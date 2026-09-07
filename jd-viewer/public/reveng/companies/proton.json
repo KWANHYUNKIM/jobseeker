@@ -4,7 +4,7 @@
   "name_en": "Proton",
   "country": "기타",
   "category": "기타",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-07",
   "domain": "proton.me",
   "one_liner": "광고 대신 구독으로 버티는 암호화 제품군 — 그래서 자기 데이터센터가 끓을 때 무엇을 먼저 살릴지도 스스로 골라야 했다",
@@ -193,7 +193,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "crypto-we-hand-out"
+      ]
     }
   ],
   "features": [
@@ -668,6 +670,525 @@
           "summary": "프랑크푸르트 데이터센터의 **냉각이 통째로 죽은** 사고의 사후 기록이다. 원인은 자기들이 아니라 데이터센터 운영사다 — **한밤중에 예고 없이 이중화된 공기 압축기 양쪽의 필터를 동시에 교체**했고, **냉각이 멈춘 사실조차 알리지 않아** 대응할 시간을 크게 깎았다. 온도는 8월 26일 오후 11시 15분부터 오르기 시작해 **30분이 안 되어 약 21.8°C 에서 51.9°C** 가 됐고, '온도가 오르면서 시설 안의 서버와 네트워크 장비가 하나씩 죽어 나갔다'. 사용자 영향은 자정 무렵 시작됐는데, **주 데이터베이스 사본이 있는 중요한 랙에서 주 스위치와 예비 스위치가 함께 죽은** 것이 계기였다. 네트워크 카드 다수가 **105°C**(정상 45°C)에 닿아 보호 모드가 걸렸고 **차가운 상태에서 완전 재기동을 해야만** 다시 살아난다. 가장 값어치 있는 대목은 **무엇을 먼저 살릴지 고른 것**이다 — '온도가 오르는 속도 때문에 결국 서비스를 되살리는 것보다 하드웨어를 살리는 쪽을 먼저 골라야 했다'. 이유가 구체적이다: **AI 붐으로 서버 장비가 부족해 잃으면 단기간에 대체할 수 없다.** 페일오버도 물음으로 적는다 — **같은 건물(프랑크푸르트) 안의 복제본으로 넘길 것인가**(빠르고 덜 어수선하지만 열을 못 잡으면 임시방편이다), **취리히로 넘길 것인가.** 앞을 골랐고 그 근거는 '냉각을 잡았으니 프랑크푸르트를 되살리는 편이 취리히로 넘기는 것보다 쉽고 빠를 것'이라는 가정이었는데, **그 가정이 틀렸다고 적는다.** 주 데이터베이스 페일오버를 **자동으로 하지 않는 이유**도 밝힌다 — 사람의 감독 없이 넘기면 주 DB 의 일시적 불가용이 **스플릿 브레인**(복제본이 일부 갱신을 놓치는 상태)으로 이어질 수 있다. 복구를 늦춘 것 하나를 더 적는다: **자기들의 보안 태세 때문에 대역외 컨트롤러 접근이 제한돼 있어 사람을 더 깨워야 했다.** 시간선은 11:15pm 온도 상승 → 자정 무렵 사용자 영향 → **00:45 CEST 냉각 복구** → **01:30 대부분 서비스 복구** → **02:00 무렵 나머지**다. 뒤끝도 감춘 것이 없다 — **일부 서버는 열로 죽었고, 살아남은 장비의 수명이 이번 일로 짧아졌는지는 아직 모른다.** 그리고 **'이런 유형의 장애에서 평소보다 긴 복구로 이어질 수 있다는 것은 현재 데이터베이스 인프라의 알려진 한계'** 라고 인정하며, 데이터베이스 복원력 작업을 **연말까지** 끝낼 계획이고 **새 데이터센터 공간을 포함한 추가 용량이 몇 주 안에** 들어온다고 적는다. 더 자세한 것도 있다 — **일부 구역은 60°C 까지** 올라갔다. 페일오버 방침이 분명하다: **프랑크푸르트 안에 복제본이 살아 있으면 그 안에서 넘기고, 프랑크푸르트 복제본이 남지 않은 것만 취리히로** 넘겼다. 취리히를 일부러 아낀 이유도 적는다 — **'트래픽 흐름을 너무 바꾸어 새로운 불안정을 만들지 않으려고'**. 01:30 에 대부분 복구됐지만 **푸시 알림과 결제 처리는 그때도 안 됐다.** 그 뒤가 이 기록의 백미다 — 밤새 **아주 비정상적인 상태**로 돌았다: **어떤 주 데이터베이스는 취리히에, 어떤 것은 프랑크푸르트에** 있었고 **이중화가 깨진 채로** 서비스를 굴렸다. 이중화를 되돌리는 작업은 8월 27일 내내 이어졌다. 끝에 약속 넷을 적는다 — **데이터베이스 복원력 작업을 연말까지**, **새 데이터센터 공간을 포함한 추가 용량이 몇 주 안에**, 남은 작업을 **안전하게 앞당기기 위한 안전성 검토**, 그리고 **데이터센터 운영사와 재발 방지 협력**이다. 반대로 없는 것도 세어 둘 만하다 — 전체 사용자 중 **몇 %가 영향을 받았는지**, 어떤 푸시·결제 시스템이었는지, **안 죽은 서비스는 무엇이었는지**, 페일오버를 실제로 어떤 명령·시스템·인력으로 했는지, '열사'가 정확히 무엇이고 **서버가 몇 대** 죽었는지, 수명 영향을 수치로 낼 것인지와 **교체 비용은 누가 지는지**, 새 데이터센터의 위치·규모·일정, 그리고 **기존 감시 체계가 하드웨어가 죽기 전에 냉각 실패를 잡았는지**다."
         }
       ]
+    },
+    {
+      "key": "crypto-we-hand-out",
+      "name": "우리가 쓰는 암호를 남도 쓰게 내놓는다",
+      "domain": "암호 라이브러리를 자기가 만들어 남에게 내준다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "광고를 안 받고 구독으로만 버티는 회사에서는 **믿음이 곧 상품**이다. '우리도 못 본다'는 말은 검증할 수 없으면 광고 문구와 다르지 않다.\n\n그래서 앱을 오픈소스로 내는 데서 그치지 않고 **암호 라이브러리 자체를 만들어 남에게 내준다** — 자바스크립트의 **OpenPGP.js**, Go 의 **GopenPGP** 다. 남이 쓰는 라이브러리가 되면 **우리 말고도 그것을 들여다볼 이유가 있는 사람들이 생긴다**(재구성).",
+        "metrics": [
+          {
+            "label": "OpenPGP.js 전체 보안 감사",
+            "value": "Cure53 두 차례(첫 보고서 공개)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "label": "따르는 규격",
+            "value": "RFC 9580(OpenPGP.js) · RFC 4880 과 RFC 9580 프로파일(GopenPGP)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              },
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "label": "키 생성 기본값",
+            "value": "ECC curve25519(RSA 는 호환용)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "label": "GopenPGP V3 의 하위 호환",
+            "value": "없음(V2 는 별도 브랜치로 계속 지원)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "label": "GopenPGP README 의 감사 정보",
+            "value": "없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "OpenPGP.js",
+            "what": "브라우저와 Node 에서 도는 자바스크립트 구현. Web Crypto 의 SubtleCrypto 와 Web Streams 를 요구한다."
+          },
+          {
+            "name": "GopenPGP",
+            "what": "golang crypto **포크** 위에 얹은 고수준 Go 라이브러리. Gomobile 로 안드로이드·iOS 까지 같은 코어를 쓴다."
+          },
+          {
+            "name": "프로파일",
+            "what": "어느 규격을 따를지의 선택. RFC 4880(옛것)과 RFC 9580(새것)을 인스턴스를 만들 때 고른다."
+          },
+          {
+            "name": "AEAD 설정",
+            "what": "인증 암호화 방식. AES-GCM 이 기본이고 OCB·EAX 는 실험 플래그 뒤에 있다. **켜면 옛 구현과 호환이 깨질 수 있다.**"
+          },
+          {
+            "name": "배포 형태",
+            "what": "같은 코드라도 **일반 웹 호스팅으로 내려받게 하느냐, 패키지형으로 설치하게 하느냐**가 보안 수준을 가른다."
+          }
+        ],
+        "invariants": [
+          "**웹으로 배포한 자바스크립트 암호는 설치형보다 약하다** — 라이브러리 README 가 직접 적는다.",
+          "기본값은 안전한 쪽으로 둔다(curve25519 · AES-GCM). 위험하거나 호환을 깨는 것은 플래그 뒤에 둔다.",
+          "규격을 고를 수 있게 하되 **새 규격을 기본으로** 삼는다.",
+          "호환을 깨는 판(V3)을 내더라도 **옛 판을 브랜치로 계속 살린다.**",
+          "감사는 라이브러리마다 상태가 다르다 — 한쪽은 두 번 받아 공개했고, 한쪽은 README 에 없다."
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "같은 암호가 네 곳에서 돈다",
+          "question": "웹·서버·안드로이드·iOS 가 어떻게 같은 암호를 쓰는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"OpenPGP.js\\nRFC 9580\"] --> W[\"브라우저\\nSubtleCrypto · Web Streams\"]\n  A --> N[\"Node.js v22+\"]\n  A -.실험.-> D[\"Deno\"]\n  B[\"golang crypto 포크\"] --> C[\"GopenPGP V3\"]\n  C --> S[\"서버\"]\n  C -->|Gomobile · build.sh| M1[\"안드로이드\"]\n  C -->|같은 빌드| M2[\"iOS\"]\n  P[\"프로파일 선택\\nRFC 4880 · RFC 9580\"] -.-> C\n  X[\"README 의 경고\\n웹 배포는 설치형보다 약하다\"] -.-> W"
+        },
+        {
+          "title": "안전한 것을 기본으로, 깨지는 것을 플래그 뒤로",
+          "question": "고를 수 있게 하면서 어떻게 사고를 막는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 기본값\n  기본값 --> curve25519: 키 생성\n  기본값 --> AES_GCM: AEAD\n  기본값 --> RFC9580: 규격\n  curve25519 --> RSA호환: 옛 상대와 주고받아야 할 때\n  AES_GCM --> OCB_EAX: 실험 플래그를 켤 때\n  OCB_EAX --> 호환깨짐: 옛 규격을 따르는 구현과\n  RFC9580 --> RFC4880: 프로파일을 내려 고를 때\n  기본값 --> 경량빌드: 기본 아닌 곡선은 지연 로딩\n  경량빌드 --> [*]"
+        },
+        {
+          "title": "라이브러리를 내주면 남는 구멍과, 문서가 말하지 않는 것",
+          "question": "코드를 공개하면 무엇이 해결되고 무엇이 남는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"코드를 공개했다\"] --> B[\"읽을 수 있다\"]\n  B --> C{\"그런데\"}\n  C --> C1[\"웹으로 배포하면\\n매번 내려받는 코드가 바뀔 수 있다\"]\n  C1 --> C2[\"README 가 직접 적는다\\n설치형보다 낮은 보안\"]\n  C --> C3[\"AEAD 를 켜면\\n옛 구현과 호환이 깨진다\"]\n  C --> C4[\"V3 는 V2 와 호환되지 않는다\"]\n  C4 --> C5[\"V2 를 브랜치로 계속 살린다\"]\n  Z[\"문서가 말하지 않는 것\"] -.-> Z1[\"오픈소스 페이지의 수천 명 전문가가 누구인가\"]\n  Z -.-> Z2[\"GopenPGP 는 감사를 받았나\\nREADME 에 없다\"]\n  Z -.-> Z3[\"Cure53 감사는 어느 판이었나\"]\n  Z -.-> Z4[\"golang crypto 를 왜 포크했나\"]\n  Z -.-> Z5[\"포크한 것을 상류에 되돌렸나\"]"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "두 언어로 라이브러리를 따로 만든다",
+            "why": "브라우저에서 도는 것과 서버·모바일에서 도는 것의 조건이 다르다. 한쪽은 Web Crypto 위에, 한쪽은 Go 위에 선다."
+          },
+          {
+            "step": "Go 쪽은 golang crypto 를 포크해 그 위에 고수준 API 를 얹는다",
+            "why": "표준 라이브러리만으로는 부족하고, 낮은 수준 원시 함수를 그대로 앱에 노출하면 쓰는 쪽이 틀린다."
+          },
+          {
+            "step": "Gomobile 로 안드로이드와 iOS 를 함께 빌드한다",
+            "why": "모바일마다 암호를 다시 짜면 **같은 코드가 아니게 된다.** `build.sh` 하나가 둘을 낸다."
+          },
+          {
+            "step": "기본값을 안전한 쪽으로 둔다",
+            "why": "키 생성은 ECC curve25519, AEAD 는 AES-GCM. RSA 와 실험 방식은 남기되 기본이 아니다."
+          },
+          {
+            "step": "규격 프로파일을 고를 수 있게 한다",
+            "why": "바깥 세상에는 아직 RFC 4880 만 아는 구현이 있다. 새 규격을 기본으로 두되 내려갈 길을 남긴다."
+          },
+          {
+            "step": "위험한 선택지를 플래그 뒤에 둔다",
+            "why": "OCB·EAX 는 실험 플래그 뒤에 있고, AEAD 를 켜면 **옛 구현과 호환이 깨질 수 있다**고 적는다."
+          },
+          {
+            "step": "감사를 받고 보고서를 건다",
+            "why": "OpenPGP.js 는 Cure53 이 전체를 두 번 봤고 첫 보고서가 공개돼 있다."
+          },
+          {
+            "step": "README 에 이 방식의 한계를 적는다",
+            "why": "**웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형보다 보안이 낮다** — 자기 제품의 주된 배포 형태를 두고 하는 말이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "암호를 안에서만 쓸 것인가, 라이브러리로 내놓을 것인가?",
+            "chosen": "**내놓는다.** 두 언어로 만들어 유지한다.",
+            "alternatives": [
+              "사내 구현으로만 쓴다",
+              "남의 라이브러리를 가져다 쓴다"
+            ],
+            "tradeoff": "바깥 사용자에게 API 안정성과 유지 부담을 계속 진다. 그러나 **믿음이 상품인 회사에서 검증 가능성은 기능이다** — 남이 쓰는 라이브러리가 되면 들여다볼 이유가 있는 사람이 늘어난다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Proton — 오픈소스와 감사",
+                "url": "https://proton.me/community/open-source",
+                "publisher": "Proton",
+                "summary": "자기들이 만들어 남에게 내주는 암호 라이브러리 둘을 앞세운다 — 자바스크립트용 **OpenPGP.js**(github.com/openpgpjs/openpgpjs, 보안 감사는 PR #691 에 붙어 있다)와 Go 용 **GopenPGP**(github.com/ProtonMail/gopenpgp, 감사 보고서 `Source_Code_Review_-_Proton_Crypto_Library.pdf`)다. 주요 앱을 전부 오픈소스로 내고 제3자 감사 보고서를 붙인다 — Mail(웹·데스크톱), Drive, VPN(여러 건), Pass 에 보고서가 있고 Calendar·Meet·Authenticator·Wallet·Lumo 는 저장소가 공개돼 있다. 다만 문구는 헐겁다 — **'전 세계 수천 명의 전문가가 독립적으로 보안을 감사했다'** 고만 쓰고 **이 페이지에는 감사 기관 이름도, 날짜도, 방법론도 없다.**"
+              },
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              },
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "question": "자기 배포 방식의 약점을 문서에 적을 것인가?",
+            "chosen": "**적는다** — '일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'고 쓰고 패키지형 배포와 엄격한 CSP 를 권한다.",
+            "alternatives": [
+              "장점만 적는다"
+            ],
+            "tradeoff": "**자기 주력 제품(웹 메일)의 근본 약점을 자기 라이브러리 문서에 적는 것**이다. 그러나 적지 않으면 쓰는 쪽이 웹 배포를 설치형과 같은 것으로 오해한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "question": "기본값을 무엇으로 둘 것인가?",
+            "chosen": "키 생성은 **ECC curve25519**, AEAD 는 **AES-GCM**. RSA 는 호환용으로만 남긴다.",
+            "alternatives": [
+              "RSA 를 기본으로 둔다(호환이 넓다)"
+            ],
+            "tradeoff": "옛 구현과 주고받을 때 손이 더 간다. 그러나 기본값이 곧 대부분의 사용자가 쓰는 값이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "question": "호환을 깨는 기능을 어떻게 다룰 것인가?",
+            "chosen": "**플래그 뒤에 둔다.** OCB·EAX 는 실험 플래그이고, AEAD 를 켜면 옛 규격 구현과 호환이 깨질 수 있다고 명시한다.",
+            "alternatives": [
+              "새 방식을 기본으로 켠다"
+            ],
+            "tradeoff": "좋은 기능이 기본으로 안 켜지니 대부분의 사용자에게 닿지 않는다. 그러나 **암호에서 호환이 깨지면 메일이 안 읽힌다** — 되돌릴 수 없는 종류의 실패다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "question": "메이저 판을 올리며 호환을 깰 것인가?",
+            "chosen": "깬다(**V3 는 V2 와 하위 호환이 아니다**). 대신 **V2 를 전용 브랜치로 계속** 지원한다.",
+            "alternatives": [
+              "호환을 지키며 안에서 고친다"
+            ],
+            "tradeoff": "두 판을 동시에 유지하는 비용을 진다. 그러나 호환을 지키려고 옛 설계를 끌고 가면 새 규격(RFC 9580)을 제대로 담기 어렵다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "question": "모바일 암호를 어떻게 맞출 것인가?",
+            "chosen": "**Gomobile 로 안드로이드와 iOS 를 함께 빌드**해 같은 Go 코어를 쓴다.",
+            "alternatives": [
+              "플랫폼마다 네이티브 구현을 둔다"
+            ],
+            "tradeoff": "Go 런타임을 앱에 지고 들어가야 한다(크기·성능 비용은 문서에 없다). 그러나 플랫폼마다 다시 짜면 **같은 코드가 아니게 되고 감사도 따로 받아야 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "question": "감사를 어디까지 공개할 것인가?",
+            "chosen": "OpenPGP.js 는 **Cure53 두 차례**를 알리고 첫 보고서를 공개한다. GopenPGP 는 **README 에 감사 정보를 두지 않았다.**",
+            "alternatives": [
+              "둘 다 같은 수준으로 공개한다"
+            ],
+            "tradeoff": "**두 라이브러리의 검증 상태가 다르다는 것이 문서만 봐서는 잘 안 보인다.** 회사 오픈소스 페이지는 '전 세계 수천 명의 전문가가 감사했다'고 뭉뚱그리는데, 실제로는 기관·판·범위가 라이브러리마다 다르다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              },
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              },
+              {
+                "title": "Proton — 오픈소스와 감사",
+                "url": "https://proton.me/community/open-source",
+                "publisher": "Proton",
+                "summary": "자기들이 만들어 남에게 내주는 암호 라이브러리 둘을 앞세운다 — 자바스크립트용 **OpenPGP.js**(github.com/openpgpjs/openpgpjs, 보안 감사는 PR #691 에 붙어 있다)와 Go 용 **GopenPGP**(github.com/ProtonMail/gopenpgp, 감사 보고서 `Source_Code_Review_-_Proton_Crypto_Library.pdf`)다. 주요 앱을 전부 오픈소스로 내고 제3자 감사 보고서를 붙인다 — Mail(웹·데스크톱), Drive, VPN(여러 건), Pass 에 보고서가 있고 Calendar·Meet·Authenticator·Wallet·Lumo 는 저장소가 공개돼 있다. 다만 문구는 헐겁다 — **'전 세계 수천 명의 전문가가 독립적으로 보안을 감사했다'** 고만 쓰고 **이 페이지에는 감사 기관 이름도, 날짜도, 방법론도 없다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OpenPGP.js (RFC 9580)",
+            "role": "브라우저와 Node 에서 도는 구현. Web Crypto SubtleCrypto 와 Web Streams 위에 선다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "tech": "GopenPGP V3 (golang crypto 포크 위)",
+            "role": "서버와 모바일이 쓰는 고수준 Go 라이브러리. 프로파일로 규격을 고른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "tech": "Gomobile / build.sh",
+            "role": "안드로이드와 iOS 를 한 번에 빌드해 같은 암호 코어를 쓰게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "tech": "Cure53 감사",
+            "role": "OpenPGP.js 전체를 두 번 봤다. 첫 보고서가 공개돼 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "tech": "엄격한 CSP · 패키지형 배포",
+            "role": "README 가 권하는 배포 형태 — 웹 호스팅 배포의 약점을 줄이는 방법",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "데이터센터가 끓을 때 무엇을 먼저 살릴지 고른다(같은 회사의 다른 도메인)",
+          "via": "자기 것을 자기가 진다",
+          "contract": "암호를 남의 라이브러리에 맡기지 않듯 인프라도 남의 클라우드에 맡기지 않는다. 두 도메인이 **같은 선택의 두 얼굴**이고, 대가도 같은 종류다 — 유지 부담을 계속 진다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "엔테(다른 회사)",
+          "via": "'우리도 못 본다'를 어떻게 증명하는가",
+          "contract": "엔테도 종단간 암호화를 팔며 코드를 공개하는데, Proton 은 **암호 라이브러리 자체를 남에게 내주는** 데까지 간다. 검증 가능성을 어디까지 밀 것인가의 정도 차이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "페러스 시스템즈(다른 회사)",
+          "via": "남이 쓰게 만든 것을 인증받는 일",
+          "contract": "페러스가 **남의 언어(Rust) 툴체인을 인증**하는 일을 한다면, Proton 은 **자기 암호 라이브러리를 남이 쓰게 내놓고 감사를 붙인다.** 둘 다 '내가 옳다'가 아니라 **'밖에서 확인할 수 있다'**를 파는 자리다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "1Password(다른 회사)",
+          "via": "암호를 다루는 제품의 배포 형태",
+          "contract": "README 의 경고(웹 배포는 설치형보다 약하다)가 정확히 이 차이를 가리킨다 — 설치형 앱을 주로 파는 쪽과 웹에서도 열리는 쪽의 위협 모델이 다르다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "웹으로 배포한 암호 코드는 매번 새로 내려받는다",
+            "why_hard": "설치형 앱은 한 번 검증한 바이너리가 그대로 남지만, **웹은 접속할 때마다 서버가 주는 코드를 실행한다.** 그래서 코드를 공개해도 '지금 내 브라우저에서 도는 것이 그 코드인가'는 별개의 문제다. 라이브러리 README 가 이 한계를 직접 적는다.",
+            "current_best": "패키지형 배포 형태와 **엄격한 CSP** 를 권한다. 웹 접속 자체를 없애지는 못한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              }
+            ]
+          },
+          {
+            "problem": "암호에서 호환이 깨지면 되돌릴 수 없다",
+            "why_hard": "기능이 깨지면 고치면 되지만 **읽을 수 없게 된 메일은 읽을 수 없다.** 그래서 새 규격(RFC 9580)과 새 AEAD 방식이 좋아도 기본으로 켤 수 없다 — 바깥에는 아직 옛 규격만 아는 구현이 있다.",
+            "current_best": "새 규격을 기본으로 두되 프로파일로 내려갈 길을 남기고, 호환을 깨는 방식은 **플래그 뒤**에 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              },
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          },
+          {
+            "problem": "검증 상태가 라이브러리마다 다른데 한 문장으로 뭉뚱그려진다",
+            "why_hard": "회사 페이지는 '전 세계 수천 명의 전문가가 독립적으로 감사했다'고 쓴다. 그런데 실제로는 **OpenPGP.js 는 Cure53 이 두 번 봤고 GopenPGP 는 README 에 감사 정보가 없다.** 공개(누구나 볼 수 있다)와 감사(전문가가 실제로 봤다)는 다른 일인데 한 문장에 섞이면 읽는 쪽이 구별하지 못한다.",
+            "current_best": "각 저장소와 보고서 링크를 따라가면 알 수 있다. **요약 페이지 수준에서는 구별되지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Proton — 오픈소스와 감사",
+                "url": "https://proton.me/community/open-source",
+                "publisher": "Proton",
+                "summary": "자기들이 만들어 남에게 내주는 암호 라이브러리 둘을 앞세운다 — 자바스크립트용 **OpenPGP.js**(github.com/openpgpjs/openpgpjs, 보안 감사는 PR #691 에 붙어 있다)와 Go 용 **GopenPGP**(github.com/ProtonMail/gopenpgp, 감사 보고서 `Source_Code_Review_-_Proton_Crypto_Library.pdf`)다. 주요 앱을 전부 오픈소스로 내고 제3자 감사 보고서를 붙인다 — Mail(웹·데스크톱), Drive, VPN(여러 건), Pass 에 보고서가 있고 Calendar·Meet·Authenticator·Wallet·Lumo 는 저장소가 공개돼 있다. 다만 문구는 헐겁다 — **'전 세계 수천 명의 전문가가 독립적으로 보안을 감사했다'** 고만 쓰고 **이 페이지에는 감사 기관 이름도, 날짜도, 방법론도 없다.**"
+              },
+              {
+                "title": "OpenPGP.js — README",
+                "url": "https://github.com/openpgpjs/openpgpjs",
+                "publisher": "OpenPGP.js (Proton 유지)",
+                "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+              },
+              {
+                "title": "GopenPGP — README",
+                "url": "https://github.com/ProtonMail/gopenpgp",
+                "publisher": "Proton",
+                "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "README 에 경고를 적을 때",
+          "thought": "이 회사의 주력 제품은 **브라우저에서 열리는 메일**이다. 그런데 자기 암호 라이브러리 문서에 **웹 배포는 설치형보다 약하다**고 적었다. 파는 것의 약점을 자기가 만든 도구의 설명서에 적어 둔 셈이다 — 사후 기록에 자기 한계를 적는 태도와 같은 결이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "OpenPGP.js — README",
+              "url": "https://github.com/openpgpjs/openpgpjs",
+              "publisher": "OpenPGP.js (Proton 유지)",
+              "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+            }
+          ]
+        },
+        {
+          "at": "기본값을 고를 때",
+          "thought": "암호 라이브러리에서 **기본값이 곧 정책**이다. curve25519 와 AES-GCM 을 기본으로 두고 옛 방식과 실험 방식을 플래그 뒤로 미룬 것은, 대부분의 사용자가 기본값을 바꾸지 않는다는 것을 아는 설계다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "두 라이브러리의 감사 상태가 다른 것을 볼 때",
+          "thought": "'수천 명이 감사했다'는 문장은 **공개와 감사를 섞는다.** 저장소를 공개한 것은 사실이고 Cure53 이 두 번 본 것도 사실인데, 그 둘을 한 문장으로 묶으면 **GopenPGP 도 같은 수준으로 검증됐다는 인상**이 남는다. 라이브러리 문서가 회사 페이지보다 정확했다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Proton — 오픈소스와 감사",
+          "url": "https://proton.me/community/open-source",
+          "publisher": "Proton",
+          "summary": "자기들이 만들어 남에게 내주는 암호 라이브러리 둘을 앞세운다 — 자바스크립트용 **OpenPGP.js**(github.com/openpgpjs/openpgpjs, 보안 감사는 PR #691 에 붙어 있다)와 Go 용 **GopenPGP**(github.com/ProtonMail/gopenpgp, 감사 보고서 `Source_Code_Review_-_Proton_Crypto_Library.pdf`)다. 주요 앱을 전부 오픈소스로 내고 제3자 감사 보고서를 붙인다 — Mail(웹·데스크톱), Drive, VPN(여러 건), Pass 에 보고서가 있고 Calendar·Meet·Authenticator·Wallet·Lumo 는 저장소가 공개돼 있다. 다만 문구는 헐겁다 — **'전 세계 수천 명의 전문가가 독립적으로 보안을 감사했다'** 고만 쓰고 **이 페이지에는 감사 기관 이름도, 날짜도, 방법론도 없다.**"
+        },
+        {
+          "title": "OpenPGP.js — README",
+          "url": "https://github.com/openpgpjs/openpgpjs",
+          "publisher": "OpenPGP.js (Proton 유지)",
+          "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+        },
+        {
+          "title": "GopenPGP — README",
+          "url": "https://github.com/ProtonMail/gopenpgp",
+          "publisher": "Proton",
+          "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -675,10 +1196,11 @@
     "기능(feature)을 아직 하나도 쓰지 않았다. 도메인 둘을 세웠으니 다음 사이클부터 하나씩 판다.",
     "시대(eras)를 세우지 않았다 — 이번에 읽은 자료에 구조가 언제 바뀌었는지를 다룬 대목이 없다. 사후 기록의 날짜(2026-08)뿐이다.",
     "블로그에 **엔지니어링 카테고리가 없다** — 있는 것은 업데이트·뉴스·가이드·의견이다. 그래서 자기 시스템을 다룬 글이 사후 기록 한 편뿐이었다.",
-    "감사 기관 이름·날짜·방법론을 오픈소스 페이지에서 확인하지 못했다. 각 보고서 링크를 따라가야 한다.",
     "종단간 암호화의 실제 구현(키 관리·서버가 무엇을 보는가·검색을 어떻게 하는가)을 다룬 글을 아직 못 찾았다.",
     "사후 기록은 **프랑크푸르트를 되살리는 가정이 틀렸다**고만 적고 무엇이 얼마나 더 걸렸는지, 취리히로 넘겼다면 어땠을지는 적지 않는다.",
-    "스위스가 EU 회원국이 아니라는 점이 이 회사 상품의 일부인데, **관할과 법적 요청을 어떻게 다루는지**를 다룬 자료는 이번에 읽지 않았다."
+    "스위스가 EU 회원국이 아니라는 점이 이 회사 상품의 일부인데, **관할과 법적 요청을 어떻게 다루는지**를 다룬 자료는 이번에 읽지 않았다.",
+    "OpenPGP.js 는 Cure53 이 두 번 감사했다는 것을 저장소에서 확인했다. 다만 **어느 판을 봤는지**는 보고서를 열어야 알 수 있고, **GopenPGP 는 README 에 감사 정보가 없다.**",
+    "GopenPGP 가 golang crypto 를 **왜 포크했는지**, 그리고 포크한 변경을 **상류에 되돌렸는지** 확인하지 못했다."
   ],
   "sources": [
     {
@@ -705,6 +1227,18 @@
       "publisher": "Proton",
       "date": "2026-08",
       "summary": "프랑크푸르트 데이터센터의 **냉각이 통째로 죽은** 사고의 사후 기록이다. 원인은 자기들이 아니라 데이터센터 운영사다 — **한밤중에 예고 없이 이중화된 공기 압축기 양쪽의 필터를 동시에 교체**했고, **냉각이 멈춘 사실조차 알리지 않아** 대응할 시간을 크게 깎았다. 온도는 8월 26일 오후 11시 15분부터 오르기 시작해 **30분이 안 되어 약 21.8°C 에서 51.9°C** 가 됐고, '온도가 오르면서 시설 안의 서버와 네트워크 장비가 하나씩 죽어 나갔다'. 사용자 영향은 자정 무렵 시작됐는데, **주 데이터베이스 사본이 있는 중요한 랙에서 주 스위치와 예비 스위치가 함께 죽은** 것이 계기였다. 네트워크 카드 다수가 **105°C**(정상 45°C)에 닿아 보호 모드가 걸렸고 **차가운 상태에서 완전 재기동을 해야만** 다시 살아난다. 가장 값어치 있는 대목은 **무엇을 먼저 살릴지 고른 것**이다 — '온도가 오르는 속도 때문에 결국 서비스를 되살리는 것보다 하드웨어를 살리는 쪽을 먼저 골라야 했다'. 이유가 구체적이다: **AI 붐으로 서버 장비가 부족해 잃으면 단기간에 대체할 수 없다.** 페일오버도 물음으로 적는다 — **같은 건물(프랑크푸르트) 안의 복제본으로 넘길 것인가**(빠르고 덜 어수선하지만 열을 못 잡으면 임시방편이다), **취리히로 넘길 것인가.** 앞을 골랐고 그 근거는 '냉각을 잡았으니 프랑크푸르트를 되살리는 편이 취리히로 넘기는 것보다 쉽고 빠를 것'이라는 가정이었는데, **그 가정이 틀렸다고 적는다.** 주 데이터베이스 페일오버를 **자동으로 하지 않는 이유**도 밝힌다 — 사람의 감독 없이 넘기면 주 DB 의 일시적 불가용이 **스플릿 브레인**(복제본이 일부 갱신을 놓치는 상태)으로 이어질 수 있다. 복구를 늦춘 것 하나를 더 적는다: **자기들의 보안 태세 때문에 대역외 컨트롤러 접근이 제한돼 있어 사람을 더 깨워야 했다.** 시간선은 11:15pm 온도 상승 → 자정 무렵 사용자 영향 → **00:45 CEST 냉각 복구** → **01:30 대부분 서비스 복구** → **02:00 무렵 나머지**다. 뒤끝도 감춘 것이 없다 — **일부 서버는 열로 죽었고, 살아남은 장비의 수명이 이번 일로 짧아졌는지는 아직 모른다.** 그리고 **'이런 유형의 장애에서 평소보다 긴 복구로 이어질 수 있다는 것은 현재 데이터베이스 인프라의 알려진 한계'** 라고 인정하며, 데이터베이스 복원력 작업을 **연말까지** 끝낼 계획이고 **새 데이터센터 공간을 포함한 추가 용량이 몇 주 안에** 들어온다고 적는다. 더 자세한 것도 있다 — **일부 구역은 60°C 까지** 올라갔다. 페일오버 방침이 분명하다: **프랑크푸르트 안에 복제본이 살아 있으면 그 안에서 넘기고, 프랑크푸르트 복제본이 남지 않은 것만 취리히로** 넘겼다. 취리히를 일부러 아낀 이유도 적는다 — **'트래픽 흐름을 너무 바꾸어 새로운 불안정을 만들지 않으려고'**. 01:30 에 대부분 복구됐지만 **푸시 알림과 결제 처리는 그때도 안 됐다.** 그 뒤가 이 기록의 백미다 — 밤새 **아주 비정상적인 상태**로 돌았다: **어떤 주 데이터베이스는 취리히에, 어떤 것은 프랑크푸르트에** 있었고 **이중화가 깨진 채로** 서비스를 굴렸다. 이중화를 되돌리는 작업은 8월 27일 내내 이어졌다. 끝에 약속 넷을 적는다 — **데이터베이스 복원력 작업을 연말까지**, **새 데이터센터 공간을 포함한 추가 용량이 몇 주 안에**, 남은 작업을 **안전하게 앞당기기 위한 안전성 검토**, 그리고 **데이터센터 운영사와 재발 방지 협력**이다. 반대로 없는 것도 세어 둘 만하다 — 전체 사용자 중 **몇 %가 영향을 받았는지**, 어떤 푸시·결제 시스템이었는지, **안 죽은 서비스는 무엇이었는지**, 페일오버를 실제로 어떤 명령·시스템·인력으로 했는지, '열사'가 정확히 무엇이고 **서버가 몇 대** 죽었는지, 수명 영향을 수치로 낼 것인지와 **교체 비용은 누가 지는지**, 새 데이터센터의 위치·규모·일정, 그리고 **기존 감시 체계가 하드웨어가 죽기 전에 냉각 실패를 잡았는지**다."
+    },
+    {
+      "title": "OpenPGP.js — README",
+      "url": "https://github.com/openpgpjs/openpgpjs",
+      "publisher": "OpenPGP.js (Proton 유지)",
+      "summary": "OpenPGP 프로토콜의 자바스크립트 구현이며 **RFC 9580** 을 따른다(앞선 규격을 대체한다). 도는 곳은 최신 브라우저(크롬·파이어폭스·엣지·사파리 15+), **Node.js v22+**, 그리고 실험적으로 Deno 다 — **Web Crypto 의 SubtleCrypto 와 Web Streams API 가 있어야 한다.** 지원 곡선은 curve25519·ed25519·nistP256/384/521·brainpoolP256r1/384r1/512r1·secp256k1 이고, AEAD 는 **AES-GCM 이 기본**이며 OCB 와 EAX 는 실험 플래그 뒤에 있다. 압축은 zlib·zip·무압축. 키 생성 기본값은 **ECC curve25519** 이고 RSA 는 호환용으로 남긴다. 경량 빌드에서는 기본이 아닌 곡선을 **지연 로딩**한다. 감사는 **Cure53 이 전체를 두 번** 했고 **첫 보고서가 공개**돼 있다. 가장 눈에 띄는 것은 README 가 적은 두 가지 경고다 — ① **'일반 웹 호스팅으로 배포한 자바스크립트 암호 앱은 설치형 앱보다 사용자에게 낮은 보안을 준다'** 며 패키지형 배포와 엄격한 CSP 를 권한다. ② **AEAD 를 켜면 옛 규격을 아직 따르는 다른 OpenPGP 구현과 호환이 깨질 수 있다.** 그 밖에 디스크에 있는 개인 키를 지키는 강한 암호구를 권한다."
+    },
+    {
+      "title": "GopenPGP — README",
+      "url": "https://github.com/ProtonMail/gopenpgp",
+      "publisher": "Proton",
+      "summary": "**golang crypto 라이브러리의 포크 위에 얹은 고수준 OpenPGP 라이브러리**다(V3). 낮은 수준의 원시 함수를 감싸 암호화·복호화(비밀번호 또는 키), 서명 생성·검증, 키 생성을 쉬운 API 로 낸다. **Gomobile 로도 컴파일된다** — 저장소의 `build.sh` 가 **안드로이드와 iOS 를 함께** 빌드해 모바일 앱에서 같은 코어를 쓰게 한다. 규격은 **RFC 4880 과 RFC 9580** 프로파일을 지원하며 PGP 인스턴스를 만들 때 고른다. 분명한 단서가 하나 있다 — **V3 는 V2 와 하위 호환이 아니다.** 다만 V2 를 전용 브랜치로 계속 지원해 버그 수정과 작은 기능 갱신을 이어 간다고 적는다. **README 에는 감사 보고서나 제3자 검증 정보가 없다**(메인 브랜치 커밋 625개, 열린 이슈 26개)."
     }
   ]
 }
