@@ -9,9 +9,12 @@
 from __future__ import annotations
 
 import re
-import unicodedata
+import sys as _sys
 from functools import lru_cache
 from pathlib import Path
+
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from normalize import company as norm_company  # noqa: E402,F401
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 COMPANY_SLUG_JS = ROOT_DIR / "jd-viewer" / "src" / "lib" / "companySlug.js"
@@ -67,20 +70,6 @@ def _clean(s: str) -> str:
     s = re.sub(r"[^a-z0-9]+", "-", s)
     s = re.sub(r"-+", "-", s)
     return s.strip("-")
-
-
-def norm_company(name: str) -> str:
-    """회사의 정체성. dashboard.classifier._norm_company 와 같은 규칙이다.
-
-    여기에 다시 적는 이유: classifier 는 import 시 회사 목록 JSON 을 읽어 들이는
-    무거운 모듈이라, 백필/크롤 경로가 그걸 끌고 들어올 이유가 없다. 규칙이 갈리지
-    않도록 `--selftest` 가 두 구현을 대조한다.
-    """
-    if not name:
-        return ""
-    s = unicodedata.normalize("NFKC", name).lower()
-    s = re.sub(r"\(주\)|주식회사|㈜|inc\.?|co\.?,?\s*ltd\.?|corp\.?|corporation|ltd\.?", "", s)
-    return re.sub(r"[\s\-_().,&/]+", "", s)
 
 
 def base_company_slug(norm: str) -> str:
@@ -168,16 +157,24 @@ def _selftest() -> int:
     """`python -m store.slug --selftest` — 규칙이 JS/classifier 와 갈렸는지 본다."""
     failed = 0
 
-    # 1. norm_company 가 classifier 와 같은 답을 내는가
+    # 1. 회사명 정규화가 **한 벌**인가. 예전에는 classifier 와 여기에 같은 규칙의
+    #    두 구현이 있었고, 그게 회사가 갈리는 결함의 뿌리였다. 지금은 둘 다
+    #    normalize.company 를 가리켜야 한다 — 값이 같은지가 아니라 같은 함수인지를 본다.
     try:
         import sys
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
         from dashboard.classifier import _norm_company as ref
-        for name in ["메가존클라우드㈜", "(주)클로봇", "주식회사 솔트룩스", "Coupang Inc.",
-                     "현대오토에버(주)", "쿠팡", "네이버 클라우드"]:
+        from normalize import company as canonical
+        if not (norm_company is canonical and ref is canonical):
+            failed += 1
+            print("FAIL 회사명 정규화가 아직 여러 벌이다 "
+                  f"(slug={norm_company!r}, classifier={ref!r})")
+        else:
+            print("  회사명 정규화 = normalize.company 하나")
+        for name in ["메가존클라우드㈜", "(주)클로봇", "주식회사 솔트룩스", "Coupang Inc."]:
             if norm_company(name) != ref(name):
                 failed += 1
-                print(f"FAIL norm_company({name!r}): {norm_company(name)!r} != {ref(name)!r}")
+                print(f"FAIL norm_company({name!r}) 불일치")
     except Exception as e:
         print(f"  (classifier 대조 건너뜀: {e})")
 
