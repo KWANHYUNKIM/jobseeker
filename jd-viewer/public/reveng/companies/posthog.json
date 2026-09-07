@@ -45,6 +45,20 @@
       "why": "손님의 서비스에서 이벤트가 몰려 들어오는데, 그 양은 우리가 못 정한다. 곧바로 데이터베이스에 쓰면 트래픽이 튀거나 클러스터를 못 쓸 때 그대로 잃는다.\n\n경계를 여기서 끊은 이유는 이 문제만 **받는 일**이기 때문이다 — 어디에 어떻게 쌓을지는 다음 도메인의 몫이다(재구성).",
       "tech": [
         {
+          "tech": "넘침 파이프라인",
+          "solves": "한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 옆길로 돌린다 — 버리는 것 없이 캡처 API 는 200 을 돌려준다.",
+          "limits": "그동안 그 식별자의 처리 순서 보장이 느슨해진다. 전달 보장·데드레터·배압과 처리량 수치는 문서에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ingestion pipeline — Docs",
+              "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+              "publisher": "PostHog",
+              "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+            }
+          ]
+        },
+        {
           "tech": "카프카를 앞에 두기",
           "solves": "직접 쓰지 않고 카프카를 거쳐 트래픽이 튀거나 클러스터를 못 쓸 때도 견딘다. 이미 앱 전반에서 쓰고 있어 안전한 선택이었다고 적는다.",
           "limits": "층이 하나 늘고 그 큐를 운영해야 한다(재구성).",
@@ -87,7 +101,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "overflow-instead-of-dropping"
+      ]
     },
     {
       "name": "워크로드마다 클러스터를 가른다",
@@ -205,13 +221,486 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "overflow-instead-of-dropping",
+      "name": "한 명이 몰아쳐도 버리지 않고 옆길로 보낸다",
+      "domain": "쏟아지는 이벤트를 잃지 않고 받는다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "분석 도구는 손님의 서비스에서 이벤트를 받아 살아간다. 그런데 **얼마나 올지는 우리가 못 정한다** — 손님 쪽에서 버그 하나가 나면 한 사용자 식별자에서 초당 수백 건이 쏟아질 수 있다.\n\n그때 흔한 답은 속도 제한을 걸고 거절하는 것이다. 그러면 손님 쪽 라이브러리가 오류를 받고 데이터가 사라진다 — 이 회사는 **거절하지 않고 옆길로 보내는** 쪽을 골랐다.",
+        "metrics": [
+          {
+            "label": "우회 기준",
+            "value": "한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘길 때",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "label": "그때 하는 일",
+            "value": "넘침 파이프라인으로 우회시킨다 — 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "label": "내주는 것",
+            "value": "그 distinct_id 의 처리 순서 보장이 제한이 걸린 동안 느슨해진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "label": "토픽 셋",
+            "value": "보통 · 넘침 · 과거 데이터용으로 갈라 둔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "label": "받는 쪽",
+            "value": "러스트로 쓴 캡처 서비스가 압축을 풀고 모양을 정규화한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "캡처 서비스",
+            "what": "제일 앞에서 받는 곳. 러스트로 쓰였고 압축 해제와 정규화를 한다"
+          },
+          {
+            "name": "distinct_id",
+            "what": "사용자를 가리키는 식별자. 처리와 우회의 단위다"
+          },
+          {
+            "name": "보통 토픽",
+            "what": "평소 이벤트가 가는 길"
+          },
+          {
+            "name": "넘침 토픽",
+            "what": "한 식별자가 몰아칠 때 우회하는 길. 순서 보장이 느슨하다"
+          },
+          {
+            "name": "사람 레코드",
+            "what": "포스트그레스에 있는 것. distinct_id 로 갱신된다"
+          }
+        ],
+        "invariants": [
+          "버리지 않는다",
+          "캡처는 언제나 200 을 돌려준다",
+          "몰아치는 한 명이 나머지를 막지 않는다",
+          "우회하는 동안 순서 보장이 느슨해진다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "이벤트가 지나는 길",
+          "question": "받아서 어디까지 가나",
+          "kind": "flow",
+          "code": "flowchart LR\n  C[\"<b>클라이언트</b>\"]:::list --> R[\"<b>캡처 서비스(러스트)</b><br/>• 압축 해제 · 모양 정규화\"]:::list\n  R --> K{\"어느 토픽인가\"}\n  K -->|\"보통\"| T1[\"<b>events_plugin_ingestion</b>\"]:::list\n  K -->|\"몰아칠 때\"| T2[\"<b>overflow</b>\"]:::list\n  K -->|\"과거 데이터\"| T3[\"<b>historical</b>\"]:::list\n  T1 --> W[\"<b>적재 워커(노드)</b><br/>• 다섯 단계 처리<br/>• 사람 레코드 갱신(포스트그레스)\"]:::list\n  T2 --> W\n  W --> Q[\"<b>별도 토픽 → 클릭하우스</b>\"]:::list"
+        },
+        {
+          "title": "몰아칠 때 무엇을 내주나",
+          "question": "거절하지 않으면 무엇이 흔들리나",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 평소\n  평소: 보통 토픽\\n순서 보장 유지\n  평소 --> 넘침: 분당 약 5천 건을 지속해서 넘긴다\n  넘침: 넘침 파이프라인\\n순서 보장이 느슨해진다\\n버리는 것은 없다\n  넘침 --> 평소: 제한이 풀린다\n  note right of 넘침: 캡처 API 는 계속 200"
+        },
+        {
+          "title": "안 버리기로 하면 남는 것",
+          "question": "거절 대신 우회의 대가",
+          "kind": "failure",
+          "code": "flowchart TD\n  N[\"<b>버리지 않는다</b>\"]:::list --> A[\"<b>순서가 흔들린다</b><br/>• 그 식별자에 한해\"]:::list\n  N --> B[\"<b>일이 사라지지 않는다</b><br/>• 뒤에서 다 처리해야 한다(재구성)\"]:::list\n  K[\"<b>카프카 테이블을 질의하면</b>\"]:::list --> C[\"<b>오프셋이 진행돼 데이터를 잃는다</b><br/>• 핸드북이 경고한다\"]:::list\n  D[\"<b>문서에 없는 것</b>\"]:::list --> E[\"<b>전달·순서 보장 · 데드레터 · 배압<br/>처리량·지연 수치</b>\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "러스트로 쓴 캡처 서비스가 받는다",
+            "why": "제일 앞에서 압축을 풀고 모양을 맞춰야 뒤가 단순해진다"
+          },
+          {
+            "step": "보통·넘침·과거 세 토픽 가운데 하나로 보낸다",
+            "why": "성질이 다른 흐름을 같은 줄에 세우면 서로를 막는다"
+          },
+          {
+            "step": "한 식별자가 분당 약 5천 건을 지속해서 넘기면 넘침으로 돌린다",
+            "why": "몰아치는 한 명이 나머지 손님의 처리를 늦추면 안 된다"
+          },
+          {
+            "step": "그동안 그 식별자의 순서 보장을 느슨하게 둔다",
+            "why": "순서를 지키려면 한 줄로 세워야 하고 그러면 다시 막힌다(재구성)"
+          },
+          {
+            "step": "적재 워커가 다섯 단계로 처리하고 사람 레코드를 갱신한다",
+            "why": "이벤트를 사람에 붙여야 분석이 된다"
+          },
+          {
+            "step": "처리된 이벤트를 다시 카프카를 거쳐 클릭하우스에 쓴다",
+            "why": "쓰는 쪽이 밀려도 앞이 안 막힌다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "몰아치는 트래픽을 어떻게 다룰 것인가",
+            "chosen": "거절하지 않고 넘침 파이프라인으로 우회시킨다 — 버리는 것 없이 캡처는 200 을 돌려준다",
+            "alternatives": [
+              "속도 제한을 걸어 거절하기",
+              "그냥 버리기",
+              "큐가 찰 때까지 받다가 막히기"
+            ],
+            "tradeoff": "그 식별자의 처리 순서 보장이 느슨해지고 일은 사라지지 않아 뒤에서 다 처리해야 한다(재구성). 대신 손님 쪽 라이브러리가 오류를 안 받고 데이터가 사라지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "question": "우회의 단위를 무엇으로 할 것인가",
+            "chosen": "(프로젝트, distinct_id) 흐름 단위로 본다 — 분당 약 5천 건이 기준이다",
+            "alternatives": [
+              "프로젝트 전체를 우회시키기",
+              "서버 전체에 제한을 걸기"
+            ],
+            "tradeoff": "식별자마다 상태를 봐야 한다(재구성). 대신 문제를 만든 흐름만 옆길로 가고 같은 프로젝트의 나머지는 그대로 흐른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "question": "흐름을 몇 갈래로 둘 것인가",
+            "chosen": "셋 — 보통, 넘침, 과거 데이터",
+            "alternatives": [
+              "한 토픽에 다 넣기"
+            ],
+            "tradeoff": "토픽과 소비자가 늘어 운영이 는다(재구성). 대신 성질이 다른 것들이 서로를 막지 않는다 — 과거 데이터 대량 적재가 실시간 이벤트를 늦추지 않는다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "question": "제일 앞을 무엇으로 만들 것인가",
+            "chosen": "러스트로 쓴 캡처 서비스가 압축 해제와 정규화까지 한다",
+            "alternatives": [
+              "앱과 같은 언어로 두기",
+              "정규화를 뒤로 미루기"
+            ],
+            "tradeoff": "언어가 하나 늘어 유지할 것이 는다(재구성). 대신 가장 많은 요청을 받는 자리가 가볍고, 뒤 단계가 정규화된 모양만 다루면 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "question": "데이터베이스에 직접 쓸 것인가",
+            "chosen": "쓰지 않는다. 카프카를 거친다 — 이미 앱 전반에서 쓰고 있어 안전한 선택이었다고 적는다",
+            "alternatives": [
+              "적재 워커가 클릭하우스에 직접 쓰기"
+            ],
+            "tradeoff": "층이 늘고 그 큐를 운영해야 한다. 대신 트래픽이 튀거나 클러스터를 못 쓸 때도 견디고, 테이블을 지워 적재를 잠깐 멈출 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data ingestion — Handbook",
+                "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+                "publisher": "PostHog",
+                "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "클릭하우스 쪽 적재를 어떻게 엮을 것인가",
+            "chosen": "카프카 테이블이 소비하고 구체화 뷰가 변환해 분산 테이블로 넘기며 복제 테이블에 쌓는다",
+            "alternatives": [
+              "애플리케이션이 INSERT 를 직접 날리기"
+            ],
+            "tradeoff": "적재 중에 카프카 테이블을 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다고 핸드북이 경고한다 — 편한 구조에 조용한 함정이 붙어 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data ingestion — Handbook",
+                "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+                "publisher": "PostHog",
+                "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "깨진 메시지를 어떻게 할 것인가",
+            "chosen": "설정으로 건너뛰거나 데드레터 큐로 뺀다",
+            "alternatives": [
+              "멈추고 사람을 부르기"
+            ],
+            "tradeoff": "건너뛴 것을 어떻게 되살리는지는 문서에 없다(재구성). 대신 하나가 적재 전체를 막지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data ingestion — Handbook",
+                "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+                "publisher": "PostHog",
+                "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "러스트 캡처 서비스",
+            "role": "압축 해제와 정규화를 맡는 첫 관문",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "카프카 세 토픽(보통·넘침·과거)",
+            "role": "성질이 다른 흐름을 갈라 서로 안 막게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "노드 적재 워커",
+            "role": "다섯 단계 처리와 사람 레코드 갱신",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "카프카 테이블 + 구체화 뷰 + 분산/복제 테이블",
+            "role": "클릭하우스 쪽 적재 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data ingestion — Handbook",
+                "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+                "publisher": "PostHog",
+                "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "워크로드마다 클러스터를 가른다",
+          "via": "막지 않게 가르는 같은 손버릇",
+          "contract": "토픽을 셋으로 가른 이유와 클러스터를 워크로드마다 가른 이유가 같다 — 한 종류의 부하가 다른 종류를 늦추면 안 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "한 데이터베이스로 안 되는 것을 옆에 둔다",
+          "via": "안 되는 것을 인정하는 자리",
+          "contract": "여기서는 순서 보장을 내주고 저기서는 웨어하우스 용도를 다른 엔진에 넘긴다. 무엇을 못 하는지 적고 그에 맞춰 구조를 바꾸는 방식이 같다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "손님의 서비스",
+          "via": "우리가 못 정하는 유입",
+          "contract": "얼마나 올지는 손님 쪽이 정한다. 버그 하나로 한 식별자가 몰아쳐도 200 을 돌려주는 것이 이 설계의 약속이다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Kafka: a Distributed Messaging System for Log Processing",
+            "authors": "Jay Kreps, Neha Narkhede, Jun Rao",
+            "year": "2011",
+            "venue": "NetDB 2011",
+            "url": "https://notes.stephenholiday.com/Kafka.pdf",
+            "takeaway": "로그를 파티션으로 나눠 순서를 파티션 안에서만 지키는 설계다. 한 식별자를 넘침 토픽으로 돌리면 그 순서 보장이 느슨해지는 이유가 정확히 이 구조에서 나온다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Tail at Scale",
+            "authors": "Jeffrey Dean, Luiz André Barroso",
+            "year": "2013",
+            "venue": "CACM 56(2)",
+            "url": "https://research.google/pubs/pub40801/",
+            "takeaway": "소수의 느린 요청이 전체 응답을 지배한다는 정리다. 몰아치는 한 식별자를 옆길로 빼서 나머지를 지키는 이 설계가 같은 문제의 적재판이다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Congestion Avoidance and Control",
+            "authors": "Van Jacobson",
+            "year": "1988",
+            "venue": "SIGCOMM 1988",
+            "url": "https://ee.lbl.gov/papers/congavoid.pdf",
+            "takeaway": "넘치는 트래픽을 버릴 것인가 늦출 것인가를 다룬 원형이다. 이 회사는 버리지 않고 옆길로 돌리되 순서를 내주는 쪽을 골랐다 — 무엇을 포기할지의 선택지가 같다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "유입량을 우리가 못 정한다",
+            "why_hard": "손님 쪽 버그 하나로 한 식별자에서 이벤트가 몰아칠 수 있는데, 그 흐름을 그대로 처리하면 다른 손님까지 밀린다.",
+            "current_best": "그 흐름만 넘침 파이프라인으로 돌리고 순서 보장을 느슨하게 두는 것 — 버리지 않고 200 을 돌려준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "problem": "버리지 않으면 일이 남는다",
+            "why_hard": "거절하지 않기로 하면 그 이벤트를 언젠가는 다 처리해야 한다. 몰림이 길어지면 뒤가 계속 밀린다(재구성).",
+            "current_best": "흐름을 갈라 두어 밀리는 것이 그 갈래 안에 머물게 하는 것.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Ingestion pipeline — Docs",
+                "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+                "publisher": "PostHog",
+                "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+              }
+            ]
+          },
+          {
+            "problem": "편한 적재 구조에 조용한 함정이 있다",
+            "why_hard": "카프카 테이블을 그냥 질의하면 오프셋이 진행돼 데이터가 사라진다. 평범한 SELECT 가 데이터를 지우는 셈이다.",
+            "current_best": "핸드북에 그 경고를 적어 두는 것 — 구조를 바꾸는 대신 아는 사람만 만지게 한다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data ingestion — Handbook",
+                "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+                "publisher": "PostHog",
+                "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "한 식별자가 몰아칠 때",
+          "thought": "속도 제한을 걸면 손님 쪽 라이브러리가 오류를 받고 그 데이터는 영영 없다. 우리가 받아 두고 옆길로 돌리면 늦어도 남는다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "무엇을 내줄지 고를 때",
+          "thought": "버리지 않으려면 순서든 지연이든 하나는 내줘야 한다. 그 식별자에 한해 순서를 느슨하게 두는 편이 낫다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "토픽을 가를 때",
+          "thought": "과거 데이터 대량 적재와 실시간 이벤트를 같은 줄에 세우면 서로를 막는다. 성질이 다르면 줄도 달라야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "핸드북을 쓰며",
+          "thought": "카프카 테이블을 질의하면 데이터가 사라진다는 걸 적어 둬야 한다. 구조로 못 막으면 문서로 막는 수밖에 없다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Ingestion pipeline — Docs",
+          "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+          "publisher": "PostHog",
+          "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
+        },
+        {
+          "title": "Data ingestion — Handbook",
+          "url": "https://posthog.com/handbook/engineering/clickhouse/data-ingestion",
+          "publisher": "PostHog",
+          "summary": "클릭하우스로 데이터를 넣는 방식을 적은 핸드북 문서다. 카프카를 거치는 이유가 둘이다 — 트래픽이 튀거나 클러스터를 못 쓸 때도 견디는 복원력, 그리고 이미 앱 전반에서 카프카를 쓰고 있어 기술적으로 안전한 선택이라는 것이다. 메모리 부담이 적고 테이블을 지워 적재를 잠깐 멈출 수 있다는 것도 이점으로 든다. 표 구조는 세 겹이다: 카프카 테이블이 소비자 노릇을 하고(예로 든 것은 JSONEachRow 형식), 분산 테이블이 질의를 받고 샤드에 쓰기를 나누며, 실제 데이터는 ReplicatedMergeTree 가 날짜로 파티션을 나누고 팀·시각·종류·출처로 정렬해 담는다. 그 사이를 구체화 뷰가 잇는데 INSERT 때 걸려 변환해 넘긴다. 위험도 적어 둔다 — 적재 중에 카프카 테이블에서 데이터를 질의하면 오프셋이 진행돼 데이터를 잃을 수 있다. 깨진 메시지는 kafka_skip_broken_messages 설정이나 데드레터 큐로 다룬다. 중복 제거나 순서 보장은 이 문서에서 다루지 않는다."
+        },
+        {
+          "title": "How PostHog runs ClickHouse at scale — Handbook",
+          "url": "https://posthog.com/handbook/engineering/clickhouse/clusters",
+          "publisher": "PostHog",
+          "summary": "클릭하우스를 어떻게 굴리는지 적은 핸드북 문서다. 하나의 큰 클러스터를 공유하지 않고 워크로드 종류마다 전용 클러스터를 여럿 둔다고 밝힌다 — 대화형 질의, 적재, 세션 리플레이, 로그, 배치 내보내기, API, 내부 도구가 각각 격리된 용량을 갖는다. 그렇게 된 배경은 초기의 단일 클러스터 시절인데, 무거운 작업이 사용자 질의와 자원을 다투면서 성능이 나빠졌다고 적는다. 데이터는 그 아래에서 샤딩되고 복제되며, 뜨거운 데이터는 빠른 로컬 NVMe 에, 차가운 데이터는 더 크고 싼 볼륨에 두는 계층 저장을 쓴다. 질의는 클릭하우스의 분산 테이블 엔진이 관련 데이터를 가진 샤드로 펼쳐 보내고 각 샤드가 자기 몫을 걸러 내는 방식이다. 적재는 직접 쓰지 않고 카프카로 떼어 놓았고, 온라인 대화형 질의와 오프라인 배치 작업을 갈라 둔다. 미국과 유럽은 서로 독립된 거울 배포다. 대가도 적는다 — 클릭하우스에서 갱신과 삭제는 비싸서 제자리 수정 대신 변화를 새 행으로 모형화하는 스키마 방식으로 가게 된다. 샤드·복제본 수와 하드웨어 사양은 이 문서에 없다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "단위당 값과 매출을 확인하지 못했다 — 값 페이지가 무료 한도만 자세히 적고 넘었을 때의 단가와 물량 할인은 없다.",
     "샤드·복제본 수와 하드웨어 사양이 핸드북에 없다. 클러스터가 몇 개인지도 종류만 적혀 있고 수는 없다.",
     "중복 제거와 순서 보장을 어떻게 하는지 못 봤다 — 적재 문서가 다루지 않는다.",
     "안 읽은 것 — `why-we-rebuilt-our-data-warehouse` · 클릭하우스 대 빅쿼리 비교 글 · 운영 문서.",
-    "시대 구분(eras)을 세우지 않았다. 단일 클러스터에서 워크로드별 클러스터로 옮긴 전환이 있으나 연도가 붙은 자료를 아직 못 찾았다."
+    "시대 구분(eras)을 세우지 않았다. 단일 클러스터에서 워크로드별 클러스터로 옮긴 전환이 있으나 연도가 붙은 자료를 아직 못 찾았다.",
+    "적재 문서가 전달 보장과 순서 보장을 명시하지 않는다 — 넘침 때 순서가 느슨해진다는 것만 적혀 있고 평소의 보장 수준은 안 나온다."
   ],
   "sources": [
     {
@@ -238,6 +727,12 @@
       "url": "https://posthog.com/pricing",
       "publisher": "PostHog",
       "summary": "값 페이지다. 회사의 97%가 공짜로 쓴다고 적고 월 무료 한도를 제품별로 늘어놓는다 — 분석 이벤트 100만, 세션 리플레이 5천 건, 기능 플래그 요청 100만, 오류 추적 예외 10만, 설문 응답 1,500건, 데이터 웨어하우스 100만 행(과거 데이터는 무료), 데이터 파이프라인 이벤트 1만과 100만 행, AI 관측 이벤트 10만, 로그 10GB. 그 밖에 PostHog AI 크레딧 500(5달러어치), 워크플로 메시지 1만, 리플레이 비전 크레딧 2,500(25달러어치)이 붙는다. 카드를 등록하면 한도를 넘겨 쓸 수 있고 프로젝트가 1개에서 6개로 늘며 보관이 7년이 된다고 적지만, 단위당 값과 물량 할인은 이 페이지에 없다. 무료 한도에서 사용이 멈추므로 모르는 사이에 청구되는 일은 없다고 밝힌다."
+    },
+    {
+      "title": "Ingestion pipeline — Docs",
+      "url": "https://posthog.com/docs/how-posthog-works/ingestion-pipeline",
+      "publisher": "PostHog",
+      "summary": "이벤트가 들어오는 길을 적은 문서다. 클라이언트 라이브러리가 러스트로 쓴 캡처 서비스에 보내면 압축을 풀고 이벤트 모양을 정규화한다. 그 원본은 카프카의 세 토픽 가운데 하나로 간다 — 보통의 `events_plugin_ingestion`, 넘칠 때의 `events_plugin_ingestion_overflow`, 과거 데이터용 `events_plugin_ingestion_historical`. 노드로 쓴 CDP 적재 워커가 그것을 소비해 다섯 단계로 처리하고, distinct_id 를 기준으로 포스트그레스의 사람(person) 레코드를 갱신한 뒤, 다 처리된 이벤트를 별도 카프카 토픽을 거쳐 클릭하우스 이벤트 테이블에 쓴다. 전달 보장이나 순서 보장은 문서가 명시하지 않는다. 다만 한 (프로젝트, distinct_id) 흐름이 분당 약 5천 건을 지속해서 넘기면 넘침 파이프라인으로 우회시키는데, 그동안 그 distinct_id 의 처리 순서 보장이 느슨해진다고 적는다. 그때도 버리는 것은 없고 캡처 API 는 여전히 200 을 돌려준다. 데드레터 큐나 배압에 대한 설명, 처리량·지연 수치는 이 문서에 없다."
     }
   ]
 }
