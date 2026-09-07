@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "letsencrypt",
+      "name": "레츠 인크립트",
+      "name_en": "Let's Encrypt",
+      "country": "US",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "폐기를 잘 알리는 대신 폐기가 덜 필요하게 만든 인증 기관 — 그 대가로 모든 갱신이 자동이어야 한다",
+      "updated_at": "2026-09-07",
+      "domain": "letsencrypt.org"
+    },
+    {
       "slug": "curl",
       "name": "컬",
       "name_en": "curl",
@@ -2646,7 +2658,9 @@
     "샤드를 어디에 둘지 끝없이 다시 정한다",
     "필드마다 다른 방식으로 압축한다",
     "들어오는 보고를 소수가 감당한다",
-    "남이 배포한 바이너리는 우리가 못 고친다"
+    "남이 배포한 바이너리는 우리가 못 고친다",
+    "폐기를 알리는 일에서 손을 뗀다",
+    "인증서를 짧게 만들어 폐기가 덜 필요하게 한다"
   ],
   "countries": {
     "KR": "한국",
