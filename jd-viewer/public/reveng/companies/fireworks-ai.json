@@ -1,0 +1,134 @@
+{
+  "slug": "fireworks-ai",
+  "name": "파이어웍스 AI",
+  "name_en": "Fireworks AI",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-07",
+  "domain": "fireworks.ai",
+  "one_liner": "남의 모델을 남보다 빠르게 돌려 파는 회사 — 그래서 커널 하나의 루프 순서가 사업의 값이 된다",
+  "business_model": "모델을 훈련하고 서빙하는 플랫폼이다. **훈련**(강화학습을 포함한 맞춤 로직까지), **추론**(서버리스·온디맨드·예약), 그리고 딥시크·GLM·Kimi·Qwen 같은 **모델 라이브러리** 셋을 판다.\n\n값은 토큰 단위다 — GLM 5.2 가 입력 100만 토큰당 1.4달러·출력 4.4달러, Kimi K3 가 3달러·15달러, Minimax M3 가 0.3달러·1.2달러.\n\n**모델은 남이 만든다.** 그러니 이 회사가 파는 것은 같은 모델을 **얼마나 빠르고 싸게 돌리느냐**이고, 그것이 커널 한 줄의 문제로 내려온다. 성능 주장도 그 축이다 — 쿼라의 응답 시간 3배, 노션의 지연이 약 2초에서 350밀리초로.\n\n고객으로 커서·버셀·노션·소스그래프·쿼라 같은 이름을 싣는다.",
+  "revenue_total": "매출이 공개돼 있지 않다. 공개된 것은 토큰 단위 가격과 고객 이름뿐이다.",
+  "products": [
+    "추론(서버리스·온디맨드·예약)",
+    "훈련(강화학습 포함)",
+    "모델 라이브러리"
+  ],
+  "revenue_streams": [
+    {
+      "name": "토큰 단위 추론",
+      "how": "모델마다 입력·출력 100만 토큰 단위로 값을 매긴다 — GLM 5.2 1.4/4.4달러, Kimi K3 3/15달러, Minimax M3 0.3/1.2달러.",
+      "weight": "매출 비중은 공개돼 있지 않다",
+      "domains": [
+        "남의 모델을 남보다 빠르게 돌린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Fireworks AI — 무엇을 파나",
+          "url": "https://fireworks.ai/",
+          "publisher": "Fireworks AI",
+          "summary": "모델을 훈련하고 서빙하는 플랫폼이다. 파는 것은 셋으로 갈린다 — **훈련**(안내된 실행부터 설정 중심, 맞춤 훈련 로직과 강화학습까지), **추론**(서버리스·온디맨드·예약 배포), 그리고 딥시크·GLM·Kimi·Qwen·Gemma 같은 수십 개 모델을 담은 **모델 라이브러리**다. 값은 토큰 단위로 매긴다 — GLM 5.2 는 입력 100만 토큰당 1.4달러·출력 4.4달러(문맥 1,048,576), Kimi K3 는 3달러·15달러(같은 문맥), Kimi K2.7 Code 는 0.95달러·4달러(문맥 262,144), Minimax M3 는 0.3달러·1.2달러(문맥 512,000)다. 성능 주장으로 쿼라의 응답 시간 3배 향상, 노션의 지연이 약 2초에서 350밀리초로, AI 코딩 지출을 50~75% 줄인다는 것을 든다. 고객으로 커서·버셀·노션·검플룹·소스그래프·UiPath·쿼라·젠스파크·모티프·크레스타·rLLM 을 이름 대어 싣는다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "caption": "모델은 남이 만들고 값은 토큰으로 받는다 — 그 사이에서 이 회사가 손댈 수 있는 것은 같은 모델을 돌리는 커널의 모양뿐이다.",
+    "code": "flowchart LR\n  M[\"남이 만든 모델\\n딥시크 · GLM · Kimi · Qwen\"] --> K[\"커널\\nQ-outer 대 KV-outer\\n흩어 쓰기를 미룬다\"]\n  K --> P[\"처리량과 지연\\n기준선 대비 1.9~2.4배\\n980 TFLOP/s\"]\n  P --> B[\"토큰 단위 값\\n입력·출력 100만 토큰당\"]"
+  },
+  "domains": [
+    {
+      "name": "남의 모델을 남보다 빠르게 돌린다",
+      "why": "모델은 남이 만든다. 그러니 이 회사가 파는 것은 **같은 모델을 얼마나 빠르고 싸게 돌리느냐**다.\n\n그러면 사업이 커널 한 줄의 문제로 내려온다 — 어떤 루프를 바깥에 둘 것인가, 부분 결과를 언제 흩을 것인가. 경계를 여기서 끊은 이유는 이것이 이 회사가 실제로 손댈 수 있는 유일한 층이기 때문이다(재구성).",
+      "tech": [
+        {
+          "tech": "Q-outer 대 KV-outer",
+          "solves": "질의를 고정하고 도는 방식과 KV 를 고정하고 도는 방식의 병목이 다르다 — **Q-outer 는 L2 대역폭에, KV-outer 는 HBM 대역폭에 묶인다.** 그래서 `nsb / N < 2.85` 일 때 KV-outer 가 빠르다는 교차점을 수식으로 낸다.",
+          "limits": "그 임계는 이 모델과 이 하드웨어(블랙웰)의 값이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Optimizing MiniMax M3 Sparse Attention on NVIDIA Blackwell",
+              "url": "https://fireworks.ai/blog/kernel-optimization-for-minimax-m3-on-nvidia-blackwell",
+              "publisher": "Fireworks AI",
+              "date": "2026-07-10",
+              "summary": "엔비디아 블랙웰에서 MiniMax M3 의 희소 어텐션 커널을 최적화한 기록이다(Performance 팀). 근본 갈림길을 먼저 적는다 — 질의를 고정하고 도는 방식(Q-outer)과 KV 를 고정하고 도는 방식(KV-outer) 가운데 무엇을 쓸 것인가. 둘의 병목이 다르다: **Q-outer 는 L2 대역폭에 묶이고 KV-outer 는 HBM 대역폭에 묶인다.** 그래서 교차점을 수식으로 낸다 — `nsb / N < 2.85` 일 때 KV-outer 가 Q-outer 보다 빠르다. 출력 저장 방식에서도 오픈소스 구현을 물린다. 공개된 MSA 는 어텐션 에필로그 안에서 부분 결과를 각각의 (질의, 순위) 자리에 흩어 쓰는데, 이쪽은 **부분 출력을 타일 순서 그대로 원본으로 저장하고 흩기와 정규화를 결합 커널로 미룬다** — 커널 안에서의 흩어 쓰기가 명령 지연에 민감해 파이프라인 전체를 쉽게 멈추기 때문이라고 적는다. 수치를 낸다 — 질의 고정 기준선(FlashInfer) 대비 **1.9~2.4배**, MiniMax 의 오픈소스 MSA 커널 대비 **약 1.6배**, 모듈 전체로는 기준선 대비 **1.18~1.43배**, 최고 처리량 **980 TFLOP/s**(HBM 대역폭 약 4.1TB/s)다."
+            }
+          ]
+        },
+        {
+          "tech": "흩어 쓰기를 결합 커널로 미루기",
+          "solves": "부분 출력을 타일 순서 그대로 원본으로 저장하고, 흩기와 정규화는 결합 커널에서 한다 — 어텐션 커널 안의 흩어 쓰기가 명령 지연에 민감해 파이프라인을 통째로 멈추기 때문이다.",
+          "limits": "커널이 하나 더 생기고 중간 결과를 그대로 들고 있어야 한다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Optimizing MiniMax M3 Sparse Attention on NVIDIA Blackwell",
+              "url": "https://fireworks.ai/blog/kernel-optimization-for-minimax-m3-on-nvidia-blackwell",
+              "publisher": "Fireworks AI",
+              "date": "2026-07-10",
+              "summary": "엔비디아 블랙웰에서 MiniMax M3 의 희소 어텐션 커널을 최적화한 기록이다(Performance 팀). 근본 갈림길을 먼저 적는다 — 질의를 고정하고 도는 방식(Q-outer)과 KV 를 고정하고 도는 방식(KV-outer) 가운데 무엇을 쓸 것인가. 둘의 병목이 다르다: **Q-outer 는 L2 대역폭에 묶이고 KV-outer 는 HBM 대역폭에 묶인다.** 그래서 교차점을 수식으로 낸다 — `nsb / N < 2.85` 일 때 KV-outer 가 Q-outer 보다 빠르다. 출력 저장 방식에서도 오픈소스 구현을 물린다. 공개된 MSA 는 어텐션 에필로그 안에서 부분 결과를 각각의 (질의, 순위) 자리에 흩어 쓰는데, 이쪽은 **부분 출력을 타일 순서 그대로 원본으로 저장하고 흩기와 정규화를 결합 커널로 미룬다** — 커널 안에서의 흩어 쓰기가 명령 지연에 민감해 파이프라인 전체를 쉽게 멈추기 때문이라고 적는다. 수치를 낸다 — 질의 고정 기준선(FlashInfer) 대비 **1.9~2.4배**, MiniMax 의 오픈소스 MSA 커널 대비 **약 1.6배**, 모듈 전체로는 기준선 대비 **1.18~1.43배**, 최고 처리량 **980 TFLOP/s**(HBM 대역폭 약 4.1TB/s)다."
+            }
+          ]
+        },
+        {
+          "tech": "기준선과 오픈소스 구현을 함께 견주기",
+          "solves": "질의 고정 기준선(FlashInfer) 대비 1.9~2.4배, MiniMax 의 오픈소스 MSA 커널 대비 약 1.6배, 모듈 전체로는 1.18~1.43배라고 나눠 적는다.",
+          "limits": "커널 배수와 모듈 배수가 다르다 — 커널만 빨라져도 전체는 그만큼 안 는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Optimizing MiniMax M3 Sparse Attention on NVIDIA Blackwell",
+              "url": "https://fireworks.ai/blog/kernel-optimization-for-minimax-m3-on-nvidia-blackwell",
+              "publisher": "Fireworks AI",
+              "date": "2026-07-10",
+              "summary": "엔비디아 블랙웰에서 MiniMax M3 의 희소 어텐션 커널을 최적화한 기록이다(Performance 팀). 근본 갈림길을 먼저 적는다 — 질의를 고정하고 도는 방식(Q-outer)과 KV 를 고정하고 도는 방식(KV-outer) 가운데 무엇을 쓸 것인가. 둘의 병목이 다르다: **Q-outer 는 L2 대역폭에 묶이고 KV-outer 는 HBM 대역폭에 묶인다.** 그래서 교차점을 수식으로 낸다 — `nsb / N < 2.85` 일 때 KV-outer 가 Q-outer 보다 빠르다. 출력 저장 방식에서도 오픈소스 구현을 물린다. 공개된 MSA 는 어텐션 에필로그 안에서 부분 결과를 각각의 (질의, 순위) 자리에 흩어 쓰는데, 이쪽은 **부분 출력을 타일 순서 그대로 원본으로 저장하고 흩기와 정규화를 결합 커널로 미룬다** — 커널 안에서의 흩어 쓰기가 명령 지연에 민감해 파이프라인 전체를 쉽게 멈추기 때문이라고 적는다. 수치를 낸다 — 질의 고정 기준선(FlashInfer) 대비 **1.9~2.4배**, MiniMax 의 오픈소스 MSA 커널 대비 **약 1.6배**, 모듈 전체로는 기준선 대비 **1.18~1.43배**, 최고 처리량 **980 TFLOP/s**(HBM 대역폭 약 4.1TB/s)다."
+            }
+          ]
+        },
+        {
+          "tech": "하드웨어 한계에 붙이기",
+          "solves": "최고 처리량 980 TFLOP/s 를 HBM 대역폭 약 4.1TB/s 에서 낸다고 적는다.",
+          "limits": "대역폭에 묶인 구간에서는 연산을 더 넣어도 안 빨라진다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Optimizing MiniMax M3 Sparse Attention on NVIDIA Blackwell",
+              "url": "https://fireworks.ai/blog/kernel-optimization-for-minimax-m3-on-nvidia-blackwell",
+              "publisher": "Fireworks AI",
+              "date": "2026-07-10",
+              "summary": "엔비디아 블랙웰에서 MiniMax M3 의 희소 어텐션 커널을 최적화한 기록이다(Performance 팀). 근본 갈림길을 먼저 적는다 — 질의를 고정하고 도는 방식(Q-outer)과 KV 를 고정하고 도는 방식(KV-outer) 가운데 무엇을 쓸 것인가. 둘의 병목이 다르다: **Q-outer 는 L2 대역폭에 묶이고 KV-outer 는 HBM 대역폭에 묶인다.** 그래서 교차점을 수식으로 낸다 — `nsb / N < 2.85` 일 때 KV-outer 가 Q-outer 보다 빠르다. 출력 저장 방식에서도 오픈소스 구현을 물린다. 공개된 MSA 는 어텐션 에필로그 안에서 부분 결과를 각각의 (질의, 순위) 자리에 흩어 쓰는데, 이쪽은 **부분 출력을 타일 순서 그대로 원본으로 저장하고 흩기와 정규화를 결합 커널로 미룬다** — 커널 안에서의 흩어 쓰기가 명령 지연에 민감해 파이프라인 전체를 쉽게 멈추기 때문이라고 적는다. 수치를 낸다 — 질의 고정 기준선(FlashInfer) 대비 **1.9~2.4배**, MiniMax 의 오픈소스 MSA 커널 대비 **약 1.6배**, 모듈 전체로는 기준선 대비 **1.18~1.43배**, 최고 처리량 **980 TFLOP/s**(HBM 대역폭 약 4.1TB/s)다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출과 규모를 확인하지 못했다 — 공개된 것은 토큰 가격과 고객 이름뿐이다.",
+    "쿼라의 3배, 노션의 2초→350밀리초 같은 주장의 근거 글을 찾지 못했다.",
+    "훈련(강화학습 포함) 쪽 내부를 다룬 기술 글을 찾지 못했다 — 그래서 도메인을 하나만 세웠다.",
+    "서버리스·온디맨드·예약 배포가 내부에서 어떻게 갈리는지 확인하지 못했다.",
+    "시대 구분(eras)을 세우지 않았다 — 연도가 붙은 기술 자료가 이 글 하나뿐이다.",
+    "블로그 나머지는 모델 공지가 지배한다 — 기술 글은 이 커널 최적화 한 편을 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Fireworks AI — 무엇을 파나",
+      "url": "https://fireworks.ai/",
+      "publisher": "Fireworks AI",
+      "summary": "모델을 훈련하고 서빙하는 플랫폼이다. 파는 것은 셋으로 갈린다 — **훈련**(안내된 실행부터 설정 중심, 맞춤 훈련 로직과 강화학습까지), **추론**(서버리스·온디맨드·예약 배포), 그리고 딥시크·GLM·Kimi·Qwen·Gemma 같은 수십 개 모델을 담은 **모델 라이브러리**다. 값은 토큰 단위로 매긴다 — GLM 5.2 는 입력 100만 토큰당 1.4달러·출력 4.4달러(문맥 1,048,576), Kimi K3 는 3달러·15달러(같은 문맥), Kimi K2.7 Code 는 0.95달러·4달러(문맥 262,144), Minimax M3 는 0.3달러·1.2달러(문맥 512,000)다. 성능 주장으로 쿼라의 응답 시간 3배 향상, 노션의 지연이 약 2초에서 350밀리초로, AI 코딩 지출을 50~75% 줄인다는 것을 든다. 고객으로 커서·버셀·노션·검플룹·소스그래프·UiPath·쿼라·젠스파크·모티프·크레스타·rLLM 을 이름 대어 싣는다."
+    },
+    {
+      "title": "Optimizing MiniMax M3 Sparse Attention on NVIDIA Blackwell",
+      "url": "https://fireworks.ai/blog/kernel-optimization-for-minimax-m3-on-nvidia-blackwell",
+      "publisher": "Fireworks AI",
+      "date": "2026-07-10",
+      "summary": "엔비디아 블랙웰에서 MiniMax M3 의 희소 어텐션 커널을 최적화한 기록이다(Performance 팀). 근본 갈림길을 먼저 적는다 — 질의를 고정하고 도는 방식(Q-outer)과 KV 를 고정하고 도는 방식(KV-outer) 가운데 무엇을 쓸 것인가. 둘의 병목이 다르다: **Q-outer 는 L2 대역폭에 묶이고 KV-outer 는 HBM 대역폭에 묶인다.** 그래서 교차점을 수식으로 낸다 — `nsb / N < 2.85` 일 때 KV-outer 가 Q-outer 보다 빠르다. 출력 저장 방식에서도 오픈소스 구현을 물린다. 공개된 MSA 는 어텐션 에필로그 안에서 부분 결과를 각각의 (질의, 순위) 자리에 흩어 쓰는데, 이쪽은 **부분 출력을 타일 순서 그대로 원본으로 저장하고 흩기와 정규화를 결합 커널로 미룬다** — 커널 안에서의 흩어 쓰기가 명령 지연에 민감해 파이프라인 전체를 쉽게 멈추기 때문이라고 적는다. 수치를 낸다 — 질의 고정 기준선(FlashInfer) 대비 **1.9~2.4배**, MiniMax 의 오픈소스 MSA 커널 대비 **약 1.6배**, 모듈 전체로는 기준선 대비 **1.18~1.43배**, 최고 처리량 **980 TFLOP/s**(HBM 대역폭 약 4.1TB/s)다."
+    }
+  ]
+}
