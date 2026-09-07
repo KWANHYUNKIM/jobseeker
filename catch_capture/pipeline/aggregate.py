@@ -22,6 +22,7 @@ from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
 import json
+import os
 import re
 import shutil
 import sys
@@ -112,6 +113,11 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
         site_sources[site] = ", ".join(dict.fromkeys(srcs))
         kw_note = f"{len(srcs)}개 키워드" if len(srcs) > 1 else srcs[0]
         print(f"  [{site}] {kw_note} → {len(site_jobs)}건 (파일 {copied_files}개 복사)", flush=True)
+
+    # 정본 DB(이관 2단계)에 넘길 원본. 아래의 (회사명+제목) 중복 제거를 **거치기 전**
+    # 목록이다 — DB 는 URL 로 공고를 식별하므로 그 규칙이 필요 없고, 오히려 같은
+    # 회사가 같은 제목으로 낸 다른 팀 공고를 뭉개던 자리다.
+    raw_jobs = list(all_jobs)
 
     # 교차 사이트 중복 제거: (회사명+제목) 정규화 키로 첫 등장만 유지.
     # SITES 순서(wanted→dev)가 우선순위이므로 앞 사이트 게시물이 보존된다.
@@ -223,6 +229,18 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     print(f"  사이트별 원본 {sum(site_counts.values())}건  ({', '.join(f'{s}={n}' for s,n in site_counts.items())})")
     print(f"  중복 제거 후 {len(all_jobs)}건  (교차 사이트 중복 {cross_dups}건 제거)")
     print(f"  모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건  (마감 누적보관: closed_{out_label}.json)")
+
+    # 정본 DB 이중 쓰기(이관 2단계). JSON 이 아직 정본이므로 여기서 실패해도
+    # 사이클은 그대로 간다 — DB 가 꺼져 있다고 크롤 결과를 잃는 쪽이 손해가 크다.
+    # 끄려면 DB_DUAL_WRITE=0.
+    if os.environ.get("DB_DUAL_WRITE", "1") != "0":
+        try:
+            from store.ingest_crawl import ingest as _db_ingest, summary as _db_summary
+            _db_stats = _db_ingest(raw_jobs, label=out_label, keywords=kws,
+                                   site_counts=site_counts)
+            print(f"  [db] {_db_summary(_db_stats)}", flush=True)
+        except Exception as e:
+            print(f"  [db] 이중 쓰기 건너뜀: {type(e).__name__}: {e}", flush=True)
 
     # 헬스 기록 + 이상 탐지: history.jsonl 누적, latest.json, 이상시 경고
     try:
