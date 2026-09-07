@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "godot",
+      "name": "고도 엔진",
+      "name_en": "Godot Engine",
+      "country": "기타",
+      "category": "게임",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "기부로 굴러가는 오픈소스 게임 엔진 — 그래서 남의 운영체제가 흘려보내는 것까지 대신 받아 내야 한다",
+      "updated_at": "2026-09-07",
+      "domain": "godotengine.org"
+    },
+    {
       "slug": "bluesky",
       "name": "블루스카이",
       "name_en": "Bluesky",
@@ -2522,7 +2534,8 @@
     "생성한 파서를 버리고 손으로 쓴다",
     "압축을 푸는 방식이 다르면 같은 파일이 다르게 설치된다",
     "중앙 릴레이로 모으되 프로토콜은 양쪽 다 되게 둔다",
-    "모더레이션을 한 겹의 권한이 아니라 층으로 쌓는다"
+    "모더레이션을 한 겹의 권한이 아니라 층으로 쌓는다",
+    "플랫폼이 주는 입력을 그대로 흘려보내지 않는다"
   ],
   "countries": {
     "KR": "한국",
