@@ -1712,7 +1712,7 @@
       "country": "US",
       "category": "검색",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "객체 저장소를 진실의 원본으로 삼는 검색 엔진 — 메모리에 다 올리지 않고도 벡터와 전문 검색을 판다",
       "updated_at": "2026-09-07",
       "domain": "turbopuffer.com"
