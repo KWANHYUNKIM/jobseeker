@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "henry",
+      "name": "헨리",
+      "name_en": "Henry",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "기록과 청구를 한 시스템에 둔 병원 SaaS — 제도가 기능을 정하고, 맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다",
+      "updated_at": "2026-09-07",
+      "domain": "henry-app.jp"
+    },
+    {
       "slug": "m3",
       "name": "엠쓰리",
       "name_en": "M3",
@@ -2814,7 +2826,9 @@
     "추천을 다듬되 물린 길을 적는다",
     "늘릴 때 손이 얼마나 드느냐로 기반을 고른다",
     "몇 년 뒤에 또 하지 않도록 지운다",
-    "멈출 수 없는 것을 되돌릴 수 있게 옮긴다"
+    "멈출 수 없는 것을 되돌릴 수 있게 옮긴다",
+    "기록과 청구를 한 시스템에 둔다",
+    "맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다"
   ],
   "countries": {
     "KR": "한국",
