@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **AuthZed (SpiceDB)** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 둘 다 비어 있다 — 권한을 한곳에 모은다(`authz-in-a-distributed-system` 2026-07-02 확보) · 권한 그래프를 빨리 훑는다(`query-planner-early-benchmarks` 2026-05-20 확보). 안 읽은 것 — `Cloud Datastore, Unlocked`(2026-03-03, 저장소 선택) · 질의 계획기 소개(2026-02-02) · 일관성(ZedToken) 글을 아직 못 찾았다. ⚠️ 글 주소가 제목과 다르다(`/blog/authz-in-a-distributed-system`). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **AuthZed (SpiceDB)** | US · SaaS | 인가(권한) 시스템 축이 이 엔진에 없다 — 구글 잔지바 계열을 오픈소스로 구현해 판다. `authzed.com/blog` 에 자기 시스템 글이 있다 — `Query Planner Early Benchmarks`(2026-05-20)가 대표적이다: 30단계 중첩 문서 계층(DeepArrow)과 팬아웃(WideArrow) 같은 시나리오를 만들어 재고, 화살표 뒤집기·가지 재정렬·화살표 회전·도달 가능성 가지치기 같은 최적화를 이름 대어 적으며, 알고리즘만 볼 때 772µs → 70µs(11배), 포스트그레스 저장소로는 19.55ms → 10.41ms(47%), WideArrow 는 1.33ms → 0.50ms(62%)라는 수치를 낸다. 대가도 적는다 — 분산 디스패치는 망 비용을 조금 내주고 캐시 이득을 얻는 맞바꿈이고, 지금은 하위 문제를 과하게 디스패치한다고 스스로 밝힌다. 그 밖에 `Introducing the SpiceDB Query Planner`(2026-02-02) · `Authorization in a Distributed System`(2026-07-02) 이 있다. ⚠️ 최근 목록에는 AI 관련 마케팅 글이 섞여 있다. |
 | **turbopuffer** | US · SaaS | 검색 엔진 내부(전문 검색·벡터를 객체 저장소 위에서) 축이 없다 — Chroma 는 벡터, Tigris 는 객체 저장소를 만드는 쪽인데 여기는 그 위에 검색을 짓는 쪽이다. `turbopuffer.com/blog` 에 자기 시스템 글이 이어진다 — `How to ship a database every day`(2026-08-14) · `Designing inverted indexes in a KV-store on object storage`(2026-01-14) · `Why BM25 queries with more terms can be faster`(2026-01-07) · `Vectorized MAXSCORE over WAND, especially for long LLM-generated queries`(2025-12-09) · `FTS v2: up to 20x faster full-text search`(2025-12-04) · `Rust zero-cost abstractions vs. SIMD`(2026-02-18) · `Mixing numeric attributes into text search`(2026-04-27). 최신 글이 2026-09-04 이고 손님 글이 섞이지만 자기 시스템 글의 비중이 크다. |
 | **Deno** | US · SaaS | Val Town 의 런타임이 바로 이 회사 제품이라 **부품이 된 회사**를 반대편에서 볼 수 있다. `deno.com/blog` 에 자기 시스템 글이 있다 — `What we got wrong about HTTP imports`(2024-07-29, 설계를 되짚는 회고) · `The Anatomy of an Isolate Cloud`(2022-09-27, Deploy 인프라) · `How security and tenant isolation allows Deno Subhosting to run untrusted code securely`(2023-11-27, 발타운의 격리 이야기와 정면으로 견줄 자리) · `Building Deno KV internals`(2023-09-14, FoundationDB 선택) · `How We Made the Deno Language Server Ten Times Faster`(2024-06-20, 자동완성 6~8초 → 1초 미만) · `How we built JSR`(2024-04-12). ⚠️ **최신성이 약하다** — 심층 글이 2022~2024년에 몰려 있고 2026년 글은 릴리스 위주다(최신 2026-06-25 Deno 2.9). 팔 때 그 사정을 프로파일에 적는다. |
 
