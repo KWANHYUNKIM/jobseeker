@@ -8,7 +8,7 @@
       "country": "EU",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "재시도·상태 기계·분산 락을 없애려고 그 아래 로그를 자기 손으로 지은 회사 — 그 대가로 남이 안 만들라는 상태 저장 시스템을 떠안았다",
       "updated_at": "2026-09-07",
       "domain": "restate.dev"
