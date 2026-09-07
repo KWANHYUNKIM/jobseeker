@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "banksalad",
+      "name": "뱅크샐러드",
+      "name_en": "Banksalad",
+      "country": "KR",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "저장비를 옮겼더니 올라온 조회비를 700배로 되돌린 마이데이터 회사 — 락으로 막는 대신 도메인 성질로 경합을 넘긴다",
+      "updated_at": "2026-09-07",
+      "domain": "banksalad.com"
+    },
+    {
       "slug": "render",
       "name": "렌더",
       "name_en": "Render",
@@ -2730,7 +2742,9 @@
     "터진 것을 사슬로 공개한다",
     "연결을 붙들고 있는 값을 깎는다",
     "라우팅 상태를 전 세계에 퍼뜨린다",
-    "무너져도 도는 것은 돌게 한다"
+    "무너져도 도는 것은 돌게 한다",
+    "락으로 막지 않고 도메인 성질로 넘긴다",
+    "비용을 옮기면 다른 비용이 올라온다"
   ],
   "countries": {
     "KR": "한국",
