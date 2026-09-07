@@ -1939,8 +1939,8 @@
       "name_en": "Airbyte",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "소스와 목적지 사이를 잇는 오픈소스 커넥터 600개 — 그 사이에 서 있던 중간 층을 걷어내는 것이 성능의 전부였다",
       "updated_at": "2026-09-07",
       "domain": "airbyte.com"
