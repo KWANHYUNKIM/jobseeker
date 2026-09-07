@@ -1872,6 +1872,18 @@
       "one_liner": "남의 모델을 남보다 빠르게 돌려 파는 회사 — 그래서 커널 하나의 루프 순서가 사업의 값이 된다",
       "updated_at": "2026-09-07",
       "domain": "fireworks.ai"
+    },
+    {
+      "slug": "zulip",
+      "name": "줄립",
+      "name_en": "Zulip",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "주제로 나눠 담는 오픈소스 팀 채팅 — 비영리 재단이 회사를 통째로 소유하는 구조로 옮겨 갔다",
+      "updated_at": "2026-09-07",
+      "domain": "zulip.com"
     }
   ],
   "domains": [
@@ -2343,7 +2355,8 @@
     "고칠 수 없는 것을 고친다",
     "밀어 넣는 길을 짧게 만든다",
     "무너진 것을 통째로 적는다",
-    "남의 모델을 남보다 빠르게 돌린다"
+    "남의 모델을 남보다 빠르게 돌린다",
+    "지연에 민감한 곳에서 권한을 유연하게 짓는다"
   ],
   "countries": {
     "KR": "한국",
