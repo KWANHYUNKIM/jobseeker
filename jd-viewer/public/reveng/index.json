@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "cockroach-labs",
+      "name": "코크로치 랩스",
+      "name_en": "Cockroach Labs",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "PostgreSQL 처럼 보이는 분산 데이터베이스 — 그래서 새 기능마다 '한 대에서는 쉬운 것'을 흩어진 상태에서 다시 풀어야 한다",
+      "updated_at": "2026-09-07",
+      "domain": "cockroachlabs.com"
+    },
+    {
       "slug": "proton",
       "name": "프로톤",
       "name_en": "Proton",
@@ -2480,7 +2492,9 @@
     "지운 데이터를 되살릴 수 있게 한다",
     "메일함을 나라 경계 위에 올려놓는다",
     "데이터센터가 끓을 때 무엇을 먼저 살릴지 고른다",
-    "암호 라이브러리를 자기가 만들어 남에게 내준다"
+    "암호 라이브러리를 자기가 만들어 남에게 내준다",
+    "컴팩션이 큰 값을 반복해 옮기지 않게 한다",
+    "분산 트랜잭션 위에 벡터 색인을 얹는다"
   ],
   "countries": {
     "KR": "한국",
