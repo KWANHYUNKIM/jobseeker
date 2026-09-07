@@ -21,8 +21,20 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **AuthZed (SpiceDB)** | US · SaaS | 인가(권한) 시스템 축이 이 엔진에 없다 — 구글 잔지바 계열을 오픈소스로 구현해 판다. `authzed.com/blog` 에 자기 시스템 글이 있다 — `Query Planner Early Benchmarks`(2026-05-20)가 대표적이다: 30단계 중첩 문서 계층(DeepArrow)과 팬아웃(WideArrow) 같은 시나리오를 만들어 재고, 화살표 뒤집기·가지 재정렬·화살표 회전·도달 가능성 가지치기 같은 최적화를 이름 대어 적으며, 알고리즘만 볼 때 772µs → 70µs(11배), 포스트그레스 저장소로는 19.55ms → 10.41ms(47%), WideArrow 는 1.33ms → 0.50ms(62%)라는 수치를 낸다. 대가도 적는다 — 분산 디스패치는 망 비용을 조금 내주고 캐시 이득을 얻는 맞바꿈이고, 지금은 하위 문제를 과하게 디스패치한다고 스스로 밝힌다. 그 밖에 `Introducing the SpiceDB Query Planner`(2026-02-02) · `Authorization in a Distributed System`(2026-07-02) 이 있다. ⚠️ 최근 목록에는 AI 관련 마케팅 글이 섞여 있다. |
+| **turbopuffer** | US · SaaS | 검색 엔진 내부(전문 검색·벡터를 객체 저장소 위에서) 축이 없다 — Chroma 는 벡터, Tigris 는 객체 저장소를 만드는 쪽인데 여기는 그 위에 검색을 짓는 쪽이다. `turbopuffer.com/blog` 에 자기 시스템 글이 이어진다 — `How to ship a database every day`(2026-08-14) · `Designing inverted indexes in a KV-store on object storage`(2026-01-14) · `Why BM25 queries with more terms can be faster`(2026-01-07) · `Vectorized MAXSCORE over WAND, especially for long LLM-generated queries`(2025-12-09) · `FTS v2: up to 20x faster full-text search`(2025-12-04) · `Rust zero-cost abstractions vs. SIMD`(2026-02-18) · `Mixing numeric attributes into text search`(2026-04-27). 최신 글이 2026-09-04 이고 손님 글이 섞이지만 자기 시스템 글의 비중이 크다. |
+| **Deno** | US · SaaS | Val Town 의 런타임이 바로 이 회사 제품이라 **부품이 된 회사**를 반대편에서 볼 수 있다. `deno.com/blog` 에 자기 시스템 글이 있다 — `What we got wrong about HTTP imports`(2024-07-29, 설계를 되짚는 회고) · `The Anatomy of an Isolate Cloud`(2022-09-27, Deploy 인프라) · `How security and tenant isolation allows Deno Subhosting to run untrusted code securely`(2023-11-27, 발타운의 격리 이야기와 정면으로 견줄 자리) · `Building Deno KV internals`(2023-09-14, FoundationDB 선택) · `How We Made the Deno Language Server Ten Times Faster`(2024-06-20, 자동완성 6~8초 → 1초 미만) · `How we built JSR`(2024-04-12). ⚠️ **최신성이 약하다** — 심층 글이 2022~2024년에 몰려 있고 2026년 글은 릴리스 위주다(최신 2026-06-25 Deno 2.9). 팔 때 그 사정을 프로파일에 적는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-07 마흔두 번째 후보 조사 — 목표 3곳을 채웠다. 축을 또 벌렸다 — 인가 · 검색 엔진 내부 · 런타임을 만드는 쪽.**
+  - **AuthZed(SpiceDB)**(US) — 잔지바 계열 인가 시스템. 질의 계획기 벤치마크(2026-05-20)가 시나리오·최적화·수치·대가를 다 적는다.
+  - **turbopuffer**(US) — 객체 저장소 위의 전문 검색과 벡터. BM25·MAXSCORE·SIMD 같은 검색 엔진 내부 글이 이어진다.
+  - **Deno**(US) — 방금 판 Val Town 의 런타임을 만드는 쪽이다. 격리와 HTTP 임포트 회고가 정면으로 견줄 자리다.
+  - **접은 곳 둘.** **Matrix** — 블로그가 주간 소식과 릴리스 위주라 상태 해소·페더레이션 확장 같은 심층 글이 없다(최신 2026-09-04). **Home Assistant** — 릴리스 공지와 제휴 소식이 지배한다(최신 2026-09-02).
+  - **못 읽은 곳 하나 — GitLab.** `about.gitlab.com/blog/categories/engineering/` 이 403 을 돌려준다. 자료가 없는 것이 아니라 도구가 못 읽은 것이므로 **접은 것과 구분해 적어 둔다**(연표 스킬의 `none`/`blocked` 구분과 같은 정신).
+  - **교훈 — 부품이 된 회사를 반대편에서 본다.** 이 엔진에는 남의 회사 글에 부품으로 등장한 회사가 여럿이다(템포럴이 Railway 의 제어면에, 타이거비틀이 Zig 재단의 후원사로, 클릭하우스가 PostHog 의 저장소로). Deno 는 방금 판 Val Town 의 런타임이라 **같은 문제(믿을 수 없는 코드 격리)를 만드는 쪽과 쓰는 쪽 양쪽에서** 볼 수 있는 첫 사례다.
+  - **절차가 열여섯 번째로 값을 했다** — `name_en` 141개를 먼저 출력해 세 이름이 다 없다는 것을 확인하고 던졌다.
 
 - **2026-09-07 마흔한 번째 후보 조사 — 목표 3곳을 채웠다. 축을 또 벌렸다 — 자율주행 · 분석 인프라를 쓰는 쪽 · 런타임 격리.**
   - **comma.ai**(US) — 9년치 버그 여섯을 근본 원인까지 적은 CTO 회고(2026-07-21). 자율주행 축이 없었다.
