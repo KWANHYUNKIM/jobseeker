@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "fastmail",
+      "name": "패스트메일",
+      "name_en": "Fastmail",
+      "country": "기타",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "메일함은 지우면 끝이라, 이 회사가 파는 것은 편지함이 아니라 되살릴 수 있음이다",
+      "updated_at": "2026-09-07",
+      "domain": "fastmail.com"
+    },
+    {
       "slug": "deepl",
       "name": "딥엘",
       "name_en": "DeepL",
@@ -2452,7 +2464,9 @@
     "신뢰할 수 없는 입력이 SQL 이 되는 것을 막는다",
     "문서의 생김새를 지키면서 번역한다",
     "모델이 자기 번역을 자기가 채점하지 못하게 한다",
-    "정밀도를 깎아서 처리량을 산다"
+    "정밀도를 깎아서 처리량을 산다",
+    "지운 데이터를 되살릴 수 있게 한다",
+    "메일함을 나라 경계 위에 올려놓는다"
   ],
   "countries": {
     "KR": "한국",
