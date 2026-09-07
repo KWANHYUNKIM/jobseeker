@@ -7,8 +7,8 @@
       "name_en": "Henry",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "기록과 청구를 한 시스템에 둔 병원 SaaS — 제도가 기능을 정하고, 맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다",
       "updated_at": "2026-09-07",
       "domain": "henry-app.jp"
