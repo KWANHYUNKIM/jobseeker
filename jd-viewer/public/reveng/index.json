@@ -1675,8 +1675,8 @@
       "name_en": "PostHog",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "제품 분석을 여러 제품으로 묶어 파는 회사 — 클릭하우스를 쓰는 쪽에서 그 한계와 값을 공개 핸드북에 적는다",
       "updated_at": "2026-09-07",
       "domain": "posthog.com"
