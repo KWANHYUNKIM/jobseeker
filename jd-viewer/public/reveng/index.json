@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "gunosy",
+      "name": "그노시",
+      "name_en": "Gunosy",
+      "country": "JP",
+      "category": "광고",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "물린 방침을 이름 대어 적는 뉴스 추천 회사 — 기반은 '늘릴 때 손이 얼마나 드느냐'로 골랐다",
+      "updated_at": "2026-09-07",
+      "domain": "gunosy.co.jp"
+    },
+    {
       "slug": "dena",
       "name": "디엔에이",
       "name_en": "DeNA",
@@ -2786,7 +2798,9 @@
     "일본판을 접고 글로벌 시스템에 올라탄다",
     "바꾼 뒤에 나빠지지 않았음을 증명한다",
     "오래된 것을 값과 함께 옮긴다",
-    "깨진 자리를 소스와 바이너리까지 파고든다"
+    "깨진 자리를 소스와 바이너리까지 파고든다",
+    "추천을 다듬되 물린 길을 적는다",
+    "늘릴 때 손이 얼마나 드느냐로 기반을 고른다"
   ],
   "countries": {
     "KR": "한국",
