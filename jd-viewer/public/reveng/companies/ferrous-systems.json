@@ -222,9 +222,40 @@
               "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
             }
           ]
+        },
+        {
+          "tech": "2년 패치 릴리스",
+          "solves": "고른 판에 2년간 패치를 준다 — 기업 요금제는 요청하는 어느 판이든. 한번 인증한 것을 오래 쓰는 사정에 맞춘다(재구성).",
+          "limits": "오래된 판을 여러 개 동시에 돌봐야 한다(재구성). 판을 옮길 때 무엇을 다시 해야 하는지는 자료에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ferrocene — 지원 기간과 요금제",
+              "url": "https://ferrocene.dev/",
+              "publisher": "Ferrous Systems",
+              "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+            }
+          ]
+        },
+        {
+          "tech": "에어갭 전달(전송 구역 + 오프라인 crates)",
+          "solves": "인터넷이 있는 전송 구역에서 미리 고른 것을 모으고, 망이 끊긴 안쪽에서는 서버와 오프라인 crates 인스턴스로 나눠 준다. 26.08 판에 넣을 계획이라고 적는다.",
+          "limits": "미리 고른 목록 밖은 안에서 구할 수 없다(재구성). 서명·SBOM·재현 가능한 빌드 같은 공급망 장치는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ferrocene for Air-Gapped Environments",
+              "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+              "publisher": "Ferrous Systems",
+              "date": "2026-03",
+              "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "downstream-of-a-moving-language"
+      ]
     },
     {
       "name": "인증 문서까지 열어 놓고 판다",
@@ -857,6 +888,552 @@
           "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
         }
       ]
+    },
+    {
+      "key": "downstream-of-a-moving-language",
+      "name": "6주마다 바뀌는 언어를 3개월마다 고정한다",
+      "domain": "남의 언어를 받아 인증한다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "이 회사는 언어를 만들지 않는다. 그런데 인증은 **한 판을 고정해 놓고 그 판에 문서를 붙이는 일**이다. 상류 러스트는 보통 6주마다 바뀐다.\n\n그래서 움직이는 것과 멈춰야 하는 것 사이에 자기 주기를 하나 세운다 — **3개월.** 26.05.0 은 상류의 다섯 판(1.93.0 · 1.93.1 · 1.94.0 · 1.94.1 · 1.95.0)을 한꺼번에 담았다. 그리고 고른 판은 **2년 동안 패치를 준다** — 안전 시스템은 한번 인증한 것을 오래 쓰기 때문이다(재구성).",
+        "metrics": [
+          {
+            "label": "두 주기",
+            "value": "공식 rustc 보통 6주 · Ferrocene 3개월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          },
+          {
+            "label": "한 판에 담기는 상류",
+            "value": "26.05.0 이 러스트 1.93.0부터 1.95.0까지 다섯 판의 변경을 담았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              }
+            ]
+          },
+          {
+            "label": "지원 기간",
+            "value": "고른 판에 2년간 패치 릴리스 — 기업 요금제는 요청하는 어느 판이든",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 지원 기간과 요금제",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+              }
+            ]
+          },
+          {
+            "label": "상류를 고친 값",
+            "value": "질의 순환 하나에 디버깅 일주일 초과 · 스택 8MB(8176KB) · 죽기 전 100만 프레임 초과",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query cycles: A compiler murder mystery",
+                "url": "https://ferrous-systems.com/blog/query-cycles-a-compiler-murder-mystery/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "타깃",
+            "value": "리눅스 · QNX · Armv8-A/Armv7E-M 베어메탈, 26.05.0 에 레드햇과 만든 `aarch64-rhivos2-linux-gnu` 추가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              },
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "상류 판",
+            "what": "러스트 프로젝트가 6주마다 내는 rustc 판"
+          },
+          {
+            "name": "인증판",
+            "what": "3개월마다 고정해 문서와 인증을 붙인 판"
+          },
+          {
+            "name": "패치 릴리스",
+            "what": "고정된 판을 2년 동안 고쳐 주는 갱신"
+          },
+          {
+            "name": "타깃",
+            "what": "인증이 붙는 단위 — 운영체제와 아키텍처, 그리고 CPU"
+          },
+          {
+            "name": "전송 구역",
+            "what": "인터넷이 있는 쪽에서 필요한 것을 미리 모으는 자리"
+          }
+        ],
+        "invariants": [
+          "고친 것은 상류에 보고한다",
+          "인증은 판마다 붙는다",
+          "고정한 판은 2년 동안 고쳐 준다",
+          "우리 쪽에서 우회하기보다 원인을 고친다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "움직이는 것과 멈추는 것",
+          "question": "두 주기가 어떻게 맞물리나",
+          "kind": "flow",
+          "code": "flowchart LR\n  R1[\"<b>rustc 1.93.0</b>\"]:::list --> F[\"<b>Ferrocene 26.05.0</b><br/>• 3개월 주기로 한 번에 담는다\"]:::list\n  R2[\"<b>1.93.1 · 1.94.0 · 1.94.1</b>\"]:::list --> F\n  R3[\"<b>1.95.0</b>\"]:::list --> F\n  F --> Q[\"<b>TÜV SÜD 인증</b><br/>• 판마다 붙는다\"]:::list\n  Q --> P[\"<b>2년 패치 릴리스</b><br/>• 기업은 요청하는 어느 판이든\"]:::list\n  F -.->|\"고친 것은 되돌려 보낸다\"| U[\"<b>상류 러스트</b>\"]:::list"
+        },
+        {
+          "title": "버그를 만났을 때 어디를 고치나",
+          "question": "우회할 것인가 원인을 고칠 것인가",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant F as Ferrocene\n  participant T as 시험\n  participant U as 상류 러스트\n  F->>T: 인증 린트를 켜고 돌린다\n  T-->>F: 출력 없이 멈춘다 → 파드가 죽는다\n  Note over F: 원인이 셋 — 우리 린트의 질의 순환 · 상류 순환 탐지의 무한 재귀 · 스택 보호 부재\n  F->>U: 우회하지 않고 상류 버그로 고친다\n  Note over F,U: 러스트를 쓰는 모두가 얻는다 — 대신 일주일 넘게 걸렸다\n  F->>T: CI 에 명시적 시간·메모리 한계를 두기로 한다"
+        },
+        {
+          "title": "다운스트림이라서 생기는 구멍",
+          "question": "남의 언어를 받아 쓰면 무엇이 남나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>시차</b>\"]:::list --> A1[\"<b>상류 새 기능이 인증판에 닿기까지</b><br/>• 6주 대 3개월(재구성)\"]:::list\n  B[\"<b>목록 밖은 못 쓴다</b>\"]:::list --> B1[\"<b>인증은 타깃과 CPU 단위로 붙는다</b>\"]:::list\n  C[\"<b>판을 옮길 때</b>\"]:::list --> C1[\"<b>무엇을 다시 해야 하는지 자료에 없다</b>\"]:::list\n  D[\"<b>에어갭 글에 없는 것</b>\"]:::list --> D1[\"<b>서명 · SBOM · 재현 가능한 빌드 · 미러 인증</b>\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "상류 러스트의 판들을 3개월 동안 모은다",
+            "why": "6주마다 인증을 다시 붙일 수는 없다(재구성)"
+          },
+          {
+            "step": "모은 것을 한 판으로 고정한다",
+            "why": "인증은 움직이지 않는 대상에만 붙는다(재구성)"
+          },
+          {
+            "step": "타깃과 CPU 별로 인증 범위를 정한다",
+            "why": "같은 컴파일러라도 어디에 쓰느냐에 따라 증명해야 할 것이 다르다(재구성)"
+          },
+          {
+            "step": "제3자(TÜV SÜD)의 확인을 받는다",
+            "why": "규격은 자기 확인이 아니라 제3자 확인을 요구한다(재구성)"
+          },
+          {
+            "step": "고정한 판을 2년 동안 패치한다",
+            "why": "안전 시스템은 한번 통과한 것을 오래 쓴다(재구성)"
+          },
+          {
+            "step": "버그를 만나면 상류에 고쳐 보낸다",
+            "why": "자기 쪽에서 우회하면 다음 판마다 그 우회를 다시 들고 가야 한다(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "릴리스 주기를 얼마로 할 것인가",
+            "chosen": "3개월 — 상류의 여러 판을 한꺼번에 담는다",
+            "alternatives": [
+              "상류와 같은 6주 주기로 따라가기",
+              "1년처럼 더 길게 잡기"
+            ],
+            "tradeoff": "상류의 새 기능이 인증판에 닿기까지 시차가 생긴다(재구성). 대신 인증 작업이 감당할 수 있는 빈도로 줄어든다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              },
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              }
+            ]
+          },
+          {
+            "question": "상류 버그를 만나면 어디를 고칠 것인가",
+            "chosen": "자기 쪽에서 우회하지 않고 상류 러스트를 고친다",
+            "alternatives": [
+              "Ferrocene 안에서 회피 코드를 넣기",
+              "해당 기능을 인증 범위에서 빼기"
+            ],
+            "tradeoff": "일주일 넘게 걸렸고 일정이 상류의 검토에 매인다(재구성). 대신 러스트를 쓰는 모두가 얻고, 다음 판마다 우회를 다시 들고 갈 일이 없다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query cycles: A compiler murder mystery",
+                "url": "https://ferrous-systems.com/blog/query-cycles-a-compiler-murder-mystery/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "언어를 포크할 것인가",
+            "chosen": "포크하지 않는다 — 상류의 다운스트림으로 남고 고침은 전부 상류에 보고한다",
+            "alternatives": [
+              "자체 컴파일러 계통을 따로 유지하기"
+            ],
+            "tradeoff": "상류가 바꾸는 것을 못 막고 따라가야 한다(재구성). 대신 러스트 생태계와 갈라지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          },
+          {
+            "question": "고정한 판을 얼마나 오래 돌볼 것인가",
+            "chosen": "고른 판에 2년 패치. 기업 요금제는 요청하는 어느 판이든",
+            "alternatives": [
+              "최신 판만 지원하기"
+            ],
+            "tradeoff": "오래된 판을 여러 개 동시에 돌봐야 한다(재구성). 대신 한번 인증한 것을 오래 쓰는 안전 시스템의 사정에 맞는다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 지원 기간과 요금제",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "타깃을 어떻게 늘릴 것인가",
+            "chosen": "파트너와 함께 타깃을 만들고 CPU 단위로 인증을 붙인다",
+            "alternatives": [
+              "상류가 지원하는 모든 타깃을 한꺼번에 인증하기"
+            ],
+            "tradeoff": "목록 밖 타깃은 인증 범위 밖이라 못 쓴다(재구성). 대신 26.05.0 처럼 레드햇의 차량 내 운영체제용 `aarch64-rhivos2-linux-gnu` 같은 실제 수요를 정확히 덮는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              },
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          },
+          {
+            "question": "인터넷이 끊긴 곳에 어떻게 넘길 것인가",
+            "chosen": "전송 구역에서 미리 고른 것을 모아 두고, 에어갭 안에서는 서버와 오프라인 crates 인스턴스로 나눠 준다",
+            "alternatives": [
+              "물리 매체로 그때그때 옮기기"
+            ],
+            "tradeoff": "무엇을 미리 고를지 정해야 하고 그 목록 밖은 안에서 구할 수 없다(재구성). 서명·SBOM·재현 가능한 빌드 같은 공급망 장치는 글에 안 적혀 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene for Air-Gapped Environments",
+                "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-03",
+                "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "시험 기반을 어떻게 지킬 것인가",
+            "chosen": "CI 에 명시적 시간 제한과 메모리 한계를 둔다",
+            "alternatives": [
+              "코드의 올바름만 믿기"
+            ],
+            "tradeoff": "한계에 걸린 시험이 진짜 실패인지 한계 탓인지 가려야 한다(재구성). 이유는 겪은 그대로다 — 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query cycles: A compiler murder mystery",
+                "url": "https://ferrous-systems.com/blog/query-cycles-a-compiler-murder-mystery/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "상류 rustc 의 다운스트림 계통",
+            "role": "6주 주기의 상류를 3개월 주기로 받아 고정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          },
+          {
+            "tech": "TÜV SÜD 인증",
+            "role": "판마다 제3자 확인을 붙인다 — ASIL D · SIL 3 · Class C",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              }
+            ]
+          },
+          {
+            "tech": "패치 릴리스 채널",
+            "role": "고정한 판을 2년 동안 고친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 지원 기간과 요금제",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+              }
+            ]
+          },
+          {
+            "tech": "타깃·CPU 인증 목록",
+            "role": "리눅스·QNX·베어메탈과 cortex-m4·cortex-a53 처럼 쓰이는 자리를 하나씩 덮는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              },
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          },
+          {
+            "tech": "전송 구역과 오프라인 crates 인스턴스",
+            "role": "인터넷 없는 환경에 툴체인과 의존성을 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene for Air-Gapped Environments",
+                "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-03",
+                "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "certified-subset-boundary",
+          "via": "검사가 컴파일러 안에 산다",
+          "contract": "인증 경계 검사는 컴파일러 드라이버 안에 있어 상류가 바뀔 때마다 함께 움직인다. 그래서 상류 버그가 곧 이 회사의 버그가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "인증 문서까지 열어 놓고 판다",
+          "via": "판이 곧 상품 단위",
+          "contract": "3개월마다 고정한 판에 인증과 문서가 붙고, 그 판을 2년 동안 돌보는 것이 요금제의 내용이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "상류 러스트 프로젝트",
+          "via": "받고 되돌려 보낸다",
+          "contract": "판을 받아 인증하고 고친 것은 전부 되돌려 보낸다. 포크하지 않는 대신 상류의 결정을 따라간다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Reflections on Trusting Trust",
+            "authors": "Ken Thompson",
+            "year": "1984",
+            "venue": "Communications of the ACM 27(8) (튜링상 강연)",
+            "url": "https://dl.acm.org/doi/10.1145/358198.358210",
+            "takeaway": "소스를 다 읽어도 컴파일러 자체를 믿을 근거는 따로 필요하다는 이야기다. 툴체인을 인증한다는 일이 왜 별도의 산업이 되는지가 여기 있다 — 인증은 프로그램이 아니라 프로그램을 만드는 도구에 붙는다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "ISO 26262: Road vehicles — Functional safety",
+            "authors": "ISO",
+            "year": "2018",
+            "venue": "국제 표준",
+            "url": "https://www.iso.org/standard/68383.html",
+            "takeaway": "자동차 기능 안전의 위험 등급(ASIL)을 정의한다. 이 회사가 받은 것은 그중 최고 등급인 ASIL D 이고, 인증이 판마다 붙는 구조도 이런 규격의 요구에서 나온다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene 26.05.0 now available!",
+                "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+              },
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              }
+            ]
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "움직이는 상류 위에 멈춘 인증을 얹기",
+            "why_hard": "인증은 고정된 대상에만 붙는데 언어는 6주마다 바뀐다. 너무 자주 고정하면 인증 작업이 감당이 안 되고, 너무 뜸하면 쓰는 쪽이 낡은 언어에 갇힌다(재구성).",
+            "current_best": "3개월 주기로 상류 여러 판을 한꺼번에 담고, 고정한 판을 2년 동안 패치하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene — 인증된 러스트 툴체인",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+              },
+              {
+                "title": "Ferrocene — 지원 기간과 요금제",
+                "url": "https://ferrocene.dev/",
+                "publisher": "Ferrous Systems",
+                "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+              }
+            ]
+          },
+          {
+            "problem": "우회 대신 상류를 고치면 일정이 남에게 매인다",
+            "why_hard": "상류는 이 회사의 인증 일정을 위해 움직이지 않는다. 그런데 우회를 쌓으면 판마다 그것을 다시 들고 가야 한다(재구성).",
+            "current_best": "그래도 상류를 고치는 쪽을 고르는 것 — 질의 순환 하나에 일주일 넘게 썼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query cycles: A compiler murder mystery",
+                "url": "https://ferrous-systems.com/blog/query-cycles-a-compiler-murder-mystery/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-07",
+                "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "인터넷 없는 곳에 툴체인과 의존성을 통째로 넘기기",
+            "why_hard": "안전이 걸린 현장은 망이 끊겨 있는데 러스트 생태계는 크레이트를 내려받는 것을 전제한다(재구성).",
+            "current_best": "전송 구역에서 미리 고른 것을 모으고 안에서는 오프라인 crates 인스턴스로 나눠 주는 것 — 공급망 장치의 구체는 아직 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ferrocene for Air-Gapped Environments",
+                "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+                "publisher": "Ferrous Systems",
+                "date": "2026-03",
+                "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "주기를 정할 때",
+          "thought": "6주마다 인증을 다시 붙일 수는 없다. 그렇다고 1년을 기다리면 쓰는 쪽이 낡은 언어에 갇힌다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "버그의 원인을 찾고 나서",
+          "thought": "우리 쪽에서 피해 갈 수 있다. 하지만 그러면 판마다 그 우회를 다시 들고 가야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "시험이 멈춰 있을 때",
+          "thought": "출력이 없다는 것은 결과가 아니다. 시험 기반 자체를 못 믿는 상태다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에어갭 요구를 받을 때",
+          "thought": "러스트는 크레이트를 내려받는 것을 전제한다. 망이 끊긴 곳에서는 그 전제부터 옮겨 놔야 한다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Ferrocene — 인증된 러스트 툴체인",
+          "url": "https://ferrocene.dev/",
+          "publisher": "Ferrous Systems",
+          "summary": "자동차·산업·의료·항공우주처럼 안전과 임무가 걸린 시스템에 쓰라고 만든 오픈소스 인증 러스트 툴체인이다. 컴파일러가 ISO 26262 의 ASIL D(자동차 최고 위험 등급) · IEC 61508 의 SIL 3(산업) · IEC 62304 의 Class C(의료)에 맞게 인증돼 있고, `core` 라이브러리의 인증된 부분집합은 ISO 26262 ASIL B 와 IEC 61508 SIL 2 를 덮는다. 지원 대상으로 리눅스·QNX 와 Armv8-A·Armv7E-M 베어메탈을 든다. MIT 또는 Apache-2.0 으로 완전히 오픈소스이며 **인증 문서 전체가 여기 포함된다**고 밝힌다. 상류 러스트 프로젝트의 다운스트림으로 움직이며, 공식 rustc 가 보통 6주마다 나오는 데 비해 이쪽은 3개월 주기로 낸다. 고친 것은 전부 상류에 보고한다고 적는다. 현재 판은 26.05.0 이다."
+        },
+        {
+          "title": "Ferrocene 26.05.0 now available!",
+          "url": "https://ferrous-systems.com/blog/ferrocene-26-05-0/",
+          "publisher": "Ferrous Systems",
+          "date": "2026-07",
+          "summary": "26.05.0 판 발표다. 새로 들어간 것은 인증된 부분집합을 검사하는 `#[warn(ferrocene::unvalidated)]` 린트, 특정 CPU 에 대한 인증 지원, 인증된 `core::fmt`, 그리고 레드햇과 함께 만든 `aarch64-rhivos2-linux-gnu` 타깃(레드햇의 차량 내 운영체제용)이다. CPU 로는 `thumbv7em-none-eabihf` 에 `-C target-cpu=cortex-m4`, `aarch64-unknown-none` 에 `-C target-cpu=cortex-a53` 가 더해졌고, 인증된 `aarch64-unknown-linux-gnu` 호스트 플랫폼이 처음 들어갔다(우선 RHIVOS2 를 겨냥한다). 인증 주체는 TÜV SÜD 이고 ISO 26262(ASIL D)·IEC 61508(SIL 3)·IEC 62304(Class C)에 따른 안전 관련 개발에 쓸 수 있다고 적는다. 상류에서는 러스트 1.93.0·1.93.1·1.94.0·1.94.1·1.95.0 의 변경을 받아들였다(`asm!` 줄의 `cfg`, match 의 if-let 가드 등). 구독 가격은 사용자당 월 25유로 또는 연 240유로다."
+        },
+        {
+          "title": "Query cycles: A compiler murder mystery",
+          "url": "https://ferrous-systems.com/blog/query-cycles-a-compiler-murder-mystery/",
+          "publisher": "Ferrous Systems",
+          "date": "2026-07",
+          "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+        },
+        {
+          "title": "Ferrocene — 지원 기간과 요금제",
+          "url": "https://ferrocene.dev/",
+          "publisher": "Ferrous Systems",
+          "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
+        },
+        {
+          "title": "Ferrocene for Air-Gapped Environments",
+          "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+          "publisher": "Ferrous Systems",
+          "date": "2026-03",
+          "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -864,8 +1441,9 @@
     "오픈소스인데 무엇으로 값을 받는지 회사가 직접 설명하지 않는다 — 인증의 책임인지 지원인지 갱신인지 확인하지 못했다.",
     "인증이 판마다 붙는지, 고객이 새 판으로 옮길 때 무엇을 다시 해야 하는지 확인하지 못했다.",
     "시대 구분(eras)을 세우지 않았다. 판 번호(26.05.0)로 보아 연·월 체계인 것은 알지만 이전 판들의 변화를 적은 자료를 아직 못 찾았다.",
-    "안 읽은 글 — 블로그에 릴리스·행사·채용 공고가 섞여 있어 기술 글만 골라야 한다. 목록을 더 훑지 못했다.",
-    "질의 순환 문제에서 CI 에 실제로 어떤 시간·메모리 한계를 넣었는지 글에 없다."
+    "질의 순환 문제에서 CI 에 실제로 어떤 시간·메모리 한계를 넣었는지 글에 없다.",
+    "안 읽은 글 — `Accessing Hardware in Rust`(2026-03, 자기 시스템 글인지 교육 글인지 확인 안 했다). 블로그 전체 목록은 `/blog/all` 에 있다는데 훑지 않았다.",
+    "에어갭 전달의 공급망 장치를 확인하지 못했다 — 서명·SBOM·재현 가능한 빌드·미러 인증이 글에 없다."
   ],
   "sources": [
     {
@@ -900,6 +1478,19 @@
       "publisher": "Ferrous Systems",
       "date": "2026-07",
       "summary": "불안정 기능인 `fn_delegation` 을 쓰는 코드를 컴파일할 때 무한 재귀와 메모리 부족으로 죽는 문제를 파고든 기록이다. 증상은 시험이 아무 출력 없이 멈춰 있다가 개발용 파드를 통째로 죽이는 것이었다. 원인은 셋으로 갈린다. 하나는 Ferrocene 쪽 — 인증된 코드가 검증 안 된 코드를 부르는지 추적하는 자기네 `ferrocene::unvalidated` 린트가 항목이 검증됐는지 확인하려고 부르는 질의들이 순환 의존을 만들었다. 둘은 상류 러스트의 질의 시스템 — 순환을 탐지해 오류로 알려야 할 장치가 오히려 무한히 재귀했다. 셋은 `ensure_sufficient_stack` 에 보호가 없어 무한 재귀 동안 메모리를 마음껏 잡았다는 것이다. 고르기를 분명히 적는다: Ferrocene 안에서 우회하지 않고 상류 컴파일러 버그를 고치기로 했고 그것이 러스트 공동체 전체에 이롭다고 본다. 수치로는 리눅스 기본 스택 한계 8MB(8176KB), 죽기 전 스택 추적 깊이 100만 프레임 초과, 디버깅에 일주일 넘게 걸린 것을 든다. 교훈으로 시험 기반 자체에 버그가 있을 때는 올바름만으로 부족하다며 CI 에 명시적 시간 제한과 메모리 한계가 필요하다고 적는다."
+    },
+    {
+      "title": "Ferrocene for Air-Gapped Environments",
+      "url": "https://ferrous-systems.com/blog/air-gapped-environments/",
+      "publisher": "Ferrous Systems",
+      "date": "2026-03",
+      "summary": "인터넷이 끊긴 환경에 툴체인을 넘기는 방법을 소개한 글이다. 두 구역으로 나눈다 — 인터넷이 있는 전송 구역에서 미리 고른 것들을 한곳에 내려받고, 에어갭 구역 안에서는 서버와 오프라인 crates 인스턴스로 올려 두어 사용자가 필요한 것을 가져가게 한다. 검토를 거친 크레이트를 쓴다는 것을 특징으로 든다. 시연에서는 툴체인을 설치하고 예제 러스트 프로젝트를 만들어 빌드하고 실행하는 것까지를 전부 오프라인에서 보인다. 26.08 판에 넣을 계획이라고 적는다. 다만 서명·소프트웨어 자재 명세(SBOM)·재현 가능한 빌드·미러 인증 같은 공급망 장치의 구체적인 내용은 이 글에 없고, 파일 크기나 수치도 없으며, 물린 대안이나 한계도 적지 않는다."
+    },
+    {
+      "title": "Ferrocene — 지원 기간과 요금제",
+      "url": "https://ferrocene.dev/",
+      "publisher": "Ferrous Systems",
+      "summary": "제품 페이지가 지원 정책도 적는다. 공식 rustc 의 릴리스 주기가 보통 6주인 데 비해 Ferrocene 은 3개월 주기로 내며 그 사이에도 상류의 개선을 따라간다. 개인과 기업 요금제 모두 **고른 판에 대해 2년간 패치 릴리스**를 준다. 기업 요금제는 여기에 **요청하는 어느 판이든 패치 릴리스**를 주고, 인증 서명과 평가자 보고서, 인증 지원을 함께 준다. 공개 문서는 public-docs.ferrocene.dev 에 있고 고객 포털은 customers.ferrocene.dev 다. 그 밖의 릴리스 채널 구조나 인증판을 받는 절차는 이 페이지에 더 적혀 있지 않다."
     }
   ]
 }

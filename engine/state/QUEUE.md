@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Ferrous Systems** | EU · 기타 | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 인증받은 것과 아닌 것 사이에 선을 긋는다(`certified-subset-boundary`). 빈 도메인 둘 — 남의 언어를 받아 인증한다(`Query cycles` 확보) · 인증 문서까지 열어 놓고 판다(릴리스·ferrocene.dev 확보). **⚠️ 블로그에 릴리스·행사·채용 공고가 섞여 있다** — 기술 글은 `Callgraph analysis`·`Query cycles` 둘만 찾았다. 목록을 더 훑어야 한다. |
+| **Ferrous Systems** | EU · 기타 | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 인증받은 것과 아닌 것 사이에 선을 긋는다(`certified-subset-boundary`) · 남의 언어를 받아 인증한다(`downstream-of-a-moving-language`). 빈 도메인 하나 — 인증 문서까지 열어 놓고 판다(릴리스·제품 페이지·요금제 확보). **⚠️ 블로그 전체 목록은 `/blog/all` 인데 아직 안 훑었다.** 안 읽은 글 — `Accessing Hardware in Rust`(2026-03). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
