@@ -121,9 +121,26 @@
               "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
             }
           ]
+        },
+        {
+          "tech": "Deft 코로케이션 시설 둘",
+          "solves": "애시번과 시카고에 48U 캐비닛 네 대씩, 서버 약 90대씩(모두 180대, 전부 델)을 두고 EVPN/VXLAN 으로 잇는다. 시설당 40kW 를 캐비닛 넷에 나눈다.",
+          "limits": "시설 운영은 남에게 맡긴다(10년 넘게 고객이던 곳이다). CPU·메모리·디스크 사양은 글에 없고, 시카고는 재생 에너지로 돌지만 애시번은 해마다 탄소 크레딧을 산다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "37signals datacenter overview",
+              "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+              "publisher": "37signals",
+              "date": "2023-08-10",
+              "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "leave-the-cloud"
+      ]
     },
     {
       "name": "페타바이트를 되찾는다",
@@ -260,14 +277,612 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "leave-the-cloud",
+      "name": "값만이 아니라 운영이 이유였다",
+      "domain": "클라우드에서 나온다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "2022년 클라우드 청구서가 **연 3,201,564달러**였다. 그런데 이 회사가 나온 이유로 첫 줄에 적은 것은 값이 아니다 — **얻는 것보다 쓰는 것이 많았고 그것이 값만이 아니라 운영에서도 그랬다.**\n\n근거로 드는 것은 AWS ECS·GKE·EKS 를 함께 다루며 쌓인 복잡도와 기술 부채, 그리고 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 **딸린 시스템들의 부담**이다.\n\n그래서 앱을 자기 데이터센터로 되돌렸다. 이 엔진의 다른 회사들이 대개 클라우드로 **들어가는** 기록인 데 비해 여기는 **나오는** 기록이다.",
+        "metrics": [
+          {
+            "label": "공개한 청구서",
+            "value": "연 3,201,564달러(월 266,797달러) — S3 907,838 · EC2/EKS 759,983 · OpenSearch 519,959 · RDS 473,196 · ElastiCache 123,852 · CloudFront 66,742",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "label": "한 제품의 몫",
+            "value": "HEY 만 연 1,066,150달러",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "label": "옮기는 데 걸린 시간",
+            "value": "Tadalist 6주 미만 → Writeboard 2주 미만 → Backpack 3주쯤",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "label": "얻은 것",
+            "value": "배포 몇 분 → 약 1분 · VM 프로비저닝 20분쯤 → 게스트당 60초 미만 · Writeboard 데이터베이스 전환 무중단 16분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "label": "되돌아간 자리",
+            "value": "시설 두 곳(애시번·시카고) · 48U 캐비닛 여덟 대 · 서버 약 180대(델) · 시설당 40kW",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "37signals datacenter overview",
+                "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+                "publisher": "37signals",
+                "date": "2023-08-10",
+                "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "청구서",
+            "what": "서비스별로 갈린 클라우드 지출. 나오기로 한 판단의 출발점이다"
+          },
+          {
+            "name": "딸린 시스템",
+            "what": "오토스케일러·인그레스 컨트롤러처럼 본 일이 아닌데 돌봐야 하는 것들"
+          },
+          {
+            "name": "오케스트레이터",
+            "what": "컨테이너를 배포하고 돌리는 층 — 쿠버네티스 대신 MRSK(Kamal)"
+          },
+          {
+            "name": "자기 시설",
+            "what": "Deft 가 운영하는 시설 두 곳의 캐비닛과 서버"
+          },
+          {
+            "name": "남긴 것",
+            "what": "되돌리지 않고 남의 것을 계속 쓰는 부분 — CDN·DNS·CI"
+          }
+        ],
+        "invariants": [
+          "옮긴 앱은 같은 방식으로 배포된다",
+          "특별한 설정을 앱마다 두지 않는다",
+          "전부 되돌리지는 않는다",
+          "상태를 갖는 서비스는 우리가 책임진다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "무엇을 되돌리고 무엇을 남겼나",
+          "question": "경계가 어디에 그어졌나",
+          "kind": "flow",
+          "code": "flowchart LR\n  C[\"<b>클라우드(연 320만 달러)</b>\"]:::list --> B[\"<b>되돌린 것</b>\"]:::list\n  C --> K[\"<b>남긴 것</b>\"]:::list\n  B --> B1[\"<b>앱 실행</b><br/>• ECS·GKE·EKS → MRSK(Kamal) · KVM\"]:::list\n  B --> B2[\"<b>데이터베이스</b><br/>• Percona MySQL 8 · cron 백업\"]:::list\n  B --> B3[\"<b>로깅·상태 저장</b><br/>• ELK · NFS 공유 저장소\"]:::list\n  K --> K1[\"<b>CDN·DNS</b><br/>• CloudFront/Route53 → 클라우드플레어\"]:::list\n  K --> K2[\"<b>CI/CD</b><br/>• Buildkite → GitHub Actions\"]:::list"
+        },
+        {
+          "title": "세 앱을 차례로 옮긴다",
+          "question": "어떤 순서로 무엇을 배웠나",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant T as Tadalist\n  participant W as Writeboard\n  participant B as Backpack\n  participant O as 운영팀\n  O->>T: 기반부터 만든다 — 6주 미만\n  Note over T: 무중단 요구가 없어 전환 중 중단을 감수했다\n  O->>W: 같은 방식을 재사용한다 — 2주 미만\n  Note over W: 데이터베이스 전환은 무중단 16분\n  O->>B: 메일 파이프라인 때문에 더 복잡 — 3주쯤\n  Note over B: 상태를 갖는 메일 처리에 NFS 공유 저장소\n  O->>O: 배포가 몇 분에서 약 1분이 된다"
+        },
+        {
+          "title": "나오면서 떠안은 것",
+          "question": "이 되돌리기가 무는 값",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"<b>상태를 갖는 서비스</b>\"]:::list --> R1[\"<b>MySQL · Postfix 를 우리가 돌린다</b><br/>• 책임이 늘었다고 스스로 적는다\"]:::list\n  L[\"<b>학습 곡선</b>\"]:::list --> L1[\"<b>기존 시스템을 유지하면서 옮겼다</b><br/>• 초반이 가팔랐다\"]:::list\n  D[\"<b>용량이 유한하다</b>\"]:::list --> D1[\"<b>서버 약 180대 · 시설당 40kW</b><br/>• 늘리려면 사야 한다(재구성)\"]:::list\n  N[\"<b>아직 못 읽은 것</b>\"]:::list --> N1[\"<b>실제로 얼마를 아꼈는지</b><br/>• 연말에 보고하겠다는 약속만 있다\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "청구서를 서비스별로 공개한다",
+            "why": "무엇이 값비싼지 밖에도 안에도 분명해야 한다(재구성)"
+          },
+          {
+            "step": "작고 덜 위험한 앱부터 옮긴다",
+            "why": "Tadalist 는 무중단 요구가 없어 기반을 만들며 배울 수 있다"
+          },
+          {
+            "step": "만든 방식을 다음 앱에 재사용한다",
+            "why": "두 번째(Writeboard)가 2주 미만으로 줄었다"
+          },
+          {
+            "step": "복잡한 것을 마지막에 옮긴다",
+            "why": "Backpack 은 상태를 갖는 메일 처리가 붙어 있었다"
+          },
+          {
+            "step": "오케스트레이션을 복잡도가 낮은 쪽으로 바꾼다",
+            "why": "벤더가 받쳐 주는 쿠버네티스 대신 MRSK 를 골랐다"
+          },
+          {
+            "step": "딸린 시스템을 지운다",
+            "why": "오토스케일러·인그레스 컨트롤러 같은 것이 본 일이 아니었다"
+          },
+          {
+            "step": "되돌리지 않을 것을 정한다",
+            "why": "CDN·DNS 는 클라우드플레어로, CI 는 GitHub Actions 로 남겼다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "클라우드에서 나올 것인가",
+            "chosen": "나온다 — 앱 스택을 자기 데이터센터로 되돌린다",
+            "alternatives": [
+              "클라우드에 남아 최적화하기",
+              "일부만 옮기기"
+            ],
+            "tradeoff": "MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘고, 기존 시스템을 유지하면서 옮기는 팀의 초반 학습 곡선이 가팔랐다. 대신 연 3,201,564달러짜리 청구서와 여러 클라우드 플랫폼의 복잡도가 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              },
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "question": "오케스트레이션을 무엇으로 할 것인가",
+            "chosen": "MRSK(뒤의 Kamal) — 직접 만든 도구",
+            "alternatives": [
+              "벤더가 받쳐 주는 쿠버네티스를 자기 시설에 세우기",
+              "ECS/GKE/EKS 를 유지하기"
+            ],
+            "tradeoff": "쿠버네티스 생태계의 도구와 관리형 서비스를 못 쓰고 만든 것을 계속 돌봐야 한다(재구성). 대신 복잡도가 낮고 배포가 몇 분에서 약 1분이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 앱부터 옮길 것인가",
+            "chosen": "작고 무중단 요구가 없는 Tadalist 부터 — 그다음 Writeboard, 마지막 Backpack",
+            "alternatives": [
+              "중요한 제품부터 옮기기",
+              "한꺼번에 옮기기"
+            ],
+            "tradeoff": "첫 앱은 전환 중 중단을 감수했다. 대신 6주 미만으로 만든 기반을 재사용해 두 번째가 2주 미만이 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "question": "관리형 서비스를 무엇으로 대신할 것인가",
+            "chosen": "Percona MySQL 8 에 cron 백업, 예약 작업은 Redis 기반 잠금, 상태 저장은 NFS, 로깅은 ELK",
+            "alternatives": [
+              "RDS·ElastiCache 를 계속 쓰기"
+            ],
+            "tradeoff": "백업과 복구, 잠금의 정확성이 우리 책임이 된다(재구성). 대신 RDS 473,196달러와 ElastiCache 123,852달러가 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              },
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 되돌리지 않을 것인가",
+            "chosen": "CDN·DNS 는 클라우드플레어로, CI/CD 는 GitHub Actions 로 — 남의 것을 계속 쓴다",
+            "alternatives": [
+              "전부 자기 것으로 되돌리기"
+            ],
+            "tradeoff": "그 부분의 의존은 남는다. 대신 되돌리기의 범위가 감당할 만해진다(재구성) — CloudFront 는 66,742달러로 항목 중 가장 작았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              },
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "question": "시설을 직접 운영할 것인가",
+            "chosen": "운영하지 않는다 — Deft 와 협력해 코로케이션으로 둔다",
+            "alternatives": [
+              "자기 데이터센터를 짓고 운영하기"
+            ],
+            "tradeoff": "시설 운영을 남에게 맡기니 그쪽에 매인다(재구성). 대신 10년 넘게 고객이던 곳이고 서버 약 180대와 캐비닛 여덟 대를 두 시설에 나눠 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "37signals datacenter overview",
+                "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+                "publisher": "37signals",
+                "date": "2023-08-10",
+                "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+              },
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          },
+          {
+            "question": "VM 을 어떻게 띄울 것인가",
+            "chosen": "이미 있던 KVM 위에 cloud-init 으로 빠른 프로비저닝을 붙인다",
+            "alternatives": [
+              "기존 방식 그대로 두기"
+            ],
+            "tradeoff": "프로비저닝 도구를 직접 만들어 유지한다(재구성). 대신 20분쯤 걸리던 것이 게스트당 60초 미만이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "MRSK(Kamal)",
+            "role": "컨테이너 배포와 오케스트레이션",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "tech": "KVM + cloud-init",
+            "role": "VM 을 60초 미만에 띄운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "tech": "Percona MySQL 8 · Redis · NFS · ELK",
+            "role": "관리형 서비스를 대신하는 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "tech": "클라우드플레어 + F5 로드 밸런서",
+            "role": "CloudFront·Route53 을 대신하고 앞단을 받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "tech": "Deft 코로케이션(애시번·시카고)",
+            "role": "캐비닛 여덟 대와 서버 약 180대가 사는 자리 — EVPN/VXLAN 으로 잇는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "37signals datacenter overview",
+                "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+                "publisher": "37signals",
+                "date": "2023-08-10",
+                "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "history": [
+        {
+          "version": "클라우드 위",
+          "from": "2023-01",
+          "to": "2023-03",
+          "what": "AWS ECS·GKE·EKS 를 함께 쓰며 연 3,201,564달러를 냈다. 2023년 1월에 그 내역을 서비스별로 공개하고 그해에 많은 것을 자기 하드웨어로 옮기겠다고 적었다.",
+          "why_changed": "얻는 것보다 쓰는 것이 많았고 그것이 값만이 아니라 운영에서도 그랬다 — 여러 플랫폼의 복잡도와 딸린 시스템의 부담이 근거다.",
+          "tradeoff": "관리형 서비스를 쓰는 편함을 내주게 된다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our cloud spend in 2022",
+              "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+              "publisher": "37signals",
+              "date": "2023-01-13",
+              "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+            },
+            {
+              "title": "De-cloud and de-k8s — bringing our apps back home",
+              "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+              "publisher": "37signals",
+              "date": "2023-03-21",
+              "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+            }
+          ]
+        },
+        {
+          "version": "자기 데이터센터",
+          "from": "2023-03",
+          "to": "",
+          "what": "앱 셋을 차례로 되돌리고 MRSK(Kamal)·KVM·Percona MySQL 8 로 갈아탔다. 8월에는 시설 두 곳(애시번·시카고)에 캐비닛 여덟 대와 서버 약 180대를 두고 EVPN/VXLAN 으로 잇는 구성을 공개했다.",
+          "why_changed": "",
+          "tradeoff": "상태를 갖는 서비스의 책임과 유한한 용량을 떠안는다. 대신 배포가 약 1분이 되고 클라우드 제어면 관리가 사라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "De-cloud and de-k8s — bringing our apps back home",
+              "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+              "publisher": "37signals",
+              "date": "2023-03-21",
+              "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+            },
+            {
+              "title": "37signals datacenter overview",
+              "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+              "publisher": "37signals",
+              "date": "2023-08-10",
+              "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+            }
+          ]
+        }
+      ],
+      "connections": [
+        {
+          "to": "페타바이트를 되찾는다",
+          "via": "계산 다음이 저장이다",
+          "contract": "앱을 되돌린 뒤 청구서에서 가장 큰 항목으로 남은 것이 S3 907,838달러였다 — 다음 사이클이 그것을 옮긴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사지 않고 만든다",
+          "via": "되돌리기를 가능하게 한 습관",
+          "contract": "쿠버네티스 대신 쓴 MRSK 를 직접 만들었다. 도구를 만드는 습관이 없었다면 이 되돌리기의 값이 달라졌을 것이다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Railway(다른 회사)",
+          "via": "쿠버네티스를 버리는 두 방향",
+          "contract": "저쪽은 남에게 파는 플랫폼을 만들려고 자기 금속과 자기 오케스트레이터로 갔고, 여기는 자기 앱만 돌리려고 복잡도가 낮은 도구로 갔다. 같은 거절, 다른 목적이다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Above the Clouds: A Berkeley View of Cloud Computing",
+            "authors": "Michael Armbrust 외",
+            "year": "2009",
+            "venue": "UC Berkeley EECS 기술 보고서",
+            "url": "https://www2.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-28.html",
+            "takeaway": "클라우드가 주는 탄력성과 그 값을 정리한 초기 문헌이다. 부하가 크게 출렁이지 않는 회사에서는 그 탄력성의 값이 이득보다 클 수 있다는 계산이 이 되돌리기의 밑바탕이다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Borg, Omega, and Kubernetes",
+            "authors": "Brendan Burns, Brian Grant, David Oppenheimer, Eric Brewer, John Wilkes",
+            "year": "2016",
+            "venue": "ACM Queue 14(1)",
+            "url": "https://dl.acm.org/doi/10.1145/2898442.2898444",
+            "takeaway": "수많은 팀과 서비스를 한 클러스터에서 돌리려고 만든 계보를 적는다. 그 규모의 문제를 풀려고 생긴 복잡도가, 앱 몇 개를 돌리는 곳에서는 그대로 부담이 된다는 것이 이 회사의 판단이다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Datacenter as a Computer",
+            "authors": "Luiz André Barroso, Urs Hölzle, Parthasarathy Ranganathan",
+            "year": "2018",
+            "venue": "Morgan & Claypool(3판)",
+            "url": "https://www.morganclaypool.com/doi/10.2200/S00874ED3V01Y201809CAC046",
+            "takeaway": "데이터센터를 한 대의 컴퓨터로 보고 전력·냉각·이중화를 설계하는 관점이다. 시설당 40kW 를 캐비닛 넷에 나누고 각 계층에 이중화를 두는 구성이 그 틀 안에 있다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "복잡도의 값은 청구서에 안 찍힌다",
+            "why_hard": "오토스케일러·인그레스 컨트롤러·네트워크 설정을 돌보는 시간은 어디에도 항목으로 나오지 않는다(재구성).",
+            "current_best": "값과 운영을 함께 이유로 적고 나오는 것 — 다만 되돌린 뒤의 운영 부담도 스스로 적어 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "problem": "돌아가면서 서비스를 멈출 수 없다",
+            "why_hard": "옮기는 동안 기존 시스템도 계속 돌아야 하고 팀은 둘 다 안다(재구성).",
+            "current_best": "무중단 요구가 없는 앱부터 옮겨 기반을 만들고 그 방식을 재사용하는 것 — 6주가 2주가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              }
+            ]
+          },
+          {
+            "problem": "어디까지 되돌릴지 정하는 일",
+            "why_hard": "전부 되돌리면 CDN·DNS·CI 까지 떠안게 되고, 덜 되돌리면 의존이 남는다.",
+            "current_best": "항목별 값과 부담을 견줘 CDN·DNS 는 클라우드플레어로, CI 는 깃허브로 남기는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "De-cloud and de-k8s — bringing our apps back home",
+                "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+                "publisher": "37signals",
+                "date": "2023-03-21",
+                "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+              },
+              {
+                "title": "Our cloud spend in 2022",
+                "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+                "publisher": "37signals",
+                "date": "2023-01-13",
+                "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "청구서를 볼 때",
+          "thought": "연 320만 달러다. 그런데 더 큰 문제는 이 여러 플랫폼을 우리가 다 돌봐야 한다는 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "오케스트레이터를 고를 때",
+          "thought": "쿠버네티스는 우리가 겪지 않는 규모의 문제를 푼다. 우리에게는 그 복잡도가 그냥 부담이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "순서를 정할 때",
+          "thought": "무중단 요구가 없는 앱부터 한다. 거기서 만든 것을 다음에 그대로 쓴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "경계를 그을 때",
+          "thought": "CDN 은 66,742달러다. 이건 되돌려서 얻을 게 없다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Our cloud spend in 2022",
+          "url": "https://dev.37signals.com/our-cloud-spend-in-2022/",
+          "publisher": "37signals",
+          "date": "2023-01-13",
+          "summary": "2022년 클라우드 지출을 서비스별로 통째로 공개한 글이다. 합계는 연 3,201,564달러(월 266,797달러)다. 내역은 이렇다 — 파일 저장(S3) 연 907,838달러, 계산(EC2/EKS) 759,983달러, 검색(OpenSearch) 519,959달러, 데이터베이스(RDS) 473,196달러, 캐시(ElastiCache) 123,852달러, CDN(CloudFront) 66,742달러. HEY 한 제품만 연 1,066,150달러다. 2023년에는 많은 서비스와 의존을 클라우드 밖 자기 하드웨어로 옮겨 이 청구서를 크게 줄이겠다고 적는다. 데이터센터는 직접 운영하지 않고 Deft 와 협력하며 지금도 물리 데이터센터 두 곳이 베이스캠프 제품군을 받치고 있다. 연말에 실제로 얼마를 아꼈는지 보고하겠다고 약속한다."
+        },
+        {
+          "title": "De-cloud and de-k8s — bringing our apps back home",
+          "url": "https://dev.37signals.com/bringing-our-apps-back-home/",
+          "publisher": "37signals",
+          "date": "2023-03-21",
+          "summary": "앱 셋(Tadalist·Writeboard·Backpack)을 클라우드에서 자기 데이터센터로 되돌린 기록이다. 이유를 분명히 적는다 — 얻는 것보다 쓰는 것이 많았고, 그것이 값만이 아니라 운영에서도 그랬다. 여러 클라우드 플랫폼(AWS ECS·GKE·EKS)을 함께 다루며 쌓인 복잡도와 기술 부채, 클러스터 오토스케일러·인그레스 컨트롤러·복잡한 네트워크 설정 같은 딸린 시스템들의 부담을 든다. 대신 세운 것은 이렇다. 이미 있던 KVM 기반 위에 컨테이너 오케스트레이션으로 MRSK(뒤에 Kamal)를 골랐다 — 벤더가 받쳐 주는 쿠버네티스 대신 복잡도가 낮은 쪽을 택했다. cloud-init 으로 VM 을 20분쯤 걸리던 것에서 게스트당 60초 미만에 띄우게 만들었고, 로깅은 ELK 로 모았으며, CloudFront 와 Route53 을 클라우드플레어로 바꿔 F5 로드 밸런서 앞에 뒀다. CI/CD 는 Buildkite 에서 GitHub Actions 로 옮기고, 데이터베이스는 Percona MySQL 8 에 cron 기반 백업을 붙였으며, 예약 작업은 Redis 기반 잠금으로, 상태를 갖는 메일 처리에는 NFS 공유 저장소를 뒀다. 걸린 시간은 Tadalist 가 기반을 만들어 운영에 올리기까지 6주 미만, 같은 방식을 재사용한 Writeboard 가 2주 미만, 메일 파이프라인 때문에 복잡했던 Backpack 이 3주쯤이다. 배포 시간은 몇 분에서 대략 1분으로 줄었고 Writeboard 의 데이터베이스 전환은 무중단으로 16분이 걸렸다. 대가도 적는다 — Tadalist 는 무중단 요구가 없어 전환 중 중단을 감수했고, MySQL 과 Postfix 처럼 상태를 갖는 중요한 서비스를 직접 돌리는 책임이 늘었으며, 기존 시스템을 유지하면서 옮기는 팀에게 초반 학습 곡선이 가팔랐다."
+        },
+        {
+          "title": "37signals datacenter overview",
+          "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+          "publisher": "37signals",
+          "date": "2023-08-10",
+          "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출·고객 수·인원을 확인하지 못했다 — 공개된 것은 지출 쪽이고 제품 요금은 각 제품 사이트에 있다.",
-    "클라우드를 나온 뒤 실제로 얼마를 아꼈는지 확인하지 못했다 — 연말에 보고하겠다고 약속한 글은 읽었지만 그 결과 글은 아직 안 읽었다.",
     "S3 이전의 정확한 비용과 절감액이 없다 — 저장 장비에 수십만에서 수백만 달러라는 말만 있다.",
     "ONCE 의 가격과 판매 규모를 확인하지 못했다.",
-    "안 읽은 글 — `Solid Cache`(2023-10-03) · `37signals datacenter overview`(2023-08-10) · `Prometheus metrics`(2023-08-14) · `Introducing Upright`(2026-02-16) · `Rails Multi-Tenancy`(2026-02-13) · `Behind the Fizzy Infrastructure`(2026-02-26) · `The ONCE app server`(2026-04-17).",
-    "시대 구분(eras)을 아직 세우지 않았다 — 2023년 지출 공개와 되돌리기, 2026년 저장 이전으로 연도가 붙은 자료가 여럿이라 확장 사이클에서 세울 수 있을지 본다."
+    "시대 구분(eras)을 아직 세우지 않았다 — 2023년 지출 공개와 되돌리기, 2026년 저장 이전으로 연도가 붙은 자료가 여럿이라 확장 사이클에서 세울 수 있을지 본다.",
+    "되돌린 뒤 실제 절감액을 적은 글을 **블로그 목록에서 찾지 못했다** — 2023년 1월 글이 연말에 보고하겠다고 약속했는데 그 후속 글이 `dev.37signals.com` 목록에 없다. 다른 채널(창업자 개인 글 등)에 있을 수 있으나 확인하지 않았다.",
+    "안 읽은 글 — `Solid Cache`(2023-10-03) · `Prometheus metrics`(2023-08-14) · `Introducing Upright`(2026-02-16) · `Rails Multi-Tenancy`(2026-02-13) · `Behind the Fizzy Infrastructure`(2026-02-26) · `The ONCE app server`(2026-04-17)."
   ],
   "sources": [
     {
@@ -296,6 +911,13 @@
       "publisher": "37signals",
       "date": "2026-01-08",
       "summary": "S3 에서 자기 저장소로 데이터를 통째로 옮긴 기록이다. 규모는 여러 버킷에 걸쳐 10페타바이트(중복 제거하면 5페타바이트), 파일 약 50억 개, 평균 객체 크기 1.1메가바이트다. 옮긴 곳은 데이터센터 두 곳에 놓은 Pure Storage Flashblade 다. 무중단 방법은 이중 쓰기다 — 애플리케이션이 S3 와 새 저장소 양쪽에 쓰는 동안 대조와 검증을 따로 돌리고, 전환은 S3 쪽 이중 쓰기를 끄고 마지막 동기화를 확인한 뒤 버킷 권한을 막아 실수로 쓰이지 않게 하고, 완전함을 확인한 다음에야 지우는 순서다. 시간은 협상한 이전 창이 90일인데 실제 전송은 10일 미만이었고, 그 앞에 몇 달의 계획과 시험이 있었다. 도구는 직접 만들었다 — ActiveJob 과 Solid Queue 로 작업을 지휘하는 Nostos 라는 레일스 앱을 짓고, 실제 전송은 rclone, 인벤토리 분할은 DuckDB, 버킷 목록은 S3 인벤토리 리포트와 S3 Fast List 를 썼다. 값은 구체적인 금액을 밝히지 않고 저장 장비에 수십만에서 수백만 달러의 자본 지출이 들었다는 말과, 협상한 기간 안에 내보내면 대역폭 크레딧을 주는 AWS 의 면제 프로그램이 있었다는 정도로 적는다. 부딪힌 것들을 자세히 적는다 — 작은 버킷에는 초당 5,500 GET 요청이라는 S3 제한이 걸리고, 내보내기에는 AWS 다이렉트 커넥트를 쓸 수 없어 공용 인터넷을 써야 하며, 버킷 목록과 대조에도 API 요청 값이 붙는다. 100기가비트 회선을 깔았는데 80기가비트를 넘게 쓰자 다른 트래픽을 방해하기 시작했다. 대조는 복사 자체보다 자원을 더 먹었고, S3 스냅숏과 실제 상태 사이의 시차 때문에 확신을 얻으려면 동기화를 여러 번 되풀이해야 했다. 자격 증명 관리는 스크립트로는 부족해 비밀 관리와 상태 추적을 위해 레일스로 옮겼다. 저장 매체로 하드디스크도 봤지만 쓰기 속도의 물리적 한계와 고장률 때문에 물렸다 — 플래시는 초당 수십만 건의 메타데이터 연산이 되어 검증을 감당할 수 있었다. 앞으로는 세 곳 체계를 계획한다 — Flashblade 두 대(주 저장소와 대기)에 더해 벤더 종속을 피하려고 다른 벤더 플랫폼 위의 MinIO 를 셋째로 둔다."
+    },
+    {
+      "title": "37signals datacenter overview",
+      "url": "https://dev.37signals.com/37signals-datacenter-overview/",
+      "publisher": "37signals",
+      "date": "2023-08-10",
+      "summary": "자기 데이터센터가 어떻게 생겼는지 적은 글이다. 시설은 버지니아 애시번과 일리노이 시카고 두 곳이고 Deft 가 운영한다(10년 넘게 고객이었다). 각 시설에 48U 캐비닛 네 대씩 모두 여덟 대를 쓰고, 서버는 한 곳에 약 90대씩 모두 180대다 — 1U 와 2U 가 섞여 있고 전부 델 장비다. 전력은 각 시설에 40kW 를 캐비닛 넷에 나눠 캐비닛당 약 10kW 다. 내부 연결은 EVPN/VXLAN 으로 짓고 각 계층에 이중화를 뒀다. 바깥으로는 서로 다른 제공자와 물리적으로 다른 경로로 인터넷·반대편 데이터센터·AWS 에 이어진다. 시카고 시설은 재생 에너지로 돌고 애시번은 해마다 탄소 크레딧을 사야 한다고 적는다. CPU·메모리·디스크 사양은 이 글에 없다."
     }
   ]
 }
