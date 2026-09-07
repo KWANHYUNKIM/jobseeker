@@ -1736,7 +1736,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "타입스크립트에서 데이터베이스를 다루는 계층을 만드는 회사 — 오년 된 러스트 엔진을 스스로 걷어냈다",
       "updated_at": "2026-09-07",
       "domain": "prisma.io"
