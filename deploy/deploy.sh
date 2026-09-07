@@ -76,6 +76,18 @@ if [ -x ./deploy/setup-crawler.sh ]; then
   ./deploy/setup-crawler.sh --reschedule || warn "크롤 스케줄 재등록 실패 — 수동 확인 필요"
 fi
 
+# ── 호스트 서비스 재등록 ───────────────────────────────────
+# 크롤 스케줄과 같은 문제가 8765·8770·8771·8772 에도 있다. launchd 는 등록 당시의
+# 모듈을 계속 돌리므로, 검색 API 를 정본 DB 판으로 바꿔 커밋해도 배포만으로는
+# 서버에서 옛 모듈이 계속 돈다. --reschedule 은 plist 내용이 같으면 아무것도 하지
+# 않으므로(검색을 끊지 않는다) 배포마다 불러도 안전하다.
+#
+# 대시보드가 아예 등록되지 않은 머신(뷰어 전용)에서도 이 스크립트는 venv 가 없으면
+# 스스로 멈춘다. 실패가 뷰어 배포를 막지는 않는다.
+if [ -x ./deploy/setup-dashboards.sh ]; then
+  ./deploy/setup-dashboards.sh --reschedule || warn "대시보드·검색 서비스 재등록 실패 — 수동 확인 필요"
+fi
+
 # ── 빌드 & 기동 ────────────────────────────────────────────
 log "이미지 빌드 및 컨테이너 기동"
 docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
