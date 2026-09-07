@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "render",
+      "name": "렌더",
+      "name_en": "Render",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "제어 평면이 죽어도 이미 도는 것은 살아 있게 만드는 클라우드 — 숨은 의존성을 찾아 갈라 놓고, 상태 전파는 세 번 다시 지었다",
+      "updated_at": "2026-09-07",
+      "domain": "render.com"
+    },
+    {
       "slug": "triggerdev",
       "name": "트리거닷데브",
       "name_en": "Trigger.dev",
@@ -2716,7 +2728,9 @@
     "필터를 그래프 탐색 안으로 들여온다",
     "RAM 을 넘어서는 컬렉션에 계층을 준다",
     "터진 것을 사슬로 공개한다",
-    "연결을 붙들고 있는 값을 깎는다"
+    "연결을 붙들고 있는 값을 깎는다",
+    "라우팅 상태를 전 세계에 퍼뜨린다",
+    "무너져도 도는 것은 돌게 한다"
   ],
   "countries": {
     "KR": "한국",
