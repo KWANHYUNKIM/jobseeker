@@ -17,6 +17,19 @@
     `search.py`(FTS5+벡터 RRF 하이브리드) / `server.py`(검색 API, 8771)
     마감 공고는 색인에 남기되(지난 공고 통계·유사도의 재료) `meta.status` 로 표시해
     검색·추천에서 뺀다. 검색은 `--include-closed` 로 열 수 있다.
+  - `store/` : 정본 DB(PostgreSQL) 접근 계층 — **이관 중이다.** 지금까지 원본은
+    `all_jobs_enriched.json` 한 덩어리였고 키도 제약도 없어서 회사 표기가 갈리고
+    (`(주)클로봇` ≠ `클로봇`) `status` 가 계산 시점에 박제됐다. 스키마와 설계 근거는
+    `db/schema.sql` · `db/README.md`. `conn`(DSN) / `slug`(주소 슬러그 — 규칙 원본은
+    `jd-viewer/src/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
+    백필과 크롤이 같은 함수를 쓴다) / `backfill`(JSON→DB) /
+    `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다) / `export`(DB→뷰어 JSON) /
+    `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate_vectors`(sqlite-vec→pgvector).
+    **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
+    이중 쓰기는 실패해도 사이클을 죽이지 않는다(`DB_DUAL_WRITE=0` 으로 끈다).
+    목록에서 사라진 공고는 지우지 않고 `gone_at` 만 찍되, 그 사이트의 수집량이
+    절반 아래로 떨어지면(`DB_GONE_MIN_RATIO`) 그 처리를 통째로 보류한다 —
+    크롤이 차단당한 것과 공고가 내려간 것은 다르다.
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비).
   화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>`, `/companies/<회사>` 등) —
