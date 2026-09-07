@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "triggerdev",
+      "name": "트리거닷데브",
+      "name_en": "Trigger.dev",
+      "country": "EU",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "터진 것을 사슬로 적고 자기 설계를 '잠재된 책임'이라 부르는 백그라운드 작업 플랫폼 — 연결을 붙드는 값을 깎으려 런타임까지 갈아 치웠다",
+      "updated_at": "2026-09-07",
+      "domain": "trigger.dev"
+    },
+    {
       "slug": "qdrant",
       "name": "큐드런트",
       "name_en": "Qdrant",
@@ -2702,7 +2714,9 @@
     "데이터베이스 안에서 사용자 코드를 트랜잭션으로 돌린다",
     "싼 척하는 원시 연산은 주지 않는다",
     "필터를 그래프 탐색 안으로 들여온다",
-    "RAM 을 넘어서는 컬렉션에 계층을 준다"
+    "RAM 을 넘어서는 컬렉션에 계층을 준다",
+    "터진 것을 사슬로 공개한다",
+    "연결을 붙들고 있는 값을 깎는다"
   ],
   "countries": {
     "KR": "한국",
