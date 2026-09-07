@@ -7,8 +7,8 @@
       "name_en": "Supabase",
       "country": "기타",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "Postgres 를 고치지 않고 그 둘레를 짓는 회사 — 그래서 자기 제품이 무엇을 못 하는지도 같이 적는다",
       "updated_at": "2026-09-07",
       "domain": "supabase.com"
