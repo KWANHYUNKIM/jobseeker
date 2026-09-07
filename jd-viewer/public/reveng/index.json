@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "replicate",
+      "name": "리플리케이트",
+      "name_en": "Replicate",
+      "country": "기타",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "초 단위로 GPU 시간을 파는 회사 — 그래서 모델이 깨어나는 데 걸리는 시간이 곧 원가다",
+      "updated_at": "2026-09-07",
+      "domain": "replicate.com"
+    },
+    {
       "slug": "supabase",
       "name": "수파베이스",
       "name_en": "Supabase",
@@ -2549,7 +2561,9 @@
     "모더레이션을 한 겹의 권한이 아니라 층으로 쌓는다",
     "플랫폼이 주는 입력을 그대로 흘려보내지 않는다",
     "Postgres 를 고치지 않고 그 둘레를 짓는다",
-    "같은 데이터를 보내는 두 길을 갈라 놓는다"
+    "같은 데이터를 보내는 두 길을 갈라 놓는다",
+    "모델이 깨어나는 시간을 줄인다",
+    "속도를 위해 바뀐 출력의 값을 치른다"
   ],
   "countries": {
     "KR": "한국",
