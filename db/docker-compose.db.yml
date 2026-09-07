@@ -1,0 +1,53 @@
+# jobseeker 정본 DB — PostgreSQL + pgvector
+#
+#   기동:  docker compose -f db/docker-compose.db.yml up -d
+#   적용:  psql "$JOBSEEKER_DSN" -f db/schema.sql
+#   접속:  postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobseeker
+#
+# 포트는 5433 — 로컬에 다른 Postgres 가 떠 있어도 안 겹치게.
+# 127.0.0.1 로 묶는다. 이 DB 는 크롤 파이프라인과 검색 API 만 쓰는 내부 저장소라
+# LAN 에 열 이유가 없다(뷰어는 nginx 가 정적 JSON 을 서빙한다).
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: jobseeker-db
+    environment:
+      POSTGRES_DB: jobseeker
+      POSTGRES_USER: jobseeker
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobseeker}
+      # 한국어 정렬·대소문자 처리를 위해 UTF-8 로 초기화한다.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - jobseeker_pgdata:/var/lib/postgresql/data
+      # 컨테이너를 처음 만들 때 스키마를 자동 적용한다. 이미 데이터가 있으면 건너뛴다.
+      - ./schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+    # ── 8GB M1 튜닝 ────────────────────────────────────────────────
+    # Playwright 크롤과 Ollama 임베딩이 이미 메모리를 다툰다. 17,584행짜리
+    # DB 라 넉넉히 줄 이유가 없고, 뺏기면 크롤이 컨텍스트 할당에 실패한다.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - work_mem=16MB
+      # HNSW 인덱스 빌드가 여기를 쓴다. 1024차원 × 17k 행이면 이 정도로 충분하다.
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - max_connections=40
+      - -c
+      - effective_cache_size=1GB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobseeker -d jobseeker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  jobseeker_pgdata:

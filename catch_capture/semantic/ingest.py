@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Iterator
@@ -26,91 +25,17 @@ from .config import (
     BLOG_CONTENT_DIR,
     BLOGS_JSON,
     JOBS_JSON,
-    MAX_EMBED_CHARS,
 )
 
-# 섹션 하나가 입력 전체를 먹어치우지 않게 잘라 쓰는 상한.
-SECTION_CHARS = 700
-
-_MD_IMAGE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
-_MD_LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
-_CODE_FENCE = re.compile(r"```.*?```", re.S)
-_WS = re.compile(r"[ \t]+")
-_BLANKS = re.compile(r"\n{3,}")
+# 임베딩 입력 텍스트를 만드는 규칙은 semantic/text.py 가 소유한다 — 저장소(SQLite/
+# PostgreSQL)에 의존하지 않아야 두 경로가 같은 텍스트, 같은 content_hash 를 만든다.
+# job_embed_text/post_embed_text 는 기존 호출부(dashboard, 테스트)를 위해 재수출한다.
+from .text import as_list as _as_list  # noqa: E402
+from .text import job_embed_text, post_embed_text  # noqa: E402,F401
 
 
 def doc_id(url: str) -> str:
     return hashlib.sha1(url.encode("utf-8")).hexdigest()[:16]
-
-
-def _as_list(v: Any) -> list[str]:
-    """tech_stack 등은 보통 list 지만 문자열로 굳어 들어온 스냅샷도 있다."""
-    if isinstance(v, list):
-        return [str(x) for x in v if x]
-    if isinstance(v, str) and v.strip():
-        s = v.strip()
-        if s.startswith("["):
-            try:
-                parsed = json.loads(s.replace("'", '"'))
-                if isinstance(parsed, list):
-                    return [str(x) for x in parsed if x]
-            except Exception:
-                pass
-        return [s]
-    return []
-
-
-def _clean(text: Any, limit: int | None = None) -> str:
-    s = str(text or "").strip()
-    if not s:
-        return ""
-    s = _CODE_FENCE.sub(" ", s)
-    s = _MD_IMAGE.sub("", s)
-    s = _MD_LINK.sub(r"\1", s)
-    s = _WS.sub(" ", s)
-    s = _BLANKS.sub("\n\n", s)
-    s = s.strip()
-    if limit and len(s) > limit:
-        s = s[:limit].rstrip() + "…"
-    return s
-
-
-def job_embed_text(job: dict) -> str:
-    """공고 임베딩 입력. 복지/전체 JD 원문은 뺀다 — 변별력 대비 길이만 늘린다."""
-    tech = ", ".join(_as_list(job.get("tech_stack")))
-    head = [job.get("title") or ""]
-    facts = [job.get("company"), job.get("career"), job.get("location")]
-    head.append(" | ".join(f for f in facts if f))
-    if tech:
-        head.append(f"기술스택: {tech}")
-    parts = [p for p in head if p.strip()]
-    for label, key in (
-        ("주요업무", "main_tasks"),
-        ("자격요건", "qualifications"),
-        ("우대사항", "preferences"),
-    ):
-        body = _clean(job.get(key), SECTION_CHARS)
-        if body:
-            parts.append(f"[{label}]\n{body}")
-    return _clean("\n".join(parts), MAX_EMBED_CHARS)
-
-
-def post_embed_text(post: dict, content: str | None) -> str:
-    """블로그 글 임베딩 입력. 번역본(content_ko)이 있으면 그쪽을 우선한다."""
-    parts = [post.get("title") or ""]
-    facts = [post.get("company"), post.get("country")]
-    tags = _as_list(post.get("tech_stack")) + _as_list(post.get("categories"))
-    if tags:
-        facts.append(", ".join(dict.fromkeys(tags)))
-    joined = " | ".join(f for f in facts if f)
-    if joined:
-        parts.append(joined)
-    summary = _clean(post.get("summary"), SECTION_CHARS)
-    if summary:
-        parts.append(summary)
-    if content:
-        parts.append(_clean(content, MAX_EMBED_CHARS))
-    return _clean("\n".join(p for p in parts if p.strip()), MAX_EMBED_CHARS)
 
 
 def _load_json(path: Path) -> Any:

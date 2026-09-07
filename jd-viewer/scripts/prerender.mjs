@@ -137,11 +137,30 @@ function page({ path, title, description, body, jsonLd, robots }) {
 }
 
 let written = 0
+let skipped = 0
+const skippedSamples = []
+
+// 파일 이름으로 못 쓰는 글자. 해외 보드·ATS 의 공고 번호에는 콜론이 들어간다
+// (`remoteok:1135014`, `ashby:Perplexity:598e…`) — 484건. macOS·리눅스는 콜론을
+// 파일 이름에 허용하지만 Windows 는 못 쓴다.
+const UNSAFE_PATH = /[:*?"<>|]/
+
 function write(path, html) {
   // 주소는 퍼센트 인코딩된 형태(/companies/%EC%BF%A0%ED%8C%A1)지만 파일은 원문 이름으로
   // 깐다 — nginx 는 요청 URI 를 디코딩한 뒤 파일을 찾기 때문이다. 인코딩된 이름으로
   // 깔면 nginx 에서만 조용히 안 잡혀 SPA 폴백으로 새고, 프리렌더가 무용지물이 된다.
-  const dir = join(DIST, path === '/' ? '' : decodeURIComponent(path))
+  const decoded = path === '/' ? '' : decodeURIComponent(path)
+
+  // 이름을 바꿔서 깔면 안 된다 — 파일 이름이 곧 주소라, 다듬는 순간 앱이 만드는
+  // 주소와 어긋나 어차피 안 잡힌다. 그래서 그 주소만 건너뛴다. 프리렌더가 없어도
+  // SPA 폴백으로 화면은 정상이고, 잃는 것은 미리보기 봇용 메타뿐이다.
+  if (process.platform === 'win32' && UNSAFE_PATH.test(decoded)) {
+    skipped += 1
+    if (skippedSamples.length < 3) skippedSamples.push(path)
+    return
+  }
+
+  const dir = join(DIST, decoded)
   mkdirSync(dir, { recursive: true })
   writeFileSync(join(dir, 'index.html'), html)
   written += 1
@@ -581,6 +600,15 @@ if (SITE_URL) {
   writeFileSync(
     join(DIST, 'robots.txt'),
     `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+  )
+}
+
+if (skipped) {
+  console.log(
+    `[prerender] ⚠ Windows 에서 파일 이름으로 못 쓰는 주소 ${skipped}개를 건너뜁니다 ` +
+      `(예: ${skippedSamples.join(', ')}).\n` +
+      `[prerender]   화면은 SPA 폴백으로 정상이고, 미리보기 봇용 정적 메타만 빠집니다. ` +
+      `배포용 빌드는 macOS·리눅스에서 하세요.`,
   )
 }
 

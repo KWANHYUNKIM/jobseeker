@@ -15,8 +15,11 @@ from __future__ import annotations
 
 import json
 import re
-import unicodedata
+import sys as _sys
 from pathlib import Path
+
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from normalize import company as _normalize_company  # noqa: E402
 
 _COMPANIES_JSON = Path(__file__).parent / "companies.json"
 
@@ -54,15 +57,10 @@ _FALLBACK_MID: list[str] = [
 ]
 
 
-def _norm_company(name: str) -> str:
-    """비교용 정규화: 소문자 + 공백/괄호/특수문자 제거."""
-    if not name:
-        return ""
-    s = unicodedata.normalize("NFKC", name)
-    s = s.lower()
-    s = re.sub(r"\(주\)|주식회사|㈜|inc\.?|co\.?,?\s*ltd\.?|corp\.?|corporation|ltd\.?", "", s)
-    s = re.sub(r"[\s\-_().,&/]+", "", s)
-    return s
+# 회사명 정규화 규칙은 catch_capture/normalize.py 하나다. 여기서 다시 쓰면
+# store 쪽 구현과 두 벌이 되고, 그게 회사가 갈리는 결함의 뿌리였다.
+# 기존 호출부(crawl_company, sort_companies, semantic/similar)를 위해 이름은 그대로 둔다.
+_norm_company = _normalize_company
 
 
 _LARGE_LIST_JSON, _MID_LIST_JSON = _load_companies_from_json()

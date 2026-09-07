@@ -126,13 +126,35 @@ async def collect_search_cards(page, keyword: str, max_pages: int) -> list[dict]
     return all_jobs
 
 
+# 카드 메타 한 칸에 들어갈 만한 길이. 이보다 길면 공고 제목이나 본문 한 줄이
+# 흘러들어온 것이다("[국비최대무료/기숙사무료/취업연계]AI/빅데이터/풀스택/KDT단기심화").
+META_MAX = 20
+
+# 길이만으로는 부족하다. "프리랜서 Java 백엔드 개발자 모집"(19자)처럼 짧은 제목은
+# 키워드로 시작하고 길이도 통과한다. 메타 칸에는 절대 안 들어가는 낱말로 한 겹 더 건다.
+# 마감 칸에는 적용하지 않는다 — "채용시 마감"이 정상 값이다.
+TITLEISH = re.compile(r"채용|모집|개발자|엔지니어|인재|담당자|Pool", re.I)
+
+
 def parse_raw_meta(raw_text: str) -> dict:
-    """카드 raw_text에서 위치/경력/학력/고용형태/마감 추정."""
+    """카드 raw_text에서 위치/경력/학력/고용형태/마감 추정.
+
+    **줄이 값을 담고 있기만 하면 안 되고, 값 자체여야 한다.** 예전 규칙은 키워드가
+    줄 안 어디에 있기만 하면 그 줄 전체를 값으로 썼다. 그래서 제목에 '단기'가 든
+    'KDT단기심화' 공고는 제목이 통째로 고용형태 칸에 들어앉았고, 실제로 고용형태가
+    채워진 242건 중 225건(92%)이 그런 쓰레기였다 — 217건은 제목과 글자 하나까지 같았다.
+    경력도 3,398건 중 704건(20%), 학력도 71건 중 17건이 같은 꼴이었다.
+
+    근무지(re_loc)는 이미 같은 이유로 `^` 앵커가 붙어 있었다. 나머지 세 칸에도
+    같은 규칙을 적용한다 — 줄 **머리**에서 시작하고 메타 칸 길이를 넘지 않을 것.
+    못 잡으면 빈 칸으로 둔다. 틀린 값보다 빈 값이 낫다.
+    """
     out = {"location": "", "career": "", "education": "", "employment": "", "deadline": ""}
     lines = [s.strip() for s in raw_text.splitlines() if s.strip()]
-    re_career = re.compile(r"신입|경력|인턴|경력무관")
-    re_emp = re.compile(r"정규직|계약직|인턴|파견|프리랜서|단기|아르바이트")
-    re_edu = re.compile(r"학력|대졸|대학원|고졸|초대졸|석사|박사|학사|학력무관")
+    re_career = re.compile(r"^(신입|경력|인턴|경력무관)")
+    re_emp = re.compile(r"^(정규직|계약직|인턴|파견|프리랜서|단기|아르바이트|위촉직|"
+                        r"전문연구요원|산업기능요원|병역특례)")
+    re_edu = re.compile(r"^(학력|대졸|대학원|대학|고졸|초대졸|석사|박사|학사)")
     # 시도로 **시작하는** 줄만 근무지로 본다. 예전 규칙은 시도 이름이 줄 안 어디에
     # 있기만 하면 잡아서, "[울산] 제조 시스템 개발자 모집" 같은 공고 제목이 근무지
     # 칸에 들어앉았다(그런 공고가 87건 있었다). 못 잡으면 빈 칸으로 두고,
@@ -141,17 +163,64 @@ def parse_raw_meta(raw_text: str) -> dict:
     re_loc = re.compile(r"^(서울|경기|인천|부산|대구|광주|대전|울산|세종|강원|충북|충남|전북|전남|경북|경남|제주)")
     re_dday = re.compile(r"^D-|채용시|상시|마감|~\d+/\d+")
     for s in lines:
-        if not out["career"] and re_career.search(s):
+        # 메타 칸에 들어갈 수 없는 길이면 어느 칸에도 넣지 않는다. 마감 표기만
+        # 예외다 — "~ 06/14(일) 23시 마감" 처럼 길어질 수 있고 파서가 따로 흡수한다.
+        short = len(s) <= META_MAX and not TITLEISH.search(s)
+        if not out["career"] and short and re_career.match(s):
             out["career"] = s
-        elif not out["employment"] and re_emp.search(s):
+        elif not out["employment"] and short and re_emp.match(s):
             out["employment"] = s
-        elif not out["education"] and re_edu.search(s):
+        elif not out["education"] and short and re_edu.match(s):
             out["education"] = s
         elif not out["deadline"] and re_dday.search(s):
             out["deadline"] = s
-        elif not out["location"] and re_loc.search(s):
+        elif not out["location"] and short and re_loc.match(s):
             out["location"] = s
     return out
+
+
+def _selftest() -> int:
+    """`python -m crawlers.crawl_jobkorea --selftest` — 메타 칸 오염 회귀 방지.
+
+    아래 '거부' 항목은 전부 실제 데이터에서 그 칸에 들어앉아 있던 값이다.
+    """
+    ok_cases = [
+        ("정규직", "employment"), ("정규직/계약직", "employment"),
+        ("정규직(수습 3개월)", "employment"), ("병역특례", "employment"),
+        ("신입", "career"), ("경력3년↑", "career"), ("경력무관", "career"),
+        ("신입 지원 가능", "career"), ("신입·경력", "career"),
+        ("학력무관", "education"), ("대졸이상", "education"),
+        ("석사 이상 (전공 무관)", "education"),
+        ("서울 강남구", "location"), ("경기 성남시 분당구", "location"),
+    ]
+    reject = [
+        "[국비최대무료/기숙사무료/취업연계]AI/빅데이터/풀스택/KDT단기심화",
+        "[아이모비] 웹 풀스택 개발자(정규직/신입)",
+        "SK하이닉스(SK Hynix) React/Java 개발자(정규직/계약직/프리랜서) 채용",
+        "㈜서일엔지니어링 2026년 정규직 채용(웹 개발자 프론트엔드/백엔드)",
+        "SI 및 웹 개발자 채용(프리랜서)",
+        "[ICB] 기업부설연구소 시스템엔지니어 정규직(5년 이상) 채용",
+        "정보보안솔루션 경력개발자",
+        "PC 애플리케이션 개발자 모집(경력직)",
+        "수습기간 3개월, 수습기간 근무평가 후, 정규직으로 채용",
+        "대학(2,3년) 이상 (졸업 예정자 가능) 소프트웨어 공학, 컴퓨터 공학 등 관련학과 전공자",
+        "[울산] 제조 시스템 개발자 모집",
+    ]
+    failed = 0
+    for text, field in ok_cases:
+        got = parse_raw_meta(text)
+        if got.get(field) != text:
+            failed += 1
+            print(f"FAIL 받아들여야 함 {text!r} → {field}, 실제 {got}")
+    for text in reject:
+        got = parse_raw_meta(text)
+        dirty = {k: v for k, v in got.items() if v and k != "deadline"}
+        if dirty:
+            failed += 1
+            print(f"FAIL 거부해야 함 {text[:40]!r} → {dirty}")
+    total = len(ok_cases) + len(reject)
+    print(f"crawl_jobkorea selftest: {total - failed}/{total} 통과")
+    return 1 if failed else 0
 
 
 DETAIL_URL = "https://www.jobkorea.co.kr/Recruit/GI_Read/{gno}"
@@ -369,4 +438,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        raise SystemExit(_selftest())
     main()
