@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "kakaopay",
+      "name": "카카오페이",
+      "name_en": "Kakao Pay",
+      "country": "KR",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "'모름'을 1급 상태로 두고 사람의 대사까지 설계에 넣는 결제 회사 — 레거시를 바꿀 때는 처리량 20%를 내주고 안전을 산다",
+      "updated_at": "2026-09-07",
+      "domain": "kakaopay.com"
+    },
+    {
       "slug": "banksalad",
       "name": "뱅크샐러드",
       "name_en": "Banksalad",
@@ -2744,7 +2756,9 @@
     "라우팅 상태를 전 세계에 퍼뜨린다",
     "무너져도 도는 것은 돌게 한다",
     "락으로 막지 않고 도메인 성질로 넘긴다",
-    "비용을 옮기면 다른 비용이 올라온다"
+    "비용을 옮기면 다른 비용이 올라온다",
+    "모르는 상태를 1급으로 다룬다",
+    "운영을 멈추지 않고 레거시를 바꿔치운다"
   ],
   "countries": {
     "KR": "한국",
