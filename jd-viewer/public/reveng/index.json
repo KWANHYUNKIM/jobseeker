@@ -8,7 +8,7 @@
       "country": "기타",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "Postgres 안에서 시계열을 하는 회사 — 그래서 지난 시각을 달고 뒤늦게 도착한 데이터를 무엇까지 다시 계산할지가 문제가 된다",
       "updated_at": "2026-09-07",
       "domain": "tigerdata.com"
