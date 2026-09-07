@@ -120,14 +120,20 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="넣지 않고 집계만")
     ap.add_argument("--truncate", action="store_true", help="기존 내용을 비우고 적재")
     ap.add_argument("--limit", type=int, help="앞에서 N건만 (시험용)")
+    # 다른 머신이 모아 둔 크롤 결과를 이 DB 로 합칠 때 쓴다. 공고의 정체성은
+    # URL 이라 같은 공고는 그대로 겹쳐 쓰이고, 그쪽에만 있던 것이 새로 들어온다.
+    # 이 파일이 뷰어가 읽는 JSON 을 대신하지는 않는다 — DB 에만 넣는다.
+    ap.add_argument("--file", type=_Path, default=ENRICHED,
+                    help=f"읽을 공고 JSON (기본: {ENRICHED})")
     args = ap.parse_args()
 
-    if not ENRICHED.exists():
-        print(f"입력이 없다: {ENRICHED}")
+    src = args.file
+    if not src.exists():
+        print(f"입력이 없다: {src}")
         return 1
 
-    print(f"읽는 중: {ENRICHED.name} ({ENRICHED.stat().st_size // (1024*1024)}MB)")
-    jobs = json.loads(ENRICHED.read_text(encoding="utf-8"))
+    print(f"읽는 중: {src.name} ({src.stat().st_size // (1024*1024)}MB)")
+    jobs = json.loads(src.read_text(encoding="utf-8"))
     if args.limit:
         jobs = jobs[: args.limit]
     print(f"  공고 {len(jobs):,}건")
