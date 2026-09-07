@@ -1951,8 +1951,8 @@
       "name_en": "Metabase",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "남의 데이터베이스에 질의를 대신 보내는 BI 도구 — 그래서 신뢰할 수 없는 입력이 SQL 이 되는 자리가 이 제품의 급소다",
       "updated_at": "2026-09-07",
       "domain": "metabase.com"
