@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "mapbox",
+      "name": "맵박스",
+      "name_en": "Mapbox",
+      "country": "기타",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "지도를 남의 기기에서 그리게 하는 회사 — 그래서 프레임 시간과 번들 크기가 곧 상품성이다",
+      "updated_at": "2026-09-07",
+      "domain": "mapbox.com"
+    },
+    {
       "slug": "mozilla",
       "name": "모질라",
       "name_en": "Mozilla",
@@ -2605,7 +2617,8 @@
     "청크가 늘어도 계획이 무거워지지 않게 한다",
     "미리 계산해 둔 집계를 늦게 온 데이터와 화해시킨다",
     "오래 묵은 코드에서 잠복 취약점을 찾아낸다",
-    "남이 우리 안에 들어오는 것을 막되 대신할 길을 준다"
+    "남이 우리 안에 들어오는 것을 막되 대신할 길을 준다",
+    "클라이언트 기기에서 치르는 값을 줄인다"
   ],
   "countries": {
     "KR": "한국",
