@@ -1920,6 +1920,18 @@
       "one_liner": "납땜을 거절해서 파는 회사 — 업그레이드를 지키려고 속도와 용량을 얼마나 내주는지까지 적는다",
       "updated_at": "2026-09-07",
       "domain": "frame.work"
+    },
+    {
+      "slug": "deepgram",
+      "name": "딥그램",
+      "name_en": "Deepgram",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "말이 끝나기 전에 소리를 내보내는 음성 API — 그러려고 문맥을 5~20배 적게 보는 값을 먼저 적는다",
+      "updated_at": "2026-09-07",
+      "domain": "deepgram.com"
     }
   ],
   "domains": [
@@ -2398,7 +2410,8 @@
     "네이티브처럼 보이게 만든다",
     "터미널 코어를 떼어 남에게 준다",
     "몇 주씩 켜 두는 프로그램의 메모리를 지킨다",
-    "납땜을 거절하고 그 값을 적는다"
+    "납땜을 거절하고 그 값을 적는다",
+    "말이 끝나기 전에 소리를 내보낸다"
   ],
   "countries": {
     "KR": "한국",
