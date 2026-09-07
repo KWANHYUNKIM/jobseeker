@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "deepl",
+      "name": "딥엘",
+      "name_en": "DeepL",
+      "country": "EU",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "번역을 파는 회사인데, 어려운 자리는 문장이 아니라 그 문장이 놓인 문서의 생김새와 잘했는지 누가 채점하느냐다",
+      "updated_at": "2026-09-07",
+      "domain": "deepl.com"
+    },
+    {
       "slug": "cursor",
       "name": "Cursor",
       "name_en": "Cursor",
@@ -2437,7 +2449,10 @@
     "납땜을 거절하고 그 값을 적는다",
     "말이 끝나기 전에 소리를 내보낸다",
     "소스에서 목적지로 옮기는 길을 짧게 만든다",
-    "신뢰할 수 없는 입력이 SQL 이 되는 것을 막는다"
+    "신뢰할 수 없는 입력이 SQL 이 되는 것을 막는다",
+    "문서의 생김새를 지키면서 번역한다",
+    "모델이 자기 번역을 자기가 채점하지 못하게 한다",
+    "정밀도를 깎아서 처리량을 산다"
   ],
   "countries": {
     "KR": "한국",
