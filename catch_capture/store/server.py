@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys as _sys
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -214,7 +215,11 @@ def serve(host: str, port: int) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="검색 API (정본 DB)")
-    ap.add_argument("--host", default="127.0.0.1")
+    # SEARCH_HOST=0.0.0.0 으로 연다 — ops/stats 의 OPS_HOST·DASH_HOST 와 같은 규약이고,
+    # setup-dashboards.sh 가 plist 에 이 이름으로 넣는다. 이걸 안 보면 launchd 로 뜬
+    # 서버가 loopback 에만 붙어서, 뷰어 nginx 컨테이너가 host.docker.internal 로
+    # 프록시하는 /api/ 가 전부 502 가 된다(semantic.server 는 이미 이렇게 읽는다).
+    ap.add_argument("--host", default=os.environ.get("SEARCH_HOST", "127.0.0.1"))
     ap.add_argument("--port", type=int, default=DEFAULT_PORT)
     args = ap.parse_args()
     try:
