@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Electric** (ElectricSQL) | 기타 · SaaS | 프로파일 완료(2026-09-07). **법인 소재지가 홈에 없어 국가를 `기타` 로 뒀다**(© 2026 Electric DB Inc. 만 있다). 도메인 둘 — 읽기를 데이터베이스 밖으로 밀어낸다 · 내구성을 커널 속도로 만든다. 확보한 자료 — Durable Streams(2026-06-26: fsync + 그룹 커밋 WAL · sendfile/splice · 4vCPU 에 초당 86만 append · 메모리 515MB) · 데이터브릭스 합류(2026-08-11: **Electric Cloud 는 접는다**, 오픈소스는 Apache 2.0 유지, PGlite 주 1,300만 다운로드) · 홈(동시 독자 100만+ · 캐시 적중 99% · 부하 평평). **⚠️ 주장들의 측정 조건이 없다.** 다음에 읽을 것 — `Electric 1.1 새 저장 엔진(쓰기 100배)` · PGlite · Electric Circuits(2026-07-17). |
+| **Electric** (ElectricSQL) | 기타 · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 읽기를 데이터베이스 밖으로 밀어낸다(`serve-reads-from-immutable-chunks`, 연표 1세대). 빈 도메인 하나 — 내구성을 커널 속도로 만든다(Durable Streams 글 확보: fsync + 그룹 커밋 WAL · sendfile/splice · 86만 append/s). **⚠️ 법인 소재지가 홈에 없어 국가는 `기타`. 클라우드는 데이터브릭스 합류와 함께 접는다.** 안 읽은 글 — PGlite · Electric Circuits(2026-07-17) · Electric Agents 0.6. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
