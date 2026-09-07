@@ -1855,8 +1855,8 @@
       "name_en": "SourceHut",
       "country": "EU",
       "category": "기타",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "자바스크립트도 추적도 AI 기능도 없는 개발 포지 — 무너졌을 때 170시간을 통째로 적어 내는 쪽이다",
       "updated_at": "2026-09-07",
       "domain": "sourcehut.org"
