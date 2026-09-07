@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "tigerdata",
+      "name": "타이거데이터",
+      "name_en": "TigerData",
+      "country": "기타",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "Postgres 안에서 시계열을 하는 회사 — 그래서 지난 시각을 달고 뒤늦게 도착한 데이터를 무엇까지 다시 계산할지가 문제가 된다",
+      "updated_at": "2026-09-07",
+      "domain": "tigerdata.com"
+    },
+    {
       "slug": "redpanda",
       "name": "레드판다",
       "name_en": "Redpanda",
@@ -2577,7 +2589,9 @@
     "모델이 깨어나는 시간을 줄인다",
     "속도를 위해 바뀐 출력의 값을 치른다",
     "보장을 토픽마다 고르게 한다",
-    "교차 AZ 비용을 오브젝트 스토리지로 옮긴다"
+    "교차 AZ 비용을 오브젝트 스토리지로 옮긴다",
+    "청크가 늘어도 계획이 무거워지지 않게 한다",
+    "미리 계산해 둔 집계를 늦게 온 데이터와 화해시킨다"
   ],
   "countries": {
     "KR": "한국",
