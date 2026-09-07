@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Deno** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 둘 다 비어 있다 — 남의 코드를 엣지에서 돌린다(`anatomy-isolate-cloud` 2022-09-27 확보) · 모듈을 어디서 가져올지 정한다(`http-imports` 2024-07-29 회고 확보). 안 읽은 것 — Subhosting 보안·격리(2023-11-27, Val Town 과 견줄 자리) · Deno KV 내부(2023-09-14) · 언어 서버 10배(2024-06-20) · JSR(2024-04-12) · 값 페이지. ⚠️ 심층 글이 2022~2024년에 몰려 있다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Deno** | US · SaaS | Val Town 의 런타임이 바로 이 회사 제품이라 **부품이 된 회사**를 반대편에서 볼 수 있다. `deno.com/blog` 에 자기 시스템 글이 있다 — `What we got wrong about HTTP imports`(2024-07-29, 설계를 되짚는 회고) · `The Anatomy of an Isolate Cloud`(2022-09-27, Deploy 인프라) · `How security and tenant isolation allows Deno Subhosting to run untrusted code securely`(2023-11-27, 발타운의 격리 이야기와 정면으로 견줄 자리) · `Building Deno KV internals`(2023-09-14, FoundationDB 선택) · `How We Made the Deno Language Server Ten Times Faster`(2024-06-20, 자동완성 6~8초 → 1초 미만) · `How we built JSR`(2024-04-12). ⚠️ **최신성이 약하다** — 심층 글이 2022~2024년에 몰려 있고 2026년 글은 릴리스 위주다(최신 2026-06-25 Deno 2.9). 팔 때 그 사정을 프로파일에 적는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
