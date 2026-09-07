@@ -7,8 +7,8 @@
       "name_en": "Render",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "제어 평면이 죽어도 이미 도는 것은 살아 있게 만드는 클라우드 — 숨은 의존성을 찾아 갈라 놓고, 상태 전파는 세 번 다시 지었다",
       "updated_at": "2026-09-07",
       "domain": "render.com"
