@@ -1748,7 +1748,7 @@
       "country": "US",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "지도를 서버 없이 파일 하나로 만드는 오픈소스 — 타일 서버를 세우는 대신 객체 저장소에 올려 두고 범위 요청으로 읽는다",
       "updated_at": "2026-09-07",
       "domain": "protomaps.com"
