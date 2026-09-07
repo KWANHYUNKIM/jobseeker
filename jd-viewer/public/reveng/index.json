@@ -1687,8 +1687,8 @@
       "name_en": "Val Town",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "브라우저에서 짠 조각 코드를 그 자리에서 돌려 주는 회사 — 남의 코드를 안전하게 실행하는 방법을 네 번 갈아엎었다",
       "updated_at": "2026-09-07",
       "domain": "val.town"
