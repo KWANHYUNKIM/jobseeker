@@ -13,3 +13,6 @@ trafilatura>=1.12
 # crawl_techblog 의 한국어 번역 — 없으면 영어 글은 본문 파일이 아예 안 만들어진다.
 # 패키지 이름은 하이픈, import 는 언더스코어(deep_translator).
 deep-translator>=1.11
+# 정본 DB(PostgreSQL) 접근 — store/ 전부와 8771 검색 API 가 이걸 쓴다.
+# 없으면 store.server 가 기동 즉시 죽고 setup-dashboards.sh 가 SQLite 판으로 되돌린다.
+psycopg[binary]>=3.2
