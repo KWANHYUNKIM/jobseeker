@@ -1699,8 +1699,8 @@
       "name_en": "AuthZed",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "구글 잔지바 계열의 권한 시스템을 오픈소스로 만들어 파는 회사 — 누가 무엇을 할 수 있는지를 서비스마다 따로 묻지 않게 한다",
       "updated_at": "2026-09-07",
       "domain": "authzed.com"
