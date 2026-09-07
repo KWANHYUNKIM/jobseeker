@@ -199,15 +199,46 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 1. 백필 | `catch_capture/store/backfill.py` | ✅ 17,067건 적재 완료 |
 | 3. 정본 교체 | `catch_capture/store/export.py` | ✅ `--check` 로 기존 JSON 과 대조됨 |
 | 2. 이중 쓰기 | `catch_capture/store/ingest_crawl.py` | ✅ aggregate 에 연결·4개 시나리오 검증 |
-| 4. 벡터 이관 | `catch_capture/store/migrate_vectors.py` | ⚠️ 코드만 — 맥에서 실행 필요 |
-| 임베딩 | `catch_capture/store/embed.py` | ⚠️ 코드만 — Ollama 필요 |
-| 유사 공고 | `catch_capture/store/similar.py` | ✅ SQL 검증(합성 벡터 17k) |
+| 4. 벡터 이관 | `catch_capture/store/migrate_vectors.py` | ⚠️ 코드·테스트만 — 맥에서 실행 필요 |
+| 임베딩 | `catch_capture/store/embed.py` | ✅ 실제 Ollama 로 300건 검증 |
+| 유사 공고 | `catch_capture/store/similar.py` | ✅ 실제 벡터로 추천 품질까지 확인 |
 | 검색 | `catch_capture/store/search.py` | ✅ FTS·RRF·마감제외 검증 |
 
 | 블로그 글 적재 | `catch_capture/store/ingest_posts.py` | ✅ 1,063건 (회사 연결 282) |
+| 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 · 백과사전 16 · 링크 84 |
+| 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
 임베딩 입력 텍스트는 `semantic/text.py` 로 떼어내 SQLite·PostgreSQL 두 경로가 공유한다.
+
+### 서비스 연결 — 8771 검색 API
+
+`store/server.py` 가 `semantic/server.py` 를 대체한다. **응답 형식은 한 글자도 바뀌지
+않는다** — 뷰어의 `useHybridSearch.ts` 가 읽는 필드 그대로라 화면 쪽은 고칠 데가 없다.
+
+```
+GET /api/search?q=재택+백엔드&kind=job&limit=20&include_closed=0
+GET /api/health
+```
+
+`/api/health` 가 벡터 상태를 말해 준다(`vector_search: false` 면 FTS 로만 도는 중이다).
+Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도 도는 편이 통째로 실패하는
+것보다 낫고, 대신 그 사실을 health 가 드러낸다.
+
+**띄울 때 출력을 파이프로 자르지 말 것.** `python -m store.server | head -6` 처럼 쓰면
+6줄 뒤 파이프가 닫히면서 이후 모든 쓰기가 BrokenPipe 가 되고 요청 처리 스레드가
+조용히 죽는다(health 는 되는데 search 만 무응답인 모양으로 나타난다). 실제로 그렇게
+30분을 썼다. `launchd`/`nohup` 으로 파일에 직접 리다이렉트할 것.
+
+### 엔진 산출물 색인
+
+`engine/`·`guide-engine/`·`study-engine/` 이 쓴 JSON 본문은 **파일로 둔다**(사람이 쓴 글,
+git 리뷰 대상). DB 에는 무엇이 무엇에 붙어 있는지만 넣어 `validate.py --gaps` 를 SQL
+한 줄로 만든다. `store.ingest_engines` 가 채우고, `guide_gap`·`study_gap` 뷰가 답한다.
+
+역설계 61곳 중 15곳만 이어진다 — 나머지는 넷플릭스·유튜브처럼 우리 공고에 없는 해외
+회사라 `company` 행이 없다. 공고 0인 회사에 행을 만들면 gap 질의가 거짓말을 하므로
+일부러 건너뛴다. 뷰어는 그 문서를 파일에서 바로 읽으므로 화면은 멀쩡하다.
 
 ### 검사 — `python -m store.selftest`
 
@@ -244,6 +275,29 @@ status 가 달라진 공고: active → closed 1,842건 (전부 status_source=de
 
 1,842건은 파일이 구워진 뒤 마감일이 지난 공고다. 지금까지 화면에 '모집중'으로 남아
 있던 것이고, 이제는 파일을 다시 뽑을 때마다 그 시점 기준으로 다시 판정된다.
+
+### 운영(맥)에는 벡터가 이미 있다 — 재임베딩하지 말 것
+
+`similar_jobs.json`(2026-08-19 생성)에 문서 10,542개, `similar_posts.json` 에 1,063개가
+들어 있다. 그 파일들이 곧 `semantic.db` 에 그만큼의 임베딩이 있다는 증거다.
+**`store.migrate_vectors` 가 그것을 URL 로 이어 그대로 옮긴다.** 같은 모델·같은 차원·
+같은 입력 텍스트(`semantic/text.py`)면 이미 만든 벡터가 그대로 유효하다.
+
+새로 임베딩해야 하는 것은 8/19 이후에 들어온 나머지 ~7,000건뿐이다.
+
+전량 재임베딩이 얼마나 나쁜 생각인지는 재 봤다 — GPU 없는 i3 에서 **0.7건/초**,
+17,067건이면 6.8시간이다. M1 은 이보다 빠르지만 Playwright 크롤과 메모리를 다투므로
+`auto_crawl stop` 없이 돌리면 안 된다.
+
+실제 임베딩 300건으로 확인한 것(합성 벡터로는 못 보는 것들):
+
+```
+추천 품질   같은 공고의 서울/포항 쌍, 시니어/주니어 쌍,
+            두 회사가 올린 같은 공고(워로브라더스/왈로우)를 잡아낸다
+하이브리드  'C++ 임베디드' → engines={fts:5, vector:5}
+            fts#51 이던 공고가 vec#3 이라 RRF 로 4위까지 올라온다 (하이브리드의 값어치)
+JSON 형식   docs={c,t,u} · similar=[[id, score]] — useSimilar.ts 규격 그대로
+```
 
 ## 이관 계획
 
