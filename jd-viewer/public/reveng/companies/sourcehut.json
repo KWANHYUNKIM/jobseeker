@@ -114,7 +114,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "five-stages-and-two-roundtrips"
+      ]
     },
     {
       "name": "무너진 것을 통째로 적는다",
@@ -179,19 +181,518 @@
               "summary": "2024년 1월 10일 필라델피아 주 데이터센터를 겨냥한 3계층 분산 서비스 거부 공격으로 시작된 장애의 사후 기록이다(글쓴이 Drew DeVault). 콜로 제공자의 상류 망(Cogent 과 Level 3)이 공격에 대응하며 **널 라우트로 서브넷 전체를 막았고**, 제공자의 티켓 시스템이 인수들을 거치며 폐기돼 제때 연락이 닿지도 않았다. 공격자는 완화 작업을 따라다니며 새 기반으로 공격을 옮겼다. 결국 모든 서비스를 대서양 건너 암스테르담으로 7일에 걸쳐 비상 이전했고 **170시간 장애**가 됐다. 시간선은 이렇다 — 1월 10일 06:00 UTC 공격 시작, 09:00 UTC 망 접근 상실과 비상 이전 결정, 12일 오후 일부 복구 시작, 13일 11:00 UTC 깃 서비스 정상화, 17일 10:30 UTC 마지막 서비스(chat.sr.ht) 복구. 사고 전 구성은 데이터센터 셋이었다 — PHL(주), AMS(연구·미래), FRE(백업). 이전에서 고른 것을 적는다: **클라우드플레어의 후원 제안을 받는 대신** OVH NAT 을 세워 DDoS 를 견디는 기반으로 트래픽을 태우면서 SSH·SMTP·IRC 의 종단간 암호화를 지켰고, 클라우드플레어의 처음 견적보다 값도 쌌다고 밝힌다. 백업 상태도 적는다 — 포스트그레스 대기본이 운영과 **30초 미만** 차이였고 대용량 저장 백업은 **12시간 이내**였다. 뒤처리로 약 60개의 작업을 식별했고, 유료 사용자에게 7일치를 무료로 줬다. 그 뒤 PHL 데이터센터를 아예 폐기하고 유럽 기반(AMS·FRE)으로 옮겼으며, 쿠버네티스 기반 이중화와 보조 운영 데이터센터 계획을 앞당겨 기반을 알파에서 베타 수준으로 올리고 있다고 적는다."
             }
           ]
+        },
+        {
+          "tech": "장애가 될 뻔한 것도 적는다",
+          "solves": "2020년 10월, 20분마다 도는 가비지 컬렉션 크론잡이 저장 모형을 덧붙이기에서 삭제로 바꿨는데 ZFS 스냅숏 보존 정책을 그에 맞춰 안 고쳐 디스크가 닷새에 100GiB 에서 25GiB 아래로 떨어졌다 — 발견 시 4.6GiB, 시간당 2GiB 감소. **오래된 스냅숏 여섯 개를 지우자 500GiB 가 즉시 풀렸다.**",
+          "limits": "고친 것은 프로메테우스 지표 보존을 15일에서 60일로 늘린 것뿐이고, 저장 지표를 잘게 나누는 일과 보존 정책 재검토는 우선순위가 낮았다고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Post-mortem: git.sr.ht's almost-outage today",
+              "url": "https://sourcehut.org/blog/october-almost-outage/",
+              "publisher": "SourceHut",
+              "date": "2020-10-08",
+              "summary": "장애가 될 뻔한 일을 적은 기록이다(글쓴이 Drew DeVault). git.sr.ht 의 남은 디스크가 2.8GiB 까지 떨어졌고 **시간당 약 2기가씩** 줄고 있었다 — 2GiB 가 되면 강제로 읽기 전용으로 돌리기로 정해 둔 참이었다. 원인은 8월 12일 배포였다. 무작위로 고른 저장소 일부에 **20분마다 도는 가비지 컬렉션 크론잡**을 넣었는데, 이것이 저장 모형을 덧붙이기만 하던 것에서 실제로 객체를 지우는 것으로 바꿨다. 그런데 ZFS 스냅숏 보존 정책(15분·매시·매일로 돈다)을 그 달라진 증가 양상에 맞춰 고치지 않아, 스냅숏끼리의 차이가 훨씬 커지며 예상 못 한 용량을 먹었다. 수치를 든다 — 닷새에 걸쳐 약 100GiB 에서 25GiB 아래로 떨어졌고, 발견했을 때 4.6GiB 가 남아 시간당 2GiB 씩 줄고 있었으며, **오래된 스냅숏 여섯 개를 지우자 500GiB 가 즉시 풀렸다.** 9월 18일 시점의 처음 추정은 용량이 바닥나기까지 9주였다. 바꾼 것은 프로메테우스 지표 보존을 15일에서 60일로 늘려 긴 흐름을 볼 수 있게 한 것이다. 앞으로 할 것으로 저장 지표를 더 잘게 나누고 보존 정책을 다시 보는 것을 들지만, 급한 불을 끄는 것보다 우선순위가 낮았다고 적는다."
+            }
+          ]
         }
       ],
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "five-stages-and-two-roundtrips",
+      "name": "자주 하는 일의 길을 짧게 만든다",
+      "domain": "밀어 넣는 길을 짧게 만든다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "포지에서 사람이 가장 자주 하는 일은 푸시다. 그 한 번에 다섯 단계가 차례로 돈다 — 디스패치·식별·인가·실행·후속.\n\n처음 구현은 그 길이 길었다. **단계마다 파이썬 시작 값이 최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나에 **SQL 왕복이 20번을 넘기도** 했다. 게다가 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다.\n\n자주 하는 일에서는 **고정 비용이 곧 제품의 체감**이 된다(재구성).",
+        "metrics": [
+          {
+            "label": "단계마다 붙던 값",
+            "value": "파이썬 시작 값이 단계당 최대 1초 수준 — VM 초기화와 SQLAlchemy 임포트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "데이터베이스 왕복",
+            "value": "푸시 하나에 SQL 왕복 20번 초과 → 가져오기 1번, 푸시 최대 2번",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "가장 나빴던 지점",
+            "value": "HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "단계 수",
+            "value": "다섯 — 디스패치 · 식별 · 인가 · 실행 · 후속(후속은 다시 세 단계 훅)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "남은 한계",
+            "value": "서버가 바쁠 때의 I/O 처리량 — 하드웨어 문제라고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "디스패치",
+            "what": "SSH 연결을 어느 서비스로 보낼지 정하는 첫 단계(`gitsrht-dispatch`)"
+          },
+          {
+            "name": "키 확인",
+            "what": "`gitsrht-keys` 가 레디스 캐시에서 SSH 키를 보고, 없으면 meta.sr.ht 에 물어 저장한다"
+          },
+          {
+            "name": "인가 질의",
+            "what": "저장소·소유자·미는 사람의 자격·접근 목록을 한 번에 가져오는 SQL"
+          },
+          {
+            "name": "훅 세 단계",
+            "what": "저장소 수정 시각 갱신 · CI 작업 제출 · 웹훅 전달"
+          },
+          {
+            "name": "고정 비용",
+            "what": "실제 일과 무관하게 단계마다 붙는 시작 값"
+          }
+        ],
+        "invariants": [
+          "자주 하는 일에는 고정 비용을 남기지 않는다",
+          "필요한 것은 한 번에 가져온다",
+          "깃 작업은 웹 애플리케이션을 거치지 않는다",
+          "느린 뒷일은 분리해 비동기로 돌린다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "푸시 한 번이 지나는 다섯 단계",
+          "question": "무엇이 차례로 도나",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자(SSH)\n  participant D as gitsrht-dispatch\n  participant K as gitsrht-keys\n  participant R as 레디스\n  participant S as gitsrht-shell\n  participant G as git 바이너리\n  U->>D: 연결\n  D->>K: 어느 서비스인지 정하고 넘긴다\n  K->>R: SSH 키를 캐시에서 본다\n  R-->>K: 없으면 meta.sr.ht 에 물어 저장한다\n  K->>S: 인가로 넘긴다\n  S->>S: SQL 한 번으로 저장소·소유자·자격·접근 목록\n  S->>G: git-receive-pack / upload-pack / upload-archive\n  G-->>U: 결과\n  Note over G: 뒤이어 훅 세 단계 — 수정 시각 · CI 제출 · 웹훅(분리된 프로세스)"
+        },
+        {
+          "title": "고정 비용을 걷어낸다",
+          "question": "무엇을 어떻게 줄였나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>파이썬 단계들</b><br/>• VM 초기화 · SQLAlchemy 임포트<br/>• 단계당 최대 1초\"]:::list --> A1[\"<b>고로 다시 쓴다</b>\"]:::list\n  B[\"<b>SQL 왕복 20회 초과</b>\"]:::list --> B1[\"<b>서브쿼리와 조인으로 합친다</b><br/>• 가져오기 1회 · 푸시 최대 2회\"]:::list\n  C[\"<b>웹 워커에 맡긴 깃 작업</b><br/>• 평균 60초에 육박\"]:::list --> C1[\"<b>걷어내고 따로 처리한다</b>\"]:::list\n  A1 --> R[\"<b>남은 한계: I/O 처리량</b>\"]:::list\n  B1 --> R\n  C1 --> R"
+        },
+        {
+          "title": "짧게 만들어도 남는 것",
+          "question": "이 길에서 못 없앤 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  I[\"<b>I/O 처리량</b>\"]:::list --> I1[\"<b>서버가 바쁠 때의 한계</b><br/>• 하드웨어 문제라 서버를 들인다고 적는다\"]:::list\n  S[\"<b>단계가 여전히 다섯이다</b>\"]:::list --> S1[\"<b>각 단계의 값은 줄였지만 수는 그대로(재구성)</b>\"]:::list\n  H[\"<b>훅 세 단계</b>\"]:::list --> H1[\"<b>레디스로 상태를 넘긴다</b><br/>• 3단계는 웹훅 때문에 분리된 프로세스\"]:::list\n  N[\"<b>글에 없는 것</b>\"]:::list --> N1[\"<b>고로 옮기는 데 든 기간·인원</b>\"]:::list\n  N --> N2[\"<b>고친 뒤의 실제 지연 수치</b>\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "SSH 연결을 서비스로 보낸다",
+            "why": "한 호스트가 깃·머큐리얼 등 여러 서비스를 받는다"
+          },
+          {
+            "step": "레디스 캐시에서 SSH 키를 확인한다",
+            "why": "키 확인마다 meta.sr.ht 에 물으면 왕복이 는다"
+          },
+          {
+            "step": "캐시에 없으면 meta.sr.ht 에 묻고 저장한다",
+            "why": "다음부터는 캐시에서 끝난다"
+          },
+          {
+            "step": "SQL 한 번으로 인가에 필요한 것을 다 가져온다",
+            "why": "저장소·소유자·미는 사람·접근 목록을 따로 물으면 왕복이 20번을 넘긴다"
+          },
+          {
+            "step": "깃 바이너리에 넘긴다",
+            "why": "실제 일은 깃이 제일 잘한다(재구성)"
+          },
+          {
+            "step": "훅 세 단계로 뒷일을 한다",
+            "why": "수정 시각 갱신·CI 제출·웹훅 전달이 남는다"
+          },
+          {
+            "step": "웹훅 단계는 분리된 프로세스로 돌린다",
+            "why": "느린 상대를 기다리느라 푸시가 붙잡히면 안 된다(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "단계들을 무슨 언어로 쓸 것인가",
+            "chosen": "파이썬에서 고로 다시 쓴다",
+            "alternatives": [
+              "파이썬을 유지하며 최적화하기",
+              "오래 도는 데몬으로 바꿔 시작 값을 없애기"
+            ],
+            "tradeoff": "언어를 바꾸는 값이 든다(재구성) — 기간과 인원은 글에 없다. 대신 VM 초기화와 SQLAlchemy 임포트로 단계당 최대 1초씩 붙던 시작 값이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "인가에 필요한 것을 어떻게 가져올 것인가",
+            "chosen": "서브쿼리와 조인으로 한 질의에 합친다",
+            "alternatives": [
+              "필요할 때마다 따로 물어보기"
+            ],
+            "tradeoff": "질의 하나가 복잡해진다(재구성). 대신 왕복이 20번 초과에서 가져오기 1번·푸시 최대 2번이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "깃 작업을 웹 애플리케이션에 맡길 것인가",
+            "chosen": "걷어내고 따로 처리한다",
+            "alternatives": [
+              "웹 애플리케이션 워커가 처리하게 두기(그전 구조)"
+            ],
+            "tradeoff": "같은 로직을 두 곳에 두지 않으려던 이점을 잃는다(재구성). 그 구조가 만든 결과는 분명했다 — HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "키 확인을 어디서 할 것인가",
+            "chosen": "레디스 캐시를 먼저 보고 없을 때만 meta.sr.ht 에 묻는다",
+            "alternatives": [
+              "매번 계정 서비스에 묻기"
+            ],
+            "tradeoff": "캐시가 낡을 수 있다(재구성) — 무효화 방식은 글에 없다. 대신 대부분의 푸시가 원격 호출 없이 끝난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "뒷일을 어떻게 다룰 것인가",
+            "chosen": "훅을 세 단계로 나누고 레디스로 상태를 넘기며, 웹훅 단계는 분리된 프로세스로 비동기로 돌린다",
+            "alternatives": [
+              "푸시 안에서 전부 동기로 처리하기"
+            ],
+            "tradeoff": "단계 사이 상태를 외부 저장소로 넘겨야 한다. 대신 느린 웹훅 상대가 푸시를 붙잡지 않는다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "남은 병목을 어떻게 할 것인가",
+            "chosen": "하드웨어로 푼다 — 더 나은 서버를 들인다",
+            "alternatives": [
+              "소프트웨어를 더 최적화하기"
+            ],
+            "tradeoff": "돈이 드는 답이다(재구성). 이유는 남은 한계가 서버가 바쁠 때의 I/O 처리량이라고 판단해서다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "고(Go)",
+            "role": "단계들을 다시 써 시작 값을 없앤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "레디스",
+            "role": "SSH 키 캐시이자 훅 단계 사이의 상태 전달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "포스트그레스(단일 인가 질의)",
+            "role": "저장소·소유자·자격·접근 목록을 한 번에 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "git-receive-pack · upload-pack · upload-archive",
+            "role": "실제 깃 작업을 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "분리된 웹훅 프로세스",
+            "role": "느린 상대를 기다리는 일을 푸시에서 떼어 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "무너진 것을 통째로 적는다",
+          "via": "같은 서비스의 다른 축",
+          "contract": "이 길을 빠르게 만든 뒤에도 저장 용량과 망은 따로 무너진다 — 2020년의 디스크 소진 직전과 2024년의 170시간이 그 자리다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "37signals(다른 회사)",
+          "via": "작은 팀이 자기 것을 돌린다",
+          "contract": "저쪽은 클라우드에서 나와 자기 데이터센터로 갔고, 여기는 처음부터 자기 하드웨어로 포지를 돌린다. 둘 다 남에게 맡기지 않은 대신 운영을 통째로 진다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "GitHub(다른 회사)",
+          "via": "같은 일을 정반대 규모로",
+          "contract": "푸시 한 번이 지나는 길이라는 문제는 같은데, 한쪽은 세계 최대 규모로 다른 쪽은 한 사람이 읽을 수 있는 다섯 단계로 푼다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "The UNIX Time-Sharing System",
+            "authors": "Dennis M. Ritchie, Ken Thompson",
+            "year": "1974",
+            "venue": "Communications of the ACM 17(7)",
+            "url": "https://dl.acm.org/doi/10.1145/361011.361061",
+            "takeaway": "작은 프로그램을 이어 붙여 일을 하는 방식이다. 푸시 경로를 `gitsrht-dispatch`·`gitsrht-keys`·`gitsrht-shell` 처럼 작은 실행 파일들로 나눈 구조가 그 갈래이고, 그래서 **프로세스 시작 값이 그대로 지연이 되는** 대가도 함께 따라왔다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Latency Lags Bandwidth",
+            "authors": "David A. Patterson",
+            "year": "2004",
+            "venue": "Communications of the ACM 47(10)",
+            "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+            "takeaway": "대역폭은 빨리 좋아지는데 지연은 그렇지 않다는 관찰이다. 왕복 20번을 2번으로 줄이는 것이 왜 그렇게 큰 차이를 내는지의 배경이다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Tail at Scale",
+            "authors": "Jeffrey Dean, Luiz André Barroso",
+            "year": "2013",
+            "venue": "Communications of the ACM 56(2)",
+            "url": "https://dl.acm.org/doi/10.1145/2408776.2408794",
+            "takeaway": "여러 단계를 거치는 요청은 각 단계의 느린 꼬리가 겹쳐 전체를 느리게 만든다. 다섯 단계짜리 푸시 경로에서 단계마다 붙는 고정 비용을 없앤 이유가 여기 있다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "자주 하는 일에서는 고정 비용이 전부다",
+            "why_hard": "실제 깃 작업이 아무리 빨라도 단계마다 붙는 시작 값과 왕복이 그 위에 쌓인다 — 단계당 1초면 다섯 단계에서 이미 몇 초다(재구성).",
+            "current_best": "언어를 바꿔 시작 값을 없애고 질의를 합쳐 왕복을 줄이는 것 — 20번 초과가 최대 2번이 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "problem": "코드를 모으려다 병목을 만든다",
+            "why_hard": "같은 로직을 웹과 SSH 양쪽에 두지 않으려고 웹 워커에 맡겼는데, 그 워커가 깃 작업까지 받으며 평균 60초에 육박하게 됐다.",
+            "current_best": "깃 작업을 웹에서 떼어 따로 처리하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "problem": "소프트웨어로 못 줄이는 자리가 남는다",
+            "why_hard": "단계와 왕복을 다 줄이고 나면 서버가 바쁠 때의 I/O 처리량이 남는다.",
+            "current_best": "하드웨어를 바꾸는 것이라고 밝힌다 — 더 나은 서버를 들이고 있다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+                "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+                "publisher": "SourceHut",
+                "date": "2019-11-22",
+                "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "느리다는 신고를 받고",
+          "thought": "깃이 느린 게 아니다. 깃을 부르기까지가 느리다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "단계를 세어 볼 때",
+          "thought": "단계마다 파이썬이 뜬다. 실제 일은 시작하지도 않았는데 몇 초가 간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "질의를 볼 때",
+          "thought": "저장소, 소유자, 자격, 접근 목록. 이걸 따로 묻고 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다 줄이고 나서",
+          "thought": "이제 남은 건 디스크다. 이건 코드로 못 고친다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What happens when you push to git.sr.ht, and why was it so slow?",
+          "url": "https://sourcehut.org/blog/2019-11-22-what-happens-on-git-push/",
+          "publisher": "SourceHut",
+          "date": "2019-11-22",
+          "summary": "깃 푸시가 왜 느렸고 어떻게 고쳤는지 적은 글이다(글쓴이 Drew DeVault). 푸시 한 번에 다섯 단계가 차례로 돈다. **디스패치** — `gitsrht-dispatch` 가 SSH 연결을 해당 서비스(git.sr.ht·hg.sr.ht 등)로 보낸다. **식별** — `gitsrht-keys` 가 레디스 캐시에서 SSH 키를 확인하고, 없으면 meta.sr.ht 에 물어 결과를 로컬에 저장한다. **인가** — `gitsrht-shell` 이 **SQL 한 번**으로 저장소 정보·소유자·미는 사람의 자격·접근 목록을 함께 가져온다. **실행** — `git-receive-pack`·`git-upload-pack`·`git-upload-archive` 에 넘긴다. **후속** — 세 단계 훅이 저장소 수정 시각 갱신, builds.sr.ht 에 CI 작업 제출, 웹훅 전달을 맡는다(단계 사이는 레디스로 넘기고, 3단계는 웹훅을 비동기로 다루려고 분리된 프로세스로 돈다). 느렸던 이유를 셋으로 적는다 — 파이썬 시작 값이 단계마다 **최대 1초 수준**이었고(VM 초기화와 SQLAlchemy 임포트), 푸시 하나를 끝내는 데 **SQL 왕복이 20번을 넘기도** 했으며, 로직을 웹 애플리케이션 워커로 옮긴 것이 병목을 만들어 **HTTP 요청과 깃 푸시의 평균 시간이 60초에 육박**했다. 고침은 이렇다 — 파이썬에서 **고로 다시 써** VM 시작 값을 없애고, 서브쿼리와 조인으로 질의를 하나로 합쳐 **가져오기는 왕복 한 번, 푸시는 많아야 두 번**으로 줄이고, 웹 애플리케이션에 맡기던 것을 걷어 깃 작업을 따로 처리했다. 남은 한계도 적는다 — 서버가 바쁠 때의 **I/O 처리량**이고, 이는 하드웨어 문제라 더 나은 서버를 들이고 있다고 밝힌다."
+        },
+        {
+          "title": "SourceHut — 무엇을 주고 무엇을 안 하나",
+          "url": "https://sourcehut.org/",
+          "publisher": "SourceHut",
+          "summary": "소프트웨어 개발을 위한 서비스 묶음이다 — git.sr.ht(깃 저장소, 공개·비공개·비목록), hg.sr.ht(머큐리얼), builds.sr.ht(여러 리눅스 배포판과 BSD 에서 도는 CI), lists.sr.ht(메일링 리스트와 코드 리뷰), todo.sr.ht(할 일 중심 이슈 추적), chat.sr.ht(IRC 바운서와 웹 채팅), meta.sr.ht(계정과 보안), man.sr.ht(깃으로 굴리는 위키), paste.sr.ht, srht.site(정적 웹 호스팅). 안 하는 것을 분명히 적는다 — **추적도 광고도 전혀 없고, 모든 기능이 자바스크립트 없이 돌며, AI 기능은 하나도 없다.** 100% 자유·오픈소스 소프트웨어이고 서비스는 공개 알파 상태라고 밝힌다. 법인은 네덜란드에 있다(Postbus 3068, 1620GB Hoorn, KVK 84165251, BTW NL003921490B16). 가격은 이 페이지에 없다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "가격과 매출을 확인하지 못했다 — 홈에 요금이 없고, 2025년 12월의 가격 인상 제안 글을 읽지 않았다.",
     "고로 다시 쓰는 데 든 값(기간·인원)이 글에 없다.",
     "장애 뒤 계획한 쿠버네티스 기반 이중화와 보조 운영 데이터센터가 어떻게 됐는지 확인하지 못했다.",
     "사용자 수·저장소 수 같은 규모 지표를 찾지 못했다.",
     "시대 구분(eras)을 세우지 않았다. 파이썬에서 고로 옮긴 것(2019)과 PHL 폐기(2024)는 알지만 그 사이 구조 변화를 다 못 봤다.",
-    "안 읽은 글 — `우리는 서비스를 어떻게 감시하나`(2020-07-03) · `git.sr.ht 거의 장애`(2020-10-08) · `가격 인상 제안`(2025-12-01) · `LLM 관련 이용약관 변경`(2026-08-27)."
+    "안 읽은 글 — `우리는 서비스를 어떻게 감시하나`(2020-07-03) · `가격 인상 제안`(2025-12-01) · `LLM 관련 이용약관 변경`(2026-08-27).",
+    "고친 뒤의 실제 푸시 지연 수치가 글에 없다 — 왕복 수와 시작 값 제거만 적는다."
   ],
   "sources": [
     {
@@ -213,6 +714,13 @@
       "publisher": "SourceHut",
       "date": "2024-01-19",
       "summary": "2024년 1월 10일 필라델피아 주 데이터센터를 겨냥한 3계층 분산 서비스 거부 공격으로 시작된 장애의 사후 기록이다(글쓴이 Drew DeVault). 콜로 제공자의 상류 망(Cogent 과 Level 3)이 공격에 대응하며 **널 라우트로 서브넷 전체를 막았고**, 제공자의 티켓 시스템이 인수들을 거치며 폐기돼 제때 연락이 닿지도 않았다. 공격자는 완화 작업을 따라다니며 새 기반으로 공격을 옮겼다. 결국 모든 서비스를 대서양 건너 암스테르담으로 7일에 걸쳐 비상 이전했고 **170시간 장애**가 됐다. 시간선은 이렇다 — 1월 10일 06:00 UTC 공격 시작, 09:00 UTC 망 접근 상실과 비상 이전 결정, 12일 오후 일부 복구 시작, 13일 11:00 UTC 깃 서비스 정상화, 17일 10:30 UTC 마지막 서비스(chat.sr.ht) 복구. 사고 전 구성은 데이터센터 셋이었다 — PHL(주), AMS(연구·미래), FRE(백업). 이전에서 고른 것을 적는다: **클라우드플레어의 후원 제안을 받는 대신** OVH NAT 을 세워 DDoS 를 견디는 기반으로 트래픽을 태우면서 SSH·SMTP·IRC 의 종단간 암호화를 지켰고, 클라우드플레어의 처음 견적보다 값도 쌌다고 밝힌다. 백업 상태도 적는다 — 포스트그레스 대기본이 운영과 **30초 미만** 차이였고 대용량 저장 백업은 **12시간 이내**였다. 뒤처리로 약 60개의 작업을 식별했고, 유료 사용자에게 7일치를 무료로 줬다. 그 뒤 PHL 데이터센터를 아예 폐기하고 유럽 기반(AMS·FRE)으로 옮겼으며, 쿠버네티스 기반 이중화와 보조 운영 데이터센터 계획을 앞당겨 기반을 알파에서 베타 수준으로 올리고 있다고 적는다."
+    },
+    {
+      "title": "Post-mortem: git.sr.ht's almost-outage today",
+      "url": "https://sourcehut.org/blog/october-almost-outage/",
+      "publisher": "SourceHut",
+      "date": "2020-10-08",
+      "summary": "장애가 될 뻔한 일을 적은 기록이다(글쓴이 Drew DeVault). git.sr.ht 의 남은 디스크가 2.8GiB 까지 떨어졌고 **시간당 약 2기가씩** 줄고 있었다 — 2GiB 가 되면 강제로 읽기 전용으로 돌리기로 정해 둔 참이었다. 원인은 8월 12일 배포였다. 무작위로 고른 저장소 일부에 **20분마다 도는 가비지 컬렉션 크론잡**을 넣었는데, 이것이 저장 모형을 덧붙이기만 하던 것에서 실제로 객체를 지우는 것으로 바꿨다. 그런데 ZFS 스냅숏 보존 정책(15분·매시·매일로 돈다)을 그 달라진 증가 양상에 맞춰 고치지 않아, 스냅숏끼리의 차이가 훨씬 커지며 예상 못 한 용량을 먹었다. 수치를 든다 — 닷새에 걸쳐 약 100GiB 에서 25GiB 아래로 떨어졌고, 발견했을 때 4.6GiB 가 남아 시간당 2GiB 씩 줄고 있었으며, **오래된 스냅숏 여섯 개를 지우자 500GiB 가 즉시 풀렸다.** 9월 18일 시점의 처음 추정은 용량이 바닥나기까지 9주였다. 바꾼 것은 프로메테우스 지표 보존을 15일에서 60일로 늘려 긴 흐름을 볼 수 있게 한 것이다. 앞으로 할 것으로 저장 지표를 더 잘게 나누고 보존 정책을 다시 보는 것을 들지만, 급한 불을 끄는 것보다 우선순위가 낮았다고 적는다."
     }
   ]
 }
