@@ -4,7 +4,7 @@
   "name_en": "Prisma",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-07",
   "domain": "prisma.io",
   "one_liner": "타입스크립트에서 데이터베이스를 다루는 계층을 만드는 회사 — 오년 된 러스트 엔진을 스스로 걷어냈다",
@@ -117,15 +117,15 @@
         },
         {
           "tech": "Accelerate — 전역 캐시와 연결",
-          "solves": "연산 단위로 세어 파는 캐시 계층이다.",
-          "limits": "내부 구조를 이번 사이클에서 확인하지 못했다.",
-          "confidence": "unknown",
+          "solves": "15개 넘는 지역의 전역 연결 풀로 서버리스의 연결 고갈을 막고, 300곳 넘는 지점에서 질의 결과를 캐시해 레디스·멤캐시드를 따로 안 세워도 되게 한다. 신선도는 질의마다 cacheStrategy(TTL·SWR)로 정한다.",
+          "limits": "질의 캐싱은 Prisma Postgres 에서 지원하지 않고, 독립 제품으로서의 Accelerate 는 2026-12-01 에 접는다. 한도 숫자와 대가는 문서에 없다.",
+          "confidence": "confirmed",
           "sources": [
             {
-              "title": "Prisma — Pricing",
-              "url": "https://www.prisma.io/pricing",
+              "title": "Prisma Accelerate — Docs",
+              "url": "https://www.prisma.io/docs/accelerate",
               "publisher": "Prisma",
-              "summary": "요금제는 무료·스타터 월 10달러·프로 월 49달러·비즈니스 월 129달러·맞춤이다. 파는 것은 넷으로 갈린다. Prisma Postgres 는 질의 하나를 연산 하나로 세어 받고 저장은 GB 초과분으로 받으며 데이터 전송은 모든 요금제에서 무제한이다. Prisma Compute 는 요청을 100만 건 단위로, 메모리를 GB·시간당 0.006달러로, CPU 를 활성 vCPU·시간당 0.064달러로, 나가는 대역폭을 GB 당 0.025달러로 받는다. Accelerate 는 전역 캐시로 요금제마다 포함 연산이 다르고 초과는 1,000 연산 단위로 받는다. ORM 자체는 공짜이며 앞으로도 늘 그럴 것이라고 적는다. 무료 한도는 월 요청 100만 건, 메모리 360GB·시간, vCPU 4시간, 나가는 대역폭 10GB, 포스트그레스 연산 20만 건, 저장 500MB 다. 좌석당 과금은 없고 사용량으로만 받는다."
+              "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
             }
           ]
         },
@@ -144,7 +144,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "edge-connection-and-cache"
+      ]
     }
   ],
   "features": [
@@ -669,6 +671,481 @@
           "summary": "요금제는 무료·스타터 월 10달러·프로 월 49달러·비즈니스 월 129달러·맞춤이다. 파는 것은 넷으로 갈린다. Prisma Postgres 는 질의 하나를 연산 하나로 세어 받고 저장은 GB 초과분으로 받으며 데이터 전송은 모든 요금제에서 무제한이다. Prisma Compute 는 요청을 100만 건 단위로, 메모리를 GB·시간당 0.006달러로, CPU 를 활성 vCPU·시간당 0.064달러로, 나가는 대역폭을 GB 당 0.025달러로 받는다. Accelerate 는 전역 캐시로 요금제마다 포함 연산이 다르고 초과는 1,000 연산 단위로 받는다. ORM 자체는 공짜이며 앞으로도 늘 그럴 것이라고 적는다. 무료 한도는 월 요청 100만 건, 메모리 360GB·시간, vCPU 4시간, 나가는 대역폭 10GB, 포스트그레스 연산 20만 건, 저장 500MB 다. 좌석당 과금은 없고 사용량으로만 받는다."
         }
       ]
+    },
+    {
+      "key": "edge-connection-and-cache",
+      "name": "엣지에서는 연결이 먼저 무너진다",
+      "domain": "어디서든 도는 데이터 계층을 만든다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "러스트 바이너리를 걷어내 엣지·서버리스에서 돌게 만들고 나면 **다음 벽이 연결**이다. 함수가 요청마다 뜨고 지는 환경에서는 데이터베이스 연결이 금방 바닥나 — 문서가 연결 고갈을 실제로 나는 고장이라고 못 박는다.\n\n게다가 엣지에서 멀리 있는 데이터베이스까지 가는 시간이 그대로 응답 시간이다. 그래서 이 회사는 **연결 풀과 캐시를 대신 들고 있는 계층**을 팔았다(재구성).",
+        "metrics": [
+          {
+            "label": "연결 풀",
+            "value": "15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "label": "캐시 지점",
+            "value": "300곳 넘는 곳에서 답한다 — 레디스나 멤캐시드를 따로 안 둬도 된다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "label": "쓰는 법",
+            "value": "아무 질의에 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 캐시된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "label": "예로 든 설정",
+            "value": "TTL 60초에 SWR 10초 창",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "label": "팔 때 세는 단위",
+            "value": "캐시는 1,000 연산 단위 초과 과금, 데이터베이스는 질의 하나가 연산 하나",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma — Pricing",
+                "url": "https://www.prisma.io/pricing",
+                "publisher": "Prisma",
+                "summary": "요금제는 무료·스타터 월 10달러·프로 월 49달러·비즈니스 월 129달러·맞춤이다. 파는 것은 넷으로 갈린다. Prisma Postgres 는 질의 하나를 연산 하나로 세어 받고 저장은 GB 초과분으로 받으며 데이터 전송은 모든 요금제에서 무제한이다. Prisma Compute 는 요청을 100만 건 단위로, 메모리를 GB·시간당 0.006달러로, CPU 를 활성 vCPU·시간당 0.064달러로, 나가는 대역폭을 GB 당 0.025달러로 받는다. Accelerate 는 전역 캐시로 요금제마다 포함 연산이 다르고 초과는 1,000 연산 단위로 받는다. ORM 자체는 공짜이며 앞으로도 늘 그럴 것이라고 적는다. 무료 한도는 월 요청 100만 건, 메모리 360GB·시간, vCPU 4시간, 나가는 대역폭 10GB, 포스트그레스 연산 20만 건, 저장 500MB 다. 좌석당 과금은 없고 사용량으로만 받는다."
+              }
+            ]
+          },
+          {
+            "label": "접는 것",
+            "value": "독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "연결",
+            "what": "데이터베이스가 동시에 받아 줄 수 있는 수. 서버리스에서 먼저 바닥나는 자원이다"
+          },
+          {
+            "name": "전역 연결 풀",
+            "what": "15개 넘는 지역에서 대신 들고 있는 연결"
+          },
+          {
+            "name": "캐시 지점",
+            "what": "300곳 넘는 자리. 질의 결과를 사용자 가까이에 둔다"
+          },
+          {
+            "name": "cacheStrategy",
+            "what": "질의에 붙이는 지시. TTL 과 SWR 로 신선도를 정한다"
+          },
+          {
+            "name": "연산",
+            "what": "파는 단위. 질의 하나가 연산 하나다"
+          }
+        ],
+        "invariants": [
+          "연결은 우리가 대신 들고 있는다",
+          "신선도는 질의마다 붙여 정한다",
+          "캐시는 별도 저장소를 세우지 않고 이 계층이 맡는다",
+          "쓴 만큼 연산으로 센다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "서버리스에서 무엇이 먼저 무너지나",
+          "question": "바이너리를 없앤 다음의 벽",
+          "kind": "flow",
+          "code": "flowchart LR\n  F[\"<b>함수가 요청마다 뜬다</b>\"]:::list --> C[\"<b>연결을 새로 연다</b>\"]:::list --> X[\"<b>연결 고갈</b><br/>• 실제로 나는 고장이라고 적는다\"]:::list\n  E[\"<b>엣지에서 먼 데이터베이스</b>\"]:::list --> L[\"<b>왕복이 그대로 응답 시간</b>\"]:::list\n  X --> A[\"<b>전역 연결 풀</b><br/>• 15개 넘는 지역\"]:::list\n  L --> B[\"<b>캐시 300곳 이상</b><br/>• 레디스·멤캐시드를 따로 안 둔다\"]:::list"
+        },
+        {
+          "title": "신선도를 질의에 붙인다",
+          "question": "무엇을 얼마나 캐시할지 누가 정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>질의</b>\"]:::list --> S[\"<b>cacheStrategy 를 붙인다</b>\"]:::list\n  S --> T[\"<b>TTL</b><br/>• 예: 60초\"]:::list\n  S --> W[\"<b>stale-while-revalidate</b><br/>• 예: 10초 창\"]:::list\n  T --> R[\"<b>엣지에서 답한다</b>\"]:::list\n  W --> R\n  N[\"<b>안 붙이면</b>\"]:::list --> D[\"<b>그냥 데이터베이스로 간다(재구성)</b>\"]:::list"
+        },
+        {
+          "title": "이 계층이 남기는 것",
+          "question": "대신 들고 있으면 무엇이 걸리나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>연결과 캐시를 남이 들고 있다</b>\"]:::list --> A1[\"<b>그 계층이 죽으면 다 멈춘다(재구성)</b>\"]:::list\n  B[\"<b>TTL·SWR 로 낡음을 허용한다</b>\"]:::list --> B1[\"<b>무효화는 시간에 맡긴다</b><br/>• 바뀌자마자 비우는 길은 안 적혀 있다(재구성)\"]:::list\n  C[\"<b>Prisma Postgres 에서는</b>\"]:::list --> C1[\"<b>질의 캐싱을 지원하지 않는다</b><br/>• 당장의 계획에도 없다고 적는다\"]:::list\n  D[\"<b>독립 제품 Accelerate</b>\"]:::list --> D1[\"<b>2026-12-01 에 접는다</b>\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "연결을 우리 쪽에서 들고 있는다",
+            "why": "함수가 요청마다 뜨고 지면 데이터베이스 연결이 먼저 바닥난다"
+          },
+          {
+            "step": "그 풀을 15개 넘는 지역에 둔다",
+            "why": "연결을 한곳에만 두면 먼 지역의 왕복이 그대로 붙는다(재구성)"
+          },
+          {
+            "step": "질의에 cacheStrategy 를 붙이게 한다",
+            "why": "무엇을 얼마나 캐시할지는 그 질의를 쓴 사람이 가장 잘 안다(재구성)"
+          },
+          {
+            "step": "TTL 과 SWR 로 신선도를 정한다",
+            "why": "낡아도 되는 시간과 갱신하는 동안 옛것을 주는 창을 나눠 정한다"
+          },
+          {
+            "step": "결과를 300곳 넘는 지점에서 답한다",
+            "why": "레디스나 멤캐시드를 따로 세우지 않아도 되게 한다"
+          },
+          {
+            "step": "연산 단위로 센다",
+            "why": "질의 하나가 연산 하나이고 캐시는 1,000 연산 단위로 초과를 받는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "엣지에서 데이터베이스에 어떻게 붙일 것인가",
+            "chosen": "연결을 대신 들고 있는 전역 풀을 둔다 — 15개 넘는 지역",
+            "alternatives": [
+              "애플리케이션이 직접 연결하기",
+              "데이터베이스 쪽 풀러(pgbouncer 등)를 각자 세우기"
+            ],
+            "tradeoff": "연결이 남의 계층에 매이고 그 계층이 죽으면 다 멈춘다(재구성). 대신 서버리스에서 실제로 나는 고장인 연결 고갈이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 어디에 둘 것인가",
+            "chosen": "이 계층이 300곳 넘는 지점에서 맡는다 — 레디스나 멤캐시드를 따로 두지 않아도 된다고 적는다",
+            "alternatives": [
+              "손님이 캐시 저장소를 따로 세우기",
+              "캐시를 안 주기"
+            ],
+            "tradeoff": "캐시 정책이 우리 계층의 규칙에 묶인다(재구성). 대신 붙일 것이 하나 줄고 사용자 가까이에서 답한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 캐시할지 누가 정할 것인가",
+            "chosen": "질의마다 cacheStrategy 를 붙여 쓰는 쪽이 정한다",
+            "alternatives": [
+              "전역 설정으로 일괄 적용",
+              "자동으로 판단하기"
+            ],
+            "tradeoff": "안 붙이면 이득이 없고, 잘못 붙이면 낡은 답이 나간다(재구성). 대신 같은 앱 안에서도 질의마다 다른 신선도를 줄 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "question": "무효화를 어떻게 할 것인가",
+            "chosen": "시간으로 한다 — TTL 과 stale-while-revalidate(예: 60초 TTL, 10초 SWR)",
+            "alternatives": [
+              "쓰기 때 관련 캐시를 비우기"
+            ],
+            "tradeoff": "바뀌자마자 비우는 길이 문서에 안 적혀 있어 낡음의 상한이 곧 TTL 이 된다(재구성). 대신 규칙이 단순해 어디서 답이 오든 예측이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "question": "자기 데이터베이스에도 이 캐시를 줄 것인가",
+            "chosen": "주지 않는다 — 질의 캐싱은 Prisma Postgres 에서 지원하지 않으며 당장의 계획에도 없다고 적는다",
+            "alternatives": [
+              "자기 데이터베이스에 먼저 붙이기"
+            ],
+            "tradeoff": "자기 관리형 데이터베이스를 쓰는 손님은 이 캐시를 못 쓴다. 그 이유는 문서가 밝히지 않는다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "question": "이 제품을 어떻게 둘 것인가",
+            "chosen": "독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다고 공지한다",
+            "alternatives": [
+              "독립 제품으로 계속 팔기"
+            ],
+            "tradeoff": "쓰던 손님이 옮겨야 한다(재구성). 파는 것의 무게 중심이 계층에서 데이터베이스 쪽으로 옮겨 가는 신호로 읽힌다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "전역 연결 풀",
+            "role": "15개 넘는 지역에서 연결을 대신 들고 있는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "tech": "엣지 캐시(300곳 이상)",
+            "role": "질의 결과를 사용자 가까이에서 답한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "tech": "cacheStrategy(TTL·SWR)",
+            "role": "질의마다 신선도를 정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "tech": "연산 단위 과금",
+            "role": "질의 하나가 연산 하나, 캐시는 1,000 연산 단위",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma — Pricing",
+                "url": "https://www.prisma.io/pricing",
+                "publisher": "Prisma",
+                "summary": "요금제는 무료·스타터 월 10달러·프로 월 49달러·비즈니스 월 129달러·맞춤이다. 파는 것은 넷으로 갈린다. Prisma Postgres 는 질의 하나를 연산 하나로 세어 받고 저장은 GB 초과분으로 받으며 데이터 전송은 모든 요금제에서 무제한이다. Prisma Compute 는 요청을 100만 건 단위로, 메모리를 GB·시간당 0.006달러로, CPU 를 활성 vCPU·시간당 0.064달러로, 나가는 대역폭을 GB 당 0.025달러로 받는다. Accelerate 는 전역 캐시로 요금제마다 포함 연산이 다르고 초과는 1,000 연산 단위로 받는다. ORM 자체는 공짜이며 앞으로도 늘 그럴 것이라고 적는다. 무료 한도는 월 요청 100만 건, 메모리 360GB·시간, vCPU 4시간, 나가는 대역폭 10GB, 포스트그레스 연산 20만 건, 저장 500MB 다. 좌석당 과금은 없고 사용량으로만 받는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rust-to-typescript-query-compiler",
+          "via": "바이너리를 없앤 다음의 벽",
+          "contract": "엣지에서 돌게 만들고 나면 다음 문제가 연결과 지연이다. 앞 기능이 자리를 열고 이 기능이 그 자리에서 실제로 쓰이게 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "turbopuffer · Backblaze",
+          "via": "캐시로 거리를 되사는 같은 손버릇",
+          "contract": "터보퍼퍼는 객체 저장소의 거리를 NVMe 캐시로, 여기는 데이터베이스까지의 거리를 엣지 캐시로 되산다. 원본을 멀리 두고 가까이에 사본을 두는 구조가 같다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "데이터베이스",
+          "via": "우리가 못 늘리는 자원",
+          "contract": "동시 연결 수는 데이터베이스가 정한다. 그 한계 때문에 앞에 풀을 두는 계층이 생긴다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "stale-while-revalidate (RFC 5861)",
+            "authors": "Mark Nottingham",
+            "year": "2010",
+            "venue": "IETF RFC",
+            "url": "https://datatracker.ietf.org/doc/html/rfc5861",
+            "takeaway": "낡은 답을 주면서 뒤에서 갱신하는 캐시 확장이다. 이 계층이 질의에 붙이는 신선도 규칙이 그대로 이 규약의 어휘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "title": "Connection pooling in serverless environments",
+            "authors": "업계 관행",
+            "year": "2021",
+            "venue": "산업 사례",
+            "url": "https://www.pgbouncer.org/",
+            "takeaway": "연결을 앞에서 모아 두는 오래된 답이다. 서버리스가 그 문제를 되살렸고, 이 회사는 그 풀을 서비스로 판다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Tail at Scale",
+            "authors": "Jeffrey Dean, Luiz André Barroso",
+            "year": "2013",
+            "venue": "CACM 56(2)",
+            "url": "https://research.google/pubs/pub40801/",
+            "takeaway": "멀리 있는 자원 하나가 전체 응답을 지배한다는 정리다. 엣지에서 먼 데이터베이스까지의 왕복을 캐시로 지우는 이유가 그것이다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "서버리스는 연결을 먼저 소진한다",
+            "why_hard": "함수가 요청마다 뜨고 지는데 데이터베이스의 동시 연결 수는 정해져 있다 — 우리가 못 늘리는 자원이다.",
+            "current_best": "연결을 대신 들고 있는 전역 풀을 두는 것 — 대신 그 계층에 매인다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "problem": "엣지에 코드를 둬도 데이터는 멀리 있다",
+            "why_hard": "실행을 사용자 가까이 옮겨도 데이터베이스까지의 왕복이 남으면 이득이 상쇄된다.",
+            "current_best": "결과를 300곳 넘는 지점에 캐시하고 신선도를 질의마다 정하게 하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          },
+          {
+            "problem": "무효화를 시간에 맡기면 낡음이 남는다",
+            "why_hard": "TTL 과 SWR 은 단순하지만 데이터가 바뀌자마자 비우지는 못한다.",
+            "current_best": "낡아도 되는 시간을 쓰는 쪽이 질의마다 정하게 하는 것 — 바뀌자마자 비우는 길은 이 문서에 없다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Prisma Accelerate — Docs",
+                "url": "https://www.prisma.io/docs/accelerate",
+                "publisher": "Prisma",
+                "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "엣지에서 돌게 만든 뒤",
+          "thought": "이제 거기서 데이터베이스에 붙어야 하는데, 함수가 요청마다 뜨니 연결이 먼저 바닥난다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "캐시를 붙일지 볼 때",
+          "thought": "손님더러 레디스를 따로 세우라고 하면 그만큼 안 쓴다. 우리 계층이 캐시까지 들고 있으면 붙일 것이 하나 준다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "신선도를 정할 때",
+          "thought": "어떤 질의가 얼마나 낡아도 되는지는 우리가 모른다. 질의마다 붙이게 하고 TTL 과 SWR 만 준다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "제품을 정리하며",
+          "thought": "독립 제품으로서의 이 계층은 접는다. 파는 무게 중심이 데이터베이스 쪽으로 옮겨 가는 것으로 보인다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Prisma Accelerate — Docs",
+          "url": "https://www.prisma.io/docs/accelerate",
+          "publisher": "Prisma",
+          "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
+        },
+        {
+          "title": "Prisma — Pricing",
+          "url": "https://www.prisma.io/pricing",
+          "publisher": "Prisma",
+          "summary": "요금제는 무료·스타터 월 10달러·프로 월 49달러·비즈니스 월 129달러·맞춤이다. 파는 것은 넷으로 갈린다. Prisma Postgres 는 질의 하나를 연산 하나로 세어 받고 저장은 GB 초과분으로 받으며 데이터 전송은 모든 요금제에서 무제한이다. Prisma Compute 는 요청을 100만 건 단위로, 메모리를 GB·시간당 0.006달러로, CPU 를 활성 vCPU·시간당 0.064달러로, 나가는 대역폭을 GB 당 0.025달러로 받는다. Accelerate 는 전역 캐시로 요금제마다 포함 연산이 다르고 초과는 1,000 연산 단위로 받는다. ORM 자체는 공짜이며 앞으로도 늘 그럴 것이라고 적는다. 무료 한도는 월 요청 100만 건, 메모리 360GB·시간, vCPU 4시간, 나가는 대역폭 10GB, 포스트그레스 연산 20만 건, 저장 500MB 다. 좌석당 과금은 없고 사용량으로만 받는다."
+        },
+        {
+          "title": "From Rust to TypeScript: A New Chapter for Prisma ORM",
+          "url": "https://www.prisma.io/blog/from-rust-to-typescript-a-new-chapter-for-prisma-orm",
+          "publisher": "Prisma",
+          "date": "2025-01-30",
+          "summary": "존 해럴이 2025년 1월 30일에 쓴 글로, 오년 된 러스트 질의 엔진을 걷어내는 이유를 적는다. 처음 러스트를 고른 이유는 되도록 여러 언어를 위한 ORM 을 만들고 싶었고, 성능과 시스템 수준 접근이 그 목적에 자연스러웠기 때문이다. 그런데 문제가 쌓였다. 패키지 크기가 약 14MB(gzip 7MB)여서 서버리스 환경의 콜드 스타트에 부담이었고, 러스트와 자바스크립트 사이를 오갈 때마다 데이터를 옮겨 담는 값이 특히 큰 질의에서 크게 붙었으며, 러스트와 타입스크립트를 둘 다 아는 사람이 필요하다는 기술 장벽과 운영체제·OpenSSL 버전마다 따로 바이너리를 내야 하는 배포 부담이 있었다. 게다가 요즘 자바스크립트 런타임과 서버리스·엣지 환경은 큰 러스트 바이너리와 늘 맞지는 않는다. 새 구조는 질의 컴파일러다 — WASM 이 질의 계획을 만들고 실행은 전부 타입스크립트에서 하며, 네이티브 바이너리 의존이 사라져 클라우드플레어 워커스·데노·번·버셀 엣지에서 돈다. 결과로 패키지가 약 1.6MB(gzip 600KB)로 85~90% 줄었고, 레코드 2만 5천 건을 읽는 findMany 가 185밀리초에서 55밀리초로 3.4배 빨라졌다. 물린 대안은 이 글에 없고, 큰 전환이라 매끄럽게 넘어가는 일이 필요하다고만 적는다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -698,6 +1175,12 @@
       "publisher": "Prisma",
       "date": "2025-07-24",
       "summary": "니콜라스 부르크가 2025년 7월 24일에 쓴 벤치마크 글로, 러스트 기반과 타입스크립트·WASM 질의 컴파일러를 견준다. 포스트그레스에서 pg 드라이버로 쟀고 벤치마크 저장소를 공개하지만 하드웨어 사양은 이 글에 없다. 크게 빨라진 것들을 든다 — 레코드 2만 5천 건을 전부 읽는 findMany 가 163밀리초에서 77밀리초로 2.12배, 다대다 관계를 포함해 2천 건을 가져오는 질의가 1,539밀리초에서 136밀리초로 11.32배, 조건과 포함을 함께 쓴 질의가 82밀리초에서 38밀리초로 2.16배다. 느려진 것도 그대로 적는다 — 리뷰 3건을 포함한 findUnique 가 19밀리초에서 25밀리초로 0.76배, 다대다에서 일대일로 가는 작은 질의가 1밀리초에서 2밀리초로 0.50배, 배우와 영화 25편을 정렬해 가져오는 질의가 9밀리초에서 11밀리초로 0.82배다. 다만 작은 질의에서는 두 판의 차이가 미미하고 러스트 쪽이 조금 빠른 경우도 절대 시간이 이미 아주 낮을 때(1~2밀리초)뿐이라 실무에서 의미 있는 차이가 아니라고 적는다. 번들은 14MB 에서 1.6MB 로 90% 줄었고 별도 엔진 바이너리가 사라져 CPU 부담도 줄었다. 러스트 없는 판은 Prisma 7 에서 기본이 될 것이라고 밝힌다."
+    },
+    {
+      "title": "Prisma Accelerate — Docs",
+      "url": "https://www.prisma.io/docs/accelerate",
+      "publisher": "Prisma",
+      "summary": "엣지·서버리스에서 데이터베이스에 붙는 문제를 다루는 제품 문서다. 연결 고갈이 실제로 나는 고장이라고 못 박고, 15개 넘는 지역에 걸친 전역 연결 풀을 대신 관리한다고 적는다. 캐시는 300곳 넘는 지점에서 답해 레디스나 멤캐시드를 따로 두지 않아도 된다고 밝힌다. 쓰는 법은 간단하다 — 아무 질의에나 cacheStrategy 를 붙이면 TTL 이나 stale-while-revalidate 로 엣지에서 결과를 캐시한다(예로 든 것이 TTL 60초에 SWR 10초 창이다). 다만 질의 크기·타임아웃·응답 크기·요금제별 제한 같은 한도 숫자는 이 문서에 없고 대가도 따로 적지 않는다. 중요한 제약이 둘 있다 — 질의 캐싱은 Prisma Postgres 에서는 지원하지 않으며 당장의 계획에도 없다고 적고, 독립 제품으로서의 Accelerate 는 2026년 12월 1일에 접는다는 공지가 붙어 있다."
     }
   ]
 }
