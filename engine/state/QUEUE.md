@@ -21,8 +21,20 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Prisma** | US · SaaS | **러스트에서 나온 기록**이 이 엔진에 없다 — Bun 과 Ladybird 는 러스트로 옮긴 쪽이고 여기는 오년 된 러스트 질의 엔진을 걷어내고 타입스크립트·WASM 으로 되돌린 쪽이다. `prisma.io/blog` 에 그 여정을 연작으로 냈다 — `From Rust to TypeScript: A New Chapter for Prisma ORM` · `Try the New Rust-free Version (Early Access)` · `Rust to TypeScript Update: Boosting Performance` · `Prisma ORM without Rust: Latest Performance Benchmarks` · `Rust-free Prisma ORM is Ready for Production` · `Prisma 7 Release: Rust-Free, Faster, and More Compatible`. 수치가 붙는다 — 질의 최대 3.4배, 번들 약 14MB 에서 1.6MB(90% 감소). 이유도 적는다: 여러 언어를 받치려고 러스트를 골랐는데 오년 뒤 보니 타입스크립트가 지배적이라 언어 경계를 넘는 직렬화 값만 남았다는 것이다. ⚠️ 목록 페이지가 글을 안 보여 줘서 검색으로 주소를 얻었다 — 팔 때 개별 글에서 날짜를 확정한다. |
+| **Protomaps** | US · 오픈소스 | 지도 타일·지리공간 축이 없다. `protomaps.com/blog` 에 자기 형식(PMTiles — 객체 저장소 위의 단일 파일 타일 아카이브)을 두고 쓴 글이 있다. 특히 `You Might Not Want PMTiles`(2024-05-22)가 **자기 제품을 쓰지 말아야 할 자리를 스스로 적는다** — 웹에서 보고, 수 메가바이트를 넘고, 데이터가 하루에 한 번 이하로 바뀌는 세 조건이 아니면 다른 것을 쓰라며 GeoJSON·PostGIS·GeoParquet 을 이름 대어 권한다(자주 바뀌면 파일을 통째로 다시 올려야 해 경제성이 무너진다). 그 밖에 `Covering the Planet with Compressed Bitmaps`(2025-01-27) · `pmtiles merge`(2025-12-16) · `Mapterhorn - Terrain for Web Mapping`(2025-09-02). ⚠️ 사실상 소수가 만드는 오픈소스다(레이디버드·지그 재단 전례) · 최신 글이 2025-12-16 이다. |
+| **Ente** | IN/US · SaaS | 소비자용 종단간 암호화 사진과 **온디바이스 ML** 축이 없다(시그널은 메시징, 백블레이즈는 저장 내구성이다). `ente.com/blog` 에 자기 시스템 글이 이어진다 — `First steps to post-quantum`(2026-08-18, 혼합 암호) · `How Shamir's Secret Sharing Works`(2026-05-25) · `Finding similar images with Rust and a Vector DB`(2025-10-02) · `Image search on the Edge`(2023-11-18, CLIP·GGML 을 기기에서) · `3 copies, 3 clouds`(2023-01-07, 복제 전략) · `Custom Domains - How!`(2025-09-01) · `Monorepo - Our experience`(2024-10-29) · `Open sourcing our server`(2024-03-01). 사업 지표를 공개한다는 글(2026-07-01)도 있다. ⚠️ 최근 목록은 제품 공지가 많다 — 팔 때 기술 글만 고른다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-07 마흔세 번째 후보 조사 — 목표 3곳을 채웠다. 축을 또 벌렸다 — ORM·데이터 접근 계층 · 지도 타일 · 소비자 E2EE 와 온디바이스 ML.**
+  - **Prisma**(US) — 오년 된 러스트 질의 엔진을 걷어내고 타입스크립트·WASM 으로 되돌린 연작. 질의 3.4배, 번들 14MB→1.6MB.
+  - **Protomaps**(US) — `You Might Not Want PMTiles`(2024-05-22)가 자기 제품을 쓰지 말아야 할 자리를 이름 대어 적는다.
+  - **Ente**(IN/US) — 후양자 암호, 기기 위의 CLIP 검색, 3중 복제(클라우드 셋)까지 자기 시스템 글이 이어진다.
+  - **접은 곳 하나.** **Godot** — 릴리스·개발 스냅숏·커뮤니티 소식이 지배한다(최신 2026-08-26). 엔진 내부 글은 마우스 폴링 수정 한 편 정도다.
+  - **교훈 — 되돌린 기록을 찾는다.** 지난 조사에서 "회고를 먼저 찾는다"를 배웠는데, 이번에 한 겹 더 좁혔다. 이 엔진에는 러스트로 **옮긴** 기록이 둘(Bun·Ladybird) 있는데 러스트에서 **나온** 기록이 없었다 — Prisma 가 그 반대편이다. 같은 축의 반대 방향을 찾으면 비교가 저절로 선다.
+  - **자기 제품을 쓰지 말라는 글이 판정을 통과시킨다.** Protomaps 의 글이 그것 하나로 후보 자격을 얻었다 — 파는 쪽이 안 맞는 자리를 이름 대어 적는 것은 이 엔진이 찾는 바로 그 자료다.
+  - **절차가 열일곱 번째로 값을 했다** — `name_en` 144개를 먼저 출력해 세 이름이 다 없다는 것을 확인하고 던졌다.
 
 - **2026-09-07 마흔두 번째 후보 조사 — 목표 3곳을 채웠다. 축을 또 벌렸다 — 인가 · 검색 엔진 내부 · 런타임을 만드는 쪽.**
   - **AuthZed(SpiceDB)**(US) — 잔지바 계열 인가 시스템. 질의 계획기 벤치마크(2026-05-20)가 시나리오·최적화·수치·대가를 다 적는다.
