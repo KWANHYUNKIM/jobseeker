@@ -94,6 +94,25 @@ echo "latest -> $LATEST (${NEW_COUNT}건 = 모집중 ${ACTIVE_COUNT} + 마감 ${
 # 받아 온다. 캐시가 있어 이미 확인한 공고는 다시 조회하지 않는다.
 (cd "$ROOT_DIR/catch_capture" && "$PY" -m pipeline.backfill_location) || \
   echo "  [경고] 근무지 보수 실패 — 기존 값으로 계속합니다." >&2
+
+# ── 정본 DB 로 한 벌 만들기 (이관 3단계) ────────────────────
+# 여기까지의 JSON 은 **이 서버가 이번에 훑은 것**만 담는다. 정본 DB 는 그보다
+# 넓다 — 다른 머신이 모아 온 공고가 얹혀 있고(2026-09-08 기준 7천여 건),
+# status·dday 도 저장값이 아니라 읽는 시점에 계산한 값이다. 그래서 8771 검색은
+# 2만 4천 건을 답하는데 목록 화면은 1만 7천 건만 보이는 어긋남이 생겼다.
+#
+# JSON 을 DB 에서 다시 뽑아 **아래 빌더들이 전부 같은 것을 읽게** 한다.
+# 순서가 중요하다: backfill 이 방금 만든 JSON(근무지 보수까지 끝난)을 DB 에
+# 먼저 넣고, export 가 그 DB 를 통째로 내린다. 그래야 이번 사이클에 새로 본
+# 공고와 다른 머신에서 온 공고가 한 파일에 같이 담긴다.
+#
+# DB 가 꺼져 있으면 조용히 지나간다 — 방금 만든 스냅샷 JSON 이 그대로 쓰이고
+# 사이클은 계속된다. export 는 원자적 교체이고 자체 급감 가드(EXPORT_MIN_RATIO)를
+# 들고 있으므로, 반쯤 쓰인 파일이나 갑자기 줄어든 파일이 화면에 닿지 않는다.
+(cd "$ROOT_DIR/catch_capture" \
+   && "$PY" -m store.backfill \
+   && "$PY" -m store.export) \
+  || echo "  [경고] 정본 DB 반영 실패 — 이번 사이클은 스냅샷 JSON 으로 계속합니다." >&2
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 회사 규모 색인 — 잡 리스트의 "기업 규모" 필터가 읽는 얇은 파일(공고 1건 회사 포함)
