@@ -8,7 +8,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "PostgreSQL 처럼 보이는 분산 데이터베이스 — 그래서 새 기능마다 '한 대에서는 쉬운 것'을 흩어진 상태에서 다시 풀어야 한다",
       "updated_at": "2026-09-07",
       "domain": "cockroachlabs.com"
