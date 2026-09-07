@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Protomaps** | US · 오픈소스 | 프로파일만 씀(2026-09-07). 도메인 둘 다 비어 있다 — 서버 없이 지도를 낸다(PMTiles 형식 문서 확보) · 안 맞는 자리를 스스로 적는다(`you-might-not-want-pmtiles` 2024-05-22 확보). 안 읽은 것 — 압축 비트맵(2025-01-27) · pmtiles merge(2025-12-16) · Mapterhorn(2025-09-02). 라이선스와 후원 금액은 확인 못 했다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Protomaps** | US · 오픈소스 | 지도 타일·지리공간 축이 없다. `protomaps.com/blog` 에 자기 형식(PMTiles — 객체 저장소 위의 단일 파일 타일 아카이브)을 두고 쓴 글이 있다. 특히 `You Might Not Want PMTiles`(2024-05-22)가 **자기 제품을 쓰지 말아야 할 자리를 스스로 적는다** — 웹에서 보고, 수 메가바이트를 넘고, 데이터가 하루에 한 번 이하로 바뀌는 세 조건이 아니면 다른 것을 쓰라며 GeoJSON·PostGIS·GeoParquet 을 이름 대어 권한다(자주 바뀌면 파일을 통째로 다시 올려야 해 경제성이 무너진다). 그 밖에 `Covering the Planet with Compressed Bitmaps`(2025-01-27) · `pmtiles merge`(2025-12-16) · `Mapterhorn - Terrain for Web Mapping`(2025-09-02). ⚠️ 사실상 소수가 만드는 오픈소스다(레이디버드·지그 재단 전례) · 최신 글이 2025-12-16 이다. |
 | **Ente** | IN/US · SaaS | 소비자용 종단간 암호화 사진과 **온디바이스 ML** 축이 없다(시그널은 메시징, 백블레이즈는 저장 내구성이다). `ente.com/blog` 에 자기 시스템 글이 이어진다 — `First steps to post-quantum`(2026-08-18, 혼합 암호) · `How Shamir's Secret Sharing Works`(2026-05-25) · `Finding similar images with Rust and a Vector DB`(2025-10-02) · `Image search on the Edge`(2023-11-18, CLIP·GGML 을 기기에서) · `3 copies, 3 clouds`(2023-01-07, 복제 전략) · `Custom Domains - How!`(2025-09-01) · `Monorepo - Our experience`(2024-10-29) · `Open sourcing our server`(2024-03-01). 사업 지표를 공개한다는 글(2026-07-01)도 있다. ⚠️ 최근 목록은 제품 공지가 많다 — 팔 때 기술 글만 고른다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
