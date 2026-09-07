@@ -1867,8 +1867,8 @@
       "name_en": "Fireworks AI",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "남의 모델을 남보다 빠르게 돌려 파는 회사 — 그래서 커널 하나의 루프 순서가 사업의 값이 된다",
       "updated_at": "2026-09-07",
       "domain": "fireworks.ai"
