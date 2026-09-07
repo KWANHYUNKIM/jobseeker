@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **turbopuffer** | US · 검색 | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 객체 저장소를 원본으로 삼는다 · 차가운 질의와 따뜻한 질의를 갈라 판다(둘 다 아키텍처 문서로 확보) · 색인이 읽을 양을 정한다(자료 미독, tech 두 칸 `unknown`). 안 읽은 것 — 역색인 설계(2026-01-14) · FTS v2(2025-12-04) · BM25 질의 길이(2026-01-07) · MAXSCORE 대 WAND(2025-12-09) · SIMD(2026-02-18) · 날마다 배포하기(2026-08-14). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **turbopuffer** | US · SaaS | 검색 엔진 내부(전문 검색·벡터를 객체 저장소 위에서) 축이 없다 — Chroma 는 벡터, Tigris 는 객체 저장소를 만드는 쪽인데 여기는 그 위에 검색을 짓는 쪽이다. `turbopuffer.com/blog` 에 자기 시스템 글이 이어진다 — `How to ship a database every day`(2026-08-14) · `Designing inverted indexes in a KV-store on object storage`(2026-01-14) · `Why BM25 queries with more terms can be faster`(2026-01-07) · `Vectorized MAXSCORE over WAND, especially for long LLM-generated queries`(2025-12-09) · `FTS v2: up to 20x faster full-text search`(2025-12-04) · `Rust zero-cost abstractions vs. SIMD`(2026-02-18) · `Mixing numeric attributes into text search`(2026-04-27). 최신 글이 2026-09-04 이고 손님 글이 섞이지만 자기 시스템 글의 비중이 크다. |
 | **Deno** | US · SaaS | Val Town 의 런타임이 바로 이 회사 제품이라 **부품이 된 회사**를 반대편에서 볼 수 있다. `deno.com/blog` 에 자기 시스템 글이 있다 — `What we got wrong about HTTP imports`(2024-07-29, 설계를 되짚는 회고) · `The Anatomy of an Isolate Cloud`(2022-09-27, Deploy 인프라) · `How security and tenant isolation allows Deno Subhosting to run untrusted code securely`(2023-11-27, 발타운의 격리 이야기와 정면으로 견줄 자리) · `Building Deno KV internals`(2023-09-14, FoundationDB 선택) · `How We Made the Deno Language Server Ten Times Faster`(2024-06-20, 자동완성 6~8초 → 1초 미만) · `How we built JSR`(2024-04-12). ⚠️ **최신성이 약하다** — 심층 글이 2022~2024년에 몰려 있고 2026년 글은 릴리스 위주다(최신 2026-06-25 Deno 2.9). 팔 때 그 사정을 프로파일에 적는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
