@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **37signals** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 클라우드에서 나온다(`leave-the-cloud`, 연표 2세대). 빈 도메인 둘 — 페타바이트를 되찾는다(S3 탈출 글 확보: 10PB·50억 파일) · 사지 않고 만든다(Kamal·Solid Cache·Nostos·Upright, 다만 뒤 셋은 본문 안 읽음). **⚠️ 되돌린 뒤 실제 절감액 글이 블로그 목록에 없다** — 연말 보고 약속만 있고 후속 글을 못 찾았다. 안 읽은 글 — `Solid Cache`(2023-10-03) · `Prometheus metrics`(2023-08-14) · `Upright`(2026-02-16) · `Rails Multi-Tenancy`(2026-02-13) · `Fizzy Infrastructure`(2026-02-26) · `The ONCE app server`(2026-04-17). |
+| **37signals** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 클라우드에서 나온다(`leave-the-cloud`, 연표 2세대) · 페타바이트를 되찾는다(`dual-write-then-verify`). 빈 도메인 하나 — 사지 않고 만든다(Kamal 은 확보, `Solid Cache`·`Upright`·`The ONCE app server` 는 본문 안 읽음). **⚠️ 되돌린 뒤 실제 절감액 글이 블로그 목록에 없다.** 다음에 읽을 것 — `Solid Cache`(2023-10-03) · `Introducing Upright`(2026-02-16) · `The ONCE app server`(2026-04-17) · `Rails Multi-Tenancy`(2026-02-13). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
