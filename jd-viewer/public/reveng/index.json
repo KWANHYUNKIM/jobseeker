@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "restate",
+      "name": "리스테이트",
+      "name_en": "Restate",
+      "country": "EU",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "재시도·상태 기계·분산 락을 없애려고 그 아래 로그를 자기 손으로 지은 회사 — 그 대가로 남이 안 만들라는 상태 저장 시스템을 떠안았다",
+      "updated_at": "2026-09-07",
+      "domain": "restate.dev"
+    },
+    {
       "slug": "letsencrypt",
       "name": "레츠 인크립트",
       "name_en": "Let's Encrypt",
@@ -2660,7 +2672,9 @@
     "들어오는 보고를 소수가 감당한다",
     "남이 배포한 바이너리는 우리가 못 고친다",
     "폐기를 알리는 일에서 손을 뗀다",
-    "인증서를 짧게 만들어 폐기가 덜 필요하게 한다"
+    "인증서를 짧게 만들어 폐기가 덜 필요하게 한다",
+    "모든 것을 하나의 로그로 모아 조율을 없앤다",
+    "엔진을 밑바닥부터 자기 손으로 짓는다"
   ],
   "countries": {
     "KR": "한국",
