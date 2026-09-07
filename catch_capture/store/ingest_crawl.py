@@ -23,7 +23,8 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 from pipeline.job_status import parse_deadline, today_date  # noqa: E402
 from store import conn as store_conn  # noqa: E402
 from store.upsert import (  # noqa: E402
-    content_hash, log_event, refresh_display_names, set_job_techs, upsert_company, upsert_job,
+    content_hash, log_event, parse_career, parse_employment, refresh_display_names,
+    set_job_techs, upsert_company, upsert_job,
 )
 
 CATCH = _Path(__file__).resolve().parent.parent
@@ -150,6 +151,7 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
 
                 deadline_on, always_open = _deadline(j, today)
                 region = j.get("region") if j.get("region") in ("kr", "global") else None
+                career_min, accepts_entry = parse_career(j.get("career"))
                 chash = content_hash(j)
                 prev = known.get(j["url"].strip())
                 body_same = prev is not None and prev["content_hash"] == chash
@@ -158,11 +160,12 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
                     "site": j["site"], "pid": str(j["pid"]), "url": j["url"].strip(),
                     "company_id": cid, "title": j["title"].strip(),
                     "career_text": j.get("career") or "",
-                    "career_min": None, "accepts_entry": None,
+                    "career_min": career_min, "accepts_entry": accepts_entry,
                     "location_text": j.get("location") or "",
                     "sido": None, "sigungu": None, "region": region,
                     "overseas": bool(j.get("overseas")),
-                    "employment": None, "education": j.get("education") or None,
+                    "employment": parse_employment(j.get("employment")),
+                    "education": j.get("education") or None,
                     "source_board": j.get("source_board") or None,
                     "main_tasks": j.get("main_tasks") or "",
                     "qualifications": j.get("qualifications") or "",

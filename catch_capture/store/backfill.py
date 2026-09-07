@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys as _sys
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -33,7 +32,8 @@ from pipeline.job_status import parse_deadline  # noqa: E402
 from store import conn as store_conn  # noqa: E402
 from store.slug import build_company_slugs, norm_company  # noqa: E402
 from store.upsert import (  # noqa: E402
-    content_hash, refresh_display_names, set_job_techs, upsert_company, upsert_job,
+    content_hash, parse_career, parse_employment, refresh_display_names,
+    set_job_techs, upsert_company, upsert_job,
 )
 
 ROOT = _Path(__file__).resolve().parent.parent.parent
@@ -43,41 +43,6 @@ CLOSURES = CATCH / "job_closures.json"
 OVERRIDES = CATCH / "overrides.json"
 
 SITES = {"wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"}
-
-# '경력3년↑' / '경력 3년 이상' → 3
-_YEARS = re.compile(r"(\d+)\s*년")
-_ENTRY = re.compile(r"신입|경력무관|무관")
-
-_EMPLOYMENT = {
-    "정규직": "정규직", "계약직": "계약직", "인턴": "인턴",
-    "프리랜서": "프리랜서", "파견": "파견", "파견직": "파견",
-}
-
-
-def parse_career(text: str) -> tuple[int | None, bool | None]:
-    """'경력3년↑' → (3, False) / '신입·경력' → (0, True) / 빈 값 → (None, None)"""
-    t = (text or "").strip()
-    if not t:
-        return None, None
-    m = _YEARS.search(t)
-    years = int(m.group(1)) if m else None
-    entry = bool(_ENTRY.search(t))
-    if entry and years is None:
-        years = 0
-    return years, entry
-
-
-def parse_employment(text: str) -> str | None:
-    """지금 데이터의 employment 는 파싱이 깨져 있다 — 값에 공고 제목이 통째로
-    들어간 것이 대부분이다. 아는 낱말만 받아들이고 나머지는 버린다(스키마의
-    ENUM 이 어차피 거부한다). jobkorea txt 파서를 고치면 다시 채워진다."""
-    t = (text or "").strip()
-    if not t or len(t) > 12:
-        return None
-    for key, val in _EMPLOYMENT.items():
-        if t == key:
-            return val
-    return None
 
 
 def load_closures() -> dict:

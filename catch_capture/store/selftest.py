@@ -141,6 +141,25 @@ def run() -> int:
         cur.execute("SELECT is_noise FROM tech WHERE id = %s", (ids["dev"],))
         check(cur.fetchone()["is_noise"], "'dev' 는 노이즈로 표시된다")
 
+        # ── 2b. 조건 파싱: 크롤러가 흘린 제목이 DB 까지 못 가게 ──────
+        print("\n[2b] 경력·고용형태 파싱")
+        from store.upsert import parse_career, parse_employment
+        check(parse_employment("정규직") == "정규직"
+              and parse_employment("정규직(수습 3개월)") == "정규직"
+              and parse_employment("정규직/계약직") == "정규직",
+              "정상 고용형태는 받아들인다")
+        # 실제 데이터에서 고용형태 칸에 들어앉아 있던 값들이다(242건 중 225건).
+        check(all(parse_employment(v) is None for v in (
+                  "[아이모비] 웹 풀스택 개발자(정규직/신입)",
+                  "SK하이닉스(SK Hynix) React/Java 개발자(정규직/계약직/프리랜서) 채용",
+                  "프리랜서 Java 백엔드 개발자 모집",
+                  "[국비최대무료/기숙사무료/취업연계]AI/빅데이터/풀스택/KDT단기심화")),
+              "제목이 고용형태로 들어오면 버린다")
+        check(parse_career("경력3년↑") == (3, False)
+              and parse_career("신입·경력") == (0, True)
+              and parse_career("") == (None, None),
+              "경력 파싱")
+
         # ── 3. 공고 제약 ───────────────────────────────────────────
         print("\n[3] 공고 제약")
         base = dict(site="wanted", pid="1", url="https://a.test/1", company_id=cid,
