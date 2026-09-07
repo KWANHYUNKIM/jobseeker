@@ -87,6 +87,26 @@ def _usable(j: dict) -> bool:
     )
 
 
+def record_tech_daily(cur) -> int:
+    """오늘의 기술별 모집중 공고 수를 남긴다. `trends_reports/*.md` 가 하던 일이다.
+
+    하루에 한 행이라 같은 날 여러 사이클이 돌면 마지막 값으로 덮인다 — 그게 맞다.
+    하루치 추이에 사이클 단위 잡음까지 담을 이유가 없다.
+    """
+    cur.execute(
+        """
+        INSERT INTO tech_daily (day, tech_id, n_active)
+        SELECT CURRENT_DATE, t.id, count(*)
+          FROM job_tech jt
+          JOIN tech t ON t.id = jt.tech_id AND NOT t.is_noise
+          JOIN job_state s ON s.job_id = jt.job_id AND s.status = 'active'
+         GROUP BY t.id
+        ON CONFLICT (day, tech_id) DO UPDATE SET n_active = EXCLUDED.n_active
+        """
+    )
+    return cur.rowcount
+
+
 def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
            site_counts: dict[str, int] | None = None) -> dict:
     """공고 목록을 정본 DB 에 반영하고 요약을 돌려준다."""
@@ -243,6 +263,7 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
 
             renamed = refresh_display_names(cur)
             stats["renamed"] = renamed
+            stats["tech_daily"] = record_tech_daily(cur)
 
             cur.execute(
                 """UPDATE crawl_run SET ended_at = now(), ok = true,
