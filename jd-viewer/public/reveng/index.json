@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "mozilla",
+      "name": "모질라",
+      "name_en": "Mozilla",
+      "country": "기타",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "수십 년 묵은 코드와 남이 밀어 넣는 코드를 동시에 감당하는 브라우저 — 그래서 막는 것보다 대신할 길을 주는 일이 먼저다",
+      "updated_at": "2026-09-07",
+      "domain": "mozilla.org"
+    },
+    {
       "slug": "tigerdata",
       "name": "타이거데이터",
       "name_en": "TigerData",
@@ -2591,7 +2603,9 @@
     "보장을 토픽마다 고르게 한다",
     "교차 AZ 비용을 오브젝트 스토리지로 옮긴다",
     "청크가 늘어도 계획이 무거워지지 않게 한다",
-    "미리 계산해 둔 집계를 늦게 온 데이터와 화해시킨다"
+    "미리 계산해 둔 집계를 늦게 온 데이터와 화해시킨다",
+    "오래 묵은 코드에서 잠복 취약점을 찾아낸다",
+    "남이 우리 안에 들어오는 것을 막되 대신할 길을 준다"
   ],
   "countries": {
     "KR": "한국",
