@@ -4,7 +4,7 @@
   "name_en": "DeNA",
   "country": "JP",
   "category": "게임",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-07",
   "domain": "dena.com",
   "one_liner": "게임 이벤트 중 페일오버가 깨진 원인을 10년 전 MySQL 커밋까지 거슬러 찾는 회사 — 옮길 때는 요금을 양쪽 다 적는다",
@@ -192,7 +192,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "go-down-to-the-format"
+      ]
     }
   ],
   "features": [
@@ -700,17 +702,492 @@
           "summary": "**Okta(외부 IDaaS)에서 자체 제작 IdP 로 옮긴** 전사 프로젝트의 3부다. SAML/OIDC·SSO·MFA 를 자체 기반으로 받치고 **벤더 의존에서 벗어나는 것**이 목적이다. 규모가 크다 — **350개가 넘는 서비스 제공자(SP) 애플리케이션**을 옮겼고 스스로 **'全社的なプロジェクト'**(전사적 프로젝트)라 부른다. **넘기는 방식은 겹쳐 두기**다. 이관 중에는 **사용자는 계속 Okta 로 로그인하고 뒤에서 자체 IdP 가 인증을 처리**하는 병행 운영을 했고, 모든 앱이 준비된 뒤 **'公開を年始第2週とした'**(공개를 연초 둘째 주로 잡았다), 그리고 **1.5개월** 동안 양쪽 접근을 열어 둔 뒤에야 Okta 를 껐다. **깨진 자리는 끝내는 순간이었다.** 접근 정책을 **전환 모드**(Okta SSO 만으로 정책을 만족시키던 상태)에서 **실제 강제**로 바꾸는 순간 **문의가 폭증**했다 — **사전에 알렸는데도** 사용자들이 새 MFA 요구에 준비가 안 되어 있었다. **'セキュリティ部門と迅速なコミュニケーション'**(보안 부문과의 신속한 소통)으로 풀었다. **의도적으로 고른 것들도 적는다** — 두 IdP 화면 사이에서 사용자가 헷갈리지 않도록 **Okta 를 더 오래 살려 뒀고**, 정책을 확실히 강제하기 위해 **당장의 문의 부담이 커지는 것을 받아들였으며**, 복잡도를 감당하려고 **AI 를 붙인 온보딩**을 넣었다. 그리고 이것이 **'終着点'**(종착점)이 아니라 보안과 사용성을 계속 손보는 과정이라고 못 박는다. **일정·다운타임·사용자 수의 구체 수치는 없다.**"
         }
       ]
+    },
+    {
+      "key": "go-down-to-the-format",
+      "name": "도구가 안 알려 주면 형식까지 내려간다",
+      "domain": "깨진 자리를 소스와 바이너리까지 파고든다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "**게임 이벤트가 도는 중에 마스터가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — **'malformed binlog: it does not contain any Format_description_log_event'.**\n\n오류 메시지만으로는 아무것도 알 수 없다. 그래서 **내려갔다.** 운영 데이터의 불일치에서 거슬러 **MHA 의 소스**를 읽고, **MySQL 의 소스와 binlog 규격**까지 가고, **hexdump 로 바이너리를 뜯고**, mysqlbinlog 의 동작을 **5.7.8 과 5.7.25 에서 견줬다.**\n\n원인은 **2015년의 변경**이었다. **MySQL 5.7.9** 에서 mysqlbinlog 가 **relaylog 에 적힌 슬레이브의 메타데이터(FDE)를 읽어도 아무것도 하지 않게** 바뀌었는데, **MHA 는 첫 FDE 만 쓰는 옛 구현 그대로**였다 — **얹혀 있는 도구의 전제가 10년째 조용히 어긋나 있었다.**\n\n**이 손버릇은 오래됐다.** 2010년에도 **MySQL 의 SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 냈다.",
+        "metrics": [
+          {
+            "label": "터진 자리",
+            "value": "게임 이벤트 중 마스터 호스트 고장 → 페일오버 → 슬레이브 3대 중 1대 복제 정지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "label": "조사 깊이",
+            "value": "MHA 소스 → MySQL 소스와 binlog 규격 → hexdump → 5.7.8/5.7.25 비교",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "label": "원인의 나이",
+            "value": "MySQL 5.7.9(2015년 릴리스)의 mysqlbinlog 변경",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "label": "발생 조건",
+            "value": "5.7.9 이상 + 읽기 진도가 앞선 슬레이브가 있거나 미실행 relaylog 가 있을 때",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "label": "빈도",
+            "value": "'우리 환경에서도 이 한 번밖에 일어나지 않았다'",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "label": "15년 전의 같은 손버릇",
+            "value": "2010년 HandlerSocket — SQL 파서를 건너뛰어 엔진 성능을 한계까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "HandlerSocket plugin for MySQL",
+                "url": "https://engineering.dena.com/blog/2010/08/handlersocket-plugin-for-mysql/",
+                "publisher": "DeNA",
+                "summary": "**2010년 8월** 글이다. MySQL 접근을 빠르게 하려고 **SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 공개했다 — **'MySQLのSQLパーザをすっ飛ばし'**(MySQL 의 SQL 파서를 훌쩍 건너뛰고) 네트워크 통신과 멀티스레딩 기반까지 바꿔 **'InnoDB等のデータベースエンジンの性能を限界まで引き出します'**(InnoDB 등 데이터베이스 엔진의 성능을 한계까지 끌어냅니다). 효과를 셋으로 적는다 — **'MySQLサーバの負荷軽減、memcachedの負荷軽減、ネットワークトラフィック減少'**(MySQL 서버 부하 경감 · memcached 부하 경감 · 네트워크 트래픽 감소). 그전까지 쓰던 **MySQL + memcached 구성을 HandlerSocket 을 얹은 MySQL 만으로** 대신하게 됐다는 것이 요지다. 애플리케이션 CPU 부하도 크게 줄었다고 하되 **그것이 HandlerSocket 때문만은 아니라고 단서를 단다.** **정량은 없다** — QPS 수치가 나오지 않는다. 그리고 **'不稼動、稼動不良'**(비가동·가동 불량)에 책임지지 않으며 어떤 목적에도 **'いかなる保証も行わない'**(어떠한 보증도 하지 않는다)는 고지를 붙인다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "FDE(Format_description_event)",
+            "what": "binlog·relaylog 앞머리의 **메타데이터**. 뒤따르는 이벤트를 어떻게 읽을지 알려 준다."
+          },
+          {
+            "name": "relaylog",
+            "what": "슬레이브가 받아 둔 로그. **자기 서버의 FDE 와 마스터의 FDE 가 함께** 들어 있다."
+          },
+          {
+            "name": "MHA",
+            "what": "마스터가 죽으면 슬레이브를 승격시키는 자동 페일오버 도구. **relaylog 의 첫 FDE 만 쓴다.**"
+          },
+          {
+            "name": "mysqlbinlog",
+            "what": "로그를 읽어 이벤트를 재생하는 도구. **5.7.9 부터 relaylog 의 슬레이브 FDE 를 무시한다.**"
+          },
+          {
+            "name": "hexdump",
+            "what": "바이너리를 직접 보는 수단. **도구가 안 알려 줄 때 형식으로 내려가는 길.**"
+          }
+        ],
+        "invariants": [
+          "**오류 메시지는 원인을 말해 주지 않는다** — 형식까지 내려가야 보인다.",
+          "**얹혀 있는 도구는 밑이 바뀌면 조용히 어긋난다.**",
+          "**드물게 터지는 것일수록 조건이 좁다** — 그 조건을 못 박아야 재현된다.",
+          "relaylog 의 **첫 FDE 가 마스터의 것이 아닐 수 있다.**",
+          "**빈도를 정직하게 적어야** 다음 사람이 판단할 수 있다."
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "오류 메시지에서 2015년까지",
+          "question": "어디까지 내려가서 원인을 찾았나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"게임 이벤트 중 마스터 호스트 고장\"] --> B[\"MHA 자동 페일오버\"]\n  B --> C[\"슬레이브 3대 중 1대 복제 정지\"]\n  C --> D[\"malformed binlog:\\nit does not contain any\\nFormat_description_log_event\"]\n  D --> E[\"운영 데이터 불일치에서 거슬러 간다\"]\n  E --> F[\"MHA 소스를 읽는다\"]\n  F --> G[\"MySQL 소스와 binlog 규격\"]\n  G --> H[\"hexdump 로 바이너리를 뜯는다\"]\n  H --> I[\"mysqlbinlog 를 5.7.8 과\\n5.7.25 에서 견준다\"]\n  I --> J[\"원인 — MySQL 5.7.9 (2015)\"]\n  J --> K[\"relaylog 의 슬레이브 FDE 를\\n읽어도 아무것도 안 하게 바뀜\"]\n  K --> L[\"MHA 는 첫 FDE 만 쓰는\\n옛 구현 그대로\"]\n  L --> M[\"마스터 FDE 를 못 써\\n메타데이터 없이 이벤트를 처리\"]"
+        },
+        {
+          "title": "전제가 어긋난 자리",
+          "question": "왜 첫 FDE 만 쓰면 안 되게 됐나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant R as relaylog\n  participant B as mysqlbinlog\n  participant M as MHA\n  Note over R: 앞머리에 슬레이브 자신의 FDE<br/>뒤에 마스터의 FDE 가 온다\n  Note over B,M: MySQL 5.7.8 까지\n  M->>B: relaylog 를 읽어라\n  B->>R: 첫 FDE(슬레이브 것)를 읽는다\n  B-->>M: 그것으로 이벤트를 해석한다\n  Note over B,M: MySQL 5.7.9 부터\n  M->>B: relaylog 를 읽어라\n  B->>R: 첫 FDE(슬레이브 것)를 읽는다\n  B->>B: 아무것도 하지 않는다\n  Note over B: 마스터의 FDE 를 써야 하는데<br/>MHA 는 첫 것만 넘겨 준다\n  B--xM: malformed binlog"
+        },
+        {
+          "title": "드물지만 조건이 있다",
+          "question": "언제 터지는가, 그리고 무엇이 안 적혀 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"발생 조건\"] --> A1[\"MySQL 5.7.9 이상\"]\n  A --> A2[\"페일오버 때\\n자기보다 읽기 진도가 앞선\\n다른 슬레이브가 있다\"]\n  A --> A3[\"또는 아직 실행되지 않은\\nrelaylog 가 있다\"]\n  A1 --> B[\"조건이 다 맞아야 터진다\"]\n  A2 --> B\n  A3 --> B\n  B --> C[\"우리 환경에서도\\n이 한 번밖에 일어나지 않았다\"]\n  Z[\"이 글에 없는 것\"] -.-> Z1[\"고쳤는지 · MHA 를 버렸는지\"]\n  Z -.-> Z2[\"'그 뒤의 대응도 나중에\\n글로 쓸 수 있으면' 에서 멈춘다\"]\n  Z -.-> Z3[\"복제가 멈춘 동안의\\n데이터 불일치 규모\"]\n  Z -.-> Z4[\"복구에 걸린 시간\"]"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "오류 메시지를 믿지 않는다",
+            "why": "**'malformed binlog'** 는 **무엇이 잘못됐는지**만 말하고 **왜 그런지**는 말하지 않는다. 거기서 멈추면 '가끔 나는 오류'로 남는다."
+          },
+          {
+            "step": "쓰는 도구의 소스를 읽는다",
+            "why": "MHA 가 relaylog 를 **어떻게** 읽는지 봐야 한다 — **첫 FDE 만 쓰는 구현**이라는 것이 여기서 나온다."
+          },
+          {
+            "step": "그 아래 도구의 소스까지 간다",
+            "why": "mysqlbinlog 의 동작이 바뀐 것이 진짜 원인이었다. **얹혀 있는 도구만 봐서는 안 보인다.**"
+          },
+          {
+            "step": "형식을 직접 본다",
+            "why": "**hexdump 로 binlog 의 바이너리 형식을 뜯어** 어느 이벤트가 있고 없는지 확인한다 — **도구가 안 알려 주면 형식으로 내려간다.**"
+          },
+          {
+            "step": "버전을 나란히 돌려 좁힌다",
+            "why": "**5.7.8 과 5.7.25** 에서 mysqlbinlog 의 동작을 견줘 **언제 바뀌었는지**를 특정한다 — **5.7.9(2015)** 였다."
+          },
+          {
+            "step": "발생 조건을 못 박는다",
+            "why": "**5.7.9 이상**이고 **자기보다 읽기 진도가 앞선 슬레이브가 있거나 미실행 relaylog 가 있을 때.** 조건을 적어야 다른 사람이 자기 환경을 판단할 수 있다."
+          },
+          {
+            "step": "빈도를 정직하게 적는다",
+            "why": "**'우리 환경에서도 이 한 번밖에 일어나지 않았다.'** 무섭게 쓰지도, 별것 아닌 척하지도 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "오류를 어디까지 파고들 것인가?",
+            "chosen": "**형식까지.** MHA 소스 → MySQL 소스와 binlog 규격 → hexdump → 버전별 동작 비교.",
+            "alternatives": [
+              "재시작하고 넘어간다",
+              "MHA 를 다른 것으로 바꾼다"
+            ],
+            "tradeoff": "**한 번밖에 안 일어난 일에 이만큼 든다.** 그러나 원인을 모르면 **다음에 또 나도 같은 자리에 선다** — 그리고 발생 조건을 적어 두면 남도 판단할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "question": "원인을 어느 계층에서 찾을 것인가?",
+            "chosen": "**얹혀 있는 도구(MHA)가 아니라 그 아래(mysqlbinlog)의 변경**에서 찾았다.",
+            "alternatives": [
+              "MHA 의 버그로 결론짓는다"
+            ],
+            "tradeoff": "**아래까지 안 갔으면 '가끔 나는 MHA 버그'로 끝났을 것**이다. 대신 조사에 시간이 훨씬 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "question": "발생 조건을 공개할 것인가?",
+            "chosen": "**적는다** — 5.7.9 이상 + 진도가 앞선 슬레이브 또는 미실행 relaylog.",
+            "alternatives": [
+              "'드물게 발생'으로만 적는다"
+            ],
+            "tradeoff": "**우리 환경의 구조가 드러난다**(재구성). 대신 같은 조합을 쓰는 쪽이 **자기가 해당되는지 판단**할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "question": "대응을 이 글에 넣을 것인가?",
+            "chosen": "**넣지 않는다** — **'그 뒤의 대응도 나중에 글로 쓸 수 있으면 좋겠다'** 에서 멈춘다.",
+            "alternatives": [
+              "원인과 대응을 한 글에 담는다"
+            ],
+            "tradeoff": "**읽는 쪽은 고쳤는지 모른다.** MHA 를 고쳤는지 버렸는지, 어떻게 막았는지가 열린 채다 — **조사기로는 완결이지만 사고 보고서로는 미완**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "question": "MySQL 안을 남의 것으로 둘 것인가?",
+            "chosen": "**두지 않는다.** 2010년에는 **SQL 파서를 건너뛰는 플러그인**을 만들었고, 2026년에는 **binlog 형식을 뜯는다.**",
+            "alternatives": [
+              "표준 인터페이스만 쓴다"
+            ],
+            "tradeoff": "**엔진 내부에 매인다** — 버전이 바뀌면 전제가 어긋난다. **정확히 이번에 터진 것이 그 대가**다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "HandlerSocket plugin for MySQL",
+                "url": "https://engineering.dena.com/blog/2010/08/handlersocket-plugin-for-mysql/",
+                "publisher": "DeNA",
+                "summary": "**2010년 8월** 글이다. MySQL 접근을 빠르게 하려고 **SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 공개했다 — **'MySQLのSQLパーザをすっ飛ばし'**(MySQL 의 SQL 파서를 훌쩍 건너뛰고) 네트워크 통신과 멀티스레딩 기반까지 바꿔 **'InnoDB等のデータベースエンジンの性能を限界まで引き出します'**(InnoDB 등 데이터베이스 엔진의 성능을 한계까지 끌어냅니다). 효과를 셋으로 적는다 — **'MySQLサーバの負荷軽減、memcachedの負荷軽減、ネットワークトラフィック減少'**(MySQL 서버 부하 경감 · memcached 부하 경감 · 네트워크 트래픽 감소). 그전까지 쓰던 **MySQL + memcached 구성을 HandlerSocket 을 얹은 MySQL 만으로** 대신하게 됐다는 것이 요지다. 애플리케이션 CPU 부하도 크게 줄었다고 하되 **그것이 HandlerSocket 때문만은 아니라고 단서를 단다.** **정량은 없다** — QPS 수치가 나오지 않는다. 그리고 **'不稼動、稼動不良'**(비가동·가동 불량)에 책임지지 않으며 어떤 목적에도 **'いかなる保証も行わない'**(어떠한 보증도 하지 않는다)는 고지를 붙인다."
+              },
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "MHA",
+            "role": "자동 페일오버. relaylog 의 첫 FDE 만 쓰는 옛 구현",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "tech": "mysqlbinlog",
+            "role": "로그를 읽어 재생한다. 5.7.9 부터 relaylog 의 슬레이브 FDE 를 무시",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "tech": "hexdump",
+            "role": "바이너리 형식을 직접 본다 — 도구가 안 알려 줄 때의 길",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "tech": "버전별 동작 비교(5.7.8 / 5.7.25)",
+            "role": "변경 시점을 좁혀 2015년 릴리스로 특정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "tech": "HandlerSocket(2010)",
+            "role": "SQL 파서를 건너뛰어 InnoDB 성능을 한계까지. MySQL+memcached 를 MySQL 만으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "HandlerSocket plugin for MySQL",
+                "url": "https://engineering.dena.com/blog/2010/08/handlersocket-plugin-for-mysql/",
+                "publisher": "DeNA",
+                "summary": "**2010년 8월** 글이다. MySQL 접근을 빠르게 하려고 **SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 공개했다 — **'MySQLのSQLパーザをすっ飛ばし'**(MySQL 의 SQL 파서를 훌쩍 건너뛰고) 네트워크 통신과 멀티스레딩 기반까지 바꿔 **'InnoDB等のデータベースエンジンの性能を限界まで引き出します'**(InnoDB 등 데이터베이스 엔진의 성능을 한계까지 끌어냅니다). 효과를 셋으로 적는다 — **'MySQLサーバの負荷軽減、memcachedの負荷軽減、ネットワークトラフィック減少'**(MySQL 서버 부하 경감 · memcached 부하 경감 · 네트워크 트래픽 감소). 그전까지 쓰던 **MySQL + memcached 구성을 HandlerSocket 을 얹은 MySQL 만으로** 대신하게 됐다는 것이 요지다. 애플리케이션 CPU 부하도 크게 줄었다고 하되 **그것이 HandlerSocket 때문만은 아니라고 단서를 단다.** **정량은 없다** — QPS 수치가 나오지 않는다. 그리고 **'不稼動、稼動不良'**(비가동·가동 불량)에 책임지지 않으며 어떤 목적에도 **'いかなる保証も行わない'**(어떠한 보증도 하지 않는다)는 고지를 붙인다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "오래된 것을 값과 함께 옮긴다(같은 회사의 다른 도메인)",
+          "via": "오래 쓴 자산의 두 얼굴",
+          "contract": "저쪽은 **수명이 다한 것을 값을 재며 떠나고**, 이쪽은 **오래된 조합이 터진 이유를 끝까지 판다.** 그리고 **Cloud SQL 로 옮기면 이 층의 문제가 사라진다** — 관리형이 MHA 자리를 대신하기 때문이다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "쿡패드(다른 회사)",
+          "via": "이관이 조용히 깨뜨리는 것",
+          "contract": "쿡패드는 **본문에 박힌 레시피 ID 링크**가 이관에 깨졌고, DeNA 는 **도구의 전제**가 버전 업으로 깨졌다. 둘 다 **평소에는 안 보이는 연결**인데, 쿡패드 것은 **자기 데이터**이고 DeNA 것은 **남의 코드**다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "curl(다른 회사)",
+          "via": "오래된 것과 함께 사는 법",
+          "contract": "curl 이 **20년 넘게 유지되는 코드의 부담**을 적듯, DeNA 는 **10년 전 변경에 따라오지 못한 도구**를 만났다. **오래 굴리면 반드시 이런 자리가 생긴다.**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "트리거닷데브(다른 회사)",
+          "via": "사슬로 적는가, 대응까지 적는가",
+          "contract": "트리거닷데브는 **원인과 고칠 것 여섯 가지를 한 글에** 적는데, DeNA 는 **원인까지만 적고 대응을 후속으로 미룬다.** **조사기와 사고 보고서는 다르다** — 앞은 '왜'가 끝이고 뒤는 '그래서 무엇을'까지다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+              "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+              "publisher": "DeNA",
+              "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+            }
+          ]
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "얹혀 있는 도구는 밑이 바뀌면 조용히 어긋난다",
+            "why_hard": "**MySQL 5.7.9(2015)** 에서 mysqlbinlog 가 **relaylog 의 슬레이브 FDE 를 읽어도 아무것도 하지 않게** 바뀌었는데, **MHA 는 첫 FDE 만 쓰는 구현 그대로**였다. **10년 동안 아무 일도 없다가** 페일오버라는 드문 상황에서 드러났다.",
+            "current_best": "**형식까지 내려가 원인을 특정하고 발생 조건을 못 박았다.** 다만 **대응은 후속 글로 미뤄져** 고쳤는지 버렸는지는 알 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "problem": "드물게 터지는 것은 재현이 어렵다",
+            "why_hard": "조건이 셋이다 — **5.7.9 이상**, **자기보다 읽기 진도가 앞선 다른 슬레이브**, 또는 **미실행 relaylog.** 셋이 겹쳐야 하니 **'우리 환경에서도 이 한 번밖에 일어나지 않았다.'**",
+            "current_best": "**버전별 동작을 나란히 돌려 좁혔다**(5.7.8 vs 5.7.25). 운영에서 재현하는 대신 **도구의 동작 차이로** 확인한 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+                "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+                "publisher": "DeNA",
+                "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+              }
+            ]
+          },
+          {
+            "problem": "엔진 내부에 붙으면 버전이 곧 위험이다",
+            "why_hard": "2010년의 **HandlerSocket** 은 **SQL 파서를 건너뛰어** 엔진 성능을 끌어냈다 — 내부에 붙는 방식이다. 그렇게 얻은 성능은 **엔진이 바뀌면 전제가 흔들린다.**",
+            "current_best": "이 글들은 그 연결을 스스로 말하지 않는다(재구성). 다만 **2010년의 손버릇과 2026년에 터진 자리가 같은 층**이라는 것은 남는다.",
+            "confidence": "inferred"
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어디까지 팔지 정할 때",
+          "thought": "**한 번밖에 안 일어난 일**에 소스와 바이너리까지 갔다. 그런데 **원인을 모르면 다음에 또 나도 같은 자리에 선다** — 그리고 **발생 조건을 적어 두면 같은 조합을 쓰는 남도 판단할 수 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+              "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+              "publisher": "DeNA",
+              "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+            }
+          ]
+        },
+        {
+          "at": "계층을 내려갈 때",
+          "thought": "**MHA 의 버그로 결론짓고 끝낼 수도 있었다.** 아래(mysqlbinlog)까지 가서야 **2015년의 변경**이 나왔다 — **원인의 나이가 10년**이라는 것이 이 조사의 값이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+              "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+              "publisher": "DeNA",
+              "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+            }
+          ]
+        },
+        {
+          "at": "빈도를 적을 때",
+          "thought": "**'이 한 번밖에 일어나지 않았다'** 를 그대로 적는다. 무섭게 부풀리지도, 별것 아닌 척하지도 않는다 — **읽는 쪽이 스스로 판단하게** 두는 태도다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+              "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+              "publisher": "DeNA",
+              "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+            }
+          ]
+        },
+        {
+          "at": "대응이 없는 것을 볼 때",
+          "thought": "**조사기로는 완결인데 사고 보고서로는 미완**이다. 트리거닷데브가 **고칠 것 여섯 가지**를 같은 글에 적은 것과 갈린다 — **'왜'와 '그래서 무엇을'은 다른 글이 될 수도 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+              "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+              "publisher": "DeNA",
+              "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MySQL 버전 업으로 생긴 MHA 의 버그 — 조사 전기",
+          "url": "https://engineering.dena.com/blog/2026/06/mha-mysqlbinlog-troubleshoot/",
+          "publisher": "DeNA",
+          "summary": "**게임 이벤트가 도는 중에 마스터 인스턴스가 호스트 고장으로 멈췄다.** MHA 가 자동 페일오버를 돌렸는데 **슬레이브 세 대 중 한 대가 복제 오류로 멈췄다** — 메시지는 **'malformed binlog: it does not contain any Format_description_log_event'** 였다. 조사가 깊다. 운영 데이터의 불일치에서 거슬러 올라가 **MHA 의 소스**를 읽고, 다시 **MySQL 의 소스와 binlog 규격**까지 갔으며, **hexdump 로 binlog 의 바이너리 형식을 뜯고** mysqlbinlog 의 동작을 **MySQL 5.7.8 과 5.7.25 에서 견줬다.** 원인은 **10년 전의 변경**이었다 — **MySQL 5.7.9(2015년 릴리스)** 에서 mysqlbinlog 에 수정이 들어가 **relaylog 에 적힌 슬레이브 서버의 메타데이터(Format_description_event)를 읽어도 아무것도 하지 않게** 됐는데, **MHA 가 그 변경을 따라가지 못하고 relaylog 의 첫 FDE 만 쓰는 옛 구현 그대로**였다. 그 결과 **마스터의 FDE 를 쓰지 못해 메타데이터 없이 데이터 갱신 이벤트를 처리하다** 오류가 났다. **발생 조건도 짚는다** — MySQL **5.7.9 이상**이고, 페일오버 때 **자기보다 읽기 진도가 앞선 다른 슬레이브가 있거나** **아직 실행되지 않은 relaylog 가 있는** 상태다. 빈도도 정직하게 적는다 — **'あまり頻発するものではなく、私たちの環境でもこの1回しか発生していません'**(그리 자주 일어나는 것은 아니고 우리 환경에서도 이 한 번밖에 일어나지 않았다). **다만 대응은 이 글에 없다** — **'この後の対応などについても追って記事にできればと考えています'**(그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다)에서 멈춘다."
+        },
+        {
+          "title": "HandlerSocket plugin for MySQL",
+          "url": "https://engineering.dena.com/blog/2010/08/handlersocket-plugin-for-mysql/",
+          "publisher": "DeNA",
+          "summary": "**2010년 8월** 글이다. MySQL 접근을 빠르게 하려고 **SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 공개했다 — **'MySQLのSQLパーザをすっ飛ばし'**(MySQL 의 SQL 파서를 훌쩍 건너뛰고) 네트워크 통신과 멀티스레딩 기반까지 바꿔 **'InnoDB等のデータベースエンジンの性能を限界まで引き出します'**(InnoDB 등 데이터베이스 엔진의 성능을 한계까지 끌어냅니다). 효과를 셋으로 적는다 — **'MySQLサーバの負荷軽減、memcachedの負荷軽減、ネットワークトラフィック減少'**(MySQL 서버 부하 경감 · memcached 부하 경감 · 네트워크 트래픽 감소). 그전까지 쓰던 **MySQL + memcached 구성을 HandlerSocket 을 얹은 MySQL 만으로** 대신하게 됐다는 것이 요지다. 애플리케이션 CPU 부하도 크게 줄었다고 하되 **그것이 HandlerSocket 때문만은 아니라고 단서를 단다.** **정량은 없다** — QPS 수치가 나오지 않는다. 그리고 **'不稼動、稼動不良'**(비가동·가동 불량)에 책임지지 않으며 어떤 목적에도 **'いかなる保証も行わない'**(어떠한 보증도 하지 않는다)는 고지를 붙인다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**설립 연도·본사 주소·자본금·직원 수·매출을 확인하지 못했다** — 기업 정보 페이지의 `会社概要` 하위까지 열지 않았다. 상장사라 IR 자료도 있다.",
-    "**MHA 버그의 대응이 이 글에 없다** — **'그 뒤의 대응에 대해서도 나중에 글로 쓸 수 있으면 좋겠다'** 에서 멈춘다. 고쳤는지, MHA 를 버렸는지, 어떻게 막았는지가 열려 있다.",
     "**이관에 걸린 기간과 인력이 없다** — 요금과 실측은 촘촘한데 **누가 얼마나 붙었는지**는 없다.",
     "**저장 공간을 줄인 것이 요금에 얼마를 되돌렸는지** 따로 적지 않는다 — 1500 GiB → 1150 GiB 의 값이 1.4배 안에 포함된 것인지가 불분명하다.",
     "**게임 SRE 글은 수치가 없다** — `game-development-sre-first-year` 는 **'개발자를 사용자로 보는 디자인'** 이라는 관점 전환과 **50% 규칙**(운영 절반·개선 절반)을 적지만 **성과 지표를 내지 않는다.** 같은 회사 안에서 글마다 두께가 크게 다르다.",
     "**MySQL 자산이 지금 얼마나 되는지** 모른다 — 인스턴스 수·데이터 크기·트래픽이 이관 글의 구성 정보(4대·1500 GiB) 밖으로는 안 나온다.",
     "**후보 글이 남았다** — `idp-migration` 의 **1부·2부**, `disaster-recovery-automation`, `solid-queue-monitoring`, `dynatrace-sensitive-data-masking`, 그리고 **2010년부터의 옛 글 전체**(`handlersocket-plugin-for-mysql`·`mysql-for-socialgame` 등 — 연표 사이클의 재료).",
-    "**겹쳐 둔 1.5개월의 비용을 재지 않는다** — 두 IdP 를 함께 운영한 기간의 요금과 운영 부담이 없다. IdP 이관 글에는 **일정·다운타임·사용자 수**도 없다."
+    "**겹쳐 둔 1.5개월의 비용을 재지 않는다** — 두 IdP 를 함께 운영한 기간의 요금과 운영 부담이 없다. IdP 이관 글에는 **일정·다운타임·사용자 수**도 없다.",
+    "**조사기와 사고 보고서는 다르다** — MHA 글은 **'그 뒤의 대응도 나중에 글로 쓸 수 있으면 좋겠다'** 에서 멈춘다. 고쳤는지, MHA 를 버렸는지, **복제가 멈춘 동안의 데이터 불일치 규모와 복구 시간**도 없다."
   ],
   "sources": [
     {
@@ -736,6 +1213,12 @@
       "url": "https://engineering.dena.com/blog/2026/08/idp-migration-part3/",
       "publisher": "DeNA",
       "summary": "**Okta(외부 IDaaS)에서 자체 제작 IdP 로 옮긴** 전사 프로젝트의 3부다. SAML/OIDC·SSO·MFA 를 자체 기반으로 받치고 **벤더 의존에서 벗어나는 것**이 목적이다. 규모가 크다 — **350개가 넘는 서비스 제공자(SP) 애플리케이션**을 옮겼고 스스로 **'全社的なプロジェクト'**(전사적 프로젝트)라 부른다. **넘기는 방식은 겹쳐 두기**다. 이관 중에는 **사용자는 계속 Okta 로 로그인하고 뒤에서 자체 IdP 가 인증을 처리**하는 병행 운영을 했고, 모든 앱이 준비된 뒤 **'公開を年始第2週とした'**(공개를 연초 둘째 주로 잡았다), 그리고 **1.5개월** 동안 양쪽 접근을 열어 둔 뒤에야 Okta 를 껐다. **깨진 자리는 끝내는 순간이었다.** 접근 정책을 **전환 모드**(Okta SSO 만으로 정책을 만족시키던 상태)에서 **실제 강제**로 바꾸는 순간 **문의가 폭증**했다 — **사전에 알렸는데도** 사용자들이 새 MFA 요구에 준비가 안 되어 있었다. **'セキュリティ部門と迅速なコミュニケーション'**(보안 부문과의 신속한 소통)으로 풀었다. **의도적으로 고른 것들도 적는다** — 두 IdP 화면 사이에서 사용자가 헷갈리지 않도록 **Okta 를 더 오래 살려 뒀고**, 정책을 확실히 강제하기 위해 **당장의 문의 부담이 커지는 것을 받아들였으며**, 복잡도를 감당하려고 **AI 를 붙인 온보딩**을 넣었다. 그리고 이것이 **'終着点'**(종착점)이 아니라 보안과 사용성을 계속 손보는 과정이라고 못 박는다. **일정·다운타임·사용자 수의 구체 수치는 없다.**"
+    },
+    {
+      "title": "HandlerSocket plugin for MySQL",
+      "url": "https://engineering.dena.com/blog/2010/08/handlersocket-plugin-for-mysql/",
+      "publisher": "DeNA",
+      "summary": "**2010년 8월** 글이다. MySQL 접근을 빠르게 하려고 **SQL 파서를 통째로 건너뛰는 플러그인**을 만들어 공개했다 — **'MySQLのSQLパーザをすっ飛ばし'**(MySQL 의 SQL 파서를 훌쩍 건너뛰고) 네트워크 통신과 멀티스레딩 기반까지 바꿔 **'InnoDB等のデータベースエンジンの性能を限界まで引き出します'**(InnoDB 등 데이터베이스 엔진의 성능을 한계까지 끌어냅니다). 효과를 셋으로 적는다 — **'MySQLサーバの負荷軽減、memcachedの負荷軽減、ネットワークトラフィック減少'**(MySQL 서버 부하 경감 · memcached 부하 경감 · 네트워크 트래픽 감소). 그전까지 쓰던 **MySQL + memcached 구성을 HandlerSocket 을 얹은 MySQL 만으로** 대신하게 됐다는 것이 요지다. 애플리케이션 CPU 부하도 크게 줄었다고 하되 **그것이 HandlerSocket 때문만은 아니라고 단서를 단다.** **정량은 없다** — QPS 수치가 나오지 않는다. 그리고 **'不稼動、稼動不良'**(비가동·가동 불량)에 책임지지 않으며 어떤 목적에도 **'いかなる保証も行わない'**(어떠한 보증도 하지 않는다)는 고지를 붙인다."
     }
   ]
 }
