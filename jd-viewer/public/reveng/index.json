@@ -1944,6 +1944,18 @@
       "one_liner": "소스와 목적지 사이를 잇는 오픈소스 커넥터 600개 — 그 사이에 서 있던 중간 층을 걷어내는 것이 성능의 전부였다",
       "updated_at": "2026-09-07",
       "domain": "airbyte.com"
+    },
+    {
+      "slug": "metabase",
+      "name": "메타베이스",
+      "name_en": "Metabase",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "남의 데이터베이스에 질의를 대신 보내는 BI 도구 — 그래서 신뢰할 수 없는 입력이 SQL 이 되는 자리가 이 제품의 급소다",
+      "updated_at": "2026-09-07",
+      "domain": "metabase.com"
     }
   ],
   "domains": [
@@ -2424,7 +2436,8 @@
     "몇 주씩 켜 두는 프로그램의 메모리를 지킨다",
     "납땜을 거절하고 그 값을 적는다",
     "말이 끝나기 전에 소리를 내보낸다",
-    "소스에서 목적지로 옮기는 길을 짧게 만든다"
+    "소스에서 목적지로 옮기는 길을 짧게 만든다",
+    "신뢰할 수 없는 입력이 SQL 이 되는 것을 막는다"
   ],
   "countries": {
     "KR": "한국",
