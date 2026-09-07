@@ -1843,8 +1843,8 @@
       "name_en": "Chainguard",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "CVE 없는 컨테이너와 라이브러리를 파는 회사 — 파는 것은 이미지가 아니라 '끊임없이 다시 지어 최신으로 유지된다'는 상태다",
       "updated_at": "2026-09-07",
       "domain": "chainguard.dev"
