@@ -7,8 +7,8 @@
       "name_en": "Mapbox",
       "country": "기타",
       "category": "기타",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "지도를 남의 기기에서 그리게 하는 회사 — 그래서 프레임 시간과 번들 크기가 곧 상품성이다",
       "updated_at": "2026-09-07",
       "domain": "mapbox.com"
