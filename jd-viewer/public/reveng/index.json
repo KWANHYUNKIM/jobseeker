@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "astral",
+      "name": "애스트럴",
+      "name_en": "Astral",
+      "country": "US",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "파이썬 도구를 러스트로 다시 짜 거의 1000배 빠르게 만든 회사 — 그런데 전부 무료로 내주고 값을 받는 방법은 끝내 안 밝혔다",
+      "updated_at": "2026-09-07",
+      "domain": "astral.sh"
+    },
+    {
       "slug": "cockroach-labs",
       "name": "코크로치 랩스",
       "name_en": "Cockroach Labs",
@@ -2494,7 +2506,9 @@
     "데이터센터가 끓을 때 무엇을 먼저 살릴지 고른다",
     "암호 라이브러리를 자기가 만들어 남에게 내준다",
     "컴팩션이 큰 값을 반복해 옮기지 않게 한다",
-    "분산 트랜잭션 위에 벡터 색인을 얹는다"
+    "분산 트랜잭션 위에 벡터 색인을 얹는다",
+    "생성한 파서를 버리고 손으로 쓴다",
+    "압축을 푸는 방식이 다르면 같은 파일이 다르게 설치된다"
   ],
   "countries": {
     "KR": "한국",
