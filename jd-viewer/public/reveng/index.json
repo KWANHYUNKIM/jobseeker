@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "qdrant",
+      "name": "큐드런트",
+      "name_en": "Qdrant",
+      "country": "EU",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "자기 방식이 무너지는 지점을 재현율과 밀리초로 먼저 내놓는 벡터 검색 엔진 — 감추지 않는 대신 고르는 일을 사용자에게 되돌려준다",
+      "updated_at": "2026-09-07",
+      "domain": "qdrant.tech"
+    },
+    {
       "slug": "convex",
       "name": "컨벡스",
       "name_en": "Convex",
@@ -2688,7 +2700,9 @@
     "모든 것을 하나의 로그로 모아 조율을 없앤다",
     "엔진을 밑바닥부터 자기 손으로 짓는다",
     "데이터베이스 안에서 사용자 코드를 트랜잭션으로 돌린다",
-    "싼 척하는 원시 연산은 주지 않는다"
+    "싼 척하는 원시 연산은 주지 않는다",
+    "필터를 그래프 탐색 안으로 들여온다",
+    "RAM 을 넘어서는 컬렉션에 계층을 준다"
   ],
   "countries": {
     "KR": "한국",
