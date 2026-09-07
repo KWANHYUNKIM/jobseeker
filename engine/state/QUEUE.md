@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **37signals** | US · SaaS | 프로파일 완료(2026-09-07). 도메인 셋 — 클라우드에서 나온다 · 페타바이트를 되찾는다 · 사지 않고 만든다. 확보한 자료 — 지출 공개(2023-01-13, 연 3,201,564달러 서비스별 내역) · 되돌리기(2023-03-21, MRSK/Kamal · VM 20분→60초 · 배포 수 분→1분) · S3 탈출(2026-01-08, 10PB·50억 파일·이중 쓰기·90일 창에 10일 미만). **⚠️ 되돌린 뒤 실제 절감액을 적은 글을 아직 못 찾았다** — 연말에 보고하겠다는 약속만 읽었다. 안 읽은 글 — `Solid Cache`(2023-10-03) · `datacenter overview`(2023-08-10) · `Upright`(2026-02-16) · `Rails Multi-Tenancy`(2026-02-13) · `Fizzy Infrastructure`(2026-02-26) · `The ONCE app server`(2026-04-17). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **37signals** | US · SaaS | 이 엔진에 **클라우드에서 나온 쪽**이 없다(들어간 쪽만 있다). `dev.37signals.com` 에 그 기록이 이어진다 — `Our cloud spend in 2022`(2023-01-13, 실제 지출과 이전 목표) · `De-cloud and de-k8s`(2023-03-21, 클라우드 의존을 걷고 앱 스택을 데이터센터로 되돌린 과정) · `37signals datacenter overview`(2023-08-10) · `Moving Mountains of Data off S3`(2026-01-08, **수십억 파일을 무중단으로** S3 밖으로) · `Solid Cache`(2023-10-03) · `Rails Multi-Tenancy`(2026-02-13) · `Introducing Upright`(2026-02-16, 자체 합성 감시) · `Behind the Fizzy Infrastructure`(2026-02-26). **'되돌린 기록을 찾는다'는 기준에 정면으로 맞는다.**
 | **Linear** | US · SaaS | 로컬 우선 동기화 엔진 축이 없다. `linear.app/now/rebuilding-delta-sync-read-path`(2026-08-18, Peter Travers)가 **turbopuffer 로 20TB 넘는 동기화 액션의 캐치업 지연을 예측 가능하게** 만든 이야기다 — **turbopuffer 는 이 엔진에 이미 있어** 부품이 된 회사를 쓰는 쪽에서 다시 보는 사례가 된다(Deno↔Val Town, 클릭하우스↔PostHog 와 같은 자리). `Styling Linear for the future with StyleX`(2026-08-26)도 있다. ⚠️ 나머지는 체인지로그·고객 사례다.
 | **Mux** | US · 스트리밍 | 비디오 인코딩·전송 축이 없다(넷플릭스는 스트리밍 서비스, 이쪽은 그 인프라를 파는 API 다). `mux.com/blog/it-s-one-rendition-what-could-it-cost`(2026-08-24, Andrew Crowe)가 렌디션 사다리를 두고 **왜 270p 를 남기고 720p 를 더했는지를 직관이 아니라 데이터로 정했다**고 적는다. `Playing time by rendition`(2026-08-25)은 그 측정 쪽이다. ⚠️ 나머지는 제품 공지·고객 사례다.
 

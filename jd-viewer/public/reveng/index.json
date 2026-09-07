@@ -1800,6 +1800,18 @@
       "one_liner": "25년 된 Perl 서비스를 굴리면서 남의 만화 서비스 스무 곳을 한 기반으로 낸다 — 무엇을 쓸지 매달 재서 고르는 회사",
       "updated_at": "2026-09-07",
       "domain": "hatena.co.jp"
+    },
+    {
+      "slug": "37signals",
+      "name": "37시그널스",
+      "name_en": "37signals",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "클라우드에서 나온 회사 — 연 320만 달러 청구서를 공개하고 앱과 10페타바이트를 자기 데이터센터로 되돌렸다",
+      "updated_at": "2026-09-07",
+      "domain": "37signals.com"
     }
   ],
   "domains": [
@@ -2259,7 +2271,10 @@
     "런타임 안에 언어를 들인다",
     "한 기반으로 남의 서비스 스무 곳을 낸다",
     "무엇을 쓸지 매달 재서 고른다",
-    "25년 된 Perl 을 계속 굴린다"
+    "25년 된 Perl 을 계속 굴린다",
+    "클라우드에서 나온다",
+    "페타바이트를 되찾는다",
+    "사지 않고 만든다"
   ],
   "countries": {
     "KR": "한국",
