@@ -202,7 +202,7 @@
           "title": "DriverManagerDataSource",
           "summary": "설정과 사용이 갈리는 첫 예.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -210,7 +210,7 @@
           "title": "HikariCP 적용",
           "summary": "풀 크기를 어떻게 정하나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -218,7 +218,7 @@
           "title": "정리",
           "summary": "코드는 그대로고 구현만 바뀐다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

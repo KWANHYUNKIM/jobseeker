@@ -1,0 +1,173 @@
+{
+ "book": "spring-db-1",
+ "id": "datasource-pool",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "HikariCP 적용",
+ "summary": "풀 크기를 어떻게 정하나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "HikariCP 를 설정할 수 있다.",
+  "풀 크기를 크게 잡으면 왜 나쁜지 안다.",
+  "주요 설정 넷을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "한 줄만 바뀐다",
+   "code": "@Test\nvoid dataSourceConnectionPool() throws SQLException, InterruptedException {\n    HikariDataSource dataSource = new HikariDataSource();\n    dataSource.setJdbcUrl(URL);\n    dataSource.setUsername(USERNAME);\n    dataSource.setPassword(PASSWORD);\n    dataSource.setMaximumPoolSize(10);\n    dataSource.setPoolName(\"MyPool\");\n\n    useDataSource(dataSource);   // 3.4 절과 같은 메서드\n\n    Thread.sleep(1000);          // 풀 초기화 로그를 보려고\n}",
+   "note": "**`useDataSource` 가 그대로**다. 3.3절에서 만든 구조 덕이다.\n\n**`setJdbcUrl`** 이다 — `setUrl` 이 아니다. HikariCP 의 이름이라 헷갈린다.\n\n**`Thread.sleep`** 은 로그를 보려는 것이다. **풀이 커넥션을 별도 스레드에서 채우기** 때문에, 테스트가 바로 끝나면 로그가 안 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "크기를 정하는 법",
+   "ascii": "   pool size too small\n        |\n        +--> requests wait\n        +--> latency goes up, cpu is idle\n\n   pool size too large\n        |\n        +--> db has too many sessions\n        +--> context switching, lock contention\n        +--> throughput goes DOWN\n\n   hikari formula\n        connections = ((core_count * 2) + effective_spindle_count)\n\n   8 cores, ssd  ->  around 17\n\n   크게 잡는 것이 답이 아니다",
+   "note": "**너무 크면 처리량이 오히려 떨어진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "크게 잡으면 왜 나빠지나",
+   "md": "**\"많을수록 좋다\" 가 틀린 자리**다.\n\n**DB 가 실제로 동시에 일할 수 있는 수는 정해져 있다.**\n\n```\nCPU 코어 8 개  ->  진짜 동시 실행은 8 개\n```\n\n**커넥션이 100 개여도 CPU 는 8개**다. 나머지 92개는 **번갈아 가며** 조금씩 실행된다.\n\n**그러면 세 가지가 나빠진다.**\n\n| | |\n|---|---|\n| **컨텍스트 스위칭** | 오갈수록 오버헤드 |\n| **락 경합** | 같은 행을 노리는 트랜잭션이 늘어난다 |\n| **메모리** | 세션마다 잡는다 (3.1절) |\n\n**HikariCP 문서가 권하는 식**이 있다.\n\n```\nconnections = (core_count * 2) + effective_spindle_count\n```\n\n**8코어에 SSD 면 17 정도**다. **생각보다 작다.**\n\n**\"10개로 초당 몇 건이 처리되나\" 를 재고 늘려 보는 것**이 정석이다. **어느 지점부터 처리량이 안 늘거나 떨어진다** — 거기가 한계다.\n\n> **애플리케이션이 여럿이면 합쳐서 센다.** 서버 5대에 풀 10개면 **DB 는 50개**를 본다."
+  },
+  {
+   "type": "table",
+   "caption": "주요 설정 넷",
+   "note": "**`maximumPoolSize` 와 `connectionTimeout`** 이 제일 중요하다.",
+   "columns": [
+    "",
+    "무엇",
+    "기본값"
+   ],
+   "rows": [
+    [
+     "`maximumPoolSize`",
+     "최대 개수",
+     "10"
+    ],
+    [
+     "`minimumIdle`",
+     "놀고 있어도 유지할 수",
+     "= max"
+    ],
+    [
+     "`connectionTimeout`",
+     "**빌리기를 기다리는 시간**",
+     "30초"
+    ],
+    [
+     "`maxLifetime`",
+     "커넥션 하나의 수명",
+     "30분"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타임아웃이 30초면 길다",
+   "md": "**3.2절에서 본 그것**이다.\n\n```\njava.sql.SQLTransientConnectionException:\n  HikariPool-1 - Connection is not available, request timed out after 30000ms.\n```\n\n**30초 동안 스레드가 잡혀 있다.** 요청이 계속 오면 **스레드 풀도 마르고**, 그러면 **아무 요청도 못 받는다.**\n\n**웹 애플리케이션이면 짧게 잡는 편**이 낫다.\n\n```properties\nspring.datasource.hikari.connection-timeout=3000\n```\n\n**빨리 실패하는 것이 낫다.** 사용자는 30초를 안 기다린다 — **브라우저가 먼저 포기**하고, 사용자는 새로고침해서 **요청을 더 만든다.**\n\n**`maxLifetime` 도 중요**하다. **DB 나 방화벽이 끊는 시간보다 짧아야** 한다.\n\n```\nMySQL wait_timeout = 8 시간\nHikari maxLifetime  = 30 분      <- 안전\n```\n\n**반대면** 풀이 **이미 죽은 커넥션**을 빌려 준다. 3.1절에서 \"하나를 계속 쓰면 끊어진다\"고 한 그것이다.\n\n> **`leakDetectionThreshold`** 를 켜 두면 누수를 잡는다. **오래 안 돌려준 커넥션의 스택 트레이스**를 찍어 준다 — 3.2절에서 \"어느 코드가 안 돌려줬는지 안 나온다\"고 한 문제의 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "풀은 별도 스레드에서 채운다",
+   "md": "```\nMyPool - Starting...\nMyPool - Start completed.\nMyPool - Added connection conn0: url=jdbc:h2:...\nMyPool - Added connection conn1: ...\n...\nMyPool - After adding stats (total=10, active=2, idle=8, waiting=0)\n```\n\n**`Start completed` 가 먼저 찍히고 커넥션이 나중에** 추가된다.\n\n**애플리케이션이 기다리지 않게** 하려는 것이다. 풀이 다 안 찼어도 **있는 것부터 빌려 준다.**\n\n**그래서 뜨자마자 트래픽이 몰리면** 아직 커넥션이 부족할 수 있다. `minimumIdle` 을 미리 채워 두는 이유다.\n\n**통계 로그가 유용**하다.\n\n| | 무엇 |\n|---|---|\n| `total` | 만들어진 수 |\n| `active` | **지금 빌려 나간 수** |\n| `idle` | 대기 중 |\n| `waiting` | **기다리는 요청 수** |\n\n**`waiting` 이 0 이 아니면 풀이 부족**하다는 신호다. **운영에서 이 지표를 봐야** 한다 — 액추에이터가 노출해 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "HikariDataSource ds = new HikariDataSource();\nds.setJdbcUrl(URL); ds.setUsername(USERNAME); ds.setPassword(PASSWORD);\nds.setMaximumPoolSize(10);\n\nMemberRepositoryV1 repository = new MemberRepositoryV1(ds);\nrepository.save(new Member(\"hi1\", 10000));\nrepository.findById(\"hi1\");\nrepository.update(\"hi1\", 20000);\nrepository.delete(\"hi1\");\n\n# 로그\n#   MyPool - Starting...\n#   MyPool - Added connection conn0: url=jdbc:h2:tcp://localhost/~/test\n#   MyPool - Start completed.\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#   get connection=HikariProxyConnection@2 wrapping conn0\n#   get connection=HikariProxyConnection@3 wrapping conn0\n#   get connection=HikariProxyConnection@4 wrapping conn0\n#   MyPool - After adding stats (total=10, active=0, idle=10, waiting=0)\n\n# 3.4 절에서는 conn0~conn3 이었다\n\n# 나가는 SQL 은 같다\n#   insert into member(member_id, money) values(?, ?)\n#   select * from member where member_id = ?\n#   update member set money=? where member_id=?\n#   delete from member where member_id=?\n\n# H2 세션\nselect count(*) from information_schema.sessions;\n#   11   (콘솔 + 풀 10 개)\n\n# 안 쓰고 있어도 열 개가 유지된다",
+   "note": "**`wrapping conn0` 이 네 번 다 같다.** 3.4절에서 `conn0`~`conn3` 이던 자리다 — **재사용이 눈에 보인다.**\n\n**프록시 번호(`@1`~`@4`)는 매번 다르다.** 3.2절에서 본 대로 **감싸는 객체는 새로 만들어지고 안의 커넥션은 그대로**다.\n\n**세션이 11개** 다. 3.4절에서는 1개였는데 늘었다 — **풀이 미리 열어 둔 것**이고, **안 쓰고 있어도 유지**된다. 이것이 3.1절에서 말한 **\"비용을 앞으로 당긴 것\"** 이다.\n\n**나가는 SQL 은 세 절 내내 같다.** 바뀐 것은 **누가 커넥션을 주느냐**뿐이다."
+  }
+ ],
+ "recap": [
+  "**`useDataSource` 가 그대로**다 — 3.3절의 구조 덕.",
+  "**`setJdbcUrl`** 이다. `setUrl` 이 아니다.",
+  "**크게 잡는 것이 답이 아니다** — 처리량이 오히려 떨어진다.",
+  "**컨텍스트 스위칭 · 락 경합 · 메모리**가 나빠진다.",
+  "**`(코어 x 2) + 디스크 수`** 정도가 출발점이다.",
+  "**서버가 여럿이면 합쳐서** 센다.",
+  "**타임아웃 30초는 길다** — 웹이면 짧게.",
+  "**`maxLifetime` 은 DB 의 `wait_timeout` 보다 짧아야** 한다.",
+  "**`leakDetectionThreshold`** 가 누수의 스택 트레이스를 찍어 준다.",
+  "**풀은 별도 스레드에서 채운다** — `Start completed` 가 먼저다.",
+  "**`waiting` 이 0 이 아니면 풀이 부족**하다."
+ ],
+ "drills": [
+  {
+   "task": "`HikariDataSource` 로 바꾸고 로그를 본다.",
+   "done_when": "`wrapping conn0` 이 같은 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "H2 세션 수를 3.4절과 비교한다.",
+   "done_when": "풀 크기만큼 늘어난 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`maximumPoolSize` 를 1 로 줄이고 동시 요청을 보낸다.",
+   "done_when": "기다리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`connectionTimeout` 을 1초로 줄인다.",
+   "done_when": "빨리 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`leakDetectionThreshold` 를 켜고 `close` 를 빠뜨린다.",
+   "done_when": "스택 트레이스가 찍히는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "풀을 크게 잡으면 왜 나빠지나?",
+   "a": "DB 의 실제 동시 처리 능력은 정해져 있어서 컨텍스트 스위칭·락 경합·메모리만 늘고 처리량이 떨어진다."
+  },
+  {
+   "q": "크기의 출발점은?",
+   "a": "`(코어 수 x 2) + 디스크 수` 정도다. 서버가 여럿이면 합쳐서 센다."
+  },
+  {
+   "q": "`connectionTimeout` 30초가 왜 긴가?",
+   "a": "그동안 스레드가 잡혀 스레드 풀까지 마르고, 사용자는 기다리지 않고 새로고침해 요청을 더 만든다."
+  },
+  {
+   "q": "`maxLifetime` 은 어떻게 잡나?",
+   "a": "DB 나 방화벽이 연결을 끊는 시간보다 짧게 잡는다. 아니면 죽은 커넥션을 빌려 준다."
+  },
+  {
+   "q": "`waiting` 이 0 이 아니면?",
+   "a": "풀이 부족해서 요청이 커넥션을 기다리고 있다는 뜻이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HikariCP",
+   "en": "",
+   "what": "스프링 부트의 기본 커넥션 풀."
+  },
+  {
+   "term": "maxLifetime",
+   "en": "",
+   "what": "커넥션 하나를 유지하는 최대 시간. DB 의 타임아웃보다 짧아야 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "HikariCP — About Pool Sizing",
+   "url": "https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing",
+   "publisher": "HikariCP"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
