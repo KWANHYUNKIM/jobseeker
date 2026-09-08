@@ -563,7 +563,7 @@
           "title": "HttpSession",
           "summary": "서블릿 표준. 1편 3.2절에서 언급만 한 그것.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -571,7 +571,7 @@
           "title": "세션 정보와 타임아웃",
           "summary": "언제 사라지나. 그리고 메모리는 얼마나 먹나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -579,7 +579,7 @@
           "title": "@SessionAttribute 와 리졸버",
           "summary": "1편 7.13절에서 만든 @Login 이 여기 쓰인다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",

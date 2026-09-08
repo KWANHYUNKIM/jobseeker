@@ -1,0 +1,164 @@
+{
+ "book": "spring-mvc-2",
+ "id": "session-argument-resolver",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "@SessionAttribute 와 리졸버",
+ "summary": "1편 7.13절에서 만든 @Login 이 여기 쓰인다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ArgumentResolver` 로 애너테이션을 만들 수 있다.",
+  "언제 만들 만한지 판단할 수 있다.",
+  "`supports` 패턴이 반복된다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 7.13절에서 `ArgumentResolver` 를 만들어 보고 이렇게 적었다.\n\n> 지금은 쓸 데가 없어 보이는데, **2편에서 로그인한 회원을 `@Login Member member` 로 받을 때** 이것을 쓴다.\n\n**여기다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 불편한가",
+   "md": "7.6절에서 이렇게까지 짧아졌다.\n\n```java\n@GetMapping(\"/\")\npublic String home(\n        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false)\n        Member loginMember, Model model) { ... }\n```\n\n**충분히 짧은데** 화면이 늘면 이 긴 줄이 **컨트롤러마다** 반복된다.\n\n**그리고 두 가지가 흩어진다.**\n\n1. **세션 키 상수** — `SessionConst.LOGIN_MEMBER` 를 매번 적는다\n2. **`required = false`** — 빠뜨리면 로그인 안 한 사용자에게 오류\n\n**둘 다 \"항상 같은 값\"** 이다. 항상 같은 것이 반복되면 **감출 수 있다.**\n\n```java\npublic String home(@Login Member loginMember, Model model) { ... }\n```"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션",
+   "code": "@Target(ElementType.PARAMETER)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Login {\n}",
+   "note": "**속성이 하나도 없다.** 표시(marker)일 뿐이다.\n\n**`RUNTIME` 이 필수**다. 기본값(`CLASS`)이면 실행 중에 못 읽는다 — 리플렉션으로 확인해야 하니까."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리졸버",
+   "code": "public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {\n\n    @Override\n    public boolean supportsParameter(MethodParameter parameter) {\n        boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);\n        boolean hasMemberType = Member.class.isAssignableFrom(parameter.getParameterType());\n        return hasLoginAnnotation && hasMemberType;\n    }\n\n    @Override\n    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,\n                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {\n\n        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();\n        HttpSession session = request.getSession(false);\n        if (session == null) {\n            return null;\n        }\n        return session.getAttribute(SessionConst.LOGIN_MEMBER);\n    }\n}",
+   "note": "**`supportsParameter` 가 둘 다 확인**한다. 애너테이션만 보면 `@Login String x` 같은 것에도 걸린다.\n\n**`getSession(false)`** — 7.6절의 그 규칙이 여기서도 지켜져야 한다. 리졸버는 **모든 요청에서** 도니까 더 중요하다.\n\n**`isAssignableFrom`** 은 5.9절에서 본 그것 — 자식 타입도 통과시킨다."
+  },
+  {
+   "type": "figure",
+   "caption": "구조가 반복된다",
+   "ascii": "   handler method parameter\n        |\n        v\n   for each resolver:  supportsParameter(param)?\n        |                      |\n       yes                    no\n        |                      |\n        v                      v\n   resolveArgument()      try next resolver\n        |\n        v\n   value passed to the method\n\n   5.9 절의 supports 와 같은 모양이다",
+   "note": "**\"맡을 수 있나\" 를 물어보고 맡기는 구조**가 스프링 곳곳에 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "같은 모양을 세 번째 본다",
+   "md": "| | 묻는 것 | 하는 것 |\n|---|---|---|\n| `Validator` (5.9) | `supports` | `validate` |\n| `HandlerAdapter` (1편 6.3) | `supports` | `handle` |\n| `ArgumentResolver` | `supportsParameter` | `resolveArgument` |\n\n**전부 같은 패턴**이다. **후보를 여럿 두고 각자에게 물어본 뒤 맡긴다.**\n\n**새 종류를 추가할 때 기존 코드를 안 고친다** — 앞 책 3장에서 본 **개방-폐쇄 원칙(OCP)** 이 구현된 모습이다.\n\n**스프링을 읽을 때 이 모양이 보이면** 나머지는 짐작할 수 있다. `HttpMessageConverter` 도 `canRead`/`canWrite` 로 같은 일을 한다(1편 7.12절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n\n    @Override\n    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {\n        resolvers.add(new LoginMemberArgumentResolver());\n    }\n}",
+   "note": "**`WebMvcConfigurer`** 다 — 1편 7.13절에서 본 그 설정 지점.\n\n**기본 리졸버 뒤에 추가**된다. `@RequestParam` 같은 것이 먼저 확인되고, 아무도 안 맡으면 우리 것이 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "만들 만한가",
+   "md": "**클래스 둘과 설정 하나**가 생겼다. 줄어든 것은 **컨트롤러의 한 줄**이다.\n\n**언제 이득인가**\n\n| | |\n|---|---|\n| **컨트롤러가 많다** | 20곳에서 쓰면 확실히 이득 |\n| **로직이 바뀔 수 있다** | 세션 → 토큰으로 바꿔도 한 곳만 |\n| **실수를 막는다** | `required = false` 를 빠뜨릴 수 없다 |\n\n**두 번째가 크다.** 인증 방식이 바뀌면 **리졸버 한 곳**만 고치면 된다. `@SessionAttribute` 를 직접 썼으면 전부 고쳐야 한다.\n\n**언제 과한가**\n\n- **컨트롤러가 두셋뿐** — 클래스만 는다\n- **`@Login` 이 무엇인지 모르는 사람이 온다** — 검색해서 찾아야 한다\n\n**5.10절에서 한 말이 여기도 적용**된다.\n\n> **자동화의 대가는 검증이 코드에 안 보이는 것**이다.\n\n`@Login` 도 마찬가지다. **어디서 값이 오는지 애너테이션만 봐서는 모른다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "null 을 어떻게 다룰까",
+   "md": "**리졸버가 `null` 을 돌려주면** 컨트롤러가 `null` 을 받는다.\n\n```java\npublic String home(@Login Member loginMember) {\n    if (loginMember == null) {\n        return \"home\";\n    }\n    ...\n}\n```\n\n**매번 null 검사**를 한다. 홈처럼 **로그인해도 되고 안 해도 되는 화면**에는 맞다.\n\n**로그인이 필수인 화면**에서는 이 검사가 반복이고, **빠뜨리면 NPE** 다.\n\n**그래서 8장이 온다.** 필터·인터셉터로 **아예 컨트롤러에 못 들어오게** 막으면 이 검사가 필요 없다.\n\n> `Optional<Member>` 로 받게 만들 수도 있는데, **8장을 하고 나면 필요 없어진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET / HTTP/1.1\nCookie: JSESSIONID=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h4>testUser님 환영합니다.</h4>\n\n# 7.6 절과 응답이 똑같다\n\n# 컨트롤러 코드만 바뀌었다\n#   before\n#     @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member m\n#   after\n#     @Login Member m\n\n# 로그인 안 한 요청\nGET / HTTP/1.1\n\nHTTP/1.1 200 \n<button>로그인</button>\n\n# 리졸버가 null 을 돌려줬고 컨트롤러가 분기했다\n\n# Set-Cookie 가 없다 - getSession(false) 를 지켰다",
+   "note": "**응답이 7.6절과 한 글자도 다르지 않다.** 4.3절·5.9절과 같은 성격의 절이다.\n\n**마지막 주석이 중요하다.** 리졸버는 **모든 요청에서 도는** 코드라, 여기서 `getSession()` 을 기본값으로 불렀으면 **로그인 안 한 모든 방문자에게 세션이 생긴다.** 7.6절의 함정이 여기서는 더 크게 작용한다.\n\n**응답에 `Set-Cookie` 가 없는 것**이 그것을 지켰다는 증거다."
+  }
+ ],
+ "recap": [
+  "**1편 7.13절에서 만들어 둔 `ArgumentResolver`** 가 여기 쓰인다.",
+  "**항상 같은 값이 반복되면 감출 수 있다** — 세션 키와 `required = false`.",
+  "**`@Retention(RUNTIME)`** 이 필수다. 기본값이면 실행 중에 못 읽는다.",
+  "**`supportsParameter` 에서 애너테이션과 타입을 둘 다** 확인한다.",
+  "**리졸버에서도 `getSession(false)`** — 모든 요청에서 도니 더 중요하다.",
+  "**같은 패턴을 세 번째** 본다 — `Validator` · `HandlerAdapter` · `ArgumentResolver`.",
+  "**후보에게 물어보고 맡기는 구조**가 OCP 의 구현이다.",
+  "만들 만한 이유 — **반복이 많다 · 인증 방식이 바뀔 수 있다 · 실수를 막는다**.",
+  "**대가는 값이 어디서 오는지 안 보이는 것**이다.",
+  "**null 검사 반복은 8장이 없앤다.**"
+ ],
+ "drills": [
+  {
+   "task": "`@Login` 애너테이션과 리졸버를 만든다.",
+   "done_when": "컨트롤러가 한 줄로 줄어든 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`@Retention` 을 지운다.",
+   "done_when": "리졸버가 애너테이션을 못 읽는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`supportsParameter` 에서 타입 검사를 뺀다.",
+   "done_when": "`@Login String x` 에도 걸리는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "리졸버에서 `getSession()` 을 기본값으로 부른다.",
+   "done_when": "모든 요청에 `Set-Cookie` 가 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Validator`·`HandlerAdapter`·`ArgumentResolver` 의 시그니처를 나란히 본다.",
+   "done_when": "같은 패턴인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Login` 을 만들어 무엇을 감추나?",
+   "a": "세션 키 상수와 `required = false` 다. 항상 같은 값이라 감출 수 있다."
+  },
+  {
+   "q": "`@Retention(RUNTIME)` 이 왜 필요한가?",
+   "a": "리졸버가 실행 중에 리플렉션으로 애너테이션을 읽어야 하기 때문이다."
+  },
+  {
+   "q": "`supportsParameter` 에서 타입도 확인하는 이유는?",
+   "a": "애너테이션만 보면 `@Login String x` 처럼 엉뚱한 타입에도 걸린다."
+  },
+  {
+   "q": "같은 패턴을 어디서 봤나?",
+   "a": "`Validator` 의 `supports`, `HandlerAdapter` 의 `supports` 다. 후보에게 물어보고 맡기는 구조로 OCP 를 구현한다."
+  },
+  {
+   "q": "리졸버에서 `getSession(false)` 가 왜 더 중요한가?",
+   "a": "모든 요청에서 실행되므로 기본값을 쓰면 방문자 전원에게 빈 세션이 생긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ArgumentResolver",
+   "en": "HandlerMethodArgumentResolver",
+   "what": "컨트롤러 메서드 파라미터의 값을 만들어 주는 스프링 확장점."
+  },
+  {
+   "term": "마커 애너테이션",
+   "en": "marker annotation",
+   "what": "속성 없이 표시만 하는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Method Arguments",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/arguments.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

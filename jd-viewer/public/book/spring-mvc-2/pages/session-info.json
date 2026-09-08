@@ -1,0 +1,152 @@
+{
+ "book": "spring-mvc-2",
+ "id": "session-info",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "세션 정보와 타임아웃",
+ "summary": "언제 사라지나. 그리고 메모리는 얼마나 먹나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "타임아웃이 무엇을 기준으로 재는지 안다.",
+  "세션에 무엇을 담을지 판단할 수 있다.",
+  "세션이 서버 확장에 왜 걸림돌인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "세션이 들고 있는 것",
+   "code": "session.getId();                     // JSESSIONID 값\nsession.getCreationTime();           // 생성 시각\nsession.getLastAccessedTime();       // 마지막 요청 시각\nsession.getMaxInactiveInterval();    // 타임아웃 (초)\nsession.isNew();                     // 이번 요청에서 만들어졌나",
+   "note": "**`getLastAccessedTime`** 이 타임아웃의 기준이다.\n\n`isNew()` 는 **처음 만들어진 요청에서만 `true`** 다. 클라이언트가 아직 `JSESSIONID` 를 안 보냈다는 뜻이기도 하다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 기준으로 재나",
+   "ascii": "   lastAccessedTime  updated on every request\n        |\n        v\n   now - lastAccessedTime > maxInactiveInterval\n        |\n        v\n   session is discarded\n\n   30 min timeout, user active every 20 min\n        |\n        +--> never expires\n\n   마지막 요청 기준이지 로그인 시각 기준이 아니다",
+   "note": "**로그인 시각이 아니라 마지막 요청 시각**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 마지막 요청 기준인가",
+   "md": "**로그인 시각 기준이면** 30분마다 다시 로그인해야 한다. 쓰고 있는 중에도.\n\n**마지막 요청 기준이면** 쓰는 동안은 안 끊기고, **자리를 비우면 끊긴다.**\n\n**그것이 원하는 동작**이다. 세션의 목적이 **\"자리를 비운 사이 남이 쓰는 것\"** 을 막는 것이니까.\n\n**다만 무한정 갱신된다.** 24시간 켜 두면 24시간 유지된다.\n\n**은행 같은 곳은 절대 시간도 둔다.**\n\n```\n비활성 30분  ->  끊김\n로그인 후 8시간  ->  무조건 끊김\n```\n\n**둘을 같이** 쓰는 것이고, 서블릿은 앞엣것만 제공한다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "설정",
+   "code": "# 전역 (초 단위가 아니라 기간 표기)\nserver.servlet.session.timeout=1800\nserver.servlet.session.timeout=30m\n\n# 쿠키 설정도 여기서\nserver.servlet.session.cookie.http-only=true\nserver.servlet.session.cookie.secure=true\nserver.servlet.session.cookie.same-site=lax",
+   "note": "**기본값이 1800초(30분)** 다.\n\n**개별 세션은 코드로** 바꾼다.\n\n```java\nsession.setMaxInactiveInterval(1800);\n```\n\n**`same-site` 가 중요**해졌다 — CSRF 방어의 한 겹이다. `lax` 면 다른 사이트에서 온 POST 에 쿠키가 안 붙는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "메모리를 얼마나 먹나",
+   "md": "**세션은 서버 메모리에 산다.**\n\n```\n동시 접속자 1,000 명\n세션 하나에 Member 객체 = 대략 1KB\n  -> 1MB\n```\n\n**그 정도면 아무것도 아닌데**, 문제는 **여기에 무엇을 담느냐**다.\n\n```java\nsession.setAttribute(\"searchResult\", 조회한_1만건);   // 하면 안 된다\nsession.setAttribute(\"cart\", 장바구니_전체);\n```\n\n**동시 접속자가 늘면 그대로 곱해진다.** 1,000명 x 1MB = 1GB.\n\n**그리고 타임아웃까지 안 지워진다.** 사용자가 떠나도 30분은 남는다.\n\n**규칙**\n\n| | |\n|---|---|\n| **담는다** | 식별에 필요한 최소한 — id, 이름, 권한 |\n| **안 담는다** | 조회 결과, 큰 목록, 자주 바뀌는 것 |\n\n> **`Member` 를 통째로 담는 것도 사실 애매하다.** 회원 정보가 바뀌어도 세션의 것은 낡은 채로 남는다. **id 만 담고 매번 조회**하는 편이 정확한데, 그러면 요청마다 쿼리가 는다. **어느 쪽도 공짜가 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "서버가 둘이면 안 된다",
+   "md": "**세션의 가장 큰 제약**이다.\n\n```\n         로드 밸런서\n        /          \\\n   서버 A          서버 B\n   세션 있음        세션 없음\n```\n\n**로그인은 A 에서 했는데 다음 요청이 B 로 가면** 세션이 없다. **로그아웃된 것처럼** 보인다.\n\n7.1절에서 무상태의 장점으로 꼽은 것이 여기서 깨진다.\n\n> **그 덕에 서버를 늘리기 쉽다.** 어느 서버가 받아도 되니까.\n\n**세션을 쓰는 순간 서버가 상태를 갖는다.**\n\n**해법 셋**\n\n| | 어떻게 | 문제 |\n|---|---|---|\n| **스티키 세션** | 같은 사용자를 같은 서버로 | 그 서버가 죽으면 다 날아감 |\n| **세션 복제** | 서버끼리 동기화 | 서버가 늘수록 비용 폭증 |\n| **외부 저장소** | Redis 등에 보관 | **표준 해법** |\n\n**세 번째가 답이다.** 스프링 세션(`spring-session-data-redis`)을 넣으면 **코드를 안 고치고** 저장소만 바뀐다.\n\n> **7.9절에서 토큰 방식과 비교**한다. 토큰은 이 문제가 없는 대신 7.4절의 무효화 문제를 갖는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /session-info HTTP/1.1\nCookie: JSESSIONID=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\n\nsessionId=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6\nmaxInactiveInterval=1800\ncreationTime=Tue Sep 09 06:20:11 KST 2026\nlastAccessedTime=Tue Sep 09 06:22:45 KST 2026\nisNew=false\n\n# 30 분 넘게 아무 요청도 안 하면\nGET / HTTP/1.1\nCookie: JSESSIONID=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6\n\nHTTP/1.1 200 \nSet-Cookie: JSESSIONID=FF00EE11DD22CC33BB44AA5566778899; Path=/; HttpOnly\n<button>로그인</button>\n\n# 옛 세션은 서버에서 사라졌고 새 세션이 발급됐다\n\n# 서버가 둘일 때 (스티키 세션 없이)\nGET / HTTP/1.1\nCookie: JSESSIONID=A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6\n\nHTTP/1.1 200 \n<button>로그인</button>",
+   "note": "**`creationTime` 과 `lastAccessedTime` 이 2분 34초 차이**다. 요청을 계속하면 뒤엣것만 갱신되고 앞엣것은 고정이다 — **타임아웃이 어느 것을 보는지**가 여기서 드러난다.\n\n둘째에서 **같은 쿠키를 보냈는데 새 `JSESSIONID` 가 발급**됐다. 서버가 그 세션을 이미 버려서 **무효한 ID** 였고, 홈에서 `getSession()` 을 부르니 새로 만든 것이다.\n\n**맨 아래가 확장 문제**다. **요청 바이트가 둘째와 똑같은데** 다른 서버로 갔다는 이유만으로 로그아웃 화면이 나왔다. 클라이언트는 뭐가 다른지 알 수 없다."
+  }
+ ],
+ "recap": [
+  "**`getLastAccessedTime`** 이 타임아웃의 기준이다.",
+  "**로그인 시각이 아니라 마지막 요청 시각** — 쓰는 동안은 안 끊긴다.",
+  "**무한정 갱신된다** — 절대 시간이 필요하면 따로 만든다.",
+  "**기본값 1800초**, `server.servlet.session.timeout` 으로 바꾼다.",
+  "**`same-site`** 도 여기서 설정한다 — CSRF 의 한 겹.",
+  "**세션은 서버 메모리**다 — 담는 것이 동시 접속자 수만큼 곱해진다.",
+  "**식별에 필요한 최소한**만 담는다. 조회 결과는 안 된다.",
+  "**`Member` 통째로 vs id 만** — 어느 쪽도 공짜가 아니다.",
+  "**서버가 둘이면 세션이 안 맞는다** — 7.1절의 무상태 장점이 깨진다.",
+  "**외부 저장소(Redis)가 표준 해법**이다."
+ ],
+ "drills": [
+  {
+   "task": "세션 정보를 찍는 엔드포인트를 만든다.",
+   "done_when": "두 시각의 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "타임아웃을 10초로 줄이고 기다린다.",
+   "done_when": "새 세션이 발급되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요청을 5초마다 보내며 기다린다.",
+   "done_when": "안 끊기는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세션에 큰 리스트를 담고 메모리를 본다.",
+   "done_when": "동시 접속 수만큼 곱해지는 것을 계산했다.",
+   "minutes": 20
+  },
+  {
+   "task": "포트를 달리해 서버를 둘 띄우고 번갈아 요청한다.",
+   "done_when": "세션이 안 맞는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타임아웃은 무엇을 기준으로 재나?",
+   "a": "마지막 요청 시각이다. 로그인 시각이 아니라서 쓰는 동안은 안 끊긴다."
+  },
+  {
+   "q": "절대 시간 제한은 어떻게 하나?",
+   "a": "서블릿은 제공하지 않는다. 로그인 시각을 따로 담아 직접 검사한다."
+  },
+  {
+   "q": "세션에 무엇을 담으면 안 되나?",
+   "a": "조회 결과나 큰 목록이다. 동시 접속자 수만큼 곱해지고 타임아웃까지 안 지워진다."
+  },
+  {
+   "q": "서버가 둘이면 왜 문제인가?",
+   "a": "세션이 그 서버 메모리에 있어서 다른 서버로 요청이 가면 로그아웃된 것처럼 보인다."
+  },
+  {
+   "q": "그 표준 해법은?",
+   "a": "Redis 같은 외부 저장소에 세션을 보관하는 것이다. 스프링 세션을 쓰면 코드를 안 고쳐도 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "타임아웃",
+   "en": "session timeout",
+   "what": "마지막 요청 이후 세션을 유지하는 시간. 기본 30분."
+  },
+  {
+   "term": "스티키 세션",
+   "en": "sticky session",
+   "what": "같은 사용자를 늘 같은 서버로 보내는 로드 밸런서 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
