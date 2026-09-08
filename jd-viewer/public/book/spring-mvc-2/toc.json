@@ -634,7 +634,7 @@
           "title": "인터셉터 — 요청 로그",
           "summary": "핸들러 정보를 알 수 있다는 것의 값.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -642,7 +642,7 @@
           "title": "인터셉터 — 인증 체크",
           "summary": "excludePathPatterns 가 화이트리스트를 대신한다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",
@@ -650,7 +650,7 @@
           "title": "정리 — 무엇을 쓸까",
           "summary": "실무 기준. 그리고 ArgumentResolver 와의 경계.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

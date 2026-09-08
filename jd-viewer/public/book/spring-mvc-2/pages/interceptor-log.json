@@ -1,0 +1,139 @@
+{
+ "book": "spring-mvc-2",
+ "id": "interceptor-log",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "인터셉터 — 요청 로그",
+ "summary": "핸들러 정보를 알 수 있다는 것의 값.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "메서드가 나뉘어 값을 어떻게 넘기는지 안다.",
+  "싱글톤 빈의 필드에 담으면 안 되는 이유를 안다.",
+  "핸들러 정보로 무엇을 할 수 있는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "8.2절의 필터 로그를 인터셉터로 다시 만든다. **같은 일인데 구조가 달라진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메서드가 나뉘어서 생기는 문제",
+   "md": "**필터는 한 메서드**였다.\n\n```java\nString uuid = UUID.randomUUID().toString();   // 지역 변수\ntry {\n    chain.doFilter(...);\n} finally {\n    log.info(\"RESPONSE [{}]\", uuid);          // 그대로 쓴다\n}\n```\n\n**인터셉터는 셋으로 나뉘어** 있다. `preHandle` 에서 만든 uuid 를 `afterCompletion` 에서 써야 하는데 — **지역 변수는 메서드가 끝나면 사라진다.**\n\n**필드에 담고 싶어진다.**\n\n```java\npublic class LogInterceptor implements HandlerInterceptor {\n    private String uuid;   // 하면 안 된다\n}\n```\n\n**인터셉터는 싱글톤**이다. 앞 책 5.4절에서 본 그 문제 — **동시에 들어온 요청들이 같은 필드를 덮어쓴다.**\n\n```\n요청 A: preHandle  uuid = \"aaa\"\n요청 B: preHandle  uuid = \"bbb\"    <- A 의 값이 사라짐\n요청 A: afterCompletion  uuid -> \"bbb\"   틀린 값\n```\n\n**로그가 조용히 뒤섞인다.** 오류도 안 난다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디에 담나",
+   "ascii": "   preHandle          request.setAttribute(LOG_ID, uuid)\n        |\n        |    싱글톤 빈의 필드에 담으면 안 된다\n        |    요청이 동시에 여럿이다\n        v\n   afterCompletion    request.getAttribute(LOG_ID)\n\n   request 는 요청 하나에 하나다. 거기 담는다",
+   "note": "**`request` 는 요청 하나에 하나**다. 거기 담으면 섞이지 않는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터셉터",
+   "code": "@Slf4j\npublic class LogInterceptor implements HandlerInterceptor {\n\n    public static final String LOG_ID = \"logId\";\n\n    @Override\n    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,\n                             Object handler) {\n        String requestURI = request.getRequestURI();\n        String uuid = UUID.randomUUID().toString();\n        request.setAttribute(LOG_ID, uuid);\n\n        if (handler instanceof HandlerMethod hm) {\n            log.info(\"REQUEST [{}][{}][{}]\", uuid, requestURI, hm);\n        }\n        return true;\n    }\n\n    @Override\n    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,\n                               Object handler, Exception ex) {\n        String uuid = (String) request.getAttribute(LOG_ID);\n        log.info(\"RESPONSE [{}][{}]\", uuid, request.getRequestURI());\n        if (ex != null) {\n            log.error(\"afterCompletion error\", ex);\n        }\n    }\n}",
+   "note": "**`request.setAttribute`** 로 담고 꺼낸다 — 1편 4.3절에서 `request` 를 임시 저장소로 쓴 그 방식이다.\n\n**`ex != null` 검사**가 8.2절의 `catch` 자리다. **여기는 잡을 필요가 없다** — 이미 처리된 예외를 정보로 받는다.\n\n**`instanceof HandlerMethod`** — 8.4절에서 본 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "핸들러로 무엇을 아나",
+   "md": "```\nREQUEST [a1b2][/items][hello.login.web.item.ItemController#items(Model)]\n```\n\n**필터 로그에는 `/items` 뿐**이었다. 여기는 **클래스와 메서드 시그니처**까지 있다.\n\n**무엇에 쓰나**\n\n| | |\n|---|---|\n| **느린 요청 찾기** | 어느 메서드가 느린지 바로 안다 |\n| **호출 통계** | URL 이 아니라 메서드 단위로 센다 |\n| **애너테이션 읽기** | 8.6절의 인증 |\n\n**첫 번째가 실무에서 크다.** URL 만 있으면 `/items/{id}` 같은 것이 **경로 변수마다 다른 URL** 로 세어지는데, 메서드 단위면 하나로 묶인다.\n\n```java\nHandlerMethod hm = (HandlerMethod) handler;\nhm.getBeanType();     // ItemController.class\nhm.getMethod();       // items(Model)\nhm.getMethodAnnotation(GetMapping.class);\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "정적 리소스면 캐스팅이 터진다",
+   "md": "```java\nHandlerMethod hm = (HandlerMethod) handler;   // ClassCastException\n```\n\n8.4절에서 인터셉터는 정적 리소스에 안 걸린다고 했는데 — **`addPathPatterns(\"/**\")` 로 등록하면 걸린다.**\n\n**정확히는** 정적 리소스도 `DispatcherServlet` 을 타는 경우가 있다. 그때 핸들러는 **`ResourceHttpRequestHandler`** 다.\n\n```java\nif (handler instanceof HandlerMethod hm) { ... }\n```\n\n**`instanceof` 로 확인**하거나 `excludePathPatterns` 로 애초에 뺀다.\n\n**둘 다 하는 편**이 낫다 — 제외 목록은 빠뜨릴 수 있고, `instanceof` 는 빠뜨리면 500 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "필터 로그와 같이 쓰기",
+   "md": "**둘을 다 두면 시간이 갈린다.**\n\n```\nfilter REQUEST      [a1b2] 06:33:10.100\n  interceptor REQUEST  [c3d4] 06:33:10.115\n  interceptor RESPONSE [c3d4] 06:33:10.180\nfilter RESPONSE     [a1b2] 06:33:10.195\n```\n\n**바깥이 95ms, 안이 65ms** — 차이 30ms 가 **`DispatcherServlet` 의 앞뒤**에서 쓴 시간이다. 핸들러 매핑, 뷰 리졸빙, 응답 쓰기.\n\n**uuid 가 둘이라 이어지지 않는 것**이 문제인데, 8.2절의 MDC 를 쓰면 **필터가 심은 값을 인터셉터도 쓴다.**\n\n```java\nString uuid = MDC.get(\"requestId\");   // 필터가 넣은 것\n```\n\n**MDC 가 `ThreadLocal`** 이라 같은 요청이면 같은 스레드고, 그래서 보인다.\n\n> **실무에서는 보통 하나만** 둔다. 둘 다 두는 것은 성능을 파고들 때다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /items HTTP/1.1\n\n# 서버 로그\n#   REQUEST  [a1b2c3d4][/items][hello.login.web.item.ItemController#items(Model)]\n#   RESPONSE [a1b2c3d4][/items]\n\nHTTP/1.1 200 \n<h2>상품 목록</h2>\n\n# 8.2 절의 필터 로그는 이랬다\n#   REQUEST  [a1b2c3d4][/items]\n#   RESPONSE [a1b2c3d4][/items]\n\n# 경로 변수가 있는 URL\nGET /items/1 HTTP/1.1\nGET /items/2 HTTP/1.1\nGET /items/3 HTTP/1.1\n\n# 필터: 서로 다른 URL 세 개\n#   [/items/1] [/items/2] [/items/3]\n\n# 인터셉터: 같은 메서드 하나\n#   ItemController#item(Long, Model)  x3\n\n# 예외가 나면\nGET /items/999 HTTP/1.1\n\n#   REQUEST  [e5f6][/items/999][ItemController#item(Long, Model)]\n#   RESPONSE [e5f6][/items/999]\n#   afterCompletion error ... ItemNotFoundException\n\nHTTP/1.1 500 ",
+   "note": "**첫 로그와 아래 필터 로그를 비교하면** 대괄호가 하나 더 있다. 그것이 8.4절에서 말한 인터셉터의 값이다.\n\n**가운데가 실용적인 차이**다. 세 요청이 필터에서는 **서로 다른 URL 세 개**로 보이고 인터셉터에서는 **같은 메서드 하나**로 묶인다. 호출 통계를 낼 때 갈린다.\n\n**맨 아래에서 `afterCompletion` 이 예외를 받았다.** 8.2절에서는 `catch (Exception e) { throw e; }` 로 잡아야 했던 것을 **시그니처가 준다.**"
+  }
+ ],
+ "recap": [
+  "**메서드가 셋으로 나뉘어** 값을 넘길 방법이 필요하다.",
+  "**필드에 담으면 안 된다** — 인터셉터는 싱글톤이다.",
+  "**동시 요청이 서로를 덮어쓴다** — 조용히 뒤섞이고 오류도 안 난다.",
+  "**`request.setAttribute`** 에 담는다 — 요청 하나에 하나다.",
+  "**핸들러로 클래스와 메서드**를 안다.",
+  "**경로 변수가 있어도 메서드 단위로 묶인다** — 통계에서 갈린다.",
+  "**`instanceof HandlerMethod`** 로 확인한다. 정적 리소스면 다른 타입이다.",
+  "**`ex != null` 이 8.2절의 `catch` 자리**다. 잡을 필요가 없다.",
+  "**필터와 인터셉터를 같이 두면** 그 사이 시간이 보인다.",
+  "**MDC 를 쓰면 uuid 를 공유**할 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "인터셉터 로그를 만들고 핸들러 정보를 찍는다.",
+   "done_when": "메서드 시그니처가 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "uuid 를 필드에 담고 동시에 요청을 보낸다.",
+   "done_when": "값이 섞이는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`request.setAttribute` 로 바꾼다.",
+   "done_when": "안 섞이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`instanceof` 없이 캐스팅하고 정적 리소스를 요청한다.",
+   "done_when": "`ClassCastException` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필터 로그와 인터셉터 로그를 같이 두고 시간을 비교한다.",
+   "done_when": "바깥이 더 긴 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`preHandle` 의 값을 `afterCompletion` 에 어떻게 넘기나?",
+   "a": "`request.setAttribute` 에 담는다. 요청 하나에 `request` 하나라 섞이지 않는다."
+  },
+  {
+   "q": "필드에 담으면 왜 안 되나?",
+   "a": "인터셉터가 싱글톤이라 동시 요청이 같은 필드를 덮어쓴다. 조용히 틀린 값이 된다."
+  },
+  {
+   "q": "핸들러 정보의 실용적 이득은?",
+   "a": "경로 변수가 달라도 같은 메서드로 묶여서 통계와 성능 분석이 정확해진다."
+  },
+  {
+   "q": "`instanceof HandlerMethod` 가 왜 필요한가?",
+   "a": "정적 리소스는 `ResourceHttpRequestHandler` 라 캐스팅하면 `ClassCastException` 이 난다."
+  },
+  {
+   "q": "필터의 `catch` 자리는 인터셉터에서 무엇인가?",
+   "a": "`afterCompletion` 의 `Exception ex` 파라미터다. 잡을 필요 없이 정보로 받는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Interception",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-interceptor.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

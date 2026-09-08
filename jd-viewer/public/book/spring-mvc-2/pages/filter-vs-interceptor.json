@@ -1,0 +1,180 @@
+{
+ "book": "spring-mvc-2",
+ "id": "filter-vs-interceptor",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "정리 — 무엇을 쓸까",
+ "summary": "실무 기준. 그리고 ArgumentResolver 와의 경계.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "필터·인터셉터·리졸버의 경계를 안다.",
+  "무엇을 어디에 둘지 판단할 수 있다.",
+  "8장이 남긴 문제를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "세 층",
+   "ascii": "   request\n     |\n     v\n   filter               servlet spec, sees everything\n     |                    encoding, cors, security, raw logging\n     v\n   DispatcherServlet\n     |\n     v\n   interceptor          spring, knows the handler\n     |                    auth, per-handler logging, common model\n     v\n   ArgumentResolver     builds one parameter\n     |                    @Login Member\n     v\n   controller\n\n   막을 것은 위에서, 만들 것은 아래에서",
+   "note": "**막을 것은 위에서, 만들 것은 아래에서.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세 가지가 하는 일이 다르다",
+   "md": "**\"요청에 끼어든다\" 는 점만 같고 목적이 다르다.**\n\n| | 무엇을 |\n|---|---|\n| **필터** | **통과시킬지** 정한다 |\n| **인터셉터** | **핸들러를 알고** 통과시킬지 정한다 |\n| **리졸버** | **파라미터 값을 만든다** |\n\n**리졸버는 막지 못한다.** 7.8절의 `@Login` 은 `null` 을 돌려줄 뿐이고, 컨트롤러는 그대로 실행된다.\n\n**그래서 셋이 겹치지 않는다.**\n\n```\n인터셉터:  로그인 안 했으면 못 들어온다\n리졸버:    들어왔으면 회원 객체를 만들어 준다\n```\n\n**8장을 하고 나면 7.8절의 null 검사가 사라진다** — 인터셉터가 이미 막았으니 `@Login Member` 는 항상 값이 있다.\n\n> 7.8절에서 예고한 것이 이것이다.\n>\n> **그래서 8장이 온다.** 필터·인터셉터로 **아예 컨트롤러에 못 들어오게** 막으면 이 검사가 필요 없다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 어디에",
+   "note": "**둘 다 되는 것은 인터셉터**를 고른다. 스프링 안이라 다루기 쉽고 정보가 많다.",
+   "columns": [
+    "",
+    "어디에",
+    "왜"
+   ],
+   "rows": [
+    [
+     "인코딩",
+     "**필터**",
+     "가장 먼저 해야 한다"
+    ],
+    [
+     "CORS",
+     "**필터**",
+     "`DispatcherServlet` 전에 응답할 수도"
+    ],
+    [
+     "보안(시큐리티)",
+     "**필터**",
+     "넓을수록 안전"
+    ],
+    [
+     "요청 전체 시간",
+     "**필터**",
+     "가장 바깥"
+    ],
+    [
+     "인증(직접 만들 때)",
+     "인터셉터",
+     "패턴이 정교하다"
+    ],
+    [
+     "핸들러별 로그",
+     "**인터셉터**",
+     "메서드를 안다"
+    ],
+    [
+     "공통 모델",
+     "인터셉터",
+     "`postHandle`"
+    ],
+    [
+     "파라미터 만들기",
+     "**리졸버**",
+     "막는 일이 아니다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 기본값",
+   "md": "**직접 만들 일이 생각보다 적다.**\n\n| | |\n|---|---|\n| 인코딩·CORS | **부트가 이미** 한다 |\n| 인증·인가 | **스프링 시큐리티** |\n| 요청 로그 | **액추에이터·APM** 또는 간단한 필터 |\n\n**8장에서 만든 인증 인터셉터는 실무에서 잘 안 쓴다.** 7.2절에서 본 시도 제한, 7.6절의 세션 고정, CSRF, 비밀번호 해시 — **직접 만들면 다 빠뜨린다.**\n\n**그런데 배운 것이 낭비가 아니다.** 스프링 시큐리티가 **필터로 구현**되어 있어서, **이 장의 구조를 알아야 시큐리티 설정이 읽힌다.**\n\n```java\nhttp.authorizeHttpRequests(auth -> auth\n        .requestMatchers(\"/css/**\", \"/login\").permitAll()\n        .anyRequest().authenticated());\n```\n\n**8.6절의 `excludePathPatterns` 와 같은 모양**이다. `permitAll` 이 제외 목록이고 `anyRequest().authenticated()` 가 `/**` 다.\n\n> **화이트리스트 방향도 같다** — 나열한 것만 열고 나머지는 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "AOP 는 왜 안 쓰나",
+   "md": "**공통 관심사를 모으는 것**이라면 AOP 도 있다. 앞 책에서 예고편으로 본 것이다.\n\n**웹에서는 AOP 보다 필터·인터셉터가 맞다.**\n\n| | |\n|---|---|\n| **AOP** | 메서드 호출을 가로챈다 |\n| **필터·인터셉터** | **HTTP 요청**을 가로챈다 |\n\n**AOP 는 `HttpServletRequest` 를 모른다.** URL·헤더·상태 코드를 다루려면 결국 꺼내 와야 하고, **응답을 직접 쓰는 것**(리다이렉트, 403)도 어색하다.\n\n**AOP 가 맞는 자리는 서비스 계층**이다 — 트랜잭션, 캐시, 재시도.\n\n> **`@Transactional` 이 AOP** 다. 웹 계층이 아니라 서비스 계층에 붙는 것에 이유가 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "8장이 남긴 것",
+   "md": "**8.6절 마지막에서 본 것**이다.\n\n```\nGET /items/999\n  -> 500\n  -> 오류 페이지로 가는 내부 요청\n  -> 인터셉터가 또 돈다\n```\n\n**그 \"내부 요청\" 이 무엇인지** 아직 설명하지 않았다. `/error` 를 제외 목록에 넣어야 한다고만 했다.\n\n**1.2절의 숙제 목록**에 이런 줄이 있었다.\n\n> **없는 상품을 열면 500** 이 난다 — **9장**\n\n**지금도 그렇다.** `/items/999` 를 열면 흰 화면에 스택 트레이스가 나오거나 부트의 기본 오류 페이지가 나온다.\n\n**9장이 셋을 한다.**\n\n1. **오류 페이지를 만든다**\n2. **그 내부 요청(DispatcherType)의 정체를 밝힌다**\n3. **필터·인터셉터를 오류 요청에서 어떻게 뺄지** 정한다\n\n**세 번째가 이 장과 직접 이어진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 8장의 결과",
+   "sql": "# 로그인 없이 보호된 URL\nGET /items HTTP/1.1\n\nHTTP/1.1 302 \nLocation: /login?redirectURL=/items\n\n# 7.9 절에서는 200 이었다\n\n# 정적 리소스는 통과\nGET /css/bootstrap.min.css HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/css\n\n# 로그인 후\nGET /items HTTP/1.1\nCookie: JSESSIONID=A1B2C3...\n\nHTTP/1.1 200 \n<h2>상품 목록</h2>\n\n# 서버 로그 - 컨트롤러에는 인증 코드가 한 줄도 없다\n#   REQUEST  [a1b2][/items][ItemController#items(Model)]\n#   RESPONSE [a1b2][/items]\n\n# 아직 안 된 것\nGET /items/999 HTTP/1.1\nCookie: JSESSIONID=A1B2C3...\n\nHTTP/1.1 500 \nContent-Type: text/html\n<html><body><h1>Whitelabel Error Page</h1>...",
+   "note": "**첫 응답이 7장과 8장을 가른다.** 같은 요청이 7.9절에서는 200 이었다.\n\n**컨트롤러에는 인증 코드가 한 줄도 없다.** 7.9절에서 걱정한 \"컨트롤러 20개에 20번\" 이 인터셉터 하나로 끝났고, **새 컨트롤러를 만들어도 자동으로 보호**된다.\n\n**맨 아래가 9장의 시작점**이다. 로그인은 했는데 **없는 상품**을 열었고, 사용자가 보는 것은 `Whitelabel Error Page` 다. **서비스의 화면이 아니다.**"
+  }
+ ],
+ "recap": [
+  "**필터는 통과시킬지, 인터셉터는 핸들러를 알고 통과시킬지, 리졸버는 값을 만든다.**",
+  "**리졸버는 막지 못한다** — `null` 을 돌려줄 뿐이다.",
+  "**인터셉터가 막으니 7.8절의 null 검사가 사라진다.**",
+  "**둘 다 되면 인터셉터** — 스프링 안이라 정보가 많다.",
+  "**인코딩·CORS·보안은 필터** — 넓어야 하는 것들.",
+  "**실무에서는 직접 만들 일이 적다** — 부트와 시큐리티가 한다.",
+  "**시큐리티 설정이 `excludePathPatterns` 와 같은 모양**이다.",
+  "**AOP 는 HTTP 를 모른다** — 웹 계층에는 필터·인터셉터.",
+  "**`@Transactional` 이 서비스 계층에 붙는 이유**가 그것이다.",
+  "**9장이 오류 페이지와 그 내부 요청의 정체**를 다룬다."
+ ],
+ "drills": [
+  {
+   "task": "8장에서 만든 것을 세 층으로 분류한다.",
+   "done_when": "각각 왜 그 층인지 말할 수 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨트롤러에서 로그인 검사 코드를 전부 지운다.",
+   "done_when": "인터셉터만으로 막히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Login Member` 의 null 검사를 지워 본다.",
+   "done_when": "보호된 URL 에서는 항상 값이 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스프링 시큐리티 설정 예제를 읽어 본다.",
+   "done_when": "`permitAll` 이 제외 목록인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`/items/999` 를 열어 본다.",
+   "done_when": "서비스 화면이 아닌 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 층의 목적 차이는?",
+   "a": "필터는 통과 여부, 인터셉터는 핸들러를 알고 통과 여부, 리졸버는 파라미터 값 생성이다."
+  },
+  {
+   "q": "리졸버로 인증을 막을 수 있나?",
+   "a": "없다. `null` 을 돌려줄 뿐 컨트롤러는 실행된다."
+  },
+  {
+   "q": "인코딩·CORS·보안을 왜 필터에 두나?",
+   "a": "가장 먼저 처리되어야 하거나 넓게 잡을수록 안전한 것들이기 때문이다."
+  },
+  {
+   "q": "AOP 를 웹 계층에 안 쓰는 이유는?",
+   "a": "메서드 호출을 가로챌 뿐 HTTP 요청·응답을 다루지 못한다."
+  },
+  {
+   "q": "8장이 남긴 문제는?",
+   "a": "없는 상품을 열면 서비스 화면이 아닌 기본 오류 페이지가 나온다. 9장이 다룬다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Interception",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-interceptor.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
