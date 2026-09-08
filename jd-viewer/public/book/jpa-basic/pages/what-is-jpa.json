@@ -1,0 +1,403 @@
+{
+  "book": "jpa-basic",
+  "id": "what-is-jpa",
+  "no": "2.2",
+  "chapter": 2,
+  "title": "JPA 소개",
+  "summary": "JPA 는 라이브러리가 아니라 표준 명세다. Hibernate 와의 관계, JPA 가 실제로 해 주는 일 다섯 가지, 그리고 JPA 가 만병통치약이 아닌 지점.",
+  "minutes": 20,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "JPA·Hibernate·Spring Data JPA 가 각각 무엇이고 어떤 층에 있는지 그림으로 그릴 수 있다.",
+    "`em.persist(member)` 한 줄이 어떤 SQL 이 되는지, 그리고 **언제** 되는지 말할 수 있다.",
+    "앞 절의 네 가지 불일치를 JPA 가 각각 어떻게 푸는지 하나씩 대응시킬 수 있다.",
+    "JPA 를 쓰면 안 되는(또는 SQL 로 내려가야 하는) 상황을 두 가지 이상 들 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절은 이렇게 끝났다. **객체를 자바 컬렉션에 넣고 꺼내듯 다루면서, 실제로는 관계형 데이터베이스에 저장되게 하고 싶다.**\n\nJPA 는 그 요구를 자바 표준으로 못 박은 것이다."
+    },
+    {
+      "type": "heading",
+      "text": "JPA 는 라이브러리가 아니라 '명세' 다"
+    },
+    {
+      "type": "prose",
+      "md": "이걸 먼저 정리하고 가야 뒤가 안 헷갈린다. **JPA(Jakarta Persistence API)는 인터페이스의 모음이다.** 구현이 아니다.\n\n`build.gradle` 에 `jpa` 를 넣는다고 뭔가 동작하지 않는다. 인터페이스만 있고 실제로 SQL 을 만들어 내는 물건이 없기 때문이다. 그 물건을 *구현체* 라고 부르고, 사실상의 표준 구현체가 **Hibernate** 다."
+    },
+    {
+      "type": "figure",
+      "caption": "누가 어디에 있나",
+      "ascii": "  ┌──────────────────────────────────────────────┐\n  │  my application code                         │\n  │    member.setName(\"kim\");                    │\n  └────────────────────┬─────────────────────────┘\n                       │  em.persist(member)\n                       ▼\n  ┌──────────────────────────────────────────────┐\n  │  JPA   (jakarta.persistence.*)               │   ← 인터페이스. 자바 표준 명세다.\n  │    EntityManager, @Entity, @Id ...           │      구현은 한 줄도 들어 있지 않다.\n  └────────────────────┬─────────────────────────┘\n                       │  implements\n                       ▼\n  ┌──────────────────────────────────────────────┐\n  │  Hibernate   (or EclipseLink, DataNucleus)   │   ← 실제로 SQL 을 만드는 라이브러리.\n  │    builds SQL, picks the DB dialect          │      DB 마다 다른 문법을 여기서 흡수한다.\n  └────────────────────┬─────────────────────────┘\n                       │  JDBC API\n                       ▼\n  ┌──────────────────────────────────────────────┐\n  │  JDBC driver  ->  database                   │\n  └──────────────────────────────────────────────┘",
+      "note": "우리가 코드에서 부르는 것은 위에서 두 번째 칸(JPA 인터페이스)뿐이다. 아래 두 칸은 전부 라이브러리가 한다."
+    },
+    {
+      "type": "prose",
+      "md": "왜 굳이 인터페이스와 구현을 나눠 놨을까. JDBC 와 똑같은 이유다 — **구현체를 갈아 끼워도 내 코드가 안 바뀌게 하려고.** 실제로 갈아 끼우는 일은 거의 없지만, 그 덕분에 배우는 사람 입장에서는 좋은 점이 있다. `jakarta.persistence` 패키지 안에 있는 것만 알면, Hibernate 문서를 안 읽어도 90% 는 쓸 수 있다."
+    },
+    {
+      "type": "table",
+      "caption": "헷갈리는 이름 정리",
+      "note": "면접에서 \"Spring Data JPA 랑 JPA 랑 뭐가 달라요?\" 를 실제로 자주 묻는다. 층이 다르다는 것만 정확히 말하면 된다.",
+      "columns": [
+        "이름",
+        "정체",
+        "역할",
+        "없으면?"
+      ],
+      "rows": [
+        [
+          "**JPA** (Jakarta Persistence)",
+          "자바 표준 **명세**",
+          "`EntityManager`, `@Entity` 같은 인터페이스와 규칙을 정의",
+          "구현체가 뭘 만들어야 할지 기준이 없다"
+        ],
+        [
+          "**Hibernate**",
+          "JPA **구현체** (라이브러리)",
+          "실제로 SQL 을 생성하고 JDBC 를 호출",
+          "**아무것도 동작하지 않는다**"
+        ],
+        [
+          "**Spring Data JPA**",
+          "JPA 를 감싸는 **편의 계층**",
+          "`JpaRepository` 로 DAO 코드 자체를 없애 줌",
+          "`EntityManager` 를 직접 쓰면 된다 (이 책이 하는 방식)"
+        ],
+        [
+          "**QueryDSL**",
+          "타입 안전 쿼리 **빌더**",
+          "JPQL 문자열을 자바 코드로 작성",
+          "JPQL 을 문자열로 쓴다 (오타는 런타임에 발견)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "javax 와 jakarta — 이름만 바뀐 것",
+      "md": "오래된 자료는 `import javax.persistence.Entity` 라고 되어 있고, 요즘 자료는 `jakarta.persistence.Entity` 다.\n\nOracle 이 Java EE 를 Eclipse 재단에 넘길 때 `javax` 라는 이름을 같이 넘기지 못해서 패키지 이름을 통째로 바꾼 것이다. **내용은 같다.** Hibernate 6 부터는 `jakarta` 만 쓴다. 옛날 블로그 예제를 보다가 `import` 가 안 잡히면 십중팔구 이것이다."
+    },
+    {
+      "type": "heading",
+      "text": "그래서 코드가 어떻게 생겼나"
+    },
+    {
+      "type": "prose",
+      "md": "말보다 코드가 빠르다. 앞 절의 `MemberDAO` 가 JPA 로는 어떻게 되는지 본다. 먼저 클래스에 표시를 단다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "caption": "매핑 정보를 클래스 안에 적는다",
+      "code": "import jakarta.persistence.*;\n\n@Entity                       // 이 클래스는 테이블과 매핑된다\npublic class Member {\n\n    @Id                       // 이 필드가 기본 키\n    private String memberId;\n\n    @Column(name = \"NAME\")    // 필드 이름과 컬럼 이름이 다르면 적어 준다\n    private String username;\n\n    private String tel;       // 이름이 같으면 생략 가능\n\n    protected Member() {}     // JPA 가 리플렉션으로 쓰는 기본 생성자 (5.1절)\n}",
+      "note": "SQL 이 한 줄도 없다. 그리고 이 파일 하나가 **테이블 구조의 유일한 진실**이 된다 — 앞 절에서 SQL 수십 개에 흩어져 있던 그것이다."
+    },
+    {
+      "type": "prose",
+      "md": "이제 저장·조회·수정·삭제를 차례로 본다. 왼쪽이 우리가 쓰는 코드, 오른쪽이 **JPA 가 대신 만들어 내보내는 SQL** 이다. 이 책은 앞으로 계속 이 짝을 보여 준다."
+    },
+    {
+      "type": "heading",
+      "text": "저장"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = new Member();\nmember.setMemberId(\"100\");\nmember.setUsername(\"김관현\");\n\nem.persist(member);      // 저장"
+    },
+    {
+      "type": "sql",
+      "caption": "JPA 가 만들어 내보내는 SQL",
+      "sql": "INSERT INTO MEMBER (MEMBER_ID, NAME, TEL) VALUES (?, ?, ?)",
+      "note": "필드 이름과 컬럼 이름의 대응은 `@Column` 이 알려 준다. 필드를 하나 늘리면 이 SQL 도 자동으로 늘어난다 — 앞 절에서 사람이 하던 일이 사라진 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그런데 이 INSERT 는 지금 나가지 않는다",
+      "md": "`em.persist(member)` 를 부른 그 순간에는 **DB 에 아무 일도 일어나지 않는다.** SQL 은 트랜잭션을 커밋하는 시점에 몰아서 나간다.\n\n처음 JPA 를 쓸 때 가장 당황스러운 지점이 이것이다. 로그를 켜 놓고 `persist()` 를 불렀는데 SQL 이 안 보여서 \"저장이 안 됐나?\" 싶어진다.\n\n왜 그러는지는 **4장 전체가 그 이야기**다. 지금은 \"JPA 는 코드와 DB 사이에 한 겹을 끼워 두고, 그 겹에 모아 뒀다가 한 번에 보낸다\" 정도만 기억하면 된다. 그 겹의 이름이 **영속성 컨텍스트**다."
+    },
+    {
+      "type": "heading",
+      "text": "조회"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = em.find(Member.class, \"100\");"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.TEL\n  FROM MEMBER M\n WHERE M.MEMBER_ID = ?",
+      "note": "`ResultSet` 을 돌면서 `new Member()` 에 값을 채우는 코드는 없다. JPA 가 한다."
+    },
+    {
+      "type": "heading",
+      "text": "수정 — 여기가 제일 놀랍다"
+    },
+    {
+      "type": "compare",
+      "caption": "수정하는 법",
+      "left": {
+        "title": "JDBC 였다면",
+        "lang": "java",
+        "bad": true,
+        "code": "Member member = dao.find(\"100\");\nmember.setUsername(\"김관현2\");\n\ndao.update(member);   // ← 반드시 불러야 한다",
+        "md": "`update()` 를 빠뜨리면 아무 일도 안 일어난다. 그리고 자주 빠뜨린다."
+      },
+      "right": {
+        "title": "JPA 라면",
+        "lang": "java",
+        "code": "Member member = em.find(Member.class, \"100\");\nmember.setUsername(\"김관현2\");\n\n// 끝. update 를 부르지 않는다.",
+        "md": "**저장 메서드가 없다.** 트랜잭션이 끝날 때 JPA 가 알아서 UPDATE 를 내보낸다."
+      }
+    },
+    {
+      "type": "sql",
+      "caption": "커밋 시점에 나가는 SQL",
+      "sql": "UPDATE MEMBER SET NAME = ?, TEL = ? WHERE MEMBER_ID = ?"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 update 를 안 불러도 되나",
+      "md": "JPA 는 조회한 엔티티의 **최초 상태를 따로 복사해 둔다**(스냅샷). 트랜잭션이 끝날 때 현재 값과 스냅샷을 비교해서, 달라진 필드가 있으면 UPDATE 를 만든다.\n\n이걸 **변경 감지(dirty checking)** 라고 부른다. 자바 컬렉션에서 `list.get(0).setName(...)` 을 하면 따로 저장할 필요가 없는 것과 같은 감각을 만들어 내려는 장치다. 자세한 동작은 4.2절에서 본다."
+    },
+    {
+      "type": "heading",
+      "text": "삭제"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = em.find(Member.class, \"100\");\nem.remove(member);"
+    },
+    {
+      "type": "sql",
+      "sql": "DELETE FROM MEMBER WHERE MEMBER_ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "앞 절의 네 문제를 JPA 는 어떻게 푸나"
+    },
+    {
+      "type": "prose",
+      "md": "여기가 이 절의 핵심이다. 2.1절에서 본 네 가지 불일치를 하나씩 대응시켜 본다."
+    },
+    {
+      "type": "table",
+      "caption": "네 가지 불일치 → JPA 의 답",
+      "note": "오른쪽 칸의 '몇 장' 은 이 책에서 그 내용을 다루는 곳이다.",
+      "columns": [
+        "불일치",
+        "SQL 직접",
+        "JPA 의 답",
+        "어디서"
+      ],
+      "rows": [
+        [
+          "**상속**",
+          "INSERT 두 번, 타입마다 다른 조인",
+          "`@Inheritance` 전략을 지정하면 JPA 가 두 개의 INSERT 와 조인을 알아서 만든다. 코드는 `em.persist(album)` 한 줄",
+          "8장"
+        ],
+        [
+          "**연관관계**",
+          "참조 ↔ FK 변환을 사람이",
+          "`@ManyToOne Team team` 참조를 그대로 두면 JPA 가 저장할 때 FK 로, 꺼낼 때 객체로 바꾼다",
+          "6~7장"
+        ],
+        [
+          "**그래프 탐색**",
+          "SQL 이 정해 준 만큼만",
+          "지연 로딩 — `member.getOrder()` 를 부르는 그 순간 필요한 SELECT 를 추가로 내보낸다. **어디까지 갈 수 있는지를 SQL 이 아니라 코드가 정한다**",
+          "9장, 12장"
+        ],
+        [
+          "**동일성 비교**",
+          "두 번 조회하면 다른 인스턴스",
+          "같은 트랜잭션 안에서 같은 키로 조회하면 **같은 인스턴스**를 돌려준다(1차 캐시). `==` 이 true",
+          "4.2절"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "여기서 한 번 멈추는 게 좋다",
+      "md": "위 표의 네 줄이 이 책 전체의 지도다. 5장부터는 매핑 어노테이션이 쏟아지는데, **각 어노테이션이 저 네 줄 중 어느 문제를 푸는 것인지**를 붙여 놓고 읽으면 외울 게 훨씬 줄어든다.\n\n예를 들어 `@JoinColumn` 은 두 번째 줄(연관관계)의 도구고, `@Inheritance` 는 첫 번째 줄의 도구다."
+    },
+    {
+      "type": "heading",
+      "text": "덤으로 따라오는 것 — 성능"
+    },
+    {
+      "type": "prose",
+      "md": "\"한 겹을 끼워 넣었으니 느려지지 않나?\" 는 자연스러운 의심이다. 실제로는 **그 겹 덕분에 빨라지는 경우가 더 많다.** 겹이 있어야만 할 수 있는 최적화가 세 가지 있다."
+    },
+    {
+      "type": "steps",
+      "caption": "중간 계층이 있어서 가능한 세 가지",
+      "items": [
+        {
+          "title": "1차 캐시 — 같은 것을 두 번 안 읽는다",
+          "md": "한 트랜잭션 안에서 같은 회원을 두 번 조회하면 SELECT 는 **한 번만** 나간다. 두 번째는 메모리에 있는 것을 돌려준다. 동일성 문제가 풀리는 것도 이 덕분이다.",
+          "lang": "java",
+          "code": "Member m1 = em.find(Member.class, \"100\");  // SELECT 나감\nMember m2 = em.find(Member.class, \"100\");  // SQL 안 나감\n\nSystem.out.println(m1 == m2);   // true"
+        },
+        {
+          "title": "쓰기 지연 — 여러 개를 한 번에 보낸다",
+          "md": "`persist()` 를 세 번 해도 네트워크는 커밋 때 **한 번만** 탄다. JDBC 배치로 묶어 보내므로 왕복 비용이 줄어든다.",
+          "lang": "java",
+          "code": "em.persist(memberA);   // SQL 안 나감\nem.persist(memberB);   // SQL 안 나감\nem.persist(memberC);   // SQL 안 나감\n\ntx.commit();           // 여기서 INSERT 3개를 한 번에"
+        },
+        {
+          "title": "지연 로딩 — 안 쓸 것은 안 읽는다",
+          "md": "`member.getTeam()` 을 실제로 부르기 전까지 TEAM 을 조회하지 않는다. 팀 이름이 필요 없는 화면에서는 조인이 아예 안 나간다. (반대로 항상 같이 쓴다면 12장의 **페치 조인**으로 한 번에 가져온다.)",
+          "lang": "java",
+          "code": "Member member = em.find(Member.class, \"100\");\n// SELECT * FROM MEMBER ...   ← 여기까지만\n\nmember.getTeam().getName();\n// SELECT * FROM TEAM ...     ← 이때 추가로"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "그럼 JPA 만 쓰면 되나 — 아니다"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "JPA 가 잘 못하는 것",
+      "md": "**1. 통계·집계 쿼리.** 여러 테이블을 복잡하게 묶어 합계를 내는 쿼리는 JPQL 로 짜면 오히려 읽기 어렵다. 이런 건 네이티브 SQL 이나 QueryDSL, 또는 별도 조회 전용 경로로 내려가는 게 맞다.\n\n**2. 대량 데이터 일괄 처리.** 십만 건을 수정하는데 엔티티를 십만 개 메모리에 올릴 수는 없다. 벌크 연산(12.7절)이 있지만 영속성 컨텍스트와 어긋나는 문제가 따라온다.\n\n**3. DB 고유 기능.** 힌트, 특정 DB 의 함수, 파티션 관련 구문 등은 표준 JPQL 에 없다. 네이티브 쿼리로 내려간다.\n\n**4. 성능 문제의 원인이 안 보인다.** SQL 을 직접 쓰면 느린 쿼리가 눈에 보이지만, JPA 는 만들어진 SQL 을 안 보면 모른다. **그래서 이 책은 매 절에서 나가는 SQL 을 같이 본다.** `show_sql` 을 켜 두는 습관이 JPA 를 쓰는 사람의 기본기다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "정확히 말하면",
+      "md": "JPA 는 SQL 을 **없애는** 도구가 아니라, **반복되는 SQL 을 없애고 나머지에 집중하게 하는** 도구다. JPA 를 잘 쓰는 사람일수록 SQL 을 잘 안다 — 나가는 쿼리를 읽어야 하기 때문이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPA 와 Hibernate 의 차이는?\"** → JPA 는 인터페이스 명세, Hibernate 는 그 구현체. 우리가 부르는 코드는 `jakarta.persistence` 만 쓰고 실제 SQL 은 Hibernate 가 만든다.\n- **\"Spring Data JPA 도 JPA 인가요?\"** → JPA 위에 얹은 편의 계층이다. `JpaRepository` 는 내부적으로 `EntityManager` 를 쓴다.\n- **\"JPA 를 쓰면 SQL 을 몰라도 되나요?\"** → 반대다. 만들어진 SQL 을 읽어야 성능 문제를 잡을 수 있어서 SQL 을 더 잘 알아야 한다.\n- **\"수정할 때 왜 update 를 안 부르나요?\"** → 변경 감지. 조회 시점의 스냅샷과 커밋 시점의 값을 비교해 UPDATE 를 만든다.\n- **\"JPA 의 단점은?\"** → 복잡한 통계 쿼리, 대량 일괄 처리, DB 고유 기능. 그리고 나가는 SQL 이 코드에 안 보여서 성능 문제를 놓치기 쉽다는 점."
+    }
+  ],
+  "recap": [
+    "JPA 는 명세(인터페이스), Hibernate 는 구현체, Spring Data JPA 는 그 위의 편의 계층이다.",
+    "`persist`·`find`·`remove` 는 있는데 `update` 는 없다 — 변경 감지가 대신한다.",
+    "2.1절의 네 가지 불일치는 각각 상속 전략(8장), 연관관계 매핑(6~7장), 지연 로딩(9장), 1차 캐시(4.2절)가 푼다.",
+    "중간 계층이 있어서 1차 캐시·쓰기 지연·지연 로딩이 가능하다. 그 계층의 이름이 영속성 컨텍스트이고 4장의 주제다.",
+    "JPA 는 SQL 을 없애지 않는다. 나가는 SQL 을 늘 켜 놓고 보는 것이 기본기다."
+  ],
+  "drills": [
+    {
+      "task": "`persistence.xml` 에 `hibernate.show_sql`, `hibernate.format_sql`, `hibernate.use_sql_comments` 세 옵션을 켜고, `em.persist()` → `tx.commit()` 을 실행해 SQL 이 **언제** 찍히는지 눈으로 확인한다.",
+      "done_when": "`persist()` 직후가 아니라 `commit()` 직후에 INSERT 가 찍히는 것을 로그에서 확인했다.",
+      "hint": "`use_sql_comments` 를 켜면 그 SQL 이 어떤 JPQL/작업에서 나왔는지 주석으로 같이 찍힌다.",
+      "minutes": 20
+    },
+    {
+      "task": "회원을 조회한 뒤 `setUsername()` 만 부르고 아무것도 하지 않은 채 커밋한다. 그리고 UPDATE 가 나가는지 본다.",
+      "done_when": "UPDATE 가 나가는 것을 확인했고, 값을 **원래와 같은 값**으로 세팅했을 때는 UPDATE 가 안 나가는 것도 확인했다.",
+      "hint": "두 번째가 더 중요하다. 스냅샷과 비교한다는 증거다.",
+      "minutes": 20
+    },
+    {
+      "task": "같은 회원을 `em.find()` 로 두 번 조회하고 `m1 == m2` 를 찍어 본다. 그다음 `em.clear()` 를 사이에 넣고 다시 해 본다.",
+      "done_when": "첫 번째는 true, 두 번째는 false 가 나오는 것을 확인했고 왜 그런지 한 문장으로 설명할 수 있다.",
+      "hint": "SELECT 가 몇 번 나가는지도 같이 센다.",
+      "minutes": 15
+    },
+    {
+      "task": "본인이 관심 있는 회사의 백엔드 채용공고 다섯 건을 열어, JPA·Hibernate·Spring Data JPA·QueryDSL 중 무엇을 요구하는지 세어 본다.",
+      "done_when": "네 이름이 각각 몇 번 나왔는지 적었고, 함께 나오는 조합(예: JPA + QueryDSL)이 보인다.",
+      "hint": "이 책의 뒷장에서 QueryDSL 이 왜 거의 항상 따라붙는지가 나온다(11.1절).",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`build.gradle` 에 JPA 만 넣고 Hibernate 를 안 넣으면 어떻게 되는가?",
+      "a": "동작하지 않는다. JPA 는 인터페이스뿐이라 실제로 SQL 을 만들 구현체가 없다. (실무에서는 `spring-boot-starter-data-jpa` 가 Hibernate 를 같이 끌고 오기 때문에 이 상황을 겪을 일이 잘 없다.)"
+    },
+    {
+      "q": "`em.persist(member)` 를 부른 직후 다른 세션에서 그 회원을 조회하면 보이는가?",
+      "a": "안 보인다. `persist()` 시점에는 INSERT 가 나가지 않았다. 커밋 시점에 SQL 이 나가고, 그때서야 다른 세션이 볼 수 있다."
+    },
+    {
+      "q": "JPA 에 `update()` 메서드가 없는 이유는?",
+      "a": "변경 감지가 대신하기 때문이다. 조회 시점의 스냅샷과 커밋 시점의 필드 값을 비교해 달라진 것이 있으면 UPDATE 를 자동으로 만든다. 자바 컬렉션에서 꺼낸 객체를 수정하면 따로 저장할 필요가 없는 것과 같은 감각을 만들려는 것이다."
+    },
+    {
+      "q": "JPA 를 쓰면 SQL 을 덜 알아도 되는가?",
+      "a": "아니다. 나가는 SQL 이 코드에 보이지 않으므로 오히려 로그를 읽고 실행 계획을 확인하는 능력이 더 필요하다. N+1 같은 문제는 SQL 을 볼 줄 알아야만 발견된다."
+    },
+    {
+      "q": "지연 로딩이 2.1절의 어떤 문제를 푸는가?",
+      "a": "객체 그래프 탐색. SQL 이 정해 준 범위까지만 걸어갈 수 있던 것을, 참조를 따라가는 그 순간에 필요한 쿼리를 추가로 내보내는 방식으로 바꾼다. 어디까지 갈 수 있는지를 DAO 의 SQL 이 아니라 호출하는 코드가 정하게 된다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "JPA",
+      "en": "Jakarta Persistence API",
+      "what": "자바 진영의 ORM **표준 명세**. 인터페이스와 어노테이션의 집합이고 구현은 없다. 예전 이름은 Java Persistence API."
+    },
+    {
+      "term": "구현체",
+      "en": "provider / implementation",
+      "what": "명세를 실제 동작하는 코드로 만든 라이브러리. Hibernate, EclipseLink, DataNucleus. 사실상 Hibernate 를 쓴다."
+    },
+    {
+      "term": "ORM",
+      "en": "Object-Relational Mapping",
+      "what": "객체와 관계형 테이블을 맵핑해서, 객체를 다루듯 쓰면 SQL 이 나가게 하는 기술 전반."
+    },
+    {
+      "term": "EntityManager",
+      "en": "",
+      "what": "JPA 로 무언가를 하려면 반드시 거치는 창구. `persist`·`find`·`remove`·`createQuery` 가 전부 여기에 있다. 4장의 영속성 컨텍스트를 관리하는 주체이기도 하다."
+    },
+    {
+      "term": "영속성 컨텍스트",
+      "en": "persistence context",
+      "what": "엔티티를 담아 두는 논리적 공간. 코드와 DB 사이에 끼워진 '한 겹' 이고, 1차 캐시·쓰기 지연·변경 감지가 전부 여기서 일어난다. 4장의 주제."
+    },
+    {
+      "term": "변경 감지",
+      "en": "dirty checking",
+      "what": "조회 시점의 스냅샷과 커밋 시점의 값을 비교해 달라진 필드만 UPDATE 로 만드는 기능. JPA 에 `update()` 가 없는 이유."
+    },
+    {
+      "term": "Dialect",
+      "en": "",
+      "what": "같은 JPQL 을 DB 마다 다른 SQL 로 번역하기 위한 방언 설정. 페이징 구문(`LIMIT` vs `ROWNUM`)이 DB 마다 다른 것을 여기서 흡수한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 Specification",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM User Guide",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "Spring Data JPA Reference Documentation",
+      "url": "https://docs.spring.io/spring-data/jpa/reference/",
+      "publisher": "VMware"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -50,16 +50,20 @@
   `jd-viewer/public/guide/` 에 쌓여 공고 상세 화면 오른쪽 패널이 읽는다.
   대기열은 `all_jobs_enriched.json` 에서 나온다 — `validate.py --gaps` 가 브리핑 없는
   회사를 모집중 공고 수로 줄 세워 준다.
-- `study-engine/` : 기술 백과사전 엔진. 앞의 둘이 "이 회사"·"이 공고"를 다룬다면
-  여기 단위는 **낱말 하나**다 — ATmega128 핀맵·풀업 저항 같은 펌웨어/하드웨어 기초부터
-  파이썬 자료구조 선택, 금융권이 왜 Java 인지, 멱등성 같은 IT 용어까지. 브리핑이
-  "BullMQ 분산 락을 공부하라"에서 멈추면 그 다음 줄(그게 뭔데·왜 생겼는데·언제 그것
-  대신 저것인데)을 쓴다. 구조는 `engine/` 과 같고(PROMPT/schema/state/validate)
-  산출물은 `jd-viewer/public/study/` 에 쌓여 뷰어의 `기술 백과사전` 탭이 읽는다
-  (`/wiki`, `/wiki/<slug>` — `기술 트렌드 > 기술 관계·맥락` 의 다음 칸이다).
-  대기열은 `tech_relations.json`(수요 큰데 문서 없는 기술) + 이미 쓴 문서의 끊긴
-  `related` 링크에서 나온다. 모든 문서는 실제 공고 문장(`evidence`)과 실습(`drills`)으로
-  끝난다 — 읽고 끝나는 문서는 완성으로 치지 않는다.
+- `study-engine/` : 기술 백과사전 엔진. 단위는 **낱말 하나**다 — ATmega128 핀맵·풀업
+  저항부터 파이썬 자료구조 선택, 멱등성 같은 IT 용어까지. 구조는 `engine/` 과 같고
+  산출물은 `jd-viewer/public/study/` 에 쌓인다.
+  **2026-09-08 부터 뷰어 화면에서는 빠져 있다** — `/wiki` 를 책장이 가져갔다.
+  데이터와 엔진은 그대로 살아 있고, 화면 코드만 `jd-viewer/archive/study-wiki/` 로
+  옮겨 뒀다(되살리는 법은 그쪽 README).
+- **책(`jd-viewer/public/book/`)** : `/wiki` 가 읽는 것. 낱말 사전이 아니라 **차례가
+  있는 한 권**이다 — 위키독스처럼 왼쪽에 차례가 상주하고 이전/다음으로 이어 읽는다.
+  첫 권은 「자바 ORM 표준 JPA 프로그래밍 — 기본편」(12장 56절). 차례의 뼈대는 인프런
+  커리큘럼에서 빌렸고 본문·예제·SQL·그림은 직접 쓴다. 매 절이 **그 자바 코드가 실제로
+  내보내는 SQL** 로 끝나는 것이 이 책의 규칙이다.
+  **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
+  Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
+  `jd-viewer/public/book/README.md`.
 - `design-lab/` : 공고 한 건을 한 장의 이미지로 접어 소셜에 올리는 실험실(8780).
   인스타에서 모은 상세페이지·채용포스터 캡처(`refs.json` — 읽은 것/훔칠 것/버릴 것)를
   템플릿으로 옮겨 놨다. `poster/`(공고 색인 → 원고 → HTML → Playwright 렌더) →

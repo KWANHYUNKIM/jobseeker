@@ -85,7 +85,12 @@ export function useSeo(seo: Seo | null): void {
     document.head.appendChild(link)
 
     setMeta('name', 'description', desc)
-    if (robots) setMeta('name', 'robots', robots)
+    if (robots) {
+      // index.html 에 박혀 있는 기본 robots 는 이 훅의 표식이 없어서 위의 정리에
+      // 안 걸린다. 색인 제외 화면에서는 그것까지 걷어내고 우리 것만 남긴다.
+      for (const el of document.querySelectorAll('meta[name="robots"]')) el.remove()
+      setMeta('name', 'robots', robots)
+    }
     setMeta('property', 'og:type', 'website')
     setMeta('property', 'og:site_name', SITE_NAME)
     setMeta('property', 'og:title', full)
