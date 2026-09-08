@@ -241,7 +241,7 @@
           "title": "단방향 연관관계",
           "summary": "Long teamId 를 Team team 으로 바꾸면 무엇이 달라지는가. @ManyToOne 과 @JoinColumn.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -249,7 +249,7 @@
           "title": "양방향 연관관계와 연관관계의 주인 1 — 기본",
           "summary": "테이블에는 방향이 없고 객체에는 있다. mappedBy 가 말하는 것.",
           "minutes": 22,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -257,7 +257,7 @@
           "title": "양방향 연관관계와 연관관계의 주인 2 — 주의점, 정리",
           "summary": "주인이 아닌 쪽에만 값을 넣어서 생기는 버그, 연관관계 편의 메서드, toString·JSON 의 무한 루프.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -265,7 +265,7 @@
           "title": "실전 예제 2 — 연관관계 매핑 시작",
           "summary": "5장에서 만든 엔티티의 FK 필드를 전부 객체 참조로 바꾼다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

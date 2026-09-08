@@ -1,0 +1,270 @@
+{
+  "book": "jpa-basic",
+  "id": "unidirectional",
+  "no": "6.1",
+  "chapter": 6,
+  "title": "단방향 연관관계",
+  "summary": "Long teamId 를 Team team 으로 바꾸면 무엇이 달라지는가. @ManyToOne 과 @JoinColumn.",
+  "minutes": 20,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`Long teamId` 와 `Team team` 이 코드 사용성에서 어떻게 다른지 예로 들 수 있다.",
+    "`@ManyToOne` 과 `@JoinColumn` 이 각각 무엇을 지정하는지 말할 수 있다.",
+    "참조를 저장하면 어떤 SQL 이 나가는지, 조회하면 어떻게 객체가 조립되는지 안다.",
+    "`@JoinColumn` 을 생략하면 어떤 컬럼 이름이 만들어지는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.5절을 이렇게 끝냈다.\n\n> `Order` 가 `Member` 를 가지고 있지 않다. 주문 객체 혼자로는 아무것도 못 하고 항상 `EntityManager` 가 옆에 있어야 한다.\n\n이 장이 그걸 고친다. 그리고 **2.1절에서 못 풀었던 두 번째 불일치(연관관계)가 여기서 풀린다.**\n\n예제는 회원과 팀으로 간다. 회원은 하나의 팀에 속하고, 팀에는 여러 회원이 있다."
+    },
+    {
+      "type": "heading",
+      "text": "먼저, 지금 상태"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "테이블을 그대로 옮긴 객체",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n\n    private String username;\n\n    @Column(name = \"TEAM_ID\")\n    private Long teamId;          // ← 참조가 아니라 그냥 숫자\n}\n\n// 회원이 속한 팀 이름을 알려면\nMember member = em.find(Member.class, 1L);\nTeam team = em.find(Team.class, member.getTeamId());   // 한 번 더\nString teamName = team.getName();"
+    },
+    {
+      "type": "prose",
+      "md": "이 코드의 문제는 줄 수가 아니다. **`Member` 만 들고 있는 곳에서는 팀을 알 수 없다**는 것이다. 서비스든 컨트롤러든 어디서든 `EntityManager` 가 같이 있어야 한다."
+    },
+    {
+      "type": "heading",
+      "text": "참조로 바꾼다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "@ManyToOne 과 @JoinColumn",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    @Column(name = \"MEMBER_ID\")\n    private Long id;\n\n    private String username;\n\n    @ManyToOne                         // 회원(N) : 팀(1)\n    @JoinColumn(name = \"TEAM_ID\")      // 이 FK 컬럼으로 조인한다\n    private Team team;                 // ← 참조\n\n    protected Member() {}\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Team.java",
+      "code": "@Entity\npublic class Team {\n    @Id @GeneratedValue\n    @Column(name = \"TEAM_ID\")\n    private Long id;\n\n    private String name;\n\n    protected Team() {}\n    // 아직 List<Member> 는 없다. 단방향이다.\n}"
+    },
+    {
+      "type": "table",
+      "caption": "두 어노테이션이 각각 하는 일",
+      "note": "다중성은 **내 쪽에서 상대 쪽을 볼 때**의 관계다. 회원 여러 명이 팀 하나를 보므로 `@ManyToOne` — 앞이 나, 뒤가 상대다.",
+      "columns": [
+        "",
+        "무엇을 말하나",
+        "빠뜨리면"
+      ],
+      "rows": [
+        [
+          "`@ManyToOne`",
+          "**다중성**. 나(N)와 상대(1)의 관계",
+          "매핑이 안 돼 EMF 생성이 실패한다"
+        ],
+        [
+          "`@JoinColumn(name)`",
+          "**어느 FK 컬럼으로 조인하나**",
+          "기본 이름이 만들어진다 (아래 참고)"
+        ]
+      ]
+    },
+    {
+      "type": "figure",
+      "caption": "참조와 외래 키",
+      "ascii": "   객체                                테이블\n\n   ┌────────────────┐                 ┌────────────────────┐\n   │ Member         │                 │ MEMBER             │\n   │   username     │                 │   USERNAME         │\n   │   team  ───────┼──▶ Team         │   TEAM_ID  (FK) ───┼──▶ TEAM\n   └────────────────┘                 └────────────────────┘\n\n   화살표가 한쪽으로만 있다                 화살표에 방향이 없다\n   member.getTeam()    O              MEMBER -> TEAM 도\n   team.getMembers()   X              TEAM -> MEMBER 도 조인된다",
+      "note": "오른쪽 아래 두 줄이 이 장 전체의 씨앗이다 — **객체 참조에는 방향이 있고 테이블 조인에는 없다.** 6.2절이 이 차이를 다룬다."
+    },
+    {
+      "type": "heading",
+      "text": "저장"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Team team = new Team(\"팀A\");\nem.persist(team);\n\nMember member = new Member(\"김관현\");\nmember.setTeam(team);        // ← 객체를 그대로 넣는다\nem.persist(member);"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL",
+      "sql": "INSERT INTO TEAM   (NAME, TEAM_ID) VALUES (?, ?)\nINSERT INTO MEMBER (USERNAME, TEAM_ID, MEMBER_ID) VALUES (?, ?, ?)",
+      "note": "`member.setTeam(team)` 한 줄이 `TEAM_ID` 컬럼 값으로 번역됐다. **`team.getId()` 를 꺼내는 코드를 우리가 쓰지 않았다** — 2.1절에서 사람이 하던 변환이 사라진 자리다."
+    },
+    {
+      "type": "heading",
+      "text": "조회 — 객체 그래프 탐색"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member found = em.find(Member.class, member.getId());\n\nTeam team = found.getTeam();        // 참조를 따라간다\nSystem.out.println(team.getName()); // 팀A"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "2.1절의 세 번째 불일치도 같이 풀린다",
+      "md": "2.1절에서 객체 그래프 탐색이 문제라고 했다 — `member.getTeam()` 이 될지 안 될지가 **DAO 안의 SQL 에 달려 있어서** 서비스 코드가 DAO 를 열어 봐야 했다.\n\n이제는 참조가 있으면 항상 된다. `getTeam()` 을 부르는 그 순간 필요하면 JPA 가 SELECT 를 한 번 더 보낸다(9장 지연 로딩). **어디까지 갈 수 있는지를 SQL 이 아니라 매핑이 정한다.**\n\n다만 이 편리함이 곧 N+1 문제의 씨앗이기도 하다. 9장과 12장이 그 이야기다."
+    },
+    {
+      "type": "heading",
+      "text": "연관관계 수정"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Team teamB = new Team(\"팀B\");\nem.persist(teamB);\n\nMember member = em.find(Member.class, 1L);\nmember.setTeam(teamB);      // 참조만 바꾼다\n\n// 저장 코드 없음 — 변경 감지(4.2절)"
+    },
+    {
+      "type": "sql",
+      "sql": "UPDATE MEMBER SET USERNAME = ?, TEAM_ID = ? WHERE MEMBER_ID = ?"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "관계를 끊으려면",
+      "md": "```java\nmember.setTeam(null);\n```\n\n`TEAM_ID` 가 `NULL` 로 UPDATE 된다. FK 값을 직접 다루던 시절과 코드 모양이 완전히 같아 보이지만, **다루는 것이 숫자가 아니라 객체**라는 점이 다르다."
+    },
+    {
+      "type": "heading",
+      "text": "@JoinColumn 을 생략하면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "@ManyToOne\n// @JoinColumn 없음\nprivate Team team;",
+      "note": "기본 이름이 만들어진다 — **`필드명` + `_` + `참조 대상 테이블의 기본 키 컬럼명`**. 여기서는 `team_TEAM_ID` 가 된다. 대소문자가 섞인 이상한 컬럼이 생기므로 실무에서는 항상 명시한다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "다중성 어노테이션을 아예 빼면",
+      "md": "`@ManyToOne` 없이 `private Team team;` 만 두면 JPA 는 이 필드를 **값 타입으로 저장하려 한다.** `Team` 은 `Serializable` 도 아니고 기본 타입도 아니므로 EMF 를 만들 때 실패한다.\n\n```\nCould not determine recommended JdbcType for Java type 'Team'\n```\n\n엔티티끼리의 참조에는 **반드시 다중성 어노테이션이 필요하다.**"
+    },
+    {
+      "type": "heading",
+      "text": "정리 — 무엇이 달라졌나"
+    },
+    {
+      "type": "compare",
+      "caption": "FK 값 vs 참조",
+      "left": {
+        "title": "Long teamId",
+        "lang": "java",
+        "bad": true,
+        "code": "Long id = member.getTeamId();\nTeam team = em.find(Team.class, id);\nString name = team.getName();",
+        "md": "회원 객체만으로는 팀을 알 수 없다. **EntityManager 가 항상 필요하다.**"
+      },
+      "right": {
+        "title": "Team team",
+        "lang": "java",
+        "code": "String name =\n    member.getTeam().getName();",
+        "md": "회원 객체가 팀을 **가지고 있다.** 어디서든 참조를 따라갈 수 있다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"연관관계 매핑을 왜 하나요?\"** → FK 값을 들고 있으면 객체가 아니라 구조체가 된다. 참조로 두면 객체 그래프 탐색이 되고, 참조↔FK 변환을 JPA 가 대신한다.\n- **\"`@ManyToOne` 의 Many 는 누구인가요?\"** → **나**다. 내 쪽이 N, 상대가 1. 회원 여러 명이 팀 하나에 속하므로 `Member` 에 `@ManyToOne` 을 붙인다.\n- **\"`@JoinColumn` 을 생략하면?\"** → `필드명_참조테이블PK명` 으로 컬럼 이름이 만들어진다. 예측하기 어려우니 명시한다."
+    }
+  ],
+  "recap": [
+    "`Long teamId` → `Team team` 으로 바꾸면 회원 객체 혼자서 팀을 알 수 있게 된다.",
+    "`@ManyToOne` 은 다중성(나 N : 상대 1), `@JoinColumn` 은 조인에 쓸 FK 컬럼을 지정한다.",
+    "`member.setTeam(team)` 이 `TEAM_ID` 컬럼 값으로 번역된다. 변환 코드를 사람이 쓰지 않는다.",
+    "참조를 바꾸면 변경 감지로 UPDATE 가 나가고, `null` 을 넣으면 FK 가 NULL 이 된다.",
+    "`@JoinColumn` 을 생략하면 `team_TEAM_ID` 같은 기본 이름이 만들어진다. 항상 명시한다.",
+    "지금은 단방향이다 — `member.getTeam()` 은 되지만 `team.getMembers()` 는 없다."
+  ],
+  "drills": [
+    {
+      "task": "`Long teamId` 버전과 `Team team` 버전을 둘 다 만들고, '회원의 팀 이름 출력' 코드를 각각 써 본다.",
+      "done_when": "두 코드의 줄 수가 아니라 **EntityManager 가 필요한지 여부**가 다르다는 것을 설명할 수 있다.",
+      "minutes": 25
+    },
+    {
+      "task": "`member.setTeam(team)` 으로 저장하고 나가는 INSERT 문의 컬럼 목록을 확인한다.",
+      "done_when": "`TEAM_ID` 가 들어 있고, 우리가 `team.getId()` 를 부른 적이 없다는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`@JoinColumn` 을 지우고 `hbm2ddl.auto=create` 로 실행해 생성된 컬럼 이름을 본다.",
+      "done_when": "`team_TEAM_ID` 를 눈으로 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`@ManyToOne` 을 지우고 실행해 본다.",
+      "done_when": "EMF 생성이 실패하는 것과 그 메시지를 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "회원의 팀을 A → B 로 바꾸고 커밋한 뒤 나가는 UPDATE 를 확인한다. 그다음 `setTeam(null)` 도 해 본다.",
+      "done_when": "TEAM_ID 가 바뀌고, null 로도 UPDATE 되는 것을 봤다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`@ManyToOne` 에서 Many 는 누구를 가리키는가?",
+      "a": "이 어노테이션이 붙은 쪽, 즉 **나**다. 회원 여러 명(N)이 팀 하나(1)에 속하므로 `Member.team` 에 `@ManyToOne` 을 붙인다."
+    },
+    {
+      "q": "`member.setTeam(team)` 후 커밋하면 어떤 SQL 이 나가는가?",
+      "a": "`INSERT ... (USERNAME, TEAM_ID, MEMBER_ID)` 또는 `UPDATE MEMBER SET ... TEAM_ID = ?`. 참조가 FK 컬럼 값으로 번역된다."
+    },
+    {
+      "q": "`@JoinColumn` 을 생략하면 컬럼 이름이 어떻게 정해지는가?",
+      "a": "`필드명` + `_` + `참조 대상 테이블의 기본 키 컬럼명`. `team` + `_` + `TEAM_ID` = `team_TEAM_ID`."
+    },
+    {
+      "q": "엔티티 참조 필드에 다중성 어노테이션을 안 붙이면?",
+      "a": "JPA 가 그 필드를 값 타입으로 저장하려다 실패한다. 엔티티 간 참조에는 반드시 `@ManyToOne`·`@OneToMany` 같은 다중성 어노테이션이 필요하다."
+    },
+    {
+      "q": "단방향 매핑에서 `team.getMembers()` 가 없는 이유는?",
+      "a": "아직 `Team` 에 `List<Member>` 필드를 만들지 않았기 때문이다. 테이블은 FK 하나로 양쪽 조인이 되지만, 객체는 참조를 만든 방향으로만 갈 수 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "단방향 연관관계",
+      "en": "unidirectional",
+      "what": "한쪽에서만 상대를 참조하는 매핑. `Member.team` 은 있고 `Team.members` 는 없는 상태."
+    },
+    {
+      "term": "@ManyToOne",
+      "en": "",
+      "what": "다중성 매핑. 앞이 나(N), 뒤가 상대(1). 실무에서 가장 많이 쓴다."
+    },
+    {
+      "term": "@JoinColumn",
+      "en": "",
+      "what": "조인에 사용할 외래 키 컬럼을 지정한다. 생략하면 `필드명_참조테이블PK` 로 만들어진다."
+    },
+    {
+      "term": "다중성",
+      "en": "multiplicity",
+      "what": "양쪽 엔티티가 서로 몇 개씩 대응하는지. N:1, 1:N, 1:1, N:M."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Relationship Mapping",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a691",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

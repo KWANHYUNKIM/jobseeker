@@ -1,0 +1,211 @@
+{
+  "book": "jpa-basic",
+  "id": "practice-2-associations",
+  "no": "6.4",
+  "chapter": 6,
+  "title": "실전 예제 2 — 연관관계 매핑 시작",
+  "summary": "5장에서 만든 엔티티의 FK 필드를 전부 객체 참조로 바꾼다.",
+  "minutes": 18,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "5.5절의 네 엔티티를 참조 기반으로 전환할 수 있다.",
+    "전환 전후로 '주문한 회원의 이름' 을 얻는 코드가 어떻게 달라지는지 비교할 수 있다.",
+    "테이블은 그대로인데 코드만 달라졌다는 것을 DDL 로 확인할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.5절에서 일부러 어정쩡하게 만들어 둔 네 엔티티를 고친다. **테이블은 하나도 안 바뀐다** — 바뀌는 것은 자바 코드뿐이다."
+    },
+    {
+      "type": "figure",
+      "caption": "무엇이 달라지나",
+      "ascii": "   5.5 절 (FK 를 값으로)                6.4 절 (참조로)\n\n   Order                               Order\n   ┌──────────────────┐                ┌──────────────────────┐\n   │ Long memberId    │                │ Member member        │   @ManyToOne\n   └──────────────────┘                │ List<OrderItem> ...  │   @OneToMany(mappedBy)\n                                       └──────────────────────┘\n\n   order.getMemberId()                 order.getMember().getName()\n   -> em.find(Member.class, id)\n   -> member.getName()                 EntityManager 가 필요 없다\n\n\n   테이블은 하나도 안 바뀐다. 바뀐 것은 자바 코드뿐이다."
+    },
+    {
+      "type": "heading",
+      "text": "Member"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "@Entity\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"MEMBER_ID\")\n    private Long id;\n\n    private String name;\n    private String city;\n    private String street;\n    private String zipcode;\n\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders = new ArrayList<>();\n\n    protected Member() {}\n}",
+      "note": "`orders` 는 **꼭 필요한 게 아니다.** 6.3절의 결론대로라면 단방향으로 끝내는 것이 맞다. 여기서는 양방향의 모양을 보려고 넣어 두고, 뒤에서 다시 뺄지 판단한다."
+    },
+    {
+      "type": "heading",
+      "text": "Order — FK 두 개가 참조로"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Order.java",
+      "code": "@Entity\n@Table(name = \"ORDERS\")\npublic class Order {\n\n    @Id @GeneratedValue\n    @Column(name = \"ORDER_ID\")\n    private Long id;\n\n    @ManyToOne                              // 주문(N) : 회원(1)\n    @JoinColumn(name = \"MEMBER_ID\")\n    private Member member;                  // ← Long memberId 였던 것\n\n    @OneToMany(mappedBy = \"order\")\n    private List<OrderItem> orderItems = new ArrayList<>();\n\n    private LocalDateTime orderDate;\n\n    @Enumerated(EnumType.STRING)\n    private OrderStatus status;\n\n    protected Order() {}\n\n    // ── 연관관계 편의 메서드 (6.3절) ──\n    public void setMember(Member member) {\n        if (this.member != null) {\n            this.member.getOrders().remove(this);\n        }\n        this.member = member;\n        if (member != null) {\n            member.getOrders().add(this);\n        }\n    }\n\n    public void addOrderItem(OrderItem orderItem) {\n        orderItems.add(orderItem);\n        orderItem.setOrder(this);\n    }\n}"
+    },
+    {
+      "type": "heading",
+      "text": "OrderItem — 여기가 관계의 교차점이다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderItem.java",
+      "code": "@Entity\npublic class OrderItem {\n\n    @Id @GeneratedValue\n    @Column(name = \"ORDER_ITEM_ID\")\n    private Long id;\n\n    @ManyToOne\n    @JoinColumn(name = \"ORDER_ID\")\n    private Order order;\n\n    @ManyToOne\n    @JoinColumn(name = \"ITEM_ID\")\n    private Item item;\n\n    private int orderPrice;\n    private int count;\n\n    protected OrderItem() {}\n\n    void setOrder(Order order) {   // Order.addOrderItem 에서만 부른다\n        this.order = order;\n    }\n}",
+      "note": "`ORDER_ITEM` 은 FK 를 둘 들고 있으므로 **`@ManyToOne` 이 두 개**다. 5.5절에서 다대다를 연결 테이블로 푼 결과가 객체에서는 이렇게 나타난다."
+    },
+    {
+      "type": "heading",
+      "text": "Item — 그대로 둔다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Item.java",
+      "code": "@Entity\npublic class Item {\n\n    @Id @GeneratedValue\n    @Column(name = \"ITEM_ID\")\n    private Long id;\n\n    private String name;\n    private int price;\n    private int stockQuantity;\n\n    protected Item() {}\n}",
+      "note": "`List<OrderItem>` 을 넣지 않았다. **상품에서 주문상품을 거슬러 올라갈 일이 없기 때문이다.** 이게 6.3절이 말한 \"필요할 때만 양방향\" 을 실제로 적용한 자리다."
+    },
+    {
+      "type": "heading",
+      "text": "저장 코드"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = new Member(\"김관현\");\nem.persist(member);\n\nItem item = new Item(\"JPA 책\", 30000, 100);\nem.persist(item);\n\nOrder order = new Order();\norder.setMember(member);          // 편의 메서드 — 양쪽이 채워진다\norder.setStatus(OrderStatus.ORDER);\norder.setOrderDate(LocalDateTime.now());\n\nOrderItem orderItem = new OrderItem(item, 30000, 2);\norder.addOrderItem(orderItem);    // 편의 메서드\n\nem.persist(order);\nem.persist(orderItem);\n\ntx.commit();"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL",
+      "sql": "INSERT INTO MEMBER     (NAME, CITY, ..., MEMBER_ID) VALUES (?, ?, ..., ?)\nINSERT INTO ITEM       (NAME, PRICE, STOCK, ITEM_ID)  VALUES (?, ?, ?, ?)\nINSERT INTO ORDERS     (MEMBER_ID, ORDER_DATE, STATUS, ORDER_ID) VALUES (?, ?, ?, ?)\nINSERT INTO ORDER_ITEM (ORDER_ID, ITEM_ID, ORDER_PRICE, COUNT, ORDER_ITEM_ID) VALUES (?, ?, ?, ?, ?)",
+      "note": "5.5절과 **완전히 같은 SQL** 이다. 우리가 `member.getId()` 나 `item.getId()` 를 꺼낸 적이 없는데도 FK 가 다 채워졌다."
+    },
+    {
+      "type": "heading",
+      "text": "조회 — 이제 이게 된다"
+    },
+    {
+      "type": "compare",
+      "caption": "5.5절 vs 지금",
+      "left": {
+        "title": "5.5절",
+        "lang": "java",
+        "bad": true,
+        "code": "Order order = em.find(Order.class, id);\n\nLong mid = order.getMemberId();\nMember m = em.find(Member.class, mid);\nString name = m.getName();\n\n// 주문한 상품 이름들은\n// OrderItem 을 JPQL 로 찾고\n// 다시 Item 을 찾고 ...",
+        "md": "매 단계마다 `EntityManager` 가 필요하다."
+      },
+      "right": {
+        "title": "지금",
+        "lang": "java",
+        "code": "Order order = em.find(Order.class, id);\n\nString name =\n    order.getMember().getName();\n\nfor (OrderItem oi : order.getOrderItems()) {\n    System.out.println(\n        oi.getItem().getName());\n}",
+        "md": "**참조를 따라 걸어간다.** 2.1절에서 못 하던 객체 그래프 탐색이다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그런데 이 코드는 쿼리를 몇 번 보낼까",
+      "md": "위 오른쪽 코드는 편하지만, 주문상품이 10개면 SQL 이 몇 번 나갈지 지금은 알 수 없다. `getItem()` 을 부를 때마다 SELECT 가 한 번씩 나갈 수도 있다.\n\n**그게 N+1 문제**이고, 9장(지연 로딩)과 12장(페치 조인)이 그 이야기다. 지금은 \"편해진 만큼 안 보이는 비용이 생겼다\" 는 것만 기억해 두면 된다.\n\n연관관계 매핑은 2.1절의 문제를 풀지만, 동시에 **새로운 종류의 성능 문제를 들여온다.** JPA 를 쓴다는 것은 이 교환을 받아들이고 관리한다는 뜻이다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "DDL 을 비교해 보면",
+      "md": "`hbm2ddl.auto=create` 로 실행해서 5.5절의 DDL 과 나란히 놓아 보자.\n\n**컬럼은 똑같고, 외래 키 제약이 추가된다.**\n\n```sql\nALTER TABLE ORDERS\n    ADD CONSTRAINT FK_ORDERS_MEMBER\n    FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER;\n```\n\n5.5절에서는 `Long memberId` 가 JPA 에게 그냥 숫자였으므로 FK 제약이 안 생겼다. 이제 관계를 알려 줬으니 제약도 같이 만들어진다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"주문상품처럼 FK 를 두 개 가진 엔티티는 어떻게 매핑하나요?\"** → `@ManyToOne` 을 두 개 둔다. 다대다를 연결 테이블로 푼 결과다.\n- **\"모든 연관관계를 양방향으로 만드나요?\"** → 아니다. 반대 방향 조회가 필요한 것만. 이 예제에서 `Item` 은 `List<OrderItem>` 을 안 가진다.\n- **\"참조로 바꾸면 테이블이 바뀌나요?\"** → 컬럼은 그대로고 외래 키 제약이 추가된다. JPA 가 이제 관계를 알기 때문이다."
+    }
+  ],
+  "recap": [
+    "네 엔티티의 FK 필드를 전부 `@ManyToOne` + `@JoinColumn` 참조로 바꿨다.",
+    "`OrderItem` 은 FK 가 둘이라 `@ManyToOne` 이 두 개다 — 다대다를 연결 테이블로 푼 결과.",
+    "`Item` 에는 컬렉션을 두지 않았다. 반대 방향 조회가 필요 없기 때문이다(6.3절).",
+    "저장 SQL 은 5.5절과 똑같다. 다만 `getId()` 를 꺼내는 코드를 우리가 쓰지 않는다.",
+    "이제 `order.getMember().getName()` 이 된다 — 객체 그래프 탐색이 열렸다.",
+    "대신 쿼리가 몇 번 나갈지 코드만 봐서는 모르게 됐다. 그게 N+1 이고 9장·12장의 주제다."
+  ],
+  "drills": [
+    {
+      "task": "네 엔티티를 참조 기반으로 바꾸고 DDL 을 5.5절과 나란히 비교한다.",
+      "done_when": "컬럼은 같고 FOREIGN KEY 제약이 추가된 것을 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "편의 메서드를 써서 회원 1 → 주문 1 → 주문상품 2 → 상품 2 를 저장한다.",
+      "done_when": "네 테이블에 데이터가 들어갔고 FK 가 다 채워졌다. `getId()` 를 한 번도 안 꺼냈다는 것도 확인한다.",
+      "minutes": 30
+    },
+    {
+      "task": "주문 하나를 조회해 회원 이름과 주문 상품 이름들을 출력하고, **나가는 SELECT 개수를 센다.**",
+      "done_when": "몇 번 나가는지 숫자로 말할 수 있다. 그 숫자가 왜 그런지는 9장에서 답한다.",
+      "hint": "`hibernate.show_sql` 로그를 세면 된다. 이 숫자를 적어 두었다가 12장 페치 조인에서 다시 비교한다.",
+      "minutes": 25
+    },
+    {
+      "task": "`Order.setMember()` 편의 메서드에서 '옛 팀에서 빼는' 부분을 지우고, 주문의 회원을 A→B 로 바꿔 본다.",
+      "done_when": "`memberA.getOrders()` 에 주문이 남아 있는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`Member.orders` 를 아예 지우고 같은 기능을 JPQL 로 구현해 본다.",
+      "done_when": "양방향 없이도 되는 것을 확인했고, 어느 쪽이 나은지 스스로 판단이 섰다.",
+      "hint": "`SELECT o FROM Order o WHERE o.member = :member`",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`OrderItem` 에 `@ManyToOne` 이 두 개인 이유는?",
+      "a": "ORDER_ITEM 테이블이 ORDER_ID 와 ITEM_ID 두 개의 FK 를 갖기 때문이다. 주문과 상품의 다대다를 연결 테이블로 풀면 객체에서는 이 모양이 된다."
+    },
+    {
+      "q": "`Item` 에 `List<OrderItem>` 을 두지 않은 이유는?",
+      "a": "상품에서 주문상품을 거슬러 올라갈 일이 없기 때문이다. 양방향은 반대 방향 조회가 실제로 필요할 때만 추가한다."
+    },
+    {
+      "q": "참조로 바꾸면 DDL 이 어떻게 달라지는가?",
+      "a": "컬럼은 그대로고 FOREIGN KEY 제약이 추가된다. `Long memberId` 는 JPA 에게 숫자일 뿐이라 관계를 몰랐지만, 이제는 안다."
+    },
+    {
+      "q": "저장할 때 `member.getId()` 를 꺼내지 않았는데 MEMBER_ID 가 어떻게 채워지나?",
+      "a": "JPA 가 주인 쪽 참조(`order.member`)를 보고 그 엔티티의 식별자를 FK 컬럼 값으로 번역한다. 2.1절에서 사람이 하던 변환이 사라진 자리다."
+    },
+    {
+      "q": "`order.getOrderItems()` 를 돌면서 `getItem().getName()` 을 부르면 SQL 이 몇 번 나가는가?",
+      "a": "코드만 봐서는 알 수 없다. 지연 로딩이면 주문상품 수만큼 추가 SELECT 가 나갈 수 있다 — N+1 문제이고 9장·12장에서 다룬다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "연결 엔티티",
+      "en": "join entity",
+      "what": "다대다를 풀기 위한 중간 엔티티. FK 를 두 개 가지므로 `@ManyToOne` 이 두 개 붙는다."
+    },
+    {
+      "term": "객체 그래프 탐색",
+      "en": "object graph traversal",
+      "what": "`order.getMember().getName()` 처럼 참조를 따라 걸어가는 것. 2.1절의 세 번째 불일치가 여기서 풀린다."
+    },
+    {
+      "term": "N+1 문제",
+      "en": "",
+      "what": "목록을 한 번 조회한 뒤 각 원소의 연관 데이터를 하나씩 조회하면서 쿼리가 N+1 번 나가는 현상. 9장·12장의 주제."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

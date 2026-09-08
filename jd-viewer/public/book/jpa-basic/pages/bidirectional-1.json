@@ -1,0 +1,246 @@
+{
+  "book": "jpa-basic",
+  "id": "bidirectional-1",
+  "no": "6.2",
+  "chapter": 6,
+  "title": "양방향 연관관계와 연관관계의 주인 1 — 기본",
+  "summary": "테이블에는 방향이 없고 객체에는 있다. mappedBy 가 말하는 것.",
+  "minutes": 22,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "테이블과 객체가 '방향' 을 다르게 다룬다는 것을 그림으로 설명할 수 있다.",
+    "'연관관계의 주인' 이 왜 필요한지, 없으면 무엇이 모호해지는지 말할 수 있다.",
+    "주인을 고르는 규칙 한 줄을 대고, 왜 그 규칙인지 설명할 수 있다.",
+    "`mappedBy` 에 무엇을 적는지 정확히 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.1절 끝에서 남긴 것: `member.getTeam()` 은 되는데 `team.getMembers()` 는 없다.\n\n팀 화면에서 소속 회원 목록을 보여 줘야 한다면 반대 방향도 필요하다. 그런데 **여기서 JPA 초심자가 가장 많이 헤매는 개념이 나온다.**"
+    },
+    {
+      "type": "heading",
+      "text": "왜 어려운가 — 테이블과 객체가 방향을 다르게 다룬다"
+    },
+    {
+      "type": "figure",
+      "caption": "방향이라는 개념 자체가 한쪽에만 있다",
+      "ascii": "   테이블 : 방향이 없다                     객체 : 방향이 있다\n\n   MEMBER               TEAM             Member.team   ──▶ Team\n   ┌───────────┐       ┌─────────┐\n   │ MEMBER_ID │       │ TEAM_ID │       Team.members  ──▶ Member\n   │ TEAM_ID   │◀─────▶│ NAME    │\n   └───────────┘       └─────────┘       참조를 두 개 만들어야\n                                         비로소 '양방향' 이 된다\n   FK 컬럼 하나로\n   양쪽 조인이 다 된다\n\n\n   그래서 문제가 생긴다.\n   FK 는 하나인데 그 값을 정할 수 있는 자바 필드는 두 개다.\n   둘이 서로 다른 값을 말하면 JPA 는 어느 쪽을 믿어야 하나?\n       ==>  하나를 '연관관계의 주인' 으로 정한다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이 한 문단이 6장 전체다",
+      "md": "테이블에서 \"회원과 팀의 연관관계\"는 **`MEMBER.TEAM_ID` 라는 컬럼 하나**다. 이 컬럼 하나로 회원→팀도 조회하고 팀→회원도 조회한다. 방향이라는 개념이 아예 없다.\n\n객체에서는 다르다. `Member.team` 과 `Team.members` 는 **서로 다른 두 개의 필드**다. 둘 다 만들면 \"양방향\"이라고 부르지만, 사실은 **단방향 두 개**를 나란히 둔 것에 가깝다.\n\n그래서 저장할 때 문제가 생긴다. FK 는 하나인데 그 값을 바꿀 수 있는 자바 필드가 둘이다. `member.setTeam(teamA)` 인데 `teamB.getMembers().add(member)` 라면, `TEAM_ID` 에 A 를 넣어야 하나 B 를 넣어야 하나?\n\n**JPA 의 답: 둘 중 하나만 보겠다.** 그 하나를 *연관관계의 주인* 이라고 부른다."
+    },
+    {
+      "type": "heading",
+      "text": "양방향으로 만들기"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Team.java",
+      "caption": "반대편에 컬렉션을 추가한다",
+      "code": "@Entity\npublic class Team {\n    @Id @GeneratedValue\n    @Column(name = \"TEAM_ID\")\n    private Long id;\n\n    private String name;\n\n    @OneToMany(mappedBy = \"team\")     // ← 나는 주인이 아니다\n    private List<Member> members = new ArrayList<>();\n\n    protected Team() {}\n}",
+      "note": "컬렉션은 **필드에서 바로 초기화**한다. `null` 이면 `getMembers().add(...)` 가 NPE 를 낸다. 하이버네이트가 내부 컬렉션으로 바꿔치기하므로 다른 곳에서 새 리스트를 대입해서도 안 된다."
+    },
+    {
+      "type": "prose",
+      "md": "`Member` 쪽은 6.1절 그대로다. **아무것도 바꾸지 않는다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "@ManyToOne\n@JoinColumn(name = \"TEAM_ID\")\nprivate Team team;                    // ← 이쪽이 주인"
+    },
+    {
+      "type": "figure",
+      "caption": "주인과 주인이 아닌 쪽",
+      "ascii": "   ┌──────────────────────────────┐        ┌──────────────────────────────┐\n   │ Member                       │        │ Team                         │\n   │                              │        │                              │\n   │  @ManyToOne                  │        │  @OneToMany(mappedBy=\"team\") │\n   │  @JoinColumn(name=\"TEAM_ID\") │        │  List<Member> members        │\n   │  Team team                   │        │                              │\n   └──────────────────────────────┘        └──────────────────────────────┘\n              주인                                    주인이 아님\n       FK 를 관리한다                          읽기 전용 (거울)\n       등록 / 수정 가능                        여기에 값을 넣어도 SQL 이 안 나간다\n\n   규칙은 하나다: 외래 키가 있는 테이블 쪽이 주인이다.\n   MEMBER 테이블에 TEAM_ID 가 있으므로 Member.team 이 주인이다.\n   그리고 N:1 에서 N 쪽이 항상 FK 를 가지므로, 결국 '@ManyToOne 쪽이 주인' 이다."
+    },
+    {
+      "type": "heading",
+      "text": "주인을 고르는 규칙"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "외래 키가 있는 쪽이 주인이다",
+      "md": "규칙은 이 한 줄이다. 그리고 이 규칙에는 좋은 이유가 있다.\n\n주인이 아닌 쪽을 FK 관리자로 삼았다고 해 보자. `team.getMembers().add(member)` 를 했을 때 UPDATE 되는 테이블은 `TEAM` 이 아니라 **`MEMBER`** 다. **내 필드를 건드렸는데 다른 테이블에 UPDATE 가 나가는 상태**가 되고, 성능 문제를 추적할 때 코드와 SQL 이 연결되지 않는다.\n\nFK 가 있는 쪽을 주인으로 두면 \"이 필드를 바꾸면 이 테이블이 UPDATE 된다\"가 일대일로 맞는다.\n\n실무적으로는 더 간단히 외울 수 있다 — **N:1 에서 FK 는 항상 N 쪽에 있으므로, `@ManyToOne` 이 붙은 쪽이 주인이다.** `@OneToMany` 쪽에는 `mappedBy` 가 붙는다."
+    },
+    {
+      "type": "heading",
+      "text": "mappedBy 에 무엇을 적나"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "// Member 쪽 필드 이름이 team 이므로\n@OneToMany(mappedBy = \"team\")\nprivate List<Member> members;"
+    },
+    {
+      "type": "table",
+      "caption": "mappedBy 의 값",
+      "note": "\"나는 주인이 아니고, **저쪽의 이 필드**에 의해 매핑된다\" 는 뜻이다. `mappedBy` 가 있으면 그쪽은 자동으로 읽기 전용이 된다.",
+      "columns": [
+        "헷갈리는 것",
+        "정답"
+      ],
+      "rows": [
+        [
+          "테이블 이름? (`MEMBER`)",
+          "아니다"
+        ],
+        [
+          "컬럼 이름? (`TEAM_ID`)",
+          "아니다"
+        ],
+        [
+          "클래스 이름? (`Member`)",
+          "아니다"
+        ],
+        [
+          "**주인 쪽 엔티티의 필드 이름** (`team`)",
+          "**이것이다**"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "조회 — 이제 양쪽 다 된다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Team team = em.find(Team.class, teamId);\n\nList<Member> members = team.getMembers();   // 반대 방향 탐색\nfor (Member m : members) {\n    System.out.println(m.getUsername());\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "getMembers() 를 실제로 쓸 때 나가는 SQL",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.TEAM_ID = ?",
+      "note": "`find(Team...)` 시점에는 이 쿼리가 안 나간다. **컬렉션을 실제로 건드릴 때** 나간다 — 지연 로딩이고, `@OneToMany` 의 기본값이다(9.2절)."
+    },
+    {
+      "type": "heading",
+      "text": "그런데 양방향이 꼭 필요한가"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "결론부터: 단방향으로 설계를 끝내라",
+      "md": "양방향은 **객체 입장에서만 추가되는 것**이지 DB 에는 아무 변화도 없다. `Team.members` 를 추가해도 테이블은 그대로고 DDL 도 그대로다.\n\n그래서 순서가 이렇게 된다.\n\n1. **처음에는 단방향 매핑만으로 설계를 끝낸다.** (`@ManyToOne` 만)\n2. 반대 방향으로 조회할 일이 실제로 생기면 그때 컬렉션을 추가한다.\n\n양방향을 미리 깔아 두면 6.3절에서 볼 문제들(주인 아닌 쪽만 세팅, 무한 루프, 편의 메서드 관리)이 **쓰지도 않는 관계 때문에** 따라온다.\n\n그리고 사실 반대 방향 조회는 JPQL 로도 된다:\n\n```java\n\"SELECT m FROM Member m WHERE m.team = :team\"\n```\n\n컬렉션 필드가 꼭 있어야 하는 건 아니다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"연관관계의 주인이 뭔가요?\"** → 양방향에서 **외래 키를 실제로 관리하는 쪽**. 객체는 참조가 둘인데 FK 는 하나라서, 어느 쪽을 보고 FK 를 정할지 정해야 한다.\n- **\"주인은 어떻게 정하나요?\"** → 외래 키가 있는 테이블 쪽. N:1 에서 FK 는 N 쪽에 있으므로 `@ManyToOne` 쪽이 주인이다.\n- **\"왜 FK 가 있는 쪽이어야 하나요?\"** → 반대로 하면 내 필드를 바꿨는데 다른 테이블에 UPDATE 가 나간다. 코드와 SQL 이 일대일로 대응하지 않게 된다.\n- **\"`mappedBy` 에 뭘 적나요?\"** → 주인 쪽 엔티티의 **필드 이름**. 테이블명·컬럼명이 아니다.\n- **\"양방향 매핑은 언제 하나요?\"** → 반대 방향 조회가 실제로 필요할 때만. 단방향으로 설계를 끝내고 나중에 추가한다. DB 에는 아무 영향이 없다."
+    }
+  ],
+  "recap": [
+    "테이블은 FK 하나로 양쪽 조인이 되지만, 객체는 참조를 만든 방향으로만 갈 수 있다.",
+    "양방향은 사실 '단방향 두 개' 다. 그래서 FK 하나를 두고 자바 필드가 둘이 되는 모호함이 생긴다.",
+    "그 모호함을 없애려고 하나를 **연관관계의 주인**으로 정하고, JPA 는 그쪽만 보고 FK 를 정한다.",
+    "주인은 **외래 키가 있는 테이블 쪽** — 실무적으로는 `@ManyToOne` 이 붙은 쪽이다.",
+    "`mappedBy` 에는 **주인 쪽 엔티티의 필드 이름**을 적는다. 테이블명·컬럼명이 아니다.",
+    "양방향은 DB 에 아무 영향이 없다. 단방향으로 설계를 끝내고 필요할 때 추가한다."
+  ],
+  "drills": [
+    {
+      "task": "`Team` 에 `@OneToMany(mappedBy=\"team\")` 을 추가하고 `hbm2ddl.auto=create` 로 실행해 DDL 을 확인한다.",
+      "done_when": "테이블 구조가 6.1절과 **완전히 같다**는 것을 확인했다. 양방향이 DB 에 영향을 주지 않는다는 증거다.",
+      "minutes": 15
+    },
+    {
+      "task": "`mappedBy` 에 `\"Member\"`(클래스명), `\"TEAM_ID\"`(컬럼명)를 각각 넣고 실행해 본다.",
+      "done_when": "둘 다 실패하는 것과 그 메시지를 확인했다. 무엇을 적어야 하는지 몸에 남는다.",
+      "minutes": 15
+    },
+    {
+      "task": "`Team.members` 를 `= new ArrayList<>()` 없이 선언하고 `getMembers().add(...)` 를 호출해 본다.",
+      "done_when": "NPE 를 확인했다. 컬렉션을 필드에서 초기화하는 이유다.",
+      "minutes": 10
+    },
+    {
+      "task": "`em.find(Team.class, id)` 만 하고 SQL 을 확인한 뒤, `team.getMembers().size()` 를 부르고 다시 확인한다.",
+      "done_when": "두 번째 호출에서 SELECT 가 추가로 나가는 것을 봤다. 지연 로딩을 처음 눈으로 보는 순간이다.",
+      "minutes": 20
+    },
+    {
+      "task": "컬렉션 필드 없이 JPQL `SELECT m FROM Member m WHERE m.team = :team` 으로 같은 결과를 얻어 본다.",
+      "done_when": "양방향 없이도 반대 방향 조회가 된다는 것을 확인했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "테이블과 객체가 '방향' 을 어떻게 다르게 다루는가?",
+      "a": "테이블은 FK 컬럼 하나로 양쪽 조인이 다 되므로 방향이라는 개념이 없다. 객체는 참조를 만든 방향으로만 갈 수 있어서, 양방향을 원하면 참조 두 개를 만들어야 한다."
+    },
+    {
+      "q": "'연관관계의 주인' 이 왜 필요한가?",
+      "a": "FK 컬럼은 하나인데 그 값을 정할 수 있는 자바 필드가 둘이 된다. 두 필드가 다른 값을 말할 때 어느 쪽을 믿을지 정해야 하므로, 한쪽만 보기로 하고 그쪽을 주인이라 부른다."
+    },
+    {
+      "q": "주인을 고르는 규칙과 그 이유는?",
+      "a": "외래 키가 있는 테이블 쪽이 주인이다. 반대로 하면 내 필드를 바꿨는데 다른 테이블에 UPDATE 가 나가서 코드와 SQL 이 대응하지 않는다."
+    },
+    {
+      "q": "`mappedBy` 에 적는 값은 무엇인가?",
+      "a": "주인 쪽 엔티티의 **필드 이름**이다. `Member.team` 이 주인이면 `mappedBy = \"team\"`. 테이블명·컬럼명·클래스명이 아니다."
+    },
+    {
+      "q": "`@OneToMany` 컬렉션을 필드에서 `new ArrayList<>()` 로 초기화하는 이유는?",
+      "a": "null 이면 `getMembers().add(...)` 가 NPE 를 낸다. 또 하이버네이트가 조회 시 자체 컬렉션으로 바꿔치기하므로, 나중에 새 리스트를 대입하면 변경 추적이 깨진다."
+    },
+    {
+      "q": "양방향 매핑을 추가하면 테이블이 바뀌는가?",
+      "a": "안 바뀐다. 양방향은 순전히 객체 쪽 편의다. 그래서 단방향으로 설계를 끝내고 필요할 때 추가하는 것이 권장된다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "양방향 연관관계",
+      "en": "bidirectional",
+      "what": "양쪽 엔티티가 서로를 참조하는 상태. 실제로는 단방향 매핑 두 개다."
+    },
+    {
+      "term": "연관관계의 주인",
+      "en": "owning side",
+      "what": "외래 키를 실제로 관리하는 쪽. JPA 는 이쪽만 보고 FK 값을 정한다. 등록·수정이 가능하다."
+    },
+    {
+      "term": "mappedBy",
+      "en": "",
+      "what": "\"나는 주인이 아니고 저쪽 필드에 의해 매핑된다\" 는 선언. 값은 주인 쪽 엔티티의 필드 이름이다."
+    },
+    {
+      "term": "@OneToMany",
+      "en": "",
+      "what": "일대다 매핑. 양방향에서는 주인이 아닌 쪽에 붙고 `mappedBy` 가 따라온다."
+    },
+    {
+      "term": "읽기 전용",
+      "en": "",
+      "what": "주인이 아닌 쪽의 성질. 값을 넣어도 SQL 이 나가지 않는다. 6.3절의 주제."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Bidirectional relationships",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a691",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Bidirectional associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many-bidirectional",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
