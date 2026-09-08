@@ -1,0 +1,194 @@
+{
+ "book": "spring-core",
+ "id": "beanfactory-applicationcontext",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "BeanFactory 와 ApplicationContext",
+ "summary": "둘의 관계와, ApplicationContext 가 더 들고 있는 것들.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`BeanFactory` 와 `ApplicationContext` 의 관계를 그릴 수 있다.",
+  "`ApplicationContext` 가 더 갖고 있는 네 가지 기능을 안다.",
+  "왜 실무에서 `ApplicationContext` 만 쓰는지 설명할 수 있다.",
+  "4.5절에서 본 `environment` 빈이 어디서 온 것인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.1절에서 **\"엄밀히는 둘로 나뉘는데 4.6절에서 갈라 준다\"** 고 했다. 여기다.\n\n짧은 절이다. 실무에서 구분이 필요한 일이 거의 없기 때문이다. 그래도 알아 둘 값은 있는데, **왜 인터페이스를 둘로 나눴는가** 가 스프링의 설계 취향을 보여 주기 때문이다."
+  },
+  {
+   "type": "figure",
+   "caption": "상속 관계와 부가 기능",
+   "ascii": "   ┌─────────────────────────────────────┐\n   │             BeanFactory             │   ← getBean() 이 여기 있다\n   └─────────────────────────────────────┘\n                      △\n   ┌──────────────────┴──────────────────┐\n   │         ApplicationContext          │   ← 여기에 네 가지가 더 붙는다\n   └─────────────────────────────────────┘\n\n        MessageSource               : i18n\n        EnvironmentCapable          : local, dev, prod\n        ApplicationEventPublisher   : event\n        ResourceLoader              : classpath:, file:, http:",
+   "note": "**`ApplicationContext` 는 `BeanFactory` 를 상속한 인터페이스**다. 빈을 관리·조회하는 일은 전부 `BeanFactory` 쪽에 있고, 위쪽은 그것을 그대로 물려받는다."
+  },
+  {
+   "type": "heading",
+   "text": "BeanFactory — 컨테이너의 최소 정의"
+  },
+  {
+   "type": "prose",
+   "md": "스프링 컨테이너의 **최상위 인터페이스**다. 하는 일은 딱 하나 — **빈을 관리하고 조회한다.**\n\n우리가 4.2~4.5절에서 쓴 `getBean`, `getBeansOfType`, `getBeanDefinitionNames` 는 전부 이쪽에 정의돼 있다. 3.8절에서 \"컨테이너가 하는 일은 만든다 + 연결한다 둘뿐\" 이라고 했는데, `BeanFactory` 가 그 정의를 그대로 인터페이스로 옮긴 것이다."
+  },
+  {
+   "type": "heading",
+   "text": "ApplicationContext — 그 위에 얹은 네 가지"
+  },
+  {
+   "type": "table",
+   "caption": "부가 기능",
+   "note": "**전부 애플리케이션을 개발할 때 필요한 것들**이다. 빈 관리와는 직접 상관이 없지만, 어차피 컨테이너가 다 들고 있으니 같이 제공한다.",
+   "columns": [
+    "인터페이스",
+    "무엇",
+    "언제 쓰나"
+   ],
+   "rows": [
+    [
+     "`MessageSource`",
+     "국제화",
+     "한국에서 오면 한국어, 영어권이면 영어로 메시지를 바꿔 준다"
+    ],
+    [
+     "`EnvironmentCapable`",
+     "환경 변수",
+     "로컬·개발·운영을 구분해서 다른 설정을 읽는다"
+    ],
+    [
+     "`ApplicationEventPublisher`",
+     "이벤트",
+     "이벤트를 발행하고 구독한다 — 느슨한 결합을 만드는 또 하나의 도구"
+    ],
+    [
+     "`ResourceLoader`",
+     "리소스 조회",
+     "`classpath:`, `file:`, `http:` 를 같은 방식으로 읽는다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4.5절에서 본 environment 빈이 이것이다",
+   "md": "4.5절 마지막 실행 결과에 이런 것들이 있었다.\n\n```\nkey = environment          value = StandardEnvironment {activeProfiles=[], ...}\nkey = systemProperties     value = {java.version=17.0.9, ...}\nkey = systemEnvironment    value = {PATH=..., HOME=...}\n```\n\n`ROLE_APPLICATION` 필터에도 안 걸리고 내가 등록한 적도 없는데 들어 있던 빈들이다.\n\n**`EnvironmentCapable` 이 그것들을 넣은 것**이다. 컨테이너가 환경 정보를 빈으로 들고 있어야 `@Value(\"${db.url}\")` 같은 것이 동작한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "실제로 꺼내 본다",
+   "code": "ApplicationContext ac =\n    new AnnotationConfigApplicationContext(AppConfig.class);\n\n// EnvironmentCapable\nSystem.out.println(\"java = \"\n    + ac.getEnvironment().getProperty(\"java.version\"));\nSystem.out.println(\"profiles = \"\n    + java.util.Arrays.toString(\n          ac.getEnvironment().getActiveProfiles()));\n\n// ResourceLoader\nSystem.out.println(\"resource = \"\n    + ac.getResource(\"classpath:application.properties\"));\n\n// BeanFactory 로도 쓸 수 있다 — 상속했으니까\nBeanFactory bf = ac;\nSystem.out.println(\"bean = \" + bf.getBean(\"memberService\"));",
+   "note": "마지막 두 줄이 요점이다. **`ApplicationContext` 를 `BeanFactory` 타입에 그냥 넣을 수 있다.** 상속 관계이기 때문이다."
+  },
+  {
+   "type": "heading",
+   "text": "그럼 왜 나눠 놨나"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "역할이 다르기 때문이다",
+   "md": "`BeanFactory` 만 필요한 곳이 있다. 스프링 내부에서 빈을 다루는 코드나, 메모리를 아껴야 하는 아주 제한된 환경이다.\n\n그런데 **애플리케이션 개발자에게는 부가 기능이 거의 항상 필요하다.** 환경 변수 없이, 리소스 조회 없이 애플리케이션을 만들기 어렵다.\n\n그래서 **최소 정의(`BeanFactory`)와 실사용 정의(`ApplicationContext`)를 나눠** 두고, 개발자는 후자만 쓴다. 1.4절의 ISP — 큰 인터페이스 하나보다 작은 것 여러 개 — 가 스프링 자기 코드에 적용된 자리다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "BeanFactory 를 직접 쓸 일은 없다",
+   "md": "\"둘 다 컨테이너인데 뭘 써야 하나\" 라고 고민할 필요가 없다. **`ApplicationContext` 를 쓴다.** 끝이다.\n\n실제로 4.2절에서 우리는 `AnnotationConfigApplicationContext` 타입으로 받기까지 했다 — `getBeanDefinition()` 이 필요해서였다.\n\n\"스프링 컨테이너\" 라고 하면 보통 `ApplicationContext` 를 가리킨다고 4.1절에서 말한 이유가 이것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과",
+   "sql": "java = 17.0.9\nprofiles = []\nresource = class path resource [application.properties]\nbean = hello.core.member.MemberServiceImpl@42d3bd8b\n\n# 참고 — 인터페이스 계층을 찍어 보면\nac instanceof BeanFactory        : true\nac instanceof ApplicationContext : true\nac instanceof EnvironmentCapable : true\nac instanceof ResourceLoader     : true",
+   "note": "**`instanceof` 가 전부 `true` 다.** 하나의 컨테이너 객체가 다섯 인터페이스를 동시에 만족한다 — 4.5절의 \"하나의 빈이 여러 타입으로 조회된다\" 가 컨테이너 자신에게도 적용되는 셈이다."
+  }
+ ],
+ "recap": [
+  "**`BeanFactory` 가 최상위 인터페이스**다. 빈을 관리·조회하는 일이 전부 여기 있다.",
+  "**`ApplicationContext` 는 그것을 상속**하고 네 가지를 더 갖는다.",
+  "국제화 · 환경 변수 · 이벤트 · 리소스 조회 — 전부 **애플리케이션 개발에 필요한 것**이다.",
+  "4.5절에서 본 `environment`·`systemProperties` 빈이 **`EnvironmentCapable`** 이 넣은 것이다.",
+  "둘로 나눈 이유는 **최소 정의와 실사용 정의를 구분**하기 위해서다 (ISP).",
+  "고민할 필요 없다 — **`ApplicationContext` 를 쓴다.**"
+ ],
+ "drills": [
+  {
+   "task": "`ac.getEnvironment().getProperty(\"java.version\")` 를 찍어 본다.",
+   "done_when": "JVM 버전이 나오는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`BeanFactory bf = ac;` 로 대입하고 `getBean` 을 불러 본다.",
+   "done_when": "컴파일도 실행도 되는 이유를 상속 관계로 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ac.getResource(\"classpath:application.properties\")` 를 찍어 본다.",
+   "done_when": "`Resource` 객체가 나오는 것을 확인했다. 파일이 없어도 객체는 나온다는 것도 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ac instanceof ...` 를 네 인터페이스에 대해 전부 찍는다.",
+   "done_when": "전부 `true` 인 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`BeanFactory` 와 `ApplicationContext` 의 관계는?",
+   "a": "`ApplicationContext` 가 `BeanFactory` 를 상속한 인터페이스다. 빈 관리·조회 기능은 `BeanFactory` 에 있다."
+  },
+  {
+   "q": "`ApplicationContext` 가 더 갖는 네 가지는?",
+   "a": "국제화(`MessageSource`), 환경 변수(`EnvironmentCapable`), 애플리케이션 이벤트(`ApplicationEventPublisher`), 리소스 조회(`ResourceLoader`)."
+  },
+  {
+   "q": "4.5절에서 본 `environment` 빈은 어디서 온 것인가?",
+   "a": "`EnvironmentCapable` 이다. 컨테이너가 환경 정보를 빈으로 들고 있어야 `@Value(\"${...}\")` 같은 것이 동작한다."
+  },
+  {
+   "q": "둘로 나눈 이유는?",
+   "a": "최소 정의와 실사용 정의를 분리하기 위해서다. 스프링 내부에서는 `BeanFactory` 만 필요한 곳이 있지만, 애플리케이션 개발자는 부가 기능이 거의 항상 필요하다."
+  },
+  {
+   "q": "실무에서는 무엇을 쓰나?",
+   "a": "`ApplicationContext`. `BeanFactory` 를 직접 쓸 일은 사실상 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BeanFactory",
+   "en": "",
+   "what": "스프링 컨테이너의 최상위 인터페이스. 빈을 관리하고 조회한다. `getBean` 이 여기 정의돼 있다."
+  },
+  {
+   "term": "MessageSource",
+   "en": "",
+   "what": "국제화 기능. 접속 지역이나 요청 헤더에 따라 다른 언어의 메시지를 돌려준다."
+  },
+  {
+   "term": "ResourceLoader",
+   "en": "",
+   "what": "`classpath:`, `file:`, `http:` 같은 서로 다른 위치의 리소스를 같은 방식으로 읽게 해 주는 추상화."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Spring Framework Reference — Introduction to the Spring IoC container and beans",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/introduction.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

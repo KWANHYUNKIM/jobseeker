@@ -1,0 +1,202 @@
+{
+ "book": "spring-core",
+ "id": "bean-lookup-duplicate",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "스프링 빈 조회 — 동일한 타입이 둘 이상",
+ "summary": "NoUniqueBeanDefinitionException. 7장 의존관계 주입에서 다시 만난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "같은 타입의 빈이 둘일 때 타입 조회가 왜 실패하는지 안다.",
+  "`NoUniqueBeanDefinitionException` 을 해결하는 두 가지 방법을 안다.",
+  "`getBeansOfType` 으로 같은 타입을 전부 받을 수 있다.",
+  "이 예외가 7장에서 다시 나온다는 것과, 그때는 왜 더 성가신지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.3절에서 `getBean(MemberRepository.class)` 처럼 **타입만으로** 조회했다. 잘 됐다. 저장소가 하나뿐이었기 때문이다.\n\n둘이면 어떻게 될까. 컨테이너 입장에서 생각해 보면 답이 보인다 — **둘 중 무엇을 줘야 할지 알 수가 없다.**"
+  },
+  {
+   "type": "heading",
+   "text": "일부러 둘로 만든다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ApplicationContextSameBeanFindTest.java",
+   "code": "class ApplicationContextSameBeanFindTest {\n\n    AnnotationConfigApplicationContext ac =\n        new AnnotationConfigApplicationContext(SameBeanConfig.class);\n\n    @Configuration\n    static class SameBeanConfig {\n\n        @Bean\n        public MemberRepository memberRepository1() {\n            return new MemoryMemberRepository();\n        }\n\n        @Bean\n        public MemberRepository memberRepository2() {\n            return new MemoryMemberRepository();\n        }\n    }\n}",
+   "note": "**이름은 다르고 타입은 같다.** `memberRepository1`, `memberRepository2` 둘 다 `MemberRepository` 다. 빈 이름은 중복되지 않았으니 등록 자체는 문제가 없다(4.1절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "테스트용 설정을 클래스 안에 둔다",
+   "md": "`AppConfig` 를 건드리지 않고 이 테스트에서만 쓸 설정이 필요하다. 그래서 **테스트 클래스 안에 `static` 중첩 클래스**로 설정을 넣었다.\n\n`@Configuration` 이 붙어 있으니 스프링은 이것도 설정 클래스로 취급한다. **테스트마다 다른 컨테이너를 띄우는 흔한 방법**이고, 이 책의 4장·5장 테스트에서 계속 쓴다.\n\n3.5절에서 \"구성 영역이 여러 개일 수 있다\" 고 한 것의 가장 작은 실물이다."
+  },
+  {
+   "type": "heading",
+   "text": "타입으로 조회하면 실패한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "실패하는 조회",
+   "bad": true,
+   "code": "@Test\n@DisplayName(\"타입으로 조회 시 같은 타입이 둘 이상 있으면 중복 오류\")\nvoid findBeanByTypeDuplicate() {\n    assertThrows(NoUniqueBeanDefinitionException.class,\n        () -> ac.getBean(MemberRepository.class));\n}",
+   "note": "**Unique 가 없다** 는 이름 그대로다. 4.3절의 `NoSuchBeanDefinition`(없다) 과 짝을 이루는 예외 — 이번에는 **너무 많다.**"
+  },
+  {
+   "type": "table",
+   "caption": "두 예외를 나란히 두면",
+   "note": "컨테이너가 타입으로 빈을 찾을 때 나올 수 있는 결과는 셋이다 — **0개(예외) / 1개(성공) / 2개 이상(예외).**",
+   "columns": [
+    "상황",
+    "예외",
+    "메시지 첫 줄"
+   ],
+   "rows": [
+    [
+     "빈이 **0개**",
+     "`NoSuchBeanDefinitionException`",
+     "`No qualifying bean of type ... available`"
+    ],
+    [
+     "빈이 **1개**",
+     "(성공)",
+     ""
+    ],
+    [
+     "빈이 **2개 이상**",
+     "`NoUniqueBeanDefinitionException`",
+     "`expected single matching bean but found 2`"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "해결 1 — 이름을 준다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Test\n@DisplayName(\"타입이 겹치면 빈 이름을 지정한다\")\nvoid findBeanByName() {\n    MemberRepository memberRepository =\n        ac.getBean(\"memberRepository1\", MemberRepository.class);\n    assertThat(memberRepository).isInstanceOf(MemberRepository.class);\n}",
+   "note": "**타입이 애매하면 이름으로 좁힌다.** 4.3절 표에서 \"두 번째 형태를 쓴다\" 고 한 이유가 이것이다 — 이름과 타입을 둘 다 주면 애매할 일이 없다."
+  },
+  {
+   "type": "heading",
+   "text": "해결 2 — 전부 받는다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "getBeansOfType",
+   "code": "@Test\n@DisplayName(\"특정 타입을 모두 조회하기\")\nvoid findAllBeanByType() {\n    Map<String, MemberRepository> beansOfType =\n        ac.getBeansOfType(MemberRepository.class);\n\n    for (String key : beansOfType.keySet()) {\n        System.out.println(\"key = \" + key\n                         + \"  value = \" + beansOfType.get(key));\n    }\n\n    assertThat(beansOfType.size()).isEqualTo(2);\n}",
+   "note": "**`Map<빈 이름, 빈 객체>`** 로 돌려준다. 4.1절의 빈 저장소 그림에서 한 타입만 골라 뽑은 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이게 쓸모 있는 진짜 자리",
+   "md": "지금은 \"둘이라 실패했으니 둘 다 받자\" 로 보이지만, **일부러 여러 개를 두고 전부 받는 설계**가 실무에 있다.\n\n- 결제 수단이 카드·계좌이체·간편결제 셋인데, **들어온 요청에 맞는 것을 골라야 할 때**\n- 검증 규칙이 여러 개인데 **전부 순서대로 돌려야 할 때**\n\n\"구현체가 하나여야 한다\" 는 법이 없다. 여러 개를 두고 **런타임에 고르는 것**이 정상인 경우가 있다.\n\n이 패턴을 `List` 와 `Map` 으로 주입받는 방법이 **7.8절**이다. 지금은 `getBeansOfType` 이 그 원형이라는 것만 알면 된다."
+  },
+  {
+   "type": "heading",
+   "text": "7장에서 다시 만난다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "지금은 조회지만, 그때는 주입이다",
+   "md": "지금은 내가 `getBean` 을 부르니 **이름을 주면 해결**된다. 성가시지 않다.\n\n7장의 자동 주입에서는 상황이 다르다.\n\n```java\n@Autowired\nprivate DiscountPolicy discountPolicy;   // 타입으로 찾는다\n```\n\n`@Autowired` 는 **기본적으로 타입으로 찾는다.** 그런데 `FixDiscountPolicy` 와 `RateDiscountPolicy` 를 둘 다 빈으로 등록해 두면 — **바로 이 예외가 난다.**\n\n그때는 `getBean` 처럼 이름을 적을 자리가 없어서 `@Qualifier`·`@Primary` 같은 별도의 장치가 필요해진다(7.5~7.6절). **4.4절은 그 문제를 미리 작게 본 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과",
+   "sql": "key = memberRepository1  value = hello.core.member.MemoryMemberRepository@2f7a2457\nkey = memberRepository2  value = hello.core.member.MemoryMemberRepository@3e6f3f2\n\nApplicationContextSameBeanFindTest > 타입으로 조회 시 ... 중복 오류 PASSED\nApplicationContextSameBeanFindTest > 타입이 겹치면 빈 이름을 지정한다 PASSED\nApplicationContextSameBeanFindTest > 특정 타입을 모두 조회하기 PASSED\n\n# assertThrows 를 빼면\norg.springframework.beans.factory.NoUniqueBeanDefinitionException:\n    No qualifying bean of type 'hello.core.member.MemberRepository' available:\n    expected single matching bean but found 2: memberRepository1,memberRepository2\n\nBUILD SUCCESSFUL\n3 tests completed",
+   "note": "**`expected single matching bean but found 2`** 뒤에 **후보 이름이 전부 나온다.** 이 목록이 실무에서 가장 쓸모 있다 — 내가 등록한 기억이 없는 빈이 후보에 끼어 있으면, 라이브러리나 자동 설정이 올린 것이다."
+  }
+ ],
+ "recap": [
+  "같은 타입 빈이 둘이면 **타입 조회가 실패**한다 — `NoUniqueBeanDefinitionException`.",
+  "빈 **이름은 중복이 아니다.** 등록은 정상이고, 조회가 애매한 것이다.",
+  "해결 1 — **이름을 준다.** `getBean(\"memberRepository1\", 타입.class)`.",
+  "해결 2 — **전부 받는다.** `getBeansOfType` 이 `Map<이름, 객체>` 로 돌려준다.",
+  "여러 개를 두고 런타임에 고르는 것이 **정상인 설계**도 있다 → 7.8절.",
+  "이 예외는 **7장 자동 주입에서 다시 나오고, 그때가 진짜 문제**다."
+ ],
+ "drills": [
+  {
+   "task": "테스트 클래스 안에 `static @Configuration` 을 두고 같은 타입 빈 2개를 등록한다.",
+   "done_when": "컨테이너는 정상으로 뜨는데 타입 조회만 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`assertThrows` 없이 실행해 예외 메시지의 후보 목록을 읽는다.",
+   "done_when": "`found 2: memberRepository1,memberRepository2` 를 눈으로 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getBeansOfType` 결과를 `Map` 으로 받아 키와 값을 출력한다.",
+   "done_when": "키가 빈 이름이라는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`AppConfig` 에 `FixDiscountPolicy` 와 `RateDiscountPolicy` 를 둘 다 `@Bean` 으로 등록해 본다.",
+   "done_when": "`getBean(DiscountPolicy.class)` 가 실패하는 것을 확인했다. 7장에서 이것을 어떻게 푸는지 기대하게 됐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "같은 타입 빈이 둘일 때 타입으로 조회하면?",
+   "a": "`NoUniqueBeanDefinitionException` 이 난다. 컨테이너가 둘 중 무엇을 줘야 할지 정할 수 없기 때문이다."
+  },
+  {
+   "q": "빈 이름이 같은 것과 타입이 같은 것은 다른 문제인가?",
+   "a": "그렇다. 이름 중복은 등록 단계의 문제(4.1절), 타입 중복은 조회 단계의 문제다. 이름만 다르면 등록은 정상이다."
+  },
+  {
+   "q": "해결 방법 두 가지는?",
+   "a": "① `getBean` 에 빈 이름을 함께 준다. ② `getBeansOfType` 으로 같은 타입을 전부 `Map` 으로 받는다."
+  },
+  {
+   "q": "`getBeansOfType` 은 무엇을 돌려주는가?",
+   "a": "`Map<String, T>` — 키가 빈 이름, 값이 빈 객체다."
+  },
+  {
+   "q": "같은 타입 빈을 여러 개 두는 것이 정상인 경우는?",
+   "a": "결제 수단이나 검증 규칙처럼 구현이 여러 개인 것이 자연스럽고, 런타임에 골라 쓰거나 전부 실행해야 할 때. 7.8절에서 List·Map 주입으로 다룬다."
+  },
+  {
+   "q": "이 예외가 7장에서 더 성가신 이유는?",
+   "a": "`@Autowired` 는 타입으로 주입하는데 이름을 적을 자리가 없다. `@Qualifier`·`@Primary` 같은 별도 장치가 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "NoUniqueBeanDefinitionException",
+   "en": "",
+   "what": "타입으로 조회했는데 후보가 둘 이상일 때 나는 예외. 메시지에 후보 빈 이름이 전부 나온다."
+  },
+  {
+   "term": "getBeansOfType",
+   "en": "",
+   "what": "특정 타입의 빈을 전부 `Map<빈 이름, 빈 객체>` 로 받는 메서드. 7.8절 List·Map 주입의 원형이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,193 @@
+{
+ "book": "spring-core",
+ "id": "bean-lookup-inheritance",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "스프링 빈 조회 — 상속 관계",
+ "summary": "부모 타입으로 조회하면 자식이 전부 나온다. Object 로 조회하면?",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "부모 타입 조회가 자식까지 끌어온다는 규칙을 안다.",
+  "그 규칙 때문에 4.4절의 예외가 언제 나는지 예측할 수 있다.",
+  "`Object` 로 조회하면 무엇이 나오는지 안다.",
+  "이 규칙이 7장 자동 주입의 동작을 미리 설명한다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "규칙은 한 줄이다.\n\n> **부모 타입으로 조회하면, 자식 타입도 함께 조회된다.**\n\n당연해 보이는데, 이 한 줄이 4.4절의 예외가 **언제 터지는지**를 결정한다. 그리고 7장에서 `@Autowired` 가 왜 그렇게 동작하는지도 이것으로 설명된다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 절의 예제 계층",
+   "ascii": "   Object                                    <- 모든 빈이 여기 걸린다\n     △\n     └── DiscountPolicy                      <- interface\n            △\n            ├── RateDiscountPolicy           <- @Bean rateDiscountPolicy\n            └── FixDiscountPolicy            <- @Bean fixDiscountPolicy",
+   "note": "3.1절에서 만든 그 두 정책이다. 이번에는 **둘 다 빈으로 등록해 둔다** — 4.4절 마지막 실습에서 이미 해 봤을 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ApplicationContextExtendsFindTest.java",
+   "code": "@Configuration\nstatic class TestConfig {\n\n    @Bean\n    public DiscountPolicy rateDiscountPolicy() {\n        return new RateDiscountPolicy();\n    }\n\n    @Bean\n    public DiscountPolicy fixDiscountPolicy() {\n        return new FixDiscountPolicy();\n    }\n}",
+   "note": "**반환 타입을 `DiscountPolicy` 로 적었다.** 실제 객체는 자식이지만 등록할 때 선언한 타입은 부모다. 그런데 조회 결과는 **선언 타입이 아니라 실제 객체 타입**을 따른다 — 아래에서 확인한다."
+  },
+  {
+   "type": "heading",
+   "text": "부모 타입으로 조회하면 둘 다 나온다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "그래서 실패한다",
+   "bad": true,
+   "code": "@Test\n@DisplayName(\"부모 타입으로 조회 시 자식이 둘 이상이면 중복 오류\")\nvoid findBeanByParentTypeDuplicate() {\n    assertThrows(NoUniqueBeanDefinitionException.class,\n        () -> ac.getBean(DiscountPolicy.class));\n}",
+   "note": "4.4절과 **같은 예외**다. 다른 점은 4.4절에서는 타입이 문자 그대로 같았고, 여기서는 **상속 관계로 묶여서** 같은 타입 취급을 받았다는 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "네 가지 조회를 나란히",
+   "note": "**3번은 되지만 권장하지 않는다** — 4.3절에서 구체 타입 조회를 말린 것과 같은 이유다. 실무에서는 1번이나 4번을 쓴다.",
+   "columns": [
+    "#",
+    "조회",
+    "결과"
+   ],
+   "rows": [
+    [
+     "1",
+     "`getBean(\"rateDiscountPolicy\", DiscountPolicy.class)`",
+     "성공 — 이름으로 좁혔다"
+    ],
+    [
+     "2",
+     "`getBean(DiscountPolicy.class)`",
+     "**실패** — 후보 2개"
+    ],
+    [
+     "3",
+     "`getBean(RateDiscountPolicy.class)`",
+     "성공 — 하지만 구현에 의존한다"
+    ],
+    [
+     "4",
+     "`getBeansOfType(DiscountPolicy.class)`",
+     "성공 — `Map` 에 2개"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3번이 되는 이유가 중요하다",
+   "md": "등록할 때 반환 타입을 `DiscountPolicy` 로 적었는데, `RateDiscountPolicy.class` 로 조회하면 찾아진다.\n\n**컨테이너는 실제로 만들어진 객체의 타입을 본다.** 선언한 타입이 아니다. `@Bean` 메서드가 무엇을 돌려주는지는 실행해 봐야 알기 때문에, 스프링은 만들어진 객체를 보고 판단한다.\n\n그래서 **하나의 빈이 여러 타입으로 조회된다** — `RateDiscountPolicy` 로도, `DiscountPolicy` 로도, `Object` 로도."
+  },
+  {
+   "type": "heading",
+   "text": "Object 로 조회하면"
+  },
+  {
+   "type": "prose",
+   "md": "모든 자바 객체의 부모는 `Object` 다. 위 규칙을 그대로 적용하면 답이 나온다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Test\n@DisplayName(\"부모 타입으로 모두 조회하기 — Object\")\nvoid findAllBeanByObjectType() {\n    Map<String, Object> beansOfType = ac.getBeansOfType(Object.class);\n\n    for (String key : beansOfType.keySet()) {\n        System.out.println(\"key = \" + key\n                         + \"  value = \" + beansOfType.get(key));\n    }\n}",
+   "note": "**컨테이너의 모든 빈**이 나온다. 4.2절의 `getBeanDefinitionNames()` 로 훑은 것과 결과가 같다 — 가는 길이 다를 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "두 길의 차이",
+   "md": "| | 무엇을 준다 | |\n|---|---|---|\n| `getBeanDefinitionNames()` | **빈 이름 목록** | 등록 정보를 훑는다 |\n| `getBeansOfType(Object.class)` | **이름 → 객체** | 객체를 실제로 만들어서 준다 |\n\n두 번째는 **아직 안 만들어진 빈을 만들게 한다.** 9장의 프로토타입 스코프나 지연 로딩 빈이 섞여 있으면 이 호출 때문에 객체가 생성될 수 있다.\n\n확인용으로만 쓰고, 애플리케이션 로직에서 `Object.class` 로 전부 긁는 코드는 쓰지 않는다."
+  },
+  {
+   "type": "heading",
+   "text": "7장 예고 — 이 규칙이 자동 주입을 설명한다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "@Autowired 가 타입으로 찾는다는 말의 정확한 뜻",
+   "md": "```java\n@Autowired\nprivate DiscountPolicy discountPolicy;\n```\n\n이 한 줄이 하는 일은 **`getBean(DiscountPolicy.class)` 와 같다.** 그러니 이 절의 규칙이 그대로 적용된다.\n\n- `RateDiscountPolicy` 만 등록 → 잘 주입된다\n- **둘 다 등록 → `NoUniqueBeanDefinitionException`**\n\n초심자가 `@Autowired` 에서 가장 자주 막히는 자리이고, 원인은 **상속 관계 조회 규칙**이다. 그래서 4장에서 미리 본다.\n\n푸는 방법이 7.6절의 `@Qualifier`·`@Primary` 인데, **그 전에 이 규칙을 모르면 왜 그런 장치가 필요한지 이해가 안 된다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과",
+   "sql": "# getBeansOfType(DiscountPolicy.class)\nkey = rateDiscountPolicy  value = hello.core.discount.RateDiscountPolicy@1f36e637\nkey = fixDiscountPolicy   value = hello.core.discount.FixDiscountPolicy@7b02881e\n\n# getBeansOfType(Object.class) — 앞부분만\nkey = org.springframework.context.annotation.internalConfigurationAnnotationProcessor  ...\nkey = testConfig            value = ...TestConfig$$SpringCGLIB$$0@2b91004a\nkey = rateDiscountPolicy    value = hello.core.discount.RateDiscountPolicy@1f36e637\nkey = fixDiscountPolicy     value = hello.core.discount.FixDiscountPolicy@7b02881e\nkey = environment           value = StandardEnvironment {activeProfiles=[], ...}\nkey = systemProperties      value = {java.version=17.0.9, ...}\nkey = systemEnvironment     value = {PATH=..., HOME=...}\n\nBUILD SUCCESSFUL\n5 tests completed",
+   "note": "`Object` 조회에서 **`environment`, `systemProperties`, `systemEnvironment`** 가 나온 것을 봐 두자. 4.2절의 `ROLE` 필터에는 안 걸리던 것들이다 — **스프링이 환경 정보도 빈으로 들고 있다.** 이것이 4.6절 `ApplicationContext` 의 부가 기능 중 하나다."
+  }
+ ],
+ "recap": [
+  "**부모 타입으로 조회하면 자식까지 전부 나온다.** 이 절은 이 한 줄이다.",
+  "그래서 자식이 둘이면 부모 타입 조회가 **4.4절과 같은 예외**로 실패한다.",
+  "컨테이너는 **선언 타입이 아니라 실제 객체 타입**을 본다 — 하나의 빈이 여러 타입으로 조회된다.",
+  "`Object` 로 조회하면 **모든 빈**이 나온다. 확인용으로만 쓴다.",
+  "`getBeansOfType` 은 객체를 **실제로 만들어서** 준다 — `getBeanDefinitionNames` 와 다르다.",
+  "`@Autowired` 는 `getBean(타입.class)` 과 같다. **7장의 막히는 자리를 여기서 미리 본 것이다.**"
+ ],
+ "drills": [
+  {
+   "task": "`DiscountPolicy` 자식 둘을 빈으로 등록하고 네 가지 조회를 전부 테스트로 짠다.",
+   "done_when": "2번만 실패하고 나머지 셋은 통과한다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Bean` 반환 타입을 `RateDiscountPolicy` 로 바꿔서 등록한 뒤 부모 타입으로 조회한다.",
+   "done_when": "여전히 찾아지는 것을 확인했다 — 선언 타입이 아니라 실제 객체 타입을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getBeansOfType(Object.class)` 를 찍고 `environment` 를 찾아본다.",
+   "done_when": "`ROLE_APPLICATION` 필터에는 안 나오던 빈이 여기 있다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`OrderServiceImpl` 의 생성자에 `@Autowired` 를 붙이고 정책 둘을 등록한 채로 띄워 본다.",
+   "done_when": "애플리케이션이 안 뜨는 것과 예외 이름을 확인했다. 7장에서 답을 맞춰 본다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부모 타입으로 조회하면 무엇이 나오는가?",
+   "a": "자식 타입 빈까지 전부 나온다. 그래서 자식이 둘 이상이면 `NoUniqueBeanDefinitionException` 이 난다."
+  },
+  {
+   "q": "`@Bean` 의 반환 타입을 부모로 적었는데 자식 타입으로 조회하면 찾아지는가?",
+   "a": "찾아진다. 컨테이너는 선언 타입이 아니라 실제로 만들어진 객체의 타입을 보고 판단한다."
+  },
+  {
+   "q": "`Object` 타입으로 조회하면?",
+   "a": "모든 자바 객체의 부모가 `Object` 이므로 컨테이너의 모든 빈이 나온다. 스프링 내부 빈과 환경 정보 빈까지 전부."
+  },
+  {
+   "q": "`getBeanDefinitionNames()` 와 `getBeansOfType(Object.class)` 의 차이는?",
+   "a": "전자는 등록 정보(이름)만 훑고, 후자는 빈 객체를 실제로 만들어서 돌려준다. 후자는 아직 안 만들어진 빈을 생성하게 할 수 있다."
+  },
+  {
+   "q": "이 규칙이 7장과 어떻게 이어지는가?",
+   "a": "`@Autowired` 는 타입으로 찾으므로 `getBean(타입.class)` 과 같다. 같은 타입 후보가 둘이면 같은 예외가 나고, 그것을 푸는 것이 `@Qualifier`·`@Primary` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "상속 관계 조회",
+   "en": "",
+   "what": "부모 타입으로 조회하면 자식 타입 빈까지 후보가 되는 스프링의 규칙. 타입 기반 주입의 동작을 전부 설명한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -277,7 +277,7 @@
           "title": "스프링 빈 조회 — 기본",
           "summary": "이름으로, 타입으로. 없으면 예외.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -285,7 +285,7 @@
           "title": "스프링 빈 조회 — 동일한 타입이 둘 이상",
           "summary": "NoUniqueBeanDefinitionException. 7장 의존관계 주입에서 다시 만난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -293,7 +293,7 @@
           "title": "스프링 빈 조회 — 상속 관계",
           "summary": "부모 타입으로 조회하면 자식이 전부 나온다. Object 로 조회하면?",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -301,7 +301,7 @@
           "title": "BeanFactory 와 ApplicationContext",
           "summary": "둘의 관계와, ApplicationContext 가 더 들고 있는 것들.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
