@@ -1,0 +1,209 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-mapping",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "요청 매핑",
+ "summary": "@RequestMapping 의 속성들. PathVariable 과 조건 매핑.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@PathVariable` 로 URL 경로의 값을 받을 수 있다.",
+  "5.8절에서 못 만든 '패턴 URL 매핑' 이 어떻게 되는지 안다.",
+  "파라미터·헤더·미디어 타입으로 조건을 걸 수 있다.",
+  "조건 매핑을 실무에서 왜 잘 안 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.8절에서 '안 만든 것' 1번**이 이 절이다.\n\n> `/items/{id}` 를 못 받는다. `Map` 의 정확 매칭뿐이다.\n\n그리고 이것이 **HTTP API 를 만들 때 반드시 필요하다.**"
+  },
+  {
+   "type": "heading",
+   "text": "기본"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@RestController\npublic class MappingController {\n\n    // 배열로 여러 URL\n    @RequestMapping({\"/hello-basic\", \"/hello-go\"})\n    public String helloBasic() {\n        return \"ok\";\n    }\n\n    // HTTP 메서드 지정 (6.7절)\n    @GetMapping(\"/mapping-get-v2\")\n    public String mappingGetV2() {\n        return \"ok\";\n    }\n}",
+   "note": "**URL 을 배열로 여러 개** 줄 수 있다. 경로를 옮기면서 옛 주소도 한동안 살려 둘 때 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "@PathVariable"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@GetMapping(\"/mapping/{userId}\")\npublic String mappingPath(@PathVariable(\"userId\") String data) {\n    log.info(\"mappingPath userId={}\", data);\n    return \"ok\";\n}\n\n// 이름이 같으면 생략할 수 있다\n@GetMapping(\"/mapping/{userId}\")\npublic String mappingPath(@PathVariable String userId) { ... }\n\n// 여러 개\n@GetMapping(\"/mapping/users/{userId}/orders/{orderId}\")\npublic String mappingPath(@PathVariable String userId,\n                         @PathVariable Long orderId) { ... }",
+   "note": "**`{}` 안의 이름과 파라미터 이름을 맞춘다.** 같으면 `(\"userId\")` 를 생략할 수 있는데, **6.7절에서 말한 컴파일 옵션 문제**가 여기도 있다.\n\n`Long orderId` 처럼 **타입 변환도 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "우리가 못 만든 이유",
+   "md": "5.2절의 우리 매핑은 이랬다.\n\n```java\ncontrollerMap.get(request.getRequestURI());   // Map 의 정확한 키\n```\n\n`/mapping/user1`, `/mapping/user2`, ... **키가 무한히 많아진다.**\n\n스프링은 **`Map` 이 아니라 패턴 목록**을 들고 있다가 요청 URL 과 하나씩 맞춰 본다. 그리고 맞으면 **`{}` 자리의 값을 뽑아 둔다.**\n\n`RequestMappingHandlerMapping` 이 하는 일이고, 뽑아 둔 값을 파라미터에 넣는 것은 **`ArgumentResolver`**(7.14절)다.\n\n1.1절에서 던진 질문 하나가 여기서 답을 얻는다.\n\n> `{itemId}` 조각은 누가 뽑아 오나\n\n**매핑이 뽑고 어댑터가 넣는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "패턴이 겹치면",
+   "md": "```java\n@GetMapping(\"/users/{userId}\")\n@GetMapping(\"/users/new\")\n```\n\n`GET /users/new` 는 **둘 다 맞는다.** 어느 것이 이기나.\n\n**더 구체적인 쪽**이다. 스프링은 패턴에 점수를 매겨서 정렬한다 — **변수가 적고 리터럴이 많을수록 구체적**이다.\n\n```\n/users/new         <- 리터럴만. 이긴다\n/users/{userId}    <- 변수 하나\n/users/**          <- 와일드카드. 가장 약하다\n```\n\n앞 책 7.6절에서 **\"더 상세하고 구체적인 것이 우선한다\"** 는 원칙을 세웠다(`@Qualifier` > `@Primary`). **같은 원칙이 URL 매핑에도 있다.**\n\n그래도 헷갈리면 순서에 기대지 말고 **경로를 겹치지 않게 설계**하는 편이 낫다. `/users/new` 대신 `/users/new-form` 처럼."
+  },
+  {
+   "type": "heading",
+   "text": "조건 매핑"
+  },
+  {
+   "type": "table",
+   "caption": "네 가지 조건",
+   "note": "**아래 셋은 잘 안 쓴다.** 이유는 다음 항목에 있다.",
+   "columns": [
+    "속성",
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "`method`",
+     "**HTTP 메서드** (6.7절)",
+     "`@GetMapping`"
+    ],
+    [
+     "`params`",
+     "**특정 파라미터**가 있어야",
+     "`params = \"mode=debug\"`"
+    ],
+    [
+     "`headers`",
+     "**특정 헤더**가 있어야",
+     "`headers = \"mode=debug\"`"
+    ],
+    [
+     "`consumes`",
+     "**요청의 `Content-Type`**",
+     "`consumes = \"application/json\"`"
+    ],
+    [
+     "`produces`",
+     "**요청의 `Accept`**",
+     "`produces = \"text/html\"`"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "// 요청 바디가 JSON 일 때만\n@PostMapping(value = \"/mapping-consume\", consumes = \"application/json\")\npublic String mappingConsumes() { ... }\n\n// 클라이언트가 HTML 을 원할 때만\n@PostMapping(value = \"/mapping-produce\", produces = \"text/html\")\npublic String mappingProduces() { ... }",
+   "note": "**`consumes` 는 요청의 `Content-Type`, `produces` 는 요청의 `Accept`** 를 본다. 헷갈리기 쉬운데 **서버 입장에서 소비/생산**이라고 읽으면 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "consumes·produces 는 실제로 쓴다",
+   "md": "3.4절에서 **`Content-Type` 이 갈림길**이라고 했다. 같은 URL 에 폼도 오고 JSON 도 올 수 있다.\n\n```java\n@PostMapping(value = \"/items\", consumes = \"application/x-www-form-urlencoded\")\npublic String addForm(@ModelAttribute Item item) { ... }\n\n@PostMapping(value = \"/items\", consumes = \"application/json\")\npublic Item addJson(@RequestBody Item item) { ... }\n```\n\n**같은 URL 인데 처리가 갈린다.** 화면용과 API 용을 하나의 경로로 두고 싶을 때 쓴다.\n\n안 맞으면 **415 Unsupported Media Type** 이다 — 400 도 404 도 아니다. **왜 안 되는지가 상태 코드에 나온다.**\n\n`produces` 는 **콘텐츠 협상**과 이어진다(7.15절). 같은 URL 이 JSON 도 XML 도 줄 수 있는 원리."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "params·headers 는 잘 안 쓴다",
+   "md": "```java\n@GetMapping(value = \"/mapping-param\", params = \"mode=debug\")\n```\n\n**동작은 하는데 실무에서 거의 안 보인다.**\n\n1. **조건이 URL 에 안 보인다.** 같은 경로인데 파라미터에 따라 다른 메서드로 간다 — 로그만 봐서는 왜 그리로 갔는지 모른다\n2. **분기가 매핑에 숨는다.** 컨트롤러 안의 `if` 였다면 코드로 보이는데, 어노테이션에 있으면 안 보인다\n3. **안 맞으면 404** 다. \"파라미터가 틀렸다\" 가 아니라 \"그런 URL 없다\" 로 보인다\n\n이 책이 반복해서 말한 것이다 — **자동화는 코드에서 정보를 뺀다**(앞 책 6장).\n\n조건이 두세 개면 **컨트롤러 안에서 `if` 로 나누는 편**이 읽기 쉽다. `consumes`·`produces` 는 예외인데, **그것은 HTTP 규약이 정한 분기**라서 상태 코드까지 맞게 나간다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 조건이 안 맞을 때",
+   "sql": "# PathVariable\nGET /mapping/users/user1/orders/100 HTTP/1.1\n\nHTTP/1.1 200 \nok\n\n# 서버 로그\nmappingPath userId=user1, orderId=100\n\n# consumes 가 안 맞으면\nPOST /mapping-consume HTTP/1.1\nContent-Type: text/plain\n\nhello\n\nHTTP/1.1 415 \n#   Unsupported Media Type\n\n# produces 가 안 맞으면\nPOST /mapping-produce HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 406 \n#   Not Acceptable\n\n# params 가 안 맞으면\nGET /mapping-param HTTP/1.1\n\nHTTP/1.1 404 \n#   Not Found — 조건이 안 맞은 건데 없는 URL 로 보인다",
+   "note": "**세 조건이 각각 다른 상태 코드를 낸다.**\n\n- **415** — 내가 보낸 형식을 서버가 못 받는다\n- **406** — 내가 원하는 형식을 서버가 못 준다\n- **404** — 그런 것 없다\n\n앞의 둘은 **정확하다.** 클라이언트가 무엇을 고쳐야 하는지 알 수 있다.\n\n**마지막이 문제다.** `params` 조건이 안 맞았을 뿐인데 \"URL 이 없다\" 로 보인다. 위에서 params 를 말린 이유가 이 한 줄이다."
+  }
+ ],
+ "recap": [
+  "**`@PathVariable`** 로 URL 경로의 값을 받는다 — 5.8절 '안 만든 것' 1번.",
+  "`{}` 이름과 파라미터 이름을 맞추면 **생략**할 수 있다(컴파일 옵션 주의).",
+  "스프링은 `Map` 이 아니라 **패턴 목록**을 들고 맞춰 본다.",
+  "**매핑이 값을 뽑고 어댑터가 넣는다** — 1.1절 질문의 답.",
+  "패턴이 겹치면 **더 구체적인 쪽**이 이긴다 — 앞 책 7.6절과 같은 원칙.",
+  "조건 매핑 — **`method`·`params`·`headers`·`consumes`·`produces`.**",
+  "**`consumes` 는 `Content-Type`, `produces` 는 `Accept`** 를 본다.",
+  "**`consumes`·`produces` 는 쓴다** — 같은 URL 에 폼과 JSON 을 나눌 때.",
+  "**`params`·`headers` 는 잘 안 쓴다** — 조건이 안 보이고, 안 맞으면 404 다.",
+  "415 · 406 은 정확하고 **404 는 원인을 감춘다.**"
+ ],
+ "drills": [
+  {
+   "task": "`@PathVariable` 로 `/mapping/users/{userId}/orders/{orderId}` 를 받는다.",
+   "done_when": "두 값이 로그에 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`/users/{userId}` 와 `/users/new` 를 둘 다 만들고 `/users/new` 를 호출한다.",
+   "done_when": "구체적인 쪽이 이기는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`consumes` 를 걸고 다른 `Content-Type` 으로 보낸다.",
+   "done_when": "415 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`params` 조건을 걸고 파라미터 없이 호출한다.",
+   "done_when": "404 가 나와 원인이 안 보인다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 URL 에 `consumes` 로 폼용과 JSON 용 메서드를 만든다.",
+   "done_when": "`Content-Type` 에 따라 갈리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@PathVariable` 은 무엇을 하나?",
+   "a": "URL 경로의 `{}` 자리 값을 컨트롤러 파라미터로 받는다. 타입 변환도 된다."
+  },
+  {
+   "q": "5장에서 이것을 못 만든 이유는?",
+   "a": "`Map` 의 정확한 키 매칭이라 `/items/1`, `/items/2` 처럼 키가 무한히 많아지기 때문이다."
+  },
+  {
+   "q": "패턴이 겹치면 어느 것이 이기나?",
+   "a": "더 구체적인 쪽이다. 리터럴이 많고 변수가 적을수록 우선한다."
+  },
+  {
+   "q": "`consumes` 와 `produces` 는 각각 무엇을 보나?",
+   "a": "`consumes` 는 요청의 `Content-Type`, `produces` 는 요청의 `Accept` 헤더다."
+  },
+  {
+   "q": "안 맞을 때 나오는 상태 코드는?",
+   "a": "`consumes` 는 415, `produces` 는 406, `params`·`headers` 는 404 다."
+  },
+  {
+   "q": "`params` 조건을 잘 안 쓰는 이유는?",
+   "a": "조건이 URL 에 안 보이고 분기가 어노테이션에 숨으며, 안 맞으면 404 라 원인을 알 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@PathVariable",
+   "en": "",
+   "what": "URL 경로 템플릿(`{id}`)의 값을 파라미터로 받는 어노테이션."
+  },
+  {
+   "term": "consumes / produces",
+   "en": "",
+   "what": "요청의 `Content-Type`·`Accept` 로 매핑 조건을 거는 속성. 안 맞으면 415·406 이 나간다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Request Mapping",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-requestmapping.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

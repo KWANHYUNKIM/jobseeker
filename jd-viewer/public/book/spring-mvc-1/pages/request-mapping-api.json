@@ -1,0 +1,181 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-mapping-api",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "요청 매핑 — API 예시",
+ "summary": "회원 관리 API 를 URL 설계부터.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리소스 중심으로 URL 을 설계할 수 있다.",
+  "HTTP 메서드로 행위를 표현하는 이유를 안다.",
+  "계층 구조를 URL 로 나타낼 수 있다.",
+  "이 설계가 완벽하지 않다는 것도 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.3절의 도구로 **API 하나를 설계**해 본다. 코드보다 **URL 을 정하는 것**이 이 절의 내용이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MappingClassController.java",
+   "code": "@RestController\n@RequestMapping(\"/mapping/users\")\npublic class MappingClassController {\n\n    @GetMapping\n    public String users() {\n        return \"get users\";\n    }\n\n    @PostMapping\n    public String addUser() {\n        return \"post user\";\n    }\n\n    @GetMapping(\"/{userId}\")\n    public String findUser(@PathVariable String userId) {\n        return \"get userId=\" + userId;\n    }\n\n    @PatchMapping(\"/{userId}\")\n    public String updateUser(@PathVariable String userId) {\n        return \"update userId=\" + userId;\n    }\n\n    @DeleteMapping(\"/{userId}\")\n    public String deleteUser(@PathVariable String userId) {\n        return \"delete userId=\" + userId;\n    }\n}",
+   "note": "**URL 이 둘뿐이다.** `/mapping/users` 와 `/mapping/users/{userId}`.\n\n다섯 기능인데 경로는 둘이고, **나머지는 HTTP 메서드가 구분한다.**"
+  },
+  {
+   "type": "table",
+   "caption": "URL 두 개, 기능 다섯 개",
+   "note": "**행위가 URL 에 없다.** `/getUsers`, `/deleteUser` 같은 것이 아니다.",
+   "columns": [
+    "메서드",
+    "URL",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`GET`",
+     "`/users`",
+     "회원 목록"
+    ],
+    [
+     "`POST`",
+     "`/users`",
+     "회원 등록"
+    ],
+    [
+     "`GET`",
+     "`/users/{userId}`",
+     "회원 조회"
+    ],
+    [
+     "`PATCH`",
+     "`/users/{userId}`",
+     "회원 수정"
+    ],
+    [
+     "`DELETE`",
+     "`/users/{userId}`",
+     "회원 삭제"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "URL 은 리소스, 메서드는 행위",
+   "md": "**URL 에 동사를 안 쓴다.** 이것이 원칙이다.\n\n```\n나쁜 것              좋은 것\n/getUsers            GET  /users\n/createUser          POST /users\n/deleteUser?id=1     DELETE /users/1\n```\n\n**행위는 이미 HTTP 메서드에 있다.** URL 에 또 쓰면 중복이다.\n\n그리고 실용적인 이유가 크다.\n\n- **`GET` 은 안전하다** — 여러 번 불러도 상태가 안 바뀐다. 캐시할 수 있고 크롤러가 따라가도 된다\n- **`DELETE` 를 `GET` 으로 만들면** 6.7절에서 말한 사고가 난다 — **크롤러가 데이터를 지운다**\n- **재시도 판단** — `PUT`·`DELETE` 는 여러 번 해도 결과가 같다(멱등). 네트워크가 끊겼을 때 다시 보내도 된다\n\n**메서드가 의미를 갖고 있어서 클라이언트·프록시·캐시가 그것을 읽는다.** URL 에 동사를 쓰면 그 정보가 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "계층은 URL 로",
+   "md": "```\nGET /users/{userId}/orders            그 회원의 주문 목록\nGET /users/{userId}/orders/{orderId}  그 주문 하나\n```\n\n**소속 관계를 경로로 나타낸다.**\n\n다만 **깊어지면 읽기 어려워진다.**\n\n```\n/users/1/orders/2/items/3/reviews/4    <- 너무 깊다\n```\n\n실무 기준 하나 — **두 단계까지.** 그 이상은 하위 리소스를 독립시킨다.\n\n```\n/orders/2/items      대신\n/order-items?orderId=2\n```\n\n**리소스가 독립적으로 식별되면 굳이 중첩하지 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "PUT 과 PATCH 는 다르다",
+   "md": "| | 무엇 |\n|---|---|\n| **`PUT`** | **전체 교체.** 안 보낸 필드는 지워진다 |\n| **`PATCH`** | **부분 수정.** 보낸 것만 바꾼다 |\n\n```json\n// 현재: {\"name\":\"kim\", \"age\":20, \"email\":\"a@b.c\"}\n\nPUT   {\"name\":\"lee\"}   ->  {\"name\":\"lee\"}              email 이 사라진다\nPATCH {\"name\":\"lee\"}   ->  {\"name\":\"lee\", \"age\":20, \"email\":\"a@b.c\"}\n```\n\n**실무에서 대부분 `PATCH` 가 맞다.** 화면에서 필드 하나만 고치는 경우가 많기 때문이다.\n\n그런데 **`PUT` 을 쓰면서 부분 수정처럼 구현한 API 가 아주 많다.** 규약을 안 지키는 것이라 클라이언트가 헷갈린다.\n\n**HTML 폼은 `GET`·`POST` 만 지원한다**(8장). 그래서 화면 기반 애플리케이션은 이 구분을 못 쓰고, `POST /items/{id}/edit` 같은 URL 을 쓴다 — **8장에서 그렇게 만든다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 설계가 완벽하지는 않다",
+   "md": "리소스 중심 설계가 안 맞는 자리가 있다.\n\n- **행위가 리소스가 아닌 것** — 로그인, 결제 승인, 검색\n- **여러 리소스를 한 번에 바꾸는 것** — 일괄 처리\n\n```\nPOST /login              리소스가 아니다\nPOST /orders/1/cancel    '취소' 는 동사인데 다른 방법이 마땅찮다\n```\n\n실무에서는 **적당히 타협한다.** 원칙을 지키려고 `POST /sessions` 같은 것을 만들면 오히려 읽기 어렵다.\n\n**원칙은 기본값이고 예외는 있다.** 다만 **예외를 쓸 때 그것이 예외라는 것을 알고 쓰는 것**이 중요하다.\n\n2.4절에서 \"API 를 줄 것인가 화면을 줄 것인가를 먼저 정한다\" 고 했는데, 이 절은 **API 쪽을 정했을 때의 이야기**다. 화면 쪽은 8장이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 같은 URL, 다른 메서드",
+   "sql": "GET /mapping/users HTTP/1.1\n\nHTTP/1.1 200 \nget users\n\nPOST /mapping/users HTTP/1.1\n\nHTTP/1.1 200 \npost user\n\nGET /mapping/users/user1 HTTP/1.1\n\nHTTP/1.1 200 \nget userId=user1\n\nDELETE /mapping/users/user1 HTTP/1.1\n\nHTTP/1.1 200 \ndelete userId=user1\n\n# 지원하지 않는 메서드\nPUT /mapping/users/user1 HTTP/1.1\n\nHTTP/1.1 405 \nAllow: GET, PATCH, DELETE",
+   "note": "**앞의 둘이 같은 URL 인데 응답이 다르다.** 6.7절에서 되찾은 HTTP 메서드 구분이 여기서 설계의 도구가 된다.\n\n맨 아래 **`Allow: GET, PATCH, DELETE`** 를 봐 두자. 스프링이 **그 URL 에 등록된 메서드를 모아서** 알려 준다.\n\n클라이언트가 이 헤더만 봐도 무엇을 할 수 있는지 안다. **URL 에 동사를 안 써도 되는 이유**가 여기에도 있다."
+  }
+ ],
+ "recap": [
+  "**URL 은 리소스, 행위는 HTTP 메서드.** URL 에 동사를 안 쓴다.",
+  "다섯 기능에 **URL 은 둘**이다.",
+  "실용적 이유 — **`GET` 은 안전**하고, `DELETE` 를 `GET` 으로 두면 크롤러가 지운다.",
+  "**멱등성**이 재시도 판단의 근거가 된다.",
+  "계층은 URL 로 나타내되 **두 단계까지**. 깊어지면 하위 리소스를 독립시킨다.",
+  "**`PUT` 은 전체 교체, `PATCH` 는 부분 수정**이다. 실무는 대부분 `PATCH` 가 맞다.",
+  "**HTML 폼은 `GET`·`POST` 만** 지원한다 — 8장은 다르게 간다.",
+  "리소스 중심이 안 맞는 자리가 있다 — **로그인·결제 승인·검색.**",
+  "**원칙은 기본값이고 예외는 있다.** 예외인 줄 알고 쓰는 것이 중요하다.",
+  "`Allow` 헤더가 그 URL 의 메서드 목록을 알려 준다."
+ ],
+ "drills": [
+  {
+   "task": "`MappingClassController` 를 만들고 다섯 요청을 전부 보낸다.",
+   "done_when": "URL 둘로 다섯 기능이 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "등록하지 않은 메서드로 요청한다.",
+   "done_when": "405 와 `Allow` 헤더를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 쓰는 서비스의 API URL 을 이 원칙으로 다시 써 본다.",
+   "done_when": "동사가 들어간 URL 을 찾아 고쳤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`PUT` 과 `PATCH` 의 차이를 실제 API 문서에서 찾아본다.",
+   "done_when": "규약대로 구현된 것과 아닌 것을 하나씩 찾았다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "URL 설계의 기본 원칙은?",
+   "a": "URL 은 리소스를 나타내고 행위는 HTTP 메서드로 표현한다. URL 에 동사를 쓰지 않는다."
+  },
+  {
+   "q": "그 실용적 이유는?",
+   "a": "`GET` 은 안전해서 캐시·크롤링이 가능하고, `DELETE` 를 `GET` 으로 두면 크롤러가 데이터를 지운다. 멱등성은 재시도 판단의 근거가 된다."
+  },
+  {
+   "q": "계층 구조는 얼마나 깊게?",
+   "a": "두 단계까지가 적당하다. 그 이상이면 하위 리소스를 독립적으로 식별할 수 있게 분리한다."
+  },
+  {
+   "q": "`PUT` 과 `PATCH` 의 차이는?",
+   "a": "`PUT` 은 전체 교체라 안 보낸 필드가 지워지고, `PATCH` 는 보낸 것만 바꾼다."
+  },
+  {
+   "q": "HTML 폼에서 이 설계를 그대로 쓸 수 있나?",
+   "a": "없다. 폼은 `GET`·`POST` 만 지원해서 `POST /items/{id}/edit` 같은 URL 을 쓰게 된다."
+  },
+  {
+   "q": "리소스 중심 설계가 안 맞는 자리는?",
+   "a": "로그인·결제 승인·검색처럼 행위 자체가 리소스가 아닌 것들이다. 예외인 줄 알고 타협한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "멱등성",
+   "en": "idempotent",
+   "what": "같은 요청을 여러 번 보내도 결과가 같은 성질. `GET`·`PUT`·`DELETE` 가 멱등이라 재시도해도 안전하다."
+  },
+  {
+   "term": "안전",
+   "en": "safe",
+   "what": "호출해도 리소스를 변경하지 않는 성질. `GET`·`HEAD` 가 안전하다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "MDN — HTTP request methods",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

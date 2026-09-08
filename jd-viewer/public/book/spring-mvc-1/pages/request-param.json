@@ -1,0 +1,194 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-param",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "HTTP 요청 파라미터 — @RequestParam",
+ "summary": "3장에서 손으로 읽던 것을 어노테이션이 대신한다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@RequestParam` 의 옵션을 전부 쓸 수 있다.",
+  "생략 규칙 세 단계를 안다.",
+  "`required` 와 기본형 타입의 함정을 안다.",
+  "복수 파라미터를 받을 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절과 3.6절을 어노테이션으로 다시 쓴다.**\n\n그때 확인한 것 하나를 기억해 두자 — **GET 쿼리와 POST 폼은 형식이 같아서 같은 방법으로 읽힌다**(3.6절). `@RequestParam` 도 마찬가지다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "단계별로 줄여 간다",
+   "code": "// 1. 서블릿 그대로 (3.5절)\n@RequestMapping(\"/request-param-v1\")\npublic void requestParamV1(HttpServletRequest request, HttpServletResponse response)\n        throws IOException {\n    String username = request.getParameter(\"username\");\n    int age = Integer.parseInt(request.getParameter(\"age\"));\n    response.getWriter().write(\"ok\");\n}\n\n// 2. @RequestParam\n@ResponseBody\n@RequestMapping(\"/request-param-v2\")\npublic String requestParamV2(@RequestParam(\"username\") String memberName,\n                            @RequestParam(\"age\") int memberAge) {\n    return \"ok\";\n}\n\n// 3. 이름이 같으면 () 생략\n@ResponseBody\n@RequestMapping(\"/request-param-v3\")\npublic String requestParamV3(@RequestParam String username,\n                            @RequestParam int age) {\n    return \"ok\";\n}\n\n// 4. 단순 타입이면 어노테이션도 생략\n@ResponseBody\n@RequestMapping(\"/request-param-v4\")\npublic String requestParamV4(String username, int age) {\n    return \"ok\";\n}",
+   "note": "**`@ResponseBody` 가 나왔다.** 7.2절의 `@RestController` 를 메서드 단위로 하는 것이다. `\"ok\"` 를 뷰 이름이 아니라 바디로 쓴다(7.11절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "4번까지 가는 것이 좋은가",
+   "md": "**의견이 갈리는 자리다.**\n\n**생략하자는 쪽** — 짧고 읽기 쉽다. 스프링이 권하는 방식이기도 하다.\n\n**적자는 쪽** — 세 가지 이유가 있다.\n\n1. **파라미터 이름이 클래스 파일에 남아야** 한다. `-parameters` 옵션에 의존한다(6.7절)\n2. **이것이 요청 파라미터라는 표시가 없다.** 그냥 자바 파라미터처럼 보인다\n3. **\"단순 타입\" 의 기준을 알아야 한다.** `String`·`int`·`Integer` 는 되고, 객체는 `@ModelAttribute` 로 간다(7.7절)\n\n3번이 특히 헷갈린다 — **어노테이션이 없으면 스프링이 타입을 보고 판단한다.** 그 규칙을 모르면 왜 이렇게 동작하는지 알 수 없다.\n\n**이 책은 3번(`@RequestParam` 은 쓰고 `()` 는 생략)을 기본으로 한다.** 팀 규칙을 따르는 것이 맞고, 어느 쪽이든 **왜 그런지 알고 쓰는 것**이 중요하다."
+  },
+  {
+   "type": "heading",
+   "text": "옵션 셋"
+  },
+  {
+   "type": "table",
+   "caption": "required · defaultValue · Map",
+   "note": "**7.5절의 `@RequestHeader` 와 같은 옵션**이다. \"없을 때 어떻게 할까\" 라는 같은 질문.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`required = true`",
+     "**기본값.** 없으면 400"
+    ],
+    [
+     "`required = false`",
+     "없으면 `null`"
+    ],
+    [
+     "`defaultValue = \"guest\"`",
+     "없거나 **빈 문자열**이면 이 값"
+    ],
+    [
+     "`@RequestParam Map<String,String>`",
+     "전부 받는다"
+    ],
+    [
+     "`@RequestParam MultiValueMap<...>`",
+     "**복수 값까지** 받는다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "required = false 와 기본형",
+   "md": "```java\n@RequestParam(required = false) int age\n```\n\n**`age` 를 안 보내면 500 이다.**\n\n스프링이 `null` 을 넣으려는데 **`int` 는 `null` 을 받을 수 없다.**\n\n```java\n@RequestParam(required = false) Integer age   // 이렇게\n```\n\n**`Integer` 로 바꾸면 된다.** 또는 `defaultValue` 를 준다.\n\n앞 책 7.2절에서 `@Autowired` 옵션 처리를 배울 때도 비슷한 자리가 있었다 — **\"없음\" 을 표현할 수 있는 타입인가**를 봐야 한다.\n\n이 실수는 **컴파일에 안 잡히고 파라미터를 안 보낼 때만** 터진다. 테스트에서 항상 값을 넣어 보내면 못 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "defaultValue 는 빈 문자열도 잡는다",
+   "md": "```java\n@RequestParam(defaultValue = \"guest\") String username\n```\n\n```\n?username=kim   ->  kim\n?username=       ->  guest      <- 빈 문자열도 기본값으로\n(없음)           ->  guest\n```\n\n3.5절에서 **`?username=` 은 빈 문자열, 아예 없으면 `null`** 이라고 했다. 그리고 \"`null` 체크만 하면 빈 값이 통과한다\" 고 적었다.\n\n**`defaultValue` 는 그 둘을 같이 처리한다.** 실무에서 편한 자리다."
+  },
+  {
+   "type": "heading",
+   "text": "복수 파라미터"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "// List 로 받는다\n@RequestMapping(\"/request-param-list\")\npublic String requestParamList(@RequestParam List<String> username) {\n    log.info(\"username={}\", username);   // [hello, kim]\n    return \"ok\";\n}\n\n// MultiValueMap 으로 전부\n@RequestMapping(\"/request-param-multi\")\npublic String requestParamMulti(@RequestParam MultiValueMap<String, String> paramMap) {\n    log.info(\"paramMap={}\", paramMap);\n    return \"ok\";\n}",
+   "note": "**5.8절 '안 만든 것' 4번이 여기서 채워진다.**\n\n3.5절에서 `getParameter()` 가 **첫 값만 주고 나머지를 조용히 버린다**고 했다. 그리고 우리 v3 는 `Map<String,String>` 이라 같은 문제가 있었다.\n\n**`List` 라고 적으면 전부 온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타입이 곧 선언이다",
+   "md": "이 절에서 반복되는 것이 있다.\n\n| 적은 것 | 스프링이 하는 일 |\n|---|---|\n| `String` | 문자열 그대로 |\n| `int` | **변환**한다. 실패하면 400 |\n| `Integer` | 변환하고 **`null` 도 허용** |\n| `List<String>` | **전부** 담는다 |\n| `MultiValueMap` | 이름과 복수 값을 **전부** |\n\n**타입을 적는 것이 \"이렇게 받고 싶다\" 는 선언**이 된다.\n\n5장에서 우리는 `Map<String,String>` 하나로 고정했다. 그래서 **컨트롤러가 전부 문자열을 받고 직접 변환**해야 했다.\n\n6.5절에서 인터페이스를 벗은 결과가 여기서도 나온다 — **컨트롤러마다 원하는 모양으로 받는다.**\n\n대가도 같다. **타입을 잘못 적으면 실행 시점에 안다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 옵션에 따라 갈린다",
+   "sql": "# 정상\nGET /request-param-v3?username=hello&age=20 HTTP/1.1\n\nHTTP/1.1 200 \nok\n\n# 필수 파라미터를 빼면\nGET /request-param-v3?username=hello HTTP/1.1\n\nHTTP/1.1 400 \n#   Required request parameter 'age' is not present\n\n# 타입이 안 맞으면\nGET /request-param-v3?username=hello&age=abc HTTP/1.1\n\nHTTP/1.1 400 \n#   6.7 절에서 본 그것\n\n# required=false 인데 int 로 받으면\nGET /request-param-required?username=hello HTTP/1.1\n\nHTTP/1.1 500 \n#   null 을 int 에 넣을 수 없다\n\n# 복수 값\nGET /request-param-list?username=hello&username=kim HTTP/1.1\n\nHTTP/1.1 200 \n# 로그: username=[hello, kim]",
+   "note": "**400 셋과 500 하나.** 400 은 클라이언트가 고칠 것이고, **500 은 내가 고칠 것**이다.\n\n`required = false` + `int` 의 500 이 이 절의 함정이다. **파라미터를 안 보낼 때만 터지므로** 테스트에서 놓치기 쉽다.\n\n마지막 줄이 3.5절에서 잃었던 값이다 — **`[hello, kim]`**, 둘 다 왔다."
+  }
+ ],
+ "recap": [
+  "**3.5·3.6절을 어노테이션으로 다시 쓰는 절**이다.",
+  "생략 세 단계 — `(\"이름\")` 생략 → 어노테이션까지 생략.",
+  "**끝까지 생략하는 것은 의견이 갈린다** — 컴파일 옵션 의존, 표시 없음, '단순 타입' 규칙.",
+  "옵션 — **`required`(기본 true) · `defaultValue` · `Map`/`MultiValueMap`.**",
+  "**`required=false` + `int` 는 500** 이다. `Integer` 나 `defaultValue` 로 푼다.",
+  "그 실수는 **파라미터를 안 보낼 때만** 터진다.",
+  "**`defaultValue` 는 빈 문자열도 잡는다** — 3.5절의 `null` vs `\"\"` 문제.",
+  "**`List<String>`** 으로 복수 값을 전부 받는다 — 5.8절 '안 만든 것' 4번.",
+  "**타입을 적는 것이 '이렇게 받고 싶다' 는 선언**이 된다.",
+  "대가는 6.5절과 같다 — **잘못 적으면 실행 시점에 안다.**"
+ ],
+ "drills": [
+  {
+   "task": "v1~v4 를 다 만들고 같은 요청을 보낸다.",
+   "done_when": "네 방식이 같은 결과를 내는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필수 파라미터를 빼고 호출한다.",
+   "done_when": "400 과 메시지를 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`required = false` 에 `int` 를 쓰고 파라미터를 뺀다.",
+   "done_when": "500 이 나는 것과 `Integer` 로 고치는 법을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`defaultValue` 를 주고 `?username=` 으로 호출한다.",
+   "done_when": "빈 문자열도 기본값으로 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 이름을 두 번 보내고 `List` 로 받는다.",
+   "done_when": "3.5절에서 잃었던 값이 다 오는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@RequestParam` 을 생략할 수 있는 조건은?",
+   "a": "파라미터 이름이 같으면 `()` 를 생략할 수 있고, `String`·`int` 같은 단순 타입이면 어노테이션 자체도 생략할 수 있다."
+  },
+  {
+   "q": "끝까지 생략하는 것을 망설이는 이유는?",
+   "a": "컴파일 옵션에 의존하고, 요청 파라미터라는 표시가 사라지며, '단순 타입' 의 기준을 알아야 하기 때문이다."
+  },
+  {
+   "q": "`required = false` 에 `int` 를 쓰면?",
+   "a": "파라미터를 안 보냈을 때 `null` 을 `int` 에 넣을 수 없어 500 이 난다. `Integer` 나 `defaultValue` 를 쓴다."
+  },
+  {
+   "q": "`defaultValue` 가 `required=false` 보다 나은 점은?",
+   "a": "값이 없을 때뿐 아니라 빈 문자열일 때도 기본값을 넣어 준다."
+  },
+  {
+   "q": "복수 값을 받으려면?",
+   "a": "`List<String>` 이나 `MultiValueMap` 으로 받는다. 5장의 `Map<String,String>` 으로는 첫 값만 왔다."
+  },
+  {
+   "q": "이 절에서 반복되는 원리는?",
+   "a": "타입을 적는 것이 곧 '이렇게 받고 싶다' 는 선언이 된다는 것이다. 인터페이스를 벗어서 가능해졌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ResponseBody",
+   "en": "",
+   "what": "반환값을 뷰 이름이 아니라 HTTP 응답 바디로 쓰는 어노테이션. 메서드 단위 `@RestController` 다."
+  },
+  {
+   "term": "defaultValue",
+   "en": "",
+   "what": "파라미터가 없거나 빈 문자열일 때 쓸 기본값. `required` 옵션보다 안전하다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Method Arguments",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/arguments.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

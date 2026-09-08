@@ -1,0 +1,242 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-header",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "HTTP 요청 — 기본, 헤더 조회",
+ "summary": "컨트롤러 파라미터로 받을 수 있는 것들.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "헤더를 파라미터로 받을 수 있다.",
+  "받을 수 있는 타입이 얼마나 많은지 안다.",
+  "3.3절에서 손으로 꺼낸 것과 비교할 수 있다.",
+  "이 유연함의 근거가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절을 어노테이션으로 다시 쓰는 절**이다. 그때는 `request` 에서 하나씩 꺼냈다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "RequestHeaderController.java",
+   "code": "@Slf4j\n@RestController\npublic class RequestHeaderController {\n\n    @RequestMapping(\"/headers\")\n    public String headers(HttpServletRequest request,\n                         HttpServletResponse response,\n                         HttpMethod httpMethod,\n                         Locale locale,\n                         @RequestHeader MultiValueMap<String, String> headerMap,\n                         @RequestHeader(\"host\") String host,\n                         @CookieValue(value = \"myCookie\", required = false) String cookie) {\n\n        log.info(\"request={}\", request);\n        log.info(\"httpMethod={}\", httpMethod);\n        log.info(\"locale={}\", locale);\n        log.info(\"headerMap={}\", headerMap);\n        log.info(\"header host={}\", host);\n        log.info(\"myCookie={}\", cookie);\n\n        return \"ok\";\n    }\n}",
+   "note": "**파라미터가 일곱 개인데 종류가 전부 다르다.**\n\n서블릿 객체도 있고, 스프링 타입도 있고, 어노테이션이 붙은 것도 있다. **그런데 다 채워진다.**"
+  },
+  {
+   "type": "table",
+   "caption": "3.3절과 비교",
+   "note": "**왼쪽은 전부 `request` 에서 꺼냈다.** 오른쪽은 파라미터에 적으면 들어온다.",
+   "columns": [
+    "3.3절",
+    "7.5절"
+   ],
+   "rows": [
+    [
+     "`request.getMethod()`",
+     "**`HttpMethod httpMethod`**"
+    ],
+    [
+     "`request.getLocale()`",
+     "**`Locale locale`**"
+    ],
+    [
+     "`request.getHeaderNames()` 순회",
+     "**`@RequestHeader MultiValueMap`**"
+    ],
+    [
+     "`request.getHeader(\"host\")`",
+     "**`@RequestHeader(\"host\") String host`**"
+    ],
+    [
+     "`request.getCookies()` 순회",
+     "**`@CookieValue(\"myCookie\")`**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "MultiValueMap 이 나온 이유",
+   "md": "```java\n@RequestHeader MultiValueMap<String, String> headerMap\n```\n\n**`Map` 이 아니라 `MultiValueMap`** 이다. 값이 `List` 다.\n\n3.9절에서 **헤더는 같은 이름이 여러 줄 나갈 수 있다**고 했다(`addHeader`). 요청도 마찬가지다.\n\n```\nkeyA=value1&keyA=value2\n```\n\n```java\nMultiValueMap<String, String> map = ...;\nList<String> values = map.get(\"keyA\");   // [value1, value2]\nString first = map.getFirst(\"keyA\");     // value1\n```\n\n**5.4절에서 우리가 `Map<String,String>` 으로 만들어 복수 값을 잃었던 것**(5.8절 '안 만든 것' 4번)을 스프링은 이 타입으로 푼다.\n\n7.6절에서 요청 파라미터에도 같은 것이 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@RequestHeader 의 옵션",
+   "md": "```java\n@RequestHeader(value = \"host\", required = false, defaultValue = \"unknown\")\nString host\n```\n\n- **`required`** — 기본이 `true`. 헤더가 없으면 **400** 이다\n- **`defaultValue`** — 없을 때 쓸 값. 이걸 주면 `required` 는 의미가 없다\n\n앞 책 7.2절에서 `@Autowired` 의 옵션 처리를 배웠는데 **모양이 비슷하다.** \"없을 때 어떻게 할까\" 라는 같은 질문이다.\n\n다만 **여기는 기본이 필수**다. 헤더나 파라미터가 없으면 대개 클라이언트 잘못이라 400 을 내는 것이 맞다."
+  },
+  {
+   "type": "heading",
+   "text": "받을 수 있는 것이 아주 많다"
+  },
+  {
+   "type": "table",
+   "caption": "컨트롤러 파라미터로 쓸 수 있는 타입 (일부)",
+   "note": "**공식 문서에 목록이 있다.** 외울 것이 아니라 필요할 때 찾아 쓰는 것이다.",
+   "columns": [
+    "타입",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`HttpServletRequest` / `Response`",
+     "서블릿 객체 그대로"
+    ],
+    [
+     "`HttpMethod`",
+     "GET, POST …"
+    ],
+    [
+     "`Locale`",
+     "`Accept-Language` 를 파싱한 것 (3.3절)"
+    ],
+    [
+     "`@RequestHeader`",
+     "헤더"
+    ],
+    [
+     "`@CookieValue`",
+     "쿠키"
+    ],
+    [
+     "**`@RequestParam`**",
+     "요청 파라미터 (7.6절)"
+    ],
+    [
+     "**`@ModelAttribute`**",
+     "파라미터를 객체로 (7.7절)"
+    ],
+    [
+     "**`@RequestBody`**",
+     "메시지 바디 (7.9절)"
+    ],
+    [
+     "**`Model`**",
+     "뷰에 넘길 데이터 (6.7절)"
+    ],
+    [
+     "`InputStream` / `Reader`",
+     "바디를 직접 (3.7절)"
+    ],
+    [
+     "`OutputStream` / `Writer`",
+     "응답을 직접 (3.10절)"
+    ],
+    [
+     "`HttpEntity`",
+     "헤더와 바디를 함께"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 유연함이 어디서 오나",
+   "md": "6.5절에서 **인터페이스를 벗어서 시그니처 제약이 사라졌다**고 했다. 그 결과가 이 표다.\n\n5장 우리 컨트롤러는 이랬다.\n\n```java\nString process(Map<String,String> paramMap, Map<String,Object> model);\n```\n\n**딱 둘.** 헤더가 필요하면 인터페이스를 고쳐야 하고, 그러면 **모든 컨트롤러가 그것을 받아야** 한다.\n\n스프링은 **메서드 시그니처를 리플렉션으로 읽고 필요한 것만 채운다.** 그래서 컨트롤러마다 다른 파라미터를 쓸 수 있다.\n\n그 일을 하는 것이 **`ArgumentResolver`** 이고 **7.14절**이다. 표의 각 줄마다 그것을 처리하는 리졸버가 하나씩 있다.\n\n**대가도 6.5절에서 적었다** — 타입 안전을 잃었다. 지원하지 않는 타입을 적으면 **실행 시점에** 알게 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그렇다고 다 받으면 안 된다",
+   "md": "```java\npublic String save(HttpServletRequest request,\n                  HttpServletResponse response,\n                  @RequestParam String username,\n                  Model model) { ... }\n```\n\n**`request` 를 받으면 다시 서블릿에 묶인다.** 6.7절에서 힘들게 걷어낸 것이다.\n\n5.4절에서 컨트롤러가 웹을 모르게 만든 이유가 **테스트**였다. `HttpServletRequest` 를 받는 순간 그 이득이 사라진다.\n\n**꼭 필요할 때만 받는다.** 대개는 `@RequestParam`·`@RequestHeader` 로 충분하다.\n\n`HttpServletRequest` 가 정말 필요한 자리는 — 파일 업로드의 `getParts()`, 세션 직접 제어, 필터가 넣어 둔 속성 읽기 정도다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 브라우저가 보내는 헤더",
+   "sql": "GET /headers HTTP/1.1\nHost: localhost:8080\nUser-Agent: Mozilla/5.0 ...\nAccept: text/html,application/xhtml+xml,*/*;q=0.8\nAccept-Language: ko-KR,ko;q=0.9,en-US;q=0.8\nAccept-Encoding: gzip, deflate\nConnection: keep-alive\nCookie: myCookie=good\n\nHTTP/1.1 200 \nok\n\n# 서버 로그\nrequest=org.apache.catalina.connector.RequestFacade@1a2b\nhttpMethod=GET\nlocale=ko_KR\nheaderMap={host=[localhost:8080], user-agent=[Mozilla/5.0 ...],\n           accept=[text/html,...], accept-language=[ko-KR,ko;q=0.9,...],\n           accept-encoding=[gzip, deflate], connection=[keep-alive],\n           cookie=[myCookie=good]}\nheader host=localhost:8080\nmyCookie=good",
+   "note": "**`headerMap` 의 값이 전부 `[]` 로 감싸여 있다.** `MultiValueMap` 이라 `List` 인 것이다.\n\n그리고 **`locale=ko_KR`** — 3.3절에서 편의 메서드가 `q` 값을 보고 고른다고 한 그것이다. `Accept-Language` 원문과 비교해 보면 파싱이 됐다는 것이 보인다.\n\n`request` 를 찍으면 **`org.apache.catalina`** 가 나온다(3.1절). 스프링을 쓰는데도 밑바닥은 톰캣이다."
+  }
+ ],
+ "recap": [
+  "**3.3절을 어노테이션으로 다시 쓰는 절**이다.",
+  "`HttpMethod`·`Locale`·`@RequestHeader`·`@CookieValue` 로 파라미터에서 받는다.",
+  "**`MultiValueMap`** 은 값이 `List` 다 — 헤더는 같은 이름이 여럿일 수 있다.",
+  "**5.8절 '안 만든 것' 4번(복수 파라미터)** 을 스프링은 이 타입으로 푼다.",
+  "`@RequestHeader` 의 **기본은 필수**다. 없으면 400.",
+  "받을 수 있는 타입이 **아주 많다.** 외우지 말고 문서에서 찾는다.",
+  "유연함의 근거는 **6.5절에서 인터페이스를 벗은 것**이고, 실행은 **`ArgumentResolver`**(7.14절)다.",
+  "**다 받으면 안 된다** — `HttpServletRequest` 를 받으면 6.7절에서 걷어낸 것이 돌아온다.",
+  "정말 필요한 자리는 **파일 업로드·세션 제어·필터 속성** 정도다."
+ ],
+ "drills": [
+  {
+   "task": "`RequestHeaderController` 를 만들어 브라우저로 호출한다.",
+   "done_when": "브라우저가 보내는 헤더 목록을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`curl` 로 호출하고 브라우저와 헤더 수를 비교한다.",
+   "done_when": "브라우저가 훨씬 많이 보낸다는 것을 확인했다(3.3절과 같은 실습).",
+   "minutes": 10
+  },
+  {
+   "task": "`@RequestHeader(\"nothing\")` 처럼 없는 헤더를 요구한다.",
+   "done_when": "400 이 나는 것과 `required=false` 로 피하는 법을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 헤더를 두 번 보내고 `MultiValueMap` 을 확인한다.",
+   "done_when": "`List` 에 둘 다 담긴 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "3.3절 서블릿 코드와 이 컨트롤러의 줄 수를 비교한다.",
+   "done_when": "같은 정보를 얻는 데 코드가 얼마나 줄었는지 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "헤더를 파라미터로 받는 어노테이션은?",
+   "a": "`@RequestHeader` 다. 하나만 받거나 `MultiValueMap` 으로 전부 받을 수 있다."
+  },
+  {
+   "q": "왜 `Map` 이 아니라 `MultiValueMap` 인가?",
+   "a": "헤더는 같은 이름이 여러 줄 올 수 있어서 값이 `List` 여야 하기 때문이다."
+  },
+  {
+   "q": "`@RequestHeader` 의 기본 동작은?",
+   "a": "필수다. 헤더가 없으면 400 이 나간다. `required=false` 나 `defaultValue` 로 바꿀 수 있다."
+  },
+  {
+   "q": "컨트롤러 파라미터가 이렇게 다양할 수 있는 이유는?",
+   "a": "인터페이스를 구현하지 않아 시그니처 제약이 없고, `ArgumentResolver` 가 타입마다 값을 채워 주기 때문이다."
+  },
+  {
+   "q": "`HttpServletRequest` 를 받으면 무엇이 나빠지나?",
+   "a": "컨트롤러가 다시 서블릿에 묶여 순수 자바 테스트가 어려워진다. 6.7절에서 걷어낸 것이 돌아온다."
+  },
+  {
+   "q": "그럼에도 `HttpServletRequest` 가 필요한 자리는?",
+   "a": "파일 업로드의 `getParts()`, 세션 직접 제어, 필터가 넣어 둔 속성 읽기 정도다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MultiValueMap",
+   "en": "",
+   "what": "하나의 키에 여러 값을 담는 스프링 맵. `getFirst()` 로 첫 값만 꺼낼 수 있다."
+  },
+  {
+   "term": "@CookieValue",
+   "en": "",
+   "what": "쿠키 값을 파라미터로 받는 어노테이션. `required`·`defaultValue` 를 지원한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Method Arguments",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/arguments.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
