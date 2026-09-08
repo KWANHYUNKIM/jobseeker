@@ -1,0 +1,162 @@
+{
+ "book": "spring-mvc-2",
+ "id": "type-error",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "스프링이 만드는 검증 오류",
+ "summary": "타입 변환 실패도 FieldError 다. 1편 7.6절의 400 이 여기서 화면이 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "타입 변환 실패가 어떻게 `FieldError` 가 되는지 안다.",
+  "`typeMismatch` 코드에 메시지를 붙일 수 있다.",
+  "검증 순서가 왜 중요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.1절에서 셋 중 하나만 성질이 달랐다.\n\n> **타입 변환 실패는 컨트롤러에 못 들어온다** — 5.8절에서 따로.\n\n**5.3절에서 이미 200 이 됐고 5.4절에서 값도 남았다.** 남은 것은 **메시지**다."
+  },
+  {
+   "type": "figure",
+   "caption": "스프링이 만드는 FieldError",
+   "ascii": "   price=abc\n     |\n     v\n   binding  ->  String to Integer  ->  fail\n     |\n     v\n   spring creates FieldError automatically\n     |\n     +--> code       typeMismatch\n     +--> rejected   \"abc\"\n     +--> failure    true\n     |\n     v\n   typeMismatch.item.price\n   typeMismatch.price\n   typeMismatch.java.lang.Integer\n   typeMismatch\n     |\n     v\n   내가 만든 것과 똑같은 모양이다",
+   "note": "**코드가 `typeMismatch` 로 고정**이다. 나머지는 내가 만든 것과 똑같은 구조."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "같은 그릇에 담긴다",
+   "md": "**타입 변환 실패와 검증 규칙 위반은 원인이 다른데 결과는 같다.**\n\n| | 언제 | `bindingFailure` | 코드 |\n|---|---|---|---|\n| 타입 변환 실패 | 바인딩 중 | `true` | `typeMismatch` |\n| 검증 규칙 위반 | 컨트롤러 안 | `false` | 내가 정한 것 |\n\n**둘 다 `FieldError` 이고 같은 `BindingResult` 에 들어간다.**\n\n그래서 **화면은 구분할 필요가 없다.** `th:errors` 하나가 둘 다 그린다.\n\n**5.4절의 `bindingFailure` 플래그**가 여기서 값을 갖는다 — 스프링이 만든 것은 `true` 이고, 그것이 **`typeMismatch` 코드를 붙일지 정하는 기준**이다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "errors.properties 에 한 줄",
+   "code": "typeMismatch.java.lang.Integer=숫자를 입력해 주세요.\ntypeMismatch=타입 오류입니다.",
+   "note": "**5.6절에서 \"3단계(타입)는 잘 안 쓴다\" 고 했는데 여기가 예외**다.\n\n타입 변환 실패는 **타입에 따라 메시지가 결정**된다. `Integer` 면 \"숫자를 입력해 주세요\", `LocalDate` 면 \"날짜 형식이 아닙니다\". **객체나 필드와 무관**하다.\n\n**두 줄이면 거의 다 덮인다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "메시지가 바뀐다",
+   "left": {
+    "title": "파일에 없을 때",
+    "lang": "html",
+    "bad": true,
+    "code": "<div class=\"field-error\">\n  Failed to convert property value of type\n  java.lang.String to required type\n  java.lang.Integer for property price;\n  nested exception is ...\n</div>",
+    "md": "**스프링의 `defaultMessage`** 다. 개발자용이고 사용자에게 보여 줄 수 없다."
+   },
+   "right": {
+    "title": "한 줄 넣으면",
+    "lang": "html",
+    "good": true,
+    "code": "<div class=\"field-error\">\n  숫자를 입력해 주세요.\n</div>",
+    "md": "**코드가 이미 있었고 메시지만 없었다.** 자바 코드는 안 건드린다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1편 7.6절의 400 이 어디로 갔나",
+   "md": "1편 7.6절에서 요청 파라미터 변환을 다룰 때 이렇게 적었다.\n\n> `age=abc` 처럼 변환할 수 없는 값이 오면 **400** 이다. 이 오류를 사용자에게 어떻게 보여 줄지는 **2편의 검증**에서 다룬다.\n\n**여기까지 온 경로가 셋**이었다.\n\n1. **5.3절** — `BindingResult` 파라미터로 400 → 200\n2. **5.4절** — `rejectedValue` 로 입력값 복원\n3. **5.8절** — `typeMismatch` 메시지로 문구 교체\n\n**셋이 다 있어야 쓸 만한 화면**이 된다. 하나라도 빠지면 — 400 이거나, 빈칸이거나, 영문 예외 메시지다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타입 오류가 나면 검증 로직이 못 돈다",
+   "md": "```java\nif (item.getPrice() == null || item.getPrice() < 1000) {\n    bindingResult.rejectValue(\"price\", \"range\", ...);\n}\n```\n\n`price=abc` 면 `item.getPrice()` 가 **`null`** 이다. 그러면 위 조건이 참이라 **`range` 오류가 하나 더 붙는다.**\n\n```\n숫자를 입력해 주세요.\n가격은 1000 ~ 1000000 까지 허용합니다.\n```\n\n**오류가 두 개** 뜬다. 틀린 말은 아닌데 **혼란스럽다.**\n\n**해결은 이미 오류가 있으면 건너뛰는 것**이다.\n\n```java\nif (bindingResult.hasFieldErrors(\"price\")) {\n    // 타입 오류가 이미 있으면 범위 검사를 건너뛴다\n} else if (item.getPrice() < 1000) { ... }\n```\n\n**또는 전체를 건너뛴다.**\n\n```java\nif (bindingResult.hasErrors()) {\n    return \"validation/v2/addForm\";   // 검증 로직 앞에서 끊는다\n}\n```\n\n**5.9절에서 검증기를 분리하면** 이 판단이 한곳으로 모인다. 그리고 **6장의 Bean Validation 은 타입 오류가 난 필드를 자동으로 건너뛴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "값을 어디까지 되살릴까",
+   "md": "**타입 오류 시 `price` 는 `null`** 이다. 그런데 화면에는 `abc` 가 남는다(5.4절).\n\n```\n객체:   item.price = null\n화면:   value=\"abc\"\n```\n\n**둘이 다른 것**이 중요하다. 화면은 사용자가 보던 것을 보여 주고, 객체는 담을 수 있는 것만 담는다.\n\n**그래서 컨트롤러에서 `item` 을 신뢰하면 안 된다.** `hasErrors()` 로 끊기 전에 `item.getPrice()` 를 쓰면 `null` 이다.\n\n> **NPE 가 나는 흔한 자리**다. 검증 로직 안에서 `item.getPrice() * item.getQuantity()` 를 할 때 앞에 null 체크가 있던 것(5.2절)이 이 때문이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=abc&quantity=10\n\n# typeMismatch 메시지가 없을 때\nHTTP/1.1 200 \n<input type=\"text\" id=\"price\" name=\"price\" value=\"abc\" class=\"form-control field-error\">\n<div class=\"field-error\">Failed to convert property value of type\n  java.lang.String to required type java.lang.Integer for property price</div>\n\n# errors.properties 에 한 줄 추가\n#   typeMismatch.java.lang.Integer=숫자를 입력해 주세요.\n\nHTTP/1.1 200 \n<input type=\"text\" id=\"price\" name=\"price\" value=\"abc\" class=\"form-control field-error\">\n<div class=\"field-error\">숫자를 입력해 주세요.</div>\n\n# 검증 로직을 안 끊으면 오류가 둘\n<div class=\"field-error\">숫자를 입력해 주세요.</div>\n<div class=\"field-error\">가격은 1000 ~ 1000000 까지 허용합니다.</div>\n\n# 1 편 7.6 절에서는 이 요청이\nHTTP/1.1 400 \nContent-Type: application/json",
+   "note": "**맨 위와 맨 아래를 비교하면 이 장의 전부**다. 같은 요청이 1편에서는 400 에 JSON 이었고 지금은 200 에 HTML 이다.\n\n**`value=\"abc\"` 가 두 응답 모두에 있다** — 메시지만 달라졌다. 코드(`typeMismatch`)는 처음부터 있었고 **파일에 그 줄이 없었을 뿐**이다.\n\n셋째가 이 절의 함정이다. **오류 둘이 같은 필드에** 붙었다. 사용자는 `abc` 를 숫자로 바꿔야 하는지 1000 이상으로 해야 하는지 헷갈린다."
+  }
+ ],
+ "recap": [
+  "**타입 변환 실패도 `FieldError`** 다. 스프링이 자동으로 만든다.",
+  "코드는 **`typeMismatch`** 로 고정, `bindingFailure` 는 `true`.",
+  "**같은 `BindingResult` 에 들어가서 화면은 구분할 필요가 없다.**",
+  "**3단계(타입) 코드가 여기서 쓸모 있다** — 타입이 메시지를 결정한다.",
+  "**`typeMismatch.java.lang.Integer` 한 줄이면 거의 다 덮인다.**",
+  "1편 7.6절의 400 은 **5.3 → 5.4 → 5.8 세 단계**를 거쳐 화면이 됐다.",
+  "**타입 오류가 나면 그 필드가 `null`** 이라 검증 로직이 또 걸린다.",
+  "**이미 오류가 있으면 건너뛴다** — 6장은 이것을 자동으로 한다.",
+  "**객체의 값과 화면의 값이 다르다** — 컨트롤러에서 `item` 을 신뢰하면 NPE."
+ ],
+ "drills": [
+  {
+   "task": "`price=abc` 를 보내고 기본 메시지를 읽는다.",
+   "done_when": "영문 예외 문장이 화면에 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`typeMismatch.java.lang.Integer` 를 추가한다.",
+   "done_when": "자바 코드 수정 없이 문구가 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`typeMismatch` 만 두고 `Integer` 줄을 지운다.",
+   "done_when": "폴백되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "검증 로직을 안 끊고 `price=abc` 를 보낸다.",
+   "done_when": "오류가 둘 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`hasErrors()` 로 앞에서 끊는다.",
+   "done_when": "오류가 하나만 뜨는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타입 변환 실패는 어떻게 처리되나?",
+   "a": "스프링이 `typeMismatch` 코드의 `FieldError` 를 자동으로 만들어 `BindingResult` 에 담는다."
+  },
+  {
+   "q": "3단계(타입) 코드가 왜 여기서 유용한가?",
+   "a": "타입 변환 실패는 객체나 필드가 아니라 타입이 메시지를 결정하기 때문이다."
+  },
+  {
+   "q": "1편 7.6절의 400 이 화면이 되기까지 필요한 셋은?",
+   "a": "`BindingResult` 파라미터, `rejectedValue` 로 값 복원, `typeMismatch` 메시지다."
+  },
+  {
+   "q": "타입 오류 시 오류가 둘 뜨는 이유는?",
+   "a": "변환에 실패해 필드가 `null` 이 되고 검증 로직의 null 조건에 또 걸리기 때문이다."
+  },
+  {
+   "q": "왜 컨트롤러에서 `item` 을 신뢰하면 안 되나?",
+   "a": "타입 변환에 실패한 필드는 `null` 이라 계산하면 NPE 가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "typeMismatch",
+   "en": "",
+   "what": "타입 변환 실패 시 스프링이 붙이는 오류 코드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

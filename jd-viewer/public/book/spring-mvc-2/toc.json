@@ -389,7 +389,7 @@
           "title": "V5 — 오류 코드와 메시지 처리",
           "summary": "구체적인 것에서 덜 구체적인 것으로.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -397,7 +397,7 @@
           "title": "MessageCodesResolver",
           "summary": "규칙이 코드에 안 보인다. 그런데 규칙은 하나다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -405,7 +405,7 @@
           "title": "스프링이 만드는 검증 오류",
           "summary": "타입 변환 실패도 FieldError 다. 1편 7.6절의 400 이 여기서 화면이 된다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",

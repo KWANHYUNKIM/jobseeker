@@ -1,0 +1,163 @@
+{
+ "book": "spring-mvc-2",
+ "id": "v5-error-code",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "V5 — 오류 코드와 메시지 처리",
+ "summary": "구체적인 것에서 덜 구체적인 것으로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "오류 코드의 단계를 안다.",
+  "메시지 파일을 어떻게 설계할지 안다.",
+  "단계가 있어서 무엇이 가능해지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.5절에서 `range` 하나가 네 후보로 펼쳐지는 것을 봤다. **그것을 어떻게 쓸지**가 이 절이다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 단계",
+   "ascii": "   required.item.itemName      level 1   object + field\n   required.itemName           level 2   field\n   required.java.lang.String   level 3   type\n   required                    level 4   code only\n\n   위에서부터 찾다가 처음 만난 것을 쓴다\n\n   errors.properties 에 무엇을 둘까\n   -------------------------------\n   required                    한 줄로 전부 덮는다\n   required.item.itemName      이 필드만 다르게\n\n   기본은 아래에 두고 예외만 위에 둔다",
+   "note": "**위가 구체적이고 아래가 일반적**이다. 위에서부터 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 단계가 필요한가",
+   "md": "**모든 필드에 메시지를 하나씩 쓰면** 이렇게 된다.\n\n```properties\nrequired.item.itemName=상품 이름은 필수입니다.\nrequired.item.price=가격은 필수입니다.\nrequired.item.quantity=수량은 필수입니다.\nrequired.member.name=이름은 필수입니다.\nrequired.member.email=이메일은 필수입니다.\n...\n```\n\n**필드가 100개면 100줄**이고, 전부 \"~은 필수입니다\" 다.\n\n**단계가 있으면 한 줄로 끝난다.**\n\n```properties\nrequired=필수 값입니다.\n```\n\n**그리고 특별한 것만 위에 둔다.**\n\n```properties\nrequired=필수 값입니다.\nrequired.item.itemName=상품 이름은 필수입니다.\n```\n\n**대부분은 기본 문구, 몇 개만 맞춤.** 이것이 이 설계의 목적이다."
+  },
+  {
+   "type": "table",
+   "caption": "어느 단계에 둘까",
+   "note": "**3단계(타입)는 잘 안 쓴다.** 같은 타입이라고 같은 메시지가 맞는 경우가 드물다. 다만 **`typeMismatch` 는 예외**다 — 5.8절에서 본다.",
+   "columns": [
+    "",
+    "언제 쓰나"
+   ],
+   "rows": [
+    [
+     "**4단계** `required`",
+     "**기본값** — 거의 모든 경우"
+    ],
+    [
+     "**2단계** `required.itemName`",
+     "같은 이름의 필드가 여러 객체에 있고 뜻이 같을 때"
+    ],
+    [
+     "**1단계** `required.item.itemName`",
+     "이 객체의 이 필드만 특별할 때"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "errors.properties — 이렇게 짠다",
+   "code": "#==== 기본 (4단계) ====\nrequired=필수 값입니다.\nrange=범위는 {0} ~ {1} 까지 허용합니다.\nmax=최대 {0} 까지 허용합니다.\n\n#==== 특별한 것만 (1단계) ====\nrequired.item.itemName=상품 이름은 필수입니다.\nrange.item.price=가격은 {0} ~ {1} 까지 허용합니다.\nmax.item.quantity=수량은 최대 {0} 까지 허용합니다.\n\n#==== 글로벌 ====\ntotalPriceMin=가격 * 수량의 합은 {0}원 이상이어야 합니다. 현재 값 = {1}",
+   "note": "**위쪽 세 줄만 있어도 동작한다.** 아래는 문구를 다듬은 것뿐이다.\n\n**개발 초반에는 위쪽만 두고 나중에 다듬는** 순서가 자연스럽다. 5.5절에서 500 을 피하는 방법으로 말한 그것이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "단계가 만드는 것 — 점진적 구체화",
+   "md": "**이 구조의 진짜 이득은 순서를 바꿀 수 있다는 것**이다.\n\n```\n1. required=필수 값입니다.            일단 다 돌아간다\n2. 기획자가 문구를 본다\n3. required.item.itemName=상품명을 입력해 주세요\n4. 나머지는 그대로 둔다\n```\n\n**전부 채우고 시작하지 않아도 된다.** 필요한 것만 위 단계에 얹는다.\n\n앞 책 3장에서 AppConfig 를 만들 때, **되는 것부터 만들고 필요할 때 갈라낸** 방식과 같다.\n\n**반대 방향도 된다.** 100줄짜리 메시지 파일에서 반복되는 문구를 발견하면 **아래 단계로 내려서 지운다.** 리팩터링이 파일 안에서 일어난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "구체적인 것이 있으면 아래는 안 본다",
+   "md": "```properties\nrequired=필수 값입니다.\nrequired.item.itemName=\n```\n\n**둘째 줄이 빈 문자열이면 빈 문자열이 나온다.** 아래로 안 내려간다.\n\n**\"없으면 내려간다\" 이지 \"비었으면\" 이 아니다.** 키가 존재하면 값이 무엇이든 그것으로 끝이다.\n\n**메시지를 지울 때 줄 전체를 지워야** 하는 이유다. 값만 비우면 화면에 빈 오류 박스가 뜬다.\n\n> 4.4절의 국제화 폴백도 같다. `messages_en.properties` 에 키가 있고 값이 비어 있으면 영어에서 빈 문자열이 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "코드 이름을 어떻게 짓나",
+   "md": "**단계가 잘 먹히려면 코드 이름이 재사용 가능해야** 한다.\n\n```\n# 좋음 - 규칙의 종류다\nrequired  range  max  min  pattern  duplicate\n\n# 나쁨 - 이 필드 전용이다\nitemNameRequired   priceRange\n```\n\n**둘째 방식은 4단계가 무의미**해진다. `itemNameRequired` 라는 일반 문구를 쓸 데가 없다.\n\n**\"어떤 종류의 규칙을 어겼나\"** 로 짓는다. 그러면 같은 코드가 여러 필드에서 재사용되고, 기본 문구 한 줄이 그 전부를 덮는다.\n\n**6장의 Bean Validation 이 이 규칙을 강제**한다 — `@NotBlank` `@Range` `@Max` 처럼 **애너테이션 이름이 곧 코드**이고, 그것은 당연히 규칙의 종류다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# errors.properties 에 required 만 있을 때\n#   required=필수 값입니다.\n\nPOST /validation/v2/items/add HTTP/1.1\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \n<div class=\"field-error\">필수 값입니다.</div>\n\n# required.item.itemName 을 추가하면\n#   required.item.itemName=상품 이름은 필수입니다.\n\nHTTP/1.1 200 \n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n\n# 값을 비우면 (줄은 남겨 두고)\n#   required.item.itemName=\n\nHTTP/1.1 200 \n<div class=\"field-error\"></div>",
+   "note": "**세 응답이 같은 요청에서 나왔다.** 자바 코드는 한 글자도 안 바뀌었고 `.properties` 만 달라졌다.\n\n첫째는 4단계, 둘째는 1단계가 이겼다. **구체적인 것이 있으면 그것을 쓴다.**\n\n**셋째가 이 절의 함정**이다. 키가 있으니 아래로 안 내려가고 **빈 `<div>`** 가 나갔다. 화면에는 오류 박스만 뜨고 글자가 없다 — 사용자는 무엇이 잘못됐는지 모른다.\n\n**응답을 보면 `class=\"field-error\"` 가 붙어 있으니 태그는 렌더링됐다.** `th:errors` 는 오류가 없을 때만 태그를 지우고(5.3절), **오류가 있는데 메시지가 빈 것**은 구분하지 않는다."
+  }
+ ],
+ "recap": [
+  "오류 코드는 **네 단계** — 객체+필드 · 필드 · 타입 · 코드만.",
+  "**위가 구체적이고 아래가 일반적**이다. 위에서부터 찾는다.",
+  "**기본은 아래(4단계)에 두고 예외만 위(1단계)에** 둔다.",
+  "**한 줄이 100개 필드를 덮는다** — 이것이 설계의 목적.",
+  "**점진적 구체화가 된다** — 다 채우고 시작하지 않아도 된다.",
+  "**반대 방향도 된다** — 반복되는 문구를 아래로 내려 지운다.",
+  "**\"없으면 내려간다\" 이지 \"비었으면\" 이 아니다** — 빈 값이면 빈 문자열이 나온다.",
+  "**코드 이름은 규칙의 종류로** 짓는다 — `required` `range`, `itemNameRequired` 가 아니라.",
+  "**6장의 Bean Validation 이 이 규칙을 강제**한다."
+ ],
+ "drills": [
+  {
+   "task": "`required` 한 줄만 두고 여러 필드를 비워 본다.",
+   "done_when": "전부 같은 문구가 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`required.item.itemName` 을 추가한다.",
+   "done_when": "그 필드만 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "그 줄의 값만 비운다.",
+   "done_when": "빈 오류 박스가 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "코드 이름을 `itemNameRequired` 로 바꿔 본다.",
+   "done_when": "4단계가 무의미해지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "2단계(`required.itemName`)만 두고 어느 객체에서든 되는지 본다.",
+   "done_when": "객체가 달라도 필드 이름이 같으면 쓰이는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "오류 코드의 네 단계는?",
+   "a": "`코드.객체.필드`, `코드.필드`, `코드.타입`, `코드` 다. 구체적인 것부터 찾는다."
+  },
+  {
+   "q": "단계가 왜 필요한가?",
+   "a": "기본 문구 한 줄로 모든 필드를 덮고 특별한 것만 구체적인 코드로 얹기 위해서다."
+  },
+  {
+   "q": "키는 있는데 값이 비면?",
+   "a": "빈 문자열이 나온다. 아래 단계로 내려가지 않는다. 지울 때는 줄 전체를 지워야 한다."
+  },
+  {
+   "q": "코드 이름을 어떻게 짓나?",
+   "a": "규칙의 종류로 짓는다. `required`·`range` 처럼. `itemNameRequired` 는 재사용이 안 되어 단계가 무의미해진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "오류 코드 단계",
+   "en": "",
+   "what": "구체적인 코드에서 일반적인 코드로 내려가며 메시지를 찾는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

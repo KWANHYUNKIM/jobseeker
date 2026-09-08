@@ -1,0 +1,168 @@
+{
+ "book": "spring-mvc-2",
+ "id": "message-codes-resolver",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "MessageCodesResolver",
+ "summary": "규칙이 코드에 안 보인다. 그런데 규칙은 하나다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "코드 확장이 어디서 일어나는지 안다.",
+  "필드 오류와 글로벌 오류의 규칙 차이를 안다.",
+  "배열이 순서대로 시도된다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.5·5.6절에서 **코드가 펼쳐진다** 고만 했다. **누가 펼치는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디서 펼쳐지나",
+   "ascii": "   rejectValue(\"price\", \"range\")\n        |\n        v\n   MessageCodesResolver.resolveMessageCodes(\"range\", \"item\", \"price\", Integer.class)\n        |\n        v\n   String[] {\n     \"range.item.price\",\n     \"range.price\",\n     \"range.java.lang.Integer\",\n     \"range\"\n   }\n        |\n        v\n   new FieldError(\"item\", \"price\", ..., codes, args, null)\n        |\n        v\n   MessageSource 가 배열을 순서대로 시도한다",
+   "note": "**`rejectValue` 안에서 일어난다.** 그래서 코드에 안 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "FieldError 가 코드를 배열로 받는다",
+   "md": "5.4절의 긴 생성자를 다시 본다.\n\n```java\nnew FieldError(objectName, field, rejectedValue, bindingFailure,\n               String[] codes,        // <- 배열이다\n               Object[] arguments, String defaultMessage)\n```\n\n**`codes` 가 `String` 이 아니라 `String[]`** 이었다.\n\n`MessageSource` 가 **배열을 순서대로 시도**한다. 첫 번째로 찾은 것을 쓰고, 하나도 못 찾으면 `defaultMessage`, 그것도 없으면 예외.\n\n**5.6절의 \"단계\" 가 이 배열의 순서**다. 특별한 폴백 장치가 있는 게 아니라 **그냥 배열을 앞에서부터 훑는다.**\n\n> **직접 배열을 만들어 넣을 수도 있다.** 5.4절에서 `new String[]{\"range.item.price\"}` 라고 쓴 것이 그것이고, 그때는 하나뿐이라 폴백이 없었다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "규칙을 직접 확인한다",
+   "code": "MessageCodesResolver codesResolver = new DefaultMessageCodesResolver();\n\n@Test\nvoid messageCodesResolverObject() {\n    String[] codes = codesResolver.resolveMessageCodes(\"required\", \"item\");\n    assertThat(codes).containsExactly(\"required.item\", \"required\");\n}\n\n@Test\nvoid messageCodesResolverField() {\n    String[] codes = codesResolver.resolveMessageCodes(\n            \"required\", \"item\", \"itemName\", String.class);\n    assertThat(codes).containsExactly(\n            \"required.item.itemName\",\n            \"required.itemName\",\n            \"required.java.lang.String\",\n            \"required\");\n}",
+   "note": "**테스트로 규칙을 눈으로 볼 수 있다.** 5.6절의 네 단계가 그대로 나온다.\n\n**글로벌 오류는 두 개뿐**이다 — 필드가 없으니 필드 단계와 타입 단계가 빠진다."
+  },
+  {
+   "type": "table",
+   "caption": "두 규칙",
+   "note": "**`reject` 와 `rejectValue` 가 각각 위·아래를 부른다.**",
+   "columns": [
+    "",
+    "만들어지는 코드"
+   ],
+   "rows": [
+    [
+     "**글로벌** `reject(code)`",
+     "`code.objectName` → `code`"
+    ],
+    [
+     "**필드** `rejectValue(field, code)`",
+     "`code.object.field` → `code.field` → `code.type` → `code`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "규칙이 코드에 안 보인다",
+   "md": "**이것이 이 방식의 비용**이다.\n\n```java\nbindingResult.rejectValue(\"price\", \"range\", args, null);\n```\n\n**이 줄만 봐서는 어느 메시지가 나올지 모른다.** `errors.properties` 를 열어 봐야 하고, 거기서도 **어느 줄이 이길지** 단계를 따져야 한다.\n\n**디버깅할 때 쓸 것**\n\n```properties\n# 개발 중에만\nlogging.level.org.springframework.validation=trace\n```\n\n또는 화면에 오류 객체를 통째로 찍어 본다.\n\n```html\n<div th:each=\"err : ${#fields.detailedErrors()}\"\n     th:text=\"${err.code} + ' / ' + ${err.message}\"></div>\n```\n\n**`#fields.detailedErrors()`** 가 **선택된 코드**와 최종 메시지를 함께 준다. \"왜 저 문구가 나오지\" 를 풀 때 이것부터 본다.\n\n> **규칙은 하나뿐이라 외우면 된다.** 문제는 규칙이 아니라 **파일이 커졌을 때 어느 줄이 이기는지**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이름 앞뒤가 헷갈린다",
+   "md": "**`required.item.itemName`** 은 `코드.객체.필드` 순이다.\n\n4장의 메시지 키는 **`label.item.itemName`** 이었다 — `갈래.객체.필드`.\n\n**우연히 모양이 같다.** `label` 자리에 `required` 가 들어간 셈인데, **하나는 사람이 짓고 하나는 스프링이 만든다.**\n\n| | 누가 |\n|---|---|\n| `label.item.itemName` | 사람이 짓는다 (4.1절) |\n| `required.item.itemName` | `MessageCodesResolver` 가 만든다 |\n\n**파일을 나눠 두면(`messages` / `errors`) 헷갈리지 않는다.** 5.5절에서 나눈 이유의 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "규칙을 바꿀 수도 있다",
+   "md": "`MessageCodesResolver` 는 **인터페이스**다. 빈으로 등록하면 규칙을 바꿀 수 있다.\n\n```java\n@Bean\npublic MessageCodesResolver messageCodesResolver() {\n    DefaultMessageCodesResolver resolver = new DefaultMessageCodesResolver();\n    resolver.setPrefix(\"validation.\");   // validation.required.item.itemName\n    return resolver;\n}\n```\n\n**접두사를 붙이는 정도**가 실용적인 용도다. 메시지 파일에서 검증 코드를 구분하기 좋다.\n\n**규칙 자체를 갈아엎는 것은 권하지 않는다.** 스프링 문서와 다른 동작이 되면 나중에 합류한 사람이 못 읽는다.\n\n> 앞 책 4장에서 본 **전략 패턴**이다 — 인터페이스로 두고 기본 구현을 주되 갈아 끼울 수 있게 한다. 스프링 전체가 이 모양이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 어느 코드가 선택됐나",
+   "sql": "# 화면에 detailedErrors 를 찍어 두면\n\nPOST /validation/v2/items/add HTTP/1.1\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div>codes=[required.item.itemName, required.itemName,\n            required.java.lang.String, required]\n     -> required.item.itemName / 상품 이름은 필수입니다.</div>\n\n<div>codes=[range.item.price, range.price,\n            range.java.lang.Integer, range]\n     -> range.item.price / 가격은 1000 ~ 1000000 까지 허용합니다.</div>\n\n<div>codes=[totalPriceMin.item, totalPriceMin]\n     -> totalPriceMin / 가격 * 수량의 합은 10000원 이상이어야 합니다. 현재 값 = 5000</div>",
+   "note": "**세 줄의 배열 길이를 비교한다.** 앞의 둘은 넷, 마지막은 둘이다 — **글로벌 오류는 필드가 없어서** 짧다.\n\n그리고 **어느 것이 선택됐는지**가 다르다. 앞의 둘은 1단계(`required.item.itemName`)가 이겼고, 마지막은 2단계(`totalPriceMin`)가 이겼다 — `totalPriceMin.item` 을 파일에 안 뒀기 때문이다.\n\n**배열은 항상 만들어지고, 파일에 있는 것만 선택된다.** 이 두 줄이 5.5~5.7절의 요약이다."
+  }
+ ],
+ "recap": [
+  "**`rejectValue` 안에서 `MessageCodesResolver` 가 코드를 펼친다.**",
+  "**`FieldError.codes` 가 `String[]`** 이고 `MessageSource` 가 순서대로 시도한다.",
+  "**단계는 특별한 장치가 아니라 배열 순서**다.",
+  "**글로벌은 두 단계, 필드는 네 단계** — 필드가 없으면 두 개가 빠진다.",
+  "**규칙이 코드에 안 보이는 것**이 비용이다.",
+  "**`#fields.detailedErrors()`** 로 선택된 코드와 메시지를 함께 본다.",
+  "`label.item.itemName` 과 모양이 같지만 **하나는 사람이 짓고 하나는 스프링이 만든다.**",
+  "**파일을 나눠 두면** 헷갈리지 않는다.",
+  "**인터페이스라 규칙을 바꿀 수 있다** — 접두사 정도가 실용적."
+ ],
+ "drills": [
+  {
+   "task": "`DefaultMessageCodesResolver` 를 테스트로 직접 불러 본다.",
+   "done_when": "네 코드가 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "글로벌 오류용으로 불러 본다.",
+   "done_when": "두 개만 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`#fields.detailedErrors()` 를 화면에 찍는다.",
+   "done_when": "어느 코드가 선택됐는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1단계 메시지를 지우고 다시 본다.",
+   "done_when": "선택된 코드가 아래로 내려가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`setPrefix` 로 접두사를 붙인다.",
+   "done_when": "모든 코드 앞에 붙는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "코드 확장은 어디서 일어나나?",
+   "a": "`rejectValue`·`reject` 안에서 `MessageCodesResolver` 가 한다."
+  },
+  {
+   "q": "`FieldError.codes` 가 배열인 이유는?",
+   "a": "`MessageSource` 가 앞에서부터 순서대로 시도하기 때문이다. 단계는 배열 순서일 뿐이다."
+  },
+  {
+   "q": "글로벌 오류의 코드가 왜 두 개인가?",
+   "a": "필드가 없어서 필드 단계와 타입 단계가 만들어지지 않는다."
+  },
+  {
+   "q": "어느 코드가 선택됐는지 어떻게 보나?",
+   "a": "`#fields.detailedErrors()` 로 코드 배열과 최종 메시지를 함께 출력한다."
+  },
+  {
+   "q": "이 방식의 비용은?",
+   "a": "규칙이 코드에 안 보인다는 것이다. 어느 메시지가 나올지 알려면 파일과 단계를 따져야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MessageCodesResolver",
+   "en": "",
+   "what": "오류 코드를 여러 후보로 확장하는 인터페이스. 기본 구현은 `DefaultMessageCodesResolver`."
+  },
+  {
+   "term": "#fields.detailedErrors()",
+   "en": "",
+   "what": "선택된 오류 코드와 최종 메시지를 함께 주는 타임리프 유틸리티."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
