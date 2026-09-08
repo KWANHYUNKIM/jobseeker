@@ -124,7 +124,7 @@
           "title": "Hello JPA — 프로젝트 생성",
           "summary": "persistence.xml 한 줄씩 뜯어보기. dialect 는 무엇이고 왜 필요한가.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -132,7 +132,7 @@
           "title": "Hello JPA — 애플리케이션 개발",
           "summary": "저장·조회·수정·삭제를 순수 JPA 로. 왜 EntityManager 는 스레드마다 새로 만들어야 하는가.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -194,7 +194,7 @@
           "title": "객체와 테이블 매핑",
           "summary": "@Entity·@Table. 기본 생성자가 반드시 필요한 진짜 이유(프록시와 리플렉션).",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -202,7 +202,7 @@
           "title": "데이터베이스 스키마 자동 생성",
           "summary": "hbm2ddl.auto 의 다섯 값과, 운영 DB 에서 이걸 켰다가 벌어지는 일.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -210,7 +210,7 @@
           "title": "필드와 컬럼 매핑",
           "summary": "@Column·@Enumerated·@Temporal·@Lob·@Transient. EnumType.ORDINAL 을 절대 쓰면 안 되는 이유.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -218,7 +218,7 @@
           "title": "기본 키 매핑",
           "summary": "IDENTITY·SEQUENCE·TABLE·AUTO. IDENTITY 만 persist() 즉시 INSERT 가 나가는 이유와 allocationSize.",
           "minutes": 22,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -226,7 +226,7 @@
           "title": "실전 예제 1 — 요구사항 분석과 기본 매핑",
           "summary": "요구사항에서 테이블을 뽑고, 그 테이블을 엔티티로 옮긴다. 아직 연관관계는 FK 컬럼 그대로 둔다.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

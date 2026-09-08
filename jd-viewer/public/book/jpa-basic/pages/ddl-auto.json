@@ -1,0 +1,291 @@
+{
+  "book": "jpa-basic",
+  "id": "ddl-auto",
+  "no": "5.2",
+  "chapter": 5,
+  "title": "데이터베이스 스키마 자동 생성",
+  "summary": "hbm2ddl.auto 의 다섯 값과, 운영 DB 에서 이걸 켰다가 벌어지는 일.",
+  "minutes": 12,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`hbm2ddl.auto` 의 다섯 값이 각각 무엇을 하는지 말할 수 있다.",
+    "`update` 가 안전해 보이지만 실무에서 쓰지 않는 이유를 세 가지 들 수 있다.",
+    "환경별로 어떤 값을 쓰는 것이 맞는지 답할 수 있다.",
+    "DDL 에만 영향을 주는 속성과 런타임에도 영향을 주는 속성을 구분할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.1절에서 `hibernate.hbm2ddl.auto` 를 `create` 로 두고 넘어갔다. 이 옵션은 **엔티티 매핑 정보를 보고 DDL 을 만들어 실행**한다. 테이블을 손으로 만들 필요가 없어서 실습에는 최고고, 운영에 켜면 회사가 없어질 수도 있다."
+    },
+    {
+      "type": "table",
+      "caption": "다섯 가지 값",
+      "note": "애플리케이션이 **뜰 때** 실행된다. 운영 중에 도는 것이 아니라, 배포하고 서버가 올라오는 그 순간 도는 것이다.",
+      "columns": [
+        "값",
+        "무엇을 하나",
+        "쓰는 곳"
+      ],
+      "rows": [
+        [
+          "**create**",
+          "기존 테이블을 **DROP 하고** 새로 만든다",
+          "로컬 개발. 매번 깨끗한 상태로 시작"
+        ],
+        [
+          "**create-drop**",
+          "create 와 같고, **애플리케이션이 끝날 때 또 DROP** 한다",
+          "테스트 코드"
+        ],
+        [
+          "**update**",
+          "바뀐 것만 반영한다. **추가만 하고 삭제는 안 한다**",
+          "로컬에서 데이터를 유지하고 싶을 때"
+        ],
+        [
+          "**validate**",
+          "DDL 을 만들지 않고 **엔티티와 테이블이 맞는지 검사만** 한다. 안 맞으면 기동 실패",
+          "스테이징. 강력히 권장"
+        ],
+        [
+          "**none**",
+          "아무것도 안 한다 (기본값. 값을 안 쓰거나 아무 문자열이나 써도 같다)",
+          "**운영**"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "운영에서 create 를 켜면",
+      "md": "서버가 재기동되는 순간 **모든 테이블이 DROP 되고 빈 테이블로 다시 만들어진다.** 데이터가 전부 사라진다.\n\n\"그럴 리가\" 싶지만, 실제 사고는 대개 이렇게 난다 — 로컬 설정 파일을 그대로 커밋하거나, 운영 프로파일이 로컬 프로파일을 덮어쓰지 못하거나, 새 환경을 만들면서 설정을 복사해 온다.\n\n**운영 DB 계정에는 DDL 권한(CREATE/DROP/ALTER)을 아예 주지 않는 것**이 가장 확실한 방어다. 설정 실수는 사람이 하지만 권한은 설정 실수를 못 이긴다."
+    },
+    {
+      "type": "heading",
+      "text": "update 도 쓰면 안 된다"
+    },
+    {
+      "type": "prose",
+      "md": "`update` 는 지우지 않으니 안전해 보인다. 세 가지 이유로 그렇지 않다."
+    },
+    {
+      "type": "steps",
+      "caption": "update 가 위험한 세 가지",
+      "items": [
+        {
+          "title": "지워야 할 것을 안 지운다",
+          "md": "엔티티에서 필드를 삭제해도 컬럼은 그대로 남는다. 시간이 지나면 **아무도 안 쓰는 컬럼이 쌓이고**, 그게 `NOT NULL` 이면 INSERT 가 실패하기 시작한다."
+        },
+        {
+          "title": "타입 변경을 못 한다",
+          "md": "`String` → `int` 같은 변경은 반영하지 못하거나 실패한다. 그런데 **기동은 성공**하는 경우가 있어서, 스키마와 코드가 어긋난 채로 서비스가 뜬다."
+        },
+        {
+          "title": "무슨 DDL 이 나갈지 배포 전에 알 수 없다",
+          "md": "운영 스키마 변경은 **락이 걸리는 작업**이다. 수백만 행짜리 테이블에 `ALTER TABLE` 이 걸리면 그동안 그 테이블이 멈춘다. 그게 배포 시점에 예고 없이 도는 건 위험하다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그럼 운영에서 스키마는 어떻게 바꾸나",
+      "md": "**마이그레이션 도구**를 쓴다. Flyway 나 Liquibase 가 표준이다.\n\n```\ndb/migration/\n  V1__create_member.sql\n  V2__add_member_tel.sql\n  V3__drop_member_legacy_col.sql\n```\n\n핵심은 **DDL 이 코드로 남고, 리뷰를 거치고, 순서가 기록된다**는 것이다. 누가 언제 무엇을 바꿨는지 git 에 남고, 롤백 계획도 같이 세울 수 있다.\n\n`hbm2ddl.auto` 는 그 반대다 — DDL 이 어디에도 안 남고, 아무도 안 봤고, 기동할 때 갑자기 돈다."
+    },
+    {
+      "type": "table",
+      "caption": "환경별 권장",
+      "note": "가운데 줄이 핵심이다. `validate` 는 **엔티티와 실제 테이블이 어긋났다는 사실을 배포 전에 알려 준다.** 운영에서 컬럼을 못 찾아 500 이 나기 전에 스테이징에서 기동이 실패한다.",
+      "columns": [
+        "환경",
+        "값",
+        "왜"
+      ],
+      "rows": [
+        [
+          "로컬 개발",
+          "`create` 또는 `update`",
+          "빨리 돌려 보는 게 우선. 데이터가 날아가도 상관없다"
+        ],
+        [
+          "테스트 코드",
+          "`create-drop`",
+          "테스트마다 깨끗한 스키마"
+        ],
+        [
+          "스테이징 / 통합",
+          "**`validate`**",
+          "엔티티와 스키마가 어긋나면 **기동 자체를 실패**시킨다"
+        ],
+        [
+          "운영",
+          "**`none`**",
+          "스키마는 마이그레이션 도구가 관리한다. DDL 권한도 주지 않는다"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "DDL 에만 영향을 주는 속성들"
+    },
+    {
+      "type": "prose",
+      "md": "이 구분을 모르면 나중에 반드시 헷갈린다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\npublic class Member {\n\n    @Id\n    private Long id;\n\n    @Column(nullable = false, length = 20)\n    private String name;\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "hbm2ddl.auto 가 켜져 있으면 이런 DDL 이 나간다",
+      "sql": "CREATE TABLE MEMBER (\n    ID   BIGINT NOT NULL,\n    NAME VARCHAR(20) NOT NULL,\n    PRIMARY KEY (ID)\n)"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그런데 auto 가 꺼져 있으면 이 두 속성은 아무 일도 안 한다",
+      "md": "`nullable = false` 도 `length = 20` 도 **DDL 을 만들 때만** 쓰인다. `none` 으로 두면 JPA 는 저장 전에 아무 검사도 하지 않는다.\n\n즉 운영에서는 이 어노테이션이 **문서에 가깝다.** 실제 제약은 DB 에 걸려 있어야 하고, 애플리케이션 검증이 필요하면 Bean Validation(`@NotNull`, `@Size`)을 따로 붙인다. 이름이 비슷해서 헷갈리기 쉬운데, `@Column(nullable=false)` 와 `@NotNull` 은 서로 다른 층의 물건이다."
+    },
+    {
+      "type": "table",
+      "caption": "속성이 어느 층에 영향을 주나",
+      "columns": [
+        "속성",
+        "DDL",
+        "런타임 동작"
+      ],
+      "rows": [
+        [
+          "`@Column(nullable, length, unique)`",
+          "영향 있음",
+          "**없음**"
+        ],
+        [
+          "`@Table(uniqueConstraints, indexes)`",
+          "영향 있음",
+          "**없음**"
+        ],
+        [
+          "`@Column(insertable, updatable)`",
+          "없음",
+          "**있음** — INSERT/UPDATE 문에서 그 컬럼을 뺀다"
+        ],
+        [
+          "`@Column(name)`",
+          "영향 있음",
+          "**있음** — SQL 의 컬럼 이름"
+        ],
+        [
+          "`@NotNull` `@Size` (Bean Validation)",
+          "하이버네이트가 참고하기도 함",
+          "**있음** — 저장 전 검증"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"ddl-auto 를 운영에서 어떻게 두나요?\"** → `none`. 스키마는 Flyway/Liquibase 로 관리하고, 운영 계정에 DDL 권한을 주지 않는다.\n- **\"update 는 안전하지 않나요?\"** → 삭제를 못 하고, 타입 변경을 못 하고, 배포 시점에 예고 없이 ALTER 가 도는 게 위험하다.\n- **\"validate 는 왜 쓰나요?\"** → 엔티티와 실제 스키마가 어긋났을 때 **기동을 실패시켜** 운영 장애 전에 잡는다.\n- **\"`@Column(nullable=false)` 면 null 저장이 막히나요?\"** → 아니다. DDL 생성에만 쓰인다. 실제 제약은 DB 가 걸고, 애플리케이션 검증은 Bean Validation 이 한다."
+    }
+  ],
+  "recap": [
+    "`hbm2ddl.auto` 는 애플리케이션이 **뜰 때** DDL 을 만들어 실행한다.",
+    "create/create-drop 은 DROP 을 포함한다. 운영에서 켜면 데이터가 사라진다.",
+    "update 도 안 쓴다 — 삭제 못 함, 타입 변경 못 함, 배포 때 예고 없는 ALTER.",
+    "권장은 로컬 create/update · 테스트 create-drop · 스테이징 **validate** · 운영 **none**.",
+    "가장 확실한 방어는 설정이 아니라 **운영 계정에 DDL 권한을 안 주는 것**이다.",
+    "`@Column(nullable, length)` 은 DDL 전용이다. 런타임 검증은 Bean Validation 이 한다."
+  ],
+  "drills": [
+    {
+      "task": "`create` 로 실행해 데이터를 넣고, 애플리케이션을 다시 실행한 뒤 그 데이터를 찾아본다.",
+      "done_when": "데이터가 사라진 것을 확인했다. DROP 이 실제로 돈다는 것을 몸으로 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "`update` 로 바꾸고 엔티티에 필드를 하나 추가·실행 → 그 필드를 삭제·실행 한다. 매번 H2 콘솔에서 컬럼을 확인한다.",
+      "done_when": "추가는 반영되고 삭제는 반영되지 않는 것을 눈으로 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`validate` 로 바꾸고, 엔티티에만 필드를 추가한 뒤 실행한다.",
+      "done_when": "기동이 실패하는 것을 확인했다. 이게 스테이징에서 하고 싶은 일이다.",
+      "minutes": 15
+    },
+    {
+      "task": "`@Column(nullable = false)` 를 붙이고 `auto` 를 `none` 으로 둔 뒤, 그 필드에 null 을 넣어 저장해 본다.",
+      "done_when": "JPA 가 막지 않고 DB 가 막는지(또는 아무 제약이 없어 그냥 들어가는지)를 확인했다.",
+      "hint": "이 실습이 'DDL 전용 속성' 이라는 말의 진짜 의미다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`hbm2ddl.auto` 는 언제 실행되는가?",
+      "a": "애플리케이션이 뜰 때(EntityManagerFactory 를 만들 때) 한 번 실행된다. 운영 중에 계속 도는 것이 아니다."
+    },
+    {
+      "q": "`create` 와 `create-drop` 의 차이는?",
+      "a": "둘 다 시작할 때 DROP 후 CREATE 한다. create-drop 은 **애플리케이션이 끝날 때 한 번 더 DROP** 한다. 테스트용."
+    },
+    {
+      "q": "`update` 를 운영에 쓰면 안 되는 이유 세 가지는?",
+      "a": "① 엔티티에서 지운 컬럼을 DB 에서 지우지 않아 쓰레기 컬럼이 쌓인다 ② 타입 변경을 반영하지 못한다 ③ 배포 시점에 어떤 ALTER 가 돌지 예측할 수 없고, 큰 테이블이면 락이 걸린다."
+    },
+    {
+      "q": "스테이징 환경에 `validate` 를 쓰는 이유는?",
+      "a": "엔티티 매핑과 실제 테이블이 어긋나면 기동을 실패시킨다. 운영에서 '컬럼을 못 찾음' 오류가 나기 전에 배포 파이프라인에서 잡힌다."
+    },
+    {
+      "q": "`@Column(nullable = false)` 만 붙이면 null 저장이 막히는가?",
+      "a": "아니다. 이 속성은 DDL 생성에만 쓰인다. 실제로 막는 것은 DB 의 NOT NULL 제약이고, 애플리케이션 레벨 검증은 `@NotNull`(Bean Validation)이 한다."
+    },
+    {
+      "q": "설정 실수로 운영에서 create 가 도는 것을 막는 가장 확실한 방법은?",
+      "a": "운영 DB 계정에 CREATE/DROP/ALTER 권한을 주지 않는 것이다. 설정은 실수할 수 있지만 권한은 실수를 이긴다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "hbm2ddl",
+      "en": "hibernate mapping to DDL",
+      "what": "엔티티 매핑 정보로 DDL 을 생성하는 하이버네이트 기능. `hibernate.hbm2ddl.auto` 로 제어한다."
+    },
+    {
+      "term": "validate",
+      "en": "",
+      "what": "DDL 을 만들지 않고 엔티티와 실제 스키마가 일치하는지만 검사하는 모드. 안 맞으면 기동이 실패한다."
+    },
+    {
+      "term": "마이그레이션 도구",
+      "en": "Flyway / Liquibase",
+      "what": "스키마 변경을 버전이 붙은 SQL 파일로 관리하고 순서대로 적용하는 도구. 운영 스키마 관리의 표준."
+    },
+    {
+      "term": "Bean Validation",
+      "en": "Jakarta Validation",
+      "what": "`@NotNull`·`@Size` 같은 애플리케이션 레벨 검증. `@Column` 속성과 층이 다르다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Schema generation",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#schema-generation",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "Flyway — Why database migrations",
+      "url": "https://documentation.red-gate.com/flyway/getting-started-with-flyway/why-database-migrations",
+      "publisher": "Redgate"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

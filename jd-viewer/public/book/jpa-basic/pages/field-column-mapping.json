@@ -1,0 +1,329 @@
+{
+  "book": "jpa-basic",
+  "id": "field-column-mapping",
+  "no": "5.3",
+  "chapter": 5,
+  "title": "필드와 컬럼 매핑",
+  "summary": "@Column·@Enumerated·@Temporal·@Lob·@Transient. EnumType.ORDINAL 을 절대 쓰면 안 되는 이유.",
+  "minutes": 18,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`@Column` 의 주요 속성이 각각 DDL 과 런타임 중 어디에 영향을 주는지 안다.",
+    "`EnumType.ORDINAL` 이 만드는 사고를 시나리오로 설명할 수 있다.",
+    "`@Temporal` 이 이제 필요 없는 이유를 안다.",
+    "`insertable = false, updatable = false` 를 언제 쓰는지 말할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "필드 하나를 컬럼 하나에 붙이는 어노테이션들이다. 개수는 많은데 실제로 자주 쓰는 건 넷이고, **하나는 절대 쓰면 안 되는 값**을 갖고 있다."
+    },
+    {
+      "type": "table",
+      "caption": "전체 목록",
+      "columns": [
+        "어노테이션",
+        "무엇",
+        "얼마나 자주"
+      ],
+      "rows": [
+        [
+          "`@Column`",
+          "컬럼 이름·제약·길이 등",
+          "자주"
+        ],
+        [
+          "`@Enumerated`",
+          "enum 을 어떻게 저장할지",
+          "자주 — **함정 있음**"
+        ],
+        [
+          "`@Lob`",
+          "아주 긴 문자열/바이너리 (CLOB/BLOB)",
+          "가끔"
+        ],
+        [
+          "`@Transient`",
+          "이 필드는 DB 에 저장하지 않는다",
+          "가끔"
+        ],
+        [
+          "`@Temporal`",
+          "`java.util.Date` 의 정밀도 지정",
+          "**이제 안 쓴다**"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "@Column"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\npublic class Member {\n\n    @Id\n    private Long id;\n\n    @Column(name = \"USER_NAME\", nullable = false, length = 20)\n    private String username;\n\n    @Column(precision = 19, scale = 2)\n    private BigDecimal balance;\n\n    @Column(insertable = false, updatable = false)\n    private LocalDateTime createdAt;\n}"
+    },
+    {
+      "type": "table",
+      "caption": "@Column 속성",
+      "note": "**대부분이 DDL 전용이다**(5.2절). 런타임에 실제로 동작을 바꾸는 것은 `name`·`insertable`·`updatable` 셋뿐이다.",
+      "columns": [
+        "속성",
+        "무엇",
+        "영향"
+      ],
+      "rows": [
+        [
+          "`name`",
+          "컬럼 이름. 기본은 필드 이름",
+          "DDL + **런타임 SQL**"
+        ],
+        [
+          "`nullable`",
+          "NOT NULL 제약",
+          "DDL 만"
+        ],
+        [
+          "`length`",
+          "문자열 길이. 기본 255",
+          "DDL 만"
+        ],
+        [
+          "`unique`",
+          "유니크 제약 (이름이 랜덤이라 실무에선 `@Table` 쪽을 쓴다)",
+          "DDL 만"
+        ],
+        [
+          "`precision` / `scale`",
+          "`BigDecimal` 의 전체 자릿수 / 소수 자릿수",
+          "DDL 만"
+        ],
+        [
+          "`columnDefinition`",
+          "컬럼 정의를 직접 문자열로",
+          "DDL 만"
+        ],
+        [
+          "**`insertable`**",
+          "false 면 INSERT 문에서 이 컬럼을 뺀다",
+          "**런타임**"
+        ],
+        [
+          "**`updatable`**",
+          "false 면 UPDATE 문에서 이 컬럼을 뺀다",
+          "**런타임**"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "insertable / updatable 을 쓰는 자리",
+      "md": "**① DB 가 값을 채우는 컬럼.** `DEFAULT CURRENT_TIMESTAMP` 로 생성 시각을 DB 가 넣는 경우, 자바에서 보내면 덮어써진다. `insertable = false` 로 빼 둔다.\n\n**② 절대 바뀌면 안 되는 컬럼.** 가입일 같은 것에 `updatable = false` 를 걸면, 실수로 setter 를 불러도 UPDATE 문에 안 들어간다. 변경 감지의 사고를 구조로 막는 방법이다.\n\n**③ 같은 컬럼을 두 번 매핑할 때.** 7장에서 연관관계와 FK 값을 동시에 들고 싶을 때 한쪽을 읽기 전용으로 만든다."
+    },
+    {
+      "type": "heading",
+      "text": "@Enumerated — 이 장에서 가장 중요한 함정"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "절대 이렇게 쓰지 않는다",
+      "code": "@Enumerated(EnumType.ORDINAL)   // 기본값이다. 무섭게도.\nprivate RoleType roleType;",
+      "note": "`@Enumerated` 를 아무 값 없이 쓰면 **ORDINAL 이 기본값**이다. 그래서 '몰라서 안 쓴' 것이 아니라 '몰라서 쓴' 상태가 된다."
+    },
+    {
+      "type": "prose",
+      "md": "`ORDINAL` 은 enum 의 **순서를 숫자로** 저장한다. `USER` 가 0, `ADMIN` 이 1. 컬럼도 작고 인덱스도 빠르다. 그런데."
+    },
+    {
+      "type": "figure",
+      "caption": "ORDINAL 이 만드는 사고",
+      "ascii": "   처음 배포                                나중에 GUEST 를 맨 앞에 추가\n\n   enum RoleType {                          enum RoleType {\n       USER,    -> 0                            GUEST,   -> 0\n       ADMIN    -> 1                            USER,    -> 1\n   }                                            ADMIN    -> 2\n                                            }\n\n   MEMBER table  (행 데이터는 아무도 안 건드렸다)\n\n   ┌────┬───────────┐                       ┌────┬───────────┐\n   │ ID │ ROLE_TYPE │                       │ ID │ ROLE_TYPE │\n   ├────┼───────────┤    ==  deploy  ==>    ├────┼───────────┤\n   │ 1  │     0     │                       │ 1  │     0     │\n   │ 2  │     1     │                       │ 2  │     1     │\n   └────┴───────────┘                       └────┴───────────┘\n        │                                        │\n        ▼  reads as                              ▼  reads as\n   1 -> USER                                1 -> GUEST     <- 등급이 강등됐다\n   2 -> ADMIN                               2 -> USER      <- 관리자가 일반 사용자로\n\n   DB 에는 숫자만 남아 있어서 원래 무엇이었는지 알 방법이 없다.\n   백업을 뒤지지 않는 한 복구가 불가능하다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이 사고의 성질",
+      "md": "**오류가 안 난다.** 예외도 없고 로그도 없다. 애플리케이션은 정상적으로 동작하고, 다만 **모든 사용자의 권한이 한 칸씩 밀려 있다.**\n\n그리고 **되돌릴 수 없다.** DB 에는 `0`, `1` 이라는 숫자만 있어서, 그 숫자가 옛 enum 의 무엇이었는지 알 방법이 없다. enum 상수를 중간에 끼워 넣은 순간 과거의 데이터가 통째로 의미를 잃는다.\n\n권한이 아니라 결제 상태(`PENDING`, `PAID`, `REFUNDED`)였다면 어떻게 됐을지 생각해 보면 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "항상 이렇게 쓴다",
+      "code": "@Enumerated(EnumType.STRING)\nprivate RoleType roleType;"
+    },
+    {
+      "type": "sql",
+      "caption": "저장되는 값",
+      "sql": "-- ORDINAL\nINSERT INTO MEMBER (ROLE_TYPE, ID) VALUES (0, ?)\n\n-- STRING\nINSERT INTO MEMBER (ROLE_TYPE, ID) VALUES ('USER', ?)",
+      "note": "STRING 은 컬럼이 조금 커지고 인덱스가 조금 느리다. **그 대가로 enum 순서를 마음대로 바꿀 수 있고, DB 를 열어 봤을 때 값이 읽힌다.** 비교할 거리가 아니다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "STRING 에도 규칙이 하나 있다",
+      "md": "enum **상수 이름**이 그대로 저장되므로, 상수 이름을 바꾸면 기존 데이터를 못 읽는다(`No enum constant`).\n\n순서는 마음대로 바꿔도 되지만 **이름은 스키마의 일부**라고 생각해야 한다. 이름을 바꿔야 한다면 마이그레이션으로 기존 값도 같이 UPDATE 한다."
+    },
+    {
+      "type": "heading",
+      "text": "@Temporal — 이제 필요 없다"
+    },
+    {
+      "type": "compare",
+      "caption": "날짜 타입",
+      "note": "`@Temporal` 은 `java.util.Date`·`Calendar` 에만 필요했다. 그 타입들은 날짜·시간·타임스탬프를 구분하지 못해서 어노테이션으로 알려 줘야 했다.",
+      "left": {
+        "title": "예전 방식",
+        "lang": "java",
+        "bad": true,
+        "code": "@Temporal(TemporalType.TIMESTAMP)\nprivate Date createdAt;",
+        "md": "옛 자료에 아직 많이 남아 있다. 새로 쓸 이유는 없다."
+      },
+      "right": {
+        "title": "지금 방식",
+        "lang": "java",
+        "code": "private LocalDate  birthday;\nprivate LocalDateTime createdAt;\nprivate LocalTime  openAt;",
+        "md": "타입 자체가 무엇인지 말하고 있으므로 어노테이션이 필요 없다. 하이버네이트가 알아서 `DATE`/`TIMESTAMP`/`TIME` 으로 매핑한다."
+      }
+    },
+    {
+      "type": "heading",
+      "text": "@Lob 과 @Transient"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Lob\nprivate String description;      // 길이 제한 없는 문자열 -> CLOB\n\n@Lob\nprivate byte[] thumbnail;        // 바이너리 -> BLOB\n\n@Transient\nprivate int temporaryScore;      // DB 에 저장하지 않는다",
+      "note": "`@Lob` 에는 타입을 지정하는 속성이 없다. **필드 타입이 문자면 CLOB, 아니면 BLOB** 으로 자동 결정된다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "@Transient 를 쓰는 자리",
+      "md": "계산해서 쓰는 값, 화면에만 필요한 임시 값처럼 **DB 에 있으면 안 되는 필드**에 붙인다.\n\n헷갈리기 쉬운 이름이 하나 있다 — 4.1절의 엔티티 상태 \"비영속(transient)\" 과는 **아무 관계가 없다.** 이름만 같다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`@Enumerated` 에서 ORDINAL 을 쓰면 안 되는 이유는?\"** → enum 순서를 숫자로 저장하므로 **상수를 중간에 추가하면 기존 데이터의 의미가 전부 밀린다.** 오류가 안 나고 복구도 안 된다. 그리고 **ORDINAL 이 기본값**이라는 것까지 말하면 확실하다.\n- **\"STRING 의 단점은?\"** → 컬럼이 커지고, enum 상수 이름을 바꾸면 기존 데이터를 못 읽는다. 그래도 ORDINAL 보다 낫다.\n- **\"`@Column(updatable = false)` 는 언제 쓰나요?\"** → 가입일처럼 절대 바뀌면 안 되는 컬럼. 변경 감지로 인한 실수를 구조로 막는다.\n- **\"`@Temporal` 을 요즘도 쓰나요?\"** → `java.time` 타입을 쓰면 필요 없다. 타입 자체가 정밀도를 말하고 있다."
+    }
+  ],
+  "recap": [
+    "`@Column` 속성 대부분은 DDL 전용이다. 런타임을 바꾸는 것은 `name`·`insertable`·`updatable` 셋.",
+    "`@Enumerated` 의 기본값은 **ORDINAL 이고, 그게 함정이다.** 항상 `EnumType.STRING` 을 명시한다.",
+    "ORDINAL 사고는 오류가 안 나고 복구도 안 된다 — DB 에 숫자만 남기 때문이다.",
+    "STRING 을 쓰면 enum 순서는 자유지만 **상수 이름은 스키마의 일부**가 된다.",
+    "`@Temporal` 은 `java.util.Date` 시절의 것이다. `LocalDate`/`LocalDateTime` 을 쓰면 필요 없다.",
+    "`@Transient` 는 '저장하지 않는 필드' 다. 엔티티 상태의 '비영속(transient)' 과는 무관하다."
+  ],
+  "drills": [
+    {
+      "task": "`@Enumerated` 를 ORDINAL 로 두고 회원 두 명(USER, ADMIN)을 저장한 뒤, enum 맨 앞에 `GUEST` 를 추가하고 다시 조회한다.",
+      "done_when": "권한이 한 칸씩 밀린 것을 눈으로 봤다. **이 실습을 건너뛰면 ORDINAL 의 위험은 머리로만 아는 것이 된다.**",
+      "hint": "H2 콘솔에서 ROLE_TYPE 컬럼이 숫자인 것도 같이 본다.",
+      "minutes": 25
+    },
+    {
+      "task": "같은 실습을 `EnumType.STRING` 으로 반복한다.",
+      "done_when": "GUEST 를 추가해도 기존 데이터가 그대로인 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "STRING 상태에서 enum 상수 이름을 `USER` → `NORMAL` 로 바꾸고 조회해 본다.",
+      "done_when": "`No enum constant` 오류를 확인했다. 이름이 스키마의 일부라는 뜻을 알게 된다.",
+      "minutes": 15
+    },
+    {
+      "task": "`@Column(updatable = false)` 를 붙인 필드에 setter 를 호출하고 커밋한다.",
+      "done_when": "UPDATE 문에 그 컬럼이 안 들어가는 것을 로그로 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`@Transient` 필드에 값을 넣고 저장한 뒤, 새 트랜잭션에서 다시 조회한다.",
+      "done_when": "값이 사라진 것을 확인했다(DDL 에도 그 컬럼이 없다).",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`@Enumerated` 를 값 없이 쓰면 어떤 방식으로 저장되는가?",
+      "a": "`EnumType.ORDINAL` — 순서를 숫자로 저장한다. 기본값이 하필 위험한 쪽이라 명시적으로 STRING 을 적어야 한다."
+    },
+    {
+      "q": "ORDINAL 로 저장하다가 enum 맨 앞에 상수를 추가하면?",
+      "a": "기존 행의 숫자는 그대로인데 그 숫자가 가리키는 상수가 한 칸씩 밀린다. ADMIN 이던 사람이 USER 로, USER 이던 사람이 새 상수로 읽힌다. 오류가 안 나고, DB 에 숫자만 남아 있어 복구도 불가능하다."
+    },
+    {
+      "q": "`EnumType.STRING` 의 단점은?",
+      "a": "컬럼 크기가 커지고 인덱스가 조금 느리다. 그리고 enum 상수 **이름**을 바꾸면 기존 데이터를 못 읽는다 — 이름이 사실상 스키마의 일부가 된다."
+    },
+    {
+      "q": "`@Column(nullable=false, length=20)` 은 런타임 동작을 바꾸는가?",
+      "a": "바꾸지 않는다. DDL 생성 때만 쓰인다. 런타임을 바꾸는 것은 `name`·`insertable`·`updatable` 뿐이다."
+    },
+    {
+      "q": "`insertable = false` 는 어떤 상황에 쓰는가?",
+      "a": "DB 가 값을 채우는 컬럼(`DEFAULT CURRENT_TIMESTAMP` 등)이라 자바가 보내면 안 될 때. 또는 같은 컬럼을 두 번 매핑할 때 한쪽을 읽기 전용으로 만들 때."
+    },
+    {
+      "q": "`@Temporal` 을 안 써도 되는 이유는?",
+      "a": "`LocalDate`·`LocalDateTime`·`LocalTime` 은 타입 자체가 날짜인지 시각인지 타임스탬프인지 말하고 있어서, 하이버네이트가 어노테이션 없이도 올바른 컬럼 타입으로 매핑한다."
+    },
+    {
+      "q": "`@Transient` 와 엔티티 상태 '비영속(transient)' 은 같은 것인가?",
+      "a": "아니다. 이름만 같다. `@Transient` 는 '이 필드를 DB 에 저장하지 않는다' 는 뜻이고, 비영속 상태는 '엔티티 인스턴스가 아직 영속성 컨텍스트에 들어가지 않았다' 는 뜻이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@Column",
+      "en": "",
+      "what": "필드와 컬럼의 매핑을 지정한다. 속성 대부분은 DDL 생성 전용이다."
+    },
+    {
+      "term": "@Enumerated",
+      "en": "",
+      "what": "enum 저장 방식을 지정한다. ORDINAL(순서 숫자)과 STRING(상수 이름). **기본값이 ORDINAL 이라 항상 명시해야 한다.**"
+    },
+    {
+      "term": "ORDINAL",
+      "en": "",
+      "what": "enum 의 선언 순서를 숫자로 저장하는 방식. 상수를 중간에 추가하면 기존 데이터의 의미가 밀린다."
+    },
+    {
+      "term": "@Lob",
+      "en": "Large Object",
+      "what": "큰 데이터를 CLOB(문자)/BLOB(바이너리)으로 매핑한다. 필드 타입으로 둘 중 무엇인지 자동 결정된다."
+    },
+    {
+      "term": "@Transient",
+      "en": "",
+      "what": "이 필드를 DB 에 매핑하지 않는다. 엔티티 생명주기의 '비영속' 과는 무관하다."
+    },
+    {
+      "term": "insertable / updatable",
+      "en": "",
+      "what": "INSERT/UPDATE 문에 이 컬럼을 포함할지. `@Column` 속성 중 런타임 SQL 을 실제로 바꾸는 몇 안 되는 것."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Basic mappings",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a132",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Basic types & enums",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#basic-enums",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

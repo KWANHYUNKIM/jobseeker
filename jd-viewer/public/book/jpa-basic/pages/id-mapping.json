@@ -1,0 +1,367 @@
+{
+  "book": "jpa-basic",
+  "id": "id-mapping",
+  "no": "5.4",
+  "chapter": 5,
+  "title": "기본 키 매핑",
+  "summary": "IDENTITY·SEQUENCE·TABLE·AUTO. IDENTITY 만 persist() 즉시 INSERT 가 나가는 이유와 allocationSize.",
+  "minutes": 22,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "네 가지 키 생성 전략의 동작과 나가는 SQL 을 각각 말할 수 있다.",
+    "IDENTITY 만 `persist()` 시점에 INSERT 가 나가는 이유를 4장 개념으로 설명할 수 있다.",
+    "`allocationSize` 가 무엇을 아끼는지, 그리고 어떤 대가가 있는지 안다.",
+    "기본 키로 자연키를 쓰면 안 되는 이유를 들 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "지금까지 예제는 `@Id` 만 붙이고 키를 직접 넣었다. 실무에서는 대개 DB 나 JPA 가 만들어 준다. 그 방법이 넷이고, **그중 하나는 4장에서 배운 쓰기 지연을 무력화한다.**"
+    },
+    {
+      "type": "heading",
+      "text": "직접 할당"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Id\nprivate Long id;\n\n// ...\nmember.setId(1L);\nem.persist(member);",
+      "note": "`@GeneratedValue` 가 없으면 직접 할당이다. 값을 안 넣고 `persist()` 하면 `IdentifierGenerationException` 이 난다."
+    },
+    {
+      "type": "heading",
+      "text": "네 가지 자동 생성 전략"
+    },
+    {
+      "type": "table",
+      "caption": "GenerationType",
+      "note": "실무에서는 사실상 **IDENTITY(MySQL)** 와 **SEQUENCE(PostgreSQL·Oracle·H2)** 둘 중 하나다.",
+      "columns": [
+        "전략",
+        "누가 만드나",
+        "쓰는 DB"
+      ],
+      "rows": [
+        [
+          "**IDENTITY**",
+          "DB 가 INSERT 할 때 (AUTO_INCREMENT)",
+          "MySQL, MariaDB, SQL Server"
+        ],
+        [
+          "**SEQUENCE**",
+          "DB 시퀀스 객체",
+          "Oracle, PostgreSQL, H2"
+        ],
+        [
+          "**TABLE**",
+          "키 전용 테이블을 만들어 흉내낸다",
+          "아무 DB 나 (대신 느리다)"
+        ],
+        [
+          "**AUTO**",
+          "방언을 보고 구현체가 고른다 (기본값)",
+          "이식성이 필요할 때"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "IDENTITY — 4장에서 예고했던 그것"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Id\n@GeneratedValue(strategy = GenerationType.IDENTITY)\nprivate Long id;"
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 DDL (MySQL)",
+      "sql": "CREATE TABLE MEMBER (\n    ID BIGINT NOT NULL AUTO_INCREMENT,\n    ...\n)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "IDENTITY 만 persist() 즉시 INSERT 가 나간다",
+      "md": "4.1절에서 예고한 예외다. 이유를 이제 정확히 말할 수 있다.\n\n1. `persist()` 는 엔티티를 **1차 캐시에 넣는 것**이 일이다.\n2. 1차 캐시는 **`@Id` 를 키로 하는 Map** 이다.\n3. 그런데 IDENTITY 는 **INSERT 를 실행해야 키 값이 정해진다.**\n4. 키를 모르면 Map 에 넣을 수 없다.\n\n그래서 어쩔 수 없이 그 자리에서 INSERT 를 보내고 생성된 키를 받아 온다.\n\n**결과: 쓰기 지연이 동작하지 않는다.** 쌓을 것이 없으니 `hibernate.jdbc.batch_size` 를 아무리 키워도 INSERT 배치가 안 된다(4.2절). 대량 저장이 있는 테이블에서 이게 실제 병목이 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "직접 확인",
+      "code": "System.out.println(\"=== persist 전 ===\");\nem.persist(member);\nSystem.out.println(\"=== persist 후 ===\");\nSystem.out.println(member.getId());   // 값이 이미 들어와 있다\n\ntx.commit();",
+      "note": "IDENTITY 면 `persist()` 와 `persist 후` 사이에 INSERT 가 찍히고, `getId()` 에 값이 들어 있다. SEQUENCE 로 바꾸면 INSERT 는 커밋 때 나가지만 `getId()` 에는 이미 값이 있다 — **키만 미리 받아 오기 때문**이다."
+    },
+    {
+      "type": "heading",
+      "text": "SEQUENCE"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\n@SequenceGenerator(\n    name = \"member_seq_generator\",\n    sequenceName = \"MEMBER_SEQ\",   // DB 에 만들어질 시퀀스 이름\n    initialValue = 1,\n    allocationSize = 50            // 기본값. 아래에서 설명\n)\npublic class Member {\n\n    @Id\n    @GeneratedValue(strategy = GenerationType.SEQUENCE,\n                    generator = \"member_seq_generator\")\n    private Long id;\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "persist() 시점에 나가는 SQL",
+      "sql": "CALL NEXT VALUE FOR MEMBER_SEQ",
+      "note": "INSERT 가 아니라 **키를 받아 오는 호출**만 나간다. INSERT 는 커밋 때 다른 것들과 함께 나가므로 쓰기 지연과 배치가 그대로 살아 있다."
+    },
+    {
+      "type": "heading",
+      "text": "allocationSize — 이름과 달리 중요한 옵션"
+    },
+    {
+      "type": "prose",
+      "md": "시퀀스를 쓰면 `persist()` 마다 DB 를 한 번 왕복한다. 회원 50명을 저장하면 왕복이 50번이다. 배치를 켜서 INSERT 를 묶어 봐야 키 받아 오느라 50번 왕복하면 의미가 없다.\n\n`allocationSize` 는 그 왕복을 줄인다."
+    },
+    {
+      "type": "figure",
+      "caption": "allocationSize 가 하는 일",
+      "ascii": "   allocationSize = 1    ->  DB 왕복 50번\n\n   persist #1  -> SELECT nextval -> 1\n   persist #2  -> SELECT nextval -> 2\n   persist #3  -> SELECT nextval -> 3\n   ...\n   persist #50 -> SELECT nextval -> 50\n\n\n   allocationSize = 50   ->  DB 왕복 1번\n\n   persist #1  -> SELECT nextval -> 50\n                  ┌────────────────────────────────────────┐\n                  │ hold 1 .. 50 in memory, no more calls  │\n                  └────────────────────────────────────────┘\n   persist #2  -> 2      (no SQL)\n   persist #3  -> 3      (no SQL)\n   ...\n   persist #50 -> 50     (no SQL)\n   persist #51 -> SELECT nextval -> 100     <- 다 쓰면 한 번 더 부른다\n\n   서버가 여러 대여도 안전하다. 각자 다른 구간을 받아 간다.\n   대신 재시작하면 안 쓴 번호는 버려진다. 구멍이 생겨도 문제없다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "번호에 구멍이 생기는 건 문제가 아니다",
+      "md": "서버를 재시작하면 미리 받아 둔 구간의 남은 번호는 버려진다. 그래서 id 가 `1,2,3,...,17` 다음에 `51` 로 뛴다.\n\n**괜찮다.** 기본 키는 유일하기만 하면 되고, 연속이어야 할 이유가 없다. \"주문 번호가 연속이어야 한다\" 같은 요구가 있다면 그건 **업무용 번호**이고, 기본 키와는 별도 컬럼으로 두는 것이 맞다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이미 있는 시퀀스에 붙일 때는 확인해야 한다",
+      "md": "`allocationSize` 는 DB 시퀀스의 `INCREMENT BY` 와 **같아야** 한다.\n\n하이버네이트가 시퀀스를 직접 만들면 알아서 맞춰 준다(`INCREMENT BY 50`). 하지만 이미 만들어져 있는 시퀀스(`INCREMENT BY 1`)에 `allocationSize = 50` 으로 붙이면, 하이버네이트가 \"1을 받았으니 1~50 은 내 것\" 이라고 판단해 **다른 애플리케이션이 쓸 번호를 겹쳐 쓴다.**\n\n레거시 DB 에 붙일 때 반드시 확인할 항목이다."
+    },
+    {
+      "type": "heading",
+      "text": "TABLE — 이식성을 위해 성능을 버린다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\n@TableGenerator(\n    name = \"member_seq_generator\",\n    table = \"MY_SEQUENCES\",\n    pkColumnValue = \"MEMBER_SEQ\",\n    allocationSize = 50\n)\npublic class Member {\n\n    @Id\n    @GeneratedValue(strategy = GenerationType.TABLE,\n                    generator = \"member_seq_generator\")\n    private Long id;\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "키 전용 테이블",
+      "sql": "CREATE TABLE MY_SEQUENCES (\n    SEQUENCE_NAME  VARCHAR(255) NOT NULL,\n    NEXT_VAL       BIGINT,\n    PRIMARY KEY (SEQUENCE_NAME)\n)\n\n-- 키를 받을 때마다\nSELECT NEXT_VAL FROM MY_SEQUENCES WHERE SEQUENCE_NAME = ? FOR UPDATE\nUPDATE MY_SEQUENCES SET NEXT_VAL = ? WHERE SEQUENCE_NAME = ?",
+      "note": "`FOR UPDATE` 가 보인다. **키를 받을 때마다 행 하나에 락이 걸린다.** 동시 요청이 많으면 여기가 통째로 병목이 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "TABLE 은 쓸 이유가 거의 없다",
+      "md": "장점은 \"모든 DB 에서 똑같이 동작한다\" 하나뿐이다. 대신 키를 받을 때마다 **SELECT + UPDATE 두 번에 행 락**이 걸린다.\n\n요즘은 어느 DB 를 쓸지 모른 채 개발하는 일이 거의 없어서, 이 이식성을 살 이유가 잘 없다. **IDENTITY 나 SEQUENCE 중 그 DB 에 맞는 것**을 쓰면 된다."
+    },
+    {
+      "type": "heading",
+      "text": "AUTO"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Id\n@GeneratedValue   // strategy 를 안 쓰면 AUTO\nprivate Long id;",
+      "note": "구현체가 방언을 보고 고른다. Hibernate 6 은 시퀀스(또는 시퀀스를 흉내 내는 테이블)를 선호한다 — MySQL 처럼 시퀀스가 없는 DB 에서도 그렇다. **Hibernate 5 시절과 동작이 다르므로**, 옛 자료를 보고 \"AUTO 면 MySQL 에서 IDENTITY\" 라고 기억하고 있으면 어긋난다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그래서 실무에서는 명시한다",
+      "md": "AUTO 는 편하지만 **어떤 DDL 과 어떤 SQL 이 나갈지 예측하기 어렵다.** 구현체 버전이 올라가면서 선택이 바뀌기도 한다.\n\nMySQL 이면 `IDENTITY`, PostgreSQL·Oracle 이면 `SEQUENCE` 라고 명시하는 편이 낫다. 한 줄 더 쓰고 예측 가능성을 얻는다."
+    },
+    {
+      "type": "heading",
+      "text": "그런데 기본 키에 무엇을 쓸 것인가"
+    },
+    {
+      "type": "prose",
+      "md": "전략보다 앞선 질문이다. 기본 키가 만족해야 하는 조건은 셋이다."
+    },
+    {
+      "type": "steps",
+      "caption": "기본 키의 조건",
+      "items": [
+        {
+          "title": "null 이면 안 된다",
+          "md": "당연하다."
+        },
+        {
+          "title": "유일해야 한다",
+          "md": "이것도 당연하다."
+        },
+        {
+          "title": "**변하면 안 된다**",
+          "md": "여기가 문제다. 기본 키는 다른 테이블의 외래 키로 퍼져 나가고, 캐시·로그·외부 시스템에도 남는다. 한 번 정하면 사실상 못 바꾼다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "자연키를 기본 키로 쓰지 않는다",
+      "md": "주민등록번호·사업자등록번호·이메일·전화번호 같은 **업무적으로 의미가 있는 값**을 자연키라고 한다. 유일해 보이지만 기본 키로 쓰면 안 된다.\n\n- **바뀐다.** 이메일도 전화번호도 바뀐다. 사업자번호도 바뀐다.\n- **법이 바뀐다.** 주민번호를 저장하지 못하게 하는 법이 실제로 생겼다. 그때 그게 기본 키였다면, **모든 테이블의 외래 키를 다 바꿔야 한다.**\n- **없을 수 있다.** 외국인, 법인, 미성년자… 예외는 반드시 나온다.\n\n**대리키(surrogate key)** — 아무 의미 없는 Long id — 를 쓰고, 자연키는 유니크 제약이 걸린 보통 컬럼으로 둔다. 이 결정은 되돌리기가 가장 비싼 결정 중 하나다."
+    },
+    {
+      "type": "table",
+      "caption": "정리",
+      "columns": [
+        "전략",
+        "persist 시점",
+        "쓰기 지연",
+        "INSERT 배치"
+      ],
+      "rows": [
+        [
+          "**IDENTITY**",
+          "**INSERT 가 즉시 나간다**",
+          "**안 됨**",
+          "**안 됨**"
+        ],
+        [
+          "**SEQUENCE**",
+          "키 조회 SQL 만 나간다",
+          "됨",
+          "됨"
+        ],
+        [
+          "**TABLE**",
+          "SELECT + UPDATE (행 락)",
+          "됨",
+          "됨"
+        ],
+        [
+          "**AUTO**",
+          "고른 전략을 따른다",
+          "-",
+          "-"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"IDENTITY 전략의 단점은?\"** → `persist()` 시점에 INSERT 가 즉시 나가서 쓰기 지연과 INSERT 배치가 무력화된다. **왜 그런지(1차 캐시의 키가 @Id 라서)** 까지 말하면 확실하다.\n- **\"allocationSize 가 뭔가요?\"** → 시퀀스를 한 번 호출해 확보한 값으로 그만큼의 키를 메모리에서 나눠 쓴다. DB 왕복이 1/N 로 준다. 대가는 서버 재시작 시 번호에 구멍이 생기는 것인데 문제가 아니다.\n- **\"allocationSize 를 쓸 때 주의할 점은?\"** → DB 시퀀스의 INCREMENT BY 와 값이 같아야 한다. 레거시 시퀀스에 붙일 때 어긋나면 키가 겹친다.\n- **\"기본 키로 주민번호를 쓰면 안 되는 이유는?\"** → 바뀔 수 있고, 법이 바뀔 수 있고, 없는 경우가 있다. 기본 키는 외래 키로 퍼져서 사실상 못 바꾼다.\n- **\"@GeneratedValue 만 쓰면 어떤 전략인가요?\"** → AUTO. 구현체가 방언을 보고 고르며 Hibernate 6 은 시퀀스를 선호한다. 예측 가능성 때문에 실무에서는 명시하는 편이 낫다."
+    }
+  ],
+  "recap": [
+    "네 전략 — IDENTITY(DB 위임) · SEQUENCE(시퀀스) · TABLE(키 테이블) · AUTO(방언에 위임).",
+    "IDENTITY 만 `persist()` 즉시 INSERT 가 나간다. 1차 캐시의 키가 `@Id` 인데 그 값을 DB 가 정하기 때문이다.",
+    "그 결과 IDENTITY 는 쓰기 지연과 INSERT 배치를 못 쓴다. 대량 저장이 있으면 SEQUENCE 를 고른다.",
+    "`allocationSize` 는 시퀀스 호출 한 번으로 여러 키를 확보해 DB 왕복을 줄인다. 번호 구멍은 문제가 아니다.",
+    "이미 있는 시퀀스에 붙일 때는 `allocationSize` 와 `INCREMENT BY` 가 같은지 반드시 확인한다.",
+    "TABLE 은 락 때문에 느리다. 이식성이 절실하지 않으면 쓰지 않는다.",
+    "기본 키는 의미 없는 대리키로. 자연키(주민번호·이메일)는 바뀌고, 없을 수 있고, 법이 바뀐다."
+  ],
+  "drills": [
+    {
+      "task": "IDENTITY 전략으로 회원을 저장하고 `persist()` 앞뒤에 로그를 찍어 INSERT 시점을 확인한다.",
+      "done_when": "persist 직후에 INSERT 가 찍히고 `getId()` 에 값이 들어 있는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "같은 코드를 SEQUENCE 전략으로 바꿔 다시 돌린다.",
+      "done_when": "persist 시점에는 시퀀스 호출만 나가고 INSERT 는 커밋 때 나가는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "회원 100명을 저장하면서 IDENTITY / SEQUENCE 각각에서 `hibernate.jdbc.batch_size=50` 을 켜고 시간을 잰다.",
+      "done_when": "IDENTITY 에서는 배치가 안 먹는 것을 숫자로 확인했다.",
+      "hint": "4.2절 쓰기 지연과 이어지는 실습이다.",
+      "minutes": 30
+    },
+    {
+      "task": "`allocationSize` 를 1 과 50 으로 각각 두고 회원 50명을 저장하며 시퀀스 호출 횟수를 센다.",
+      "done_when": "50번 vs 1번(또는 2번)인 것을 로그로 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "allocationSize=50 으로 50명 미만을 저장하고 애플리케이션을 재시작한 뒤 또 저장해 id 를 본다.",
+      "done_when": "번호에 구멍이 생기는 것을 확인했고, 왜 문제가 아닌지 설명할 수 있다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "IDENTITY 전략에서 `persist()` 시점에 INSERT 가 즉시 나가는 이유는?",
+      "a": "1차 캐시는 `@Id` 를 키로 쓰는데, IDENTITY 는 INSERT 를 실행해야 그 값이 정해진다. 키를 모르면 캐시에 넣을 수 없으므로 그 자리에서 INSERT 를 보내고 생성된 키를 받아 온다."
+    },
+    {
+      "q": "그 결과 무엇을 잃는가?",
+      "a": "쓰기 지연과 INSERT 배치다. 쌓아 둘 SQL 자체가 없으니 `hibernate.jdbc.batch_size` 를 켜도 소용이 없다."
+    },
+    {
+      "q": "SEQUENCE 전략에서 `persist()` 시점에 나가는 SQL 은?",
+      "a": "시퀀스 값을 받아 오는 호출(`CALL NEXT VALUE FOR ...`)만 나간다. INSERT 는 커밋 때 다른 것들과 함께 나가므로 배치가 살아 있다."
+    },
+    {
+      "q": "`allocationSize = 50` 이 하는 일은?",
+      "a": "시퀀스를 한 번 호출해 확보한 값을 기준으로 50개의 키를 메모리에서 나눠 쓴다. DB 왕복이 1/50 로 줄어든다."
+    },
+    {
+      "q": "allocationSize 때문에 id 에 구멍이 생겼다. 고쳐야 하나?",
+      "a": "아니다. 기본 키는 유일하기만 하면 되고 연속일 필요가 없다. 연속 번호가 업무 요구라면 그건 별도 컬럼으로 두는 것이 맞다."
+    },
+    {
+      "q": "이미 있는 DB 시퀀스(INCREMENT BY 1)에 `allocationSize = 50` 으로 붙이면?",
+      "a": "하이버네이트가 받은 값 기준으로 50개를 자기 것으로 여겨 다른 애플리케이션이 쓸 번호와 겹친다. 두 값은 반드시 같아야 한다."
+    },
+    {
+      "q": "기본 키로 이메일이나 주민번호를 쓰면 안 되는 이유는?",
+      "a": "바뀔 수 있고(이메일·전화번호), 법이 바뀌어 저장 자체를 못 하게 될 수 있고(주민번호), 없는 경우가 있다(외국인·법인). 기본 키는 외래 키로 퍼져 나가 사실상 변경이 불가능하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@GeneratedValue",
+      "en": "",
+      "what": "기본 키를 자동 생성한다. `strategy` 로 방식을 고른다. 안 쓰면 AUTO."
+    },
+    {
+      "term": "IDENTITY",
+      "en": "",
+      "what": "DB 의 자동 증가 컬럼에 위임. `persist()` 시점에 INSERT 가 즉시 나가 쓰기 지연·배치를 못 쓴다."
+    },
+    {
+      "term": "SEQUENCE",
+      "en": "",
+      "what": "DB 시퀀스 객체에서 키를 받아 온다. `@SequenceGenerator` 로 설정한다."
+    },
+    {
+      "term": "allocationSize",
+      "en": "",
+      "what": "시퀀스 호출 한 번으로 미리 확보하는 키 개수. 기본 50. DB 왕복을 줄이는 대신 번호에 구멍이 생긴다."
+    },
+    {
+      "term": "TABLE 전략",
+      "en": "",
+      "what": "키 전용 테이블로 시퀀스를 흉내낸다. 모든 DB 에서 되지만 행 락 때문에 느리다."
+    },
+    {
+      "term": "대리키",
+      "en": "surrogate key",
+      "what": "업무적 의미가 없는 인조 기본 키(보통 Long id). 변하지 않는다는 조건을 만족시키는 유일한 실용적 방법."
+    },
+    {
+      "term": "자연키",
+      "en": "natural key",
+      "what": "주민번호·이메일처럼 업무적 의미가 있는 유일 값. 기본 키로 쓰면 안 되고 유니크 제약이 걸린 보통 컬럼으로 둔다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Primary Key Generation",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1010",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Identifier generators",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#identifiers",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "book": "jpa-basic",
+  "id": "entity-table-mapping",
+  "no": "5.1",
+  "chapter": 5,
+  "title": "객체와 테이블 매핑",
+  "summary": "@Entity·@Table. 기본 생성자가 반드시 필요한 진짜 이유(프록시와 리플렉션).",
+  "minutes": 14,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`@Entity` 가 붙은 클래스가 지켜야 하는 규칙 네 가지를 이유와 함께 말할 수 있다.",
+    "기본 생성자가 필요한 이유를 '리플렉션' 과 '프록시' 두 단어로 설명할 수 있다.",
+    "`@Entity(name)` 과 `@Table(name)` 이 각각 무엇의 이름인지 구분할 수 있다.",
+    "필드 접근과 프로퍼티 접근의 차이를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5장은 **클래스 하나를 테이블 하나에 붙이는 방법** 전부다. 어노테이션이 여기서 다 나온다.\n\n다만 이 장을 어노테이션 목록으로 읽으면 아무것도 안 남는다. 2.2절의 표를 다시 떠올리면서 읽는 게 좋다 — 5장은 그 표의 **첫 줄(상속)을 빼고 나머지를 준비하는 장**이고, 진짜 재미는 6장 연관관계부터다."
+    },
+    {
+      "type": "heading",
+      "text": "@Entity"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\npublic class Member {\n\n    @Id\n    private Long id;\n\n    private String name;\n\n    protected Member() {}   // ← 이게 왜 필요한가\n}"
+    },
+    {
+      "type": "prose",
+      "md": "`@Entity` 가 붙으면 JPA 가 관리하는 클래스가 된다. 붙이는 순간 따라오는 규칙이 넷 있다."
+    },
+    {
+      "type": "table",
+      "caption": "@Entity 클래스의 규칙",
+      "note": "네 줄 다 \"하이버네이트가 이 클래스를 대신 다뤄야 한다\" 는 하나의 사정에서 나온다.",
+      "columns": [
+        "규칙",
+        "왜"
+      ],
+      "rows": [
+        [
+          "**기본 생성자가 있어야 한다**",
+          "리플렉션으로 인스턴스를 만들고, 프록시가 상속하면서 `super()` 를 부른다. `public` 또는 `protected`"
+        ],
+        [
+          "**final 클래스면 안 된다**",
+          "프록시가 상속할 수 없다"
+        ],
+        [
+          "**final 메서드·필드면 안 된다**",
+          "프록시가 오버라이드할 수 없다"
+        ],
+        [
+          "**저장할 필드에 final 을 쓰면 안 된다**",
+          "리플렉션으로 값을 채워 넣어야 한다"
+        ]
+      ]
+    },
+    {
+      "type": "figure",
+      "caption": "규칙 넷의 진짜 출처",
+      "ascii": "   내가 쓴 클래스                    하이버네이트가 런타임에 만드는 것\n\n   ┌──────────────────┐             ┌───────────────────────────┐\n   │ Member           │◀── extends ─│ Member$HibernateProxy$xY  │\n   │                  │             │                           │\n   │ + getName()      │             │ + getName()   (override)  │\n   │ + getTeam()      │             │ + getTeam()   (override)  │\n   └──────────────────┘             └───────────────────────────┘\n\n   1. 상속하려면 Member 가 final 이면 안 된다\n   2. 오버라이드하려면 메서드가 final 이면 안 된다\n   3. 자식이 만들어지려면 부모의 기본 생성자를 부를 수 있어야 한다\n\n   -> \"기본 생성자를 만들어라, final 을 쓰지 마라\" 는 규칙은\n      전부 이 그림 한 장에서 나온다. (9장 프록시)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "\"기본 생성자를 만들어라\" 는 규칙이 두 겹인 이유",
+      "md": "**첫 겹은 리플렉션이다.** JPA 가 DB 에서 행을 읽어 `Member` 객체를 만들 때, 우리가 만든 생성자를 부를 수는 없다. 어떤 생성자가 어떤 인자를 받는지 모르기 때문이다. 그래서 **인자 없는 생성자로 빈 객체를 만들고 필드에 값을 하나씩 꽂는다.**\n\n**둘째 겹은 프록시다.** 9장에서 볼 지연 로딩은 `Member` 를 상속한 가짜 클래스를 런타임에 만들어 쓴다. 자바에서 자식 생성자는 반드시 부모 생성자를 부르는데, 부를 수 있는 것이 기본 생성자뿐이다.\n\n그래서 `protected` 로 두는 것이 관례다 — JPA(같은 패키지·하위 클래스)는 쓸 수 있고, **애플리케이션 코드에서 실수로 빈 객체를 만드는 것은 막는다.**"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "빠뜨렸을 때 나는 메시지",
+      "code": "org.hibernate.InstantiationException:\n    No default constructor for entity: hello.jpa.Member",
+      "note": "롬복을 쓴다면 `@NoArgsConstructor(access = AccessLevel.PROTECTED)` 가 같은 일을 한다."
+    },
+    {
+      "type": "heading",
+      "text": "@Entity(name) 과 @Table(name) — 서로 다른 것의 이름이다"
+    },
+    {
+      "type": "compare",
+      "caption": "헷갈리기 쉬운 둘",
+      "note": "실무에서 `@Entity(name=...)` 을 쓸 일은 거의 없다. 서로 다른 패키지에 같은 이름의 엔티티가 있을 때 정도다.",
+      "left": {
+        "title": "@Entity(name) — JPQL 에서 쓰는 이름",
+        "lang": "java",
+        "code": "@Entity(name = \"Member\")\npublic class Member { }\n\n// JPQL 에서\n\"SELECT m FROM Member m\"",
+        "md": "**객체 쪽 이름**이다. 기본값은 클래스 이름이라 대개 생략한다."
+      },
+      "right": {
+        "title": "@Table(name) — 실제 테이블 이름",
+        "lang": "java",
+        "code": "@Entity\n@Table(name = \"MBR\")\npublic class Member { }\n\n// 나가는 SQL 에서\n// SELECT ... FROM MBR",
+        "md": "**DB 쪽 이름**이다. 이미 있는 테이블 이름이 클래스 이름과 다를 때 쓴다."
+      }
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "@Table 의 나머지 속성",
+      "code": "@Entity\n@Table(\n    name = \"MEMBER\",\n    uniqueConstraints = @UniqueConstraint(\n        name = \"NAME_AGE_UNIQUE\",\n        columnNames = {\"NAME\", \"AGE\"}\n    )\n)\npublic class Member { }",
+      "note": "`uniqueConstraints` 는 **DDL 을 자동 생성할 때만** 쓰인다. 이미 만들어진 테이블에는 아무 영향이 없다 — 5.2절에서 이 구분이 중요해진다."
+    },
+    {
+      "type": "heading",
+      "text": "필드 접근 vs 프로퍼티 접근"
+    },
+    {
+      "type": "prose",
+      "md": "JPA 는 두 가지 방법으로 값을 읽고 쓴다. **`@Id` 를 어디에 붙였느냐**로 결정된다."
+    },
+    {
+      "type": "compare",
+      "caption": "@Id 의 위치가 방식을 정한다",
+      "note": "둘을 섞으면(`@Access` 로 명시하지 않는 한) 매핑이 무시되는 필드가 생긴다. 한 엔티티 안에서는 한 방식으로 통일한다.",
+      "left": {
+        "title": "필드 접근 (거의 항상 이것)",
+        "lang": "java",
+        "code": "@Entity\npublic class Member {\n    @Id                 // 필드에\n    private Long id;\n    private String name;\n\n    public String getName() {\n        return name;\n    }\n}",
+        "md": "리플렉션으로 필드에 직접 접근한다. **getter 가 없어도 되고**, getter 안에 로직이 있어도 안전하다."
+      },
+      "right": {
+        "title": "프로퍼티 접근",
+        "lang": "java",
+        "code": "@Entity\npublic class Member {\n    private Long id;\n\n    @Id                 // getter 에\n    public Long getId() {\n        return id;\n    }\n}",
+        "md": "getter/setter 를 통해 접근한다. **getter 에 가공 로직이 있으면 그 값이 DB 로 나간다** — 사고가 나기 쉽다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "필드 접근을 기본으로 쓴다",
+      "md": "이유는 단순하다. `getName()` 이 `return name.trim().toUpperCase()` 같은 걸 하고 있으면, 프로퍼티 접근에서는 **그 가공된 값이 DB 에 저장된다.** 읽을 때도 마찬가지다.\n\n엔티티에 계산된 getter 를 두는 건 흔한 일이라(`getFullName()`, `getDisplayName()`), 필드 접근이 훨씬 안전하다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"엔티티에 기본 생성자가 왜 필요한가요?\"** → 리플렉션으로 인스턴스를 만들고, 프록시가 상속하며 `super()` 를 호출한다. **두 이유를 다 대면** 외운 게 아니라는 게 드러난다.\n- **\"왜 protected 로 두나요?\"** → JPA 는 쓸 수 있게 하되 애플리케이션 코드가 빈 엔티티를 만드는 것은 막으려고.\n- **\"엔티티 클래스에 final 을 붙이면 안 되는 이유는?\"** → 하이버네이트가 프록시를 만들 때 상속·오버라이드해야 하기 때문이다.\n- **\"`@Entity(name)` 과 `@Table(name)` 의 차이는?\"** → 전자는 JPQL 에서 쓰는 엔티티 이름, 후자는 실제 테이블 이름."
+    }
+  ],
+  "recap": [
+    "`@Entity` 규칙 넷(기본 생성자, final 금지 셋)은 전부 리플렉션과 프록시에서 나온다.",
+    "기본 생성자는 `protected` 가 관례다 — JPA 는 쓰고 애플리케이션 코드는 못 쓰게.",
+    "`@Entity(name)` 은 JPQL 에서 쓰는 이름, `@Table(name)` 은 실제 테이블 이름이다.",
+    "`@Table` 의 `uniqueConstraints` 는 DDL 자동 생성 때만 쓰인다. 런타임 동작에는 영향이 없다.",
+    "접근 방식은 `@Id` 의 위치로 정해진다. 계산된 getter 사고를 피하려면 필드 접근을 쓴다."
+  ],
+  "drills": [
+    {
+      "task": "엔티티에서 기본 생성자를 지우고 실행해 오류 메시지를 확인한다.",
+      "done_when": "`No default constructor for entity` 를 직접 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "엔티티 클래스에 `final` 을 붙이고, 지연 로딩되는 연관관계를 하나 만들어 조회해 본다.",
+      "done_when": "프록시를 만들지 못해 나는 오류(또는 경고)를 확인했다. 9장을 미리 맛본 셈이다.",
+      "hint": "연관관계는 6장에서 배운다. 지금은 오류만 확인해도 충분하다.",
+      "minutes": 20
+    },
+    {
+      "task": "`@Table(name = \"MBR\")` 을 붙이고 나가는 SQL 과 JPQL 을 각각 확인한다.",
+      "done_when": "SQL 은 `MBR` 로, JPQL 은 여전히 `Member` 로 쓴다는 것을 눈으로 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "getter 에 `return name.toUpperCase()` 를 넣고, 필드 접근과 프로퍼티 접근을 각각 써 저장되는 값을 비교한다.",
+      "done_when": "프로퍼티 접근일 때만 대문자가 저장되는 것을 DB 에서 확인했다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "엔티티에 기본 생성자가 필요한 이유 두 가지는?",
+      "a": "① JPA 가 리플렉션으로 빈 인스턴스를 만든 뒤 필드에 값을 채우기 때문 ② 지연 로딩용 프록시가 엔티티를 상속하면서 부모의 기본 생성자를 호출해야 하기 때문."
+    },
+    {
+      "q": "기본 생성자를 `private` 이 아니라 `protected` 로 두는 이유는?",
+      "a": "프록시가 상속해서 `super()` 를 부르려면 최소한 protected 여야 한다. 동시에 애플리케이션 코드가 `new Member()` 로 빈 엔티티를 만드는 것은 막을 수 있다."
+    },
+    {
+      "q": "엔티티 클래스를 `final` 로 만들면 무엇이 안 되는가?",
+      "a": "하이버네이트가 프록시(상속 클래스)를 만들 수 없어 지연 로딩이 동작하지 않는다."
+    },
+    {
+      "q": "`@Table(uniqueConstraints = ...)` 를 붙였는데 DB 에 제약이 안 걸려 있다. 왜인가?",
+      "a": "이 속성은 DDL 을 자동 생성할 때만 쓰인다. 이미 만들어진 테이블에는 아무 영향이 없다."
+    },
+    {
+      "q": "필드 접근을 프로퍼티 접근보다 선호하는 이유는?",
+      "a": "getter 에 가공 로직이 있으면 프로퍼티 접근에서는 그 가공된 값이 DB 에 저장된다. 엔티티에 계산 getter 를 두는 건 흔한 일이라 필드 접근이 안전하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@Entity",
+      "en": "",
+      "what": "이 클래스를 JPA 가 관리하는 엔티티로 지정한다. 붙는 순간 기본 생성자·final 금지 규칙이 따라온다."
+    },
+    {
+      "term": "@Table",
+      "en": "",
+      "what": "매핑할 실제 테이블을 지정한다. `name`·`uniqueConstraints`·`indexes` 는 DDL 생성 때만 쓰인다."
+    },
+    {
+      "term": "리플렉션",
+      "en": "reflection",
+      "what": "런타임에 클래스 정보를 읽어 인스턴스를 만들고 필드에 접근하는 자바 기능. JPA 가 엔티티를 조립하는 방법."
+    },
+    {
+      "term": "프록시",
+      "en": "proxy",
+      "what": "엔티티를 상속해 런타임에 만들어지는 가짜 객체. 지연 로딩의 핵심이고 9장의 주제."
+    },
+    {
+      "term": "필드 접근 / 프로퍼티 접근",
+      "en": "field / property access",
+      "what": "JPA 가 값을 읽고 쓰는 방식. `@Id` 를 필드에 붙이면 전자, getter 에 붙이면 후자."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Entity Class Requirements",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a37",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Entity types",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#entity",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

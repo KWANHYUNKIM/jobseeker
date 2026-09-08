@@ -1,0 +1,235 @@
+{
+  "book": "jpa-basic",
+  "id": "practice-1-basic-mapping",
+  "no": "5.5",
+  "chapter": 5,
+  "title": "실전 예제 1 — 요구사항 분석과 기본 매핑",
+  "summary": "요구사항에서 테이블을 뽑고, 그 테이블을 엔티티로 옮긴다. 아직 연관관계는 FK 컬럼 그대로 둔다.",
+  "minutes": 20,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "요구사항 → 테이블 → 엔티티 순서로 옮기는 과정을 한 번 끝까지 해 본다.",
+    "이 시점의 엔티티가 왜 '객체답지 않은지' 를 코드로 지적할 수 있다.",
+    "`Order` 처럼 예약어인 이름을 어떻게 처리하는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6장부터 10장까지 계속 쓸 도메인을 여기서 만든다. **지금 만드는 엔티티는 일부러 어정쩡하다** — 외래 키를 그냥 `Long` 필드로 들고 있는 상태다.\n\n그래야 6장에서 그걸 객체 참조로 바꿀 때 무엇이 좋아지는지가 대비되어 보인다. 2.1절에서 \"참조를 FK 값으로 바꿔 저장하고 꺼낼 땐 반대로 조립\" 이라고 했던 그 상태를 직접 만들어 보는 것이다."
+    },
+    {
+      "type": "heading",
+      "text": "요구사항"
+    },
+    {
+      "type": "steps",
+      "caption": "쇼핑몰 하나",
+      "items": [
+        {
+          "title": "회원",
+          "md": "회원은 이름과 주소(도시·거리·우편번호)를 가진다."
+        },
+        {
+          "title": "주문",
+          "md": "회원은 여러 번 주문할 수 있다. 주문에는 주문 시각과 상태(주문/취소)가 있다."
+        },
+        {
+          "title": "상품",
+          "md": "상품은 이름·가격·재고를 가진다."
+        },
+        {
+          "title": "주문상품",
+          "md": "한 주문에 여러 상품이 담긴다. 담길 때의 **주문 가격과 수량**을 기록해야 한다 — 나중에 상품 가격이 바뀌어도 과거 주문 금액은 그대로여야 하기 때문이다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "네 번째 항목이 왜 별도 테이블인가",
+      "md": "주문과 상품은 **다대다**다. 한 주문에 여러 상품이 들어가고, 한 상품이 여러 주문에 들어간다.\n\n관계형 DB 는 다대다를 그대로 만들 수 없어서 **연결 테이블**로 푼다. 그런데 여기서는 연결만 하는 게 아니라 \"그때의 가격\"과 \"수량\"을 같이 들고 있어야 한다. 이렇게 **연결 자체에 데이터가 붙으면** 그건 그냥 하나의 개체다.\n\n7.4절에서 `@ManyToMany` 를 왜 실무에서 안 쓰는지 다룰 때 이 예제가 다시 나온다."
+    },
+    {
+      "type": "heading",
+      "text": "테이블 설계"
+    },
+    {
+      "type": "figure",
+      "caption": "네 테이블",
+      "ascii": "   MEMBER                ORDERS                 ORDER_ITEM            ITEM\n   ┌────────────┐        ┌───────────────┐      ┌──────────────┐      ┌──────────┐\n   │ MEMBER_ID  │◀──┐    │ ORDER_ID      │◀──┐  │ ORDER_ITEM_ID│   ┌─▶│ ITEM_ID  │\n   │ NAME       │   └────│ MEMBER_ID (FK)│   └──│ ORDER_ID (FK)│   │  │ NAME     │\n   │ CITY       │        │ ORDER_DATE    │      │ ITEM_ID  (FK)│───┘  │ PRICE    │\n   │ STREET     │        │ STATUS        │      │ ORDER_PRICE  │      │ STOCK    │\n   │ ZIPCODE    │        └───────────────┘      │ COUNT        │      └──────────┘\n   └────────────┘                               └──────────────┘\n\n   회원 1 : N 주문        주문 1 : N 주문상품        주문상품 N : 1 상품\n\n   주문과 상품은 다대다다. RDB 는 다대다를 그대로 못 만들기 때문에\n   ORDER_ITEM 이라는 연결 테이블로 풀었다. (7.4절에서 다시 다룬다)"
+    },
+    {
+      "type": "heading",
+      "text": "엔티티로 옮기기"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "@Entity\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"MEMBER_ID\")\n    private Long id;\n\n    private String name;\n    private String city;\n    private String street;\n    private String zipcode;\n\n    protected Member() {}\n    // getter / setter 생략\n}",
+      "note": "`city`·`street`·`zipcode` 가 나란히 있는 게 눈에 걸린다면 감이 좋은 것이다. **10.2절 임베디드 타입**에서 `Address` 하나로 묶는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Order.java",
+      "code": "@Entity\n@Table(name = \"ORDERS\")          // ← ORDER 는 예약어다\npublic class Order {\n\n    @Id @GeneratedValue\n    @Column(name = \"ORDER_ID\")\n    private Long id;\n\n    @Column(name = \"MEMBER_ID\")\n    private Long memberId;       // ← 참조가 아니라 그냥 값(FK)\n\n    private LocalDateTime orderDate;\n\n    @Enumerated(EnumType.STRING)  // 5.3절 — ORDINAL 절대 금지\n    private OrderStatus status;\n\n    protected Order() {}\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "ORDER 는 SQL 예약어다",
+      "md": "`ORDER BY` 의 그 ORDER 다. 테이블 이름을 `ORDER` 로 만들면 DB 에 따라 DDL 이 실패하거나, 만들어져도 쿼리에서 매번 따옴표로 감싸야 한다.\n\n`@Table(name = \"ORDERS\")` 로 피하는 게 관례다. 비슷한 지뢰로 `USER`(PostgreSQL·Oracle), `GROUP`, `KEY` 등이 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderItem.java",
+      "code": "@Entity\npublic class OrderItem {\n\n    @Id @GeneratedValue\n    @Column(name = \"ORDER_ITEM_ID\")\n    private Long id;\n\n    @Column(name = \"ORDER_ID\")\n    private Long orderId;        // ← FK 값\n\n    @Column(name = \"ITEM_ID\")\n    private Long itemId;         // ← FK 값\n\n    private int orderPrice;      // 주문 당시의 가격\n    private int count;\n\n    protected OrderItem() {}\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Item.java",
+      "code": "@Entity\npublic class Item {\n\n    @Id @GeneratedValue\n    @Column(name = \"ITEM_ID\")\n    private Long id;\n\n    private String name;\n    private int price;\n    private int stockQuantity;\n\n    protected Item() {}\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderStatus.java",
+      "code": "public enum OrderStatus {\n    ORDER, CANCEL\n}"
+    },
+    {
+      "type": "heading",
+      "text": "돌려 보면 잘 된다. 그런데."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "주문한 회원의 이름을 알고 싶다",
+      "code": "Order order = em.find(Order.class, orderId);\n\n// order.getMember().getName()  ← 이렇게 하고 싶은데\n\nLong memberId = order.getMemberId();          // FK 값을 꺼내서\nMember member = em.find(Member.class, memberId);  // 또 조회하고\nString name = member.getName();                // 그제서야 이름",
+      "note": "코드가 세 줄인 게 문제가 아니다. **`Order` 가 `Member` 를 가지고 있지 않다**는 것이 문제다. 주문 객체 혼자로는 아무것도 못 하고 항상 `EntityManager` 가 옆에 있어야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이게 2.1절의 두 번째 불일치다",
+      "md": "2.1절에서 이렇게 썼다.\n\n> 객체답게 짜면 변환 코드가 늘고, 변환 코드를 줄이면 객체가 아니게 된다.\n\n지금 우리는 **후자를 골랐다.** 테이블 구조를 그대로 클래스로 옮겼더니, `Order` 는 객체가 아니라 **행 하나를 담은 구조체**가 됐다.\n\n연관관계 매핑이 없는 JPA 는 사실 편한 JDBC 에 지나지 않는다. 6장이 이걸 고친다:\n\n```java\n@ManyToOne\n@JoinColumn(name = \"MEMBER_ID\")\nprivate Member member;   // Long memberId 대신\n\n// 그러면\norder.getMember().getName()\n```"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "지금 남겨 둘 질문 두 개",
+      "md": "6장을 읽으면서 답을 찾으면 된다.\n\n1. `Order` 가 `Member` 를 들고 있으면, **`Member` 도 `List<Order>` 를 들고 있어야 하나?** 테이블에는 FK 가 한 쪽에만 있는데.\n2. 양쪽 다 들고 있다면, **주문의 회원을 바꿀 때 어느 쪽을 고쳐야 DB 에 반영되나?**\n\n두 번째 질문의 답이 '연관관계의 주인' 이고, 6장에서 가장 헷갈리는 개념이다."
+    },
+    {
+      "type": "heading",
+      "text": "확인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "네 엔티티가 다 매핑됐는지",
+      "code": "// hbm2ddl.auto = create 로 두고 실행하면\n// 콘솔에 CREATE TABLE 네 개가 찍힌다.\n\nEntityManagerFactory emf = Persistence.createEntityManagerFactory(\"hello\");\nemf.close();"
+    },
+    {
+      "type": "sql",
+      "caption": "나가야 하는 DDL",
+      "sql": "CREATE TABLE MEMBER     (MEMBER_ID BIGINT NOT NULL, CITY VARCHAR(255), ...)\nCREATE TABLE ORDERS     (ORDER_ID BIGINT NOT NULL, MEMBER_ID BIGINT, ...)\nCREATE TABLE ORDER_ITEM (ORDER_ITEM_ID BIGINT NOT NULL, ORDER_ID BIGINT, ITEM_ID BIGINT, ...)\nCREATE TABLE ITEM       (ITEM_ID BIGINT NOT NULL, NAME VARCHAR(255), ...)",
+      "note": "**외래 키 제약(`FOREIGN KEY`)이 안 걸린 것**을 눈여겨본다. `Long memberId` 는 JPA 가 보기엔 그냥 숫자 컬럼이라 관계를 모른다. 6장에서 `@JoinColumn` 을 붙이면 그때 FK 제약도 같이 생긴다."
+    }
+  ],
+  "recap": [
+    "요구사항 → 테이블 → 엔티티 순서로 옮겼다. 네 테이블(MEMBER·ORDERS·ORDER_ITEM·ITEM).",
+    "주문–상품의 다대다는 ORDER_ITEM 으로 풀었다. 연결에 데이터(가격·수량)가 붙으면 그건 개체다.",
+    "`ORDER` 는 SQL 예약어라 `@Table(name=\"ORDERS\")` 로 피한다.",
+    "지금 엔티티는 FK 를 `Long` 필드로 들고 있다 — **테이블을 그대로 옮긴 상태**이고, 객체가 아니라 구조체다.",
+    "그래서 `order.getMember().getName()` 이 안 되고 매번 `EntityManager` 가 필요하다. 6장이 이걸 고친다.",
+    "FK 를 값으로 두면 DDL 에 외래 키 제약도 안 생긴다. JPA 가 관계를 모르기 때문이다."
+  ],
+  "drills": [
+    {
+      "task": "네 엔티티를 만들고 `hbm2ddl.auto=create` 로 실행해 CREATE TABLE 네 개가 나오는지 확인한다.",
+      "done_when": "H2 콘솔에서 네 테이블을 눈으로 봤고, 외래 키 제약이 없다는 것도 확인했다.",
+      "minutes": 30
+    },
+    {
+      "task": "`@Table(name=\"ORDERS\")` 를 지우고 실행해 본다.",
+      "done_when": "DDL 이 실패하거나 이상하게 만들어지는 것을 확인했다. 예약어 지뢰를 한 번 밟아 본 셈이다.",
+      "minutes": 10
+    },
+    {
+      "task": "회원 1명 → 주문 1건 → 주문상품 2건 → 상품 2개를 저장하는 코드를 쓴다.",
+      "done_when": "네 테이블에 데이터가 다 들어갔고, FK 값이 서로 맞게 채워졌다.",
+      "hint": "FK 를 직접 넣어야 한다는 것 자체가 이 실습의 요점이다.",
+      "minutes": 35
+    },
+    {
+      "task": "주문 한 건을 조회해 '주문한 회원의 이름' 과 '주문한 상품들의 이름' 을 출력한다.",
+      "done_when": "`em.find()` 를 몇 번 불러야 했는지 세었다. 6장을 읽고 나서 이 코드를 다시 짜 보면 차이가 보인다.",
+      "minutes": 25
+    },
+    {
+      "task": "`@Enumerated` 를 빼고(=ORDINAL) 주문을 저장한 뒤 DB 의 STATUS 컬럼을 본다.",
+      "done_when": "숫자로 저장되는 것을 확인했다. 5.3절의 그 함정이다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "주문상품(ORDER_ITEM)을 왜 별도 테이블로 두는가?",
+      "a": "주문과 상품이 다대다인데 RDB 는 다대다를 직접 만들 수 없어 연결 테이블이 필요하다. 게다가 '주문 당시 가격' 과 '수량' 이라는 데이터가 연결 자체에 붙으므로, 단순 연결이 아니라 하나의 개체다."
+    },
+    {
+      "q": "주문 가격을 상품 테이블에서 그때그때 읽어 오면 안 되는 이유는?",
+      "a": "상품 가격이 바뀌면 과거 주문 금액까지 바뀐다. 주문 시점의 가격은 그 주문에 기록되어야 한다."
+    },
+    {
+      "q": "테이블 이름을 `ORDER` 로 두면 무슨 문제가 있나?",
+      "a": "SQL 예약어(`ORDER BY`)라 DDL 이 실패하거나 쿼리마다 따옴표로 감싸야 한다. `ORDERS` 로 바꾸는 것이 관례다."
+    },
+    {
+      "q": "이 시점의 `Order` 엔티티가 '객체답지 않다' 는 것은 무슨 뜻인가?",
+      "a": "`Member` 를 참조로 들고 있지 않고 `Long memberId` 라는 값만 들고 있다. 그래서 주문 객체 혼자서는 회원을 알 수 없고 항상 EntityManager 로 다시 조회해야 한다 — 객체가 아니라 행을 담은 구조체다."
+    },
+    {
+      "q": "FK 를 `Long` 필드로 두면 DDL 에 외래 키 제약이 생기는가?",
+      "a": "안 생긴다. JPA 가 보기엔 그냥 숫자 컬럼이라 관계를 모른다. 6장에서 `@JoinColumn` 으로 매핑하면 그때 FK 제약도 함께 생성된다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "연결 테이블",
+      "en": "join table",
+      "what": "다대다 관계를 두 개의 일대다로 풀기 위한 중간 테이블. 데이터가 붙으면 독립된 엔티티가 된다."
+    },
+    {
+      "term": "예약어",
+      "en": "reserved word",
+      "what": "SQL 문법이 이미 쓰고 있는 단어. ORDER·USER·GROUP·KEY 등. 테이블·컬럼 이름으로 쓰면 문제가 생긴다."
+    },
+    {
+      "term": "대리키",
+      "en": "surrogate key",
+      "what": "의미 없는 인조 기본 키. 여기서는 네 엔티티 전부 `@GeneratedValue Long id` 를 쓴다(5.4절)."
+    },
+    {
+      "term": "스냅샷 값",
+      "en": "",
+      "what": "주문 시점 가격처럼 '그때의 값' 을 따로 기록하는 것. 원본이 바뀌어도 과거 기록이 변하지 않게 한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 Specification",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

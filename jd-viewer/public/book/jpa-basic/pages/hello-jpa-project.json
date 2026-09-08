@@ -1,0 +1,354 @@
+{
+  "book": "jpa-basic",
+  "id": "hello-jpa-project",
+  "no": "3.1",
+  "chapter": 3,
+  "title": "Hello JPA — 프로젝트 생성",
+  "summary": "persistence.xml 한 줄씩 뜯어보기. dialect 는 무엇이고 왜 필요한가.",
+  "minutes": 14,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "순수 JPA 프로젝트에 필요한 의존성이 무엇이고 각각 왜 필요한지 말할 수 있다.",
+    "persistence.xml 의 모든 줄이 무슨 뜻인지 설명할 수 있다.",
+    "dialect 가 없으면 무엇이 안 되는지, 왜 DB 마다 달라야 하는지 예를 들 수 있다.",
+    "처음 실행할 때 나는 오류 메시지 다섯 개를 보고 원인을 바로 짚을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "스프링 부트를 쓰면 이 절의 내용이 전부 사라진다. 의존성 한 줄(`spring-boot-starter-data-jpa`)과 `application.yml` 몇 줄이면 끝이고, `EntityManager` 는 알아서 주입된다.\n\n그래서 **일부러 손으로 한다.** 부트가 대신 해 주는 일이 무엇인지 한 번 보고 나면, 나중에 `@Transactional` 이 어디서 트랜잭션을 열고 닫는지·영속성 컨텍스트가 언제 만들어지고 사라지는지가 짐작이 아니라 지식이 된다."
+    },
+    {
+      "type": "heading",
+      "text": "파일은 네 개면 된다"
+    },
+    {
+      "type": "figure",
+      "caption": "프로젝트 구조",
+      "ascii": "   my-jpa/\n   ├── build.gradle\n   └── src/\n       └── main/\n           ├── java/\n           │   └── hello/jpa/\n           │       ├── Member.java        <- @Entity\n           │       └── JpaMain.java       <- main()\n           └── resources/\n               └── META-INF/\n                   └── persistence.xml    <- 설정은 여기 하나뿐이다\n\n   경로가 정확히 META-INF/persistence.xml 이어야 한다.\n   한 칸이라도 어긋나면 \"No Persistence provider\" 로 죽는다."
+    },
+    {
+      "type": "heading",
+      "text": "의존성 — 두 줄"
+    },
+    {
+      "type": "code",
+      "lang": "groovy",
+      "file": "build.gradle",
+      "code": "plugins {\n    id 'java'\n}\n\nrepositories { mavenCentral() }\n\ndependencies {\n    // JPA 구현체. jakarta.persistence-api 를 같이 끌고 온다.\n    implementation 'org.hibernate.orm:hibernate-core:6.4.4.Final'\n\n    // 실습용 DB\n    implementation 'com.h2database:h2:2.2.224'\n}\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(17) }\n}",
+      "note": "`jakarta.persistence-api` 를 따로 적지 않는다. `hibernate-core` 가 이미 의존하고 있어서, 따로 적으면 **버전이 어긋날 때만 문제가 생긴다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "2.2절에서 본 층 구조가 여기 그대로 있다",
+      "md": "`hibernate-core` 는 **구현체**, 그 안에 들어 있는 `jakarta.persistence-api` 가 **명세**다. 우리가 코드에서 `import` 하는 것은 후자뿐이다.\n\n실제로 이 책의 예제 어디에도 `org.hibernate.*` 를 import 하는 곳이 없다. 그게 명세와 구현을 나눠 둔 실질적인 이득이다."
+    },
+    {
+      "type": "heading",
+      "text": "persistence.xml — 설정은 이 파일 하나다"
+    },
+    {
+      "type": "code",
+      "lang": "xml",
+      "file": "src/main/resources/META-INF/persistence.xml",
+      "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<persistence version=\"3.0\"\n             xmlns=\"https://jakarta.ee/xml/ns/persistence\">\n\n    <persistence-unit name=\"hello\">\n        <properties>\n            <!-- 필수: DB 접속 -->\n            <property name=\"jakarta.persistence.jdbc.driver\"   value=\"org.h2.Driver\"/>\n            <property name=\"jakarta.persistence.jdbc.url\"      value=\"jdbc:h2:tcp://localhost/~/test\"/>\n            <property name=\"jakarta.persistence.jdbc.user\"     value=\"sa\"/>\n            <property name=\"jakarta.persistence.jdbc.password\" value=\"\"/>\n\n            <!-- 필수: 어떤 DB 의 SQL 로 번역할 것인가 -->\n            <property name=\"hibernate.dialect\" value=\"org.hibernate.dialect.H2Dialect\"/>\n\n            <!-- 이 책에서는 사실상 필수: 나가는 SQL 을 눈으로 본다 -->\n            <property name=\"hibernate.show_sql\"        value=\"true\"/>\n            <property name=\"hibernate.format_sql\"      value=\"true\"/>\n            <property name=\"hibernate.use_sql_comments\" value=\"true\"/>\n\n            <!-- 테이블을 알아서 만들어 준다. 로컬에서만. -->\n            <property name=\"hibernate.hbm2ddl.auto\" value=\"create\"/>\n        </properties>\n    </persistence-unit>\n</persistence>"
+    },
+    {
+      "type": "table",
+      "caption": "줄별로 뜯어보면",
+      "note": "`jakarta.persistence.` 로 시작하는 것은 **표준 속성**이라 구현체를 바꿔도 그대로 동작한다. `hibernate.` 로 시작하는 것은 하이버네이트 전용이다.",
+      "columns": [
+        "줄",
+        "무슨 뜻",
+        "빠뜨리면"
+      ],
+      "rows": [
+        [
+          "`persistence-unit name`",
+          "이 설정 묶음의 이름. 코드의 `createEntityManagerFactory(\"hello\")` 와 **글자 그대로 같아야** 한다",
+          "`No Persistence provider for EntityManager named hello`"
+        ],
+        [
+          "`jdbc.driver` / `url` / `user` / `password`",
+          "JDBC 접속 정보. JDBC 를 직접 쓸 때와 똑같다",
+          "커넥션을 못 만들어 EMF 생성이 실패한다"
+        ],
+        [
+          "`hibernate.dialect`",
+          "**어느 DB 의 SQL 문법으로 번역할 것인가.** 아래에서 자세히",
+          "Hibernate 6 은 접속해서 추측하지만, 못 하면 죽는다"
+        ],
+        [
+          "`show_sql`",
+          "나가는 SQL 을 콘솔에 찍는다",
+          "무엇이 나가는지 영영 모른다"
+        ],
+        [
+          "`format_sql`",
+          "그 SQL 을 줄바꿈해서 읽기 좋게",
+          "한 줄로 길게 나와 읽기 어렵다"
+        ],
+        [
+          "`use_sql_comments`",
+          "그 SQL 이 **어떤 작업에서 나왔는지** 주석으로 같이",
+          "N+1 을 추적할 때 어느 코드가 범인인지 못 찾는다"
+        ],
+        [
+          "`hbm2ddl.auto`",
+          "엔티티를 보고 테이블을 자동 생성. 값은 5.2절에서",
+          "`Table \"MEMBER\" not found`"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "dialect — 이 설정이 하는 일"
+    },
+    {
+      "type": "prose",
+      "md": "JPQL 은 표준이지만 SQL 은 아니다. 같은 JPQL 한 줄이 DB 마다 다른 SQL 로 번역되어야 한다. **그 번역 규칙표가 dialect(방언)다.**"
+    },
+    {
+      "type": "table",
+      "caption": "같은 것을 하는데 문법이 다른 것들",
+      "note": "이 표가 dialect 클래스 안에 들어 있다. 그래서 DB 를 바꾸면 dialect 한 줄만 바꾸면 되고, JPQL 은 손대지 않는다.",
+      "columns": [
+        "무엇",
+        "H2 / MySQL",
+        "Oracle",
+        "SQL Server"
+      ],
+      "rows": [
+        [
+          "**페이징**",
+          "`LIMIT 10 OFFSET 20`",
+          "`ROWNUM` 서브쿼리 두 겹",
+          "`OFFSET .. FETCH NEXT`"
+        ],
+        [
+          "**문자열 이어붙이기**",
+          "`CONCAT(a, b)`",
+          "`a || b`",
+          "`a + b`"
+        ],
+        [
+          "**가변 문자 타입**",
+          "`VARCHAR`",
+          "`VARCHAR2`",
+          "`NVARCHAR`"
+        ],
+        [
+          "**자동 증가 키**",
+          "`AUTO_INCREMENT`",
+          "시퀀스",
+          "`IDENTITY`"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "2.1절의 약속이 지켜지는 자리",
+      "md": "2.1절에서 \"객체를 컬렉션처럼 다루고 싶다\"고 했다. 그런데 컬렉션에는 페이징 문법 같은 게 없다.\n\ndialect 는 **DB 마다 다른 사정을 한 곳에 몰아넣어**, 애플리케이션 코드에서는 그 차이를 보지 않게 만드는 장치다. 11.4절에서 `setFirstResult()` / `setMaxResults()` 두 줄만 쓰고 나면, 실제로 나가는 SQL 이 DB 마다 완전히 다르게 생겼다는 것을 보게 된다."
+    },
+    {
+      "type": "heading",
+      "text": "H2 는 메모리 말고 파일 모드로 띄운다"
+    },
+    {
+      "type": "compare",
+      "caption": "url 두 가지",
+      "note": "H2 를 설치하고 `h2.sh`(또는 `h2.bat`)로 서버를 띄운 뒤 브라우저 콘솔에 접속한다.",
+      "left": {
+        "title": "메모리 모드",
+        "lang": "text",
+        "bad": true,
+        "code": "jdbc:h2:mem:test",
+        "md": "프로그램이 끝나면 **DB 가 통째로 사라진다.** 테이블을 눈으로 확인할 방법이 없다."
+      },
+      "right": {
+        "title": "파일(서버) 모드",
+        "lang": "text",
+        "code": "jdbc:h2:tcp://localhost/~/test",
+        "md": "H2 콘솔에서 테이블과 행을 **직접 열어 볼 수 있다.** 이 책의 실습은 대부분 \"DB 에 실제로 뭐가 들어갔나\"를 확인하는 것이라 이쪽이어야 한다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "왜 굳이 눈으로 봐야 하나",
+      "md": "4.4절의 `merge()` 함정을 떠올려 보자. 전화번호가 null 로 덮어써지는 사고는 **DB 를 열어 보기 전까지 아무 신호도 없다.**\n\nJPA 를 배우는 동안 \"코드가 시키는 것\"과 \"DB 에 실제로 남은 것\"을 계속 대조해야 하는데, 메모리 모드면 그 대조를 아예 할 수 없다."
+    },
+    {
+      "type": "heading",
+      "text": "처음 돌릴 때 나는 오류 다섯 개"
+    },
+    {
+      "type": "table",
+      "caption": "메시지 → 원인 → 고치는 법",
+      "note": "다섯 개 중 넷이 **설정 파일의 위치나 오타**다. 스택 트레이스 맨 아래(`Caused by:`)를 먼저 보는 습관을 들이면 대부분 30초 안에 끝난다.",
+      "columns": [
+        "오류 메시지",
+        "원인",
+        "고치는 법"
+      ],
+      "rows": [
+        [
+          "`No Persistence provider for EntityManager named hello`",
+          "persistence.xml 을 못 찾았거나 unit 이름이 다르다",
+          "경로가 정확히 `resources/META-INF/persistence.xml` 인지, `<persistence-unit name>` 이 코드와 같은지"
+        ],
+        [
+          "`Unable to build EntityManagerFactory`",
+          "덮개 예외다. 진짜 원인은 그 아래 `Caused by:`",
+          "**맨 아래 Caused by 를 먼저 읽는다.** 대개 아래 네 개 중 하나"
+        ],
+        [
+          "`Connection refused` / `Database ... not found`",
+          "H2 서버가 안 떠 있다",
+          "`h2.sh` 로 서버를 먼저 띄운다. `~/test.mv.db` 파일이 있는지도 확인"
+        ],
+        [
+          "`Table \"MEMBER\" not found`",
+          "테이블이 없다",
+          "`hbm2ddl.auto` 를 `create` 로. 5.2절"
+        ],
+        [
+          "`No default constructor for entity`",
+          "엔티티에 기본 생성자가 없다",
+          "`protected Member() {}` 를 넣는다. 이유는 5.1절"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "그리고 코드 쪽"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "JpaMain.java",
+      "caption": "설정과 코드가 만나는 유일한 지점",
+      "code": "// \"hello\" 가 persistence.xml 의 <persistence-unit name=\"hello\"> 와 같아야 한다\nEntityManagerFactory emf = Persistence.createEntityManagerFactory(\"hello\");",
+      "note": "설정 파일과 코드를 잇는 문자열이 이것 하나다. 오타가 나면 위 표의 첫 번째 오류가 뜬다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "스프링 부트로 넘어가면",
+      "md": "`persistence.xml` 은 없어지고 `application.yml` 이 그 자리를 대신한다. 이름만 바뀔 뿐 들어가는 값은 거의 같다.\n\n```yaml\nspring:\n  datasource:\n    url: jdbc:h2:tcp://localhost/~/test\n    username: sa\n  jpa:\n    hibernate.ddl-auto: create\n    properties.hibernate.format_sql: true\n    show-sql: true\n```\n\n부트가 추가로 해 주는 것은 **커넥션 풀(HikariCP), 트랜잭션 매니저, `EntityManager` 주입** 세 가지다. 설정 자체가 사라지는 게 아니라 기본값이 채워지는 것이다."
+    }
+  ],
+  "recap": [
+    "의존성은 `hibernate-core` 와 DB 드라이버 두 줄. `jakarta.persistence-api` 는 따로 적지 않는다.",
+    "설정은 `src/main/resources/META-INF/persistence.xml` 하나다. 경로가 한 칸만 어긋나도 못 찾는다.",
+    "`persistence-unit name` 은 `createEntityManagerFactory(\"...\")` 와 글자 그대로 같아야 한다.",
+    "dialect 는 'DB 마다 다른 SQL 문법의 번역표' 다. DB 를 바꿔도 JPQL 은 그대로 두게 만드는 장치.",
+    "H2 는 파일(서버) 모드로. 이 책의 실습은 DB 를 눈으로 확인하는 것이 절반이다.",
+    "`show_sql`·`format_sql`·`use_sql_comments` 셋은 이 책에서 사실상 필수 설정이다."
+  ],
+  "drills": [
+    {
+      "task": "H2 서버를 띄우고 persistence.xml 을 그대로 만들어 `Persistence.createEntityManagerFactory(\"hello\")` 만 실행해 본다.",
+      "done_when": "예외 없이 EMF 가 만들어지고, 콘솔에 하이버네이트 버전이 찍혔다.",
+      "minutes": 25
+    },
+    {
+      "task": "`<persistence-unit name>` 을 일부러 `hello2` 로 바꿔 실행하고 오류 메시지를 확인한다.",
+      "done_when": "`No Persistence provider ...` 를 직접 봤고, 원인을 30초 안에 짚을 수 있다.",
+      "hint": "일부러 고장 내 보는 것이 이 실습의 목적이다. 나중에 진짜로 났을 때 당황하지 않는다.",
+      "minutes": 10
+    },
+    {
+      "task": "persistence.xml 을 `resources/persistence.xml`(META-INF 없이)로 옮기고 실행한다.",
+      "done_when": "같은 오류가 나는 것을 확인했다. 경로가 규약이라는 것을 몸으로 알게 된다.",
+      "minutes": 10
+    },
+    {
+      "task": "url 을 `jdbc:h2:mem:test` 로 바꿔 실행한 뒤, H2 콘솔에서 MEMBER 테이블을 찾아본다.",
+      "done_when": "콘솔에서 테이블이 안 보인다는 것을 확인했고, 왜 이 책이 파일 모드를 쓰는지 알게 됐다.",
+      "minutes": 15
+    },
+    {
+      "task": "`hibernate.dialect` 줄을 지우고 실행해 본다.",
+      "done_when": "동작하는지 안 하는지 확인했다. (Hibernate 6 은 접속해서 추측하기도 한다 — 되더라도 명시하는 것이 왜 나은지 생각해 본다.)",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`build.gradle` 에 `jakarta.persistence-api` 를 따로 적을 필요가 없는 이유는?",
+      "a": "`hibernate-core` 가 이미 의존하고 있어서 함께 딸려 온다. 따로 적으면 버전이 어긋날 때만 문제가 생긴다."
+    },
+    {
+      "q": "persistence.xml 은 어디에 두어야 하는가?",
+      "a": "`src/main/resources/META-INF/persistence.xml`. 규약으로 정해진 경로라 한 칸이라도 다르면 못 찾고 `No Persistence provider` 가 난다."
+    },
+    {
+      "q": "dialect 는 무엇을 하는 설정인가?",
+      "a": "같은 JPQL 을 DB 별로 다른 SQL 로 번역하는 규칙표다. 페이징 구문·문자열 함수·타입 이름·키 생성 방식처럼 DB 마다 다른 부분을 여기서 흡수한다."
+    },
+    {
+      "q": "`Unable to build EntityManagerFactory` 를 봤다. 무엇을 먼저 해야 하나?",
+      "a": "스택 트레이스 맨 아래의 `Caused by:` 를 읽는다. 이 메시지 자체는 덮개일 뿐이고 진짜 원인은 그 아래에 있다."
+    },
+    {
+      "q": "실습 DB 를 메모리 모드로 쓰면 안 되는 이유는?",
+      "a": "프로그램이 끝나면 DB 가 사라져 H2 콘솔에서 테이블을 확인할 수 없다. 이 책은 '코드가 시킨 것' 과 'DB 에 실제로 남은 것' 을 계속 대조하는 방식이라 확인이 안 되면 실습의 절반이 사라진다."
+    },
+    {
+      "q": "`hibernate.use_sql_comments` 는 왜 켜는가?",
+      "a": "나간 SQL 이 어떤 작업(어떤 JPQL·어떤 엔티티 연산)에서 비롯됐는지 주석으로 같이 찍어 준다. N+1 처럼 '누가 이 쿼리를 냈나' 를 추적할 때 결정적이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "영속성 유닛",
+      "en": "persistence unit",
+      "what": "persistence.xml 안의 설정 묶음 하나. 이름으로 식별하고, 그 이름으로 EntityManagerFactory 를 만든다."
+    },
+    {
+      "term": "dialect",
+      "en": "방언",
+      "what": "DB 별 SQL 문법 차이를 흡수하는 번역 규칙 모음. `org.hibernate.dialect.*` 클래스."
+    },
+    {
+      "term": "hbm2ddl.auto",
+      "en": "",
+      "what": "엔티티 매핑 정보로 DDL 을 자동 생성·실행하는 옵션. 값과 위험은 5.2절."
+    },
+    {
+      "term": "H2",
+      "en": "",
+      "what": "자바로 만든 가벼운 관계형 DB. 실습용으로 많이 쓴다. 메모리 모드와 파일(서버) 모드가 있다."
+    },
+    {
+      "term": "표준 속성 / 구현체 속성",
+      "en": "",
+      "what": "`jakarta.persistence.` 로 시작하면 구현체를 바꿔도 통하는 표준, `hibernate.` 로 시작하면 하이버네이트 전용이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Persistence Unit Packaging",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a11049",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Configuration properties",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#configurations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "H2 Database — Cheat Sheet",
+      "url": "https://www.h2database.com/html/cheatSheet.html",
+      "publisher": "H2"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "book": "jpa-basic",
+  "id": "hello-jpa-app",
+  "no": "3.2",
+  "chapter": 3,
+  "title": "Hello JPA — 애플리케이션 개발",
+  "summary": "저장·조회·수정·삭제를 순수 JPA 로. 왜 EntityManager 는 스레드마다 새로 만들어야 하는가.",
+  "minutes": 18,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "EMF · EM · 트랜잭션의 수명 주기를 그림으로 그릴 수 있다.",
+    "저장·조회·수정·삭제 네 가지를 코드와 나가는 SQL 로 짝지어 말할 수 있다.",
+    "`em.find()` 로 할 수 없는 조회가 무엇이고 왜 JPQL 이 필요한지 설명할 수 있다.",
+    "트랜잭션 없이 `persist()` 를 부르면 무슨 일이 생기는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "설정이 끝났으니 이제 코드다. 이 절의 코드는 전부 4장에서 다시 나온다 — 여기서는 **손이 먼저 익게** 하는 것이 목적이고, 왜 그렇게 동작하는지는 4장에서 판다."
+    },
+    {
+      "type": "heading",
+      "text": "뼈대 — 이 모양은 안 바뀐다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "JpaMain.java",
+      "code": "public class JpaMain {\n    public static void main(String[] args) {\n\n        EntityManagerFactory emf = Persistence.createEntityManagerFactory(\"hello\");\n        EntityManager em = emf.createEntityManager();\n        EntityTransaction tx = em.getTransaction();\n\n        tx.begin();\n        try {\n            // ── 여기가 작업 ──\n\n            tx.commit();\n        } catch (Exception e) {\n            tx.rollback();\n            e.printStackTrace();\n        } finally {\n            em.close();      // 반드시\n        }\n\n        emf.close();\n    }\n}",
+      "note": "`try` 블록 안에 `tx.commit()` 이 있는 것이 어색해 보일 수 있다. 커밋 자체가 실패할 수 있어서다 — 커밋 시점에 플러시가 돌면서 제약 위반이 터지면 그것도 잡아 롤백해야 한다."
+    },
+    {
+      "type": "figure",
+      "caption": "누가 언제 만들어지고 사라지나",
+      "ascii": "   application start\n        │\n        ▼\n   EntityManagerFactory emf = Persistence.createEntityManagerFactory(\"hello\")\n        │                     <- 앱당 1개. 만드는 데 수 초. 스레드가 공유해도 안전하다.\n        │\n        │   ===== 여기부터 작업(요청) 하나마다 반복 =====\n        │\n        ▼\n   EntityManager em = emf.createEntityManager()\n        │                     <- 여기서 영속성 컨텍스트가 생긴다. 공유하면 안 된다.\n        ▼\n   tx.begin()\n        │\n        ▼\n   persist / find / setter / remove ...\n        │                     <- SQL 은 아직 안 나간다. 쓰기 지연 저장소에 쌓인다.\n        ▼\n   tx.commit()  ->  flush  ->  send SQL  ->  db commit\n        │\n        ▼\n   em.close()\n        │                     <- 영속성 컨텍스트가 사라진다. 커넥션이 풀로 돌아간다.\n        │\n        │   ===== 여기까지가 작업 하나 =====\n        │\n        ▼\n   emf.close()   application shutdown"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "닫지 않으면 커넥션이 샌다",
+      "md": "`em.close()` 를 `finally` 에 두는 이유는 **커넥션 반납** 때문이다. `EntityManager` 는 내부적으로 DB 커넥션을 잡고 있고, 닫지 않으면 풀로 돌아가지 않는다. 예외가 났을 때 특히 그렇다.\n\n웹 애플리케이션에서 이게 몇 백 번 반복되면 커넥션 풀이 말라 **모든 요청이 멈춘다.** 스프링을 쓰면 프레임워크가 대신 닫아 주는데, 그 사실을 아는 것과 모르는 것은 장애 대응에서 갈린다."
+    },
+    {
+      "type": "heading",
+      "text": "엔티티부터"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "import jakarta.persistence.*;\n\n@Entity\npublic class Member {\n\n    @Id\n    private Long id;\n\n    private String name;\n\n    protected Member() {}          // JPA 가 쓴다 (5.1절)\n\n    public Member(Long id, String name) {\n        this.id = id;\n        this.name = name;\n    }\n\n    public Long getId() { return id; }\n    public String getName() { return name; }\n    public void setName(String name) { this.name = name; }\n}",
+      "note": "`@Id` 만 있고 `@GeneratedValue` 가 없다 — 키를 직접 넣는 방식이다. 자동 생성은 5.4절에서."
+    },
+    {
+      "type": "heading",
+      "text": "저장"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = new Member(1L, \"김관현\");\nem.persist(member);"
+    },
+    {
+      "type": "sql",
+      "sql": "INSERT INTO MEMBER (NAME, ID) VALUES (?, ?)",
+      "note": "**커밋 시점에** 나간다. `persist()` 를 부른 줄에서 나가지 않는다 — 4.1절의 그 이야기다."
+    },
+    {
+      "type": "heading",
+      "text": "조회 — 기본 키로"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member found = em.find(Member.class, 1L);\nSystem.out.println(found.getName());   // 김관현"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.ID, M.NAME FROM MEMBER M WHERE M.ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "수정 — 저장 메서드가 없다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member found = em.find(Member.class, 1L);\nfound.setName(\"김관현2\");\n\n// 끝. em.update(...) 같은 것은 없다.",
+      "note": "이게 이 책에서 가장 처음 놀라는 지점이다. 어떻게 아는지는 4.2절 변경 감지."
+    },
+    {
+      "type": "sql",
+      "sql": "UPDATE MEMBER SET NAME = ? WHERE ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "삭제"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member found = em.find(Member.class, 1L);\nem.remove(found);"
+    },
+    {
+      "type": "sql",
+      "sql": "DELETE FROM MEMBER WHERE ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "그런데 — 나이가 18살 이상인 회원을 찾으려면?"
+    },
+    {
+      "type": "prose",
+      "md": "`em.find()` 로는 할 수 없다. **기본 키 하나로 한 건**을 가져오는 메서드이기 때문이다.\n\n조건으로 여러 건을 찾으려면 결국 쿼리를 써야 한다. 그런데 SQL 을 쓰면 2.1절로 되돌아간다 — 테이블 이름과 컬럼 이름을 문자열에 다시 적게 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "JPQL — 이 책에서 처음 등장",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m WHERE m.name = :name\", Member.class)\n    .setParameter(\"name\", \"김관현\")\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "caption": "번역된 SQL",
+      "sql": "SELECT M.ID, M.NAME\n  FROM MEMBER M\n WHERE M.NAME = ?"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "JPQL 은 테이블이 아니라 엔티티를 대상으로 한다",
+      "md": "위 JPQL 을 다시 보자.\n\n```\nSELECT m FROM Member m WHERE m.name = :name\n```\n\n- `Member` 는 **테이블 이름이 아니라 클래스 이름**이다. 테이블은 `MEMBER` 지만 그건 몰라도 된다.\n- `m.name` 은 **컬럼 이름이 아니라 필드 이름**이다. 컬럼이 `USER_NAME` 이어도 JPQL 은 `m.name` 이다.\n- `SELECT m` 은 컬럼 목록이 아니라 **객체 자체**를 고르는 것이다.\n\n그래서 필드 이름을 바꾸면 IDE 가 JPQL 도 같이 잡아 준다(문자열이라 완벽하진 않다 — 그래서 QueryDSL 이 나온다). **DB 를 바꿔도 JPQL 은 안 바뀐다** — dialect 가 번역을 맡기 때문이다.\n\nJPQL 전체 문법은 11장과 12장이 다룬다. 지금은 \"조건 검색은 JPQL 로 한다\" 정도면 충분하다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "JPQL 에는 함정이 하나 있다 (미리 알아 두면 좋은 것)",
+      "md": "`em.find()` 는 1차 캐시를 먼저 보지만, **JPQL 은 항상 DB 로 내려간다.** 그래서 방금 `persist()` 한 것을 JPQL 로 찾으려 하면 자동 플러시가 먼저 도는데, 이 동작을 모르면 4장에서 한 번 헤맨다.\n\n자세한 건 4.3절."
+    },
+    {
+      "type": "heading",
+      "text": "트랜잭션이 없으면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "tx.begin() 을 빼면",
+      "code": "EntityManager em = emf.createEntityManager();\n// tx.begin() 없음\n\nem.persist(new Member(1L, \"김관현\"));",
+      "note": "`jakarta.persistence.TransactionRequiredException` 이 난다. **JPA 의 모든 데이터 변경은 트랜잭션 안에서 일어나야 한다** — 이건 권장이 아니라 명세가 정한 규칙이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "조회는 트랜잭션 없이도 되지만",
+      "md": "`em.find()` 나 JPQL 조회는 트랜잭션 없이도 동작한다. 다만 그러면 변경 감지가 걸릴 자리가 없어서 수정이 반영되지 않고, 지연 로딩도 안전하지 않다.\n\n스프링에서 조회 전용 메서드에도 `@Transactional(readOnly = true)` 를 붙이는 이유가 이것이다 — 트랜잭션은 열되 변경 감지를 위한 스냅샷은 뜨지 않아 메모리와 시간을 아낀다."
+    },
+    {
+      "type": "heading",
+      "text": "EntityManager 를 왜 매번 새로 만드나"
+    },
+    {
+      "type": "prose",
+      "md": "4.1절에서 이미 답이 나왔지만, 코드를 쳐 본 지금 다시 보면 다르게 읽힌다."
+    },
+    {
+      "type": "compare",
+      "caption": "두 객체의 성격이 정반대다",
+      "left": {
+        "title": "EntityManagerFactory",
+        "lang": "java",
+        "code": "// 앱 시작할 때 딱 한 번\nemf = Persistence\n    .createEntityManagerFactory(\"hello\");",
+        "md": "만드는 데 **수 초**가 걸린다(엔티티 스캔, 메타데이터 구성, 커넥션 풀). 내부 상태가 불변이라 **여러 스레드가 같이 써도 안전하다.**"
+      },
+      "right": {
+        "title": "EntityManager",
+        "lang": "java",
+        "code": "// 요청/작업 하나마다\nem = emf.createEntityManager();\ntry { ... } finally { em.close(); }",
+        "md": "만드는 비용은 거의 없다. 대신 **이 작업만의 상태**(1차 캐시·스냅샷·쓰기 지연 큐)를 들고 있어서 **공유하면 안 된다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "공유하면 무슨 일이 생기나",
+      "md": "요청 A 와 요청 B 가 하나의 `EntityManager` 를 나눠 쓰면, A 가 조회해 둔 회원을 B 가 수정하고 그게 A 의 커밋 때 같이 나간다. 반대도 마찬가지다.\n\n**재현이 안 되고 로그도 안 남는다.** 부하가 있을 때만 가끔 데이터가 이상해지는, 가장 잡기 어려운 종류의 버그다.\n\n스프링에서 `@PersistenceContext` 로 주입받은 `EntityManager` 를 필드에 둬도 안전한 것은, 그게 진짜 매니저가 아니라 **현재 스레드의 것을 찾아 주는 프록시**이기 때문이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"EntityManagerFactory 와 EntityManager 의 차이는?\"** → 팩토리는 앱당 하나·생성 비용 큼·스레드 안전. 매니저는 요청당 하나·비용 거의 없음·**공유 금지**. \"내부에 요청별 상태를 들고 있어서\"까지 말한다.\n- **\"JPA 에서 데이터 변경은 왜 트랜잭션 안에서 해야 하나요?\"** → 명세가 요구한다. 쓰기 지연·변경 감지가 전부 커밋 시점을 기준으로 동작하기 때문에 트랜잭션 경계가 곧 영속성 컨텍스트의 경계다.\n- **\"em.find() 와 JPQL 의 차이는?\"** → find 는 기본 키로 한 건, 1차 캐시를 먼저 본다. JPQL 은 조건 검색이 가능하고 항상 DB 로 내려간다.\n- **\"JPQL 은 SQL 과 뭐가 다른가요?\"** → 대상이 테이블이 아니라 엔티티다. 클래스 이름과 필드 이름을 쓰고, DB 별 SQL 로는 dialect 가 번역한다."
+    }
+  ],
+  "recap": [
+    "EMF 는 앱당 하나, EM 은 작업당 하나, 변경은 반드시 트랜잭션 안에서. 이 삼각형이 순수 JPA 코드의 뼈대다.",
+    "`em.close()` 는 `finally` 에 둔다. 안 닫으면 커넥션이 새고, 쌓이면 서비스가 멈춘다.",
+    "저장·조회·삭제는 메서드가 있고 **수정은 없다.** 변경 감지가 대신한다(4.2절).",
+    "조건 검색은 `em.find()` 로 안 된다. JPQL 을 쓴다 — 대상이 테이블이 아니라 엔티티다.",
+    "JPQL 은 클래스 이름과 필드 이름으로 쓴다. 테이블·컬럼 이름은 몰라도 되고, DB 차이는 dialect 가 흡수한다.",
+    "EntityManager 를 스레드 간에 공유하면 재현 안 되는 데이터 오염이 생긴다."
+  ],
+  "drills": [
+    {
+      "task": "위 뼈대 코드로 회원 하나를 저장하고, H2 콘솔에서 MEMBER 테이블을 직접 열어 행이 들어갔는지 확인한다.",
+      "done_when": "콘솔에서 행을 눈으로 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`tx.commit()` 을 지우고(또는 `tx.rollback()` 으로 바꾸고) 같은 코드를 돌린다.",
+      "done_when": "INSERT 가 나가지 않거나 롤백되어 DB 에 아무것도 안 남는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`tx.begin()` 을 지우고 `persist()` 를 호출해 본다.",
+      "done_when": "`TransactionRequiredException` 을 직접 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "회원 세 명을 저장한 뒤 JPQL 로 전체 조회하고, `setFirstResult(1).setMaxResults(2)` 를 붙여 다시 조회한다.",
+      "done_when": "나가는 SQL 에 `LIMIT ... OFFSET ...` 이 붙는 것을 확인했다. dialect 가 하는 일을 처음으로 눈으로 보는 순간이다.",
+      "hint": "11.4절에서 이 두 줄을 다시 다룬다.",
+      "minutes": 25
+    },
+    {
+      "task": "엔티티의 필드 이름을 `name` 에서 `username` 으로 바꾸고, JPQL 은 그대로 둔 채 실행해 본다.",
+      "done_when": "런타임에 실패하는 것을 확인했다. JPQL 이 문자열이라 컴파일러가 못 잡는다는 것 — QueryDSL 이 왜 거의 항상 따라붙는지의 답이다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`em.close()` 를 `finally` 에 두는 이유는?",
+      "a": "커넥션 반납 때문이다. EntityManager 가 잡고 있던 DB 커넥션이 풀로 돌아가지 않으면 쌓여서 결국 모든 요청이 커넥션을 못 얻고 멈춘다."
+    },
+    {
+      "q": "`em.update()` 가 없는데 수정은 어떻게 하는가?",
+      "a": "영속 상태의 엔티티를 그냥 수정하면 된다. 커밋 시점에 변경 감지가 스냅샷과 비교해 UPDATE 를 자동으로 만든다(4.2절)."
+    },
+    {
+      "q": "나이가 18 이상인 회원을 모두 찾으려면 `em.find()` 로 되는가?",
+      "a": "안 된다. find 는 기본 키 하나로 한 건을 가져오는 메서드다. 조건 검색은 JPQL(또는 QueryDSL·네이티브 SQL)로 한다."
+    },
+    {
+      "q": "JPQL 의 `SELECT m FROM Member m` 에서 `Member` 는 무엇인가?",
+      "a": "테이블 이름이 아니라 **엔티티 클래스 이름**이다. 마찬가지로 `m.name` 은 컬럼이 아니라 필드 이름이다. 테이블·컬럼 이름으로의 번역은 매핑 정보와 dialect 가 한다."
+    },
+    {
+      "q": "트랜잭션 없이 `em.persist()` 를 부르면?",
+      "a": "`TransactionRequiredException` 이 난다. JPA 명세가 데이터 변경을 트랜잭션 안에서만 허용한다."
+    },
+    {
+      "q": "`EntityManager` 를 싱글턴 빈의 필드에 그냥 담아 두면 왜 위험한가?",
+      "a": "내부에 1차 캐시·스냅샷·쓰기 지연 큐 같은 요청별 상태를 들고 있어서 요청끼리 데이터가 섞인다. 재현이 안 되는 종류의 버그다. 스프링의 `@PersistenceContext` 주입은 진짜 매니저가 아니라 현재 스레드의 것을 찾아 주는 프록시라서 안전한 것이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "EntityTransaction",
+      "en": "",
+      "what": "순수 JPA 에서 트랜잭션을 여닫는 객체. `em.getTransaction()` 으로 얻는다. 스프링에서는 `@Transactional` 이 이 자리를 대신한다."
+    },
+    {
+      "term": "JPQL",
+      "en": "Jakarta Persistence Query Language",
+      "what": "엔티티를 대상으로 하는 객체지향 쿼리 언어. 클래스 이름·필드 이름을 쓰고, 실행 시 dialect 를 거쳐 SQL 로 번역된다. 11~12장의 주제."
+    },
+    {
+      "term": "TypedQuery",
+      "en": "",
+      "what": "반환 타입이 정해진 쿼리 객체. `createQuery(jpql, Member.class)` 로 만들면 형변환 없이 `List<Member>` 를 받는다."
+    },
+    {
+      "term": "TransactionRequiredException",
+      "en": "",
+      "what": "트랜잭션 밖에서 데이터 변경을 시도할 때 나는 예외."
+    },
+    {
+      "term": "readOnly 트랜잭션",
+      "en": "",
+      "what": "조회 전용 트랜잭션. 변경 감지를 위한 스냅샷을 뜨지 않아 메모리와 시간을 아낀다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — EntityManager",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/entitymanager",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Bootstrap & Sessions",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#bootstrap",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
