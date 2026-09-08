@@ -1,0 +1,144 @@
+{
+ "book": "spring-mvc-2",
+ "id": "conversion-service",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "ConversionService",
+ "summary": "등록과 사용을 분리한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ConversionService` 로 컨버터를 모아 쓸 수 있다.",
+  "인터페이스가 둘로 나뉜 이유를 안다.",
+  "인터페이스 분리 원칙의 예를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "11.2절에서 컨버터를 만들었는데 **쓰는 쪽이 어느 컨버터를 쓸지 직접 골라야** 한다.\n\n```java\nStringToIpPortConverter converter = new StringToIpPortConverter();\nIpPort ipPort = converter.convert(\"127.0.0.1:8080\");\n```\n\n**컨버터가 늘면 쓰는 쪽이 다 알아야** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "모아서 쓴다",
+   "code": "@Test\nvoid conversionService() {\n    DefaultConversionService conversionService = new DefaultConversionService();\n\n    conversionService.addConverter(new StringToIntegerConverter());\n    conversionService.addConverter(new IntegerToStringConverter());\n    conversionService.addConverter(new StringToIpPortConverter());\n    conversionService.addConverter(new IpPortToStringConverter());\n\n    // 쓰는 쪽은 타입만 말한다\n    assertThat(conversionService.convert(\"10\", Integer.class)).isEqualTo(10);\n    assertThat(conversionService.convert(\"127.0.0.1:8080\", IpPort.class))\n            .isEqualTo(new IpPort(\"127.0.0.1\", 8080));\n}",
+   "note": "**쓰는 쪽이 컨버터 이름을 모른다.** `convert(값, 원하는타입)` 만 부른다.\n\n**어느 컨버터가 도는지는 `ConversionService` 가 정한다** — 제네릭 타입을 보고(11.2절)."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 둘",
+   "ascii": "   ConverterRegistry           ConversionService\n   -----------------           -----------------\n   addConverter(...)           canConvert(...)\n                               convert(...)\n\n   DefaultConversionService implements both\n\n   config      ->  ConverterRegistry     (register)\n   user code   ->  ConversionService     (use)\n\n   등록하는 쪽과 쓰는 쪽이 서로를 모른다",
+   "note": "**등록하는 쪽과 쓰는 쪽이 다른 인터페이스**를 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스 분리 원칙",
+   "md": "**앞 책 3장에서 SOLID 를 훑을 때** 나온 그것이다.\n\n> **ISP — 인터페이스 분리 원칙.** 특정 클라이언트를 위한 인터페이스 여러 개가 범용 하나보다 낫다.\n\n**여기가 교과서 같은 예**다.\n\n| | 무엇을 본다 | 누가 |\n|---|---|---|\n| `ConverterRegistry` | `addConverter` | **설정 코드** |\n| `ConversionService` | `convert` | **쓰는 코드** |\n\n**쓰는 쪽은 등록 메서드를 볼 필요가 없다.** 보이면 **실수로 부를 수 있고**, 무엇보다 **의존이 는다.**\n\n**등록이 끝난 뒤에 컨버터가 추가되면** 동작이 바뀐다. 쓰는 쪽에서 그럴 수 있으면 **언제 무엇이 등록됐는지 추적이 안 된다.**\n\n**둘을 나누면 그런 일이 구조적으로 막힌다.**\n\n> **8.6절에서 설정과 로직을 가른 것**과 같은 발상이다. 거기는 클래스 단위였고 여기는 인터페이스 단위다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "DefaultConversionService 에는 기본이 들어 있다",
+   "md": "```java\nDefaultConversionService service = new DefaultConversionService();\nservice.convert(\"10\", Integer.class);   // 등록 안 해도 된다\n```\n\n**생성자에서 기본 컨버터들을 등록**한다 — 11.2절에서 본 그 목록이다.\n\n**빈 것으로 시작하려면**\n\n```java\nGenericConversionService service = new GenericConversionService();\n```\n\n**부모 클래스**다. 기본 컨버터가 없다.\n\n**실무에서는 `DefaultConversionService`** 를 쓰고, 스프링 MVC 는 **`WebConversionService`** 라는 것을 쓴다 — 11.4절에서 본다.\n\n> **`canConvert` 를 먼저 부를 수 있다.**\n>\n> ```java\n> if (service.canConvert(String.class, IpPort.class)) { ... }\n> ```\n>\n> **변환기가 없으면 `ConverterNotFoundException`** 이 나니, 확실하지 않으면 물어본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "우선순위가 있다",
+   "md": "**같은 변환을 하는 컨버터가 둘이면** 어느 것이 이길까.\n\n```java\nservice.addConverter(new StringToIpPortConverter());\nservice.addConverter(new AnotherStringToIpPortConverter());\n```\n\n**나중에 등록한 것이 이긴다** — 같은 타입 쌍이면 덮어쓴다.\n\n**타입이 다르면 더 구체적인 것**이 이긴다.\n\n```\nString -> Enum          ConverterFactory\nString -> ItemType      Converter          <- 이것이 이긴다\n```\n\n**5.6절의 오류 코드 단계, 9.7절의 오류 페이지와 같은 규칙**이다 — 구체적인 것부터.\n\n**이 책에서 몇 번째인지** 세어 보면 네 번째다. **스프링이 후보를 고르는 방식이 대체로 이 모양**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 아직 테스트만",
+   "sql": "# ConversionService 로 모았지만 웹에는 아직 안 붙었다\nGET /ip-port?ipPort=127.0.0.1:8080 HTTP/1.1\n\nHTTP/1.1 400 \n# 여전히 ConversionFailedException\n\n# 테스트\n@Test\nvoid conversionService() {\n    DefaultConversionService service = new DefaultConversionService();\n    service.addConverter(new StringToIpPortConverter());\n\n    IpPort result = service.convert(\"127.0.0.1:8080\", IpPort.class);\n    // IpPort(ip=127.0.0.1, port=8080)\n\n    String s = service.convert(new IpPort(\"127.0.0.1\", 8080), String.class);\n    // \"127.0.0.1:8080\"  <- 이건 아직 안 된다\n}\n\n# ConverterNotFoundException:\n# No converter found capable of converting from type [IpPort] to type [String]\n\n# 반대 방향 컨버터도 등록해야 한다",
+   "note": "**웹에는 아직 안 붙었다.** 11.4절이 그것을 한다.\n\n**아래 테스트가 이 절의 요점**이다. `String` → `IpPort` 는 되는데 **반대는 `ConverterNotFoundException`** 이다.\n\n11.2절에서 **\"방향마다 하나씩\"** 이라고 한 것이 여기서 드러난다. `IpPortToStringConverter` 를 따로 등록해야 한다.\n\n**메시지가 정확하다** — `from type [IpPort] to type [String]`. 11.1절의 오류 메시지와 같은 친절함이다."
+  }
+ ],
+ "recap": [
+  "**`ConversionService` 가 컨버터를 모은다.**",
+  "**쓰는 쪽은 `convert(값, 타입)`** 만 부른다.",
+  "**인터페이스가 둘** — `ConverterRegistry`(등록) · `ConversionService`(사용).",
+  "**ISP 의 교과서 같은 예**다 — 앞 책 3장.",
+  "**쓰는 쪽이 등록 메서드를 보면** 실수하고 추적이 안 된다.",
+  "**`DefaultConversionService`** 에는 기본 컨버터가 들어 있다.",
+  "**`GenericConversionService`** 는 빈 것이다.",
+  "**`canConvert`** 로 물어볼 수 있다. 없으면 `ConverterNotFoundException`.",
+  "**같은 쌍이면 나중 것이, 다르면 구체적인 것이** 이긴다.",
+  "**구체적인 것부터 고르는 규칙을 네 번째** 본다."
+ ],
+ "drills": [
+  {
+   "task": "`DefaultConversionService` 에 컨버터를 등록하고 써 본다.",
+   "done_when": "컨버터 이름 없이 변환되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "반대 방향 컨버터 없이 역변환을 시도한다.",
+   "done_when": "`ConverterNotFoundException` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`canConvert` 로 먼저 물어본다.",
+   "done_when": "예외 없이 판단되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "아무것도 등록 안 하고 `\"10\"` 을 `Integer` 로 바꾼다.",
+   "done_when": "기본 컨버터가 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`GenericConversionService` 로 같은 것을 해 본다.",
+   "done_when": "안 되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`ConversionService` 를 쓰면 무엇이 좋아지나?",
+   "a": "쓰는 쪽이 어느 컨버터인지 모르고 원하는 타입만 말하면 된다."
+  },
+  {
+   "q": "인터페이스가 왜 둘로 나뉘어 있나?",
+   "a": "인터페이스 분리 원칙이다. 등록하는 쪽과 쓰는 쪽이 서로의 메서드를 볼 필요가 없다."
+  },
+  {
+   "q": "쓰는 쪽이 등록 메서드를 보면 무엇이 문제인가?",
+   "a": "실수로 부를 수 있고 언제 무엇이 등록됐는지 추적이 안 된다."
+  },
+  {
+   "q": "컨버터가 겹치면?",
+   "a": "같은 타입 쌍이면 나중에 등록한 것이, 구체성이 다르면 더 구체적인 것이 이긴다."
+  },
+  {
+   "q": "변환기가 없으면?",
+   "a": "`ConverterNotFoundException` 이 난다. `canConvert` 로 미리 물어볼 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ConversionService",
+   "en": "",
+   "what": "여러 컨버터를 모아 타입만으로 변환해 주는 인터페이스."
+  },
+  {
+   "term": "ISP",
+   "en": "Interface Segregation Principle",
+   "what": "클라이언트별로 좁은 인터페이스를 두는 원칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-mvc-2",
+ "id": "converter-spring",
+ "no": "11.4",
+ "chapter": 11,
+ "title": "스프링에 적용",
+ "summary": "WebConversionService. 어디까지 적용되나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨버터를 스프링 MVC 에 등록할 수 있다.",
+  "적용되는 자리와 안 되는 자리를 안다.",
+  "JSON 이 왜 다른지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n\n    @Override\n    public void addFormatters(FormatterRegistry registry) {\n        registry.addConverter(new StringToIpPortConverter());\n        registry.addConverter(new IpPortToStringConverter());\n    }\n}",
+   "note": "**메서드 이름이 `addFormatters`** 다 — 컨버터도 여기 등록한다. 11.6절에서 포매터가 나오면 이해가 된다.\n\n**`WebMvcConfigurer`** 가 또 나왔다 — 7.8절(리졸버) · 8.4절(인터셉터) · 10.4절(예외 리졸버)에서 본 그 자리다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디까지 적용되나",
+   "ascii": "   WebMvcConfigurer.addFormatters(registry)\n        |\n        v\n   WebConversionService\n        |\n        +--> @RequestParam         yes\n        +--> @PathVariable         yes\n        +--> @ModelAttribute       yes\n        +--> @Value                yes\n        +--> view rendering        yes  (11.5)\n        |\n        +--> @RequestBody          NO\n        +--> @ResponseBody         NO\n\n   json 은 컨버터가 아니라 jackson 이 한다",
+   "note": "**`@RequestBody` 는 안 된다.** 이것이 11.8절의 헷갈림이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JSON 은 왜 다른가",
+   "md": "**둘이 완전히 다른 길**이다.\n\n```\n@RequestParam ipPort=127.0.0.1:8080\n  -> WebDataBinder -> ConversionService -> IpPort\n\n@RequestBody {\"ipPort\": \"127.0.0.1:8080\"}\n  -> HttpMessageConverter -> Jackson -> IpPort\n```\n\n**1편 7.12절의 `HttpMessageConverter`** 가 JSON 을 맡는다. 그것은 **바디 전체를 한 번에** 객체로 바꾸고(6.8절), 내부적으로 **Jackson** 을 쓴다.\n\n**Jackson 은 스프링의 `ConversionService` 를 안 본다.**\n\n**JSON 에서 커스텀 타입을 쓰려면 Jackson 쪽에 등록**한다.\n\n```java\npublic class IpPortDeserializer extends JsonDeserializer<IpPort> { ... }\n```\n\n**`@JsonComponent`** 로 등록하거나 `ObjectMapper` 에 모듈을 더한다.\n\n> **11.8절에서 두 컨버터를 나란히** 놓고 정리한다. **이름이 비슷해서 실무에서 가장 자주 헷갈리는 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "@Value 도 된다",
+   "md": "```properties\nserver.address=127.0.0.1:8080\n```\n\n```java\n@Value(\"${server.address}\")\nprivate IpPort address;\n```\n\n**동작한다.** 11.1절에서 말한 대로 **웹만의 기능이 아니다.**\n\n**다만 등록 위치가 다르다.**\n\n| | 어디에 |\n|---|---|\n| **웹 요청** | `WebMvcConfigurer.addFormatters` |\n| **`@Value`** | `ConversionService` 빈을 직접 등록 |\n\n```java\n@Bean\npublic ConversionService conversionService() {\n    DefaultFormattingConversionService service = new DefaultFormattingConversionService();\n    service.addConverter(new StringToIpPortConverter());\n    return service;\n}\n```\n\n**빈 이름이 `conversionService`** 여야 한다 — 4.5절의 `localeResolver`, 1편 6.4절의 특별한 빈 이름과 같은 규약이다.\n\n> **부트에서는 `WebConversionService` 가 자동 등록**되고 `addFormatters` 의 것도 거기 들어간다. 보통은 신경 안 써도 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기본 컨버터를 덮어쓰면",
+   "md": "```java\nregistry.addConverter(new StringToIntegerConverter());   // 직접 만든 것\n```\n\n**11.3절에서 본 대로 나중 것이 이긴다.** 스프링의 기본 `String` → `Integer` 가 우리 것으로 바뀐다.\n\n**그러면 모든 곳이 영향을 받는다** — `@RequestParam Integer` 도, `@Value` 도, `@ModelAttribute` 의 필드도.\n\n**로그를 찍어 보면 확인된다.**\n\n```\nconvert source=10\nconvert source=20\nconvert source=9999\n```\n\n**예상보다 훨씬 자주 불린다.**\n\n**기본 타입 컨버터는 덮어쓰지 않는 편**이 낫다. 특별한 처리가 필요하면 **그 필드에만** 적용되는 방법을 쓴다 — **11.7절의 애너테이션**이 그것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /ip-port?ipPort=127.0.0.1:8080 HTTP/1.1\n\n# 서버 로그\n#   convert source=127.0.0.1:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\nip = 127.0.0.1\nport = 8080\n\n# 11.1 절에서는 400 이었다\n\n# 잘못된 형식\nGET /ip-port?ipPort=abc HTTP/1.1\n\nHTTP/1.1 400 \n{\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\"}\n\n# ConversionFailedException 안에\n# IllegalArgumentException: ip:port 형식이어야 합니다: abc\n\n# JSON 은 안 된다\nPOST /api/ip-port HTTP/1.1\nContent-Type: application/json\n\n{\"ipPort\": \"127.0.0.1:8080\"}\n\nHTTP/1.1 400 \n# Jackson 이 IpPort 를 못 만든다",
+   "note": "**첫 응답이 11.1절의 400 을 200 으로** 바꿨다. 등록 한 줄의 결과다.\n\n**로그에 `convert source=` 가 찍혔다** — 우리 컨버터가 실제로 불렸다는 증거다.\n\n**둘째는 11.2절에서 명시적으로 던진 예외**다. 400 은 같은데 **로그 메시지가 읽힌다.**\n\n**맨 아래가 이 절의 경계**다. 같은 문자열인데 **JSON 바디로 오면 컨버터가 안 돈다.** `HttpMessageConverter` 와 Jackson 의 영역이다."
+  }
+ ],
+ "recap": [
+  "**`WebMvcConfigurer.addFormatters`** 에 등록한다.",
+  "**메서드 이름이 `addFormatters`** 인 것은 11.6절에서 이해된다.",
+  "적용되는 곳 — **`@RequestParam` · `@PathVariable` · `@ModelAttribute` · `@Value` · 뷰**.",
+  "**`@RequestBody`·`@ResponseBody` 는 안 된다.**",
+  "**JSON 은 `HttpMessageConverter` 와 Jackson** 의 영역이다.",
+  "**Jackson 은 `ConversionService` 를 안 본다.**",
+  "**`@Value` 는 `conversionService` 빈**을 직접 등록해야 한다.",
+  "**기본 컨버터를 덮어쓰면 모든 곳이 영향**을 받는다.",
+  "**필드마다 다르게 하려면 11.7절의 애너테이션**을 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "컨버터를 `addFormatters` 에 등록한다.",
+   "done_when": "400 이 200 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨버터에 로그를 찍고 여러 요청을 보낸다.",
+   "done_when": "언제 불리는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`String` → `Integer` 컨버터를 직접 만들어 등록한다.",
+   "done_when": "예상보다 자주 불리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 값을 JSON 바디로 보낸다.",
+   "done_when": "컨버터가 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Value` 로 커스텀 타입을 받아 본다.",
+   "done_when": "빈 등록이 따로 필요한 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨버터를 어디에 등록하나?",
+   "a": "`WebMvcConfigurer` 의 `addFormatters` 다."
+  },
+  {
+   "q": "적용되지 않는 자리는?",
+   "a": "`@RequestBody`·`@ResponseBody` 다. JSON 은 `HttpMessageConverter` 와 Jackson 이 처리한다."
+  },
+  {
+   "q": "JSON 에서 커스텀 타입을 쓰려면?",
+   "a": "Jackson 쪽에 `JsonDeserializer` 를 등록한다. `ConversionService` 와 무관하다."
+  },
+  {
+   "q": "기본 컨버터를 덮어쓰면?",
+   "a": "`@RequestParam`·`@Value`·`@ModelAttribute` 등 모든 곳이 영향을 받는다."
+  },
+  {
+   "q": "특정 필드에만 다른 변환을 하려면?",
+   "a": "11.7절의 `@NumberFormat`·`@DateTimeFormat` 같은 애너테이션을 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WebConversionService",
+   "en": "",
+   "what": "스프링 부트가 웹 계층에 등록하는 변환 서비스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

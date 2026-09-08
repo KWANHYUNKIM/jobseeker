@@ -1,0 +1,147 @@
+{
+ "book": "spring-mvc-2",
+ "id": "converter-custom",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "타입 컨버터 만들기",
+ "summary": "Converter 인터페이스. 메서드 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Converter` 를 구현할 수 있다.",
+  "제네릭이 등록 정보라는 것을 안다.",
+  "변환 실패를 어떻게 다룰지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "메서드 하나뿐이다",
+   "ascii": "   public interface Converter<S, T> {\n       T convert(S source);\n   }\n\n   StringToIpPortConverter   implements Converter<String, IpPort>\n   IpPortToStringConverter   implements Converter<IpPort, String>\n\n   방향마다 하나씩. 둘은 다른 클래스다\n\n   generic types are how spring knows what it converts",
+   "note": "**제네릭 타입이 곧 등록 정보**다. `supports` 같은 메서드가 없다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "우리 타입",
+   "code": "@Getter\n@EqualsAndHashCode\npublic class IpPort {\n\n    private final String ip;\n    private final int port;\n\n    public IpPort(String ip, int port) {\n        this.ip = ip;\n        this.port = port;\n    }\n}",
+   "note": "**`@EqualsAndHashCode` 가 중요**하다. 값 객체는 **내용이 같으면 같은 것**이어야 한다.\n\n**불변**으로 만들었다 — `final` 필드에 setter 가 없다. **컨버터가 만든 뒤로는 안 바뀐다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "두 방향",
+   "code": "@Slf4j\npublic class StringToIpPortConverter implements Converter<String, IpPort> {\n\n    @Override\n    public IpPort convert(String source) {\n        log.info(\"convert source={}\", source);\n        String[] split = source.split(\":\");\n        return new IpPort(split[0], Integer.parseInt(split[1]));\n    }\n}\n\n@Slf4j\npublic class IpPortToStringConverter implements Converter<IpPort, String> {\n\n    @Override\n    public String convert(IpPort source) {\n        log.info(\"convert source={}\", source);\n        return source.getIp() + \":\" + source.getPort();\n    }\n}",
+   "note": "**두 클래스**다. `Converter<S, T>` 가 **한 방향**만 나타낸다.\n\n**양방향이 필요하면 둘 다** 만든다. 11.6절의 포매터는 **하나로 양방향**을 한다 — 그것이 차이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "제네릭이 등록 정보다",
+   "md": "**5.9절의 `Validator` 와 비교**해 보자.\n\n```java\nboolean supports(Class<?> clazz);   // 물어본다\nvoid validate(Object target, Errors errors);\n```\n\n**`Converter` 에는 `supports` 가 없다.**\n\n```java\nT convert(S source);\n```\n\n**제네릭 타입 `<String, IpPort>` 를 스프링이 리플렉션으로 읽는다.** 그것이 곧 \"나는 `String` 을 `IpPort` 로 바꾼다\" 는 선언이다.\n\n**7.8절·10.3절에서 본 그 패턴의 또 다른 형태**다.\n\n| | 무엇으로 판단 |\n|---|---|\n| `Validator` | `supports` 메서드 |\n| `ArgumentResolver` | `supportsParameter` 메서드 |\n| `HandlerExceptionResolver` | **`null` 반환** |\n| **`Converter`** | **제네릭 타입** |\n\n**네 가지 방식이 다 다른데 목적은 같다** — 여러 후보 중 맡을 수 있는 것을 고른다.\n\n> **제네릭 방식이 가장 간결**하다. 메서드가 하나뿐이고 실수할 여지가 적다. 대신 **타입만으로 판단할 수 있을 때만** 쓸 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "변환 실패를 어떻게 할까",
+   "md": "```java\npublic IpPort convert(String source) {\n    String[] split = source.split(\":\");\n    return new IpPort(split[0], Integer.parseInt(split[1]));\n}\n```\n\n**`?ipPort=abc` 가 오면** — `split` 결과가 하나뿐이라 `split[1]` 에서 **`ArrayIndexOutOfBoundsException`** 이다.\n\n**그러면 무슨 일이 생기나** — 스프링이 잡아서 **`ConversionFailedException`** 으로 감싸고, 10.5절의 `DefaultHandlerExceptionResolver` 가 **400** 을 낸다.\n\n**결과는 맞다.** 그런데 **로그에 예상 못 한 예외**가 남는다.\n\n**명시적으로 던지는 편**이 낫다.\n\n```java\npublic IpPort convert(String source) {\n    String[] split = source.split(\":\");\n    if (split.length != 2) {\n        throw new IllegalArgumentException(\"ip:port 형식이어야 합니다: \" + source);\n    }\n    ...\n}\n```\n\n**`IllegalArgumentException` 을 던지면** 같은 400 인데 **메시지가 읽힌다.**\n\n**`null` 을 반환하면 안 된다** — 변환 성공으로 보고 `null` 이 그대로 들어간다. **5.8절에서 본 `typeMismatch` 도 안 걸린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이미 등록된 컨버터가 많다",
+   "md": "**만들기 전에 있는지 본다.**\n\n```\nStringToNumberConverterFactory     String -> Integer, Long, Double...\nStringToEnumConverterFactory       String -> Enum   (3.6절)\nStringToBooleanConverter\nStringToUUIDConverter\nStringToCharsetConverter\nCollectionToCollectionConverter    List -> Set 등\nObjectToStringConverter            toString()\n```\n\n**`ConverterFactory`** 라는 것도 있다 — **`String` → 모든 `Enum`** 처럼 **한 방향에 여러 대상**일 때 쓴다. `Enum` 마다 컨버터를 만들 수는 없으니까.\n\n**세 가지 인터페이스**\n\n| | 언제 |\n|---|---|\n| `Converter<S, T>` | **일대일** |\n| `ConverterFactory<S, R>` | 하나에서 **계층 전체**로 |\n| `GenericConverter` | **여러 쌍**을 한 클래스에서. 애너테이션도 본다 |\n\n**`GenericConverter` 가 가장 강력**하고 복잡하다. **11.7절의 `@NumberFormat`** 같은 것이 이것으로 구현되어 있다.\n\n> **거의 항상 `Converter` 로 충분**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 아직 안 붙었다",
+   "sql": "# 컨버터를 만들었지만 등록 전이다\nGET /ip-port?ipPort=127.0.0.1:8080 HTTP/1.1\n\nHTTP/1.1 400 \n# 여전히 ConversionFailedException\n\n# 테스트로는 동작한다\n@Test\nvoid stringToIpPort() {\n    StringToIpPortConverter converter = new StringToIpPortConverter();\n    IpPort result = converter.convert(\"127.0.0.1:8080\");\n    assertThat(result).isEqualTo(new IpPort(\"127.0.0.1\", 8080));\n}\n\n# 통과한다. @EqualsAndHashCode 덕이다\n\n# 잘못된 형식\n@Test\nvoid invalid() {\n    assertThatThrownBy(() -> converter.convert(\"abc\"))\n            .isInstanceOf(IllegalArgumentException.class);\n}",
+   "note": "**만들었는데 아직 안 된다.** 스프링이 이 클래스를 모른다 — **등록이 남았다.**\n\n11.3절에서 `ConversionService` 에 등록하고 11.4절에서 스프링 MVC 에 붙인다. **만드는 것과 등록하는 것이 나뉘어 있는 것**이 이 구조의 특징이다.\n\n**테스트는 통과한다.** 5.9절에서 `Validator` 를 웹 없이 테스트한 것과 같다 — **컨버터도 순수 자바 객체**라 웹이 필요 없다.\n\n`isEqualTo` 가 통과하는 것은 **`@EqualsAndHashCode`** 덕이다. 없으면 참조 비교라 실패한다."
+  }
+ ],
+ "recap": [
+  "**`Converter<S, T>` 는 메서드 하나**뿐이다.",
+  "**제네릭 타입이 곧 등록 정보**다 — `supports` 가 없다.",
+  "**한 방향씩** 만든다. 양방향이면 두 클래스.",
+  "**값 객체는 `@EqualsAndHashCode`** 와 불변으로.",
+  "**변환 실패는 `IllegalArgumentException`** 을 명시적으로 던진다.",
+  "**`null` 을 반환하면 안 된다** — 성공으로 보고 `null` 이 들어간다.",
+  "**이미 등록된 컨버터가 많다** — 만들기 전에 확인한다.",
+  "**`ConverterFactory`** 는 `String` → 모든 `Enum` 같은 계층 변환.",
+  "**`GenericConverter`** 는 여러 쌍과 애너테이션까지 본다.",
+  "**만드는 것과 등록하는 것이 나뉘어** 있다."
+ ],
+ "drills": [
+  {
+   "task": "`IpPort` 와 두 컨버터를 만든다.",
+   "done_when": "테스트가 통과하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@EqualsAndHashCode` 를 지운다.",
+   "done_when": "테스트가 실패하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`?ipPort=abc` 를 보낸다.",
+   "done_when": "어떤 예외가 나는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "형식 검사를 넣고 `IllegalArgumentException` 을 던진다.",
+   "done_when": "로그가 읽히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨버터에서 `null` 을 반환해 본다.",
+   "done_when": "`null` 이 그대로 들어가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Converter` 에 `supports` 가 왜 없나?",
+   "a": "제네릭 타입을 스프링이 읽어서 무엇을 무엇으로 바꾸는지 판단하기 때문이다."
+  },
+  {
+   "q": "양방향 변환은?",
+   "a": "방향마다 컨버터를 하나씩 만든다. 하나로 양방향을 하는 것은 포매터다."
+  },
+  {
+   "q": "변환 실패는 어떻게 하나?",
+   "a": "`IllegalArgumentException` 을 명시적으로 던진다. 스프링이 `ConversionFailedException` 으로 감싸 400 을 낸다."
+  },
+  {
+   "q": "`null` 을 반환하면?",
+   "a": "변환 성공으로 보고 `null` 이 그대로 주입된다. `typeMismatch` 도 안 걸린다."
+  },
+  {
+   "q": "`ConverterFactory` 는 언제 쓰나?",
+   "a": "`String` 에서 모든 `Enum` 처럼 대상이 계층 전체일 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "값 객체",
+   "en": "value object",
+   "what": "내용이 같으면 같은 것으로 보는 불변 객체. `equals`·`hashCode` 를 구현한다."
+  },
+  {
+   "term": "ConverterFactory",
+   "en": "",
+   "what": "한 타입에서 어떤 계층의 여러 타입으로 변환하는 컨버터를 만들어 주는 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
