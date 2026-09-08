@@ -135,7 +135,7 @@
           "title": "회원 도메인 개발",
           "summary": "MemberService·MemberRepository·MemoryMemberRepository.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -143,7 +143,7 @@
           "title": "회원 도메인 실행과 테스트",
           "summary": "main 으로 확인하고, JUnit 으로 옮긴다. 그리고 설계의 문제점이 하나 보인다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -151,7 +151,7 @@
           "title": "주문과 할인 도메인 설계",
           "summary": "할인 정책을 인터페이스로 분리한다. 이 결정이 3장 전체를 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",
@@ -159,7 +159,7 @@
           "title": "주문과 할인 도메인 개발",
           "summary": "OrderService·DiscountPolicy·FixDiscountPolicy.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.8",

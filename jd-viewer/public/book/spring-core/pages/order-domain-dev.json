@@ -1,0 +1,181 @@
+{
+  "book": "spring-core",
+  "id": "order-domain-dev",
+  "no": "2.7",
+  "chapter": 2,
+  "title": "주문과 할인 도메인 개발",
+  "summary": "OrderService·DiscountPolicy·FixDiscountPolicy.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "정액 할인 정책을 구현할 수 있다.",
+    "`OrderServiceImpl` 이 두 협력 객체를 어떻게 쓰는지 안다.",
+    "2.4절과 같은 문제가 여기서 두 배로 생기는 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "정액 할인 정책"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "FixDiscountPolicy.java",
+      "code": "public class FixDiscountPolicy implements DiscountPolicy {\n\n    private final int discountFixAmount = 1000;   // VIP 는 1000원 할인\n\n    @Override\n    public int discount(Member member, int price) {\n        if (member.getGrade() == Grade.VIP) {\n            return discountFixAmount;\n        }\n        return 0;\n    }\n}",
+      "note": "`price` 를 안 쓴다. **정액이라 가격과 무관하기 때문**이다. 인터페이스에는 있는데 구현이 안 쓰는 파라미터 — 3.1절에서 정률 할인을 만들면 그때 쓰인다."
+    },
+    {
+      "type": "heading",
+      "text": "주문 서비스"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderServiceImpl.java",
+      "code": "public class OrderServiceImpl implements OrderService {\n\n    private final MemberRepository memberRepository = new MemoryMemberRepository();\n    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();\n\n    @Override\n    public Order createOrder(Long memberId, String itemName, int itemPrice) {\n        Member member = memberRepository.findById(memberId);\n        int discountPrice = discountPolicy.discount(member, itemPrice);\n\n        return new Order(memberId, itemName, itemPrice, discountPrice);\n    }\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "createOrder 메서드는 잘 만들어졌다",
+      "md": "세 줄이 딱 자기 일만 한다.\n\n1. 회원을 조회한다 → **저장소에 맡긴다**\n2. 할인액을 계산한다 → **할인 정책에 맡긴다**\n3. 주문을 만들어 돌려준다 → **자기 일**\n\n할인 계산 로직이 여기 없다는 것이 중요하다. 정률로 바뀌든 쿠폰이 붙든 **이 메서드는 안 바뀐다.** 단일 책임이 지켜진 좋은 코드다.\n\n**문제는 이 메서드가 아니라 그 위 두 줄이다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "그 위 두 줄",
+      "code": "private final MemberRepository memberRepository = new MemoryMemberRepository();\nprivate final DiscountPolicy discountPolicy = new FixDiscountPolicy();",
+      "note": "**2.4절의 그 한 줄이 여기서는 두 줄**이다. 그리고 문제도 두 배다 — 저장소를 바꿔도, 할인 정책을 바꿔도 이 파일을 고쳐야 한다."
+    },
+    {
+      "type": "heading",
+      "text": "실행"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderApp.java",
+      "code": "public class OrderApp {\n    public static void main(String[] args) {\n\n        MemberService memberService = new MemberServiceImpl();\n        OrderService orderService = new OrderServiceImpl();\n\n        Long memberId = 1L;\n        memberService.join(new Member(memberId, \"memberA\", Grade.VIP));\n\n        Order order = orderService.createOrder(memberId, \"itemA\", 10000);\n        System.out.println(\"order = \" + order);\n        System.out.println(\"calculatePrice = \" + order.calculatePrice());\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "order = Order{memberId=1, itemName='itemA', itemPrice=10000, discountPrice=1000}\ncalculatePrice = 9000",
+      "note": "**동작한다.** VIP 라서 1000원이 할인됐고 최종가가 9000원이다. 요구사항대로다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그런데 이 main 이 도는 것 자체가 이상하다",
+      "md": "`MemberServiceImpl` 과 `OrderServiceImpl` 이 **각자 `new MemoryMemberRepository()` 를 한다.** 저장소 인스턴스가 두 개 만들어진다는 뜻이다.\n\n그런데 회원 가입은 `memberService` 로 하고 조회는 `orderService` 안에서 하는데도 회원을 찾는다. **왜?**\n\n2.4절에서 지나간 그 줄 때문이다.\n\n```java\nprivate static Map<Long, Member> store = new HashMap<>();\n```\n\n`static` 이라 인스턴스가 몇 개든 저장소가 하나다. **우연히 동작하고 있는 것이다.**\n\n`static` 을 빼면 이 예제는 바로 깨진다 — `NullPointerException` 이 난다. 지금은 넘어가지만, 3.3절에서 `AppConfig` 를 만들면 이 문제도 같이 사라진다. **저장소 인스턴스를 하나만 만들어 양쪽에 넣어 주기 때문**이다."
+    },
+    {
+      "type": "heading",
+      "text": "테스트로"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderServiceTest.java",
+      "code": "class OrderServiceTest {\n\n    MemberService memberService = new MemberServiceImpl();\n    OrderService orderService = new OrderServiceImpl();\n\n    @Test\n    void createOrder() {\n        Long memberId = 1L;\n        memberService.join(new Member(memberId, \"memberA\", Grade.VIP));\n\n        Order order = orderService.createOrder(memberId, \"itemA\", 10000);\n\n        assertThat(order.getDiscountPrice()).isEqualTo(1000);\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "OrderServiceTest > createOrder() PASSED\n\nBUILD SUCCESSFUL\n2 tests completed",
+      "note": "**2장이 여기서 끝난다.** 요구사항을 만족하고 테스트도 통과한다. 겉으로는 아무 문제가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "2장이 남긴 것",
+      "md": "지금 코드에는 **문제 셋이 숨어 있다.**\n\n1. **`MemberServiceImpl` 이 저장소 구현을 직접 고른다** (2.4)\n2. **`OrderServiceImpl` 이 저장소와 할인 정책을 둘 다 직접 고른다** (2.7)\n3. **저장소가 두 번 만들어지는데 `static` 때문에 우연히 동작한다** (2.7)\n\n셋 다 지금은 아무 증상이 없다. **테스트가 통과하기 때문에 문제로 보이지도 않는다.**\n\n3.1절에서 \"정률 할인으로 바꿔 주세요\" 가 오고, 3.2절에서 이 셋이 한꺼번에 드러난다. 그리고 3.3절에서 **하나의 해법으로 셋이 다 풀린다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`createOrder` 메서드는 잘 짜였나요?\"** → 그렇다. 조회는 저장소에, 할인은 정책에 맡기고 자기는 주문만 만든다. 할인 방식이 바뀌어도 이 메서드는 안 바뀐다.\n- **\"그럼 무엇이 문제인가요?\"** → 메서드가 아니라 **필드 선언 두 줄**이다. 협력 대상의 구현체를 자기가 고르고 있다.\n- **\"저장소가 두 번 만들어지는데 왜 동작하나요?\"** → `store` 가 `static` 이라 인스턴스가 몇 개든 데이터가 공유된다. 우연히 동작하는 것이고, 3장에서 인스턴스를 하나만 만들어 공유하면 근본적으로 해결된다."
+    }
+  ],
+  "recap": [
+    "`FixDiscountPolicy` 는 VIP 에게 1000원. `price` 를 안 쓰는 것은 정액이기 때문이다.",
+    "`createOrder` 메서드 자체는 잘 짜였다 — 조회는 저장소에, 할인은 정책에 맡긴다.",
+    "**문제는 메서드가 아니라 필드 선언 두 줄**이다. 협력 대상의 구현체를 자기가 고른다.",
+    "`MemberServiceImpl` 과 `OrderServiceImpl` 이 저장소를 각각 만드는데, `static` 때문에 우연히 동작한다.",
+    "요구사항을 만족하고 테스트도 통과한다. **겉으로는 아무 문제가 없다.**",
+    "2장이 남긴 문제 셋은 3.2절에서 한꺼번에 드러나고 3.3절에서 한 해법으로 풀린다."
+  ],
+  "drills": [
+    {
+      "task": "`FixDiscountPolicy`·`OrderServiceImpl` 을 만들고 `OrderApp` 을 실행한다.",
+      "done_when": "할인 1000원, 최종가 9000원이 나왔다.",
+      "minutes": 25
+    },
+    {
+      "task": "`MemoryMemberRepository` 의 `store` 에서 `static` 을 빼고 `OrderApp` 을 다시 실행한다.",
+      "done_when": "`NullPointerException` 이 나는 것을 확인했다. 왜 나는지 설명할 수 있다.",
+      "hint": "저장소 인스턴스가 두 개다. 가입한 곳과 조회하는 곳이 다르다.",
+      "minutes": 20
+    },
+    {
+      "task": "일반 등급(BASIC) 회원으로 주문해 본다.",
+      "done_when": "할인이 0원인 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "2장에서 만든 클래스를 전부 나열하고, 그중 구현 클래스 이름을 알고 있는 클래스를 표시한다.",
+      "done_when": "`MemberServiceImpl` 과 `OrderServiceImpl` 둘이 나왔다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`FixDiscountPolicy` 가 `price` 파라미터를 안 쓰는 이유는?",
+      "a": "정액 할인이라 가격과 무관하게 1000원이기 때문이다. 정률 할인(3.1절)에서는 이 파라미터가 쓰인다."
+    },
+    {
+      "q": "`createOrder` 메서드는 잘 짜였는가?",
+      "a": "그렇다. 조회는 저장소에, 할인 계산은 정책에 맡기고 자기는 주문을 만드는 일만 한다. 할인 방식이 바뀌어도 이 메서드는 안 바뀐다."
+    },
+    {
+      "q": "그럼 `OrderServiceImpl` 의 무엇이 문제인가?",
+      "a": "필드 선언 두 줄이다. `new MemoryMemberRepository()` 와 `new FixDiscountPolicy()` 로 협력 대상의 구현체를 자기가 고르고 있다."
+    },
+    {
+      "q": "저장소 인스턴스가 두 개인데 왜 회원을 찾을 수 있는가?",
+      "a": "`store` 가 `static` 이라 클래스 단위로 하나뿐이기 때문이다. 우연히 동작하는 것이고 `static` 을 빼면 바로 깨진다."
+    },
+    {
+      "q": "2장이 남긴 문제 셋은?",
+      "a": "① MemberServiceImpl 이 저장소를 직접 고른다 ② OrderServiceImpl 이 둘 다 직접 고른다 ③ 저장소가 두 번 만들어지는데 static 때문에 우연히 동작한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "정액 할인",
+      "en": "fixed discount",
+      "what": "가격과 무관하게 일정 금액을 할인. 이 예제의 첫 정책."
+    },
+    {
+      "term": "우연한 동작",
+      "en": "",
+      "what": "설계가 아니라 부수적 조건 때문에 돌아가는 상태. 여기서는 `static` 필드가 그 조건이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

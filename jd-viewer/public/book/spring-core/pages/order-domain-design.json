@@ -1,0 +1,162 @@
+{
+  "book": "spring-core",
+  "id": "order-domain-design",
+  "no": "2.6",
+  "chapter": 2,
+  "title": "주문과 할인 도메인 설계",
+  "summary": "할인 정책을 인터페이스로 분리한다. 이 결정이 3장 전체를 만든다.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "주문 도메인의 협력 관계를 그릴 수 있다.",
+    "할인 정책을 왜 분리하는지, 분리하면 무엇을 얻는지 말할 수 있다.",
+    "`OrderServiceImpl` 이 두 개의 인터페이스에 의존하는 구조를 이해한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절의 미확정 두 번째 — **할인 정책** — 을 처리한다.\n\n요구사항에 \"변경 가능성이 높다\", \"최악의 경우 할인을 적용하지 않을 수도 있다\" 가 명시되어 있었다. 1.3절의 기준(\"바뀔 것 같은 곳에만 인터페이스\")으로 보면 **여기는 확실히 인터페이스 자리**다."
+    },
+    {
+      "type": "figure",
+      "caption": "협력 관계",
+      "ascii": "   주문 도메인 협력 관계\n\n\n   client\n      │  createOrder(memberId, itemName, itemPrice)\n      ▼\n   ┌──────────────────┐\n   │ OrderService     │   <-- interface\n   └────────┬─────────┘\n            │ implements\n            ▼\n   ┌──────────────────┐\n   │ OrderServiceImpl │\n   └───┬──────────┬───┘\n       │          │\n       │ uses     │ uses\n       ▼          ▼\n   ┌──────────────────┐   ┌──────────────────┐\n   │ MemberRepository │   │ DiscountPolicy   │   <-- interface 둘\n   │  findById()      │   │  discount()      │\n   └──────────────────┘   └────────┬─────────┘\n                                   │ implements\n                            ┌──────┴──────────┐\n                            ▼                 ▼\n                   ┌──────────────────┐ ┌──────────────────┐\n                   │FixDiscountPolicy │ │RateDiscountPolicy│\n                   └──────────────────┘ └──────────────────┘\n                     지금 만든다            3.1 절에서\n\n\n   흐름\n     1. 주문 생성 요청이 온다\n     2. MemberRepository 로 회원을 조회해 등급을 알아낸다\n     3. 등급을 DiscountPolicy 에 넘겨 할인액을 받는다\n     4. Order 를 만들어 돌려준다"
+    },
+    {
+      "type": "heading",
+      "text": "역할이 셋이다"
+    },
+    {
+      "type": "table",
+      "caption": "주문 하나를 만드는 데 참여하는 것",
+      "note": "**`OrderServiceImpl` 은 두 인터페이스에 의존한다.** 회원을 조회해야 등급을 알고, 등급을 알아야 할인을 계산할 수 있다.",
+      "columns": [
+        "역할",
+        "무엇을 하나",
+        "누가 구현"
+      ],
+      "rows": [
+        [
+          "**OrderService**",
+          "주문을 생성한다",
+          "`OrderServiceImpl`"
+        ],
+        [
+          "**MemberRepository**",
+          "회원을 조회한다 (등급을 알아내려고)",
+          "`MemoryMemberRepository` (2.4절)"
+        ],
+        [
+          "**DiscountPolicy**",
+          "등급과 가격으로 할인액을 계산한다",
+          "`FixDiscountPolicy` (2.7절)"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "할인 정책 인터페이스"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "DiscountPolicy.java",
+      "code": "public interface DiscountPolicy {\n\n    /**\n     * @return 할인 대상 금액\n     */\n    int discount(Member member, int price);\n}",
+      "note": "**반환값이 '할인된 최종 가격' 이 아니라 '할인 금액' 이다.** 이 선택이 중요하다 — 아래에서 본다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 '할인액' 을 돌려주나",
+      "md": "두 가지로 만들 수 있다.\n\n```java\nint discount(Member member, int price);           // 할인액 1000\nint calculatePrice(Member member, int price);     // 최종가 9000\n```\n\n**두 번째가 더 편해 보이는데, 첫 번째가 낫다.**\n\n- 주문 화면에 \"할인 1,000원\" 을 표시해야 한다. 최종가만 받으면 원가에서 빼서 역산해야 한다.\n- 할인이 여러 개 겹칠 수 있다. 각각의 할인액을 알아야 합산하거나 상한을 걸 수 있다.\n- 최종가 계산은 **주문의 책임**이지 할인 정책의 책임이 아니다.\n\n인터페이스 설계에서 **반환값을 무엇으로 할 것인가**는 메서드 이름만큼 중요하다. 한 번 정하면 모든 구현체와 클라이언트가 그 형태에 묶인다(1.3절)."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Order.java",
+      "code": "public class Order {\n\n    private Long memberId;\n    private String itemName;\n    private int itemPrice;\n    private int discountPrice;\n\n    public Order(Long memberId, String itemName, int itemPrice, int discountPrice) {\n        this.memberId = memberId;\n        this.itemName = itemName;\n        this.itemPrice = itemPrice;\n        this.discountPrice = discountPrice;\n    }\n\n    public int calculatePrice() {         // 최종가 계산은 주문이 한다\n        return itemPrice - discountPrice;\n    }\n\n    @Override\n    public String toString() {\n        return \"Order{memberId=\" + memberId +\n               \", itemName='\" + itemName + '\\'' +\n               \", itemPrice=\" + itemPrice +\n               \", discountPrice=\" + discountPrice + '}';\n    }\n}",
+      "note": "`Order` 가 원가와 할인액을 **둘 다 들고 있다.** 그래서 화면에서 무엇이 필요하든 대응할 수 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderService.java",
+      "code": "public interface OrderService {\n\n    Order createOrder(Long memberId, String itemName, int itemPrice);\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 아직 인터페이스뿐",
+      "sql": "$ ./gradlew compileJava\n\nBUILD SUCCESSFUL\n\n// 추가된 것\n//   Order (class)\n//   OrderService (interface)\n//   DiscountPolicy (interface)",
+      "note": "2.3절과 같다. **인터페이스는 약속이지 동작이 아니다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"인터페이스 메서드의 반환값을 정할 때 무엇을 보나요?\"** → 클라이언트가 무엇을 필요로 하는지, 그리고 그 계산이 누구의 책임인지. 최종가 계산은 주문의 일이지 할인 정책의 일이 아니다.\n- **\"할인 정책을 인터페이스로 분리한 근거는?\"** → 요구사항에 변경 가능성이 명시됐다. 바뀔 것 같은 곳에만 인터페이스를 둔다(1.3절).\n- **\"`OrderServiceImpl` 이 인터페이스 두 개에 의존해도 되나요?\"** → 된다. 협력 대상이 둘일 뿐이다. 문제는 개수가 아니라 **그 대상을 누가 고르느냐**다."
+    }
+  ],
+  "recap": [
+    "요구사항에 변경 가능성이 명시된 **할인 정책**을 인터페이스로 분리한다.",
+    "`OrderServiceImpl` 은 두 인터페이스(`MemberRepository`, `DiscountPolicy`)에 의존한다.",
+    "`discount()` 는 **할인액**을 돌려준다. 최종가 계산은 `Order` 의 책임이다.",
+    "반환값 설계는 메서드 이름만큼 중요하다 — 한 번 정하면 모든 구현체와 클라이언트가 묶인다.",
+    "`Order` 가 원가와 할인액을 둘 다 들고 있어 화면 요구에 대응할 수 있다."
+  ],
+  "drills": [
+    {
+      "task": "`Order`·`OrderService`·`DiscountPolicy` 를 만든다.",
+      "done_when": "컴파일이 통과했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`discount()` 대신 `calculatePrice()` 로 설계했다고 가정하고, '할인 1,000원' 을 화면에 표시하려면 어떻게 해야 하는지 적어 본다.",
+      "done_when": "역산이 필요하고, 할인이 여러 개면 불가능하다는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "주문 도메인의 클래스 다이어그램을 그려 본다.",
+      "done_when": "`OrderServiceImpl` 에서 화살표가 둘 나가는 것을 확인했다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "할인 정책을 인터페이스로 분리한 근거는?",
+      "a": "요구사항에 '변경 가능성이 높다', '최악의 경우 할인을 적용하지 않을 수도 있다' 가 명시되어 있다. 바뀔 것 같은 곳에만 인터페이스를 둔다는 1.3절 기준에 정확히 맞는다."
+    },
+    {
+      "q": "`discount()` 가 최종가가 아니라 할인액을 돌려주는 이유는?",
+      "a": "화면에 할인 금액을 표시해야 하고, 할인이 겹칠 때 합산이 필요하며, 최종가 계산은 주문의 책임이지 할인 정책의 책임이 아니기 때문이다."
+    },
+    {
+      "q": "`OrderServiceImpl` 이 인터페이스 둘에 의존하는 것이 문제인가?",
+      "a": "아니다. 협력 대상이 둘일 뿐이다. 문제는 의존 개수가 아니라 그 대상의 구현체를 누가 고르느냐다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "협력 관계",
+      "en": "collaboration",
+      "what": "하나의 일을 위해 여러 객체가 메시지를 주고받는 구조."
+    },
+    {
+      "term": "반환값 설계",
+      "en": "",
+      "what": "메서드가 무엇을 돌려줄지 정하는 것. 인터페이스에서는 이름만큼 되돌리기 어려운 결정이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

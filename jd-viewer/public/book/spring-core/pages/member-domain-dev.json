@@ -1,0 +1,130 @@
+{
+  "book": "spring-core",
+  "id": "member-domain-dev",
+  "no": "2.4",
+  "chapter": 2,
+  "title": "회원 도메인 개발",
+  "summary": "MemberService·MemberRepository·MemoryMemberRepository.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "2.3절의 설계를 코드로 옮길 수 있다.",
+    "구현체를 고르는 코드가 어디에 들어가는지 눈으로 확인한다.",
+    "`HashMap` 을 저장소로 쓸 때의 한계를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "설계를 코드로 옮긴다. 짧고 어려울 것이 없다. **다만 마지막 클래스에 한 줄이 들어가는데, 그 줄이 3장 전체를 만든다.**"
+    },
+    {
+      "type": "heading",
+      "text": "저장소 구현"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "MemoryMemberRepository.java",
+      "code": "public class MemoryMemberRepository implements MemberRepository {\n\n    private static Map<Long, Member> store = new HashMap<>();\n\n    @Override\n    public void save(Member member) {\n        store.put(member.getId(), member);\n    }\n\n    @Override\n    public Member findById(Long memberId) {\n        return store.get(memberId);\n    }\n}",
+      "note": "`store` 가 `static` 이다. 테스트마다 새 인스턴스를 만들어도 데이터가 공유된다는 뜻이고, **이것 자체가 문제의 소지**다. 5.4절에서 무상태 설계를 다룰 때 다시 본다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "HashMap 은 동시성에 안전하지 않다",
+      "md": "여러 스레드가 동시에 `put()` 하면 데이터가 깨질 수 있다. 실무라면 `ConcurrentHashMap` 을 쓴다.\n\n이 책에서 그냥 `HashMap` 을 쓰는 이유는 **테스트만 돌리기 때문**이다. 웹서버를 안 띄우니 동시 요청이 없다(2.1절).\n\n다만 **이 예외가 언제 깨지는지는 알아 둬야 한다.** 5장에서 스프링 빈이 싱글톤이라는 것을 배우고 나면, \"싱글톤 빈이 상태를 가지면 어떻게 되는가\" 가 정확히 이 문제다."
+    },
+    {
+      "type": "heading",
+      "text": "서비스 구현 — 여기가 중요하다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "MemberServiceImpl.java",
+      "code": "public class MemberServiceImpl implements MemberService {\n\n    private final MemberRepository memberRepository = new MemoryMemberRepository();\n\n    @Override\n    public void join(Member member) {\n        memberRepository.save(member);\n    }\n\n    @Override\n    public Member findMember(Long memberId) {\n        return memberRepository.findById(memberId);\n    }\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "1.4절에서 본 그 한 줄이 여기 있다",
+      "md": "```java\nprivate final MemberRepository memberRepository = new MemoryMemberRepository();\n//            ^^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^^^^^^^^^\n//            추상에 의존 (좋다)                       구체에 의존 (문제)\n```\n\n**설계를 잘 해 놓고도 이렇게 된다.** 2.3절에서 인터페이스를 나눴고, 이름도 구현이 안 새어 나오게 지었고, 다이어그램도 깔끔했다. 그런데 코드를 쓰는 순간 구현 클래스 이름이 서비스 안에 들어왔다.\n\n**그리고 지금은 이게 문제로 보이지 않는다.** 동작하고, 테스트도 통과하고, 다른 방법이 딱히 떠오르지도 않는다. `MemberServiceImpl` 을 만들려면 저장소가 있어야 하고, 저장소를 만들려면 `new` 를 해야 하니까.\n\n2.8절에서 같은 일이 주문 쪽에서도 벌어지고, **3.2절에서 그 대가를 치른다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "$ ./gradlew compileJava\n\nBUILD SUCCESSFUL in 1s\n\n// 클래스 네 개가 컴파일됐다.\n//   MemberService (interface)\n//   MemberServiceImpl\n//   MemberRepository (interface)\n//   MemoryMemberRepository",
+      "note": "동작 확인은 2.5절에서 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "이름에 대한 메모 — Impl",
+      "md": "구현이 하나뿐인데 `MemberServiceImpl` 이라고 짓는 것은 좋은 이름이 아니다. **`Impl` 은 이름이 아니라 자리표시자**다.\n\n구현이 여럿이면 각각의 성격으로 이름을 짓는 편이 낫다.\n\n```java\nMemoryMemberRepository   // 메모리에 저장한다\nJdbcMemberRepository     // JDBC 로 저장한다\n```\n\n저장소 쪽은 그렇게 지었는데 서비스 쪽은 못 그랬다. **구현이 하나뿐이라 성격을 붙일 이름이 없기 때문**이다. 그 자체가 \"이 인터페이스가 지금 필요한가\" 라는 질문의 신호이기도 하다(2.2절).\n\n이 책은 관례를 따라 `Impl` 을 쓰지만, 실무에서 이 이름을 볼 때마다 한 번은 의심해 보는 편이 낫다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`new MemoryMemberRepository()` 가 서비스 안에 있는 게 왜 문제인가요?\"** → DIP 위반이다. 서비스가 구현 클래스 이름을 알고 있어서, 저장소를 바꾸면 서비스를 고쳐야 한다.\n- **\"`Impl` 이라는 이름은 어떤가요?\"** → 구현이 하나뿐일 때 붙이는 자리표시자다. 구현이 여럿이면 성격을 이름에 담는 편이 낫고, 하나뿐이라면 인터페이스가 필요한지부터 의심해 볼 수 있다.\n- **\"저장소를 `static HashMap` 으로 두면?\"** → 동시성에 안전하지 않다. 스프링 빈은 싱글톤이라 여러 스레드가 같은 인스턴스를 쓰므로 실무에서는 위험하다(5.4절)."
+    }
+  ],
+  "recap": [
+    "`MemoryMemberRepository` 는 `HashMap` 하나. 동시성에 안전하지 않지만 테스트만 돌리므로 넘어간다.",
+    "`MemberServiceImpl` 에 **`new MemoryMemberRepository()`** 가 들어간다 — 1.4절의 그 한 줄이다.",
+    "설계를 잘 해 놓고도 코드를 쓰는 순간 구현 클래스 이름이 서비스에 들어온다.",
+    "**지금은 이것이 문제로 보이지 않는다.** 동작하고 테스트도 통과한다. 3.2절에서 대가를 치른다.",
+    "`Impl` 은 이름이 아니라 자리표시자다. 구현이 하나뿐일 때 붙게 되는 신호."
+  ],
+  "drills": [
+    {
+      "task": "네 클래스를 만들고 컴파일한다.",
+      "done_when": "BUILD SUCCESSFUL 을 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`MemberServiceImpl` 에서 `MemoryMemberRepository` 를 `DbMemberRepository`(빈 구현) 로 바꿔 본다.",
+      "done_when": "서비스 클래스를 고쳐야 한다는 것을 확인했다. 몇 줄을 고쳤는지 세어 둔다.",
+      "minutes": 15
+    },
+    {
+      "task": "`store` 에서 `static` 을 빼고 테스트를 두 개 만들어 본다.",
+      "done_when": "테스트마다 저장소가 비어 있는 것을 확인했다. `static` 이 무엇을 하고 있었는지 알게 된다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`MemberServiceImpl` 의 어느 줄이 DIP 를 어기고 있는가?",
+      "a": "`private final MemberRepository memberRepository = new MemoryMemberRepository();`. 왼쪽은 추상 의존이지만 오른쪽에 구현 클래스 이름이 들어 있다."
+    },
+    {
+      "q": "그 코드가 지금은 왜 문제로 보이지 않는가?",
+      "a": "동작하고 테스트도 통과하기 때문이다. 설계 결함은 요구사항이 바뀔 때 드러나고, 이 책에서는 3.2절이 그 시점이다."
+    },
+    {
+      "q": "`store` 를 `HashMap` 으로 둬도 되는 이유와, 언제 문제가 되는가?",
+      "a": "웹서버 없이 테스트만 돌려 동시 요청이 없기 때문이다. 스프링 빈은 싱글톤이라 여러 스레드가 같은 인스턴스를 공유하므로 실무에서는 `ConcurrentHashMap` 이 필요하다(5.4절)."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Impl 접미사",
+      "en": "",
+      "what": "구현이 하나뿐일 때 붙이는 자리표시자성 이름. 인터페이스의 필요성을 의심해 볼 신호이기도 하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
