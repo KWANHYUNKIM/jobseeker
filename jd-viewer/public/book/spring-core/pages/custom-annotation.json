@@ -1,0 +1,187 @@
+{
+ "book": "spring-core",
+ "id": "custom-annotation",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "애노테이션 직접 만들기",
+ "summary": "@Qualifier 문자열의 오타를 컴파일 때 잡는 법.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Qualifier` 를 감싼 커스텀 어노테이션을 만들 수 있다.",
+  "그것이 왜 오타를 컴파일 시점에 잡는지 안다.",
+  "6.2절의 메타 어노테이션과 같은 원리라는 것을 안다.",
+  "어디까지 재정의해도 되는지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.6절 마지막의 문제다.\n\n```java\n@Qualifier(\"mainDiscountPolicy\")   // 오타를 컴파일러가 못 잡는다\n```\n\n이 책에서 네 번째로 나오는 같은 문제다 — **빈 이름**(4.3절), **`basePackages`**(6.2절), **필터**(6.3절), 그리고 `@Qualifier`. 전부 문자열이고, 전부 컴파일러가 못 본다.\n\n이번에는 **고칠 수 있다.**"
+  },
+  {
+   "type": "heading",
+   "text": "@Qualifier 를 감싼 어노테이션을 만든다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MainDiscountPolicy.java",
+   "code": "@Target({ElementType.FIELD, ElementType.METHOD,\n         ElementType.PARAMETER, ElementType.TYPE,\n         ElementType.ANNOTATION_TYPE})\n@Retention(RetentionPolicy.RUNTIME)\n@Documented\n@Qualifier(\"mainDiscountPolicy\")     // 여기 딱 한 번만 문자열이 나온다\npublic @interface MainDiscountPolicy {\n}",
+   "note": "**`@Qualifier` 를 이 어노테이션에 붙였다.** 6.2절에서 `@Service` 가 `@Component` 를 품고 있던 것과 같은 구조다."
+  },
+  {
+   "type": "compare",
+   "caption": "쓰는 쪽",
+   "left": {
+    "title": "문자열",
+    "lang": "java",
+    "bad": true,
+    "code": "@Component\n@Qualifier(\"mainDiscountPolicy\")\npublic class RateDiscountPolicy { ... }\n\n// 주입\npublic OrderServiceImpl(\n        @Qualifier(\"mainDiscountPolicy\")\n        DiscountPolicy discountPolicy) { ... }",
+    "md": "문자열이 **두 곳**에 나온다. 한 쪽만 고치면 조용히 깨진다."
+   },
+   "right": {
+    "title": "커스텀 어노테이션",
+    "lang": "java",
+    "code": "@Component\n@MainDiscountPolicy\npublic class RateDiscountPolicy { ... }\n\n// 주입\npublic OrderServiceImpl(\n        @MainDiscountPolicy\n        DiscountPolicy discountPolicy) { ... }",
+    "md": "**타입**이다. 오타를 내면 컴파일이 안 되고, IDE 가 자동완성해 주고, **사용처 찾기가 된다.**"
+   }
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 달라지나",
+   "note": "**마지막 줄이 실무에서 가장 크다.** 문자열은 `Ctrl+F` 로 찾아야 하고, 같은 문자열이 다른 의미로 쓰였는지 알 수 없다.",
+   "columns": [
+    "",
+    "`@Qualifier(\"...\")`",
+    "커스텀 어노테이션"
+   ],
+   "rows": [
+    [
+     "오타",
+     "**런타임에 발견**",
+     "**컴파일 에러**"
+    ],
+    [
+     "자동완성",
+     "안 된다",
+     "된다"
+    ],
+    [
+     "이름 바꾸기",
+     "손으로 전부",
+     "IDE 리팩터링"
+    ],
+    [
+     "**사용처 찾기**",
+     "문자열 검색",
+     "**Find Usages**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "6.2절과 같은 원리다",
+   "md": "6.2절에서 이렇게 적었다.\n\n> 자바에는 **어노테이션 상속이 없다.** 이건 **스프링이 직접 구현한 기능**이다. 스프링은 클래스에 붙은 어노테이션을 읽을 때, 그 어노테이션에 또 붙어 있는 어노테이션까지 따라간다.\n\n`@MainDiscountPolicy` 를 만나면 스프링이 그 안의 `@Qualifier(\"mainDiscountPolicy\")` 를 따라간다. **`@Service` 가 `@Component` 로 읽히는 것과 정확히 같다.**\n\n그래서 이건 `@Qualifier` 만의 기능이 아니다. 스프링의 거의 모든 어노테이션을 이렇게 감쌀 수 있다. **`@SpringBootApplication` 자체가 그런 물건이다**(6.2절)."
+  },
+  {
+   "type": "heading",
+   "text": "어디까지 해도 되나"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "무분별하게 재정의하면 오히려 나빠진다",
+   "md": "할 수 있다고 해서 다 하면 안 된다.\n\n```java\n@MyService          // = @Service\n@MyTransactional    // = @Transactional(readOnly = true, timeout = 5)\n@MyRestController   // = @RestController + @RequestMapping(\"/api\")\n```\n\n이렇게 쌓기 시작하면 **새로 온 사람이 아무것도 못 읽는다.** 스프링을 아는 것이 소용없어지고, 그 팀의 어노테이션을 따로 배워야 한다.\n\n기준을 하나 두자면 이렇다.\n\n> **문자열을 타입으로 바꾸는 것은 이득이 명확하다. 그 외에는 신중하게.**\n\n`@Qualifier` 를 감싸는 것은 첫 번째 경우다 — 없던 안전이 생긴다. 반면 `@Service` 를 `@MyService` 로 감싸는 것은 **이름만 바꾼 것**이라 얻는 게 없다.\n\n6장에서 계속 나온 이야기와 이어진다 — **자동화는 코드에서 정보를 뺀다.** 여기서는 뺄 정보가 문자열 하나뿐이라 이득이지만, 어노테이션을 겹겹이 쌓으면 정보가 계속 빠진다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "제네릭도 구분자가 된다",
+   "md": "타입 파라미터가 다르면 스프링이 그것으로 구분한다.\n\n```java\n@Autowired private Repository<Member> memberRepository;\n@Autowired private Repository<Order>  orderRepository;\n```\n\n`Repository<Member>` 와 `Repository<Order>` 는 **다른 타입으로 취급**되어 `@Qualifier` 없이 주입된다.\n\n스프링 4.0 부터의 기능이고, 제네릭 저장소나 컨버터를 여러 개 둘 때 유용하다. **타입으로 구분되면 문자열이 아예 필요 없다** — 이 절의 목표를 가장 깔끔하게 달성하는 방법이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 오타가 컴파일에서 잡힌다",
+   "sql": "# 커스텀 어노테이션 이름에 오타를 내면\njava: cannot find symbol\n  symbol:   class MainDiscountPolicyy\n  location: class hello.core.order.OrderServiceImpl\n\n# 문자열에 오타를 냈을 때 (7.6절)\n# 컴파일은 통과하고, 실행에서\nNoSuchBeanDefinitionException: No qualifying bean of type\n    'hello.core.discount.DiscountPolicy' available:\n    expected at least 1 bean which qualifies as autowire candidate.\n    Dependency annotations: {@Qualifier(value=\"mainDiscountPolicyy\")}\n\n# 정상 동작\ndiscountPolicy = hello.core.discount.RateDiscountPolicy@1f36e637\nOrderServiceTest > VIP는_10퍼센트_할인() PASSED\n\nBUILD SUCCESSFUL",
+   "note": "**위 두 블록이 이 절의 전부다.** 같은 실수인데 하나는 `javac` 가 잡고 하나는 실행해야 안다.\n\n7.3절에서 `final` 을 두고 한 이야기와 같다 — **버그는 발견이 빠를수록 싸다.** 그때는 자바 문법(`final`)으로, 여기서는 타입 시스템으로 앞당겼다."
+  }
+ ],
+ "recap": [
+  "`@Qualifier` 를 품은 **커스텀 어노테이션**을 만들면 문자열이 타입이 된다.",
+  "문자열은 **딱 한 곳**(어노테이션 정의)에만 남는다.",
+  "얻는 것 — **컴파일 검사 · 자동완성 · 리팩터링 · 사용처 찾기.**",
+  "원리는 **6.2절의 메타 어노테이션**이다. 스프링이 어노테이션을 따라가며 읽는다.",
+  "자바에는 어노테이션 상속이 없다 — **스프링 기능**이다.",
+  "**무분별한 재정의는 나쁘다.** 문자열을 타입으로 바꾸는 것만 이득이 명확하다.",
+  "**제네릭 타입 파라미터도 구분자가 된다** — 문자열이 아예 필요 없어진다."
+ ],
+ "drills": [
+  {
+   "task": "`@MainDiscountPolicy` 를 만들어 `@Qualifier` 문자열을 대체한다.",
+   "done_when": "문자열이 어노테이션 정의 한 곳에만 남았다.",
+   "minutes": 20
+  },
+  {
+   "task": "그 어노테이션 이름에 오타를 낸다.",
+   "done_when": "컴파일 에러가 나는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "IDE 의 Find Usages 로 어노테이션 사용처를 찾는다.",
+   "done_when": "등록 쪽과 주입 쪽이 한 번에 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Repository<Member>` / `Repository<Order>` 형태로 제네릭 구분을 시험한다.",
+   "done_when": "`@Qualifier` 없이 주입되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커스텀 어노테이션은 무엇을 해결하는가?",
+   "a": "`@Qualifier` 의 문자열을 타입으로 바꿔서 오타를 컴파일 시점에 잡게 한다."
+  },
+  {
+   "q": "어떻게 만드는가?",
+   "a": "새 어노테이션을 정의하고 그 위에 `@Qualifier(\"...\")` 를 붙인다. 문자열은 그 정의 한 곳에만 남는다."
+  },
+  {
+   "q": "이것이 동작하는 원리는?",
+   "a": "스프링이 메타 어노테이션을 따라가며 읽기 때문이다. `@Service` 가 `@Component` 로 인식되는 것과 같다. 자바 기능이 아니라 스프링 기능이다."
+  },
+  {
+   "q": "문자열 대비 얻는 것 네 가지는?",
+   "a": "컴파일 시점 오타 검사, 자동완성, IDE 리팩터링, 사용처 찾기(Find Usages)."
+  },
+  {
+   "q": "어노테이션 재정의를 남용하면?",
+   "a": "새로 온 사람이 스프링 지식으로 코드를 읽을 수 없게 된다. 문자열을 타입으로 바꾸는 경우 외에는 신중해야 한다."
+  },
+  {
+   "q": "제네릭으로도 구분이 되는가?",
+   "a": "된다. `Repository<Member>` 와 `Repository<Order>` 는 다른 타입으로 취급되어 `@Qualifier` 없이 주입된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "커스텀 Qualifier",
+   "en": "",
+   "what": "`@Qualifier` 를 메타 어노테이션으로 품은 사용자 정의 어노테이션. 문자열 구분자를 타입으로 바꾼다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Using Generics as Autowiring Qualifiers",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired-qualifiers.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

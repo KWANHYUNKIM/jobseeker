@@ -1,0 +1,208 @@
+{
+ "book": "spring-core",
+ "id": "qualifier-primary",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "@Autowired 필드 명, @Qualifier, @Primary",
+ "summary": "세 가지 해결책과 우선순위. 언제 무엇을 쓰나.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 해결책을 각각 쓸 수 있다.",
+  "스프링이 후보를 좁히는 순서를 말할 수 있다.",
+  "`@Qualifier` 가 `@Primary` 보다 우선하는 이유를 안다.",
+  "실무에서 둘을 어떻게 조합하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.5절의 요구는 이랬다 — **타입 외의 기준으로, 서비스 클래스 밖에서 하나를 고른다.** 답이 셋이다."
+  },
+  {
+   "type": "heading",
+   "text": "1. @Autowired 필드 명 매칭"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "// 기존 — 타입만 맞다\n@Autowired\nprivate DiscountPolicy discountPolicy;        // 후보 2개, 실패\n\n// 변수 이름을 빈 이름과 맞춘다\n@Autowired\nprivate DiscountPolicy rateDiscountPolicy;    // 성공",
+   "note": "**타입 매칭 결과가 여럿이면 필드 이름·파라미터 이름으로 빈 이름을 한 번 더 본다.** 코드를 거의 안 고쳐도 된다는 것이 장점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그런데 잘 쓰지 않는다",
+   "md": "변수 이름이 **의미 없는 식별자에서 설정으로 바뀐다.** 이름을 리팩터링하면 주입이 깨지는데, IDE 는 그것을 모른다.\n\n```java\nprivate DiscountPolicy rateDiscountPolicy;   // 이름 바꾸면 앱이 안 뜬다\n```\n\n그리고 **왜 이 이름인지 코드에 설명이 없다.** 6장에서 계속 나온 문제 — 조건이 코드에 안 보인다 — 가 여기도 있다.\n\n생성자 주입에서는 **파라미터 이름**이 기준이 되는데, 이건 더 위험하다. 컴파일 옵션(`-parameters`)에 따라 파라미터 이름이 클래스 파일에 안 남을 수도 있기 때문이다."
+  },
+  {
+   "type": "heading",
+   "text": "2. @Qualifier — 별도의 구분자"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록할 때와 주입할 때 둘 다 붙인다",
+   "code": "// 등록\n@Component\n@Qualifier(\"mainDiscountPolicy\")\npublic class RateDiscountPolicy implements DiscountPolicy { ... }\n\n@Component\n@Qualifier(\"fixDiscountPolicy\")\npublic class FixDiscountPolicy implements DiscountPolicy { ... }\n\n// 주입\n@Autowired\npublic OrderServiceImpl(MemberRepository memberRepository,\n                       @Qualifier(\"mainDiscountPolicy\") DiscountPolicy discountPolicy) {\n    ...\n}",
+   "note": "**빈 이름을 바꾸는 것이 아니다.** 빈 이름은 그대로 `rateDiscountPolicy` 이고, `@Qualifier` 는 **추가 구분자**를 붙이는 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "@Bean 에도 붙는다",
+   "md": "```java\n@Bean\n@Qualifier(\"mainDiscountPolicy\")\npublic DiscountPolicy discountPolicy() {\n    return new RateDiscountPolicy();\n}\n```\n\n수동 등록에도 쓸 수 있다. 그리고 `@Qualifier` 로 못 찾으면 **같은 이름의 빈**을 한 번 더 찾아본다 — 그것도 없으면 `NoSuchBeanDefinitionException` 이다.\n\n다만 **그 fallback 에 기대지 않는다.** `@Qualifier` 를 붙였으면 등록 쪽에도 붙이는 것이 명확하다."
+  },
+  {
+   "type": "heading",
+   "text": "3. @Primary — 기본값을 정한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Component\n@Primary\npublic class RateDiscountPolicy implements DiscountPolicy { ... }\n\n@Component\npublic class FixDiscountPolicy implements DiscountPolicy { ... }\n\n// 주입하는 쪽은 아무것도 안 한다\n@Autowired\npublic OrderServiceImpl(MemberRepository memberRepository,\n                       DiscountPolicy discountPolicy) { ... }",
+   "note": "**주입하는 쪽 코드가 그대로다.** 이것이 `@Primary` 의 가장 큰 장점이다 — 쓰는 곳이 100군데여도 안 고친다."
+  },
+  {
+   "type": "heading",
+   "text": "스프링이 고르는 순서"
+  },
+  {
+   "type": "figure",
+   "caption": "후보를 좁혀 가는 순서",
+   "ascii": "   1. type match\n        ├── exactly 1   ->  inject\n        └── 2 or more\n              │\n   2. @Qualifier filter\n        ├── narrowed to 1  ->  inject\n        └── still 2 or more\n              │\n   3. @Primary\n        ├── found  ->  inject\n        └── none\n              │\n   4. field / parameter name match\n        ├── found  ->  inject\n        └── none   ->  NoUniqueBeanDefinitionException",
+   "note": "**`@Qualifier` 가 먼저 걸러 내고, 그 다음 `@Primary` 가 고른다.** 그래서 둘이 붙어 있으면 `@Qualifier` 가 이긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 @Qualifier 가 우선인가",
+   "md": "스프링에는 일관된 원칙이 하나 있다.\n\n> **더 상세하고 구체적인 것이 우선한다.**\n\n`@Primary` 는 \"별말 없으면 이걸 써라\" 는 **기본값**이고, `@Qualifier` 는 \"이 자리에서는 이걸 써라\" 는 **명시적 지정**이다. 명시가 기본값을 이기는 것이 자연스럽다.\n\n6.4절에서 **수동 등록이 자동 등록을 이긴다**고 한 것과 같은 원칙이다. 손으로 적은 쪽이 더 구체적인 의사 표현이기 때문이다."
+  },
+  {
+   "type": "table",
+   "caption": "셋을 나란히",
+   "note": "**실무에서는 `@Primary` + `@Qualifier` 조합**을 쓴다. 아래에 예가 있다.",
+   "columns": [
+    "",
+    "주입하는 쪽 코드",
+    "언제"
+   ],
+   "rows": [
+    [
+     "**필드 명 매칭**",
+     "변수 이름을 바꾼다",
+     "**거의 안 쓴다**"
+    ],
+    [
+     "**`@Qualifier`**",
+     "`@Qualifier(\"...\")` 를 붙인다",
+     "특정 자리에서 특정 구현이 필요할 때"
+    ],
+    [
+     "**`@Primary`**",
+     "**안 고친다**",
+     "대부분이 쓰는 기본 구현이 있을 때"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실무 조합 — 메인은 @Primary, 예외는 @Qualifier",
+   "md": "데이터베이스 커넥션이 둘인 상황을 생각해 보자.\n\n```java\n@Bean\n@Primary                            // 대부분의 코드가 쓴다\npublic DataSource mainDataSource() { ... }\n\n@Bean\n@Qualifier(\"batchDataSource\")       // 배치 작업만 쓴다\npublic DataSource batchDataSource() { ... }\n```\n\n- 서비스 클래스 수십 개는 `DataSource` 만 적으면 **메인이 주입된다**\n- 배치 코드 몇 곳만 `@Qualifier(\"batchDataSource\")` 를 적는다\n\n**흔한 쪽은 안 적고, 드문 쪽만 적는다.** 코드가 가장 적게 든다.\n\n리플리케이션(읽기/쓰기 DB 분리), 캐시 매니저 여러 개, 외부 API 클라이언트 여러 개 — 실무에서 이 패턴이 나오는 자리는 많다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "@Qualifier 는 문자열이다",
+   "md": "```java\n@Qualifier(\"mainDiscountPolicy\")   // 오타를 컴파일러가 못 잡는다\n```\n\n4.3절부터 반복된 문제다 — 빈 이름, `basePackages`, 그리고 이제 `@Qualifier`.\n\n**7.7절이 이 문제를 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 셋 다 통과한다",
+   "sql": "# 1. 필드 명 매칭\ndiscountPolicy = hello.core.discount.RateDiscountPolicy@1f36e637\n\n# 2. @Qualifier\ndiscountPolicy = hello.core.discount.RateDiscountPolicy@1f36e637\n\n# 3. @Primary\ndiscountPolicy = hello.core.discount.RateDiscountPolicy@1f36e637\n\n# 4. @Primary 와 @Qualifier 가 함께 있을 때\n#    Rate 에 @Primary, Fix 에 @Qualifier(\"fixDiscountPolicy\")\n#    주입 자리에 @Qualifier(\"fixDiscountPolicy\")\ndiscountPolicy = hello.core.discount.FixDiscountPolicy@7b02881e\n#                                    ^^^^^^^^^^^^^^^^^^ @Qualifier 가 이겼다\n\nOrderServiceTest > VIP는_10퍼센트_할인() PASSED\n\nBUILD SUCCESSFUL",
+   "note": "**네 번째가 이 절의 결론이다.** `@Primary` 가 붙은 `RateDiscountPolicy` 를 제치고 `FixDiscountPolicy` 가 주입됐다.\n\n기본값보다 명시가 이긴다 — 6.4절의 \"수동이 자동을 이긴다\" 와 같은 원칙이다."
+  }
+ ],
+ "recap": [
+  "해결책 셋 — **필드 명 매칭 · `@Qualifier` · `@Primary`.**",
+  "필드 명 매칭은 **변수 이름이 설정이 된다.** 리팩터링에 깨지고 이유가 안 보인다.",
+  "`@Qualifier` 는 **빈 이름이 아니라 추가 구분자**다. 등록·주입 양쪽에 붙인다.",
+  "`@Primary` 는 **주입하는 쪽 코드를 안 고친다** — 쓰는 곳이 많을 때 강력하다.",
+  "순서 — 타입 → **`@Qualifier` 로 거르고** → `@Primary` 로 고르고 → 이름 매칭.",
+  "**더 구체적인 것이 우선한다** — `@Qualifier` > `@Primary`. 6.4절과 같은 원칙.",
+  "실무 조합 — **흔한 쪽은 `@Primary`, 드문 쪽만 `@Qualifier`.**"
+ ],
+ "drills": [
+  {
+   "task": "세 가지 해결책을 각각 적용해 본다.",
+   "done_when": "셋 다 예외 없이 뜨는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@Primary` 와 `@Qualifier` 를 함께 두고 어느 쪽이 이기는지 확인한다.",
+   "done_when": "`@Qualifier` 쪽이 주입되는 것을 눈으로 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "필드 명 매칭으로 주입한 뒤 변수 이름을 IDE 리팩터링으로 바꾼다.",
+   "done_when": "애플리케이션이 안 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Qualifier` 문자열에 오타를 낸다.",
+   "done_when": "컴파일은 되고 실행에서 실패하는 것을 확인했다. 7.7절을 기대하게 됐다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타입 후보가 여럿일 때 스프링이 좁히는 순서는?",
+   "a": "타입 매칭 → `@Qualifier` 로 후보를 거름 → `@Primary` 로 선택 → 필드·파라미터 이름 매칭 → 그래도 안 되면 예외."
+  },
+  {
+   "q": "`@Qualifier` 는 빈 이름을 바꾸는가?",
+   "a": "아니다. 빈 이름은 그대로 두고 추가 구분자를 붙이는 것이다."
+  },
+  {
+   "q": "`@Primary` 의 가장 큰 장점은?",
+   "a": "주입하는 쪽 코드를 하나도 안 고쳐도 된다. 쓰는 곳이 많을수록 유리하다."
+  },
+  {
+   "q": "`@Qualifier` 가 `@Primary` 보다 우선하는 이유는?",
+   "a": "더 상세하고 구체적인 것이 우선한다는 원칙 때문이다. `@Primary` 는 기본값, `@Qualifier` 는 명시적 지정이다."
+  },
+  {
+   "q": "실무에서 둘을 어떻게 조합하나?",
+   "a": "대부분이 쓰는 구현에 `@Primary`, 특별한 경우에만 쓰는 구현에 `@Qualifier`. 흔한 쪽은 안 적고 드문 쪽만 적는다."
+  },
+  {
+   "q": "필드 명 매칭을 잘 안 쓰는 이유는?",
+   "a": "변수 이름이 설정이 되어 리팩터링에 깨지고, 왜 그 이름인지 코드에 설명이 남지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@Qualifier",
+   "en": "",
+   "what": "빈에 추가 구분자를 붙이는 어노테이션. 등록할 때와 주입할 때 같은 문자열을 쓴다."
+  },
+  {
+   "term": "@Primary",
+   "en": "",
+   "what": "같은 타입 후보 중 우선 선택될 빈을 표시하는 어노테이션. 주입하는 쪽 코드를 고치지 않아도 된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Fine-tuning Annotation-based Autowiring with Qualifiers",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired-qualifiers.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

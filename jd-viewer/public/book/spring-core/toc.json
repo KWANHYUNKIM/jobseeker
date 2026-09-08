@@ -458,7 +458,7 @@
           "title": "조회 빈이 2개 이상 — 문제",
           "summary": "타입으로 주입하는데 후보가 둘이면 어떻게 되나.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -466,7 +466,7 @@
           "title": "@Autowired 필드 명, @Qualifier, @Primary",
           "summary": "세 가지 해결책과 우선순위. 언제 무엇을 쓰나.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -474,7 +474,7 @@
           "title": "애노테이션 직접 만들기",
           "summary": "@Qualifier 문자열의 오타를 컴파일 때 잡는 법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -482,7 +482,7 @@
           "title": "조회한 빈이 모두 필요할 때 — List, Map",
           "summary": "전략 패턴을 스프링이 대신 조립해 준다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",

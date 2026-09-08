@@ -1,0 +1,216 @@
+{
+ "book": "spring-core",
+ "id": "list-map-injection",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "조회한 빈이 모두 필요할 때 — List, Map",
+ "summary": "전략 패턴을 스프링이 대신 조립해 준다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`List` 와 `Map` 으로 같은 타입 빈을 전부 주입받을 수 있다.",
+  "`Map` 의 키가 무엇인지 안다.",
+  "이것이 전략 패턴이라는 것과, 스프링이 무엇을 대신했는지 안다.",
+  "빈이 없을 때 어떻게 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.5~7.7절은 **후보 여럿 중 하나를 고르는** 이야기였다. 그런데 4.4절에서 이렇게 적었다.\n\n> \"구현체가 하나여야 한다\" 는 법이 없다. 여러 개를 두고 **런타임에 고르는 것**이 정상인 경우가 있다.\n\n이 절이 그 자리다. **고르는 것을 컴파일 시점이 아니라 실행 시점으로 미룬다.**"
+  },
+  {
+   "type": "heading",
+   "text": "요구사항이 바뀌었다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클라이언트가 할인 방식을 고른다면",
+   "md": "지금까지는 **애플리케이션이 정책 하나를 정해** 놓고 썼다. `AppConfig` 를 고치거나(3.5절) `@Primary` 를 붙여서(7.6절).\n\n요구가 이렇게 바뀌었다고 하자.\n\n> 사용자가 결제 화면에서 **정액 할인과 정률 할인 중 고를 수 있다.**\n\n이제 어느 정책을 쓸지 **요청이 들어와야 안다.** `@Qualifier` 도 `@Primary` 도 소용없다 — 둘 다 **뜰 때 정해지는** 것이기 때문이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "if 문으로 하면",
+   "bad": true,
+   "code": "public int discount(Member member, int price, String code) {\n    if (code.equals(\"fixDiscountPolicy\")) {\n        return new FixDiscountPolicy().discount(member, price);\n    } else if (code.equals(\"rateDiscountPolicy\")) {\n        return new RateDiscountPolicy().discount(member, price);\n    }\n    throw new IllegalArgumentException(code);\n}",
+   "note": "**3.2절로 돌아간다.** 구현 클래스를 직접 알고, `new` 를 하고, 정책이 늘 때마다 이 메서드를 고친다. OCP 위반이다."
+  },
+  {
+   "type": "heading",
+   "text": "전부 주입받는다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "DiscountService.java",
+   "code": "@Component\npublic class DiscountService {\n\n    private final Map<String, DiscountPolicy> policyMap;\n    private final List<DiscountPolicy> policies;\n\n    public DiscountService(Map<String, DiscountPolicy> policyMap,\n                          List<DiscountPolicy> policies) {\n        this.policyMap = policyMap;\n        this.policies = policies;\n    }\n\n    public int discount(Member member, int price, String discountCode) {\n        DiscountPolicy discountPolicy = policyMap.get(discountCode);\n        return discountPolicy.discount(member, price);\n    }\n}",
+   "note": "**`Map<String, DiscountPolicy>` 의 키는 빈 이름**이다. 값이 그 타입의 빈 전부다. `List` 는 값만 순서대로 받는다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 조립됐나",
+   "ascii": "   DiscountService\n        │\n        ├── Map<String, DiscountPolicy> policyMap\n        │        ├── \"fixDiscountPolicy\"   ->  FixDiscountPolicy\n        │        └── \"rateDiscountPolicy\"  ->  RateDiscountPolicy\n        │\n        └── discount(member, price, code)\n                 policyMap.get(code).discount(member, price)\n\n   code 는 런타임에 정해진다  =>  if 문이 없다",
+   "note": "**`if` 문이 없다.** `code` 로 `Map` 에서 꺼내면 끝이다. 정책이 열 개로 늘어도 이 클래스는 안 고친다 — **OCP 다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 전략 패턴이다",
+   "md": "**전략 패턴(Strategy Pattern)** — 알고리즘을 인터페이스로 뽑아 두고, 실행 시점에 갈아 끼우는 것.\n\n원래 직접 하려면 이런 것들이 필요하다.\n\n- 전략 인터페이스 (`DiscountPolicy` — 있다)\n- 구현체들 (`Fix`, `Rate` — 있다)\n- **전략들을 담아 두는 저장소** (직접 `Map` 을 만들고 `put` 해야 한다)\n- 키로 꺼내 쓰는 컨텍스트 (`DiscountService`)\n\n스프링은 **세 번째를 대신 해 준다.** `Map` 을 선언만 하면 채워서 넣어 준다.\n\n1.3절에서 다형성의 장점으로 \"클라이언트를 안 고치고 구현을 바꾼다\" 를 꼽았다. 여기서는 한 걸음 더 나간다 — **클라이언트를 안 고치고 구현을 늘린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "4.4절의 getBeansOfType 이 이것이었다",
+   "md": "```java\nMap<String, MemberRepository> beansOfType = ac.getBeansOfType(MemberRepository.class);\n```\n\n4.4절에서 **똑같은 모양**을 봤다. 그때는 내가 컨테이너에게 물어봤고, 지금은 **컨테이너가 넣어 준다.**\n\n그때 이렇게 적었다 — \"이 패턴을 `List` 와 `Map` 으로 주입받는 방법이 **7.8절**이다. 지금은 `getBeansOfType` 이 그 원형이라는 것만 알면 된다.\"\n\n**원형이 맞았다.** 스프링은 내부적으로 같은 일을 한다."
+  },
+  {
+   "type": "heading",
+   "text": "실무에서 나오는 자리"
+  },
+  {
+   "type": "table",
+   "caption": "이 패턴이 쓰이는 곳",
+   "note": "**공통점은 '종류가 늘어난다' 는 것**이다. 새 결제 수단이 생기면 클래스 하나만 추가하면 되고, 기존 코드는 안 열어 본다.",
+   "columns": [
+    "도메인",
+    "인터페이스",
+    "구현들",
+    "키"
+   ],
+   "rows": [
+    [
+     "결제",
+     "`PaymentProcessor`",
+     "카드 · 계좌이체 · 간편결제",
+     "결제 수단 코드"
+    ],
+    [
+     "알림",
+     "`Notifier`",
+     "이메일 · SMS · 푸시",
+     "알림 채널"
+    ],
+    [
+     "파일",
+     "`FileStorage`",
+     "로컬 · S3 · GCS",
+     "설정값"
+    ],
+    [
+     "검증",
+     "`Validator`",
+     "규칙 여러 개",
+     "(키 없이 `List` 로 전부 실행)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "List 는 순서가 필요할 때",
+   "md": "마지막 줄처럼 **키로 고르는 게 아니라 전부 실행**해야 하는 경우가 있다. 검증 규칙, 필터, 후처리기 같은 것들이다.\n\n```java\nfor (Validator v : validators) {\n    v.validate(request);\n}\n```\n\n이때는 **순서가 중요할 수 있는데**, `List` 주입 순서는 기본적으로 보장되지 않는다. 필요하면 `@Order` 나 `Ordered` 인터페이스로 정한다.\n\n```java\n@Component\n@Order(1)\npublic class NotNullValidator implements Validator { ... }\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈이 하나도 없으면 예외가 아니다",
+   "md": "`Map` 이나 `List` 로 주입받을 때 **해당 타입 빈이 하나도 없으면 빈 컬렉션이 들어온다.** 예외가 안 난다.\n\n```java\npolicyMap.size()   // 0\n```\n\n7.2절에서 본 `@Autowired` 의 기본 동작 — 없으면 예외 — 과 **다르다.** 컬렉션은 '없음' 이 자연스러운 상태이기 때문이다.\n\n문제는 이것이 **조용한 실패**라는 점이다. 컴포넌트 스캔 범위를 잘못 잡아서(6.2절) 구현체가 하나도 안 잡혔는데, 애플리케이션은 멀쩡히 뜨고 `policyMap.get(code)` 가 `null` 을 돌려준다.\n\n**필수라면 확인 코드를 넣는다.**\n\n```java\npublic DiscountService(Map<String, DiscountPolicy> policyMap) {\n    Assert.notEmpty(policyMap, \"할인 정책이 하나도 등록되지 않았다\");\n    this.policyMap = policyMap;\n}\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 같은 코드가 다른 정책을 쓴다",
+   "sql": "policyMap = {fixDiscountPolicy=hello.core.discount.FixDiscountPolicy@1f36e637,\n             rateDiscountPolicy=hello.core.discount.RateDiscountPolicy@7b02881e}\npolicies  = [hello.core.discount.FixDiscountPolicy@1f36e637,\n             hello.core.discount.RateDiscountPolicy@7b02881e]\n\ndiscount(memberA, 10000, \"fixDiscountPolicy\")   ->  1000\ndiscount(memberA, 20000, \"rateDiscountPolicy\")  ->  2000\n\nDiscountServiceTest > findAllBean PASSED\n\n# 새 정책 클래스를 추가하고 @Component 만 붙이면\npolicyMap = {fixDiscountPolicy=..., rateDiscountPolicy=..., vipDiscountPolicy=...}\n# DiscountService 는 한 글자도 안 고쳤다",
+   "note": "**마지막 두 줄이 이 절의 결론이다.** 클래스 하나를 추가했더니 `Map` 이 저절로 커졌고, 쓰는 쪽은 안 고쳤다.\n\n3.8절에서 DI 를 정리하며 **\"정적 클래스 의존관계를 바꾸지 않고 동적 객체 의존관계를 바꾼다\"** 고 했다. 여기서는 **동적 객체 의존관계가 저절로 늘어난다.**"
+  }
+ ],
+ "recap": [
+  "`Map<String, T>` · `List<T>` 로 **그 타입의 빈을 전부** 주입받는다.",
+  "**`Map` 의 키는 빈 이름**이다.",
+  "`if` 문 대신 `Map.get(code)` — **정책이 늘어도 쓰는 쪽을 안 고친다(OCP).**",
+  "이것이 **전략 패턴**이고, 스프링은 **전략 저장소를 채우는 일**을 대신한다.",
+  "**4.4절의 `getBeansOfType` 이 이것의 원형**이었다.",
+  "실무 — 결제 수단 · 알림 채널 · 파일 저장소 · 검증 규칙.",
+  "`List` 순서가 중요하면 **`@Order`** 를 쓴다.",
+  "**빈이 하나도 없으면 예외가 아니라 빈 컬렉션**이다 — 조용한 실패에 주의한다."
+ ],
+ "drills": [
+  {
+   "task": "`DiscountService` 를 만들어 `Map` 과 `List` 를 둘 다 주입받는다.",
+   "done_when": "키가 빈 이름인 것을 출력으로 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "새 할인 정책 클래스를 추가하고 `@Component` 만 붙인다.",
+   "done_when": "`DiscountService` 를 안 고쳤는데 `Map` 이 커진 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "구현체의 `@Component` 를 전부 떼고 실행한다.",
+   "done_when": "예외 없이 뜨고 `policyMap.size()` 가 0 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Validator` 인터페이스와 구현 셋을 만들어 `List` 로 전부 실행해 본다.",
+   "done_when": "`@Order` 로 순서를 정할 수 있다는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Map<String, DiscountPolicy>` 로 주입받으면 키는 무엇인가?",
+   "a": "빈 이름이다. 값은 그 타입의 빈 객체다."
+  },
+  {
+   "q": "이 방식이 `if` 문보다 나은 이유는?",
+   "a": "구현이 늘어도 쓰는 쪽 코드를 고치지 않는다. 새 클래스에 `@Component` 만 붙이면 `Map` 에 자동으로 들어온다."
+  },
+  {
+   "q": "전략 패턴에서 스프링이 대신하는 부분은?",
+   "a": "전략들을 담아 두는 저장소를 만들고 채우는 일이다. 인터페이스와 구현체, 컨텍스트는 여전히 내가 만든다."
+  },
+  {
+   "q": "4.4절의 무엇과 같은가?",
+   "a": "`getBeansOfType`. 그때는 내가 컨테이너에 물어봤고, 여기서는 컨테이너가 주입해 준다."
+  },
+  {
+   "q": "해당 타입 빈이 하나도 없으면?",
+   "a": "예외가 아니라 빈 컬렉션이 주입된다. 조용한 실패가 될 수 있어 필수라면 확인 코드를 넣는다."
+  },
+  {
+   "q": "`List` 주입 순서를 정하려면?",
+   "a": "`@Order` 어노테이션이나 `Ordered` 인터페이스를 쓴다. 기본 순서는 보장되지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "전략 패턴",
+   "en": "Strategy Pattern",
+   "what": "알고리즘을 인터페이스로 뽑아 두고 실행 시점에 갈아 끼우는 디자인 패턴. 스프링의 `Map`·`List` 주입이 전략 저장소를 대신 채워 준다."
+  },
+  {
+   "term": "@Order",
+   "en": "",
+   "what": "`List` 로 주입되는 빈들의 순서를 정하는 어노테이션. 숫자가 작을수록 먼저다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Using Generics as Autowiring Qualifiers",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired-qualifiers.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Spring Framework Reference — Autowiring Collections and Maps",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

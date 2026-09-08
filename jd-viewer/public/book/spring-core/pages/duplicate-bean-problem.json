@@ -1,0 +1,142 @@
+{
+ "book": "spring-core",
+ "id": "duplicate-bean-problem",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "조회 빈이 2개 이상 — 문제",
+ "summary": "타입으로 주입하는데 후보가 둘이면 어떻게 되나.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "타입 후보가 둘일 때 나는 예외를 재현할 수 있다.",
+  "이것이 4.4~4.5절에서 본 문제와 같다는 것을 안다.",
+  "하위 타입으로 지정하는 해결책이 왜 나쁜지 설명할 수 있다.",
+  "다음 절의 세 가지 해결책이 무엇을 푸는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.4절 마지막에 이렇게 적었다.\n\n> `@Autowired` 는 **기본적으로 타입으로 찾는다.** 그런데 `FixDiscountPolicy` 와 `RateDiscountPolicy` 를 둘 다 빈으로 등록해 두면 — **바로 이 예외가 난다.** 그때는 `getBean` 처럼 이름을 적을 자리가 없어서 별도의 장치가 필요해진다.\n\n**그 자리다.** 그리고 4.5절 마지막 실습이 이것을 미리 겪게 했다."
+  },
+  {
+   "type": "heading",
+   "text": "둘 다 등록한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "bad": true,
+   "code": "@Component\npublic class FixDiscountPolicy implements DiscountPolicy { ... }\n\n@Component\npublic class RateDiscountPolicy implements DiscountPolicy { ... }",
+   "note": "3.1절에서 만든 두 정책이다. 그동안 `RateDiscountPolicy` 에만 `@Component` 를 붙여 뒀는데, **둘 다 붙였다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무슨 일이 일어나나",
+   "ascii": "   @Autowired  DiscountPolicy discountPolicy\n        │\n        ▼   getBean(DiscountPolicy.class)\n        ├── fixDiscountPolicy      (candidate)\n        └── rateDiscountPolicy     (candidate)\n\n   =>  NoUniqueBeanDefinitionException",
+   "note": "**`@Autowired` 는 `getBean(타입.class)` 과 같다**(4.5절). 후보가 둘이면 컨테이너가 고를 수 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이것은 새 문제가 아니다",
+   "md": "4장에서 이미 두 번 봤다.\n\n- **4.4절** — 같은 타입 빈이 둘일 때 `getBean(타입.class)` 실패\n- **4.5절** — 부모 타입으로 조회하면 자식이 전부 후보가 된다\n\n지금은 상속 관계다. `FixDiscountPolicy` 와 `RateDiscountPolicy` 가 `DiscountPolicy` 를 구현했으니 **둘 다 `DiscountPolicy` 타입이다.**\n\n달라진 것은 **내가 조회하는 게 아니라 스프링이 주입한다**는 점뿐이다. 그래서 4.4절의 해결책 — `getBean` 에 이름을 함께 주는 것 — 을 **쓸 자리가 없다.**"
+  },
+  {
+   "type": "heading",
+   "text": "나쁜 해결책 — 하위 타입으로 지정"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동작은 한다",
+   "bad": true,
+   "code": "@Autowired\npublic OrderServiceImpl(MemberRepository memberRepository,\n                       FixDiscountPolicy discountPolicy) {\n    //                 ^^^^^^^^^^^^^^^^^ 구현 클래스로 받는다\n}",
+   "note": "후보가 하나로 좁혀지니 예외는 안 난다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "3장을 통째로 되돌리는 코드다",
+   "md": "**3.2절의 그 문제로 정확히 돌아간다.**\n\n- `OrderServiceImpl` 의 import 에 **구현 클래스가 생긴다** — 3.7절의 DIP 판정 기준에 걸린다\n- 정책을 바꾸려면 **서비스 파일을 열어야 한다** — 3.5절에서 없앤 그 작업이다\n- OCP 위반\n\n1.4절에서 \"구현체를 고르는 코드는 어딘가에 반드시 있어야 한다\" 고 했다. 맞다. **그런데 그 자리가 서비스 클래스여서는 안 된다.**\n\n그리고 실용적인 문제도 있다 — **하위 타입이 없는 경우**에는 이 방법조차 못 쓴다. 4.4절처럼 같은 클래스를 `@Bean` 으로 두 번 등록한 경우가 그렇다.\n\n```java\n@Bean public DiscountPolicy rateDiscountPolicy() { return new RateDiscountPolicy(); }\n@Bean public DiscountPolicy rateDiscountPolicy2() { return new RateDiscountPolicy(); }\n```\n\n**타입이 완전히 같다.** 좁힐 하위 타입이 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필요한 것은 타입 말고 다른 기준이다",
+   "md": "문제를 다시 보면 이렇다.\n\n> 후보가 여럿일 때, **타입 외의 정보로** 하나를 고를 방법이 필요하다.\n\n그리고 그 정보는 **서비스 클래스 밖에** 있어야 한다. 안에 두면 위의 문제로 돌아간다.\n\n스프링이 주는 답이 셋이고, **7.6절**에서 셋을 다 본다.\n\n1. **`@Autowired` 필드 명 매칭** — 변수 이름을 기준으로\n2. **`@Qualifier`** — 별도의 구분자를 붙여서\n3. **`@Primary`** — 하나를 기본값으로 정해서"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 애플리케이션이 안 뜬다",
+   "sql": "UnsatisfiedDependencyException: Error creating bean with name 'orderServiceImpl'\n    defined in file [.../OrderServiceImpl.class]:\n    Unsatisfied dependency expressed through constructor parameter 1:\n\nNoUniqueBeanDefinitionException: No qualifying bean of type\n    'hello.core.discount.DiscountPolicy' available:\n    expected single matching bean but found 2:\n    fixDiscountPolicy,rateDiscountPolicy",
+   "note": "두 예외가 겹쳐 있다. 겉은 **`UnsatisfiedDependencyException`** — 7.2절에서 본 그것이고, **어느 빈의 몇 번째 생성자 파라미터**인지 알려 준다. 속은 **`NoUniqueBeanDefinitionException`** — 4.4절에서 본 그것이고, **후보 이름을 전부** 알려 준다.\n\n둘을 같이 읽으면 **어디서 무엇 때문에** 실패했는지가 한 번에 나온다. 실무에서 이 메시지를 읽는 법을 알면 대부분의 주입 실패는 1분 안에 끝난다."
+  }
+ ],
+ "recap": [
+  "구현체를 둘 다 등록하면 **`NoUniqueBeanDefinitionException`** 이 난다.",
+  "4.4·4.5절에서 본 것과 **같은 문제**다 — 달라진 건 조회가 아니라 주입이라는 점뿐.",
+  "그래서 `getBean` 에 이름을 주던 해결책을 **쓸 자리가 없다.**",
+  "하위 타입으로 받으면 되지만 **3장을 통째로 되돌린다** — DIP·OCP 위반.",
+  "타입이 완전히 같은 경우에는 **하위 타입 지정조차 못 쓴다.**",
+  "필요한 것은 **타입 외의 기준**이고, 그것이 서비스 클래스 **밖에** 있어야 한다.",
+  "예외 메시지 둘을 같이 읽으면 **어디서 무엇 때문에**가 한 번에 나온다."
+ ],
+ "drills": [
+  {
+   "task": "두 정책에 모두 `@Component` 를 붙이고 애플리케이션을 띄운다.",
+   "done_when": "두 예외가 겹친 메시지를 눈으로 읽었다.",
+   "minutes": 10
+  },
+  {
+   "task": "예외 메시지에서 '어느 빈의 몇 번째 파라미터' 와 '후보 목록' 을 각각 찾는다.",
+   "done_when": "두 정보가 서로 다른 예외에서 온다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "생성자 파라미터를 `FixDiscountPolicy` 로 바꿔 예외를 없앤다.",
+   "done_when": "동작은 하는데 import 에 구현 클래스가 생긴 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 클래스를 `@Bean` 으로 두 번 등록해 본다.",
+   "done_when": "하위 타입으로 좁힐 수 없다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "구현체를 둘 다 등록하면 어떤 예외가 나는가?",
+   "a": "`NoUniqueBeanDefinitionException`. `@Autowired` 는 타입으로 찾는데 후보가 둘이면 고를 수 없다."
+  },
+  {
+   "q": "4.4절의 해결책을 여기서 못 쓰는 이유는?",
+   "a": "그때는 내가 `getBean` 을 부르며 이름을 함께 줄 수 있었다. 지금은 스프링이 주입하므로 이름을 적을 자리가 없다."
+  },
+  {
+   "q": "하위 타입으로 받는 해결책의 문제는?",
+   "a": "서비스 클래스가 구현 클래스를 알게 되어 DIP·OCP 를 위반한다. 3장에서 없앤 문제로 돌아간다."
+  },
+  {
+   "q": "하위 타입 지정조차 안 되는 경우는?",
+   "a": "같은 클래스를 `@Bean` 으로 두 번 등록한 경우처럼 타입이 완전히 같을 때다."
+  },
+  {
+   "q": "필요한 것은 무엇인가?",
+   "a": "타입 외의 기준으로 하나를 고르는 방법이고, 그 기준이 서비스 클래스 밖에 있어야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Fine-tuning Annotation-based Autowiring with Qualifiers",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired-qualifiers.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
