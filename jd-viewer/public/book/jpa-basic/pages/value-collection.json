@@ -1,0 +1,258 @@
+{
+  "book": "jpa-basic",
+  "id": "value-collection",
+  "no": "10.5",
+  "chapter": 10,
+  "title": "값 타입 컬렉션",
+  "summary": "@ElementCollection 은 편하지만 수정 시 전부 지우고 다시 넣는다. 실무 대안.",
+  "minutes": 20,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "값 타입 컬렉션이 왜 별도 테이블이 되는지, 기본 키가 왜 전체 컬럼인지 설명할 수 있다.",
+    "수정할 때 나가는 SQL 을 예측할 수 있다.",
+    "값 타입 컬렉션의 세 가지 제약을 말할 수 있다.",
+    "실무 대안(일대다 연결 엔티티)으로 바꾸는 방법을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "값 타입을 여러 개 담고 싶을 때가 있다. 좋아하는 음식 목록, 이전 주소 이력 같은 것.\n\n그런데 **컬럼 하나에 여러 값을 넣을 수 없다.** 관계형 DB 의 제약이다. 그래서 JPA 는 별도 테이블을 만든다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    @Column(name = \"MEMBER_ID\")\n    private Long id;\n\n    private String name;\n\n    @ElementCollection\n    @CollectionTable(\n        name = \"FAVORITE_FOOD\",\n        joinColumns = @JoinColumn(name = \"MEMBER_ID\")\n    )\n    @Column(name = \"FOOD_NAME\")      // 값이 하나뿐이라 컬럼 이름을 직접 준다\n    private Set<String> favoriteFoods = new HashSet<>();\n\n    @ElementCollection\n    @CollectionTable(\n        name = \"ADDRESS_HISTORY\",\n        joinColumns = @JoinColumn(name = \"MEMBER_ID\")\n    )\n    private List<Address> addressHistory = new ArrayList<>();\n}",
+      "note": "임베디드 타입(`Address`)이면 그 안의 필드 이름이 컬럼이 되므로 `@Column` 이 필요 없다. 기본형(`String`)일 때만 컬럼 이름을 지정한다."
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 DDL",
+      "sql": "CREATE TABLE FAVORITE_FOOD (\n    MEMBER_ID BIGINT       NOT NULL,\n    FOOD_NAME VARCHAR(255) NOT NULL,\n    PRIMARY KEY (MEMBER_ID, FOOD_NAME)     -- 전체 컬럼이 기본 키다\n)\n\nCREATE TABLE ADDRESS_HISTORY (\n    MEMBER_ID BIGINT       NOT NULL,\n    CITY      VARCHAR(255) NOT NULL,\n    STREET    VARCHAR(255) NOT NULL,\n    ZIPCODE   VARCHAR(255) NOT NULL,\n    PRIMARY KEY (MEMBER_ID, CITY, STREET, ZIPCODE)\n)"
+    },
+    {
+      "type": "figure",
+      "caption": "구조와 그 결과",
+      "ascii": "   값 타입 컬렉션은 별도 테이블이 된다\n\n   MEMBER                        FAVORITE_FOOD\n   ┌──────────────┐              ┌──────────────────────────┐\n   │ MEMBER_ID PK │◀─────────────│ MEMBER_ID  FK            │\n   │ NAME         │              │ FOOD_NAME                │\n   └──────────────┘              └──────────────────────────┘\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^\n                                   두 컬럼 전부가 기본 키다\n\n\n   왜 그런가: 값 타입에는 식별자가 없다.\n   행 하나를 가리킬 방법이 \"모든 컬럼의 조합\" 밖에 없다.\n\n   그래서 따라오는 제약\n     - 어느 컬럼도 NULL 이면 안 된다\n     - 같은 값을 두 번 넣을 수 없다\n     - 행 하나만 골라 UPDATE 할 수 없다\n\n\n   수정하면 무슨 일이 일어나는가\n\n   favoriteFoods.remove(\"chicken\");\n   favoriteFoods.add(\"pizza\");\n\n   DELETE FROM FAVORITE_FOOD WHERE MEMBER_ID = 1      <-- 전부 지우고\n   INSERT INTO FAVORITE_FOOD VALUES (1, 'burger')     <-- 안 바꾼 것까지\n   INSERT INTO FAVORITE_FOOD VALUES (1, 'pizza')          다시 넣는다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "기본 키가 전체 컬럼인 이유",
+      "md": "10.1절에서 값 타입에는 식별자가 없다고 했다. 그 사실이 여기서 **테이블 구조로 나타난다.**\n\n`FAVORITE_FOOD` 의 한 행을 가리키려면 무엇을 써야 할까? `FOOD_NAME` 만으로는 안 된다(다른 회원도 같은 음식을 좋아한다). 대리키를 만들면 그건 이미 값 타입이 아니라 엔티티다.\n\n그래서 **모든 컬럼의 조합**이 기본 키가 된다. 그리고 기본 키는 NULL 일 수 없으므로 **어느 컬럼도 NULL 이 안 되고**, 유일해야 하므로 **같은 값을 두 번 넣을 수 없다.**"
+    },
+    {
+      "type": "heading",
+      "text": "조회 — 지연 로딩이다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = em.find(Member.class, 1L);\n// SELECT MEMBER 만\n\nmember.getFavoriteFoods().size();\n// 여기서 SELECT FAVORITE_FOOD"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT MEMBER_ID, FOOD_NAME\n  FROM FAVORITE_FOOD\n WHERE MEMBER_ID = ?",
+      "note": "`@ElementCollection` 의 기본 fetch 는 `LAZY` 다(9.2절의 표에는 없지만 컬렉션이므로 같다)."
+    },
+    {
+      "type": "heading",
+      "text": "수정 — 여기가 문제다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "기본형 컬렉션은 그나마 낫다",
+      "code": "Member member = em.find(Member.class, 1L);\n\nmember.getFavoriteFoods().remove(\"chicken\");\nmember.getFavoriteFoods().add(\"pizza\");"
+    },
+    {
+      "type": "sql",
+      "caption": "Set<String> 의 경우",
+      "sql": "DELETE FROM FAVORITE_FOOD WHERE MEMBER_ID = ? AND FOOD_NAME = ?\nINSERT INTO FAVORITE_FOOD (MEMBER_ID, FOOD_NAME) VALUES (?, ?)",
+      "note": "값 자체가 기본 키라 **그 행을 정확히 지목할 수 있다.** 그래서 바뀐 것만 처리된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "임베디드 타입 컬렉션은 다르다",
+      "code": "member.getAddressHistory().remove(new Address(\"Seoul\", \"Gangnam\", \"12345\"));\nmember.getAddressHistory().add(new Address(\"Busan\", \"Haeundae\", \"67890\"));"
+    },
+    {
+      "type": "sql",
+      "caption": "주소가 3개였다면",
+      "sql": "DELETE FROM ADDRESS_HISTORY WHERE MEMBER_ID = ?    -- 3개 전부 삭제\n\nINSERT INTO ADDRESS_HISTORY VALUES (?, ?, ?, ?)     -- 안 바꾼 것\nINSERT INTO ADDRESS_HISTORY VALUES (?, ?, ?, ?)     -- 안 바꾼 것\nINSERT INTO ADDRESS_HISTORY VALUES (?, ?, ?, ?)     -- 새로 넣은 것",
+      "note": "**하이버네이트가 컬렉션 전체를 지우고 다시 넣는다.** 주소가 100개면 DELETE 1번 + INSERT 100번이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "왜 전부 지우고 다시 넣나",
+      "md": "`@OrderColumn` 없이 매핑된 `List` 는 하이버네이트가 **각 행을 개별적으로 지목할 방법이 없다.** 기본 키가 전체 컬럼이라 값이 바뀌면 그건 다른 행이고, 어느 행이 어느 것으로 바뀌었는지 추적할 수 없다.\n\n그래서 가장 안전한 방법을 택한다 — **다 지우고 현재 상태대로 다시 넣는다.** 정확하지만 비싸다.\n\n`@OrderColumn` 을 붙이면 순서 컬럼으로 행을 지목할 수 있게 되는데, 이번에는 **중간 원소를 삭제할 때 뒤쪽 순서를 전부 UPDATE** 하는 문제가 생긴다. 어느 쪽이든 깔끔하지 않다."
+    },
+    {
+      "type": "heading",
+      "text": "제약 정리"
+    },
+    {
+      "type": "table",
+      "caption": "값 타입 컬렉션의 세 제약",
+      "note": "셋 다 \"값 타입에는 식별자가 없다\" 는 한 사실에서 나온다. 10.1절의 정의가 여기까지 그대로 이어진다.",
+      "columns": [
+        "제약",
+        "왜",
+        "부딪히는 상황"
+      ],
+      "rows": [
+        [
+          "**NULL 을 넣을 수 없다**",
+          "기본 키의 일부라서",
+          "선택 입력 필드가 있는 값 타입"
+        ],
+        [
+          "**중복 저장이 안 된다**",
+          "기본 키가 유일해야 해서",
+          "같은 주소로 두 번 이사한 이력"
+        ],
+        [
+          "**수정이 전체 재작성**",
+          "행을 개별 지목할 수 없어서",
+          "원소가 수십 개 이상일 때"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "실무 대안 — 엔티티로 승격시킨다"
+    },
+    {
+      "type": "prose",
+      "md": "7.4절에서 `@ManyToMany` 를 연결 엔티티로 바꿨던 것과 **같은 해법**이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "일대다 + cascade + orphanRemoval",
+      "code": "@Entity\npublic class AddressEntity {\n\n    @Id @GeneratedValue           // 대리키를 만든다\n    private Long id;\n\n    @Embedded\n    private Address address;      // 값 타입은 그대로 안에 둔다\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"MEMBER_ID\")\n    private Member member;\n}\n\n// Member 쪽\n@OneToMany(mappedBy = \"member\",\n           cascade = CascadeType.ALL,\n           orphanRemoval = true)\nprivate List<AddressEntity> addressHistory = new ArrayList<>();",
+      "note": "9.3절의 조합이다. **부모가 자식 생명주기를 완전히 관리**하므로 쓰는 쪽 코드는 값 타입 컬렉션과 거의 같아 보인다 — `addressHistory.add(...)`, `remove(...)`."
+    },
+    {
+      "type": "sql",
+      "caption": "이제 수정이 이렇게 된다",
+      "sql": "-- 하나만 지우고\nDELETE FROM ADDRESS_HISTORY WHERE ID = ?\n\n-- 하나만 넣는다\nINSERT INTO ADDRESS_HISTORY (ADDRESS_CITY, ADDRESS_STREET, ADDRESS_ZIPCODE, MEMBER_ID, ID)\nVALUES (?, ?, ?, ?, ?)",
+      "note": "대리키가 생기니 **행을 지목할 수 있게 됐다.** NULL 도 되고 중복도 된다. `@Embedded Address` 를 안에 그대로 두었으므로 값 타입의 응집도는 유지된다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그럼 값 타입 컬렉션은 언제 쓰나",
+      "md": "**정말 단순하고 개수가 적고 통째로 갈아 끼워도 되는 것**에만 쓴다. `Set<String> tags` 정도가 후보다.\n\n판단 질문 두 개.\n\n1. **원소를 하나만 골라 수정할 일이 있는가?** 있으면 엔티티로.\n2. **원소가 몇 개까지 늘어날 수 있는가?** 수십 개를 넘으면 엔티티로.\n\n\"이력\"이라는 이름이 붙은 것은 거의 항상 엔티티다. 이력은 쌓이고, 쌓이면 개수가 늘고, 늘면 전체 재작성이 감당이 안 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"값 타입 컬렉션의 테이블 구조는?\"** → 별도 테이블이 생기고 **모든 컬럼이 기본 키**다. 값 타입에 식별자가 없어서 행을 가리킬 방법이 그것뿐이기 때문이다.\n- **\"그래서 어떤 제약이 생기나요?\"** → NULL 불가, 중복 불가, 수정 시 전체 삭제 후 재삽입.\n- **\"왜 전부 지우고 다시 넣나요?\"** → 행을 개별적으로 지목할 수 없어서 가장 안전한 방법을 택한 것이다.\n- **\"실무에서는 어떻게 하나요?\"** → 일대다 연결 엔티티로 승격시키고 `cascade = ALL` + `orphanRemoval = true` 를 건다. 값 타입은 그 엔티티 안에 `@Embedded` 로 그대로 둔다.\n- **\"7.4 다대다와 같은 해법 아닌가요?\"** → 맞다. 둘 다 \"JPA 가 감춰 준 중간 테이블을 다시 드러내는\" 일이다."
+    }
+  ],
+  "recap": [
+    "값 타입 컬렉션은 별도 테이블이 되고 **모든 컬럼이 기본 키**다 — 값 타입에 식별자가 없기 때문이다.",
+    "그래서 NULL 불가, 중복 불가, 그리고 행을 개별 지목할 수 없다.",
+    "임베디드 타입 컬렉션은 수정 시 **전부 DELETE 후 재INSERT** 된다. 원소가 많으면 감당이 안 된다.",
+    "`@OrderColumn` 을 붙이면 지목은 되지만 중간 삭제 시 순서 UPDATE 가 줄줄이 나간다.",
+    "실무 대안은 일대다 연결 엔티티 + `cascade = ALL` + `orphanRemoval = true` — 7.4절과 같은 해법이다.",
+    "판단 기준 둘 — 원소를 하나만 골라 수정할 일이 있는가, 개수가 수십을 넘는가. 하나라도 그렇다면 엔티티."
+  ],
+  "drills": [
+    {
+      "task": "`Set<String> favoriteFoods` 를 매핑하고 DDL 을 확인한다.",
+      "done_when": "두 컬럼이 모두 기본 키인 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "음식 하나를 빼고 하나를 넣은 뒤 나가는 SQL 을 확인한다.",
+      "done_when": "DELETE 1 + INSERT 1 인 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`List<Address> addressHistory` 를 세 개 넣고, 하나만 바꾼 뒤 SQL 을 센다.",
+      "done_when": "DELETE 1번 + INSERT 3번이 나가는 것을 확인했다. 기본형과 임베디드의 차이를 몸으로 안다.",
+      "hint": "이 실습이 이 절의 핵심이다.",
+      "minutes": 25
+    },
+    {
+      "task": "값 타입 컬렉션에 같은 주소를 두 번 넣어 본다.",
+      "done_when": "실패하는 것과 그 이유를 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`AddressEntity` 로 승격시키고 같은 수정을 반복해 SQL 을 비교한다.",
+      "done_when": "DELETE 1 + INSERT 1 로 줄어든 것을 확인했다.",
+      "minutes": 30
+    }
+  ],
+  "quiz": [
+    {
+      "q": "값 타입 컬렉션 테이블의 기본 키가 전체 컬럼인 이유는?",
+      "a": "값 타입에는 식별자가 없어서 행 하나를 가리킬 방법이 모든 컬럼의 조합밖에 없기 때문이다. 대리키를 만드는 순간 그것은 값 타입이 아니라 엔티티가 된다."
+    },
+    {
+      "q": "그로부터 따라오는 제약 세 가지는?",
+      "a": "① 어느 컬럼도 NULL 일 수 없다 ② 같은 값을 두 번 넣을 수 없다 ③ 행 하나만 골라 수정할 수 없다."
+    },
+    {
+      "q": "임베디드 타입 컬렉션에서 원소 하나를 바꾸면 SQL 이 어떻게 나가는가?",
+      "a": "그 회원의 컬렉션 테이블 행을 전부 DELETE 한 뒤, 현재 상태대로 전부 INSERT 한다. 원소가 100개면 DELETE 1번 + INSERT 100번이다."
+    },
+    {
+      "q": "`@OrderColumn` 을 붙이면 해결되는가?",
+      "a": "행 지목은 가능해지지만 중간 원소를 삭제할 때 뒤쪽 순서를 전부 UPDATE 해야 한다. 문제를 다른 문제로 바꾸는 것에 가깝다."
+    },
+    {
+      "q": "실무 대안은 무엇인가?",
+      "a": "값 타입 컬렉션을 일대다 연결 엔티티로 승격시키고 `cascade = ALL` + `orphanRemoval = true` 를 건다. 값 타입은 그 엔티티 안에 `@Embedded` 로 남긴다."
+    },
+    {
+      "q": "값 타입 컬렉션을 그대로 써도 되는 경우는?",
+      "a": "원소를 하나만 골라 수정할 일이 없고 개수가 적은 경우. `Set<String> tags` 정도다. '이력' 이라는 이름이 붙은 것은 거의 항상 엔티티로 가야 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@ElementCollection",
+      "en": "",
+      "what": "값 타입 컬렉션을 매핑한다. 별도 테이블이 생기고 기본 fetch 는 LAZY."
+    },
+    {
+      "term": "@CollectionTable",
+      "en": "",
+      "what": "값 타입 컬렉션이 저장될 테이블 이름과 조인 컬럼을 지정한다."
+    },
+    {
+      "term": "@OrderColumn",
+      "en": "",
+      "what": "List 의 순서를 저장할 컬럼. 행 지목은 가능해지지만 중간 삭제 시 순서 갱신 비용이 든다."
+    },
+    {
+      "term": "전체 재작성",
+      "en": "",
+      "what": "컬렉션 수정 시 전부 삭제하고 다시 삽입하는 동작. 값 타입 컬렉션의 대표적 비용."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — ElementCollection",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1590",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Collections of basic values",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#collections",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "book": "jpa-basic",
+  "id": "practice-6-value-types",
+  "no": "10.6",
+  "chapter": 10,
+  "title": "실전 예제 6 — 값 타입 매핑",
+  "summary": "회원과 배송의 주소를 Address 임베디드 타입으로 묶는다. 그리고 지금까지 만든 것 전체 정리.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "흩어진 필드를 임베디드 타입으로 묶고 DDL 이 그대로임을 확인할 수 있다.",
+    "`@AttributeOverride` 가 필요한 경우와 아닌 경우를 구분할 수 있다.",
+    "1~10장에서 만든 도메인 전체를 한 장으로 볼 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.5절부터 `city`·`street`·`zipcode` 를 나란히 두고 \"10.2절에서 묶는다\"고 미뤄 왔다. 이제 묶는다.\n\n그리고 이 절이 **매핑 부분의 마지막**이다. 11장부터는 조회(JPQL)로 넘어간다."
+    },
+    {
+      "type": "heading",
+      "text": "Address 를 두 곳에 넣는다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Address.java",
+      "caption": "10.3·10.4 의 결론을 반영한 최종형",
+      "code": "@Embeddable\npublic class Address {\n\n    @Column(nullable = false)\n    private String city;\n\n    @Column(nullable = false)\n    private String street;\n\n    @Column(nullable = false)\n    private String zipcode;\n\n    protected Address() {}\n\n    public Address(String city, String street, String zipcode) {\n        this.city = city;\n        this.street = street;\n        this.zipcode = zipcode;\n    }\n\n    public String getCity()    { return city; }\n    public String getStreet()  { return street; }\n    public String getZipcode() { return zipcode; }\n\n    // setter 없음 — 불변 (10.3)\n\n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (!(o instanceof Address)) return false;\n        Address other = (Address) o;\n        return Objects.equals(getCity(), other.getCity())\n            && Objects.equals(getStreet(), other.getStreet())\n            && Objects.equals(getZipcode(), other.getZipcode());\n    }\n\n    @Override\n    public int hashCode() {\n        return Objects.hash(getCity(), getStreet(), getZipcode());\n    }\n}",
+      "note": "10.3(불변)과 10.4(equals/hashCode)를 한 클래스에 다 넣었다. `instanceof` 와 getter 비교도 그대로다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "쓰는 쪽 두 곳",
+      "code": "@Entity\npublic class Member extends BaseEntity {\n    @Id @GeneratedValue\n    @Column(name = \"MEMBER_ID\")\n    private Long id;\n\n    private String name;\n\n    @Embedded\n    private Address address;         // city, street, zipcode 세 필드를 대체\n}\n\n@Entity\npublic class Delivery extends BaseEntity {\n    @Id @GeneratedValue\n    @Column(name = \"DELIVERY_ID\")\n    private Long id;\n\n    @Embedded\n    private Address address;\n\n    @Enumerated(EnumType.STRING)\n    private DeliveryStatus status;\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "여기서는 @AttributeOverride 가 필요 없다",
+      "md": "10.2절에서 같은 임베디드 타입을 두 번 쓰면 컬럼 이름이 겹친다고 했다. 그런데 여기서는 안 겹친다.\n\n**`Member` 와 `Delivery` 는 서로 다른 테이블**이기 때문이다. `MEMBER.CITY` 와 `DELIVERY.CITY` 는 이름이 같아도 다른 컬럼이다.\n\n`@AttributeOverride` 가 필요한 것은 **한 엔티티 안에 같은 타입을 두 번** 넣을 때뿐이다(집 주소 + 회사 주소)."
+    },
+    {
+      "type": "sql",
+      "caption": "DDL — 5.5절과 컬럼이 같다",
+      "sql": "CREATE TABLE MEMBER (\n    MEMBER_ID BIGINT       NOT NULL,\n    NAME      VARCHAR(255),\n    CITY      VARCHAR(255) NOT NULL,\n    STREET    VARCHAR(255) NOT NULL,\n    ZIPCODE   VARCHAR(255) NOT NULL,\n    ...\n)\n\nCREATE TABLE DELIVERY (\n    DELIVERY_ID BIGINT       NOT NULL,\n    CITY        VARCHAR(255) NOT NULL,\n    STREET      VARCHAR(255) NOT NULL,\n    ZIPCODE     VARCHAR(255) NOT NULL,\n    STATUS      VARCHAR(255),\n    ...\n)",
+      "note": "`NOT NULL` 이 붙은 것만 다르다. `@Column(nullable = false)` 를 `Address` 안에 넣었기 때문이다 — 임베디드 타입 안의 `@Column` 도 그대로 적용된다."
+    },
+    {
+      "type": "heading",
+      "text": "주문할 때 회원 주소를 배송지로 복사한다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "불변이라 안전하게 넘길 수 있다",
+      "code": "Delivery delivery = new Delivery(member.getAddress());\n\n// Address 가 불변이므로 같은 인스턴스를 넘겨도 안전하다.\n// 회원이 이사해도 이미 만들어진 배송지는 그대로다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "10.3절이 여기서 값어치를 낸다",
+      "md": "만약 `Address` 가 가변이었다면 이 코드는 **버그**다. 회원이 나중에 주소를 바꾸면 과거 배송지까지 같이 바뀐다 — 10.3절의 그 사고다.\n\n불변으로 만들어 뒀으므로 **복사를 신경 쓸 필요가 없다.** 참조를 그대로 넘겨도 아무도 그 내용을 바꿀 수 없다.\n\n5.5절에서 \"주문 당시 가격을 기록해야 한다\"고 했던 것과 같은 종류의 요구다. **과거 기록은 원본이 바뀌어도 변하지 않아야 한다.** 값 타입을 불변으로 두면 그 성질이 공짜로 따라온다."
+    },
+    {
+      "type": "heading",
+      "text": "지금까지 만든 것 전체"
+    },
+    {
+      "type": "figure",
+      "caption": "1~10장의 결과",
+      "ascii": "   이 책의 최종 도메인\n\n   BaseEntity  (@MappedSuperclass)  ->  모든 엔티티가 상속\n\n   Member ────────@OneToMany(mappedBy)───────▶ Order\n     │                                          │\n     │  @Embedded Address                       ├──@OneToOne(LAZY, ALL)──▶ Delivery\n     │                                          │                            │\n     │                                          │                   @Embedded Address\n     │                                          │\n     │                    @OneToMany(LAZY, ALL, orphanRemoval)\n     │                                          │\n     │                                          ▼\n     │                                      OrderItem\n     │                                          │\n     │                                @ManyToOne(LAZY)\n     │                                          ▼\n     │                                        Item  (SINGLE_TABLE)\n     │                                          │\n     │                             ┌────────────┼────────────┐\n     │                           Album        Movie        Book\n     │                                          │\n     └──                        @ManyToMany ────┴──▶ Category ──self──▶ Category\n\n\n   Address 가 두 곳에 임베디드로 들어간다 — Member 와 Delivery.\n   테이블은 각각의 것이므로 @AttributeOverride 가 필요 없다."
+    },
+    {
+      "type": "table",
+      "caption": "장별로 이 도메인에 더해진 것",
+      "columns": [
+        "장",
+        "무엇을 더했나"
+      ],
+      "rows": [
+        [
+          "5장",
+          "네 엔티티. FK 는 아직 `Long` 필드"
+        ],
+        [
+          "6장",
+          "FK 를 객체 참조로. 연관관계의 주인과 편의 메서드"
+        ],
+        [
+          "7장",
+          "배송(1:1)·카테고리(N:M)·셀프 조인"
+        ],
+        [
+          "8장",
+          "상품 상속(단일 테이블) + `BaseEntity` 공통 컬럼"
+        ],
+        [
+          "9장",
+          "전부 LAZY. 주문→주문상품·배송에만 CASCADE"
+        ],
+        [
+          "10장",
+          "`Address` 임베디드 타입. 불변 + equals/hashCode"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "11장으로 넘어가기 전에",
+      "md": "여기까지가 **매핑**이다. \"객체를 어떻게 테이블에 붙이는가\".\n\n11장부터는 **조회**다. 그리고 9.4절에서 남겨 둔 숙제가 있다 — 주문 하나를 조회하는 데 쿼리가 13번 나갔던 그것. 12.2절 페치 조인이 그 숫자를 1로 만든다.\n\n매핑을 다시 볼 일이 생기면 5~10장을 사전처럼 찾아 읽으면 된다. 11~12장은 앞에서부터 순서대로 읽는 편이 낫다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"임베디드 타입을 두 엔티티에 쓰면 `@AttributeOverride` 가 필요한가요?\"** → 아니다. 테이블이 다르므로 컬럼 이름이 겹치지 않는다. 한 엔티티 안에 두 번 넣을 때만 필요하다.\n- **\"회원 주소를 배송지로 복사할 때 주의할 점은?\"** → 값 타입이 가변이면 회원이 이사했을 때 과거 배송지까지 바뀐다. 불변으로 만들어 두면 참조를 그대로 넘겨도 안전하다.\n- **\"임베디드 타입 안에 `@Column(nullable=false)` 를 넣으면?\"** → 그대로 적용된다. 임베디드 타입의 필드 매핑은 쓰는 엔티티의 테이블에 반영된다."
+    }
+  ],
+  "recap": [
+    "`Member` 와 `Delivery` 의 주소 세 필드를 `Address` 임베디드 타입으로 묶었다. DDL 은 그대로다.",
+    "서로 다른 엔티티(=다른 테이블)에 쓰는 것이므로 `@AttributeOverride` 가 필요 없다.",
+    "`Address` 는 불변이고 `equals`/`hashCode` 를 갖는다 — 10.3·10.4 의 결론이 한 클래스에 다 들어갔다.",
+    "불변이라서 회원 주소를 배송지로 복사할 때 참조를 그대로 넘겨도 안전하다.",
+    "임베디드 타입 안의 `@Column` 은 쓰는 엔티티의 테이블에 그대로 적용된다.",
+    "여기까지가 매핑이다. 11장부터는 조회이고, 9.4절이 남긴 쿼리 13번을 12.2절이 1번으로 만든다."
+  ],
+  "drills": [
+    {
+      "task": "`Member` 의 주소 세 필드를 `Address` 로 묶고 DDL 을 전후 비교한다.",
+      "done_when": "컬럼 구성이 같고 `NOT NULL` 만 추가된 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`Delivery` 에도 같은 `Address` 를 넣고 `@AttributeOverride` 없이 실행한다.",
+      "done_when": "오류 없이 동작하는 것을 확인했고 왜 그런지 설명할 수 있다.",
+      "minutes": 15
+    },
+    {
+      "task": "`Member` 에 집 주소와 회사 주소를 둘 다 넣어 본다.",
+      "done_when": "이번에는 `@AttributeOverride` 가 필요한 것을 확인했다. 두 경우의 차이가 무엇인지 말할 수 있다.",
+      "minutes": 20
+    },
+    {
+      "task": "회원 주소를 배송지로 넘겨 주문을 만든 뒤, 회원의 주소를 새 `Address` 로 바꾼다.",
+      "done_when": "이미 만들어진 배송지가 그대로인 것을 DB 에서 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "1~10장의 엔티티 전체를 한 번에 `hbm2ddl.auto=create` 로 만들고 테이블 목록을 확인한다.",
+      "done_when": "그림의 구조가 실제 테이블로 나온 것을 눈으로 봤다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`Member` 와 `Delivery` 에 같은 `Address` 를 쓰는데 `@AttributeOverride` 가 필요 없는 이유는?",
+      "a": "서로 다른 테이블이라 컬럼 이름이 겹치지 않는다. `@AttributeOverride` 는 한 엔티티 안에 같은 임베디드 타입을 두 번 넣을 때 필요하다."
+    },
+    {
+      "q": "회원 주소를 배송지로 넘길 때 복사를 신경 쓰지 않아도 되는 이유는?",
+      "a": "`Address` 가 불변이기 때문이다. 참조를 공유해도 아무도 내용을 바꿀 수 없어서, 회원이 이사해도 과거 배송지가 변하지 않는다."
+    },
+    {
+      "q": "임베디드 타입 안에 `@Column(nullable = false)` 를 붙이면 어떻게 되는가?",
+      "a": "그대로 적용된다. 임베디드 타입의 필드 매핑 정보는 그것을 쓰는 엔티티의 테이블에 반영된다."
+    },
+    {
+      "q": "5장부터 10장까지 이 도메인에 더해진 것을 순서대로 말하면?",
+      "a": "엔티티와 기본 매핑 → 객체 참조로 연관관계 → 다양한 다중성과 셀프 조인 → 상속과 공통 컬럼 → fetch/cascade 정리 → 값 타입 임베디드."
+    }
+  ],
+  "terms": [
+    {
+      "term": "임베디드 타입 재사용",
+      "en": "",
+      "what": "같은 `@Embeddable` 을 여러 엔티티에서 쓰는 것. 테이블이 다르면 컬럼 충돌이 없다."
+    },
+    {
+      "term": "스냅샷 값",
+      "en": "",
+      "what": "과거 시점의 값을 따로 기록해 원본 변경에 영향받지 않게 하는 것. 주문 가격과 배송지가 그렇다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — ElementCollection",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1590",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Collections of basic values",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#collections",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

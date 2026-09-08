@@ -179,7 +179,7 @@
           "title": "실전 예제 0 — 프로젝트 환경설정",
           "summary": "5장부터 계속 쓸 회원·주문·상품 테이블을 실제로 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -429,7 +429,7 @@
           "title": "값 타입 컬렉션",
           "summary": "@ElementCollection 은 편하지만 수정 시 전부 지우고 다시 넣는다. 실무 대안.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -437,7 +437,7 @@
           "title": "실전 예제 6 — 값 타입 매핑",
           "summary": "회원과 배송의 주소를 Address 임베디드 타입으로 묶는다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
