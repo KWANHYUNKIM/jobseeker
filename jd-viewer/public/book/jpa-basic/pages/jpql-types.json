@@ -1,0 +1,226 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-types",
+  "no": "11.7",
+  "chapter": 11,
+  "title": "JPQL 타입 표현과 기타식",
+  "summary": "문자·숫자·enum·엔티티 타입을 쿼리에 쓰는 법. 패키지명을 다 적어야 하는 이유.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 에서 각 타입의 리터럴을 어떻게 쓰는지 안다.",
+    "enum 을 쿼리에 쓸 때 패키지 전체 경로가 필요한 이유와, 그것을 피하는 방법을 안다.",
+    "SQL 과 문법이 같은 기타식을 구분할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "table",
+      "caption": "타입 표현",
+      "note": "**문자열은 홑따옴표**다. 자바 문자열 안에 쓰므로 `\"... = 'A'\"` 형태가 된다. 홑따옴표 자체를 넣으려면 두 번 쓴다(`''`).",
+      "columns": [
+        "타입",
+        "쓰는 법",
+        "예"
+      ],
+      "rows": [
+        [
+          "문자",
+          "홑따옴표",
+          "`WHERE m.name = '김관현'`"
+        ],
+        [
+          "숫자",
+          "그대로. 접미사 가능",
+          "`10L`, `10D`, `10F`"
+        ],
+        [
+          "Boolean",
+          "그대로",
+          "`WHERE m.active = TRUE`"
+        ],
+        [
+          "**enum**",
+          "**패키지 전체 경로**",
+          "`WHERE o.status = com.example.OrderStatus.ORDER`"
+        ],
+        [
+          "엔티티 타입",
+          "`TYPE()`",
+          "`WHERE TYPE(i) = Book` (12.4)"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "enum 이 번거로운 이유"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "이렇게 쓰면 안 된다",
+      "code": "\"SELECT o FROM Order o WHERE o.status = ORDER\"          // 안 됨\n\"SELECT o FROM Order o WHERE o.status = 'ORDER'\"        // 안 됨"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "패키지를 전부 적거나",
+      "code": "\"SELECT o FROM Order o WHERE o.status = com.example.domain.OrderStatus.ORDER\""
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "파라미터로 넘긴다 — 이쪽을 쓴다",
+      "code": "List<Order> result = em.createQuery(\n        \"SELECT o FROM Order o WHERE o.status = :status\", Order.class)\n    .setParameter(\"status\", OrderStatus.ORDER)     // 자바 코드로 넘긴다\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT O.ORDER_ID, O.STATUS, O.ORDER_DATE, O.MEMBER_ID\n  FROM ORDERS O\n WHERE O.STATUS = ?",
+      "note": "`EnumType.STRING` 이면 `'ORDER'` 라는 문자열이, `ORDINAL` 이면 숫자가 바인딩된다(5.3절). **어느 쪽이든 JPQL 은 안 바뀐다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 패키지 전체 경로여야 하나",
+      "md": "JPQL 은 **자바 import 를 모른다.** 그냥 문자열이라 파서가 `ORDER` 라는 낱말만 보고 그것이 어느 enum 의 상수인지 알 방법이 없다. 게다가 `ORDER` 는 SQL 예약어와도 겹친다.\n\n그래서 완전한 이름을 요구한다. 그리고 **패키지를 옮기면 그 문자열이 조용히 깨진다** — 11.1절에서 본 JPQL 의 약점이 또 나온다.\n\n**결론: enum 은 항상 파라미터로 넘긴다.** 문자열에 박아 넣을 이유가 없다."
+    },
+    {
+      "type": "heading",
+      "text": "기타식 — SQL 과 같다"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "그대로 쓰면 된다",
+      "code": "WHERE m.age BETWEEN 18 AND 30\nWHERE m.name LIKE '김%'\nWHERE m.name LIKE '_관현'\nWHERE m.team IS NULL\nWHERE m.team IS NOT NULL\nWHERE m.age IN (18, 19, 20)\nWHERE m.age NOT IN (18, 19)\nWHERE m.orders IS EMPTY",
+      "note": "마지막 `IS EMPTY` 는 SQL 에 없는 JPQL 전용이다 — **컬렉션이 비었는지**를 묻는다."
+    },
+    {
+      "type": "sql",
+      "caption": "IS EMPTY 는 이렇게 번역된다",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME\n  FROM MEMBER M\n WHERE NOT EXISTS (\n     SELECT 1 FROM ORDERS O WHERE O.MEMBER_ID = M.MEMBER_ID\n )",
+      "note": "\"주문이 하나도 없는 회원\" 이 `m.orders IS EMPTY` 한 줄이 된다. 이런 것이 **엔티티를 대상으로 쿼리한다**는 말의 실질이다."
+    },
+    {
+      "type": "table",
+      "caption": "컬렉션 전용 식",
+      "note": "`MEMBER OF` 는 컬렉션에 특정 원소가 있는지 묻는다.",
+      "columns": [
+        "식",
+        "뜻"
+      ],
+      "rows": [
+        [
+          "`m.orders IS EMPTY`",
+          "컬렉션이 비었는가"
+        ],
+        [
+          "`m.orders IS NOT EMPTY`",
+          "하나라도 있는가"
+        ],
+        [
+          "`:order MEMBER OF m.orders`",
+          "그 원소가 컬렉션에 들어 있는가"
+        ],
+        [
+          "`SIZE(m.orders)`",
+          "컬렉션 크기 (11.9절 함수)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "컬렉션에는 비교 연산자를 못 쓴다",
+      "md": "```\nWHERE m.orders > 0       // 안 된다\nWHERE SIZE(m.orders) > 0 // 이렇게 쓴다\n```\n\n컬렉션 자체는 값이 아니라 여러 행이므로 `>`·`=` 로 비교할 수 없다. **컬렉션에 쓸 수 있는 것은 위 표의 넷뿐**이고, 그 외에는 조인해서 원소를 꺼내야 한다.\n\n이 제약은 12.1절 경로 표현식에서 더 근본적인 형태로 다시 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 에서 enum 을 어떻게 쓰나요?\"** → 패키지 전체 경로를 적거나 파라미터로 넘긴다. 실무에서는 항상 후자다.\n- **\"왜 패키지 전체 경로가 필요한가요?\"** → JPQL 은 자바 import 를 모르는 문자열이라 상수 이름만으로는 어느 enum 인지 알 수 없다.\n- **\"`IS EMPTY` 는 SQL 로 어떻게 번역되나요?\"** → `NOT EXISTS` 서브쿼리다. 컬렉션이 비었는지 묻는 JPQL 전용 문법이다.\n- **\"컬렉션에 `> 0` 같은 비교를 쓸 수 있나요?\"** → 없다. `IS EMPTY`·`MEMBER OF`·`SIZE()` 만 가능하다."
+    }
+  ],
+  "recap": [
+    "문자는 홑따옴표, 숫자는 그대로, Boolean 은 `TRUE`/`FALSE`.",
+    "**enum 은 패키지 전체 경로가 필요하다** — JPQL 이 자바 import 를 모르기 때문이다.",
+    "그래서 실무에서는 항상 파라미터로 넘긴다. 문자열에 박으면 패키지 이동에 깨진다.",
+    "`BETWEEN`·`LIKE`·`IS NULL`·`IN` 은 SQL 과 같다.",
+    "`IS EMPTY`·`MEMBER OF` 는 JPQL 전용 컬렉션 식이다. `IS EMPTY` 는 `NOT EXISTS` 로 번역된다.",
+    "컬렉션에는 비교 연산자를 쓸 수 없다. `SIZE()` 를 쓰거나 조인해서 원소를 꺼낸다."
+  ],
+  "drills": [
+    {
+      "task": "enum 을 패키지 전체 경로로 쓴 JPQL 을 작성해 실행한다.",
+      "done_when": "동작하는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "그 enum 클래스의 패키지를 옮기고 JPQL 은 그대로 둔 채 실행한다.",
+      "done_when": "런타임에 실패하는 것을 확인했다. 파라미터 방식이면 컴파일 오류가 났을 것이다.",
+      "minutes": 15
+    },
+    {
+      "task": "`m.orders IS EMPTY` 로 주문 없는 회원을 조회하고 SQL 을 확인한다.",
+      "done_when": "`NOT EXISTS` 로 번역되는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "`WHERE m.orders > 0` 을 시도해 본다.",
+      "done_when": "실패하는 것과 그 이유를 확인했다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JPQL 에서 enum 을 쓸 때 패키지 전체 경로가 필요한 이유는?",
+      "a": "JPQL 은 문자열이라 자바 import 를 모른다. 상수 이름만으로는 어느 enum 의 것인지 판단할 수 없다."
+    },
+    {
+      "q": "실무에서 enum 조건을 어떻게 처리하는가?",
+      "a": "파라미터로 넘긴다. `setParameter(\"status\", OrderStatus.ORDER)`. 문자열에 박으면 패키지를 옮길 때 조용히 깨진다."
+    },
+    {
+      "q": "`m.orders IS EMPTY` 는 어떤 SQL 이 되는가?",
+      "a": "`NOT EXISTS (SELECT 1 FROM ORDERS O WHERE O.MEMBER_ID = M.MEMBER_ID)` 형태의 서브쿼리가 된다."
+    },
+    {
+      "q": "컬렉션에 쓸 수 있는 식 네 가지는?",
+      "a": "`IS EMPTY`, `IS NOT EMPTY`, `MEMBER OF`, `SIZE()`. 비교 연산자(`>`, `=`)는 쓸 수 없다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "IS EMPTY",
+      "en": "",
+      "what": "컬렉션이 비었는지 묻는 JPQL 전용 식. `NOT EXISTS` 로 번역된다."
+    },
+    {
+      "term": "MEMBER OF",
+      "en": "",
+      "what": "특정 원소가 컬렉션에 들어 있는지 묻는 식."
+    },
+    {
+      "term": "리터럴",
+      "en": "literal",
+      "what": "쿼리에 직접 적는 값. 문자는 홑따옴표, enum 은 패키지 전체 경로가 필요하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

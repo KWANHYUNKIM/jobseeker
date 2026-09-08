@@ -1,0 +1,222 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-join",
+  "no": "11.5",
+  "chapter": 11,
+  "title": "조인",
+  "summary": "내부 조인·외부 조인·세타 조인, 그리고 ON 절로 필터링하기.",
+  "minutes": 18,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 조인이 SQL 조인과 어떻게 다르게 쓰이는지 말할 수 있다.",
+    "`ON` 절의 두 가지 용도를 구분할 수 있다.",
+    "`WHERE` 로 거르는 것과 `ON` 으로 거르는 것의 차이를 설명할 수 있다.",
+    "묵시적 조인이 왜 위험한지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "SQL 조인은 \"두 테이블을 어떤 컬럼으로 붙일까\"를 매번 적는다. JPQL 은 다르다 — **연관 필드를 따라가면 조인 조건은 매핑에 이미 있다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "조인의 모양",
+      "ascii": "   JPQL 의 조인은 '연관 필드' 를 따라간다\n\n   SQL                                  JPQL\n   ┌───────────────────────────────┐    ┌───────────────────────────────┐\n   │ FROM MEMBER M                 │    │ FROM Member m                 │\n   │ JOIN TEAM T                   │    │ JOIN m.team t                 │\n   │   ON M.TEAM_ID = T.TEAM_ID    │    │                               │\n   └───────────────────────────────┘    └───────────────────────────────┘\n     조인 조건을 매번 적는다               매핑에 이미 있으니 안 적는다\n\n\n   세 가지 조인\n\n   INNER JOIN   m.team t       양쪽에 다 있는 것만\n   LEFT JOIN    m.team t       왼쪽은 다 나오고 짝이 없으면 NULL\n   FROM a, b                   연관관계가 없는 것끼리 (세타 조인)\n\n\n   ON 절은 두 가지로 쓴다\n\n   1. 조인 대상 필터링\n      LEFT JOIN m.team t ON t.name = 'A'\n      -> 팀 이름이 A 가 아니면 t 만 NULL. 회원은 그대로 다 나온다\n\n   2. 연관관계 없는 엔티티 조인\n      LEFT JOIN Team t ON m.username = t.name\n      -> 매핑이 없어도 임의 조건으로 붙인다"
+    },
+    {
+      "type": "heading",
+      "text": "내부 조인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<Member> result = em.createQuery(\n        \"SELECT m FROM Member m INNER JOIN m.team t \" +\n        \"WHERE t.name = :teamName\", Member.class)\n    .setParameter(\"teamName\", \"팀A\")\n    .getResultList();",
+      "note": "`INNER` 는 생략할 수 있다. `JOIN m.team t` 만 써도 같다."
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n WHERE T.NAME = ?",
+      "note": "**`ON M.TEAM_ID = T.TEAM_ID` 를 우리가 안 적었다.** `@JoinColumn(name=\"TEAM_ID\")` 에 이미 있는 정보라서다(6.1절)."
+    },
+    {
+      "type": "heading",
+      "text": "외부 조인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT m FROM Member m LEFT JOIN m.team t\"",
+      "note": "`OUTER` 도 생략 가능하다. **팀이 없는 회원도 결과에 나온다.**"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n  LEFT OUTER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID"
+    },
+    {
+      "type": "heading",
+      "text": "세타 조인 — 연관관계가 없는 것끼리"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "회원 이름과 팀 이름이 같은 경우를 찾는다",
+      "code": "List<Member> result = em.createQuery(\n        \"SELECT m FROM Member m, Team t WHERE m.username = t.name\",\n        Member.class)\n    .getResultList();",
+      "note": "`FROM` 절에 엔티티를 나란히 쓴다. **연관 필드가 없어도 임의 조건으로 붙일 수 있다.**"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n CROSS JOIN TEAM T\n WHERE M.USERNAME = T.NAME",
+      "note": "`CROSS JOIN` 으로 나간다 — **모든 조합을 만든 뒤 `WHERE` 로 거른다.** 데이터가 크면 위험하다. 회원 1만 × 팀 100 이면 100만 행을 만들고 거르는 셈이다."
+    },
+    {
+      "type": "heading",
+      "text": "ON 절 — 두 가지 용도"
+    },
+    {
+      "type": "compare",
+      "caption": "WHERE 로 거를 때와 ON 으로 거를 때",
+      "note": "**내부 조인이면 둘의 결과가 같다.** 외부 조인일 때만 달라진다. 그래서 `LEFT JOIN` 에서 `WHERE` 로 오른쪽 테이블을 거르면 사실상 내부 조인이 되어 버리는 실수가 흔하다.",
+      "left": {
+        "title": "WHERE — 결과 행을 거른다",
+        "lang": "text",
+        "code": "SELECT m FROM Member m\n LEFT JOIN m.team t\n WHERE t.name = 'A'",
+        "md": "조인한 뒤에 거른다. **팀이 없는 회원(`t` 가 NULL)도 조건에서 탈락**해 결과에서 사라진다."
+      },
+      "right": {
+        "title": "ON — 조인 대상을 거른다",
+        "lang": "text",
+        "code": "SELECT m FROM Member m\n LEFT JOIN m.team t\n    ON t.name = 'A'",
+        "md": "붙일 때 거른다. **회원은 전부 나오고**, 팀 이름이 A 가 아니면 `t` 만 NULL 이 된다."
+      }
+    },
+    {
+      "type": "sql",
+      "caption": "두 쿼리의 SQL",
+      "sql": "-- WHERE 로 거른 경우\n  FROM MEMBER M LEFT JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n WHERE T.NAME = 'A'\n\n-- ON 으로 거른 경우\n  FROM MEMBER M LEFT JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID AND T.NAME = 'A'",
+      "note": "매핑에서 온 조인 조건 뒤에 우리가 쓴 조건이 `AND` 로 붙는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "ON 의 두 번째 용도 — 연관관계 없는 조인",
+      "code": "\"SELECT m, t FROM Member m LEFT JOIN Team t ON m.username = t.name\"",
+      "note": "`m.team` 이 아니라 **`Team` 을 직접 적었다.** JPA 2.1 부터 가능해진 문법이고, 세타 조인과 달리 외부 조인도 된다."
+    },
+    {
+      "type": "heading",
+      "text": "묵시적 조인 — 편한데 위험하다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "JOIN 을 안 썼는데 조인이 나간다",
+      "code": "\"SELECT m.team.name FROM Member m\"",
+      "note": "`m.team` 을 따라갔으므로 JPA 가 알아서 조인한다. 편해 보이지만 **쿼리를 읽을 때 조인이 몇 개 나갈지 안 보인다.**"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT T.NAME\n  FROM MEMBER M\n INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID",
+      "note": "항상 **내부 조인**으로 나간다. 외부 조인이 필요해도 선택권이 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "명시적 조인을 쓴다",
+      "md": "```\nSELECT t.name FROM Member m JOIN m.team t     // 명시적\n```\n\n이유는 셋이다.\n\n1. **조인이 몇 개 나가는지 쿼리에 보인다.** 경로가 길어지면(`m.team.branch.region.name`) 묵시적 조인이 세 개 나간다.\n2. **조인 종류를 고를 수 있다.** 묵시적은 항상 내부 조인이다.\n3. **튜닝할 자리가 생긴다.** 조인이 안 보이면 실행 계획을 읽어도 어느 코드에서 왔는지 못 찾는다.\n\n묵시적 조인의 더 깊은 함정 — **컬렉션을 따라가면 어떻게 되는가** — 는 12.1절 경로 표현식에서 다룬다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 조인이 SQL 과 다른 점은?\"** → 연관 필드를 따라가므로 조인 조건(`ON A.x = B.y`)을 적지 않는다. 매핑에 이미 있기 때문이다.\n- **\"`ON` 과 `WHERE` 로 거르는 것의 차이는?\"** → 내부 조인이면 같지만, 외부 조인에서는 `WHERE` 가 짝 없는 행까지 탈락시켜 사실상 내부 조인이 된다.\n- **\"세타 조인의 위험은?\"** → `CROSS JOIN` 으로 모든 조합을 만든 뒤 거른다. 데이터가 크면 폭발한다.\n- **\"묵시적 조인을 왜 피하나요?\"** → 조인이 쿼리에 안 보이고, 항상 내부 조인이며, 튜닝할 때 어느 코드에서 왔는지 추적이 안 된다."
+    }
+  ],
+  "recap": [
+    "JPQL 조인은 연관 필드를 따라간다 — 조인 조건은 매핑에 이미 있으므로 안 적는다.",
+    "`INNER`·`OUTER` 키워드는 생략할 수 있다. `JOIN`·`LEFT JOIN` 으로 쓴다.",
+    "세타 조인은 `FROM a, b` 로 쓰고 `CROSS JOIN` 이 되므로 데이터가 크면 위험하다.",
+    "`ON` 은 조인 대상을 거르고 `WHERE` 는 결과 행을 거른다 — 외부 조인에서만 차이가 난다.",
+    "`ON` 으로 **연관관계 없는 엔티티도 외부 조인**할 수 있다(JPA 2.1+).",
+    "묵시적 조인은 쿼리에 안 보이고 항상 내부 조인이다. 명시적 조인을 쓴다."
+  ],
+  "drills": [
+    {
+      "task": "팀이 없는 회원을 하나 만들고 `JOIN` 과 `LEFT JOIN` 으로 각각 조회해 건수를 비교한다.",
+      "done_when": "내부 조인에서는 그 회원이 빠지는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`LEFT JOIN` 에 조건을 `WHERE` 로 걸었을 때와 `ON` 으로 걸었을 때의 건수를 비교한다.",
+      "done_when": "WHERE 쪽에서 팀 없는 회원이 사라지는 것을 확인했다. **이 절에서 가장 중요한 실습이다.**",
+      "minutes": 25
+    },
+    {
+      "task": "세타 조인을 실행하고 나가는 SQL 에서 `CROSS JOIN` 을 확인한다.",
+      "done_when": "모든 조합을 만든 뒤 거른다는 것을 SQL 로 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "`SELECT m.team.name FROM Member m` 을 실행하고 SQL 을 확인한 뒤, 명시적 조인으로 바꿔 비교한다.",
+      "done_when": "묵시적 조인이 내부 조인으로 나가는 것을 확인했다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JPQL 에서 조인 조건(`ON A.x = B.y`)을 안 적어도 되는 이유는?",
+      "a": "`@JoinColumn` 매핑에 이미 어느 컬럼으로 붙일지가 적혀 있기 때문이다. 연관 필드(`m.team`)를 따라가면 JPA 가 그 정보를 쓴다."
+    },
+    {
+      "q": "`LEFT JOIN ... WHERE t.name = 'A'` 와 `LEFT JOIN ... ON t.name = 'A'` 의 결과 차이는?",
+      "a": "WHERE 는 조인 후 결과 행을 거르므로 팀이 없는 회원(t 가 NULL)도 탈락해 사실상 내부 조인이 된다. ON 은 붙일 때 거르므로 회원은 전부 나오고 t 만 NULL 이 된다."
+    },
+    {
+      "q": "세타 조인이 위험한 이유는?",
+      "a": "`CROSS JOIN` 으로 모든 조합을 만든 뒤 WHERE 로 거른다. 양쪽 데이터가 크면 중간 결과가 폭발한다."
+    },
+    {
+      "q": "묵시적 조인의 세 가지 문제는?",
+      "a": "① 조인이 쿼리에 보이지 않아 몇 개가 나갈지 모른다 ② 항상 내부 조인이라 외부 조인을 고를 수 없다 ③ 튜닝할 때 실행 계획과 코드를 연결하기 어렵다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "내부 조인",
+      "en": "INNER JOIN",
+      "what": "양쪽에 짝이 있는 행만 나온다. `INNER` 는 생략 가능."
+    },
+    {
+      "term": "외부 조인",
+      "en": "LEFT JOIN",
+      "what": "왼쪽은 전부 나오고 짝이 없으면 오른쪽이 NULL."
+    },
+    {
+      "term": "세타 조인",
+      "en": "theta join",
+      "what": "연관관계 없는 엔티티를 `FROM a, b` 로 붙이는 것. CROSS JOIN 이 된다."
+    },
+    {
+      "term": "묵시적 조인",
+      "en": "implicit join",
+      "what": "연관 경로를 따라가면 자동으로 발생하는 조인. 쿼리에 안 보이고 항상 내부 조인이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

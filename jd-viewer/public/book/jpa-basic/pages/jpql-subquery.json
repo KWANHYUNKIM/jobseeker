@@ -1,0 +1,245 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-subquery",
+  "no": "11.6",
+  "chapter": 11,
+  "title": "서브 쿼리",
+  "summary": "EXISTS·ALL·ANY·IN. JPA 표준이 FROM 절 서브쿼리를 지원하지 않는 문제와 우회.",
+  "minutes": 16,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 서브쿼리에서 쓸 수 있는 함수와 위치를 안다.",
+    "FROM 절 서브쿼리가 왜 표준에 없는지, 어떻게 우회하는지 말할 수 있다.",
+    "상관 서브쿼리의 성능 함정을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "서브쿼리 문법 자체는 SQL 과 거의 같다. **다른 것은 쓸 수 있는 위치**다."
+    },
+    {
+      "type": "table",
+      "caption": "서브쿼리를 쓸 수 있는 곳",
+      "note": "하이버네이트 6 부터는 `SELECT` 절과 `FROM` 절 서브쿼리를 일부 지원한다. 다만 **표준이 아니므로** 구현체를 바꾸면 깨질 수 있다는 것을 알고 써야 한다.",
+      "columns": [
+        "위치",
+        "JPA 표준",
+        "비고"
+      ],
+      "rows": [
+        [
+          "`WHERE`",
+          "**가능**",
+          "가장 많이 쓴다"
+        ],
+        [
+          "`HAVING`",
+          "**가능**",
+          ""
+        ],
+        [
+          "`SELECT`",
+          "표준 아님",
+          "하이버네이트는 지원"
+        ],
+        [
+          "`FROM`",
+          "**불가능**",
+          "인라인 뷰. 우회가 필요하다"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "WHERE 절 서브쿼리"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "평균 나이보다 많은 회원",
+      "code": "\"SELECT m FROM Member m \" +\n\"WHERE m.age > (SELECT AVG(m2.age) FROM Member m2)\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE\n  FROM MEMBER M\n WHERE M.AGE > (SELECT AVG(M2.AGE) FROM MEMBER M2)",
+      "note": "서브쿼리 안에서는 **별칭을 새로 준다**(`m2`). 바깥 별칭을 그대로 쓰면 상관 서브쿼리가 되어 뜻이 달라진다."
+    },
+    {
+      "type": "heading",
+      "text": "EXISTS · ALL · ANY · IN"
+    },
+    {
+      "type": "table",
+      "caption": "네 가지",
+      "columns": [
+        "함수",
+        "뜻",
+        "예"
+      ],
+      "rows": [
+        [
+          "`EXISTS`",
+          "하나라도 있으면 참",
+          "`WHERE EXISTS (SELECT t FROM m.team t WHERE t.name = 'A')`"
+        ],
+        [
+          "`ALL`",
+          "**전부** 만족해야 참",
+          "`WHERE m.age > ALL (SELECT ...)`"
+        ],
+        [
+          "`ANY` / `SOME`",
+          "**하나라도** 만족하면 참",
+          "`WHERE m.team = ANY (SELECT t FROM Team t)`"
+        ],
+        [
+          "`IN`",
+          "목록에 있으면 참",
+          "`WHERE m.team IN (SELECT t FROM Team t WHERE ...)`"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "주문이 하나라도 있는 회원",
+      "code": "\"SELECT m FROM Member m \" +\n\"WHERE EXISTS (SELECT o FROM Order o WHERE o.member = m)\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE\n  FROM MEMBER M\n WHERE EXISTS (\n     SELECT 1 FROM ORDERS O WHERE O.MEMBER_ID = M.MEMBER_ID\n )",
+      "note": "`o.member = m` 처럼 **엔티티를 직접 비교**할 수 있다. JPA 가 기본 키 비교로 바꿔 준다(12.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "상관 서브쿼리는 행마다 실행될 수 있다",
+      "md": "위 쿼리처럼 서브쿼리가 **바깥 행을 참조하면**(`o.member = m`) 상관 서브쿼리다. DB 옵티마이저가 대개 조인으로 바꿔 주지만, 항상 그런 것은 아니다.\n\n회원이 10만 명이면 최악의 경우 서브쿼리가 10만 번 실행된다. **실행 계획을 확인하는 습관**이 필요한 자리다.\n\n대개는 조인으로 바꾸는 편이 안전하다.\n\n```\nSELECT DISTINCT m FROM Member m JOIN Order o ON o.member = m\n```"
+    },
+    {
+      "type": "heading",
+      "text": "FROM 절 서브쿼리가 안 된다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "이건 표준에 없다",
+      "code": "// SELECT mm.age, mm.username\n//   FROM (SELECT m.age, m.username FROM Member m) AS mm\n\n// JPQL 로 쓸 수 없다",
+      "note": "인라인 뷰라고 부르는 것이다. \"집계한 결과를 다시 집계\" 같은 쿼리에 필요한데, JPA 표준에는 없다."
+    },
+    {
+      "type": "table",
+      "caption": "우회하는 세 가지",
+      "note": "세 번째가 의외로 자주 정답이다. **하나의 쿼리로 다 하려는 것 자체가 과욕인 경우**가 많다 — 나눠 보내면 각각이 단순해지고 인덱스도 잘 탄다.",
+      "columns": [
+        "방법",
+        "언제"
+      ],
+      "rows": [
+        [
+          "**조인으로 바꾼다**",
+          "대부분의 경우 가능하다. 먼저 시도한다"
+        ],
+        [
+          "**네이티브 쿼리**",
+          "DB 고유 문법까지 필요할 때"
+        ],
+        [
+          "**쿼리를 두 번 보낸다**",
+          "첫 결과를 파라미터로 넘긴다. 왕복이 늘지만 각 쿼리가 단순해진다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "하이버네이트 6 은 좀 다르다",
+      "md": "하이버네이트 6 부터 `FROM` 절 서브쿼리와 CTE(`WITH`)를 지원한다. 실무에서 쓸 수는 있다.\n\n다만 **표준이 아니라는 것을 알고 써야 한다.** 나중에 다른 구현체로 옮기거나, 하이버네이트 버전을 올렸을 때 동작이 달라질 수 있다. 팀 규칙으로 \"표준 밖 문법은 주석에 표시한다\" 정도를 정해 두면 나중에 찾기 쉽다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 서브쿼리는 어디에 쓸 수 있나요?\"** → 표준으로는 `WHERE`·`HAVING`. `SELECT` 는 하이버네이트가 지원하고 `FROM` 은 표준에 없다.\n- **\"FROM 절 서브쿼리가 필요하면?\"** → 조인으로 바꾸거나, 네이티브 쿼리, 아니면 쿼리를 두 번 보낸다.\n- **\"상관 서브쿼리의 위험은?\"** → 바깥 행마다 서브쿼리가 실행될 수 있다. 실행 계획을 확인하고 가능하면 조인으로 바꾼다.\n- **\"서브쿼리에서 엔티티를 직접 비교할 수 있나요?\"** → 된다. `o.member = m` 처럼 쓰면 JPA 가 기본 키 비교로 번역한다."
+    }
+  ],
+  "recap": [
+    "표준으로 서브쿼리를 쓸 수 있는 곳은 `WHERE` 와 `HAVING` 이다.",
+    "`SELECT` 절은 하이버네이트가 지원하지만 표준이 아니다.",
+    "**`FROM` 절 서브쿼리(인라인 뷰)는 JPA 표준에 없다.** 하이버네이트 6 은 지원한다.",
+    "우회는 셋 — 조인으로 바꾸기, 네이티브 쿼리, 쿼리 두 번 보내기.",
+    "상관 서브쿼리는 바깥 행마다 실행될 수 있다. 실행 계획을 보고 조인으로 바꾸는 편이 안전하다.",
+    "서브쿼리 안에서는 별칭을 새로 준다. 엔티티 직접 비교(`o.member = m`)는 기본 키 비교로 번역된다."
+  ],
+  "drills": [
+    {
+      "task": "평균 나이보다 많은 회원을 서브쿼리로 조회하고 SQL 을 확인한다.",
+      "done_when": "서브쿼리가 그대로 SQL 에 나가는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "`EXISTS` 로 '주문이 있는 회원' 을 조회하고, 같은 것을 조인 + DISTINCT 로 다시 짠다.",
+      "done_when": "두 SQL 의 실행 계획을 비교했다.",
+      "hint": "H2 콘솔에서 `EXPLAIN` 을 쓸 수 있다.",
+      "minutes": 30
+    },
+    {
+      "task": "FROM 절 서브쿼리를 JPQL 로 시도해 본다.",
+      "done_when": "표준에서 안 되는 것(또는 하이버네이트 6 에서 되는 것)을 확인했다. 버전을 같이 기록한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JPA 표준에서 서브쿼리를 쓸 수 있는 위치는?",
+      "a": "`WHERE` 와 `HAVING` 절이다. `SELECT` 는 하이버네이트 확장이고 `FROM` 은 표준에 없다."
+    },
+    {
+      "q": "FROM 절 서브쿼리가 필요할 때 우회 방법 셋은?",
+      "a": "① 조인으로 바꾼다 ② 네이티브 쿼리를 쓴다 ③ 쿼리를 두 번 보내 첫 결과를 파라미터로 넘긴다."
+    },
+    {
+      "q": "상관 서브쿼리가 위험할 수 있는 이유는?",
+      "a": "바깥 쿼리의 행마다 서브쿼리가 실행될 수 있다. 옵티마이저가 조인으로 바꿔 주기도 하지만 항상은 아니므로 실행 계획을 확인해야 한다."
+    },
+    {
+      "q": "`WHERE o.member = m` 처럼 엔티티를 직접 비교하면 어떤 SQL 이 되는가?",
+      "a": "기본 키 비교(`O.MEMBER_ID = M.MEMBER_ID`)로 번역된다. 12.5절에서 자세히 다룬다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "상관 서브쿼리",
+      "en": "correlated subquery",
+      "what": "바깥 쿼리의 행을 참조하는 서브쿼리. 행마다 실행될 수 있어 성능 확인이 필요하다."
+    },
+    {
+      "term": "인라인 뷰",
+      "en": "inline view",
+      "what": "FROM 절에 오는 서브쿼리. JPA 표준에는 없다."
+    },
+    {
+      "term": "EXISTS",
+      "en": "",
+      "what": "서브쿼리 결과가 하나라도 있으면 참. 값을 실제로 가져오지 않아 IN 보다 유리한 경우가 많다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

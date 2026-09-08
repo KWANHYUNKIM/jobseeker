@@ -484,7 +484,7 @@
           "title": "조인",
           "summary": "내부 조인·외부 조인·세타 조인, 그리고 ON 절로 필터링하기.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -492,7 +492,7 @@
           "title": "서브 쿼리",
           "summary": "EXISTS·ALL·ANY·IN. JPA 표준이 FROM 절 서브쿼리를 지원하지 않는 문제와 우회.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",
@@ -500,7 +500,7 @@
           "title": "JPQL 타입 표현과 기타식",
           "summary": "문자·숫자·enum·엔티티 타입을 쿼리에 쓰는 법. 패키지명을 다 적어야 하는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -508,7 +508,7 @@
           "title": "조건식 — CASE, COALESCE, NULLIF",
           "summary": "기본 CASE 와 단순 CASE, 그리고 null 을 다루는 두 함수.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.9",

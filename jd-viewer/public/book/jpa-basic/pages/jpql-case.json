@@ -1,0 +1,199 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-case",
+  "no": "11.8",
+  "chapter": 11,
+  "title": "조건식 — CASE, COALESCE, NULLIF",
+  "summary": "기본 CASE 와 단순 CASE, 그리고 null 을 다루는 두 함수.",
+  "minutes": 10,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "기본 CASE 와 단순 CASE 를 구분해 쓸 수 있다.",
+    "`COALESCE` 와 `NULLIF` 가 각각 무엇을 하는지 안다.",
+    "조건 분기를 쿼리에서 할지 자바에서 할지 판단할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "기본 CASE — 조건마다 다르게"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT \" +\n\"  CASE WHEN m.age <= 10 THEN '학생요금' \" +\n\"       WHEN m.age >= 60 THEN '경로요금' \" +\n\"       ELSE '일반요금' \" +\n\"  END \" +\n\"FROM Member m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT CASE\n         WHEN M.AGE <= 10 THEN '학생요금'\n         WHEN M.AGE >= 60 THEN '경로요금'\n         ELSE '일반요금'\n       END\n  FROM MEMBER M",
+      "note": "SQL 로 거의 그대로 나간다. `WHEN` 마다 **다른 조건식**을 쓸 수 있다."
+    },
+    {
+      "type": "heading",
+      "text": "단순 CASE — 한 값을 여러 값과 비교"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT \" +\n\"  CASE t.name \" +\n\"    WHEN '팀A' THEN 110 \" +\n\"    WHEN '팀B' THEN 120 \" +\n\"    ELSE 100 \" +\n\"  END \" +\n\"FROM Team t\"",
+      "note": "비교 대상(`t.name`)을 `CASE` 뒤에 한 번만 쓴다. **같은 값을 여러 번 비교할 때만** 쓸 수 있고, 범위 조건(`<=`)은 못 쓴다."
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT CASE T.NAME\n         WHEN '팀A' THEN 110\n         WHEN '팀B' THEN 120\n         ELSE 100\n       END\n  FROM TEAM T"
+    },
+    {
+      "type": "heading",
+      "text": "COALESCE — 처음 나오는 null 아닌 값"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "이름이 없으면 '이름 없는 회원'",
+      "code": "\"SELECT COALESCE(m.username, '이름 없는 회원') FROM Member m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT COALESCE(M.USERNAME, '이름 없는 회원') FROM MEMBER M",
+      "note": "인자를 앞에서부터 보고 **처음으로 null 이 아닌 것**을 돌려준다. 두 개 이상 줄 수도 있다 — `COALESCE(a, b, c, '기본값')`."
+    },
+    {
+      "type": "heading",
+      "text": "NULLIF — 두 값이 같으면 null"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "관리자 이름은 감춘다",
+      "code": "\"SELECT NULLIF(m.username, '관리자') FROM Member m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT NULLIF(M.USERNAME, '관리자') FROM MEMBER M",
+      "note": "두 값이 같으면 `null`, 다르면 첫 번째 값을 돌려준다. **집계에서 특정 값을 제외**할 때도 쓴다 — `SUM(NULLIF(price, 0))` 처럼."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "COALESCE 와 NULLIF 를 같이 쓰는 자리",
+      "md": "0 으로 나누는 것을 피할 때 자주 나온다.\n\n```\nSELECT COALESCE(m.total / NULLIF(m.count, 0), 0) FROM Member m\n```\n\n`count` 가 0 이면 `NULLIF` 가 `null` 을 만들고, `null` 로 나눈 결과는 `null` 이 되고, `COALESCE` 가 그것을 0 으로 바꾼다. **분모가 0 인 오류를 세 함수의 조합으로 막는다.**"
+    },
+    {
+      "type": "heading",
+      "text": "그런데 쿼리에서 할 일인가"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "표현(presentation)은 자바에서 하는 편이 낫다",
+      "md": "위 첫 예제의 `'학생요금'`·`'경로요금'` 은 사실 **화면 문구**다. 이걸 쿼리에 넣으면 두 가지가 따라온다.\n\n1. **다국어가 필요해지면 쿼리를 고쳐야 한다.**\n2. **같은 판단이 여러 쿼리에 복사된다.** 요금 기준이 바뀌면 전부 찾아 고쳐야 한다.\n\n나이를 그대로 가져와서 자바에서 `FareType.of(age)` 같은 것으로 바꾸는 편이 대개 낫다. 도메인 규칙은 도메인 코드에 있어야 한다.\n\n**쿼리에서 CASE 를 쓸 만한 자리**는 따로 있다.\n\n- 그 값으로 **정렬하거나 필터링**해야 할 때 (`ORDER BY CASE ...`)\n- **집계**의 일부일 때 (`SUM(CASE WHEN ... THEN 1 ELSE 0 END)`)\n- 데이터가 많아 **자바로 다 가져오면 곤란**할 때\n\n기준은 하나다 — **DB 가 그 값을 알아야만 할 수 있는 일인가.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "집계에서 쓰는 예 — 이건 쿼리가 맞다",
+      "code": "\"SELECT \" +\n\"  SUM(CASE WHEN o.status = :ordered THEN 1 ELSE 0 END), \" +\n\"  SUM(CASE WHEN o.status = :canceled THEN 1 ELSE 0 END) \" +\n\"FROM Order o\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT SUM(CASE WHEN O.STATUS = ? THEN 1 ELSE 0 END),\n       SUM(CASE WHEN O.STATUS = ? THEN 1 ELSE 0 END)\n  FROM ORDERS O",
+      "note": "주문 전체를 자바로 가져와 세는 것과 비교하면 차이가 크다. **DB 가 세는 것이 맞는 일**이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"기본 CASE 와 단순 CASE 의 차이는?\"** → 기본은 `WHEN` 마다 다른 조건식을 쓸 수 있고, 단순은 한 값을 여러 값과 등호 비교만 한다.\n- **\"`COALESCE` 와 `NULLIF` 는?\"** → 전자는 처음 나오는 null 아닌 값, 후자는 두 값이 같으면 null.\n- **\"0 으로 나누는 것을 어떻게 피하나요?\"** → `COALESCE(a / NULLIF(b, 0), 0)`.\n- **\"CASE 를 쿼리에 쓸지 자바에 쓸지 어떻게 정하나요?\"** → DB 가 그 값을 알아야만 할 수 있는 일(정렬·필터·집계)이면 쿼리, 단순 표현이면 자바."
+    }
+  ],
+  "recap": [
+    "기본 CASE 는 `WHEN` 마다 다른 조건식, 단순 CASE 는 한 값과의 등호 비교만.",
+    "`COALESCE(a, b, ...)` 는 처음 나오는 null 아닌 값을 돌려준다.",
+    "`NULLIF(a, b)` 는 두 값이 같으면 null, 다르면 a 를 돌려준다.",
+    "0 나눗셈은 `COALESCE(a / NULLIF(b, 0), 0)` 조합으로 막는다.",
+    "**표현용 분기는 자바에서 한다.** 다국어와 규칙 중복 때문이다.",
+    "쿼리에 CASE 를 쓸 자리는 정렬·필터·집계 — **DB 가 그 값을 알아야만 할 수 있는 일**일 때다."
+  ],
+  "drills": [
+    {
+      "task": "기본 CASE 로 연령대별 요금 구분을 조회하고 SQL 을 확인한다.",
+      "done_when": "SQL 로 거의 그대로 나가는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "같은 것을 단순 CASE 로 바꿔 본다.",
+      "done_when": "범위 조건(`<=`)을 못 써서 안 된다는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`SUM(CASE WHEN ...)` 로 주문 상태별 건수를 한 번에 센다.",
+      "done_when": "쿼리 하나로 두 숫자가 나오는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`COALESCE(a / NULLIF(b, 0), 0)` 로 0 나눗셈을 막아 본다.",
+      "done_when": "`b` 가 0 일 때 오류 없이 0 이 나오는 것을 확인했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "단순 CASE 로 할 수 없는 것은?",
+      "a": "범위 조건이다. `WHEN m.age <= 10` 같은 비교는 기본 CASE 로만 쓸 수 있다. 단순 CASE 는 등호 비교 전용이다."
+    },
+    {
+      "q": "`COALESCE` 가 하는 일은?",
+      "a": "인자를 앞에서부터 보고 처음으로 null 이 아닌 값을 돌려준다. 기본값을 채울 때 쓴다."
+    },
+    {
+      "q": "`NULLIF(a, b)` 의 결과는?",
+      "a": "`a` 와 `b` 가 같으면 null, 다르면 `a`. 집계에서 특정 값을 제외하거나 0 나눗셈을 막을 때 쓴다."
+    },
+    {
+      "q": "요금 구분 문자열을 쿼리의 CASE 로 만들면 무엇이 문제인가?",
+      "a": "다국어가 필요해지면 쿼리를 고쳐야 하고, 같은 판단이 여러 쿼리에 복사되어 규칙이 바뀔 때 전부 찾아 고쳐야 한다. 도메인 규칙은 도메인 코드에 두는 편이 낫다."
+    },
+    {
+      "q": "CASE 를 쿼리에 쓰는 것이 맞는 경우는?",
+      "a": "그 값으로 정렬·필터링해야 하거나, 집계의 일부이거나, 데이터가 많아 자바로 다 가져오기 어려울 때. 기준은 'DB 가 그 값을 알아야만 할 수 있는 일인가' 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "기본 CASE",
+      "en": "searched case",
+      "what": "`CASE WHEN 조건 THEN ...` 형태. WHEN 마다 다른 조건식을 쓸 수 있다."
+    },
+    {
+      "term": "단순 CASE",
+      "en": "simple case",
+      "what": "`CASE 값 WHEN ...` 형태. 한 값과의 등호 비교만 가능하다."
+    },
+    {
+      "term": "COALESCE",
+      "en": "",
+      "what": "처음 나오는 null 아닌 값을 반환한다."
+    },
+    {
+      "term": "NULLIF",
+      "en": "",
+      "what": "두 값이 같으면 null 을 반환한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
