@@ -1,0 +1,159 @@
+{
+ "book": "spring-mvc-2",
+ "id": "converter-summary",
+ "no": "11.8",
+ "chapter": 11,
+ "title": "정리",
+ "summary": "메시지 컨버터와 헷갈리지 않기.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 컨버터를 구분한다.",
+  "언제 컨버터이고 언제 포매터인지 안다.",
+  "11장이 무엇을 채웠는지 정리한다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "이름이 닮은 둘",
+   "ascii": "   ConversionService              HttpMessageConverter\n   -----------------              --------------------\n   String to Object               body to Object\n   one value at a time            whole body at once\n   query, path, form, @Value      @RequestBody, @ResponseBody\n   register in addFormatters      register in extendMessageConverters\n   uses Converter, Formatter      uses Jackson, StringConverter\n\n   이름이 닮았을 뿐 겹치지 않는다",
+   "note": "**실무에서 가장 자주 헷갈리는 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 겹치지 않나",
+   "md": "**다루는 단위가 다르다.**\n\n```\nConversionService:     \"10\"  ->  10           값 하나\nHttpMessageConverter:  {\"a\":1,\"b\":2}  ->  객체  바디 전체\n```\n\n**6.8절에서 본 그 차이**다.\n\n> `@ModelAttribute` 는 **필드 단위**, `@RequestBody` 는 **전부 아니면 전무**.\n\n**`HttpMessageConverter` 는 안에서 Jackson 을 쓰고**, Jackson 은 자기만의 변환 체계(`JsonDeserializer`)를 갖는다. **스프링의 `ConversionService` 를 안 본다.**\n\n**등록하는 자리도 다르다.**\n\n```java\naddFormatters(FormatterRegistry registry)              // 11.4절\nextendMessageConverters(List<HttpMessageConverter<?>>)  // 1편 7.12절\n```\n\n**둘 다 `WebMvcConfigurer` 에 있어서** 더 헷갈린다.\n\n> **기억하는 법** — **`@RequestBody` 가 붙어 있으면 메시지 컨버터**, 아니면 `ConversionService` 다."
+  },
+  {
+   "type": "table",
+   "caption": "언제 무엇을",
+   "note": "**대부분 애너테이션으로 끝난다.** 컨버터를 직접 만드는 것은 우리 타입이 있을 때뿐이다.",
+   "columns": [
+    "",
+    "무엇을"
+   ],
+   "rows": [
+    [
+     "우리가 만든 타입",
+     "**`Converter`** 두 방향"
+    ],
+    [
+     "숫자·날짜 형식",
+     "**`@NumberFormat` · `@DateTimeFormat`**"
+    ],
+    [
+     "모든 곳에 같은 형식",
+     "`Formatter` 전역 등록 — **드물다**"
+    ],
+    [
+     "JSON 의 커스텀 타입",
+     "**Jackson** 의 `JsonSerializer`"
+    ],
+    [
+     "JSON 의 날짜 형식",
+     "**`@JsonFormat`**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "컨버터냐 포매터냐",
+   "md": "**기준 둘이면 갈린다.**\n\n**1. 한쪽이 `String` 인가**\n\n아니면 **컨버터**다. `Integer` → `Long` 같은 것은 포매터로 못 한다.\n\n**2. 로케일에 따라 달라지나**\n\n달라지면 **포매터**다. 숫자·날짜·통화.\n\n```\nString <-> IpPort        컨버터   (로케일과 무관)\nString <-> Integer       포매터    (콤마가 나라마다)\nString <-> LocalDate     포매터    (형식이 나라마다)\nString <-> ItemType      컨버터   (ENUM 이름은 고정)\n```\n\n**애매하면 컨버터**다. 포매터는 **로케일을 다뤄야 할 때** 쓰는 특수한 경우이고, 11.6절에서 본 대로 **전역으로 두면 위험**하다.\n\n> **`IpPort` 를 포매터로 만들 수도** 있다. `Formatter<IpPort>` 로 하면 한 클래스에 양방향이 들어가 편하다. **`Locale` 파라미터를 안 쓸 뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "11장이 채운 것",
+   "md": "**2.5절의 빈자리**\n\n```\n서버 -> 화면:  10000  ->  \"10,000\"\n화면 -> 서버:  \"10,000\"  ->  10000     <- 채워졌다\n```\n\n**1편 7.5절의 \"해 준다\"**\n\n`String` 이 `Integer` 가 되는 것이 `ConversionService` 였다는 것.\n\n**5.8절의 `typeMismatch`**\n\n그 변환이 실패했을 때 나는 오류였다는 것.\n\n**3.6절의 ENUM 변환**\n\n> 문자열이 ENUM 이 되는 것은 **스프링의 컨버터** — 11장에서 직접 만든다.\n\n**`StringToEnumConverterFactory` 가 하고 있었다**(11.2절).\n\n**네 곳에서 미룬 것이 한 장에 모였다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "쓰지 않는 편이 나을 때",
+   "md": "**컨버터를 만들면 변환이 안 보인다.**\n\n```java\n@RequestParam IpPort ipPort\n```\n\n**어디서 `String` 이 `IpPort` 가 되는지 코드에 없다.** 컨버터 클래스를 찾아야 한다.\n\n**이 책에서 반복된 그 교환**이다.\n\n> **자동화의 대가는 동작이 선언 뒤로 숨는 것**이다 — 5.10절 · 7.8절 · 8.6절.\n\n**네 번째다.**\n\n**한 번 쓰는 타입이면 그냥 받는 편**이 낫다.\n\n```java\n@RequestParam String ipPort\nIpPort parsed = IpPort.parse(ipPort);   // 명시적\n```\n\n**컨버터가 값어치를 하는 자리**\n\n| | |\n|---|---|\n| **여러 컨트롤러에서 쓴다** | 반복이 사라진다 |\n| **폼과 화면에 다 쓴다** | 양방향이 필요하다 |\n| **팀이 그 타입을 안다** | 찾아볼 일이 적다 |\n\n**세 번째가 은근히 중요**하다. `IpPort` 처럼 **이름만 봐도 형식이 짐작되는 타입**이라야 감춰도 괜찮다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 11장의 결과",
+   "sql": "# 폼 - ConversionService\nGET /formatter/edit HTTP/1.1\n\nHTTP/1.1 200 \n<input name=\"number\" value=\"10,000\">\n<input name=\"ipPort\" value=\"127.0.0.1:8080\">\n\nPOST /formatter/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nnumber=10,000&ipPort=127.0.0.1:8080\n\nHTTP/1.1 302 \n\n# JSON - HttpMessageConverter\nPOST /api/formatter HTTP/1.1\nContent-Type: application/json\n\n{\"number\": \"10,000\", \"ipPort\": \"127.0.0.1:8080\"}\n\nHTTP/1.1 400 \n{\"code\":\"MALFORMED_REQUEST\",\"message\":\"요청 형식이 올바르지 않습니다\"}\n\n# 같은 값인데 JSON 은 안 된다\n\n# JSON 은 이렇게 보내야 한다\n{\"number\": 10000, \"ipPort\": \"127.0.0.1:8080\"}\n\n# 그리고 IpPort 는 JsonDeserializer 가 있어야 한다",
+   "note": "**폼은 되고 JSON 은 안 된다.** 같은 문자열인데 길이 다르다 — 11.4절의 경계가 응답으로 드러난다.\n\n**400 응답이 10장에서 만든 형식**이다. `MALFORMED_REQUEST` 가 `HttpMessageNotReadableException` 을 잡은 결과다(10.8절).\n\n**JSON 에서는 숫자를 숫자로** 보내야 한다. `\"10,000\"` 은 Jackson 이 못 읽는다 — **JSON 에 형식이라는 개념이 없기** 때문이다. 숫자는 숫자, 문자열은 문자열이다.\n\n**이것이 포맷이 화면의 일인 이유**이기도 하다(2.5절). **API 는 값만 주고받고 형식은 클라이언트가 정한다.**"
+  }
+ ],
+ "recap": [
+  "**`ConversionService` 와 `HttpMessageConverter` 는 겹치지 않는다.**",
+  "**값 하나 vs 바디 전체**가 차이다.",
+  "**`@RequestBody` 가 붙어 있으면 메시지 컨버터**다.",
+  "**Jackson 은 `ConversionService` 를 안 본다.**",
+  "**한쪽이 `String` 이 아니면 컨버터**, **로케일에 따라 달라지면 포매터**.",
+  "**애매하면 컨버터**다.",
+  "**2.5절 · 1편 7.5절 · 5.8절 · 3.6절**에서 미룬 것이 한 장에 모였다.",
+  "**컨버터를 만들면 변환이 안 보인다** — 네 번째 같은 교환.",
+  "**한 번 쓰는 타입이면 그냥 받는 편**이 낫다.",
+  "**JSON 에는 형식이라는 개념이 없다** — 값만 주고받는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 값을 폼과 JSON 으로 각각 보낸다.",
+   "done_when": "하나만 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@NumberFormat` 을 JSON DTO 에 붙여 본다.",
+   "done_when": "안 먹는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@JsonFormat` 으로 바꾼다.",
+   "done_when": "JSON 에서 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금까지 만든 변환을 컨버터와 포매터로 분류한다.",
+   "done_when": "기준 둘로 갈린 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`IpPort` 컨버터를 지우고 `String` 으로 받아 직접 파싱한다.",
+   "done_when": "어느 쪽이 읽기 좋은지 판단했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 컨버터의 차이는?",
+   "a": "`ConversionService` 는 값 하나를, `HttpMessageConverter` 는 바디 전체를 다룬다. 겹치지 않는다."
+  },
+  {
+   "q": "어떻게 구분하나?",
+   "a": "`@RequestBody`·`@ResponseBody` 가 붙어 있으면 메시지 컨버터, 아니면 `ConversionService` 다."
+  },
+  {
+   "q": "컨버터와 포매터를 어떻게 고르나?",
+   "a": "한쪽이 `String` 이 아니면 컨버터, 로케일에 따라 달라지면 포매터다. 애매하면 컨버터."
+  },
+  {
+   "q": "JSON 에 `\"10,000\"` 을 보내면?",
+   "a": "Jackson 이 못 읽는다. JSON 에는 형식 개념이 없어 숫자는 숫자로 보낸다."
+  },
+  {
+   "q": "컨버터를 안 만드는 편이 나을 때는?",
+   "a": "한 번만 쓰는 타입이다. 변환이 코드에 안 보이는 대가가 이득보다 크다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

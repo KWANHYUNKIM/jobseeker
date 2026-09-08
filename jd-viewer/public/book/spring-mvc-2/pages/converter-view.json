@@ -1,0 +1,144 @@
+{
+ "book": "spring-mvc-2",
+ "id": "converter-view",
+ "no": "11.5",
+ "chapter": 11,
+ "title": "뷰 템플릿에 적용",
+ "summary": "${{...}} 가 왜 중괄호 두 개인가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`${{...}}` 를 쓸 수 있다.",
+  "`th:field` 가 항상 변환한다는 것을 안다.",
+  "화면에서 변환이 왜 선택인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "11.4절의 표에서 **뷰 렌더링도 적용된다**고 했다. **그런데 자동은 아니다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "중괄호 하나와 둘",
+   "ascii": "   ${ipPort}      ->  toString()          ->  hello.IpPort@2f1b3c\n   ${{ipPort}}    ->  ConversionService   ->  127.0.0.1:8080\n\n   th:field=\"*{ipPort}\"                   ->  127.0.0.1:8080\n        |\n        +--> 폼에서는 항상 변환한다\n\n   중괄호 두 개가 변환하라는 표시다",
+   "note": "**하나면 `toString()`, 둘이면 변환**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 선택으로 두었나",
+   "md": "**전부 자동으로 변환하면** 문제가 생긴다.\n\n2.3절에서 `${}` 안이 SpEL 이고 프로퍼티 접근은 getter 를 부른다고 했다. **화면에서 쓰는 값은 대부분 이미 문자열이나 숫자**다.\n\n```html\n<span th:text=\"${item.itemName}\">   <!-- 이미 String -->\n<span th:text=\"${item.price}\">      <!-- Integer, toString 이면 충분 -->\n```\n\n**여기까지 변환을 태우면** 컨버터 조회가 매번 일어난다. **반복문 안이면 더**하다(2.10절).\n\n**그리고 의도가 안 보인다.** `${item.price}` 가 `10000` 인지 `10,000` 인지 **템플릿만 봐서 모르게** 된다.\n\n**중괄호 하나를 더 쓰게 한 것**이 그 선택이다.\n\n> **2.2절의 `th:text` 와 `th:utext`** 와 같은 발상이다 — **기본은 안전하고 단순한 쪽**, 다른 동작에는 표시를 더한다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<ul>\n    <li>${ipPort} = <span th:text=\"${ipPort}\"></span></li>\n    <li>${{ipPort}} = <span th:text=\"${{ipPort}}\"></span></li>\n</ul>\n\n<!-- 폼 -->\n<input type=\"text\" th:field=\"*{ipPort}\">",
+   "note": "**첫 줄은 `hello.typeconverter.type.IpPort@59cb0946`** 가 나온다 — `toString()` 을 안 만들었으면 그렇다.\n\n**마지막 `th:field` 는 자동으로 변환**한다. `${{}}` 를 안 써도 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "th:field 는 항상 변환한다",
+   "md": "**3.1절에서 `th:field` 가 하는 일**을 꼽았다.\n\n> `id` · `name` · `value` 를 만든다.\n\n**`value` 를 만들 때 변환을 태운다.** 폼은 **문자열로 보내야** 하니 당연한 일이다.\n\n**그리고 되받을 때도** 컨버터가 돈다 — 11.4절의 `@ModelAttribute`.\n\n```\n서버 -> 화면:  IpPort  ->  \"127.0.0.1:8080\"   IpPortToStringConverter\n화면 -> 서버:  \"127.0.0.1:8080\"  ->  IpPort   StringToIpPortConverter\n```\n\n**2.5절의 빈자리가 여기서 절반 채워진다.**\n\n> **되돌리는 쪽이 없다** — 화면에서 `10,000` 으로 보여 줬는데 폼으로 다시 받을 때 숫자로 안 들어온다.\n\n**컨버터를 양방향으로 만들면 왕복이 된다.** 다만 **숫자 포맷은 컨버터로 하기 어색**하다 — `Integer` → `String` 컨버터를 만들면 **모든 숫자**가 콤마를 갖게 된다(11.4절의 덮어쓰기 문제).\n\n**11.7절의 애너테이션이 나머지 절반**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "toString 을 만들면 헷갈린다",
+   "md": "```java\npublic class IpPort {\n    @Override\n    public String toString() {\n        return ip + \":\" + port;\n    }\n}\n```\n\n**`${ipPort}` 와 `${{ipPort}}` 가 같은 결과**를 낸다. **컨버터가 도는지 아닌지 구분이 안 된다.**\n\n**그러면 컨버터가 없어도 화면은 멀쩡**하고, **폼에서 되받을 때만 400** 이 난다. 원인 찾기가 어렵다.\n\n**`toString` 은 로그·디버깅용**으로 두고 **화면 표현은 컨버터**로 하는 것이 구분하기 좋다.\n\n**`@Data` 나 `@ToString` 을 무심코 붙이면** 이 상황이 된다. **값 객체에는 `@EqualsAndHashCode` 만** 붙이는 편이 낫다 — 11.2절에서 그렇게 한 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "타임리프가 스프링에 물어본다",
+   "md": "**`${{}}` 는 타임리프 문법이 아니다.** 정확히는 **스프링 통합에서 생긴 것**이다.\n\n3.1절의 표에 있었다.\n\n> **변환 서비스** — `ConversionService` 연동 — **11장**\n\n**순수 타임리프에는 `${{}}` 가 없다.** `spring-boot-starter-thymeleaf` 가 붙였고, 그것이 `ConversionService` 를 부른다.\n\n**4장의 `#{...}` 와 같은 성격**이다 — 통합이 더해 준 문법.\n\n**2.15절의 표현식 다섯**에 하나가 더 붙은 셈인데, **`${{}}` 는 `${}` 의 변형**이라 여섯 번째로 세지는 않는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /converter-view HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<ul>\n    <li>${number} = 10000</li>\n    <li>${{number}} = 10000</li>\n    <li>${ipPort} = hello.typeconverter.type.IpPort@59cb0946</li>\n    <li>${{ipPort}} = 127.0.0.1:8080</li>\n</ul>\n\n# 앞의 둘은 같고 뒤의 둘은 다르다\n\n# 폼 화면\nGET /converter/edit HTTP/1.1\n\nHTTP/1.1 200 \n<input type=\"text\" id=\"ipPort\" name=\"ipPort\" value=\"127.0.0.1:8080\">\n\n# th:field 는 ${{}} 없이도 변환했다\n\n# 제출하면\nPOST /converter/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nipPort=127.0.0.1:8080\n\n# 서버 로그\n#   convert source=127.0.0.1:8080\n\nHTTP/1.1 302 ",
+   "note": "**첫 두 줄이 같은 것**에 주의한다. `Integer` 는 기본 컨버터의 결과나 `toString()` 이나 **똑같이 `10000`** 이다. **차이가 안 보이는 경우**가 많다.\n\n**셋째 줄이 변환을 안 탄 결과**다. `IpPort@59cb0946` — 객체의 기본 `toString()` 이고 **패키지 경로까지 노출**됐다. 10.1절에서 담지 말라고 한 그것이 화면에 나온 셈이다.\n\n**폼 쪽을 보면 `value=\"127.0.0.1:8080\"`** 이다. `${{}}` 를 안 썼는데 변환됐다.\n\n**제출 로그에 `convert source=`** 가 찍혔다 — **왕복이 완성**됐다."
+  }
+ ],
+ "recap": [
+  "**`${}` 는 `toString()`, `${{}}` 는 변환**한다.",
+  "**전부 자동으로 하면** 컨버터 조회가 잦고 의도가 안 보인다.",
+  "**2.2절의 `th:text`/`th:utext` 와 같은 발상** — 기본은 단순한 쪽.",
+  "**`th:field` 는 항상 변환**한다. 폼은 문자열로 보내야 하니까.",
+  "**보낼 때와 받을 때 각각 컨버터**가 돈다 — 왕복.",
+  "**2.5절의 빈자리가 절반 채워진다.**",
+  "**숫자 포맷은 컨버터로 하기 어색**하다 — 11.7절이 나머지 절반.",
+  "**`toString` 을 만들면 컨버터가 도는지 구분이 안 된다.**",
+  "**값 객체에는 `@EqualsAndHashCode` 만** 붙이는 편이 낫다.",
+  "**`${{}}` 는 스프링 통합이 더한 문법**이다."
+ ],
+ "drills": [
+  {
+   "task": "`${ipPort}` 와 `${{ipPort}}` 를 나란히 출력한다.",
+   "done_when": "결과가 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Integer` 로 같은 것을 해 본다.",
+   "done_when": "차이가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`toString()` 을 만들고 다시 본다.",
+   "done_when": "구분이 안 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:field` 로 폼을 만들고 제출한다.",
+   "done_when": "양쪽에서 컨버터가 도는 것을 로그로 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "역방향 컨버터를 빼고 폼을 연다.",
+   "done_when": "`toString()` 결과가 `value` 에 들어가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`${}` 와 `${{}}` 의 차이는?",
+   "a": "`${}` 는 `toString()` 을 쓰고 `${{}}` 는 `ConversionService` 를 태운다."
+  },
+  {
+   "q": "왜 자동이 아닌가?",
+   "a": "대부분의 값은 변환이 필요 없어 조회가 낭비이고, 자동이면 템플릿만 봐서 결과를 알 수 없다."
+  },
+  {
+   "q": "`th:field` 는?",
+   "a": "항상 변환한다. 폼의 `value` 는 문자열이어야 하고 되받을 때도 컨버터가 돈다."
+  },
+  {
+   "q": "`toString()` 을 만들면 무엇이 헷갈리나?",
+   "a": "`${}` 와 `${{}}` 결과가 같아져 컨버터가 도는지 알 수 없다. 폼 제출에서만 실패한다."
+  },
+  {
+   "q": "`${{}}` 는 어디서 온 문법인가?",
+   "a": "타임리프 자체가 아니라 스프링 통합이 더한 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf + Spring",
+   "url": "https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

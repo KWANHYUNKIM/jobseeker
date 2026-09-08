@@ -1,0 +1,142 @@
+{
+ "book": "spring-mvc-2",
+ "id": "formatter",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "포맷터",
+ "summary": "날짜와 숫자. 컨버터와 무엇이 다른가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "포매터와 컨버터의 차이를 안다.",
+  "`Locale` 이 왜 파라미터인지 안다.",
+  "포매터를 만들어 등록할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "둘의 차이",
+   "ascii": "   Converter<S, T>\n        |\n        +--> any type to any type\n        +--> one direction per class\n        +--> no locale\n\n   Formatter<T>\n        |\n        +--> String print(T object, Locale locale)\n        +--> T parse(String text, Locale locale)  throws ParseException\n        |\n        +--> always String on one side\n        +--> both directions in one class\n        +--> locale aware\n\n   포매터는 컨버터의 특수한 경우다",
+   "note": "**한쪽이 항상 `String`** 이고 **`Locale` 을 받는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "표현의 문제는 다르다",
+   "md": "11.1절에서 이 장이 채우는 두 자리를 갈랐다.\n\n> **첫째는 타입의 문제이고 둘째는 표현의 문제**다.\n\n**타입의 문제** — `String` 을 `IpPort` 로. **정답이 하나**다.\n\n**표현의 문제** — `10000` 을 어떻게 보여 줄까.\n\n```\n10,000        한국·미국\n10.000        독일·이탈리아\n10 000        프랑스\n```\n\n**나라마다 다르다.** 4.4절에서 국제화의 어려움으로 꼽은 그것이다.\n\n> **번역이 길이와 어순을 바꾼다** — 진짜 어려움은 여기다.\n\n**숫자와 날짜도 같다.** 그래서 **`Locale` 이 파라미터**에 있다.\n\n```java\nString print(T object, Locale locale);\nT parse(String text, Locale locale) throws ParseException;\n```\n\n**4.2절의 `MessageSource.getMessage` 와 같은 모양**이다 — 거기도 `Locale` 을 매번 넘겼다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "숫자 포매터",
+   "code": "@Slf4j\npublic class MyNumberFormatter implements Formatter<Number> {\n\n    @Override\n    public Number parse(String text, Locale locale) throws ParseException {\n        log.info(\"text={}, locale={}\", text, locale);\n        NumberFormat format = NumberFormat.getInstance(locale);\n        return format.parse(text);\n    }\n\n    @Override\n    public String print(Number object, Locale locale) {\n        log.info(\"object={}, locale={}\", object, locale);\n        return NumberFormat.getInstance(locale).format(object);\n    }\n}",
+   "note": "**`NumberFormat` 이 자바 표준**이다. `Locale` 을 주면 그 나라 형식으로 만든다.\n\n**`parse` 가 `ParseException` 을 던진다** — 컨버터와 다른 점이다. 컨버터는 던질 예외가 정해져 있지 않았다(11.2절).\n\n**`Formatter<Number>`** 라 `Integer` · `Long` · `Double` 을 다 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "2.5절의 빈자리가 채워진다",
+   "md": "2.5절에서 이렇게 적었다.\n\n```\n서버 -> 화면:  10000  ->  \"10,000\"   #numbers 가 한다\n화면 -> 서버:  \"10,000\"  ->  ???      아무도 안 한다\n```\n\n**포매터가 양쪽을 다** 한다.\n\n```\nprint:  10000       ->  \"10,000\"\nparse:  \"10,000\"    ->  10000\n```\n\n**한 클래스에 두 방향**이 있는 것이 컨버터와 다른 점이고, **그것이 이 문제에 맞는 이유**다. 보내는 형식과 받는 형식이 **반드시 짝**이어야 하는데, 컨버터로 두 클래스에 나눠 두면 **한쪽만 고치는 실수**가 생긴다.\n\n**그리고 `#numbers` 가 필요 없어진다.**\n\n```html\n<!-- 2.5 절 -->\n<span th:text=\"${#numbers.formatInteger(item.price, 3, 'COMMA')}\">\n\n<!-- 지금 -->\n<span th:text=\"${{item.price}}\">\n```\n\n**화면이 포맷을 몰라도 된다.** 2.3절에서 정한 기준에 더 맞는다.\n\n> **\"이 값이 무엇을 뜻하는가\" 를 정하는 것은 서버, \"어떻게 보여 줄까\" 는 화면**이다.\n\n**포맷이 서버 설정으로 옮겨 간 것**이라 화면은 값만 꺼낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "전역 포매터는 위험하다",
+   "md": "```java\nregistry.addFormatter(new MyNumberFormatter());\n```\n\n**모든 `Number` 에 적용**된다. 11.4절의 덮어쓰기 문제 그대로다.\n\n**무슨 일이 생기나**\n\n```\n상품 가격     10,000     좋다\n상품 번호     1,234      나쁘다\n연도         2,026      나쁘다\n수량         1,000      애매하다\n```\n\n**ID 와 연도에 콤마가 붙는다.** 그리고 **URL 에도 영향**을 준다 — `@PathVariable Long id` 에 `1,234` 를 파싱하려 든다.\n\n**더 나쁜 것은 되받을 때**다. `parse` 가 **콤마 없는 값도 받아들이므로** 겉으로는 잘 도는데, **`1.5` 같은 값이 로케일에 따라 `15` 로 읽히는** 일이 생긴다(독일에서 `.` 은 천 단위 구분).\n\n**그래서 전역보다 필드별**이다 — **11.7절의 애너테이션**.\n\n> **`addFormatter` 를 쓸 자리**는 우리가 만든 타입뿐이다. `IpPort` 처럼 다른 데 쓰일 일이 없는 것."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "포매터도 컨버터로 등록된다",
+   "md": "**`FormatterRegistry` 가 `ConverterRegistry` 를 상속**한다.\n\n```java\npublic interface FormatterRegistry extends ConverterRegistry {\n    void addFormatter(Formatter<?> formatter);\n    ...\n}\n```\n\n**11.4절의 메서드 이름이 `addFormatters`** 였던 이유다 — **컨버터와 포매터를 같은 자리**에 등록한다.\n\n**내부적으로 포매터는 두 컨버터로 쪼개진다.**\n\n```\nFormatter<Number>\n  -> PrinterConverter    Number -> String\n  -> ParserConverter     String -> Number\n```\n\n**결국 `ConversionService` 가 다 관리**한다. 쓰는 쪽은 `convert` 만 부르고 **컨버터인지 포매터인지 모른다**(11.3절의 ISP).\n\n**우선순위도 같다** — 나중 것이 이기고 구체적인 것이 이긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /converter-view HTTP/1.1\nAccept-Language: ko-KR\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<li>${number} = 10000</li>\n<li>${{number}} = 10,000</li>\n\n# 서버 로그\n#   object=10000, locale=ko_KR\n\n# 폼에서 되받으면\nPOST /converter/edit HTTP/1.1\n\nnumber=10,000\n\n# 서버 로그\n#   text=10,000, locale=ko_KR\n\nHTTP/1.1 302 \n\n# 2.5 절에서는 이 요청이 400 이었다\n\n# 독일어로 요청하면\nGET /converter-view HTTP/1.1\nAccept-Language: de-DE\n\nHTTP/1.1 200 \n<li>${{number}} = 10.000</li>",
+   "note": "**둘째 줄에 콤마가 붙었다.** `#numbers` 없이 `${{}}` 만으로 됐다.\n\n**로그의 `locale=ko_KR`** 이 4.5절의 `LocaleResolver` 가 정한 값이다 — **`LocaleContextHolder` 에서 꺼내 온다.**\n\n**POST 가 302 로 성공**한 것이 이 절의 성과다. **2.5절에서 `10,000` 이 숫자로 안 들어온다**고 한 그 요청이고, 지금은 `parse` 가 받는다.\n\n**맨 아래가 `Locale` 파라미터의 값**이다. 같은 `10000` 이 독일어에서는 **`10.000`** 으로 나갔다 — 콤마가 아니라 점이다."
+  }
+ ],
+ "recap": [
+  "**포매터는 한쪽이 항상 `String`** 이고 **`Locale` 을 받는다.**",
+  "**한 클래스에 두 방향**이 있다.",
+  "**타입의 문제는 컨버터, 표현의 문제는 포매터**다.",
+  "**숫자·날짜 형식은 나라마다 다르다** — 4.4절의 그 어려움.",
+  "**`parse` 가 `ParseException`** 을 던진다.",
+  "**2.5절의 빈자리가 채워진다** — `#numbers` 가 필요 없다.",
+  "**포맷이 서버 설정으로** 옮겨 가 화면은 값만 꺼낸다.",
+  "**전역 포매터는 위험하다** — ID·연도에도 콤마가 붙는다.",
+  "**로케일에 따라 `1.5` 가 `15` 로** 읽힐 수 있다.",
+  "**`FormatterRegistry` 가 `ConverterRegistry` 를 상속**한다.",
+  "**포매터는 내부적으로 두 컨버터**로 쪼개진다."
+ ],
+ "drills": [
+  {
+   "task": "`MyNumberFormatter` 를 만들어 등록한다.",
+   "done_when": "`${{number}}` 에 콤마가 붙는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`10,000` 을 폼으로 제출한다.",
+   "done_when": "숫자로 들어오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Accept-Language: de-DE` 로 요청한다.",
+   "done_when": "구분자가 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "상품 번호와 연도를 화면에 출력한다.",
+   "done_when": "원하지 않는 콤마가 붙는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`#numbers` 를 쓴 코드와 비교한다.",
+   "done_when": "화면이 짧아진 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "포매터와 컨버터의 차이는?",
+   "a": "포매터는 한쪽이 항상 `String` 이고 `Locale` 을 받으며 한 클래스에 양방향이 있다."
+  },
+  {
+   "q": "왜 `Locale` 이 필요한가?",
+   "a": "숫자·날짜 형식이 나라마다 달라서다. 표현의 문제라 정답이 하나가 아니다."
+  },
+  {
+   "q": "2.5절의 문제가 어떻게 풀리나?",
+   "a": "`print` 와 `parse` 가 짝을 이뤄 보내는 형식과 받는 형식이 어긋나지 않는다."
+  },
+  {
+   "q": "전역 포매터가 왜 위험한가?",
+   "a": "모든 숫자에 적용되어 ID·연도에도 콤마가 붙고 로케일에 따라 값이 잘못 파싱될 수 있다."
+  },
+  {
+   "q": "포매터는 어떻게 관리되나?",
+   "a": "내부적으로 두 컨버터로 쪼개져 `ConversionService` 에 등록된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "포매터",
+   "en": "Formatter",
+   "what": "객체와 문자열을 로케일에 맞게 양방향 변환하는 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

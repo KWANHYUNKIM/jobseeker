@@ -839,7 +839,7 @@
           "title": "뷰 템플릿에 적용",
           "summary": "${{...}} 가 왜 중괄호 두 개인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -847,7 +847,7 @@
           "title": "포맷터",
           "summary": "날짜와 숫자. 컨버터와 무엇이 다른가.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",
@@ -855,7 +855,7 @@
           "title": "@NumberFormat, @DateTimeFormat",
           "summary": "필드마다 다르게.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -863,7 +863,7 @@
           "title": "정리",
           "summary": "메시지 컨버터와 헷갈리지 않기.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

@@ -1,0 +1,145 @@
+{
+ "book": "spring-mvc-2",
+ "id": "formatter-annotation",
+ "no": "11.7",
+ "chapter": 11,
+ "title": "@NumberFormat, @DateTimeFormat",
+ "summary": "필드마다 다르게.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "애너테이션으로 필드별 포맷을 지정할 수 있다.",
+  "전역 포매터보다 나은 이유를 안다.",
+  "`AnnotationFormatterFactory` 를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "11.6절의 문제 — **전역 포매터는 모든 숫자에 적용**된다.\n\n**필드마다 정할 수 있으면** 그 문제가 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "범위가 좁아진다",
+   "ascii": "   global formatter          annotation\n   ----------------          ----------\n   every Number              this field only\n   id gets commas too        id stays plain\n   one format for all        format per field\n\n   @NumberFormat(pattern = \"###,###\")\n   private Integer number;\n\n   @DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")\n   private LocalDateTime localDateTime;",
+   "note": "**그 필드에만** 적용된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "쓰는 모습",
+   "code": "@Data\npublic class Form {\n\n    @NumberFormat(pattern = \"###,###\")\n    private Integer number;\n\n    @DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")\n    private LocalDateTime localDateTime;\n\n    private Long id;   // 포맷 없음\n}",
+   "note": "**`id` 에는 안 붙였다** — 콤마 없이 그대로 나온다. 11.6절의 문제가 이렇게 풀린다.\n\n**`@DateTimeFormat` 은 이미 쓰고 있었을 수도** 있다. 부트가 기본 등록해 둔 것이라 **날짜 필드에 붙이면 그냥 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이미 등록되어 있다",
+   "md": "**직접 등록할 필요가 없다.**\n\n```java\n// DefaultFormattingConversionService 가 하는 일\naddFormatterForFieldAnnotation(new NumberFormatAnnotationFormatterFactory());\naddFormatterForFieldAnnotation(new Jsr310DateTimeFormatAnnotationFormatterFactory());\n```\n\n**부트가 `WebConversionService` 로 이것을 쓴다**(11.4절).\n\n**그래서 애너테이션만 붙이면 된다.**\n\n**`@DateTimeFormat` 의 기본값**도 알아 둘 만하다.\n\n```java\n@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)   // 2026-09-09\n@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)\n@DateTimeFormat(pattern = \"yyyy-MM-dd\")\n```\n\n**`LocalDate` 는 애너테이션 없이도** ISO 형식(`2026-09-09`)이면 파싱된다. **다른 형식을 쓸 때만** 붙인다.\n\n> **HTML 의 `<input type=\"date\">`** 가 보내는 값이 `2026-09-09` 라 대부분 그냥 된다. `datetime-local` 은 `2026-09-09T14:30` 이라 `ISO.DATE_TIME` 이 맞다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "AnnotationFormatterFactory",
+   "md": "**애너테이션을 보고 포매터를 만드는 것**이다.\n\n```java\npublic interface AnnotationFormatterFactory<A extends Annotation> {\n    Set<Class<?>> getFieldTypes();\n    Printer<?> getPrinter(A annotation, Class<?> fieldType);\n    Parser<?> getParser(A annotation, Class<?> fieldType);\n}\n```\n\n**애너테이션의 속성을 읽어서** 그에 맞는 포매터를 준다. `pattern = \"###,###\"` 을 보고 `DecimalFormat` 을 만드는 식이다.\n\n**11.2절에서 본 세 인터페이스에 하나 더** 붙는 셈이다.\n\n| | 판단 기준 |\n|---|---|\n| `Converter` | 타입 |\n| `ConverterFactory` | 타입 계층 |\n| `GenericConverter` | 타입 + 애너테이션 |\n| **`AnnotationFormatterFactory`** | **애너테이션** |\n\n**직접 만들 일은 드물다.** `@NumberFormat` 과 `@DateTimeFormat` 으로 거의 다 되고, 특별한 것이 필요하면 **커스텀 애너테이션**을 만든다 — 6.4절에서 커스텀 검증 애너테이션을 만들던 것과 비슷하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@ModelAttribute 에만 붙는다",
+   "md": "**`@RequestParam` 에는 어떻게 붙일까.**\n\n```java\n@GetMapping\npublic String search(@NumberFormat(pattern = \"###,###\")\n                     @RequestParam Integer price) { ... }\n```\n\n**파라미터에도 붙는다.** 다만 **잘 안 쓴다** — 쿼리 스트링에 콤마가 든 숫자를 보내는 일이 드물다.\n\n**실제로 쓰는 자리는 폼 객체**다(6.7절의 `ItemSaveForm`).\n\n**그리고 `@RequestBody` 에는 안 된다** — 11.4절의 그 경계다.\n\n```java\n// JSON 에서는 Jackson 의 것을 쓴다\n@JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")\nprivate LocalDateTime createdAt;\n```\n\n**`@DateTimeFormat` 과 `@JsonFormat` 이 이름도 역할도 닮았는데 서로 다른 길**이다. **폼이면 앞엣것, JSON 이면 뒤엣것.**\n\n**둘 다 붙여야 하는 경우도** 있다 — 같은 DTO 를 폼과 API 에 다 쓸 때. **그러면 나누는 편**이 낫다(6.7절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "포맷과 검증의 순서",
+   "md": "**파싱이 먼저다.**\n\n```java\n@NumberFormat(pattern = \"###,###\")\n@Range(min = 1000, max = 1000000)\nprivate Integer price;\n```\n\n```\n\"10,000\"  ->  parse  ->  10000  ->  @Range 검사\n\"abc\"     ->  parse 실패  ->  typeMismatch  ->  @Range 는 건너뜀\n```\n\n**6.2절에서 본 그것**이다.\n\n> **바인딩 실패한 필드는 건너뛴다** — 값이 없으니 검사할 것도 없다.\n\n**포맷 오류 메시지**도 5.8절의 방식으로 바꾼다.\n\n```properties\ntypeMismatch.java.lang.Integer=숫자를 입력해 주세요.\n```\n\n**`\"10,000원\"` 처럼 단위가 붙으면** 파싱에 실패한다. **사용자는 화면에서 `10,000` 을 봤으니** 그대로 고치면 되는데, **직접 타이핑할 때** 문제가 된다.\n\n> **입력 칸에는 포맷을 안 쓰는 선택**도 있다. 보여 줄 때만 콤마를 붙이고 입력은 순수 숫자로 받는 것 — **`th:field` 가 항상 변환하니**(11.5절) 그렇게 하려면 `th:value` 로 직접 써야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /formatter/edit HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<input type=\"text\" id=\"number\" name=\"number\" value=\"10,000\">\n<input type=\"text\" id=\"localDateTime\" name=\"localDateTime\"\n       value=\"2026-09-09 14:30:00\">\n<input type=\"text\" id=\"id\" name=\"id\" value=\"1234\">\n\n# id 에는 콤마가 없다 - 애너테이션을 안 붙였다\n\n# 제출\nPOST /formatter/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nnumber=10,000&localDateTime=2026-09-09 14:30:00&id=1234\n\nHTTP/1.1 302 \n\n# 잘못된 형식\nnumber=10,000원\n\nHTTP/1.1 200 \n<div class=\"field-error\">숫자를 입력해 주세요.</div>\n<input type=\"text\" name=\"number\" value=\"10,000원\">\n\n# 5.4 절의 rejectedValue 가 살아 있다",
+   "note": "**`id` 에만 콤마가 없다.** 11.6절의 전역 포매터에서는 `1,234` 가 됐을 것이다 — **애너테이션이 범위를 좁힌 결과**다.\n\n**날짜도 `2026-09-09 14:30:00`** 로 나갔다. `LocalDateTime.toString()` 이면 가운데에 `T` 가 있었을 것이다(2.5절에서 본 것).\n\n**맨 아래가 5장과 11장이 만나는 자리**다. 파싱에 실패해 `typeMismatch` 가 났고, **5.8절의 메시지**가 나왔고, **5.4절의 `rejectedValue`** 덕에 `10,000원` 이 화면에 남아 있다. **세 장이 한 응답에 겹쳐 있다.**"
+  }
+ ],
+ "recap": [
+  "**애너테이션은 그 필드에만** 적용된다.",
+  "**`@NumberFormat` · `@DateTimeFormat`** 이 이미 등록되어 있다.",
+  "**`LocalDate` 는 ISO 형식이면 애너테이션 없이도** 파싱된다.",
+  "**`AnnotationFormatterFactory`** 가 애너테이션을 보고 포매터를 만든다.",
+  "**후보를 고르는 네 번째 기준**이다 — 타입·계층·타입+애너테이션·애너테이션.",
+  "**파라미터에도 붙지만 실제로는 폼 객체**에 쓴다.",
+  "**`@RequestBody` 에는 `@JsonFormat`** — 서로 다른 길이다.",
+  "**파싱이 검증보다 먼저**다. 실패하면 검증은 건너뛴다.",
+  "**`typeMismatch` 메시지**를 바꿔 준다 — 5.8절.",
+  "**5.4절의 `rejectedValue`** 덕에 잘못된 입력이 화면에 남는다."
+ ],
+ "drills": [
+  {
+   "task": "`@NumberFormat` 을 한 필드에만 붙인다.",
+   "done_when": "다른 필드에는 콤마가 없는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@DateTimeFormat` 없이 `LocalDateTime` 을 출력한다.",
+   "done_when": "`T` 가 들어간 모양을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`10,000원` 을 제출한다.",
+   "done_when": "`typeMismatch` 와 입력값 유지를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`typeMismatch.java.lang.Integer` 메시지를 등록한다.",
+   "done_when": "문구가 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 DTO 를 JSON 으로 보낸다.",
+   "done_when": "`@NumberFormat` 이 안 먹는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "애너테이션이 전역 포매터보다 나은 이유는?",
+   "a": "그 필드에만 적용되어 ID 나 연도 같은 다른 숫자가 영향을 안 받는다."
+  },
+  {
+   "q": "`@DateTimeFormat` 을 언제 붙이나?",
+   "a": "ISO 가 아닌 형식을 쓸 때다. `LocalDate` 는 `2026-09-09` 면 그냥 파싱된다."
+  },
+  {
+   "q": "`@RequestBody` 에서는?",
+   "a": "안 된다. Jackson 의 `@JsonFormat` 을 쓴다."
+  },
+  {
+   "q": "포맷과 검증의 순서는?",
+   "a": "파싱이 먼저다. 실패하면 `typeMismatch` 가 나고 검증 애너테이션은 건너뛴다."
+  },
+  {
+   "q": "파싱에 실패해도 입력값이 왜 남나?",
+   "a": "5.4절의 `FieldError.rejectedValue` 에 보관되고 `th:field` 가 꺼내 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "AnnotationFormatterFactory",
+   "en": "",
+   "what": "애너테이션의 속성을 보고 그에 맞는 포매터를 만들어 주는 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Type Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation/convert.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
