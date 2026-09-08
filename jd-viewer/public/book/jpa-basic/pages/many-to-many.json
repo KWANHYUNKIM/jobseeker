@@ -1,0 +1,195 @@
+{
+  "book": "jpa-basic",
+  "id": "many-to-many",
+  "no": "7.4",
+  "chapter": 7,
+  "title": "다대다 [N:M]",
+  "summary": "@ManyToMany 는 편해 보이지만 실무에서 쓰지 않는다. 연결 엔티티로 푸는 법.",
+  "minutes": 16,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`@ManyToMany` 가 만들어 내는 테이블 구조를 말할 수 있다.",
+    "그 구조가 실무에서 왜 무너지는지 구체적인 요구사항으로 설명할 수 있다.",
+    "연결 엔티티로 전환하는 방법과, 그 엔티티의 기본 키를 어떻게 잡는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**관계형 DB 는 다대다를 표현할 수 없다.** 테이블 두 개로는 안 되고 중간 테이블이 반드시 필요하다.\n\n반면 객체는 컬렉션을 서로 들고 있으면 그만이다. `@ManyToMany` 는 그 간극을 JPA 가 알아서 메워 주는 기능이다. 그리고 **이 장에서 유일하게 \"쓰지 마라\"로 끝나는 절**이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "쓰면 이렇게 생겼다",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n\n    @ManyToMany\n    @JoinTable(name = \"MEMBER_PRODUCT\")\n    private List<Product> products = new ArrayList<>();\n}\n\n@Entity\npublic class Product {\n    @Id @GeneratedValue\n    private Long id;\n\n    @ManyToMany(mappedBy = \"products\")\n    private List<Member> members = new ArrayList<>();\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 DDL",
+      "sql": "CREATE TABLE MEMBER_PRODUCT (\n    MEMBER_ID  BIGINT NOT NULL,\n    PRODUCTS_ID BIGINT NOT NULL\n)",
+      "note": "중간 테이블을 **JPA 가 알아서 만든다.** 엔티티도 없고 코드에도 안 보인다. 편해 보이는 지점이자 문제의 시작이다."
+    },
+    {
+      "type": "figure",
+      "caption": "무엇이 부족한가",
+      "ascii": "   @ManyToMany 가 만드는 것\n\n   MEMBER            MEMBER_PRODUCT           PRODUCT\n   ┌──────────┐      ┌────────────────┐      ┌───────────┐\n   │ MEMBER_ID│◀─────│ MEMBER_ID  FK  │      │ PRODUCT_ID│\n   │ USERNAME │      │ PRODUCT_ID FK  │─────▶│ NAME      │\n   └──────────┘      └────────────────┘      └───────────┘\n                             ▲\n                             │\n                  컬럼이 딱 두 개다. 더 넣을 수 없다.\n\n\n   실무가 요구하는 것\n\n   MEMBER            ORDER_ITEM               PRODUCT\n   ┌──────────┐      ┌────────────────┐      ┌───────────┐\n   │ MEMBER_ID│◀─────│ MEMBER_ID  FK  │      │ PRODUCT_ID│\n   │ USERNAME │      │ PRODUCT_ID FK  │─────▶│ NAME      │\n   └──────────┘      │ ORDER_PRICE    │      └───────────┘\n                     │ COUNT          │\n                     │ ORDER_DATE     │\n                     └────────────────┘\n                             ▲\n                             │\n                  연결에 데이터가 붙는 순간 그것은 개체다."
+    },
+    {
+      "type": "heading",
+      "text": "실무에서 반드시 무너지는 지점"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "연결 테이블에는 컬럼이 추가된다",
+      "md": "\"회원이 상품을 주문한다\"를 다대다로 매핑했다고 하자. 며칠 뒤 요구가 들어온다.\n\n- **주문 수량**을 저장해야 한다\n- **주문 시각**이 필요하다\n- **주문 당시 가격**을 기록해야 한다 (5.5절에서 본 그 이유)\n\n`@ManyToMany` 가 만든 중간 테이블에는 **FK 두 개 말고는 아무것도 넣을 수 없다.** 엔티티가 없으니 필드를 추가할 곳 자체가 없다.\n\n그리고 이 요구는 예외가 아니라 규칙이다. **연결에는 거의 항상 데이터가 붙는다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "쿼리도 예상 밖으로 나간다",
+      "md": "중간 테이블이 코드에 안 보이므로, 그 테이블을 거치는 조인이 언제 몇 번 나가는지도 안 보인다.\n\n```sql\nSELECT p.* FROM MEMBER_PRODUCT mp\n  JOIN PRODUCT p ON mp.PRODUCTS_ID = p.PRODUCT_ID\n WHERE mp.MEMBER_ID = ?\n```\n\n이 정도면 괜찮지만, 컬렉션 수정이 섞이면 하이버네이트가 **전부 DELETE 하고 다시 INSERT** 하는 경우가 생긴다. 10.5절의 값 타입 컬렉션과 같은 성질의 문제다."
+    },
+    {
+      "type": "heading",
+      "text": "해법 — 연결 엔티티로 승격시킨다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "중간 테이블을 엔티티로 만든다",
+      "code": "@Entity\npublic class OrderItem {\n\n    @Id @GeneratedValue                     // 대리키를 쓴다\n    @Column(name = \"ORDER_ITEM_ID\")\n    private Long id;\n\n    @ManyToOne\n    @JoinColumn(name = \"MEMBER_ID\")\n    private Member member;\n\n    @ManyToOne\n    @JoinColumn(name = \"PRODUCT_ID\")\n    private Product product;\n\n    private int orderPrice;                 // 이제 컬럼을 얼마든지 추가한다\n    private int count;\n    private LocalDateTime orderDate;\n}",
+      "note": "**다대다 하나가 다대일 두 개로 바뀐다.** 6.4절의 `OrderItem` 이 정확히 이것이고, 5.5절에서 이미 이 구조로 설계해 뒀다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "연결 엔티티의 기본 키는 대리키로",
+      "md": "FK 두 개를 묶어 복합 키(`@IdClass`·`@EmbeddedId`)로 만들 수도 있다. 하지만 실무에서는 **의미 없는 `Long id` 를 따로 두는 편**이 낫다.\n\n- 복합 키는 코드가 복잡해진다 — 별도 식별자 클래스, `equals`/`hashCode` 구현, `Serializable`.\n- 나중에 \"같은 상품을 두 번 담을 수 있어야 한다\" 같은 요구가 오면 복합 키는 **구조를 통째로 바꿔야** 한다.\n- 5.4절의 기본 키 조건 셋 중 \"변하면 안 된다\" 를 대리키가 가장 잘 만족한다."
+    },
+    {
+      "type": "table",
+      "caption": "정리",
+      "columns": [
+        "",
+        "@ManyToMany",
+        "연결 엔티티"
+      ],
+      "rows": [
+        [
+          "코드 양",
+          "적다",
+          "많다"
+        ],
+        [
+          "**연결에 컬럼 추가**",
+          "**불가능**",
+          "가능"
+        ],
+        [
+          "중간 테이블이 코드에 보이나",
+          "안 보인다",
+          "보인다"
+        ],
+        [
+          "나가는 쿼리 예측",
+          "어렵다",
+          "쉽다"
+        ],
+        [
+          "실무 사용",
+          "**하지 않는다**",
+          "표준"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그럼 @ManyToMany 는 언제 쓰나",
+      "md": "정말로 **연결에 아무 데이터도 붙지 않을 것이 확실한** 경우다. 게시글과 태그, 사용자와 권한 정도가 후보다.\n\n그런데 그런 관계도 \"태그를 언제 붙였나\"·\"누가 권한을 줬나\" 같은 요구가 나중에 온다. 그래서 **처음부터 연결 엔티티로 가는 것**이 결과적으로 싸다. 나중에 바꾸려면 이미 쌓인 데이터를 마이그레이션해야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`@ManyToMany` 를 실무에서 안 쓰는 이유는?\"** → 중간 테이블에 FK 두 개 말고는 컬럼을 넣을 수 없는데, 연결에는 거의 항상 데이터(수량·시각·가격)가 붙는다.\n- **\"그럼 어떻게 하나요?\"** → 중간 테이블을 엔티티로 승격시킨다. 다대다 하나가 `@ManyToOne` 두 개가 된다.\n- **\"연결 엔티티의 기본 키는?\"** → FK 복합 키보다 의미 없는 대리키를 권한다. 복합 키는 코드가 복잡하고 요구가 바뀌면 구조를 바꿔야 한다.\n- **\"관계형 DB 는 왜 다대다를 못 만드나요?\"** → 한 행이 여러 값을 가리킬 방법이 없어서 중간 테이블이 필요하다. 객체는 컬렉션으로 표현할 수 있어 여기서 불일치가 생긴다."
+    }
+  ],
+  "recap": [
+    "관계형 DB 는 다대다를 표현할 수 없어 중간 테이블이 필요하다. `@ManyToMany` 는 그걸 감춰 준다.",
+    "감춰진 중간 테이블에는 FK 두 개 말고 아무것도 못 넣는다 — 실무 요구가 반드시 여기서 막힌다.",
+    "해법은 중간 테이블을 엔티티로 승격시키는 것. 다대다 하나가 다대일 두 개가 된다.",
+    "연결 엔티티의 기본 키는 복합 키보다 대리키를 쓴다.",
+    "처음부터 연결 엔티티로 가는 것이 싸다. 나중에 바꾸면 데이터 마이그레이션이 따라온다."
+  ],
+  "drills": [
+    {
+      "task": "`@ManyToMany` 로 회원–상품을 매핑하고 DDL 과 조회 SQL 을 확인한다.",
+      "done_when": "중간 테이블이 자동으로 만들어지는 것과 컬럼이 두 개뿐인 것을 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "그 매핑에 '주문 수량' 을 추가해 보려고 시도한다.",
+      "done_when": "넣을 곳이 없다는 것을 직접 겪었다.",
+      "minutes": 10
+    },
+    {
+      "task": "연결 엔티티(`OrderItem`)로 바꾸고 수량·주문시각을 추가한다.",
+      "done_when": "저장·조회가 되고, `@ManyToOne` 이 두 개인 구조를 이해했다.",
+      "minutes": 30
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`@ManyToMany` 가 만드는 중간 테이블에는 어떤 컬럼이 들어가는가?",
+      "a": "양쪽 FK 두 개뿐이다. 엔티티가 없으므로 컬럼을 추가할 방법이 없다."
+    },
+    {
+      "q": "실무에서 그 구조가 무너지는 전형적인 요구는?",
+      "a": "주문 수량, 주문 시각, 주문 당시 가격처럼 **연결 자체에 붙는 데이터**다. 예외가 아니라 거의 항상 나온다."
+    },
+    {
+      "q": "연결 엔티티로 바꾸면 매핑이 어떻게 되는가?",
+      "a": "다대다 하나가 `@ManyToOne` 두 개가 된다. 연결 엔티티가 양쪽 FK 를 들고 있고 추가 컬럼을 얼마든지 가질 수 있다."
+    },
+    {
+      "q": "연결 엔티티의 기본 키를 복합 키가 아니라 대리키로 두는 이유는?",
+      "a": "복합 키는 식별자 클래스·equals/hashCode 구현이 필요해 복잡하고, '같은 상품을 두 번 담기' 같은 요구가 오면 구조를 바꿔야 한다. 대리키는 '변하면 안 된다' 는 기본 키 조건을 가장 잘 만족한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@ManyToMany",
+      "en": "",
+      "what": "다대다 매핑. 중간 테이블을 JPA 가 자동 생성한다. 실무에서는 쓰지 않는다."
+    },
+    {
+      "term": "@JoinTable",
+      "en": "",
+      "what": "연결 테이블의 이름과 조인 컬럼을 지정한다."
+    },
+    {
+      "term": "연결 엔티티",
+      "en": "join entity",
+      "what": "중간 테이블을 엔티티로 승격시킨 것. `@ManyToOne` 두 개를 갖고 추가 컬럼을 가질 수 있다."
+    },
+    {
+      "term": "복합 키",
+      "en": "composite key",
+      "what": "여러 컬럼을 묶은 기본 키. `@IdClass`·`@EmbeddedId`. 연결 엔티티에는 권하지 않는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

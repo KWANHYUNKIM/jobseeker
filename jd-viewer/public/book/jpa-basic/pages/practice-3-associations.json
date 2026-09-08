@@ -1,0 +1,228 @@
+{
+  "book": "jpa-basic",
+  "id": "practice-3-associations",
+  "no": "7.5",
+  "chapter": 7,
+  "title": "실전 예제 3 — 다양한 연관관계 매핑",
+  "summary": "주문–배송의 일대일, 상품–카테고리의 다대다, 그리고 카테고리의 셀프 조인.",
+  "minutes": 20,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "일대일 매핑에서 FK 위치를 실제 요구사항을 보고 고를 수 있다.",
+    "셀프 조인(같은 엔티티끼리의 연관관계)을 매핑할 수 있다.",
+    "예제의 다대다가 실무라면 왜 바뀌어야 하는지 말할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.4절의 네 엔티티에 두 가지를 더한다.\n\n- **배송** — 주문 하나에 배송 하나. 일대일.\n- **카테고리** — 상품 하나가 여러 카테고리에, 카테고리 하나에 여러 상품. 다대다. 그리고 카테고리는 계층 구조다."
+    },
+    {
+      "type": "figure",
+      "caption": "최종 ERD",
+      "ascii": "   MEMBER              ORDERS               ORDER_ITEM          ITEM\n   ┌───────────┐       ┌──────────────┐     ┌─────────────┐     ┌──────────┐\n   │ MEMBER_ID │◀──────│ MEMBER_ID FK │     │ ORDER_ID FK │────▶│ ITEM_ID  │\n   │ NAME      │       │ DELIVERY_ID  │──┐  │ ITEM_ID  FK │     │ NAME     │\n   │ CITY      │       │ ORDER_DATE   │  │  │ ORDER_PRICE │     │ PRICE    │\n   │ STREET    │       │ STATUS       │  │  │ COUNT       │     │ STOCK    │\n   │ ZIPCODE   │       └──────┬───────┘  │  └─────────────┘     └────┬─────┘\n   └───────────┘              │          │                           │\n                              └──────────┼───────────────────────────┼──┐\n                                         ▼                           │  │\n                                  DELIVERY                           │  │\n                                  ┌──────────────┐                   │  │\n                                  │ DELIVERY_ID  │      CATEGORY_ITEM│  │\n                                  │ CITY         │      ┌────────────┴┐ │\n                                  │ STREET       │      │ CATEGORY_ID │ │\n                                  │ ZIPCODE      │      │ ITEM_ID     │◀┘\n                                  │ STATUS       │      └──────┬──────┘\n                                  └──────────────┘             │\n                                                               ▼\n                                                        CATEGORY\n                                                        ┌──────────────┐\n                                                        │ CATEGORY_ID  │\n                                                        │ NAME         │\n                                                        │ PARENT_ID FK │  self\n                                                        └──────────────┘\n\n   ORDERS : DELIVERY  = 1:1  (FK 는 주 테이블 ORDERS 에)\n   CATEGORY : ITEM    = N:M  (예제라서 남겨 두지만, 실무라면 연결 엔티티로)\n   CATEGORY : CATEGORY = 셀프 조인 (부모-자식)"
+    },
+    {
+      "type": "heading",
+      "text": "주문 ↔ 배송 : 일대일"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Order.java",
+      "code": "@OneToOne\n@JoinColumn(name = \"DELIVERY_ID\")\nprivate Delivery delivery;",
+      "note": "FK 를 `ORDERS` 쪽에 뒀다. 7.3절의 (A) — **주문을 조회하면 배송이 있는지 바로 알 수 있어 지연 로딩이 성립한다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Delivery.java",
+      "code": "@Entity\npublic class Delivery {\n    @Id @GeneratedValue\n    @Column(name = \"DELIVERY_ID\")\n    private Long id;\n\n    private String city;\n    private String street;\n    private String zipcode;\n\n    @Enumerated(EnumType.STRING)\n    private DeliveryStatus status;\n\n    @OneToOne(mappedBy = \"delivery\")     // 주인은 Order 쪽\n    private Order order;\n}",
+      "note": "양방향으로 열었다. 배송 화면에서 주문을 거슬러 올라갈 일이 있기 때문이다. 없다면 `mappedBy` 쪽은 안 만드는 게 낫다(6.3절)."
+    },
+    {
+      "type": "sql",
+      "caption": "주문 저장 시",
+      "sql": "INSERT INTO DELIVERY (CITY, STREET, ZIPCODE, STATUS, DELIVERY_ID) VALUES (?, ?, ?, ?, ?)\nINSERT INTO ORDERS   (MEMBER_ID, DELIVERY_ID, ORDER_DATE, STATUS, ORDER_ID) VALUES (?, ?, ?, ?, ?)",
+      "note": "배송이 먼저 INSERT 된다. `ORDERS.DELIVERY_ID` 를 채우려면 배송의 식별자가 먼저 있어야 하기 때문이다."
+    },
+    {
+      "type": "heading",
+      "text": "상품 ↔ 카테고리 : 다대다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Category.java",
+      "code": "@Entity\npublic class Category {\n    @Id @GeneratedValue\n    @Column(name = \"CATEGORY_ID\")\n    private Long id;\n\n    private String name;\n\n    @ManyToMany\n    @JoinTable(\n        name = \"CATEGORY_ITEM\",\n        joinColumns        = @JoinColumn(name = \"CATEGORY_ID\"),\n        inverseJoinColumns = @JoinColumn(name = \"ITEM_ID\")\n    )\n    private List<Item> items = new ArrayList<>();\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "이건 예제라서 남겨 둔다",
+      "md": "7.4절에서 `@ManyToMany` 를 쓰지 말라고 했는데 여기서는 쓴다. **표준 매핑의 모양을 한 번 보기 위해서**다.\n\n실무라면 이렇게 바꾼다.\n\n```java\n@Entity\npublic class CategoryItem {\n    @Id @GeneratedValue\n    private Long id;\n\n    @ManyToOne @JoinColumn(name = \"CATEGORY_ID\")\n    private Category category;\n\n    @ManyToOne @JoinColumn(name = \"ITEM_ID\")\n    private Item item;\n\n    private int displayOrder;      // \"이 카테고리에서 몇 번째로 보여 줄 것인가\"\n    private LocalDateTime addedAt;\n}\n```\n\n`displayOrder` 는 상상이 아니다. **카테고리 화면에 상품을 배치하는 순간 반드시 필요해지는 컬럼**이고, `@ManyToMany` 로는 넣을 곳이 없다."
+    },
+    {
+      "type": "heading",
+      "text": "카테고리 ↔ 카테고리 : 셀프 조인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "같은 엔티티끼리도 매핑 규칙은 똑같다",
+      "code": "@ManyToOne\n@JoinColumn(name = \"PARENT_ID\")\nprivate Category parent;\n\n@OneToMany(mappedBy = \"parent\")\nprivate List<Category> child = new ArrayList<>();",
+      "note": "타입이 자기 자신일 뿐, **다대일 양방향과 완전히 같은 모양**이다. 주인은 FK 가 있는 `parent` 쪽이다."
+    },
+    {
+      "type": "sql",
+      "caption": "하위 카테고리를 조회할 때",
+      "sql": "SELECT C.CATEGORY_ID, C.NAME, C.PARENT_ID\n  FROM CATEGORY C\n WHERE C.PARENT_ID = ?"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "계층이 깊으면 이 방식으로 못 버틴다",
+      "md": "`category.getChild()` 를 재귀로 내려가면 **깊이만큼 SELECT 가 나간다.** 3단계면 3번이 아니라 노드 수만큼이다.\n\n카테고리가 3~4단계로 고정되고 개수가 적으면 괜찮다. 깊이가 늘거나 \"이 카테고리의 모든 하위를 한 번에\" 같은 요구가 오면 **경로 컬럼(`/1/17/42/`)이나 클로저 테이블** 같은 별도 설계로 가야 한다. JPA 매핑으로 풀 문제가 아니다."
+    },
+    {
+      "type": "heading",
+      "text": "이 장에서 내린 결정 정리"
+    },
+    {
+      "type": "table",
+      "caption": "여섯 관계",
+      "note": "다중성을 고르는 것보다 **어느 쪽에 FK 를 둘 것인가**와 **양방향을 열 것인가**가 실제 결정이다.",
+      "columns": [
+        "관계",
+        "다중성",
+        "주인",
+        "양방향?"
+      ],
+      "rows": [
+        [
+          "주문 → 회원",
+          "N:1",
+          "`Order.member`",
+          "열었다 (회원의 주문 목록)"
+        ],
+        [
+          "주문상품 → 주문",
+          "N:1",
+          "`OrderItem.order`",
+          "열었다 (주문의 상품 목록)"
+        ],
+        [
+          "주문상품 → 상품",
+          "N:1",
+          "`OrderItem.item`",
+          "**안 열었다**"
+        ],
+        [
+          "주문 → 배송",
+          "1:1",
+          "`Order.delivery` (FK 가 ORDERS 에)",
+          "열었다"
+        ],
+        [
+          "카테고리 ↔ 상품",
+          "N:M",
+          "`Category.items`",
+          "예제용. 실무는 연결 엔티티"
+        ],
+        [
+          "카테고리 → 부모",
+          "N:1 (셀프)",
+          "`Category.parent`",
+          "열었다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"주문과 배송의 FK 를 왜 ORDERS 에 뒀나요?\"** → 주문을 조회할 때 배송 유무를 바로 알 수 있어 지연 로딩이 성립한다. 반대로 두면 항상 즉시 로딩된다.\n- **\"셀프 조인은 어떻게 매핑하나요?\"** → 타입이 자기 자신일 뿐 다대일 양방향과 같다. FK 가 있는 `parent` 쪽이 주인이다.\n- **\"카테고리 계층을 JPA 로 조회할 때 주의할 점은?\"** → 재귀 탐색이면 노드 수만큼 쿼리가 나간다. 깊은 계층은 경로 컬럼이나 클로저 테이블로 설계를 바꾼다."
+    }
+  ],
+  "recap": [
+    "주문–배송 일대일은 FK 를 `ORDERS` 에 뒀다. 지연 로딩이 되는 쪽을 고른 것이다.",
+    "일대일 저장에서는 FK 를 채워야 하는 쪽이 나중에 INSERT 된다.",
+    "카테고리–상품 다대다는 예제로만 남긴다. 실무라면 `displayOrder` 같은 컬럼 때문에 반드시 연결 엔티티가 된다.",
+    "셀프 조인은 타입이 자기 자신일 뿐 다대일 양방향과 완전히 같다.",
+    "깊은 계층 구조는 JPA 매핑이 아니라 테이블 설계(경로 컬럼·클로저 테이블)로 푼다.",
+    "실제 결정은 다중성이 아니라 'FK 를 어디에 둘 것인가' 와 '양방향을 열 것인가' 다."
+  ],
+  "drills": [
+    {
+      "task": "주문–배송을 FK 를 `ORDERS` 에 두고 매핑한 뒤, 주문만 조회했을 때 배송 SELECT 가 나가는지 확인한다.",
+      "done_when": "지연 로딩이 되는 것을 확인했다. FK 를 `DELIVERY` 로 옮기면 어떻게 되는지도 해 본다.",
+      "minutes": 30
+    },
+    {
+      "task": "카테고리를 3단계로 만들고 최상위에서 재귀로 전부 출력하며 SELECT 개수를 센다.",
+      "done_when": "쿼리 수가 노드 수에 비례하는 것을 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "`@ManyToMany` 카테고리–상품에 `displayOrder` 를 추가해 보려고 시도한 뒤, 연결 엔티티로 바꾼다.",
+      "done_when": "두 구조의 DDL 을 비교했고 왜 후자여야 하는지 말할 수 있다.",
+      "minutes": 35
+    },
+    {
+      "task": "이 장의 여섯 관계를 표로 정리하고, 각각 '양방향을 왜 열었/안 열었나' 를 한 줄씩 쓴다.",
+      "done_when": "여섯 줄이 다 채워졌고 근거가 6.3절의 기준과 맞다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "주문–배송의 FK 를 `ORDERS` 에 둔 이유는?",
+      "a": "주 테이블에 FK 가 있어야 주문을 조회하는 것만으로 배송 유무를 알 수 있고, 그래야 프록시를 만들어 지연 로딩을 할 수 있다(7.3절)."
+    },
+    {
+      "q": "일대일 저장에서 INSERT 순서가 정해지는 이유는?",
+      "a": "FK 를 가진 쪽이 상대의 식별자를 알아야 하므로, 상대가 먼저 INSERT 된다. 여기서는 DELIVERY 가 먼저, ORDERS 가 나중이다."
+    },
+    {
+      "q": "셀프 조인 매핑은 일반 연관관계와 무엇이 다른가?",
+      "a": "다르지 않다. 타입이 자기 자신일 뿐 다대일 양방향과 완전히 같고, FK 가 있는 `parent` 쪽이 주인이다."
+    },
+    {
+      "q": "카테고리 계층을 재귀로 탐색하면 무슨 문제가 있는가?",
+      "a": "노드 수만큼 SELECT 가 나간다. 깊이가 늘거나 '모든 하위를 한 번에' 같은 요구가 오면 경로 컬럼이나 클로저 테이블로 설계를 바꿔야 한다."
+    },
+    {
+      "q": "예제의 `@ManyToMany` 를 실무에서 바꿔야 하는 구체적 이유는?",
+      "a": "카테고리 화면에 상품을 배치하려면 `displayOrder` 같은 컬럼이 필요한데, `@ManyToMany` 의 중간 테이블에는 FK 두 개 말고 넣을 곳이 없다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "셀프 조인",
+      "en": "self join",
+      "what": "같은 엔티티끼리의 연관관계. 카테고리의 부모-자식처럼 계층을 표현한다."
+    },
+    {
+      "term": "@JoinTable",
+      "en": "",
+      "what": "연결 테이블 이름과 양쪽 조인 컬럼을 지정한다. `joinColumns` 가 내 쪽, `inverseJoinColumns` 가 상대 쪽이다."
+    },
+    {
+      "term": "클로저 테이블",
+      "en": "closure table",
+      "what": "모든 조상-자손 쌍을 미리 저장해 두는 계층 구조 설계. 깊은 트리를 한 번의 쿼리로 조회할 수 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

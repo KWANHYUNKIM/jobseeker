@@ -1,0 +1,159 @@
+{
+  "book": "jpa-basic",
+  "id": "one-to-many",
+  "no": "7.2",
+  "chapter": 7,
+  "title": "일대다 [1:N]",
+  "summary": "일대다 단방향은 왜 UPDATE 가 한 번 더 나가는가. 실무에서 권하지 않는 이유.",
+  "minutes": 16,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "일대다 단방향에서 UPDATE 가 추가로 나가는 이유를 설명할 수 있다.",
+    "`@JoinColumn` 을 생략하면 무엇이 더 나빠지는지 안다.",
+    "일대다 양방향이 표준에 없다는 것과, 흉내 내는 방법의 한계를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**1 쪽이 주인인 매핑**이다. 즉 `Team` 이 `MEMBER.TEAM_ID` 를 관리한다.\n\n\"팀이 회원을 가진다\"는 말이 자연스러워서 처음에는 이쪽이 옳아 보인다. 실제로 써 보면 왜 안 쓰는지 알게 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "mappedBy 가 없고 @JoinColumn 이 있다",
+      "code": "@Entity\npublic class Team {\n    @Id @GeneratedValue\n    private Long id;\n\n    private String name;\n\n    @OneToMany                          // mappedBy 없음 -> 내가 주인\n    @JoinColumn(name = \"TEAM_ID\")       // MEMBER 테이블의 FK 컬럼\n    private List<Member> members = new ArrayList<>();\n}\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n    private String username;\n    // Team 참조가 없다. 단방향이다.\n}"
+    },
+    {
+      "type": "figure",
+      "caption": "주인과 FK 가 다른 테이블에 있다",
+      "ascii": "   일대다 단방향 :  Team 이 주인인데 FK 는 MEMBER 테이블에 있다\n\n   ┌───────────────────────────────┐\n   │ Team                 (owner)  │\n   │   @OneToMany                  │\n   │   @JoinColumn(\"TEAM_ID\")      │\n   │   List<Member> members        │\n   └───────────────┬───────────────┘\n                   │\n                   │  add / remove here\n                   │\n                   ▼\n   ┌──────────────────────┐        ┌──────────────────────┐\n   │ TEAM                 │        │ MEMBER               │\n   │   TEAM_ID   PK       │        │   MEMBER_ID PK       │\n   │   NAME               │        │   TEAM_ID   FK       │  <-- UPDATE 는 여기로 나간다\n   └──────────────────────┘        └──────────────────────┘\n      내 테이블                        남의 테이블\n\n   그래서 회원을 INSERT 한 뒤 TEAM_ID 를 채우는 UPDATE 가 한 번 더 나간다."
+    },
+    {
+      "type": "heading",
+      "text": "저장해 보면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = new Member(\"김관현\");\nem.persist(member);\n\nTeam team = new Team(\"팀A\");\nteam.getMembers().add(member);      // 여기서 관계를 맺는다\nem.persist(team);\n\ntx.commit();"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL — 세 개다",
+      "sql": "INSERT INTO MEMBER (USERNAME, MEMBER_ID) VALUES (?, ?)\nINSERT INTO TEAM   (NAME, TEAM_ID)      VALUES (?, ?)\n\nUPDATE MEMBER SET TEAM_ID = ? WHERE MEMBER_ID = ?    -- 이게 추가로 나간다",
+      "note": "`Member` 를 INSERT 할 때 `TEAM_ID` 를 채울 수가 없다. **회원 엔티티는 팀을 모르기 때문이다.** 그래서 팀을 저장한 뒤 UPDATE 로 따로 채운다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "무엇이 문제인가",
+      "md": "**1. 성능.** 회원 100명을 한 팀에 넣으면 UPDATE 가 100번 더 나간다.\n\n**2. 추적이 안 된다.** `team.getMembers().add(member)` 라는 코드를 보고 `MEMBER` 테이블에 UPDATE 가 나갈 거라고 예상하기 어렵다. 6.2절에서 \"FK 가 있는 쪽이 주인이어야 코드와 SQL 이 일대일로 대응한다\"고 한 이유가 이것이다.\n\n**3. 회원 엔티티가 자기 팀을 모른다.** `member.getTeam()` 이 없으므로, 회원을 다루는 모든 코드가 팀을 알려면 다시 조회해야 한다 — 5.5절의 그 상태로 되돌아간다."
+    },
+    {
+      "type": "heading",
+      "text": "@JoinColumn 을 빼면 더 나빠진다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "@OneToMany\n// @JoinColumn 없음\nprivate List<Member> members = new ArrayList<>();"
+    },
+    {
+      "type": "sql",
+      "caption": "조인 테이블이 생긴다",
+      "sql": "CREATE TABLE TEAM_MEMBER (\n    TEAM_ID    BIGINT NOT NULL,\n    MEMBERS_ID BIGINT NOT NULL\n)",
+      "note": "`@JoinColumn` 을 생략하면 JPA 는 **조인 테이블 전략**을 기본으로 쓴다. 테이블이 하나 더 생기고 조회할 때 조인이 한 번 더 붙는다. 일대다에서 `@JoinColumn` 은 사실상 필수다."
+    },
+    {
+      "type": "heading",
+      "text": "일대다 양방향은 표준에 없다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "흉내 내는 방법",
+      "code": "@Entity\npublic class Member {\n    @ManyToOne\n    @JoinColumn(name = \"TEAM_ID\",\n                insertable = false, updatable = false)   // 읽기 전용\n    private Team team;\n}",
+      "note": "같은 컬럼을 두 곳에서 매핑하되 한쪽을 읽기 전용으로 만드는 것이다(5.3절의 `insertable`/`updatable`). **표준이 정한 방법이 아니라 편법**이고, 관리할 것만 늘어난다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "결론은 한 줄이다",
+      "md": "**일대다를 쓰고 싶다면 다대일 양방향을 쓴다.**\n\n```java\n// Team\n@OneToMany(mappedBy = \"team\")\nprivate List<Member> members;\n\n// Member\n@ManyToOne\n@JoinColumn(name = \"TEAM_ID\")\nprivate Team team;\n```\n\n원하는 것(`team.getMembers()`)을 그대로 얻으면서, FK 는 있어야 할 쪽이 관리한다. 추가 UPDATE 도 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"일대다 단방향의 단점은?\"** → 주인과 FK 가 다른 테이블에 있어서 ① 내 엔티티를 손댔는데 남의 테이블에 UPDATE 가 나가고 ② INSERT 후 UPDATE 가 한 번 더 나간다.\n- **\"그럼 어떻게 하나요?\"** → 다대일 양방향으로 바꾼다. 얻는 것은 같고 잃는 것이 없다.\n- **\"일대다에서 `@JoinColumn` 을 빼면?\"** → 조인 테이블 전략이 기본이라 중간 테이블이 생긴다."
+    }
+  ],
+  "recap": [
+    "일대다 단방향은 1 쪽이 주인인데 FK 는 N 쪽 테이블에 있다.",
+    "그래서 INSERT 후 FK 를 채우는 UPDATE 가 추가로 나가고, 코드와 SQL 이 대응하지 않는다.",
+    "`@JoinColumn` 을 빼면 조인 테이블이 생겨 더 나빠진다.",
+    "일대다 양방향은 표준에 없다. `insertable=false, updatable=false` 로 흉내만 낸다.",
+    "**답은 다대일 양방향이다.** 얻는 것은 같고 문제가 없다."
+  ],
+  "drills": [
+    {
+      "task": "일대다 단방향으로 회원 3명을 한 팀에 넣고 나가는 SQL 을 센다.",
+      "done_when": "UPDATE 가 3번 추가로 나가는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "같은 것을 다대일 양방향으로 바꿔 SQL 을 다시 센다.",
+      "done_when": "추가 UPDATE 가 사라진 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "일대다에서 `@JoinColumn` 을 지우고 DDL 을 확인한다.",
+      "done_when": "조인 테이블이 생기는 것을 봤다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "일대다 단방향에서 UPDATE 가 추가로 나가는 이유는?",
+      "a": "Member 를 INSERT 할 때 그 엔티티는 팀을 모르므로 TEAM_ID 를 채울 수 없다. 팀 쪽 컬렉션을 보고 나서야 FK 값을 알 수 있어 UPDATE 로 따로 채운다."
+    },
+    {
+      "q": "일대다 단방향에서 `@JoinColumn` 을 생략하면?",
+      "a": "조인 테이블 전략이 기본값이라 `TEAM_MEMBER` 같은 중간 테이블이 생긴다. 테이블도 늘고 조회에 조인이 한 번 더 붙는다."
+    },
+    {
+      "q": "일대다 양방향은 왜 표준에 없는가?",
+      "a": "FK 는 N 쪽에 있으므로 1 쪽을 주인으로 두는 것 자체가 관계형 모델과 어긋난다. `insertable/updatable = false` 로 읽기 전용 참조를 덧붙여 흉내만 낼 수 있다."
+    },
+    {
+      "q": "일대다 관계가 필요하면 무엇을 쓰나?",
+      "a": "다대일 양방향. `@ManyToOne` 쪽이 주인이고 `@OneToMany(mappedBy)` 로 반대 방향을 연다. 추가 UPDATE 없이 같은 것을 얻는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "일대다 단방향",
+      "en": "",
+      "what": "1 쪽이 주인인 매핑. FK 는 N 쪽에 있어 UPDATE 가 추가로 나간다. 실무에서 권하지 않는다."
+    },
+    {
+      "term": "조인 테이블 전략",
+      "en": "join table",
+      "what": "연관관계를 중간 테이블로 표현하는 방식. 일대다에서 `@JoinColumn` 을 생략하면 기본값이 된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -280,7 +280,7 @@
           "title": "다대일 [N:1]",
           "summary": "가장 많이 쓰는 매핑. 단방향이 기본이고 양방향은 필요할 때만 연다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -288,7 +288,7 @@
           "title": "일대다 [1:N]",
           "summary": "일대다 단방향은 왜 UPDATE 가 한 번 더 나가는가. 실무에서 권하지 않는 이유.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -296,7 +296,7 @@
           "title": "일대일 [1:1]",
           "summary": "FK 를 어느 테이블에 둘 것인가. 주 테이블에 두면 지연 로딩이 깨지는 문제.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -304,7 +304,7 @@
           "title": "다대다 [N:M]",
           "summary": "@ManyToMany 는 편해 보이지만 실무에서 쓰지 않는다. 연결 엔티티로 푸는 법.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -312,7 +312,7 @@
           "title": "실전 예제 3 — 다양한 연관관계 매핑",
           "summary": "주문–상품의 다대다를 주문상품 엔티티로 풀고, 배송과 카테고리를 붙인다.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

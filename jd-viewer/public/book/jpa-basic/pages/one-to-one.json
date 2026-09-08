@@ -1,0 +1,183 @@
+{
+  "book": "jpa-basic",
+  "id": "one-to-one",
+  "no": "7.3",
+  "chapter": 7,
+  "title": "일대일 [1:1]",
+  "summary": "FK 를 어느 테이블에 둘 것인가. 주 테이블에 두면 지연 로딩이 되고, 대상 테이블에 두면 안 된다.",
+  "minutes": 18,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "일대일에서 FK 위치를 고르는 두 선택지의 장단점을 말할 수 있다.",
+    "대상 테이블에 FK 를 두면 왜 지연 로딩이 불가능한지 설명할 수 있다.",
+    "일대일 양방향에서 주인이 누구인지 판단할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "회원과 락커처럼 서로 하나씩만 갖는 관계다. 다대일과 달리 **FK 를 어느 쪽에 둘지 고를 수 있고**, 그 선택이 성능에 직접 영향을 준다."
+    },
+    {
+      "type": "figure",
+      "caption": "두 가지 선택",
+      "ascii": "   FK 를 어디에 둘 것인가\n\n   (A) 주 테이블에 FK                       (B) 대상 테이블에 FK\n\n   MEMBER                                 MEMBER\n   ┌──────────────┐                       ┌──────────────┐\n   │ MEMBER_ID PK │                       │ MEMBER_ID PK │\n   │ LOCKER_ID FK │                       │ USERNAME     │\n   └──────────────┘                       └──────────────┘\n   LOCKER                                 LOCKER\n   ┌──────────────┐                       ┌──────────────┐\n   │ LOCKER_ID PK │                       │ LOCKER_ID PK │\n   │ NAME         │                       │ MEMBER_ID FK │\n   └──────────────┘                       └──────────────┘\n\n   회원을 조회하는 것만으로                  회원만 조회해서는\n   락커가 있는지 알 수 있다                  락커가 있는지 알 수 없다\n   -> 지연 로딩이 된다                      -> 프록시를 만들 수 없다\n                                           -> 항상 즉시 로딩된다"
+    },
+    {
+      "type": "heading",
+      "text": "(A) 주 테이블에 FK — 권장"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "다대일 단방향과 모양이 같다",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n\n    @OneToOne\n    @JoinColumn(name = \"LOCKER_ID\")\n    private Locker locker;\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "조회할 때 — 한 방에 확인된다",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.LOCKER_ID\n  FROM MEMBER M\n WHERE M.MEMBER_ID = ?",
+      "note": "`LOCKER_ID` 가 null 인지 아닌지가 이 한 줄에 나온다. 값이 있으면 프록시를 만들어 두고, 실제로 쓸 때 락커를 조회한다 — **지연 로딩이 성립한다.**"
+    },
+    {
+      "type": "heading",
+      "text": "(B) 대상 테이블에 FK — 지연 로딩이 깨진다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 프록시를 만들 수 없나",
+      "md": "`LOCKER` 테이블에 `MEMBER_ID` 가 있다고 하자. 회원을 조회했을 때 JPA 가 `member.locker` 에 무엇을 넣어야 할까?\n\n- **락커가 있으면** 프록시 객체를 넣어야 한다.\n- **락커가 없으면** `null` 을 넣어야 한다.\n\n그런데 둘 중 어느 쪽인지 알려면 **`LOCKER` 테이블을 조회해 봐야 한다.** 조회할 거면 프록시를 만들 이유가 없다.\n\n그래서 이 경우 하이버네이트는 **항상 즉시 로딩**한다. `fetch = FetchType.LAZY` 를 적어도 무시된다. 회원 목록 100건을 조회하면 락커 조회가 100번 따라붙는 N+1 이 자동으로 생긴다.\n\n> 컬렉션(`@OneToMany`)은 이 문제가 없다. 빈 컬렉션이라는 표현이 있어서 \"없음\"을 즉시 나타낼 수 있기 때문이다. 단일 참조에만 생기는 문제다."
+    },
+    {
+      "type": "heading",
+      "text": "일대일 양방향"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Entity\npublic class Locker {\n    @Id @GeneratedValue\n    private Long id;\n\n    private String name;\n\n    @OneToOne(mappedBy = \"locker\")   // 주인은 FK 가 있는 Member 쪽\n    private Member member;\n}",
+      "note": "규칙은 6.2절과 같다 — **FK 가 있는 테이블 쪽이 주인**이다. 여기서는 `MEMBER` 에 `LOCKER_ID` 가 있으므로 `Member.locker` 가 주인이다."
+    },
+    {
+      "type": "table",
+      "caption": "FK 위치를 고르는 기준",
+      "note": "정답이 하나는 아니다. 다만 **지연 로딩이 안 된다는 점은 되돌릴 수 없는 비용**이라 (A)를 기본으로 두는 편이 낫다.",
+      "columns": [
+        "",
+        "(A) 주 테이블에 FK",
+        "(B) 대상 테이블에 FK"
+      ],
+      "rows": [
+        [
+          "**지연 로딩**",
+          "**된다**",
+          "**안 된다 (항상 즉시 로딩)**"
+        ],
+        [
+          "주 테이블만 조회해도",
+          "관계 유무를 안다",
+          "모른다"
+        ],
+        [
+          "관계가 없을 때",
+          "FK 가 `null` — 컬럼 낭비",
+          "행이 아예 없다 — 깔끔"
+        ],
+        [
+          "나중에 1:N 으로 바뀌면",
+          "테이블 구조를 바꿔야 한다",
+          "FK 에 걸린 유니크만 풀면 된다"
+        ],
+        [
+          "선호하는 쪽",
+          "애플리케이션 개발자",
+          "DBA"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "일대일에는 유니크 제약이 반드시 필요하다",
+      "md": "`@OneToOne` 매핑만으로는 DB 가 일대일을 보장하지 않는다. FK 컬럼에 **유니크 제약**이 없으면 같은 락커를 두 회원이 가리킬 수 있다.\n\n하이버네이트가 DDL 을 만들면 유니크 제약을 같이 넣어 주지만, `ddl-auto=none` 인 운영 환경에서는 마이그레이션에 직접 적어야 한다. 5.2절의 \"`@Column` 속성은 DDL 전용\" 과 같은 함정이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"일대일에서 FK 를 어디에 두나요?\"** → 주 테이블 쪽. 대상 테이블에 두면 지연 로딩이 안 된다.\n- **\"왜 지연 로딩이 안 되나요?\"** → 관계가 있는지 없는지 알려면 대상 테이블을 조회해야 하는데, 조회할 거면 프록시를 만들 이유가 없다. 그래서 항상 즉시 로딩된다.\n- **\"일대일 양방향의 주인은?\"** → FK 가 있는 테이블 쪽. 반대쪽에 `mappedBy` 를 쓴다.\n- **\"`@OneToOne` 만 붙이면 일대일이 보장되나요?\"** → 아니다. FK 컬럼에 유니크 제약이 있어야 DB 가 보장한다."
+    }
+  ],
+  "recap": [
+    "일대일은 FK 를 어느 테이블에 둘지 고를 수 있고, 그 선택이 지연 로딩 가능 여부를 정한다.",
+    "주 테이블에 FK 를 두면 한 번의 조회로 관계 유무를 알 수 있어 프록시를 만들 수 있다.",
+    "대상 테이블에 FK 를 두면 관계 유무를 알려고 조회해야 하므로 **항상 즉시 로딩**된다.",
+    "양방향의 주인은 언제나 FK 가 있는 쪽이다.",
+    "`@OneToOne` 만으로는 DB 가 일대일을 보장하지 않는다. FK 에 유니크 제약이 필요하다."
+  ],
+  "drills": [
+    {
+      "task": "주 테이블 FK 로 매핑하고 `fetch = LAZY` 로 두고 회원만 조회해 SQL 을 확인한다.",
+      "done_when": "락커 조회가 안 나가는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "FK 를 대상 테이블로 옮기고 같은 실험을 반복한다.",
+      "done_when": "LAZY 를 적었는데도 락커 조회가 같이 나가는 것을 확인했다.",
+      "hint": "이 실습 하나가 이 절의 전부다.",
+      "minutes": 25
+    },
+    {
+      "task": "FK 컬럼의 유니크 제약을 지우고 같은 락커를 두 회원에게 연결해 본다.",
+      "done_when": "저장이 성공하는 것을 확인했다. 매핑이 제약을 대신하지 않는다는 뜻이다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "일대일에서 대상 테이블에 FK 를 두면 왜 지연 로딩이 안 되는가?",
+      "a": "회원만 조회해서는 락커가 있는지 없는지 알 수 없다. 프록시를 넣을지 null 을 넣을지 정하려면 대상 테이블을 조회해야 하고, 조회할 거면 프록시가 의미가 없다. 그래서 항상 즉시 로딩된다."
+    },
+    {
+      "q": "컬렉션(`@OneToMany`)에는 왜 같은 문제가 없는가?",
+      "a": "'없음' 을 빈 컬렉션으로 표현할 수 있어서, 조회하지 않고도 컬렉션 프록시를 넣어 둘 수 있다. 단일 참조는 null 인지 프록시인지를 미리 정할 방법이 없다."
+    },
+    {
+      "q": "일대일 양방향에서 주인은 누구인가?",
+      "a": "FK 가 있는 테이블 쪽. 반대쪽에는 `mappedBy` 를 쓴다. 6.2절의 규칙이 그대로 적용된다."
+    },
+    {
+      "q": "`@OneToOne` 매핑을 했는데 같은 락커에 두 회원이 연결됐다. 왜인가?",
+      "a": "FK 컬럼에 유니크 제약이 없기 때문이다. 매핑은 애플리케이션의 선언일 뿐이고, 실제 보장은 DB 제약이 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "주 테이블",
+      "en": "owning table",
+      "what": "관계에서 중심이 되는 테이블. 여기에 FK 를 두면 지연 로딩이 가능하다."
+    },
+    {
+      "term": "대상 테이블",
+      "en": "target table",
+      "what": "관계의 상대 테이블. 여기에 FK 를 두면 일대일 지연 로딩이 불가능해진다."
+    },
+    {
+      "term": "즉시 로딩",
+      "en": "EAGER",
+      "what": "연관 엔티티를 함께 조회하는 방식. 일대일 대상 테이블 FK 에서는 강제된다. 9.2절에서 자세히."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Associations",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#associations",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
