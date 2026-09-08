@@ -1,0 +1,204 @@
+{
+ "book": "spring-mvc-1",
+ "id": "dispatcher-servlet",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "DispatcherServlet",
+ "summary": "서블릿 하나가 모든 요청을 받는다. doDispatch 를 읽는다.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`DispatcherServlet` 의 상속 구조를 안다.",
+  "누가 어떻게 등록하는지 안다.",
+  "`doDispatch()` 를 읽고 v5 와 대응시킬 수 있다.",
+  "`/` 매핑과 `/*` 의 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**우리가 만든 `FrontControllerServletV5` 의 스프링 판**이다.\n\n이름 그대로 **서블릿**이고, 3.1절에서 본 `service()` 가 여기서도 출발점이다."
+  },
+  {
+   "type": "heading",
+   "text": "상속 구조"
+  },
+  {
+   "type": "figure",
+   "caption": "네 겹",
+   "ascii": "   HttpServlet\n       △\n       └── HttpServletBean          빈 속성 주입\n                △\n                └── FrameworkServlet     스프링 컨테이너 연결, service() 재정의\n                         △\n                         └── DispatcherServlet   doDispatch()\n\n   service() 는 FrameworkServlet 이 재정의한다\n   3.1 절에서 본 그 service() 다",
+   "note": "**`service()` 를 재정의하는 것은 `FrameworkServlet`** 이다. 3.1절에서 `HttpServlet.service()` 가 분기문이라고 했는데, 스프링은 그것을 통째로 갈아 끼웠다."
+  },
+  {
+   "type": "table",
+   "caption": "각 층이 하는 일",
+   "note": "**우리가 읽을 것은 맨 아래**다. 위의 셋은 준비 작업이다.",
+   "columns": [
+    "클래스",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`HttpServlet`",
+     "서블릿 표준 (3.1절)"
+    ],
+    [
+     "`HttpServletBean`",
+     "서블릿 초기화 파라미터를 빈 속성으로 주입"
+    ],
+    [
+     "`FrameworkServlet`",
+     "스프링 컨테이너와 연결. **`service()` 재정의**"
+    ],
+    [
+     "**`DispatcherServlet`**",
+     "**`doDispatch()`** — 실제 요청 처리"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "누가 등록하나"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스프링 부트가 자동으로 등록한다",
+   "md": "우리는 `@WebServlet` 을 붙이고 `@ServletComponentScan` 을 켰다(1.3절).\n\n스프링 부트는 **`DispatcherServletAutoConfiguration`** 이 서블릿 컨테이너에 직접 등록한다. 어노테이션이 없다.\n\n```java\n@Bean\npublic DispatcherServletRegistrationBean dispatcherServletRegistration(...) {\n    return new DispatcherServletRegistrationBean(dispatcherServlet, \"/\");\n}\n```\n\n**매핑 경로가 `\"/\"`** 다. 5.1절에서 예고한 대로 우리 `/*` 와 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "/ 와 /* 의 차이",
+   "md": "| | 무엇 |\n|---|---|\n| **`/*`** | **모든 요청을 가로챈다.** 다른 서블릿 매핑보다도 우선한다 |\n| **`/`** | **기본 서블릿을 대체한다.** 다른 매핑이 없을 때만 온다 |\n\n서블릿 컨테이너에는 원래 **기본 서블릿(default servlet)** 이 있다. 매핑에 안 걸리는 요청 — 주로 **정적 리소스** — 을 처리하는 것이다.\n\n`DispatcherServlet` 이 `/` 에 매핑되면 **그 자리를 차지한다.** 그래서 정적 리소스 요청도 여기로 온다.\n\n그럼 CSS 는 어떻게 되나 — 스프링이 **`ResourceHttpRequestHandler`** 라는 핸들러를 두고 `/static` 등에서 찾아 준다. 6.3절에서 이 핸들러를 볼 것이다.\n\n**정적 리소스 처리도 핸들러 하나로 통합한 것**이다. 우리 v5 는 그런 게 없어서 `/*` 로 열면 CSS 가 404 였다(5.1절)."
+  },
+  {
+   "type": "heading",
+   "text": "doDispatch"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "핵심만 추린 것",
+   "code": "protected void doDispatch(HttpServletRequest request, HttpServletResponse response)\n        throws Exception {\n\n    ModelAndView mv = null;\n\n    // 1. 핸들러 조회\n    mappedHandler = getHandler(processedRequest);\n    if (mappedHandler == null) {\n        noHandlerFound(processedRequest, response);\n        return;\n    }\n\n    // 2. 핸들러 어댑터 조회\n    HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());\n\n    // 3. 핸들러 어댑터 실행 -> 4. 핸들러 실행 -> 5. ModelAndView 반환\n    mv = ha.handle(processedRequest, response, mappedHandler.getHandler());\n\n    processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);\n}\n\nprivate void processDispatchResult(..., ModelAndView mv, ...) throws Exception {\n    // 뷰 렌더링 호출\n    render(mv, request, response);\n}\n\nprotected void render(ModelAndView mv, HttpServletRequest request,\n                     HttpServletResponse response) throws Exception {\n\n    String viewName = mv.getViewName();\n\n    // 6. 뷰 리졸버를 통해 뷰 획득\n    View view = resolveViewName(viewName, mv.getModelInternal(), locale, request);\n\n    // 7. 뷰 렌더링\n    view.render(mv.getModelInternal(), request, response);\n}",
+   "note": "**주석 번호가 실제 스프링 소스에 그대로 있다.** 지어낸 것이 아니다."
+  },
+  {
+   "type": "compare",
+   "caption": "우리 것과 나란히",
+   "left": {
+    "title": "v5 (5.6절)",
+    "lang": "java",
+    "code": "Object handler =\n    handlerMappingMap.get(request.getRequestURI());\nif (handler == null) {\n    response.setStatus(404);\n    return;\n}\n\nMyHandlerAdapter adapter =\n    getHandlerAdapter(handler);\n\nModelView mv =\n    adapter.handle(request, response, handler);\n\nMyView view = viewResolver(mv.getViewName());\nview.render(mv.getModel(), request, response);",
+    "md": "**우리가 손으로 쓴 것.**"
+   },
+   "right": {
+    "title": "DispatcherServlet",
+    "lang": "java",
+    "code": "mappedHandler = getHandler(processedRequest);\nif (mappedHandler == null) {\n    noHandlerFound(processedRequest, response);\n    return;\n}\n\nHandlerAdapter ha =\n    getHandlerAdapter(mappedHandler.getHandler());\n\nmv = ha.handle(processedRequest, response,\n               mappedHandler.getHandler());\n\nView view = resolveViewName(mv.getViewName(), ...);\nview.render(mv.getModelInternal(), request, response);",
+    "md": "**스프링 소스.** 메서드 이름까지 비슷하다 — `getHandlerAdapter` 는 이름도 같다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1.1절의 약속이 지켜지는 자리",
+   "md": "1.1절에서 이렇게 적었다.\n\n> 5장을 건너뛰고 6장을 읽으면 이 표가 그냥 **외울 것**이 된다. 만들어 보고 읽으면 **이미 아는 것에 이름을 붙이는 일**이 된다.\n\n**위 두 코드가 그 차이다.**\n\n5장을 만들었다면 오른쪽이 처음 보는 코드가 아니다. `getHandler` 는 우리 `handlerMappingMap.get()`, `ha.handle()` 은 우리 `adapter.handle()` 이다.\n\n**스프링 소스를 읽는 것이 무서운 이유는 대개 구조를 모르기 때문**이다. 구조를 만들어 봤으면 읽힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "우리가 안 만든 것도 여기 있다",
+   "md": "위 코드는 **핵심만 추린 것**이다. 실제 `doDispatch()` 는 100줄이 넘고, 우리 것에 없는 것들이 들어 있다.\n\n- **`checkMultipart()`** — 파일 업로드 요청이면 별도 처리 (3.6절에서 안 다룬 그것)\n- **인터셉터** — `applyPreHandle()`, `applyPostHandle()`. 컨트롤러 앞뒤로 끼어드는 것\n- **예외 처리** — `dispatchException` 을 잡아 `HandlerExceptionResolver` 로\n- **비동기** — `asyncManager` 관련 코드\n\n**전부 5.1절에서 말한 \"입구가 하나여서 가능해진 것\"** 들이다. 인터셉터도 예외 처리도 **여기 한 곳에 있으면 모든 요청에 적용**된다.\n\n인터셉터와 예외 처리는 **스프링 MVC 2편**의 주제다(9.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 로그로 흐름을 본다",
+   "sql": "# application.properties\nlogging.level.org.springframework.web=DEBUG\n\n# GET /springmvc/v1/members\nDispatcherServlet    : GET \"/springmvc/v1/members\", parameters={}\nRequestMappingHandlerMapping : Mapped to SpringMemberListControllerV1#process()\nDispatcherServlet    : Completed 200 OK\n\n# 없는 URL\nDispatcherServlet    : GET \"/nothing\", parameters={}\nDispatcherServlet    : Completed 404 NOT_FOUND\n#   noHandlerFound() 가 부른 것\n\n# 상속 구조 확인\ndispatcherServlet.getClass()\n  -> org.springframework.web.servlet.DispatcherServlet\ndispatcherServlet instanceof HttpServlet   -> true",
+   "note": "**`Mapped to ...` 한 줄이 1번(핸들러 조회)의 결과**다. 어느 컨트롤러의 어느 메서드로 갔는지 알려 준다.\n\n실무에서 \"요청이 왜 여기로 안 오지\" 를 디버깅할 때 **가장 먼저 켜는 로그**다. 이 줄이 안 나오면 매핑이 안 된 것이고, 나오는데 결과가 이상하면 컨트롤러 문제다.\n\n두 번째 블록의 `404` 는 **우리 v1 에서 `setStatus(SC_NOT_FOUND)` 로 쓴 것**과 같은 자리다(5.2절)."
+  }
+ ],
+ "recap": [
+  "`DispatcherServlet` 은 **서블릿**이다. `HttpServlet` 을 네 겹 상속했다.",
+  "**`service()` 를 재정의하는 것은 `FrameworkServlet`** 이다.",
+  "**스프링 부트가 자동으로 등록**한다. 매핑 경로는 **`\"/\"`**.",
+  "**`/` 는 기본 서블릿을 대체**한다 — 정적 리소스 요청도 여기로 온다.",
+  "그래서 스프링에는 **정적 리소스용 핸들러**가 따로 있다(6.3절).",
+  "**`doDispatch()` 가 v5 의 `service()` 와 거의 같다** — 메서드 이름까지.",
+  "**5장을 만들었으면 이 코드가 처음 보는 것이 아니다.**",
+  "실제 `doDispatch()` 에는 **멀티파트 · 인터셉터 · 예외 처리 · 비동기**가 더 있다.",
+  "**전부 입구가 하나여서 가능한 것**들이다."
+ ],
+ "drills": [
+  {
+   "task": "`logging.level.org.springframework.web=DEBUG` 를 켜고 요청을 보낸다.",
+   "done_when": "`Mapped to ...` 로그를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "IDE 에서 `DispatcherServlet.doDispatch()` 를 열어 읽는다.",
+   "done_when": "1~7번 주석을 찾았고, v5 의 어느 줄에 해당하는지 짚었다.",
+   "minutes": 20
+  },
+  {
+   "task": "`FrameworkServlet.service()` 를 열어 본다.",
+   "done_when": "`HttpServlet.service()` 를 재정의한 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`/static` 에 CSS 를 두고 요청해 본다.",
+   "done_when": "`DispatcherServlet` 이 `/` 에 매핑됐는데도 정적 파일이 나오는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`DispatcherServlet` 은 무엇인가?",
+   "a": "서블릿이다. `HttpServlet` 을 상속한 스프링의 프론트 컨트롤러이고, 모든 요청이 여기를 지난다."
+  },
+  {
+   "q": "`service()` 는 어느 클래스가 재정의하나?",
+   "a": "`FrameworkServlet` 이다. `DispatcherServlet` 은 그 아래에서 `doDispatch()` 를 구현한다."
+  },
+  {
+   "q": "매핑 경로가 `/*` 가 아니라 `/` 인 이유는?",
+   "a": "`/` 는 서블릿 컨테이너의 기본 서블릿 자리를 대체하는 것이라, 다른 서블릿 매핑이 있으면 그쪽이 우선한다."
+  },
+  {
+   "q": "그럼 정적 리소스는 어떻게 처리되나?",
+   "a": "`DispatcherServlet` 으로 오지만 스프링이 `ResourceHttpRequestHandler` 라는 핸들러를 두어 `/static` 등에서 찾아 준다."
+  },
+  {
+   "q": "`doDispatch()` 의 흐름은?",
+   "a": "핸들러 조회 → 어댑터 조회 → 어댑터 실행 → `ModelAndView` 반환 → `render()` → 뷰 리졸버 → 뷰 렌더링. v5 의 `service()` 와 같다."
+  },
+  {
+   "q": "실제 `doDispatch()` 에 더 있는 것은?",
+   "a": "멀티파트 처리, 인터셉터, 예외 처리, 비동기 처리다. 전부 입구가 하나여서 한 곳에 쓸 수 있는 것들이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "FrameworkServlet",
+   "en": "",
+   "what": "`DispatcherServlet` 의 부모. 스프링 컨테이너와 연결하고 `service()` 를 재정의한다."
+  },
+  {
+   "term": "기본 서블릿",
+   "en": "default servlet",
+   "what": "매핑에 걸리지 않는 요청을 처리하는 서블릿 컨테이너의 기본 구성 요소. 주로 정적 리소스를 준다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

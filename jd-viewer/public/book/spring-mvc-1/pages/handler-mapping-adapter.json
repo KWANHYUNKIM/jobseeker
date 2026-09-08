@@ -1,0 +1,181 @@
+{
+ "book": "spring-mvc-1",
+ "id": "handler-mapping-adapter",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "핸들러 매핑과 핸들러 어댑터",
+ "summary": "v5 의 어댑터가 실제로 어떻게 구현돼 있나.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "옛날 `Controller` 인터페이스로 핸들러를 만들 수 있다.",
+  "핸들러 매핑과 어댑터가 어떤 순서로 조회되는지 안다.",
+  "구현체가 여럿인 이유를 실물로 확인한다.",
+  "`HttpRequestHandler` 가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.1절에서 **\"구현체가 여러 개다\"** 라고 했다. 말로만 하면 안 와닿으니 **직접 하나 만들어 본다.**\n\n어노테이션 방식이 아닌, **2.5절 연표의 2009년 이전 방식**으로."
+  },
+  {
+   "type": "heading",
+   "text": "옛날 Controller 인터페이스"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OldController.java",
+   "code": "@Component(\"/springmvc/old-controller\")\npublic class OldController implements Controller {\n\n    @Override\n    public ModelAndView handleRequest(HttpServletRequest request,\n                                     HttpServletResponse response) {\n        System.out.println(\"OldController.handleRequest\");\n        return null;\n    }\n}",
+   "note": "**빈 이름이 URL 이다.** `@Component(\"/springmvc/old-controller\")` — 이상해 보이는데 의도한 것이다.\n\n`org.springframework.web.servlet.mvc.Controller` 를 import 한다. `@Controller` 어노테이션과 **완전히 다른 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@Controller 와 Controller 는 다르다",
+   "md": "| | 무엇 |\n|---|---|\n| **`@Controller`** | 어노테이션. `@Component` 를 품고 있어 컴포넌트 스캔 대상 (앞 책 6.2절) |\n| **`Controller`** | **인터페이스.** 2009년 이전의 컨트롤러 방식 |\n\n이름이 같아서 헷갈리는데 **관계가 없다.** import 를 보면 갈린다.\n\n지금 실무에서 `Controller` 인터페이스를 쓸 일은 없다. 그런데 **스프링이 여전히 지원한다** — 그것이 이 절의 요점이다."
+  },
+  {
+   "type": "table",
+   "caption": "이 핸들러가 처리되는 경로",
+   "note": "**둘 다 어노테이션 방식과 다른 구현체**다. 우리 v5 에서 v3 어댑터와 v4 어댑터가 나뉘어 있던 것과 같다.",
+   "columns": [
+    "",
+    "무엇이 처리하나"
+   ],
+   "rows": [
+    [
+     "핸들러 매핑",
+     "**`BeanNameUrlHandlerMapping`** — 빈 이름으로 URL 을 찾는다"
+    ],
+    [
+     "핸들러 어댑터",
+     "**`SimpleControllerHandlerAdapter`** — `Controller` 인터페이스를 처리한다"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "조회 순서"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "핸들러 매핑 — 위에서부터",
+   "md": "스프링 부트가 등록하는 `HandlerMapping` 을 순서대로 쓰면 이렇다.\n\n```\n0 = RequestMappingHandlerMapping    @RequestMapping 을 찾는다\n1 = BeanNameUrlHandlerMapping       스프링 빈 이름이 URL 인 것을 찾는다\n```\n\n**앞에서부터 물어보고 처음 찾은 것을 쓴다.** 5.7절에서 어댑터 순서를 이야기한 것과 같은 방식이다.\n\n`OldController` 는 `@RequestMapping` 이 없으니 0번이 못 찾고, **1번이 빈 이름 `/springmvc/old-controller` 로 찾아낸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "핸들러 어댑터 — 역시 위에서부터",
+   "md": "```\n0 = RequestMappingHandlerAdapter      @RequestMapping 방식\n1 = HttpRequestHandlerAdapter         HttpRequestHandler 인터페이스\n2 = SimpleControllerHandlerAdapter    Controller 인터페이스\n```\n\n`supports()` 를 순서대로 물어본다 — **우리 `getHandlerAdapter()` 와 완전히 같은 구조**다(5.6절).\n\n```java\n// SimpleControllerHandlerAdapter\npublic boolean supports(Object handler) {\n    return (handler instanceof Controller);\n}\n```\n\n**`instanceof` 한 줄이다.** 우리가 쓴 것과 한 글자도 안 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "HttpRequestHandler — 가장 낮은 층",
+   "md": "```java\npublic interface HttpRequestHandler {\n    void handleRequest(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException;\n}\n```\n\n**`ModelAndView` 를 안 돌려준다.** 반환이 `void` 다.\n\n**우리 v1 인터페이스와 똑같다**(5.2절). 서블릿과 같은 시그니처.\n\n뷰가 필요 없는 처리 — **정적 리소스 서빙**이 대표적이다. 6.2절에서 말한 `ResourceHttpRequestHandler` 가 이 인터페이스를 구현한다.\n\n그래서 스프링은 **`/` 로 모든 요청을 받고도 정적 리소스를 처리할 수 있다.** 핸들러 종류를 늘려서 푼 것이다 — 5.7절에서 \"실무에서 유용한 자리\" 로 꼽은 그 구조."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "핸들러의 종류를 세어 보면",
+   "md": "우리 v5 는 핸들러 종류가 둘이었다(`ControllerV3`, `ControllerV4`).\n\n스프링은 최소 넷이다.\n\n| 핸들러 | 어댑터 | 쓰는 곳 |\n|---|---|---|\n| **`@Controller` 메서드** | `RequestMappingHandlerAdapter` | **거의 전부** |\n| `HttpRequestHandler` | `HttpRequestHandlerAdapter` | 정적 리소스 |\n| `Controller` 인터페이스 | `SimpleControllerHandlerAdapter` | 레거시 |\n| `HandlerFunction` | `HandlerFunctionAdapter` | 함수형 라우팅 |\n\n**5.7절에서 \"레거시 마이그레이션\" 과 \"여러 종류의 엔드포인트\" 를 실무 자리로 꼽았는데**, 스프링 자신이 그것을 하고 있다.\n\n2009년에 어노테이션 방식이 나왔지만 **옛 방식을 지우지 않았다.** 어댑터가 있어서 가능한 일이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 어느 매핑과 어댑터가 일했나",
+   "sql": "GET /springmvc/old-controller\n\n# 서버 콘솔\nOldController.handleRequest\n\n# 디버거로 확인하면\nmappedHandler.getHandler()  ->  OldController@1a2b\nha                          ->  SimpleControllerHandlerAdapter@3c4d\n\n# 로그\nDispatcherServlet : GET \"/springmvc/old-controller\", parameters={}\nBeanNameUrlHandlerMapping : Mapped to hello.servlet.web.springmvc.old.OldController@1a2b\nDispatcherServlet : Completed 200 OK\n\n# @RequestMapping 방식과 비교\nDispatcherServlet : GET \"/springmvc/v1/members\", parameters={}\nRequestMappingHandlerMapping : Mapped to SpringMemberListControllerV1#process()\n\n# 정적 리소스\nDispatcherServlet : GET \"/css/app.css\"\nDispatcherServlet : Completed 200 OK\n#   ResourceHttpRequestHandler 가 처리했다",
+   "note": "**로그의 앞부분이 다르다.** `BeanNameUrlHandlerMapping` 과 `RequestMappingHandlerMapping`.\n\n같은 `DispatcherServlet` 이 받았는데 **다른 매핑이 찾고 다른 어댑터가 실행했다.** 6.1절에서 말한 \"구현체가 여러 개\" 의 실물이다.\n\n그리고 `handleRequest` 가 `null` 을 돌려줬는데도 **200** 이 나갔다. `ModelAndView` 가 `null` 이면 렌더링을 건너뛴다 — **응답을 이미 다 썼다고 보는 것**이다. 6.4절에서 여기에 뷰를 붙인다."
+  }
+ ],
+ "recap": [
+  "**`@Controller` 와 `Controller` 인터페이스는 다른 것**이다. import 로 갈린다.",
+  "빈 이름을 URL 로 두면 **`BeanNameUrlHandlerMapping`** 이 찾아 준다.",
+  "**핸들러 매핑도 어댑터도 순서대로 물어본다** — 우리 `getHandlerAdapter()` 와 같은 구조.",
+  "`SimpleControllerHandlerAdapter.supports()` 는 **`instanceof` 한 줄**이다.",
+  "**`HttpRequestHandler` 는 `void` 를 돌려준다** — 우리 v1 인터페이스와 같다.",
+  "**정적 리소스가 그 방식으로 처리된다** — `ResourceHttpRequestHandler`.",
+  "스프링의 핸들러 종류는 **최소 넷** — 어노테이션 · 정적 리소스 · 레거시 · 함수형.",
+  "**2009년 이후에도 옛 방식을 안 지웠다.** 어댑터가 있어서 가능하다.",
+  "`ModelAndView` 가 `null` 이면 **렌더링을 건너뛴다.**"
+ ],
+ "drills": [
+  {
+   "task": "`OldController` 를 만들어 호출한다.",
+   "done_when": "콘솔에 출력이 찍히고 로그에 `BeanNameUrlHandlerMapping` 이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`doDispatch()` 에 브레이크포인트를 걸고 `ha` 변수를 확인한다.",
+   "done_when": "`SimpleControllerHandlerAdapter` 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@RequestMapping` 컨트롤러와 로그를 비교한다.",
+   "done_when": "매핑 클래스가 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`HttpRequestHandler` 를 구현한 핸들러를 만들어 본다.",
+   "done_when": "`ModelAndView` 없이 직접 응답을 쓰는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`SimpleControllerHandlerAdapter` 소스를 열어 `supports()` 를 읽는다.",
+   "done_when": "`instanceof` 한 줄인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Controller` 와 `Controller` 인터페이스의 관계는?",
+   "a": "관계가 없다. 전자는 컴포넌트 스캔용 어노테이션, 후자는 2009년 이전의 컨트롤러 인터페이스다."
+  },
+  {
+   "q": "빈 이름이 URL 이면 무엇이 처리하나?",
+   "a": "`BeanNameUrlHandlerMapping` 이 찾고 `SimpleControllerHandlerAdapter` 가 실행한다."
+  },
+  {
+   "q": "핸들러 매핑과 어댑터는 어떻게 선택되나?",
+   "a": "등록된 목록을 순서대로 물어보고 처음 처리 가능한 것을 쓴다. v5 의 `getHandlerAdapter()` 와 같다."
+  },
+  {
+   "q": "`HttpRequestHandler` 의 특징은?",
+   "a": "`ModelAndView` 를 반환하지 않고 `void` 다. 뷰가 필요 없는 처리에 쓰며 정적 리소스 서빙이 대표적이다."
+  },
+  {
+   "q": "스프링이 옛 방식을 안 지운 이유는?",
+   "a": "어댑터 구조 덕분에 여러 종류의 핸들러를 함께 지원할 수 있기 때문이다. 기존 코드를 고치지 않아도 된다."
+  },
+  {
+   "q": "`ModelAndView` 가 `null` 이면?",
+   "a": "뷰 렌더링을 건너뛴다. 핸들러가 응답을 직접 다 썼다고 보는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BeanNameUrlHandlerMapping",
+   "en": "",
+   "what": "스프링 빈의 이름이 `/` 로 시작하면 그것을 URL 로 보고 핸들러를 찾는 매핑."
+  },
+  {
+   "term": "HttpRequestHandler",
+   "en": "",
+   "what": "가장 단순한 핸들러 인터페이스. `ModelAndView` 없이 요청·응답만 받는다. 정적 리소스 처리에 쓰인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

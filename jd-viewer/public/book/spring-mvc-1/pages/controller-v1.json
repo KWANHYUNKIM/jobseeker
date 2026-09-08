@@ -1,0 +1,219 @@
+{
+ "book": "spring-mvc-1",
+ "id": "controller-v1",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "스프링 MVC — 시작하기",
+ "summary": "@RequestMapping. 어노테이션 기반 컨트롤러의 첫 모습.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Controller` + `@RequestMapping` 으로 컨트롤러를 만들 수 있다.",
+  "`RequestMappingHandlerMapping` 이 무엇을 보고 찾는지 안다.",
+  "이 방식이 왜 이겼는지 안다.",
+  "6.5~6.7 이 v1~v3 와 같은 진행이라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "2.5절 연표의 **2009년**이다. 지금 실무에서 쓰는 방식이 여기서 시작한다.\n\n**6.5~6.7 은 5장과 같은 방식으로 간다** — 같은 컨트롤러를 세 번 고쳐 쓰면서 하나씩 줄인다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SpringMemberFormControllerV1.java",
+   "code": "@Controller\npublic class SpringMemberFormControllerV1 {\n\n    @RequestMapping(\"/springmvc/v1/members/new-form\")\n    public ModelAndView process() {\n        return new ModelAndView(\"new-form\");\n    }\n}",
+   "note": "**인터페이스를 구현하지 않는다.** 2.5절에서 말한 그 변화다.\n\n메서드 이름도 `process` 든 뭐든 상관없다. **`@RequestMapping` 만 붙으면 된다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SpringMemberSaveControllerV1.java",
+   "code": "@Controller\npublic class SpringMemberSaveControllerV1 {\n\n    private MemberRepository memberRepository = MemberRepository.getInstance();\n\n    @RequestMapping(\"/springmvc/v1/members/save\")\n    public ModelAndView process(HttpServletRequest request,\n                               HttpServletResponse response) {\n\n        String username = request.getParameter(\"username\");\n        int age = Integer.parseInt(request.getParameter(\"age\"));\n\n        Member member = new Member(username, age);\n        memberRepository.save(member);\n\n        ModelAndView mv = new ModelAndView(\"save-result\");\n        mv.addObject(\"member\", member);\n        return mv;\n    }\n}",
+   "note": "**5.4절 v3 컨트롤러와 거의 같다.** `ModelView` 가 `ModelAndView` 로, `mv.getModel().put()` 이 `mv.addObject()` 로 바뀌었을 뿐.\n\n다만 **`HttpServletRequest` 가 돌아왔다.** v3 에서 걷어냈던 것인데 — 6.7절에서 다시 없앤다."
+  },
+  {
+   "type": "heading",
+   "text": "무엇이 찾아 주나"
+  },
+  {
+   "type": "table",
+   "caption": "이 방식의 매핑과 어댑터",
+   "note": "**6.3절 목록의 0번**이다. 가장 먼저 물어보고, 실무 컨트롤러는 거의 다 여기 걸린다.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "핸들러 매핑",
+     "**`RequestMappingHandlerMapping`**"
+    ],
+    [
+     "핸들러 어댑터",
+     "**`RequestMappingHandlerAdapter`**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 보고 찾나",
+   "md": "`RequestMappingHandlerMapping` 은 **스프링 빈 중에서** 다음 둘을 찾는다.\n\n- **클래스에 `@RequestMapping`** 이 붙어 있거나\n- **클래스에 `@Controller`** 가 붙어 있거나\n\n**`@Controller` 를 안 붙이고 `@Component` 만 붙이면 안 된다.** 빈으로는 등록되지만 핸들러로는 안 잡힌다.\n\n앞 책 6.2절에서 `@Controller` 안에 `@Component` 가 들어 있다고 했는데, **반대는 아니다.** `@Component` 는 `@Controller` 를 품지 않는다.\n\n그래서 `@Controller` 는 두 가지 일을 한다.\n\n1. **빈 등록** — `@Component` 를 품고 있어서\n2. **핸들러 표시** — `RequestMappingHandlerMapping` 이 이것을 본다\n\n앞 책 6.2절에서 \"`@Service` 는 부가 기능이 없다\" 고 했는데, **`@Controller` 는 있다.** 이것이 그 부가 기능이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "@RequestMapping 을 클래스에 붙여도 된다",
+   "md": "```java\n@RequestMapping\n@Controller     // 없어도 된다\npublic class SomeController { ... }\n```\n\n둘 중 하나만 있어도 핸들러로 잡힌다. 그런데 **`@Controller` 를 쓴다.**\n\n이유가 앞 책 6.2절에 있다 — **`@Service` 를 쓰는 이유와 같다.** 사람이 읽기 때문이다.\n\n클래스 이름 위의 `@Controller` 한 줄이 \"여기는 웹 계층이다\" 라고 말해 준다. `@RequestMapping` 만 있으면 그 정보가 없다."
+  },
+  {
+   "type": "heading",
+   "text": "이 방식이 왜 이겼나"
+  },
+  {
+   "type": "table",
+   "caption": "6.3절의 옛 방식과 비교",
+   "note": "**마지막 줄이 결정적**이다. 화면 셋이면 클래스 셋에서 클래스 하나로 줄어든다 — 6.6절에서 한다.",
+   "columns": [
+    "",
+    "`Controller` 인터페이스 (6.3)",
+    "`@RequestMapping` (6.5)"
+   ],
+   "rows": [
+    [
+     "구현",
+     "인터페이스 구현 필수",
+     "**아무것도 구현 안 한다**"
+    ],
+    [
+     "메서드 이름",
+     "`handleRequest` 고정",
+     "**자유**"
+    ],
+    [
+     "파라미터",
+     "`request`, `response` 고정",
+     "**필요한 것만** (7.14절)"
+    ],
+    [
+     "반환",
+     "`ModelAndView` 고정",
+     "**여러 가지** (7.11절)"
+    ],
+    [
+     "URL",
+     "빈 이름 하나",
+     "**한 클래스에 여러 개**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 벗은 대가로 얻은 것",
+   "md": "인터페이스를 구현하면 **시그니처가 고정**된다. 그것이 5장에서 우리를 계속 괴롭혔다.\n\n- v1~v2 — `request`, `response` 를 안 써도 받아야 했다\n- v3 — `Map` 하나로 고정. 다른 것이 필요하면?\n- v4 — `Map` 둘로 고정\n\n**필요한 것만 받고 싶은데 인터페이스가 허락하지 않는다.**\n\n어노테이션 방식은 **인터페이스가 없어서** 그 제약이 사라진다. 대신 스프링이 **리플렉션으로 메서드 시그니처를 읽고 파라미터를 채운다.**\n\n그 일을 하는 것이 `RequestMappingHandlerAdapter` 이고, 6.1절에서 \"어댑터가 훨씬 많은 일을 한다\" 고 한 것이 이것이다.\n\n**타입 안전을 포기하고 유연성을 얻은 것**이다 — 5.6절에서 `Object` 로 열 때와 같은 거래다. 파라미터를 잘못 쓰면 컴파일이 아니라 **실행 시점에** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "6.5 → 6.6 → 6.7 은 v1 → v3 와 같다",
+   "md": "5장에서 다섯 번 고쳐 쓴 것처럼 여기서도 세 번 고친다.\n\n| | 무엇을 줄이나 |\n|---|---|\n| **6.5** | 지금 — 클래스 하나에 메서드 하나 |\n| **6.6** | **클래스를 합친다** — URL 공통 부분을 클래스로 |\n| **6.7** | **`Model`·`@RequestParam`** — 서블릿을 다시 걷어낸다 |\n\n**6.7 이 v3 에 해당한다.** 컨트롤러가 `HttpServletRequest` 를 모르게 되는 지점.\n\n5장에서 우리가 `Map` 으로 풀었던 것을 스프링은 **파라미터 어노테이션**으로 푼다. 결과는 같다 — **컨트롤러가 웹을 덜 안다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 매핑 로그",
+   "sql": "# 애플리케이션 시작 시\nRequestMappingHandlerMapping :\n  1 mappings in 'requestMappingHandlerMapping'\n  {/springmvc/v1/members/new-form}: process()\n  {/springmvc/v1/members/save}: process(HttpServletRequest, HttpServletResponse)\n  {/springmvc/v1/members}: process()\n\n# 요청\nDispatcherServlet : GET \"/springmvc/v1/members\", parameters={}\nRequestMappingHandlerMapping : Mapped to SpringMemberListControllerV1#process()\nDispatcherServlet : Completed 200 OK\n\n# @Controller 를 @Component 로 바꾸면\nDispatcherServlet : GET \"/springmvc/v1/members\", parameters={}\nDispatcherServlet : Completed 404 NOT_FOUND\n#   빈으로는 등록됐지만 핸들러로는 안 잡혔다",
+   "note": "**첫 블록이 애플리케이션 시작 시점에 찍힌다.** 스프링이 `@RequestMapping` 을 스캔해 매핑 표를 만드는 것이다.\n\n5.2절에서 우리가 생성자에서 `controllerMap.put()` 을 하던 그 자리다. **차이는 우리가 손으로 적었고 스프링은 스캔한다는 것.**\n\n6.1절에서 \"자동화는 코드에서 정보를 뺀다\" 고 했는데, **이 로그가 그 정보를 되돌려 준다.** 어떤 URL 이 있는지 시작 로그로 확인할 수 있다.\n\n맨 아래가 이 절의 함정이다 — **`@Component` 만 붙이면 404** 다. 빈 목록에는 있는데 핸들러가 아니다."
+  }
+ ],
+ "recap": [
+  "**`@Controller` + `@RequestMapping`** — 인터페이스를 구현하지 않는다.",
+  "**메서드 이름은 자유**다. `@RequestMapping` 만 있으면 된다.",
+  "`RequestMappingHandlerMapping` 은 **클래스의 `@Controller` 나 `@RequestMapping`** 을 본다.",
+  "**`@Component` 만 붙이면 빈은 되지만 핸들러가 아니다** — 404.",
+  "`@Controller` 는 두 가지를 한다 — **빈 등록 + 핸들러 표시.** 앞 책 6.2절의 부가 기능이 이것.",
+  "인터페이스를 벗어서 **시그니처 제약이 사라졌다** — 필요한 것만 받는다.",
+  "대신 **타입 안전을 포기했다.** 파라미터를 잘못 쓰면 실행 시점에 안다.",
+  "**6.5 → 6.6 → 6.7 은 v1 → v3 와 같은 진행**이다.",
+  "시작 로그의 **매핑 표**가 흩어진 URL 정보를 되돌려 준다."
+ ],
+ "drills": [
+  {
+   "task": "`@Controller` 방식으로 컨트롤러 셋을 만든다.",
+   "done_when": "세 URL 이 동작한다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@Controller` 를 `@Component` 로 바꿔 본다.",
+   "done_when": "404 가 나는 것과 그 이유를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "시작 로그에서 매핑 표를 찾는다.",
+   "done_when": "등록된 URL 목록을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드 이름을 다른 것으로 바꿔 본다.",
+   "done_when": "상관없이 동작하는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "6.3절 `OldController` 와 코드 줄 수·제약을 비교한다.",
+   "done_when": "왜 어노테이션 방식이 이겼는지 말할 수 있다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@RequestMapping` 방식의 매핑과 어댑터는?",
+   "a": "`RequestMappingHandlerMapping` 과 `RequestMappingHandlerAdapter` 다. 6.3절 목록의 0번, 가장 먼저 조회된다."
+  },
+  {
+   "q": "무엇을 보고 핸들러를 찾나?",
+   "a": "스프링 빈 중 클래스에 `@Controller` 나 `@RequestMapping` 이 붙은 것을 찾는다."
+  },
+  {
+   "q": "`@Component` 만 붙이면?",
+   "a": "빈으로는 등록되지만 핸들러로 인식되지 않아 404 가 난다."
+  },
+  {
+   "q": "`@Controller` 가 하는 두 가지는?",
+   "a": "`@Component` 를 품고 있어 빈으로 등록되게 하고, `RequestMappingHandlerMapping` 이 핸들러로 인식하게 한다."
+  },
+  {
+   "q": "인터페이스를 벗어서 얻은 것과 잃은 것은?",
+   "a": "얻은 것은 시그니처의 자유 — 필요한 파라미터만 받는다. 잃은 것은 타입 안전 — 잘못 쓰면 실행 시점에 안다."
+  },
+  {
+   "q": "6.5~6.7 은 어떤 진행인가?",
+   "a": "5장의 v1~v3 와 같다. 같은 컨트롤러를 세 번 고쳐 쓰면서 클래스를 합치고 서블릿 종속을 걷어낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "RequestMappingHandlerMapping",
+   "en": "",
+   "what": "`@Controller`·`@RequestMapping` 이 붙은 빈을 찾아 URL 과 메서드를 매핑하는 핸들러 매핑. 가장 먼저 조회된다."
+  },
+  {
+   "term": "ModelAndView",
+   "en": "",
+   "what": "스프링의 뷰 이름 + 모델 객체. `addObject()` 로 모델에 값을 담는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — View Resolution",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/viewresolver.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

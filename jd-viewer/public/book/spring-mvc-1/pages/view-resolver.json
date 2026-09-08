@@ -1,0 +1,190 @@
+{
+ "book": "spring-mvc-1",
+ "id": "view-resolver",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "뷰 리졸버",
+ "summary": "\"new-form\" 이라는 문자열이 어떻게 JSP 파일이 되나.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ViewResolver` 설정을 할 수 있다.",
+  "우리 `viewResolver()` 한 줄이 어떻게 구현돼 있는지 안다.",
+  "`InternalResourceView` 가 왜 특이한지 안다.",
+  "다른 뷰 템플릿과 무엇이 다른지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.3절의 `OldController` 가 `null` 을 돌려줬다. **이번에는 `ModelAndView` 를 돌려준다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OldController.java",
+   "code": "@Component(\"/springmvc/old-controller\")\npublic class OldController implements Controller {\n\n    @Override\n    public ModelAndView handleRequest(HttpServletRequest request,\n                                     HttpServletResponse response) {\n        System.out.println(\"OldController.handleRequest\");\n        return new ModelAndView(\"new-form\");\n    }\n}",
+   "note": "**논리 이름 `\"new-form\"`** 이다. 5.4절에서 `new ModelView(\"new-form\")` 라고 쓴 것과 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이대로 실행하면 흰 화면이다",
+   "md": "**404 도 500 도 아니고 빈 화면**이 나온다.\n\n스프링이 `\"new-form\"` 을 그대로 경로로 보고 `/new-form` 을 찾았는데 없기 때문이다.\n\n**접두사와 접미사를 알려 줘야 한다.**\n\n```properties\nspring.mvc.view.prefix=/WEB-INF/views/\nspring.mvc.view.suffix=.jsp\n```\n\n5.4절에서 예고한 그 두 줄이다.\n\n```java\n// 우리가 쓴 것\nprivate MyView viewResolver(String viewName) {\n    return new MyView(\"/WEB-INF/views/\" + viewName + \".jsp\");\n}\n```\n\n**하드코딩한 두 문자열이 설정 파일로 나왔다.** 그것이 이 절의 전부라고 해도 된다."
+  },
+  {
+   "type": "heading",
+   "text": "순서대로 물어본다"
+  },
+  {
+   "type": "figure",
+   "caption": "뷰 리졸버 조회",
+   "ascii": "   mv.getViewName()   =  \"new-form\"\n        │\n        ▼\n   ViewResolver 를 순서대로 묻는다\n        ├── BeanNameViewResolver          빈 이름이 new-form 인 View 가 있나?  ->  없다\n        └── InternalResourceViewResolver  prefix + name + suffix\n                 │\n                 ▼\n   InternalResourceView(\"/WEB-INF/views/new-form.jsp\")\n        │\n        │  render(model, request, response)\n        ▼\n   forward",
+   "note": "**핸들러 매핑·어댑터와 같은 방식**이다(6.3절). 목록을 순서대로 물어보고 처음 찾은 것을 쓴다."
+  },
+  {
+   "type": "table",
+   "caption": "스프링 부트가 등록하는 것",
+   "note": "**2번이 마지막 보루**다. 앞에서 아무도 못 찾으면 무조건 경로를 만들어 낸다 — 그래서 파일이 없어도 `View` 객체는 나온다.",
+   "columns": [
+    "#",
+    "무엇",
+    "언제 찾나"
+   ],
+   "rows": [
+    [
+     "1",
+     "`BeanNameViewResolver`",
+     "빈 이름이 뷰 이름과 같은 `View` 빈이 있을 때"
+    ],
+    [
+     "2",
+     "`InternalResourceViewResolver`",
+     "**항상.** prefix + 이름 + suffix 로 경로를 만든다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1번이 쓰이는 자리",
+   "md": "\"빈 이름이 뷰 이름인 `View`\" 가 언제 필요한가.\n\n**엑셀 다운로드**가 대표적이다.\n\n```java\n@Bean\npublic View memberListExcel() {          // 빈 이름 = 뷰 이름\n    return new MemberListExcelView();\n}\n\n// 컨트롤러\nreturn new ModelAndView(\"memberListExcel\");\n```\n\n`View` 를 직접 구현해서 **HTML 이 아닌 것을 내보낼 때** 쓴다. `render()` 안에서 엑셀 바이트를 응답에 쓰면 된다.\n\n5.3절에서 `MyView` 를 만들며 \"스프링의 `View` 는 구현체가 여럿 — JSP 용, JSON 용, 엑셀용\" 이라고 적었다. **여기가 그 자리다.**\n\n실무에서는 요즘 잘 안 쓴다. 파일 다운로드는 `ResponseEntity<Resource>` 로 하는 편이 많다."
+  },
+  {
+   "type": "heading",
+   "text": "InternalResourceView 는 특이하다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다른 뷰와 동작 방식이 다르다",
+   "md": "`InternalResourceViewResolver` 가 만드는 `View` 는 렌더링을 **`forward`** 로 한다.\n\n```java\n// InternalResourceView.renderMergedOutputModel() 의 핵심\nRequestDispatcher rd = request.getRequestDispatcher(getUrl());\nrd.forward(request, response);\n```\n\n**우리 `MyView.render()` 와 같은 코드다**(5.3절).\n\n왜 `forward` 인가 — **JSP 는 서블릿이기 때문**이다(2.2절). 스프링이 JSP 를 직접 실행할 수 없고, **서블릿 컨테이너에게 넘겨야** 한다.\n\n그런데 **다른 뷰 템플릿은 그럴 필요가 없다.**\n\n| | 렌더링 방법 |\n|---|---|\n| **JSP** | **`forward`** — 서블릿 컨테이너가 실행 |\n| **타임리프** | **직접 렌더링** — 스프링이 문자열을 만들어 응답에 쓴다 |\n| **JSON** | 직접 씀 (7.13절의 메시지 컨버터) |\n\n그래서 타임리프를 쓰면 `WEB-INF` 도 War 패키징도 필요 없다(1.3절). **8장에서 그것을 확인한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "JstlView 는 이제 안 쓴다",
+   "md": "예전 스프링 문서를 보면 **`JstlView`** 라는 것이 나온다. JSTL(4.5절) 라이브러리가 있으면 `InternalResourceViewResolver` 가 이것을 대신 만들었다.\n\n**스프링 6 부터 없어졌다.** `InternalResourceView` 하나로 통합됐다.\n\n오래된 예제를 따라 하다 `JstlView` 를 찾으면 안 나오는데, **없어진 것이 맞다.**\n\n2.5절에서 본 대로 자바 웹 기술은 계속 정리되는 중이다. **JSP 자체가 그 대상**이라 이런 클래스는 앞으로 더 줄어들 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "뷰 이름 앞에 붙일 수 있는 접두사",
+   "md": "```java\nreturn new ModelAndView(\"redirect:/basic/items\");\nreturn new ModelAndView(\"forward:/other-url\");\n```\n\n**`redirect:` 와 `forward:`** 는 특별 취급된다. 뷰 리졸버가 파일을 찾는 대신 리다이렉트하거나 포워드한다.\n\n3.9절에서 본 `sendRedirect` 를 문자열 하나로 하는 것이다. **8.10절(PRG)에서 계속 쓴다.**\n\n주의할 것 — `redirect:` 는 **새 요청**이라 모델이 사라진다(4.5절 표). 값을 넘기려면 URL 에 붙이거나 `RedirectAttributes` 를 쓴다(8.11절)."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 논리 이름이 파일이 된다",
+   "sql": "GET /springmvc/old-controller HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<form action=\"/servlet/members/save\" method=\"post\"> ... </form>\n\n# 서버 콘솔\nOldController.handleRequest\n\n# 내부에서 일어난 일\nmv.getViewName()  =  new-form\n  BeanNameViewResolver         -> null\n  InternalResourceViewResolver -> InternalResourceView\n                                    url = /WEB-INF/views/new-form.jsp\n  view.render(model, request, response)\n    -> request.getRequestDispatcher(url).forward(...)\n\n# prefix/suffix 설정이 없으면\nmv.getViewName()  =  new-form\n  InternalResourceView(url = new-form)\n  -> forward 대상이 없어 빈 화면",
+   "note": "**`\"new-form\"` 다섯 글자가 `/WEB-INF/views/new-form.jsp` 가 되는 과정**이 가운데 블록에 다 있다.\n\n맨 아래가 설정을 빠뜨렸을 때다 — **404 도 500 도 아니고 빈 화면**이다. 오류가 안 나서 원인을 찾기 어렵다.\n\n실무에서 \"화면이 안 나와요\" 의 원인 중 하나이고, **로그를 DEBUG 로 켜면**(6.2절) 어떤 경로로 forward 했는지 보인다."
+  }
+ ],
+ "recap": [
+  "**`spring.mvc.view.prefix` / `suffix`** 가 우리 `viewResolver()` 의 두 문자열이다.",
+  "설정을 빠뜨리면 **404 도 500 도 아닌 빈 화면**이다.",
+  "뷰 리졸버도 **순서대로 물어본다** — 핸들러 매핑·어댑터와 같은 방식.",
+  "**`InternalResourceViewResolver` 가 마지막 보루**다. 항상 경로를 만들어 낸다.",
+  "`BeanNameViewResolver` 는 **`View` 를 직접 구현했을 때** 쓴다 — 엑셀 다운로드 등.",
+  "**`InternalResourceView` 는 `forward` 로 렌더링**한다 — JSP 가 서블릿이라서.",
+  "**타임리프는 직접 렌더링**한다. 그래서 `WEB-INF` 도 War 도 필요 없다.",
+  "**`JstlView` 는 스프링 6 에서 없어졌다.**",
+  "**`redirect:` · `forward:`** 접두사는 특별 취급된다 — 8.10절에서 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`OldController` 가 `ModelAndView(\"new-form\")` 을 돌려주게 하고 실행한다.",
+   "done_when": "설정 전에는 빈 화면, 설정 후에는 폼이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`InternalResourceView` 소스를 열어 `forward` 하는 줄을 찾는다.",
+   "done_when": "우리 `MyView.render()` 와 같은 코드인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "등록된 `ViewResolver` 빈 목록을 출력한다.",
+   "done_when": "둘 이상 있는 것과 순서를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "뷰 이름을 `\"redirect:/servlet/members\"` 로 바꿔 본다.",
+   "done_when": "302 가 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`prefix`/`suffix` 설정을 지우고 DEBUG 로그로 forward 대상을 확인한다.",
+   "done_when": "경로가 `new-form` 인 것을 봤다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "논리 뷰 이름이 파일 경로가 되는 방법은?",
+   "a": "`InternalResourceViewResolver` 가 `spring.mvc.view.prefix` 와 `suffix` 를 앞뒤에 붙인다."
+  },
+  {
+   "q": "설정을 빠뜨리면 어떻게 되나?",
+   "a": "오류가 아니라 빈 화면이 나온다. 뷰 이름을 그대로 경로로 보고 forward 하는데 대상이 없기 때문이다."
+  },
+  {
+   "q": "`InternalResourceView` 가 특이한 이유는?",
+   "a": "렌더링을 `forward` 로 한다. JSP 가 서블릿이라 스프링이 직접 실행할 수 없고 서블릿 컨테이너에 넘겨야 하기 때문이다."
+  },
+  {
+   "q": "타임리프는 어떻게 다른가?",
+   "a": "스프링이 직접 렌더링해서 응답에 쓴다. `forward` 가 없으므로 `WEB-INF` 나 War 패키징이 필요 없다."
+  },
+  {
+   "q": "`BeanNameViewResolver` 는 언제 쓰나?",
+   "a": "`View` 를 직접 구현해 빈으로 등록했을 때다. 엑셀 다운로드처럼 HTML 이 아닌 것을 내보낼 때 쓴다."
+  },
+  {
+   "q": "`redirect:` 접두사는 무엇을 하나?",
+   "a": "파일을 찾는 대신 리다이렉트한다. 새 요청이므로 모델이 사라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "InternalResourceViewResolver",
+   "en": "",
+   "what": "prefix + 뷰 이름 + suffix 로 경로를 만드는 뷰 리졸버. 항상 뷰를 만들어 내는 마지막 보루다."
+  },
+  {
+   "term": "InternalResourceView",
+   "en": "",
+   "what": "`forward` 로 렌더링하는 뷰. JSP 처럼 서블릿 컨테이너가 실행해야 하는 것에 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — View Resolution",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/viewresolver.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
