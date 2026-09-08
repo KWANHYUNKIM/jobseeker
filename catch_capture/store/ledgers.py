@@ -182,9 +182,15 @@ def load_trend_days() -> list[dict]:
     return [out[k] for k in sorted(out, key=lambda k: (k[0], k[1]))]
 
 
-def seed_trends() -> tuple[int, int]:
-    """trends_history.jsonl → DB. 이미 있는 날짜는 갈아 끼운다(멱등)."""
-    rows = _read_jsonl(TRENDS_JSONL)
+def seed_trends(*paths: _Path) -> tuple[int, int]:
+    """trends_history.jsonl → DB. 이미 있는 날짜는 갈아 끼운다(멱등).
+
+    여러 파일을 받으면 순서대로 넣는다 — 같은 (day, keyword) 가 겹치면 뒤에
+    준 파일이 이긴다. 날짜 단위 스냅샷이라 합치는 데 순서 문제가 없다.
+    """
+    rows: list[dict] = []
+    for path in (paths or (TRENDS_JSONL,)):
+        rows.extend(_read_jsonl(path))
     n_days = n_metrics = 0
     with store_conn.connect() as db:
         with db.cursor() as cur:
@@ -234,14 +240,25 @@ def append_job_versions(records: list[dict]) -> int:
     return len(records)
 
 
-def seed_history() -> tuple[int, int]:
-    """job_history.jsonl → DB. 파일 순서가 판본 순서이므로 그대로 넣는다.
+def seed_history(*paths: _Path) -> tuple[int, int]:
+    """job_history.jsonl → DB. 여러 파일을 받으면 시간순으로 합친다.
 
-    파일에는 (key, hash) 가 중복된 줄이 있다 — '직전 판만 비교' 하던 시절
+    **왜 정렬하는가.** id 순서가 곧 판본 순서이고 빌더는 versions[-1] 을 '최신 판'
+    으로 읽는다. 한 파일만 넣을 때는 파일 순서가 곧 append 순서라 그대로면 되지만,
+    두 머신의 원장을 합칠 때 파일을 이어 붙이면 뒷 파일의 옛 판이 앞 파일의 새 판
+    뒤에 놓인다 — 그러면 몇 달 전 판이 '최신' 이 되어 재공고 판정이 뒤집힌다.
+    seen(YYYY-MM-DD) 으로 안정 정렬하고, 'bootstrap'(아카이브에서 온 옛 판)을
+    맨 앞에 둔다. 같은 날짜 안에서는 파일 순서가 그대로 유지된다.
+
+    파일에는 (key, hash) 가 중복된 줄이 있을 수 있다 — '직전 판만 비교' 하던 시절
     A→B→A 를 오가며 쌓인 것들이다. UNIQUE 가 먼저 들어온 쪽을 남긴다.
     """
-    rows = _read_jsonl(HISTORY_JSONL)
+    rows: list[dict] = []
+    for path in (paths or (HISTORY_JSONL,)):
+        rows.extend(_read_jsonl(path))
     ok = [r for r in rows if r.get("key") and r.get("hash")]
+    if len(paths) > 1:
+        ok.sort(key=lambda r: ((r.get("seen") or "") != "bootstrap", r.get("seen") or ""))
     with store_conn.connect() as db:
         with db.cursor() as cur:
             cur.execute("SELECT count(*) AS n FROM job_version")
@@ -289,7 +306,15 @@ def main() -> int:
     ap.add_argument("cmd", choices=["seed", "status"])
     ap.add_argument("--trends", action="store_true", help="트렌드만")
     ap.add_argument("--history", action="store_true", help="공고 판본만")
+    ap.add_argument("--also", action="append", default=[], metavar="JSONL",
+                    help="다른 머신에서 가져온 원장 파일을 함께 넣는다 (여러 번 가능)")
     args = ap.parse_args()
+
+    extra = [_Path(x) for x in args.also]
+    for x in extra:
+        if not x.exists():
+            print(f"[중단] 없는 파일: {x}")
+            return 2
 
     if args.cmd == "status":
         _status()
@@ -297,11 +322,13 @@ def main() -> int:
 
     both = not (args.trends or args.history)
     if args.trends or both:
-        d, m = seed_trends()
-        print(f"트렌드: {d}일 · 지표 {m:,}행  ← {TRENDS_JSONL.name}")
+        srcs = [TRENDS_JSONL] + [x for x in extra if "trend" in x.name]
+        d, m = seed_trends(*srcs)
+        print(f"트렌드: {d}일 · 지표 {m:,}행  ← {', '.join(x.name for x in srcs)}")
     if args.history or both:
-        n, added = seed_history()
-        print(f"공고 판본: 읽은 {n:,}줄 중 새로 {added:,}판  ← {HISTORY_JSONL.name}")
+        srcs = [HISTORY_JSONL] + [x for x in extra if "trend" not in x.name]
+        n, added = seed_history(*srcs)
+        print(f"공고 판본: 읽은 {n:,}줄 중 새로 {added:,}판  ← {', '.join(x.name for x in srcs)}")
     return 0
 
 
