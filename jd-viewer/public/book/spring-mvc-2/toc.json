@@ -413,7 +413,7 @@
           "title": "Validator 분리",
           "summary": "컨트롤러에서 검증 로직을 뺀다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",
@@ -421,7 +421,7 @@
           "title": "WebDataBinder 와 @Validated",
           "summary": "@InitBinder 로 자동 적용.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.11",
@@ -429,7 +429,7 @@
           "title": "정리",
           "summary": "다섯 단계가 각각 무엇을 없앴나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

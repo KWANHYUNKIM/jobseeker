@@ -1,0 +1,155 @@
+{
+ "book": "spring-mvc-2",
+ "id": "web-data-binder",
+ "no": "5.10",
+ "chapter": 5,
+ "title": "WebDataBinder 와 @Validated",
+ "summary": "@InitBinder 로 자동 적용.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`WebDataBinder` 가 무엇을 하는지 안다.",
+  "`@Validated` 로 검증을 자동화할 수 있다.",
+  "`supports` 가 여기서 쓰인다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.9절에서 컨트롤러가 한 줄로 줄었다. **그 한 줄도 없앤다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "바인딩 앞에 검증이 붙는다",
+   "ascii": "   @InitBinder\n   public void init(WebDataBinder dataBinder) {\n       dataBinder.addValidators(itemValidator);\n   }\n\n   request\n     |\n     v\n   WebDataBinder  ->  bind      request params to object\n                  ->  convert   String to Integer\n                  ->  validate  registered validators\n     |\n     v\n   @Validated Item item, BindingResult bindingResult\n\n   컨트롤러가 불리기 전에 검증이 끝나 있다",
+   "note": "**`WebDataBinder` 가 바인딩·변환·검증을 다 한다.** 컨트롤러는 결과만 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "WebDataBinder 는 이미 일하고 있었다",
+   "md": "**새로 등장한 것이 아니다.** 지금까지 본 것들이 다 여기서 일어났다.\n\n| | 어디서 봤나 |\n|---|---|\n| 요청 파라미터 → 객체 | 1편 7.7절 `@ModelAttribute` |\n| `String` → `Integer` | 1편 7.6절, 5.8절 `typeMismatch` |\n| 체크박스 `_open` 처리 | **3.4절** |\n| 오류를 `BindingResult` 에 | 5.3절 |\n\n**3.4절에서 이렇게 적었다.**\n\n> 이 처리는 `WebDataBinder` 가 한다 — **5.10절에서 다시 나온다.**\n\n**여기에 검증기를 하나 더 얹는 것**이 이 절이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@InitBinder\npublic void init(WebDataBinder dataBinder) {\n    dataBinder.addValidators(itemValidator);\n}\n\n@PostMapping(\"/add\")\npublic String addItem(@Validated @ModelAttribute Item item,\n                      BindingResult bindingResult,\n                      RedirectAttributes redirectAttributes) {\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v2/addForm\";\n    }\n    // 성공\n}",
+   "note": "**`itemValidator.validate(...)` 한 줄이 사라졌다.**\n\n**`@Validated` 가 신호**다. 이게 없으면 검증기를 등록해도 안 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "supports 가 여기서 산다",
+   "md": "5.9절에서 이렇게 적었다.\n\n> **그래서 지금은 `supports` 가 죽은 코드처럼 보인다.** 5.10절에서 살아난다.\n\n**검증기를 여러 개 등록할 수 있다.**\n\n```java\n@InitBinder\npublic void init(WebDataBinder dataBinder) {\n    dataBinder.addValidators(itemValidator, memberValidator);\n}\n```\n\n**`@Validated` 가 붙은 객체의 타입을 보고** `supports` 가 `true` 인 것만 실행한다.\n\n```\n@Validated Item item  ->  itemValidator.supports(Item.class)   true   실행\n                      ->  memberValidator.supports(Item.class) false  건너뜀\n```\n\n**타입으로 고르는 것**이라 컨트롤러가 어느 검증기를 부를지 안 정해도 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@InitBinder 의 범위",
+   "md": "**그 컨트롤러 안에서만** 적용된다.\n\n```java\n@Controller\npublic class ValidationItemControllerV2 {\n    @InitBinder ...   // 이 컨트롤러의 모든 핸들러\n}\n```\n\n**다른 컨트롤러에는 안 붙는다.** 컨트롤러가 늘면 같은 `@InitBinder` 를 복사하게 된다.\n\n**전역으로 하려면 `@ControllerAdvice`** 다 — 10.7절에서 본다. 다만 **전역 검증기는 잘 안 쓴다.** 6장의 Bean Validation 이 전역으로 도는 것이 훨씬 자연스럽다.\n\n> 3.3절의 메서드 `@ModelAttribute` 와 같은 성질이다. **컨트롤러 단위이고 `@ControllerAdvice` 로 전역이 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@Validated 와 @Valid",
+   "md": "**둘 다 된다.** 이름이 비슷한데 출신이 다르다.\n\n| | 출신 | 그룹 |\n|---|---|---|\n| `@Validated` | **스프링** | **된다** |\n| `@Valid` | 자바 표준 (Bean Validation) | 안 된다 |\n\n**`@Valid` 는 의존성이 필요**하다 — `spring-boot-starter-validation`. 1.3절에서 이 책의 유일한 새 의존성이라고 한 그것이다.\n\n**이 책은 `@Validated` 를 쓴다.** 6.6절의 **그룹** 기능이 스프링 것에만 있어서다.\n\n> **`@Validated` 는 다른 자리에서도 쓰인다** — 클래스에 붙이면 AOP 로 메서드 파라미터를 검증한다. 웹이 아닌 서비스 계층에서 쓰는 용법인데, 이 책 범위 밖이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "자동화의 대가",
+   "md": "**검증이 코드에 안 보인다.**\n\n```java\npublic String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult)\n```\n\n**애너테이션 하나**가 전부다. 어느 검증기가 도는지는 `@InitBinder` 를 찾아봐야 하고, 그것이 다른 파일에 있을 수도 있다.\n\n5.7절에서 `MessageCodesResolver` 에 대해 한 말과 같다.\n\n> **규칙이 코드에 안 보이는 것**이 이 방식의 비용이다.\n\n**5장 내내 같은 교환**이 반복됐다. **코드가 짧아지는 대신 동작이 선언 뒤로 숨는다.**\n\n**그래서 원리를 봤다.** V1 부터 만들어 온 이유이기도 하다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<div class=\"field-error\">가격은 1000 ~ 1000000 까지 허용합니다.</div>\n<div class=\"field-error\">가격 * 수량의 합은 10000원 이상이어야 합니다. 현재 값 = 5000</div>\n\n# 5.9 절과 응답이 똑같다\n\n# @Validated 를 빼면 검증이 아예 안 돈다\nitemName=&price=500&quantity=10\n\nHTTP/1.1 302 \nLocation: /validation/v2/items/5",
+   "note": "**맨 아래가 이 절에서 제일 위험한 것**이다. `@Validated` 를 빼면 **오류 없이 302 로 저장**된다.\n\n5.9절까지는 `itemValidator.validate(...)` 를 지워야 그렇게 됐는데, 지금은 **애너테이션 하나만 빠져도** 그렇다. 그리고 **컴파일도 되고 테스트도 안 짜 두면 통과**한다.\n\n**검증이 조용히 사라지는 것**은 오류가 나는 것보다 나쁘다. 5.3절에서 `BindingResult` 순서를 틀리면 400 이 나던 것은 그래도 티가 났다."
+  }
+ ],
+ "recap": [
+  "**`WebDataBinder` 는 이미 일하고 있었다** — 바인딩·변환·`_open` 처리.",
+  "**`@InitBinder` 로 검증기를 얹는다.**",
+  "**`@Validated` 가 신호**다. 없으면 검증기를 등록해도 안 돈다.",
+  "**`supports` 가 여기서 산다** — 타입으로 검증기를 고른다.",
+  "**`@InitBinder` 는 그 컨트롤러 안에서만** 적용된다.",
+  "전역은 `@ControllerAdvice` 인데 **전역 검증기는 잘 안 쓴다.**",
+  "**`@Validated` 는 스프링, `@Valid` 는 자바 표준** — 그룹은 스프링 것만.",
+  "**자동화의 대가는 검증이 코드에 안 보이는 것**이다.",
+  "**`@Validated` 를 빼면 조용히 302** 가 된다 — 컴파일도 된다."
+ ],
+ "drills": [
+  {
+   "task": "`@InitBinder` 로 검증기를 등록하고 `@Validated` 를 붙인다.",
+   "done_when": "`validate` 호출 없이 검증이 도는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Validated` 를 뺀다.",
+   "done_when": "오류 없이 302 로 저장되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "검증기를 두 개 등록하고 `supports` 에 로그를 찍는다.",
+   "done_when": "타입이 맞는 것만 실행되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다른 컨트롤러에서 같은 요청을 보낸다.",
+   "done_when": "`@InitBinder` 가 없으면 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Valid` 로 바꿔 본다.",
+   "done_when": "의존성이 있으면 동작하는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`WebDataBinder` 가 하는 일은?",
+   "a": "요청 파라미터를 객체에 바인딩하고, 타입을 변환하고, 등록된 검증기를 실행한다."
+  },
+  {
+   "q": "`@Validated` 가 없으면?",
+   "a": "검증기를 등록해도 실행되지 않는다. 오류 없이 통과한다."
+  },
+  {
+   "q": "`supports` 가 여기서 어떻게 쓰이나?",
+   "a": "등록된 여러 검증기 중 `@Validated` 대상 타입을 맡는 것만 골라 실행한다."
+  },
+  {
+   "q": "`@InitBinder` 의 적용 범위는?",
+   "a": "그 컨트롤러 안이다. 전역으로 하려면 `@ControllerAdvice` 가 필요하다."
+  },
+  {
+   "q": "`@Validated` 와 `@Valid` 의 차이는?",
+   "a": "`@Validated` 는 스프링 것이고 그룹을 지원한다. `@Valid` 는 자바 표준이고 그룹이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WebDataBinder",
+   "en": "",
+   "what": "요청 파라미터의 바인딩·타입 변환·검증을 담당하는 스프링 객체."
+  },
+  {
+   "term": "@InitBinder",
+   "en": "",
+   "what": "그 컨트롤러의 `WebDataBinder` 를 설정하는 메서드에 붙인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

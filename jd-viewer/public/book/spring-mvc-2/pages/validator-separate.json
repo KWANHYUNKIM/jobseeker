@@ -1,0 +1,156 @@
+{
+ "book": "spring-mvc-2",
+ "id": "validator-separate",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "Validator 분리",
+ "summary": "컨트롤러에서 검증 로직을 뺀다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Validator` 인터페이스의 두 메서드를 안다.",
+  "`Errors` 와 `BindingResult` 의 관계를 안다.",
+  "분리로 무엇을 얻는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.2절의 한계 3번이 아직 남아 있다.\n\n> **화면이 지저분하다** — 5.3절이 풀었다.\n\n**컨트롤러가 지저분한 것**은 안 풀었다. 검증 코드가 컨트롤러 메서드의 절반이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨트롤러가 하는 일이 셋",
+   "md": "```java\n@PostMapping(\"/add\")\npublic String addItem(@ModelAttribute Item item, BindingResult bindingResult) {\n\n    // 1. 검증  <- 30 줄\n    if (!StringUtils.hasText(...)) { ... }\n    ...\n\n    // 2. 실패 처리  <- 3 줄\n    if (bindingResult.hasErrors()) return \"addForm\";\n\n    // 3. 저장과 이동  <- 3 줄\n    Item saved = itemRepository.save(item);\n    return \"redirect:/items/{itemId}\";\n}\n```\n\n**1번이 대부분**이고, 등록과 수정에서 **거의 같은 코드가 두 벌** 있다.\n\n1편 4.4절에서 MVC 로 가른 근거가 **\"변경의 라이프사이클이 다르다\"** 였다. **검증 규칙과 요청 처리 흐름도 다르다** — 규칙은 업무가 바뀌면 바뀌고, 흐름은 화면 구조가 바뀌면 바뀐다.\n\n**따로 두면 따로 바뀐다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 둘뿐이다",
+   "ascii": "   public interface Validator {\n       boolean supports(Class<?> clazz);\n       void validate(Object target, Errors errors);\n   }\n\n   supports  ->  이 검증기가 이 타입을 맡는가\n   validate  ->  맡는다면 검사한다\n\n   Errors  <--  BindingResult 의 부모\n\n   검증기는 BindingResult 를 모른다. Errors 만 안다",
+   "note": "**`supports` 가 타입을 확인하고 `validate` 가 검사**한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "검증기",
+   "code": "@Component\npublic class ItemValidator implements Validator {\n\n    @Override\n    public boolean supports(Class<?> clazz) {\n        return Item.class.isAssignableFrom(clazz);\n    }\n\n    @Override\n    public void validate(Object target, Errors errors) {\n        Item item = (Item) target;\n\n        ValidationUtils.rejectIfEmptyOrWhitespace(errors, \"itemName\", \"required\");\n\n        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {\n            errors.rejectValue(\"price\", \"range\", new Object[]{1000, 1000000}, null);\n        }\n\n        if (item.getPrice() != null && item.getQuantity() != null) {\n            int resultPrice = item.getPrice() * item.getQuantity();\n            if (resultPrice < 10000) {\n                errors.reject(\"totalPriceMin\", new Object[]{10000, resultPrice}, null);\n            }\n        }\n    }\n}",
+   "note": "**`isAssignableFrom` 이라 자식 클래스도 통과**한다. `==` 로 비교하면 상속이 안 먹는다.\n\n**`ValidationUtils`** 가 흔한 검사를 한 줄로 줄여 준다. `hasText` 검사 + `rejectValue` 를 합친 것이다.\n\n**`Object target` 이라 캐스팅이 필요**한 것이 이 인터페이스의 오래된 흔적이다. 제네릭이 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "Errors 와 BindingResult",
+   "md": "**`validate` 는 `Errors` 를 받는데 컨트롤러는 `BindingResult` 를 넘긴다.**\n\n```\nErrors  (인터페이스)\n  +-- BindingResult  (인터페이스)\n        +-- BeanPropertyBindingResult  (구현)\n```\n\n**`BindingResult` 가 `Errors` 의 자식**이라 그냥 넘어간다.\n\n**왜 나눠 놓았나** — `Errors` 는 **오류를 담는 일만** 하고, `BindingResult` 는 거기에 **바인딩 결과**(거절된 값, 타입 정보)를 더한다.\n\n**검증기는 바인딩을 모르는 편이 낫다.** 웹 요청에서 왔든 테스트에서 만들었든 검증 규칙은 같아야 한다.\n\n```java\n@Test\nvoid validate() {\n    Item item = new Item(\"\", 500, 10);\n    Errors errors = new BeanPropertyBindingResult(item, \"item\");\n\n    itemValidator.validate(item, errors);\n\n    assertThat(errors.getFieldError(\"itemName\")).isNotNull();\n}\n```\n\n**웹 없이 테스트할 수 있다.** 분리의 가장 큰 이득이 이것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러가 짧아진다",
+   "code": "private final ItemValidator itemValidator;\n\n@PostMapping(\"/add\")\npublic String addItem(@ModelAttribute Item item, BindingResult bindingResult,\n                      RedirectAttributes redirectAttributes) {\n\n    itemValidator.validate(item, bindingResult);\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v2/addForm\";\n    }\n\n    Item savedItem = itemRepository.save(item);\n    redirectAttributes.addAttribute(\"itemId\", savedItem.getId());\n    return \"redirect:/validation/v2/items/{itemId}\";\n}",
+   "note": "**30 줄이 한 줄이 됐다.** 그리고 **등록과 수정이 같은 검증기**를 쓴다.\n\n`@Component` 로 빈이 됐으니 **생성자 주입**이다 — 앞 책 7장에서 정한 그대로."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "supports 를 언제 쓰나",
+   "md": "**직접 부를 때는 `supports` 가 안 불린다.**\n\n```java\nitemValidator.validate(item, bindingResult);   // supports 는 무시된다\n```\n\n**타입이 확실하니 확인할 이유가 없다.**\n\n`supports` 는 **스프링이 검증기를 자동으로 고를 때** 쓴다 — 5.10절의 `@InitBinder` 방식이다. 검증기가 여러 개일 때 **어느 것을 부를지 이것으로 판단**한다.\n\n**그래서 지금은 `supports` 가 죽은 코드처럼 보인다.** 5.10절에서 살아난다.\n\n> 인터페이스를 구현하면 안 쓰는 메서드도 채워야 하는 상황인데, **다음 절을 위한 준비**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "검증기를 나눌 기준",
+   "md": "**객체 하나에 검증기 하나**가 기본인데, 규칙이 갈릴 때가 있다.\n\n```\n등록:  id 가 없어야 한다\n수정:  id 가 있어야 하고, 수량은 안 바뀌어야 한다\n```\n\n**같은 `Item` 인데 규칙이 다르다.**\n\n| 방법 | |\n|---|---|\n| 검증기를 둘로 | `ItemSaveValidator` · `ItemUpdateValidator` |\n| 폼 객체를 둘로 | `ItemSaveForm` · `ItemUpdateForm` — **6.7절** |\n| 그룹 | `@Validated(Save.class)` — **6.6절** |\n\n**6장이 두 번째와 세 번째를 다룬다.** 지금은 검증기를 나누는 것이 자연스럽다.\n\n> **`Item` 이 도메인이면서 폼 객체인 것**이 사실 문제다. 1.2절에서 1편의 숙제로 꼽았던 \"DTO 를 안 나눴다\" 가 여기서 다시 나온다. **6.7절이 그것을 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<div class=\"field-error\">가격은 1000 ~ 1000000 까지 허용합니다.</div>\n<div class=\"field-error\">가격 * 수량의 합은 10000원 이상이어야 합니다. 현재 값 = 5000</div>\n\n# 5.8 절과 응답이 똑같다\n\n# 수정 화면도 같은 검증기를 쓴다\nPOST /validation/v2/items/1/edit HTTP/1.1\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<div class=\"field-error\">가격은 1000 ~ 1000000 까지 허용합니다.</div>",
+   "note": "**응답이 5.8절과 한 글자도 다르지 않다.** 4.3절과 같은 성격의 절이다 — 밖에서 보이는 것은 그대로고 코드의 배치만 바뀐다.\n\n아래 수정 요청이 분리의 결과다. **검증 코드를 한 벌만 두고 두 화면이 쓴다.** 전에는 컨트롤러 메서드마다 같은 30줄이 복사돼 있었고, 규칙이 바뀌면 두 곳을 고쳐야 했다."
+  }
+ ],
+ "recap": [
+  "**검증 규칙과 요청 처리 흐름은 바뀌는 이유가 다르다** — 그래서 나눈다.",
+  "`Validator` 는 **`supports` 와 `validate`** 둘뿐이다.",
+  "**`isAssignableFrom`** 이라 자식 클래스도 통과한다.",
+  "**`ValidationUtils`** 가 흔한 검사를 한 줄로 줄인다.",
+  "**`BindingResult` 는 `Errors` 의 자식**이라 그냥 넘어간다.",
+  "**검증기는 바인딩을 모른다** — 그래서 웹 없이 테스트할 수 있다.",
+  "**30 줄이 한 줄**이 되고 등록·수정이 같은 검증기를 쓴다.",
+  "**`supports` 는 직접 부를 때 안 불린다** — 5.10절에서 살아난다.",
+  "등록과 수정의 규칙이 다르면 **검증기를 나누거나 6장의 방법**을 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`ItemValidator` 를 만들고 컨트롤러에서 부른다.",
+   "done_when": "응답이 이전과 같은 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "검증기만 단위 테스트한다.",
+   "done_when": "`BeanPropertyBindingResult` 로 웹 없이 검증한 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "수정 컨트롤러에서도 같은 검증기를 부른다.",
+   "done_when": "코드가 한 줄씩만 늘어난 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`supports` 에 `return false` 를 넣고 직접 부른다.",
+   "done_when": "그래도 검증이 도는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ValidationUtils.rejectIfEmptyOrWhitespace` 로 바꾼다.",
+   "done_when": "같은 오류 코드가 나오는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Validator` 의 두 메서드는?",
+   "a": "`supports` 로 이 타입을 맡는지 알리고 `validate` 로 검사한다."
+  },
+  {
+   "q": "`Errors` 와 `BindingResult` 의 관계는?",
+   "a": "`BindingResult` 가 `Errors` 를 상속한다. `Errors` 는 오류를 담는 일만 하고 `BindingResult` 는 바인딩 결과를 더한다."
+  },
+  {
+   "q": "분리의 가장 큰 이득은?",
+   "a": "웹 없이 검증기만 단위 테스트할 수 있다는 것이다."
+  },
+  {
+   "q": "`supports` 는 언제 쓰이나?",
+   "a": "직접 부를 때는 안 불린다. 스프링이 여러 검증기 중에서 자동으로 고를 때 쓴다."
+  },
+  {
+   "q": "등록과 수정의 규칙이 다르면?",
+   "a": "검증기를 나누거나, 6장의 폼 객체 분리 또는 그룹을 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Validator",
+   "en": "",
+   "what": "스프링의 검증기 인터페이스. `supports` 와 `validate` 를 가진다."
+  },
+  {
+   "term": "Errors",
+   "en": "",
+   "what": "검증 오류를 담는 인터페이스. `BindingResult` 의 부모다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
