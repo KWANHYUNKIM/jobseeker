@@ -1,0 +1,142 @@
+{
+ "book": "spring-mvc-2",
+ "id": "spring-multipart",
+ "no": "12.3",
+ "chapter": 12,
+ "title": "스프링과 MultipartFile",
+ "summary": "@RequestParam 으로 받는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`MultipartFile` 로 파일을 받을 수 있다.",
+  "`@ModelAttribute` 에도 담긴다는 것을 안다.",
+  "빈 파일을 어떻게 다룰지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "Part 를 감싼 것",
+   "ascii": "   Part                        MultipartFile\n   ----                        -------------\n   getName()                   getName()\n   getSubmittedFileName()      getOriginalFilename()\n   getSize()                   getSize()\n   getInputStream()            getInputStream()\n   write(String path)          transferTo(File dest)\n                               isEmpty()\n                               getBytes()\n\n   같은 것을 스프링 이름으로 감싼 것이다",
+   "note": "**하는 일은 같고 이름과 편의 메서드가 다르다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "파라미터로 받는다",
+   "code": "@PostMapping(\"/upload\")\npublic String saveFile(@RequestParam String itemName,\n                       @RequestParam MultipartFile file) throws IOException {\n\n    if (!file.isEmpty()) {\n        String fullPath = fileDir + file.getOriginalFilename();\n        file.transferTo(new File(fullPath));\n    }\n    return \"upload-form\";\n}",
+   "note": "**12.2절의 반복문이 사라졌다.** 이름으로 바로 받는다.\n\n**`isEmpty()` 검사**가 중요하다 — 파일을 안 고르고 제출해도 **`MultipartFile` 은 온다.** 크기가 0 일 뿐이다.\n\n**`transferTo` 가 `part.write` 자리**다. `File` 을 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@ModelAttribute 에도 담긴다",
+   "md": "```java\n@Data\npublic class ItemForm {\n    private String itemName;\n    private MultipartFile attachFile;\n    private List<MultipartFile> imageFiles;\n}\n```\n\n```java\n@PostMapping(\"/save\")\npublic String save(@ModelAttribute ItemForm form) { ... }\n```\n\n**필드로 받는다.** 6.7절의 폼 객체에 파일이 섞이는 것이다.\n\n**`List<MultipartFile>` 도 된다** — 3.5절의 멀티 체크박스와 같은 원리다. **같은 `name` 이 여러 번** 오면 리스트로 묶인다.\n\n```html\n<input type=\"file\" name=\"imageFiles\" multiple>\n```\n\n**`multiple` 속성**을 주면 브라우저가 여러 파일을 같은 이름으로 보낸다 — 2.9절의 진위 속성이다.\n\n> **검증도 붙는다.** `@NotNull` 은 파일 객체 자체를 보므로 쓸모없고, **직접 만든 검증**(6.4절의 자바 코드)이 필요하다 — 크기·확장자는 애너테이션으로 표현이 안 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "isEmpty 와 null 이 다르다",
+   "md": "```java\n@RequestParam MultipartFile file\n```\n\n**파일 입력이 폼에 있으면** 안 골라도 **빈 `MultipartFile`** 이 온다.\n\n**폼에 아예 없으면** `null` 이 아니라 **400** 이다 — `@RequestParam` 은 기본이 필수라서.\n\n```java\n@RequestParam(required = false) MultipartFile file\n```\n\n**그러면 `null` 이 올 수 있다.** 7.3절의 `@CookieValue` 와 같은 이야기다.\n\n**세 상태를 구분해야** 한다.\n\n| | 언제 |\n|---|---|\n| `null` | 필드가 아예 안 왔다 |\n| `isEmpty()` | 필드는 왔는데 파일을 안 골랐다 |\n| 정상 | 파일이 있다 |\n\n**수정 화면에서 특히 중요**하다.\n\n```\n파일을 안 골랐다  ->  기존 파일 유지\n파일을 골랐다     ->  교체\n```\n\n**3.4절의 체크박스 문제와 같은 성질**이다 — **\"안 왔다\" 와 \"비었다\" 를 구분**해야 한다. 거기는 히든 필드로 풀었고, 여기는 `isEmpty()` 로 푼다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "transferTo 를 두 번 부를 수 없다",
+   "md": "```java\nfile.transferTo(new File(path1));\nfile.transferTo(new File(path2));   // 실패한다\n```\n\n**임시 파일을 옮기는(move) 구현**이라 한 번뿐이다. 12.2절에서 본 그 임시 파일이다.\n\n**두 곳에 저장하려면**\n\n```java\nbyte[] bytes = file.getBytes();      // 메모리에 읽는다\nFiles.write(Path.of(path1), bytes);\nFiles.write(Path.of(path2), bytes);\n```\n\n**또는 스트림을 쓴다.**\n\n```java\ntry (InputStream in = file.getInputStream()) {\n    Files.copy(in, Path.of(path1));\n}\n```\n\n**`getBytes()` 는 파일 전체를 메모리에** 올린다. **큰 파일이면 위험**하다 — 동시 업로드가 몇 개만 겹쳐도 힙이 찬다.\n\n**썸네일 생성처럼 두 번 읽어야 하면** 일단 저장하고 그 파일을 다시 읽는 편이 안전하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "IOException 을 어떻게 다룰까",
+   "md": "```java\npublic String save(...) throws IOException\n```\n\n**컨트롤러가 던지게 두면** 9장의 흐름을 탄다 — 500 에 오류 페이지.\n\n**대부분 그것이 맞다.** 디스크가 차거나 권한이 없는 것은 **서버 문제**이고 500 이 정확하다(9.8절).\n\n**다만 로그가 필요하다.**\n\n```java\ntry {\n    file.transferTo(new File(fullPath));\n} catch (IOException e) {\n    log.error(\"파일 저장 실패 path={}\", fullPath, e);\n    throw new FileSaveException(\"파일을 저장하지 못했습니다\", e);\n}\n```\n\n**원인 예외를 넘긴다** — `new FileSaveException(msg, e)`. **안 넘기면 진짜 원인이 사라진다.**\n\n**10.6절의 `@ExceptionHandler` 로 잡으면** API 에도 우리 형식으로 나간다.\n\n> **부분 실패에 주의한다.** 파일 셋 중 둘을 저장하고 실패하면 **앞의 둘이 남는다.** DB 트랜잭션과 달리 **파일 시스템은 롤백이 없다** — 저장 전에 검증을 다 끝내거나, 실패 시 지우는 코드를 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /spring/upload HTTP/1.1\nContent-Type: multipart/form-data; boundary=----boundary\n\n------boundary\nContent-Disposition: form-data; name=\"itemName\"\n\nSpring\n------boundary\nContent-Disposition: form-data; name=\"file\"; filename=\"cat.png\"\nContent-Type: image/png\n\n(binary)\n------boundary--\n\n# 서버 로그\n#   itemName=Spring\n#   multipartFile=org.springframework.web.multipart.support.StandardMultipartFile\n#   originalFilename=cat.png\n\nHTTP/1.1 200 \n\n# 파일을 안 고르고 제출하면\n------boundary\nContent-Disposition: form-data; name=\"file\"; filename=\"\"\nContent-Type: application/octet-stream\n\n\n------boundary--\n\n# 서버 로그\n#   originalFilename=  (빈 문자열)\n#   isEmpty=true\n\nHTTP/1.1 200 ",
+   "note": "**아래쪽이 이 절의 요점**이다. 파일을 안 골랐는데도 **부분이 온다.** `filename=\"\"` 에 내용이 비어 있고, `Content-Type` 은 `application/octet-stream` 이다.\n\n**브라우저가 빈 부분을 보내는 것**이라 서버는 `MultipartFile` 을 받는다. **`null` 이 아니다.**\n\n그래서 **`isEmpty()` 검사가 필요**하다. 안 하면 **빈 파일이 저장**되고, 파일명이 빈 문자열이라 **경로가 디렉터리 자체**가 되어 `IOException` 이 난다."
+  }
+ ],
+ "recap": [
+  "**`MultipartFile` 은 `Part` 를 감싼 것**이다.",
+  "**`@RequestParam` 으로 이름을 지정해** 받는다.",
+  "**`transferTo(File)`** 로 저장한다.",
+  "**`@ModelAttribute` 의 필드**로도 받는다.",
+  "**`List<MultipartFile>`** 은 `multiple` 속성과 짝이다 — 3.5절의 원리.",
+  "**파일을 안 골라도 빈 `MultipartFile` 이 온다** — `null` 이 아니다.",
+  "**`null` · `isEmpty()` · 정상** 세 상태를 구분한다.",
+  "**3.4절의 체크박스와 같은 성질**이다.",
+  "**`transferTo` 는 한 번만** 부를 수 있다 — 임시 파일을 옮긴다.",
+  "**`getBytes()` 는 메모리에 올린다** — 큰 파일이면 위험.",
+  "**파일 시스템은 롤백이 없다** — 부분 실패에 주의."
+ ],
+ "drills": [
+  {
+   "task": "`MultipartFile` 로 파일을 받아 저장한다.",
+   "done_when": "12.2절보다 짧아진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "파일을 안 고르고 제출한다.",
+   "done_when": "빈 `MultipartFile` 이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`isEmpty()` 검사를 빼고 저장해 본다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`transferTo` 를 두 번 부른다.",
+   "done_when": "두 번째가 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`List<MultipartFile>` 과 `multiple` 로 여러 파일을 올린다.",
+   "done_when": "리스트로 묶이는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`MultipartFile` 은 무엇인가?",
+   "a": "서블릿의 `Part` 를 스프링이 감싼 것이다. 하는 일은 같고 편의 메서드가 더 있다."
+  },
+  {
+   "q": "파일을 안 고르면?",
+   "a": "`null` 이 아니라 빈 `MultipartFile` 이 온다. `isEmpty()` 로 확인해야 한다."
+  },
+  {
+   "q": "세 상태를 왜 구분하나?",
+   "a": "수정 화면에서 파일을 안 고른 것과 필드가 안 온 것이 다른 의미이기 때문이다."
+  },
+  {
+   "q": "`transferTo` 를 두 번 부르면?",
+   "a": "실패한다. 임시 파일을 옮기는 구현이라 한 번뿐이다."
+  },
+  {
+   "q": "파일 저장의 부분 실패는?",
+   "a": "파일 시스템에는 롤백이 없어 앞의 파일이 남는다. 미리 검증하거나 실패 시 지운다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MultipartFile",
+   "en": "",
+   "what": "스프링이 제공하는 업로드 파일 인터페이스. `Part` 를 감싼다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Multipart Resolver",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/multipart.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,151 @@
+{
+ "book": "spring-mvc-2",
+ "id": "multipart-intro",
+ "no": "12.1",
+ "chapter": 12,
+ "title": "파일 업로드 소개",
+ "summary": "바디를 경계 문자열로 나눈다. 형식부터 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 인코딩 방식의 차이를 안다.",
+  "경계 문자열이 무엇인지 안다.",
+  "부분마다 헤더가 있다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 7.5절에서 폼 전송을 다룰 때 이렇게 적었다.\n\n> `application/x-www-form-urlencoded` — **HTML 폼의 기본**이다. **파일 전송은 `multipart/form-data`** 를 쓰는데, 그건 2편에서 본다.\n\n**여기다.** 형식부터 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 형식",
+   "ascii": "   application/x-www-form-urlencoded\n   ---------------------------------\n   itemName=Spring&price=10000\n        |\n        +--> 하나의 문자열. 바이너리를 못 담는다\n\n   multipart/form-data; boundary=----abc123\n   ---------------------------------------\n   ------abc123\n   Content-Disposition: form-data; name=\"itemName\"\n\n   Spring\n   ------abc123\n   Content-Disposition: form-data; name=\"file\"; filename=\"a.png\"\n   Content-Type: image/png\n\n   (binary)\n   ------abc123--\n        |\n        +--> 부분마다 헤더가 따로 있다",
+   "note": "**경계 문자열로 나누고 부분마다 헤더**를 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 다른 형식이 필요한가",
+   "md": "**기본 방식으로는 파일을 못 보낸다.**\n\n```\nitemName=Spring&price=10000\n```\n\n**전부 하나의 문자열**이다. 그리고 **URL 인코딩**이 걸린다 — 공백은 `+`, 한글은 `%ED%95%9C` 같은 식.\n\n**바이너리를 이렇게 보내면**\n\n| | |\n|---|---|\n| **크기가 는다** | 1바이트가 `%XX` 3바이트로 |\n| **`&` 와 `=` 가 섞인다** | 이미지 안에 그 바이트가 있으면 |\n| **타입 정보가 없다** | 이게 PNG 인지 PDF 인지 |\n| **파일 이름이 없다** | 원본 이름을 못 전한다 |\n\n**`multipart/form-data` 가 넷을 다 푼다.**\n\n**바이너리를 그대로** 싣고, **경계로 나누고**, **부분마다 `Content-Type` 과 `filename`** 을 붙인다.\n\n> **HTTP 바디에 여러 개를 담는 유일한 표준 방식**이다. 그래서 파일이 없어도 파일 입력이 하나라도 있으면 폼 전체가 이 형식이 된다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "폼",
+   "code": "<form th:action method=\"post\" enctype=\"multipart/form-data\">\n    <input type=\"text\" name=\"itemName\">\n    <input type=\"file\" name=\"file\">\n    <button type=\"submit\">저장</button>\n</form>",
+   "note": "**`enctype=\"multipart/form-data\"`** 를 빠뜨리면 **파일 이름만 문자열로** 전송된다. 오류도 안 난다 — **가장 흔한 실수**다.\n\n**`method=\"post\"` 여야 한다.** GET 은 바디가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경계 문자열은 브라우저가 정한다",
+   "md": "```\nContent-Type: multipart/form-data; boundary=----WebKitFormBoundaryabc123\n```\n\n**`boundary` 를 브라우저가 만든다.** 요청마다 다르다.\n\n**왜 랜덤인가** — **파일 내용에 그 문자열이 들어 있으면 안 되기** 때문이다. 들어 있으면 파싱이 거기서 잘린다.\n\n**그래서 길고 무작위**다. 11.2절의 세션 ID 와 비슷한 이유이지만, **여기는 보안이 아니라 충돌 회피**다.\n\n**구분선의 규칙**\n\n```\n------WebKitFormBoundaryabc123        부분의 시작 (앞에 -- 가 붙는다)\n------WebKitFormBoundaryabc123--      전체의 끝 (뒤에도 -- 가 붙는다)\n```\n\n**마지막에 `--` 가 하나 더** 붙는 것으로 끝을 알린다.\n\n**직접 파싱할 일은 없다** — 서블릿 컨테이너가 한다(12.2절). 다만 **`curl` 로 테스트하거나 로그를 읽을 때** 이 모양을 알아야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "부분마다 헤더가 있다",
+   "md": "**이것이 핵심**이다.\n\n```\nContent-Disposition: form-data; name=\"file\"; filename=\"cat.png\"\nContent-Type: image/png\n```\n\n| | 무엇 |\n|---|---|\n| `name` | **폼 필드 이름** — `@RequestParam` 이 볼 것 |\n| `filename` | **원본 파일 이름** — 있으면 파일이다 |\n| `Content-Type` | 파일의 종류 |\n\n**`filename` 이 있느냐 없느냐로 파일과 일반 필드가 갈린다.**\n\n**`Content-Type` 은 브라우저가 확장자를 보고 추측**한 것이다. **믿으면 안 된다** — 12.6절에서 다시 본다.\n\n> **HTTP 헤더의 구조가 바디 안에 다시 나타난다**는 것이 재미있는 지점이다. 1편 2.4절에서 헤더를 다룰 때 본 형식이 여기서 반복된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "요즘은 JSON 과 섞기도 한다",
+   "md": "**멀티파트에 JSON 을 담을 수도** 있다.\n\n```\nContent-Disposition: form-data; name=\"data\"\nContent-Type: application/json\n\n{\"itemName\":\"Spring\",\"price\":10000}\n------boundary\nContent-Disposition: form-data; name=\"file\"; filename=\"a.png\"\n```\n\n**메타데이터는 JSON, 파일은 바이너리**로 나눠 보내는 방식이다.\n\n```java\npublic String save(@RequestPart(\"data\") ItemSaveForm form,\n                   @RequestPart(\"file\") MultipartFile file)\n```\n\n**`@RequestPart`** 가 그것이다. **`@RequestParam` 과 달리 `HttpMessageConverter` 를 태운다** — 11.8절에서 가른 그 경계가 여기서 만난다.\n\n**언제 쓰나** — **API 에서 파일과 구조화된 데이터를 같이** 보낼 때. 폼 화면이면 그냥 `@ModelAttribute` 가 편하다.\n\n> **대안은 파일과 데이터를 두 번에 나눠 보내는 것**이다. 파일을 먼저 올려 ID 를 받고, 그 ID 를 JSON 에 담아 보낸다. **요즘 API 는 이쪽이 많다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /upload HTTP/1.1\nContent-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Length: 12847\n\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"itemName\"\n\nSpring\n------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"file\"; filename=\"cat.png\"\nContent-Type: image/png\n\n(PNG binary data)\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\n\nHTTP/1.1 200 \nok\n\n# enctype 을 빠뜨리면\nPOST /upload HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=Spring&file=cat.png\n\n# 파일 이름만 문자열로 왔다. 내용은 없다",
+   "note": "**경계 문자열이 세 번** 나온다 — 부분 시작 둘과 끝 하나. 마지막에만 `--` 가 뒤에 붙었다.\n\n**첫 부분에는 `Content-Type` 이 없다.** 일반 텍스트 필드라서다. **둘째에는 `filename` 과 `Content-Type` 이 다** 있다.\n\n**`Content-Length: 12847`** — 파일 크기 + 헤더들이다. 12.6절에서 이 값을 제한하는 이야기를 한다.\n\n**맨 아래가 `enctype` 을 빠뜨린 결과**다. `file=cat.png` — **이름만 왔고 내용은 없다.** 서버는 정상 요청으로 받아들이고, **파일이 안 왔다는 것도 모른다.**"
+  }
+ ],
+ "recap": [
+  "1편 7.5절이 미룬 **`multipart/form-data`** 다.",
+  "**기본 방식은 하나의 문자열**이라 바이너리를 못 담는다.",
+  "**크기·구분자 충돌·타입·파일명** 넷을 멀티파트가 푼다.",
+  "**`enctype` 을 빠뜨리면 파일 이름만** 온다. 오류도 안 난다.",
+  "**경계 문자열은 브라우저가 무작위로** 만든다 — 충돌 회피.",
+  "**끝에는 `--` 가 하나 더** 붙는다.",
+  "**부분마다 헤더**가 있다 — `name` · `filename` · `Content-Type`.",
+  "**`filename` 이 있으면 파일**이다.",
+  "**`Content-Type` 은 브라우저의 추측**이라 믿으면 안 된다.",
+  "**`@RequestPart`** 로 JSON 과 파일을 섞을 수 있다.",
+  "**요즘 API 는 두 번에 나눠 보내는** 방식이 많다."
+ ],
+ "drills": [
+  {
+   "task": "파일 폼을 만들고 개발자 도구에서 요청을 본다.",
+   "done_when": "경계 문자열과 부분 헤더를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`enctype` 을 빼고 제출한다.",
+   "done_when": "파일 이름만 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 폼을 두 번 제출하고 `boundary` 를 비교한다.",
+   "done_when": "매번 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "텍스트 필드와 파일 필드의 헤더를 비교한다.",
+   "done_when": "`filename` 유무가 갈림인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`curl -F` 로 같은 요청을 보낸다.",
+   "done_when": "curl 이 경계를 만들어 주는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `multipart/form-data` 가 필요한가?",
+   "a": "기본 방식은 하나의 문자열이라 바이너리를 담을 수 없고 파일 이름과 타입도 전할 수 없다."
+  },
+  {
+   "q": "경계 문자열이 왜 무작위인가?",
+   "a": "파일 내용에 같은 바이트열이 있으면 파싱이 잘못되기 때문이다."
+  },
+  {
+   "q": "파일과 일반 필드는 무엇으로 갈리나?",
+   "a": "`Content-Disposition` 에 `filename` 이 있으면 파일이다."
+  },
+  {
+   "q": "`enctype` 을 빠뜨리면?",
+   "a": "파일 이름만 문자열로 전송되고 내용은 안 온다. 오류도 안 난다."
+  },
+  {
+   "q": "`@RequestPart` 는 무엇이 다른가?",
+   "a": "`HttpMessageConverter` 를 태워서 부분을 JSON 등으로 변환할 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "multipart/form-data",
+   "en": "",
+   "what": "바디를 경계 문자열로 나눠 여러 부분을 담는 인코딩. 파일 전송에 쓴다."
+  },
+  {
+   "term": "경계 문자열",
+   "en": "boundary",
+   "what": "멀티파트의 각 부분을 구분하는 무작위 문자열."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 7578 — Returning Values from Forms: multipart/form-data",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7578",
+   "publisher": "IETF"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

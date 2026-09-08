@@ -1,0 +1,136 @@
+{
+ "book": "spring-mvc-2",
+ "id": "upload-requirements",
+ "no": "12.4",
+ "chapter": 12,
+ "title": "예제 — 상품 이미지",
+ "summary": "이미지 하나와 첨부 여럿.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "저장 이름과 원본 이름을 나눌 수 있다.",
+  "여러 파일을 받아 저장할 수 있다.",
+  "파일 경로를 어디에 둘지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "이름이 둘이다",
+   "ascii": "   uploaded\n        |\n        v\n   UploadFile\n        +--> uploadFileName    cat.png            사용자에게 보여 줄 것\n        +--> storeFileName     uuid.png           디스크에 쓸 것\n\n   why two names\n   -------------\n   same name uploaded twice   ->  overwrite\n   path traversal in name     ->  escape the directory\n   korean, spaces, emoji      ->  filesystem issues\n\n   원본 이름은 보여 주기만 한다",
+   "note": "**12.2절에서 예고한 그것**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "저장 정보",
+   "code": "@Data\n@AllArgsConstructor\npublic class UploadFile {\n    private String uploadFileName;   // 원본\n    private String storeFileName;    // 저장\n}",
+   "note": "**둘을 다 들고 있어야** 한다. 저장 이름으로 찾고 원본 이름으로 보여 준다.\n\n**DB 에도 이 둘이 들어간다.** 파일 자체는 디스크나 오브젝트 스토리지에 두고 **DB 에는 이름만**."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "저장 담당",
+   "code": "@Component\npublic class FileStore {\n\n    @Value(\"${file.dir}\")\n    private String fileDir;\n\n    public UploadFile storeFile(MultipartFile multipartFile) throws IOException {\n        if (multipartFile.isEmpty()) {\n            return null;\n        }\n\n        String originalFilename = multipartFile.getOriginalFilename();\n        String storeFileName = createStoreFileName(originalFilename);\n\n        multipartFile.transferTo(new File(getFullPath(storeFileName)));\n        return new UploadFile(originalFilename, storeFileName);\n    }\n\n    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {\n        List<UploadFile> storeFileResult = new ArrayList<>();\n        for (MultipartFile multipartFile : multipartFiles) {\n            if (!multipartFile.isEmpty()) {\n                storeFileResult.add(storeFile(multipartFile));\n            }\n        }\n        return storeFileResult;\n    }\n\n    private String createStoreFileName(String originalFilename) {\n        String ext = extractExt(originalFilename);\n        String uuid = UUID.randomUUID().toString();\n        return uuid + \".\" + ext;\n    }\n}",
+   "note": "**`@Value(\"${file.dir}\")`** 로 경로를 밖에서 받는다 — 11.1절에서 `@Value` 도 변환을 탄다고 한 그것.\n\n**`UUID`** 를 쓴다 — 7.5절의 세션 ID 와 같은 이유는 아니다. 여기는 **충돌 회피**가 목적이다.\n\n**확장자만 원본에서** 가져온다. **이름 나머지는 버린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 UUID 인가",
+   "md": "**세 가지를 한 번에 푼다.**\n\n**1. 충돌**\n\n같은 이름을 두 사람이 올려도 안 겹친다. **타임스탬프로는 부족**하다 — 같은 밀리초에 둘이 올릴 수 있다.\n\n**2. 경로 조작**\n\nUUID 에는 `/` 도 `..` 도 없다. **12.2절의 위험**이 사라진다.\n\n**3. 추측 불가**\n\n`1.png` · `2.png` 로 저장하면 **순회해서 남의 파일을 볼 수 있다.** 7.4절에서 회원 번호로 본 그 문제다.\n\n**그런데 3번은 반쪽**이다. UUID 를 알면 여전히 접근된다 — **인가 검사가 따로** 필요하다(8장). **URL 을 모르면 안전하다는 것은 보안이 아니다.**\n\n> **확장자는 왜 남기나** — 없어도 되는데, **다운로드할 때 브라우저가 참고**하고 개발자가 디렉터리를 눈으로 볼 때 편하다. 다만 **확장자를 그대로 믿으면 위험**하다(12.6절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "폼 객체",
+   "code": "@Data\npublic class ItemForm {\n    private Long itemId;\n    private String itemName;\n    private MultipartFile attachFile;\n    private List<MultipartFile> imageFiles;\n}",
+   "note": "**6.7절의 폼 객체**에 파일이 섞였다. `Item` 도메인에는 `UploadFile` 이 들어간다 — **폼과 도메인이 다르다.**\n\n```java\npublic class Item {\n    private UploadFile attachFile;\n    private List<UploadFile> imageFiles;\n}\n```\n\n**`MultipartFile` 은 요청에만 존재**하고 도메인에는 저장 결과만 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "파일 경로를 어디에 둘까",
+   "md": "```properties\nfile.dir=/Users/x/study/upload/\n```\n\n**웹 루트 아래에 두면 안 된다.**\n\n```\nsrc/main/resources/static/upload/   <- 위험\n```\n\n**정적 리소스로 바로 서빙**되기 때문이다. `.jsp` 나 `.html` 을 올리면 **그대로 실행되거나 XSS 가 된다**(2.2절).\n\n**그리고 배포하면 사라진다** — jar 안에 들어가거나 재배포 시 덮인다.\n\n**둘 곳**\n\n| | |\n|---|---|\n| **애플리케이션 밖 디렉터리** | 간단하다. 서버가 여럿이면 공유가 문제 |\n| **네트워크 스토리지** | 서버가 여럿일 때 |\n| **오브젝트 스토리지** | S3 등. **실무의 기본** |\n\n**7.7절의 세션 이야기와 같은 구조**다.\n\n> **서버가 둘이면 세션이 안 맞는다** — 7.1절의 무상태 장점이 깨진다.\n\n**파일도 같다.** A 서버에 올린 파일을 B 서버가 못 읽는다. **외부 저장소로 빼는 것이 답**이다.\n\n**경로 끝의 `/`** 도 실수하기 쉽다. 없으면 `uploadcat.png` 가 된다 — **`File` 이나 `Path` 로 조합**하면 안 겪는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /items/new HTTP/1.1\nContent-Type: multipart/form-data; boundary=----boundary\n\n------boundary\nContent-Disposition: form-data; name=\"itemName\"\n\n상품A\n------boundary\nContent-Disposition: form-data; name=\"attachFile\"; filename=\"명세서.pdf\"\nContent-Type: application/pdf\n\n(binary)\n------boundary\nContent-Disposition: form-data; name=\"imageFiles\"; filename=\"1.png\"\nContent-Type: image/png\n\n(binary)\n------boundary\nContent-Disposition: form-data; name=\"imageFiles\"; filename=\"2.png\"\nContent-Type: image/png\n\n(binary)\n------boundary--\n\n# 저장 결과\n#   명세서.pdf  ->  6c4f1b2e-8a3d-4f5c-9b7e-1d2e3f4a5b6c.pdf\n#   1.png       ->  a1b2c3d4-...-e5f6.png\n#   2.png       ->  f7e8d9c0-...-b1a2.png\n\nHTTP/1.1 302 \nLocation: /items/1\n\n# 화면에는 원본 이름이 나온다\nGET /items/1 HTTP/1.1\n\nHTTP/1.1 200 \n<li>첨부: <a href=\"/attach/1\">명세서.pdf</a></li>\n<img src=\"/images/a1b2c3d4-...-e5f6.png\">",
+   "note": "**`imageFiles` 가 두 번 온다.** 3.5절의 멀티 체크박스와 같은 형태다 — **배열 표기가 아니라 같은 이름의 반복.**\n\n**한글 파일명 `명세서.pdf` 가 그대로** 실려 있다. 헤더에 한글이 들어간 것인데, **브라우저마다 인코딩이 다르다** — 12.5절에서 다룬다.\n\n**저장 이름이 전부 UUID** 다. 원본 이름은 어디에도 안 쓰였다.\n\n**응답 화면**을 보면 `<a>` 텍스트는 **원본 이름**이고 `<img src>` 는 **저장 이름**이다. **둘을 다 들고 있어야 하는 이유**가 여기서 보인다."
+  }
+ ],
+ "recap": [
+  "**저장 이름과 원본 이름을 나눈다.**",
+  "**저장은 UUID, 표시는 원본** 이름.",
+  "**UUID 가 충돌·경로 조작·추측을 한 번에** 푼다.",
+  "**추측 불가는 반쪽**이다 — 인가 검사가 따로 필요하다.",
+  "**확장자만 원본에서** 가져온다.",
+  "**`MultipartFile` 은 요청에만**, 도메인에는 `UploadFile` 이 남는다.",
+  "**웹 루트 아래에 저장하면 안 된다** — 그대로 서빙되고 배포 시 사라진다.",
+  "**서버가 여럿이면 외부 저장소**가 답이다 — 7.7절의 세션과 같은 구조.",
+  "**경로는 `File`·`Path` 로 조합**한다."
+ ],
+ "drills": [
+  {
+   "task": "`UploadFile` 과 `FileStore` 를 만든다.",
+   "done_when": "UUID 로 저장되는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "같은 이름의 파일을 두 번 올린다.",
+   "done_when": "안 겹치는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`static/upload/` 에 저장하고 `.html` 을 올린다.",
+   "done_when": "그대로 서빙되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "여러 파일을 한 번에 올린다.",
+   "done_when": "같은 이름이 반복되는 것을 요청에서 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "경로 끝의 `/` 를 뺀다.",
+   "done_when": "파일 이름이 붙어 버리는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이름을 왜 둘로 나누나?",
+   "a": "저장 이름은 충돌과 경로 조작을 피하려고 UUID 로 만들고 원본 이름은 사용자에게 보여 주기 위해 보관한다."
+  },
+  {
+   "q": "UUID 가 푸는 세 가지는?",
+   "a": "이름 충돌, 경로 조작, 순회를 통한 추측이다."
+  },
+  {
+   "q": "추측 불가가 왜 반쪽인가?",
+   "a": "URL 을 알면 여전히 접근되므로 인가 검사가 따로 필요하다."
+  },
+  {
+   "q": "웹 루트 아래에 저장하면?",
+   "a": "정적 리소스로 그대로 서빙되어 올린 HTML 이 실행될 수 있고 배포 시 사라진다."
+  },
+  {
+   "q": "서버가 여럿이면?",
+   "a": "A 서버의 파일을 B 서버가 못 읽는다. 오브젝트 스토리지 같은 외부 저장소를 쓴다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Multipart Resolver",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/multipart.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

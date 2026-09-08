@@ -1,0 +1,140 @@
+{
+ "book": "spring-mvc-2",
+ "id": "servlet-multipart",
+ "no": "12.2",
+ "chapter": 12,
+ "title": "서블릿과 파일 업로드",
+ "summary": "getParts(). 손으로 해 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Part` 로 파일을 읽고 저장할 수 있다.",
+  "멀티파트 처리가 언제 켜지는지 안다.",
+  "임시 파일이 어디에 생기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "Part 가 들고 있는 것",
+   "ascii": "   request.getParts()\n        |\n        v\n   Part\n        +--> getName()          form field name\n        +--> getSubmittedFileName()   original filename\n        +--> getSize()\n        +--> getContentType()\n        +--> getInputStream()\n        +--> write(path)        save it\n\n   spring.servlet.multipart.enabled=false\n        |\n        +--> getParts() returns empty\n        +--> request.getParameter() also empty",
+   "note": "**부분마다 하나씩** `Part` 가 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "손으로",
+   "code": "@PostMapping(\"/upload\")\npublic String saveFileV1(HttpServletRequest request) throws ServletException, IOException {\n\n    String itemName = request.getParameter(\"itemName\");\n\n    Collection<Part> parts = request.getParts();\n    for (Part part : parts) {\n        log.info(\"name={}\", part.getName());\n        log.info(\"submittedFileName={}\", part.getSubmittedFileName());\n        log.info(\"size={}\", part.getSize());\n\n        if (StringUtils.hasText(part.getSubmittedFileName())) {\n            String fullPath = fileDir + part.getSubmittedFileName();\n            part.write(fullPath);\n        }\n    }\n    return \"upload-form\";\n}",
+   "note": "**`request.getParameter` 도 그대로 된다.** 멀티파트여도 텍스트 필드는 파라미터로 읽힌다 — 서블릿이 파싱해서 넣어 준다.\n\n**`getSubmittedFileName()` 이 비어 있으면 일반 필드**다 — 12.1절의 그 구분.\n\n**`part.write(경로)`** 가 저장이다. 스트림을 직접 다룰 필요가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "언제 멀티파트로 처리되나",
+   "md": "```properties\nspring.servlet.multipart.enabled=true   # 기본값\n```\n\n**끄면 `getParts()` 가 빈 목록**이다. 그리고 **`getParameter` 도 아무것도 못 읽는다** — 바디를 파싱하지 않으니 텍스트 필드도 안 온다.\n\n**켜져 있어도 항상 파싱하는 것은 아니다.**\n\n```\nContent-Type: multipart/form-data  ->  파싱한다\n그 외                              ->  안 한다\n```\n\n**스프링이 `MultipartResolver` 로 판단**한다. `StandardServletMultipartResolver` 가 기본이고, **`HttpServletRequest` 를 `MultipartHttpServletRequest` 로 감싼다.**\n\n**1편 3.3절의 `HttpServletRequestWrapper`** 와 같은 수법이다 — 원본을 감싸서 기능을 더한다.\n\n> **`enabled=false` 로 두면** 요청 바디를 직접 읽을 수 있다. **파일을 스트림으로 흘려보내야 할 때**(대용량 프록시) 쓰는 방법이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "임시 파일이 생긴다",
+   "md": "**업로드된 파일은 어딘가에 먼저 저장**된다.\n\n```properties\nspring.servlet.multipart.max-file-size=1MB       # 기본값\nspring.servlet.multipart.max-request-size=10MB   # 기본값\nspring.servlet.multipart.file-size-threshold=0   # 이 크기 넘으면 디스크로\n```\n\n**`file-size-threshold` 가 `0`** 이면 **전부 디스크**에 임시 파일로 쓴다. 메모리에 안 올린다.\n\n**임시 파일은 요청이 끝나면 지워진다** — 서블릿 컨테이너가 한다.\n\n**그래서 주의할 것**\n\n```java\nMultipartFile file = ...;\n// 요청이 끝난 뒤에 이 파일을 쓰려고 하면 이미 없다\n```\n\n**비동기로 처리하거나 다른 스레드에 넘기면** 파일이 사라진다. **요청 안에서 영구 위치로 복사**해야 한다.\n\n**임시 디렉터리 위치**\n\n```properties\nspring.servlet.multipart.location=/tmp/upload\n```\n\n**안 정하면 시스템 임시 디렉터리**다. **디스크가 차면 업로드가 통째로 실패**하니 운영에서는 모니터링 대상이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "원본 파일명을 그대로 쓰면 안 된다",
+   "md": "```java\nString fullPath = fileDir + part.getSubmittedFileName();\npart.write(fullPath);\n```\n\n**예제 코드인데 위험하다.**\n\n**1. 경로 조작**\n\n```\nfilename=\"../../etc/passwd\"\nfilename=\"..\\\\..\\\\windows\\\\system32\\\\x.dll\"\n```\n\n**디렉터리를 벗어난다.** 서블릿 컨테이너가 걸러 주기도 하는데 **믿을 것은 아니다.**\n\n**2. 덮어쓰기**\n\n같은 이름을 올리면 **앞의 파일이 사라진다.** 다른 사용자의 파일일 수도 있다.\n\n**3. 실행 가능한 확장자**\n\n`a.jsp` · `a.php` 를 웹 루트에 저장하면 **그것이 실행**될 수 있다.\n\n**12.6절에서 전부 다룬다.** 지금은 **원본 이름을 그대로 쓰면 안 된다**는 것만 기억한다.\n\n> **12.4절부터는 UUID 로 저장 이름을 만든다.** 원본 이름은 따로 보관한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /servlet/v1/upload HTTP/1.1\nContent-Type: multipart/form-data; boundary=----boundary\n\n------boundary\nContent-Disposition: form-data; name=\"itemName\"\n\nSpring\n------boundary\nContent-Disposition: form-data; name=\"file\"; filename=\"cat.png\"\nContent-Type: image/png\n\n(binary)\n------boundary--\n\n# 서버 로그\n#   itemName=Spring\n#   name=itemName, submittedFileName=null, size=6\n#   name=file, submittedFileName=cat.png, size=12345\n#   파일 저장 fullPath=/Users/x/upload/cat.png\n\nHTTP/1.1 200 \n\n# 크기 제한을 넘으면\nContent-Length: 5242880\n\nHTTP/1.1 500 \n# MaxUploadSizeExceededException\n\n# enabled=false 로 두면\n# 서버 로그\n#   itemName=null\n#   parts=[]",
+   "note": "**로그의 두 `Part`** 를 비교한다. 첫째는 `submittedFileName=null` 에 `size=6` — 문자열 `Spring` 의 길이다. **둘째만 파일**이다.\n\n**`itemName=Spring` 이 `getParameter` 로 읽혔다.** 멀티파트인데도 된다.\n\n**크기 초과가 500 인 것**에 주의한다 — **413(Payload Too Large)이 맞는데** 스프링 기본은 500 이다. 10장의 `@ExceptionHandler` 로 `MaxUploadSizeExceededException` 을 잡아 **413 으로 바꾸는 것**이 낫다.\n\n**맨 아래가 `enabled=false`** 다. 파일뿐 아니라 **텍스트 필드도 `null`** 이 된다."
+  }
+ ],
+ "recap": [
+  "**`request.getParts()`** 로 부분들을 읽는다.",
+  "**`getSubmittedFileName()` 이 비어 있으면 일반 필드**다.",
+  "**`part.write(경로)`** 로 저장한다.",
+  "**멀티파트여도 `getParameter` 가 된다.**",
+  "**`enabled=false` 면 텍스트 필드도 안 읽힌다.**",
+  "**`MultipartResolver` 가 요청을 감싼다** — 1편 3.3절의 래퍼 수법.",
+  "**임시 파일이 디스크에 생기고 요청이 끝나면 지워진다.**",
+  "**다른 스레드로 넘기면 파일이 사라진다** — 요청 안에서 복사한다.",
+  "**원본 파일명을 그대로 쓰면 안 된다** — 경로 조작·덮어쓰기·실행.",
+  "**크기 초과가 500 인데 413 이 맞다** — 10장으로 고친다."
+ ],
+ "drills": [
+  {
+   "task": "`getParts()` 로 모든 부분의 정보를 찍는다.",
+   "done_when": "파일과 일반 필드가 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`part.write()` 로 저장한다.",
+   "done_when": "디스크에 파일이 생긴 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`enabled=false` 로 두고 요청한다.",
+   "done_when": "텍스트 필드도 `null` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`max-file-size` 를 넘는 파일을 올린다.",
+   "done_when": "500 이 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 이름의 파일을 두 번 올린다.",
+   "done_when": "덮어써지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "파일과 일반 필드를 어떻게 구분하나?",
+   "a": "`getSubmittedFileName()` 이 비어 있으면 일반 필드다."
+  },
+  {
+   "q": "`enabled=false` 로 두면?",
+   "a": "바디를 파싱하지 않아 파일뿐 아니라 텍스트 필드도 읽히지 않는다."
+  },
+  {
+   "q": "임시 파일은 언제 사라지나?",
+   "a": "요청이 끝나면 서블릿 컨테이너가 지운다. 다른 스레드로 넘기면 파일이 없다."
+  },
+  {
+   "q": "원본 파일명을 그대로 쓰면 무엇이 위험한가?",
+   "a": "경로 조작으로 디렉터리를 벗어나고, 같은 이름이면 덮어쓰고, 실행 가능한 확장자가 실행될 수 있다."
+  },
+  {
+   "q": "크기 초과의 상태 코드는?",
+   "a": "스프링 기본은 500 인데 413 이 맞다. `@ExceptionHandler` 로 바꾼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Part",
+   "en": "",
+   "what": "멀티파트 요청의 한 부분을 나타내는 서블릿 객체."
+  },
+  {
+   "term": "MultipartResolver",
+   "en": "",
+   "what": "멀티파트 요청을 판단해 파싱하고 요청 객체를 감싸는 스프링 컴포넌트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Multipart Resolver",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/multipart.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
