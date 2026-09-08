@@ -1,0 +1,293 @@
+{
+  "book": "jpa-basic",
+  "id": "detached",
+  "no": "4.4",
+  "chapter": 4,
+  "title": "준영속 상태",
+  "summary": "detach·clear·close. 준영속 엔티티를 수정해도 UPDATE 가 안 나가는 이유와 merge() 의 함정.",
+  "minutes": 18,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "엔티티를 준영속으로 만드는 세 가지 방법과 각각의 범위를 구분할 수 있다.",
+    "준영속이 되면 정확히 무엇을 잃는지 네 가지로 말할 수 있다.",
+    "`merge()` 가 내부적으로 어떤 순서로 동작하는지, 그리고 왜 null 필드가 위험한지 설명할 수 있다.",
+    "실무에서 `merge()` 대신 무엇을 쓰는지, 그 이유가 무엇인지 답할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.1절의 생명주기 그림에서 오른쪽 아래 칸이다. **한때 영속이었지만 지금은 영속성 컨텍스트가 더 이상 쳐다보지 않는 상태.**\n\n인스턴스는 멀쩡히 살아 있다. `getName()` 도 되고 `setName()` 도 된다. 다만 그 수정이 DB 에 반영되지 않는다. 그리고 **이 사실을 모른 채로 코드를 짜면 아무 오류도 안 나면서 저장만 안 된다.** 실무에서 \"수정이 안 돼요\"의 대부분이 여기다."
+    },
+    {
+      "type": "heading",
+      "text": "준영속으로 만드는 세 가지"
+    },
+    {
+      "type": "steps",
+      "caption": "범위가 다르다",
+      "items": [
+        {
+          "title": "em.detach(entity) — 이 엔티티 하나만",
+          "md": "지정한 엔티티만 관리에서 뺀다. 1차 캐시·스냅샷·쌓여 있던 그 엔티티의 SQL 까지 같이 지운다.",
+          "lang": "java",
+          "code": "Member member = em.find(Member.class, 1L);\nmember.setName(\"바뀐이름\");\n\nem.detach(member);\ntx.commit();     // UPDATE 안 나감"
+        },
+        {
+          "title": "em.clear() — 영속성 컨텍스트를 통째로",
+          "md": "상자를 새것으로 갈아 끼우는 것과 같다. 안에 있던 **모든** 엔티티가 준영속이 된다. 대량 처리에서 `flush()` 와 짝으로 쓴다(4.3절).",
+          "lang": "java",
+          "code": "Member m1 = em.find(Member.class, 1L);   // SELECT\n\nem.clear();\n\nMember m2 = em.find(Member.class, 1L);   // SELECT 또 나감\nSystem.out.println(m1 == m2);            // false"
+        },
+        {
+          "title": "em.close() — 상자를 닫는다",
+          "md": "영속성 컨텍스트가 아예 사라진다. 그 전에 조회했던 엔티티는 전부 준영속이다.",
+          "lang": "java",
+          "code": "Member member = em.find(Member.class, 1L);\nem.close();\n\nmember.setName(\"바뀐이름\");   // 아무 일도 안 일어난다"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "준영속이 되면 무엇을 잃나"
+    },
+    {
+      "type": "table",
+      "caption": "영속 vs 준영속",
+      "note": "네 줄 전부 \"영속성 컨텍스트가 그 객체를 알고 있는가\"에서 나온다. 모르는 객체는 비교할 스냅샷도 없고, 프록시를 채워 줄 통로도 없다.",
+      "columns": [
+        "",
+        "영속 managed",
+        "준영속 detached"
+      ],
+      "rows": [
+        [
+          "**변경 감지**",
+          "된다. 수정하면 커밋 때 UPDATE",
+          "**안 된다. 수정해도 아무 일 없음**"
+        ],
+        [
+          "**1차 캐시**",
+          "들어 있다. 같은 키 조회 시 SQL 없음",
+          "빠져 있다. 다시 조회하면 SELECT 가 나간다"
+        ],
+        [
+          "**동일성 보장**",
+          "같은 키 = 같은 인스턴스",
+          "보장 없음"
+        ],
+        [
+          "**지연 로딩**",
+          "된다. 프록시를 건드리면 SELECT 가 나감",
+          "**안 된다.** `LazyInitializationException` (9장)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "가장 자주 만나는 준영속 — 트랜잭션 밖",
+      "md": "일부러 `detach()` 를 부를 일은 거의 없다. 준영속은 대개 **자기도 모르게** 만난다.\n\n- 스프링에서 `@Transactional` 메서드가 **끝난 뒤** 반환받은 엔티티. 이미 준영속이다.\n- 컨트롤러에서 화면 값으로 새로 만든 엔티티. `new` 로 만들었지만 `@Id` 가 채워져 있는 상태 — 엄밀히는 비영속이지만 JPA 는 준영속처럼 다룬다.\n- 그래서 컨트롤러에서 엔티티를 수정하고 \"저장했는데 왜 안 되지\" 하는 일이 생긴다. 서비스 계층(트랜잭션 안)에서 수정해야 변경 감지가 걸린다."
+    },
+    {
+      "type": "heading",
+      "text": "다시 영속으로 — merge()"
+    },
+    {
+      "type": "prose",
+      "md": "준영속 엔티티의 변경 내용을 DB 에 반영하려면 `merge()` 를 쓴다. 이름 그대로 **병합**이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member detached = /* 어디선가 온 준영속 엔티티 */;\ndetached.setName(\"김관현2\");\n\nMember managed = em.merge(detached);\n\ntx.commit();"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL — SELECT 가 먼저다",
+      "sql": "SELECT M.ID, M.NAME, M.TEL FROM MEMBER M WHERE M.ID = ?   -- 1차 캐시에 없으면\nUPDATE MEMBER SET NAME = ?, TEL = ? WHERE ID = ?           -- 커밋 시점",
+      "note": "SELECT 가 먼저 나가는 것이 핵심이다. `merge()` 는 **덮어쓸 대상(영속 엔티티)을 먼저 확보**해야 한다."
+    },
+    {
+      "type": "figure",
+      "caption": "merge() 가 실제로 하는 일",
+      "ascii": "   member (detached)                      persistence context\n   ┌──────────────────┐\n   │ id   = 1         │\n   │ name = \"kim2\"    │\n   │ tel  = null      │\n   └────────┬─────────┘\n            │  em.merge(member)\n            ▼\n   ┌─────────────────────────────┐\n   │ 1. find managed by id       │        ┌──────────────────┐\n   │    (SELECT if not cached)   │ ──────▶│ id   = 1         │  managed\n   └─────────────┬───────────────┘        │ name = \"kim\"     │\n                 │                        │ tel  = \"010-...\" │\n                 │                        └──────────────────┘\n                 ▼                                  │\n   ┌─────────────────────────────┐                  │\n   │ 2. copy ALL fields over     │ ────────────────▶ │\n   │    (null overwrites too)    │                   ▼\n   └─────────────┬───────────────┘        ┌──────────────────┐\n                 │                        │ id   = 1         │  managed\n                 │                        │ name = \"kim2\"    │\n                 ▼                        │ tel  = null      │  ← 덮어써졌다\n   ┌─────────────────────────────┐        └──────────────────┘\n   │ 3. return that managed one  │                  ▲\n   │    (NOT the one passed in)  │ ─────────────────┘\n   └─────────────────────────────┘\n\n   member 는 여전히 detached 다. 반환값만 managed 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "merge 의 함정 — null 도 그대로 덮는다",
+      "md": "그림의 2번 단계를 다시 보자. `merge()` 는 **넘긴 엔티티의 모든 필드를 통째로 복사**한다. \"값이 있는 필드만\"이 아니다.\n\n수정 화면에서 이름만 받아 왔다고 하자.\n\n```java\nMember form = new Member();\nform.setId(1L);\nform.setName(\"김관현2\");\n// form.setTel(...)  ← 화면에 없어서 안 채웠다\n\nem.merge(form);\n```\n\n결과는 **전화번호가 null 로 저장된다.** 화면에 없던 필드가 DB 에서 지워지는 것이다.\n\n오류도 안 나고 경고도 없다. 며칠 뒤 \"고객 전화번호가 다 날아갔어요\" 로 발견된다. `merge()` 가 실무에서 위험한 도구로 취급되는 이유가 정확히 이것이다."
+    },
+    {
+      "type": "heading",
+      "text": "그래서 실무에서는 merge 를 안 쓴다"
+    },
+    {
+      "type": "compare",
+      "caption": "수정하는 두 가지 방법",
+      "note": "오른쪽이 스프링·JPA 실무의 표준이다. 흔히 '변경 감지를 쓴다' 고 말한다.",
+      "left": {
+        "title": "merge — 통째로 덮어쓴다",
+        "lang": "java",
+        "bad": true,
+        "code": "@Transactional\npublic void update(Member form) {\n    em.merge(form);\n}\n\n// form 에 안 채워진 필드가\n// null 로 저장된다",
+        "md": "무엇이 바뀌는지 코드만 봐서는 알 수 없다. **바뀌는 범위가 폼 객체의 모양에 달려 있다.**"
+      },
+      "right": {
+        "title": "조회 후 필요한 것만 수정",
+        "lang": "java",
+        "code": "@Transactional\npublic void update(Long id, String name) {\n    Member member = em.find(Member.class, id);\n    member.setName(name);\n    // 저장 코드 없음 — 변경 감지\n}",
+        "md": "**바뀌는 필드가 코드에 그대로 보인다.** 건드리지 않은 필드는 스냅샷과 같으니 UPDATE 대상이 아니다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "한 줄로 외운다면",
+      "md": "**\"수정은 조회한 다음에 한다.\"**\n\n트랜잭션 안에서 `find()` 로 영속 엔티티를 가져와 필요한 필드만 바꾼다. 저장 메서드는 부르지 않는다. 이게 JPA 가 의도한 방식이고, `merge()` 는 그렇게 할 수 없는 상황(정말로 통째로 교체하는 게 맞는 경우)을 위한 예외 통로다."
+    },
+    {
+      "type": "heading",
+      "text": "merge 에 대한 오해 하나 더"
+    },
+    {
+      "type": "prose",
+      "md": "`merge()` 는 **넘긴 객체를 영속 상태로 바꾸지 않는다.** 새 영속 객체를 만들어 돌려줄 뿐이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "직접 확인",
+      "code": "Member managed = em.merge(detached);\n\nSystem.out.println(managed == detached);        // false\nSystem.out.println(em.contains(detached));      // false  ← 여전히 준영속\nSystem.out.println(em.contains(managed));       // true",
+      "note": "그래서 `em.merge(member)` 만 부르고 반환값을 안 받으면, 이후에 `member` 를 아무리 수정해도 반영되지 않는다. **반환값을 써야 한다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "merge 는 저장도 한다",
+      "md": "`merge()` 에 넘긴 엔티티의 `@Id` 로 DB 를 찾았는데 **없으면**, 새로 만들어 `persist()` 한 것과 같은 결과가 된다.\n\n그래서 `merge()` 는 \"저장 또는 수정\"(save-or-update)처럼 동작한다. 편해 보이지만, **지금 저장인지 수정인지가 코드에 안 드러난다**는 뜻이기도 하다. 편의가 곧 모호함인 전형적인 경우다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"준영속 상태가 뭔가요?\"** → 한때 영속이었으나 영속성 컨텍스트가 더 이상 관리하지 않는 상태. **변경 감지가 안 걸린다**는 결과까지 붙여야 답이 된다.\n- **\"준영속으로 만드는 방법은?\"** → `detach()`(하나), `clear()`(전부), `close()`(컨텍스트 종료). 범위 차이를 같이 말한다.\n- **\"merge 는 어떻게 동작하나요?\"** → id 로 영속 엔티티를 찾고(없으면 SELECT), 준영속 엔티티의 **모든 필드를 덮어쓰고**, 그 영속 엔티티를 반환한다. 넘긴 객체는 여전히 준영속이다.\n- **\"merge 의 위험은?\"** → 값이 안 채워진 필드까지 null 로 덮어쓴다. 수정 폼처럼 일부 필드만 오는 경우 데이터가 지워진다.\n- **\"그럼 실무에서 수정은 어떻게 하나요?\"** → 트랜잭션 안에서 조회한 뒤 필요한 필드만 바꾸고 변경 감지에 맡긴다.\n- **\"준영속 엔티티에서 지연 로딩을 하면?\"** → `LazyInitializationException`. 프록시를 채워 줄 영속성 컨텍스트가 없기 때문이다(9장)."
+    }
+  ],
+  "recap": [
+    "준영속 = 한때 영속이었으나 이제 관리 밖. 인스턴스는 살아 있지만 변경 감지가 안 걸린다.",
+    "만드는 방법 셋 — `detach()`(하나), `clear()`(전부), `close()`(컨텍스트 종료).",
+    "잃는 것 넷 — 변경 감지, 1차 캐시, 동일성 보장, 지연 로딩.",
+    "일부러 만들 일은 드물다. 트랜잭션 밖으로 나온 엔티티가 대표적인 준영속이다.",
+    "`merge()` 는 id 로 영속 엔티티를 확보한 뒤 **모든 필드를 덮어쓴다.** null 도 덮는다.",
+    "`merge()` 는 넘긴 객체를 영속으로 바꾸지 않고, 새 영속 객체를 반환한다. 반환값을 써야 한다.",
+    "실무 표준은 merge 가 아니라 '조회한 뒤 필요한 필드만 수정' 이다."
+  ],
+  "drills": [
+    {
+      "task": "회원을 조회해 이름을 바꾼 뒤 ① 그냥 커밋 ② `em.detach(member)` 후 커밋 — 두 경우의 SQL 을 비교한다.",
+      "done_when": "detach 가 있으면 UPDATE 가 안 나가는 것을 로그로 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`em.find()` 두 번 사이에 `em.clear()` 를 넣고 SELECT 횟수와 `m1 == m2` 를 확인한다.",
+      "done_when": "SELECT 가 두 번 나가고 `==` 가 false 인 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "필드가 3개(id·name·tel)인 회원을 저장하고, **name 만 채운** 준영속 객체를 만들어 `merge()` 한다.",
+      "done_when": "tel 이 null 로 덮어써진 것을 DB 에서 직접 확인했다. 이 실습을 건너뛰면 merge 의 위험은 머리로만 아는 것이 된다.",
+      "hint": "H2 콘솔에서 테이블을 직접 열어 본다.",
+      "minutes": 30
+    },
+    {
+      "task": "같은 수정을 '조회 후 필드만 변경' 방식으로 다시 짜고, tel 이 유지되는 것을 확인한다.",
+      "done_when": "두 방식의 UPDATE 문을 나란히 놓고 차이를 설명할 수 있다.",
+      "minutes": 20
+    },
+    {
+      "task": "`Member managed = em.merge(detached)` 후 `managed == detached`, `em.contains(detached)`, `em.contains(managed)` 를 각각 찍어 본다.",
+      "done_when": "false / false / true 가 나오는 것을 확인했고, 왜 그런지 그림으로 설명할 수 있다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "준영속 엔티티를 수정하고 커밋하면 어떻게 되는가?",
+      "a": "아무 일도 일어나지 않는다. 영속성 컨텍스트가 그 객체를 관리하지 않으므로 비교할 스냅샷이 없고, 변경 감지 대상이 아니다. 오류도 안 난다는 점이 위험하다."
+    },
+    {
+      "q": "`detach()`, `clear()`, `close()` 의 차이는?",
+      "a": "범위다. detach 는 지정한 엔티티 하나, clear 는 영속성 컨텍스트 안의 전부, close 는 영속성 컨텍스트 자체를 없앤다. 결과적으로 그 안에 있던 엔티티는 모두 준영속이 된다."
+    },
+    {
+      "q": "`merge()` 를 부르면 SELECT 가 먼저 나가는 이유는?",
+      "a": "덮어쓸 대상인 영속 엔티티를 확보해야 하기 때문이다. 1차 캐시에 있으면 SELECT 없이 그것을 쓰고, 없으면 DB 에서 읽어 온다."
+    },
+    {
+      "q": "수정 폼에서 이름만 받아 `merge()` 했더니 전화번호가 사라졌다. 왜인가?",
+      "a": "merge 는 넘긴 엔티티의 **모든 필드**를 대상 엔티티에 복사한다. 폼에서 안 채운 tel 은 null 이고, 그 null 이 그대로 덮어써진다."
+    },
+    {
+      "q": "`em.merge(member)` 후 `member` 를 수정하면 반영되는가?",
+      "a": "안 된다. member 는 여전히 준영속이다. merge 가 반환한 객체가 영속 상태이므로 그쪽을 수정해야 한다."
+    },
+    {
+      "q": "실무에서 엔티티 수정의 표준 방식은?",
+      "a": "트랜잭션 안에서 `find()` 로 영속 엔티티를 조회한 뒤 필요한 필드만 바꾸고 저장 코드를 쓰지 않는다(변경 감지). 무엇이 바뀌는지가 코드에 그대로 드러나기 때문이다."
+    },
+    {
+      "q": "준영속 엔티티에서 연관 엔티티를 지연 로딩하면?",
+      "a": "`LazyInitializationException` 이 난다. 프록시를 실제 데이터로 채우려면 영속성 컨텍스트가 필요한데 이미 관리 밖이기 때문이다. 9장에서 자세히 본다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "준영속",
+      "en": "detached",
+      "what": "한때 영속이었으나 영속성 컨텍스트의 관리에서 벗어난 상태. 변경 감지·1차 캐시·지연 로딩을 전부 잃는다."
+    },
+    {
+      "term": "detach()",
+      "en": "",
+      "what": "지정한 엔티티 하나를 관리에서 뺀다. 그 엔티티의 쌓여 있던 SQL 도 취소된다."
+    },
+    {
+      "term": "clear()",
+      "en": "",
+      "what": "영속성 컨텍스트를 통째로 비운다. 안에 있던 모든 엔티티가 준영속이 된다."
+    },
+    {
+      "term": "merge()",
+      "en": "",
+      "what": "준영속 엔티티의 값을 영속 엔티티에 병합하고 그 영속 엔티티를 반환한다. 모든 필드를 덮어쓰므로 null 도 덮는다."
+    },
+    {
+      "term": "em.contains()",
+      "en": "",
+      "what": "그 엔티티가 지금 영속 상태인지 확인한다. merge 의 동작을 확인할 때 유용하다."
+    },
+    {
+      "term": "LazyInitializationException",
+      "en": "",
+      "what": "준영속 상태에서 아직 안 읽어 온 연관 데이터를 건드릴 때 나는 예외. 9장 프록시에서 다룬다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — EntityManager.merge",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/entitymanager#merge(T)",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM User Guide — Detached entities & merging",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#pc-merge",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

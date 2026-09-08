@@ -1,0 +1,386 @@
+{
+  "book": "jpa-basic",
+  "id": "persistence-context-2",
+  "no": "4.2",
+  "chapter": 4,
+  "title": "영속성 컨텍스트 2 — 1차 캐시·동일성·쓰기 지연·변경 감지",
+  "summary": "같은 회원을 두 번 조회해도 SELECT 가 한 번인 이유, setter 만 불렀는데 UPDATE 가 나가는 이유.",
+  "minutes": 28,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "1차 캐시가 언제 SQL 을 막고 언제 못 막는지 말할 수 있다.",
+    "영속 엔티티의 동일성 보장이 2.1절의 어떤 문제를 푸는지, 그리고 그 보장이 어디까지인지 설명할 수 있다.",
+    "쓰기 지연이 성능에 도움이 되는 조건과, 그 조건이 깨지는 경우(IDENTITY)를 안다.",
+    "변경 감지가 정확히 언제·무엇을 비교해서 UPDATE 를 만드는지 순서대로 말할 수 있다.",
+    "JPA 에 `update()` 가 없는 이유를 한 문장으로 답할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 상자를 봤다. `EntityManager` 안에 1차 캐시·스냅샷·쓰기 지연 SQL 저장소가 들어 있는 그 그림이다.\n\n이 절은 **그 상자가 실제로 하는 일 네 가지**다. 넷 다 \"저장소를 자바 컬렉션처럼 보이게 하려면 무엇이 필요한가\"라는 한 질문의 답이다."
+    },
+    {
+      "type": "heading",
+      "text": "1) 1차 캐시 — 같은 것을 두 번 읽지 않는다"
+    },
+    {
+      "type": "prose",
+      "md": "`em.find()` 는 곧바로 DB 로 가지 않는다. 먼저 1차 캐시를 본다."
+    },
+    {
+      "type": "figure",
+      "caption": "em.find() 가 실제로 하는 일",
+      "ascii": "   em.find(Member.class, 1L)\n        │\n        ▼\n   ┌──────────────────────────────────┐\n   │  1st-level cache : has key 1 ?   │\n   └───────┬──────────────────┬───────┘\n          yes                 no\n           │                  │\n           ▼                  ▼\n   ┌───────────────┐   ┌──────────────────────────┐\n   │  return it    │   │  SELECT ... WHERE id = 1 │\n   │  (no SQL)     │   └────────────┬─────────────┘\n   └───────────────┘                │\n                                    ▼\n                        ┌──────────────────────────┐\n                        │  put into cache          │   ← 1차 캐시에 넣고\n                        │  copy into snapshot      │      스냅샷도 같이 뜬다\n                        └────────────┬─────────────┘\n                                     │\n                                     ▼\n                              return it",
+      "note": "중요한 건 오른쪽 아래다 — DB 에서 읽어 온 엔티티는 **1차 캐시와 스냅샷 두 곳에 들어간다.** 스냅샷은 나중에 변경 감지가 쓴다."
+    },
+    {
+      "type": "prose",
+      "md": "그래서 같은 회원을 두 번 조회하면 SQL 은 한 번만 나간다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "두 번 조회",
+      "code": "Member m1 = em.find(Member.class, 1L);   // SELECT 나감\nMember m2 = em.find(Member.class, 1L);   // SQL 없음. 캐시에서 꺼내 준다"
+    },
+    {
+      "type": "sql",
+      "caption": "실제로 나가는 SQL — 한 번뿐이다",
+      "sql": "SELECT M.ID, M.NAME, M.TEL\n  FROM MEMBER M\n WHERE M.ID = ?"
+    },
+    {
+      "type": "prose",
+      "md": "저장한 직후에도 마찬가지다. `persist()` 시점에 이미 1차 캐시에 들어갔기 때문에, 커밋 전에 그 회원을 찾아도 DB 로 가지 않는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "저장하고 바로 조회",
+      "code": "Member member = new Member();\nmember.setId(100L);\nmember.setName(\"김관현\");\n\nem.persist(member);                            // 아직 DB 에 없다\n\nMember found = em.find(Member.class, 100L);    // SELECT 안 나감\nSystem.out.println(found.getName());           // 김관현",
+      "note": "DB 에는 아직 이 회원이 없다. 그런데도 조회가 된다 — **1차 캐시가 DB 보다 앞에 있기 때문**이다. JPA 를 처음 쓸 때 \"저장이 됐나 안 됐나\"가 헷갈리는 지점이 정확히 여기다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "1차 캐시의 성능 이점은 사실 크지 않다",
+      "md": "1차 캐시는 **트랜잭션 하나가 살아 있는 동안만** 존재한다. 웹 요청 하나가 보통 수십 밀리초라, 그 사이에 같은 엔티티를 여러 번 조회하는 일은 생각보다 드물다.\n\n그래서 1차 캐시를 \"성능 최적화\"로 소개하는 건 절반만 맞다. **진짜 값어치는 다음 항목, 동일성 보장이다.** 캐시가 있어야만 \"같은 것을 두 번 꺼내면 같은 인스턴스\"가 성립한다.\n\n> 여러 트랜잭션이 공유하는 캐시는 **2차 캐시**라고 따로 부르고, 그쪽이 성능용이다. 이 책의 범위 밖이다."
+    },
+    {
+      "type": "heading",
+      "text": "2) 영속 엔티티의 동일성 보장"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member m1 = em.find(Member.class, 1L);\nMember m2 = em.find(Member.class, 1L);\n\nSystem.out.println(m1 == m2);   // true"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "2.1절의 네 번째 불일치가 여기서 풀린다",
+      "md": "2.1절에서 이랬다. JDBC 로 같은 회원을 두 번 조회하면 `new Member()` 를 두 번 하게 되니 `==` 이 false 다. 그래서 **같은 회원이 인스턴스 두 개로 갈라지고**, 한쪽만 수정하면 다른 쪽의 옛 값이 나중에 덮어써서 수정이 조용히 사라진다.\n\n1차 캐시가 있으면 두 번째 조회가 새 인스턴스를 만들지 않는다. 같은 회원은 한 트랜잭션 안에서 **인스턴스도 하나**다. 자바 컬렉션에서 `list.get(0)` 을 두 번 해도 같은 객체가 나오는 것과 같은 성질이고, JPA 는 이걸 흉내 내려고 캐시를 두는 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "보장은 '같은 영속성 컨텍스트 안에서' 만이다",
+      "md": "```java\nMember m1 = em1.find(Member.class, 1L);   // EntityManager A\nMember m2 = em2.find(Member.class, 1L);   // EntityManager B\n\nm1 == m2   // false\n```\n\n영속성 컨텍스트가 다르면 상자도 다르고 캐시도 다르다. 스프링에서는 **트랜잭션 하나 = 영속성 컨텍스트 하나**이므로, 서비스 메서드가 다르면(=트랜잭션이 다르면) 동일성은 깨진다.\n\n그래서 엔티티의 `equals()`/`hashCode()` 를 `@Id` 기준으로 구현해 두는 습관이 필요하다. `==` 에만 기대면 트랜잭션 경계를 넘는 순간 무너진다."
+    },
+    {
+      "type": "heading",
+      "text": "3) 트랜잭션을 지원하는 쓰기 지연"
+    },
+    {
+      "type": "prose",
+      "md": "`persist()` 를 세 번 해도 커밋 전까지는 네트워크를 한 번도 타지 않는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "tx.begin();\n\nem.persist(memberA);   // SQL 안 나감\nem.persist(memberB);   // SQL 안 나감\nem.persist(memberC);   // SQL 안 나감\n\nSystem.out.println(\"===== 여기까지 DB 는 아무것도 모른다 =====\");\n\ntx.commit();           // 여기서 INSERT 3개가 한 번에"
+    },
+    {
+      "type": "figure",
+      "caption": "쌓아 뒀다가 한 번에 보낸다",
+      "ascii": "   em.persist(memberA)      em.persist(memberB)      em.persist(memberC)\n          │                        │                        │\n          ▼                        ▼                        ▼\n   ┌──────────────────────────────────────────────────────────────┐\n   │  write-behind SQL store                                      │\n   │   1. INSERT INTO MEMBER ...                                  │   ← 쌓이기만 한다\n   │   2. INSERT INTO MEMBER ...                                  │      네트워크는 안 탄다\n   │   3. INSERT INTO MEMBER ...                                  │\n   └───────────────────────────┬──────────────────────────────────┘\n                               │  tx.commit()\n                               │    → flush : 쌓인 SQL 을 한 번에 전송\n                               │    → commit : DB 트랜잭션 커밋\n                               ▼\n                          database"
+    },
+    {
+      "type": "sql",
+      "caption": "커밋 시점에 한 번에 나가는 SQL",
+      "sql": "INSERT INTO MEMBER (NAME, TEL, ID) VALUES (?, ?, ?)\nINSERT INTO MEMBER (NAME, TEL, ID) VALUES (?, ?, ?)\nINSERT INTO MEMBER (NAME, TEL, ID) VALUES (?, ?, ?)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 모아 두나 — 왕복 비용",
+      "md": "DB 호출 한 번은 네트워크를 왕복한다. 같은 서버 안이어도 수백 마이크로초, 다른 존이면 밀리초 단위다. 백 건을 저장하면서 백 번 왕복하는 것과, 한 번에 묶어 보내는 것은 눈에 띄게 차이가 난다.\n\n다만 **모아 두는 것만으로 자동으로 배치가 되지는 않는다.** JDBC 배치를 켜야 실제로 한 번에 나간다.\n\n```xml\n<property name=\"hibernate.jdbc.batch_size\" value=\"50\"/>\n```\n\n이 옵션이 없으면 커밋 시점에 SQL 세 개가 *차례로* 나간다. 왕복은 여전히 세 번이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "IDENTITY 전략이면 배치가 아예 안 된다",
+      "md": "기본 키를 `GenerationType.IDENTITY`(MySQL AUTO_INCREMENT)로 두면, `persist()` 시점에 INSERT 가 **즉시** 나간다. DB 가 정해 주는 키 값을 받아야 1차 캐시에 넣을 수 있기 때문이다(4.1절).\n\n그러면 쓰기 지연 저장소에 쌓일 것이 없고, `batch_size` 를 아무리 키워도 배치가 안 된다. 대량 저장이 있는 테이블이라면 `SEQUENCE` 전략을 쓰는 이유가 이것이다. 자세한 건 5.4절에서 본다."
+    },
+    {
+      "type": "heading",
+      "text": "4) 변경 감지 — 이 책에서 제일 놀라운 것"
+    },
+    {
+      "type": "prose",
+      "md": "다시 봐도 이상한 코드다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "저장 코드가 없다",
+      "code": "tx.begin();\n\nMember member = em.find(Member.class, 1L);\nmember.setName(\"김관현2\");\n\n// em.update(member);  ← 이런 것이 없다. 있지도 않다.\n\ntx.commit();"
+    },
+    {
+      "type": "sql",
+      "caption": "그런데 커밋 시점에 이게 나간다",
+      "sql": "UPDATE MEMBER SET NAME = ?, TEL = ? WHERE ID = ?"
+    },
+    {
+      "type": "prose",
+      "md": "어떻게 아는가. **조회할 때 떠 둔 스냅샷과 비교**한다."
+    },
+    {
+      "type": "figure",
+      "caption": "플러시 시점의 변경 감지",
+      "ascii": "   tx.commit()\n        │\n        ▼  flush\n   ┌────────────────────────────────────────────────────────────┐\n   │  for each managed entity :                                 │\n   │                                                            │\n   │      entity            snapshot                            │\n   │    ┌──────────────┐  ┌──────────────┐                      │\n   │    │ id   = 1     │  │ id   = 1     │   same               │\n   │    │ name = \"kim2\"│  │ name = \"kim\" │   DIFFERENT          │  ← 여기가 변경 감지다\n   │    │ tel  = null  │  │ tel  = null  │   same               │\n   │    └──────────────┘  └──────────────┘                      │\n   │                │                                           │\n   │                ▼  if different                             │\n   │        UPDATE MEMBER SET ... WHERE id = 1                  │\n   │                │                                           │\n   │                ▼                                           │\n   │        push into write-behind SQL store                    │\n   └────────────────────────────┬───────────────────────────────┘\n                                │\n                                ▼\n                   send queued SQL  ->  database",
+      "note": "1차 캐시에 엔티티를 넣을 때 그 순간의 값을 **한 벌 더 복사해 둔 것**이 스냅샷이다. 4.1절 그림에서 상자 두 개가 나란히 있던 이유가 이것이다."
+    },
+    {
+      "type": "steps",
+      "caption": "순서대로 다시",
+      "items": [
+        {
+          "title": "조회 시점 — 스냅샷을 뜬다",
+          "md": "`em.find()` 가 DB 에서 읽어 온 값을 1차 캐시에 넣으면서, **그 시점의 필드 값을 따로 복사**해 둔다."
+        },
+        {
+          "title": "코드가 엔티티를 수정한다",
+          "md": "`member.setName(\"김관현2\")`. 이 시점에는 JPA 가 개입하지 않는다. 그냥 자바 객체의 필드가 바뀔 뿐이다."
+        },
+        {
+          "title": "플러시 — 전부 비교한다",
+          "md": "커밋(또는 `flush()`) 시점에 **영속 상태인 모든 엔티티**를 스냅샷과 비교한다. 엔티티가 만 개면 만 번 비교한다."
+        },
+        {
+          "title": "달라진 것만 UPDATE 를 만든다",
+          "md": "다른 필드가 하나라도 있으면 UPDATE 문을 만들어 쓰기 지연 저장소에 넣는다."
+        },
+        {
+          "title": "쌓인 SQL 을 DB 로 보낸다",
+          "md": "INSERT·UPDATE·DELETE 가 순서대로 나간다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "값이 안 바뀌면 UPDATE 도 안 나간다",
+      "md": "```java\nMember member = em.find(Member.class, 1L);\nmember.setName(member.getName());   // 같은 값으로 세팅\ntx.commit();\n```\n\n이러면 SQL 이 **하나도 안 나간다.** 스냅샷과 값이 같으니 달라진 게 없다고 판단하는 것이다.\n\n이걸 직접 로그로 확인해 보는 게 변경 감지를 이해하는 가장 빠른 길이다. \"setter 를 불렀으니 UPDATE 가 나간다\"가 아니라 **\"값이 달라졌으니 UPDATE 가 나간다\"** 임이 눈에 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본 UPDATE 는 바뀐 필드만 고치지 않는다",
+      "md": "이름 하나만 바꿨는데 나가는 SQL 은 이렇다.\n\n```sql\nUPDATE MEMBER SET NAME = ?, TEL = ?, CITY = ?, ... WHERE ID = ?\n```\n\n**모든 필드가 SET 절에 들어간다.** 왜 그러냐면, 컬럼 조합이 매번 달라지면 SQL 문자열도 매번 달라져서 DB 와 하이버네이트가 만들어 둔 실행 계획·구문 캐시를 못 쓰기 때문이다. 컬럼 수가 적을 때는 이쪽이 오히려 빠르다.\n\n컬럼이 아주 많거나 `@Lob` 같이 무거운 필드가 섞여 있으면 `@DynamicUpdate` 로 바꿀 수 있다. 다만 **컬럼 30개 넘기 전까지는 기본이 낫다** — 대개는 설계를 다시 볼 신호다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "변경 감지는 영속 상태에만 걸린다",
+      "md": "준영속 엔티티는 아무리 수정해도 UPDATE 가 안 나간다. 영속성 컨텍스트가 그 객체를 더 이상 쳐다보지 않아서 비교할 스냅샷도 없기 때문이다.\n\n실무에서 \"수정이 안 돼요\"의 대부분이 이것이고, **다음 절(4.4)이 통째로 이 이야기다.**"
+    },
+    {
+      "type": "heading",
+      "text": "5) 삭제도 같은 방식이다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = em.find(Member.class, 1L);\nem.remove(member);        // 삭제 예약. SQL 안 나감\n\ntx.commit();              // 여기서 DELETE"
+    },
+    {
+      "type": "sql",
+      "sql": "DELETE FROM MEMBER WHERE ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "정리 — 상자 하나가 만들어 내는 네 가지"
+    },
+    {
+      "type": "table",
+      "caption": "영속성 컨텍스트가 하는 일",
+      "note": "넷 다 \"코드와 DB 사이에 상태를 들고 있는 겹\" 없이는 불가능하다. 그래서 JPA 는 저 겹을 없앨 수 없고, JPA 를 이해한다는 건 저 겹의 동작을 이해한다는 뜻이 된다.",
+      "columns": [
+        "",
+        "무슨 일이 일어나나",
+        "없으면 어떻게 되나"
+      ],
+      "rows": [
+        [
+          "**1차 캐시**",
+          "같은 키로 두 번 조회하면 SELECT 는 한 번",
+          "매번 DB 로 간다. 동일성도 같이 깨진다"
+        ],
+        [
+          "**동일성 보장**",
+          "두 번 조회한 결과가 `==` 로 같다",
+          "같은 회원이 인스턴스 두 개로 갈라진다(2.1절)"
+        ],
+        [
+          "**쓰기 지연**",
+          "SQL 을 모아 뒀다가 플러시 때 한 번에",
+          "저장할 때마다 네트워크를 왕복한다"
+        ],
+        [
+          "**변경 감지**",
+          "스냅샷과 비교해 달라진 것만 UPDATE",
+          "`update()` 를 손으로 불러야 하고, 자주 빠뜨린다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"변경 감지가 어떻게 동작하나요?\"** → 조회 시점에 스냅샷을 뜨고, 플러시 시점에 영속 엔티티 전부를 스냅샷과 비교해서 달라진 것만 UPDATE 를 만든다. **\"플러시 시점\"** 과 **\"스냅샷\"** 두 낱말이 들어가야 답이 완성된다.\n- **\"영속성 컨텍스트에 엔티티가 많으면 성능 문제가 있나요?\"** → 있다. 플러시마다 전부 스냅샷과 비교하므로 엔티티 수에 비례한다. 그래서 대량 처리에는 벌크 연산(12.7절)이나 주기적인 `clear()` 를 쓴다.\n- **\"1차 캐시 덕분에 성능이 좋아지나요?\"** → 트랜잭션 범위라 실제 이득은 크지 않다. 진짜 값어치는 동일성 보장이다. 이렇게 답하면 외운 게 아니라는 게 드러난다.\n- **\"쓰기 지연이 있으면 항상 배치로 나가나요?\"** → 아니다. `hibernate.jdbc.batch_size` 를 켜야 하고, IDENTITY 전략이면 애초에 쌓이지 않아 배치가 안 된다.\n- **\"엔티티에 equals/hashCode 를 왜 구현하나요?\"** → `==` 동일성은 같은 영속성 컨텍스트 안에서만 보장된다. 트랜잭션 경계를 넘으면 깨지므로 `@Id` 기준 동등성이 필요하다."
+    }
+  ],
+  "recap": [
+    "`em.find()` 는 1차 캐시를 먼저 본다. 없을 때만 SELECT 를 보내고, 읽어 온 값은 캐시와 스냅샷 두 곳에 넣는다.",
+    "1차 캐시의 값어치는 성능보다 동일성 보장이다 — 그리고 그 보장은 같은 영속성 컨텍스트 안에서만이다.",
+    "쓰기 지연은 SQL 을 모아 둘 뿐이고, 실제 배치는 `hibernate.jdbc.batch_size` 를 켜야 한다. IDENTITY 전략이면 아예 안 된다.",
+    "변경 감지는 플러시 시점에 영속 엔티티 전부를 스냅샷과 비교한다. 값이 그대로면 UPDATE 도 안 나간다.",
+    "기본 UPDATE 는 모든 필드를 SET 에 넣는다. 구문 캐시를 쓰기 위해서고, 대개 그쪽이 빠르다.",
+    "변경 감지는 영속 상태에만 걸린다. 준영속은 수정해도 아무 일도 안 일어난다."
+  ],
+  "drills": [
+    {
+      "task": "같은 회원을 `em.find()` 로 두 번 조회하고 SELECT 가 몇 번 나가는지, `m1 == m2` 가 무엇인지 찍어 본다. 그다음 두 조회 사이에 `em.clear()` 를 넣고 다시 돌린다.",
+      "done_when": "clear 없을 때 SELECT 1번·true, clear 있을 때 SELECT 2번·false 를 둘 다 확인했다.",
+      "hint": "clear 는 상자를 통째로 비운다. 그래서 두 번째 조회는 처음 보는 회원이 된다.",
+      "minutes": 20
+    },
+    {
+      "task": "회원을 조회한 뒤 `setName()` 에 **원래와 같은 값**을 넣고 커밋한다. 그다음 **다른 값**을 넣고 커밋한다.",
+      "done_when": "같은 값일 때는 UPDATE 가 안 나가고 다른 값일 때만 나가는 것을 로그로 확인했다.",
+      "hint": "이게 '스냅샷과 비교한다' 는 것의 직접적인 증거다.",
+      "minutes": 20
+    },
+    {
+      "task": "`em.persist()` 를 100번 반복하고 커밋한다. `hibernate.jdbc.batch_size` 없이 한 번, 50으로 켜고 한 번 — 걸린 시간을 잰다.",
+      "done_when": "두 경우의 시간 차이를 숫자로 말할 수 있다.",
+      "hint": "@Id 전략이 IDENTITY 면 차이가 없다. 그 이유를 설명할 수 있으면 이 실습은 끝난 것이다.",
+      "minutes": 35
+    },
+    {
+      "task": "필드가 5개인 엔티티에서 하나만 수정하고 나가는 UPDATE 문을 확인한다. 그다음 클래스에 `@DynamicUpdate` 를 붙이고 다시 본다.",
+      "done_when": "기본은 모든 컬럼이 SET 에 들어가고, @DynamicUpdate 를 붙이면 바뀐 컬럼만 들어가는 것을 눈으로 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`em.persist(member)` 직후 `em.find()` 로 같은 회원을 조회해 SELECT 가 나가는지 본다. 그리고 **다른 EntityManager** 로도 같은 회원을 조회해 본다.",
+      "done_when": "같은 em 에서는 조회가 되고(SQL 없이), 다른 em 에서는 null 이 나오는 것을 확인했다.",
+      "hint": "1차 캐시는 DB 보다 앞에 있고, EntityManager 마다 따로다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`em.persist(member)` 직후 같은 `EntityManager` 로 `em.find()` 하면 SELECT 가 나가는가?",
+      "a": "안 나간다. persist 시점에 이미 1차 캐시에 들어갔고, find 는 캐시를 먼저 보기 때문이다. DB 에는 아직 그 행이 없지만 조회는 성공한다."
+    },
+    {
+      "q": "1차 캐시가 성능에 큰 도움이 안 되는 이유는?",
+      "a": "트랜잭션 범위에서만 살기 때문이다. 웹 요청 하나가 수십 밀리초라 같은 엔티티를 여러 번 조회하는 일이 드물다. 진짜 값어치는 동일성 보장이다."
+    },
+    {
+      "q": "변경 감지는 무엇과 무엇을 비교하는가? 그리고 언제 하는가?",
+      "a": "1차 캐시의 엔티티 현재 값과, 조회 시점에 떠 둔 스냅샷을 비교한다. 플러시 시점(커밋·`flush()`·JPQL 실행 직전)에 영속 상태인 엔티티 전부를 대상으로 한다."
+    },
+    {
+      "q": "필드 하나만 바꿨는데 UPDATE 의 SET 절에 모든 컬럼이 들어가는 이유는?",
+      "a": "컬럼 조합마다 SQL 문자열이 달라지면 DB 와 하이버네이트의 구문 캐시·실행 계획 재사용이 깨진다. 컬럼 수가 적을 때는 통째로 갱신하는 쪽이 빠르다. 필요하면 `@DynamicUpdate`."
+    },
+    {
+      "q": "`em1.find(Member.class, 1L) == em2.find(Member.class, 1L)` 은?",
+      "a": "false 다. 동일성 보장은 같은 영속성 컨텍스트 안에서만 성립한다. EntityManager 가 다르면 캐시도 다르다."
+    },
+    {
+      "q": "쓰기 지연을 켜 뒀는데도 INSERT 가 하나씩 나간다. 왜일까?",
+      "a": "두 가지다. ① `hibernate.jdbc.batch_size` 를 안 켰다 — 모아 두기는 하지만 전송은 하나씩 한다. ② 기본 키 전략이 IDENTITY 다 — persist 시점에 즉시 INSERT 가 나가므로 쌓일 것 자체가 없다."
+    },
+    {
+      "q": "영속성 컨텍스트에 엔티티가 10만 개 올라가 있으면 무슨 일이 생기나?",
+      "a": "플러시할 때마다 10만 개를 전부 스냅샷과 비교한다. 메모리도 두 벌(엔티티 + 스냅샷)이 든다. 대량 처리에서 주기적으로 `flush()` + `clear()` 를 하거나 벌크 연산을 쓰는 이유다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "1차 캐시",
+      "en": "first-level cache",
+      "what": "영속성 컨텍스트 안의 Map. `@Id` 가 키다. 트랜잭션 범위에서만 살고, `em.find()` 가 DB 보다 먼저 본다."
+    },
+    {
+      "term": "스냅샷",
+      "en": "snapshot",
+      "what": "엔티티를 1차 캐시에 넣을 때 함께 떠 두는 값 복사본. 변경 감지가 이것과 비교한다."
+    },
+    {
+      "term": "동일성 보장",
+      "en": "identity guarantee",
+      "what": "같은 영속성 컨텍스트에서 같은 키로 조회하면 항상 같은 인스턴스가 나오는 성질. 2.1절의 네 번째 불일치를 푸는 장치."
+    },
+    {
+      "term": "쓰기 지연",
+      "en": "transactional write-behind",
+      "what": "INSERT/UPDATE/DELETE 를 즉시 보내지 않고 저장소에 쌓아 뒀다가 플러시 때 한 번에 보내는 방식."
+    },
+    {
+      "term": "변경 감지",
+      "en": "dirty checking",
+      "what": "플러시 시점에 엔티티와 스냅샷을 비교해 달라진 것에 대해 UPDATE 를 자동 생성하는 기능. JPA 에 `update()` 가 없는 이유."
+    },
+    {
+      "term": "JDBC 배치",
+      "en": "JDBC batch",
+      "what": "여러 SQL 을 한 번의 네트워크 왕복으로 보내는 것. `hibernate.jdbc.batch_size` 로 켠다."
+    },
+    {
+      "term": "@DynamicUpdate",
+      "en": "",
+      "what": "UPDATE 문에 바뀐 컬럼만 넣게 하는 하이버네이트 어노테이션. 컬럼이 아주 많을 때만 고려한다."
+    },
+    {
+      "term": "2차 캐시",
+      "en": "second-level cache",
+      "what": "여러 트랜잭션·여러 EntityManager 가 공유하는 캐시. 성능용이고 1차 캐시와 완전히 별개다. 이 책 범위 밖."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Entity Operations",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1291",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM User Guide — Flushing & Dirty Checking",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#flushing",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "Hibernate ORM User Guide — Batching",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#batch",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
