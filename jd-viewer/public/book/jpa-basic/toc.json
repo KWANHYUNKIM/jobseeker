@@ -358,7 +358,7 @@
           "title": "프록시",
           "summary": "getReference() 가 돌려주는 가짜 객체. instanceof 는 되고 == 은 안 되는 이유.",
           "minutes": 22,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -366,7 +366,7 @@
           "title": "즉시 로딩과 지연 로딩",
           "summary": "실무에서 즉시 로딩을 쓰지 않는 이유. N+1 문제를 직접 만들어 본다.",
           "minutes": 24,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -374,7 +374,7 @@
           "title": "영속성 전이(CASCADE)와 고아 객체",
           "summary": "부모를 저장할 때 자식도 같이. 언제 켜도 되고 언제 켜면 안 되는가 — 소유권의 문제.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -382,7 +382,7 @@
           "title": "실전 예제 5 — 연관관계 관리",
           "summary": "모든 연관관계를 지연 로딩으로 바꾸고, 주문–주문상품에만 CASCADE 를 건다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

@@ -1,0 +1,276 @@
+{
+  "book": "jpa-basic",
+  "id": "proxy",
+  "no": "9.1",
+  "chapter": 9,
+  "title": "프록시",
+  "summary": "getReference() 가 돌려주는 가짜 객체. instanceof 는 되고 == 은 안 되는 이유.",
+  "minutes": 22,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`em.find()` 와 `em.getReference()` 가 각각 언제 SQL 을 보내는지 말할 수 있다.",
+    "프록시 초기화 과정을 그림으로 설명할 수 있다.",
+    "프록시가 섞였을 때 `==` 비교가 왜 실패하는지, 무엇으로 바꿔야 하는지 안다.",
+    "`LazyInitializationException` 이 나는 조건과 해법을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6장부터 계속 미뤄 둔 이야기다. `member.getTeam()` 이 어떻게 \"부르는 그 순간\" SELECT 를 보낼 수 있는가.\n\n답은 **`getTeam()` 이 돌려주는 것이 진짜 `Team` 이 아니기 때문**이다. 하이버네이트가 런타임에 만든 가짜가 들어 있고, 그 가짜가 실제로 필요해진 순간 DB 로 간다.\n\n이 절은 그 가짜의 정체다. 그리고 5.1절에서 \"기본 생성자를 만들어라, final 을 쓰지 마라\"고 했던 규칙의 이유가 여기서 완결된다."
+    },
+    {
+      "type": "heading",
+      "text": "find() 와 getReference()"
+    },
+    {
+      "type": "compare",
+      "caption": "언제 SQL 이 나가나",
+      "note": "`getReference()` 를 직접 쓸 일은 많지 않다. 하지만 **지연 로딩된 연관 필드에는 이것과 똑같은 물건이 들어 있다.** 그래서 이 메서드로 프록시를 관찰하는 것이 가장 빠르다.",
+      "left": {
+        "title": "em.find()",
+        "lang": "java",
+        "code": "Member m = em.find(Member.class, 1L);\n// SELECT 가 여기서 나간다\n\nm.getName();\n// SQL 없음",
+        "md": "**DB 를 지금 조회한다.** 진짜 엔티티가 들어온다."
+      },
+      "right": {
+        "title": "em.getReference()",
+        "lang": "java",
+        "code": "Member m = em.getReference(Member.class, 1L);\n// SQL 이 안 나간다\n\nm.getName();\n// SELECT 가 여기서 나간다",
+        "md": "**조회를 미룬다.** 껍데기(프록시)를 돌려주고, 실제로 값이 필요해질 때 조회한다."
+      }
+    },
+    {
+      "type": "sql",
+      "caption": "getName() 시점에 나가는 SQL",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.MEMBER_ID = ?"
+    },
+    {
+      "type": "heading",
+      "text": "프록시가 초기화되는 과정"
+    },
+    {
+      "type": "figure",
+      "caption": "세 단계",
+      "ascii": "   Member member = em.getReference(Member.class, 1L);\n   member.getName();                        <-- 이 순간에 무슨 일이 일어나나\n\n\n   1.  getReference() 직후 — SQL 이 나가지 않았다\n\n       ┌──────────────────────┐\n       │ Member$Proxy         │\n       │   id     = 1         │\n       │   target = null      │\n       └──────────────────────┘\n\n\n   2.  getName() 호출 — 프록시가 영속성 컨텍스트에 초기화를 요청한다\n\n       ┌──────────────────────┐\n       │ Member$Proxy         │\n       │   getName()          │\n       └──────────┬───────────┘\n                  │\n                  ▼\n       ┌──────────────────────┐\n       │ persistence context  │\n       └──────────┬───────────┘\n                  │  SELECT ... WHERE MEMBER_ID = 1\n                  ▼\n              database\n\n\n   3.  실제 객체가 target 에 붙는다\n\n       ┌──────────────────────┐        ┌──────────────────────┐\n       │ Member$Proxy         │        │ Member  (real)       │\n       │   target ────────────┼───────▶│   id   = 1           │\n       │   getName()          │        │   name = \"kim\"       │\n       └──────────────────────┘        └──────────────────────┘\n\n   이후 getName() 은 target.getName() 을 그대로 넘긴다.\n   프록시는 사라지지 않는다. 한 번 프록시면 끝까지 프록시다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "5.1절의 규칙이 여기서 완결된다",
+      "md": "프록시는 **엔티티를 상속한 클래스**다. 하이버네이트가 바이트코드를 조작해 런타임에 만든다.\n\n- 상속하려면 엔티티가 `final` 이면 안 된다.\n- 메서드를 오버라이드해야 하므로 메서드도 `final` 이면 안 된다.\n- 자식 생성자가 부모 생성자를 불러야 하므로 **기본 생성자가 필요하다.**\n\n5.1절에서 \"프록시 때문\"이라고만 하고 넘어간 것이 이것이다. 규칙 셋이 전부 이 한 그림에서 나온다."
+    },
+    {
+      "type": "heading",
+      "text": "프록시의 성질 다섯 가지"
+    },
+    {
+      "type": "steps",
+      "caption": "알아 둬야 하는 것",
+      "items": [
+        {
+          "title": "한 번만 초기화된다",
+          "md": "두 번째 `getName()` 부터는 SQL 이 안 나간다. 이미 target 이 붙어 있기 때문이다."
+        },
+        {
+          "title": "초기화돼도 프록시는 프록시다",
+          "md": "**진짜 엔티티로 바뀌는 것이 아니다.** target 을 통해 값을 넘겨줄 뿐이다. 그래서 `getClass()` 는 계속 `Member$HibernateProxy$...` 를 돌려준다.",
+          "lang": "java",
+          "code": "Member m = em.getReference(Member.class, 1L);\nm.getName();                 // 초기화\nSystem.out.println(m.getClass());\n// class ...Member$HibernateProxy$aBcD"
+        },
+        {
+          "title": "식별자는 초기화 없이도 읽힌다",
+          "md": "`getId()` 는 프록시가 이미 알고 있다(그걸로 만들어졌으니까). 그래서 **FK 값만 필요할 때는 SQL 이 안 나간다.** 6장에서 `order.getMember().getId()` 가 조회 없이 되는 이유다.",
+          "lang": "java",
+          "code": "Member m = em.getReference(Member.class, 1L);\nm.getId();      // SQL 없음\nm.getName();    // 여기서 SELECT"
+        },
+        {
+          "title": "영속성 컨텍스트에 이미 있으면 진짜를 준다",
+          "md": "동일성 보장(4.2절) 때문이다. `find()` 로 이미 올려 둔 엔티티가 있는데 프록시를 새로 만들면 `==` 이 깨진다.",
+          "lang": "java",
+          "code": "Member m1 = em.find(Member.class, 1L);\nMember m2 = em.getReference(Member.class, 1L);\n\nm1 == m2;   // true — 둘 다 진짜 엔티티"
+        },
+        {
+          "title": "반대도 성립한다 — 한 번 프록시면 끝까지 프록시",
+          "md": "먼저 프록시를 만들어 두면, 그 뒤의 `find()` 도 **프록시를 돌려준다.** 같은 이유(동일성)다.",
+          "lang": "java",
+          "code": "Member m1 = em.getReference(Member.class, 1L);\nMember m2 = em.find(Member.class, 1L);\n\nm1 == m2;   // true — 둘 다 프록시\nm2.getClass();  // ...HibernateProxy..."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "그래서 == 을 쓰면 안 된다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "타입 비교가 실패하는 자리",
+      "code": "public void check(Member m1, Member m2) {\n    if (m1.getClass() == m2.getClass()) {   // 프록시가 섞이면 false\n        ...\n    }\n}",
+      "note": "한쪽이 `find()` 로, 다른 쪽이 지연 로딩으로 들어온 경우 클래스가 다르다. **매개변수로 받은 엔티티가 프록시인지 아닌지는 부르는 쪽 사정이라 알 수 없다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "대신 instanceof",
+      "code": "if (m1 instanceof Member) {   // 프록시는 Member 를 상속했으므로 true\n    ...\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "상속 관계에서는 더 위험하다",
+      "md": "8장의 `Item` 상속을 떠올려 보자. 지연 로딩으로 들어온 `Item` 프록시는 **`Item` 을 상속한 프록시**이지 `Book` 이 아니다.\n\n```java\nItem item = orderItem.getItem();   // 프록시\nitem instanceof Book;              // false — Book 인데도!\n```\n\n프록시는 만들어질 때 실제 타입을 모른다(조회를 안 했으니까). 그래서 부모 타입의 프록시로 만들어진다.\n\n해법은 셋이다 — ① 페치 조인으로 진짜 객체를 가져온다(12.2절) ② JPQL `TYPE()` 으로 거른다(12.4절) ③ 애초에 **다형성이 필요한 자리에는 프록시를 두지 않는다.** 실무에서는 ①이 대부분이다."
+    },
+    {
+      "type": "heading",
+      "text": "준영속 상태에서 초기화하면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "Member member = em.getReference(Member.class, 1L);\nem.close();                   // 영속성 컨텍스트가 사라진다\n\nmember.getName();             // 여기서 터진다"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "나는 예외",
+      "code": "org.hibernate.LazyInitializationException:\n    could not initialize proxy [Member#1] - no Session",
+      "note": "4.4절에서 예고한 그것이다. 프록시를 채우려면 영속성 컨텍스트가 있어야 하는데 이미 닫혔다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "실무에서 이게 나는 자리",
+      "md": "**컨트롤러나 뷰에서 지연 로딩을 건드릴 때**다. 서비스 메서드(`@Transactional`)가 끝나면서 영속성 컨텍스트가 닫혔는데, 그 뒤에 `member.getTeam().getName()` 을 부르는 경우.\n\n해법 셋 중 어느 것을 고르느냐가 설계 결정이다.\n\n1. **필요한 것을 트랜잭션 안에서 다 로딩한다** — 페치 조인(12.2절)이 정석이다.\n2. **DTO 로 변환해서 내보낸다** — 6.3절에서 말한 그것. 트랜잭션 안에서 필요한 값만 꺼내 담는다.\n3. `spring.jpa.open-in-view=true` 로 뷰까지 컨텍스트를 열어 둔다 — 스프링 부트 기본값이지만 **끄는 것을 권한다.** 커넥션을 화면 렌더링이 끝날 때까지 붙들고 있어서 부하가 몰리면 커넥션 풀이 마른다."
+    },
+    {
+      "type": "heading",
+      "text": "확인하는 도구"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "PersistenceUnitUtil util = emf.getPersistenceUnitUtil();\n\nutil.isLoaded(member);        // 초기화됐나? (표준)\nHibernate.isInitialized(member);   // 같은 것 (하이버네이트)\n\nHibernate.initialize(member); // 강제로 초기화 (하이버네이트 전용)",
+      "note": "JPA 표준에는 **강제 초기화 메서드가 없다.** 표준만 쓰려면 `member.getName()` 처럼 아무 값이나 건드려야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`find()` 와 `getReference()` 의 차이는?\"** → 전자는 즉시 DB 조회, 후자는 프록시를 돌려주고 실제 값이 필요할 때 조회한다.\n- **\"프록시는 초기화되면 진짜 엔티티가 되나요?\"** → 아니다. 내부 target 에 진짜를 붙이고 호출을 넘길 뿐, `getClass()` 는 계속 프록시다.\n- **\"프록시에서 `getId()` 는 왜 SQL 없이 되나요?\"** → 프록시가 식별자로 만들어졌으므로 이미 알고 있다. FK 값만 필요할 때 조회가 안 나가는 이유다.\n- **\"프록시가 섞이면 `==` 비교가 왜 위험한가요?\"** → 클래스가 달라 타입 비교가 실패한다. `instanceof` 를 쓰거나 `@Id` 기준 `equals` 를 쓴다.\n- **\"`LazyInitializationException` 은 언제 나나요?\"** → 영속성 컨텍스트가 닫힌 뒤 프록시를 초기화하려 할 때. 페치 조인이나 DTO 변환으로 트랜잭션 안에서 끝내는 것이 정석이다.\n- **\"open-in-view 를 왜 끄나요?\"** → 뷰 렌더링이 끝날 때까지 DB 커넥션을 붙들고 있어서, 부하가 몰리면 커넥션 풀이 마른다."
+    }
+  ],
+  "recap": [
+    "`getReference()` 는 SQL 없이 프록시를 돌려주고, 실제 값이 필요해질 때 초기화한다.",
+    "프록시는 엔티티를 상속한 런타임 클래스다 — 5.1절의 기본 생성자·final 금지 규칙이 여기서 나온다.",
+    "초기화돼도 프록시는 프록시다. target 에 진짜를 붙이고 호출을 넘길 뿐이다.",
+    "`getId()` 는 초기화 없이 읽힌다. FK 값만 필요할 때 SQL 이 안 나가는 이유.",
+    "동일성 보장 때문에, 컨텍스트에 진짜가 있으면 진짜를 주고 프록시가 있으면 프록시를 준다.",
+    "프록시가 섞이면 `==`·`getClass()` 비교가 실패한다. `instanceof` 나 `@Id` 기준 `equals` 를 쓴다.",
+    "상속 관계에서 프록시는 부모 타입으로 만들어져 `instanceof Book` 이 false 가 된다.",
+    "컨텍스트가 닫힌 뒤 초기화하면 `LazyInitializationException`. 페치 조인이나 DTO 로 트랜잭션 안에서 끝낸다."
+  ],
+  "drills": [
+    {
+      "task": "`em.getReference()` 로 회원을 얻고 `getId()`·`getName()` 을 차례로 부르며 SQL 시점을 확인한다.",
+      "done_when": "`getName()` 에서만 SELECT 가 나가는 것을 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`getReference()` 로 얻은 객체의 `getClass()` 를 초기화 전후로 각각 찍는다.",
+      "done_when": "둘 다 프록시 클래스인 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`find()` 먼저 → `getReference()` 순서와, 그 반대 순서로 각각 실행해 `m1 == m2` 와 `getClass()` 를 비교한다.",
+      "done_when": "둘 다 true 이고 클래스는 순서에 따라 달라진다는 것을 확인했다.",
+      "hint": "왜 그래야 하는지는 4.2절 동일성 보장이다.",
+      "minutes": 25
+    },
+    {
+      "task": "프록시를 얻고 `em.close()` 한 뒤 `getName()` 을 부른다.",
+      "done_when": "`LazyInitializationException` 을 직접 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "8장의 상속 예제에서 `OrderItem.item` 을 지연 로딩으로 두고 `item instanceof Book` 을 확인한다.",
+      "done_when": "실제로 Book 인데 false 가 나오는 것을 확인했다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`em.getReference()` 를 부르면 SQL 이 나가는가?",
+      "a": "안 나간다. 식별자만 들고 있는 프록시를 돌려주고, 실제 값을 건드리는 순간 SELECT 가 나간다."
+    },
+    {
+      "q": "프록시가 초기화되면 진짜 엔티티로 바뀌는가?",
+      "a": "아니다. 내부 target 필드에 진짜 엔티티를 붙이고 메서드 호출을 그쪽으로 넘길 뿐이다. `getClass()` 는 끝까지 프록시 클래스다."
+    },
+    {
+      "q": "프록시에서 `getId()` 를 부르면 왜 SQL 이 안 나가는가?",
+      "a": "프록시는 식별자를 받아 만들어졌으므로 그 값을 이미 알고 있다. 그래서 연관 엔티티의 FK 값만 필요한 경우 추가 조회가 발생하지 않는다."
+    },
+    {
+      "q": "`find()` 로 이미 올려 둔 엔티티를 `getReference()` 로 다시 얻으면?",
+      "a": "프록시가 아니라 진짜 엔티티가 나온다. 4.2절의 동일성 보장을 지키기 위해서다. 반대로 프록시를 먼저 만들면 이후 `find()` 도 그 프록시를 돌려준다."
+    },
+    {
+      "q": "프록시가 섞인 상태에서 타입을 어떻게 비교해야 하는가?",
+      "a": "`==` 이나 `getClass()` 비교 대신 `instanceof` 를 쓴다. 프록시는 엔티티를 상속했으므로 `instanceof` 는 통과한다."
+    },
+    {
+      "q": "상속 관계에서 `item instanceof Book` 이 false 인 이유는?",
+      "a": "프록시는 만들어질 때 실제 타입을 모르므로 부모 타입(`Item`)의 프록시로 생성된다. 페치 조인으로 진짜 객체를 가져오거나 JPQL `TYPE()` 으로 걸러야 한다."
+    },
+    {
+      "q": "`LazyInitializationException` 을 피하는 정석적인 방법은?",
+      "a": "트랜잭션 안에서 필요한 것을 다 로딩하는 것 — 페치 조인(12.2절)이나 DTO 변환. `open-in-view` 로 컨텍스트를 늘리는 것은 커넥션을 오래 붙들어 권하지 않는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "프록시",
+      "en": "proxy",
+      "what": "엔티티를 상속해 런타임에 만들어지는 가짜 객체. 식별자만 알고 있다가 실제 값이 필요할 때 초기화된다."
+    },
+    {
+      "term": "초기화",
+      "en": "initialization",
+      "what": "프록시가 영속성 컨텍스트에 요청해 진짜 엔티티를 target 에 붙이는 과정. 한 번만 일어난다."
+    },
+    {
+      "term": "getReference()",
+      "en": "",
+      "what": "프록시를 돌려주는 조회 메서드. 식별자만 알면 되는 경우(FK 세팅 등)에 조회를 아낀다."
+    },
+    {
+      "term": "LazyInitializationException",
+      "en": "",
+      "what": "영속성 컨텍스트 밖에서 프록시를 초기화하려 할 때 나는 예외."
+    },
+    {
+      "term": "open-in-view",
+      "en": "OSIV",
+      "what": "영속성 컨텍스트를 뷰 렌더링까지 열어 두는 설정. 지연 로딩 예외를 막지만 커넥션을 오래 점유한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — getReference",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/entitymanager#getReference(java.lang.Class,java.lang.Object)",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Fetching",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

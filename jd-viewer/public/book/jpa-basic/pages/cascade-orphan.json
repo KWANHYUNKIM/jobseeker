@@ -1,0 +1,268 @@
+{
+  "book": "jpa-basic",
+  "id": "cascade-orphan",
+  "no": "9.3",
+  "chapter": 9,
+  "title": "영속성 전이(CASCADE)와 고아 객체",
+  "summary": "부모를 저장할 때 자식도 같이. 언제 켜도 되고 언제 켜면 안 되는가 — 소유권의 문제.",
+  "minutes": 20,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "CASCADE 옵션이 각각 어떤 연산을 전파하는지 말할 수 있다.",
+    "CASCADE 를 켜도 되는 조건을 한 줄로 답할 수 있다.",
+    "`orphanRemoval` 이 CASCADE.REMOVE 와 무엇이 다른지 구분할 수 있다.",
+    "둘을 함께 켰을 때 부모가 자식 생명주기를 완전히 관리한다는 의미를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "주문 하나에 주문상품이 셋이면, 저장할 때 `persist()` 를 네 번 불러야 한다. 지울 때도 마찬가지다.\n\n**영속성 전이**는 그 반복을 없앤다. 그리고 이 절은 **편의 기능이 아니라 소유권에 대한 설계 결정**이라는 것이 요점이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "전이 없이",
+      "code": "em.persist(order);\nem.persist(orderItem1);\nem.persist(orderItem2);\nem.persist(orderItem3);"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "cascade 를 켜면",
+      "code": "@Entity\npublic class Order {\n    @OneToMany(mappedBy = \"order\", cascade = CascadeType.ALL)\n    private List<OrderItem> orderItems = new ArrayList<>();\n}\n\n// ...\norder.addOrderItem(orderItem1);   // 연관관계 편의 메서드(6.3절)\norder.addOrderItem(orderItem2);\norder.addOrderItem(orderItem3);\n\nem.persist(order);   // 이 한 줄이면 된다"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL",
+      "sql": "INSERT INTO ORDERS     (MEMBER_ID, ORDER_DATE, STATUS, ORDER_ID) VALUES (?, ?, ?, ?)\nINSERT INTO ORDER_ITEM (ORDER_ID, ITEM_ID, ORDER_PRICE, COUNT, ORDER_ITEM_ID) VALUES (?, ?, ?, ?, ?)\nINSERT INTO ORDER_ITEM (ORDER_ID, ITEM_ID, ORDER_PRICE, COUNT, ORDER_ITEM_ID) VALUES (?, ?, ?, ?, ?)\nINSERT INTO ORDER_ITEM (ORDER_ID, ITEM_ID, ORDER_PRICE, COUNT, ORDER_ITEM_ID) VALUES (?, ?, ?, ?, ?)",
+      "note": "**SQL 은 전이가 없을 때와 똑같다.** CASCADE 는 성능 최적화가 아니라 `persist()` 호출을 줄이는 편의다. 이 구분이 중요하다 — 성능을 기대하고 켜면 안 된다."
+    },
+    {
+      "type": "table",
+      "caption": "CascadeType",
+      "note": "실무에서는 `ALL` 아니면 `PERSIST` 다. 나머지를 세밀하게 조합할 일은 잘 없다.",
+      "columns": [
+        "값",
+        "무엇이 전파되나"
+      ],
+      "rows": [
+        [
+          "**ALL**",
+          "아래 전부"
+        ],
+        [
+          "**PERSIST**",
+          "`em.persist()` — 저장"
+        ],
+        [
+          "REMOVE",
+          "`em.remove()` — 삭제"
+        ],
+        [
+          "MERGE",
+          "`em.merge()` — 병합"
+        ],
+        [
+          "DETACH",
+          "`em.detach()` — 준영속화"
+        ],
+        [
+          "REFRESH",
+          "`em.refresh()` — DB 에서 다시 읽기"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "켜도 되는 조건 — 소유권이 하나일 때"
+    },
+    {
+      "type": "figure",
+      "caption": "판단 기준",
+      "ascii": "   CASCADE 를 켜도 되는 경우                 켜면 안 되는 경우\n\n   Order                                    Member\n     │  cascade = ALL                         │  cascade = ALL   <-- 위험\n     ▼                                        ▼\n   OrderItem                                Team\n     ▲                                        ▲\n     │                                        │\n   이 주문상품을 참조하는 곳은               이 팀을 참조하는 주문·부서·\n   이 주문 하나뿐이다                        다른 회원이 얼마든지 있다\n\n   주문을 지우면 주문상품도                  회원 하나를 지웠는데\n   같이 사라지는 것이 맞다                   팀이 사라지면 안 된다\n\n\n   판단 기준 한 줄:  \"이 자식을 소유한 부모가 오직 하나인가?\"\n   하나면 켜도 된다. 둘 이상이 참조할 수 있으면 절대 켜지 않는다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "여러 곳에서 참조하는 엔티티에 켜면",
+      "md": "`Member` 에 `cascade = ALL` 로 `Team` 을 물려 두었다고 하자. 회원 하나를 `remove()` 했더니 **그 팀이 삭제되고**, 그 팀에 속한 다른 회원 100명의 FK 가 깨진다.\n\nCASCADE 는 \"이 엔티티가 저 엔티티의 **생명주기를 책임진다**\"는 선언이다. 편의 문법이 아니다. 그래서 켜기 전에 물어야 하는 것은 \"편한가\"가 아니라 **\"이 자식은 이 부모가 없으면 존재할 이유가 없는가\"** 다.\n\n주문상품은 주문이 없으면 의미가 없다. 팀은 회원이 없어도 존재한다. 이 차이다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "DDD 로 말하면",
+      "md": "이 조건은 **애그리거트 루트(aggregate root)** 개념과 정확히 겹친다. 하나의 트랜잭션 경계 안에서 함께 생성되고 함께 사라지는 묶음이 있고, 그 묶음의 대표가 루트다.\n\n주문–주문상품–배송이 한 애그리거트, 회원이 다른 애그리거트, 상품이 또 다른 애그리거트다. **애그리거트 안에서만 CASCADE 를 켠다**고 생각하면 판단이 거의 자동으로 된다."
+    },
+    {
+      "type": "heading",
+      "text": "고아 객체 — orphanRemoval"
+    },
+    {
+      "type": "prose",
+      "md": "CASCADE 는 부모에게 일어난 일을 자식에게 전파한다. `orphanRemoval` 은 다른 것이다 — **부모의 컬렉션에서 빠진 자식을 삭제한다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@OneToMany(mappedBy = \"order\", orphanRemoval = true)\nprivate List<OrderItem> orderItems = new ArrayList<>();"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "컬렉션에서 빼기만 해도",
+      "code": "Order order = em.find(Order.class, 1L);\norder.getOrderItems().remove(0);      // 리스트에서 뺀다\n\n// em.remove() 를 부르지 않았다"
+    },
+    {
+      "type": "sql",
+      "sql": "DELETE FROM ORDER_ITEM WHERE ORDER_ITEM_ID = ?",
+      "note": "\"부모와의 연결이 끊긴 자식 = 존재할 이유가 없는 객체\" 로 본다. **자바 컬렉션에서 원소를 빼면 GC 대상이 되는 것**과 같은 감각을 만들려는 장치다 — 2.1절의 그 목표가 여기까지 이어진다."
+    },
+    {
+      "type": "compare",
+      "caption": "CASCADE.REMOVE 와 무엇이 다른가",
+      "note": "둘은 트리거가 다르다. 그래서 함께 켜는 것이 보통이다 — 부모를 지워도, 컬렉션에서 빼기만 해도 자식이 정리된다.",
+      "left": {
+        "title": "CascadeType.REMOVE",
+        "lang": "java",
+        "code": "em.remove(order);\n// -> 주문상품 전부 DELETE",
+        "md": "**부모를 지울 때** 자식도 지운다. 컬렉션에서 빼는 것만으로는 아무 일도 안 일어난다."
+      },
+      "right": {
+        "title": "orphanRemoval = true",
+        "lang": "java",
+        "code": "order.getOrderItems().remove(0);\n// -> 그 주문상품만 DELETE",
+        "md": "**컬렉션에서 빠질 때** 그 자식을 지운다. 부모를 지우는 경우도 포함된다(전부 빠지는 것과 같으므로)."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "orphanRemoval 도 소유권이 하나일 때만",
+      "md": "CASCADE 와 같은 조건이다. **참조하는 곳이 둘 이상이면 절대 켜지 않는다.**\n\n`Team.members` 에 `orphanRemoval = true` 를 켜 두면, 팀에서 회원을 빼는 순간 그 **회원이 DB 에서 삭제된다.** \"팀에서 제외\"가 \"퇴사 처리\"가 되는 것이다.\n\n그리고 이 사고는 `remove()` 를 부른 곳이 없어서 코드 검색으로 찾기도 어렵다."
+    },
+    {
+      "type": "heading",
+      "text": "둘을 함께 켜면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@OneToMany(mappedBy = \"order\",\n           cascade = CascadeType.ALL,\n           orphanRemoval = true)\nprivate List<OrderItem> orderItems = new ArrayList<>();"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "부모가 자식의 생명주기를 완전히 관리한다",
+      "md": "이 조합이면 `OrderItem` 을 다루는 데 `EntityManager` 가 필요 없어진다.\n\n```java\norder.addOrderItem(newItem);        // 저장\norder.getOrderItems().remove(old);  // 삭제\n```\n\n**저장·삭제가 전부 부모를 통해서만 일어난다.** `OrderItemRepository` 를 만들 필요조차 없다.\n\n이게 애그리거트 루트가 하는 일이다 — 묶음 안의 객체는 루트를 거쳐서만 다뤄지고, 그래서 묶음의 일관성이 한 곳에서 지켜진다. 리포지토리를 애그리거트 루트마다 하나씩만 두는 관례가 여기서 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "cascade 는 연관관계 매핑과 아무 상관이 없다",
+      "md": "헷갈리기 쉬운 지점이다. `cascade` 는 **연관관계의 주인**이나 FK 관리와 무관하다.\n\n단지 \"이 엔티티에 어떤 연산이 일어나면 저쪽에도 같은 연산을 걸어라\" 는 **편의 설정**일 뿐이다. 그래서 주인이 아닌 쪽(`mappedBy` 가 붙은 쪽)에 걸어도 정상 동작한다 — 위 예제가 그렇다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"CASCADE 는 언제 쓰나요?\"** → 자식의 소유자가 오직 하나일 때. 주문–주문상품처럼 함께 생성되고 함께 사라지는 관계.\n- **\"여러 곳에서 참조하는 엔티티에 켜면?\"** → 한쪽을 지웠을 때 다른 쪽이 참조하던 엔티티가 사라진다. 편의 기능이 아니라 생명주기 책임 선언이다.\n- **\"`orphanRemoval` 과 `CascadeType.REMOVE` 의 차이는?\"** → 전자는 **컬렉션에서 빠질 때**, 후자는 **부모가 삭제될 때** 자식을 지운다. 트리거가 다르다.\n- **\"둘을 같이 켜면?\"** → 부모가 자식의 생명주기를 완전히 관리한다. 자식을 다루는 데 EntityManager 가 필요 없어지고, 이것이 DDD 애그리거트 루트의 구현이다.\n- **\"CASCADE 가 성능에 도움이 되나요?\"** → 아니다. 나가는 SQL 은 똑같고 `persist()` 호출만 줄어든다."
+    }
+  ],
+  "recap": [
+    "CASCADE 는 부모에게 일어난 연산을 자식에게 전파한다. 나가는 SQL 은 그대로다 — 성능이 아니라 편의다.",
+    "켜도 되는 조건은 한 줄이다 — **이 자식을 소유한 부모가 오직 하나인가.**",
+    "여러 곳에서 참조하는 엔티티에 켜면 한쪽을 지웠을 때 남의 데이터가 사라진다.",
+    "`orphanRemoval` 은 컬렉션에서 빠진 자식을 지운다. CASCADE.REMOVE 는 부모가 지워질 때 지운다. 트리거가 다르다.",
+    "`orphanRemoval` 도 소유권이 하나일 때만. 켜 두면 '목록에서 제외' 가 '삭제' 가 된다.",
+    "둘을 함께 켜면 부모가 자식 생명주기를 완전히 관리한다 — DDD 애그리거트 루트의 구현이다.",
+    "cascade 는 연관관계의 주인·FK 관리와 아무 상관이 없다. 주인이 아닌 쪽에 걸어도 동작한다."
+  ],
+  "drills": [
+    {
+      "task": "cascade 없이 주문과 주문상품 3개를 저장하고, `cascade = ALL` 로 바꿔 `persist(order)` 하나만 부른다.",
+      "done_when": "두 경우의 SQL 이 완전히 같다는 것을 확인했다. CASCADE 가 성능 최적화가 아니라는 증거다.",
+      "minutes": 25
+    },
+    {
+      "task": "`Member.team` 에 `cascade = ALL` 을 걸고 회원 하나를 `remove()` 해 본다.",
+      "done_when": "팀이 같이 삭제되는 것을 확인했고(또는 FK 제약으로 실패하는 것을 봤고), 왜 이걸 켜면 안 되는지 설명할 수 있다.",
+      "minutes": 20
+    },
+    {
+      "task": "`orphanRemoval = true` 를 켜고 `order.getOrderItems().remove(0)` 만 실행한다.",
+      "done_when": "`em.remove()` 없이 DELETE 가 나가는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`orphanRemoval` 만 켠 상태와 `CascadeType.REMOVE` 만 켠 상태에서 각각 ① 컬렉션에서 빼기 ② 부모 지우기 를 해 본다.",
+      "done_when": "네 조합의 결과를 표로 정리했다.",
+      "hint": "트리거가 다르다는 것이 이 실습의 요점이다.",
+      "minutes": 30
+    },
+    {
+      "task": "주문–주문상품에 둘 다 켜고, `OrderItem` 을 직접 `persist`/`remove` 하는 코드를 전부 지워 본다.",
+      "done_when": "부모를 통해서만 다뤄도 전부 동작하는 것을 확인했다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "CASCADE 를 켜면 나가는 SQL 이 줄어드는가?",
+      "a": "안 줄어든다. `persist()` 호출 횟수만 줄어들고 INSERT 문은 그대로다. 성능 최적화가 아니라 편의 기능이다."
+    },
+    {
+      "q": "CASCADE 를 켜도 되는 조건은?",
+      "a": "그 자식을 소유한 부모가 오직 하나일 때. 주문상품은 주문 하나에만 속하지만, 팀은 여러 회원이 참조하므로 켜면 안 된다."
+    },
+    {
+      "q": "`orphanRemoval` 과 `CascadeType.REMOVE` 의 차이는?",
+      "a": "트리거가 다르다. orphanRemoval 은 **컬렉션에서 빠질 때** 그 자식을 삭제하고, CASCADE.REMOVE 는 **부모가 삭제될 때** 자식을 삭제한다."
+    },
+    {
+      "q": "`Team.members` 에 `orphanRemoval = true` 를 켜면 무슨 일이 생기나?",
+      "a": "팀의 회원 목록에서 회원을 빼는 순간 그 회원이 DB 에서 삭제된다. '팀에서 제외' 가 '계정 삭제' 가 되는 것이고, `remove()` 호출이 코드에 없어 추적도 어렵다."
+    },
+    {
+      "q": "`cascade = ALL` + `orphanRemoval = true` 조합의 의미는?",
+      "a": "부모가 자식의 생명주기를 완전히 관리한다. 자식의 저장·삭제가 전부 부모를 통해 일어나므로 자식 전용 리포지토리가 필요 없어진다 — DDD 애그리거트 루트의 구현이다."
+    },
+    {
+      "q": "cascade 를 `mappedBy` 가 붙은(주인이 아닌) 쪽에 걸어도 되는가?",
+      "a": "된다. cascade 는 연관관계의 주인이나 FK 관리와 무관한, 연산 전파 설정일 뿐이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "영속성 전이",
+      "en": "cascade",
+      "what": "부모 엔티티에 일어난 연산을 연관 엔티티에 함께 적용하는 설정."
+    },
+    {
+      "term": "고아 객체",
+      "en": "orphan",
+      "what": "부모와의 연결이 끊어진 자식 엔티티. `orphanRemoval = true` 면 자동 삭제된다."
+    },
+    {
+      "term": "애그리거트 루트",
+      "en": "aggregate root",
+      "what": "함께 생성되고 함께 사라지는 객체 묶음의 대표. CASCADE 를 켜도 되는 범위와 정확히 겹친다."
+    },
+    {
+      "term": "CascadeType.ALL",
+      "en": "",
+      "what": "PERSIST·REMOVE·MERGE·DETACH·REFRESH 전부를 전파한다. 실무에서 쓰는 것은 사실상 ALL 아니면 PERSIST 다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Cascading & orphanRemoval",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#pc-cascade",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

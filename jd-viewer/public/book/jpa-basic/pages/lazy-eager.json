@@ -1,0 +1,294 @@
+{
+  "book": "jpa-basic",
+  "id": "lazy-eager",
+  "no": "9.2",
+  "chapter": 9,
+  "title": "즉시 로딩과 지연 로딩",
+  "summary": "실무에서 즉시 로딩을 쓰지 않는 이유. N+1 문제를 직접 만들어 본다.",
+  "minutes": 24,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`LAZY` 와 `EAGER` 가 각각 언제 SQL 을 보내는지 말할 수 있다.",
+    "N+1 문제가 왜 생기는지, `em.find()` 에서는 왜 덜 심한지 설명할 수 있다.",
+    "각 연관관계의 기본 fetch 값을 외우고 있고, 왜 그것을 바꿔야 하는지 안다.",
+    "N+1 을 푸는 세 가지 도구를 구분할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.1절에서 프록시를 봤다. 이제 **연관 엔티티를 프록시로 둘 것인가, 함께 조회할 것인가**를 정한다. 매핑 어노테이션의 `fetch` 속성 하나다.\n\n그런데 이 한 글자가 애플리케이션 전체의 쿼리 수를 바꾼다."
+    },
+    {
+      "type": "compare",
+      "caption": "fetch 두 값",
+      "left": {
+        "title": "LAZY — 지연 로딩",
+        "lang": "java",
+        "code": "@ManyToOne(fetch = FetchType.LAZY)\n@JoinColumn(name = \"TEAM_ID\")\nprivate Team team;\n\n// 조회\nMember m = em.find(Member.class, 1L);\n// SELECT MEMBER 만\n\nm.getTeam().getName();\n// 여기서 SELECT TEAM",
+        "md": "`team` 자리에 **프록시**가 들어간다. 실제로 쓸 때 조회한다."
+      },
+      "right": {
+        "title": "EAGER — 즉시 로딩",
+        "lang": "java",
+        "code": "@ManyToOne(fetch = FetchType.EAGER)\n@JoinColumn(name = \"TEAM_ID\")\nprivate Team team;\n\n// 조회\nMember m = em.find(Member.class, 1L);\n// SELECT MEMBER JOIN TEAM\n\nm.getTeam().getName();\n// SQL 없음",
+        "md": "**진짜 `Team`** 이 들어간다. 조인해서 한 번에 가져온다."
+      }
+    },
+    {
+      "type": "sql",
+      "caption": "EAGER 로 em.find() 했을 때",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID,\n       T.TEAM_ID, T.NAME\n  FROM MEMBER M\n  LEFT JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n WHERE M.MEMBER_ID = ?",
+      "note": "`em.find()` 한 건이면 EAGER 도 나쁘지 않다. **조인 한 번으로 끝난다.** 문제는 JPQL 이다."
+    },
+    {
+      "type": "heading",
+      "text": "N+1 문제"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "이 두 줄이 쿼리 1001번을 만든다",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m\", Member.class)\n    .getResultList();\n// team 이 EAGER 라면?"
+    },
+    {
+      "type": "figure",
+      "caption": "무슨 일이 벌어지나",
+      "ascii": "   \"SELECT m FROM Member m\"   회원이 5명, team 이 EAGER 일 때\n\n\n   1  SELECT * FROM MEMBER                       <-- 이게 1\n      ┌──────┬──────────┬─────────┐\n      │ ID   │ USERNAME │ TEAM_ID │\n      ├──────┼──────────┼─────────┤\n      │ 1    │ kim      │   10    │\n      │ 2    │ lee      │   11    │\n      │ 3    │ park     │   10    │\n      │ 4    │ choi     │   12    │\n      │ 5    │ jung     │   13    │\n      └──────┴──────────┴─────────┘\n                  │\n                  │ 각 행의 team 을 채워야 한다\n                  ▼\n   2  SELECT * FROM TEAM WHERE TEAM_ID = 10      <-- 여기부터 N\n   3  SELECT * FROM TEAM WHERE TEAM_ID = 11\n   4  (10 은 1차 캐시에 있어 생략)\n   5  SELECT * FROM TEAM WHERE TEAM_ID = 12\n   6  SELECT * FROM TEAM WHERE TEAM_ID = 13\n\n   회원이 1000명이면 최악의 경우 쿼리가 1001번 나간다.\n   JPQL 은 1차 캐시를 안 보고 DB 로 내려가므로(4.3절) 이 상황을 피할 수 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 JPA 가 조인해서 가져오지 않나",
+      "md": "4.3절에서 봤다 — **JPQL 은 1차 캐시를 보지 않고 그대로 SQL 로 번역되어 DB 로 내려간다.**\n\n`SELECT m FROM Member m` 은 `SELECT * FROM MEMBER` 가 된다. JPA 는 이 SQL 을 먼저 보내고, **결과를 받고 나서야** 각 회원의 `team` 을 채워야 한다는 것을 안다. 그때는 이미 늦었다. `TEAM_ID` 별로 추가 조회를 보낼 수밖에 없다.\n\n`em.find()` 는 다르다. \"회원 1번을 가져온다\"는 것을 처음부터 알고 있으니 조인 SQL 을 한 번에 만들 수 있다.\n\n**즉 N+1 은 JPQL(과 그것을 쓰는 모든 것 — Spring Data JPA 의 `findAll` 포함)에서 생긴다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "LAZY 로 바꿔도 N+1 은 사라지지 않는다",
+      "md": "흔한 오해다. LAZY 로 두면 목록 조회 시점에는 쿼리가 1번이다. 그런데 **반복문에서 `getTeam().getName()` 을 부르는 순간** 같은 일이 벌어진다.\n\n```java\nfor (Member m : members) {\n    System.out.println(m.getTeam().getName());   // 여기서 N번\n}\n```\n\nLAZY 가 하는 일은 **N+1 을 없애는 것이 아니라 미루는 것**이다. 다만 미룰 수 있다는 게 중요하다 — 안 쓰면 안 나가니까. 그리고 **필요할 때 페치 조인으로 한 번에 가져올 여지**가 생긴다. EAGER 는 그 선택지를 아예 없앤다."
+    },
+    {
+      "type": "heading",
+      "text": "기본값이 함정이다"
+    },
+    {
+      "type": "table",
+      "caption": "fetch 기본값",
+      "note": "**`@ManyToOne` 과 `@OneToOne` 의 기본값이 EAGER 다.** 5.3절의 `EnumType.ORDINAL` 처럼, 기본값이 하필 위험한 쪽인 자리가 JPA 에 몇 군데 있다.",
+      "columns": [
+        "매핑",
+        "기본 fetch",
+        "실무에서는"
+      ],
+      "rows": [
+        [
+          "`@ManyToOne`",
+          "**EAGER**",
+          "**LAZY 로 바꾼다**"
+        ],
+        [
+          "`@OneToOne`",
+          "**EAGER**",
+          "**LAZY 로 바꾼다**"
+        ],
+        [
+          "`@OneToMany`",
+          "LAZY",
+          "그대로"
+        ],
+        [
+          "`@ManyToMany`",
+          "LAZY",
+          "그대로 (애초에 안 쓴다)"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "실무 규칙 — 전부 LAZY",
+      "code": "@ManyToOne(fetch = FetchType.LAZY)\n@JoinColumn(name = \"TEAM_ID\")\nprivate Team team;\n\n@OneToOne(fetch = FetchType.LAZY)\n@JoinColumn(name = \"DELIVERY_ID\")\nprivate Delivery delivery;",
+      "note": "예외를 두지 않는 편이 낫다. \"이건 항상 같이 쓰니까 EAGER\" 라고 판단한 자리가 **다른 화면에서 목록 조회에 걸리는 순간** N+1 이 된다. 그리고 그 화면은 나중에 생긴다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "즉시 로딩의 진짜 문제는 예측 불가능성이다",
+      "md": "EAGER 를 하나 켜면 그 엔티티를 조회하는 **모든 곳**이 영향을 받는다. 그리고 EAGER 가 걸린 엔티티가 또 다른 EAGER 를 물고 있으면 연쇄적으로 딸려 온다.\n\n회원을 조회했는데 팀이 오고, 팀이 지점을 물고, 지점이 지역을 물어서 **한 번의 `find()` 가 5개 테이블을 조인**하는 상황이 실제로 생긴다. 어떤 화면에서 어떤 쿼리가 나갈지 코드를 다 읽기 전에는 알 수 없게 된다.\n\nLAZY 는 반대다. **기본이 \"안 가져온다\"이고, 필요한 곳에서만 명시적으로 가져온다.** 그래서 쿼리가 코드에 드러난다."
+    },
+    {
+      "type": "heading",
+      "text": "그럼 N+1 은 어떻게 푸나"
+    },
+    {
+      "type": "table",
+      "caption": "세 가지 도구",
+      "note": "셋 다 \"필요한 곳에서 명시적으로 함께 가져온다\" 는 같은 원리다. **모든 연관관계를 LAZY 로 두는 것이 전제**이고, 그 위에서 필요한 자리마다 하나를 고른다.",
+      "columns": [
+        "도구",
+        "무엇",
+        "어디서"
+      ],
+      "rows": [
+        [
+          "**페치 조인**",
+          "JPQL 에 `JOIN FETCH` 를 적어 한 번에 가져온다",
+          "12.2 · 가장 많이 쓴다"
+        ],
+        [
+          "**@EntityGraph**",
+          "어노테이션으로 함께 가져올 경로를 지정",
+          "Spring Data JPA 에서"
+        ],
+        [
+          "**배치 사이즈**",
+          "`IN (?, ?, ...)` 으로 묶어 N번을 1번으로",
+          "컬렉션에 특히 유용"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "미리 맛보기 — 페치 조인",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m JOIN FETCH m.team\", Member.class)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "caption": "쿼리가 한 번이 된다",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID,\n       T.TEAM_ID, T.NAME\n  FROM MEMBER M\n  INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID",
+      "note": "**LAZY 로 두었기 때문에 이 선택이 가능하다.** EAGER 였다면 이 쿼리를 쓰든 안 쓰든 항상 조인이 나갔을 것이다. 자세한 건 12.2절."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "배치 사이즈",
+      "code": "// 엔티티에\n@BatchSize(size = 100)\n@OneToMany(mappedBy = \"team\")\nprivate List<Member> members;\n\n// 또는 전역 설정\n// hibernate.default_batch_fetch_size = 100"
+    },
+    {
+      "type": "sql",
+      "caption": "N번이 1번으로",
+      "sql": "-- 전\nSELECT * FROM MEMBER WHERE TEAM_ID = 10\nSELECT * FROM MEMBER WHERE TEAM_ID = 11\nSELECT * FROM MEMBER WHERE TEAM_ID = 12\n\n-- 후\nSELECT * FROM MEMBER WHERE TEAM_ID IN (10, 11, 12)",
+      "note": "컬렉션 페치 조인은 페이징과 충돌하는 문제가 있어서(12.3절), 그 경우 배치 사이즈가 사실상 유일한 해법이 된다. **전역 설정으로 100~1000 정도를 깔아 두는 것**이 실무의 안전장치다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"N+1 문제가 뭔가요?\"** → 목록을 한 번 조회한 뒤 각 원소의 연관 데이터를 하나씩 조회해 쿼리가 N+1번 나가는 것. **JPQL 이 1차 캐시를 안 보고 DB 로 내려가기 때문에** 목록 쿼리 시점에는 조인을 만들 수 없다는 것까지 말하면 원인을 아는 것으로 읽힌다.\n- **\"LAZY 로 바꾸면 N+1 이 해결되나요?\"** → 아니다. 미뤄질 뿐이고 연관을 건드리는 순간 똑같이 난다. 다만 **페치 조인으로 해결할 여지**가 생긴다.\n- **\"`@ManyToOne` 의 기본 fetch 는?\"** → EAGER. 그래서 실무에서는 전부 LAZY 로 바꾼다.\n- **\"즉시 로딩이 왜 위험한가요?\"** → 그 엔티티를 조회하는 모든 곳이 영향을 받고, EAGER 가 연쇄되면 한 번의 find 가 여러 테이블을 조인한다. 어떤 쿼리가 나갈지 예측할 수 없게 된다.\n- **\"N+1 해결 방법은?\"** → 페치 조인, `@EntityGraph`, 배치 사이즈. 컬렉션 페치 조인은 페이징과 충돌하므로 그때는 배치 사이즈를 쓴다."
+    }
+  ],
+  "recap": [
+    "`LAZY` 는 연관 자리에 프록시를 넣고, `EAGER` 는 조인해서 함께 가져온다.",
+    "N+1 은 JPQL 에서 생긴다 — 목록 SQL 을 먼저 보내고 나서야 연관을 채워야 함을 알기 때문이다.",
+    "`em.find()` 는 대상을 미리 알아서 조인 한 번으로 끝난다. 그래서 EAGER 도 덜 위험해 보인다.",
+    "**LAZY 로 바꿔도 N+1 은 사라지지 않는다.** 미뤄질 뿐이고, 대신 페치 조인이라는 선택지가 생긴다.",
+    "`@ManyToOne`·`@OneToOne` 의 기본값이 EAGER 다. 실무에서는 전부 LAZY 로 바꾼다.",
+    "즉시 로딩의 진짜 문제는 성능이 아니라 **어떤 쿼리가 나갈지 예측할 수 없어지는 것**이다.",
+    "해법은 셋 — 페치 조인(12.2), `@EntityGraph`, 배치 사이즈. 전제는 전부 LAZY 로 두는 것이다."
+  ],
+  "drills": [
+    {
+      "task": "회원 5명과 팀 3개를 만들고 `@ManyToOne` 을 EAGER 로 둔 채 JPQL 전체 조회를 실행한다.",
+      "done_when": "SELECT 가 몇 번 나가는지 세었고, 1차 캐시 덕분에 중복 팀은 생략되는 것도 확인했다.",
+      "hint": "`hibernate.show_sql` 로그를 센다. 이 숫자를 적어 둔다.",
+      "minutes": 30
+    },
+    {
+      "task": "같은 코드를 LAZY 로 바꾸고 반복문 없이 실행한다.",
+      "done_when": "SELECT 가 1번인 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "LAZY 상태에서 반복문에 `getTeam().getName()` 을 추가한다.",
+      "done_when": "다시 N+1 이 되는 것을 확인했다. 'LAZY 가 해결책이 아니다' 를 몸으로 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "`JOIN FETCH` 를 붙여 같은 결과를 얻고 SQL 을 확인한다.",
+      "done_when": "쿼리가 1번이 되는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`hibernate.default_batch_fetch_size = 100` 을 켜고 LAZY + 반복문을 다시 실행한다.",
+      "done_when": "`IN (...)` 으로 묶인 쿼리가 나가는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "EAGER 를 두 단계로 걸어 본다(Member→Team, Team→Branch). 그리고 회원 하나를 `find` 한다.",
+      "done_when": "조인이 연쇄되는 것을 SQL 에서 확인했다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "N+1 문제는 왜 JPQL 에서 생기는가?",
+      "a": "JPQL 은 1차 캐시를 보지 않고 그대로 SQL 로 번역되어 나간다. 목록 SQL 을 먼저 보내고 결과를 받은 뒤에야 연관을 채워야 함을 알게 되므로, 그때는 추가 조회를 보낼 수밖에 없다."
+    },
+    {
+      "q": "`em.find()` 에서는 왜 N+1 이 덜 심한가?",
+      "a": "무엇을 조회할지 처음부터 알고 있어서 조인 SQL 을 한 번에 만들 수 있기 때문이다."
+    },
+    {
+      "q": "LAZY 로 바꾸면 N+1 이 해결되는가?",
+      "a": "아니다. 연관을 실제로 건드리는 시점으로 미뤄질 뿐이다. 다만 안 쓰면 안 나가고, 필요할 때 페치 조인으로 한 번에 가져올 선택지가 생긴다. EAGER 는 그 선택지를 없앤다."
+    },
+    {
+      "q": "`@ManyToOne` 과 `@OneToMany` 의 기본 fetch 값은?",
+      "a": "`@ManyToOne`·`@OneToOne` 은 EAGER, `@OneToMany`·`@ManyToMany` 는 LAZY. 앞의 둘이 함정이라 실무에서는 전부 LAZY 로 바꾼다."
+    },
+    {
+      "q": "즉시 로딩의 가장 큰 문제는?",
+      "a": "성능 그 자체보다 예측 불가능성이다. 그 엔티티를 조회하는 모든 곳이 영향을 받고, EAGER 가 연쇄되면 한 번의 조회가 여러 테이블을 조인한다."
+    },
+    {
+      "q": "컬렉션에서 페치 조인 대신 배치 사이즈를 써야 하는 경우는?",
+      "a": "페이징이 필요할 때다. 컬렉션 페치 조인은 페이징과 충돌해 메모리에서 처리하게 되므로(12.3절), 배치 사이즈로 `IN` 절 묶음 조회를 하는 편이 안전하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "지연 로딩",
+      "en": "LAZY",
+      "what": "연관 엔티티 자리에 프록시를 넣고 실제로 쓸 때 조회하는 방식. 실무의 기본값."
+    },
+    {
+      "term": "즉시 로딩",
+      "en": "EAGER",
+      "what": "연관 엔티티를 조인해 함께 조회하는 방식. `@ManyToOne`·`@OneToOne` 의 기본값이지만 실무에서는 끈다."
+    },
+    {
+      "term": "N+1 문제",
+      "en": "",
+      "what": "목록 조회 1번 + 각 원소의 연관 조회 N번. JPQL 이 DB 로 바로 내려가기 때문에 생긴다."
+    },
+    {
+      "term": "페치 조인",
+      "en": "fetch join",
+      "what": "JPQL 에서 연관을 함께 조회하도록 명시하는 문법. N+1 의 정석 해법. 12.2절."
+    },
+    {
+      "term": "배치 사이즈",
+      "en": "batch fetch size",
+      "what": "여러 건의 연관 조회를 `IN` 절 하나로 묶는 설정. 페이징과 함께 쓸 때 특히 유용하다."
+    },
+    {
+      "term": "@EntityGraph",
+      "en": "",
+      "what": "함께 조회할 연관 경로를 어노테이션으로 지정하는 표준 기능. Spring Data JPA 에서 많이 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Fetching",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
