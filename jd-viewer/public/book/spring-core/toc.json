@@ -600,7 +600,7 @@
           "title": "스코프와 프록시",
           "summary": "@ScopedProxyMode. 가짜를 먼저 주입하고 진짜는 나중에 — 9장 프록시가 여기서도 나온다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

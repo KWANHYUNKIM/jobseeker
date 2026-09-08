@@ -1,0 +1,693 @@
+{
+  "id": "spring-mvc-1",
+  "title": "스프링 MVC",
+  "subtitle": "1편 — 서블릿부터 시작해서 DispatcherServlet 까지 직접 만들어 본다",
+  "blurb": "프레임워크를 배우기 전에 프레임워크가 없는 상태를 겪는다. 그리고 없는 것을 직접 만들어 본 다음, 스프링 MVC 와 나란히 놓는다.",
+  "updated_at": "2026-09-09",
+  "preface": "스프링 MVC 를 처음 배우면 이런 코드를 만난다.\n\n```java\n@GetMapping(\"/items/{id}\")\npublic String item(@PathVariable Long id, Model model) { ... }\n```\n\n짧고 편하다. 그런데 **이 한 줄이 어떻게 HTTP 요청과 연결되는지**는 아무도 설명해 주지 않는다. `@PathVariable` 이 어떻게 URL 조각을 뽑아 오는지, `Model` 이 어디서 나타나는지, 돌려준 문자열 `\"item\"` 이 어떻게 HTML 이 되는지.\n\n**모르는 채로도 개발은 된다.** 문제가 생기기 전까지는.\n\n이 책은 앞 책과 같은 순서로 간다. **없는 상태부터 시작한다.**\n\n3장에서 서블릿으로 직접 요청을 받아 본다. `request.getParameter()` 를 부르고 `response.getWriter()` 에 HTML 을 문자열로 찍는다. 불편하다. 4장에서 JSP 를 쓰고, MVC 패턴으로 나누고, **그 패턴의 한계까지 만난다.**\n\n5장이 이 책의 중심이다. **프론트 컨트롤러 패턴으로 MVC 프레임워크를 직접 만든다.** v1 에서 v5 까지 한 단계씩. 다 만들고 나면 6장에서 알게 된다 — **우리가 만든 것이 스프링 MVC 와 구조가 같다.** `FrontController` 는 `DispatcherServlet` 이었고, `ControllerV5` 는 `HandlerAdapter` 였다.\n\n이 책의 규칙 셋.\n\n첫째, **매 절은 실제로 오간 HTTP 로 끝난다.** 요청 라인부터 응답 바디까지 날것 그대로. 앞 책이 '이 코드가 컨테이너 안에서 무엇을 만드는가' 였다면 이 책은 **'이 코드가 네트워크로 무엇을 내보내는가'** 다.\n\n둘째, **직접 만들어 본 것만 설명한다.** 5장에서 만들지 않은 것은 6장에서도 설명하지 않는다.\n\n셋째, **웹 표준과 스프링을 구분해서 적는다.** 서블릿·HTTP 는 표준이고 스프링은 그 위에 얹힌 것이다. 이 둘을 섞으면 다른 프레임워크로 옮길 때 아무것도 못 옮긴다.\n\n차례는 인프런 김영한 강사의 「스프링 MVC 1편 — 백엔드 웹 개발 핵심 기술」 커리큘럼(9개 섹션)을 뼈대로 삼았고, 본문·예제·HTTP 로그·그림은 새로 썼다.",
+  "how_to_read": [
+    "**2장은 개념이다.** 웹 서버·WAS·서블릿·멀티 쓰레드. 지루하면 3장부터 읽고 필요할 때 돌아온다.",
+    "3~4장은 반드시 손으로 친다. 5장이 이 코드의 중복을 걷어내는 장이라, 불편을 안 겪으면 5장이 남의 이야기가 된다.",
+    "**5장이 이 책의 중심이다.** v1 → v5 를 순서대로 만든다. 건너뛰면 6장이 마법으로 보인다.",
+    "6장은 5장에서 만든 것과 스프링 MVC 를 나란히 놓는 장이다. 5장 없이 읽으면 의미가 없다.",
+    "7장은 사전처럼 써도 된다. 다만 7.13(HTTP 메시지 컨버터)은 정독한다.",
+    "8장은 앞의 것을 다 써서 화면을 만든다. 여기까지 오면 실무 코드가 읽힌다.",
+    "앞 책 「스프링 핵심 원리」를 읽었다면 6장의 빈 등록·주입이 훨씬 쉽게 읽힌다."
+  ],
+  "prereq": [
+    "자바 문법과 **인터페이스로 추상화하는 감각**. 5장이 통째로 그 연습이다.",
+    "HTTP 를 조금이라도 본 적 있으면 좋다 — 메서드, 상태 코드, 헤더. 몰라도 2장에서 필요한 만큼 다룬다.",
+    "스프링 컨테이너(빈, DI). 앞 책 「스프링 핵심 원리」의 내용이고, 6장부터 쓴다.",
+    "HTML 을 읽을 수 있으면 8장이 편하다. 쓸 줄은 몰라도 된다."
+  ],
+  "env": [
+    {
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
+    },
+    {
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": "서블릿 패키지가 jakarta.servlet 이다"
+    },
+    {
+      "name": "빌드",
+      "value": "Gradle",
+      "note": "start.spring.io"
+    },
+    {
+      "name": "의존성",
+      "value": "Spring Web, Lombok",
+      "note": "8장부터 Thymeleaf 를 더한다"
+    },
+    {
+      "name": "서버",
+      "value": "내장 Tomcat",
+      "note": "부트가 띄운다. 포트 8080"
+    },
+    {
+      "name": "확인 도구",
+      "value": "curl 또는 브라우저 개발자 도구",
+      "note": "이 책은 오간 HTTP 를 계속 보여 준다"
+    }
+  ],
+  "source": {
+    "name": "스프링 MVC 1편 - 백엔드 웹 개발 핵심 기술 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링-mvc-1",
+    "note": "차례(9개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·HTTP 로그·그림은 이 책에서 새로 쓴 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "이 책이 어떤 순서로 가는지, 무엇을 만들 것인지.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "왜 서블릿부터 시작하는가. 그리고 5장을 건너뛰면 안 되는 이유.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "what-we-build",
+          "title": "무엇을 만드나",
+          "summary": "상품 관리 화면 하나. 그리고 그것을 굴리는 프레임워크를 직접 만든다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "project-setup",
+          "title": "프로젝트 만들기",
+          "summary": "start.spring.io 에서 뼈대를 받고 첫 요청을 받아 본다.",
+          "minutes": 14,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "웹 애플리케이션 이해",
+      "goal": "요청 하나가 서버에 도착해서 응답이 나가기까지, 누가 무엇을 하는가.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "web-server-was",
+          "title": "웹 서버와 웹 애플리케이션 서버",
+          "summary": "정적 파일과 동적 처리. 둘을 왜 나누고 실무에서는 어떻게 배치하나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "servlet",
+          "title": "서블릿",
+          "summary": "HTTP 를 파싱하는 지겨운 일을 누가 대신하나. 서블릿 컨테이너의 역할.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "multi-thread",
+          "title": "동시 요청 — 멀티 쓰레드",
+          "summary": "요청 하나에 쓰레드 하나. 쓰레드 풀이 없으면 무슨 일이 생기나.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "html-vs-api",
+          "title": "HTML, HTTP API, CSR, SSR",
+          "summary": "서버가 HTML 을 만들 것인가 데이터를 줄 것인가. 백엔드 개발자가 정해야 하는 것.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "java-web-history",
+          "title": "자바 백엔드 웹 기술 역사",
+          "summary": "서블릿 → JSP → MVC 프레임워크 → 스프링 MVC. 이 책의 차례가 곧 역사다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "서블릿",
+      "goal": "서블릿으로 요청을 받고 응답을 내보낸다. 날것 그대로.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "hello-servlet",
+          "title": "Hello 서블릿",
+          "summary": "`@WebServlet` 하나로 요청을 받는다. 그리고 그 요청이 어떻게 여기까지 왔는지.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "request-overview",
+          "title": "HttpServletRequest — 개요",
+          "summary": "스프링이 아니라 서블릿 표준이 주는 객체. 무엇이 들어 있나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "request-basic",
+          "title": "HttpServletRequest — 기본 사용법",
+          "summary": "시작 라인·헤더·기타 정보를 전부 찍어 본다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "request-data-overview",
+          "title": "HTTP 요청 데이터 — 개요",
+          "summary": "클라이언트가 데이터를 보내는 세 가지 방법.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "request-get-query",
+          "title": "GET 쿼리 파라미터",
+          "summary": "URL 뒤에 붙는 것. 복수 파라미터는 어떻게 되나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "request-post-form",
+          "title": "POST HTML Form",
+          "summary": "`application/x-www-form-urlencoded`. GET 과 읽는 방법이 같은 이유.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "request-body-text",
+          "title": "API 메시지 바디 — 단순 텍스트",
+          "summary": "`InputStream` 을 직접 읽는다. 인코딩을 지정해야 하는 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "request-body-json",
+          "title": "API 메시지 바디 — JSON",
+          "summary": "문자열을 객체로. 이 변환을 나중에 누가 대신해 주나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.9",
+          "id": "response-basic",
+          "title": "HttpServletResponse — 기본 사용법",
+          "summary": "상태 코드·헤더·쿠키·리다이렉트를 직접 설정한다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.10",
+          "id": "response-html",
+          "title": "HTTP 응답 데이터 — 단순 텍스트, HTML",
+          "summary": "HTML 을 자바 문자열로 찍는다. 이게 왜 지옥인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.11",
+          "id": "response-json",
+          "title": "HTTP 응답 데이터 — API JSON",
+          "summary": "객체를 JSON 문자열로. `Content-Type` 을 잊으면 생기는 일.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.12",
+          "id": "servlet-summary",
+          "title": "정리",
+          "summary": "서블릿만으로 할 수 있는 것과, 여기서 멈추면 안 되는 이유.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "서블릿, JSP, MVC 패턴",
+      "goal": "같은 화면을 세 가지 방식으로 만들고, 각각의 한계를 센다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "requirements",
+          "title": "회원 관리 웹 애플리케이션 요구사항",
+          "summary": "저장·목록 두 기능. 작지만 모든 문제를 다 드러낸다.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "servlet-app",
+          "title": "서블릿으로 만들기",
+          "summary": "자바 코드 안에서 HTML 을 조립한다. 줄 수를 세어 둔다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "jsp-app",
+          "title": "JSP 로 만들기",
+          "summary": "HTML 안에 자바를 넣는다. 방향이 뒤집혔는데 무엇이 나아졌나.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "mvc-overview",
+          "title": "MVC 패턴 — 개요",
+          "summary": "왜 나눠야 하는가. 변경의 라이프사이클이 다르다는 말의 뜻.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "mvc-apply",
+          "title": "MVC 패턴 — 적용",
+          "summary": "컨트롤러·뷰·모델로 나눈다. `forward` 와 `redirect` 의 차이.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "mvc-limits",
+          "title": "MVC 패턴 — 한계",
+          "summary": "중복이 남는다. 그것도 아주 많이. 목록으로 센다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "mvc-summary",
+          "title": "정리",
+          "summary": "5장에서 무엇을 없앨 것인지 미리 정한다.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "MVC 프레임워크 만들기",
+      "goal": "이 책의 중심. 프론트 컨트롤러를 v1 부터 v5 까지 직접 만든다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "front-controller-intro",
+          "title": "프론트 컨트롤러 패턴 소개",
+          "summary": "입구를 하나로 모으면 무엇이 가능해지나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "v1-front-controller",
+          "title": "v1 — 프론트 컨트롤러 도입",
+          "summary": "구조만 잡는다. 기존 코드를 그대로 옮긴다.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "v2-view-separation",
+          "title": "v2 — View 분리",
+          "summary": "`forward` 중복을 `MyView` 로 걷어낸다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "v3-model-add",
+          "title": "v3 — Model 추가",
+          "summary": "컨트롤러가 서블릿을 몰라도 되게 만든다. 이 책에서 가장 큰 도약.",
+          "minutes": 20,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "v4-practical",
+          "title": "v4 — 단순하고 실용적인 컨트롤러",
+          "summary": "ModelView 를 안 만들고 뷰 이름만 돌려준다. 인터페이스를 쓰는 사람 편으로.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "v5-adapter",
+          "title": "v5 — 유연한 컨트롤러 (어댑터 도입)",
+          "summary": "v3 와 v4 를 동시에 지원하려면. 핸들러 어댑터 패턴.",
+          "minutes": 20,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "v5-apply",
+          "title": "v5 — 어댑터 적용",
+          "summary": "두 방식이 한 프론트 컨트롤러 안에서 함께 돈다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "framework-summary",
+          "title": "정리 — 우리가 만든 것",
+          "summary": "v1~v5 를 한 장에 놓고 각 단계가 무엇을 없앴는지 센다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "스프링 MVC — 구조 이해",
+      "goal": "5장에서 만든 것과 스프링 MVC 를 나란히 놓는다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "spring-mvc-structure",
+          "title": "스프링 MVC 전체 구조",
+          "summary": "우리가 만든 그림 위에 스프링의 이름을 덮어쓴다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "dispatcher-servlet",
+          "title": "DispatcherServlet",
+          "summary": "서블릿 하나가 모든 요청을 받는다. `doDispatch` 를 읽는다.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "handler-mapping-adapter",
+          "title": "핸들러 매핑과 핸들러 어댑터",
+          "summary": "v5 의 어댑터가 실제로 어떻게 구현돼 있나.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "view-resolver",
+          "title": "뷰 리졸버",
+          "summary": "`\"new-form\"` 이라는 문자열이 어떻게 JSP 파일이 되나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "controller-v1",
+          "title": "스프링 MVC — 시작하기",
+          "summary": "`@RequestMapping`. 어노테이션 기반 컨트롤러의 첫 모습.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "controller-v2",
+          "title": "스프링 MVC — 컨트롤러 통합",
+          "summary": "URL 을 클래스 레벨로 올린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "controller-v3",
+          "title": "스프링 MVC — 실용적인 방식",
+          "summary": "`Model`·`@RequestParam`·`@GetMapping`. 실무에서 쓰는 형태가 여기서 완성된다.",
+          "minutes": 16,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "스프링 MVC — 기본 기능",
+      "goal": "실무에서 쓰는 기능을 하나씩. 사전처럼 써도 된다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "project-setup-2",
+          "title": "프로젝트 생성",
+          "summary": "이번에는 Thymeleaf 도 넣는다.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "logging",
+          "title": "로깅 알아보기",
+          "summary": "`System.out.println` 을 쓰면 안 되는 이유. 레벨과 설정.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "request-mapping",
+          "title": "요청 매핑",
+          "summary": "`@RequestMapping` 의 속성들. PathVariable 과 조건 매핑.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "request-mapping-api",
+          "title": "요청 매핑 — API 예시",
+          "summary": "회원 관리 API 를 URL 설계부터.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "request-header",
+          "title": "HTTP 요청 — 기본, 헤더 조회",
+          "summary": "컨트롤러 파라미터로 받을 수 있는 것들.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "request-param",
+          "title": "HTTP 요청 파라미터 — @RequestParam",
+          "summary": "3장에서 손으로 읽던 것을 어노테이션이 대신한다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "model-attribute",
+          "title": "HTTP 요청 파라미터 — @ModelAttribute",
+          "summary": "파라미터를 객체로 묶는다. 생략했을 때의 규칙.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "request-body-string",
+          "title": "HTTP 요청 메시지 — 단순 텍스트",
+          "summary": "`@RequestBody`. `InputStream` 부터 시작해서 단계적으로 줄인다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "request-body-json-2",
+          "title": "HTTP 요청 메시지 — JSON",
+          "summary": "객체로 바로 받는다. `@RequestBody` 를 빼면 생기는 일.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "7.10",
+          "id": "response-static",
+          "title": "응답 — 정적 리소스, 뷰 템플릿",
+          "summary": "`/static` 과 `/templates` 의 차이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.11",
+          "id": "response-body",
+          "title": "응답 — HTTP API, 메시지 바디에 직접 입력",
+          "summary": "`@ResponseBody` 와 `@RestController`.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.12",
+          "id": "message-converter",
+          "title": "HTTP 메시지 컨버터",
+          "summary": "이 장에서 가장 중요한 절. 객체와 바이트가 오가는 지점.",
+          "minutes": 20,
+          "status": "todo"
+        },
+        {
+          "no": "7.13",
+          "id": "argument-resolver",
+          "title": "요청 매핑 핸들러 어댑터 구조",
+          "summary": "`ArgumentResolver`. 컨트롤러 파라미터가 채워지는 진짜 이유.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "7.14",
+          "id": "content-negotiation",
+          "title": "콘텐츠 협상",
+          "summary": "같은 URL 이 JSON 도 XML 도 돌려주는 원리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.15",
+          "id": "basic-summary",
+          "title": "정리",
+          "summary": "7장의 기능들이 6장 구조의 어디에 붙어 있는지.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "스프링 MVC — 웹 페이지 만들기",
+      "goal": "앞의 것을 전부 써서 상품 관리 화면을 만든다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "item-requirements",
+          "title": "요구사항 분석",
+          "summary": "상품 목록·상세·등록·수정. 화면 넷.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "item-domain",
+          "title": "상품 도메인 개발",
+          "summary": "`Item` 과 `ItemRepository`. 테스트부터.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "thymeleaf-intro",
+          "title": "타임리프 소개",
+          "summary": "HTML 파일이 그대로 열린다는 것의 의미.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "item-list",
+          "title": "상품 목록",
+          "summary": "`th:each`. 정적 HTML 을 템플릿으로 바꾸는 첫 단계.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "item-detail",
+          "title": "상품 상세",
+          "summary": "`th:text` 와 링크. `@PathVariable` 이 여기서 쓰인다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "item-add-1",
+          "title": "상품 등록 폼",
+          "summary": "`th:action` 과 빈 문자열의 뜻.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "item-add-2",
+          "title": "상품 등록 처리 — @RequestParam",
+          "summary": "가장 원시적인 방법부터.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "item-add-3",
+          "title": "상품 등록 처리 — @ModelAttribute",
+          "summary": "파라미터 셋이 객체 하나가 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.9",
+          "id": "item-edit",
+          "title": "상품 수정",
+          "summary": "GET 으로 폼을 주고 POST 로 받는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.10",
+          "id": "prg",
+          "title": "PRG — Post/Redirect/Get",
+          "summary": "새로고침하면 주문이 두 번 들어가는 문제. 리다이렉트가 답인 이유.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "8.11",
+          "id": "redirect-attributes",
+          "title": "RedirectAttributes",
+          "summary": "리다이렉트하면서 값을 넘긴다. URL 인코딩까지.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.12",
+          "id": "web-page-summary",
+          "title": "정리",
+          "summary": "8장에서 만든 화면이 6장 구조를 어떻게 지나갔는지 되짚는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "다음으로",
+      "goal": "이 책이 끝난 자리에서 무엇이 남았나.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "whats-missing",
+          "title": "아직 없는 것들",
+          "summary": "검증·예외 처리·인터셉터·파일 업로드. 왜 1편에 없는가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "next-steps",
+          "title": "다음 단계",
+          "summary": "MVC 2편·JPA·HTTP. 무엇을 먼저 볼지 정하는 기준.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+ "book": "spring-core",
+ "id": "scope-proxy",
+ "no": "9.8",
+ "chapter": 9,
+ "title": "스코프와 프록시",
+ "summary": "@ScopedProxyMode. 가짜를 먼저 주입하고 진짜는 나중에 — 5.6절의 CGLIB 이 여기서도 나온다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`proxyMode` 로 request 스코프 빈을 그냥 주입받을 수 있다.",
+  "프록시가 무엇이고 언제 진짜를 찾는지 설명할 수 있다.",
+  "5.6절의 CGLIB 과 같은 기술이라는 것을 안다.",
+  "이 편의가 감추는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "9.7절의 아쉬움은 이것이었다.\n\n> **`MyLogger` 를 쓰려는 모든 곳에서** 같은 두 줄을 반복해야 한다. 스코프가 request 라는 사정이 **쓰는 쪽 코드에 다 드러난다.**\n\n그리고 9.1절과 9.6절의 예외 메시지가 계속 같은 말을 했다.\n\n```\nconsider defining a scoped proxy for this bean\n```\n\n**마지막 절이다.**"
+  },
+  {
+   "type": "heading",
+   "text": "속성 하나를 더한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MyLogger.java",
+   "code": "@Component\n@Scope(value = \"request\", proxyMode = ScopedProxyMode.TARGET_CLASS)\npublic class MyLogger {\n    // 나머지는 그대로\n}",
+   "note": "**`proxyMode = ScopedProxyMode.TARGET_CLASS`** 한 줄이 전부다.\n\n적용 대상이 클래스면 `TARGET_CLASS`, **인터페이스면 `INTERFACES`** 다."
+  },
+  {
+   "type": "compare",
+   "caption": "쓰는 쪽",
+   "left": {
+    "title": "9.7 — Provider",
+    "lang": "java",
+    "code": "private final ObjectProvider<MyLogger> myLoggerProvider;\n\npublic String logDemo(HttpServletRequest request) {\n    MyLogger myLogger = myLoggerProvider.getObject();\n    myLogger.setRequestURL(requestURL);\n    myLogger.log(\"controller test\");\n}",
+    "md": "쓸 때마다 `getObject()` 를 부른다."
+   },
+   "right": {
+    "title": "9.8 — 프록시",
+    "lang": "java",
+    "code": "private final MyLogger myLogger;\n\npublic String logDemo(HttpServletRequest request) {\n    myLogger.setRequestURL(requestURL);\n    myLogger.log(\"controller test\");\n}",
+    "md": "**9.6절에서 쓰려다 실패한 그 코드 그대로다.** 이번에는 동작한다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓰는 쪽이 몰라도 되게 됐다",
+   "md": "3장 내내 해 온 이야기다. `OrderServiceImpl` 은 **어떤 정책이 주입되는지 몰랐다.**\n\n여기도 같다. `LogDemoController` 는 `MyLogger` 의 스코프가 request 인지 싱글톤인지 **모른다.** 그냥 주입받아 쓴다.\n\n스코프를 바꿔도 쓰는 쪽 코드는 안 고친다. **9.7절의 Provider 방식은 그게 안 됐다** — 스코프가 바뀌면 `getObject()` 를 걷어내야 한다."
+  },
+  {
+   "type": "heading",
+   "text": "무엇이 주입된 것인가"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "찍어 본다",
+   "code": "public String logDemo(HttpServletRequest request) {\n    System.out.println(\"myLogger = \" + myLogger.getClass());\n    ...\n}",
+   "note": "**5.6절에서 한 것과 똑같은 확인**이다. 그때는 `AppConfig` 였다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 우리가 만든 클래스가 아니다",
+   "sql": "myLogger = class hello.core.common.MyLogger$$SpringCGLIB$$0",
+   "note": "**`$$SpringCGLIB$$0`.** 4.2절에서 처음 보고 5.6절에서 정체를 밝힌 그것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5.6절과 같은 기술, 다른 목적",
+   "md": "스프링은 **CGLIB 으로 `MyLogger` 를 상속한 가짜 클래스**를 만들어 **그것을 빈으로 등록한다.**\n\n5.6절에서 `@Configuration` 이 한 일과 **기술이 같다.** 목적만 다르다.\n\n| | 5.6 `@Configuration` | 9.8 스코프 프록시 |\n|---|---|---|\n| 상속 대상 | 설정 클래스 | **request 스코프 빈** |\n| 재정의하는 것 | `@Bean` 메서드 | **모든 `public` 메서드** |\n| 하는 일 | 이미 있으면 그것을 준다 | **지금 요청의 진짜 빈을 찾아 위임한다** |\n| 목적 | **싱글톤 보장** | **주입 시점 미루기** |\n\n\"스프링이 우리 클래스를 몰래 바꿔치기한다\" 는 5장의 결론이 여기서 한 번 더 쓰인다."
+  },
+  {
+   "type": "figure",
+   "caption": "가짜가 진짜를 찾아 준다",
+   "ascii": "   container start\n        └──> LogDemoController (singleton)  create\n                 └──> inject  MyLogger$$SpringCGLIB$$0\n                                                       <- 가짜다. 타입은 MyLogger\n\n   http request in\n        └──> myLogger.log(\"controller test\")\n                 └──> proxy : find real bean for this request\n                          └──> MyLogger@A .log(\"controller test\")\n\n   다음 요청이 오면 proxy 가 MyLogger@B 를 찾는다",
+   "note": "**가짜는 싱글톤처럼 하나만 있다.** 그래서 컨테이너 시작 시점에 주입할 수 있다. 진짜는 **메서드를 부르는 순간** 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "9.7절과 같은 일을 대신 해 주는 것이다",
+   "md": "프록시 안에서 일어나는 일을 코드로 쓰면 이렇다.\n\n```java\n// 가짜 MyLogger 가 하는 일 (의사코드)\n@Override\npublic void log(String message) {\n    MyLogger real = 지금_요청의_MyLogger를_찾는다();   // = getObject()\n    real.log(message);\n}\n```\n\n**9.7절에서 손으로 하던 `getObject()` 를 프록시가 대신 부른다.** 원리가 새로 생긴 것이 아니라, 같은 일을 **호출하는 쪽에서 보이지 않게** 옮긴 것이다.\n\n1.3절의 다형성이 마지막으로 한 번 더 나온다 — **타입이 같으면 무엇이 들어와도 클라이언트는 같은 코드를 쓴다.** 진짜든 가짜든."
+  },
+  {
+   "type": "heading",
+   "text": "감추는 것"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "싱글톤처럼 보이지만 싱글톤이 아니다",
+   "md": "이것이 이 방식의 대가다.\n\n```java\nprivate final MyLogger myLogger;   // 코드만 보면 평범한 싱글톤 주입\n```\n\n**코드 어디에도 request 스코프라는 표시가 없다.** `MyLogger` 클래스를 열어 봐야 안다.\n\n그래서 이런 일이 생긴다.\n\n- **별도 스레드에서 부르면 예외가 난다** — 9.7절과 같은 제약인데, 코드에는 안 보인다\n- **테스트에서 요청 없이 부르면 실패한다** — 왜인지 한참 헤맨다\n- 성능이 궁금해서 봤더니 **호출마다 조회가 일어나고 있다**\n\n6장 끝에서 한 정리가 여기서도 그대로 적용된다.\n\n> **자동화는 코드에서 정보를 뺀다.**\n\n7.4절의 롬복, 6.1절의 컴포넌트 스캔, 그리고 이것. **편의를 얻으면 정보를 잃는다.** 이 책이 반복해서 말한 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "웹 스코프는 꼭 필요한 곳에만",
+   "md": "\"편하니까 여기저기 쓰자\" 가 되면 곤란해진다.\n\n**request 스코프 빈이 늘어날수록 유지보수가 어려워진다.** 어떤 객체가 요청 단위인지, 어디서 값이 채워지는지가 코드에 안 나타나기 때문이다.\n\n실무 기준을 하나 두자면.\n\n> **요청 전체에 걸쳐야 하고, 파라미터로 넘기기에는 너무 여러 계층을 지나는 것.**\n\n로그 추적, 인증된 사용자 정보 정도다. 그 외에는 **파라미터로 넘기는 것이 낫다** — 코드에 보이니까.\n\n7.9절에서 기술 지원 빈을 수동 등록하기로 한 것과 같은 판단이다. **한눈에 보이는가.**"
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"싱글톤 빈에서 request 스코프 빈을 어떻게 쓰나요?\"** → `ObjectProvider` 로 조회 시점을 미루거나, `proxyMode` 로 프록시를 주입받는다.\n- **\"스코프 프록시는 어떻게 동작하나요?\"** → CGLIB 으로 가짜 객체를 만들어 싱글톤처럼 주입하고, 메서드가 호출되면 그때 현재 요청의 진짜 빈을 찾아 위임한다.\n- **\"`@Configuration` 의 CGLIB 과 같은 건가요?\"** → 기술은 같다. 목적이 다르다 — 하나는 싱글톤 보장, 하나는 조회 지연.\n- **\"단점은?\"** → 코드만 봐서는 특별한 스코프라는 것을 알 수 없다. 별도 스레드나 요청 밖에서 부르면 실패하는데 그 사정이 안 보인다."
+  },
+  {
+   "type": "heading",
+   "text": "책을 닫으며"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1.4절의 두 줄로 돌아간다",
+   "md": "이 책은 이 코드에서 시작했다.\n\n```java\nprivate DiscountPolicy discountPolicy = new FixDiscountPolicy();\n```\n\n한 줄에 의존관계가 둘 있고, DIP 를 어겨서 OCP 가 깨진다고 했다.\n\n그 뒤로 한 일을 줄이면 이렇다.\n\n1. **`AppConfig` 를 만들어 `new` 를 밖으로 뺐다** (3장) — 스프링 없이\n2. **그것을 스프링에게 넘겼다** (3.9)\n3. **넘긴 물건이 어떻게 생겼는지 확인했다** (4장)\n4. **객체를 하나만 만들어 공유하는 대가를 배웠다** (5장)\n5. **등록과 주입을 자동화하고, 그 대가를 셌다** (6~7장)\n6. **태어나고 죽는 자리에 끼어드는 법** (8장)\n7. **하나가 아니어야 하는 경우** (9장)\n\n**스프링이 하는 일은 여전히 둘뿐이다** — 3.8절에서 정리한 그대로. **만든다, 연결한다.** 4장부터 9장까지는 전부 그 둘을 더 편하게·더 안전하게 하는 이야기였다.\n\n그리고 반복된 문장이 하나 있다.\n\n> **편의를 얻으면 정보를 잃는다.**\n\n컴포넌트 스캔이 그랬고(6장), 롬복이 그랬고(7.4), 스코프 프록시가 그렇다. **그래도 쓴다. 다만 무엇을 잃었는지 알고 쓴다.** 이 책이 하려던 말이 그것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 마지막",
+   "sql": "myLogger = class hello.core.common.MyLogger$$SpringCGLIB$$0\n\n# 첫 번째 요청\n[d4d3e6f1-...] request scope bean create: hello.core.common.MyLogger@1f36e637\n[d4d3e6f1-...][http://localhost:8080/log-demo] controller test\n[d4d3e6f1-...][http://localhost:8080/log-demo] service id = testId\n[d4d3e6f1-...] request scope bean close: hello.core.common.MyLogger@1f36e637\n\n# 두 번째 요청\n[8b2f1c04-...] request scope bean create: hello.core.common.MyLogger@7b02881e\n[8b2f1c04-...][http://localhost:8080/log-demo] controller test\n[8b2f1c04-...][http://localhost:8080/log-demo] service id = testId\n[8b2f1c04-...] request scope bean close: hello.core.common.MyLogger@7b02881e\n\nBUILD SUCCESSFUL",
+   "note": "**9.7절과 결과가 똑같다.** 그런데 컨트롤러와 서비스에는 `getObject()` 가 한 줄도 없다.\n\n맨 윗줄만 다르다 — **`$$SpringCGLIB$$0`.** 4.2절에서 설명 없이 흘려 둔 그 문자열이, 5.6절에서 정체를 드러내고, 여기서 마지막으로 한 번 더 일한다.\n\n**책 끝.**"
+  }
+ ],
+ "recap": [
+  "**`proxyMode = ScopedProxyMode.TARGET_CLASS`** 한 줄이면 그냥 주입받을 수 있다.",
+  "인터페이스에 걸 때는 **`INTERFACES`** 다.",
+  "주입된 것은 **CGLIB 이 만든 가짜**다 — `MyLogger$$SpringCGLIB$$0`.",
+  "가짜는 **싱글톤처럼 하나**라서 시작 시점에 주입된다.",
+  "메서드를 부르면 그때 **현재 요청의 진짜 빈을 찾아 위임**한다.",
+  "**5.6절의 CGLIB 과 같은 기술**이고 목적만 다르다 — 싱글톤 보장 vs 조회 지연.",
+  "대가 — **코드만 봐서는 특별한 스코프인지 알 수 없다.**",
+  "**웹 스코프는 꼭 필요한 곳에만.** 요청 전체에 걸치고 계층을 여럿 지나는 것에만."
+ ],
+ "drills": [
+  {
+   "task": "`MyLogger` 에 `proxyMode` 를 붙이고 9.6절 코드(Provider 없는 버전)로 되돌린다.",
+   "done_when": "시작 오류 없이 뜨고 로그가 정상으로 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`myLogger.getClass()` 를 출력한다.",
+   "done_when": "`$$SpringCGLIB$$0` 을 확인했다 — 4.2·5.6절에 이어 세 번째다.",
+   "minutes": 5
+  },
+  {
+   "task": "별도 스레드에서 `myLogger.log()` 를 불러 본다.",
+   "done_when": "예외가 나는 것과, 코드만 봐서는 그 위험이 안 보인다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "9.7 방식과 9.8 방식을 나란히 두고 장단점을 정리한다.",
+   "done_when": "'보이는가' 와 '편한가' 가 반대 방향이라는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1장부터 9장까지 각 장을 한 문장으로 요약한다.",
+   "done_when": "아홉 문장이 서로 이어지는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`proxyMode` 는 무엇을 하는가?",
+   "a": "CGLIB 으로 가짜 프록시 객체를 만들어 빈으로 등록한다. 싱글톤처럼 주입되고, 메서드 호출 시점에 진짜 빈을 찾아 위임한다."
+  },
+  {
+   "q": "`TARGET_CLASS` 와 `INTERFACES` 의 차이는?",
+   "a": "적용 대상이 클래스면 `TARGET_CLASS`, 인터페이스면 `INTERFACES` 를 쓴다."
+  },
+  {
+   "q": "5.6절의 CGLIB 과 어떻게 다른가?",
+   "a": "기술은 같다. `@Configuration` 은 싱글톤을 보장하려고 `@Bean` 메서드를 재정의하고, 스코프 프록시는 조회를 미루려고 모든 public 메서드를 재정의한다."
+  },
+  {
+   "q": "프록시가 주입 시점 문제를 어떻게 푸나?",
+   "a": "프록시 자체는 싱글톤처럼 하나뿐이라 컨테이너 시작 시점에 만들 수 있다. HTTP 요청이 필요한 것은 진짜 빈이고, 그것은 메서드가 호출될 때 찾는다."
+  },
+  {
+   "q": "9.7 Provider 방식과 비교하면?",
+   "a": "결과는 같다. 프록시는 쓰는 쪽 코드가 깨끗하지만 특별한 스코프라는 사실이 숨는다. Provider 는 코드가 지저분하지만 그 사정이 드러난다."
+  },
+  {
+   "q": "웹 스코프를 최소화해야 하는 이유는?",
+   "a": "어떤 객체가 요청 단위인지, 어디서 값이 채워지는지가 코드에 나타나지 않아 유지보수가 어려워진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스코프 프록시",
+   "en": "scoped proxy",
+   "what": "특별한 스코프의 빈을 싱글톤 빈에 주입할 수 있게 해 주는 가짜 객체. 호출 시점에 실제 빈을 찾아 위임한다."
+  },
+  {
+   "term": "ScopedProxyMode",
+   "en": "",
+   "what": "프록시를 만드는 방식. `TARGET_CLASS`(클래스 상속) 와 `INTERFACES`(인터페이스 구현) 가 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Scoped Beans as Dependencies",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

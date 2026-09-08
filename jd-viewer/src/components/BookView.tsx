@@ -935,6 +935,13 @@ function rulesFor(lang?: string): RegExp | null {
     return new RegExp(`(?<cm>--[^\\n]*)|(?<st>'(?:''|[^'])*')|(?<kw>\\b(?:${SQL_KW})\\b)|(?<nu>\\b\\d+\\b)`, 'gi')
   if (l === 'xml' || l === 'html')
     return new RegExp(`(?<cm><!--[\\s\\S]*?-->)|(?<st>"[^"]*")|(?<kw><\\/?[\\w:.-]+|\\/?>)`, 'g')
+  // 오간 HTTP 를 날것으로 싣는 책(스프링 MVC)이 있어서 넣었다.
+  // 헤더 이름을 `an` 으로 칠하는 것은 어노테이션과 같은 자리 — 줄 맨 앞의 이름표라는 점이 같다.
+  if (l === 'http')
+    return new RegExp(
+      `(?<cm>^#[^\\n]*)|(?<kw>^(?:GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\\b|HTTP\\/[\\d.]+)|(?<an>^[A-Za-z][\\w-]*(?=:\\s))|(?<nu>\\b[1-5]\\d{2}\\b)`,
+      'gm',
+    )
   return null
 }
 

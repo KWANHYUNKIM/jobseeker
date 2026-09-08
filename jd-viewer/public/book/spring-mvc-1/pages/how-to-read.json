@@ -1,0 +1,139 @@
+{
+ "book": "spring-mvc-1",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "왜 서블릿부터 시작하는가. 그리고 5장을 건너뛰면 안 되는 이유.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책이 어떤 순서로 가는지 안다.",
+  "왜 오래된 기술부터 만지는지 안다.",
+  "5장이 왜 중심인지 안다.",
+  "매 절이 무엇으로 끝나는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "스프링 MVC 를 처음 배우면 이 코드를 만난다.\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId, Model model) {\n    model.addAttribute(\"item\", itemRepository.findById(itemId));\n    return \"basic/item\";\n}\n```\n\n**여섯 줄인데 설명해야 할 것이 여덟 가지쯤 된다.**\n\n- `@GetMapping` 이 어떻게 URL 과 연결되나\n- `{itemId}` 조각은 누가 뽑아 오나\n- `Model` 은 어디서 나타나나 — 내가 만든 적이 없다\n- 돌려준 `\"basic/item\"` 이라는 문자열이 어떻게 HTML 이 되나\n\n**모르는 채로도 개발은 된다.** 문제가 생기기 전까지는."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책의 순서",
+   "md": "**없는 상태부터 시작한다.**\n\n앞 책 「스프링 핵심 원리」가 스프링 없이 DI 컨테이너를 만들어 본 것처럼, 이 책은 **스프링 MVC 없이 웹 애플리케이션을 만든다.** 그리고 불편해진 다음에 프레임워크를 직접 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "3장에서 6장까지",
+   "ascii": "   ch3  servlet only          request.getParameter(), out.println(\"<html>\")\n          │  불편하다\n          ▼\n   ch4  jsp + mvc pattern     화면은 나아졌는데 중복이 남는다\n          │  중복을 센다\n          ▼\n   ch5  build it yourself     v1 -> v2 -> v3 -> v4 -> v5\n          │  다 만들고 나서\n          ▼\n   ch6  spring mvc            FrontController == DispatcherServlet",
+   "note": "**6장에서 하는 일은 이름 붙이기뿐**이다. 우리가 `FrontController` 라고 부른 것이 스프링에서는 `DispatcherServlet` 이라는 것."
+  },
+  {
+   "type": "heading",
+   "text": "왜 굳이 서블릿부터인가"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 가지 이유",
+   "md": "**1. 스프링 MVC 가 서블릿 위에 있다.**\n\n지우고 갈 수 있는 층이 아니다. `DispatcherServlet` 은 이름 그대로 **서블릿**이고, `HttpServletRequest` 는 스프링 컨트롤러에서 지금도 파라미터로 받을 수 있다. 아래 층을 모르면 위 층의 동작을 설명할 수 없다.\n\n**2. 무엇이 표준이고 무엇이 스프링인지 갈린다.**\n\nHTTP·서블릿은 표준이고 스프링은 그 위에 얹힌 것이다. 이 둘을 섞어서 외우면 **다른 프레임워크로 옮길 때 아무것도 못 옮긴다.** 이 책은 계속 구분해서 적는다.\n\n**3. 편의의 정체가 보인다.**\n\n`@RequestParam` 이 편한 이유는 3장에서 `request.getParameter()` 를 손으로 써 봐야 안다. 안 겪으면 그냥 \"원래 그런 것\" 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JSP 를 배우는 것이 아니다",
+   "md": "4장에서 JSP 를 쓴다. **실무에서 새 프로젝트에 JSP 를 쓰는 일은 이제 없다** — 8장부터는 타임리프로 간다.\n\n그런데 JSP 를 거치는 이유가 있다. **서블릿에서 JSP 로 갔을 때 무엇이 나아지고 무엇이 안 나아지는지**가 MVC 패턴이 필요한 이유를 정확히 설명하기 때문이다.\n\n4장의 JSP 는 **배우려고 쓰는 것이 아니라 겪으려고 쓰는 것**이다."
+  },
+  {
+   "type": "heading",
+   "text": "5장을 건너뛰면 안 된다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "6장이 마법으로 보인다",
+   "md": "5장은 코드를 다섯 번 고쳐 쓴다. v1 을 만들고, v2 로 고치고, v3 로 고치고… 지루해 보인다.\n\n**그런데 그 다섯 단계가 스프링 MVC 의 설계 그 자체다.**\n\n| 우리가 만든 것 | 스프링에서의 이름 |\n|---|---|\n| `FrontControllerServlet` | `DispatcherServlet` |\n| `ControllerV3` 인터페이스 | `Controller` / 핸들러 |\n| `MyHandlerAdapter` | `HandlerAdapter` |\n| `ModelView` | `ModelAndView` |\n| `viewResolver()` 메서드 | `ViewResolver` |\n\n5장을 건너뛰고 6장을 읽으면 **이 표가 그냥 외울 것**이 된다. 만들어 보고 읽으면 **이미 아는 것에 이름을 붙이는 일**이 된다.\n\n두 경험의 차이가 이 책의 전부다."
+  },
+  {
+   "type": "heading",
+   "text": "매 절은 오간 HTTP 로 끝난다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책의 규칙",
+   "md": "앞 책들에도 규칙이 있었다.\n\n- 「JPA」 — 매 절이 **실제로 나가는 SQL** 로 끝난다\n- 「스프링 핵심 원리」 — 매 절이 **실행 결과·컨테이너 로그** 로 끝난다\n- **이 책 — 매 절이 실제로 오간 HTTP 로 끝난다**\n\n요청 라인부터 응답 바디까지 날것 그대로 싣는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "직접 볼 수 있어야 한다",
+   "md": "책에 적힌 것을 믿지 말고 직접 본다. 두 가지 방법이면 충분하다.\n\n```bash\n# 요청과 응답을 전부 보여 준다\ncurl -v http://localhost:8080/hello\n\n# 헤더까지 지정해서 보내려면\ncurl -v -X POST http://localhost:8080/items \\\n     -H \"Content-Type: application/json\" \\\n     -d '{\"itemName\":\"itemA\",\"price\":10000}'\n```\n\n브라우저 개발자 도구의 **Network 탭**도 같은 것을 보여 준다. 요청 헤더·응답 헤더·바디를 다 볼 수 있다.\n\n**둘 중 하나는 늘 열어 두고 읽는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 이 책이 매 절 끝에 싣는 것",
+   "sql": "GET /hello?username=kim HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/8.4.0\nAccept: */*\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\nContent-Length: 16\nDate: Tue, 09 Sep 2026 02:21:00 GMT\n\nhello username=kim",
+   "note": "**빈 줄 하나가 헤더와 바디를 가른다.** 위가 요청, 아래가 응답이다.\n\n이 책의 목표를 한 문장으로 하면 이렇다 — **자바 코드를 보고 이 텍스트를 예상할 수 있게 되는 것.** 그리고 반대로, 이 텍스트를 보고 어느 코드가 만들었는지 짚을 수 있게 되는 것."
+  }
+ ],
+ "recap": [
+  "**없는 상태부터 시작한다** — 3장 서블릿, 4장 JSP·MVC 패턴, 5장 직접 만들기, 6장 이름 붙이기.",
+  "서블릿부터 하는 이유 — **스프링 MVC 가 그 위에 있고**, 표준과 스프링이 갈리고, **편의의 정체가 보인다.**",
+  "4장의 JSP 는 **배우려고 쓰는 것이 아니라 겪으려고 쓰는 것**이다.",
+  "**5장이 중심이다.** 건너뛰면 6장의 대응표가 외울 것이 된다.",
+  "매 절은 **실제로 오간 HTTP** 로 끝난다.",
+  "`curl -v` 나 브라우저 Network 탭을 **늘 열어 두고 읽는다.**"
+ ],
+ "drills": [
+  {
+   "task": "아무 웹사이트에나 `curl -v` 를 걸어 요청·응답 전문을 본다.",
+   "done_when": "빈 줄이 헤더와 바디를 가르는 것을 눈으로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "브라우저 개발자 도구 Network 탭에서 같은 요청을 본다.",
+   "done_when": "curl 출력과 같은 정보가 어디에 있는지 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 아는 스프링 MVC 코드에서 설명 못 하는 부분을 목록으로 적는다.",
+   "done_when": "다섯 개쯤 적었다. 책을 다 읽고 다시 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책은 왜 서블릿부터 시작하는가?",
+   "a": "스프링 MVC 가 서블릿 위에 얹혀 있고, 무엇이 표준이고 무엇이 스프링인지 구분할 수 있으며, 편의 기능의 정체가 보이기 때문이다."
+  },
+  {
+   "q": "4장에서 JSP 를 쓰는 이유는?",
+   "a": "실무에서 쓰려는 것이 아니라, 서블릿에서 JSP 로 갔을 때 무엇이 나아지고 무엇이 안 나아지는지가 MVC 패턴이 필요한 이유를 설명하기 때문이다."
+  },
+  {
+   "q": "5장을 건너뛰면 무엇이 문제인가?",
+   "a": "6장의 '우리가 만든 것 ↔ 스프링의 이름' 대응표가 그냥 외울 것이 된다. 만들어 봐야 이미 아는 것에 이름을 붙이는 일이 된다."
+  },
+  {
+   "q": "이 책의 매 절은 무엇으로 끝나는가?",
+   "a": "실제로 오간 HTTP — 요청 라인부터 응답 바디까지 날것 그대로."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

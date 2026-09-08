@@ -1,0 +1,138 @@
+{
+ "book": "spring-mvc-1",
+ "id": "what-we-build",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "무엇을 만드나",
+ "summary": "상품 관리 화면 하나. 그리고 그것을 굴리는 프레임워크를 직접 만든다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책에서 만들 것 두 가지를 구분할 수 있다.",
+  "예제가 왜 이렇게 작은지 안다.",
+  "URL 설계가 왜 먼저 나오는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "만드는 것이 **둘**이다. 헷갈리기 쉬우니 먼저 갈라 둔다.\n\n1. **웹 애플리케이션** — 회원 관리(4장), 상품 관리(8장). 화면 몇 개짜리\n2. **MVC 프레임워크** — 그 애플리케이션을 굴리는 것(5장)\n\n보통 책은 1번만 만든다. **이 책은 2번을 만드는 것이 중심**이고, 1번은 2번을 만들 이유를 주는 재료다."
+  },
+  {
+   "type": "heading",
+   "text": "1. 웹 애플리케이션"
+  },
+  {
+   "type": "table",
+   "caption": "두 개를 만든다",
+   "note": "**둘 다 저장과 조회뿐**이다. 로그인도 권한도 결제도 없다.",
+   "columns": [
+    "",
+    "언제",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "**회원 관리**",
+     "4장",
+     "이름·나이 저장, 목록 보기. 화면 셋"
+    ],
+    [
+     "**상품 관리**",
+     "8장",
+     "목록·상세·등록·수정. 화면 넷"
+    ]
+   ]
+  },
+  {
+   "type": "figure",
+   "caption": "8장에서 만들 URL",
+   "ascii": "   GET  /basic/items              ->  목록\n   GET  /basic/items/{id}         ->  상세\n   GET  /basic/items/add          ->  등록 폼\n   POST /basic/items/add          ->  등록 처리   -> redirect\n   GET  /basic/items/{id}/edit    ->  수정 폼\n   POST /basic/items/{id}/edit    ->  수정 처리   -> redirect",
+   "note": "**같은 URL 에 GET 과 POST 가 짝을 이룬다.** 폼을 보여 주는 것과 처리하는 것. 이 관례와, 처리 뒤에 왜 `redirect` 를 하는지가 **8.10절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예제가 왜 이렇게 작은가",
+   "md": "**설명할 것이 프레임워크이기 때문**이다.\n\n예제가 크면 그 도메인을 설명하는 데 지면이 간다. 주문·결제·배송이 얽힌 예제를 쓰면 \"주문 상태가 왜 이렇게 바뀌는지\" 를 설명해야 하고, **정작 보여 주려던 `DispatcherServlet` 의 동작이 묻힌다.**\n\n저장소도 `HashMap` 하나다.\n\n```java\nprivate static final Map<Long, Item> store = new HashMap<>();\n```\n\nDB 를 안 쓴다. 앞 책 「스프링 핵심 원리」 2.7절에서 이 `static` 이 문제였는데, 여기서는 **이 책의 관심사가 아니라서** 그냥 둔다. 대신 그 사실을 적어 둔다 — **의도적으로 대충 한 자리는 대충 했다고 말하는 것**이 이 책의 태도다."
+  },
+  {
+   "type": "heading",
+   "text": "2. MVC 프레임워크"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "5장에서 만드는 것",
+   "md": "5장에서 만드는 물건의 목록이다. 지금은 이름만 봐 둔다.\n\n- **`FrontControllerServlet`** — 모든 요청을 받는 서블릿 하나\n- **`ControllerV3` 인터페이스** — 컨트롤러가 지켜야 할 약속\n- **`ModelView`** — 컨트롤러가 돌려주는 것 (뷰 이름 + 데이터)\n- **`MyView`** — 뷰 렌더링을 맡는 것\n- **`MyHandlerAdapter`** — 서로 다른 모양의 컨트롤러를 같게 다루는 것\n\n다섯 개뿐이다. **스프링 MVC 의 뼈대가 이 정도라는 뜻**이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "코드를 지우지 않는다",
+   "md": "5장에서 v1 을 만들고 v2 로 갈 때 **v1 을 지우지 않는다.** 패키지를 따로 둔다.\n\n```\nhello.servlet.web.frontcontroller.v1\nhello.servlet.web.frontcontroller.v2\nhello.servlet.web.frontcontroller.v3\n...\n```\n\n나란히 두고 비교할 수 있어야 하기 때문이다. **5.8절에서 다섯 버전을 한 장에 놓고 각 단계가 무엇을 없앴는지 센다.**\n\n앞 책에서도 같은 방식을 썼다 — 2장의 `AppConfig` 를 3장 내내 지우지 않고 고쳐 갔다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 이 책의 도착점",
+   "sql": "POST /basic/items/add HTTP/1.1\nHost: localhost:8080\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 38\n\nitemName=itemA&price=10000&quantity=10\n\nHTTP/1.1 302 \nLocation: http://localhost:8080/basic/items/1\nContent-Length: 0\n\n# 브라우저가 이어서\nGET /basic/items/1 HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<!DOCTYPE HTML>\n<html>...상품 상세 화면...</html>",
+   "note": "**8장 마지막에서 이 흐름을 만든다.** 폼을 보내면 `302` 로 리다이렉트되고 브라우저가 새 주소로 다시 요청한다.\n\n왜 `200` 으로 화면을 바로 주지 않고 굳이 두 번 오가는지 — **새로고침하면 상품이 두 번 등록되는 문제** 때문이다. 8.10절이다.\n\n지금은 **이 텍스트가 목표라는 것만** 봐 둔다."
+  }
+ ],
+ "recap": [
+  "만드는 것이 둘이다 — **웹 애플리케이션**(4·8장)과 **MVC 프레임워크**(5장).",
+  "보통 책은 앞의 것만 만든다. **이 책은 뒤의 것이 중심**이다.",
+  "예제가 작은 이유는 **설명할 것이 프레임워크**이기 때문이다.",
+  "저장소는 `HashMap` 하나다 — **대충 한 자리는 대충 했다고 적는다.**",
+  "5장에서 만들 물건은 **다섯 개**뿐이다. 스프링 MVC 의 뼈대가 그 정도다.",
+  "**버전별 코드를 지우지 않는다.** 나란히 놓고 비교해야 하기 때문이다."
+ ],
+ "drills": [
+  {
+   "task": "8장에서 만들 URL 여섯 개를 종이에 적고 각각 GET/POST 를 표시한다.",
+   "done_when": "폼과 처리가 짝을 이루는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "평소 쓰는 웹사이트에서 폼을 제출하고 Network 탭에서 302 가 나오는지 본다.",
+   "done_when": "리다이렉트가 실제로 흔하다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "5장에서 만들 다섯 물건의 이름을 적어 두고, 각각 무슨 일을 할지 짐작해 본다.",
+   "done_when": "5장을 다 읽은 뒤 비교할 메모가 생겼다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책에서 만드는 것 두 가지는?",
+   "a": "웹 애플리케이션(회원 관리·상품 관리)과 그것을 굴리는 MVC 프레임워크다. 후자가 중심이다."
+  },
+  {
+   "q": "예제가 작은 이유는?",
+   "a": "설명할 것이 프레임워크이기 때문이다. 도메인이 복잡하면 그것을 설명하는 데 지면이 가고 정작 보여 주려던 동작이 묻힌다."
+  },
+  {
+   "q": "5장에서 버전별 코드를 지우지 않는 이유는?",
+   "a": "다섯 버전을 나란히 놓고 각 단계가 무엇을 없앴는지 비교하기 위해서다."
+  },
+  {
+   "q": "폼 처리 뒤에 리다이렉트를 하는 이유는?",
+   "a": "새로고침했을 때 같은 요청이 다시 전송되는 것을 막기 위해서다. 8.10절에서 다룬다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

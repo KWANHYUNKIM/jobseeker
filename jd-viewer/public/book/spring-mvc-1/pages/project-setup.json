@@ -1,0 +1,224 @@
+{
+ "book": "spring-mvc-1",
+ "id": "project-setup",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "프로젝트 만들기",
+ "summary": "start.spring.io 에서 뼈대를 받고 첫 요청을 받아 본다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프로젝트를 만들고 서버를 띄울 수 있다.",
+  "내장 톰캣이 무엇을 하는지 안다.",
+  "`@ServletComponentScan` 이 왜 필요한지 안다.",
+  "첫 요청의 HTTP 를 눈으로 확인할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "손으로 칠 준비를 한다. **3장부터 계속 쓸 프로젝트**이니 여기서 제대로 만들어 둔다."
+  },
+  {
+   "type": "heading",
+   "text": "start.spring.io"
+  },
+  {
+   "type": "table",
+   "caption": "고를 것",
+   "note": "**Thymeleaf 는 지금 안 넣는다.** 8장에서 더한다 — 3~5장은 서블릿과 JSP 만으로 간다.",
+   "columns": [
+    "항목",
+    "값"
+   ],
+   "rows": [
+    [
+     "Project",
+     "**Gradle - Groovy**"
+    ],
+    [
+     "Language",
+     "Java"
+    ],
+    [
+     "Spring Boot",
+     "**3.x**"
+    ],
+    [
+     "Packaging",
+     "**War**"
+    ],
+    [
+     "Java",
+     "17"
+    ],
+    [
+     "Dependencies",
+     "**Spring Web**, Lombok"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Packaging 을 War 로 고른다",
+   "md": "기본값이 Jar 인데 **War 로 바꾼다.** 이유는 하나뿐이다 — **4장에서 JSP 를 쓰기 때문**이다.\n\nJSP 는 Jar 패키징에서 동작하지 않는다. 실행 가능한 Jar 안의 `WEB-INF` 를 서블릿 컨테이너가 못 찾기 때문이다.\n\n**실무에서는 Jar 를 쓴다.** JSP 를 안 쓰니까. 이건 이 책의 4장 때문에 감수하는 것이고, **8장부터는 사실 Jar 로 해도 된다.**\n\n앞 절에서 말한 태도 그대로다 — **예제 사정 때문에 표준에서 벗어난 자리는 그렇다고 적는다.**"
+  },
+  {
+   "type": "code",
+   "lang": "xml",
+   "file": "build.gradle",
+   "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n\n    compileOnly 'org.projectlombok:lombok'\n    annotationProcessor 'org.projectlombok:lombok'\n\n    // JSP 를 쓰려면 필요하다 (4장)\n    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'\n    implementation 'jakarta.servlet:jakarta.servlet-api'\n    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'\n    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'\n\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}",
+   "note": "아래 넷은 **JSP 용**이다. `jasper` 가 JSP 를 자바 코드로 바꿔 주는 엔진이고, 나머지는 표준 API 다.\n\n`jakarta` 라는 이름이 계속 나오는데, 앞 책 8.4절에서 본 그것이다 — **`javax` 가 이름을 못 쓰게 되면서 바뀐 것.** 부트 3.x 는 전부 `jakarta` 다."
+  },
+  {
+   "type": "heading",
+   "text": "서버를 띄운다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ServletApplication.java",
+   "code": "@ServletComponentScan      // 서블릿을 직접 등록할 때 필요하다\n@SpringBootApplication\npublic class ServletApplication {\n\n    public static void main(String[] args) {\n        SpringApplication.run(ServletApplication.class, args);\n    }\n}",
+   "note": "**`@ServletComponentScan` 이 새로 나온 것**이다. 나머지는 앞 책 6.2절에서 본 그대로다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "@ServletComponentScan 은 무엇을 하나",
+   "md": "이름이 `@ComponentScan` 과 비슷한데 **다른 것을 찾는다.**\n\n| | 찾는 것 | 등록되는 곳 |\n|---|---|---|\n| `@ComponentScan` | `@Component` | **스프링 컨테이너** |\n| `@ServletComponentScan` | **`@WebServlet`**, `@WebFilter`, `@WebListener` | **서블릿 컨테이너** |\n\n**등록되는 곳이 다르다.** 서블릿은 스프링 빈이 아니다 — 표준이 정한 물건이고 톰캣이 관리한다.\n\n원래 서블릿은 `web.xml` 이라는 설정 파일에 등록해야 했다. `@WebServlet` 어노테이션이 그것을 대신하는데, **스프링 부트는 그 어노테이션을 자동으로 찾아 주지 않는다.** `@ServletComponentScan` 을 붙여야 찾는다.\n\n1.1절에서 말한 구분이 첫 절부터 나온다 — **서블릿은 표준이고 스프링은 그 위**다. 스프링이 남의 표준을 알아서 챙겨 주지는 않는다."
+  },
+  {
+   "type": "figure",
+   "caption": "bootRun 하면 일어나는 일",
+   "ascii": "   ./gradlew bootRun\n        │\n        ├──> spring boot starts\n        ├──> embedded tomcat starts   (port 8080)\n        └──> servlet container ready\n                 │\n                 └──> @ServletComponentScan  finds  @WebServlet\n\n   http request  ->  tomcat  ->  servlet container  ->  my servlet",
+   "note": "**부트가 톰캣을 띄운다.** 예전에는 톰캣을 따로 설치하고 War 를 그 안에 넣었는데, 지금은 **애플리케이션 안에 톰캣이 들어 있다.** 2.1절에서 다시 본다."
+  },
+  {
+   "type": "heading",
+   "text": "첫 요청"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "HelloServlet.java",
+   "code": "@WebServlet(name = \"helloServlet\", urlPatterns = \"/hello\")\npublic class HelloServlet extends HttpServlet {\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        System.out.println(\"HelloServlet.service\");\n\n        String username = request.getParameter(\"username\");\n        System.out.println(\"username = \" + username);\n\n        response.setContentType(\"text/plain\");\n        response.setCharacterEncoding(\"utf-8\");\n        response.getWriter().write(\"hello \" + username);\n    }\n}",
+   "note": "**아직 스프링이 한 줄도 없다.** `jakarta.servlet` 패키지의 표준 API 뿐이다.\n\n이 코드가 3장 전체의 출발점이고, **3.1절에서 한 줄씩 뜯는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "확인은 셋 중 하나로",
+   "md": "```bash\n# 1. curl\ncurl -v \"http://localhost:8080/hello?username=kim\"\n\n# 2. 브라우저 주소창\nhttp://localhost:8080/hello?username=kim\n\n# 3. IntelliJ 의 .http 파일\nGET http://localhost:8080/hello?username=kim\n```\n\n**세 번째가 편하다.** 프로젝트에 `test.http` 파일을 만들어 두면 요청을 저장해 두고 계속 쓸 수 있고, 응답도 에디터 안에서 본다.\n\n이 책은 계속 HTTP 를 보여 줄 것이므로 **하나는 익숙해져 두는 것이 좋다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "한글이 깨지면",
+   "md": "```java\nresponse.setCharacterEncoding(\"utf-8\");\n```\n\n이 줄을 빼면 **한글이 `?????` 로 나온다.** 서블릿의 기본 인코딩이 UTF-8 이 아니기 때문이다.\n\n스프링 MVC 를 쓰면 이 줄을 안 써도 된다 — **부트가 기본을 UTF-8 로 잡아 준다.** 그런데 그건 스프링이 해 주는 것이고, **서블릿 표준의 기본값은 아니다.**\n\n3.7절에서 요청 쪽 인코딩도 같은 문제를 겪는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /hello?username=kim HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/8.4.0\nAccept: */*\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=utf-8\nContent-Length: 9\nDate: Tue, 09 Sep 2026 02:21:00 GMT\nKeep-Alive: timeout=60\nConnection: keep-alive\n\nhello kim\n\n# 서버 콘솔\nHelloServlet.service\nusername = kim",
+   "note": "읽을 것이 셋이다.\n\n① **`Content-Type: text/plain;charset=utf-8`** — 우리가 코드로 지정한 그 값이 그대로 나갔다.\n② **`Content-Length: 9`** — `\"hello kim\"` 이 9바이트다. 우리가 안 적었는데 톰캣이 세어서 붙였다.\n③ **`Connection: keep-alive`** — 이것도 안 적었다. HTTP/1.1 의 기본 동작이고 톰캣이 처리한다.\n\n**내가 쓴 것과 서버가 채운 것이 섞여 있다.** 이 책이 매 절 끝에 HTTP 를 싣는 이유가 이것이다 — **어디까지가 내 코드고 어디부터가 남의 일인지** 보이게."
+  }
+ ],
+ "recap": [
+  "start.spring.io — **War 패키징**, Spring Web, Lombok.",
+  "**War 로 하는 이유는 4장의 JSP 하나뿐**이다. 실무에서는 Jar 를 쓴다.",
+  "JSP 를 쓰려면 `tomcat-embed-jasper` 등 **네 개를 더 넣는다.**",
+  "**`@ServletComponentScan`** 이 `@WebServlet` 을 찾아 **서블릿 컨테이너**에 등록한다.",
+  "`@ComponentScan` 과 다르다 — **등록되는 곳이 스프링 컨테이너가 아니다.**",
+  "`HelloServlet` 에는 **스프링이 한 줄도 없다.** `jakarta.servlet` 표준뿐이다.",
+  "`setCharacterEncoding(\"utf-8\")` 을 빼면 **한글이 깨진다.** 표준의 기본값이 아니다.",
+  "응답 HTTP 에는 **내가 쓴 것과 톰캣이 채운 것이 섞여 있다.**"
+ ],
+ "drills": [
+  {
+   "task": "start.spring.io 에서 프로젝트를 만들고 `bootRun` 으로 띄운다.",
+   "done_when": "`Tomcat started on port 8080` 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`HelloServlet` 을 만들고 `curl -v` 로 호출한다.",
+   "done_when": "요청·응답 전문과 서버 콘솔 출력을 둘 다 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@ServletComponentScan` 을 지우고 다시 호출한다.",
+   "done_when": "404 가 나는 것을 확인했다 — 서블릿이 등록되지 않았다.",
+   "minutes": 10
+  },
+  {
+   "task": "`setCharacterEncoding` 을 빼고 한글 이름으로 호출한다.",
+   "done_when": "글자가 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "응답 헤더 중 내가 코드로 지정한 것과 안 지정한 것을 나눠 적는다.",
+   "done_when": "톰캣이 채운 것이 더 많다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Packaging 을 War 로 고르는 이유는?",
+   "a": "4장에서 JSP 를 쓰기 때문이다. JSP 는 Jar 패키징에서 동작하지 않는다. 실무에서는 Jar 를 쓴다."
+  },
+  {
+   "q": "`@ServletComponentScan` 은 무엇을 하는가?",
+   "a": "`@WebServlet`·`@WebFilter`·`@WebListener` 가 붙은 클래스를 찾아 서블릿 컨테이너에 등록한다. 스프링 컨테이너가 아니다."
+  },
+  {
+   "q": "`@ComponentScan` 과 어떻게 다른가?",
+   "a": "찾는 어노테이션도 다르고 등록되는 곳도 다르다. 서블릿은 스프링 빈이 아니라 서블릿 컨테이너가 관리하는 표준 물건이다."
+  },
+  {
+   "q": "`HelloServlet` 에 스프링 코드가 있는가?",
+   "a": "없다. `jakarta.servlet` 패키지의 표준 API 만 쓴다."
+  },
+  {
+   "q": "`setCharacterEncoding(\"utf-8\")` 을 빼면?",
+   "a": "한글이 깨진다. 서블릿 표준의 기본 인코딩이 UTF-8 이 아니기 때문이다. 스프링 MVC 를 쓰면 부트가 기본을 잡아 준다."
+  },
+  {
+   "q": "응답의 `Content-Length` 는 누가 넣었나?",
+   "a": "톰캣이다. 코드로 지정하지 않았지만 서버가 바디 크기를 세어서 붙인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ServletComponentScan",
+   "en": "",
+   "what": "`@WebServlet` 등이 붙은 클래스를 찾아 서블릿 컨테이너에 등록하게 하는 스프링 부트 어노테이션."
+  },
+  {
+   "term": "Jasper",
+   "en": "",
+   "what": "톰캣의 JSP 엔진. JSP 파일을 서블릿 자바 코드로 변환해 컴파일한다."
+  },
+  {
+   "term": "내장 톰캣",
+   "en": "embedded tomcat",
+   "what": "애플리케이션 Jar/War 안에 들어 있는 서블릿 컨테이너. 따로 설치하지 않고 `main` 에서 띄운다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot Reference — Embedded Web Servers",
+   "url": "https://docs.spring.io/spring-boot/reference/web/servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -31,13 +31,16 @@ book/
 | `prose` | 산문. 마크다운(목록·인용·표·펜스 코드 다 됨) |
 | `heading` | 절 안의 소제목 |
 | `code` | 코드. `bad: true` 면 '이렇게 하면 안 된다' 로 그린다 |
-| `sql` | **위 코드가 실제로 내보내는 SQL.** 이 책의 규칙상 개념 설명은 이걸로 끝난다 |
+| `sql` | **위 코드가 실제로 만들어 내는 것.** 절의 마지막 블록이다 — `lang` 으로 무엇인지 정한다 |
 | `callout` | `tone`: `why` `tip` `note` `warn` `trap` `interview` |
 | `table` | 비교표. 셀은 인라인 마크다운(`**`, 백틱) 가능 |
 | `compare` | 좌우 대조. 한쪽에 `bad: true` 를 주면 ✓/✗ 가 붙고, 안 주면 중립 비교로 그린다 |
 | `steps` | 번호가 의미 있는 순서 |
 | `figure` | ASCII 그림 |
 | `terms` | 본문 중간의 낱말 상자 |
+
+`sql` 블록의 `lang` 은 책마다 다르다 — 기본값 `sql`(JPA), `text`(실행 결과·로그),
+`http`(오간 HTTP). 이름이 `sql` 로 남은 것은 56절이 이미 그 이름으로 쓰여 있어서다.
 
 절 끝에는 `recap` / `drills` / `quiz` / `terms` / `sources` 가 온다.
 
