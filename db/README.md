@@ -137,7 +137,7 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | 지금 | 새 위치 | 비고 |
 |---|---|---|
 | `all_jobs_enriched.json` | `job` + `company` + `job_tech` | 파일은 `v_job` 의 덤프로 강등 |
-| `job_closures.json` | `job_closure_check` | 맵 → append-only 이력 |
+| `job_closures.json` | `job_closure_check` | 맵 → append-only 이력. **`close_check` 가 직접 쓴다** |
 | `overrides.json` | `job_override` | `site:pid` 키 → 필드 단위 |
 | `closed_<label>.json` | 없음 — `job_state` 가 계산 | 아카이브가 따로 필요 없다 |
 | `health/history.jsonl` | `crawl_run` + `crawl_run_site` | |
@@ -210,6 +210,7 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 블로그 글 적재 | `catch_capture/store/ingest_posts.py` | ✅ 1,063건 (회사 연결 282) |
 | 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 |
 | 파일 원장 이관 | `catch_capture/store/ledgers.py` | ✅ 트렌드 54일·22,304행 · 판본 30,431 |
+| 사이클 중복 제거 | `refresh-data.sh` 에서 `backfill` 제거 | ✅ export 만 남김 · 산출물 무변화 확인 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).

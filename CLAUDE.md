@@ -22,8 +22,9 @@
     (`(주)클로봇` ≠ `클로봇`) `status` 가 계산 시점에 박제됐다. 스키마와 설계 근거는
     `db/schema.sql` · `db/README.md`. `conn`(DSN) / `slug`(주소 슬러그 — 규칙 원본은
     `jd-viewer/src/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
-    백필과 크롤이 같은 함수를 쓴다) / `backfill`(JSON→DB) /
-    `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다) / `export`(DB→뷰어 JSON) /
+    백필과 크롤이 같은 함수를 쓴다) / `backfill`(JSON→DB — 이관·복구용 일회성. 사이클에서는 뺐다) /
+    `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
+    `mv_company_stack` 갱신도 여기서 한다) / `export`(DB→뷰어 JSON) /
     `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate_vectors`(sqlite-vec→pgvector) /
     `ledgers`(파일로 쌓이던 시계열 원장 — `trends_history.jsonl`→`trend_day`/`trend_metric`,
     `job_history.jsonl`→`job_version`. 지난 일은 다시 계산할 수 없어서 머신마다 따로
