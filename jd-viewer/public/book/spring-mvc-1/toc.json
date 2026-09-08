@@ -132,7 +132,7 @@
           "title": "자바 백엔드 웹 기술 역사",
           "summary": "서블릿 → JSP → MVC 프레임워크 → 스프링 MVC. 이 책의 차례가 곧 역사다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -147,7 +147,7 @@
           "title": "Hello 서블릿",
           "summary": "`@WebServlet` 하나로 요청을 받는다. 그리고 그 요청이 어떻게 여기까지 왔는지.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -155,7 +155,7 @@
           "title": "HttpServletRequest — 개요",
           "summary": "스프링이 아니라 서블릿 표준이 주는 객체. 무엇이 들어 있나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -163,7 +163,7 @@
           "title": "HttpServletRequest — 기본 사용법",
           "summary": "시작 라인·헤더·기타 정보를 전부 찍어 본다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

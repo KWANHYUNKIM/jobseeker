@@ -1,0 +1,241 @@
+{
+ "book": "spring-mvc-1",
+ "id": "java-web-history",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "자바 백엔드 웹 기술 역사",
+ "summary": "서블릿 → JSP → MVC 프레임워크 → 스프링 MVC. 이 책의 차례가 곧 역사다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "자바 웹 기술이 어떤 순서로 나왔는지 안다.",
+  "각 단계가 이전 단계의 무슨 문제를 풀었는지 말할 수 있다.",
+  "이 책의 차례가 왜 이 순서인지 안다.",
+  "지금 실무에서 무엇을 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**이 절은 이 책의 차례 설명이다.**\n\n1.1절에서 \"없는 상태부터 시작한다\" 고 했다. 그런데 그 순서가 **우연히 정한 것이 아니라 실제로 일어난 순서**다. 기술이 나온 순서대로 겪으면, 각 단계가 **무엇이 불편해서 나왔는지**가 저절로 따라온다."
+  },
+  {
+   "type": "figure",
+   "caption": "자바 웹 기술 연표",
+   "ascii": "   1997   servlet             자바 코드로 HTML 을 만든다\n   1999   jsp                 HTML 안에 자바를 넣는다\n   200x   mvc pattern         모델 / 뷰 / 컨트롤러로 나눈다\n   200x   mvc frameworks      struts, webwork, spring mvc\n   2009   annotation mvc      @RequestMapping        (spring 3.0)\n   2014   spring boot         서버 설치가 사라진다\n   2017   webflux             비동기 논블로킹        (실무 적용은 아직 적다)\n\n   ch3    ch4        ch5              ch6, ch7\n   ^^^    ^^^        ^^^              ^^^^^^^^\n   이 책의 차례가 곧 이 역사다",
+   "note": "**3장부터 7장까지가 1997년부터 2009년까지다.** 12년을 다섯 장에 압축해서 다시 겪는 것이다."
+  },
+  {
+   "type": "heading",
+   "text": "1997 — 서블릿"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "HTML 을 자바 문자열로",
+   "md": "2.2절에서 봤듯 서블릿은 **HTTP 파싱이라는 큰 문제를 해결했다.** 소켓도 헤더도 신경 안 써도 된다.\n\n그런데 응답을 만드는 쪽이 지옥이었다.\n\n```java\nPrintWriter w = response.getWriter();\nw.write(\"<html>\");\nw.write(\"<body>\");\nw.write(\"  <ul>\");\nfor (Member member : members) {\n    w.write(\"    <li>\" + member.getUsername() + \"</li>\");\n}\nw.write(\"  </ul>\");\nw.write(\"</body>\");\nw.write(\"</html>\");\n```\n\n**HTML 이 자바 문자열 안에 갇혀 있다.** 디자이너가 화면을 고치려면 자바 코드를 열어야 하고, 따옴표를 하나 빠뜨리면 컴파일 에러다.\n\n**4.2절에서 이 코드를 직접 짠다.**"
+  },
+  {
+   "type": "heading",
+   "text": "1999 — JSP"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "방향을 뒤집었다",
+   "md": "\"자바 안에 HTML\" 이 문제라면 **\"HTML 안에 자바\"** 로 하면 되지 않나.\n\n```jsp\n<html>\n<body>\n  <ul>\n    <% for (Member member : members) { %>\n      <li><%= member.getUsername() %></li>\n    <% } %>\n  </ul>\n</body>\n</html>\n```\n\n**HTML 이 HTML 답게 보인다.** 큰 개선이었다.\n\n그런데 새 문제가 생겼다 — **JSP 하나에 모든 것이 들어갔다.**\n\n```jsp\n<%\n    MemberRepository repo = MemberRepository.getInstance();   // 저장소 조회\n    List<Member> members = repo.findAll();                     // 비즈니스 로직\n%>\n<html> ... 화면 ... </html>\n```\n\n**비즈니스 로직과 화면이 한 파일에 있다.** 파일이 수천 줄이 되고, 로직을 고치다 화면이 깨지고, 화면을 고치다 로직이 깨진다.\n\n**4.3절에서 이 코드도 직접 짠다.**"
+  },
+  {
+   "type": "heading",
+   "text": "2000년대 — MVC 패턴과 프레임워크"
+  },
+  {
+   "type": "table",
+   "caption": "역할을 나눈다",
+   "note": "**변경의 이유가 다른 것을 나눈 것**이다. 화면은 디자이너가, 로직은 개발자가 고친다. 4.4절에서 이 근거를 판다.",
+   "columns": [
+    "",
+    "무엇을 하나",
+    "이 책"
+   ],
+   "rows": [
+    [
+     "**Controller**",
+     "요청을 받고 비즈니스 로직을 부른다",
+     "서블릿"
+    ],
+    [
+     "**Model**",
+     "뷰에 넘길 데이터를 담는다",
+     "`request` 의 임시 저장소 (3.2절)"
+    ],
+    [
+     "**View**",
+     "화면을 그린다",
+     "JSP"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "MVC 프레임워크 춘추전국시대",
+   "md": "MVC 패턴을 손으로 적용하니 **중복이 엄청나게 나왔다**(4.6절에서 센다). 그래서 그것을 걷어내는 프레임워크가 쏟아졌다.\n\n**Struts, WebWork, Spring MVC** — 2000년대 중반에는 어느 것을 쓸지가 논쟁거리였다.\n\n**5장에서 우리가 만들 것이 바로 이것**이다. 그 시절 프레임워크들이 무엇을 했는지 손으로 만들어 본다."
+  },
+  {
+   "type": "heading",
+   "text": "2009 — 어노테이션 기반 스프링 MVC"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 안 구현해도 된다",
+   "md": "그전의 스프링 MVC 는 이랬다.\n\n```java\npublic class MemberController implements Controller {\n    public ModelAndView handleRequest(HttpServletRequest req,\n                                     HttpServletResponse res) { ... }\n}\n```\n\n**인터페이스를 구현해야 했다.** 메서드 이름도 파라미터도 고정이다. 컨트롤러 하나에 URL 하나.\n\nSpring 3.0 부터는 이렇게 됐다.\n\n```java\n@Controller\npublic class MemberController {\n\n    @RequestMapping(\"/members\")\n    public String list(Model model) { ... }\n\n    @RequestMapping(\"/members/new\")\n    public String addForm() { ... }\n}\n```\n\n**인터페이스가 없다.** 메서드 이름도 자유고, 파라미터도 필요한 것만 받는다. 한 클래스에 URL 여러 개.\n\n이 유연함이 **어떻게 가능한지**가 6장과 7장이다. 특히 **파라미터를 마음대로 받을 수 있는 이유**는 7.14절이다."
+  },
+  {
+   "type": "heading",
+   "text": "2014 — 스프링 부트"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "서버 설치가 사라졌다",
+   "md": "그전에는 이랬다.\n\n1. 톰캣을 **설치**한다\n2. 프로젝트를 **War 로 빌드**한다\n3. 톰캣의 `webapps` 폴더에 **넣는다**\n4. 톰캣을 **재시작**한다\n\n지금은 `./gradlew bootRun` 하나다. **톰캣이 애플리케이션 안에 들어 있기 때문**이다(1.3절의 내장 톰캣).\n\n그리고 라이브러리 버전 관리도 사라졌다. `spring-boot-starter-web` 하나에 톰캣·스프링 MVC·Jackson 이 **서로 맞는 버전으로** 들어 있다.\n\n1.3절에서 우리가 `build.gradle` 에 적은 줄이 몇 개 안 됐던 것이 그래서다."
+  },
+  {
+   "type": "heading",
+   "text": "지금"
+  },
+  {
+   "type": "table",
+   "caption": "실무에서 쓰는 것",
+   "note": "**뷰 템플릿의 역사도 비슷하다** — JSP → Freemarker·Velocity → **타임리프**. 8.3절에서 타임리프를 쓴다.",
+   "columns": [
+    "",
+    "무엇",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**웹 프레임워크**",
+     "**스프링 MVC**",
+     "사실상 표준"
+    ],
+    [
+     "**비동기**",
+     "Spring WebFlux",
+     "**실무 적용은 아직 적다.** 학습 난이도가 높고 관계형 DB 지원이 약하다"
+    ],
+    [
+     "**뷰 템플릿**",
+     "**타임리프**",
+     "HTML 파일이 그대로 브라우저에서 열린다(내추럴 템플릿)"
+    ],
+    [
+     "**CSR 을 쓸 때**",
+     "React·Vue + HTTP API",
+     "그때 자바 쪽은 뷰를 안 만든다(2.4절)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "WebFlux 를 지금 안 배워도 된다",
+   "md": "\"논블로킹이 최신 기술이니 그것부터\" 라고 생각할 수 있는데, **순서가 거꾸로다.**\n\nWebFlux 는 **스프링 MVC 를 대체하는 것이 아니라 다른 선택지**다. 그리고 쓰려면 코드 스타일 자체가 바뀐다 — `Mono`, `Flux`, 리액티브 연산자.\n\n실무 적용이 적은 이유도 분명하다. **관계형 DB 지원이 약하고**(JPA 를 못 쓴다), 디버깅이 어렵고, 팀 전체가 배워야 한다.\n\n**스프링 MVC 를 알고 나서 필요하면 보면 된다.** 이 책은 그 이야기를 안 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 25년이 지나도 이것은 안 바뀌었다",
+   "sql": "GET /members HTTP/1.1\nHost: localhost:8080\nAccept: text/html\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html><body><ul><li>kim</li></ul></body></html>\n\n# 1997 년 서블릿으로 만들어도\n# 1999 년 JSP 로 만들어도\n# 2009 년 @RequestMapping 으로 만들어도\n# 이 텍스트는 똑같다",
+   "note": "**바뀐 것은 이 텍스트를 만드는 방법뿐**이다.\n\n1.1절에서 \"무엇이 표준이고 무엇이 스프링인지 갈린다\" 고 했다. **HTTP 는 25년 동안 그대로이고, 자바 쪽만 다섯 번 바뀌었다.**\n\n그래서 이 책이 매 절 끝에 HTTP 를 싣는다. **변하지 않는 쪽을 기준으로 삼으면** 프레임워크가 또 바뀌어도 다시 배울 것이 적다."
+  }
+ ],
+ "recap": [
+  "**1997 서블릿** — HTTP 파싱을 해결했지만 HTML 이 자바 문자열에 갇혔다.",
+  "**1999 JSP** — 방향을 뒤집었지만 한 파일에 로직과 화면이 다 들어갔다.",
+  "**2000년대 MVC 패턴** — 역할을 나눴지만 중복이 엄청나게 나왔다.",
+  "**MVC 프레임워크** — 그 중복을 걷어냈다. **5장에서 우리가 만들 것.**",
+  "**2009 어노테이션 MVC** — 인터페이스 구현에서 벗어났다. 6·7장.",
+  "**2014 스프링 부트** — 서버 설치와 버전 관리가 사라졌다.",
+  "지금은 **스프링 MVC + 타임리프**, 또는 **API + React/Vue.**",
+  "**WebFlux 는 대체재가 아니라 다른 선택지**다. 지금 안 배워도 된다.",
+  "**HTTP 는 25년 동안 안 바뀌었다.** 변하지 않는 쪽을 기준으로 삼는다."
+ ],
+ "drills": [
+  {
+   "task": "연표의 각 단계가 '이전 단계의 무슨 문제를 풀었는지' 를 한 줄씩 적는다.",
+   "done_when": "일곱 줄이 서로 이어지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금 회사(또는 학습) 프로젝트가 연표의 어디쯤인지 표시한다.",
+   "done_when": "쓰고 있는 기술의 위치를 안다.",
+   "minutes": 10
+  },
+  {
+   "task": "`spring-boot-starter-web` 의 의존성 트리를 출력한다 (`./gradlew dependencies`).",
+   "done_when": "톰캣·스프링 MVC·Jackson 이 함께 들어 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서블릿으로 HTML 을 만드는 코드를 다섯 줄쯤 써 본다.",
+   "done_when": "왜 JSP 가 나왔는지 체감했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿의 문제는 무엇이었나?",
+   "a": "HTTP 파싱은 해결했지만 HTML 을 자바 문자열로 만들어야 해서 화면 작업이 지옥이었다."
+  },
+  {
+   "q": "JSP 는 무엇을 바꿨고 무슨 문제가 남았나?",
+   "a": "HTML 안에 자바를 넣는 방향으로 뒤집어 화면이 읽기 쉬워졌다. 대신 비즈니스 로직과 화면이 한 파일에 섞였다."
+  },
+  {
+   "q": "MVC 패턴이 나눈 셋은?",
+   "a": "Controller(요청 처리), Model(뷰에 넘길 데이터), View(화면). 변경의 이유가 다른 것을 나눈 것이다."
+  },
+  {
+   "q": "MVC 프레임워크가 나온 이유는?",
+   "a": "MVC 패턴을 손으로 적용하니 컨트롤러마다 중복이 엄청나게 나왔기 때문이다. 5장에서 직접 만든다."
+  },
+  {
+   "q": "어노테이션 기반 MVC 가 바꾼 것은?",
+   "a": "컨트롤러가 인터페이스를 구현하지 않아도 되고, 메서드 이름과 파라미터를 자유롭게 정할 수 있게 됐다."
+  },
+  {
+   "q": "스프링 부트가 없앤 것은?",
+   "a": "톰캣 설치와 War 배포, 그리고 라이브러리 버전 맞추기다. 내장 톰캣과 스타터 의존성이 대신한다."
+  },
+  {
+   "q": "WebFlux 를 지금 안 배워도 되는 이유는?",
+   "a": "스프링 MVC 의 대체재가 아니라 다른 선택지이고, 관계형 DB 지원이 약해 실무 적용이 적다. MVC 를 알고 나서 필요하면 보면 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내추럴 템플릿",
+   "en": "natural template",
+   "what": "템플릿 파일을 그대로 브라우저에서 열어도 화면이 깨지지 않는 성질. 타임리프의 특징이다."
+  },
+  {
+   "term": "WebFlux",
+   "en": "",
+   "what": "스프링의 비동기·논블로킹 웹 프레임워크. 서블릿을 쓰지 않는다. MVC 의 대체가 아니라 다른 선택지다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Web on Servlet Stack",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

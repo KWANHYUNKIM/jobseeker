@@ -1,0 +1,180 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-overview",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "HttpServletRequest — 개요",
+ "summary": "스프링이 아니라 서블릿 표준이 주는 객체. 무엇이 들어 있나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`HttpServletRequest` 가 무엇을 담고 있는지 안다.",
+  "부가 기능 둘(임시 저장소·세션)을 안다.",
+  "임시 저장소가 4장에서 왜 필요해지는지 안다.",
+  "이 객체를 잘 쓰려면 무엇을 알아야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.1절에서 `request` 를 찍었더니 `org.apache.catalina.connector.RequestFacade` 가 나왔다. **그 안에 무엇이 들어 있는지** 본다.\n\n한 문장으로 하면 이렇다.\n\n> **HTTP 요청 메시지를 파싱해서 객체로 담아 둔 것.**\n\n그것뿐이다. 마법이 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "HTTP 메시지가 객체가 된다",
+   "ascii": "   POST /save?q=1 HTTP/1.1        ─┐\n   Host: localhost:8080            │  start line\n   Content-Type: application/json  │  headers\n                                   │\n   {\"username\":\"kim\"}              │  body\n                                  ─┘\n        │\n        ▼   parse\n   ┌─────────────────────────────────────────────┐\n   │  HttpServletRequest                         │\n   │                                             │\n   │   getMethod()      ->  \"POST\"               │\n   │   getRequestURI()  ->  \"/save\"              │\n   │   getQueryString() ->  \"q=1\"                │\n   │   getHeader(...)   ->  \"application/json\"   │\n   │   getInputStream() ->  {\"username\":\"kim\"}   │\n   └─────────────────────────────────────────────┘",
+   "note": "**왼쪽 텍스트의 각 부분이 오른쪽 메서드에 대응한다.** 2.2절 표의 2번(파싱)과 5번(바디 파싱)이 이 객체 하나로 끝난다."
+  },
+  {
+   "type": "heading",
+   "text": "제공하는 것 셋"
+  },
+  {
+   "type": "table",
+   "caption": "HTTP 요청 메시지의 구성 그대로",
+   "note": "**HTTP 메시지 구조를 알면 이 객체의 API 가 저절로 예상된다.** 반대로 모르면 메서드 이름을 외워야 한다.",
+   "columns": [
+    "부분",
+    "메서드",
+    "다루는 절"
+   ],
+   "rows": [
+    [
+     "**START LINE**",
+     "`getMethod()`, `getRequestURI()`, `getQueryString()`, `getProtocol()`",
+     "**3.3**"
+    ],
+    [
+     "**헤더**",
+     "`getHeader(name)`, `getHeaderNames()`",
+     "**3.3**"
+    ],
+    [
+     "**바디**",
+     "`getParameter()`, `getInputStream()`, `getReader()`",
+     "**3.5~3.8**"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "부가 기능 둘"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1. 임시 저장소 — 이게 4장의 열쇠다",
+   "md": "```java\nrequest.setAttribute(\"member\", member);\nObject member = request.getAttribute(\"member\");\n```\n\n**HTTP 메시지에 없는 것을 담아 둘 수 있다.** 요청이 시작될 때 만들어져서 응답이 나갈 때 사라지는 저장소다.\n\n왜 이게 있나 — **서블릿이 데이터를 만들고 JSP 가 그것을 화면에 그려야** 하기 때문이다.\n\n```java\n// 서블릿 (컨트롤러)\nList<Member> members = memberRepository.findAll();\nrequest.setAttribute(\"members\", members);\n\n// 다른 곳(JSP)으로 넘긴다\nrequest.getRequestDispatcher(\"/WEB-INF/views/members.jsp\")\n       .forward(request, response);\n```\n\n**2.5절에서 MVC 패턴의 Model 이 무엇이냐고 했을 때 \"`request` 의 임시 저장소\" 라고 적었다.** 그것이 이 기능이다.\n\n4.5절에서 MVC 패턴을 적용할 때 이 코드가 나오고, **5.4절에서 그것을 `ModelView` 객체로 대체**한다. 그리고 6.7절에서 스프링의 `Model` 이 같은 자리를 차지한다.\n\n**이 책의 절반이 이 두 줄에서 시작한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2. 세션 관리",
+   "md": "```java\nrequest.getSession(true);\n```\n\nHTTP 는 **상태가 없다**(stateless). 요청 하나가 끝나면 서버는 그 클라이언트를 잊는다.\n\n로그인 같은 것을 하려면 상태를 어딘가 들고 있어야 하고, 그것이 세션이다. 2.4절에서 웹 스코프를 말할 때의 그 세션이다.\n\n**이 책에서는 안 쓴다.** 로그인이 예제에 없기 때문이다. 다만 `HttpServletRequest` 가 그 기능도 갖고 있다는 것은 알아 둔다."
+  },
+  {
+   "type": "heading",
+   "text": "중요한 것"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 객체를 안다고 HTTP 를 아는 것이 아니다",
+   "md": "`HttpServletRequest` 는 **HTTP 를 쉽게 쓰게 해 주는 도구**일 뿐이다.\n\n그래서 이 객체의 메서드를 다 외워도, **HTTP 스펙을 모르면 쓸 수가 없다.**\n\n- `getParameter()` 가 GET 쿼리와 POST 폼을 **둘 다** 읽는 이유(3.6절)를 모르면 헷갈린다\n- `Content-Type` 을 왜 봐야 하는지(3.4절) 모르면 바디를 못 읽는다\n- `302` 와 `301` 의 차이(3.9절)를 모르면 리다이렉트를 잘못 쓴다\n\n1.1절에서 \"표준과 스프링을 구분한다\" 고 했는데, 그보다 아래에 하나가 더 있다.\n\n> **HTTP → 서블릿 → 스프링 MVC**\n\n위로 갈수록 편해지고, **아래로 갈수록 안 바뀐다.** 2.5절에서 25년 동안 HTTP 만 그대로였던 것을 봤다.\n\n**이 책이 매 절 끝에 HTTP 를 싣는 이유가 이것이다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "response 도 대칭이다",
+   "md": "`HttpServletResponse` 는 반대 방향이다. **읽는 대신 쓴다.**\n\n| | request | response |\n|---|---|---|\n| START LINE | `getMethod()` | `setStatus(200)` |\n| 헤더 | `getHeader(name)` | `setHeader(name, value)` |\n| 바디 | `getInputStream()` | `getWriter()` / `getOutputStream()` |\n\n**3.9절부터 이쪽을 다룬다.** 구조가 같아서 하나를 알면 다른 하나가 쉽다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 왼쪽이 오른쪽이 된다",
+   "sql": "POST /save?q=1 HTTP/1.1\nHost: localhost:8080\nContent-Type: application/json\nContent-Length: 18\n\n{\"username\":\"kim\"}\n\n# 서버 콘솔 — 같은 요청을 객체로 읽으면\ngetMethod()        = POST\ngetRequestURI()    = /save\ngetQueryString()   = q=1\ngetProtocol()      = HTTP/1.1\ngetHeader(\"Host\")  = localhost:8080\ngetContentType()   = application/json\ngetContentLength() = 18\nbody               = {\"username\":\"kim\"}",
+   "note": "**위의 텍스트와 아래의 출력이 한 글자도 안 다르다.**\n\n`HttpServletRequest` 가 하는 일이 정확히 이것이다 — 텍스트를 잘라서 메서드로 꺼낼 수 있게 해 주는 것. **없는 정보를 만들어 주지 않는다.**\n\n그래서 이 절의 결론은 이렇게 된다. **HTTP 메시지를 읽을 줄 알면 이 객체의 API 를 외울 필요가 없다.**"
+  }
+ ],
+ "recap": [
+  "`HttpServletRequest` 는 **HTTP 요청 메시지를 파싱해 객체로 담아 둔 것**이다.",
+  "제공하는 것 — **START LINE · 헤더 · 바디.** HTTP 메시지 구조 그대로다.",
+  "부가 기능 1 — **임시 저장소**(`setAttribute`/`getAttribute`). 요청이 살아 있는 동안만.",
+  "**그것이 MVC 패턴의 Model 이다.** 4.5절에서 쓰고 5.4절에서 대체하고 6.7절에서 스프링 `Model` 이 된다.",
+  "부가 기능 2 — **세션.** HTTP 가 무상태라서 필요하다. 이 책에서는 안 쓴다.",
+  "**이 객체를 안다고 HTTP 를 아는 것이 아니다.** 도구일 뿐이다.",
+  "**HTTP → 서블릿 → 스프링 MVC** — 위로 갈수록 편하고 아래로 갈수록 안 바뀐다.",
+  "`HttpServletResponse` 는 대칭이다 — 읽는 대신 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`request.setAttribute` 로 값을 넣고 같은 요청에서 꺼내 본다.",
+   "done_when": "동작하는 것과, 다음 요청에서는 없다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "HTTP 요청 메시지 구조를 종이에 그리고 각 부분에 대응하는 메서드를 적는다.",
+   "done_when": "메서드 이름이 구조에서 유도된다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`request.getSession(false)` 를 호출하고 결과를 본다.",
+   "done_when": "세션이 없으면 `null` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`HttpServletRequest` 인터페이스를 IDE 에서 열어 메서드 목록을 훑는다.",
+   "done_when": "START LINE·헤더·바디 셋으로 분류할 수 있다는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`HttpServletRequest` 는 무엇인가?",
+   "a": "HTTP 요청 메시지를 파싱해서 객체로 담아 둔 것이다. 서블릿 컨테이너가 만들어 넣어 준다."
+  },
+  {
+   "q": "제공하는 정보 세 가지는?",
+   "a": "START LINE(메서드·URI·쿼리·프로토콜), 헤더, 바디. HTTP 메시지 구조 그대로다."
+  },
+  {
+   "q": "임시 저장소는 무엇이고 언제까지 사나?",
+   "a": "`setAttribute`/`getAttribute` 로 값을 담아 두는 곳이다. 해당 HTTP 요청이 시작될 때 만들어지고 응답이 나가면 사라진다."
+  },
+  {
+   "q": "임시 저장소가 왜 중요한가?",
+   "a": "서블릿이 만든 데이터를 JSP 로 넘길 때 쓰기 때문이다. MVC 패턴의 Model 이 바로 이것이다."
+  },
+  {
+   "q": "세션은 왜 필요한가?",
+   "a": "HTTP 가 무상태라서 요청이 끝나면 서버가 클라이언트를 잊기 때문이다. 로그인 같은 상태를 유지하려면 필요하다."
+  },
+  {
+   "q": "이 객체만 알면 되는가?",
+   "a": "아니다. HTTP 를 편하게 쓰게 해 주는 도구일 뿐이라 HTTP 스펙을 알아야 제대로 쓸 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임시 저장소",
+   "en": "request attribute",
+   "what": "`HttpServletRequest` 에 값을 담아 두는 곳. 해당 요청이 살아 있는 동안만 유지된다. MVC 패턴의 Model 로 쓰인다."
+  },
+  {
+   "term": "무상태",
+   "en": "stateless",
+   "what": "HTTP 의 성질. 요청 하나가 끝나면 서버가 클라이언트 정보를 유지하지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

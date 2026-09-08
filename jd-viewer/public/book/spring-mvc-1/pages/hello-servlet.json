@@ -1,0 +1,242 @@
+{
+ "book": "spring-mvc-1",
+ "id": "hello-servlet",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "Hello 서블릿",
+ "summary": "@WebServlet 하나로 요청을 받는다. 그리고 그 요청이 어떻게 여기까지 왔는지.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@WebServlet` 의 속성을 안다.",
+  "`HttpServlet` 상속 구조와 `service()` 의 위치를 안다.",
+  "`doGet`/`doPost` 분기가 어디서 일어나는지 안다.",
+  "요청이 서블릿까지 오는 순서를 말할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1.3절에서 만든 `HelloServlet` 을 **한 줄씩 뜯는다.** 3장 전체가 이 클래스를 늘려 가는 장이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "HelloServlet.java",
+   "code": "@WebServlet(name = \"helloServlet\", urlPatterns = \"/hello\")\npublic class HelloServlet extends HttpServlet {\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        System.out.println(\"HelloServlet.service\");\n        System.out.println(\"request = \" + request);\n        System.out.println(\"response = \" + response);\n\n        String username = request.getParameter(\"username\");\n        System.out.println(\"username = \" + username);\n\n        response.setContentType(\"text/plain\");\n        response.setCharacterEncoding(\"utf-8\");\n        response.getWriter().write(\"hello \" + username);\n    }\n}"
+  },
+  {
+   "type": "heading",
+   "text": "@WebServlet"
+  },
+  {
+   "type": "table",
+   "caption": "속성 둘",
+   "note": "**`name` 은 안 겹치게만 하면 된다.** 실제로 중요한 것은 `urlPatterns` 다 — 2.2절 표의 3번(URL 매핑)을 이것이 대신한다.",
+   "columns": [
+    "속성",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`name`",
+     "서블릿 이름. 컨테이너 안에서 구분하는 식별자"
+    ],
+    [
+     "**`urlPatterns`**",
+     "**이 URL 로 오면 이 서블릿을 부른다.** 배열이라 여러 개도 된다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "urlPatterns 는 정확히 매칭된다",
+   "md": "```java\n@WebServlet(urlPatterns = \"/hello\")\n```\n\n- `/hello` → **매칭**\n- `/hello?username=kim` → **매칭** (쿼리 스트링은 경로가 아니다)\n- `/hello/` → 매칭 안 됨\n- `/hello/world` → 매칭 안 됨\n\n서블릿 표준의 URL 패턴 규칙이 따로 있다 — `/*`(전부), `*.do`(확장자), `/app/*`(경로 접두). **5장에서 프론트 컨트롤러를 만들 때 `/*` 를 쓴다.**\n\n스프링의 `@RequestMapping` 은 훨씬 유연하다(`/items/{id}` 같은 것). **그건 스프링이 얹은 것이지 서블릿 표준이 아니다.**"
+  },
+  {
+   "type": "heading",
+   "text": "HttpServlet 을 상속한다"
+  },
+  {
+   "type": "figure",
+   "caption": "상속 구조",
+   "ascii": "   Servlet  (interface)\n       △\n       └── GenericServlet\n                △\n                └── HttpServlet\n                         △\n                         └── HelloServlet          <- 내가 쓴 것",
+   "note": "**`Servlet` 이 인터페이스**다. `HttpServlet` 은 그것을 HTTP 에 맞게 구현해 둔 것이고, 우리는 거기서 필요한 메서드만 재정의한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "service() 가 하는 진짜 일",
+   "md": "`HttpServlet` 의 `service()` 를 열어 보면 **분기문**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "HttpServlet.service() 의 원래 동작",
+   "ascii": "   service(request, response)          <- HttpServlet 이 구현한 것\n        │\n        ├── GET     ->  doGet(...)\n        ├── POST    ->  doPost(...)\n        ├── PUT     ->  doPut(...)\n        └── DELETE  ->  doDelete(...)\n\n   service() 를 직접 재정의하면 이 분기를 건너뛴다",
+   "note": "**HTTP 메서드를 보고 `doGet`·`doPost` 로 나눠 준다.** 그래서 보통은 `doGet` 만 재정의한다."
+  },
+  {
+   "type": "compare",
+   "caption": "무엇을 재정의할까",
+   "left": {
+    "title": "service() 재정의",
+    "lang": "java",
+    "code": "@Override\nprotected void service(\n        HttpServletRequest request,\n        HttpServletResponse response) {\n    // GET 이든 POST 든 여기로 온다\n}",
+    "md": "**분기를 건너뛴다.** 메서드 구분 없이 다 받는다. 이 책 3장은 이렇게 쓴다 — **하나만 보면 되니까.**"
+   },
+   "right": {
+    "title": "doGet() / doPost() 재정의",
+    "lang": "java",
+    "code": "@Override\nprotected void doGet(\n        HttpServletRequest request,\n        HttpServletResponse response) {\n    // GET 만 여기로 온다\n}",
+    "md": "**실무 방식이다.** 메서드마다 다르게 처리해야 하고, 정의 안 한 메서드는 `405` 를 자동으로 돌려준다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "service() 를 재정의하면 405 를 잃는다",
+   "md": "`doGet` 만 정의하고 POST 요청을 보내면 톰캣이 **`405 Method Not Allowed`** 를 돌려준다. `HttpServlet.service()` 의 분기가 그 처리까지 하고 있기 때문이다.\n\n`service()` 를 통째로 재정의하면 **그 분기가 사라진다.** POST 든 DELETE 든 다 내 코드로 들어온다.\n\n이 책 3장은 그래도 `service()` 를 쓴다. **한 서블릿에서 GET·POST 를 다 보여 주는 것이 설명에 편하기 때문**이다. **실무 코드에서는 `doGet`·`doPost` 를 쓴다.**\n\n1.2절에서 말한 태도 그대로다 — **예제 사정 때문에 표준에서 벗어난 자리는 그렇다고 적는다.**"
+  },
+  {
+   "type": "heading",
+   "text": "요청이 여기까지 오는 순서"
+  },
+  {
+   "type": "table",
+   "caption": "2.2절 그림을 코드에 대응시키면",
+   "note": "**내가 쓴 것은 4번뿐이다.** 나머지는 톰캣이 한다 — 2.2절에서 센 그 열 가지.",
+   "columns": [
+    "#",
+    "누가",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "1",
+     "톰캣",
+     "8080 포트로 들어온 TCP 연결을 받는다"
+    ],
+    [
+     "2",
+     "톰캣",
+     "HTTP 메시지를 파싱해 `request`·`response` 객체를 만든다"
+    ],
+    [
+     "3",
+     "서블릿 컨테이너",
+     "`urlPatterns` 로 `HelloServlet` 을 찾는다"
+    ],
+    [
+     "4",
+     "**쓰레드 풀의 쓰레드**",
+     "**`service()` 를 호출한다** ← 내 코드"
+    ],
+    [
+     "5",
+     "서블릿 컨테이너",
+     "`response` 객체를 읽어 HTTP 메시지로 만든다"
+    ],
+    [
+     "6",
+     "톰캣",
+     "소켓으로 내보내고 쓰레드를 풀에 반납한다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "request·response 를 찍어 보면",
+   "md": "```java\nSystem.out.println(\"request = \" + request);\n```\n\n```\nrequest = org.apache.catalina.connector.RequestFacade@1a2b3c\nresponse = org.apache.catalina.connector.ResponseFacade@4d5e6f\n```\n\n**`org.apache.catalina`** — 톰캣 패키지다. `HttpServletRequest` 는 인터페이스이고, **실제 구현체는 WAS 마다 다르다.**\n\n제티를 쓰면 `org.eclipse.jetty...` 가 나온다. **내 코드는 인터페이스만 알기 때문에** WAS 를 바꿔도 안 고친다.\n\n앞 책 1.3절의 역할·구현 분리가 **서블릿 표준 자체에 적용돼 있는 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /hello?username=kim HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/8.4.0\nAccept: */*\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=utf-8\nContent-Length: 9\n\nhello kim\n\n# 서버 콘솔\nHelloServlet.service\nrequest = org.apache.catalina.connector.RequestFacade@1a2b3c\nresponse = org.apache.catalina.connector.ResponseFacade@4d5e6f\nusername = kim\n\n# POST 로 보내면 (service() 를 재정의했으므로)\n$ curl -X POST http://localhost:8080/hello?username=kim\nhello kim          <- 405 가 아니라 그냥 동작한다",
+   "note": "**마지막 두 줄이 이 절의 확인**이다.\n\n`doGet` 만 정의했다면 POST 는 `405 Method Not Allowed` 였을 것이다. `service()` 를 재정의했으니 **분기가 사라지고 전부 들어온다.**\n\n편해 보이지만 **HTTP 메서드의 의미를 잃은 것**이다. `GET /hello` 와 `DELETE /hello` 가 같은 일을 하는 서버는 좋은 서버가 아니다. 7.3절에서 스프링이 이것을 어떻게 되돌려 주는지 본다."
+  }
+ ],
+ "recap": [
+  "**`@WebServlet(urlPatterns = ...)`** 가 URL 매핑을 대신한다 — 2.2절 표의 3번.",
+  "URL 패턴은 **정확히 매칭**된다. `/*`, `*.do` 같은 규칙이 따로 있다.",
+  "`Servlet` 은 인터페이스, **`HttpServlet` 이 HTTP 용 구현**이다.",
+  "**`HttpServlet.service()` 는 분기문**이다 — 메서드를 보고 `doGet`·`doPost` 로 나눈다.",
+  "`service()` 를 재정의하면 **그 분기를 건너뛴다.** 405 처리도 사라진다.",
+  "**이 책 3장은 `service()`, 실무는 `doGet`·`doPost`.**",
+  "`request` 를 찍으면 **`org.apache.catalina...`** 가 나온다 — 구현체는 WAS 마다 다르다.",
+  "**내 코드는 인터페이스만 안다.** 서블릿 표준 자체가 역할·구현을 나눠 뒀다."
+ ],
+ "drills": [
+  {
+   "task": "`request` 와 `response` 를 출력해 실제 클래스 이름을 확인한다.",
+   "done_when": "`org.apache.catalina` 패키지인 것을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`service()` 대신 `doGet()` 만 재정의하고 POST 요청을 보낸다.",
+   "done_when": "`405 Method Not Allowed` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`urlPatterns` 를 `/hello/*` 로 바꾸고 `/hello/world` 를 호출한다.",
+   "done_when": "매칭 규칙이 달라지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`HttpServlet` 의 `service()` 소스를 IDE 에서 열어 본다.",
+   "done_when": "메서드 이름으로 분기하는 코드를 눈으로 찾았다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@WebServlet` 의 `urlPatterns` 는 무엇을 하나?",
+   "a": "이 URL 로 요청이 오면 이 서블릿을 호출하라는 매핑이다. 서블릿 컨테이너가 이것을 보고 서블릿을 찾는다."
+  },
+  {
+   "q": "`HttpServlet.service()` 의 원래 동작은?",
+   "a": "HTTP 메서드를 보고 `doGet`, `doPost`, `doPut`, `doDelete` 로 분기하는 것이다."
+  },
+  {
+   "q": "`service()` 를 재정의하면 무엇이 달라지나?",
+   "a": "메서드별 분기가 사라져 모든 HTTP 메서드가 그 메서드로 들어온다. 정의하지 않은 메서드에 대한 405 응답도 없어진다."
+  },
+  {
+   "q": "이 책 3장이 `service()` 를 쓰는 이유는?",
+   "a": "한 서블릿에서 GET·POST 를 모두 보여 주는 것이 설명에 편하기 때문이다. 실무에서는 `doGet`·`doPost` 를 쓴다."
+  },
+  {
+   "q": "`request` 를 출력하면 왜 톰캣 클래스가 나오나?",
+   "a": "`HttpServletRequest` 는 인터페이스이고 구현체는 WAS 가 제공하기 때문이다. 제티를 쓰면 다른 클래스가 나온다."
+  },
+  {
+   "q": "요청이 서블릿까지 오는 순서에서 내가 쓴 코드는 몇 번째인가?",
+   "a": "네 번째다. 소켓·파싱·매핑·응답 조립·소켓 종료는 전부 컨테이너가 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@WebServlet",
+   "en": "",
+   "what": "서블릿을 등록하는 어노테이션. `name` 과 `urlPatterns` 를 지정한다. `web.xml` 설정을 대신한다."
+  },
+  {
+   "term": "HttpServlet",
+   "en": "",
+   "what": "`Servlet` 인터페이스를 HTTP 용으로 구현한 추상 클래스. `service()` 가 메서드별로 분기한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

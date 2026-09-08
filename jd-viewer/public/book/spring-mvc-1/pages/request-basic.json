@@ -1,0 +1,213 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-basic",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "HttpServletRequest — 기본 사용법",
+ "summary": "시작 라인·헤더·기타 정보를 전부 찍어 본다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "START LINE 을 구성 요소별로 꺼낼 수 있다.",
+  "URI 와 URL 의 차이를 안다.",
+  "헤더를 전부 순회해서 출력할 수 있다.",
+  "HTTP 정보가 아닌 것(Remote·Local)을 구분할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.2절에서 무엇이 들어 있는지 봤다. **전부 꺼내 본다.**\n\n외울 절이 아니다. **한 번 찍어 보고 \"이런 게 있구나\" 하면 되는 절**이고, 필요할 때 다시 찾아오면 된다."
+  },
+  {
+   "type": "heading",
+   "text": "START LINE"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "RequestHeaderServlet.java",
+   "code": "private void printStartLine(HttpServletRequest request) {\n    System.out.println(\"getMethod()      = \" + request.getMethod());\n    System.out.println(\"getProtocol()    = \" + request.getProtocol());\n    System.out.println(\"getScheme()      = \" + request.getScheme());\n\n    // http://localhost:8080/request-test\n    System.out.println(\"getRequestURL()  = \" + request.getRequestURL());\n\n    // /request-test\n    System.out.println(\"getRequestURI()  = \" + request.getRequestURI());\n\n    // username=hi\n    System.out.println(\"getQueryString() = \" + request.getQueryString());\n\n    System.out.println(\"isSecure()       = \" + request.isSecure());\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "URL 을 잘라 보면",
+   "ascii": "   http://localhost:8080/request-test?username=hello\n   ^^^^   ^^^^^^^^^ ^^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^\n   scheme host      port uri-path     query string",
+   "note": "**메서드 이름이 이 그림에서 유도된다.** `getScheme()`, `getServerName()`, `getServerPort()`, `getRequestURI()`, `getQueryString()`."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "URL 과 URI 를 헷갈리지 않는다",
+   "md": "이름이 비슷해서 자주 틀린다.\n\n| | 돌려주는 것 | 예 |\n|---|---|---|\n| **`getRequestURL()`** | **scheme + host + port + path** | `http://localhost:8080/request-test` |\n| **`getRequestURI()`** | **path 만** | `/request-test` |\n\n**둘 다 쿼리 스트링은 없다.** 쿼리는 `getQueryString()` 으로 따로 받는다.\n\n실무에서 로그를 남길 때 대개 **`getRequestURI()`** 를 쓴다 — 짧고, 어느 API 인지 알기에 충분하기 때문이다.\n\n엄밀히 말하면 URI 가 더 큰 개념이고 URL 은 그중 위치를 나타내는 것인데, **서블릿 API 의 이 두 메서드 이름은 그 정의를 따르지 않는다.** 그냥 위 표대로 외운다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "isSecure() 는 프록시 뒤에서 거짓말을 한다",
+   "md": "`isSecure()` 는 **이 요청이 HTTPS 였는지**를 돌려준다.\n\n그런데 2.1절의 실무 구성을 떠올려 보자. **NGINX 가 앞에서 HTTPS 를 받고 톰캣에는 HTTP 로 넘긴다.** 그러면 톰캣 입장에서는 평문 HTTP 라서 `isSecure()` 가 `false` 다.\n\n실제 프로토콜을 알려면 **`X-Forwarded-Proto` 헤더**를 봐야 한다. 웹 서버가 붙여 주는 것이다.\n\n스프링 부트는 `server.forward-headers-strategy=native` 설정으로 이것을 자동 처리해 준다. **알아 두면 리다이렉트가 `http://` 로 나가는 사고를 막는다.**"
+  },
+  {
+   "type": "heading",
+   "text": "헤더"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "전부 순회한다",
+   "code": "private void printHeaders(HttpServletRequest request) {\n    request.getHeaderNames().asIterator()\n           .forEachRemaining(headerName ->\n               System.out.println(headerName + \": \" + request.getHeader(headerName)));\n}",
+   "note": "`getHeaderNames()` 가 **`Enumeration`** 을 돌려준다 — 서블릿 API 가 1997년에 만들어져서 그렇다. `asIterator()` 로 요즘 방식으로 바꿔 쓴다."
+  },
+  {
+   "type": "table",
+   "caption": "자주 쓰는 편의 메서드",
+   "note": "**전부 `getHeader(\"...\")` 로도 읽을 수 있다.** 편의 메서드는 파싱까지 해 준다는 점이 다르다 — `getLocale()` 은 `Accept-Language` 의 품질값(`q=0.9`)까지 보고 정렬한다.",
+   "columns": [
+    "메서드",
+    "읽는 헤더",
+    "쓰는 곳"
+   ],
+   "rows": [
+    [
+     "`getServerName()`",
+     "`Host`",
+     "어느 도메인으로 들어왔나"
+    ],
+    [
+     "`getLocale()`",
+     "`Accept-Language`",
+     "국제화"
+    ],
+    [
+     "`getCookies()`",
+     "`Cookie`",
+     "쿠키를 객체 배열로"
+    ],
+    [
+     "`getContentType()`",
+     "`Content-Type`",
+     "**바디를 어떻게 읽을지 정한다** (3.4절)"
+    ],
+    [
+     "`getContentLength()`",
+     "`Content-Length`",
+     "바디 크기"
+    ],
+    [
+     "`getCharacterEncoding()`",
+     "`Content-Type` 의 charset",
+     "**없으면 ISO-8859-1** (3.7절)"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "HTTP 정보가 아닌 것"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이건 메시지에 없다",
+   "md": "```java\n// 요청이 온 곳\nrequest.getRemoteHost();     // 192.168.0.5\nrequest.getRemoteAddr();     // 192.168.0.5\nrequest.getRemotePort();     // 54321\n\n// 요청을 받은 곳\nrequest.getLocalName();      // localhost\nrequest.getLocalAddr();      // 127.0.0.1\nrequest.getLocalPort();      // 8080\n```\n\n**이 값들은 HTTP 메시지 어디에도 없다.** TCP/IP 연결 정보다 — 소켓에서 나온다.\n\n2.2절에서 \"서블릿 컨테이너가 소켓을 다룬다\" 고 했는데, **그 소켓 정보를 여기서 꺼내 쓸 수 있다.**\n\n왜 알아 두나 — **로그에 접속 IP 를 남길 때** 쓰기 때문이다. 그런데 함정이 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "getRemoteAddr() 는 대개 프록시 IP 다",
+   "md": "2.1절의 구성에서 **톰캣이 보는 것은 NGINX 의 IP** 다. 진짜 클라이언트 IP 가 아니다.\n\n실제 IP 는 **`X-Forwarded-For` 헤더**에 있다. 웹 서버가 붙여 준다.\n\n```\nX-Forwarded-For: 203.0.113.10, 192.168.0.5\n                 ^^^^^^^^^^^^  진짜 클라이언트\n```\n\n`isSecure()` 와 같은 문제다 — **프록시 뒤에 있으면 소켓 정보가 거짓말을 한다.**\n\n이 헤더는 **클라이언트가 위조할 수도 있으니** 보안 판단에 그대로 쓰면 안 된다. 신뢰할 수 있는 프록시가 붙인 값만 봐야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 그리고 서버가 본 것",
+   "sql": "GET /request-header?username=hello HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/8.4.0\nAccept: */*\nAccept-Language: ko-KR,ko;q=0.9,en;q=0.8\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=utf-8\n\nok\n\n# 서버 콘솔 — START LINE\ngetMethod()      = GET\ngetProtocol()    = HTTP/1.1\ngetScheme()      = http\ngetRequestURL()  = http://localhost:8080/request-header\ngetRequestURI()  = /request-header\ngetQueryString() = username=hello\nisSecure()       = false\n\n# 헤더\nhost: localhost:8080\nuser-agent: curl/8.4.0\naccept: */*\naccept-language: ko-KR,ko;q=0.9,en;q=0.8\n\n# 편의 조회\ngetServerName()  = localhost\ngetLocale()      = ko_KR\ngetContentType() = null\n\n# HTTP 정보가 아닌 것\ngetRemoteAddr()  = 127.0.0.1\ngetLocalPort()   = 8080",
+   "note": "세 가지를 봐 두자.\n\n① **`getRequestURL()` 에 쿼리가 없다.** `?username=hello` 는 `getQueryString()` 쪽이다.\n② **`getLocale()` 이 `ko_KR`** — `Accept-Language` 의 `q` 값을 보고 스스로 골랐다. 편의 메서드가 파싱까지 해 준다는 뜻이다.\n③ **`getContentType()` 이 `null`** — GET 이라 바디가 없다. 3.4절에서 이 값이 중요해진다."
+  }
+ ],
+ "recap": [
+  "START LINE 은 **메서드 · 프로토콜 · 스킴 · URL · URI · 쿼리**로 꺼낸다.",
+  "**`getRequestURL()` 은 전체 주소, `getRequestURI()` 는 경로만.** 둘 다 쿼리는 없다.",
+  "로그에는 보통 **`getRequestURI()`** 를 쓴다.",
+  "**`isSecure()` 는 프록시 뒤에서 거짓말한다** — `X-Forwarded-Proto` 를 봐야 한다.",
+  "헤더는 **`getHeaderNames()`** 로 전부 순회한다. `Enumeration` 이라 `asIterator()` 를 쓴다.",
+  "편의 메서드는 **파싱까지** 해 준다 — `getLocale()` 이 `q` 값을 보고 고른다.",
+  "**Remote·Local 정보는 HTTP 메시지에 없다.** TCP 소켓 정보다.",
+  "**`getRemoteAddr()` 도 프록시 뒤에서는 프록시 IP** 다 — `X-Forwarded-For` 를 본다."
+ ],
+ "drills": [
+  {
+   "task": "`RequestHeaderServlet` 을 만들어 START LINE 을 전부 찍는다.",
+   "done_when": "URL 과 URI 가 다르다는 것을 눈으로 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "헤더를 전부 순회해 출력하고 브라우저와 curl 의 차이를 본다.",
+   "done_when": "브라우저가 훨씬 많은 헤더를 보낸다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Accept-Language` 를 바꿔 보내고 `getLocale()` 결과를 본다.",
+   "done_when": "`q` 값에 따라 결과가 달라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getRemoteAddr()` 와 `getLocalAddr()` 를 찍는다.",
+   "done_when": "둘이 다르다는 것과, 둘 다 HTTP 메시지에는 없다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`getRequestURL()` 과 `getRequestURI()` 의 차이는?",
+   "a": "전자는 scheme·host·port·path 를 다 포함한 전체 주소, 후자는 경로만이다. 둘 다 쿼리 스트링은 포함하지 않는다."
+  },
+  {
+   "q": "쿼리 스트링은 어떻게 얻나?",
+   "a": "`getQueryString()` 으로 따로 얻는다. 파싱된 값이 필요하면 `getParameter()` 를 쓴다(3.5절)."
+  },
+  {
+   "q": "`isSecure()` 를 그대로 믿으면 안 되는 이유는?",
+   "a": "앞단 웹 서버가 HTTPS 를 받고 톰캣에는 HTTP 로 넘기면 `false` 가 나온다. `X-Forwarded-Proto` 헤더를 봐야 한다."
+  },
+  {
+   "q": "헤더를 전부 순회하려면?",
+   "a": "`getHeaderNames()` 로 이름 목록을 받는다. `Enumeration` 이므로 `asIterator()` 로 바꿔 쓴다."
+  },
+  {
+   "q": "편의 메서드가 `getHeader()` 와 다른 점은?",
+   "a": "파싱까지 해 준다. 예를 들어 `getLocale()` 은 `Accept-Language` 의 품질값을 보고 정렬해 최적 로케일을 돌려준다."
+  },
+  {
+   "q": "`getRemoteAddr()` 는 HTTP 정보인가?",
+   "a": "아니다. TCP 소켓 연결 정보다. 그리고 프록시 뒤에서는 프록시의 IP 가 나오므로 `X-Forwarded-For` 를 봐야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "X-Forwarded-For",
+   "en": "",
+   "what": "프록시가 원래 클라이언트 IP 를 담아 전달하는 헤더. 클라이언트가 위조할 수 있으므로 신뢰할 수 있는 프록시가 붙인 값만 써야 한다."
+  },
+  {
+   "term": "Enumeration",
+   "en": "",
+   "what": "`Iterator` 이전의 자바 순회 인터페이스. 서블릿 API 가 오래돼서 아직 쓴다. `asIterator()` 로 변환한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "MDN — HTTP headers",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
