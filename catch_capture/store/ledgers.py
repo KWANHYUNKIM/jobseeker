@@ -489,8 +489,13 @@ def seed_health(*paths: _Path) -> tuple[int, int]:
                     for r in cur.fetchall()}
             n = 0
             for rec in rows:
-                if (rec.get("keyword") or "", rec["ts"]) in have:
+                # 넣은 것도 have 에 더한다. 두 머신의 파일을 함께 줄 때 같은 사이클이
+                # 양쪽에 있으면(같은 keyword·같은 초) 표에 두 번 들어가는데,
+                # 이 표에는 그걸 막을 제약이 없다.
+                seen_key = (rec.get("keyword") or "", rec["ts"])
+                if seen_key in have:
                     continue
+                have.add(seen_key)
                 # 백필은 언제나 새 행이다 — 옛 사이클에 맞는 crawl_run 행이 없다.
                 cur.execute(
                     """INSERT INTO crawl_run (label, started_at, ended_at, ok,
