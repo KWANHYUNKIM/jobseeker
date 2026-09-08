@@ -116,7 +116,7 @@
     {
       "type": "figure",
       "caption": "객체의 상속 ↔ 테이블의 슈퍼타입/서브타입",
-      "ascii": "  [객체]                              [테이블]\n\n    Item                              ITEM\n  ┌────────────┐                   ┌──────────────┐\n  │ id         │                   │ ITEM_ID (PK) │\n  │ name       │                   │ NAME         │\n  │ price      │                   │ PRICE        │\n  └─────┬──────┘                   │ DTYPE        │\n        │ extends                  └──────┬───────┘\n   ┌────┼────┬─────────┐                  │ PK/FK\n   │    │    │         │            ┌─────┼─────┬──────┐\n Album Movie Book                   │     │     │      │\n(artist)(dir)(author)             ALBUM MOVIE BOOK\n                                  (ARTIST)(DIRECTOR)(AUTHOR)",
+      "ascii": "   [ objects ]                          [ tables ]\n\n       Item                                ITEM\n   ┌────────────┐                    ┌──────────────┐\n   │ id         │                    │ ITEM_ID (PK) │\n   │ name       │                    │ NAME         │\n   │ price      │                    │ PRICE        │\n   └─────┬──────┘                    │ DTYPE        │\n         │ extends                   └──────┬───────┘\n         │                                  │ PK 이면서 FK\n    ┌────┼─────┬─────────┐            ┌─────┼──────┬────────┐\n    │    │     │         │            │     │      │        │\n  Album Movie Book                  ALBUM  MOVIE  BOOK\n (artist)(director)(author)        (ARTIST)(DIRECTOR)(AUTHOR)",
       "note": "그림만 보면 비슷해 보인다. 문제는 '저장' 과 '조회' 를 손으로 짜는 순간 드러난다."
     },
     {

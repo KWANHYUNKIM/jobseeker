@@ -777,7 +777,11 @@ function BlockView({ block: b }: { block: Block }) {
         </figure>
       )
 
-    case 'compare':
+    case 'compare': {
+      // 한쪽이 `bad` 로 표시된 비교만 ✓/✗ 를 붙인다. 그냥 나란히 놓고 보는 비교
+      // (객체의 참조 vs 테이블의 외래 키)에 둘 다 ✓ 를 달면 둘 다 정답이라는
+      // 뜻이 되어 버려서, 무엇을 말하려는 그림인지가 흐려진다.
+      const graded = Boolean(b.left.bad || b.right.bad)
       return (
         <figure className="mt-6">
           {b.caption && <figcaption className="text-sm font-semibold text-(--color-text) mb-2">{b.caption}</figcaption>}
@@ -790,7 +794,7 @@ function BlockView({ block: b }: { block: Block }) {
                 }`}
               >
                 <div className={`text-xs font-bold ${side.bad ? 'text-red-500' : 'text-(--color-accent-deep)'}`}>
-                  {side.bad ? '✗ ' : '✓ '}
+                  {graded ? (side.bad ? '✗ ' : '✓ ') : ''}
                   {side.title}
                 </div>
                 {side.code && <Pre lang={side.lang} code={side.code} className="mt-2" />}
@@ -805,6 +809,7 @@ function BlockView({ block: b }: { block: Block }) {
           {b.note && <p className="text-xs text-(--color-faint) mt-1.5 leading-relaxed"><Md>{b.note}</Md></p>}
         </figure>
       )
+    }
 
     case 'steps':
       return (
