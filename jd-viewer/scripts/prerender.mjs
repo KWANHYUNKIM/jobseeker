@@ -129,10 +129,6 @@ function page({ path, title, description, body, jsonLd, robots }) {
   // 셸의 기본 title/description 은 페이지별 것으로 대체한다(둘이 겹치면 안 된다).
   html = html.replace(/<title>[\s\S]*?<\/title>\s*/, '')
   html = html.replace(/<meta\s+name="description"[\s\S]*?\/>\s*/, '')
-  // 셸에 박혀 있는 `robots: index, follow` 는 색인 제외 페이지에서 지운다.
-  // 남겨 두면 한 문서에 robots 가 두 벌 생긴다 — 크롤러가 더 엄격한 쪽을 따르긴
-  // 하지만, 색인 여부를 남의 우선순위 규칙에 맡길 이유가 없다.
-  if (robots) html = html.replace(/<meta\s+name="robots"[\s\S]*?\/>\s*/, '')
   html = html.replace('</head>', `  ${head}\n  </head>`)
   // 정적 본문은 #root 안에 넣는다. 브라우저에서는 React 가 마운트하며 이 자리를
   // 통째로 갈아끼우므로 화면에는 영향이 없고, JS 를 안 도는 크롤러만 이걸 읽는다.
@@ -171,7 +167,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a></nav>`
+const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/wiki">기술 백과사전</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -181,6 +177,7 @@ const jobs = readJson('all_jobs_enriched.json') ?? []
 const stacks = readJson('company_stacks.json')
 const radar = readJson('company_tech_radar.json')
 const revengIndex = readJson('reveng/index.json')
+const studyIndex = readJson('study/index.json')
 const blogs = readJson('tech_blogs.json')
 
 const jobKey = (j) => `${j.site}-${j.pid}` // src/lib/urls.ts 의 jobKey 와 같은 규칙
@@ -236,17 +233,11 @@ const TAB_SEO = {
     title: '기업 기술 역설계',
     desc: '공개 자료만으로 재구성한 기업의 비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결.',
   },
-  // `/wiki` 는 혼자 읽으려고 쓰는 책이다. 정적 HTML 은 만들되(직접 열었을 때
-  // 빈 껍데기가 아니게) 색인은 막고 sitemap 에도 넣지 않는다. NOINDEX 목록이
-  // 그 판단을 한 곳에서 한다.
   '/wiki': {
-    title: '내 책장',
-    desc: '혼자 읽으려고 쓰는 책.',
+    title: '개발자 기술 백과사전',
+    desc: 'ATmega128 핀맵부터 풀업 저항, 파이썬 자료구조 선택, 멱등성까지 — 공부하다 막히는 낱말 하나를 실제 채용공고 문장과 손으로 해 볼 실습까지 붙여 설명합니다.',
   },
 }
-
-/** 색인시키지 않는 허브. 링크 목록도 깔지 않는다 — 크롤러가 탈 길 자체를 안 만든다. */
-const NOINDEX = new Set(['/wiki'])
 
 // 목록 페이지의 정적 본문에는 실제 링크를 깐다. 크롤러는 이 링크를 타고 상세로
 // 들어가고, 사이트맵에만 있는 주소보다 훨씬 빨리 발견된다.
@@ -274,11 +265,17 @@ const revengLinks = revengList
   .map((c) => `<li><a href="/reveng/${encodeURIComponent(c.slug)}">${esc(c.name)} 기술 역설계</a></li>`)
   .join('')
 
+const studyList = studyIndex?.articles ?? []
+const studyLinks = studyList
+  .map((a) => `<li><a href="/wiki/${encodeURIComponent(a.slug)}">${esc(a.title)}</a> — ${esc(clip(a.one_liner, 100))}</li>`)
+  .join('')
+
 const HUB_LINKS = {
   '/': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul>`,
   '/companies': `<h2>회사 목록</h2><ul>${companyLinks}</ul>`,
   '/radar': `<h2>기업 목록</h2><ul>${radarLinks}</ul>`,
   '/reveng': `<h2>역설계한 회사</h2><ul>${revengLinks}</ul>`,
+  '/wiki': `<h2>문서 목록</h2><ul>${studyLinks}</ul>`,
 }
 
 const jobsMtime = mtime('all_jobs_enriched.json')
@@ -290,7 +287,6 @@ for (const [path, seo] of Object.entries(TAB_SEO)) {
       path,
       title: seo.title,
       description: seo.desc,
-      robots: NOINDEX.has(path) ? 'noindex, nofollow' : undefined,
       body: `${NAV}<main><h1>${esc(seo.title)}</h1><p>${esc(seo.desc)}</p>${HUB_LINKS[path] ?? ''}</main>`,
       jsonLd:
         path === '/'
@@ -304,7 +300,7 @@ for (const [path, seo] of Object.entries(TAB_SEO)) {
           : null,
     }),
   )
-  if (!NOINDEX.has(path)) add(abs(path), jobsMtime, 'daily', path === '/' ? '1.0' : '0.8')
+  add(abs(path), jobsMtime, 'daily', path === '/' ? '1.0' : '0.8')
 }
 
 // ── 공고 상세 ───────────────────────────────────────────────────────────
@@ -470,10 +466,47 @@ for (const c of revengList) {
   add(abs(path), c.updated_at ?? today, 'monthly', '0.6')
 }
 
-// ── 책(/wiki) ───────────────────────────────────────────────────────────
-// 정적 HTML 을 만들지 않는다. 혼자 읽으려고 쓰는 책이라 색인될 이유가 없고,
-// 절 하나가 30KB 라 정적 본문을 두 벌로 두는 비용도 크다. 허브(`/wiki`)만
-// noindex 로 찍고 나머지는 SPA 폴백에 맡긴다.
+// ── 기술 백과사전 ───────────────────────────────────────────────────────
+// 우리가 직접 쓴 글이라 색인 대상이다. 본문은 요약·절 제목·실습만 싣는다 — 크롤러에게
+// 필요한 건 '이 주소에 이 낱말의 설명이 있다'는 사실이고, 전문을 두 벌로 두면 앱이
+// 그리는 화면과 정적 HTML 이 갈릴 때 어느 쪽이 정본인지 알 수 없어진다.
+for (const a of studyList) {
+  const path = `/wiki/${encodeURIComponent(a.slug)}`
+  const doc = readJson(`study/articles/${a.slug}.json`)
+  const description = clip(`${a.one_liner} ${doc?.summary ?? ''}`)
+  const heads = (doc?.sections ?? []).map((x) => x.heading).filter(Boolean)
+  const drills = (doc?.drills ?? []).map((d) => d.task).filter(Boolean)
+  const body =
+    `${NAV}<main><article>` +
+    `<h1>${esc(a.title)}</h1>` +
+    `<p>${esc(a.one_liner)}</p>` +
+    section('요약', doc?.summary, 900) +
+    (heads.length ? `<h2>목차</h2><ul>${heads.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '') +
+    (drills.length
+      ? `<h2>손으로 해 볼 것</h2><ul>${drills.map((d) => `<li>${esc(clip(d, 200))}</li>`).join('')}</ul>`
+      : '') +
+    `<p><a href="/wiki">기술 백과사전 목록</a></p>` +
+    `</article></main>`
+  write(
+    path,
+    page({
+      path,
+      title: `${a.title} — 개발자 기술 백과사전`,
+      description,
+      body,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: a.title,
+        description,
+        inLanguage: 'ko',
+        dateModified: a.updated_at,
+        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+      },
+    }),
+  )
+  add(abs(path), a.updated_at ?? today, 'monthly', '0.6')
+}
 
 // ── 기술 역설계: 도메인 비교 문서 ──────────────────────────────────────
 // 우리가 직접 쓴 글이라(남의 글 요약이 아니다) 색인 대상이다. 마크다운을 그대로
@@ -566,7 +599,7 @@ if (SITE_URL) {
   // robots.txt — 검색어가 붙은 목록은 같은 목록의 무한 변형이라 크롤 예산만 태운다.
   writeFileSync(
     join(DIST, 'robots.txt'),
-    `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /wiki\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+    `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
   )
 }
 
@@ -580,7 +613,7 @@ if (skipped) {
 }
 
 console.log(
-  `[prerender] ${written}쪽 (공고 ${jobPages.length} · 회사 ${companyList.length} · 레이더 ${radarList.length} · 역설계 ${revengList.length})\n` +
+  `[prerender] ${written}쪽 (공고 ${jobPages.length} · 회사 ${companyList.length} · 레이더 ${radarList.length} · 역설계 ${revengList.length} · 백과사전 ${studyList.length})\n` +
     (SITE_URL
       ? `[prerender] sitemap ${chunks.length}개 · URL ${urls.length}개 · 블로그 글 ${blogCount}건은 색인 제외\n` +
         `[prerender] 오리진 ${SITE_URL}`

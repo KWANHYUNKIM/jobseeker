@@ -23,12 +23,9 @@ export const paths = {
   calendar: () => '/calendar',
   reposts: () => '/reposts',
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
-  /** 책장. 예전 기술 백과사전이 쓰던 경로를 그대로 물려받았다(북마크가 안 깨지게). */
   wiki: () => '/wiki',
-  /** @param id 책 id(`jpa-basic`). 한 번 정하면 안 바뀐다. */
-  book: (id: string) => `/wiki/${encodeURIComponent(id)}`,
-  /** @param pageId 절 id(`sql-pain`). 차례의 no(`2.1`)가 아니라 슬러그다 — 순서가 바뀌어도 주소는 안 바뀐다. */
-  bookPage: (id: string, pageId: string) => `/wiki/${encodeURIComponent(id)}/${encodeURIComponent(pageId)}`,
+  /** @param slug study-engine 이 정한 문서 slug(`atmega128`). 한 번 정하면 안 바뀐다. */
+  wikiArticle: (slug: string) => `/wiki/${encodeURIComponent(slug)}`,
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
   revengDoc: (slug: string) => `/reveng/docs/${encodeURIComponent(slug)}`,
@@ -79,10 +76,9 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
     title: '개발 기술 트렌드',
     desc: '채용공고에서 언급된 기술의 비중 변화로 보는 개발 기술 트렌드와 학습 경로.',
   },
-  // 책은 색인시키지 않는다(BookView 가 전부 noindex 를 건다). 그래도 탭 제목은 필요하다.
   wiki: {
-    title: '내 책장',
-    desc: '혼자 읽으려고 쓰는 책.',
+    title: '개발자 기술 백과사전',
+    desc: 'ATmega128 핀맵부터 풀업 저항, 파이썬 자료구조 선택, 멱등성까지 — 공부하다 막히는 낱말 하나를 실제 채용공고 문장과 손으로 해 볼 실습까지 붙여 설명합니다.',
   },
   reveng: {
     title: '기업 기술 역설계',
