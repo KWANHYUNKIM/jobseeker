@@ -1,0 +1,189 @@
+{
+ "book": "spring-mvc-1",
+ "id": "content-negotiation",
+ "no": "7.14",
+ "chapter": 7,
+ "title": "콘텐츠 협상",
+ "summary": "같은 URL 이 JSON 도 XML 도 돌려주는 원리.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Accept` 헤더가 응답 형식을 어떻게 정하는지 안다.",
+  "품질값(`q`)이 무엇인지 안다.",
+  "브라우저와 API 클라이언트가 왜 다르게 동작하는지 안다.",
+  "실무에서 이 기능을 얼마나 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "2.4절에서 이렇게 적어 뒀다.\n\n> ③이 흥미로운데, **같은 URL 로 둘 다 줄 수도 있다.** 스프링이 `Accept` 를 보고 갈라 주는 것을 **콘텐츠 협상**이라고 하고 7.14절에서 다룬다.\n\n**그 자리다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클라이언트가 원하는 것을 말한다",
+   "md": "```\nAccept: application/json\n```\n\n**\"나는 JSON 을 원한다\"** 는 뜻이다. 3.3절에서 헤더를 훑을 때 본 그것이고, 7.12절에서 컨버터가 `canWrite` 로 보는 것도 이것이다.\n\n여러 개를 **선호 순서와 함께** 말할 수도 있다.\n\n```\nAccept: application/json;q=0.9, application/xml;q=0.5, */*;q=0.1\n```\n\n**`q` 가 품질값(quality value)** 이다. 0~1 사이이고 **클수록 선호**한다. 안 적으면 1.0 이다.\n\n3.3절에서 `getLocale()` 이 `Accept-Language` 의 `q` 를 보고 고른다고 했는데, **같은 규칙**이다. `Accept-Language`, `Accept-Encoding`, `Accept-Charset` 이 전부 이 문법을 쓴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러는 하나다",
+   "code": "@GetMapping(\"/api/items/{id}\")\npublic Item item(@PathVariable Long id) {\n    return itemRepository.findById(id);\n}",
+   "note": "**응답 형식을 정하는 코드가 없다.** 클라이언트가 `Accept` 로 말하면 스프링이 맞는 컨버터를 고른다(7.12절)."
+  },
+  {
+   "type": "table",
+   "caption": "같은 URL, 다른 Accept",
+   "note": "**XML 을 주려면 의존성이 필요하다** — `jackson-dataformat-xml`. 안 넣으면 컨버터가 없어서 406 이다.",
+   "columns": [
+    "`Accept`",
+    "선택되는 컨버터",
+    "응답"
+   ],
+   "rows": [
+    [
+     "`application/json`",
+     "`MappingJackson2HttpMessageConverter`",
+     "JSON"
+    ],
+    [
+     "`application/xml`",
+     "`MappingJackson2XmlHttpMessageConverter`",
+     "XML"
+    ],
+    [
+     "`*/*`",
+     "**목록에서 먼저 맞는 것**",
+     "JSON (보통)"
+    ],
+    [
+     "(없음)",
+     "`*/*` 와 같다",
+     "JSON"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "브라우저는 다르게 동작한다"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "브라우저의 Accept 를 보면",
+   "md": "```\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,\n        image/webp,*/*;q=0.8\n```\n\n**`text/html` 이 맨 앞이고 `application/json` 이 아예 없다.**\n\n그래서 브라우저 주소창으로 API 를 호출하면 **의도와 다른 것이 나올 수 있다.**\n\n- `application/xml` 이 `q=0.9` 로 있어서 **XML 컨버터가 있으면 XML 이 나간다**\n- JSON 은 `*/*;q=0.8` 에 걸려서 **더 낮은 우선순위**다\n\n**\"curl 로는 JSON 인데 브라우저에서는 XML 이 나와요\"** 가 이 헤더 때문이다.\n\n확인하려면 `Accept` 를 명시한다.\n\n```bash\ncurl -H \"Accept: application/json\" http://localhost:8080/api/items/1\n```\n\n실무에서는 **`produces` 로 못 박는 편**이 낫다(7.3절).\n\n```java\n@GetMapping(value = \"/api/items/{id}\", produces = MediaType.APPLICATION_JSON_VALUE)\n```\n\n**협상의 여지를 없애는 것**이다. 클라이언트가 무엇을 원하든 JSON 을 준다."
+  },
+  {
+   "type": "heading",
+   "text": "실무에서는"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "거의 안 쓴다",
+   "md": "정직하게 적으면 — **한 API 가 JSON 과 XML 을 둘 다 주는 경우는 드물다.**\n\n요즘 API 는 **JSON 하나로 간다**(2.4절). XML 을 요구하는 것은 오래된 시스템 연동 정도다.\n\n그런데 이 기능이 **끄지 않아도 조용히 동작한다**는 것이 문제가 될 수 있다.\n\n- XML 의존성이 어딘가에 딸려 들어오면 **브라우저 요청이 갑자기 XML** 이 된다\n- 클라이언트가 잘못된 `Accept` 를 보내면 **406** 이 나는데 원인이 안 보인다\n\n**그래서 알아 둬야 한다.** 쓰려고가 아니라 **예상 못한 동작을 만났을 때 짚기 위해서**다.\n\n7.12절에서 컨버터를 두고 한 말과 같다 — **만드는 법이 아니라 고르는 규칙을 아는 것**이 중요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "협상의 세 가지 방법",
+   "md": "스프링은 세 가지로 형식을 정할 수 있다.\n\n| | 예 | 기본 |\n|---|---|---|\n| **`Accept` 헤더** | `Accept: application/json` | **켜져 있다** |\n| **URL 파라미터** | `?format=json` | 꺼져 있다 |\n| **확장자** | `/items/1.json` | **꺼져 있다** (부트 3) |\n\n뒤의 둘은 **`Accept` 를 못 보내는 상황**을 위한 것이다 — 브라우저 주소창이나 오래된 클라이언트.\n\n**확장자 방식은 스프링 부트 3 에서 기본이 꺼졌다.** 보안 문제와 URL 설계 혼란 때문이다 — `/items/1.json` 은 7.4절에서 말한 \"URL 은 리소스\" 원칙에도 어긋난다.\n\n필요하면 켤 수 있는데, **`produces` 로 못 박거나 URL 을 나누는 편**이 명확하다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 같은 URL, 다른 응답",
+   "sql": "# JSON 을 원한다\nGET /api/items/1 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 200 \nContent-Type: application/json\n\n{\"id\":1,\"itemName\":\"itemA\",\"price\":10000}\n\n# XML 을 원한다 (jackson-dataformat-xml 이 있을 때)\nGET /api/items/1 HTTP/1.1\nAccept: application/xml\n\nHTTP/1.1 200 \nContent-Type: application/xml\n\n<Item><id>1</id><itemName>itemA</itemName><price>10000</price></Item>\n\n# 브라우저 주소창\nGET /api/items/1 HTTP/1.1\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n\nHTTP/1.1 200 \nContent-Type: application/xml\n#   json 보다 xml 이 q 값이 높다\n\n# 아무도 못 주면\nGET /api/items/1 HTTP/1.1\nAccept: application/pdf\n\nHTTP/1.1 406 ",
+   "note": "**세 번째가 이 절에서 기억할 것이다.** 같은 코드인데 브라우저에서는 XML 이 나간다.\n\n원인은 서버가 아니라 **브라우저가 보낸 `Accept`** 에 있다. 3.3절에서 \"브라우저가 훨씬 많은 헤더를 보낸다\" 고 했는데, **그중 하나가 이렇게 동작을 바꾼다.**\n\n이 책이 매 절 끝에 HTTP 를 싣는 이유가 여기서도 나온다 — **응답만 봐서는 왜 XML 인지 알 수 없다.**"
+  }
+ ],
+ "recap": [
+  "**`Accept` 헤더**로 클라이언트가 원하는 형식을 말한다.",
+  "**`q` 가 품질값**이다. 클수록 선호하고 안 적으면 1.0.",
+  "`Accept-Language`·`Accept-Encoding` 도 **같은 문법**을 쓴다(3.3절).",
+  "스프링이 `Accept` 를 보고 **컨버터를 고른다**(7.12절).",
+  "**브라우저의 `Accept` 에는 JSON 이 없다.** `application/xml;q=0.9` 가 더 높다.",
+  "그래서 **\"curl 은 JSON, 브라우저는 XML\"** 이 생긴다.",
+  "실무에서는 **`produces` 로 못 박는 편**이 낫다 — 협상의 여지를 없앤다.",
+  "협상 방법 셋 — **`Accept` 헤더 · URL 파라미터 · 확장자.** 뒤의 둘은 기본이 꺼져 있다.",
+  "**확장자 방식은 부트 3 에서 꺼졌다** — 보안과 URL 설계 문제.",
+  "**거의 안 쓰지만 알아 둬야 한다** — 예상 못한 동작을 짚기 위해서."
+ ],
+ "drills": [
+  {
+   "task": "같은 API 를 `Accept: application/json` 과 `application/xml` 로 호출한다.",
+   "done_when": "형식이 갈리는 것을 확인했다(XML 의존성 필요).",
+   "minutes": 20
+  },
+  {
+   "task": "브라우저 주소창으로 호출하고 `Accept` 헤더를 확인한다.",
+   "done_when": "JSON 이 없고 XML 이 있다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`produces` 를 지정하고 다른 `Accept` 로 호출한다.",
+   "done_when": "406 이 나는 것과 협상이 막힌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Accept: application/pdf` 로 호출한다.",
+   "done_when": "406 을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`q` 값을 바꿔 가며 선택이 달라지는지 본다.",
+   "done_when": "품질값이 실제로 우선순위라는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "콘텐츠 협상이란?",
+   "a": "클라이언트가 `Accept` 헤더로 원하는 형식을 말하면 서버가 그에 맞는 표현을 골라 주는 것이다."
+  },
+  {
+   "q": "`q` 는 무엇인가?",
+   "a": "품질값이다. 0~1 사이이고 클수록 선호한다. 안 적으면 1.0 이다."
+  },
+  {
+   "q": "브라우저로 API 를 호출하면 왜 XML 이 나올 수 있나?",
+   "a": "브라우저의 `Accept` 에 `application/xml;q=0.9` 가 있고 JSON 은 `*/*;q=0.8` 에만 걸려서 우선순위가 낮기 때문이다."
+  },
+  {
+   "q": "그것을 막으려면?",
+   "a": "`produces = MediaType.APPLICATION_JSON_VALUE` 로 못 박아 협상의 여지를 없앤다."
+  },
+  {
+   "q": "협상 방법 세 가지는?",
+   "a": "`Accept` 헤더(기본 켜짐), URL 파라미터(`?format=json`), 확장자(`/items/1.json`). 뒤의 둘은 기본이 꺼져 있다."
+  },
+  {
+   "q": "확장자 방식이 부트 3 에서 꺼진 이유는?",
+   "a": "보안 문제와 URL 설계 혼란 때문이다. `/items/1.json` 은 'URL 은 리소스' 원칙에도 어긋난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "콘텐츠 협상",
+   "en": "content negotiation",
+   "what": "클라이언트가 원하는 표현 형식을 서버가 골라 주는 것. `Accept` 헤더가 기준이다."
+  },
+  {
+   "term": "품질값",
+   "en": "quality value, q",
+   "what": "`Accept` 계열 헤더에서 선호도를 나타내는 0~1 사이의 값. 클수록 선호한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "MDN — Content negotiation",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

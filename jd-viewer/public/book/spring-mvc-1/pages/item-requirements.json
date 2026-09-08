@@ -1,0 +1,183 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-requirements",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "요구사항 분석",
+ "summary": "상품 목록·상세·등록·수정. 화면 넷.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "만들 화면 넷과 URL 을 정할 수 있다.",
+  "화면 기반 애플리케이션의 URL 이 왜 7.4절과 다른지 안다.",
+  "이 장에서 다루지 않는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1.2절에서 예고한 화면이다. **7장까지의 부품으로 만든다.**"
+  },
+  {
+   "type": "table",
+   "caption": "상품 도메인",
+   "note": "**필드 넷.** 4.1절의 회원(둘)보다 조금 크지만 여전히 작다.",
+   "columns": [
+    "필드",
+    "타입",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`id`",
+     "`Long`",
+     "상품 ID"
+    ],
+    [
+     "`itemName`",
+     "`String`",
+     "상품명"
+    ],
+    [
+     "`price`",
+     "`Integer`",
+     "가격"
+    ],
+    [
+     "`quantity`",
+     "`Integer`",
+     "수량"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "price 와 quantity 가 Integer 인 이유",
+   "md": "`int` 가 아니라 **`Integer`** 다.\n\n7.6절에서 본 그 문제다 — **`null` 을 표현할 수 있어야** 한다.\n\n등록 폼에서 가격을 비워 두면 값이 안 온다. `int` 면 **500**(7.6절), `Integer` 면 `null` 이 들어와서 **검증으로 처리**할 수 있다.\n\n**\"값이 없을 수 있는가\"** 가 타입 선택의 기준이다. ID 도 `Long` 인 것이 같은 이유 — 저장 전에는 `null` 이다."
+  },
+  {
+   "type": "table",
+   "caption": "URL 설계",
+   "note": "**7.4절의 API 설계와 다르다.** 이유는 아래에 있다.",
+   "columns": [
+    "메서드",
+    "URL",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`GET`",
+     "`/basic/items`",
+     "목록"
+    ],
+    [
+     "`GET`",
+     "`/basic/items/{itemId}`",
+     "상세"
+    ],
+    [
+     "`GET`",
+     "`/basic/items/add`",
+     "등록 폼"
+    ],
+    [
+     "`POST`",
+     "`/basic/items/add`",
+     "등록 처리"
+    ],
+    [
+     "`GET`",
+     "`/basic/items/{itemId}/edit`",
+     "수정 폼"
+    ],
+    [
+     "`POST`",
+     "`/basic/items/{itemId}/edit`",
+     "수정 처리"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 7.4절과 다른가",
+   "md": "7.4절에서는 URL 두 개로 다섯 기능을 했다.\n\n```\nGET    /users        POST   /users\nGET    /users/{id}   PATCH  /users/{id}   DELETE /users/{id}\n```\n\n**여기서는 URL 이 넷이고 `add`·`edit` 이라는 동사가 들어 있다.** 7.4절에서 말린 그것이다.\n\n이유가 둘이다.\n\n**1. HTML 폼은 `GET`·`POST` 만 지원한다.**\n\n7.4절에서 미리 적었다. `PATCH`·`DELETE` 를 못 쓰니 **메서드로 구분할 수가 없다.**\n\n**2. 폼 화면이 따로 필요하다.**\n\nAPI 는 데이터만 주고받으니 \"등록\" 하나면 된다. **화면은 폼을 보여 주는 것과 처리하는 것이 나뉜다.**\n\n```\nGET  /add   폼을 보여 준다\nPOST /add   처리한다\n```\n\n**같은 URL 에 메서드로 구분**하는 것이 그나마 원칙에 가깝다. `/add-form` 과 `/add` 로 나누는 것보다 낫다.\n\n7.4절에서 **\"원칙은 기본값이고 예외는 있다\"** 고 적었다. 이것이 그 예외이고, **이유가 분명하다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 장에서 안 하는 것",
+   "md": "**검증이 없다.** 가격을 비워도, 음수를 넣어도 그대로 저장된다.\n\n7.6절에서 `int` 대신 `Integer` 를 쓴 이유가 검증을 하려면 `null` 이 필요해서인데, **정작 검증은 안 한다.**\n\n**삭제도 없다.** 화면 넷에 삭제가 없는 것이 이상해 보이는데, 삭제는 **확인 화면이나 자바스크립트**가 필요해서 예제가 커진다.\n\n**로그인도 없다.** 누구나 상품을 고칠 수 있다.\n\n전부 **스프링 MVC 2편의 주제**다(9.1절). 1.2절에서 말한 태도 그대로다 — **대충 한 자리는 대충 했다고 적는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 8장의 흐름",
+   "sql": "# 1. 목록\nGET /basic/items HTTP/1.1\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n# 2. 등록 폼\nGET /basic/items/add HTTP/1.1\nHTTP/1.1 200 \n\n# 3. 등록 처리\nPOST /basic/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=10000&quantity=10\n\nHTTP/1.1 302 \nLocation: /basic/items/1\n\n# 4. 브라우저가 이어서 (8.10 절)\nGET /basic/items/1 HTTP/1.1\nHTTP/1.1 200 ",
+   "note": "**1.2절 마지막에서 보여 준 흐름이다.** 그때 이렇게 적었다.\n\n> 왜 `200` 으로 화면을 바로 주지 않고 굳이 두 번 오가는지 — **새로고침하면 상품이 두 번 등록되는 문제** 때문이다. 8.10절이다.\n\n**8.7~8.9절까지는 `302` 가 없다.** 그것을 만들고 나서 문제를 겪고 8.10절에서 고친다."
+  }
+ ],
+ "recap": [
+  "상품 필드 넷 — **`id` · `itemName` · `price` · `quantity`.**",
+  "**`price`·`quantity` 가 `Integer`** 인 이유는 `null` 을 표현해야 해서다(7.6절).",
+  "URL 넷 — 목록 · 상세 · **`add`(GET/POST)** · **`{id}/edit`(GET/POST)**.",
+  "**7.4절의 API 설계와 다르다** — 동사가 들어 있다.",
+  "이유 1 — **HTML 폼은 `GET`·`POST` 만** 지원한다.",
+  "이유 2 — **폼을 보여 주는 것과 처리하는 것이 나뉜다.**",
+  "**같은 URL 에 메서드로 구분**하는 것이 그나마 원칙에 가깝다.",
+  "안 하는 것 — **검증 · 삭제 · 로그인.** 전부 MVC 2편이다.",
+  "**8.9절까지는 `302` 가 없다.** 8.10절에서 문제를 겪고 고친다."
+ ],
+ "drills": [
+  {
+   "task": "URL 여섯 개를 적고 각각 GET/POST 를 표시한다.",
+   "done_when": "폼과 처리가 짝을 이루는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "7.4절의 API URL 과 나란히 놓고 차이를 적는다.",
+   "done_when": "동사가 들어간 이유를 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`price` 를 `int` 로 두면 무엇이 문제일지 적는다.",
+   "done_when": "7.6절의 500 문제와 연결했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`price` 를 `Integer` 로 두는 이유는?",
+   "a": "값이 없을 때 `null` 을 표현해야 하기 때문이다. `int` 면 파라미터가 없을 때 500 이 난다."
+  },
+  {
+   "q": "URL 에 `add`·`edit` 같은 동사가 들어간 이유는?",
+   "a": "HTML 폼이 `GET`·`POST` 만 지원해서 메서드로 구분할 수 없고, 폼 화면과 처리가 나뉘기 때문이다."
+  },
+  {
+   "q": "그럼에도 원칙에 가까운 부분은?",
+   "a": "같은 URL 에 `GET`(폼)과 `POST`(처리)를 두어 메서드로 구분한 것이다."
+  },
+  {
+   "q": "이 장에서 다루지 않는 것은?",
+   "a": "검증, 삭제, 로그인이다. 전부 스프링 MVC 2편의 주제다."
+  },
+  {
+   "q": "등록 처리 후 왜 302 인가?",
+   "a": "새로고침하면 같은 POST 가 다시 전송되어 상품이 두 번 등록되기 때문이다. 8.10절에서 다룬다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

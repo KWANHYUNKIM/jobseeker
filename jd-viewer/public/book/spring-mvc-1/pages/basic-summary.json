@@ -1,0 +1,212 @@
+{
+ "book": "spring-mvc-1",
+ "id": "basic-summary",
+ "no": "7.15",
+ "chapter": 7,
+ "title": "정리",
+ "summary": "7장의 기능들이 6장 구조의 어디에 붙어 있는지.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "7장에서 배운 것을 6장 구조 위에 배치할 수 있다.",
+  "요청과 응답의 대칭을 볼 수 있다.",
+  "5.8절의 '안 만든 것' 이 전부 채워졌는지 확인한다.",
+  "8장에서 무엇을 할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7장은 기능이 많았다. **한 장에 배치해 둔다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "전체 구조와 절 번호",
+   "ascii": "   DispatcherServlet                                    6.2\n        │\n        ├─ HandlerMapping        핸들러를 찾는다          6.3, 7.3\n        ├─ HandlerAdapter        어댑터를 찾는다          6.3\n        │      │\n        │      ├─ ArgumentResolver   파라미터를 채운다     7.13\n        │      │      └─ @RequestBody 면 MessageConverter  7.12\n        │      │\n        │      ├─ 컨트롤러 호출\n        │      │\n        │      └─ ReturnValueHandler  반환값을 처리한다    7.13\n        │             └─ @ResponseBody 면 MessageConverter 7.12\n        │\n        ├─ ViewResolver          뷰를 찾는다              6.4\n        └─ View.render           화면을 그린다             6.4",
+   "note": "**6장이 뼈대, 7장이 살**이다. 그리고 이 그림은 5.8절에서 우리가 만든 것 위에 이름을 덮은 것이다."
+  },
+  {
+   "type": "heading",
+   "text": "요청과 응답은 대칭이다"
+  },
+  {
+   "type": "table",
+   "caption": "3장에서 세운 대칭이 7장에서도 그대로다",
+   "note": "**3.9절에서 `request`/`response` 를 대칭으로 놓았고**, 7장의 어노테이션도 같은 모양으로 갈린다.",
+   "columns": [
+    "",
+    "요청",
+    "응답"
+   ],
+   "rows": [
+    [
+     "**헤더**",
+     "`@RequestHeader` (7.5)",
+     "`ResponseEntity` 의 헤더 (7.11)"
+    ],
+    [
+     "**파라미터**",
+     "`@RequestParam`·`@ModelAttribute` (7.6·7.7)",
+     "(없다)"
+    ],
+    [
+     "**바디**",
+     "**`@RequestBody`** (7.8·7.9)",
+     "**`@ResponseBody`** (7.11)"
+    ],
+    [
+     "**상태 코드**",
+     "(없다)",
+     "`ResponseEntity`·`@ResponseStatus` (7.11)"
+    ],
+    [
+     "**형식 협상**",
+     "`consumes` (7.3)",
+     "`produces`·`Accept` (7.3·7.14)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파라미터의 세계와 바디의 세계",
+   "md": "7장에서 가장 자주 헷갈리는 것이 이 선이다.\n\n| | 무엇을 읽나 | 컨버터 |\n|---|---|---|\n| **`@RequestParam`·`@ModelAttribute`** | **요청 파라미터** (쿼리·폼) | 안 쓴다 |\n| **`@RequestBody`** | **메시지 바디** | **쓴다** |\n\n3.4절에서 **`Content-Type` 이 갈림길**이라고 했고, 7.8·7.9·7.12절에서 계속 그 선을 확인했다.\n\n**증상으로 기억하면 이렇다.**\n\n- JSON 을 보냈는데 `@RequestParam` 이 `null` → **3.4절**\n- JSON 을 보냈는데 `@ModelAttribute` 로 받아 빈 객체 → **7.9절**\n- `Content-Type` 이 없어서 415 → **7.9절·7.12절**\n\n**셋 다 이 선을 잘못 넘은 것**이다."
+  },
+  {
+   "type": "heading",
+   "text": "5.8절의 '안 만든 것'"
+  },
+  {
+   "type": "table",
+   "caption": "다섯 개가 전부 채워졌다",
+   "note": "**5장에서 만든 것은 구조**였고, **7장이 기능**을 채웠다. 5.8절에서 그렇게 정리했다.",
+   "columns": [
+    "5.8 에서 못 만든 것",
+    "채워진 곳"
+   ],
+   "rows": [
+    [
+     "패턴 URL 매핑",
+     "**7.3** `@PathVariable`"
+    ],
+    [
+     "HTTP 메서드 구분",
+     "**6.7** `@GetMapping`"
+    ],
+    [
+     "파라미터 타입 변환",
+     "**6.7 · 7.6** `@RequestParam int`"
+    ],
+    [
+     "복수 파라미터",
+     "**7.5 · 7.6** `List` · `MultiValueMap`"
+    ],
+    [
+     "뷰 기술 선택",
+     "**7.10 · 7.11 · 7.12** 뷰 / 바디 / 컨버터"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "1.1절의 질문들"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "전부 답했다",
+   "md": "1.1절에서 여섯 줄짜리 코드를 놓고 **\"설명해야 할 것이 여덟 가지쯤 된다\"** 고 했다.\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId, Model model) {\n    model.addAttribute(\"item\", itemRepository.findById(itemId));\n    return \"basic/item\";\n}\n```\n\n| 질문 | 답 |\n|---|---|\n| `@GetMapping` 이 어떻게 URL 과 연결되나 | **6.5** `RequestMappingHandlerMapping` |\n| `{itemId}` 조각은 누가 뽑아 오나 | **7.3** 매핑이 뽑고 **7.13** 리졸버가 넣는다 |\n| `Model` 은 어디서 나타나나 | **5.5 → 6.7 → 7.13** `ModelMethodProcessor` |\n| `\"basic/item\"` 이 어떻게 HTML 이 되나 | **6.4** `ViewResolver` → `View.render` |\n\n**한 줄도 마법이 아니다.** 그리고 그중 절반은 **5장에서 직접 만들어 본 것**이다.\n\n1.1절에서 이렇게 적었다.\n\n> **모르는 채로도 개발은 된다.** 문제가 생기기 전까지는.\n\n이제 문제가 생겼을 때 **어디를 볼지** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무에서 막혔을 때 보는 순서",
+   "md": "7장까지의 지식으로 대부분의 요청 처리 문제를 짚을 수 있다.\n\n**1. 매핑이 됐나** — 로그의 `Mapped to ...`(6.2절). 없으면 404 이고 URL·메서드·`consumes` 를 본다\n\n**2. 파라미터가 채워졌나** — `null` 이면 **파라미터인지 바디인지** 먼저 확인한다(7.9절)\n\n**3. 응답이 왜 그 형식인가** — 반환 타입과 `Accept` 를 본다(7.12·7.14절)\n\n**4. 상태 코드가 왜 그런가**\n\n| | 어디 |\n|---|---|\n| **400** | 파라미터 없음·타입 변환 실패 (7.6) |\n| **404** | 매핑 없음 (7.3) |\n| **405** | HTTP 메서드 안 맞음 (6.7) |\n| **406** | 응답 컨버터 없음 (7.12·7.14) |\n| **415** | 요청 컨버터 없음 (7.12) |\n| **500** | 그 외 — 대개 내 코드 |\n\n**앞의 다섯은 클라이언트나 설정 문제이고 500 만 내 코드**다. 이 구분이 디버깅 시간을 크게 줄인다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "8장에서 하는 것",
+   "md": "7장까지가 **부품**이었다. 8장은 그것으로 **화면 넷을 만든다.**\n\n```\n목록 · 상세 · 등록 · 수정\n```\n\n4.1절에서 예고한 상품 관리 화면이다. 그리고 **타임리프**를 제대로 쓴다(8.3절).\n\n**새 스프링 기능은 거의 없다.** 대신 이런 것을 만난다.\n\n- **타임리프 문법** — `th:each`, `th:text`, `th:action` (8.3~8.6)\n- **PRG 패턴** — 새로고침하면 상품이 두 번 등록되는 문제 (8.10)\n- **`RedirectAttributes`** — 리다이렉트하면서 값을 넘기기 (8.11)\n\n**8.10 이 8장의 중심**이다. 1.2절에서 `302` 응답을 보여 주며 \"왜 두 번 오가는지는 8.10절\" 이라고 한 그것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 7장에서 본 상태 코드들",
+   "sql": "# 200 — 정상\nGET /items/1 HTTP/1.1\nAccept: application/json\nHTTP/1.1 200 \nContent-Type: application/json\n\n# 400 — 타입 변환 실패 (7.6)\nGET /items?page=abc HTTP/1.1\nHTTP/1.1 400 \n\n# 404 — 매핑 없음 (7.3)\nGET /nothing HTTP/1.1\nHTTP/1.1 404 \n\n# 405 — 메서드 안 맞음 (6.7)\nDELETE /items/1 HTTP/1.1\nHTTP/1.1 405 \nAllow: GET, POST\n\n# 406 — 응답 컨버터 없음 (7.12, 7.14)\nGET /items/1 HTTP/1.1\nAccept: application/pdf\nHTTP/1.1 406 \n\n# 415 — 요청 컨버터 없음 (7.12)\nPOST /items HTTP/1.1\nContent-Type: text/html\nHTTP/1.1 415 ",
+   "note": "**4·5장에서 응답이 한 번도 안 바뀌었던 것**과 대비된다.\n\n6.7절에서 405 와 400 이 처음 나왔고, 7장에서 406·415 가 늘었다. **기능이 늘면서 응답이 정확해진 것**이다.\n\n3.9절에서 `setStatus` 를 손으로 쓸 때는 **내가 정하는 것**이었다. 이제는 **스프링이 상황에 맞는 코드를 낸다** — 그리고 그 상황이 어디서 갈리는지 7장에서 다 봤다."
+  }
+ ],
+ "recap": [
+  "**6장이 뼈대, 7장이 살**이다. 전체 구조 위에 절 번호를 배치했다.",
+  "**요청과 응답은 대칭**이다 — 3.9절에서 세운 그 대칭이 어노테이션에도 있다.",
+  "가장 헷갈리는 선 — **파라미터의 세계와 바디의 세계.**",
+  "그 선을 잘못 넘은 증상 셋 — `@RequestParam` 이 `null` · 빈 객체 · 415.",
+  "**5.8절의 '안 만든 것' 다섯이 전부 채워졌다.**",
+  "**1.1절의 질문 넷에 전부 답했다.** 절반은 5장에서 직접 만든 것이다.",
+  "막혔을 때 순서 — **매핑 → 파라미터 → 응답 형식 → 상태 코드.**",
+  "**400·404·405·406·415 는 클라이언트나 설정, 500 만 내 코드**다.",
+  "**8장은 부품으로 화면 넷을 만든다.** 새 스프링 기능은 거의 없다.",
+  "**8.10(PRG)이 8장의 중심**이다 — 1.2절에서 예고한 자리."
+ ],
+ "drills": [
+  {
+   "task": "전체 구조 그림을 보지 않고 여섯 단계를 그려 본다.",
+   "done_when": "6.1절과 같은 순서를 적을 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "7장에서 만난 상태 코드 여섯 개를 각각 재현한다.",
+   "done_when": "어느 단계에서 나는 것인지 짚을 수 있다.",
+   "minutes": 25
+  },
+  {
+   "task": "5.8절의 표를 다시 보고 다섯 개에 절 번호를 적는다.",
+   "done_when": "전부 채워진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1.1절의 코드를 다시 읽고 각 줄에 절 번호를 단다.",
+   "done_when": "설명 못 하는 줄이 없다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메시지 컨버터는 구조의 어디에 붙어 있나?",
+   "a": "`HandlerAdapter` 안의 `ArgumentResolver`·`ReturnValueHandler` 에서 호출된다. `@RequestBody`·`@ResponseBody` 일 때만이다."
+  },
+  {
+   "q": "가장 헷갈리는 구분은?",
+   "a": "요청 파라미터(`@RequestParam`·`@ModelAttribute`)와 메시지 바디(`@RequestBody`)의 구분이다. 앞은 컨버터를 안 쓰고 뒤는 쓴다."
+  },
+  {
+   "q": "406 과 415 의 차이는?",
+   "a": "415 는 요청 바디를 읽을 컨버터가 없는 것, 406 은 응답을 쓸 컨버터가 없는 것이다."
+  },
+  {
+   "q": "상태 코드로 무엇을 구분할 수 있나?",
+   "a": "400·404·405·406·415 는 클라이언트나 설정 문제이고, 500 만 내 코드 문제일 가능성이 크다."
+  },
+  {
+   "q": "5.8절의 '안 만든 것' 다섯은 어디서 채워졌나?",
+   "a": "패턴 URL 은 7.3, HTTP 메서드 구분과 타입 변환은 6.7, 복수 파라미터는 7.5·7.6, 뷰 기술 선택은 7.10~7.12 다."
+  },
+  {
+   "q": "8장에서 무엇을 하나?",
+   "a": "7장까지의 부품으로 상품 관리 화면 넷을 만든다. 타임리프와 PRG 패턴이 중심이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

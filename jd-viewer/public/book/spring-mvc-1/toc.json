@@ -543,7 +543,7 @@
           "title": "요청 매핑 핸들러 어댑터 구조",
           "summary": "`ArgumentResolver`. 컨트롤러 파라미터가 채워지는 진짜 이유.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.14",
@@ -551,7 +551,7 @@
           "title": "콘텐츠 협상",
           "summary": "같은 URL 이 JSON 도 XML 도 돌려주는 원리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.15",
@@ -559,7 +559,7 @@
           "title": "정리",
           "summary": "7장의 기능들이 6장 구조의 어디에 붙어 있는지.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -574,7 +574,7 @@
           "title": "요구사항 분석",
           "summary": "상품 목록·상세·등록·수정. 화면 넷.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
