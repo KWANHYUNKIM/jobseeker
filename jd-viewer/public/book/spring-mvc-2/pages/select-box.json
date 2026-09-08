@@ -1,0 +1,137 @@
+{
+ "book": "spring-mvc-2",
+ "id": "select-box",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "셀렉트 박스",
+ "summary": "@ModelAttribute 를 메서드에 붙이는 용법.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:field` 를 `<select>` 에 붙인다는 것을 안다.",
+  "`selected` 가 어떻게 붙는지 안다.",
+  "라디오와 셀렉트를 언제 나눠 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**셀렉트 박스는 구조가 다르다.** 앞의 셋은 `<input>` 하나가 선택지 하나였는데, 여기는 **`<select>` 하나에 `<option>` 여럿**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "붙는 자리가 다르다",
+   "ascii": "   input                         select\n   -----                         ------\n   value 가 input 자신에 있다      value 가 option 에 있다\n\n   <input value=\"FAST\"           <select name=\"deliveryCode\">\n          name=\"deliveryCode\"      <option value=\"FAST\">\n          checked>                 <option value=\"SLOW\" selected>\n                                 </select>\n\n   th:field 가 붙는 자리도 다르다\n\n   th:field 는 select 에         th:value 는 option 에",
+   "note": "**`th:field` 는 `<select>` 에 한 번**, `th:value` 는 각 `<option>` 에."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<select th:field=\"*{deliveryCode}\" class=\"form-select\">\n    <option value=\"\">==배송 방식 선택==</option>\n    <option th:each=\"deliveryCode : ${deliveryCodes}\"\n            th:value=\"${deliveryCode.code}\"\n            th:text=\"${deliveryCode.displayName}\">FAST</option>\n</select>",
+   "note": "**첫 `<option>` 이 빈 값**이다. 아무것도 안 고른 상태를 만들어 준다 — 라디오와 달리 셀렉트는 **항상 뭔가 선택돼 있어서** 이게 없으면 첫 항목이 기본으로 선택돼 버린다.\n\n**`th:each` 가 `<option>` 에 붙었다.** 2.10절대로 그 태그 자신이 반복된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "id 번호가 안 붙는다",
+   "md": "3.5·3.6절에서는 `regions1` · `itemType1` 로 번호가 붙었는데 **여기는 안 붙는다.**\n\n**`<select>` 가 하나**라서다. id 가 겹칠 일이 없다.\n\n```html\n<select id=\"deliveryCode\" name=\"deliveryCode\">\n```\n\n`<label for=\"deliveryCode\">` 도 그냥 쓰면 된다. **`#ids.prev(...)` 가 필요 없다.**\n\n**히든 필드도 없다.** 셀렉트는 항상 값이 전송되기 때문이다 — 빈 `<option>` 을 골라도 `deliveryCode=` 로 **빈 문자열이 온다.**\n\n**셋을 비교하면**\n\n| | id 번호 | 히든 필드 |\n|---|---|---|\n| 멀티 체크박스 | **붙는다** | **있다** |\n| 라디오 | **붙는다** | 없다 |\n| 셀렉트 | 안 붙는다 | 없다 |"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "selected 는 option 에 붙는다",
+   "md": "**`th:field` 를 `<select>` 에 붙였는데 `selected` 는 `<option>` 에 생긴다.**\n\n```html\n<!-- item.deliveryCode 가 \"SLOW\" 일 때 -->\n<select id=\"deliveryCode\" name=\"deliveryCode\">\n    <option value=\"\">==배송 방식 선택==</option>\n    <option value=\"FAST\">빠른 배송</option>\n    <option value=\"SLOW\" selected=\"selected\">일반 배송</option>\n</select>\n```\n\n**타임리프가 `<select>` 의 값과 각 `<option>` 의 `value` 를 비교**해서 맞는 하나에 붙인다.\n\n`selected` 도 2.9절의 **진위 속성**이다 — 없으면 안 골라진 것이다.\n\n**체크박스에서 `checked` 를 붙이던 것과 같은 일**인데, 붙는 태그가 다를 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "라디오와 셀렉트는 언제 나누나",
+   "md": "**둘 다 \"하나만 고른다\"** 인데 쓰는 자리가 다르다.\n\n| | 언제 |\n|---|---|\n| **라디오** | 선택지가 **적고**(2~5개) 전부 보여 주는 편이 나을 때 |\n| **셀렉트** | 선택지가 **많거나** 화면을 아껴야 할 때 |\n\n**선택지가 다 보이느냐**가 갈림점이다. 라디오는 비교하기 좋고, 셀렉트는 자리를 덜 먹는다.\n\n**나라 목록 200개를 라디오로** 그리면 화면이 무너진다. **성별 두 개를 셀렉트로** 하면 클릭이 두 번이다.\n\n> 이 책이 상품 종류를 라디오, 배송 방식을 셀렉트로 나눈 것도 **개수 차이가 아니라 연습**이다. 실제로는 셋씩이라 둘 다 라디오여도 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /form/items/1/edit HTTP/1.1\n\nHTTP/1.1 200 \n\n<select class=\"form-select\" id=\"deliveryCode\" name=\"deliveryCode\">\n    <option value=\"\">==배송 방식 선택==</option>\n    <option value=\"FAST\">빠른 배송</option>\n    <option value=\"NORMAL\" selected=\"selected\">일반 배송</option>\n    <option value=\"SLOW\">느린 배송</option>\n</select>\n\n# 히든 필드도 id 번호도 없다\n\nPOST /form/items/1/edit HTTP/1.1\n\nitemName=itemA&price=10000&deliveryCode=SLOW\n\n# 빈 옵션을 고르면 (값이 오긴 온다)\ndeliveryCode=",
+   "note": "**`id` 가 `deliveryCode` 하나**다 — 3.5·3.6절의 `regions1` · `itemType1` 과 다르다.\n\n`selected=\"selected\"` 가 **`NORMAL` 에만** 붙었다. 서버가 모델 값과 각 `option` 을 비교해 정한 것이다.\n\n마지막 줄이 셀렉트의 성질이다 — **빈 옵션을 골라도 `deliveryCode=` 로 온다.** 값이 안 오는 게 아니라 **빈 문자열이 온다.** 그래서 히든 필드가 필요 없다.\n\n2.8절에서 본 대로 **타임리프는 빈 문자열을 null 처럼** 보지만, **서버에 도착한 것은 빈 문자열**이다 — 5장에서 이 둘의 차이가 문제가 된다."
+  }
+ ],
+ "recap": [
+  "**`th:field` 는 `<select>` 에 한 번**, `th:value` 는 각 `<option>` 에.",
+  "**빈 `<option>`** 이 있어야 \"안 고름\" 상태가 생긴다.",
+  "**id 번호가 안 붙는다** — `<select>` 가 하나뿐이라서.",
+  "**히든 필드도 없다** — 항상 값이 전송된다.",
+  "**`selected` 는 `<option>` 에** 붙는다. 값을 비교해 맞는 하나에.",
+  "`selected` 도 **진위 속성**이다 — 2.9절 그대로.",
+  "**라디오는 선택지가 적을 때, 셀렉트는 많을 때.** 다 보이느냐가 갈림점.",
+  "빈 옵션을 고르면 **빈 문자열이 온다** — `null` 이 아니다."
+ ],
+ "drills": [
+  {
+   "task": "셀렉트를 그리고 `id` 에 번호가 없는 것을 확인한다.",
+   "done_when": "체크박스와 비교했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빈 `<option>` 을 지운다.",
+   "done_when": "첫 항목이 기본 선택되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "수정 화면에서 `selected` 가 어디 붙는지 본다.",
+   "done_when": "모델 값과 같은 option 에만 붙은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빈 옵션을 고르고 제출한다.",
+   "done_when": "빈 문자열이 전송되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:field` 를 어디에 붙이나?",
+   "a": "`<select>` 에 한 번 붙인다. 각 `<option>` 에는 `th:value` 를 쓴다."
+  },
+  {
+   "q": "id 번호가 왜 안 붙나?",
+   "a": "`<select>` 가 하나뿐이라 id 가 겹칠 일이 없기 때문이다."
+  },
+  {
+   "q": "히든 필드가 왜 없나?",
+   "a": "셀렉트는 항상 값이 전송된다. 빈 옵션을 골라도 빈 문자열이 온다."
+  },
+  {
+   "q": "`selected` 는 어떻게 정해지나?",
+   "a": "타임리프가 모델 값과 각 `option` 의 `value` 를 비교해 맞는 하나에 붙인다."
+  },
+  {
+   "q": "라디오와 셀렉트를 나누는 기준은?",
+   "a": "선택지가 다 보여야 하고 개수가 적으면 라디오, 많거나 화면을 아껴야 하면 셀렉트다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "selected",
+   "en": "",
+   "what": "`<option>` 이 선택됐음을 나타내는 진위 속성. 존재 여부가 곧 값이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "HTML Standard — The select element",
+   "url": "https://html.spec.whatwg.org/multipage/form-elements.html",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "Thymeleaf + Spring",
+   "url": "https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

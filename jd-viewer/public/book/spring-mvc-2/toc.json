@@ -263,7 +263,7 @@
           "title": "체크 박스 — 멀티",
           "summary": "th:field 가 name 과 id 를 만들어 준다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -271,7 +271,7 @@
           "title": "라디오 버튼",
           "summary": "체크박스와 무엇이 다른가. ENUM 을 쓸 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -279,7 +279,7 @@
           "title": "셀렉트 박스",
           "summary": "@ModelAttribute 를 메서드에 붙이는 용법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",
@@ -287,7 +287,7 @@
           "title": "정리",
           "summary": "th:field 하나가 없앤 것들.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

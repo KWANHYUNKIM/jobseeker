@@ -1,0 +1,152 @@
+{
+ "book": "spring-mvc-2",
+ "id": "radio-button",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "라디오 버튼",
+ "summary": "체크박스와 무엇이 다른가. ENUM 을 쓸 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "라디오에 히든 필드가 필요 없는 이유를 안다.",
+  "ENUM 을 선택지로 쓸 수 있다.",
+  "ENUM 을 템플릿에서 직접 부르는 것의 비용을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "체크박스와 무엇이 다른가",
+   "ascii": "   checkbox                     radio\n   --------                     -----\n   none / one / many            zero or one\n\n   uncheck 가 된다               uncheck 가 안 된다\n     |                            |\n     v                            v\n   hidden field 가 필요하다       필요 없다\n\n   한 번 고르면 다른 것으로 바꿀 수만 있다",
+   "note": "**한 번 선택하면 해제할 수 없다.** 이 성질 하나가 히든 필드를 없앤다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "히든 필드가 필요 없다",
+   "md": "3.4절의 문제는 **\"해제하면 아무것도 안 온다\"** 였다.\n\n**라디오는 해제라는 동작이 없다.** 같은 `name` 그룹에서 하나를 고르면 다른 것이 풀릴 뿐, **전부 푸는 방법이 없다.**\n\n| | 값이 안 오는 경우 |\n|---|---|\n| 체크박스 | **해제했을 때** — 흔하다 |\n| 라디오 | **처음부터 아무것도 안 골랐을 때** — 등록 폼뿐 |\n\n**수정 화면에서는 이미 하나가 선택돼 있다.** 그래서 값이 안 오는 상황이 안 생긴다.\n\n스프링도 **라디오에는 히든 필드를 안 만든다.**\n\n> 등록 폼에서 아무것도 안 고르면 `null` 이 온다. **그건 검증으로 막는다** — 5장의 일이다."
+  },
+  {
+   "type": "heading",
+   "text": "ENUM 을 선택지로"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "상품 종류",
+   "code": "public enum ItemType {\n\n    BOOK(\"도서\"), FOOD(\"식품\"), ETC(\"기타\");\n\n    private final String description;\n\n    ItemType(String description) {\n        this.description = description;\n    }\n\n    public String getDescription() {\n        return description;\n    }\n}",
+   "note": "**ENUM 자체가 값과 설명을 다 들고 있다.** 3.3절의 `Map` 이 필요 없다.\n\n`getDescription()` 이 있어야 화면에서 `${type.description}` 으로 꺼낼 수 있다 — 2.3절의 프로퍼티 접근이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "모델에 담기",
+   "code": "@ModelAttribute(\"itemTypes\")\npublic ItemType[] itemTypes() {\n    return ItemType.values();\n}",
+   "note": "**`values()` 가 전부를 배열로** 준다. 3.3절의 메서드 `@ModelAttribute` 용법이다.\n\n**ENUM 이 늘어나면 화면이 자동으로 따라온다** — `Map` 을 쓰면 두 곳을 고쳐야 한다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "화면",
+   "code": "<div th:each=\"type : ${itemTypes}\" class=\"form-check form-check-inline\">\n    <input type=\"radio\" th:field=\"*{itemType}\" th:value=\"${type.name()}\"\n           class=\"form-check-input\">\n    <label th:for=\"${#ids.prev('itemType')}\" th:text=\"${type.description}\"\n           class=\"form-check-label\">도서</label>\n</div>",
+   "note": "**`${type.name()}`** 이 ENUM 의 이름(`BOOK`)이다. 이것이 서버로 간다.\n\n`th:value` 를 **생략해도 된다** — 타임리프가 ENUM 이면 `name()` 을 쓴다. 그래도 **적어 두는 편**이 무엇이 전송되는지 드러난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "ENUM 을 템플릿에서 직접 부를 수도 있다",
+   "md": "모델에 안 담고 이렇게 써도 된다.\n\n```html\n<div th:each=\"type : ${T(hello.itemservice.domain.item.ItemType).values()}\">\n```\n\n**`T(...)` 는 SpEL 의 타입 참조**다. 클래스를 직접 부른다.\n\n**동작하는데 쓰지 않는다.**\n\n1. **패키지 경로가 템플릿에 박힌다** — 클래스를 옮기면 화면이 깨지고, 컴파일러는 모른다\n2. **화면이 도메인을 직접 안다** — 2.3절의 그 기준에 걸린다\n3. **아무 클래스나 부를 수 있다** — 템플릿을 사용자가 편집할 수 있는 구조라면 위험하다\n\n2.3절에서 `${@서비스.메서드()}` 를 쓰지 말자고 한 것과 같은 이유다. **화면이 서버 내부를 직접 아는 것**을 피한다.\n\n**모델에 담아 넘기는 편**이 한 줄 더 쓰고 셋을 피한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "문자열로 오는 것이 ENUM 이 되는 것",
+   "md": "```\nitemType=BOOK   (문자열)\n     |\n     v\nitem.itemType = ItemType.BOOK   (ENUM)\n```\n\n**누가 바꾸나** — 스프링의 기본 컨버터다. 1편 7.5절에서 `price=10000` 이 `Integer` 가 되던 것과 같은 자리다.\n\n**없는 이름을 보내면** 변환에 실패하고 **400** 이 난다. 3.1절 표의 마지막 줄이 이것이다.\n\n> 변환 서비스 · `ConversionService` 연동 — **11장**\n\n**11장에서 이 변환을 직접 만든다.** 지금은 \"자동으로 된다\" 로 두되, **어디서 되는지**는 알아 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /form/items/1/edit HTTP/1.1\n\nHTTP/1.1 200 \n\n<input type=\"radio\" value=\"BOOK\" id=\"itemType1\" name=\"itemType\" checked=\"checked\">\n<label for=\"itemType1\">도서</label>\n<input type=\"radio\" value=\"FOOD\" id=\"itemType2\" name=\"itemType\">\n<label for=\"itemType2\">식품</label>\n<input type=\"radio\" value=\"ETC\" id=\"itemType3\" name=\"itemType\">\n<label for=\"itemType3\">기타</label>\n\n# 히든 필드가 없다\n\nPOST /form/items/1/edit HTTP/1.1\n\nitemName=itemA&price=10000&itemType=FOOD\n\n# 없는 값을 보내면\nitemType=MOVIE\n\nHTTP/1.1 400 \n#   Failed to convert value of type String to required type ItemType",
+   "note": "**3.5절의 응답과 나란히 놓으면 차이가 하나**다 — **`_itemType` 히든 필드가 없다.**\n\nid 번호 붙이기(`itemType1`~`3`)와 `checked` 판단은 똑같이 한다. **해제가 불가능하다는 성질 하나** 때문에 히든 필드만 빠졌다.\n\n마지막 400 이 3.1절 표의 마지막 줄을 미리 보여 준다. `MOVIE` 라는 ENUM 상수가 없어서 **컨트롤러에 들어오기도 전에** 튕긴다."
+  }
+ ],
+ "recap": [
+  "**라디오는 해제라는 동작이 없다** — 그래서 히든 필드가 필요 없다.",
+  "값이 안 오는 경우는 **등록 폼에서 아무것도 안 골랐을 때**뿐이다. 검증으로 막는다.",
+  "**ENUM 이 값과 설명을 다 들고** 있어서 `Map` 이 필요 없다.",
+  "**`values()`** 를 모델에 담는다. ENUM 이 늘면 화면이 자동으로 따라온다.",
+  "`${type.name()}` 이 전송되는 값이다. **생략해도 되지만 적어 두는 편**이 낫다.",
+  "**`T(...)` 로 클래스를 직접 부를 수 있는데 쓰지 않는다** — 경로가 박히고 화면이 도메인을 안다.",
+  "문자열이 ENUM 이 되는 것은 **스프링의 컨버터** — 11장에서 직접 만든다.",
+  "없는 이름을 보내면 **400** 이다."
+ ],
+ "drills": [
+  {
+   "task": "라디오를 그리고 응답에 히든 필드가 없는 것을 본다.",
+   "done_when": "체크박스와 비교했다.",
+   "minutes": 10
+  },
+  {
+   "task": "선택한 뒤 해제를 시도한다.",
+   "done_when": "안 되는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "ENUM 에 상수를 하나 더 추가한다.",
+   "done_when": "화면이 자동으로 늘어나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`itemType=MOVIE` 를 직접 보내 본다.",
+   "done_when": "400 과 변환 실패 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`T(...)` 로 ENUM 을 직접 부른 뒤 클래스를 다른 패키지로 옮긴다.",
+   "done_when": "컴파일은 되는데 화면이 깨지는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "라디오에 히든 필드가 왜 필요 없나?",
+   "a": "해제라는 동작이 없어서 값이 안 오는 상황이 수정 화면에서는 생기지 않는다."
+  },
+  {
+   "q": "ENUM 을 선택지로 쓸 때 `Map` 이 왜 필요 없나?",
+   "a": "ENUM 자체가 이름(값)과 설명을 다 들고 있기 때문이다."
+  },
+  {
+   "q": "`T(...)` 를 쓰지 않는 이유는?",
+   "a": "패키지 경로가 템플릿에 박히고, 화면이 도메인을 직접 알게 되고, 아무 클래스나 부를 수 있게 된다."
+  },
+  {
+   "q": "문자열이 ENUM 으로 어떻게 바뀌나?",
+   "a": "스프링의 기본 컨버터가 바꾼다. 없는 이름이면 400 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "타입 참조",
+   "en": "type reference",
+   "what": "SpEL 의 `T(...)`. 클래스를 직접 참조한다. 템플릿에서는 피한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "HTML Standard — The input element",
+   "url": "https://html.spec.whatwg.org/multipage/input.html",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "Thymeleaf + Spring",
+   "url": "https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
