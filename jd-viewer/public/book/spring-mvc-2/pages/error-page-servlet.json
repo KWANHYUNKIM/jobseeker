@@ -1,0 +1,141 @@
+{
+ "book": "spring-mvc-2",
+ "id": "error-page-servlet",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "오류 화면 제공",
+ "summary": "web.xml 시절의 방법과 스프링 부트의 방법.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "오류 페이지를 등록하는 두 방법을 안다.",
+  "예외 타입과 상태 코드로 나눠 등록할 수 있다.",
+  "부트가 무엇을 감췄는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "예전과 지금",
+   "ascii": "   web.xml (old)\n   -------------\n   <error-page>\n     <error-code>404</error-code>\n     <location>/error-page/404</location>\n   </error-page>\n\n   spring boot (now)\n   -----------------\n   src/main/resources/templates/error/404.html\n   src/main/resources/templates/error/4xx.html\n   src/main/resources/templates/error/500.html\n   src/main/resources/templates/error/error.html\n\n   파일을 두는 것만으로 등록된다",
+   "note": "**부트에서는 파일을 두는 것만으로** 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "서블릿 방식을 먼저 본다",
+   "md": "**부트가 다 해 주는데 왜 보나** — 9.3절에서 **요청이 두 번 오는 것**을 설명하려면 이 구조를 알아야 한다.\n\n**서블릿 스펙의 오류 페이지 등록**은 셋으로 나뉜다.\n\n| | 언제 |\n|---|---|\n| **상태 코드별** | 404, 500 |\n| **예외 타입별** | `RuntimeException` 과 그 자식 |\n| **기본** | 위에 안 걸리는 것 전부 |\n\n**`web.xml` 대신 자바 설정**으로도 된다.\n\n```java\n@Component\npublic class WebServerCustomizer\n        implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {\n\n    @Override\n    public void customize(ConfigurableWebServerFactory factory) {\n        ErrorPage errorPage404 = new ErrorPage(HttpStatus.NOT_FOUND, \"/error-page/404\");\n        ErrorPage errorPage500 = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, \"/error-page/500\");\n        ErrorPage errorPageEx = new ErrorPage(RuntimeException.class, \"/error-page/500\");\n\n        factory.addErrorPages(errorPage404, errorPage500, errorPageEx);\n    }\n}\n```\n\n**`/error-page/404` 는 URL** 이다. HTML 파일 경로가 아니라 **컨트롤러가 받아야 하는 주소**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "오류 페이지 컨트롤러",
+   "code": "@Slf4j\n@Controller\npublic class ErrorPageController {\n\n    @RequestMapping(\"/error-page/404\")\n    public String errorPage404(HttpServletRequest request, HttpServletResponse response) {\n        log.info(\"errorPage 404\");\n        return \"error-page/404\";\n    }\n\n    @RequestMapping(\"/error-page/500\")\n    public String errorPage500(HttpServletRequest request, HttpServletResponse response) {\n        log.info(\"errorPage 500\");\n        return \"error-page/500\";\n    }\n}",
+   "note": "**`@RequestMapping` 이다** — `@GetMapping` 이 아니다.\n\n**오류는 어느 메서드에서든 날 수 있다.** POST 요청이 실패했으면 오류 페이지도 POST 로 온다. `@GetMapping` 이면 **405** 가 나고, 그 405 가 또 오류 페이지를 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외 타입은 자식까지 걸린다",
+   "md": "```java\nnew ErrorPage(RuntimeException.class, \"/error-page/500\")\n```\n\n**`RuntimeException` 과 그 자식 전부**가 여기로 온다. `IllegalArgumentException` 도, 직접 만든 `ItemNotFoundException` 도.\n\n**더 구체적인 것을 따로 등록하면** 그것이 이긴다.\n\n```java\nnew ErrorPage(ItemNotFoundException.class, \"/error-page/404\")\nnew ErrorPage(RuntimeException.class, \"/error-page/500\")\n```\n\n**5.6절의 오류 코드 단계와 같은 발상**이다 — 구체적인 것부터 찾고 없으면 일반적인 것으로.\n\n**`Exception.class` 를 등록하면 거의 다 잡는다.** 다만 **`Error` 는 안 잡힌다** — `OutOfMemoryError` 같은 것은 `Throwable` 의 다른 갈래다. 그건 잡아도 할 수 있는 것이 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "부트는 규약으로 대신한다",
+   "md": "**위의 설정 클래스가 통째로 필요 없다.**\n\n```\ntemplates/error/404.html\ntemplates/error/500.html\ntemplates/error/4xx.html\ntemplates/error/5xx.html\ntemplates/error/error.html\n```\n\n**파일 이름이 곧 등록**이다. `BasicErrorController` 가 `/error` 를 받아서 상태 코드에 맞는 뷰를 고른다 — **9.6절에서 자세히** 본다.\n\n**정적 파일도 된다.**\n\n```\nstatic/error/404.html\n```\n\n**템플릿이 우선**이다. 정적 파일은 모델을 못 쓰니 화면이 단순할 때만.\n\n**예외 타입별 분기는 없다.** 부트는 **상태 코드로만** 나눈다. 예외 타입에 따라 다르게 하려면 **10장의 `@ExceptionHandler`** 가 필요하다.\n\n> **그래서 서블릿 방식이 완전히 죽은 것은 아니다.** 다만 실무에서는 부트 규약 + `@ExceptionHandler` 조합을 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "오류 페이지에서 또 오류가 나면",
+   "md": "**흔한 사고**다.\n\n```html\n<h2 th:text=\"${item.itemName}\">   <!-- 오류 페이지에 item 이 있을 리 없다 -->\n```\n\n**오류 페이지를 렌더링하다 예외가 난다.** 그러면 다시 오류 페이지로 가고, **무한 반복**이 된다.\n\n**톰캣이 막아 준다** — 몇 번 반복되면 포기하고 기본 화면을 낸다. 그런데 **로그에는 예외가 잔뜩** 쌓인다.\n\n**오류 페이지는 최대한 단순하게** 만든다.\n\n| | |\n|---|---|\n| **모델을 안 쓴다** | 있을 것을 가정하지 않는다 |\n| **DB 를 안 본다** | 그게 원인일 수도 있다 |\n| **조각을 조심한다** | 헤더 조각이 로그인 정보를 쓰면 |\n\n**세 번째가 놓치기 쉽다.** 2.15절의 공통 헤더 조각이 `${session.loginMember.name}` 을 쓰면 **로그인 안 한 사용자의 오류 페이지가 또 터진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /error-ex HTTP/1.1\n\nHTTP/1.1 500 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<head><title>오류 화면</title></head>\n<body>\n<div class=\"container\">\n    <div class=\"py-5 text-center\">\n        <h2>500 오류 화면</h2>\n    </div>\n    <div>서버 오류입니다.</div>\n    <a href=\"/\">홈으로</a>\n</div>\n</body>\n</html>\n\n# 9.1 절에서는 Whitelabel 이었다\n\n# 상태 코드는 그대로 500 이다\n\n# 없는 URL\nGET /no-such-page HTTP/1.1\n\nHTTP/1.1 404 \n<h2>404 오류 화면</h2>\n<div>요청한 페이지를 찾을 수 없습니다.</div>",
+   "note": "**응답 본문이 서비스의 화면**이 됐다. `Whitelabel` 이 아니라 우리 HTML 이고, **`홈으로` 링크**가 있어서 사용자가 할 일이 생겼다.\n\n**상태 코드는 여전히 500 이다** — 이것이 중요하다. 화면을 바꿨다고 200 으로 만들면 안 된다. **모니터링과 크롤러가 상태 코드를 본다.**\n\n**둘째는 컨트롤러가 없는 URL** 이다. 예외가 난 것이 아니라 **`DispatcherServlet` 이 핸들러를 못 찾아** 404 를 냈고, 그것도 같은 구조로 처리됐다."
+  }
+ ],
+ "recap": [
+  "서블릿은 **상태 코드별 · 예외 타입별 · 기본**으로 오류 페이지를 등록한다.",
+  "**`/error-page/404` 는 URL** 이다. 컨트롤러가 받아야 한다.",
+  "**`@RequestMapping` 을 쓴다** — 오류는 어느 메서드에서든 난다.",
+  "**예외 타입은 자식까지** 걸린다. 구체적인 것이 이긴다.",
+  "**5.6절의 오류 코드 단계와 같은 발상**이다.",
+  "**부트는 파일 이름이 곧 등록**이다 — `error/404.html`.",
+  "**부트는 상태 코드로만** 나눈다. 예외 타입은 10장의 `@ExceptionHandler`.",
+  "**오류 페이지에서 또 오류가 나면** 반복된다.",
+  "**모델·DB·조각을 조심**한다 — 헤더 조각이 로그인 정보를 쓰면 터진다.",
+  "**상태 코드는 그대로 500** 이어야 한다. 화면만 바꾼다."
+ ],
+ "drills": [
+  {
+   "task": "`error/404.html` 과 `error/500.html` 을 만든다.",
+   "done_when": "`Whitelabel` 이 사라진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서블릿 방식으로도 등록해 본다.",
+   "done_when": "`WebServerFactoryCustomizer` 가 동작하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@GetMapping` 으로 오류 페이지를 만들고 POST 로 오류를 낸다.",
+   "done_when": "405 가 나는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "오류 페이지에 `${item.name}` 을 넣는다.",
+   "done_when": "오류가 반복되는 것을 로그에서 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "오류 페이지의 상태 코드를 확인한다.",
+   "done_when": "200 이 아니라 500 인 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿의 오류 페이지 등록 방식 셋은?",
+   "a": "상태 코드별, 예외 타입별, 그리고 나머지를 받는 기본이다."
+  },
+  {
+   "q": "오류 페이지에 `@RequestMapping` 을 쓰는 이유는?",
+   "a": "POST 요청이 실패하면 오류 페이지도 POST 로 오는데 `@GetMapping` 이면 405 가 난다."
+  },
+  {
+   "q": "부트에서는 어떻게 등록하나?",
+   "a": "`templates/error/404.html` 처럼 파일 이름으로 등록된다. 별도 설정이 없다."
+  },
+  {
+   "q": "부트 방식으로 못 하는 것은?",
+   "a": "예외 타입별 분기다. 상태 코드로만 나뉘고 타입별은 `@ExceptionHandler` 가 필요하다."
+  },
+  {
+   "q": "오류 페이지를 단순하게 만드는 이유는?",
+   "a": "거기서 또 예외가 나면 오류 페이지가 반복 호출되기 때문이다. 공통 헤더 조각이 특히 위험하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "오류 페이지",
+   "en": "error page",
+   "what": "예외나 오류 상태 코드가 났을 때 대신 보여 줄 화면. 서블릿 스펙에 등록 방식이 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

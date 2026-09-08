@@ -1,0 +1,161 @@
+{
+ "book": "spring-mvc-2",
+ "id": "exception-basic",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "서블릿 예외 처리",
+ "summary": "예외가 컨트롤러 밖으로 나가면 무슨 일이 생기나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예외가 어디까지 올라가는지 안다.",
+  "`sendError` 와 예외의 차이를 안다.",
+  "기본 오류 화면이 왜 문제인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "8.7절이 남긴 것 — **`/items/999` 를 열면 `Whitelabel Error Page`** 다.\n\n1.2절의 숙제 목록에도 있었다.\n\n> **없는 상품을 열면 500** 이 난다 — **9장**\n\n**먼저 무슨 일이 벌어지는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "예외는 위로 올라간다",
+   "ascii": "   WAS\n     ^\n     |  exception propagates up\n   filter\n     ^\n     |\n   servlet (DispatcherServlet)\n     ^\n     |\n   interceptor\n     ^\n     |\n   controller   <-- throw\n\n   아무도 안 잡으면 WAS 까지 올라간다",
+   "note": "**8장에서 본 그 층**을 역순으로 거슬러 올라간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자바의 예외가 그대로 적용된다",
+   "md": "**특별한 것이 없다.** 메서드에서 예외가 나면 부른 쪽으로 올라가고, 아무도 `catch` 하지 않으면 **`main` 까지** 간다.\n\n**웹에서는 `main` 대신 WAS** 다.\n\n```\ncontroller  ->  interceptor  ->  servlet  ->  filter  ->  WAS\n```\n\n**8.5절에서 `afterCompletion` 이 예외를 인자로 받는다**고 한 것이 이 경로 위에 있다. 스프링이 중간에서 한 번 정리하고 다시 던진다.\n\n**WAS 까지 가면** — 톰캣이 처리한다. 그것이 `Whitelabel Error Page` 다.\n\n**HTTP 상태 코드는 500** 이다. \"서버가 처리하다 실패했다\" 는 뜻이니 **맞는 말이긴 하다.**"
+  },
+  {
+   "type": "table",
+   "caption": "예외를 만드는 두 방법",
+   "note": "**`sendError` 는 예외가 아니다.** 응답에 \"오류다\" 라고 표시만 하고 정상 흐름으로 돌아간다.",
+   "columns": [
+    "",
+    "무엇",
+    "상태 코드"
+   ],
+   "rows": [
+    [
+     "`throw new RuntimeException()`",
+     "예외를 던진다",
+     "**500**"
+    ],
+    [
+     "`response.sendError(404)`",
+     "**응답에 표시**한다",
+     "404"
+    ],
+    [
+     "`response.sendError(400, \"메시지\")`",
+     "메시지도 담는다",
+     "400"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "둘의 차이",
+   "code": "@GetMapping(\"/error-ex\")\npublic void errorEx() {\n    throw new RuntimeException(\"예외 발생!\");\n}\n\n@GetMapping(\"/error-404\")\npublic void error404(HttpServletResponse response) throws IOException {\n    response.sendError(404, \"404 오류!\");\n    // 여기 아래 코드도 실행된다\n}",
+   "note": "**둘째는 메서드가 계속 실행**된다. `sendError` 는 **표시만** 하고, 실제 처리는 **서블릿 컨테이너가 응답을 내보낼 때** 한다.\n\n**그래서 `sendError` 뒤에 `return` 을 빠뜨리면** 그 아래 코드가 다 돈다. **8.3절의 `sendRedirect` 도 같다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외를 잡아 삼키면 안 된다",
+   "md": "**8.2절에서 한 말**이 여기서 이어진다.\n\n> **던지는 것을 빠뜨리면 안 된다.** 예외를 삼키면 9장의 오류 페이지가 안 뜬다.\n\n```java\ntry {\n    itemService.findById(id);\n} catch (Exception e) {\n    log.error(\"오류\", e);   // 로그만 찍고 끝\n}\nreturn \"item\";              // 정상인 척 진행\n```\n\n**200 이 나간다.** 화면은 비어 있거나 깨져 있는데 **상태 코드는 정상**이다.\n\n**무엇이 나쁜가**\n\n| | |\n|---|---|\n| **모니터링이 못 잡는다** | 200 만 세면 오류율이 0 이다 |\n| **클라이언트가 못 판단한다** | 성공인 줄 안다 |\n| **재시도도 안 된다** | 실패라고 알려야 재시도한다 |\n\n**`catch` 는 처리할 수 있을 때만** 한다. 로그만 찍을 거면 **찍고 다시 던진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "기본 오류 화면이 왜 문제인가",
+   "md": "```\nWhitelabel Error Page\nThis application has no explicit mapping for /error, so you are seeing this as a fallback.\nThere was an unexpected error (type=Internal Server Error, status=500).\n```\n\n**세 가지가 문제다.**\n\n**1. 사용자가 못 읽는다**\n\n영어에 기술 용어다. **무엇을 해야 하는지** 없다 — 돌아가기 버튼도, 문의 링크도.\n\n**2. 서비스 화면이 아니다**\n\n헤더도 메뉴도 없다. **다른 사이트에 온 것 같다.**\n\n**3. 정보가 새어 나갈 수 있다**\n\n설정에 따라 **스택 트레이스가 그대로** 나온다. 클래스 이름·패키지 구조·사용 중인 라이브러리와 버전이 드러난다.\n\n```properties\n# 운영에서는 꺼야 한다\nserver.error.include-stacktrace=never\nserver.error.include-message=never\n```\n\n**부트 기본값이 `never`** 라 요즘은 안전한데, **개발 편의로 켜 두고 그대로 배포**하는 일이 있다.\n\n> **개발자에게는 정보가 많을수록 좋고 사용자에게는 적을수록 안전하다.** 로그에 남기고 화면에는 안 보여 주는 것이 원칙이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 예외를 던지면\nGET /error-ex HTTP/1.1\n\nHTTP/1.1 500 \nContent-Type: text/html;charset=UTF-8\n\n<html><body>\n<h1>Whitelabel Error Page</h1>\n<p>This application has no explicit mapping for /error...</p>\n<div>There was an unexpected error (type=Internal Server Error, status=500).</div>\n</body></html>\n\n# sendError 를 부르면\nGET /error-404 HTTP/1.1\n\nHTTP/1.1 404 \nContent-Type: text/html;charset=UTF-8\n\n<html><body>\n<h1>Whitelabel Error Page</h1>\n<div>There was an unexpected error (type=Not Found, status=404).</div>\n</body></html>\n\n# 예외를 삼키면\nGET /error-swallowed HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html><body></body></html>",
+   "note": "**앞의 둘은 상태 코드만 다르다.** 화면은 같은 `Whitelabel` 이다 — 오류의 종류와 무관하게 같은 것이 나온다.\n\n**셋째가 제일 나쁘다.** `200` 에 빈 화면이다. 모니터링 도구는 **정상 응답으로 센다.** 사용자만 이상한 것을 보고, 서버 쪽에서는 아무 일도 없던 것이 된다.\n\n**세 응답 모두 서비스의 화면이 아니다.** 9.2절부터 이것을 바꾼다."
+  }
+ ],
+ "recap": [
+  "**예외는 위로 올라간다** — 컨트롤러에서 WAS 까지.",
+  "**자바의 예외 전파가 그대로** 적용된다.",
+  "**WAS 까지 가면 톰캣이 처리**한다. 그것이 `Whitelabel` 이다.",
+  "**`sendError` 는 예외가 아니다** — 표시만 하고 흐름은 계속된다.",
+  "**뒤에 `return` 을 빠뜨리면** 아래 코드가 다 돈다.",
+  "**예외를 삼키면 200 이 나간다** — 모니터링이 못 잡는다.",
+  "**`catch` 는 처리할 수 있을 때만** 한다. 아니면 다시 던진다.",
+  "기본 화면의 문제 셋 — **못 읽는다 · 서비스 화면이 아니다 · 정보가 샌다**.",
+  "**스택 트레이스는 로그에, 화면에는 안** 보여 준다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러에서 `RuntimeException` 을 던진다.",
+   "done_when": "500 과 `Whitelabel` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`sendError(404)` 를 부르고 그 뒤에 로그를 찍는다.",
+   "done_when": "아래 코드가 실행되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외를 `catch` 해서 로그만 찍는다.",
+   "done_when": "200 이 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`server.error.include-stacktrace=always` 를 켠다.",
+   "done_when": "스택 트레이스가 화면에 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필터·인터셉터에 로그를 찍고 예외를 던진다.",
+   "done_when": "예외가 어디까지 올라가는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨트롤러의 예외를 아무도 안 잡으면?",
+   "a": "인터셉터·서블릿·필터를 거쳐 WAS 까지 올라가고 톰캣의 기본 오류 화면이 나온다."
+  },
+  {
+   "q": "`sendError` 와 예외의 차이는?",
+   "a": "`sendError` 는 응답에 오류를 표시만 하고 코드는 계속 실행된다. 예외는 흐름을 끊고 위로 올라간다."
+  },
+  {
+   "q": "예외를 삼키면 무엇이 나쁜가?",
+   "a": "200 이 나가서 모니터링이 오류를 못 잡고 클라이언트가 성공으로 판단한다."
+  },
+  {
+   "q": "기본 오류 화면의 문제는?",
+   "a": "사용자가 못 읽고, 서비스 화면이 아니고, 설정에 따라 스택 트레이스로 내부 정보가 샌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "sendError",
+   "en": "",
+   "what": "응답에 오류 상태를 표시하는 서블릿 메서드. 예외를 던지는 것과 다르다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

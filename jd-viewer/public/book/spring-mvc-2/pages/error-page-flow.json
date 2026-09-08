@@ -1,0 +1,175 @@
+{
+ "book": "spring-mvc-2",
+ "id": "error-page-flow",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "오류 페이지 작동 원리",
+ "summary": "요청이 두 번 온다. 필터와 인터셉터가 두 번 돈다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "오류 페이지가 왜 두 번째 요청인지 안다.",
+  "무엇이 두 번 도는지 안다.",
+  "오류 정보가 어디에 담기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "8.6절 마지막에 이렇게 적고 넘어갔다.\n\n> 500 이 나서 오류 페이지로 가는 **내부 요청**이 다시 인터셉터를 타고, 로그인 안 했으면 거기서 막힌다. **9장에서 이 내부 요청의 정체를 본다.**\n\n**여기다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "요청이 두 번",
+   "ascii": "   1) client request\n        |\n        v\n      WAS  ->  filter  ->  servlet  ->  interceptor  ->  controller\n                                                            |\n                                                          throw\n        <-------------------------------------------------- \n        |\n        v\n      WAS finds error page for the exception\n\n   2) internal request  (client knows nothing)\n        |\n        v\n      WAS  ->  filter  ->  servlet  ->  interceptor  ->  error controller\n        |\n        v\n      response goes to the original client\n\n   필터와 인터셉터가 두 번 돈다",
+   "note": "**클라이언트는 한 번 보냈는데 서버 안에서 두 번 돈다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 리다이렉트가 아닌가",
+   "md": "**오류 페이지를 보여 주는 방법이 둘** 있다.\n\n| | |\n|---|---|\n| **리다이렉트** | 302 를 보내고 클라이언트가 다시 요청 |\n| **내부 재요청** | **서버 안에서** 다시 돌린다 |\n\n**서블릿은 두 번째**를 쓴다. 왜냐하면 —\n\n**1. 상태 코드를 지켜야 한다**\n\n리다이렉트하면 **302 다음에 200** 이다. 500 이 사라진다. 9.2절에서 \"상태 코드는 그대로 500\" 이라고 한 것을 못 지킨다.\n\n**2. URL 이 바뀌면 안 된다**\n\n`/items/999` 에서 오류가 났는데 주소창이 `/error-page/500` 이 되면, **새로고침해도 원래 페이지로 못 돌아간다.**\n\n**3. 오류 정보를 넘겨야 한다**\n\n어떤 예외였는지, 어느 URL 이었는지. 리다이렉트로는 쿼리 스트링에 실어야 하고 **그러면 사용자에게 노출**된다.\n\n**그래서 클라이언트는 아무것도 모른다.** 요청 한 번, 응답 한 번을 받았을 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "필터와 인터셉터가 두 번 돈다",
+   "md": "**이것이 문제의 시작**이다.\n\n```\n1차:  LogFilter -> LoginCheckFilter -> controller (예외)\n2차:  LogFilter -> LoginCheckFilter -> error controller\n```\n\n**무슨 일이 생기나**\n\n**1. 로그가 두 번 찍힌다**\n\n8.2절의 요청 로그가 같은 요청에 두 벌 남는다. **uuid 도 다르다** — 다른 요청으로 보인다.\n\n**2. 인증이 두 번 검사된다**\n\n8.6절에서 본 그것이다. `/error-page/500` 이 화이트리스트에 없으면 **오류 페이지가 로그인 화면으로** 바뀐다.\n\n**3. 부수 효과가 두 번 일어난다**\n\n필터에서 방문자 수를 세거나 통계를 쌓으면 **두 번 센다.**\n\n**세 번째가 조용해서 나쁘다.** 오류가 날 때마다 통계가 한 번씩 더 쌓이는데 **아무도 모른다.**\n\n**9.4·9.5절이 이것을 푼다.**"
+  },
+  {
+   "type": "table",
+   "caption": "오류 정보는 request 에 담긴다",
+   "note": "**`request.setAttribute`** 로 담아 넘긴다 — 8.5절에서 인터셉터가 쓴 그 방식이다.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`jakarta.servlet.error.exception`",
+     "예외 객체"
+    ],
+    [
+     "`jakarta.servlet.error.exception_type`",
+     "예외 클래스"
+    ],
+    [
+     "`jakarta.servlet.error.message`",
+     "메시지"
+    ],
+    [
+     "`jakarta.servlet.error.request_uri`",
+     "**원래 URL**"
+    ],
+    [
+     "`jakarta.servlet.error.servlet_name`",
+     "서블릿 이름"
+    ],
+    [
+     "`jakarta.servlet.error.status_code`",
+     "상태 코드"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "꺼내 보기",
+   "code": "@RequestMapping(\"/error-page/500\")\npublic String errorPage500(HttpServletRequest request, Model model) {\n\n    log.info(\"ERROR_EXCEPTION: {}\", request.getAttribute(ERROR_EXCEPTION));\n    log.info(\"ERROR_REQUEST_URI: {}\", request.getAttribute(ERROR_REQUEST_URI));\n    log.info(\"ERROR_STATUS_CODE: {}\", request.getAttribute(ERROR_STATUS_CODE));\n    log.info(\"dispatcherType={}\", request.getDispatcherType());\n\n    return \"error-page/500\";\n}",
+   "note": "**`ERROR_REQUEST_URI` 가 유용**하다. 오류 페이지에서 **어느 페이지에서 났는지** 보여 주거나 로그에 남길 수 있다.\n\n**`getDispatcherType()`** 이 9.4절의 열쇠다. 여기서는 **`ERROR`** 가 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "예외 객체를 화면에 뿌리면 안 된다",
+   "md": "```html\n<div th:text=\"${exception}\">   <!-- 하면 안 된다 -->\n```\n\n**9.1절에서 말한 정보 노출**이 이렇게도 일어난다. 예외 메시지에 **SQL 문, 파일 경로, 내부 ID** 가 들어 있는 경우가 흔하다.\n\n```\norg.springframework.dao.DataIntegrityViolationException:\ncould not execute statement; SQL [insert into member (email, ...) values (?, ...)];\nconstraint [uk_member_email]\n```\n\n**테이블 이름과 제약 조건 이름**이 그대로 나간다.\n\n**화면에는 사용자가 할 수 있는 것**만 쓴다.\n\n```html\n<h2>일시적인 오류가 발생했습니다</h2>\n<p>잠시 후 다시 시도해 주세요.</p>\n<p>문제가 계속되면 오류 번호 <span th:text=\"${errorId}\">A1B2</span> 로 문의해 주세요.</p>\n```\n\n**오류 번호를 보여 주는 것**이 좋은 절충이다. 8.2절의 요청 uuid 를 쓰면 **로그에서 바로 찾을 수 있다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 클라이언트가 보내는 것은 한 번뿐\nGET /error-ex HTTP/1.1\n\nHTTP/1.1 500 \nContent-Type: text/html;charset=UTF-8\n\n<h2>500 오류 화면</h2>\n\n# 그런데 서버 로그는 이렇다\n#   REQUEST  [a1b2][/error-ex]              <- 1 차\n#   LoginCheckFilter [/error-ex]\n#   ...예외 발생\n#   RESPONSE [a1b2][/error-ex]\n#\n#   REQUEST  [c3d4][/error-page/500]        <- 2 차, uuid 가 다르다\n#   LoginCheckFilter [/error-page/500]\n#   ERROR_EXCEPTION: java.lang.RuntimeException: 예외 발생!\n#   ERROR_REQUEST_URI: /error-ex\n#   ERROR_STATUS_CODE: 500\n#   dispatcherType=ERROR\n#   RESPONSE [c3d4][/error-page/500]\n\n# 응답은 하나인데 로그는 두 벌이다",
+   "note": "**응답은 한 번**이고 클라이언트는 `/error-page/500` 이라는 주소를 본 적도 없다. 주소창은 `/error-ex` 그대로다.\n\n**로그가 두 벌**인 것이 이 절의 요점이다. `[a1b2]` 와 `[c3d4]` — 8.2절의 uuid 가 요청마다 새로 만들어지니 **다른 요청으로 기록**됐다.\n\n**`ERROR_REQUEST_URI: /error-ex`** 가 둘을 잇는 유일한 단서다.\n\n**`dispatcherType=ERROR`** — 1차 요청에서는 `REQUEST` 였다. **9.4절이 이 값으로 두 번 도는 것을 막는다.**"
+  }
+ ],
+ "recap": [
+  "**오류 페이지는 서버 안의 두 번째 요청**이다.",
+  "**리다이렉트가 아닌 이유 셋** — 상태 코드 · URL · 오류 정보.",
+  "**클라이언트는 아무것도 모른다** — 요청 한 번, 응답 한 번.",
+  "**필터와 인터셉터가 두 번 돈다.**",
+  "**로그가 두 벌**이고 uuid 가 달라 다른 요청으로 보인다.",
+  "**인증이 두 번 검사**된다 — 8.6절의 그 문제.",
+  "**부수 효과가 두 번** 일어난다. 조용해서 나쁘다.",
+  "**오류 정보는 `request` 애트리뷰트**에 담긴다.",
+  "**`ERROR_REQUEST_URI`** 가 원래 URL 이다.",
+  "**예외 객체를 화면에 뿌리면 안 된다** — SQL·제약 이름이 샌다.",
+  "**오류 번호를 보여 주는 것**이 좋은 절충이다."
+ ],
+ "drills": [
+  {
+   "task": "오류 페이지 컨트롤러에서 애트리뷰트를 전부 찍는다.",
+   "done_when": "예외·원래 URL·상태 코드를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터에 로그를 두고 예외를 낸다.",
+   "done_when": "로그가 두 벌 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "uuid 두 개를 비교한다.",
+   "done_when": "서로 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "브라우저 주소창을 본다.",
+   "done_when": "`/error-page/500` 이 아닌 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`getDispatcherType()` 을 1차와 2차에서 찍는다.",
+   "done_when": "`REQUEST` 와 `ERROR` 인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "오류 페이지가 왜 두 번째 요청인가?",
+   "a": "서블릿 컨테이너가 서버 내부에서 오류 페이지 URL 로 다시 요청하기 때문이다."
+  },
+  {
+   "q": "리다이렉트를 안 쓰는 이유는?",
+   "a": "상태 코드가 200 이 되고, 주소창이 바뀌고, 오류 정보를 쿼리로 노출해야 하기 때문이다."
+  },
+  {
+   "q": "두 번 돌아서 생기는 문제는?",
+   "a": "로그가 두 벌 남고, 인증이 두 번 검사되고, 필터의 부수 효과가 두 번 일어난다."
+  },
+  {
+   "q": "오류 정보는 어디에 있나?",
+   "a": "`request` 애트리뷰트다. `jakarta.servlet.error.*` 이름으로 예외·원래 URL·상태 코드가 담긴다."
+  },
+  {
+   "q": "예외 메시지를 화면에 뿌리면?",
+   "a": "SQL 문·테이블 이름·제약 조건 같은 내부 정보가 노출된다. 오류 번호만 보여 주는 것이 낫다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내부 재요청",
+   "en": "internal dispatch",
+   "what": "서버 안에서 다른 URL 로 다시 요청을 돌리는 것. 클라이언트는 모른다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

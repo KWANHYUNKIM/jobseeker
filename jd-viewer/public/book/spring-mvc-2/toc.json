@@ -665,7 +665,7 @@
           "title": "서블릿 예외 처리",
           "summary": "예외가 컨트롤러 밖으로 나가면 무슨 일이 생기나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -673,7 +673,7 @@
           "title": "오류 화면 제공",
           "summary": "web.xml 시절의 방법과 스프링 부트의 방법.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -681,7 +681,7 @@
           "title": "오류 페이지 작동 원리",
           "summary": "요청이 두 번 온다. 필터와 인터셉터가 두 번 돈다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -689,7 +689,7 @@
           "title": "필터와 DispatcherType",
           "summary": "두 번 도는 것을 막는 방법.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",

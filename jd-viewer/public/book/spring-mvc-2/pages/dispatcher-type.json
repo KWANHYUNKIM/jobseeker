@@ -1,0 +1,144 @@
+{
+ "book": "spring-mvc-2",
+ "id": "dispatcher-type",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "필터와 DispatcherType",
+ "summary": "두 번 도는 것을 막는 방법.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`DispatcherType` 이 무엇인지 안다.",
+  "필터를 오류 요청에서 뺄 수 있다.",
+  "기본값이 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "9.3절에서 본 문제 — **필터가 두 번 돈다.**\n\n**서블릿이 구분할 수단을 준다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "요청의 종류",
+   "ascii": "   DispatcherType\n   --------------\n   REQUEST    client request              default\n   ERROR      error page dispatch\n   FORWARD    RequestDispatcher.forward\n   INCLUDE    RequestDispatcher.include\n   ASYNC      async servlet\n\n   registration.setDispatcherTypes(REQUEST, ERROR)\n        |\n        +--> 오류 요청에도 필터를 태운다\n\n   기본값은 REQUEST 하나다",
+   "note": "**요청이 어떻게 들어왔는지**를 나타낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 가지",
+   "md": "| | 언제 |\n|---|---|\n| **`REQUEST`** | 클라이언트가 보낸 요청 |\n| **`ERROR`** | 오류 페이지로 가는 내부 요청 |\n| `FORWARD` | 서블릿에서 다른 서블릿으로 |\n| `INCLUDE` | 다른 서블릿의 결과를 끼워 넣을 때 |\n| `ASYNC` | 비동기 서블릿 |\n\n**`FORWARD` 는 1편 4.3절에서** 본 것이다 — 서블릿에서 JSP 로 넘길 때 썼다.\n\n> `dispatcher.forward(request, response)` — **서버 안에서 다른 자원으로 넘긴다.** 클라이언트는 모른다.\n\n**JSP 를 쓰던 시절에는 `FORWARD` 도 중요**했다. 타임리프는 뷰 리졸버가 직접 렌더링하니 포워드가 안 일어난다.\n\n**실무에서 신경 쓰는 것은 `REQUEST` 와 `ERROR` 둘**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "명시적으로 지정",
+   "code": "@Bean\npublic FilterRegistrationBean logFilter() {\n    FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();\n    registration.setFilter(new LogFilter());\n    registration.setOrder(1);\n    registration.addUrlPatterns(\"/*\");\n    registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);\n    return registration;\n}",
+   "note": "**`REQUEST` 와 `ERROR` 둘 다** 지정했다. 로그 필터는 **오류 요청도 보고 싶기 때문**이다.\n\n**인증 필터는 `REQUEST` 만** 둔다 — 오류 페이지에 인증을 걸 이유가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기본값이 REQUEST 하나다",
+   "md": "**아무것도 안 쓰면 `REQUEST` 만** 적용된다.\n\n```java\nregistration.addUrlPatterns(\"/*\");\n// setDispatcherTypes 를 안 쓰면 REQUEST 만\n```\n\n**그러면 9.3절의 문제가 없어야 하는데** — 실제로는 로그가 두 번 찍혔다.\n\n**왜인가.** 8.1절에서 이렇게 등록했기 때문이다.\n\n```java\n@Component\npublic class LogFilter implements Filter { ... }\n```\n\n**`@Component` 로 등록하면** 부트가 `ServletComponentScan` 이나 기본 등록 규칙으로 붙이는데 **설정이 다를 수 있다.**\n\n**`FilterRegistrationBean` 을 쓰면** 명시적이라 헷갈리지 않는다 — 8.1절에서 그것이 낫다고 한 이유의 하나다.\n\n> **결론은 단순하다.** 기본값을 믿지 말고 **의도를 적는다.** 필터마다 `REQUEST` 만인지 `ERROR` 도인지 정해서 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 ERROR 에도 태울까",
+   "md": "**필터마다 판단이 다르다.**\n\n| | `ERROR` 에도 | 왜 |\n|---|---|---|\n| **인코딩** | **예** | 오류 화면도 한글이다 |\n| **로그** | 예 | 오류 처리 과정을 보고 싶다 |\n| **인증** | **아니오** | 오류 페이지는 누구나 봐야 한다 |\n| **통계·집계** | **아니오** | 두 번 세면 안 된다 |\n| **CORS** | 예 | 오류 응답도 CORS 헤더가 필요하다 |\n\n**마지막이 놓치기 쉽다.** API 에서 오류가 났는데 CORS 헤더가 없으면, **브라우저가 응답 자체를 못 읽는다.** 그러면 클라이언트는 \"네트워크 오류\" 만 보고 **500 이었는지도 모른다.**\n\n**인증을 `REQUEST` 만 두는 것**이 8.6절에서 `/error` 를 제외 목록에 넣은 것과 같은 효과다. **여기가 더 깔끔하다** — 경로를 나열하지 않아도 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "필터 안에서 확인할 수도 있다",
+   "md": "```java\npublic void doFilter(ServletRequest request, ...) {\n    if (request.getDispatcherType() == DispatcherType.ERROR) {\n        chain.doFilter(request, response);\n        return;   // 이 필터의 일은 건너뛴다\n    }\n    ...\n}\n```\n\n**등록 설정 대신 코드에서** 판단하는 방법이다.\n\n**언제 이게 낫나** — **부분적으로만 다르게** 하고 싶을 때다. 로그는 찍되 통계는 안 세는 식.\n\n**보통은 등록 설정**이 낫다. 8.6절에서 본 것과 같은 이유로 — **정책은 한곳에 모으는 편**이 읽기 쉽다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /error-ex HTTP/1.1\n\nHTTP/1.1 500 \n<h2>500 오류 화면</h2>\n\n# 인증 필터를 REQUEST 만으로 두면\n#   REQUEST  [a1b2][/error-ex] dispatcherType=REQUEST\n#   LoginCheckFilter [/error-ex]\n#   ...예외\n#   RESPONSE [a1b2][/error-ex]\n#\n#   REQUEST  [c3d4][/error-page/500] dispatcherType=ERROR\n#   (LoginCheckFilter 가 없다)\n#   RESPONSE [c3d4][/error-page/500]\n\n# 로그 필터를 REQUEST 만으로 두면\n#   REQUEST  [a1b2][/error-ex]\n#   RESPONSE [a1b2][/error-ex]\n#   (2 차 로그가 통째로 없다)\n\n# 로그인 안 한 사용자가 오류를 만나면\n# 인증 필터가 ERROR 에도 걸릴 때\nGET /error-ex HTTP/1.1\n\nHTTP/1.1 302 \nLocation: /login?redirectURL=/error-page/500",
+   "note": "**첫 로그에서 `LoginCheckFilter` 가 2차에 없다.** `REQUEST` 만 지정한 결과이고, 이것이 9.3절 문제의 해법이다.\n\n**둘째는 로그 필터까지 `REQUEST` 만** 뒀을 때다. 오류 처리 과정이 로그에서 통째로 사라진다 — **오류를 조사할 때 제일 필요한 부분**이라 이건 손해다.\n\n**맨 아래가 최악**이다. 인증 필터가 `ERROR` 에도 걸리면 **오류 페이지가 로그인 화면으로** 바뀐다. 사용자는 500 을 보지도 못하고, `redirectURL` 에 `/error-page/500` 이라는 **내부 URL 이 노출**된다."
+  }
+ ],
+ "recap": [
+  "**`DispatcherType` 이 요청의 종류**를 나타낸다.",
+  "다섯 가지 중 **`REQUEST` 와 `ERROR`** 가 실무에서 중요하다.",
+  "**`FORWARD` 는 JSP 시절**의 것이다.",
+  "**기본값은 `REQUEST` 하나**다.",
+  "**`FilterRegistrationBean` 으로 명시**하는 편이 헷갈리지 않는다.",
+  "**인코딩·로그·CORS 는 `ERROR` 에도**, **인증·통계는 `REQUEST` 만**.",
+  "**CORS 를 빠뜨리면** 클라이언트가 오류 응답을 못 읽는다.",
+  "**인증을 `REQUEST` 만 두는 것**이 경로 나열보다 깔끔하다.",
+  "**필터 안에서 확인**할 수도 있지만 정책은 한곳에 모은다."
+ ],
+ "drills": [
+  {
+   "task": "필터에서 `getDispatcherType()` 을 찍는다.",
+   "done_when": "`REQUEST` 와 `ERROR` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인증 필터를 `REQUEST` 만으로 지정한다.",
+   "done_when": "2차 요청에서 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인증 필터에 `ERROR` 도 넣어 본다.",
+   "done_when": "오류 페이지가 로그인 화면이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그 필터를 `REQUEST` 만으로 둔다.",
+   "done_when": "오류 처리 로그가 사라지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필터를 지정 없이 등록한다.",
+   "done_when": "기본값이 `REQUEST` 인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`DispatcherType` 은 무엇인가?",
+   "a": "요청이 어떻게 들어왔는지를 나타내는 값이다. `REQUEST`, `ERROR`, `FORWARD` 등이 있다."
+  },
+  {
+   "q": "기본값은?",
+   "a": "`REQUEST` 하나다. 오류 요청에는 필터가 안 걸린다."
+  },
+  {
+   "q": "인증 필터를 `REQUEST` 만 두는 이유는?",
+   "a": "오류 페이지는 누구나 볼 수 있어야 하는데 `ERROR` 에도 걸면 로그인 화면으로 바뀐다."
+  },
+  {
+   "q": "CORS 필터를 `ERROR` 에도 두는 이유는?",
+   "a": "오류 응답에 CORS 헤더가 없으면 브라우저가 응답을 못 읽어 클라이언트가 상태 코드도 모른다."
+  },
+  {
+   "q": "통계 필터는?",
+   "a": "`REQUEST` 만 둔다. `ERROR` 에도 걸면 오류마다 두 번 센다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DispatcherType",
+   "en": "",
+   "what": "요청이 클라이언트에서 왔는지 내부 디스패치인지 나타내는 서블릿 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
