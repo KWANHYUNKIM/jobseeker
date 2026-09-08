@@ -1,0 +1,172 @@
+{
+ "book": "spring-mvc-2",
+ "id": "attribute",
+ "no": "2.9",
+ "chapter": 2,
+ "title": "속성 값 설정",
+ "summary": "th:attrappend · 체크박스의 checked 함정.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:*` 가 속성을 덮어쓴다는 원리를 안다.",
+  "`th:attrappend` · `th:classappend` 를 쓸 수 있다.",
+  "`checked` 같은 진위 속성이 왜 따로 다뤄지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**타임리프의 동작 원리는 하나**다.\n\n> `th:` 로 시작하는 속성을 만나면, **계산해서 `th:` 를 뗀 이름의 속성으로 바꿔 놓는다.**\n\n```html\n<input type=\"text\" name=\"mock\" th:name=\"userA\" />\n\n<!-- 렌더링 -->\n<input type=\"text\" name=\"userA\" />\n```\n\n**`name` 이 있어도 `th:name` 이 덮는다.** 원래 있던 `mock` 은 브라우저로 그냥 열었을 때 보이는 값 — **내추럴 템플릿**이다.\n\n`th:text` 도 `th:href` 도 전부 이 규칙 하나다."
+  },
+  {
+   "type": "heading",
+   "text": "덮지 말고 붙여야 할 때"
+  },
+  {
+   "type": "table",
+   "caption": "추가하는 속성들",
+   "note": "**`th:classappend` 는 공백을 알아서 넣어 준다.** `attrappend` 로 클래스를 붙이면 `btnlarge` 처럼 붙어 버린다.",
+   "columns": [
+    "",
+    "하는 일",
+    "예"
+   ],
+   "rows": [
+    [
+     "`th:attrappend`",
+     "뒤에 붙임",
+     "`class=\"btn\"` → `class=\"btn large\"`"
+    ],
+    [
+     "`th:attrprepend`",
+     "앞에 붙임",
+     "`class=\"btn\"` → `class=\"large btn\"`"
+    ],
+    [
+     "`th:classappend`",
+     "**클래스 전용**, 공백 자동",
+     "`class=\"btn large\"`"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<input type=\"text\" class=\"text\" th:attrappend=\"class=' large'\" />\n<input type=\"text\" class=\"text\" th:classappend=\"large\" />\n\n<!-- 조건과 같이 쓸 때가 많다 -->\n<div class=\"item\" th:classappend=\"${item.soldOut} ? 'sold-out'\">",
+   "note": "**첫 줄의 `' large'` 앞 공백**을 본다. 직접 넣어야 한다. 둘째 줄은 안 넣어도 된다.\n\n셋째 줄이 실무에서 제일 흔하다 — **2.8절의 축약 조건식**과 붙여 쓴다. 거짓이면 빈 문자열이라 아무것도 안 붙는다."
+  },
+  {
+   "type": "heading",
+   "text": "checked 는 다르다"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "false 를 넣어도 체크된다",
+   "md": "```html\n<input type=\"checkbox\" name=\"active\" checked=\"false\" />\n```\n\n**체크된다.**\n\nHTML 에서 `checked` 는 **진위 속성(boolean attribute)** 이다. **속성이 있으면 참, 없으면 거짓**이고 **값은 안 본다.**\n\n```html\n<input checked />           체크됨\n<input checked=\"checked\" /> 체크됨\n<input checked=\"false\" />   체크됨\n<input />                   안 됨\n```\n\n그래서 `th:attr=\"checked=${...}\"` 로는 **끌 수가 없다.** 값이 뭐가 되든 속성이 남으니까.\n\n**`th:checked` 가 이것을 안다.**\n\n```html\n<input type=\"checkbox\" name=\"active\" th:checked=\"false\" />\n\n<!-- 렌더링 -->\n<input type=\"checkbox\" name=\"active\" />     <- 속성 자체가 사라진다\n```\n\n**거짓이면 속성을 지운다.** 다른 `th:*` 가 \"값을 채우는\" 것과 달리 이것은 **\"있느냐 없느냐\" 를 다룬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "같은 성질의 속성들",
+   "md": "`checked` 만이 아니다.\n\n| 속성 | 어디 |\n|---|---|\n| `checked` | 체크박스·라디오 |\n| `selected` | `<option>` |\n| `disabled` | 입력 요소 전부 |\n| `readonly` | 입력 요소 |\n| `required` | 입력 요소 |\n| `multiple` | `<select>`, 파일 업로드 |\n\n**전부 `th:` 판이 있고 전부 같게 동작한다** — 거짓이면 속성을 지운다.\n\n**3장에서 이것이 크게 쓰인다.** 체크박스·라디오·셀렉트박스를 다룰 때 `th:field` 가 **`checked`·`selected` 를 알아서 붙여 준다.** 그 편함의 바닥에 이 규칙이 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이런 속성이 존재하나",
+   "md": "HTML 이 **문서 마크업에서 출발**했기 때문이다.\n\n`<input checked>` 는 \"체크되어 있음\" 이라는 **표시**지 변수 대입이 아니다. 문서에 밑줄을 긋는 것에 가깝다.\n\n**프로그래밍 언어의 감각으로 읽으면 틀린다.** `checked=\"false\"` 를 \"false 를 대입\" 으로 읽는 것이 그 실수다.\n\n1편 2장에서 HTTP 와 HTML 의 역사를 짚은 자리와 이어진다. **웹은 문서로 시작해서 애플리케이션이 됐고**, 그 흔적이 이런 데 남아 있다.\n\n> **6장의 Bean Validation** 에서도 비슷한 것을 본다 — `required` 를 HTML 이 검사하는 것과 서버가 검사하는 것은 다르다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/attribute HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>속성 설정</h1>\n<input type=\"text\" name=\"userA\" />\n\n<h1>속성 추가</h1>\n- th:attrappend  = <input type=\"text\" class=\"text large\" />\n- th:attrprepend = <input type=\"text\" class=\"large text\" />\n- th:classappend = <input type=\"text\" class=\"text large\" />\n\n<h1>checked 처리</h1>\n- checked=false  = <input type=\"checkbox\" name=\"active\" checked=\"checked\" />\n- checked=true   = <input type=\"checkbox\" name=\"active\" checked=\"checked\" />\n- checked 삭제   = <input type=\"checkbox\" name=\"active\" />",
+   "note": "**첫 줄에 `name=\"mock\"` 이 없다.** `th:name` 이 덮어썼고, 원본은 응답에 흔적도 안 남는다. 브라우저가 받는 것은 이미 완성된 HTML 이다.\n\n**아래 세 줄이 함정**이다. 첫째 줄은 템플릿에 `checked=\"false\"` 라고 적었는데 응답은 **`checked=\"checked\"`** 다 — 타임리프가 아니라 **HTML 규칙**이 그렇다. 셋째 줄만 `th:checked=\"false\"` 를 썼고, **속성 자체가 사라졌다.**\n\n같은 화면인데 **첫째와 셋째가 정반대로 그려진다.**"
+  }
+ ],
+ "recap": [
+  "타임리프의 규칙은 하나 — **`th:` 를 떼고 그 이름의 속성으로 덮어쓴다.**",
+  "원래 있던 값은 **내추럴 템플릿용**이고 응답에는 안 남는다.",
+  "덮지 말고 붙이려면 **`th:attrappend` · `th:attrprepend`**.",
+  "**클래스는 `th:classappend`** — 공백을 알아서 넣어 준다.",
+  "`checked` 는 **진위 속성**이다 — **있으면 참, 값은 안 본다.**",
+  "그래서 `checked=\"false\"` 도 **체크된다.**",
+  "**`th:checked` 는 거짓이면 속성을 지운다.**",
+  "`selected` · `disabled` · `readonly` · `required` · `multiple` 도 같다.",
+  "**3장의 `th:field`** 가 이 규칙 위에서 동작한다."
+ ],
+ "drills": [
+  {
+   "task": "`name=\"mock\"` 과 `th:name=\"userA\"` 를 같이 두고 응답을 본다.",
+   "done_when": "`mock` 이 흔적도 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:attrappend` 로 클래스를 붙일 때 앞 공백을 빼 본다.",
+   "done_when": "클래스가 붙어 버리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`checked=\"false\"` 를 그대로 렌더링한다.",
+   "done_when": "체크되는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`th:checked=\"false\"` 로 바꾼다.",
+   "done_when": "응답에서 속성이 사라진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:disabled` 로 버튼을 조건부로 비활성화한다.",
+   "done_when": "같은 규칙이 적용되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타임리프가 `th:name` 을 만나면 무엇을 하나?",
+   "a": "표현식을 계산해서 `name` 속성으로 덮어쓴다. 원래 값은 사라진다."
+  },
+  {
+   "q": "`th:attrappend` 와 `th:classappend` 의 차이는?",
+   "a": "앞은 그대로 이어 붙여서 공백을 직접 넣어야 하고, 뒤는 클래스 전용이라 공백을 알아서 넣는다."
+  },
+  {
+   "q": "`checked=\"false\"` 가 왜 체크되나?",
+   "a": "`checked` 는 진위 속성이라 속성이 존재하기만 하면 참이고 값은 보지 않는다."
+  },
+  {
+   "q": "`th:checked=\"false\"` 는 무엇이 다른가?",
+   "a": "거짓이면 속성 자체를 지운다. 값을 채우는 것이 아니라 있느냐 없느냐를 다룬다."
+  },
+  {
+   "q": "같은 성질의 속성은?",
+   "a": "`selected`, `disabled`, `readonly`, `required`, `multiple` 등이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "진위 속성",
+   "en": "boolean attribute",
+   "what": "HTML 에서 존재 여부만으로 참·거짓이 정해지는 속성. 값은 무시된다."
+  },
+  {
+   "term": "th:classappend",
+   "en": "",
+   "what": "class 속성에 값을 덧붙이는 속성. 구분 공백을 자동으로 넣는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

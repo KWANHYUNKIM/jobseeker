@@ -136,7 +136,7 @@
           "title": "URL 링크",
           "summary": "`@{}` 의 세 가지 형태. 1편 8.3절을 정확히 다시.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",
@@ -144,7 +144,7 @@
           "title": "리터럴",
           "summary": "공백이 있으면 왜 깨지나. `|...|` 가 나온 이유.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.8",
@@ -152,7 +152,7 @@
           "title": "연산",
           "summary": "비교·조건·Elvis·No-Operation. 화면에 로직을 얼마나 둘까.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.9",
@@ -160,7 +160,7 @@
           "title": "속성 값 설정",
           "summary": "th:attrappend · 체크박스의 checked 함정.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.10",

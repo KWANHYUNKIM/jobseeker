@@ -1,0 +1,162 @@
+{
+ "book": "spring-mvc-2",
+ "id": "url-link",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "URL 링크",
+ "summary": "@{} 의 세 가지 형태. 1편 8.3절을 정확히 다시.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@{}` 의 세 가지 형태를 구분해 쓸 수 있다.",
+  "경로 변수와 쿼리 파라미터가 어떻게 갈리는지 안다.",
+  "`@{}` 를 왜 쓰는지(직접 문자열 조합 대신) 말할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 8.3절에서 `@{}` 를 이렇게 적고 넘어갔다.\n\n> **`@{...}` 는 URL 링크 표현식**이다. 컨텍스트 경로를 알아서 붙여 준다.\n\n**정확히 다시 본다.** 형태가 세 가지다."
+  },
+  {
+   "type": "figure",
+   "caption": "괄호 안이 어디로 가는가",
+   "ascii": "   @{/hello(param1=${a}, param2=${b})}\n     |          |\n     |          +----> query string   ?param1=a&param2=b\n     +---------------> path\n\n   @{/hello/{id}(id=${id})}\n            |     |\n            |     +--> path variable  (matched by name)\n            +--------> placeholder\n\n   @{/hello/{id}(id=${id}, q=${q})}\n                          |\n                          +--> 이름이 안 맞으면 쿼리로 간다",
+   "note": "**괄호 안의 이름이 경로의 `{}` 와 맞으면 경로로, 안 맞으면 쿼리로** 간다. 규칙이 이것 하나다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지",
+   "note": "**섞어 쓸 수 있다** 는 것이 마지막 줄이다. 이름이 맞는 것만 경로로 빠지고 나머지는 쿼리가 된다.",
+   "columns": [
+    "",
+    "쓰는 법",
+    "만들어지는 URL"
+   ],
+   "rows": [
+    [
+     "**쿼리**",
+     "`@{/hello(a=1,b=2)}`",
+     "`/hello?a=1&b=2`"
+    ],
+    [
+     "**경로 변수**",
+     "`@{/hello/{id}(id=1)}`",
+     "`/hello/1`"
+    ],
+    [
+     "**섞기**",
+     "`@{/hello/{id}(id=1,q=2)}`",
+     "`/hello/1?q=2`"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<ul>\n    <li><a th:href=\"@{/hello}\">basic url</a></li>\n    <li><a th:href=\"@{/hello(param1=${param1}, param2=${param2})}\">query param</a></li>\n    <li><a th:href=\"@{/hello/{param1}(param1=${param1})}\">path variable</a></li>\n    <li><a th:href=\"@{/hello/{param1}(param1=${param1}, param2=${param2})}\">mixed</a></li>\n</ul>",
+   "note": "**`th:href` 를 쓴다.** 1편 8.3절에서 본 대로 `href` 를 그대로 두면 내추럴 템플릿이 되고, 렌더링될 때 `th:href` 가 덮어쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "왜 직접 안 쓰나"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "@{} 가 해 주는 것 네 가지",
+   "md": "이렇게 써도 되는 것처럼 보인다.\n\n```html\n<a th:href=\"'/items/' + ${item.id}\">   <!-- 문자열 조합 -->\n```\n\n**동작한다.** 그런데 `@{}` 가 해 주는 것이 있다.\n\n1. **컨텍스트 경로** — 앱이 `/myapp` 아래 배포되면 `@{/items}` 는 `/myapp/items` 가 된다. 문자열 조합은 안 붙는다\n2. **URL 인코딩** — 값에 공백이나 한글이 있으면 알아서 인코딩한다\n3. **의도가 드러난다** — \"이건 URL 이다\" 가 표기에 있다\n4. **세션 URL 재작성** — 쿠키가 없을 때 `;jsessionid=...` 를 붙이는 자리다 (7장)\n\n**1번이 실무에서 제일 자주 문다.** 로컬에서는 컨텍스트 경로가 `/` 라 문자열 조합이 잘 되다가, 배포하면 전부 404 가 된다.\n\n> **1편 3.5절**에서 서블릿 매핑 경로를 다룰 때 컨텍스트 경로가 앞에 붙는다고 했다. 그것을 화면에서 신경 안 쓰게 해 주는 것이 `@{}` 다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름이 안 맞으면 조용히 쿼리가 된다",
+   "md": "```html\n<a th:href=\"@{/items/{itemId}(id=${item.id})}\">\n```\n\n경로에는 `{itemId}` 인데 괄호에는 `id` 다. **오타 하나**다.\n\n결과는 — **예외가 아니다.**\n\n```\n/items/{itemId}?id=1\n```\n\n**`{itemId}` 가 글자 그대로 남는다.** 클릭하면 404 가 나는데, 화면을 볼 때는 멀쩡해 보인다.\n\n2.4절에서 없는 파라미터가 빈 문자열이 되던 것과 같은 성질이다 — **타임리프는 표현식 오타에 관대하다.** 관대한 만큼 조용히 틀린다.\n\n**렌더링된 HTML 을 한 번은 눈으로 봐야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "슬래시 하나 차이",
+   "md": "| | 뜻 |\n|---|---|\n| `@{/items}` | **절대 경로** — 컨텍스트 경로 기준 |\n| `@{items}` | **상대 경로** — 지금 URL 기준 |\n| `@{~/items}` | 서버 루트 기준 (컨텍스트 무시) |\n| `@{//cdn.example.com/a.js}` | 프로토콜 상대 |\n\n**거의 항상 `/` 로 시작하는 절대 경로**를 쓴다. 상대 경로는 **지금 있는 URL 에 따라 결과가 달라져서** 같은 조각(2.15절)을 여러 화면에서 쓸 때 깨진다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/link?param1=data1&param2=data2 HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>URL 링크</h1>\n<ul>\n    <li><a href=\"/hello\">basic url</a></li>\n    <li><a href=\"/hello?param1=data1&amp;param2=data2\">query param</a></li>\n    <li><a href=\"/hello/data1\">path variable</a></li>\n    <li><a href=\"/hello/data1?param2=data2\">path variable + query</a></li>\n</ul>\n\n# 이름을 틀리면 (예외가 아니다)\n<li><a href=\"/hello/{param1}?id=data1\">typo</a></li>\n\n# 그 링크를 클릭하면\nGET /hello/%7Bparam1%7D?id=data1 HTTP/1.1\n\nHTTP/1.1 404 ",
+   "note": "**둘째 줄의 `&amp;` 를 본다.** 2.2절의 이스케이프다 — `&` 는 HTML 에서 엔티티의 시작이라 속성값 안에서도 이스케이프된다. 브라우저는 이것을 `&` 로 읽으므로 링크는 정상이다.\n\n그리고 **오타난 링크는 200 안에 들어 있다.** 화면은 멀쩡하고, **클릭한 다음에야 404** 다. 중괄호가 `%7B` 로 인코딩되어 나가는 것까지 보인다."
+  }
+ ],
+ "recap": [
+  "`@{}` 의 형태는 셋 — **쿼리 · 경로 변수 · 섞기**.",
+  "**괄호 안 이름이 경로의 `{}` 와 맞으면 경로, 안 맞으면 쿼리**로 간다.",
+  "`@{}` 가 해 주는 것: **컨텍스트 경로 · URL 인코딩 · 의도 · 세션 URL 재작성**.",
+  "**컨텍스트 경로가 실무에서 제일 자주 문다** — 로컬에선 되고 배포하면 404.",
+  "**이름을 틀려도 예외가 아니다** — `{itemId}` 가 글자로 남고 클릭해야 404.",
+  "**거의 항상 `/` 로 시작하는 절대 경로**를 쓴다. 상대 경로는 조각에서 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "세 가지 형태를 한 화면에 다 써 보고 렌더링된 `href` 를 확인한다.",
+   "done_when": "쿼리와 경로가 어떻게 갈리는지 눈으로 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "경로 변수 이름을 일부러 틀린다.",
+   "done_when": "`{...}` 가 글자로 남고 클릭해야 404 가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "값에 공백이나 한글을 넣는다.",
+   "done_when": "URL 인코딩이 자동으로 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`server.servlet.context-path=/myapp` 을 주고 다시 본다.",
+   "done_when": "`@{}` 는 붙고 문자열 조합은 안 붙는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@{/hello/{id}(id=1, q=2)}` 의 결과는?",
+   "a": "`/hello/1?q=2` 다. 이름이 경로의 `{}` 와 맞는 것은 경로로, 나머지는 쿼리로 간다."
+  },
+  {
+   "q": "문자열 조합 대신 `@{}` 를 쓰는 이유는?",
+   "a": "컨텍스트 경로를 붙여 주고, URL 인코딩을 하고, 의도가 드러나고, 세션 URL 재작성 자리를 잡아 준다."
+  },
+  {
+   "q": "경로 변수 이름을 틀리면?",
+   "a": "예외가 아니라 `{이름}` 이 글자 그대로 남는다. 화면은 멀쩡하고 클릭해야 404 가 난다."
+  },
+  {
+   "q": "`@{items}` 와 `@{/items}` 의 차이는?",
+   "a": "앞은 지금 URL 기준 상대 경로, 뒤는 컨텍스트 경로 기준 절대 경로다. 조각에서 재사용하려면 절대 경로여야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "URL 링크 표현식",
+   "en": "link URL expression",
+   "what": "`@{...}`. 컨텍스트 경로와 인코딩을 붙여 URL 을 만드는 표현식."
+  },
+  {
+   "term": "컨텍스트 경로",
+   "en": "context path",
+   "what": "웹 애플리케이션이 배포된 기준 경로. 루트가 아니면 모든 URL 앞에 붙는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

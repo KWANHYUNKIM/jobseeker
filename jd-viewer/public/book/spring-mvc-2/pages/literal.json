@@ -1,0 +1,156 @@
+{
+ "book": "spring-mvc-2",
+ "id": "literal",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "리터럴",
+ "summary": "공백이 있으면 왜 깨지나. |...| 가 나온 이유.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리터럴 네 종류를 안다.",
+  "공백이 있으면 왜 오류가 나는지 안다.",
+  "`|...|` 을 언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "리터럴은 **소스에 그대로 적은 고정값**이다. 자바에서 `\"Hello\"`, `10`, `true` 같은 것.\n\n타임리프에도 있는데 **한 가지가 자바와 다르다.**"
+  },
+  {
+   "type": "table",
+   "caption": "네 종류",
+   "note": "**불린과 null 도 리터럴**이다. `th:if=\"${x != null}\"` 의 `null` 이 그것이다.",
+   "columns": [
+    "",
+    "표기"
+   ],
+   "rows": [
+    [
+     "문자",
+     "`'hello'`"
+    ],
+    [
+     "숫자",
+     "`10`"
+    ],
+    [
+     "불린",
+     "`true`, `false`"
+    ],
+    [
+     "널",
+     "`null`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "공백이 있으면 깨진다",
+   "md": "```html\n<span th:text=\"hello\">        <!-- 된다 -->\n<span th:text=\"hello world!\">  <!-- 오류 -->\n```\n\n**둘째 줄에서 `TemplateProcessingException`** 이 난다.\n\n왜냐하면 **타임리프는 공백을 구분자로** 본다. `hello world!` 를 **두 개의 토큰**으로 읽고, 그 사이에 연산자가 없으니 문법 오류다.\n\n첫 줄이 되는 이유는 **공백 없는 문자열은 리터럴로 봐 주는 예외**가 있기 때문이다.\n\n**해결은 따옴표**다.\n\n```html\n<span th:text=\"'hello world!'\">\n```\n\n속성값의 큰따옴표 안에 **작은따옴표**로 문자열을 감싼다."
+  },
+  {
+   "type": "heading",
+   "text": "그런데 연결이 지저분해진다"
+  },
+  {
+   "type": "compare",
+   "caption": "같은 결과, 두 표기",
+   "left": {
+    "title": "연결",
+    "lang": "html",
+    "code": "<span th:text=\"'Hello ' + ${data}\">\n\n<!-- 조금만 길어지면 -->\n<span th:text=\"'Hello ' + ${a} + ' and ' + ${b} + '!'\">",
+    "md": "**따옴표와 `+` 가 번갈아 나온다.** 어디가 리터럴이고 어디가 표현식인지 눈으로 세야 한다."
+   },
+   "right": {
+    "title": "리터럴 대체",
+    "lang": "html",
+    "good": true,
+    "code": "<span th:text=\"|Hello ${data}|\">\n\n<!-- 길어져도 -->\n<span th:text=\"|Hello ${a} and ${b}!|\">",
+    "md": "**결과 문자열 모양 그대로** 적는다. 자바스크립트의 템플릿 리터럴과 같은 발상이다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그래서 |...| 이 나왔다",
+   "md": "**리터럴 대체(literal substitution)** 라고 한다.\n\n`|...|` 안에서는 **전부 문자열**이고 `${}` 만 값으로 치환된다. 따옴표도 `+` 도 필요 없다.\n\n**언제 쓰나** — 문자열과 값을 섞을 때다.\n\n```html\n<span th:text=\"|${item.name} (${item.price}원)|\">\n<div th:class=\"|item item-${item.id}|\">\n```\n\n**주의 하나** — `|...|` 안에서는 **연산을 못 한다.**\n\n```html\n<span th:text=\"|${a + b}|\">     <!-- 이건 된다, ${} 안이니까 -->\n<span th:text=\"|합계| + ${a}\">   <!-- 이건 섞어 쓰는 것, 되긴 된다 -->\n```\n\n`${}` **안쪽은 여전히 SpEL** 이라 계산이 되고, `|...|` 자체가 계산을 하지는 않는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/literal?data=Spring! HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>리터럴</h1>\n<ul>\n    <li>'hello' + ' world!' = hello world!</li>\n    <li>'hello world!' = hello world!</li>\n    <li>'hello ' + ${data} = hello Spring!</li>\n    <li>리터럴 대체 |hello ${data}| = hello Spring!</li>\n</ul>\n\n# 따옴표를 빼면 200 이 아니다\nHTTP/1.1 500 \n#   TemplateProcessingException:\n#   Could not parse as expression: \"hello world!\"",
+   "note": "**네 줄이 전부 같은 결과**다. 표기만 다르다.\n\n아래 500 이 이 절의 요점이다. **`Could not parse as expression`** — 타임리프가 `hello world!` 를 표현식으로 읽으려다 실패했다는 말이다. **문자열로 봐 주지 않는다.**\n\n1편 8.5절에서 본 500 과 종류가 다르다. 저건 실행 중 예외였고 **이건 파싱 실패**다 — 데이터와 무관하게 **항상** 터진다. 그래서 오히려 발견하기 쉽다."
+  }
+ ],
+ "recap": [
+  "리터럴 네 종류 — **문자 · 숫자 · 불린 · 널**.",
+  "**공백이 있으면 파싱 오류**다. 타임리프가 공백을 구분자로 본다.",
+  "공백 없는 문자열만 **예외적으로** 리터럴로 봐 준다.",
+  "해결은 **작은따옴표로 감싸는 것**.",
+  "**`|...|` 이 리터럴 대체**다 — 결과 문자열 모양 그대로 적는다.",
+  "`|...|` 안에서 **`${}` 만 치환**되고 나머지는 전부 문자열이다.",
+  "오류가 **파싱 단계**라 데이터와 무관하게 항상 터진다 — 발견하기 쉽다."
+ ],
+ "drills": [
+  {
+   "task": "`th:text=\"hello world!\"` 를 그대로 써 본다.",
+   "done_when": "`Could not parse as expression` 을 읽었다.",
+   "minutes": 5
+  },
+  {
+   "task": "작은따옴표로 감싸 고친다.",
+   "done_when": "200 이 나온다.",
+   "minutes": 5
+  },
+  {
+   "task": "`'A ' + ${x} + ' B'` 를 `|...|` 로 바꾼다.",
+   "done_when": "같은 결과가 나오고 표기가 짧아진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:class=\"|item item-${id}|\"` 로 클래스를 만든다.",
+   "done_when": "렌더링된 `class` 속성을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:text=\"hello world!\"` 가 왜 오류인가?",
+   "a": "타임리프가 공백을 구분자로 보고 두 토큰으로 읽는데 사이에 연산자가 없어서 파싱에 실패한다."
+  },
+  {
+   "q": "`th:text=\"hello\"` 는 왜 되나?",
+   "a": "공백 없는 문자열은 리터럴로 봐 주는 예외가 있기 때문이다."
+  },
+  {
+   "q": "`|...|` 은 무엇인가?",
+   "a": "리터럴 대체다. 안쪽은 전부 문자열이고 `${}` 만 값으로 치환된다."
+  },
+  {
+   "q": "이 오류가 1편 8.5절의 500 과 어떻게 다른가?",
+   "a": "저건 실행 중 예외라 데이터에 따라 나고, 이건 파싱 실패라 데이터와 무관하게 항상 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리터럴 대체",
+   "en": "literal substitution",
+   "what": "`|...|`. 안쪽을 문자열로 보고 `${}` 만 치환한다. 문자열과 값을 섞을 때 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
