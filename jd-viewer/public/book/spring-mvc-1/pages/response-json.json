@@ -1,0 +1,188 @@
+{
+ "book": "spring-mvc-1",
+ "id": "response-json",
+ "no": "3.11",
+ "chapter": 3,
+ "title": "HTTP 응답 데이터 — API JSON",
+ "summary": "객체를 JSON 문자열로. Content-Type 을 잊으면 생기는 일.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "객체를 JSON 으로 만들어 응답할 수 있다.",
+  "3.8절과 대칭이라는 것을 안다.",
+  "`application/json` 에 `charset` 을 안 붙이는 이유를 안다.",
+  "3장에서 배운 것을 한 장으로 정리할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3장의 마지막 코드다. **3.8절의 반대 방향**이고, 그래서 새로 배울 것이 거의 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "3.8절과 대칭",
+   "ascii": "   3.8  request                      3.11  response\n   -------------                     --------------\n   getInputStream()                  getWriter()\n        │                                 ▲\n        ▼                                 │\n   readValue(json, HelloData.class)  writeValueAsString(helloData)\n        │                                 ▲\n        ▼                                 │\n   HelloData 객체                     HelloData 객체",
+   "note": "**화살표 방향만 반대다.** `readValue` 대신 `writeValueAsString`, `getInputStream` 대신 `getWriter`."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ResponseJsonServlet.java",
+   "code": "@WebServlet(name = \"responseJsonServlet\", urlPatterns = \"/response-json\")\npublic class ResponseJsonServlet extends HttpServlet {\n\n    private ObjectMapper objectMapper = new ObjectMapper();\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        // Content-Type: application/json\n        response.setContentType(\"application/json\");\n        response.setCharacterEncoding(\"utf-8\");\n\n        HelloData data = new HelloData();\n        data.setUsername(\"kim\");\n        data.setAge(20);\n\n        String result = objectMapper.writeValueAsString(data);\n        response.getWriter().write(result);\n    }\n}",
+   "note": "3.8절에서 만든 `HelloData` 를 그대로 쓴다. **getter 가 있어야 한다** — Jackson 이 값을 꺼낼 때 쓴다.\n\n3.8절에서는 setter 가 필요했다. **읽을 때는 setter, 쓸 때는 getter.**"
+  },
+  {
+   "type": "heading",
+   "text": "charset 을 붙이면 안 된다"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "application/json 은 charset 파라미터가 없다",
+   "md": "```java\nresponse.setContentType(\"application/json\");\nresponse.setCharacterEncoding(\"utf-8\");   // 이 줄이 문제다\n```\n\n이렇게 하면 응답 헤더가 이렇게 나간다.\n\n```\nContent-Type: application/json;charset=utf-8\n```\n\n**틀린 것은 아니지만 불필요하다.** JSON 스펙(RFC 8259)이 **인코딩을 UTF-8 로 못 박고 있어서** `charset` 파라미터를 정의하지 않는다.\n\n대부분의 클라이언트는 무시하고 잘 동작한다. 그런데 **엄격한 파서는 알 수 없는 파라미터로 보고 거부**할 수 있다.\n\n서블릿의 문제는 `setContentType(\"application/json\")` 만 불러도 **컨테이너가 기본 인코딩을 붙일 수 있다**는 것이다. 그것까지 막으려면 이렇게 쓴다.\n\n```java\nresponse.setContentType(\"application/json;charset=utf-8\");\n// 또는 스프링에서는 그냥\n// produces = MediaType.APPLICATION_JSON_VALUE\n```\n\n**7.11절부터는 이 고민이 사라진다.** 스프링의 메시지 컨버터가 알아서 붙인다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "보기 좋게 출력하려면",
+   "md": "```java\nobjectMapper.writerWithDefaultPrettyPrinter()\n            .writeValueAsString(data);\n```\n\n```json\n{\n  \"username\" : \"kim\",\n  \"age\" : 20\n}\n```\n\n**개발 중에만 쓴다.** 운영에서는 공백이 그대로 네트워크 비용이라 압축된 형태로 보낸다.\n\n스프링 부트라면 설정으로 켠다.\n\n```properties\nspring.jackson.serialization.indent-output=true\n```"
+  },
+  {
+   "type": "heading",
+   "text": "3장을 닫으며"
+  },
+  {
+   "type": "table",
+   "caption": "3장에서 한 일",
+   "note": "**왼쪽 열이 전부 서블릿 표준**이다. 스프링은 아직 한 줄도 안 썼다(`StreamUtils`·`ObjectMapper` 는 유틸이다).",
+   "columns": [
+    "",
+    "요청",
+    "응답"
+   ],
+   "rows": [
+    [
+     "**시작 라인·헤더**",
+     "`getMethod()`, `getHeader()` (3.3)",
+     "`setStatus()`, `setHeader()` (3.9)"
+    ],
+    [
+     "**파라미터**",
+     "`getParameter()` (3.5·3.6)",
+     "(없다)"
+    ],
+    [
+     "**텍스트**",
+     "`getInputStream()` (3.7)",
+     "`getWriter()` (3.10)"
+    ],
+    [
+     "**JSON**",
+     "`readValue()` (3.8)",
+     "`writeValueAsString()` (3.11)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 얻었나",
+   "md": "3장에서 **HTTP 메시지를 자바 코드로 읽고 쓰는 방법을 전부** 봤다. 이제 어떤 요청이 와도 읽을 수 있고 어떤 응답도 만들 수 있다.\n\n그런데 **화면을 만드는 것이 지옥**이라는 것도 봤다(3.10절).\n\n그리고 아직 안 한 것이 있다 — **여러 화면을 가진 애플리케이션**을 만들어 본 적이 없다. 서블릿 하나에 URL 하나씩 붙여 왔다.\n\n**4장에서 그것을 한다.** 회원 관리 애플리케이션을 서블릿으로, JSP 로, MVC 패턴으로 세 번 만든다. 그리고 **각각의 한계를 센다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"`@RequestBody` 없이 JSON 을 받으려면?\"** → `getInputStream()` 으로 바디를 읽어 문자열로 만들고 `ObjectMapper.readValue()` 로 객체로 바꾼다.\n- **\"`getParameter()` 로 JSON 을 못 읽는 이유는?\"** → 서블릿 컨테이너는 `Content-Type` 이 `application/x-www-form-urlencoded` 일 때만 바디를 파싱한다.\n- **\"리다이렉트는 어떻게 동작하나요?\"** → 서버가 `302` 와 `Location` 헤더를 주면 브라우저가 그 주소로 다시 요청한다.\n- **\"응답 헤더를 나중에 못 바꾸는 이유는?\"** → 바디를 쓰기 시작하면 헤더가 이미 나간다. 버퍼가 차기 전이면 바뀌기도 해서 동작이 일정하지 않다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 3장의 마지막",
+   "sql": "GET /response-json HTTP/1.1\nHost: localhost:8080\nAccept: application/json\n\nHTTP/1.1 200 \nContent-Type: application/json;charset=utf-8\nContent-Length: 27\n\n{\"username\":\"kim\",\"age\":20}\n\n# pretty printer 를 켜면\nHTTP/1.1 200 \nContent-Type: application/json;charset=utf-8\nContent-Length: 43\n\n{\n  \"username\" : \"kim\",\n  \"age\" : 20\n}",
+   "note": "**같은 데이터인데 `Content-Length` 가 27 에서 43 으로 늘었다.** 공백과 줄바꿈이 16바이트다.\n\n작아 보이지만 목록 응답이 수백 건이면 그만큼 배가 된다. **운영에서 pretty print 를 끄는 이유**가 이 숫자다.\n\n3.7절에서 `Content-Length` 가 바이트 수라고 한 것이 여기서 다시 쓰인다 — **눈에 안 보이는 공백도 바이트다.**"
+  }
+ ],
+ "recap": [
+  "**`objectMapper.writeValueAsString(객체)`** 로 JSON 문자열을 만든다.",
+  "3.8절과 **대칭**이다 — 읽을 때는 setter, **쓸 때는 getter.**",
+  "**`application/json` 에는 `charset` 파라미터가 없다.** JSON 스펙이 UTF-8 로 못 박고 있다.",
+  "서블릿에서는 컨테이너가 붙일 수 있어 **`setContentType(\"application/json;charset=utf-8\")`** 로 통제한다.",
+  "**pretty print 는 개발용**이다. 공백이 그대로 네트워크 비용이다.",
+  "3장에서 **HTTP 메시지를 읽고 쓰는 방법을 전부** 봤다. 전부 서블릿 표준이다.",
+  "그런데 **화면 만들기가 지옥**이고, **여러 화면짜리 애플리케이션**은 아직 안 만들어 봤다.",
+  "**4장에서 그 둘을 한다.**"
+ ],
+ "drills": [
+  {
+   "task": "`ResponseJsonServlet` 을 만들어 JSON 을 응답한다.",
+   "done_when": "브라우저와 `curl` 에서 각각 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`setContentType` 을 `text/plain` 으로 바꾼다.",
+   "done_when": "브라우저가 다르게 보여 주는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "pretty printer 를 켜고 `Content-Length` 를 비교한다.",
+   "done_when": "공백만큼 늘어난 것을 숫자로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`HelloData` 에서 getter 를 지우고 실행한다.",
+   "done_when": "빈 JSON 이 나오거나 예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "3장 표를 보고 여덟 칸을 각각 한 문장으로 설명한다.",
+   "done_when": "요청과 응답이 대칭이라는 것을 말할 수 있다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "객체를 JSON 으로 만드는 방법은?",
+   "a": "`objectMapper.writeValueAsString(객체)` 를 쓰고 `response.getWriter()` 로 내보낸다."
+  },
+  {
+   "q": "읽을 때와 쓸 때 필요한 것이 어떻게 다른가?",
+   "a": "읽을 때는 기본 생성자와 setter, 쓸 때는 getter 가 필요하다."
+  },
+  {
+   "q": "`application/json` 에 `charset` 을 붙이지 않는 이유는?",
+   "a": "JSON 스펙이 인코딩을 UTF-8 로 정하고 있어서 `charset` 파라미터를 정의하지 않기 때문이다."
+  },
+  {
+   "q": "그럼에도 서블릿에서 명시하는 이유는?",
+   "a": "`setCharacterEncoding` 이나 컨테이너 기본값 때문에 원치 않는 `charset` 이 붙을 수 있어서, `setContentType` 에 직접 적어 통제한다."
+  },
+  {
+   "q": "pretty print 를 운영에서 끄는 이유는?",
+   "a": "공백과 줄바꿈이 그대로 응답 크기가 되기 때문이다. 목록 응답에서는 차이가 크게 벌어진다."
+  },
+  {
+   "q": "3장에서 쓴 것 중 스프링은 무엇인가?",
+   "a": "거의 없다. `StreamUtils` 와 `ObjectMapper` 는 유틸이고, HTTP 를 읽고 쓰는 API 는 전부 서블릿 표준이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "writeValueAsString",
+   "en": "",
+   "what": "Jackson 이 자바 객체를 JSON 문자열로 바꾸는 메서드. getter 로 값을 꺼낸다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format",
+   "url": "https://datatracker.ietf.org/doc/html/rfc8259",
+   "publisher": "IETF"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -203,7 +203,7 @@
           "title": "API 메시지 바디 — JSON",
           "summary": "문자열을 객체로. 이 변환을 나중에 누가 대신해 주나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",
@@ -211,7 +211,7 @@
           "title": "HttpServletResponse — 기본 사용법",
           "summary": "상태 코드·헤더·쿠키·리다이렉트를 직접 설정한다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.10",
@@ -219,7 +219,7 @@
           "title": "HTTP 응답 데이터 — 단순 텍스트, HTML",
           "summary": "HTML 을 자바 문자열로 찍는다. 이게 왜 지옥인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.11",
@@ -227,7 +227,7 @@
           "title": "HTTP 응답 데이터 — API JSON",
           "summary": "객체를 JSON 문자열로. `Content-Type` 을 잊으면 생기는 일.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.12",
