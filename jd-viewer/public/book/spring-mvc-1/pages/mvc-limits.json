@@ -1,0 +1,177 @@
+{
+ "book": "spring-mvc-1",
+ "id": "mvc-limits",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "MVC 패턴 — 한계",
+ "summary": "중복이 남는다. 그것도 아주 많이. 목록으로 센다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "MVC 패턴을 손으로 적용했을 때 남는 중복을 셀 수 있다.",
+  "'공통 처리가 어렵다' 는 말의 뜻을 안다.",
+  "왜 메서드 추출로는 부족한지 안다.",
+  "5장이 무엇을 없애려는 것인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.5절에서 목표는 달성했다. 화면과 로직이 나뉘었다.\n\n**그런데 컨트롤러 세 개를 나란히 놓고 보면** 같은 코드가 계속 보인다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 서블릿의 공통 부분",
+   "ascii": "   MvcMemberFormServlet      MvcMemberSaveServlet      MvcMemberListServlet\n   --------------------      --------------------      --------------------\n   viewPath = \"/WEB-INF/     viewPath = \"/WEB-INF/     viewPath = \"/WEB-INF/\n              views/          views/                    views/\n              new-form.jsp\"   save-result.jsp\"          members.jsp\"\n\n   dispatcher = request.getRequestDispatcher(viewPath);   <- 3 번 똑같다\n   dispatcher.forward(request, response);                 <- 3 번 똑같다\n\n   서블릿이 30 개면 이 두 줄이 30 번 있다",
+   "note": "**화면이 늘어날수록 정비례로 늘어난다.** 그리고 이 중복은 4.5절에서 만든 것이 아니라, MVC 패턴을 **손으로** 적용했기 때문에 생긴 것이다."
+  },
+  {
+   "type": "heading",
+   "text": "중복 넷"
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 반복되나",
+   "note": "**4번이 가장 크다.** 나머지 셋은 불편함이지만 4번은 **불가능**에 가깝다.",
+   "columns": [
+    "#",
+    "무엇",
+    "왜 문제인가"
+   ],
+   "rows": [
+    [
+     "1",
+     "**포워드 중복**",
+     "`getRequestDispatcher` + `forward` 두 줄이 모든 컨트롤러에"
+    ],
+    [
+     "2",
+     "**ViewPath 중복**",
+     "`/WEB-INF/views/` 와 `.jsp` 가 모든 컨트롤러에"
+    ],
+    [
+     "3",
+     "**쓰지 않는 코드**",
+     "`response` 를 안 쓰는데 파라미터에 있다. `ServletException` 도 늘 던진다"
+    ],
+    [
+     "4",
+     "**공통 처리가 어렵다**",
+     "로그·인증·시간 측정을 **모든 컨트롤러에 넣어야** 한다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "2번이 나중에 사고를 만든다",
+   "md": "```java\nString viewPath = \"/WEB-INF/views/new-form.jsp\";\n```\n\n뷰 폴더를 `/WEB-INF/templates/` 로 옮기고 싶다면? **모든 컨트롤러를 고쳐야 한다.**\n\nJSP 를 타임리프로 바꾸면? **모든 컨트롤러에서 `.jsp` 를 `.html` 로 바꿔야 한다.**\n\n이 책에서 계속 나온 문제다 — **문자열이라 컴파일러가 안 잡는다.** 하나를 빠뜨리면 그 화면만 404 가 나고, 그 화면을 열어 보기 전까지 모른다.\n\n앞 책 4.3절부터 여러 번 만난 그것이다. 여기서는 **접두사·접미사를 한 곳에 모으는 것**으로 푼다(5.2절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "4번 — 진짜 문제는 이것이다",
+   "md": "모든 요청의 처리 시간을 로그로 남기고 싶다고 하자.\n\n```java\nlong start = System.currentTimeMillis();\n// ... 원래 코드 ...\nlong end = System.currentTimeMillis();\nlog.info(\"took {}ms\", end - start);\n```\n\n**컨트롤러가 30개면 이것을 30번 붙여야 한다.** 그리고 새 컨트롤러를 만들 때마다 **잊지 않고** 붙여야 한다.\n\n로그인 검사도 마찬가지다. 하나라도 빠뜨리면 **그 화면만 인증 없이 열린다** — 보안 사고다.\n\n**공통 기능을 넣는 자리가 없다는 것**이 손으로 만든 MVC 의 가장 큰 한계다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "메서드로 뽑으면 되지 않나",
+   "md": "정당한 생각이다. 실제로 이렇게 해 볼 수 있다.\n\n```java\nprivate void forward(String viewName,\n                    HttpServletRequest request,\n                    HttpServletResponse response) throws ... {\n    String viewPath = \"/WEB-INF/views/\" + viewName + \".jsp\";\n    request.getRequestDispatcher(viewPath).forward(request, response);\n}\n```\n\n**1·2번은 이걸로 상당히 줄어든다.** 부모 클래스에 두면 더 낫다.\n\n**그런데 4번은 안 된다.**\n\n```java\nprotected void service(...) {\n    long start = System.currentTimeMillis();   // 이 줄을\n    // ...\n    forward(\"new-form\", request, response);\n    long end = System.currentTimeMillis();     // 이 줄을\n}\n```\n\n**시작과 끝을 감싸는 코드는 메서드로 못 뽑는다.** 원래 코드가 그 사이에 있어야 하기 때문이다.\n\n부모 클래스의 `service()` 에서 감싸고 자식이 다른 메서드를 구현하게 하면 되는데 — **그 순간 상속이 강제된다.** 그리고 컨트롤러마다 상속 구조가 다르면 못 쓴다.\n\n필요한 것은 **호출을 대신 해 주는 무언가**다. 부모가 아니라 **앞에 서 있는 것.**"
+  },
+  {
+   "type": "heading",
+   "text": "그리고 하나 더"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "URL 매핑이 흩어져 있다",
+   "md": "```java\n@WebServlet(urlPatterns = \"/servlet-mvc/members/new-form\")\n@WebServlet(urlPatterns = \"/servlet-mvc/members/save\")\n@WebServlet(urlPatterns = \"/servlet-mvc/members\")\n```\n\n**어떤 URL 이 있는지 알려면 파일을 전부 열어 봐야 한다.**\n\n앞 책 6장에서 컴포넌트 스캔을 배우며 정리한 문장이 여기서도 맞다.\n\n> **자동화는 코드에서 정보를 뺀다.**\n\n여기서는 자동화가 아니라 **분산**이 정보를 뺐다. 결과는 같다 — 전체 구조가 한눈에 안 보인다.\n\n**입구를 하나로 모으면** 그 하나만 보면 된다. 5.1절의 발상이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 문제는 여기 없다",
+   "sql": "GET /servlet-mvc/members HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<table> ... </table>\n\n# 컨트롤러를 하나 더 만들면\nGET /servlet-mvc/members/delete HTTP/1.1\n\n# 새 서블릿 파일 하나\n# + @WebServlet 한 줄\n# + viewPath 문자열 한 줄\n# + getRequestDispatcher / forward 두 줄\n# + (로그를 남기려면) 시간 측정 두 줄\n# + (인증이 필요하면) 검사 코드 몇 줄",
+   "note": "**응답에는 아무 문제가 없다.** 4장 내내 그랬듯이.\n\n아래가 이 절의 요지다 — **화면 하나를 추가할 때마다 같은 것을 다시 쓴다.** 그리고 그중 몇 줄은 **잊으면 조용히 잘못 동작한다**(인증 검사).\n\n4장의 결론은 이렇다. **MVC 패턴은 맞았다. 손으로 적용한 것이 문제다.**\n\n**5장에서 그것을 자동화한다.**"
+  }
+ ],
+ "recap": [
+  "MVC 로 나눴는데 **컨트롤러끼리의 중복**이 남았다.",
+  "중복 넷 — **포워드 · ViewPath · 안 쓰는 코드 · 공통 처리.**",
+  "ViewPath 문자열은 **뷰 폴더나 템플릿 엔진을 바꿀 때 전부 고쳐야** 한다.",
+  "**가장 큰 것은 공통 처리**다 — 로그·인증·시간 측정을 모든 컨트롤러에 넣어야 한다.",
+  "하나라도 빠뜨리면 **그 화면만 인증 없이 열린다.**",
+  "**메서드 추출로는 1·2번만 준다.** 시작과 끝을 감싸는 코드는 못 뽑는다.",
+  "부모 클래스로 감싸면 **상속이 강제**된다.",
+  "필요한 것은 부모가 아니라 **앞에 서서 호출을 대신 해 주는 것**이다.",
+  "URL 매핑도 흩어져 있어 **전체 구조가 한눈에 안 보인다.**",
+  "**MVC 패턴은 맞았다. 손으로 적용한 것이 문제다.**"
+ ],
+ "drills": [
+  {
+   "task": "세 컨트롤러의 공통 줄을 표시하고 몇 줄인지 센다.",
+   "done_when": "화면 수에 비례한다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "모든 컨트롤러에 처리 시간 로그를 넣어 본다.",
+   "done_when": "같은 두 줄을 세 번 쓴 것과, 새 컨트롤러에서 잊기 쉽다는 것을 체감했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`forward` 를 부모 클래스 메서드로 뽑아 본다.",
+   "done_when": "1·2번은 줄지만 시간 측정은 안 된다는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "뷰 폴더 이름을 바꾸고 몇 군데를 고쳐야 하는지 센다.",
+   "done_when": "컨트롤러 수만큼이라는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "프로젝트에 어떤 URL 이 있는지 목록을 만들어 본다.",
+   "done_when": "파일을 전부 열어야 한다는 것을 체감했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "MVC 패턴 적용 후 남는 중복 네 가지는?",
+   "a": "포워드 코드 중복, ViewPath 문자열 중복, 쓰지 않는 코드(`response`·`ServletException`), 공통 처리를 넣을 자리가 없는 것."
+  },
+  {
+   "q": "ViewPath 중복이 왜 위험한가?",
+   "a": "문자열이라 컴파일러가 안 잡는다. 뷰 폴더나 확장자를 바꿀 때 하나라도 빠뜨리면 그 화면만 404 가 나고 열어 보기 전까지 모른다."
+  },
+  {
+   "q": "가장 큰 한계는?",
+   "a": "공통 처리가 어렵다는 것이다. 로그·인증·시간 측정을 모든 컨트롤러에 넣어야 하고, 하나라도 빠뜨리면 그 화면만 잘못 동작한다."
+  },
+  {
+   "q": "메서드 추출로 해결되지 않는 이유는?",
+   "a": "시작과 끝을 감싸는 코드는 원래 코드가 사이에 있어야 해서 메서드로 뽑을 수 없다. 부모 클래스로 감싸면 상속이 강제된다."
+  },
+  {
+   "q": "그럼 무엇이 필요한가?",
+   "a": "부모가 아니라 앞에 서서 컨트롤러 호출을 대신 해 주는 것이다. 그것이 프론트 컨트롤러다."
+  },
+  {
+   "q": "4장의 결론은?",
+   "a": "MVC 패턴은 맞았고, 그것을 손으로 적용한 것이 문제다. 5장에서 자동화한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

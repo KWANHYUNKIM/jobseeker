@@ -1,0 +1,209 @@
+{
+ "book": "spring-mvc-1",
+ "id": "front-controller-intro",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "프론트 컨트롤러 패턴 소개",
+ "summary": "입구를 하나로 모으면 무엇이 가능해지나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프론트 컨트롤러 패턴의 구조를 그릴 수 있다.",
+  "입구를 하나로 모아서 얻는 것을 말할 수 있다.",
+  "`urlPatterns = \"/*\"` 의 의미를 안다.",
+  "이것이 `DispatcherServlet` 이라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.6절의 결론은 이랬다.\n\n> 필요한 것은 부모가 아니라 **앞에 서서 호출을 대신 해 주는 것**이다.\n\n그것에 이름이 있다 — **프론트 컨트롤러(Front Controller)**."
+  },
+  {
+   "type": "figure",
+   "caption": "입구를 하나로",
+   "ascii": "   before                                after\n   ------                                -----\n   client -> ServletA -> viewA          client\n   client -> ServletB -> viewB             │\n   client -> ServletC -> viewC             ▼\n                                 ┌──────────────────┐\n                                 │ FrontController  │\n                                 └─────────┬────────┘\n                                           │\n                             ┌─────────────┼─────────────┐\n                             ▼             ▼             ▼\n                        ControllerA   ControllerB   ControllerC\n\n   입구가 3 개                            입구가 1 개",
+   "note": "**서블릿은 하나만 남는다.** 나머지는 서블릿을 상속하지 않는 평범한 클래스가 된다."
+  },
+  {
+   "type": "heading",
+   "text": "무엇이 가능해지나"
+  },
+  {
+   "type": "table",
+   "caption": "입구가 하나면",
+   "note": "**4.6절에서 센 문제 넷이 전부 여기서 답을 얻는다.**",
+   "columns": [
+    "4.6 의 문제",
+    "프론트 컨트롤러가 하는 일"
+   ],
+   "rows": [
+    [
+     "**공통 처리 자리가 없다**",
+     "**프론트 컨트롤러 한 곳에** 쓴다. 모든 요청이 여기를 지난다"
+    ],
+    [
+     "포워드 중복",
+     "**프론트 컨트롤러가 대신 `forward`** 한다"
+    ],
+    [
+     "viewPath 중복",
+     "접두사·접미사를 **한 곳에서** 붙인다 (5.3절)"
+    ],
+    [
+     "서블릿 종속",
+     "컨트롤러가 **서블릿을 상속하지 않아도** 된다 (5.4절)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "가장 큰 것은 공통 처리다",
+   "md": "```java\nprotected void service(HttpServletRequest request, HttpServletResponse response) {\n\n    long start = System.currentTimeMillis();      // 여기\n\n    Controller controller = controllerMap.get(requestURI);\n    controller.process(request, response);\n\n    long end = System.currentTimeMillis();        // 여기\n    log.info(\"took {}ms\", end - start);\n}\n```\n\n**컨트롤러가 30개여도 이 두 줄은 한 번만 쓴다.** 그리고 새 컨트롤러를 만들 때 **잊을 수가 없다** — 어차피 프론트 컨트롤러를 지나기 때문이다.\n\n4.6절에서 \"하나라도 빠뜨리면 그 화면만 인증 없이 열린다\" 고 했다. **빠뜨릴 방법이 없어진다.**\n\n메서드 추출이나 상속으로 못 하던 것이 **호출하는 쪽을 바꾸니** 된다. 이것이 이 패턴의 핵심이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컨트롤러가 서블릿이 아니게 된다",
+   "md": "지금까지 컨트롤러는 `HttpServlet` 을 상속했다. 프론트 컨트롤러가 생기면 **그럴 필요가 없다.**\n\n```java\npublic interface ControllerV1 {\n    void process(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException;\n}\n```\n\n**인터페이스 하나면 된다.** 프론트 컨트롤러가 이 타입으로 받아서 호출하면 되니까.\n\n그러면 `@WebServlet` 도 필요 없고, **서블릿 컨테이너가 컨트롤러를 몰라도 된다.**\n\n5.4절에서 이 인터페이스에서 `HttpServletRequest` 마저 빼면 — **컨트롤러가 웹을 모르게 된다.** 그것이 5장의 도착점이다."
+  },
+  {
+   "type": "heading",
+   "text": "urlPatterns = \"/*\""
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@WebServlet(name = \"frontControllerServletV1\",\n            urlPatterns = \"/front-controller/v1/*\")\npublic class FrontControllerServletV1 extends HttpServlet {\n}",
+   "note": "**`/*` 가 핵심이다.** 3.1절에서 URL 패턴 규칙을 언급하며 \"5장에서 프론트 컨트롤러를 만들 때 `/*` 를 쓴다\" 고 예고한 자리."
+  },
+  {
+   "type": "table",
+   "caption": "서블릿 URL 패턴",
+   "note": "**하위 경로를 전부 받는 것**이 프론트 컨트롤러의 전제다. 그래야 어떤 URL 이 와도 여기로 들어온다.",
+   "columns": [
+    "패턴",
+    "매칭"
+   ],
+   "rows": [
+    [
+     "`/hello`",
+     "정확히 그 경로만"
+    ],
+    [
+     "**`/front-controller/v1/*`**",
+     "**그 아래 전부** — `/v1/members`, `/v1/members/save` …"
+    ],
+    [
+     "`/*`",
+     "**모든 요청.** 정적 리소스까지 다 온다"
+    ],
+    [
+     "`*.do`",
+     "확장자로 매칭. 옛날 스타일"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "실무에서 /* 를 쓰면 정적 리소스까지 온다",
+   "md": "`/*` 로 열어 두면 **CSS·이미지 요청까지 프론트 컨트롤러로 들어온다.**\n\n그러면 매핑에 없는 URL 이라 404 를 내게 되고, **화면이 스타일 없이 나온다.**\n\n이 책은 `/front-controller/v1/*` 처럼 **버전별 접두사**를 붙여서 이 문제를 피한다. 1.2절에서 말한 대로 버전마다 패키지를 나누기 때문이기도 하다.\n\n스프링의 `DispatcherServlet` 은 실제로 **`/`** 에 매핑된다(`/*` 가 아니다). 이 둘의 차이는 **`/` 는 서블릿 컨테이너의 기본 서블릿을 대체**하는 것이라, 다른 서블릿 매핑이 우선하고 정적 리소스 처리도 따로 설정할 수 있다.\n\n6.2절에서 `DispatcherServlet` 을 볼 때 다시 짚는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 DispatcherServlet 이다",
+   "md": "1.1절에서 이 표를 미리 보여 줬다.\n\n| 우리가 만들 것 | 스프링에서의 이름 |\n|---|---|\n| **`FrontControllerServlet`** | **`DispatcherServlet`** |\n| `ControllerV3` 인터페이스 | `Controller` / 핸들러 |\n| `MyHandlerAdapter` | `HandlerAdapter` |\n| `ModelView` | `ModelAndView` |\n| `viewResolver()` | `ViewResolver` |\n\n**첫 줄이 이 절이다.** 스프링 MVC 의 모든 요청이 `DispatcherServlet` 하나를 지난다.\n\n그래서 스프링에서 로그·인증·인코딩 같은 공통 처리를 **인터셉터와 필터**로 한 곳에 쓸 수 있는 것이다. 그 자리가 여기서 만들어진다.\n\n**6장에서 이 표를 하나씩 채운다.** 그전에 다섯 단계를 직접 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 아직 아무것도 안 만들었다",
+   "sql": "# 지금까지 (4.5 MVC)\nGET /servlet-mvc/members HTTP/1.1        ->  MvcMemberListServlet\nGET /servlet-mvc/members/new-form HTTP/1.1  ->  MvcMemberFormServlet\nGET /servlet-mvc/members/save HTTP/1.1      ->  MvcMemberSaveServlet\n#   서블릿 3 개가 각각 받는다\n\n# 5.2 부터\nGET /front-controller/v1/members HTTP/1.1\nGET /front-controller/v1/members/new-form HTTP/1.1\nGET /front-controller/v1/members/save HTTP/1.1\n#   전부 FrontControllerServletV1 하나가 받는다\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<table> ... </table>\n#   응답은 4 장과 똑같다",
+   "note": "**세 URL 이 서블릿 하나로 들어온다.** 그 안에서 어느 컨트롤러를 부를지는 URL 을 보고 정한다.\n\n그리고 **응답은 4장과 똑같다.** 4.7절에서 말한 대로 5장도 코드만 바뀐다.\n\n**5.2절에서 실제로 만든다.**"
+  }
+ ],
+ "recap": [
+  "**프론트 컨트롤러** — 모든 요청을 서블릿 하나가 받고 알맞은 컨트롤러를 부른다.",
+  "**4.6절의 문제 넷이 전부 여기서 답을 얻는다.**",
+  "가장 큰 것은 **공통 처리** — 한 곳에 쓰고, 새 컨트롤러에서 **잊을 방법이 없다.**",
+  "메서드 추출로 못 하던 것이 **호출하는 쪽을 바꾸니** 된다.",
+  "**컨트롤러가 서블릿이 아니게 된다** — 인터페이스 하나면 충분하다.",
+  "**`urlPatterns = \"/*\"`** 로 하위 경로를 전부 받는다.",
+  "실무에서 `/*` 는 **정적 리소스까지** 온다. 스프링은 `/` 에 매핑한다.",
+  "**이것이 `DispatcherServlet`** 이다. 1.1절 대응표의 첫 줄."
+ ],
+ "drills": [
+  {
+   "task": "`/front-controller/v1/*` 로 매핑한 빈 서블릿을 만들어 여러 URL 로 호출한다.",
+   "done_when": "전부 같은 서블릿으로 들어오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`urlPatterns` 를 `/*` 로 바꾸고 정적 리소스를 요청한다.",
+   "done_when": "CSS 요청까지 서블릿으로 들어오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "프론트 컨트롤러에 시간 측정 코드를 넣어 본다.",
+   "done_when": "한 곳에만 썼는데 모든 요청에 적용되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1.1절의 대응표를 다시 보고 아는 줄에 표시한다.",
+   "done_when": "첫 줄을 채울 수 있게 됐다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프론트 컨트롤러 패턴이란?",
+   "a": "모든 요청을 서블릿 하나가 받고, 그 안에서 URL 을 보고 알맞은 컨트롤러를 호출하는 구조다."
+  },
+  {
+   "q": "입구를 하나로 모아서 얻는 가장 큰 것은?",
+   "a": "공통 처리를 넣을 자리가 생긴다. 한 곳에만 쓰면 되고 새 컨트롤러에서 빠뜨릴 방법이 없다."
+  },
+  {
+   "q": "메서드 추출로는 왜 안 됐나?",
+   "a": "시작과 끝을 감싸는 코드는 원래 코드가 사이에 있어야 하기 때문이다. 호출하는 쪽을 바꿔야 풀린다."
+  },
+  {
+   "q": "컨트롤러가 서블릿을 상속하지 않아도 되는 이유는?",
+   "a": "프론트 컨트롤러가 인터페이스 타입으로 받아서 호출하기 때문이다. 서블릿 컨테이너는 컨트롤러를 몰라도 된다."
+  },
+  {
+   "q": "`urlPatterns = \"/*\"` 의 의미는?",
+   "a": "그 아래 모든 경로를 이 서블릿이 받는다는 뜻이다. `/*` 로 열면 정적 리소스 요청까지 들어온다."
+  },
+  {
+   "q": "이것의 스프링 이름은?",
+   "a": "`DispatcherServlet` 이다. 스프링 MVC 의 모든 요청이 이것 하나를 지난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프론트 컨트롤러",
+   "en": "Front Controller",
+   "what": "모든 요청을 하나의 입구가 받아 알맞은 컨트롤러로 넘기는 패턴. 공통 처리를 한 곳에 모을 수 있다."
+  },
+  {
+   "term": "DispatcherServlet",
+   "en": "",
+   "what": "스프링 MVC 의 프론트 컨트롤러. 이름 그대로 서블릿이며 모든 요청이 여기를 지난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

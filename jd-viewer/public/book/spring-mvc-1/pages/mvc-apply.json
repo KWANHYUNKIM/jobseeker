@@ -1,0 +1,228 @@
+{
+ "book": "spring-mvc-1",
+ "id": "mvc-apply",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "MVC 패턴 — 적용",
+ "summary": "컨트롤러·뷰·모델로 나눈다. forward 와 redirect 의 차이.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서블릿을 컨트롤러로, JSP 를 뷰로 나눌 수 있다.",
+  "`forward` 와 `redirect` 의 차이를 설명할 수 있다.",
+  "`WEB-INF` 아래에 두는 이유를 안다.",
+  "EL 과 JSTL 로 뷰에서 자바 코드를 없앨 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.4절에서 정한 대로 나눈다.\n\n- **컨트롤러** — 서블릿\n- **모델** — `request` 의 임시 저장소(3.2절)\n- **뷰** — JSP\n\n**새로 배울 API 는 하나뿐**이다 — `forward`."
+  },
+  {
+   "type": "heading",
+   "text": "forward — 서버 안에서 넘긴다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MvcMemberFormServlet.java",
+   "code": "@WebServlet(name = \"mvcMemberFormServlet\", urlPatterns = \"/servlet-mvc/members/new-form\")\npublic class MvcMemberFormServlet extends HttpServlet {\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response)\n            throws ServletException, IOException {\n\n        String viewPath = \"/WEB-INF/views/new-form.jsp\";\n        RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\n        dispatcher.forward(request, response);\n    }\n}",
+   "note": "**세 줄이 전부다.** HTML 이 한 글자도 없다 — 4.2절의 25줄이 3줄이 됐다.\n\n`throws ServletException` 이 늘었다. `forward` 가 던진다."
+  },
+  {
+   "type": "figure",
+   "caption": "forward 와 redirect",
+   "ascii": "   forward  (서버 안에서 넘긴다)\n     client  ->  servlet  ->  jsp  ->  client\n                     └── 요청 1 번. 브라우저는 모른다\n\n   redirect (브라우저에게 다시 요청하라고 한다)\n     client  ->  servlet\n     client  <-  302 Location\n     client  ->  jsp\n                     └── 요청 2 번. 주소창이 바뀐다",
+   "note": "**forward 는 요청이 한 번, redirect 는 두 번**이다. 그래서 forward 는 주소창이 안 바뀌고 `request` 가 그대로 살아 있다."
+  },
+  {
+   "type": "table",
+   "caption": "둘의 차이",
+   "note": "**Model 을 넘길 수 있는 것은 forward 뿐**이다. redirect 는 새 요청이라 `request` 가 새로 만들어진다 — 3.2절에서 임시 저장소가 \"요청이 살아 있는 동안\" 이라고 한 것이 이 뜻이다.",
+   "columns": [
+    "",
+    "forward",
+    "redirect"
+   ],
+   "rows": [
+    [
+     "요청 횟수",
+     "**1번**",
+     "**2번**"
+    ],
+    [
+     "주소창",
+     "안 바뀐다",
+     "**바뀐다**"
+    ],
+    [
+     "`request` 객체",
+     "**그대로 유지**",
+     "새로 만들어진다"
+    ],
+    [
+     "Model 전달",
+     "**된다**",
+     "안 된다"
+    ],
+    [
+     "클라이언트가 아나",
+     "**모른다**",
+     "안다"
+    ],
+    [
+     "쓰는 곳",
+     "**화면을 그릴 때**",
+     "**처리 후 이동**(8.10절)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "WEB-INF 아래에 두는 이유",
+   "md": "```\nsrc/main/webapp/WEB-INF/views/new-form.jsp\n```\n\n**`WEB-INF` 아래의 파일은 브라우저가 직접 호출할 수 없다.** 서블릿 표준이 정한 규칙이다.\n\n```\nhttp://localhost:8080/WEB-INF/views/new-form.jsp   ->  404\n```\n\n왜 막나 — **컨트롤러를 거치지 않고 뷰만 열리는 것을 막으려는 것**이다.\n\n4.3절에서는 `/jsp/members.jsp` 를 직접 호출했다. 그러면 컨트롤러가 준비한 데이터 없이 뷰가 실행된다. 목록 화면이라면 **빈 표**가 나오거나 `NullPointerException` 이 난다.\n\n**뷰는 혼자 열리면 안 된다.** 그것을 규칙이 아니라 **구조로 막는 것**이 `WEB-INF` 다.\n\n`forward` 는 **서버 안에서 넘기는 것**이라 이 제한을 안 받는다."
+  },
+  {
+   "type": "heading",
+   "text": "Model 에 담아 넘긴다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MvcMemberSaveServlet.java",
+   "code": "@Override\nprotected void service(HttpServletRequest request,\n                      HttpServletResponse response)\n        throws ServletException, IOException {\n\n    String username = request.getParameter(\"username\");\n    int age = Integer.parseInt(request.getParameter(\"age\"));\n\n    Member member = new Member(username, age);\n    memberRepository.save(member);\n\n    // Model 에 담는다\n    request.setAttribute(\"member\", member);\n\n    String viewPath = \"/WEB-INF/views/save-result.jsp\";\n    RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\n    dispatcher.forward(request, response);\n}",
+   "note": "**`setAttribute` 한 줄이 Model 이다.** 3.2절에서 예고하고 4.4절에서 이름을 붙인 그것.\n\n그리고 **`response` 를 안 쓴다.** `forward` 에 넘기기만 한다 — 4.6절에서 이것이 문제가 된다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "WEB-INF/views/save-result.jsp",
+   "code": "<%@ page contentType=\"text/html;charset=UTF-8\" language=\"java\" %>\n<html>\n<body>\n성공\n<ul>\n    <li>id=${member.id}</li>\n    <li>username=${member.username}</li>\n    <li>age=${member.age}</li>\n</ul>\n</body>\n</html>",
+   "note": "**`<%= %>` 가 `${}` 로 바뀌었다.** 자바 코드가 한 줄도 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "EL — 자바 코드 없이 값을 꺼낸다",
+   "md": "```jsp\n<%= ((Member)request.getAttribute(\"member\")).getUsername() %>   <!-- 예전 -->\n${member.username}                                              <!-- EL -->\n```\n\n**EL(Expression Language)** 이 `request` 의 임시 저장소를 알아서 뒤진다. 형변환도 필요 없고 getter 도 알아서 부른다.\n\n`${member.username}` 은 실제로 `member.getUsername()` 을 호출한다 — **getter 가 없으면 안 나온다.**\n\n찾는 순서도 정해져 있다 — `page` → `request` → `session` → `application`. 이름이 겹치면 앞의 것이 이긴다."
+  },
+  {
+   "type": "heading",
+   "text": "목록 — 반복문도 사라진다"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "WEB-INF/views/members.jsp",
+   "code": "<%@ page contentType=\"text/html;charset=UTF-8\" language=\"java\" %>\n<%@ taglib prefix=\"c\" uri=\"jakarta.tags.core\" %>\n<html>\n<body>\n<table>\n    <thead>\n    <th>id</th>\n    <th>username</th>\n    <th>age</th>\n    </thead>\n    <tbody>\n    <c:forEach var=\"item\" items=\"${members}\">\n        <tr>\n            <td>${item.id}</td>\n            <td>${item.username}</td>\n            <td>${item.age}</td>\n        </tr>\n    </c:forEach>\n    </tbody>\n</table>\n</body>\n</html>",
+   "note": "**4.3절의 `out.write(\"<tr>\")` 가 사라졌다.**\n\n`<c:forEach>` 는 JSTL 이고, 두 번째 줄의 `taglib` 선언이 있어야 쓸 수 있다. 부트 3.x 는 `uri` 가 **`jakarta.tags.core`** 다 — 예전 `http://java.sun.com/jsp/jstl/core` 를 그대로 쓰면 안 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 달라졌는지 세어 보면",
+   "md": "| | 4.3 JSP | 4.5 MVC |\n|---|---|---|\n| 화면 파일의 자바 코드 | **20줄** | **0줄** |\n| 화면 파일이 저장소를 아나 | **안다** | **모른다** |\n| 컨트롤러 파일 | 없다 | 서블릿 3개 |\n| 뷰를 직접 호출할 수 있나 | **된다** | **안 된다** |\n\n4.4절에서 세운 목표가 달성됐다.\n\n- **View 는 화면만 그린다** — 자바 코드 0줄\n- **View 는 데이터가 어디서 왔는지 모른다** — Model 에서 꺼낼 뿐\n- **Controller 는 HTML 을 모른다** — 뷰 경로만 안다\n\n디자이너가 `members.jsp` 를 열면 **HTML 과 태그뿐**이다. 로직을 고치는 사람은 서블릿만 연다. **변경의 이유가 다른 둘이 다른 파일에 있다**(4.4절)."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 여전히 똑같다",
+   "sql": "POST /servlet-mvc/members/save HTTP/1.1\nHost: localhost:8080\nContent-Type: application/x-www-form-urlencoded\n\nusername=hello&age=20\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n성공\n<ul>\n    <li>id=1</li>\n    <li>username=hello</li>\n    <li>age=20</li>\n</ul>\n</body>\n</html>\n\n# forward 는 요청이 한 번뿐이라 302 가 없다\n# 브라우저는 /servlet-mvc/members/save 만 안다\n\n# WEB-INF 를 직접 호출하면\nGET /WEB-INF/views/save-result.jsp HTTP/1.1\n\nHTTP/1.1 404 \nContent-Type: text/html;charset=utf-8",
+   "note": "**응답이 4.2·4.3과 또 똑같다.** 세 번째 구현인데 클라이언트는 아무 차이를 모른다.\n\n**forward 라서 `302` 가 없다.** 브라우저는 JSP 가 실행된 것을 모르고, 주소창에는 여전히 `/servlet-mvc/members/save` 가 있다.\n\n맨 아래가 `WEB-INF` 의 실물이다 — **`404`.** 뷰만 따로 열 방법이 없다."
+  }
+ ],
+ "recap": [
+  "새로 배운 API 는 **`forward`** 하나뿐이다.",
+  "**forward 는 요청 1번, redirect 는 2번**이다. 주소창과 `request` 유지 여부가 갈린다.",
+  "**Model 을 넘길 수 있는 것은 forward 뿐** — redirect 는 `request` 가 새로 만들어진다.",
+  "**`WEB-INF` 아래는 브라우저가 직접 호출할 수 없다** — 뷰가 혼자 열리는 것을 구조로 막는다.",
+  "`setAttribute` 한 줄이 **Model** 이다.",
+  "**EL(`${}`)** 이 임시 저장소를 뒤져 getter 를 부른다. 형변환이 필요 없다.",
+  "**JSTL(`<c:forEach>`)** 로 반복문도 태그가 된다. 부트 3.x 는 uri 가 `jakarta.tags.core`.",
+  "결과 — **화면 파일의 자바 코드 20줄이 0줄**이 됐다.",
+  "**응답 HTTP 는 4.2·4.3과 완전히 같다.** 세 번째 구현인데 클라이언트는 모른다."
+ ],
+ "drills": [
+  {
+   "task": "세 서블릿과 세 JSP 로 MVC 버전을 만든다.",
+   "done_when": "4.3절과 같은 화면이 나오는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`/WEB-INF/views/members.jsp` 를 브라우저에서 직접 연다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "JSP 를 `WEB-INF` 밖으로 옮기고 직접 호출한다.",
+   "done_when": "빈 화면이나 오류가 나는 것을 확인했다 — 컨트롤러를 안 거쳤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`forward` 대신 `sendRedirect` 로 바꿔 본다.",
+   "done_when": "Model 이 사라지고 302 가 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Member` 의 getter 를 지우고 `${member.username}` 을 출력한다.",
+   "done_when": "값이 안 나오는 것과 EL 이 getter 를 쓴다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`forward` 와 `redirect` 의 가장 큰 차이는?",
+   "a": "forward 는 서버 안에서 넘기는 것이라 요청이 한 번이고, redirect 는 브라우저가 다시 요청하는 것이라 두 번이다."
+  },
+  {
+   "q": "왜 Model 은 forward 로만 넘길 수 있나?",
+   "a": "Model 이 `request` 의 임시 저장소인데, redirect 는 새 요청이라 `request` 객체가 새로 만들어지기 때문이다."
+  },
+  {
+   "q": "JSP 를 `WEB-INF` 아래에 두는 이유는?",
+   "a": "브라우저가 직접 호출할 수 없게 해서 컨트롤러를 거치지 않고 뷰만 열리는 것을 막는다."
+  },
+  {
+   "q": "EL 은 무엇을 하나?",
+   "a": "`${member.username}` 처럼 자바 코드 없이 값을 꺼낸다. 임시 저장소를 뒤지고 getter 를 자동으로 호출하며 형변환도 필요 없다."
+  },
+  {
+   "q": "MVC 적용 후 화면 파일에 자바 코드가 몇 줄 남았나?",
+   "a": "0줄이다. EL 과 JSTL 로 전부 대체됐다."
+  },
+  {
+   "q": "클라이언트가 보는 응답은 4.3절과 어떻게 다른가?",
+   "a": "다르지 않다. MVC 패턴은 서버 코드를 어떻게 나눌지의 문제라서 HTTP 에는 영향이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "forward",
+   "en": "",
+   "what": "서버 내부에서 다른 서블릿·JSP 로 요청을 넘기는 것. 요청이 한 번이고 `request` 가 유지된다."
+  },
+  {
+   "term": "WEB-INF",
+   "en": "",
+   "what": "서블릿 표준의 보호 폴더. 이 아래의 파일은 브라우저가 URL 로 직접 접근할 수 없다."
+  },
+  {
+   "term": "EL",
+   "en": "Expression Language",
+   "what": "JSP 에서 `${}` 로 값을 꺼내는 문법. 저장소를 순서대로 뒤지고 getter 를 자동 호출한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

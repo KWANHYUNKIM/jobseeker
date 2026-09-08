@@ -282,7 +282,7 @@
           "title": "MVC 패턴 — 적용",
           "summary": "컨트롤러·뷰·모델로 나눈다. `forward` 와 `redirect` 의 차이.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -290,7 +290,7 @@
           "title": "MVC 패턴 — 한계",
           "summary": "중복이 남는다. 그것도 아주 많이. 목록으로 센다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
@@ -298,7 +298,7 @@
           "title": "정리",
           "summary": "5장에서 무엇을 없앨 것인지 미리 정한다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -313,7 +313,7 @@
           "title": "프론트 컨트롤러 패턴 소개",
           "summary": "입구를 하나로 모으면 무엇이 가능해지나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
