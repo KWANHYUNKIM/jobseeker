@@ -1,0 +1,199 @@
+{
+ "book": "spring-mvc-2",
+ "id": "interceptor-intro",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "스프링 인터셉터 소개",
+ "summary": "필터와 무엇이 다른가. 세 시점.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인터셉터의 세 시점을 안다.",
+  "예외가 났을 때 어느 것이 불리는지 안다.",
+  "핸들러 정보를 안다는 것의 값을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 일을 하는데 자리가 다르다.**\n\n필터는 `DispatcherServlet` **앞**, 인터셉터는 **안**이다. 1편 6.2절에서 본 그 구조 안에 들어간다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 시점",
+   "ascii": "   DispatcherServlet\n        |\n        v\n   preHandle          before the handler\n        |                  |\n        |               false  ->  stop here\n        v\n   handler (controller)\n        |\n        v\n   postHandle         after the handler, before the view\n        |\n        v\n   render view\n        |\n        v\n   afterCompletion    always, even on exception\n\n   필터의 한 메서드가 셋으로 나뉘었다",
+   "note": "**필터의 `doFilter` 하나가 셋으로 나뉘었다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface HandlerInterceptor {\n\n    default boolean preHandle(HttpServletRequest request, HttpServletResponse response,\n                              Object handler) throws Exception {\n        return true;\n    }\n\n    default void postHandle(HttpServletRequest request, HttpServletResponse response,\n                            Object handler, ModelAndView modelAndView) throws Exception {\n    }\n\n    default void afterCompletion(HttpServletRequest request, HttpServletResponse response,\n                                 Object handler, Exception ex) throws Exception {\n    }\n}",
+   "note": "**셋 다 기본 구현이 있다.** 필요한 것만 재정의한다.\n\n**`HttpServletRequest` 다** — 캐스팅이 필요 없다. 8.1절에서 본 필터와 다른 점.\n\n**`Object handler`** 가 있다. 이것이 인터셉터의 값이다."
+  },
+  {
+   "type": "table",
+   "caption": "필터와 비교",
+   "note": "**마지막 두 줄이 갈림점**이다.",
+   "columns": [
+    "",
+    "필터",
+    "인터셉터"
+   ],
+   "rows": [
+    [
+     "출신",
+     "서블릿 스펙",
+     "스프링"
+    ],
+    [
+     "위치",
+     "`DispatcherServlet` 앞",
+     "안"
+    ],
+    [
+     "정적 리소스",
+     "**걸린다**",
+     "안 걸린다"
+    ],
+    [
+     "시점",
+     "`doFilter` 하나",
+     "**셋**"
+    ],
+    [
+     "끊는 법",
+     "`chain.doFilter` 안 부름",
+     "`preHandle` 이 `false`"
+    ],
+    [
+     "**핸들러 정보**",
+     "**모른다**",
+     "**안다**"
+    ],
+    [
+     "**URL 패턴**",
+     "단순",
+     "**정교하다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "핸들러를 안다는 것",
+   "md": "**필터는 URI 문자열만** 안다. 인터셉터는 **어느 컨트롤러의 어느 메서드**로 갈지 안다.\n\n```java\npublic boolean preHandle(..., Object handler) {\n    if (handler instanceof HandlerMethod hm) {\n        Method method = hm.getMethod();\n        AdminOnly annotation = method.getAnnotation(AdminOnly.class);\n        ...\n    }\n}\n```\n\n**메서드에 붙은 애너테이션을 읽을 수 있다.** 그러면 URL 목록 대신 **선언으로 권한을 표시**할 수 있다.\n\n```java\n@AdminOnly\n@GetMapping(\"/admin/members\")\npublic String members() { ... }\n```\n\n**8.3절의 화이트리스트 문제**가 이렇게도 풀린다 — **목록을 따로 관리하지 않고 컨트롤러 옆에 둔다.**\n\n**`Object` 인 이유** — 1편 6.3절에서 본 대로 핸들러가 `HandlerMethod` 만 있는 게 아니다. 정적 리소스는 `ResourceHttpRequestHandler` 다. **`instanceof` 검사가 필요**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외가 나면 postHandle 은 안 불린다",
+   "md": "**세 시점의 차이가 여기서 드러난다.**\n\n```\n정상:    preHandle -> handler -> postHandle -> afterCompletion\n예외:    preHandle -> handler(예외) ->              afterCompletion\n```\n\n**`postHandle` 이 건너뛰어진다.** `ModelAndView` 를 못 만들었으니 넘겨줄 것이 없다.\n\n**`afterCompletion` 은 항상 불린다.** 8.2절의 `finally` 와 같은 자리다 — **로그·리소스 정리는 여기**서 한다.\n\n**그리고 예외를 인자로 받는다.**\n\n```java\npublic void afterCompletion(..., Exception ex) {\n    if (ex != null) {\n        log.error(\"오류\", ex);\n    }\n}\n```\n\n> **`preHandle` 이 `false` 를 반환하면** 그 뒤가 다 안 불린다 — `afterCompletion` 도. **이미 실행된 인터셉터의 `afterCompletion` 만** 역순으로 불린다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "postHandle 은 쓸 자리가 적다",
+   "md": "**셋 중 가장 안 쓰인다.**\n\n**`@ResponseBody` 나 `ResponseEntity` 면 `ModelAndView` 가 `null`** 이다. API 컨트롤러에서는 볼 것이 없다.\n\n**그리고 예외가 나면 안 불린다** — 가장 필요한 순간에 없다.\n\n**쓸 만한 자리는 하나** — **모든 화면에 공통 모델을 넣을 때**다.\n\n```java\npublic void postHandle(..., ModelAndView mav) {\n    if (mav != null) {\n        mav.addObject(\"serverTime\", LocalDateTime.now());\n    }\n}\n```\n\n**3.3절의 메서드 `@ModelAttribute`** 와 비슷한 일인데, 그건 컨트롤러 단위이고 이건 전역이다.\n\n> **실무에서는 `preHandle` 과 `afterCompletion` 만** 쓰는 경우가 대부분이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n\n    @Override\n    public void addInterceptors(InterceptorRegistry registry) {\n        registry.addInterceptor(new LogInterceptor())\n                .order(1)\n                .addPathPatterns(\"/**\")\n                .excludePathPatterns(\"/css/**\", \"/*.ico\", \"/error\");\n    }\n}",
+   "note": "**`WebMvcConfigurer`** 다 — 7.8절에서 리졸버를 등록한 그 자리.\n\n**`excludePathPatterns`** 가 8.3절의 화이트리스트를 대신한다. **제외 목록이 따로 있는 것**이 필터와 다르다.\n\n**`/**` 는 하위 전부**, `/*` 는 한 단계만이다. 이 차이가 `simpleMatch` 에는 없었다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /items HTTP/1.1\n\n# 서버 로그\n#   preHandle       [/items] [ItemController#items(Model)]\n#   postHandle      [ModelAndView: view=items]\n#   afterCompletion [ex=null]\n\nHTTP/1.1 200 \n<h2>상품 목록</h2>\n\n# 정적 리소스 - 인터셉터가 안 걸린다\nGET /css/bootstrap.min.css HTTP/1.1\n\n# 서버 로그 - 아무것도 안 찍힌다\n# (8.1 절의 필터는 여기도 걸렸다)\n\nHTTP/1.1 200 \n\n# 컨트롤러에서 예외\nGET /items/999 HTTP/1.1\n\n# 서버 로그\n#   preHandle       [/items/999]\n#   afterCompletion [ex=ItemNotFoundException]\n#   (postHandle 은 없다)\n\nHTTP/1.1 500 ",
+   "note": "**첫 로그의 대괄호 안**이 필터와 갈리는 지점이다. `ItemController#items(Model)` — **어느 컨트롤러의 어느 메서드**인지가 찍혔다. 8.2절의 필터 로그에는 `/items` 라는 문자열뿐이었다.\n\n**둘째가 범위 차이**다. 8.1절에서 CSS 요청에 필터가 걸렸던 자리인데 **인터셉터는 아무것도 안 찍었다.**\n\n**셋째가 예외일 때**다. `postHandle` 이 없고 `afterCompletion` 만 있는데, **예외 객체가 인자로** 들어왔다. 필터에서 `catch` 로 잡아야 했던 것을 **시그니처가 준다.**"
+  }
+ ],
+ "recap": [
+  "**인터셉터는 `DispatcherServlet` 안**이다. 스프링 것이다.",
+  "**세 시점** — `preHandle` · `postHandle` · `afterCompletion`.",
+  "**필터의 `doFilter` 하나가 셋으로** 나뉘었다.",
+  "**`preHandle` 이 `false`** 면 거기서 끝난다.",
+  "**정적 리소스에는 안 걸린다.**",
+  "**핸들러를 안다** — 어느 컨트롤러의 어느 메서드인지.",
+  "**메서드의 애너테이션을 읽을 수 있다** — 목록 대신 선언으로.",
+  "**`Object handler` 라 `instanceof` 검사**가 필요하다.",
+  "**예외가 나면 `postHandle` 이 건너뛰어진다.**",
+  "**`afterCompletion` 은 항상 불리고 예외를 인자로** 받는다.",
+  "**`postHandle` 은 쓸 자리가 적다** — API 면 `ModelAndView` 가 `null`."
+ ],
+ "drills": [
+  {
+   "task": "세 시점에 로그를 찍는 인터셉터를 만든다.",
+   "done_when": "순서를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "CSS 파일을 요청한다.",
+   "done_when": "인터셉터가 안 걸리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨트롤러에서 예외를 던진다.",
+   "done_when": "`postHandle` 이 건너뛰어지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`preHandle` 에서 `false` 를 반환한다.",
+   "done_when": "컨트롤러가 안 불리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`handler` 를 `HandlerMethod` 로 캐스팅해 메서드 이름을 찍는다.",
+   "done_when": "필터가 모르는 정보인 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터셉터의 세 시점은?",
+   "a": "`preHandle`(핸들러 전), `postHandle`(핸들러 후 뷰 전), `afterCompletion`(항상)이다."
+  },
+  {
+   "q": "예외가 나면 무엇이 안 불리나?",
+   "a": "`postHandle` 이다. `ModelAndView` 를 못 만들었기 때문이다. `afterCompletion` 은 불린다."
+  },
+  {
+   "q": "핸들러 정보를 안다는 것의 값은?",
+   "a": "어느 컨트롤러 메서드인지 알아서 메서드의 애너테이션으로 권한을 표시할 수 있다."
+  },
+  {
+   "q": "`handler` 가 왜 `Object` 인가?",
+   "a": "`HandlerMethod` 말고도 정적 리소스 핸들러 등 여러 종류가 있기 때문이다."
+  },
+  {
+   "q": "`postHandle` 이 왜 잘 안 쓰이나?",
+   "a": "API 에서는 `ModelAndView` 가 `null` 이고 예외가 나면 아예 안 불린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HandlerInterceptor",
+   "en": "",
+   "what": "`DispatcherServlet` 안에서 핸들러 전후에 끼어드는 스프링 확장점."
+  },
+  {
+   "term": "HandlerMethod",
+   "en": "",
+   "what": "컨트롤러 메서드를 나타내는 핸들러 타입. 메서드와 애너테이션을 읽을 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Interception",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-interceptor.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
