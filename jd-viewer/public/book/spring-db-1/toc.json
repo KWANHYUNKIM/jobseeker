@@ -99,7 +99,7 @@
           "title": "JDBC 가 없던 시절",
           "summary": "데이터베이스를 바꾸면 코드를 다시 썼다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -107,7 +107,7 @@
           "title": "JDBC 표준 인터페이스",
           "summary": "셋만 알면 된다 — Connection · Statement · ResultSet.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -115,7 +115,7 @@
           "title": "JDBC 와 최신 기술",
           "summary": "SQL Mapper 와 ORM 이 무엇을 감췄나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -123,7 +123,7 @@
           "title": "데이터베이스 연결",
           "summary": "DriverManager 가 드라이버를 고르는 법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",

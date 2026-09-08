@@ -1,0 +1,163 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-interface",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "JDBC 표준 인터페이스",
+ "summary": "셋만 알면 된다 — Connection · Statement · ResultSet.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 인터페이스의 관계를 안다.",
+  "`Statement` 와 `PreparedStatement` 를 구분한다.",
+  "`AutoCloseable` 이 무엇을 뜻하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "셋의 관계",
+   "ascii": "   Connection\n        |\n        +--> prepareStatement(sql)   ->  PreparedStatement\n        +--> setAutoCommit(false)        chapter 4\n        +--> commit() / rollback()       chapter 4\n        +--> close()\n\n   PreparedStatement\n        |\n        +--> setString(1, value)\n        +--> executeUpdate()         ->  int  (rows affected)\n        +--> executeQuery()          ->  ResultSet\n\n   ResultSet\n        |\n        +--> next()                  ->  boolean\n        +--> getString(\"member_id\")\n        +--> getInt(\"money\")\n\n   셋이 계층을 이룬다. 위가 아래를 만든다",
+   "note": "**위가 아래를 만든다.** 커넥션이 statement 를, statement 가 result set 을."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 맡나",
+   "note": "**커넥션 하나에 세션 하나**다 — 4.2절에서 다시 본다.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`Connection`",
+     "DB 와의 **연결**. 트랜잭션 단위이기도 하다"
+    ],
+    [
+     "`Statement`",
+     "**보낼 SQL**"
+    ],
+    [
+     "`ResultSet`",
+     "**받은 결과**. 커서를 들고 있다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Statement 를 안 쓰고 PreparedStatement 를 쓴다",
+   "md": "**둘 다 SQL 을 보내는 것**인데 하나는 쓰지 않는다.\n\n```java\n// Statement - 문자열을 이어 붙인다\nString sql = \"select * from member where member_id = '\" + id + \"'\";\nstmt.executeQuery(sql);\n\n// PreparedStatement - 자리를 비워 둔다\nString sql = \"select * from member where member_id = ?\";\npstmt.setString(1, id);\npstmt.executeQuery();\n```\n\n**첫째가 SQL 인젝션**이다.\n\n```\nid = \"hi1' or '1'='1\"\n  -> select * from member where member_id = 'hi1' or '1'='1'\n  -> 전부 조회된다\n```\n\n**「MVC 2편」 2.2절의 XSS 와 같은 구조**다.\n\n> **데이터와 코드가 섞이는 것**이 문제다. 거기는 HTML 에 스크립트가 섞였고, **여기는 SQL 에 데이터가 섞인다.**\n\n**대응도 같다** — **섞지 않는다.** `?` 로 자리를 비워 두면 **SQL 은 먼저 파싱되고 값은 나중에 채워진다.** 값 안에 무엇이 있든 **SQL 구조를 못 바꾼다.**\n\n**성능 이득도 있다.** 같은 SQL 을 반복하면 **DB 가 실행 계획을 재사용**한다.\n\n> **이 책은 `Statement` 를 한 번도 안 쓴다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "전형적인 모양",
+   "code": "Connection con = null;\nPreparedStatement pstmt = null;\nResultSet rs = null;\n\ntry {\n    con = getConnection();\n    pstmt = con.prepareStatement(sql);\n    pstmt.setString(1, memberId);\n    rs = pstmt.executeQuery();\n\n    if (rs.next()) {\n        Member member = new Member();\n        member.setMemberId(rs.getString(\"member_id\"));\n        member.setMoney(rs.getInt(\"money\"));\n        return member;\n    } else {\n        throw new NoSuchElementException(\"member not found memberId=\" + memberId);\n    }\n} catch (SQLException e) {\n    log.error(\"db error\", e);\n    throw e;\n} finally {\n    close(con, pstmt, rs);\n}",
+   "note": "**변수 셋을 밖에 선언**하는 것이 눈에 띈다. `finally` 에서 닫아야 해서다 — 2.8절에서 이것을 다룬다.\n\n**`throws SQLException`** 이 붙는다. **체크 예외**라 어쩔 수 없고, 이것이 6장의 주제다.\n\n**이 스무 줄이 조회 하나**다. 2.9절에서 몇 번 반복되는지 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "셋 다 AutoCloseable 이다",
+   "md": "```java\npublic interface Connection extends Wrapper, AutoCloseable\n```\n\n**`try-with-resources`** 를 쓸 수 있다는 뜻이다.\n\n```java\ntry (Connection con = getConnection();\n     PreparedStatement pstmt = con.prepareStatement(sql);\n     ResultSet rs = pstmt.executeQuery()) {\n    ...\n}   // 역순으로 자동으로 닫힌다\n```\n\n**훨씬 짧다.** 그런데 **이 책은 4장까지 안 쓴다.**\n\n**이유가 둘**이다.\n\n1. **닫는 순서와 예외 처리를 눈으로 보려고** — 2.8절의 주제다\n2. **트랜잭션에서는 커넥션을 밖에서 받아** 오므로 `try-with-resources` 로 못 닫는다 — 4.11절\n\n**두 번째가 크다.** 서비스가 커넥션을 만들어 리포지토리에 넘기면, **리포지토리가 닫으면 안 된다.** 트랜잭션이 아직 안 끝났으니까.\n\n> **그래서 4장의 코드가 지저분해진다.** 1.1절에서 예고한 그것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "인덱스가 1부터다",
+   "md": "```java\npstmt.setString(1, member.getMemberId());\npstmt.setInt(2, member.getMoney());\n```\n\n**자바인데 1부터** 시작한다. **SQL 의 관례**를 따른 것이다.\n\n**`ResultSet` 도 마찬가지**다.\n\n```java\nrs.getString(1);              // 첫 번째 컬럼\nrs.getString(\"member_id\");    // 이름으로도 된다\n```\n\n**이름으로 읽는 편**이 낫다. 컬럼 순서가 바뀌어도 안 깨지고, **읽는 사람이 무엇인지 안다.**\n\n**`rs.next()` 도 헷갈린다.**\n\n```java\nResultSet rs = pstmt.executeQuery();\n// 지금 커서는 첫 행 '앞'에 있다\nif (rs.next()) {   // 첫 행으로 이동. 있으면 true\n    rs.getString(\"member_id\");\n}\n```\n\n**처음부터 `next()` 를 불러야** 첫 행을 읽는다. **2.6절에서 다시** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# PreparedStatement 로 조회\nString sql = \"select * from member where member_id = ?\";\npstmt.setString(1, \"hi1\");\n\n# 로그\n#   get connection=conn0 class=class org.h2.jdbc.JdbcConnection\n#   findById - select * from member where member_id = ?\n#   resource close conn0\n\n# H2 가 받은 것 (TRACE_LEVEL_SYSTEM_OUT=2)\n#   /*SQL l:44 #:1*/select * from member where member_id = ?;\n#   {1: 'hi1'}\n\n# SQL 과 값이 따로 간다\n\n# Statement 로 문자열을 이어 붙이면\nString id = \"hi1' or '1'='1\";\nString sql = \"select * from member where member_id = '\" + id + \"'\";\n\n#   select * from member where member_id = 'hi1' or '1'='1'\n\n# MEMBER_ID | MONEY\n# hi1       | 10000\n# hi2       | 20000\n\n# 전부 조회됐다",
+   "note": "**H2 로그에서 `?` 와 값이 따로** 나간 것이 보인다. `{1: 'hi1'}` — **SQL 은 이미 파싱된 뒤에 값이 채워진다.**\n\n**아래가 인젝션**이다. 따옴표 하나로 `where` 절이 통째로 바뀌었고 **두 행이 다 나왔다.**\n\n**한 행만 기대한 코드가 두 행을 받으면** 그다음 동작이 예측이 안 된다. 로그인 쿼리였다면 **비밀번호 없이 통과**한다.\n\n**「MVC 2편」 5.1절에서 본 그 문장**이 여기서도 맞다 — **클라이언트가 보낸 것은 전부 위조 가능하다.**"
+  }
+ ],
+ "recap": [
+  "**셋이 계층**을 이룬다 — 커넥션이 statement 를, statement 가 result set 을 만든다.",
+  "**커넥션 하나에 세션 하나**다.",
+  "**`Statement` 는 안 쓴다** — SQL 인젝션.",
+  "**데이터와 코드가 섞이는 것**이 문제다 — XSS 와 같은 구조.",
+  "**`?` 를 쓰면 SQL 이 먼저 파싱**되고 값이 나중에 채워진다.",
+  "**실행 계획 재사용**이라는 성능 이득도 있다.",
+  "**셋 다 `AutoCloseable`** 이라 `try-with-resources` 가 된다.",
+  "**이 책은 4장까지 안 쓴다** — 트랜잭션에서 커넥션을 밖에서 받아서.",
+  "**인덱스가 1부터**다. SQL 의 관례를 따랐다.",
+  "**이름으로 읽는 편**이 낫다 — 순서가 바뀌어도 안 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "`PreparedStatement` 로 조회를 한 번 해 본다.",
+   "done_when": "H2 로그에서 값이 따로 가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Statement` 로 문자열을 이어 붙이고 `' or '1'='1` 을 넣는다.",
+   "done_when": "전부 조회되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`setString` 의 인덱스를 0 으로 준다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`rs.next()` 없이 `rs.getString` 을 부른다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`try-with-resources` 로 다시 써 본다.",
+   "done_when": "얼마나 짧아지는지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 인터페이스의 관계는?",
+   "a": "커넥션이 `PreparedStatement` 를 만들고 그것이 `ResultSet` 을 만든다."
+  },
+  {
+   "q": "`Statement` 를 왜 안 쓰나?",
+   "a": "SQL 문자열에 값을 이어 붙여야 해서 SQL 인젝션에 뚫린다."
+  },
+  {
+   "q": "`?` 가 왜 안전한가?",
+   "a": "SQL 이 먼저 파싱된 뒤 값이 채워져서 값 안의 내용이 SQL 구조를 바꿀 수 없다."
+  },
+  {
+   "q": "왜 `try-with-resources` 를 안 쓰나?",
+   "a": "트랜잭션에서는 커넥션을 서비스에서 받아 오므로 리포지토리가 닫으면 안 되기 때문이다."
+  },
+  {
+   "q": "`rs.next()` 를 왜 먼저 불러야 하나?",
+   "a": "커서가 처음에 첫 행 앞에 있어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PreparedStatement",
+   "en": "",
+   "what": "값 자리를 `?` 로 비워 둔 SQL. 인젝션을 막고 실행 계획을 재사용한다."
+  },
+  {
+   "term": "SQL 인젝션",
+   "en": "SQL injection",
+   "what": "입력값이 SQL 구조를 바꿔 버리는 공격."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

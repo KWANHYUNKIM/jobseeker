@@ -1,0 +1,143 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-why",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "JDBC 가 없던 시절",
+ "summary": "데이터베이스를 바꾸면 코드를 다시 썼다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JDBC 가 무엇을 표준화했는지 안다.",
+  "표준화가 무엇을 못 했는지 안다.",
+  "인터페이스와 구현의 분리를 다시 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**애플리케이션이 DB 를 쓰려면 세 가지**를 한다.\n\n1. **연결한다** — 어디에, 누구로\n2. **SQL 을 보낸다**\n3. **결과를 받는다**\n\n**셋 다 DB 마다 방식이 달랐다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "표준이 생기기 전과 후",
+   "ascii": "   before jdbc\n   -----------\n   app  ->  oracle client library    connect, send, parse result\n   app  ->  mysql client library     all different\n        |\n        +--> change the db, rewrite the code\n        +--> learn each vendor's api\n\n   with jdbc\n   ---------\n   app  ->  java.sql.Connection      interface\n                  |\n                  +--> oracle driver\n                  +--> h2 driver\n                  +--> mysql driver\n\n   표준이 인터페이스로 있고 구현은 벤더가 낸다",
+   "note": "**인터페이스는 표준이 정하고 구현은 벤더가 낸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 가지가 문제였다",
+   "md": "**1. DB 를 바꾸면 코드를 다시 쓴다**\n\n오라클로 만든 것을 MySQL 로 옮기려면 **데이터 접근 코드 전부**를 고쳐야 했다. 연결하는 함수 이름부터 결과를 읽는 방식까지 다르다.\n\n**2. 개발자가 DB 마다 배워야 한다**\n\n이직하거나 프로젝트가 바뀌면 **처음부터 다시** 배운다.\n\n**JDBC(Java Database Connectivity)** 가 이것을 표준으로 묶었다. **1997년, JDK 1.1** 부터다.\n\n**핵심은 인터페이스만 정한 것**이다.\n\n```java\npackage java.sql;\n\npublic interface Connection extends Wrapper, AutoCloseable { ... }\npublic interface Statement extends Wrapper, AutoCloseable { ... }\npublic interface ResultSet extends Wrapper, AutoCloseable { ... }\n```\n\n**구현은 각 DB 회사가 만들어 배포**한다. 그것이 **JDBC 드라이버**다.\n\n1.3절에서 본 그 로그가 이것이다.\n\n```\nclass=class org.h2.jdbc.JdbcConnection\n```\n\n**`java.sql.Connection` 을 H2 가 구현한 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "서가에서 세 번째 보는 구조",
+   "md": "**앞 책들에서 같은 모양을 봤다.**\n\n| | 인터페이스 | 구현 |\n|---|---|---|\n| 「MVC 2편」 11.6절 | `Formatter` | 우리가 만든 것 |\n| 「MVC 2편」 6.1절 | Bean Validation | **하이버네이트 밸리데이터** |\n| 여기 | `java.sql.*` | **각 DB 의 드라이버** |\n\n**두 번째와 같은 성격**이다 — **표준 명세와 구현체가 나뉘어 있고**, 사실상 쓰는 구현이 정해져 있다.\n\n**차이가 하나 있다.** Bean Validation 은 **구현이 사실상 하나**(하이버네이트)인데, **JDBC 는 DB 수만큼** 있다. 그래서 **표준을 지키는 것이 실제로 값어치**를 한다.\n\n> 앞 책 「스프링 핵심 원리」 3장의 **역할과 구현을 분리한다**가 자바 표준 라이브러리 수준에서 실현된 예다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "표준화되지 않은 것",
+   "md": "**JDBC 가 다 해결한 것은 아니다.**\n\n**1. SQL 방언**\n\n```sql\n-- 페이징\nMySQL       limit 10 offset 20\nOracle      rownum, row_number()\nSQL Server  offset 20 rows fetch next 10 rows only\n```\n\n**함수도 다르다** — 문자열 자르기, 날짜 더하기, 널 처리.\n\n**JDBC 는 SQL 을 보내는 방법을 표준화했지 SQL 자체를 표준화하지 못했다.**\n\n**2. 데이터 타입**\n\n오라클의 `NUMBER`, MySQL 의 `TINYINT(1)` 같은 것이 자바 타입으로 어떻게 오는지가 미묘하게 다르다.\n\n**3. 락과 격리 수준의 세부**\n\n1.3절에서 H2 를 운영에 안 쓴다고 한 이유다. **4장에서 볼 락 동작이 DB 마다 다르다.**\n\n> **그래서 \"DB 를 바꾸는 것\" 은 지금도 쉽지 않다.** JDBC 는 **코드의 모양**을 통일했고, **JPA 가 방언(Dialect)까지** 다루려고 한 것이 그다음 단계다 — 2.3절에서 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "드라이버는 어떻게 찾아지나",
+   "md": "**1.3절에서 `runtimeOnly` 였던 이유**가 여기 있다.\n\n```java\nDriverManager.getConnection(\"jdbc:h2:tcp://localhost/~/test\", \"sa\", \"\");\n```\n\n**우리 코드에 H2 클래스가 하나도 없다.** URL 문자열만 있다.\n\n**`DriverManager` 가 등록된 드라이버들에게 물어본다.**\n\n```\n\"jdbc:h2:...\" 를 처리할 수 있나?\n  -> H2 드라이버:    예\n  -> MySQL 드라이버:  아니오\n```\n\n**서가에서 반복해서 본 그 패턴**이다 — 「MVC 2편」 11.2절에서 네 가지 방식을 표로 정리했다. **후보를 두고 물어본 뒤 맡기는 것.**\n\n**등록은 자동**이다. 옛날에는 이렇게 썼다.\n\n```java\nClass.forName(\"org.h2.Driver\");   // 지금은 필요 없다\n```\n\n**JDBC 4.0(자바 6)부터** `META-INF/services` 에 드라이버를 적어 두면 **자동으로 로딩**된다 — **`ServiceLoader`** 방식이다.\n\n**2.4절에서 이 과정을 자세히** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# H2 드라이버로 연결\nDriverManager.getConnection(\"jdbc:h2:tcp://localhost/~/test\", \"sa\", \"\")\n\n# 로그\n#   connection=conn0: url=jdbc:h2:tcp://localhost/~/test user=SA\n#   class=class org.h2.jdbc.JdbcConnection\n\n# URL 만 바꾸면 (드라이버가 있다면)\nDriverManager.getConnection(\"jdbc:mysql://localhost:3306/test\", \"root\", \"\")\n\n#   class=class com.mysql.cj.jdbc.ConnectionImpl\n\n# 자바 코드는 한 글자도 안 바뀌었다\n#   Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD);\n#   PreparedStatement pstmt = con.prepareStatement(sql);\n#   ResultSet rs = pstmt.executeQuery();\n\n# 그런데 SQL 은 바꿔야 할 수 있다\nselect * from member limit 10 offset 20;      -- H2, MySQL\nselect * from member offset 20 rows fetch next 10 rows only;  -- Oracle 12c+",
+   "note": "**클래스 이름만 다르다.** `org.h2.jdbc.JdbcConnection` 과 `com.mysql.cj.jdbc.ConnectionImpl` — **둘 다 `java.sql.Connection` 의 구현**이다.\n\n**그 아래 자바 코드가 안 바뀐 것**이 JDBC 가 한 일이다.\n\n**맨 아래가 JDBC 가 못 한 일**이다. 연결하고 보내는 방법은 같은데 **보낼 내용이 다르다.** 이 차이가 남아 있는 한 \"DB 를 바꾼다\" 는 여전히 일이다."
+  }
+ ],
+ "recap": [
+  "**연결·전송·결과 읽기가 DB 마다 달랐다.**",
+  "**DB 를 바꾸면 코드를 다시 쓰고** 개발자가 매번 배워야 했다.",
+  "**JDBC 는 인터페이스만 정한다** — `Connection` · `Statement` · `ResultSet`.",
+  "**구현은 벤더가 드라이버로** 배포한다.",
+  "**1.3절의 `org.h2.jdbc.JdbcConnection`** 이 그 구현이다.",
+  "**Bean Validation 과 같은 구조**인데 구현이 DB 수만큼 있다.",
+  "표준화 못 한 것 — **SQL 방언 · 데이터 타입 · 락 세부**.",
+  "**\"DB 를 바꾸는 것\" 은 지금도 쉽지 않다.**",
+  "**드라이버는 URL 을 보고 자동으로** 골라진다.",
+  "**`Class.forName` 은 이제 필요 없다** — `ServiceLoader` 방식."
+ ],
+ "drills": [
+  {
+   "task": "`getConnection` 의 반환 클래스를 찍는다.",
+   "done_when": "H2 구현체인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`java.sql.Connection` 의 소스를 열어 본다.",
+   "done_when": "인터페이스인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "H2 의존성을 빼고 실행한다.",
+   "done_when": "드라이버를 못 찾는 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`limit ... offset` 을 오라클 문법과 비교한다.",
+   "done_when": "JDBC 가 표준화하지 못한 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JDBC 가 표준화한 것은?",
+   "a": "데이터베이스에 연결하고 SQL 을 보내고 결과를 받는 방법이다. 인터페이스만 정하고 구현은 벤더가 낸다."
+  },
+  {
+   "q": "JDBC 드라이버란?",
+   "a": "각 DB 회사가 만든 `java.sql.*` 인터페이스의 구현체다."
+  },
+  {
+   "q": "표준화하지 못한 것은?",
+   "a": "SQL 방언, 데이터 타입 매핑, 락과 격리 수준의 세부 동작이다."
+  },
+  {
+   "q": "드라이버는 어떻게 골라지나?",
+   "a": "`DriverManager` 가 등록된 드라이버들에게 URL 을 처리할 수 있는지 물어본다."
+  },
+  {
+   "q": "`Class.forName` 이 왜 이제 필요 없나?",
+   "a": "JDBC 4.0 부터 `META-INF/services` 를 통해 `ServiceLoader` 가 자동으로 등록하기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JDBC",
+   "en": "Java Database Connectivity",
+   "what": "자바에서 데이터베이스에 접근하는 표준 인터페이스."
+  },
+  {
+   "term": "JDBC 드라이버",
+   "en": "JDBC driver",
+   "what": "각 DB 벤더가 제공하는 JDBC 인터페이스 구현체."
+  },
+  {
+   "term": "SQL 방언",
+   "en": "SQL dialect",
+   "what": "DB 마다 다른 SQL 문법과 함수. JDBC 가 표준화하지 못한 부분이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
