@@ -1,0 +1,144 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-summary",
+ "no": "2.9",
+ "chapter": 2,
+ "title": "정리",
+ "summary": "같은 코드가 네 번 반복된다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 반복되는지 센다.",
+  "2장이 남긴 문제 셋을 안다.",
+  "각각이 어느 장에서 풀리는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "네 메서드를 나란히 놓으면",
+   "ascii": "   save        findById      update        delete\n   ----        --------      ------        ------\n   getConn     getConn       getConn       getConn\n   prepare     prepare       prepare       prepare\n   setXxx      setXxx        setXxx        setXxx\n   execute     execute       execute       execute\n   -           map result    -             -\n   catch       catch         catch         catch\n   finally     finally       finally       finally\n\n   only two lines differ:  the sql, and the mapping\n\n   나머지 열여덟 줄이 네 번 반복된다",
+   "note": "**다른 것은 SQL 과 매핑 두 줄**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "반복이 왜 나쁜가",
+   "md": "**\"줄 수가 많다\" 가 문제의 전부가 아니다.**\n\n**1. 빠뜨린다**\n\n2.8절의 `close` 를 한 곳에서만 빠뜨려도 **커넥션이 샌다.** 네 곳을 다 확인해야 하고, **메서드를 새로 만들 때마다** 다시 확인해야 한다.\n\n**2. 고칠 때 네 곳을 고친다**\n\n로그를 추가하거나 예외 처리를 바꾸면 **전부 손댄다.** 한 곳을 빠뜨리면 **거기만 다르게 동작**한다.\n\n**3. 진짜 코드가 안 보인다**\n\n```java\npstmt = con.prepareStatement(sql);\npstmt.setString(1, memberId);\nrs = pstmt.executeQuery();\n```\n\n**의미 있는 것은 이 세 줄**인데 앞뒤로 열여덟 줄이 붙어 있다. **무엇을 하는 메서드인지 읽기 어렵다.**\n\n**세 번째가 제일 크다.** 「MVC 2편」에서 반복해서 본 것이다.\n\n> 5.9절: **컨트롤러가 하는 일이 셋** — 검증 30줄, 실패 처리 3줄, 저장 3줄.\n\n**같은 진단이다.** 그리고 같은 해법 — **빼내서 한 곳으로.**"
+  },
+  {
+   "type": "table",
+   "caption": "2장이 남긴 것",
+   "note": "**셋이 각각 다른 장에서** 풀린다.",
+   "columns": [
+    "",
+    "무엇",
+    "어디서"
+   ],
+   "rows": [
+    [
+     "**1**",
+     "커넥션을 매번 새로 만든다",
+     "**3장** — 커넥션 풀"
+    ],
+    [
+     "**2**",
+     "`SQLException` 이 위로 번진다",
+     "**6·7장** — 예외 추상화"
+    ],
+    [
+     "**3**",
+     "같은 코드가 반복된다",
+     "**7.6절** — `JdbcTemplate`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그리고 아직 트랜잭션이 없다",
+   "md": "**2장의 코드에는 트랜잭션이라는 말이 안 나온다.**\n\n```java\nmemberRepository.save(memberA);     // conn0, 커밋됨\nmemberRepository.save(memberB);     // conn1, 커밋됨\n```\n\n**각각 따로 커밋된다.** 둘째가 실패해도 **첫째는 남는다.**\n\n**왜 커밋이 되나** — `autoCommit` 이 기본으로 켜져 있어서다. **우리가 아무것도 안 했는데 SQL 하나마다 커밋**이 나간다.\n\n**4.3절이 이것을 다룬다.**\n\n**이것이 제일 큰 문제**인데 **2장에서는 보이지 않는다.** 저장이 한 번뿐이면 문제가 없기 때문이다 — **「MVC 2편」의 `Map` 저장소와 같은 상태**다.\n\n> 1.2절에서 이렇게 적었다.\n>\n> **저장이 두 번이 되는 순간** 되돌릴 범위가 필요해진다.\n\n**4장에서 계좌이체를 만들면** 그 순간이 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "지금 코드의 좋은 점",
+   "md": "**다 나쁜 것은 아니다.**\n\n**1. 무슨 일이 일어나는지 다 보인다**\n\n커넥션을 언제 얻고 언제 닫는지, SQL 이 언제 나가는지 **코드에 다 있다.** 3장 이후로는 **점점 감춰진다.**\n\n**2. 스프링이 없어도 된다**\n\n`main` 메서드에서 그냥 돈다. **테스트도 컨테이너 없이** 뜬다.\n\n**3. 디버깅하기 쉽다**\n\n중단점을 걸면 **한 줄씩 따라갈 수 있다.** 프록시도 AOP 도 없다.\n\n**이 셋이 사라지는 것이 앞으로의 대가**다. 서가에서 반복해서 본 그 교환이다.\n\n> **자동화의 대가는 동작이 선언 뒤로 숨는 것**이다 — 「MVC 2편」에서 네 번 나왔다.\n\n**5.8절에서 `@Transactional` 한 줄이 되면** 무슨 일이 일어나는지 **로그로만** 알 수 있다. **1.1절에서 로그를 강조한 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그 — 2장의 결과",
+   "sql": "MemberRepositoryV0 repository = new MemberRepositoryV0();\n\nMember member = new Member(\"hi1\", 10000);\nrepository.save(member);\nrepository.findById(\"hi1\");\nrepository.update(\"hi1\", 20000);\nrepository.delete(\"hi1\");\n\n# 로그\n#   get connection=conn0    insert into member(member_id, money) values(?, ?)\n#   resource close conn0\n#   get connection=conn1    select * from member where member_id = ?\n#   resource close conn1\n#   get connection=conn2    update member set money=? where member_id=?\n#   resource close conn2\n#   get connection=conn3    delete from member where member_id=?\n#   resource close conn3\n\n# 커넥션 넷. 세션 넷. 각각 따로 커밋됐다\n\n# update 에서 예외가 나면\n#   get connection=conn0    insert  -> 커밋됨\n#   get connection=conn1    select  -> 성공\n#   get connection=conn2    update  -> 예외\n\n# insert 는 남아 있다. 되돌릴 방법이 없다",
+   "note": "**커넥션이 넷**이다. 한 흐름인데 **DB 입장에서는 서로 모르는 네 개의 세션**이다.\n\n**`autoCommit` 이라 각각 커밋됐다.** 로그에 `commit` 이라는 글자가 없는데도 그렇다 — **안 보이는 곳에서 나간다.**\n\n**아래가 이 장이 못 하는 것**이다. 중간에 실패했는데 **앞의 것이 남는다.** 「MVC 2편」 9.1절의 그 말이 여기서도 맞다.\n\n> **예외를 삼키면 200 이 나간다** — 동작은 한다.\n\n**여기는 예외가 제대로 나는데도** 데이터가 반만 남았다. **동작은 하고 데이터는 틀린 상태**다.\n\n**4장이 여기서 시작한다.**"
+  }
+ ],
+ "recap": [
+  "**네 메서드에서 다른 것은 SQL 과 매핑 두 줄**뿐이다.",
+  "반복이 나쁜 이유 셋 — **빠뜨린다 · 네 곳을 고친다 · 진짜 코드가 안 보인다**.",
+  "**세 번째가 제일 크다** — 「MVC 2편」 5.9절과 같은 진단.",
+  "2장이 남긴 것 — **커넥션 · 예외 · 반복**.",
+  "**각각 3장 · 6·7장 · 7.6절**에서 풀린다.",
+  "**그리고 트랜잭션이 없다** — `autoCommit` 이 켜져 있다.",
+  "**저장이 한 번뿐이라 안 보인다.**",
+  "지금 코드의 좋은 점 — **다 보이고 · 스프링이 없어도 되고 · 디버깅이 쉽다**.",
+  "**이 셋이 사라지는 것이 앞으로의 대가**다.",
+  "**동작은 하고 데이터는 틀린 상태**가 될 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "네 메서드를 나란히 놓고 다른 줄을 센다.",
+   "done_when": "두 줄인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한 메서드에서만 `close` 를 빼고 반복 호출한다.",
+   "done_when": "거기서만 세션이 새는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "save 두 번 중 둘째에서 예외를 던진다.",
+   "done_when": "첫째가 남는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그에서 커넥션 번호를 센다.",
+   "done_when": "메서드마다 다른 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네 메서드에서 실제로 다른 것은?",
+   "a": "SQL 문자열과 결과 매핑 두 줄이다."
+  },
+  {
+   "q": "반복이 나쁜 가장 큰 이유는?",
+   "a": "의미 있는 세 줄이 열여덟 줄에 묻혀 무엇을 하는 메서드인지 안 보인다."
+  },
+  {
+   "q": "2장이 남긴 세 문제와 해결 장은?",
+   "a": "커넥션 생성(3장), `SQLException` 전파(6·7장), 코드 반복(7.6절)이다."
+  },
+  {
+   "q": "왜 트랜잭션이 없나?",
+   "a": "`autoCommit` 이 켜져 있어 SQL 하나마다 커밋된다. 저장이 한 번뿐이라 문제가 안 보였을 뿐이다."
+  },
+  {
+   "q": "지금 코드가 잃게 될 좋은 점은?",
+   "a": "무슨 일이 일어나는지 다 보이고, 스프링 없이 돌고, 디버깅이 쉽다는 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

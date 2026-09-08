@@ -163,7 +163,7 @@
           "title": "정리",
           "summary": "같은 코드가 네 번 반복된다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -178,7 +178,7 @@
           "title": "커넥션을 매번 만들면",
           "summary": "TCP 연결과 인증에 드는 시간.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -186,7 +186,7 @@
           "title": "커넥션 풀 이해",
           "summary": "빌려 쓰고 돌려준다. 닫는 것이 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -194,7 +194,7 @@
           "title": "DataSource 라는 추상화",
           "summary": "커넥션을 얻는 방법을 인터페이스로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

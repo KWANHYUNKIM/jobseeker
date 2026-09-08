@@ -1,0 +1,135 @@
+{
+ "book": "spring-db-1",
+ "id": "datasource-intro",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "DataSource 라는 추상화",
+ "summary": "커넥션을 얻는 방법을 인터페이스로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`DataSource` 인터페이스를 안다.",
+  "설정과 사용이 왜 갈리는지 안다.",
+  "이 구조를 서가에서 어디서 봤는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "무엇이 갈리나",
+   "ascii": "   before\n   ------\n   repository  ->  DriverManager.getConnection(url, user, pw)\n        |\n        +--> to switch to a pool, change every repository\n\n   after\n   -----\n   repository  ->  DataSource.getConnection()\n                        |\n                        +--> DriverManagerDataSource\n                        +--> HikariDataSource\n                        +--> any other pool\n\n   config knows the url. the repository does not",
+   "note": "**리포지토리가 URL 을 모르게** 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface DataSource {\n    Connection getConnection() throws SQLException;\n    Connection getConnection(String username, String password) throws SQLException;\n    // ...\n}",
+   "note": "**핵심은 첫 메서드 하나**다. `javax.sql` 패키지이고 **자바 표준**이다.\n\n**URL·아이디·비밀번호가 없다.** 그것은 **`DataSource` 를 만들 때** 정한다.\n\n**2.4절의 `DriverManager` 와 비교하면** 인자가 사라졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "설정과 사용이 갈린다",
+   "md": "**`DriverManager` 는 부를 때마다 설정이 필요**했다.\n\n```java\nDriverManager.getConnection(URL, USERNAME, PASSWORD);   // 매번\n```\n\n**리포지토리가 URL 을 안다는 뜻**이다. 그러면\n\n- **환경마다 다른 URL** 을 리포지토리가 알아야 한다\n- **커넥션 풀로 바꾸려면** 리포지토리를 다 고친다\n- **테스트에서 다른 DB** 를 쓰기 어렵다\n\n**`DataSource` 는 만들 때 한 번**이다.\n\n```java\n// 설정하는 쪽\nHikariDataSource ds = new HikariDataSource();\nds.setJdbcUrl(URL);\nds.setUsername(USERNAME);\nds.setPassword(PASSWORD);\n\n// 쓰는 쪽\nConnection con = dataSource.getConnection();   // 아무것도 모른다\n```\n\n**「MVC 2편」 11.3절에서 본 그것**과 같은 이야기다.\n\n> **`ConverterRegistry`(등록)와 `ConversionService`(사용)** 가 나뉜 것 — **인터페이스 분리 원칙**.\n\n**여기는 인터페이스가 하나**인데, **설정은 구현체의 생성자·setter** 로 하고 **사용은 인터페이스**로 한다. **같은 목적을 다른 방법으로** 이룬 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "구현이 여럿이다",
+   "md": "| | 무엇 |\n|---|---|\n| `DriverManagerDataSource` | **풀이 없다.** 매번 새로 만든다 |\n| `HikariDataSource` | **부트의 기본** 풀 |\n| `TomcatDataSource` | 톰캣이 제공하는 풀 |\n| `LazyConnectionDataSourceProxy` | **실제로 쓸 때까지** 안 빌린다 |\n\n**첫 번째가 흥미롭다.** 풀이 아닌데 `DataSource` 다 — **인터페이스를 맞춘 것**이다. 3.4절에서 이것으로 시작한다.\n\n**마지막도 알아 둘 만하다.** `@Transactional` 이 붙으면 **메서드 시작할 때 커넥션을 빌리는데**(5.4절), **DB 를 안 쓰는 분기**면 낭비다. `LazyConnectionDataSourceProxy` 는 **첫 SQL 이 나갈 때까지** 미룬다.\n\n> **서가에서 본 패턴**이다 — 「스프링 핵심 원리」 3장의 **역할과 구현을 분리한다.** 여기는 자바 표준이 역할을 정하고 여러 구현이 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "리포지토리는 인터페이스만 안다",
+   "md": "```java\npublic class MemberRepositoryV1 {\n\n    private final DataSource dataSource;\n\n    public MemberRepositoryV1(DataSource dataSource) {\n        this.dataSource = dataSource;\n    }\n\n    private Connection getConnection() throws SQLException {\n        Connection con = dataSource.getConnection();\n        log.info(\"get connection={}, class={}\", con, con.getClass());\n        return con;\n    }\n}\n```\n\n**생성자 주입**이다 — 앞 책 7장에서 정한 그것.\n\n**리포지토리 코드가 3.4절과 3.5절에서 한 글자도 안 바뀐다.** 넘기는 구현만 바뀐다.\n\n```java\nnew MemberRepositoryV1(new DriverManagerDataSource(...));   // 3.4\nnew MemberRepositoryV1(new HikariDataSource(...));          // 3.5\n```\n\n**이것이 추상화의 값어치**다. 「MVC 2편」에서 반복해서 본 것이고, **여기서는 성능이 40배 달라지는데 코드는 그대로**다.\n\n> **`close()` 도 그대로**다(3.2절). 하나는 진짜로 닫고 하나는 반납하는데 **부르는 쪽은 모른다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 같은 리포지토리 코드, 다른 DataSource\n\n# 1) DriverManagerDataSource\nDataSource ds = new DriverManagerDataSource(URL, USERNAME, PASSWORD);\nMemberRepositoryV1 repository = new MemberRepositoryV1(ds);\n\nrepository.save(member);\nrepository.findById(\"hi1\");\n\n#   get connection=conn0: url=jdbc:h2:... class=class org.h2.jdbc.JdbcConnection\n#   get connection=conn1: url=jdbc:h2:... class=class org.h2.jdbc.JdbcConnection\n\n# 2) HikariDataSource\nHikariDataSource ds = new HikariDataSource();\nds.setJdbcUrl(URL); ds.setUsername(USERNAME); ds.setPassword(PASSWORD);\nMemberRepositoryV1 repository = new MemberRepositoryV1(ds);\n\nrepository.save(member);\nrepository.findById(\"hi1\");\n\n#   get connection=HikariProxyConnection@11 wrapping conn0\n#     class=class com.zaxxer.hikari.pool.HikariProxyConnection\n#   get connection=HikariProxyConnection@12 wrapping conn0\n#     class=class com.zaxxer.hikari.pool.HikariProxyConnection\n\n# 리포지토리 코드는 한 글자도 안 바뀌었다\n# 나가는 SQL 도 같다\n#   insert into member(member_id, money) values(?, ?)\n#   select * from member where member_id = ?",
+   "note": "**두 로그의 차이가 전부**다. 첫째는 `conn0` · `conn1` 로 늘고, **둘째는 `wrapping conn0` 이 같다.**\n\n**클래스도 다르다** — `org.h2.jdbc.JdbcConnection` 과 `com.zaxxer.hikari.pool.HikariProxyConnection`. **후자가 프록시**다(3.2절).\n\n**나가는 SQL 은 완전히 같다.** DB 입장에서는 구분이 안 된다.\n\n**리포지토리 코드가 안 바뀐 것**이 이 절의 요점이다. 2.1절에서 JDBC 가 **DB 를 바꿔도 코드가 안 바뀌게** 했는데, **`DataSource` 는 커넥션 획득 방식을 바꿔도** 안 바뀌게 한다. **추상화가 한 겹 더** 있는 셈이다."
+  }
+ ],
+ "recap": [
+  "**`DataSource` 는 커넥션을 얻는 방법**을 인터페이스로 만든 것이다.",
+  "**`getConnection()` 에 인자가 없다** — 설정은 만들 때 한다.",
+  "**설정과 사용이 갈린다** — 「MVC 2편」 11.3절과 같은 발상.",
+  "**리포지토리가 URL 을 모르게** 된다.",
+  "**`DriverManagerDataSource` 는 풀이 아닌데 `DataSource`** 다.",
+  "**`LazyConnectionDataSourceProxy`** 는 첫 SQL 까지 커넥션을 안 빌린다.",
+  "**생성자 주입**으로 받는다.",
+  "**리포지토리 코드가 한 글자도 안 바뀐다** — 구현만 바꾼다.",
+  "**성능이 40배 달라지는데 코드는 그대로**다.",
+  "**`close()` 의 의미가 달라져도 부르는 쪽은 모른다.**"
+ ],
+ "drills": [
+  {
+   "task": "리포지토리를 `DataSource` 받도록 고친다.",
+   "done_when": "URL 이 리포지토리에서 사라진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`DriverManagerDataSource` 로 실행한다.",
+   "done_when": "커넥션 번호가 느는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`HikariDataSource` 로 바꾼다.",
+   "done_when": "리포지토리를 안 고치고 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 경우의 클래스 이름을 비교한다.",
+   "done_when": "프록시인지 아닌지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "나가는 SQL 을 H2 로그에서 비교한다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`DataSource` 가 무엇을 추상화하나?",
+   "a": "커넥션을 얻는 방법이다. 풀이든 아니든 `getConnection()` 하나로 쓴다."
+  },
+  {
+   "q": "`getConnection()` 에 왜 인자가 없나?",
+   "a": "URL·계정은 `DataSource` 를 만들 때 정하기 때문이다. 설정과 사용이 갈린다."
+  },
+  {
+   "q": "`DriverManagerDataSource` 는 무엇인가?",
+   "a": "풀이 아닌데 `DataSource` 인터페이스를 맞춘 구현이다. 매번 새 커넥션을 만든다."
+  },
+  {
+   "q": "리포지토리 코드가 왜 안 바뀌나?",
+   "a": "인터페이스에만 의존하고 구현은 밖에서 주입받기 때문이다."
+  },
+  {
+   "q": "`LazyConnectionDataSourceProxy` 는?",
+   "a": "실제 SQL 이 나갈 때까지 커넥션을 빌리지 않는다. DB 를 안 쓰는 트랜잭션에서 낭비를 줄인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DataSource",
+   "en": "",
+   "what": "커넥션을 얻는 방법을 정의한 자바 표준 인터페이스. `javax.sql` 에 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "HikariCP — About Pool Sizing",
+   "url": "https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing",
+   "publisher": "HikariCP"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
