@@ -1,0 +1,146 @@
+{
+ "book": "spring-mvc-2",
+ "id": "login-domain",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "로그인 기능 개발",
+ "summary": "아이디와 비밀번호로 회원을 찾는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "로그인 실패를 글로벌 오류로 다루는 이유를 안다.",
+  "왜 실패 이유를 알려 주지 않는지 안다.",
+  "5·6장의 검증이 로그인에 어떻게 쓰이는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "로직은 단순하다",
+   "ascii": "   LoginService.login(loginId, password)\n        |\n        v\n   findByLoginId(loginId)   ->  Optional<Member>\n        |\n        v\n   filter(m -> m.getPassword().equals(password))\n        |\n        v\n   orElse(null)\n\n   반환이 null 이면 실패다. 왜 실패인지는 안 알려 준다",
+   "note": "**성공하면 `Member`, 실패하면 `null`.** 이유는 안 담는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "서비스",
+   "code": "@Service\n@RequiredArgsConstructor\npublic class LoginService {\n\n    private final MemberRepository memberRepository;\n\n    /**\n     * @return null 이면 로그인 실패\n     */\n    public Member login(String loginId, String password) {\n        return memberRepository.findByLoginId(loginId)\n                .filter(m -> m.getPassword().equals(password))\n                .orElse(null);\n    }\n}",
+   "note": "**`Optional` 의 `filter` 를 쓴다.** 회원을 못 찾아도, 찾았는데 비밀번호가 틀려도 **똑같이 빈 `Optional`** 이 된다.\n\n**그것이 의도**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이유를 안 알려 주나",
+   "md": "```\n\"없는 아이디입니다\"        <- 이 아이디는 가입되어 있지 않다\n\"비밀번호가 틀렸습니다\"     <- 이 아이디는 가입되어 있다\n```\n\n**둘째가 정보를 흘린다.**\n\n공격자가 아이디 목록을 가지고 **하나씩 넣어 보면** 어느 것이 가입돼 있는지 알아낼 수 있다. **계정 열거(account enumeration)** 라고 한다.\n\n**이메일로 로그인하는 서비스면 더 심각**하다. \"이 사람이 이 서비스를 쓴다\" 는 사실 자체가 개인정보일 수 있다 — 병원 예약, 구직 사이트.\n\n**그래서 하나로 합친다.**\n\n```\n아이디 또는 비밀번호가 맞지 않습니다\n```\n\n**사용자 경험은 조금 나빠진다.** 아이디를 잘못 친 건지 비밀번호를 잘못 친 건지 모른다. **그 정도는 감수한다.**\n\n> **회원 가입에서도 같은 문제**가 있다. \"이미 사용 중인 아이디입니다\" 는 필요한 안내인데 동시에 정보를 흘린다. 이메일 가입이면 **\"가입 안내 메일을 보냈습니다\" 로 통일**하는 방법을 쓴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@PostMapping(\"/login\")\npublic String login(@Validated @ModelAttribute LoginForm form,\n                    BindingResult bindingResult) {\n\n    if (bindingResult.hasErrors()) {\n        return \"login/loginForm\";\n    }\n\n    Member loginMember = loginService.login(form.getLoginId(), form.getPassword());\n\n    if (loginMember == null) {\n        bindingResult.reject(\"loginFail\", \"아이디 또는 비밀번호가 맞지 않습니다.\");\n        return \"login/loginForm\";\n    }\n\n    // TODO: 로그인 상태 유지 - 7.3 절\n    return \"redirect:/\";\n}",
+   "note": "**`reject`** 다. 5.5절에서 본 글로벌 오류.\n\n**어느 필드의 문제인지 모르니** `rejectValue` 를 쓸 수 없다 — 그리고 **알려 주면 안 되니** 쓰면 안 된다.\n\n**6.9절의 기준**이 여기 적용된다.\n\n> **외부를 봐야 하나** — DB 조회, 다른 서비스 호출 — **자바 코드**다.\n\n애너테이션으로 못 하는 검증이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "검증이 두 겹이다",
+   "md": "**형식 검증과 인증이 나뉜다.**\n\n```java\npublic class LoginForm {\n    @NotEmpty\n    private String loginId;\n\n    @NotEmpty\n    private String password;\n}\n```\n\n**1. 비었나** — 애너테이션. 조회할 것도 없이 막는다.\n**2. 맞나** — 서비스 조회.\n\n**순서가 중요하다.** 빈 값으로 DB 를 조회할 이유가 없다.\n\n```java\nif (bindingResult.hasErrors()) return \"login/loginForm\";   // 먼저\nMember m = loginService.login(...);                        // 나중\n```\n\n**`@NotBlank` 가 아니라 `@NotEmpty`** 인 것에 주의한다. 6.1절에서 `@NotBlank` 를 권했는데 — **비밀번호는 공백이 유효한 문자**일 수 있다. 앞뒤 공백을 잘라내면 안 된다.\n\n> **아이디는 `@NotBlank` 가 맞다.** 공백만으로 된 아이디는 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "로그인 시도를 제한해야 한다",
+   "md": "**이 코드에는 없는 것**이 하나 있다.\n\n```\n같은 아이디에 비밀번호를 1초에 100번 넣어도 막지 않는다\n```\n\n**무차별 대입(brute force)** 이다. 비밀번호가 `1234` 같은 것이면 금방 뚫린다.\n\n**실무의 방어**\n\n| | |\n|---|---|\n| **시도 횟수 제한** | 5회 실패 시 잠금 |\n| **지연** | 실패할수록 응답을 늦춘다 |\n| **CAPTCHA** | 자동화를 막는다 |\n| **2단계 인증** | 비밀번호가 뚫려도 막힌다 |\n\n**첫째를 그대로 쓰면 다른 문제**가 생긴다 — 남의 아이디로 일부러 5번 틀려서 **계정을 잠글 수 있다.** 그래서 IP 기준을 섞거나 시간이 지나면 풀리게 한다.\n\n> **이 책은 안 만든다.** 다만 **로그인 코드에 이것이 없으면 미완성**이라는 것은 알아 둔다. 스프링 시큐리티를 쓰면 상당 부분 제공된다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 빈 값 - 애너테이션이 막는다\nPOST /login HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nloginId=&password=\n\nHTTP/1.1 200 \n<div class=\"field-error\">공백은 입력할 수 없습니다.</div>\n<div class=\"field-error\">공백은 입력할 수 없습니다.</div>\n\n# 없는 아이디\nloginId=nobody&password=test!\n\nHTTP/1.1 200 \n<div class=\"alert alert-danger\">아이디 또는 비밀번호가 맞지 않습니다.</div>\n\n# 있는 아이디, 틀린 비밀번호\nloginId=test&password=wrong\n\nHTTP/1.1 200 \n<div class=\"alert alert-danger\">아이디 또는 비밀번호가 맞지 않습니다.</div>\n\n# 성공\nloginId=test&password=test!\n\nHTTP/1.1 302 \nLocation: /",
+   "note": "**둘째와 셋째의 응답이 한 글자도 다르지 않다.** 응답 시간까지 같으면 더 좋은데, 그건 실무에서 신경 쓰는 수준이다.\n\n**계정 열거를 막는 것**이 이 두 응답을 같게 만드는 것이다. 공격자는 `nobody` 가 가입돼 있는지 없는지 알 수 없다.\n\n첫째는 **애너테이션이 막은 것**이라 오류 모양이 다르다 — `field-error` 가 필드마다 붙었다. 아래 둘은 `alert-danger` 로 글로벌 오류다. **5.1절에서 나눈 구분이 화면에서 이렇게 보인다.**\n\n**마지막 302 뒤가 문제**다. 7.1절에서 본 대로 **홈에 가면 다시 로그아웃 상태**다."
+  }
+ ],
+ "recap": [
+  "**로직은 단순하다** — 아이디로 찾고 비밀번호를 비교한다.",
+  "**실패 이유를 알려 주지 않는다** — 계정 열거를 막는다.",
+  "**\"아이디 또는 비밀번호\"** 로 합친다. 경험이 조금 나빠져도 감수한다.",
+  "**`reject`** 를 쓴다 — 필드를 특정할 수 없고 해서도 안 된다.",
+  "**검증이 두 겹** — 형식은 애너테이션, 인증은 서비스 조회.",
+  "**빈 값으로 DB 를 조회하지 않는다** — 순서가 중요하다.",
+  "**비밀번호는 `@NotEmpty`** — 공백이 유효한 문자일 수 있다.",
+  "**시도 횟수 제한이 없으면 미완성**이다 — 무차별 대입.",
+  "**잠금만 하면 남의 계정을 잠글 수 있다** — IP·시간을 섞는다."
+ ],
+ "drills": [
+  {
+   "task": "`LoginService` 와 로그인 컨트롤러를 만든다.",
+   "done_when": "성공 시 302 가 오는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "없는 아이디와 틀린 비밀번호로 각각 보낸다.",
+   "done_when": "응답이 같은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "실패 메시지를 두 종류로 나눠 본다.",
+   "done_when": "가입 여부가 드러나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 값을 보낸다.",
+   "done_when": "DB 조회 없이 막히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "성공 후 홈으로 가 본다.",
+   "done_when": "로그인 상태가 안 남는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "실패 이유를 왜 안 알려 주나?",
+   "a": "어느 아이디가 가입돼 있는지 드러나 계정 열거에 쓰일 수 있기 때문이다."
+  },
+  {
+   "q": "왜 `rejectValue` 가 아니라 `reject` 인가?",
+   "a": "어느 필드의 문제인지 특정할 수 없고, 특정해서 알려 주면 안 되기 때문이다."
+  },
+  {
+   "q": "검증이 두 겹이라는 것은?",
+   "a": "빈 값인지는 애너테이션이 먼저 막고, 맞는지는 서비스가 조회해서 판단한다."
+  },
+  {
+   "q": "비밀번호에 `@NotBlank` 대신 `@NotEmpty` 를 쓰는 이유는?",
+   "a": "공백도 유효한 비밀번호 문자일 수 있어서 앞뒤 공백을 문제 삼으면 안 된다."
+  },
+  {
+   "q": "이 코드에 빠진 방어는?",
+   "a": "로그인 시도 횟수 제한이다. 없으면 무차별 대입에 노출된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "계정 열거",
+   "en": "account enumeration",
+   "what": "오류 메시지 차이로 어느 계정이 존재하는지 알아내는 공격."
+  },
+  {
+   "term": "무차별 대입",
+   "en": "brute force",
+   "what": "비밀번호를 반복 시도해 뚫는 공격. 시도 제한으로 막는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

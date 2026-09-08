@@ -508,7 +508,7 @@
           "title": "정리",
           "summary": "언제 어노테이션이고 언제 Validator 인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -523,7 +523,7 @@
           "title": "로그인 요구사항",
           "summary": "회원 가입 · 로그인 · 로그아웃. 그리고 화면 분기.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -531,7 +531,7 @@
           "title": "로그인 기능 개발",
           "summary": "아이디와 비밀번호로 회원을 찾는다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
