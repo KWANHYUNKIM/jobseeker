@@ -1,0 +1,183 @@
+{
+ "book": "spring-core",
+ "id": "lifecycle-bean-methods",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "빈 등록 초기화·소멸 메서드 지정",
+ "summary": "@Bean(initMethod, destroyMethod). 외부 라이브러리에는 이것뿐이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Bean` 속성으로 초기화·소멸 메서드를 지정할 수 있다.",
+  "이 방법이 외부 라이브러리에도 되는 이유를 안다.",
+  "`destroyMethod` 의 추론 기능을 안다.",
+  "추론을 끄는 법과 그래야 하는 경우를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "8.2절의 결론 — **외부 라이브러리에 못 쓴다.**\n\n원인은 분명하다. **클래스에 무언가를 붙이려고 했기 때문**이다. 클래스를 고칠 수 없으면 방법이 없다.\n\n그러면 **클래스 밖에서 지정하면 된다.**"
+  },
+  {
+   "type": "heading",
+   "text": "설정에서 이름으로 지정한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "클래스는 평범해진다",
+   "code": "public class NetworkClient {\n\n    private String url;\n\n    public void setUrl(String url) { this.url = url; }\n\n    public void init() {\n        System.out.println(\"NetworkClient.init\");\n        connect();\n        call(\"초기화 연결 메시지\");\n    }\n\n    public void close() {\n        System.out.println(\"NetworkClient.close\");\n        disconnect();\n    }\n}",
+   "note": "**`implements` 가 없다.** 스프링을 import 하지 않는 **순수 자바 클래스**다. 메서드 이름도 내가 정한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "설정에서 지정",
+   "code": "@Configuration\nstatic class LifeCycleConfig {\n\n    @Bean(initMethod = \"init\", destroyMethod = \"close\")\n    public NetworkClient networkClient() {\n        NetworkClient networkClient = new NetworkClient();\n        networkClient.setUrl(\"http://hello-spring.dev\");\n        return networkClient;\n    }\n}",
+   "note": "**메서드 이름을 문자열로 준다.** 4.8절에서 본 `BeanDefinition` 의 `initMethodName`·`destroyMethodName` 속성이 이것이다."
+  },
+  {
+   "type": "table",
+   "caption": "8.2절과 비교",
+   "note": "**세 칸이 다 뒤집혔다.** 클래스를 고치는 대신 설정에서 지정한 결과다.",
+   "columns": [
+    "",
+    "인터페이스 (8.2)",
+    "설정 지정 (8.3)"
+   ],
+   "rows": [
+    [
+     "스프링 의존",
+     "**있다** (import)",
+     "**없다**"
+    ],
+    [
+     "메서드 이름",
+     "고정",
+     "**자유**"
+    ],
+    [
+     "외부 라이브러리",
+     "**불가능**",
+     "**가능**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 외부 라이브러리에 되나",
+   "md": "**`@Bean` 을 붙이는 것은 그 클래스가 아니라 내 설정 클래스**이기 때문이다.\n\n```java\n@Bean(initMethod = \"start\", destroyMethod = \"shutdown\")\npublic SomeLibraryClient client() {\n    return new SomeLibraryClient(config);   // 남이 만든 클래스\n}\n```\n\n라이브러리 클래스는 손도 안 댔다. **그 클래스에 `start()` 와 `shutdown()` 이라는 `public` 메서드가 있기만 하면** 된다.\n\n7.9절에서 기술 지원 빈은 수동 등록하기로 했다. 그리고 초기화가 필요한 것도 대개 기술 지원 빈이다 — **이 방법이 그 자리에 정확히 맞는다.**"
+  },
+  {
+   "type": "heading",
+   "text": "destroyMethod 의 추론 기능"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "안 적어도 close 나 shutdown 을 찾아 부른다",
+   "md": "`destroyMethod` 는 기본값이 특별하다 — **`(inferred)`** 다.\n\n```java\n@Bean   // destroyMethod 를 안 적었다\npublic NetworkClient networkClient() { ... }\n```\n\n이러면 스프링이 그 빈에서 **`close` 또는 `shutdown` 이라는 이름의 메서드를 찾아서 자동으로 부른다.**\n\n왜 그런 기능이 있나 — **라이브러리 대부분이 그 이름을 쓰기 때문**이다.\n\n- `AutoCloseable.close()` — 자바 표준\n- `ExecutorService.shutdown()`\n- `HikariDataSource.close()`\n\n그래서 실무에서는 **`destroyMethod` 를 안 적어도 대개 잘 동작한다.** 스프링이 흔한 관례를 알고 있는 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "추론이 곤란한 경우 — 끄는 법",
+   "md": "가끔 **`close()` 라는 이름의 메서드가 있는데 그것을 부르면 안 되는** 경우가 있다.\n\n- 이미 다른 곳에서 닫는 자원인데 두 번 닫힌다\n- `close()` 가 소멸이 아니라 다른 의미인 클래스\n\n이럴 때는 **빈 문자열**로 끈다.\n\n```java\n@Bean(destroyMethod = \"\")\npublic SomeClient client() { ... }\n```\n\n`null` 이 아니라 **빈 문자열**이다. \"지정 안 함\"(추론)과 \"명시적으로 없음\"을 구분해야 해서 이렇게 됐다.\n\n실무에서 이 줄을 볼 일이 드물지만, 보면 **\"의도적으로 껐다\"** 로 읽으면 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 방법의 약점",
+   "md": "**메서드 이름이 문자열이다.**\n\n```java\n@Bean(initMethod = \"init\")     // 오타면?\n```\n\n이 책에서 다섯 번째다 — 빈 이름(4.3), `basePackages`(6.2), 필터(6.3), `@Qualifier`(7.6), 그리고 이것.\n\n7.7절처럼 타입으로 바꿀 방법이 없다. 메서드 참조를 어노테이션 속성에 넣을 수 없기 때문이다.\n\n다행히 이 경우는 **실패가 시끄럽다** — 없는 메서드를 지정하면 애플리케이션이 시작할 때 예외가 난다. `@Qualifier` 오타처럼 조용하지 않다.\n\n그리고 **내가 고칠 수 있는 클래스라면 8.4절의 어노테이션을 쓴다.** 이 방법은 라이브러리용이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 순수 자바 클래스에 콜백이 걸린다",
+   "sql": "생성자 호출, url = null\nNetworkClient.init\nconnect: http://hello-spring.dev\ncall: http://hello-spring.dev message = 초기화 연결 메시지\n\n# ac.close()\nNetworkClient.close\nclose: http://hello-spring.dev\n\nBeanLifeCycleTest > lifeCycleTest PASSED\n\n# destroyMethod 를 아예 안 적었을 때도 같다 — close 를 추론한다\nNetworkClient.close\nclose: http://hello-spring.dev\n\n# 없는 메서드를 지정하면\nBeanCreationException: Couldn't find an init method named 'initt'\n    on bean with name 'networkClient'\n\nBUILD SUCCESSFUL",
+   "note": "**`NetworkClient` 는 스프링을 한 줄도 import 하지 않는다.** 8.2절과 결과가 같은데 클래스는 순수 자바다.\n\n맨 아래를 봐 두자 — 오타는 **시작 시점에 예외**로 잡힌다. 문자열이지만 조용히 넘어가지는 않는다."
+  }
+ ],
+ "recap": [
+  "`@Bean(initMethod = \"...\", destroyMethod = \"...\")` 로 **설정에서 지정**한다.",
+  "클래스는 **순수 자바**로 남는다 — 스프링을 import 하지 않는다.",
+  "메서드 이름을 **자유롭게** 정할 수 있다.",
+  "**외부 라이브러리에도 쓸 수 있다** — `@Bean` 을 붙이는 것은 내 설정 클래스이기 때문.",
+  "`destroyMethod` 기본값은 **추론**이다 — `close` 나 `shutdown` 을 찾아 부른다.",
+  "추론을 끄려면 **빈 문자열**을 준다.",
+  "약점은 **문자열**이지만, 없는 메서드면 **시작 시점에 예외**가 난다."
+ ],
+ "drills": [
+  {
+   "task": "`NetworkClient` 에서 `implements` 를 걷어내고 `@Bean` 속성으로 바꾼다.",
+   "done_when": "스프링 import 가 하나도 없는데 콜백이 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`destroyMethod` 를 아예 지우고 실행한다.",
+   "done_when": "`close()` 가 그대로 불리는 것을 확인했다 — 추론이다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드 이름을 `shutdown` 으로 바꾸고 `destroyMethod` 없이 실행한다.",
+   "done_when": "이것도 추론되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`initMethod` 에 없는 이름을 준다.",
+   "done_when": "시작 시점에 예외가 나는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Bean` 으로 콜백을 지정하는 방법은?",
+   "a": "`@Bean(initMethod = \"init\", destroyMethod = \"close\")` 처럼 메서드 이름을 문자열로 준다."
+  },
+  {
+   "q": "왜 외부 라이브러리에도 쓸 수 있나?",
+   "a": "`@Bean` 을 붙이는 것은 라이브러리 클래스가 아니라 내 설정 클래스이기 때문이다. 라이브러리는 손대지 않는다."
+  },
+  {
+   "q": "`destroyMethod` 의 기본값은?",
+   "a": "추론(`inferred`)이다. 빈에서 `close` 나 `shutdown` 이라는 이름의 메서드를 찾아 자동으로 호출한다."
+  },
+  {
+   "q": "추론 기능이 있는 이유는?",
+   "a": "라이브러리 대부분이 종료 메서드 이름으로 `close` 나 `shutdown` 을 쓰기 때문이다. `AutoCloseable`, `ExecutorService` 등."
+  },
+  {
+   "q": "추론을 끄려면?",
+   "a": "`destroyMethod = \"\"` 로 빈 문자열을 준다. `null` 이 아니다."
+  },
+  {
+   "q": "이 방법의 약점은?",
+   "a": "메서드 이름이 문자열이라 컴파일러가 검사하지 못한다. 다만 없는 메서드를 지정하면 시작 시점에 예외가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "initMethod / destroyMethod",
+   "en": "",
+   "what": "`@Bean` 의 속성. 초기화·소멸 메서드 이름을 문자열로 지정한다. `BeanDefinition` 의 같은 이름 속성으로 들어간다."
+  },
+  {
+   "term": "추론",
+   "en": "inferred",
+   "what": "`destroyMethod` 의 기본 동작. 빈에서 `close` 나 `shutdown` 메서드를 찾아 자동 호출한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Lifecycle Callbacks",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

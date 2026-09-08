@@ -490,7 +490,7 @@
           "title": "자동, 수동의 올바른 실무 운영 기준",
           "summary": "기본은 자동. 그런데 수동으로 등록해야 하는 자리가 분명히 있다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -505,7 +505,7 @@
           "title": "빈 생명주기 콜백 시작",
           "summary": "생성자에서 커넥션을 맺으면 안 되는 이유. 의존관계 주입은 그다음이다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -513,7 +513,7 @@
           "title": "인터페이스 InitializingBean, DisposableBean",
           "summary": "가장 오래된 방법. 지금은 쓰지 않는 이유.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -521,7 +521,7 @@
           "title": "빈 등록 초기화·소멸 메서드 지정",
           "summary": "@Bean(initMethod, destroyMethod). 외부 라이브러리에는 이것뿐이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
