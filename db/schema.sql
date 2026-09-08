@@ -560,33 +560,10 @@ CREATE TABLE reveng_doc (
     updated_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE TABLE study_article (
-    slug       text        PRIMARY KEY,       -- study/<slug>.json, /wiki/<slug>
-    tech_id    bigint      REFERENCES tech(id) ON DELETE SET NULL,
-    title      text        NOT NULL,
-    complete   boolean     NOT NULL DEFAULT false,
-    n_sections integer     NOT NULL DEFAULT 0,
-    n_drills   integer     NOT NULL DEFAULT 0,
-    updated_at timestamptz NOT NULL DEFAULT now()
-);
-
--- 문서 사이의 related 링크. 끊긴 링크가 곧 다음 집필 대기열이다.
-CREATE TABLE study_link (
-    from_slug text NOT NULL REFERENCES study_article(slug) ON DELETE CASCADE,
-    to_slug   text NOT NULL,                  -- 아직 없는 문서를 가리킬 수 있어 FK 를 걸지 않는다
-    PRIMARY KEY (from_slug, to_slug)
-);
-
--- 수요는 큰데 문서가 없는 기술 = study-engine 대기열
-CREATE VIEW study_gap AS
-SELECT te.id, te.slug, te.name, count(*) AS n_jobs
-  FROM job_tech jt
-  JOIN tech te ON te.id = jt.tech_id
-  JOIN job_state s ON s.job_id = jt.job_id AND s.status = 'active'
-  LEFT JOIN study_article a ON a.tech_id = te.id
- WHERE a.slug IS NULL AND NOT te.is_noise
- GROUP BY te.id, te.slug, te.name
- ORDER BY count(*) DESC;
+-- 기술 백과사전(study-engine)은 여기에 색인을 두지 않는다. 문서가 전부 파일에
+-- 있고(jd-viewer/public/study/), 대기열은 tech_relations.json 과 끊긴 related
+-- 링크에서 나온다 — study-engine/validate.py --gaps 가 파일만 읽고 답한다.
+-- DB 사본은 아무도 안 읽으면서 갱신만 필요했으므로 없앴다.
 
 -- 모집중 공고는 많은데 브리핑이 없는 회사 = guide-engine 대기열
 CREATE VIEW guide_gap AS

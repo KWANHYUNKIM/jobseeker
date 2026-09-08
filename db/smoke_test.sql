@@ -97,7 +97,6 @@ SELECT count(*) AS with_closed FROM search_jobs('백엔드', (SELECT embedding F
 \echo ''
 \echo '═════ 13. 엔진 대기열 뷰'
 SELECT * FROM guide_gap;
-SELECT * FROM study_gap;
 
 \echo ''
 \echo '═════ 14. 집계 갱신'

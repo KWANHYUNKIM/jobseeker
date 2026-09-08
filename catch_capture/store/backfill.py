@@ -175,7 +175,7 @@ def main() -> int:
         with db.cursor() as cur:
             if args.truncate:
                 cur.execute(
-                    "TRUNCATE company, tech, job, crawl_run, post, study_article, "
+                    "TRUNCATE company, tech, job, crawl_run, post, "
                     "tech_daily RESTART IDENTITY CASCADE"
                 )
                 print("  기존 내용 비움")

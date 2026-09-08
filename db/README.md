@@ -148,7 +148,8 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | `tech_relations.json` | `job_tech` 조인 질의 | 미리 굳힐 이유가 없다 |
 | `semantic.db` | `job_embedding`, `post_embedding` | 위 표 참조 |
 | `guide/`, `reveng/`, `study/` **본문** | **파일 그대로** | 사람이 쓴 글, git 리뷰 대상 |
-| `validate.py --gaps` | `guide_gap`, `study_gap` 뷰 | |
+| `guide-engine/validate.py --gaps` | `guide_gap` 뷰 | |
+| `study-engine/validate.py --gaps` | 없음 — 파일만 읽는다 | 문서·`tech_relations.json` 이 곧 큐 |
 
 `jd-viewer/public/*.json` 은 없어지지 않는다. **정본에서 뽑아내는 빌드 산출물로 강등**될 뿐이다
 — 뷰어는 지금처럼 정적 JSON 을 fetch 하면 되고, nginx read-only 볼륨 구조도 그대로다.
@@ -205,7 +206,7 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 검색 | `catch_capture/store/search.py` | ✅ FTS·RRF·마감제외 검증 |
 
 | 블로그 글 적재 | `catch_capture/store/ingest_posts.py` | ✅ 1,063건 (회사 연결 282) |
-| 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 · 백과사전 16 · 링크 84 |
+| 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
@@ -234,7 +235,13 @@ Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도
 
 `engine/`·`guide-engine/`·`study-engine/` 이 쓴 JSON 본문은 **파일로 둔다**(사람이 쓴 글,
 git 리뷰 대상). DB 에는 무엇이 무엇에 붙어 있는지만 넣어 `validate.py --gaps` 를 SQL
-한 줄로 만든다. `store.ingest_engines` 가 채우고, `guide_gap`·`study_gap` 뷰가 답한다.
+한 줄로 만든다. `store.ingest_engines` 가 채우고, `guide_gap` 뷰가 답한다.
+
+**기술 백과사전은 DB 에 색인을 두지 않는다.** `study_article`·`study_link`·`study_gap`
+을 뒀다가 없앴다 — 문서 139편이 전부 파일에 있고 `study-engine/validate.py --gaps` 는
+그 파일들과 `tech_relations.json` 만 읽는다. 아무도 안 읽는 사본을 사이클마다 갱신할
+이유가 없었다. 낱말 중 절반 이상(139편 중 88편)은 애초에 `tech` 행이 없는 개념·용어라
+이어붙일 데도 없었다.
 
 역설계 61곳 중 15곳만 이어진다 — 나머지는 넷플릭스·유튜브처럼 우리 공고에 없는 해외
 회사라 `company` 행이 없다. 공고 0인 회사에 행을 만들면 gap 질의가 거짓말을 하므로
