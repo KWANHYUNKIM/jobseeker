@@ -1,0 +1,188 @@
+{
+ "book": "spring-core",
+ "id": "scope-intro",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "빈 스코프란?",
+ "summary": "싱글톤·프로토타입·웹 스코프. 스코프란 빈이 존재하는 범위다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스코프가 무엇의 범위인지 말할 수 있다.",
+  "스프링이 지원하는 스코프들을 나열할 수 있다.",
+  "스코프를 지정하는 두 가지 방법을 안다.",
+  "이것이 `BeanDefinition` 의 한 속성이라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.3절에서 이렇게 적었다.\n\n> **싱글톤은 기본값**이다. `prototype` 등 다른 스코프가 있다(9장).\n\n그리고 4.8절 `BeanDefinition` 속성 표에도 있었다 — `scope`, **\"9장\"**.\n\n마지막 장이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스코프 = 빈이 존재할 수 있는 범위",
+   "md": "말 그대로다. **언제 만들어져서 언제까지 사는가.**\n\n지금까지 쓴 싱글톤은 **컨테이너와 생사를 같이한다** — 컨테이너가 뜰 때 만들어지고 내려갈 때 없어진다. 그래서 5.3절에서 \"미리 만들어 두고, 달라고 하면 같은 것을 준다\" 고 했다.\n\n그런데 그것이 맞지 않는 경우가 있다.\n\n- 요청마다 **다른 값을 들고 있어야** 하는 객체\n- 사용자마다 **따로 있어야** 하는 객체\n- 쓰고 나면 **버려야** 하는 객체\n\n5.4절에서 \"싱글톤 빈은 무상태여야 한다\" 고 했다. **상태가 꼭 필요하면 스코프를 바꾸는 것**이 답이 될 수 있다."
+  },
+  {
+   "type": "heading",
+   "text": "스프링이 지원하는 스코프"
+  },
+  {
+   "type": "figure",
+   "caption": "각 스코프가 사는 기간",
+   "ascii": "                container start              container close\n                |                                          |\n   singleton    |==========================================|      (default)\n   prototype    |==|                                              until returned\n   request      |=====|    |=====|    |=====|                     per http request\n   session      |===============================|                 per user session\n   application  |==========================================|      per servlet context",
+   "note": "**프로토타입만 유난히 짧다.** 그리고 그 짧음이 9.2절의 주제다 — 스프링이 **돌려주고 나면 손을 뗀다.**"
+  },
+  {
+   "type": "table",
+   "caption": "여섯 가지",
+   "note": "**아래 넷은 웹 환경에서만** 동작한다. 웹이 아닌 컨테이너에서 쓰면 예외가 난다.",
+   "columns": [
+    "스코프",
+    "범위",
+    "절"
+   ],
+   "rows": [
+    [
+     "**singleton**",
+     "컨테이너 시작~종료. **기본값**",
+     "5장"
+    ],
+    [
+     "**prototype**",
+     "생성과 주입, 초기화까지만. 그 뒤는 관리 안 함",
+     "**9.2~9.4**"
+    ],
+    [
+     "**request**",
+     "HTTP 요청 하나",
+     "**9.5~9.8**"
+    ],
+    [
+     "**session**",
+     "HTTP 세션 하나",
+     "9.5"
+    ],
+    [
+     "**application**",
+     "서블릿 컨텍스트(`ServletContext`)",
+     "9.5"
+    ],
+    [
+     "**websocket**",
+     "웹소켓 연결 하나",
+     "(다루지 않는다)"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "지정하는 법"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컴포넌트 스캔 자동 등록",
+   "code": "@Scope(\"prototype\")\n@Component\npublic class HelloBean {\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "수동 등록",
+   "code": "@Scope(\"prototype\")\n@Bean\npublic HelloBean helloBean() {\n    return new HelloBean();\n}",
+   "note": "**두 방법 다 된다.** 7.9절의 자동/수동 기준과 무관하게 스코프는 따로 정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "문자열 대신 상수를 쓴다",
+   "md": "```java\n@Scope(\"prototype\")                        // 문자열\n@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)   // 상수\n```\n\n이 책에서 여섯 번째로 나오는 문자열 문제다. 다행히 **상수가 이미 준비돼 있다.**\n\n- `ConfigurableBeanFactory.SCOPE_SINGLETON` / `SCOPE_PROTOTYPE`\n- `WebApplicationContext.SCOPE_REQUEST` / `SCOPE_SESSION` / `SCOPE_APPLICATION`\n\n다만 실무에서는 **`\"prototype\"` 처럼 그냥 적는 경우가 더 많다.** 값이 여섯 개뿐이고 오타가 나면 시작 시점에 예외가 나기 때문이다.\n\n```\nNo Scope registered for scope name 'prototyp'\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "BeanDefinition 의 한 속성일 뿐이다",
+   "md": "4.8절에서 `BeanDefinition` 을 찍어 봤을 때 이런 줄이 있었다.\n\n```\nGeneric bean: class [hello.core.AppConfig]; scope=; abstract=false; lazyInit=null; ...\n#                                            ^^^^^^\n```\n\n`scope=` 가 비어 있었다 — **비어 있으면 싱글톤**이다.\n\n`@Scope(\"prototype\")` 을 붙이면 그 자리에 문자열이 들어간다. **컨테이너는 그 문자열을 보고 다르게 행동한다.**\n\n4장에서 \"속성 목록이 곧 남은 목차\" 라고 했는데, 이 장이 그 마지막 줄이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — scope 가 BeanDefinition 에 찍힌다",
+   "sql": "# @Scope 를 안 붙였을 때\nname = helloBean  beanDefinition = Generic bean: class [hello.core.scope.HelloBean];\n    scope=; abstract=false; lazyInit=null; ...\n\n# @Scope(\"prototype\") 을 붙였을 때\nname = helloBean  beanDefinition = Generic bean: class [hello.core.scope.HelloBean];\n    scope=prototype; abstract=false; lazyInit=null; ...\n#   ^^^^^^^^^^^^^^^\n\n# 오타를 냈을 때\nIllegalStateException: No Scope registered for scope name 'prototyp'\n\n# 웹이 아닌 컨테이너에서 request 스코프를 쓰면\nBeanCreationException: Scope 'request' is not active for the current thread;\n    consider defining a scoped proxy for this bean",
+   "note": "**맨 아래 예외를 봐 두자.** `consider defining a scoped proxy` — 9.8절의 답이 예외 메시지에 이미 적혀 있다.\n\n스프링의 예외 메시지는 대개 **해결 방법을 함께 알려 준다.** 4.4절의 후보 목록, 7.5절의 파라미터 위치, 그리고 이것."
+  }
+ ],
+ "recap": [
+  "**스코프는 빈이 존재할 수 있는 범위**다 — 언제 만들어져 언제까지 사는가.",
+  "**싱글톤**(기본) · **프로토타입** · **request · session · application · websocket.**",
+  "뒤의 넷은 **웹 환경에서만** 동작한다.",
+  "`@Scope(\"prototype\")` 을 **자동 등록·수동 등록 양쪽에** 붙일 수 있다.",
+  "문자열 대신 **`ConfigurableBeanFactory.SCOPE_PROTOTYPE`** 같은 상수를 쓸 수 있다.",
+  "**`BeanDefinition` 의 `scope` 속성**일 뿐이다 — 비어 있으면 싱글톤.",
+  "5.4절에서 무상태를 요구했는데, **상태가 꼭 필요하면 스코프를 바꾸는 것**이 답이 될 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "`HelloBean` 에 `@Scope(\"prototype\")` 을 붙이고 `BeanDefinition` 을 찍는다.",
+   "done_when": "`scope=prototype` 이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Scope` 문자열에 오타를 낸다.",
+   "done_when": "시작 시점에 예외가 나는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`ConfigurableBeanFactory.SCOPE_PROTOTYPE` 상수로 바꿔 본다.",
+   "done_when": "값이 `\"prototype\"` 인 것을 IDE 에서 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "웹이 아닌 테스트에서 `@Scope(\"request\")` 빈을 조회한다.",
+   "done_when": "예외 메시지에 해결 방법이 적혀 있는 것을 봤다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "빈 스코프란 무엇인가?",
+   "a": "빈이 존재할 수 있는 범위다. 언제 만들어져서 언제까지 사는지를 정한다."
+  },
+  {
+   "q": "스프링이 지원하는 스코프는?",
+   "a": "singleton(기본), prototype, request, session, application, websocket. 뒤의 넷은 웹 환경 전용이다."
+  },
+  {
+   "q": "스코프를 지정하는 방법은?",
+   "a": "`@Scope(\"prototype\")` 을 컴포넌트 스캔 대상 클래스나 `@Bean` 메서드에 붙인다."
+  },
+  {
+   "q": "스코프는 내부적으로 무엇인가?",
+   "a": "`BeanDefinition` 의 `scope` 속성이다. 비어 있으면 싱글톤으로 취급한다."
+  },
+  {
+   "q": "웹이 아닌 환경에서 request 스코프 빈을 조회하면?",
+   "a": "`Scope 'request' is not active for the current thread` 예외가 난다. 메시지가 scoped proxy 를 권한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빈 스코프",
+   "en": "bean scope",
+   "what": "빈이 존재할 수 있는 범위. 스프링은 singleton, prototype, request, session, application, websocket 을 지원한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,194 @@
+{
+ "book": "spring-core",
+ "id": "lifecycle-annotation",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "@PostConstruct, @PreDestroy",
+ "summary": "권장되는 방법. 다만 외부 라이브러리에는 못 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@PostConstruct`·`@PreDestroy` 로 콜백을 걸 수 있다.",
+  "이것이 스프링이 아니라 자바 표준이라는 것을 안다.",
+  "패키지 이름이 왜 두 가지인지 안다.",
+  "세 방법을 언제 각각 쓰는지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "8.2절은 **스프링 인터페이스**를 구현했고, 8.3절은 **설정에 문자열**로 적었다. 세 번째는 어노테이션 하나다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "NetworkClient.java",
+   "code": "import jakarta.annotation.PostConstruct;\nimport jakarta.annotation.PreDestroy;\n\npublic class NetworkClient {\n\n    private String url;\n\n    public void setUrl(String url) { this.url = url; }\n\n    @PostConstruct\n    public void init() {\n        System.out.println(\"NetworkClient.init\");\n        connect();\n        call(\"초기화 연결 메시지\");\n    }\n\n    @PreDestroy\n    public void close() {\n        System.out.println(\"NetworkClient.close\");\n        disconnect();\n    }\n}",
+   "note": "**설정 클래스는 아무것도 안 적는다.**\n\n```java\n@Bean\npublic NetworkClient networkClient() { ... }   // 속성 없음\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "import 를 보라 — 스프링이 아니다",
+   "md": "```java\nimport jakarta.annotation.PostConstruct;\n//     ^^^^^^^ org.springframework 가 아니다\n```\n\n**자바 표준(JSR-250)** 이다. 그래서 스프링이 아닌 다른 DI 컨테이너에서도 동작한다.\n\n8.2절에서 인터페이스 방식의 단점 1번으로 \"내 도메인 코드가 스프링을 import 한다\" 를 꼽았다. **이 방법은 그 문제가 없다.** 클래스가 어노테이션 하나만 알면 되고, 그 어노테이션은 자바 것이다.\n\n7.7절에서 커스텀 어노테이션을 만들며 \"문자열을 타입으로 바꾸는 것\" 을 이야기했다. 여기서도 같다 — **8.3절의 문자열이 어노테이션(타입)이 됐다.** 오타를 컴파일러가 잡는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "javax 인가 jakarta 인가",
+   "md": "패키지 이름이 두 가지다. 버전에 따라 다르다.\n\n| 환경 | import |\n|---|---|\n| 스프링 부트 **2.x** (Java EE) | `javax.annotation.PostConstruct` |\n| 스프링 부트 **3.x** (Jakarta EE 9+) | `jakarta.annotation.PostConstruct` |\n\n오라클이 Java EE 를 이클립스 재단에 넘기면서 **`javax` 라는 이름을 못 쓰게** 됐고, 그래서 전부 `jakarta` 로 바뀌었다.\n\n오래된 예제를 따라 하다가 `javax` 를 import 하면 **어노테이션이 조용히 무시된다** — 클래스패스에 없으면 컴파일 에러가 나지만, 둘 다 있으면 스프링이 안 읽는 쪽을 import 할 수 있다.\n\n**콜백이 안 불리면 import 부터 확인한다.**"
+  },
+  {
+   "type": "heading",
+   "text": "유일한 단점"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "외부 라이브러리에 못 쓴다",
+   "md": "8.2절과 **같은 한계**다. 어노테이션을 붙이려면 **그 클래스의 소스를 고쳐야** 한다.\n\n```java\n@PostConstruct\npublic void start() { ... }   // 라이브러리 클래스에는 못 붙인다\n```\n\n그래서 **8.3절이 여전히 필요하다.** 두 방법은 경쟁 관계가 아니라 **역할이 나뉘어 있다.**\n\n- 내가 만든 클래스 → **`@PostConstruct`**\n- 남이 만든 클래스 → **`@Bean(initMethod = ...)`**\n\n7.9절에서 업무 로직 빈은 자동, 기술 지원 빈은 수동으로 나눴다. **여기도 같은 선이 그어진다** — 내가 만든 것과 남이 만든 것."
+  },
+  {
+   "type": "table",
+   "caption": "세 방법 정리",
+   "note": "**결론 — `@PostConstruct` 를 쓰고, 라이브러리에는 `@Bean` 속성을 쓴다.** 인터페이스 방식은 오래된 코드에서 읽을 줄만 알면 된다.",
+   "columns": [
+    "",
+    "8.2 인터페이스",
+    "8.3 `@Bean` 속성",
+    "8.4 어노테이션"
+   ],
+   "rows": [
+    [
+     "코드 위치",
+     "클래스",
+     "**설정**",
+     "클래스"
+    ],
+    [
+     "스프링 의존",
+     "**있다**",
+     "없다",
+     "없다 (자바 표준)"
+    ],
+    [
+     "메서드 이름",
+     "고정",
+     "자유",
+     "자유"
+    ],
+    [
+     "오타 검사",
+     "컴파일",
+     "**시작 시점**",
+     "컴파일"
+    ],
+    [
+     "외부 라이브러리",
+     "불가",
+     "**가능**",
+     "불가"
+    ],
+    [
+     "쓰나",
+     "**안 쓴다**",
+     "라이브러리에만",
+     "**기본**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"빈 초기화 콜백을 거는 방법은?\"** → 세 가지. 인터페이스 구현, `@Bean` 속성 지정, `@PostConstruct`. **기본은 `@PostConstruct`** 다.\n- **\"`@PostConstruct` 는 스프링 어노테이션인가요?\"** → 아니다. `jakarta.annotation` 패키지의 **자바 표준**이다.\n- **\"그럼 `@Bean(initMethod)` 는 언제 쓰나요?\"** → 소스를 고칠 수 없는 **외부 라이브러리 클래스**에 콜백을 걸 때다.\n- **\"생성자에서 하면 안 되나요?\"** → 의존관계 주입 전이라 값이 `null` 이고, `new` 만으로 외부 연결이 열리는 것도 문제다(8.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 8장의 세 방법이 같은 결과를 낸다",
+   "sql": "생성자 호출, url = null\nNetworkClient.init\nconnect: http://hello-spring.dev\ncall: http://hello-spring.dev message = 초기화 연결 메시지\n\n# ac.close()\nNetworkClient.close\nclose: http://hello-spring.dev\n\nBeanLifeCycleTest > lifeCycleTest PASSED\n\n# 세 방법을 한 클래스에 다 걸면 — 호출 순서\n@PostConstruct              -> NetworkClient.postConstruct\nInitializingBean            -> NetworkClient.afterPropertiesSet\n@Bean(initMethod)           -> NetworkClient.init\n\nBUILD SUCCESSFUL\n1 test completed",
+   "note": "**아래가 덤이다.** 셋을 다 걸면 `@PostConstruct` → 인터페이스 → `@Bean` 속성 순으로 불린다.\n\n실무에서 셋을 다 걸 일은 없지만, **오래된 코드를 고칠 때** 알아 두면 쓸모가 있다 — `@PostConstruct` 를 새로 붙였는데 기존 `afterPropertiesSet` 보다 먼저 도는 것을 모르면 순서 버그가 난다."
+  }
+ ],
+ "recap": [
+  "**`@PostConstruct` · `@PreDestroy`** — 어노테이션 하나면 끝이다.",
+  "**스프링이 아니라 자바 표준**(JSR-250)이다. `jakarta.annotation` 패키지.",
+  "8.3절의 **문자열이 어노테이션(타입)** 이 됐다 — 오타를 컴파일러가 잡는다.",
+  "**`javax` 냐 `jakarta` 냐** — 부트 2.x 는 전자, 3.x 는 후자. 콜백이 안 불리면 import 부터 본다.",
+  "유일한 단점 — **외부 라이브러리에 못 쓴다.** 소스를 고쳐야 하기 때문.",
+  "그래서 **8.3절이 여전히 필요하다** — 내가 만든 것과 남이 만든 것으로 나뉜다.",
+  "셋을 다 걸면 **`@PostConstruct` → 인터페이스 → `@Bean` 속성** 순이다."
+ ],
+ "drills": [
+  {
+   "task": "`NetworkClient` 를 `@PostConstruct`·`@PreDestroy` 로 바꾼다.",
+   "done_when": "설정 클래스에 속성이 하나도 없는데 콜백이 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "import 를 `javax` 로 바꿔 본다 (부트 3.x 기준).",
+   "done_when": "무슨 일이 일어나는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "세 방법을 한 클래스에 다 걸고 호출 순서를 확인한다.",
+   "done_when": "`@PostConstruct` 가 가장 먼저인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "라이브러리 클래스에 `@PostConstruct` 를 붙여 보려 시도한다.",
+   "done_when": "불가능하고, 그래서 8.3절이 필요하다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@PostConstruct` 는 어느 패키지에 있나?",
+   "a": "`jakarta.annotation`(스프링 부트 3.x) 또는 `javax.annotation`(2.x). 스프링이 아니라 자바 표준 JSR-250 이다."
+  },
+  {
+   "q": "자바 표준이라는 것이 왜 장점인가?",
+   "a": "내 도메인 코드가 스프링에 의존하지 않는다. 다른 DI 컨테이너에서도 동작한다."
+  },
+  {
+   "q": "`@Bean(initMethod)` 대비 무엇이 나은가?",
+   "a": "메서드 이름이 문자열이 아니라 어노테이션이라 오타를 컴파일러가 잡는다. 설정에 따로 적을 것도 없다."
+  },
+  {
+   "q": "유일한 단점은?",
+   "a": "외부 라이브러리에 못 쓴다. 어노테이션을 붙이려면 그 클래스의 소스를 고쳐야 하기 때문이다."
+  },
+  {
+   "q": "그럼 무엇을 언제 쓰나?",
+   "a": "내가 만든 클래스에는 `@PostConstruct`, 소스를 고칠 수 없는 라이브러리에는 `@Bean(initMethod, destroyMethod)`."
+  },
+  {
+   "q": "세 방법을 다 걸면 순서는?",
+   "a": "`@PostConstruct` → `InitializingBean.afterPropertiesSet` → `@Bean(initMethod)` 순이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JSR-250",
+   "en": "Common Annotations for the Java Platform",
+   "what": "`@PostConstruct`·`@PreDestroy`·`@Resource` 등을 정의한 자바 표준. 스프링이 이것을 지원한다."
+  },
+  {
+   "term": "jakarta",
+   "en": "",
+   "what": "Java EE 가 이클립스 재단으로 넘어가면서 `javax` 를 대체한 패키지 이름. 스프링 부트 3.x 부터 이쪽을 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Lifecycle Callbacks",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
