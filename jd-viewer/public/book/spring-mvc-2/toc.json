@@ -231,7 +231,7 @@
           "title": "타임리프 스프링 통합",
           "summary": "무엇이 더해지나. 그리고 그것이 왜 필요했나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -239,7 +239,7 @@
           "title": "입력 폼 처리",
           "summary": "th:object 와 *{...}. 1편 8.6절의 폼을 다시 쓴다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -247,7 +247,7 @@
           "title": "요구사항 추가",
           "summary": "판매 여부 · 등록 지역 · 상품 종류 · 배송 방식.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -255,7 +255,7 @@
           "title": "체크 박스 — 단일",
           "summary": "체크를 해제하면 값이 아예 안 온다. 히든 필드가 필요한 이유.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

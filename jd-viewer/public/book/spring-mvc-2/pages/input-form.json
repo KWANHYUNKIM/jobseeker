@@ -1,0 +1,144 @@
+{
+ "book": "spring-mvc-2",
+ "id": "input-form",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "입력 폼 처리",
+ "summary": "th:object 와 *{...}. 1편 8.6절의 폼을 다시 쓴다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:object` 와 `*{...}` 를 쓸 수 있다.",
+  "등록 폼에도 빈 객체가 필요한 이유를 안다.",
+  "`th:field` 로 1편의 폼을 다시 쓸 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 8.6절에서 상품 등록 폼을 이렇게 썼다.\n\n```html\n<input type=\"text\" id=\"itemName\" name=\"itemName\" class=\"form-control\">\n```\n\n**`id` 와 `name` 을 손으로 맞췄다.** 그리고 수정 폼에서는 `th:value` 를 하나 더 붙였다.\n\n**다시 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "th:object 와 별표",
+   "ascii": "   <form th:object=\"${item}\">\n                      |\n                      +--> 이 폼이 다루는 객체\n\n       *{itemName}   ==  ${item.itemName}\n       *{price}      ==  ${item.price}\n       |\n       +--> th:object 가 있어야 쓸 수 있다",
+   "note": "**`*{}` 는 `${object.}` 의 축약**이다. `th:object` 로 기준을 잡고 그 아래를 별표로 부른다."
+  },
+  {
+   "type": "compare",
+   "caption": "등록 폼",
+   "left": {
+    "title": "1편 8.6절",
+    "lang": "html",
+    "code": "<form action=\"item.html\" th:action method=\"post\">\n    <input type=\"text\" id=\"itemName\"\n           name=\"itemName\" class=\"form-control\">\n    <input type=\"text\" id=\"price\"\n           name=\"price\" class=\"form-control\">\n</form>",
+    "md": "**`id` 와 `name` 을 각각 적는다.** 둘이 다르면 `<label for>` 이 안 걸린다."
+   },
+   "right": {
+    "title": "지금",
+    "lang": "html",
+    "good": true,
+    "code": "<form action=\"item.html\" th:action th:object=\"${item}\" method=\"post\">\n    <input type=\"text\" th:field=\"*{itemName}\"\n           class=\"form-control\">\n    <input type=\"text\" th:field=\"*{price}\"\n           class=\"form-control\">\n</form>",
+    "md": "**한 줄이 셋을 만든다.** 오타가 나면 렌더링할 때 예외가 난다."
+   },
+   "note": "**`th:action` 이 값 없이 쓰인 것**은 1편 8.6절에서 본 그것이다 — 비워 두면 **현재 URL** 로 간다. 등록 폼(`GET /add`)과 처리(`POST /add`)가 같은 URL 이라 이것으로 충분하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "오타가 나면 예외가 난다",
+   "md": "**2장에서 계속 본 것과 반대**다.\n\n2.4절에서 없는 파라미터는 빈 문자열, 2.6절에서 틀린 경로 변수는 글자 그대로 남았다. **타임리프는 표현식 오타에 관대**했다.\n\n**`th:field` 는 아니다.**\n\n```html\n<input th:field=\"*{itemNmae}\">   <!-- 오타 -->\n```\n\n```\nNotReadablePropertyException:\nInvalid property 'itemNmae' of bean class Item\n```\n\n**500 이 난다.**\n\n**왜 여기만 엄격한가** — `th:field` 는 **객체의 프로퍼티를 실제로 찾아야** 하기 때문이다. 값을 읽을 뿐 아니라 `name` 을 만들어서 **서버가 되받을 이름**을 정한다. 조용히 넘어가면 **폼 전체가 조용히 고장난다.**\n\n**빨리 터지는 편이 낫다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "등록 폼에도 빈 객체가 필요하다",
+   "md": "```java\n@GetMapping(\"/add\")\npublic String addForm(Model model) {\n    model.addAttribute(\"item\", new Item());   // 빈 객체\n    return \"form/addForm\";\n}\n```\n\n**이게 없으면 500 이다.**\n\n```\nNeither BindingResult nor plain target object for bean name 'item'\navailable as request attribute\n```\n\n**`th:object=\"${item}\"` 이 모델에서 `item` 을 찾는데 없어서**다. 등록 폼은 보여 줄 값이 없으니 안 담아도 될 것 같은데, **`th:field` 는 값을 읽으려고 객체를 요구한다.**\n\n> 이 오류 메시지는 **5장에서 다시 만난다.** `BindingResult` 라는 말이 여기 이미 나와 있다 — `th:field` 는 모델의 객체나 `BindingResult` 중 하나를 본다.\n\n**수정 폼은 조회한 객체를 담으니 자연히 해결**된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "th:object 없이 쓸 수도 있다",
+   "md": "```html\n<!-- th:object 있을 때 -->\n<input th:field=\"*{itemName}\">\n\n<!-- 없을 때 -->\n<input th:field=\"${item.itemName}\">\n```\n\n**둘 다 된다.** 그런데 `th:object` 쪽을 쓴다.\n\n1. **폼이 무엇을 다루는지 form 태그에 드러난다**\n2. **객체 이름이 한 곳에만** 있다 — 바꿀 때 한 줄\n3. **5장의 `#fields`** 가 `th:object` 를 기준으로 동작한다\n\n**3번이 결정적**이다. 검증 오류를 그릴 때 `th:object` 가 없으면 매번 객체 이름을 적어야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /form/items/add HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<form action=\"/form/items/add\" method=\"post\">\n    <input type=\"text\" id=\"itemName\" name=\"itemName\" value=\"\" class=\"form-control\">\n    <input type=\"text\" id=\"price\" name=\"price\" value=\"\" class=\"form-control\">\n    <input type=\"text\" id=\"quantity\" name=\"quantity\" value=\"\" class=\"form-control\">\n</form>\n\n# 수정 폼은 value 가 차 있다\nGET /form/items/1/edit HTTP/1.1\n\nHTTP/1.1 200 \n    <input type=\"text\" id=\"itemName\" name=\"itemName\" value=\"itemA\" class=\"form-control\">\n    <input type=\"text\" id=\"price\" name=\"price\" value=\"10000\" class=\"form-control\">\n\n# 빈 객체를 안 담으면\nHTTP/1.1 500 \n#   Neither BindingResult nor plain target object for bean name 'item'",
+   "note": "**등록 폼과 수정 폼의 응답이 `value` 만 다르다.** 템플릿은 `th:field=\"*{itemName}\"` 로 똑같다.\n\n등록 폼의 `value=\"\"` 가 중요하다 — **빈 객체의 `null` 이 빈 문자열로** 나갔다. `th:field` 가 실제로 `item.getItemName()` 을 부른 증거다.\n\n그래서 **객체가 없으면 500**이다. 부를 대상이 없다.\n\n`action` 도 비어 있던 `th:action` 이 **현재 URL 로 채워졌다.**"
+  }
+ ],
+ "recap": [
+  "**`th:object` 로 폼이 다루는 객체**를 정하고 **`*{}`** 로 그 아래를 부른다.",
+  "`*{itemName}` 은 `${item.itemName}` 의 **축약**이다.",
+  "**`th:field` 는 오타에 엄격하다** — 500 이 난다. 2장과 반대.",
+  "**폼 전체가 조용히 고장나는 것보다 빨리 터지는 편이 낫다.**",
+  "**등록 폼에도 빈 객체를 담아야** 한다. 없으면 500.",
+  "그 오류 메시지에 **`BindingResult`** 가 이미 나온다 — 5장의 예고.",
+  "**`th:object` 를 쓰는 이유는 5장의 `#fields`** 때문이기도 하다.",
+  "`th:action` 을 비우면 **현재 URL** 로 간다."
+ ],
+ "drills": [
+  {
+   "task": "1편 8.6절의 등록 폼을 `th:object` + `th:field` 로 다시 쓴다.",
+   "done_when": "렌더링 결과가 이전과 같은 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`th:field` 에 없는 프로퍼티 이름을 넣는다.",
+   "done_when": "`NotReadablePropertyException` 을 읽었다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨트롤러에서 `new Item()` 담는 줄을 지운다.",
+   "done_when": "`Neither BindingResult nor plain target object` 를 읽었다.",
+   "minutes": 10
+  },
+  {
+   "task": "수정 폼을 열어 `value` 가 채워지는 것을 본다.",
+   "done_when": "같은 템플릿이 다른 응답을 내는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`*{itemName}` 은 무엇의 축약인가?",
+   "a": "`th:object` 로 지정한 객체 기준의 `${item.itemName}` 이다."
+  },
+  {
+   "q": "`th:field` 의 오타는 왜 500 인가?",
+   "a": "객체의 프로퍼티를 실제로 찾아 `name` 을 만들어야 하기 때문이다. 조용히 넘어가면 폼 전체가 조용히 고장난다."
+  },
+  {
+   "q": "등록 폼에 빈 객체가 왜 필요한가?",
+   "a": "`th:object` 가 모델에서 그 이름의 객체를 찾고 `th:field` 가 값을 읽으려 하기 때문이다."
+  },
+  {
+   "q": "`th:object` 를 쓰는 이유 세 가지는?",
+   "a": "폼이 다루는 객체가 드러나고, 객체 이름이 한 곳에만 있고, 5장의 `#fields` 가 이것을 기준으로 동작한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "th:object",
+   "en": "",
+   "what": "폼이 다루는 객체를 지정하는 속성. 그 아래 `*{}` 의 기준이 된다."
+  },
+  {
+   "term": "선택 변수 표현식",
+   "en": "selection variable expression",
+   "what": "`*{...}`. `th:object` 로 선택한 객체 기준의 표현식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf + Spring",
+   "url": "https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
