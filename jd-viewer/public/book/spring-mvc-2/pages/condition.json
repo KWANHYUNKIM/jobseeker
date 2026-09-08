@@ -1,0 +1,157 @@
+{
+ "book": "spring-mvc-2",
+ "id": "condition",
+ "no": "2.11",
+ "chapter": 2,
+ "title": "조건부 평가",
+ "summary": "th:if · th:unless · th:switch. 렌더링이 아예 안 된다는 뜻.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:if` 가 숨기는 것이 아니라 만들지 않는다는 것을 안다.",
+  "`th:unless` 가 왜 따로 있는지 안다.",
+  "타임리프가 무엇을 참으로 보는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "숨기는 것이 아니다",
+   "md": "```html\n<span th:if=\"${user.age lt 20}\">미성년자</span>\n```\n\n조건이 거짓이면 — **`display:none` 이 붙는 게 아니라 태그 자체가 응답에 없다.**\n\n**이게 CSS 로 숨기는 것과 크게 다르다.**\n\n| | `th:if` 로 뺌 | CSS 로 숨김 |\n|---|---|---|\n| 응답 바이트 | **없다** | 있다 |\n| 개발자 도구로 보면 | **안 보인다** | 보인다 |\n| 브라우저가 로드 | 안 함 | **이미지·스크립트를 로드한다** |\n\n**세 번째가 크다.** 숨겨진 `<img>` 도 브라우저는 받아 온다.\n\n**보안 면에서도 다르다.** 관리자 전용 버튼을 CSS 로 숨기면 **소스 보기로 보인다.** 그 URL 을 알면 직접 칠 수 있다. 물론 **진짜 방어는 서버**여야 하지만(8장 인터셉터), 화면에서 안 내보내는 것이 첫 줄이다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지",
+   "note": "**`th:unless` 는 `th:if` 의 반대**다. `not` 을 쓸 수도 있는데, `unless` 쪽이 읽기 좋다.",
+   "columns": [
+    "",
+    "언제 그리나"
+   ],
+   "rows": [
+    [
+     "`th:if`",
+     "참일 때"
+    ],
+    [
+     "`th:unless`",
+     "거짓일 때"
+    ],
+    [
+     "`th:switch` / `th:case`",
+     "값이 맞는 하나만"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇이 참인가",
+   "md": "자바보다 관대하다.\n\n```\ntrue                 참\n0 이 아닌 숫자        참\n\"false\" · \"off\" · \"no\" 가 아닌 문자열   참\n그 밖의 null 아닌 객체   참\n\nnull                 거짓\n0                    거짓\n\"false\" \"off\" \"no\"   거짓\n```\n\n**`0` 이 거짓**이라는 것이 자주 문다.\n\n```html\n<span th:if=\"${item.quantity}\">수량 있음</span>\n```\n\n수량이 0 이면 안 나오니 맞는 것처럼 보이는데, **의도가 코드에 없다.** 나중에 읽는 사람이 `null` 체크인지 `0` 체크인지 모른다.\n\n**항상 명시적으로** 쓴다.\n\n```html\n<span th:if=\"${item.quantity gt 0}\">수량 있음</span>\n```\n\n그리고 **문자열 `\"0\"` 은 참**이다 — 숫자 `0` 과 다르다. 폼에서 넘어온 값은 문자열이라(1편 7.5절) 여기서 갈린다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "switch",
+   "code": "<td th:switch=\"${user.age}\">\n    <span th:case=\"10\">10살</span>\n    <span th:case=\"20\">20살</span>\n    <span th:case=\"*\">기타</span>\n</td>",
+   "note": "**`*` 가 `default`** 다. 없으면 아무것도 안 나온다.\n\n**자바의 `switch` 와 다른 점** — `break` 가 없고 **맞는 첫 하나만** 그린다. 폴스루가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "th:if 와 th:each 를 같이 쓰면",
+   "md": "```html\n<tr th:each=\"item : ${items}\" th:if=\"${item.quantity gt 0}\">\n```\n\n**동작한다.** 반복 각 회차에서 조건을 본다.\n\n다만 **필터링을 화면에서 하는 것**이라 2.3절의 기준에 걸린다. 그리고 **`stat.count` 가 어긋난다** — 걸러진 것도 세기 때문에 화면 번호가 1, 3, 4 처럼 뛴다.\n\n**컨트롤러에서 걸러서 넘기는 편**이 낫다.\n\n**속성 우선순위**도 알아 둘 만하다. 한 태그에 여러 `th:*` 가 있으면 정해진 순서로 처리된다.\n\n```\nth:each  ->  th:if / th:unless / th:switch  ->  th:text  ->  나머지\n```\n\n**`th:each` 가 먼저**라 위 코드가 \"각 요소마다 조건 검사\" 로 동작하는 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/condition HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>if, unless</h1>\n<table border=\"1\">\n    <tr><th>count</th><th>username</th><th>age</th></tr>\n    <tr><td>1</td><td>UserA</td><td>10</td><td><span>미성년자</span></td></tr>\n    <tr><td>2</td><td>UserB</td><td>20</td><td></td></tr>\n    <tr><td>3</td><td>UserC</td><td>30</td><td></td></tr>\n</table>\n\n<h1>switch</h1>\n    <tr><td>UserA</td><td><span>미성년자</span></td></tr>\n    <tr><td>UserB</td><td><span>성인</span></td></tr>",
+   "note": "**둘째·셋째 줄의 `<td></td>` 를 본다.** `<span>` 이 통째로 없다. `style=\"display:none\"` 이 아니라 **아예 안 만들어졌다.**\n\n첫 줄에만 `<span>미성년자</span>` 가 있다. **응답 바이트가 행마다 다르다** — 이것이 서버 사이드 렌더링이 클라이언트 렌더링과 갈리는 지점이다. 브라우저는 조건을 모른 채 결과만 받는다."
+  }
+ ],
+ "recap": [
+  "**`th:if` 는 숨기는 것이 아니라 만들지 않는다** — 응답에 태그가 없다.",
+  "CSS 로 숨기면 **바이트가 나가고 이미지·스크립트도 로드**된다.",
+  "**소스 보기로 보이느냐**의 차이도 있다. 다만 진짜 방어는 서버(8장)다.",
+  "**`th:unless` 는 `th:if` 의 반대** — `not` 보다 읽기 좋다.",
+  "**`0` 과 `\"false\"` `\"off\"` `\"no\"` 가 거짓**이다. 자바보다 관대하다.",
+  "**문자열 `\"0\"` 은 참** — 숫자 `0` 과 다르다.",
+  "**항상 명시적으로** 쓴다 — `${x}` 말고 `${x gt 0}`.",
+  "`th:switch` 의 `default` 는 **`*`** 이고 폴스루가 없다.",
+  "속성 우선순위는 **`th:each` → `th:if` → `th:text`** 순이다.",
+  "**반복 + 조건은 `stat.count` 를 어긋나게** 한다. 컨트롤러에서 거른다."
+ ],
+ "drills": [
+  {
+   "task": "`th:if` 로 뺀 요소를 브라우저 개발자 도구에서 찾아본다.",
+   "done_when": "아예 없다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 것을 `style=\"display:none\"` 으로 바꿔 비교한다.",
+   "done_when": "응답 바이트가 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:if=\"${0}\"` 과 `th:if=\"${'0'}\"` 을 비교한다.",
+   "done_when": "숫자와 문자열이 갈리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:switch` 에서 `*` 를 지운다.",
+   "done_when": "아무것도 안 나오는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`th:each` 와 `th:if` 를 같이 쓰고 `stat.count` 를 찍는다.",
+   "done_when": "번호가 뛰는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:if` 가 거짓이면 무엇이 남나?",
+   "a": "아무것도 안 남는다. 태그 자체가 응답에 만들어지지 않는다."
+  },
+  {
+   "q": "CSS 로 숨기는 것과 무엇이 다른가?",
+   "a": "응답 바이트가 나가지 않고, 브라우저가 안쪽 이미지·스크립트를 로드하지 않으며, 소스 보기로도 안 보인다."
+  },
+  {
+   "q": "타임리프가 거짓으로 보는 것은?",
+   "a": "null, 숫자 0, 문자열 \"false\"·\"off\"·\"no\" 다. 나머지는 참이다."
+  },
+  {
+   "q": "문자열 `\"0\"` 은?",
+   "a": "참이다. 숫자 0 과 다르다."
+  },
+  {
+   "q": "`th:each` 와 `th:if` 를 같이 쓰면 무엇이 어긋나나?",
+   "a": "`stat.count` 가 걸러진 것까지 세서 화면 번호가 뛴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건부 평가",
+   "en": "conditional evaluation",
+   "what": "조건이 거짓이면 태그를 렌더링하지 않는 것. 숨기는 것과 다르다."
+  },
+  {
+   "term": "속성 우선순위",
+   "en": "attribute precedence",
+   "what": "한 태그의 여러 `th:*` 가 처리되는 정해진 순서. each 가 if 보다 먼저다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

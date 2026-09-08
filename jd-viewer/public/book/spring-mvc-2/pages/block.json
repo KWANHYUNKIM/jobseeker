@@ -1,0 +1,146 @@
+{
+ "book": "spring-mvc-2",
+ "id": "block",
+ "no": "2.13",
+ "chapter": 2,
+ "title": "블록",
+ "summary": "th:block 이 필요한 자리.",
+ "minutes": 9,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:block` 이 유일한 자체 태그라는 것을 안다.",
+  "언제 필요한지 세 가지 자리를 안다.",
+  "남용하지 않는 기준을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "지금까지 본 `th:*` 는 전부 **기존 태그에 붙이는 속성**이었다.\n\n**`th:block` 만 다르다.** 타임리프의 **유일한 자체 태그**다."
+  },
+  {
+   "type": "figure",
+   "caption": "래퍼가 남느냐 사라지느냐",
+   "ascii": "   <div th:each=\"item : ${items}\">\n       <div>name</div>\n       <div>price</div>\n   </div>\n                                     wrapper div 가 남는다\n\n   <th:block th:each=\"item : ${items}\">\n       <div>name</div>\n       <div>price</div>\n   </th:block>\n                                     wrapper 가 사라진다",
+   "note": "**`th:block` 은 렌더링될 때 자신을 지운다.** 안쪽만 남는다."
+  },
+  {
+   "type": "heading",
+   "text": "언제 필요한가"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "첫째 — 반복 단위가 태그 하나가 아닐 때",
+   "md": "2.10절에서 **`th:each` 는 붙은 태그 자신을 반복**한다고 했다. 그러면 **묶을 태그가 필요**하다.\n\n```html\n<!-- 두 div 를 함께 반복하고 싶다 -->\n<div th:each=\"user : ${users}\">   <!-- 이 div 가 남는다 -->\n    <div th:text=\"${user.username}\"></div>\n    <div th:text=\"${user.age}\"></div>\n</div>\n```\n\n**의미 없는 `<div>` 가 하나 늘어난다.** CSS 가 걸려 있으면 레이아웃이 깨지기도 한다.\n\n```html\n<th:block th:each=\"user : ${users}\">\n    <div th:text=\"${user.username}\"></div>\n    <div th:text=\"${user.age}\"></div>\n</th:block>\n```\n\n**래퍼 없이 반복된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "둘째 — 태그를 넣을 수 없는 자리",
+   "md": "**`<table>` 안이 대표적이다.**\n\n```html\n<table>\n    <div th:each=\"row : ${rows}\">   <!-- HTML 규격 위반 -->\n        <tr>...</tr>\n        <tr>...</tr>\n    </div>\n</table>\n```\n\n`<table>` 의 직접 자식은 `<thead>` · `<tbody>` · `<tr>` 등만 올 수 있다. **`<div>` 를 넣으면 브라우저가 표 밖으로 밀어낸다.**\n\n`<select>` 안의 `<option>`, `<ul>` 안의 `<li>` 도 같다.\n\n**`th:block` 은 사라지므로 규격을 안 깬다.**\n\n```html\n<table>\n    <th:block th:each=\"row : ${rows}\">\n        <tr th:text=\"${row.a}\"></tr>\n        <tr th:text=\"${row.b}\"></tr>\n    </th:block>\n</table>\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "셋째 — 조건 하나로 여러 태그를 묶을 때",
+   "md": "```html\n<!-- 조건을 세 번 쓴다 -->\n<h2 th:if=\"${admin}\">관리</h2>\n<p  th:if=\"${admin}\">설명</p>\n<a  th:if=\"${admin}\">이동</a>\n\n<!-- 한 번 -->\n<th:block th:if=\"${admin}\">\n    <h2>관리</h2>\n    <p>설명</p>\n    <a>이동</a>\n</th:block>\n```\n\n**조건이 한 곳에만 있다.** 조건을 바꿀 때 빠뜨릴 일이 없다.\n\n2.11절에서 본 대로 **거짓이면 안쪽이 통째로 응답에 안 나간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "남용하지 않는다",
+   "md": "**`th:block` 이 편해서 다 감싸고 싶어지는데** 그러면 템플릿이 읽기 어려워진다.\n\n**기준** — **의미 있는 태그가 있으면 거기 붙인다.**\n\n```html\n<!-- 굳이 -->\n<th:block th:if=\"${x}\">\n    <div>하나</div>\n</th:block>\n\n<!-- 이걸로 -->\n<div th:if=\"${x}\">하나</div>\n```\n\n**`th:block` 은 붙일 태그가 없을 때** 쓴다. 태그가 있는데 감싸면 중첩만 는다.\n\n**내추럴 템플릿도 조금 깨진다.** `<th:block>` 은 브라우저가 모르는 태그라 정적으로 열면 그냥 무시되는데(안쪽은 보인다), **개발자 도구에서는 이상하게 보인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다른 도구의 같은 것",
+   "md": "**\"래퍼 없이 묶고 싶다\" 는 요구는 어디에나** 있다.\n\n| 도구 | 이름 |\n|---|---|\n| 타임리프 | `<th:block>` |\n| React | `<React.Fragment>` · `<>...</>` |\n| Vue | `<template>` |\n| Angular | `<ng-container>` |\n\n**전부 같은 문제를 푼다** — 문법이 요구하는 묶음과 HTML 이 원하는 구조가 안 맞는 것.\n\n이 프로젝트의 뷰어도 React 라 `<>...</>` 를 쓴다. **같은 필요가 서버 쪽에도 있었던 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/block HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div>\n    <div>사용자 이름1 <span>UserA</span></div>\n    <div>사용자 나이1 <span>10</span></div>\n</div>\n<div>\n    <div>사용자 이름1 <span>UserB</span></div>\n    <div>사용자 나이1 <span>20</span></div>\n</div>\n\n# th:block 으로 바꾸면\n<div>사용자 이름1 <span>UserA</span></div>\n<div>사용자 나이1 <span>10</span></div>\n<div>사용자 이름1 <span>UserB</span></div>\n<div>사용자 나이1 <span>20</span></div>",
+   "note": "**위아래를 비교한다.** 내용은 같은데 위에는 바깥 `<div>` 가 두 개 더 있다.\n\n**`<th:block>` 이라는 글자는 응답 어디에도 없다.** 서버에서 사라졌다 — `<th:block>` 은 브라우저에 나가는 태그가 아니라 **템플릿 문법**이다.\n\n2.9절에서 `th:` 속성이 이름을 바꿔 남았던 것과 다르다. **이것은 흔적 없이 없어진다.**"
+  }
+ ],
+ "recap": [
+  "**`th:block` 은 타임리프의 유일한 자체 태그**다.",
+  "**렌더링될 때 자신을 지우고 안쪽만 남긴다.**",
+  "**첫째** — 반복 단위가 태그 하나가 아닐 때 래퍼 없이 묶는다.",
+  "**둘째** — `<table>` `<select>` `<ul>` 처럼 아무 태그나 못 넣는 자리.",
+  "**셋째** — 조건 하나로 여러 태그를 묶을 때. 조건을 한 곳에만 쓴다.",
+  "**남용하지 않는다** — 붙일 태그가 있으면 거기 붙인다.",
+  "**응답에 `<th:block>` 이라는 글자는 없다** — 템플릿 문법이지 태그가 아니다.",
+  "React 의 Fragment, Vue 의 `<template>` 과 **같은 문제를 푼다.**"
+ ],
+ "drills": [
+  {
+   "task": "`<div th:each>` 로 두 요소를 묶어 반복하고 응답을 본다.",
+   "done_when": "래퍼 div 가 반복만큼 생기는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:block` 으로 바꾼다.",
+   "done_when": "래퍼가 사라진 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`<table>` 안에 `<div th:each>` 를 넣어 본다.",
+   "done_when": "브라우저가 표 밖으로 밀어내는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 것을 `th:block` 으로 고친다.",
+   "done_when": "표가 정상이 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조건 하나로 세 태그를 묶는다.",
+   "done_when": "거짓일 때 셋 다 응답에 없는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:block` 이 다른 `th:*` 와 다른 점은?",
+   "a": "속성이 아니라 태그다. 타임리프의 유일한 자체 태그이고 렌더링될 때 사라진다."
+  },
+  {
+   "q": "`<table>` 안에서 왜 필요한가?",
+   "a": "`<table>` 의 직접 자식은 정해져 있어서 `<div>` 를 넣으면 브라우저가 표 밖으로 밀어낸다. `th:block` 은 사라지므로 규격을 안 깬다."
+  },
+  {
+   "q": "조건에 쓰면 무엇이 좋은가?",
+   "a": "여러 태그에 같은 조건을 반복해 쓰지 않고 한 곳에만 쓴다."
+  },
+  {
+   "q": "남용하지 않는 기준은?",
+   "a": "붙일 의미 있는 태그가 있으면 거기 붙인다. `th:block` 은 붙일 태그가 없을 때 쓴다."
+  },
+  {
+   "q": "다른 프레임워크의 같은 것은?",
+   "a": "React 의 Fragment, Vue 의 `<template>`, Angular 의 `<ng-container>` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "th:block",
+   "en": "",
+   "what": "타임리프의 유일한 자체 태그. 렌더링될 때 사라져 래퍼 없이 여러 요소를 묶는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

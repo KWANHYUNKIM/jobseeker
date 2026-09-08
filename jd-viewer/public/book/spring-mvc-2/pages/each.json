@@ -1,0 +1,185 @@
+{
+ "book": "spring-mvc-2",
+ "id": "each",
+ "no": "2.10",
+ "chapter": 2,
+ "title": "반복",
+ "summary": "th:each 와 반복 상태. 1편 8.4절보다 자세히.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:each` 가 태그 자신을 반복한다는 것을 안다.",
+  "반복 상태 변수를 쓸 수 있다.",
+  "반복 안에서 하면 안 되는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 8.4절에서 상품 목록을 그릴 때 `th:each` 를 썼다. **거기서는 쓰기만 했고 여기서 자세히 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 반복되는가",
+   "ascii": "   <tr th:each=\"user, stat : ${users}\">\n               |      |       |\n               |      |       +--> 반복할 대상\n               |      +----------> 반복 상태 (생략 가능)\n               +-----------------> 이번 요소\n\n   태그 자신이 반복된다\n\n   users = [A, B, C]  ->  <tr>A</tr>\n                          <tr>B</tr>\n                          <tr>C</tr>",
+   "note": "**`th:each` 가 붙은 태그 자신이 반복된다.** 안쪽이 아니라 그 태그부터다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "태그 자신이 반복된다",
+   "md": "이것을 헷갈리면 표가 이상해진다.\n\n```html\n<!-- 틀림: table 이 세 개 생긴다 -->\n<table th:each=\"user : ${users}\">\n    <tr><td th:text=\"${user.username}\"></td></tr>\n</table>\n\n<!-- 맞음: tr 이 세 개 생긴다 -->\n<table>\n    <tr th:each=\"user : ${users}\">\n        <td th:text=\"${user.username}\"></td>\n    </tr>\n</table>\n```\n\n**\"몇 번 나와야 하는 태그인가\" 를 찾아서 거기 붙인다.**\n\n반복할 대상은 `List` 만이 아니다. `Iterable` · `Enumeration` · `Iterator` · `Map` · **배열**도 된다. `Map` 은 요소가 `Map.Entry` 라서 `${entry.key}` · `${entry.value}` 로 꺼낸다."
+  },
+  {
+   "type": "heading",
+   "text": "반복 상태"
+  },
+  {
+   "type": "table",
+   "caption": "stat 이 들고 있는 것",
+   "note": "**`index` 는 0 부터, `count` 는 1 부터**다. 화면에 번호를 찍을 때는 `count` 를 쓴다.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`stat.index`",
+     "0 부터"
+    ],
+    [
+     "`stat.count`",
+     "1 부터"
+    ],
+    [
+     "`stat.size`",
+     "전체 개수"
+    ],
+    [
+     "`stat.first`",
+     "첫 번째인가"
+    ],
+    [
+     "`stat.last`",
+     "마지막인가"
+    ],
+    [
+     "`stat.odd` · `stat.even`",
+     "홀수·짝수 번째인가"
+    ],
+    [
+     "`stat.current`",
+     "이번 요소 (`user` 와 같다)"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<tr th:each=\"user, userStat : ${users}\"\n    th:class=\"${userStat.even} ? 'even' : 'odd'\">\n    <td th:text=\"${userStat.count}\">1</td>\n    <td th:text=\"${user.username}\">이름</td>\n    <td th:if=\"${userStat.last}\">마지막</td>\n</tr>",
+   "note": "**상태 변수를 생략하면 `이번요소이름 + Stat`** 이 자동으로 만들어진다. `user` 면 `userStat` 이다.\n\n다만 **써 주는 편이 낫다** — 자동 이름은 요소 이름을 바꿀 때 같이 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "줄무늬와 구분선",
+   "md": "`odd`/`even` 과 `first`/`last` 가 실제로 쓰이는 자리가 있다.\n\n```html\n<!-- 줄무늬 -->\n<tr th:each=\"i, s : ${items}\" th:classappend=\"${s.odd} ? 'row-odd'\">\n\n<!-- 마지막만 구분선 빼기 -->\n<li th:each=\"i, s : ${items}\" th:classappend=\"${s.last} ? '' : 'border-b'\">\n\n<!-- 사이에만 구분자 -->\n<span th:each=\"t, s : ${tags}\">\n    <span th:text=\"${t}\"></span><span th:unless=\"${s.last}\">, </span>\n</span>\n```\n\n**세 번째가 유용하다.** \"사이에만\" 을 자바에서 하려면 `String.join` 인데, 각 요소가 태그면 못 쓴다.\n\n> CSS 의 `:nth-child(odd)` 로도 줄무늬는 되지만, **`stat` 은 데이터 기준**이라 조건이 섞여도 맞는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "반복 안에서 하면 안 되는 것",
+   "md": "2.3절에서 SpEL 로 빈을 부르면 안 된다고 하면서 **N+1** 을 이유로 꼽았다. **여기가 그 자리다.**\n\n```html\n<tr th:each=\"order : ${orders}\">\n    <td th:text=\"${@memberService.findById(order.memberId).name}\"></td>\n</tr>\n```\n\n**주문이 100건이면 조회가 100번** 나간다. 화면에서는 안 보이고 **DB 로그에만 보인다.**\n\n서가 첫 책(JPA)의 9장·12장이 통째로 이 문제를 다룬다. **거기서는 페치 조인으로 풀었는데**, 여기서는 애초에 **화면이 조회를 하면 안 된다**로 푼다.\n\n**컨트롤러가 필요한 것을 다 담아서** 넘긴다. 화면은 담긴 것만 그린다.\n\n**같은 이유로 반복 안의 무거운 계산도 피한다** — `th:with` (2.3절)로 한 번만 하거나 컨트롤러로 옮긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/each HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>기본 테이블</h1>\n<table border=\"1\">\n    <tr><th>username</th><th>age</th></tr>\n    <tr><td>UserA</td><td>10</td></tr>\n    <tr><td>UserB</td><td>20</td></tr>\n    <tr><td>UserC</td><td>30</td></tr>\n</table>\n\n<h1>반복 상태 유지</h1>\n<table border=\"1\">\n    <tr class=\"odd\"><td>1</td><td>UserA</td><td>index=0, size=3, first</td></tr>\n    <tr class=\"even\"><td>2</td><td>UserB</td><td>index=1, size=3</td></tr>\n    <tr class=\"odd\"><td>3</td><td>UserC</td><td>index=2, size=3, last</td></tr>\n</table>",
+   "note": "**`<tr>` 이 세 개, `<table>` 은 하나**다. `th:each` 를 어디 붙였느냐가 응답 구조로 그대로 드러난다.\n\n그리고 **`count` 는 1·2·3, `index` 는 0·1·2** 로 나란히 찍혀 있다. `class` 가 `odd`/`even` 으로 갈리는 것도 서버가 정해서 보낸 것이다 — 브라우저가 계산한 게 아니다.\n\n**반복은 서버에서 끝난다.** 브라우저가 받는 것은 이미 펼쳐진 HTML 이다."
+  }
+ ],
+ "recap": [
+  "**`th:each` 가 붙은 태그 자신이 반복**된다. 안쪽이 아니다.",
+  "`List` 만이 아니라 **`Map` · 배열 · `Iterator`** 도 된다.",
+  "**반복 상태 변수**는 생략하면 `요소이름 + Stat` 이 자동 생성된다.",
+  "**`index` 는 0 부터, `count` 는 1 부터**.",
+  "`first` · `last` · `odd` · `even` 으로 **줄무늬·구분선·사이 구분자**를 만든다.",
+  "**반복 안에서 조회하면 N+1** 이다. 화면에서는 안 보이고 DB 로그에만 보인다.",
+  "**컨트롤러가 필요한 것을 다 담아** 넘기고 화면은 그리기만 한다.",
+  "**반복은 서버에서 끝난다** — 브라우저는 펼쳐진 HTML 을 받는다."
+ ],
+ "drills": [
+  {
+   "task": "`th:each` 를 `<table>` 에 붙여 본다.",
+   "done_when": "표가 세 개 생기는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`<tr>` 로 옮긴다.",
+   "done_when": "행이 세 개 생기는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "상태 변수를 선언하지 않고 `userStat` 을 써 본다.",
+   "done_when": "자동 생성 이름이 동작하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`last` 로 마지막 요소 뒤에만 구분자를 빼 본다.",
+   "done_when": "\"사이에만\" 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Map` 을 반복해 `${entry.key}` 와 `${entry.value}` 를 꺼낸다.",
+   "done_when": "요소가 `Map.Entry` 라는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:each` 는 무엇을 반복하나?",
+   "a": "그 속성이 붙은 태그 자신이다. 안쪽이 아니라 그 태그부터 통째로 반복된다."
+  },
+  {
+   "q": "`index` 와 `count` 의 차이는?",
+   "a": "`index` 는 0 부터, `count` 는 1 부터다. 화면 번호에는 `count` 를 쓴다."
+  },
+  {
+   "q": "상태 변수를 생략하면?",
+   "a": "`요소이름 + Stat` 이 자동으로 만들어진다. `user` 면 `userStat` 이다."
+  },
+  {
+   "q": "반복 안에서 서비스를 부르면?",
+   "a": "요소 수만큼 조회가 나가는 N+1 이 된다. 화면에는 안 보이고 DB 로그에만 보인다."
+  },
+  {
+   "q": "`Map` 을 반복하면 요소는 무엇인가?",
+   "a": "`Map.Entry` 다. `${entry.key}` 와 `${entry.value}` 로 꺼낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "반복 상태",
+   "en": "iteration status",
+   "what": "`th:each` 의 두 번째 변수. index·count·size·first·last·odd·even 을 들고 있다."
+  },
+  {
+   "term": "N+1",
+   "en": "N+1 problem",
+   "what": "목록 1번 조회 뒤 각 요소마다 추가 조회가 나가는 문제. 반복문 안의 조회가 원인이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

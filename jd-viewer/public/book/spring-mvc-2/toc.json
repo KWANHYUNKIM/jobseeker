@@ -168,7 +168,7 @@
           "title": "반복",
           "summary": "th:each 와 반복 상태. 1편 8.4절보다 자세히.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.11",
@@ -176,7 +176,7 @@
           "title": "조건부 평가",
           "summary": "th:if · th:unless · th:switch. 렌더링이 아예 안 된다는 뜻.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.12",
@@ -184,7 +184,7 @@
           "title": "주석",
           "summary": "세 가지 주석. 어느 것이 응답에 남나.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.13",
@@ -192,7 +192,7 @@
           "title": "블록",
           "summary": "th:block 이 필요한 자리.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.14",
