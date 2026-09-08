@@ -1,0 +1,152 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-synchronization",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "트랜잭션 동기화",
+ "summary": "ThreadLocal 로 커넥션을 보관한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ThreadLocal` 로 커넥션을 공유하는 방식을 안다.",
+  "왜 필드가 아니라 `ThreadLocal` 인지 안다.",
+  "정리를 안 하면 무슨 일이 생기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.1절의 두 번째 문제를 푼다.\n\n> **파라미터로 넘기지 않고 다른 데 보관**한다. **어디에 보관하나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "스레드마다 따로",
+   "ascii": "   TransactionSynchronizationManager\n        |\n        +--> ThreadLocal<Map<DataSource, ConnectionHolder>>\n\n   thread-1                        thread-2\n   --------                        --------\n   bindResource(ds, conn0)         bindResource(ds, conn1)\n        |                               |\n   repository asks                 repository asks\n        |                               |\n   getResource(ds) -> conn0        getResource(ds) -> conn1\n\n   같은 코드가 스레드마다 다른 커넥션을 받는다",
+   "note": "**같은 코드가 스레드마다 다른 커넥션**을 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필드에 두면 안 되는 이유",
+   "md": "```java\npublic class MemberRepository {\n    private Connection con;   // 하면 안 된다\n}\n```\n\n**리포지토리는 싱글톤**이다. **동시 요청이 같은 필드를 덮어쓴다.**\n\n**「MVC 2편」 8.5절에서 본 그것**이다.\n\n> 인터셉터는 싱글톤이다 — **동시에 들어온 요청들이 같은 필드를 덮어쓴다.**\n\n**거기서는 `request.setAttribute`** 로 풀었다. **요청 하나에 `request` 하나**니까.\n\n**여기는 `request` 가 없다.** 서비스와 리포지토리는 웹을 모른다.\n\n**`ThreadLocal`** 이 그 자리다. **스레드 하나에 값 하나**를 둔다.\n\n```java\nThreadLocal<Connection> tl = new ThreadLocal<>();\ntl.set(con);        // 이 스레드에만\ntl.get();           // 이 스레드의 것만\n```\n\n**「MVC 2편」에서 세 번 본 구조**다.\n\n| | 무엇을 담나 |\n|---|---|\n| `LocaleContextHolder` (4.5절) | 요청의 언어 |\n| MDC (8.2절) | 요청 식별자 |\n| **여기** | **커넥션** |\n\n**요청 하나가 스레드 하나**라서 가능한 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "스프링이 하는 일",
+   "code": "// 트랜잭션 시작할 때 (DataSourceTransactionManager 안에서)\nConnection con = dataSource.getConnection();\ncon.setAutoCommit(false);\nTransactionSynchronizationManager.bindResource(dataSource, new ConnectionHolder(con));\n\n// 리포지토리가 커넥션이 필요할 때\nConnection con = DataSourceUtils.getConnection(dataSource);\n// 안에서: TransactionSynchronizationManager.getResource(dataSource)\n\n// 트랜잭션 끝날 때\nTransactionSynchronizationManager.unbindResource(dataSource);\ncon.close();",
+   "note": "**`DataSource` 를 열쇠로** 쓴다. `ThreadLocal<Map<DataSource, ...>>` 인 이유다.\n\n**왜 `Map` 인가** — **`DataSource` 가 여럿**일 수 있다(3.6절의 읽기 전용 복제본). 각각 다른 트랜잭션이다.\n\n**`ConnectionHolder`** 는 커넥션과 참조 횟수를 들고 있다. **중첩 트랜잭션에서 몇 번 참여했는지** 센다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리포지토리가 쓰는 법",
+   "code": "private Connection getConnection() throws SQLException {\n    // 트랜잭션 동기화를 고려한다\n    Connection con = DataSourceUtils.getConnection(dataSource);\n    log.info(\"get connection={} class={}\", con, con.getClass());\n    return con;\n}\n\nprivate void close(Connection con, Statement stmt, ResultSet rs) {\n    JdbcUtils.closeResultSet(rs);\n    JdbcUtils.closeStatement(stmt);\n    // 트랜잭션 중이면 닫지 않는다\n    DataSourceUtils.releaseConnection(con, dataSource);\n}",
+   "note": "**`DataSourceUtils` 가 열쇠**다.\n\n| | 하는 일 |\n|---|---|\n| `getConnection` | **동기화된 커넥션이 있으면 그것**, 없으면 새것 |\n| `releaseConnection` | **트랜잭션 중이면 안 닫는다**, 아니면 닫는다 |\n\n**4.7절의 문제가 이렇게 풀린다.**\n\n> **리포지토리가 커넥션을 닫으면 안 된다** — 커넥션만 빼고 닫는다.\n\n**`releaseConnection` 이 판단**해 준다. **메서드가 두 벌일 필요가 없어졌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "정리를 안 하면 다음 요청이 물려받는다",
+   "md": "**`ThreadLocal` 의 위험**이다.\n\n```\n요청 A: 스레드 1 이 커넥션을 ThreadLocal 에 담는다\n요청 A: 끝났는데 정리를 안 했다\n요청 B: 같은 스레드 1 을 재사용한다\n요청 B: getResource() -> 요청 A 의 커넥션이 나온다\n```\n\n**이미 닫힌 커넥션**이거나 **남의 트랜잭션**이다.\n\n**「MVC 2편」 8.2절에서 본 그것**이다.\n\n> **`MDC.clear()` 를 빠뜨리면** 스레드 풀에서 다음 요청에 남은 값이 붙는다.\n\n**여기는 결과가 훨씬 나쁘다.** 로그가 틀리는 정도가 아니라 **데이터가 섞인다.**\n\n**스프링이 `finally` 에서 정리**한다.\n\n```java\nfinally {\n    TransactionSynchronizationManager.unbindResource(dataSource);\n    TransactionSynchronizationManager.clear();\n}\n```\n\n**직접 `ThreadLocal` 을 쓸 일이 있으면** 반드시 이렇게 한다.\n\n> **비동기에서 안 따라가는 이유**도 이것이다(4.2절). **스레드가 바뀌면 `ThreadLocal` 도 바뀐다.** `@Async` 메서드는 **트랜잭션을 물려받지 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "커넥션이 없으면 어떻게 되나",
+   "md": "```java\nDataSourceUtils.getConnection(dataSource);\n```\n\n**트랜잭션 밖에서 부르면** — **새 커넥션**을 준다.\n\n```java\nrepository.findById(\"memberA\");   // 트랜잭션 없이\n// -> 새 커넥션을 빌리고 쓰고 반납한다. 2·3장과 같다\n```\n\n**그래서 메서드가 하나면 된다.** 트랜잭션이 있으면 그것을 쓰고 없으면 알아서 얻는다.\n\n**5.1절의 두 번째 문제가 완전히 풀렸다.**\n\n**한 가지 주의** — 트랜잭션 밖의 조회는 **각각 다른 커넥션**이다.\n\n```java\nMember a = repository.findById(\"memberA\");   // conn0\nMember b = repository.findById(\"memberB\");   // conn1\n```\n\n**서로 다른 시점의 데이터**를 볼 수 있다. **일관된 조회가 필요하면 `@Transactional(readOnly = true)`** 를 붙인다 — 4.3절에서 말한 그것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 트랜잭션 안에서\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n#   get connection=HikariProxyConnection@1 wrapping conn0    <- findById\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0    <- findById\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0    <- update\n#     update member set money=? where member_id=?\n#   get connection=HikariProxyConnection@1 wrapping conn0    <- update\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 프록시 번호가 @1 로 네 번 다 같다\n# ThreadLocal 에서 같은 것을 꺼냈다\n\n# 3.5 절에서는 @1 @2 @3 @4 였다\n\n# 트랜잭션 밖에서\nrepository.findById(\"memberA\");\nrepository.findById(\"memberB\");\n\n#   get connection=HikariProxyConnection@5 wrapping conn0\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@6 wrapping conn0\n#     select * from member where member_id = ?\n\n# 프록시 번호가 다르다. 각각 빌리고 반납했다",
+   "note": "**프록시 번호가 `@1` 로 네 번 다 같다.** 3.5절에서 `@1`~`@4` 로 달랐던 자리다.\n\n**같은 프록시 객체**를 받았다는 것은 **`ThreadLocal` 에서 꺼냈다**는 뜻이다 — 풀에서 새로 빌리면 프록시가 새로 만들어진다(3.2절).\n\n**리포지토리 코드는 `DataSourceUtils.getConnection` 한 줄**뿐인데 **트랜잭션 안팎에서 다르게** 동작한다.\n\n**아래가 트랜잭션 밖**이다. `@5` 와 `@6` 으로 다르다 — 각각 빌리고 반납했다. **2·3장의 동작**이다."
+  }
+ ],
+ "recap": [
+  "**필드에 두면 동시 요청이 섞인다** — 리포지토리는 싱글톤이다.",
+  "**`ThreadLocal` 은 스레드 하나에 값 하나**다.",
+  "**「MVC 2편」에서 세 번 본 구조** — 로케일 · MDC · 여기.",
+  "**`DataSource` 를 열쇠로** 쓴다. 여럿일 수 있어서 `Map` 이다.",
+  "**`DataSourceUtils.getConnection`** 이 동기화된 커넥션을 찾아 준다.",
+  "**`releaseConnection` 이 닫을지 말지** 판단한다.",
+  "**메서드가 두 벌일 필요가 없어졌다.**",
+  "**정리를 안 하면 다음 요청이 물려받는다** — 데이터가 섞인다.",
+  "**비동기에서 트랜잭션이 안 따라가는 이유**도 이것이다.",
+  "**트랜잭션 밖에서는 새 커넥션**을 준다 — 2·3장과 같다.",
+  "**트랜잭션 밖의 조회는 각각 다른 시점**을 볼 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "리포지토리를 `DataSourceUtils` 로 바꾼다.",
+   "done_when": "메서드가 한 벌이 된 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "트랜잭션 안팎에서 각각 호출하고 프록시 번호를 본다.",
+   "done_when": "안에서는 같고 밖에서는 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ThreadLocal` 을 직접 만들어 값을 담고 다른 스레드에서 읽어 본다.",
+   "done_when": "안 보이는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "정리하지 않고 같은 스레드를 재사용해 본다.",
+   "done_when": "이전 값이 남는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@Async` 메서드에서 트랜잭션이 이어지는지 본다.",
+   "done_when": "안 따라가는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 필드가 아니라 `ThreadLocal` 인가?",
+   "a": "리포지토리가 싱글톤이라 필드에 두면 동시 요청이 서로를 덮어쓴다."
+  },
+  {
+   "q": "`DataSourceUtils.getConnection` 이 하는 일은?",
+   "a": "동기화된 커넥션이 있으면 그것을 주고 없으면 새로 빌린다."
+  },
+  {
+   "q": "`releaseConnection` 은?",
+   "a": "트랜잭션 중이면 닫지 않고 아니면 닫는다. 그래서 메서드가 한 벌이면 된다."
+  },
+  {
+   "q": "정리를 안 하면?",
+   "a": "스레드 풀에서 재사용될 때 다음 요청이 이전 커넥션을 물려받아 데이터가 섞인다."
+  },
+  {
+   "q": "비동기에서 트랜잭션이 왜 안 따라가나?",
+   "a": "스레드가 바뀌면 `ThreadLocal` 도 바뀌기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "트랜잭션 동기화",
+   "en": "transaction synchronization",
+   "what": "커넥션을 `ThreadLocal` 에 보관해 같은 스레드가 공유하게 하는 방식."
+  },
+  {
+   "term": "DataSourceUtils",
+   "en": "",
+   "what": "동기화를 고려해 커넥션을 얻고 반납하는 스프링 유틸리티."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

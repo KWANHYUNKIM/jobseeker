@@ -336,7 +336,7 @@
           "title": "네 가지 문제",
           "summary": "기술 종속 · 커넥션 전달 · 반복 · try-catch.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -344,7 +344,7 @@
           "title": "트랜잭션 추상화",
           "summary": "PlatformTransactionManager. 인터페이스 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -352,7 +352,7 @@
           "title": "트랜잭션 동기화",
           "summary": "ThreadLocal 로 커넥션을 보관한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -360,7 +360,7 @@
           "title": "트랜잭션 매니저 — 동작 흐름",
           "summary": "getConnection 이 같은 것을 돌려준다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",

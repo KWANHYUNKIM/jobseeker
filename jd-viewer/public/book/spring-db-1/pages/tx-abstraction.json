@@ -1,0 +1,148 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-abstraction",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "트랜잭션 추상화",
+ "summary": "PlatformTransactionManager. 인터페이스 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`PlatformTransactionManager` 를 안다.",
+  "구현이 여럿이라는 것을 안다.",
+  "추상화의 값어치와 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "인터페이스를 하나 끼운다",
+   "ascii": "   before\n   ------\n   service  ->  DataSource, Connection, SQLException\n                     |\n                     +--> jdbc only\n\n   after\n   -----\n   service  ->  PlatformTransactionManager\n                     |\n                     +--> DataSourceTransactionManager   jdbc\n                     +--> JpaTransactionManager          jpa\n                     +--> JtaTransactionManager          distributed\n\n   getTransaction / commit / rollback\n   세 메서드로 줄었다",
+   "note": "**3.3절의 `DataSource` 와 같은 수법**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface PlatformTransactionManager extends TransactionManager {\n\n    TransactionStatus getTransaction(TransactionDefinition definition)\n            throws TransactionException;\n\n    void commit(TransactionStatus status) throws TransactionException;\n\n    void rollback(TransactionStatus status) throws TransactionException;\n}",
+   "note": "**세 메서드**뿐이다. 시작·커밋·롤백.\n\n**`getTransaction`** 이라는 이름이 어색한데, **\"트랜잭션을 시작한다\"** 가 아니라 **\"트랜잭션을 가져온다\"** 다. **이미 있으면 그것을 주고 없으면 만든다** — 5.4절에서 이 구분이 중요해진다.\n\n**`TransactionException` 이 런타임 예외**다. `SQLException` 같은 체크 예외가 아니다 — 6·7장의 주제를 미리 쓴 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구현이 여럿이다",
+   "md": "| | 무엇을 |\n|---|---|\n| `DataSourceTransactionManager` | **JDBC** — 커넥션의 `autoCommit` 을 다룬다 |\n| `JpaTransactionManager` | **JPA** — `EntityTransaction` 을 다룬다 |\n| `JtaTransactionManager` | 여러 리소스에 걸친 분산 트랜잭션 |\n| `JdbcTransactionManager` | 부트 3 부터. JDBC 판인데 예외 변환을 더 한다 |\n\n**서비스는 인터페이스만** 본다. 5.1절의 첫 문제가 이렇게 풀린다.\n\n```java\n// JDBC 를 쓰든\nnew DataSourceTransactionManager(dataSource);\n\n// JPA 를 쓰든\nnew JpaTransactionManager(emf);\n\n// 서비스 코드는 같다\ntransactionManager.getTransaction(new DefaultTransactionDefinition());\n```\n\n**3.3절에서 본 그 구조**다.\n\n> **리포지토리 코드가 한 글자도 안 바뀐다** — 넘기는 구현만 바뀐다.\n\n**여기는 서비스**다. **바뀔 것을 밖으로** 뺀 것이 같다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "쓰는 모습",
+   "code": "public void accountTransfer(String fromId, String toId, int money)\n        throws SQLException {\n\n    TransactionStatus status =\n            transactionManager.getTransaction(new DefaultTransactionDefinition());\n\n    try {\n        bizLogic(fromId, toId, money);\n        transactionManager.commit(status);\n    } catch (Exception e) {\n        transactionManager.rollback(status);\n        throw new IllegalStateException(e);\n    }\n}",
+   "note": "**`finally` 가 사라졌다.** 4.7절의 `release(con)` 이 없다.\n\n**`commit` 과 `rollback` 이 자원 정리까지** 한다 — 커넥션을 닫고 `autoCommit` 을 되돌린다.\n\n**그리고 `Connection` 이 코드에 없다.** 5.1절의 두 번째 문제가 **절반** 풀렸다 — 서비스에서는 사라졌는데 **리포지토리는 아직** 받는다. 5.5절에서 마저 없앤다.\n\n**`TransactionStatus`** 가 그 자리를 대신한다. **커넥션이 아니라 트랜잭션의 상태**를 들고 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "TransactionDefinition 이 무엇인가",
+   "md": "```java\nnew DefaultTransactionDefinition()\n```\n\n**트랜잭션의 성격**을 정하는 것이다.\n\n| | 무엇 |\n|---|---|\n| **전파(propagation)** | 이미 트랜잭션이 있으면 어떻게 |\n| **격리 수준** | 4.1절의 그것 |\n| **읽기 전용** | 4.3절의 `readOnly` |\n| **타임아웃** | 트랜잭션 제한 시간 |\n\n**전부 `@Transactional` 의 속성**이다.\n\n```java\n@Transactional(propagation = REQUIRES_NEW, isolation = READ_COMMITTED,\n               readOnly = true, timeout = 10)\n```\n\n**5.8절에서 애너테이션이 되는데** 실제로는 **이 객체를 만들어 넘기는 것**이다.\n\n**기본값**\n\n```\n전파       REQUIRED    있으면 참여, 없으면 새로\n격리 수준   DEFAULT     DB 설정을 따른다\n읽기 전용   false\n타임아웃    없음\n```\n\n> **전파가 제일 중요**하고 제일 헷갈린다. **5.4절에서 `getTransaction` 이 \"가져온다\" 인 이유**가 이것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "추상화의 한계",
+   "md": "**인터페이스가 같아도 동작이 완전히 같지는 않다.**\n\n**1. 기술마다 되는 것이 다르다**\n\n```java\n@Transactional(isolation = SERIALIZABLE)\n```\n\n**DB 가 지원해야** 한다. 안 하면 무시되거나 예외다.\n\n**2. 섞어 쓰면 조심**\n\nJPA 와 JDBC 를 같이 쓰면 **`JpaTransactionManager` 하나로** 관리한다 — 그것이 `DataSource` 도 같이 다룬다. **`DataSourceTransactionManager` 를 따로 두면 트랜잭션이 둘**이 된다.\n\n**3. 분산 트랜잭션은 다른 이야기**\n\n`JtaTransactionManager` 는 **DB 두 개나 DB + 메시지 큐**를 묶는다. **2단계 커밋**이 필요하고 느리다. **요즘은 잘 안 쓴다** — 대신 **사가 패턴** 같은 것으로 푼다.\n\n> **「MVC 2편」 11.8절에서 본 것**과 같은 이야기다. 추상화는 **모양을 통일하지 세부를 없애지 못한다.** 2.1절에서 JDBC 가 SQL 방언을 표준화 못 한 것과 같다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "PlatformTransactionManager txManager =\n        new DataSourceTransactionManager(dataSource);\n\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n# 로그\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n#     select * from member where member_id = ?\n#     select * from member where member_id = ?\n#     update member set money=? where member_id=?\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# H2 가 받은 것\n#   SET AUTOCOMMIT FALSE\n#   select ... select ... update ... update ...\n#   COMMIT\n\n# 4 장과 완전히 같다\n\n# 트랜잭션 이름이 null 이다\n#   Creating new transaction with name [null]\n# 5.8 절에서 @Transactional 을 쓰면 메서드 이름이 나온다",
+   "note": "**스프링의 로그가 자기 말로** 남는다. `Switching to manual commit` 이 `SET AUTOCOMMIT FALSE` 이고, `Committing JDBC transaction` 이 `COMMIT` 이다.\n\n**`PROPAGATION_REQUIRED,ISOLATION_DEFAULT`** 가 `DefaultTransactionDefinition` 의 기본값이다.\n\n**`Releasing Connection after transaction`** 이 4.7절의 `release(con)` 자리다 — **스프링이 대신** 한다.\n\n**트랜잭션 이름이 `null`** 인 것을 봐 둔다. 5.8절에서 **`MemberServiceV3_3.accountTransfer`** 로 나온다 — 애너테이션이 이름을 붙여 준다."
+  }
+ ],
+ "recap": [
+  "**`PlatformTransactionManager` 인터페이스 하나**를 끼운다.",
+  "**세 메서드** — `getTransaction` · `commit` · `rollback`.",
+  "**\"가져온다\"** 다 — 있으면 주고 없으면 만든다. 5.4절.",
+  "**구현이 여럿** — JDBC · JPA · JTA.",
+  "**3.3절의 `DataSource` 와 같은 수법**이다.",
+  "**`finally` 가 사라졌다** — 커밋·롤백이 자원 정리까지 한다.",
+  "**서비스에서 `Connection` 이 사라졌다** — 리포지토리는 아직 받는다.",
+  "**`TransactionDefinition` 이 트랜잭션의 성격**을 정한다.",
+  "**전부 `@Transactional` 의 속성**이다.",
+  "**추상화는 모양을 통일하지 세부를 없애지 못한다.**",
+  "**로그가 스프링 말로** 바뀌었을 뿐 SQL 은 같다."
+ ],
+ "drills": [
+  {
+   "task": "`DataSourceTransactionManager` 로 서비스를 다시 쓴다.",
+   "done_when": "`finally` 가 사라진 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "로그를 켜고 스프링의 트랜잭션 로그를 읽는다.",
+   "done_when": "4장의 SQL 과 대응시켰다.",
+   "minutes": 20
+  },
+  {
+   "task": "`DefaultTransactionDefinition` 의 기본값을 로그에서 찾는다.",
+   "done_when": "`PROPAGATION_REQUIRED` 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`readOnly` 를 켜고 로그를 비교한다.",
+   "done_when": "무엇이 달라지는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서비스에서 `import java.sql.Connection` 을 지워 본다.",
+   "done_when": "지워지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`PlatformTransactionManager` 의 세 메서드는?",
+   "a": "`getTransaction`, `commit`, `rollback` 이다."
+  },
+  {
+   "q": "`getTransaction` 이 왜 \"가져온다\" 인가?",
+   "a": "이미 트랜잭션이 있으면 그것을 주고 없으면 만들기 때문이다. 전파 속성이 이것을 정한다."
+  },
+  {
+   "q": "`finally` 가 왜 사라졌나?",
+   "a": "`commit`·`rollback` 이 커넥션 반납과 `autoCommit` 복원까지 하기 때문이다."
+  },
+  {
+   "q": "`TransactionDefinition` 은 무엇인가?",
+   "a": "전파·격리 수준·읽기 전용·타임아웃 등 트랜잭션의 성격이다. `@Transactional` 의 속성이 이것이다."
+  },
+  {
+   "q": "추상화의 한계는?",
+   "a": "모양은 통일해도 기술별 세부는 남는다. 지원하지 않는 격리 수준이나 분산 트랜잭션이 그렇다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PlatformTransactionManager",
+   "en": "",
+   "what": "트랜잭션의 시작·커밋·롤백을 추상화한 스프링 인터페이스."
+  },
+  {
+   "term": "TransactionStatus",
+   "en": "",
+   "what": "진행 중인 트랜잭션의 상태를 담는 객체. 커밋·롤백에 넘긴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

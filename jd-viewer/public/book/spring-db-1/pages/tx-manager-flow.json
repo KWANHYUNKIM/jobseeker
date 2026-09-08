@@ -1,0 +1,141 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-manager-flow",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "트랜잭션 매니저 — 동작 흐름",
+ "summary": "getConnection 이 같은 것을 돌려준다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "트랜잭션 시작부터 종료까지 흐름을 안다.",
+  "이미 트랜잭션이 있을 때 무엇이 다른지 안다.",
+  "전파 속성의 기본 동작을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "처음부터 끝까지",
+   "ascii": "   service calls txManager.getTransaction()\n        |\n        v\n   is there a transaction already?\n        |                    |\n       no                   yes\n        |                    |\n        v                    v\n   dataSource.getConnection()   join the existing one\n   setAutoCommit(false)         (no new connection)\n   bindResource(ds, con)\n        |\n        v\n   repository: DataSourceUtils.getConnection(ds)\n        |\n        +--> getResource(ds)  ->  the same con\n        |\n        v\n   commit / rollback\n        |\n        +--> unbindResource, setAutoCommit(true), close",
+   "note": "**갈림길이 하나** — 이미 트랜잭션이 있나."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "getTransaction 이 갈린다",
+   "md": "5.2절에서 이름이 이상하다고 했다.\n\n> **\"트랜잭션을 시작한다\" 가 아니라 \"트랜잭션을 가져온다\"** 다.\n\n**이유가 이것**이다.\n\n```java\n@Transactional\npublic void outer() {\n    inner();          // 여기서 또 getTransaction 이 불린다\n}\n\n@Transactional\npublic void inner() { ... }\n```\n\n**`inner` 가 새 트랜잭션을 만들면** 커넥션이 둘이 되고 **원자성이 깨진다.**\n\n**기본 전파가 `REQUIRED`** 라 **있으면 참여**한다.\n\n```\nouter:  트랜잭션 없음  ->  새로 만든다\ninner:  트랜잭션 있음  ->  참여한다 (커넥션을 안 빌린다)\ninner 끝:  아무것도 안 한다 (커밋하지 않는다)\nouter 끝:  커밋한다\n```\n\n**`inner` 가 커밋하면 안 된다.** 아직 `outer` 가 안 끝났으니까.\n\n**`ConnectionHolder` 가 참여 횟수를 센다**(5.3절). **0 이 될 때만** 실제로 정리한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안쪽에서 롤백하면 바깥이 죽는다",
+   "md": "**참여한 트랜잭션에서 예외가 나면** 어떻게 되나.\n\n```java\n@Transactional\npublic void outer() {\n    try {\n        inner();          // 여기서 예외\n    } catch (Exception e) {\n        // 무시하고 계속\n    }\n    repository.save(something);\n}\n```\n\n**`outer` 가 커밋하려 하면**\n\n```\nUnexpectedRollbackException: Transaction silently rolled back\nbecause it has been marked as rollback-only\n```\n\n**안쪽이 롤백 표시를 남겼다.** 물리 롤백은 안 했는데 **\"이 트랜잭션은 롤백해야 한다\"** 고 적어 뒀다.\n\n**왜 그런가** — **같은 트랜잭션**이라서다. 안쪽이 실패했는데 바깥이 커밋하면 **일부만 저장**된다. 4.6절의 그 상태다.\n\n**예외를 잡아도 소용없다.** 표시는 이미 남았다.\n\n**어떻게 하나**\n\n| | |\n|---|---|\n| **안쪽을 트랜잭션에서 뺀다** | `@Transactional` 을 지운다 |\n| **`REQUIRES_NEW`** | 별도 커넥션. 진짜로 분리된다 |\n| **예외를 안 나게 한다** | 검증을 앞으로 |\n\n**두 번째는 커넥션이 둘**이라 **풀을 두 배로** 쓴다. 3.5절의 크기 계산에 영향을 준다.\n\n> **실무에서 자주 겪는 예외**다. `UnexpectedRollbackException` 이 보이면 **중첩 트랜잭션을 의심**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "커넥션은 언제 빌리나",
+   "md": "**`getTransaction` 에서** 빌린다.\n\n```\nCreating new transaction\nAcquired Connection [conn0] for JDBC transaction   <- 여기\nSwitching JDBC Connection [conn0] to manual commit\n```\n\n**아직 SQL 은 하나도 안 나갔다.**\n\n**그래서 3.3절의 `LazyConnectionDataSourceProxy`** 가 쓸모가 있다.\n\n```java\n@Transactional\npublic void mostlyReadonly(String id) {\n    if (cache.has(id)) {\n        return cache.get(id);   // DB 를 안 쓴다\n    }\n    return repository.findById(id);\n}\n```\n\n**캐시에 있으면 DB 를 안 쓰는데 커넥션은 이미 빌렸다.** 트래픽이 많으면 **낭비가 크다.**\n\n**`LazyConnectionDataSourceProxy` 를 쓰면** 첫 SQL 이 나갈 때까지 미룬다.\n\n> **읽기·쓰기 분리에도 쓰인다.** 커넥션을 늦게 빌리면 **트랜잭션이 읽기 전용인지 보고** 복제본으로 보낼 수 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "TransactionStatus 로 알 수 있는 것",
+   "code": "TransactionStatus status = txManager.getTransaction(definition);\n\nstatus.isNewTransaction();   // 내가 시작했나, 참여했나\nstatus.isRollbackOnly();     // 롤백 표시가 있나\nstatus.setRollbackOnly();    // 롤백 표시를 남긴다\nstatus.isCompleted();        // 끝났나",
+   "note": "**`isNewTransaction`** 이 위의 갈림길이다. **참여한 경우 `false`** 다.\n\n**`setRollbackOnly`** 는 **예외를 안 던지고 롤백**하고 싶을 때 쓴다.\n\n```java\nif (somethingWrong) {\n    status.setRollbackOnly();\n    return;   // 예외 없이 롤백된다\n}\n```\n\n**`@Transactional` 에서는** `TransactionAspectSupport.currentTransactionStatus()` 로 꺼낸다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 단일 트랜잭션\nservice.accountTransfer(...);\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 중첩 - 안쪽이 참여한다\nouterService.outer();   // 안에서 innerService.inner() 를 부른다\n\n#   Creating new transaction with name [outer]\n#   Acquired Connection [conn0]                     <- 한 번만 빌린다\n#   Switching to manual commit\n#   Participating in existing transaction            <- inner\n#     insert ...   (inner 의 SQL)\n#     insert ...   (outer 의 SQL)\n#   Initiating transaction commit                    <- outer 만 커밋\n#   Committing JDBC transaction on Connection [conn0]\n\n# 안쪽에서 예외가 나고 바깥이 잡으면\n#   Participating transaction failed - marking existing transaction as rollback-only\n#   Setting JDBC transaction [conn0] rollback-only\n#   Initiating transaction commit\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   Initiating transaction rollback\n#\n# org.springframework.transaction.UnexpectedRollbackException:\n#   Transaction silently rolled back because it has been marked as rollback-only",
+   "note": "**`Participating in existing transaction`** 이 참여의 증거다. **`Acquired Connection` 이 한 번뿐**이다.\n\n**`inner` 가 끝날 때 커밋 로그가 없다.** `outer` 만 커밋한다.\n\n**맨 아래가 이 절의 함정**이다. `marking existing transaction as rollback-only` 로 **표시가 남았고**, `outer` 가 커밋을 요청했는데 **롤백됐다.**\n\n**예외 메시지가 정확하다** — `silently rolled back`. **조용히 롤백됐다**는 것을 알려 주려고 예외를 던지는 것이다."
+  }
+ ],
+ "recap": [
+  "**갈림길은 하나** — 이미 트랜잭션이 있나.",
+  "**기본 전파 `REQUIRED`** — 있으면 참여, 없으면 새로.",
+  "**참여하면 커넥션을 안 빌리고 커밋도 안 한다.**",
+  "**`ConnectionHolder` 가 참여 횟수**를 센다.",
+  "**안쪽에서 롤백하면 바깥이 죽는다** — `UnexpectedRollbackException`.",
+  "**예외를 잡아도 표시는 남는다.**",
+  "**`REQUIRES_NEW` 는 커넥션이 둘** — 풀을 두 배로 쓴다.",
+  "**커넥션은 `getTransaction` 에서** 빌린다. SQL 전이다.",
+  "**`LazyConnectionDataSourceProxy`** 가 그것을 미룬다.",
+  "**`isNewTransaction`** 으로 참여인지 알 수 있다.",
+  "**`setRollbackOnly`** 로 예외 없이 롤백한다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 서비스를 만들고 로그를 본다.",
+   "done_when": "`Participating in existing transaction` 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "안쪽에서 예외를 던지고 바깥에서 잡는다.",
+   "done_when": "`UnexpectedRollbackException` 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "안쪽을 `REQUIRES_NEW` 로 바꾼다.",
+   "done_when": "커넥션이 둘 빌려지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`isNewTransaction()` 을 찍어 본다.",
+   "done_when": "바깥은 true, 안쪽은 false 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "DB 를 안 쓰는 트랜잭션을 만들고 커넥션 로그를 본다.",
+   "done_when": "빌리는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`getTransaction` 의 갈림길은?",
+   "a": "이미 트랜잭션이 있으면 참여하고 없으면 새로 만든다. 기본 전파가 `REQUIRED` 다."
+  },
+  {
+   "q": "참여하면 무엇이 다른가?",
+   "a": "커넥션을 새로 안 빌리고 끝날 때 커밋하지도 않는다."
+  },
+  {
+   "q": "`UnexpectedRollbackException` 은 왜 나나?",
+   "a": "참여한 안쪽이 실패해 롤백 표시를 남겼는데 바깥이 커밋을 요청했기 때문이다."
+  },
+  {
+   "q": "예외를 잡으면 해결되나?",
+   "a": "안 된다. 표시는 이미 남았다. `REQUIRES_NEW` 로 분리하거나 애초에 예외가 안 나게 한다."
+  },
+  {
+   "q": "커넥션은 언제 빌리나?",
+   "a": "`getTransaction` 시점이다. SQL 이 나가기 전이라 DB 를 안 쓰는 트랜잭션도 커넥션을 잡는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "전파",
+   "en": "propagation",
+   "what": "이미 트랜잭션이 있을 때 어떻게 할지 정하는 속성. 기본은 `REQUIRED`."
+  },
+  {
+   "term": "rollback-only",
+   "en": "",
+   "what": "롤백해야 한다는 표시. 참여한 트랜잭션이 실패하면 남는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
