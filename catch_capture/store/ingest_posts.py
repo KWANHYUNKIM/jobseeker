@@ -63,6 +63,11 @@ def _published(p: dict):
         return None
 
 
+def _strs(v) -> list[str]:
+    """text[] 로 넣을 값. None·비문자열이 섞여도 배열이 깨지지 않게 한다."""
+    return [str(x) for x in (v or []) if x]
+
+
 def ingest(dry_run: bool = False) -> dict:
     if not BLOGS_JSON.exists():
         raise SystemExit(f"입력이 없다: {BLOGS_JSON}")
@@ -109,8 +114,9 @@ def ingest(dry_run: bool = False) -> dict:
                 cur.execute(
                     """
                     INSERT INTO post (url, content_id, company_id, blog_name, title,
-                                      body, published_on, content_hash)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                                      body, published_on, content_hash,
+                                      country, lang, summary, tags, tech_stack, categories)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (url) DO UPDATE SET
                         content_id   = EXCLUDED.content_id,
                         company_id   = EXCLUDED.company_id,
@@ -119,12 +125,21 @@ def ingest(dry_run: bool = False) -> dict:
                         body         = EXCLUDED.body,
                         published_on = EXCLUDED.published_on,
                         content_hash = EXCLUDED.content_hash,
+                        country      = EXCLUDED.country,
+                        lang         = EXCLUDED.lang,
+                        summary      = EXCLUDED.summary,
+                        tags         = EXCLUDED.tags,
+                        tech_stack   = EXCLUDED.tech_stack,
+                        categories   = EXCLUDED.categories,
                         last_seen_at = now()
                     RETURNING (xmax = 0) AS inserted
                     """,
                     (p["url"].strip(), p.get("content_id") or None, cid,
                      p.get("company") or "", p["title"].strip(),
-                     body, _published(p), chash),
+                     body, _published(p), chash,
+                     p.get("country") or "", p.get("lang") or "",
+                     p.get("summary") or "", _strs(p.get("tags")),
+                     _strs(p.get("tech_stack")), _strs(p.get("categories"))),
                 )
                 if cur.fetchone()["inserted"]:
                     stats["new"] += 1

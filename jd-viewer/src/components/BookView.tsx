@@ -8,10 +8,10 @@ import { absUrl, clip, useSeo } from '../lib/seo'
 import { paths } from '../lib/urls'
 import {
   neighbors,
-  recallLast,
   rememberLast,
   totalMinutes,
   useFlatToc,
+  useLastRead,
   usePage,
   useReading,
   useShelf,
@@ -82,10 +82,7 @@ function Shelf() {
 
 function BookCard({ book }: { book: ShelfBook }) {
   const to = paths.book(book.id)
-  // '이어 읽기' 는 브라우저에 남은 기록이라 렌더 중에 읽어도 되지만, 값이 없을 수도
-  // 있으므로 마운트 뒤에 한 번만 확인한다(SSR·프리렌더에서 localStorage 가 없다).
-  const [last, setLast] = useState<string | null>(null)
-  useEffect(() => setLast(recallLast(book.id)), [book.id])
+  const last = useLastRead(book.id)
 
   const pct = book.sections ? Math.round((book.written / book.sections) * 100) : 0
 
@@ -142,8 +139,7 @@ function BookCard({ book }: { book: ShelfBook }) {
 function Cover({ bookId }: { bookId: string }) {
   const { data: toc, loading, error } = useToc(bookId)
   const { read } = useReading(bookId)
-  const [last, setLast] = useState<string | null>(null)
-  useEffect(() => setLast(recallLast(bookId)), [bookId])
+  const last = useLastRead(bookId)
 
   useSeo(
     toc
@@ -332,11 +328,18 @@ function Reader({ bookId, pageId }: { bookId: string; pageId: string }) {
   const { read, toggle } = useReading(bookId)
   const [tocOpen, setTocOpen] = useState(false)
 
+  // 절이 바뀌면 모바일 차례 서랍을 닫는다. 효과가 아니라 렌더 중에 조정하는 이유는
+  // 이 파일의 다른 곳과 같다 — 효과로 미루면 새 절 위에 서랍이 한 프레임 남는다.
+  const [prevPage, setPrevPage] = useState(pageId)
+  if (pageId !== prevPage) {
+    setPrevPage(pageId)
+    setTocOpen(false)
+  }
+
   useEffect(() => {
     rememberLast(bookId, pageId)
     // 절을 옮기면 맨 위에서 시작해야 한다. 스크롤이 남아 있으면 새 절의 중간부터 보인다.
     document.querySelector('[data-book-scroll]')?.scrollTo({ top: 0 })
-    setTocOpen(false)
   }, [bookId, pageId])
 
   useSeo(

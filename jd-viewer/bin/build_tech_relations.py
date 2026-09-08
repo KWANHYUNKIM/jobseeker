@@ -52,7 +52,11 @@ def main() -> None:
             stacks.append(ts)
             count.update(ts)
 
-    top = [t for t, _ in count.most_common(TOP_N)]
+    # 동률에서 이름으로 자른다. Counter.most_common 은 같은 건수면 **입력 순서**를
+    # 따르므로, 같은 데이터라도 공고를 읽어온 순서가 조금만 달라지면 순위가 흔들린다
+    # (Node.js 와 MySQL 이 둘 다 252건인 식). 값은 같은데 파일만 달라지면 무엇이
+    # 진짜 변화인지 볼 수 없다.
+    top = [t for t, _ in sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:TOP_N]]
     topset = set(top)
     co: dict[str, Counter] = {t: Counter() for t in top}
     for ts in stacks:
@@ -66,7 +70,7 @@ def main() -> None:
     for t in top:
         base = count[t]
         related = []
-        for name, n in co[t].most_common(RELATED_N):
+        for name, n in sorted(co[t].items(), key=lambda kv: (-kv[1], kv[0]))[:RELATED_N]:
             related.append({
                 "name": name,
                 "layer": layer_of(name),

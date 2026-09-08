@@ -54,7 +54,7 @@ MIN_SCORE = 0.05     # 이보다 낮으면 '가까운 글'이 아니라 그냥 �
 # 공고의 몇 %" 를 보고 여기서 "그럼 뭘 읽지" 로 이어지려면 축이 같아야 한다.
 sys.path.insert(0, str(ROOT / "catch_capture"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from jobs_filter import load_jobs  # noqa: E402
+from jobs_filter import load_jobs, load_posts  # noqa: E402
 from pipeline.trends import CONCEPT_KEYWORDS  # noqa: E402
 
 
@@ -153,9 +153,7 @@ def main() -> None:
     }
     stack_by_url = {j.get("url"): (j.get("tech_stack") or []) for j in jobs if j.get("url")}
 
-    blogs = json.loads((ROOT / "jd-viewer" / "public" / "tech_blogs.json").read_text(encoding="utf-8"))
-    blist = blogs if isinstance(blogs, list) else next(v for v in blogs.values() if isinstance(v, list))
-    meta_by_url = {b["url"]: b for b in blist if b.get("url")}
+    meta_by_url = {b["url"]: b for b in load_posts() if b.get("url")}
 
     base = jvec.mean(axis=0)
 

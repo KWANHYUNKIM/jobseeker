@@ -287,6 +287,20 @@ export function rememberLast(book: string, pageId: string): void {
   }
 }
 
+/**
+ * 마지막으로 연 절을 렌더 중에 읽는다. 효과 안에서 setState 하면 첫 프레임에
+ * '이어 읽기' 버튼이 없다가 생겨서 버튼 줄이 한 번 튄다.
+ * (localStorage 접근이 막힌 환경에서는 recallLast 가 null 을 돌려준다.)
+ */
+export function useLastRead(book: string | null): string | null {
+  const [state, setState] = useState<{ book: string | null; last: string | null }>(() => ({
+    book,
+    last: book ? recallLast(book) : null,
+  }))
+  if (state.book !== book) setState({ book, last: book ? recallLast(book) : null })
+  return state.book === book ? state.last : null
+}
+
 export function recallLast(book: string): string | null {
   try {
     return localStorage.getItem(lastKey(book))

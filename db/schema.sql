@@ -430,6 +430,17 @@ CREATE TABLE post (
     body          text        NOT NULL DEFAULT '',
     published_on  date,
     content_hash  text        NOT NULL,
+
+    -- 분류 축. `tech_blogs.json` 이 들고 있던 것을 그대로 옮긴다 — 이게 없으면
+    -- build_company_stacks 의 블로그 추천(어떤 기술·주제의 글인가)이 성립하지
+    -- 않아서, 그 빌더가 DB 를 두고 파일을 다시 읽어야 했다.
+    country       text        NOT NULL DEFAULT '',   -- 'KR' / 'US' / 'JP' …
+    lang          text        NOT NULL DEFAULT '',
+    summary       text        NOT NULL DEFAULT '',
+    tags          text[]      NOT NULL DEFAULT '{}',
+    tech_stack    text[]      NOT NULL DEFAULT '{}',
+    categories    text[]      NOT NULL DEFAULT '{}',  -- 한국어 주제 분류('보안' 등)
+
     first_seen_at timestamptz NOT NULL DEFAULT now(),
     last_seen_at  timestamptz NOT NULL DEFAULT now(),
 

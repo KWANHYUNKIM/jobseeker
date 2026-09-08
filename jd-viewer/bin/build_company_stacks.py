@@ -32,7 +32,7 @@ from classifier import (  # noqa: E402
     extract_revenue_eok,
     _norm_company,
 )
-from jobs_filter import active_only, load_jobs  # noqa: E402
+from jobs_filter import active_only, load_jobs, load_posts  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 PROFILES = ROOT / "jd-viewer" / "public" / "company_profiles.json"
@@ -652,14 +652,12 @@ _CAT_TO_BLOGCAT: dict[str, str] = {
 
 def _load_blog_index() -> list[dict]:
     """블로그 글을 검색용 인덱스로 로드. 실패 시 빈 리스트(가이드는 여전히 동작)."""
-    if not TECH_BLOGS.exists():
-        return []
     try:
-        data = json.loads(TECH_BLOGS.read_text(encoding="utf-8"))
+        posts = load_posts(TECH_BLOGS)
     except Exception:
         return []
     idx: list[dict] = []
-    for p in data.get("posts", []):
+    for p in posts:
         tags = {str(t).lower() for t in (p.get("tags") or [])}
         tags |= {str(t).lower() for t in (p.get("tech_stack") or [])}
         idx.append({

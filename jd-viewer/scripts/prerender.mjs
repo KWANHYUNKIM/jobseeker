@@ -129,6 +129,10 @@ function page({ path, title, description, body, jsonLd, robots }) {
   // 셸의 기본 title/description 은 페이지별 것으로 대체한다(둘이 겹치면 안 된다).
   html = html.replace(/<title>[\s\S]*?<\/title>\s*/, '')
   html = html.replace(/<meta\s+name="description"[\s\S]*?\/>\s*/, '')
+  // 셸에 박혀 있는 `robots: index, follow` 는 색인 제외 페이지에서 지운다.
+  // 남겨 두면 한 문서에 robots 가 두 벌 생긴다 — 크롤러가 더 엄격한 쪽을 따르긴
+  // 하지만, 색인 여부를 남의 우선순위 규칙에 맡길 이유가 없다.
+  if (robots) html = html.replace(/<meta\s+name="robots"[\s\S]*?\/>\s*/, '')
   html = html.replace('</head>', `  ${head}\n  </head>`)
   // 정적 본문은 #root 안에 넣는다. 브라우저에서는 React 가 마운트하며 이 자리를
   // 통째로 갈아끼우므로 화면에는 영향이 없고, JS 를 안 도는 크롤러만 이걸 읽는다.

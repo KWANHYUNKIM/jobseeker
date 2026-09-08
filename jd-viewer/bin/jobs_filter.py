@@ -72,3 +72,63 @@ def active_only(jobs: list[dict]) -> list[dict]:
     if not any("status" in j for j in jobs[:50]):
         return jobs                      # status 이전 포맷 — 거를 근거가 없다
     return [j for j in jobs if (j.get("status") or "active") != "closed"]
+
+
+def load_posts(fallback: Path | None = None, *, quiet: bool = False) -> list[dict]:
+    """기술 블로그 글 전량. 정본 DB 의 `post` 를 읽고, 못 읽으면 tech_blogs.json.
+
+    돌려주는 dict 는 `tech_blogs.json` 의 posts 항목과 같은 키를 쓴다 —
+    company / country / title / url / published / published_ts / summary /
+    tags / tech_stack / categories / lang. 읽는 쪽은 출처를 몰라도 된다.
+
+    `published_ts` 는 저장하지 않고 `published_on` 에서 만든다. 파일 쪽 값도
+    날짜 단위였고(그날 00:00 UTC), 같은 값을 두 군데 두면 어긋날 자리만 는다.
+    """
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    try:
+        from store import conn as store_conn
+        with store_conn.cursor(autocommit=True) as cur:
+            cur.execute(
+                """SELECT p.url, p.title, p.blog_name, p.published_on, p.summary,
+                          p.country, p.lang, p.tags, p.tech_stack, p.categories,
+                          p.content_id
+                     FROM post p ORDER BY p.published_on DESC NULLS LAST, p.id"""
+            )
+            rows = cur.fetchall()
+        if rows:
+            from datetime import datetime, timezone
+            out = []
+            for r in rows:
+                d = r["published_on"]
+                out.append({
+                    "company": r["blog_name"] or "",
+                    "country": r["country"] or "",
+                    "lang": r["lang"] or "",
+                    "title": r["title"],
+                    "url": r["url"],
+                    "summary": r["summary"] or "",
+                    "published": d.isoformat() if d else "",
+                    "published_ts": (datetime(d.year, d.month, d.day,
+                                              tzinfo=timezone.utc).timestamp() if d else 0),
+                    "tags": list(r["tags"] or []),
+                    "tech_stack": list(r["tech_stack"] or []),
+                    "categories": list(r["categories"] or []),
+                    "content_id": r["content_id"] or "",
+                })
+            if not quiet:
+                print(f"  [입력] 정본 DB post {len(out):,}편")
+            return out
+        if not quiet:
+            print("  [입력] DB 에 블로그 글이 없습니다 — 파일로 물러섭니다")
+    except Exception as e:                                          # noqa: BLE001
+        if not quiet:
+            print(f"  [입력] DB 를 못 읽어 파일로 물러섭니다: {e}")
+
+    path = fallback or (ROOT / "jd-viewer" / "public" / "tech_blogs.json")
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    posts = data.get("posts") if isinstance(data, dict) else data
+    if not quiet:
+        print(f"  [입력] {path.name} {len(posts or []):,}편")
+    return posts or []

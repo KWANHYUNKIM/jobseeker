@@ -146,7 +146,7 @@ function App() {
       // 검색어가 걸린 목록은 같은 목록의 무한 변형이라 색인해봐야 중복 페이지만 는다.
       robots: filter.query && isJobList ? 'noindex, follow' : undefined,
     }
-  }, [selected, tab, detail, route.path, route.seg, filter.query, isJobList])
+  }, [selected, tab, detail, route.path, filter.query, isJobList])
   useSeo(seo)
 
   return (
