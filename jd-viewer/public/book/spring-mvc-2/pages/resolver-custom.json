@@ -1,0 +1,136 @@
+{
+ "book": "spring-mvc-2",
+ "id": "resolver-custom",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "직접 만들어 본다",
+ "summary": "예외를 상태 코드로 바꾼다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리졸버를 직접 만들 수 있다.",
+  "응답을 직접 쓰는 방법을 안다.",
+  "이 방식이 왜 불편한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리졸버",
+   "code": "@Slf4j\npublic class UserHandlerExceptionResolver implements HandlerExceptionResolver {\n\n    private final ObjectMapper objectMapper = new ObjectMapper();\n\n    @Override\n    public ModelAndView resolveException(HttpServletRequest request,\n                                         HttpServletResponse response,\n                                         Object handler, Exception ex) {\n        try {\n            if (ex instanceof UserException) {\n                String acceptHeader = request.getHeader(\"accept\");\n                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);\n\n                if (\"application/json\".equals(acceptHeader)) {\n                    Map<String, Object> errorResult = new HashMap<>();\n                    errorResult.put(\"ex\", ex.getClass());\n                    errorResult.put(\"message\", ex.getMessage());\n\n                    String result = objectMapper.writeValueAsString(errorResult);\n\n                    response.setContentType(\"application/json\");\n                    response.setCharacterEncoding(\"utf-8\");\n                    response.getWriter().write(result);\n\n                    return new ModelAndView();   // 빈 것\n                } else {\n                    return new ModelAndView(\"error/500\");\n                }\n            }\n        } catch (IOException e) {\n            log.error(\"resolver ex\", e);\n        }\n        return null;   // 못 잡았다\n    }\n}",
+   "note": "**`ObjectMapper` 를 직접 쓴다.** 1편 7.9절에서 본 그것인데, **여기서는 스프링이 안 도와준다** — 응답 바디를 손으로 쓴다.\n\n**`setCharacterEncoding(\"utf-8\")`** 을 빠뜨리면 한글이 깨진다. 1편 3.4절의 그 문제.\n\n**마지막 `return null`** 이 중요하다. `UserException` 이 아니면 못 잡는다고 알린다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 리졸버가 둘을 가른다",
+   "ascii": "   resolveException(request, response, handler, ex)\n        |\n        +--> ex instanceof UserException ?\n                  |\n                 yes\n                  |\n                  v\n             accept header is json ?\n                  |            |\n                yes           no\n                  |            |\n                  v            v\n             write json    forward to error view\n                  |            |\n                  v            v\n             empty MAV     new ModelAndView(\"error/500\")\n\n   한 리졸버 안에서 화면과 API 를 가른다",
+   "note": "**`Accept` 헤더로 화면과 API 를 나눈다** — 9.6절의 `BasicErrorController` 와 같은 방식."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "불편한 것 넷",
+   "md": "**동작은 하는데 손이 많이 간다.**\n\n**1. 응답을 손으로 쓴다**\n\n`ObjectMapper` · `setContentType` · `setCharacterEncoding` · `getWriter().write()`. **1편 7.9절에서 `@ResponseBody` 가 해 주던 것**을 전부 직접 한다.\n\n**2. `Accept` 헤더를 직접 판단한다**\n\n```java\nif (\"application/json\".equals(acceptHeader))\n```\n\n**문자열 비교**다. 실제 헤더는 `application/json, text/plain, */*` 처럼 온다 — **이 코드는 브라우저 요청을 못 걸러낸다.** 1편 7.14절의 콘텐츠 협상을 손으로 구현하는 셈이다.\n\n**3. 예외마다 `if` 가 는다**\n\n```java\nif (ex instanceof UserException) { ... }\nelse if (ex instanceof ItemNotFoundException) { ... }\nelse if (ex instanceof NoPermissionException) { ... }\n```\n\n**10.2절에서 지적한 문제**가 그대로다.\n\n**4. 컨트롤러와 멀다**\n\n여전히 별도 클래스다. **어느 컨트롤러의 예외인지** 알 수 없다.\n\n**10.6절의 `@ExceptionHandler` 가 넷을 다 없앤다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 만들어 본 이유",
+   "md": "**`@ExceptionHandler` 도 결국 리졸버**다.\n\n```\nExceptionHandlerExceptionResolver\n  -> @ExceptionHandler 메서드를 찾는다\n  -> 호출한다\n  -> 반환값을 HttpMessageConverter 로 쓴다\n  -> 빈 ModelAndView 를 반환한다\n```\n\n**위에서 손으로 한 것을 그대로** 한다. 애너테이션이 마법이 아니라 **이 인터페이스 위에 얹힌 것**이다.\n\n**5장에서 V1 부터 만든 것과 같은 이유**다. 결과만 보면 왜 그렇게 생겼는지 모른다.\n\n**그리고 직접 만들어야 하는 자리도 있다.**\n\n| | |\n|---|---|\n| **모든 예외에 공통 처리** | 로깅·알림·`traceId` 부여 |\n| **`@ExceptionHandler` 전에** | 순서상 먼저 봐야 할 때 |\n| **스프링 밖의 예외** | 필터에서 난 것은 못 잡지만 |\n\n**세 번째는 사실 안 된다** — 리졸버는 `DispatcherServlet` 안이라 **필터의 예외는 못 본다.** 그건 9장의 흐름이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n\n    @Override\n    public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {\n        resolvers.add(new UserHandlerExceptionResolver());\n    }\n}",
+   "note": "**`extend` 다** — `configure` 가 아니다.\n\n```java\nconfigureHandlerExceptionResolvers(...)   // 기본 것을 다 지운다\nextendHandlerExceptionResolvers(...)      // 기본 것에 더한다\n```\n\n**`configure` 를 쓰면 `@ExceptionHandler` 가 안 돈다.** 6.2절에서 `addValidators` 가 전역 검증기를 대체하던 것과 같은 종류의 함정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "예외를 정의하는 법",
+   "md": "**리졸버든 `@ExceptionHandler` 든 예외 클래스가 먼저**다.\n\n```java\npublic class UserException extends RuntimeException {\n    public UserException(String message) {\n        super(message);\n    }\n}\n```\n\n**`RuntimeException` 을 상속**한다 — 체크 예외로 만들면 `throws` 가 온 코드에 번진다.\n\n**계층을 만드는 것**이 좋다.\n\n```\nBusinessException          (모든 업무 예외의 부모)\n  +-- ItemNotFoundException\n  +-- NoPermissionException\n  +-- OutOfStockException\n```\n\n**부모로 한 번에 잡을 수 있다** — 9.2절에서 `RuntimeException.class` 하나가 자식을 다 잡던 것과 같다.\n\n**메시지를 예외에 넣을지**는 판단이다.\n\n| | |\n|---|---|\n| 예외에 메시지 | 간단하다. 국제화가 안 된다 |\n| **예외에 코드** | 4장의 메시지 소스를 태울 수 있다 |\n\n```java\npublic class ItemNotFoundException extends BusinessException {\n    public ItemNotFoundException(Long itemId) {\n        super(\"error.item.notFound\", itemId);   // 코드와 인자\n    }\n}\n```\n\n**5.5절의 `rejectValue` 와 같은 발상**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# API 요청\nGET /api/user-ex HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 400 \nContent-Type: application/json;charset=utf-8\n\n{\"ex\":\"hello.exception.exception.UserException\",\"message\":\"사용자 오류\"}\n\n# 화면 요청\nGET /api/user-ex HTTP/1.1\nAccept: text/html,application/xhtml+xml\n\nHTTP/1.1 400 \nContent-Type: text/html;charset=UTF-8\n\n<h2>오류가 발생했습니다</h2>\n\n# 브라우저가 보내는 실제 Accept\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n\n# 문자열 비교라 걸러지지 않는 경우\nAccept: application/json, text/plain, */*\n\nHTTP/1.1 400 \nContent-Type: text/html;charset=UTF-8\n\n<h2>오류가 발생했습니다</h2>\n\n# JSON 을 원했는데 HTML 이 왔다",
+   "note": "**앞의 둘은 의도대로**다. 같은 URL 에 `Accept` 만 다른데 JSON 과 HTML 로 갈렸다.\n\n**맨 아래가 문자열 비교의 한계**다. `application/json` 으로 시작하는데 뒤에 다른 것이 붙어 있어서 `equals` 가 실패했고, **JSON 을 원한 클라이언트가 HTML 을 받았다** — 10.1절에서 본 그 파싱 오류가 난다.\n\n**첫 응답의 `\"ex\"` 필드**도 문제다. **패키지 경로가 그대로** 나갔다 — 10.1절에서 담지 말라고 한 것이다. 예제라 넣었지만 실제로는 빼야 한다."
+  }
+ ],
+ "recap": [
+  "**`ObjectMapper` 로 응답을 손으로** 쓴다.",
+  "**`setCharacterEncoding`** 을 빠뜨리면 한글이 깨진다.",
+  "**`return null` 이 못 잡았다**는 신호다.",
+  "불편한 것 넷 — **응답 직접 · `Accept` 직접 · `if` 증가 · 컨트롤러와 멂**.",
+  "**`Accept` 를 `equals` 로 비교하면** 실제 헤더를 못 거른다.",
+  "**`@ExceptionHandler` 도 결국 이 인터페이스 위**에 얹힌 것이다.",
+  "**`extend` 를 쓴다** — `configure` 는 기본 것을 지운다.",
+  "**`RuntimeException` 을 상속**하고 **계층을 만든다**.",
+  "**예외에 메시지 대신 코드**를 담으면 4장을 태울 수 있다.",
+  "**리졸버는 필터의 예외를 못 본다** — 그건 9장의 흐름이다."
+ ],
+ "drills": [
+  {
+   "task": "`UserException` 과 리졸버를 만든다.",
+   "done_when": "400 과 JSON 이 나오는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`setCharacterEncoding` 을 뺀다.",
+   "done_when": "한글이 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Accept: application/json, */*` 로 요청한다.",
+   "done_when": "HTML 이 오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`configure` 로 등록해 본다.",
+   "done_when": "`@ExceptionHandler` 가 안 도는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "예외 계층을 만들고 부모로 잡아 본다.",
+   "done_when": "자식들이 다 걸리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리졸버에서 JSON 을 어떻게 내보내나?",
+   "a": "`ObjectMapper` 로 직렬화하고 `setContentType`·`setCharacterEncoding` 후 `getWriter().write()` 로 직접 쓴다."
+  },
+  {
+   "q": "직접 만든 리졸버의 불편함은?",
+   "a": "응답과 `Accept` 판단을 손으로 하고, 예외마다 `if` 가 늘고, 컨트롤러와 멀다."
+  },
+  {
+   "q": "`configure` 와 `extend` 의 차이는?",
+   "a": "`configure` 는 기본 리졸버를 다 지우고 `extend` 는 더한다. `configure` 를 쓰면 `@ExceptionHandler` 가 안 돈다."
+  },
+  {
+   "q": "예외를 어떻게 정의하나?",
+   "a": "`RuntimeException` 을 상속하고 업무 예외의 공통 부모를 두어 계층을 만든다."
+  },
+  {
+   "q": "예외에 메시지 대신 코드를 담으면?",
+   "a": "4장의 메시지 소스를 태울 수 있어 국제화되고 문구를 파일에서 관리한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

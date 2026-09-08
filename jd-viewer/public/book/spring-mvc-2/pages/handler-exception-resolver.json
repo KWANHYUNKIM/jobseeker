@@ -1,0 +1,168 @@
+{
+ "book": "spring-mvc-2",
+ "id": "handler-exception-resolver",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "HandlerExceptionResolver",
+ "summary": "1편 6.2절 doDispatch 의 catch 자리.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리졸버가 어디서 불리는지 안다.",
+  "반환값 세 가지의 뜻을 안다.",
+  "왜 요청이 두 번 안 오는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 6.2절에서 `doDispatch` 를 뜯어볼 때 이런 줄이 있었다.\n\n> 핸들러 호출을 `try-catch` 로 감싸고 있다. **여기서 잡힌 예외가 어떻게 되는지는 2편에서** 본다.\n\n**여기다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "잡힌 예외가 가는 곳",
+   "ascii": "   doDispatch()\n   ------------\n   try {\n       ha.handle(request, response, handler)   <- controller\n   } catch (Exception ex) {\n       dispatchException = ex\n   }\n   processDispatchResult(..., dispatchException)\n        |\n        v\n   for each HandlerExceptionResolver:\n       resolveException(request, response, handler, ex)\n        |\n        +--> ModelAndView   ->  render it, exception is handled\n        +--> empty MAV      ->  no view, response as-is\n        +--> null           ->  try next resolver\n\n   아무도 못 잡으면 예외가 그대로 올라간다",
+   "note": "**`DispatcherServlet` 안에서 처리된다** — 9장처럼 WAS 까지 안 올라간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "요청이 두 번 오지 않는다",
+   "md": "**9.3절의 구조와 비교**하면 이것이 핵심 차이다.\n\n```\n9 장:  예외 -> WAS -> 오류 페이지 URL 로 재요청 -> 응답\n10 장: 예외 -> DispatcherServlet 이 잡음 -> 바로 응답\n```\n\n**리졸버가 예외를 \"해결\" 하면** `DispatcherServlet` 은 **정상 처리된 것처럼** 응답을 내보낸다. WAS 는 예외가 있었는지도 모른다.\n\n**그래서 따라오는 것들**\n\n| | |\n|---|---|\n| **필터·인터셉터가 한 번만** | 9.4·9.5절의 조치가 필요 없다 |\n| **`DispatcherType` 이 `REQUEST`** | 오류 요청이 아니다 |\n| **오류 페이지 등록이 불필요** | URL 을 안 만든다 |\n\n**9장의 복잡함이 통째로 사라진다.**\n\n> **그런데 화면은 여전히 9장 방식**을 쓴다. 오류 페이지가 있어야 하고 `Whitelabel` 을 막아야 하니까. **둘이 공존**한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface HandlerExceptionResolver {\n\n    ModelAndView resolveException(HttpServletRequest request,\n                                  HttpServletResponse response,\n                                  Object handler,\n                                  Exception ex);\n}",
+   "note": "**`Object handler`** 가 또 나온다 — 8.4절의 인터셉터와 같다.\n\n**반환이 `ModelAndView`** 인 것이 이 인터페이스의 시대를 보여 준다. **API 를 상정하지 않은 설계**다."
+  },
+  {
+   "type": "table",
+   "caption": "반환값 세 가지",
+   "note": "**둘째가 API 에서 쓰는 것**이다. 응답 바디를 직접 쓰고 빈 `ModelAndView` 를 돌려준다.",
+   "columns": [
+    "",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "**`ModelAndView`**",
+     "이 뷰를 렌더링한다. 예외는 해결됨"
+    ],
+    [
+     "**빈 `ModelAndView`**",
+     "뷰 없음. **응답을 그대로** 내보낸다"
+    ],
+    [
+     "**`null`**",
+     "**내가 못 잡는다** — 다음 리졸버로"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "null 과 빈 ModelAndView 를 헷갈리면",
+   "md": "**정반대의 뜻**이다.\n\n```java\nreturn null;                      // 못 잡았다\nreturn new ModelAndView();        // 잡았고 뷰는 없다\n```\n\n**`null` 을 반환하면** 다음 리졸버로 넘어가고, 아무도 안 잡으면 **예외가 그대로 WAS 로** 올라간다 — 9장의 흐름을 탄다.\n\n**빈 `ModelAndView` 를 반환하면** 거기서 끝난다. **응답에 아무것도 안 썼으면 빈 200** 이 나간다.\n\n**8.1절의 `chain.doFilter` 와 같은 종류의 함정**이다.\n\n> **실수로 안 부르면 백지**다. 오류도 안 난다.\n\n**여기도 백지가 나온다.** `response.getWriter().write(...)` 를 빠뜨리면 그렇다.\n\n**8.4절의 `preHandle` 반환값**과도 비슷하다 — **불린 하나로 흐름이 갈리는 API** 가 스프링에 자주 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 모양을 네 번째 본다",
+   "md": "| | 묻는 것 |\n|---|---|\n| `Validator` (5.9) | `supports` |\n| `HandlerAdapter` (1편 6.3) | `supports` |\n| `ArgumentResolver` (7.8) | `supportsParameter` |\n| **`HandlerExceptionResolver`** | **`null` 반환** |\n\n**앞의 셋은 물어보는 메서드가 따로** 있고, 이것은 **`null` 로 대신**한다.\n\n**같은 목적**이다 — 여러 후보를 두고 맡을 수 있는 것에 넘긴다.\n\n**왜 다르게 만들었나** — 예외 처리는 **해 보기 전에 맡을지 알기 어렵다.** 예외 타입만으로 판단이 안 되는 경우가 있어서, **일단 해 보고 안 되면 `null`** 이 더 자연스럽다.\n\n> **7.8절에서 이 패턴이 OCP 의 구현**이라고 했다. 형태가 조금 달라도 목적은 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이미 넷이 등록되어 있다",
+   "md": "**직접 만들기 전에** 부트가 등록해 둔 것이 있다.\n\n| | 하는 일 | 순서 |\n|---|---|---|\n| `ExceptionHandlerExceptionResolver` | **`@ExceptionHandler`** 처리 | **1** |\n| `ResponseStatusExceptionResolver` | `@ResponseStatus` 처리 | 2 |\n| `DefaultHandlerExceptionResolver` | 스프링 내부 예외 → 상태 코드 | 3 |\n\n**첫 번째가 10.6절**에서 쓸 것이고, **실무에서 쓰는 것은 거의 그것뿐**이다.\n\n**직접 리졸버를 만드는 일은 드물다.** 그런데 **10.4절에서 만들어 본다** — 5장에서 V1 부터 만든 것과 같은 이유다. `@ExceptionHandler` 가 무엇 위에서 도는지 알아야 한다.\n\n**순서가 중요하다.** `@ExceptionHandler` 가 가장 먼저 확인되므로, 그것이 잡으면 나머지는 안 불린다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 리졸버가 없을 때 (9 장의 흐름)\nGET /api/items/999 HTTP/1.1\n\n# 서버 로그\n#   REQUEST  [a1b2][/api/items/999]      <- 1 차\n#   ...예외\n#   RESPONSE [a1b2][/api/items/999]\n#   REQUEST  [c3d4][/error]              <- 2 차\n#   RESPONSE [c3d4][/error]\n\nHTTP/1.1 500 \n{\"timestamp\":\"...\",\"status\":500,...}\n\n# 리졸버가 잡으면 (10 장의 흐름)\nGET /api/items/999 HTTP/1.1\n\n# 서버 로그\n#   REQUEST  [a1b2][/api/items/999]      <- 한 번뿐\n#   resolver: ItemNotFoundException 처리\n#   RESPONSE [a1b2][/api/items/999]\n\nHTTP/1.1 404 \nContent-Type: application/json\n{\"code\":\"ITEM_NOT_FOUND\",\"message\":\"상품을 찾을 수 없습니다\"}\n\n# 빈 ModelAndView 를 반환하고 응답을 안 쓰면\nHTTP/1.1 200 \nContent-Length: 0",
+   "note": "**로그가 한 벌**이 된 것이 이 절의 성과다. 9.3절에서 두 벌이던 것이고, **uuid 가 하나**라 요청이 이어진다.\n\n**응답도 404 로** 정확해졌다 — 리졸버가 상태 코드를 정했기 때문이다.\n\n**맨 아래가 함정**이다. 빈 `ModelAndView` 를 돌려주고 응답 바디를 안 썼더니 **200 에 길이 0** 이다. 클라이언트는 성공으로 읽는다 — 9.1절에서 본 \"예외를 삼키면 200\" 과 같은 결과다."
+  }
+ ],
+ "recap": [
+  "**1편 6.2절 `doDispatch` 의 `catch` 자리**다.",
+  "**`DispatcherServlet` 안에서 처리**되어 WAS 로 안 올라간다.",
+  "**요청이 두 번 오지 않는다** — 9장의 복잡함이 사라진다.",
+  "**필터·인터셉터가 한 번만** 돈다.",
+  "**화면은 여전히 9장 방식** — 둘이 공존한다.",
+  "반환 셋 — **`ModelAndView` · 빈 `ModelAndView` · `null`**.",
+  "**`null` 은 못 잡았다는 뜻**이고 빈 것은 잡았다는 뜻이다.",
+  "**응답을 안 쓰면 200 에 빈 바디**가 나간다.",
+  "**같은 패턴을 네 번째** 본다 — 다만 `null` 로 대신한다.",
+  "**이미 셋이 등록**되어 있고 실무에서는 `@ExceptionHandler` 만 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "리졸버를 만들고 `null` 을 반환한다.",
+   "done_when": "9장의 흐름을 타는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈 `ModelAndView` 를 반환한다.",
+   "done_when": "200 에 빈 바디가 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답에 JSON 을 쓰고 빈 것을 반환한다.",
+   "done_when": "요청이 한 번만 도는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터 로그를 켜고 두 흐름을 비교한다.",
+   "done_when": "로그가 두 벌에서 한 벌이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "등록된 리졸버 목록을 디버거로 확인한다.",
+   "done_when": "셋이 순서대로 있는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리졸버는 어디서 불리나?",
+   "a": "`DispatcherServlet` 의 `doDispatch` 가 핸들러 호출을 감싼 `try-catch` 뒤다."
+  },
+  {
+   "q": "9장과 흐름이 어떻게 다른가?",
+   "a": "예외가 WAS 로 안 올라가고 `DispatcherServlet` 안에서 처리되어 요청이 두 번 오지 않는다."
+  },
+  {
+   "q": "`null` 과 빈 `ModelAndView` 의 차이는?",
+   "a": "`null` 은 못 잡았다는 뜻이라 다음 리졸버로 가고, 빈 것은 잡았고 뷰가 없다는 뜻이다."
+  },
+  {
+   "q": "빈 `ModelAndView` 를 주고 응답을 안 쓰면?",
+   "a": "200 에 빈 바디가 나가서 클라이언트가 성공으로 읽는다."
+  },
+  {
+   "q": "기본 등록된 리졸버는?",
+   "a": "`ExceptionHandlerExceptionResolver`, `ResponseStatusExceptionResolver`, `DefaultHandlerExceptionResolver` 셋이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HandlerExceptionResolver",
+   "en": "",
+   "what": "컨트롤러에서 난 예외를 `DispatcherServlet` 안에서 처리하는 확장점."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

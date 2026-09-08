@@ -1,0 +1,151 @@
+{
+ "book": "spring-mvc-2",
+ "id": "api-exception-intro",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "API 예외 처리 시작",
+ "summary": "오류 페이지를 주면 클라이언트가 파싱에 실패한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "화면과 API 의 오류 처리가 왜 달라야 하는지 안다.",
+  "HTML 오류 응답이 API 클라이언트에 무엇을 하는지 안다.",
+  "오류 응답에 무엇을 담을지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "9.8절이 남긴 것 — **API 는 아직 부트 기본**이다.\n\n**그리고 더 나쁜 경우**가 있다. 9.2절처럼 직접 만든 오류 페이지가 API 요청에도 나가는 것."
+  },
+  {
+   "type": "figure",
+   "caption": "HTML 을 받으면",
+   "ascii": "   client expects json\n        |\n        v\n   fetch('/api/items/999')\n     .then(r => r.json())\n        |\n        v\n   server sends html error page\n        |\n        v\n   SyntaxError: Unexpected token '<'\n        |\n        +--> 상태 코드도 못 읽고 끝난다",
+   "note": "**`Unexpected token '<'`** — 자바스크립트 개발자가 제일 자주 보는 오류다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "상태 코드도 못 읽는다",
+   "md": "**파싱에서 터지면 그 뒤가 없다.**\n\n```javascript\nfetch('/api/items/999')\n    .then(r => r.json())      // 여기서 SyntaxError\n    .then(data => ...)\n    .catch(e => console.error(e));   // \"Unexpected token '<'\"\n```\n\n**`r.status` 를 볼 기회가 없다.** 클라이언트는 **404 였는지 500 이었는지도 모른다.**\n\n**6.8절에서 본 것과 같은 성질**이다.\n\n> **파싱에 실패하면 객체가 없어서** 검증할 것도 없다.\n\n**거기는 서버가 클라이언트의 JSON 을 못 읽은 것**이고, 여기는 **클라이언트가 서버의 HTML 을 못 읽은 것**이다. 방향만 반대다.\n\n**9.4절의 CORS 이야기**와도 이어진다.\n\n> **CORS 를 빠뜨리면** 클라이언트가 오류 응답을 못 읽는다.\n\n**오류 응답이 안 읽히면 오류가 없는 것과 같다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "화면용 오류 페이지가 API 를 덮친다",
+   "md": "**9.2절의 서블릿 방식**을 그대로 두면 이렇게 된다.\n\n```java\nnew ErrorPage(RuntimeException.class, \"/error-page/500\")\n```\n\n**`/api/...` 요청도 여기로 온다.** 오류 페이지 컨트롤러가 `error-page/500` 뷰를 반환하고, **HTML 이 나간다.**\n\n**부트 기본(`BasicErrorController`)은 안 그렇다** — 9.6절에서 본 대로 `Accept` 헤더로 갈린다.\n\n**그러면 부트 기본을 쓰면 되지 않나** — **그 JSON 이 쓸모없다는 것**이 문제다(9.6절).\n\n```json\n{\"timestamp\":\"...\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/api/items/999\"}\n```\n\n**세 가지가 필요하다.**\n\n1. **예외마다 다른 상태 코드** — 404 인지 500 인지\n2. **왜 실패했는지** — 클라이언트가 판단할 근거\n3. **우리 형식** — 성공 응답과 같은 모양\n\n**10장이 이 셋을 만든다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "오류 응답 객체",
+   "code": "@Data\n@AllArgsConstructor\npublic class ErrorResult {\n    private String code;\n    private String message;\n}",
+   "note": "**6.8절에서 예고한 그것**이다.\n\n> **필요한 것만 담은 응답 객체**를 만든다.\n\n**`code` 가 중요**하다. `message` 는 사람이 읽는 것이고 **`code` 는 클라이언트가 분기하는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "무엇을 담을까",
+   "md": "| | 왜 |\n|---|---|\n| **`code`** | 클라이언트가 분기한다. 문구가 바뀌어도 안 깨진다 |\n| **`message`** | 사람이 읽는다. 4장의 메시지 소스를 태울 수 있다 |\n| **`errors`** | 필드별 검증 오류 (6.8절) |\n| **`traceId`** | 8.2절의 요청 uuid. 문의할 때 쓴다 |\n\n**담지 말 것**\n\n| | 왜 |\n|---|---|\n| 스택 트레이스 | 9.1절의 정보 노출 |\n| 예외 클래스 이름 | 내부 구조가 드러난다 |\n| SQL·제약 조건 이름 | 9.3절에서 본 것 |\n\n**`code` 를 문자열로 정하는 것**이 좋다.\n\n```json\n{\"code\": \"ITEM_NOT_FOUND\", \"message\": \"상품을 찾을 수 없습니다\"}\n```\n\n**숫자보다 낫다** — 로그에서 읽히고, 새 코드를 추가할 때 번호를 관리 안 해도 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "표준이 있다 — Problem Details",
+   "md": "**오류 응답 형식을 매번 새로 정하는 대신** 표준을 쓸 수도 있다.\n\n**RFC 9457 (Problem Details for HTTP APIs)**\n\n```json\n{\n  \"type\": \"https://example.com/probs/out-of-stock\",\n  \"title\": \"재고 부족\",\n  \"status\": 409,\n  \"detail\": \"요청 수량 10개, 재고 3개\",\n  \"instance\": \"/api/orders/12345\"\n}\n```\n\n**`Content-Type: application/problem+json`** 으로 보낸다.\n\n**스프링 6 부터 지원**한다.\n\n```java\nProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, \"상품 없음\");\n```\n\n**언제 쓰나** — **외부에 공개하는 API** 라면 표준이 낫다. 클라이언트가 어디에 무엇이 있는지 이미 안다.\n\n**내부 API 면 우리 형식**이 편하다. 이 책은 그쪽으로 간다.\n\n> **중요한 것은 하나로 정하는 것**이다. 엔드포인트마다 오류 형식이 다르면 클라이언트가 전부 따로 처리한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 화면용 오류 페이지가 API 에도 나가면\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 500 \nContent-Type: text/html;charset=UTF-8\n\n<html><body><h2>500 오류 화면</h2>...</body></html>\n\n# 클라이언트 콘솔\n#   SyntaxError: Unexpected token '<', \"<html><bo\"... is not valid JSON\n\n# 부트 기본\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 500 \nContent-Type: application/json\n\n{\"timestamp\":\"2026-09-09T06:48:33.102+00:00\",\"status\":500,\n \"error\":\"Internal Server Error\",\"path\":\"/api/items/999\"}\n\n# 10 장이 끝나면\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 404 \nContent-Type: application/json\n\n{\"code\":\"ITEM_NOT_FOUND\",\"message\":\"상품을 찾을 수 없습니다\",\"traceId\":\"a1b2c3d4\"}",
+   "note": "**세 응답이 같은 요청에 대한 것**이다.\n\n첫째는 **JSON 을 달라고 했는데 HTML** 이 왔다. `Accept` 헤더를 무시한 것이고, 클라이언트는 상태 코드도 못 읽는다.\n\n둘째는 형식은 맞는데 **500 이 틀렸다.** 9.8절에서 화면 쪽은 404 로 고쳤는데 API 는 그대로다.\n\n셋째가 목표다. **404 라는 정확한 상태 코드**, **분기할 수 있는 `code`**, **문의에 쓸 `traceId`**. 그리고 `timestamp` 나 `path` 같은 **클라이언트가 이미 아는 것**은 뺐다."
+  }
+ ],
+ "recap": [
+  "**HTML 오류 응답을 받으면 클라이언트가 파싱에서 터진다.**",
+  "**상태 코드를 볼 기회도 없다** — `r.json()` 에서 끝난다.",
+  "**오류 응답이 안 읽히면 오류가 없는 것과 같다.**",
+  "**화면용 오류 페이지가 API 를 덮친다** — 9.2절 방식의 함정.",
+  "**부트 기본은 형식만 맞고 내용이 없다.**",
+  "필요한 것 셋 — **정확한 상태 코드 · 실패 이유 · 우리 형식**.",
+  "**`code` 로 분기**하고 `message` 는 사람이 읽는다.",
+  "**스택 트레이스·예외 이름·SQL 은 안 담는다.**",
+  "**`traceId`** 로 로그와 잇는다.",
+  "**RFC 9457 Problem Details** 라는 표준이 있다. 공개 API 면 그쪽.",
+  "**중요한 것은 하나로 정하는 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "`fetch` 로 API 를 부르고 서버가 HTML 을 보내게 한다.",
+   "done_when": "`Unexpected token '<'` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "그 상태에서 `r.status` 를 찍어 본다.",
+   "done_when": "볼 기회가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ErrorResult` 클래스를 만든다.",
+   "done_when": "`code` 와 `message` 를 나눈 이유를 말할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ProblemDetail` 로 응답을 만들어 본다.",
+   "done_when": "`application/problem+json` 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "부트 기본 JSON 에서 클라이언트가 쓸 수 있는 필드를 센다.",
+   "done_when": "거의 없는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "API 에 HTML 오류를 보내면?",
+   "a": "클라이언트가 JSON 파싱에서 터지고 상태 코드조차 읽지 못한다."
+  },
+  {
+   "q": "부트 기본 JSON 의 문제는?",
+   "a": "형식은 맞지만 왜 실패했는지가 없고 상태 코드도 예외에 맞게 안 정해진다."
+  },
+  {
+   "q": "`code` 와 `message` 를 나누는 이유는?",
+   "a": "`code` 는 클라이언트가 분기하는 것이라 문구가 바뀌어도 안 깨지고, `message` 는 사람이 읽는 것이다."
+  },
+  {
+   "q": "오류 응답에 담으면 안 되는 것은?",
+   "a": "스택 트레이스, 예외 클래스 이름, SQL 이나 제약 조건 이름이다."
+  },
+  {
+   "q": "Problem Details 는 언제 쓰나?",
+   "a": "외부에 공개하는 API 다. 표준이라 클라이언트가 형식을 이미 안다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Problem Details",
+   "en": "RFC 9457",
+   "what": "HTTP API 오류 응답의 표준 형식. `application/problem+json` 으로 보낸다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9457",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

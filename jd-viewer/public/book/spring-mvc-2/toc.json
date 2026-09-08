@@ -736,7 +736,7 @@
           "title": "API 예외 처리 시작",
           "summary": "오류 페이지를 주면 클라이언트가 파싱에 실패한다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -744,7 +744,7 @@
           "title": "BasicErrorController 와 API",
           "summary": "부트가 주는 JSON 의 한계.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -752,7 +752,7 @@
           "title": "HandlerExceptionResolver",
           "summary": "1편 6.2절 doDispatch 의 catch 자리.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
@@ -760,7 +760,7 @@
           "title": "직접 만들어 본다",
           "summary": "예외를 상태 코드로 바꾼다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",

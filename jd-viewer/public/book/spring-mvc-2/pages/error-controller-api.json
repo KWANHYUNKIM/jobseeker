@@ -1,0 +1,131 @@
+{
+ "book": "spring-mvc-2",
+ "id": "error-controller-api",
+ "no": "10.2",
+ "chapter": 10,
+ "title": "BasicErrorController 와 API",
+ "summary": "부트가 주는 JSON 의 한계.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Accept` 헤더에 따라 무엇이 나오는지 안다.",
+  "`BasicErrorController` 를 확장하는 방법을 안다.",
+  "그것으로 부족한 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "무엇으로 갈리나",
+   "ascii": "   BasicErrorController\n        |\n        +--> errorHtml()   produces = text/html\n        +--> error()       no produces\n\n   Accept: text/html,...           ->  errorHtml\n   Accept: application/json        ->  error\n   Accept: */*                     ->  errorHtml   (careful)\n   no Accept header                ->  errorHtml\n\n   curl 로 테스트하면 html 이 온다",
+   "note": "**`*/*` 도 HTML 로 간다.** 테스트할 때 헷갈리는 자리다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "curl 로 테스트하면 HTML 이 온다",
+   "md": "```bash\ncurl http://localhost:8080/api/items/999\n```\n\n**HTML 이 온다.** curl 은 기본으로 `Accept: */*` 를 보내고, **`produces = text/html` 메서드가 그것을 받아들인다.**\n\n**`*/*` 는 \"아무거나\" 라는 뜻**이라 HTML 도 맞다. 그리고 `errorHtml` 이 먼저 등록되어 있다.\n\n```bash\ncurl -H \"Accept: application/json\" http://localhost:8080/api/items/999\n```\n\n**명시해야 JSON 이 온다.**\n\n**브라우저 주소창으로 API 를 테스트하는 것**도 같은 함정이다. 브라우저는 `Accept: text/html,...` 을 보낸다.\n\n> **1편 7.14절의 콘텐츠 협상**에서 본 것이 여기 그대로 적용된다. **`q` 값과 우선순위**가 응답 형식을 정한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "확장해 보기",
+   "code": "@Component\npublic class MyErrorAttributes extends DefaultErrorAttributes {\n\n    @Override\n    public Map<String, Object> getErrorAttributes(WebRequest webRequest,\n                                                  ErrorAttributeOptions options) {\n        Map<String, Object> result = super.getErrorAttributes(webRequest, options);\n\n        result.remove(\"timestamp\");\n        result.remove(\"error\");\n        result.put(\"code\", \"SERVER_ERROR\");\n\n        return result;\n    }\n}",
+   "note": "**`DefaultErrorAttributes` 를 상속**해서 모델을 바꾼다. 9.6절의 그 모델이다.\n\n**빈으로 등록하면** 부트의 것을 대체한다 — `@ConditionalOnMissingBean` 이라서."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이걸로는 부족하다",
+   "md": "**세 가지가 안 된다.**\n\n**1. 예외 종류를 모른다**\n\n`getErrorAttributes` 안에서 예외를 꺼낼 수는 있는데 —\n\n```java\nThrowable error = getError(webRequest);\n```\n\n**`if-else` 로 타입을 나눠야** 한다. 예외가 늘 때마다 이 메서드가 길어진다.\n\n**2. 상태 코드를 바꾸기 어렵다**\n\n**이미 정해진 뒤**에 불린다. 9.3절의 흐름에서 **WAS 가 상태 코드를 보고 오류 페이지를 고른** 다음이다.\n\n**3. 컨트롤러와 멀다**\n\n`ItemController` 의 예외를 처리하는 코드가 **전혀 다른 클래스**에 있다. 어느 예외가 어디서 나는지 추적이 어렵다.\n\n**그리고 9장의 구조를 그대로 탄다** — **요청이 두 번** 온다. API 에는 필요 없는 왕복이다.\n\n**10.3절부터 다른 길**로 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "화면과 API 의 갈림",
+   "md": "**두 가지가 근본적으로 다르다.**\n\n| | 화면 | API |\n|---|---|---|\n| **받는 쪽** | 사람 | 프로그램 |\n| **필요한 것** | 무엇을 할지 안내 | **분기할 근거** |\n| **오류 종류** | 몇 가지면 충분 | **예외마다 다르게** |\n| **처리 위치** | 전역 한곳 | **컨트롤러 근처** |\n\n**네 번째가 10장의 방향**을 정한다.\n\n**화면은 오류 종류가 많을 필요가 없다.** 404 와 500 이면 대부분이고, 사용자는 어차피 홈으로 가거나 재시도한다.\n\n**API 는 예외마다 다른 응답**이 필요하다. 재고 부족·권한 없음·중복 등록이 전부 다른 처리를 요구한다.\n\n**그래서 처리를 컨트롤러 근처에** 둔다 — **어떤 예외가 나는지 아는 곳**에서 잡는다.\n\n> **9장이 전역이고 10장이 지역**이다. 이것이 두 장의 차이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# curl 기본 - Accept: */*\n$ curl -i http://localhost:8080/api/items/999\n\nHTTP/1.1 500 \nContent-Type: text/html;charset=UTF-8\n\n<html><body><h2>오류가 발생했습니다</h2></body></html>\n\n# Accept 를 명시하면\n$ curl -i -H \"Accept: application/json\" http://localhost:8080/api/items/999\n\nHTTP/1.1 500 \nContent-Type: application/json\n\n{\"timestamp\":\"...\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/api/items/999\"}\n\n# ErrorAttributes 를 바꾸면\n{\"status\":500,\"code\":\"SERVER_ERROR\",\"path\":\"/api/items/999\"}\n\n# 그런데 여전히 500 이다\n# ItemNotFoundException 이든 뭐든 다 500 이다",
+   "note": "**첫 두 응답이 같은 URL, 다른 `Accept`** 다. 헤더 한 줄로 `Content-Type` 이 갈린다 — 9.6절에서 본 콘텐츠 협상이고, **curl 기본값이 HTML 을 부른다**는 것이 실무에서 헷갈리는 지점이다.\n\n**셋째에서 형식은 우리 것이 됐다.** `timestamp` 와 `error` 를 지우고 `code` 를 넣었다.\n\n**맨 아래가 한계**다. **예외가 무엇이든 `SERVER_ERROR` 에 500** 이다. 없는 상품도, 권한 없음도, 중복 등록도 전부 같은 응답이다. **클라이언트가 분기할 수 없다.**"
+  }
+ ],
+ "recap": [
+  "**`Accept` 헤더로 HTML 과 JSON 이 갈린다.**",
+  "**`*/*` 는 HTML 로 간다** — curl 기본값이 그것이다.",
+  "**브라우저 주소창 테스트도** 같은 함정이다.",
+  "**`DefaultErrorAttributes` 를 상속**해 모델을 바꿀 수 있다.",
+  "**예외 종류를 나누려면 `if-else`** 가 길어진다.",
+  "**상태 코드는 이미 정해진 뒤**에 불린다.",
+  "**컨트롤러와 멀다** — 어느 예외가 어디서 나는지 추적이 어렵다.",
+  "**9장의 구조라 요청이 두 번** 온다. API 에는 불필요하다.",
+  "**화면은 전역, API 는 컨트롤러 근처**에서 처리한다.",
+  "**9장이 전역이고 10장이 지역**이다."
+ ],
+ "drills": [
+  {
+   "task": "curl 로 API 오류를 부른다.",
+   "done_when": "HTML 이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Accept: application/json` 을 붙인다.",
+   "done_when": "JSON 이 오는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`DefaultErrorAttributes` 를 상속해 필드를 바꾼다.",
+   "done_when": "응답 형식이 바뀌는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 종류의 예외를 던지고 응답을 비교한다.",
+   "done_when": "둘 다 500 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "브라우저 주소창으로 API 를 열어 본다.",
+   "done_when": "HTML 이 나오는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "curl 로 API 오류를 부르면 왜 HTML 이 오나?",
+   "a": "curl 기본 `Accept: */*` 가 `produces = text/html` 메서드에 걸리기 때문이다."
+  },
+  {
+   "q": "`DefaultErrorAttributes` 로 무엇을 할 수 있나?",
+   "a": "오류 응답 모델의 필드를 추가·삭제할 수 있다."
+  },
+  {
+   "q": "그것으로 부족한 이유는?",
+   "a": "예외 종류별 분기가 `if-else` 로 길어지고, 상태 코드는 이미 정해진 뒤이며, 컨트롤러와 멀다."
+  },
+  {
+   "q": "화면과 API 의 처리 위치가 왜 다른가?",
+   "a": "화면은 오류 종류가 적어 전역 한곳이면 되지만 API 는 예외마다 다른 응답이 필요해 컨트롤러 근처가 낫다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DefaultErrorAttributes",
+   "en": "",
+   "what": "부트의 오류 응답 모델을 만드는 클래스. 상속해 필드를 바꿀 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
