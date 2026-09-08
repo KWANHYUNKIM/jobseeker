@@ -1,0 +1,200 @@
+{
+ "book": "spring-mvc-1",
+ "id": "message-converter",
+ "no": "7.12",
+ "chapter": 7,
+ "title": "HTTP 메시지 컨버터",
+ "summary": "이 장에서 가장 중요한 절. 객체와 바이트가 오가는 지점.",
+ "minutes": 20,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "메시지 컨버터가 언제 쓰이는지 안다.",
+  "`canRead`/`canWrite` 가 무엇을 보고 판단하는지 안다.",
+  "기본 컨버터 셋과 우선순위를 안다.",
+  "3.7~3.11절에서 손으로 한 것이 어디로 갔는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절에서 정독을 권한 절**이다.\n\n3장에서 손으로 한 것들이 여기서 하나로 묶인다.\n\n| 3장 | 무엇을 했나 |\n|---|---|\n| **3.7** | 스트림을 읽고 인코딩을 지정해 문자열로 |\n| **3.8** | 문자열을 `ObjectMapper` 로 객체로 |\n| **3.10** | 문자열을 `getWriter()` 로 응답에 |\n| **3.11** | 객체를 `writeValueAsString` 으로 문자열로 |\n\n**넷이 전부 이 절의 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "언제 쓰이나",
+   "md": "**메시지 바디를 읽거나 쓸 때만** 쓰인다.\n\n| | 컨버터를 쓰나 |\n|---|---|\n| `@RequestParam`·`@ModelAttribute` | **안 쓴다** — 요청 파라미터다 |\n| **`@RequestBody`·`HttpEntity`** | **쓴다** |\n| `Model` + 뷰 이름 반환 | **안 쓴다** — 뷰 리졸버로 간다 |\n| **`@ResponseBody`·`ResponseEntity`** | **쓴다** |\n\n3.4절에서 **`Content-Type` 이 갈림길**이라고 했고, 7.8절에서 **`@RequestParam` 이 바디에 안 먹는 이유**를 짚었다. 그 선이 여기서도 그대로다 — **파라미터의 세계와 바디의 세계가 다르다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "HttpMessageConverter.java",
+   "code": "public interface HttpMessageConverter<T> {\n\n    boolean canRead(Class<?> clazz, @Nullable MediaType mediaType);\n    boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType);\n\n    List<MediaType> getSupportedMediaTypes();\n\n    T read(Class<? extends T> clazz, HttpInputMessage inputMessage)\n            throws IOException, HttpMessageNotReadableException;\n\n    void write(T t, @Nullable MediaType contentType, HttpOutputMessage outputMessage)\n            throws IOException, HttpMessageNotWritableException;\n}",
+   "note": "**`canRead`/`canWrite` 로 묻고 `read`/`write` 로 한다.**\n\n5.6절의 `MyHandlerAdapter` 와 **모양이 같다** — `supports()` 로 묻고 `handle()` 로 한다.\n\n스프링에서 이 패턴이 계속 나온다. **목록을 순서대로 물어보고 처음 `true` 를 준 것을 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 보고 고르나",
+   "ascii": "   요청\n   Content-Type: application/json     -->  canRead(HelloData, json)?\n        │                                       │\n        │                                       ▼\n        └──────────────────────────>  MappingJackson2HttpMessageConverter\n                                              read()\n                                                │\n                                                ▼\n                                          HelloData 객체\n\n   응답\n   HelloData 객체                     -->  canWrite(HelloData, ?)\n   Accept: application/json                    │\n        │                                      ▼\n        └──────────────────────────>  MappingJackson2HttpMessageConverter\n                                              write()\n                                                │\n                                                ▼\n                                    {\"username\":\"kim\",\"age\":20}",
+   "note": "**두 가지를 본다** — **클래스 타입**과 **미디어 타입**. 요청에서는 `Content-Type`, 응답에서는 `Accept` 다."
+  },
+  {
+   "type": "heading",
+   "text": "기본 컨버터"
+  },
+  {
+   "type": "table",
+   "caption": "우선순위 순서",
+   "note": "**위에서부터 물어본다.** `ByteArray` 가 먼저인 이유는 가장 구체적이기 때문이다 — 5.7절의 어댑터 순서와 같은 방식.",
+   "columns": [
+    "#",
+    "컨버터",
+    "클래스 타입",
+    "미디어 타입"
+   ],
+   "rows": [
+    [
+     "0",
+     "`ByteArrayHttpMessageConverter`",
+     "`byte[]`",
+     "`*/*`"
+    ],
+    [
+     "1",
+     "`StringHttpMessageConverter`",
+     "`String`",
+     "`*/*`"
+    ],
+    [
+     "2",
+     "`MappingJackson2HttpMessageConverter`",
+     "**객체 · `HashMap`**",
+     "`application/json`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예제로 따라가 본다",
+   "md": "**경우 1** — `content-type: application/json`, `@RequestBody String data`\n\n```\n0. ByteArray : canRead(String, json)?  ->  클래스가 byte[] 가 아니다. false\n1. String    : canRead(String, json)?  ->  클래스 맞고, 미디어 타입은 */* 라 통과. true\n```\n\n**`String` 컨버터가 이긴다.** JSON 문자열이 그대로 들어온다 — 7.8절 v4 가 이것이다.\n\n**경우 2** — `content-type: application/json`, `@RequestBody HelloData data`\n\n```\n0. ByteArray : false\n1. String    : canRead(HelloData, json)?  ->  클래스가 String 이 아니다. false\n2. Jackson   : canRead(HelloData, json)?  ->  둘 다 맞다. true\n```\n\n**Jackson 이 이긴다.** 7.9절 v3 다.\n\n**경우 3** — `content-type: text/html`, `@RequestBody HelloData data`\n\n```\n0. false\n1. canRead(HelloData, ...)  ->  클래스가 안 맞는다. false\n2. canRead(HelloData, html) ->  미디어 타입이 안 맞는다. false\n```\n\n**아무도 못 읽는다 → 415.** 7.9절에서 `Content-Type` 을 빼면 415 라고 한 것이 이 과정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "String 컨버터가 먼저인 것이 함정이 될 때",
+   "md": "```java\n@PostMapping(\"/api\")\npublic String api(@RequestBody String body) { ... }\n```\n\nJSON 을 보냈는데 **문자열로 받아진다.** 객체로 받고 싶었다면 타입을 잘못 적은 것이다.\n\n반대도 있다.\n\n```java\n@ResponseBody\npublic String hello() {\n    return \"{\\\"result\\\":\\\"ok\\\"}\";     // JSON 처럼 보이는 문자열\n}\n```\n\n**`Content-Type: text/plain` 으로 나간다.** `String` 컨버터가 처리하기 때문이다.\n\n클라이언트가 JSON 으로 파싱하려다 실패한다. **JSON 을 주려면 객체를 반환하거나 `produces` 를 지정한다.**\n\n```java\n@GetMapping(value = \"/api\", produces = MediaType.APPLICATION_JSON_VALUE)\n```\n\n3.11절에서 `Content-Type` 을 손으로 적던 것이 여기서는 **타입 선택의 문제**가 된다."
+  },
+  {
+   "type": "heading",
+   "text": "어디서 호출되나"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어댑터 안이다",
+   "md": "6.1절에서 **\"어댑터가 훨씬 많은 일을 한다\"** 고 했다. 그중 하나가 이것이다.\n\n```\nRequestMappingHandlerAdapter\n    │\n    ├── ArgumentResolver          파라미터를 채운다        7.13 절\n    │        └── @RequestBody 면 -> HttpMessageConverter.read()\n    │\n    ├── 컨트롤러 메서드 호출\n    │\n    └── ReturnValueHandler        반환값을 처리한다\n             └── @ResponseBody 면 -> HttpMessageConverter.write()\n```\n\n**컨버터를 직접 부르는 것은 `ArgumentResolver` 와 `ReturnValueHandler`** 다. 컨버터가 어댑터에 직접 붙어 있는 것이 아니다.\n\n5.6절에서 우리가 만든 어댑터는 `Map` 을 만들어 넘기는 정도였다. **스프링 어댑터는 그 안에 또 확장 지점을 뒀다.**\n\n**7.13절에서 그것을 본다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "직접 만들 일은 드물다",
+   "md": "컨버터를 추가할 수 있다.\n\n```java\n@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n    @Override\n    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {\n        converters.add(0, new MyCustomConverter());\n    }\n}\n```\n\n**실무에서 쓸 일이 거의 없다.** JSON·문자열·바이트면 대부분 끝나기 때문이다.\n\n만드는 경우가 있다면 — **CSV·프로토버프 같은 특수 형식**이나, **Jackson 설정을 바꾸는 것**(날짜 포맷, 네이밍 전략) 정도다. 후자는 대개 `ObjectMapper` 빈을 손보는 것으로 끝난다.\n\n**중요한 것은 만드는 법이 아니라 고르는 규칙을 아는 것**이다. 415 나 406 이 났을 때 **왜 아무도 처리 못 했는지** 짚을 수 있으면 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 어느 컨버터가 일했나",
+   "sql": "# String 컨버터\nPOST /request-body-string-v4 HTTP/1.1\nContent-Type: text/plain\n\nhello\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\n\nok\n\n# Jackson 컨버터\nPOST /request-body-json-v4 HTTP/1.1\nContent-Type: application/json\n\n{\"username\":\"kim\",\"age\":20}\n\nHTTP/1.1 200 \nContent-Type: application/json\n\n{\"username\":\"kim\",\"age\":20}\n\n# 아무도 못 읽을 때\nPOST /request-body-json-v4 HTTP/1.1\nContent-Type: text/html\n\n{\"username\":\"kim\"}\n\nHTTP/1.1 415 \n\n# 아무도 못 쓸 때\nGET /response-body-json-v2 HTTP/1.1\nAccept: application/xml\n\nHTTP/1.1 406 \n#   Jackson 은 json 만 쓸 수 있다",
+   "note": "**415 와 406 이 컨버터 선택의 실패**다. 7.3절에서 `consumes`·`produces` 로 같은 코드를 봤는데, **거기는 매핑 단계이고 여기는 컨버터 단계**다.\n\n같은 상태 코드가 두 자리에서 나올 수 있다는 뜻이다. **매핑에서 걸렸는지 컨버터에서 걸렸는지**는 로그(6.2절)로 구분한다 — `Mapped to ...` 가 찍혔으면 매핑은 통과한 것이다."
+  }
+ ],
+ "recap": [
+  "**3.7·3.8·3.10·3.11절에서 손으로 한 것**이 전부 컨버터의 일이다.",
+  "**메시지 바디를 읽거나 쓸 때만** 쓰인다. 파라미터와 뷰는 다른 길이다.",
+  "**`canRead`/`canWrite` 로 묻고 `read`/`write` 로 한다** — 5.6절 어댑터와 같은 모양.",
+  "**클래스 타입과 미디어 타입** 둘을 본다.",
+  "기본 셋 — **`ByteArray` · `String` · `Jackson`.** 위에서부터 물어본다.",
+  "**`String` 이 Jackson 보다 먼저**다. JSON 을 `String` 으로 받으면 문자열이 온다.",
+  "**JSON 처럼 생긴 문자열을 반환하면 `text/plain`** 이다 — 객체를 반환하거나 `produces` 를 쓴다.",
+  "컨버터를 부르는 것은 **`ArgumentResolver` 와 `ReturnValueHandler`**(7.13절).",
+  "**직접 만들 일은 드물다.** 고르는 규칙을 아는 것이 중요하다.",
+  "**415·406 이 컨버터 선택의 실패**다."
+ ],
+ "drills": [
+  {
+   "task": "JSON 을 보내고 `@RequestBody String` 으로 받아 본다.",
+   "done_when": "문자열이 그대로 오는 것과 `String` 컨버터가 이긴 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Content-Type: text/html` 로 JSON 을 보낸다.",
+   "done_when": "415 가 나오는 이유를 컨버터 순회로 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Accept: application/xml` 로 객체를 요청한다.",
+   "done_when": "406 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "JSON 문자열을 `String` 으로 반환하고 `Content-Type` 을 본다.",
+   "done_when": "`text/plain` 인 것을 확인했고 고치는 법을 안다.",
+   "minutes": 15
+  },
+  {
+   "task": "등록된 `HttpMessageConverter` 목록을 출력한다.",
+   "done_when": "기본 셋 말고도 여럿 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메시지 컨버터는 언제 쓰이나?",
+   "a": "`@RequestBody`·`HttpEntity` 로 바디를 읽을 때와 `@ResponseBody`·`ResponseEntity` 로 바디를 쓸 때다. 요청 파라미터와 뷰 렌더링에는 안 쓰인다."
+  },
+  {
+   "q": "컨버터는 무엇을 보고 선택되나?",
+   "a": "클래스 타입과 미디어 타입 둘이다. 요청은 `Content-Type`, 응답은 `Accept` 를 본다."
+  },
+  {
+   "q": "기본 컨버터의 순서는?",
+   "a": "`ByteArray` → `String` → `Jackson` 순이다. 위에서부터 `canRead`/`canWrite` 를 물어본다."
+  },
+  {
+   "q": "JSON 을 `@RequestBody String` 으로 받으면?",
+   "a": "`String` 컨버터가 Jackson 보다 먼저라서 JSON 문자열이 그대로 들어온다."
+  },
+  {
+   "q": "JSON 처럼 생긴 문자열을 반환하면?",
+   "a": "`String` 컨버터가 처리해 `Content-Type: text/plain` 으로 나간다. 객체를 반환하거나 `produces` 를 지정해야 한다."
+  },
+  {
+   "q": "415 와 406 은 각각 무엇인가?",
+   "a": "415 는 요청 바디를 읽을 컨버터가 없는 것, 406 은 응답을 쓸 컨버터가 없는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HttpMessageConverter",
+   "en": "",
+   "what": "HTTP 메시지 바디와 자바 객체를 서로 변환하는 인터페이스. `canRead`/`canWrite` 로 처리 가능 여부를 묻는다."
+  },
+  {
+   "term": "미디어 타입",
+   "en": "MediaType",
+   "what": "`application/json` 같은 형식 표시. 요청은 `Content-Type`, 응답은 `Accept` 헤더로 전달된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — HTTP Message Conversion",
+   "url": "https://docs.spring.io/spring-framework/reference/integration/rest-clients.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

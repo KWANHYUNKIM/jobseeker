@@ -54,7 +54,7 @@
    "type": "callout",
    "tone": "why",
    "title": "헤더와 바디를 함께 다룬다",
-   "md": "```java\nHttpEntity<String> entity = ...;\nString body = entity.getBody();\nHttpHeaders headers = entity.getHeaders();\n```\n\n**HTTP 메시지의 바디와 헤더를 담는 객체**다. 요청에도 응답에도 쓴다.\n\n`@RequestBody` 는 **바디만** 준다. 헤더도 함께 봐야 하면 `HttpEntity` 를 쓴다.\n\n상속한 것 둘이 더 있다.\n\n| | 무엇 |\n|---|---|\n| **`RequestEntity`** | 요청용. HTTP 메서드와 URL 도 담는다 |\n| **`ResponseEntity`** | **응답용. 상태 코드도 담는다** |\n\n**`ResponseEntity` 가 실무에서 아주 많이 쓰인다.**\n\n```java\nreturn new ResponseEntity<>(\"ok\", HttpStatus.CREATED);   // 201\n```\n\n7.12절에서 다시 본다. 3.9절에서 `setStatus` 로 하던 것을 반환값으로 하는 것이다."
+   "md": "```java\nHttpEntity<String> entity = ...;\nString body = entity.getBody();\nHttpHeaders headers = entity.getHeaders();\n```\n\n**HTTP 메시지의 바디와 헤더를 담는 객체**다. 요청에도 응답에도 쓴다.\n\n`@RequestBody` 는 **바디만** 준다. 헤더도 함께 봐야 하면 `HttpEntity` 를 쓴다.\n\n상속한 것 둘이 더 있다.\n\n| | 무엇 |\n|---|---|\n| **`RequestEntity`** | 요청용. HTTP 메서드와 URL 도 담는다 |\n| **`ResponseEntity`** | **응답용. 상태 코드도 담는다** |\n\n**`ResponseEntity` 가 실무에서 아주 많이 쓰인다.**\n\n```java\nreturn new ResponseEntity<>(\"ok\", HttpStatus.CREATED);   // 201\n```\n\n7.11절에서 다시 본다. 3.9절에서 `setStatus` 로 하던 것을 반환값으로 하는 것이다."
   },
   {
    "type": "heading",
@@ -70,14 +70,14 @@
    "type": "callout",
    "tone": "why",
    "title": "누가 변환하나",
-   "md": "v3·v4 에서 **바디가 이미 `String`** 이었다. 누가 바꿨나.\n\n**HTTP 메시지 컨버터**다. **7.13절**의 주제이고, 이 장에서 가장 중요한 절이라고 7.1절에서 적었다.\n\n지금은 이렇게만 알면 된다.\n\n```\n요청 바디(바이트)  ->  HttpMessageConverter  ->  자바 객체\n자바 객체          ->  HttpMessageConverter  ->  응답 바디(바이트)\n```\n\n**3.7절에서 우리가 손으로 한 것**(스트림 읽고 인코딩 지정)을 컨버터가 한다. `String` 이면 `StringHttpMessageConverter`, JSON 이면 `MappingJackson2HttpMessageConverter`(7.9절).\n\n1.1절에서 이 책의 규칙으로 **\"직접 만들어 본 것만 설명한다\"** 고 했다. 컨버터는 5장에서 안 만들었는데, **3.7~3.8절에서 손으로 해 봤다.** 그것이 대신한다."
+   "md": "v3·v4 에서 **바디가 이미 `String`** 이었다. 누가 바꿨나.\n\n**HTTP 메시지 컨버터**다. **7.12절**의 주제이고, 이 장에서 가장 중요한 절이라고 7.1절에서 적었다.\n\n지금은 이렇게만 알면 된다.\n\n```\n요청 바디(바이트)  ->  HttpMessageConverter  ->  자바 객체\n자바 객체          ->  HttpMessageConverter  ->  응답 바디(바이트)\n```\n\n**3.7절에서 우리가 손으로 한 것**(스트림 읽고 인코딩 지정)을 컨버터가 한다. `String` 이면 `StringHttpMessageConverter`, JSON 이면 `MappingJackson2HttpMessageConverter`(7.9절).\n\n1.1절에서 이 책의 규칙으로 **\"직접 만들어 본 것만 설명한다\"** 고 했다. 컨버터는 5장에서 안 만들었는데, **3.7~3.8절에서 손으로 해 봤다.** 그것이 대신한다."
   },
   {
    "type": "sql",
    "lang": "http",
    "caption": "실제로 오간 HTTP",
    "sql": "POST /request-body-string-v4 HTTP/1.1\nContent-Type: text/plain\nContent-Length: 5\n\nhello\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\nContent-Length: 2\n\nok\n\n# 서버 로그\nmessageBody=hello\n\n# @RequestParam 으로 받으려 하면\nPOST /request-param-string HTTP/1.1\nContent-Type: text/plain\n\nhello\n\nHTTP/1.1 400 \n#   Required request parameter 'data' is not present\n#   바디는 있는데 파라미터로는 안 잡힌다\n\n# HttpEntity 로 헤더까지 보면\nheaders={Content-Type=[text/plain], Content-Length=[5], ...}\nbody=hello",
-   "note": "**가운데 블록이 3.4절의 확인**이다. 바디에 `hello` 가 있는데 `@RequestParam` 은 못 읽는다 — **`Content-Type` 이 폼 형식이 아니라서**다.\n\n응답의 `Content-Type` 도 봐 두자. **`text/plain;charset=UTF-8`** — 내가 안 적었는데 붙었다. `StringHttpMessageConverter` 가 정한 것이고, 7.13절에서 그 규칙을 본다."
+   "note": "**가운데 블록이 3.4절의 확인**이다. 바디에 `hello` 가 있는데 `@RequestParam` 은 못 읽는다 — **`Content-Type` 이 폼 형식이 아니라서**다.\n\n응답의 `Content-Type` 도 봐 두자. **`text/plain;charset=UTF-8`** — 내가 안 적었는데 붙었다. `StringHttpMessageConverter` 가 정한 것이고, 7.12절에서 그 규칙을 본다."
   }
  ],
  "recap": [
@@ -86,7 +86,7 @@
   "**`ResponseEntity`** 는 상태 코드까지 담는다 — 실무에서 아주 많이 쓴다(7.12절).",
   "**메시지 바디에는 `@RequestParam` 이 안 먹는다** — 3.4절의 `Content-Type` 갈림길.",
   "**`@RequestBody` 는 생략할 수 없다.** 빼면 `@ModelAttribute` 로 판단된다.",
-  "바디를 문자열로 바꾸는 것은 **HTTP 메시지 컨버터**다(7.13절).",
+  "바디를 문자열로 바꾸는 것은 **HTTP 메시지 컨버터**다(7.12절).",
   "**3.7절에서 손으로 한 것**을 컨버터가 대신한다.",
   "응답의 `Content-Type` 도 컨버터가 정한다."
  ],
@@ -136,7 +136,7 @@
   },
   {
    "q": "바디를 자바 객체로 바꾸는 것은?",
-   "a": "HTTP 메시지 컨버터다. 3.7~3.8절에서 손으로 하던 일을 대신한다. 7.13절에서 다룬다."
+   "a": "HTTP 메시지 컨버터다. 3.7~3.8절에서 손으로 하던 일을 대신한다. 7.12절에서 다룬다."
   },
   {
    "q": "응답의 `Content-Type` 은 누가 정하나?",

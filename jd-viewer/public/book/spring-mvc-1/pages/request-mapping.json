@@ -42,7 +42,7 @@
    "type": "callout",
    "tone": "why",
    "title": "우리가 못 만든 이유",
-   "md": "5.2절의 우리 매핑은 이랬다.\n\n```java\ncontrollerMap.get(request.getRequestURI());   // Map 의 정확한 키\n```\n\n`/mapping/user1`, `/mapping/user2`, ... **키가 무한히 많아진다.**\n\n스프링은 **`Map` 이 아니라 패턴 목록**을 들고 있다가 요청 URL 과 하나씩 맞춰 본다. 그리고 맞으면 **`{}` 자리의 값을 뽑아 둔다.**\n\n`RequestMappingHandlerMapping` 이 하는 일이고, 뽑아 둔 값을 파라미터에 넣는 것은 **`ArgumentResolver`**(7.14절)다.\n\n1.1절에서 던진 질문 하나가 여기서 답을 얻는다.\n\n> `{itemId}` 조각은 누가 뽑아 오나\n\n**매핑이 뽑고 어댑터가 넣는다.**"
+   "md": "5.2절의 우리 매핑은 이랬다.\n\n```java\ncontrollerMap.get(request.getRequestURI());   // Map 의 정확한 키\n```\n\n`/mapping/user1`, `/mapping/user2`, ... **키가 무한히 많아진다.**\n\n스프링은 **`Map` 이 아니라 패턴 목록**을 들고 있다가 요청 URL 과 하나씩 맞춰 본다. 그리고 맞으면 **`{}` 자리의 값을 뽑아 둔다.**\n\n`RequestMappingHandlerMapping` 이 하는 일이고, 뽑아 둔 값을 파라미터에 넣는 것은 **`ArgumentResolver`**(7.13절)다.\n\n1.1절에서 던진 질문 하나가 여기서 답을 얻는다.\n\n> `{itemId}` 조각은 누가 뽑아 오나\n\n**매핑이 뽑고 어댑터가 넣는다.**"
   },
   {
    "type": "callout",
@@ -101,7 +101,7 @@
    "type": "callout",
    "tone": "why",
    "title": "consumes·produces 는 실제로 쓴다",
-   "md": "3.4절에서 **`Content-Type` 이 갈림길**이라고 했다. 같은 URL 에 폼도 오고 JSON 도 올 수 있다.\n\n```java\n@PostMapping(value = \"/items\", consumes = \"application/x-www-form-urlencoded\")\npublic String addForm(@ModelAttribute Item item) { ... }\n\n@PostMapping(value = \"/items\", consumes = \"application/json\")\npublic Item addJson(@RequestBody Item item) { ... }\n```\n\n**같은 URL 인데 처리가 갈린다.** 화면용과 API 용을 하나의 경로로 두고 싶을 때 쓴다.\n\n안 맞으면 **415 Unsupported Media Type** 이다 — 400 도 404 도 아니다. **왜 안 되는지가 상태 코드에 나온다.**\n\n`produces` 는 **콘텐츠 협상**과 이어진다(7.15절). 같은 URL 이 JSON 도 XML 도 줄 수 있는 원리."
+   "md": "3.4절에서 **`Content-Type` 이 갈림길**이라고 했다. 같은 URL 에 폼도 오고 JSON 도 올 수 있다.\n\n```java\n@PostMapping(value = \"/items\", consumes = \"application/x-www-form-urlencoded\")\npublic String addForm(@ModelAttribute Item item) { ... }\n\n@PostMapping(value = \"/items\", consumes = \"application/json\")\npublic Item addJson(@RequestBody Item item) { ... }\n```\n\n**같은 URL 인데 처리가 갈린다.** 화면용과 API 용을 하나의 경로로 두고 싶을 때 쓴다.\n\n안 맞으면 **415 Unsupported Media Type** 이다 — 400 도 404 도 아니다. **왜 안 되는지가 상태 코드에 나온다.**\n\n`produces` 는 **콘텐츠 협상**과 이어진다(7.14절). 같은 URL 이 JSON 도 XML 도 줄 수 있는 원리."
   },
   {
    "type": "callout",

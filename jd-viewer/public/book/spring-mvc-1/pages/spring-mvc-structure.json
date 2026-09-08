@@ -92,7 +92,7 @@
    "type": "callout",
    "tone": "warn",
    "title": "3. 어댑터가 훨씬 많은 일을 한다",
-   "md": "**이것이 가장 큰 차이다.**\n\n우리 `ControllerV4HandlerAdapter.handle()` 은 `Map` 을 만들고 `ModelView` 를 조립하는 정도였다.\n\n스프링의 `RequestMappingHandlerAdapter` 는 **컨트롤러 메서드의 파라미터를 채워 준다.**\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId,\n                  @RequestParam String q,\n                  HttpServletRequest request,\n                  Model model) { ... }\n```\n\n**파라미터 네 개가 종류도 타입도 다른데 다 채워진다.** 우리 v4 는 `Map` 둘로 고정이었다.\n\n이것을 하는 것이 **`ArgumentResolver`** 이고 **7.14절**의 주제다. 1.1절에서 던진 질문 중\n\n> `{itemId}` 조각은 누가 뽑아 오나\n> `Model` 은 어디서 나타나나\n\n의 답이 거기 있다. **`Model` 의 답은 5.5절에서 이미 절반을 봤다** — 프론트 컨트롤러가 만들어 넣어 준다. 스프링에서는 어댑터가 한다."
+   "md": "**이것이 가장 큰 차이다.**\n\n우리 `ControllerV4HandlerAdapter.handle()` 은 `Map` 을 만들고 `ModelView` 를 조립하는 정도였다.\n\n스프링의 `RequestMappingHandlerAdapter` 는 **컨트롤러 메서드의 파라미터를 채워 준다.**\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId,\n                  @RequestParam String q,\n                  HttpServletRequest request,\n                  Model model) { ... }\n```\n\n**파라미터 네 개가 종류도 타입도 다른데 다 채워진다.** 우리 v4 는 `Map` 둘로 고정이었다.\n\n이것을 하는 것이 **`ArgumentResolver`** 이고 **7.13절**의 주제다. 1.1절에서 던진 질문 중\n\n> `{itemId}` 조각은 누가 뽑아 오나\n> `Model` 은 어디서 나타나나\n\n의 답이 거기 있다. **`Model` 의 답은 5.5절에서 이미 절반을 봤다** — 프론트 컨트롤러가 만들어 넣어 준다. 스프링에서는 어댑터가 한다."
   },
   {
    "type": "callout",
@@ -115,7 +115,7 @@
   "다른 점 1 — **구현체가 여러 개**다. `@Controller` 방식은 그중 하나.",
   "다른 점 2 — **등록을 안 해도 된다.** `@Controller` + `@RequestMapping` 이 대신한다.",
   "그래서 **어떤 URL 이 있는지 한 파일에서 못 본다** — 앞 책 6장의 대가와 같다.",
-  "다른 점 3 — **어댑터가 컨트롤러 파라미터를 채워 준다.** 7.14절의 `ArgumentResolver`.",
+  "다른 점 3 — **어댑터가 컨트롤러 파라미터를 채워 준다.** 7.13절의 `ArgumentResolver`.",
   "**6장은 확인하는 장**이다. 5장을 만들었다면 빠르게 읽힌다."
  ],
  "drills": [
@@ -159,7 +159,7 @@
   },
   {
    "q": "스프링 어댑터가 우리보다 더 하는 일은?",
-   "a": "컨트롤러 메서드의 파라미터를 종류와 타입에 맞게 채워 준다. `ArgumentResolver` 가 하는 일이고 7.14절에서 다룬다."
+   "a": "컨트롤러 메서드의 파라미터를 종류와 타입에 맞게 채워 준다. `ArgumentResolver` 가 하는 일이고 7.13절에서 다룬다."
   },
   {
    "q": "6장은 어떤 장인가?",

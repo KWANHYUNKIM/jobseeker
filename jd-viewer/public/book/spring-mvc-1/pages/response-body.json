@@ -1,0 +1,208 @@
+{
+ "book": "spring-mvc-1",
+ "id": "response-body",
+ "no": "7.11",
+ "chapter": 7,
+ "title": "응답 — HTTP API, 메시지 바디에 직접 입력",
+ "summary": "@ResponseBody 와 @RestController.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@ResponseBody` 로 응답 바디를 직접 만들 수 있다.",
+  "뷰를 찾는 길과 바디로 가는 길이 어디서 갈리는지 안다.",
+  "`@RestController` 가 무엇을 묶은 것인지 안다.",
+  "`ResponseEntity` 로 상태 코드를 정할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.10절에서 세 가지 응답 중 **셋째**다. 그리고 **3.10~3.11절을 다시 쓰는 절**이기도 하다."
+  },
+  {
+   "type": "figure",
+   "caption": "갈림길",
+   "ascii": "   컨트롤러가 무언가를 반환했다\n        │\n        ├── @ResponseBody 가 없다\n        │        │\n        │        └──>  ViewResolver  ->  View  ->  render      6.4 절\n        │\n        └── @ResponseBody 가 있다\n                 │\n                 └──>  HttpMessageConverter  ->  응답 바디       7.12 절\n\n   doDispatch 의 5~6 번을 건너뛰는 것이다",
+   "note": "**6.2절 `doDispatch()` 의 5~6번(뷰 리졸버·렌더링)을 건너뛴다.** 6.3절에서 `ModelAndView` 가 `null` 이면 렌더링을 건너뛴다고 한 것과 같은 자리다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "단계별",
+   "code": "// v1 — 서블릿 그대로 (3.10 절)\n@GetMapping(\"/response-body-string-v1\")\npublic void responseBodyV1(HttpServletResponse response) throws IOException {\n    response.getWriter().write(\"ok\");\n}\n\n// v2 — ResponseEntity\n@GetMapping(\"/response-body-string-v2\")\npublic ResponseEntity<String> responseBodyV2() {\n    return new ResponseEntity<>(\"ok\", HttpStatus.OK);\n}\n\n// v3 — @ResponseBody\n@ResponseBody\n@GetMapping(\"/response-body-string-v3\")\npublic String responseBodyV3() {\n    return \"ok\";\n}",
+   "note": "**v1 은 3.10절의 `getWriter().write()`** 그대로다. 서블릿에 묶여 있다.\n\nv2·v3 는 **반환값이 곧 응답 바디**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "JSON 도 같다",
+   "code": "// ResponseEntity 로\n@GetMapping(\"/response-body-json-v1\")\npublic ResponseEntity<HelloData> responseBodyJsonV1() {\n    HelloData data = new HelloData();\n    data.setUsername(\"userA\");\n    data.setAge(20);\n    return new ResponseEntity<>(data, HttpStatus.OK);\n}\n\n// @ResponseBody + @ResponseStatus\n@ResponseStatus(HttpStatus.OK)\n@ResponseBody\n@GetMapping(\"/response-body-json-v2\")\npublic HelloData responseBodyJsonV2() {\n    HelloData data = new HelloData();\n    data.setUsername(\"userA\");\n    data.setAge(20);\n    return data;\n}",
+   "note": "**3.11절의 `objectMapper.writeValueAsString()` 이 없다.** 객체를 그대로 돌려주면 JSON 이 나간다.\n\n`Content-Type: application/json` 도 자동이다 — 3.11절에서 손으로 적고 `charset` 을 어떻게 할지 고민한 그것."
+  },
+  {
+   "type": "heading",
+   "text": "ResponseEntity vs @ResponseStatus"
+  },
+  {
+   "type": "table",
+   "caption": "상태 코드를 정하는 두 방법",
+   "note": "**동적으로 정해야 하면 `ResponseEntity` 밖에 없다.** 어노테이션은 컴파일 시점에 고정이다.",
+   "columns": [
+    "",
+    "`ResponseEntity`",
+    "`@ResponseStatus`"
+   ],
+   "rows": [
+    [
+     "상태 코드",
+     "**런타임에 정한다**",
+     "**고정**"
+    ],
+    [
+     "헤더",
+     "**추가할 수 있다**",
+     "못 한다"
+    ],
+    [
+     "코드 모양",
+     "`return new ResponseEntity<>(...)`",
+     "메서드에 어노테이션"
+    ],
+    [
+     "언제",
+     "**조건에 따라 다를 때**",
+     "**항상 같을 때**"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적으로 정해야 할 때",
+   "code": "@GetMapping(\"/items/{id}\")\npublic ResponseEntity<Item> findItem(@PathVariable Long id) {\n    Item item = itemRepository.findById(id);\n\n    if (item == null) {\n        return ResponseEntity.notFound().build();          // 404\n    }\n    return ResponseEntity.ok(item);                        // 200\n}",
+   "note": "**`ResponseEntity` 에 정적 팩토리 메서드**가 있다. `ok()`, `notFound()`, `created(uri)`, `badRequest()`.\n\n`new ResponseEntity<>(...)` 보다 읽기 쉬워서 실무에서 이쪽을 많이 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3.9절과 무엇이 다른가",
+   "md": "3.9절에서는 이렇게 했다.\n\n```java\nresponse.setStatus(HttpServletResponse.SC_NOT_FOUND);\nresponse.setHeader(\"Location\", url);\n```\n\n**부수 효과로 응답을 만들었다.** 그리고 3.9절에서 **커밋 함정**을 이야기했다 — 바디를 쓰기 시작하면 못 고친다.\n\n`ResponseEntity` 는 **반환값으로 응답 전체를 표현한다.** 상태 코드·헤더·바디가 한 객체에 있다.\n\n그래서\n\n- **커밋 문제가 없다** — 스프링이 다 만든 뒤에 한 번에 쓴다\n- **테스트하기 쉽다** — 반환값을 검증하면 된다\n- **분기가 보인다** — `return` 문마다 어떤 응답인지 나타난다\n\n앞 책 7.3절에서 **\"결과를 객체에 남기지 말고 돌려준다\"** 고 한 것과 같은 발상이다."
+  },
+  {
+   "type": "heading",
+   "text": "@RestController"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 개를 묶은 것이다",
+   "md": "```java\n@Controller\n@ResponseBody\npublic class SomeController { ... }\n\n// 같다\n@RestController\npublic class SomeController { ... }\n```\n\n`@RestController` 안을 열어 보면 **`@Controller` + `@ResponseBody`** 다. 앞 책 6.2절의 메타 어노테이션이다.\n\n**클래스 전체에 적용**되므로 모든 메서드가 바디로 나간다. 7.2절에서 처음 쓸 때 \"뷰를 안 거친다\" 고 한 것이 이것이다.\n\n**API 만 만드는 컨트롤러에 쓴다.** 화면과 API 를 섞어야 하면 `@Controller` 에 메서드마다 `@ResponseBody` 를 붙인다 — 그런데 **섞지 않는 편이 낫다.** 클래스를 나누면 읽는 사람이 어느 쪽인지 바로 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Rest 라는 이름이 오해를 부른다",
+   "md": "**REST 를 강제하지 않는다.** 7.4절에서 이야기한 URL 설계와 아무 상관이 없다.\n\n`@RestController` 가 하는 일은 **\"뷰를 안 찾는다\"** 하나뿐이다. URL 에 동사를 써도, `GET` 으로 삭제해도 잘 동작한다.\n\n이름이 이래서 **\"`@RestController` 를 쓰면 REST API 다\"** 라고 오해하기 쉬운데, **REST 는 설계 원칙이고 이것은 반환 방식**이다.\n\n7.4절에서 말한 것과 같다 — **원칙은 내가 지키는 것**이지 어노테이션이 지켜 주는 것이 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누가 변환하나 — 7.12절",
+   "md": "`String` 을 돌려주면 `text/plain` 이고 객체를 돌려주면 `application/json` 이었다(7.9절).\n\n**반환 타입에 따라 다른 컨버터가 일한다.**\n\n| 반환 | 컨버터 | `Content-Type` |\n|---|---|---|\n| `String` | `StringHttpMessageConverter` | `text/plain` |\n| 객체 | `MappingJackson2HttpMessageConverter` | `application/json` |\n| `byte[]` | `ByteArrayHttpMessageConverter` | `application/octet-stream` |\n\n**7.12절에서 이 표가 어떻게 결정되는지 본다.** 지금은 \"타입에 따라 갈린다\" 만 알면 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /response-body-string-v3 HTTP/1.1\nAccept: */*\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\nContent-Length: 2\n\nok\n\n# JSON\nGET /response-body-json-v2 HTTP/1.1\nAccept: */*\n\nHTTP/1.1 200 \nContent-Type: application/json\nContent-Length: 27\n\n{\"username\":\"userA\",\"age\":20}\n\n# ResponseEntity 로 404\nGET /items/999 HTTP/1.1\n\nHTTP/1.1 404 \nContent-Length: 0\n\n# @ResponseBody 를 빼면 (7.10 절)\nGET /response-body-string-v3 HTTP/1.1\n\nHTTP/1.1 500 \n#   \"ok\" 라는 뷰를 못 찾는다",
+   "note": "**`Content-Type` 이 반환 타입에 따라 다르다.** 내가 안 적었는데 붙었다 — 3.11절에서 손으로 적으며 `charset` 을 어떻게 할지 고민한 그 자리다.\n\n맨 아래가 7.10절의 함정이다. `@ResponseBody` 를 빼면 **`ok` 라는 뷰를 찾다가 실패**한다. 뷰 이름이 그럴듯하면(`response/hello`) 화면 대신 글자가 나오고, 아니면 500 이다."
+  }
+ ],
+ "recap": [
+  "**`@ResponseBody`** 는 반환값을 응답 바디로 쓴다. 뷰를 안 찾는다.",
+  "**`doDispatch()` 의 5~6번을 건너뛰는 것**이다(6.2절).",
+  "**`ResponseEntity`** 는 상태 코드·헤더·바디를 반환값 하나에 담는다.",
+  "3.9절의 `setStatus` 와 달리 **커밋 문제가 없고 테스트가 쉽다.**",
+  "`ResponseEntity.ok()`·`notFound()` 같은 **정적 팩토리**를 쓴다.",
+  "**`@ResponseStatus` 는 고정**이다. 조건에 따라 다르면 `ResponseEntity` 를 쓴다.",
+  "**`@RestController` = `@Controller` + `@ResponseBody`** — 메타 어노테이션.",
+  "**REST 를 강제하지 않는다.** 이름이 오해를 부른다.",
+  "**반환 타입에 따라 다른 컨버터**가 일하고 `Content-Type` 이 정해진다(7.12절)."
+ ],
+ "drills": [
+  {
+   "task": "v1~v3 를 만들고 응답 헤더를 비교한다.",
+   "done_when": "셋 다 같은 결과를 내는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "객체를 반환해 JSON 이 나가는 것을 확인한다.",
+   "done_when": "`Content-Type: application/json` 이 자동으로 붙는 것을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ResponseEntity` 로 조건에 따라 200/404 를 나눠 준다.",
+   "done_when": "같은 URL 이 상황에 따라 다른 코드를 내는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@ResponseBody` 를 빼고 실행한다.",
+   "done_when": "뷰를 찾다가 실패하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@RestController` 소스를 열어 본다.",
+   "done_when": "`@Controller` 와 `@ResponseBody` 가 들어 있는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ResponseBody` 는 무엇을 하나?",
+   "a": "반환값을 뷰 이름이 아니라 HTTP 응답 바디로 쓴다. 뷰 리졸버와 렌더링 단계를 건너뛴다."
+  },
+  {
+   "q": "`ResponseEntity` 가 `setStatus` 보다 나은 점은?",
+   "a": "상태 코드·헤더·바디를 반환값 하나로 표현해서 커밋 문제가 없고, 테스트가 쉽고, `return` 문마다 어떤 응답인지 보인다."
+  },
+  {
+   "q": "`@ResponseStatus` 와 `ResponseEntity` 중 무엇을 쓰나?",
+   "a": "상태 코드가 항상 같으면 `@ResponseStatus`, 조건에 따라 달라지면 `ResponseEntity` 를 쓴다."
+  },
+  {
+   "q": "`@RestController` 는 무엇인가?",
+   "a": "`@Controller` + `@ResponseBody` 를 묶은 메타 어노테이션이다. 클래스의 모든 메서드가 바디로 나간다."
+  },
+  {
+   "q": "`@RestController` 가 REST 를 보장하나?",
+   "a": "아니다. 뷰를 안 찾는다는 것뿐이고 URL 설계와는 무관하다. REST 는 내가 지키는 원칙이다."
+  },
+  {
+   "q": "응답의 `Content-Type` 은 어떻게 정해지나?",
+   "a": "반환 타입에 따라 다른 메시지 컨버터가 선택되고 그것이 정한다. `String` 은 `text/plain`, 객체는 `application/json` 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ResponseEntity",
+   "en": "",
+   "what": "상태 코드·헤더·바디를 함께 담는 응답 객체. `HttpEntity` 를 상속한다."
+  },
+  {
+   "term": "@RestController",
+   "en": "",
+   "what": "`@Controller` + `@ResponseBody`. 클래스의 모든 메서드가 뷰를 거치지 않고 바디를 반환한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Handler Methods",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

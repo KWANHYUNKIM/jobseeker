@@ -89,7 +89,7 @@
    "type": "callout",
    "tone": "why",
    "title": "인터페이스를 안 구현해도 된다",
-   "md": "그전의 스프링 MVC 는 이랬다.\n\n```java\npublic class MemberController implements Controller {\n    public ModelAndView handleRequest(HttpServletRequest req,\n                                     HttpServletResponse res) { ... }\n}\n```\n\n**인터페이스를 구현해야 했다.** 메서드 이름도 파라미터도 고정이다. 컨트롤러 하나에 URL 하나.\n\nSpring 3.0 부터는 이렇게 됐다.\n\n```java\n@Controller\npublic class MemberController {\n\n    @RequestMapping(\"/members\")\n    public String list(Model model) { ... }\n\n    @RequestMapping(\"/members/new\")\n    public String addForm() { ... }\n}\n```\n\n**인터페이스가 없다.** 메서드 이름도 자유고, 파라미터도 필요한 것만 받는다. 한 클래스에 URL 여러 개.\n\n이 유연함이 **어떻게 가능한지**가 6장과 7장이다. 특히 **파라미터를 마음대로 받을 수 있는 이유**는 7.14절이다."
+   "md": "그전의 스프링 MVC 는 이랬다.\n\n```java\npublic class MemberController implements Controller {\n    public ModelAndView handleRequest(HttpServletRequest req,\n                                     HttpServletResponse res) { ... }\n}\n```\n\n**인터페이스를 구현해야 했다.** 메서드 이름도 파라미터도 고정이다. 컨트롤러 하나에 URL 하나.\n\nSpring 3.0 부터는 이렇게 됐다.\n\n```java\n@Controller\npublic class MemberController {\n\n    @RequestMapping(\"/members\")\n    public String list(Model model) { ... }\n\n    @RequestMapping(\"/members/new\")\n    public String addForm() { ... }\n}\n```\n\n**인터페이스가 없다.** 메서드 이름도 자유고, 파라미터도 필요한 것만 받는다. 한 클래스에 URL 여러 개.\n\n이 유연함이 **어떻게 가능한지**가 6장과 7장이다. 특히 **파라미터를 마음대로 받을 수 있는 이유**는 7.13절이다."
   },
   {
    "type": "heading",

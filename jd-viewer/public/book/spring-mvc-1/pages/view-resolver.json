@@ -77,7 +77,7 @@
    "type": "callout",
    "tone": "why",
    "title": "다른 뷰와 동작 방식이 다르다",
-   "md": "`InternalResourceViewResolver` 가 만드는 `View` 는 렌더링을 **`forward`** 로 한다.\n\n```java\n// InternalResourceView.renderMergedOutputModel() 의 핵심\nRequestDispatcher rd = request.getRequestDispatcher(getUrl());\nrd.forward(request, response);\n```\n\n**우리 `MyView.render()` 와 같은 코드다**(5.3절).\n\n왜 `forward` 인가 — **JSP 는 서블릿이기 때문**이다(2.2절). 스프링이 JSP 를 직접 실행할 수 없고, **서블릿 컨테이너에게 넘겨야** 한다.\n\n그런데 **다른 뷰 템플릿은 그럴 필요가 없다.**\n\n| | 렌더링 방법 |\n|---|---|\n| **JSP** | **`forward`** — 서블릿 컨테이너가 실행 |\n| **타임리프** | **직접 렌더링** — 스프링이 문자열을 만들어 응답에 쓴다 |\n| **JSON** | 직접 씀 (7.13절의 메시지 컨버터) |\n\n그래서 타임리프를 쓰면 `WEB-INF` 도 War 패키징도 필요 없다(1.3절). **8장에서 그것을 확인한다.**"
+   "md": "`InternalResourceViewResolver` 가 만드는 `View` 는 렌더링을 **`forward`** 로 한다.\n\n```java\n// InternalResourceView.renderMergedOutputModel() 의 핵심\nRequestDispatcher rd = request.getRequestDispatcher(getUrl());\nrd.forward(request, response);\n```\n\n**우리 `MyView.render()` 와 같은 코드다**(5.3절).\n\n왜 `forward` 인가 — **JSP 는 서블릿이기 때문**이다(2.2절). 스프링이 JSP 를 직접 실행할 수 없고, **서블릿 컨테이너에게 넘겨야** 한다.\n\n그런데 **다른 뷰 템플릿은 그럴 필요가 없다.**\n\n| | 렌더링 방법 |\n|---|---|\n| **JSP** | **`forward`** — 서블릿 컨테이너가 실행 |\n| **타임리프** | **직접 렌더링** — 스프링이 문자열을 만들어 응답에 쓴다 |\n| **JSON** | 직접 씀 (7.12절의 메시지 컨버터) |\n\n그래서 타임리프를 쓰면 `WEB-INF` 도 War 패키징도 필요 없다(1.3절). **8장에서 그것을 확인한다.**"
   },
   {
    "type": "callout",
