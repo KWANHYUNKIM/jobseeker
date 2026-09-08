@@ -1,0 +1,160 @@
+{
+  "book": "spring-core",
+  "id": "spring-origin",
+  "no": "1.1",
+  "chapter": 1,
+  "title": "자바 진영의 추운 겨울과 스프링의 탄생",
+  "summary": "EJB 가 무엇을 잘못했고, 그 반작용으로 무엇이 나왔나. 스프링과 하이버네이트가 같은 사건에서 나온 이유.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "EJB 가 만든 문제 세 가지를 말할 수 있다.",
+    "POJO 라는 말이 무엇에 대한 반작용인지 안다.",
+    "스프링과 하이버네이트가 같은 뿌리에서 나왔다는 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "역사 이야기는 대개 건너뛰어도 되는데, 이 절은 예외다. **스프링이 무엇을 하지 않으려고 만들어졌는지**를 알면 나머지 여덟 장의 설계 판단이 전부 같은 방향을 가리키는 것이 보인다.\n\n앞 책 「자바 ORM 표준 JPA 프로그래밍」을 읽었다면 이미 절반은 아는 이야기이기도 하다."
+    },
+    {
+      "type": "figure",
+      "caption": "무슨 일이 있었나",
+      "ascii": "   1999   EJB 1.0 / J2EE\n          \"엔터프라이즈 자바는 컨테이너 위에서 돌아야 한다\"\n\n   2002   Rod Johnson, \"J2EE Design and Development\"\n          30000 줄짜리 예제 코드로 \"EJB 없이도 된다\" 를 보인다\n                │\n                ├──▶ 그 예제 코드가 Spring Framework 가 된다  (2003)\n                │\n          Gavin King, Hibernate\n                │\n                └──▶ EJB 엔티티 빈을 대체한다  (2001~)\n\n   2006   EJB 3.0 / JPA 표준\n          두 반란이 표준으로 흡수된다.\n          JPA 명세를 만든 사람 중에 Gavin King 이 있다\n\n   2014   Spring Boot 1.0\n          \"설정을 하지 마라. 관례를 따르면 된다\"\n\n\n   두 프로젝트가 같은 사건에서 나왔다.\n   그래서 앞 책(JPA)과 이 책(스프링)이 같은 문제의식을 공유한다 —\n   프레임워크가 내 코드를 잡아먹지 않게 하는 것."
+    },
+    {
+      "type": "heading",
+      "text": "EJB 가 만든 세 가지 문제"
+    },
+    {
+      "type": "table",
+      "caption": "왜 '추운 겨울' 이었나",
+      "note": "세 번째가 결정적이다. **테스트할 수 없는 코드는 고칠 수 없다.** 요구가 바뀔 때마다 무서워지고, 무서우면 아무도 안 고친다.",
+      "columns": [
+        "문제",
+        "구체적으로"
+      ],
+      "rows": [
+        [
+          "**복잡하다**",
+          "비즈니스 로직 한 줄을 위해 인터페이스 두 개, 배포 서술자 XML, 컨테이너 콜백 메서드 여덟 개"
+        ],
+        [
+          "**느리다**",
+          "모든 호출이 원격 호출 규약을 탄다. 같은 서버 안에서도"
+        ],
+        [
+          "**테스트가 안 된다**",
+          "컨테이너 없이는 객체를 만들 수도 없다. 단위 테스트가 사실상 불가능"
+        ]
+      ]
+    },
+    {
+      "type": "figure",
+      "caption": "POJO 로 돌아가자",
+      "ascii": "   무엇을 되찾으려 했나\n\n   EJB 시절                              POJO\n\n   public class MemberBean               public class MemberService {\n       extends EntityBean {                  public void join(...) { }\n                                         }\n       // 컨테이너가 요구하는\n       // 콜백 메서드 여덟 개\n       public void ejbActivate() { }     new MemberService().join(...);\n       public void ejbPassivate() { }    -> main() 에서도 돈다\n       public void ejbLoad() { }         -> 테스트에서도 돈다\n       public void ejbStore() { }        -> 컨테이너가 없어도 돈다\n       ...\n   }\n\n   컨테이너 없이는 인스턴스도 못 만든다\n   그래서 단위 테스트가 사실상 불가능했다\n\n\n   POJO = Plain Old Java Object\n        = \"그냥 자바 객체\". 특별할 것 없다는 뜻의 이름이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "POJO 라는 이름이 말하는 것",
+      "md": "**Plain Old Java Object** — \"그냥 오래된 자바 객체\". 이름 자체가 냉소다.\n\n마틴 파울러가 붙인 이름인데, 이유가 이랬다고 한다. \"우리가 하는 건 그냥 자바 객체를 쓰는 건데, 사람들이 그럴듯한 이름이 없으면 안 쓰더라.\"\n\n즉 POJO 는 **새로운 기술이 아니라 원래 있던 것으로 되돌아가자는 주장**이다. 그리고 그 되돌아감이 가능하려면, 프레임워크가 내 클래스에게 아무것도 요구하지 않아야 한다.\n\n이 책에서 만들 코드에 스프링 관련 코드가 거의 없는 이유가 그것이다. `@Component` 하나 붙는 정도이고, 그마저도 6장까지는 안 붙인다."
+    },
+    {
+      "type": "heading",
+      "text": "그래서 앞 책과 이 책이 같은 이야기다"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "두 반란, 하나의 문제의식",
+      "md": "- **하이버네이트**는 EJB 의 *엔티티 빈*(데이터 저장 부분)을 대체했다 → 나중에 **JPA** 표준이 됐다\n- **스프링**은 EJB 의 *세션 빈*(비즈니스 로직 부분)을 대체했다 → **DI 컨테이너**가 됐다\n\n둘 다 \"프레임워크가 내 도메인 코드를 잡아먹지 않게 하자\" 는 같은 주장이다.\n\n앞 책 2.1절에서 \"SQL 중심 개발을 하면 도메인 모델이 DB 사정에 맞춰 납작해진다\" 고 했다. 이 책 3.2절에서는 \"구현체를 직접 고르면 서비스 코드가 정책 변경에 끌려다닌다\" 를 보게 된다. **같은 형태의 문제**다.\n\n그리고 두 해법도 같은 모양이다 — **가운데에 한 겹을 끼운다.** JPA 는 영속성 컨텍스트를, 스프링은 DI 컨테이너를."
+    },
+    {
+      "type": "heading",
+      "text": "확인 — 지금 우리가 쓰는 것이 그 결과다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "2003년의 주장이 지금 이렇게 보인다",
+      "code": "public class MemberService {\n\n    private final MemberRepository memberRepository;\n\n    public MemberService(MemberRepository memberRepository) {\n        this.memberRepository = memberRepository;\n    }\n\n    public void join(Member member) {\n        memberRepository.save(member);\n    }\n}",
+      "note": "**스프링을 import 한 곳이 한 군데도 없다.** 그런데 이 클래스는 스프링 컨테이너 안에서 그대로 동작한다. 2장에서 만들 코드가 정확히 이 모양이다."
+    },
+    {
+      "type": "sql",
+      "lang": "java",
+      "caption": "실행 결과 — 컨테이너 없이도 돈다",
+      "sql": "// 테스트 코드\nMemberRepository repo = new MemoryMemberRepository();\nMemberService service = new MemberService(repo);\n\nservice.join(new Member(1L, \"kim\"));\n\n// 통과. 스프링을 띄우지 않았다.",
+      "note": "EJB 시절에는 이 세 줄이 불가능했다. **테스트를 짤 수 있다는 것**이 POJO 가 되찾은 가장 큰 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"스프링을 왜 쓰나요?\"** → \"편해서\" 는 절반이다. **좋은 객체 지향 설계를 할 수 있게 도와주는 프레임워크**라는 게 스프링 자신의 정의이고, 그 배경이 EJB 에 대한 반작용이다.\n- **\"POJO 가 뭔가요?\"** → 특정 기술에 종속되지 않은 순수 자바 객체. 프레임워크가 요구하는 상속·구현·어노테이션 없이도 동작하는 클래스.\n- **\"스프링과 하이버네이트의 관계는?\"** → 같은 시기에 EJB 의 서로 다른 부분을 대체하며 나왔다. 하이버네이트는 JPA 표준이 됐다."
+    }
+  ],
+  "recap": [
+    "EJB 의 세 문제 — 복잡하고, 느리고, **테스트가 안 됐다.** 세 번째가 결정적이다.",
+    "POJO 는 새 기술이 아니라 '그냥 자바 객체로 돌아가자' 는 주장이다.",
+    "그러려면 프레임워크가 내 클래스에게 아무것도 요구하지 않아야 한다.",
+    "하이버네이트(→JPA)와 스프링은 EJB 의 서로 다른 부분을 대체하며 같은 시기에 나왔다.",
+    "둘 다 해법이 같은 모양이다 — **가운데에 한 겹을 끼운다**(영속성 컨텍스트 / DI 컨테이너)."
+  ],
+  "drills": [
+    {
+      "task": "지금 쓰는(또는 본 적 있는) 스프링 프로젝트에서 서비스 클래스 하나를 열어 스프링 관련 import 가 몇 개인지 센다.",
+      "done_when": "대개 `@Service`·`@Transactional` 둘 정도인 것을 확인했다. 그게 POJO 의 결과다.",
+      "minutes": 10
+    },
+    {
+      "task": "그 클래스를 스프링 없이 `new` 로 만들어 테스트를 짜 본다.",
+      "done_when": "가능한지 아닌지 확인했다. 안 된다면 왜 안 되는지가 이 책의 7.3절 주제다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "EJB 의 세 가지 문제 중 가장 치명적이었던 것은?",
+      "a": "테스트가 안 되는 것이다. 컨테이너 없이는 객체 생성조차 못 해서 단위 테스트가 불가능했고, 테스트할 수 없는 코드는 무서워서 아무도 못 고친다."
+    },
+    {
+      "q": "POJO 는 무엇을 뜻하는가?",
+      "a": "Plain Old Java Object — 특정 기술에 종속되지 않은 순수 자바 객체다. 프레임워크가 요구하는 상속·인터페이스 구현 없이 동작하는 클래스를 가리킨다."
+    },
+    {
+      "q": "스프링과 하이버네이트의 공통점은?",
+      "a": "둘 다 EJB 에 대한 반작용으로 같은 시기에 나왔고, '프레임워크가 도메인 코드를 잡아먹지 않게 한다' 는 같은 주장을 한다. 하이버네이트는 이후 JPA 표준이 됐다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "EJB",
+      "en": "Enterprise Java Beans",
+      "what": "초기 J2EE 의 컴포넌트 모델. 복잡하고 느리고 테스트가 어려워 스프링·하이버네이트를 낳았다."
+    },
+    {
+      "term": "POJO",
+      "en": "Plain Old Java Object",
+      "what": "특정 기술에 종속되지 않은 순수 자바 객체. 스프링의 핵심 가치 중 하나."
+    },
+    {
+      "term": "DI 컨테이너",
+      "en": "",
+      "what": "객체를 만들고 서로 연결해 주는 것. 이 책 3장에서 직접 만들고 이름을 붙인다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — Overview",
+      "url": "https://docs.spring.io/spring-framework/reference/overview.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

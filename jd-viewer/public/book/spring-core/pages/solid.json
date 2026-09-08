@@ -1,0 +1,227 @@
+{
+  "book": "spring-core",
+  "id": "solid",
+  "no": "1.4",
+  "chapter": 1,
+  "title": "좋은 객체 지향 설계의 5가지 원칙 (SOLID)",
+  "summary": "다섯 원칙을 나열하지 않는다. OCP 와 DIP 두 개가 어떻게 서로를 무너뜨리는지가 이 책의 출발점이다.",
+  "minutes": 20,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "SOLID 다섯 원칙을 한 줄씩 말할 수 있다.",
+    "OCP 와 DIP 가 다형성만으로는 지켜지지 않는다는 것을 코드로 보일 수 있다.",
+    "그 문제의 해법이 어떤 모양이어야 하는지 감을 잡는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "SOLID 는 로버트 마틴이 정리한 다섯 원칙이다. 외우기는 쉬운데 **실제 코드에 적용하려면 애매한** 것으로도 유명하다.\n\n이 절은 다섯을 고르게 다루지 않는다. **OCP 와 DIP 둘만 제대로 본다** — 나머지 셋보다 중요해서가 아니라, 그 둘이 이 책 3장까지의 줄거리를 만들기 때문이다."
+    },
+    {
+      "type": "table",
+      "caption": "다섯 원칙",
+      "note": "**아래 둘이 이 책의 주제다.** 위 셋은 이름과 뜻만 알아 두고 넘어간다.",
+      "columns": [
+        "원칙",
+        "한 줄",
+        "이 책에서"
+      ],
+      "rows": [
+        [
+          "**SRP** 단일 책임",
+          "한 클래스는 하나의 책임만",
+          "3.3절에서 다시 나온다"
+        ],
+        [
+          "**LSP** 리스코프 치환",
+          "자식은 부모 자리에 그대로 들어갈 수 있어야",
+          "언급만"
+        ],
+        [
+          "**ISP** 인터페이스 분리",
+          "큰 인터페이스 하나보다 작은 것 여러 개",
+          "언급만"
+        ],
+        [
+          "**OCP** 개방-폐쇄",
+          "**확장에는 열리고 변경에는 닫혀야**",
+          "**3장 전체**"
+        ],
+        [
+          "**DIP** 의존관계 역전",
+          "**추상에 의존하고 구체에 의존하지 마라**",
+          "**3장 전체**"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "OCP — 확장에는 열리고 변경에는 닫힌다"
+    },
+    {
+      "type": "prose",
+      "md": "말이 모순처럼 들린다. 기능을 확장하는데 어떻게 코드를 안 고치나.\n\n답은 **다형성**이다. 새 구현체를 추가하는 것은 확장이고, 그때 기존 클라이언트 코드를 안 고치면 변경에 닫힌 것이다.\n\n1.3절의 `DiscountPolicy` 를 다시 보자. 정률 할인 클래스를 새로 만드는 것 — 여기까지는 확장이고 아무 문제 없다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "확장 — 새 클래스를 추가한다",
+      "code": "public class RateDiscountPolicy implements DiscountPolicy {\n    @Override\n    public int discount(Member member, int price) {\n        return member.getGrade() == Grade.VIP ? price / 10 : 0;\n    }\n}",
+      "note": "기존 코드를 하나도 안 건드렸다. 여기까지는 OCP 를 지킨 것처럼 보인다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "그런데 이걸 쓰려면",
+      "code": "public class OrderService {\n\n    // private DiscountPolicy discountPolicy = new FixDiscountPolicy();\n    private DiscountPolicy discountPolicy = new RateDiscountPolicy();\n    //                                          ^^^^^^^^^^^^^^^^^^^^\n    //                                          기존 코드를 고쳤다\n}",
+      "note": "**여기서 OCP 가 깨진다.** 기능을 확장했는데 기존 클래스를 열어서 고쳐야 했다."
+    },
+    {
+      "type": "heading",
+      "text": "DIP — 추상에 의존하라"
+    },
+    {
+      "type": "figure",
+      "caption": "무엇이 잘못됐나",
+      "ascii": "   DIP 를 어긴다는 것\n\n\n   내가 원하는 그림                       실제 코드\n\n   ┌──────────────┐                    ┌──────────────┐\n   │ OrderService │                    │ OrderService │\n   └──────┬───────┘                    └───┬──────┬───┘\n          │                                │      │\n          ▼                                ▼      ▼\n   ┌──────────────┐             ┌──────────────┐ ┌───────────────────┐\n   │DiscountPolicy│             │DiscountPolicy│ │ FixDiscountPolicy │\n   │ (interface)  │             │ (interface)  │ │ (class)           │\n   └──────────────┘             └──────────────┘ └───────────────────┘\n\n   추상에만 의존한다              추상에도 의존하고 구체에도 의존한다\n\n                                private DiscountPolicy policy\n                                    = new FixDiscountPolicy();\n                                      ^^^^^^^^^^^^^^^^^^^^^^^\n                                      구현 클래스 이름이 코드에 있다\n\n\n   그리고 OCP 도 같이 깨진다\n\n   \"정률 할인으로 바꿔 주세요\"\n      -> OrderService 를 연다\n      -> new FixDiscountPolicy() 를 new RateDiscountPolicy() 로 고친다\n      -> 기능을 확장했는데 기존 코드를 고쳤다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "\"의존한다\" 는 것의 뜻",
+      "md": "A 가 B 에 의존한다는 것은 **B 가 바뀌면 A 도 바뀔 수 있다**는 뜻이다. 코드로는 대개 \"A 가 B 의 이름을 알고 있다\" 로 나타난다.\n\n```java\nprivate DiscountPolicy discountPolicy = new FixDiscountPolicy();\n//      ^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^^^\n//      추상에 의존 (좋다)                    구체에 의존 (문제)\n```\n\n한 줄에 **두 의존이 같이 있다.** 앞부분만 보면 DIP 를 지키는 것 같은데, 뒷부분 때문에 구현 클래스 이름이 `OrderService` 파일 안에 박혀 있다.\n\n그래서 `RateDiscountPolicy` 로 바꾸려면 이 파일을 열어야 하고 — **DIP 위반이 OCP 위반을 만든다.** 두 원칙이 하나의 문제인 이유다."
+    },
+    {
+      "type": "heading",
+      "text": "그럼 어떻게 하나"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "구현체를 안 고르면 된다",
+      "code": "public class OrderService {\n\n    private final DiscountPolicy discountPolicy;\n\n    public OrderService(DiscountPolicy discountPolicy) {   // 밖에서 받는다\n        this.discountPolicy = discountPolicy;\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 컴파일이 안 된다",
+      "sql": "error: constructor OrderService in class OrderService\n       cannot be applied to given types;\n  required: DiscountPolicy\n  found:    no arguments\n\n// OrderService 를 만들려면 누군가 DiscountPolicy 를 줘야 한다.\n// 그런데 그 '누군가' 가 지금 없다.",
+      "note": "**문제를 옮긴 것이지 푼 것이 아니다.** 이제 `OrderService` 는 깨끗해졌지만, 그것을 만드는 쪽에서 여전히 구현체를 골라야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "여기가 이 책의 진짜 출발점이다",
+      "md": "\"구현체를 고르는 일\"은 없앨 수 없다. 프로그램이 돌려면 누군가는 `new RateDiscountPolicy()` 를 해야 한다.\n\n할 수 있는 것은 **그 일을 한 곳으로 몰아내는 것**이다.\n\n- 그러면 `OrderService` 는 추상에만 의존한다 → **DIP**\n- 정책을 바꿀 때 고치는 곳이 그 한 곳뿐이다 → **OCP**\n\n그 \"한 곳\" 이 3.3절에서 만들 `AppConfig` 이고, 3.8절에서 그것의 이름이 **DI 컨테이너**였다는 것을 알게 된다.\n\n1.2절에서 인용한 문장이 여기서 구체적인 뜻을 갖는다.\n\n> 스프링은 좋은 객체 지향 애플리케이션을 개발할 수 있게 도와주는 프레임워크다.\n\n**정확히는, 순수 자바만으로는 지킬 수 없는 OCP·DIP 를 지킬 수 있게 해 주는 물건이다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "나머지 셋도 계속 나온다",
+      "md": "이 절에서 다루지 않았을 뿐 사라지지는 않는다.\n\n- **SRP** — 3.3절에서 \"사용하는 책임\"과 \"구성하는 책임\"을 나눈다. `AppConfig` 가 생기는 근거다.\n- **ISP** — 7.8절에서 여러 구현을 `Map` 으로 받을 때, 인터페이스가 작아야 유용하다는 것이 드러난다.\n- **LSP** — 5.4절의 무상태 설계와 이어진다. 싱글톤 빈이 예상과 다르게 동작하면 치환 가능성이 깨진 것이다.\n\n원칙을 외우는 것보다 **어느 코드가 어느 원칙을 어겼는지 짚는 연습**이 낫다. 이 책은 계속 그렇게 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"SOLID 를 말해 보세요\"** → 다섯을 나열하는 것으로는 부족하다. **OCP 와 DIP 가 왜 같이 깨지는지**를 코드로 설명하면 확실히 갈린다.\n- **\"OCP 가 뭔가요?\"** → 확장에는 열리고 변경에는 닫힌다. 새 구현을 추가할 때 기존 클라이언트를 안 고치는 것.\n- **\"DIP 가 뭔가요?\"** → 구체가 아니라 추상에 의존한다. `new FixDiscountPolicy()` 가 클라이언트 안에 있으면 위반이다.\n- **\"그럼 순수 자바로는 OCP·DIP 를 지킬 수 없나요?\"** → 지킬 수 있다. 다만 구현체를 고르는 코드를 밖으로 빼야 하고, 그 밖을 직접 만들면 그것이 DI 컨테이너다. 스프링은 그걸 대신 해 준다.\n- **\"스프링을 한 문장으로?\"** → 좋은 객체 지향 설계를 할 수 있게 도와주는 프레임워크. **왜 도움이 필요한지**를 이 절로 설명한다."
+    }
+  ],
+  "recap": [
+    "SOLID 다섯 중 이 책의 주제는 **OCP 와 DIP** 둘이다.",
+    "OCP — 확장에는 열리고 변경에는 닫힌다. 새 구현을 추가할 때 클라이언트를 안 고치는 것.",
+    "DIP — 구체가 아니라 추상에 의존한다. 구현 클래스 이름이 클라이언트에 박혀 있으면 위반.",
+    "`private DiscountPolicy p = new FixDiscountPolicy();` 한 줄에 **두 의존이 같이 있다.**",
+    "**DIP 위반이 OCP 위반을 만든다.** 두 원칙이 사실 하나의 문제다.",
+    "구현체를 고르는 일은 없앨 수 없고, **한 곳으로 몰아낼 수만 있다.**",
+    "그 한 곳이 3.3절의 `AppConfig` 이고 3.8절에서 이름이 DI 컨테이너가 된다."
+  ],
+  "drills": [
+    {
+      "task": "1.3절의 `OrderService` 코드에서 DIP 를 어긴 줄과 OCP 를 어기게 만드는 줄을 각각 표시한다.",
+      "done_when": "같은 줄이라는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "생성자로 받도록 고친 뒤 컴파일해 본다.",
+      "done_when": "`OrderService` 를 만드는 쪽에서 오류가 나는 것을 확인했다. 문제가 옮겨 갔을 뿐이라는 것을 몸으로 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "지금 쓰는 프로젝트에서 `new` 로 구현체를 직접 만드는 곳을 찾아 세어 본다.",
+      "done_when": "몇 군데인지 세었고, 그중 바뀔 가능성이 있는 것이 무엇인지 판단했다.",
+      "minutes": 20
+    },
+    {
+      "task": "SOLID 다섯 원칙을 각각 한 줄로 적고, 최근 코드 리뷰에서 지적했던(또는 받았던) 것이 어느 원칙과 관련되는지 짝지어 본다.",
+      "done_when": "최소 두 개를 짝지었다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "OCP 를 한 줄로 말하면?",
+      "a": "확장에는 열려 있고 변경에는 닫혀 있어야 한다. 새 구현을 추가할 때 기존 클라이언트 코드를 고치지 않는 것."
+    },
+    {
+      "q": "DIP 를 한 줄로 말하면?",
+      "a": "구체 클래스가 아니라 추상(인터페이스)에 의존해야 한다. 클라이언트 안에 구현 클래스 이름이 있으면 위반이다."
+    },
+    {
+      "q": "`private DiscountPolicy p = new FixDiscountPolicy();` 의 문제는?",
+      "a": "한 줄에 추상 의존과 구체 의존이 같이 있다. 뒷부분 때문에 구현 클래스 이름이 클라이언트에 박히고, 정책을 바꾸려면 이 파일을 고쳐야 한다."
+    },
+    {
+      "q": "DIP 위반과 OCP 위반이 왜 같이 일어나는가?",
+      "a": "구현 클래스 이름이 클라이언트에 있으면(DIP 위반), 구현을 바꿀 때 그 클라이언트를 고쳐야 하기 때문이다(OCP 위반)."
+    },
+    {
+      "q": "생성자로 `DiscountPolicy` 를 받게 고치면 문제가 해결되는가?",
+      "a": "옮겨질 뿐이다. `OrderService` 는 깨끗해지지만 그것을 만드는 쪽에서 여전히 구현체를 골라야 한다. 그 일을 한 곳으로 몰아내는 것이 3장의 주제다."
+    },
+    {
+      "q": "스프링이 '좋은 객체 지향 설계를 도와준다' 는 말의 기술적 의미는?",
+      "a": "순수 자바만으로는 지키기 어려운 OCP·DIP 를, 구현체를 고르고 연결하는 일을 대신 맡아 줌으로써 지킬 수 있게 해 준다는 뜻이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "OCP",
+      "en": "Open-Closed Principle",
+      "what": "확장에는 열리고 변경에는 닫힌다. 다형성으로 확장하되 클라이언트는 안 고친다."
+    },
+    {
+      "term": "DIP",
+      "en": "Dependency Inversion Principle",
+      "what": "구체가 아니라 추상에 의존한다. 구현 클래스 이름이 클라이언트에 없어야 한다."
+    },
+    {
+      "term": "의존한다",
+      "en": "depend on",
+      "what": "그것이 바뀌면 나도 바뀔 수 있다는 뜻. 코드에서는 대개 '그 이름을 알고 있다' 로 나타난다."
+    },
+    {
+      "term": "SRP",
+      "en": "Single Responsibility Principle",
+      "what": "한 클래스는 하나의 책임만. 3.3절에서 '사용' 과 '구성' 을 나누는 근거가 된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Robert C. Martin — Design Principles and Design Patterns",
+      "url": "https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf",
+      "publisher": "Object Mentor"
+    },
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

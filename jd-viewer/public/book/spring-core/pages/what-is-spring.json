@@ -1,0 +1,213 @@
+{
+  "book": "spring-core",
+  "id": "what-is-spring",
+  "no": "1.2",
+  "chapter": 1,
+  "title": "스프링이란?",
+  "summary": "스프링 프레임워크·부트·생태계. '스프링' 이라는 말이 문맥마다 다른 것을 가리킨다.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "스프링 프레임워크·부트·생태계를 구분할 수 있다.",
+    "스프링 부트가 실제로 해 주는 일 네 가지를 말할 수 있다.",
+    "이 책이 그중 어디를 다루는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "\"스프링 할 줄 아세요?\" 라는 질문이 애매한 이유가 있다. **그 말이 가리키는 것이 문맥마다 다르다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "세 층",
+      "ascii": "   '스프링' 이라는 말이 가리키는 것\n\n\n   Spring Boot\n   ┌──────────────────────────────────────────────────────────┐\n   │  embedded server · starter · auto-config · properties    │\n   └──────────────────────────────────────────────────────────┘\n        \"설정하지 마라. 관례를 따르면 된다\"\n                            │  기반으로 삼는다\n                            ▼\n   Spring Framework\n   ┌──────────────────────────────────────────────────────────┐\n   │  core         DI container · AOP · events                │   <-- 이 책\n   │  web          Spring MVC · WebFlux                       │\n   │  data         transaction · JDBC · ORM support           │\n   │  integration  cache · mail · remoting · scheduling       │\n   │  test         spring test support                        │\n   └──────────────────────────────────────────────────────────┘\n\n   Spring Data / Security / Batch / Cloud ...\n   ┌──────────────────────────────────────────────────────────┐\n   │  separate projects, built the same way                   │\n   └──────────────────────────────────────────────────────────┘\n\n\n   이 책은 가운데 상자의 첫 줄, DI container 하나만 다룬다."
+    },
+    {
+      "type": "heading",
+      "text": "스프링 부트가 실제로 하는 일"
+    },
+    {
+      "type": "table",
+      "caption": "네 가지",
+      "note": "부트는 **새로운 기능이 아니라 조립 방식**이다. 스프링 프레임워크를 대체하지 않고 그 위에 얹힌다.",
+      "columns": [
+        "기능",
+        "그 전에는",
+        "지금은"
+      ],
+      "rows": [
+        [
+          "**내장 웹서버**",
+          "톰캣을 따로 설치하고 WAR 를 배포",
+          "`java -jar app.jar` 하나로 뜬다"
+        ],
+        [
+          "**스타터 의존성**",
+          "라이브러리 버전 조합을 손으로 맞춤",
+          "`spring-boot-starter-web` 한 줄"
+        ],
+        [
+          "**자동 구성**",
+          "XML 이나 자바 설정을 직접 작성",
+          "클래스패스를 보고 알아서 등록"
+        ],
+        [
+          "**외부 설정**",
+          "환경마다 다른 설정 파일 관리",
+          "`application.yml` + 프로파일"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그런데 이 책은 그 넷을 거의 안 쓴다",
+      "md": "웹서버를 안 띄우고, 스타터도 `spring-boot-starter` 하나만 쓰고, 자동 구성을 일부러 피하고, 외부 설정도 안 쓴다.\n\n**컨테이너 하나만 남겨 두려는 것**이다.\n\n부트를 쓰는 이유는 프로젝트 뼈대를 빨리 만들기 위해서일 뿐이다. 이 책의 코드 대부분은 스프링 부트가 없어도, 심지어 3장 중반까지는 **스프링 자체가 없어도** 돈다."
+    },
+    {
+      "type": "heading",
+      "text": "스프링 프레임워크의 핵심 기술 세 가지"
+    },
+    {
+      "type": "table",
+      "caption": "핵심 기술",
+      "note": "**이 책은 첫 줄만 다룬다.** AOP 와 이벤트는 고급편의 주제다.",
+      "columns": [
+        "기술",
+        "무엇",
+        "이 책에서"
+      ],
+      "rows": [
+        [
+          "**DI 컨테이너**",
+          "객체를 만들고 서로 연결해 준다",
+          "**전부**"
+        ],
+        [
+          "AOP",
+          "공통 관심사(로깅·트랜잭션)를 분리한다",
+          "5.6절에서 프록시 개념만"
+        ],
+        [
+          "이벤트",
+          "빈끼리 느슨하게 통신한다",
+          "다루지 않는다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "스프링이 스스로를 뭐라고 정의하는가",
+      "md": "공식 문서와 강의에서 반복되는 한 문장이 있다.\n\n> **스프링은 좋은 객체 지향 애플리케이션을 개발할 수 있게 도와주는 프레임워크다.**\n\n\"웹을 편하게 만든다\" 도 \"DB 를 편하게 쓴다\" 도 아니다. **객체 지향**이다.\n\n처음 들으면 추상적인데, 3장을 끝내면 이 문장이 정확한 기술적 서술이라는 것을 알게 된다. 1.4절에서 볼 OCP·DIP 원칙은 순수 자바만으로는 지킬 수 없고, 그것을 지킬 수 있게 해 주는 물건이 DI 컨테이너다.\n\n그래서 이 책의 구성이 이렇다 — **1장 원칙 → 2장 원칙을 어긴 코드 → 3장 그 원칙을 지키는 물건을 직접 만들기.**"
+    },
+    {
+      "type": "heading",
+      "text": "확인해 보기"
+    },
+    {
+      "type": "code",
+      "lang": "groovy",
+      "file": "build.gradle",
+      "caption": "이 책이 쓰는 의존성 전부",
+      "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}",
+      "note": "`-web` 도 `-data-jpa` 도 없다. **컨테이너와 테스트뿐**이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 무엇이 딸려 오는지",
+      "sql": "$ ./gradlew dependencies --configuration compileClasspath\n\ncompileClasspath\n\\--- org.springframework.boot:spring-boot-starter\n     +--- org.springframework.boot:spring-boot\n     |    +--- org.springframework:spring-core\n     |    \\--- org.springframework:spring-context      <-- DI 컨테이너\n     +--- org.springframework.boot:spring-boot-autoconfigure\n     +--- org.springframework.boot:spring-boot-starter-logging\n     \\--- org.yaml:snakeyaml",
+      "note": "`spring-context` 가 이 책의 주인공이다. `ApplicationContext`·`@Configuration`·`@Bean` 이 전부 거기 들어 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "부트 없이도 되나",
+      "md": "된다. 스프링 프레임워크만 직접 의존성으로 넣어도 이 책의 내용은 전부 동작한다.\n\n```groovy\nimplementation 'org.springframework:spring-context:6.1.5'\n```\n\n부트를 쓰는 것은 **버전 조합을 알아서 맞춰 주기 때문**이다. 스프링 프레임워크·로깅·테스트 라이브러리의 호환 버전을 손으로 맞추는 일이 생각보다 성가시다.\n\n앞 책 1.3절에서 `hibernate-core` 하나만 넣고 시작했던 것과 같은 판단이다 — **필요한 최소한만.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"스프링 부트와 스프링 프레임워크의 차이는?\"** → 부트는 프레임워크를 **더 쉽게 쓰게 해 주는 도구**다. 내장 웹서버·스타터·자동 구성·외부 설정. 프레임워크를 대체하지 않는다.\n- **\"스프링의 핵심 기술은?\"** → DI 컨테이너, AOP, 이벤트. 그중 DI 컨테이너가 나머지의 기반이다.\n- **\"스프링을 한 문장으로 정의하면?\"** → 좋은 객체 지향 애플리케이션을 개발할 수 있게 도와주는 프레임워크. **왜 그 정의인지**를 OCP·DIP 로 설명할 수 있으면 확실하다."
+    }
+  ],
+  "recap": [
+    "'스프링' 은 세 층을 가리킬 수 있다 — 부트, 프레임워크, 그리고 생태계 프로젝트들.",
+    "부트가 하는 일 넷 — 내장 웹서버, 스타터 의존성, 자동 구성, 외부 설정.",
+    "부트는 새 기능이 아니라 **조립 방식**이다. 프레임워크를 대체하지 않는다.",
+    "프레임워크 핵심 기술 셋 중 이 책은 **DI 컨테이너 하나**만 다룬다.",
+    "스프링의 자기 정의는 '좋은 객체 지향 애플리케이션을 개발하게 도와주는 프레임워크' 다.",
+    "의존성은 `spring-boot-starter` 하나뿐. 웹도 DB 도 안 쓴다."
+  ],
+  "drills": [
+    {
+      "task": "start.spring.io 에서 의존성 없이 프로젝트를 만들고 `./gradlew dependencies` 를 실행한다.",
+      "done_when": "`spring-context` 가 딸려 오는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`spring-boot-starter-web` 을 추가하고 다시 실행해 무엇이 늘어나는지 본다.",
+      "done_when": "톰캣과 잭슨이 추가되는 것을 확인했다. 이 책에서 그것을 안 쓰는 이유도 이해했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "스프링 부트가 하는 일 네 가지는?",
+      "a": "내장 웹서버, 스타터 의존성(버전 조합), 자동 구성, 외부 설정. 새로운 기능이라기보다 프레임워크를 쉽게 조립하는 방식이다."
+    },
+    {
+      "q": "스프링 프레임워크의 핵심 기술 셋은?",
+      "a": "DI 컨테이너, AOP, 이벤트. DI 컨테이너가 나머지의 기반이고 이 책은 그것만 다룬다."
+    },
+    {
+      "q": "이 책이 `spring-boot-starter-web` 을 안 쓰는 이유는?",
+      "a": "웹 기능이 필요 없고, 컨테이너 자체에만 집중하기 위해서다. 이 책의 코드는 대부분 웹서버 없이 테스트로만 확인한다."
+    },
+    {
+      "q": "스프링이 스스로를 정의하는 문장은?",
+      "a": "\"좋은 객체 지향 애플리케이션을 개발할 수 있게 도와주는 프레임워크\". 편의 도구가 아니라 설계 원칙을 지킬 수 있게 해 주는 물건이라는 뜻이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "스프링 프레임워크",
+      "en": "Spring Framework",
+      "what": "DI 컨테이너·AOP·웹·데이터 접근 등을 포함하는 본체."
+    },
+    {
+      "term": "스프링 부트",
+      "en": "Spring Boot",
+      "what": "프레임워크를 쉽게 쓰게 해 주는 도구. 내장 웹서버·스타터·자동 구성·외부 설정."
+    },
+    {
+      "term": "스타터",
+      "en": "starter",
+      "what": "함께 쓰이는 의존성을 검증된 버전 조합으로 묶어 둔 것."
+    },
+    {
+      "term": "spring-context",
+      "en": "",
+      "what": "DI 컨테이너가 들어 있는 모듈. 이 책의 주인공."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — Overview",
+      "url": "https://docs.spring.io/spring-framework/reference/overview.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "Spring Boot Reference Documentation",
+      "url": "https://docs.spring.io/spring-boot/index.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

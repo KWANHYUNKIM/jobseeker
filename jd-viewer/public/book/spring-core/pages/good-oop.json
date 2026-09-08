@@ -1,0 +1,191 @@
+{
+  "book": "spring-core",
+  "id": "good-oop",
+  "no": "1.3",
+  "chapter": 1,
+  "title": "좋은 객체 지향 프로그래밍이란",
+  "summary": "다형성. 역할과 구현을 분리하면 무엇이 가능해지는가 — 그리고 왜 그것만으로는 부족한가.",
+  "minutes": 16,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "역할과 구현의 분리가 무엇을 가능하게 하는지 예로 설명할 수 있다.",
+    "자바 다형성이 실행 시점에 무엇을 하는지 말할 수 있다.",
+    "다형성만으로 해결되지 않는 것이 무엇인지 코드로 짚을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "객체 지향의 특징으로 캡슐화·상속·추상화·다형성을 배운다. 그런데 **스프링이 관심 있는 것은 다형성 하나**다.\n\n정확히는 다형성이 가능하게 하는 **역할과 구현의 분리**다."
+    },
+    {
+      "type": "figure",
+      "caption": "역할과 구현",
+      "ascii": "   역할과 구현을 나눈다\n\n\n   client                              클라이언트는 바뀌지 않는다\n      │\n      │ uses\n      ▼\n   ┌──────────────────┐\n   │  Car             │               <-- interface (역할)\n   │    accelerate()  │\n   │    brake()       │\n   └────────┬─────────┘\n            │ implements\n     ┌──────┼──────┬─────────┐\n     ▼      ▼      ▼         ▼\n   K3    Avante  Model3   (new one)   <-- 여기가 늘어나도 client 는 그대로\n\n\n   무대에서 배우를 바꾸는 것과 같다.\n   관객(클라이언트)은 역할만 알고, 누가 그 역할을 하는지는 몰라도 된다.\n\n\n   그런데 역할 자체가 바뀌면?\n\n   accelerate()  ->  accelerate(int level)  로 인터페이스를 고치면\n   모든 구현체와 모든 클라이언트를 다 고쳐야 한다.\n\n   그래서 인터페이스 설계가 어렵고, 늦게 만드는 편이 나을 때도 있다."
+    },
+    {
+      "type": "heading",
+      "text": "코드로 보면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "역할 — 인터페이스",
+      "code": "public interface DiscountPolicy {\n    int discount(Member member, int price);\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "구현 — 두 가지",
+      "code": "public class FixDiscountPolicy implements DiscountPolicy {\n    @Override\n    public int discount(Member member, int price) {\n        return member.getGrade() == Grade.VIP ? 1000 : 0;    // 정액\n    }\n}\n\npublic class RateDiscountPolicy implements DiscountPolicy {\n    @Override\n    public int discount(Member member, int price) {\n        return member.getGrade() == Grade.VIP ? price / 10 : 0;   // 정률\n    }\n}",
+      "note": "2장에서 실제로 만들 코드다. 지금은 모양만 봐 두면 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "클라이언트",
+      "code": "public class OrderService {\n\n    private DiscountPolicy discountPolicy;\n\n    public Order createOrder(Member member, int price) {\n        int discountPrice = discountPolicy.discount(member, price);\n        return new Order(member, price, discountPrice);\n    }\n}",
+      "note": "**`OrderService` 는 어떤 정책인지 모른다.** 정액이든 정률이든 `discount()` 를 부르면 된다. 이게 역할과 구현이 분리됐다는 말의 뜻이다."
+    },
+    {
+      "type": "figure",
+      "caption": "실행 시점에 무슨 일이",
+      "ascii": "   자바 다형성이 실제로 하는 일\n\n   Car car = new K3();\n   car.accelerate();\n\n\n   compile time                          runtime\n\n   ┌──────────────────────┐              ┌──────────────────────┐\n   │ type: Car            │              │ instance: K3         │\n   │ check accelerate()   │ ───────────▶ │ K3.accelerate() runs │\n   │ exists on Car        │              │                      │\n   └──────────────────────┘              └──────────────────────┘\n\n   호출하는 쪽 코드는 하나인데 실행되는 메서드가 달라진다.\n   이것이 오버라이딩이고, 다형성의 전부다.\n\n\n   그런데 누가 new K3() 를 하는가?\n\n   Car car = new K3();\n               ^^^^^^\n               이 한 줄이 클라이언트 코드 안에 있다.\n               차를 바꾸려면 결국 이 줄을 고쳐야 한다.\n\n   1.4 절과 3장이 이 한 줄에 대한 이야기다."
+    },
+    {
+      "type": "heading",
+      "text": "그래서 무엇이 좋아지나"
+    },
+    {
+      "type": "table",
+      "caption": "다형성이 주는 것",
+      "note": "**세 번째가 실무에서 가장 크다.** 테스트에서 진짜 DB 대신 메모리 구현을 끼우는 것이 이 원리다.",
+      "columns": [
+        "",
+        "구체적으로"
+      ],
+      "rows": [
+        [
+          "**구현을 바꿔도 클라이언트가 안 바뀐다**",
+          "정액 → 정률로 정책을 바꿔도 `OrderService` 코드는 그대로"
+        ],
+        [
+          "**구현을 늘려도 클라이언트가 안 바뀐다**",
+          "새 할인 정책이 생겨도 마찬가지"
+        ],
+        [
+          "**테스트에서 가짜를 끼울 수 있다**",
+          "`DiscountPolicy` 를 구현한 스텁을 넣으면 DB 없이 테스트"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "인터페이스가 안정적일수록 값어치가 크다",
+      "md": "인터페이스는 **약속**이다. 그리고 약속이 자주 바뀌면 약속이 아니다.\n\n`discount(Member, int)` 를 `discount(Member, int, Coupon)` 으로 바꾸면 **모든 구현체와 모든 클라이언트를 다 고쳐야 한다.** 인터페이스를 안 만들었을 때보다 오히려 손댈 곳이 늘어난다.\n\n그래서 두 가지 판단이 필요하다.\n\n- **바뀔 것 같은 부분에만 인터페이스를 둔다.** 전부 인터페이스로 만드는 것은 과설계다.\n- **인터페이스를 미리 만들지 않는다.** 구현이 하나뿐일 때는 클래스로 두고, 두 번째가 생길 때 뽑아내는 편이 낫다.\n\n2장에서 할인 정책에만 인터페이스를 두고 나머지는 클래스로 두는 이유가 그것이다."
+    },
+    {
+      "type": "heading",
+      "text": "그런데 다형성만으로는 부족하다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "누군가는 구현체를 골라야 한다",
+      "code": "public class OrderService {\n\n    private DiscountPolicy discountPolicy = new FixDiscountPolicy();\n                                            // ^^^^^^^^^^^^^^^^^^^^^^\n                                            // 여기서 골랐다\n}",
+      "note": "인터페이스를 잘 나눴는데도 **`OrderService` 안에 구현체 이름이 박혀 있다.** 정책을 바꾸려면 이 파일을 고쳐야 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 동작은 한다",
+      "sql": "OrderServiceTest > 할인이_적용된다() PASSED\n\n// 정액 할인 1000원이 적용됐다. 아무 문제 없어 보인다.",
+      "note": "**테스트가 통과한다는 것이 문제다.** 설계 결함은 동작으로 드러나지 않는다. 요구사항이 바뀔 때 드러난다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "여기가 이 책의 출발점이다",
+      "md": "다형성은 \"**바꿔 끼울 수 있게**\" 만들어 준다. 그런데 \"**누가 끼우는가**\" 는 답하지 않는다.\n\n지금은 `OrderService` 자기 자신이 끼우고 있다. 그러면 결국 정책이 바뀔 때마다 `OrderService` 를 고치게 되고, **인터페이스를 만든 의미가 절반 사라진다.**\n\n1.4절에서 이것이 어떤 원칙 위반인지 정확한 이름을 붙이고, 3장에서 고친다. 고치는 방법이 **끼우는 일을 밖으로 빼는 것**이고, 그 밖이 곧 스프링이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"객체 지향의 핵심은?\"** → 다형성. 정확히는 **역할과 구현의 분리**이고, 그래야 구현을 바꿔도 클라이언트가 안 바뀐다.\n- **\"다형성이 실행 시점에 하는 일은?\"** → 호출하는 코드는 인터페이스 타입만 알고, 실제로는 그 자리에 들어 있는 인스턴스의 메서드가 실행된다(오버라이딩).\n- **\"인터페이스를 무조건 만드는 게 좋나요?\"** → 아니다. 인터페이스가 바뀌면 구현체와 클라이언트를 다 고쳐야 해서 오히려 비용이 커진다. 바뀔 것 같은 부분에만 둔다.\n- **\"다형성만으로 부족한 것은?\"** → 구현체를 **누가 고르느냐**를 답하지 않는다. 클라이언트가 직접 고르면 결국 클라이언트를 고치게 된다."
+    }
+  ],
+  "recap": [
+    "객체 지향의 네 특징 중 스프링이 관심 있는 것은 **다형성** 하나다.",
+    "다형성이 가능하게 하는 것은 **역할과 구현의 분리**다.",
+    "구현을 바꾸거나 늘려도 클라이언트가 안 바뀌고, 테스트에서 가짜를 끼울 수 있다.",
+    "대신 **인터페이스가 바뀌면 구현체와 클라이언트를 전부 고쳐야 한다.** 바뀔 것 같은 곳에만 둔다.",
+    "다형성은 '바꿔 끼울 수 있게' 만들지만 **'누가 끼우는가' 는 답하지 않는다.**",
+    "지금은 클라이언트가 직접 고르고 있고, 그래서 인터페이스를 만든 의미가 절반 사라졌다."
+  ],
+  "drills": [
+    {
+      "task": "`DiscountPolicy` 인터페이스와 두 구현체, 그리고 `OrderService` 를 스케치해 본다.",
+      "done_when": "`OrderService` 안에 `new FixDiscountPolicy()` 가 들어가는 것을 확인했다. 2장에서 이걸 제대로 만든다.",
+      "minutes": 20
+    },
+    {
+      "task": "정책을 정률로 바꾸려면 몇 개의 파일을 고쳐야 하는지 센다.",
+      "done_when": "인터페이스를 잘 나눴는데도 `OrderService` 를 고쳐야 한다는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "지금 쓰는 프로젝트에서 인터페이스가 하나의 구현체만 가진 경우를 찾아본다.",
+      "done_when": "몇 개인지 세었고, 그중 정말로 두 번째 구현이 생길 것 같은 것이 몇 개인지 판단했다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "역할과 구현을 분리하면 무엇이 가능해지는가?",
+      "a": "구현을 바꾸거나 늘려도 클라이언트 코드가 바뀌지 않는다. 테스트에서 가짜 구현을 끼울 수 있는 것도 같은 원리다."
+    },
+    {
+      "q": "인터페이스를 무조건 만드는 것이 좋은가?",
+      "a": "아니다. 인터페이스가 바뀌면 모든 구현체와 클라이언트를 고쳐야 해서 오히려 비용이 커진다. 바뀔 것 같은 부분에만 두고, 구현이 하나뿐이면 클래스로 시작한다."
+    },
+    {
+      "q": "다형성이 답하지 않는 질문은?",
+      "a": "구현체를 **누가 고르는가**다. 클라이언트가 직접 `new` 로 고르면 정책이 바뀔 때마다 클라이언트를 고치게 된다."
+    },
+    {
+      "q": "설계 결함이 테스트로 잘 안 드러나는 이유는?",
+      "a": "동작은 정상이기 때문이다. 결함은 요구사항이 바뀌어 '무엇을 고쳐야 하는가' 를 셀 때 드러난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "다형성",
+      "en": "polymorphism",
+      "what": "같은 타입으로 여러 구현을 다룰 수 있는 성질. 자바에서는 오버라이딩으로 구현된다."
+    },
+    {
+      "term": "역할과 구현",
+      "en": "",
+      "what": "인터페이스(역할)와 클래스(구현)를 나누는 설계. 클라이언트는 역할만 알면 된다."
+    },
+    {
+      "term": "클라이언트",
+      "en": "client",
+      "what": "어떤 객체를 사용하는 쪽. 여기서는 `OrderService` 가 `DiscountPolicy` 의 클라이언트다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
