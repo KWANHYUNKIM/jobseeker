@@ -1,0 +1,157 @@
+{
+ "book": "spring-mvc-2",
+ "id": "v2-binding-result",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "V2 — BindingResult",
+ "summary": "1편 7.7절에서 예고한 그것. 예외 대신 오류 정보.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`BindingResult` 가 파라미터 순서에 민감한 이유를 안다.",
+  "타입 오류가 400 에서 200 으로 바뀌는 것을 안다.",
+  "`#fields` 와 `th:errors` 를 쓸 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 7.7절에서 `@ModelAttribute` 를 다룰 때 이런 줄이 있었다.\n\n> 바인딩에 실패하면 **`BindException`** 이 나고 400 이 된다. **2편에서 `BindingResult` 로 이것을 받아 처리한다.**\n\n**여기다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "파라미터 하나의 차이",
+   "ascii": "   @ModelAttribute Item item, BindingResult bindingResult\n                        |            |\n                        |            +--> 바로 뒤에 와야 한다\n                        +-----------------> 이 객체의 바인딩 결과\n\n   binding fails\n   -------------\n   without BindingResult   ->  400, controller not called\n   with    BindingResult   ->  controller called, error recorded\n\n   파라미터 하나가 400 을 200 으로 바꾼다",
+   "note": "**`BindingResult` 가 있으면 예외를 던지지 않고 거기에 담는다.** 컨트롤러가 실행된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예외 대신 정보로",
+   "md": "**바인딩 실패는 두 가지로 처리할 수 있다.**\n\n| | 결과 |\n|---|---|\n| **예외를 던진다** | 400. 컨트롤러가 안 불린다 |\n| **정보로 담는다** | 컨트롤러가 불린다. 화면을 그릴 수 있다 |\n\n**둘 다 필요하다.** API 는 400 이 맞고, 폼 화면은 정보가 맞다.\n\n**스프링은 파라미터 유무로 이 둘을 가른다.** 설정이 아니라 **메서드 시그니처**가 정한다.\n\n> 앞 책 7장에서 생성자 주입이 필수 의존관계를 **시그니처로 강제**하던 것과 비슷한 발상이다. **선언이 곧 정책**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "순서가 중요하다",
+   "md": "```java\n// 맞음\npublic String addItem(@ModelAttribute Item item, BindingResult bindingResult,\n                      RedirectAttributes redirectAttributes) { ... }\n\n// 틀림 - 400 이 그대로 난다\npublic String addItem(@ModelAttribute Item item,\n                      RedirectAttributes redirectAttributes,\n                      BindingResult bindingResult) { ... }\n```\n\n**`BindingResult` 는 검증할 대상 바로 뒤**에 와야 한다.\n\n**왜냐하면 `@ModelAttribute` 가 여러 개일 수 있어서**다. 어느 객체의 결과인지 **위치로 정한다.**\n\n```java\npublic String edit(@ModelAttribute Item item, BindingResult itemResult,\n                   @ModelAttribute Member member, BindingResult memberResult)\n```\n\n**짝을 이룬다.** 이름이 아니라 순서다.\n\n**틀려도 컴파일은 된다.** 실행해 보고 400 이 나야 안다 — 이 절에서 제일 자주 겪는 실수다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "V2 컨트롤러",
+   "code": "@PostMapping(\"/add\")\npublic String addItem(@ModelAttribute Item item, BindingResult bindingResult,\n                      RedirectAttributes redirectAttributes) {\n\n    if (!StringUtils.hasText(item.getItemName())) {\n        bindingResult.addError(new FieldError(\"item\", \"itemName\",\n                \"상품 이름은 필수입니다.\"));\n    }\n    if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {\n        bindingResult.addError(new FieldError(\"item\", \"price\",\n                \"가격은 1,000 ~ 1,000,000 까지 허용합니다.\"));\n    }\n\n    if (item.getPrice() != null && item.getQuantity() != null) {\n        int resultPrice = item.getPrice() * item.getQuantity();\n        if (resultPrice < 10000) {\n            bindingResult.addError(new ObjectError(\"item\",\n                    \"가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = \" + resultPrice));\n        }\n    }\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v2/addForm\";\n    }\n\n    // 성공\n}",
+   "note": "**`Map` 이 `BindingResult` 가 됐을 뿐** 흐름은 5.2절과 같다.\n\n**`FieldError` 와 `ObjectError` 로 갈린다** — 5.1절에서 구분한 그 둘이 클래스로 나타났다. `FieldError` 는 필드 이름을 하나 더 받는다.\n\n**첫 인자 `\"item\"`** 은 객체 이름이다. `@ModelAttribute Item item` 의 그 이름."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "모델에 안 담아도 된다",
+   "md": "5.2절에서는 `model.addAttribute(\"errors\", errors)` 를 했는데 **여기는 없다.**\n\n**`BindingResult` 는 자동으로 모델에 담긴다.** 스프링이 `BindingResult.MODEL_KEY_PREFIX + \"item\"` 이라는 이름으로 넣어 준다.\n\n3.2절에서 본 그 오류 메시지가 여기서 이어진다.\n\n> `Neither BindingResult nor plain target object for bean name 'item' available as request attribute`\n\n**\"`BindingResult` 나 대상 객체 중 하나\"** 라고 되어 있었다. `th:object` 는 **둘 중 하나만 있으면** 동작한다 — 검증 실패 시에는 `BindingResult` 쪽을 본다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "화면이 짧아진다",
+   "code": "<div th:if=\"${#fields.hasGlobalErrors()}\">\n    <p class=\"field-error\" th:each=\"err : ${#fields.globalErrors()}\"\n       th:text=\"${err}\">전체 오류</p>\n</div>\n\n<input type=\"text\" th:field=\"*{itemName}\"\n       th:errorclass=\"field-error\" class=\"form-control\">\n<div class=\"field-error\" th:errors=\"*{itemName}\">상품명 오류</div>",
+   "note": "**5.2절의 화면과 비교하면 확 짧다.**\n\n- **`th:errors`** — 그 필드에 오류가 있으면 메시지를 출력하고, **없으면 태그 자체가 안 나온다.** `th:if` 가 필요 없다\n- **`th:errorclass`** — 오류가 있을 때만 `class` 에 덧붙인다. 2.9절의 `th:classappend` 를 오류 조건으로 특화한 것\n- **`#fields`** — 3.2절에서 `th:object` 를 쓴 이유의 절반이 이것이다\n\n**중첩 삼항과 `containsKey` 반복이 사라졌다.** 5.2절 한계 3번이 여기서 풀린다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "타입 오류가 200 이 됐다 — 그런데",
+   "md": "**`price=abc` 를 보내면 이제 400 이 아니다.**\n\n스프링이 바인딩에 실패하고 **`FieldError` 를 자동으로 만들어** `BindingResult` 에 담는다. 컨트롤러가 실행되고 화면이 그려진다.\n\n**5.1절의 한계 1번이 풀렸다.** 그런데 화면을 보면 —\n\n```html\n<input type=\"text\" name=\"price\" value=\"\">\n<div class=\"field-error\">\n  Failed to convert property value of type java.lang.String to required\n  type java.lang.Integer for property price; nested exception is ...\n</div>\n```\n\n**두 가지가 문제다.**\n\n1. **입력값이 사라졌다** — `abc` 를 `Integer` 필드에 못 담으니 `value` 가 빈칸\n2. **메시지가 개발자용이다** — 사용자에게 이걸 보여 줄 수 없다\n\n**5.4절이 1번을, 5.5~5.7절이 2번을 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=abc&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<input type=\"text\" id=\"itemName\" name=\"itemName\" value=\"\"\n       class=\"form-control field-error\">\n\n<input type=\"text\" id=\"price\" name=\"price\" value=\"\"\n       class=\"form-control field-error\">\n<div class=\"field-error\">Failed to convert property value of type\n  java.lang.String to required type java.lang.Integer for property price</div>\n\n# 5.2 절에서는 이 요청이 400 이었다\n\n# BindingResult 를 파라미터에서 빼면\nHTTP/1.1 400 ",
+   "note": "**같은 요청이 5.2절에서는 400, 여기서는 200** 이다. 바뀐 것은 **메서드 파라미터 하나**뿐이다.\n\n그리고 **`price` 의 `value` 가 비어 있다.** `abc` 를 `Integer` 에 못 담았으니 되살릴 곳이 없다 — 5.4절이 이것을 푼다.\n\n오류 메시지가 **`Failed to convert property value of type...`** — 사용자에게 보여 줄 문장이 아니다. 5.5절부터 이것을 갈아 낀다.\n\n맨 아래가 이 절의 요점을 뒤집어 보여 준다. **파라미터를 빼면 400 으로 돌아간다.**"
+  }
+ ],
+ "recap": [
+  "**1편 7.7절에서 예고한 그것**이다 — `BindException` 대신 `BindingResult`.",
+  "**있으면 예외를 안 던지고 담는다** — 컨트롤러가 실행된다.",
+  "**메서드 시그니처가 정책을 정한다** — 설정이 아니다.",
+  "**검증 대상 바로 뒤**에 와야 한다. 이름이 아니라 순서로 짝을 짓는다.",
+  "**틀려도 컴파일은 된다** — 400 이 나야 안다.",
+  "**`FieldError` 와 `ObjectError`** 가 5.1절의 두 구분이다.",
+  "**모델에 안 담아도 된다** — 스프링이 자동으로 넣는다.",
+  "3.2절의 `Neither BindingResult nor plain target object` 가 여기서 이어진다.",
+  "**`th:errors` 는 오류가 없으면 태그 자체가 안 나온다** — `th:if` 불필요.",
+  "**타입 오류가 200 이 됐다.** 그런데 입력값이 사라지고 메시지가 개발자용이다."
+ ],
+ "drills": [
+  {
+   "task": "`BindingResult` 를 파라미터에 추가하고 `price=abc` 를 보낸다.",
+   "done_when": "400 이 200 으로 바뀌는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`BindingResult` 를 다른 파라미터 뒤로 옮긴다.",
+   "done_when": "다시 400 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:errors` 로 화면을 다시 쓴다.",
+   "done_when": "`th:if` 없이도 오류가 있을 때만 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`th:errorclass` 를 쓴다.",
+   "done_when": "삼항 없이 클래스가 붙는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "타입 오류 시 `price` 의 `value` 를 본다.",
+   "done_when": "빈칸인 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`BindingResult` 가 있으면 무엇이 달라지나?",
+   "a": "바인딩 실패 시 예외를 던지지 않고 오류 정보를 담아서 컨트롤러가 실행된다."
+  },
+  {
+   "q": "왜 검증 대상 바로 뒤에 와야 하나?",
+   "a": "`@ModelAttribute` 가 여러 개일 수 있어서 어느 객체의 결과인지 위치로 정하기 때문이다."
+  },
+  {
+   "q": "`th:errors` 가 `th:if` 를 대신하는 이유는?",
+   "a": "해당 필드에 오류가 없으면 태그 자체를 렌더링하지 않기 때문이다."
+  },
+  {
+   "q": "`BindingResult` 를 모델에 담아야 하나?",
+   "a": "아니다. 스프링이 자동으로 모델에 넣어 준다."
+  },
+  {
+   "q": "V2 에서 타입 오류가 200 이 됐는데 남은 문제는?",
+   "a": "사용자가 입력한 값이 사라지고 오류 메시지가 개발자용 영문 문장이라는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BindingResult",
+   "en": "",
+   "what": "바인딩과 검증 결과를 담는 스프링 인터페이스. 대상 파라미터 바로 뒤에 선언한다."
+  },
+  {
+   "term": "th:errors",
+   "en": "",
+   "what": "해당 필드의 오류 메시지를 출력하는 속성. 오류가 없으면 태그 자체가 나오지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -365,7 +365,7 @@
           "title": "V2 — BindingResult",
           "summary": "1편 7.7절에서 예고한 그것. 예외 대신 오류 정보.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -373,7 +373,7 @@
           "title": "V3 — FieldError, ObjectError",
           "summary": "거절된 값을 유지한다. 타입 오류가 나도 화면이 안 깨진다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -381,7 +381,7 @@
           "title": "V4 — rejectValue, reject",
           "summary": "오류 코드를 문자열로 쓰지 않는다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",

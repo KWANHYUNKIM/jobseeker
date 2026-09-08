@@ -1,0 +1,167 @@
+{
+ "book": "spring-mvc-2",
+ "id": "v4-reject-value",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "V4 — rejectValue, reject",
+ "summary": "오류 코드를 문자열로 쓰지 않는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`rejectValue` 와 `reject` 를 쓸 수 있다.",
+  "오류 메시지를 `.properties` 로 뺄 수 있다.",
+  "오류 코드가 여러 후보로 확장된다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.4절이 남긴 것 하나 — **메시지가 자바 코드에 박혀 있다.**\n\n4장에서 화면의 글자를 다 뺐으니 **오류 메시지도 같은 자리로** 보낸다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "errors.properties",
+   "code": "required.item.itemName=상품 이름은 필수입니다.\nrange.item.price=가격은 {0} ~ {1} 까지 허용합니다.\nmax.item.quantity=수량은 최대 {0} 까지 허용합니다.\ntotalPriceMin=가격 * 수량의 합은 {0}원 이상이어야 합니다. 현재 값 = {1}",
+   "note": "**파일을 `messages` 와 나눴다.** 4.2절에서 `setBasenames` 가 여러 개를 받는다고 한 그 자리다.\n\n```properties\nspring.messages.basename=messages,errors\n```\n\n**`{0}` `{1}` 은 4.2절의 `MessageFormat`** 이다. 오류 메시지야말로 파라미터가 자주 필요하다 — 범위·현재값."
+  },
+  {
+   "type": "compare",
+   "caption": "긴 생성자에서 짧은 호출로",
+   "left": {
+    "title": "V3",
+    "lang": "java",
+    "code": "bindingResult.addError(new FieldError(\n        \"item\", \"price\", item.getPrice(), false,\n        new String[]{\"range.item.price\"},\n        new Object[]{1000, 1000000},\n        null));",
+    "md": "**객체 이름·거절값·플래그를 매번 적는다.** 그리고 코드가 **완성된 문자열**이다."
+   },
+   "right": {
+    "title": "V4",
+    "lang": "java",
+    "good": true,
+    "code": "bindingResult.rejectValue(\"price\", \"range\",\n        new Object[]{1000, 1000000}, null);",
+    "md": "**필드와 코드만 적는다.** 나머지는 `BindingResult` 가 안다."
+   }
+  },
+  {
+   "type": "figure",
+   "caption": "코드 하나가 여러 후보로",
+   "ascii": "   bindingResult.rejectValue(\"price\", \"range\", new Object[]{1000, 1000000}, null)\n                                |         |            |               |\n                                |         |            |               +--> default\n                                |         |            +--------------------> {0} {1}\n                                |         +---------------------------------> error code\n                                +-------------------------------------------> field\n\n   objectName 이 없다  ->  BindingResult 가 이미 알고 있다\n\n   range  ->  range.item.price\n         ->  range.price\n         ->  range.java.lang.Integer\n         ->  range",
+   "note": "**`range` 하나를 넘겼는데 후보가 넷**이다. 구체적인 것부터 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 줄었나",
+   "md": "**`rejectValue` 가 대신 채우는 것들**\n\n| | 어디서 오나 |\n|---|---|\n| `objectName` | `BindingResult` 가 안다 (`item`) |\n| `rejectedValue` | 바인딩할 때 이미 알고 있다 |\n| `bindingFailure` | 규칙 위반이므로 `false` |\n| 코드 확장 | **`MessageCodesResolver`** 가 한다 |\n\n**마지막이 이 절의 핵심**이다. `range` 라는 짧은 이름 하나가 **`range.item.price` → `range.price` → `range.java.lang.Integer` → `range`** 로 펼쳐진다.\n\n**왜 여러 개인가** — 메시지를 **얼마나 구체적으로 쓸지 고를 수 있게** 하려고다.\n\n```properties\n# 아주 구체적으로\nrange.item.price=상품 가격은 {0} ~ {1} 까지 허용합니다.\n\n# 아니면 뭉뚱그려서\nrange=범위 오류입니다. {0} ~ {1}\n```\n\n**구체적인 것이 있으면 그것을 쓰고 없으면 일반적인 것으로 내려온다.** 4.4절의 국제화 폴백과 같은 구조다.\n\n> **규칙 자체는 5.7절**에서 본다. 지금은 \"펼쳐진다\" 만 알면 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "글로벌 오류는 reject",
+   "code": "if (resultPrice < 10000) {\n    bindingResult.reject(\"totalPriceMin\",\n            new Object[]{10000, resultPrice}, null);\n}",
+   "note": "**필드 이름이 없으니 `reject`** 다. 5.1절에서 나눈 두 종류가 메서드 이름으로 갈렸다.\n\n| | 만드는 것 |\n|---|---|\n| `rejectValue(field, code, ...)` | `FieldError` |\n| `reject(code, ...)` | `ObjectError` |\n\n**글로벌 오류는 필드가 없으니 코드도 덜 펼쳐진다** — `totalPriceMin.item` 과 `totalPriceMin` 둘뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "네 번째 인자를 null 로 두면",
+   "md": "```java\nbindingResult.rejectValue(\"price\", \"range\", args, null);\n//                                             ^^^^ defaultMessage\n```\n\n**메시지를 못 찾으면 예외**다.\n\n```\nNoSuchMessageException: No message found under code 'range.item.price'\n```\n\n4.2절에서 본 그 예외이고, **화면 전체가 500** 이다. 검증 오류를 보여 주려다 페이지가 안 뜬다.\n\n**어느 쪽이 나은가** — 4.2절의 표에서 이렇게 갈랐다.\n\n> **예외**: 화면의 라벨 — 빠진 것을 개발 중에 발견해야 한다\n> **기본 메시지**: 선택적인 문구 — 없으면 없는 대로\n\n**검증 오류는 애매하다.** 코드가 자동 확장되므로 **모든 조합을 파일에 둘 수 없고**, 그렇다고 조용히 넘어가면 사용자가 빈 오류를 본다.\n\n**실무의 절충**\n\n```properties\n# 맨 아래 단계를 채워 둔다\nrange=값이 범위를 벗어났습니다\nrequired=필수 값입니다\n```\n\n**가장 일반적인 코드에 기본 문구를 두면** 구체적인 것이 없어도 뭔가는 나온다. 폴백이 파일 안에 있는 셈이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "코드가 짧아진 대가",
+   "md": "**`\"range\"` 라는 문자열은 여전히 자바 코드에 있다.**\n\n메시지 **문장**은 뺐지만 **코드 이름**은 남았다. 그리고 이것도 오타가 나면 조용히 틀린다 — `renge` 라고 쓰면 그 코드로 된 메시지를 못 찾을 뿐이다.\n\n**6장의 Bean Validation 이 이것마저 없앤다.**\n\n```java\n@Range(min = 1000, max = 1000000)\nprivate Integer price;\n```\n\n**애너테이션 이름이 곧 코드**가 된다. 오타가 나면 컴파일이 안 된다.\n\n> **V5(5.6절)는 이 코드 이름을 어떻게 설계할지**를 다룬다. 그리고 5.7절이 확장 규칙을 밝힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<div class=\"field-error\">가격은 1000 ~ 1000000 까지 허용합니다.</div>\n<div class=\"field-error\">가격 * 수량의 합은 10000원 이상이어야 합니다. 현재 값 = 5000</div>\n\n# 자바 코드에는 이 문장이 하나도 없다\n#   bindingResult.rejectValue(\"price\", \"range\", new Object[]{1000, 1000000}, null)\n\n# errors.properties 에서 한 줄 고치면\n#   range.item.price=가격 범위를 확인해 주세요 ({0}~{1})\n\nHTTP/1.1 200 \n<div class=\"field-error\">가격 범위를 확인해 주세요 (1000~1000000)</div>\n\n# 코드에 해당하는 메시지가 없으면\nHTTP/1.1 500 \n#   NoSuchMessageException: No message found under code 'range.item.price'",
+   "note": "**응답의 문장이 자바 코드 어디에도 없다.** 4.3절에서 화면 글자에 대해 한 일을 오류 메시지에 대해서도 한 것이다.\n\n`{0}` `{1}` 이 `1000` `1000000` 으로 치환됐다 — **`1,000` 이 아니라 `1000`** 인 것에 주의한다. 콤마를 넣으려면 메시지 쪽에서 `{0,number,#,###}` 를 쓰거나 인자를 문자열로 넘겨야 한다.\n\n맨 아래 500 이 이 방식의 대가다. **메시지 파일이 코드와 짝을 이뤄야** 하고, 그 짝은 컴파일러가 확인해 주지 않는다."
+  }
+ ],
+ "recap": [
+  "**오류 메시지를 `errors.properties` 로** 뺀다. 4장과 같은 자리.",
+  "**`rejectValue(field, code, args, default)`** 로 짧아진다.",
+  "`objectName` · `rejectedValue` · `bindingFailure` 를 **`BindingResult` 가 안다.**",
+  "**코드 하나가 여러 후보로 펼쳐진다** — `range` → `range.item.price` 등.",
+  "**구체적인 것부터 찾고 없으면 내려온다** — 4.4절 폴백과 같은 구조.",
+  "**글로벌 오류는 `reject`** — `ObjectError` 를 만든다.",
+  "**메시지를 못 찾으면 500** 이다. 가장 일반적인 코드를 채워 두는 것이 절충.",
+  "**코드 이름은 여전히 자바 코드에 문자열**로 남아 있다.",
+  "**6장의 Bean Validation 이 그것마저 없앤다** — 애너테이션 이름이 코드가 된다."
+ ],
+ "drills": [
+  {
+   "task": "`errors.properties` 를 만들고 `basename` 에 추가한다.",
+   "done_when": "메시지가 파일에서 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`rejectValue` 로 바꾼다.",
+   "done_when": "자바 코드에서 문장이 사라진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`{0}` `{1}` 에 값을 넘긴다.",
+   "done_when": "치환되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메시지 파일에서 그 줄을 지운다.",
+   "done_when": "500 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`range=` 만 남기고 `range.item.price` 를 지운다.",
+   "done_when": "일반 코드로 폴백하는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`rejectValue` 가 대신 채우는 것은?",
+   "a": "`objectName`, `rejectedValue`, `bindingFailure`, 그리고 오류 코드 확장이다."
+  },
+  {
+   "q": "`range` 하나가 왜 여러 코드가 되나?",
+   "a": "메시지를 얼마나 구체적으로 쓸지 고를 수 있게 하려고다. 구체적인 것이 있으면 쓰고 없으면 일반적인 것으로 내려온다."
+  },
+  {
+   "q": "`reject` 와 `rejectValue` 의 차이는?",
+   "a": "`reject` 는 필드 없는 `ObjectError`, `rejectValue` 는 `FieldError` 를 만든다."
+  },
+  {
+   "q": "메시지를 못 찾으면?",
+   "a": "`NoSuchMessageException` 으로 500 이다. 가장 일반적인 코드에 기본 문구를 두어 폴백을 만든다."
+  },
+  {
+   "q": "V4 에도 남은 것은?",
+   "a": "오류 코드 이름이 여전히 자바 코드에 문자열로 있다는 것이다. 6장이 그것을 없앤다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "rejectValue",
+   "en": "",
+   "what": "`BindingResult` 에 필드 오류를 등록하는 메서드. 오류 코드를 자동 확장한다."
+  },
+  {
+   "term": "오류 코드",
+   "en": "error code",
+   "what": "메시지를 찾는 키. 짧은 이름 하나가 구체적인 것부터 여러 후보로 펼쳐진다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "book": "spring-mvc-2",
+ "id": "v3-field-error",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "V3 — FieldError, ObjectError",
+ "summary": "거절된 값을 유지한다. 타입 오류가 나도 화면이 안 깨진다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "거절된 값이 어디에 보관되는지 안다.",
+  "`th:field` 가 왜 단순 대체가 아닌지 안다.",
+  "`bindingFailure` 플래그의 뜻을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.1절에서 이렇게 적고 미뤘다.\n\n> **`th:field` 는 이때 `BindingResult` 에 보관된 거절된 값을 꺼내 쓴다.** 직접 `value=\"${item.price}\"` 로 쓰면 빈칸이 된다.\n>\n> **5.8절에서 이것을 자세히 본다.**\n\n**구조는 여기서 만든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "생성자가 길어진다",
+   "ascii": "   new FieldError(objectName, field, rejectedValue,\n                  bindingFailure, codes, arguments, defaultMessage)\n                        |            |         |          |\n                        |            |         |          +--> 5.3\n                        |            |         +-------------> 5.5\n                        |            +-----------------------> 5.5\n                        +------------------------------------> here\n\n   rejectedValue 가 있어야 화면에 되살릴 수 있다\n\n   abc  ->  Integer price 에 못 담는다\n        ->  FieldError.rejectedValue 에 담는다\n        ->  th:field 가 거기서 꺼낸다",
+   "note": "**`rejectedValue` 가 이 절이 쓰는 자리**다. 나머지는 5.5절에서 채운다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "긴 생성자",
+   "code": "bindingResult.addError(new FieldError(\n        \"item\",                    // objectName\n        \"price\",                   // field\n        item.getPrice(),           // rejectedValue  <- 거절된 값\n        false,                     // bindingFailure\n        null,                      // codes\n        null,                      // arguments\n        \"가격은 1,000 ~ 1,000,000 까지 허용합니다.\"));",
+   "note": "**5.3절의 세 인자짜리 생성자와 같은 것**인데 뒤가 다 붙었다.\n\n**지금 쓰는 것은 `rejectedValue` 하나**다. `codes` 와 `arguments` 는 5.5절, `defaultMessage` 는 5.3절에서 쓰던 것."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 따로 보관해야 하나",
+   "md": "**타입이 안 맞으면 담을 곳이 없다.**\n\n```\nprice=abc  ->  Item.price 는 Integer  ->  담을 수 없다\nprice=500  ->  Integer 로 변환됨      ->  item.price = 500\n```\n\n**둘째는 객체에 남아 있으니 화면에 되살릴 수 있는데**, 첫째는 갈 곳이 없다.\n\n**그래서 `FieldError` 가 따로 들고 있는다.** 검증 오류 객체가 **\"무슨 값이 거절됐는지\"** 를 기억한다.\n\n```\nBindingResult\n  FieldError(field=\"price\", rejectedValue=\"abc\", ...)\n                              |\n                              +--> th:field 가 여기서 꺼낸다\n```\n\n**`th:field` 가 값을 찾는 순서**\n\n1. `BindingResult` 에 그 필드의 오류가 있으면 → **`rejectedValue`**\n2. 없으면 → 모델 객체의 프로퍼티\n\n**그래서 `value=\"${item.price}\"` 로 직접 쓰면 안 된다.** 1번 경로가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "bindingFailure 가 무엇을 가르나",
+   "md": "**오류에는 두 종류**가 있다.\n\n| | `bindingFailure` | 예 |\n|---|---|---|\n| **타입 변환 실패** | `true` | `price=abc` |\n| **검증 규칙 위반** | `false` | `price=500` (1000 미만) |\n\n**앞은 값을 못 담은 것이고 뒤는 담았는데 규칙에 안 맞는 것**이다.\n\n**직접 만들 때는 `false`** 다 — 값은 담겼고 규칙만 어겼으니까.\n\n**타입 변환 실패는 스프링이 만들고 `true` 로 넣는다.** 5.8절에서 그것을 본다.\n\n**이 플래그가 무엇에 쓰이나** — 메시지 코드를 만들 때 다르게 처리한다. `typeMismatch` 라는 코드가 붙는 것이 그것이다(5.7·5.8절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "rejectedValue 는 Object 다",
+   "md": "```java\nnew FieldError(\"item\", \"price\", item.getPrice(), false, ...)\n```\n\n**`item.getPrice()` 를 넘겼다.** `Integer` 다.\n\n타입 변환에 실패한 경우에는 **문자열 `\"abc\"`** 가 들어간다. **타입이 제각각**이라 `Object` 다.\n\n**화면에 그릴 때는 문자열이 된다.** `th:field` 가 `toString()` 을 쓴다.\n\n> **주의** — `rejectedValue` 를 사용자 입력 그대로 화면에 다시 뿌리는 것이므로 **XSS 가 걸릴 자리**다. 2.2절에서 본 그것. `th:field` 는 `value` 속성에 넣고 이스케이프하므로 안전한데, **직접 `th:utext` 로 꺼내면 뚫린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "아직 남은 것 — 메시지",
+   "md": "**V3 로 화면은 안 깨진다.** 사용자가 입력한 `abc` 가 그대로 남는다.\n\n**그런데 메시지가 여전히 자바 코드에 박혀 있다.**\n\n```java\n\"가격은 1,000 ~ 1,000,000 까지 허용합니다.\"\n```\n\n4장에서 화면의 글자를 다 뺐는데 **오류 메시지만 남았다.** 5.2절 한계 4번이 그대로다.\n\n그리고 **타입 변환 실패 메시지는 여전히 영문**이다 — 스프링이 만든 것이라 자바 코드를 고쳐도 안 바뀐다.\n\n**5.5절부터 이것을 푼다.** `codes` 와 `arguments` 자리가 그때 채워진다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v2/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=abc&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<input type=\"text\" id=\"price\" name=\"price\" value=\"abc\"\n       class=\"form-control field-error\">\n<div class=\"field-error\">Failed to convert property value of type ...</div>\n\n# 5.3 절에서는 value=\"\" 였다\n\n# 규칙 위반일 때도 남는다\nitemName=itemA&price=500&quantity=10\n\nHTTP/1.1 200 \n<input type=\"text\" id=\"price\" name=\"price\" value=\"500\"\n       class=\"form-control field-error\">\n<div class=\"field-error\">가격은 1,000 ~ 1,000,000 까지 허용합니다.</div>",
+   "note": "**`value=\"abc\"`** 가 이 절의 결과다. 5.3절에서 빈칸이던 자리다.\n\n`Item.price` 는 `Integer` 라서 `abc` 를 담을 수 없는데도 화면에 나왔다 — **`FieldError.rejectedValue` 에서 꺼낸 것**이다.\n\n아래 `value=\"500\"` 은 다른 경로다. 값이 객체에 담겨 있으니 거기서 나왔어도 됐는데, **`FieldError` 가 있으면 그쪽이 우선**이라 `rejectedValue` 에서 나왔다. 결과가 같아서 구분이 안 될 뿐이다.\n\n메시지 두 줄을 비교하면 **하나는 영문 하나는 한글** — 앞은 스프링이 만들었고 뒤는 자바 코드에 박아 넣은 것이다. **둘 다 아직 파일 밖에 없다.**"
+  }
+ ],
+ "recap": [
+  "**타입이 안 맞으면 객체에 담을 곳이 없다** — 그래서 `FieldError` 가 들고 있는다.",
+  "**`rejectedValue`** 가 거절된 값을 기억한다.",
+  "`th:field` 는 **오류가 있으면 `rejectedValue`, 없으면 프로퍼티**에서 값을 꺼낸다.",
+  "**그래서 `value=\"${item.price}\"` 로 직접 쓰면 안 된다.**",
+  "**`bindingFailure`** 가 타입 변환 실패(`true`)와 규칙 위반(`false`)을 가른다.",
+  "**직접 만들 때는 `false`** — 값은 담겼고 규칙만 어겼다.",
+  "`rejectedValue` 는 **`Object`** 다. 타입이 제각각이라서.",
+  "**사용자 입력을 되뿌리는 자리라 XSS 를 조심**한다 — `th:field` 는 안전하다.",
+  "**메시지는 여전히 자바 코드에 박혀 있다** — 5.5절부터 푼다."
+ ],
+ "drills": [
+  {
+   "task": "`FieldError` 의 긴 생성자로 바꾸고 `rejectedValue` 를 넘긴다.",
+   "done_when": "`price=500` 일 때 값이 남는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`price=abc` 를 보낸다.",
+   "done_when": "`value=\"abc\"` 가 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:field` 를 `th:value=\"${item.price}\"` 로 바꾼다.",
+   "done_when": "타입 오류 시 빈칸이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`rejectedValue` 에 `null` 을 넘겨 본다.",
+   "done_when": "값이 안 남는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "오류 메시지가 어디에 있는지 센다.",
+   "done_when": "자바 코드에 몇 개 박혀 있는지 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "거절된 값을 왜 따로 보관하나?",
+   "a": "타입이 안 맞으면 대상 객체의 필드에 담을 수 없어서 화면에 되살릴 방법이 없기 때문이다."
+  },
+  {
+   "q": "`th:field` 가 값을 찾는 순서는?",
+   "a": "그 필드에 오류가 있으면 `rejectedValue`, 없으면 모델 객체의 프로퍼티다."
+  },
+  {
+   "q": "`bindingFailure` 는 무엇을 구분하나?",
+   "a": "타입 변환 실패(`true`)와 검증 규칙 위반(`false`)이다."
+  },
+  {
+   "q": "직접 `FieldError` 를 만들 때 `bindingFailure` 는?",
+   "a": "`false` 다. 값은 담겼고 규칙만 어겼기 때문이다."
+  },
+  {
+   "q": "V3 에서도 남는 문제는?",
+   "a": "오류 메시지가 자바 코드에 박혀 있고, 타입 변환 실패 메시지는 영문 그대로다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "rejectedValue",
+   "en": "",
+   "what": "검증에서 거절된 사용자 입력값. `FieldError` 가 보관하고 `th:field` 가 꺼내 쓴다."
+  },
+  {
+   "term": "bindingFailure",
+   "en": "",
+   "what": "타입 변환 실패인지 검증 규칙 위반인지를 나타내는 플래그."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
