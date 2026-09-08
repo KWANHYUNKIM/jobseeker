@@ -1,0 +1,196 @@
+{
+  "book": "jpa-basic",
+  "id": "embedded",
+  "no": "10.2",
+  "chapter": 10,
+  "title": "임베디드 타입",
+  "summary": "@Embeddable·@Embedded. 테이블은 그대로인데 클래스만 의미 단위로 묶는다.",
+  "minutes": 16,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "임베디드 타입을 적용해도 테이블이 바뀌지 않는다는 것을 DDL 로 확인할 수 있다.",
+    "`@Embeddable` 과 `@Embedded` 를 각각 어디에 붙이는지 안다.",
+    "같은 임베디드 타입을 한 엔티티에 두 번 쓸 때 무엇이 필요한지 안다.",
+    "임베디드 타입이 null 일 때 컬럼이 어떻게 되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.5절에서 회원을 이렇게 만들었다.\n\n```java\nprivate String city;\nprivate String street;\nprivate String zipcode;\n```\n\n그때 \"나란히 있는 게 눈에 걸린다면 감이 좋은 것\" 이라고 적어 뒀다. 이 셋은 **함께 다녀야 하는 하나의 개념**이다. 그런데 클래스에는 그 사실이 안 적혀 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Address.java",
+      "caption": "@Embeddable — 값 타입 쪽에 붙인다",
+      "code": "@Embeddable\npublic class Address {\n\n    private String city;\n    private String street;\n    private String zipcode;\n\n    protected Address() {}      // 기본 생성자 필수 (5.1절과 같은 이유)\n\n    public Address(String city, String street, String zipcode) {\n        this.city = city;\n        this.street = street;\n        this.zipcode = zipcode;\n    }\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "caption": "@Embedded — 쓰는 쪽에 붙인다",
+      "code": "@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n\n    private String name;\n\n    @Embedded\n    private Period workPeriod;\n\n    @Embedded\n    private Address homeAddress;\n}",
+      "note": "둘 중 하나만 붙여도 동작하지만, **둘 다 붙이는 것이 관례**다. 클래스만 봐도 값 타입인지 알 수 있고, 필드만 봐도 임베디드인지 알 수 있다."
+    },
+    {
+      "type": "figure",
+      "caption": "클래스만 나뉜다",
+      "ascii": "   클래스는 나뉘고 테이블은 그대로다\n\n   전                                  후\n\n   Member                              Member\n   ┌────────────────┐                  ┌──────────────────┐\n   │ id             │                  │ id               │\n   │ name           │                  │ name             │\n   │ startDate      │                  │ workPeriod ──────┼──▶ Period\n   │ endDate        │                  │ homeAddress ─────┼──▶ Address\n   │ city           │                  └──────────────────┘\n   │ street         │\n   │ zipcode        │                  Period            Address\n   └────────────────┘                  ┌──────────┐      ┌──────────┐\n                                       │ start    │      │ city     │\n                                       │ end      │      │ street   │\n                                       └──────────┘      │ zipcode  │\n                                                         └──────────┘\n\n   MEMBER 테이블 (두 경우 모두 같다)\n   ┌──────────────────────────────────────────────────────────────┐\n   │ MEMBER_ID │ NAME │ START_DATE │ END_DATE │ CITY │ STREET │ ZIPCODE │\n   └──────────────────────────────────────────────────────────────┘\n\n   DDL 이 한 글자도 안 바뀐다. 바뀌는 것은 자바 코드의 응집도뿐이다."
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 DDL — 임베디드 전과 똑같다",
+      "sql": "CREATE TABLE MEMBER (\n    MEMBER_ID  BIGINT NOT NULL,\n    NAME       VARCHAR(255),\n    START_DATE TIMESTAMP,\n    END_DATE   TIMESTAMP,\n    CITY       VARCHAR(255),\n    STREET     VARCHAR(255),\n    ZIPCODE    VARCHAR(255),\n    PRIMARY KEY (MEMBER_ID)\n)",
+      "note": "**테이블은 하나도 안 늘어난다.** 임베디드 타입은 DB 관점에서 아무것도 아니고, 순전히 자바 쪽 정리다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그럼 왜 하나 — 컬럼 세 개가 아니라 개념 하나가 된다",
+      "md": "**1. 그 값만의 메서드를 둘 수 있다.**\n\n```java\npublic class Period {\n    private LocalDateTime start;\n    private LocalDateTime end;\n\n    public boolean isWork(LocalDateTime now) {\n        return start.isBefore(now) && end.isAfter(now);\n    }\n}\n```\n\n이 로직이 갈 곳이 원래는 없었다. 서비스 어딘가에 `isWork(member.getStartDate(), member.getEndDate(), now)` 같은 유틸로 흩어졌을 것이다.\n\n**2. 재사용된다.** 배송지도 주소고 회사 주소도 주소다. 세 필드를 세 곳에 복사하는 대신 타입 하나를 쓴다.\n\n**3. 의미가 이름에 남는다.** `member.getHomeAddress().getCity()` 는 `member.getCity()` 보다 길지만, **어느 주소의 도시인지가 코드에 적혀 있다.** 주소가 두 개가 되는 순간 이 차이가 결정적이다."
+    },
+    {
+      "type": "heading",
+      "text": "같은 타입을 두 번 쓰면 — @AttributeOverride"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "이대로면 컬럼 이름이 겹친다",
+      "code": "@Embedded\nprivate Address homeAddress;\n\n@Embedded\nprivate Address workAddress;   // CITY, STREET, ZIPCODE 가 또 필요하다"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "나는 오류",
+      "code": "org.hibernate.MappingException:\n    Repeated column in mapping for entity: Member column: city"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "컬럼 이름을 바꿔 준다",
+      "code": "@Embedded\nprivate Address homeAddress;\n\n@Embedded\n@AttributeOverrides({\n    @AttributeOverride(name = \"city\",    column = @Column(name = \"WORK_CITY\")),\n    @AttributeOverride(name = \"street\",  column = @Column(name = \"WORK_STREET\")),\n    @AttributeOverride(name = \"zipcode\", column = @Column(name = \"WORK_ZIPCODE\"))\n})\nprivate Address workAddress;"
+    },
+    {
+      "type": "sql",
+      "caption": "결과",
+      "sql": "CREATE TABLE MEMBER (\n    MEMBER_ID     BIGINT NOT NULL,\n    CITY          VARCHAR(255),\n    STREET        VARCHAR(255),\n    ZIPCODE       VARCHAR(255),\n    WORK_CITY     VARCHAR(255),\n    WORK_STREET   VARCHAR(255),\n    WORK_ZIPCODE  VARCHAR(255),\n    PRIMARY KEY (MEMBER_ID)\n)",
+      "note": "어노테이션이 길어지는 게 거슬리면, 그건 **주소가 둘이라는 사실 자체가 복잡하다는 신호**이기도 하다. 그때는 배송지를 엔티티로 분리할 때가 된 것일 수 있다(10.1절의 판단 기준)."
+    },
+    {
+      "type": "heading",
+      "text": "임베디드 타입이 null 이면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "member.setHomeAddress(null);\nem.persist(member);"
+    },
+    {
+      "type": "sql",
+      "sql": "INSERT INTO MEMBER (NAME, CITY, STREET, ZIPCODE, MEMBER_ID)\nVALUES (?, NULL, NULL, NULL, ?)",
+      "note": "**매핑된 컬럼이 전부 NULL 이 된다.** 반대로 조회할 때 세 컬럼이 모두 NULL 이면 임베디드 필드도 `null` 로 들어온다. 그래서 `member.getHomeAddress().getCity()` 가 NPE 를 낼 수 있다는 점을 염두에 둬야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "임베디드 타입 안에 엔티티를 참조할 수도 있다",
+      "md": "```java\n@Embeddable\npublic class Address {\n    private String city;\n    private String street;\n\n    @ManyToOne\n    @JoinColumn(name = \"ZIPCODE_ID\")\n    private Zipcode zipcode;   // 엔티티\n}\n```\n\n문법적으로는 된다. 다만 **값 타입이 엔티티를 물고 있으면 \"값\" 이라는 성질이 흐려진다** — 복사해도 되는지, 공유해도 되는지가 애매해진다. 쓰기 전에 그 임베디드 타입이 정말 값인지 다시 생각해 보는 편이 낫다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"임베디드 타입을 쓰면 테이블이 어떻게 바뀌나요?\"** → 안 바뀐다. 순전히 자바 쪽 응집도를 위한 것이다.\n- **\"그럼 왜 쓰나요?\"** → 그 값에 딸린 로직(`isWork()`)이 갈 곳이 생기고, 재사용되고, 어느 주소인지가 이름에 남는다.\n- **\"같은 임베디드 타입을 한 엔티티에 두 번 쓰려면?\"** → `@AttributeOverride` 로 컬럼 이름을 바꿔 준다.\n- **\"임베디드 타입이 null 이면?\"** → 매핑된 컬럼이 전부 NULL 이 된다. 조회 시에도 전부 NULL 이면 필드가 null 로 들어온다."
+    }
+  ],
+  "recap": [
+    "`@Embeddable` 은 값 타입 클래스에, `@Embedded` 는 쓰는 필드에. 둘 다 붙이는 것이 관례다.",
+    "**DDL 은 한 글자도 안 바뀐다.** 임베디드 타입은 DB 관점에서 아무것도 아니다.",
+    "값어치는 셋 — 그 값만의 메서드를 둘 곳이 생기고, 재사용되고, 의미가 이름에 남는다.",
+    "같은 타입을 두 번 쓰면 컬럼 이름이 겹친다. `@AttributeOverride` 로 바꿔 준다.",
+    "임베디드 타입이 null 이면 매핑된 컬럼이 전부 NULL 이 된다. 조회 시 NPE 를 조심한다.",
+    "기본 생성자가 필요하다 — 5.1절과 같은 이유(리플렉션)다."
+  ],
+  "drills": [
+    {
+      "task": "`Member` 의 `city`·`street`·`zipcode` 를 `Address` 임베디드 타입으로 묶고 DDL 을 전후로 비교한다.",
+      "done_when": "완전히 같다는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`Period` 를 만들고 `isWork(LocalDateTime)` 메서드를 넣는다.",
+      "done_when": "그 로직이 서비스가 아니라 값 타입 안에 들어간 것을 확인했다.",
+      "hint": "이게 임베디드 타입의 진짜 값어치다.",
+      "minutes": 20
+    },
+    {
+      "task": "`homeAddress` 와 `workAddress` 를 둘 다 두고 실행해 오류를 본 뒤 `@AttributeOverride` 로 고친다.",
+      "done_when": "`Repeated column in mapping` 을 직접 봤고, 고친 뒤 DDL 에 여섯 컬럼이 생긴 것을 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "임베디드 필드에 null 을 넣고 저장한 뒤, 다시 조회해 그 필드가 null 인지 확인한다.",
+      "done_when": "컬럼이 전부 NULL 이 되고 조회 시에도 null 로 들어오는 것을 봤다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "임베디드 타입을 적용하면 테이블이 어떻게 달라지는가?",
+      "a": "달라지지 않는다. 컬럼 구성이 그대로다. 임베디드 타입은 자바 코드의 응집도를 위한 것이지 DB 설계와는 무관하다."
+    },
+    {
+      "q": "임베디드 타입의 가장 큰 실질적 이득은?",
+      "a": "그 값에 딸린 로직을 둘 곳이 생기는 것이다. `period.isWork(now)` 같은 메서드가 서비스에 유틸로 흩어지지 않는다."
+    },
+    {
+      "q": "같은 임베디드 타입을 한 엔티티에 두 번 쓰면 무슨 오류가 나는가?",
+      "a": "`Repeated column in mapping`. 같은 컬럼 이름이 두 번 매핑되기 때문이다. `@AttributeOverride` 로 한쪽 컬럼 이름을 바꾼다."
+    },
+    {
+      "q": "임베디드 필드에 null 을 넣으면 DB 는 어떻게 되는가?",
+      "a": "매핑된 컬럼이 전부 NULL 이 된다. 반대로 조회 시 그 컬럼들이 모두 NULL 이면 필드도 null 로 들어오므로 NPE 를 조심해야 한다."
+    },
+    {
+      "q": "`@Embeddable` 클래스에 기본 생성자가 필요한 이유는?",
+      "a": "5.1절과 같다 — JPA 가 리플렉션으로 인스턴스를 만들어 필드를 채우기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@Embeddable",
+      "en": "",
+      "what": "이 클래스가 값 타입임을 선언한다. 값 타입 클래스 쪽에 붙인다."
+    },
+    {
+      "term": "@Embedded",
+      "en": "",
+      "what": "이 필드가 임베디드 값 타입임을 선언한다. 쓰는 엔티티 쪽에 붙인다."
+    },
+    {
+      "term": "@AttributeOverride",
+      "en": "",
+      "what": "임베디드 타입의 컬럼 이름을 재정의한다. 같은 타입을 한 엔티티에 두 번 쓸 때 필요하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Embeddable Classes",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a606",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Embeddable types",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#embeddables",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

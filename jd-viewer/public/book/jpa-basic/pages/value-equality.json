@@ -1,0 +1,208 @@
+{
+  "book": "jpa-basic",
+  "id": "value-equality",
+  "no": "10.4",
+  "chapter": 10,
+  "title": "값 타입의 비교",
+  "summary": "동일성과 동등성. equals·hashCode 를 안 만들면 컬렉션에서 벌어지는 일.",
+  "minutes": 16,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "동일성과 동등성의 차이를 값 타입 맥락에서 설명할 수 있다.",
+    "`equals` 만 만들고 `hashCode` 를 빠뜨리면 무엇이 깨지는지 안다.",
+    "값 타입의 `equals` 를 구현할 때 필드 직접 접근 대신 getter 를 쓰는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.1절의 네 번째 불일치가 **동일성 비교**였다. 그때는 엔티티 이야기였고, 4.2절의 1차 캐시가 그 문제를 풀었다.\n\n값 타입은 사정이 다르다. 값 타입에는 식별자가 없어서 **애초에 동일성으로 비교할 것이 아니다.** `1000원` 두 장은 서로 다른 인스턴스여도 같은 값이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "기본형은 문제가 없다",
+      "code": "int a = 10;\nint b = 10;\n\na == b;   // true"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "객체 값 타입은 다르다",
+      "code": "Address a = new Address(\"서울\", \"강남대로\", \"12345\");\nAddress b = new Address(\"서울\", \"강남대로\", \"12345\");\n\na == b;        // false — 다른 인스턴스\na.equals(b);   // false — Object.equals 는 == 과 같다"
+    },
+    {
+      "type": "table",
+      "caption": "동일성과 동등성",
+      "note": "**값 타입은 반드시 동등성으로 비교해야 한다.** 그러려면 `equals()` 를 직접 구현해야 하고, `Object` 의 기본 구현은 `==` 이므로 도움이 안 된다.",
+      "columns": [
+        "",
+        "무엇을 비교",
+        "메서드"
+      ],
+      "rows": [
+        [
+          "**동일성**",
+          "같은 인스턴스인가",
+          "`==`"
+        ],
+        [
+          "**동등성**",
+          "값이 같은가",
+          "`equals()`"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "equals 를 구현한다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Embeddable\npublic class Address {\n\n    private String city;\n    private String street;\n    private String zipcode;\n\n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || !(o instanceof Address)) return false;\n\n        Address other = (Address) o;\n        return Objects.equals(getCity(), other.getCity())\n            && Objects.equals(getStreet(), other.getStreet())\n            && Objects.equals(getZipcode(), other.getZipcode());\n    }\n\n    @Override\n    public int hashCode() {\n        return Objects.hash(getCity(), getStreet(), getZipcode());\n    }\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "필드가 아니라 getter 로 비교한다",
+      "md": "IDE 가 만들어 주는 `equals` 는 보통 필드에 직접 접근한다.\n\n```java\nreturn Objects.equals(city, other.city);   // 필드 직접 접근\n```\n\n대부분은 잘 동작하지만, **비교 대상이 프록시일 때 깨진다.** 프록시는 자기 필드가 비어 있고 target 을 통해 값을 넘기므로(9.1절), `other.city` 는 `null` 이다. `other.getCity()` 여야 초기화가 일어나고 실제 값이 나온다.\n\n값 타입 자체는 프록시가 되지 않지만, **엔티티의 `equals` 를 같은 방식으로 짜다가 정확히 이 문제를 만난다.** 습관을 처음부터 getter 쪽으로 들이는 편이 낫다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "getClass() 비교 대신 instanceof",
+      "md": "IDE 는 `if (o == null || getClass() != o.getClass()) return false;` 를 만든다. 값 타입에서는 대개 괜찮지만, 엔티티에서는 **프록시와 진짜를 비교할 때 false 가 된다**(9.1절).\n\n`instanceof` 를 쓰면 프록시가 그 타입을 상속했으므로 통과한다. 이것도 같은 이유로 습관을 통일해 두는 편이 낫다."
+    },
+    {
+      "type": "heading",
+      "text": "hashCode 를 빠뜨리면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "equals 만 구현한 경우",
+      "code": "Set<Address> set = new HashSet<>();\nset.add(new Address(\"서울\", \"강남대로\", \"12345\"));\n\nboolean has = set.contains(\n    new Address(\"서울\", \"강남대로\", \"12345\"));\n\nSystem.out.println(has);   // false",
+      "note": "`HashSet` 은 **해시 버킷을 먼저 찾고 그 안에서 `equals` 를 부른다.** `hashCode` 가 다르면 다른 버킷을 뒤지므로 `equals` 는 불릴 기회조차 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이게 10.5절에서 터진다",
+      "md": "값 타입 컬렉션(`Set<Address>`)을 쓰면 하이버네이트가 **컬렉션에서 무엇이 빠지고 무엇이 남았는지를 `equals`/`hashCode` 로 판단한다.**\n\n제대로 구현되어 있지 않으면 \"바꾸지 않은 원소가 삭제되고 다시 삽입되는\" 일이 벌어진다. 그리고 오류가 아니라 **SQL 이 이상하게 나가는 방식**으로 드러나서 원인을 찾기 어렵다.\n\n값 타입에 `equals`/`hashCode` 를 구현하는 것은 선택이 아니라 **컬렉션을 쓸 자격**이다."
+    },
+    {
+      "type": "heading",
+      "text": "JPQL 에서의 비교"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m WHERE m.homeAddress = :addr\", Member.class)\n    .setParameter(\"addr\", new Address(\"서울\", \"강남대로\", \"12345\"))\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "caption": "임베디드 타입은 컬럼 전부를 비교한다",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.CITY, M.STREET, M.ZIPCODE\n  FROM MEMBER M\n WHERE M.CITY = ? AND M.STREET = ? AND M.ZIPCODE = ?",
+      "note": "여기서는 `equals()` 가 쓰이지 않는다 — **DB 가 컬럼 값으로 비교**한다. 그래서 자바에서는 같다고 판단되는데 DB 에서는 안 걸리는 경우가 생길 수 있다(예: 한쪽만 앞뒤 공백이 있는 경우). 값 타입을 만들 때 정규화를 생성자에서 해 두면 이 간극이 준다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"값 타입은 왜 `equals` 를 구현해야 하나요?\"** → 식별자가 없어서 동등성으로 비교해야 하는데, `Object.equals` 는 `==` 이라 도움이 안 된다.\n- **\"`hashCode` 도 같이 만들어야 하는 이유는?\"** → `HashSet`·`HashMap` 은 해시 버킷을 먼저 찾으므로, `hashCode` 가 다르면 `equals` 가 불리지도 않는다.\n- **\"`equals` 에서 필드 직접 접근 대신 getter 를 쓰는 이유는?\"** → 비교 대상이 프록시면 필드가 비어 있다. getter 를 불러야 초기화되어 실제 값이 나온다.\n- **\"`getClass()` 비교와 `instanceof` 중 무엇을 쓰나요?\"** → `instanceof`. 프록시는 원본을 상속했으므로 통과한다.\n- **\"JPQL 에서 임베디드 타입을 비교하면 `equals` 가 불리나요?\"** → 아니다. 매핑된 컬럼 전부를 `AND` 로 비교하는 SQL 이 나간다."
+    }
+  ],
+  "recap": [
+    "값 타입은 식별자가 없으므로 **동등성(`equals`)으로 비교**해야 한다. `==` 은 의미가 없다.",
+    "`Object.equals` 는 `==` 과 같으므로 직접 구현하지 않으면 값이 같아도 false 다.",
+    "`hashCode` 를 빠뜨리면 `HashSet`·`HashMap` 에서 `equals` 가 불리지도 않는다.",
+    "`equals` 안에서는 필드 직접 접근 대신 **getter** 를 쓴다 — 프록시 대응.",
+    "`getClass()` 비교보다 `instanceof` 를 쓴다 — 같은 이유.",
+    "JPQL 에서의 비교는 `equals` 가 아니라 매핑된 **컬럼 전부의 AND 비교**로 번역된다.",
+    "값 타입 컬렉션(10.5)은 `equals`/`hashCode` 가 제대로 없으면 조용히 망가진다."
+  ],
+  "drills": [
+    {
+      "task": "`equals`/`hashCode` 없이 같은 값의 `Address` 두 개를 만들어 `==` 과 `equals` 를 찍어 본다.",
+      "done_when": "둘 다 false 인 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`equals` 만 구현하고 `HashSet.contains()` 를 시험한다.",
+      "done_when": "false 가 나오는 것을 봤고, 왜 `equals` 가 불리지 않는지 설명할 수 있다.",
+      "minutes": 15
+    },
+    {
+      "task": "`hashCode` 를 추가하고 다시 시험한다.",
+      "done_when": "true 가 나오는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "IDE 로 `equals` 를 생성한 뒤, 필드 접근을 getter 로 전부 바꾼다.",
+      "done_when": "두 버전의 차이를 눈으로 확인했고, 왜 getter 여야 하는지 말할 수 있다.",
+      "minutes": 15
+    },
+    {
+      "task": "JPQL 로 임베디드 타입을 파라미터 비교하고 나가는 SQL 을 확인한다.",
+      "done_when": "컬럼 세 개가 AND 로 묶인 WHERE 절을 봤다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "값 타입을 `==` 으로 비교하면 안 되는 이유는?",
+      "a": "값 타입에는 식별자가 없어 같은 값이라도 다른 인스턴스일 수 있다. 값이 같은지를 묻는 것이므로 동등성(`equals`)으로 비교해야 한다."
+    },
+    {
+      "q": "`equals` 만 구현하고 `hashCode` 를 빼면 무엇이 깨지는가?",
+      "a": "`HashSet`·`HashMap` 등 해시 기반 컬렉션이다. 해시 버킷을 먼저 찾는데 hashCode 가 다르면 다른 버킷을 뒤지므로 equals 가 호출되지도 않는다."
+    },
+    {
+      "q": "`equals` 안에서 `other.city` 대신 `other.getCity()` 를 쓰는 이유는?",
+      "a": "비교 대상이 프록시일 경우 필드는 비어 있고 target 을 통해서만 값이 나온다. getter 를 불러야 초기화되어 실제 값이 반환된다."
+    },
+    {
+      "q": "`getClass()` 비교 대신 `instanceof` 를 권하는 이유는?",
+      "a": "프록시는 원본 클래스를 상속한 다른 클래스라 `getClass()` 비교가 false 가 된다. `instanceof` 는 상속 관계를 인정하므로 통과한다."
+    },
+    {
+      "q": "JPQL 에서 임베디드 타입을 비교하면 `equals()` 가 호출되는가?",
+      "a": "안 된다. 매핑된 모든 컬럼을 `AND` 로 묶은 WHERE 절이 만들어져 DB 가 비교한다. 그래서 자바와 DB 의 판단이 어긋날 수 있다(공백·대소문자 등)."
+    }
+  ],
+  "terms": [
+    {
+      "term": "동일성",
+      "en": "identity",
+      "what": "같은 인스턴스인가. `==` 으로 비교한다."
+    },
+    {
+      "term": "동등성",
+      "en": "equality",
+      "what": "값이 같은가. `equals()` 로 비교한다. 값 타입은 이쪽이어야 한다."
+    },
+    {
+      "term": "hashCode 규약",
+      "en": "",
+      "what": "equals 가 true 면 hashCode 도 같아야 한다. 어기면 해시 기반 컬렉션이 동작하지 않는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Embeddable Classes",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a606",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Embeddable types",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#embeddables",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

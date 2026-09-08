@@ -397,7 +397,7 @@
           "title": "기본값 타입",
           "summary": "엔티티 타입과 값 타입의 결정적 차이 — 추적되는가, 공유되는가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -405,7 +405,7 @@
           "title": "임베디드 타입",
           "summary": "@Embeddable·@Embedded. 테이블은 그대로인데 클래스만 의미 단위로 묶는다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -413,7 +413,7 @@
           "title": "값 타입과 불변 객체",
           "summary": "값 타입을 공유하면 옆 사람 주소가 같이 바뀐다. setter 를 없애는 것이 해법인 이유.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
@@ -421,7 +421,7 @@
           "title": "값 타입의 비교",
           "summary": "동일성과 동등성. equals·hashCode 를 안 만들면 컬렉션에서 벌어지는 일.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
