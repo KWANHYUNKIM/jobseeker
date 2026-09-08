@@ -646,7 +646,7 @@
           "title": "PRG — Post/Redirect/Get",
           "summary": "새로고침하면 주문이 두 번 들어가는 문제. 리다이렉트가 답인 이유.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.11",
@@ -654,7 +654,7 @@
           "title": "RedirectAttributes",
           "summary": "리다이렉트하면서 값을 넘긴다. URL 인코딩까지.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.12",

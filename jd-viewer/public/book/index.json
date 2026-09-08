@@ -33,7 +33,7 @@
       "emoji": "🌐",
       "chapters": 9,
       "sections": 71,
-      "written": 65,
+      "written": 67,
       "status": "writing",
       "updated_at": "2026-09-09",
       "blurb": "서블릿으로 요청을 직접 받아 보고, MVC 프레임워크를 v1 부터 v5 까지 만들어 본 다음, 그것이 DispatcherServlet 과 같은 구조임을 확인한다. 매 절이 실제로 오간 HTTP 로 끝난다."
