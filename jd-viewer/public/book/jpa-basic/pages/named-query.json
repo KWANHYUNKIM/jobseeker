@@ -1,0 +1,199 @@
+{
+  "book": "jpa-basic",
+  "id": "named-query",
+  "no": "12.6",
+  "chapter": 12,
+  "title": "Named 쿼리",
+  "summary": "애플리케이션 로딩 시점에 문법을 검사받는 유일한 쿼리. 오타를 배포 전에 잡는다.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "Named 쿼리가 언제 문법 검사를 받는지 안다.",
+    "그것이 11.1절의 약점을 어떻게 메우는지 설명할 수 있다.",
+    "Spring Data JPA 의 `@Query` 와의 관계를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.1절에서 JPQL 의 결정적 약점을 이렇게 적었다.\n\n> 문자열이라 오타를 런타임에야 발견한다.\n\n**Named 쿼리는 그 약점을 부분적으로 메운다.** 미리 이름을 붙여 두면 애플리케이션이 뜰 때 전부 검사받는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "엔티티에 선언한다",
+      "code": "@Entity\n@NamedQuery(\n    name = \"Member.findByUsername\",\n    query = \"SELECT m FROM Member m WHERE m.username = :username\"\n)\npublic class Member { ... }",
+      "note": "이름은 **`엔티티명.메서드명`** 형태가 관례다. 전역 이름 공간이라 겹치면 안 되기 때문이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "쓸 때",
+      "code": "List<Member> result = em.createNamedQuery(\n        \"Member.findByUsername\", Member.class)\n    .setParameter(\"username\", \"김관현\")\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.USERNAME = ?",
+      "note": "실행 결과는 `createQuery` 와 똑같다. 다른 것은 **언제 검사받느냐**뿐이다."
+    },
+    {
+      "type": "heading",
+      "text": "로딩 시점 검사"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "오타를 심어 본다",
+      "code": "@NamedQuery(\n    name = \"Member.findByUsername\",\n    query = \"SELECT m FROM Membr m WHERE m.usernam = :username\"   // 오타 둘\n)"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "애플리케이션이 아예 안 뜬다",
+      "code": "Caused by: org.hibernate.query.SemanticException:\n    Could not interpret path expression 'm.usernam'\n\n(EntityManagerFactory 생성 중 실패)",
+      "note": "**배포되기 전에 죽는다.** `createQuery` 였다면 그 코드가 실행되는 화면을 누군가 열 때까지 아무도 몰랐을 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이게 왜 큰 차이인가",
+      "md": "JPQL 오타는 **테스트가 없는 경로에서 특히 오래 산다.** 관리자 화면의 잘 안 쓰는 필터, 예외 처리 분기 안의 조회 같은 것들.\n\nNamed 쿼리로 두면 그런 쿼리도 **애플리케이션이 뜨는 순간 전부 파싱된다.** CI 에서 컨텍스트를 띄우는 테스트가 하나라도 있으면 거기서 잡힌다.\n\n비용은 \"쿼리를 미리 선언해 둬야 한다\"는 것뿐이다. 동적 쿼리에는 못 쓰지만, **정적 쿼리라면 안 쓸 이유가 별로 없다.**"
+    },
+    {
+      "type": "heading",
+      "text": "부수 효과 — 재사용과 캐시"
+    },
+    {
+      "type": "table",
+      "caption": "createQuery 와 비교",
+      "note": "성능 차이는 대개 미미하다. **값어치의 90% 는 로딩 시점 검사**다.",
+      "columns": [
+        "",
+        "createQuery",
+        "Named 쿼리"
+      ],
+      "rows": [
+        [
+          "문법 검사",
+          "실행할 때",
+          "**애플리케이션 로딩 시점**"
+        ],
+        [
+          "파싱",
+          "매번 (구현체가 캐시하기도 함)",
+          "한 번 파싱해서 재사용"
+        ],
+        [
+          "동적 쿼리",
+          "가능",
+          "**불가능**"
+        ],
+        [
+          "쿼리 위치",
+          "쓰는 곳",
+          "엔티티나 XML — 흩어지지 않는다"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "XML 로 빼면"
+    },
+    {
+      "type": "code",
+      "lang": "xml",
+      "file": "META-INF/orm.xml",
+      "code": "<named-query name=\"Member.findByUsername\">\n    <query>\n        SELECT m FROM Member m WHERE m.username = :username\n    </query>\n</named-query>",
+      "note": "**XML 이 어노테이션보다 우선한다.** 그래서 배포 환경마다 쿼리를 바꿔 끼울 수 있다 — 실무에서 자주 쓰지는 않지만, 긴 쿼리를 자바 문자열로 이어 붙이는 것보다는 읽기 좋다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "Spring Data JPA 의 @Query 가 사실상 이것이다",
+      "md": "```java\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    @Query(\"SELECT m FROM Member m WHERE m.username = :username\")\n    List<Member> findByUsername(@Param(\"username\") String username);\n}\n```\n\n스프링이 이것을 **Named 쿼리로 등록**해 준다. 그래서 **애플리케이션 로딩 시점에 문법 검사를 받는다.**\n\n그리고 메서드 이름만으로 만드는 쿼리(`findByUsernameAndAgeGreaterThan`)도 마찬가지로 로딩 시점에 만들어진다. **Spring Data JPA 를 쓰면 별도로 신경 쓰지 않아도 이 이득을 얻는다** — 순수 JPA 에서 `createQuery` 만 쓰는 것과 가장 크게 갈리는 지점 중 하나다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"Named 쿼리의 장점은?\"** → 애플리케이션 로딩 시점에 문법 검사를 받는다. JPQL 오타를 배포 전에 잡는 유일한 방법이다.\n- **\"단점은?\"** → 동적 쿼리에 못 쓴다. 미리 선언해 두는 정적 쿼리 전용이다.\n- **\"Spring Data JPA 의 `@Query` 도 그런가요?\"** → 그렇다. 내부적으로 Named 쿼리로 등록되어 로딩 시점에 검사받는다.\n- **\"성능 이득도 있나요?\"** → 파싱 결과를 재사용하지만 차이는 미미하다. 값어치의 대부분은 검사 시점이다."
+    }
+  ],
+  "recap": [
+    "Named 쿼리는 **애플리케이션 로딩 시점에 문법 검사**를 받는다. JPQL 의 가장 큰 약점을 메운다.",
+    "오타가 있으면 EntityManagerFactory 생성이 실패해 배포 전에 죽는다.",
+    "이름은 `엔티티명.메서드명` 이 관례다 — 전역 이름 공간이라 충돌을 피해야 한다.",
+    "동적 쿼리에는 못 쓴다. 정적 쿼리라면 안 쓸 이유가 별로 없다.",
+    "XML 로 빼면 어노테이션보다 우선 적용되고 긴 쿼리가 읽기 좋아진다.",
+    "**Spring Data JPA 의 `@Query` 가 사실상 Named 쿼리다.** 쓰기만 해도 이 이득을 얻는다."
+  ],
+  "drills": [
+    {
+      "task": "`@NamedQuery` 를 선언하고 `createNamedQuery` 로 실행한다.",
+      "done_when": "동작하는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "그 쿼리에 오타를 심고 애플리케이션을 띄운다.",
+      "done_when": "EMF 생성 단계에서 실패하는 것을 확인했다. **이 절의 핵심 실습이다.**",
+      "minutes": 15
+    },
+    {
+      "task": "같은 오타를 `createQuery` 에 넣고 그 코드를 실행하지 않는 채로 애플리케이션을 띄운다.",
+      "done_when": "정상 기동되는 것을 확인했다. 두 방식의 차이가 몸으로 남는다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Named 쿼리가 `createQuery` 와 다른 결정적 차이는?",
+      "a": "문법 검사 시점이다. Named 쿼리는 애플리케이션 로딩 시점에 전부 파싱되므로 오타가 있으면 기동이 실패한다."
+    },
+    {
+      "q": "왜 그게 큰 이득인가?",
+      "a": "테스트가 없는 경로(잘 안 쓰는 관리자 화면, 예외 분기 안의 조회)의 JPQL 오타는 오래 살아남는다. 로딩 시점 검사는 그런 것까지 전부 잡는다."
+    },
+    {
+      "q": "Named 쿼리의 제약은?",
+      "a": "동적 쿼리에 쓸 수 없다. 조건이 실행 시점에 달라지는 쿼리는 `createQuery`나 QueryDSL 로 만든다."
+    },
+    {
+      "q": "Spring Data JPA 의 `@Query` 는 어떻게 처리되는가?",
+      "a": "내부적으로 Named 쿼리로 등록되어 애플리케이션 로딩 시점에 문법 검사를 받는다. 메서드 이름 기반 쿼리도 마찬가지다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Named 쿼리",
+      "en": "",
+      "what": "미리 이름을 붙여 정의해 둔 정적 JPQL. 로딩 시점에 파싱·검증된다."
+    },
+    {
+      "term": "로딩 시점 검사",
+      "en": "",
+      "what": "EntityManagerFactory 를 만들 때 모든 Named 쿼리를 파싱하는 것. 오타가 있으면 기동이 실패한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "Spring Data JPA — @Query",
+      "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

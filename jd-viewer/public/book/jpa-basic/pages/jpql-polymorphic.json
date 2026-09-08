@@ -1,0 +1,156 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-polymorphic",
+  "no": "12.4",
+  "chapter": 12,
+  "title": "다형성 쿼리",
+  "summary": "TYPE 과 TREAT. 상속 관계에서 특정 자식만 조회하기.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "`TYPE()` 으로 자식 타입을 거를 수 있다.",
+    "상속 전략에 따라 같은 JPQL 이 다른 SQL 이 되는 것을 안다.",
+    "`TREAT()` 이 필요한 상황을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "8장에서 `Item` 을 `Album`·`Movie`·`Book` 으로 나눴다. 그때 부모 타입으로 조회하면 자식 인스턴스가 나오는 것까지 봤다.\n\n이 절은 그 반대다 — **\"책만 조회하고 싶다\"** 를 JPQL 로 어떻게 쓰는가."
+    },
+    {
+      "type": "heading",
+      "text": "TYPE — 타입으로 거른다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT i FROM Item i WHERE TYPE(i) IN (Book, Movie)\"",
+      "note": "`Book`·`Movie` 는 **엔티티 이름**이다. enum 과 달리 패키지 전체 경로가 필요 없다 — JPA 가 엔티티 이름은 알고 있기 때문이다(11.7절과 대비되는 지점)."
+    },
+    {
+      "type": "sql",
+      "caption": "단일 테이블 전략이면",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, I.DTYPE, I.AUTHOR, I.DIRECTOR, ...\n  FROM ITEM I\n WHERE I.DTYPE IN ('B', 'M')",
+      "note": "`@DiscriminatorValue` 로 지정한 값이 그대로 들어간다(8.1절). **DTYPE 을 명시해 두는 것이 여기서 값어치를 낸다** — 클래스 이름이 그대로 쿼리 조건이 되면 클래스명 변경이 곧 데이터 사고다."
+    },
+    {
+      "type": "sql",
+      "caption": "조인 전략이면 SQL 이 완전히 다르다",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, B.AUTHOR, M.DIRECTOR, ...\n  FROM ITEM I\n  LEFT JOIN BOOK  B ON I.ITEM_ID = B.ITEM_ID\n  LEFT JOIN MOVIE M ON I.ITEM_ID = M.ITEM_ID\n WHERE I.DTYPE IN ('B', 'M')",
+      "note": "**JPQL 은 한 글자도 안 바뀌었다.** 8.1절에서 `@Inheritance(strategy)` 한 줄로 테이블 구조가 통째로 달라진다고 했는데, 쿼리 쪽에서도 같은 일이 일어난다."
+    },
+    {
+      "type": "heading",
+      "text": "TREAT — 자식 필드에 접근한다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "부모 타입에는 그 필드가 없다",
+      "code": "\"SELECT i FROM Item i WHERE i.author = '김영한'\"      // 안 된다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "TREAT 으로 다운캐스팅한다",
+      "code": "\"SELECT i FROM Item i WHERE TREAT(i AS Book).author = '김영한'\""
+    },
+    {
+      "type": "sql",
+      "caption": "단일 테이블 전략",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, I.DTYPE, I.AUTHOR, ...\n  FROM ITEM I\n WHERE I.DTYPE = 'B' AND I.AUTHOR = ?",
+      "note": "**타입 조건이 자동으로 붙는다.** `AUTHOR` 컬럼은 앨범 행에도 있지만(전부 NULL) 책만 걸러진다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그런데 대개는 자식 엔티티로 바로 조회한다",
+      "md": "```\nSELECT b FROM Book b WHERE b.author = '김영한'\n```\n\n이게 훨씬 읽기 쉽고 SQL 도 같다. **`TYPE`·`TREAT` 이 필요한 자리는 따로 있다.**\n\n- **여러 자식 타입을 한 번에** 다뤄야 할 때 (`TYPE(i) IN (Book, Movie)`)\n- **부모 타입 목록에 조건을 섞을 때** (\"상품 전체 중에서 책이면 저자가 X 인 것\")\n- 이미 부모 타입으로 조인된 경로에서 자식 필드를 볼 때\n\n하나의 자식만 필요하면 그 엔티티로 조회하는 편이 낫다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "TYPE 조건은 인덱스를 잘 못 탄다",
+      "md": "단일 테이블 전략에서 `WHERE DTYPE = 'B'` 는 **선택도가 낮은 조건**이다. 상품이 100만 건이고 책이 30만 건이면 인덱스를 타도 이득이 적어 옵티마이저가 풀 스캔을 고를 수 있다.\n\n자식 타입별 조회가 잦다면 **`DTYPE` 을 복합 인덱스의 선두 컬럼으로 넣거나**(`DTYPE, AUTHOR`), 아예 조인 전략을 고려한다(8.1절). 조인 전략에서는 `BOOK` 테이블만 읽으면 되므로 이 문제가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"상속 관계에서 특정 자식만 조회하려면?\"** → `WHERE TYPE(i) = Book`. 단일 테이블이면 `DTYPE` 비교, 조인 전략이면 자식 테이블 조인으로 번역된다.\n- **\"자식 필드에 조건을 걸려면?\"** → `TREAT(i AS Book).author`. 다만 자식 하나면 `FROM Book b` 로 바로 조회하는 편이 낫다.\n- **\"`TYPE()` 에 패키지 경로가 필요 없는 이유는?\"** → 엔티티 이름은 JPA 가 알고 있다. enum 은 자바 타입이라 몰라서 전체 경로가 필요했다."
+    }
+  ],
+  "recap": [
+    "`TYPE(i)` 으로 자식 타입을 거른다. 인자는 **엔티티 이름**이고 패키지 경로가 필요 없다.",
+    "상속 전략에 따라 같은 JPQL 이 `DTYPE` 비교나 자식 테이블 조인으로 다르게 번역된다.",
+    "`@DiscriminatorValue` 를 명시해 둔 것이 여기서 값어치를 낸다 — 클래스명이 곧 쿼리 조건이 되면 위험하다.",
+    "`TREAT(i AS Book).author` 로 자식 필드에 접근한다. 타입 조건이 자동으로 붙는다.",
+    "자식 하나만 필요하면 `FROM Book b` 가 더 낫다. `TYPE`·`TREAT` 은 여러 타입을 섞을 때 쓴다.",
+    "단일 테이블에서 `DTYPE` 조건은 선택도가 낮아 인덱스 효과가 작다."
+  ],
+  "drills": [
+    {
+      "task": "단일 테이블 전략에서 `TYPE(i) IN (Book, Movie)` 를 실행하고 SQL 을 확인한다.",
+      "done_when": "`DTYPE IN (...)` 으로 번역되는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "전략을 `JOINED` 로 바꾸고 같은 JPQL 을 실행한다.",
+      "done_when": "SQL 이 조인으로 바뀌는 것을 확인했다. JPQL 은 그대로다.",
+      "minutes": 20
+    },
+    {
+      "task": "`TREAT` 로 저자 조건을 걸고, 같은 것을 `FROM Book b` 로도 짜서 SQL 을 비교한다.",
+      "done_when": "두 SQL 이 거의 같다는 것을 확인했다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`TYPE(i) = Book` 은 단일 테이블 전략에서 어떤 SQL 이 되는가?",
+      "a": "`WHERE DTYPE = 'B'`. `@DiscriminatorValue` 로 지정한 값이 쓰인다."
+    },
+    {
+      "q": "같은 JPQL 이 조인 전략에서는 어떻게 되는가?",
+      "a": "부모 테이블과 자식 테이블을 조인하고 `DTYPE`(또는 자식 테이블 존재 여부)로 거른다. JPQL 은 바뀌지 않는다."
+    },
+    {
+      "q": "`TYPE()` 에 패키지 전체 경로가 필요 없는 이유는?",
+      "a": "엔티티 이름은 JPA 가 매핑 정보로 알고 있다. enum 은 자바 타입일 뿐이라 몰라서 전체 경로가 필요했다(11.7절)."
+    },
+    {
+      "q": "`TREAT` 대신 자식 엔티티로 바로 조회하는 편이 나은 경우는?",
+      "a": "자식 타입 하나만 필요할 때다. `SELECT b FROM Book b WHERE b.author = ...` 가 더 읽기 쉽고 SQL 도 같다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "TYPE()",
+      "en": "",
+      "what": "엔티티의 실제 타입을 조건으로 쓰는 함수. 구분 컬럼이나 자식 테이블 조인으로 번역된다."
+    },
+    {
+      "term": "TREAT()",
+      "en": "",
+      "what": "부모 타입 경로를 자식 타입으로 다운캐스팅해 자식 필드에 접근하게 한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "book": "jpa-basic",
+  "id": "bulk-operation",
+  "no": "12.7",
+  "chapter": 12,
+  "title": "벌크 연산",
+  "summary": "UPDATE 한 방으로 만 건을 고치면 영속성 컨텍스트와 DB 가 어긋난다. 그래서 반드시 clear() 한다.",
+  "minutes": 18,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "벌크 연산이 왜 필요한지, 변경 감지로는 왜 안 되는지 말할 수 있다.",
+    "벌크 연산 후 영속성 컨텍스트가 어긋나는 이유를 4장 개념으로 설명할 수 있다.",
+    "두 가지 대응 순서를 안다.",
+    "Spring Data JPA 에서 같은 문제를 어떻게 처리하는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "이 책의 마지막 절이고, **4장으로 되돌아가는 절**이다.\n\n지금까지 배운 방식(변경 감지)으로 재고가 있는 모든 상품의 가격을 10% 올리려면 어떻게 해야 할까."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "변경 감지로는",
+      "code": "List<Item> items = em.createQuery(\"SELECT i FROM Item i\", Item.class)\n                     .getResultList();\n\nfor (Item item : items) {\n    item.setPrice(item.getPrice() * 1.1);\n}\n\ntx.commit();",
+      "note": "상품이 10만 개면 **엔티티 10만 개와 스냅샷 10만 개**가 메모리에 올라가고, 커밋 때 UPDATE 가 10만 번 나간다(4.2절)."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "벌크 연산",
+      "code": "int count = em.createQuery(\n        \"UPDATE Item i SET i.price = i.price * 1.1 WHERE i.stockQuantity > 0\")\n    .executeUpdate();\n\nSystem.out.println(\"수정된 건수: \" + count);"
+    },
+    {
+      "type": "sql",
+      "sql": "UPDATE ITEM SET PRICE = PRICE * 1.1 WHERE STOCK_QUANTITY > 0",
+      "note": "**SQL 한 번.** 엔티티를 하나도 만들지 않는다. `executeUpdate()` 는 영향받은 행 수를 돌려준다."
+    },
+    {
+      "type": "heading",
+      "text": "그런데 대가가 있다"
+    },
+    {
+      "type": "figure",
+      "caption": "영속성 컨텍스트를 지나치지 않는다",
+      "ascii": "   벌크 연산은 영속성 컨텍스트를 지나치지 않는다\n\n\n   평소 (변경 감지)                     벌크 연산\n\n   member.setAge(20)                   \"UPDATE Member m SET m.age = 20\"\n        │                                     │\n        ▼                                     │\n   ┌──────────────────┐                       │   <-- 여기를 거치지 않는다\n   │ 1st-level cache  │                       │\n   │   age = 20       │                       │\n   └────────┬─────────┘                       │\n            │ flush                           │\n            ▼                                 ▼\n        database                          database\n\n\n   그래서 이런 일이 생긴다\n\n   Member m = em.find(Member.class, 1L);     // age = 10. 1차 캐시에 올라간다\n   em.createQuery(\"UPDATE Member m SET m.age = 20\").executeUpdate();\n   m.getAge();                               // 10.  DB 는 20 인데\n\n   ┌──────────────────┐        ┌──────────────────┐\n   │ 1st-level cache  │        │ database         │\n   │   age = 10       │        │   age = 20       │\n   └──────────────────┘        └──────────────────┘\n\n   서로 다르다. 1차 캐시는 이 UPDATE 를 모른다. 그래서 clear() 로 비워야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "왜 1차 캐시가 모르는가",
+      "md": "4.2절에서 1차 캐시는 **`@Id` 를 키로 하는 Map** 이라고 했다. 그 Map 은 우리가 `find()` 하거나 JPQL 로 조회할 때만 채워지고 갱신된다.\n\n벌크 UPDATE 는 **DB 에 직접 `UPDATE ... WHERE ...` 를 보낸다.** 어떤 행이 바뀌었는지 JPA 는 모른다 — 조건에 맞는 행이 무엇인지는 DB 만 안다.\n\n그래서 1차 캐시에 있던 엔티티는 **옛 값을 그대로 들고 있다.** 그리고 그 상태로 커밋하면, 변경 감지가 그 옛 값을 스냅샷과 비교해서... 다행히 안 바뀌었으므로 UPDATE 는 안 나간다. 하지만 **읽는 쪽은 계속 옛 값을 본다.**\n\n더 나쁜 경우도 있다. 벌크 연산 전에 그 엔티티를 수정해 뒀다면, 커밋 때 변경 감지가 **벌크 연산 결과를 덮어쓴다.**"
+    },
+    {
+      "type": "heading",
+      "text": "대응 — 순서가 전부다"
+    },
+    {
+      "type": "compare",
+      "caption": "두 가지 방법",
+      "note": "둘 다 원리는 같다 — **벌크 연산과 1차 캐시가 같은 트랜잭션 안에서 겹치지 않게 한다.**",
+      "left": {
+        "title": "1. 벌크 연산을 먼저",
+        "lang": "java",
+        "code": "tx.begin();\n\n// 아직 아무것도 조회하지 않았다\nem.createQuery(\"UPDATE Item i SET ...\")\n  .executeUpdate();\n\n// 이제 조회한다\nList<Item> items = em.createQuery(...)\n                     .getResultList();\n\ntx.commit();",
+        "md": "1차 캐시가 비어 있을 때 실행하면 어긋날 것이 없다. **가능하면 이쪽이 낫다.**"
+      },
+      "right": {
+        "title": "2. 실행 후 clear()",
+        "lang": "java",
+        "code": "Item item = em.find(Item.class, 1L);\n\nem.createQuery(\"UPDATE Item i SET ...\")\n  .executeUpdate();\n\nem.clear();          // 반드시\n\nItem fresh = em.find(Item.class, 1L);\n// DB 에서 새로 읽어 온다",
+        "md": "이미 조회한 것이 있으면 통째로 비운다. **`clear()` 이후 기존 참조는 전부 준영속**이다(4.4절)."
+      }
+    },
+    {
+      "type": "sql",
+      "caption": "clear() 후 다시 조회하면",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, ... FROM ITEM I WHERE I.ITEM_ID = ?",
+      "note": "1차 캐시가 비었으므로 SELECT 가 다시 나가고, **DB 의 최신 값**이 들어온다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "플러시는 자동으로 된다",
+      "md": "벌크 연산도 JPQL 이므로 **실행 직전에 자동 플러시가 일어난다**(4.3절). 그래서 이런 코드는 안전하다.\n\n```java\nitem.setName(\"새 이름\");                  // 아직 UPDATE 안 나감\n\nem.createQuery(\"UPDATE Item i SET ...\")   // 여기서 자동 플러시\n  .executeUpdate();                        // -> 이름 UPDATE 가 먼저 나간다\n```\n\n**플러시는 자동이고 `clear()` 는 수동이다.** 이 비대칭이 사고의 원인이다 — \"JPA 가 알아서 해 주겠지\" 라고 생각하면 절반만 맞다."
+    },
+    {
+      "type": "heading",
+      "text": "Spring Data JPA 에서는"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "public interface ItemRepository extends JpaRepository<Item, Long> {\n\n    @Modifying(clearAutomatically = true)\n    @Query(\"UPDATE Item i SET i.price = i.price * :rate WHERE i.stockQuantity > 0\")\n    int raisePrice(@Param(\"rate\") double rate);\n}",
+      "note": "`@Modifying` 이 없으면 **조회 쿼리로 실행하려다 실패한다.** `clearAutomatically = true` 가 우리가 손으로 하던 `clear()` 다. `flushAutomatically = true` 도 함께 쓰는 경우가 많다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "벌크 연산이 무시하는 것들",
+      "md": "영속성 컨텍스트만 지나치는 게 아니다. **엔티티 레벨의 기능이 전부 안 먹는다.**\n\n- **`@PreUpdate` 같은 생명주기 콜백**(8.2절) — 수정일이 안 찍힌다\n- **낙관적 잠금의 `@Version`** — 버전이 안 올라간다\n- **`cascade`·`orphanRemoval`**(9.3절) — 벌크 DELETE 는 자식을 안 지운다\n\n마지막이 특히 위험하다. `DELETE FROM Order o WHERE ...` 를 벌크로 실행하면 `ORDER_ITEM` 이 남아 **FK 제약 위반이 나거나 고아 행이 쌓인다.**\n\n**벌크 연산은 JPA 의 기능을 우회하는 도구**라고 생각하는 편이 정확하다. 우회하는 만큼 직접 챙겨야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 이 책이 여기서 끝나는 것이 맞다",
+      "md": "12.7절은 **4장으로 되돌아가는 절**이다. 벌크 연산의 모든 문제가 \"영속성 컨텍스트를 지나친다\"는 한 문장에서 나오고, 그 문장을 이해하려면 1차 캐시·변경 감지·플러시·준영속을 다 알아야 한다.\n\n2.1절에서 \"객체를 자바 컬렉션처럼 다루고 싶다\"고 시작했다. 그 소원을 이루기 위해 JPA 는 코드와 DB 사이에 한 겹을 끼웠고, 이 책의 나머지는 **그 겹이 어떻게 동작하는가**였다.\n\n벌크 연산은 그 겹을 잠깐 건너뛰는 일이다. 건너뛸 수 있다는 것도, 건너뛰면 무엇이 어긋나는지도 — **그 겹을 알아야 판단할 수 있다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"벌크 연산을 쓰는 이유는?\"** → 변경 감지로 만 건을 수정하면 엔티티와 스냅샷이 만 개씩 올라가고 UPDATE 도 만 번 나간다. 벌크는 SQL 한 번이다.\n- **\"벌크 연산 후 왜 `clear()` 를 하나요?\"** → 벌크는 영속성 컨텍스트를 지나쳐 DB 로 직행하므로 1차 캐시가 옛 값을 들고 있다. 비우지 않으면 이후 조회가 낡은 값을 준다.\n- **\"`clear()` 안 하면 최악의 경우?\"** → 벌크 전에 수정해 둔 엔티티가 있으면 커밋 때 변경 감지가 벌크 결과를 덮어쓴다.\n- **\"플러시도 직접 해야 하나요?\"** → 아니다. 벌크도 JPQL 이라 실행 직전에 자동 플러시된다. **플러시는 자동, clear 는 수동**이라는 비대칭이 핵심이다.\n- **\"벌크 DELETE 로 부모를 지우면 자식은?\"** → 안 지워진다. `cascade`·`orphanRemoval` 은 엔티티 레벨 기능이라 벌크는 우회한다. FK 제약 위반이나 고아 행이 생긴다.\n- **\"Spring Data JPA 에서는?\"** → `@Modifying(clearAutomatically = true)`. `@Modifying` 이 없으면 조회 쿼리로 실행하려다 실패한다."
+    }
+  ],
+  "recap": [
+    "벌크 연산은 `executeUpdate()` 로 UPDATE·DELETE 를 한 번에 보낸다. 엔티티를 만들지 않는다.",
+    "**영속성 컨텍스트를 지나쳐 DB 로 직행**하므로 1차 캐시가 그 변경을 모른다.",
+    "그래서 벌크 연산을 먼저 실행하거나, 실행 후 `clear()` 로 비운다.",
+    "플러시는 자동(JPQL 이므로), `clear()` 는 수동이다. **이 비대칭이 사고의 원인이다.**",
+    "`@PreUpdate` 콜백·`@Version`·`cascade`·`orphanRemoval` 이 전부 무시된다.",
+    "특히 벌크 DELETE 는 자식을 안 지워 FK 위반이나 고아 행을 만든다.",
+    "Spring Data JPA 는 `@Modifying(clearAutomatically = true)` 로 처리한다."
+  ],
+  "drills": [
+    {
+      "task": "상품을 조회한 뒤 벌크 UPDATE 를 실행하고, 그 엔티티의 값을 다시 읽는다.",
+      "done_when": "옛 값이 나오는 것을 확인했다. **이 절의 핵심 실습이다.**",
+      "minutes": 20
+    },
+    {
+      "task": "`em.clear()` 를 넣고 다시 조회한다.",
+      "done_when": "SELECT 가 새로 나가고 최신 값이 나오는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "벌크 연산 전에 엔티티를 수정해 두고 `clear()` 없이 커밋한다.",
+      "done_when": "변경 감지가 벌크 결과를 덮어쓰는 것을 DB 에서 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "엔티티에 `@PreUpdate` 를 걸어 두고 벌크 UPDATE 를 실행한다.",
+      "done_when": "콜백이 호출되지 않아 수정일이 안 바뀌는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`cascade = ALL, orphanRemoval = true` 가 걸린 부모를 벌크 DELETE 로 지워 본다.",
+      "done_when": "자식이 남거나 FK 제약 위반이 나는 것을 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "10만 건 가격 인상을 변경 감지 방식과 벌크 방식으로 각각 실행해 시간과 메모리를 잰다.",
+      "done_when": "차이를 숫자로 말할 수 있다. 이 책의 마지막 실습이다.",
+      "minutes": 40
+    }
+  ],
+  "quiz": [
+    {
+      "q": "벌크 연산이 영속성 컨텍스트와 어긋나는 이유는?",
+      "a": "`UPDATE ... WHERE ...` 를 DB 에 직접 보내므로 어떤 행이 바뀌었는지 JPA 가 알 수 없다. 1차 캐시는 갱신되지 않고 옛 값을 그대로 들고 있다."
+    },
+    {
+      "q": "`clear()` 를 안 하면 최악의 경우 무슨 일이 생기는가?",
+      "a": "벌크 연산 전에 수정해 둔 엔티티가 있으면, 커밋 시점의 변경 감지가 그 옛 값으로 UPDATE 를 만들어 벌크 결과를 덮어쓴다."
+    },
+    {
+      "q": "벌크 연산 전에 플러시를 직접 해야 하는가?",
+      "a": "아니다. 벌크도 JPQL 이므로 실행 직전에 자동 플러시가 일어난다(4.3절). 플러시는 자동이고 `clear()` 만 수동이다."
+    },
+    {
+      "q": "가능하면 벌크 연산을 트랜잭션 앞쪽에서 실행하라는 이유는?",
+      "a": "1차 캐시가 비어 있으면 어긋날 것이 없기 때문이다. 이미 조회한 엔티티가 없으면 `clear()` 도 필요 없다."
+    },
+    {
+      "q": "벌크 연산이 무시하는 JPA 기능 세 가지는?",
+      "a": "`@PreUpdate` 같은 생명주기 콜백, `@Version` 낙관적 잠금, `cascade`·`orphanRemoval`. 전부 엔티티 레벨 기능이라 SQL 직행 시 개입할 자리가 없다."
+    },
+    {
+      "q": "벌크 DELETE 로 부모를 지우면 왜 위험한가?",
+      "a": "`cascade`·`orphanRemoval` 이 동작하지 않아 자식 행이 남는다. FK 제약 위반이 나거나 고아 행이 쌓인다."
+    },
+    {
+      "q": "Spring Data JPA 에서 벌크 연산은 어떻게 쓰는가?",
+      "a": "`@Modifying(clearAutomatically = true)` 와 `@Query` 를 함께 쓴다. `@Modifying` 이 없으면 조회 쿼리로 실행하려다 실패한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "벌크 연산",
+      "en": "bulk operation",
+      "what": "JPQL 의 UPDATE·DELETE 를 `executeUpdate()` 로 실행하는 것. 엔티티를 만들지 않고 SQL 을 직접 보낸다."
+    },
+    {
+      "term": "executeUpdate",
+      "en": "",
+      "what": "벌크 연산을 실행하고 영향받은 행 수를 반환한다."
+    },
+    {
+      "term": "@Modifying",
+      "en": "",
+      "what": "Spring Data JPA 에서 변경 쿼리임을 표시한다. `clearAutomatically` 로 자동 clear 를 켠다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

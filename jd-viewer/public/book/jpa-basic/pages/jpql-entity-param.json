@@ -1,0 +1,149 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-entity-param",
+  "no": "12.5",
+  "chapter": 12,
+  "title": "엔티티 직접 사용",
+  "summary": "파라미터로 엔티티를 넘기면 JPA 가 알아서 기본 키로 바꾼다. 외래 키도 마찬가지.",
+  "minutes": 10,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 에서 엔티티를 직접 쓰면 무엇으로 번역되는지 안다.",
+    "연관 필드를 조건으로 쓸 때 조인이 생기는 경우와 아닌 경우를 구분할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "짧은 절이다. 규칙 하나면 끝난다 — **JPQL 에서 엔티티를 쓰면 그 기본 키로 번역된다.**"
+    },
+    {
+      "type": "heading",
+      "text": "기본 키 대신 엔티티"
+    },
+    {
+      "type": "compare",
+      "caption": "둘은 같은 SQL 이 된다",
+      "left": {
+        "title": "엔티티를 넘긴다",
+        "lang": "java",
+        "code": "em.createQuery(\n    \"SELECT m FROM Member m \" +\n    \"WHERE m = :member\", Member.class)\n  .setParameter(\"member\", member)",
+        "md": "읽기 좋다. 타입도 맞다."
+      },
+      "right": {
+        "title": "식별자를 넘긴다",
+        "lang": "java",
+        "code": "em.createQuery(\n    \"SELECT m FROM Member m \" +\n    \"WHERE m.id = :memberId\", Member.class)\n  .setParameter(\"memberId\", memberId)",
+        "md": "식별자만 들고 있을 때."
+      }
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.MEMBER_ID = ?",
+      "note": "`SELECT COUNT(m)` 도 마찬가지로 `COUNT(M.MEMBER_ID)` 가 된다. **엔티티가 나오는 자리는 전부 기본 키로 치환된다**고 보면 된다."
+    },
+    {
+      "type": "heading",
+      "text": "외래 키도 마찬가지 — 그리고 여기가 중요하다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT m FROM Member m WHERE m.team = :team\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.TEAM_ID = ?",
+      "note": "**조인이 안 나갔다.** `m.team` 은 `MEMBER.TEAM_ID` 컬럼에 이미 있는 값이라 `TEAM` 테이블을 볼 이유가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "12.1절과 이어 보면",
+      "md": "12.1절에서 \"단일 값 연관 경로는 묵시적 조인이 나간다\" 고 했다. 그런데 여기서는 안 나간다.\n\n차이는 **그 연관을 어디까지 쓰느냐**다.\n\n```\nWHERE m.team = :team          -- 조인 없음. FK 값만 비교하면 된다\nWHERE m.team.name = 'A'       -- 조인 발생. TEAM 테이블의 컬럼이 필요하다\n```\n\n**연관 엔티티 자체를 비교하면 FK 로 끝나고, 그 엔티티의 필드를 보면 조인이 필요하다.** 이 구분이 쿼리를 읽을 때 실제로 유용하다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "실무에서 자주 쓰는 형태",
+      "md": "```java\n// 팀에 속한 회원 수\n\"SELECT COUNT(m) FROM Member m WHERE m.team = :team\"\n\n// 특정 회원의 주문 (조인 없이)\n\"SELECT o FROM Order o WHERE o.member = :member\"\n```\n\n6.3절에서 \"양방향을 안 열어도 JPQL 로 반대 방향 조회가 된다\" 고 했던 것이 이 문법이다. `Member.orders` 컬렉션을 만들지 않아도 회원의 주문을 찾을 수 있고, **조인도 안 나간다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "프록시를 넘겨도 된다",
+      "md": "파라미터로 넘기는 엔티티가 프록시여도 상관없다. 9.1절에서 본 대로 **프록시는 식별자를 이미 알고 있어서** 초기화 없이 값이 나온다.\n\n```java\nTeam team = em.getReference(Team.class, teamId);   // SQL 없음\n\nem.createQuery(\"SELECT m FROM Member m WHERE m.team = :team\", Member.class)\n  .setParameter(\"team\", team)                      // 초기화 안 됨\n  .getResultList();\n```\n\n`getReference()` 가 실무에서 쓰이는 몇 안 되는 자리 중 하나다 — **FK 를 세팅하거나 조건으로 쓸 때는 조회가 필요 없다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 파라미터로 엔티티를 넘기면?\"** → 기본 키로 번역된다. `WHERE m = :member` 가 `WHERE MEMBER_ID = ?` 가 된다.\n- **\"`WHERE m.team = :team` 에 조인이 나가나요?\"** → 안 나간다. `MEMBER.TEAM_ID` 값만 비교하면 되기 때문이다. `m.team.name` 처럼 필드를 보면 그때 조인이 생긴다.\n- **\"프록시를 파라미터로 넘겨도 되나요?\"** → 된다. 프록시는 식별자를 알고 있어서 초기화 없이 값이 나온다."
+    }
+  ],
+  "recap": [
+    "JPQL 에서 엔티티가 나오는 자리는 **전부 기본 키로 치환**된다.",
+    "`WHERE m.team = :team` 은 `TEAM_ID` 비교라 **조인이 안 나간다.**",
+    "`WHERE m.team.name = 'A'` 는 TEAM 테이블 컬럼이 필요하므로 조인이 생긴다.",
+    "이 문법 덕분에 양방향 컬렉션 없이도 반대 방향 조회를 조인 없이 할 수 있다(6.3절).",
+    "파라미터로 프록시를 넘겨도 초기화가 일어나지 않는다. `getReference()` 의 실용적인 쓰임이다."
+  ],
+  "drills": [
+    {
+      "task": "`WHERE m = :member` 와 `WHERE m.id = :id` 의 SQL 을 비교한다.",
+      "done_when": "같다는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`WHERE m.team = :team` 과 `WHERE m.team.name = :name` 의 SQL 을 비교한다.",
+      "done_when": "전자에는 조인이 없고 후자에는 있는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`em.getReference()` 로 얻은 팀을 파라미터로 넘겨 조회한다.",
+      "done_when": "팀 조회 SQL 이 안 나가는 것을 확인했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`SELECT COUNT(m) FROM Member m` 는 어떤 SQL 이 되는가?",
+      "a": "`SELECT COUNT(M.MEMBER_ID) FROM MEMBER M`. 엔티티가 나오는 자리는 기본 키로 치환된다."
+    },
+    {
+      "q": "`WHERE m.team = :team` 에 조인이 안 나가는 이유는?",
+      "a": "비교에 필요한 값이 `MEMBER.TEAM_ID` 컬럼에 이미 있기 때문이다. TEAM 테이블을 볼 이유가 없다."
+    },
+    {
+      "q": "그럼 언제 조인이 생기는가?",
+      "a": "`m.team.name` 처럼 연관 엔티티의 **필드**를 볼 때다. 그 값은 TEAM 테이블에 있어서 조인이 필요하다."
+    },
+    {
+      "q": "프록시를 파라미터로 넘기면 초기화되는가?",
+      "a": "안 된다. 프록시는 식별자를 이미 알고 있고 JPQL 은 그 식별자만 필요로 하므로 조회가 발생하지 않는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "엔티티 직접 사용",
+      "en": "",
+      "what": "JPQL 에서 엔티티를 값처럼 쓰는 것. 기본 키로 번역된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
