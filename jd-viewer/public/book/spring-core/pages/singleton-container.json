@@ -1,0 +1,185 @@
+{
+ "book": "spring-core",
+ "id": "singleton-container",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "싱글톤 컨테이너",
+ "summary": "스프링이 싱글톤 패턴의 문제를 어떻게 피하면서 싱글톤을 유지하는가.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스프링 컨테이너가 빈을 싱글톤으로 관리한다는 것을 테스트로 확인할 수 있다.",
+  "5.2절의 문제 여섯 가지가 왜 하나도 안 생기는지 설명할 수 있다.",
+  "'싱글톤 레지스트리' 라는 말의 뜻을 안다.",
+  "싱글톤이 기본값일 뿐 유일한 선택지는 아니라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.2절의 결론은 **\"싱글톤은 필요하다. 싱글톤 패턴은 필요 없다\"** 였다.\n\n객체를 하나만 유지하는 일을 **클래스 자신이 하지 않고 컨테이너가 하면** 여섯 문제가 사라진다. 그리고 우리는 이미 그 컨테이너를 쓰고 있다 — 3.9절부터."
+  },
+  {
+   "type": "heading",
+   "text": "확인부터"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SingletonTest.java",
+   "code": "@Test\n@DisplayName(\"스프링 컨테이너와 싱글톤\")\nvoid springContainer() {\n    ApplicationContext ac =\n        new AnnotationConfigApplicationContext(AppConfig.class);\n\n    MemberService memberService1 = ac.getBean(\"memberService\", MemberService.class);\n    MemberService memberService2 = ac.getBean(\"memberService\", MemberService.class);\n\n    System.out.println(\"memberService1 = \" + memberService1);\n    System.out.println(\"memberService2 = \" + memberService2);\n\n    assertThat(memberService1).isSameAs(memberService2);\n}",
+   "note": "5.1절의 `pureContainer()` 와 **한 글자만 다르다** — `isNotSameAs` 가 `isSameAs` 로 바뀌었다. 그리고 컨테이너를 스프링 것으로 썼다."
+  },
+  {
+   "type": "figure",
+   "caption": "5.1절 그림과 나란히 보면",
+   "ascii": "   client A ──┐\n   client B ──┼──> getBean(\"memberService\") --> MemberServiceImpl@1a2b   <- 늘 같은 객체\n   client C ──┘\n\n   100 req/s  =>  0 objects/s  =>  no gc pressure",
+   "note": "5.1절에서는 요청마다 `new` 였다. **여기서는 요청이 아무리 많아도 객체는 이미 만들어져 있는 것 하나다.** 컨테이너가 뜰 때 만들어 놓고 계속 준다."
+  },
+  {
+   "type": "heading",
+   "text": "여섯 문제가 어떻게 됐나"
+  },
+  {
+   "type": "table",
+   "caption": "5.2절의 표를 그대로 다시 본다",
+   "note": "**하나도 안 남았다.** 그리고 이건 스프링이 뭔가 대단한 것을 한 게 아니라, **객체를 만드는 책임을 클래스에서 컨테이너로 옮겼기 때문**이다 — 3장에서 한 그 일이다.",
+   "columns": [
+    "#",
+    "싱글톤 패턴",
+    "싱글톤 컨테이너"
+   ],
+   "rows": [
+    [
+     "1",
+     "구현 코드가 길다",
+     "**한 글자도 안 쓴다.** `@Bean` 이 전부다"
+    ],
+    [
+     "2",
+     "DIP 위반 (`구체클래스.getInstance()`)",
+     "**클라이언트는 인터페이스만 안다.** 생성자로 받는다"
+    ],
+    [
+     "3",
+     "OCP 위반 가능성",
+     "2번이 없으니 없다. 구현 교체는 `AppConfig` 한 줄(3.5절)"
+    ],
+    [
+     "4",
+     "테스트하기 어렵다",
+     "**설정을 바꿔 가짜를 넣는다**(3.5절의 `TestConfig`)"
+    ],
+    [
+     "5",
+     "내부 속성 변경·초기화 곤란",
+     "생성자로 무엇이든 넣을 수 있다. 초기화 콜백은 **8장**"
+    ],
+    [
+     "6",
+     "자식 클래스를 못 만든다",
+     "평범한 클래스라 상속도 된다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "싱글톤 레지스트리",
+   "md": "스프링 컨테이너처럼 **싱글톤 객체를 생성하고 관리하는 기능**을 싱글톤 레지스트리(singleton registry)라고 부른다.\n\n4.1절의 빈 저장소 그림이 정확히 레지스트리다 — `이름 → 객체` 지도를 들고 있다가, 요청이 오면 **만들지 않고 꺼내 준다.**\n\n말을 하나 더 붙이자면, 스프링이 하는 일은 이것뿐이다.\n\n> 미리 만들어 두고, 달라고 하면 **같은 것**을 준다.\n\n5.6절에서 이 문장이 `@Configuration` 과 어떻게 연결되는지 본다."
+  },
+  {
+   "type": "heading",
+   "text": "싱글톤은 기본값이지 유일한 선택지가 아니다"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "요청마다 새 객체가 필요하면",
+   "md": "빈 스코프를 `prototype` 으로 바꾸면 **조회할 때마다 새 객체**를 만들어 준다.\n\n```java\n@Bean\n@Scope(\"prototype\")\npublic SomeService someService() { ... }\n```\n\n4.8절의 `BeanDefinition` 속성 표에 `scope` 가 있었다 — 그 자리다. 자세한 것은 **9장**이다.\n\n다만 실무에서 이것을 쓰는 일은 아주 드물다. **거의 모든 빈이 싱글톤이면 되는데**, 그 이유가 다음 절의 주제다 — 잘 만든 서비스 객체는 **상태가 없기 때문**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "공짜가 아니다",
+   "md": "객체 하나를 여러 스레드가 **동시에** 쓴다는 뜻이다.\n\n5.1절에서 웹의 조건으로 '동시 요청' 을 꼽았다. 요청마다 객체가 따로였다면 서로 간섭할 일이 없다. **공유하는 순간 간섭이 가능해진다.**\n\n그래서 싱글톤에는 조건이 붙는다. **5.4절이 그 조건이고, 이 장에서 가장 실전적인 절이다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 같은 객체다",
+   "sql": "memberService1 = hello.core.member.MemberServiceImpl@42d3bd8b\nmemberService2 = hello.core.member.MemberServiceImpl@42d3bd8b\n#                                                     ^^^^^^^^ 같다\n\nSingletonTest > 스프링 없는 순수한 DI 컨테이너 PASSED\nSingletonTest > 싱글톤 패턴을 적용한 객체 사용 PASSED\nSingletonTest > 스프링 컨테이너와 싱글톤 PASSED\n\nBUILD SUCCESSFUL\n3 tests completed",
+   "note": "세 테스트가 5장의 흐름 그대로다 — **없을 때(5.1) → 직접 만들 때(5.2) → 컨테이너가 할 때(5.3).**\n\n`MemberServiceImpl` 에는 싱글톤 코드가 **한 줄도 없다.** `private` 생성자도, `getInstance()` 도 없다. 평범한 클래스인데 하나만 존재한다."
+  }
+ ],
+ "recap": [
+  "스프링 컨테이너는 빈을 **싱글톤으로 관리**한다 — `isSameAs` 로 확인했다.",
+  "**싱글톤 코드를 한 줄도 안 쓴다.** `MemberServiceImpl` 은 평범한 클래스다.",
+  "5.2절의 여섯 문제가 **하나도 안 생긴다** — 만드는 책임이 컨테이너로 갔기 때문이다.",
+  "**싱글톤 레지스트리** — 미리 만들어 두고, 달라고 하면 같은 것을 준다.",
+  "싱글톤은 **기본값**이다. `prototype` 등 다른 스코프가 있다(9장).",
+  "공짜가 아니다 — **객체 하나를 여러 스레드가 동시에 쓴다.** 조건이 5.4절이다."
+ ],
+ "drills": [
+  {
+   "task": "`springContainer()` 테스트를 짜고 5.1절의 `pureContainer()` 와 나란히 돌린다.",
+   "done_when": "한쪽은 다르고 한쪽은 같다는 것을 주소로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`MemberServiceImpl` 에 싱글톤 관련 코드가 있는지 찾아본다.",
+   "done_when": "한 줄도 없다는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "5.2절의 여섯 문제를 하나씩 스프링 컨테이너 기준으로 다시 판정한다.",
+   "done_when": "여섯 개 전부 '해당 없음' 인 이유를 각각 말할 수 있다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Bean` 에 `@Scope(\"prototype\")` 을 붙이고 같은 테스트를 돌린다.",
+   "done_when": "테스트가 실패하는 것을 확인했다. 9장에서 다시 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스프링 컨테이너는 빈을 어떻게 관리하는가?",
+   "a": "기본적으로 싱글톤으로 관리한다. 컨테이너가 뜰 때 객체를 만들어 두고, 조회하면 항상 같은 객체를 돌려준다."
+  },
+  {
+   "q": "싱글톤 패턴의 문제가 왜 안 생기는가?",
+   "a": "객체를 하나만 유지하는 책임이 클래스가 아니라 컨테이너에 있기 때문이다. 클래스는 평범하게 남고, 클라이언트는 여전히 생성자로 받는다."
+  },
+  {
+   "q": "싱글톤 레지스트리란?",
+   "a": "싱글톤 객체를 생성하고 관리하는 기능. 스프링 컨테이너의 빈 저장소가 그 역할을 한다."
+  },
+  {
+   "q": "싱글톤이 아닌 스코프도 있는가?",
+   "a": "있다. `prototype` 은 조회할 때마다 새 객체를 만든다. `BeanDefinition` 의 `scope` 속성으로 정하고, 9장에서 다룬다."
+  },
+  {
+   "q": "싱글톤의 대가는 무엇인가?",
+   "a": "객체 하나를 여러 스레드가 동시에 쓰게 된다. 그래서 무상태로 설계해야 한다는 조건이 붙는다(5.4절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "싱글톤 레지스트리",
+   "en": "singleton registry",
+   "what": "싱글톤 객체를 생성하고 관리하는 기능. 스프링 컨테이너가 이 역할을 하기 때문에 클래스가 싱글톤 코드를 갖지 않아도 된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

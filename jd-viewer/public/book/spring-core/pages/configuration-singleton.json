@@ -1,0 +1,176 @@
+{
+ "book": "spring-core",
+ "id": "configuration-singleton",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "@Configuration 과 싱글톤",
+ "summary": "AppConfig 의 메서드를 두 번 부르는데 왜 같은 객체가 나오나.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`AppConfig` 코드만 보고 '싱글톤이 깨져야 한다' 는 모순을 발견할 수 있다.",
+  "테스트로 실제로는 깨지지 않는다는 것을 확인할 수 있다.",
+  "`@Bean` 메서드가 몇 번 호출되는지 직접 세어 볼 수 있다.",
+  "그 결과가 자바 문법으로는 설명되지 않는다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.9절에서 이렇게 적고 넘어갔다.\n\n> **메서드를 두 번 부르는데 객체가 하나다** — `@Configuration` 이 보장한다. 어떻게 그게 되는지는 5.5~5.6절에서 판다.\n\n두 절을 미뤄 뒀다. 여기서 **모순을 확인하고**, 다음 절에서 **정체를 밝힌다.**"
+  },
+  {
+   "type": "heading",
+   "text": "코드를 다시 본다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "AppConfig.java",
+   "code": "@Configuration\npublic class AppConfig {\n\n    @Bean\n    public MemberService memberService() {\n        return new MemberServiceImpl(memberRepository());   // 호출 1\n    }\n\n    @Bean\n    public OrderService orderService() {\n        return new OrderServiceImpl(\n                memberRepository(),                         // 호출 2\n                discountPolicy());\n    }\n\n    @Bean\n    public MemberRepository memberRepository() {\n        return new MemoryMemberRepository();                // new 가 여기\n    }\n}",
+   "note": "**자바 문법대로 읽으면 답이 하나다.** `memberRepository()` 를 부를 때마다 `new MemoryMemberRepository()` 가 실행된다. 3.4절에서 `r1 == r2 : false` 로 이미 확인했다."
+  },
+  {
+   "type": "figure",
+   "caption": "호출을 세어 보면",
+   "ascii": "   memberService()   ──> memberRepository()   <- call 1\n   orderService()    ──> memberRepository()   <- call 2\n   @Bean memberRepository()                   <- call 3\n\n   expected : new MemoryMemberRepository() x 3\n   actual   : ?",
+   "note": "`memberService` 안에서 한 번, `orderService` 안에서 한 번, 그리고 `memberRepository` 빈 자체를 만들 때 한 번 — **세 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그렇다면 싱글톤이 깨진다",
+   "md": "저장소 객체가 **셋** 만들어진다는 뜻이다.\n\n- `memberService` 가 들고 있는 저장소\n- `orderService` 가 들고 있는 저장소\n- 컨테이너에 `memberRepository` 라는 이름으로 등록된 저장소\n\n셋이 다르면 어떻게 되나. **회원을 가입시켰는데 주문할 때 그 회원이 없다.** 2.7절에서 `static` 을 걷어냈을 때 정확히 그 증상이 났다.\n\n그런데 3.4절 이후로 그런 일이 없었다. **테스트가 계속 통과했다.** 무언가 앞뒤가 안 맞는다."
+  },
+  {
+   "type": "heading",
+   "text": "직접 확인한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "테스트용 조회 메서드를 넣는다",
+   "code": "public class MemberServiceImpl implements MemberService {\n\n    private final MemberRepository memberRepository;\n\n    // 테스트 용도\n    public MemberRepository getMemberRepository() {\n        return memberRepository;\n    }\n}",
+   "note": "**인터페이스가 아니라 구현 클래스에 넣었다.** 그래서 조회할 때 구체 타입이 필요하다 — 4.3절에서 \"테스트에서는 일부러 구체 타입으로 조회하기도 한다\" 고 한 그 자리다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ConfigurationSingletonTest.java",
+   "code": "@Test\nvoid configurationTest() {\n    ApplicationContext ac =\n        new AnnotationConfigApplicationContext(AppConfig.class);\n\n    MemberServiceImpl memberService = ac.getBean(\"memberService\", MemberServiceImpl.class);\n    OrderServiceImpl  orderService  = ac.getBean(\"orderService\",  OrderServiceImpl.class);\n    MemberRepository  memberRepository = ac.getBean(\"memberRepository\", MemberRepository.class);\n\n    MemberRepository repo1 = memberService.getMemberRepository();\n    MemberRepository repo2 = orderService.getMemberRepository();\n\n    System.out.println(\"memberService -> \" + repo1);\n    System.out.println(\"orderService  -> \" + repo2);\n    System.out.println(\"container     -> \" + memberRepository);\n\n    assertThat(repo1).isSameAs(memberRepository);\n    assertThat(repo2).isSameAs(memberRepository);\n}",
+   "note": "**셋이 같은지** 본다. 자바 문법대로면 이 테스트는 실패해야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 셋이 같다",
+   "sql": "memberService -> hello.core.member.MemoryMemberRepository@6b58b9e9\norderService  -> hello.core.member.MemoryMemberRepository@6b58b9e9\ncontainer     -> hello.core.member.MemoryMemberRepository@6b58b9e9\n#                                                          ^^^^^^^^ 전부 같다\n\nConfigurationSingletonTest > configurationTest PASSED",
+   "note": "**`new` 를 세 번 하는 코드인데 객체가 하나다.** 자바 문법으로는 설명되지 않는다."
+  },
+  {
+   "type": "heading",
+   "text": "몇 번 호출되는지 센다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "출력문을 넣어 본다",
+   "code": "@Configuration\npublic class AppConfig {\n\n    @Bean\n    public MemberService memberService() {\n        System.out.println(\"call AppConfig.memberService\");\n        return new MemberServiceImpl(memberRepository());\n    }\n\n    @Bean\n    public OrderService orderService() {\n        System.out.println(\"call AppConfig.orderService\");\n        return new OrderServiceImpl(memberRepository(), discountPolicy());\n    }\n\n    @Bean\n    public MemberRepository memberRepository() {\n        System.out.println(\"call AppConfig.memberRepository\");\n        return new MemoryMemberRepository();\n    }\n}",
+   "note": "**가장 확실한 확인 방법**이다. 몇 번 찍히는지 세면 된다."
+  },
+  {
+   "type": "compare",
+   "caption": "예상과 실제",
+   "left": {
+    "title": "자바 문법대로 예상하면",
+    "lang": "text",
+    "bad": true,
+    "code": "call AppConfig.memberService\ncall AppConfig.memberRepository\ncall AppConfig.orderService\ncall AppConfig.memberRepository\ncall AppConfig.memberRepository\n\n// memberRepository 가 3번",
+    "md": "빈을 만들 때 1번 + 다른 빈이 부를 때 2번 = **3번**."
+   },
+   "right": {
+    "title": "실제 출력",
+    "lang": "text",
+    "code": "call AppConfig.memberService\ncall AppConfig.memberRepository\ncall AppConfig.orderService\n\n// 각각 1번씩",
+    "md": "**전부 한 번씩만** 찍힌다. `memberRepository` 도 한 번이다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이건 자바가 아니다",
+   "md": "메서드를 세 번 부르는 코드가 있는데 **메서드 본문이 한 번만 실행된다.**\n\n자바에는 이런 문법이 없다. `static` 이나 캐싱 코드가 있는 것도 아니다 — 우리가 쓴 `AppConfig` 는 평범한 클래스다.\n\n그러니 답은 하나뿐이다. **우리가 쓴 그 클래스가 실행되고 있는 게 아니다.**\n\n증거는 이미 4.2절에 찍혀 있었다.\n\n```\nname = appConfig  object = hello.core.AppConfig$$SpringCGLIB$$0@7a675056\n```\n\n**`$$SpringCGLIB$$0`.** 다음 절이 이것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 세 번 부르는데 한 번 실행된다",
+   "sql": "call AppConfig.memberService\ncall AppConfig.memberRepository\ncall AppConfig.orderService\n\nmemberService -> hello.core.member.MemoryMemberRepository@6b58b9e9\norderService  -> hello.core.member.MemoryMemberRepository@6b58b9e9\ncontainer     -> hello.core.member.MemoryMemberRepository@6b58b9e9\n\nConfigurationSingletonTest > configurationTest PASSED\n\nBUILD SUCCESSFUL\n1 test completed",
+   "note": "**`call AppConfig.memberRepository` 가 한 줄뿐이다.** 코드에는 그 메서드를 부르는 자리가 세 곳인데.\n\n5.1절에서 심어 둔 함정을 기억하자 — **`@Configuration` 이 붙어 있어도 `new AppConfig()` 로 만들면 아무 일도 안 한다.** 스프링이 읽어야 뭔가가 일어난다. **무엇을 읽어서 무엇을 하는가**, 그게 5.6절이다."
+  }
+ ],
+ "recap": [
+  "`AppConfig` 코드를 자바 문법대로 읽으면 **저장소가 3개 만들어져야 한다.**",
+  "그런데 테스트하면 **셋이 전부 같은 객체**다.",
+  "출력문을 넣어 세어 보면 `@Bean` 메서드가 **각각 한 번씩만** 실행된다.",
+  "메서드를 세 번 부르는 코드인데 본문이 한 번 실행된다 — **자바 문법으로 설명 안 된다.**",
+  "그렇다면 **우리가 쓴 클래스가 실행되는 게 아니다.**",
+  "증거는 4.2절에 이미 찍혀 있었다 — **`AppConfig$$SpringCGLIB$$0`.**"
+ ],
+ "drills": [
+  {
+   "task": "`MemberServiceImpl`·`OrderServiceImpl` 에 테스트용 조회 메서드를 넣고 셋이 같은지 확인한다.",
+   "done_when": "세 주소가 같은 것을 눈으로 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`AppConfig` 의 세 `@Bean` 메서드에 출력문을 넣고 몇 번 찍히는지 센다.",
+   "done_when": "`memberRepository` 가 한 번만 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "왜 3번일 것이라고 예상했는지 종이에 호출 경로를 그린다.",
+   "done_when": "세 경로를 다 찾았고, 그런데도 한 번인 것이 이상하다고 느꼈다.",
+   "minutes": 10
+  },
+  {
+   "task": "`new AppConfig()` 로 직접 만들어 `memberRepository()` 를 세 번 부른다.",
+   "done_when": "이번에는 세 번 찍히고 객체도 셋인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`AppConfig` 코드를 자바 문법대로 읽으면 저장소가 몇 개 만들어져야 하는가?",
+   "a": "3개다. `memberService()` 안에서 1번, `orderService()` 안에서 1번, `memberRepository` 빈 자체로 1번 호출된다."
+  },
+  {
+   "q": "실제로는 몇 개인가?",
+   "a": "1개다. 세 곳에서 참조하는 저장소가 전부 같은 객체다."
+  },
+  {
+   "q": "`@Bean` 메서드에 출력문을 넣으면 몇 번 찍히나?",
+   "a": "각각 한 번씩만 찍힌다. `memberRepository` 도 한 번이다."
+  },
+  {
+   "q": "이 결과가 왜 이상한가?",
+   "a": "자바에는 '메서드를 세 번 불렀는데 본문이 한 번만 실행되는' 문법이 없다. 캐싱 코드도 없다."
+  },
+  {
+   "q": "그렇다면 결론은?",
+   "a": "우리가 작성한 `AppConfig` 클래스가 실행되고 있는 것이 아니다. 4.2절 출력의 `AppConfig$$SpringCGLIB$$0` 이 그 증거다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Using the @Configuration annotation",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/java/configuration-annotation.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

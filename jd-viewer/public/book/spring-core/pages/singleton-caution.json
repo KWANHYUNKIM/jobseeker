@@ -1,0 +1,212 @@
+{
+ "book": "spring-core",
+ "id": "singleton-caution",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "싱글톤 방식의 주의점",
+ "summary": "무상태로 설계해야 한다. 필드 하나가 만드는 동시성 사고를 재현한다.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "싱글톤 빈에 상태를 두면 어떤 사고가 나는지 재현할 수 있다.",
+  "무상태(stateless) 설계의 기준 네 가지를 말할 수 있다.",
+  "상태를 어디에 두어야 하는지 안다.",
+  "이 사고가 왜 테스트로 잘 안 잡히는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**이 장에서 가장 실전적인 절이다.** 앞의 세 절이 \"싱글톤이 좋다\" 였다면, 이 절은 그 대가를 치르는 방법이다.\n\n객체 하나를 여러 클라이언트가 공유한다는 것은, **한 클라이언트가 바꾼 것을 다른 클라이언트가 본다**는 뜻이다. 그래서 규칙이 하나 붙는다.\n\n> **싱글톤 객체는 무상태(stateless)로 설계해야 한다.**"
+  },
+  {
+   "type": "table",
+   "caption": "무상태 설계의 기준",
+   "note": "네 번째가 실무의 판정 기준이다 — **필드에 값을 쓰는 코드(`this.xxx = ...`)가 생성자 밖에 있으면 의심한다.**",
+   "columns": [
+    "",
+    "기준"
+   ],
+   "rows": [
+    [
+     "1",
+     "특정 클라이언트에 **의존적인 필드**가 있으면 안 된다"
+    ],
+    [
+     "2",
+     "특정 클라이언트가 **값을 변경할 수 있는 필드**가 있으면 안 된다"
+    ],
+    [
+     "3",
+     "가급적 **읽기만** 해야 한다"
+    ],
+    [
+     "4",
+     "필드 대신 **자바에서 공유되지 않는 것**을 쓴다 — 지역변수, 파라미터, `ThreadLocal`"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "사고를 재현한다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "StatefulService.java",
+   "bad": true,
+   "code": "public class StatefulService {\n\n    private int price;   // 상태를 유지하는 필드\n\n    public void order(String name, int price) {\n        System.out.println(\"name = \" + name + \" price = \" + price);\n        this.price = price;   // 여기가 문제다\n    }\n\n    public int getPrice() {\n        return price;\n    }\n}",
+   "note": "**코드만 보면 아무 문제가 없어 보인다.** 주문을 받아서 가격을 기억해 두고, 나중에 꺼내 쓴다 — 흔한 모양이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "두 사용자가 주문한다",
+   "code": "@Test\nvoid statefulServiceSingleton() {\n    ApplicationContext ac =\n        new AnnotationConfigApplicationContext(TestConfig.class);\n\n    StatefulService statefulService1 = ac.getBean(StatefulService.class);\n    StatefulService statefulService2 = ac.getBean(StatefulService.class);\n\n    // ThreadA: A 사용자가 10000원 주문\n    statefulService1.order(\"userA\", 10000);\n    // ThreadB: B 사용자가 20000원 주문\n    statefulService2.order(\"userB\", 20000);\n\n    // ThreadA: A 사용자가 주문 금액을 조회\n    int price = statefulService1.getPrice();\n    System.out.println(\"price = \" + price);\n\n    assertThat(price).isEqualTo(20000);   // 10000 이 아니다\n}",
+   "note": "**`assertThat(price).isEqualTo(20000)`** — 테스트가 틀린 게 아니라, **틀린 동작을 그대로 적어 둔 것**이다. A 사용자는 10000원을 주문했는데 20000원이 조회된다."
+  },
+  {
+   "type": "figure",
+   "caption": "실제 서버에서는 이렇게 겹친다",
+   "ascii": "   time   thread A (userA)              thread B (userB)\n   ────   ───────────────────────       ───────────────────────\n     1    order(\"userA\", 10000)\n     2      this.price = 10000\n     3                                  order(\"userB\", 20000)\n     4                                    this.price = 20000\n     5    getPrice() -> 20000                                      <- 사고",
+   "note": "위 테스트는 한 스레드에서 순서대로 실행했지만, 서버에서는 **두 요청이 겹쳐서** 들어온다. 3번과 4번이 A 의 주문과 조회 **사이에** 끼어드는 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이게 실제로 얼마나 무서운가",
+   "md": "결제 금액이 섞이면 **다른 사람의 금액으로 결제**된다. 사용자 정보를 필드에 두면 **다른 사람의 개인정보가 보인다.**\n\n더 무서운 것은 **발견 방식**이다.\n\n- 개발 중에는 요청이 하나씩 들어오니 **절대 재현되지 않는다**\n- 테스트도 보통 단일 스레드라 통과한다\n- **운영에서 트래픽이 몰릴 때만** 터진다\n- 그때도 \"가끔 이상한 값이 나온다\" 로 보고된다\n\n원인을 찾는 데 며칠이 걸리는 종류의 버그다. **필드 하나가 만든다.**"
+  },
+  {
+   "type": "heading",
+   "text": "고치는 법 — 지역변수로 돌려준다"
+  },
+  {
+   "type": "compare",
+   "caption": "상태를 없앤다",
+   "left": {
+    "title": "상태 있음",
+    "lang": "java",
+    "bad": true,
+    "code": "public class StatefulService {\n\n    private int price;\n\n    public void order(String name, int price) {\n        this.price = price;\n    }\n\n    public int getPrice() {\n        return price;\n    }\n}",
+    "md": "결과를 **객체에 남긴다.** 다음 호출이 덮어쓴다."
+   },
+   "right": {
+    "title": "무상태",
+    "lang": "java",
+    "code": "public class StatelessService {\n\n    public int order(String name, int price) {\n        System.out.println(\n            \"name = \" + name + \" price = \" + price);\n        return price;\n    }\n}",
+    "md": "결과를 **돌려준다.** 객체에 아무것도 안 남는다. 호출하는 쪽이 지역변수로 받는다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "왜 지역변수는 안전한가",
+   "md": "지역변수와 파라미터는 **스레드마다 따로 있는 스택**에 잡힌다. 스레드 A 의 `price` 와 스레드 B 의 `price` 는 애초에 다른 메모리다.\n\n반면 **필드는 힙에 있는 객체 안**에 있고, 객체가 하나면 그 필드도 하나다.\n\n| 어디 | 공유되나 |\n|---|---|\n| 지역변수 · 파라미터 | **아니다** (스레드 스택) |\n| 필드 | **그렇다** (힙의 객체) |\n| `static` 필드 | **그렇다** (클래스마다 하나) |\n\n2.7절의 `static HashMap` 이 세 번째 줄이었다. 그때는 그 공유가 **우연히 도움**이 됐지만, 원리는 이 표 그대로다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그럼 저장소는 왜 괜찮은가",
+   "md": "`MemoryMemberRepository` 에는 `store` 라는 필드가 있다. 이건 상태 아닌가?\n\n**상태가 맞다. 그런데 종류가 다르다.**\n\n- `StatefulService.price` — **특정 클라이언트의** 값. 다른 요청이 보면 안 된다\n- `MemoryMemberRepository.store` — **모두가 공유해야 하는** 값. 그러라고 만든 것이다\n\n기준 1번이 \"**특정 클라이언트에 의존적인** 필드\" 라고 쓰여 있는 이유다. 공유가 목적인 상태는 남긴다 — 대신 **동시에 써도 안전하게** 만들어야 한다(실무에서는 `ConcurrentHashMap` 이나 DB 를 쓴다)."
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"스프링 빈은 왜 무상태로 만들어야 하나요?\"** → 기본이 싱글톤이라 여러 스레드가 한 객체를 공유한다. 상태가 있으면 요청끼리 값이 섞인다.\n- **\"그런 버그를 겪어 본 적 있나요?\"** → 발견이 어렵다는 점을 말하면 좋다. 개발·테스트에서는 재현이 안 되고 부하가 걸릴 때만 터진다.\n- **\"`ThreadLocal` 은 왜 조심해야 하나요?\"** → 스레드 풀에서 스레드가 재사용되므로, 다 쓰고 `remove()` 하지 않으면 **다음 요청이 이전 요청의 값을 본다.** 같은 사고가 다른 경로로 난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 값이 섞인다",
+   "sql": "name = userA price = 10000\nname = userB price = 20000\nprice = 20000\n#       ^^^^^ userA 가 조회했는데 userB 의 금액이다\n\nStatefulServiceTest > statefulServiceSingleton PASSED\n\n# 무상태로 고친 뒤\nname = userA price = 10000\nname = userB price = 20000\nuserAPrice = 10000\nuserBPrice = 20000\n\nStatelessServiceTest > statelessServiceSingleton PASSED\n\nBUILD SUCCESSFUL\n2 tests completed",
+   "note": "**위 테스트는 '통과' 한다.** 틀린 동작을 그대로 적어 뒀기 때문이다.\n\n이 절에서 기억할 것은 문법이 아니라 **`price = 20000` 이라는 한 줄**이다. 실무에서 이 줄을 보게 되는 자리는 로그 파일이고, 그때는 이미 잘못 결제된 뒤다."
+  }
+ ],
+ "recap": [
+  "싱글톤 빈은 **무상태로 설계**해야 한다 — 여러 스레드가 한 객체를 공유하기 때문이다.",
+  "기준 — 클라이언트 의존 필드 X · 변경 가능 필드 X · 읽기만 · **지역변수·파라미터를 쓴다.**",
+  "실전 판정법: **`this.xxx = ...` 이 생성자 밖에 있으면 의심한다.**",
+  "결과는 객체에 남기지 말고 **돌려준다.**",
+  "지역변수는 **스레드 스택**에, 필드는 **힙의 객체**에 있다. 그래서 하나는 안전하고 하나는 아니다.",
+  "**공유가 목적인 상태**(저장소)는 남긴다 — 대신 동시성 안전하게 만든다.",
+  "이 버그는 **개발·테스트에서 재현되지 않고 운영에서만 터진다.**"
+ ],
+ "drills": [
+  {
+   "task": "`StatefulService` 를 그대로 짜고 테스트를 돌려 `price = 20000` 을 눈으로 본다.",
+   "done_when": "A 가 주문한 금액이 아니라는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "무상태 버전으로 고치고 두 사용자의 금액이 각각 맞게 나오는지 확인한다.",
+   "done_when": "필드가 하나도 없는 서비스가 됐다.",
+   "minutes": 15
+  },
+  {
+   "task": "실제 스레드 두 개로 동시에 호출해 본다.",
+   "done_when": "실행할 때마다 결과가 달라지는 것을 확인했다 — 재현이 왜 어려운지 체감했다.",
+   "minutes": 25
+  },
+  {
+   "task": "지금 만들고 있는 프로젝트의 `@Service` 클래스들에서 `this.xxx = ...` 를 검색한다.",
+   "done_when": "생성자 밖에서 필드에 쓰는 코드가 있는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 싱글톤 빈은 무상태여야 하는가?",
+   "a": "여러 스레드가 하나의 객체를 공유하므로, 특정 클라이언트의 값을 필드에 두면 다른 요청이 그 값을 보거나 덮어쓴다."
+  },
+  {
+   "q": "무상태 설계의 기준은?",
+   "a": "특정 클라이언트에 의존적인 필드가 없을 것, 값을 변경하는 필드가 없을 것, 가급적 읽기만 할 것, 필드 대신 지역변수·파라미터·ThreadLocal 을 쓸 것."
+  },
+  {
+   "q": "지역변수는 왜 안전한가?",
+   "a": "지역변수와 파라미터는 스레드마다 따로 있는 스택에 잡힌다. 필드는 힙의 객체 안에 있고 객체가 하나면 필드도 하나다."
+  },
+  {
+   "q": "`MemoryMemberRepository.store` 는 상태인데 왜 괜찮은가?",
+   "a": "특정 클라이언트의 값이 아니라 모두가 공유해야 하는 값이기 때문이다. 다만 동시에 써도 안전하게 만들어야 한다."
+  },
+  {
+   "q": "이 버그가 발견하기 어려운 이유는?",
+   "a": "개발 중에는 요청이 하나씩 들어와 재현되지 않고, 단일 스레드 테스트도 통과한다. 운영에서 트래픽이 몰릴 때만 간헐적으로 터진다."
+  },
+  {
+   "q": "`ThreadLocal` 을 쓸 때 주의할 점은?",
+   "a": "스레드 풀에서 스레드가 재사용되므로 다 쓰고 `remove()` 하지 않으면 다음 요청이 이전 요청의 값을 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "무상태",
+   "en": "stateless",
+   "what": "객체가 호출 사이에 값을 남기지 않는 설계. 결과를 필드에 저장하지 않고 반환값으로 돌려준다."
+  },
+  {
+   "term": "ThreadLocal",
+   "en": "",
+   "what": "스레드마다 별도의 값을 갖는 저장소. 스레드 풀에서 재사용되므로 다 쓰면 반드시 `remove()` 해야 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Java Language Specification — Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
