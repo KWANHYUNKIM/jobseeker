@@ -1,0 +1,229 @@
+{
+ "book": "spring-core",
+ "id": "prototype-provider",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "Provider 로 문제 해결",
+ "summary": "ObjectProvider 와 JSR-330 Provider. '주입' 대신 '조회' 로 바꾼다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ObjectProvider` 로 프로토타입 문제를 해결할 수 있다.",
+  "이것이 `ApplicationContext` 주입보다 나은 이유를 설명할 수 있다.",
+  "JSR-330 `Provider` 와의 차이를 안다.",
+  "언제 어느 것을 쓰는지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "9.3절의 요구는 이랬다.\n\n> **`PrototypeBean` 을 하나 만들어 주는 기능**, 그것만.\n\n`ApplicationContext` 는 그 기능을 포함하지만 **너무 크다.** 딱 그것만 하는 물건이 필요하다."
+  },
+  {
+   "type": "heading",
+   "text": "ObjectProvider"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "static class ClientBean {\n\n    @Autowired\n    private ObjectProvider<PrototypeBean> prototypeBeanProvider;\n\n    public int logic() {\n        PrototypeBean prototypeBean = prototypeBeanProvider.getObject();\n        prototypeBean.addCount();\n        return prototypeBean.getCount();\n    }\n}",
+   "note": "**`getObject()` 를 부를 때마다** 컨테이너에서 새 `PrototypeBean` 을 만들어 돌려준다. 9.3절의 `ac.getBean(...)` 과 하는 일이 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "주입받는 것이 무엇인지 보라",
+   "ascii": "   ClientBean (singleton)\n        │\n        └── ObjectProvider<PrototypeBean> provider     <- 이것만 주입받는다\n                 │\n                 └── getObject()\n                          │\n                          └──>  ac.getBean(PrototypeBean.class)\n\n   logic() 을 부를 때마다 getObject() 가 새 객체를 만든다",
+   "note": "**`ClientBean` 이 아는 것은 `ObjectProvider` 하나**다. 컨테이너 전체가 아니다."
+  },
+  {
+   "type": "table",
+   "caption": "9.3절의 세 문제가 어떻게 됐나",
+   "note": "**1번은 남았다.** `ObjectProvider` 는 여전히 스프링 것이다. 다만 **인터페이스가 작아서** 그 대가가 훨씬 싸다.",
+   "columns": [
+    "#",
+    "`ApplicationContext` 주입",
+    "`ObjectProvider` 주입"
+   ],
+   "rows": [
+    [
+     "1",
+     "스프링에 종속된다",
+     "**여전히 스프링이다** (아래에서 다룬다)"
+    ],
+    [
+     "2",
+     "단위 테스트가 어렵다",
+     "**쉽다** — 메서드 하나짜리라 mock 이 간단하다"
+    ],
+    [
+     "3",
+     "필요 이상으로 강력하다",
+     "**딱 필요한 만큼이다** — 이 타입 하나만 꺼낼 수 있다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3번이 왜 중요한가",
+   "md": "`ApplicationContext` 를 받은 `ClientBean` 은 **아무 빈이나 꺼낼 수 있다.** 오늘은 안 그래도 내일 누군가 그렇게 쓴다.\n\n`ObjectProvider<PrototypeBean>` 을 받은 `ClientBean` 은 **`PrototypeBean` 밖에 못 꺼낸다.** 타입이 막고 있다.\n\n1.4절의 ISP — **큰 인터페이스 하나보다 작은 인터페이스 여러 개** — 가 여기서 실물로 나온다. 그리고 이건 규율이 아니라 **컴파일러가 강제하는 것**이라 지켜진다.\n\n7.3절에서 생성자 주입을 고르며 \"필요한 것이 파라미터 목록에 다 적혀 있다\" 고 했다. 같은 이야기다 — **받는 것을 좁히면 할 수 있는 일이 좁아지고, 그게 읽는 사람에게 정보가 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "ObjectFactory 와 ObjectProvider",
+   "md": "둘 다 있다. **`ObjectProvider` 가 `ObjectFactory` 를 상속**한 것이고, 편의 기능이 더 붙어 있다.\n\n```java\nprovider.getObject()              // 없으면 예외\nprovider.getIfAvailable()         // 없으면 null\nprovider.getIfUnique()            // 둘 이상이면 null\nprovider.stream()                 // 전부 스트림으로\n```\n\n7.2절의 옵션 처리(`@Nullable`·`Optional`)와 7.8절의 컬렉션 주입이 **메서드로 들어 있다.** 그래서 `ObjectFactory` 를 쓸 이유가 없다 — **`ObjectProvider` 를 쓴다.**\n\n별도 라이브러리도 필요 없다. 스프링에 들어 있다."
+  },
+  {
+   "type": "heading",
+   "text": "JSR-330 Provider"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "import jakarta.inject.Provider;\n\nstatic class ClientBean {\n\n    @Autowired\n    private Provider<PrototypeBean> prototypeBeanProvider;\n\n    public int logic() {\n        PrototypeBean prototypeBean = prototypeBeanProvider.get();\n        prototypeBean.addCount();\n        return prototypeBean.getCount();\n    }\n}",
+   "note": "**`get()` 메서드 하나뿐**이다. 그리고 `jakarta.inject` — 8.4절의 `@PostConstruct` 처럼 **자바 표준**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쓰려면 라이브러리를 추가해야 한다",
+   "md": "```gradle\nimplementation 'jakarta.inject:jakarta.inject-api:2.0.1'\n```\n\n`@PostConstruct` 와 달리 **스프링 부트에 기본으로 안 들어 있다.** 별도 의존성이 필요하다.\n\n그 수고를 감수할 이유가 있나 — **스프링이 아닌 컨테이너로 옮길 가능성**이 있을 때뿐이다. 실무에서 그런 일은 거의 없다."
+  },
+  {
+   "type": "table",
+   "caption": "둘 중 무엇을 쓰나",
+   "note": "**기본은 `ObjectProvider`.** 스프링을 쓰기로 이미 정했다면 스프링 것을 쓰는 게 맞다.",
+   "columns": [
+    "",
+    "`ObjectProvider`",
+    "JSR-330 `Provider`"
+   ],
+   "rows": [
+    [
+     "패키지",
+     "스프링",
+     "**자바 표준** (`jakarta.inject`)"
+    ],
+    [
+     "라이브러리",
+     "**기본 포함**",
+     "별도 추가"
+    ],
+    [
+     "메서드",
+     "`getObject()` + 편의 기능",
+     "`get()` 하나"
+    ],
+    [
+     "언제",
+     "**보통 이것**",
+     "다른 컨테이너 가능성이 있을 때"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "정리 — 그런데"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "프로토타입을 쓸 일 자체가 드물다",
+   "md": "9.2절에서 이미 말했지만 다시 적는다. **프로토타입 빈을 실무에서 쓸 일은 거의 없다.**\n\n대부분의 빈은 무상태라 싱글톤으로 충분하고(5.4절), 상태가 필요하면 **매개변수로 넘기거나 지역 객체를 `new`** 하면 된다.\n\n그런데 **`ObjectProvider` 자체는 자주 쓴다.** 프로토타입 전용 도구가 아니기 때문이다.\n\n- **순환 참조를 끊을 때** — A 와 B 가 서로를 주입받아야 하면 한쪽을 `ObjectProvider` 로 미룬다\n- **초기화 순서 문제** — 아직 준비 안 된 빈을 나중에 꺼낸다\n- **웹 스코프** — **9.7절**. 이게 이 책에서 실제로 쓰는 자리다\n\n프로토타입은 `ObjectProvider` 를 설명하기 좋은 예제였고, **진짜 쓰임은 다음 절부터**다."
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"싱글톤 빈에서 프로토타입 빈을 매번 새로 쓰려면?\"** → `ObjectProvider` 를 주입받아 `getObject()` 를 호출한다. 주입이 아니라 **조회**로 바꾸는 것이다.\n- **\"`ApplicationContext` 를 주입받으면 안 되나요?\"** → 동작은 한다. 하지만 컨테이너 전체에 의존하게 되고 테스트가 어려워진다. **필요한 만큼만 받는 것**이 낫다.\n- **\"`ObjectProvider` 와 JSR-330 `Provider` 의 차이는?\"** → 전자는 스프링 것이고 편의 기능이 많다. 후자는 자바 표준이지만 라이브러리를 추가해야 하고 `get()` 하나뿐이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 매번 새 객체",
+   "sql": "PrototypeBean.init ...@1f36e637\ncount1 = 1\nPrototypeBean.init ...@7b02881e\ncount2 = 1\n\nSingletonWithPrototypeTest > providerTest PASSED\n\n# JSR-330 Provider 도 결과가 같다\nPrototypeBean.init ...@2b91004a\ncount1 = 1\nPrototypeBean.init ...@42d3bd8b\ncount2 = 1\n\nSingletonWithPrototypeTest > providerTest2 PASSED\n\n# 참고 — ClientBean 의 import\nimport org.springframework.beans.factory.ObjectProvider;   // ObjectProvider\nimport jakarta.inject.Provider;                            // JSR-330\n\nBUILD SUCCESSFUL\n2 tests completed",
+   "note": "**`count` 가 둘 다 1 이다.** 9.3절에서 2가 나왔던 자리다.\n\n맨 아래 import 두 줄이 이 절의 선택지다. 3.7절부터 계속 써 온 판정 기준 — **import 를 보면 무엇에 의존하는지 안다.**"
+  }
+ ],
+ "recap": [
+  "**`ObjectProvider.getObject()`** 를 부를 때마다 새 프로토타입 빈을 받는다.",
+  "**주입이 아니라 조회**로 바꾼 것이다 — 9.3절에서 갈랐던 그 둘.",
+  "`ApplicationContext` 대비 **테스트가 쉽고, 딱 필요한 만큼만** 받는다.",
+  "**타입이 막아 준다** — `ObjectProvider<PrototypeBean>` 은 그 타입밖에 못 꺼낸다.",
+  "`ObjectFactory` 대신 **`ObjectProvider`** 를 쓴다. 편의 기능이 더 있다.",
+  "JSR-330 `Provider` 는 **자바 표준**이지만 라이브러리를 추가해야 한다.",
+  "**프로토타입은 드물지만 `ObjectProvider` 는 자주 쓴다** — 순환 참조, 초기화 순서, **웹 스코프(9.7)**."
+ ],
+ "drills": [
+  {
+   "task": "9.3절의 `ClientBean` 을 `ObjectProvider` 로 바꾼다.",
+   "done_when": "`count` 가 항상 1이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`ObjectProvider` 의 메서드들(`getIfAvailable`, `stream`)을 IDE 에서 훑는다.",
+   "done_when": "7.2절·7.8절에서 배운 것이 메서드로 들어 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "JSR-330 라이브러리를 추가하고 `Provider` 로도 만들어 본다.",
+   "done_when": "결과가 같은 것과 import 가 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ObjectProvider` 를 mock 으로 만들어 단위 테스트를 짜 본다.",
+   "done_when": "메서드 하나짜리라 쉽다는 것을 체감했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`ObjectProvider` 는 무엇을 하는가?",
+   "a": "`getObject()` 를 호출하면 컨테이너에서 해당 타입의 빈을 찾아 돌려준다. 프로토타입이면 호출할 때마다 새 객체다."
+  },
+  {
+   "q": "`ApplicationContext` 주입보다 나은 점은?",
+   "a": "단위 테스트가 쉽고, 그 타입 하나만 꺼낼 수 있어 필요 이상으로 강력하지 않다. 타입이 사용 범위를 막아 준다."
+  },
+  {
+   "q": "`ObjectFactory` 와 `ObjectProvider` 의 관계는?",
+   "a": "`ObjectProvider` 가 `ObjectFactory` 를 상속하고 `getIfAvailable`, `stream` 같은 편의 기능을 더했다. 그래서 `ObjectProvider` 를 쓴다."
+  },
+  {
+   "q": "JSR-330 `Provider` 의 특징은?",
+   "a": "`jakarta.inject` 패키지의 자바 표준이고 `get()` 메서드 하나뿐이다. 별도 라이브러리를 추가해야 한다."
+  },
+  {
+   "q": "둘 중 무엇을 쓰나?",
+   "a": "보통 `ObjectProvider`. 스프링이 아닌 컨테이너로 옮길 가능성이 있을 때만 JSR-330 을 고려한다."
+  },
+  {
+   "q": "`ObjectProvider` 를 프로토타입 말고 어디에 쓰나?",
+   "a": "순환 참조를 끊을 때, 초기화 순서 문제를 미룰 때, 그리고 웹 스코프 빈을 주입받을 때(9.7절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ObjectProvider",
+   "en": "",
+   "what": "특정 타입의 빈을 필요할 때 조회하는 스프링 인터페이스. `getObject()` 외에 옵션·스트림 편의 기능이 있다."
+  },
+  {
+   "term": "JSR-330",
+   "en": "Dependency Injection for Java",
+   "what": "자바의 DI 표준. `@Inject`, `Provider` 등을 정의한다. 스프링이 이것을 지원한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

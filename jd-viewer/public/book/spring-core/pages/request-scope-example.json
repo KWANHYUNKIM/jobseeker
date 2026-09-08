@@ -1,0 +1,167 @@
+{
+ "book": "spring-core",
+ "id": "request-scope-example",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "request 스코프 예제 만들기",
+ "summary": "요청마다 다른 로그 UUID. 그리고 바로 오류가 난다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "request 스코프 빈으로 요청 단위 로그 추적을 만들 수 있다.",
+  "왜 애플리케이션이 시작조차 안 되는지 설명할 수 있다.",
+  "그것이 9.3절과 같은 종류의 문제라는 것을 안다.",
+  "해결 방향이 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**동시에 여러 요청이 들어오는 서버**에서 로그를 보면 이런 문제가 있다.\n\n```\n[/log-demo] controller test\n[/order] controller test\n[/log-demo] service id = testId\n[/order] service id = orderId\n```\n\n**어느 줄이 어느 요청의 것인지 알 수 없다.** 5.1절에서 웹의 조건으로 꼽은 '동시 요청' 이 로그를 뒤섞는다.\n\n요청마다 고유한 ID 를 붙이면 해결된다. **그리고 그 ID 를 들고 다닐 객체가 request 스코프에 딱 맞는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "만들려는 것",
+   "ascii": "   [d4d3e...] request scope bean create\n   [d4d3e...][/log-demo] controller test\n   [d4d3e...][/log-demo] service id = testId\n   [d4d3e...] request scope bean close\n\n   [8b2f1...] request scope bean create\n   [8b2f1...][/log-demo] controller test\n   [8b2f1...][/log-demo] service id = testId\n   [8b2f1...] request scope bean close\n\n   앞의 8자리만 보면 어느 요청의 로그인지 안다",
+   "note": "**UUID 앞 8자리**로 요청이 구분된다. 그리고 요청이 시작할 때 `create`, 끝날 때 `close` 가 찍힌다 — 9.5절에서 말한 **종료 콜백이 불린다**는 것의 실물이다."
+  },
+  {
+   "type": "heading",
+   "text": "MyLogger"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MyLogger.java",
+   "code": "@Component\n@Scope(value = \"request\")\npublic class MyLogger {\n\n    private String uuid;\n    private String requestURL;      // 상태를 갖는다\n\n    public void setRequestURL(String requestURL) {\n        this.requestURL = requestURL;\n    }\n\n    public void log(String message) {\n        System.out.println(\"[\" + uuid + \"][\" + requestURL + \"] \" + message);\n    }\n\n    @PostConstruct\n    public void init() {\n        uuid = UUID.randomUUID().toString();\n        System.out.println(\"[\" + uuid + \"] request scope bean create: \" + this);\n    }\n\n    @PreDestroy\n    public void close() {\n        System.out.println(\"[\" + uuid + \"] request scope bean close: \" + this);\n    }\n}",
+   "note": "**필드가 둘 있다.** 5.4절이라면 금지였다 — 그런데 이 빈은 싱글톤이 아니라 **요청마다 별도**라서 괜찮다.\n\n`requestURL` 을 생성자가 아니라 `setter` 로 받는 이유는, **URL 을 아는 것은 컨트롤러**이지 이 클래스가 아니기 때문이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "LogDemoController.java",
+   "bad": true,
+   "code": "@Controller\n@RequiredArgsConstructor\npublic class LogDemoController {\n\n    private final LogDemoService logDemoService;\n    private final MyLogger myLogger;          // 주입받는다\n\n    @RequestMapping(\"log-demo\")\n    @ResponseBody\n    public String logDemo(HttpServletRequest request) {\n        String requestURL = request.getRequestURL().toString();\n        myLogger.setRequestURL(requestURL);\n\n        myLogger.log(\"controller test\");\n        logDemoService.logic(\"testId\");\n        return \"OK\";\n    }\n}",
+   "note": "7.4절의 `@RequiredArgsConstructor` 를 썼다. **읽어 보면 자연스러운 코드다.** 그런데 안 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "LogDemoService.java",
+   "code": "@Service\n@RequiredArgsConstructor\npublic class LogDemoService {\n\n    private final MyLogger myLogger;\n\n    public void logic(String id) {\n        myLogger.log(\"service id = \" + id);\n    }\n}",
+   "note": "**여기가 이 예제의 핵심이다.** 서비스는 `requestURL` 도 `uuid` 도 모르는데 로그에는 찍힌다.\n\n파라미터로 넘겼다면 `logic(String id, String requestURL, String uuid)` 가 됐을 것이고, **웹 정보가 서비스 계층까지 흘러 들어온다.** 9.5절에서 말한 \"요청 전체에 걸친 컨텍스트\" 가 이것을 막는다."
+  },
+  {
+   "type": "heading",
+   "text": "실행하면 안 뜬다"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 실패하나",
+   "ascii": "   container start\n        └──> LogDemoController (singleton)  create\n                 └──> inject MyLogger  ?\n                          │\n                          └──>  request scope is not active\n\n   HTTP 요청이 아직 없다. 만들 수가 없다.",
+   "note": "**컨테이너가 시작할 때 `LogDemoController` 는 싱글톤이라 만들어져야 한다.** 그러려면 `MyLogger` 를 주입해야 하는데, **그 시점에는 HTTP 요청이 없다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 애플리케이션이 시작을 못 한다",
+   "sql": "BeanCreationException: Error creating bean with name 'logDemoController':\n    Unsatisfied dependency expressed through constructor parameter 1:\n\nBeanCreationException: Error creating bean with name 'myLogger':\n    Scope 'request' is not active for the current thread;\n    consider defining a scoped proxy for this bean if you intend to\n    refer to it from a singleton;\n\n    nested exception is java.lang.IllegalStateException:\n        No thread-bound request found:\n        Are you referring to request attributes outside of an actual web request,\n        or processing a request outside of the originally receiving thread?",
+   "note": "**세 겹으로 쌓여 있다.** 위에서부터 읽으면 원인이 나온다.\n\n① `logDemoController` 를 만들다가 실패했다 — **생성자 파라미터 1번**\n② `myLogger` 를 만들 수 없다 — **request 스코프가 활성 상태가 아니다**\n③ **`No thread-bound request found`** — 지금 이 스레드에 묶인 HTTP 요청이 없다\n\n그리고 ②에 **해결 방법까지 적혀 있다** — `consider defining a scoped proxy`. **9.8절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "9.3절과 같은 종류의 문제다",
+   "md": "9.3절에서 싱글톤 빈에 프로토타입을 주입했을 때 **주입이 한 번뿐이라** 문제가 됐다.\n\n여기는 **주입 시점 자체가 불가능**하다.\n\n| | 9.3 프로토타입 | 9.6 request 스코프 |\n|---|---|---|\n| 주입 시점 | 가능하지만 **한 번뿐** | **아예 불가능** |\n| 증상 | 계속 같은 객체 | **시작조차 안 된다** |\n| 원인 | 주입은 생성 시점의 일회성 사건 | **그 시점에 요청이 없다** |\n\n원인이 같다 — **주입은 빈을 만들 때 일어난다.** 그런데 우리가 원하는 것은 **나중에** 가져오는 것이다.\n\n9.3절에서 그 해결책을 이미 배웠다. **주입 대신 조회.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "시작조차 안 되는 것은 좋은 일이다",
+   "md": "고약한 버그가 아니라 **좋은 실패**다.\n\n6.4절에서 조용한 덮어쓰기를 이야기하며 \"둘 다 예외로 끝나는 것이 맞다\" 고 했다. 여기도 같다 — **동작하다가 이상해지는 것보다 아예 안 뜨는 것이 낫다.**\n\n그리고 예외 메시지가 **해결책을 알려 준다.** 9.1절에서 예고한 그 메시지다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 다음 절에서 얻을 것",
+   "sql": "# 첫 번째 요청\n[d4d3e6f1-...] request scope bean create: hello.core.common.MyLogger@1f36e637\n[d4d3e6f1-...][http://localhost:8080/log-demo] controller test\n[d4d3e6f1-...][http://localhost:8080/log-demo] service id = testId\n[d4d3e6f1-...] request scope bean close: hello.core.common.MyLogger@1f36e637\n\n# 두 번째 요청\n[8b2f1c04-...] request scope bean create: hello.core.common.MyLogger@7b02881e\n[8b2f1c04-...][http://localhost:8080/log-demo] controller test\n[8b2f1c04-...][http://localhost:8080/log-demo] service id = testId\n[8b2f1c04-...] request scope bean close: hello.core.common.MyLogger@7b02881e",
+   "note": "**두 요청의 객체 주소가 다르다.** 그리고 한 요청 안에서는 컨트롤러와 서비스가 **같은 객체**를 쓴다 — uuid 가 같은 것이 증거다.\n\n`create` 와 `close` 가 요청마다 짝을 이룬다. **프로토타입에는 없던 `close`**(9.2절)가 여기는 있다.\n\n**9.7절과 9.8절이 각각 다른 방법으로 이 결과를 만든다.**"
+  }
+ ],
+ "recap": [
+  "동시 요청이 로그를 뒤섞는다 — **요청마다 고유 ID** 가 필요하다.",
+  "`MyLogger` 는 **필드를 갖는다.** 싱글톤이 아니라 요청마다 별도라서 괜찮다.",
+  "서비스는 URL 도 uuid 도 모르는데 로그에 찍힌다 — **웹 정보가 서비스로 안 흘러든다.**",
+  "그런데 **애플리케이션이 시작조차 못 한다.**",
+  "싱글톤 컨트롤러를 만드는 시점에는 **HTTP 요청이 없기 때문**이다.",
+  "**9.3절과 같은 원인** — 주입은 빈을 만들 때 일어나는 일이다.",
+  "예외 메시지가 **해결책을 알려 준다** — `consider defining a scoped proxy`.",
+  "**시작조차 안 되는 것은 좋은 실패**다."
+ ],
+ "drills": [
+  {
+   "task": "`MyLogger`·`LogDemoController`·`LogDemoService` 를 만들고 실행한다.",
+   "done_when": "애플리케이션이 안 뜨는 것과 예외 세 겹을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "예외 메시지에서 '어느 빈의 몇 번째 파라미터' 와 '왜' 와 '해결책' 을 각각 찾는다.",
+   "done_when": "세 정보가 서로 다른 층에 있다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`MyLogger` 의 스코프를 싱글톤으로 바꿔 실행한다.",
+   "done_when": "뜨긴 뜨는데 두 요청의 uuid 가 같다는 것을 확인했다 — 5.4절의 사고다.",
+   "minutes": 15
+  },
+  {
+   "task": "파라미터로 uuid 를 넘기는 방식으로 짜 보고 서비스 시그니처가 어떻게 되는지 본다.",
+   "done_when": "웹 정보가 서비스 계층까지 흘러드는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "request 스코프 빈으로 무엇을 만들었나?",
+   "a": "요청마다 고유한 UUID 를 갖는 로거다. 동시 요청이 뒤섞인 로그에서 어느 줄이 어느 요청인지 구분하기 위한 것이다."
+  },
+  {
+   "q": "`MyLogger` 에 필드를 둬도 되는 이유는?",
+   "a": "싱글톤이 아니라 HTTP 요청마다 별도 인스턴스이기 때문이다. 요청끼리 값이 섞이지 않는다."
+  },
+  {
+   "q": "왜 애플리케이션이 시작조차 못 하나?",
+   "a": "싱글톤인 컨트롤러를 만들려면 `MyLogger` 를 주입해야 하는데, 컨테이너 시작 시점에는 HTTP 요청이 없어 request 스코프 빈을 만들 수 없다."
+  },
+  {
+   "q": "9.3절의 문제와 어떻게 같은가?",
+   "a": "둘 다 주입이 빈을 만드는 시점에 일어나기 때문에 생긴다. 9.3은 한 번뿐이라 문제였고, 여기는 그 시점이 아예 불가능하다."
+  },
+  {
+   "q": "예외 메시지가 알려 주는 해결책은?",
+   "a": "`consider defining a scoped proxy for this bean` — 9.8절의 `@ScopedProxyMode` 다."
+  },
+  {
+   "q": "서비스에 request 스코프 빈을 주입하는 것의 이점은?",
+   "a": "요청 정보를 파라미터로 넘기지 않아도 된다. 웹 정보가 서비스 계층 시그니처로 흘러들지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "No thread-bound request found",
+   "en": "",
+   "what": "현재 스레드에 묶인 HTTP 요청이 없다는 예외 메시지. request 스코프 빈을 요청 밖에서 조회할 때 나온다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Request, Session, Application, and WebSocket Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

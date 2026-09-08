@@ -1,0 +1,208 @@
+{
+ "book": "spring-core",
+ "id": "web-scope",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "웹 스코프",
+ "summary": "request·session·application. HTTP 요청 하나가 곧 스코프가 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "웹 스코프 네 가지를 구분할 수 있다.",
+  "웹 스코프가 프로토타입과 어떻게 다른지 안다.",
+  "request 스코프가 어떤 문제를 푸는지 안다.",
+  "웹 라이브러리가 필요하다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.4절에서 이렇게 결론지었다.\n\n> **싱글톤 객체는 무상태(stateless)로 설계해야 한다.**\n\n그런데 **요청마다 값을 들고 있어야 하는** 경우가 실제로 있다. 그때 필드를 쓰면 5.4절의 사고가 난다.\n\n웹 스코프가 그 자리를 위한 것이다."
+  },
+  {
+   "type": "heading",
+   "text": "네 가지"
+  },
+  {
+   "type": "table",
+   "caption": "웹 스코프",
+   "note": "**웹 환경에서만 동작한다.** `spring-boot-starter-web` 이 있어야 하고, 없으면 9.1절에서 본 `Scope 'request' is not active` 예외가 난다.",
+   "columns": [
+    "스코프",
+    "범위"
+   ],
+   "rows": [
+    [
+     "**request**",
+     "HTTP 요청 하나가 들어오고 나갈 때까지. **요청마다 별도 인스턴스**"
+    ],
+    [
+     "**session**",
+     "HTTP 세션과 같은 생명주기. **사용자마다 하나**"
+    ],
+    [
+     "**application**",
+     "서블릿 컨텍스트(`ServletContext`)와 같은 생명주기"
+    ],
+    [
+     "**websocket**",
+     "웹소켓 연결 하나"
+    ]
+   ]
+  },
+  {
+   "type": "figure",
+   "caption": "request 스코프",
+   "ascii": "   http request A   |--------------------|\n                     myLogger@A                          <- A 만 쓴다\n\n   http request B         |----------------------|\n                           myLogger@B                     <- B 만 쓴다\n\n   두 요청이 겹쳐도 서로의 값을 못 본다",
+   "note": "**요청 A 와 B 가 겹쳐도 각자의 인스턴스를 쓴다.** 5.4절에서 필드 하나 때문에 값이 섞였던 그 문제가 구조적으로 안 생긴다."
+  },
+  {
+   "type": "heading",
+   "text": "프로토타입과 무엇이 다른가"
+  },
+  {
+   "type": "table",
+   "caption": "둘 다 '싱글톤이 아니다' 인데",
+   "note": "**결정적인 차이는 마지막 두 줄**이다. 웹 스코프는 스프링이 끝까지 관리한다 — 요청이 끝날 때 `@PreDestroy` 를 불러 준다.",
+   "columns": [
+    "",
+    "프로토타입",
+    "request 스코프"
+   ],
+   "rows": [
+    [
+     "새 객체가 생기는 기준",
+     "**조회할 때마다**",
+     "**HTTP 요청마다**"
+    ],
+    [
+     "같은 요청에서 두 번 조회",
+     "**다른 객체**",
+     "**같은 객체**"
+    ],
+    [
+     "종료 콜백",
+     "**없다**",
+     "**있다** — 요청이 끝날 때"
+    ],
+    [
+     "관리 주체",
+     "받아 간 쪽",
+     "**스프링**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "'같은 요청에서는 같은 객체' 가 핵심이다",
+   "md": "이것이 웹 스코프를 쓸모 있게 만든다.\n\n컨트롤러에서 만든 값을 서비스에서, 리포지토리에서 그대로 쓸 수 있다. **파라미터로 넘기지 않고도.**\n\n```java\n// 이렇게 안 해도 된다\nservice.logic(userId, requestId, traceId, ...);\n```\n\n요청 하나가 하나의 스코프이므로, 그 안에서 조회하면 늘 같은 객체가 나온다. **요청 전체에 걸친 컨텍스트**를 만들 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇에 쓰나",
+   "md": "**request 스코프**\n- 요청 단위 로그 추적 (요청마다 고유 ID)\n- 요청 시작 시각, 호출 경로 기록\n- 인증된 사용자 정보를 요청 내내 들고 다니기\n\n**session 스코프**\n- 장바구니\n- 로그인 사용자 정보\n\n**application 스코프**\n- 애플리케이션 전체 설정값 — 그런데 **이건 싱글톤과 거의 같다.** 잘 안 쓴다\n\n실무에서 가장 자주 쓰는 것은 **request** 이고, 그중에서도 **로그 추적**이 대표적이다. 9.6절에서 그것을 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "session 스코프는 조심한다",
+   "md": "편해 보이지만 문제가 있다.\n\n- **서버 메모리를 먹는다.** 동시 접속자 수만큼 객체가 산다\n- **서버가 여러 대면 세션이 공유가 안 된다.** 스티키 세션이나 세션 저장소(Redis)가 필요하다\n\n요즘 서비스는 대개 **무상태 서버 + 토큰**으로 간다. 그래서 session 스코프를 새로 쓸 일은 줄었다.\n\n5.1절에서 웹의 조건으로 꼽은 것들 — 동시 요청, 오래 떠 있음 — 이 여기서도 판단을 만든다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "지정 방법은 같다",
+   "code": "@Component\n@Scope(value = \"request\")\npublic class MyLogger {\n}\n\n// 상수를 쓰면\n@Scope(value = WebApplicationContext.SCOPE_REQUEST)"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 웹 라이브러리가 있어야 한다",
+   "sql": "# build.gradle 에 추가\nimplementation 'org.springframework.boot:spring-boot-starter-web'\n\n# 없으면 (AnnotationConfigApplicationContext 로 뜬다)\nINFO  AnnotationConfigApplicationContext - Refreshing\nBeanCreationException: Scope 'request' is not active for the current thread\n\n# 있으면 (AnnotationConfigServletWebServerApplicationContext 로 뜬다)\nINFO  AnnotationConfigServletWebServerApplicationContext - Refreshing\nINFO  TomcatWebServer - Tomcat started on port 8080\nINFO  Application - Started Application in 1.234 seconds",
+   "note": "**컨테이너 구현 클래스가 달라진다.** `AnnotationConfigServletWebServerApplicationContext` — 4.1절에서 \"`ApplicationContext` 는 인터페이스이고 구현체가 여럿\" 이라고 했던 것의 또 다른 구현체다.\n\n스프링 부트는 **클래스패스에 웹 라이브러리가 있으면** 웹 컨테이너로, 없으면 일반 컨테이너로 뜬다. 4.7절에서 설정 형식이 달라도 컨테이너 인터페이스가 같았던 것처럼, **환경이 달라도 쓰는 쪽 코드는 같다.**"
+  }
+ ],
+ "recap": [
+  "웹 스코프는 **request · session · application · websocket** 넷이다.",
+  "**웹 환경에서만 동작한다** — `spring-boot-starter-web` 이 필요하다.",
+  "**request 스코프는 HTTP 요청마다 별도 인스턴스**다.",
+  "프로토타입과 다른 점 — **같은 요청 안에서는 같은 객체**이고, **종료 콜백이 불린다.**",
+  "그래서 **요청 전체에 걸친 컨텍스트**를 만들 수 있다 — 파라미터로 안 넘겨도 된다.",
+  "5.4절에서 금지한 '싱글톤에 상태 두기' 를 **스코프로 푸는 것**이다.",
+  "**session 스코프는 조심한다** — 메모리와 서버 확장 문제가 있다.",
+  "웹 라이브러리가 있으면 **컨테이너 구현체 자체가 달라진다.**"
+ ],
+ "drills": [
+  {
+   "task": "`spring-boot-starter-web` 을 추가하고 애플리케이션을 띄운다.",
+   "done_when": "컨테이너 클래스 이름이 바뀌고 톰캣이 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Scope(\"request\")` 빈을 만들고 웹 라이브러리 없이 조회한다.",
+   "done_when": "`Scope 'request' is not active` 예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "프로토타입과 request 스코프의 차이를 표로 정리한다.",
+   "done_when": "'같은 요청에서 두 번 조회' 칸이 다르다는 것을 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "session 스코프를 서버 두 대로 운영한다고 가정하고 무엇이 문제일지 적는다.",
+   "done_when": "세션 공유 문제를 찾아냈다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "웹 스코프 네 가지는?",
+   "a": "request, session, application, websocket. 모두 웹 환경에서만 동작한다."
+  },
+  {
+   "q": "request 스코프의 범위는?",
+   "a": "HTTP 요청 하나가 들어오고 나갈 때까지다. 요청마다 별도 인스턴스가 만들어진다."
+  },
+  {
+   "q": "프로토타입과 request 스코프의 결정적 차이는?",
+   "a": "같은 요청 안에서 여러 번 조회해도 같은 객체이고, 요청이 끝날 때 종료 콜백이 불린다. 스프링이 끝까지 관리한다."
+  },
+  {
+   "q": "request 스코프가 유용한 이유는?",
+   "a": "요청 전체에 걸친 컨텍스트를 만들 수 있다. 컨트롤러에서 만든 값을 파라미터로 넘기지 않고 서비스·리포지토리에서 쓸 수 있다."
+  },
+  {
+   "q": "session 스코프의 문제는?",
+   "a": "동시 접속자 수만큼 메모리를 먹고, 서버가 여러 대면 세션 공유가 안 된다."
+  },
+  {
+   "q": "웹 라이브러리가 있으면 무엇이 달라지나?",
+   "a": "스프링 부트가 컨테이너를 `AnnotationConfigServletWebServerApplicationContext` 로 띄운다. 쓰는 쪽 코드는 같다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "request 스코프",
+   "en": "",
+   "what": "HTTP 요청 하나가 들어오고 나갈 때까지 사는 빈 스코프. 요청마다 별도 인스턴스이고 스프링이 종료까지 관리한다."
+  },
+  {
+   "term": "ServletContext",
+   "en": "",
+   "what": "웹 애플리케이션 전체를 대표하는 서블릿 표준 객체. application 스코프가 이것과 생명주기를 같이한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
