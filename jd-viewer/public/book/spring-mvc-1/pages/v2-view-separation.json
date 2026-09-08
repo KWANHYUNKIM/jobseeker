@@ -1,0 +1,173 @@
+{
+ "book": "spring-mvc-1",
+ "id": "v2-view-separation",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "v2 — View 분리",
+ "summary": "forward 중복을 MyView 로 걷어낸다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`MyView` 를 만들어 렌더링 책임을 옮길 수 있다.",
+  "컨트롤러가 `MyView` 를 반환하는 구조를 이해한다.",
+  "무엇이 없어지고 무엇이 남았는지 안다.",
+  "이 `MyView` 가 나중에 무엇이 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이번에 없앨 것",
+   "md": "**4.6절의 1번 — 포워드 중복.**\n\n```java\nRequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\ndispatcher.forward(request, response);\n```\n\n이 두 줄이 **모든 컨트롤러 끝에** 있다. 이것을 걷어낸다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MyView.java",
+   "code": "public class MyView {\n\n    private String viewPath;\n\n    public MyView(String viewPath) {\n        this.viewPath = viewPath;\n    }\n\n    public void render(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n\n        RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\n        dispatcher.forward(request, response);\n    }\n}",
+   "note": "**컨트롤러에 있던 두 줄이 여기로 왔다.** 클래스 하나에 한 번만."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ControllerV2.java",
+   "code": "public interface ControllerV2 {\n\n    MyView process(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException;\n}",
+   "note": "**반환 타입이 `void` 에서 `MyView` 로 바뀌었다.** 이 한 글자가 이 절의 전부다.\n\n컨트롤러가 **\"이 뷰를 보여 줘\" 라고 말하고 끝낸다.** 직접 보여 주지 않는다."
+  },
+  {
+   "type": "compare",
+   "caption": "컨트롤러",
+   "left": {
+    "title": "v1",
+    "lang": "java",
+    "code": "public void process(...) {\n    String viewPath =\n        \"/WEB-INF/views/new-form.jsp\";\n    RequestDispatcher dispatcher =\n        request.getRequestDispatcher(viewPath);\n    dispatcher.forward(request, response);\n}",
+    "md": "**세 줄.** 그리고 세 컨트롤러가 전부 이렇다."
+   },
+   "right": {
+    "title": "v2",
+    "lang": "java",
+    "code": "public MyView process(...) {\n    return new MyView(\n        \"/WEB-INF/views/new-form.jsp\");\n}",
+    "md": "**한 줄.** `forward` 를 부르는 코드가 사라졌다."
+   }
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "FrontControllerServletV2.java",
+   "code": "@Override\nprotected void service(HttpServletRequest request, HttpServletResponse response)\n        throws ServletException, IOException {\n\n    ControllerV2 controller = controllerMap.get(request.getRequestURI());\n    if (controller == null) {\n        response.setStatus(HttpServletResponse.SC_NOT_FOUND);\n        return;\n    }\n\n    MyView view = controller.process(request, response);\n    view.render(request, response);          // 프론트 컨트롤러가 부른다\n}",
+   "note": "**마지막 줄이 늘었다.** 컨트롤러가 돌려준 뷰를 여기서 렌더링한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 옮겨 갔나",
+   "ascii": "   v1                              v2\n   --                              --\n   FrontController                 FrontController\n        │                               │\n        ▼                               ▼\n   Controller                      Controller\n        │                               │  return MyView\n        │  forward  <- 여기             ▼\n        ▼                          FrontController\n   jsp                                  │  view.render()  <- 여기로 올라왔다\n                                        ▼\n                                   jsp",
+   "note": "**`forward` 가 컨트롤러에서 프론트 컨트롤러로 올라왔다.** 컨트롤러는 이제 \"무엇을 보여 줄지\" 만 말한다."
+  },
+  {
+   "type": "heading",
+   "text": "왜 이게 나은가"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "책임이 하나 더 나뉘었다",
+   "md": "4.4절에서 컨트롤러의 일을 넷으로 셌다. v1 까지 컨트롤러는 **화면을 보여 주는 일**까지 하고 있었다.\n\n이제 이렇게 나뉜다.\n\n| | v1 | v2 |\n|---|---|---|\n| 어느 뷰인지 **정한다** | 컨트롤러 | **컨트롤러** |\n| 그 뷰를 **보여 준다** | 컨트롤러 | **MyView + 프론트 컨트롤러** |\n\n**정하는 것과 실행하는 것을 나눴다.** 앞 책 3장에서 `AppConfig` 가 \"무엇을 쓸지 정하고\" 서비스는 \"쓰기만\" 했던 것과 같은 구조다.\n\n그리고 이 분리가 **테스트를 가능하게 한다.** 컨트롤러가 `MyView` 를 돌려주면, 테스트에서 `forward` 를 실행하지 않고 **어느 뷰를 골랐는지만 확인**할 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그런데 viewPath 문자열은 그대로다",
+   "md": "```java\nreturn new MyView(\"/WEB-INF/views/new-form.jsp\");\nreturn new MyView(\"/WEB-INF/views/save-result.jsp\");\nreturn new MyView(\"/WEB-INF/views/members.jsp\");\n```\n\n**4.6절의 2번이 안 풀렸다.** `/WEB-INF/views/` 와 `.jsp` 가 여전히 세 곳에 있다.\n\n뷰 폴더를 옮기거나 타임리프로 바꾸면 **다시 세 곳을 고쳐야 한다.**\n\n**5.4절에서 이것을 푼다.** 컨트롤러는 `\"new-form\"` 이라고만 말하고, 접두사·접미사는 프론트 컨트롤러가 붙인다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "MyView 가 나중에 무엇이 되나",
+   "md": "1.1절 대응표의 한 줄이다.\n\n| 우리가 만든 것 | 스프링 |\n|---|---|\n| **`MyView`** | **`View`** |\n| `new MyView(viewPath)` | `ViewResolver` 가 만든다 |\n\n스프링의 `View` 도 **`render()` 메서드 하나**를 갖는다. 그리고 구현체가 여럿이다 — JSP 용, 타임리프용, JSON 용, 엑셀 다운로드용.\n\n**렌더링을 인터페이스 뒤로 숨긴 것**이라 나중에 뷰 기술을 바꿔도 컨트롤러가 안 바뀐다. 지금은 클래스 하나지만 **자리는 같다.**\n\n6.4절에서 `ViewResolver` 를 볼 때 다시 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 코드 줄 수",
+   "sql": "# v1\nMemberFormControllerV1 :  3 lines in process()\nMemberSaveControllerV1 :  9 lines\nMemberListControllerV1 :  7 lines\nFrontControllerServletV1 : 매핑 + 호출\n\n# v2\nMemberFormControllerV2 :  1 line in process()\nMemberSaveControllerV2 :  7 lines\nMemberListControllerV2 :  5 lines\nMyView                 :  render() 한 곳\nFrontControllerServletV2 : 매핑 + 호출 + render\n\n# 컨트롤러에서 사라진 것\n- RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\n- dispatcher.forward(request, response);\n  x 3\n\n# HTTP 응답은 v1 과 완전히 같다",
+   "note": "**컨트롤러마다 두 줄씩, 여섯 줄이 사라지고 `MyView` 에 두 줄이 생겼다.**\n\n컨트롤러가 열 개면 스무 줄이 두 줄이 된다. **중복을 없앤다는 것이 이런 뜻이다.**\n\n그리고 4.7절에서 예고한 대로 **HTTP 응답은 안 바뀐다.** 이 절의 결과는 코드에만 있다."
+  }
+ ],
+ "recap": [
+  "**이번 목표는 4.6절의 1번(포워드 중복)** 이다.",
+  "`MyView` 가 `render()` 를 갖고, **컨트롤러는 `MyView` 를 반환**한다.",
+  "인터페이스의 반환 타입이 `void` → `MyView` — **이 한 글자가 절의 전부**다.",
+  "**프론트 컨트롤러가 `view.render()` 를 부른다.**",
+  "**정하는 것과 실행하는 것이 나뉘었다** — 앞 책 3장의 `AppConfig` 와 같은 구조.",
+  "이 분리가 **테스트를 가능하게 한다** — 어느 뷰를 골랐는지만 확인하면 된다.",
+  "**viewPath 문자열은 그대로다** — 4.6절의 2번은 아직 안 풀렸다.",
+  "**`MyView` 는 스프링의 `View`** 가 될 자리다."
+ ],
+ "drills": [
+  {
+   "task": "`MyView` 를 만들고 컨트롤러 셋을 v2 로 고친다.",
+   "done_when": "v1 과 같은 화면이 나온다.",
+   "minutes": 25
+  },
+  {
+   "task": "v1 과 v2 컨트롤러의 줄 수를 비교한다.",
+   "done_when": "컨트롤러마다 두 줄씩 줄어든 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨트롤러가 어느 뷰를 골랐는지 검증하는 테스트를 짜 본다.",
+   "done_when": "`forward` 없이 `MyView` 만 확인하면 된다는 것을 체감했다.",
+   "minutes": 20
+  },
+  {
+   "task": "뷰 폴더 이름을 바꿔 보고 몇 군데를 고쳐야 하는지 센다.",
+   "done_when": "여전히 컨트롤러 수만큼이라는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "v2 에서 없앤 것은?",
+   "a": "포워드 중복이다. `getRequestDispatcher` + `forward` 두 줄이 모든 컨트롤러에서 사라지고 `MyView` 한 곳으로 갔다."
+  },
+  {
+   "q": "인터페이스가 어떻게 바뀌었나?",
+   "a": "반환 타입이 `void` 에서 `MyView` 로 바뀌었다. 컨트롤러는 어느 뷰인지 말하고 끝낸다."
+  },
+  {
+   "q": "렌더링은 누가 하나?",
+   "a": "프론트 컨트롤러가 컨트롤러에게 받은 `MyView` 의 `render()` 를 호출한다."
+  },
+  {
+   "q": "이 분리가 테스트에 어떻게 도움이 되나?",
+   "a": "`forward` 를 실행하지 않고 컨트롤러가 어느 뷰를 골랐는지만 확인할 수 있다."
+  },
+  {
+   "q": "v2 에 남은 문제는?",
+   "a": "viewPath 문자열이 여전히 각 컨트롤러에 있다. 접두사와 확장자를 바꾸려면 전부 고쳐야 한다."
+  },
+  {
+   "q": "`MyView` 는 스프링의 무엇인가?",
+   "a": "`View` 인터페이스다. 스프링에서도 `render()` 하나를 갖고 JSP·타임리프·JSON 용 구현체가 여럿 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MyView",
+   "en": "",
+   "what": "뷰 렌더링을 맡는 클래스. `viewPath` 를 들고 있다가 `render()` 에서 `forward` 한다. 스프링의 `View` 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,173 @@
+{
+ "book": "spring-mvc-1",
+ "id": "v4-practical",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "v4 — 단순하고 실용적인 컨트롤러",
+ "summary": "ModelView 를 안 만들고 뷰 이름만 돌려준다. 인터페이스를 쓰는 사람 편으로.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "모델을 파라미터로 받는 구조를 만들 수 있다.",
+  "인터페이스 설계에서 '쓰는 사람' 을 우선한다는 뜻을 안다.",
+  "프론트 컨트롤러가 무엇을 더 떠안았는지 안다.",
+  "이 방식이 스프링 MVC 의 어느 코드와 닮았는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이번에 없앨 것",
+   "md": "**기능이 아니라 번거로움**이다.\n\n```java\nModelView mv = new ModelView(\"save-result\");\nmv.getModel().put(\"member\", member);\nreturn mv;\n```\n\n5.4절 마지막에서 적은 그것 — **컨트롤러가 하고 싶은 말은 두 가지인데 절차가 셋**이다.\n\n이 절은 앞의 셋과 성질이 다르다. **중복을 없애는 것이 아니라 쓰기 편하게 만드는 것**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ControllerV4.java",
+   "code": "public interface ControllerV4 {\n\n    /**\n     * @param paramMap 요청 파라미터\n     * @param model    여기에 담으면 뷰로 간다\n     * @return 뷰의 논리 이름\n     */\n    String process(Map<String, String> paramMap, Map<String, Object> model);\n}",
+   "note": "**`model` 이 파라미터로 들어온다.** 그리고 반환은 **뷰 이름 문자열** 하나다.\n\n`ModelView` 라는 타입이 인터페이스에서 사라졌다."
+  },
+  {
+   "type": "compare",
+   "caption": "컨트롤러",
+   "left": {
+    "title": "v3",
+    "lang": "java",
+    "code": "public ModelView process(\n        Map<String, String> paramMap) {\n\n    String username = paramMap.get(\"username\");\n    int age = Integer.parseInt(paramMap.get(\"age\"));\n\n    Member member = new Member(username, age);\n    memberRepository.save(member);\n\n    ModelView mv = new ModelView(\"save-result\");\n    mv.getModel().put(\"member\", member);\n    return mv;\n}",
+    "md": "**`ModelView` 를 알아야 한다.** 만들고, 꺼내고, 담고, 돌려준다."
+   },
+   "right": {
+    "title": "v4",
+    "lang": "java",
+    "code": "public String process(\n        Map<String, String> paramMap,\n        Map<String, Object> model) {\n\n    String username = paramMap.get(\"username\");\n    int age = Integer.parseInt(paramMap.get(\"age\"));\n\n    Member member = new Member(username, age);\n    memberRepository.save(member);\n\n    model.put(\"member\", member);\n    return \"save-result\";\n}",
+    "md": "**`Map` 에 담고 이름을 돌려준다.** `ModelView` 를 모른다."
+   }
+  },
+  {
+   "type": "figure",
+   "caption": "줄어든 것",
+   "ascii": "   v3                                  v4\n   --                                  --\n   ModelView mv =\n       new ModelView(\"save-result\");    model.put(\"member\", member);\n   mv.getModel()\n     .put(\"member\", member);            return \"save-result\";\n   return mv;\n\n   3 줄                                 2 줄, 그리고 ModelView 를 모른다",
+   "note": "**한 줄 줄었다.** 그런데 줄 수보다 중요한 것은 **컨트롤러가 알아야 할 타입이 하나 줄었다**는 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "FrontControllerServletV4.java",
+   "code": "// 1. 서블릿 파라미터를 Map 으로\nMap<String, String> paramMap = createParamMap(request);\n\n// 2. 모델을 프론트 컨트롤러가 만든다\nMap<String, Object> model = new HashMap<>();\n\n// 3. 컨트롤러 호출 — 뷰 이름만 받는다\nString viewName = controller.process(paramMap, model);\n\n// 4. 나머지는 v3 와 같다\nMyView view = viewResolver(viewName);\nview.render(model, request, response);",
+   "note": "**2번이 새로 늘었다.** v3 에서 컨트롤러가 만들던 `Map` 을 프론트 컨트롤러가 만들어서 **빌려 준다.**\n\n그리고 `render` 에는 그 `Map` 을 그대로 넘긴다 — 컨트롤러가 담아 둔 것이 들어 있다."
+  },
+  {
+   "type": "heading",
+   "text": "누가 불편해졌나"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 쓰는 사람 편으로",
+   "md": "**프론트 컨트롤러가 한 줄 늘고 컨트롤러가 한 줄 줄었다.** 전체 줄 수는 거의 같다.\n\n그런데 이게 이득인 이유가 있다.\n\n| | 개수 | 누가 쓰나 |\n|---|---|---|\n| **프론트 컨트롤러** | **1개** | 프레임워크 만드는 사람 |\n| **컨트롤러** | **수십~수백 개** | **애플리케이션 개발자** |\n\n**한 곳이 복잡해지고 수백 곳이 단순해진다.**\n\n인터페이스 설계의 기본 원칙이다 — **구현하는 쪽이 편해야 한다.** 인터페이스는 한 번 만들고 수백 번 구현되기 때문이다.\n\n앞 책 5.3절에서 스프링 컨테이너를 설명하며 같은 이야기를 했다. **컨테이너가 복잡한 일을 떠안아서 우리 클래스가 평범해진 것.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부수 효과로 값을 전달한다",
+   "md": "그런데 이 방식에 불편한 점이 하나 있다.\n\n```java\nmodel.put(\"member\", member);   // 이게 밖으로 전달된다\nreturn \"save-result\";\n```\n\n**반환값이 아니라 파라미터 객체를 고쳐서** 결과를 넘긴다. 함수형 관점에서는 **부수 효과(side effect)** 이고, 처음 보면 \"이 `model` 이 어디로 가지\" 싶다.\n\n그래서 v4 의 인터페이스에 **주석을 달았다.** 시그니처만으로는 의도가 안 보이기 때문이다.\n\n**스프링 MVC 가 정확히 이 방식이다.**\n\n```java\n@GetMapping(\"/items\")\npublic String items(Model model) {\n    model.addAttribute(\"items\", itemRepository.findAll());\n    return \"basic/items\";\n}\n```\n\n`Model` 을 파라미터로 받아서 담고, 뷰 이름을 문자열로 돌려준다. **v4 와 같은 모양이다.**\n\n처음 스프링 MVC 를 배울 때 \"`Model` 은 어디서 나타나나\" 라고 궁금했다면(1.1절) — **프론트 컨트롤러가 만들어서 넣어 준 것**이다. 그 자리를 방금 만들었다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "v3 를 지우지 않는다",
+   "md": "v4 가 더 편한데 **v3 를 지우지 않는다.**\n\n둘은 우열 관계가 아니다.\n\n- **v3** — 반환값 하나에 다 담긴다. 테스트가 더 깔끔하다\n- **v4** — 쓰기 편하다. 코드가 짧다\n\n실제로 스프링 MVC 도 **둘 다 지원한다.** `ModelAndView` 를 돌려줘도 되고 `Model` 파라미터에 담고 `String` 을 돌려줘도 된다.\n\n그런데 지금 우리 프론트 컨트롤러는 **둘 중 하나만** 쓸 수 있다. `controllerMap` 의 타입이 하나로 고정돼 있기 때문이다.\n\n**둘을 동시에 지원하려면?** 5.6절이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 컨트롤러가 아는 타입",
+   "sql": "# v3 컨트롤러가 아는 것\nMap<String, String>              (파라미터)\nModelView                        (반환)\nMember, MemberRepository         (도메인)\n\n# v4 컨트롤러가 아는 것\nMap<String, String>              (파라미터)\nMap<String, Object>              (모델)\nString                           (반환)\nMember, MemberRepository         (도메인)\n\n# 프레임워크가 정의한 타입\nv3 : ModelView  1 개\nv4 : 0 개\n\n# HTTP 응답은 v1~v3 와 완전히 같다",
+   "note": "**v4 컨트롤러는 프레임워크가 만든 타입을 하나도 모른다.** 전부 자바 표준(`Map`, `String`)과 내 도메인뿐이다.\n\n5.4절에서 `jakarta.servlet` 을 걷어냈고, 여기서 **`ModelView` 마저 걷어냈다.**\n\n다만 이게 항상 좋은 것은 아니다 — 타입이 없으면 **시그니처만 보고 의도를 알기 어렵다.** 그래서 주석이 필요했다. **얻는 것과 잃는 것이 있다.**"
+  }
+ ],
+ "recap": [
+  "**중복이 아니라 번거로움**을 없애는 절이다.",
+  "**모델을 파라미터로 받고 뷰 이름을 문자열로 반환**한다.",
+  "프론트 컨트롤러가 **`Map` 을 만들어 빌려 준다.**",
+  "전체 줄 수는 비슷한데, **한 곳이 복잡해지고 수백 곳이 단순해진다.**",
+  "**인터페이스는 한 번 만들고 수백 번 구현된다** — 쓰는 쪽이 편해야 한다.",
+  "대가 — **부수 효과로 값을 전달**한다. 시그니처만으로 의도가 안 보여 주석이 필요하다.",
+  "**스프링 MVC 가 정확히 이 방식**이다 — `Model` 파라미터 + `String` 반환.",
+  "\"`Model` 은 어디서 나타나나\" 의 답 — **프론트 컨트롤러가 만들어 넣어 준다.**",
+  "**v3 를 지우지 않는다.** 우열이 아니라 취향이고, 스프링도 둘 다 지원한다.",
+  "**지금은 둘 중 하나만 쓸 수 있다** → 5.6절."
+ ],
+ "drills": [
+  {
+   "task": "`ControllerV4` 와 프론트 컨트롤러 v4 를 만든다.",
+   "done_when": "v3 와 같은 화면이 나온다.",
+   "minutes": 25
+  },
+  {
+   "task": "v3 와 v4 컨트롤러의 줄 수와 아는 타입을 비교한다.",
+   "done_when": "v4 가 프레임워크 타입을 모른다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "v4 인터페이스에서 주석을 지우고 남에게 보여 준다.",
+   "done_when": "`model` 파라미터의 의도가 안 보인다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "스프링 MVC 컨트롤러 예제를 찾아 v4 와 나란히 놓는다.",
+   "done_when": "`Model` 파라미터 + `String` 반환이 같은 모양이라는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "v3 컨트롤러를 v4 프론트 컨트롤러에 등록해 본다.",
+   "done_when": "타입이 안 맞아 안 된다는 것을 확인했다 — 5.6절의 문제다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "v4 가 없앤 것은?",
+   "a": "중복이 아니라 번거로움이다. 컨트롤러가 `ModelView` 를 직접 만들고 담고 돌려주던 세 절차가 둘로 줄었다."
+  },
+  {
+   "q": "모델은 누가 만드나?",
+   "a": "프론트 컨트롤러가 만들어 파라미터로 넘긴다. 컨트롤러는 거기에 담기만 한다."
+  },
+  {
+   "q": "전체 줄 수는 비슷한데 왜 이득인가?",
+   "a": "프론트 컨트롤러는 하나이고 컨트롤러는 수백 개다. 한 곳이 복잡해지고 수백 곳이 단순해진다."
+  },
+  {
+   "q": "이 방식의 단점은?",
+   "a": "반환값이 아니라 파라미터 객체를 고쳐서 결과를 전달한다. 시그니처만으로 의도가 안 보여 문서가 필요하다."
+  },
+  {
+   "q": "스프링 MVC 와 어떻게 닮았나?",
+   "a": "`Model` 을 파라미터로 받아 담고 뷰 이름을 `String` 으로 반환하는 것이 v4 와 같은 모양이다."
+  },
+  {
+   "q": "v3 를 지우지 않는 이유는?",
+   "a": "우열 관계가 아니기 때문이다. 스프링 MVC 도 `ModelAndView` 반환과 `Model` 파라미터 방식을 둘 다 지원한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "부수 효과",
+   "en": "side effect",
+   "what": "반환값이 아니라 파라미터로 받은 객체를 변경해 결과를 전달하는 것. v4 와 스프링 MVC 의 `Model` 이 이 방식이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

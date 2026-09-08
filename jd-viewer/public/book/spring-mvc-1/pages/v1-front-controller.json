@@ -1,0 +1,157 @@
+{
+ "book": "spring-mvc-1",
+ "id": "v1-front-controller",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "v1 — 프론트 컨트롤러 도입",
+ "summary": "구조만 잡는다. 기존 코드를 그대로 옮긴다.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프론트 컨트롤러와 컨트롤러 인터페이스를 만들 수 있다.",
+  "URL 로 컨트롤러를 찾는 방법을 안다.",
+  "v1 에서 무엇이 없어지고 무엇이 남았는지 안다.",
+  "한 번에 다 바꾸지 않는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이번에 없앨 것",
+   "md": "**4.6절의 4번 — 공통 처리를 넣을 자리가 없다.**\n\n입구를 하나로 만드는 것이 목표이고, **나머지는 건드리지 않는다.** 컨트롤러 안의 `forward` 도 그대로 둔다.\n\n**한 번에 다 바꾸지 않는 것이 이 장의 방법**이다. 구조를 먼저 세우고, 그 위에서 하나씩 걷어낸다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ControllerV1.java",
+   "code": "public interface ControllerV1 {\n\n    void process(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException;\n}",
+   "note": "**서블릿의 `service()` 와 시그니처가 같다.** 일부러 그렇게 했다 — 4.5절 서블릿의 몸통을 **그대로 복사해 넣을 수 있게.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MemberFormControllerV1.java",
+   "code": "public class MemberFormControllerV1 implements ControllerV1 {\n\n    @Override\n    public void process(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n\n        String viewPath = \"/WEB-INF/views/new-form.jsp\";\n        RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);\n        dispatcher.forward(request, response);\n    }\n}",
+   "note": "**`extends HttpServlet` 이 `implements ControllerV1` 로 바뀐 것이 전부다.** 몸통은 4.5절과 한 글자도 안 다르다.\n\n그리고 **`@WebServlet` 이 사라졌다.** 이제 이 클래스는 서블릿이 아니다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "FrontControllerServletV1.java",
+   "code": "@WebServlet(name = \"frontControllerServletV1\",\n            urlPatterns = \"/front-controller/v1/*\")\npublic class FrontControllerServletV1 extends HttpServlet {\n\n    private Map<String, ControllerV1> controllerMap = new HashMap<>();\n\n    public FrontControllerServletV1() {\n        controllerMap.put(\"/front-controller/v1/members/new-form\",\n                          new MemberFormControllerV1());\n        controllerMap.put(\"/front-controller/v1/members/save\",\n                          new MemberSaveControllerV1());\n        controllerMap.put(\"/front-controller/v1/members\",\n                          new MemberListControllerV1());\n    }\n\n    @Override\n    protected void service(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n\n        String requestURI = request.getRequestURI();\n\n        ControllerV1 controller = controllerMap.get(requestURI);\n        if (controller == null) {\n            response.setStatus(HttpServletResponse.SC_NOT_FOUND);\n            return;\n        }\n\n        controller.process(request, response);\n    }\n}",
+   "note": "**서블릿은 이것 하나뿐**이다. 나머지 셋은 평범한 클래스가 됐다."
+  },
+  {
+   "type": "figure",
+   "caption": "흐름",
+   "ascii": "   http request\n        │\n        ▼\n   FrontControllerServletV1\n        │  1. controllerMap.get(requestURI)\n        ▼\n   ControllerV1  (인터페이스)\n        │  2. process(request, response)\n        ▼\n   MemberFormControllerV1\n        │  3. forward  <- 아직 컨트롤러가 한다\n        ▼\n   new-form.jsp",
+   "note": "**3번이 아직 컨트롤러 안에 있다.** 5.3절에서 그것을 프론트 컨트롤러로 올린다."
+  },
+  {
+   "type": "heading",
+   "text": "읽을 것 셋"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1. URL 이 한 파일에 모였다",
+   "md": "```java\ncontrollerMap.put(\"/front-controller/v1/members/new-form\", ...);\ncontrollerMap.put(\"/front-controller/v1/members/save\", ...);\ncontrollerMap.put(\"/front-controller/v1/members\", ...);\n```\n\n4.6절 마지막에서 **\"어떤 URL 이 있는지 알려면 파일을 전부 열어 봐야 한다\"** 고 했다. **이제 이 세 줄만 보면 된다.**\n\n생성자에서 등록하는 것이 어색해 보이는데, **지금은 이게 최선이다.** 6장에서 스프링을 쓰면 이 등록도 사라진다 — `@RequestMapping` 이 대신한다.\n\n앞 책 3장에서 `AppConfig` 를 만들었을 때와 같은 모양이다. **무엇을 쓸지 정하는 코드를 한 곳에 모은 것.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "2. 이제 공통 처리를 쓸 자리가 있다",
+   "md": "```java\nprotected void service(HttpServletRequest request, HttpServletResponse response) {\n\n    long start = System.currentTimeMillis();      // 여기\n\n    ControllerV1 controller = controllerMap.get(request.getRequestURI());\n    controller.process(request, response);\n\n    log.info(\"took {}ms\", System.currentTimeMillis() - start);   // 여기\n}\n```\n\n**컨트롤러가 30개가 돼도 이 두 줄은 한 번만 쓴다.** 4.6절의 가장 큰 문제가 이 절에서 끝난다.\n\n그리고 **인증 검사를 빠뜨릴 방법이 없다.** 모든 요청이 여기를 지나기 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "3. requestURI 로 정확히 매칭한다",
+   "md": "```java\nString requestURI = request.getRequestURI();   // /front-controller/v1/members\ncontrollerMap.get(requestURI);\n```\n\n**`Map` 의 정확한 키 매칭**이다. 3.3절에서 `getRequestURI()` 가 경로만 준다고 했으니 쿼리 스트링은 안 섞인다.\n\n그런데 **`/members/1`** 같은 URL 은 어떻게 하나. 키가 무한히 많아진다.\n\n지금은 못 한다. **패턴 매칭이 필요하고, 그것은 스프링의 `@GetMapping(\"/items/{id}\")` 가 하는 일**이다(7.3절).\n\n이 책에서 만들 프레임워크는 **정확 매칭까지**다. 그 이상은 스프링에게 맡긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "null 체크를 잊지 않는다",
+   "md": "```java\nif (controller == null) {\n    response.setStatus(HttpServletResponse.SC_NOT_FOUND);\n    return;\n}\n```\n\n**`urlPatterns = \"/*\"` 로 열어 뒀으니** 매핑에 없는 URL 도 들어온다(5.1절).\n\n이 체크가 없으면 `NullPointerException` 이 나고 **500** 이 나간다. 사용자에게는 \"서버 오류\" 로 보인다.\n\n**없는 페이지는 404 여야 한다.** 3.9절에서 `setStatus` 를 배운 자리가 여기서 쓰인다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 여전히 같다",
+   "sql": "GET /front-controller/v1/members HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<table> ... </table>\n\n# 매핑에 없는 URL\nGET /front-controller/v1/nothing HTTP/1.1\n\nHTTP/1.1 404 \nContent-Length: 0\n\n# 서버 콘솔 (공통 처리를 넣었다면)\nFrontControllerServletV1.service  /front-controller/v1/members\ntook 12ms",
+   "note": "**응답은 4.5절과 같다.** 5장 내내 그럴 것이다.\n\n**이 절의 결과는 아래 두 줄에 있다.** 컨트롤러 어디에도 로그 코드가 없는데 모든 요청에 로그가 남는다.\n\n4.7절에서 \"5장에서는 HTTP 대신 실행 흐름이 결과인 절도 있다\" 고 했다. **여기가 그 첫 절이다.**"
+  }
+ ],
+ "recap": [
+  "**이번 목표는 4.6절의 4번(공통 처리)** 하나다. 나머지는 안 건드린다.",
+  "`ControllerV1` 인터페이스의 시그니처를 **서블릿과 같게** 해서 몸통을 그대로 옮겼다.",
+  "**서블릿은 프론트 컨트롤러 하나**뿐이다. 나머지는 평범한 클래스가 됐다.",
+  "**URL 이 한 파일에 모였다** — 4.6절의 '흩어진 매핑' 문제도 같이 풀렸다.",
+  "**공통 처리를 쓸 자리가 생겼다.** 컨트롤러가 30개여도 한 번만 쓴다.",
+  "`requestURI` 로 **정확 매칭**한다. `/items/{id}` 같은 패턴은 못 한다 — 스프링의 일이다.",
+  "**`null` 체크를 잊으면 500 이 나간다.** 없는 페이지는 404 여야 한다.",
+  "**`forward` 는 아직 컨트롤러 안에 있다** → 5.3절."
+ ],
+ "drills": [
+  {
+   "task": "`ControllerV1` 과 컨트롤러 셋, 프론트 컨트롤러를 만든다.",
+   "done_when": "4.5절과 같은 화면이 나온다.",
+   "minutes": 30
+  },
+  {
+   "task": "프론트 컨트롤러에 처리 시간 로그를 넣는다.",
+   "done_when": "컨트롤러를 안 고쳤는데 모든 요청에 로그가 남는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`null` 체크를 지우고 없는 URL 을 호출한다.",
+   "done_when": "500 이 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "4.5절 서블릿과 v1 컨트롤러의 코드를 나란히 비교한다.",
+   "done_when": "선언부만 다르다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "v1 에서 없앤 것은?",
+   "a": "공통 처리를 넣을 자리가 없다는 문제다. 모든 요청이 프론트 컨트롤러를 지나므로 한 곳에만 쓰면 된다."
+  },
+  {
+   "q": "`ControllerV1` 의 시그니처를 서블릿과 같게 한 이유는?",
+   "a": "기존 서블릿의 몸통을 그대로 옮겨 붙일 수 있게 하기 위해서다. 구조만 바꾸고 코드는 안 바꾼다."
+  },
+  {
+   "q": "서블릿은 몇 개 남았나?",
+   "a": "프론트 컨트롤러 하나다. 컨트롤러들은 `@WebServlet` 도 상속도 없는 평범한 클래스가 됐다."
+  },
+  {
+   "q": "URL 매핑이 어떻게 달라졌나?",
+   "a": "각 파일에 흩어져 있던 것이 프론트 컨트롤러의 `controllerMap` 한 곳에 모였다."
+  },
+  {
+   "q": "`/items/{id}` 같은 URL 은 왜 안 되나?",
+   "a": "`Map` 의 정확한 키 매칭이라 키가 무한히 많아진다. 패턴 매칭은 스프링의 `@GetMapping` 이 한다."
+  },
+  {
+   "q": "v1 에 아직 남은 중복은?",
+   "a": "`forward` 코드와 viewPath 문자열이 여전히 각 컨트롤러 안에 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

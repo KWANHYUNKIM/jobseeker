@@ -321,7 +321,7 @@
           "title": "v1 — 프론트 컨트롤러 도입",
           "summary": "구조만 잡는다. 기존 코드를 그대로 옮긴다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -329,7 +329,7 @@
           "title": "v2 — View 분리",
           "summary": "`forward` 중복을 `MyView` 로 걷어낸다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -337,7 +337,7 @@
           "title": "v3 — Model 추가",
           "summary": "컨트롤러가 서블릿을 몰라도 되게 만든다. 이 책에서 가장 큰 도약.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -345,7 +345,7 @@
           "title": "v4 — 단순하고 실용적인 컨트롤러",
           "summary": "ModelView 를 안 만들고 뷰 이름만 돌려준다. 인터페이스를 쓰는 사람 편으로.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
