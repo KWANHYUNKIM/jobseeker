@@ -100,7 +100,7 @@
           "title": "웹 서버와 웹 애플리케이션 서버",
           "summary": "정적 파일과 동적 처리. 둘을 왜 나누고 실무에서는 어떻게 배치하나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -108,7 +108,7 @@
           "title": "서블릿",
           "summary": "HTTP 를 파싱하는 지겨운 일을 누가 대신하나. 서블릿 컨테이너의 역할.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -116,7 +116,7 @@
           "title": "동시 요청 — 멀티 쓰레드",
           "summary": "요청 하나에 쓰레드 하나. 쓰레드 풀이 없으면 무슨 일이 생기나.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -124,7 +124,7 @@
           "title": "HTML, HTTP API, CSR, SSR",
           "summary": "서버가 HTML 을 만들 것인가 데이터를 줄 것인가. 백엔드 개발자가 정해야 하는 것.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",

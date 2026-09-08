@@ -1,0 +1,199 @@
+{
+ "book": "spring-mvc-1",
+ "id": "servlet",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "서블릿",
+ "summary": "HTTP 를 파싱하는 지겨운 일을 누가 대신하나. 서블릿 컨테이너의 역할.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서블릿이 없으면 무엇을 직접 해야 하는지 안다.",
+  "서블릿 컨테이너가 하는 일을 순서대로 말할 수 있다.",
+  "서블릿 객체가 싱글톤이라는 것과 그 함의를 안다.",
+  "JSP 도 결국 서블릿이라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서블릿이 없다고 가정하고** 웹 애플리케이션을 만든다면 무엇을 해야 하나. 목록을 세어 보면 서블릿이 무엇인지 저절로 나온다."
+  },
+  {
+   "type": "table",
+   "caption": "요청 하나를 처리하려면",
+   "note": "**굵은 줄 하나만 내가 하고 싶은 일**이다. 나머지 열은 요청이 무엇이든 똑같이 반복된다.",
+   "columns": [
+    "#",
+    "해야 할 일"
+   ],
+   "rows": [
+    [
+     "1",
+     "서버 TCP/IP 연결 대기, 소켓 연결"
+    ],
+    [
+     "2",
+     "HTTP 요청 메시지를 파싱해서 읽기"
+    ],
+    [
+     "3",
+     "**POST 방식, `/save` URL 인지** 인지"
+    ],
+    [
+     "4",
+     "`Content-Type` 확인"
+    ],
+    [
+     "5",
+     "HTTP 바디 내용 파싱 — 쿼리 스트링? 폼? JSON?"
+    ],
+    [
+     "6",
+     "**저장 프로세스 실행** ← 진짜 하고 싶은 일"
+    ],
+    [
+     "7",
+     "비즈니스 로직 결과로 HTTP 응답 메시지 생성 시작"
+    ],
+    [
+     "8",
+     "시작 라인 생성 — `HTTP/1.1 200 OK`"
+    ],
+    [
+     "9",
+     "헤더 생성 — `Content-Type`, `Content-Length`…"
+    ],
+    [
+     "10",
+     "메시지 바디에 HTML 생성해서 넣기"
+    ],
+    [
+     "11",
+     "TCP/IP 로 응답 전달, 소켓 종료"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서블릿은 6번만 남겨 준다",
+   "md": "**나머지 열 개를 서블릿 컨테이너가 한다.**\n\n1.3절에서 쓴 코드를 다시 보자.\n\n```java\n@WebServlet(name = \"helloServlet\", urlPatterns = \"/hello\")\npublic class HelloServlet extends HttpServlet {\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n        String username = request.getParameter(\"username\");\n        response.getWriter().write(\"hello \" + username);\n    }\n}\n```\n\n**소켓도 없고 파싱도 없고 헤더 조립도 없다.** `request` 에서 꺼내고 `response` 에 쓴다.\n\n`@WebServlet` 의 `urlPatterns` 가 3번을 대신하고, `getParameter` 가 5번을, `getWriter().write()` 가 8~10번을 대신한다."
+  },
+  {
+   "type": "figure",
+   "caption": "서블릿 컨테이너가 하는 일",
+   "ascii": "   http request (raw text)\n        │\n        ▼\n   ┌──────────────────────────────────────────────┐\n   │  servlet container (tomcat)                  │\n   │                                              │\n   │   1. parse http message                      │\n   │   2. new HttpServletRequest  / Response      │\n   │   3. find servlet by url pattern             │\n   │   4. service(request, response)              │───>  my code\n   │   5. read response object                    │\n   │   6. build http message                      │\n   └──────────────────────────────────────────────┘\n        │\n        ▼\n   http response (raw text)\n\n   4 번만 내가 쓴다. 나머지는 전부 컨테이너가 한다",
+   "note": "**`request` 와 `response` 객체는 컨테이너가 만들어서 넣어 준다.** 앞 책의 DI 와 비슷한 구조인데, 여기서는 스프링이 아니라 **톰캣이 주입한다.**"
+  },
+  {
+   "type": "heading",
+   "text": "서블릿 컨테이너"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "WAS 안에 들어 있는 것",
+   "md": "톰캣처럼 **서블릿을 지원하는 WAS 를 서블릿 컨테이너**라고 부른다. 하는 일이 넷이다.\n\n1. **서블릿 객체를 생성한다** — 내가 `new` 하지 않는다\n2. **초기화하고 호출한다** — `init()` → `service()`\n3. **종료한다** — `destroy()`\n4. **생명주기를 관리한다**\n\n앞 책 8장에서 스프링 빈의 생명주기를 배웠다. **서블릿에도 같은 것이 있고, 그것을 관리하는 주체가 스프링이 아니라 톰캣**이다.\n\n1.3절에서 `@ServletComponentScan` 이 필요했던 이유가 이것이다 — **등록되는 곳이 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "서블릿 객체는 싱글톤이다",
+   "md": "요청이 올 때마다 `new HelloServlet()` 을 하지 않는다. **컨테이너가 하나만 만들어 두고 계속 쓴다.**\n\n객체를 요청마다 만드는 것은 비효율이기 때문인데 — **앞 책 5.1절에서 똑같은 이야기를 했다.**\n\n그리고 결론도 같다.\n\n> **서블릿에 공유 변수를 두면 안 된다.**\n\n```java\npublic class HelloServlet extends HttpServlet {\n\n    private String username;   // 이러면 안 된다\n\n    protected void service(...) {\n        this.username = request.getParameter(\"username\");   // 값이 섞인다\n    }\n}\n```\n\n앞 책 5.4절의 `StatefulService` 와 **완전히 같은 사고**다. 다른 요청의 값이 보인다.\n\n**5.4절의 규칙이 여기서도 그대로 적용된다** — 지역변수와 파라미터를 쓴다. `request` 와 `response` 가 파라미터로 들어오는 것이 그래서다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "JSP 도 서블릿이다",
+   "md": "4장에서 JSP 를 쓸 텐데, 미리 알아 둘 것이 있다.\n\n**JSP 파일은 실행 전에 서블릿 자바 코드로 변환된다.** 1.3절에서 넣은 `tomcat-embed-jasper` 가 그 일을 한다.\n\n```\nhello.jsp  ──(jasper)──>  hello_jsp.java  ──(javac)──>  hello_jsp.class\n```\n\n그러니 \"JSP 는 서블릿과 다른 기술\" 이 아니다. **쓰는 방식만 다르고 결국 같은 것**이다. 4장에서 JSP 가 서블릿보다 나아 보이다가 한계를 만나는 이유도 여기 있다 — **밑바닥이 같으니 못 하는 것도 같다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 내가 안 쓴 것이 대부분이다",
+   "sql": "POST /save HTTP/1.1\nHost: localhost:8080\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 25\n\nusername=kim&age=20\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\nContent-Length: 42\nDate: Tue, 09 Sep 2026 02:32:00 GMT\nKeep-Alive: timeout=60\nConnection: keep-alive\n\n<html><body>save ok: kim</body></html>",
+   "note": "이 응답에서 **내 코드가 만든 것은 마지막 한 줄과 `Content-Type` 뿐**이다.\n\n- `HTTP/1.1 200` — 내가 상태 코드를 안 정하면 톰캣이 200 을 붙인다\n- `Content-Length: 42` — 바디를 세어서 붙였다\n- `Date`, `Keep-Alive`, `Connection` — 전부 컨테이너가 채웠다\n\n**앞의 표에서 8·9·11번이 여기 있다.** 서블릿을 쓴다는 것은 이 줄들을 안 쓴다는 뜻이다."
+  }
+ ],
+ "recap": [
+  "요청 하나를 처리하려면 열한 가지를 해야 하는데 **내가 하고 싶은 것은 하나**다.",
+  "**서블릿 컨테이너가 나머지 열을 한다** — 파싱·객체 생성·매핑·응답 조립·소켓.",
+  "`request` 와 `response` 객체는 **컨테이너가 만들어서 넣어 준다.**",
+  "컨테이너는 서블릿의 **생성·초기화·호출·종료**를 관리한다 — 스프링이 아니라 톰캣이.",
+  "**서블릿 객체는 싱글톤**이다. 앞 책 5.1절과 같은 이유.",
+  "그래서 **공유 변수를 두면 안 된다** — 5.4절의 그 사고가 똑같이 난다.",
+  "**JSP 도 결국 서블릿으로 변환**된다. 밑바닥이 같다."
+ ],
+ "drills": [
+  {
+   "task": "서블릿 없이 요청을 처리하려면 할 일 열한 가지를 종이에 옮겨 적는다.",
+   "done_when": "정말 하고 싶은 일이 하나뿐이라는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`HelloServlet` 에 인스턴스 필드를 두고 값을 저장해 본다.",
+   "done_when": "요청을 두 번 보내면 값이 섞이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "톰캣이 만든 `hello_jsp.java` 파일을 빌드 폴더에서 찾아본다.",
+   "done_when": "JSP 가 서블릿 코드로 변환된 것을 눈으로 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답 헤더 중 내가 코드로 쓴 것과 안 쓴 것을 나눠 적는다.",
+   "done_when": "컨테이너가 채운 것이 더 많다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿이 대신해 주는 것은?",
+   "a": "TCP 소켓 연결, HTTP 파싱, URL 매핑, 응답 메시지 조립, 소켓 종료 등. 개발자는 비즈니스 로직만 쓴다."
+  },
+  {
+   "q": "서블릿 컨테이너가 관리하는 것은?",
+   "a": "서블릿 객체의 생성·초기화·호출·종료, 즉 생명주기 전체다. 그리고 멀티 쓰레드 처리도 한다."
+  },
+  {
+   "q": "서블릿 객체는 몇 개 만들어지는가?",
+   "a": "싱글톤이다. 요청마다 만들지 않고 컨테이너가 하나만 만들어 재사용한다."
+  },
+  {
+   "q": "그래서 무엇을 조심해야 하나?",
+   "a": "인스턴스 필드에 요청별 값을 두면 안 된다. 여러 요청이 같은 객체를 공유하므로 값이 섞인다."
+  },
+  {
+   "q": "JSP 와 서블릿의 관계는?",
+   "a": "JSP 파일은 실행 전에 서블릿 자바 코드로 변환되어 컴파일된다. 쓰는 방식만 다르고 결국 같은 것이다."
+  },
+  {
+   "q": "`request`·`response` 객체는 누가 만드는가?",
+   "a": "서블릿 컨테이너다. HTTP 메시지를 파싱해 객체로 만들어 `service()` 파라미터로 넣어 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "서블릿 컨테이너",
+   "en": "servlet container",
+   "what": "서블릿을 지원하는 WAS. 서블릿 객체의 생명주기를 관리하고 HTTP 파싱·응답 조립·멀티 쓰레드 처리를 담당한다."
+  },
+  {
+   "term": "HttpServletRequest",
+   "en": "",
+   "what": "HTTP 요청 메시지를 파싱해 담아 둔 객체. 서블릿 컨테이너가 만들어 넣어 준다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

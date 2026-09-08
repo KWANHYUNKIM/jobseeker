@@ -1,0 +1,242 @@
+{
+ "book": "spring-mvc-1",
+ "id": "html-vs-api",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "HTML, HTTP API, CSR, SSR",
+ "summary": "서버가 HTML 을 만들 것인가 데이터를 줄 것인가. 백엔드 개발자가 정해야 하는 것.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서버가 내보낼 수 있는 세 가지를 구분할 수 있다.",
+  "HTTP API 가 쓰이는 세 가지 상황을 안다.",
+  "SSR 과 CSR 의 차이를 말할 수 있다.",
+  "이 책이 무엇을 다루는지 위치를 잡을 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서버가 클라이언트에게 무엇을 줄 것인가.** 답이 셋이고, 그 선택이 코드를 완전히 다르게 만든다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지",
+   "note": "**세 번째가 요즘 압도적으로 많다.** 그런데 이 책은 두 번째를 주로 다룬다 — 이유는 아래에 있다.",
+   "columns": [
+    "",
+    "무엇을 준다",
+    "누가 받나"
+   ],
+   "rows": [
+    [
+     "**정적 리소스**",
+     "이미 있는 파일 그대로",
+     "브라우저"
+    ],
+    [
+     "**HTML 페이지**",
+     "서버가 만든 완성된 HTML",
+     "브라우저"
+    ],
+    [
+     "**HTTP API**",
+     "**데이터만** (주로 JSON)",
+     "앱 · 자바스크립트 · 다른 서버"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "HTTP API — 데이터만 준다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "화면이 아니라 데이터라는 것",
+   "md": "```json\n{ \"id\": 1, \"itemName\": \"itemA\", \"price\": 10000 }\n```\n\nHTML 이 아니다. **어떻게 보여 줄지는 받는 쪽이 정한다.**\n\n이게 왜 중요한가 — **받는 쪽이 브라우저가 아닐 수 있기 때문**이다.\n\n1. **서버 to 서버** — 주문 서버가 결제 서버를 부른다. 화면이 아예 없다\n2. **앱 클라이언트** — 안드로이드·iOS 는 HTML 을 받아도 쓸 수 없다\n3. **웹 클라이언트** — 자바스크립트가 데이터만 받아서 화면 일부를 갱신한다\n\n**같은 데이터를 세 종류의 클라이언트가 쓴다.** HTML 을 내보내면 첫 번째와 두 번째는 못 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 JSON 인가",
+   "md": "예전에는 XML 을 많이 썼다. 지금은 거의 JSON 이다.\n\n- **짧다** — 태그를 두 번 쓰지 않는다\n- **자바스크립트가 그대로 읽는다** — 원래 JavaScript Object Notation 이다\n- **사람이 읽을 수 있다**\n\n7.13절에서 자바 객체와 JSON 이 오가는 지점(**HTTP 메시지 컨버터**)을 판다. 지금은 **데이터 형식일 뿐**이라고 알아 두면 된다."
+  },
+  {
+   "type": "heading",
+   "text": "SSR 과 CSR"
+  },
+  {
+   "type": "prose",
+   "md": "HTML 을 **누가 만드느냐**의 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 방식",
+   "ascii": "   SSR                                CSR\n   ---                                ---\n   browser  ->  server                browser  ->  server\n                build html                         return json\n   <-  html (complete)                <-  json\n   render                             js builds html\n                                      render\n\n   첫 화면이 빠르다                     첫 화면 뒤로는 부드럽다\n   jsp, thymeleaf                     react, vue",
+   "note": "**SSR 은 서버가 완성해서 보내고, CSR 은 브라우저가 조립한다.** 서버가 하는 일이 완전히 다르다."
+  },
+  {
+   "type": "table",
+   "caption": "비교",
+   "note": "**둘 중 하나만 쓰는 것도 아니다.** 한 서비스 안에서 정적인 화면은 SSR, 동적인 화면은 CSR 로 섞어 쓰는 것이 흔하다.",
+   "columns": [
+    "",
+    "SSR",
+    "CSR"
+   ],
+   "rows": [
+    [
+     "HTML 을 만드는 곳",
+     "**서버**",
+     "**브라우저**"
+    ],
+    [
+     "기술",
+     "JSP, **타임리프**",
+     "React, Vue"
+    ],
+    [
+     "주 담당",
+     "**백엔드 개발자**",
+     "프론트엔드 개발자"
+    ],
+    [
+     "잘 맞는 화면",
+     "정적인 화면, 뉴스·게시판",
+     "구글 지도, 관리자 화면처럼 상호작용이 많은 것"
+    ],
+    [
+     "첫 화면",
+     "**빠르다**",
+     "느리다 (JS 를 받아 실행해야 한다)"
+    ],
+    [
+     "이후 화면 전환",
+     "매번 새로 요청",
+     "**부드럽다** (필요한 데이터만 받는다)"
+    ],
+    [
+     "SEO",
+     "**유리하다**",
+     "불리하다 (검색 엔진이 JS 를 실행해야 한다)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "요즘은 경계가 흐려졌다",
+   "md": "Next.js·Nuxt 같은 도구가 **CSR 프레임워크로 SSR 을 한다.** React 로 만들되 첫 화면은 서버에서 렌더링해서 보내는 것이다.\n\n그러면 SSR 의 첫 화면 속도와 SEO 를 얻으면서 CSR 의 부드러운 전환도 얻는다. 대신 **서버에서 자바스크립트를 실행해야** 해서 구성이 복잡해진다.\n\n중요한 것은 — **그때 자바 백엔드는 HTTP API 를 준다.** HTML 을 만드는 것은 Node 서버이고, 자바 서버는 데이터만 넘긴다.\n\n**그래서 요즘 자바 백엔드 개발자는 HTML 을 만들 일이 줄었다.**"
+  },
+  {
+   "type": "heading",
+   "text": "그럼 이 책은 왜 HTML 을 만드나"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구조를 보려면 SSR 이 낫다",
+   "md": "솔직히 적으면 — **실무에서 8장 같은 코드를 쓸 일은 줄고 있다.**\n\n그런데도 이 책이 HTML 을 만드는 이유가 둘이다.\n\n**1. 뷰가 있어야 MVC 가 보인다.**\n\n5장에서 만들 프레임워크의 절반이 **뷰를 다루는 부분**이다 — `MyView`, `ViewResolver`, `forward`. JSON 만 내보내면 그 절반이 통째로 사라지고, **`DispatcherServlet` 의 동작 절반을 못 본다.**\n\n**2. API 는 그 위에 얹힌 것이다.**\n\n`@ResponseBody` 를 붙이면 뷰를 찾는 대신 바디에 바로 쓴다(7.11절). **뷰를 찾는 흐름을 알아야 그것을 건너뛴다는 말이 이해된다.**\n\n7장에서는 API 도 같이 다룬다. **순서가 SSR 먼저일 뿐이다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "백엔드 개발자가 정해야 하는 것",
+   "md": "이 절의 실무적 결론은 이렇다.\n\n> **API 를 줄 것인가 화면을 줄 것인가**를 먼저 정한다.\n\n이 결정이 바뀌면 컨트롤러부터 다시 짜야 한다. 응답 타입도, 예외 처리 방식도, 에러 응답 형식도 전부 다르다.\n\n- 화면을 준다 → 오류 나면 **오류 페이지**로 보낸다\n- API 를 준다 → 오류 나면 **JSON 으로 에러 코드**를 준다\n\n그리고 대개는 **둘 다 필요하다.** 관리자 화면은 SSR 로, 앱용은 API 로. 그래서 스프링 MVC 가 둘 다 지원한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 같은 데이터, 다른 응답",
+   "sql": "# HTML 페이지 (SSR)\nGET /basic/items/1 HTTP/1.1\nAccept: text/html\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<!DOCTYPE HTML>\n<html>\n<body>\n  <h2>상품 상세</h2>\n  <input value=\"itemA\">\n  <input value=\"10000\">\n</body>\n</html>\n\n# HTTP API\nGET /api/items/1 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 200 \nContent-Type: application/json\n\n{\"id\":1,\"itemName\":\"itemA\",\"price\":10000,\"quantity\":10}",
+   "note": "**같은 상품 하나인데 응답이 완전히 다르다.**\n\n① **`Content-Type`** 이 다르다 — `text/html` vs `application/json`\n② **길이가 다르다** — HTML 은 화면 구조까지 담아서 길다\n③ **요청의 `Accept` 헤더**도 다르다 — 클라이언트가 무엇을 원하는지 미리 말한다\n\n③이 흥미로운데, **같은 URL 로 둘 다 줄 수도 있다.** 스프링이 `Accept` 를 보고 갈라 주는 것을 **콘텐츠 협상**이라고 하고 7.14절에서 다룬다."
+  }
+ ],
+ "recap": [
+  "서버가 줄 수 있는 것 셋 — **정적 리소스 · HTML 페이지 · HTTP API.**",
+  "HTTP API 는 **데이터만** 준다. 어떻게 보여 줄지는 받는 쪽이 정한다.",
+  "쓰이는 곳 셋 — **서버 to 서버 · 앱 클라이언트 · 웹 클라이언트.**",
+  "**SSR 은 서버가 HTML 을 만들고, CSR 은 브라우저가 만든다.**",
+  "SSR 은 **첫 화면과 SEO**, CSR 은 **화면 전환**이 유리하다.",
+  "요즘은 Next.js 처럼 섞는다 — 그때 **자바 백엔드는 API 를 준다.**",
+  "이 책이 HTML 을 만드는 이유 — **뷰가 있어야 MVC 구조가 보이고**, API 는 그 위에 얹힌 것이라서.",
+  "실무 결론 — **API 인가 화면인가를 먼저 정한다.** 오류 처리 방식까지 달라진다."
+ ],
+ "drills": [
+  {
+   "task": "자주 쓰는 사이트에서 페이지 소스 보기를 눌러 HTML 에 데이터가 들어 있는지 본다.",
+   "done_when": "SSR 인지 CSR 인지 짐작할 수 있게 됐다.",
+   "minutes": 10
+  },
+  {
+   "task": "Network 탭에서 JSON 응답을 하나 찾아본다.",
+   "done_when": "`Content-Type: application/json` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 데이터를 HTML 로 줄 때와 JSON 으로 줄 때의 응답 크기를 비교한다.",
+   "done_when": "HTML 이 훨씬 큰 이유를 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 만들고 있는(또는 만들고 싶은) 서비스가 어느 쪽인지 정하고 이유를 적는다.",
+   "done_when": "오류 처리 방식까지 정했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서버가 클라이언트에게 줄 수 있는 세 가지는?",
+   "a": "정적 리소스, 서버가 만든 HTML 페이지, 데이터만 담은 HTTP API."
+  },
+  {
+   "q": "HTTP API 가 쓰이는 세 가지 상황은?",
+   "a": "서버 to 서버, 앱 클라이언트, 웹 클라이언트(자바스크립트가 데이터만 받아 화면을 갱신)."
+  },
+  {
+   "q": "SSR 과 CSR 의 차이는?",
+   "a": "HTML 을 서버가 만드느냐 브라우저가 만드느냐다. SSR 은 완성된 HTML 을, CSR 은 데이터를 보내고 자바스크립트가 화면을 만든다."
+  },
+  {
+   "q": "각각의 장점은?",
+   "a": "SSR 은 첫 화면이 빠르고 SEO 에 유리하다. CSR 은 이후 화면 전환이 부드럽고 상호작용이 많은 화면에 맞는다."
+  },
+  {
+   "q": "Next.js 같은 도구를 쓰면 자바 백엔드는 무엇을 하나?",
+   "a": "HTTP API 를 준다. HTML 을 만드는 것은 Node 서버이고 자바 서버는 데이터만 넘긴다."
+  },
+  {
+   "q": "이 책이 SSR 부터 다루는 이유는?",
+   "a": "뷰가 있어야 MVC 구조(뷰 리졸버·forward)가 보이고, API 응답은 그 뷰를 찾는 흐름을 건너뛰는 것이라 순서상 나중이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SSR",
+   "en": "Server Side Rendering",
+   "what": "서버에서 최종 HTML 을 만들어 브라우저에 넘기는 방식. JSP·타임리프."
+  },
+  {
+   "term": "CSR",
+   "en": "Client Side Rendering",
+   "what": "서버는 데이터만 주고 브라우저의 자바스크립트가 HTML 을 만드는 방식. React·Vue."
+  },
+  {
+   "term": "HTTP API",
+   "en": "",
+   "what": "화면이 아니라 데이터를 주고받는 방식. 주로 JSON 을 쓰고, 브라우저가 아닌 클라이언트도 쓸 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "MDN — An overview of HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
