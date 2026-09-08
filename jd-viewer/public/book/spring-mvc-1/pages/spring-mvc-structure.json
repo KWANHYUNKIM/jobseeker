@@ -1,0 +1,198 @@
+{
+ "book": "spring-mvc-1",
+ "id": "spring-mvc-structure",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "스프링 MVC 전체 구조",
+ "summary": "우리가 만든 그림 위에 스프링의 이름을 덮어쓴다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스프링 MVC 의 동작 순서를 여섯 단계로 말할 수 있다.",
+  "각 단계가 v5 의 어느 코드에 대응하는지 안다.",
+  "우리 구조와 다른 점 셋을 안다.",
+  "6장에서 무엇을 확인할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**새로 배울 것이 거의 없는 장이다.**\n\n5장에서 만든 것에 이름을 붙이고, 스프링이 우리보다 더 하는 것을 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "스프링 MVC 구조",
+   "ascii": "   http request\n        │\n        ▼\n   ┌─────────────────────────────────────────────────────┐\n   │  DispatcherServlet                                  │\n   │                                                     │\n   │   1. handler lookup      HandlerMapping             │\n   │   2. adapter lookup      HandlerAdapter             │\n   │   3. handle(handler)     ──────────────────────────────>  handler\n   │   4. ModelAndView        <──────────────────────────────\n   │   5. view resolve        ViewResolver               │\n   │   6. view.render(model)  View                       │\n   └─────────────────────────────────────────────────────┘\n        │\n        ▼\n   http response",
+   "note": "**5.6절 그림과 같다.** 이름만 바뀌었다."
+  },
+  {
+   "type": "table",
+   "caption": "여섯 단계",
+   "note": "**오른쪽 열이 5장에서 우리가 쓴 코드**다. 한 줄씩 대응한다.",
+   "columns": [
+    "#",
+    "스프링",
+    "v5 에서는"
+   ],
+   "rows": [
+    [
+     "1",
+     "**핸들러 조회** — `HandlerMapping`",
+     "`handlerMappingMap.get(uri)`"
+    ],
+    [
+     "2",
+     "**핸들러 어댑터 조회** — `HandlerAdapter`",
+     "`getHandlerAdapter(handler)`"
+    ],
+    [
+     "3",
+     "**핸들러 어댑터 실행** → 핸들러 실행",
+     "`adapter.handle(...)`"
+    ],
+    [
+     "4",
+     "**`ModelAndView` 반환**",
+     "`ModelView` 반환"
+    ],
+    [
+     "5",
+     "**`ViewResolver` 호출**",
+     "`viewResolver(viewName)`"
+    ],
+    [
+     "6",
+     "**`View` 렌더링**",
+     "`view.render(model, ...)`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름만 바뀐 것이 아니다 — 인터페이스가 됐다",
+   "md": "우리 코드는 이랬다.\n\n```java\nprivate MyView viewResolver(String viewName) {          // 메서드\n    return new MyView(\"/WEB-INF/views/\" + viewName + \".jsp\");\n}\n```\n\n스프링은 이렇다.\n\n```java\npublic interface ViewResolver {                         // 인터페이스\n    View resolveViewName(String viewName, Locale locale) throws Exception;\n}\n```\n\n**우리가 메서드로 둔 것이 스프링에서는 전부 인터페이스**다. `HandlerMapping`, `HandlerAdapter`, `ViewResolver`, `View` 넷 다.\n\n그래서 **구현을 갈아 끼울 수 있다.** JSP 용 `ViewResolver` 를 타임리프용으로 바꾸는 식으로.\n\n앞 책 1.3절의 역할·구현 분리이고, 5.6절에서 우리가 `MyHandlerAdapter` 를 인터페이스로 만든 것과 같은 발상이다. **스프링은 그것을 모든 자리에 적용했다.**"
+  },
+  {
+   "type": "heading",
+   "text": "우리와 다른 점 셋"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1. 구현체가 여러 개다",
+   "md": "우리는 각 자리에 클래스가 하나였다. 스프링은 여럿이다.\n\n| 인터페이스 | 스프링 부트가 등록하는 것 |\n|---|---|\n| `HandlerMapping` | `RequestMappingHandlerMapping`(`@RequestMapping` 용), `BeanNameUrlHandlerMapping` |\n| `HandlerAdapter` | `RequestMappingHandlerAdapter`, `HttpRequestHandlerAdapter`, `SimpleControllerHandlerAdapter` |\n| `ViewResolver` | `BeanNameViewResolver`, `InternalResourceViewResolver`(JSP), 타임리프용 |\n\n**우리가 아는 `@Controller` 방식은 각 목록의 첫 줄**이다. 5.7절에서 말한 대로 **여러 종류가 함께 동작**한다.\n\n그리고 이 목록도 **순서가 있다**(5.7절의 어댑터 순서). 앞에서부터 훑어 처음 처리 가능한 것을 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2. 등록을 안 해도 된다",
+   "md": "우리는 생성자에서 손으로 등록했다.\n\n```java\nhandlerMappingMap.put(\"/front-controller/v5/v3/members\", new MemberListControllerV3());\nhandlerAdapters.add(new ControllerV3HandlerAdapter());\n```\n\n스프링은 **스프링 부트가 자동으로 등록**한다. 그리고 핸들러는 **`@Controller` 를 찾아서** 등록한다.\n\n앞 책 6장의 컴포넌트 스캔이 여기서 쓰인다. **`@Controller` 안에 `@Component` 가 들어 있다**(앞 책 6.2절).\n\n그리고 URL 도 `@RequestMapping` 이 알려 준다 — **우리가 `put()` 에 적던 문자열**이 어노테이션으로 옮겨 간 것이다.\n\n앞 책 6장의 결론이 여기서도 맞다. **자동화는 코드에서 정보를 뺀다** — 이제 어떤 URL 이 있는지 한 파일에서 못 본다. 대신 IDE 나 액추에이터로 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "3. 어댑터가 훨씬 많은 일을 한다",
+   "md": "**이것이 가장 큰 차이다.**\n\n우리 `ControllerV4HandlerAdapter.handle()` 은 `Map` 을 만들고 `ModelView` 를 조립하는 정도였다.\n\n스프링의 `RequestMappingHandlerAdapter` 는 **컨트롤러 메서드의 파라미터를 채워 준다.**\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId,\n                  @RequestParam String q,\n                  HttpServletRequest request,\n                  Model model) { ... }\n```\n\n**파라미터 네 개가 종류도 타입도 다른데 다 채워진다.** 우리 v4 는 `Map` 둘로 고정이었다.\n\n이것을 하는 것이 **`ArgumentResolver`** 이고 **7.14절**의 주제다. 1.1절에서 던진 질문 중\n\n> `{itemId}` 조각은 누가 뽑아 오나\n> `Model` 은 어디서 나타나나\n\n의 답이 거기 있다. **`Model` 의 답은 5.5절에서 이미 절반을 봤다** — 프론트 컨트롤러가 만들어 넣어 준다. 스프링에서는 어댑터가 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장을 읽는 법",
+   "md": "6장은 **확인하는 장**이다. 새 개념이 거의 없다.\n\n- **6.2** `DispatcherServlet` 의 `doDispatch()` 를 직접 읽는다. 위 여섯 단계가 그대로 있다\n- **6.3** `HandlerMapping` 과 `HandlerAdapter` 의 실제 구현\n- **6.4** `ViewResolver` — 우리 한 줄짜리 메서드가 어떻게 구현돼 있나\n- **6.5~6.7** `@RequestMapping` 방식으로 컨트롤러를 세 번 고쳐 쓴다. v1→v3 처럼\n\n**5장을 만들었다면 6장은 빠르게 읽힌다.** 만들지 않았다면 지금이라도 5장으로 돌아가는 것이 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 스프링이 등록한 것들",
+   "sql": "# 애플리케이션 시작 시 등록되는 빈 (일부)\nrequestMappingHandlerMapping   RequestMappingHandlerMapping\nbeanNameHandlerMapping         BeanNameUrlHandlerMapping\nrequestMappingHandlerAdapter   RequestMappingHandlerAdapter\nhttpRequestHandlerAdapter      HttpRequestHandlerAdapter\nsimpleControllerHandlerAdapter SimpleControllerHandlerAdapter\nviewResolver                   ContentNegotiatingViewResolver\nbeanNameViewResolver           BeanNameViewResolver\n\n# 우리가 손으로 한 것\nhandlerMappingMap.put(...)   x 6\nhandlerAdapters.add(...)     x 2\nviewResolver()               메서드 1 개\n\n# 요청 하나의 처리 흐름 (로그 레벨을 낮추면)\nDispatcherServlet    : GET \"/items\", parameters={}\nRequestMappingHandlerMapping : Mapped to ItemController#items(Model)\nDispatcherServlet    : Completed 200 OK",
+   "note": "**가운데 로그 세 줄이 이 절의 요약이다.**\n\n`DispatcherServlet` 이 받고, `HandlerMapping` 이 핸들러를 찾고, 처리하고 끝난다. **우리가 만든 순서 그대로다.**\n\n`logging.level.org.springframework.web=DEBUG` 로 켤 수 있다. 실무에서 \"요청이 어느 컨트롤러로 갔나\" 를 확인할 때 쓴다.\n\n**6.2절에서 이 로그가 나오는 코드를 직접 읽는다.**"
+  }
+ ],
+ "recap": [
+  "스프링 MVC 여섯 단계 — **핸들러 조회 · 어댑터 조회 · 실행 · `ModelAndView` · `ViewResolver` · 렌더링.**",
+  "**5.6절 그림과 같다.** 이름만 바뀌었다.",
+  "**우리가 메서드로 둔 것이 스프링에서는 전부 인터페이스**다 — 구현을 갈아 끼울 수 있다.",
+  "다른 점 1 — **구현체가 여러 개**다. `@Controller` 방식은 그중 하나.",
+  "다른 점 2 — **등록을 안 해도 된다.** `@Controller` + `@RequestMapping` 이 대신한다.",
+  "그래서 **어떤 URL 이 있는지 한 파일에서 못 본다** — 앞 책 6장의 대가와 같다.",
+  "다른 점 3 — **어댑터가 컨트롤러 파라미터를 채워 준다.** 7.14절의 `ArgumentResolver`.",
+  "**6장은 확인하는 장**이다. 5장을 만들었다면 빠르게 읽힌다."
+ ],
+ "drills": [
+  {
+   "task": "v5 의 `service()` 와 스프링 여섯 단계를 나란히 적는다.",
+   "done_when": "한 줄씩 대응하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`logging.level.org.springframework.web=DEBUG` 를 켜고 요청을 보낸다.",
+   "done_when": "`Mapped to ...` 로그를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "등록된 `HandlerAdapter` 빈 목록을 출력한다.",
+   "done_when": "셋 이상 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`ViewResolver` 인터페이스를 IDE 에서 열어 구현체를 훑는다.",
+   "done_when": "우리 한 줄짜리 메서드가 인터페이스가 된 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스프링 MVC 의 동작 순서 여섯 단계는?",
+   "a": "핸들러 조회 → 핸들러 어댑터 조회 → 어댑터 실행(핸들러 호출) → `ModelAndView` 반환 → `ViewResolver` 호출 → `View` 렌더링."
+  },
+  {
+   "q": "우리 코드와 구조적으로 무엇이 다른가?",
+   "a": "우리가 메서드로 둔 것들이 스프링에서는 전부 인터페이스다. 그래서 구현을 갈아 끼울 수 있다."
+  },
+  {
+   "q": "핸들러와 어댑터를 등록하는 방법이 어떻게 다른가?",
+   "a": "우리는 생성자에서 손으로 등록했고, 스프링은 `@Controller`·`@RequestMapping` 을 스캔해 자동으로 등록한다."
+  },
+  {
+   "q": "그 자동화의 대가는?",
+   "a": "어떤 URL 이 있는지 한 파일에서 볼 수 없다. 앞 책 6장의 컴포넌트 스캔과 같은 대가다."
+  },
+  {
+   "q": "스프링 어댑터가 우리보다 더 하는 일은?",
+   "a": "컨트롤러 메서드의 파라미터를 종류와 타입에 맞게 채워 준다. `ArgumentResolver` 가 하는 일이고 7.14절에서 다룬다."
+  },
+  {
+   "q": "6장은 어떤 장인가?",
+   "a": "새 개념을 배우는 장이 아니라 5장에서 만든 것을 스프링에서 확인하는 장이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HandlerMapping",
+   "en": "",
+   "what": "요청 URL 로 핸들러를 찾는 인터페이스. 우리 `handlerMappingMap` 자리."
+  },
+  {
+   "term": "HandlerAdapter",
+   "en": "",
+   "what": "핸들러를 실행하고 `ModelAndView` 로 결과를 맞춰 주는 인터페이스. 우리 `MyHandlerAdapter` 자리."
+  },
+  {
+   "term": "ModelAndView",
+   "en": "",
+   "what": "뷰 이름과 모델을 함께 담는 스프링 객체. 우리 `ModelView` 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

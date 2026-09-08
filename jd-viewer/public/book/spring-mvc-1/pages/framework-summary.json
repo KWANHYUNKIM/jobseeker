@@ -1,0 +1,204 @@
+{
+ "book": "spring-mvc-1",
+ "id": "framework-summary",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "정리 — 우리가 만든 것",
+ "summary": "v1~v5 를 한 장에 놓고 각 단계가 무엇을 없앴는지 센다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 단계가 각각 무엇을 없앴는지 말할 수 있다.",
+  "4.6절의 중복 넷이 전부 해결됐는지 확인할 수 있다.",
+  "우리가 만든 것과 안 만든 것을 구분할 수 있다.",
+  "6장에서 무엇을 할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**다섯 번 고쳐 썼다.** 한 장에 놓고 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "각 단계가 더한 것",
+   "ascii": "   4.5  mvc pattern      컨트롤러가 전부 한다\n         │\n         │  + FrontController          공통 처리 자리가 생긴다\n         ▼\n   v1    front controller  컨트롤러는 여전히 forward 한다\n         │\n         │  + MyView                   forward 가 한 곳으로\n         ▼\n   v2    view separation   viewPath 는 아직 컨트롤러에\n         │\n         │  + ModelView, viewResolver  서블릿과 viewPath 가 사라진다\n         ▼\n   v3    model add         <== 여기서 스프링 MVC 와 구조가 같아진다\n         │\n         │  + model 파라미터            ModelView 를 안 만들어도 된다\n         ▼\n   v4    practical         한 종류만 쓸 수 있다\n         │\n         │  + HandlerAdapter           여러 종류를 함께 쓴다\n         ▼\n   v5    flexible",
+   "note": "**더한 것은 매번 클래스 하나나 파라미터 하나**다. 큰 변화가 한 번에 온 것이 아니라 작은 것이 다섯 번 쌓였다."
+  },
+  {
+   "type": "table",
+   "caption": "컨트롤러 인터페이스의 변화",
+   "note": "**아래로 갈수록 프레임워크 타입이 줄어든다.** v4 에서 `Map` 과 `String` 만 남는다.",
+   "columns": [
+    "",
+    "시그니처"
+   ],
+   "rows": [
+    [
+     "**v1**",
+     "`void process(HttpServletRequest, HttpServletResponse)`"
+    ],
+    [
+     "**v2**",
+     "`MyView process(HttpServletRequest, HttpServletResponse)`"
+    ],
+    [
+     "**v3**",
+     "`ModelView process(Map<String,String>)`"
+    ],
+    [
+     "**v4**",
+     "`String process(Map<String,String>, Map<String,Object>)`"
+    ],
+    [
+     "**v5**",
+     "(핸들러는 무엇이든 — 어댑터가 맞춘다)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4.6절의 넷은 어떻게 됐나",
+   "md": "| 4.6 의 중복 | 어디서 없어졌나 |\n|---|---|\n| **1. 포워드 중복** | **v2** — `MyView.render()` 한 곳 |\n| **2. viewPath 중복** | **v3** — `viewResolver()` 한 곳 |\n| **3. 서블릿 종속** | **v3** — `Map` 으로 받는다 |\n| **4. 공통 처리 자리 없음** | **v1** — 프론트 컨트롤러 |\n\n**전부 없어졌다.** 그리고 4.6절 마지막에 덧붙인 \"URL 매핑이 흩어져 있다\" 도 v1 에서 같이 풀렸다.\n\n4.7절에서 세운 계획 그대로다."
+  },
+  {
+   "type": "heading",
+   "text": "우리가 안 만든 것"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "다섯 가지가 빠져 있다",
+   "md": "**이것을 아는 것이 6장을 읽는 데 중요하다.** 스프링이 하는 일이 우리보다 훨씬 많다.\n\n**1. 패턴 URL 매핑**\n`/items/{id}` 를 못 받는다(5.2절). `Map` 의 정확 매칭뿐이다.\n\n**2. HTTP 메서드 구분**\n`GET /members` 와 `POST /members` 를 구분 못 한다. URL 만 본다.\n\n**3. 파라미터 타입 변환**\n`Map<String,String>` 이라 전부 문자열이다. `Integer.parseInt` 를 컨트롤러가 직접 한다.\n\n**4. 복수 파라미터**\n`Map<String,String>` 이라 같은 이름이 여럿이면 하나만 담긴다(3.5절).\n\n**5. 뷰 기술 선택**\n`viewResolver` 가 JSP 하나로 하드코딩돼 있다. JSON 응답도 못 한다.\n\n**전부 6·7장에서 스프링이 채운다.** 특히 3번은 7.6절, 5번은 7.11~7.13절이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 뼈대는 만들었다",
+   "md": "빠진 다섯 가지는 **기능**이고, 우리가 만든 것은 **구조**다.\n\n```\n요청 -> 핸들러를 찾고 -> 어댑터를 찾고 -> 실행하고 -> 뷰를 정하고 -> 렌더링\n```\n\n**이 흐름은 스프링과 똑같다.** 6.2절에서 `DispatcherServlet` 의 `doDispatch()` 를 읽을 텐데, **이 순서 그대로 적혀 있다.**\n\n1.1절에서 \"5장을 건너뛰면 6장의 대응표가 외울 것이 된다\" 고 했다. **이제 외울 것이 없다** — 이미 만들어 봤으니 이름만 붙이면 된다."
+  },
+  {
+   "type": "table",
+   "caption": "1.1절 대응표 — 이제 다 채웠다",
+   "note": "**5장에서 만든 다섯 물건이 그대로 스프링의 다섯 이름이다.** 6장은 이 표를 확인하는 장이다.",
+   "columns": [
+    "우리가 만든 것",
+    "스프링",
+    "어느 절"
+   ],
+   "rows": [
+    [
+     "`FrontControllerServlet`",
+     "**`DispatcherServlet`**",
+     "6.2"
+    ],
+    [
+     "`handlerMappingMap`",
+     "**`HandlerMapping`**",
+     "6.3"
+    ],
+    [
+     "`MyHandlerAdapter`",
+     "**`HandlerAdapter`**",
+     "6.3"
+    ],
+    [
+     "`ModelView`",
+     "**`ModelAndView`**",
+     "6.5"
+    ],
+    [
+     "`viewResolver()`",
+     "**`ViewResolver`**",
+     "6.4"
+    ],
+    [
+     "`MyView`",
+     "**`View`**",
+     "6.4"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"스프링 MVC 의 동작 흐름을 설명해 보세요\"** → 요청이 `DispatcherServlet` 으로 오고, `HandlerMapping` 으로 핸들러를 찾고, 그 핸들러를 처리할 `HandlerAdapter` 를 찾고, 어댑터가 핸들러를 호출해 `ModelAndView` 를 받고, `ViewResolver` 로 `View` 를 얻어 렌더링한다.\n- **\"왜 `HandlerAdapter` 가 필요한가요?\"** → 핸들러의 종류가 여러 가지이기 때문이다. 어댑터가 각 형식을 하나로 맞춰 줘서 `DispatcherServlet` 이 종류를 몰라도 된다.\n- **\"프론트 컨트롤러 패턴의 장점은?\"** → 공통 처리를 한 곳에 모을 수 있고, 컨트롤러가 서블릿을 몰라도 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 5장 전체",
+   "sql": "# 5 장에서 만든 파일\nControllerV1 / V2 / V3 / V4          인터페이스 4 개\nMyView                                뷰 렌더링\nModelView                             뷰 이름 + 모델\nMyHandlerAdapter                      어댑터 인터페이스\nControllerV3HandlerAdapter            어댑터 2 개\nControllerV4HandlerAdapter\nFrontControllerServletV1 ~ V5         서블릿 5 개\n\n# 컨트롤러 구현\nMemberForm / MemberSave / MemberList  x 5 버전 = 15 개\n\n# 그런데 HTTP 응답은\nGET .../v1/members  ->  <table> ... </table>\nGET .../v2/members  ->  <table> ... </table>\nGET .../v3/members  ->  <table> ... </table>\nGET .../v4/members  ->  <table> ... </table>\nGET .../v5/v3/members -> <table> ... </table>\nGET .../v5/v4/members -> <table> ... </table>\n#   여섯 번 다 같다",
+   "note": "**5장에서 HTTP 는 한 번도 안 바뀌었다.**\n\n1.1절에서 \"매 절이 실제로 오간 HTTP 로 끝난다\" 고 했는데, 4·5장은 그 규칙이 오히려 **아무것도 안 바뀐다는 것을 보여 주는 데** 쓰였다.\n\n**바뀐 것은 전부 코드의 모양**이다. 그리고 그 모양이 스프링 MVC 다.\n\n**6장에서 확인한다.**"
+  }
+ ],
+ "recap": [
+  "**v1** 프론트 컨트롤러 · **v2** MyView · **v3** ModelView+viewResolver · **v4** model 파라미터 · **v5** 어댑터.",
+  "**더한 것은 매번 클래스 하나나 파라미터 하나**다. 작은 것이 다섯 번 쌓였다.",
+  "**4.6절의 중복 넷이 전부 없어졌다** — v1 에서 둘, v2 에서 하나, v3 에서 둘.",
+  "컨트롤러 시그니처가 **서블릿 → `Map`+`String`** 으로 줄었다.",
+  "안 만든 것 다섯 — **패턴 URL · HTTP 메서드 구분 · 타입 변환 · 복수 파라미터 · 뷰 기술 선택.**",
+  "빠진 것은 **기능**이고 만든 것은 **구조**다.",
+  "**흐름은 스프링과 똑같다** — 핸들러 찾고, 어댑터 찾고, 실행하고, 뷰 정하고, 렌더링.",
+  "**1.1절 대응표 여섯 줄을 다 채웠다.** 6장은 확인하는 장이다.",
+  "**5장에서 HTTP 는 한 번도 안 바뀌었다.**"
+ ],
+ "drills": [
+  {
+   "task": "v1~v5 를 전부 호출해 응답이 같은지 확인한다.",
+   "done_when": "여섯 URL 이 같은 HTML 을 주는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "각 단계에서 추가된 파일과 삭제된 코드를 표로 만든다.",
+   "done_when": "다섯 단계가 각각 무엇을 없앴는지 말할 수 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "'안 만든 것 다섯 가지' 를 v5 코드에서 확인한다.",
+   "done_when": "각각 어느 줄 때문에 안 되는지 짚을 수 있다.",
+   "minutes": 20
+  },
+  {
+   "task": "대응표를 보지 않고 스프링 MVC 흐름을 말해 본다.",
+   "done_when": "여섯 단계를 순서대로 말할 수 있다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "각 버전이 없앤 것은?",
+   "a": "v1 공통 처리 자리와 흩어진 URL 매핑, v2 포워드 중복, v3 viewPath 중복과 서블릿 종속, v4 ModelView 조립의 번거로움, v5 한 종류만 쓸 수 있는 제약."
+  },
+  {
+   "q": "우리가 안 만든 것 다섯 가지는?",
+   "a": "패턴 URL 매핑, HTTP 메서드 구분, 파라미터 타입 변환, 복수 파라미터, 뷰 기술 선택이다."
+  },
+  {
+   "q": "빠진 것과 만든 것의 차이는?",
+   "a": "빠진 것은 기능이고 만든 것은 구조다. 요청 처리 흐름 자체는 스프링과 같다."
+  },
+  {
+   "q": "스프링 MVC 의 동작 흐름은?",
+   "a": "DispatcherServlet → HandlerMapping 으로 핸들러 조회 → HandlerAdapter 조회 → 어댑터가 핸들러 호출 → ModelAndView 반환 → ViewResolver → View 렌더링."
+  },
+  {
+   "q": "5장에서 HTTP 응답은 몇 번 바뀌었나?",
+   "a": "한 번도 안 바뀌었다. 여섯 URL 이 전부 같은 HTML 을 준다. 바뀐 것은 코드의 모양뿐이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

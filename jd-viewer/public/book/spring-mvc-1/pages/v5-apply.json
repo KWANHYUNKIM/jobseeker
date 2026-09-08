@@ -1,0 +1,138 @@
+{
+ "book": "spring-mvc-1",
+ "id": "v5-apply",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "v5 — 어댑터 적용",
+ "summary": "두 방식이 한 프론트 컨트롤러 안에서 함께 돈다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ControllerV4HandlerAdapter` 를 만들 수 있다.",
+  "어댑터가 형식을 어떻게 맞추는지 안다.",
+  "v3 와 v4 가 함께 도는 것을 확인할 수 있다.",
+  "어댑터 구조가 무엇을 가능하게 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.6절에서 구조를 만들었다. **이제 어댑터를 하나 더 추가한다.**\n\n그리고 이 절의 요점은 **프론트 컨트롤러를 한 글자도 안 고친다**는 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ControllerV4HandlerAdapter.java",
+   "code": "public class ControllerV4HandlerAdapter implements MyHandlerAdapter {\n\n    @Override\n    public boolean supports(Object handler) {\n        return (handler instanceof ControllerV4);\n    }\n\n    @Override\n    public ModelView handle(HttpServletRequest request,\n                          HttpServletResponse response,\n                          Object handler) {\n\n        ControllerV4 controller = (ControllerV4) handler;\n\n        Map<String, String> paramMap = createParamMap(request);\n        Map<String, Object> model = new HashMap<>();      // 어댑터가 만든다\n\n        String viewName = controller.process(paramMap, model);\n\n        // 형식을 맞춘다 — String 을 ModelView 로\n        ModelView mv = new ModelView(viewName);\n        mv.setModel(model);\n        return mv;\n    }\n}",
+   "note": "**5.5절에서 프론트 컨트롤러가 하던 일이 여기로 왔다.**\n\n`Map` 을 만들어 빌려 주고, 돌아온 뷰 이름으로 `ModelView` 를 조립한다.\n\n**어댑터가 하는 일이 정확히 이것**이다 — 서로 다른 모양을 **하나의 형식으로 맞춘다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록만 하면 끝이다",
+   "code": "private void initHandlerAdapters() {\n    handlerAdapters.add(new ControllerV3HandlerAdapter());\n    handlerAdapters.add(new ControllerV4HandlerAdapter());   // 이 한 줄\n}\n\nprivate void initHandlerMappingMap() {\n    // v3 컨트롤러\n    handlerMappingMap.put(\"/front-controller/v5/v3/members/new-form\",\n                          new MemberFormControllerV3());\n    // v4 컨트롤러\n    handlerMappingMap.put(\"/front-controller/v5/v4/members/new-form\",\n                          new MemberFormControllerV4());\n}",
+   "note": "**`service()` 는 한 글자도 안 바뀌었다.** 어댑터 목록에 하나를 더하고 핸들러를 등록했을 뿐이다.\n\n앞 책 3.5절에서 \"정책을 바꿀 때 고치는 곳이 `AppConfig` 한 줄\" 이라고 했던 것과 같은 구조다. **동작하는 코드를 안 열었다 — OCP.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어댑터가 감추는 것",
+   "md": "프론트 컨트롤러의 `service()` 를 다시 보자.\n\n```java\nObject handler = handlerMappingMap.get(request.getRequestURI());\nMyHandlerAdapter adapter = getHandlerAdapter(handler);\nModelView mv = adapter.handle(request, response, handler);\n```\n\n**이 코드는 v3 인지 v4 인지 모른다.** 알 필요도 없다.\n\n- **v3 어댑터** — 컨트롤러가 준 `ModelView` 를 그대로 돌려준다\n- **v4 어댑터** — `Map` 을 빌려 주고 받은 이름으로 `ModelView` 를 만든다\n\n**하는 일이 완전히 다른데 프론트 컨트롤러는 구분하지 않는다.**\n\n앞 책 1.3절의 다형성이 여기서 또 나온다 — **인터페이스가 같으면 뒤에서 무슨 일이 일어나든 부르는 쪽은 같다.**\n\n그리고 이것이 **5.6절에서 `ModelView` 로 반환을 통일한 이유**다. 형식이 하나여야 프론트 컨트롤러가 하나의 코드로 처리한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 구조가 진짜로 유용한 자리",
+   "md": "\"v3 와 v4 를 같이 쓸 일이 있나\" 싶을 수 있다. **예제에서는 없다.**\n\n그런데 실무에서는 이런 자리가 있다.\n\n1. **레거시 마이그레이션** — 기존 컨트롤러 200개를 두고 새 방식을 도입한다. 새로 만드는 것만 새 방식으로\n2. **여러 종류의 엔드포인트** — HTML 을 주는 컨트롤러와 JSON 을 주는 컨트롤러의 처리 방식이 다르다\n3. **프레임워크 확장** — 남이 만든 라이브러리의 컨트롤러를 내 프론트 컨트롤러가 처리한다\n\n**스프링이 정확히 이것을 한다.** 6.3절에서 보겠지만 스프링에는 `HandlerAdapter` 구현체가 여럿 있고, **우리가 아는 `@Controller` 방식은 그중 하나**일 뿐이다.\n\n그래서 스프링 MVC 에서 **함수형 엔드포인트**(`RouterFunction`)나 **오래된 `Controller` 인터페이스**가 같이 동작할 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "순서가 중요하다",
+   "md": "```java\nhandlerAdapters.add(new ControllerV3HandlerAdapter());\nhandlerAdapters.add(new ControllerV4HandlerAdapter());\n```\n\n`getHandlerAdapter` 는 **리스트를 앞에서부터 훑어 처음 `true` 를 준 것을 쓴다.**\n\n지금은 `supports` 가 서로 배타적이라(`instanceof ControllerV3` vs `V4`) 순서가 상관없다. 그런데 **어댑터가 겹치게 만들면** 앞에 있는 것이 이긴다.\n\n앞 책 7.6절에서 `@Order` 로 `List` 주입 순서를 정한다고 했던 것과 같은 이야기다.\n\n스프링에서도 `HandlerAdapter` 는 **순서가 있다.** 그래서 커스텀 어댑터를 추가할 때 `Ordered` 를 구현해 위치를 정한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 두 방식이 함께 돈다",
+   "sql": "GET /front-controller/v5/v3/members\n  handler = MemberListControllerV3@1a2b\n  adapter = ControllerV3HandlerAdapter@3c4d\n  mv.viewName = members\n  -> 200 <table> ... </table>\n\nGET /front-controller/v5/v4/members\n  handler = MemberListControllerV4@5e6f\n  adapter = ControllerV4HandlerAdapter@7a8b\n  mv.viewName = members\n  -> 200 <table> ... </table>\n\n# 프론트 컨트롤러의 service() 는 두 요청에 대해\n# 완전히 같은 코드를 실행했다\n\n# HTTP 응답도 서로 같고, v1~v4 와도 같다",
+   "note": "**두 요청이 완전히 다른 컨트롤러로 갔는데 프론트 컨트롤러 코드는 하나다.**\n\n5장에서 다섯 번 고쳐 쓴 결과가 이것이다 — **처리 방식이 달라도 입구는 하나이고, 새 방식을 추가해도 기존 코드를 안 연다.**\n\n그리고 **응답은 5장 내내 한 번도 안 바뀌었다.** 4.7절에서 예고한 그대로다."
+  }
+ ],
+ "recap": [
+  "`ControllerV4HandlerAdapter` 가 **`Map` 을 빌려 주고 `String` 을 `ModelView` 로 조립**한다.",
+  "5.5절에서 프론트 컨트롤러가 하던 일이 **어댑터로 옮겨 갔다.**",
+  "**프론트 컨트롤러의 `service()` 는 한 글자도 안 바뀌었다** — 등록만 늘었다.",
+  "앞 책 3.5절의 \"`AppConfig` 한 줄\" 과 같은 구조다 — **동작하는 코드를 안 연다(OCP).**",
+  "**어댑터가 하는 일이 완전히 다른데 프론트 컨트롤러는 구분하지 않는다** — 다형성.",
+  "그래서 **반환을 `ModelView` 로 통일**한 것이 중요했다.",
+  "실무 자리 — **레거시 마이그레이션 · 여러 종류의 엔드포인트 · 프레임워크 확장.**",
+  "**스프링에는 `HandlerAdapter` 가 여럿**이고 `@Controller` 는 그중 하나다.",
+  "**어댑터 순서가 중요하다** — 앞에서부터 훑어 처음 `true` 를 준 것을 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`ControllerV4HandlerAdapter` 를 만들고 v4 컨트롤러를 등록한다.",
+   "done_when": "v3 와 v4 URL 이 모두 동작한다.",
+   "minutes": 25
+  },
+  {
+   "task": "`service()` 를 v5 최초 버전과 비교한다.",
+   "done_when": "한 글자도 안 바뀐 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "두 어댑터의 `handle()` 이 하는 일을 나란히 적는다.",
+   "done_when": "완전히 다른데 반환 타입만 같다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`supports` 를 둘 다 `true` 로 만들고 순서를 바꿔 본다.",
+   "done_when": "앞에 있는 어댑터가 이기는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "v2 컨트롤러용 어댑터를 추가로 만들어 본다.",
+   "done_when": "프론트 컨트롤러를 안 고치고 세 방식이 도는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`ControllerV4HandlerAdapter` 가 하는 일은?",
+   "a": "모델 `Map` 을 만들어 컨트롤러에 넘기고, 돌아온 뷰 이름 문자열로 `ModelView` 를 조립해 돌려준다."
+  },
+  {
+   "q": "어댑터를 추가할 때 프론트 컨트롤러를 고치나?",
+   "a": "안 고친다. 어댑터 목록에 한 줄 추가하고 핸들러를 등록하면 된다. `service()` 는 그대로다."
+  },
+  {
+   "q": "반환을 `ModelView` 로 통일한 이유는?",
+   "a": "프론트 컨트롤러가 하나의 코드로 처리하려면 받는 형식이 하나여야 하기 때문이다."
+  },
+  {
+   "q": "이 구조가 실무에서 유용한 자리는?",
+   "a": "레거시 컨트롤러를 두고 새 방식을 도입할 때, 엔드포인트 종류가 여럿일 때, 남이 만든 컨트롤러를 처리할 때."
+  },
+  {
+   "q": "스프링에서 이 구조는?",
+   "a": "`HandlerAdapter` 구현체가 여럿이고 `@Controller` 방식은 그중 하나다. 그래서 함수형 엔드포인트나 옛 `Controller` 인터페이스도 함께 동작한다."
+  },
+  {
+   "q": "어댑터 순서가 왜 중요한가?",
+   "a": "리스트를 앞에서부터 훑어 처음 `supports` 가 `true` 인 것을 쓰기 때문이다. 겹치면 앞의 것이 이긴다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

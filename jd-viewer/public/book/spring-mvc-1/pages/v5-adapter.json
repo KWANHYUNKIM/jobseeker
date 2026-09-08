@@ -1,0 +1,177 @@
+{
+ "book": "spring-mvc-1",
+ "id": "v5-adapter",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "v5 — 유연한 컨트롤러 (어댑터 도입)",
+ "summary": "v3 와 v4 를 동시에 지원하려면. 핸들러 어댑터 패턴.",
+ "minutes": 20,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 v3 와 v4 를 동시에 쓸 수 없는지 안다.",
+  "어댑터 패턴으로 그것을 푸는 방법을 안다.",
+  "'컨트롤러' 가 '핸들러' 로 불리는 이유를 안다.",
+  "`Object` 로 받는 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이번에 없앨 것",
+   "md": "**5.5절 마지막의 문제** — v3 와 v4 를 동시에 쓸 수 없다.\n\n```java\nprivate Map<String, ControllerV3> controllerMap = new HashMap<>();\n//                  ^^^^^^^^^^^^^\n```\n\n**타입이 하나로 고정돼 있다.** `ControllerV4` 를 넣으면 컴파일이 안 된다.\n\n실무에서는 이게 문제가 된다. **기존 컨트롤러를 다 고치지 않고 새 방식을 도입하고 싶을 때**가 있기 때문이다."
+  },
+  {
+   "type": "heading",
+   "text": "타입을 열면 부를 수가 없다"
+  },
+  {
+   "type": "figure",
+   "caption": "Object 로 바꾸면",
+   "ascii": "   v4 까지                              v5\n   -------                             --\n   Map<String, ControllerV3> map       Map<String, Object> map\n                ^^^^^^^^^^^                          ^^^^^^\n   한 종류만 담긴다                      아무거나 담긴다\n\n   controller.process(...)             adapter.handle(..., handler)\n     타입이 정해져 있어 부를 수 있다        어댑터가 캐스팅해서 부른다",
+   "note": "**아무거나 담을 수는 있는데 부를 수가 없다.** `Object` 에는 `process()` 가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "instanceof 로 분기하면 되지 않나",
+   "md": "```java\nObject handler = handlerMappingMap.get(requestURI);\n\nif (handler instanceof ControllerV3) {\n    ModelView mv = ((ControllerV3) handler).process(paramMap);\n    ...\n} else if (handler instanceof ControllerV4) {\n    Map<String, Object> model = new HashMap<>();\n    String viewName = ((ControllerV4) handler).process(paramMap, model);\n    ...\n}\n```\n\n**동작은 한다.** 그리고 4.5절에서 `if` 문으로 만들었던 코드와 **똑같이 생겼다.**\n\n앞 책 7.8절에서 이 모양을 봤다 — 할인 정책을 `if` 로 고르던 그것. 결론도 같다.\n\n> **컨트롤러 종류가 늘 때마다 프론트 컨트롤러를 고쳐야 한다.** OCP 위반.\n\nv6, v7 이 생기면 이 `if` 가 계속 늘어난다. 그리고 **프론트 컨트롤러는 모든 요청이 지나는 곳**이라 여기를 고치는 것은 위험하다.\n\n필요한 것은 **\"이 핸들러를 처리할 줄 아는 것\" 을 찾아서 맡기는 구조**다."
+  },
+  {
+   "type": "heading",
+   "text": "어댑터"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MyHandlerAdapter.java",
+   "code": "public interface MyHandlerAdapter {\n\n    /** 이 핸들러를 처리할 수 있나 */\n    boolean supports(Object handler);\n\n    /** 처리하고 ModelView 로 돌려준다 */\n    ModelView handle(HttpServletRequest request,\n                    HttpServletResponse response,\n                    Object handler) throws ServletException, IOException;\n}",
+   "note": "**메서드 둘이 전부다.**\n\n`supports` — \"내가 이걸 할 줄 아나\"\n`handle` — \"그럼 해라\"\n\n반환은 **`ModelView` 로 통일**한다. 어떤 컨트롤러든 프론트 컨트롤러가 받는 형식은 하나여야 하기 때문이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ControllerV3HandlerAdapter.java",
+   "code": "public class ControllerV3HandlerAdapter implements MyHandlerAdapter {\n\n    @Override\n    public boolean supports(Object handler) {\n        return (handler instanceof ControllerV3);\n    }\n\n    @Override\n    public ModelView handle(HttpServletRequest request,\n                          HttpServletResponse response,\n                          Object handler) {\n\n        ControllerV3 controller = (ControllerV3) handler;\n\n        Map<String, String> paramMap = createParamMap(request);\n        return controller.process(paramMap);\n    }\n}",
+   "note": "**`instanceof` 가 사라진 것이 아니라 옮겨 갔다.** 프론트 컨트롤러의 `if` 가 어댑터의 `supports()` 가 됐다.\n\n차이는 **새 종류가 생겨도 프론트 컨트롤러를 안 고친다**는 것이다. 어댑터를 하나 더 만들어 등록하면 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "FrontControllerServletV5.java",
+   "code": "private final Map<String, Object> handlerMappingMap = new HashMap<>();\nprivate final List<MyHandlerAdapter> handlerAdapters = new ArrayList<>();\n\npublic FrontControllerServletV5() {\n    initHandlerMappingMap();\n    initHandlerAdapters();\n}\n\nprivate void initHandlerAdapters() {\n    handlerAdapters.add(new ControllerV3HandlerAdapter());\n}\n\n@Override\nprotected void service(HttpServletRequest request, HttpServletResponse response)\n        throws ServletException, IOException {\n\n    Object handler = handlerMappingMap.get(request.getRequestURI());\n    if (handler == null) {\n        response.setStatus(HttpServletResponse.SC_NOT_FOUND);\n        return;\n    }\n\n    MyHandlerAdapter adapter = getHandlerAdapter(handler);\n    ModelView mv = adapter.handle(request, response, handler);\n\n    MyView view = viewResolver(mv.getViewName());\n    view.render(mv.getModel(), request, response);\n}\n\nprivate MyHandlerAdapter getHandlerAdapter(Object handler) {\n    for (MyHandlerAdapter adapter : handlerAdapters) {\n        if (adapter.supports(handler)) {\n            return adapter;\n        }\n    }\n    throw new IllegalArgumentException(\"handler adapter 를 찾을 수 없다: \" + handler);\n}",
+   "note": "**`getHandlerAdapter` 가 리스트를 훑으며 물어본다.** 앞 책 7.8절의 `Map` 주입과 같은 발상이다 — **구현이 여럿이고 런타임에 고른다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "v5 의 흐름",
+   "ascii": "   FrontControllerServletV5\n        │\n        │  1. handlerMappingMap.get(uri)   ->  Object handler\n        ▼\n   getHandlerAdapter(handler)\n        │  2. adapters 를 훑으며 supports(handler) 를 묻는다\n        ▼\n   MyHandlerAdapter\n        │  3. handle(request, response, handler)\n        ▼\n   handler  (ControllerV3 이든 ControllerV4 이든)\n        │\n        ▼\n   ModelView   <- 어댑터가 형식을 맞춰서 돌려준다",
+   "note": "**단계가 하나 늘었다.** 핸들러를 찾고 → 어댑터를 찾고 → 어댑터가 부른다."
+  },
+  {
+   "type": "heading",
+   "text": "왜 '핸들러' 인가"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름이 바뀐 이유",
+   "md": "v5 부터 **`controllerMap` 이 `handlerMappingMap` 으로, `ControllerV3 controller` 가 `Object handler` 로** 바뀌었다.\n\n이유가 있다.\n\n**이제 무엇이든 들어올 수 있기 때문**이다. `ControllerV3` 여도 되고 `ControllerV4` 여도 되고, 심지어 우리가 모르는 클래스여도 된다 — **그것을 처리할 어댑터만 있으면.**\n\n그러니 \"컨트롤러\" 라는 이름이 좁아졌다. **\"요청을 처리하는 무언가\"** 라는 뜻으로 **핸들러(handler)** 라고 부른다.\n\n스프링도 같은 이름을 쓴다 — **`HandlerMapping`, `HandlerAdapter`.** 스프링에서 핸들러는 `@Controller` 클래스일 수도 있고, `Controller` 인터페이스 구현체일 수도 있고, 함수형 엔드포인트일 수도 있다.\n\n**이름의 변화가 설계의 변화를 따라온 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "Object 로 받는 대가",
+   "md": "유연해진 만큼 **컴파일러의 도움을 잃었다.**\n\n```java\nhandlerMappingMap.put(\"/front-controller/v5/members\", \"이건 컨트롤러가 아니다\");\n```\n\n**컴파일이 된다.** 문자열도 `Object` 니까.\n\n그리고 실행하면 `getHandlerAdapter` 에서 예외가 난다 — **시작 시점이 아니라 그 URL 을 호출했을 때.**\n\n이 책에서 여러 번 나온 패턴이다. **타입을 열면 유연해지고 안전을 잃는다.**\n\n스프링도 같은 대가를 치른다. `@Controller` 를 안 붙인 클래스를 등록하면 런타임에 알게 된다. 다만 스프링은 **애플리케이션 시작 시점에 핸들러를 다 스캔**해서 대부분의 문제를 그때 잡는다 — 6.3절에서 본다.\n\n`getHandlerAdapter` 에서 **예외를 던진 것**이 그래서 중요하다. `null` 을 돌려주면 그다음 줄에서 NPE 가 나고, **무엇이 문제인지 안 보인다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 아직 v3 만 등록했다",
+   "sql": "GET /front-controller/v5/v3/members\n\n# 프론트 컨트롤러 내부\nhandler          = MemberListControllerV3@1a2b\nadapter          = ControllerV3HandlerAdapter@3c4d\n  supports(handler) -> true\nmv.viewName      = members\nviewPath         = /WEB-INF/views/members.jsp\n\n# 어댑터가 없는 핸들러를 넣으면\nhandlerMappingMap.put(\"/front-controller/v5/x\", new Object());\n\nGET /front-controller/v5/x\n-> IllegalArgumentException: handler adapter 를 찾을 수 없다: java.lang.Object@5e6f\n   (시작 시점이 아니라 이 URL 을 호출했을 때)\n\n# HTTP 응답은 v1~v4 와 완전히 같다",
+   "note": "**`supports` 가 `true` 를 돌려준 어댑터가 일한다.** 아직 어댑터가 하나뿐이라 선택의 여지가 없는데, **5.7절에서 둘이 된다.**\n\n가운데가 이 절의 대가다 — **컴파일은 되고 그 URL 을 호출할 때 터진다.** 예외 메시지에 핸들러 클래스 이름을 넣은 것이 그래서다."
+  }
+ ],
+ "recap": [
+  "**타입이 하나로 고정**돼서 v3 와 v4 를 같이 못 쓴다.",
+  "`Object` 로 열면 담을 수는 있는데 **부를 수가 없다.**",
+  "`instanceof` 분기는 동작하지만 **종류가 늘 때마다 프론트 컨트롤러를 고쳐야** 한다 — OCP 위반.",
+  "**어댑터** — `supports(handler)` 로 묻고 `handle(...)` 로 맡긴다.",
+  "**반환은 `ModelView` 로 통일**한다. 프론트 컨트롤러가 받는 형식은 하나여야 한다.",
+  "`instanceof` 가 사라진 것이 아니라 **어댑터로 옮겨 갔다.** 새 종류는 어댑터만 추가한다.",
+  "**'컨트롤러' 가 '핸들러' 가 됐다** — 무엇이든 들어올 수 있어서. 스프링도 같은 이름을 쓴다.",
+  "대가 — **`Object` 라 컴파일러가 안 잡는다.** 그 URL 을 호출할 때 터진다.",
+  "그래서 `getHandlerAdapter` 는 **`null` 이 아니라 예외**를 던진다."
+ ],
+ "drills": [
+  {
+   "task": "`MyHandlerAdapter` 와 `ControllerV3HandlerAdapter` 를 만들어 v5 를 돌린다.",
+   "done_when": "v3 컨트롤러가 v5 프론트 컨트롤러에서 동작한다.",
+   "minutes": 30
+  },
+  {
+   "task": "`instanceof` 분기 버전을 먼저 짜 보고 어댑터 버전과 비교한다.",
+   "done_when": "종류가 늘 때 어디를 고쳐야 하는지 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`handlerMappingMap` 에 컨트롤러가 아닌 객체를 넣는다.",
+   "done_when": "컴파일이 되고 호출할 때 예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getHandlerAdapter` 가 `null` 을 돌려주게 바꿔 본다.",
+   "done_when": "NPE 가 나고 원인이 안 보인다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "v3 와 v4 를 같이 못 쓴 이유는?",
+   "a": "`Map<String, ControllerV3>` 처럼 타입이 하나로 고정돼 있어서 다른 타입을 넣을 수 없었다."
+  },
+  {
+   "q": "`Object` 로 열면 무엇이 문제인가?",
+   "a": "담을 수는 있지만 `Object` 에는 `process()` 가 없어서 호출할 수 없다."
+  },
+  {
+   "q": "`instanceof` 분기의 문제는?",
+   "a": "컨트롤러 종류가 늘 때마다 프론트 컨트롤러를 고쳐야 한다. 모든 요청이 지나는 곳이라 위험하다."
+  },
+  {
+   "q": "어댑터의 두 메서드는?",
+   "a": "`supports(handler)` 로 처리 가능 여부를 묻고, `handle(request, response, handler)` 로 실제 처리해 `ModelView` 를 돌려준다."
+  },
+  {
+   "q": "왜 '컨트롤러' 가 '핸들러' 로 바뀌었나?",
+   "a": "어댑터만 있으면 무엇이든 요청을 처리할 수 있게 됐기 때문이다. 스프링도 `HandlerMapping`·`HandlerAdapter` 라는 이름을 쓴다."
+  },
+  {
+   "q": "`Object` 로 받는 대가는?",
+   "a": "컴파일러가 타입을 검사하지 못한다. 잘못된 핸들러를 등록해도 그 URL 을 호출할 때에야 예외가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "핸들러",
+   "en": "handler",
+   "what": "요청을 처리하는 것. 어댑터만 있으면 어떤 타입이든 될 수 있어서 '컨트롤러' 보다 넓은 이름이다."
+  },
+  {
+   "term": "어댑터 패턴",
+   "en": "Adapter Pattern",
+   "what": "서로 다른 인터페이스를 하나의 형식으로 맞춰 주는 패턴. 여기서는 다양한 컨트롤러를 `ModelView` 반환으로 통일한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — DispatcherServlet",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

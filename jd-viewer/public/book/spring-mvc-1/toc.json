@@ -353,7 +353,7 @@
           "title": "v5 — 유연한 컨트롤러 (어댑터 도입)",
           "summary": "v3 와 v4 를 동시에 지원하려면. 핸들러 어댑터 패턴.",
           "minutes": 20,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -361,7 +361,7 @@
           "title": "v5 — 어댑터 적용",
           "summary": "두 방식이 한 프론트 컨트롤러 안에서 함께 돈다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -369,7 +369,7 @@
           "title": "정리 — 우리가 만든 것",
           "summary": "v1~v5 를 한 장에 놓고 각 단계가 무엇을 없앴는지 센다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -384,7 +384,7 @@
           "title": "스프링 MVC 전체 구조",
           "summary": "우리가 만든 그림 위에 스프링의 이름을 덮어쓴다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
