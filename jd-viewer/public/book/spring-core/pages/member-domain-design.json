@@ -1,0 +1,166 @@
+{
+  "book": "spring-core",
+  "id": "member-domain-design",
+  "no": "2.3",
+  "chapter": 2,
+  "title": "회원 도메인 설계",
+  "summary": "역할과 구현을 나눈 클래스 다이어그램. 저장소를 아직 정하지 않는다.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "역할과 구현을 나눈 설계를 다이어그램으로 그릴 수 있다.",
+    "'클래스 다이어그램' 과 '객체 다이어그램' 의 차이를 안다.",
+    "이 설계가 무엇을 가정하고 있는지 짚을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절의 미확정 두 개 중 **첫 번째(저장 방식)** 를 인터페이스로 처리한다. 1.3절의 역할–구현 분리를 실제 코드에 처음 적용하는 자리다."
+    },
+    {
+      "type": "figure",
+      "caption": "역할과 구현",
+      "ascii": "   회원 도메인 협력 관계\n\n\n   client\n      │\n      ▼\n   ┌──────────────────┐\n   │ MemberService    │   <-- interface (역할)\n   │   join()         │\n   │   findMember()   │\n   └────────┬─────────┘\n            │ implements\n            ▼\n   ┌──────────────────┐\n   │ MemberServiceImpl│   <-- class (구현)\n   └────────┬─────────┘\n            │ uses\n            ▼\n   ┌──────────────────┐\n   │ MemberRepository │   <-- interface (역할)\n   │   save()         │\n   │   findById()     │\n   └────────┬─────────┘\n            │ implements\n     ┌──────┴──────────────┐\n     ▼                     ▼\n   ┌───────────────────┐ ┌───────────────────┐\n   │ MemoryMemberRepo  │ │ DbMemberRepo      │\n   └───────────────────┘ └───────────────────┘\n     지금 만든다            나중에\n\n\n   저장 방식이 미정이므로 지금은 메모리 구현만 만들고\n   나중에 DB 구현으로 갈아 끼운다 — 는 것이 계획이다.\n   3.2 절에서 그 계획이 왜 그대로 안 되는지 보게 된다."
+    },
+    {
+      "type": "heading",
+      "text": "두 종류의 다이어그램"
+    },
+    {
+      "type": "table",
+      "caption": "무엇이 다른가",
+      "note": "**클래스 다이어그램만으로는 실제 동작을 알 수 없다.** `MemberServiceImpl` 이 두 저장소 중 무엇을 쓰는지는 실행할 때 정해지기 때문이다. 이 구분이 3장에서 중요해진다.",
+      "columns": [
+        "",
+        "무엇을 보여 주나",
+        "언제 정해지나"
+      ],
+      "rows": [
+        [
+          "**클래스 다이어그램**",
+          "역할과 구현의 **가능한** 관계",
+          "컴파일 시점 (정적)"
+        ],
+        [
+          "**객체 다이어그램**",
+          "실제로 **어떤 인스턴스**가 연결됐나",
+          "실행 시점 (동적)"
+        ]
+      ]
+    },
+    {
+      "type": "figure",
+      "caption": "객체 다이어그램 — 실행 시점",
+      "ascii": "   MemberServiceImpl  ──────▶  MemoryMemberRepository\n\n   또는\n\n   MemberServiceImpl  ──────▶  DbMemberRepository\n\n\n   같은 클래스 다이어그램에서 두 가지 실행 모습이 나온다.\n   무엇이 연결되는지는 \"누가 new 를 하는가\" 가 정한다."
+    },
+    {
+      "type": "heading",
+      "text": "인터페이스"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "MemberService.java",
+      "code": "public interface MemberService {\n\n    void join(Member member);\n\n    Member findMember(Long memberId);\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "MemberRepository.java",
+      "code": "public interface MemberRepository {\n\n    void save(Member member);\n\n    Member findById(Long memberId);\n}",
+      "note": "**저장 방식에 대한 힌트가 하나도 없다.** `saveToDatabase()` 같은 이름을 쓰면 인터페이스가 구현을 알고 있는 셈이 되어 미루는 의미가 사라진다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "인터페이스 이름과 메서드 이름은 '무엇' 만 말한다",
+      "md": "좋은 인터페이스는 **어떻게 하는지를 말하지 않는다.**\n\n```java\n// 나쁨 — 구현을 드러낸다\nvoid saveToMemory(Member member);\nMember findByIdFromCache(Long id);\n\n// 좋음 — 무엇을 하는지만\nvoid save(Member member);\nMember findById(Long id);\n```\n\n이름에 구현이 새어 나오면 나중에 구현을 바꿀 때 **이름까지 거짓말이 된다.** `saveToMemory()` 가 DB 에 저장하는 상황은 흔하고, 그 시점에는 이름을 고칠 수도 없다(호출하는 곳이 너무 많아서)."
+    },
+    {
+      "type": "heading",
+      "text": "이 설계가 가정하는 것"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "\"나중에 갈아 끼우면 된다\" 가 성립하려면",
+      "md": "그림의 마지막 줄을 다시 보자.\n\n> 지금은 메모리 구현만 만들고 나중에 DB 구현으로 갈아 끼운다.\n\n이게 되려면 **`MemberServiceImpl` 이 어떤 저장소를 쓸지 모르고 있어야** 한다. 그런데 2.4절에서 실제로 코드를 쓰면 이렇게 된다.\n\n```java\nprivate final MemberRepository memberRepository = new MemoryMemberRepository();\n```\n\n1.4절에서 본 그 한 줄이다. **인터페이스를 잘 나눴는데도 구현 클래스 이름이 다시 등장한다.**\n\n이 설계는 그 문제를 **아직 모르는 상태**의 설계다. 2장 전체가 그렇다. 3.2절에서 그 사실이 드러난다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 인터페이스만으로는 아무것도 안 된다",
+      "sql": "$ ./gradlew compileJava\n\nBUILD SUCCESSFUL\n\n// 인터페이스 두 개가 컴파일됐을 뿐이다.\n// 구현체가 없으므로 실행할 수 있는 것이 없다.",
+      "note": "설계 단계에서 확인할 수 있는 것은 여기까지다. **인터페이스는 약속이지 동작이 아니다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"클래스 다이어그램과 객체 다이어그램의 차이는?\"** → 전자는 컴파일 시점의 가능한 관계, 후자는 실행 시점의 실제 인스턴스 연결. **클래스 다이어그램만으로는 실제 동작을 알 수 없다**는 것이 핵심이다.\n- **\"인터페이스 메서드 이름을 지을 때 주의할 점은?\"** → 구현 방식이 이름에 새어 나오면 안 된다. `saveToMemory()` 같은 이름은 구현을 바꿀 때 거짓말이 된다.\n- **\"역할과 구현을 나눴는데도 문제가 남을 수 있나요?\"** → 그렇다. 누가 구현체를 고르느냐가 남는다. 클라이언트가 직접 고르면 나눈 의미가 절반 사라진다."
+    }
+  ],
+  "recap": [
+    "저장 방식이 미정이므로 `MemberRepository` 를 인터페이스로 두고 메모리 구현만 만든다.",
+    "**클래스 다이어그램**은 가능한 관계(정적), **객체 다이어그램**은 실제 연결(동적)이다.",
+    "클래스 다이어그램만으로는 실제 동작을 알 수 없다 — 무엇이 연결되는지는 '누가 new 를 하는가' 가 정한다.",
+    "인터페이스 이름과 메서드 이름은 **'무엇' 만 말하고 '어떻게' 는 말하지 않는다.**",
+    "이 설계는 \"나중에 갈아 끼우면 된다\" 를 가정하는데, 그 가정이 2.4절에서 흔들린다.",
+    "인터페이스는 약속이지 동작이 아니다. 컴파일만 될 뿐 실행할 것이 없다."
+  ],
+  "drills": [
+    {
+      "task": "`MemberService` 와 `MemberRepository` 인터페이스를 만든다.",
+      "done_when": "컴파일이 통과했다.",
+      "minutes": 10
+    },
+    {
+      "task": "회원 도메인의 클래스 다이어그램과 객체 다이어그램을 각각 그려 본다.",
+      "done_when": "둘의 차이를 그림으로 설명할 수 있다.",
+      "minutes": 15
+    },
+    {
+      "task": "`MemberRepository` 의 메서드 이름에 구현이 새어 나온 버전(`saveToMemory` 등)을 만들어 보고, 나중에 DB 로 바꾼다고 가정해 본다.",
+      "done_when": "이름이 거짓말이 되는 것을 확인했다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "클래스 다이어그램만으로 실제 동작을 알 수 없는 이유는?",
+      "a": "인터페이스와 구현체의 가능한 관계만 보여 줄 뿐, 실행 시점에 어떤 인스턴스가 연결되는지는 '누가 `new` 를 하는가' 가 정하기 때문이다."
+    },
+    {
+      "q": "인터페이스 메서드 이름을 지을 때 피해야 할 것은?",
+      "a": "구현 방식이 이름에 드러나는 것이다. `saveToMemory()` 는 DB 구현으로 바꾸는 순간 거짓말이 되고, 호출하는 곳이 많아 고치기도 어렵다."
+    },
+    {
+      "q": "이 설계가 아직 모르는 문제는?",
+      "a": "`MemberServiceImpl` 이 구현체를 직접 고르게 된다는 것이다. 인터페이스를 잘 나눴는데도 구현 클래스 이름이 클라이언트에 등장한다(1.4절)."
+    }
+  ],
+  "terms": [
+    {
+      "term": "클래스 다이어그램",
+      "en": "class diagram",
+      "what": "컴파일 시점의 정적 관계. 역할과 구현의 가능한 조합을 보여 준다."
+    },
+    {
+      "term": "객체 다이어그램",
+      "en": "object diagram",
+      "what": "실행 시점의 동적 관계. 실제로 어떤 인스턴스가 연결됐는지를 보여 준다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

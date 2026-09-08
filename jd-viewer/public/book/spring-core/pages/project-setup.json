@@ -1,0 +1,156 @@
+{
+  "book": "spring-core",
+  "id": "project-setup",
+  "no": "2.1",
+  "chapter": 2,
+  "title": "프로젝트 생성",
+  "summary": "스프링 부트 스타터로 뼈대를 만든다. 이 책이 라이브러리를 거의 안 쓰는 이유.",
+  "minutes": 10,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "의존성 없는 스프링 부트 프로젝트를 만들 수 있다.",
+    "이 책이 웹·DB 를 안 쓰는 이유를 안다.",
+    "테스트만으로 확인하는 방식에 익숙해진다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**start.spring.io** 에서 만든다. 의존성은 하나도 고르지 않는다."
+    },
+    {
+      "type": "table",
+      "caption": "선택할 것",
+      "note": "**Dependencies 는 비워 둔다.** Web 을 고르면 톰캣이 딸려 와서 실행할 때마다 서버가 뜬다 — 이 책에는 방해다.",
+      "columns": [
+        "항목",
+        "값"
+      ],
+      "rows": [
+        [
+          "Project",
+          "Gradle - Groovy"
+        ],
+        [
+          "Language",
+          "Java"
+        ],
+        [
+          "Spring Boot",
+          "3.x"
+        ],
+        [
+          "Packaging",
+          "Jar"
+        ],
+        [
+          "Java",
+          "17"
+        ],
+        [
+          "**Dependencies**",
+          "**(없음)**"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "groovy",
+      "file": "build.gradle",
+      "caption": "받으면 이렇게 되어 있다",
+      "code": "plugins {\n    id 'java'\n    id 'org.springframework.boot' version '3.2.x'\n    id 'io.spring.dependency-management' version '1.1.x'\n}\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(17) }\n}\n\nrepositories { mavenCentral() }\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\ntasks.named('test') { useJUnitPlatform() }",
+      "note": "1.2절에서 본 그대로다. `spring-boot-starter` 안에 `spring-context`(DI 컨테이너)가 들어 있다."
+    },
+    {
+      "type": "heading",
+      "text": "동작 확인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "CoreApplication.java",
+      "code": "@SpringBootApplication\npublic class CoreApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(CoreApplication.class, args);\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n\nStarting CoreApplication using Java 17\nStarted CoreApplication in 0.412 seconds\n\nProcess finished with exit code 0",
+      "note": "**서버가 안 뜬다.** 웹 의존성이 없어서 컨테이너를 만들고 바로 종료한다. 0.4초 만에 끝나는 것을 확인한다 — `-web` 을 넣으면 2~3초가 되고 프로세스가 안 끝난다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 웹도 DB 도 안 쓰나",
+      "md": "이 책의 주제는 **컨테이너 하나**다. 웹이 붙으면 요청·응답이 개입해서 \"지금 빈이 몇 개 만들어졌나\" 같은 것을 관찰하기가 어려워진다.\n\n그래서 확인은 전부 **테스트 코드**로 한다.\n\n```java\n@Test\nvoid 빈이_하나만_만들어진다() {\n    ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);\n    MemberService a = ac.getBean(MemberService.class);\n    MemberService b = ac.getBean(MemberService.class);\n\n    assertThat(a).isSameAs(b);\n}\n```\n\n5장의 싱글톤, 8장의 생명주기, 9장의 스코프 — 전부 이런 식으로 **컨테이너에 직접 물어보는 테스트**로 확인한다. 웹서버를 띄우면 오히려 안 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "IDE 설정 하나",
+      "md": "인텔리제이라면 **Gradle 대신 IntelliJ 로 빌드/실행**하게 바꾸면 테스트가 훨씬 빨라진다.\n\n```\nSettings > Build, Execution, Deployment > Build Tools > Gradle\n  Build and run using:  IntelliJ IDEA\n  Run tests using:      IntelliJ IDEA\n```\n\n이 책은 테스트를 수백 번 돌리게 되므로 체감 차이가 크다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "프로젝트 생성 자체가 질문이 되지는 않는다. 다만 **\"스프링 부트 없이 스프링만 쓸 수 있나요\"** 는 나온다.\n\n답: 된다. `spring-context` 의존성만 넣으면 컨테이너는 그대로 쓸 수 있다. 부트는 버전 조합·자동 구성·내장 서버를 얹어 주는 것이고, **컨테이너 자체는 프레임워크 쪽에 있다.**"
+    }
+  ],
+  "recap": [
+    "start.spring.io 에서 **의존성 없이** 만든다. Web 을 고르면 톰캣이 딸려 온다.",
+    "`spring-boot-starter` 안에 `spring-context` 가 들어 있고, 그것이 DI 컨테이너다.",
+    "실행하면 서버 없이 0.4초 만에 끝난다. 컨테이너를 만들고 바로 종료하는 것이다.",
+    "확인은 전부 **테스트 코드로 컨테이너에 직접 물어보는 방식**이다.",
+    "인텔리제이 빌드로 바꾸면 테스트가 빨라진다. 이 책은 테스트를 아주 많이 돌린다."
+  ],
+  "drills": [
+    {
+      "task": "의존성 없이 프로젝트를 만들고 실행해 종료 시간을 확인한다.",
+      "done_when": "1초 이내에 끝나는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "`spring-boot-starter-web` 을 추가하고 다시 실행한다.",
+      "done_when": "톰캣이 뜨고 프로세스가 안 끝나는 것을 확인했다. 그다음 다시 제거한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "이 책에서 `spring-boot-starter-web` 을 안 쓰는 이유는?",
+      "a": "웹 요청·응답이 개입하면 컨테이너 자체를 관찰하기 어려워진다. 확인은 전부 테스트로 컨테이너에 직접 물어보는 방식으로 한다."
+    },
+    {
+      "q": "의존성 없이 만든 스프링 부트 앱을 실행하면?",
+      "a": "컨테이너를 만들고 바로 종료한다. 웹서버가 없어서 계속 떠 있을 이유가 없다."
+    },
+    {
+      "q": "부트 없이 스프링만 쓸 수 있는가?",
+      "a": "된다. `spring-context` 의존성만 넣으면 컨테이너를 쓸 수 있다. 부트는 버전 조합·자동 구성·내장 서버를 얹어 주는 도구다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "spring-boot-starter",
+      "en": "",
+      "what": "부트의 기본 스타터. `spring-context`(DI 컨테이너)와 로깅을 포함한다."
+    },
+    {
+      "term": "@SpringBootApplication",
+      "en": "",
+      "what": "부트 애플리케이션의 시작점. 자동 구성과 컴포넌트 스캔을 켠다(6장)."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Boot Reference Documentation",
+      "url": "https://docs.spring.io/spring-boot/index.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
