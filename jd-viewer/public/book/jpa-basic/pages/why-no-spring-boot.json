@@ -1,0 +1,153 @@
+{
+  "book": "jpa-basic",
+  "id": "why-no-spring-boot",
+  "no": "1.4",
+  "chapter": 1,
+  "title": "왜 스프링 부트를 쓰지 않고 시작하나",
+  "summary": "부트가 대신 해 주는 일을 손으로 한 번 해 봐야 트랜잭션 경계가 보인다.",
+  "minutes": 8,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "스프링 부트가 JPA 와 관련해 대신 해 주는 일 네 가지를 말할 수 있다.",
+    "그것이 감춰졌을 때 어떤 문제를 이해하기 어려워지는지 안다.",
+    "언제 부트로 넘어가면 되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "실무에서 순수 JPA 를 쓸 일은 거의 없다. 그런데 이 책은 12장까지 `EntityManager` 를 손으로 만들고 닫는다.\n\n**불편한 것이 목적이다.** 정확히는, 부트가 감추는 것들이 이 책의 주제와 정확히 겹치기 때문이다."
+    },
+    {
+      "type": "figure",
+      "caption": "무엇이 감춰지나",
+      "ascii": "   스프링 부트가 대신 해 주는 것\n\n\n   순수 JPA (이 책)                     스프링 부트\n\n   emf = Persistence                    (없음)\n       .createEntityManagerFactory()    -> 부트가 만들어 둔다\n\n   em = emf.createEntityManager()       @PersistenceContext EntityManager em\n                                        -> 요청마다 알아서 준다\n\n   tx.begin()                           @Transactional\n   ...                                  ...\n   tx.commit() / tx.rollback()          -> 메서드가 끝나면 커밋,\n   em.close()                              예외가 나면 롤백, 그리고 close\n\n   (커넥션 풀 없음. 매번 새 연결)         HikariCP\n                                        -> 미리 만들어 둔 연결을 빌려 준다\n\n\n   왼쪽 세 줄이 오른쪽에서는 어노테이션 하나가 된다.\n   편해지는 대신 \"언제 열리고 언제 닫히는지\" 가 코드에서 사라진다."
+    },
+    {
+      "type": "heading",
+      "text": "감춰지는 것이 하필 이 책의 주제다"
+    },
+    {
+      "type": "table",
+      "caption": "부트가 대신 하는 일 ↔ 이 책이 다루는 것",
+      "note": "왼쪽이 자동화되면 편하다. 다만 **그 자동화의 경계가 어디인지 모르면** 오른쪽 문제를 만났을 때 원인을 짚을 수 없다.",
+      "columns": [
+        "부트가 하는 일",
+        "감춰지는 개념",
+        "관련 절"
+      ],
+      "rows": [
+        [
+          "`EntityManagerFactory` 생성",
+          "설정과 dialect",
+          "3.1"
+        ],
+        [
+          "`EntityManager` 주입",
+          "**영속성 컨텍스트의 수명**",
+          "4.1"
+        ],
+        [
+          "`@Transactional` 로 트랜잭션 관리",
+          "**언제 플러시되고 언제 준영속이 되는가**",
+          "4.3 · 4.4"
+        ],
+        [
+          "커넥션 풀(HikariCP)",
+          "커넥션을 언제 붙들고 있는가",
+          "9.1 (OSIV)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "가장 큰 것은 두 번째와 세 번째다",
+      "md": "`@Transactional` 을 쓰면 **영속성 컨텍스트가 언제 만들어지고 언제 사라지는지가 코드에서 사라진다.**\n\n그러면 이런 질문에 답할 수 없게 된다.\n\n- 서비스 메서드가 끝난 뒤 반환받은 엔티티를 수정하면 왜 저장이 안 되나 → **준영속**(4.4)\n- 컨트롤러에서 `getTeam().getName()` 을 부르면 왜 `LazyInitializationException` 이 나나 → **컨텍스트가 닫혔다**(9.1)\n- 같은 메서드 안에서 두 번 조회했는데 왜 쿼리가 한 번인가 → **1차 캐시**(4.2)\n\n세 질문의 답이 전부 \"트랜잭션 경계\"다. 손으로 `tx.begin()`·`em.close()` 를 써 보면 그 경계가 **코드에 눈으로 보인다.** 그다음에 `@Transactional` 을 보면 \"아, 이게 그 자리구나\" 가 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "순수 JPA 로 쓰면 이게 그대로 보인다",
+      "md": "```java\nem = emf.createEntityManager();   // 영속성 컨텍스트 생성\ntx.begin();\n\n// ... 이 안에서만 영속 상태다 ...\n\ntx.commit();                      // 플러시 + 커밋\nem.close();                       // 영속성 컨텍스트 소멸. 이후는 전부 준영속\n```\n\n네 줄이 곧 개념 넷이다. 3.2절의 그림이 이걸 그린 것이고, 4장 전체가 저 주석들의 확대판이다."
+    },
+    {
+      "type": "heading",
+      "text": "그럼 언제 부트로 넘어가나"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "4장을 이해했으면 언제든",
+      "md": "이 책의 코드를 스프링으로 옮기는 것은 어렵지 않다. 대응이 일대일이다.\n\n| 순수 JPA | 스프링 |\n|---|---|\n| `persistence.xml` | `application.yml` |\n| `emf.createEntityManager()` | `@PersistenceContext` 주입 |\n| `tx.begin()` ~ `tx.commit()` | `@Transactional` |\n| `em.createQuery(...)` | `@Query` 또는 리포지토리 메서드 |\n\n**중요한 것은 순서다.** 부트로 시작하면 위 오른쪽 칸만 알게 되고, 왼쪽이 무엇을 하는지는 문제가 터진 뒤에 배우게 된다.\n\n실무에서 부트를 쓰지 말라는 게 아니다. **한 번은 손으로 해 보라는 것**이고, 그 한 번이 12장까지면 충분하다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "부트에서만 생기는 함정 하나 — OSIV",
+      "md": "순수 JPA 에서는 `em.close()` 를 우리가 부르니까 컨텍스트가 언제 닫히는지 명확하다.\n\n스프링 부트는 기본값이 **`spring.jpa.open-in-view=true`** 다. 영속성 컨텍스트를 **뷰 렌더링이 끝날 때까지** 열어 둔다는 뜻이고, 그래서 컨트롤러에서 지연 로딩을 해도 예외가 안 난다.\n\n편해 보이지만 **DB 커넥션을 그때까지 붙들고 있다.** 화면 렌더링이 느리거나 외부 API 를 호출하는 구간이 있으면 커넥션이 그만큼 묶이고, 부하가 몰리면 풀이 마른다.\n\n9.1절에서 다시 다루는데, 결론은 **끄고 필요한 것을 트랜잭션 안에서 다 로딩하는 것**이다. 그리고 그 판단을 하려면 4장을 알아야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`@Transactional` 이 하는 일은?\"** → 트랜잭션을 열고 닫는다. **그리고 그 경계가 곧 영속성 컨텍스트의 경계**라는 것까지 말하면 답이 완성된다.\n- **\"서비스에서 반환한 엔티티를 컨트롤러에서 수정하면 저장되나요?\"** → 안 된다. 트랜잭션이 끝나면서 준영속이 됐다.\n- **\"`open-in-view` 는 뭔가요?\"** → 영속성 컨텍스트를 뷰까지 열어 두는 설정. 지연 로딩 예외는 막지만 커넥션을 오래 점유한다. 끄고 페치 조인이나 DTO 로 해결하는 편이 낫다."
+    }
+  ],
+  "recap": [
+    "부트가 대신 하는 것 넷 — EMF 생성, EntityManager 주입, 트랜잭션 관리, 커넥션 풀.",
+    "그중 **영속성 컨텍스트의 수명과 트랜잭션 경계**가 감춰지는 것이 가장 크다.",
+    "준영속·`LazyInitializationException`·1차 캐시 — 세 질문의 답이 전부 그 경계다.",
+    "순수 JPA 로 쓰면 `createEntityManager` ~ `close` 네 줄에 개념 넷이 그대로 보인다.",
+    "대응은 일대일이라 옮기기 쉽다. **중요한 것은 순서**다.",
+    "부트의 `open-in-view` 기본값이 `true` 인 것은 함정이다. 끄고 트랜잭션 안에서 해결한다."
+  ],
+  "drills": [
+    {
+      "task": "이 책의 뼈대 코드(3.2절)에 주석으로 '여기서 영속성 컨텍스트 생성/소멸' 을 달아 본다.",
+      "done_when": "네 지점을 정확히 짚었다.",
+      "minutes": 10
+    },
+    {
+      "task": "스프링 부트 프로젝트가 있다면 `spring.jpa.open-in-view` 를 `false` 로 바꾸고 실행한다.",
+      "done_when": "컨트롤러에서 지연 로딩하는 코드가 있으면 예외가 나는 것을 확인했다. 그게 원래 있던 문제였다는 것도.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "스프링 부트가 JPA 와 관련해 대신 해 주는 일 네 가지는?",
+      "a": "EntityManagerFactory 생성, EntityManager 주입, `@Transactional` 로 트랜잭션 관리, 커넥션 풀(HikariCP)."
+    },
+    {
+      "q": "그중 가장 크게 감춰지는 개념은?",
+      "a": "영속성 컨텍스트의 수명과 트랜잭션 경계다. 준영속, LazyInitializationException, 1차 캐시 동작이 전부 그 경계에서 설명된다."
+    },
+    {
+      "q": "`@Transactional` 을 한 문장으로 설명하면?",
+      "a": "트랜잭션을 열고 닫는다. 그리고 그 경계가 곧 영속성 컨텍스트의 경계다."
+    },
+    {
+      "q": "`open-in-view=true` 의 대가는?",
+      "a": "뷰 렌더링이 끝날 때까지 DB 커넥션을 붙들고 있다. 부하가 몰리면 커넥션 풀이 마른다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "OSIV",
+      "en": "Open Session In View",
+      "what": "영속성 컨텍스트를 뷰 렌더링까지 열어 두는 설정. 스프링 부트 기본값이 켜짐이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Getting started",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/quickstart/html_single/",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

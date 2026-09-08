@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-09-08",
+  "updated_at": "2026-09-09",
   "note": "혼자 읽으려고 쓰는 책. 강의를 옮겨 적은 것이 아니라, 차례만 빌려 와서 내 문장으로 다시 쓴다.",
   "books": [
     {
       "id": "jpa-basic",
       "title": "자바 ORM 표준 JPA 프로그래밍",
       "subtitle": "기본편 — 객체와 테이블이 어긋나는 자리에서",
-      "blurb": "SQL 을 손으로 쓰던 사람이 JPA 로 넘어올 때 정확히 어디서 막히는지를 따라가는 책이다. 매 절이 '이 자바 코드가 어떤 SQL 로 나가는가' 로 끝난다.",
+      "blurb": "SQL 을 손으로 쓰던 사람이 JPA 로 넘어올 때 정확히 어디서 막히는지를 따라가는 책이다. 12장 56절 전부 완성. 매 절이 '이 자바 코드가 어떤 SQL 로 나가는가' 로 끝난다.",
       "emoji": "🗄️",
       "chapters": 12,
       "sections": 56,
-      "written": 52,
-      "status": "writing",
-      "updated_at": "2026-09-08"
+      "written": 56,
+      "status": "done",
+      "updated_at": "2026-09-09"
     }
   ]
 }

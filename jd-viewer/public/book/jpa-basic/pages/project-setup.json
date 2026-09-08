@@ -1,0 +1,219 @@
+{
+  "book": "jpa-basic",
+  "id": "project-setup",
+  "no": "1.3",
+  "chapter": 1,
+  "title": "프로젝트 만들기 — Gradle, H2, persistence.xml",
+  "summary": "의존성 세 줄과 설정 파일 하나. 여기서 뜨는 오류 대부분의 원인도 함께.",
+  "minutes": 15,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "5분 안에 첫 SQL 을 로그로 볼 수 있다.",
+    "H2 를 파일(서버) 모드로 띄우고 콘솔에서 테이블을 확인할 수 있다.",
+    "설정 단계에서 나는 오류 여섯 개를 메시지만 보고 원인을 짚을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "이 절은 **일단 돌아가게 하는 것**이 목표다. 설정 파일이 무슨 뜻인지는 3.1절에서 줄별로 뜯는다.\n\n순서를 지키면 막힐 일이 별로 없고, 막히면 아래 오류 표에 대개 있다."
+    },
+    {
+      "type": "figure",
+      "caption": "순서",
+      "ascii": "   5분 안에 첫 SQL 을 보는 순서\n\n\n   1  H2 서버를 띄운다\n      ./h2.sh          (Windows: h2.bat)\n      -> 브라우저에서 http://localhost:8082 가 열린다\n      -> JDBC URL 을 jdbc:h2:~/test 로 두고 한 번 접속해\n         ~/test.mv.db 파일을 만들어 둔다\n\n   2  프로젝트를 만든다\n      build.gradle       (의존성 2줄)\n      persistence.xml    (resources/META-INF/ 아래)\n      Member.java        (@Entity)\n      JpaMain.java       (main)\n\n   3  돌린다\n      -> 콘솔에 create table 과 insert 가 찍히면 성공\n\n   4  눈으로 확인한다\n      H2 콘솔에서 JDBC URL 을 jdbc:h2:tcp://localhost/~/test 로 바꿔 접속\n      -> SELECT * FROM MEMBER\n\n\n   4번까지 해야 끝이다. 이 책의 실습은 \"DB 에 실제로 뭐가 들어갔나\" 를\n   눈으로 대조하는 것이 절반이다."
+    },
+    {
+      "type": "heading",
+      "text": "1. H2 를 먼저 띄운다"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "파일 모드로 한 번 접속해 두는 것이 요령이다",
+      "md": "H2 를 설치하고 `h2.sh`(또는 `h2.bat`)를 실행하면 브라우저 콘솔이 열린다.\n\n**처음 한 번은 JDBC URL 을 `jdbc:h2:~/test` 로 두고 접속한다.** 그래야 홈 디렉터리에 `test.mv.db` 파일이 만들어진다.\n\n그다음부터는 **`jdbc:h2:tcp://localhost/~/test`** 를 쓴다. 이렇게 하면 애플리케이션과 콘솔이 **같은 DB 를 동시에** 볼 수 있다 — 프로그램이 저장한 것을 콘솔에서 바로 확인할 수 있다는 뜻이다.\n\n순서를 바꾸면 `Database ... not found` 가 난다. 파일이 없는데 TCP 로 붙으려 했기 때문이다."
+    },
+    {
+      "type": "heading",
+      "text": "2. 파일 네 개"
+    },
+    {
+      "type": "code",
+      "lang": "groovy",
+      "file": "build.gradle",
+      "code": "plugins { id 'java' }\n\nrepositories { mavenCentral() }\n\ndependencies {\n    implementation 'org.hibernate.orm:hibernate-core:6.4.4.Final'\n    implementation 'com.h2database:h2:2.2.224'\n}\n\njava { toolchain { languageVersion = JavaLanguageVersion.of(17) } }"
+    },
+    {
+      "type": "code",
+      "lang": "xml",
+      "file": "src/main/resources/META-INF/persistence.xml",
+      "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<persistence version=\"3.0\" xmlns=\"https://jakarta.ee/xml/ns/persistence\">\n    <persistence-unit name=\"hello\">\n        <properties>\n            <property name=\"jakarta.persistence.jdbc.driver\"   value=\"org.h2.Driver\"/>\n            <property name=\"jakarta.persistence.jdbc.url\"      value=\"jdbc:h2:tcp://localhost/~/test\"/>\n            <property name=\"jakarta.persistence.jdbc.user\"     value=\"sa\"/>\n            <property name=\"jakarta.persistence.jdbc.password\" value=\"\"/>\n\n            <property name=\"hibernate.dialect\" value=\"org.hibernate.dialect.H2Dialect\"/>\n\n            <property name=\"hibernate.show_sql\"         value=\"true\"/>\n            <property name=\"hibernate.format_sql\"       value=\"true\"/>\n            <property name=\"hibernate.use_sql_comments\" value=\"true\"/>\n\n            <property name=\"hibernate.hbm2ddl.auto\" value=\"create\"/>\n        </properties>\n    </persistence-unit>\n</persistence>",
+      "note": "**경로가 정확히 `resources/META-INF/persistence.xml`** 이어야 한다. 한 칸이라도 다르면 못 찾는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "import jakarta.persistence.*;\n\n@Entity\npublic class Member {\n\n    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)\n    private Long id;\n\n    private String name;\n\n    protected Member() {}\n    public Member(String name) { this.name = name; }\n\n    public Long getId()     { return id; }\n    public String getName() { return name; }\n    public void setName(String name) { this.name = name; }\n}",
+      "note": "`SEQUENCE` 로 둔 것에 이유가 있다 — `IDENTITY` 면 4장의 쓰기 지연 실습이 성립하지 않는다(4.5절·5.4절)."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "JpaMain.java",
+      "code": "import jakarta.persistence.*;\n\npublic class JpaMain {\n    public static void main(String[] args) {\n\n        EntityManagerFactory emf = Persistence.createEntityManagerFactory(\"hello\");\n        EntityManager em = emf.createEntityManager();\n        EntityTransaction tx = em.getTransaction();\n\n        tx.begin();\n        try {\n            em.persist(new Member(\"김관현\"));\n            tx.commit();\n        } catch (Exception e) {\n            tx.rollback();\n            e.printStackTrace();\n        } finally {\n            em.close();\n        }\n        emf.close();\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "콘솔에 이게 찍히면 성공이다",
+      "sql": "Hibernate:\n    create table Member (id bigint not null, name varchar(255), primary key (id))\n\nHibernate:\n    call next value for Member_SEQ\n\nHibernate:\n    insert into Member (name, id) values (?, ?)",
+      "note": "`create table` 은 `hbm2ddl.auto=create` 가 만든 것이고, `next value` 는 `SEQUENCE` 전략이 키를 받아 오는 것이다. **`insert` 가 맨 마지막에 있는 것**을 눈여겨본다 — `persist()` 가 아니라 `commit()` 때 나갔다는 뜻이다(4.1절)."
+    },
+    {
+      "type": "heading",
+      "text": "3. 눈으로 확인한다"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "caption": "H2 콘솔에서",
+      "code": "SELECT * FROM MEMBER;",
+      "note": "여기까지 해야 끝이다. **로그에 SQL 이 찍히는 것과 DB 에 실제로 행이 들어간 것은 다른 이야기**다 — 4.4절의 `merge` 함정처럼, 로그만 봐서는 안 보이는 사고가 있다."
+    },
+    {
+      "type": "heading",
+      "text": "여기서 나는 오류 여섯 개"
+    },
+    {
+      "type": "table",
+      "caption": "메시지 → 원인 → 해결",
+      "note": "여섯 중 넷이 **경로나 순서**다. `Unable to build EntityManagerFactory` 는 덮개일 뿐이므로 **스택 트레이스 맨 아래 `Caused by:` 를 먼저 읽는다.**",
+      "columns": [
+        "메시지",
+        "원인",
+        "해결"
+      ],
+      "rows": [
+        [
+          "`No Persistence provider for EntityManager named hello`",
+          "persistence.xml 을 못 찾았거나 unit 이름이 다르다",
+          "경로가 `resources/META-INF/persistence.xml` 인지, `<persistence-unit name>` 이 코드와 같은지"
+        ],
+        [
+          "`Connection refused` / `Database \"...\" not found`",
+          "H2 서버가 안 떴거나 파일이 없다",
+          "`h2.sh` 실행 → `jdbc:h2:~/test` 로 한 번 접속해 파일 생성 → 그다음 `tcp://`"
+        ],
+        [
+          "`Table \"MEMBER\" not found`",
+          "테이블이 없다",
+          "`hbm2ddl.auto` 를 `create` 로 (5.2절)"
+        ],
+        [
+          "`No default constructor for entity`",
+          "기본 생성자가 없다",
+          "`protected Member() {}` 추가 (5.1절)"
+        ],
+        [
+          "`Unknown entity: Member`",
+          "`@Entity` 를 안 붙였거나 다른 패키지의 클래스",
+          "`jakarta.persistence.Entity` 를 import 했는지 확인"
+        ],
+        [
+          "`package jakarta.persistence does not exist`",
+          "의존성이 안 잡혔다",
+          "Gradle 새로고침. `javax.persistence` 를 import 하고 있지 않은지도 확인"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "javax 와 jakarta 를 섞으면",
+      "md": "IDE 가 자동 import 를 할 때 **옛 `javax.persistence` 를 골라 주는 경우**가 있다. 그러면 `@Entity` 는 붙었는데 하이버네이트가 인식하지 못해 `Unknown entity` 가 난다.\n\n오류 메시지가 원인을 안 알려 주는 대표적인 자리다. **import 문을 먼저 확인하는 습관**을 들이면 시간을 많이 아낀다.\n\n(왜 이름이 바뀌었는지는 2.2절에서 설명한다.)"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "Maven 이라면",
+      "md": "```xml\n<dependency>\n    <groupId>org.hibernate.orm</groupId>\n    <artifactId>hibernate-core</artifactId>\n    <version>6.4.4.Final</version>\n</dependency>\n<dependency>\n    <groupId>com.h2database</groupId>\n    <artifactId>h2</artifactId>\n    <version>2.2.224</version>\n</dependency>\n```\n\n나머지는 전부 같다. 이 책에서 빌드 도구가 갈리는 곳은 여기뿐이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "환경 설정 자체를 묻지는 않는다. 다만 **\"`Unable to build EntityManagerFactory` 가 나면 어떻게 하나요\"** 같은 트러블슈팅 질문은 나온다.\n\n답은 하나다 — **맨 아래 `Caused by:` 를 읽는다.** 이 메시지 자체는 아무 정보도 없다."
+    }
+  ],
+  "recap": [
+    "H2 를 먼저 띄우고 `jdbc:h2:~/test` 로 한 번 접속해 파일을 만든 뒤, `tcp://` 로 바꾼다.",
+    "파일은 넷 — `build.gradle`, `persistence.xml`, 엔티티, main 클래스.",
+    "`persistence.xml` 은 정확히 `resources/META-INF/` 아래여야 한다.",
+    "실습 엔티티는 `SEQUENCE` 전략으로 둔다. `IDENTITY` 면 4장 실습이 성립하지 않는다.",
+    "로그에 `insert` 가 **맨 마지막**에 찍히는 것을 확인한다 — 쓰기 지연의 첫 증거다.",
+    "H2 콘솔로 행을 눈으로 확인해야 끝이다. 로그와 DB 는 다른 이야기다.",
+    "오류 여섯 개 중 넷이 경로·순서 문제다. `Caused by:` 를 먼저 읽는다."
+  ],
+  "drills": [
+    {
+      "task": "위 순서대로 프로젝트를 만들고 회원 하나를 저장한다.",
+      "done_when": "콘솔에 `insert` 가 찍혔고 H2 콘솔에서 행을 눈으로 봤다.",
+      "minutes": 30
+    },
+    {
+      "task": "`persistence-unit name` 을 일부러 틀리고 실행한다.",
+      "done_when": "`No Persistence provider ...` 를 직접 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "`protected Member() {}` 를 지우고 실행한다.",
+      "done_when": "`No default constructor` 를 확인했다. 이유는 5.1절에서 답한다.",
+      "minutes": 10
+    },
+    {
+      "task": "H2 콘솔을 열어 둔 채로 프로그램을 다시 실행한다.",
+      "done_when": "`hbm2ddl.auto=create` 때문에 테이블이 새로 만들어져 이전 데이터가 사라지는 것을 확인했다.",
+      "hint": "5.2절에서 이 옵션이 운영에서 왜 금지인지 다룬다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "H2 를 `jdbc:h2:~/test` 로 한 번 접속해 둬야 하는 이유는?",
+      "a": "그래야 홈 디렉터리에 `test.mv.db` 파일이 만들어진다. 파일이 없는 상태에서 `tcp://` 로 붙으면 `Database not found` 가 난다."
+    },
+    {
+      "q": "실습 엔티티의 키 전략을 `SEQUENCE` 로 두는 이유는?",
+      "a": "`IDENTITY` 는 `persist()` 시점에 INSERT 를 즉시 보내므로 4장의 쓰기 지연 실습(persist 와 commit 사이에 SQL 이 없다)이 성립하지 않는다."
+    },
+    {
+      "q": "`Unable to build EntityManagerFactory` 를 보면 무엇을 먼저 하는가?",
+      "a": "스택 트레이스 맨 아래의 `Caused by:` 를 읽는다. 이 메시지는 덮개일 뿐 원인을 담고 있지 않다."
+    },
+    {
+      "q": "`@Entity` 를 붙였는데 `Unknown entity` 가 난다면?",
+      "a": "`javax.persistence.Entity` 를 import 했을 가능성이 높다. Hibernate 6 은 `jakarta.persistence` 만 인식한다."
+    },
+    {
+      "q": "로그에 `insert` 가 찍혔는데도 H2 콘솔에서 확인해야 하는 이유는?",
+      "a": "로그에 SQL 이 나간 것과 의도한 값이 들어간 것은 다르다. 4.4절의 merge 함정처럼 오류 없이 잘못된 값이 저장되는 경우가 있다."
+    }
+  ],
+  "terms": [],
+  "sources": [
+    {
+      "title": "Hibernate ORM 6 — Getting started",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/quickstart/html_single/",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "H2 Database — Cheat Sheet",
+      "url": "https://www.h2database.com/html/cheatSheet.html",
+      "publisher": "H2"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
