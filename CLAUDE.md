@@ -26,9 +26,11 @@
     `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
     `mv_company_stack` 갱신도 여기서 한다) / `export`(DB→뷰어 JSON) /
     `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate_vectors`(sqlite-vec→pgvector) /
-    `ledgers`(파일로 쌓이던 시계열 원장 — `trends_history.jsonl`→`trend_day`/`trend_metric`,
-    `job_history.jsonl`→`job_version`. 지난 일은 다시 계산할 수 없어서 머신마다 따로
-    놀면 안 된다. `build_trends.py`·`build_reposts.py` 가 여기서 읽는다).
+    `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→`trend_day`/`trend_metric`,
+    `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→`engagement_event`.
+    지난 일은 다시 계산할 수 없는데 머신마다 따로 놀거나(트렌드가 로컬 54일/운영 23일)
+    조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·`engagement.score`
+    가 여기서 읽고, 씨앗 뿌리기는 `python -m store.ledgers seed`).
     **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
     이중 쓰기는 실패해도 사이클을 죽이지 않는다(`DB_DUAL_WRITE=0` 으로 끈다).
     목록에서 사라진 공고는 지우지 않고 `gone_at` 만 찍되, 그 사이트의 수집량이

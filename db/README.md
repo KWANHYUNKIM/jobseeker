@@ -145,6 +145,8 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | `company_stacks.json` (15MB) | `mv_company_stack` | `REFRESH ... CONCURRENTLY` |
 | `trends_history.jsonl` | `trend_day`, `trend_metric` | ✅ 이관됨 — 다시 계산 못 하는 시계열 |
 | `job_history.jsonl` | `job_version` | ✅ 이관됨 — `UNIQUE (job_key, hash)` 가 중복 판본을 막는다 |
+| `engagement/events.jsonl` | `engagement_event` | ✅ 이관됨 — 파일 쪽 64MB 회전이 옛 기록을 버리고 있었다 |
+| `company_profiles.json` | `company.homepage`/`description`/`domains`/`homepage_tech` | ✅ 이관됨 |
 | `trends.json`, `trends_reports/*.md` | `trend_day`/`trend_metric` 에서 빌드 | `build_trends.py` |
 | `similar_jobs.json`, `similar_posts.json` | `job_similar`, `post_similar` | |
 | `tech_relations.json` | `job_tech` 조인 질의 | 미리 굳힐 이유가 없다 |
@@ -214,6 +216,7 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 사이클 중복 제거 | `refresh-data.sh` 에서 `backfill` 제거 | ✅ export 만 남김 · 산출물 무변화 확인 |
 | 빌더 입력 전환 | `jd-viewer/bin/jobs_filter.py` `load_jobs`/`load_posts` | ✅ 빌더 7개 · 운영에서 산출물 대조 |
 | 마감 재확인 대상 | `job_recheck_queue` → `pipeline.close_check` | ✅ 후보 10,496 → 12,548건 |
+| 행동 기록 이관 | `engagement/collect.py`·`score.py` | ✅ 409건 · DB↔파일 글자 그대로 일치 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
