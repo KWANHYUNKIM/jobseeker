@@ -1,941 +1,941 @@
 {
- "id": "spring-mvc-2",
- "title": "스프링 MVC",
- "subtitle": "2편 — 1편이 미뤄 둔 것들을 하나씩 붙인다",
- "blurb": "검증·예외·인터셉터·파일 업로드. 전부 1편에서 만든 흐름에 끼어드는 것들이라, 붙는 자리를 알고 시작한다.",
- "updated_at": "2026-09-09",
- "preface": "1편 9.1절에서 여섯 가지를 미뤄 두고 이렇게 적었다.\n\n> **전부 우리가 만든 흐름에 끼어드는 것**이다. 새 흐름이 아니다.\n> 붙는 자리가 **전부 6·7장에서 본 이름**이다.\n\n이 책은 그것들을 하나씩 붙인다. 그래서 **1편을 읽었다는 전제로 쓴다** — `DispatcherServlet`·`ArgumentResolver`·`ViewResolver` 를 설명 없이 쓴다.\n\n1편이 **\"요청이 어떻게 처리되는가\"** 였다면 이 책은 **\"그 처리가 실패할 때 무엇을 하는가\"** 다. 절의 절반이 오류에 관한 것이다 — 검증(5·6장), 예외 처리(9·10장), 그리고 로그인 실패(7·8장).\n\n그리고 1편에서 남긴 숙제들이 여기서 끝난다.\n\n- 1편 8.5절 — **없는 상품에 500 이 난다.** 9장에서 404 로 바꾼다\n- 1편 8.7절 — **음수 가격이 저장된다.** 5·6장에서 막는다\n- 1편 8.12절 — **DTO 를 안 나눴다.** 6장에서 나눈다\n- 1편 7.13절 — **`@Login` 리졸버를 만들어 봤다.** 8장에서 제대로 쓴다\n\n이 책의 규칙 셋.\n\n첫째, **매 절은 실제로 오간 HTTP 로 끝난다.** 1편과 같다. 다만 여기서는 **오류 응답이 훨씬 많이 나온다** — 400·404·415·500 이 정상 동작인 절이 여럿이다.\n\n둘째, **틀린 코드를 먼저 만든다.** 1편 8.7절에서 새로고침 문제를 일부러 만든 것처럼, 검증도 예외 처리도 **직접 손으로 해 보고** 나서 스프링의 것을 쓴다.\n\n셋째, **화면과 API 를 갈라서 본다.** 1편 2.4절에서 정한 그 선이 이 책에서 계속 갈린다 — 오류를 화면으로 줄 것인가 JSON 으로 줄 것인가.\n\n차례는 인프런 김영한 강사의 「스프링 MVC 2편 — 백엔드 웹 개발 활용 기술」 커리큘럼(13개 섹션)을 뼈대로 삼았고, 본문·예제·HTTP 로그·그림은 새로 썼다.",
- "how_to_read": [
-  "**1편을 먼저 읽는다.** 이 책은 `DispatcherServlet`·`ArgumentResolver` 를 설명 없이 쓴다.",
-  "2장은 타임리프 문법이다. **사전처럼 써도 된다** — 필요할 때 찾아 본다.",
-  "3장부터 실제 화면에 적용한다. 2장을 다 외우고 오지 않아도 된다.",
-  "**5장이 이 책의 중심이다.** 검증을 손으로 만들어 보고 스프링의 것으로 옮긴다. 1편 5장과 같은 방식.",
-  "6장은 5장 없이 읽으면 어노테이션 목록이 된다. 순서를 지킨다.",
-  "7~8장은 로그인이다. 8장의 인터셉터가 1편 5.1절의 '공통 처리를 한 곳에' 를 정식으로 쓰는 자리다.",
-  "9~10장은 예외다. **화면과 API 로 갈리는 것**이 이 두 장의 구조다.",
-  "11~12장은 필요할 때 찾아 읽어도 된다. 다만 11장의 타입 컨버터는 1편 7.6절의 타입 변환이 어떻게 되는지 알려 준다."
- ],
- "prereq": [
-  "**1편 전체.** 특히 5장(직접 만든 MVC 프레임워크)과 7장(요청 매핑·파라미터).",
-  "타임리프 기초. 1편 8.3~8.6절 정도면 충분하다 — 2장에서 처음부터 다시 본다.",
-  "스프링 컨테이너(빈·DI). 앞 책 「스프링 핵심 원리」의 내용이고 인터셉터 등록에 쓴다.",
-  "HTTP 상태 코드. 1편 7.15절에서 정리한 그 표."
- ],
- "env": [
-  {
-   "name": "Java",
-   "value": "17",
-   "note": "21 도 그대로 된다"
-  },
-  {
-   "name": "Spring Boot",
-   "value": "3.x",
-   "note": "jakarta 패키지"
-  },
-  {
-   "name": "빌드",
-   "value": "Gradle",
-   "note": "Jar 패키징. 1편 7.1절과 같다"
-  },
-  {
-   "name": "의존성",
-   "value": "Spring Web, Thymeleaf, Lombok",
-   "note": "6장에서 Validation 을 더한다"
-  },
-  {
-   "name": "확인 도구",
-   "value": "curl · 브라우저 개발자 도구",
-   "note": "오류 응답을 자주 본다"
-  }
- ],
- "source": {
-  "name": "스프링 MVC 2편 - 백엔드 웹 개발 활용 기술 (김영한, 인프런)",
-  "url": "https://www.inflearn.com/course/스프링-mvc-2",
-  "note": "차례(13개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·HTTP 로그·그림은 이 책에서 새로 쓴 것이다."
- },
- "chapters": [
-  {
-   "no": 1,
-   "title": "시작하기 전에",
-   "goal": "1편이 남긴 숙제 목록과, 이 책이 그것을 어떤 순서로 푸는지.",
-   "sections": [
+  "id": "spring-mvc-2",
+  "title": "스프링 MVC",
+  "subtitle": "2편 — 1편이 미뤄 둔 것들을 하나씩 붙인다",
+  "blurb": "검증·예외·인터셉터·파일 업로드. 전부 1편에서 만든 흐름에 끼어드는 것들이라, 붙는 자리를 알고 시작한다.",
+  "updated_at": "2026-09-09",
+  "preface": "1편 9.1절에서 여섯 가지를 미뤄 두고 이렇게 적었다.\n\n> **전부 우리가 만든 흐름에 끼어드는 것**이다. 새 흐름이 아니다.\n> 붙는 자리가 **전부 6·7장에서 본 이름**이다.\n\n이 책은 그것들을 하나씩 붙인다. 그래서 **1편을 읽었다는 전제로 쓴다** — `DispatcherServlet`·`ArgumentResolver`·`ViewResolver` 를 설명 없이 쓴다.\n\n1편이 **\"요청이 어떻게 처리되는가\"** 였다면 이 책은 **\"그 처리가 실패할 때 무엇을 하는가\"** 다. 절의 절반이 오류에 관한 것이다 — 검증(5·6장), 예외 처리(9·10장), 그리고 로그인 실패(7·8장).\n\n그리고 1편에서 남긴 숙제들이 여기서 끝난다.\n\n- 1편 8.5절 — **없는 상품에 500 이 난다.** 9장에서 404 로 바꾼다\n- 1편 8.7절 — **음수 가격이 저장된다.** 5·6장에서 막는다\n- 1편 8.12절 — **DTO 를 안 나눴다.** 6장에서 나눈다\n- 1편 7.13절 — **`@Login` 리졸버를 만들어 봤다.** 8장에서 제대로 쓴다\n\n이 책의 규칙 셋.\n\n첫째, **매 절은 실제로 오간 HTTP 로 끝난다.** 1편과 같다. 다만 여기서는 **오류 응답이 훨씬 많이 나온다** — 400·404·415·500 이 정상 동작인 절이 여럿이다.\n\n둘째, **틀린 코드를 먼저 만든다.** 1편 8.7절에서 새로고침 문제를 일부러 만든 것처럼, 검증도 예외 처리도 **직접 손으로 해 보고** 나서 스프링의 것을 쓴다.\n\n셋째, **화면과 API 를 갈라서 본다.** 1편 2.4절에서 정한 그 선이 이 책에서 계속 갈린다 — 오류를 화면으로 줄 것인가 JSON 으로 줄 것인가.\n\n차례는 인프런 김영한 강사의 「스프링 MVC 2편 — 백엔드 웹 개발 활용 기술」 커리큘럼(13개 섹션)을 뼈대로 삼았고, 본문·예제·HTTP 로그·그림은 새로 썼다.",
+  "how_to_read": [
+    "**1편을 먼저 읽는다.** 이 책은 `DispatcherServlet`·`ArgumentResolver` 를 설명 없이 쓴다.",
+    "2장은 타임리프 문법이다. **사전처럼 써도 된다** — 필요할 때 찾아 본다.",
+    "3장부터 실제 화면에 적용한다. 2장을 다 외우고 오지 않아도 된다.",
+    "**5장이 이 책의 중심이다.** 검증을 손으로 만들어 보고 스프링의 것으로 옮긴다. 1편 5장과 같은 방식.",
+    "6장은 5장 없이 읽으면 어노테이션 목록이 된다. 순서를 지킨다.",
+    "7~8장은 로그인이다. 8장의 인터셉터가 1편 5.1절의 '공통 처리를 한 곳에' 를 정식으로 쓰는 자리다.",
+    "9~10장은 예외다. **화면과 API 로 갈리는 것**이 이 두 장의 구조다.",
+    "11~12장은 필요할 때 찾아 읽어도 된다. 다만 11장의 타입 컨버터는 1편 7.6절의 타입 변환이 어떻게 되는지 알려 준다."
+  ],
+  "prereq": [
+    "**1편 전체.** 특히 5장(직접 만든 MVC 프레임워크)과 7장(요청 매핑·파라미터).",
+    "타임리프 기초. 1편 8.3~8.6절 정도면 충분하다 — 2장에서 처음부터 다시 본다.",
+    "스프링 컨테이너(빈·DI). 앞 책 「스프링 핵심 원리」의 내용이고 인터셉터 등록에 쓴다.",
+    "HTTP 상태 코드. 1편 7.15절에서 정리한 그 표."
+  ],
+  "env": [
     {
-     "no": "1.1",
-     "id": "how-to-read",
-     "title": "이 책을 읽는 법",
-     "summary": "1편을 전제로 한다. 그리고 절의 절반이 오류에 관한 것이다.",
-     "minutes": 10,
-     "status": "todo"
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
     },
     {
-     "no": "1.2",
-     "id": "whats-left",
-     "title": "1편이 남긴 것",
-     "summary": "음수 가격 · 없는 상품에 500 · DTO 미분리 · 로그인 없음.",
-     "minutes": 12,
-     "status": "todo"
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": "jakarta 패키지"
     },
     {
-     "no": "1.3",
-     "id": "project-setup",
-     "title": "프로젝트 만들기",
-     "summary": "1편 프로젝트를 이어 쓰지 않고 새로 만든다. 이유가 있다.",
-     "minutes": 10,
-     "status": "todo"
+      "name": "빌드",
+      "value": "Gradle",
+      "note": "Jar 패키징. 1편 7.1절과 같다"
+    },
+    {
+      "name": "의존성",
+      "value": "Spring Web, Thymeleaf, Lombok",
+      "note": "6장에서 Validation 을 더한다"
+    },
+    {
+      "name": "확인 도구",
+      "value": "curl · 브라우저 개발자 도구",
+      "note": "오류 응답을 자주 본다"
     }
-   ]
+  ],
+  "source": {
+    "name": "스프링 MVC 2편 - 백엔드 웹 개발 활용 기술 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링-mvc-2",
+    "note": "차례(13개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·HTTP 로그·그림은 이 책에서 새로 쓴 것이다."
   },
-  {
-   "no": 2,
-   "title": "타임리프 — 기본 기능",
-   "goal": "1편에서 필요한 만큼만 쓴 타임리프를 처음부터.",
-   "sections": [
+  "chapters": [
     {
-     "no": "2.1",
-     "id": "thymeleaf-basic",
-     "title": "타임리프 소개",
-     "summary": "내추럴 템플릿을 다시. 그리고 서버 사이드 렌더링의 자리.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "1편이 남긴 숙제 목록과, 이 책이 그것을 어떤 순서로 푸는지.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "1편을 전제로 한다. 그리고 절의 절반이 오류에 관한 것이다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "whats-left",
+          "title": "1편이 남긴 것",
+          "summary": "음수 가격 · 없는 상품에 500 · DTO 미분리 · 로그인 없음.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "project-setup",
+          "title": "프로젝트 만들기",
+          "summary": "1편 프로젝트를 이어 쓰지 않고 새로 만든다. 이유가 있다.",
+          "minutes": 10,
+          "status": "done"
+        }
+      ]
     },
     {
-     "no": "2.2",
-     "id": "text-utext",
-     "title": "텍스트 — text, utext",
-     "summary": "이스케이프가 기본인 이유. XSS 를 실제로 만들어 본다.",
-     "minutes": 14,
-     "status": "todo"
+      "no": 2,
+      "title": "타임리프 — 기본 기능",
+      "goal": "1편에서 필요한 만큼만 쓴 타임리프를 처음부터.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "thymeleaf-basic",
+          "title": "타임리프 소개",
+          "summary": "내추럴 템플릿을 다시. 그리고 서버 사이드 렌더링의 자리.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "2.2",
+          "id": "text-utext",
+          "title": "텍스트 — text, utext",
+          "summary": "이스케이프가 기본인 이유. XSS 를 실제로 만들어 본다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "variables-spel",
+          "title": "변수 — SpringEL",
+          "summary": "`${}` 안은 자바가 아니라 SpEL 이다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "basic-objects",
+          "title": "기본 객체들",
+          "summary": "param · session · @빈이름. 편한데 화면이 무엇에 의존하게 되나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "utility-objects",
+          "title": "유틸리티 객체와 날짜",
+          "summary": "#numbers · #dates · #strings. 화면에서 포맷을 하는 것의 한계.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "url-link",
+          "title": "URL 링크",
+          "summary": "`@{}` 의 세 가지 형태. 1편 8.3절을 정확히 다시.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.7",
+          "id": "literal",
+          "title": "리터럴",
+          "summary": "공백이 있으면 왜 깨지나. `|...|` 가 나온 이유.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "2.8",
+          "id": "operation",
+          "title": "연산",
+          "summary": "비교·조건·Elvis·No-Operation. 화면에 로직을 얼마나 둘까.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.9",
+          "id": "attribute",
+          "title": "속성 값 설정",
+          "summary": "th:attrappend · 체크박스의 checked 함정.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.10",
+          "id": "each",
+          "title": "반복",
+          "summary": "th:each 와 반복 상태. 1편 8.4절보다 자세히.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.11",
+          "id": "condition",
+          "title": "조건부 평가",
+          "summary": "th:if · th:unless · th:switch. 렌더링이 아예 안 된다는 뜻.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.12",
+          "id": "comment",
+          "title": "주석",
+          "summary": "세 가지 주석. 어느 것이 응답에 남나.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "2.13",
+          "id": "block",
+          "title": "블록",
+          "summary": "th:block 이 필요한 자리.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "2.14",
+          "id": "javascript-inline",
+          "title": "자바스크립트 인라인",
+          "summary": "따옴표·이스케이프를 자동으로. 그리고 여기서도 XSS.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.15",
+          "id": "fragment",
+          "title": "템플릿 조각",
+          "summary": "th:fragment · th:insert · th:replace. 중복을 걷어낸다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.16",
+          "id": "layout",
+          "title": "템플릿 레이아웃",
+          "summary": "조각에 조각을 넘긴다. head 와 전체 레이아웃.",
+          "minutes": 14,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.3",
-     "id": "variables-spel",
-     "title": "변수 — SpringEL",
-     "summary": "`${}` 안은 자바가 아니라 SpEL 이다.",
-     "minutes": 14,
-     "status": "todo"
+      "no": 3,
+      "title": "타임리프 — 스프링 통합과 폼",
+      "goal": "폼을 다루는 것이 화면 작업의 대부분이다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "spring-integration",
+          "title": "타임리프 스프링 통합",
+          "summary": "무엇이 더해지나. 그리고 그것이 왜 필요했나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "input-form",
+          "title": "입력 폼 처리",
+          "summary": "th:object 와 *{...}. 1편 8.6절의 폼을 다시 쓴다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "requirements",
+          "title": "요구사항 추가",
+          "summary": "판매 여부 · 등록 지역 · 상품 종류 · 배송 방식.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "checkbox-single",
+          "title": "체크 박스 — 단일",
+          "summary": "체크를 해제하면 값이 아예 안 온다. 히든 필드가 필요한 이유.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "checkbox-multi",
+          "title": "체크 박스 — 멀티",
+          "summary": "th:field 가 name 과 id 를 만들어 준다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "radio-button",
+          "title": "라디오 버튼",
+          "summary": "체크박스와 무엇이 다른가. ENUM 을 쓸 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "select-box",
+          "title": "셀렉트 박스",
+          "summary": "@ModelAttribute 를 메서드에 붙이는 용법.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "form-summary",
+          "title": "정리",
+          "summary": "th:field 하나가 없앤 것들.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.4",
-     "id": "basic-objects",
-     "title": "기본 객체들",
-     "summary": "param · session · @빈이름. 편한데 화면이 무엇에 의존하게 되나.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 4,
+      "title": "메시지, 국제화",
+      "goal": "하드코딩된 문자열을 한 곳으로.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "message-intro",
+          "title": "메시지 · 국제화 소개",
+          "summary": "1편 8장의 화면에 '상품명' 이 몇 번 있나.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "message-source",
+          "title": "스프링 메시지 소스",
+          "summary": "MessageSource. 앞 책 4.6절에서 이름만 본 그것.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "message-apply",
+          "title": "웹 애플리케이션에 적용",
+          "summary": "#{...} 와 파라미터. 그리고 없는 키를 쓰면.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "i18n",
+          "title": "국제화",
+          "summary": "파일을 언어별로. Accept-Language 가 여기서 쓰인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "locale-resolver",
+          "title": "LocaleResolver",
+          "summary": "언어를 무엇으로 정하나. 쿠키·세션·헤더.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.5",
-     "id": "utility-objects",
-     "title": "유틸리티 객체와 날짜",
-     "summary": "#numbers · #dates · #strings. 화면에서 포맷을 하는 것의 한계.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 5,
+      "title": "검증1 — Validation",
+      "goal": "이 책의 중심. 검증을 손으로 만들어 보고 스프링의 것으로 옮긴다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "validation-intro",
+          "title": "검증 요구사항",
+          "summary": "1편 8.7절에서 음수 가격이 저장되던 그 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "v1-direct",
+          "title": "V1 — 직접 처리",
+          "summary": "Map 에 오류를 담는다. 되긴 되는데.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "v2-binding-result",
+          "title": "V2 — BindingResult",
+          "summary": "1편 7.7절에서 예고한 그것. 예외 대신 오류 정보.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "v3-field-error",
+          "title": "V3 — FieldError, ObjectError",
+          "summary": "거절된 값을 유지한다. 타입 오류가 나도 화면이 안 깨진다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "v4-reject-value",
+          "title": "V4 — rejectValue, reject",
+          "summary": "오류 코드를 문자열로 쓰지 않는다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "v5-error-code",
+          "title": "V5 — 오류 코드와 메시지 처리",
+          "summary": "구체적인 것에서 덜 구체적인 것으로.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "message-codes-resolver",
+          "title": "MessageCodesResolver",
+          "summary": "규칙이 코드에 안 보인다. 그런데 규칙은 하나다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "type-error",
+          "title": "스프링이 만드는 검증 오류",
+          "summary": "타입 변환 실패도 FieldError 다. 1편 7.6절의 400 이 여기서 화면이 된다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "validator-separate",
+          "title": "Validator 분리",
+          "summary": "컨트롤러에서 검증 로직을 뺀다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.10",
+          "id": "web-data-binder",
+          "title": "WebDataBinder 와 @Validated",
+          "summary": "@InitBinder 로 자동 적용.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.11",
+          "id": "validation1-summary",
+          "title": "정리",
+          "summary": "다섯 단계가 각각 무엇을 없앴나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.6",
-     "id": "url-link",
-     "title": "URL 링크",
-     "summary": "`@{}` 의 세 가지 형태. 1편 8.3절을 정확히 다시.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 6,
+      "title": "검증2 — Bean Validation",
+      "goal": "어노테이션으로 줄이되, 5장을 알아야 읽힌다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "bean-validation-intro",
+          "title": "Bean Validation 소개",
+          "summary": "표준이다. 스프링 것이 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "bean-validation-apply",
+          "title": "스프링 적용",
+          "summary": "@Valid 와 @Validated. 어디까지 자동인가.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "bean-validation-error-code",
+          "title": "에러 코드",
+          "summary": "5장의 MessageCodesResolver 규칙이 여기서도.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "object-error",
+          "title": "오브젝트 오류",
+          "summary": "@ScriptAssert 를 권하지 않는 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "modify-validation",
+          "title": "수정에 적용",
+          "summary": "등록과 수정의 검증 규칙이 다르다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "groups",
+          "title": "한계와 groups",
+          "summary": "groups 가 왜 잘 안 쓰이나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "form-object-split",
+          "title": "폼 객체 분리",
+          "summary": "1편 8.12절에서 DTO 를 안 나눴다고 한 자리.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "api-validation",
+          "title": "HTTP 메시지 컨버터와 검증",
+          "summary": "@RequestBody 는 실패 방식이 다르다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "6.9",
+          "id": "validation2-summary",
+          "title": "정리",
+          "summary": "언제 어노테이션이고 언제 Validator 인가.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.7",
-     "id": "literal",
-     "title": "리터럴",
-     "summary": "공백이 있으면 왜 깨지나. `|...|` 가 나온 이유.",
-     "minutes": 10,
-     "status": "todo"
+      "no": 7,
+      "title": "로그인 처리1 — 쿠키, 세션",
+      "goal": "HTTP 가 무상태라는 것의 실물.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "login-requirements",
+          "title": "로그인 요구사항",
+          "summary": "회원 가입 · 로그인 · 로그아웃. 그리고 화면 분기.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "login-domain",
+          "title": "로그인 기능 개발",
+          "summary": "아이디와 비밀번호로 회원을 찾는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "cookie-login",
+          "title": "쿠키로 로그인 유지",
+          "summary": "동작한다. 그리고 보안이 전부 뚫린다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "cookie-security",
+          "title": "쿠키와 보안 문제",
+          "summary": "값을 바꾸면 남이 된다. 세 가지 취약점.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "session-manual",
+          "title": "세션 직접 만들기",
+          "summary": "쿠키에 식별자만 두고 값은 서버에. 원리를 손으로.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "http-session",
+          "title": "HttpSession",
+          "summary": "서블릿 표준. 1편 3.2절에서 언급만 한 그것.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "session-info",
+          "title": "세션 정보와 타임아웃",
+          "summary": "언제 사라지나. 그리고 메모리는 얼마나 먹나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "session-argument-resolver",
+          "title": "@SessionAttribute 와 리졸버",
+          "summary": "1편 7.13절에서 만든 @Login 이 여기 쓰인다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "login-summary",
+          "title": "정리",
+          "summary": "쿠키 · 세션 · 토큰. 요즘은 무엇을 쓰나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.8",
-     "id": "operation",
-     "title": "연산",
-     "summary": "비교·조건·Elvis·No-Operation. 화면에 로직을 얼마나 둘까.",
-     "minutes": 14,
-     "status": "todo"
+      "no": 8,
+      "title": "로그인 처리2 — 필터, 인터셉터",
+      "goal": "1편 5.1절의 '공통 처리를 한 곳에' 를 정식으로.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "filter-intro",
+          "title": "서블릿 필터 소개",
+          "summary": "DispatcherServlet 앞이다. 스프링을 모른다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "filter-log",
+          "title": "필터 — 요청 로그",
+          "summary": "1편 7.2절의 요청 ID 가 여기서 만들어진다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "filter-auth",
+          "title": "필터 — 인증 체크",
+          "summary": "화이트리스트를 어떻게 관리하나.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "interceptor-intro",
+          "title": "스프링 인터셉터 소개",
+          "summary": "필터와 무엇이 다른가. 세 시점.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "interceptor-log",
+          "title": "인터셉터 — 요청 로그",
+          "summary": "핸들러 정보를 알 수 있다는 것의 값.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "interceptor-auth",
+          "title": "인터셉터 — 인증 체크",
+          "summary": "excludePathPatterns 가 화이트리스트를 대신한다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "filter-vs-interceptor",
+          "title": "정리 — 무엇을 쓸까",
+          "summary": "실무 기준. 그리고 ArgumentResolver 와의 경계.",
+          "minutes": 14,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.9",
-     "id": "attribute",
-     "title": "속성 값 설정",
-     "summary": "th:attrappend · 체크박스의 checked 함정.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 9,
+      "title": "예외 처리와 오류 페이지",
+      "goal": "1편 8.5절의 500 을 여기서 고친다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "exception-basic",
+          "title": "서블릿 예외 처리",
+          "summary": "예외가 컨트롤러 밖으로 나가면 무슨 일이 생기나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "error-page-servlet",
+          "title": "오류 화면 제공",
+          "summary": "web.xml 시절의 방법과 스프링 부트의 방법.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "error-page-flow",
+          "title": "오류 페이지 작동 원리",
+          "summary": "요청이 두 번 온다. 필터와 인터셉터가 두 번 돈다.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "dispatcher-type",
+          "title": "필터와 DispatcherType",
+          "summary": "두 번 도는 것을 막는 방법.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "interceptor-exclude",
+          "title": "인터셉터와 오류 경로",
+          "summary": "인터셉터는 DispatcherType 이 없다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "spring-boot-error",
+          "title": "스프링 부트 오류 처리",
+          "summary": "BasicErrorController 가 이미 다 해 준다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "error-page-priority",
+          "title": "오류 페이지 우선순위",
+          "summary": "4xx.html · 404.html · error.html.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.8",
+          "id": "exception-summary",
+          "title": "정리",
+          "summary": "1편 8.5절의 500 을 404 로.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.10",
-     "id": "each",
-     "title": "반복",
-     "summary": "th:each 와 반복 상태. 1편 8.4절보다 자세히.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 10,
+      "title": "API 예외 처리",
+      "goal": "화면이 아니라 JSON 으로 오류를 준다.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "api-exception-intro",
+          "title": "API 예외 처리 시작",
+          "summary": "오류 페이지를 주면 클라이언트가 파싱에 실패한다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "error-controller-api",
+          "title": "BasicErrorController 와 API",
+          "summary": "부트가 주는 JSON 의 한계.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "handler-exception-resolver",
+          "title": "HandlerExceptionResolver",
+          "summary": "1편 6.2절 doDispatch 의 catch 자리.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "resolver-custom",
+          "title": "직접 만들어 본다",
+          "summary": "예외를 상태 코드로 바꾼다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "spring-resolvers",
+          "title": "스프링이 제공하는 것들",
+          "summary": "ResponseStatus · ResponseEntityException · DefaultHandler.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "exception-handler",
+          "title": "@ExceptionHandler",
+          "summary": "컨트롤러 안에서 잡는다. 가장 많이 쓴다.",
+          "minutes": 18,
+          "status": "todo"
+        },
+        {
+          "no": "10.7",
+          "id": "controller-advice",
+          "title": "@ControllerAdvice",
+          "summary": "여러 컨트롤러의 예외를 한 곳에서.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.8",
+          "id": "api-exception-summary",
+          "title": "정리",
+          "summary": "화면과 API 의 오류 처리가 어떻게 갈리나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.11",
-     "id": "condition",
-     "title": "조건부 평가",
-     "summary": "th:if · th:unless · th:switch. 렌더링이 아예 안 된다는 뜻.",
-     "minutes": 12,
-     "status": "todo"
+      "no": 11,
+      "title": "스프링 타입 컨버터",
+      "goal": "1편 7.6절에서 int 로 받히던 것의 정체.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "converter-intro",
+          "title": "타입 컨버터 소개",
+          "summary": "String 이 어떻게 Integer 가 됐나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "converter-custom",
+          "title": "타입 컨버터 만들기",
+          "summary": "Converter 인터페이스. 메서드 하나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "conversion-service",
+          "title": "ConversionService",
+          "summary": "등록과 사용을 분리한다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "converter-spring",
+          "title": "스프링에 적용",
+          "summary": "WebConversionService. 어디까지 적용되나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "converter-view",
+          "title": "뷰 템플릿에 적용",
+          "summary": "${{...}} 가 왜 중괄호 두 개인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "formatter",
+          "title": "포맷터",
+          "summary": "날짜와 숫자. 컨버터와 무엇이 다른가.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.7",
+          "id": "formatter-annotation",
+          "title": "@NumberFormat, @DateTimeFormat",
+          "summary": "필드마다 다르게.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.8",
+          "id": "converter-summary",
+          "title": "정리",
+          "summary": "메시지 컨버터와 헷갈리지 않기.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.12",
-     "id": "comment",
-     "title": "주석",
-     "summary": "세 가지 주석. 어느 것이 응답에 남나.",
-     "minutes": 10,
-     "status": "todo"
+      "no": 12,
+      "title": "파일 업로드",
+      "goal": "1편 3.6절에서 미룬 multipart.",
+      "sections": [
+        {
+          "no": "12.1",
+          "id": "multipart-intro",
+          "title": "파일 업로드 소개",
+          "summary": "바디를 경계 문자열로 나눈다. 형식부터 본다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "12.2",
+          "id": "servlet-multipart",
+          "title": "서블릿과 파일 업로드",
+          "summary": "getParts(). 손으로 해 본다.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "12.3",
+          "id": "spring-multipart",
+          "title": "스프링과 MultipartFile",
+          "summary": "@RequestParam 으로 받는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "12.4",
+          "id": "upload-requirements",
+          "title": "예제 — 상품 이미지",
+          "summary": "이미지 하나와 첨부 여럿.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.5",
+          "id": "upload-download",
+          "title": "다운로드",
+          "summary": "Content-Disposition 과 한글 파일명.",
+          "minutes": 16,
+          "status": "todo"
+        },
+        {
+          "no": "12.6",
+          "id": "upload-security",
+          "title": "업로드의 위험",
+          "summary": "파일명 · 크기 · 확장자 · 저장 위치.",
+          "minutes": 16,
+          "status": "todo"
+        }
+      ]
     },
     {
-     "no": "2.13",
-     "id": "block",
-     "title": "블록",
-     "summary": "th:block 이 필요한 자리.",
-     "minutes": 10,
-     "status": "todo"
-    },
-    {
-     "no": "2.14",
-     "id": "javascript-inline",
-     "title": "자바스크립트 인라인",
-     "summary": "따옴표·이스케이프를 자동으로. 그리고 여기서도 XSS.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "2.15",
-     "id": "fragment",
-     "title": "템플릿 조각",
-     "summary": "th:fragment · th:insert · th:replace. 중복을 걷어낸다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "2.16",
-     "id": "layout",
-     "title": "템플릿 레이아웃",
-     "summary": "조각에 조각을 넘긴다. head 와 전체 레이아웃.",
-     "minutes": 14,
-     "status": "todo"
+      "no": 13,
+      "title": "다음으로",
+      "goal": "이 책이 끝난 자리.",
+      "sections": [
+        {
+          "no": "13.1",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "JPA · 스프링 부트 · HTTP. 그리고 서가의 다음 책.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "no": 3,
-   "title": "타임리프 — 스프링 통합과 폼",
-   "goal": "폼을 다루는 것이 화면 작업의 대부분이다.",
-   "sections": [
-    {
-     "no": "3.1",
-     "id": "spring-integration",
-     "title": "타임리프 스프링 통합",
-     "summary": "무엇이 더해지나. 그리고 그것이 왜 필요했나.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "3.2",
-     "id": "input-form",
-     "title": "입력 폼 처리",
-     "summary": "th:object 와 *{...}. 1편 8.6절의 폼을 다시 쓴다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "3.3",
-     "id": "requirements",
-     "title": "요구사항 추가",
-     "summary": "판매 여부 · 등록 지역 · 상품 종류 · 배송 방식.",
-     "minutes": 10,
-     "status": "todo"
-    },
-    {
-     "no": "3.4",
-     "id": "checkbox-single",
-     "title": "체크 박스 — 단일",
-     "summary": "체크를 해제하면 값이 아예 안 온다. 히든 필드가 필요한 이유.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "3.5",
-     "id": "checkbox-multi",
-     "title": "체크 박스 — 멀티",
-     "summary": "th:field 가 name 과 id 를 만들어 준다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "3.6",
-     "id": "radio-button",
-     "title": "라디오 버튼",
-     "summary": "체크박스와 무엇이 다른가. ENUM 을 쓸 때.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "3.7",
-     "id": "select-box",
-     "title": "셀렉트 박스",
-     "summary": "@ModelAttribute 를 메서드에 붙이는 용법.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "3.8",
-     "id": "form-summary",
-     "title": "정리",
-     "summary": "th:field 하나가 없앤 것들.",
-     "minutes": 10,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 4,
-   "title": "메시지, 국제화",
-   "goal": "하드코딩된 문자열을 한 곳으로.",
-   "sections": [
-    {
-     "no": "4.1",
-     "id": "message-intro",
-     "title": "메시지 · 국제화 소개",
-     "summary": "1편 8장의 화면에 '상품명' 이 몇 번 있나.",
-     "minutes": 10,
-     "status": "todo"
-    },
-    {
-     "no": "4.2",
-     "id": "message-source",
-     "title": "스프링 메시지 소스",
-     "summary": "MessageSource. 앞 책 4.6절에서 이름만 본 그것.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "4.3",
-     "id": "message-apply",
-     "title": "웹 애플리케이션에 적용",
-     "summary": "#{...} 와 파라미터. 그리고 없는 키를 쓰면.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "4.4",
-     "id": "i18n",
-     "title": "국제화",
-     "summary": "파일을 언어별로. Accept-Language 가 여기서 쓰인다.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "4.5",
-     "id": "locale-resolver",
-     "title": "LocaleResolver",
-     "summary": "언어를 무엇으로 정하나. 쿠키·세션·헤더.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 5,
-   "title": "검증1 — Validation",
-   "goal": "이 책의 중심. 검증을 손으로 만들어 보고 스프링의 것으로 옮긴다.",
-   "sections": [
-    {
-     "no": "5.1",
-     "id": "validation-intro",
-     "title": "검증 요구사항",
-     "summary": "1편 8.7절에서 음수 가격이 저장되던 그 자리.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "5.2",
-     "id": "v1-direct",
-     "title": "V1 — 직접 처리",
-     "summary": "Map 에 오류를 담는다. 되긴 되는데.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "5.3",
-     "id": "v2-binding-result",
-     "title": "V2 — BindingResult",
-     "summary": "1편 7.7절에서 예고한 그것. 예외 대신 오류 정보.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "5.4",
-     "id": "v3-field-error",
-     "title": "V3 — FieldError, ObjectError",
-     "summary": "거절된 값을 유지한다. 타입 오류가 나도 화면이 안 깨진다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "5.5",
-     "id": "v4-reject-value",
-     "title": "V4 — rejectValue, reject",
-     "summary": "오류 코드를 문자열로 쓰지 않는다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "5.6",
-     "id": "v5-error-code",
-     "title": "V5 — 오류 코드와 메시지 처리",
-     "summary": "구체적인 것에서 덜 구체적인 것으로.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "5.7",
-     "id": "message-codes-resolver",
-     "title": "MessageCodesResolver",
-     "summary": "규칙이 코드에 안 보인다. 그런데 규칙은 하나다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "5.8",
-     "id": "type-error",
-     "title": "스프링이 만드는 검증 오류",
-     "summary": "타입 변환 실패도 FieldError 다. 1편 7.6절의 400 이 여기서 화면이 된다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "5.9",
-     "id": "validator-separate",
-     "title": "Validator 분리",
-     "summary": "컨트롤러에서 검증 로직을 뺀다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "5.10",
-     "id": "web-data-binder",
-     "title": "WebDataBinder 와 @Validated",
-     "summary": "@InitBinder 로 자동 적용.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "5.11",
-     "id": "validation1-summary",
-     "title": "정리",
-     "summary": "다섯 단계가 각각 무엇을 없앴나.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 6,
-   "title": "검증2 — Bean Validation",
-   "goal": "어노테이션으로 줄이되, 5장을 알아야 읽힌다.",
-   "sections": [
-    {
-     "no": "6.1",
-     "id": "bean-validation-intro",
-     "title": "Bean Validation 소개",
-     "summary": "표준이다. 스프링 것이 아니다.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "6.2",
-     "id": "bean-validation-apply",
-     "title": "스프링 적용",
-     "summary": "@Valid 와 @Validated. 어디까지 자동인가.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "6.3",
-     "id": "bean-validation-error-code",
-     "title": "에러 코드",
-     "summary": "5장의 MessageCodesResolver 규칙이 여기서도.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "6.4",
-     "id": "object-error",
-     "title": "오브젝트 오류",
-     "summary": "@ScriptAssert 를 권하지 않는 이유.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "6.5",
-     "id": "modify-validation",
-     "title": "수정에 적용",
-     "summary": "등록과 수정의 검증 규칙이 다르다.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "6.6",
-     "id": "groups",
-     "title": "한계와 groups",
-     "summary": "groups 가 왜 잘 안 쓰이나.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "6.7",
-     "id": "form-object-split",
-     "title": "폼 객체 분리",
-     "summary": "1편 8.12절에서 DTO 를 안 나눴다고 한 자리.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "6.8",
-     "id": "api-validation",
-     "title": "HTTP 메시지 컨버터와 검증",
-     "summary": "@RequestBody 는 실패 방식이 다르다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "6.9",
-     "id": "validation2-summary",
-     "title": "정리",
-     "summary": "언제 어노테이션이고 언제 Validator 인가.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 7,
-   "title": "로그인 처리1 — 쿠키, 세션",
-   "goal": "HTTP 가 무상태라는 것의 실물.",
-   "sections": [
-    {
-     "no": "7.1",
-     "id": "login-requirements",
-     "title": "로그인 요구사항",
-     "summary": "회원 가입 · 로그인 · 로그아웃. 그리고 화면 분기.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "7.2",
-     "id": "login-domain",
-     "title": "로그인 기능 개발",
-     "summary": "아이디와 비밀번호로 회원을 찾는다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "7.3",
-     "id": "cookie-login",
-     "title": "쿠키로 로그인 유지",
-     "summary": "동작한다. 그리고 보안이 전부 뚫린다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "7.4",
-     "id": "cookie-security",
-     "title": "쿠키와 보안 문제",
-     "summary": "값을 바꾸면 남이 된다. 세 가지 취약점.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "7.5",
-     "id": "session-manual",
-     "title": "세션 직접 만들기",
-     "summary": "쿠키에 식별자만 두고 값은 서버에. 원리를 손으로.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "7.6",
-     "id": "http-session",
-     "title": "HttpSession",
-     "summary": "서블릿 표준. 1편 3.2절에서 언급만 한 그것.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "7.7",
-     "id": "session-info",
-     "title": "세션 정보와 타임아웃",
-     "summary": "언제 사라지나. 그리고 메모리는 얼마나 먹나.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "7.8",
-     "id": "session-argument-resolver",
-     "title": "@SessionAttribute 와 리졸버",
-     "summary": "1편 7.13절에서 만든 @Login 이 여기 쓰인다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "7.9",
-     "id": "login-summary",
-     "title": "정리",
-     "summary": "쿠키 · 세션 · 토큰. 요즘은 무엇을 쓰나.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 8,
-   "title": "로그인 처리2 — 필터, 인터셉터",
-   "goal": "1편 5.1절의 '공통 처리를 한 곳에' 를 정식으로.",
-   "sections": [
-    {
-     "no": "8.1",
-     "id": "filter-intro",
-     "title": "서블릿 필터 소개",
-     "summary": "DispatcherServlet 앞이다. 스프링을 모른다.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "8.2",
-     "id": "filter-log",
-     "title": "필터 — 요청 로그",
-     "summary": "1편 7.2절의 요청 ID 가 여기서 만들어진다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "8.3",
-     "id": "filter-auth",
-     "title": "필터 — 인증 체크",
-     "summary": "화이트리스트를 어떻게 관리하나.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "8.4",
-     "id": "interceptor-intro",
-     "title": "스프링 인터셉터 소개",
-     "summary": "필터와 무엇이 다른가. 세 시점.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "8.5",
-     "id": "interceptor-log",
-     "title": "인터셉터 — 요청 로그",
-     "summary": "핸들러 정보를 알 수 있다는 것의 값.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "8.6",
-     "id": "interceptor-auth",
-     "title": "인터셉터 — 인증 체크",
-     "summary": "excludePathPatterns 가 화이트리스트를 대신한다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "8.7",
-     "id": "filter-vs-interceptor",
-     "title": "정리 — 무엇을 쓸까",
-     "summary": "실무 기준. 그리고 ArgumentResolver 와의 경계.",
-     "minutes": 14,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 9,
-   "title": "예외 처리와 오류 페이지",
-   "goal": "1편 8.5절의 500 을 여기서 고친다.",
-   "sections": [
-    {
-     "no": "9.1",
-     "id": "exception-basic",
-     "title": "서블릿 예외 처리",
-     "summary": "예외가 컨트롤러 밖으로 나가면 무슨 일이 생기나.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "9.2",
-     "id": "error-page-servlet",
-     "title": "오류 화면 제공",
-     "summary": "web.xml 시절의 방법과 스프링 부트의 방법.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "9.3",
-     "id": "error-page-flow",
-     "title": "오류 페이지 작동 원리",
-     "summary": "요청이 두 번 온다. 필터와 인터셉터가 두 번 돈다.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "9.4",
-     "id": "dispatcher-type",
-     "title": "필터와 DispatcherType",
-     "summary": "두 번 도는 것을 막는 방법.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "9.5",
-     "id": "interceptor-exclude",
-     "title": "인터셉터와 오류 경로",
-     "summary": "인터셉터는 DispatcherType 이 없다.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "9.6",
-     "id": "spring-boot-error",
-     "title": "스프링 부트 오류 처리",
-     "summary": "BasicErrorController 가 이미 다 해 준다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "9.7",
-     "id": "error-page-priority",
-     "title": "오류 페이지 우선순위",
-     "summary": "4xx.html · 404.html · error.html.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "9.8",
-     "id": "exception-summary",
-     "title": "정리",
-     "summary": "1편 8.5절의 500 을 404 로.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 10,
-   "title": "API 예외 처리",
-   "goal": "화면이 아니라 JSON 으로 오류를 준다.",
-   "sections": [
-    {
-     "no": "10.1",
-     "id": "api-exception-intro",
-     "title": "API 예외 처리 시작",
-     "summary": "오류 페이지를 주면 클라이언트가 파싱에 실패한다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "10.2",
-     "id": "error-controller-api",
-     "title": "BasicErrorController 와 API",
-     "summary": "부트가 주는 JSON 의 한계.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "10.3",
-     "id": "handler-exception-resolver",
-     "title": "HandlerExceptionResolver",
-     "summary": "1편 6.2절 doDispatch 의 catch 자리.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "10.4",
-     "id": "resolver-custom",
-     "title": "직접 만들어 본다",
-     "summary": "예외를 상태 코드로 바꾼다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "10.5",
-     "id": "spring-resolvers",
-     "title": "스프링이 제공하는 것들",
-     "summary": "ResponseStatus · ResponseEntityException · DefaultHandler.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "10.6",
-     "id": "exception-handler",
-     "title": "@ExceptionHandler",
-     "summary": "컨트롤러 안에서 잡는다. 가장 많이 쓴다.",
-     "minutes": 18,
-     "status": "todo"
-    },
-    {
-     "no": "10.7",
-     "id": "controller-advice",
-     "title": "@ControllerAdvice",
-     "summary": "여러 컨트롤러의 예외를 한 곳에서.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "10.8",
-     "id": "api-exception-summary",
-     "title": "정리",
-     "summary": "화면과 API 의 오류 처리가 어떻게 갈리나.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 11,
-   "title": "스프링 타입 컨버터",
-   "goal": "1편 7.6절에서 int 로 받히던 것의 정체.",
-   "sections": [
-    {
-     "no": "11.1",
-     "id": "converter-intro",
-     "title": "타입 컨버터 소개",
-     "summary": "String 이 어떻게 Integer 가 됐나.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "11.2",
-     "id": "converter-custom",
-     "title": "타입 컨버터 만들기",
-     "summary": "Converter 인터페이스. 메서드 하나.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "11.3",
-     "id": "conversion-service",
-     "title": "ConversionService",
-     "summary": "등록과 사용을 분리한다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "11.4",
-     "id": "converter-spring",
-     "title": "스프링에 적용",
-     "summary": "WebConversionService. 어디까지 적용되나.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "11.5",
-     "id": "converter-view",
-     "title": "뷰 템플릿에 적용",
-     "summary": "${{...}} 가 왜 중괄호 두 개인가.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "11.6",
-     "id": "formatter",
-     "title": "포맷터",
-     "summary": "날짜와 숫자. 컨버터와 무엇이 다른가.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "11.7",
-     "id": "formatter-annotation",
-     "title": "@NumberFormat, @DateTimeFormat",
-     "summary": "필드마다 다르게.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "11.8",
-     "id": "converter-summary",
-     "title": "정리",
-     "summary": "메시지 컨버터와 헷갈리지 않기.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 12,
-   "title": "파일 업로드",
-   "goal": "1편 3.6절에서 미룬 multipart.",
-   "sections": [
-    {
-     "no": "12.1",
-     "id": "multipart-intro",
-     "title": "파일 업로드 소개",
-     "summary": "바디를 경계 문자열로 나눈다. 형식부터 본다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "12.2",
-     "id": "servlet-multipart",
-     "title": "서블릿과 파일 업로드",
-     "summary": "getParts(). 손으로 해 본다.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "12.3",
-     "id": "spring-multipart",
-     "title": "스프링과 MultipartFile",
-     "summary": "@RequestParam 으로 받는다.",
-     "minutes": 14,
-     "status": "todo"
-    },
-    {
-     "no": "12.4",
-     "id": "upload-requirements",
-     "title": "예제 — 상품 이미지",
-     "summary": "이미지 하나와 첨부 여럿.",
-     "minutes": 12,
-     "status": "todo"
-    },
-    {
-     "no": "12.5",
-     "id": "upload-download",
-     "title": "다운로드",
-     "summary": "Content-Disposition 과 한글 파일명.",
-     "minutes": 16,
-     "status": "todo"
-    },
-    {
-     "no": "12.6",
-     "id": "upload-security",
-     "title": "업로드의 위험",
-     "summary": "파일명 · 크기 · 확장자 · 저장 위치.",
-     "minutes": 16,
-     "status": "todo"
-    }
-   ]
-  },
-  {
-   "no": 13,
-   "title": "다음으로",
-   "goal": "이 책이 끝난 자리.",
-   "sections": [
-    {
-     "no": "13.1",
-     "id": "whats-next",
-     "title": "다음 단계",
-     "summary": "JPA · 스프링 부트 · HTTP. 그리고 서가의 다음 책.",
-     "minutes": 12,
-     "status": "todo"
-    }
-   ]
-  }
- ]
+  ]
 }

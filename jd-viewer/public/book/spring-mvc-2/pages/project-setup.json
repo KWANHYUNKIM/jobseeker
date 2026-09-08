@@ -1,0 +1,143 @@
+{
+ "book": "spring-mvc-2",
+ "id": "project-setup",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "프로젝트 만들기",
+ "summary": "1편 프로젝트를 이어 쓰지 않고 새로 만든다. 이유가 있다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프로젝트를 만들 수 있다.",
+  "1편 것을 이어 쓰지 않는 이유를 안다.",
+  "이 책에서 버전을 나눠 가는 방식을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "start.spring.io",
+   "note": "**1편 7.1절과 같다.** Jar 패키징이고 Thymeleaf 가 있다. 6장에서 Validation 을 더한다.",
+   "columns": [
+    "항목",
+    "값"
+   ],
+   "rows": [
+    [
+     "Project",
+     "Gradle - Groovy"
+    ],
+    [
+     "Packaging",
+     "**Jar**"
+    ],
+    [
+     "Java",
+     "17"
+    ],
+    [
+     "Dependencies",
+     "Spring Web, **Thymeleaf**, Lombok"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1편 프로젝트를 이어 쓰지 않는다",
+   "md": "**이어 써도 된다.** 그런데 새로 만드는 편이 낫다.\n\n**1. 같은 화면을 여러 번 만든다.**\n\n이 책은 검증만 해도 **v1~v5** 를 만든다(5장). 1편의 `BasicItemController` 를 계속 고치면 **이전 버전이 사라져서 비교가 안 된다.**\n\n1편 1.2절에서 이렇게 적었다.\n\n> 5장에서 v1 을 만들고 v2 로 갈 때 **v1 을 지우지 않는다.** 패키지를 따로 둔다.\n\n**같은 방식으로 간다.**\n\n```\nhello.itemservice.web.basic          1 편 것 (그대로 옮긴다)\nhello.itemservice.web.validation.v1  5.2\nhello.itemservice.web.validation.v2  5.3\n...\nhello.itemservice.web.form           6.7\nhello.itemservice.web.login          7 장\n```\n\n**2. 1편 프로젝트에는 서블릿·JSP 실습이 섞여 있다.**\n\n1편은 3~5장에서 서블릿과 JSP 를 썼다. 그래서 **War 패키징이고 `webapp` 폴더가 있다**(1편 1.3절). 이 책은 그것이 필요 없다.\n\n1편 7.1절에서 **Jar 로 갈아탄 그 프로젝트**를 다시 만드는 것에 가깝다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1편의 상품 관리 화면을 옮긴다",
+   "md": "1편 8장에서 만든 것을 그대로 복사해 온다.\n\n```\ndomain/item/Item.java\ndomain/item/ItemRepository.java\nweb/basic/BasicItemController.java\nresources/templates/basic/*.html\n```\n\n**이 책은 그 위에 얹는다.** 5장부터 `validation` 패키지에 복사본을 만들어 고쳐 간다.\n\n**1편 8.12절에서 적은 문제들이 그대로 따라온다** — 검증 없음, 500, DTO 미분리. 그것을 고치는 것이 이 책이다."
+  },
+  {
+   "type": "heading",
+   "text": "버전을 나누는 규칙"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "패키지와 URL 을 함께 나눈다",
+   "md": "```java\n@Controller\n@RequestMapping(\"/validation/v2/items\")\npublic class ValidationItemControllerV2 { ... }\n```\n\n```\n패키지  web.validation.v2\nURL     /validation/v2/items\n템플릿  templates/validation/v2/*.html\n```\n\n**셋이 같은 이름으로 간다.** 1편 5.1절에서 `/front-controller/v1/*` 처럼 한 것과 같다.\n\n그러면 **여러 버전이 동시에 살아 있다.** 브라우저에서 v1 과 v2 를 번갈아 열어 **동작 차이를 직접 비교**할 수 있다.\n\n**템플릿도 복사한다.** 검증 오류를 화면에 뿌리는 방식이 버전마다 달라지기 때문이다 — 5장의 절반이 템플릿 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "복사가 늘어나는 것은 감수한다",
+   "md": "**같은 HTML 이 다섯 벌 생긴다.** 실무라면 안 될 일이다.\n\n그런데 **비교가 목적**이라 그렇게 한다. 1편 5장에서 프론트 컨트롤러를 다섯 벌 만든 것과 같다.\n\n1편 5.8절에서 이렇게 적었다.\n\n> **이전 버전 코드를 지우지 않는다.** 5.8절에서 다섯을 나란히 놓는다.\n\n**책이 끝나면 최종 버전만 남기고 지우면 된다.** 그때는 2장에서 배울 **템플릿 조각**(2.15절)으로 중복을 걷어낼 수 있다.\n\n**중복을 만들었다가 걷어내는 것도 연습**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 책에서 늘어날 의존성",
+   "md": "| 언제 | 무엇 | 왜 |\n|---|---|---|\n| **6장** | `spring-boot-starter-validation` | Bean Validation |\n| (선택) | `jackson-dataformat-xml` | 1편 7.14절의 콘텐츠 협상 실험용 |\n\n**둘뿐이다.** 나머지는 이미 있는 것으로 한다.\n\n필터·인터셉터·예외 처리·타입 컨버터는 **전부 스프링 코어에 들어 있다.** 파일 업로드도 서블릿 표준이라 추가 의존성이 없다.\n\n**\"기능을 쓰려면 라이브러리를 넣어야 한다\" 는 인상**을 받기 쉬운데, 이 책의 주제 대부분은 **이미 있는 것을 쓰는 법**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 1편 화면이 그대로 돈다",
+   "sql": "GET /basic/items HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n<table>\n    <tr><td><a href=\"/basic/items/1\">1</a></td><td>itemA</td>...</tr>\n    <tr><td><a href=\"/basic/items/2\">2</a></td><td>itemB</td>...</tr>\n</table>\n</body>\n</html>\n\n# 1 편 8.4 절과 완전히 같다\n\n# 그리고 문제도 그대로 따라왔다\nPOST /basic/items/add\nitemName=itemA&price=-1000&quantity=10\nHTTP/1.1 302        <- 음수 가격이 저장된다\n\nGET /basic/items/999\nHTTP/1.1 500        <- 404 여야 한다",
+   "note": "**1편 8장의 응답이 그대로 나온다.** 프로젝트만 새로 만들었지 코드는 같으니 당연하다.\n\n그리고 **문제도 그대로 따라왔다.** 1.2절에서 센 것들이다.\n\n**5장부터 이것을 고친다.**"
+  }
+ ],
+ "recap": [
+  "**Jar 패키징 · Thymeleaf.** 1편 7.1절과 같다.",
+  "1편 프로젝트를 **이어 쓰지 않는다** — 버전을 여러 벌 만들 것이고, 1편에는 서블릿·JSP 잔재가 있다.",
+  "1편 8장의 **상품 관리 화면을 복사해 온다.** 문제도 그대로 따라온다.",
+  "**패키지 · URL · 템플릿을 같은 이름으로** 나눈다 — 1편 5.1절과 같은 방식.",
+  "그러면 **여러 버전이 동시에 살아 있어** 브라우저로 비교할 수 있다.",
+  "**같은 HTML 이 여러 벌 생기는 것은 감수**한다. 비교가 목적이다.",
+  "책이 끝나면 **템플릿 조각**(2.15절)으로 중복을 걷어낼 수 있다.",
+  "늘어날 의존성은 **`validation` 하나**다. 나머지는 스프링 코어에 있다."
+ ],
+ "drills": [
+  {
+   "task": "새 프로젝트를 만들고 1편 8장 코드를 옮긴다.",
+   "done_when": "`/basic/items` 가 1편과 같이 동작한다.",
+   "minutes": 25
+  },
+  {
+   "task": "음수 가격과 없는 상품을 확인한다.",
+   "done_when": "1편의 문제가 그대로 따라온 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "패키지·URL·템플릿 경로 규칙을 종이에 적는다.",
+   "done_when": "5장에서 v1 을 만들 때 어디에 둘지 정해졌다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "1편 프로젝트를 이어 쓰지 않는 이유는?",
+   "a": "같은 화면을 여러 버전으로 만들 것이라 이전 버전이 남아 있어야 하고, 1편에는 서블릿·JSP 실습 때문에 War 설정이 남아 있다."
+  },
+  {
+   "q": "버전을 어떻게 나누나?",
+   "a": "패키지·URL·템플릿 경로를 같은 이름으로 나눈다. 1편 5.1절의 `/front-controller/v1/*` 과 같은 방식이다."
+  },
+  {
+   "q": "HTML 이 여러 벌 생기는 것은 괜찮은가?",
+   "a": "실무라면 안 되지만 비교가 목적이라 감수한다. 책이 끝나면 템플릿 조각으로 걷어낼 수 있다."
+  },
+  {
+   "q": "이 책에서 늘어나는 의존성은?",
+   "a": "`spring-boot-starter-validation` 하나다. 필터·인터셉터·예외 처리·타입 컨버터·파일 업로드는 이미 있는 것으로 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
