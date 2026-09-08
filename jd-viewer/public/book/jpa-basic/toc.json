@@ -516,7 +516,7 @@
           "title": "JPQL 함수",
           "summary": "표준 함수와 사용자 정의 함수. Dialect 에 등록해야 하는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -531,7 +531,7 @@
           "title": "경로 표현식",
           "summary": "상태 필드·단일 값 연관 경로·컬렉션 값 연관 경로. 묵시적 조인이 위험한 이유.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.2",
@@ -539,7 +539,7 @@
           "title": "페치 조인 1 — 기본",
           "summary": "N+1 을 한 방에 없애는 도구. 일반 조인과 무엇이 다른가.",
           "minutes": 24,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -547,7 +547,7 @@
           "title": "페치 조인 2 — 한계",
           "summary": "별칭을 못 쓰는 이유, 컬렉션 페치 조인에 페이징을 걸면 벌어지는 일, 둘 이상 못 쓰는 제약.",
           "minutes": 22,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",

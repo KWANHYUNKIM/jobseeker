@@ -1,0 +1,232 @@
+{
+  "book": "jpa-basic",
+  "id": "fetch-join-1",
+  "no": "12.2",
+  "chapter": 12,
+  "title": "페치 조인 1 — 기본",
+  "summary": "N+1 을 한 방에 없애는 도구. 일반 조인과 무엇이 다른가.",
+  "minutes": 24,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "일반 조인과 페치 조인의 차이를 SELECT 절 수준에서 설명할 수 있다.",
+    "9.4절에서 세어 둔 쿼리 수를 페치 조인으로 1번으로 만들 수 있다.",
+    "컬렉션 페치 조인에서 행이 뻥튀기되는 이유와 `DISTINCT` 의 역할을 안다.",
+    "페치 조인이 지연 로딩 설정보다 우선한다는 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.2절에서 N+1 을 만들었고, 9.4절에서 \"주문 하나 조회에 쿼리 13번\" 을 세어 뒀다. **이 절이 그 답이다.**\n\n그리고 이것은 SQL 에 없는 문법이다 — **JPQL 전용**이고, 성능 최적화를 위해 따로 만들어진 것이다."
+    },
+    {
+      "type": "heading",
+      "text": "한 글자 차이"
+    },
+    {
+      "type": "figure",
+      "caption": "SELECT 절을 비교하면",
+      "ascii": "   일반 조인과 페치 조인은 SELECT 절이 다르다\n\n\n   JOIN        \"SELECT m FROM Member m JOIN m.team t\"\n\n     SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID          <-- Member 컬럼만\n       FROM MEMBER M\n      INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n\n     조인은 했지만 Team 을 가져오지 않았다.\n     m.getTeam() 자리에는 여전히 프록시가 들어간다.\n     -> 나중에 건드리면 SELECT 가 또 나간다 (N+1)\n\n\n   JOIN FETCH  \"SELECT m FROM Member m JOIN FETCH m.team\"\n\n     SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID,\n            T.TEAM_ID, T.NAME                           <-- Team 컬럼까지\n       FROM MEMBER M\n      INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n\n     Team 을 실제로 가져와 채워 넣는다.\n     m.getTeam() 은 프록시가 아니라 진짜 객체다.\n     -> 추가 SELECT 가 없다\n\n\n   차이는 한 글자(FETCH)인데 결과는 쿼리 1번과 N+1번이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "일반 조인이 N+1 을 못 막는 이유",
+      "md": "이게 처음에 가장 헷갈리는 지점이다. \"조인했는데 왜 또 쿼리가 나가지?\"\n\n**일반 조인은 조인만 한다.** `WHERE t.name = 'A'` 같은 조건을 걸기 위해서다. `SELECT m` 이라고 썼으니 JPA 는 `Member` 컬럼만 가져오고, `m.team` 자리는 지연 로딩 설정대로 **프록시**를 넣는다.\n\n페치 조인은 다르다. \"조인한 김에 **그쪽 데이터도 가져와서 채워라**\" 는 지시다. 그래서 `SELECT` 절에 상대 테이블 컬럼이 붙는다.\n\n한 글자(`FETCH`)가 하는 일이 그것이다."
+    },
+    {
+      "type": "heading",
+      "text": "엔티티 페치 조인"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "먼저 N+1 을 확인한다",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m\", Member.class)\n    .getResultList();\n\nfor (Member m : members) {\n    System.out.println(m.getUsername() + \" / \" + m.getTeam().getName());\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "회원 5명, 팀 3개일 때",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID FROM MEMBER M   -- 1\n\nSELECT T.TEAM_ID, T.NAME FROM TEAM T WHERE T.TEAM_ID = 1    -- 2\nSELECT T.TEAM_ID, T.NAME FROM TEAM T WHERE T.TEAM_ID = 2    -- 3\nSELECT T.TEAM_ID, T.NAME FROM TEAM T WHERE T.TEAM_ID = 3    -- 4",
+      "note": "1차 캐시 덕분에 중복 팀은 생략됐다(4.2절). 그래도 팀 종류만큼 나간다. 회원 1000명이 서로 다른 팀이면 1001번이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "FETCH 를 붙인다",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m JOIN FETCH m.team\", Member.class)\n    .getResultList();\n\nfor (Member m : members) {\n    System.out.println(m.getUsername() + \" / \" + m.getTeam().getName());\n}",
+      "note": "**별칭을 안 줬다.** 페치 조인은 \"이것도 같이 가져와라\" 는 지시일 뿐이라 별칭이 필요 없다 — 그리고 12.3절에서 볼 이유로 **주지 않는 편이 맞다.**"
+    },
+    {
+      "type": "sql",
+      "caption": "쿼리가 하나가 된다",
+      "sql": "SELECT M.MEMBER_ID, M.USERNAME, M.TEAM_ID,\n       T.TEAM_ID, T.NAME\n  FROM MEMBER M\n INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID",
+      "note": "반복문에서 `getTeam().getName()` 을 불러도 SQL 이 더 안 나간다. **이미 채워져 있기 때문이다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "페치 조인은 지연 로딩 설정을 이긴다",
+      "md": "`@ManyToOne(fetch = LAZY)` 로 두었는데도 페치 조인을 쓰면 진짜 객체가 들어온다.\n\n모순처럼 보이지만 그게 의도다. **LAZY 는 기본값을 정하는 것이고, 페치 조인은 그 쿼리에 한해 다르게 하겠다는 것**이다. 9.2절에서 \"전부 LAZY 로 두고 필요한 자리에서 명시적으로 가져온다\" 고 한 설계가 여기서 완성된다.\n\n반대로 EAGER 로 두면 이 선택권이 없다 — 페치 조인을 쓰든 안 쓰든 항상 조인이 나간다."
+    },
+    {
+      "type": "heading",
+      "text": "컬렉션 페치 조인 — 행이 늘어난다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<Team> teams = em.createQuery(\n        \"SELECT t FROM Team t JOIN FETCH t.members\", Team.class)\n    .getResultList();\n\nSystem.out.println(teams.size());   // 팀이 2개인데 3이 나온다"
+    },
+    {
+      "type": "figure",
+      "caption": "왜 3인가",
+      "ascii": "   컬렉션 페치 조인은 행이 뻥튀기된다\n\n   TEAM                      MEMBER\n   ┌──────┬───────┐          ┌──────┬──────────┬─────────┐\n   │ ID   │ NAME  │          │ ID   │ USERNAME │ TEAM_ID │\n   ├──────┼───────┤          ├──────┼──────────┼─────────┤\n   │ 1    │ teamA │          │ 1    │ kim      │    1    │\n   │ 2    │ teamB │          │ 2    │ lee      │    1    │\n   └──────┴───────┘          │ 3    │ park     │    2    │\n                             └──────┴──────────┴─────────┘\n\n   \"SELECT t FROM Team t JOIN FETCH t.members\"\n\n   조인 결과 (SQL 이 실제로 돌려주는 행)\n   ┌──────┬───────┬──────┬──────────┐\n   │ T.ID │ NAME  │ M.ID │ USERNAME │\n   ├──────┼───────┼──────┼──────────┤\n   │ 1    │ teamA │ 1    │ kim      │   <-- teamA 가\n   │ 1    │ teamA │ 2    │ lee      │   <-- 두 번 나온다\n   │ 2    │ teamB │ 3    │ park     │\n   └──────┴───────┴──────┴──────────┘\n\n   팀은 2개인데 결과가 3행이다.\n   그래서 JPQL 의 DISTINCT 가 같은 식별자의 엔티티를 하나로 합친다 (11.3)\n   (하이버네이트 6 부터는 이 합치기가 기본 동작이다)"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "DISTINCT 를 붙인다",
+      "code": "\"SELECT DISTINCT t FROM Team t JOIN FETCH t.members\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT DISTINCT T.TEAM_ID, T.NAME, M.MEMBER_ID, M.USERNAME, M.TEAM_ID\n  FROM TEAM T\n INNER JOIN MEMBER M ON T.TEAM_ID = M.TEAM_ID",
+      "note": "**SQL 의 DISTINCT 만으로는 안 걸러진다** — 회원 컬럼이 다르므로 행 전체는 서로 다르다. 11.3절에서 본 대로 JPQL 이 **애플리케이션에서 같은 식별자의 엔티티를 한 번 더 합친다.** 그래서 결과가 2가 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "하이버네이트 6 에서는 DISTINCT 를 안 써도 된다",
+      "md": "6 부터 **엔티티 조회 결과의 중복 제거가 기본 동작**이 됐다. `DISTINCT` 를 써도 SQL 에는 안 붙이고 애플리케이션 레벨 합치기만 한다.\n\n다만 5.x 를 쓰는 코드가 아직 많고, 명시해도 손해가 없으므로 **써 두는 편이 안전하다.** 팀에서 버전을 올릴 때 이 동작이 바뀐다는 것만 알고 있으면 된다."
+    },
+    {
+      "type": "heading",
+      "text": "9.4절의 숙제를 푼다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "9.4절에서 세어 본 코드",
+      "code": "Order order = em.find(Order.class, id);\norder.getMember().getName();\nfor (OrderItem oi : order.getOrderItems()) {\n    oi.getItem().getName();\n}\n// 주문상품이 10개면 SELECT 13번"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "페치 조인으로",
+      "code": "Order order = em.createQuery(\n        \"SELECT DISTINCT o FROM Order o \" +\n        \"JOIN FETCH o.member \" +\n        \"JOIN FETCH o.orderItems oi \" +\n        \"JOIN FETCH oi.item \" +\n        \"WHERE o.id = :id\", Order.class)\n    .setParameter(\"id\", id)\n    .getSingleResult();"
+    },
+    {
+      "type": "sql",
+      "caption": "SELECT 한 번",
+      "sql": "SELECT DISTINCT O.ORDER_ID, O.ORDER_DATE, O.STATUS, O.MEMBER_ID, O.DELIVERY_ID,\n       M.MEMBER_ID, M.NAME, M.CITY, M.STREET, M.ZIPCODE,\n       OI.ORDER_ITEM_ID, OI.ORDER_PRICE, OI.COUNT, OI.ORDER_ID, OI.ITEM_ID,\n       I.ITEM_ID, I.NAME, I.PRICE, I.STOCK_QUANTITY, I.DTYPE\n  FROM ORDERS O\n INNER JOIN MEMBER     M  ON O.MEMBER_ID = M.MEMBER_ID\n INNER JOIN ORDER_ITEM OI ON O.ORDER_ID = OI.ORDER_ID\n INNER JOIN ITEM       I  ON OI.ITEM_ID = I.ITEM_ID\n WHERE O.ORDER_ID = ?",
+      "note": "**13 → 1.** 6.4절 실습에서 적어 둔 숫자와 비교해 보라고 했던 그 자리다.\n\n다만 여기서 `JOIN FETCH oi.item` 처럼 **컬렉션 뒤에 별칭을 주고 이어 간 것**은 12.3절에서 볼 제약과 관련이 있다. 컬렉션 페치 조인은 하나까지다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그렇다고 다 페치 조인하면 안 된다",
+      "md": "조인이 늘어날수록 **결과 행이 곱해진다.** 주문 1건에 주문상품 10개면 10행, 여기에 다른 컬렉션을 하나 더 페치 조인하면 10 × N 행이다.\n\n그리고 컬럼 수도 늘어난다. 위 SQL 만 해도 20개다. 필요 없는 컬럼까지 네트워크로 실어 나른다.\n\n**필요한 것만 페치 조인한다.** 화면이 회원 이름만 쓴다면 `JOIN FETCH o.member` 하나면 되고, 애초에 DTO 로 조회하는 편이 나을 수도 있다(11.3절)."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"일반 조인과 페치 조인의 차이는?\"** → `SELECT` 절이다. 일반 조인은 조인만 하고 대상 엔티티 컬럼을 안 가져와서 프록시가 남는다. 페치 조인은 그 컬럼까지 가져와 채운다.\n- **\"페치 조인은 지연 로딩 설정을 무시하나요?\"** → 그렇다. LAZY 는 기본값이고 페치 조인은 그 쿼리에 한해 다르게 하겠다는 지시다.\n- **\"컬렉션 페치 조인에서 결과가 늘어나는 이유는?\"** → 일대다 조인이라 SQL 결과 행이 자식 수만큼 늘어난다. `DISTINCT` 로 애플리케이션에서 같은 식별자를 합친다.\n- **\"SQL DISTINCT 만으로 안 되는 이유는?\"** → 자식 컬럼이 다르므로 행 전체는 서로 다르다. JPQL 이 한 단계 더 해 준다.\n- **\"페치 조인을 많이 쓰면 되나요?\"** → 조인마다 행과 컬럼이 곱해진다. 필요한 것만 하고, 조회 전용이면 DTO 를 고려한다."
+    }
+  ],
+  "recap": [
+    "페치 조인은 SQL 에 없는 **JPQL 전용 문법**이고 성능 최적화를 위한 것이다.",
+    "일반 조인은 조인만 한다 — `SELECT` 절에 상대 컬럼이 없어서 프록시가 남고 N+1 이 그대로다.",
+    "`JOIN FETCH` 는 상대 컬럼까지 가져와 채운다. 그래서 추가 SELECT 가 없다.",
+    "**페치 조인은 지연 로딩 설정보다 우선한다.** 전부 LAZY 로 두는 설계가 여기서 완성된다.",
+    "컬렉션 페치 조인은 일대다라 행이 늘어난다. `DISTINCT` 가 애플리케이션에서 합친다.",
+    "SQL DISTINCT 만으로는 안 된다 — 자식 컬럼이 달라 행 전체는 서로 다르기 때문이다.",
+    "9.4절의 쿼리 13번이 1번이 된다. 다만 필요한 것만 페치 조인한다."
+  ],
+  "drills": [
+    {
+      "task": "회원 5명·팀 3개를 만들고 일반 조회 + 반복문으로 N+1 을 재현해 쿼리 수를 센다.",
+      "done_when": "숫자를 적었다.",
+      "minutes": 20
+    },
+    {
+      "task": "`JOIN` 만 붙여 다시 실행한다.",
+      "done_when": "쿼리 수가 안 줄어드는 것을 확인했다. **이 실습이 이 절의 핵심이다** — 조인과 페치 조인의 차이를 몸으로 안다.",
+      "minutes": 20
+    },
+    {
+      "task": "`JOIN FETCH` 로 바꿔 다시 센다.",
+      "done_when": "1번이 되는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`SELECT t FROM Team t JOIN FETCH t.members` 를 DISTINCT 없이/있이 실행해 `size()` 를 비교한다.",
+      "done_when": "차이를 확인했다. 하이버네이트 6 이면 둘 다 같을 수 있으니 버전을 기록한다.",
+      "minutes": 25
+    },
+    {
+      "task": "9.4절의 주문 조회를 페치 조인으로 다시 짜고 쿼리 수를 6.4·9.4 에서 적어 둔 숫자와 비교한다.",
+      "done_when": "13 → 1 을 직접 확인했다.",
+      "hint": "이 책에서 세 번에 걸쳐 이어 온 실습이 여기서 닫힌다.",
+      "minutes": 30
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`JOIN` 과 `JOIN FETCH` 의 SQL 상 차이는?",
+      "a": "`SELECT` 절이다. 일반 조인은 조인만 하고 대상 엔티티의 컬럼을 가져오지 않아 프록시가 남지만, 페치 조인은 그 컬럼까지 함께 조회해 실제 객체를 채운다."
+    },
+    {
+      "q": "`@ManyToOne(fetch = LAZY)` 인데 페치 조인을 쓰면?",
+      "a": "진짜 객체가 들어온다. LAZY 는 기본값을 정하는 것이고 페치 조인은 그 쿼리에 한해 다르게 가져오겠다는 지시다."
+    },
+    {
+      "q": "컬렉션 페치 조인에서 팀 2개를 조회했는데 3건이 나오는 이유는?",
+      "a": "일대다 조인이라 SQL 결과 행이 자식(회원) 수만큼 늘어난다. 회원이 2명인 팀은 두 행으로 나온다."
+    },
+    {
+      "q": "SQL DISTINCT 로는 왜 안 걸러지는가?",
+      "a": "SQL DISTINCT 는 행 전체가 같아야 중복으로 친다. 자식 컬럼이 서로 다르므로 행은 다르다. JPQL 이 애플리케이션에서 같은 식별자의 엔티티를 한 번 더 합쳐 준다."
+    },
+    {
+      "q": "페치 조인을 많이 쓰면 무엇이 문제인가?",
+      "a": "조인마다 결과 행이 곱해지고 컬럼 수도 늘어난다. 필요 없는 데이터까지 네트워크로 실어 나르므로 필요한 것만 골라 쓴다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "페치 조인",
+      "en": "fetch join",
+      "what": "연관 엔티티를 함께 조회해 채우는 JPQL 전용 문법. SQL 에는 없다."
+    },
+    {
+      "term": "일반 조인",
+      "en": "",
+      "what": "조인만 하고 대상 엔티티를 가져오지 않는다. 조건을 걸기 위한 조인."
+    },
+    {
+      "term": "DISTINCT",
+      "en": "",
+      "what": "JPQL 에서는 SQL DISTINCT + 같은 식별자 엔티티 합치기 두 가지를 한다. 하이버네이트 6 은 후자가 기본."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Fetch Joins",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4779",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Fetch joins",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html#fetch-joins",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

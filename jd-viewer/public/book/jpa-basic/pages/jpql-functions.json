@@ -1,0 +1,212 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-functions",
+  "no": "11.9",
+  "chapter": 11,
+  "title": "JPQL 함수",
+  "summary": "표준 함수와 사용자 정의 함수. Dialect 에 등록해야 하는 이유.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 표준 함수 목록을 알고, 표준이 아닌 것을 구분할 수 있다.",
+    "DB 고유 함수를 쓰려면 무엇이 필요한지 안다.",
+    "`SIZE()` 가 어떤 SQL 로 번역되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "JPQL 표준 함수는 **모든 DB 에서 동작이 보장되는 것들**이다. 종류가 많지 않은데, 그게 표준의 성격이다 — 어느 DB 에나 있는 것만 넣을 수 있다."
+    },
+    {
+      "type": "table",
+      "caption": "표준 함수",
+      "note": "`SIZE` 와 `INDEX` 는 SQL 에 없는 JPQL 전용이다. 나머지는 SQL 함수와 이름·동작이 같다.",
+      "columns": [
+        "함수",
+        "무엇",
+        "예"
+      ],
+      "rows": [
+        [
+          "`CONCAT`",
+          "문자 이어붙이기",
+          "`CONCAT('a', m.name)` 또는 `'a' \\|\\| m.name`"
+        ],
+        [
+          "`SUBSTRING`",
+          "부분 문자열",
+          "`SUBSTRING(m.name, 2, 3)`"
+        ],
+        [
+          "`TRIM`",
+          "공백 제거",
+          "`TRIM(LEADING FROM m.name)`"
+        ],
+        [
+          "`LOWER` / `UPPER`",
+          "대소문자",
+          "`UPPER(m.name)`"
+        ],
+        [
+          "`LENGTH`",
+          "길이",
+          "`LENGTH(m.name)`"
+        ],
+        [
+          "`LOCATE`",
+          "위치 찾기 (1부터)",
+          "`LOCATE('de', 'abcdef')` → 4"
+        ],
+        [
+          "`ABS` `SQRT` `MOD`",
+          "수학",
+          "`MOD(10, 3)`"
+        ],
+        [
+          "`SIZE`",
+          "**컬렉션 크기**",
+          "`SIZE(t.members)`"
+        ],
+        [
+          "`INDEX`",
+          "`@OrderColumn` 리스트의 위치",
+          "거의 안 쓴다"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "SIZE — 컬렉션 크기",
+      "code": "\"SELECT t.name, SIZE(t.members) FROM Team t\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT T.NAME,\n       (SELECT COUNT(M.MEMBER_ID) FROM MEMBER M WHERE M.TEAM_ID = T.TEAM_ID)\n  FROM TEAM T",
+      "note": "**상관 서브쿼리**로 번역된다(11.6절). 팀이 1000개면 서브쿼리가 1000번 돌 수 있으므로, 목록에서 쓸 때는 실행 계획을 확인한다. 조인 + `GROUP BY` 로 바꾸는 편이 나은 경우가 많다."
+    },
+    {
+      "type": "heading",
+      "text": "표준에 없는 함수를 쓰려면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "MySQL 의 group_concat 을 그냥 쓰면",
+      "code": "\"SELECT group_concat(m.username) FROM Member m\"",
+      "note": "JPQL 파서가 모르는 이름이라 실패한다. **표준 함수가 아니면 JPA 는 그것이 함수인지도 모른다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "function() 으로 감싼다",
+      "code": "\"SELECT function('group_concat', m.username) FROM Member m\"",
+      "note": "\"이건 함수다, 이름은 이것이다\" 라고 JPA 에 알려 주는 문법이다. 하이버네이트에서는 `function` 을 생략하고 바로 쓸 수도 있다."
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT group_concat(M.USERNAME) FROM MEMBER M"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그래도 dialect 에 등록하는 편이 낫다",
+      "md": "`function('...')` 은 문자열이라 오타를 못 잡고, 반환 타입도 JPA 가 모른다. 자주 쓸 함수라면 dialect 에 등록해 둔다.\n\n**하이버네이트 6** 에서는 `FunctionContributor` 를 구현한다.\n\n```java\npublic class MyFunctionContributor implements FunctionContributor {\n    @Override\n    public void contributeFunctions(FunctionContributions fc) {\n        fc.getFunctionRegistry().registerPattern(\n            \"group_concat\", \"group_concat(?1)\",\n            fc.getTypeConfiguration()\n              .getBasicTypeRegistry()\n              .resolve(StandardBasicTypes.STRING));\n    }\n}\n```\n\n하이버네이트 5 에서는 `Dialect` 를 상속해 `registerFunction()` 을 부르는 방식이었다. **버전에 따라 방법이 다르므로** 옛 자료를 그대로 따라 하면 안 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "DB 고유 함수를 쓰는 순간 이식성이 사라진다",
+      "md": "`group_concat` 은 MySQL, `string_agg` 는 PostgreSQL, `LISTAGG` 는 Oracle 이다. 하나를 쓰면 그 쿼리는 그 DB 전용이 된다.\n\n11.1절에서 \"JPQL 은 DB 를 바꿔도 그대로\" 라고 했던 것이 여기서 깨진다. 그래서 판단이 필요하다.\n\n- **DB 를 바꿀 일이 정말 없는가?** 대부분은 없다. 그러면 써도 된다.\n- **그 로직을 자바로 옮기면 얼마나 비싼가?** 문자열 이어붙이기 정도는 자바에서 해도 된다. 윈도우 함수로 순위를 매기는 것은 DB 가 하는 게 맞다.\n\n쓰기로 했다면 **그 쿼리에 주석을 남긴다.** 나중에 DB 를 옮길 때 찾아야 하는 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 표준 함수가 적은 이유는?\"** → 모든 DB 에 공통으로 있는 것만 표준이 될 수 있기 때문이다.\n- **\"DB 고유 함수를 쓰려면?\"** → `function('이름', 인자)` 로 감싸거나 dialect 에 등록한다. 하이버네이트 6 은 `FunctionContributor`.\n- **\"`SIZE()` 는 어떤 SQL 이 되나요?\"** → 상관 서브쿼리(`SELECT COUNT(...) WHERE FK = ...`)다. 목록에서 쓰면 행마다 돌 수 있으니 실행 계획을 본다.\n- **\"DB 고유 함수를 쓸 때 주의할 점은?\"** → 그 쿼리가 그 DB 전용이 된다. 이식성을 포기하는 결정이므로 주석으로 표시해 둔다."
+    }
+  ],
+  "recap": [
+    "JPQL 표준 함수는 모든 DB 에 공통인 것만 있다. 그래서 종류가 적다.",
+    "`SIZE()` 와 `INDEX()` 는 SQL 에 없는 JPQL 전용이다.",
+    "`SIZE()` 는 **상관 서브쿼리**로 번역된다. 목록에서 쓸 때는 실행 계획을 확인한다.",
+    "표준 밖 함수는 `function('이름', 인자)` 로 감싸거나 dialect 에 등록한다.",
+    "하이버네이트 6 은 `FunctionContributor`, 5 는 `Dialect` 상속 — 버전마다 방법이 다르다.",
+    "DB 고유 함수를 쓰면 그 쿼리는 그 DB 전용이 된다. 쓰기로 했다면 주석을 남긴다."
+  ],
+  "drills": [
+    {
+      "task": "`SELECT t.name, SIZE(t.members) FROM Team t` 를 실행하고 SQL 을 확인한다.",
+      "done_when": "상관 서브쿼리로 번역되는 것을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "같은 결과를 `JOIN` + `GROUP BY COUNT` 로 다시 짜고 두 SQL 의 실행 계획을 비교한다.",
+      "done_when": "어느 쪽이 나은지 데이터 규모별로 말할 수 있다.",
+      "minutes": 30
+    },
+    {
+      "task": "표준에 없는 함수를 그냥 써서 실패시킨 뒤 `function()` 으로 감싼다.",
+      "done_when": "두 경우의 차이를 확인했다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JPQL 표준 함수가 많지 않은 이유는?",
+      "a": "모든 DB 에서 동작이 보장되어야 표준이 될 수 있기 때문이다. DB 마다 있고 없고가 갈리는 함수는 표준에 넣을 수 없다."
+    },
+    {
+      "q": "`SIZE(t.members)` 는 어떤 SQL 이 되는가?",
+      "a": "`(SELECT COUNT(...) FROM MEMBER M WHERE M.TEAM_ID = T.TEAM_ID)` 같은 상관 서브쿼리다. 바깥 행마다 실행될 수 있어 목록에서 주의가 필요하다."
+    },
+    {
+      "q": "표준에 없는 DB 함수를 JPQL 에서 쓰는 두 방법은?",
+      "a": "`function('이름', 인자)` 로 감싸거나, dialect 에 등록한다(하이버네이트 6 은 `FunctionContributor`)."
+    },
+    {
+      "q": "DB 고유 함수를 쓰면 무엇을 포기하는가?",
+      "a": "이식성이다. 그 쿼리는 그 DB 전용이 되므로, 쓰기로 했다면 나중에 찾을 수 있게 주석으로 표시해 둔다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "표준 함수",
+      "en": "",
+      "what": "JPA 명세가 정한 함수. 모든 구현체·DB 에서 동작이 보장된다."
+    },
+    {
+      "term": "SIZE()",
+      "en": "",
+      "what": "컬렉션의 크기. 상관 서브쿼리로 번역된다."
+    },
+    {
+      "term": "function()",
+      "en": "",
+      "what": "표준에 없는 함수를 JPQL 에서 호출하는 문법."
+    },
+    {
+      "term": "FunctionContributor",
+      "en": "",
+      "what": "하이버네이트 6 에서 사용자 정의 함수를 등록하는 인터페이스."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL functions",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html#functions",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

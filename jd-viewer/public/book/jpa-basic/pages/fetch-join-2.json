@@ -1,0 +1,260 @@
+{
+  "book": "jpa-basic",
+  "id": "fetch-join-2",
+  "no": "12.3",
+  "chapter": 12,
+  "title": "페치 조인 2 — 한계",
+  "summary": "별칭을 못 쓰는 이유, 컬렉션 페치 조인에 페이징을 걸면 벌어지는 일, 둘 이상 못 쓰는 제약.",
+  "minutes": 22,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "페치 조인에 별칭을 주면 안 되는 이유를 설명할 수 있다.",
+    "컬렉션 페치 조인 둘 이상이 왜 위험한지 안다.",
+    "컬렉션 페치 조인 + 페이징의 문제와 실무 해법을 안다.",
+    "`@BatchSize` 를 쓰는 자리와 그 효과를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "12.2절만 보면 페치 조인이 만능처럼 보인다. 실제로는 제약이 셋 있고, **그중 하나는 서비스를 멈출 수 있다.**"
+    },
+    {
+      "type": "heading",
+      "text": "한계 1 — 별칭을 주지 않는다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "\"SELECT t FROM Team t JOIN FETCH t.members m WHERE m.age > 20\"",
+      "note": "하이버네이트는 이걸 **허용한다.** 그래서 더 위험하다 — 문법 오류가 안 나므로 문제를 모른 채 배포된다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "왜 위험한가 — 컬렉션이 조작된다",
+      "md": "위 쿼리의 결과에서 `team.getMembers()` 에는 **20살 넘는 회원만** 들어 있다. 그런데 그 `Team` 은 **영속 상태**다(11.3절).\n\n즉 1차 캐시에 \"회원이 2명인 팀A\" 가 올라간다. 실제로는 5명인데.\n\n그 상태에서 컬렉션을 건드리면 어떻게 될까. `orphanRemoval` 이 켜져 있다면(9.3절) **컬렉션에서 빠진 3명이 삭제 대상**이 된다. 켜져 있지 않아도, 그 팀을 다시 조회하는 코드는 5명이 아니라 2명을 보게 된다.\n\n**페치 조인은 \"연관된 것을 전부 가져온다\"는 약속**이다. 그 약속을 어기면 영속성 컨텍스트가 사실과 다른 상태를 들고 있게 된다.\n\n조건을 걸어야 한다면 **컬렉션을 조작하는 게 아니라 다른 쿼리를 써야 한다** — 회원을 대상으로 조회하거나, DTO 로 뽑는다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "예외 — 다음 페치 조인을 이어 갈 때",
+      "md": "12.2절에서 이렇게 썼다.\n\n```\nJOIN FETCH o.orderItems oi\nJOIN FETCH oi.item\n```\n\n여기서 `oi` 는 **필터링용이 아니라 다음 경로를 이어 가기 위한 별칭**이다. 이건 괜찮다. 컬렉션을 거르는 데 쓰지 않으면 된다.\n\n기준은 하나다 — **별칭을 `WHERE` 나 `ON` 에 쓰는가.** 쓰면 컬렉션이 잘린다."
+    },
+    {
+      "type": "heading",
+      "text": "한계 2 — 컬렉션 페치 조인은 하나까지"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "\"SELECT t FROM Team t \" +\n\"JOIN FETCH t.members \" +\n\"JOIN FETCH t.projects\"",
+      "note": "`MultipleBagFetchException` 이 나거나, `Set` 이면 오류 없이 **카테시안 곱**이 만들어진다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "행이 곱해진다",
+      "md": "팀에 회원 5명, 프로젝트 4개면 조인 결과는 **20행**이다. 팀 하나를 위해 20행을 받는다.\n\n팀이 100개고 각각 그렇다면 2000행. 회원과 프로젝트가 각각 50개씩이면 팀당 2500행, 전체 25만 행이다. **곱셈이라 금방 커진다.**\n\n`List` 로 두 개를 페치 조인하면 하이버네이트가 `MultipleBagFetchException` 으로 막아 준다(순서 보장이 불가능해지기 때문). `Set` 이면 막지 않는다 — **오류 없이 느려지는 쪽**이라 더 나쁘다.\n\n일대일·다대일(`ToOne`)은 몇 개를 붙여도 행이 안 늘어나므로 제한이 없다. **문제는 컬렉션끼리다.**"
+    },
+    {
+      "type": "heading",
+      "text": "한계 3 — 페이징과 같이 못 쓴다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "List<Team> teams = em.createQuery(\n        \"SELECT t FROM Team t JOIN FETCH t.members\", Team.class)\n    .setFirstResult(0)\n    .setMaxResults(10)\n    .getResultList();"
+    },
+    {
+      "type": "figure",
+      "caption": "무슨 일이 일어나나",
+      "ascii": "   컬렉션 페치 조인 + 페이징 = 메모리에서 자른다\n\n\n   \"SELECT t FROM Team t JOIN FETCH t.members\"\n   .setFirstResult(0).setMaxResults(1)\n\n\n   내가 원한 것                          하이버네이트가 하는 일\n\n   팀 1개                                 SELECT ... FROM TEAM T\n   (그 팀의 회원 전부)                     INNER JOIN MEMBER M ...\n                                          (LIMIT 이 없다)\n                                                │\n                                                ▼\n                                          전체 행을 메모리로\n                                                │\n                                                ▼\n                                          자바에서 자른다\n\n\n   WARN: firstResult/maxResults specified with collection fetch;\n         applying in memory\n\n\n   왜 LIMIT 을 못 붙이나\n\n   조인 결과에서 \"1행\" 은 팀 하나가 아니다.\n   회원이 3명인 팀이면 3행이 그 팀 하나다.\n   LIMIT 1 을 붙이면 회원 한 명만 딸린 반쪽짜리 팀이 나온다.\n\n   팀이 10만 개면 그대로 OutOfMemoryError 다."
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "로그에 찍히는 경고",
+      "code": "WARN  HHH90003004: firstResult/maxResults specified with collection fetch;\n      applying in memory",
+      "note": "**경고일 뿐 오류가 아니다.** 개발 환경에서는 데이터가 적어 잘 돌고, 운영에서 터진다. 로그 경고를 흘려보내면 안 되는 대표적인 자리다."
+    },
+    {
+      "type": "heading",
+      "text": "그럼 어떻게 하나 — 두 단계로 나눈다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "1단계 — ToOne 만 페치 조인하고 페이징한다",
+      "code": "List<Order> orders = em.createQuery(\n        \"SELECT o FROM Order o \" +\n        \"JOIN FETCH o.member \" +      // ToOne: 행이 안 늘어난다\n        \"JOIN FETCH o.delivery\",      // ToOne\n        Order.class)\n    .setFirstResult(0)\n    .setMaxResults(10)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT O.*, M.*, D.*\n  FROM ORDERS O\n INNER JOIN MEMBER   M ON O.MEMBER_ID = M.MEMBER_ID\n INNER JOIN DELIVERY D ON O.DELIVERY_ID = D.DELIVERY_ID\n LIMIT 10 OFFSET 0",
+      "note": "**`LIMIT` 이 SQL 로 나간다.** ToOne 조인은 행을 늘리지 않으므로 DB 가 자를 수 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "2단계 — 컬렉션은 배치 사이즈로",
+      "code": "// 전역 설정 (권장)\n// hibernate.default_batch_fetch_size = 100\n\n// 또는 개별 지정\n@BatchSize(size = 100)\n@OneToMany(mappedBy = \"order\", fetch = FetchType.LAZY)\nprivate List<OrderItem> orderItems = new ArrayList<>();"
+    },
+    {
+      "type": "sql",
+      "caption": "N번이 1번으로 묶인다",
+      "sql": "-- 배치 없이 (주문 10건이면 10번)\nSELECT * FROM ORDER_ITEM WHERE ORDER_ID = 1\nSELECT * FROM ORDER_ITEM WHERE ORDER_ID = 2\n...\n\n-- 배치 사이즈 100\nSELECT * FROM ORDER_ITEM WHERE ORDER_ID IN (1, 2, 3, ..., 10)",
+      "note": "쿼리가 **1(주문) + 1(주문상품) + 1(상품)** = 3번이 된다. 페치 조인의 1번보다는 많지만, **페이징이 되고 행이 곱해지지 않는다.**"
+    },
+    {
+      "type": "table",
+      "caption": "정리 — 언제 무엇을",
+      "note": "**전역 배치 사이즈를 100~1000 으로 깔아 두는 것**이 실무의 기본 안전장치다. 페치 조인을 빠뜨린 자리가 있어도 N+1 이 N/100+1 로 줄어든다.",
+      "columns": [
+        "상황",
+        "방법"
+      ],
+      "rows": [
+        [
+          "ToOne 연관만 필요",
+          "**페치 조인**. 제약이 없다"
+        ],
+        [
+          "컬렉션 하나 + 페이징 없음",
+          "**페치 조인 + DISTINCT**"
+        ],
+        [
+          "컬렉션 하나 + **페이징 필요**",
+          "ToOne 만 페치 조인 + **배치 사이즈**"
+        ],
+        [
+          "컬렉션 둘 이상",
+          "하나만 페치 조인하고 나머지는 배치 사이즈"
+        ],
+        [
+          "조회 전용 화면",
+          "**DTO 직접 조회**(11.3절). 애초에 엔티티를 안 만든다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "@EntityGraph — 어노테이션으로 같은 일을",
+      "md": "JPQL 을 안 쓰고 페치 대상을 지정하는 표준 방법이다. Spring Data JPA 에서 특히 편하다.\n\n```java\n@EntityGraph(attributePaths = {\"member\", \"delivery\"})\nList<Order> findAll();\n```\n\n효과는 페치 조인과 같고 **한계도 같다** — 컬렉션 + 페이징 문제가 그대로 있다. 문법이 다를 뿐 같은 것이라고 보면 된다.\n\n다만 하나 차이가 있다. `@EntityGraph` 는 **LEFT JOIN 으로 나간다.** 연관이 없는 행도 결과에 남으므로, `JOIN FETCH`(내부 조인)와 결과 건수가 다를 수 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"페치 조인에 별칭을 주면 왜 안 되나요?\"** → `WHERE` 로 컬렉션을 거르면 일부만 담긴 엔티티가 영속 상태로 올라간다. 페치 조인은 '연관된 것을 전부 가져온다'는 약속이라, 어기면 컨텍스트가 사실과 다른 상태를 갖는다.\n- **\"컬렉션 페치 조인을 둘 이상 하면?\"** → `List` 면 `MultipleBagFetchException`, `Set` 이면 오류 없이 카테시안 곱이 만들어진다. 후자가 더 위험하다.\n- **\"컬렉션 페치 조인에 페이징을 걸면?\"** → 하이버네이트가 경고를 찍고 **전체를 메모리로 가져와 자바에서 자른다.** 데이터가 많으면 OOM 이다.\n- **\"그럼 어떻게 하나요?\"** → ToOne 만 페치 조인해서 페이징하고, 컬렉션은 `default_batch_fetch_size` 로 `IN` 절 묶음 조회를 하게 한다. 쿼리는 3번쯤 되지만 안전하다.\n- **\"`@EntityGraph` 와 페치 조인의 차이는?\"** → 효과와 한계는 같고 문법만 다르다. `@EntityGraph` 는 LEFT JOIN 으로 나간다는 점이 다르다."
+    }
+  ],
+  "recap": [
+    "페치 조인에 **별칭을 주고 `WHERE` 로 거르면** 컬렉션이 잘린 채 영속 상태가 된다. 하이버네이트가 막아 주지 않는다.",
+    "다음 페치 조인을 이어 가기 위한 별칭은 괜찮다. 기준은 '별칭을 조건에 쓰는가' 다.",
+    "컬렉션 페치 조인은 하나까지. 둘이면 행이 곱해지고 `List` 는 `MultipleBagFetchException` 이 난다.",
+    "**컬렉션 페치 조인 + 페이징은 전체를 메모리로 가져와 자른다.** 경고만 찍히고 오류가 아니라 더 위험하다.",
+    "해법은 두 단계 — ToOne 은 페치 조인해서 페이징하고, 컬렉션은 배치 사이즈로 묶는다.",
+    "`default_batch_fetch_size` 를 100~1000 으로 깔아 두는 것이 기본 안전장치다.",
+    "`@EntityGraph` 는 같은 일을 어노테이션으로 한다. 한계도 같고, LEFT JOIN 으로 나간다는 점만 다르다."
+  ],
+  "drills": [
+    {
+      "task": "`JOIN FETCH t.members m WHERE m.age > 20` 을 실행하고 `team.getMembers().size()` 를 확인한다.",
+      "done_when": "실제 회원 수보다 적게 나오는 것을 봤다. 오류가 안 난다는 것도 확인한다.",
+      "hint": "이 절에서 가장 중요한 실습이다.",
+      "minutes": 25
+    },
+    {
+      "task": "컬렉션 페치 조인에 `setMaxResults(1)` 을 걸고 로그를 본다.",
+      "done_when": "`applying in memory` 경고를 직접 봤고 SQL 에 LIMIT 이 없는 것도 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`List` 컬렉션 두 개를 페치 조인해 본다.",
+      "done_when": "`MultipleBagFetchException` 을 확인했다. `Set` 으로 바꾸면 어떻게 되는지도 본다.",
+      "minutes": 25
+    },
+    {
+      "task": "주문 목록을 ToOne 페치 조인 + 페이징으로 조회하고 SQL 에 LIMIT 이 붙는지 확인한다.",
+      "done_when": "LIMIT 이 SQL 로 나가는 것을 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`hibernate.default_batch_fetch_size = 100` 을 켜고 같은 조회에서 주문상품을 순회한다.",
+      "done_when": "`IN (...)` 쿼리가 나가고 총 쿼리가 3번인 것을 확인했다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "페치 조인에 별칭을 주고 `WHERE` 로 거르면 무엇이 문제인가?",
+      "a": "컬렉션의 일부만 담긴 엔티티가 영속 상태로 1차 캐시에 올라간다. 그 상태에서 컬렉션을 다루면 실제 데이터와 어긋나고, `orphanRemoval` 이 켜져 있으면 빠진 원소가 삭제 대상이 된다."
+    },
+    {
+      "q": "그럼 페치 조인에 별칭을 절대 못 쓰는가?",
+      "a": "다음 페치 조인을 이어 가기 위한 별칭(`JOIN FETCH o.orderItems oi JOIN FETCH oi.item`)은 괜찮다. 기준은 그 별칭을 `WHERE`/`ON` 조건에 쓰느냐다."
+    },
+    {
+      "q": "컬렉션 페치 조인을 둘 이상 하면?",
+      "a": "결과 행이 곱해진다. `List` 면 `MultipleBagFetchException` 으로 막히지만 `Set` 이면 오류 없이 카테시안 곱이 만들어져 더 위험하다."
+    },
+    {
+      "q": "컬렉션 페치 조인에 페이징을 걸면 실제로 무슨 일이 일어나는가?",
+      "a": "SQL 에 LIMIT 을 붙이지 못하고 전체 행을 메모리로 가져온 뒤 자바에서 자른다. 경고만 찍히고 오류가 아니라 개발 환경에서는 드러나지 않는다."
+    },
+    {
+      "q": "왜 LIMIT 을 붙일 수 없는가?",
+      "a": "조인 결과에서 한 행이 부모 하나가 아니기 때문이다. 회원 3명인 팀은 3행이므로 `LIMIT 1` 은 회원 한 명만 딸린 반쪽 팀을 만든다."
+    },
+    {
+      "q": "컬렉션 + 페이징의 실무 해법은?",
+      "a": "ToOne 연관만 페치 조인해서 페이징하고, 컬렉션은 `default_batch_fetch_size` 로 `IN` 절 묶음 조회를 하게 한다. 쿼리 수는 3번쯤이지만 안전하고 페이징이 된다."
+    },
+    {
+      "q": "`@EntityGraph` 와 페치 조인의 차이는?",
+      "a": "효과와 한계는 같고 문법만 다르다. 다만 `@EntityGraph` 는 LEFT JOIN 으로 나가므로 연관이 없는 행도 남아 결과 건수가 다를 수 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "MultipleBagFetchException",
+      "en": "",
+      "what": "`List` 컬렉션을 둘 이상 페치 조인할 때 나는 예외. 순서 보장이 불가능해지기 때문이다."
+    },
+    {
+      "term": "카테시안 곱",
+      "en": "cartesian product",
+      "what": "여러 컬렉션을 조인할 때 행이 곱셈으로 늘어나는 현상."
+    },
+    {
+      "term": "배치 사이즈",
+      "en": "batch fetch size",
+      "what": "여러 건의 지연 로딩을 `IN` 절 하나로 묶는 설정. 컬렉션 + 페이징의 표준 해법."
+    },
+    {
+      "term": "@EntityGraph",
+      "en": "",
+      "what": "함께 조회할 연관 경로를 어노테이션으로 지정하는 표준 기능. LEFT JOIN 으로 나간다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Fetch Joins",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4779",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Fetch joins",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html#fetch-joins",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

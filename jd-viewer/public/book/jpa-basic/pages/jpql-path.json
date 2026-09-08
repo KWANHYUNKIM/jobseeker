@@ -1,0 +1,256 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-path",
+  "no": "12.1",
+  "chapter": 12,
+  "title": "경로 표현식",
+  "summary": "상태 필드·단일 값 연관 경로·컬렉션 값 연관 경로. 묵시적 조인이 위험한 이유.",
+  "minutes": 18,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "경로 표현식 세 가지를 구분하고 각각 더 탐색할 수 있는지 판단할 수 있다.",
+    "묵시적 조인이 언제 발생하는지, 왜 피해야 하는지 설명할 수 있다.",
+    "컬렉션 경로에서 별칭을 받아 탐색을 이어 가는 방법을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**경로 표현식**은 `m.username`·`m.team.name` 처럼 점(`.`)을 찍어 들어가는 것이다. 문법 같지만 실제로는 **어떤 SQL 이 나갈지를 결정하는 자리**다.\n\n11.5절에서 \"묵시적 조인을 피하라\"고 하고 넘겼는데, 그 이야기의 뿌리가 여기다."
+    },
+    {
+      "type": "figure",
+      "caption": "세 가지 경로",
+      "ascii": "   경로 표현식 세 가지\n\n\n   1. 상태 필드          m.username\n\n      ┌──────────────┐\n      │ Member       │\n      │   username   │  <-- 값이다. 여기서 끝.\n      └──────────────┘\n      m.username.xxx    불가능\n\n\n   2. 단일 값 연관 경로   m.team      (@ManyToOne, @OneToOne)\n\n      ┌──────────────┐        ┌──────────────┐\n      │ Member       │───────▶│ Team         │\n      │   team       │        │   name       │\n      └──────────────┘        └──────────────┘\n      m.team.name       가능.  대신 묵시적 INNER JOIN 이 나간다\n\n\n   3. 컬렉션 값 연관 경로  t.members   (@OneToMany, @ManyToMany)\n\n      ┌──────────────┐        ┌──────────────┐\n      │ Team         │───────▶│ Member       │  Member\n      │   members    │        │              │  Member\n      └──────────────┘        └──────────────┘  Member\n      t.members.username     불가능. 여러 개 중 누구인지 모른다\n\n      명시적 조인으로 별칭을 주면 그때부터 탐색할 수 있다\n      SELECT m.username FROM Team t JOIN t.members m"
+    },
+    {
+      "type": "table",
+      "caption": "정리",
+      "note": "**두 번째 줄이 문제**다. 조인이 나가는데 쿼리에는 `JOIN` 이라는 글자가 없다.",
+      "columns": [
+        "종류",
+        "예",
+        "더 탐색",
+        "조인"
+      ],
+      "rows": [
+        [
+          "**상태 필드**",
+          "`m.username`",
+          "**불가**",
+          "없음"
+        ],
+        [
+          "**단일 값 연관 경로**",
+          "`m.team`",
+          "가능",
+          "**묵시적 INNER JOIN**"
+        ],
+        [
+          "**컬렉션 값 연관 경로**",
+          "`t.members`",
+          "**불가**",
+          "묵시적 INNER JOIN"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "1. 상태 필드"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "\"SELECT m.username FROM Member m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.USERNAME FROM MEMBER M",
+      "note": "조인이 없다. 경로가 여기서 끝나므로 가장 안전한 종류다."
+    },
+    {
+      "type": "heading",
+      "text": "2. 단일 값 연관 경로 — 조인이 숨는다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "\"SELECT m.team.name FROM Member m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT T.NAME\n  FROM MEMBER M\n INNER JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID",
+      "note": "**`JOIN` 을 안 썼는데 조인이 나갔다.** 그리고 항상 내부 조인이라, 팀이 없는 회원은 결과에서 사라진다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "경로가 길어지면 조인이 쌓인다",
+      "md": "```\nSELECT o.member.team.branch.name FROM Order o\n```\n\n조인이 **세 개** 나간다. 쿼리 한 줄만 보고는 알 수 없다.\n\n그리고 실무에서 진짜 문제는 이것이다 — **느린 쿼리를 발견했을 때 어느 코드가 그것을 만들었는지 못 찾는다.** 슬로우 쿼리 로그에는 4-way 조인이 찍혀 있는데, 코드를 검색하면 `JOIN` 이라는 글자가 어디에도 없다.\n\n3.1절에서 `hibernate.use_sql_comments` 를 켜라고 한 이유 중 하나가 이것이다. 그래도 명시적으로 쓰는 편이 훨씬 낫다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "명시적으로 쓴다",
+      "code": "\"SELECT t.name FROM Member m JOIN m.team t\"\n\n// 외부 조인이 필요하면\n\"SELECT t.name FROM Member m LEFT JOIN m.team t\""
+    },
+    {
+      "type": "heading",
+      "text": "3. 컬렉션 값 연관 경로 — 더 못 들어간다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "\"SELECT t.members.username FROM Team t\"      // 안 된다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 안 되는가",
+      "md": "`t.members` 는 **회원 여러 명**이다. `.username` 을 붙이면 그 여러 명 중 누구의 이름인지 정할 수 없다.\n\n자바로 치면 `List<Member>` 에 `.getUsername()` 을 부르는 것과 같다. 리스트에는 그런 메서드가 없다.\n\n그래서 **하나씩 꺼내는 단계**가 필요하고, 그게 조인 + 별칭이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "별칭을 받으면 그때부터 탐색할 수 있다",
+      "code": "\"SELECT m.username FROM Team t JOIN t.members m\""
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.USERNAME\n  FROM TEAM T\n INNER JOIN MEMBER M ON T.TEAM_ID = M.TEAM_ID",
+      "note": "`m` 이라는 별칭을 받으면 `m` 은 **회원 한 명**이 되므로 상태 필드처럼 다룰 수 있다. `SIZE(t.members)` 만은 예외적으로 컬렉션에 바로 쓸 수 있다(11.9절)."
+    },
+    {
+      "type": "heading",
+      "text": "결론 — 명시적 조인만 쓴다"
+    },
+    {
+      "type": "compare",
+      "caption": "같은 결과, 다른 코드",
+      "note": "오른쪽에는 조인이 몇 개인지, 어떤 종류인지가 전부 쿼리에 적혀 있다.",
+      "left": {
+        "title": "묵시적 조인",
+        "lang": "text",
+        "bad": true,
+        "code": "SELECT o.member.team.name\n  FROM Order o",
+        "md": "짧다. 대신 조인 두 개가 안 보이고 둘 다 내부 조인이며, 튜닝할 때 추적이 안 된다."
+      },
+      "right": {
+        "title": "명시적 조인",
+        "lang": "text",
+        "code": "SELECT t.name\n  FROM Order o\n  JOIN o.member m\n  JOIN m.team t",
+        "md": "길다. 대신 **나가는 SQL 이 코드 모양 그대로**다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "예외 — SELECT 절과 WHERE 절의 단일 경로",
+      "md": "\"묵시적 조인을 절대 쓰지 마라\"까지 갈 필요는 없다. `WHERE m.team.name = 'A'` 정도는 실무에서 흔히 쓰고 읽기도 쉽다.\n\n기준을 두자면 이렇다.\n\n- **경로가 한 단계면** 써도 된다 (`m.team.name`)\n- **두 단계를 넘어가면** 명시적으로 (`o.member.team.name`)\n- **외부 조인이 필요하면** 무조건 명시적으로 (묵시적은 내부 조인 전용)\n- **`FROM`·`JOIN` 절에는** 어차피 별칭이 필요하다\n\n그리고 **12.2절의 페치 조인은 반드시 명시적**이다. 묵시적 조인으로는 페치 조인을 만들 수 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"경로 표현식 세 가지는?\"** → 상태 필드, 단일 값 연관 경로, 컬렉션 값 연관 경로. 각각 더 탐색이 되는지와 조인 발생 여부가 다르다.\n- **\"`t.members.username` 이 왜 안 되나요?\"** → 컬렉션은 여러 건이라 그중 누구의 필드인지 정할 수 없다. 조인해서 별칭을 받으면 그때부터 탐색할 수 있다.\n- **\"묵시적 조인의 문제는?\"** → 쿼리에 조인이 보이지 않아 몇 개가 나갈지 모르고, 항상 내부 조인이며, 슬로우 쿼리를 발견해도 어느 코드에서 나왔는지 추적이 안 된다.\n- **\"그럼 절대 쓰면 안 되나요?\"** → 한 단계 경로는 실무에서 쓴다. 두 단계 이상이거나 외부 조인이 필요하면 명시적으로 쓴다."
+    }
+  ],
+  "recap": [
+    "경로 표현식은 셋 — 상태 필드, 단일 값 연관 경로, 컬렉션 값 연관 경로.",
+    "상태 필드는 더 탐색할 수 없고 조인도 안 생긴다. 가장 안전하다.",
+    "단일 값 연관 경로는 탐색이 되지만 **묵시적 내부 조인**이 나간다.",
+    "컬렉션 값 연관 경로는 더 탐색할 수 없다 — 여러 건 중 누구인지 정할 수 없기 때문이다.",
+    "컬렉션은 명시적 조인으로 **별칭을 받으면** 그때부터 상태 필드처럼 다룰 수 있다.",
+    "묵시적 조인의 진짜 문제는 성능이 아니라 **추적 불가능성**이다.",
+    "실무 기준 — 한 단계는 허용, 두 단계 이상이거나 외부 조인이 필요하면 명시적으로."
+  ],
+  "drills": [
+    {
+      "task": "`SELECT m.team.name FROM Member m` 을 실행하고 SQL 을 확인한다.",
+      "done_when": "INNER JOIN 이 나가는 것을 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "팀이 없는 회원을 만들고 같은 쿼리를 실행한다.",
+      "done_when": "그 회원이 결과에서 빠지는 것을 확인했다. 묵시적 조인이 내부 조인이라는 증거다.",
+      "minutes": 15
+    },
+    {
+      "task": "`SELECT o.member.team.name FROM Order o` 를 실행하고 조인이 몇 개인지 센다.",
+      "done_when": "SQL 에서 조인 두 개를 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`SELECT t.members.username FROM Team t` 를 시도한다.",
+      "done_when": "실패하는 것과 그 이유를 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 것을 `JOIN t.members m` 으로 고쳐 실행한다.",
+      "done_when": "별칭을 받으면 되는 것을 확인했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "단일 값 연관 경로를 쓰면 어떤 조인이 나가는가?",
+      "a": "묵시적 **내부** 조인이다. 그래서 연관이 없는 행(FK 가 NULL)은 결과에서 빠진다."
+    },
+    {
+      "q": "컬렉션 값 연관 경로에서 더 탐색할 수 없는 이유는?",
+      "a": "컬렉션은 여러 건이라 `.username` 을 붙여도 그중 누구의 것인지 정할 수 없다. `List<Member>` 에 `getUsername()` 이 없는 것과 같다."
+    },
+    {
+      "q": "컬렉션에서 탐색을 이어 가려면?",
+      "a": "명시적 조인으로 별칭을 받는다. `FROM Team t JOIN t.members m` 이후에는 `m` 이 회원 한 명이므로 `m.username` 이 가능하다."
+    },
+    {
+      "q": "묵시적 조인의 가장 실무적인 문제는?",
+      "a": "추적 불가능성이다. 슬로우 쿼리 로그에 4-way 조인이 찍혀도 코드에 `JOIN` 이라는 글자가 없어 어느 쿼리에서 나왔는지 찾기 어렵다."
+    },
+    {
+      "q": "페치 조인은 묵시적으로 만들 수 있는가?",
+      "a": "없다. 페치 조인은 반드시 `JOIN FETCH` 로 명시해야 한다(12.2절)."
+    }
+  ],
+  "terms": [
+    {
+      "term": "경로 표현식",
+      "en": "path expression",
+      "what": "`m.team.name` 처럼 점을 찍어 필드나 연관을 따라가는 표현. 종류에 따라 조인 발생 여부가 다르다."
+    },
+    {
+      "term": "상태 필드",
+      "en": "state field",
+      "what": "단순 값을 저장하는 필드. 더 탐색할 수 없다."
+    },
+    {
+      "term": "단일 값 연관 경로",
+      "en": "single valued association path",
+      "what": "`@ManyToOne`·`@OneToOne` 대상. 탐색은 되지만 묵시적 내부 조인이 발생한다."
+    },
+    {
+      "term": "컬렉션 값 연관 경로",
+      "en": "collection valued association path",
+      "what": "`@OneToMany`·`@ManyToMany` 대상. 더 탐색할 수 없고 별칭이 필요하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL functions",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html#functions",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
