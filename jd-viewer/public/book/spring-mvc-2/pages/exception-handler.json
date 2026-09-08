@@ -1,0 +1,146 @@
+{
+ "book": "spring-mvc-2",
+ "id": "exception-handler",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "@ExceptionHandler",
+ "summary": "컨트롤러 안에서 잡는다. 가장 많이 쓴다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@ExceptionHandler` 로 예외별 응답을 만들 수 있다.",
+  "10.4절의 불편함이 어떻게 사라지는지 안다.",
+  "부모 예외로 잡는 규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.4절의 불편함 넷을 다 없앤다.** 그리고 실무에서 쓰는 것은 거의 이것뿐이다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨트롤러 메서드처럼",
+   "ascii": "   @ExceptionHandler(ItemNotFoundException.class)\n   @ResponseStatus(HttpStatus.NOT_FOUND)\n   public ErrorResult handle(ItemNotFoundException e) {\n       return new ErrorResult(\"ITEM_NOT_FOUND\", e.getMessage());\n   }\n        |\n        +--> return value goes through HttpMessageConverter\n        +--> just like @ResponseBody\n\n   컨트롤러 메서드처럼 쓴다\n\n   parameter type can be omitted from the annotation\n   @ExceptionHandler\n   public ErrorResult handle(ItemNotFoundException e)",
+   "note": "**반환값이 `HttpMessageConverter` 를 탄다** — 1편 7.12절의 그것."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러 안에",
+   "code": "@Slf4j\n@RestController\npublic class ApiExceptionController {\n\n    @ResponseStatus(HttpStatus.BAD_REQUEST)\n    @ExceptionHandler(IllegalArgumentException.class)\n    public ErrorResult illegalExHandler(IllegalArgumentException e) {\n        log.error(\"[exceptionHandler] ex\", e);\n        return new ErrorResult(\"BAD\", e.getMessage());\n    }\n\n    @ExceptionHandler\n    public ResponseEntity<ErrorResult> userExHandler(UserException e) {\n        log.error(\"[exceptionHandler] ex\", e);\n        ErrorResult errorResult = new ErrorResult(\"USER-EX\", e.getMessage());\n        return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);\n    }\n\n    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)\n    @ExceptionHandler\n    public ErrorResult exHandler(Exception e) {\n        log.error(\"[exceptionHandler] ex\", e);\n        return new ErrorResult(\"EX\", \"내부 오류\");\n    }\n}",
+   "note": "**애너테이션에 타입을 안 써도 된다** — 파라미터 타입으로 판단한다. **적어 두는 편**이 의도가 드러난다.\n\n**상태 코드를 정하는 두 방법**이 나란히 있다. `@ResponseStatus` 는 **고정**, `ResponseEntity` 는 **코드에서 결정**한다.\n\n**마지막 `Exception e` 가 모든 것을 잡는다** — 아래에서 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 없어졌나",
+   "md": "10.4절에서 꼽은 넷이다.\n\n| | 어떻게 |\n|---|---|\n| **응답을 손으로 씀** | **반환값이 컨버터를 탄다** |\n| **`Accept` 직접 판단** | **컨버터가 협상한다** |\n| **예외마다 `if`** | **메서드가 나뉜다** |\n| **컨트롤러와 멂** | **같은 클래스 안** |\n\n**첫 둘이 크다.** `@RestController` 의 메서드와 완전히 같게 동작한다 — 1편 7.9절의 `@ResponseBody` 가 하던 일을 그대로 한다.\n\n**`ObjectMapper` 도 `setContentType` 도 없다.**\n\n**세 번째는 `if-else` 가 메서드 분리로** 바뀐 것이다. 5.9절에서 검증 로직을 클래스로 뺀 것과 같은 종류의 정리다.\n\n**네 번째가 이 절의 이름값**이다 — `ApiExceptionController` 의 예외를 **그 컨트롤러 안에서** 잡는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자식이 우선이다",
+   "md": "```java\n@ExceptionHandler(Exception.class)          // 부모\n@ExceptionHandler(IllegalArgumentException.class)   // 자식\n```\n\n**`IllegalArgumentException` 이 나면 자식 쪽이 잡는다.** 더 구체적인 것이 이긴다.\n\n**9.2절의 오류 페이지 등록, 5.6절의 오류 코드 단계와 같은 규칙**이다 — **구체적인 것부터**.\n\n**그런데 함정이 있다.**\n\n```java\n@ExceptionHandler(Exception.class)\npublic ErrorResult exHandler(Exception e) { ... }\n```\n\n**이것이 있으면 모든 예외를 잡는다.** 5.8절의 `typeMismatch` 도, 6.8절의 파싱 실패도, **스프링 내부 예외까지 전부**다.\n\n**10.5절에서 본 `DefaultHandlerExceptionResolver` 가 안 불린다** — 리졸버 순서상 `ExceptionHandlerExceptionResolver` 가 먼저다.\n\n**그러면 400 이어야 할 것이 500** 이 된다.\n\n**대응**\n\n```java\n@ExceptionHandler(BusinessException.class)   // 우리 예외만\n```\n\n**업무 예외의 공통 부모**로 범위를 좁힌다 — 10.4절에서 예외 계층을 만든 이유다.\n\n**`Exception.class` 를 쓸 거면** 스프링 내부 예외를 따로 잡아 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "파라미터로 받을 수 있는 것들",
+   "md": "**컨트롤러 메서드와 비슷하게** 여러 가지를 받는다.\n\n```java\n@ExceptionHandler(ItemNotFoundException.class)\npublic ErrorResult handle(ItemNotFoundException e,\n                          HttpServletRequest request,\n                          Locale locale) {\n    ...\n}\n```\n\n| | |\n|---|---|\n| 예외 객체 | 필수는 아니지만 거의 항상 |\n| `HttpServletRequest` | URL·헤더가 필요할 때 |\n| `Locale` | 4장의 메시지를 태울 때 |\n| `HandlerMethod` | 어느 컨트롤러였는지 |\n\n**`@Login Member` 도 된다** — 7.8절의 리졸버가 여기도 적용된다.\n\n**반환도 컨트롤러와 같다.**\n\n```java\nErrorResult                    // 컨버터를 탄다\nResponseEntity<ErrorResult>    // 상태 코드도 정한다\nString                         // 뷰 이름 (화면용)\nModelAndView                   // 화면용\nvoid                           // 응답을 직접 썼을 때\n```\n\n**화면용으로도 쓸 수 있다** — `String` 을 반환하면 뷰가 렌더링된다. 다만 **9장의 오류 페이지와 겹치니** 보통은 API 에만 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "로그를 어디서 찍을까",
+   "md": "```java\n@ExceptionHandler(Exception.class)\npublic ErrorResult exHandler(Exception e) {\n    log.error(\"[exceptionHandler] ex\", e);   // 여기\n    ...\n}\n```\n\n**예외 핸들러가 로그를 찍는 자리**로 적당하다. 잡은 예외가 여기로 다 모인다.\n\n**주의 둘**\n\n**1. 레벨을 나눈다**\n\n```java\nlog.warn(\"업무 예외: {}\", e.getMessage());   // BusinessException\nlog.error(\"예상 못 한 오류\", e);              // Exception\n```\n\n**\"상품 없음\" 을 `error` 로 찍으면** 알림이 계속 울린다. **업무 예외는 `warn` 이나 `info`** 가 맞다 — 정상적인 흐름의 일부다.\n\n**2. 스택 트레이스를 언제 남길까**\n\n`log.error(msg, e)` 는 스택을 남기고 `log.error(\"...{}\", e.getMessage())` 는 안 남긴다.\n\n**업무 예외는 스택이 필요 없다.** 어디서 났는지 뻔하고, **로그만 커진다.**\n\n> 8.2절에서 만든 `traceId` 를 여기서 응답에 실으면 **로그와 응답이 이어진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /api2/members/bad HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 400 \nContent-Type: application/json\n\n{\"code\":\"BAD\",\"message\":\"잘못된 사용자\"}\n\n# 서버 로그 - 요청이 한 번뿐이다\n#   REQUEST  [a1b2][/api2/members/bad]\n#   [exceptionHandler] ex java.lang.IllegalArgumentException: 잘못된 사용자\n#   RESPONSE [a1b2][/api2/members/bad]\n\n# 10.5 절의 @ResponseStatus 는 두 번 돌았다\n\n# 다른 예외\nGET /api2/members/user-ex HTTP/1.1\n\nHTTP/1.1 400 \n{\"code\":\"USER-EX\",\"message\":\"사용자 오류\"}\n\n# 잡지 않은 예외\nGET /api2/members/ex HTTP/1.1\n\nHTTP/1.1 500 \n{\"code\":\"EX\",\"message\":\"내부 오류\"}\n\n# Exception.class 핸들러가 있으면 타입 오류도 여기로\nGET /api2/members?page=abc HTTP/1.1\n\nHTTP/1.1 500 \n{\"code\":\"EX\",\"message\":\"내부 오류\"}\n\n# 원래는 400 이어야 한다",
+   "note": "**첫 응답이 10.1절에서 원한 그 모양**이다. `code` 로 분기할 수 있고 형식이 우리 것이다. **로그도 한 벌**이다 — 10.5절의 `@ResponseStatus` 와 갈리는 지점.\n\n**앞의 셋이 예외마다 다른 응답**이다. `BAD` · `USER-EX` · `EX` 로 클라이언트가 구분한다.\n\n**맨 아래가 이 절의 함정**이다. `?page=abc` 는 타입 오류라 **400 이어야 하는데 500** 이다. `Exception.class` 핸들러가 `DefaultHandlerExceptionResolver` 보다 먼저 잡았기 때문이다. **10.5절에서 공짜로 얻던 것을 잃었다.**"
+  }
+ ],
+ "recap": [
+  "**컨트롤러 메서드처럼** 쓴다. 반환값이 컨버터를 탄다.",
+  "10.4절의 불편 넷이 **다 사라진다**.",
+  "**애너테이션에 타입을 안 써도** 파라미터로 판단한다.",
+  "상태 코드는 **`@ResponseStatus`(고정)** 또는 **`ResponseEntity`(동적)**.",
+  "**자식이 우선**이다 — 구체적인 것부터.",
+  "**`Exception.class` 를 잡으면 스프링 내부 예외까지** 가져간다.",
+  "**400 이어야 할 것이 500** 이 된다 — 10.5절의 이득을 잃는다.",
+  "**업무 예외의 공통 부모**로 범위를 좁힌다.",
+  "파라미터로 **`HttpServletRequest` · `Locale` · `@Login`** 등을 받는다.",
+  "**업무 예외는 `warn`**, 스택 트레이스는 안 남긴다.",
+  "**`traceId` 를 응답에 실으면** 로그와 이어진다."
+ ],
+ "drills": [
+  {
+   "task": "`@ExceptionHandler` 로 예외 셋을 각각 처리한다.",
+   "done_when": "응답이 다른 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "필터 로그로 요청 횟수를 본다.",
+   "done_when": "한 번인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Exception.class` 핸들러를 두고 타입 오류를 낸다.",
+   "done_when": "400 이 500 이 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`BusinessException` 으로 범위를 좁힌다.",
+   "done_when": "타입 오류가 다시 400 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "업무 예외 로그를 `warn` 으로 바꾼다.",
+   "done_when": "스택 트레이스 없이 한 줄인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ExceptionHandler` 가 10.4절의 불편을 어떻게 없애나?",
+   "a": "반환값이 `HttpMessageConverter` 를 타서 응답과 콘텐츠 협상을 스프링이 하고, 예외별로 메서드가 나뉘며, 컨트롤러 안에 있다."
+  },
+  {
+   "q": "여러 핸들러가 겹치면?",
+   "a": "더 구체적인 자식 예외를 잡는 쪽이 우선이다."
+  },
+  {
+   "q": "`Exception.class` 를 잡으면 무엇이 문제인가?",
+   "a": "스프링 내부 예외까지 가져가서 400 이어야 할 타입 오류가 500 이 된다."
+  },
+  {
+   "q": "상태 코드를 정하는 두 방법은?",
+   "a": "`@ResponseStatus` 로 고정하거나 `ResponseEntity` 로 코드에서 결정한다."
+  },
+  {
+   "q": "업무 예외의 로그 레벨은?",
+   "a": "`warn` 이나 `info` 다. 정상 흐름의 일부라 `error` 로 찍으면 알림이 계속 울린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ExceptionHandler",
+   "en": "",
+   "what": "컨트롤러 안에서 특정 예외를 잡아 응답을 만드는 메서드에 붙인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

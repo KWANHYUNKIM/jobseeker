@@ -768,7 +768,7 @@
           "title": "스프링이 제공하는 것들",
           "summary": "ResponseStatus · ResponseEntityException · DefaultHandler.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -776,7 +776,7 @@
           "title": "@ExceptionHandler",
           "summary": "컨트롤러 안에서 잡는다. 가장 많이 쓴다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.7",
@@ -784,7 +784,7 @@
           "title": "@ControllerAdvice",
           "summary": "여러 컨트롤러의 예외를 한 곳에서.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.8",
@@ -792,7 +792,7 @@
           "title": "정리",
           "summary": "화면과 API 의 오류 처리가 어떻게 갈리나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

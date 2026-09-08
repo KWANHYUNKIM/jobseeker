@@ -1,0 +1,163 @@
+{
+ "book": "spring-mvc-2",
+ "id": "api-exception-summary",
+ "no": "10.8",
+ "chapter": 10,
+ "title": "정리",
+ "summary": "화면과 API 의 오류 처리가 어떻게 갈리나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 흐름의 차이를 정리한다.",
+  "무엇을 언제 쓸지 판단할 수 있다.",
+  "9·10장이 함께 만든 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "두 길",
+   "ascii": "   screen                          api\n   ------                          ---\n   exception goes to WAS           resolver catches it\n   error page url                  no extra url\n   request runs twice              runs once\n   DispatcherType matters          not involved\n   few kinds of errors             one per exception\n   global, one place               near the controller\n\n   같은 예외가 두 길로 갈라진다",
+   "note": "**같은 예외가 어디서 잡히느냐로 갈린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "갈림의 이유는 하나다",
+   "md": "**받는 쪽이 사람이냐 프로그램이냐.**\n\n| | 사람 | 프로그램 |\n|---|---|---|\n| **원하는 것** | 무엇을 할지 안내 | 분기할 근거 |\n| **오류 종류** | 404·500 이면 충분 | 예외마다 다르게 |\n| **형식** | 읽히면 된다 | **계약이다** |\n\n**세 번째가 크다.** 6.8절에서 이렇게 적었다.\n\n> **오류 응답 형식도 계약**이다 — 바뀌면 클라이언트가 깨진다.\n\n**화면은 문구를 바꿔도 아무도 안 깨진다.** API 는 필드 이름 하나만 바뀌어도 클라이언트가 깨진다.\n\n**그래서 API 쪽에 더 공을 들인다** — `code` 체계, 형식 통일, 문서화."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 쓸까",
+   "note": "**실무에서 쓰는 것은 마지막 둘**이다. 나머지는 그 아래에서 도는 것들이다.",
+   "columns": [
+    "",
+    "언제"
+   ],
+   "rows": [
+    [
+     "**오류 페이지(9장)**",
+     "**화면**. `error/404.html` 등"
+    ],
+    [
+     "`@ResponseStatus`",
+     "예외에 상태 코드 고정. 화면·API 공통"
+    ],
+    [
+     "`ResponseStatusException`",
+     "라이브러리 예외를 감쌀 때"
+    ],
+    [
+     "`HandlerExceptionResolver`",
+     "거의 안 만든다"
+    ],
+    [
+     "**`@ExceptionHandler`**",
+     "**API**. 예외마다 다른 응답"
+    ],
+    [
+     "**`@ControllerAdvice`**",
+     "**그것을 한곳에**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 조합",
+   "md": "**보통 이렇게 쌓는다.**\n\n```\n1. 예외 계층을 만든다            BusinessException 과 자식들\n2. @RestControllerAdvice 하나    API 예외를 한곳에서\n3. templates/error/*.html        화면 오류 페이지\n4. @ResponseStatus               상태 코드가 고정인 예외에\n```\n\n**2번과 3번이 각각 API 와 화면**을 맡는다.\n\n**`@ExceptionHandler` 에서 잡는 것**\n\n```java\n@ExceptionHandler(BusinessException.class)      // 우리 예외\n@ExceptionHandler(MethodArgumentNotValidException.class)  // 검증 실패 (6.8절)\n@ExceptionHandler(HttpMessageNotReadableException.class)  // 파싱 실패 (6.8절)\n@ExceptionHandler(Exception.class)              // 나머지 - 500\n```\n\n**6.8절에서 미룬 것 둘이 여기 있다.**\n\n> **파싱 실패는 예외 처리의 영역**이다 — 10장에서 한다.\n\n**검증 실패도 마찬가지**다. `@Valid` 가 실패하면 `MethodArgumentNotValidException` 이 나고, 그것을 잡아서 **필드별 오류 목록**을 만든다.\n\n```java\n@ExceptionHandler(MethodArgumentNotValidException.class)\npublic ErrorResult handleValidation(MethodArgumentNotValidException e) {\n    List<FieldErrorDto> errors = e.getBindingResult().getFieldErrors().stream()\n            .map(fe -> new FieldErrorDto(fe.getField(), fe.getDefaultMessage()))\n            .toList();\n    return new ErrorResult(\"VALIDATION_FAILED\", \"입력값을 확인해 주세요\", errors);\n}\n```\n\n**5장의 `BindingResult` 가 여기서 다시 쓰인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "10장이 남긴 것",
+   "md": "**셋이 아직 없다.**\n\n**1. 필터·인터셉터의 예외**\n\n10.3·10.7절에서 반복한 것이다. **`DispatcherServlet` 밖의 예외**는 9장의 흐름을 탄다.\n\n**8.3절의 인증 필터에서 예외가 나면** API 요청에도 HTML 오류 페이지가 갈 수 있다. **인증을 인터셉터에 두면**(8.6절) advice 가 못 잡는 것은 같지만, 적어도 `preHandle` 에서 직접 JSON 을 쓸 수는 있다.\n\n**2. 비동기·`@Async` 의 예외**\n\n다른 스레드에서 난 것은 요청 스레드가 모른다.\n\n**3. 뷰 렌더링 중의 예외**\n\n**`postHandle` 뒤에 나는 것**이다(8.4절). 이미 응답을 쓰기 시작했을 수도 있어서 **상태 코드를 못 바꾼다.** 9.2절에서 오류 페이지를 단순하게 만들라고 한 이유이기도 하다.\n\n**셋 다 이 책 범위 밖**이다. **\"모든 예외를 한곳에서 잡는다\" 는 것이 불가능**하다는 것만 알아 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "9·10장이 함께 만든 것",
+   "md": "**9장** — 화면. 오류 페이지, 요청이 두 번, `DispatcherType`.\n\n**10장** — API. 리졸버, `@ExceptionHandler`, `@ControllerAdvice`.\n\n**둘이 겹치는 자리**\n\n| | |\n|---|---|\n| `@ResponseStatus` | 상태 코드를 정한다. **둘 다** 쓴다 |\n| 예외 계층 | 잡는 단위가 된다 |\n| 상태 코드 | 화면은 페이지를, API 는 응답을 고른다 |\n\n**하나의 예외가 두 응답**을 낼 수 있다는 것이 요점이다.\n\n```\nItemNotFoundException\n  -> 화면:  404.html\n  -> API:   {\"code\":\"ITEM_NOT_FOUND\"}\n```\n\n**같은 서비스가 화면과 API 를 다 내는 경우** 이 구조가 필요하다. **9장만 하면 API 가 HTML 을 받고, 10장만 하면 화면이 JSON 을 받는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 10장의 결과",
+   "sql": "# 같은 예외, 화면 요청\nGET /items/999 HTTP/1.1\nAccept: text/html,application/xhtml+xml\n\nHTTP/1.1 404 \nContent-Type: text/html;charset=UTF-8\n\n<h2>페이지를 찾을 수 없습니다</h2>\n<a href=\"/\">홈으로</a>\n\n# 같은 예외, API 요청\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 404 \nContent-Type: application/json\n\n{\"code\":\"ITEM_NOT_FOUND\",\"message\":\"상품을 찾을 수 없습니다\",\"traceId\":\"a1b2c3d4\"}\n\n# 검증 실패\nPOST /api/items HTTP/1.1\nContent-Type: application/json\n{\"itemName\":\"\",\"price\":0}\n\nHTTP/1.1 400 \n{\"code\":\"VALIDATION_FAILED\",\"message\":\"입력값을 확인해 주세요\",\n \"errors\":[{\"field\":\"itemName\",\"message\":\"공백은 입력할 수 없습니다\"},\n           {\"field\":\"price\",\"message\":\"1000 ~ 1000000 까지 허용합니다\"}]}\n\n# 파싱 실패\nPOST /api/items HTTP/1.1\n{\"price\":\"abc\"}\n\nHTTP/1.1 400 \n{\"code\":\"MALFORMED_REQUEST\",\"message\":\"요청 형식이 올바르지 않습니다\"}",
+   "note": "**앞의 둘이 같은 예외**다. `Accept` 만 다른데 하나는 HTML, 하나는 JSON 이고 **상태 코드는 둘 다 404** 다.\n\n**셋째가 6.8절에서 미룬 것**이다. 거기서는 `getAllErrors()` 를 그대로 반환해 **200 에 스프링 내부 구조**가 나갔는데, 여기서는 400 에 **필드와 메시지만** 담겼다. 5장의 `BindingResult` 를 우리 형식으로 옮긴 것이다.\n\n**넷째도 6.8절의 것**이다. 파싱 실패는 컨트롤러에 못 들어와서 검증으로 못 잡았는데, **`@ExceptionHandler` 는 잡는다.**\n\n**네 응답의 형식이 전부 같다** — `code` 가 있고 필요하면 `errors` 가 붙는다. **계약이 하나**다."
+  }
+ ],
+ "recap": [
+  "**받는 쪽이 사람이냐 프로그램이냐**가 갈림의 이유다.",
+  "**API 는 형식이 계약**이라 더 공을 들인다.",
+  "실무에서 쓰는 것은 **오류 페이지 + `@ControllerAdvice`** 둘이다.",
+  "**예외 계층 → advice → 오류 페이지 → `@ResponseStatus`** 순으로 쌓는다.",
+  "**6.8절이 미룬 검증 실패와 파싱 실패**를 여기서 잡는다.",
+  "**5장의 `BindingResult`** 가 API 오류 응답으로 다시 쓰인다.",
+  "**필터·비동기·뷰 렌더링의 예외**는 못 잡는다.",
+  "**\"모든 예외를 한곳에서\" 는 불가능**하다.",
+  "**하나의 예외가 두 응답**을 낼 수 있다.",
+  "**9장만 하면 API 가 HTML 을, 10장만 하면 화면이 JSON 을** 받는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 예외를 화면과 API 로 각각 요청한다.",
+   "done_when": "상태 코드는 같고 형식이 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`MethodArgumentNotValidException` 을 잡아 필드 오류를 담는다.",
+   "done_when": "6.8절의 응답이 우리 형식이 되는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`HttpMessageNotReadableException` 을 잡는다.",
+   "done_when": "파싱 실패도 우리 형식이 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터에서 예외를 던지고 API 로 요청한다.",
+   "done_when": "advice 가 못 잡는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금까지의 오류 응답 형식을 하나로 맞춘다.",
+   "done_when": "모든 오류가 같은 모양인 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "화면과 API 의 오류 처리가 왜 갈리나?",
+   "a": "받는 쪽이 사람이냐 프로그램이냐다. 사람은 안내가 필요하고 프로그램은 분기할 근거가 필요하다."
+  },
+  {
+   "q": "실무에서 쓰는 조합은?",
+   "a": "화면은 `templates/error/*.html`, API 는 `@RestControllerAdvice` 의 `@ExceptionHandler` 다."
+  },
+  {
+   "q": "6.8절이 미룬 둘을 어떻게 잡나?",
+   "a": "`MethodArgumentNotValidException` 과 `HttpMessageNotReadableException` 을 `@ExceptionHandler` 로 잡는다."
+  },
+  {
+   "q": "무엇을 못 잡나?",
+   "a": "필터·인터셉터의 예외, 다른 스레드의 예외, 뷰 렌더링 중의 예외다."
+  },
+  {
+   "q": "9장만 하면 무엇이 문제인가?",
+   "a": "API 요청이 HTML 오류 페이지를 받는다. 반대로 10장만 하면 화면이 JSON 을 받는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

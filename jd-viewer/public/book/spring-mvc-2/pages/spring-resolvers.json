@@ -1,0 +1,189 @@
+{
+ "book": "spring-mvc-2",
+ "id": "spring-resolvers",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "스프링이 제공하는 것들",
+ "summary": "ResponseStatus · ResponseEntityException · DefaultHandler.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@ResponseStatus` 를 쓸 수 있다.",
+  "`ResponseStatusException` 을 언제 쓰는지 안다.",
+  "스프링 내부 예외가 어떻게 상태 코드가 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "셋이 순서대로",
+   "ascii": "   1  ExceptionHandlerExceptionResolver\n        |\n        +--> @ExceptionHandler   10.6\n\n   2  ResponseStatusExceptionResolver\n        |\n        +--> @ResponseStatus on the exception class\n        +--> ResponseStatusException\n\n   3  DefaultHandlerExceptionResolver\n        |\n        +--> spring internal exceptions to status codes\n        +--> TypeMismatchException  ->  400\n\n   위에서부터 물어보고 잡으면 끝난다",
+   "note": "**10.3절에서 이름만 본 셋**이다."
+  },
+  {
+   "type": "heading",
+   "text": "@ResponseStatus"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "예외에 상태 코드를 붙인다",
+   "code": "@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = \"error.item.notFound\")\npublic class ItemNotFoundException extends RuntimeException {\n}",
+   "note": "**9.8절에서 예고한 그것**이다.\n\n**`reason` 에 메시지 코드**를 넣을 수 있다 — 4장의 `MessageSource` 를 탄다. `messages.properties` 에 `error.item.notFound=상품을 찾을 수 없습니다` 를 두면 그것이 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "sendError 를 부른다",
+   "md": "**이름과 달리 응답을 직접 만들지 않는다.**\n\n```java\nresponse.sendError(statusCode, resolvedReason);\n```\n\n**`ResponseStatusExceptionResolver` 가 하는 일이 이것뿐**이다. 9.1절에서 본 `sendError` 다.\n\n**그러면 9장의 흐름을 탄다** — WAS 가 오류 페이지를 찾고, **요청이 두 번** 온다.\n\n**10.3절에서 \"요청이 두 번 안 온다\" 고 했는데** 이 리졸버는 예외다. **`sendError` 로 넘겨 버리기 때문**이다.\n\n**그래서 API 응답이 부트 기본**이 된다.\n\n```json\n{\"timestamp\":\"...\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/items/999\"}\n```\n\n**상태 코드는 맞는데 형식은 그대로**다. 10.1절에서 원한 `{\"code\":\"ITEM_NOT_FOUND\", ...}` 가 아니다.\n\n> **화면에는 충분**하다. 404 상태 코드로 9.7절의 `404.html` 이 나온다. **API 에는 부족**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "내 예외가 아니면 못 붙인다",
+   "md": "**`@ResponseStatus` 는 클래스에 붙이는 것**이라 **라이브러리 예외에는 못 붙인다.**\n\n```java\nIllegalArgumentException   // 자바 것\nDataAccessException        // 스프링 것\n```\n\n**그때 쓰는 것이 `ResponseStatusException`** 이다.\n\n```java\nthrow new ResponseStatusException(HttpStatus.NOT_FOUND,\n        \"상품을 찾을 수 없습니다\", ex);\n```\n\n**예외 클래스를 안 만들어도 된다.** 던지는 자리에서 상태 코드를 정한다.\n\n**어느 쪽이 나은가**\n\n| | |\n|---|---|\n| `@ResponseStatus` | **예외 하나에 상태 코드 하나** 고정 |\n| `ResponseStatusException` | 같은 예외를 자리마다 다르게 |\n\n**전자가 보통 낫다.** \"상품 없음은 404\" 가 한곳에 있고, 던지는 코드가 짧다.\n\n**후자는 예외 클래스를 만들 만큼은 아닌 일회성**일 때 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "DefaultHandlerExceptionResolver"
+  },
+  {
+   "type": "table",
+   "caption": "스프링 내부 예외를 상태 코드로",
+   "note": "**이미 동작하고 있던 것**이다. 5.8절의 400 이 여기서 나왔다.",
+   "columns": [
+    "예외",
+    "상태 코드"
+   ],
+   "rows": [
+    [
+     "`TypeMismatchException`",
+     "**400**"
+    ],
+    [
+     "`HttpMessageNotReadableException`",
+     "**400** — 6.8절"
+    ],
+    [
+     "`HttpRequestMethodNotSupportedException`",
+     "405"
+    ],
+    [
+     "`HttpMediaTypeNotSupportedException`",
+     "415"
+    ],
+    [
+     "`MissingServletRequestParameterException`",
+     "400"
+    ],
+    [
+     "`NoHandlerFoundException`",
+     "404"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "500 이 아니라 400 인 이유",
+   "md": "**타입 변환에 실패하면 자바 입장에서는 그냥 예외**다. 아무 처리도 안 하면 **500** 이 된다.\n\n**그런데 500 은 서버 잘못**이라는 뜻이다(9.8절). 클라이언트가 이상한 값을 보낸 것이니 **400 이 맞다.**\n\n**`DefaultHandlerExceptionResolver` 가 이 판단을 대신** 해 준다.\n\n**5.8절에서 본 그 400** 이 여기서 나온 것이다.\n\n> `price=abc` 면 `item.getPrice()` 가... **컨트롤러에 들어오지도 못한다.**\n\n**6.8절의 400 도** 마찬가지다 — `HttpMessageNotReadableException` 이 415 도 500 도 아닌 400 인 것은 이 표 때문이다.\n\n**직접 만든 예외가 아니라 스프링 내부 예외**만 다룬다. 그래서 **우리가 신경 쓸 일이 거의 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 응답도 부트 기본이다",
+   "md": "**`DefaultHandlerExceptionResolver` 도 `sendError` 를 부른다.**\n\n```\n타입 오류 -> 400 -> sendError -> BasicErrorController -> 부트 기본 JSON\n```\n\n**API 에서는 여전히 쓸모없는 응답**이다.\n\n```json\n{\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/api/items\"}\n```\n\n**어느 필드가 왜 틀렸는지 없다.**\n\n**6.8절에서 이 문제를 꼽고 10장으로 미뤘다.**\n\n> **파싱 실패는 예외 처리의 영역**이다 — 10장.\n\n**10.6절의 `@ExceptionHandler` 로 이것도 잡는다.**\n\n```java\n@ExceptionHandler(HttpMessageNotReadableException.class)\npublic ErrorResult handleParseError(...) { ... }\n```\n\n**스프링 내부 예외도 잡을 수 있다** — 리졸버 순서상 `ExceptionHandlerExceptionResolver` 가 먼저라서."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# @ResponseStatus 를 붙이면\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 404 \nContent-Type: application/json\n\n{\"timestamp\":\"2026-09-09T06:53:11.442+00:00\",\"status\":404,\n \"error\":\"Not Found\",\"path\":\"/api/items/999\"}\n\n# 상태 코드는 맞는데 형식은 부트 기본이다\n\n# 서버 로그 - 요청이 두 번 돈다\n#   REQUEST  [a1b2][/api/items/999]\n#   RESPONSE [a1b2][/api/items/999]\n#   REQUEST  [c3d4][/error]\n#   RESPONSE [c3d4][/error]\n\n# 화면 요청이면 404.html 이 나온다\nGET /items/999 HTTP/1.1\nAccept: text/html\n\nHTTP/1.1 404 \n<h2>페이지를 찾을 수 없습니다</h2>\n\n# 타입 오류 - DefaultHandlerExceptionResolver\nGET /api/items?page=abc HTTP/1.1\n\nHTTP/1.1 400 \n{\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/api/items\"}",
+   "note": "**첫 응답의 상태 코드가 404 로 맞다.** 9.8절에서 화면 쪽만 고쳤던 것이 API 에도 적용됐다 — **애너테이션 한 줄**로.\n\n**그런데 형식은 부트 기본**이고, 로그를 보면 **요청이 두 번** 돌았다. `@ResponseStatus` 가 `sendError` 를 부르기 때문이다 — 10.3절에서 \"요청이 두 번 안 온다\" 고 한 것의 예외다.\n\n**화면 쪽은 이걸로 충분**하다. 404 상태 코드가 `404.html` 을 부른다.\n\n**맨 아래는 우리가 아무것도 안 했는데** 400 이 나왔다. `DefaultHandlerExceptionResolver` 가 이미 하고 있던 일이다."
+  }
+ ],
+ "recap": [
+  "**`@ResponseStatus`** 로 예외에 상태 코드를 붙인다.",
+  "**`reason` 에 메시지 코드**를 넣으면 4장의 `MessageSource` 를 탄다.",
+  "**`sendError` 를 부른다** — 그래서 **요청이 두 번** 온다.",
+  "**10.3절의 예외**다. 응답 형식은 부트 기본이 된다.",
+  "**화면에는 충분하고 API 에는 부족**하다.",
+  "**라이브러리 예외에는 못 붙인다** — `ResponseStatusException` 을 쓴다.",
+  "**보통은 `@ResponseStatus`** 가 낫다. 상태 코드가 한곳에 있다.",
+  "**`DefaultHandlerExceptionResolver`** 가 스프링 내부 예외를 상태 코드로 바꾼다.",
+  "**5.8절과 6.8절의 400** 이 여기서 나왔다.",
+  "**이 응답도 부트 기본**이라 API 에는 부족하다."
+ ],
+ "drills": [
+  {
+   "task": "`@ResponseStatus(NOT_FOUND)` 를 예외에 붙인다.",
+   "done_when": "API 와 화면 모두 404 가 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터 로그를 켜고 요청이 몇 번 도는지 본다.",
+   "done_when": "두 번인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`reason` 에 메시지 코드를 넣는다.",
+   "done_when": "`messages.properties` 의 문구가 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ResponseStatusException` 을 던져 본다.",
+   "done_when": "예외 클래스 없이도 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`?page=abc` 로 타입 오류를 낸다.",
+   "done_when": "아무것도 안 했는데 400 인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ResponseStatus` 는 어떻게 동작하나?",
+   "a": "`ResponseStatusExceptionResolver` 가 `sendError` 를 부른다. 그래서 9장의 흐름을 타고 요청이 두 번 온다."
+  },
+  {
+   "q": "그것의 한계는?",
+   "a": "응답 형식이 부트 기본이 되어 API 에는 부족하다. 화면에는 충분하다."
+  },
+  {
+   "q": "라이브러리 예외에는 어떻게 하나?",
+   "a": "클래스에 애너테이션을 못 붙이니 `ResponseStatusException` 을 던진다."
+  },
+  {
+   "q": "`DefaultHandlerExceptionResolver` 는 무엇을 하나?",
+   "a": "타입 변환 실패나 파싱 실패 같은 스프링 내부 예외를 알맞은 400·405·415 로 바꾼다."
+  },
+  {
+   "q": "타입 오류가 왜 500 이 아니라 400 인가?",
+   "a": "500 은 서버 잘못이라는 뜻인데 클라이언트가 이상한 값을 보낸 것이므로 400 이 맞다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ResponseStatus",
+   "en": "",
+   "what": "예외 클래스에 HTTP 상태 코드를 지정하는 애너테이션. 내부적으로 `sendError` 를 부른다."
+  },
+  {
+   "term": "ResponseStatusException",
+   "en": "",
+   "what": "던지는 자리에서 상태 코드를 지정하는 예외. 라이브러리 예외를 감쌀 때 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Exceptions",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/exceptionhandlers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
