@@ -265,7 +265,7 @@
           "title": "트랜잭션 실습 — 롤백",
           "summary": "없던 일이 된다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -273,7 +273,7 @@
           "title": "계좌이체 — 문제 상황",
           "summary": "중간에 예외가 나면 돈이 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
@@ -281,7 +281,7 @@
           "title": "계좌이체 — 트랜잭션으로",
           "summary": "둘을 한 커넥션에서 한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -289,7 +289,7 @@
           "title": "DB 락 — 개념",
           "summary": "먼저 잡은 쪽이 끝날 때까지 기다린다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.9",

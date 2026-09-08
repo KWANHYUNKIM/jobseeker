@@ -1,0 +1,144 @@
+{
+ "book": "spring-db-1",
+ "id": "lock-intro",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "DB 락 — 개념",
+ "summary": "먼저 잡은 쪽이 끝날 때까지 기다린다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "락이 왜 필요한지 안다.",
+  "락이 언제 잡히고 언제 풀리는지 안다.",
+  "데드락이 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 남긴 셋 중 마지막**이다.\n\n> **동시성은 조회와 변경 사이에 끼어드는** 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "먼저 잡은 쪽이 이긴다",
+   "ascii": "   session 1                    session 2\n   ---------                    ---------\n   set autocommit false\n   update memberA               \n        |\n        +--> takes the lock on that row\n                                set autocommit false\n                                update memberA\n                                     |\n                                     +--> waits\n   commit\n        |\n        +--> lock released\n                                     update runs\n\n   락은 행 단위다. 다른 행은 안 막힌다",
+   "note": "**락은 행 단위**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "락이 없으면",
+   "md": "```\n세션 1: memberA 를 10000 -> 8000 으로\n세션 2: memberA 를 10000 -> 12000 으로\n```\n\n**둘이 동시에 실행되면** 결과가 예측이 안 된다. 하나가 다른 하나를 덮어쓴다 — **갱신 손실(lost update)** 이다.\n\n**락이 이것을 막는다.**\n\n```\n세션 1이 먼저 락을 잡는다\n세션 2는 기다린다\n세션 1이 커밋하면 락이 풀린다\n세션 2가 그때 최신 값을 읽고 수정한다\n```\n\n**순서가 정해진다.** 둘 다 실행되고, **나중 것이 앞의 결과를 본다.**\n\n**락은 트랜잭션이 끝날 때 풀린다.** 커밋이든 롤백이든.\n\n**그래서 4.1절에서 이렇게 적었다.**\n\n> **너무 넓으면 락을 오래 잡는다** — 다른 요청이 다 기다린다.\n\n**트랜잭션 길이가 곧 락 시간**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇에 락이 걸리나",
+   "md": "**변경하는 행**이다.\n\n```sql\nupdate member set money=8000 where member_id='memberA';\n-- memberA 행에만 락\n```\n\n**다른 행은 안 막힌다.**\n\n```sql\n-- 세션 2 - 다른 행이라 바로 된다\nupdate member set money=5000 where member_id='memberB';\n```\n\n**조회는 보통 락을 안 잡는다** — `READ COMMITTED` 에서는 그렇다. 4.10절에서 예외를 본다.\n\n**그런데 범위가 넓어질 수 있다.**\n\n| | |\n|---|---|\n| **인덱스가 없으면** | 테이블 전체를 훑으며 **다 잠근다** |\n| **범위 조건** | `where money > 5000` 이면 그 범위 |\n| **갭 락** | MySQL 은 행 사이 틈까지 잠근다 |\n\n**첫 번째가 실무의 함정**이다. **인덱스 없는 컬럼으로 `update`** 하면 **테이블 락처럼** 동작한다 — 다른 요청이 다 막힌다.\n\n> **인덱스가 성능만의 문제가 아니다.** 동시성에도 직접 영향을 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "데드락",
+   "md": "**서로가 서로를 기다리면** 영원히 안 끝난다.\n\n```\n세션 1: A 를 잠갔다  ->  B 를 기다린다\n세션 2: B 를 잠갔다  ->  A 를 기다린다\n```\n\n**둘 다 못 간다.**\n\n**DB 가 감지해서 한쪽을 죽인다.**\n\n```\nDeadlock detected. The current transaction was rolled back.\n```\n\n**죽은 쪽은 롤백**된다(4.5절). **살아난 쪽은 정상 진행**한다.\n\n**막는 방법**\n\n| | |\n|---|---|\n| **접근 순서를 통일** | 항상 ID 오름차순으로 잠근다 |\n| **트랜잭션을 짧게** | 잡고 있는 시간을 줄인다 |\n| **재시도** | 데드락은 다시 하면 되는 경우가 많다 |\n\n**첫 번째가 근본 해법**이다. 계좌이체라면 **항상 작은 ID 부터** 잠근다.\n\n```java\nString first = fromId.compareTo(toId) < 0 ? fromId : toId;\nString second = fromId.compareTo(toId) < 0 ? toId : fromId;\n```\n\n**그러면 순환이 안 생긴다.** 모두가 같은 순서로 잡으면 **기다리는 그래프에 고리가 없다.**\n\n> **4.7절의 계좌이체가 데드락 후보**다. A→B 와 B→A 가 동시에 일어나면 그렇다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "락 대기 시간",
+   "md": "**무한정 기다리지 않는다.**\n\n```sql\n-- H2\nSET LOCK_TIMEOUT 3000;   -- 3 초\n```\n\n**넘으면 예외**다.\n\n```\nTimeout trying to lock table \"MEMBER\"\n```\n\n**기본값이 DB 마다 다르다** — MySQL 은 50초, PostgreSQL 은 **무한**이다.\n\n**웹 애플리케이션이면 짧게** 잡는다. 3.5절의 커넥션 타임아웃과 같은 이유다.\n\n> **빨리 실패하는 것이 낫다.** 사용자는 안 기다리고, 그동안 **커넥션과 스레드가 잡혀** 있다.\n\n**그리고 락 대기가 쌓이면 연쇄 장애**가 된다. 한 행에 락이 걸려 열 요청이 기다리면 **커넥션 열 개가 묶인다** — 3.2절의 그 상황이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 세션 1 (H2 콘솔 1)\nset autocommit false;\nupdate member set money=500 where member_id='memberA';\n# Update count: 1\n\n# 락을 잡았다. 아직 커밋 안 함\n\n# 세션 2 (H2 콘솔 2)\nset autocommit false;\nupdate member set money=1000 where member_id='memberA';\n\n# ... 응답이 안 온다. 기다린다\n\n# 세션 3 에서 상태 확인\nselect id, statement from information_schema.sessions;\n# ID | STATEMENT\n# 4  | null                                        <- 세션 1, 락을 쥐고 있다\n# 5  | update member set money=1000 where ...       <- 세션 2, 대기 중\n\n# 세션 1\ncommit;\n\n# 세션 2 - 그제서야 응답\n# Update count: 1\n\n# 다른 행은 안 막힌다\n# 세션 2\nupdate member set money=9999 where member_id='memberB';\n# Update count: 1   (즉시)\n\n# 타임아웃을 넘기면\nSET LOCK_TIMEOUT 3000;\nupdate member set money=1000 where member_id='memberA';\n# Timeout trying to lock table \"MEMBER\"; SQL statement: ... [50200-232]",
+   "note": "**세션 2의 `update` 가 응답을 안 준다.** SQL 은 보냈는데 **DB 가 붙잡고 있다.**\n\n**세션 목록의 `STATEMENT`** 가 그 증거다 — 4.2절에서 `null` 이던 자리에 **대기 중인 SQL** 이 보인다. **락 문제를 진단하는 첫 단서**다.\n\n**세션 1이 커밋한 뒤에야 세션 2가 진행**됐다. **락이 트랜잭션과 함께 풀린 것**이다.\n\n**다른 행은 즉시** 된다 — 행 단위 락이다.\n\n**마지막 오류 코드 `50200`** 을 봐 둔다. 2.5절의 `23505` 처럼 **7.5절에서 이 숫자로 예외를 변환**한다."
+  }
+ ],
+ "recap": [
+  "**락이 없으면 갱신 손실**이 난다.",
+  "**먼저 잡은 쪽이 끝날 때까지 기다린다.**",
+  "**락은 트랜잭션이 끝날 때 풀린다** — 커밋이든 롤백이든.",
+  "**트랜잭션 길이가 곧 락 시간**이다.",
+  "**락은 행 단위**다. 다른 행은 안 막힌다.",
+  "**인덱스가 없으면 범위가 넓어진다** — 테이블 락처럼 된다.",
+  "**인덱스는 성능만의 문제가 아니다.**",
+  "**데드락은 DB 가 한쪽을 죽여** 푼다.",
+  "**접근 순서를 통일**하면 순환이 안 생긴다.",
+  "**락 대기 시간은 DB 마다 기본값이 다르다** — PostgreSQL 은 무한.",
+  "**대기가 쌓이면 커넥션이 묶여 연쇄 장애**가 된다."
+ ],
+ "drills": [
+  {
+   "task": "콘솔 두 개로 같은 행을 수정한다.",
+   "done_when": "두 번째가 기다리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세 번째 세션에서 `STATEMENT` 를 조회한다.",
+   "done_when": "대기 중인 SQL 이 보이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "다른 행을 수정한다.",
+   "done_when": "즉시 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`SET LOCK_TIMEOUT` 을 짧게 주고 대기시킨다.",
+   "done_when": "타임아웃 예외와 코드 50200 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 세션이 서로 다른 순서로 두 행을 잠근다.",
+   "done_when": "데드락이 나는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "락이 없으면 무엇이 문제인가?",
+   "a": "갱신 손실이다. 동시 수정에서 하나가 다른 하나를 덮어쓴다."
+  },
+  {
+   "q": "락은 언제 풀리나?",
+   "a": "트랜잭션이 끝날 때다. 커밋이든 롤백이든."
+  },
+  {
+   "q": "인덱스가 없으면?",
+   "a": "테이블 전체를 훑으며 잠가 다른 요청이 다 막힌다. 인덱스는 동시성에도 영향을 준다."
+  },
+  {
+   "q": "데드락을 어떻게 막나?",
+   "a": "접근 순서를 통일한다. 모두가 같은 순서로 잠그면 순환이 생기지 않는다."
+  },
+  {
+   "q": "락 대기 시간의 기본값은?",
+   "a": "DB 마다 다르다. MySQL 은 50초, PostgreSQL 은 무한이다. 웹이면 짧게 잡는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "갱신 손실",
+   "en": "lost update",
+   "what": "동시 수정에서 한쪽의 변경이 다른 쪽에 덮여 사라지는 것."
+  },
+  {
+   "term": "데드락",
+   "en": "deadlock",
+   "what": "서로가 서로의 락을 기다려 영원히 진행되지 않는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,135 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-rollback",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "트랜잭션 실습 — 롤백",
+ "summary": "없던 일이 된다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "롤백이 무엇을 되돌리는지 안다.",
+  "무엇이 롤백을 부르는지 안다.",
+  "롤백해도 안 돌아오는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "세션 2 는 아무것도 못 봤다",
+   "ascii": "   session 1                    session 2\n   ---------                    ---------\n   set autocommit false\n   insert 'newId'\n   select  ->  newId is there   select  ->  not there\n\n   rollback\n   select  ->  newId is GONE    select  ->  still not there\n\n   세션 2 는 아무것도 못 봤다\n   세션 1 에게만 있었다가 사라졌다",
+   "note": "**4.4절의 커밋 자리에 롤백**을 넣었을 뿐이다."
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "세션 1",
+   "code": "set autocommit false;\ninsert into member(member_id, money) values ('newId', 10000);\n\nselect * from member;\n-- memberA | 10000\n-- newId   | 10000\n\nrollback;\n\nselect * from member;\n-- memberA | 10000\n-- (newId 가 사라졌다)",
+   "note": "**자기가 넣은 것도 사라진다.** 커밋 전이라 **아직 확정되지 않은 상태**였다(4.4절).\n\n**세션 2는 이 소동을 전혀 몰랐다.** `newId` 가 있었던 적이 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 롤백을 부르나",
+   "md": "**우리가 부르는 것만이 아니다.**\n\n| | 언제 |\n|---|---|\n| **`rollback()`** | 직접 부른다 |\n| **커넥션 종료** | 커밋 안 하고 끊기면 |\n| **풀 반납** | 3.2절 — 커밋 안 된 것은 롤백 |\n| **DB 가 강제로** | 데드락, 타임아웃, 서버 재시작 |\n\n**두 번째와 세 번째가 실무에서 자주** 일어난다. 4.1절에서 \"H2 콘솔 창을 닫으면 사라진다\"고 한 그것이고, 3.2절에서 \"반납할 때 되돌린다\"고 한 그것이다.\n\n**네 번째는 우리가 못 막는다.** 데드락이 나면 **DB 가 한쪽을 골라 죽인다**(4.9절). 그쪽 트랜잭션은 통째로 롤백된다.\n\n> **그래서 재시도 로직**이 필요한 경우가 있다. 데드락은 **다시 하면 되는 경우가 많다** — 상대가 이미 끝났으니까.\n\n**5.8절의 `@Transactional` 은 예외가 나면 자동으로 롤백**한다. 그것이 기본 동작이고, **어떤 예외에서 롤백할지가 규칙**이다 — 6장을 하고 나서 이야기한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "롤백해도 안 돌아오는 것",
+   "md": "**DB 안의 데이터만 돌아온다.**\n\n```java\ntry {\n    con.setAutoCommit(false);\n    repository.save(member);\n    emailSender.send(member.getEmail(), \"가입 완료\");   // 메일이 나갔다\n    throw new RuntimeException();\n} catch (Exception e) {\n    con.rollback();   // 회원은 사라지는데 메일은 이미 갔다\n}\n```\n\n**밖으로 나간 것은 못 되돌린다.**\n\n| | 롤백되나 |\n|---|---|\n| DB 의 insert·update·delete | **된다** |\n| 파일 저장 | **안 된다** |\n| 메일·알림 발송 | **안 된다** |\n| 외부 API 호출 | **안 된다** |\n| 자바 객체의 필드 값 | **안 된다** |\n\n**「MVC 2편」 12.3절에서 본 그것**과 같다.\n\n> **파일 시스템은 롤백이 없다** — 저장 전에 검증을 다 끝내거나 실패 시 지운다.\n\n**마지막 줄도 조심**한다. `member.setId(1L)` 로 채워 둔 값은 **롤백돼도 객체에 남는다.** JPA 를 쓰면 영속성 컨텍스트가 정리해 주는데, **순수 JDBC 는 아무도 안 치운다.**\n\n**규칙** — **되돌릴 수 없는 일은 커밋 뒤에** 한다.\n\n```java\n@Transactional\npublic void join(Member member) {\n    repository.save(member);\n}\n// 커밋된 뒤에\neventPublisher.publish(new MemberJoined(member.getId()));\n```\n\n**스프링의 `@TransactionalEventListener`** 가 이것을 도와준다 — 커밋 뒤에만 실행되게 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세이브포인트",
+   "md": "**전체가 아니라 일부만 되돌릴 수도** 있다.\n\n```java\ncon.setAutoCommit(false);\nrepository.save(memberA);\n\nSavepoint sp = con.setSavepoint();\ntry {\n    repository.save(memberB);   // 실패할 수도 있는 것\n} catch (SQLException e) {\n    con.rollback(sp);            // B 만 되돌린다\n}\n\ncon.commit();   // A 는 저장된다\n```\n\n**\"이 부분만 실패해도 괜찮다\"** 를 표현한다.\n\n**스프링의 `Propagation.NESTED`** 가 이것을 쓴다. **`REQUIRES_NEW` 와 다르다** — 그것은 **커넥션이 따로**이고, 이것은 **같은 커넥션 안의 지점**이다.\n\n**잘 안 쓴다.** 이유가 둘이다.\n\n1. **모든 DB 가 지원하지 않는다** — 오라클·MySQL·PostgreSQL 은 되는데 JPA 와 섞으면 복잡해진다\n2. **트랜잭션 범위를 나누는 편이 낫다** — 4.1절의 그 이야기\n\n> **이 책은 안 쓴다.** 다만 **\"부분 롤백\" 이라는 말이 나오면 이것**이라는 것은 알아 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 세션 1 (H2 콘솔 1)\nset autocommit false;\ninsert into member(member_id, money) values ('newId', 10000);\n\nselect * from member;\n# memberA | 10000\n# newId   | 10000\n\n# 세션 2 (H2 콘솔 2)\nselect * from member;\n# memberA | 10000\n\n# 세션 1\nrollback;\n\nselect * from member;\n# memberA | 10000\n\n# 세션 2\nselect * from member;\n# memberA | 10000\n\n# H2 가 받은 순서\n#   SET AUTOCOMMIT FALSE\n#   insert into member(member_id, money) values ('newId', 10000)\n#   select * from member          (session 1)  -> 2 rows\n#   select * from member          (session 2)  -> 1 row\n#   ROLLBACK\n#   select * from member          (session 1)  -> 1 row\n#   select * from member          (session 2)  -> 1 row\n\n# 자바에서\nConnection con = dataSource.getConnection();\ncon.setAutoCommit(false);\nrepository.save(new Member(\"newId\", 10000));\ncon.close();   // commit 을 안 부르고 반납\n\n# HikariPool - Reset (autoCommit) on connection conn0\n# 풀이 롤백하고 autoCommit 을 되돌렸다",
+   "note": "**세션 1의 조회 결과가 2행에서 1행으로** 바뀌었다. **자기가 넣은 것도 사라졌다.**\n\n**세션 2는 내내 1행**이다. **아무 일도 없었다.**\n\n**맨 아래가 실무에서 자주 겪는 것**이다. `commit()` 을 안 부르고 `close()` 했더니 **풀이 알아서 롤백**했다 — 3.2절의 그 동작이다.\n\n**로그에 `Reset (autoCommit)`** 이 찍힌다. **커밋을 빠뜨린 코드는 조용히 아무것도 안 한다** — 4.3절에서 \"기본이 수동이면 찾기 어려운 버그\"라고 한 그것이다."
+  }
+ ],
+ "recap": [
+  "**롤백하면 자기가 넣은 것도 사라진다** — 확정되지 않았던 것이다.",
+  "**다른 세션은 아무것도 못 봤다.**",
+  "롤백을 부르는 것 — **직접 · 연결 종료 · 풀 반납 · DB 의 강제**.",
+  "**데드락은 DB 가 한쪽을 골라 죽인다** — 재시도가 필요할 수 있다.",
+  "**DB 안의 데이터만 돌아온다.**",
+  "**파일 · 메일 · 외부 API · 객체 필드는 안 돌아온다.**",
+  "**되돌릴 수 없는 일은 커밋 뒤에** 한다.",
+  "**`@TransactionalEventListener`** 가 그것을 돕는다.",
+  "**세이브포인트로 일부만** 되돌릴 수 있는데 잘 안 쓴다.",
+  "**커밋 없이 `close()` 하면 풀이 롤백**한다."
+ ],
+ "drills": [
+  {
+   "task": "콘솔 두 개로 롤백 전후를 확인한다.",
+   "done_when": "세션 1에서도 사라지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자바에서 커밋 없이 `close()` 를 부른다.",
+   "done_when": "`Reset (autoCommit)` 로그와 데이터가 없는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "트랜잭션 안에서 파일을 쓰고 롤백한다.",
+   "done_when": "파일이 남는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`setSavepoint` 로 일부만 되돌려 본다.",
+   "done_when": "앞의 것은 저장되는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "롤백하면 자기 세션에서도 사라지나?",
+   "a": "사라진다. 커밋 전이라 아직 확정되지 않은 상태였다."
+  },
+  {
+   "q": "롤백을 부르는 경우 넷은?",
+   "a": "직접 호출, 커넥션 종료, 풀 반납, DB 의 강제 롤백(데드락·타임아웃)이다."
+  },
+  {
+   "q": "롤백해도 안 돌아오는 것은?",
+   "a": "파일, 메일 발송, 외부 API 호출, 자바 객체의 필드 값이다."
+  },
+  {
+   "q": "그래서 어떻게 하나?",
+   "a": "되돌릴 수 없는 일은 커밋 뒤에 한다. `@TransactionalEventListener` 가 돕는다."
+  },
+  {
+   "q": "커밋 없이 `close()` 하면?",
+   "a": "커넥션 풀이 롤백하고 `autoCommit` 을 되돌린다. 조용히 아무 일도 안 한 것이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "롤백",
+   "en": "rollback",
+   "what": "트랜잭션의 변경을 전부 되돌리는 것."
+  },
+  {
+   "term": "세이브포인트",
+   "en": "savepoint",
+   "what": "트랜잭션 안의 지점. 거기까지만 되돌릴 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

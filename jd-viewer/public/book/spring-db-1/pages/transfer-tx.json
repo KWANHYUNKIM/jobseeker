@@ -1,0 +1,142 @@
+{
+ "book": "spring-db-1",
+ "id": "transfer-tx",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "계좌이체 — 트랜잭션으로",
+ "summary": "둘을 한 커넥션에서 한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "커넥션을 넘겨 트랜잭션을 묶을 수 있다.",
+  "리포지토리가 커넥션을 닫으면 안 된다는 것을 안다.",
+  "이 방식의 문제를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "커넥션을 넘긴다",
+   "ascii": "   before\n   ------\n   service  ->  repository.update(fromId, ...)   borrows conn, commits, returns\n            ->  repository.update(toId, ...)     borrows conn, commits, returns\n\n   after\n   -----\n   service  ->  con = dataSource.getConnection()\n                con.setAutoCommit(false)\n            ->  repository.update(con, fromId, ...)   uses the given con\n            ->  repository.update(con, toId, ...)     same con\n                con.commit()\n                con.close()\n\n   커넥션을 파라미터로 넘긴다\n   그리고 이것이 5 장의 문제가 된다",
+   "note": "**서비스가 커넥션을 만들고 리포지토리에 넘긴다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "서비스",
+   "code": "public void accountTransfer(String fromId, String toId, int money)\n        throws SQLException {\n\n    Connection con = dataSource.getConnection();\n    try {\n        con.setAutoCommit(false);        // 트랜잭션 시작\n\n        bizLogic(con, fromId, toId, money);\n\n        con.commit();                    // 성공하면 커밋\n    } catch (Exception e) {\n        con.rollback();                  // 실패하면 롤백\n        throw new IllegalStateException(e);\n    } finally {\n        release(con);\n    }\n}\n\nprivate void bizLogic(Connection con, String fromId, String toId, int money)\n        throws SQLException {\n    Member fromMember = memberRepository.findById(con, fromId);\n    Member toMember = memberRepository.findById(con, toId);\n\n    memberRepository.update(con, fromId, fromMember.getMoney() - money);\n    validation(toMember);\n    memberRepository.update(con, toId, toMember.getMoney() + money);\n}",
+   "note": "**업무 로직을 `bizLogic` 으로 뺐다.** 안 그러면 트랜잭션 코드와 섞여서 **무엇이 업무인지 안 보인다.**\n\n**`catch (Exception e)`** 다 — `SQLException` 만 잡으면 **`IllegalStateException` 이 났을 때 롤백을 못 한다.**\n\n**`throw new IllegalStateException(e)`** 로 원인을 넘긴다. 안 넘기면 진짜 이유가 사라진다(2.8절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "반납 — 상태를 되돌린다",
+   "code": "private void release(Connection con) {\n    if (con != null) {\n        try {\n            con.setAutoCommit(true);   // 풀에 돌려주기 전에 되돌린다\n            con.close();\n        } catch (Exception e) {\n            log.info(\"error\", e);\n        }\n    }\n}",
+   "note": "**`setAutoCommit(true)` 를 직접** 부른다.\n\n**3.2절에서 풀이 해 준다고 했는데** — HikariCP 는 해 주고, **다른 풀이나 `DriverManagerDataSource` 는 안 할 수도** 있다. **`autoCommit=false` 인 커넥션이 풀에 돌아가면** 다음 사람이 그 상태를 물려받는다.\n\n**명시적으로 하는 편**이 안전하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리포지토리가 커넥션을 닫으면 안 된다",
+   "md": "**2.2절에서 예고한 그것**이다.\n\n> **트랜잭션에서는 커넥션을 밖에서 받아** 오므로 `try-with-resources` 로 못 닫는다.\n\n```java\npublic Member findById(Connection con, String memberId) throws SQLException {\n    PreparedStatement pstmt = null;\n    ResultSet rs = null;\n    try {\n        pstmt = con.prepareStatement(sql);\n        ...\n    } finally {\n        JdbcUtils.closeResultSet(rs);\n        JdbcUtils.closeStatement(pstmt);\n        // con 은 닫지 않는다\n    }\n}\n```\n\n**커넥션만 빼고 닫는다.** 닫으면 **다음 리포지토리 호출에서 터진다** — 이미 닫힌 커넥션이니까.\n\n**메서드가 두 벌이 된다.**\n\n```java\npublic Member findById(String memberId)                    // 커넥션을 스스로 얻는다\npublic Member findById(Connection con, String memberId)    // 받아서 쓴다\n```\n\n**같은 일을 하는 메서드가 두 개**다. 트랜잭션이 필요한 곳과 아닌 곳이 갈려서다.\n\n**`JdbcUtils`** 는 스프링이 주는 유틸이다 — 2.8절에서 손으로 쓴 `try-catch` 를 대신한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "동작은 하는데 코드가 망가졌다",
+   "md": "**목적은 이뤘다.** 돈이 안 사라진다.\n\n**그런데 네 가지가 나빠졌다.**\n\n**1. 서비스가 JDBC 를 안다**\n\n```java\nimport java.sql.Connection;\nimport java.sql.SQLException;\n```\n\n**서비스는 업무 로직만** 있어야 하는데 **데이터 접근 기술이 들어왔다.** JPA 로 바꾸면 서비스도 고쳐야 한다.\n\n**2. 커넥션을 파라미터로 넘긴다**\n\n**모든 리포지토리 메서드에 `Connection con`** 이 붙는다. 그리고 **메서드가 두 벌**이 된다.\n\n**3. `try-catch-finally` 가 서비스를 채운다**\n\n**업무 로직 다섯 줄에 트랜잭션 코드 열다섯 줄**이다. 2.9절에서 리포지토리에 대해 한 이야기가 **서비스에서 반복**된다.\n\n**4. 모든 서비스 메서드에 반복된다**\n\n이체 말고 다른 업무가 생기면 **같은 열다섯 줄을 또** 쓴다.\n\n**5.1절에서 이 넷을 정리**하고 하나씩 없앤다.\n\n> **1.1절에서 예고한 그대로**다.\n>\n> **4장이 제일 지저분해진다.** 일부러 그렇게 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래도 알아 둘 것",
+   "md": "**이 코드가 `@Transactional` 이 하는 일 그대로**다.\n\n```\ngetConnection\nsetAutoCommit(false)\n  ... 업무 로직 ...\ncommit  또는  rollback\nsetAutoCommit(true)\nclose\n```\n\n**5.8절에서 애너테이션 하나가 되는데**, 그 안에서 **정확히 이것**을 한다.\n\n**그래서 5장의 로그가 읽힌다.**\n\n```\nAcquired Connection [conn0] for JDBC transaction\nSwitching JDBC Connection [conn0] to manual commit\nInitiating transaction commit\nReleasing JDBC Connection [conn0] after transaction\n```\n\n**네 줄이 위 다섯 단계**다.\n\n**1.1절에서 로그를 강조한 이유**가 이것이다. **코드에서 사라진 것이 로그에는 남는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 정상 이체\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     SET AUTOCOMMIT FALSE\n#     select * from member where member_id = ?   {1: 'memberA'}\n#     select * from member where member_id = ?   {1: 'memberB'}\n#     update member set money=? where member_id=?  {1: 8000, 2: 'memberA'}\n#     update member set money=? where member_id=?  {1: 12000, 2: 'memberB'}\n#     COMMIT\n#     SET AUTOCOMMIT TRUE\n#   resource close conn0\n\n# 커넥션이 하나다. 반납이 한 번이다\n\n# 예외가 나는 경우\nservice.accountTransfer(\"memberA\", \"ex\", 2000);\n\n#   get connection=HikariProxyConnection@2 wrapping conn0\n#     SET AUTOCOMMIT FALSE\n#     select * from member where member_id = ?   {1: 'memberA'}\n#     select * from member where member_id = ?   {1: 'ex'}\n#     update member set money=? where member_id=?  {1: 8000, 2: 'memberA'}\n#     (예외)\n#     ROLLBACK\n#     SET AUTOCOMMIT TRUE\n#   resource close conn0\n\n# 데이터 확인\nselect * from member;\n# memberA | 10000     <- 안 줄었다\n# ex      | 10000\n\n# 합계 20000. 4.6 절에서는 18000 이었다",
+   "note": "**4.6절의 로그와 나란히 놓으면 차이가 분명하다.** 거기는 `resource close conn0` 이 **세 번**이었는데 여기는 **한 번**이다.\n\n**`SET AUTOCOMMIT FALSE` 와 `COMMIT` 이 SQL 로** 나갔다. 4.3절에서 본 그것이다.\n\n**두 `update` 사이에 커밋이 없다.** 그래서 **둘이 한 덩어리**다.\n\n**아래에서 `ROLLBACK` 이 나가고 `memberA` 가 10000 으로 남았다.** 4.6절에서 8000 이 되던 자리다.\n\n**1.1절의 세 가지가 다 맞다** — 커넥션이 `conn0` 하나, `autoCommit=false`, 커밋이 마지막에 한 번."
+  }
+ ],
+ "recap": [
+  "**서비스가 커넥션을 만들고 리포지토리에 넘긴다.**",
+  "**업무 로직을 `bizLogic` 으로** 빼야 읽힌다.",
+  "**`catch (Exception e)`** 여야 모든 실패에서 롤백된다.",
+  "**`setAutoCommit(true)` 를 직접** 되돌리는 편이 안전하다.",
+  "**리포지토리가 커넥션을 닫으면 안 된다** — 커넥션만 빼고 닫는다.",
+  "**메서드가 두 벌**이 된다 — 커넥션을 받는 것과 아닌 것.",
+  "**동작은 하는데 코드가 망가졌다** — 네 가지.",
+  "**서비스가 JDBC 를 알고**, **커넥션을 넘기고**, **`try-catch` 가 채우고**, **반복된다**.",
+  "**이 코드가 `@Transactional` 이 하는 일 그대로**다.",
+  "**코드에서 사라진 것이 로그에는 남는다.**"
+ ],
+ "drills": [
+  {
+   "task": "`MemberServiceV2` 를 만들고 정상 이체를 확인한다.",
+   "done_when": "커넥션이 하나인 것을 로그로 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "예외 케이스를 실행한다.",
+   "done_when": "`ROLLBACK` 이 나가고 합계가 맞는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "리포지토리에서 커넥션을 닫아 본다.",
+   "done_when": "다음 호출이 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`catch (SQLException e)` 로 좁혀 본다.",
+   "done_when": "`IllegalStateException` 에서 롤백이 안 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스 코드에서 `import java.sql` 을 센다.",
+   "done_when": "업무 계층에 JDBC 가 들어온 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "어떻게 두 `update` 를 묶었나?",
+   "a": "서비스가 커넥션을 만들어 `autoCommit` 을 끄고 리포지토리에 파라미터로 넘긴다."
+  },
+  {
+   "q": "리포지토리가 커넥션을 닫으면?",
+   "a": "다음 리포지토리 호출에서 이미 닫힌 커넥션을 쓰게 되어 실패한다."
+  },
+  {
+   "q": "왜 `catch (Exception e)` 인가?",
+   "a": "`SQLException` 만 잡으면 업무 예외가 났을 때 롤백을 못 한다."
+  },
+  {
+   "q": "이 방식의 네 가지 문제는?",
+   "a": "서비스가 JDBC 를 알고, 커넥션을 파라미터로 넘기고, `try-catch` 가 서비스를 채우고, 모든 메서드에 반복된다."
+  },
+  {
+   "q": "이 코드와 `@Transactional` 의 관계는?",
+   "a": "`@Transactional` 이 정확히 이 다섯 단계를 대신한다. 그래서 5장의 로그가 읽힌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JdbcUtils",
+   "en": "",
+   "what": "스프링이 제공하는 JDBC 자원 정리 유틸리티."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

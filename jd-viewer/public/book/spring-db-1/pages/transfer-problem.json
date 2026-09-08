@@ -1,0 +1,119 @@
+{
+ "book": "spring-db-1",
+ "id": "transfer-problem",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "계좌이체 — 문제 상황",
+ "summary": "중간에 예외가 나면 돈이 사라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "트랜잭션 없이 여러 번 수정하면 무슨 일이 생기는지 본다.",
+  "1.2절의 Service 계층이 왜 필요해지는지 안다.",
+  "문제를 재현할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 이렇게 적었다.**\n\n> **저장이 두 번이 되는 순간** 되돌릴 범위가 필요해진다.\n\n**그 순간을 만든다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "서비스",
+   "code": "@RequiredArgsConstructor\npublic class MemberServiceV1 {\n\n    private final MemberRepositoryV1 memberRepository;\n\n    public void accountTransfer(String fromId, String toId, int money)\n            throws SQLException {\n\n        Member fromMember = memberRepository.findById(fromId);\n        Member toMember = memberRepository.findById(toId);\n\n        memberRepository.update(fromId, fromMember.getMoney() - money);\n        validation(toMember);\n        memberRepository.update(toId, toMember.getMoney() + money);\n    }\n\n    private void validation(Member toMember) {\n        if (toMember.getMemberId().equals(\"ex\")) {\n            throw new IllegalStateException(\"이체중 예외 발생\");\n        }\n    }\n}",
+   "note": "**드디어 Service 계층**이 생겼다. 「MVC 2편」이 끝날 때까지 없던 것이다.\n\n**`validation` 이 두 `update` 사이**에 있다. **일부러 그 자리**에 뒀다 — 실무에서는 검증을 앞에서 하지만, **중간에 무엇이든 실패할 수 있다**는 것을 보이려는 것이다.\n\n**`throws SQLException`** 이 서비스까지 올라왔다. 6장에서 이것을 다룬다."
+  },
+  {
+   "type": "figure",
+   "caption": "무슨 일이 벌어지나",
+   "ascii": "   MemberService.accountTransfer(fromId, toId, money)\n        |\n        v\n   findById(fromId)                     conn0, commit\n   update fromId, money - 5000          conn1, commit   <-- money is gone\n        |\n        +--> validation(toId) throws\n        |\n   update toId, money + 5000            never runs\n\n   result\n   ------\n   memberA   5000     lost 5000\n   memberEx 10000     gained nothing\n\n   세상에서 5000 이 사라졌다",
+   "note": "**첫 `update` 는 이미 커밋됐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "돈이 사라진다",
+   "md": "```\n이체 전:  memberA 10000, memberEx 10000   합계 20000\n이체 후:  memberA  5000, memberEx 10000   합계 15000\n```\n\n**5000 이 없어졌다.**\n\n**어디로 갔나** — 어디로도 안 갔다. **첫 `update` 만 커밋되고 둘째가 안 실행**된 것이다.\n\n**4.3절에서 본 그것**이다. `autoCommit` 이 켜져 있어 **`update` 하나가 트랜잭션 하나**다.\n\n**로그를 보면 커넥션도 다르다.**\n\n```\nfindById   conn0  (빌리고 반납)\nfindById   conn0  (다시 빌리고 반납)\nupdate     conn0  (다시)  -> 커밋됨\n(예외)\n```\n\n**3.6절에서 말한 그것**이다.\n\n> **같은 `conn0` 인데 트랜잭션이 넷**이다.\n\n**같은 커넥션을 썼는데도 소용없다.** 빌리고 반납하는 사이마다 커밋되기 때문이다.\n\n> **실제 금융 시스템에서 이런 일이 나면** 정산이 안 맞고, 그것을 찾는 데 며칠이 걸린다. **로그를 다 뒤져야** 어느 이체가 반만 됐는지 알 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "테스트로 재현해야 한다",
+   "md": "**이런 버그는 눈으로 안 보인다.**\n\n```java\n@Test\nvoid accountTransferEx() throws SQLException {\n    Member memberA = new Member(MEMBER_A, 10000);\n    Member memberEx = new Member(MEMBER_EX, 10000);\n    repository.save(memberA);\n    repository.save(memberEx);\n\n    assertThatThrownBy(() ->\n            service.accountTransfer(memberA.getMemberId(), memberEx.getMemberId(), 2000))\n            .isInstanceOf(IllegalStateException.class);\n\n    Member findMemberA = repository.findById(memberA.getMemberId());\n    Member findMemberEx = repository.findById(memberEx.getMemberId());\n\n    assertThat(findMemberA.getMoney()).isEqualTo(8000);    // 줄었다\n    assertThat(findMemberEx.getMoney()).isEqualTo(10000);  // 안 늘었다\n}\n```\n\n**\"예외가 났다\" 만 확인하면 놓친다.** **예외 뒤의 데이터 상태**를 봐야 한다.\n\n**이 테스트가 통과하는 것이 지금 문제**다. 4.7절에서 **`8000` 을 `10000` 으로 고치면 실패**하고, 트랜잭션을 걸어야 통과한다.\n\n> **테스트가 버그를 문서화**한 셈이다. 「MVC 2편」에서 반복한 방식이다 — **틀린 코드를 먼저 만들고** 고친다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "왜 서비스 계층인가",
+   "md": "**트랜잭션을 어디에 걸어야 하나.**\n\n| | |\n|---|---|\n| 컨트롤러 | 너무 위. 웹 기술에 묶인다 |\n| **서비스** | **업무 단위가 여기** |\n| 리포지토리 | 너무 아래. 메서드 하나가 단위가 된다 |\n\n**\"이체\" 라는 업무가 하나**이고, 그것이 **서비스 메서드 하나**다.\n\n**리포지토리에 걸면 안 되는 이유**가 명확하다. `update` 하나가 트랜잭션이 되면 **지금과 똑같다.**\n\n**컨트롤러에 걸면** — 동작은 하는데 **웹이 아닌 곳에서 못 쓴다.** 배치나 스케줄러에서 같은 업무를 부르려면 트랜잭션이 없다.\n\n> **「MVC 2편」 1.2절에서 예고한 그대로**다.\n>\n> **Service 계층**이 생긴다 — 트랜잭션 경계가 필요해서.\n\n**필요해서 생긴 것**이지 관례로 만든 것이 아니다. **4.11절에서 실제로 트랜잭션을 건다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "service.accountTransfer(\"memberA\", \"ex\", 2000);\n\n# 로그\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?    {1: 'memberA'}\n#   resource close conn0\n\n#   get connection=HikariProxyConnection@2 wrapping conn0\n#     select * from member where member_id = ?    {1: 'ex'}\n#   resource close conn0\n\n#   get connection=HikariProxyConnection@3 wrapping conn0\n#     update member set money=? where member_id=?  {1: 8000, 2: 'memberA'}\n#     resultSize=1\n#   resource close conn0\n\n#   java.lang.IllegalStateException: 이체중 예외 발생\n\n# 두 번째 update 는 로그에 없다\n\n# 데이터 확인\nselect * from member;\n# MEMBER_ID | MONEY\n# memberA   | 8000\n# ex        | 10000\n\n# 합계가 20000 에서 18000 이 됐다\n\n# H2 가 받은 것 - commit 이라는 글자가 없다\n#   select ...\n#   select ...\n#   update ...\n# autoCommit 이라 각 문장 뒤에 자동으로 커밋됐다",
+   "note": "**`wrapping conn0` 이 세 번 다 같다.** 3장의 풀 덕에 **같은 물리 커넥션**을 썼다.\n\n**그런데 `resource close conn0` 이 매번 있다.** 빌리고 반납하기를 세 번 했고, **그 사이마다 커밋**됐다.\n\n**두 번째 `update` 가 로그에 없다.** 예외가 그 앞에서 났다.\n\n**합계가 안 맞는다.** 20000 이 18000 이 됐고, **되돌릴 방법이 없다** — 이미 커밋됐다.\n\n**1.1절에서 봐야 한다고 한 세 가지 중 두 개가 틀렸다** — `autoCommit` 이 `true` 이고 **커밋 시점이 우리가 정한 것이 아니다.**"
+  }
+ ],
+ "recap": [
+  "**드디어 Service 계층**이 생겼다 — 트랜잭션 경계가 필요해서.",
+  "**두 `update` 사이에 예외**가 나면 앞의 것만 커밋된다.",
+  "**돈이 사라진다** — 합계가 안 맞는다.",
+  "**같은 커넥션을 써도 소용없다** — 반납할 때마다 커밋된다.",
+  "**테스트로 재현**해야 한다. 눈으로는 안 보인다.",
+  "**\"예외가 났다\" 만 보면 놓친다** — 예외 뒤의 데이터를 본다.",
+  "**테스트가 버그를 문서화**한다.",
+  "**트랜잭션은 서비스에** 건다 — 업무 단위가 거기다.",
+  "**리포지토리에 걸면 지금과 같고**, **컨트롤러에 걸면 웹 밖에서 못 쓴다.**",
+  "**필요해서 생긴 계층**이지 관례가 아니다."
+ ],
+ "drills": [
+  {
+   "task": "`MemberServiceV1` 을 만들고 정상 이체를 테스트한다.",
+   "done_when": "합계가 맞는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`ex` 회원으로 이체해 예외를 낸다.",
+   "done_when": "돈이 사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그에서 커넥션 반납 횟수를 센다.",
+   "done_when": "세 번인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트에서 기대값을 `10000` 으로 바꾼다.",
+   "done_when": "실패하는 것을 확인했다. 4.7절에서 통과시킨다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 돈이 사라지나?",
+   "a": "첫 `update` 가 이미 커밋된 뒤에 예외가 나서 둘째가 실행되지 않기 때문이다."
+  },
+  {
+   "q": "같은 커넥션을 썼는데 왜 소용없나?",
+   "a": "빌리고 반납하는 사이마다 커밋되어 각각 다른 트랜잭션이기 때문이다."
+  },
+  {
+   "q": "이 버그를 어떻게 확인하나?",
+   "a": "테스트로 예외 뒤의 데이터 상태를 검증한다. 예외가 났다는 것만 보면 놓친다."
+  },
+  {
+   "q": "트랜잭션을 왜 서비스에 거나?",
+   "a": "업무 단위가 서비스 메서드이기 때문이다. 리포지토리는 너무 좁고 컨트롤러는 웹에 묶인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
