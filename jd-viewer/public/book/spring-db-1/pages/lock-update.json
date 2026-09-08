@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-1",
+ "id": "lock-update",
+ "no": "4.9",
+ "chapter": 4,
+ "title": "DB 락 — 변경",
+ "summary": "타임아웃이 나는 것을 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "락 타임아웃을 재현할 수 있다.",
+  "타임아웃 뒤에 트랜잭션이 어떻게 되는지 안다.",
+  "락 대기를 어떻게 진단하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "기다리다 죽는다",
+   "ascii": "   session 1                       session 2\n   ---------                       ---------\n   set autocommit false\n   update memberA  ->  lock held\n                                   set lock_timeout 60000\n                                   update memberA\n                                        |\n                                        +--> waiting ...\n\n   (60 seconds pass)\n                                   Timeout trying to lock table MEMBER\n                                        |\n                                        +--> the whole transaction is dead\n\n   타임아웃은 그 문장만 실패하는 것이 아니다",
+   "note": "**타임아웃 뒤에 트랜잭션이 남아 있지 않다.**"
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "세션 2 — 짧게 잡고 기다린다",
+   "code": "set autocommit false;\nset lock_timeout 3000;\n\nupdate member set money=1000 where member_id='memberA';\n\n-- 3 초 뒤\n-- Timeout trying to lock table \"MEMBER\";\n-- SQL statement: update member set money=1000 where member_id='memberA'\n-- [50200-232]",
+   "note": "**`set lock_timeout` 은 세션 설정**이다(4.2절). **세션마다 따로** 잡는다.\n\n**밀리초 단위**다. `3000` 이 3초.\n\n**H2 의 기본값은 1초** 인데 콘솔에서는 더 길게 잡혀 있기도 하다. **DB 마다 다르다**(4.8절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타임아웃이 나면 트랜잭션 전체가 위험하다",
+   "md": "**문장 하나만 실패하는 것이 아니다.**\n\n```sql\nset autocommit false;\nupdate memberB set money=1000;    -- 성공\nupdate memberA set money=1000;    -- 타임아웃\ncommit;                            -- 어떻게 되나\n```\n\n**DB 마다 다르다.**\n\n| | |\n|---|---|\n| **H2 · MySQL** | 그 문장만 실패. **커밋하면 앞의 것이 저장** |\n| **PostgreSQL** | **트랜잭션 전체가 중단 상태**가 된다 |\n\n**PostgreSQL 은 그 뒤 모든 SQL 이 거부**된다.\n\n```\nERROR: current transaction is aborted,\ncommands ignored until end of transaction block\n```\n\n**롤백밖에 못 한다.**\n\n**어느 쪽이 안전한가** — **PostgreSQL 쪽**이다. 앞의 것만 저장되면 **4.6절의 그 상태**가 된다.\n\n**그래서 애플리케이션에서 잡아 롤백**해야 한다. 4.7절의 `catch (Exception e)` 가 그 자리다.\n\n> **1.3절에서 \"H2 의 락 동작이 다른 DB 와 미묘하게 다르다\"** 고 한 것이 이런 것이다. **개념은 같고 세부가 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 무한정 기다리게 두지 않나",
+   "md": "**PostgreSQL 의 기본이 무한**인데, 그것이 좋은 것이 아니다.\n\n```\n요청 1: memberA 를 잠그고 외부 API 를 부른다 (5 초)\n요청 2~11: memberA 를 수정하려고 대기\n```\n\n**커넥션 열 개가 묶인다.** 3.2절의 그 상황이다.\n\n**그리고 스레드도 묶인다.** 톰캣 스레드가 200개면 **그것도 마른다.**\n\n**빨리 실패하면**\n\n- 사용자에게 **\"잠시 후 다시\" 를 빨리** 보여 준다\n- **커넥션이 풀린다**\n- **재시도할 기회**가 생긴다\n\n**「MVC 2편」에서 반복한 것**이다.\n\n> 3.5절: **빨리 실패하는 것이 낫다.** 사용자는 30초를 안 기다린다.\n\n**같은 판단이 락에도 적용**된다.\n\n**얼마로 잡나** — **정상 트랜잭션이 끝나는 시간의 몇 배**다. 대부분 100ms 안에 끝나면 **3초면 충분**하다. **그보다 오래 기다리는 것은 이미 이상한 상황**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "락 대기를 진단하는 법",
+   "md": "**4.8절에서 본 세션 조회**가 첫 단서다.\n\n```sql\n-- H2\nselect id, statement, session_start from information_schema.sessions;\n```\n\n**`STATEMENT` 에 SQL 이 오래 남아 있으면** 대기 중이다.\n\n**다른 DB 는 더 자세히** 알려 준다.\n\n```sql\n-- MySQL\nselect * from performance_schema.data_lock_waits;\nshow engine innodb status;\n\n-- PostgreSQL\nselect pid, state, wait_event_type, query from pg_stat_activity\nwhere wait_event_type = 'Lock';\n```\n\n**누가 누구를 기다리는지**까지 나온다.\n\n**실무의 순서**\n\n1. **응답이 느려진다** — 모니터링에 걸린다\n2. **커넥션 풀의 `waiting` 이 는다**(3.5절)\n3. **DB 에서 락 대기를 조회**한다\n4. **원인 트랜잭션을 찾는다** — 대개 **긴 트랜잭션**이다\n\n**4번에서 나오는 원인이 대체로 같다.**\n\n| | |\n|---|---|\n| 트랜잭션 안의 외부 API | 4.1절 |\n| 인덱스 없는 `update` | 4.8절 |\n| 배치가 통째로 한 트랜잭션 | 4.1절 |\n| **커밋을 안 하고 열어 둔 것** | 4.3절의 `idle in transaction` |\n\n**네 가지가 이 책에 이미 다 나왔다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 세션 1 (H2 콘솔 1)\nset autocommit false;\nupdate member set money=500 where member_id='memberA';\n# Update count: 1\n# 커밋하지 않고 둔다\n\n# 세션 2 (H2 콘솔 2)\nset autocommit false;\nset lock_timeout 3000;\nupdate member set money=1000 where member_id='memberA';\n\n# 3 초 뒤\n# Timeout trying to lock table \"MEMBER\"; SQL statement:\n# update member set money=1000 where member_id='memberA' [50200-232]\n\n# 대기 중에 세션 3 에서 조회하면\nselect id, statement from information_schema.sessions;\n# ID | STATEMENT\n# 4  | null\n# 5  | update member set money=1000 where member_id='memberA'\n\n# 자바에서\n@Test\nvoid lockTimeout() {\n    // 세션 1 이 락을 쥔 상태에서\n    assertThatThrownBy(() -> service.update(\"memberA\", 1000))\n            .isInstanceOf(SQLException.class);\n}\n\n# org.h2.jdbc.JdbcSQLTimeoutException:\n#   Timeout trying to lock table \"MEMBER\" [50200-232]\n\n# 예외 코드 50200 - 7.5 절에서 이 숫자를 쓴다\n\n# 세션 1 이 커밋하면\ncommit;\n# 세션 2 는 이미 실패한 뒤라 다시 실행해야 한다",
+   "note": "**세션 2의 `update` 가 3초 동안 응답을 안 주다가 예외**로 끝났다. 4.8절에서는 무한정 기다렸던 자리다.\n\n**세션 목록의 `STATEMENT`** 가 대기 중인 SQL 을 보여 준다 — 4.2절에서 `null` 이던 것과 대비된다.\n\n**`50200`** 이 락 타임아웃 코드다. 2.5절의 `23505`(중복 키), 4.8절에서 본 그것과 함께 **7.5절에서 예외 변환에 쓰인다.**\n\n**세션 1이 커밋해도 세션 2는 안 살아난다.** 이미 실패한 뒤다 — **재시도는 애플리케이션의 몫**이다."
+  }
+ ],
+ "recap": [
+  "**`set lock_timeout` 은 세션 설정**이다. 밀리초 단위.",
+  "**타임아웃 뒤의 동작이 DB 마다 다르다.**",
+  "**H2·MySQL 은 그 문장만**, **PostgreSQL 은 트랜잭션 전체**가 중단된다.",
+  "**PostgreSQL 쪽이 안전**하다 — 앞의 것만 저장되면 4.6절의 상태가 된다.",
+  "**애플리케이션에서 잡아 롤백**해야 한다.",
+  "**무한정 기다리면 커넥션과 스레드가 묶인다.**",
+  "**빨리 실패하는 것이 낫다** — 3.5절과 같은 판단.",
+  "**정상 트랜잭션 시간의 몇 배**로 잡는다.",
+  "진단 순서 — **응답 지연 → `waiting` 증가 → 락 조회 → 긴 트랜잭션**.",
+  "원인 넷이 **이 책에 이미 다 나왔다.**",
+  "**`50200`** 이 락 타임아웃 코드다 — 7.5절에서 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`set lock_timeout 3000` 으로 타임아웃을 재현한다.",
+   "done_when": "예외와 코드 50200 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "대기 중에 세션 목록을 조회한다.",
+   "done_when": "`STATEMENT` 에 SQL 이 남아 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "타임아웃 뒤에 커밋해 본다.",
+   "done_when": "앞의 문장이 저장되는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자바 테스트로 같은 것을 재현한다.",
+   "done_when": "`JdbcSQLTimeoutException` 을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "락 타임아웃이 나면 트랜잭션은?",
+   "a": "DB 마다 다르다. H2·MySQL 은 그 문장만 실패하고 PostgreSQL 은 트랜잭션 전체가 중단된다."
+  },
+  {
+   "q": "어느 쪽이 안전한가?",
+   "a": "PostgreSQL 쪽이다. 앞의 문장만 저장되면 원자성이 깨진 상태가 된다."
+  },
+  {
+   "q": "왜 무한정 기다리게 두지 않나?",
+   "a": "커넥션과 스레드가 묶여 연쇄 장애가 된다. 빨리 실패하고 재시도할 기회를 주는 편이 낫다."
+  },
+  {
+   "q": "락 대기를 어떻게 진단하나?",
+   "a": "세션 목록에서 오래 남아 있는 SQL 을 찾는다. MySQL·PostgreSQL 은 누가 누구를 기다리는지도 알려 준다."
+  },
+  {
+   "q": "락 대기의 흔한 원인 넷은?",
+   "a": "트랜잭션 안의 외부 API, 인덱스 없는 `update`, 배치를 한 트랜잭션으로, 커밋 없이 열어 둔 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "락 타임아웃",
+   "en": "lock timeout",
+   "what": "락을 기다리는 최대 시간. 넘으면 예외가 난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

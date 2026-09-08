@@ -1,0 +1,135 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-summary",
+ "no": "4.12",
+ "chapter": 4,
+ "title": "정리",
+ "summary": "커넥션을 파라미터로 넘기게 됐다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "4장이 얻은 것과 잃은 것을 정리한다.",
+  "1.1절의 세 가지를 확인한다.",
+  "5장이 무엇을 할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "얻은 것과 대가",
+   "ascii": "   what we got\n   -----------\n   atomicity      both updates or neither\n   one connection one transaction\n   service layer  the transaction boundary\n\n   what it cost\n   ------------\n   service imports java.sql\n   Connection passed as a parameter\n   repository methods duplicated\n   try-catch-finally everywhere\n\n   5 장이 이 넷을 하나씩 없앤다",
+   "note": "**동작은 맞고 코드가 망가졌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1.1절의 세 가지가 다 맞다",
+   "md": "**책의 첫 절에서 이렇게 적었다.**\n\n> `conn0` 이 같은가 · `autoCommit` 이 false 인가 · 커밋이 언제 나갔나\n\n**2·3장의 로그**\n\n```\nget connection=conn0   insert ...   close\nget connection=conn0   select ...   close\n```\n\n**커넥션은 같은데 트랜잭션이 다르다.** `autoCommit` 이 켜져 있고 **커밋이 안 보인다.**\n\n**4장의 로그**\n\n```\nget connection=conn0\n  SET AUTOCOMMIT FALSE\n  select ... select ... update ... update ...\n  COMMIT\nclose conn0\n```\n\n**셋이 다 맞다.** 커넥션 하나, 수동 커밋, 커밋 한 번.\n\n**로그가 유일한 증거**라고 한 것이 이것이다. **자바 코드만 봐서는** 4.6절과 4.7절의 차이가 잘 안 보인다 — 둘 다 리포지토리를 네 번 부를 뿐이다."
+  },
+  {
+   "type": "table",
+   "caption": "4장이 푼 것",
+   "note": "**「MVC 2편」이 남긴 셋이 여기서 끝났다.**",
+   "columns": [
+    "",
+    "어디서"
+   ],
+   "rows": [
+    [
+     "원자성",
+     "4.7절 — 커넥션을 넘겨 묶었다"
+    ],
+    [
+     "**Service 계층**",
+     "**4.6·4.11절** — 필요해서 생겼다"
+    ],
+    [
+     "**`static` 저장소**",
+     "**DB 를 붙인 것으로** 끝"
+    ],
+    [
+     "**동시성**",
+     "**4.8~4.10절** — 락"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "네 가지 대가",
+   "md": "**4.7절에서 꼽은 것을 다시 본다.**\n\n**1. 서비스가 JDBC 를 안다**\n\n```java\nimport java.sql.Connection;\nimport java.sql.SQLException;\n```\n\n**JPA 로 바꾸면 서비스도 바뀐다.** 4.11절에서 말한 그 문제다.\n\n**2. 커넥션을 파라미터로 넘긴다**\n\n**리포지토리 메서드가 두 벌**이 됐다.\n\n**3. `try-catch-finally` 가 서비스를 채운다**\n\n**업무 한 줄에 트랜잭션 열여섯 줄**이다.\n\n**4. 모든 서비스 메서드에 반복된다**\n\n**업무가 늘면 같은 열여섯 줄이 는다.**\n\n**5장이 하나씩 없앤다.**\n\n| | 어디서 |\n|---|---|\n| 1번 | **5.2절** — 트랜잭션 추상화 |\n| 2번 | **5.3·5.5절** — 트랜잭션 동기화 |\n| 3번 | **5.6절** — 트랜잭션 템플릿 |\n| 4번 | **5.8절** — `@Transactional` |\n\n**5.1절에서 이 표로 시작**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "4장에서 알아 둘 것",
+   "md": "**5장이 다 감춰도 이것들은 남는다.**\n\n**1. 트랜잭션은 커넥션 단위다**(4.2절)\n\n`@Transactional` 이 붙어도 **결국 커넥션 하나**를 잡는다. **두 트랜잭션이 필요하면 커넥션이 둘** 필요하다 — 스프링의 `REQUIRES_NEW` 가 그것이다.\n\n**2. 락은 트랜잭션과 함께 풀린다**(4.8절)\n\n**트랜잭션이 길면 락이 길다.** `@Transactional` 을 붙였다고 이것이 사라지지 않는다.\n\n**3. 조회한 값은 낡을 수 있다**(4.10절)\n\n**갱신 손실**은 트랜잭션이 있어도 난다. **DB 에서 계산하거나 락을 걸어야** 한다.\n\n**4. 롤백은 DB 안의 것만**(4.5절)\n\n**파일·메일·API 는 안 돌아온다.**\n\n> **넷 다 5장 이후로 안 바뀐다.** 도구가 편해질 뿐 **DB 의 성질은 그대로**다.\n\n**1.2절에서 \"JPA 를 배운 사람이 이 책을 봐야 하는 이유\"** 라고 한 것이 이것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그 — 4장의 결과",
+   "sql": "# 2 장 - 트랜잭션 없음\nget connection=conn0   insert into member ...   close\nget connection=conn1   select * from member ... close\n\n# 3 장 - 풀은 있는데 트랜잭션은 없음\nget connection=HikariProxyConnection@1 wrapping conn0   insert ...  close\nget connection=HikariProxyConnection@2 wrapping conn0   select ...  close\n\n# 4 장 - 트랜잭션\nget connection=HikariProxyConnection@1 wrapping conn0\n  SET AUTOCOMMIT FALSE\n  select * from member where member_id = ?\n  select * from member where member_id = ?\n  update member set money=? where member_id=?\n  update member set money=? where member_id=?\n  COMMIT\n  SET AUTOCOMMIT TRUE\nresource close conn0\n\n# 실패하면\n  ROLLBACK\n\n# 데이터 확인\nselect * from member;\n# memberA | 10000\n# ex      | 10000\n# 합계 20000. 4.6 절에서는 18000 이었다\n\n# 그런데 서비스 코드는\n#   import java.sql.Connection;\n#   import java.sql.SQLException;\n#   업무 1 줄, 트랜잭션 16 줄",
+   "note": "**세 장의 로그를 나란히 놓으면 이 책의 진행이 보인다.**\n\n2장은 커넥션이 매번 새것, 3장은 재사용되지만 트랜잭션이 없고, **4장에서 `SET AUTOCOMMIT FALSE` 와 `COMMIT` 이 하나의 괄호**가 됐다.\n\n**합계가 맞는다.** 4.6절의 18000 이 20000 으로 돌아왔다.\n\n**맨 아래가 5장이 지울 것**이다. 로그는 이대로 두고 **자바 코드에서 저 세 줄이 사라진다.**"
+  }
+ ],
+ "recap": [
+  "**1.1절의 세 가지가 다 맞다** — 커넥션 하나, 수동 커밋, 커밋 한 번.",
+  "**자바 코드만 봐서는 4.6과 4.7의 차이가 안 보인다.**",
+  "**「MVC 2편」이 남긴 셋이 여기서 끝났다.**",
+  "네 가지 대가 — **JDBC 노출 · 커넥션 전달 · try-catch · 반복**.",
+  "**5장이 각각 5.2 · 5.3·5.5 · 5.6 · 5.8절에서** 없앤다.",
+  "**트랜잭션은 커넥션 단위**다 — `@Transactional` 도 마찬가지.",
+  "**락은 트랜잭션과 함께 풀린다** — 길면 길다.",
+  "**조회한 값은 낡을 수 있다** — 갱신 손실은 트랜잭션이 있어도 난다.",
+  "**롤백은 DB 안의 것만** 되돌린다.",
+  "**넷 다 5장 이후로 안 바뀐다** — 도구가 편해질 뿐이다."
+ ],
+ "drills": [
+  {
+   "task": "2·3·4장의 로그를 나란히 놓고 비교한다.",
+   "done_when": "무엇이 늘고 줄었는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서비스에서 `import java.sql` 을 세고 지울 수 있는지 본다.",
+   "done_when": "못 지우는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "새 업무 메서드를 추가한다.",
+   "done_when": "트랜잭션 코드가 또 늘어나는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "4장에서 알아 둘 것 넷을 각각 재현한다.",
+   "done_when": "5장 이후로도 남을 것들이라는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "1.1절의 세 가지가 4장에서 어떻게 확인되나?",
+   "a": "커넥션이 하나이고 `autoCommit=false` 이며 커밋이 마지막에 한 번 나간다."
+  },
+  {
+   "q": "4장의 네 가지 대가는?",
+   "a": "서비스가 JDBC 를 알고, 커넥션을 파라미터로 넘기고, `try-catch` 가 서비스를 채우고, 모든 메서드에 반복된다."
+  },
+  {
+   "q": "5장이 다 감춰도 남는 것 넷은?",
+   "a": "트랜잭션이 커넥션 단위라는 것, 락이 트랜잭션과 함께 풀린다는 것, 조회한 값이 낡을 수 있다는 것, 롤백이 DB 안의 것만 되돌린다는 것이다."
+  },
+  {
+   "q": "「MVC 2편」의 숙제 셋은 어디서 끝났나?",
+   "a": "Service 계층은 4.6·4.11절, `static` 저장소는 DB 를 붙인 것으로, 동시성은 4.8~4.10절이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

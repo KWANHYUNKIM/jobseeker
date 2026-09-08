@@ -1,0 +1,141 @@
+{
+ "book": "spring-db-1",
+ "id": "lock-select",
+ "no": "4.10",
+ "chapter": 4,
+ "title": "DB 락 — 조회",
+ "summary": "select for update 는 언제 쓰나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "조회가 보통 락을 안 잡는다는 것을 안다.",
+  "`select for update` 를 언제 쓰는지 안다.",
+  "비관적 락과 낙관적 락을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "조회는 기다리지 않는다",
+   "ascii": "   plain select\n   ------------\n   session 1  update memberA  ->  lock\n   session 2  select memberA  ->  returns immediately, old value\n\n   select for update\n   -----------------\n   session 1  update memberA       ->  lock\n   session 2  select ... for update ->  waits\n\n   read committed 에서 조회는 락을 안 잡는다\n   잡으려면 명시해야 한다",
+   "note": "**`for update` 를 붙여야 잡는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 조회는 락을 안 잡나",
+   "md": "**조회가 기다리면 시스템이 멈춘다.**\n\n대부분의 요청은 **읽기**다. 쓰기 하나가 읽기 백 개를 막으면 **아무것도 안 된다.**\n\n**그래서 MVCC** 를 쓴다 — **다중 버전 동시성 제어**.\n\n```\nsession 1 이 memberA 를 수정 중 (커밋 전)\nsession 2 가 조회  ->  옛날 버전을 읽는다. 안 기다린다\n```\n\n**변경 전 값을 어딘가 보관**해 두고, **커밋 안 된 변경을 보는 세션에게는 옛 버전**을 준다.\n\n**4.4절에서 본 그것**이다. 세션 2가 옛날 값을 본 이유가 이것이다.\n\n**대가가 있다** — **옛 버전을 계속 보관**해야 한다. 4.3절에서 말한 `idle in transaction` 이 문제인 이유다.\n\n> **트랜잭션을 오래 열어 두면 DB 가 옛 버전을 못 지운다.** PostgreSQL 의 `VACUUM`, MySQL 의 언두 로그가 그것을 다룬다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그래서 조회 후 수정이 위험하다",
+   "md": "**1.2절에서 말한 그것**이다.\n\n```java\nMember member = repository.findById(\"memberA\");   // 락 없음. 10000\n// 다른 요청이 여기서 끼어든다\nrepository.update(\"memberA\", member.getMoney() - 2000);   // 8000 으로\n```\n\n```\n요청 A: 조회 10000\n요청 B: 조회 10000\n요청 A: 8000 으로 수정\n요청 B: 8000 으로 수정      <- A 의 변경이 사라졌다\n```\n\n**둘 다 2000 을 뺐는데 4000 이 아니라 2000 만** 빠졌다. **갱신 손실**이다(4.8절).\n\n**`update` 에 락이 걸리는데도 그렇다.** 락은 **수정할 때** 잡히는데, **조회한 값이 이미 낡았다.**\n\n**4.7절의 계좌이체가 이 구조**다.\n\n```java\nMember fromMember = memberRepository.findById(con, fromId);   // 조회\nmemberRepository.update(con, fromId, fromMember.getMoney() - money);   // 수정\n```\n\n**같은 트랜잭션 안이라 괜찮아 보이는데** — `READ COMMITTED` 면 **조회 시점과 수정 시점 사이에 다른 트랜잭션이 커밋**할 수 있다."
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "조회할 때 잠근다",
+   "code": "select * from member where member_id='memberA' for update;\n-- 이 행에 락을 잡는다. 다른 세션의 수정은 기다린다\n\nupdate member set money=8000 where member_id='memberA';\ncommit;   -- 여기서 락이 풀린다",
+   "note": "**조회부터 수정까지 아무도 못 끼어든다.**\n\n**JPA 에서는** `@Lock(LockModeType.PESSIMISTIC_WRITE)` 다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "비관적 락과 낙관적 락",
+   "md": "**두 가지 접근**이 있다.\n\n| | 어떻게 | 언제 |\n|---|---|---|\n| **비관적** | **미리 잠근다** (`for update`) | 충돌이 잦을 때 |\n| **낙관적** | **버전을 확인**한다 | 충돌이 드물 때 |\n\n**낙관적 락은 2.7절에서 봤다.**\n\n```sql\nupdate member set money=?, version=version+1\nwhere member_id=? and version=?\n```\n\n**`count == 0` 이면 누군가 먼저 고친 것**이다.\n\n**어느 쪽이 나은가**\n\n**충돌이 드물면 낙관적**이다. **락을 안 잡으니 빠르고**, 충돌한 소수만 재시도한다.\n\n**충돌이 잦으면 비관적**이다. 낙관적으로 하면 **재시도가 계속 실패**해서 오히려 느려진다.\n\n**재고 차감 같은 것**이 비관적 쪽이다 — 인기 상품이면 **모두가 같은 행**을 노린다.\n\n**게시글 수정**은 낙관적이다 — 같은 글을 동시에 고치는 일이 드물다.\n\n> **JPA 의 `@Version`** 이 낙관적 락이고, 서가 첫 책에서 다룬다. **이 책은 개념만** 짚는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "for update 를 남발하면 안 된다",
+   "md": "**잠그는 것이 안전해 보여서 다 붙이고 싶어진다.**\n\n**그러면 4.8·4.9절의 문제가 다 온다.**\n\n- **대기가 늘어난다** — 조회끼리도 막힌다\n- **데드락 확률이 는다** — 잠그는 자리가 많아지니까\n- **트랜잭션이 길어진다** — 락 시간도 길어진다\n\n**필요한 자리에만** 쓴다.\n\n```\n조회한 값으로 판단하고 그 값을 수정한다  ->  필요\n조회만 하고 끝난다                      ->  불필요\n조회한 값과 무관하게 수정한다            ->  불필요\n```\n\n**세 번째가 중요**하다.\n\n```sql\n-- 조회한 값을 안 쓴다. 락이 필요 없다\nupdate member set money = money - 2000 where member_id = 'memberA';\n```\n\n**DB 에서 계산하면** 조회-수정 사이의 틈이 없다. **갱신 손실이 안 난다.**\n\n> **가장 단순한 해법**이 이것인 경우가 많다. **애플리케이션으로 값을 가져와 계산하는 것**이 문제의 시작이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 세션 1\nset autocommit false;\nupdate member set money=500 where member_id='memberA';\n\n# 세션 2 - 일반 조회\nselect * from member where member_id='memberA';\n# MEMBER_ID | MONEY\n# memberA   | 10000        <- 즉시 응답. 옛날 값\n\n# 세션 2 - for update\nselect * from member where member_id='memberA' for update;\n# ... 기다린다\n\n# 세션 1\ncommit;\n\n# 세션 2 - 그제서야\n# MEMBER_ID | MONEY\n# memberA   | 500          <- 최신 값\n\n# 갱신 손실 재현\n# 세션 1                          세션 2\n# set autocommit false;           set autocommit false;\n# select money -> 10000           select money -> 10000\n# update money=8000               \n#                                 update money=8000   (대기)\n# commit                          \n#                                 (진행) commit\n\nselect * from member where member_id='memberA';\n# 8000\n\n# 2000 씩 두 번 뺐는데 2000 만 빠졌다\n\n# DB 에서 계산하면\nupdate member set money = money - 2000 where member_id='memberA';\n# 두 번 실행하면 6000. 손실이 없다",
+   "note": "**일반 조회는 즉시 옛날 값**을 준다 — MVCC 다. **`for update` 는 기다린다.**\n\n**가운데가 갱신 손실의 재현**이다. `update` 에 락이 걸려 순서가 정해졌는데도 **결과가 틀렸다** — **조회한 값이 낡았기** 때문이다.\n\n**맨 아래가 가장 단순한 해법**이다. `money = money - 2000` 으로 **DB 가 계산**하면 조회 자체가 없어서 틈이 안 생긴다.\n\n**락을 거는 것보다 이게 낫다.** 4.8절부터 본 문제의 상당수가 **애플리케이션으로 값을 가져오는 것**에서 시작한다."
+  }
+ ],
+ "recap": [
+  "**조회는 보통 락을 안 잡는다** — MVCC 로 옛 버전을 준다.",
+  "**조회가 기다리면 시스템이 멈춘다** — 대부분이 읽기다.",
+  "**대가는 옛 버전 보관**이다 — `idle in transaction` 이 문제인 이유.",
+  "**조회 후 수정이 위험**하다 — 조회한 값이 낡을 수 있다.",
+  "**`update` 에 락이 걸려도 갱신 손실**이 난다.",
+  "**`select for update`** 로 조회할 때 잠근다.",
+  "**비관적은 미리 잠그고 낙관적은 버전을 확인**한다.",
+  "**충돌이 드물면 낙관적, 잦으면 비관적**이다.",
+  "**`for update` 를 남발하면** 대기·데드락·긴 트랜잭션이 온다.",
+  "**DB 에서 계산하면 틈이 없다** — 가장 단순한 해법."
+ ],
+ "drills": [
+  {
+   "task": "일반 조회와 `for update` 를 각각 해 본다.",
+   "done_when": "하나는 즉시, 하나는 기다리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 세션으로 갱신 손실을 재현한다.",
+   "done_when": "2000 씩 두 번 뺐는데 2000 만 빠지는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`for update` 를 붙여 같은 것을 해 본다.",
+   "done_when": "손실이 안 나는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`money = money - 2000` 으로 바꿔 본다.",
+   "done_when": "락 없이도 손실이 없는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 조회는 락을 안 잡나?",
+   "a": "대부분의 요청이 읽기라 쓰기 하나가 읽기를 다 막으면 시스템이 멈추기 때문이다. MVCC 로 옛 버전을 준다."
+  },
+  {
+   "q": "`update` 에 락이 걸리는데 왜 갱신 손실이 나나?",
+   "a": "락은 수정할 때 잡히는데 그 전에 조회한 값이 이미 낡았기 때문이다."
+  },
+  {
+   "q": "비관적 락과 낙관적 락의 차이는?",
+   "a": "비관적은 미리 잠그고 낙관적은 버전을 조건에 넣어 갱신 건수로 충돌을 판단한다."
+  },
+  {
+   "q": "어느 쪽을 고르나?",
+   "a": "충돌이 드물면 낙관적, 잦으면 비관적이다. 재고 차감은 비관적, 게시글 수정은 낙관적이다."
+  },
+  {
+   "q": "가장 단순한 해법은?",
+   "a": "`money = money - 2000` 처럼 DB 에서 계산하는 것이다. 조회-수정 사이의 틈이 없어진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MVCC",
+   "en": "Multi-Version Concurrency Control",
+   "what": "변경 전 버전을 보관해 조회가 락 없이 진행되게 하는 방식."
+  },
+  {
+   "term": "비관적 락",
+   "en": "pessimistic lock",
+   "what": "충돌을 예상하고 미리 잠그는 방식. `select for update`."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
