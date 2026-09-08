@@ -1,0 +1,302 @@
+{
+  "book": "jpa-basic",
+  "id": "inheritance",
+  "no": "8.1",
+  "chapter": 8,
+  "title": "상속관계 매핑",
+  "summary": "조인 전략·단일 테이블 전략·구현 클래스마다 테이블 전략. 셋의 SQL 을 나란히 놓고 고른다.",
+  "minutes": 24,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "관계형 DB 에 상속이 없다는 것과, 그것을 흉내 내는 세 가지 물리 모델을 말할 수 있다.",
+    "세 전략의 저장·조회 SQL 이 각각 어떻게 다른지 말할 수 있다.",
+    "`@DiscriminatorColumn` 이 각 전략에서 필수인지 아닌지 구분할 수 있다.",
+    "실제 프로젝트에서 어떤 전략을 고를지 근거를 대고 판단할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.1절의 **첫 번째 불일치**가 이 절에서 풀린다. 그때 이렇게 썼다.\n\n> 상속을 쓰면 저장·조회 코드가 자식 수만큼 늘어난다. 그러니 개발자는 자연스럽게 DB 에 저장할 객체에는 상속을 쓰지 않는 습관을 들인다. **도메인 모델이 DB 사정에 맞춰 납작해지는 것이다.**\n\n관계형 DB 에는 상속이 없다. 다만 **슈퍼타입/서브타입** 이라는 논리 모델이 있고, 그것을 실제 테이블로 만드는 방법이 세 가지다. JPA 는 그 세 가지를 전부 지원하고, 우리 코드는 어느 쪽이든 똑같이 생겼다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "객체 쪽은 이게 전부다 — 전략과 무관하게 같다",
+      "code": "@Entity\n@Inheritance(strategy = InheritanceType.JOINED)   // 여기만 바꾼다\n@DiscriminatorColumn                               // DTYPE 컬럼\npublic abstract class Item {\n\n    @Id @GeneratedValue\n    @Column(name = \"ITEM_ID\")\n    private Long id;\n\n    private String name;\n    private int price;\n}\n\n@Entity\n@DiscriminatorValue(\"A\")\npublic class Album extends Item {\n    private String artist;\n}\n\n@Entity\n@DiscriminatorValue(\"M\")\npublic class Movie extends Item {\n    private String director;\n    private String actor;\n}",
+      "note": "부모를 `abstract` 로 두는 것이 보통이다. `Item` 자체를 저장할 일이 없기 때문이다. 그리고 **어노테이션 한 줄만 바꾸면 테이블 구조가 통째로 달라진다** — 이 절이 말하려는 것이 그 한 줄의 무게다."
+    },
+    {
+      "type": "figure",
+      "caption": "같은 클래스, 세 가지 테이블",
+      "ascii": "   (1) JOINED  —  조인 전략\n\n   ITEM                        ALBUM              MOVIE            BOOK\n   ┌──────────────┐            ┌──────────┐       ┌──────────┐     ┌──────────┐\n   │ ITEM_ID  PK  │◀───────────│ ITEM_ID  │       │ ITEM_ID  │     │ ITEM_ID  │\n   │ NAME         │◀───────────│ ARTIST   │       │ DIRECTOR │     │ AUTHOR   │\n   │ PRICE        │◀───────────└──────────┘       │ ACTOR    │     │ ISBN     │\n   │ DTYPE        │                               └──────────┘     └──────────┘\n   └──────────────┘\n   부모 컬럼은 한 곳에만 있다. 저장은 INSERT 2번, 조회는 JOIN.\n\n\n   (2) SINGLE_TABLE  —  단일 테이블 전략   (기본값)\n\n   ITEM\n   ┌──────────────────────────────────────────────────────────────────┐\n   │ ITEM_ID  PK │ NAME │ PRICE │ DTYPE │ ARTIST │ DIRECTOR │ AUTHOR  │\n   └──────────────────────────────────────────────────────────────────┘\n   테이블 하나. 조인이 없다. 대신 자식 컬럼은 전부 NULL 을 허용해야 한다.\n\n\n   (3) TABLE_PER_CLASS  —  구현 클래스마다 테이블\n\n   ALBUM                      MOVIE                      BOOK\n   ┌──────────────┐           ┌──────────────┐           ┌──────────────┐\n   │ ITEM_ID  PK  │           │ ITEM_ID  PK  │           │ ITEM_ID  PK  │\n   │ NAME         │           │ NAME         │           │ NAME         │\n   │ PRICE        │           │ PRICE        │           │ PRICE        │\n   │ ARTIST       │           │ DIRECTOR     │           │ AUTHOR       │\n   └──────────────┘           └──────────────┘           └──────────────┘\n   ITEM 테이블이 없다. 부모 타입으로 조회하면 세 테이블을 UNION 한다."
+    },
+    {
+      "type": "heading",
+      "text": "(1) 조인 전략 — 정규화된 모양"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Inheritance(strategy = InheritanceType.JOINED)"
+    },
+    {
+      "type": "sql",
+      "caption": "Album 하나를 저장하면",
+      "sql": "INSERT INTO ITEM  (NAME, PRICE, DTYPE, ITEM_ID) VALUES (?, ?, 'A', ?)\nINSERT INTO ALBUM (ARTIST, ITEM_ID)             VALUES (?, ?)",
+      "note": "2.1절에서 **손으로 짜야 했던 그 INSERT 두 개**다. 이제 `em.persist(album)` 한 줄이 이걸 만든다."
+    },
+    {
+      "type": "sql",
+      "caption": "Album 을 조회하면",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, A.ARTIST\n  FROM ALBUM A\n  JOIN ITEM I ON A.ITEM_ID = I.ITEM_ID\n WHERE A.ITEM_ID = ?"
+    },
+    {
+      "type": "sql",
+      "caption": "부모 타입으로 조회하면 — 여기가 조인 전략의 값어치다",
+      "sql": "SELECT I.ITEM_ID, I.NAME, I.PRICE, I.DTYPE,\n       A.ARTIST, M.DIRECTOR, M.ACTOR, B.AUTHOR, B.ISBN\n  FROM ITEM I\n  LEFT JOIN ALBUM A ON I.ITEM_ID = A.ITEM_ID\n  LEFT JOIN MOVIE M ON I.ITEM_ID = M.ITEM_ID\n  LEFT JOIN BOOK  B ON I.ITEM_ID = B.ITEM_ID\n WHERE I.ITEM_ID = ?",
+      "note": "`em.find(Item.class, id)` 한 줄이 이걸 만들고, **실제 타입에 맞는 자식 객체를 돌려준다.** 2.1절에서 포기했던 다형적 조회가 여기서 살아난다."
+    },
+    {
+      "type": "heading",
+      "text": "(2) 단일 테이블 전략 — 기본값"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "@Inheritance(strategy = InheritanceType.SINGLE_TABLE)\n// strategy 를 아예 안 쓰면 이게 기본값이다"
+    },
+    {
+      "type": "sql",
+      "caption": "저장과 조회",
+      "sql": "-- 저장: INSERT 한 번\nINSERT INTO ITEM (NAME, PRICE, ARTIST, DTYPE, ITEM_ID) VALUES (?, ?, ?, 'A', ?)\n\n-- 조회: 조인 없음\nSELECT ITEM_ID, NAME, PRICE, DTYPE, ARTIST, DIRECTOR, ACTOR, AUTHOR, ISBN\n  FROM ITEM\n WHERE ITEM_ID = ?",
+      "note": "쿼리가 단순하고 빠르다. 대신 한 행에 자식들의 컬럼이 전부 들어 있고, **자기 타입이 아닌 컬럼은 전부 NULL 이다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "단일 테이블에서는 NOT NULL 을 걸 수 없다",
+      "md": "`Album.artist` 는 앨범이라면 반드시 있어야 하는 값이다. 그런데 같은 테이블에 영화 행도 들어오고, 그 행의 `ARTIST` 는 NULL 이다.\n\n그래서 **자식의 모든 컬럼에 NOT NULL 을 걸 수 없다.** DB 가 무결성을 지켜 주지 못하고 애플리케이션이 대신 검증해야 한다.\n\n자식이 3~4개고 각자 컬럼이 2~3개면 견딜 만하다. 자식이 10개고 각자 컬럼이 10개면 **NULL 이 90% 인 테이블**이 된다. 이 지점이 전략을 고르는 실질적인 기준이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "단일 테이블에서 DTYPE 은 필수다",
+      "md": "행 하나를 보고 그것이 앨범인지 영화인지 알 방법이 그것뿐이다. 그래서 `@DiscriminatorColumn` 을 안 써도 **하이버네이트가 알아서 `DTYPE` 을 만든다.**\n\n조인 전략에서는 다르다. 자식 테이블에 행이 있는지 없는지로 타입을 알 수 있어서 없어도 동작한다. 다만 **있는 편이 낫다** — 부모 테이블만 봐도 타입을 알 수 있으면 운영 중 데이터를 들여다볼 때 훨씬 편하고, 조회 성능에도 도움이 된다.\n\n`@DiscriminatorValue` 를 생략하면 기본값은 **클래스 이름**이다. 클래스 이름을 바꾸면 기존 데이터를 못 읽으므로(5.3절 enum 과 같은 성질), 짧은 값을 명시해 두는 편이 안전하다."
+    },
+    {
+      "type": "heading",
+      "text": "(3) 구현 클래스마다 테이블 — 쓰지 않는다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "code": "@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)"
+    },
+    {
+      "type": "sql",
+      "caption": "부모 타입으로 조회하면",
+      "sql": "SELECT * FROM (\n    SELECT ITEM_ID, NAME, PRICE, ARTIST,   NULL AS DIRECTOR, NULL AS AUTHOR FROM ALBUM\n    UNION ALL\n    SELECT ITEM_ID, NAME, PRICE, NULL,     DIRECTOR,         NULL           FROM MOVIE\n    UNION ALL\n    SELECT ITEM_ID, NAME, PRICE, NULL,     NULL,             AUTHOR         FROM BOOK\n) ITEM\n WHERE ITEM_ID = ?",
+      "note": "자식이 늘어날수록 UNION 이 늘어난다. 인덱스도 각 테이블에 따로 타므로 실행 계획이 나빠진다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "이 전략의 진짜 문제",
+      "md": "**1. 부모 타입 조회가 느리다.** UNION 이 자식 수만큼 붙는다.\n\n**2. 다른 테이블에서 참조할 수 없다.** `ORDER_ITEM.ITEM_ID` 로 FK 를 걸고 싶은데, 참조할 `ITEM` 테이블이 없다. 상품을 참조하는 모든 관계가 깨진다.\n\n**3. `@GeneratedValue` 의 IDENTITY 를 쓸 수 없다.** 테이블마다 따로 증가하면 형제끼리 id 가 겹친다.\n\n2번이 결정적이다. 상속을 쓴 엔티티는 대개 다른 곳에서 참조당하는 물건이라(상품·결제수단·알림) 이 전략은 거의 항상 막힌다. **DB 설계자도 ORM 도 이 방식을 권하지 않는다.**"
+    },
+    {
+      "type": "heading",
+      "text": "그래서 무엇을 고르나"
+    },
+    {
+      "type": "table",
+      "caption": "세 전략 비교",
+      "note": "실무의 기본 판단: **자식이 적고 컬럼이 단순하면 단일 테이블, 자식마다 컬럼이 많고 제약이 필요하면 조인.** 세 번째는 고려 대상이 아니다.",
+      "columns": [
+        "",
+        "JOINED (조인)",
+        "SINGLE_TABLE (단일)",
+        "TABLE_PER_CLASS"
+      ],
+      "rows": [
+        [
+          "테이블 수",
+          "부모 1 + 자식 N",
+          "**1개**",
+          "자식 N (부모 없음)"
+        ],
+        [
+          "저장",
+          "INSERT 2번",
+          "**INSERT 1번**",
+          "INSERT 1번"
+        ],
+        [
+          "자식 조회",
+          "JOIN 1번",
+          "**조인 없음**",
+          "조인 없음"
+        ],
+        [
+          "부모 타입 조회",
+          "LEFT JOIN N개",
+          "**조인 없음**",
+          "UNION N개"
+        ],
+        [
+          "자식 컬럼에 NOT NULL",
+          "**가능**",
+          "불가능",
+          "가능"
+        ],
+        [
+          "저장 공간",
+          "**낭비 없음**",
+          "NULL 이 많다",
+          "부모 컬럼이 중복"
+        ],
+        [
+          "다른 테이블에서 FK 참조",
+          "**가능**",
+          "**가능**",
+          "**불가능**"
+        ],
+        [
+          "실무",
+          "정규화가 중요할 때",
+          "**기본으로 놓고 시작**",
+          "쓰지 않는다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "고민이 길어지면",
+      "md": "**단일 테이블로 시작한다.** 이유는 단순하다 — 조인 전략으로 바꾸는 마이그레이션이 그 반대보다 쉽다. 컬럼을 자식 테이블로 떼어 내는 것은 기계적인 작업이지만, 흩어진 테이블을 합치면서 컬럼 이름 충돌을 정리하는 것은 그렇지 않다.\n\n그리고 애초에 **상속을 쓸 자리인지부터 의심해 볼 필요가 있다.** 자식마다 필드가 한두 개 다른 정도라면 단일 테이블 + `@Enumerated` 타입 컬럼으로 충분한 경우가 많다. 상속은 **자식마다 동작(메서드)이 다를 때** 값어치가 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"상속관계 매핑 전략 세 가지는?\"** → 조인·단일 테이블·구현 클래스마다 테이블. 각각의 테이블 구조와 나가는 SQL 을 같이 말한다.\n- **\"기본 전략은?\"** → `SINGLE_TABLE`. `strategy` 를 안 쓰면 이것이다.\n- **\"단일 테이블 전략의 단점은?\"** → 자식 컬럼에 NOT NULL 을 걸 수 없고, 자식이 많아지면 NULL 투성이 테이블이 된다.\n- **\"구현 클래스마다 테이블 전략을 안 쓰는 이유는?\"** → 부모 타입 조회가 UNION 이라 느리고, **부모 테이블이 없어서 다른 테이블이 FK 로 참조할 수 없다.** 두 번째가 결정적이다.\n- **\"DTYPE 은 언제 필요한가요?\"** → 단일 테이블에서는 필수(없으면 자동 생성). 조인 전략에서는 없어도 되지만 운영·성능상 두는 편이 낫다."
+    }
+  ],
+  "recap": [
+    "관계형 DB 에는 상속이 없다. 슈퍼타입/서브타입을 테이블로 만드는 방법이 세 가지다.",
+    "객체 쪽 코드는 전략과 무관하게 같다 — `@Inheritance(strategy)` 한 줄이 테이블 구조를 통째로 바꾼다.",
+    "조인 전략은 정규화되어 있고 NOT NULL 을 걸 수 있다. 대신 INSERT 2번, 조회에 조인이 붙는다.",
+    "단일 테이블은 기본값이고 가장 빠르다. 대신 자식 컬럼에 NOT NULL 을 못 걸고 NULL 이 쌓인다.",
+    "구현 클래스마다 테이블은 **부모 테이블이 없어 FK 참조가 불가능**해서 사실상 못 쓴다.",
+    "고민이 길면 단일 테이블로 시작한다. 조인으로 가는 마이그레이션이 반대보다 쉽다.",
+    "그 전에 '상속을 쓸 자리인가' 부터 의심한다. 상속은 자식마다 동작이 다를 때 값어치가 난다."
+  ],
+  "drills": [
+    {
+      "task": "Item–Album–Movie–Book 을 만들고 `JOINED` 로 앨범 하나를 저장한 뒤 나가는 SQL 을 확인한다.",
+      "done_when": "INSERT 가 두 번 나가는 것을 봤다. 2.1절에서 손으로 짜야 했던 그 SQL 이다.",
+      "minutes": 25
+    },
+    {
+      "task": "`em.find(Item.class, id)` 로 부모 타입 조회를 하고 SQL 과 반환 객체의 실제 타입을 확인한다.",
+      "done_when": "LEFT JOIN 세 개가 나가고 `instanceof Album` 이 true 인 것을 확인했다.",
+      "hint": "2.1절에서 포기했던 다형적 조회가 되는 순간이다.",
+      "minutes": 20
+    },
+    {
+      "task": "전략을 `SINGLE_TABLE` 로 바꾸고 DDL·저장·조회 SQL 을 전부 다시 확인한다.",
+      "done_when": "테이블이 하나가 되고 조인이 사라진 것을 봤다. 자바 코드는 한 글자도 안 고쳤다는 것도 확인한다.",
+      "minutes": 20
+    },
+    {
+      "task": "`SINGLE_TABLE` 상태에서 `Album.artist` 에 `@Column(nullable = false)` 를 걸고 영화를 저장해 본다.",
+      "done_when": "저장이 실패하는 것을 확인했다. 왜 자식 컬럼에 NOT NULL 을 못 거는지 몸으로 알게 된다.",
+      "minutes": 15
+    },
+    {
+      "task": "`TABLE_PER_CLASS` 로 바꾸고 부모 타입으로 조회해 UNION 쿼리를 확인한다. 그다음 `OrderItem` 이 `Item` 을 `@ManyToOne` 으로 참조하게 해 본다.",
+      "done_when": "UNION 을 봤고, FK 를 걸 부모 테이블이 없어서 문제가 생기는 것을 확인했다.",
+      "minutes": 30
+    },
+    {
+      "task": "`@DiscriminatorValue` 를 지우고 저장한 뒤 DTYPE 값을 본다. 그다음 클래스 이름을 바꿔 본다.",
+      "done_when": "기본값이 클래스 이름이고, 이름을 바꾸면 기존 데이터를 못 읽는 것을 확인했다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`@Inheritance` 를 안 쓰면 어떤 전략이 적용되는가?",
+      "a": "`SINGLE_TABLE`(단일 테이블). 5.3절의 `@Enumerated` 처럼 기본값을 모르고 쓰게 되는 자리이므로 명시하는 편이 낫다."
+    },
+    {
+      "q": "조인 전략에서 앨범 하나를 저장하면 SQL 이 몇 번 나가는가?",
+      "a": "두 번이다. `ITEM` 에 부모 컬럼, `ALBUM` 에 자식 컬럼. 2.1절에서 개발자가 손으로 짜야 했던 그 두 문장이다."
+    },
+    {
+      "q": "단일 테이블 전략에서 자식 컬럼에 NOT NULL 을 걸 수 없는 이유는?",
+      "a": "한 테이블에 모든 자식의 행이 섞여 있어서, 다른 타입의 행에서는 그 컬럼이 반드시 NULL 이 되기 때문이다."
+    },
+    {
+      "q": "구현 클래스마다 테이블 전략의 결정적 문제는?",
+      "a": "부모 테이블이 없어서 다른 테이블이 FK 로 참조할 수 없다. 상속을 쓰는 엔티티는 대개 다른 곳에서 참조당하므로 이 지점에서 거의 항상 막힌다."
+    },
+    {
+      "q": "`DTYPE` 이 필수인 전략은?",
+      "a": "단일 테이블. 행 하나만 보고 타입을 알 방법이 그것뿐이라 안 써도 하이버네이트가 자동 생성한다. 조인 전략에서는 자식 테이블 존재 여부로 알 수 있어 선택이지만, 두는 편이 낫다."
+    },
+    {
+      "q": "`@DiscriminatorValue` 를 생략하면 무엇이 저장되는가?",
+      "a": "클래스 이름이다. 클래스 이름을 바꾸면 기존 데이터를 못 읽으므로(5.3절 enum STRING 과 같은 성질) 짧은 값을 명시하는 편이 안전하다."
+    },
+    {
+      "q": "전략을 고르기 어려울 때 무엇부터 하나?",
+      "a": "단일 테이블로 시작한다. 나중에 조인 전략으로 쪼개는 마이그레이션이 그 반대보다 쉽다. 그 전에 '상속이 필요한 자리인가' 를 먼저 의심한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "슈퍼타입/서브타입",
+      "en": "supertype/subtype",
+      "what": "관계형 모델에서 상속을 표현하는 논리 모델. 물리 모델로 바꾸는 방법이 세 가지다."
+    },
+    {
+      "term": "@Inheritance",
+      "en": "",
+      "what": "상속 매핑 전략을 지정한다. `JOINED`·`SINGLE_TABLE`·`TABLE_PER_CLASS`. 기본값은 SINGLE_TABLE."
+    },
+    {
+      "term": "@DiscriminatorColumn",
+      "en": "구분 컬럼",
+      "what": "행의 타입을 표시하는 컬럼. 기본 이름은 `DTYPE`. 단일 테이블에서는 필수."
+    },
+    {
+      "term": "@DiscriminatorValue",
+      "en": "",
+      "what": "그 자식이 구분 컬럼에 저장할 값. 생략하면 클래스 이름."
+    },
+    {
+      "term": "다형적 조회",
+      "en": "polymorphic query",
+      "what": "부모 타입으로 조회했는데 실제 자식 인스턴스를 돌려받는 것. 2.1절에서 포기했던 것."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Inheritance",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1063",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Inheritance",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#entity-inheritance",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

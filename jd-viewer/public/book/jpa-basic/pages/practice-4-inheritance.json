@@ -1,0 +1,212 @@
+{
+  "book": "jpa-basic",
+  "id": "practice-4-inheritance",
+  "no": "8.3",
+  "chapter": 8,
+  "title": "실전 예제 4 — 상속관계 매핑",
+  "summary": "상품을 앨범·책·영화로 나누고, 공통 등록일 정보를 뽑아낸다.",
+  "minutes": 16,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "실제 예제에서 상속 전략을 고르고 근거를 댈 수 있다.",
+    "상속 매핑과 `@MappedSuperclass` 를 한 엔티티에 같이 적용할 수 있다.",
+    "상속을 넣은 뒤 기존 연관관계(`OrderItem.item`)가 그대로 동작하는지 확인할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.5절의 도메인에 두 가지를 더한다.\n\n- **상품을 앨범·영화·책으로 나눈다** — 8.1절의 상속 매핑\n- **모든 엔티티에 등록일·수정일·등록자·수정자를 붙인다** — 8.2절의 `@MappedSuperclass`\n\n둘은 서로 다른 층이라 한 엔티티에 같이 적용된다."
+    },
+    {
+      "type": "figure",
+      "caption": "이 예제의 구조",
+      "ascii": "   ITEM  (SINGLE_TABLE)\n   ┌──────────────────────────────────────────────────────────────────────┐\n   │ ITEM_ID  PK │ NAME │ PRICE │ STOCK │ DTYPE │ ARTIST │ DIRECTOR │ ... │\n   └──────────────────────────────────────────────────────────────────────┘\n        ▲\n        │ extends\n   ┌────┼──────────────┬──────────────┐\n   │    │              │              │\n  Item Album         Movie          Book\n       (ARTIST,      (DIRECTOR,     (AUTHOR,\n        ETC)          ACTOR)         ISBN)\n\n\n   그리고 모든 엔티티가 BaseEntity 를 상속한다 (@MappedSuperclass)\n\n   BaseEntity\n   ┌──────────────────────┐\n   │ createdBy            │\n   │ createdDate          │      Member  Order  OrderItem  Item\n   │ lastModifiedBy       │  ->  Delivery  Category   ... 전부\n   │ lastModifiedDate     │\n   └──────────────────────┘\n\n   ITEM 테이블에는 상속 컬럼(ARTIST...)과 공통 컬럼(CREATED_DATE...)이 함께 들어간다."
+    },
+    {
+      "type": "heading",
+      "text": "전략을 고른다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "여기서는 단일 테이블",
+      "md": "8.1절의 표에 대입해 보면 이렇다.\n\n- **자식이 3개**고 각자 컬럼이 1~2개다. NULL 이 많이 생기지 않는다.\n- **`ORDER_ITEM` 이 `ITEM` 을 FK 로 참조한다.** `TABLE_PER_CLASS` 는 여기서 탈락이다.\n- 상품 목록 화면은 **부모 타입으로 전체를 조회**한다. 조인 전략이면 LEFT JOIN 세 개가 붙는다.\n\n조인 전략도 나쁘지 않다 — 실제 서비스라면 상품 종류가 계속 늘 것이므로 그쪽이 나을 수도 있다. 다만 지금 규모에서는 단일 테이블이 단순하고, 8.1절에서 말한 대로 **나중에 조인으로 쪼개는 것이 반대보다 쉽다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Item.java",
+      "code": "@Entity\n@Inheritance(strategy = InheritanceType.SINGLE_TABLE)\n@DiscriminatorColumn(name = \"DTYPE\")\npublic abstract class Item extends BaseEntity {\n\n    @Id @GeneratedValue\n    @Column(name = \"ITEM_ID\")\n    private Long id;\n\n    private String name;\n    private int price;\n    private int stockQuantity;\n\n    @ManyToMany(mappedBy = \"items\")\n    private List<Category> categories = new ArrayList<>();\n}",
+      "note": "`extends BaseEntity` 와 `@Inheritance` 가 **한 클래스에 같이 있다.** 위쪽으로는 공통 컬럼을 물려받고, 아래쪽으로는 자식들에게 테이블을 나눠 준다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세 자식",
+      "code": "@Entity\n@DiscriminatorValue(\"A\")\npublic class Album extends Item {\n    private String artist;\n    private String etc;\n}\n\n@Entity\n@DiscriminatorValue(\"M\")\npublic class Movie extends Item {\n    private String director;\n    private String actor;\n}\n\n@Entity\n@DiscriminatorValue(\"B\")\npublic class Book extends Item {\n    private String author;\n    private String isbn;\n}",
+      "note": "`@DiscriminatorValue` 를 명시했다. 생략하면 클래스 이름이 들어가는데, 클래스 이름을 바꾸는 순간 기존 데이터를 못 읽는다(8.1절)."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "BaseEntity.java",
+      "code": "@MappedSuperclass\npublic abstract class BaseEntity {\n\n    @Column(updatable = false)\n    private String createdBy;\n\n    @Column(updatable = false)\n    private LocalDateTime createdDate;\n\n    private String lastModifiedBy;\n    private LocalDateTime lastModifiedDate;\n\n    @PrePersist\n    public void prePersist() {\n        LocalDateTime now = LocalDateTime.now();\n        createdDate = now;\n        lastModifiedDate = now;\n    }\n\n    @PreUpdate\n    public void preUpdate() {\n        lastModifiedDate = LocalDateTime.now();\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 ITEM 테이블",
+      "sql": "CREATE TABLE ITEM (\n    DTYPE              VARCHAR(31) NOT NULL,\n    ITEM_ID            BIGINT      NOT NULL,\n    NAME               VARCHAR(255),\n    PRICE              INTEGER,\n    STOCK_QUANTITY     INTEGER,\n\n    ARTIST             VARCHAR(255),   -- Album\n    ETC                VARCHAR(255),   -- Album\n    DIRECTOR           VARCHAR(255),   -- Movie\n    ACTOR              VARCHAR(255),   -- Movie\n    AUTHOR             VARCHAR(255),   -- Book\n    ISBN               VARCHAR(255),   -- Book\n\n    CREATED_BY         VARCHAR(255),   -- BaseEntity\n    CREATED_DATE       TIMESTAMP,      -- BaseEntity\n    LAST_MODIFIED_BY   VARCHAR(255),   -- BaseEntity\n    LAST_MODIFIED_DATE TIMESTAMP,      -- BaseEntity\n\n    PRIMARY KEY (ITEM_ID)\n)",
+      "note": "한 테이블에 **세 출처의 컬럼**이 섞여 있다 — 자기 것, 자식 것(상속 매핑), 공통 것(`@MappedSuperclass`). `DTYPE` 이 맨 앞에 온 것도 하이버네이트가 그렇게 만든다."
+    },
+    {
+      "type": "heading",
+      "text": "저장하고 조회하기"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Book book = new Book();\nbook.setName(\"JPA 프로그래밍\");\nbook.setPrice(30000);\nbook.setAuthor(\"김영한\");\nbook.setIsbn(\"9788960777330\");\n\nem.persist(book);"
+    },
+    {
+      "type": "sql",
+      "sql": "INSERT INTO ITEM\n    (NAME, PRICE, STOCK_QUANTITY, CREATED_BY, CREATED_DATE,\n     LAST_MODIFIED_BY, LAST_MODIFIED_DATE, AUTHOR, ISBN, DTYPE, ITEM_ID)\nVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'B', ?)",
+      "note": "INSERT 가 **한 번**이다. 조인 전략이었다면 두 번이었다. 그리고 `DTYPE` 에 `'B'`, `CREATED_DATE` 에 콜백이 넣은 값이 들어갔다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "부모 타입으로 조회",
+      "code": "Item item = em.find(Item.class, book.getId());\n\nSystem.out.println(item.getClass());        // class ...Book\nSystem.out.println(item instanceof Book);   // true"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT ITEM_ID, DTYPE, NAME, PRICE, STOCK_QUANTITY,\n       ARTIST, ETC, DIRECTOR, ACTOR, AUTHOR, ISBN,\n       CREATED_BY, CREATED_DATE, LAST_MODIFIED_BY, LAST_MODIFIED_DATE\n  FROM ITEM\n WHERE ITEM_ID = ?",
+      "note": "조인이 없다. 그리고 `DTYPE` 을 보고 **하이버네이트가 `Book` 인스턴스를 만들어 준다.** 2.1절에서 \"결국 타입마다 DAO 를 따로 판다\"고 했던 그 문제가 사라진 자리다."
+    },
+    {
+      "type": "heading",
+      "text": "기존 연관관계는 그대로다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "OrderItem 은 한 글자도 안 바뀐다",
+      "code": "@ManyToOne\n@JoinColumn(name = \"ITEM_ID\")\nprivate Item item;      // 부모 타입 그대로"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "OrderItem oi = em.find(OrderItem.class, id);\n\nItem item = oi.getItem();\nif (item instanceof Book b) {\n    System.out.println(b.getAuthor());\n}",
+      "note": "상품을 참조하는 쪽은 그것이 앨범인지 책인지 몰라도 된다. **필요할 때만 타입을 확인한다.** 이게 다형성을 유지한다는 말의 실질이다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "JPQL 에서 타입으로 거르려면",
+      "md": "12.4절에서 자세히 다루지만 미리 하나만.\n\n```\nSELECT i FROM Item i WHERE TYPE(i) = Book\n```\n\n`TYPE()` 이 `DTYPE` 비교로 번역된다. 단일 테이블이면 `WHERE DTYPE = 'B'`, 조인 전략이면 자식 테이블 존재 여부로 판단한다. **전략을 바꿔도 JPQL 은 그대로**라는 점이 중요하다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "상속을 넣기 전에 한 번 더",
+      "md": "이 예제는 상속을 배우기 위한 것이라 상품을 셋으로 나눴다. 실제 서비스에서 이 설계가 옳은지는 별개 문제다.\n\n**앨범·영화·책이 서로 다른 동작(메서드)을 갖는가?** 그냥 필드 몇 개가 다를 뿐이라면, `ItemType` enum 하나와 `Map<String,String> attributes` 같은 구조가 더 유연할 수도 있다. 상품 종류가 계속 늘어나는 커머스라면 특히 그렇다 — 종류가 늘 때마다 배포가 필요한 설계는 곤란하다.\n\n8.1절에서 말한 \"상속을 쓸 자리인지부터 의심하라\" 가 이 예제에도 그대로 적용된다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"상속 매핑과 `@MappedSuperclass` 를 한 클래스에 같이 쓸 수 있나요?\"** → 된다. 위로는 공통 컬럼을 물려받고 아래로는 자식에게 테이블 전략을 준다.\n- **\"이 예제에서 단일 테이블을 고른 이유는?\"** → 자식이 셋뿐이고 컬럼이 적어 NULL 부담이 작다. `ORDER_ITEM` 이 `ITEM` 을 FK 로 참조하므로 `TABLE_PER_CLASS` 는 불가능하고, 나중에 조인으로 쪼개는 것이 반대보다 쉽다.\n- **\"상속을 넣으면 기존 연관관계를 고쳐야 하나요?\"** → 아니다. 부모 타입으로 참조하고 있으면 그대로다."
+    }
+  ],
+  "recap": [
+    "상속 매핑(`@Inheritance`)과 공통 컬럼(`@MappedSuperclass`)은 층이 달라 한 클래스에 같이 쓴다.",
+    "이 예제는 단일 테이블을 골랐다 — 자식이 적고, FK 참조가 필요하고, 나중에 쪼개기 쉽기 때문이다.",
+    "결과 테이블에는 자기 컬럼·자식 컬럼·공통 컬럼 세 출처가 섞인다.",
+    "저장은 INSERT 한 번, 조회는 조인 없이 한 번. `DTYPE` 을 보고 하이버네이트가 자식 인스턴스를 만든다.",
+    "`OrderItem.item` 같은 기존 연관관계는 부모 타입 그대로라 손댈 것이 없다.",
+    "그래도 '상속이 필요한 자리인가' 는 매번 다시 물어야 한다. 필드만 다르면 다른 설계가 나을 수 있다."
+  ],
+  "drills": [
+    {
+      "task": "Item 을 추상 클래스로 만들고 Album·Movie·Book 을 단일 테이블 전략으로 매핑한 뒤 DDL 을 확인한다.",
+      "done_when": "한 테이블에 세 자식의 컬럼과 DTYPE 이 다 들어간 것을 봤다.",
+      "minutes": 25
+    },
+    {
+      "task": "`BaseEntity` 를 만들어 모든 엔티티가 상속하게 하고 DDL 을 다시 본다.",
+      "done_when": "모든 테이블에 네 컬럼이 추가된 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "책 하나를 저장하고 `em.find(Item.class, id)` 로 조회해 `getClass()` 를 찍는다.",
+      "done_when": "`Book` 이 나오는 것을 확인했다. 2.1절의 다형적 조회 문제가 풀린 순간이다.",
+      "minutes": 20
+    },
+    {
+      "task": "전략을 `JOINED` 로 바꾸고 같은 저장·조회를 반복하며 SQL 을 비교한다.",
+      "done_when": "INSERT 2번·LEFT JOIN 3개로 바뀌는 것을 확인했고, 자바 코드는 한 글자도 안 고쳤다는 것도 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "책을 수정하고 `LAST_MODIFIED_DATE` 만 바뀌는지, `CREATED_DATE` 는 그대로인지 확인한다.",
+      "done_when": "`@PreUpdate` 와 `@Column(updatable=false)` 가 각각 동작하는 것을 봤다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`Item` 클래스에 `@Inheritance` 와 `extends BaseEntity` 가 동시에 있는 것이 가능한가?",
+      "a": "가능하다. `@MappedSuperclass` 로부터 공통 컬럼을 물려받고, 자기 자식들에게는 상속 매핑 전략을 적용한다. 서로 다른 층이다."
+    },
+    {
+      "q": "이 예제에서 `TABLE_PER_CLASS` 를 쓸 수 없는 이유는?",
+      "a": "`OrderItem` 이 `Item` 을 `@ManyToOne` 으로 참조하는데, 그 전략에는 참조할 `ITEM` 테이블이 없다."
+    },
+    {
+      "q": "책을 저장하면 INSERT 가 몇 번 나가는가?",
+      "a": "단일 테이블 전략이므로 한 번이다. 조인 전략이었다면 ITEM 과 BOOK 에 각각 한 번씩 두 번."
+    },
+    {
+      "q": "`em.find(Item.class, id)` 가 `Book` 인스턴스를 돌려주는 근거는?",
+      "a": "`DTYPE` 컬럼 값이다. 하이버네이트가 그 값을 보고 어떤 자식 클래스로 만들지 결정한다."
+    },
+    {
+      "q": "상속을 도입한 뒤 `OrderItem.item` 을 고쳐야 하는가?",
+      "a": "아니다. 부모 타입(`Item`)으로 참조하고 있으므로 그대로 동작한다. 필요할 때만 `instanceof` 로 실제 타입을 확인한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "DTYPE",
+      "en": "discriminator type",
+      "what": "행의 실제 타입을 저장하는 구분 컬럼. 하이버네이트가 이 값을 보고 자식 인스턴스를 만든다."
+    },
+    {
+      "term": "TYPE()",
+      "en": "",
+      "what": "JPQL 에서 엔티티의 타입으로 거르는 함수. `WHERE TYPE(i) = Book`. 12.4절."
+    },
+    {
+      "term": "BaseEntity",
+      "en": "",
+      "what": "등록·수정 정보를 담는 `@MappedSuperclass` 관례적 이름. 시간만 담는 BaseTimeEntity 와 나누기도 한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Inheritance",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1063",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Inheritance",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#entity-inheritance",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

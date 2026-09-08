@@ -1,0 +1,222 @@
+{
+  "book": "jpa-basic",
+  "id": "mapped-superclass",
+  "no": "8.2",
+  "chapter": 8,
+  "title": "@MappedSuperclass — 매핑 정보 상속",
+  "summary": "상속이 아니라 '공통 컬럼 묶음'. 등록일·수정일을 모든 엔티티에 붙이는 방법.",
+  "minutes": 12,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "`@MappedSuperclass` 와 8.1절의 상속 매핑이 무엇이 다른지 말할 수 있다.",
+    "`@MappedSuperclass` 클래스로 할 수 없는 일 세 가지를 안다.",
+    "등록일·수정일을 자동으로 채우는 방법을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "이름 때문에 8.1절과 헷갈리기 쉬운데, **완전히 다른 물건이다.**\n\n8.1절의 상속 매핑은 \"앨범은 상품이다\"라는 **관계**를 테이블로 옮기는 것이었다. `@MappedSuperclass` 는 그런 관계가 아니다. 그냥 **여러 엔티티에 똑같이 들어가는 컬럼 묶음을 한 곳에 적어 두는 것**이다.\n\n전형적인 예가 등록일·수정일·등록자·수정자다. 거의 모든 테이블에 있고, 매번 네 줄씩 복사하기 싫은 그것."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "BaseEntity.java",
+      "code": "@MappedSuperclass\npublic abstract class BaseEntity {\n\n    @Column(updatable = false)          // 5.3절 — 생성 정보는 안 바뀐다\n    private String createdBy;\n\n    @Column(updatable = false)\n    private LocalDateTime createdDate;\n\n    private String lastModifiedBy;\n    private LocalDateTime lastModifiedDate;\n}",
+      "note": "`abstract` 로 둔다. 이 클래스로 인스턴스를 만들 일이 없기 때문이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "쓰는 쪽",
+      "code": "@Entity\npublic class Member extends BaseEntity {\n    @Id @GeneratedValue\n    private Long id;\n    private String name;\n}"
+    },
+    {
+      "type": "figure",
+      "caption": "컬럼이 복사된다",
+      "ascii": "   @MappedSuperclass 는 상속이 아니라 '컬럼 묶음 붙여넣기' 다\n\n   @MappedSuperclass\n   ┌──────────────────────┐\n   │ BaseEntity           │      <-- 테이블이 없다. 조회할 수도 없다.\n   │   createdBy          │\n   │   createdDate        │\n   │   lastModifiedBy     │\n   │   lastModifiedDate   │\n   └──────────┬───────────┘\n              │ extends\n      ┌───────┼────────┐\n      ▼       ▼        ▼\n   Member   Order    Item          <-- 이 셋만 @Entity 다\n\n\n   만들어지는 테이블\n\n   MEMBER                      ORDERS                     ITEM\n   ┌──────────────────┐        ┌──────────────────┐       ┌──────────────────┐\n   │ MEMBER_ID  PK    │        │ ORDER_ID   PK    │       │ ITEM_ID    PK    │\n   │ NAME             │        │ ORDER_DATE       │       │ PRICE            │\n   │ CREATED_BY       │        │ CREATED_BY       │       │ CREATED_BY       │\n   │ CREATED_DATE     │        │ CREATED_DATE     │       │ CREATED_DATE     │\n   │ MODIFIED_BY      │        │ MODIFIED_BY      │       │ MODIFIED_BY      │\n   │ MODIFIED_DATE    │        │ MODIFIED_DATE    │       │ MODIFIED_DATE    │\n   └──────────────────┘        └──────────────────┘       └──────────────────┘\n\n   같은 네 컬럼이 각 테이블에 복사된다. 조인도 UNION 도 없다."
+    },
+    {
+      "type": "sql",
+      "caption": "만들어지는 DDL — BaseEntity 테이블은 없다",
+      "sql": "CREATE TABLE MEMBER (\n    MEMBER_ID          BIGINT NOT NULL,\n    NAME               VARCHAR(255),\n    CREATED_BY         VARCHAR(255),\n    CREATED_DATE       TIMESTAMP,\n    LAST_MODIFIED_BY   VARCHAR(255),\n    LAST_MODIFIED_DATE TIMESTAMP,\n    PRIMARY KEY (MEMBER_ID)\n)"
+    },
+    {
+      "type": "heading",
+      "text": "할 수 없는 것 세 가지"
+    },
+    {
+      "type": "table",
+      "caption": "@MappedSuperclass 는 엔티티가 아니다",
+      "note": "\"엔티티가 아니다\" 라는 한 문장에서 셋이 다 나온다. 테이블이 없으니 조회할 수도, 가리킬 수도 없다.",
+      "columns": [
+        "할 수 없는 것",
+        "왜"
+      ],
+      "rows": [
+        [
+          "`em.find(BaseEntity.class, id)`",
+          "테이블이 없다"
+        ],
+        [
+          "`SELECT b FROM BaseEntity b`",
+          "JPQL 의 대상이 아니다"
+        ],
+        [
+          "다른 엔티티가 `@ManyToOne BaseEntity` 로 참조",
+          "가리킬 테이블이 없다"
+        ]
+      ]
+    },
+    {
+      "type": "compare",
+      "caption": "8.1 상속 매핑과 나란히 놓으면",
+      "note": "판단 기준: **\"A 는 B 다\" 가 성립하면 상속 매핑, \"A 와 B 에 같은 컬럼이 있다\" 면 @MappedSuperclass.**",
+      "left": {
+        "title": "@Inheritance (8.1)",
+        "lang": "java",
+        "code": "@Entity\n@Inheritance(...)\npublic abstract class Item { }\n\n@Entity\npublic class Album extends Item { }",
+        "md": "**앨범은 상품이다.** 부모도 엔티티고 테이블이 있다. 부모 타입으로 조회할 수 있고 FK 로 참조할 수 있다."
+      },
+      "right": {
+        "title": "@MappedSuperclass (8.2)",
+        "lang": "java",
+        "code": "@MappedSuperclass\npublic abstract class BaseEntity { }\n\n@Entity\npublic class Member extends BaseEntity { }",
+        "md": "**회원은 BaseEntity 가 아니다.** 그냥 같은 컬럼을 갖고 있을 뿐이다. 부모는 테이블도 없고 조회도 안 된다."
+      }
+    },
+    {
+      "type": "heading",
+      "text": "값을 자동으로 채우기"
+    },
+    {
+      "type": "prose",
+      "md": "컬럼만 만들어 두고 손으로 채우면 반드시 빠뜨린다. JPA 에는 생명주기 콜백이 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "순수 JPA — @PrePersist / @PreUpdate",
+      "code": "@MappedSuperclass\npublic abstract class BaseEntity {\n\n    @Column(updatable = false)\n    private LocalDateTime createdDate;\n    private LocalDateTime lastModifiedDate;\n\n    @PrePersist\n    public void prePersist() {\n        LocalDateTime now = LocalDateTime.now();\n        createdDate = now;\n        lastModifiedDate = now;      // 처음에도 채워 둬야 정렬·비교가 편하다\n    }\n\n    @PreUpdate\n    public void preUpdate() {\n        lastModifiedDate = LocalDateTime.now();\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "caption": "저장할 때",
+      "sql": "INSERT INTO MEMBER (NAME, CREATED_DATE, LAST_MODIFIED_DATE, MEMBER_ID)\nVALUES (?, ?, ?, ?)",
+      "note": "`@PrePersist` 는 INSERT 문이 만들어지기 **직전**에 불린다. 그래서 여기서 세팅한 값이 그대로 SQL 에 들어간다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "등록자·수정자는 콜백으로 못 채운다",
+      "md": "\"누가 수정했나\"는 현재 로그인 사용자를 알아야 하는데, `@PreUpdate` 안에서는 그걸 알 방법이 없다. 엔티티는 인증 컨텍스트를 몰라야 하기도 하고.\n\n스프링을 쓴다면 **Spring Data JPA Auditing** 이 이 자리를 채운다.\n\n```java\n@EntityListeners(AuditingEntityListener.class)\n@MappedSuperclass\npublic abstract class BaseEntity {\n    @CreatedDate      private LocalDateTime createdDate;\n    @LastModifiedDate private LocalDateTime lastModifiedDate;\n    @CreatedBy        private String createdBy;\n    @LastModifiedBy   private String lastModifiedBy;\n}\n```\n\n`AuditorAware` 빈 하나를 등록하면 현재 사용자를 알아서 넣어 준다. 순수 JPA 에서는 콜백 안에서 스레드 로컬을 읽는 식으로 직접 만들어야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "시간 필드와 날짜 필드를 나누는 습관",
+      "md": "모든 엔티티에 등록일·수정일이 필요한 건 맞지만, **등록자·수정자까지 필요한 엔티티는 그보다 적다.** 로그성 테이블이나 코드 테이블에는 과하다.\n\n`BaseTimeEntity`(시간만) 와 그것을 상속한 `BaseEntity`(사용자까지)로 두 단계를 두는 구성이 흔하다. `@MappedSuperclass` 는 여러 단계로 상속해도 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"`@MappedSuperclass` 와 상속 매핑의 차이는?\"** → 전자는 컬럼 묶음을 물려주는 것이고 부모는 엔티티가 아니다. 후자는 \"A 는 B 다\" 라는 관계를 테이블로 옮기는 것이고 부모도 엔티티다.\n- **\"`@MappedSuperclass` 클래스를 조회할 수 있나요?\"** → 없다. 테이블이 없어서 `em.find` 도 JPQL 도 안 되고 FK 로 참조할 수도 없다.\n- **\"등록일·수정일은 어떻게 채우나요?\"** → 순수 JPA 는 `@PrePersist`/`@PreUpdate`, 스프링은 Auditing.\n- **\"등록자는 왜 콜백으로 못 채우나요?\"** → 현재 로그인 사용자를 엔티티가 알 수 없다. `AuditorAware` 같은 외부 공급자가 필요하다."
+    }
+  ],
+  "recap": [
+    "`@MappedSuperclass` 는 상속이 아니라 **공통 컬럼 묶음**이다. 부모는 엔티티가 아니고 테이블도 없다.",
+    "그래서 `em.find`·JPQL·FK 참조가 전부 불가능하다 — '엔티티가 아니다' 한 문장에서 다 나온다.",
+    "판단 기준: \"A 는 B 다\" 면 상속 매핑, \"A 와 B 에 같은 컬럼이 있다\" 면 `@MappedSuperclass`.",
+    "값 채우기는 `@PrePersist`/`@PreUpdate`. 스프링에서는 Auditing 이 그 자리를 대신한다.",
+    "등록자·수정자는 인증 컨텍스트가 필요해서 콜백만으로는 못 채운다.",
+    "여러 단계로 상속할 수 있다. 시간만 있는 것과 사용자까지 있는 것을 나눠 두는 구성이 흔하다."
+  ],
+  "drills": [
+    {
+      "task": "`BaseEntity` 를 만들어 세 엔티티가 상속하게 하고 DDL 을 확인한다.",
+      "done_when": "세 테이블 모두에 같은 컬럼이 생기고 `BASE_ENTITY` 테이블은 없다는 것을 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "`em.find(BaseEntity.class, 1L)` 을 시도하고 JPQL `SELECT b FROM BaseEntity b` 도 시도한다.",
+      "done_when": "둘 다 실패하는 것과 그 메시지를 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`@PrePersist`/`@PreUpdate` 를 붙이고 저장·수정하며 컬럼 값을 확인한다.",
+      "done_when": "저장 시 두 값이 같고, 수정 시 수정일만 바뀌는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "`createdDate` 에 `@Column(updatable = false)` 를 붙인 뒤 그 값을 바꿔 커밋해 본다.",
+      "done_when": "UPDATE 문에 그 컬럼이 안 들어가는 것을 로그로 확인했다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`@MappedSuperclass` 클래스에 대응하는 테이블이 만들어지는가?",
+      "a": "안 만들어진다. 엔티티가 아니라 매핑 정보만 물려주는 클래스이고, 컬럼은 자식 엔티티의 테이블에 각각 복사된다."
+    },
+    {
+      "q": "`@MappedSuperclass` 클래스로 할 수 없는 일 세 가지는?",
+      "a": "`em.find()` 조회, JPQL 대상으로 삼기, 다른 엔티티가 연관관계로 참조하기. 전부 테이블이 없기 때문이다."
+    },
+    {
+      "q": "상속 매핑과 `@MappedSuperclass` 중 무엇을 쓸지 어떻게 판단하나?",
+      "a": "\"A 는 B 다\" 라는 관계가 성립하면 상속 매핑(앨범은 상품이다), 그냥 같은 컬럼을 공유할 뿐이면 `@MappedSuperclass`(회원은 BaseEntity 가 아니다)."
+    },
+    {
+      "q": "`@PrePersist` 는 언제 호출되는가?",
+      "a": "INSERT 문이 만들어지기 직전이다. 그래서 여기서 세팅한 값이 그대로 SQL 에 반영된다."
+    },
+    {
+      "q": "등록자(createdBy)를 `@PrePersist` 로 채우기 어려운 이유는?",
+      "a": "현재 로그인 사용자를 알아야 하는데 엔티티가 인증 컨텍스트를 알 수 없다. 스프링의 `AuditorAware` 같은 외부 공급자가 필요하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@MappedSuperclass",
+      "en": "",
+      "what": "여러 엔티티에 공통 매핑 정보를 물려주는 클래스. 엔티티가 아니고 테이블도 없다."
+    },
+    {
+      "term": "생명주기 콜백",
+      "en": "lifecycle callback",
+      "what": "`@PrePersist`·`@PostPersist`·`@PreUpdate`·`@PreRemove`·`@PostLoad`. 엔티티 상태가 바뀌는 시점에 호출된다."
+    },
+    {
+      "term": "Auditing",
+      "en": "감사",
+      "what": "등록·수정 시각과 주체를 자동으로 기록하는 것. Spring Data JPA 가 `@CreatedDate` 등으로 지원한다."
+    },
+    {
+      "term": "AuditorAware",
+      "en": "",
+      "what": "현재 사용자를 알려 주는 스프링 인터페이스. `@CreatedBy`·`@LastModifiedBy` 가 이걸 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Inheritance",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a1063",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — Inheritance",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#entity-inheritance",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "Spring Data JPA — Auditing",
+      "url": "https://docs.spring.io/spring-data/jpa/reference/auditing.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -327,7 +327,7 @@
           "title": "상속관계 매핑",
           "summary": "조인 전략·단일 테이블 전략·구현 클래스마다 테이블 전략. 셋의 SQL 을 나란히 놓고 고른다.",
           "minutes": 24,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -335,7 +335,7 @@
           "title": "@MappedSuperclass — 매핑 정보 상속",
           "summary": "상속이 아니라 '공통 컬럼 묶음'. 등록일·수정일을 모든 엔티티에 붙이는 방법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -343,7 +343,7 @@
           "title": "실전 예제 4 — 상속관계 매핑",
           "summary": "상품을 앨범·책·영화로 나누고, 공통 등록일 정보를 뽑아낸다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
