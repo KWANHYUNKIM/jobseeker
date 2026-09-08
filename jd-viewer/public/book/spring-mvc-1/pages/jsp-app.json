@@ -1,0 +1,213 @@
+{
+ "book": "spring-mvc-1",
+ "id": "jsp-app",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "JSP 로 만들기",
+ "summary": "HTML 안에 자바를 넣는다. 방향이 뒤집혔는데 무엇이 나아졌나.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JSP 로 같은 세 화면을 만들 수 있다.",
+  "JSP 문법 셋(`<%@ %>`, `<% %>`, `<%= %>`)을 구분한다.",
+  "서블릿 대비 무엇이 나아졌는지 말할 수 있다.",
+  "무엇이 여전히 문제인지 말할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "2.5절 연표의 **1999년**이다. 방향을 뒤집는다.\n\n> 자바 안에 HTML 이 문제라면 — **HTML 안에 자바**를 넣으면 되지 않나."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "JSP 는 파일 위치가 정해져 있다",
+   "md": "```\nsrc/main/webapp/jsp/members/new-form.jsp\nsrc/main/webapp/jsp/members/save.jsp\nsrc/main/webapp/jsp/members.jsp\n```\n\n**URL 이 곧 파일 경로**다. `/jsp/members.jsp` 로 요청하면 그 파일이 실행된다.\n\n1.3절에서 War 패키징을 고른 이유가 이것이고, 3.6절에서 `webapp` 폴더를 설명한 자리이기도 하다.\n\n**서블릿과 달리 `@WebServlet` 이 없다.** URL 매핑을 안 적는다 — 그것도 나중에 문제가 된다(4.6절)."
+  },
+  {
+   "type": "heading",
+   "text": "문법 셋"
+  },
+  {
+   "type": "table",
+   "caption": "JSP 태그",
+   "note": "**첫 줄이 없으면 한글이 깨진다.** 3장 내내 나온 인코딩 문제가 여기서는 이 한 줄이다.",
+   "columns": [
+    "",
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "`<%@ page ... %>`",
+     "**지시자.** 페이지 설정·import",
+     "`contentType`, `import`"
+    ],
+    [
+     "`<% ... %>`",
+     "**스크립틀릿.** 자바 코드를 그대로",
+     "`for`, 변수 선언"
+    ],
+    [
+     "`<%= ... %>`",
+     "**표현식.** 값을 출력",
+     "`<%= member.getId() %>`"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "webapp/jsp/members/new-form.jsp",
+   "code": "<%@ page contentType=\"text/html;charset=UTF-8\" language=\"java\" %>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Title</title>\n</head>\n<body>\n<form action=\"/jsp/members/save.jsp\" method=\"post\">\n    username: <input type=\"text\" name=\"username\" />\n    age:      <input type=\"text\" name=\"age\" />\n    <button type=\"submit\">전송</button>\n</form>\n</body>\n</html>",
+   "note": "**첫 줄 말고는 순수 HTML 이다.** 4.2절의 `MemberFormServlet` 과 비교해 보면 차이가 분명하다 — 이스케이프도 `\\n` 도 `w.write` 도 없다."
+  },
+  {
+   "type": "heading",
+   "text": "저장"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "webapp/jsp/members/save.jsp",
+   "code": "<%@ page import=\"hello.servlet.domain.member.MemberRepository\" %>\n<%@ page import=\"hello.servlet.domain.member.Member\" %>\n<%@ page contentType=\"text/html;charset=UTF-8\" language=\"java\" %>\n<%\n    // request, response 는 그냥 쓸 수 있다\n    MemberRepository memberRepository = MemberRepository.getInstance();\n\n    String username = request.getParameter(\"username\");\n    int age = Integer.parseInt(request.getParameter(\"age\"));\n\n    Member member = new Member(username, age);\n    memberRepository.save(member);\n%>\n<html>\n<body>\n성공\n<ul>\n    <li>id=<%=member.getId()%></li>\n    <li>username=<%=member.getUsername()%></li>\n    <li>age=<%=member.getAge()%></li>\n</ul>\n</body>\n</html>",
+   "note": "**`request` 와 `response` 를 선언 없이 쓴다.** JSP 가 서블릿으로 변환될 때 그것들이 파라미터로 들어오기 때문이다(2.2절).\n\n이런 것을 **암묵 객체(implicit object)** 라고 한다 — `request`, `response`, `out`, `session`, `application`."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 나아졌나",
+   "md": "**4.2절의 세 서블릿과 비교하면 이렇다.**\n\n| | 서블릿 (4.2) | JSP (4.3) |\n|---|---|---|\n| HTML 이스케이프 | **필요** | 없음 |\n| 줄바꿈 `\\n` | **직접 넣는다** | 그대로 |\n| 문법 강조 | **없다** | **된다** |\n| 태그 오류 | 실행해야 안다 | **에디터가 잡는다** |\n| 디자이너 협업 | 불가 | **가능** |\n\n3.10절에서 센 문제 넷 중 **셋이 해결됐다.** 남은 하나는 \"브라우저로 미리 볼 수 없다\" 인데, JSP 는 `<% %>` 태그 때문에 그냥 열면 깨진다. **8.3절의 타임리프가 그것까지 푼다.**"
+  },
+  {
+   "type": "heading",
+   "text": "그런데 목록을 보면"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "webapp/jsp/members.jsp",
+   "bad": true,
+   "code": "<%@ page import=\"java.util.List\" %>\n<%@ page import=\"hello.servlet.domain.member.Member\" %>\n<%@ page import=\"hello.servlet.domain.member.MemberRepository\" %>\n<%@ page contentType=\"text/html;charset=UTF-8\" language=\"java\" %>\n<%\n    MemberRepository memberRepository = MemberRepository.getInstance();\n    List<Member> members = memberRepository.findAll();\n%>\n<html>\n<body>\n<table>\n    <thead>\n    <th>id</th>\n    <th>username</th>\n    <th>age</th>\n    </thead>\n    <tbody>\n    <%\n        for (Member member : members) {\n            out.write(\"    <tr>\");\n            out.write(\"        <td>\" + member.getId() + \"</td>\");\n            out.write(\"        <td>\" + member.getUsername() + \"</td>\");\n            out.write(\"        <td>\" + member.getAge() + \"</td>\");\n            out.write(\"    </tr>\");\n        }\n    %>\n    </tbody>\n</table>\n</body>\n</html>",
+   "note": "**`<% %>` 안에서 다시 `out.write(\"<tr>\")` 를 하고 있다.**\n\n4.2절의 그 코드가 **JSP 파일 안으로 옮겨 왔을 뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JSTL 을 쓰면 이건 나아진다",
+   "md": "```html\n<c:forEach var=\"member\" items=\"${members}\">\n    <tr>\n        <td>${member.id}</td>\n        <td>${member.username}</td>\n    </tr>\n</c:forEach>\n```\n\n**태그로 반복한다.** HTML 구조가 안 잘린다. 1.3절에서 넣은 `jakarta.servlet.jsp.jstl` 이 이것이다.\n\n**그래도 이 절에서는 안 쓴다.** 이유가 둘이다.\n\n1. JSTL 을 배우는 것이 목적이 아니다 — **8장에서 타임리프로 같은 것을 한다**\n2. **진짜 문제는 반복문이 아니기 때문**이다. 아래에서 본다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "진짜 문제 — 한 파일이 모든 것을 한다",
+   "md": "`save.jsp` 를 다시 보자. 이 파일 안에 무엇이 있나.\n\n1. **저장소를 찾는다** — `MemberRepository.getInstance()`\n2. **파라미터를 읽는다** — `request.getParameter()`\n3. **비즈니스 로직** — `new Member()`, `save()`\n4. **화면을 그린다** — HTML\n\n4.2절 서블릿의 주석 세 개에 **저장소 조회가 하나 더 붙었다.** 나아진 것이 아니다.\n\n그리고 **이 파일은 화면 파일이다.** 디자이너가 열어서 CSS 를 고치려는 파일 안에 **DB 를 다루는 코드가 들어 있다.**\n\n실무 JSP 는 이런 파일이 **수천 줄**이 된다. 화면을 고치다 로직이 깨지고, 로직을 고치다 화면이 깨진다.\n\n**서블릿은 자바 파일에 HTML 이 섞였고, JSP 는 HTML 파일에 자바가 섞였다.** 방향만 바뀌었지 **섞인 것은 그대로다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "비율은 뒤집혔는데",
+   "ascii": "   4.2  servlet                    4.3  jsp\n   ------------                    ---------\n   java file                       jsp file\n     java  ....................      html ........................\n       \"<html>\"                        <html>\n       \"<body>\"                        <body>\n       + member.getId() +              <%= member.getId() %>\n                                    \n   html 68 / java 32               html 80 / java 20\n\n   비율이 뒤집혔다. 그런데 java 20 이 어디에 있나",
+   "note": "**java 20 줄이 화면 파일 맨 위에 뭉쳐 있다.** 그것이 4.4절의 출발점이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 3장과 다를 것이 없다",
+   "sql": "POST /jsp/members/save.jsp HTTP/1.1\nHost: localhost:8080\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 21\n\nusername=hello&age=20\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n성공\n<ul>\n    <li>id=1</li>\n    <li>username=hello</li>\n    <li>age=20</li>\n</ul>\n</body>\n</html>\n\n# 참고 — 빌드 폴더에서 변환된 서블릿을 찾을 수 있다\nbuild/.../org/apache/jsp/jsp/members/save_jsp.java",
+   "note": "**4.2절과 응답이 똑같다.** 클라이언트는 서블릿으로 만들었는지 JSP 로 만들었는지 알 수 없다.\n\n맨 아래를 봐 두자 — **JSP 는 서블릿 자바 코드로 변환된다**(2.2절). `save_jsp.java` 를 열어 보면 우리가 4.2절에서 손으로 쓴 것과 **거의 같은 코드**가 들어 있다.\n\n**밑바닥이 같으니 못 하는 것도 같다** — 2.2절에서 미리 못박은 문장이 여기서 확인된다."
+  }
+ ],
+ "recap": [
+  "JSP 는 **URL 이 곧 파일 경로**다. `webapp` 아래에 둔다.",
+  "문법 셋 — **`<%@ %>` 지시자 · `<% %>` 스크립틀릿 · `<%= %>` 표현식.**",
+  "`request`·`response`·`out` 은 **암묵 객체**라 선언 없이 쓴다.",
+  "3.10절의 문제 넷 중 **셋이 해결**됐다 — 이스케이프·문법 강조·디자이너 협업.",
+  "남은 하나(브라우저로 미리보기)는 **8장 타임리프**가 푼다.",
+  "목록에서는 여전히 **`<% %>` 안에서 `out.write`** 를 한다. JSTL 로 나아지지만 그게 핵심은 아니다.",
+  "**진짜 문제 — 화면 파일 하나가 저장소·파라미터·로직·화면을 다 한다.**",
+  "**서블릿은 자바에 HTML 이, JSP 는 HTML 에 자바가 섞였다.** 방향만 바뀌었다.",
+  "**JSP 는 서블릿으로 변환된다** — 밑바닥이 같으니 못 하는 것도 같다."
+ ],
+ "drills": [
+  {
+   "task": "세 JSP 파일을 만들어 4.2절과 같은 흐름을 돌린다.",
+   "done_when": "응답 HTML 이 4.2절과 같은 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "4.2절 서블릿과 JSP 파일의 줄 수를 비교한다.",
+   "done_when": "HTML/자바 비율이 뒤집힌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빌드 폴더에서 `save_jsp.java` 를 찾아 연다.",
+   "done_when": "4.2절과 비슷한 코드가 들어 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`<%@ page contentType %>` 줄을 지우고 한글을 출력한다.",
+   "done_when": "글자가 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`members.jsp` 의 반복문을 JSTL `<c:forEach>` 로 바꿔 본다.",
+   "done_when": "HTML 구조가 안 잘리는 것을 확인했고, 그래도 남는 문제를 말할 수 있다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JSP 문법 세 가지는?",
+   "a": "`<%@ %>` 지시자(설정·import), `<% %>` 스크립틀릿(자바 코드), `<%= %>` 표현식(값 출력)."
+  },
+  {
+   "q": "`request` 를 선언 없이 쓸 수 있는 이유는?",
+   "a": "JSP 가 서블릿으로 변환될 때 `service()` 파라미터로 들어오기 때문이다. 이런 것을 암묵 객체라고 한다."
+  },
+  {
+   "q": "서블릿 대비 무엇이 나아졌나?",
+   "a": "이스케이프와 줄바꿈이 필요 없고, 문법 강조와 자동완성이 되며, 태그 오류를 에디터가 잡고, 디자이너가 열 수 있다."
+  },
+  {
+   "q": "JSP 의 진짜 문제는?",
+   "a": "화면 파일 하나가 저장소 조회·파라미터 읽기·비즈니스 로직·화면 그리기를 전부 한다는 것이다."
+  },
+  {
+   "q": "서블릿과 JSP 의 공통점은?",
+   "a": "둘 다 자바와 HTML 이 한 파일에 섞여 있다. 방향만 반대일 뿐 섞인 것은 그대로다."
+  },
+  {
+   "q": "JSP 는 실행 전에 무엇이 되나?",
+   "a": "서블릿 자바 코드로 변환되어 컴파일된다. 그래서 밑바닥의 한계도 같다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스크립틀릿",
+   "en": "scriptlet",
+   "what": "JSP 안에서 자바 코드를 쓰는 `<% %>` 블록. 실무에서는 쓰지 않는 것을 권한다."
+  },
+  {
+   "term": "암묵 객체",
+   "en": "implicit object",
+   "what": "JSP 에서 선언 없이 쓸 수 있는 객체. `request`, `response`, `out`, `session`, `application` 등."
+  },
+  {
+   "term": "JSTL",
+   "en": "JSP Standard Tag Library",
+   "what": "JSP 에서 반복·조건을 태그로 쓰게 해 주는 표준 라이브러리. `<c:forEach>` 등."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Server Pages Specification",
+   "url": "https://jakarta.ee/specifications/pages/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

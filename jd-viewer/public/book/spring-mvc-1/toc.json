@@ -250,7 +250,7 @@
           "title": "회원 관리 웹 애플리케이션 요구사항",
           "summary": "저장·목록 두 기능. 작지만 모든 문제를 다 드러낸다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -258,7 +258,7 @@
           "title": "서블릿으로 만들기",
           "summary": "자바 코드 안에서 HTML 을 조립한다. 줄 수를 세어 둔다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -266,7 +266,7 @@
           "title": "JSP 로 만들기",
           "summary": "HTML 안에 자바를 넣는다. 방향이 뒤집혔는데 무엇이 나아졌나.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -274,7 +274,7 @@
           "title": "MVC 패턴 — 개요",
           "summary": "왜 나눠야 하는가. 변경의 라이프사이클이 다르다는 말의 뜻.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",

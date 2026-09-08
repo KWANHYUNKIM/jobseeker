@@ -1,0 +1,219 @@
+{
+ "book": "spring-mvc-1",
+ "id": "mvc-overview",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "MVC 패턴 — 개요",
+ "summary": "왜 나눠야 하는가. 변경의 라이프사이클이 다르다는 말의 뜻.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "MVC 세 요소가 각각 무엇을 하는지 안다.",
+  "'변경의 라이프사이클' 이 무슨 뜻인지 설명할 수 있다.",
+  "Model 이 왜 필요한지 안다.",
+  "컨트롤러에서 비즈니스 로직을 또 빼는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.2절과 4.3절이 같은 문제를 남겼다.\n\n> **한 파일이 너무 많은 일을 한다.**\n\n이 문장은 앞 책 1.5절에서 본 적이 있다 — **SRP(단일 책임 원칙)**. 그리고 앞 책 3장 전체가 그 문장을 코드로 푸는 과정이었다.\n\n여기서도 방법은 같다. **나눈다.**"
+  },
+  {
+   "type": "heading",
+   "text": "너무 많은 역할"
+  },
+  {
+   "type": "table",
+   "caption": "save.jsp 가 하는 네 가지",
+   "note": "**네 가지가 서로 다른 이유로 바뀐다.** 그것이 나눠야 하는 근거다.",
+   "columns": [
+    "#",
+    "무엇",
+    "언제 바뀌나"
+   ],
+   "rows": [
+    [
+     "1",
+     "저장소를 찾는다",
+     "저장 방식이 바뀔 때 (메모리 → DB)"
+    ],
+    [
+     "2",
+     "파라미터를 읽는다",
+     "**요청 형식이 바뀔 때** (폼 → JSON)"
+    ],
+    [
+     "3",
+     "비즈니스 로직",
+     "**요구사항이 바뀔 때**"
+    ],
+    [
+     "4",
+     "화면을 그린다",
+     "**디자인이 바뀔 때**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "변경의 라이프사이클이 다르다",
+   "md": "이것이 MVC 패턴의 **가장 중요한 근거**다.\n\n> **UI 를 수정하는 일과 비즈니스 로직을 수정하는 일은 서로 다른 이유로, 서로 다른 시점에 일어난다.**\n\n디자인을 바꾸는 것과 할인 정책을 바꾸는 것은 **아무 상관이 없다.** 대부분 서로에게 영향을 주지 않는다.\n\n그런데 한 파일에 있으면\n\n- **디자이너가 CSS 를 고치려고 비즈니스 로직이 든 파일을 연다**\n- 로직을 고치다 태그를 깨뜨린다\n- **한 명이 고치는 동안 다른 한 명이 못 고친다** (충돌)\n- 파일이 수천 줄이 돼서 아무도 전체를 못 읽는다\n\n앞 책 1.5절에서 SRP 를 설명하며 \"**변경이 있을 때 파급 효과가 적으면 SRP 를 잘 따른 것**\" 이라고 했다. 같은 이야기다.\n\n**변경의 이유가 다르면 파일을 나눈다.** 이것 하나가 4장의 결론이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기능 특화도 이유다",
+   "md": "JSP 는 **화면을 그리는 데 최적화**돼 있다. 태그를 쓰고, 값을 끼워 넣고, 반복한다.\n\n그런데 4.3절처럼 그 안에서 DB 를 다루면 **잘하는 것을 못 쓰고 못하는 것을 한다.**\n\n반대로 서블릿은 요청·응답을 다루는 데 좋고 HTML 을 만드는 데는 나쁘다(4.2절).\n\n**각자 잘하는 일만 시키면 둘 다 좋아진다.**"
+  },
+  {
+   "type": "heading",
+   "text": "Model · View · Controller"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 어떻게 나누나",
+   "ascii": "   before                          after\n   ------                          -----\n   ┌──────────────────┐            ┌──────────────────┐\n   │  save.jsp        │            │  Controller      │  <- 요청, 로직 호출\n   │                  │            └────────┬─────────┘\n   │  find repository │                     │  Model\n   │  read parameter  │                     ▼\n   │  business logic  │            ┌──────────────────┐\n   │  render html     │            │  View            │  <- 화면만\n   └──────────────────┘            └──────────────────┘\n\n   한 파일이 넷을 한다              둘로 나눈다. 사이에 Model 이 있다",
+   "note": "**컨트롤러가 먼저 받고, 뷰가 나중에 그린다.** 그 사이를 잇는 것이 Model 이다."
+  },
+  {
+   "type": "table",
+   "caption": "셋의 역할",
+   "note": "**Model 이 있어야 View 가 컨트롤러를 몰라도 된다.** 그게 이 셋의 핵심이다.",
+   "columns": [
+    "",
+    "무엇을 하나",
+    "이 책에서는"
+   ],
+   "rows": [
+    [
+     "**Controller**",
+     "HTTP 요청을 받고, **파라미터를 검증하고**, 비즈니스 로직을 호출하고, 결과를 Model 에 담는다",
+     "**서블릿**"
+    ],
+    [
+     "**Model**",
+     "View 에 출력할 데이터를 담아 둔다",
+     "**`request` 의 임시 저장소** (3.2절)"
+    ],
+    [
+     "**View**",
+     "Model 에 담긴 데이터로 **화면을 그린다.** 그것만 한다",
+     "**JSP**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Model 이 왜 필요한가",
+   "md": "3.2절에서 이렇게 적었다.\n\n> **이 책의 절반이 이 두 줄에서 시작한다.**\n> ```java\n> request.setAttribute(\"member\", member);\n> Object member = request.getAttribute(\"member\");\n> ```\n\n**여기가 그 자리다.**\n\nModel 이 없다면 View 가 데이터를 어떻게 얻나 — **직접 저장소를 조회해야 한다.** 그러면 4.3절로 돌아간다.\n\nModel 이 있으면 **View 는 자기가 받은 것만 그리면 된다.** 그 데이터가 DB 에서 왔는지 메모리에서 왔는지 모른다.\n\n앞 책 1.3절의 문장이 여기서도 맞다 — **역할과 구현을 분리한다.** View 의 역할은 \"주어진 데이터를 그린다\" 이고, 그 데이터를 누가 어떻게 구했는지는 View 의 관심이 아니다."
+  },
+  {
+   "type": "heading",
+   "text": "컨트롤러에서 한 번 더 나눈다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "컨트롤러가 다시 비대해진다",
+   "md": "위 표에서 Controller 가 하는 일이 **넷**이다. 요청 받기 · 검증 · 로직 · Model 담기.\n\n**로직이 커지면 컨트롤러가 다시 4.3절이 된다.** 같은 문제가 한 층 아래에서 반복되는 것이다.\n\n그래서 실무에서는 한 번 더 나눈다.\n\n```\nController  ->  Service  ->  Repository\n```\n\n- **Controller** — HTTP 를 다룬다. 파라미터 읽기, 응답 형식 정하기\n- **Service** — 비즈니스 로직. **HTTP 를 모른다**\n- **Repository** — 저장·조회. **비즈니스 로직을 모른다**\n\n앞 책 2장에서 만든 구조가 정확히 이것이다 — `MemberService` 와 `MemberRepository`.\n\n**이 책의 예제는 로직이 `save()` 한 줄이라 Service 를 안 만든다.** 그런데 실무 코드를 읽을 때 이 세 층은 항상 나온다.\n\n그리고 이 분리가 왜 좋은지도 앞 책이 답했다 — **Service 가 HTTP 를 모르면 테스트가 쉽다**(앞 책 7.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "MVC 의 M 은 여러 뜻으로 쓰인다",
+   "md": "혼란스러운 부분이라 짚어 둔다.\n\n- **MVC 패턴의 Model** — View 에 넘길 데이터 상자. 이 책에서는 `request` 의 임시 저장소, 나중에 스프링의 `Model`\n- **도메인 모델** — `Member`, `Order` 같은 비즈니스 객체\n- **MVC 아키텍처의 Model 계층** — Service + Repository 를 통틀어\n\n**셋이 다른 것**이다. 이 책에서 \"Model\" 이라고 하면 **첫 번째**를 가리킨다.\n\n5.4절에서 `ModelView` 라는 클래스를 만들 텐데 그것도 첫 번째다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 아직 아무것도 안 바뀐다",
+   "sql": "POST /servlet-mvc/members/save HTTP/1.1\nHost: localhost:8080\nContent-Type: application/x-www-form-urlencoded\n\nusername=hello&age=20\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n성공\n<ul>\n    <li>id=1</li>\n    <li>username=hello</li>\n    <li>age=20</li>\n</ul>\n</body>\n</html>\n\n# 4.2 (servlet) 와도\n# 4.3 (jsp) 와도\n# 응답이 완전히 같다",
+   "note": "**URL 만 바뀌고 응답은 똑같다.**\n\n이 절에서 배운 것은 **클라이언트에게 아무 영향이 없다.** MVC 패턴은 HTTP 를 바꾸는 것이 아니라 **서버 코드를 어떻게 나눌지**의 문제이기 때문이다.\n\n4.1절에서 \"4장에서 새로 배우는 HTTP 기능은 없다\" 고 한 것이 이런 뜻이다. **바뀌는 것은 전부 파일 경계 안쪽**이다.\n\n**4.5절에서 실제로 나눠 본다.**"
+  }
+ ],
+ "recap": [
+  "한 파일이 **저장소 조회 · 파라미터 · 로직 · 화면** 넷을 한다 — 앞 책 1.5절의 SRP 문제.",
+  "**가장 중요한 근거는 '변경의 라이프사이클이 다르다'** 는 것이다.",
+  "디자인 변경과 로직 변경은 **서로 다른 이유로 다른 시점에** 일어난다.",
+  "기능 특화도 이유다 — **각자 잘하는 일만 시키면 둘 다 좋아진다.**",
+  "**Controller** 는 요청과 로직 호출, **View** 는 화면, **Model** 은 그 사이의 데이터 상자.",
+  "**Model 이 있어야 View 가 저장소를 몰라도 된다** — 3.2절의 `setAttribute` 가 이것이다.",
+  "컨트롤러도 커지면 나눈다 — **Controller · Service · Repository.**",
+  "**Service 가 HTTP 를 모르면 테스트가 쉽다** (앞 책 7.3절).",
+  "**MVC 의 M 은 세 가지 뜻으로 쓰인다.** 이 책에서는 '뷰에 넘길 데이터' 다."
+ ],
+ "drills": [
+  {
+   "task": "`save.jsp` 의 네 가지 일을 각각 몇 줄인지 세고 표시한다.",
+   "done_when": "네 덩어리가 눈에 보인다.",
+   "minutes": 10
+  },
+  {
+   "task": "각 덩어리가 '언제 바뀔지' 를 한 문장씩 적는다.",
+   "done_when": "이유가 서로 다르다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "Model 없이 View 가 데이터를 얻는 방법을 생각해 본다.",
+   "done_when": "직접 조회밖에 없고, 그러면 4.3절로 돌아간다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "앞 책 2장의 `MemberService`·`MemberRepository` 구조와 비교한다.",
+   "done_when": "Controller·Service·Repository 세 층이 같은 발상이라는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "MVC 패턴이 필요한 가장 중요한 근거는?",
+   "a": "변경의 라이프사이클이 다르기 때문이다. UI 수정과 비즈니스 로직 수정은 서로 다른 이유로 다른 시점에 일어난다."
+  },
+  {
+   "q": "MVC 세 요소의 역할은?",
+   "a": "Controller 는 요청을 받고 로직을 호출해 결과를 Model 에 담고, Model 은 뷰에 넘길 데이터를 보관하고, View 는 그 데이터로 화면만 그린다."
+  },
+  {
+   "q": "Model 이 없으면 무엇이 문제인가?",
+   "a": "View 가 데이터를 얻으려면 직접 저장소를 조회해야 한다. 그러면 화면 파일에 다시 로직이 들어온다."
+  },
+  {
+   "q": "이 책에서 Model 은 무엇으로 구현되나?",
+   "a": "`request` 의 임시 저장소(`setAttribute`/`getAttribute`)다. 3.2절에서 예고한 자리다."
+  },
+  {
+   "q": "컨트롤러를 한 번 더 나누는 이유는?",
+   "a": "로직이 커지면 컨트롤러가 다시 비대해지기 때문이다. Controller·Service·Repository 로 나누면 Service 가 HTTP 를 몰라도 되어 테스트가 쉬워진다."
+  },
+  {
+   "q": "MVC 의 M 이 헷갈리는 이유는?",
+   "a": "MVC 패턴의 Model(뷰에 넘길 데이터), 도메인 모델(비즈니스 객체), MVC 아키텍처의 Model 계층(Service+Repository) 세 가지로 쓰이기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "변경의 라이프사이클",
+   "en": "",
+   "what": "코드의 각 부분이 서로 다른 이유와 시점에 바뀐다는 것. 이유가 다르면 파일을 나누는 것이 MVC 의 근거다."
+  },
+  {
+   "term": "Model",
+   "en": "",
+   "what": "MVC 패턴에서 View 에 출력할 데이터를 담는 것. 이 책에서는 `request` 의 임시 저장소, 나중에 스프링의 `Model` 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Martin Fowler — GUI Architectures",
+   "url": "https://martinfowler.com/eaaDev/uiArchs.html",
+   "publisher": "martinfowler.com"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

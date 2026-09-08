@@ -1,0 +1,170 @@
+{
+ "book": "spring-mvc-1",
+ "id": "servlet-app",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "서블릿으로 만들기",
+ "summary": "자바 코드 안에서 HTML 을 조립한다. 줄 수를 세어 둔다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 화면을 서블릿만으로 만들 수 있다.",
+  "HTML 이 자바 코드에서 차지하는 비중을 안다.",
+  "반복문이 들어올 때 무엇이 더 나빠지는지 안다.",
+  "4.3절이 무엇을 고치려는 것인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "2.5절 연표의 **1997년**을 그대로 산다. **JSP 도 MVC 도 없이** 서블릿만으로 세 화면을 만든다.\n\n3.10절에서 \"안 되겠다고 느끼는 것이 목적\" 이라고 했다. 여기서는 그것을 **세 배로** 느낀다."
+  },
+  {
+   "type": "heading",
+   "text": "1. 등록 폼"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MemberFormServlet.java",
+   "code": "@WebServlet(name = \"memberFormServlet\", urlPatterns = \"/servlet/members/new-form\")\npublic class MemberFormServlet extends HttpServlet {\n\n    private MemberRepository memberRepository = MemberRepository.getInstance();\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        response.setContentType(\"text/html\");\n        response.setCharacterEncoding(\"utf-8\");\n\n        PrintWriter w = response.getWriter();\n        w.write(\"<!DOCTYPE html>\\n\" +\n                \"<html>\\n\" +\n                \"<head>\\n\" +\n                \"    <meta charset=\\\"UTF-8\\\">\\n\" +\n                \"    <title>Title</title>\\n\" +\n                \"</head>\\n\" +\n                \"<body>\\n\" +\n                \"<form action=\\\"/servlet/members/save\\\" method=\\\"post\\\">\\n\" +\n                \"    username: <input type=\\\"text\\\" name=\\\"username\\\" />\\n\" +\n                \"    age:      <input type=\\\"text\\\" name=\\\"age\\\" />\\n\" +\n                \"    <button type=\\\"submit\\\">전송</button>\\n\" +\n                \"</form>\\n\" +\n                \"</body>\\n\" +\n                \"</html>\\n\");\n    }\n}",
+   "note": "**`\\\"` 가 계속 나온다.** HTML 의 속성값 따옴표를 자바 문자열 안에서 이스케이프해야 하기 때문이다.\n\n그리고 **줄바꿈을 `\\n` 으로 직접 넣는다.** 안 넣으면 소스 보기가 한 줄이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자바 15부터는 텍스트 블록이 있다",
+   "md": "```java\nw.write(\"\"\"\n    <!DOCTYPE html>\n    <html>\n    <body>\n    <form action=\"/servlet/members/save\" method=\"post\">\n        username: <input type=\"text\" name=\"username\" />\n    </form>\n    </body>\n    </html>\n    \"\"\");\n```\n\n**이스케이프와 `\\n` 이 사라진다.** 훨씬 낫다.\n\n그런데 **문제 넷 중 하나만 해결한다**(3.10절 표). 여전히 문법 강조가 없고, 태그 오류를 못 잡고, 디자이너가 못 만지고, 미리 못 본다.\n\n그리고 **값을 끼워 넣는 순간 다시 지저분해진다** — 텍스트 블록 안에서는 `+` 로 이을 수 없어서 `formatted()` 나 `String.format` 을 써야 한다.\n\n이 책은 원래 모양을 보여 주려고 `+` 방식으로 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "2. 저장"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MemberSaveServlet.java",
+   "code": "@WebServlet(name = \"memberSaveServlet\", urlPatterns = \"/servlet/members/save\")\npublic class MemberSaveServlet extends HttpServlet {\n\n    private MemberRepository memberRepository = MemberRepository.getInstance();\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        // 1. 파라미터를 읽는다\n        String username = request.getParameter(\"username\");\n        int age = Integer.parseInt(request.getParameter(\"age\"));\n\n        // 2. 비즈니스 로직\n        Member member = new Member(username, age);\n        memberRepository.save(member);\n\n        // 3. 결과 화면\n        response.setContentType(\"text/html\");\n        response.setCharacterEncoding(\"utf-8\");\n\n        PrintWriter w = response.getWriter();\n        w.write(\"<html>\\n\" +\n                \"<body>\\n\" +\n                \"성공\\n\" +\n                \"<ul>\\n\" +\n                \"    <li>id=\" + member.getId() + \"</li>\\n\" +\n                \"    <li>username=\" + member.getUsername() + \"</li>\\n\" +\n                \"    <li>age=\" + member.getAge() + \"</li>\\n\" +\n                \"</ul>\\n\" +\n                \"</body>\\n\" +\n                \"</html>\");\n    }\n}",
+   "note": "**주석 세 개가 이 서블릿의 세 가지 일**이다. 파라미터 읽기 · 비즈니스 로직 · 화면 만들기.\n\n4.4절에서 이 셋을 나눈다. **주석이 이미 나눠져 있는 것이 힌트다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "Integer.parseInt 가 터진다",
+   "md": "```java\nint age = Integer.parseInt(request.getParameter(\"age\"));\n```\n\n사용자가 `age` 에 `abc` 를 넣으면 **`NumberFormatException`** 이다. 빈 값이면 `null` 이 들어가서 **`NumberFormatException`** 이다.\n\n둘 다 **500 오류 페이지**가 나간다. 3.5절에서 \"모든 파라미터는 `String`\" 이라고 한 것의 대가다.\n\n검증 코드를 넣으면 이 서블릿이 또 길어진다. **그래서 안 넣는다** — 이 책은 검증을 다루지 않고(9.1절), 스프링 MVC 2편의 주제다.\n\n다만 알아 둘 것 — **7.6절에서 스프링이 이 변환을 대신하면 실패 처리도 같이 온다.**"
+  },
+  {
+   "type": "heading",
+   "text": "3. 목록 — 여기가 최악이다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "MemberListServlet.java",
+   "bad": true,
+   "code": "PrintWriter w = response.getWriter();\nw.write(\"<html>\");\nw.write(\"<head>\");\nw.write(\"    <meta charset=\\\"UTF-8\\\">\");\nw.write(\"    <title>Title</title>\");\nw.write(\"</head>\");\nw.write(\"<body>\");\nw.write(\"<a href=\\\"/index.html\\\">메인</a>\");\nw.write(\"<table>\");\nw.write(\"    <thead>\");\nw.write(\"    <th>id</th>\");\nw.write(\"    <th>username</th>\");\nw.write(\"    <th>age</th>\");\nw.write(\"    </thead>\");\nw.write(\"    <tbody>\");\n\nfor (Member member : members) {\n    w.write(\"    <tr>\");\n    w.write(\"        <td>\" + member.getId() + \"</td>\");\n    w.write(\"        <td>\" + member.getUsername() + \"</td>\");\n    w.write(\"        <td>\" + member.getAge() + \"</td>\");\n    w.write(\"    </tr>\");\n}\n\nw.write(\"    </tbody>\");\nw.write(\"</table>\");\nw.write(\"</body>\");\nw.write(\"</html>\");",
+   "note": "**`<table>` 이 열리는 줄과 닫히는 줄 사이에 `for` 문이 끼어 있다.**\n\n3.10절에서 예고한 그것이다 — **HTML 구조가 자바 제어문에 잘려서 HTML 만 따로 읽을 수 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 진짜 문제인가",
+   "md": "코드가 길다는 것이 문제가 아니다. **읽는 방향이 둘로 갈린다**는 것이 문제다.\n\n- **HTML 을 읽으려면** — `w.write(\"` 와 `\")` 를 머릿속에서 지우면서 읽어야 한다\n- **자바를 읽으려면** — 문자열 사이에 흩어진 `for` 와 `+` 를 이어 붙여야 한다\n\n**어느 쪽으로도 자연스럽게 안 읽힌다.**\n\n그리고 이 파일에서 무엇을 고치든 **다른 쪽이 깨질 위험이 있다.** 태그를 고치다 따옴표를 놓치면 컴파일이 안 되고, 로직을 고치다 태그를 놓치면 화면이 깨진다.\n\n**변경의 이유가 다른 두 가지가 한 파일에 있다** — 4.4절에서 이 문장을 다시 만난다."
+  },
+  {
+   "type": "figure",
+   "caption": "줄 수를 세어 보면",
+   "ascii": "   MemberFormServlet    : 25 lines   ->  html 20 / java 5\n   MemberSaveServlet    : 30 lines   ->  html 18 / java 12\n   MemberListServlet    : 45 lines   ->  html 30 / java 15\n                          ---------\n                          100 lines      html 68 / java 32\n\n   HTML 이 자바 코드의 2 배다",
+   "note": "**HTML 이 자바의 두 배다.** 우리가 자바 파일을 쓰고 있는데.\n\n4.3절에서 이 비율을 뒤집는다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 결과는 멀쩡하다",
+   "sql": "GET /servlet/members HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=utf-8\n\n<html><head>    <meta charset=\"UTF-8\">    <title>Title</title></head>\n<body><a href=\"/index.html\">메인</a><table>    <thead>    <th>id</th>\n<th>username</th>    <th>age</th>    </thead>    <tbody>    <tr>\n<td>1</td>        <td>hello</td>        <td>20</td>    </tr>    </tbody>\n</table></body></html>",
+   "note": "**클라이언트 입장에서는 아무 문제가 없다.** 브라우저는 잘 그린다.\n\n그런데 소스를 보면 **줄바꿈이 없어서 읽을 수가 없다** — `write()` 에 `\\n` 을 안 넣었기 때문이다. 실무에서 남의 서버 HTML 이 한 줄로 뭉쳐 있는 것을 보게 되는 이유 중 하나다.\n\n**이 절의 결론은 응답이 아니라 코드에 있다.** HTTP 는 3장에서 이미 다 배웠고, 4장의 문제는 전부 **서버 쪽 코드의 모양**이다."
+  }
+ ],
+ "recap": [
+  "서블릿만으로 세 화면을 만들면 **HTML 이 자바 문자열 안에 갇힌다.**",
+  "속성 따옴표를 **`\\\"` 로 이스케이프**해야 하고 줄바꿈도 직접 넣어야 한다.",
+  "자바 15의 **텍스트 블록**은 이 중 하나만 해결한다.",
+  "저장 서블릿은 **파라미터 읽기 · 로직 · 화면**을 다 한다 — 주석이 이미 나눠져 있다.",
+  "`Integer.parseInt` 가 터지면 **500** 이다. 3.5절의 \"전부 `String`\" 의 대가.",
+  "목록에서 **`<table>` 사이에 `for` 문이 끼어** HTML 을 따로 읽을 수 없다.",
+  "진짜 문제는 길이가 아니라 **읽는 방향이 둘로 갈린다**는 것이다.",
+  "**HTML 이 자바 코드의 두 배**다 — 자바 파일을 쓰고 있는데.",
+  "**변경의 이유가 다른 둘이 한 파일에 있다** → 4.4절."
+ ],
+ "drills": [
+  {
+   "task": "세 서블릿을 만들어 브라우저에서 흐름을 돌려 본다.",
+   "done_when": "폼에서 저장하고 목록에서 보이는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "각 파일의 줄 수를 HTML 과 자바로 나눠 센다.",
+   "done_when": "HTML 이 더 많다는 것을 숫자로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`age` 에 문자를 넣고 저장한다.",
+   "done_when": "500 오류와 `NumberFormatException` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "닫는 태그를 하나 빠뜨리고 컴파일한다.",
+   "done_when": "컴파일은 되고 화면만 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "등록 폼을 자바 15 텍스트 블록으로 바꿔 본다.",
+   "done_when": "나아진 점과 여전한 문제를 각각 말할 수 있다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿으로 HTML 을 만들면 무엇이 불편한가?",
+   "a": "속성 따옴표를 이스케이프해야 하고, 줄바꿈을 직접 넣어야 하며, 문법 강조·자동완성이 없고, 태그 오류를 컴파일 시점에 못 잡는다."
+  },
+  {
+   "q": "자바 텍스트 블록이 해결하는 것과 못 하는 것은?",
+   "a": "이스케이프와 줄바꿈은 해결한다. 문법 강조·태그 검사·디자이너 협업·미리보기는 그대로다."
+  },
+  {
+   "q": "저장 서블릿이 하는 일 세 가지는?",
+   "a": "요청 파라미터 읽기, 비즈니스 로직 실행, 응답 화면 만들기다."
+  },
+  {
+   "q": "목록 화면이 특히 나쁜 이유는?",
+   "a": "`<table>` 이 열리는 줄과 닫히는 줄 사이에 `for` 문이 끼어서 HTML 구조를 따로 읽을 수 없다."
+  },
+  {
+   "q": "진짜 문제는 무엇인가?",
+   "a": "코드가 길다는 것이 아니라 읽는 방향이 둘로 갈린다는 것이다. HTML 로도 자바로도 자연스럽게 읽히지 않는다."
+  },
+  {
+   "q": "`Integer.parseInt` 가 실패하면?",
+   "a": "`NumberFormatException` 이 나고 500 오류 페이지가 나간다. 모든 파라미터가 `String` 이라서 생기는 문제다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "텍스트 블록",
+   "en": "text block",
+   "what": "자바 15부터의 여러 줄 문자열 문법(`\"\"\"`). 이스케이프 없이 쓸 수 있지만 HTML 문제의 일부만 해결한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
