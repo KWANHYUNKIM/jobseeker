@@ -1,0 +1,219 @@
+{
+ "book": "spring-core",
+ "id": "scan-scope",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "탐색 위치와 기본 스캔 대상",
+ "summary": "basePackages 와 관례. @Component 를 품고 있는 어노테이션들.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스캔 시작 위치를 지정하는 세 가지 방법을 안다.",
+  "권장 관례가 왜 그것인지 설명할 수 있다.",
+  "기본 스캔 대상 다섯 어노테이션과 각각의 부가 기능을 안다.",
+  "어노테이션이 어노테이션을 품는 것이 자바 기능이 아니라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.1절의 `@ComponentScan` 은 **어디서부터** 찾은 것일까. 프로젝트 전체를 뒤졌다면 라이브러리 클래스까지 다 훑었을 텐데, 그러지 않았다."
+  },
+  {
+   "type": "heading",
+   "text": "탐색 시작 위치"
+  },
+  {
+   "type": "table",
+   "caption": "세 가지 방법",
+   "note": "**3번이 정답이다.** 1·2번은 문법은 되는데 쓰지 않는다.",
+   "columns": [
+    "#",
+    "방법",
+    "설명"
+   ],
+   "rows": [
+    [
+     "1",
+     "`basePackages = \"hello.core\"`",
+     "패키지를 문자열로 지정. 여러 개도 가능"
+    ],
+    [
+     "2",
+     "`basePackageClasses = AutoAppConfig.class`",
+     "지정한 클래스의 **패키지**부터. 문자열이 아니라 안전하다"
+    ],
+    [
+     "3",
+     "**지정 안 함**",
+     "`@ComponentScan` 이 붙은 **클래스의 패키지**가 시작 위치"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 문자열 지정을 안 쓰나",
+   "md": "`basePackages = \"hello.core\"` 는 **문자열**이다. 4.3절에서 빈 이름이 문자열이라 위험하다고 한 것과 같은 문제다.\n\n- 패키지 이름을 바꾸면 **조용히 안 찾는다**\n- IDE 의 리팩터링이 따라오지 않는다\n- 오타가 나도 컴파일이 된다. 빈이 하나도 안 잡히고 애플리케이션이 뜬다\n\n마지막이 특히 고약하다. **예외가 안 나고 그냥 빈 컨테이너가 뜬다.** 그러다 첫 요청에서 `NoSuchBeanDefinitionException` 을 만난다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "권장 — 설정 클래스를 프로젝트 최상단에 둔다",
+   "md": "탐색 위치를 지정하지 않고, **설정 클래스를 패키지 루트에 두는 것**이 관례다. 그러면 그 아래 전부가 자동으로 대상이 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "패키지 구조",
+   "ascii": "   com.hello                        <- @SpringBootApplication 을 여기 둔다\n     ├── service\n     │     └── MemberServiceImpl\n     ├── repository\n     │     └── MemoryMemberRepository\n     └── controller\n           └── MemberController\n\n   scan root = com.hello   =>   아래 전부가 대상",
+   "note": "**스프링 부트도 이 관례를 쓴다.** `@SpringBootApplication` 이 프로젝트 시작 루트에 있고, **그 안에 `@ComponentScan` 이 들어 있다.** 그래서 부트를 쓰면 `@ComponentScan` 을 직접 붙일 일이 없다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "@SpringBootApplication 안을 열어 보면",
+   "code": "@Target(ElementType.TYPE)\n@Retention(RetentionPolicy.RUNTIME)\n@SpringBootConfiguration          // @Configuration 을 품고 있다\n@EnableAutoConfiguration\n@ComponentScan(...)               // 여기\npublic @interface SpringBootApplication {\n}",
+   "note": "**어노테이션 세 개를 묶은 것**이다. 부트 프로젝트에서 아무 설정 없이 빈이 등록되던 이유가 이것이다."
+  },
+  {
+   "type": "heading",
+   "text": "기본 스캔 대상"
+  },
+  {
+   "type": "figure",
+   "caption": "전부 @Component 를 품고 있다",
+   "ascii": "   @Component\n       ▲\n       ├── @Controller\n       ├── @Service\n       ├── @Repository\n       └── @Configuration",
+   "note": "`@Service` 를 붙이면 그 안의 `@Component` 때문에 스캔된다. **`@Service` 자체를 스프링이 특별히 아는 게 아니다** — 적어도 등록에 관해서는."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "어노테이션이 어노테이션을 품는 것은 자바 기능이 아니다",
+   "md": "자바 문법에는 **어노테이션 상속이 없다.** `@Service` 에 `@Component` 를 붙였다고 해서 자바가 `@Service` 를 `@Component` 로 취급하지 않는다.\n\n이건 **스프링이 직접 구현한 기능**이다. 스프링은 클래스에 붙은 어노테이션을 읽을 때, 그 어노테이션에 또 붙어 있는 어노테이션까지 따라간다(메타 어노테이션).\n\n\"스프링이 지원하는 것\" 과 \"자바가 하는 것\" 을 구분해 두면, 나중에 **왜 어떤 것은 되고 어떤 것은 안 되는지** 헷갈리지 않는다."
+  },
+  {
+   "type": "table",
+   "caption": "다섯 어노테이션과 부가 기능",
+   "note": "**등록되는 것은 다섯 다 같다.** 다른 것은 그 위에 얹힌 부가 기능과, **읽는 사람에게 주는 정보**다.",
+   "columns": [
+    "어노테이션",
+    "부가 기능"
+   ],
+   "rows": [
+    [
+     "`@Component`",
+     "없다. 스캔 대상이라는 표시뿐"
+    ],
+    [
+     "`@Controller`",
+     "스프링 MVC 가 **컨트롤러로 인식**한다"
+    ],
+    [
+     "`@Service`",
+     "**특별한 처리 없음.** 비즈니스 계층이라는 표시"
+    ],
+    [
+     "`@Repository`",
+     "데이터 접근 계층으로 인식하고, **예외를 스프링 예외로 변환**한다"
+    ],
+    [
+     "`@Configuration`",
+     "**5.6절의 CGLIB 처리**를 받는다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "@Service 가 아무것도 안 하는데 왜 쓰나",
+   "md": "\"특별한 처리 없음\" 인데도 `@Component` 대신 `@Service` 를 쓴다.\n\n**사람이 읽기 때문**이다. 클래스 이름 위의 한 줄이 \"여기는 비즈니스 로직이다\" 라고 말해 준다. 6.1절에서 잃었다고 한 것 — **구조가 코드에 안 보이는 문제** — 를 조금이나마 되돌린다.\n\n그리고 나중에 `@Service` 붙은 것에만 무언가를 적용하고 싶어질 때(AOP), 이미 표시가 돼 있어서 할 수 있다.\n\n`@Repository` 는 표시 그 이상이다. **JDBC·JPA 마다 다른 예외를 스프링의 공통 예외로 바꿔 준다** — 데이터 접근 기술을 바꿔도 서비스 계층이 안 깨지게 하는 장치다. 1.3절의 역할·구현 분리가 예외에까지 적용된 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 어노테이션을 바꿔도 똑같이 등록된다",
+   "sql": "# @Component -> @Service, @Repository 로 바꾼 뒤\nINFO  ClassPathBeanDefinitionScanner - Identified candidate component class:\n        file [.../hello/core/member/MemberServiceImpl.class]\nINFO  ClassPathBeanDefinitionScanner - Identified candidate component class:\n        file [.../hello/core/member/MemoryMemberRepository.class]\n\nname = memberServiceImpl        object = ...MemberServiceImpl@1f36e637\nname = memoryMemberRepository   object = ...MemoryMemberRepository@7b02881e\n\nAutoAppConfigTest > basicScan PASSED\n\n# basePackages 에 오타를 냈을 때\nINFO  AnnotationConfigApplicationContext - Refreshing\n# (스캔 로그가 한 줄도 없다)\nNoSuchBeanDefinitionException: No qualifying bean of type 'MemberService'",
+   "note": "위는 **어노테이션만 바꿨는데 빈 이름도 로그도 똑같다.** 아래가 이 절의 경고다 — **오타가 나면 예외가 아니라 침묵**이고, 컨테이너는 정상으로 뜬다. 문제는 빈을 꺼내 쓰는 순간에 드러난다."
+  }
+ ],
+ "recap": [
+  "탐색 시작 위치는 **`@ComponentScan` 이 붙은 클래스의 패키지**가 기본값이다.",
+  "`basePackages` 문자열 지정은 **리팩터링이 안 따라오고 오타가 침묵**한다.",
+  "관례 — **설정 클래스를 프로젝트 최상단**에 둔다.",
+  "스프링 부트의 `@SpringBootApplication` 안에 **`@ComponentScan` 이 들어 있다.**",
+  "기본 스캔 대상 다섯은 전부 **`@Component` 를 품고 있다.**",
+  "**어노테이션이 어노테이션을 품는 것은 자바가 아니라 스프링 기능**이다.",
+  "`@Service` 는 부가 기능이 없다. **사람이 읽으라고 쓴다.**"
+ ],
+ "drills": [
+  {
+   "task": "`@ComponentScan` 을 `hello.core.member` 패키지 아래로 옮겨 본다.",
+   "done_when": "다른 패키지의 빈이 안 잡혀 테스트가 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`basePackages` 에 없는 패키지 이름을 준다.",
+   "done_when": "예외 없이 뜨고 스캔 로그가 없다는 것을 확인했다 — 침묵의 실패를 겪었다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Service` 어노테이션 소스를 IDE 에서 열어 본다.",
+   "done_when": "안에 `@Component` 가 붙어 있는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "네 클래스의 `@Component` 를 계층에 맞는 어노테이션으로 바꾼다.",
+   "done_when": "빈 이름과 동작이 그대로인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ComponentScan` 의 기본 탐색 시작 위치는?",
+   "a": "그 어노테이션이 붙은 클래스가 속한 패키지다. 그 하위 패키지가 전부 대상이 된다."
+  },
+  {
+   "q": "`basePackages` 문자열 지정을 권하지 않는 이유는?",
+   "a": "리팩터링이 따라오지 않고, 오타가 나도 예외 없이 조용히 아무것도 안 잡는다."
+  },
+  {
+   "q": "권장하는 관례는?",
+   "a": "설정 클래스를 프로젝트 최상단 패키지에 두고 탐색 위치를 지정하지 않는다. 스프링 부트의 `@SpringBootApplication` 이 이 방식이다."
+  },
+  {
+   "q": "기본 스캔 대상 다섯 어노테이션은?",
+   "a": "`@Component`, `@Controller`, `@Service`, `@Repository`, `@Configuration`. 뒤의 넷은 모두 `@Component` 를 품고 있다."
+  },
+  {
+   "q": "어노테이션이 어노테이션을 품는 것은 자바 기능인가?",
+   "a": "아니다. 자바에는 어노테이션 상속이 없다. 스프링이 메타 어노테이션을 따라가며 읽어 주는 기능이다."
+  },
+  {
+   "q": "`@Repository` 의 부가 기능은?",
+   "a": "데이터 접근 계층으로 인식하고, 기술마다 다른 예외를 스프링의 공통 예외로 변환해 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메타 어노테이션",
+   "en": "meta-annotation",
+   "what": "다른 어노테이션에 붙는 어노테이션. 스프링은 이것을 따라가며 읽어서 `@Service` 를 `@Component` 로 취급한다."
+  },
+  {
+   "term": "@SpringBootApplication",
+   "en": "",
+   "what": "`@SpringBootConfiguration` + `@EnableAutoConfiguration` + `@ComponentScan` 을 묶은 어노테이션. 프로젝트 루트에 둔다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Classpath Scanning and Managed Components",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

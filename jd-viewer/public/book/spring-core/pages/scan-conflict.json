@@ -1,0 +1,200 @@
+{
+ "book": "spring-core",
+ "id": "scan-conflict",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "중복 등록과 충돌",
+ "summary": "자동끼리 부딪히면 예외, 수동이 자동을 이긴다 — 그리고 그 조용한 덮어쓰기가 위험한 이유.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "자동 등록끼리 이름이 겹칠 때 나는 예외를 안다.",
+  "수동 등록과 자동 등록이 겹치면 어느 쪽이 이기는지 안다.",
+  "스프링 부트가 왜 그 동작을 막았는지 설명할 수 있다.",
+  "4.1절에서 예고한 '조용한 덮어쓰기' 가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.1절에서 빈 이름이 겹치면 \"무시되거나 덮어써지거나 예외가 난다\" 고 하고, **\"조용한 덮어쓰기가 왜 위험한지는 6.4절\"** 이라고 미뤄 뒀다. 여기다.\n\n빈이 겹치는 경우는 둘이다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 충돌",
+   "ascii": "   case 1 : auto   vs  auto     ->  ConflictingBeanDefinitionException\n                                    (bean name is the same)\n\n   case 2 : manual vs  auto     ->  manual wins   (spring framework)\n                                ->  BeanDefinitionOverrideException\n                                                  (spring boot, default)",
+   "note": "**1번은 시끄럽게 실패하고, 2번은 조용히 성공한다.** 이 차이가 이 절의 전부다."
+  },
+  {
+   "type": "heading",
+   "text": "자동 vs 자동 — 예외가 난다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "이름을 일부러 겹치게 한다",
+   "bad": true,
+   "code": "@Component(\"service\")\npublic class MemberServiceImpl implements MemberService { ... }\n\n@Component(\"service\")\npublic class OrderServiceImpl implements OrderService { ... }",
+   "note": "빈 이름을 직접 지정해서 겹치게 했다(6.1절). 클래스 이름 기반 기본값을 쓰면 이런 일이 잘 안 생긴다 — **클래스 이름이 겹칠 수 없기 때문**이다. 단, 패키지가 다르면 겹칠 수 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 애플리케이션이 안 뜬다",
+   "sql": "org.springframework.context.annotation.ConflictingBeanDefinitionException:\n    Annotation-specified bean name 'service' for bean class\n    [hello.core.order.OrderServiceImpl] conflicts with existing,\n    non-compatible bean definition of same name and class\n    [hello.core.member.MemberServiceImpl]",
+   "note": "**시작 자체가 실패한다.** 좋은 실패다 — 개발자가 바로 알고, 메시지에 **두 클래스 이름이 다 나온다.**"
+  },
+  {
+   "type": "heading",
+   "text": "수동 vs 자동 — 수동이 이긴다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "같은 이름으로 수동 등록한다",
+   "code": "@Component\npublic class MemoryMemberRepository implements MemberRepository { ... }\n//  자동 등록 이름 -> \"memoryMemberRepository\"\n\n@Configuration\n@ComponentScan(...)\npublic class AutoAppConfig {\n\n    @Bean(name = \"memoryMemberRepository\")\n    public MemberRepository memberRepository() {\n        return new MemoryMemberRepository();   // 수동 등록\n    }\n}",
+   "note": "이름이 `memoryMemberRepository` 로 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "수동이 이기는 것은 의도된 설계다",
+   "md": "스프링 프레임워크의 기본 동작은 **수동 등록이 자동 등록을 덮어쓰는 것**이고, 로그를 한 줄 남긴다.\n\n```\nOverriding bean definition for bean 'memoryMemberRepository' ...\n```\n\n이유가 있다. **자동 등록된 것을 손으로 바꿔 끼우고 싶은 경우**가 있기 때문이다 — 라이브러리가 자동 등록하는 빈을 내 구현으로 교체하는 것 같은.\n\n의도한 상황이라면 좋은 기능이다. **문제는 의도하지 않았을 때다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "왜 조용한 덮어쓰기가 위험한가",
+   "md": "실무에서 이 상황은 **거의 항상 실수**로 만들어진다.\n\n- 여러 설정이 꼬여서 같은 이름이 두 번 등록됐다\n- 라이브러리가 등록한 빈과 내가 등록한 빈이 우연히 이름이 같았다\n- 팀원이 만든 `@Bean` 과 내 `@Component` 가 겹쳤다\n\n그리고 이때 벌어지는 일이 나쁘다.\n\n1. **애플리케이션은 정상으로 뜬다**\n2. 로그 한 줄이 남는데, **수천 줄 로그 안에 묻힌다**\n3. 동작이 이상한데 **코드를 아무리 봐도 원인이 안 보인다** — 내가 읽고 있는 그 클래스가 실제로 주입된 것이 아니기 때문이다\n\n6.1절에서 \"무엇이 등록됐는지 코드에 안 보인다\" 고 했다. **이것이 그 대가의 최악의 형태**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "스프링 부트는 아예 막는다",
+   "md": "그래서 **스프링 부트는 기본적으로 이것을 예외로 만든다.**\n\n```\nBeanDefinitionOverrideException: Invalid bean definition with name\n  'memoryMemberRepository' defined in class path resource [AutoAppConfig.class]:\n  Cannot register bean definition ... there is already ...\n```\n\n덮어쓰기를 허용하려면 명시적으로 켜야 한다.\n\n```properties\nspring.main.allow-bean-definition-overriding=true\n```\n\n**\"편의보다 안전\"** 을 택한 것이다. 실무에서 이 옵션을 켜는 일은 거의 없고, 켜야 할 것 같으면 대개 **설정이 꼬였다는 신호**다."
+  },
+  {
+   "type": "table",
+   "caption": "정리",
+   "note": "**둘 다 예외로 끝나는 것이 맞다.** 조용히 넘어가는 것보다 낫다.",
+   "columns": [
+    "상황",
+    "스프링 프레임워크",
+    "스프링 부트"
+   ],
+   "rows": [
+    [
+     "자동 vs 자동",
+     "`ConflictingBeanDefinitionException`",
+     "같다"
+    ],
+    [
+     "수동 vs 자동",
+     "**수동이 덮어쓴다** (로그만)",
+     "`BeanDefinitionOverrideException`"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "6장을 닫으며"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "편의가 감추는 것",
+   "md": "이 장의 목표에 **\"그 편의가 감추는 것\"** 이라고 적어 뒀다. 정리하면 이렇다.\n\n| 얻은 것 | 감춰진 것 |\n|---|---|\n| 빈을 손으로 등록 안 해도 된다 | **무엇이 등록됐는지** (6.1) |\n| 탐색 위치를 안 적어도 된다 | **오타가 침묵한다** (6.2) |\n| 필터로 세밀하게 거를 수 있다 | **왜 등록됐는지** (6.3) |\n| 수동으로 덮어쓸 수 있다 | **무엇이 주입됐는지** (6.4) |\n\n네 줄이 전부 같은 이야기다 — **자동화는 코드에서 정보를 뺀다.**\n\n그래도 컴포넌트 스캔을 쓴다. 빈이 수백 개인 프로젝트에서 대안이 없다. 대신 **문제가 생겼을 때 어디를 볼지** 알아야 하고, 4.2절의 '등록된 빈 전부 출력' 이 그때 쓰인다.\n\n7장은 이 장의 나머지 반이다. 등록은 `@ComponentScan` 이 했고, **주입을 `@Autowired` 가 어떻게 하는지**를 아홉 절에 걸쳐 판다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 두 충돌을 나란히",
+   "sql": "# case 1 : 자동 vs 자동\nConflictingBeanDefinitionException: Annotation-specified bean name 'service'\n    for bean class [hello.core.order.OrderServiceImpl] conflicts with\n    existing, non-compatible bean definition of same name and class\n    [hello.core.member.MemberServiceImpl]\n\n# case 2 : 수동 vs 자동 — 스프링 프레임워크\nINFO  DefaultListableBeanFactory - Overriding bean definition for bean\n        'memoryMemberRepository' with a different definition\nAutoAppConfigTest > basicScan PASSED\n#                              ^^^^^^ 통과한다\n\n# case 2 : 수동 vs 자동 — 스프링 부트\nBeanDefinitionOverrideException: Invalid bean definition with name\n    'memoryMemberRepository' defined in class path resource\n    [hello/core/AutoAppConfig.class]: Cannot register bean definition ...\n    there is already [Generic bean: class [MemoryMemberRepository]] bound.",
+   "note": "**가운데가 이 절에서 기억할 것이다.** `INFO` 한 줄이 지나가고 테스트는 **통과한다.** 애플리케이션도 정상으로 뜬다.\n\n그리고 그 다음에 무슨 일이 벌어질지는 아무도 모른다. 스프링 부트가 이것을 예외로 바꾼 이유다."
+  }
+ ],
+ "recap": [
+  "**자동 vs 자동** — 이름이 겹치면 `ConflictingBeanDefinitionException`. 시작이 실패한다.",
+  "**수동 vs 자동** — 수동이 이긴다. 로그 한 줄만 남기고 **정상으로 뜬다.**",
+  "수동 우선은 의도된 설계다 — **자동 등록된 것을 손으로 바꿔 끼우려고.**",
+  "문제는 **의도하지 않았을 때** — 애플리케이션은 뜨고, 로그는 묻히고, 코드로는 원인이 안 보인다.",
+  "**스프링 부트는 기본적으로 이것을 예외로 만든다.** 편의보다 안전을 택했다.",
+  "6장 결론 — **자동화는 코드에서 정보를 뺀다.** 그래도 쓰되, 어디를 볼지 알고 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "두 클래스에 같은 빈 이름을 주고 띄워 본다.",
+   "done_when": "`ConflictingBeanDefinitionException` 메시지에서 두 클래스 이름을 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "자동 등록된 빈과 같은 이름으로 `@Bean` 을 수동 등록한다.",
+   "done_when": "`Overriding bean definition` 로그를 찾았고, 그런데도 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스프링 부트 프로젝트에서 같은 것을 시도한다.",
+   "done_when": "`BeanDefinitionOverrideException` 이 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`allow-bean-definition-overriding=true` 를 켜고 다시 돌린다.",
+   "done_when": "다시 통과하는 것을 확인했다. 이 옵션을 켜고 싶어질 때가 언제일지 생각해 봤다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자동 등록끼리 빈 이름이 겹치면?",
+   "a": "`ConflictingBeanDefinitionException` 이 나고 애플리케이션이 뜨지 않는다."
+  },
+  {
+   "q": "수동 등록과 자동 등록이 겹치면?",
+   "a": "스프링 프레임워크에서는 수동 등록이 자동 등록을 덮어쓰고 로그만 남긴다. 애플리케이션은 정상으로 뜬다."
+  },
+  {
+   "q": "수동 우선이 의도된 설계인 이유는?",
+   "a": "자동 등록된 빈을 손으로 바꿔 끼우고 싶은 경우가 있기 때문이다. 라이브러리가 등록한 빈을 내 구현으로 교체하는 것 같은."
+  },
+  {
+   "q": "그럼에도 위험한 이유는?",
+   "a": "실무에서는 거의 실수로 발생하는데, 애플리케이션은 정상으로 뜨고 로그는 묻히며 코드로는 원인이 보이지 않는다."
+  },
+  {
+   "q": "스프링 부트는 어떻게 처리하는가?",
+   "a": "기본적으로 `BeanDefinitionOverrideException` 을 던진다. 덮어쓰기를 원하면 `spring.main.allow-bean-definition-overriding=true` 로 명시해야 한다."
+  },
+  {
+   "q": "6장 전체를 한 문장으로 하면?",
+   "a": "자동화는 등록의 수고를 없애는 대신 코드에서 정보를 뺀다. 무엇이·왜·어떻게 등록됐는지가 안 보이게 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ConflictingBeanDefinitionException",
+   "en": "",
+   "what": "컴포넌트 스캔으로 자동 등록되는 빈끼리 이름이 겹칠 때 나는 예외. 애플리케이션 시작이 실패한다."
+  },
+  {
+   "term": "BeanDefinitionOverrideException",
+   "en": "",
+   "what": "이미 등록된 빈을 덮어쓰려 할 때 스프링 부트가 던지는 예외. 프레임워크 기본 동작(조용한 덮어쓰기)을 막는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Classpath Scanning and Managed Components",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Spring Boot Reference — Bean definition overriding",
+   "url": "https://docs.spring.io/spring-boot/reference/features/spring-application.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

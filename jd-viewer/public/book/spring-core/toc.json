@@ -387,7 +387,7 @@
           "title": "컴포넌트 스캔과 의존관계 자동 주입 시작하기",
           "summary": "@ComponentScan 과 @Autowired. AppConfig 가 사라진다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -395,7 +395,7 @@
           "title": "탐색 위치와 기본 스캔 대상",
           "summary": "basePackages 와 관례. @Component 를 품고 있는 어노테이션들.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -403,7 +403,7 @@
           "title": "필터",
           "summary": "includeFilters·excludeFilters. 실무에서 거의 안 쓰는 이유.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -411,7 +411,7 @@
           "title": "중복 등록과 충돌",
           "summary": "자동끼리 부딪히면 예외, 수동이 자동을 이긴다 — 그리고 그 조용한 덮어쓰기가 위험한 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
