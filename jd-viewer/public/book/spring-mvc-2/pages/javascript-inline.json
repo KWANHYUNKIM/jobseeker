@@ -1,0 +1,216 @@
+{
+ "book": "spring-mvc-2",
+ "id": "javascript-inline",
+ "no": "2.14",
+ "chapter": 2,
+ "title": "자바스크립트 인라인",
+ "summary": "따옴표·이스케이프를 자동으로. 그리고 여기서도 XSS.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:inline=\"javascript\"` 가 무엇을 해 주는지 안다.",
+  "객체가 JSON 으로 바뀌는 것을 안다.",
+  "자바스크립트 안의 이스케이프가 HTML 과 다른 문제라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "2.2절에서 이렇게 적고 넘어갔다.\n\n> 타임리프가 **자바스크립트 인라인은 따로 처리**하는 이유가 그것이다 — **2.14절**에서 본다.\n\n**여기다.** 왜 따로 처리하는지 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자바스크립트 안은 HTML 이 아니다",
+   "md": "```html\n<script>\n    var username = [[${user.username}]];\n</script>\n```\n\n`[[...]]` 는 2.2절에서 본 그것인데, **여기서는 안 통한다.**\n\n```javascript\nvar username = UserA;      // SyntaxError\n```\n\n**따옴표가 없다.** 자바스크립트는 `UserA` 를 변수 이름으로 읽는다.\n\n왜 이런가 — **타임리프는 기본적으로 HTML 을 만든다.** HTML 에서는 `<span>UserA</span>` 처럼 따옴표가 필요 없다. 그런데 **`<script>` 안은 문법이 다른 세계**다.\n\n**그래서 모드를 알려 준다.**\n\n```html\n<script th:inline=\"javascript\">\n    var username = [[${user.username}]];\n</script>\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "인라인이 하는 일",
+   "ascii": "   var a = [[${data}]];\n\n   without th:inline                with th:inline=\"javascript\"\n   -----------------                ---------------------------\n   var a = Spring!;                 var a = \"Spring!\";\n           |                                |\n           +--> SyntaxError                 +--> 따옴표가 붙는다\n\n   객체를 넣으면\n   -----------------                ---------------------------\n   var u = BasicController...       var u = {\"username\":\"A\",\"age\":10};\n           |                                |\n           +--> toString()                  +--> JSON",
+   "note": "**따옴표를 붙이고, 객체는 JSON 으로 바꾼다.** 두 가지다."
+  },
+  {
+   "type": "table",
+   "caption": "해 주는 것 네 가지",
+   "note": "**세 번째가 이 절의 보안 이야기**로 이어진다.",
+   "columns": [
+    "",
+    "무엇을"
+   ],
+   "rows": [
+    [
+     "**따옴표**",
+     "문자열에 자동으로 붙인다"
+    ],
+    [
+     "**JSON**",
+     "객체를 `{\"a\":1}` 로 바꾼다"
+    ],
+    [
+     "**이스케이프**",
+     "따옴표·줄바꿈 등을 자바스크립트 문법에 맞게"
+    ],
+    [
+     "**내추럴 템플릿**",
+     "`/*[[...]]*/` 표기로 정적일 때도 안 깨진다"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "내추럴 템플릿"
+  },
+  {
+   "type": "compare",
+   "caption": "정적으로 열었을 때",
+   "left": {
+    "title": "그냥 쓰면",
+    "lang": "html",
+    "code": "<script th:inline=\"javascript\">\n    var username = [[${user.username}]];\n</script>\n\n// 브라우저로 직접 열면\nvar username = [[${user.username}]];\n// SyntaxError",
+    "md": "**정적으로 열면 깨진다.** 자바스크립트가 통째로 안 돈다."
+   },
+   "right": {
+    "title": "주석 표기",
+    "lang": "html",
+    "good": true,
+    "code": "<script th:inline=\"javascript\">\n    var username = /*[[${user.username}]]*/ \"기본이름\";\n</script>\n\n// 브라우저로 직접 열면\nvar username = \"기본이름\";\n\n// 서버가 렌더링하면\nvar username = \"UserA\";",
+    "md": "**주석 안에 표현식**, 뒤에 기본값. 서버가 **주석과 기본값을 통째로 바꾼다.**"
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2.12절의 프로토타입 주석과 같은 발상",
+   "md": "`/*[[...]]*/ \"기본값\"` 은 **2.12절의 프로토타입 주석**과 같은 아이디어다.\n\n| | 정적일 때 | 서버에서 |\n|---|---|---|\n| `<!--/*/ ... /*/-->` | 주석 (안 보임) | 살아난다 |\n| `/*[[...]]*/ \"기본\"` | 주석 + 기본값 | 표현식 결과로 대체 |\n\n**둘 다 \"주석은 무시된다\" 는 성질을 이용**한다. 문법이 다른 두 세계(HTML·자바스크립트)에서 같은 수법을 쓴 것이다.\n\n**내추럴 템플릿이라는 목표 하나가 문법을 셋 만들었다** — 프로토타입 주석, `th:text` 의 기본 내용, 그리고 이것."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "객체와 반복",
+   "code": "<script th:inline=\"javascript\">\n    var user = /*[[${user}]]*/ null;\n\n    [# th:each=\"u : ${users}\"]\n    var user[[${uStat.count}]] = [[${u}]];\n    [/]\n</script>",
+   "note": "**`[# ... ]` 이 자바스크립트 안의 `th:block`** 이다(2.13절). `<script>` 안에는 태그를 못 넣으니 이 표기를 쓴다.\n\n**객체는 JSON 이 된다** — `Jackson` 이 하는 일이고, 1편 7.9절에서 `@ResponseBody` 가 쓰던 그 변환기다."
+  },
+  {
+   "type": "heading",
+   "text": "여기서도 XSS"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "인라인이 이스케이프를 하지만",
+   "md": "`th:inline` 은 **자바스크립트 문법에 맞게** 이스케이프한다.\n\n```\n사용자 입력:  \");alert(1);//\n결과:        var a = \"\\\");alert(1);//\";\n```\n\n**따옴표를 막았다.** 여기까지는 안전하다.\n\n**그런데 뚫리는 자리가 있다.**\n\n```html\n<script th:inline=\"javascript\">\n    var s = [[${data}]];\n</script>\n```\n\n`data` 가 `</script><script>alert(1)</script>` 라면 —\n\n```html\n<script>\n    var s = \"</script><script>alert(1)</script>\";\n</script>\n```\n\n**브라우저의 HTML 파서가 먼저 `</script>` 를 본다.** 자바스크립트 문자열 안이라는 것을 모른다. 스크립트가 거기서 끝나고 **새 스크립트가 열린다.**\n\n타임리프는 `/` 를 `\\/` 로 이스케이프해서 이것을 막는다. **그래서 인라인을 쓰면 안전하다.**\n\n**문제는 안 쓸 때**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "th:inline 없이 문자열로 조립하지 않는다",
+   "md": "```html\n<!-- 하면 안 된다 -->\n<script>\n    var s = \"<span th:text='${data}'></span>\";   <!-- 섞였다 -->\n    var t = '[[${data}]]';                        <!-- inline 없음 -->\n</script>\n\n<!-- 이것도 위험하다 -->\n<div th:onclick=\"'go(\\'' + ${id} + '\\')'\">\n```\n\n**공통점은 \"내가 따옴표를 관리하고 있다\"** 는 것이다. 그 순간 뚫린다.\n\n**세 가지 규칙**\n\n1. `<script>` 안에서는 **반드시 `th:inline=\"javascript\"`**\n2. 인라인 이벤트(`onclick`)에 값을 넣지 않는다 — **`data-` 속성**에 담고 JS 에서 읽는다\n3. **URL 은 별도** — 2.6절에서 본 `javascript:` 문제는 여전히 남는다\n\n```html\n<!-- 2번의 권장 -->\n<button th:data-item-id=\"${item.id}\" class=\"go\">이동</button>\n<script th:inline=\"javascript\">\n    document.querySelectorAll('.go').forEach(function (b) {\n        b.addEventListener('click', function () { go(b.dataset.itemId); });\n    });\n</script>\n```\n\n**값이 HTML 속성 컨텍스트에만 있고 자바스크립트 코드가 되지 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컨텍스트가 넷이다",
+   "md": "2.2절 마지막에 적은 것을 여기서 완성한다.\n\n| 컨텍스트 | 필요한 이스케이프 | 타임리프 |\n|---|---|---|\n| HTML 본문 | `<` `>` `&` | `th:text` (기본) |\n| HTML 속성 | 위 + 따옴표 | `th:attr` 계열 (기본) |\n| URL | 퍼센트 인코딩 | `@{}` |\n| 자바스크립트 | 따옴표·`/`·제어문자 | `th:inline` |\n\n**\"이스케이프했으니 안전하다\" 가 아니라 \"어느 컨텍스트에 넣는가\"** — 2.2절의 그 문장이 이 표다.\n\n**타임리프는 네 컨텍스트에 각각 도구를 준다.** 맞는 도구를 쓰면 안전하고, 문자열로 직접 조립하면 그 순간 컨텍스트가 섞인다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/javascript HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<script>\n    var username = \"UserA\";\n    var age = 10;\n    var username2 = \"UserA\";\n    var user = {\"username\":\"UserA\",\"age\":10};\n\n    var user1 = {\"username\":\"UserA\",\"age\":10};\n    var user2 = {\"username\":\"UserB\",\"age\":20};\n</script>\n\n# 인라인 없이 같은 것을 내보내면\n<script>\n    var username = UserA;\n    var user = hello.springmvc.basic.BasicController$User@1b6d;\n</script>",
+   "note": "**위쪽에서 세 가지가 동시에 일어났다.**\n\n1. 문자열에 **따옴표가 붙었다** (`\"UserA\"`), 숫자에는 안 붙었다 (`10`)\n2. 객체가 **JSON** 이 됐다\n3. `[# th:each]` 가 **두 줄로 펼쳐졌다** — 변수 이름까지 `user1` `user2` 로\n\n아래가 인라인 없이 나간 것이다. `var username = UserA;` 는 **SyntaxError** 고, 객체는 **`toString()` 결과**가 그대로 실려 **클래스 이름과 패키지 경로가 노출**됐다.\n\n**같은 데이터인데 응답이 하나는 코드고 하나는 쓰레기**다."
+  }
+ ],
+ "recap": [
+  "**`<script>` 안은 HTML 이 아니다** — 문법이 다른 세계다.",
+  "`th:inline=\"javascript\"` 가 **따옴표를 붙이고 객체를 JSON 으로** 바꾼다.",
+  "**`/*[[...]]*/ \"기본값\"`** 표기로 정적일 때도 안 깨진다.",
+  "2.12절의 **프로토타입 주석과 같은 발상** — 주석은 무시된다는 성질을 쓴다.",
+  "**`[# ... ]` 이 자바스크립트 안의 `th:block`** 이다.",
+  "인라인은 **`/` 까지 이스케이프**해서 `</script>` 탈출을 막는다.",
+  "**문자열로 직접 조립하면 그 순간 뚫린다** — 따옴표를 내가 관리하면 안 된다.",
+  "인라인 이벤트 대신 **`data-` 속성**에 담고 JS 에서 읽는다.",
+  "**컨텍스트가 넷** — HTML 본문 · 속성 · URL · 자바스크립트. 각각 도구가 다르다."
+ ],
+ "drills": [
+  {
+   "task": "`th:inline` 없이 `[[${data}]]` 를 `<script>` 에 넣는다.",
+   "done_when": "브라우저 콘솔에서 SyntaxError 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:inline=\"javascript\"` 를 붙인다.",
+   "done_when": "따옴표가 붙는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "객체를 넣어 본다.",
+   "done_when": "JSON 으로 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`/*[[...]]*/ \"기본값\"` 으로 바꾸고 브라우저로 직접 연다.",
+   "done_when": "정적일 때 기본값이 쓰이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`data` 에 `</script><script>alert(1)</script>` 를 넣는다.",
+   "done_when": "인라인이 `/` 를 이스케이프해 막는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`<script>` 안에서 `[[${x}]]` 가 왜 안 되나?",
+   "a": "타임리프는 기본적으로 HTML 을 만들어서 따옴표를 안 붙인다. 자바스크립트는 그것을 변수 이름으로 읽는다."
+  },
+  {
+   "q": "`th:inline=\"javascript\"` 가 해 주는 것은?",
+   "a": "따옴표를 붙이고, 객체를 JSON 으로 바꾸고, 자바스크립트 문법에 맞게 이스케이프한다."
+  },
+  {
+   "q": "`/*[[...]]*/ \"기본값\"` 은 왜 쓰나?",
+   "a": "정적으로 열면 주석이 무시되고 기본값이 쓰여 자바스크립트가 안 깨진다. 서버는 주석과 기본값을 통째로 대체한다."
+  },
+  {
+   "q": "`</script>` 탈출이 왜 위험한가?",
+   "a": "브라우저의 HTML 파서가 자바스크립트 문자열 안이라는 것을 모르고 `</script>` 를 스크립트의 끝으로 읽는다."
+  },
+  {
+   "q": "인라인 `onclick` 에 값을 넣지 않는 이유는?",
+   "a": "따옴표를 직접 관리하게 되고 HTML 속성과 자바스크립트 컨텍스트가 섞인다. `data-` 속성에 담고 JS 에서 읽는다."
+  },
+  {
+   "q": "컨텍스트 네 가지와 각각의 도구는?",
+   "a": "HTML 본문(`th:text`), HTML 속성(`th:attr` 계열), URL(`@{}`), 자바스크립트(`th:inline`)다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자바스크립트 인라인",
+   "en": "JavaScript inlining",
+   "what": "`th:inline=\"javascript\"`. `<script>` 안의 표현식을 자바스크립트 문법에 맞게 출력한다."
+  },
+  {
+   "term": "컨텍스트",
+   "en": "output context",
+   "what": "값이 들어가는 자리의 문법 세계. HTML 본문·속성·URL·자바스크립트마다 필요한 이스케이프가 다르다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "OWASP — Cross Site Scripting Prevention Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
