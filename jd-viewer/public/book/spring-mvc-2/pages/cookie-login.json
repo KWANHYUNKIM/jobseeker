@@ -1,0 +1,156 @@
+{
+ "book": "spring-mvc-2",
+ "id": "cookie-login",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "쿠키로 로그인 유지",
+ "summary": "동작한다. 그리고 보안이 전부 뚫린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿠키로 로그인 상태를 유지할 수 있다.",
+  "영속 쿠키와 세션 쿠키를 구분한다.",
+  "로그아웃이 무엇을 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 3.8절에서 쿠키를 다뤘다. **거기서는 값을 실어 보내는 것만** 봤고, **로그인에 쓰는 것**은 여기다."
+  },
+  {
+   "type": "figure",
+   "caption": "브라우저가 대신 들고 다닌다",
+   "ascii": "   POST /login\n        |\n        v\n   HTTP/1.1 302\n   Set-Cookie: memberId=1\n        |\n        v\n   browser stores it\n        |\n        v\n   GET /            Cookie: memberId=1\n   GET /items       Cookie: memberId=1\n   GET /items/1     Cookie: memberId=1\n\n   한 번 심으면 브라우저가 계속 붙여 보낸다",
+   "note": "**서버가 한 번 심으면 브라우저가 알아서 붙인다.** 7.1절의 무상태 문제가 이렇게 풀린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "로그인 시 쿠키를 심는다",
+   "code": "@PostMapping(\"/login\")\npublic String login(@Validated @ModelAttribute LoginForm form,\n                    BindingResult bindingResult,\n                    HttpServletResponse response) {\n\n    // 검증은 7.2 절과 같다\n\n    Member loginMember = loginService.login(form.getLoginId(), form.getPassword());\n    if (loginMember == null) {\n        bindingResult.reject(\"loginFail\", \"아이디 또는 비밀번호가 맞지 않습니다.\");\n        return \"login/loginForm\";\n    }\n\n    Cookie idCookie = new Cookie(\"memberId\",\n            String.valueOf(loginMember.getId()));\n    response.addCookie(idCookie);\n\n    return \"redirect:/\";\n}",
+   "note": "**`HttpServletResponse` 를 파라미터로** 받는다 — 1편 7.4절에서 본 그 방식이다.\n\n**`Cookie` 의 값은 문자열**이라 `String.valueOf` 로 바꾼다. 쿠키에 담기는 것은 언제나 문자열이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "만료를 안 주면 세션 쿠키",
+   "md": "1편 3.8절에서 나눈 그 둘이다.\n\n| | 언제까지 |\n|---|---|\n| **세션 쿠키** | **브라우저 종료 시 사라짐** |\n| **영속 쿠키** | `Max-Age` 만큼 |\n\n```java\nnew Cookie(\"memberId\", \"1\");                  // 세션 쿠키\ncookie.setMaxAge(60 * 60 * 24 * 30);          // 30 일\n```\n\n**로그인은 보통 세션 쿠키**다. 브라우저를 닫으면 로그아웃되는 것이 자연스럽고 안전하다.\n\n**\"로그인 유지\" 체크박스**가 영속 쿠키다. 편한 만큼 **공용 컴퓨터에서 위험**하다.\n\n> **\"세션 쿠키\" 의 세션은 7.5절의 세션과 다른 말**이다. 여기서는 **브라우저가 열려 있는 동안**이라는 뜻이고, 7.5절은 **서버가 들고 있는 저장소**를 말한다. 이름이 겹쳐서 헷갈린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "홈에서 읽는다",
+   "code": "@GetMapping(\"/\")\npublic String homeLogin(@CookieValue(name = \"memberId\", required = false) Long memberId,\n                        Model model) {\n\n    if (memberId == null) {\n        return \"home\";\n    }\n\n    Member loginMember = memberRepository.findById(memberId);\n    if (loginMember == null) {\n        return \"home\";\n    }\n\n    model.addAttribute(\"member\", loginMember);\n    return \"loginHome\";\n}",
+   "note": "**`@CookieValue`** 가 쿠키를 파라미터로 준다 — 1편 7.4절에서 본 애너테이션.\n\n**`required = false`** 가 필수다. 로그인 안 한 사용자에게는 쿠키가 없으니 **없으면 400** 이 난다.\n\n**타입이 `Long`** 인 것에 주의한다. 쿠키는 문자열인데 스프링이 변환한다 — 5.8절의 그 변환이고, **값이 이상하면 여기서도 400** 이 난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "회원이 없어졌을 수도 있다",
+   "md": "```java\nMember loginMember = memberRepository.findById(memberId);\nif (loginMember == null) {\n    return \"home\";\n}\n```\n\n**이 검사가 왜 필요한가.**\n\n쿠키는 **브라우저에 오래 남는다.** 그 사이에 회원이 탈퇴했을 수 있다.\n\n```\n쿠키:  memberId=5\nDB:    5 번 회원 없음\n  -> findById 가 null\n  -> null 을 model 에 담으면 화면에서 NPE\n```\n\n**\"클라이언트가 들고 있는 값은 항상 낡았을 수 있다\"** 가 원칙이다.\n\n**7.4절의 취약점과는 다른 문제**다. 여기는 정직한 사용자에게도 일어난다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "로그아웃",
+   "code": "@PostMapping(\"/logout\")\npublic String logout(HttpServletResponse response) {\n    expireCookie(response, \"memberId\");\n    return \"redirect:/\";\n}\n\nprivate void expireCookie(HttpServletResponse response, String cookieName) {\n    Cookie cookie = new Cookie(cookieName, null);\n    cookie.setMaxAge(0);\n    response.addCookie(cookie);\n}",
+   "note": "**쿠키를 지우는 API 가 없다.** 같은 이름으로 **`Max-Age=0` 인 쿠키를 덮어쓴다** — 즉시 만료라 브라우저가 지운다.\n\n**로그아웃이 `POST` 인 것**도 이유가 있다. `GET /logout` 이면 **`<img src=\"/logout\">` 만으로 남을 로그아웃**시킬 수 있다. 상태를 바꾸는 것은 `GET` 이 아니어야 한다 — 1편 2.6절의 안전한 메서드 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "동작한다, 그런데",
+   "md": "**로그인이 유지된다.** 7.1절의 문제가 풀렸다.\n\n**그리고 보안이 전부 뚫려 있다.**\n\n```\nCookie: memberId=1\n```\n\n**이 값을 `2` 로 바꾸면 2번 회원이 된다.** 개발자 도구에서 두 번 클릭이면 된다.\n\n**7.4절이 이것을 정면으로 다룬다.** 취약점이 하나가 아니라 셋이다.\n\n> **일부러 이렇게 만든다.** 무엇이 문제인지 봐야 세션이 왜 그 모양인지 이해된다. 5장에서 V1 부터 만든 것과 같은 순서다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /login HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nloginId=test&password=test!\n\nHTTP/1.1 302 \nSet-Cookie: memberId=1\nLocation: /\n\n# 브라우저가 저장하고 다음부터 붙인다\nGET / HTTP/1.1\nCookie: memberId=1\n\nHTTP/1.1 200 \n<h2>홈 화면</h2>\n<h4>testUser님 환영합니다.</h4>\n<button>상품 관리</button>\n<form action=\"/logout\" method=\"post\"><button>로그아웃</button></form>\n\n# 로그아웃\nPOST /logout HTTP/1.1\nCookie: memberId=1\n\nHTTP/1.1 302 \nSet-Cookie: memberId=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:10 GMT\nLocation: /\n\n# 쿠키가 사라졌다\nGET / HTTP/1.1\n\nHTTP/1.1 200 \n<button>회원 가입</button>\n<button>로그인</button>",
+   "note": "**7.1절의 세 요청과 비교하면** `Cookie:` 한 줄이 늘었을 뿐인데 응답이 완전히 달라졌다. **같은 URL 이 다른 화면**을 낸다.\n\n첫 응답의 `Set-Cookie` 에 **`Max-Age` 가 없다** — 세션 쿠키다.\n\n로그아웃 응답의 `Expires` 가 **1970년**이다. `Max-Age=0` 을 옛 브라우저용으로 옮긴 것인데, **과거 시각이라 즉시 만료**된다.\n\n**그리고 `Cookie: memberId=1` 을 `memberId=2` 로 바꿔 보내면** 2번 회원의 화면이 나온다. 7.4절에서 본다."
+  }
+ ],
+ "recap": [
+  "**서버가 `Set-Cookie` 로 심으면 브라우저가 계속 붙여** 보낸다.",
+  "**만료를 안 주면 세션 쿠키** — 브라우저를 닫으면 사라진다.",
+  "**\"세션 쿠키\" 의 세션과 7.5절의 세션은 다른 말**이다.",
+  "**`@CookieValue` 에 `required = false`** 를 안 주면 400 이 난다.",
+  "**회원이 없어졌을 수 있다** — 클라이언트의 값은 낡을 수 있다.",
+  "**쿠키를 지우는 API 는 없다** — `Max-Age=0` 으로 덮어쓴다.",
+  "**로그아웃은 `POST`** 다 — `GET` 이면 `<img>` 로도 당한다.",
+  "**동작하는데 값을 바꾸면 남이 된다** — 7.4절."
+ ],
+ "drills": [
+  {
+   "task": "로그인 시 쿠키를 심고 홈에서 읽는다.",
+   "done_when": "로그인 상태가 유지되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "개발자 도구에서 `Set-Cookie` 와 `Cookie` 헤더를 본다.",
+   "done_when": "왕복을 눈으로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`required = false` 를 지운다.",
+   "done_when": "로그인 안 한 상태에서 400 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿠키 값을 다른 회원 번호로 바꾼다.",
+   "done_when": "남의 계정으로 보이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "로그아웃하고 응답 헤더를 본다.",
+   "done_when": "`Max-Age=0` 을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿠키가 무상태 문제를 어떻게 푸나?",
+   "a": "서버가 한 번 심으면 브라우저가 이후 요청마다 자동으로 붙여 보낸다."
+  },
+  {
+   "q": "세션 쿠키와 영속 쿠키의 차이는?",
+   "a": "만료를 안 주면 브라우저 종료 시 사라지는 세션 쿠키, `Max-Age` 를 주면 그때까지 남는 영속 쿠키다."
+  },
+  {
+   "q": "회원 존재 검사가 왜 필요한가?",
+   "a": "쿠키는 오래 남는데 그 사이 회원이 탈퇴했을 수 있다. 클라이언트가 든 값은 낡을 수 있다."
+  },
+  {
+   "q": "쿠키를 어떻게 지우나?",
+   "a": "같은 이름으로 `Max-Age=0` 인 쿠키를 덮어쓴다. 지우는 API 는 없다."
+  },
+  {
+   "q": "로그아웃이 왜 `POST` 인가?",
+   "a": "`GET` 이면 `<img src=\"/logout\">` 같은 것으로 남을 로그아웃시킬 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세션 쿠키",
+   "en": "session cookie",
+   "what": "만료 시각이 없는 쿠키. 브라우저를 닫으면 사라진다."
+  },
+  {
+   "term": "@CookieValue",
+   "en": "",
+   "what": "쿠키 값을 컨트롤러 파라미터로 받는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 6265 — HTTP State Management Mechanism",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6265",
+   "publisher": "IETF"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

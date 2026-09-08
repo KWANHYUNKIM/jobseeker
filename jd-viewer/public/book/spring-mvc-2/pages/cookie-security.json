@@ -1,0 +1,162 @@
+{
+ "book": "spring-mvc-2",
+ "id": "cookie-security",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "쿠키와 보안 문제",
+ "summary": "값을 바꾸면 남이 된다. 세 가지 취약점.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿠키에 값을 직접 담는 것의 취약점 셋을 안다.",
+  "각각의 대응을 안다.",
+  "왜 대응만으로 부족한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "세 가지 취약점",
+   "ascii": "   1. tampering\n      Cookie: memberId=1   ->   memberId=2\n      devtools, two clicks\n\n   2. sniffing\n      http://  ->  cookie travels in plain text\n      cafe wifi, any router on the path\n\n   3. theft and replay\n      stolen cookie works forever\n      no expiry, no way to revoke\n\n   세 가지가 다 열려 있다",
+   "note": "**하나만 뚫려도 계정이 넘어간다.**"
+  },
+  {
+   "type": "heading",
+   "text": "1. 값을 바꾼다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "쿠키는 클라이언트가 들고 있다",
+   "md": "```\nCookie: memberId=1   ->   Cookie: memberId=2\n```\n\n**개발자 도구 > Application > Cookies 에서 두 번 클릭**이면 된다. 도구도 필요 없이 `curl` 로도 된다.\n\n```bash\ncurl -H \"Cookie: memberId=2\" http://localhost:8080/\n```\n\n**서버는 구분할 방법이 없다.** 정상 요청과 바이트 하나 다르지 않다.\n\n**그리고 회원 번호는 추측하기 쉽다.** 1, 2, 3... **전부 순회하면 모든 계정에 들어갈 수 있다.**\n\n**5.1절에서 클라이언트 검증에 대해 한 말**과 같은 구조다.\n\n> **브라우저를 안 거치면 그만**이다.\n\n**클라이언트가 들고 있는 것은 전부 위조 가능**하다."
+  },
+  {
+   "type": "heading",
+   "text": "2. 훔쳐본다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "http 면 평문으로 간다",
+   "md": "```\nGET / HTTP/1.1\nCookie: memberId=1\n```\n\n**암호화가 없으면 경로상의 누구나 읽는다.** 카페 와이파이, 중간 라우터, ISP.\n\n**대응은 HTTPS** 하나뿐이다. 그리고 쿠키에 표시를 남긴다.\n\n```java\ncookie.setSecure(true);   // https 에서만 전송\n```\n\n**`Secure` 를 안 붙이면** 실수로 `http://` 링크를 한 번 타는 순간 쿠키가 평문으로 나간다.\n\n> **1편 3.9절에서 `HttpOnly` 와 `Secure` 를 기억해 두라고 한 자리**가 여기와 이어진다. `HttpOnly` 는 2.2절의 XSS 방어였고, `Secure` 는 이것이다."
+  },
+  {
+   "type": "heading",
+   "text": "3. 훔친 것을 계속 쓴다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "만료가 없다",
+   "md": "**한 번 훔친 쿠키가 영원히 통한다.**\n\n```\nmemberId=1\n```\n\n**이 값은 안 바뀐다.** 비밀번호를 바꿔도, 로그아웃해도 **여전히 유효**하다. 서버가 \"이 쿠키는 무효\" 라고 표시할 방법이 없다.\n\n**세션 쿠키라 브라우저를 닫으면 사라지는데**, 그건 **정직한 사용자의 브라우저** 이야기다. 훔쳐 간 쪽은 안 닫는다.\n\n**대응**\n\n| | |\n|---|---|\n| **만료 시각** | 훔쳐도 오래 못 쓴다 |\n| **서버가 무효화** | 로그아웃·비밀번호 변경 시 |\n\n**둘 다 쿠키에 값을 담는 방식으로는 안 된다.** `memberId=1` 에 만료를 붙일 수도, 무효로 표시할 수도 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "암호화하면 되지 않나",
+   "md": "**떠오르는 해법**이다.\n\n```\nCookie: token=eyJhbGciOiJIUzI1NiJ9...   서명된 값\n```\n\n**1번과 3번이 상당히 풀린다.** 서명이 있으면 위조를 못 하고, 만료 시각을 안에 넣을 수 있다.\n\n**실제로 이것이 JWT 다.** 7.9절에서 다시 본다.\n\n**그런데 3번의 뒷부분이 안 풀린다** — **서버가 무효화할 수 없다.** 서명이 유효하고 만료 전이면 서버는 받아들일 수밖에 없다. 로그아웃해도 그 토큰은 살아 있다.\n\n**그리고 2번은 그대로다.** 훔치면 그대로 쓴다.\n\n> **암호화는 위조를 막고 탈취를 못 막는다.** 이 구분이 중요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "방향을 바꾼다",
+   "md": "**문제의 뿌리는 \"중요한 값이 클라이언트에 있다\"** 는 것이다.\n\n**그러면 값을 서버에 두면 된다.**\n\n```\n쿠키에는:  의미 없는 임의의 문자열\n서버에는:  그 문자열 -> 회원 정보\n```\n\n**세 문제가 한 번에 달라진다.**\n\n| | 어떻게 |\n|---|---|\n| **위조** | 임의의 값이라 추측 불가 |\n| **훔쳐보기** | 여전히 문제 — HTTPS 필요 |\n| **무효화** | **서버가 지우면 끝** |\n\n**2번은 여전히 남는다.** 그건 HTTPS 로 푸는 것이지 세션으로 푸는 것이 아니다.\n\n**7.5절에서 이것을 손으로 만든다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 뚫리는 것을 본다",
+   "sql": "# 정상 로그인한 1 번 회원\nGET / HTTP/1.1\nCookie: memberId=1\n\nHTTP/1.1 200 \n<h4>testUser님 환영합니다.</h4>\n\n# 값만 바꾼다 - 로그인하지 않았다\nGET / HTTP/1.1\nCookie: memberId=2\n\nHTTP/1.1 200 \n<h4>admin님 환영합니다.</h4>\n\n# curl 로도 된다\n$ curl -H \"Cookie: memberId=2\" http://localhost:8080/\n\n# 로그아웃해도 훔친 쿠키는 산다\nPOST /logout HTTP/1.1\nCookie: memberId=1\n\nHTTP/1.1 302 \nSet-Cookie: memberId=; Max-Age=0\n\n# 공격자가 들고 있던 것\nGET / HTTP/1.1\nCookie: memberId=1\n\nHTTP/1.1 200 \n<h4>testUser님 환영합니다.</h4>",
+   "note": "**둘째 요청이 이 절의 전부**다. 비밀번호도 모르고 로그인도 안 했는데 **`admin` 으로 들어갔다.**\n\n**서버가 보기에 첫째와 둘째는 구분할 수 없다.** 둘 다 `Cookie: memberId=` 한 줄이고 형식도 맞다. 검증으로 막을 수 있는 것이 아니다 — 6.9절에서 \"검증은 누구인지 모른다\" 고 한 그것이다.\n\n**맨 아래가 3번 취약점**이다. 사용자가 로그아웃해서 **자기 브라우저에서는 쿠키가 지워졌는데**, 공격자가 복사해 둔 값은 그대로 통한다. **서버는 그 쿠키를 무효로 만들 방법이 없다.**"
+  }
+ ],
+ "recap": [
+  "**쿠키는 클라이언트가 들고 있어서 마음대로 바꿀 수 있다.**",
+  "**회원 번호는 추측하기 쉽다** — 순회하면 전 계정.",
+  "**서버는 정상 요청과 구분할 수 없다.**",
+  "**http 면 평문**으로 간다. HTTPS 와 `Secure` 가 필요하다.",
+  "**1편 3.9절의 `HttpOnly`·`Secure`** 가 여기와 이어진다.",
+  "**훔친 쿠키가 영원히 통한다** — 만료도 무효화도 없다.",
+  "**암호화(JWT)는 위조를 막고 탈취를 못 막는다.**",
+  "**서버가 무효화할 수 없는 것**이 토큰 방식의 약점이다.",
+  "**방향을 바꾼다** — 쿠키에는 임의의 식별자, 값은 서버에.",
+  "**훔쳐보기는 세션으로도 안 풀린다** — HTTPS 의 일이다."
+ ],
+ "drills": [
+  {
+   "task": "개발자 도구에서 쿠키 값을 바꾼다.",
+   "done_when": "다른 회원으로 보이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`curl -H \"Cookie: ...\"` 로 같은 것을 한다.",
+   "done_when": "브라우저 없이도 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "회원 번호를 1 부터 순회해 본다.",
+   "done_when": "전 계정에 들어갈 수 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "쿠키 값을 복사해 두고 로그아웃한 뒤 다시 쓴다.",
+   "done_when": "여전히 통하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`setSecure(true)` 를 주고 http 로 접속한다.",
+   "done_when": "쿠키가 안 가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿠키 값을 바꾸는 공격을 왜 서버가 못 막나?",
+   "a": "정상 요청과 바이트 하나 다르지 않아서 구분할 방법이 없다."
+  },
+  {
+   "q": "`Secure` 속성은 무엇을 하나?",
+   "a": "https 에서만 쿠키를 전송하게 한다. 실수로 http 링크를 타도 평문으로 안 나간다."
+  },
+  {
+   "q": "훔친 쿠키가 왜 영원히 통하나?",
+   "a": "값이 고정이고 서버가 그것을 무효로 표시할 방법이 없기 때문이다."
+  },
+  {
+   "q": "JWT 같은 서명 토큰이 못 푸는 것은?",
+   "a": "서버 무효화와 탈취다. 서명이 유효하고 만료 전이면 서버가 거부할 수 없다."
+  },
+  {
+   "q": "세션으로도 안 풀리는 것은?",
+   "a": "훔쳐보기다. 그건 HTTPS 로 푼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Secure",
+   "en": "",
+   "what": "https 연결에서만 쿠키를 보내게 하는 속성."
+  },
+  {
+   "term": "재전송 공격",
+   "en": "replay attack",
+   "what": "탈취한 인증 값을 그대로 다시 보내 접근하는 공격."
+  }
+ ],
+ "sources": [
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "RFC 6265 — HTTP State Management Mechanism",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6265",
+   "publisher": "IETF"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
