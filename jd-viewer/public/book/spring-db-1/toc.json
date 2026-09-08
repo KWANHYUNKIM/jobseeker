@@ -1,0 +1,573 @@
+{
+  "id": "spring-db-1",
+  "title": "스프링 DB",
+  "subtitle": "1편 — 트랜잭션과 예외, 데이터 계층의 두 문제",
+  "blurb": "JDBC 부터 손으로 만들어 보고, 커넥션을 파라미터로 넘기는 지경까지 간 뒤에 스프링이 그것을 어떻게 걷어내는지 본다. 매 절이 실제로 나간 SQL 과 커넥션 로그로 끝난다.",
+  "updated_at": "2026-09-09",
+  "preface": "서가의 앞 네 권이 웹 계층을 다뤘다. **요청을 받고, 화면을 그리고, 실패를 처리하는 것**까지 했다.\n\n그런데 **저장소가 `Map` 이었다.**\n\n「스프링 MVC 2편」 1.2절에서 1편이 남긴 숙제를 목록으로 만들고, 13.1절에서 정산했다. **넷은 끝났고 셋이 남았다.**\n\n- **Service 계층이 없다**\n- **`static` 저장소를 쓴다**\n- **동시성을 안 다뤘다**\n\n그리고 그때 이렇게 적었다.\n\n> 셋은 **모두 DB 를 붙이면 같이 풀린다.**\n\n**이 책이 그 DB 다.** 다만 JPA 를 바로 쓰지 않는다. **JDBC 부터 손으로** 시작해서, 커넥션을 파라미터로 넘기고 `try-catch` 가 서비스를 채우는 지경까지 간 다음, **스프링이 그것을 어떻게 걷어내는지** 본다.\n\n**두 문제를 다룬다.**\n\n**트랜잭션**(4·5장) — 계좌이체가 반만 되면 안 된다. 그것을 지키려면 **같은 커넥션**이 필요하고, 그 커넥션을 어떻게 전달할 것인가가 5장의 전부다.\n\n**예외**(6·7장) — `SQLException` 은 체크 예외라 **`throws` 가 위로 번진다.** 서비스가 JDBC 를 모르는데 JDBC 예외를 선언하게 된다. 「스프링 MVC 2편」 10장이 **웹 계층의 예외**였다면 여기는 **데이터 계층의 예외**다.\n\n이 책의 규칙 셋.\n\n첫째, **매 절은 실제로 나간 SQL 과 커넥션 로그로 끝난다.** 어느 커넥션인지(`conn0` 인지 `conn1` 인지), `autoCommit` 이 무엇인지, 커밋이 언제 나갔는지. **이 세 가지로 트랜잭션이 걸렸는지 아닌지가 드러난다.**\n\n둘째, **틀린 코드를 먼저 만든다.** 서가의 다른 책들과 같다. 4.6절에서 돈이 사라지는 것을 실제로 만들고, 5.9절에서 `@Transactional` 이 안 걸리는 자리를 만든다.\n\n셋째, **두 개의 세션으로 확인한다.** 트랜잭션은 혼자 보면 안 보인다. **H2 콘솔을 두 개 열고** 한쪽에서 커밋하지 않은 것이 다른 쪽에서 안 보이는 것을 본다.\n\n차례는 인프런 김영한 강사의 「스프링 DB 1편 — 데이터 접근 핵심 원리」 커리큘럼(8개 섹션)을 뼈대로 삼았고, 본문·예제·SQL 로그·그림은 새로 썼다.",
+  "how_to_read": [
+    "**서가의 앞 책들을 안 읽어도 된다.** 다만 스프링 컨테이너와 DI 는 안다고 가정한다 — 「스프링 핵심 원리」의 내용이다.",
+    "2장은 **손으로 JDBC 를 쓴다.** 실무에서 이렇게 안 쓰는데, 7.6절에서 무엇이 사라지는지 보려면 필요하다.",
+    "**4장이 이 책의 중심이다.** 트랜잭션을 모르면 5장이 마법으로 보인다.",
+    "4·5장을 볼 때는 **H2 콘솔을 두 개** 띄운다. 세션이 둘이어야 보인다.",
+    "6장은 자바 이야기다. **스프링이 안 나온다.** 7장을 위한 준비이고, 건너뛰면 7.2절이 이해가 안 된다.",
+    "**로그를 켜고 읽는다.** 이 책의 절반은 로그를 보는 것이다."
+  ],
+  "prereq": [
+    "**스프링 컨테이너와 DI.** 빈 등록, 생성자 주입, `@Configuration`.",
+    "**SQL 기초.** `select` · `insert` · `update` · `delete` 와 `where`. 조인은 안 쓴다.",
+    "**자바 예외.** `try-catch-finally` 와 `throws`. 6장에서 처음부터 다시 본다.",
+    "**AOP 는 몰라도 된다.** 5.7절에서 필요한 만큼만 본다."
+  ],
+  "env": [
+    {
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
+    },
+    {
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": ""
+    },
+    {
+      "name": "데이터베이스",
+      "value": "H2 2.x",
+      "note": "서버 모드로 띄운다. 콘솔을 두 개 열 것이다"
+    },
+    {
+      "name": "빌드",
+      "value": "Gradle",
+      "note": ""
+    },
+    {
+      "name": "의존성",
+      "value": "JDBC API, H2, Lombok",
+      "note": "JPA 는 안 쓴다"
+    },
+    {
+      "name": "확인 도구",
+      "value": "H2 웹 콘솔 · 애플리케이션 로그",
+      "note": "커넥션 이름과 autoCommit 을 본다"
+    }
+  ],
+  "source": {
+    "name": "스프링 DB 1편 - 데이터 접근 핵심 원리 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링-db-1",
+    "note": "차례(8개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·SQL 로그·그림은 이 책에서 새로 쓴 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "서가의 네 권이 미뤄 둔 것이 여기 모인다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절이 커넥션과 트랜잭션 로그로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "whats-left",
+          "title": "서가가 남긴 것",
+          "summary": "MVC 2편 1.2절의 숙제 셋이 전부 여기 있다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "project-setup",
+          "title": "프로젝트와 H2",
+          "summary": "데이터베이스를 처음 붙인다.",
+          "minutes": 11,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "JDBC 이해",
+      "goal": "표준 인터페이스가 없던 시절과, 지금도 그 위에서 도는 것들.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "jdbc-why",
+          "title": "JDBC 가 없던 시절",
+          "summary": "데이터베이스를 바꾸면 코드를 다시 썼다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "jdbc-interface",
+          "title": "JDBC 표준 인터페이스",
+          "summary": "셋만 알면 된다 — Connection · Statement · ResultSet.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "jdbc-modern",
+          "title": "JDBC 와 최신 기술",
+          "summary": "SQL Mapper 와 ORM 이 무엇을 감췄나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "db-connection",
+          "title": "데이터베이스 연결",
+          "summary": "DriverManager 가 드라이버를 고르는 법.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "jdbc-insert",
+          "title": "등록 — PreparedStatement",
+          "summary": "왜 문자열을 이어 붙이면 안 되나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "jdbc-select",
+          "title": "조회 — ResultSet",
+          "summary": "커서를 옮겨 가며 읽는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.7",
+          "id": "jdbc-update-delete",
+          "title": "수정과 삭제",
+          "summary": "몇 건이 바뀌었는지가 반환값이다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.8",
+          "id": "jdbc-close",
+          "title": "리소스 정리",
+          "summary": "왜 finally 이고, 왜 역순인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.9",
+          "id": "jdbc-summary",
+          "title": "정리",
+          "summary": "같은 코드가 네 번 반복된다.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "커넥션풀과 데이터소스",
+      "goal": "커넥션을 미리 만들어 두고 빌려 쓴다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "connection-cost",
+          "title": "커넥션을 매번 만들면",
+          "summary": "TCP 연결과 인증에 드는 시간.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "connection-pool",
+          "title": "커넥션 풀 이해",
+          "summary": "빌려 쓰고 돌려준다. 닫는 것이 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "datasource-intro",
+          "title": "DataSource 라는 추상화",
+          "summary": "커넥션을 얻는 방법을 인터페이스로.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "datasource-driver",
+          "title": "DriverManagerDataSource",
+          "summary": "설정과 사용이 갈리는 첫 예.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "datasource-pool",
+          "title": "HikariCP 적용",
+          "summary": "풀 크기를 어떻게 정하나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "datasource-summary",
+          "title": "정리",
+          "summary": "코드는 그대로고 구현만 바뀐다.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "트랜잭션 이해",
+      "goal": "데이터베이스가 트랜잭션을 지원해서 우리가 DB 를 쓴다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "tx-why",
+          "title": "트랜잭션이 필요한 이유",
+          "summary": "원자성. 계좌이체가 반만 되면 안 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "db-session",
+          "title": "데이터베이스 세션",
+          "summary": "커넥션 하나가 세션 하나다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "auto-commit",
+          "title": "자동 커밋과 수동 커밋",
+          "summary": "기본이 자동이라 트랜잭션이 안 걸린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "tx-commit",
+          "title": "트랜잭션 실습 — 커밋",
+          "summary": "다른 세션에서는 안 보인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "tx-rollback",
+          "title": "트랜잭션 실습 — 롤백",
+          "summary": "없던 일이 된다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "transfer-problem",
+          "title": "계좌이체 — 문제 상황",
+          "summary": "중간에 예외가 나면 돈이 사라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "transfer-tx",
+          "title": "계좌이체 — 트랜잭션으로",
+          "summary": "둘을 한 커넥션에서 한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.8",
+          "id": "lock-intro",
+          "title": "DB 락 — 개념",
+          "summary": "먼저 잡은 쪽이 끝날 때까지 기다린다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.9",
+          "id": "lock-update",
+          "title": "DB 락 — 변경",
+          "summary": "타임아웃이 나는 것을 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.10",
+          "id": "lock-select",
+          "title": "DB 락 — 조회",
+          "summary": "select for update 는 언제 쓰나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.11",
+          "id": "tx-service",
+          "title": "트랜잭션 적용 — 서비스 계층",
+          "summary": "MVC 2편이 미룬 그 계층이 생긴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.12",
+          "id": "tx-summary",
+          "title": "정리",
+          "summary": "커넥션을 파라미터로 넘기게 됐다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "스프링과 문제 해결 — 트랜잭션",
+      "goal": "서비스 계층에서 JDBC 를 걷어낸다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "tx-problems",
+          "title": "네 가지 문제",
+          "summary": "기술 종속 · 커넥션 전달 · 반복 · try-catch.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "tx-abstraction",
+          "title": "트랜잭션 추상화",
+          "summary": "PlatformTransactionManager. 인터페이스 하나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "tx-synchronization",
+          "title": "트랜잭션 동기화",
+          "summary": "ThreadLocal 로 커넥션을 보관한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "tx-manager-flow",
+          "title": "트랜잭션 매니저 — 동작 흐름",
+          "summary": "getConnection 이 같은 것을 돌려준다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "tx-manager-apply",
+          "title": "트랜잭션 매니저 적용",
+          "summary": "파라미터의 Connection 이 사라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "tx-template",
+          "title": "트랜잭션 템플릿",
+          "summary": "try-catch 가 사라진다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "tx-aop-intro",
+          "title": "트랜잭션 AOP 이해",
+          "summary": "프록시가 트랜잭션을 시작한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "tx-annotation",
+          "title": "@Transactional 적용",
+          "summary": "서비스에 JDBC 가 한 줄도 없다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "proxy-limit",
+          "title": "프록시의 한계",
+          "summary": "내부 호출은 트랜잭션이 안 걸린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.10",
+          "id": "boot-auto-config",
+          "title": "스프링 부트의 자동 등록",
+          "summary": "DataSource 와 매니저를 알아서 만든다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.11",
+          "id": "tx-spring-summary",
+          "title": "정리",
+          "summary": "네 문제가 각각 어디서 풀렸나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "자바 예외 이해",
+      "goal": "체크 예외가 왜 계층을 오염시키나.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "exception-hierarchy",
+          "title": "예외 계층",
+          "summary": "Throwable · Error · Exception.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "exception-rules",
+          "title": "예외 기본 규칙",
+          "summary": "잡거나 던지거나. 두 가지뿐.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "checked-exception",
+          "title": "체크 예외",
+          "summary": "컴파일러가 강제한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "unchecked-exception",
+          "title": "언체크 예외",
+          "summary": "안 잡아도 컴파일된다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "checked-problem",
+          "title": "체크 예외의 문제",
+          "summary": "throws 가 위로 번진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "unchecked-usage",
+          "title": "언체크 예외 활용",
+          "summary": "복구할 수 없으면 던지지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "exception-cause",
+          "title": "예외 포함과 스택 트레이스",
+          "summary": "원인을 안 넘기면 진짜 이유가 사라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "exception-summary",
+          "title": "정리",
+          "summary": "무엇을 체크로 하고 무엇을 언체크로 할까.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "스프링과 문제 해결 — 예외 처리, 반복",
+      "goal": "예외와 반복 코드를 데이터 계층 안에 가둔다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "checked-interface",
+          "title": "체크 예외와 인터페이스",
+          "summary": "인터페이스에 SQLException 이 새어 나온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "runtime-exception-apply",
+          "title": "런타임 예외 적용",
+          "summary": "던지고 잡지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "custom-data-exception",
+          "title": "데이터 접근 예외 직접 만들기",
+          "summary": "중복 키를 서비스가 알아야 할 때.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "spring-exception",
+          "title": "스프링 예외 추상화",
+          "summary": "DataAccessException 계층.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "exception-translator",
+          "title": "예외 추상화 적용",
+          "summary": "SQLExceptionTranslator 가 코드를 읽는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "jdbc-template",
+          "title": "JdbcTemplate — 반복 제거",
+          "summary": "2장의 네 반복이 사라진다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "db-exception-summary",
+          "title": "정리",
+          "summary": "리포지토리 밖으로 무엇이 나가나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "다음으로",
+      "goal": "1편이 만든 바닥과 그 위에 올라갈 것들.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "JPA · 스프링 DB 2편. 그리고 서가의 다음 책.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

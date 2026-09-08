@@ -1,0 +1,142 @@
+{
+ "book": "spring-db-1",
+ "id": "project-setup",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "프로젝트와 H2",
+ "summary": "데이터베이스를 처음 붙인다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "H2 를 서버 모드로 띄울 수 있다.",
+  "임베디드 모드와 무엇이 다른지 안다.",
+  "테이블을 만들고 확인할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**새 프로젝트로 시작한다.** 「MVC 2편」의 상품 관리를 이어 쓰지 않는다.\n\n**예제가 계좌이체**이기 때문이다. 트랜잭션을 설명하려면 **한 요청에 변경이 두 번** 있어야 하는데, 상품 등록은 한 번뿐이다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "의존성",
+   "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-jdbc'\n    runtimeOnly 'com.h2database:h2'\n\n    compileOnly 'org.projectlombok:lombok'\n    annotationProcessor 'org.projectlombok:lombok'\n\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}",
+   "note": "**`spring-boot-starter-web` 이 없다.** 이 책은 화면을 안 만든다 — **테스트 코드로 확인**한다.\n\n**`starter-jdbc`** 가 `DataSource` · `JdbcTemplate` · 트랜잭션 매니저를 들고 온다. 3장·5장·7장에서 쓸 것들이 여기 다 있다.\n\n**`runtimeOnly`** 인 것에 주의한다 — H2 드라이버는 **컴파일할 때 필요 없다.** 2.4절에서 왜 그런지 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 모드",
+   "ascii": "   embedded mode\n   -------------\n   jdbc:h2:~/test\n   app process  ->  h2 engine inside the same jvm\n        |\n        +--> only one process can open the file\n        +--> h2 console cannot connect at the same time\n\n   server mode\n   -----------\n   jdbc:h2:tcp://localhost/~/test\n   app process  ->  tcp  ->  h2 server  <-  tcp  <-  h2 console\n        |\n        +--> 여러 곳에서 붙을 수 있다\n\n   이 책은 서버 모드를 쓴다. 콘솔을 두 개 열 것이다",
+   "note": "**임베디드는 한 프로세스만** 붙을 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 서버 모드인가",
+   "md": "**트랜잭션은 혼자 보면 안 보인다.**\n\n```\n세션 A: 데이터를 바꾸고 커밋하지 않는다\n세션 B: 조회한다  ->  옛날 값이 보인다\n세션 A: 커밋한다\n세션 B: 조회한다  ->  바뀐 값이 보인다\n```\n\n**두 세션이 있어야 이것이 보인다.** 임베디드 모드는 **한 프로세스만** 파일을 열 수 있어서, 애플리케이션이 떠 있으면 **H2 콘솔이 못 붙는다.**\n\n**서버 모드로 띄우면** 애플리케이션과 콘솔이 동시에 붙는다.\n\n```bash\n# h2 를 서버로 실행\n./h2.sh          # mac/linux\nh2.bat           # windows\n```\n\n**웹 콘솔이 열리고**, 거기서 `jdbc:h2:tcp://localhost/~/test` 로 접속한다.\n\n> **처음 한 번은 `jdbc:h2:~/test` 로 접속**해야 파일이 만들어진다. 그다음부터 `tcp://` 를 쓴다. **이 순서를 안 지키면 연결이 안 된다.**"
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "테이블",
+   "code": "drop table member if exists cascade;\n\ncreate table member (\n    member_id varchar(10),\n    money integer not null default 0,\n    primary key (member_id)\n);\n\ninsert into member(member_id, money) values ('hi1', 10000);\ninsert into member(member_id, money) values ('hi2', 20000);",
+   "note": "**`member_id` 가 문자열**이다. 「MVC 2편」 7.1절에서 `id` 와 `loginId` 를 나누라고 했는데 **여기는 예제라 하나**다.\n\n**`money integer`** 다. 실무에서 돈을 `integer` 로 두면 안 된다 — **`decimal`** 이어야 한다. 부동소수점 오차와 자릿수 문제가 있다. **예제라 단순하게** 뒀다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "H2 는 개발용이다",
+   "md": "**운영에 쓰지 않는다.**\n\n| | |\n|---|---|\n| **가볍다** | 설치가 없고 빠르다 |\n| **표준에 가깝다** | 다른 DB 로 옮기기 쉽다 |\n| **그런데 다르다** | 락 동작·격리 수준·함수가 미묘하게 다르다 |\n\n**세 번째가 이 책에서 문제**가 될 수 있다. 4.8~4.10절의 **락 동작이 MySQL·PostgreSQL 과 완전히 같지는 않다.**\n\n**개념은 같고 세부가 다르다.** 이 책은 **개념을 보는 데** 쓴다.\n\n> **테스트에 H2 를 쓰고 운영은 다른 DB** 인 구성도 흔한데, **권하지 않는다.** 락이나 함수 차이 때문에 **테스트는 통과하고 운영에서 터지는** 일이 생긴다. **Testcontainers** 로 진짜 DB 를 띄우는 편이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "설정 파일",
+   "md": "```properties\n# application.properties\nspring.datasource.url=jdbc:h2:tcp://localhost/~/test\nspring.datasource.username=sa\nspring.datasource.password=\n\nlogging.level.hello.jdbc=debug\n```\n\n**3장까지는 이것도 안 쓴다.** 2장에서는 **상수로 하드코딩**한다.\n\n```java\npublic abstract class ConnectionConst {\n    public static final String URL = \"jdbc:h2:tcp://localhost/~/test\";\n    public static final String USERNAME = \"sa\";\n    public static final String PASSWORD = \"\";\n}\n```\n\n**왜 그렇게 하나** — 2장은 **스프링 없이** JDBC 만 본다. `application.properties` 는 스프링이 읽는 것이라, 그것부터 쓰면 **어디까지가 JDBC 이고 어디부터가 스프링인지** 흐려진다.\n\n**3.4절에서 `DataSource` 로 옮기고**, 5.10절에서 **부트가 자동으로 만들어 주는 것**을 본다.\n\n> **설정이 세 단계로 옮겨 간다** — 상수 → `DataSource` 빈 → 부트 자동 등록. **서가의 다른 책들에서 반복된 그 순서**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "첫 확인 — 연결이 되는가",
+   "sql": "@Slf4j\npublic class ConnectionTest {\n    @Test\n    void driverManager() throws SQLException {\n        Connection con1 = DriverManager.getConnection(URL, USERNAME, PASSWORD);\n        Connection con2 = DriverManager.getConnection(URL, USERNAME, PASSWORD);\n        log.info(\"connection={}, class={}\", con1, con1.getClass());\n        log.info(\"connection={}, class={}\", con2, con2.getClass());\n    }\n}\n\n# 로그\n#   connection=conn0: url=jdbc:h2:tcp://localhost/~/test user=SA,\n#     class=class org.h2.jdbc.JdbcConnection\n#   connection=conn1: url=jdbc:h2:tcp://localhost/~/test user=SA,\n#     class=class org.h2.jdbc.JdbcConnection\n\n# H2 콘솔에서\nselect * from member;\n\n# MEMBER_ID | MONEY\n# hi1       | 10000\n# hi2       | 20000",
+   "note": "**`conn0` 과 `conn1`** 이 이 책 내내 볼 이름이다. 1.1절에서 말한 그것 — **커넥션이 다르면 다른 세션**이다.\n\n**두 번 부르니 두 개가 만들어졌다.** 3장에서 커넥션 풀을 붙이면 **같은 것을 재사용**하게 된다.\n\n**클래스가 `org.h2.jdbc.JdbcConnection`** 이다. **H2 구현체**다 — 2.2절에서 이것이 `java.sql.Connection` 인터페이스의 구현이라는 것을 본다.\n\n**아래 콘솔 조회가 애플리케이션과 동시에** 됐다. **서버 모드라서** 가능한 것이고, 4장부터 이것이 필수가 된다."
+  }
+ ],
+ "recap": [
+  "**새 프로젝트로 시작**한다 — 예제가 계좌이체라서.",
+  "**웹 의존성이 없다** — 테스트 코드로 확인한다.",
+  "**H2 드라이버는 `runtimeOnly`** — 컴파일할 때 필요 없다.",
+  "**서버 모드로 띄운다** — 임베디드는 한 프로세스만 붙는다.",
+  "**두 세션이 있어야 트랜잭션이 보인다.**",
+  "**처음 한 번은 `jdbc:h2:~/test`** 로 접속해 파일을 만든다.",
+  "**돈을 `integer` 로 두면 안 된다** — 예제라 단순하게 뒀다.",
+  "**H2 는 개발용**이다. 락 동작이 다른 DB 와 미묘하게 다르다.",
+  "**설정이 세 단계로** 옮겨 간다 — 상수 → `DataSource` → 부트 자동.",
+  "**`conn0` · `conn1`** 이 이 책 내내 볼 이름이다."
+ ],
+ "drills": [
+  {
+   "task": "H2 를 서버 모드로 띄우고 콘솔에 접속한다.",
+   "done_when": "테이블을 만들고 조회했다.",
+   "minutes": 20
+  },
+  {
+   "task": "임베디드 URL 로 애플리케이션을 띄운 채 콘솔에 붙어 본다.",
+   "done_when": "안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`DriverManager.getConnection` 을 두 번 부른다.",
+   "done_when": "`conn0` 과 `conn1` 이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "애플리케이션이 뜬 채로 콘솔에서 조회한다.",
+   "done_when": "동시에 되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 서버 모드를 쓰나?",
+   "a": "트랜잭션은 두 세션이 있어야 보이는데 임베디드는 한 프로세스만 파일을 열 수 있다."
+  },
+  {
+   "q": "H2 드라이버가 왜 `runtimeOnly` 인가?",
+   "a": "컴파일할 때는 필요 없고 실행할 때 로딩되기 때문이다."
+  },
+  {
+   "q": "H2 를 운영에 안 쓰는 이유는?",
+   "a": "락 동작·격리 수준·함수가 다른 DB 와 미묘하게 달라 테스트는 통과하고 운영에서 터진다."
+  },
+  {
+   "q": "2장에서 왜 설정을 상수로 두나?",
+   "a": "스프링 없이 JDBC 만 보기 위해서다. `application.properties` 는 스프링이 읽는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임베디드 모드",
+   "en": "embedded mode",
+   "what": "H2 엔진이 애플리케이션과 같은 JVM 에서 도는 방식. 한 프로세스만 붙을 수 있다."
+  },
+  {
+   "term": "서버 모드",
+   "en": "server mode",
+   "what": "H2 를 별도 프로세스로 띄우고 TCP 로 접속하는 방식. 여러 곳에서 붙는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

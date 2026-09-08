@@ -1,0 +1,119 @@
+{
+ "book": "spring-db-1",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절이 커넥션과 트랜잭션 로그로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책이 무엇을 다루는지 안다.",
+  "로그에서 무엇을 봐야 하는지 안다.",
+  "서가의 앞 책들과 어떻게 이어지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 앞 네 권은 웹 계층이었다.** 요청을 받고 화면을 그리고 실패를 처리했다.\n\n**저장소는 `Map` 이었다.** 애플리케이션이 죽으면 데이터가 사라지고, 요청 둘이 동시에 오면 무슨 일이 생기는지 다루지 않았다.\n\n**이 책이 그 아래를 채운다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 이렇게 끝난다",
+   "ascii": "   get connection=conn0 class=class org.h2.jdbc.JdbcConnection\n   transaction start, autoCommit=false\n        |\n   update member set money=? where member_id=?\n   update member set money=? where member_id=?\n        |\n   transaction commit\n   resource close conn0\n\n   이 다섯 줄이 이 책의 확인 방법이다\n\n   conn0 이 같은가        같은 트랜잭션인가\n   autoCommit 이 false 인가  트랜잭션이 걸렸는가\n   commit 이 언제 나갔나     어디까지가 원자적인가",
+   "note": "**세 가지를 본다** — 커넥션 이름 · `autoCommit` · 커밋 시점."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 로그인가",
+   "md": "**트랜잭션은 눈에 안 보인다.**\n\n```java\nmemberRepository.update(fromId, fromMoney - money);\nmemberRepository.update(toId, toMoney + money);\n```\n\n**이 두 줄이 한 트랜잭션인지 아닌지 코드만 봐서 모른다.** `@Transactional` 이 붙어 있어도 **안 걸릴 수 있고**(5.9절), 없어도 **DB 가 각각 커밋**해 버린다(4.3절).\n\n**로그가 유일한 증거**다.\n\n| | 무엇을 알려 주나 |\n|---|---|\n| `conn0` · `conn1` | **같은 커넥션인가** — 다르면 다른 트랜잭션이다 |\n| `autoCommit=false` | **트랜잭션이 시작됐는가** |\n| `commit` · `rollback` | **어디까지가 원자적인가** |\n\n**서가의 다른 책들과 같은 방식**이다. 「스프링 MVC」 두 권이 **실제로 오간 HTTP** 로 끝났고, 「JPA 기본편」이 **실제로 나가는 SQL** 로 끝났다.\n\n**여기는 SQL 에 커넥션과 트랜잭션 상태를 더한 것**이다. SQL 만 봐서는 안 보이는 것이 있다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "로그 설정",
+   "code": "# application.properties\nlogging.level.hello.jdbc=debug\n\n# 트랜잭션 매니저가 하는 일을 본다 (5장부터)\nlogging.level.org.springframework.jdbc.datasource=debug\nlogging.level.org.springframework.transaction=debug\n\n# H2 가 받은 SQL 을 본다\nspring.datasource.url=jdbc:h2:tcp://localhost/~/test;TRACE_LEVEL_SYSTEM_OUT=2",
+   "note": "**세 번째가 중요**하다. 애플리케이션이 보낸 것이 아니라 **DB 가 받은 것**을 본다.\n\n**둘이 다를 수 있다** — 커넥션 풀이 중간에 있고(3장), 트랜잭션 매니저가 `SET AUTOCOMMIT` 같은 것을 몰래 보낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "두 문제를 다룬다",
+   "md": "**트랜잭션**(4·5장)과 **예외**(6·7장)다.\n\n**왜 이 둘인가** — **데이터 계층에서만 생기는 문제**라서다.\n\n| | 웹 계층 | 데이터 계층 |\n|---|---|---|\n| 실패하면 | 응답을 다시 보내면 된다 | **이미 쓴 것을 되돌려야** 한다 |\n| 예외가 | 사용자에게 보여 주면 끝 | **위 계층으로 번진다** |\n\n**첫째 줄이 트랜잭션**이다. 화면은 잘못 그려도 새로고침하면 되는데, **돈이 반만 옮겨지면 되돌릴 방법이 없다.**\n\n**둘째 줄이 예외**다. `SQLException` 은 **체크 예외**라 `throws` 를 선언해야 하고, 그것이 **서비스와 컨트롤러까지 올라간다.** 서비스가 JDBC 를 모르는데 JDBC 예외를 아는 상황이 된다.\n\n> 「스프링 MVC 2편」 10장이 **웹 계층의 예외**였다. 거기는 **잡아서 응답으로** 바꾸는 이야기였고, 여기는 **애초에 새어 나오지 않게** 하는 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 책의 순서",
+   "md": "**손으로 만들고 걷어내는 순서**를 지킨다.\n\n```\n2장  JDBC 를 손으로 쓴다              반복이 보인다\n3장  커넥션 풀을 붙인다               DataSource 로 갈린다\n4장  트랜잭션을 손으로 건다            커넥션을 파라미터로 넘기게 된다\n5장  스프링이 그것을 걷어낸다          @Transactional 하나로\n6장  자바 예외를 다시 본다             체크 예외가 왜 문제인가\n7장  스프링이 그것도 걷어낸다          JdbcTemplate 하나로\n```\n\n**4장이 제일 지저분해진다.** 서비스 메서드마다 `Connection` 파라미터가 붙고 `try-catch-finally` 가 스무 줄이 된다.\n\n**일부러 그렇게 만든다.** 5장에서 그것이 사라지는 것을 봐야 **`@Transactional` 이 무엇을 하는지** 알 수 있다.\n\n**서가의 다른 책들과 같은 방식**이다 — 「MVC 2편」 5장의 V1~V5, 7장의 쿠키에서 세션으로."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책의 첫 로그와 마지막 로그",
+   "sql": "# 2 장 - JDBC 만 있을 때\nget connection=conn0\nsave - insert into member(member_id, money) values(?,?)\nresource close conn0\nget connection=conn1\nfindById - select * from member where member_id = ?\nresource close conn1\n\n# 커넥션이 매번 다르다. 트랜잭션이 없다\n\n# 7 장 - 다 끝난 뒤\nCreating new transaction with name [hello.jdbc.service.MemberService.accountTransfer]\nAcquired Connection [conn0] for JDBC transaction\nSwitching JDBC Connection [conn0] to manual commit\n  update member set money=? where member_id=?\n  update member set money=? where member_id=?\nInitiating transaction commit\nCommitting JDBC transaction on Connection [conn0]\nReleasing JDBC Connection [conn0] after transaction\n\n# 커넥션이 하나다. 수동 커밋이다. 커밋이 한 번 나갔다",
+   "note": "**위아래를 비교하는 것이 이 책의 전부**다.\n\n위에서는 **`conn0` 과 `conn1` 이 다르다.** 저장과 조회가 서로 다른 세션에서 일어났고, **한쪽이 실패해도 다른 쪽은 남는다.**\n\n아래에서는 **`conn0` 하나**다. `manual commit` 으로 바뀌었고, 두 `update` 뒤에 **커밋이 한 번** 나갔다. **둘 다 되거나 둘 다 안 되거나**다.\n\n**그리고 아래 로그를 만든 자바 코드에는 `Connection` 이라는 글자가 없다.** 서비스 메서드에 `@Transactional` 한 줄이 있을 뿐이다."
+  }
+ ],
+ "recap": [
+  "**앞 네 권은 웹 계층**이었고 저장소가 `Map` 이었다.",
+  "**매 절이 SQL 과 커넥션·트랜잭션 로그**로 끝난다.",
+  "**트랜잭션은 코드만 봐서 안 보인다** — 로그가 유일한 증거다.",
+  "세 가지를 본다 — **커넥션 이름 · `autoCommit` · 커밋 시점**.",
+  "**DB 가 받은 SQL** 을 보는 설정도 켠다.",
+  "두 문제 — **트랜잭션(4·5장)과 예외(6·7장)**.",
+  "**데이터 계층에서만 생기는 문제**라서 이 둘이다.",
+  "**손으로 만들고 걷어내는 순서**를 지킨다.",
+  "**4장이 제일 지저분해진다** — 일부러 그렇게 만든다."
+ ],
+ "drills": [
+  {
+   "task": "로그 설정을 켜고 아무 쿼리나 한 번 날려 본다.",
+   "done_when": "커넥션 이름이 로그에 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`TRACE_LEVEL_SYSTEM_OUT=2` 를 켠다.",
+   "done_when": "H2 쪽 로그가 따로 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서가의 「MVC 2편」 13.1절을 읽는다.",
+   "done_when": "남은 숙제 셋이 무엇이었는지 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 로그로 확인하나?",
+   "a": "트랜잭션이 걸렸는지 코드만 봐서는 알 수 없기 때문이다. 커넥션 이름·`autoCommit`·커밋 시점이 증거다."
+  },
+  {
+   "q": "커넥션 이름이 다르면?",
+   "a": "다른 세션이고 다른 트랜잭션이다. 한쪽이 실패해도 다른 쪽은 남는다."
+  },
+  {
+   "q": "이 책이 다루는 두 문제는?",
+   "a": "트랜잭션과 예외다. 둘 다 데이터 계층에서만 생기는 문제다."
+  },
+  {
+   "q": "4장이 왜 지저분해지나?",
+   "a": "일부러다. 5장에서 그것이 사라지는 것을 봐야 `@Transactional` 이 무엇을 하는지 알 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "autoCommit",
+   "en": "",
+   "what": "각 SQL 실행 직후 자동으로 커밋할지 여부. 기본이 `true` 라 트랜잭션이 안 걸린다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
