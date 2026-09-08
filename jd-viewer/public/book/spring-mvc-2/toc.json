@@ -302,7 +302,7 @@
           "title": "메시지 · 국제화 소개",
           "summary": "1편 8장의 화면에 '상품명' 이 몇 번 있나.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -310,7 +310,7 @@
           "title": "스프링 메시지 소스",
           "summary": "MessageSource. 앞 책 4.6절에서 이름만 본 그것.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -318,7 +318,7 @@
           "title": "웹 애플리케이션에 적용",
           "summary": "#{...} 와 파라미터. 그리고 없는 키를 쓰면.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -326,7 +326,7 @@
           "title": "국제화",
           "summary": "파일을 언어별로. Accept-Language 가 여기서 쓰인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",

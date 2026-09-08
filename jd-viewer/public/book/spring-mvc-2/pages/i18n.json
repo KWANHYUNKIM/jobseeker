@@ -1,0 +1,143 @@
+{
+ "book": "spring-mvc-2",
+ "id": "i18n",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "국제화",
+ "summary": "파일을 언어별로. Accept-Language 가 여기서 쓰인다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "언어별 파일 이름 규칙을 안다.",
+  "`Accept-Language` 헤더가 어떻게 쓰이는지 안다.",
+  "찾는 순서와 폴백을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.1절에서 이렇게 적었다.\n\n> **메시지를 먼저 하면 국제화는 파일을 더 두는 것**으로 끝난다.\n\n**정말 그것으로 끝난다.** 화면은 하나도 안 고친다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "파일 셋",
+   "code": "# messages.properties (기본)\nlabel.item.itemName=상품명\nbutton.save=저장\n\n# messages_en.properties\nlabel.item.itemName=Item Name\nbutton.save=Save\n\n# messages_ko.properties\nlabel.item.itemName=상품명\nbutton.save=저장",
+   "note": "**이름 뒤에 `_언어코드`** 를 붙인다. `messages_en_US.properties` 처럼 나라까지 붙일 수도 있다.\n\n**기본 파일(`messages.properties`)이 폴백**이다 — 맞는 언어가 없으면 여기서 찾는다."
+  },
+  {
+   "type": "figure",
+   "caption": "헤더와 파일이 어떻게 이어지나",
+   "ascii": "   Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n                       |      |        |         |\n                       |      |        |         +--> 4th\n                       |      |        +------------> 3rd\n                       |      +---------------------> 2nd\n                       +----------------------------> 1st, q=1.0\n\n   messages_ko_KR.properties       most specific\n   messages_ko.properties\n   messages.properties            fallback\n\n   좁은 것부터 찾아 내려온다",
+   "note": "**`q` 는 선호도**다. 클수록 먼저 시도한다. 값이 없으면 1.0."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1편에서 이름만 본 헤더",
+   "md": "1편 2.4절에서 HTTP 헤더를 훑을 때 이런 줄이 있었다.\n\n> **`Accept-Language`** — 클라이언트가 선호하는 언어. 서버가 이것을 보고 응답 언어를 정할 수 있다.\n\n**\"정할 수 있다\" 로 넘어간 것**이 여기다.\n\n**브라우저가 알아서 보낸다.** 사용자의 OS·브라우저 언어 설정에서 온다. 개발자가 할 일은 없다.\n\n```\nAccept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n```\n\n**콘텐츠 협상(content negotiation)** 의 한 갈래다. 1편 7.14절에서 `Accept` 헤더로 JSON 과 XML 이 갈리는 것을 봤는데, **같은 구조가 언어에도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "찾는 순서",
+   "md": "`Locale` 이 `ko_KR` 일 때 **좁은 것부터** 찾는다.\n\n```\n1. messages_ko_KR.properties\n2. messages_ko.properties\n3. messages.properties          <- 폴백\n```\n\n**키 단위로 내려온다.** 파일 단위가 아니다.\n\n```\nmessages_ko.properties  에 label.item 만 있고\nmessages.properties     에 label.item, button.save 가 있으면\n\nlabel.item   ->  messages_ko 에서\nbutton.save  ->  messages 에서\n```\n\n**번역이 덜 된 키는 자동으로 기본 언어**가 나온다. 번역을 나눠서 할 수 있다는 뜻이다.\n\n> **기본 파일을 어느 언어로 쓸지**가 판단이다. 한국어 서비스면 한국어로 두는 것이 자연스럽고, 그러면 `messages_ko.properties` 는 없어도 된다. 다만 **나중에 다국어가 커지면** 기본을 영어로 두고 `_ko` 를 따로 두는 편이 정리된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "번역이 길이를 바꾼다",
+   "md": "**국제화의 진짜 어려움은 파일이 아니다.**\n\n```\n저장           ->  Save        짧아진다\n상품 등록      ->  Register a new item   길어진다\n삭제          ->  Löschen     독일어는 더 길다\n```\n\n**버튼이 깨진다.** 고정 너비로 만든 자리가 특히.\n\n그리고 **어순이 다르다.**\n\n```\nhello.name=안녕 {0}\nhello.name=Hello {0}\n\n# 어순이 바뀌는 경우\nmsg.count={0}건의 {1}\nmsg.count={1} of {0} items\n```\n\n**`{0}` `{1}` 이 위치 기반이라 순서를 바꿔 쓸 수 있는 것**이 이래서다. 문장을 조각내서 이어 붙이면(`\"총 \" + n + \"건\"`) 어순을 못 바꾼다.\n\n> **문장을 쪼개지 않고 통째로 키 하나**에 둔다. 그게 국제화의 첫 규칙이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /message/items/add HTTP/1.1\nAccept-Language: ko-KR,ko;q=0.9,en;q=0.8\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h2>상품 등록 폼</h2>\n<label for=\"itemName\">상품명</label>\n<button type=\"submit\">상품 등록</button>\n\n# 브라우저 언어를 영어로 바꾸면\nGET /message/items/add HTTP/1.1\nAccept-Language: en-US,en;q=0.9\n\nHTTP/1.1 200 \n\n<h2>Item Register Form</h2>\n<label for=\"itemName\">Item Name</label>\n<button type=\"submit\">Register Item</button>\n\n# 지원하지 않는 언어\nAccept-Language: fr-FR,fr;q=0.9\n\nHTTP/1.1 200 \n<label for=\"itemName\">상품명</label>      <- messages.properties 로 폴백",
+   "note": "**같은 URL 인데 응답이 다르다.** 요청에서 다른 것은 `Accept-Language` 한 줄뿐이다.\n\n1편 7.14절의 콘텐츠 협상과 **같은 구조**다 — 거기서는 `Accept` 로 JSON/XML 이 갈렸고, 여기서는 `Accept-Language` 로 언어가 갈린다. **URL 은 자원을 가리키고 표현은 헤더가 정한다.**\n\n마지막 프랑스어 요청이 **폴백**이다. `messages_fr` 이 없으니 기본 파일에서 찾았고, **500 이 아니라 한국어가 나왔다.**\n\n> **캐시에 주의한다.** 같은 URL 이 다른 응답을 내므로 중간 캐시가 섞을 수 있다. `Vary: Accept-Language` 를 붙여야 하는데, 4.5절의 쿠키 방식으로 가면 이 문제가 또 달라진다."
+  }
+ ],
+ "recap": [
+  "**파일 이름 뒤에 `_언어코드`** 를 붙인다. `messages_en.properties`.",
+  "**화면은 하나도 안 고친다** — 메시지를 미리 빼 둔 덕이다.",
+  "**`Accept-Language`** 를 브라우저가 알아서 보낸다. `q` 는 선호도.",
+  "1편 2.4절에서 이름만 봤고 **7.14절 콘텐츠 협상과 같은 구조**다.",
+  "**좁은 것부터** 찾는다 — `_ko_KR` → `_ko` → 기본.",
+  "**키 단위로 내려온다** — 번역이 덜 된 키는 기본 언어가 나온다.",
+  "지원 안 하는 언어는 **폴백**이다. 500 이 아니다.",
+  "**번역이 길이와 어순을 바꾼다** — 진짜 어려움은 여기다.",
+  "**문장을 쪼개지 않고 통째로 키 하나**에 둔다."
+ ],
+ "drills": [
+  {
+   "task": "`messages_en.properties` 를 만든다.",
+   "done_when": "화면 수정 없이 파일만 추가했다.",
+   "minutes": 15
+  },
+  {
+   "task": "브라우저 언어를 영어로 바꾸고 다시 연다.",
+   "done_when": "영어로 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "개발자 도구에서 `Accept-Language` 헤더를 본다.",
+   "done_when": "`q` 값이 붙은 목록을 읽었다.",
+   "minutes": 10
+  },
+  {
+   "task": "영어 파일에서 키 하나를 지운다.",
+   "done_when": "그 키만 기본 언어로 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "지원하지 않는 언어로 요청한다.",
+   "done_when": "폴백되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "국제화를 위해 화면을 얼마나 고치나?",
+   "a": "안 고친다. 언어별 `.properties` 파일만 추가하면 된다."
+  },
+  {
+   "q": "`Accept-Language` 는 누가 보내나?",
+   "a": "브라우저가 OS·브라우저 언어 설정을 보고 자동으로 보낸다."
+  },
+  {
+   "q": "찾는 순서는?",
+   "a": "`messages_ko_KR` → `messages_ko` → `messages` 순으로 좁은 것부터다."
+  },
+  {
+   "q": "번역이 덜 된 키는?",
+   "a": "키 단위로 폴백해서 기본 파일의 값이 나온다."
+  },
+  {
+   "q": "국제화의 진짜 어려움은?",
+   "a": "번역이 길이와 어순을 바꾸는 것이다. 문장을 쪼개지 말고 통째로 키 하나에 둬야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Accept-Language",
+   "en": "",
+   "what": "클라이언트가 선호하는 언어를 알리는 HTTP 요청 헤더. `q` 로 선호도를 매긴다."
+  },
+  {
+   "term": "폴백",
+   "en": "fallback",
+   "what": "요청한 언어의 키가 없을 때 기본 파일에서 찾는 것. 키 단위로 일어난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Internationalization using MessageSource",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

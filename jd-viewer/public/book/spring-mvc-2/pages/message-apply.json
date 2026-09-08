@@ -1,0 +1,162 @@
+{
+ "book": "spring-mvc-2",
+ "id": "message-apply",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "웹 애플리케이션에 적용",
+ "summary": "#{...} 와 파라미터. 그리고 없는 키를 쓰면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`#{...}` 로 메시지를 꺼낼 수 있다.",
+  "메시지 표현식에 파라미터를 넘길 수 있다.",
+  "타임리프의 다섯 표현식을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "표현식이 다섯이다",
+   "ascii": "   ${...}   variable       모델에서 찾는다\n   *{...}   selection      th:object 아래에서 찾는다\n   @{...}   link           URL 을 만든다\n   ~{...}   fragment       조각을 가리킨다\n   #{...}   message        메시지 소스에서 찾는다\n\n   기호 다섯 개가 다 나왔다",
+   "note": "**`#{...}` 이 마지막 하나**다. 2장부터 하나씩 나왔고 여기서 다 모였다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "#{} 과 ${#...} 은 다르다",
+   "md": "**헷갈리기 쉬운 짝**이다.\n\n```html\n#{label.item}          메시지 표현식\n${#numbers.format(x)}  유틸리티 객체 (2.5절)\n${#fields.hasErrors()} 검증 (5장)\n```\n\n**`#` 이 밖에 있으면 메시지, 안에 있으면 객체**다.\n\n| | 무엇 |\n|---|---|\n| `#{...}` | 메시지 소스에서 키로 찾는다 |\n| `${#...}` | 타임리프가 제공하는 객체를 부른다 |\n\n두 기능이 우연히 같은 글자를 쓴 것이고 **관계가 없다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "적용 전후",
+   "left": {
+    "title": "1편 8장",
+    "lang": "html",
+    "code": "<h2>상품 등록 폼</h2>\n\n<label for=\"itemName\">상품명</label>\n<label for=\"price\">가격</label>\n\n<button type=\"submit\">상품 등록</button>\n<button type=\"button\">취소</button>",
+    "md": "**글자가 박혀 있다.**"
+   },
+   "right": {
+    "title": "지금",
+    "lang": "html",
+    "good": true,
+    "code": "<h2 th:text=\"#{page.addItem}\">상품 등록 폼</h2>\n\n<label for=\"itemName\"\n       th:text=\"#{label.item.itemName}\">상품명</label>\n<label for=\"price\" th:text=\"#{label.item.price}\">가격</label>\n\n<button type=\"submit\" th:text=\"#{button.save}\">상품 등록</button>\n<button type=\"button\" th:text=\"#{button.cancel}\">취소</button>",
+    "md": "**원래 글자가 남아 있다** — 내추럴 템플릿(2.1절). 정적으로 열면 여전히 읽힌다."
+   },
+   "note": "**`th:text` 뒤의 글자를 지우지 않는 것**이 이 장에서도 중요하다. 지우면 템플릿 파일이 무슨 화면인지 알아볼 수 없게 된다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "파라미터",
+   "code": "<!-- hello.name=안녕 {0} -->\n<p th:text=\"#{hello.name(${item.itemName})}\">안녕 이름</p>\n\n<!-- 여러 개 -->\n<p th:text=\"#{hello.full(${user.last}, ${user.first}, ${count})}\"></p>",
+   "note": "**괄호 안에 순서대로** 넣는다. 2.6절의 `@{}` 파라미터와 표기가 닮았다.\n\n**4.2절의 작은따옴표 함정이 여기도 적용**된다 — 파라미터가 있는 메시지에서 `'{0}'` 은 치환되지 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "없는 키를 쓰면 500 이다",
+   "md": "4.2절에서 본 그대로다.\n\n```html\n<label th:text=\"#{label.item.nmae}\">상품명</label>\n```\n\n```\nNoSuchMessageException: No message found under code 'label.item.nmae'\nfor locale 'ko_KR'\n```\n\n**화면 전체가 500** 이다. 라벨 하나 때문에 페이지가 안 뜬다.\n\n**이 책은 그것을 그대로 둔다.** 3.2절에서 `th:field` 오타가 500 인 것을 두고 이렇게 적었다.\n\n> **폼 전체가 조용히 고장나는 것보다 빨리 터지는 편이 낫다.**\n\n같은 판단이다. **라벨이 빈칸으로 나가는 것**보다 개발 중에 터지는 편이 낫다.\n\n**다만 자리를 가린다.** 4.2절의 표대로 **선택적인 문구에는 기본 메시지**를 준다.\n\n```html\n<p th:text=\"${#messages.msgOrNull('notice.today')} ?: ''\"></p>\n```\n\n**`#messages`** 가 타임리프의 메시지 유틸리티다. `msgOrNull` 은 없으면 `null` 을 준다 — 2.8절의 Elvis 와 붙여 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "th:text 말고 쓸 자리",
+   "md": "메시지는 **본문에만** 필요한 게 아니다.\n\n```html\n<!-- 속성에 -->\n<input th:placeholder=\"#{label.item.itemName}\">\n<img th:alt=\"#{image.logo.alt}\">\n<a th:title=\"#{link.help.title}\">\n\n<!-- 리터럴 대체 안에 (2.7절) -->\n<h2 th:text=\"|#{page.item} - ${item.itemName}|\"></h2>\n\n<!-- 자바스크립트 인라인 안에 (2.14절) -->\n<script th:inline=\"javascript\">\n    var msg = [[#{message.confirm.delete}]];\n</script>\n```\n\n**마지막이 중요하다.** 자바스크립트의 확인 문구도 메시지로 뺄 수 있다. 안 그러면 국제화할 때 스크립트만 남는다.\n\n**`placeholder` 와 `alt` 를 빠뜨리기 쉽다** — 화면을 훑으면 안 보인다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /message/items/add HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h2>상품 등록 폼</h2>\n<label for=\"itemName\">상품명</label>\n<label for=\"price\">가격</label>\n<label for=\"quantity\">수량</label>\n<button type=\"submit\">상품 등록</button>\n<button type=\"button\">취소</button>\n\n# 4.1 절의 응답과 한 글자도 다르지 않다\n\n# messages.properties 에서 한 줄만 고치면\n#   label.item.itemName=제품명\n\nHTTP/1.1 200 \n<label for=\"itemName\">제품명</label>\n\n# 네 화면 전부 바뀐다 (addForm, editForm, item, items)\n\n# 키를 틀리면\nHTTP/1.1 500 \n#   NoSuchMessageException: No message found under code 'label.item.nmae'",
+   "note": "**첫 응답이 4.1절과 한 글자도 다르지 않은 것**이 이 장의 성격이다. 사용자에게는 아무것도 안 바뀌었다.\n\n바뀐 것은 **한 줄 고치면 네 화면이 따라온다**는 것이다. 그전에는 네 파일을 고쳐야 했고 빠뜨렸다.\n\n**리팩터링이란 이런 것**이다 — 밖에서 보이는 동작은 같고 고치는 비용만 달라진다."
+  }
+ ],
+ "recap": [
+  "**`#{...}` 이 메시지 표현식**이다. 타임리프 표현식 다섯 중 마지막.",
+  "**`#{...}` 과 `${#...}` 은 관계가 없다** — 밖이면 메시지, 안이면 객체.",
+  "**파라미터는 괄호 안에 순서대로** — `#{hello.name(${x})}`.",
+  "**`th:text` 뒤의 원래 글자를 지우지 않는다** — 내추럴 템플릿.",
+  "없는 키는 **500**. 이 책은 그대로 둔다 — 빨리 터지는 편이 낫다.",
+  "선택적인 문구는 **`#messages.msgOrNull`** + Elvis.",
+  "**`placeholder` · `alt` · `title`** 도 메시지로 뺀다. 빠뜨리기 쉽다.",
+  "**자바스크립트 인라인 안에서도** 쓴다 — 안 그러면 스크립트만 안 바뀐다.",
+  "**응답은 한 글자도 안 바뀌고 고치는 비용만 바뀐다.**"
+ ],
+ "drills": [
+  {
+   "task": "1편 8장의 네 템플릿에 `#{...}` 를 적용한다.",
+   "done_when": "응답이 이전과 같은 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`messages.properties` 에서 한 줄만 고친다.",
+   "done_when": "네 화면이 다 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "키를 일부러 틀린다.",
+   "done_when": "500 이 나는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`placeholder` 에도 메시지를 넣는다.",
+   "done_when": "속성에서도 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "파라미터가 있는 메시지를 화면에서 쓴다.",
+   "done_when": "`{0}` 이 치환되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타임리프의 표현식 다섯은?",
+   "a": "`${}` 변수, `*{}` 선택, `@{}` 링크, `~{}` 조각, `#{}` 메시지다."
+  },
+  {
+   "q": "`#{...}` 과 `${#...}` 의 차이는?",
+   "a": "`#` 이 밖에 있으면 메시지 표현식이고 안에 있으면 타임리프 유틸리티 객체다. 서로 관계가 없다."
+  },
+  {
+   "q": "메시지에 파라미터를 어떻게 넘기나?",
+   "a": "`#{키(값1, 값2)}` 처럼 괄호 안에 순서대로 넣는다."
+  },
+  {
+   "q": "없는 키를 쓰면?",
+   "a": "`NoSuchMessageException` 으로 화면 전체가 500 이 된다."
+  },
+  {
+   "q": "메시지로 빼기 쉬운 걸 빠뜨리는 자리는?",
+   "a": "`placeholder`·`alt`·`title` 같은 속성과 자바스크립트 안의 문구다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메시지 표현식",
+   "en": "message expression",
+   "what": "`#{...}`. 메시지 소스에서 키로 문구를 찾는다."
+  },
+  {
+   "term": "#messages",
+   "en": "",
+   "what": "타임리프의 메시지 유틸리티 객체. `msgOrNull` 로 없을 때 null 을 받을 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf + Spring",
+   "url": "https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "Spring Framework — Internationalization using MessageSource",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
