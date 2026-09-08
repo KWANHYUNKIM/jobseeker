@@ -587,7 +587,7 @@
           "title": "정리",
           "summary": "쿠키 · 세션 · 토큰. 요즘은 무엇을 쓰나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -602,7 +602,7 @@
           "title": "서블릿 필터 소개",
           "summary": "DispatcherServlet 앞이다. 스프링을 모른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",

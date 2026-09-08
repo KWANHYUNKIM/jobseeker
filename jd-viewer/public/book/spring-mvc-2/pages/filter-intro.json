@@ -1,0 +1,153 @@
+{
+ "book": "spring-mvc-2",
+ "id": "filter-intro",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "서블릿 필터 소개",
+ "summary": "DispatcherServlet 앞이다. 스프링을 모른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "필터가 어느 위치에 있는지 안다.",
+  "`chain.doFilter` 가 무엇을 하는지 안다.",
+  "공통 관심사를 왜 밖으로 빼는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.9절이 남긴 문제 — **컨트롤러마다 로그인 검사를 넣어야 한다.**\n\n**여러 곳에 흩어지는 같은 코드**를 **공통 관심사(cross-cutting concern)** 라고 한다. 인증·로그·트랜잭션이 대표적이다.\n\n**한곳으로 모으는 자리**가 필터와 인터셉터다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디에 있나",
+   "ascii": "   client\n     |\n     v\n   WAS\n     |\n     v\n   filter 1  ->  filter 2  ->  filter 3\n     |\n     v\n   DispatcherServlet\n     |\n     v\n   interceptor  (chapter 8.4)\n     |\n     v\n   controller\n\n   필터는 스프링 밖이다. 서블릿이 부른다",
+   "note": "**필터는 `DispatcherServlet` 앞**이다. 1편 6.2절의 그 서블릿."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스프링 밖이라는 것",
+   "md": "**필터는 서블릿 스펙**이다. 스프링이 없어도 있다.\n\n1편 3.1절에서 서블릿 컨테이너를 설명할 때 이렇게 적었다.\n\n> **WAS 가 서블릿을 관리**한다. 스프링 MVC 도 결국 **`DispatcherServlet` 이라는 서블릿 하나**다.\n\n**필터는 그 서블릿에 닿기 전**에 끼어든다.\n\n**그래서 두 가지가 따라온다.**\n\n| | |\n|---|---|\n| **더 넓게 잡는다** | 정적 리소스·에러 페이지까지 |\n| **스프링 것을 모른다** | 어느 컨트롤러로 갈지 알 수 없다 |\n\n**두 번째가 8.4절에서 인터셉터가 나오는 이유**다.\n\n> **넓게 잡는 것이 장점이자 단점**이다. 인증은 넓을수록 좋고, 로그는 어느 컨트롤러인지 알아야 쓸모가 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface Filter {\n\n    default void init(FilterConfig filterConfig) throws ServletException {}\n\n    void doFilter(ServletRequest request, ServletResponse response,\n                  FilterChain chain) throws IOException, ServletException;\n\n    default void destroy() {}\n}",
+   "note": "**`doFilter` 만 필수**다. `init` 과 `destroy` 는 기본 구현이 있다.\n\n**`ServletRequest` 다** — `HttpServletRequest` 가 아니다. 필터는 HTTP 말고 다른 프로토콜도 상정한 인터페이스라서, **HTTP 를 쓰려면 캐스팅**해야 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "가장 단순한 필터",
+   "code": "public class LogFilter implements Filter {\n\n    @Override\n    public void doFilter(ServletRequest request, ServletResponse response,\n                         FilterChain chain) throws IOException, ServletException {\n\n        System.out.println(\"before\");\n\n        chain.doFilter(request, response);   // 다음으로 넘긴다\n\n        System.out.println(\"after\");\n    }\n}",
+   "note": "**`chain.doFilter` 앞뒤로 코드가 나뉜다.** 앞은 요청 전, 뒤는 응답 후다.\n\n**한 메서드가 두 시점**을 다룬다 — 8.4절의 인터셉터는 메서드가 나뉘어 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "chain.doFilter 를 안 부르면 끝난다",
+   "md": "**이것이 필터의 핵심 동작**이다.\n\n```java\npublic void doFilter(...) {\n    if (인증되지_않았으면) {\n        response.sendRedirect(\"/login\");\n        return;                       // chain.doFilter 를 안 부른다\n    }\n    chain.doFilter(request, response);\n}\n```\n\n**다음으로 안 넘기면 요청이 거기서 끝난다.** 서블릿도 컨트롤러도 안 불린다.\n\n**8.3절의 인증 체크가 이것으로** 만들어진다.\n\n**반대로 실수로 안 부르면** — **화면이 백지**로 나온다. 오류도 안 난다. 로그 필터를 만들 때 **가장 흔한 실수**다.\n\n> **재귀 호출처럼 생겼는데 다르다.** `chain.doFilter` 는 **다음 필터** 를 부르고, 마지막 필터가 부르면 **서블릿**이 불린다. 스택이 쌓였다가 역순으로 풀린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "등록",
+   "code": "@Configuration\npublic class WebConfig {\n\n    @Bean\n    public FilterRegistrationBean logFilter() {\n        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();\n        registration.setFilter(new LogFilter());\n        registration.setOrder(1);\n        registration.addUrlPatterns(\"/*\");\n        return registration;\n    }\n}",
+   "note": "**`setOrder` 로 순서**를 정한다. 숫자가 작을수록 먼저다.\n\n**`addUrlPatterns(\"/*\")`** 가 전부다. 필터 단계에서는 **URL 패턴이 유일한 선별 수단**이다.\n\n**`@Component` 로 등록할 수도** 있는데, 그러면 `/*` 에 순서 없이 붙는다. **`FilterRegistrationBean` 이 명시적**이라 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이미 필터가 여럿 돌고 있다",
+   "md": "**직접 만들지 않아도** 스프링 부트가 여러 필터를 등록해 뒀다.\n\n| | 하는 일 |\n|---|---|\n| `CharacterEncodingFilter` | 요청 인코딩 (1편 3.4절의 그 문제) |\n| `FormContentFilter` | PUT·DELETE 의 폼 데이터 처리 |\n| `RequestContextFilter` | `RequestContextHolder` 채우기 |\n| `HiddenHttpMethodFilter` | `_method` 로 메서드 위장 |\n\n**1편 3.4절에서 한글이 깨지던 것**을 `request.setCharacterEncoding` 으로 고쳤는데, **부트에서는 이 필터가 이미 하고 있다.**\n\n**스프링 시큐리티도 통째로 필터**다. `DelegatingFilterProxy` 하나가 등록되고 그 안에서 십여 개의 시큐리티 필터가 돈다.\n\n> **필터 체인이 실제로 어떻게 생겼는지** 보려면 `logging.level.org.springframework.web.filter=debug` 를 켠다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /items HTTP/1.1\n\n# 서버 로그\n#   before\n#   (컨트롤러 실행)\n#   after\n\nHTTP/1.1 200 \n<h2>상품 목록</h2>\n\n# 정적 리소스에도 걸린다\nGET /css/bootstrap.min.css HTTP/1.1\n\n# 서버 로그\n#   before\n#   after\n\nHTTP/1.1 200 \nContent-Type: text/css\n\n# chain.doFilter 를 안 부르면\nGET /items HTTP/1.1\n\nHTTP/1.1 200 \nContent-Length: 0\n\n# 빈 응답. 오류도 안 난다",
+   "note": "**둘째가 필터의 범위**를 보여 준다. CSS 파일 요청에도 필터가 걸렸다 — **`DispatcherServlet` 을 안 타는 요청**인데도 그렇다. 8.4절의 인터셉터는 여기 안 걸린다.\n\n**셋째가 이 절의 함정**이다. `chain.doFilter` 를 빠뜨리니 **200 인데 본문이 비었다.** 예외도 로그도 없다 — **요청이 조용히 사라진 것**이다.\n\n브라우저는 백지를 보여 준다. **무엇이 잘못됐는지 응답만 봐서는 알 수 없는** 종류의 오류다."
+  }
+ ],
+ "recap": [
+  "**공통 관심사**를 한곳으로 모으는 자리다.",
+  "**필터는 `DispatcherServlet` 앞**, 서블릿 스펙이다.",
+  "**더 넓게 잡고**(정적 리소스까지) **스프링 것을 모른다**.",
+  "**`ServletRequest` 라 HTTP 를 쓰려면 캐스팅**한다.",
+  "**`chain.doFilter` 앞뒤**로 요청 전·응답 후가 나뉜다.",
+  "**안 부르면 요청이 거기서 끝난다** — 인증 체크의 원리.",
+  "**실수로 안 부르면 백지**다. 오류도 안 난다.",
+  "**`setOrder` 로 순서**, **URL 패턴이 유일한 선별 수단**이다.",
+  "**부트가 이미 여러 필터**를 등록해 뒀다 — 인코딩·`_method` 등.",
+  "**스프링 시큐리티도 통째로 필터**다."
+ ],
+ "drills": [
+  {
+   "task": "로그를 찍는 필터를 만들고 등록한다.",
+   "done_when": "before/after 가 찍히는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "CSS 파일을 요청해 본다.",
+   "done_when": "필터가 걸리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`chain.doFilter` 를 주석 처리한다.",
+   "done_when": "빈 응답이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필터를 둘 만들고 `setOrder` 를 바꿔 본다.",
+   "done_when": "실행 순서가 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`logging.level...filter=debug` 를 켠다.",
+   "done_when": "이미 등록된 필터들을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "필터는 어디에 있나?",
+   "a": "`DispatcherServlet` 앞이다. 서블릿 스펙이라 스프링이 없어도 존재한다."
+  },
+  {
+   "q": "인터셉터보다 넓게 잡는다는 것은?",
+   "a": "정적 리소스처럼 `DispatcherServlet` 을 타지 않는 요청에도 걸린다는 뜻이다."
+  },
+  {
+   "q": "`chain.doFilter` 를 안 부르면?",
+   "a": "요청이 거기서 끝난다. 서블릿도 컨트롤러도 안 불리고 빈 응답이 나간다."
+  },
+  {
+   "q": "필터에서 URL 을 어떻게 선별하나?",
+   "a": "`addUrlPatterns` 의 URL 패턴뿐이다. 어느 컨트롤러인지는 알 수 없다."
+  },
+  {
+   "q": "이미 돌고 있는 필터의 예는?",
+   "a": "`CharacterEncodingFilter`, `HiddenHttpMethodFilter` 등이다. 스프링 시큐리티도 통째로 필터다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "공통 관심사",
+   "en": "cross-cutting concern",
+   "what": "여러 곳에 흩어져 반복되는 부가 기능. 인증·로그·트랜잭션 등."
+  },
+  {
+   "term": "필터 체인",
+   "en": "FilterChain",
+   "what": "필터들이 순서대로 이어진 구조. `doFilter` 로 다음으로 넘긴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
