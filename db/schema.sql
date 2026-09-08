@@ -594,12 +594,73 @@ SELECT co.id AS company_id, co.slug, co.display_name,
 -- CONCURRENTLY 갱신에는 UNIQUE 인덱스가 필수다.
 CREATE UNIQUE INDEX mv_company_stack_pk ON mv_company_stack (company_id, tech_id);
 
--- 기술별 일자 스냅샷. 지금은 trends_reports/*.md 파일로 쌓이는 것.
+-- 기술별 일자 스냅샷. `ingest_crawl.record_tech_daily` 가 job_state 에서 센다.
+-- 아래 trend_day/trend_metric 과 세는 모집단이 다르다 — 이쪽은 키워드를 가리지 않는
+-- DB 전체이고, 저쪽은 크롤 키워드('개발자')별이다. 분모가 다르니 섞으면 안 된다.
 CREATE TABLE tech_daily (
     day      date    NOT NULL,
     tech_id  bigint  NOT NULL REFERENCES tech(id) ON DELETE CASCADE,
     n_active integer NOT NULL,
     PRIMARY KEY (day, tech_id)
 );
+
+-- ════════════════════════════════════════════════════════════════════
+-- 13. 원장 — 파일로 쌓이던 시계열
+-- ════════════════════════════════════════════════════════════════════
+-- 여기 둘은 "지난 일"이라 다시 계산할 수 없다. 공고 집계는 언제든 job 을 다시
+-- 훑으면 되지만, 3개월 전 그날 무엇이 몇 건이었는지는 그때 세어 둔 것 말고는
+-- 복원할 방법이 없다. 그래서 파일(trends_history.jsonl / job_history.jsonl)로
+-- 쌓고 있었고, 그 파일이 사라지면 시계열도 사라진다. DB 로 옮긴다.
+
+-- ── 일자별 트렌드 스냅샷 (trends_history.jsonl) ───────────────────
+-- 축이 넷이다: 기술 / 개념 키워드 / 경력 밴드 / 직군. 축마다 표를 만들면 넷이
+-- 같은 모양으로 네 번 반복되므로 axis 한 컬럼으로 합친다. role 은 그 축을 직군별로
+-- 쪼갠 것이고(''=전체), 그래서 (axis='tech', role='백엔드') 는 "백엔드 공고 안에서
+-- 그 기술이 몇 건" 이 된다.
+CREATE TYPE trend_axis AS ENUM ('tech', 'concept', 'band', 'role');
+
+-- 그날의 분모. 크롤 키워드마다 훑은 범위가 달라('개발자' 673건 vs '통합' 5,349건)
+-- 비중의 분모가 달라진다. 한 시계열에 섞으면 안 되므로 keyword 가 PK 에 들어간다.
+CREATE TABLE trend_day (
+    day     date        NOT NULL,
+    keyword text        NOT NULL,
+    total   integer     NOT NULL,
+    at      timestamptz,
+    PRIMARY KEY (day, keyword)
+);
+
+CREATE TABLE trend_metric (
+    day     date       NOT NULL,
+    keyword text       NOT NULL,
+    axis    trend_axis NOT NULL,
+    role    text       NOT NULL DEFAULT '',   -- '' = 전체, 아니면 직군별 분해
+    name    text       NOT NULL,
+    n       integer    NOT NULL,
+    PRIMARY KEY (day, keyword, axis, role, name),
+    FOREIGN KEY (day, keyword) REFERENCES trend_day(day, keyword) ON DELETE CASCADE
+);
+-- 한 기술의 시계열을 뽑는 질의가 기본이다.
+CREATE INDEX trend_metric_series_idx ON trend_metric (keyword, axis, role, name, day);
+
+-- ── 공고 판본 이력 (job_history.jsonl) ────────────────────────────
+-- 같은 자리가 마감됐다 다시 올라올 때 URL 이 재발급되므로 (회사,제목) 정규화 키로
+-- 묶는다. 그래서 job(id) 를 참조하지 않는다 — 참조하면 판본마다 다른 공고가 된다.
+--
+-- **UNIQUE (job_key, hash) 가 이 표의 핵심이다.** 빌더는 "그 자리의 모든 기록과
+-- 비교해 같은 해시가 있으면 넣지 않는다"는 규칙을 파이썬으로 지키고 있었다.
+-- 직전 판만 보던 시절 A→B→A 를 오가는 20개 자리가 실행마다 파일을 늘렸다.
+-- 제약으로 옮기면 빌더가 잊어도 DB 가 거절한다.
+--
+-- id 순서가 곧 판본 순서다(versions[-1] = 최신). 그래서 identity 를 쓴다.
+CREATE TABLE job_version (
+    id      bigint      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    job_key text        NOT NULL,          -- '회사\t제목' 정규화 키
+    hash    text        NOT NULL,          -- 내용 해시 16자
+    seen    text        NOT NULL,          -- 'bootstrap' 또는 YYYY-MM-DD
+    data    jsonb       NOT NULL,          -- snapshot() 이 남기는 최소 형태
+    at      timestamptz NOT NULL DEFAULT now(),
+    UNIQUE (job_key, hash)
+);
+CREATE INDEX job_version_key_idx ON job_version (job_key, id);
 
 COMMIT;

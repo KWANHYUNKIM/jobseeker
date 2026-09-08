@@ -141,9 +141,11 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | `overrides.json` | `job_override` | `site:pid` 키 → 필드 단위 |
 | `closed_<label>.json` | 없음 — `job_state` 가 계산 | 아카이브가 따로 필요 없다 |
 | `health/history.jsonl` | `crawl_run` + `crawl_run_site` | |
-| `reposts.json` | `job_event` | |
+| `reposts.json` | `job_version` 에서 빌드 | `build_reposts.py` |
 | `company_stacks.json` (15MB) | `mv_company_stack` | `REFRESH ... CONCURRENTLY` |
-| `trends.json`, `trends_reports/*.md` | `tech_daily` | |
+| `trends_history.jsonl` | `trend_day`, `trend_metric` | ✅ 이관됨 — 다시 계산 못 하는 시계열 |
+| `job_history.jsonl` | `job_version` | ✅ 이관됨 — `UNIQUE (job_key, hash)` 가 중복 판본을 막는다 |
+| `trends.json`, `trends_reports/*.md` | `trend_day`/`trend_metric` 에서 빌드 | `build_trends.py` |
 | `similar_jobs.json`, `similar_posts.json` | `job_similar`, `post_similar` | |
 | `tech_relations.json` | `job_tech` 조인 질의 | 미리 굳힐 이유가 없다 |
 | `semantic.db` | `job_embedding`, `post_embedding` | 위 표 참조 |
@@ -207,6 +209,7 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 
 | 블로그 글 적재 | `catch_capture/store/ingest_posts.py` | ✅ 1,063건 (회사 연결 282) |
 | 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 |
+| 파일 원장 이관 | `catch_capture/store/ledgers.py` | ✅ 트렌드 54일·22,304행 · 판본 30,431 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).

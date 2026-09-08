@@ -3,7 +3,8 @@
 
 입력: jd-viewer/public/all_jobs_enriched.json      (모집중 + 마감, status 포함)
       catch_capture/screenshots/closed_<label>.json (누적 마감 아카이브)
-저장: catch_capture/job_history.jsonl               (append-only 버전 기록)
+저장: 정본 DB 의 job_version                        (append-only 판본 기록)
+      DB 가 없으면 catch_capture/job_history.jsonl 로 물러선다
 출력: jd-viewer/public/reposts.json
 
 **무엇을 푸는가.** 같은 회사가 같은 자리를 마감했다가 다시 올린다. 채용 사이트는 그때
@@ -17,9 +18,14 @@
 
 **히스토리.** 아카이브는 (회사,제목) 으로 중복 제거를 하므로 같은 자리가 세 번
 올라와도 한 줄만 남는다. 즉 아카이브만으로는 '이전 버전'이 하나뿐이다. 그래서 여기서
-job_history.jsonl 에 버전을 append 한다. 내용 해시가 직전 기록과 다를 때만 한 줄
-쌓으므로, 사이클마다 돌려도 변화가 없으면 파일이 자라지 않는다. 회차가 쌓일수록
-"이 자리는 네 번째 재공고이고 매번 경력 요구가 내려갔다" 같은 것이 보이게 된다.
+판본을 append 한다. 내용 해시가 기존 기록과 다를 때만 한 판이 쌓이므로, 사이클마다
+돌려도 변화가 없으면 원장이 자라지 않는다. 회차가 쌓일수록 "이 자리는 네 번째
+재공고이고 매번 경력 요구가 내려갔다" 같은 것이 보이게 된다.
+
+**원장은 DB 다.** 이 이력은 다시 계산할 수 없다 — 지난 판은 그때 남겨 둔 것 말고는
+복원할 방법이 없는데, 머신마다 따로 노는 파일에 얹혀 있었다(로컬 30,431줄 / 운영
+44,718줄). `job_version` 의 UNIQUE (job_key, hash) 가 "같은 판을 두 번 쌓지 않는다"는
+규칙을 제약으로 들고 있어, 아래 `remember()` 가 잊어도 DB 가 거절한다.
 """
 from __future__ import annotations
 
@@ -31,6 +37,7 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT / "catch_capture"))
 ENRICHED = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 ARCHIVE_GLOB = "closed_*.json"
 ARCHIVE_DIR = ROOT / "catch_capture" / "screenshots"
@@ -91,7 +98,25 @@ def diff(old: dict, new: dict, live: dict | None = None) -> list[dict]:
     return changes
 
 
-def load_history() -> dict[str, list[dict]]:
+def load_history() -> tuple[dict[str, list[dict]], bool]:
+    """(자리별 판본, DB 를 쓰는가). DB 가 답하면 파일은 아예 열지 않는다."""
+    try:
+        from store.ledgers import load_job_versions
+        hist = load_job_versions()
+        if hist:
+            return hist, True
+        # 비어 있는 것과 못 읽는 것은 다르다. 여기까지 왔으면 DB 는 살아 있고
+        # 원장만 아직 안 옮겨진 것이다 — 파일에서 읽고 쓰기는 DB 에 한다.
+        print("  [history] DB 원장이 비어 있습니다 — 파일로 읽고 DB 로 씁니다"
+              " (python -m store.ledgers seed --history 로 옮기세요)")
+    except Exception as e:
+        print(f"  [history] DB 원장을 못 읽어 파일로 물러섭니다: {e}")
+        return _load_history_file(), False
+
+    return _load_history_file(), True
+
+
+def _load_history_file() -> dict[str, list[dict]]:
     hist: dict[str, list[dict]] = {}
     if not HISTORY.exists():
         return hist
@@ -164,9 +189,10 @@ def main() -> None:
         except (json.JSONDecodeError, OSError):
             continue
 
-    hist = load_history()
+    hist, use_db = load_history()
     appended = 0
     lines: list[str] = []
+    fresh: list[dict] = []
 
     def remember(k: tuple[str, str], j: dict, status: str, seen: str,
                  bootstrap: bool = False) -> None:
@@ -189,6 +215,7 @@ def main() -> None:
             return
         rec = {"key": ks, "hash": h, "seen": seen, "data": snapshot(j, status)}
         hist.setdefault(ks, []).append(rec)
+        fresh.append(rec)
         lines.append(json.dumps(rec, ensure_ascii=False))
         appended += 1
 
@@ -208,9 +235,13 @@ def main() -> None:
     for k, j in best.items():
         remember(k, j, j.get("status") or "active", today)
 
-    if lines:
-        with HISTORY.open("a", encoding="utf-8") as fh:
-            fh.write("\n".join(lines) + "\n")
+    if fresh:
+        if use_db:
+            from store.ledgers import append_job_versions
+            append_job_versions(fresh)
+        else:
+            with HISTORY.open("a", encoding="utf-8") as fh:
+                fh.write("\n".join(lines) + "\n")
 
     # ── 재공고 판정 ────────────────────────────────────────────────
     # 마감된 판이 있고, 그 뒤에 다시 모집중인 판이 있는 자리.
@@ -282,7 +313,9 @@ def main() -> None:
         },
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
-    print(f"[reposts] 히스토리 +{appended:,}줄 (누적 {doc['history_versions']:,}판 / 자리 {len(hist):,})")
+    where = "DB(job_version)" if use_db else "파일(job_history.jsonl)"
+    print(f"[reposts] 판본 +{appended:,} → {where} "
+          f"(누적 {doc['history_versions']:,}판 / 자리 {len(hist):,})")
     print(f"[reposts] 재공고 {len(reposts):,}건 → {OUT} ({OUT.stat().st_size:,} bytes)")
     if field_counts:
         top = ", ".join(f"{k} {v}" for k, v in sorted(field_counts.items(), key=lambda kv: -kv[1])[:6])

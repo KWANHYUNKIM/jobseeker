@@ -10,3 +10,5 @@ openai==0.28.1
 feedparser==6.0.10
 newspaper3k==0.2.8
 sqlite-vec==0.1.9
+# 정본 DB(PostgreSQL). store/ 전체와 refresh-data.sh 의 백필·export 가 이걸 쓴다.
+psycopg[binary]==3.3.5

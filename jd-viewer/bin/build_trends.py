@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """개발 트렌드 시계열 빌더.
 
-입력: catch_capture/trends_history.jsonl  (pipeline.trends 가 하루 한 줄씩 적재)
+입력: 정본 DB 의 trend_day / trend_metric  (pipeline.trends 가 사이클마다 적재)
+      DB 가 없으면 catch_capture/trends_history.jsonl 로 물러선다
 출력: jd-viewer/public/trends.json
 
 **왜 스냅샷 폴더를 읽지 않는가.**
@@ -18,17 +19,24 @@ append 해 왔고, 이 파일은 prune 대상이 아니다. 같은 크롤에서 
 덤으로 히스토리에는 뷰어가 한 번도 못 봤던 축이 들어 있다: 경력 밴드, 직군, 개념
 키워드(협업·클라우드·대용량 같은 비-기술 요구). 스키마를 확장해 함께 내보낸다.
 
+**왜 DB 인가.** 이 시계열은 다시 계산할 수 없다 — 3개월 전 그날 무엇이 몇 건이었는지는
+그때 세어 둔 것 말고는 복원할 길이 없다. 그런 것이 머신마다 따로 노는 파일에 얹혀
+있었다(로컬 54줄 / 운영 23줄 — 두 서버가 서로 다른 과거를 들고 있었다). 원장을 DB 로
+옮기고 이 빌더는 거기서 읽는다. 집계 로직은 한 줄도 바뀌지 않았다.
+
 핵심 원칙은 그대로다: 크롤 커버리지가 늘면 절대 건수도 늘기 때문에 트렌드는 '비중(%)'
 으로 봐야 한다. 건수와 일별 총계를 함께 저장하고, 비중과 급상승/급하락은 여기서 계산한다.
 """
 from __future__ import annotations
 
 import json
+import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT / "catch_capture"))
 HISTORY = ROOT / "catch_capture" / "trends_history.jsonl"
 OUT = ROOT / "jd-viewer" / "public" / "trends.json"
 
@@ -57,20 +65,35 @@ def _pairs(v) -> dict[str, int]:
     return {}
 
 
-def _load_days() -> tuple[list[dict], str, list[str]]:
-    """(일별 레코드, 채택한 keyword, 제외 사유 메모)."""
-    if not HISTORY.exists():
-        raise SystemExit(f"[trends] 히스토리가 없습니다: {HISTORY}")
+def _rows_from_db() -> list[dict]:
+    """정본 DB 의 원장. 못 읽으면 빈 리스트 — 호출부가 파일로 물러선다.
 
-    rows = []
-    for line in HISTORY.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            rows.append(json.loads(line))
-        except json.JSONDecodeError:
-            continue
+    DB 가 꺼져 있다고 사이클을 죽이지 않는다. 다른 빌더들과 같은 태도다.
+    """
+    try:
+        from store.ledgers import load_trend_days
+        return load_trend_days()
+    except Exception as e:
+        print(f"  [trends] DB 원장을 못 읽어 파일로 물러섭니다: {e}")
+        return []
+
+
+def _load_days() -> tuple[list[dict], str, list[str], str]:
+    """(일별 레코드, 채택한 keyword, 제외 사유 메모, 출처)."""
+    rows, source = _rows_from_db(), "trend_day/trend_metric"
+    if not rows:
+        if not HISTORY.exists():
+            raise SystemExit(f"[trends] 원장이 DB 에도 파일에도 없습니다: {HISTORY}")
+        source = "trends_history.jsonl"
+        rows = []
+        for line in HISTORY.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
 
     # keyword 별로 크롤 범위가 다르다('개발자' 673건 vs '통합' 5349건). 비중의 분모가
     # 달라지므로 한 시계열에 섞으면 안 된다 — 줄 수가 가장 많은 keyword 하나만 쓴다.
@@ -88,7 +111,7 @@ def _load_days() -> tuple[list[dict], str, list[str]]:
             by_date[d] = r
 
     days = [by_date[d] for d in sorted(by_date)]
-    return days, keyword, dropped
+    return days, keyword, dropped, source
 
 
 def _pct(count: int, total: int) -> float:
@@ -115,7 +138,7 @@ def _window_pct(days_out: list[dict], tech: str, lo: int, hi: int) -> tuple[floa
 
 
 def main() -> None:
-    days, keyword, dropped = _load_days()
+    days, keyword, dropped, source = _load_days()
     if not days:
         raise SystemExit("[trends] 유효한 일자가 없습니다.")
 
@@ -204,7 +227,7 @@ def main() -> None:
 
     doc = {
         "generated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "source": "trends_history.jsonl",
+        "source": source,
         "keyword": keyword,
         "span": {"from": days_out[0]["date"], "to": days_out[-1]["date"], "days": n},
         "mover_window_days": w,
@@ -219,7 +242,7 @@ def main() -> None:
     OUT.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
 
     print(f"[trends] {n}일({days_out[0]['date']}~{days_out[-1]['date']}) · "
-          f"keyword={keyword} · 추적 {len(tracked)}개 기술 → {OUT}")
+          f"keyword={keyword} · 추적 {len(tracked)}개 기술 · 원장={source} → {OUT}")
     if dropped:
         print(f"  (다른 keyword 제외: {', '.join(dropped)} — 크롤 범위가 달라 분모가 맞지 않음)")
     print(f"  최신일 공고 {days_out[-1]['total']:,}건 · 비교창 {w}일 · "
