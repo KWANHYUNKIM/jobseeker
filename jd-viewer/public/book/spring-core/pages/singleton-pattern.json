@@ -1,0 +1,246 @@
+{
+ "book": "spring-core",
+ "id": "singleton-pattern",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "싱글톤 패턴",
+ "summary": "직접 구현해 보고, 그 패턴이 가진 문제 여섯 가지를 센다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "싱글톤 패턴을 직접 구현할 수 있다.",
+  "`private` 생성자가 왜 필수인지 안다.",
+  "이 패턴의 문제 여섯 가지를 셀 수 있다.",
+  "그중 어느 것이 3장에서 우리가 이미 해결한 문제인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "요구는 하나다 — **객체를 하나만 만들고 공유한다.**\n\n이것을 구현하려면 두 가지가 필요하다.\n\n1. **하나만 만든다** — 미리 하나 만들어 두고 그것만 준다\n2. **다른 방법으로는 못 만든다** — 밖에서 `new` 를 막는다\n\n2번이 없으면 1번이 소용없다. 아무나 `new` 할 수 있으면 '하나' 라는 보장이 깨진다."
+  },
+  {
+   "type": "figure",
+   "caption": "가장 단순한 싱글톤",
+   "ascii": "   ┌──────────────────────────────────────────┐\n   │  SingletonService                        │\n   │                                          │\n   │  - private static final instance  <-- 1  │\n   │  + public static getInstance()    <-- 2  │\n   │  - private SingletonService()     <-- 3  │\n   └──────────────────────────────────────────┘\n\n     1 : class 가 로딩될 때 딱 한 번 만든다\n     2 : 꺼내는 유일한 통로\n     3 : 밖에서 new 를 못 하게 막는다",
+   "note": "**세 줄이 전부다.** 이보다 정교한 구현들(지연 초기화·이중 검사 잠금·enum)이 있는데, 아래에서 짧게 다룬다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SingletonService.java",
+   "code": "public class SingletonService {\n\n    // 1. static 영역에 객체를 딱 1개만 생성해 둔다\n    private static final SingletonService instance = new SingletonService();\n\n    // 2. 객체가 필요하면 이 메서드로만 조회하도록 허용한다\n    public static SingletonService getInstance() {\n        return instance;\n    }\n\n    // 3. 생성자를 private 으로 막아 밖에서 new 를 못 하게 한다\n    private SingletonService() {\n    }\n\n    public void logic() {\n        System.out.println(\"싱글톤 객체 로직 호출\");\n    }\n}",
+   "note": "`static final` 은 **클래스가 로딩될 때 한 번만** 실행된다. JVM 이 보장하는 것이라 별도의 잠금이 필요 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "private 생성자가 핵심이다",
+   "md": "```java\nSingletonService s = new SingletonService();\n//                  ^^^ 컴파일 에러\n```\n\n생성자가 `private` 이면 **클래스 밖에서는 컴파일 자체가 안 된다.** '실수로 두 개 만드는 일' 이 원천적으로 불가능해진다.\n\n2.7절의 `static HashMap` 은 이것과 정반대였다. **동작은 하는데 왜 되는지 보장이 없었다.** 그래서 3.4절에서 걷어냈다. 싱글톤 패턴은 **컴파일러가 보장하게** 만든 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "확인",
+   "code": "@Test\n@DisplayName(\"싱글톤 패턴을 적용한 객체 사용\")\nvoid singletonServiceTest() {\n    SingletonService singletonService1 = SingletonService.getInstance();\n    SingletonService singletonService2 = SingletonService.getInstance();\n\n    System.out.println(\"singletonService1 = \" + singletonService1);\n    System.out.println(\"singletonService2 = \" + singletonService2);\n\n    assertThat(singletonService1).isSameAs(singletonService2);\n}",
+   "note": "이번에는 `isSameAs` 다 — 5.1절의 `isNotSameAs` 와 짝이다."
+  },
+  {
+   "type": "heading",
+   "text": "다른 구현 방법들"
+  },
+  {
+   "type": "table",
+   "caption": "싱글톤 구현은 여러 가지다",
+   "note": "면접에서 종종 나오는 질문이다. **결론은 위 방식이나 enum 을 쓴다** — 나머지는 미묘하게 틀리기 쉽다.",
+   "columns": [
+    "방법",
+    "특징"
+   ],
+   "rows": [
+    [
+     "**정적 초기화** (위 코드)",
+     "가장 단순하고 안전하다. 클래스 로딩 시 생성 — 안 쓰는 객체도 만들어진다"
+    ],
+    [
+     "**지연 초기화** (`if (instance == null)`)",
+     "필요할 때 만든다. **멀티스레드에서 깨진다** — 두 스레드가 동시에 null 을 볼 수 있다"
+    ],
+    [
+     "**이중 검사 잠금** (DCL)",
+     "지연 + 스레드 안전. `volatile` 을 빠뜨리면 미묘하게 깨진다"
+    ],
+    [
+     "**`enum`**",
+     "직렬화·리플렉션 공격까지 막힌다. Effective Java 가 권하는 방법"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지연 초기화가 왜 깨지나",
+   "md": "```java\npublic static SingletonService getInstance() {\n    if (instance == null) {              // 스레드 A 와 B 가 동시에 여기\n        instance = new SingletonService();  // 둘 다 new 한다\n    }\n    return instance;\n}\n```\n\n**두 스레드가 동시에 `null` 을 볼 수 있다.** 그러면 객체가 두 개 만들어지고, 나중에 온 것이 앞의 것을 덮어쓴다. 이미 앞의 것을 받아 간 코드는 다른 객체를 들고 있다.\n\n웹 애플리케이션이 딱 이 조건이다(5.1절의 '동시 요청'). **동시성 버그는 테스트로 잘 안 잡힌다** — 평소에는 잘 되다가 부하가 걸리면 터진다.\n\n5.4절에서 같은 종류의 사고를 재현해 본다."
+  },
+  {
+   "type": "heading",
+   "text": "문제 여섯 가지"
+  },
+  {
+   "type": "table",
+   "caption": "싱글톤 패턴이 안티패턴이라고도 불리는 이유",
+   "note": "**2번이 근본 원인**이고 나머지는 그 결과이거나 부수적인 것이다. 1.4절에서 DIP 위반이 OCP 위반을 부른 것과 같은 구조다.",
+   "columns": [
+    "#",
+    "문제",
+    "설명"
+   ],
+   "rows": [
+    [
+     "1",
+     "**구현 코드가 길다**",
+     "위 세 줄은 매 클래스마다 반복된다. 지연 초기화까지 하면 더 길다"
+    ],
+    [
+     "2",
+     "**DIP 를 위반한다**",
+     "`SingletonService.getInstance()` — 클라이언트가 **구체 클래스**를 부른다"
+    ],
+    [
+     "3",
+     "**OCP 를 위반할 가능성이 크다**",
+     "2번의 결과다. 구현을 바꾸려면 부르는 쪽을 전부 고쳐야 한다"
+    ],
+    [
+     "4",
+     "**테스트하기 어렵다**",
+     "가짜 객체로 바꿔 끼울 수 없다. 상태가 테스트 사이에 남는다"
+    ],
+    [
+     "5",
+     "**내부 속성을 바꾸거나 초기화하기 어렵다**",
+     "생성자가 `private` 이라 인자를 줄 수 없다"
+    ],
+    [
+     "6",
+     "**자식 클래스를 만들기 어렵다**",
+     "`private` 생성자는 상속할 수 없다"
+    ]
+   ]
+  },
+  {
+   "type": "compare",
+   "caption": "2번이 왜 심각한가",
+   "left": {
+    "title": "싱글톤 패턴",
+    "lang": "java",
+    "bad": true,
+    "code": "public class OrderServiceImpl {\n\n    private final MemberRepository memberRepository =\n        MemoryMemberRepository.getInstance();\n    //  ^^^^^^^^^^^^^^^^^^^^^^ 구체 클래스\n}",
+    "md": "3.2절의 `new MemoryMemberRepository()` 와 **정확히 같은 문제**다. `new` 가 `getInstance()` 로 바뀌었을 뿐이다. **import 에 구현 클래스가 있다**(3.7절의 기준)."
+   },
+   "right": {
+    "title": "DI",
+    "lang": "java",
+    "code": "public class OrderServiceImpl {\n\n    private final MemberRepository memberRepository;\n\n    public OrderServiceImpl(\n            MemberRepository memberRepository) {\n        this.memberRepository = memberRepository;\n    }\n}",
+    "md": "**밖에서 넣어 준다.** 그것이 싱글톤이든 아니든 이 클래스는 모른다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여기서 3장이 다시 쓰인다",
+   "md": "문제 2·3·4·5·6 은 전부 **\"클라이언트가 객체를 직접 가져온다\"** 에서 나온다.\n\n그런데 우리는 3장에서 이미 그것을 없앴다. `OrderServiceImpl` 은 저장소를 **가져오지 않고 받는다.**\n\n그러니 이렇게 정리된다.\n\n> **싱글톤은 필요하다. 그런데 싱글톤 패턴은 필요 없다.**\n\n객체를 하나만 만드는 것은 **컨테이너가 하면 된다.** 클라이언트는 여전히 생성자로 받기만 한다. 그러면 여섯 문제 중 **여섯 개가 다 사라진다.**\n\n그것이 5.3절의 **싱글톤 컨테이너**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 같은 객체다. 그런데",
+   "sql": "singletonService1 = hello.core.singleton.SingletonService@6d1e7682\nsingletonService2 = hello.core.singleton.SingletonService@6d1e7682\n#                                                          ^^^^^^^^ 같다\n싱글톤 객체 로직 호출\n\nSingletonTest > 싱글톤 패턴을 적용한 객체 사용 PASSED\n\n# 밖에서 new 를 시도하면\njava: SingletonService() has private access in hello.core.singleton.SingletonService\n\nBUILD SUCCESSFUL\n1 test completed",
+   "note": "**목적은 달성했다.** 객체가 하나이고, 밖에서 만들 수도 없다 — 그것도 **컴파일 단계에서** 막힌다.\n\n대가로 여섯 가지를 잃었다. 5.3절에서 **하나도 잃지 않고 같은 것을 얻는 방법**을 본다."
+  }
+ ],
+ "recap": [
+  "싱글톤 패턴 = **미리 하나 만들어 두기 + `private` 생성자로 밖의 `new` 막기.**",
+  "`static final` 은 클래스 로딩 시 한 번 실행된다 — JVM 이 보장한다.",
+  "**지연 초기화는 멀티스레드에서 깨진다.** 웹이 정확히 그 조건이다.",
+  "문제 여섯 — 코드 길이 · **DIP 위반** · OCP 위반 · 테스트 곤란 · 초기화 곤란 · 상속 불가.",
+  "**2번(DIP)이 근본**이고 나머지는 결과다. `getInstance()` 는 `new` 와 같은 문제다.",
+  "**싱글톤은 필요하다. 싱글톤 패턴은 필요 없다** — 컨테이너가 대신하면 된다(5.3절)."
+ ],
+ "drills": [
+  {
+   "task": "`SingletonService` 를 직접 짜고 `isSameAs` 로 확인한다.",
+   "done_when": "두 주소가 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "밖에서 `new SingletonService()` 를 시도한다.",
+   "done_when": "컴파일 에러 메시지를 눈으로 봤다 — `has private access`.",
+   "minutes": 5
+  },
+  {
+   "task": "지연 초기화 버전을 짜고, 왜 멀티스레드에서 위험한지 코드에 주석으로 적는다.",
+   "done_when": "두 스레드가 동시에 null 을 볼 수 있는 지점을 지목했다.",
+   "minutes": 15
+  },
+  {
+   "task": "여섯 가지 문제 중 3장에서 이미 해결한 것이 무엇인지 표시한다.",
+   "done_when": "2·3·4가 '클라이언트가 직접 가져온다' 에서 나온다는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "싱글톤 패턴의 두 요소는?",
+   "a": "① `static` 영역에 객체를 하나 만들어 두고 `getInstance()` 로만 꺼내게 한다. ② 생성자를 `private` 으로 막아 밖에서 `new` 를 못 하게 한다."
+  },
+  {
+   "q": "생성자를 `private` 으로 하는 이유는?",
+   "a": "밖에서 `new` 로 두 번째 객체를 만드는 것을 컴파일 단계에서 막기 위해서다. 이것이 없으면 '하나' 라는 보장이 깨진다."
+  },
+  {
+   "q": "지연 초기화(`if (instance == null)`) 방식의 문제는?",
+   "a": "두 스레드가 동시에 `null` 을 볼 수 있어 객체가 둘 만들어질 수 있다. 웹처럼 동시 요청이 있는 환경에서 위험하다."
+  },
+  {
+   "q": "싱글톤 패턴의 가장 근본적인 문제는?",
+   "a": "DIP 위반이다. 클라이언트가 `구체클래스.getInstance()` 를 직접 부르므로 구현에 의존하게 되고, 그래서 OCP 위반과 테스트 곤란이 따라온다."
+  },
+  {
+   "q": "`getInstance()` 와 `new` 의 공통점은?",
+   "a": "둘 다 클라이언트가 구체 클래스를 직접 지목한다. 3.2절에서 `new` 를 문제 삼은 이유가 그대로 적용된다."
+  },
+  {
+   "q": "'싱글톤은 필요하지만 싱글톤 패턴은 필요 없다' 는 무슨 뜻인가?",
+   "a": "객체를 하나만 유지하는 것은 필요하지만, 그 일을 클래스 자신이 하지 않고 컨테이너가 하면 여섯 가지 문제가 전부 사라진다는 뜻이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "싱글톤 패턴",
+   "en": "singleton pattern",
+   "what": "클래스가 스스로 인스턴스를 하나만 유지하도록 만드는 디자인 패턴. `private` 생성자와 정적 조회 메서드로 구현한다."
+  },
+  {
+   "term": "이중 검사 잠금",
+   "en": "double-checked locking",
+   "what": "지연 초기화를 스레드 안전하게 만드는 기법. `volatile` 을 빠뜨리면 미묘하게 깨져서 직접 구현을 권하지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Bean Scopes",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Joshua Bloch — Effective Java, Item 3: Enforce the singleton property",
+   "url": "https://www.oreilly.com/library/view/effective-java/9780134686097/",
+   "publisher": "Addison-Wesley"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

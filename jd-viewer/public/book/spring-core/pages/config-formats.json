@@ -1,0 +1,224 @@
+{
+ "book": "spring-core",
+ "id": "config-formats",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "다양한 설정 형식 지원 — 자바 코드, XML",
+ "summary": "설정 형식이 달라도 컨테이너는 같다. 그 사이에 무엇이 있나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "같은 설정을 자바와 XML 두 형식으로 쓸 수 있다.",
+  "형식이 달라도 컨테이너 인터페이스가 같은 이유를 안다.",
+  "요즘 XML 을 안 쓰는 이유와, 그래도 알아 둘 값을 구분한다.",
+  "4.8절의 질문 — '그 사이에 무엇이 있나' — 을 스스로 던질 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "4.1절에서 `ApplicationContext` 가 **인터페이스**이고 구현체가 여럿이라고 했다. 그 그림을 실제로 돌려 보는 절이다.\n\n지금까지 쓴 것은 `AnnotationConfigApplicationContext` — 자바 코드 설정을 읽는 구현체다. 이번에는 **똑같은 설정을 XML 로 쓰고** `GenericXmlApplicationContext` 로 읽는다."
+  },
+  {
+   "type": "heading",
+   "text": "같은 설정, 두 형식"
+  },
+  {
+   "type": "compare",
+   "caption": "AppConfig 를 XML 로 옮기면",
+   "left": {
+    "title": "자바 코드",
+    "lang": "java",
+    "code": "@Configuration\npublic class AppConfig {\n\n    @Bean\n    public MemberService memberService() {\n        return new MemberServiceImpl(\n                memberRepository());\n    }\n\n    @Bean\n    public MemberRepository memberRepository() {\n        return new MemoryMemberRepository();\n    }\n}",
+    "md": "메서드 이름 → 빈 이름. 생성자 인자는 **메서드 호출**로 넣는다."
+   },
+   "right": {
+    "title": "XML",
+    "lang": "xml",
+    "code": "<beans xmlns=\"http://www.springframework.org/schema/beans\" ...>\n\n    <bean id=\"memberService\"\n          class=\"hello.core.member.MemberServiceImpl\">\n        <constructor-arg name=\"memberRepository\"\n                         ref=\"memberRepository\" />\n    </bean>\n\n    <bean id=\"memberRepository\"\n          class=\"hello.core.member.MemoryMemberRepository\" />\n</beans>",
+    "md": "`id` → 빈 이름, `class` → 구현 클래스. 생성자 인자는 **`ref` 로 다른 빈을 가리킨다.**"
+   }
+  },
+  {
+   "type": "table",
+   "caption": "대응 관계",
+   "note": "**한 줄씩 정확히 맞아떨어진다.** 형식만 다르고 담는 정보가 같다는 뜻인데, 이 사실이 4.8절의 출발점이다.",
+   "columns": [
+    "자바",
+    "XML",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`@Configuration` 클래스",
+     "`<beans>`",
+     "설정 전체"
+    ],
+    [
+     "`@Bean` 메서드 이름",
+     "`<bean id=\"...\">`",
+     "빈 이름"
+    ],
+    [
+     "`return new XxxImpl()`",
+     "`<bean class=\"...\">`",
+     "구현 클래스"
+    ],
+    [
+     "메서드 호출로 인자 전달",
+     "`<constructor-arg ref=\"...\">`",
+     "의존관계"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "읽는 쪽은 클래스 하나만 바뀐다",
+   "file": "XmlAppContext.java",
+   "code": "@Test\nvoid xmlAppContext() {\n    ApplicationContext ac =\n        new GenericXmlApplicationContext(\"appConfig.xml\");\n\n    MemberService memberService =\n        ac.getBean(\"memberService\", MemberService.class);\n\n    assertThat(memberService).isInstanceOf(MemberService.class);\n}",
+   "note": "**`ApplicationContext ac = ...` 부분이 같다.** 4.3~4.6절에서 쓴 조회 코드가 전부 그대로 동작한다. 파일은 `src/main/resources/appConfig.xml` 에 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "형식이 둘인데 쓰는 쪽은 하나만 안다",
+   "ascii": "      AppConfig.java           appConfig.xml\n             │                       │\n             ▼                       ▼\n   ┌────────────────────┐  ┌────────────────────┐\n   │ AnnotationConfig   │  │ GenericXml         │\n   │ ApplicationContext │  │ ApplicationContext │\n   └────────────────────┘  └────────────────────┘\n             │                       │\n             └───────────┬───────────┘\n                         ▼\n             ┌───────────────────────┐\n             │  ApplicationContext   │   ← 쓰는 쪽은 이것만 안다\n             └───────────────────────┘",
+   "note": "**두 갈래가 한 점으로 모인다.** 3.5절에서 사용 영역이 구현체를 몰랐던 것과 같은 구조다 — 이번에는 스프링 자기 코드가 그렇게 돼 있다."
+  },
+  {
+   "type": "heading",
+   "text": "XML 은 이제 안 쓴다. 그런데"
+  },
+  {
+   "type": "table",
+   "caption": "왜 자바 설정으로 넘어갔나",
+   "note": "스프링 부트가 나오면서 사실상 끝났다. **새 프로젝트에서 XML 설정을 쓰는 일은 없다고 봐도 된다.**",
+   "columns": [
+    "",
+    "XML",
+    "자바 코드"
+   ],
+   "rows": [
+    [
+     "**컴파일 검사**",
+     "없다. 클래스 이름 오타를 실행해야 안다",
+     "**된다.** 오타면 컴파일이 실패한다"
+    ],
+    [
+     "**리팩터링**",
+     "클래스 이름을 바꾸면 XML 이 조용히 깨진다",
+     "IDE 가 같이 바꿔 준다"
+    ],
+    [
+     "**찾아가기**",
+     "문자열이라 따라갈 수 없다",
+     "Ctrl+클릭으로 구현체로 간다"
+    ],
+    [
+     "**조건부 구성**",
+     "어렵다",
+     "`if` 를 쓸 수 있다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 알아 둘 값",
+   "md": "두 가지 자리에서 만난다.\n\n1. **오래된 프로젝트를 맡을 때.** 2015년 이전 스프링 프로젝트는 대부분 XML 이다. 유지보수 대상으로 남아 있다.\n2. **개념을 설명할 때.** 자바 설정은 `@Bean` 이 너무 자연스러워서 \"이게 어떻게 컨테이너에 전달되나\" 를 잊게 만든다. XML 은 **설정이 데이터라는 것**을 눈에 보이게 한다.\n\n두 번째가 이 절을 쓰는 진짜 이유이고, 다음 절로 이어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "질문 — 그 사이에 무엇이 있나",
+   "md": "자바 코드로 쓴 설정과 XML 로 쓴 설정은 **생긴 것이 완전히 다르다.** 하나는 컴파일된 클래스이고 하나는 텍스트 파일이다.\n\n그런데 컨테이너는 **둘 다 똑같이 처리한다.** 조회 코드도, 예외 메시지도, 동작도 같다.\n\n그렇다면 컨테이너는 자바 설정도 XML 도 **직접 읽지 않는다**는 뜻이다. 중간에 **둘을 같은 것으로 만들어 주는 무언가**가 있어야 한다.\n\n그것이 `BeanDefinition` 이고, **4.8절**이다. 4.2절에서 role 을 읽으려고 잠깐 꺼내 썼던 그 물건이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 두 컨테이너를 나란히 띄운다",
+   "sql": "# 자바 설정\nINFO  AnnotationConfigApplicationContext - Refreshing\nINFO  DefaultListableBeanFactory - Creating shared instance of singleton bean 'memberService'\ntype = org.springframework.context.annotation.AnnotationConfigApplicationContext\nbean = hello.core.member.MemberServiceImpl@42d3bd8b\n\n# XML 설정\nINFO  GenericXmlApplicationContext - Refreshing\nINFO  XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [appConfig.xml]\nINFO  DefaultListableBeanFactory - Creating shared instance of singleton bean 'memberService'\ntype = org.springframework.context.support.GenericXmlApplicationContext\nbean = hello.core.member.MemberServiceImpl@6b58b9e9\n\nBUILD SUCCESSFUL\n2 tests completed",
+   "note": "**두 로그에 `DefaultListableBeanFactory` 가 똑같이 나온다.** 위쪽 한 줄만 다르고(`XmlBeanDefinitionReader` 가 XML 을 읽는 줄) 아래부터는 완전히 같은 길이다. **갈라지는 지점과 합쳐지는 지점이 로그에 그대로 찍혀 있다** — 4.8절이 이 로그의 해설이다."
+  }
+ ],
+ "recap": [
+  "같은 설정을 **자바 코드와 XML 두 형식**으로 쓸 수 있다.",
+  "읽는 구현체만 바뀐다 — `AnnotationConfig...` / `GenericXml...`. **조회 코드는 그대로다.**",
+  "자바 설정이 이긴 이유는 **컴파일 검사·리팩터링·찾아가기** 다.",
+  "새 프로젝트에서 XML 을 쓸 일은 없다. **오래된 프로젝트**에서 만난다.",
+  "XML 의 교육적 가치는 **설정이 데이터라는 것**을 눈에 보이게 하는 것이다.",
+  "형식이 달라도 결과가 같다면 **중간에 무언가가 있다** → 4.8절."
+ ],
+ "drills": [
+  {
+   "task": "`AppConfig` 전체를 `appConfig.xml` 로 옮긴다 (빈 4개).",
+   "done_when": "`GenericXmlApplicationContext` 로 띄워서 기존 조회 테스트가 통과한다.",
+   "minutes": 30
+  },
+  {
+   "task": "XML 의 `class` 속성에 오타를 낸다.",
+   "done_when": "컴파일은 되는데 실행에서 `ClassNotFoundException` 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "두 컨테이너를 같은 테스트에서 띄우고 로그를 비교한다.",
+   "done_when": "`XmlBeanDefinitionReader` 줄 하나만 다르고 나머지가 같다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "XML 의 `constructor-arg` 를 `name` 대신 `index` 로 바꿔 본다.",
+   "done_when": "둘 다 동작하고, `name` 쪽이 왜 안전한지 말할 수 있다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "XML 설정을 읽는 컨테이너 구현체는?",
+   "a": "`GenericXmlApplicationContext`. 생성자에 XML 파일 경로를 준다."
+  },
+  {
+   "q": "설정 형식이 바뀌면 조회 코드도 바뀌는가?",
+   "a": "안 바뀐다. `ApplicationContext` 인터페이스로 받으므로 `getBean` 이하가 전부 같다."
+  },
+  {
+   "q": "자바 설정이 XML 을 대체한 이유는?",
+   "a": "컴파일 시점에 오타가 잡히고, 리팩터링이 따라오고, IDE 에서 구현체로 바로 갈 수 있고, 조건부 구성이 가능하다."
+  },
+  {
+   "q": "XML 을 여전히 알아 둘 이유는?",
+   "a": "오래된 프로젝트가 XML 설정을 쓰고 있고, 개념적으로는 '설정이 데이터' 라는 것을 가장 잘 보여 준다."
+  },
+  {
+   "q": "형식이 다른데 컨테이너 동작이 같다는 것은 무엇을 뜻하는가?",
+   "a": "컨테이너가 설정 파일을 직접 읽지 않고, 중간에 두 형식을 같은 형태로 바꿔 주는 추상화가 있다는 뜻이다. 그것이 `BeanDefinition` 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "GenericXmlApplicationContext",
+   "en": "",
+   "what": "XML 설정을 읽는 스프링 컨테이너 구현체. `ApplicationContext` 를 구현하므로 조회 방법은 자바 설정과 같다."
+  },
+  {
+   "term": "constructor-arg",
+   "en": "",
+   "what": "XML 설정에서 생성자 인자를 지정하는 태그. `ref` 로 다른 빈을, `value` 로 값을 넣는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Spring Framework Reference — XML-based Configuration Metadata",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/basics.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
