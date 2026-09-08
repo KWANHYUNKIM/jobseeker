@@ -106,16 +106,23 @@ def _timeline(events: list, now: float) -> list[float]:
 
 
 def append(sid: str, events: list, now: float | None = None) -> int:
-    """정제해서 append. 실제로 적은 건수를 돌려준다."""
+    """정제해서 append. 실제로 적은 건수를 돌려준다.
+
+    파일과 정본 DB 양쪽에 적는다. **파일이 먼저다** — 여기는 브라우저 비콘을 받는
+    자리라 절대로 실패하면 안 되고, DB 가 꺼져 있다고 방문 기록을 버릴 수는 없다.
+    DB 쓰기가 실패하면 파일에만 남고, `store.ledgers seed --events` 가 나중에
+    메운다.
+    """
     now = now if now is not None else time.time()
     events = events[:MAX_EVENTS]
     at = _timeline(events, now)
-    lines = []
+    lines, recs = [], []
     for raw, when in zip(events, at):
         if not isinstance(raw, dict):
             continue
         rec = _clean(raw, sid, when)
         if rec:
+            recs.append(rec)
             lines.append(json.dumps(rec, ensure_ascii=False))
     if not lines:
         return 0
@@ -123,6 +130,12 @@ def append(sid: str, events: list, now: float | None = None) -> int:
     BASE_DIR.mkdir(parents=True, exist_ok=True)
     with EVENTS.open("a", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
+
+    try:
+        from store.ledgers import append_events
+        append_events(recs)
+    except Exception:
+        pass        # 조용히 넘어간다 — 비콘 응답을 늦출 이유가 없다
     return len(lines)
 
 

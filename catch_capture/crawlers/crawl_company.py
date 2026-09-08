@@ -24,6 +24,7 @@ import time
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
+from pathlib import Path as _Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # catch_capture 루트
 from crawlers import block_detect  # noqa: E402
@@ -216,6 +217,47 @@ def _save_cache(cache: dict[str, dict]) -> None:
     tmp = OUTPUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(OUTPUT)
+    _save_to_db(cache)
+
+
+def _save_to_db(cache: dict[str, dict]) -> int:
+    """조사 결과를 정본 DB 의 company 로. 캐시 키가 곧 company.norm 이라 그대로 맞는다.
+
+    **없는 회사는 만들지 않는다.** 여기 목록은 공고에서 나오므로 대개 이미 있지만,
+    강제 조사(--force)로 공고 없는 이름이 들어올 수 있다. 그때 빈 회사 행을 만들면
+    회사 목록이 공고 없는 이름으로 오염된다(ingest_posts 와 같은 판단).
+
+    실패해도 크롤을 죽이지 않는다 — JSON 캐시에는 이미 적혔다.
+    """
+    try:
+        import sys as _s
+        _s.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+        from store import conn as store_conn
+    except Exception:
+        return 0
+    n = 0
+    try:
+        with store_conn.connect() as db:
+            with db.cursor() as cur:
+                for norm, prof in cache.items():
+                    cur.execute(
+                        """UPDATE company SET
+                               homepage      = COALESCE(%s, homepage),
+                               description   = COALESCE(%s, description),
+                               domains       = CASE WHEN %s = '{}'::text[]
+                                                    THEN domains ELSE %s END,
+                               homepage_tech = %s
+                            WHERE norm = %s""",
+                        (prof.get("homepage"), prof.get("desc"),
+                         list(prof.get("domains") or []), list(prof.get("domains") or []),
+                         list(prof.get("tech") or []), norm),
+                    )
+                    n += cur.rowcount
+            db.commit()
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [db] 회사 프로필 반영 실패(캐시에는 남았습니다): {e}", flush=True)
+        return 0
+    return n
 
 
 def main() -> None:

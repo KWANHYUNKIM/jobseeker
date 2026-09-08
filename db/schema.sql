@@ -64,6 +64,8 @@ CREATE TABLE company (
     homepage      text,
     description   text,
     domains       text[]      NOT NULL DEFAULT '{}',   -- 사업 도메인 태그(핀테크, 물류…)
+    -- 홈페이지에서 긁힌 기술 흔적. crawl_company 가 채운다(company_profiles.json 대체).
+    homepage_tech text[]      NOT NULL DEFAULT '{}',
 
     -- 나중에 같은 회사로 판명났을 때. 행을 지우면 job.company_id 가 끊기므로
     -- 지우는 대신 여기로 넘긴다 — 옛 슬러그 주소도 리다이렉트로 살릴 수 있다.
@@ -664,6 +666,30 @@ CREATE TABLE trend_metric (
 );
 -- 한 기술의 시계열을 뽑는 질의가 기본이다.
 CREATE INDEX trend_metric_series_idx ON trend_metric (keyword, axis, role, name, day);
+
+-- ── 행동 기록 (engagement/events.jsonl) ───────────────────────────
+-- 누가 무엇을 열어 얼마나 머물렀나. 이것도 다시 계산할 수 없다 — 게다가 파일
+-- 쪽에는 64MB 를 넘으면 .jsonl.1 로 밀어내는 회전이 있어서, 오래된 기록이
+-- **조용히 버려진다**(밀려난 파일은 아무도 안 읽는다).
+--
+-- `at` 은 브라우저가 준 절대 시각이 아니라 서버 시계 위에 올린 값이다. 이벤트는
+-- 10초마다 묶여서 오므로 받은 시각을 그대로 쓰면 한 묶음이 전부 같은 시각이 되고
+-- 체류시간이 통째로 사라진다. 그 보정은 collect._timeline 이 한다.
+CREATE TYPE engagement_kind AS ENUM ('session', 'view', 'click', 'dwell', 'search', 'filter');
+
+CREATE TABLE engagement_event (
+    id      bigint          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sid     text            NOT NULL,       -- 브라우저 세션. 사람을 특정하지 않는다
+    kind    engagement_kind NOT NULL,
+    at      timestamptz     NOT NULL,
+    item    text,                           -- 공고 URL 또는 화면 경로 (파일의 `k`)
+    source  text,                           -- 유입 경로 호스트 또는 'direct' (`from`)
+    dwell_s integer                         -- kind='dwell' 일 때만. 1~3600
+);
+-- 집계는 늘 "최근 N일"이다.
+CREATE INDEX engagement_event_at_idx  ON engagement_event (at DESC);
+-- '이 공고를 본 사람이 그다음 무엇을 눌렀나' 는 세션 안의 순서를 훑는다.
+CREATE INDEX engagement_event_sid_idx ON engagement_event (sid, at);
 
 -- ── 공고 판본 이력 (job_history.jsonl) ────────────────────────────
 -- 같은 자리가 마감됐다 다시 올라올 때 URL 이 재발급되므로 (회사,제목) 정규화 키로

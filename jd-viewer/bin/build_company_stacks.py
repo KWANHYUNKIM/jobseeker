@@ -865,6 +865,28 @@ def _summary(rec: dict) -> str:
 
 
 def _load_profiles() -> dict[str, dict]:
+    """회사 홈페이지 조사 결과. 정본 DB 의 company 우선, 없으면 캐시 JSON.
+
+    키는 company.norm 이고 그것이 곧 crawl_company 의 캐시 키다 — 양쪽이 같은
+    이름으로 맞물린다.
+    """
+    try:
+        from store import conn as store_conn
+        with store_conn.cursor(autocommit=True) as cur:
+            cur.execute(
+                """SELECT norm, homepage, description, domains, homepage_tech
+                     FROM company
+                    WHERE homepage IS NOT NULL OR description IS NOT NULL
+                       OR cardinality(homepage_tech) > 0"""
+            )
+            rows = cur.fetchall()
+        if rows:
+            return {r["norm"]: {"homepage": r["homepage"], "desc": r["description"],
+                                "tech": list(r["homepage_tech"] or []),
+                                "domains": list(r["domains"] or [])} for r in rows}
+    except Exception:
+        pass
+
     if not PROFILES.exists():
         return {}
     try:

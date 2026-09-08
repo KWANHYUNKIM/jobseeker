@@ -58,6 +58,19 @@ def _median(xs: list[int]) -> float:
 
 
 def load(days: int) -> list[dict]:
+    """최근 N일의 행동 기록. 정본 DB 우선, 못 읽으면 events.jsonl.
+
+    파일 쪽에는 64MB 를 넘으면 .jsonl.1 로 밀어내는 회전이 있고 밀려난 파일은
+    아무도 안 읽는다 — 오래된 기록이 조용히 사라지는 자리였다. DB 에는 회전이 없다.
+    """
+    try:
+        from store.ledgers import load_events
+        rows = load_events(days)
+        if rows:
+            return rows
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [engagement] DB 를 못 읽어 파일로 물러섭니다: {e}")
+
     if not EVENTS.exists():
         return []
     cutoff = time.time() - days * 86400
