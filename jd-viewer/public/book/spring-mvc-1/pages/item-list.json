@@ -1,0 +1,219 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-list",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "상품 목록",
+ "summary": "th:each. 정적 HTML 을 템플릿으로 바꾸는 첫 단계.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`th:each` 로 목록을 그릴 수 있다.",
+  "정적 HTML 을 템플릿으로 바꾸는 순서를 안다.",
+  "`@PostConstruct` 로 테스트 데이터를 넣을 수 있다.",
+  "4.2절과 4.5절의 목록 코드와 비교할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "BasicItemController.java",
+   "code": "@Controller\n@RequestMapping(\"/basic/items\")\n@RequiredArgsConstructor\npublic class BasicItemController {\n\n    private final ItemRepository itemRepository;\n\n    @GetMapping\n    public String items(Model model) {\n        List<Item> items = itemRepository.findAll();\n        model.addAttribute(\"items\", items);\n        return \"basic/items\";\n    }\n\n    /** 테스트용 데이터 */\n    @PostConstruct\n    public void init() {\n        itemRepository.save(new Item(\"itemA\", 10000, 10));\n        itemRepository.save(new Item(\"itemB\", 20000, 20));\n    }\n}",
+   "note": "**7장까지의 것이 전부 나온다.** `@Controller`(6.5절) · 클래스 레벨 `@RequestMapping`(6.6절) · `Model`(6.7절) · `@RequiredArgsConstructor`(앞 책 7.4절).\n\n**새 문법이 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@PostConstruct 로 데이터를 넣는다",
+   "md": "앞 책 8.4절에서 배운 그것이다 — **의존관계 주입이 끝난 뒤에 불린다.**\n\n```java\n@PostConstruct\npublic void init() {\n    itemRepository.save(new Item(\"itemA\", 10000, 10));\n}\n```\n\n생성자에서 하면 안 되는 이유도 같다(앞 책 8.1절) — **`itemRepository` 가 아직 안 들어와 있다.**\n\n여기서는 `@RequiredArgsConstructor` 라 생성자 주입이니 실은 생성자에서도 된다. 그래도 **`@PostConstruct` 가 의도를 더 잘 보여 준다** — \"객체를 만드는 일\" 과 \"초기 데이터를 넣는 일\" 은 다른 책임이다.\n\n**당연히 예제용이다.** 실무에서 컨트롤러가 데이터를 넣는 일은 없다."
+  },
+  {
+   "type": "heading",
+   "text": "정적 HTML 을 템플릿으로"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "순서가 있다",
+   "md": "**퍼블리싱 결과물을 먼저 받고, 거기에 `th:` 를 붙인다.**\n\n```\n1. resources/static/html/items.html      정적 HTML — 그냥 열린다\n2. resources/templates/basic/items.html  복사해서 th: 를 붙인다\n```\n\n1번을 남겨 두는 이유가 있다. **디자인이 바뀌면 1번을 다시 받아서 2번을 갱신**한다. 그리고 **비교 대상**이 된다 — 렌더링 결과가 1번과 같아야 한다.\n\n8.3절에서 말한 **내추럴 템플릿의 실용적 가치**가 이것이다. JSP 였다면 1번과 2번이 **완전히 다른 파일**이 되어 비교가 안 된다.\n\n실무에서는 이 흐름이 더 중요해진다. **퍼블리셔가 HTML 을 주고 개발자가 `th:` 를 붙이는 분업**이 실제로 흔하다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "templates/basic/items.html",
+   "code": "<html xmlns:th=\"http://www.thymeleaf.org\">\n<body>\n<div class=\"container\">\n    <h2>상품 목록</h2>\n    <button th:onclick=\"|location.href='@{/basic/items/add}'|\">\n        상품 등록\n    </button>\n    <table>\n        <thead>\n        <tr><th>ID</th><th>상품명</th><th>가격</th><th>수량</th></tr>\n        </thead>\n        <tbody>\n        <tr th:each=\"item : ${items}\">\n            <td>\n                <a th:href=\"@{/basic/items/{itemId}(itemId=${item.id})}\"\n                   th:text=\"${item.id}\">1</a>\n            </td>\n            <td th:text=\"${item.itemName}\">itemA</td>\n            <td th:text=\"${item.price}\">10000</td>\n            <td th:text=\"${item.quantity}\">10</td>\n        </tr>\n        </tbody>\n    </table>\n</div>\n</body>\n</html>",
+   "note": "**`<tr>` 이 한 줄인데 여러 줄이 나온다.** `th:each` 가 그 태그를 반복한다."
+  },
+  {
+   "type": "table",
+   "caption": "이 파일에서 쓴 문법",
+   "note": "**`|...|` 가 처음 나왔다.** 문자열 안에서 `+` 없이 값을 섞는 리터럴 대체 문법이다.",
+   "columns": [
+    "문법",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`th:each=\"item : ${items}\"`",
+     "**그 태그를 반복**한다. 자바의 향상된 `for` 와 같은 모양"
+    ],
+    [
+     "`th:text=\"${item.itemName}\"`",
+     "내용을 바꾼다 (8.3절)"
+    ],
+    [
+     "`th:href=\"@{/basic/items/{itemId}(itemId=${item.id})}\"`",
+     "경로 변수 (8.3절)"
+    ],
+    [
+     "`th:onclick=\"|location.href='@{...}'|\"`",
+     "**리터럴 대체** — `|` 안에서 값을 섞는다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "th:each 는 그 태그를 반복한다",
+   "md": "```html\n<tr th:each=\"item : ${items}\">\n    <td th:text=\"${item.itemName}\">itemA</td>\n</tr>\n```\n\n**`th:each` 가 붙은 태그 자신**이 반복된다. 안쪽이 아니다.\n\n헷갈리면 이렇게 된다.\n\n```html\n<tbody th:each=\"item : ${items}\">     <!-- tbody 가 여러 개 생긴다 -->\n    <tr>...</tr>\n</tbody>\n```\n\n**HTML 이 깨진다.** `<tbody>` 는 테이블에 하나여야 한다.\n\n반복할 태그가 애매하면 **`<th:block>`** 을 쓴다.\n\n```html\n<th:block th:each=\"item : ${items}\">\n    <tr>...</tr>\n    <tr>...</tr>\n</th:block>\n```\n\n**`th:block` 은 렌더링되면 사라진다.** 두 줄씩 반복해야 할 때 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "반복 상태를 쓰려면",
+   "md": "```html\n<tr th:each=\"item, stat : ${items}\">\n    <td th:text=\"${stat.count}\">1</td>\n    <td th:text=\"${stat.index}\">0</td>\n</tr>\n```\n\n두 번째 변수가 **반복 상태**다.\n\n| | 무엇 |\n|---|---|\n| `stat.index` | 0부터 |\n| `stat.count` | **1부터** |\n| `stat.size` | 전체 개수 |\n| `stat.first`·`last` | 처음·마지막인가 |\n| `stat.odd`·`even` | 홀수·짝수 번째인가 |\n\n**번호를 매길 때 `count`, 스타일을 줄 때 `odd`/`even`** 을 쓴다.\n\n생략하면 `item` + `Stat` 으로 자동 이름이 생기는데(`itemStat`), **명시하는 편**이 읽기 쉽다."
+  },
+  {
+   "type": "heading",
+   "text": "4장과 비교하면"
+  },
+  {
+   "type": "table",
+   "caption": "같은 목록 화면을 세 번 만들었다",
+   "note": "**8장의 HTML 은 4.5절과 거의 같다.** 문법만 JSTL 에서 타임리프로 바뀌었다.",
+   "columns": [
+    "",
+    "코드"
+   ],
+   "rows": [
+    [
+     "**4.2 서블릿**",
+     "`w.write(\"<tr>\")` 를 `for` 안에서. HTML 이 자바에 갇혔다"
+    ],
+    [
+     "**4.3 JSP**",
+     "`<% %>` 안에서 `out.write(\"<tr>\")`. 방향만 바뀌었다"
+    ],
+    [
+     "**4.5 MVC + JSTL**",
+     "`<c:forEach>` — 자바 코드 0줄"
+    ],
+    [
+     "**8.4 타임리프**",
+     "`th:each` — **그리고 브라우저로 열린다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 마지막으로 달라졌나",
+   "md": "4.5절에서 **화면 파일의 자바 코드가 0줄**이 됐다. 거기서 이미 목표는 달성됐다.\n\n타임리프가 더한 것은 **파일이 열린다**는 것 하나다.\n\n작아 보이는데 실무에서는 크다.\n\n- **퍼블리싱 결과를 그대로 받는다** — 변환 작업이 없다\n- **디자인 수정을 개발자 없이 확인한다**\n- **서버를 안 띄우고 화면 구조를 본다**\n\n3.10절에서 센 문제 넷이 **여기서 전부 없어졌다.**\n\n| 3.10 의 문제 | 풀린 곳 |\n|---|---|\n| 문법 강조·자동완성 | **4.3 JSP** |\n| 태그 오류를 못 잡음 | **4.3 JSP** |\n| 디자이너가 못 만짐 | **4.3 JSP**(일부) → **8.3 타임리프**(완전히) |\n| **브라우저로 미리 못 봄** | **8.3 타임리프** |\n\n**서블릿에서 시작해 여기까지 온 것**이 이 책의 3~8장이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/items HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n<div class=\"container\">\n    <h2>상품 목록</h2>\n    <button onclick=\"location.href='/basic/items/add'\">\n        상품 등록\n    </button>\n    <table>\n        <thead>\n        <tr><th>ID</th><th>상품명</th><th>가격</th><th>수량</th></tr>\n        </thead>\n        <tbody>\n        <tr>\n            <td><a href=\"/basic/items/1\">1</a></td>\n            <td>itemA</td>\n            <td>10000</td>\n            <td>10</td>\n        </tr>\n        <tr>\n            <td><a href=\"/basic/items/2\">2</a></td>\n            <td>itemB</td>\n            <td>20000</td>\n            <td>20</td>\n        </tr>\n        </tbody>\n    </table>\n</div>\n</body>\n</html>",
+   "note": "**`th:` 가 하나도 없고 `xmlns:th` 도 사라졌다**(8.3절).\n\n**`<tr>` 이 두 개**다 — 템플릿에는 하나뿐이었다. `th:each` 가 반복한 결과다.\n\n그리고 **`th:onclick` 이 `onclick` 이 됐다.** `|...|` 안의 `@{...}` 가 `/basic/items/add` 로 바뀌어 들어갔다.\n\n**4.2절 서블릿이 만든 응답과 결과가 같다.** 만드는 방법만 바뀌었다."
+  }
+ ],
+ "recap": [
+  "컨트롤러에 **새 문법이 없다** — 7장까지의 것으로 만든다.",
+  "**`@PostConstruct`** 로 테스트 데이터를 넣는다(앞 책 8.4절).",
+  "**정적 HTML 을 먼저 받고 복사해서 `th:` 를 붙인다.** 원본은 비교용으로 남긴다.",
+  "**`th:each` 는 그 태그 자신**을 반복한다. 안쪽이 아니다.",
+  "여러 태그를 반복하려면 **`<th:block>`** 을 쓴다 — 렌더링되면 사라진다.",
+  "반복 상태 — **`count`(1부터) · `index`(0부터) · `first`·`last` · `odd`·`even`.**",
+  "**`|...|`** 는 리터럴 대체 — 문자열 안에서 `+` 없이 값을 섞는다.",
+  "4.5절 대비 더해진 것은 **파일이 열린다**는 것 하나다.",
+  "**3.10절의 문제 넷이 여기서 전부 없어졌다.**"
+ ],
+ "drills": [
+  {
+   "task": "정적 HTML 을 만들고 복사해서 `th:` 를 붙인다.",
+   "done_when": "둘 다 브라우저로 열리는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`th:each` 를 `<tbody>` 에 붙여 본다.",
+   "done_when": "HTML 이 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "반복 상태로 번호를 매긴다.",
+   "done_when": "`count` 와 `index` 가 하나 차이인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "응답 HTML 을 4.2절 서블릿 응답과 비교한다.",
+   "done_when": "결과가 같다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "3.10절의 문제 넷에 각각 풀린 절 번호를 적는다.",
+   "done_when": "넷이 다 채워진 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:each` 는 무엇을 반복하나?",
+   "a": "그 속성이 붙은 태그 자신을 반복한다. `<tbody>` 에 붙이면 `<tbody>` 가 여러 개 생겨 HTML 이 깨진다."
+  },
+  {
+   "q": "여러 태그를 함께 반복하려면?",
+   "a": "`<th:block th:each=\"...\">` 로 감싼다. `th:block` 은 렌더링되면 사라진다."
+  },
+  {
+   "q": "반복 상태에서 `count` 와 `index` 의 차이는?",
+   "a": "`count` 는 1부터, `index` 는 0부터다. 화면에 번호를 매길 때는 `count` 를 쓴다."
+  },
+  {
+   "q": "`|...|` 는 무엇인가?",
+   "a": "리터럴 대체 문법이다. 문자열 안에서 `+` 없이 표현식을 섞을 수 있다."
+  },
+  {
+   "q": "정적 HTML 원본을 남겨 두는 이유는?",
+   "a": "디자인이 바뀌면 다시 받아 갱신할 수 있고, 렌더링 결과와 비교할 수 있다. 내추럴 템플릿이라 가능한 흐름이다."
+  },
+  {
+   "q": "4.5절 JSTL 대비 타임리프가 더한 것은?",
+   "a": "파일이 브라우저로 열린다는 것이다. 화면 파일의 자바 코드가 0줄인 것은 4.5절에서 이미 달성됐다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "th:block",
+   "en": "",
+   "what": "렌더링되면 사라지는 타임리프 전용 태그. 여러 태그를 함께 반복할 때 쓴다."
+  },
+  {
+   "term": "리터럴 대체",
+   "en": "literal substitution",
+   "what": "`|...|` 안에서 `+` 없이 표현식을 섞는 타임리프 문법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

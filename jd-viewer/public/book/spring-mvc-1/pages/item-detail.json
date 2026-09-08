@@ -1,0 +1,181 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-detail",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "상품 상세",
+ "summary": "th:text 와 링크. @PathVariable 이 여기서 쓰인다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@PathVariable` 로 상세 화면을 만들 수 있다.",
+  "`th:value` 와 `th:text` 의 차이를 안다.",
+  "없는 ID 를 요청했을 때의 문제를 안다.",
+  "링크에 경로 변수를 넣을 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@GetMapping(\"/{itemId}\")\npublic String item(@PathVariable Long itemId, Model model) {\n    Item item = itemRepository.findById(itemId);\n    model.addAttribute(\"item\", item);\n    return \"basic/item\";\n}",
+   "note": "**1.1절에서 보여 준 코드가 여기 있다.**\n\n```java\n@GetMapping(\"/items/{itemId}\")\npublic String item(@PathVariable Long itemId, Model model) {\n    model.addAttribute(\"item\", itemRepository.findById(itemId));\n    return \"basic/item\";\n}\n```\n\n그때 \"설명해야 할 것이 여덟 가지쯤 된다\" 고 했다. **이제 전부 설명할 수 있다**(7.15절)."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "templates/basic/item.html",
+   "code": "<html xmlns:th=\"http://www.thymeleaf.org\">\n<body>\n<div class=\"container\">\n    <h2>상품 상세</h2>\n    <div>\n        <label for=\"itemId\">상품 ID</label>\n        <input type=\"text\" id=\"itemId\" th:value=\"${item.id}\" readonly>\n    </div>\n    <div>\n        <label for=\"itemName\">상품명</label>\n        <input type=\"text\" id=\"itemName\" th:value=\"${item.itemName}\" readonly>\n    </div>\n    <div>\n        <label for=\"price\">가격</label>\n        <input type=\"text\" id=\"price\" th:value=\"${item.price}\" readonly>\n    </div>\n    <button th:onclick=\"|location.href='@{/basic/items/{itemId}/edit(itemId=${item.id})}'|\">\n        상품 수정\n    </button>\n    <button th:onclick=\"|location.href='@{/basic/items}'|\">\n        목록으로\n    </button>\n</div>\n</body>\n</html>",
+   "note": "**`th:text` 가 아니라 `th:value`** 다. `<input>` 은 내용이 아니라 속성에 값이 들어가기 때문이다."
+  },
+  {
+   "type": "table",
+   "caption": "th:text 와 th:value",
+   "note": "**태그가 값을 어디에 담느냐**가 기준이다. `<input>` 은 속성, 나머지는 대개 내용.",
+   "columns": [
+    "",
+    "무엇을 바꾸나",
+    "언제"
+   ],
+   "rows": [
+    [
+     "**`th:text`**",
+     "태그의 **내용**",
+     "`<span>`, `<td>`, `<p>`"
+    ],
+    [
+     "**`th:value`**",
+     "**`value` 속성**",
+     "`<input>`"
+    ],
+    [
+     "`th:href`",
+     "`href` 속성",
+     "`<a>`"
+    ],
+    [
+     "`th:src`",
+     "`src` 속성",
+     "`<img>`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "th:* 는 전부 같은 규칙이다",
+   "md": "**`th:` 뒤에 아무 HTML 속성 이름이나 올 수 있다.**\n\n```html\n<input th:value=\"${item.price}\">      value 속성\n<div th:class=\"${cssClass}\">          class 속성\n<input th:placeholder=\"${hint}\">      placeholder 속성\n<input th:disabled=\"${isLocked}\">     disabled 속성\n```\n\n외울 목록이 아니라 **규칙 하나**다 — `th:속성이름`.\n\n`th:text` 만 예외처럼 보이는데, **내용은 속성이 아니라서** 따로 이름을 준 것이다.\n\n그리고 **불리언 속성은 특별하다.**\n\n```html\n<input th:disabled=\"${false}\">   ->  속성 자체가 사라진다\n<input th:disabled=\"${true}\">    ->  disabled=\"disabled\"\n```\n\nHTML 에서 `disabled=\"false\"` 는 **여전히 비활성화**다 — 속성이 있으면 참이다. 타임리프가 그것을 알아서 처리한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "없는 ID 를 요청하면",
+   "md": "```\nGET /basic/items/999\n```\n\n`findById(999L)` 이 **`null`** 을 돌려준다. 그리고 템플릿에서 `${item.id}` 를 쓰면 —\n\n**빈 화면이 나오거나 500 이 난다.**\n\n타임리프는 `${item}` 이 `null` 이면 `${item.id}` 를 `null` 로 보고 넘어가는 경우도 있고, **`SpelEvaluationException`** 이 나는 경우도 있다. 접근 방식에 따라 다르다.\n\n**어느 쪽이든 사용자에게 보여 줄 화면이 아니다.**\n\n올바른 처리는 **404** 다.\n\n```java\nItem item = itemRepository.findById(itemId);\nif (item == null) {\n    throw new ItemNotFoundException();   // -> 404\n}\n```\n\n**이 책은 안 한다.** 예외 처리가 MVC 2편의 주제이기 때문이다(9.1절).\n\n7.15절에서 상태 코드를 정리하며 **\"500 만 내 코드\"** 라고 했다. 여기가 정확히 그 자리다 — **없는 리소스는 404 여야 하는데 500 이 나는 것**은 내 잘못이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "readonly 를 쓴 이유",
+   "md": "```html\n<input type=\"text\" th:value=\"${item.id}\" readonly>\n```\n\n상세 화면은 **보여 주기만** 한다. 그런데 왜 `<span>` 이 아니라 `<input readonly>` 인가.\n\n**수정 화면과 모양을 맞추려는 것**이다(8.9절). 같은 레이아웃에서 `readonly` 만 빠지면 수정 폼이 된다.\n\n실무에서 흔한 방식이고, 나중에 **템플릿 조각으로 공통화**하기도 좋다.\n\n다만 **`readonly` 는 화면 장치일 뿐**이다. 브라우저 개발자 도구로 떼면 값을 바꿔 보낼 수 있다.\n\n8.2절에서 `update` 가 `id` 를 URL 에서 받는 이유가 이것과 이어진다 — **화면에서 막는 것은 막는 것이 아니다.** 서버에서 막아야 한다."
+  },
+  {
+   "type": "heading",
+   "text": "링크에 경로 변수를 넣는다"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "code": "<button th:onclick=\"|location.href='@{/basic/items/{itemId}/edit(itemId=${item.id})}'|\">\n    상품 수정\n</button>",
+   "note": "8.3절에서 본 `@{...}` 규칙 그대로다 — **괄호 안의 이름이 경로에 있으면 경로 변수.**\n\n`{itemId}` 가 경로에 있으니 `/basic/items/1/edit` 이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "문자열로 이으면 안 된다",
+   "md": "```html\n<!-- 나쁜 것 -->\n<a th:href=\"'/basic/items/' + ${item.id}\">\n\n<!-- 좋은 것 -->\n<a th:href=\"@{/basic/items/{itemId}(itemId=${item.id})}\">\n```\n\n**동작은 한다.** 그런데 8.3절에서 적은 셋을 잃는다.\n\n1. **컨텍스트 경로가 안 붙는다**\n2. **URL 인코딩이 안 된다** — 값에 특수문자가 있으면 깨진다(3.5절)\n3. **의도가 안 보인다** — 경로 변수인지 그냥 문자열인지\n\n특히 2번이 위험하다. 지금은 숫자 ID 라 괜찮은데, **문자열 키를 쓰는 순간 터진다.**\n\n**`@{...}` 를 쓰는 습관**을 들이면 이 문제가 안 생긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/items/1 HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n<div class=\"container\">\n    <h2>상품 상세</h2>\n    <div>\n        <label for=\"itemId\">상품 ID</label>\n        <input type=\"text\" id=\"itemId\" value=\"1\" readonly>\n    </div>\n    <div>\n        <label for=\"itemName\">상품명</label>\n        <input type=\"text\" id=\"itemName\" value=\"itemA\" readonly>\n    </div>\n    ...\n    <button onclick=\"location.href='/basic/items/1/edit'\">\n        상품 수정\n    </button>\n</div>\n</body>\n</html>\n\n# 없는 ID\nGET /basic/items/999 HTTP/1.1\n\nHTTP/1.1 500 \n#   404 여야 한다",
+   "note": "**`th:value` 가 `value` 로 바뀌었다.** 속성 이름에서 `th:` 만 떨어진 것이다.\n\n버튼의 `@{...}` 도 **`/basic/items/1/edit`** 으로 완성됐다 — 경로 변수가 채워졌다.\n\n맨 아래가 이 절의 숙제다. **없는 상품에 500 이 나는 것은 내 코드 문제**다(7.15절). 이 책은 안 고치지만 **틀렸다는 것은 적어 둔다.**"
+  }
+ ],
+ "recap": [
+  "**1.1절에서 보여 준 코드**가 이 절에 있다. 이제 전부 설명할 수 있다.",
+  "**`<input>` 은 `th:value`**, 나머지는 `th:text`.",
+  "**`th:속성이름`** — 외울 목록이 아니라 규칙 하나다.",
+  "**불리언 속성은 특별하다** — `false` 면 속성 자체가 사라진다.",
+  "**없는 ID 를 요청하면 500** 이다. 404 여야 하는데 — 7.15절의 그 구분.",
+  "예외 처리는 **MVC 2편**의 주제라 이 책은 안 고친다.",
+  "`readonly` 는 **수정 화면과 모양을 맞추려는 것**이다.",
+  "**`readonly` 는 화면 장치일 뿐**이다 — 서버에서 막아야 한다(8.2절).",
+  "링크는 **`@{...}` 로 만든다.** 문자열로 이으면 컨텍스트 경로·인코딩·의도를 잃는다."
+ ],
+ "drills": [
+  {
+   "task": "상세 컨트롤러와 템플릿을 만든다.",
+   "done_when": "목록에서 링크를 눌러 상세로 가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`th:value` 를 `th:text` 로 바꿔 본다.",
+   "done_when": "`<input>` 에서 값이 안 보이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 ID 를 요청한다.",
+   "done_when": "500 이 나는 것과 404 여야 한다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "링크를 문자열 연결로 바꾸고 ID 에 특수문자를 넣어 본다.",
+   "done_when": "인코딩이 안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`th:disabled=\"${false}\"` 를 렌더링해 본다.",
+   "done_when": "속성 자체가 사라지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`<input>` 에 값을 넣으려면?",
+   "a": "`th:value` 를 쓴다. `th:text` 는 태그의 내용을 바꾸는데 `<input>` 은 내용이 없다."
+  },
+  {
+   "q": "`th:` 속성의 규칙은?",
+   "a": "`th:속성이름` 이면 그 HTML 속성을 바꾼다. `th:class`, `th:src`, `th:placeholder` 전부 같은 규칙이다."
+  },
+  {
+   "q": "불리언 속성은 어떻게 처리되나?",
+   "a": "값이 거짓이면 속성 자체를 없앤다. HTML 에서는 속성이 있기만 하면 참이기 때문이다."
+  },
+  {
+   "q": "없는 ID 를 요청하면 무엇이 문제인가?",
+   "a": "`findById` 가 `null` 을 주고 템플릿에서 500 이 난다. 없는 리소스는 404 여야 한다."
+  },
+  {
+   "q": "`readonly` 로 수정을 막을 수 있나?",
+   "a": "없다. 화면 장치일 뿐이라 개발자 도구로 떼면 값을 바꿔 보낼 수 있다. 서버에서 막아야 한다."
+  },
+  {
+   "q": "링크를 문자열로 이으면 무엇을 잃나?",
+   "a": "컨텍스트 경로가 안 붙고, URL 인코딩이 안 되고, 경로 변수라는 의도가 코드에 안 보인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
