@@ -444,7 +444,7 @@
           "title": "Bean Validation 소개",
           "summary": "표준이다. 스프링 것이 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -452,7 +452,7 @@
           "title": "스프링 적용",
           "summary": "@Valid 와 @Validated. 어디까지 자동인가.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -460,7 +460,7 @@
           "title": "에러 코드",
           "summary": "5장의 MessageCodesResolver 규칙이 여기서도.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -468,7 +468,7 @@
           "title": "오브젝트 오류",
           "summary": "@ScriptAssert 를 권하지 않는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

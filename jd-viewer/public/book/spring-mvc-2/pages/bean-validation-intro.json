@@ -1,0 +1,162 @@
+{
+ "book": "spring-mvc-2",
+ "id": "bean-validation-intro",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "Bean Validation 소개",
+ "summary": "표준이다. 스프링 것이 아니다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Bean Validation 이 표준 명세라는 것을 안다.",
+  "표준 애너테이션과 하이버네이트 것을 구분한다.",
+  "스프링 없이 검증기를 쓸 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.11절이 남긴 넷을 푼다.\n\n> 조건문이 길고, 규칙이 필드에서 멀고, 오류 코드가 문자열이고, 등록과 수정의 규칙 구분이 어렵다.\n\n**애너테이션 하나로 셋이 풀린다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "규칙이 필드 위로",
+   "code": "public class Item {\n\n    private Long id;\n\n    @NotBlank\n    private String itemName;\n\n    @NotNull\n    @Range(min = 1000, max = 1000000)\n    private Integer price;\n\n    @NotNull\n    @Max(9999)\n    private Integer quantity;\n}",
+   "note": "5.9절의 `ItemValidator` 30줄이 **여섯 줄**이 됐다.\n\n**숫자 `1000` 이 한 곳**에만 있다. 5.11절에서 네 곳에 흩어져 있던 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "명세와 구현",
+   "ascii": "   Jakarta Bean Validation      specification (interface)\n        |\n        +--> Hibernate Validator     implementation\n        +--> Apache BVal             implementation\n\n   jakarta.validation.constraints.NotNull     standard\n   org.hibernate.validator.constraints.Range  hibernate only\n\n   패키지 이름으로 표준인지 알 수 있다",
+   "note": "**Bean Validation 은 인터페이스**다. 실제로 검사하는 것은 구현체."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스프링 것이 아니다",
+   "md": "**자바 표준(JSR-380)** 이다. 스프링과 무관하게 존재한다.\n\n```\njakarta.validation.constraints.NotNull      <- 표준\njakarta.validation.constraints.Max\njakarta.validation.constraints.Size\n\norg.hibernate.validator.constraints.Range   <- 하이버네이트 확장\norg.hibernate.validator.constraints.Length\n```\n\n**패키지 이름으로 구분**할 수 있다. `jakarta` 면 표준, `hibernate` 면 확장.\n\n**확장을 쓰면 구현체를 못 바꾼다.** 실무에서 하이버네이트 밸리데이터 말고 다른 것을 쓰는 일은 거의 없으니 큰 문제는 아닌데, **알고 쓰는 것과 모르고 쓰는 것은 다르다.**\n\n> `@Range(min=1000, max=1000000)` 대신 **표준인 `@Min` + `@Max`** 를 쓸 수도 있다. 이 책은 `@Range` 를 쓰되 확장이라는 것을 밝힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이름이 왜 jakarta 인가",
+   "md": "**예전에는 `javax.validation`** 이었다.\n\n오라클이 Java EE 를 이클립스 재단에 넘기면서 **`javax` 라는 이름을 못 쓰게** 했다. 그래서 Jakarta EE 로 이름이 바뀌었고 패키지도 전부 `jakarta` 로 갔다.\n\n| | 언제 |\n|---|---|\n| `javax.validation` | 스프링 부트 2.x |\n| `jakarta.validation` | **스프링 부트 3.x 부터** |\n\n**옛날 예제를 볼 때 이 차이로 안 붙는다.** 클래스는 똑같고 패키지만 다르다.\n\n> 서블릿도 같은 일을 겪었다 — `javax.servlet.http.HttpServletRequest` 가 `jakarta.servlet.http...` 가 됐다. 1편에서 쓴 것이 그것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "스프링 없이 써 본다",
+   "code": "@Test\nvoid beanValidation() {\n    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();\n    Validator validator = factory.getValidator();\n\n    Item item = new Item();\n    item.setItemName(\" \");      // 공백\n    item.setPrice(0);\n    item.setQuantity(10000);\n\n    Set<ConstraintViolation<Item>> violations = validator.validate(item);\n\n    for (ConstraintViolation<Item> v : violations) {\n        System.out.println(v.getPropertyPath() + \" = \" + v.getMessage());\n    }\n}",
+   "note": "**`jakarta.validation.Validator`** 다. 5.9절의 `org.springframework.validation.Validator` 와 **이름만 같고 다른 것**이다.\n\n결과는 이렇게 나온다.\n\n```\nitemName = 공백일 수 없습니다\nprice = 1000에서 1000000 사이여야 합니다\nquantity = 9999 이하여야 합니다\n```\n\n**한글이 나온다.** 하이버네이트 밸리데이터가 언어별 기본 메시지를 들고 있고, `Locale` 을 보고 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Validator 라는 이름이 둘이다",
+   "md": "**같은 이름의 인터페이스가 둘**이라 import 를 헷갈리기 쉽다.\n\n| | 패키지 | 메서드 |\n|---|---|---|\n| **스프링** | `org.springframework.validation` | `supports` · `validate(target, errors)` |\n| **표준** | `jakarta.validation` | `validate(object)` |\n\n**반환도 다르다.** 스프링 것은 `Errors` 에 담고, 표준 것은 `Set<ConstraintViolation>` 을 돌려준다.\n\n**6.2절에서 스프링이 이 둘을 이어 붙인다.** `LocalValidatorFactoryBean` 이 표준 검증기를 스프링 `Validator` 로 감싼다.\n\n> IDE 가 자동 import 할 때 **엉뚱한 쪽을 고르는 일**이 흔하다. 컴파일이 안 되면 import 부터 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "자주 쓰는 것들",
+   "md": "| | 무엇 | 주의 |\n|---|---|---|\n| `@NotNull` | null 이 아님 | 빈 문자열은 통과 |\n| `@NotEmpty` | null·빈 문자열 아님 | **공백 `\" \"` 은 통과** |\n| `@NotBlank` | null·빈·공백 아님 | 문자열 전용 |\n| `@Size(min,max)` | 길이·크기 | 문자열·컬렉션 |\n| `@Min` `@Max` | 숫자 범위 | 표준 |\n| `@Range` | 범위 한 번에 | **하이버네이트** |\n| `@Email` | 이메일 형식 | 느슨하다 |\n| `@Pattern` | 정규식 | |\n\n**위 셋이 헷갈린다.** 문자열이면 거의 **`@NotBlank`** 가 맞다.\n\n**`@Email` 은 생각보다 느슨하다** — `a@b` 도 통과한다. RFC 상 유효하기 때문이다. 엄격하게 하려면 `@Pattern` 을 쓰거나 **실제로 메일을 보내 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 아직은 테스트로",
+   "sql": "# 스프링에 붙이기 전, 표준 검증기만으로\n\nItem item = new Item(\" \", 0, 10000);\nSet<ConstraintViolation<Item>> violations = validator.validate(item);\n\n# 출력\n#   itemName = 공백일 수 없습니다\n#   price = 1000에서 1000000 사이여야 합니다\n#   quantity = 9999 이하여야 합니다\n\n# Locale 을 영어로 두면\n#   itemName = must not be blank\n#   price = must be between 1000 and 1000000\n#   quantity = must be less than or equal to 9999\n\n# 6.2 절에서 스프링에 붙이면 이렇게 나간다\nPOST /validation/v3/items/add HTTP/1.1\nitemName=&price=0&quantity=10000\n\nHTTP/1.1 200 \n<div class=\"field-error\">공백일 수 없습니다</div>\n<div class=\"field-error\">1000에서 1000000 사이여야 합니다</div>",
+   "note": "**웹이 없어도 검증이 돈다.** 4.2절의 `MessageSource` 테스트와 같은 성격이다 — 스프링 웹 계층과 무관한 기능이라 테스트로 먼저 확인한다.\n\n**언어에 따라 메시지가 바뀐다.** 4장에서 만든 국제화와 별개로, **하이버네이트 밸리데이터가 자체 메시지 번들**을 들고 있다.\n\n아래 응답이 6.2절의 결과인데 — **문구가 어색하다.** \"공백일 수 없습니다\" 는 어느 필드 이야기인지 안 보인다. **6.3절이 이것을 우리 메시지로 갈아 끼운다.**"
+  }
+ ],
+ "recap": [
+  "**규칙이 필드 위로** 올라간다. 30줄이 여섯 줄.",
+  "**숫자가 한 곳**에만 있다.",
+  "**자바 표준(JSR-380)** 이다. 스프링 것이 아니다.",
+  "**명세와 구현이 나뉜다** — 하이버네이트 밸리데이터가 사실상 표준 구현.",
+  "**패키지로 구분**한다 — `jakarta` 는 표준, `hibernate` 는 확장.",
+  "**`javax` 가 `jakarta` 로 바뀌었다** — 부트 3.x 부터. 옛 예제와 안 붙는다.",
+  "**`Validator` 라는 이름이 둘**이다 — 스프링 것과 표준 것.",
+  "**스프링 없이도 돈다** — `Set<ConstraintViolation>` 을 돌려준다.",
+  "**문자열이면 거의 `@NotBlank`** 다. `@NotEmpty` 는 공백을 통과시킨다.",
+  "**기본 메시지가 어색하다** — 6.3절에서 갈아 낀다."
+ ],
+ "drills": [
+  {
+   "task": "`Item` 에 애너테이션을 붙인다.",
+   "done_when": "`ItemValidator` 없이도 규칙이 표현된 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "표준 `Validator` 로 테스트한다.",
+   "done_when": "`ConstraintViolation` 이 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@NotEmpty` 로 바꾸고 공백 하나를 넣는다.",
+   "done_when": "통과하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Locale` 을 영어로 바꿔 본다.",
+   "done_when": "메시지가 영어로 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Range` 의 import 를 본다.",
+   "done_when": "하이버네이트 패키지인 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Bean Validation 은 무엇인가?",
+   "a": "자바 표준 명세(JSR-380)다. 스프링과 무관하며 하이버네이트 밸리데이터가 사실상 표준 구현이다."
+  },
+  {
+   "q": "표준과 확장을 어떻게 구분하나?",
+   "a": "패키지 이름이다. `jakarta.validation` 은 표준, `org.hibernate.validator` 는 확장이다."
+  },
+  {
+   "q": "`javax` 가 왜 `jakarta` 가 됐나?",
+   "a": "Java EE 가 이클립스 재단으로 넘어가면서 `javax` 이름을 못 쓰게 되어 Jakarta EE 로 바뀌었다."
+  },
+  {
+   "q": "`@NotEmpty` 와 `@NotBlank` 의 차이는?",
+   "a": "`@NotEmpty` 는 공백 문자열을 통과시키고 `@NotBlank` 는 막는다."
+  },
+  {
+   "q": "`Validator` 이름이 둘인 것은?",
+   "a": "스프링의 `org.springframework.validation.Validator` 와 표준의 `jakarta.validation.Validator` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Bean Validation",
+   "en": "JSR-380",
+   "what": "필드에 애너테이션으로 검증 규칙을 다는 자바 표준 명세."
+  },
+  {
+   "term": "하이버네이트 밸리데이터",
+   "en": "Hibernate Validator",
+   "what": "Bean Validation 의 사실상 표준 구현체. 표준 외 애너테이션도 제공한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate Validator Reference",
+   "url": "https://hibernate.org/validator/documentation/",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

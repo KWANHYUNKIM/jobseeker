@@ -1,0 +1,140 @@
+{
+ "book": "spring-mvc-2",
+ "id": "bean-validation-apply",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "스프링 적용",
+ "summary": "@Valid 와 @Validated. 어디까지 자동인가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "부트가 무엇을 자동 등록하는지 안다.",
+  "타입 오류가 난 필드를 건너뛴다는 것을 안다.",
+  "직접 만든 `Validator` 와의 관계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "의존성 하나로 붙는다",
+   "ascii": "   spring-boot-starter-validation\n        |\n        v\n   LocalValidatorFactoryBean  (auto configured)\n        |\n        +--> implements org.springframework.validation.Validator\n        +--> wraps      jakarta.validation.Validator\n        |\n        v\n   registered as global validator\n        |\n        v\n   @Validated Item item, BindingResult bindingResult\n\n   5.10 절의 @InitBinder 가 필요 없다",
+   "note": "**`LocalValidatorFactoryBean` 이 두 `Validator` 를 잇는다.** 6.1절에서 이름이 둘이라고 한 그것."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@PostMapping(\"/add\")\npublic String addItem(@Validated @ModelAttribute Item item,\n                      BindingResult bindingResult,\n                      RedirectAttributes redirectAttributes) {\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v3/addForm\";\n    }\n    // 성공\n}",
+   "note": "**5.10절과 코드가 똑같다.** 바뀐 것은 `@InitBinder` 가 없어진 것뿐이다.\n\n**전역 검증기**로 등록되어 있어서 모든 컨트롤러에서 자동으로 돈다. 5.10절에서 `@InitBinder` 가 컨트롤러마다 필요했던 것과 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "직접 등록한 검증기가 있으면",
+   "md": "```java\n@InitBinder\npublic void init(WebDataBinder dataBinder) {\n    dataBinder.addValidators(itemValidator);\n}\n```\n\n**이 줄이 있으면 전역 검증기가 안 돈다.**\n\n`WebDataBinder` 에 검증기를 직접 넣으면 **그것으로 대체**된다. 애너테이션이 붙어 있어도 무시된다.\n\n**5장 코드를 그대로 두고 6장을 시작하면** 애너테이션이 안 먹혀서 한참 찾는다.\n\n**둘을 같이 쓰려면 둘 다 등록**한다.\n\n```java\ndataBinder.addValidators(itemValidator);   // 전역이 꺼지므로\n// 애너테이션 검증도 필요하면 별도로 처리해야 한다\n```\n\n**보통은 이렇게 안 한다.** 6.4절에서 보듯 **애너테이션 + 컨트롤러의 자바 코드**로 나누는 편이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "타입 오류가 난 필드는 건너뛴다",
+   "md": "5.8절의 함정이 자동으로 풀린다.\n\n> **타입 오류가 나면 그 필드가 `null`** 이라 검증 로직이 또 걸린다.\n\n```\nprice=abc\n  -> typeMismatch FieldError 생성\n  -> @Range 검증은 건너뛴다\n  -> 오류가 하나만 뜬다\n```\n\n**바인딩에 실패한 필드에는 Bean Validation 을 적용하지 않는다.** 값이 없으니 검사할 것도 없다는 판단이다.\n\n**5.8절에서 손으로 하던 것**\n\n```java\nif (bindingResult.hasFieldErrors(\"price\")) { ... }\n```\n\n**이게 필요 없어졌다.** 5.11절에서 \"6장은 이것을 자동으로 한다\" 고 한 자리."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@NotNull 과 타입 오류가 겹치지 않는 이유",
+   "md": "**헷갈리기 쉬운 지점**이다.\n\n```java\n@NotNull\nprivate Integer price;\n```\n\n`price=abc` 를 보내면 — **`typeMismatch` 하나만** 뜬다. `@NotNull` 은 안 걸린다.\n\n`price` 는 실제로 `null` 인데도 그렇다. **바인딩 실패한 필드는 건너뛰기 때문**이다.\n\n**그러면 `@NotNull` 은 언제 걸리나** — 파라미터가 **아예 안 왔을 때**다.\n\n```\nprice=abc     ->  typeMismatch      (바인딩 실패)\nprice=        ->  @NotNull          (빈 문자열 -> null)\n(없음)         ->  @NotNull          (안 옴)\n```\n\n**빈 문자열이 `null` 이 되는 것**은 5.10절의 `WebDataBinder` 가 하는 일이다. 기본 설정에 빈 문자열을 `null` 로 바꾸는 에디터가 들어 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "아직 어색한 것",
+   "md": "**메시지가 우리 것이 아니다.**\n\n```\n공백일 수 없습니다\n1000에서 1000000 사이여야 합니다\n```\n\n**하이버네이트 밸리데이터의 기본 문구**다. 나쁘지는 않은데 —\n\n1. **필드 이름이 없다** — 오류가 여럿이면 어느 것인지 헷갈린다\n2. **4장에서 만든 메시지 체계 밖**이다 — `errors.properties` 를 안 본다\n3. **서비스의 말투와 다르다**\n\n**6.3절이 이것을 푼다.** 5장의 `MessageCodesResolver` 규칙이 여기서도 그대로 쓰인다.\n\n> **당장 급하면 애너테이션에 직접 쓸 수도** 있다.\n>\n> ```java\n> @NotBlank(message = \"상품 이름을 입력해 주세요\")\n> ```\n>\n> **되긴 되는데** 4장에서 메시지를 밖으로 뺀 이유가 그대로 무너진다. 국제화도 안 되고 기획자가 못 고친다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v3/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=0&quantity=10000\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">공백일 수 없습니다</div>\n<input value=\"\" class=\"form-control field-error\">\n<div class=\"field-error\">1000에서 1000000 사이여야 합니다</div>\n<input value=\"0\" class=\"form-control field-error\">\n<div class=\"field-error\">9999 이하여야 합니다</div>\n<input value=\"10000\" class=\"form-control field-error\">\n\n# 타입 오류는 하나만 뜬다\nitemName=itemA&price=abc&quantity=10\n\nHTTP/1.1 200 \n<div class=\"field-error\">숫자를 입력해 주세요.</div>\n<input value=\"abc\" class=\"form-control field-error\">\n\n# @Range 오류는 안 뜬다 - 바인딩 실패한 필드는 건너뛴다",
+   "note": "**첫 응답의 구조가 5장과 똑같다.** `rejectedValue` 도 살아 있고(`value=\"0\"`) `th:errors` 도 그대로 — **`FieldError` 로 변환되어 같은 `BindingResult` 에 담기기 때문**이다.\n\n**둘째가 이 절의 성과**다. 5.8절에서 오류 둘이 뜨던 자리에 **하나만** 뜬다. 그리고 그 하나는 5장에서 만든 `typeMismatch.java.lang.Integer` 메시지다 — **6장으로 넘어와도 그대로 쓰인다.**\n\n**메시지 두 종류가 섞여 있다** — 위는 하이버네이트, 아래는 우리 `errors.properties`. 6.3절이 위쪽도 우리 것으로 만든다."
+  }
+ ],
+ "recap": [
+  "**`spring-boot-starter-validation`** 하나면 붙는다.",
+  "**`LocalValidatorFactoryBean`** 이 표준 검증기를 스프링 `Validator` 로 감싼다.",
+  "**전역 검증기**라 `@InitBinder` 가 필요 없다.",
+  "**`addValidators` 를 쓰면 전역이 꺼진다** — 5장 코드를 지워야 애너테이션이 먹는다.",
+  "**바인딩 실패한 필드는 건너뛴다** — 5.8절의 오류 둘 문제가 자동으로 풀린다.",
+  "**`@NotNull` 은 타입 오류와 안 겹친다** — 건너뛰기 때문.",
+  "**빈 문자열은 `null` 이 된다** — `WebDataBinder` 의 기본 동작.",
+  "**결과는 `FieldError`** 라 5장의 화면 코드가 그대로 돈다.",
+  "**메시지가 하이버네이트 것**이다 — 6.3절에서 갈아 낀다."
+ ],
+ "drills": [
+  {
+   "task": "의존성을 넣고 `@Validated` 만으로 검증한다.",
+   "done_when": "`@InitBinder` 없이 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "5장의 `addValidators` 를 남겨 둔 채 실행한다.",
+   "done_when": "애너테이션이 안 먹는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`price=abc` 를 보낸다.",
+   "done_when": "오류가 하나만 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`price=` 로 빈 값을 보낸다.",
+   "done_when": "`@NotNull` 이 걸리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "애너테이션에 `message` 를 직접 써 본다.",
+   "done_when": "동작하지만 파일 밖이라는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트가 무엇을 자동 등록하나?",
+   "a": "`LocalValidatorFactoryBean` 을 전역 검증기로 등록한다. 표준 검증기를 스프링 `Validator` 로 감싼 것이다."
+  },
+  {
+   "q": "`addValidators` 를 쓰면 무엇이 달라지나?",
+   "a": "전역 검증기가 대체되어 애너테이션 검증이 돌지 않는다."
+  },
+  {
+   "q": "타입 오류가 난 필드는?",
+   "a": "Bean Validation 을 건너뛴다. 값이 없으니 검사할 것도 없다는 판단이다."
+  },
+  {
+   "q": "`price=abc` 에 `@NotNull` 이 왜 안 걸리나?",
+   "a": "바인딩에 실패한 필드라 건너뛰기 때문이다. `@NotNull` 은 값이 아예 안 왔을 때 걸린다."
+  },
+  {
+   "q": "검증 결과는 어디에 담기나?",
+   "a": "`FieldError` 로 변환되어 `BindingResult` 에 담긴다. 그래서 5장의 화면 코드가 그대로 동작한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "LocalValidatorFactoryBean",
+   "en": "",
+   "what": "표준 Bean Validation 검증기를 스프링 `Validator` 로 감싸는 어댑터. 부트가 자동 등록한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

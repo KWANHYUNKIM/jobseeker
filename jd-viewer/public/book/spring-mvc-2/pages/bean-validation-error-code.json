@@ -1,0 +1,172 @@
+{
+ "book": "spring-mvc-2",
+ "id": "bean-validation-error-code",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "에러 코드",
+ "summary": "5장의 MessageCodesResolver 규칙이 여기서도.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "애너테이션 이름이 오류 코드가 되는 것을 안다.",
+  "메시지를 `errors.properties` 로 옮길 수 있다.",
+  "메시지가 결정되는 순서를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.2절이 남긴 것 — **메시지가 하이버네이트 것**이다.\n\n**5장에서 만든 체계 안으로 가져온다.** 새로 배울 것이 거의 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "애너테이션 이름이 코드다",
+   "ascii": "   @NotBlank on Item.itemName\n        |\n        v\n   annotation name becomes the error code\n        |\n        v\n   NotBlank.item.itemName\n   NotBlank.itemName\n   NotBlank.java.lang.String\n   NotBlank\n        |\n        v\n   not found in errors.properties\n        |\n        v\n   annotation default message\n\n   5.7 절의 규칙 그대로다. 코드만 자동으로 지어진다",
+   "note": "**5.7절의 네 단계 그대로**다. `range` 자리에 `NotBlank` 가 들어갔을 뿐."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5.6절의 규칙을 애너테이션이 강제한다",
+   "md": "5.6절에서 이렇게 적었다.\n\n> **코드 이름은 규칙의 종류로** 짓는다 — `required` `range`, `itemNameRequired` 가 아니라.\n\n**애너테이션 이름은 당연히 규칙의 종류**다. `@NotBlank` `@Range` `@Max`.\n\n**나쁘게 지을 방법이 없다.** 그리고 오타를 내면 **컴파일이 안 된다** — 5.11절이 남긴 문제 셋째가 이렇게 풀린다.\n\n**대문자로 시작하는 것**만 5장과 다르다. `required` 가 아니라 `NotBlank` 다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "errors.properties",
+   "code": "#==== 기본 ====\nNotBlank=공백은 입력할 수 없습니다.\nRange={0} ~ {1} 까지 허용합니다.\nMax={0} 까지 허용합니다.\nNotNull=필수 값입니다.\n\n#==== 특별한 것만 ====\nNotBlank.item.itemName=상품 이름을 적어 주세요.",
+   "note": "**5.6절의 파일 구조와 똑같다.** 기본은 아래 단계에, 예외만 위 단계에.\n\n**`{0}` `{1}` 이 어디서 오나** — 애너테이션의 속성이다. `@Range(min=1000, max=1000000)` 의 값이 자동으로 들어간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "{0} 이 필드 이름이다",
+   "md": "**5장과 다른 점 하나**다.\n\n```\n# 5 장 - 내가 넘긴 값이 0 번부터\nrange={0} ~ {1} 까지 허용합니다.\n   rejectValue(\"price\", \"range\", new Object[]{1000, 1000000}, null)\n   -> 1000 ~ 1000000\n\n# 6 장 - 0 번이 필드 이름이다\nRange={0} 은 {2} ~ {1} 까지 허용합니다.\n   -> price 은 1000 ~ 1000000\n```\n\n**`{0}` 이 필드 이름이고 나머지가 뒤로 밀린다.** 그리고 **`max` 가 `{1}`, `min` 이 `{2}`** 로 **역순**이다 — 애너테이션 속성을 이름 알파벳 순으로 정렬하기 때문이다.\n\n**순서를 외우지 말고 확인한다.** 5.7절의 `#fields.detailedErrors()` 로 찍어 보면 된다.\n\n> 그래서 **실무에서는 인자를 잘 안 쓴다.** `Range=범위를 확인해 주세요` 처럼 값 없이 쓰거나, 1단계 코드로 문장을 통째로 쓴다."
+  },
+  {
+   "type": "table",
+   "caption": "메시지가 정해지는 순서",
+   "note": "**2번이 있으면 파일을 안 본다.** 6.2절에서 `message` 속성을 권하지 않은 이유다.",
+   "columns": [
+    "",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "**1**",
+     "`errors.properties` 의 코드 단계"
+    ],
+    [
+     "**2**",
+     "애너테이션의 `message` 속성"
+    ],
+    [
+     "**3**",
+     "하이버네이트 기본 메시지"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "message 속성이 defaultMessage 다",
+   "md": "5.4절의 `FieldError` 생성자를 다시 본다.\n\n```java\nnew FieldError(objectName, field, rejectedValue, bindingFailure,\n               codes, arguments, defaultMessage)\n```\n\n**애너테이션의 `message` 가 `defaultMessage` 로 들어간다.**\n\n```java\n@NotBlank(message = \"공백은 안 됩니다\")\n```\n\n**그래서 파일보다 나중**이다 — `MessageSource` 가 코드를 다 못 찾았을 때 쓰는 것.\n\n**하이버네이트 기본 메시지도 `message` 속성의 기본값**이다.\n\n```java\npublic @interface NotBlank {\n    String message() default \"{jakarta.validation.constraints.NotBlank.message}\";\n}\n```\n\n**중괄호가 붙어 있다** — 이것도 메시지 키다. 하이버네이트가 자기 번들에서 찾는다.\n\n**층이 세 겹**인 셈이고, 5.5절에서 `defaultMessage` 를 `null` 로 두면 500 이 나던 것과 달리 **여기는 항상 무언가 나온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "필드 이름을 한글로",
+   "md": "**오류가 여럿일 때 어느 필드인지 안 보이는 문제**가 남는다.\n\n```\n공백은 입력할 수 없습니다.\n1000 ~ 1000000 까지 허용합니다.\n```\n\n**화면에서 필드 옆에 붙으니** 보통은 문제가 안 되는데, 폼 위에 모아 보여 줄 때는 헷갈린다.\n\n**1단계 코드로 문장을 쓰는 것**이 가장 확실하다.\n\n```properties\nNotBlank.item.itemName=상품 이름을 적어 주세요.\nRange.item.price=가격은 1,000 ~ 1,000,000 원 사이여야 합니다.\n```\n\n**필드가 많으면 품이 드는데**, 사용자에게 보이는 문장이라 **그만한 값어치가 있다.**\n\n> 4장의 `label.item.itemName` 을 재사용하고 싶어지는데 — **된다.** 메시지 안에서 다른 메시지를 부르는 표기가 있다. 다만 구현체마다 다르고 복잡해서 이 책은 안 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v3/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=0&quantity=10000\n\n# errors.properties 에 아무것도 없을 때\nHTTP/1.1 200 \n<div class=\"field-error\">공백일 수 없습니다</div>\n<div class=\"field-error\">1000에서 1000000 사이여야 합니다</div>\n\n# NotBlank, Range 를 추가하면\n#   NotBlank=공백은 입력할 수 없습니다.\n#   Range={0} ~ {1} 까지 허용합니다.\n\nHTTP/1.1 200 \n<div class=\"field-error\">공백은 입력할 수 없습니다.</div>\n<div class=\"field-error\">price ~ 1000000 까지 허용합니다.</div>\n\n# {0} 이 필드 이름이었다\n\n# 1단계 코드로 문장을 쓰면\n#   NotBlank.item.itemName=상품 이름을 적어 주세요.\n#   Range.item.price=가격은 1,000 ~ 1,000,000 원 사이여야 합니다.\n\nHTTP/1.1 200 \n<div class=\"field-error\">상품 이름을 적어 주세요.</div>\n<div class=\"field-error\">가격은 1,000 ~ 1,000,000 원 사이여야 합니다.</div>",
+   "note": "**둘째 응답의 `price ~ 1000000 까지`** 가 이 절의 함정을 그대로 보여 준다. `{0}` 이 `1000` 일 줄 알았는데 **필드 이름**이 나왔고 `{1}` 은 `max` 였다.\n\n셋째가 실무에서 쓰는 모양이다. **인자를 안 쓰고 문장을 통째로** 쓴다 — 숫자에 콤마도 넣을 수 있고 어순도 자유롭다. 4.4절에서 국제화의 어려움으로 꼽은 **어순 문제**의 해법이기도 하다.\n\n**세 응답 모두 자바 코드는 한 글자도 안 바뀌었다.** 4.3절·5.6절과 같은 성격이다."
+  }
+ ],
+ "recap": [
+  "**애너테이션 이름이 오류 코드**가 된다 — `NotBlank`, `Range`.",
+  "**5.7절의 네 단계 규칙 그대로**다. 코드만 자동으로 지어진다.",
+  "**5.6절의 \"규칙의 종류로 짓기\" 를 애너테이션이 강제**한다.",
+  "**오타를 내면 컴파일이 안 된다** — 5.11절의 문제 셋째가 풀린다.",
+  "**`{0}` 이 필드 이름**이고 속성은 알파벳 순으로 뒤에 붙는다.",
+  "**순서를 외우지 말고 확인**한다. 실무에선 인자를 잘 안 쓴다.",
+  "메시지 순서 — **파일 → `message` 속성 → 하이버네이트 기본**.",
+  "**`message` 가 `defaultMessage`** 다. 그래서 파일보다 나중이다.",
+  "**1단계 코드로 문장을 통째로** 쓰는 것이 가장 확실하다."
+ ],
+ "drills": [
+  {
+   "task": "`errors.properties` 에 `NotBlank` 를 추가한다.",
+   "done_when": "하이버네이트 기본 메시지가 대체되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Range={0} ~ {1}` 로 두고 결과를 본다.",
+   "done_when": "`{0}` 이 필드 이름인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`#fields.detailedErrors()` 로 코드 배열을 찍는다.",
+   "done_when": "`NotBlank.item.itemName` 등 네 개가 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "애너테이션에 `message` 를 주고 파일에도 코드를 둔다.",
+   "done_when": "파일이 이기는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1단계 코드로 문장을 쓴다.",
+   "done_when": "콤마와 어순을 자유롭게 쓸 수 있는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "오류 코드는 무엇으로 정해지나?",
+   "a": "애너테이션 이름이다. `@NotBlank` 면 `NotBlank.item.itemName` 부터 네 단계로 펼쳐진다."
+  },
+  {
+   "q": "5장과 규칙이 다른가?",
+   "a": "같다. `MessageCodesResolver` 의 네 단계 그대로이고 코드만 자동으로 지어진다."
+  },
+  {
+   "q": "`{0}` 은 무엇인가?",
+   "a": "필드 이름이다. 애너테이션 속성은 알파벳 순으로 그 뒤에 붙는다."
+  },
+  {
+   "q": "메시지가 정해지는 순서는?",
+   "a": "`errors.properties` 의 코드 단계, 애너테이션의 `message` 속성, 하이버네이트 기본 메시지 순이다."
+  },
+  {
+   "q": "왜 `message` 속성보다 파일이 먼저인가?",
+   "a": "`message` 가 `FieldError` 의 `defaultMessage` 로 들어가기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "defaultMessage",
+   "en": "",
+   "what": "오류 코드로 메시지를 못 찾았을 때 쓰는 문구. 애너테이션의 `message` 속성이 여기로 들어간다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

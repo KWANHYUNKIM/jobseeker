@@ -1,0 +1,146 @@
+{
+ "book": "spring-mvc-2",
+ "id": "object-error",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "오브젝트 오류",
+ "summary": "@ScriptAssert 를 권하지 않는 이유.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여러 필드를 함께 보는 검증의 선택지를 안다.",
+  "`@ScriptAssert` 를 왜 안 쓰는지 안다.",
+  "애너테이션과 자바 코드를 어떻게 나눌지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**애너테이션은 필드 하나만 본다.**\n\n```\n가격 x 수량의 합이 10,000원 이상\n```\n\n**두 필드를 같이** 봐야 한다. `@Range` 를 어디에 붙일지부터 막힌다."
+  },
+  {
+   "type": "figure",
+   "caption": "선택지 둘",
+   "ascii": "   field error       one field                annotation\n   object error      two or more fields       ???\n\n   @ScriptAssert(script = \"_this.price * _this.quantity >= 10000\")\n        |\n        +--> string, not compiled\n        +--> no IDE support\n        +--> hard to test\n        +--> removed in Hibernate Validator 8\n\n   java code in controller\n        |\n        +--> compiled, tested, debuggable",
+   "note": "**둘 중 하나는 쓰지 않는다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "@ScriptAssert",
+   "code": "@ScriptAssert(lang = \"javascript\",\n              script = \"_this.price * _this.quantity >= 10000\",\n              message = \"총합이 10000 이상이어야 합니다\")\npublic class Item {\n    ...\n}",
+   "note": "**클래스에 붙인다.** `_this` 가 그 객체를 가리키고, 스크립트가 `false` 면 오류다.\n\n**동작한다.** 그런데 쓰지 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "쓰지 않는 이유 다섯",
+   "md": "**1. 문자열이라 컴파일러가 안 본다**\n\n`_this.pirce` 라고 오타를 내면 **실행할 때** 안다. 6.3절에서 \"오타를 내면 컴파일이 안 된다\" 는 장점을 얻었는데 **여기서 도로 잃는다.**\n\n**2. IDE 지원이 없다**\n\n자동 완성도 리팩터링도 안 된다. 필드 이름을 바꾸면 **이 문자열은 안 따라온다.**\n\n**3. 테스트·디버깅이 어렵다**\n\n중단점을 못 건다. 조건이 조금만 복잡해지면 왜 안 되는지 알 수가 없다.\n\n**4. 스크립트 엔진이 필요하다**\n\n**자바 15 부터 Nashorn 이 빠졌다.** 별도 의존성(GraalJS 등)을 넣어야 하고, 그러면 검증 하나 때문에 **자바스크립트 엔진이 애플리케이션에 들어온다.**\n\n**5. 표준에서 빠졌다**\n\n**하이버네이트 밸리데이터 8 에서 제거**됐다. 6.1절에서 말한 \"하이버네이트 확장\" 이라 표준의 보호도 없다.\n\n> **넷째와 다섯째가 결정적**이다. 되던 것이 버전을 올리면 안 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "자바 코드로",
+   "code": "@PostMapping(\"/add\")\npublic String addItem(@Validated @ModelAttribute Item item,\n                      BindingResult bindingResult, ...) {\n\n    // 필드 검증은 애너테이션이 했다\n    // 여러 필드를 보는 것만 여기서\n    if (item.getPrice() != null && item.getQuantity() != null) {\n        int resultPrice = item.getPrice() * item.getQuantity();\n        if (resultPrice < 10000) {\n            bindingResult.reject(\"totalPriceMin\",\n                    new Object[]{10000, resultPrice}, null);\n        }\n    }\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v3/addForm\";\n    }\n}",
+   "note": "**5.5절의 `reject` 를 그대로 쓴다.** 오류 코드도 메시지도 5장에서 만든 것.\n\n**null 체크가 여전히 필요**하다 — 애너테이션이 걸러도 **검증은 멈추지 않고 컨트롤러까지 온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "섞어 쓰는 것이 정상이다",
+   "md": "**전부 애너테이션으로 하려는 것이 잘못된 목표**다.\n\n| 검증 | 무엇으로 |\n|---|---|\n| 필드 하나 | **애너테이션** |\n| 여러 필드 | **자바 코드** |\n| 외부 조회 (중복 확인 등) | **자바 코드** |\n| 업무 규칙 | **서비스 계층** |\n\n**5.11절에서 예고한 그대로**다.\n\n> **그래서 `Validator` 를 배운 것이 낭비가 아니다.** 둘을 섞어 쓴다.\n\n**어디에 둘까** — 세 자리가 있다.\n\n1. **컨트롤러** — 지금 방식. 간단할 때\n2. **`Validator` 구현** — 5.9절 방식. 재사용·테스트가 필요할 때\n3. **서비스 계층** — 업무 규칙일 때. 예외를 던진다\n\n**3번이 중요하다.** \"재고가 부족하다\" 같은 것은 **검증이 아니라 업무 규칙**이다. 화면 검증으로 막아도 **동시에 두 사람이 주문하면 뚫린다.** 서비스가 다시 확인하고 예외를 던져야 한다.\n\n> 5.1절의 여섯 겹 그림에서 **5번(업무 규칙)과 6번(DB 제약)** 이 그것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "커스텀 애너테이션도 만들 수 있다",
+   "md": "**여러 필드를 보는 애너테이션을 직접 만들 수도** 있다.\n\n```java\n@Constraint(validatedBy = TotalPriceValidator.class)\n@Target(ElementType.TYPE)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface TotalPriceMin { ... }\n```\n\n**`@ScriptAssert` 와 달리 자바 코드**라 위의 다섯 문제가 없다.\n\n**언제 만드나** — **여러 곳에서 반복되는 규칙**일 때다. 사업자등록번호 형식, 전화번호 형식처럼.\n\n**한 번 쓰는 규칙에 만들면 과하다.** 클래스 둘(애너테이션 + 검증기)이 생기고, 그것을 읽는 사람이 두 파일을 열어야 한다.\n\n> **이 책은 만들지 않는다.** 방법이 있다는 것만 알아 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v3/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=1000&quantity=5\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"alert alert-danger\">\n  가격 * 수량의 합은 10000원 이상이어야 합니다. 현재 값 = 5000\n</div>\n\n<input value=\"itemA\" class=\"form-control\">\n<input value=\"1000\" class=\"form-control\">\n<input value=\"5\" class=\"form-control\">\n\n# 필드에는 field-error 가 없다 - 개별 필드는 다 정상이다\n\n# 두 필드가 다 있어야 검사한다\nitemName=itemA&price=abc&quantity=5\n\nHTTP/1.1 200 \n<div class=\"field-error\">숫자를 입력해 주세요.</div>\n\n# 총합 오류는 안 뜬다 - price 가 null 이라 건너뛰었다",
+   "note": "**세 입력이 전부 `field-error` 없이 정상**인데 위에 오류가 하나 떠 있다. **글로벌 오류가 어떤 것인지**를 응답이 그대로 보여 준다 — 5.1절에서 나눈 그 구분이다.\n\n`class=\"alert alert-danger\"` 로 **필드 오류와 다른 자리, 다른 모양**이다.\n\n둘째가 null 체크의 이유다. `price` 가 `null` 이라 곱셈을 건너뛰었고, **총합 오류가 안 떴다.** 사용자는 숫자를 고친 뒤에야 총합 문제를 알게 된다 — **오류를 한 번에 다 보여 주지 못하는 경우**이고, 이것은 어쩔 수 없다."
+  }
+ ],
+ "recap": [
+  "**애너테이션은 필드 하나만** 본다.",
+  "**`@ScriptAssert` 는 쓰지 않는다** — 이유 다섯.",
+  "**문자열이라 컴파일러가 안 보고 IDE 도 못 돕는다.**",
+  "**자바 15 부터 스크립트 엔진이 별도 의존성**이다.",
+  "**하이버네이트 밸리데이터 8 에서 제거**됐다.",
+  "**자바 코드로 한다** — 5.5절의 `reject` 를 그대로 쓴다.",
+  "**null 체크가 필요**하다. 애너테이션이 걸려도 컨트롤러까지 온다.",
+  "**섞어 쓰는 것이 정상**이다 — 필드는 애너테이션, 나머지는 자바.",
+  "**업무 규칙은 서비스 계층**에서 다시 확인한다. 동시성 때문에.",
+  "**커스텀 애너테이션**은 반복되는 규칙일 때만."
+ ],
+ "drills": [
+  {
+   "task": "`@ScriptAssert` 를 붙여 본다.",
+   "done_when": "의존성이 필요하거나 안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스크립트에 오타를 낸다.",
+   "done_when": "컴파일은 되고 실행할 때 안다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "자바 코드로 총합 검증을 옮긴다.",
+   "done_when": "글로벌 오류가 뜨는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "null 체크를 지우고 `price=abc` 를 보낸다.",
+   "done_when": "NPE 가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필드는 정상인데 총합만 틀린 값을 보낸다.",
+   "done_when": "`field-error` 없이 글로벌 오류만 뜨는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "애너테이션으로 여러 필드를 못 보는 이유는?",
+   "a": "애너테이션이 필드 하나에 붙어 그 값만 검사하기 때문이다."
+  },
+  {
+   "q": "`@ScriptAssert` 를 쓰지 않는 결정적 이유 둘은?",
+   "a": "자바 15 부터 스크립트 엔진이 별도 의존성이 됐고, 하이버네이트 밸리데이터 8 에서 제거됐다."
+  },
+  {
+   "q": "여러 필드 검증은 어디에 두나?",
+   "a": "컨트롤러의 자바 코드, `Validator` 구현, 또는 업무 규칙이면 서비스 계층이다."
+  },
+  {
+   "q": "왜 업무 규칙은 서비스에서 다시 확인해야 하나?",
+   "a": "화면 검증을 통과해도 동시에 여러 요청이 오면 뚫리기 때문이다."
+  },
+  {
+   "q": "커스텀 애너테이션은 언제 만드나?",
+   "a": "여러 곳에서 반복되는 규칙일 때다. 한 번 쓰는 규칙에는 과하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ScriptAssert",
+   "en": "",
+   "what": "스크립트로 객체 수준 검증을 하는 하이버네이트 확장. 하이버네이트 밸리데이터 8 에서 제거됐다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
