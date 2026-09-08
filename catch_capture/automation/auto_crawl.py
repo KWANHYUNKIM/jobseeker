@@ -298,6 +298,34 @@ def refresh_semantic() -> None:
         if conn is not None:
             conn.close()
 
+    refresh_store_vectors()
+
+
+def refresh_store_vectors() -> None:
+    """정본 DB 쪽 벡터·추천을 방금 갱신한 semantic.db 에서 맞춘다.
+
+    **다시 임베딩하지 않는다.** 바로 위 refresh_semantic 이 이번 사이클의 새 공고를
+    이미 임베딩해 SQLite 에 넣었고, 같은 모델·같은 차원이므로 URL 로 이어 옮기면
+    그대로 유효하다. 여기서 store.embed 를 부르면 같은 문장을 Ollama 에 두 번
+    보내는 셈이다 — 8GB 짜리 머신에서 크롤과 메모리를 다투는 판에 할 일이 아니다.
+
+    이게 없으면 새 공고는 DB 에 행만 생기고 벡터가 비어, 8771 검색이 그 공고를
+    FTS 로만 찾고 추천에서는 아예 빠진다(2026-09-08 에 job_embed_pending 이
+    사이클마다 쌓이는 것으로 드러났다).
+
+    DB 가 꺼져 있으면 로그만 남기고 넘어간다 — 크롤 사이클을 멈출 이유가 없다.
+    """
+    py = _python_executable()
+    for args, what in (
+        (["-m", "store.migrate_vectors", "--kind", "job"], "벡터 이관"),
+        (["-m", "store.similar", "--kind", "job"], "추천 재계산"),
+    ):
+        rc = subprocess.call([py, *args], cwd=str(BASE_DIR),
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        log(f"[store] {what} {'완료' if rc == 0 else f'건너뜀(rc={rc})'}")
+        if rc != 0:
+            return
+
 
 def _gh_env() -> dict:
     """GITHUB_TOKEN 이 없으면 gh CLI 로 토큰을 실어 GitHub API 한도를 올린다(레이더 repo 검증)."""
