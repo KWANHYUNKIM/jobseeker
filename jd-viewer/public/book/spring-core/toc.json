@@ -238,7 +238,7 @@
           "title": "IoC, DI, 그리고 컨테이너",
           "summary": "제어의 역전·의존관계 주입·컨테이너. 세 낱말이 방금 만든 코드의 이름이었다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",
@@ -246,7 +246,7 @@
           "title": "스프링으로 전환하기",
           "summary": "AppConfig 에 @Configuration 을 붙인다. 우리가 만든 것과 스프링이 같은 일을 한다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -261,7 +261,7 @@
           "title": "스프링 컨테이너 생성",
           "summary": "ApplicationContext 가 만들어질 때 일어나는 두 단계 — 빈 등록과 의존관계 설정.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -269,7 +269,7 @@
           "title": "컨테이너에 등록된 모든 빈 조회",
           "summary": "내가 등록한 빈과 스프링이 등록한 빈을 구분해서 찍어 본다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",

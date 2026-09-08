@@ -1,0 +1,295 @@
+{
+ "book": "spring-core",
+ "id": "ioc-di-container",
+ "no": "3.8",
+ "chapter": 3,
+ "title": "IoC, DI, 그리고 컨테이너",
+ "summary": "제어의 역전·의존관계 주입·컨테이너. 세 낱말이 방금 만든 코드의 이름이었다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "제어의 역전이 무엇이 뒤집힌 것인지 코드로 지목할 수 있다.",
+  "프레임워크와 라이브러리를 한 문장으로 구분할 수 있다.",
+  "정적 클래스 의존관계와 동적 객체 의존관계를 나눠서 말할 수 있다.",
+  "DI 와 IoC 컨테이너가 각각 무엇을 가리키는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.6절에서 **우리가 만든 물건에 아직 이름이 없다**고 했다. 이 절은 새 코드를 짜지 않는다. **이미 짠 코드에 이름을 붙인다.**\n\n순서가 이상해 보일 수 있다. 보통은 용어를 먼저 배우고 코드를 짠다. 그런데 그러면 \"IoC 는 제어의 역전이고, 제어권이 역전되는 것입니다\" 같은 문장만 남는다. **무엇이 불편해서 이걸 만들었는지**를 먼저 겪었으니 이제 이름이 붙는다."
+  },
+  {
+   "type": "heading",
+   "text": "제어의 역전 — 무엇이 뒤집혔나"
+  },
+  {
+   "type": "prose",
+   "md": "2장의 `OrderServiceImpl` 은 스스로 결정했다."
+  },
+  {
+   "type": "compare",
+   "caption": "제어권이 어디 있나",
+   "left": {
+    "title": "3장 이전 — 내가 정한다",
+    "lang": "java",
+    "code": "public class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository memberRepository\n            = new MemoryMemberRepository();\n    private final DiscountPolicy discountPolicy\n            = new FixDiscountPolicy();\n\n    // 무엇을 쓸지 이 클래스가 직접 정했다\n}",
+    "md": "구현 객체를 **스스로 생성하고 스스로 연결하고 스스로 실행한다.** 개발자 입장에서는 자연스러운 흐름이다."
+   },
+   "right": {
+    "title": "3장 이후 — 밖에서 정해 준다",
+    "lang": "java",
+    "code": "public class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository memberRepository;\n    private final DiscountPolicy discountPolicy;\n\n    public OrderServiceImpl(\n            MemberRepository memberRepository,\n            DiscountPolicy discountPolicy) { ... }\n\n    // 무엇이 들어오는지 이 클래스는 모른다\n}",
+    "md": "이 클래스는 **자기 로직을 실행하는 일만** 한다. 무엇을 쓸지는 `AppConfig` 가 정한다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 제어의 역전(IoC)이다",
+   "md": "프로그램의 제어 흐름을 **내가 짠 클래스가 아니라 외부가 관리**하는 것.\n\n`OrderServiceImpl` 은 이제 자기가 무엇을 쓰는지, 언제 만들어지는지 모른다. 그저 필요한 것이 생성자로 들어오면 그것을 쓸 뿐이다. **제어의 권한이 `AppConfig` 로 넘어갔다.**\n\n\"역전\" 이라는 말이 거창한데, 실제로 뒤집힌 것은 딱 하나다 — **`new` 를 누가 하는가.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "IoC 는 스프링 것이 아니다",
+   "md": "우리는 3장에서 **스프링을 한 줄도 안 쓰고** IoC 를 만들었다. `AppConfig` 는 순수 자바 클래스다.\n\nIoC 는 스프링이 발명한 개념이 아니라 **설계 방식의 이름**이다. 스프링은 그것을 편하게 해 주는 도구일 뿐이다. 이 순서를 잊으면 \"스프링이 알아서 해 주는 마법\" 으로만 남는다."
+  },
+  {
+   "type": "heading",
+   "text": "프레임워크와 라이브러리"
+  },
+  {
+   "type": "prose",
+   "md": "IoC 를 이해하면 이 오래된 질문이 한 줄로 정리된다."
+  },
+  {
+   "type": "table",
+   "caption": "구분 기준은 하나다 — 제어 흐름을 누가 쥐고 있나",
+   "note": "**내 코드가 부르면 라이브러리, 나를 부르면 프레임워크.** 이 기준 하나로 대부분 갈린다.",
+   "columns": [
+    "",
+    "제어 흐름",
+    "예"
+   ],
+   "rows": [
+    [
+     "**라이브러리**",
+     "내가 짠 코드가 **직접 호출**한다",
+     "Jackson(`objectMapper.readValue()`), Apache Commons"
+    ],
+    [
+     "**프레임워크**",
+     "**프레임워크가 내 코드를 호출**한다",
+     "JUnit, 스프링, React"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "JUnit 이 프레임워크인 이유",
+   "code": "class OrderServiceTest {\n\n    @BeforeEach\n    void setUp() { ... }        // 내가 부른 적이 없다\n\n    @Test\n    void VIP는_10퍼센트_할인() { ... }   // 내가 부른 적이 없다\n}",
+   "note": "이 코드 어디에도 `main` 이 없고 `setUp()` 을 호출하는 줄이 없다. **JUnit 이 내 메서드를 찾아서 부른다.** 나는 껍데기만 채웠다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "AppConfig 도 작은 프레임워크다",
+   "md": "지금 `MemberApp` 을 보면 이렇다.\n\n```java\nAppConfig appConfig = new AppConfig();\nMemberService memberService = appConfig.memberService();\n```\n\n아직은 내가 `AppConfig` 를 부른다 — 라이브러리에 가깝다. 3.9절에서 스프링 컨테이너에게 넘기면 **내가 부르지 않는 쪽으로** 완전히 넘어간다."
+  },
+  {
+   "type": "heading",
+   "text": "의존관계는 두 종류다"
+  },
+  {
+   "type": "prose",
+   "md": "여기서 많이 헷갈린다. **\"OrderServiceImpl 은 무엇에 의존하는가\"** 라는 질문에 답이 두 개이기 때문이다."
+  },
+  {
+   "type": "figure",
+   "caption": "정적인 클래스 의존관계 — 소스 코드만 보고 안다",
+   "ascii": "   ┌──────────────────┐          ┌──────────────────┐\n   │ OrderServiceImpl │─────────>│  DiscountPolicy  │   ← interface\n   └──────────────────┘          └──────────────────┘\n                                          △\n                                          │\n                            ┌─────────────┴─────────────┐\n                  ┌─────────┴──────────┐      ┌─────────┴──────────┐\n                  │ FixDiscountPolicy  │      │ RateDiscountPolicy │\n                  └────────────────────┘      └────────────────────┘",
+   "note": "**import 문만 보면 그릴 수 있다.** 애플리케이션을 실행하지 않아도 안다. 그런데 이 그림만 봐서는 **실제로 어떤 구현체가 주입될지 알 수 없다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "동적인 객체 의존관계 — 실행해 봐야 안다",
+   "ascii": "   ┌──────────────────┐          ┌────────────────────┐\n   │   orderService   │─────────>│ rateDiscountPolicy │   ← AppConfig 가 넣어 준 것\n   └──────────────────┘          └────────────────────┘\n            │\n            │                    ┌────────────────────────┐\n            └───────────────────>│ memoryMemberRepository │\n                                 └────────────────────────┘",
+   "note": "클래스가 아니라 **실제로 만들어진 객체**들의 연결이다. `AppConfig` 의 한 줄을 바꾸면 이 그림이 바뀐다 — **그런데 위의 클래스 그림은 그대로다.**"
+  },
+  {
+   "type": "terms",
+   "caption": "두 의존관계",
+   "items": [
+    {
+     "term": "정적인 클래스 의존관계",
+     "en": "static class dependency",
+     "what": "클래스가 사용하는 import 만 보고 판단하는 의존관계. 애플리케이션을 실행하지 않아도 분석할 수 있다. 클래스 다이어그램이 이것을 그린다."
+    },
+    {
+     "term": "동적인 객체 의존관계",
+     "en": "dynamic object dependency",
+     "what": "실행 시점에 실제로 생성된 객체들 사이의 연결. 객체 다이어그램이 이것을 그린다. 같은 클래스 구조에서 여러 가지가 나올 수 있다."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "의존관계 주입(DI)"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "DI 의 정의",
+   "md": "애플리케이션 **실행 시점(런타임)** 에 외부에서 실제 구현 객체를 생성하고, 클라이언트에 전달해서 클라이언트와 서버의 실제 의존관계가 연결되는 것.\n\n말이 길지만 우리가 3.3절에서 한 일 그대로다 — **`AppConfig` 가 `new` 해서 생성자로 넣어 준 것.**"
+  },
+  {
+   "type": "table",
+   "caption": "DI 가 주는 두 가지",
+   "note": "이 둘이 3.5절에서 \"정책 교체가 `AppConfig` 한 줄\" 이 된 이유다. **클래스는 안 건드리고 객체 연결만 바꿨다.**",
+   "columns": [
+    "할 수 있는 것",
+    "무슨 뜻인가"
+   ],
+   "rows": [
+    [
+     "**정적인 클래스 의존관계를 바꾸지 않고**",
+     "`OrderServiceImpl.java` 파일을 열지 않는다. 컴파일도 다시 안 해도 된다"
+    ],
+    [
+     "**동적인 객체 의존관계를 쉽게 바꾼다**",
+     "`AppConfig` 만 고치면 실제로 연결되는 객체가 달라진다"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "'주입' 이라는 말이 어색하다면",
+   "md": "영어 injection 을 옮긴 말이라 어색한데, 실체는 **\"밖에서 넣어 준다\"** 이상이 아니다.\n\n- 생성자로 넣으면 → 생성자 주입 (7.3절)\n- setter 로 넣으면 → 수정자 주입\n- 필드에 바로 꽂으면 → 필드 주입\n\n지금 우리가 쓴 것은 **생성자 주입**이고, 7장에서 이것이 왜 기본이 되는지 다시 판다."
+  },
+  {
+   "type": "heading",
+   "text": "IoC 컨테이너, DI 컨테이너"
+  },
+  {
+   "type": "prose",
+   "md": "`AppConfig` 처럼 **객체를 생성하고 관리하면서 의존관계를 연결해 주는 것**을 IoC 컨테이너 또는 DI 컨테이너라고 부른다.\n\n둘 다 같은 것을 가리키는데, IoC 는 범위가 너무 넓어서(프레임워크는 다 IoC 다) 최근에는 **DI 컨테이너**라고 더 많이 부른다. 어셈블러(assembler), 오브젝트 팩토리(object factory) 라고 부르기도 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨테이너가 하는 일 — 딱 두 가지",
+   "ascii": "   ┌───────────────────────────────────────────────────┐\n   │                    AppConfig                      │\n   │                                                   │\n   │   (1) create :  new MemoryMemberRepository()      │\n   │                 new RateDiscountPolicy()          │\n   │                 new OrderServiceImpl(...)         │\n   │                                                   │\n   │   (2) wire   :  orderService --> discountPolicy   │\n   │                 orderService --> memberRepository │\n   └───────────────────────────────────────────────────┘\n                             │\n                             ▼\n   ┌───────────────────────────────────────────────────┐\n   │            OrderServiceImpl, MemberServiceImpl    │   ← 그냥 받아서 쓴다\n   └───────────────────────────────────────────────────┘",
+   "note": "**만든다(create)** 와 **연결한다(wire)**. 컨테이너가 하는 일은 이 둘이 전부다. 나머지 장은 이 둘을 더 편하게, 더 안전하게 하는 이야기다."
+  },
+  {
+   "type": "heading",
+   "text": "확인 — 클래스는 그대로인데 결과가 다르다"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "AppConfig 한 줄만 바꿔 가며 두 번 실행한다",
+   "code": "// 실행 1\npublic DiscountPolicy discountPolicy() {\n    return new FixDiscountPolicy();       // 정액 1000원\n}\n\n// 실행 2\npublic DiscountPolicy discountPolicy() {\n    return new RateDiscountPolicy();      // 정률 10%\n}",
+   "note": "이 사이에 **`OrderServiceImpl.java` 는 열지 않았다.** 그러니 정적 클래스 의존관계는 두 실행에서 완전히 같다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 같은 클래스, 다른 객체 연결",
+   "sql": "$ java OrderApp     # 실행 1 (Fix)\nfind Member = memberA\norder = Order{memberId=1, itemName='itemA', itemPrice=20000, discountPrice=1000}\n\n$ java OrderApp     # 실행 2 (Rate)\nfind Member = memberA\norder = Order{memberId=1, itemName='itemA', itemPrice=20000, discountPrice=2000}\n\n# OrderServiceImpl.class 의 바이트코드는 두 실행이 동일하다.",
+   "note": "**같은 클래스 의존관계에서 다른 객체 의존관계가 나왔다.** 이 한 줄이 DI 의 전부이고, 3장 전체가 이것을 만들기 위한 과정이었다."
+  }
+ ],
+ "recap": [
+  "**제어의 역전(IoC)** — `new` 를 누가 하는가가 뒤집혔다. 그것뿐이다.",
+  "**내 코드가 부르면 라이브러리, 나를 부르면 프레임워크.** JUnit 이 대표적인 프레임워크다.",
+  "의존관계는 둘이다 — **정적 클래스**(import 로 안다) / **동적 객체**(실행해야 안다).",
+  "**DI** = 실행 시점에 외부가 구현 객체를 만들어 넣어 주는 것. 우리가 3.3절에 한 일이다.",
+  "DI 덕분에 **클래스는 안 건드리고 객체 연결만** 바꿀 수 있다.",
+  "**컨테이너가 하는 일은 만든다 + 연결한다, 둘뿐이다.**",
+  "IoC 는 스프링 것이 아니다 — 우리는 스프링 없이 만들었다."
+ ],
+ "drills": [
+  {
+   "task": "지금 프로젝트에서 쓰는 라이브러리와 프레임워크를 다섯 개 적고, '누가 누구를 부르나' 로 분류한다.",
+   "done_when": "애매한 것이 하나쯤 나오고, 왜 애매한지 설명할 수 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "`OrderServiceImpl` 의 정적 클래스 의존관계를 종이에 그린 뒤, 실행 중 객체 의존관계를 그 옆에 그린다.",
+   "done_when": "두 그림의 상자 이름이 다르다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`AppConfig` 의 `discountPolicy()` 를 Fix ↔ Rate 로 바꿔 가며 `OrderApp` 을 두 번 실행한다.",
+   "done_when": "`OrderServiceImpl.java` 를 열지 않고 결과가 1000 → 2000 으로 바뀌었다.",
+   "minutes": 10
+  },
+  {
+   "task": "3장에서 만든 것을 'IoC 컨테이너' 라는 말을 쓰지 않고 세 문장으로 설명해 본다.",
+   "done_when": "만든다·연결한다·모르게 한다 세 가지가 문장에 들어갔다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "제어의 역전에서 정확히 무엇이 역전되는가?",
+   "a": "구현 객체를 생성하고 연결하는 제어 권한. 이전에는 사용하는 클래스가 직접 `new` 했지만, 이제 외부(`AppConfig`)가 한다."
+  },
+  {
+   "q": "프레임워크와 라이브러리의 차이는?",
+   "a": "내가 짠 코드를 프레임워크가 부르면 프레임워크(JUnit, 스프링), 내 코드가 직접 부르면 라이브러리(Jackson)."
+  },
+  {
+   "q": "정적 클래스 의존관계와 동적 객체 의존관계의 차이는?",
+   "a": "전자는 소스의 import 만 보고 알 수 있고, 후자는 실행 시점에 실제로 생성·연결된 객체 관계다. 같은 클래스 구조에서 여러 객체 구조가 나올 수 있다."
+  },
+  {
+   "q": "DI 의 정의를 한 문장으로?",
+   "a": "실행 시점에 외부에서 실제 구현 객체를 생성해 클라이언트에 전달해서, 클라이언트와 서버의 실제 의존관계가 연결되는 것."
+  },
+  {
+   "q": "IoC 컨테이너가 하는 일 두 가지는?",
+   "a": "객체를 생성하는 것과 의존관계를 연결하는 것. 스프링 컨테이너도 결국 이 둘을 한다."
+  },
+  {
+   "q": "IoC 를 쓰려면 스프링이 필요한가?",
+   "a": "아니다. 3장에서 순수 자바 `AppConfig` 만으로 만들었다. 스프링은 이것을 편하게 해 주는 도구다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "IoC",
+   "en": "Inversion of Control",
+   "what": "프로그램의 제어 흐름을 내가 짠 클래스가 아니라 외부가 관리하는 것. 제어의 역전."
+  },
+  {
+   "term": "DI",
+   "en": "Dependency Injection",
+   "what": "실행 시점에 외부에서 구현 객체를 만들어 클라이언트에 넣어 주는 것. 의존관계 주입."
+  },
+  {
+   "term": "DI 컨테이너",
+   "en": "DI container",
+   "what": "객체를 생성·관리하고 의존관계를 연결해 주는 것. 어셈블러, 오브젝트 팩토리라고도 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Martin Fowler — Inversion of Control Containers and the Dependency Injection pattern",
+   "url": "https://martinfowler.com/articles/injection.html",
+   "publisher": "martinfowler.com"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

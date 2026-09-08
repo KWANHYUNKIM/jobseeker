@@ -1,0 +1,274 @@
+{
+ "book": "spring-core",
+ "id": "to-spring",
+ "no": "3.9",
+ "chapter": 3,
+ "title": "스프링으로 전환하기",
+ "summary": "AppConfig 에 @Configuration 을 붙인다. 우리가 만든 것과 스프링이 같은 일을 한다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Configuration` 과 `@Bean` 으로 설정 클래스를 스프링에게 넘길 수 있다.",
+  "`ApplicationContext` 에서 빈을 꺼내 쓸 수 있다.",
+  "스프링 빈의 이름이 어디서 오는지 안다.",
+  "지금 시점에서 코드가 오히려 복잡해졌다는 것과, 그 대가로 무엇을 얻는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.8절까지 만든 것은 **스프링 없는 DI 컨테이너**다. 잘 돌아간다. 그런데 이 책의 제목이 스프링이니, 이제 넘긴다.\n\n놀라운 것은 **바꿀 것이 거의 없다는 점**이다. `AppConfig` 의 구조를 하나도 안 바꾸고 어노테이션 두 개만 붙인다."
+  },
+  {
+   "type": "heading",
+   "text": "AppConfig 에 어노테이션을 붙인다"
+  },
+  {
+   "type": "compare",
+   "caption": "설정 클래스",
+   "left": {
+    "title": "순수 자바 (3.4절)",
+    "lang": "java",
+    "code": "public class AppConfig {\n\n    private final MemberRepository memberRepository\n            = new MemoryMemberRepository();\n\n    public MemberService memberService() {\n        return new MemberServiceImpl(memberRepository);\n    }\n\n    public OrderService orderService() {\n        return new OrderServiceImpl(\n                memberRepository, discountPolicy());\n    }\n\n    public DiscountPolicy discountPolicy() {\n        return new RateDiscountPolicy();\n    }\n}",
+    "md": "객체를 하나만 만들려고 **필드로 뺐다.** 3.4절에서 이 방식의 한계도 적었다."
+   },
+   "right": {
+    "title": "스프링",
+    "lang": "java",
+    "code": "@Configuration\npublic class AppConfig {\n\n    @Bean\n    public MemberService memberService() {\n        return new MemberServiceImpl(memberRepository());\n    }\n\n    @Bean\n    public OrderService orderService() {\n        return new OrderServiceImpl(\n                memberRepository(), discountPolicy());\n    }\n\n    @Bean\n    public MemberRepository memberRepository() {\n        return new MemoryMemberRepository();\n    }\n\n    @Bean\n    public DiscountPolicy discountPolicy() {\n        return new RateDiscountPolicy();\n    }\n}",
+    "md": "**필드를 다시 메서드로 되돌렸다.** `memberRepository()` 를 두 번 부르는데도 객체는 하나다 — 스프링이 보장한다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필드로 뺐던 것을 왜 되돌리나",
+   "md": "3.4절에서 우리는 **어쩔 수 없이** 필드로 뺐다. 순수 자바에서는 메서드를 두 번 부르면 `new` 도 두 번 실행되니까.\n\n그런데 필드 방식은 3.4절 끝에 적은 대로 한계가 있었다 — 선언 순서가 의존 순서에 묶이고, 조건부 생성이 어렵다.\n\n`@Configuration` 을 붙이면 **메서드로 두고도 객체가 하나만** 만들어진다. 우리가 손으로 하던 것을 스프링이 대신 해 주는 첫 번째 자리다.\n\n어떻게 그게 되는지는 **5.5~5.6절**에서 판다. 지금은 \"된다\" 만 확인하고 넘어간다 — 실제로 확인해 볼 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "어노테이션 두 개가 하는 일",
+   "columns": [
+    "어노테이션",
+    "붙이는 자리",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "`@Configuration`",
+     "클래스",
+     "이 클래스가 **설정 정보**라고 알린다. 3.5절에서 말한 '구성 영역' 을 스프링에게 선언하는 것"
+    ],
+    [
+     "`@Bean`",
+     "메서드",
+     "이 메서드가 돌려주는 객체를 **스프링 컨테이너에 등록**한다"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "컨테이너에서 꺼내 쓴다"
+  },
+  {
+   "type": "compare",
+   "caption": "MemberApp",
+   "left": {
+    "title": "이전",
+    "lang": "java",
+    "code": "AppConfig appConfig = new AppConfig();\nMemberService memberService\n        = appConfig.memberService();\n\nMember member = new Member(1L, \"memberA\", Grade.VIP);\nmemberService.join(member);",
+    "md": "**내가** `AppConfig` 를 만들고 **내가** 메서드를 부른다."
+   },
+   "right": {
+    "title": "스프링",
+    "lang": "java",
+    "code": "ApplicationContext ac =\n    new AnnotationConfigApplicationContext(AppConfig.class);\n\nMemberService memberService =\n    ac.getBean(\"memberService\", MemberService.class);\n\nMember member = new Member(1L, \"memberA\", Grade.VIP);\nmemberService.join(member);",
+    "md": "**컨테이너에게 이름으로 요청**한다. 스프링이 이미 다 만들어서 들고 있다."
+   }
+  },
+  {
+   "type": "terms",
+   "caption": "새로 나온 이름들",
+   "items": [
+    {
+     "term": "스프링 컨테이너",
+     "en": "Spring container",
+     "what": "`ApplicationContext`. `@Bean` 이 붙은 메서드를 전부 호출해 객체를 만들고, 의존관계를 연결해서 들고 있는 것. 3.8절의 DI 컨테이너 그 자리다."
+    },
+    {
+     "term": "스프링 빈",
+     "en": "Spring bean",
+     "what": "스프링 컨테이너가 관리하는 객체. 우리가 `new` 로 만들던 그 객체들이 이제 빈이 됐다."
+    },
+    {
+     "term": "빈 이름",
+     "en": "bean name",
+     "what": "기본값은 `@Bean` 이 붙은 **메서드 이름**이다. `memberService()` → `\"memberService\"`."
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "빈 이름을 직접 줄 수도 있다",
+   "md": "```java\n@Bean(name = \"memberService2\")\npublic MemberService memberService() { ... }\n```\n\n다만 **거의 쓰지 않는다.** 메서드 이름이 곧 빈 이름이라는 관례가 깨지면 찾기 어려워진다.\n\n주의할 것 하나 — **빈 이름은 항상 달라야 한다.** 같은 이름이 둘이면 무시되거나 덮어써지거나 예외가 나는데, 이 조용한 덮어쓰기가 왜 위험한지는 6.4절에서 본다."
+  },
+  {
+   "type": "heading",
+   "text": "실행해 본다"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 스프링 컨테이너가 뜨는 로그",
+   "sql": "INFO  o.s.c.a.AnnotationConfigApplicationContext - Refreshing org.springframework...\nINFO  o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'appConfig'\nINFO  o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'memberService'\nINFO  o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'memberRepository'\nINFO  o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'orderService'\nINFO  o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'discountPolicy'\n\nfind Member = memberA\nnew  Member = memberA",
+   "note": "읽을 것이 세 가지다. ① **`appConfig` 자신도 빈**이다. ② `memberService` 를 만들다가 `memberRepository()` 를 부르니 그것이 먼저 등록된다 — **선언 순서가 아니라 필요한 순서**다. ③ 전부 `singleton` 이라고 찍힌다(5장)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "메서드를 두 번 불러도 객체가 하나인지 확인한다",
+   "code": "ApplicationContext ac =\n    new AnnotationConfigApplicationContext(AppConfig.class);\n\nMemberService memberService = ac.getBean(\"memberService\", MemberService.class);\nOrderService  orderService  = ac.getBean(\"orderService\",  OrderService.class);\nMemberRepository repo       = ac.getBean(\"memberRepository\", MemberRepository.class);\n\n// memberService 안의 저장소와 orderService 안의 저장소가 같은가?\nSystem.out.println(\"repo = \" + repo);",
+   "note": "3.4절에서 `r1 == r2 : false` 를 봤던 그 실험이다. **이번에는 필드로 빼지 않았는데도** 어떻게 나오는지 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — static 없이, 필드 없이, 객체는 하나",
+   "sql": "repo = hello.core.member.MemoryMemberRepository@6b58b9e9\n\nMemberServiceTest > join() PASSED\nOrderServiceTest  > VIP는_10퍼센트_할인() PASSED\nOrderServiceTest  > BASIC은_할인_없음() PASSED\n\nBUILD SUCCESSFUL\n5 tests completed\n\n# MemoryMemberRepository 의 store 에는 여전히 static 이 없다.",
+   "note": "**`memberRepository()` 메서드를 두 번 호출하는 코드인데 인스턴스가 하나다.** 순수 자바였다면 `r1 == r2 : false` 가 나왔을 자리다. 이것이 `@Configuration` 이 하는 일이고, **5.6절에서 그 정체를 본다.**"
+  },
+  {
+   "type": "heading",
+   "text": "그런데 왜 더 복잡해졌나"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "솔직히 지금은 손해다",
+   "md": "`new AppConfig().memberService()` 한 줄이 `AnnotationConfigApplicationContext` 를 만들고 `getBean` 으로 이름을 문자열로 적어 꺼내는 것으로 바뀌었다.\n\n**코드는 길어졌고, 컴파일 타임에 잡히던 오타가 런타임으로 밀렸다.** (`\"memberServic\"` 이라고 적어도 컴파일은 된다.)\n\n이 시점에서 \"굳이?\" 라고 생각하는 것이 정상이다. 얻는 것은 지금이 아니라 4장부터 나온다."
+  },
+  {
+   "type": "table",
+   "caption": "컨테이너에 넘겨서 얻는 것 — 이 책의 남은 목차 그대로다",
+   "note": "특히 **6장**이 결정적이다. `AppConfig` 라는 파일 자체가 사라지고, 그때 `getBean` 을 직접 부르는 일도 없어진다.",
+   "columns": [
+    "무엇",
+    "어느 장"
+   ],
+   "rows": [
+    [
+     "빈이 하나만 만들어지는 것을 **보장**한다",
+     "5장 싱글톤 컨테이너"
+    ],
+    [
+     "설정 코드를 **안 써도** 자동으로 등록·주입된다",
+     "6장 컴포넌트 스캔 · 7장 자동 주입"
+    ],
+    [
+     "객체가 만들어진 뒤 / 없어지기 전에 **후처리**를 건다",
+     "8장 빈 생명주기 콜백"
+    ],
+    [
+     "요청마다 다른 객체를 주는 등 **생존 범위**를 정한다",
+     "9장 빈 스코프"
+    ],
+    [
+     "트랜잭션·AOP 같은 것을 **끼워 넣는다**",
+     "(이 책 다음)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "- **\"스프링 컨테이너를 왜 쓰나요?\"** → 객체 생성과 의존관계 연결을 대신 해 준다. 그런데 그것만이면 `AppConfig` 로 충분하다. **진짜 이유는 싱글톤 관리·자동 주입·생명주기·스코프·AOP** 처럼 그 위에 얹히는 것들이다.\n- **\"`@Configuration` 없이 `@Bean` 만 쓰면 어떻게 되나요?\"** → 빈으로 등록은 되는데 **싱글톤이 보장되지 않는다.** 메서드를 부를 때마다 새 객체가 만들어진다(5.5절).\n- **\"빈 이름은 어떻게 정해지나요?\"** → 기본은 `@Bean` 메서드 이름. 중복되면 안 된다."
+  }
+ ],
+ "recap": [
+  "`@Configuration` + `@Bean` 두 개로 `AppConfig` 가 **스프링 설정 클래스**가 된다.",
+  "**구조는 안 바꿨다** — 3.4절에서 뺐던 필드를 오히려 메서드로 되돌렸다.",
+  "`ApplicationContext` 가 스프링 컨테이너, 그 안의 객체가 **스프링 빈**이다.",
+  "빈 이름은 **`@Bean` 메서드 이름**이 기본값이고, 중복되면 안 된다.",
+  "**메서드를 두 번 불러도 객체가 하나** — `@Configuration` 이 보장한다(원리는 5.6절).",
+  "지금은 코드가 더 복잡해진 것이 맞다. **얻는 것은 4~9장에서 나온다.**",
+  "3장 끝. **문제를 만들고(2장) → 대가를 치르고(3.2) → 고치고(3.3~3.7) → 넘겼다(3.9).**"
+ ],
+ "drills": [
+  {
+   "task": "`AppConfig` 에 `@Configuration`/`@Bean` 을 붙이고 `MemberApp`·`OrderApp` 을 스프링 컨테이너 방식으로 고친다.",
+   "done_when": "이전과 같은 결과가 나오고, 컨테이너 로그에 빈 5개가 찍힌다.",
+   "minutes": 25
+  },
+  {
+   "task": "필드로 뺐던 `memberRepository` 를 다시 `@Bean` 메서드로 되돌리고 테스트를 돌린다.",
+   "done_when": "`static` 없이도 테스트가 통과한다 — 스프링이 객체를 하나만 만들었다는 뜻이다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getBean(\"memberServic\", ...)` 처럼 이름을 일부러 틀리게 적고 실행한다.",
+   "done_when": "`NoSuchBeanDefinitionException` 을 눈으로 봤고, **컴파일은 통과했다**는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Configuration` 을 빼고 `@Bean` 만 남긴 채 저장소가 하나인지 확인한다.",
+   "done_when": "결과가 달라지는 것을 확인했다. 왜인지는 5.5절에서 답을 맞춰 본다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Configuration` 과 `@Bean` 은 각각 무엇을 뜻하나?",
+   "a": "`@Configuration` 은 이 클래스가 설정 정보라는 표시, `@Bean` 은 이 메서드가 돌려주는 객체를 스프링 컨테이너에 등록하라는 표시다."
+  },
+  {
+   "q": "스프링 빈의 이름은 어떻게 정해지는가?",
+   "a": "기본값은 `@Bean` 이 붙은 메서드 이름이다. `@Bean(name=\"...\")` 으로 바꿀 수 있지만 관례를 깨서 거의 쓰지 않는다. 이름은 중복되면 안 된다."
+  },
+  {
+   "q": "3.4절에서 필드로 뺐던 저장소를 왜 다시 메서드로 되돌렸나?",
+   "a": "`@Configuration` 이 붙으면 메서드를 여러 번 호출해도 스프링이 같은 객체를 돌려주기 때문이다. 손으로 하던 보장을 스프링이 대신 한다."
+  },
+  {
+   "q": "컨테이너 로그에서 `memberRepository` 가 `orderService` 보다 먼저 만들어지는 이유는?",
+   "a": "`memberService` 를 만들다가 `memberRepository()` 를 호출하기 때문이다. 선언 순서가 아니라 필요한 순서로 만들어진다."
+  },
+  {
+   "q": "스프링으로 바꿔서 지금 당장 나빠진 점은?",
+   "a": "코드가 길어졌고, 빈 이름을 문자열로 적기 때문에 오타가 컴파일이 아니라 런타임에 잡힌다."
+  },
+  {
+   "q": "그럼에도 컨테이너를 쓰는 이유는?",
+   "a": "싱글톤 보장(5장), 설정 코드 자체가 사라지는 컴포넌트 스캔·자동 주입(6~7장), 생명주기 콜백(8장), 스코프(9장), 그 위의 AOP·트랜잭션 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ApplicationContext",
+   "en": "",
+   "what": "스프링 컨테이너를 가리키는 인터페이스. 구현체는 여럿이고, 지금 쓴 것은 자바 설정을 읽는 `AnnotationConfigApplicationContext` 다(4.6절)."
+  },
+  {
+   "term": "getBean",
+   "en": "",
+   "what": "컨테이너에서 빈을 꺼내는 메서드. 이름·타입으로 찾는다. 실무에서는 직접 부를 일이 거의 없다 — 7장의 자동 주입이 대신한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — IoC Container",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "Spring Framework Reference — Java-based Container Configuration",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/java.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
