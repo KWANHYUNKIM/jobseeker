@@ -233,7 +233,7 @@
           "title": "트랜잭션이 필요한 이유",
           "summary": "원자성. 계좌이체가 반만 되면 안 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -241,7 +241,7 @@
           "title": "데이터베이스 세션",
           "summary": "커넥션 하나가 세션 하나다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -249,7 +249,7 @@
           "title": "자동 커밋과 수동 커밋",
           "summary": "기본이 자동이라 트랜잭션이 안 걸린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -257,7 +257,7 @@
           "title": "트랜잭션 실습 — 커밋",
           "summary": "다른 세션에서는 안 보인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",

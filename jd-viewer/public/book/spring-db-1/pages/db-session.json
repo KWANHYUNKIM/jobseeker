@@ -1,0 +1,135 @@
+{
+ "book": "spring-db-1",
+ "id": "db-session",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "데이터베이스 세션",
+ "summary": "커넥션 하나가 세션 하나다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "커넥션과 세션의 관계를 안다.",
+  "세션 하나에 트랜잭션 하나라는 것을 안다.",
+  "세션의 상태가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "일대일이다",
+   "ascii": "   application                     database\n   -----------                     --------\n   conn0  <---- tcp ---->  session 1\n   conn1  <---- tcp ---->  session 2\n   conn2  <---- tcp ---->  session 3\n\n   one connection == one session == one transaction at a time\n\n   session 1                       session 2\n   ---------                       ---------\n   begin                           begin\n   update A                        select A     sees the old value\n   commit                          select A     sees the new value\n\n   세션이 다르면 서로 다른 트랜잭션이다",
+   "note": "**2.4절에서 콘솔로 확인한 그것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 세션이라는 것이 있나",
+   "md": "**DB 는 여러 클라이언트를 동시에** 받는다. 각자가 **자기 상태**를 갖는다.\n\n| | 세션마다 다른 것 |\n|---|---|\n| **진행 중인 트랜잭션** | 커밋 안 된 변경 |\n| **`autoCommit` 설정** | 켜져 있나 |\n| **격리 수준** | 4.1절의 그것 |\n| **잡고 있는 락** | 4.8절 |\n| **세션 변수·임시 테이블** | 3.2절에서 본 것 |\n\n**첫 번째가 핵심**이다. **세션 하나에 트랜잭션 하나**다.\n\n```\n세션 1: begin ... commit  ->  begin ... commit\n```\n\n**동시에 두 트랜잭션을 못 돌린다.** 앞의 것이 끝나야 다음이 시작된다.\n\n**그래서 3.1절에서 커넥션 하나를 공유하면 안 된다**고 한 것이다.\n\n> **커넥션을 공유하면 트랜잭션도 공유**된다 — 한쪽의 커밋이 다른 쪽 작업까지 커밋한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "커넥션을 반납하면 트랜잭션이 끝난다",
+   "md": "**3.6절에서 본 그것**이다.\n\n```java\nConnection con = dataSource.getConnection();   // 풀에서 빌림\ncon.setAutoCommit(false);\n// ... update\ncon.close();                                    // 반납\n```\n\n**커밋을 안 하고 반납하면** — **풀이 롤백**한다(3.2절).\n\n**그래서 트랜잭션을 걸려면 반납하면 안 된다.**\n\n```\ngetConnection  ->  setAutoCommit(false)\n                   update A\n                   update B\n                   commit\n                   close   <- 여기서 반납\n```\n\n**빌린 상태가 곧 트랜잭션이 열린 상태**다.\n\n**커넥션 풀 관점에서 보면** — **트랜잭션이 긴 만큼 커넥션을 오래 잡는다.** 4.1절에서 \"너무 넓으면 안 된다\"고 한 이유의 하나다.\n\n> **`LazyConnectionDataSourceProxy`**(3.3절)가 여기서 쓸모가 있다. **트랜잭션은 시작했는데 SQL 을 아직 안 보냈으면** 커넥션을 안 빌린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "H2 콘솔도 세션 하나다",
+   "md": "**실습할 때 헷갈리는 자리**다.\n\n```\nH2 콘솔 창 1  ->  세션 1\nH2 콘솔 창 2  ->  세션 2\n애플리케이션  ->  세션 3, 4, 5 ... (풀 크기만큼)\n```\n\n**콘솔 창을 새로 고치면 세션이 바뀐다.** 그러면 **커밋 안 한 것이 롤백**된다 — 4.1절에서 말한 그것이다.\n\n**같은 브라우저의 다른 탭도 다른 세션**일 수 있다.\n\n**세션 목록을 보는 법**\n\n```sql\nselect id, user_name, session_start, statement\nfrom information_schema.sessions;\n```\n\n**`statement` 컬럼에 지금 실행 중인 SQL** 이 나온다. **누가 무엇을 하고 있는지** 볼 수 있고, 4.9절에서 락이 걸렸을 때 이것으로 확인한다.\n\n> **다른 DB 에도 비슷한 것**이 있다 — MySQL 의 `show processlist`, PostgreSQL 의 `pg_stat_activity`. **장애 때 제일 먼저 보는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "세션과 스레드는 다르다",
+   "md": "**헷갈리기 쉬운데 별개**다.\n\n```\n애플리케이션 스레드 200 개\n커넥션 풀 10 개\nDB 세션 10 개\n```\n\n**스레드 200개가 커넥션 10개를 나눠 쓴다.** 나머지는 기다린다(3.2절).\n\n**한 스레드가 한 트랜잭션**을 다루는 것은 맞는데, **그 스레드가 커넥션을 들고 있는 동안만**이다.\n\n**5.3절의 트랜잭션 동기화**가 이 관계를 다룬다 — **`ThreadLocal` 로 스레드에 커넥션을 붙여** 둔다.\n\n**「MVC 2편」에서 본 그 구조**다.\n\n> 4.5절의 `LocaleContextHolder`, 8.2절의 MDC — **요청 하나가 스레드 하나**라서 거기 붙여 두면 어디서나 꺼낼 수 있다.\n\n**비동기가 들어오면 이 전제가 깨진다.** `@Async` 나 리액티브에서는 **스레드가 바뀌므로** 트랜잭션이 안 따라간다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 애플리케이션에서 커넥션 셋을 빌린다\nConnection con1 = dataSource.getConnection();\nConnection con2 = dataSource.getConnection();\nConnection con3 = dataSource.getConnection();\n\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#   get connection=HikariProxyConnection@2 wrapping conn1\n#   get connection=HikariProxyConnection@3 wrapping conn2\n\n# H2 콘솔에서\nselect id, user_name, session_start, statement\nfrom information_schema.sessions;\n\n# ID | USER_NAME | SESSION_START       | STATEMENT\n# 3  | SA        | 2026-09-09 07:48:01 | select id, user_name, ...\n# 4  | SA        | 2026-09-09 07:48:05 | null\n# 5  | SA        | 2026-09-09 07:48:05 | null\n# 6  | SA        | 2026-09-09 07:48:05 | null\n\n# 3 번이 콘솔 자기 자신, 4~6 번이 애플리케이션\n\n# 세션 4 에서 트랜잭션을 열면\ncon1.setAutoCommit(false);\ncon1.prepareStatement(\"update member set money=5000 where member_id='memberA'\")\n   .executeUpdate();\n\n# 콘솔에서 조회\nselect * from member where member_id = 'memberA';\n# MONEY = 10000    <- 세션 3 에서는 안 보인다\n\n# con1.commit();\n# MONEY = 5000     <- 이제 보인다",
+   "note": "**커넥션 셋이 세션 셋**으로 나타났다. **`conn0`·`conn1`·`conn2`** 와 **ID 4·5·6** 이 짝이다.\n\n**`STATEMENT` 가 `null`** 인 것은 지금 아무것도 실행 중이 아니라는 뜻이다. 4.9절에서 락이 걸리면 **여기에 대기 중인 SQL 이 보인다.**\n\n**아래가 4.1절의 실험을 자바 쪽에서** 한 것이다. **애플리케이션의 커넥션 하나가 콘솔과 대등한 세션**이고, 커밋 전에는 서로 안 보인다.\n\n**`autoCommit=false` 로 바꾼 순간부터 트랜잭션이 열려 있다** — `commit` 을 부를 때까지."
+  }
+ ],
+ "recap": [
+  "**커넥션 하나가 세션 하나**다.",
+  "**세션마다 자기 상태**를 갖는다 — 트랜잭션·`autoCommit`·격리 수준·락.",
+  "**세션 하나에 트랜잭션 하나** — 동시에 둘을 못 돌린다.",
+  "**그래서 커넥션을 공유하면 트랜잭션도 공유**된다.",
+  "**반납하면 트랜잭션이 끝난다** — 커밋 안 했으면 롤백.",
+  "**빌린 상태가 곧 트랜잭션이 열린 상태**다.",
+  "**트랜잭션이 길면 커넥션을 오래** 잡는다.",
+  "**H2 콘솔 창 하나가 세션 하나**다. 새로 고치면 바뀐다.",
+  "**`information_schema.sessions`** 로 본다 — 장애 때 제일 먼저 보는 것.",
+  "**세션과 스레드는 다르다** — 스레드 200개가 커넥션 10개를 나눠 쓴다.",
+  "**비동기에서는 스레드가 바뀌어 트랜잭션이 안 따라간다.**"
+ ],
+ "drills": [
+  {
+   "task": "커넥션 셋을 빌리고 콘솔에서 세션을 조회한다.",
+   "done_when": "짝이 맞는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자바에서 트랜잭션을 열고 콘솔에서 조회한다.",
+   "done_when": "안 보이는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "커밋하고 다시 조회한다.",
+   "done_when": "보이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "커밋 없이 `close()` 를 부른다.",
+   "done_when": "롤백되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`STATEMENT` 컬럼을 관찰하며 긴 쿼리를 실행한다.",
+   "done_when": "실행 중인 SQL 이 보이는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커넥션과 세션의 관계는?",
+   "a": "일대일이다. 커넥션 하나가 DB 쪽 세션 하나에 대응한다."
+  },
+  {
+   "q": "세션 하나에 트랜잭션이 몇 개인가?",
+   "a": "하나다. 앞의 것이 끝나야 다음이 시작된다."
+  },
+  {
+   "q": "커넥션을 반납하면?",
+   "a": "트랜잭션이 끝난다. 커밋을 안 했으면 풀이 롤백한다."
+  },
+  {
+   "q": "세션 목록은 어떻게 보나?",
+   "a": "H2 는 `information_schema.sessions`, MySQL 은 `show processlist`, PostgreSQL 은 `pg_stat_activity` 다."
+  },
+  {
+   "q": "세션과 스레드가 어떻게 다른가?",
+   "a": "스레드가 훨씬 많고 커넥션 풀을 나눠 쓴다. 비동기에서는 스레드가 바뀌어 트랜잭션이 안 따라간다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세션",
+   "en": "session",
+   "what": "DB 쪽의 작업 단위. 커넥션 하나에 대응하고 자기 상태를 갖는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

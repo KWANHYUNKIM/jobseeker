@@ -1,0 +1,134 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-commit",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "트랜잭션 실습 — 커밋",
+ "summary": "다른 세션에서는 안 보인다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 세션으로 커밋을 확인한다.",
+  "커밋 전후로 무엇이 달라지는지 안다.",
+  "자기 트랜잭션 안에서는 보인다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**H2 콘솔을 두 개 열고** 직접 해 본다. 1.3절에서 서버 모드로 띄운 이유다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 시각, 다른 결과",
+   "ascii": "   session 1                    session 2\n   ---------                    ---------\n   set autocommit false\n   insert 'newId'\n   select  ->  newId is there   select  ->  newId is NOT there\n        |                            |\n        +--> my own transaction      +--> read committed\n\n   commit\n                                select  ->  newId is there\n\n   커밋 전까지는 나에게만 존재한다",
+   "note": "**커밋이 경계**다."
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "세션 1",
+   "code": "-- 초기 상태 확인\nset autocommit true;\nselect * from member;\n-- memberA | 10000\n\n-- 트랜잭션 시작\nset autocommit false;\ninsert into member(member_id, money) values ('newId', 10000);\n\n-- 자기 자신은 보인다\nselect * from member;\n-- memberA | 10000\n-- newId   | 10000",
+   "note": "**`set autocommit false` 뒤부터** 트랜잭션이다.\n\n**자기가 넣은 것을 자기가 본다** — 아직 커밋 안 했는데도. **자기 트랜잭션 안**이라서다(4.1절)."
+  },
+  {
+   "type": "code",
+   "lang": "sql",
+   "caption": "세션 2 — 같은 시각",
+   "code": "select * from member;\n-- memberA | 10000\n-- (newId 가 없다)",
+   "note": "**커밋 안 된 것은 안 보인다.** `READ COMMITTED` 의 정의다.\n\n**만약 보인다면 `READ UNCOMMITTED`** 다 — 그것을 **더티 리드(dirty read)** 라고 한다. 세션 1이 롤백하면 **없던 데이터를 본 것**이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이것이 중요한가",
+   "md": "**커밋 전 데이터를 남이 보면 안 되는 이유**다.\n\n```\n세션 1: 계좌 A 에서 5000 을 뺀다  (아직 커밋 안 함)\n세션 2: A 의 잔액을 조회한다     -> 5000 이 보인다\n세션 1: 실패해서 롤백\n세션 2: 5000 을 기준으로 무언가 결정했다\n```\n\n**존재한 적 없는 데이터로 판단**한 것이다.\n\n**커밋이 \"이제 진짜다\" 라고 선언하는 지점**이고, 그 전까지는 **아직 결정되지 않은 상태**다.\n\n**「MVC 2편」에서 본 것과 비슷한 구조**다.\n\n> 12.3절: **오류 페이지는 서버 안의 두 번째 요청**이다 — 클라이언트는 모른다.\n\n**여기도 \"안에서 일어나는 일\" 과 \"밖에 보이는 것\"** 이 갈린다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "커밋이 즉시 보이지 않을 수도 있다",
+   "md": "**격리 수준에 따라 다르다.**\n\n```\nREAD COMMITTED     조회할 때마다 최신 커밋을 본다\nREPEATABLE READ    트랜잭션 시작 시점의 스냅숏을 본다\n```\n\n**`REPEATABLE READ` 면** 세션 2가 **이미 트랜잭션을 열었으면** 커밋 후에도 **옛날 값**이 보인다.\n\n```sql\n-- 세션 2 (REPEATABLE READ)\nset autocommit false;\nselect * from member;   -- newId 없음\n-- 세션 1 이 커밋\nselect * from member;   -- 여전히 newId 없음\ncommit;\nselect * from member;   -- 이제 보인다\n```\n\n**MySQL 이 기본으로 이것**이다(4.1절). **H2 와 PostgreSQL 은 `READ COMMITTED`** 라 바로 보인다.\n\n> **실습 결과가 책과 다르면 격리 수준을 확인**한다. 1.3절에서 말한 그 차이다.\n\n**어느 쪽이 맞나** — **둘 다 맞다.** `REPEATABLE READ` 는 **같은 조회가 같은 결과를 내는 것**을 보장하고, `READ COMMITTED` 는 **항상 최신을 보는 것**을 택한 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 세션 1 (H2 콘솔 1)\nset autocommit false;\ninsert into member(member_id, money) values ('newId', 10000);\n\nselect * from member;\n# MEMBER_ID | MONEY\n# memberA   | 10000\n# newId     | 10000\n\n# 세션 2 (H2 콘솔 2) - 같은 시각\nselect * from member;\n# MEMBER_ID | MONEY\n# memberA   | 10000\n\n# 세션 목록\nselect id, statement from information_schema.sessions;\n# ID | STATEMENT\n# 3  | select id, statement from ...\n# 4  | null                            <- 트랜잭션을 열어 둔 세션\n\n# 세션 1\ncommit;\n\n# 세션 2\nselect * from member;\n# MEMBER_ID | MONEY\n# memberA   | 10000\n# newId     | 10000\n\n# H2 가 받은 순서\n#   SET AUTOCOMMIT FALSE\n#   insert into member(member_id, money) values ('newId', 10000)\n#   select * from member          (session 1)\n#   select * from member          (session 2)\n#   COMMIT\n#   select * from member          (session 2)",
+   "note": "**맨 아래 순서가 중요하다.** `insert` 는 한 번인데 그 사이에 **두 세션의 `select`** 가 섞여 있다.\n\n**같은 `select * from member` 가 세션에 따라 다른 결과**를 냈다. SQL 은 똑같다.\n\n**`COMMIT` 이 경계**다. 그 앞의 세션 2 조회와 뒤의 조회가 갈린다.\n\n**세션 목록의 `STATEMENT` 가 `null`** 인 것에 주의한다 — 4.2절에서 본 그것이다. **아무 SQL 도 실행 중이 아닌데 트랜잭션은 열려 있다.** 이 상태가 오래 가면 4.3절의 `idle in transaction` 이다."
+  }
+ ],
+ "recap": [
+  "**두 세션으로 확인**한다 — 혼자 보면 안 보인다.",
+  "**자기 트랜잭션 안에서는 보인다** — 커밋 안 했어도.",
+  "**다른 세션에서는 안 보인다** — `READ COMMITTED`.",
+  "**보이면 더티 리드**다 — 롤백되면 없던 데이터를 본 것이 된다.",
+  "**커밋이 \"이제 진짜다\" 라고 선언하는 지점**이다.",
+  "**격리 수준에 따라 커밋 후에도 안 보일** 수 있다.",
+  "**MySQL 은 `REPEATABLE READ`** 가 기본이라 결과가 다르다.",
+  "**어느 쪽이 맞는 것이 아니라 무엇을 보장할지의 선택**이다.",
+  "**`STATEMENT` 가 `null` 인데 트랜잭션이 열려** 있을 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "콘솔 두 개로 커밋 전후를 확인한다.",
+   "done_when": "같은 쿼리가 다른 결과를 내는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세션 목록에서 트랜잭션을 연 세션을 찾는다.",
+   "done_when": "`STATEMENT` 가 `null` 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "격리 수준을 `READ UNCOMMITTED` 로 바꾼다.",
+   "done_when": "더티 리드가 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "격리 수준을 `REPEATABLE READ` 로 바꾸고 세션 2도 트랜잭션을 연다.",
+   "done_when": "커밋 후에도 안 보이는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커밋 전 데이터는 누가 볼 수 있나?",
+   "a": "그 트랜잭션 자신만 볼 수 있다."
+  },
+  {
+   "q": "더티 리드란?",
+   "a": "커밋되지 않은 데이터를 다른 세션이 읽는 것이다. 롤백되면 존재한 적 없는 데이터로 판단한 것이 된다."
+  },
+  {
+   "q": "커밋이 무엇을 뜻하나?",
+   "a": "\"이제 진짜다\"라고 선언하는 지점이다. 그 전까지는 결정되지 않은 상태다."
+  },
+  {
+   "q": "커밋했는데 다른 세션에 안 보일 수 있나?",
+   "a": "있다. `REPEATABLE READ` 면 그 세션이 트랜잭션 시작 시점의 스냅숏을 본다."
+  },
+  {
+   "q": "실습 결과가 다르면 무엇을 확인하나?",
+   "a": "DB 의 기본 격리 수준이다. MySQL 은 `REPEATABLE READ` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "더티 리드",
+   "en": "dirty read",
+   "what": "커밋되지 않은 데이터를 읽는 것. `READ UNCOMMITTED` 에서만 일어난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
