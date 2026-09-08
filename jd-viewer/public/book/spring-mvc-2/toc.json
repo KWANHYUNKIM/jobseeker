@@ -697,7 +697,7 @@
           "title": "인터셉터와 오류 경로",
           "summary": "인터셉터는 DispatcherType 이 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -705,7 +705,7 @@
           "title": "스프링 부트 오류 처리",
           "summary": "BasicErrorController 가 이미 다 해 준다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
@@ -713,7 +713,7 @@
           "title": "오류 페이지 우선순위",
           "summary": "4xx.html · 404.html · error.html.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.8",
@@ -721,7 +721,7 @@
           "title": "정리",
           "summary": "1편 8.5절의 500 을 404 로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

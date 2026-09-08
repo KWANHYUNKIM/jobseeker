@@ -1,0 +1,178 @@
+{
+ "book": "spring-mvc-2",
+ "id": "exception-summary",
+ "no": "9.8",
+ "chapter": 9,
+ "title": "정리",
+ "summary": "1편 8.5절의 500 을 404 로.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "상태 코드를 올바르게 고를 수 있다.",
+  "9장이 무엇을 만들었는지 정리한다.",
+  "10장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "9장이 바꾼 것",
+   "ascii": "   before\n   ------\n   GET /items/999   ->  NPE  ->  500  ->  Whitelabel\n\n   after\n   -----\n   GET /items/999   ->  ItemNotFoundException\n                    ->  404  ->  our 404 page\n\n   상태 코드는 이 요청이 무엇이었는지를 말한다",
+   "note": "**화면만 바꾼 것이 아니라 상태 코드를 고쳤다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1편 8.5절의 500 을 다시 본다",
+   "md": "1편 8.5절에서 없는 상품을 조회하면 500 이 났다.\n\n```java\n@GetMapping(\"/{itemId}\")\npublic String item(@PathVariable Long itemId, Model model) {\n    Item item = itemRepository.findById(itemId);   // null\n    model.addAttribute(\"item\", item);\n    return \"items/item\";                            // 렌더링하다 NPE\n}\n```\n\n**500 은 틀린 답**이다. 서버는 멀쩡하고 **없는 것을 요청한 것**이다.\n\n```java\nItem item = itemRepository.findById(itemId);\nif (item == null) {\n    throw new ItemNotFoundException(itemId);\n}\n```\n\n**예외를 던지고 404 로 매핑**한다.\n\n```java\n@ResponseStatus(HttpStatus.NOT_FOUND)\npublic class ItemNotFoundException extends RuntimeException { ... }\n```\n\n**`@ResponseStatus`** 가 예외에 상태 코드를 붙인다 — **10장에서 자세히** 본다.\n\n**무엇이 달라지나**\n\n| | 500 일 때 | 404 일 때 |\n|---|---|---|\n| 검색 엔진 | 나중에 다시 온다 | **색인에서 뺀다** |\n| 모니터링 | **장애로 센다** | 정상 |\n| 클라이언트 | 재시도한다 | 안 한다 |"
+  },
+  {
+   "type": "table",
+   "caption": "자주 헷갈리는 상태 코드",
+   "note": "**403 과 404 의 선택**이 미묘하다. **존재 여부를 감춰야 하면 404** 를 쓴다 — 7.2절의 계정 열거와 같은 발상이다.",
+   "columns": [
+    "",
+    "언제"
+   ],
+   "rows": [
+    [
+     "**400**",
+     "요청 형식이 잘못됨 — 파싱 실패, 타입 오류"
+    ],
+    [
+     "**401**",
+     "인증이 필요 — **로그인 안 함**"
+    ],
+    [
+     "**403**",
+     "인증은 됐는데 권한 없음"
+    ],
+    [
+     "**404**",
+     "없음"
+    ],
+    [
+     "**405**",
+     "URL 은 맞는데 메서드가 다름"
+    ],
+    [
+     "**409**",
+     "충돌 — 중복 등록, 동시 수정"
+    ],
+    [
+     "**422**",
+     "형식은 맞는데 **내용이 규칙 위반** — 검증 실패"
+    ],
+    [
+     "**500**",
+     "**서버 잘못**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "401 과 403 을 바꿔 쓴다",
+   "md": "**이름이 헷갈린다.**\n\n```\n401 Unauthorized   ->  실제로는 \"인증 안 됨\"\n403 Forbidden      ->  실제로는 \"권한 없음\"\n```\n\n**401 의 이름이 잘못됐다.** \"Unauthorized\" 는 인가처럼 들리는데 **인증(authentication)** 을 뜻한다. 7.1절에서 둘을 나눈 그 구분이다.\n\n**8장의 인증 필터**는 401 을 안 썼다. **302 로 로그인 화면**에 보냈다.\n\n**둘 다 맞다** — 상황이 다르다.\n\n| | |\n|---|---|\n| **화면** | **302 로 로그인 화면** — 사용자가 바로 로그인한다 |\n| **API** | **401** — 클라이언트가 판단한다 |\n\n**API 에 302 를 보내면** 클라이언트가 로그인 HTML 을 받아서 파싱하려 든다. **10장에서 이것을 가른다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "9장이 만든 것",
+   "md": "| 절 | |\n|---|---|\n| 9.1 | 예외가 어디까지 가는지 |\n| 9.2 | 오류 화면 등록 |\n| 9.3 | **요청이 두 번 오는 구조** |\n| 9.4 | 필터를 `DispatcherType` 으로 가름 |\n| 9.5 | 인터셉터를 경로로 가름 |\n| 9.6 | 부트가 이미 하는 것 |\n| 9.7 | 뷰를 찾는 순서 |\n\n**9.3절이 이 장의 중심**이다. 나머지는 그 구조에서 파생된 것들이다.\n\n**8장과 이어지는 부분**이 특히 많았다 — 필터·인터셉터가 두 번 도는 것, 인증이 오류 페이지를 막는 것. **두 장을 같이 봐야** 온전하다.\n\n**1.2절 숙제 정산**\n\n| | |\n|---|---|\n| 음수 가격 | 끝 (5·6장) |\n| DTO 분리 | 끝 (6.7절) |\n| 로그인 | 끝 (7·8장) |\n| **없는 상품에 500** | **끝** (9장) |\n\n**1편이 남긴 넷이 다 끝났다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "9장이 남긴 것",
+   "md": "**API 는 아직 부트 기본**이다.\n\n```json\n{\"timestamp\":\"...\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/api/items/999\"}\n```\n\n**9.6절에서 본 그 JSON** 이고, 6.8절에서 이미 문제를 꼽았다.\n\n> **오류 응답 형식도 계약**이다 — 바뀌면 클라이언트가 깨진다.\n\n**세 가지가 안 됐다.**\n\n1. **예외 종류마다 다른 응답** — 9.2절의 서블릿 방식에는 있었는데 부트 규약에는 없다\n2. **우리 형식** — 성공 응답과 모양이 같아야 한다\n3. **컨트롤러 근처에서 처리** — 지금은 오류 페이지 컨트롤러가 전부 받는다\n\n**10장이 셋을 한다.** `HandlerExceptionResolver` 와 `@ExceptionHandler`.\n\n**그리고 9장의 구조를 안 쓴다** — 요청이 두 번 오지 않는다. **`DispatcherServlet` 안에서 끝낸다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 9장의 결과",
+   "sql": "# 1편 8.5절\nGET /items/999 HTTP/1.1\n\nHTTP/1.1 500 \n<h1>Whitelabel Error Page</h1>\n\n# 지금\nGET /items/999 HTTP/1.1\n\nHTTP/1.1 404 \nContent-Type: text/html;charset=UTF-8\n\n<h2>페이지를 찾을 수 없습니다</h2>\n<p>주소가 바뀌었거나 삭제된 페이지입니다.</p>\n<a href=\"/\">홈으로</a>\n\n# 로그인 안 한 사용자도 오류 페이지를 본다\nGET /items/999 HTTP/1.1\n\nHTTP/1.1 404 \n<h2>페이지를 찾을 수 없습니다</h2>\n\n# API 는 아직 이렇다\nGET /api/items/999 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 500 \n{\"timestamp\":\"...\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/api/items/999\"}",
+   "note": "**첫 둘의 차이가 9장 전부**다. **상태 코드가 500 에서 404 로** 바뀌었고 화면이 서비스의 것이 됐다.\n\n**셋째가 8·9장을 같이 본 결과**다. 인증 필터를 `REQUEST` 만 두고 인터셉터에서 오류 경로를 뺐기 때문에, **로그인 안 한 사용자도 404 를 본다.** 안 그랬으면 로그인 화면이었다.\n\n**맨 아래가 10장의 시작점**이다. **같은 없는 상품인데 API 는 500** 이다. `ItemNotFoundException` 을 404 로 매핑했는데도 그렇다 — **API 경로는 다른 흐름**을 타기 때문이고, 10장이 그것을 다룬다."
+  }
+ ],
+ "recap": [
+  "**1편 8.5절의 500 이 404 가 됐다.**",
+  "**500 은 서버 잘못**이라는 뜻이다. 없는 것을 요청한 것과 다르다.",
+  "**상태 코드가 검색 엔진·모니터링·재시도**를 바꾼다.",
+  "**401 은 인증, 403 은 권한** — 이름이 헷갈린다.",
+  "**존재를 감춰야 하면 403 대신 404** — 7.2절과 같은 발상.",
+  "**화면은 302, API 는 401** — 상황이 다르다.",
+  "**9.3절이 이 장의 중심**이고 나머지는 파생이다.",
+  "**8장과 같이 봐야** 온전하다.",
+  "**1편이 남긴 넷이 다 끝났다.**",
+  "**API 는 아직 부트 기본**이다 — 10장이 한다.",
+  "**10장은 9장의 구조를 안 쓴다** — 요청이 두 번 오지 않는다."
+ ],
+ "drills": [
+  {
+   "task": "`ItemNotFoundException` 을 만들고 404 로 매핑한다.",
+   "done_when": "1편 8.5절의 500 이 404 가 되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "로그아웃 상태에서 없는 상품을 연다.",
+   "done_when": "로그인 화면이 아니라 404 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "401·403·404 를 각각 내 본다.",
+   "done_when": "언제 무엇을 쓸지 말할 수 있다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 URL 을 `Accept: application/json` 으로 요청한다.",
+   "done_when": "API 는 아직 부트 기본인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1.2절의 숙제 목록을 다시 읽는다.",
+   "done_when": "넷이 끝난 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "없는 상품에 500 이 왜 틀린 답인가?",
+   "a": "서버는 멀쩡하고 없는 것을 요청한 것이다. 500 은 서버 잘못이라는 뜻이다."
+  },
+  {
+   "q": "상태 코드가 무엇을 바꾸나?",
+   "a": "검색 엔진의 색인, 모니터링의 장애 집계, 클라이언트의 재시도 여부다."
+  },
+  {
+   "q": "401 과 403 의 차이는?",
+   "a": "401 은 인증이 안 된 것, 403 은 인증은 됐는데 권한이 없는 것이다."
+  },
+  {
+   "q": "인증 실패에 화면과 API 가 왜 다른가?",
+   "a": "화면은 302 로 로그인 페이지에 보내면 되지만 API 는 401 을 받아야 클라이언트가 판단할 수 있다."
+  },
+  {
+   "q": "10장이 9장과 무엇이 다른가?",
+   "a": "요청이 두 번 오지 않는다. `DispatcherServlet` 안에서 예외를 처리해 응답을 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@ResponseStatus",
+   "en": "",
+   "what": "예외 클래스나 메서드에 HTTP 상태 코드를 지정하는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Error Handling",
+   "url": "https://docs.spring.io/spring-boot/reference/web/servlet.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
