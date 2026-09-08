@@ -1,0 +1,246 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-projection",
+  "no": "11.3",
+  "chapter": 11,
+  "title": "프로젝션(SELECT)",
+  "summary": "엔티티·임베디드·스칼라 프로젝션. 조회한 엔티티가 영속 상태인지 아닌지.",
+  "minutes": 16,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "세 가지 프로젝션 대상을 구분할 수 있다.",
+    "엔티티 프로젝션 결과가 영속 상태라는 것과, 그것이 무엇을 뜻하는지 안다.",
+    "여러 값을 조회하는 세 가지 방법과 실무에서 무엇을 쓰는지 안다.",
+    "JPQL 의 `DISTINCT` 가 SQL 과 무엇이 다른지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**프로젝션**은 `SELECT` 절에 무엇을 적을 것인가다. JPQL 은 셋 중 하나를 고를 수 있다."
+    },
+    {
+      "type": "table",
+      "caption": "세 가지 대상",
+      "columns": [
+        "대상",
+        "예",
+        "결과"
+      ],
+      "rows": [
+        [
+          "**엔티티**",
+          "`SELECT m FROM Member m`",
+          "`Member` — **영속 상태**"
+        ],
+        [
+          "**임베디드 타입**",
+          "`SELECT m.address FROM Member m`",
+          "`Address` — 값 타입이라 관리 안 됨"
+        ],
+        [
+          "**스칼라 타입**",
+          "`SELECT m.name, m.age FROM Member m`",
+          "`String`·`int` 등"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "엔티티 프로젝션 — 결과가 영속 상태다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m\", Member.class)\n    .getResultList();\n\nMember first = members.get(0);\nfirst.setName(\"바뀐이름\");     // 저장 코드가 없다\n\ntx.commit();"
+    },
+    {
+      "type": "sql",
+      "caption": "UPDATE 가 나간다",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.AGE, M.TEAM_ID FROM MEMBER M\n\n-- 커밋 시점\nUPDATE MEMBER SET NAME = ?, AGE = ?, TEAM_ID = ? WHERE MEMBER_ID = ?",
+      "note": "**JPQL 로 조회한 엔티티도 1차 캐시에 들어가고 변경 감지 대상이 된다**(4.2절). `em.find()` 로 가져온 것과 완전히 같은 취급이다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그래서 조회 전용 화면에서 조심해야 한다",
+      "md": "목록 화면에서 100건을 조회하면 **엔티티 100개가 영속성 컨텍스트에 올라가고 스냅샷도 100개 뜬다.** 메모리도 두 벌이고, 플러시할 때마다 100번 비교한다(4.2절).\n\n읽기만 할 거라면 두 가지 방법이 있다.\n\n- `@Transactional(readOnly = true)` — 스냅샷을 뜨지 않는다.\n- **DTO 로 조회한다** — 아래의 `new` 명령어. 애초에 엔티티를 만들지 않는다.\n\n두 번째가 더 근본적이다. 조회 전용 쿼리는 필요한 컬럼만 가져오면 되고, 그러면 영속성 컨텍스트가 개입할 일 자체가 없다."
+    },
+    {
+      "type": "heading",
+      "text": "임베디드 타입 프로젝션"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<Address> addresses = em.createQuery(\n        \"SELECT o.address FROM Order o\", Address.class)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT O.CITY, O.STREET, O.ZIPCODE FROM ORDERS O",
+      "note": "**`FROM` 절에는 엔티티가 와야 한다.** `SELECT a FROM Address a` 는 안 된다 — 임베디드 타입은 자기 테이블이 없어서 조회의 시작점이 될 수 없다(10.2절)."
+    },
+    {
+      "type": "heading",
+      "text": "여러 값을 조회하는 세 가지 방법"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "1. Object[] — 쓰지 않는다",
+      "code": "List<Object[]> result = em.createQuery(\n        \"SELECT m.name, m.age FROM Member m\")\n    .getResultList();\n\nfor (Object[] row : result) {\n    String name = (String) row[0];    // 형변환\n    int age = (int) row[1];           // 순서를 외워야 한다\n}",
+      "note": "`row[0]` 이 무엇인지 코드만 봐서는 모른다. `SELECT` 절 순서를 바꾸면 조용히 깨진다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "2. new 명령어 — 실무의 표준",
+      "code": "public class MemberDto {\n    private final String name;\n    private final int age;\n\n    public MemberDto(String name, int age) {   // 생성자가 필수\n        this.name = name;\n        this.age = age;\n    }\n    // getter\n}\n\nList<MemberDto> result = em.createQuery(\n        \"SELECT new com.example.dto.MemberDto(m.name, m.age) FROM Member m\",\n        MemberDto.class)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT M.NAME, M.AGE FROM MEMBER M",
+      "note": "**필요한 컬럼만 나간다.** 엔티티를 만들지 않으므로 1차 캐시에도 안 올라가고 변경 감지 대상도 아니다. 조회 전용 API 에는 이쪽이 맞다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "new 명령어의 두 가지 불편",
+      "md": "**1. 패키지 이름을 전부 적어야 한다.** `com.example.dto.MemberDto` 처럼. 패키지를 옮기면 문자열이라 컴파일러가 안 잡아 준다(11.1절의 그 약점).\n\n**2. 생성자 시그니처가 정확히 맞아야 한다.** 인자 순서나 타입이 다르면 런타임에 터진다.\n\nQueryDSL 의 `Projections.constructor(MemberDto.class, ...)` 나 `@QueryProjection` 이 이 둘을 해결한다 — 컴파일 시점에 검증되고 패키지 이름도 안 적는다. **11.1절에서 QueryDSL 이 거의 항상 따라붙는다고 한 이유가 여기서도 나온다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "3. 인터페이스 프로젝션 — Spring Data JPA",
+      "code": "public interface MemberView {\n    String getName();\n    int getAge();\n}\n\nList<MemberView> findByAgeGreaterThan(int age);",
+      "note": "구현체를 스프링이 만들어 준다. 순수 JPA 에는 없는 기능이지만, 실무에서 조회 전용으로 가장 편한 방법이라 알아 둘 값어치가 있다."
+    },
+    {
+      "type": "heading",
+      "text": "DISTINCT — SQL 과 다른 일을 하나 더 한다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "List<String> names = em.createQuery(\n        \"SELECT DISTINCT m.name FROM Member m\", String.class)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT DISTINCT M.NAME FROM MEMBER M",
+      "note": "여기까지는 SQL 과 같다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그런데 엔티티에 쓰면 한 단계가 더 있다",
+      "md": "```\nSELECT DISTINCT o FROM Order o JOIN o.orderItems oi\n```\n\nSQL 의 `DISTINCT` 는 **행 전체가 같아야** 중복으로 친다. 주문 하나에 주문상품이 3개면 조인 결과가 3행인데, `ORDER_ITEM` 컬럼이 다르므로 SQL DISTINCT 로는 안 걸러진다.\n\nJPQL 의 `DISTINCT` 는 여기서 한 가지를 더 한다 — **애플리케이션으로 결과를 받은 뒤, 같은 식별자의 엔티티를 하나로 합친다.** 그래서 주문 3건이 아니라 1건이 나온다.\n\n이게 **12.3절 컬렉션 페치 조인**에서 결정적으로 중요해진다. 지금은 \"JPQL DISTINCT 는 SQL DISTINCT + 엔티티 중복 제거\" 라는 것만 기억하면 된다.\n\n> 하이버네이트 6 부터는 엔티티 조회 시 이 중복 제거가 **기본으로 동작**해서 `DISTINCT` 를 안 써도 된다. 다만 5.x 를 쓰는 코드가 아직 많고, 명시해도 손해가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 로 조회한 엔티티는 영속 상태인가요?\"** → 그렇다. `em.find()` 로 가져온 것과 같이 1차 캐시에 올라가고 변경 감지 대상이 된다.\n- **\"조회 전용 화면에서 그게 왜 문제인가요?\"** → 엔티티 수만큼 스냅샷이 뜨고 플러시마다 비교한다. `readOnly` 트랜잭션이나 DTO 조회로 피한다.\n- **\"여러 값을 조회할 때 무엇을 쓰나요?\"** → `new` 명령어로 DTO 를 만든다. `Object[]` 는 순서를 외워야 해서 안 쓴다.\n- **\"`new` 명령어의 불편은?\"** → 패키지 전체 경로를 적어야 하고 생성자 시그니처가 문자열로만 검증된다. QueryDSL 의 `@QueryProjection` 이 이걸 해결한다.\n- **\"JPQL 의 DISTINCT 가 SQL 과 다른 점은?\"** → SQL DISTINCT 를 보낸 뒤, 애플리케이션에서 같은 식별자의 엔티티를 한 번 더 합친다. 컬렉션 조인에서 중요하다."
+    }
+  ],
+  "recap": [
+    "프로젝션 대상은 셋 — 엔티티, 임베디드 타입, 스칼라 타입.",
+    "**엔티티 프로젝션 결과는 영속 상태다.** JPQL 로 가져와도 변경 감지가 걸린다.",
+    "그래서 조회 전용에는 `readOnly` 트랜잭션이나 DTO 조회를 쓴다. 후자가 더 근본적이다.",
+    "`FROM` 절에는 엔티티만 온다. 임베디드 타입은 조회의 시작점이 될 수 없다.",
+    "여러 값은 `new` 명령어로 DTO 를 만든다. `Object[]` 는 순서를 외워야 해서 안 쓴다.",
+    "`new` 명령어는 패키지 전체 경로와 생성자 시그니처가 문자열로만 검증된다 — QueryDSL 이 그 자리를 메운다.",
+    "JPQL `DISTINCT` 는 SQL DISTINCT + **엔티티 중복 제거** 두 가지를 한다. 12.3절에서 결정적이다."
+  ],
+  "drills": [
+    {
+      "task": "JPQL 로 회원을 조회한 뒤 setter 를 부르고 커밋한다.",
+      "done_when": "UPDATE 가 나가는 것을 확인했다. JPQL 결과도 영속 상태라는 증거다.",
+      "minutes": 15
+    },
+    {
+      "task": "`SELECT m.name, m.age` 를 `Object[]` 로 받은 뒤, SELECT 절의 순서를 바꿔 본다.",
+      "done_when": "코드는 그대로인데 값이 뒤바뀌는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "같은 조회를 `new` 명령어 + DTO 로 바꾸고 나가는 SQL 을 비교한다.",
+      "done_when": "필요한 컬럼만 나가는 것을 확인했다.",
+      "minutes": 25
+    },
+    {
+      "task": "DTO 의 패키지를 옮기고 JPQL 은 그대로 둔 채 실행한다.",
+      "done_when": "런타임에 실패하는 것을 확인했다. 11.1절의 약점이 여기서도 나온다.",
+      "minutes": 10
+    },
+    {
+      "task": "`SELECT o FROM Order o JOIN o.orderItems oi` 를 DISTINCT 없이/있이 실행해 건수를 비교한다.",
+      "done_when": "중복이 사라지는 것을 확인했다. (하이버네이트 6 이면 둘 다 같을 수 있다 — 버전을 확인한다.)",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JPQL 로 조회한 엔티티를 수정하면 어떻게 되는가?",
+      "a": "UPDATE 가 나간다. JPQL 결과도 1차 캐시에 들어가 영속 상태가 되므로 `em.find()` 와 똑같이 변경 감지 대상이다."
+    },
+    {
+      "q": "조회 전용 화면에서 엔티티 프로젝션이 부담이 되는 이유는?",
+      "a": "조회 건수만큼 엔티티와 스냅샷이 메모리에 올라가고, 플러시할 때마다 전부 비교한다."
+    },
+    {
+      "q": "`SELECT a FROM Address a` 가 안 되는 이유는?",
+      "a": "임베디드 타입은 자기 테이블이 없어서 조회의 시작점이 될 수 없다. `FROM` 절에는 엔티티만 온다."
+    },
+    {
+      "q": "여러 값을 조회할 때 `Object[]` 대신 `new` 명령어를 쓰는 이유는?",
+      "a": "`row[0]` 이 무엇인지 코드에 드러나지 않고, SELECT 절 순서를 바꾸면 조용히 깨진다. DTO 로 받으면 이름으로 접근한다."
+    },
+    {
+      "q": "`new` 명령어의 약점 두 가지는?",
+      "a": "패키지 전체 경로를 문자열로 적어야 하고, 생성자 시그니처가 컴파일 시점에 검증되지 않는다. QueryDSL 의 `@QueryProjection` 이 둘 다 해결한다."
+    },
+    {
+      "q": "JPQL `DISTINCT` 가 SQL DISTINCT 와 다른 점은?",
+      "a": "SQL DISTINCT 를 보낸 뒤 애플리케이션에서 같은 식별자를 가진 엔티티를 한 번 더 합친다. 컬렉션 조인에서 행이 뻥튀기될 때 이 두 번째 단계가 필요하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "프로젝션",
+      "en": "projection",
+      "what": "SELECT 절에 무엇을 조회할지 지정하는 것. 엔티티·임베디드·스칼라 세 가지."
+    },
+    {
+      "term": "new 명령어",
+      "en": "constructor expression",
+      "what": "JPQL 에서 DTO 생성자를 직접 호출해 결과를 담는 문법. 패키지 전체 경로가 필요하다."
+    },
+    {
+      "term": "DTO 조회",
+      "en": "",
+      "what": "필요한 값만 골라 전용 객체로 받는 방식. 엔티티를 만들지 않아 영속성 컨텍스트가 개입하지 않는다."
+    },
+    {
+      "term": "인터페이스 프로젝션",
+      "en": "",
+      "what": "Spring Data JPA 가 인터페이스만 보고 구현체를 만들어 주는 조회 방식."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

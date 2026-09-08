@@ -1,0 +1,228 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-intro",
+  "no": "11.1",
+  "chapter": 11,
+  "title": "객체지향 쿼리 언어 소개",
+  "summary": "JPQL·Criteria·QueryDSL·네이티브 SQL. 무엇을 언제 쓰나.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "`em.find()` 로 안 되는 조회가 무엇인지 말할 수 있다.",
+    "다섯 가지 조회 수단을 언제 고르는지 순서대로 설명할 수 있다.",
+    "JPQL 의 결정적 약점과, QueryDSL 이 왜 거의 항상 따라붙는지 안다.",
+    "Criteria 가 표준인데도 실무에서 안 쓰이는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10장까지가 **매핑**이었다. \"객체를 어떻게 테이블에 붙이는가\".\n\n11장부터는 **조회**다. 그리고 여기서 2.1절의 약속이 마지막으로 시험받는다 — \"객체를 자바 컬렉션처럼 다루고 싶다\"고 했는데, **컬렉션에는 `WHERE` 절이 없다.**"
+    },
+    {
+      "type": "heading",
+      "text": "em.find() 의 한계"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "Member member = em.find(Member.class, 1L);   // 기본 키 하나로 한 건"
+    },
+    {
+      "type": "prose",
+      "md": "3.2절에서 이미 부딪혔다. \"나이가 18살 이상인 회원을 전부\" 를 이걸로는 못 한다.\n\n그렇다고 테이블 전체를 자바로 가져와 필터링할 수는 없다. **조건은 DB 가 처리해야 한다** — 그게 인덱스가 있는 이유다.\n\n그래서 쿼리가 필요하고, JPA 는 그 쿼리를 **테이블이 아니라 엔티티를 대상으로** 쓰게 한다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "JPQL",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m WHERE m.age > 18\", Member.class)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "caption": "번역된 SQL",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.AGE > 18",
+      "note": "`Member` 는 클래스 이름, `m.age` 는 필드 이름이다. 테이블·컬럼 이름으로의 번역은 매핑 정보가, DB 별 문법 차이는 dialect 가 맡는다(3.1절)."
+    },
+    {
+      "type": "heading",
+      "text": "다섯 가지 수단"
+    },
+    {
+      "type": "figure",
+      "caption": "고르는 순서",
+      "ascii": "   조회 수단을 고르는 순서\n\n   em.find(Member.class, id)\n        │  기본 키 하나로 한 건 -> 여기서 끝\n        │\n        ▼  조건이 붙는다\n   JPQL\n        │  대부분 여기서 끝난다\n        │\n        ▼  쿼리가 동적으로 조립된다 / 오타를 컴파일 때 잡고 싶다\n   QueryDSL\n        │  실무에서 JPQL 과 거의 항상 같이 쓴다\n        │\n        ▼  DB 고유 문법이 필요하다 (힌트, 윈도우 함수, CONNECT BY)\n   Native Query\n        │\n        ▼  영속성 컨텍스트가 아예 필요 없다 (대량 통계, 배치)\n   JdbcTemplate / MyBatis\n\n\n   Criteria 는 이 사다리에 없다.\n   표준이지만 같은 쿼리를 쓰는 데 코드가 서너 배 들어서\n   QueryDSL 이 그 자리를 대신 가져갔다."
+    },
+    {
+      "type": "table",
+      "caption": "각각의 성격",
+      "note": "실무의 표준 조합은 **JPQL + QueryDSL** 이고, 여기에 필요할 때 네이티브 쿼리를 섞는다.",
+      "columns": [
+        "수단",
+        "장점",
+        "약점"
+      ],
+      "rows": [
+        [
+          "**JPQL**",
+          "표준. 엔티티 대상. DB 를 바꿔도 그대로",
+          "**문자열이라 오타를 런타임에 발견**. 동적 쿼리 조립이 지저분"
+        ],
+        [
+          "**QueryDSL**",
+          "자바 코드라 컴파일 때 잡힌다. 동적 쿼리가 깔끔",
+          "표준이 아니고 빌드 설정(Q타입 생성)이 필요"
+        ],
+        [
+          "**Criteria**",
+          "표준. 동적 쿼리 가능",
+          "**같은 쿼리에 코드가 서너 배**. 읽기 어렵다"
+        ],
+        [
+          "**네이티브 쿼리**",
+          "DB 고유 문법을 다 쓸 수 있다",
+          "DB 를 바꾸면 다시 써야 한다. 반환 매핑이 번거롭다"
+        ],
+        [
+          "**JdbcTemplate 등**",
+          "가장 자유롭다",
+          "영속성 컨텍스트 밖이라 **플러시 타이밍을 직접 챙겨야** 한다"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "JPQL 의 결정적 약점"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "이 코드는 컴파일된다",
+      "code": "em.createQuery(\"SELECT m FROM Membr m WHERE m.nmae = :name\", Member.class)\n  .setParameter(\"name\", \"김관현\")\n  .getResultList();",
+      "note": "`Membr`·`nmae` 두 개의 오타가 있는데 **컴파일러가 아무 말도 안 한다.** 그냥 문자열이기 때문이다. 이 화면을 실제로 열어 보기 전까지 아무도 모른다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "QueryDSL 이면 컴파일이 안 된다",
+      "code": "queryFactory\n    .selectFrom(member)\n    .where(member.name.eq(\"김관현\"))     // 오타면 컴파일 오류\n    .fetch();",
+      "note": "엔티티마다 `QMember` 같은 클래스를 빌드 때 생성해 두고, 그것으로 쿼리를 조립한다. **필드 이름을 바꾸면 쿼리도 같이 컴파일 오류가 난다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 채용공고에 둘이 같이 나온다",
+      "md": "3.2절 실습에서 \"필드 이름을 바꾸고 JPQL 은 그대로 둔 채 실행해 보라\"고 했다. 그때 런타임에 실패하는 것을 봤다면 이 절의 결론은 이미 나온 셈이다.\n\n**JPQL 을 몰라도 되는 것이 아니다.** QueryDSL 이 만들어 내는 것이 결국 JPQL 이고, 로그에 찍히는 것도 JPQL 을 거친 SQL 이다. 문법을 모르면 QueryDSL 코드를 읽을 수도, 나가는 쿼리를 이해할 수도 없다.\n\n순서는 **JPQL 을 먼저 익히고 QueryDSL 로 감싼다.** 11~12장이 그 첫 단계다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "Criteria 는 왜 밀려났나",
+      "md": "표준이고 동적 쿼리도 되는데 실무에서 안 쓴다. 이유는 하나다 — **읽을 수가 없다.**\n\n```java\nCriteriaBuilder cb = em.getCriteriaBuilder();\nCriteriaQuery<Member> cq = cb.createQuery(Member.class);\nRoot<Member> m = cq.from(Member.class);\ncq.select(m).where(cb.equal(m.get(\"name\"), \"김관현\"));\nList<Member> result = em.createQuery(cq).getResultList();\n```\n\n`SELECT m FROM Member m WHERE m.name = '김관현'` 한 줄이 다섯 줄이 된다. 조건이 셋만 붙어도 무슨 쿼리인지 알아볼 수 없어진다.\n\n\"표준이면 좋은 것\"이 항상 성립하지는 않는다는 사례다. **QueryDSL 은 표준이 아니지만 사실상의 표준**이 됐다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "네이티브 쿼리와 JdbcTemplate 을 쓸 때 조심할 것",
+      "md": "둘 다 **영속성 컨텍스트를 우회한다.** 그래서 4.3절의 문제가 생긴다.\n\n- **네이티브 쿼리**는 JPA 가 관리하므로 실행 전에 자동 플러시가 일어난다.\n- **JdbcTemplate·MyBatis** 는 JPA 밖이라 **플러시가 안 일어난다.** 방금 `persist()` 한 데이터를 못 찾는다.\n\n후자를 섞어 쓸 거라면 그 앞에 `em.flush()` 를 직접 불러야 한다. 이게 JPA 와 다른 데이터 접근 기술을 섞을 때 가장 자주 나는 사고다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 과 SQL 의 차이는?\"** → 대상이 테이블이 아니라 엔티티다. 클래스 이름과 필드 이름을 쓰고, 실행 시 매핑 정보와 dialect 를 거쳐 SQL 로 번역된다.\n- **\"JPQL 의 단점은?\"** → 문자열이라 오타를 런타임에야 발견한다. 동적 쿼리 조립도 지저분하다.\n- **\"그래서 QueryDSL 을 쓰는 건가요?\"** → 그렇다. 자바 코드로 쿼리를 조립하므로 컴파일 시점에 잡히고 동적 쿼리가 깔끔하다. 다만 만들어 내는 것은 결국 JPQL 이라 JPQL 을 알아야 한다.\n- **\"Criteria 는 왜 안 쓰나요?\"** → 표준이지만 같은 쿼리에 코드가 서너 배 들고 읽기 어렵다.\n- **\"JdbcTemplate 을 JPA 와 섞어 쓸 때 주의할 점은?\"** → 영속성 컨텍스트 밖이라 자동 플러시가 안 된다. 앞에서 `em.flush()` 를 직접 불러야 방금 저장한 데이터가 보인다."
+    }
+  ],
+  "recap": [
+    "`em.find()` 는 기본 키 한 건 전용이다. 조건 검색에는 쿼리가 필요하다.",
+    "JPQL 은 테이블이 아니라 **엔티티**를 대상으로 한다. 클래스 이름·필드 이름을 쓴다.",
+    "고르는 순서 — find → JPQL → QueryDSL → 네이티브 → JdbcTemplate.",
+    "JPQL 의 약점은 문자열이라는 것. 오타가 런타임에야 드러나고 동적 쿼리가 지저분하다.",
+    "QueryDSL 이 그 약점을 메우지만 **만들어 내는 것은 결국 JPQL** 이라 JPQL 을 먼저 안다.",
+    "Criteria 는 표준인데도 코드량과 가독성 때문에 밀려났다.",
+    "JdbcTemplate·MyBatis 는 영속성 컨텍스트 밖이라 자동 플러시가 안 된다. `em.flush()` 를 직접 부른다."
+  ],
+  "drills": [
+    {
+      "task": "JPQL 에 일부러 오타를 넣고 컴파일한 뒤 실행한다.",
+      "done_when": "컴파일은 되고 런타임에 실패하는 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "관심 있는 회사의 백엔드 공고 10건에서 JPA·QueryDSL·MyBatis 가 각각 몇 번 나오는지 센다.",
+      "done_when": "JPA 와 QueryDSL 이 거의 항상 같이 나온다는 것을 숫자로 확인했다.",
+      "hint": "11.1절의 결론이 시장에서 어떻게 보이는지 확인하는 실습이다.",
+      "minutes": 20
+    },
+    {
+      "task": "같은 조회를 JPQL 과 Criteria 로 각각 작성해 줄 수를 비교한다.",
+      "done_when": "코드량 차이를 숫자로 말할 수 있다.",
+      "minutes": 25
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`em.find()` 로 조건 검색을 할 수 없는 이유는?",
+      "a": "기본 키 하나로 한 건을 가져오는 메서드이기 때문이다. 조건 검색은 DB 가 처리해야 인덱스를 쓸 수 있으므로 쿼리가 필요하다."
+    },
+    {
+      "q": "JPQL 이 SQL 과 다른 점은?",
+      "a": "대상이 테이블이 아니라 엔티티다. `Member` 는 클래스 이름, `m.age` 는 필드 이름이며, 테이블·컬럼으로의 번역은 매핑 정보가, DB 문법 차이는 dialect 가 맡는다."
+    },
+    {
+      "q": "JPQL 의 가장 큰 약점은?",
+      "a": "문자열이라 컴파일러가 검증하지 못한다. 엔티티 이름이나 필드 이름 오타를 그 코드가 실행될 때까지 알 수 없다."
+    },
+    {
+      "q": "QueryDSL 을 쓰면 JPQL 을 몰라도 되는가?",
+      "a": "아니다. QueryDSL 이 만들어 내는 것이 JPQL 이고 로그에 찍히는 SQL 도 그것을 거친 결과다. 문법을 모르면 코드도 로그도 읽을 수 없다."
+    },
+    {
+      "q": "Criteria 가 표준인데도 실무에서 밀려난 이유는?",
+      "a": "같은 쿼리를 쓰는 데 코드가 서너 배 들고 읽기 어렵다. 조건이 몇 개만 붙어도 무슨 쿼리인지 알아보기 힘들어진다."
+    },
+    {
+      "q": "JdbcTemplate 을 JPA 와 함께 쓸 때 나는 대표적 사고는?",
+      "a": "영속성 컨텍스트 밖이라 자동 플러시가 일어나지 않아, 방금 `persist()` 한 데이터를 조회하지 못한다. 앞에서 `em.flush()` 를 직접 호출해야 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "JPQL",
+      "en": "Jakarta Persistence Query Language",
+      "what": "엔티티를 대상으로 하는 표준 객체지향 쿼리 언어. 실행 시 SQL 로 번역된다."
+    },
+    {
+      "term": "QueryDSL",
+      "en": "",
+      "what": "자바 코드로 쿼리를 조립하는 라이브러리. 컴파일 시점 검증과 동적 쿼리가 강점이고 결과물은 JPQL 이다."
+    },
+    {
+      "term": "Criteria",
+      "en": "",
+      "what": "JPA 표준의 프로그래밍 방식 쿼리 API. 코드량과 가독성 때문에 실무에서 거의 안 쓴다."
+    },
+    {
+      "term": "네이티브 쿼리",
+      "en": "native query",
+      "what": "SQL 을 그대로 쓰는 방식. DB 고유 문법이 필요할 때 사용한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-basics",
+  "no": "11.2",
+  "chapter": 11,
+  "title": "기본 문법과 쿼리 API",
+  "summary": "TypedQuery·Query, getResultList 와 getSingleResult 의 차이, 파라미터 바인딩.",
+  "minutes": 18,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPQL 의 기본 문법과 SQL 과 다른 규칙을 말할 수 있다.",
+    "`TypedQuery` 와 `Query` 를 언제 쓰는지 안다.",
+    "`getSingleResult()` 가 던지는 두 예외와, 실무에서 어떻게 피하는지 안다.",
+    "파라미터 바인딩을 이름 기준으로 써야 하는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "기본 문법"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "caption": "형태는 SQL 과 거의 같다",
+      "code": "SELECT m FROM Member AS m WHERE m.age > 18 ORDER BY m.name DESC"
+    },
+    {
+      "type": "table",
+      "caption": "SQL 과 다른 규칙",
+      "note": "`AS` 는 생략할 수 있지만 **별칭 자체는 생략할 수 없다.** SQL 에서 `SELECT * FROM MEMBER WHERE AGE > 18` 이 되는 것과 다르다.",
+      "columns": [
+        "규칙",
+        "설명"
+      ],
+      "rows": [
+        [
+          "**대상이 엔티티다**",
+          "`Member` 는 테이블이 아니라 클래스 이름(`@Entity(name)`)"
+        ],
+        [
+          "**필드 이름을 쓴다**",
+          "컬럼이 `USER_NAME` 이어도 JPQL 은 `m.name`"
+        ],
+        [
+          "**별칭이 필수다**",
+          "`SELECT m FROM Member m` — `m` 을 생략할 수 없다"
+        ],
+        [
+          "**대소문자를 구분한다**",
+          "엔티티·필드 이름은 구분. `SELECT`·`FROM` 같은 키워드는 안 구분"
+        ],
+        [
+          "**`*` 가 없다**",
+          "엔티티 전체는 `SELECT m`, 특정 값은 `SELECT m.name`"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "가장 자주 하는 실수",
+      "md": "```java\n// 테이블 이름을 쓴다\n\"SELECT m FROM MEMBER m\"          // Member 여야 한다\n\n// 컬럼 이름을 쓴다\n\"SELECT m FROM Member m WHERE m.user_name = :n\"   // m.name\n\n// 별칭을 뺀다\n\"SELECT * FROM Member\"            // SELECT m FROM Member m\n```\n\n셋 다 **컴파일은 통과하고 실행할 때 터진다**(11.1절). 그리고 셋 다 \"SQL 을 쓰던 손\"이 만드는 실수라, JPQL 을 처음 쓸 때 반드시 한 번씩 겪는다."
+    },
+    {
+      "type": "heading",
+      "text": "TypedQuery 와 Query"
+    },
+    {
+      "type": "compare",
+      "caption": "반환 타입을 아는가",
+      "note": "가능하면 `TypedQuery` 를 쓴다. 형변환이 없어지고 반환 타입이 코드에 남는다.",
+      "left": {
+        "title": "TypedQuery — 타입이 정해질 때",
+        "lang": "java",
+        "code": "TypedQuery<Member> query =\n    em.createQuery(\n        \"SELECT m FROM Member m\",\n        Member.class);\n\nList<Member> result = query.getResultList();",
+        "md": "두 번째 인자로 반환 타입을 준다. `List<Member>` 를 그대로 받는다."
+      },
+      "right": {
+        "title": "Query — 타입이 안 정해질 때",
+        "lang": "java",
+        "code": "Query query = em.createQuery(\n    \"SELECT m.name, m.age FROM Member m\");\n\nList<Object[]> result = query.getResultList();",
+        "md": "여러 값을 골라 타입이 하나로 안 정해지는 경우. `Object[]` 로 받아 꺼내 써야 한다(11.3절)."
+      }
+    },
+    {
+      "type": "heading",
+      "text": "결과를 받는 두 메서드"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "getResultList — 안전하다",
+      "code": "List<Member> result = query.getResultList();\n// 결과가 없으면 빈 리스트. null 이 아니다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "getSingleResult — 예외를 던진다",
+      "code": "Member member = query.getSingleResult();"
+    },
+    {
+      "type": "table",
+      "caption": "getSingleResult 의 세 경우",
+      "note": "**결과가 없을 때 예외를 던지는 것**이 문제다. \"없을 수도 있는 조회\"가 대부분인데 그때마다 try-catch 를 써야 한다.",
+      "columns": [
+        "결과",
+        "동작"
+      ],
+      "rows": [
+        [
+          "정확히 1건",
+          "그 값을 돌려준다"
+        ],
+        [
+          "0건",
+          "**`NoResultException`**"
+        ],
+        [
+          "2건 이상",
+          "**`NonUniqueResultException`**"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "실무에서는 이렇게 피한다",
+      "code": "List<Member> result = em.createQuery(\n        \"SELECT m FROM Member m WHERE m.name = :name\", Member.class)\n    .setParameter(\"name\", name)\n    .getResultList();\n\nOptional<Member> found = result.stream().findFirst();",
+      "note": "Spring Data JPA 는 아예 `Optional<T>` 를 반환하도록 감싸 준다. 내부적으로 이 예외를 잡아서 `Optional.empty()` 로 바꾸는 것이다."
+    },
+    {
+      "type": "heading",
+      "text": "파라미터 바인딩"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "이름 기준 — 이것만 쓴다",
+      "code": "List<Member> result = em.createQuery(\n        \"SELECT m FROM Member m WHERE m.name = :name AND m.age > :age\",\n        Member.class)\n    .setParameter(\"name\", \"김관현\")\n    .setParameter(\"age\", 18)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "caption": "나가는 SQL",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.AGE, M.TEAM_ID\n  FROM MEMBER M\n WHERE M.NAME = ? AND M.AGE > ?",
+      "note": "`?` 로 나간다 — **PreparedStatement 바인딩**이다. 값을 문자열로 이어 붙이지 않으므로 SQL 인젝션이 막히고, DB 가 실행 계획을 재사용할 수 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "위치 기준 — 쓰지 않는다",
+      "code": "em.createQuery(\"SELECT m FROM Member m WHERE m.name = ?1 AND m.age > ?2\")\n  .setParameter(1, \"김관현\")\n  .setParameter(2, 18);",
+      "note": "조건을 중간에 하나 끼워 넣는 순간 뒤의 번호가 전부 밀린다. **바꾸는 곳과 터지는 곳이 달라서** 찾기 어렵다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "문자열을 이어 붙이면 안 된다",
+      "md": "```java\n// 절대 이렇게 하지 않는다\nem.createQuery(\"SELECT m FROM Member m WHERE m.name = '\" + name + \"'\");\n```\n\n**SQL 인젝션**이 그대로 열린다. `name` 에 `' OR '1'='1` 이 들어오면 전체 조회가 된다.\n\n그리고 보안이 아니어도 문제다. 값마다 SQL 문자열이 달라지므로 **DB 의 실행 계획 캐시를 못 쓴다.** 파라미터 바인딩은 안전과 성능을 동시에 얻는 자리다."
+    },
+    {
+      "type": "heading",
+      "text": "쿼리를 만드는 세 가지 방법"
+    },
+    {
+      "type": "table",
+      "caption": "createQuery 계열",
+      "note": "동적 쿼리(`createQuery`)와 정적 쿼리(Named)의 차이가 핵심이다. Named 쿼리는 **애플리케이션이 뜰 때 문법 검사를 받는 유일한 쿼리**다(12.6절).",
+      "columns": [
+        "메서드",
+        "무엇",
+        "검사 시점"
+      ],
+      "rows": [
+        [
+          "`createQuery(jpql)`",
+          "JPQL 문자열",
+          "**실행할 때**"
+        ],
+        [
+          "`createNamedQuery(name)`",
+          "미리 이름 붙여 둔 JPQL",
+          "**애플리케이션 로딩 시점** (12.6)"
+        ],
+        [
+          "`createNativeQuery(sql)`",
+          "SQL 그대로",
+          "실행할 때"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPQL 에서 별칭을 생략할 수 있나요?\"** → 없다. `SELECT m FROM Member m` 처럼 반드시 별칭을 준다.\n- **\"`getSingleResult()` 의 문제는?\"** → 결과가 없으면 `NoResultException`, 둘 이상이면 `NonUniqueResultException` 을 던진다. 없을 수도 있는 조회에는 `getResultList()` 를 쓰고 `Optional` 로 감싼다.\n- **\"파라미터 바인딩을 왜 쓰나요?\"** → SQL 인젝션을 막고, `?` 로 나가므로 DB 가 실행 계획을 재사용할 수 있다.\n- **\"이름 기준과 위치 기준 중 무엇을 쓰나요?\"** → 이름 기준. 위치 기준은 조건을 중간에 추가하면 번호가 전부 밀린다.\n- **\"JPQL 오타는 언제 발견되나요?\"** → 실행할 때. Named 쿼리로 만들면 애플리케이션 로딩 시점에 검사받는다."
+    }
+  ],
+  "recap": [
+    "JPQL 은 엔티티 이름과 필드 이름을 쓰고, **별칭이 필수**이며, `*` 대신 `SELECT m` 을 쓴다.",
+    "엔티티·필드 이름은 대소문자를 구분하고 키워드는 구분하지 않는다.",
+    "`TypedQuery` 는 반환 타입이 정해질 때, `Query` 는 여러 값을 골라 타입이 하나가 아닐 때.",
+    "`getResultList()` 는 결과가 없으면 빈 리스트, `getSingleResult()` 는 예외를 던진다.",
+    "실무에서는 `getResultList()` + `Optional` 로 감싼다. Spring Data JPA 가 그렇게 해 준다.",
+    "파라미터는 **이름 기준**으로 바인딩한다. 위치 기준은 조건 추가 시 번호가 밀린다.",
+    "문자열 연결은 SQL 인젝션과 실행 계획 캐시 무효화를 동시에 부른다."
+  ],
+  "drills": [
+    {
+      "task": "`SELECT m FROM MEMBER m`(테이블 이름), `SELECT * FROM Member`(별칭 없음)를 각각 실행해 오류 메시지를 본다.",
+      "done_when": "둘 다 컴파일은 되고 실행에서 실패하는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "결과가 0건인 조건으로 `getSingleResult()` 를 실행한다.",
+      "done_when": "`NoResultException` 을 직접 봤다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 조회를 `getResultList()` + `stream().findFirst()` 로 바꾼다.",
+      "done_when": "예외 없이 `Optional.empty()` 가 나오는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "위치 기준 파라미터로 조건 두 개를 쓴 뒤, 맨 앞에 조건을 하나 더 끼워 넣어 본다.",
+      "done_when": "번호를 전부 고쳐야 하는 것을 겪었다.",
+      "minutes": 15
+    },
+    {
+      "task": "파라미터 바인딩 대신 문자열 연결로 쿼리를 만들고, 값에 `' OR '1'='1` 을 넣어 본다.",
+      "done_when": "전체가 조회되는 것을 확인했다. **실습 후 그 코드는 지운다.**",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`SELECT * FROM Member` 가 JPQL 에서 안 되는 이유는?",
+      "a": "JPQL 에는 `*` 가 없고 별칭이 필수다. `SELECT m FROM Member m` 처럼 써야 한다."
+    },
+    {
+      "q": "`TypedQuery` 를 쓸 수 없는 경우는?",
+      "a": "`SELECT m.name, m.age` 처럼 여러 값을 골라 반환 타입이 하나로 정해지지 않을 때. 이때는 `Query` 로 받아 `Object[]` 를 꺼낸다."
+    },
+    {
+      "q": "`getSingleResult()` 가 던지는 두 예외는?",
+      "a": "결과가 0건이면 `NoResultException`, 2건 이상이면 `NonUniqueResultException`."
+    },
+    {
+      "q": "실무에서 단건 조회를 어떻게 처리하는가?",
+      "a": "`getResultList()` 로 받아 `stream().findFirst()` 등으로 `Optional` 을 만든다. Spring Data JPA 는 내부적으로 그 예외를 잡아 `Optional` 로 바꿔 준다."
+    },
+    {
+      "q": "파라미터 바인딩이 주는 두 가지 이득은?",
+      "a": "SQL 인젝션 차단과 실행 계획 재사용이다. `?` 로 나가므로 값이 달라져도 SQL 문자열이 같다."
+    },
+    {
+      "q": "위치 기준 파라미터를 권하지 않는 이유는?",
+      "a": "조건을 중간에 추가하면 뒤의 번호가 전부 밀린다. 바꾸는 곳과 터지는 곳이 달라 추적이 어렵다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "TypedQuery",
+      "en": "",
+      "what": "반환 타입이 지정된 쿼리 객체. `createQuery(jpql, Member.class)` 로 만든다."
+    },
+    {
+      "term": "getResultList",
+      "en": "",
+      "what": "여러 건을 반환한다. 결과가 없으면 빈 리스트."
+    },
+    {
+      "term": "getSingleResult",
+      "en": "",
+      "what": "정확히 한 건을 반환한다. 0건·2건 이상이면 예외를 던진다."
+    },
+    {
+      "term": "파라미터 바인딩",
+      "en": "parameter binding",
+      "what": "값을 `?` 자리에 넣어 보내는 방식. 이름 기준(`:name`)과 위치 기준(`?1`)이 있고 전자를 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

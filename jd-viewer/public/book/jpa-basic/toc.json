@@ -452,7 +452,7 @@
           "title": "객체지향 쿼리 언어 소개",
           "summary": "JPQL·Criteria·QueryDSL·네이티브 SQL. 무엇을 언제 쓰나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -460,7 +460,7 @@
           "title": "기본 문법과 쿼리 API",
           "summary": "TypedQuery·Query, getResultList 와 getSingleResult 의 차이, 파라미터 바인딩.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -468,7 +468,7 @@
           "title": "프로젝션(SELECT)",
           "summary": "엔티티·임베디드·스칼라 프로젝션. 조회한 엔티티가 영속 상태인지 아닌지.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
@@ -476,7 +476,7 @@
           "title": "페이징",
           "summary": "setFirstResult·setMaxResults 두 줄이 DB 마다 다른 SQL 로 번역되는 과정.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",

@@ -1,0 +1,212 @@
+{
+  "book": "jpa-basic",
+  "id": "jpql-paging",
+  "no": "11.4",
+  "chapter": 11,
+  "title": "페이징",
+  "summary": "setFirstResult·setMaxResults 두 줄이 DB 마다 다른 SQL 로 번역되는 과정.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "JPA 의 페이징 API 두 개가 각각 무엇을 뜻하는지 정확히 안다.",
+    "같은 코드가 DB 마다 다른 SQL 이 되는 것을 직접 확인할 수 있다.",
+    "전체 건수를 세는 쿼리를 왜 따로 보내야 하는지 안다.",
+    "OFFSET 페이징의 성능 한계와 대안을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "페이징은 DB 마다 문법이 가장 심하게 다른 영역이다. 3.1절에서 dialect 를 \"번역 규칙표\"라고 했는데, **이 절이 그 실물**이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "API 는 두 개뿐이다",
+      "code": "List<Member> members = em.createQuery(\n        \"SELECT m FROM Member m ORDER BY m.name DESC\", Member.class)\n    .setFirstResult(20)     // 건너뛸 개수 (0부터)\n    .setMaxResults(10)      // 가져올 개수\n    .getResultList();"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "'페이지 번호' 가 아니라 '건너뛸 개수' 다",
+      "md": "`setFirstResult(20)` 은 **21번째부터**라는 뜻이지 21페이지가 아니다. 페이지 번호로 계산하려면 이렇게 한다.\n\n```java\nint page = 3;      // 3페이지 (0부터 세면 2)\nint size = 10;\n\n.setFirstResult((page - 1) * size)\n.setMaxResults(size)\n```\n\nSpring Data JPA 의 `Pageable` 은 이 계산을 대신해 주고, `page` 를 **0부터** 센다. 두 세계의 기준이 달라서 화면 페이지 번호와 어긋나는 사고가 종종 난다."
+    },
+    {
+      "type": "figure",
+      "caption": "같은 두 줄, 다른 SQL",
+      "ascii": "   setFirstResult(20).setMaxResults(10)\n   \"21번째부터 10개\" 라는 뜻. 페이지 번호가 아니라 건너뛸 개수다.\n\n\n   같은 두 줄이 DB 마다 다른 SQL 이 된다\n\n   H2 / MySQL / PostgreSQL\n   ┌──────────────────────────────────────────────────┐\n   │ SELECT ... FROM MEMBER                           │\n   │  ORDER BY NAME DESC                              │\n   │  LIMIT 10 OFFSET 20                              │\n   └──────────────────────────────────────────────────┘\n\n   Oracle 11g 이하  (ROWNUM 을 두 겹으로 감싼다)\n   ┌──────────────────────────────────────────────────┐\n   │ SELECT * FROM (                                  │\n   │     SELECT ROW_.*, ROWNUM RNUM FROM (            │\n   │         SELECT ... FROM MEMBER ORDER BY NAME DESC│\n   │     ) ROW_ WHERE ROWNUM <= 30                    │\n   │ ) WHERE RNUM > 20                                │\n   └──────────────────────────────────────────────────┘\n\n   SQL Server\n   ┌──────────────────────────────────────────────────┐\n   │ SELECT ... FROM MEMBER                           │\n   │  ORDER BY NAME DESC                              │\n   │  OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY          │\n   └──────────────────────────────────────────────────┘\n\n   3.1 절에서 dialect 를 \"번역 규칙표\" 라고 했던 것의 실물이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이게 JPA 를 쓰는 실질적 이유 중 하나다",
+      "md": "Oracle 의 저 중첩 쿼리를 손으로 쓰다가 MySQL 로 옮기면 페이징 코드를 전부 다시 써야 한다. 반대도 마찬가지다.\n\nJPA 에서는 **`persistence.xml` 의 dialect 한 줄만 바꾸면** 된다. 애플리케이션 코드는 손대지 않는다.\n\n2.1절에서 \"객체를 컬렉션처럼\" 이라고 했던 것과는 결이 다른 이득이다 — **DB 방언 차이를 한 곳에 가둔다**는 것. 두 이득 다 \"흩어진 것을 한 곳에 모은다\"는 같은 원리에서 나온다."
+    },
+    {
+      "type": "heading",
+      "text": "전체 건수는 따로 세야 한다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "code": "// 1) 페이지 데이터\nList<Member> content = em.createQuery(\n        \"SELECT m FROM Member m ORDER BY m.name DESC\", Member.class)\n    .setFirstResult(20).setMaxResults(10)\n    .getResultList();\n\n// 2) 전체 건수\nLong total = em.createQuery(\n        \"SELECT COUNT(m) FROM Member m\", Long.class)\n    .getSingleResult();"
+    },
+    {
+      "type": "sql",
+      "caption": "쿼리가 두 번 나간다",
+      "sql": "SELECT M.MEMBER_ID, M.NAME, M.AGE FROM MEMBER M\n ORDER BY M.NAME DESC\n LIMIT 10 OFFSET 20\n\nSELECT COUNT(*) FROM MEMBER",
+      "note": "**카운트 쿼리에는 `ORDER BY` 와 조인을 빼는 것**이 중요하다. 정렬은 개수와 무관하고, 컬렉션 조인은 개수를 뻥튀기한다. Spring Data JPA 의 `@Query(countQuery = ...)` 가 이걸 따로 지정하는 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "카운트 쿼리를 아예 안 보내는 방법",
+      "md": "전체 건수가 필요한 이유는 대개 \"페이지 번호를 몇 개까지 그릴까\" 하나다. 그런데 그 카운트가 **본문 쿼리보다 느린 경우**가 흔하다 — 인덱스로 10건만 읽으면 되는 것을 전체 스캔해서 세야 하기 때문이다.\n\n두 가지 회피법이 있다.\n\n- **`size + 1` 건을 조회한다.** 11건이 나오면 \"다음 페이지 있음\"이다. 총 페이지 수는 못 그리지만 \"더 보기\" 방식에는 충분하다.\n- **커서 페이징으로 바꾼다.** 아래.\n\nSpring Data JPA 의 `Slice` 가 첫 번째 방식이다. `Page` 는 카운트 쿼리를 보내고 `Slice` 는 안 보낸다."
+    },
+    {
+      "type": "heading",
+      "text": "OFFSET 페이징의 한계"
+    },
+    {
+      "type": "sql",
+      "caption": "10만 번째 페이지를 열면",
+      "sql": "SELECT ... FROM MEMBER ORDER BY NAME DESC LIMIT 10 OFFSET 1000000",
+      "note": "DB 는 **100만 건을 실제로 읽어서 버리고** 그다음 10건을 준다. OFFSET 이 커질수록 선형으로 느려진다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "커서(키셋) 페이징",
+      "code": "// 이전 페이지의 마지막 값을 조건으로 준다\nList<Member> members = em.createQuery(\n        \"SELECT m FROM Member m \" +\n        \"WHERE m.id < :lastId \" +\n        \"ORDER BY m.id DESC\", Member.class)\n    .setParameter(\"lastId\", lastId)\n    .setMaxResults(10)\n    .getResultList();"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT ... FROM MEMBER\n WHERE MEMBER_ID < ?\n ORDER BY MEMBER_ID DESC\n LIMIT 10",
+      "note": "**인덱스를 타고 바로 그 지점으로 간다.** 몇 번째 페이지든 속도가 같다. 대신 \"5페이지로 바로 이동\" 이 안 되고 \"다음 / 이전\" 만 된다 — 무한 스크롤이 이 방식인 이유다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "정렬 기준이 유일하지 않으면 페이징이 깨진다",
+      "md": "`ORDER BY m.name` 만으로 페이징하면, **이름이 같은 회원들의 순서가 매번 달라질 수 있다.** DB 는 동점자의 순서를 보장하지 않는다.\n\n그러면 1페이지에서 본 회원이 2페이지에도 나오고, 어떤 회원은 아예 안 나온다. 재현이 잘 안 돼서 \"가끔 데이터가 이상해요\" 로 접수되는 종류의 버그다.\n\n**정렬 기준의 마지막에 기본 키를 넣는다.**\n\n```\nORDER BY m.name DESC, m.id DESC\n```\n\n커서 페이징에서는 더 중요하다 — 커서 값이 유일해야 \"그 지점부터\"가 정확해진다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "컬렉션 페치 조인과 페이징은 같이 못 쓴다",
+      "md": "```\nSELECT o FROM Order o JOIN FETCH o.orderItems\n```\n\n에 `setMaxResults(10)` 을 걸면, 하이버네이트가 **경고를 찍고 전체를 메모리로 가져와 자바에서 자른다.** 데이터가 많으면 그대로 OOM 이다.\n\n이유와 대안은 12.3절에서 다룬다. 지금은 \"페이징에 함정이 하나 더 있다\" 는 것만 알아 둔다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"JPA 페이징 API 는?\"** → `setFirstResult`(건너뛸 개수)와 `setMaxResults`(가져올 개수). 페이지 번호가 아니라는 점이 포인트다.\n- **\"DB 를 바꾸면 페이징 코드를 고쳐야 하나요?\"** → 아니다. dialect 가 번역하므로 설정 한 줄만 바꾼다.\n- **\"카운트 쿼리를 왜 따로 보내나요?\"** → 전체 건수는 페이지 데이터와 다른 쿼리다. 정렬과 컬렉션 조인은 빼야 한다.\n- **\"OFFSET 페이징의 문제는?\"** → OFFSET 이 커질수록 DB 가 앞의 행을 전부 읽고 버린다. 커서(키셋) 페이징으로 바꾸면 일정하다.\n- **\"페이징에서 정렬 기준에 기본 키를 넣는 이유는?\"** → 동점자의 순서가 보장되지 않아 페이지 경계에서 중복·누락이 생긴다."
+    }
+  ],
+  "recap": [
+    "API 는 `setFirstResult`(건너뛸 개수)와 `setMaxResults`(가져올 개수) 둘뿐이다.",
+    "같은 두 줄이 dialect 를 거쳐 `LIMIT OFFSET`·`ROWNUM` 중첩·`OFFSET FETCH` 로 번역된다.",
+    "전체 건수는 별도 쿼리다. 카운트에는 `ORDER BY` 와 컬렉션 조인을 빼야 한다.",
+    "카운트가 본문보다 느린 경우가 흔하다 — `size + 1` 조회나 커서 페이징으로 피한다.",
+    "OFFSET 은 커질수록 선형으로 느려진다. 커서 페이징은 인덱스를 타고 바로 간다.",
+    "**정렬 기준 마지막에 기본 키를 넣는다.** 동점자 순서가 보장되지 않으면 페이지 경계가 깨진다.",
+    "컬렉션 페치 조인 + 페이징은 메모리에서 처리된다. 12.3절의 주제."
+  ],
+  "drills": [
+    {
+      "task": "회원 30명을 넣고 `setFirstResult(20).setMaxResults(10)` 로 조회해 나가는 SQL 을 확인한다.",
+      "done_when": "H2 의 `LIMIT ... OFFSET ...` 을 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "dialect 를 `OracleDialect` 로 바꾸고 같은 코드를 실행해 SQL 만 확인한다.",
+      "done_when": "중첩 ROWNUM 쿼리로 바뀌는 것을 봤다. 자바 코드는 한 글자도 안 고쳤다는 것도 확인한다.",
+      "hint": "실제로 Oracle 에 붙지 않아도 생성되는 SQL 은 로그로 볼 수 있다.",
+      "minutes": 20
+    },
+    {
+      "task": "이름이 같은 회원을 여러 명 만들고 `ORDER BY m.name` 만으로 페이징해 1·2페이지를 여러 번 조회한다.",
+      "done_when": "중복되거나 누락되는 회원이 생기는 것을 확인했다. 그다음 `, m.id` 를 추가해 사라지는 것도 확인한다.",
+      "minutes": 30
+    },
+    {
+      "task": "커서 페이징으로 같은 목록을 구현한다.",
+      "done_when": "동작하는 것을 확인했고, '5페이지로 바로 가기' 가 안 되는 이유를 설명할 수 있다.",
+      "minutes": 25
+    },
+    {
+      "task": "10만 건을 넣고 `OFFSET 0` 과 `OFFSET 90000` 의 실행 시간을 비교한다.",
+      "done_when": "차이를 숫자로 말할 수 있다.",
+      "minutes": 30
+    }
+  ],
+  "quiz": [
+    {
+      "q": "`setFirstResult(20)` 은 무슨 뜻인가?",
+      "a": "앞의 20건을 건너뛴다는 뜻, 즉 21번째부터다. 페이지 번호가 아니다."
+    },
+    {
+      "q": "DB 를 MySQL 에서 Oracle 로 바꾸면 페이징 코드를 고쳐야 하는가?",
+      "a": "안 고쳐도 된다. dialect 가 `LIMIT OFFSET` 을 중첩 ROWNUM 쿼리로 번역한다. 설정 한 줄만 바꾼다."
+    },
+    {
+      "q": "카운트 쿼리에서 무엇을 빼야 하는가?",
+      "a": "`ORDER BY`(개수와 무관하고 비용만 든다)와 컬렉션 조인(행이 뻥튀기되어 개수가 틀어진다)."
+    },
+    {
+      "q": "OFFSET 페이징이 뒤 페이지에서 느려지는 이유는?",
+      "a": "DB 가 OFFSET 만큼의 행을 실제로 읽어서 버린 뒤 다음 행을 준다. OFFSET 이 커질수록 선형으로 느려진다."
+    },
+    {
+      "q": "커서 페이징의 장단점은?",
+      "a": "인덱스를 타고 바로 그 지점으로 가서 몇 번째 페이지든 속도가 같다. 대신 임의 페이지로 점프할 수 없어 '다음/이전' 이나 무한 스크롤에만 맞는다."
+    },
+    {
+      "q": "정렬 기준 마지막에 기본 키를 넣는 이유는?",
+      "a": "동점자의 순서를 DB 가 보장하지 않아 페이지마다 순서가 달라질 수 있다. 그러면 경계에서 어떤 행은 두 번 나오고 어떤 행은 아예 안 나온다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "setFirstResult",
+      "en": "",
+      "what": "건너뛸 행 수. 0부터 센다."
+    },
+    {
+      "term": "setMaxResults",
+      "en": "",
+      "what": "가져올 최대 행 수."
+    },
+    {
+      "term": "OFFSET 페이징",
+      "en": "",
+      "what": "건너뛸 개수로 위치를 지정하는 방식. 뒤로 갈수록 느려진다."
+    },
+    {
+      "term": "커서 페이징",
+      "en": "keyset pagination",
+      "what": "직전 페이지의 마지막 값을 조건으로 주는 방식. 위치와 무관하게 일정한 속도."
+    },
+    {
+      "term": "Slice / Page",
+      "en": "",
+      "what": "Spring Data JPA 의 페이징 결과 타입. Page 는 카운트 쿼리를 보내고 Slice 는 보내지 않는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 — Query Language",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html#a4665",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Hibernate ORM 6 — HQL / JPQL",
+      "url": "https://docs.jboss.org/hibernate/orm/6.4/querylanguage/html_single/Hibernate_Query_Language.html",
+      "publisher": "Red Hat"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
