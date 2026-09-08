@@ -32,7 +32,7 @@ from classifier import (  # noqa: E402
     extract_revenue_eok,
     _norm_company,
 )
-from jobs_filter import active_only  # noqa: E402
+from jobs_filter import active_only, load_jobs  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 PROFILES = ROOT / "jd-viewer" / "public" / "company_profiles.json"
@@ -883,13 +883,11 @@ def main() -> None:
     args = ap.parse_args()
     min_count = 1 if args.all else args.min
 
-    if not INPUT.exists():
-        print(f"[!] 입력 없음: {INPUT}", file=sys.stderr)
-        sys.exit(1)
-    # 마감 공고는 뺀다. all_jobs_enriched.json 은 이제 모집중과 마감을 함께 담는데
+    # 입력이 없는지는 load_jobs 가 판단한다 — DB 가 살아 있으면 파일이 없어도 된다.
+    # 마감 공고는 뺀다. 정본은 이제 모집중과 마감을 함께 담는데
     # (색인·과거 조회를 살리려고) 이 빌더의 결과는 "지금 시장"이라 만료 공고를 세면
     # 수요가 과거에 눌린다.
-    jobs = active_only(json.loads(INPUT.read_text(encoding="utf-8")))
+    jobs = active_only(load_jobs(INPUT))
     print(f"[*] {len(jobs)}건 로드 (min={min_count})", flush=True)
 
     companies = build(jobs, min_count)

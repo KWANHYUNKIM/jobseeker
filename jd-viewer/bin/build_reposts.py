@@ -38,6 +38,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "catch_capture"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from jobs_filter import load_jobs  # noqa: E402
 ENRICHED = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 ARCHIVE_GLOB = "closed_*.json"
 ARCHIVE_DIR = ROOT / "catch_capture" / "screenshots"
@@ -176,7 +178,7 @@ def _long(v) -> tuple[int, str]:
 
 
 def main() -> None:
-    jobs = json.loads(ENRICHED.read_text(encoding="utf-8"))
+    jobs = load_jobs(ENRICHED)
     today = datetime.now().strftime("%Y-%m-%d")
 
     # 아카이브의 옛 버전을 히스토리 부트스트랩으로 쓴다. 히스토리가 비어 있는 첫 실행에서도

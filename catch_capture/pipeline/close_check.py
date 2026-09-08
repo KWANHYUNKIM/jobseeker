@@ -369,8 +369,50 @@ def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
     return n
 
 
-def _source_jobs() -> tuple[list[dict], str]:
-    """확인 대상 공고 목록. 최신 통합 스냅샷 우선, 없으면 뷰어 데이터."""
+def _source_jobs_db(include_closed: bool) -> list[dict]:
+    """정본 DB 의 `job_recheck_queue`. 못 읽으면 빈 리스트 — 호출부가 파일로 간다.
+
+    **왜 DB 인가.** 지금까지 대상 목록은 이번 회차 크롤 스냅샷(all_jobs.json)에서
+    나왔다. 그래서 **다른 머신이 모아 온 공고는 재확인 대상에 아예 들어오지 못했다** —
+    DB 에는 27,027건이 있는데 이 서버의 스냅샷은 10,496건뿐이었다. 마감 판정은
+    "크롤이 다시 못 봤다"로는 안 닫히고 재확인만이 닫으므로, 그 차액은 영영
+    모집중으로 남는다.
+
+    각 행에 `_checked_at`(원장이 마지막으로 본 시각)을 실어 보낸다. due_jobs 가
+    JSON 원장 대신 이 값으로 나이를 잰다.
+    """
+    try:
+        import sys as _s
+        _s.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from store import conn as store_conn
+        with store_conn.cursor(autocommit=True) as cur:
+            cur.execute(
+                "SELECT site, pid, url, company, title, status, checked_at, ledger_closed"
+                "  FROM job_recheck_queue"
+                + ("" if include_closed else " WHERE status = 'active'")
+            )
+            rows = cur.fetchall()
+    except Exception as e:                                          # noqa: BLE001
+        print(f"[close_check] DB 대상 목록을 못 읽어 파일로 물러섭니다: {e}", flush=True)
+        return []
+
+    out = []
+    for r in rows:
+        out.append({
+            "site": r["site"], "pid": r["pid"], "url": r["url"],
+            "company": r["company"] or "", "title": r["title"] or "",
+            "status": r["status"],
+            "_checked_at": r["checked_at"].isoformat() if r["checked_at"] else "",
+            "_ledger_closed": r["ledger_closed"],
+        })
+    return out
+
+
+def _source_jobs(include_closed: bool = False) -> tuple[list[dict], str]:
+    """확인 대상 공고 목록. 정본 DB 우선, 없으면 크롤 스냅샷 → 뷰어 데이터."""
+    db_jobs = _source_jobs_db(include_closed)
+    if db_jobs:
+        return db_jobs, "job_recheck_queue(DB)"
     latest = LATEST_DIR / "all_jobs.json"
     if latest.exists():
         try:
@@ -404,9 +446,17 @@ def due_jobs(jobs: list[dict], entries: dict, now: datetime, *,
         if not key or key in seen:
             continue
         seen.add(key)
-        entry = entries.get(key)
-        if entry:
-            # 마감은 되돌아오지 않는다 — 재공고는 새 pid 로 온다.
+        # DB 에서 온 행은 원장 상태를 직접 들고 온다(`_checked_at`). 파일에서 온
+        # 행은 예전처럼 JSON 원장에서 찾는다. 둘을 섞지 않는다 — 같은 질문에
+        # 서로 다른 두 원장이 답하면 어느 쪽이 맞는지 알 수 없다.
+        if "_checked_at" in job:
+            if job.get("_ledger_closed") and not recheck_closed:
+                continue                # 마감은 되돌아오지 않는다 — 재공고는 새 pid 로 온다
+            checked_at = job["_checked_at"]
+            age = _age_days(checked_at, now) if checked_at else 1e9
+            if checked_at and age < recheck_days:
+                continue
+        elif (entry := entries.get(key)):
             if entry.get("status") == "closed" and not recheck_closed:
                 continue
             age = _age_days(entry.get("checked_at", ""), now)
@@ -437,7 +487,7 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
         recheck_closed: bool = False, verbose: bool = True) -> dict:
     today = today_date()
     now = datetime.now()
-    jobs, src = _source_jobs()
+    jobs, src = _source_jobs(recheck_closed)
     if not jobs:
         print("[close_check] 확인할 공고 목록을 찾지 못했습니다.", flush=True)
         return {"checked": 0, "closed": 0, "active": 0, "unknown": 0}
@@ -446,8 +496,9 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
     entries: dict = ledger.setdefault("checked", {})
     targets = due_jobs(jobs, entries, now, sites=sites, recheck_days=recheck_days,
                        recheck_closed=recheck_closed)
+    src_label = src if src.endswith("(DB)") else Path(src).name
     print(f"[close_check] 대상 {len(targets):,}건 / 전체 {len(jobs):,}건 "
-          f"(원장 {len(entries):,}건, 출처 {Path(src).name}) — 이번 회차 {min(limit, len(targets)):,}건 확인",
+          f"(원장 {len(entries):,}건, 출처 {src_label}) — 이번 회차 {min(limit, len(targets)):,}건 확인",
           flush=True)
 
     cache: dict = {}

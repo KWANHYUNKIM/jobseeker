@@ -15,7 +15,7 @@ import json
 import re
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from jobs_filter import active_only  # noqa: E402
+from jobs_filter import active_only, load_jobs  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "public" / "all_jobs_enriched.json"
@@ -129,7 +129,7 @@ def main() -> None:
     # 마감 공고는 뺀다. all_jobs_enriched.json 은 이제 모집중과 마감을 함께 담는데
     # (색인·과거 조회를 살리려고) 이 빌더의 결과는 "지금 시장"이라 만료 공고를 세면
     # 수요가 과거에 눌린다.
-    jobs = active_only(json.loads(SRC.read_text(encoding="utf-8")))
+    jobs = active_only(load_jobs(SRC))
     today = date.today()
     items = []
     dated = always_open = no_info = 0

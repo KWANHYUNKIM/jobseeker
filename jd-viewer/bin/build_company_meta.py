@@ -25,6 +25,9 @@ ENRICHED = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 OUTPUT = ROOT / "jd-viewer" / "public" / "company_meta.json"
 
 sys.path.insert(0, str(ROOT / "catch_capture"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from jobs_filter import load_jobs  # noqa: E402
+
 from dashboard.classifier import (  # noqa: E402
     _norm_company,
     classify_company_size,
@@ -34,7 +37,7 @@ from dashboard.classifier import (  # noqa: E402
 
 
 def main() -> None:
-    jobs = json.loads(ENRICHED.read_text(encoding="utf-8"))
+    jobs = load_jobs(ENRICHED)
 
     by_norm: dict[str, list[dict]] = defaultdict(list)
     name_votes: dict[str, Counter] = defaultdict(Counter)

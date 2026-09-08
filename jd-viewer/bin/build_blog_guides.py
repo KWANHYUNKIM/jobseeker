@@ -53,6 +53,8 @@ MIN_SCORE = 0.05     # 이보다 낮으면 '가까운 글'이 아니라 그냥 �
 # pipeline/trends.py 의 CONCEPT_KEYWORDS 와 같은 축을 쓴다. 트렌드 탭에서 "이 개념이
 # 공고의 몇 %" 를 보고 여기서 "그럼 뭘 읽지" 로 이어지려면 축이 같아야 한다.
 sys.path.insert(0, str(ROOT / "catch_capture"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from jobs_filter import load_jobs  # noqa: E402
 from pipeline.trends import CONCEPT_KEYWORDS  # noqa: E402
 
 
@@ -144,7 +146,7 @@ def main() -> None:
     jvec, jdocs, pvec, pdocs = load_vectors()
     print(f"[blog-guides] 공고 {len(jdocs):,} · 글 {len(pdocs):,}", flush=True)
 
-    jobs = json.loads(JOBS.read_text(encoding="utf-8"))
+    jobs = load_jobs(JOBS)
     req_by_url = {
         j.get("url"): " ".join([j.get("qualifications") or "", j.get("preferences") or ""]).lower()
         for j in jobs if j.get("url")

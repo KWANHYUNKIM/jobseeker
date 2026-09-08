@@ -249,14 +249,6 @@ SELECT DISTINCT ON (job_id) job_id, checked_at, closed, deadline_on, evidence, c
  ORDER BY job_id, checked_at DESC;
 
 -- 재확인 대기열: 원장이 아예 없거나 오래된 순. close_check 가 매 사이클 400건씩 가져간다.
-CREATE VIEW job_recheck_queue AS
-SELECT j.id, j.site, j.url, c.checked_at
-  FROM job j
-  LEFT JOIN job_closure_latest c ON c.job_id = j.id
- WHERE j.gone_at IS NULL
-   AND (c.job_id IS NULL OR (NOT c.closed AND c.checked_at < now() - interval '7 days'))
- ORDER BY c.checked_at NULLS FIRST, j.last_seen_at DESC;
-
 -- ════════════════════════════════════════════════════════════════════
 -- 5. 수동 보정 — overrides.json 의 자리
 -- ════════════════════════════════════════════════════════════════════
@@ -320,6 +312,26 @@ SELECT
 FROM job j
 LEFT JOIN job_closure_latest c ON c.job_id = j.id
 LEFT JOIN job_override o ON o.job_id = j.id AND o.field = 'status';
+
+-- 마감 재확인 대상. `pipeline.close_check` 가 이걸 읽는다.
+--
+-- 임계값(며칠 지나면 다시 볼 것인가)을 뷰에 굳히지 않는다 — close_check 의
+-- --recheck-days 가 그 값이고, 여기에 interval '7 days' 를 박아 두면 그 옵션이
+-- 거짓말이 된다. 뷰는 "무엇을 언제 마지막으로 봤나"까지만 답하고 자르는 것은
+-- 부르는 쪽이 한다.
+--
+-- 확인하려면 site·pid·url·회사·제목이 다 필요하다(사이트별 판정기가 쓴다).
+-- 지금까지 close_check 는 이걸 크롤 스냅샷 JSON 에서 읽었고, 그래서 **다른
+-- 머신이 모아 온 공고는 재확인 대상에 아예 들어오지 못했다.**
+CREATE VIEW job_recheck_queue AS
+SELECT j.id, j.site, j.pid, j.url, co.display_name AS company, j.title,
+       s.status, c.checked_at, COALESCE(c.closed, false) AS ledger_closed
+  FROM job j
+  LEFT JOIN company co ON co.id = j.company_id
+  LEFT JOIN job_state s ON s.job_id = j.id
+  LEFT JOIN job_closure_latest c ON c.job_id = j.id
+ WHERE j.gone_at IS NULL
+ ORDER BY c.checked_at NULLS FIRST, j.last_seen_at DESC;
 
 -- ════════════════════════════════════════════════════════════════════
 -- 7. 화면이 읽는 뷰 — all_jobs_enriched.json 을 대체한다
