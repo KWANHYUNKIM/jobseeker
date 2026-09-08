@@ -1,0 +1,146 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-close",
+ "no": "2.8",
+ "chapter": 2,
+ "title": "리소스 정리",
+ "summary": "왜 finally 이고, 왜 역순인가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 `finally` 여야 하는지 안다.",
+  "왜 역순으로 닫는지 안다.",
+  "닫기가 실패할 수 있다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "역순으로, 각각 감싸서",
+   "ascii": "   open order              close order\n   ----------              -----------\n   Connection              ResultSet\n   PreparedStatement       PreparedStatement\n   ResultSet               Connection\n\n   역순으로 닫는다\n\n   close throws SQLException\n        |\n        +--> if rs.close() throws, pstmt and con leak\n        |\n        v\n   wrap each one in its own try-catch",
+   "note": "**닫는 것 자체가 예외를 던진다**는 것이 이 절의 요점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 닫으면 무슨 일이",
+   "md": "**2.4절에서 본 그것**이다.\n\n```sql\nselect id, user_name from information_schema.sessions;\n```\n\n**세션이 계속 쌓인다.** DB 마다 **최대 세션 수**가 있고, 넘으면 **새 연결이 거부**된다.\n\n```\norg.h2.jdbc.JdbcSQLNonTransientConnectionException:\n  Too many connections\n```\n\n**커넥션 풀을 쓰면 더 빨리 터진다**(3장). 풀 크기가 10이면 **10번 안 돌려주고 끝**이다.\n\n**그리고 애플리케이션이 멈춘다.** 다음 요청이 **커넥션을 기다리며 무한정 대기**한다 — 3.5절에서 이 타임아웃을 다룬다.\n\n**\"조금 새는 것\" 이 없다.** 커넥션 누수는 **어느 순간 전면 장애**가 된다.\n\n> **JVM 의 GC 가 안 치워 준다.** 커넥션은 **DB 쪽 자원**이라 자바 객체가 사라져도 세션은 남는다. `finalize` 로 닫는 드라이버도 있는데 **믿을 것이 아니다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "닫기",
+   "code": "private void close(Connection con, Statement stmt, ResultSet rs) {\n    if (rs != null) {\n        try {\n            rs.close();\n        } catch (SQLException e) {\n            log.info(\"error\", e);\n        }\n    }\n\n    if (stmt != null) {\n        try {\n            stmt.close();\n        } catch (SQLException e) {\n            log.info(\"error\", e);\n        }\n    }\n\n    if (con != null) {\n        try {\n            con.close();\n        } catch (SQLException e) {\n            log.info(\"error\", e);\n        }\n    }\n}",
+   "note": "**각각을 따로 감쌌다.** 하나로 묶으면 **앞의 것이 실패할 때 뒤가 안 닫힌다.**\n\n**`null` 검사**가 필요하다. `getConnection` 에서 예외가 나면 `pstmt` 와 `rs` 는 `null` 이다.\n\n**닫기 실패는 로그만** 찍고 넘어간다. **던져 봐야 할 수 있는 것이 없고**, 원래 예외를 덮어 버린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "왜 역순인가",
+   "md": "**`ResultSet` → `Statement` → `Connection`** 순이다.\n\n**만들어진 순서의 반대**다. 2.2절에서 본 계층 관계 때문이다.\n\n```\nConnection 이 Statement 를 만들고\nStatement 가 ResultSet 을 만든다\n```\n\n**부모를 먼저 닫으면 자식이 어떻게 되는지 보장이 없다.** 명세상 **커넥션을 닫으면 그 아래도 닫혀야** 하는데, **드라이버마다 다르게 구현**되어 있다.\n\n**「MVC 2편」 2.13절에서 본 것과 비슷하다** — 자원에 묶인 것은 범위를 벗어나면 죽는다.\n\n**`try-with-resources` 도 역순으로** 닫는다.\n\n```java\ntry (Connection con = getConnection();\n     PreparedStatement pstmt = con.prepareStatement(sql);\n     ResultSet rs = pstmt.executeQuery()) {\n    ...\n}\n// rs -> pstmt -> con 순으로 닫힌다\n```\n\n**자바가 그렇게 정해 뒀다.** 선언 순서의 반대다.\n\n> **2.2절에서 이 책이 4장까지 `try-with-resources` 를 안 쓴다**고 했다. 이유가 **트랜잭션에서 커넥션을 밖에서 받아** 오기 때문인데, **그때는 커넥션만 안 닫고 나머지는 닫아야** 한다 — 4.11절에서 그 코드를 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "닫기가 실패하면 원래 예외가 사라진다",
+   "md": "**제일 골치 아픈 경우**다.\n\n```java\ntry {\n    // 여기서 SQLException\n} finally {\n    con.close();   // 여기서도 SQLException\n}\n```\n\n**`finally` 의 예외가 이긴다.** 원래 예외는 **없던 것이 된다.**\n\n**\"DB 연결이 끊겼습니다\" 만 보이고 \"제약 조건 위반\" 은 사라진다.** 진짜 원인을 못 찾는다.\n\n**그래서 닫기 예외는 잡아서 로그만** 찍는다.\n\n```java\ntry {\n    con.close();\n} catch (SQLException e) {\n    log.info(\"error\", e);   // 던지지 않는다\n}\n```\n\n**`try-with-resources` 는 이것을 다르게** 푼다.\n\n```java\ncatch (Exception e) {\n    for (Throwable suppressed : e.getSuppressed()) {\n        log.info(\"suppressed\", suppressed);\n    }\n}\n```\n\n**억제된 예외(suppressed)** 로 붙여 둔다. **원래 예외가 주인공이고 닫기 예외는 딸려 온다.**\n\n**손으로 쓰면 이것을 못 한다.** `try-with-resources` 가 나은 이유의 하나다.\n\n> **6.7절에서 예외의 원인을 다룬다.** 여기와 같은 이야기다 — **진짜 원인이 사라지면 못 고친다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "close 가 진짜로 닫는 것이 아니다",
+   "md": "**3장을 미리 조금 본다.**\n\n```java\ncon.close();\n```\n\n**커넥션 풀을 쓰면 이것이 \"닫기\" 가 아니다.** **풀에 돌려주는 것**이다.\n\n```\nHikariProxyConnection@1234 wrapping conn0\n  close()  ->  실제 conn0 은 살아 있고 풀로 돌아간다\n```\n\n**프록시가 감싸고 있어서** 그렇다 — **「MVC 2편」 5.7절의 트랜잭션 AOP 프록시**와 같은 수법이다.\n\n**그래서 코드는 안 바뀐다.** 2장에서 쓴 `close()` 가 3장에서도 그대로다. **의미만 달라진다.**\n\n**중요한 것은 어느 쪽이든 반드시 불러야** 한다는 것이다. 안 부르면 **진짜 연결이 안 닫히거나 풀이 마른다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 정상 종료\nmemberRepository.findById(\"hi1\");\n\n#   get connection=conn0\n#   select * from member where member_id = ?\n#   resource close conn0\n\n# H2 세션 조회\nselect count(*) from information_schema.sessions;\n#   1   (콘솔 자기 자신만)\n\n# close 를 빼고 100 번 조회하면\nfor (int i = 0; i < 100; i++) {\n    memberRepository.findByIdNoClose(\"hi1\");\n}\n\n#   get connection=conn0\n#   get connection=conn1\n#   ...\n#   get connection=conn99\n\nselect count(*) from information_schema.sessions;\n#   101\n\n# 계속하면\n# org.h2.jdbc.JdbcSQLNonTransientConnectionException:\n#   Too many connections\n\n# finally 에서 예외가 나면\n#   원래 예외:  Unique index or primary key violation\n#   보이는 것:  Connection is broken\n#   진짜 원인이 사라졌다",
+   "note": "**세션 수가 그대로 증거**다. 100번 조회하고 안 닫으니 **101개**가 됐다.\n\n**`conn0`~`conn99`** 로 번호가 계속 는다 — 재사용이 하나도 안 됐다. 3장에서 이 번호가 **멈춘다.**\n\n**`Too many connections`** 가 나면 **그때부터 아무것도 안 된다.** 조금씩 느려지는 것이 아니라 **어느 순간 전면 장애**다.\n\n**맨 아래가 이 절에서 제일 조심할 것**이다. 제약 조건 위반으로 실패했는데 **연결 문제로 보인다.** 로그만 보고는 영영 못 찾는다."
+  }
+ ],
+ "recap": [
+  "**안 닫으면 세션이 쌓이고 어느 순간 전면 장애**가 된다.",
+  "**GC 가 안 치워 준다** — 커넥션은 DB 쪽 자원이다.",
+  "**`finally` 여야** 예외가 나도 닫힌다.",
+  "**각각을 따로 `try-catch`** 로 감싼다 — 하나가 실패해도 나머지를 닫는다.",
+  "**`null` 검사**가 필요하다 — 앞에서 실패하면 뒤는 `null`.",
+  "**역순으로 닫는다** — 자식부터 부모로.",
+  "**`try-with-resources` 도 역순**이다. 선언의 반대.",
+  "**닫기 예외가 원래 예외를 덮는다** — 그래서 로그만 찍는다.",
+  "**`try-with-resources` 는 억제된 예외**로 붙여 둔다.",
+  "**커넥션 풀에서는 `close` 가 반납**이다 — 3장."
+ ],
+ "drills": [
+  {
+   "task": "`close` 를 빼고 100번 조회한다.",
+   "done_when": "세션이 쌓이는 것을 콘솔에서 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "계속 반복해 `Too many connections` 를 만든다.",
+   "done_when": "전면 장애가 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`close` 를 하나의 `try` 로 묶는다.",
+   "done_when": "앞이 실패하면 뒤가 안 닫히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`finally` 에서 일부러 예외를 던진다.",
+   "done_when": "원래 예외가 사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`try-with-resources` 로 바꾸고 `getSuppressed()` 를 찍는다.",
+   "done_when": "둘 다 남는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커넥션을 안 닫으면?",
+   "a": "DB 세션이 쌓이고 최대치를 넘으면 새 연결이 거부되어 전면 장애가 된다."
+  },
+  {
+   "q": "왜 역순으로 닫나?",
+   "a": "부모를 먼저 닫으면 자식이 어떻게 되는지 드라이버마다 다르기 때문이다."
+  },
+  {
+   "q": "왜 각각 따로 `try-catch` 하나?",
+   "a": "하나로 묶으면 앞의 `close` 가 실패할 때 뒤의 것들이 안 닫힌다."
+  },
+  {
+   "q": "닫기 예외를 왜 던지지 않나?",
+   "a": "`finally` 의 예외가 원래 예외를 덮어 진짜 원인이 사라지기 때문이다."
+  },
+  {
+   "q": "커넥션 풀에서 `close` 는?",
+   "a": "실제로 닫는 것이 아니라 풀에 반납하는 것이다. 프록시가 감싸고 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "커넥션 누수",
+   "en": "connection leak",
+   "what": "커넥션을 반납하지 않아 세션이나 풀이 고갈되는 것."
+  },
+  {
+   "term": "억제된 예외",
+   "en": "suppressed exception",
+   "what": "`try-with-resources` 에서 닫기 중 난 예외를 원래 예외에 붙여 두는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

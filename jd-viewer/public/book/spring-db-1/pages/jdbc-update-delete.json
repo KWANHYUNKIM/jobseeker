@@ -1,0 +1,140 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-update-delete",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "수정과 삭제",
+ "summary": "몇 건이 바뀌었는지가 반환값이다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`update` 와 `delete` 를 쓸 수 있다.",
+  "반환값을 왜 확인해야 하는지 안다.",
+  "`where` 를 빠뜨리면 무슨 일이 생기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "세 가지 경우",
+   "ascii": "   update member set money=? where member_id=?\n        |\n        +--> row exists      ->  1\n        +--> no such row     ->  0     no exception\n        +--> where omitted   ->  every row\n\n   delete from member where member_id=?\n        |\n        +--> same three cases\n\n   반환값을 안 보면 실패한 것을 모른다",
+   "note": "**가운데가 조용한 실패**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "수정",
+   "code": "public void update(String memberId, int money) throws SQLException {\n    String sql = \"update member set money=? where member_id=?\";\n\n    Connection con = null;\n    PreparedStatement pstmt = null;\n\n    try {\n        con = getConnection();\n        pstmt = con.prepareStatement(sql);\n        pstmt.setInt(1, money);\n        pstmt.setString(2, memberId);\n\n        int resultSize = pstmt.executeUpdate();\n        log.info(\"resultSize={}\", resultSize);\n    } catch (SQLException e) {\n        log.error(\"db error\", e);\n        throw e;\n    } finally {\n        close(con, pstmt, null);\n    }\n}",
+   "note": "**`setInt(1, ...)` 이 `money`** 다. **`?` 의 순서가 SQL 에 나온 순서**이지 컬럼 순서가 아니다.\n\n**`set` 이 먼저, `where` 가 나중**이라 `money` 가 1번이다. **자주 틀리는 자리**다.\n\n**반환값을 로그로만 찍었다.** 아래에서 이것을 고친다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "0 이 돌아와도 예외가 아니다",
+   "md": "```java\nrepository.update(\"nobody\", 20000);   // 없는 회원\n// 아무 일도 안 일어난다. 예외도 없다\n```\n\n**\"수정했다\" 와 \"수정할 것이 없었다\" 를 구분하려면 반환값을 봐야** 한다.\n\n```java\nint count = pstmt.executeUpdate();\nif (count == 0) {\n    throw new NoSuchElementException(\"member not found memberId=\" + memberId);\n}\n```\n\n**안 보면 조용히 실패**한다. **「MVC 2편」 9.1절에서 본 그것**과 같은 성질이다.\n\n> **예외를 삼키면 200 이 나간다** — 모니터링이 못 잡는다.\n\n**여기는 예외를 삼킨 것도 아니다.** 애초에 예외가 안 난다. **DB 입장에서는 정상 처리**이기 때문이다 — 조건에 맞는 행이 0개였을 뿐이다.\n\n**낙관적 락에서 이것을 쓴다.**\n\n```sql\nupdate member set money=?, version=version+1\nwhere member_id=? and version=?\n```\n\n**`count == 0` 이면 누군가 먼저 고친 것**이다. 4장의 락 이야기와 이어지고, **JPA 의 `@Version`** 이 이 방식이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "where 를 빠뜨리면",
+   "md": "```sql\nupdate member set money = 0;\ndelete from member;\n```\n\n**전부 바뀐다.** 예외도 경고도 없고 **되돌릴 방법이 없다** — 트랜잭션 밖이면.\n\n**실무에서 실제로 일어나는 사고**다. 콘솔에서 `where` 절을 쓰다가 실수로 먼저 실행하는 식이다.\n\n**막는 방법들**\n\n| | |\n|---|---|\n| **`autoCommit` 을 끈다** | 확인하고 커밋한다 — 4.3절 |\n| **`select` 로 먼저 확인** | 몇 건인지 본다 |\n| **안전 모드** | MySQL 의 `SQL_SAFE_UPDATES` |\n| **운영 DB 는 읽기 계정으로** | 쓰기 권한을 분리 |\n\n**첫 번째가 이 책의 4장**이다. **커밋하기 전에는 되돌릴 수 있다.**\n\n**코드에서는 `where` 없는 `update` 를 못 쓰게** 하는 편이 낫다. 리뷰에서 잡거나, **동적 쿼리를 만들 때 조건이 비면 실행을 막는다.**\n\n```java\nif (conditions.isEmpty()) {\n    throw new IllegalArgumentException(\"조건 없는 수정은 허용하지 않습니다\");\n}\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "삭제 대신 표시하기",
+   "md": "```sql\ndelete from member where member_id = ?;\n```\n\n**실무에서는 지우지 않는 경우가 많다.**\n\n```sql\nupdate member set deleted_at = now() where member_id = ?;\n```\n\n**소프트 삭제(soft delete)** 라고 한다.\n\n**왜 그러나**\n\n| | |\n|---|---|\n| **복구할 수 있다** | 실수로 지운 것 |\n| **참조가 안 깨진다** | 주문이 회원을 가리키고 있으면 |\n| **이력이 남는다** | 언제 탈퇴했는지 |\n| **법적 보관 의무** | 거래 기록 등 |\n\n**대가도 있다.**\n\n- **모든 조회에 `where deleted_at is null`** 이 붙는다. 빠뜨리면 지운 것이 나온다\n- **유니크 제약이 걸린다** — 탈퇴한 아이디를 다시 못 쓴다\n- **데이터가 계속 쌓인다**\n\n**개인정보는 진짜로 지워야** 하는 경우도 있다 — 파기 의무. **그때는 익명화**한다(이름을 `탈퇴회원` 으로, 이메일을 지움).\n\n> **이 책의 예제는 그냥 `delete`** 다. 다만 **실무의 기본은 소프트 삭제** 쪽이라는 것을 알아 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "memberRepository.update(\"hi1\", 20000);\n\n# 애플리케이션 로그\n#   get connection=conn0\n#   resultSize=1\n#   resource close conn0\n\n# H2 가 받은 것\n#   /*SQL l:100 #:1*/update member set money=? where member_id=?;\n#   {1: 20000, 2: 'hi1'}\n\n# 없는 회원을 수정하면\nmemberRepository.update(\"nobody\", 20000);\n\n#   resultSize=0\n#   예외 없음. 정상 종료\n\n# 삭제\nmemberRepository.delete(\"hi1\");\n\n#   /*SQL*/delete from member where member_id=?;\n#   {1: 'hi1'}\n#   resultSize=1\n\n# where 를 빠뜨리면\nupdate member set money=0;\n\n#   Update count: 2\n#   두 행이 다 바뀌었다",
+   "note": "**`{1: 20000, 2: 'hi1'}`** 을 봐 둔다. **`money` 가 1번**이다 — `set` 이 `where` 보다 먼저 나와서다.\n\n**`resultSize=0`** 이 이 절의 요점이다. 로그만 보면 **정상 처리와 구분이 안 된다.** 예외도 없고 SQL 도 정상이다.\n\n**맨 아래가 `where` 를 빠뜨린 결과**다. H2 가 `Update count: 2` 라고 알려 주는데, **애플리케이션 코드에서는 반환값을 안 보면 모른다.**\n\n**그리고 커밋된 뒤라 되돌릴 수 없다.** `autoCommit` 이 켜져 있기 때문이다 — **4.3절이 이것을 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**`?` 의 순서는 SQL 에 나온 순서**다 — `set` 이 `where` 보다 먼저.",
+  "**없는 행을 수정해도 예외가 안 난다** — 0 이 돌아온다.",
+  "**DB 입장에서는 정상 처리**다. 조건에 맞는 행이 0개였을 뿐.",
+  "**반환값을 안 보면 조용히 실패**한다.",
+  "**낙관적 락이 이 반환값을 쓴다** — JPA 의 `@Version`.",
+  "**`where` 를 빠뜨리면 전부 바뀐다** — 예외도 경고도 없다.",
+  "**`autoCommit` 을 끄면 되돌릴 수 있다** — 4.3절.",
+  "**조건 없는 수정을 코드에서 막는** 편이 낫다.",
+  "**실무의 기본은 소프트 삭제**다.",
+  "대가 — **모든 조회에 조건이 붙고, 유니크 제약이 걸리고, 데이터가 쌓인다**."
+ ],
+ "drills": [
+  {
+   "task": "`update` 를 만들고 한 건 수정한다.",
+   "done_when": "`resultSize=1` 과 파라미터 순서를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 ID 로 수정한다.",
+   "done_when": "예외 없이 0 이 돌아오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`count == 0` 일 때 예외를 던지게 고친다.",
+   "done_when": "실패가 드러나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`?` 순서를 바꿔 본다.",
+   "done_when": "타입 오류나 잘못된 결과를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "H2 콘솔에서 `where` 없는 update 를 실행한다.",
+   "done_when": "전부 바뀌는 것을 확인했다. (테스트 데이터로만)",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "없는 행을 수정하면?",
+   "a": "예외 없이 0 이 돌아온다. DB 입장에서는 조건에 맞는 행이 없었을 뿐 정상 처리다."
+  },
+  {
+   "q": "반환값을 왜 확인하나?",
+   "a": "안 보면 수정 실패를 모른다. 낙관적 락도 이 값으로 충돌을 판단한다."
+  },
+  {
+   "q": "`?` 의 순서는 무엇을 따르나?",
+   "a": "SQL 문에 나온 순서다. `update ... set ... where` 면 `set` 의 값이 1번이다."
+  },
+  {
+   "q": "`where` 를 빠뜨리면?",
+   "a": "모든 행이 바뀐다. 예외도 경고도 없고 커밋된 뒤면 되돌릴 수 없다."
+  },
+  {
+   "q": "소프트 삭제의 대가는?",
+   "a": "모든 조회에 조건이 붙고, 유니크 제약이 남고, 데이터가 계속 쌓인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "소프트 삭제",
+   "en": "soft delete",
+   "what": "행을 지우지 않고 삭제 표시만 하는 방식."
+  },
+  {
+   "term": "낙관적 락",
+   "en": "optimistic lock",
+   "what": "버전 컬럼을 조건에 넣고 갱신 건수로 충돌을 판단하는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

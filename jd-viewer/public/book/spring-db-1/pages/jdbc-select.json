@@ -1,0 +1,147 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-select",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "조회 — ResultSet",
+ "summary": "커서를 옮겨 가며 읽는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ResultSet` 의 커서를 이해한다.",
+  "한 건 조회와 여러 건 조회를 구분한다.",
+  "결과가 없을 때 무엇을 할지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "커서는 첫 행 앞에서 시작한다",
+   "ascii": "   ResultSet rs = pstmt.executeQuery()\n\n   cursor\n     v\n   +-------+  before first row\n   | hi1   |  10000\n   | hi2   |  20000\n   +-------+  after last row\n\n   rs.next()  ->  true,  cursor on hi1\n   rs.next()  ->  true,  cursor on hi2\n   rs.next()  ->  false, cursor past the end\n\n   처음부터 next() 를 불러야 첫 행을 읽는다",
+   "note": "**2.2절에서 예고한 그것**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "한 건 조회",
+   "code": "public Member findById(String memberId) throws SQLException {\n    String sql = \"select * from member where member_id = ?\";\n\n    Connection con = null;\n    PreparedStatement pstmt = null;\n    ResultSet rs = null;\n\n    try {\n        con = getConnection();\n        pstmt = con.prepareStatement(sql);\n        pstmt.setString(1, memberId);\n\n        rs = pstmt.executeQuery();\n        if (rs.next()) {\n            Member member = new Member();\n            member.setMemberId(rs.getString(\"member_id\"));\n            member.setMoney(rs.getInt(\"money\"));\n            return member;\n        } else {\n            throw new NoSuchElementException(\"member not found memberId=\" + memberId);\n        }\n    } catch (SQLException e) {\n        log.error(\"db error\", e);\n        throw e;\n    } finally {\n        close(con, pstmt, rs);\n    }\n}",
+   "note": "**`if (rs.next())`** 다. 한 건이니 한 번만 부른다.\n\n**`else` 에서 예외**를 던진다. **`null` 을 돌려주지 않는다** — 부르는 쪽이 매번 null 검사를 하게 되고, 빠뜨리면 NPE 다.\n\n**결과를 객체로 옮기는 다섯 줄**이 눈에 띈다. 컬럼이 열 개면 열 줄이다 — **7.6절의 `RowMapper`** 가 이것을 대신한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "없을 때 무엇을 할까",
+   "md": "**세 가지 선택**이 있다.\n\n| | 언제 |\n|---|---|\n| **예외를 던진다** | 있어야 정상인 경우 |\n| **`Optional` 을 돌려준다** | 없을 수도 있는 경우 |\n| **`null`** | **쓰지 않는다** |\n\n**`findById` 는 애매하다.** ID 로 찾는 것이니 **보통 있어야** 하는데, 없는 ID 를 물어볼 수도 있다.\n\n```java\n// 있어야 한다\nMember findById(String id);              // 없으면 예외\n\n// 없을 수도 있다\nOptional<Member> findByEmail(String e);  // 없으면 empty\n```\n\n**이름으로 구분하는 관례**도 있다 — 스프링 데이터에서 `findById` 는 `Optional`, `getById` 는 예외.\n\n**「MVC 2편」 9.8절에서 본 그 이야기**와 이어진다.\n\n> **없는 것을 요청한 것**이 500 이 아니라 404 다.\n\n**리포지토리가 예외를 던지면** 그것이 서비스를 거쳐 컨트롤러까지 가고, **`@ExceptionHandler` 가 404 로** 바꾼다. **어디서 예외를 만들지가 응답을 정한다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "여러 건 조회",
+   "code": "public List<Member> findAll() throws SQLException {\n    String sql = \"select * from member\";\n    ...\n    rs = pstmt.executeQuery();\n\n    List<Member> members = new ArrayList<>();\n    while (rs.next()) {          // if 가 아니라 while\n        Member member = new Member();\n        member.setMemberId(rs.getString(\"member_id\"));\n        member.setMoney(rs.getInt(\"money\"));\n        members.add(member);\n    }\n    return members;\n}",
+   "note": "**`while` 로 바뀐 것**만 다르다.\n\n**결과가 없으면 빈 리스트**다. 예외가 아니다 — **\"조회했는데 없다\" 는 정상**이다.\n\n**「MVC 2편」 3.5절에서 본 그 구분**과 같다 — 전부 해제하면 `null` 이 아니라 빈 리스트."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "ResultSet 은 커넥션에 묶여 있다",
+   "md": "```java\npublic ResultSet findAllBad() throws SQLException {\n    Connection con = getConnection();\n    ...\n    ResultSet rs = pstmt.executeQuery();\n    close(con, pstmt, null);\n    return rs;                     // 이미 죽었다\n}\n```\n\n**커넥션을 닫으면 `ResultSet` 도 못 쓴다.** 데이터가 자바 쪽에 다 와 있는 것이 아니라 **DB 와 연결된 커서**이기 때문이다.\n\n**그래서 리포지토리 밖으로 `ResultSet` 을 내보내면 안 된다.** 안에서 다 읽어 객체로 옮기고 나간다.\n\n**「MVC 2편」 12.3절과 같은 성질**이다.\n\n> **`transferTo` 는 한 번만** 부를 수 있다 — 임시 파일을 옮긴다.\n\n**둘 다 \"자원에 묶인 객체\"** 다. 스트림·커서·커넥션은 **범위를 벗어나면 죽는다.**\n\n**대량 조회에서는 이것이 이득**이기도 하다. 100만 건을 `List` 로 다 올리면 메모리가 터지는데, **커서로 읽으면 한 번에 몇 건씩**만 가져온다(`setFetchSize`)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "select * 를 쓰지 않는다",
+   "md": "```sql\nselect * from member where member_id = ?\n```\n\n**예제라 썼는데 실무에서는 안 쓴다.**\n\n**1. 컬럼이 늘면 조용히 느려진다**\n\n나중에 `TEXT` 나 `BLOB` 컬럼이 추가되면 **안 쓰는 데이터까지** 매번 가져온다.\n\n**2. 순서가 바뀌면 인덱스 접근이 깨진다**\n\n```java\nrs.getString(1);   // 컬럼 순서가 바뀌면 다른 값\n```\n\n**이름으로 읽으면 안 깨지는데**(2.2절), `select *` 자체가 무엇이 오는지 안 보이게 한다.\n\n**3. 인덱스만으로 못 끝낸다**\n\n필요한 컬럼이 인덱스에 다 있으면 **테이블을 안 봐도** 되는데(커버링 인덱스), `*` 면 항상 테이블을 본다.\n\n```sql\nselect member_id, money from member where member_id = ?\n```\n\n**필요한 것만 적는다.** 길어져도 그렇게 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "Member member = memberRepository.findById(\"hi1\");\n\n# 애플리케이션 로그\n#   get connection=conn0 class=class org.h2.jdbc.JdbcConnection\n#   findMember=Member(memberId=hi1, money=10000)\n#   resource close conn0\n\n# H2 가 받은 것\n#   /*SQL l:80 #:1*/select * from member where member_id = ?;\n#   {1: 'hi1'}\n\n# 없는 것을 찾으면\nmemberRepository.findById(\"nobody\");\n\n# java.util.NoSuchElementException: member not found memberId=nobody\n# SQL 은 정상적으로 나갔다. 결과가 0 행이었을 뿐이다\n\n# 여러 건\nList<Member> members = memberRepository.findAll();\n\n#   select * from member;\n#   members.size()=2\n\n# 저장하고 바로 조회하면 커넥션이 둘이다\nmemberRepository.save(member);      # conn0\nmemberRepository.findById(\"hi5\");   # conn1\n\n# 서로 다른 세션이다. 이것이 4 장의 문제가 된다",
+   "note": "**없는 것을 찾았을 때 SQL 은 정상**이다. 오류가 아니라 **0행**이고, 예외는 **우리가 만든 것**이다 — DB 가 던진 것이 아니다.\n\n**맨 아래가 이 장의 결론으로 가는 자리**다. `save` 가 `conn0`, `findById` 가 `conn1` — **서로 다른 세션**이다.\n\n**지금은 문제가 안 보인다.** 저장이 커밋됐으니 다음 세션에서도 읽힌다.\n\n**4장에서 문제가 된다.** 저장과 조회가 **한 트랜잭션이어야** 할 때, 커넥션이 둘이면 **묶을 방법이 없다.**"
+  }
+ ],
+ "recap": [
+  "**커서가 첫 행 앞에서 시작**한다 — `next()` 를 먼저 부른다.",
+  "**한 건은 `if`, 여러 건은 `while`**.",
+  "**`null` 을 돌려주지 않는다** — 예외나 `Optional`.",
+  "**어디서 예외를 만들지가 응답을 정한다** — 「MVC 2편」 9.8절.",
+  "**결과가 없는 것은 정상**이다 — 빈 리스트.",
+  "**`ResultSet` 은 커넥션에 묶여** 있다. 밖으로 내보내면 안 된다.",
+  "**스트림·커서·커넥션은 범위를 벗어나면 죽는다.**",
+  "**대량 조회에서는 커서가 이득**이다 — 메모리.",
+  "**`select *` 를 쓰지 않는다** — 느려지고, 깨지고, 인덱스를 못 쓴다.",
+  "**저장과 조회의 커넥션이 다르다** — 4장의 문제."
+ ],
+ "drills": [
+  {
+   "task": "`findById` 를 만들고 한 건 조회한다.",
+   "done_when": "값이 객체로 옮겨진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`rs.next()` 를 안 부르고 `getString` 을 호출한다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 ID 로 조회한다.",
+   "done_when": "SQL 은 정상이고 0행인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`findAll` 을 `if` 로 써 본다.",
+   "done_when": "한 건만 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ResultSet` 을 리포지토리 밖으로 반환해 본다.",
+   "done_when": "쓸 수 없는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `rs.next()` 를 먼저 부르나?",
+   "a": "커서가 첫 행 앞에서 시작하기 때문이다."
+  },
+  {
+   "q": "결과가 없으면 무엇을 돌려주나?",
+   "a": "한 건 조회는 예외나 `Optional`, 여러 건 조회는 빈 리스트다. `null` 은 쓰지 않는다."
+  },
+  {
+   "q": "`ResultSet` 을 밖으로 내보내면?",
+   "a": "커넥션을 닫는 순간 못 쓴다. DB 와 연결된 커서이기 때문이다."
+  },
+  {
+   "q": "`select *` 를 왜 안 쓰나?",
+   "a": "컬럼이 늘면 조용히 느려지고, 무엇이 오는지 안 보이고, 커버링 인덱스를 못 쓴다."
+  },
+  {
+   "q": "저장과 조회의 커넥션이 다른 것이 왜 문제인가?",
+   "a": "둘을 한 트랜잭션으로 묶을 수 없기 때문이다. 4장의 문제다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ResultSet",
+   "en": "",
+   "what": "조회 결과를 가리키는 커서. 커넥션에 묶여 있어 닫히면 못 쓴다."
+  },
+  {
+   "term": "커버링 인덱스",
+   "en": "covering index",
+   "what": "필요한 컬럼이 인덱스에 다 있어 테이블을 안 봐도 되는 경우."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — JDBC Basics",
+   "url": "https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

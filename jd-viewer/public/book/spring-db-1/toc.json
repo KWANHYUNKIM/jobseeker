@@ -131,7 +131,7 @@
           "title": "등록 — PreparedStatement",
           "summary": "왜 문자열을 이어 붙이면 안 되나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -139,7 +139,7 @@
           "title": "조회 — ResultSet",
           "summary": "커서를 옮겨 가며 읽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",
@@ -147,7 +147,7 @@
           "title": "수정과 삭제",
           "summary": "몇 건이 바뀌었는지가 반환값이다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.8",
@@ -155,7 +155,7 @@
           "title": "리소스 정리",
           "summary": "왜 finally 이고, 왜 역순인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.9",
