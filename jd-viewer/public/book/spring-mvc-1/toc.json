@@ -235,7 +235,7 @@
           "title": "정리",
           "summary": "서블릿만으로 할 수 있는 것과, 여기서 멈추면 안 되는 이유.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -662,7 +662,7 @@
           "title": "정리",
           "summary": "8장에서 만든 화면이 6장 구조를 어떻게 지나갔는지 되짚는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -677,7 +677,7 @@
           "title": "아직 없는 것들",
           "summary": "검증·예외 처리·인터셉터·파일 업로드. 왜 1편에 없는가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -685,7 +685,7 @@
           "title": "다음 단계",
           "summary": "MVC 2편·JPA·HTTP. 무엇을 먼저 볼지 정하는 기준.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }
