@@ -426,7 +426,7 @@
           "title": "다양한 의존관계 주입 방법",
           "summary": "생성자·수정자·필드·일반 메서드. 넷의 성질이 다르다.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -434,7 +434,7 @@
           "title": "옵션 처리",
           "summary": "주입할 빈이 없을 때. required=false·@Nullable·Optional.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -442,7 +442,7 @@
           "title": "생성자 주입을 선택해라!",
           "summary": "불변·필수·테스트 가능성. 필드 주입이 왜 금지에 가까운지.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -450,7 +450,7 @@
           "title": "롬복과 최신 트렌드",
           "summary": "@RequiredArgsConstructor 로 줄어드는 코드와, 롬복이 감추는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",

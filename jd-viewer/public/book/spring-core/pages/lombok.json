@@ -1,0 +1,230 @@
+{
+ "book": "spring-core",
+ "id": "lombok",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "롬복과 최신 트렌드",
+ "summary": "@RequiredArgsConstructor 로 줄어드는 코드와, 롬복이 감추는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@RequiredArgsConstructor` 로 생성자를 없앨 수 있다.",
+  "롬복이 컴파일 시점에 무엇을 하는지 안다.",
+  "롬복이 감추는 것을 말할 수 있다.",
+  "`@Data` 를 왜 조심해야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "7.3절에서 생성자 주입을 쓰기로 했다. 그런데 생성자 코드가 **반복적이다.**\n\n필드를 하나 추가할 때마다 ① 필드 선언 ② 생성자 파라미터 ③ 대입문 — 세 군데를 고쳐야 한다. 필드가 다섯이면 생성자만 열 줄이 넘는다.\n\n**롬복**이 그것을 대신 써 준다."
+  },
+  {
+   "type": "heading",
+   "text": "코드가 얼마나 줄어드나"
+  },
+  {
+   "type": "compare",
+   "caption": "같은 클래스",
+   "left": {
+    "title": "직접 쓴 생성자",
+    "lang": "java",
+    "code": "@Component\npublic class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository memberRepository;\n    private final DiscountPolicy discountPolicy;\n\n    @Autowired\n    public OrderServiceImpl(\n            MemberRepository memberRepository,\n            DiscountPolicy discountPolicy) {\n        this.memberRepository = memberRepository;\n        this.discountPolicy = discountPolicy;\n    }\n}",
+    "md": "필드를 하나 더하면 **세 군데**를 고쳐야 한다."
+   },
+   "right": {
+    "title": "롬복",
+    "lang": "java",
+    "code": "@Component\n@RequiredArgsConstructor\npublic class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository memberRepository;\n    private final DiscountPolicy discountPolicy;\n}",
+    "md": "필드를 하나 더하면 **한 군데**만 고친다. 생성자는 롬복이 다시 만든다."
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "@RequiredArgsConstructor 가 하는 일",
+   "md": "**`final` 필드와 `@NonNull` 필드만 골라서** 생성자를 만든다. 이름의 `Required` 가 그것이다.\n\n생성자가 하나뿐이니 7.1절의 규칙대로 **`@Autowired` 도 생략된다.**\n\n```java\n@Component\n@RequiredArgsConstructor\npublic class OrderServiceImpl { ... }\n```\n\n두 줄이 전부다. 그런데 이 코드는 여전히 **생성자 주입**이고, 여전히 **`final` 이고**, 여전히 **불변이다.** 7.3절에서 얻은 것을 하나도 안 잃었다."
+  },
+  {
+   "type": "table",
+   "caption": "자주 쓰는 롬복 어노테이션",
+   "note": "**아래 셋은 실무에서 조심한다.** 특히 `@Data` 는 `@Setter` 를 품고 있어서, 불변으로 만들려던 것을 도로 열어 버린다.",
+   "columns": [
+    "어노테이션",
+    "무엇을 만드나",
+    "쓰나"
+   ],
+   "rows": [
+    [
+     "`@RequiredArgsConstructor`",
+     "`final`·`@NonNull` 필드 생성자",
+     "**쓴다**"
+    ],
+    [
+     "`@Getter`",
+     "모든 필드의 getter",
+     "**쓴다**"
+    ],
+    [
+     "`@Slf4j`",
+     "`private static final Logger log`",
+     "**쓴다**"
+    ],
+    [
+     "`@Setter`",
+     "모든 필드의 setter",
+     "조심"
+    ],
+    [
+     "`@ToString`",
+     "`toString()`",
+     "조심 — 연관 필드가 있으면 무한 루프"
+    ],
+    [
+     "`@Data`",
+     "위의 전부 + `equals`/`hashCode`",
+     "**쓰지 않는다**"
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "롬복은 어떻게 동작하나"
+  },
+  {
+   "type": "prose",
+   "md": "롬복은 **애노테이션 프로세서**다. 자바 컴파일 과정에 끼어들어 **AST(추상 구문 트리)를 직접 수정한다.**\n\n그러니까 런타임 마법이 아니다 — **컴파일이 끝난 `.class` 파일에는 생성자가 진짜로 들어 있다.** 5.6절의 CGLIB 이 런타임에 클래스를 만든 것과는 시점이 다르다."
+  },
+  {
+   "type": "table",
+   "caption": "언제 무엇을 하나",
+   "note": "**롬복은 컴파일러가 하는 일이고, CGLIB 은 컨테이너가 하는 일이다.** 둘 다 '내가 안 쓴 코드가 돈다' 는 점은 같은데, 시점과 주체가 다르다.",
+   "columns": [
+    "",
+    "롬복",
+    "CGLIB (5.6절)"
+   ],
+   "rows": [
+    [
+     "시점",
+     "**컴파일 시점**",
+     "**런타임**"
+    ],
+    [
+     "결과물",
+     "`.class` 안의 진짜 메서드",
+     "런타임에 만든 자식 클래스"
+    ],
+    [
+     "확인 방법",
+     "`javap` 또는 delombok",
+     "`getClass()` 출력"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "롬복이 감추는 것",
+   "md": "6장의 결론이 여기서 한 번 더 나온다 — **자동화는 코드에서 정보를 뺀다.**\n\n1. **생성자가 코드에 안 보인다.** 7.3절에서 \"생성자 파라미터 목록이 곧 필요 목록\" 이라고 했는데, 그 목록이 사라졌다. 대신 필드 선언을 읽어야 한다\n2. **필드를 추가하면 생성자가 조용히 바뀐다.** 파라미터 순서도 필드 선언 순서를 따른다. 같은 타입 파라미터가 둘이면 **순서가 바뀌어도 컴파일이 된다**\n3. **IDE·빌드 설정에 의존한다.** 애노테이션 프로세서가 꺼져 있으면 컴파일이 안 된다. 새 팀원이 프로젝트를 열었을 때 첫 번째로 막히는 자리\n\n그래도 쓴다. 7.3절에서 얻은 것을 하나도 안 잃으면서 반복만 없애기 때문이다. **다만 무엇을 감췄는지 알고 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@Data 를 쓰지 않는 이유",
+   "md": "`@Data` 는 `@Getter` + `@Setter` + `@RequiredArgsConstructor` + `@ToString` + `@EqualsAndHashCode` 를 다 붙인다.\n\n문제는 **`@Setter`** 다. 7.3절에서 \"변하면 안 되는 것은 변할 수 없게 만든다\" 고 했는데, `@Data` 는 **모든 필드에 setter 를 열어 버린다.** 불변이 깨진다.\n\n`@EqualsAndHashCode` 도 위험하다. 모든 필드로 `equals` 를 만드는데, **엔티티에 붙이면 연관관계를 타고 들어가 무한 루프**가 난다. JPA 책 10.4절에서 값 타입의 `equals` 를 직접 쓴 이유가 이것과 이어진다.\n\n**필요한 것만 골라 붙인다.** `@Getter` + `@RequiredArgsConstructor` 조합이 가장 흔하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 생성자가 진짜로 있다",
+   "sql": "$ javap -p build/classes/java/main/hello/core/order/OrderServiceImpl.class\n\npublic class hello.core.order.OrderServiceImpl implements hello.core.order.OrderService {\n  private final hello.core.member.MemberRepository memberRepository;\n  private final hello.core.discount.DiscountPolicy discountPolicy;\n  public hello.core.order.OrderServiceImpl(hello.core.member.MemberRepository,\n                                           hello.core.discount.DiscountPolicy);\n  public hello.core.order.Order createOrder(java.lang.Long, java.lang.String, int);\n}\n\n# 컨테이너 로그는 그대로다\nINFO  DefaultListableBeanFactory - Creating shared instance of singleton bean 'orderServiceImpl'\n\nOrderServiceTest > VIP는_10퍼센트_할인() PASSED\n\nBUILD SUCCESSFUL",
+   "note": "**`javap` 로 보면 생성자가 있다.** 소스에는 없는데 클래스 파일에는 있다 — 롬복이 컴파일 중에 넣은 것이다.\n\n5.6절에서 `getClass()` 를 찍어 CGLIB 을 확인했듯이, 롬복은 **`javap` 로 확인한다.** 마법처럼 보이는 것을 눈으로 확인해 두면 그때부터 마법이 아니다."
+  }
+ ],
+ "recap": [
+  "`@RequiredArgsConstructor` 가 **`final` 필드로 생성자를 만들어 준다.**",
+  "생성자가 하나이므로 **`@Autowired` 도 생략**된다 — 어노테이션 두 줄이 전부다.",
+  "**7.3절에서 얻은 것을 하나도 안 잃는다** — 여전히 생성자 주입, 여전히 `final`, 여전히 불변.",
+  "롬복은 **애노테이션 프로세서**다. 컴파일 시점에 `.class` 에 진짜 코드를 넣는다.",
+  "**CGLIB 은 런타임, 롬복은 컴파일 타임** — 시점과 주체가 다르다.",
+  "감추는 것 — **필요 목록(생성자)이 안 보이고, 필드를 더하면 조용히 바뀐다.**",
+  "**`@Data` 는 쓰지 않는다.** `@Setter` 가 불변을 깨고 `@EqualsAndHashCode` 가 위험하다."
+ ],
+ "drills": [
+  {
+   "task": "생성자를 직접 쓴 클래스를 `@RequiredArgsConstructor` 로 바꾼다.",
+   "done_when": "테스트가 그대로 통과한다.",
+   "minutes": 15
+  },
+  {
+   "task": "`javap -p` 로 컴파일된 클래스를 확인한다.",
+   "done_when": "소스에 없는 생성자가 클래스 파일에 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`final` 을 하나 떼고 다시 컴파일해 생성자가 어떻게 바뀌는지 본다.",
+   "done_when": "그 필드가 생성자 파라미터에서 빠지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 타입 필드를 두 개 두고 선언 순서를 바꿔 본다.",
+   "done_when": "생성자 파라미터 순서가 따라 바뀌고, 컴파일은 통과한다는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@RequiredArgsConstructor` 는 어떤 필드로 생성자를 만드는가?",
+   "a": "`final` 필드와 `@NonNull` 이 붙은 필드다. 이름의 `Required` 가 그 뜻이다."
+  },
+  {
+   "q": "왜 `@Autowired` 도 없어도 되는가?",
+   "a": "롬복이 만든 생성자가 하나뿐이기 때문이다. 생성자가 하나면 스프링이 자동으로 주입한다(7.1절)."
+  },
+  {
+   "q": "롬복은 언제 동작하는가?",
+   "a": "컴파일 시점이다. 애노테이션 프로세서로 AST 를 수정해 `.class` 파일에 진짜 코드를 넣는다. 런타임 마법이 아니다."
+  },
+  {
+   "q": "롬복과 CGLIB 의 차이는?",
+   "a": "롬복은 컴파일 시점에 컴파일러가, CGLIB 은 런타임에 컨테이너가 코드를 만든다."
+  },
+  {
+   "q": "롬복이 감추는 것은?",
+   "a": "생성자 파라미터 목록(= 이 클래스에 필요한 것들)이 코드에서 사라지고, 필드를 추가하면 생성자가 조용히 바뀐다."
+  },
+  {
+   "q": "`@Data` 를 피하는 이유는?",
+   "a": "`@Setter` 가 포함돼 있어 불변이 깨지고, `@EqualsAndHashCode` 가 모든 필드를 쓰기 때문에 연관관계가 있는 객체에서 문제를 일으킨다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "애노테이션 프로세서",
+   "en": "annotation processor",
+   "what": "자바 컴파일 과정에 끼어들어 코드를 생성하거나 검사하는 것. 롬복이 이 방식으로 동작한다."
+  },
+  {
+   "term": "delombok",
+   "en": "",
+   "what": "롬복 어노테이션을 실제 자바 코드로 풀어 주는 기능. 롬복이 무엇을 만들었는지 확인할 때 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Project Lombok — @RequiredArgsConstructor",
+   "url": "https://projectlombok.org/features/constructor",
+   "publisher": "Project Lombok"
+  },
+  {
+   "title": "Spring Framework Reference — Constructor-based Dependency Injection",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

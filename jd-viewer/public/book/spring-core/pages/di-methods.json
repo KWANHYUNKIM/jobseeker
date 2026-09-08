@@ -1,0 +1,228 @@
+{
+ "book": "spring-core",
+ "id": "di-methods",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "다양한 의존관계 주입 방법",
+ "summary": "생성자·수정자·필드·일반 메서드. 넷의 성질이 다르다.",
+ "minutes": 18,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 가지 주입 방법을 코드로 쓸 수 있다.",
+  "각각 언제 주입되는지 시점을 말할 수 있다.",
+  "생성자가 하나면 `@Autowired` 를 생략할 수 있다는 것을 안다.",
+  "스프링 빈이 아닌 객체에는 `@Autowired` 가 동작하지 않는다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6장에서 등록을 자동화했다. 7장은 **주입**이다.\n\n`@Autowired` 를 붙일 수 있는 자리가 넷이다. 문법은 비슷한데 **성질이 다르다.** 이 절은 넷을 나열하고, 다음 두 절에서 **무엇을 골라야 하는지** 판단한다."
+  },
+  {
+   "type": "figure",
+   "caption": "주입 시점이 다르다",
+   "ascii": "   container start\n        │\n        ├──> new OrderServiceImpl(repo, policy)      <- 생성자 주입, 여기서 끝\n        │\n        ├──> setMemberRepository(repo)               <- 수정자 주입\n        ├──> setDiscountPolicy(policy)\n        │\n        └──> field = repo   (reflection)             <- 필드 주입\n\n   bean is ready",
+   "note": "**생성자 주입만 객체가 만들어지는 순간에 끝난다.** 나머지는 객체가 먼저 만들어지고 그 다음에 채워진다. 이 차이가 7.3절의 근거 전부다."
+  },
+  {
+   "type": "heading",
+   "text": "1. 생성자 주입"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Component\npublic class OrderServiceImpl implements OrderService {\n\n    private final MemberRepository memberRepository;\n    private final DiscountPolicy discountPolicy;\n\n    @Autowired\n    public OrderServiceImpl(MemberRepository memberRepository,\n                           DiscountPolicy discountPolicy) {\n        this.memberRepository = memberRepository;\n        this.discountPolicy = discountPolicy;\n    }\n}",
+   "note": "6.1절에서 쓴 그것이다. **생성자 호출 시점에 딱 한 번** 주입되고 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "생성자가 하나면 @Autowired 를 생략할 수 있다",
+   "md": "```java\n@Component\npublic class OrderServiceImpl implements OrderService {\n\n    // @Autowired 없다\n    public OrderServiceImpl(MemberRepository memberRepository,\n                           DiscountPolicy discountPolicy) { ... }\n}\n```\n\n**생성자가 하나뿐이면 스프링이 알아서 주입한다.** 선택의 여지가 없으니 물어볼 것도 없기 때문이다.\n\n스프링 4.3 부터의 동작이고, 요즘 코드에서 `@Autowired` 가 안 보이는 이유가 이것이다. 7.4절에서 롬복과 합쳐지면 **생성자 자체가 사라진다.**"
+  },
+  {
+   "type": "heading",
+   "text": "2. 수정자 주입 (setter)"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Component\npublic class OrderServiceImpl implements OrderService {\n\n    private MemberRepository memberRepository;   // final 을 못 붙인다\n    private DiscountPolicy discountPolicy;\n\n    @Autowired\n    public void setMemberRepository(MemberRepository memberRepository) {\n        this.memberRepository = memberRepository;\n    }\n\n    @Autowired\n    public void setDiscountPolicy(DiscountPolicy discountPolicy) {\n        this.discountPolicy = discountPolicy;\n    }\n}",
+   "note": "**객체를 먼저 만들고 나중에 채운다.** `final` 을 못 쓰고, setter 가 `public` 이라 **나중에 누구든 바꿀 수 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "자바빈 프로퍼티 규약",
+   "md": "필드를 직접 열지 않고 `getXxx`/`setXxx` 로 접근하는 오래된 자바 관례를 **자바빈 프로퍼티 규약**이라고 한다.\n\n수정자 주입은 그 규약을 그대로 쓴다. 그래서 이름이 `setMemberRepository` 여야 한다 — **아무 메서드나 되는 게 아니다.**"
+  },
+  {
+   "type": "heading",
+   "text": "3. 필드 주입"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "짧다. 그런데 쓰지 않는다.",
+   "bad": true,
+   "code": "@Component\npublic class OrderServiceImpl implements OrderService {\n\n    @Autowired private MemberRepository memberRepository;\n    @Autowired private DiscountPolicy discountPolicy;\n\n    // 생성자도 setter 도 없다\n}",
+   "note": "**가장 짧다.** 그리고 그것이 유일한 장점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "왜 안 쓰나 — 스프링 밖에서 아무것도 못 한다",
+   "md": "스프링이 **리플렉션으로 `private` 필드에 값을 직접 꽂는다.** 그러니 스프링이 없으면 채울 방법이 없다.\n\n```java\n@Test\nvoid createOrder() {\n    OrderServiceImpl orderService = new OrderServiceImpl();\n    orderService.createOrder(1L, \"itemA\", 10000);\n    //           ^^^^^^^^^^^ NullPointerException\n}\n```\n\n**순수 자바 테스트를 짤 수가 없다.** 컨테이너를 띄우거나, 억지로 setter 를 만들거나, 리플렉션을 쓰거나 — 셋 다 나쁘다.\n\n2.5절에서 \"테스트할 수 없는 코드는 고칠 수 없다\" 고 했고, 3.6절에서 테스트가 있어서 리팩터링이 가능했다고 했다. **필드 주입은 그 테스트를 어렵게 만든다.**\n\n예외적으로 쓰는 자리가 있다 — **테스트 코드 자체**, 그리고 `@Configuration` 같은 스프링 전용 클래스. 애플리케이션 코드에는 쓰지 않는다."
+  },
+  {
+   "type": "heading",
+   "text": "4. 일반 메서드 주입"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@Component\npublic class OrderServiceImpl implements OrderService {\n\n    private MemberRepository memberRepository;\n    private DiscountPolicy discountPolicy;\n\n    @Autowired\n    public void init(MemberRepository memberRepository,\n                     DiscountPolicy discountPolicy) {\n        this.memberRepository = memberRepository;\n        this.discountPolicy = discountPolicy;\n    }\n}",
+   "note": "**아무 메서드나 된다.** 한 번에 여러 개를 받을 수 있다는 것이 수정자와의 차이인데, **거의 안 쓴다** — 생성자로 하면 되는 일이다."
+  },
+  {
+   "type": "heading",
+   "text": "네 가지를 나란히"
+  },
+  {
+   "type": "table",
+   "caption": "성질 비교",
+   "note": "**`final` 을 붙일 수 있는 것은 생성자 주입뿐**이다. 이 한 칸이 7.3절의 결론을 결정한다.",
+   "columns": [
+    "",
+    "주입 시점",
+    "`final`",
+    "값 변경",
+    "순수 자바 테스트"
+   ],
+   "rows": [
+    [
+     "**생성자**",
+     "객체 생성 시 **1회**",
+     "**가능**",
+     "불가",
+     "**쉽다**"
+    ],
+    [
+     "**수정자**",
+     "객체 생성 **후**",
+     "불가",
+     "가능",
+     "가능(setter 호출)"
+    ],
+    [
+     "**필드**",
+     "객체 생성 **후**",
+     "불가",
+     "불가(밖에서)",
+     "**불가능**"
+    ],
+    [
+     "**일반 메서드**",
+     "객체 생성 **후**",
+     "불가",
+     "가능",
+     "가능"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "스프링 빈이 아니면 @Autowired 가 동작하지 않는다",
+   "md": "```java\npublic class Member {          // @Component 가 없다\n\n    @Autowired\n    private MemberRepository memberRepository;   // 아무 일도 안 일어난다\n}\n```\n\n의존관계 주입은 **스프링 컨테이너가 관리하는 객체**에게만 일어난다. `new Member()` 로 만든 객체는 컨테이너가 모르니 손댈 수 없다.\n\n5.1절의 함정과 같은 이야기다 — **어노테이션은 스프링이 읽어야 의미가 생긴다.** 붙어만 있는 어노테이션은 주석과 다를 게 없다.\n\n초심자가 \"왜 `null` 이지\" 로 몇 시간 잃는 자리다. **`@Autowired` 가 안 먹으면 먼저 그 클래스가 빈인지 확인한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 주입 순서가 로그에 보인다",
+   "sql": "# 생성자·수정자·필드 주입을 한 클래스에 다 넣고 출력문을 심으면\n\ncall constructor : memberRepository = MemoryMemberRepository@1f36e637\ncall setter      : discountPolicy   = RateDiscountPolicy@7b02881e\n# 필드 주입은 호출되는 메서드가 없어 출력할 자리도 없다\n\nINFO  DefaultListableBeanFactory - Creating shared instance of singleton bean 'orderServiceImpl'\n\nOrderServiceTest > VIP는_10퍼센트_할인() PASSED\n\n# 스프링 빈이 아닌 객체에서\nMember member = new Member(1L, \"memberA\", Grade.VIP);\nmember.getMemberRepository()  ->  null",
+   "note": "**생성자가 먼저, 수정자가 나중**이다. 당연한 순서인데 — 생성자가 끝나야 객체가 존재하고, 그래야 setter 를 부를 수 있다.\n\n맨 아래가 이 절의 함정이다. **예외도 안 나고 그냥 `null`** 이다. 그 `null` 을 쓰는 순간에야 `NullPointerException` 이 난다."
+  }
+ ],
+ "recap": [
+  "주입 방법은 넷 — **생성자 · 수정자 · 필드 · 일반 메서드.**",
+  "**생성자 주입만 객체 생성 시점에 끝난다.** 나머지는 만들고 나서 채운다.",
+  "**생성자가 하나면 `@Autowired` 를 생략**할 수 있다(스프링 4.3+).",
+  "수정자 주입은 자바빈 프로퍼티 규약을 따른다 — 이름이 `setXxx` 여야 한다.",
+  "필드 주입은 **순수 자바 테스트를 불가능하게** 만든다. 애플리케이션 코드에 안 쓴다.",
+  "**`final` 을 붙일 수 있는 것은 생성자 주입뿐**이다.",
+  "**스프링 빈이 아니면 `@Autowired` 는 아무 일도 안 한다** — 예외 없이 `null` 이다."
+ ],
+ "drills": [
+  {
+   "task": "같은 클래스를 네 가지 방식으로 각각 만들어 본다.",
+   "done_when": "넷 다 동작하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "생성자·수정자에 출력문을 넣어 호출 순서를 확인한다.",
+   "done_when": "생성자가 먼저 찍히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필드 주입 버전을 `new` 로 만들어 메서드를 호출한다.",
+   "done_when": "`NullPointerException` 을 봤고, 왜인지 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Component` 가 없는 클래스에 `@Autowired` 를 붙여 본다.",
+   "done_when": "예외 없이 `null` 인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네 가지 주입 방법은?",
+   "a": "생성자 주입, 수정자(setter) 주입, 필드 주입, 일반 메서드 주입."
+  },
+  {
+   "q": "생성자 주입의 시점은?",
+   "a": "객체를 생성할 때 딱 한 번이다. 생성자 호출이 끝나면 의존관계 설정도 끝난다."
+  },
+  {
+   "q": "`@Autowired` 를 생략할 수 있는 경우는?",
+   "a": "생성자가 하나뿐일 때. 스프링 4.3부터 자동으로 주입한다."
+  },
+  {
+   "q": "필드 주입을 쓰지 않는 이유는?",
+   "a": "스프링이 리플렉션으로 값을 꽂기 때문에 컨테이너 없이는 채울 방법이 없다. 순수 자바 테스트가 불가능해진다."
+  },
+  {
+   "q": "`final` 을 붙일 수 있는 주입 방식은?",
+   "a": "생성자 주입뿐이다. 나머지는 객체가 만들어진 뒤에 값을 넣으므로 `final` 을 쓸 수 없다."
+  },
+  {
+   "q": "스프링 빈이 아닌 클래스에 `@Autowired` 를 붙이면?",
+   "a": "아무 일도 안 일어난다. 예외도 없고 필드는 `null` 로 남는다. 컨테이너가 관리하는 객체에게만 주입이 일어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자바빈 프로퍼티 규약",
+   "en": "JavaBeans property",
+   "what": "필드를 직접 열지 않고 `getXxx`/`setXxx` 로 접근하는 자바 관례. 수정자 주입이 이 규약을 따른다."
+  },
+  {
+   "term": "리플렉션",
+   "en": "reflection",
+   "what": "실행 중에 클래스 정보를 읽고 조작하는 자바 기능. 필드 주입은 이것으로 `private` 필드에 직접 값을 넣는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Dependency Injection",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

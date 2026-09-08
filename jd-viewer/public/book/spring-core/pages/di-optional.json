@@ -1,0 +1,160 @@
+{
+ "book": "spring-core",
+ "id": "di-optional",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "옵션 처리",
+ "summary": "주입할 빈이 없을 때. required=false·@Nullable·Optional.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "주입 대상이 없을 때 세 가지 처리 방법을 쓸 수 있다.",
+  "세 방법의 동작 차이를 정확히 말할 수 있다.",
+  "왜 기본값이 '없으면 예외' 인지 안다.",
+  "실무에서 어느 것을 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "`@Autowired` 의 기본 동작은 **없으면 예외**다. 4.3절의 그 예외다.\n\n```\nNoSuchBeanDefinitionException: No qualifying bean of type 'MemberRepository' available\n```\n\n합리적인 기본값이다 — **필요한 것이 없으면 애플리케이션이 뜨면 안 된다.** 조용히 `null` 로 시작해서 첫 요청에 터지는 것보다 훨씬 낫다.\n\n그런데 **있어도 되고 없어도 되는** 의존관계가 가끔 있다."
+  },
+  {
+   "type": "heading",
+   "text": "세 가지 방법"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "AutowiredTest.java",
+   "code": "static class TestBean {\n\n    // 1. 주입할 빈이 없으면 메서드 자체가 호출되지 않는다\n    @Autowired(required = false)\n    public void setNoBean1(Member member) {\n        System.out.println(\"setNoBean1 = \" + member);\n    }\n\n    // 2. 주입할 빈이 없으면 null 이 들어온다\n    @Autowired\n    public void setNoBean2(@Nullable Member member) {\n        System.out.println(\"setNoBean2 = \" + member);\n    }\n\n    // 3. 주입할 빈이 없으면 Optional.empty 가 들어온다\n    @Autowired\n    public void setNoBean3(Optional<Member> member) {\n        System.out.println(\"setNoBean3 = \" + member);\n    }\n}",
+   "note": "**`Member` 는 스프링 빈이 아니다.** 7.1절 마지막에서 본 그 클래스다 — `@Component` 가 없다. 그래서 셋 다 '주입할 빈이 없는' 상황이 된다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 다른가",
+   "note": "**1번만 메서드가 아예 안 불린다.** 2·3번은 불리는데 값이 비어 있다. 이 차이가 중요한 이유는, 그 메서드 안에 다른 로직이 있으면 **1번은 그 로직도 건너뛰기** 때문이다.",
+   "columns": [
+    "방법",
+    "메서드 호출",
+    "들어오는 값"
+   ],
+   "rows": [
+    [
+     "`@Autowired(required = false)`",
+     "**안 된다**",
+     "—"
+    ],
+    [
+     "`@Nullable`",
+     "된다",
+     "`null`"
+    ],
+    [
+     "`Optional<T>`",
+     "된다",
+     "`Optional.empty`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "생성자 주입에도 쓸 수 있다",
+   "md": "위 예제는 설명하기 좋으라고 수정자로 썼는데, **`@Nullable` 과 `Optional` 은 생성자 파라미터에도 붙는다.**\n\n```java\npublic OrderServiceImpl(MemberRepository memberRepository,\n                       @Nullable DiscountPolicy discountPolicy) { ... }\n```\n\n반면 **`required = false` 는 생성자에 쓰기 어렵다** — 생성자를 아예 안 부를 수는 없으니 의미가 이상해진다. 7.3절에서 생성자 주입을 기본으로 쓰기로 하면, 옵션 처리는 `@Nullable` 이나 `Optional` 이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "어느 것을 쓰나",
+   "md": "실무에서는 **`@Nullable`** 이 가장 흔하다. 짧고, IDE 와 정적 분석 도구가 이해한다.\n\n`Optional` 은 자바 8의 관용구를 좋아하는 팀에서 쓰는데, **필드에 `Optional` 을 두는 것은 권장되지 않는다**(직렬화 문제, 메모리). 파라미터로 받아서 바로 풀어 쓰는 정도가 적당하다.\n\n그리고 솔직히 — **이 셋을 쓸 일 자체가 드물다.** 의존관계가 선택적이라는 것은 대개 설계를 다시 볼 신호다. 정말 없어도 되는 것이면 **기본 구현을 하나 두는 편**이 낫다.\n\n```java\n// 없으면 null 을 받는 대신\n@Bean\npublic DiscountPolicy discountPolicy() {\n    return new NoDiscountPolicy();   // 아무것도 안 하는 구현\n}\n```\n\n3.7절에서 LSP 를 설명하며 나온 `NoDiscountPolicy` 가 그것이다. **`null` 검사를 흩뿌리는 것보다 아무것도 안 하는 구현 하나가 낫다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 하나는 아예 안 찍힌다",
+   "sql": "setNoBean2 = null\nsetNoBean3 = Optional.empty\n\n# setNoBean1 은 출력이 없다 — 메서드가 호출되지 않았다\n\nAutowiredTest > 주입할 스프링 빈이 없어도 동작해야 한다 PASSED\n\n# 옵션 처리를 안 했을 때\nUnsatisfiedDependencyException: Error creating bean with name 'testBean':\n    Unsatisfied dependency expressed through method 'setNoBean1' parameter 0:\n    No qualifying bean of type 'hello.core.member.Member' available",
+   "note": "**`setNoBean1` 은 출력이 한 줄도 없다.** 값이 `null` 인 게 아니라 **메서드가 실행되지 않았다.**\n\n아래 예외 이름을 봐 두자 — `UnsatisfiedDependencyException` 이다. 4.3절의 `NoSuchBeanDefinitionException` 을 **감싸고 있는** 예외다. **어느 빈의 어느 파라미터에서 났는지**를 알려 주기 때문에 실무에서 훨씬 유용하다."
+  }
+ ],
+ "recap": [
+  "`@Autowired` 의 기본은 **없으면 예외**다. 합리적인 기본값이다.",
+  "`@Autowired(required = false)` — **메서드 자체가 호출되지 않는다.**",
+  "`@Nullable` — 호출되고 **`null`** 이 들어온다.",
+  "`Optional<T>` — 호출되고 **`Optional.empty`** 가 들어온다.",
+  "**`@Nullable`·`Optional` 은 생성자에도 쓸 수 있다.** `required=false` 는 아니다.",
+  "쓸 일 자체가 드물다 — **아무것도 안 하는 기본 구현**을 두는 편이 대개 낫다.",
+  "`UnsatisfiedDependencyException` 은 **어느 빈의 어느 파라미터**인지 알려 준다."
+ ],
+ "drills": [
+  {
+   "task": "세 가지 방법을 한 테스트 클래스에 다 넣고 출력을 비교한다.",
+   "done_when": "하나만 출력이 없다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "옵션 처리를 지우고 실행해 예외 메시지를 읽는다.",
+   "done_when": "`UnsatisfiedDependencyException` 안에 어느 파라미터인지 나온 것을 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Nullable` 을 생성자 파라미터에 붙여 본다.",
+   "done_when": "동작하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`NoDiscountPolicy` 를 만들어 옵션 처리 대신 써 본다.",
+   "done_when": "`null` 검사가 사라진 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Autowired` 의 기본 동작은?",
+   "a": "주입할 빈이 없으면 예외를 던진다. 필요한 것이 없는 채로 애플리케이션이 뜨지 않게 하기 위해서다."
+  },
+  {
+   "q": "`@Autowired(required = false)` 의 동작은?",
+   "a": "주입할 빈이 없으면 그 메서드 자체가 호출되지 않는다. 값이 `null` 로 들어오는 것이 아니다."
+  },
+  {
+   "q": "`@Nullable` 과 `Optional` 의 차이는?",
+   "a": "둘 다 메서드는 호출된다. `@Nullable` 은 `null` 이, `Optional` 은 `Optional.empty` 가 들어온다."
+  },
+  {
+   "q": "생성자 주입에서 쓸 수 있는 것은?",
+   "a": "`@Nullable` 과 `Optional` 이다. `required = false` 는 생성자를 안 부를 수 없으므로 의미가 이상해진다."
+  },
+  {
+   "q": "옵션 처리 대신 권할 만한 설계는?",
+   "a": "아무것도 하지 않는 기본 구현(예: `NoDiscountPolicy`)을 빈으로 두는 것. `null` 검사를 흩뿌리지 않아도 된다."
+  },
+  {
+   "q": "`UnsatisfiedDependencyException` 이 유용한 이유는?",
+   "a": "어느 빈의 어느 파라미터에서 주입이 실패했는지 알려 주기 때문이다. 안에 `NoSuchBeanDefinitionException` 이 들어 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@Nullable",
+   "en": "",
+   "what": "`null` 이 들어올 수 있음을 표시하는 어노테이션. 스프링은 주입할 빈이 없으면 `null` 을 넣는다."
+  },
+  {
+   "term": "UnsatisfiedDependencyException",
+   "en": "",
+   "what": "빈을 만들다가 의존관계 주입에 실패했을 때 나는 예외. 어느 빈의 어느 파라미터인지를 담고 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Dependency Injection",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
