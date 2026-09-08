@@ -1,0 +1,243 @@
+{
+  "book": "spring-core",
+  "id": "solid-applied",
+  "no": "3.7",
+  "chapter": 3,
+  "title": "좋은 객체 지향 설계의 5가지 원칙의 적용",
+  "summary": "1.4절의 모순이 풀린 자리를 SRP·DIP·OCP 로 정확히 짚는다.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "3장의 변화를 SRP·DIP·OCP 로 각각 설명할 수 있다.",
+    "LSP·ISP 가 이 예제에서 왜 잘 안 드러나는지 안다.",
+    "원칙을 코드의 어느 줄에 대응시킬 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1.4절에서 SOLID 다섯을 나열하고 **OCP 와 DIP 둘만 판다**고 했다. 이제 그 둘이 어떻게 풀렸는지, 그리고 나머지 셋은 어디 있는지 정리한다."
+    },
+    {
+      "type": "heading",
+      "text": "SRP — 한 클래스는 하나의 책임만"
+    },
+    {
+      "type": "table",
+      "caption": "책임이 어떻게 나뉘었나",
+      "note": "**SRP 를 지킨 것이 원인**이고 아래 두 원칙은 결과다. 1.5절에서 \"책임이 하나 늘어난 것\" 이라고 했던 그 정리다.",
+      "columns": [
+        "",
+        "3장 이전",
+        "3장 이후"
+      ],
+      "rows": [
+        [
+          "`OrderServiceImpl`",
+          "주문 생성 **+ 협력 객체 선택**",
+          "주문 생성만"
+        ],
+        [
+          "`AppConfig`",
+          "(없음)",
+          "협력 객체 선택 및 연결"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "책임이 하나가 된 클래스",
+      "code": "public Order createOrder(Long memberId, String itemName, int itemPrice) {\n    Member member = memberRepository.findById(memberId);\n    int discountPrice = discountPolicy.discount(member, itemPrice);\n    return new Order(memberId, itemName, itemPrice, discountPrice);\n}",
+      "note": "세 줄이 전부 **주문을 만드는 일**이다. 무엇을 쓸지는 이미 정해져서 들어와 있다."
+    },
+    {
+      "type": "heading",
+      "text": "DIP — 추상에 의존한다"
+    },
+    {
+      "type": "compare",
+      "caption": "의존 대상",
+      "left": {
+        "title": "3장 이전",
+        "lang": "java",
+        "bad": true,
+        "code": "private final DiscountPolicy discountPolicy\n        = new FixDiscountPolicy();\n\n// import ...FixDiscountPolicy;",
+        "md": "인터페이스와 **구현 클래스 둘 다** 의존. import 문에 구현 클래스가 있다(3.2절의 판단 기준)."
+      },
+      "right": {
+        "title": "3장 이후",
+        "lang": "java",
+        "code": "private final DiscountPolicy discountPolicy;\n\npublic OrderServiceImpl(\n        DiscountPolicy discountPolicy) {\n    this.discountPolicy = discountPolicy;\n}\n\n// import 에 구현 클래스가 없다",
+        "md": "**인터페이스만** 의존. 실제로 무엇이 들어오는지는 이 파일이 모른다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "DIP 를 확인하는 가장 빠른 방법",
+      "md": "**import 문을 본다.** 구현 클래스가 import 되어 있으면 그것에 의존하는 것이다.\n\n지금 `OrderServiceImpl` 의 import 는 이렇다.\n\n```java\nimport hello.core.member.Member;\nimport hello.core.member.MemberRepository;    // 인터페이스\nimport hello.core.discount.DiscountPolicy;    // 인터페이스\nimport hello.core.order.Order;\n```\n\n구현 클래스가 하나도 없다. **이게 DIP 를 지켰다는 가장 실용적인 증거**다.\n\n반대로 `AppConfig` 의 import 에는 구현 클래스가 전부 있다. 그것이 그 클래스의 책임이기 때문이다."
+    },
+    {
+      "type": "heading",
+      "text": "OCP — 확장에는 열리고 변경에는 닫힌다"
+    },
+    {
+      "type": "table",
+      "caption": "3장 전체가 이 표다",
+      "note": "**\"확장\" 과 \"변경\" 이 다른 파일에서 일어나야** OCP 가 지켜진다. 3.2절 이전에는 둘이 같은 파일이었다.",
+      "columns": [
+        "",
+        "무엇을 했나",
+        "어느 영역"
+      ],
+      "rows": [
+        [
+          "**확장**",
+          "`RateDiscountPolicy` 클래스 추가 (3.1)",
+          "새 파일"
+        ],
+        [
+          "**적용**",
+          "`AppConfig` 한 줄 수정 (3.5)",
+          "구성 영역"
+        ],
+        [
+          "**변경**",
+          "(없음)",
+          "**사용 영역을 안 열었다**"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "\"AppConfig 를 고쳤으니 OCP 위반 아닌가\"",
+      "md": "정당한 지적이고, 답이 필요하다.\n\n**구현체를 고르는 코드는 어딘가에 반드시 있어야 한다.** 프로그램이 돌려면 누군가 `new` 를 해야 한다. 그것을 없애는 것은 불가능하다(1.4절).\n\nOCP 가 말하는 것은 \"**아무것도 안 고친다**\" 가 아니라 \"**확장할 때 기존 동작하는 코드를 안 고친다**\" 이다.\n\n- `AppConfig` 는 **설정**이지 동작하는 로직이 아니다\n- 테스트할 것도 없고, 회귀할 위험도 거의 없다\n- 무엇보다 **한 곳뿐이라 검토하기 쉽다**\n\n그리고 6장에서 컴포넌트 스캔을 배우면 이 한 줄마저 줄어든다. 다만 그때는 **다른 대가**가 생긴다 — 무엇이 조립됐는지가 코드에 안 보인다."
+    },
+    {
+      "type": "heading",
+      "text": "나머지 둘 — LSP 와 ISP"
+    },
+    {
+      "type": "table",
+      "caption": "이 예제에서는 잘 안 드러난다",
+      "note": "**원칙이 안 중요한 게 아니라 이 예제가 작아서다.** 둘 다 인터페이스가 커지거나 상속 계층이 깊어질 때 문제가 된다.",
+      "columns": [
+        "원칙",
+        "이 예제에서",
+        "언제 문제가 되나"
+      ],
+      "rows": [
+        [
+          "**LSP** 리스코프 치환",
+          "구현체가 다 정직하게 동작한다",
+          "`discount()` 가 음수를 돌려주거나 예외를 던지는 구현이 생기면"
+        ],
+        [
+          "**ISP** 인터페이스 분리",
+          "인터페이스에 메서드가 1~2개뿐이다",
+          "`MemberRepository` 에 메서드가 20개가 되면"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "LSP 가 깨지는 예를 하나 상상해 보면",
+      "md": "```java\npublic class NoDiscountPolicy implements DiscountPolicy {\n    @Override\n    public int discount(Member member, int price) {\n        throw new UnsupportedOperationException(\"할인 없음\");\n    }\n}\n```\n\n\"할인을 적용하지 않는다\" 를 이렇게 구현하면 **LSP 위반**이다. `DiscountPolicy` 를 쓰는 코드는 숫자가 돌아올 거라고 기대하는데 예외가 날아온다.\n\n올바른 구현은 `return 0;` 이다. **인터페이스의 약속(할인 금액을 돌려준다)을 지키는 것**이 LSP 다.\n\n2.2절 요구사항에 \"최악의 경우 할인을 적용하지 않을 수도 있다\" 가 있었다. 그 요구가 실제로 오면 `NoDiscountPolicy` 를 만들게 되고, **그때 이 판단을 하게 된다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "원칙을 외우는 것과 짚는 것",
+      "md": "1.4절에서 \"원칙을 외우는 것보다 어느 코드가 어느 원칙을 어겼는지 짚는 연습이 낫다\" 고 했다.\n\n이 절이 그 연습이다. 그리고 **짚어 보면 원칙들이 따로 놀지 않는다**는 것을 알게 된다.\n\n```\nSRP 를 지켰더니  →  DIP 가 지켜졌고  →  OCP 가 따라왔다\n```\n\n책임을 나눴더니(SRP) 서비스가 구현체를 안 알게 됐고(DIP), 그래서 구현을 바꿔도 서비스를 안 고치게 됐다(OCP).\n\n**하나를 제대로 지키면 나머지가 따라오는 구조**다. 그래서 실무에서 다섯 개를 동시에 생각할 필요는 없다 — **\"이 클래스가 하는 일이 하나인가\" 부터 물으면 된다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"SOLID 를 적용한 경험이 있나요?\"** → 원칙 이름을 나열하지 말고 **코드의 어느 줄이 어느 원칙과 관련되는지** 말한다. `new` 를 걷어내고 생성자로 받은 것 = DIP, 설정 클래스를 분리한 것 = SRP, 그래서 구현을 바꿔도 서비스를 안 고치는 것 = OCP.\n- **\"설정 파일을 고치는 것도 OCP 위반 아닌가요?\"** → 구현체를 고르는 코드는 반드시 어딘가 있어야 한다. OCP 는 '아무것도 안 고친다' 가 아니라 '**동작하는 기존 코드**를 안 고친다' 이다.\n- **\"다섯 원칙 중 무엇부터 보나요?\"** → SRP. 책임이 하나면 나머지가 대체로 따라온다.\n- **\"LSP 를 어긴 예를 들면?\"** → 인터페이스의 약속과 다르게 동작하는 구현. 할인 금액을 돌려주기로 했는데 예외를 던지는 경우."
+    }
+  ],
+  "recap": [
+    "**SRP** — `OrderServiceImpl` 이 하던 두 일 중 '협력 객체 선택' 을 `AppConfig` 로 옮겼다.",
+    "**DIP** — 서비스의 import 에 구현 클래스가 하나도 없다. **가장 실용적인 확인 방법**이다.",
+    "**OCP** — 확장(새 클래스)과 적용(설정 한 줄)이 다른 파일에서 일어난다. 사용 영역은 안 연다.",
+    "\"설정을 고쳤으니 OCP 위반\" 은 아니다 — OCP 는 **동작하는 기존 코드**를 안 고친다는 뜻이다.",
+    "**LSP·ISP** 는 이 예제가 작아서 안 드러난다. 인터페이스가 커지거나 구현이 약속을 어길 때 문제가 된다.",
+    "**SRP 를 지키면 DIP 가 따라오고 OCP 가 따라온다.** 다섯을 동시에 생각할 필요가 없다."
+  ],
+  "drills": [
+    {
+      "task": "`OrderServiceImpl` 의 import 문을 보고 구현 클래스가 있는지 확인한다.",
+      "done_when": "하나도 없다는 것을 확인했다. `AppConfig` 의 import 와 비교한다.",
+      "minutes": 10
+    },
+    {
+      "task": "`NoDiscountPolicy` 를 두 가지로 만들어 본다 — 예외를 던지는 것과 0을 돌려주는 것.",
+      "done_when": "전자가 왜 LSP 위반인지 설명할 수 있다.",
+      "minutes": 20
+    },
+    {
+      "task": "3장에서 한 작업을 SRP·DIP·OCP 로 각각 한 문장씩 정리한다.",
+      "done_when": "세 문장이 서로 이어지는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`MemberRepository` 에 메서드를 10개 추가한다고 가정하고 ISP 관점에서 무엇이 문제일지 적어 본다.",
+      "done_when": "구현체가 안 쓰는 메서드까지 구현해야 한다는 것을 알아냈다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "3장에서 SRP 를 어떻게 지켰는가?",
+      "a": "`OrderServiceImpl` 이 하던 두 가지 일(주문 생성 + 협력 객체 선택) 중 두 번째를 `AppConfig` 로 옮겼다. 각 클래스가 하나의 책임만 갖게 됐다."
+    },
+    {
+      "q": "DIP 를 지켰는지 가장 빠르게 확인하는 방법은?",
+      "a": "import 문을 본다. 구현 클래스가 import 되어 있으면 그것에 의존하는 것이다. 지금 서비스에는 인터페이스만 import 되어 있다."
+    },
+    {
+      "q": "`AppConfig` 를 고치는 것은 OCP 위반인가?",
+      "a": "아니다. 구현체를 고르는 코드는 어딘가 반드시 있어야 한다. OCP 는 '아무것도 안 고친다' 가 아니라 '동작하는 기존 코드를 안 고친다' 이고, 설정은 로직이 아니다."
+    },
+    {
+      "q": "LSP 를 어긴 구현의 예는?",
+      "a": "`discount()` 가 할인 금액을 돌려주기로 했는데 예외를 던지는 구현. 인터페이스의 약속과 다르게 동작하면 클라이언트가 깨진다. 할인 없음은 `return 0` 이 맞다."
+    },
+    {
+      "q": "다섯 원칙 중 무엇부터 보는 것이 좋은가?",
+      "a": "SRP 다. 책임이 하나면 구현체 선택이 밖으로 나가고(DIP), 그래서 구현을 바꿔도 안 고치게 된다(OCP). 하나를 지키면 나머지가 따라온다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "LSP",
+      "en": "Liskov Substitution Principle",
+      "what": "자식(구현체)이 부모(인터페이스) 자리에 그대로 들어갈 수 있어야 한다. 약속과 다르게 동작하면 위반."
+    },
+    {
+      "term": "ISP",
+      "en": "Interface Segregation Principle",
+      "what": "큰 인터페이스 하나보다 작은 인터페이스 여러 개. 구현체가 안 쓰는 메서드를 억지로 구현하게 되면 위반 신호."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Robert C. Martin — Design Principles and Design Patterns",
+      "url": "https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf",
+      "publisher": "Object Mentor"
+    },
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "book": "spring-core",
+  "id": "new-structure",
+  "no": "3.5",
+  "chapter": 3,
+  "title": "새로운 구조와 할인 정책 적용",
+  "summary": "이제 정책을 바꿔도 서비스 코드를 안 고친다. 고치는 곳은 AppConfig 한 곳뿐.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "사용 영역과 구성 영역의 구분을 말할 수 있다.",
+    "정책을 바꿀 때 고치는 곳이 한 줄임을 확인한다.",
+    "3.2절의 문제가 실제로 해결됐음을 같은 작업으로 검증한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.2절에서 정률 할인을 적용하면서 `OrderServiceImpl` 을 고쳐야 했다. **같은 작업을 다시 해 본다.** 이번에는 무엇을 고치는지."
+    },
+    {
+      "type": "heading",
+      "text": "정액으로 되돌려 본다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "AppConfig.java",
+      "caption": "이 한 줄",
+      "code": "public DiscountPolicy discountPolicy() {\n//  return new RateDiscountPolicy();\n    return new FixDiscountPolicy();\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "order = Order{memberId=1, itemName='itemA', itemPrice=20000, discountPrice=1000}\n\n// 정액 1000원으로 돌아갔다.\n// 고친 파일: AppConfig 하나\n// 고친 줄:   1 줄",
+      "note": "**`OrderServiceImpl` 을 열지 않았다.** 3.2절에서는 그 파일을 고쳐야 했다."
+    },
+    {
+      "type": "figure",
+      "caption": "두 영역",
+      "ascii": "   사용 영역과 구성 영역\n\n\n   ┌──────────────────────────────────────────────────────────┐\n   │  configuration area                                      │   <-- 여기만 고친다\n   │                                                          │\n   │    AppConfig                                             │\n   │      memberRepository()  -> MemoryMemberRepository       │\n   │      discountPolicy()    -> RateDiscountPolicy           │\n   │                                                          │\n   └────────────────────────┬─────────────────────────────────┘\n                            │ creates and injects\n                            ▼\n   ┌──────────────────────────────────────────────────────────┐\n   │  usage area                                              │   <-- 한 줄도 안 고친다\n   │                                                          │\n   │    MemberServiceImpl   OrderServiceImpl                  │\n   │    MemoryMemberRepo    RateDiscountPolicy                │\n   │                                                          │\n   └──────────────────────────────────────────────────────────┘\n\n\n   할인 정책을 바꿀 때 손대는 곳\n\n     구성 영역   AppConfig.discountPolicy()   1 줄\n     사용 영역   (없음)\n\n   OCP 의 \"변경에는 닫혀 있다\" 가 이 표다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "'사용 영역' 과 '구성 영역'",
+      "md": "이 구분이 3장의 결론이다.\n\n- **사용 영역** — 비즈니스 로직이 있는 곳. `MemberServiceImpl`, `OrderServiceImpl`, 그리고 구현체들.\n- **구성 영역** — 무엇을 쓸지 정하는 곳. `AppConfig` 하나.\n\n**구현을 바꿀 때 구성 영역만 고친다.** 사용 영역은 열지 않는다.\n\n그리고 이 구분이 있으면 **코드 리뷰가 쉬워진다.** \"이번 변경이 사용 영역을 건드렸는가\" 를 물으면, 그 답이 곧 이 변경이 확장인지 수정인지를 말해 준다."
+    },
+    {
+      "type": "heading",
+      "text": "2.8절의 표를 다시 채운다"
+    },
+    {
+      "type": "table",
+      "caption": "전후 비교",
+      "note": "**줄 수보다 중요한 것은 어느 영역인가**다. 도메인 코드를 안 열었다는 것이 핵심이다.",
+      "columns": [
+        "바꾸는 것",
+        "3.2절 이전",
+        "지금"
+      ],
+      "rows": [
+        [
+          "할인 정책을 정률로",
+          "`OrderServiceImpl` (사용 영역)",
+          "**`AppConfig` 1줄 (구성 영역)**"
+        ],
+        [
+          "저장소를 DB 로",
+          "`MemberServiceImpl` + `OrderServiceImpl`",
+          "**`AppConfig` 1줄**"
+        ],
+        [
+          "둘 다 바꾸기",
+          "3 파일",
+          "**`AppConfig` 2줄**"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "저장소도 바꿔 본다"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "DB 구현이 있다고 가정하면",
+      "code": "public class JdbcMemberRepository implements MemberRepository {\n    // ... 실제 구현은 이 책 범위 밖이다\n    @Override public void save(Member member) { /* INSERT */ }\n    @Override public Member findById(Long memberId) { /* SELECT */ return null; }\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "AppConfig.java",
+      "code": "private final MemberRepository memberRepository = new JdbcMemberRepository();\n//                                                     ^^^^^^^^^^^^^^^^^^^^^^\n//                                                     여기 한 줄",
+      "note": "**`MemberServiceImpl` 도 `OrderServiceImpl` 도 안 열었다.** 3.2절 전이었다면 두 파일을 고쳐야 했다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 테스트를 다르게 조립할 수도 있다",
+      "sql": "// 테스트용 설정을 따로 두면\npublic class TestConfig extends AppConfig {\n    @Override\n    public MemberRepository memberRepository() {\n        return new MemoryMemberRepository();   // 테스트는 메모리로\n    }\n}\n\nMemberServiceTest > join() PASSED\n// DB 없이 테스트가 돈다",
+      "note": "2.5절에서 **못 했던 것**이다 — \"가짜 저장소를 끼울 수가 없다\" 고 했던 그 문제. 이제 된다. **1.3절에서 다형성의 장점으로 꼽았던 세 번째가 여기서 되살아났다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "구성 영역이 여러 개일 수 있다",
+      "md": "`AppConfig` 가 하나여야 할 이유는 없다.\n\n- `AppConfig` — 운영용\n- `TestConfig` — 테스트용 (메모리 저장소, 고정 시각 등)\n- `LocalConfig` — 로컬 개발용\n\n**같은 사용 영역을 다르게 조립하는 것**이다. 실무에서는 스프링 프로파일(`@Profile`)로 하는데, 원리는 이것과 같다.\n\n그리고 이게 가능한 이유는 사용 영역이 **구현체 이름을 모르기** 때문이다. 3.2절에서 `OrderServiceImpl` 안에 `new FixDiscountPolicy()` 가 있을 때는 조립 방식을 바꿀 방법이 아예 없었다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"사용 영역과 구성 영역이 뭔가요?\"** → 비즈니스 로직이 있는 곳과 무엇을 쓸지 정하는 곳. **구현을 바꿀 때 구성 영역만 고친다**는 것이 요점이다.\n- **\"환경마다 다른 구현을 쓰려면?\"** → 설정 클래스를 여러 개 두거나 프로파일을 쓴다. 사용 영역이 구현체를 모르기 때문에 가능하다.\n- **\"테스트에서 가짜 저장소를 끼우려면?\"** → 설정에서 다른 구현을 주입한다. 서비스가 직접 `new` 하고 있으면 못 한다."
+    }
+  ],
+  "recap": [
+    "정책을 바꿀 때 고치는 곳이 **`AppConfig` 한 줄**이 됐다. 서비스 파일은 열지 않는다.",
+    "**사용 영역**(비즈니스 로직)과 **구성 영역**(무엇을 쓸지)의 구분이 3장의 결론이다.",
+    "줄 수보다 중요한 것은 **어느 영역인가** — 도메인 코드를 안 열었다는 것이 핵심이다.",
+    "저장소를 DB 로 바꿔도 마찬가지다. 두 서비스 모두 안 건드린다.",
+    "2.5절에서 못 했던 **테스트용 가짜 저장소 끼우기**가 이제 된다.",
+    "설정을 여러 개 둬서 환경마다 다르게 조립할 수 있다 — 스프링 프로파일의 원리."
+  ],
+  "drills": [
+    {
+      "task": "할인 정책을 정액↔정률로 왔다 갔다 하며 몇 개 파일을 고치는지 센다.",
+      "done_when": "매번 `AppConfig` 한 줄인 것을 확인했다.",
+      "minutes": 10
+    },
+    {
+      "task": "`JdbcMemberRepository`(빈 구현)를 만들고 `AppConfig` 에서 갈아 끼운다.",
+      "done_when": "서비스 파일을 하나도 안 열고 바뀌는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`TestConfig` 를 만들어 테스트에서 메모리 저장소를 쓰게 한다.",
+      "done_when": "2.5절에서 못 했던 것이 되는 것을 확인했다.",
+      "minutes": 20
+    },
+    {
+      "task": "3.2절과 지금의 diff 를 나란히 놓고 '어느 영역을 고쳤나' 를 표시한다.",
+      "done_when": "사용 영역 vs 구성 영역의 차이를 눈으로 봤다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "할인 정책을 바꿀 때 지금은 무엇을 고치는가?",
+      "a": "`AppConfig` 의 `discountPolicy()` 한 줄이다. 사용 영역(`OrderServiceImpl` 등)은 열지 않는다."
+    },
+    {
+      "q": "사용 영역과 구성 영역의 차이는?",
+      "a": "사용 영역은 비즈니스 로직이 있는 곳, 구성 영역은 무엇을 쓸지 정하는 곳이다. 구현을 바꿀 때 구성 영역만 고친다."
+    },
+    {
+      "q": "환경마다 다른 구현을 쓰려면?",
+      "a": "설정 클래스를 여러 개 두고 다르게 조립한다. 사용 영역이 구현체 이름을 모르기 때문에 가능하다. 스프링에서는 프로파일이 이 역할을 한다."
+    },
+    {
+      "q": "2.5절에서 못 했던 것이 지금은 왜 되는가?",
+      "a": "서비스가 저장소를 직접 만들지 않고 주입받기 때문이다. 설정에서 가짜 구현을 넣으면 DB 없이 테스트할 수 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "사용 영역",
+      "en": "usage area",
+      "what": "비즈니스 로직이 있는 곳. 구현이 바뀌어도 열지 않는다."
+    },
+    {
+      "term": "구성 영역",
+      "en": "configuration area",
+      "what": "무엇을 쓸지 정하는 곳. 구현을 바꿀 때 여기만 고친다."
+    },
+    {
+      "term": "프로파일",
+      "en": "profile",
+      "what": "환경별로 다른 설정을 적용하는 스프링 기능. 이 절의 여러 설정 클래스와 원리가 같다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

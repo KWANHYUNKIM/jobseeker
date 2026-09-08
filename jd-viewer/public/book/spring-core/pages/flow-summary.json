@@ -1,0 +1,151 @@
+{
+  "book": "spring-core",
+  "id": "flow-summary",
+  "no": "3.6",
+  "chapter": 3,
+  "title": "전체 흐름 정리",
+  "summary": "무엇이 어떻게 바뀌었는지 되짚는다.",
+  "minutes": 10,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "2장부터 3.5절까지의 변화를 순서대로 말할 수 있다.",
+    "각 단계에서 무엇이 문제였고 무엇으로 풀었는지 짝지을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "짧은 절이다. **여기까지 온 길을 한 번 되짚고** 3.7~3.9절로 넘어간다."
+    },
+    {
+      "type": "figure",
+      "caption": "여덟 걸음",
+      "ascii": "   2장에서 3장까지\n\n\n   2.4  MemberServiceImpl\n          private final MemberRepository r = new MemoryMemberRepository();\n                                                  ^ 구현 이름이 들어왔다\n\n   2.7  OrderServiceImpl\n          같은 일이 두 줄로\n\n   2.8  세어 보니 DIP 위반 세 군데\n          그런데 테스트는 다 통과한다. 증상이 없다.\n\n   3.1  RateDiscountPolicy 추가\n          기존 코드 한 줄도 안 고쳤다. 확장은 열려 있다.\n\n   3.2  적용하려니 OrderServiceImpl 을 고쳐야 한다\n          변경에는 닫혀 있지 않았다.\n          구현체를 지워 보니 NPE. 안에서는 답이 없다.\n\n   3.3  AppConfig 등장\n          서비스는 생성자로 받기만 한다. new 가 사라졌다.\n\n   3.4  역할을 메서드로. 저장소가 하나가 됐다.\n          static 없이도 동작한다.\n\n   3.5  정책 변경 = AppConfig 한 줄\n          사용 영역은 열지 않는다."
+    },
+    {
+      "type": "heading",
+      "text": "무엇이 문제였고 무엇으로 풀었나"
+    },
+    {
+      "type": "table",
+      "caption": "문제 → 해법",
+      "note": "**셋이 하나의 해법으로 풀렸다.** 3.3절에서 짚었듯이 원래 하나의 문제였기 때문이다.",
+      "columns": [
+        "문제",
+        "언제 드러났나",
+        "무엇으로 풀었나"
+      ],
+      "rows": [
+        [
+          "서비스가 구현체를 직접 고른다",
+          "3.2절 (정책 변경 시)",
+          "생성자 주입 (3.3)"
+        ],
+        [
+          "구현체 이름이 여러 파일에 흩어져 있다",
+          "2.8절 (세어 봤을 때)",
+          "`AppConfig` 한 곳으로 (3.3)"
+        ],
+        [
+          "저장소 인스턴스가 두 개다",
+          "2.7절 (`static` 제거 시)",
+          "설정에서 하나만 만들어 공유 (3.4)"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "코드가 어떻게 바뀌었나"
+    },
+    {
+      "type": "compare",
+      "caption": "OrderServiceImpl 전후",
+      "note": "**메서드는 한 글자도 안 바뀌었다.** 바뀐 것은 협력 객체를 어디서 얻는가뿐이다.",
+      "left": {
+        "title": "2.7절",
+        "lang": "java",
+        "bad": true,
+        "code": "public class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository\n        memberRepository =\n            new MemoryMemberRepository();\n\n    private final DiscountPolicy\n        discountPolicy =\n            new FixDiscountPolicy();\n\n    // createOrder(...)\n}",
+        "md": "구현 클래스 이름 **둘**. 정책이나 저장소가 바뀌면 이 파일을 연다."
+      },
+      "right": {
+        "title": "3.3절 이후",
+        "lang": "java",
+        "code": "public class OrderServiceImpl\n        implements OrderService {\n\n    private final MemberRepository\n        memberRepository;\n    private final DiscountPolicy\n        discountPolicy;\n\n    public OrderServiceImpl(\n            MemberRepository memberRepository,\n            DiscountPolicy discountPolicy) {\n        this.memberRepository = memberRepository;\n        this.discountPolicy = discountPolicy;\n    }\n\n    // createOrder(...)  — 안 바뀜\n}",
+        "md": "구현 클래스 이름 **0개**. 인터페이스만 안다."
+      }
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 지금까지 만든 테스트 전부",
+      "sql": "MemberServiceTest > join() PASSED\nOrderServiceTest > VIP는_10퍼센트_할인() PASSED\nOrderServiceTest > BASIC은_할인_없음() PASSED\nRateDiscountPolicyTest > VIP는_10퍼센트_할인() PASSED\nRateDiscountPolicyTest > VIP가_아니면_할인_없음() PASSED\n\nBUILD SUCCESSFUL\n5 tests completed",
+      "note": "**2장에서 짠 테스트가 그대로 통과한다.** 리팩터링이 동작을 바꾸지 않았다는 증거다 — 테스트가 있어서 확인할 수 있는 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "테스트가 리팩터링을 가능하게 했다",
+      "md": "2.5절에서 \"`main` 대신 테스트를 쓰는 이유는 틀렸을 때 알려 주기 때문\" 이라고 했다.\n\n3장에서 우리는 **모든 서비스 클래스의 구조를 바꿨다.** 생성자를 추가하고 필드 초기화를 걷어냈다. 그런데 겁이 안 났다 — 테스트가 있으니까.\n\n테스트가 없었다면 이 리팩터링은 훨씬 조심스러웠을 것이고, 아마 안 했을 것이다. 1.1절에서 EJB 의 가장 큰 문제가 \"테스트가 안 된다\" 였고, **테스트할 수 없는 코드는 고칠 수 없다** 고 했다. 3장이 그 문장의 실물이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "아직 이름이 없다",
+      "md": "우리가 만든 것을 뭐라고 불러야 할까.\n\n- 객체를 **만든다**\n- 서로 **연결한다**\n- 사용 영역이 구현체를 **모르게** 한다\n\n이 셋을 하는 물건에 이미 이름이 있다. **3.8절에서 붙인다.** 그리고 3.9절에서 스프링에게 넘긴다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"리팩터링할 때 무엇이 있어야 안전한가요?\"** → 테스트다. 동작이 안 바뀌었다는 것을 확인할 방법이 없으면 구조를 못 바꾼다.\n- **\"3장에서 `createOrder` 메서드는 바뀌었나요?\"** → 안 바뀌었다. 바뀐 것은 협력 객체를 어디서 얻는가뿐이다. **비즈니스 로직과 구성이 분리됐다는 증거**다."
+    }
+  ],
+  "recap": [
+    "2.4 → 2.7 문제를 만들고, 2.8 세어 보고, 3.2 대가를 치르고, 3.3~3.5 고쳤다.",
+    "세 문제가 **하나의 해법**으로 풀렸다 — 원래 하나의 문제였기 때문이다.",
+    "`OrderServiceImpl` 에서 **구현 클래스 이름이 둘에서 0개**가 됐다.",
+    "`createOrder` 메서드는 한 글자도 안 바뀌었다 — 로직과 구성이 분리됐다.",
+    "2장의 테스트가 그대로 통과한다. **테스트가 있어서 이 리팩터링이 가능했다.**",
+    "우리가 만든 물건에 아직 이름이 없다. 3.8절에서 붙인다."
+  ],
+  "drills": [
+    {
+      "task": "2.7절 커밋과 지금의 diff 를 나란히 놓고 본다.",
+      "done_when": "`createOrder` 가 안 바뀐 것을 확인했다.",
+      "hint": "git 을 쓰고 있다면 각 절마다 커밋해 두면 좋다.",
+      "minutes": 15
+    },
+    {
+      "task": "3장에서 고친 파일 목록과, 그중 비즈니스 로직이 바뀐 파일을 세어 본다.",
+      "done_when": "후자가 0개인 것을 확인했다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "3장에서 세 문제가 하나의 해법으로 풀린 이유는?",
+      "a": "'구현체를 누가 고르는가' 라는 하나의 문제가 세 가지 증상으로 나타났던 것이기 때문이다."
+    },
+    {
+      "q": "`createOrder` 메서드가 안 바뀐 것이 왜 의미가 있는가?",
+      "a": "비즈니스 로직과 구성이 분리됐다는 증거다. 바뀐 것은 협력 객체를 어디서 얻는가뿐이다."
+    },
+    {
+      "q": "이 리팩터링을 가능하게 한 것은?",
+      "a": "테스트다. 구조를 크게 바꾸면서도 동작이 유지되는지 매번 확인할 수 있었다. 테스트할 수 없는 코드는 고칠 수 없다(1.1절)."
+    }
+  ],
+  "terms": [],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
