@@ -1,0 +1,187 @@
+{
+ "book": "spring-mvc-2",
+ "id": "utility-objects",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "유틸리티 객체와 날짜",
+ "summary": "#numbers · #dates · #strings. 화면에서 포맷을 하는 것의 한계.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`#numbers` · `#strings` · `#temporals` 를 쓸 수 있다.",
+  "`#temporals` 를 쓰려면 무엇이 필요한지 안다.",
+  "포맷을 화면에서 하는 것과 서버에서 하는 것의 경계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "앞 절의 기본 객체가 **값을 꺼내는 것**이었다면, 유틸리티 객체는 **꺼낸 값을 다듬는 것**이다.\n\n`#` 으로 시작한다."
+  },
+  {
+   "type": "table",
+   "caption": "자주 쓰는 것",
+   "note": "**전부 `#` 으로 시작한다.** 기본 객체(`param`)와 구분되는 표시다.",
+   "columns": [
+    "",
+    "무엇을",
+    "예"
+   ],
+   "rows": [
+    [
+     "`#numbers`",
+     "숫자 포맷",
+     "`${#numbers.formatInteger(n,3,'COMMA')}`"
+    ],
+    [
+     "`#strings`",
+     "문자열",
+     "`${#strings.isEmpty(s)}`"
+    ],
+    [
+     "`#temporals`",
+     "날짜 (JSR-310)",
+     "`${#temporals.format(d,'yyyy-MM-dd')}`"
+    ],
+    [
+     "`#dates`",
+     "`java.util.Date`",
+     "옛날 것"
+    ],
+    [
+     "`#lists` · `#maps`",
+     "컬렉션",
+     "`${#lists.size(list)}`"
+    ],
+    [
+     "`#bools`",
+     "불린",
+     "`${#bools.isTrue(x)}`"
+    ],
+    [
+     "`#uris`",
+     "URL 인코딩",
+     "`${#uris.escapePath(p)}`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "#temporals 는 그냥 안 된다",
+   "md": "`LocalDateTime` 을 포맷하려면 **의존성이 하나 더** 필요하다.\n\n```gradle\nimplementation 'org.thymeleaf.extras:thymeleaf-extras-java8time'\n```\n\n**스프링 부트 스타터에 들어 있어서** 보통은 그냥 된다. 그런데 **부트를 안 쓰면 직접 넣어야** 하고, 안 넣으면 `#temporals` 를 못 찾는다는 오류가 난다.\n\n이름이 헷갈린다.\n\n| | 대상 |\n|---|---|\n| `#dates` | `java.util.Date` — **옛날 것** |\n| `#calendars` | `java.util.Calendar` — 더 옛날 것 |\n| `#temporals` | `LocalDateTime` 등 — **지금 쓰는 것** |\n\n**`#dates` 가 아니다.** 이름만 보면 날짜니까 `#dates` 를 쓸 것 같은데 `LocalDateTime` 에는 안 통한다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<ul>\n    <li>${#numbers.formatInteger(num, 3)} =\n        <span th:text=\"${#numbers.formatInteger(num, 3)}\"></span></li>\n    <li>${#strings.toUpperCase(data)} =\n        <span th:text=\"${#strings.toUpperCase(data)}\"></span></li>\n    <li>default =\n        <span th:text=\"${#temporals.format(localDateTime, 'yyyy-MM-dd HH:mm:ss')}\"></span></li>\n</ul>",
+   "note": "**전체 목록은 외우지 않는다.** 필요할 때 공식 문서의 Expression Utility Objects 를 본다. **`#` 으로 시작하는 것들이 있다** 는 것만 기억하면 된다."
+  },
+  {
+   "type": "heading",
+   "text": "여기까지가 화면의 일이다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "포맷은 화면의 일이 맞다",
+   "md": "2.3절에서 **\"계산할 수 있으면 컨트롤러에서\"** 라고 했는데, **포맷은 예외**다.\n\n왜냐하면 **같은 값이 화면마다 다르게 보여야** 하기 때문이다.\n\n```\n10000   ->  목록에서:  10,000원\n            엑셀에서:  10000\n            API 에서:  10000\n```\n\n**값은 하나인데 표현이 여럿**이다. 컨트롤러가 `\"10,000원\"` 이라는 문자열을 만들어 넘기면 — **API 에서 그 값을 쓸 수 없다.**\n\n1편 7.10절에서 같은 데이터를 HTML 과 JSON 으로 나눠 보낸 것과 같은 이야기다. **모델에는 값을, 화면에는 표현을** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그런데 화면에서 포맷하면 한계가 있다",
+   "md": "**세 가지가 걸린다.**\n\n1. **반복된다** — 가격을 보여 주는 화면이 열 개면 `#numbers.formatInteger` 가 열 번 나온다\n2. **국가마다 다르다** — `1,000` 인지 `1.000` 인지가 나라마다 갈린다. 4장에서 본다\n3. **되돌리는 쪽이 없다** — 화면에서 `10,000` 으로 보여 줬는데 **폼으로 다시 받을 때는 `10,000` 이 숫자로 안 들어온다**\n\n**세 번째가 특히 크다.** 보내는 쪽만 있고 받는 쪽이 없다.\n\n```\n서버 -> 화면:  10000  ->  \"10,000\"   #numbers 가 한다\n화면 -> 서버:  \"10,000\"  ->  ???      아무도 안 한다\n```\n\n**11장의 타입 컨버터·포매터**가 이 빈자리를 채운다. `@NumberFormat` 하나로 **양방향**이 된다.\n\n> 지금은 `#numbers` 로 충분하다. **11장에서 다시 만난다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/date HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>LocalDateTime</h1>\n<ul>\n    <li>default = 2026-09-09T14:23:45.123</li>\n    <li>yyyy-MM-dd HH:mm:ss = 2026-09-09 14:23:45</li>\n</ul>\n<h1>LocalDateTime - Utils</h1>\n<ul>\n    <li>${#temporals.day(localDateTime)} = 9</li>\n    <li>${#temporals.month(localDateTime)} = 9</li>\n    <li>${#temporals.hour(localDateTime)} = 14</li>\n</ul>\n<h1>Numbers</h1>\n<ul>\n    <li>formatInteger(20000, 3) = 20,000</li>\n</ul>\n\n# 의존성이 없으면\nHTTP/1.1 500 \n#   Cannot find utility object #temporals",
+   "note": "**첫 줄과 둘째 줄을 비교한다.**\n\n`default` 는 `2026-09-09T14:23:45.123` — **`toString()` 결과**다. 가운데 `T` 가 그대로 나간다. 사용자에게 보여 줄 모양이 아니다.\n\n**포맷을 지정해야 사람이 읽는 모양**이 된다. 그리고 `20,000` 의 콤마도 마찬가지다 — **응답 바이트에 콤마가 실제로 들어 있다.**\n\n그러니 **이 화면이 폼이었다면 사용자가 `20,000` 을 그대로 돌려보낸다.** 아래 빈자리가 그것이다."
+  }
+ ],
+ "recap": [
+  "유틸리티 객체는 **`#` 으로 시작**한다 — `#numbers` · `#strings` · `#temporals` · `#lists`.",
+  "**`LocalDateTime` 은 `#temporals`** 다. `#dates` 는 옛날 `java.util.Date` 용이다.",
+  "`#temporals` 는 **java8time 의존성**이 필요하다. 부트 스타터에 들어 있다.",
+  "**전체 목록은 외우지 않는다** — 필요할 때 문서를 본다.",
+  "**포맷은 화면의 일이 맞다** — 같은 값이 화면마다 다르게 보인다.",
+  "다만 **반복되고, 국가마다 다르고, 되돌리는 쪽이 없다**.",
+  "**되돌리는 쪽이 없는 것**이 제일 크다 — 폼으로 받을 때 `10,000` 이 숫자가 아니다.",
+  "**11장의 포매터**가 그 빈자리를 채운다. `@NumberFormat` 하나로 양방향."
+ ],
+ "drills": [
+  {
+   "task": "`#numbers.formatInteger(20000, 3)` 를 출력한다.",
+   "done_when": "콤마가 찍힌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`LocalDateTime` 을 포맷 없이 출력한다.",
+   "done_when": "`T` 가 들어간 `toString()` 모양이 나오는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 값을 `#dates.format` 으로 포맷해 본다.",
+   "done_when": "`LocalDateTime` 에는 안 통한다는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`#temporals.format` 으로 `yyyy-MM-dd HH:mm:ss` 를 만든다.",
+   "done_when": "사람이 읽는 모양이 나온다.",
+   "minutes": 10
+  },
+  {
+   "task": "포맷한 `10,000` 을 폼으로 다시 제출해 본다.",
+   "done_when": "숫자로 안 들어온다는 것을 확인했다. 11장에서 푼다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`LocalDateTime` 을 포맷하는 유틸리티는?",
+   "a": "`#temporals` 다. `#dates` 는 `java.util.Date` 용이라 통하지 않는다."
+  },
+  {
+   "q": "`#temporals` 가 없다고 나오면?",
+   "a": "`thymeleaf-extras-java8time` 의존성이 없는 것이다. 스프링 부트 스타터에는 들어 있다."
+  },
+  {
+   "q": "포맷을 컨트롤러에서 하면 무엇이 문제인가?",
+   "a": "같은 값이 화면마다 다르게 보여야 하는데 문자열로 박제되면 API 등 다른 곳에서 쓸 수 없다."
+  },
+  {
+   "q": "화면에서 포맷하는 것의 한계 세 가지는?",
+   "a": "화면마다 반복되고, 국가마다 표기가 다르고, 폼으로 되돌려 받을 때 파싱하는 쪽이 없다."
+  },
+  {
+   "q": "그 빈자리를 채우는 것은?",
+   "a": "11장의 타입 컨버터와 포매터다. `@NumberFormat` 으로 양방향이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "유틸리티 객체",
+   "en": "Expression Utility Objects",
+   "what": "표현식에서 값을 다듬는 도구들. `#` 으로 시작한다."
+  },
+  {
+   "term": "#temporals",
+   "en": "",
+   "what": "JSR-310 날짜(`LocalDateTime` 등)를 다루는 유틸리티. java8time 확장 모듈이 제공한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

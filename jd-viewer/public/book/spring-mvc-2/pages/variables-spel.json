@@ -1,0 +1,199 @@
+{
+ "book": "spring-mvc-2",
+ "id": "variables-spel",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "변수 — SpringEL",
+ "summary": "${} 안은 자바가 아니라 SpEL 이다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`${}` 안이 자바가 아니라는 것을 안다.",
+  "객체·리스트·맵에 접근하는 세 가지 방법을 안다.",
+  "`th:with` 로 지역 변수를 만들 수 있다.",
+  "화면에 로직을 얼마나 둘지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "1편 4.5절에서 EL(`${}`)을 이렇게 설명했다.\n\n> **EL 이 `request` 의 임시 저장소를 알아서 뒤진다.** 형변환도 필요 없고 getter 도 알아서 부른다.\n\n**타임리프의 `${}` 는 그것과 다르다.** JSP 의 EL 이 아니라 **스프링 표현식(SpEL)** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SpEL 은 훨씬 강력하다",
+   "md": "JSP 의 EL 은 값을 꺼내는 정도였다. **SpEL 은 표현식 언어**다.\n\n```html\n${user.username}              프로퍼티\n${users[0].username}          인덱스\n${userMap['userA'].username}  맵\n${user.getUsername()}         메서드 호출\n${1 + 2}                      연산\n${user.age > 20}              비교\n${@memberService.findAll()}   스프링 빈 호출\n```\n\n**빈까지 부를 수 있다.** 강력한데 **그래서 위험하기도 하다** — 아래에서 다시 본다.\n\n스프링 전반에서 쓰인다. `@Value(\"${...}\")` 의 그것과 같은 계열이고, 앞 책 9.1절에서 본 `@Scope` 표현식도 SpEL 이다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지 접근",
+   "note": "**대괄호 안에 문자열이면 맵, 숫자면 리스트**다. 자바와 같은 감각으로 읽힌다.",
+   "columns": [
+    "",
+    "표기",
+    "실제로 부르는 것"
+   ],
+   "rows": [
+    [
+     "**객체**",
+     "`${user.username}`",
+     "`user.getUsername()`"
+    ],
+    [
+     "",
+     "`${user['username']}`",
+     "같다"
+    ],
+    [
+     "",
+     "`${user.getUsername()}`",
+     "직접 호출"
+    ],
+    [
+     "**리스트**",
+     "`${users[0].username}`",
+     "`users.get(0).getUsername()`"
+    ],
+    [
+     "**맵**",
+     "`${userMap['userA']}`",
+     "`userMap.get(\"userA\")`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "getter 가 없으면 안 나온다",
+   "md": "```java\npublic class User {\n    private String username;   // getter 없음\n}\n```\n\n```html\n<span th:text=\"${user.username}\">   <!-- 오류 -->\n```\n\n**`SpelEvaluationException`** 이 난다 — **1편 8.5절에서 없는 상품에 500 이 나던 것과 같은 종류**다.\n\n프로퍼티 접근은 **getter 를 부르는 것**이지 필드를 읽는 것이 아니다. 1편 7.7절의 `@ModelAttribute` 가 setter 를 쓰는 것과 대칭이다.\n\n| | 무엇을 쓰나 |\n|---|---|\n| `@ModelAttribute` (받을 때) | **setter** |\n| `${}` (보여 줄 때) | **getter** |\n\n롬복 `@Getter` 를 붙이면 안 겪는 문제인데, **원리를 알면 오류 메시지가 읽힌다.**"
+  },
+  {
+   "type": "heading",
+   "text": "지역 변수"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "code": "<div th:with=\"first=${users[0]}\">\n    <p>처음 사람의 이름은 <span th:text=\"${first.username}\"></span></p>\n</div>",
+   "note": "**`th:with` 가 지역 변수를 만든다.** 그 태그 안에서만 산다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "언제 쓰나",
+   "md": "**같은 표현식을 여러 번 쓸 때**다.\n\n```html\n<!-- 반복이 심하다 -->\n<td th:text=\"${item.price * item.quantity}\"></td>\n<td th:if=\"${item.price * item.quantity > 10000}\">비쌈</td>\n\n<!-- th:with -->\n<tr th:with=\"total=${item.price * item.quantity}\">\n    <td th:text=\"${total}\"></td>\n    <td th:if=\"${total > 10000}\">비쌈</td>\n</tr>\n```\n\n**계산을 한 번만 한다.** 그리고 이름이 붙어서 읽기 쉬워진다.\n\n**범위가 그 태그 안**이라는 것이 중요하다. 밖에서는 못 쓴다 — 자바의 블록 스코프와 같다."
+  },
+  {
+   "type": "heading",
+   "text": "화면에 로직을 얼마나 둘까"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "할 수 있다고 다 하면 안 된다",
+   "md": "SpEL 로 이런 것도 된다.\n\n```html\n<span th:text=\"${@itemService.findById(item.id).price * 0.9}\"></span>\n```\n\n**동작한다.** 그런데 문제가 넷이다.\n\n1. **화면에서 서비스를 부른다** — 1편 4.3절에서 JSP 안에 저장소 조회가 있던 그 문제로 돌아간다\n2. **테스트할 수 없다** — 자바 코드가 아니라 문자열이다\n3. **컴파일러가 안 본다** — 오타가 나면 렌더링할 때 안다\n4. **N+1 이 숨는다** — 반복문 안에 있으면 행마다 쿼리가 나간다\n\n1편 4.4절에서 MVC 패턴의 근거로 **\"변경의 라이프사이클이 다르다\"** 를 꼽았다. **화면에 로직을 넣으면 그 분리가 무너진다.**\n\n**기준 하나** — **컨트롤러에서 계산해서 모델에 담을 수 있으면 그렇게 한다.** 화면의 표현식은 **보여 주기 위한 것**이지 계산하기 위한 것이 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래도 화면에서 하는 것이 나은 자리",
+   "md": "전부 컨트롤러로 옮기는 것도 극단이다.\n\n**화면에서 해도 되는 것**\n\n- **표시 형식** — 숫자 콤마, 날짜 포맷 (2.5절)\n- **단순 조건** — `th:if=\"${item.quantity == 0}\"` 로 \"품절\" 표시\n- **정렬·필터가 아닌 것** — 이미 있는 값을 조합해 보여 주는 정도\n\n**컨트롤러로 옮겨야 하는 것**\n\n- **조회** — 서비스·저장소 호출\n- **비즈니스 규칙** — 할인율 계산, 등급 판정\n- **여러 단계 계산**\n\n**\"이 값이 무엇을 뜻하는가\" 를 정하는 것은 서버, \"어떻게 보여 줄까\" 는 화면**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/variable HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>SpringEL 표현식</h1>\n<ul>Object\n    <li>${user.username} = userA</li>\n    <li>${user['username']} = userA</li>\n    <li>${user.getUsername()} = userA</li>\n</ul>\n<ul>List\n    <li>${users[0].username} = userA</li>\n</ul>\n<ul>Map\n    <li>${userMap['userA'].username} = userA</li>\n</ul>\n<h1>지역 변수 - (th:with)</h1>\n<p>처음 사람의 이름은 userA</p>\n\n# getter 가 없으면\nHTTP/1.1 500 \n#   SpelEvaluationException:\n#   Property or field 'username' cannot be found on object of type 'User'",
+   "note": "**세 가지 표기가 전부 같은 결과**다. `getUsername()` 을 부른다는 뜻이고, 그래서 **getter 가 없으면 셋 다 실패**한다.\n\n아래 예외 메시지를 봐 두자 — **`cannot be found`** 다. \"메서드가 없다\" 가 아니라 \"프로퍼티를 못 찾겠다\" 라고 나온다. **필드가 있는데 왜 못 찾나** 싶을 때 getter 를 확인하면 된다."
+  }
+ ],
+ "recap": [
+  "`${}` 안은 **SpEL** 이다. JSP 의 EL 과 다르고 훨씬 강력하다.",
+  "객체 `${user.username}` · 리스트 `${users[0]}` · 맵 `${map['key']}`.",
+  "**프로퍼티 접근은 getter 를 부르는 것**이다. 필드를 읽는 것이 아니다.",
+  "`@ModelAttribute` 는 setter, `${}` 는 getter — **대칭**이다.",
+  "getter 가 없으면 **`SpelEvaluationException`** — 1편 8.5절과 같은 500.",
+  "**`th:with`** 로 지역 변수를 만든다. 그 태그 안에서만 산다.",
+  "**같은 계산을 여러 번 할 때** 쓴다.",
+  "SpEL 로 **빈까지 부를 수 있는데** 하면 안 된다 — 테스트 불가·컴파일 안 됨·N+1.",
+  "**계산할 수 있으면 컨트롤러에서** 한다. 화면은 보여 주는 곳이다.",
+  "다만 **표시 형식과 단순 조건은 화면에서** 해도 된다."
+ ],
+ "drills": [
+  {
+   "task": "객체·리스트·맵을 모델에 담고 세 가지 표기로 꺼낸다.",
+   "done_when": "전부 같은 값이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Getter` 를 지우고 렌더링한다.",
+   "done_when": "`SpelEvaluationException` 메시지를 읽었다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:with` 로 계산 결과를 지역 변수에 담아 두 번 쓴다.",
+   "done_when": "표현식이 짧아진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`th:with` 를 선언한 태그 밖에서 그 변수를 써 본다.",
+   "done_when": "안 된다는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`${@서비스이름.메서드()}` 로 빈을 불러 본다.",
+   "done_when": "동작하는 것과, 왜 쓰면 안 되는지 네 가지를 말할 수 있다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타임리프의 `${}` 는 무엇인가?",
+   "a": "스프링 표현식(SpEL)이다. JSP 의 EL 보다 강력해서 메서드 호출·연산·빈 호출까지 된다."
+  },
+  {
+   "q": "`${user.username}` 이 실제로 부르는 것은?",
+   "a": "`user.getUsername()` 이다. 프로퍼티 접근은 getter 를 호출하는 것이다."
+  },
+  {
+   "q": "`@ModelAttribute` 와 어떻게 대칭인가?",
+   "a": "받을 때는 setter, 보여 줄 때는 getter 를 쓴다."
+  },
+  {
+   "q": "`th:with` 는 언제 쓰나?",
+   "a": "같은 표현식을 여러 번 쓸 때다. 계산을 한 번만 하고 이름이 붙어 읽기 쉬워진다."
+  },
+  {
+   "q": "SpEL 로 서비스를 부르면 무엇이 문제인가?",
+   "a": "화면이 로직을 갖게 되고, 테스트할 수 없고, 컴파일러가 안 보고, 반복문 안이면 N+1 이 숨는다."
+  },
+  {
+   "q": "화면에서 해도 되는 것은?",
+   "a": "표시 형식(숫자·날짜)과 단순 조건 정도다. 조회와 비즈니스 규칙은 컨트롤러에서 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SpEL",
+   "en": "Spring Expression Language",
+   "what": "스프링의 표현식 언어. 타임리프의 `${}`, `@Value`, `@Scope` 등에서 쓴다."
+  },
+  {
+   "term": "th:with",
+   "en": "",
+   "what": "지역 변수를 선언하는 속성. 선언한 태그 안에서만 유효하다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,172 @@
+{
+ "book": "spring-mvc-2",
+ "id": "basic-objects",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "기본 객체들",
+ "summary": "param · session · @빈이름. 편한데 화면이 무엇에 의존하게 되나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`${param.x}` · `${session.x}` · `${@bean.m()}` 를 안다.",
+  "모델에 담은 값과 무엇이 다른지 안다.",
+  "화면에서 이것들을 쓰면 무엇에 의존하게 되는지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "앞 절의 `${}` 는 **모델에 담은 것**을 꺼냈다. 컨트롤러가 `model.addAttribute(...)` 로 넣은 값이다.\n\n**넣지 않아도 꺼낼 수 있는 것들**이 있다."
+  },
+  {
+   "type": "table",
+   "caption": "기본 객체",
+   "note": "**타임리프 3.1 부터 `${request}` · `${response}` · `${session}` · `${servletContext}` 직접 접근이 막혔다.** 화면에서 서블릿 API 를 만지는 것을 끊겠다는 뜻이다.\n\n`${param}` · `${session.x}` 처럼 **값을 꺼내는 것**은 남아 있다.",
+   "columns": [
+    "",
+    "무엇",
+    "어디서 오나"
+   ],
+   "rows": [
+    [
+     "`${param.x}`",
+     "요청 파라미터",
+     "쿼리 스트링·폼"
+    ],
+    [
+     "`${session.x}`",
+     "세션 값",
+     "`HttpSession`"
+    ],
+    [
+     "`${@beanName.method()}`",
+     "스프링 빈",
+     "컨테이너"
+    ],
+    [
+     "`${#request}` 등",
+     "서블릿 객체",
+     "**3.1 부터 막힘**"
+    ]
+   ]
+  },
+  {
+   "type": "figure",
+   "caption": "어디서 오나",
+   "ascii": "   HttpServletRequest\n   +-------------------------------------------+\n   |  attribute   data1   ${data1}             |\n   |  parameter   ?p=v    ${param.p}           |\n   |  session ------------------> ${session.x} |\n   +-------------------------------------------+\n                                 |\n   ApplicationContext            v\n   +-------------------------------------------+\n   |  bean  helloBean  ->  ${@helloBean.hi()}  |\n   +-------------------------------------------+\n\n   왼쪽 세 줄은 요청마다 다르고 맨 아래는 서버 전체가 공유한다",
+   "note": "**출처가 셋이다.** 요청 하나에 묶인 것, 사용자에 묶인 것, 서버 전체가 공유하는 것."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "쓰는 모습",
+   "code": "<ul>\n    <li>param      = <span th:text=\"${param.paramData}\"></span></li>\n    <li>session    = <span th:text=\"${session.sessionData}\"></span></li>\n    <li>spring bean= <span th:text=\"${@helloBean.hello('Spring!')}\"></span></li>\n</ul>",
+   "note": "**`param` 은 배열**이라는 것에 주의한다. `?p=a&p=b` 처럼 같은 이름이 여러 번 올 수 있어서다. `${param.p}` 는 첫 값을 주고 `${param.p[1]}` 로 두 번째를 꺼낸다."
+  },
+  {
+   "type": "heading",
+   "text": "편한데, 문제가 있다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "화면이 무엇에 의존하게 되나",
+   "md": "**모델에 담은 값**을 쓰면 화면은 **컨트롤러가 준 것**에만 의존한다.\n\n**기본 객체**를 쓰면 화면이 **요청 형태·세션 키 이름·빈 이름**에 직접 의존한다.\n\n무슨 차이가 생기나.\n\n| | 파라미터 이름을 바꾸면 |\n|---|---|\n| 모델 경유 | 컨트롤러만 고친다 |\n| `${param.x}` | **그 이름을 쓴 화면을 전부 찾아야 한다** |\n\n**컴파일러가 안 도와준다.** 문자열이라 오타도 렌더링할 때 알게 된다.\n\n`${@bean.method()}` 는 앞 절에서 본 그 문제 그대로다 — **화면에서 서비스를 부르는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래도 쓸 만한 자리",
+   "md": "**세션의 로그인 사용자**가 대표적이다.\n\n```html\n<li th:if=\"${session.loginMember != null}\">\n    <span th:text=\"${session.loginMember.name}\">이름</span>님\n</li>\n```\n\n**모든 화면의 헤더에 필요한 값**이라 컨트롤러마다 모델에 담는 것이 더 번거롭다.\n\n다만 **7장에서 더 나은 방법**을 본다 — `@SessionAttribute` 로 컨트롤러가 받고, 나아가 **7.8절의 ArgumentResolver** 로 아예 파라미터로 받는다. 그때 화면은 다시 모델만 보게 된다.\n\n**지금은 \"할 수 있다\" 를 아는 정도**로 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "3.1 이 막은 이유",
+   "md": "**타임리프 3.1 이 `${#request}` 를 막은 것**은 흐름을 보여 준다.\n\n1편 4.3절에서 JSP 안에 저장소 조회가 있던 것을 문제로 봤고, 4.4절에서 MVC 로 갈랐다. **그 방향의 연장**이다.\n\n템플릿에서 `HttpServletRequest` 를 만질 수 있으면 — 결국 만지게 된다. **막아 버리면 안 만진다.**\n\n2.2절의 \"기본값이 안전한 쪽\" 과 같은 판단이다. **할 수 있는 것을 줄이는 것도 설계**다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/basic-objects?paramData=HelloParam HTTP/1.1\nCookie: JSESSIONID=A1B2C3D4E5\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<h1>식 기본 객체 (Expression Basic Objects)</h1>\n<ul>\n    <li>Request Parameter = HelloParam</li>\n    <li>session = Hello Session</li>\n    <li>spring bean = Hello Spring!</li>\n</ul>\n\n# 파라미터를 빼면\nGET /basic/basic-objects HTTP/1.1\n\nHTTP/1.1 200 \n    <li>Request Parameter = </li>      <- null 이 빈 문자열로",
+   "note": "**요청 한 건에 세 가지 출처가 다 들어 있다.**\n\n- `?paramData=HelloParam` -> `${param.paramData}`\n- `Cookie: JSESSIONID` -> 세션 조회 -> `${session.sessionData}`\n- 쿼리에도 쿠키에도 없는 `Hello Spring!` -> **컨테이너의 빈**\n\n마지막이 이 절의 핵심이다. **화면이 스프링 컨테이너를 직접 부른 것**이고, 그래서 이 응답은 요청과 세션을 봐도 설명이 안 된다.\n\n그리고 **없는 파라미터는 예외가 아니라 빈 문자열**이다 — 오타를 조용히 삼킨다."
+  }
+ ],
+ "recap": [
+  "모델에 담지 않아도 꺼낼 수 있는 것들이 있다 — **`param` · `session` · 빈**.",
+  "**`${param.x}` 는 배열**이다. 같은 이름이 여러 번 올 수 있어서다.",
+  "**타임리프 3.1 부터 `${#request}` 같은 서블릿 객체 접근이 막혔다.**",
+  "**화면이 요청 형태·세션 키·빈 이름에 직접 의존**하게 된다.",
+  "**컴파일러가 안 도와준다** — 오타도 렌더링할 때 안다.",
+  "세션의 로그인 사용자 정도는 쓸 만하다. **7장에서 더 나은 방법**을 본다.",
+  "**할 수 있는 것을 줄이는 것도 설계**다 — 3.1 이 막은 이유."
+ ],
+ "drills": [
+  {
+   "task": "`?paramData=x` 로 요청해 `${param.paramData}` 를 출력한다.",
+   "done_when": "쿼리 값이 화면에 나온다.",
+   "minutes": 10
+  },
+  {
+   "task": "파라미터 없이 같은 URL 을 요청한다.",
+   "done_when": "예외가 아니라 빈 문자열이 나오는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`?p=a&p=b` 로 보내고 `${param.p}` 와 `${param.p[1]}` 을 비교한다.",
+   "done_when": "배열이라는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빈을 만들고 `${@beanName.method('x')}` 로 부른다.",
+   "done_when": "화면에서 빈이 실행되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`${#request}` 를 써 본다.",
+   "done_when": "3.1 에서 막혔다는 오류를 읽었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`${param.x}` 가 배열인 이유는?",
+   "a": "`?x=a&x=b` 처럼 같은 이름의 파라미터가 여러 번 올 수 있기 때문이다."
+  },
+  {
+   "q": "타임리프 3.1 이 막은 것은?",
+   "a": "`${#request}` 같은 서블릿 객체 직접 접근이다. 화면에서 서블릿 API 를 만지지 못하게 하려는 것이다."
+  },
+  {
+   "q": "기본 객체를 쓰면 화면이 무엇에 의존하게 되나?",
+   "a": "요청 파라미터 이름·세션 키 이름·빈 이름이다. 컴파일러가 확인해 주지 않는 문자열 의존이다."
+  },
+  {
+   "q": "없는 파라미터를 참조하면?",
+   "a": "예외가 아니라 빈 문자열이 나온다. 오타를 조용히 삼킨다."
+  },
+  {
+   "q": "세션의 로그인 사용자를 화면에서 꺼내는 것의 대안은?",
+   "a": "`@SessionAttribute` 로 컨트롤러가 받거나 ArgumentResolver 로 파라미터로 받는 것이다. 7장에서 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "식 기본 객체",
+   "en": "Expression Basic Objects",
+   "what": "모델에 담지 않아도 표현식에서 쓸 수 있는 객체들. `param`, `session`, 빈 참조 등."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

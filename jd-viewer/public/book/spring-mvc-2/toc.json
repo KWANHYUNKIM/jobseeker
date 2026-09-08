@@ -104,7 +104,7 @@
           "title": "텍스트 — text, utext",
           "summary": "이스케이프가 기본인 이유. XSS 를 실제로 만들어 본다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -112,7 +112,7 @@
           "title": "변수 — SpringEL",
           "summary": "`${}` 안은 자바가 아니라 SpEL 이다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -120,7 +120,7 @@
           "title": "기본 객체들",
           "summary": "param · session · @빈이름. 편한데 화면이 무엇에 의존하게 되나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -128,7 +128,7 @@
           "title": "유틸리티 객체와 날짜",
           "summary": "#numbers · #dates · #strings. 화면에서 포맷을 하는 것의 한계.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
