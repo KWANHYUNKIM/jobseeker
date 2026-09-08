@@ -1,0 +1,149 @@
+{
+ "book": "spring-mvc-2",
+ "id": "groups",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "한계와 groups",
+ "summary": "groups 가 왜 잘 안 쓰이나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`groups` 를 쓸 수 있다.",
+  "그룹을 안 적은 애너테이션이 어떻게 되는지 안다.",
+  "왜 실무에서 잘 안 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.5절의 선택지 3번이다. **표준이 제공하는 정식 해법**인데 **실무에서 잘 안 쓴다.**\n\n**써 보고 왜 그런지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "빈 인터페이스가 이름표다",
+   "ascii": "   public interface SaveCheck {}\n   public interface UpdateCheck {}\n\n   @NotNull(groups = UpdateCheck.class)\n   private Long id;\n\n   @Max(value = 9999, groups = SaveCheck.class)\n   private Integer quantity;\n\n   @Validated(SaveCheck.class)    add\n   @Validated(UpdateCheck.class)  edit\n\n   그룹을 안 적은 애너테이션은 어느 그룹에서도 안 돈다",
+   "note": "**인터페이스는 아무것도 안 담는다.** 구분하는 이름으로만 쓴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "Item",
+   "code": "public class Item {\n\n    @NotNull(groups = UpdateCheck.class)\n    private Long id;\n\n    @NotBlank(groups = {SaveCheck.class, UpdateCheck.class})\n    private String itemName;\n\n    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})\n    @Range(min = 1000, max = 1000000, groups = {SaveCheck.class, UpdateCheck.class})\n    private Integer price;\n\n    @NotNull(groups = {SaveCheck.class, UpdateCheck.class})\n    @Max(value = 9999, groups = SaveCheck.class)\n    private Integer quantity;\n}",
+   "note": "**6.1절의 여섯 줄이 이렇게 됐다.** `groups` 를 적느라 줄이 길어지고, **`{SaveCheck.class, UpdateCheck.class}` 가 계속 반복**된다.\n\n6.1절에서 얻은 \"규칙이 한눈에 보인다\" 가 **많이 흐려졌다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@PostMapping(\"/add\")\npublic String addItem(@Validated(SaveCheck.class) @ModelAttribute Item item, ...)\n\n@PostMapping(\"/{itemId}/edit\")\npublic String edit(@Validated(UpdateCheck.class) @ModelAttribute Item item, ...)",
+   "note": "**`@Validated` 에 그룹을 준다.** 5.10절에서 `@Valid` 와 `@Validated` 의 차이로 꼽은 그것이다 — **`@Valid` 로는 안 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그룹을 안 적으면 안 돈다",
+   "md": "**제일 잘 걸리는 함정**이다.\n\n```java\n@NotBlank                       // 그룹 없음\nprivate String itemName;\n```\n\n```java\n@Validated(SaveCheck.class)     // 그룹 지정\n```\n\n**`@NotBlank` 가 안 돈다.**\n\n**그룹을 안 적은 애너테이션은 `Default` 그룹**에 속한다. `@Validated(SaveCheck.class)` 는 **`SaveCheck` 만** 검사하고 `Default` 는 안 본다.\n\n```java\n@Validated({SaveCheck.class, Default.class})   // 둘 다 보게 하려면\n```\n\n**이렇게 쓸 수는 있는데 더 복잡해진다.**\n\n**한 필드에만 그룹을 붙이고 나머지를 그냥 두면** 나머지가 통째로 안 돈다. 그리고 **오류 없이 조용히 통과**한다 — 5.10절에서 `@Validated` 를 빼면 302 가 되던 것과 같은 종류의 위험이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "왜 안 쓰나 — 넷",
+   "md": "**1. 코드가 지저분해진다**\n\n위에서 봤다. 애너테이션마다 `groups` 가 붙고 대부분은 두 그룹을 다 적는다.\n\n**2. 그룹이 늘면 조합이 폭발한다**\n\n등록·수정에 **관리자용 · API 용**이 붙으면 넷이다. 애너테이션마다 어느 조합인지 적어야 한다.\n\n**3. 조용히 안 도는 함정**\n\n위의 `Default` 문제. 그룹을 하나 추가할 때마다 **기존 애너테이션을 다 확인**해야 한다.\n\n**4. 진짜 문제를 안 푼다**\n\n**이것이 핵심**이다. `Item` 이 도메인 객체이면서 폼 데이터를 받는 것 자체가 문제인데, `groups` 는 그것을 그대로 둔 채 **증상만 가린다.**\n\n```\n등록 폼에는 id 가 없다\n수정 폼에는 있다\n  -> 애초에 다른 데이터다\n  -> 다른 클래스여야 한다\n```\n\n**6.7절이 그것을 푼다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 쓸 만한 자리",
+   "md": "**그룹이 나쁜 기능은 아니다.**\n\n**한 객체를 여러 단계로 검증**할 때가 있다.\n\n```java\n@Validated(Basic.class)     // 형식만 — 1단계\n@Validated(Full.class)      // 외부 조회까지 — 2단계\n```\n\n**\"같은 데이터인데 검사 깊이가 다르다\"** 면 그룹이 맞다. 임시 저장과 최종 제출이 그런 경우다.\n\n**등록/수정은 그것과 다르다** — 데이터 자체가 다르다.\n\n> **판단 기준** — **같은 데이터를 다르게 검사**하면 그룹, **다른 데이터**면 클래스를 나눈다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 그룹이 동작하기는 한다\nPOST /validation/v4/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=10000&quantity=10\n\nHTTP/1.1 302 \nLocation: /validation/v4/items/5\n\n# id 가 없어도 통과한다 - @NotNull 은 UpdateCheck 에만 있다\n\nPOST /validation/v4/items/1/edit HTTP/1.1\n\nid=1&itemName=itemA&price=10000&quantity=99999\n\nHTTP/1.1 302 \n\n# 수량 제한이 없다 - @Max 는 SaveCheck 에만 있다\n\n# 그룹을 빠뜨린 애너테이션은 안 돈다\n#   @NotBlank   (groups 없음)\n#   @Validated(SaveCheck.class)\n\nPOST /validation/v4/items/add HTTP/1.1\n\nitemName=&price=10000&quantity=10\n\nHTTP/1.1 302 \nLocation: /validation/v4/items/6",
+   "note": "**앞의 두 요청은 의도대로**다. 등록에서 `id` 없이 통과하고, 수정에서 수량 99999 가 통과한다. **6.5절의 딜레마가 풀렸다.**\n\n**맨 아래가 이 절의 위험**이다. `itemName` 이 비었는데 **302 로 저장**됐다. `@NotBlank` 에 그룹을 안 적어서 `Default` 에 속했고, `@Validated(SaveCheck.class)` 가 그것을 안 봤다.\n\n**오류도 경고도 없다.** 검증이 있는 줄 알고 있는데 안 도는 것 — 5.10절의 `@Validated` 누락과 같은 종류이고, **애너테이션이 눈앞에 보이니 더 속기 쉽다.**"
+  }
+ ],
+ "recap": [
+  "**빈 인터페이스를 이름표로** 쓴다.",
+  "**`@Validated(SaveCheck.class)`** 로 그룹을 지정한다. `@Valid` 로는 안 된다.",
+  "**그룹을 안 적으면 `Default`** 에 속하고, 그룹 지정 시 안 돈다.",
+  "**조용히 통과한다** — 오류도 경고도 없다.",
+  "안 쓰는 이유 넷 — **지저분 · 조합 폭발 · 조용한 함정 · 진짜 문제를 안 품**.",
+  "**네 번째가 핵심**이다 — `Item` 이 도메인이면서 폼인 것이 문제다.",
+  "**같은 데이터를 다르게 검사**하면 그룹, **다른 데이터**면 클래스를 나눈다.",
+  "**6.7절이 진짜 해법**이다."
+ ],
+ "drills": [
+  {
+   "task": "`SaveCheck` · `UpdateCheck` 인터페이스를 만들고 붙인다.",
+   "done_when": "등록에서 `id` 없이 통과하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "수정에서 수량 99999 를 보낸다.",
+   "done_when": "통과하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "애너테이션 하나에서 `groups` 를 지운다.",
+   "done_when": "그 검증이 조용히 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Validated({SaveCheck.class, Default.class})` 로 바꾼다.",
+   "done_when": "둘 다 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "그룹을 붙이기 전후로 `Item` 의 줄 수를 센다.",
+   "done_when": "얼마나 길어졌는지 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`groups` 는 무엇으로 구분하나?",
+   "a": "빈 인터페이스를 이름표로 쓴다."
+  },
+  {
+   "q": "그룹을 안 적은 애너테이션은?",
+   "a": "`Default` 그룹에 속한다. `@Validated(SaveCheck.class)` 처럼 그룹을 지정하면 실행되지 않는다."
+  },
+  {
+   "q": "그 함정이 왜 위험한가?",
+   "a": "오류도 경고도 없이 조용히 통과하기 때문이다."
+  },
+  {
+   "q": "`groups` 를 실무에서 잘 안 쓰는 핵심 이유는?",
+   "a": "한 클래스가 도메인이면서 폼 데이터를 받는 진짜 문제를 그대로 두고 증상만 가리기 때문이다."
+  },
+  {
+   "q": "그룹이 맞는 자리는?",
+   "a": "같은 데이터를 검사 깊이만 다르게 볼 때다. 데이터 자체가 다르면 클래스를 나눈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "groups",
+   "en": "",
+   "what": "검증 규칙을 상황별로 나누는 Bean Validation 기능. 빈 인터페이스로 구분한다."
+  },
+  {
+   "term": "Default 그룹",
+   "en": "",
+   "what": "`groups` 를 지정하지 않은 애너테이션이 속하는 기본 그룹."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,154 @@
+{
+ "book": "spring-mvc-2",
+ "id": "modify-validation",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "수정에 적용",
+ "summary": "등록과 수정의 검증 규칙이 다르다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "등록과 수정의 규칙이 왜 갈리는지 안다.",
+  "한 클래스로 둘을 못 담는 이유를 안다.",
+  "선택지 셋을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.9절에서 미룬 것이 있었다.\n\n> 같은 `Item` 인데 규칙이 다르다. **6장이 두 번째와 세 번째를 다룬다.**\n\n**먼저 왜 다른지**부터 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "요구사항이 갈린다",
+   "ascii": "                       add            edit\n   id                  none           required\n   itemName            required       required\n   price               1000..1000000  1000..1000000\n   quantity            max 9999       no limit\n\n   한 클래스에 두 규칙을 넣을 수 없다\n\n   @NotNull            id 에 붙이면 등록이 깨진다\n   @Max(9999)          quantity 에 붙이면 수정이 깨진다",
+   "note": "**`id` 와 `quantity` 가 갈린다.** 한 클래스에 애너테이션은 한 벌뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 갈리나",
+   "md": "**`id` 는 등록에 없고 수정에 있다.**\n\n등록은 서버가 번호를 매기니 사용자가 보낼 것이 없다. 수정은 **어느 상품인지** 알아야 한다.\n\n**`quantity` 는 업무가 바꾼다.**\n\n> 수정 화면에서는 **재고를 무제한으로** 올릴 수 있어야 한다 — 창고 입고 같은 경우.\n\n**이런 요구는 흔하다.** 처음에는 같았다가 나중에 갈리는 것이 보통이라 더 곤란하다.\n\n**애너테이션의 한계가 여기서 드러난다.** 5.11절에서 애너테이션이 푼 문제 중 하나가 **\"규칙이 필드 옆에 있다\"** 였는데, **필드 옆이라 하나뿐**이다."
+  },
+  {
+   "type": "table",
+   "caption": "선택지 셋",
+   "note": "**2번을 이 책이 쓴다.** 3번은 6.6절에서 왜 안 쓰는지 본다.",
+   "columns": [
+    "",
+    "방법",
+    "어디서"
+   ],
+   "rows": [
+    [
+     "**1**",
+     "검증기를 나눈다",
+     "5.9절 — 애너테이션을 안 쓴다"
+    ],
+    [
+     "**2**",
+     "**폼 객체를 나눈다**",
+     "**6.7절**"
+    ],
+    [
+     "**3**",
+     "`groups` 를 쓴다",
+     "6.6절"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "지금은 이렇게 버틴다",
+   "code": "@PostMapping(\"/{itemId}/edit\")\npublic String edit(@PathVariable Long itemId,\n                   @Validated @ModelAttribute Item item,\n                   BindingResult bindingResult) {\n\n    // 총합 검증은 등록과 같다\n    if (item.getPrice() != null && item.getQuantity() != null) {\n        int resultPrice = item.getPrice() * item.getQuantity();\n        if (resultPrice < 10000) {\n            bindingResult.reject(\"totalPriceMin\", new Object[]{10000, resultPrice}, null);\n        }\n    }\n\n    if (bindingResult.hasErrors()) {\n        return \"validation/v3/editForm\";\n    }\n\n    itemRepository.update(itemId, item);\n    return \"redirect:/validation/v3/items/{itemId}\";\n}",
+   "note": "**수정에도 `@Validated` 를 붙였다.** 5장의 v2 에서는 수정에 검증이 없었다 — 1편 8.9절에서 만든 수정 화면 그대로였다.\n\n**총합 검증이 등록과 똑같이 복사**돼 있다. 6.4절에서 자바 코드로 옮긴 대가다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "id 가 없어서 수정이 안 될 수도",
+   "md": "**수정 폼에 `id` 를 어떻게 보내나.**\n\n```html\n<input type=\"hidden\" th:field=\"*{id}\">\n```\n\n**히든 필드**로 보낸다. 3.4절에서 본 그 히든 필드인데 **용도가 다르다** — 여기는 값을 실어 보내는 것.\n\n**`@PathVariable Long itemId` 가 이미 있는데** 왜 또 보내나.\n\n```\nPOST /validation/v3/items/1/edit\n     id=1&itemName=itemA&...\n```\n\n**URL 에도 있고 본문에도 있다.** 중복이다.\n\n**본문의 `id` 를 신뢰하면 위험하다.** 사용자가 개발자 도구로 `id=2` 로 바꿔 보내면 **다른 상품이 수정**될 수 있다. `itemRepository.update(itemId, item)` 처럼 **URL 의 것을 쓰는 것**이 안전하다.\n\n> **7·8장에서 이런 종류의 문제를 제대로 다룬다.** \"이 사용자가 이 상품을 수정할 권한이 있나\" 는 검증이 아니라 **인가**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@NotNull(id) 를 붙이면",
+   "md": "**수정에 필요하다고 `id` 에 `@NotNull` 을 붙이면 등록이 깨진다.**\n\n```\nPOST /add\n  itemName=itemA&price=10000&quantity=10\n  -> id 가 안 왔다 -> @NotNull 위반 -> 등록 폼으로 돌아감\n```\n\n**사용자는 무엇이 잘못됐는지 모른다.** 화면에 `id` 입력 칸이 없으니 고칠 방법도 없다.\n\n**반대도 같다.** `quantity` 에서 `@Max(9999)` 를 빼면 등록에서 10000개를 등록할 수 있게 된다.\n\n**어느 쪽으로도 못 간다.** 이것이 \"한 클래스에 두 규칙\" 의 실제 모습이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 수정에도 검증이 붙었다\nPOST /validation/v3/items/1/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nid=1&itemName=&price=0&quantity=10\n\nHTTP/1.1 200 \n<div class=\"field-error\">상품 이름을 적어 주세요.</div>\n<div class=\"field-error\">가격은 1,000 ~ 1,000,000 원 사이여야 합니다.</div>\n\n# id 에 @NotNull 을 붙이면 등록이 깨진다\nPOST /validation/v3/items/add HTTP/1.1\n\nitemName=itemA&price=10000&quantity=10\n\nHTTP/1.1 200 \n<div class=\"field-error\">필수 값입니다.</div>\n\n# 화면에 id 입력 칸이 없어서 고칠 수 없다\n\n# 본문의 id 를 바꿔 보내면\nPOST /validation/v3/items/1/edit HTTP/1.1\n\nid=2&itemName=해킹&price=10000&quantity=10",
+   "note": "**둘째가 이 절의 딜레마**다. 정상적인 등록 요청인데 **화면에 없는 필드 때문에 막혔고**, 사용자는 고칠 방법이 없다.\n\n마지막 요청은 검증과 다른 층위의 문제다. **URL 은 `/items/1/edit` 인데 본문은 `id=2`** — 형식 검증은 다 통과한다. `@NotNull` 도 만족하고 타입도 맞다.\n\n**검증이 막을 수 있는 것과 없는 것**이 여기서 갈린다. 값의 모양은 검증이 보고, **그 값을 써도 되는지는 인가**가 본다."
+  }
+ ],
+ "recap": [
+  "**`id` 는 등록에 없고 수정에 있다.** `quantity` 는 업무가 갈랐다.",
+  "**애너테이션은 필드 옆에 하나뿐**이라 두 규칙을 못 담는다.",
+  "5.11절이 애너테이션의 장점으로 꼽은 것이 **여기서는 한계**가 된다.",
+  "선택지 셋 — **검증기 분리 · 폼 객체 분리 · groups**.",
+  "**`id` 에 `@NotNull` 을 붙이면 등록이 깨진다** — 화면에 칸이 없어 고칠 수도 없다.",
+  "**`@Max` 를 빼면 등록이 뚫린다** — 어느 쪽으로도 못 간다.",
+  "수정 폼은 **히든 필드로 `id`** 를 보낸다.",
+  "**본문의 `id` 를 신뢰하면 안 된다** — URL 의 것을 쓴다.",
+  "**값의 모양은 검증이, 써도 되는지는 인가**가 본다."
+ ],
+ "drills": [
+  {
+   "task": "수정 컨트롤러에 `@Validated` 를 붙인다.",
+   "done_when": "수정에서도 검증이 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`id` 에 `@NotNull` 을 붙이고 등록해 본다.",
+   "done_when": "등록이 막히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "수정 폼의 히든 `id` 를 개발자 도구로 바꿔 보낸다.",
+   "done_when": "검증을 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`update(itemId, item)` 의 `itemId` 를 `item.getId()` 로 바꿔 본다.",
+   "done_when": "다른 상품이 수정되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "등록과 수정의 규칙이 왜 갈리나?",
+   "a": "`id` 는 등록에 없고 수정에 필요하며, `quantity` 같은 규칙은 업무 요구로 화면마다 달라진다."
+  },
+  {
+   "q": "한 클래스로 왜 못 담나?",
+   "a": "애너테이션은 필드 옆에 한 벌만 붙일 수 있어서 상황별로 다른 규칙을 표현할 수 없다."
+  },
+  {
+   "q": "`id` 에 `@NotNull` 을 붙이면?",
+   "a": "등록에서 `id` 가 안 와서 막히고, 화면에 입력 칸이 없어 사용자가 고칠 수도 없다."
+  },
+  {
+   "q": "본문의 `id` 를 왜 신뢰하면 안 되나?",
+   "a": "사용자가 바꿔 보낼 수 있어 다른 상품이 수정될 수 있다. URL 의 경로 변수를 쓴다."
+  },
+  {
+   "q": "검증과 인가의 경계는?",
+   "a": "값의 모양이 맞는지는 검증이 보고, 그 값을 써도 되는지는 인가가 본다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

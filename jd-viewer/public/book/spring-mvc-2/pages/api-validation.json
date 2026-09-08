@@ -1,0 +1,171 @@
+{
+ "book": "spring-mvc-2",
+ "id": "api-validation",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "HTTP 메시지 컨버터와 검증",
+ "summary": "@RequestBody 는 실패 방식이 다르다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@RequestBody` 의 실패가 왜 다른지 안다.",
+  "세 가지 실패를 구분한다.",
+  "API 오류 응답을 어떻게 만들지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "지금까지는 **HTML 폼**이었다. **API 는 다르다.**\n\n5.1절에서 이렇게 적고 넘어갔다.\n\n> **API 는 다르다.** 브라우저가 없으니 클라이언트 검증도 없다. **6.8절에서 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "실패하는 방식이 다르다",
+   "ascii": "   @ModelAttribute                 @RequestBody\n   ---------------                 ------------\n   field by field                  whole body at once\n\n   price=abc                       {\"price\": \"abc\"}\n     |                               |\n     v                               v\n   that field fails                 parsing fails\n   others still bind                object is never created\n     |                               |\n     v                               v\n   controller runs                  controller never runs\n   BindingResult has typeMismatch   400 before validation\n\n   검증은 객체가 만들어진 다음의 이야기다",
+   "note": "**`@ModelAttribute` 는 필드 단위, `@RequestBody` 는 전부 아니면 전무**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 다른가",
+   "md": "1편 7.9절에서 `@RequestBody` 를 다룰 때 **`HttpMessageConverter`** 를 봤다.\n\n> `@ModelAttribute` 는 **요청 파라미터를 하나씩** 읽어 setter 를 부르고, `@RequestBody` 는 **바디 전체를 객체로** 바꾼다.\n\n**그 차이가 검증에서 드러난다.**\n\n```json\n{\"itemName\":\"itemA\", \"price\":\"abc\", \"quantity\":10}\n```\n\n**JSON 을 `Item` 으로 바꾸다가 `price` 에서 실패**하면 — **객체 자체가 안 만들어진다.**\n\n**검증은 객체가 있어야 한다.** 없는 객체를 검증할 수 없으니 **`BindingResult` 에 담을 것도 없다.**\n\n**그래서 컨트롤러가 아예 안 불린다.** `HttpMessageNotReadableException` 이 나고 400 이다.\n\n**5.3절에서 `BindingResult` 가 400 을 200 으로 바꿨는데, 여기서는 안 통한다.** 그때는 필드 단위라 나머지가 바인딩됐고, 여기는 만들 객체가 없다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지 실패",
+   "note": "**1번만 컨트롤러가 안 불린다.** 2·3번은 `BindingResult` 로 들어온다.",
+   "columns": [
+    "",
+    "언제",
+    "결과"
+   ],
+   "rows": [
+    [
+     "**1. 파싱 실패**",
+     "JSON 형식이 깨짐, 타입 안 맞음",
+     "**400, 컨트롤러 안 불림**"
+    ],
+    [
+     "**2. 필드 검증 실패**",
+     "`@NotBlank` 등",
+     "컨트롤러 실행, `BindingResult`"
+    ],
+    [
+     "**3. 객체 검증 실패**",
+     "총합 규칙 (6.4절)",
+     "컨트롤러 실행, `BindingResult`"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "API 컨트롤러",
+   "code": "@PostMapping(\"/add\")\npublic Object addItem(@RequestBody @Validated ItemSaveForm form,\n                      BindingResult bindingResult) {\n\n    if (bindingResult.hasErrors()) {\n        log.info(\"검증 오류 = {}\", bindingResult);\n        return bindingResult.getAllErrors();\n    }\n\n    return form;\n}",
+   "note": "**`@RequestBody` 뒤에도 `BindingResult` 가 온다.** 5.3절의 순서 규칙 그대로.\n\n**`getAllErrors()` 를 그대로 반환하면** `ObjectError` · `FieldError` 가 JSON 으로 나간다 — **개발용이다.** 실제로 이렇게 내보내면 안 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "오류 객체를 그대로 내보내면 안 된다",
+   "md": "`getAllErrors()` 의 JSON 은 이렇게 생겼다.\n\n```json\n[{\n  \"codes\": [\"Range.itemSaveForm.price\", \"Range.price\", ...],\n  \"arguments\": [{\"codes\":[\"itemSaveForm.price\",\"price\"], ...}],\n  \"defaultMessage\": \"1000에서 1000000 사이여야 합니다\",\n  \"objectName\": \"itemSaveForm\",\n  \"field\": \"price\",\n  \"rejectedValue\": 0,\n  \"bindingFailure\": false,\n  \"code\": \"Range\"\n}]\n```\n\n**세 가지가 문제다.**\n\n1. **내부 구조가 다 나간다** — 클래스 이름, 필드 이름, 스프링 내부 코드\n2. **클라이언트가 쓰기 어렵다** — 무엇을 읽어야 할지 모른다\n3. **`defaultMessage` 라 4장 메시지를 안 탄다**\n\n**필요한 것만 담은 응답 객체**를 만든다.\n\n```java\n@Data\npublic class ErrorResult {\n    private String field;\n    private String message;\n}\n```\n\n**6.7절에서 \"도메인을 그대로 내보내면 안 된다\" 고 한 것**과 같은 이야기다. **오류 객체도 마찬가지**다.\n\n> **10장이 이것을 제대로 다룬다.** `@ExceptionHandler` 로 오류 응답을 한곳에서 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "파싱 실패는 여기서 못 잡는다",
+   "md": "```json\n{\"itemName\":\"itemA\", \"price\":\"abc\"}\n```\n\n**컨트롤러가 안 불리니 `BindingResult` 에도 안 담긴다.**\n\n```\nHTTP/1.1 400\n{\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/api/items/add\"}\n```\n\n**부트의 기본 오류 응답**이다. 5.1절에서 본 그 JSON.\n\n**클라이언트에게 쓸모가 없다** — 어느 필드가 왜 틀렸는지 없다.\n\n**어떻게 잡나** — 검증이 아니라 **예외 처리**의 영역이다.\n\n```java\n@ExceptionHandler(HttpMessageNotReadableException.class)\npublic ErrorResult handleParseError(...) { ... }\n```\n\n**10장에서 한다.** 지금은 **\"검증으로 못 잡는 것이 있다\"** 를 아는 것으로 충분하다.\n\n> **`@ModelAttribute` 는 타입 오류도 검증으로 잡혔다**(5.8절). API 는 그게 안 된다 — **이것이 폼과 API 의 가장 큰 차이**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "API 는 검증이 더 중요하다",
+   "md": "**폼은 방어선이 둘**이었다 — 브라우저와 서버.\n\n**API 는 하나뿐**이다.\n\n```\n브라우저 검증  ->  없다\nHTML 폼 제약   ->  없다\n서버 검증      ->  이것뿐\n```\n\n그리고 **호출하는 쪽이 사람이 아니다.** 오타가 아니라 **잘못된 구현**이 계속 같은 요청을 보낸다.\n\n**API 검증에서 더 신경 쓸 것**\n\n| | 왜 |\n|---|---|\n| **모든 필드에 규칙** | 안 붙인 필드가 곧 구멍 |\n| **오류 응답 형식 고정** | 클라이언트가 파싱한다 |\n| **필드 이름 명시** | 어느 것이 틀렸는지 |\n| **문서화** | 호출하는 쪽이 미리 안다 |\n\n**두 번째가 특히 크다.** 오류 응답 모양이 바뀌면 **클라이언트가 깨진다.** 성공 응답만큼 계약이다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 1. 성공\nPOST /validation/api/items/add HTTP/1.1\nContent-Type: application/json\n\n{\"itemName\":\"hello\", \"price\":1000, \"quantity\":10}\n\nHTTP/1.1 200 \nContent-Type: application/json\n{\"itemName\":\"hello\",\"price\":1000,\"quantity\":10}\n\n# 2. 필드 검증 실패 - 컨트롤러가 실행된다\n{\"itemName\":\"hello\", \"price\":0, \"quantity\":10}\n\nHTTP/1.1 200 \nContent-Type: application/json\n[{\"codes\":[\"Range.itemSaveForm.price\",\"Range.price\",\"Range.java.lang.Integer\",\"Range\"],\n  \"defaultMessage\":\"1000에서 1000000 사이여야 합니다\",\n  \"field\":\"price\",\"rejectedValue\":0,\"code\":\"Range\"}]\n\n# 3. 파싱 실패 - 컨트롤러가 안 불린다\n{\"itemName\":\"hello\", \"price\":\"abc\", \"quantity\":10}\n\nHTTP/1.1 400 \nContent-Type: application/json\n{\"timestamp\":\"2026-09-09T06:10:22.891+00:00\",\"status\":400,\n \"error\":\"Bad Request\",\"path\":\"/validation/api/items/add\"}",
+   "note": "**셋의 응답이 전부 다르다.**\n\n2번이 **200 인 것**에 주의한다 — 검증에 실패했는데 200 이다. `return bindingResult.getAllErrors()` 를 그냥 반환했기 때문이다. **API 라면 400 이 맞다.** 10장에서 고친다.\n\n3번은 **`timestamp` `status` `error` `path`** 뿐이다. 어느 필드가 왜 틀렸는지 없다 — **클라이언트가 고칠 수 없는 응답**이다.\n\n**같은 서비스인데 오류 응답이 두 종류**인 것도 문제다. 클라이언트는 200 도 400 도 다 처리해야 한다. **10장이 이것을 하나로 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`@RequestBody` 는 바디 전체를 한 번에** 객체로 바꾼다.",
+  "**파싱에 실패하면 객체가 없어서** 검증할 것도 없다.",
+  "**컨트롤러가 아예 안 불린다** — `BindingResult` 도 못 받는다.",
+  "**5.3절의 400→200 이 여기서는 안 통한다.**",
+  "실패가 셋 — **파싱 · 필드 검증 · 객체 검증**. 첫째만 컨트롤러를 못 탄다.",
+  "**오류 객체를 그대로 내보내면 안 된다** — 내부 구조가 다 나간다.",
+  "**파싱 실패는 예외 처리의 영역**이다 — 10장.",
+  "**API 는 방어선이 하나뿐**이다.",
+  "**오류 응답 형식도 계약**이다 — 바뀌면 클라이언트가 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "API 컨트롤러를 만들고 정상 JSON 을 보낸다.",
+   "done_when": "200 과 객체가 오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`price` 를 0 으로 보낸다.",
+   "done_when": "컨트롤러가 실행되고 오류 목록이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`price` 를 `\"abc\"` 로 보낸다.",
+   "done_when": "컨트롤러 로그가 안 찍히고 400 이 오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JSON 중괄호를 깨뜨려 보낸다.",
+   "done_when": "같은 400 이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getAllErrors()` 응답을 읽어 본다.",
+   "done_when": "클라이언트가 쓰기 어려운 이유를 말할 수 있다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@RequestBody` 의 파싱이 실패하면?",
+   "a": "객체가 만들어지지 않아 검증할 대상이 없고 컨트롤러가 아예 실행되지 않는다. 400 이 난다."
+  },
+  {
+   "q": "`@ModelAttribute` 와 무엇이 다른가?",
+   "a": "`@ModelAttribute` 는 필드 단위라 한 필드가 실패해도 나머지가 바인딩되고 `typeMismatch` 로 검증에 들어온다."
+  },
+  {
+   "q": "세 가지 실패는?",
+   "a": "파싱 실패, 필드 검증 실패, 객체 검증 실패다. 파싱 실패만 컨트롤러를 타지 않는다."
+  },
+  {
+   "q": "`getAllErrors()` 를 그대로 내보내면 안 되는 이유는?",
+   "a": "스프링 내부 구조와 클래스·필드 이름이 노출되고 클라이언트가 쓰기 어렵다."
+  },
+  {
+   "q": "API 검증이 폼보다 중요한 이유는?",
+   "a": "브라우저 검증이 없어 서버가 유일한 방어선이고, 호출하는 쪽이 사람이 아니라 잘못된 구현이 계속 같은 요청을 보낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HttpMessageNotReadableException",
+   "en": "",
+   "what": "요청 바디를 객체로 변환하지 못했을 때 나는 예외. 컨트롤러가 실행되기 전에 발생한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation",
+   "url": "https://beanvalidation.org/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

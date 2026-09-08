@@ -476,7 +476,7 @@
           "title": "수정에 적용",
           "summary": "등록과 수정의 검증 규칙이 다르다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -484,7 +484,7 @@
           "title": "한계와 groups",
           "summary": "groups 가 왜 잘 안 쓰이나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -492,7 +492,7 @@
           "title": "폼 객체 분리",
           "summary": "1편 8.12절에서 DTO 를 안 나눴다고 한 자리.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -500,7 +500,7 @@
           "title": "HTTP 메시지 컨버터와 검증",
           "summary": "@RequestBody 는 실패 방식이 다르다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.9",
