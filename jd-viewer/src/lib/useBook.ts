@@ -37,8 +37,12 @@ export type Block =
   | { type: 'heading'; text: string; id?: string }
   /** 코드. `bad` 면 '이렇게 쓰면 안 된다'는 예제로 그린다 */
   | { type: 'code'; lang?: string; file?: string; caption?: string; code: string; note?: string; bad?: boolean }
-  /** JPA 책에서 가장 중요한 블록 — 위 코드가 **실제로 내보내는** SQL */
-  | { type: 'sql'; caption?: string; sql: string; note?: string }
+  /**
+   * 앞의 코드가 **실제로 만들어 내는 것**. JPA 책에서는 나가는 SQL 이고,
+   * 스프링 책에서는 컨테이너가 찍는 실행 로그다. 그래서 `lang` 을 열어 뒀다
+   * (기본값 sql). 본문에서 가장 자주 쓰는 블록이라 이름은 그대로 둔다.
+   */
+  | { type: 'sql'; caption?: string; sql: string; lang?: string; note?: string }
   | { type: 'callout'; tone: BlockTone; title?: string; md: string }
   | { type: 'table'; caption?: string; note?: string; columns: string[]; rows: string[][] }
   | { type: 'compare'; caption?: string; note?: string; left: CodeSide; right: CodeSide }

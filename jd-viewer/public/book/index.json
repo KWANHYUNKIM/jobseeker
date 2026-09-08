@@ -13,6 +13,18 @@
       "written": 56,
       "status": "done",
       "updated_at": "2026-09-09"
+    },
+    {
+      "id": "spring-core",
+      "title": "스프링 핵심 원리",
+      "subtitle": "기본편 — 스프링이 없으면 무엇이 불편한지부터",
+      "blurb": "순수 자바로 DI 컨테이너를 직접 만들어 본 다음, 그것이 스프링과 같은 물건임을 확인한다. 어노테이션을 외우는 대신 왜 그것이 있어야 하는지에서 시작한다.",
+      "emoji": "🌱",
+      "chapters": 9,
+      "sections": 61,
+      "written": 0,
+      "status": "writing",
+      "updated_at": "2026-09-09"
     }
   ]
 }

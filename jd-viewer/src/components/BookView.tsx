@@ -728,7 +728,7 @@ function BlockView({ block: b }: { block: Block }) {
       return <CodeBlock lang={b.lang} file={b.file} caption={b.caption} code={b.code} note={b.note} bad={b.bad} />
 
     case 'sql':
-      return <CodeBlock lang="sql" caption={b.caption ?? '실제로 나가는 SQL'} code={b.sql} note={b.note} sql />
+      return <CodeBlock lang={b.lang ?? 'sql'} caption={b.caption ?? '실제로 나가는 SQL'} code={b.sql} note={b.note} sql />
 
     case 'callout': {
       const t = TONE[b.tone] ?? TONE.note
