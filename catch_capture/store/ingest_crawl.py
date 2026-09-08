@@ -275,6 +275,19 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
             stats["run_id"] = run_id
         db.commit()
 
+    # 집계 뷰 갱신. 트랜잭션 밖에서 CONCURRENTLY 로 돈다 — 사이클이 30분마다
+    # 도는 동안 검색 API 와 뷰어 빌더가 이 뷰를 읽을 수 있고, 일반 REFRESH 는
+    # 그동안 배타 잠금을 건다. `store.backfill` 이 하던 일을 여기로 옮겼다
+    # (backfill 은 이제 사이클에서 빠졌다 — 이관 3단계 이후로 매 사이클 127MB
+    # JSON 을 통째로 재적재할 이유가 없다).
+    try:
+        with store_conn.cursor(autocommit=True) as cur:
+            cur.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY mv_company_stack")
+        stats["mv_refreshed"] = True
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [db] mv_company_stack 갱신 실패(사이클은 계속): {e}", flush=True)
+        stats["mv_refreshed"] = False
+
     return stats
 
 

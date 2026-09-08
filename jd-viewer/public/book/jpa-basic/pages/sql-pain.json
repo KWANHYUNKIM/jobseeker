@@ -1,0 +1,455 @@
+{
+  "book": "jpa-basic",
+  "id": "sql-pain",
+  "no": "2.1",
+  "chapter": 2,
+  "title": "SQL 중심적인 개발의 문제점",
+  "summary": "컬럼 하나 추가에 손대야 하는 파일이 몇 개인지 세어 본다. 그리고 객체와 테이블이 어긋나는 네 자리 — 상속, 연관관계, 그래프 탐색, 동일성 비교.",
+  "minutes": 22,
+  "updated_at": "2026-09-08",
+  "goals": [
+    "'SQL 중심적인 개발' 이 구체적으로 어떤 작업을 반복하게 만드는지 예를 들어 말할 수 있다.",
+    "객체 모델과 관계형 모델이 어긋나는 네 지점을 각각 코드로 설명할 수 있다.",
+    "왜 이 문제가 '더 부지런히 짜면 되는 문제' 가 아닌지 설명할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "지금 우리가 쓰는 언어는 객체지향이다. 그리고 데이터를 넣어 두는 곳은 거의 예외 없이 관계형 데이터베이스다.\n\n이 둘은 사이가 좋지 않다. 객체는 **상속하고, 서로를 참조하고, 참조를 따라 끝없이 걸어 다닐 수 있다.** 테이블은 그 셋 중 어느 것도 하지 않는다. 테이블은 상속이 없고, 참조 대신 외래 키라는 값을 들고 있고, 걸어 다니는 대신 조인이라는 별도의 문장이 필요하다.\n\n그래서 우리는 매일 **객체를 SQL 로 번역하고, SQL 결과를 다시 객체로 번역하는 일**을 손으로 한다. 이 절은 그 번역 작업이 정확히 무엇을 앗아 가는지를 본다."
+    },
+    {
+      "type": "heading",
+      "text": "회원 하나를 저장하고 꺼내는 데 드는 코드"
+    },
+    {
+      "type": "prose",
+      "md": "가장 단순한 것부터 보자. 회원 클래스가 하나 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "public class Member {\n    private String memberId;\n    private String name;\n    // getter, setter 생략\n}"
+    },
+    {
+      "type": "prose",
+      "md": "이 회원을 DB 에 넣고 꺼내려면 JDBC 로는 이렇게 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "MemberDAO.java",
+      "caption": "SQL 을 손으로 쓰는 전형적인 DAO",
+      "code": "public class MemberDAO {\n\n    public void save(Member member) {\n        String sql = \"INSERT INTO MEMBER(MEMBER_ID, NAME) VALUES(?, ?)\";\n        try (PreparedStatement pstmt = con.prepareStatement(sql)) {\n            pstmt.setString(1, member.getMemberId());\n            pstmt.setString(2, member.getName());\n            pstmt.executeUpdate();\n        }\n    }\n\n    public Member find(String memberId) {\n        String sql = \"SELECT MEMBER_ID, NAME FROM MEMBER WHERE MEMBER_ID = ?\";\n        try (PreparedStatement pstmt = con.prepareStatement(sql)) {\n            pstmt.setString(1, memberId);\n            ResultSet rs = pstmt.executeQuery();\n            if (!rs.next()) return null;\n\n            Member member = new Member();\n            member.setMemberId(rs.getString(\"MEMBER_ID\"));\n            member.setName(rs.getString(\"NAME\"));\n            return member;\n        }\n    }\n}",
+      "note": "필드가 둘뿐인데 벌써 SQL 두 개, 파라미터 바인딩 두 줄, ResultSet 매핑 두 줄이다. 필드 이름은 이 파일 안에서만 여섯 번 반복된다."
+    },
+    {
+      "type": "prose",
+      "md": "여기까지는 견딜 만하다. 문제는 이 코드가 **가만히 있지 않는다**는 것이다."
+    },
+    {
+      "type": "heading",
+      "text": "요구사항이 하나 늘었다"
+    },
+    {
+      "type": "prose",
+      "md": "\"회원에 연락처를 넣어 주세요.\" 필드 하나가 늘어난다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "Member.java",
+      "code": "public class Member {\n    private String memberId;\n    private String name;\n    private String tel;   // ← 이 한 줄\n}"
+    },
+    {
+      "type": "prose",
+      "md": "자바 코드에서 바뀐 건 한 줄이다. 그런데 실제로 손대야 하는 곳을 세어 보면:"
+    },
+    {
+      "type": "steps",
+      "caption": "필드 하나를 늘렸을 때 따라 고쳐야 하는 곳",
+      "items": [
+        {
+          "title": "테이블에 컬럼 추가",
+          "md": "`ALTER TABLE MEMBER ADD TEL VARCHAR(20)`. 여기까지는 어쩔 수 없다."
+        },
+        {
+          "title": "INSERT 문",
+          "md": "컬럼 목록에 `TEL` 추가, `VALUES` 에 `?` 추가, `setString(3, ...)` 추가. **세 자리를 동시에 맞춰야 하고, 순서가 어긋나도 컴파일은 통과한다.**"
+        },
+        {
+          "title": "SELECT 문 — 그런데 몇 개인가",
+          "md": "`find`, `findAll`, `findByName`, `findByTeam`… 회원을 조회하는 모든 메서드의 SELECT 절과 `rs.getString()` 매핑을 전부 고쳐야 한다."
+        },
+        {
+          "title": "UPDATE 문",
+          "md": "`SET` 절에 한 자리, 파라미터에 한 자리. 여기도 순서가 어긋나면 조용히 잘못된 값이 들어간다."
+        },
+        {
+          "title": "빠뜨린 곳 찾기",
+          "md": "**컴파일러가 도와주지 않는다.** SQL 은 그냥 문자열이라, 빠뜨린 SELECT 는 실행해 봐야, 그것도 그 화면을 열어 봐야 안다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "\"SQL 에 의존적인 개발\" 이라는 말의 뜻",
+      "md": "흔히 이 상황을 \"SQL 중심적\" 이라고 부르는데, 정확히는 **자바 객체의 모양이 SQL 문자열 수십 개에 복사되어 흩어져 있는 상태**다. 진실이 한 곳에 없으니, 진실이 바뀔 때마다 흩어진 사본을 사람이 전부 찾아다녀야 한다. 그리고 사람은 반드시 하나를 빠뜨린다."
+    },
+    {
+      "type": "heading",
+      "text": "진짜 문제는 따로 있다 — 패러다임의 불일치"
+    },
+    {
+      "type": "prose",
+      "md": "위의 반복 작업은 짜증나지만, 사실 도구로 어느 정도 줄일 수 있다. MyBatis 같은 SQL 매퍼가 그 자리를 맡는다.\n\n하지만 더 깊은 문제가 있다. **객체로 할 수 있는 일 중 일부를, 테이블에 저장하는 순간 못 하게 된다.** 이걸 객체와 관계형 데이터베이스의 *패러다임 불일치* 라고 부른다.\n\n어긋나는 자리는 네 곳이다. 하나씩 본다."
+    },
+    {
+      "type": "heading",
+      "text": "어긋나는 자리 1 — 상속"
+    },
+    {
+      "type": "prose",
+      "md": "상품이 있고, 앨범·영화·책이 상품을 상속한다고 하자. 객체로는 자연스럽다. 테이블로 옮기면 이렇게 된다."
+    },
+    {
+      "type": "figure",
+      "caption": "객체의 상속 ↔ 테이블의 슈퍼타입/서브타입",
+      "ascii": "  [객체]                              [테이블]\n\n    Item                              ITEM\n  ┌────────────┐                   ┌──────────────┐\n  │ id         │                   │ ITEM_ID (PK) │\n  │ name       │                   │ NAME         │\n  │ price      │                   │ PRICE        │\n  └─────┬──────┘                   │ DTYPE        │\n        │ extends                  └──────┬───────┘\n   ┌────┼────┬─────────┐                  │ PK/FK\n   │    │    │         │            ┌─────┼─────┬──────┐\n Album Movie Book                   │     │     │      │\n(artist)(dir)(author)             ALBUM MOVIE BOOK\n                                  (ARTIST)(DIRECTOR)(AUTHOR)",
+      "note": "그림만 보면 비슷해 보인다. 문제는 '저장' 과 '조회' 를 손으로 짜는 순간 드러난다."
+    },
+    {
+      "type": "prose",
+      "md": "앨범 하나를 저장하려면 INSERT 를 **두 번** 해야 한다."
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "caption": "Album 하나를 저장하려면",
+      "code": "INSERT INTO ITEM  (ITEM_ID, NAME, PRICE, DTYPE) VALUES (?, ?, ?, 'ALBUM');\nINSERT INTO ALBUM (ITEM_ID, ARTIST)              VALUES (?, ?);"
+    },
+    {
+      "type": "prose",
+      "md": "조회는 더 나쁘다. `ITEM` 과 `ALBUM` 을 조인해서 가져온 뒤, 그 결과를 `Album` 객체로 조립해야 한다. 그리고 이 작업은 **자식 타입마다 다르다.** 영화면 `MOVIE` 를 조인하고, 책이면 `BOOK` 을 조인한다.\n\n그래서 실무에서는 대개 이렇게 된다."
+    },
+    {
+      "type": "compare",
+      "caption": "그래서 어떻게 되는가",
+      "left": {
+        "title": "이론상 만들고 싶은 DAO",
+        "lang": "java",
+        "code": "// 부모 타입으로 다형적 조회\nItem item = itemDAO.find(itemId);\n\nif (item instanceof Album) { ... }",
+        "md": "타입을 몰라도 조회할 수 있어야 진짜 상속이다."
+      },
+      "right": {
+        "title": "실제로 만들게 되는 DAO",
+        "lang": "java",
+        "bad": true,
+        "code": "// 결국 타입마다 메서드를 따로 판다\nAlbum album = albumDAO.find(id);\nMovie movie = movieDAO.find(id);\nBook  book  = bookDAO.find(id);",
+        "md": "**부모 타입으로 조회하는 것을 포기한다.** 상속을 쓰는 이유의 절반이 사라진다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 결국 어떻게 되나",
+      "md": "상속을 쓰면 저장·조회 코드가 자식 수만큼 늘어난다. 그러니 개발자는 자연스럽게 **DB 에 저장할 객체에는 상속을 쓰지 않는 습관**을 들인다. 도메인 모델이 DB 사정에 맞춰 납작해지는 것이다. 이게 패러다임 불일치가 실제로 만드는 피해다 — 코드가 더러워지는 게 아니라, **설계를 못 하게 된다.**"
+    },
+    {
+      "type": "prose",
+      "md": "만약 이 상품들을 그냥 자바 컬렉션에 담았다면 어땠을까."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "자바 컬렉션이었다면",
+      "code": "list.add(album);          // 저장. 타입 신경 안 씀\n\nItem item = list.get(id); // 조회. 부모 타입으로 받아도 됨\nif (item instanceof Album) { ... }"
+    },
+    {
+      "type": "prose",
+      "md": "저장하는 곳이 컬렉션이면 상속이 그냥 된다. **문제는 상속이 아니라, 저장하는 곳이 컬렉션이 아니라는 것이다.**"
+    },
+    {
+      "type": "heading",
+      "text": "어긋나는 자리 2 — 연관관계"
+    },
+    {
+      "type": "prose",
+      "md": "회원이 팀에 속한다. 객체와 테이블은 이 관계를 서로 다른 방식으로 표현한다."
+    },
+    {
+      "type": "compare",
+      "caption": "참조 vs 외래 키",
+      "note": "겉보기에는 같은 말 같지만, 방향이 다르다.",
+      "left": {
+        "title": "객체 — 참조",
+        "lang": "java",
+        "code": "class Member {\n    String id;\n    Team team;      // ← 참조\n    String username;\n}\n\nclass Team {\n    String id;\n    String name;\n}\n\n// 이렇게 쓴다\nTeam team = member.getTeam();",
+        "md": "회원 → 팀 **한 방향으로만** 갈 수 있다. `team.getMember()` 는 없다."
+      },
+      "right": {
+        "title": "테이블 — 외래 키",
+        "lang": "sql",
+        "code": "MEMBER (\n  MEMBER_ID  PK,\n  TEAM_ID    FK,   -- ← 외래 키\n  USERNAME\n)\n\nTEAM (\n  TEAM_ID  PK,\n  NAME\n)\n\n-- 이렇게 쓴다\nSELECT * FROM MEMBER M\n  JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID",
+        "md": "조인은 **양방향이다.** 팀에서 회원을 찾는 쿼리도 똑같이 쓸 수 있다."
+      }
+    },
+    {
+      "type": "prose",
+      "md": "이 차이 때문에, 객체를 테이블에 맞춰 짜면 이렇게 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "테이블에 맞춘 객체 — 자주 보게 되는 모양",
+      "code": "class Member {\n    String id;\n    String teamId;   // ← 참조가 아니라 그냥 값(FK)\n    String username;\n}\n\n// 팀 이름이 필요하면\nString teamId = member.getTeamId();\nTeam team = teamDAO.find(teamId);   // 매번 DAO 를 한 번 더 부른다\nString teamName = team.getName();",
+      "note": "`Member` 가 `Team` 을 '가지고 있지' 않다. 팀에 접근하려면 항상 DAO 가 필요하다 — 객체가 아니라 데이터 전달용 구조체가 된 상태다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "반대로, 객체답게 짜면 저장이 안 된다",
+      "md": "`Team team` 참조를 그대로 두면 이번엔 저장 코드가 문제다. `member.getTeam().getId()` 를 꺼내서 `TEAM_ID` 컬럼에 넣어 주는 변환을 사람이 매번 해야 한다. 조회할 때는 반대로 `TEAM_ID` 로 `Team` 을 만들어 다시 꽂아 넣어야 한다.\n\n**객체답게 짜면 변환 코드가 늘고, 변환 코드를 줄이면 객체가 아니게 된다.** 이 둘 사이에서 매번 타협하는 것이 SQL 중심 개발이다."
+    },
+    {
+      "type": "heading",
+      "text": "어긋나는 자리 3 — 객체 그래프 탐색"
+    },
+    {
+      "type": "prose",
+      "md": "객체는 참조를 따라 계속 걸어갈 수 있어야 한다. 이게 객체 그래프 탐색이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "객체라면 당연히 되어야 하는 것",
+      "code": "member.getOrder().getOrderItem().getItem().getCategory();"
+    },
+    {
+      "type": "prose",
+      "md": "그런데 SQL 중심 개발에서는 **이 줄이 될지 안 될지를 코드만 봐서는 알 수 없다.** 왜냐하면 어디까지 갈 수 있는지가 그 회원을 가져온 SQL 에 달려 있기 때문이다."
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "caption": "이 SQL 로 가져왔다면",
+      "code": "SELECT M.*, T.*\n  FROM MEMBER M\n  JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID\n WHERE M.MEMBER_ID = ?"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "그러면 이렇게 된다",
+      "code": "member.getTeam();    // OK — 조인해서 가져왔다\nmember.getOrder();   // null — 안 가져왔다. NullPointerException"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이게 왜 심각한가 — 계층 분할이 무너진다",
+      "md": "서비스 계층은 원래 DAO 가 SQL 을 어떻게 짰는지 몰라도 돼야 한다. 그게 계층을 나눈 이유다.\n\n그런데 위 상황에서는 서비스 코드를 쓰는 사람이 **DAO 안의 SQL 을 열어 봐야만** `getOrder()` 를 불러도 되는지 알 수 있다. 계층이 나뉘어 있는 것처럼 보이지만, 실제로는 서비스가 DAO 의 SQL 에 묶여 있다.\n\n그래서 개발자들은 방어적으로 두 가지 중 하나를 한다.\n\n- **모든 것을 다 조인해서 가져온다** → 대부분의 화면에서 쓰지 않는 데이터까지 매번 읽는다.\n- **필요한 조합마다 메서드를 판다** → `findMember`, `findMemberWithTeam`, `findMemberWithTeamAndOrder`… 조합이 늘어날수록 메서드가 폭발한다."
+    },
+    {
+      "type": "heading",
+      "text": "어긋나는 자리 4 — 비교하기"
+    },
+    {
+      "type": "prose",
+      "md": "마지막이 가장 미묘하다. 같은 회원을 두 번 조회하면 어떻게 되는가."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "SQL 을 직접 쓰는 DAO 로",
+      "code": "String memberId = \"100\";\n\nMember member1 = memberDAO.find(memberId);\nMember member2 = memberDAO.find(memberId);\n\nSystem.out.println(member1 == member2);   // false",
+      "note": "`find()` 안에서 `new Member()` 를 두 번 했으니, 당연히 서로 다른 인스턴스다."
+    },
+    {
+      "type": "prose",
+      "md": "그런데 같은 일을 자바 컬렉션으로 하면 결과가 다르다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "자바 컬렉션이었다면",
+      "code": "String memberId = \"100\";\n\nMember member1 = list.get(memberId);\nMember member2 = list.get(memberId);\n\nSystem.out.println(member1 == member2);   // true"
+    },
+    {
+      "type": "table",
+      "caption": "같은 것을 두 번 꺼냈을 때",
+      "note": "`equals()` 를 잘 구현하면 동등성은 맞출 수 있다. 하지만 동일성(`==`)은 저장소가 같은 인스턴스를 돌려주지 않는 한 맞출 수 없다.",
+      "columns": [
+        "",
+        "자바 컬렉션",
+        "SQL 직접 사용"
+      ],
+      "rows": [
+        [
+          "동일성 `==`",
+          "true",
+          "**false**"
+        ],
+        [
+          "동등성 `equals()`",
+          "true (구현했다면)",
+          "true (구현했다면)"
+        ],
+        [
+          "한쪽을 수정하면",
+          "다른 쪽도 바뀐다 (같은 객체)",
+          "안 바뀐다 (남남)"
+        ],
+        [
+          "결과적으로",
+          "하나의 회원",
+          "**두 개의 회원**"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이게 만드는 실제 버그",
+      "md": "한 트랜잭션 안에서 회원을 두 번 조회한 뒤 한쪽만 수정하고 저장하면, 나머지 한쪽의 옛 값이 나중에 덮어써서 수정이 조용히 사라진다. 두 인스턴스가 같은 회원이라는 것을 **아무도 모르기 때문에** 생기는 일이다.\n\n이 문제는 코드를 더 조심히 짜서 피하는 것이지, 구조가 막아 주는 게 아니다. 그리고 조심해서 피하는 종류의 문제는 결국 언젠가 터진다."
+    },
+    {
+      "type": "heading",
+      "text": "정리 — 우리가 원하는 것"
+    },
+    {
+      "type": "prose",
+      "md": "네 자리를 다시 놓고 보면, 문제는 전부 같은 뿌리다. **저장소가 자바 컬렉션처럼 굴지 않는다는 것.**"
+    },
+    {
+      "type": "table",
+      "caption": "네 가지 불일치와, 컬렉션이었다면 어땠을까",
+      "columns": [
+        "어긋나는 자리",
+        "SQL 을 직접 쓸 때",
+        "자바 컬렉션이라면"
+      ],
+      "rows": [
+        [
+          "상속",
+          "타입마다 INSERT/SELECT 를 따로. 결국 상속을 안 쓰게 됨",
+          "`list.add(album)` 한 줄"
+        ],
+        [
+          "연관관계",
+          "참조를 FK 값으로 바꿔 저장, 꺼낼 땐 반대로 조립",
+          "`member.getTeam()` 이 그냥 됨"
+        ],
+        [
+          "그래프 탐색",
+          "어디까지 갈 수 있는지가 SQL 에 달려 있음",
+          "참조가 있는 한 끝까지 감"
+        ],
+        [
+          "비교",
+          "두 번 조회하면 다른 인스턴스",
+          "두 번 꺼내도 같은 인스턴스"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그래서 목표는 한 문장이다",
+      "md": "**객체를 자바 컬렉션에 넣고 꺼내듯 다루면서, 실제로는 관계형 데이터베이스에 저장되게 하고 싶다.**\n\n이 한 문장이 ORM 이 하려는 일의 전부이고, 다음 절에서 볼 JPA 가 바로 그 시도다. 그리고 4장에서 볼 *영속성 컨텍스트* 는, 저 문장을 실제로 가능하게 만드는 장치의 이름이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- \"JPA 를 왜 쓰나요?\" → 반복 SQL 을 줄인다는 답은 절반이다. **패러다임 불일치**를 언급하고 네 자리 중 하나를 예로 들면 답이 완성된다.\n- \"MyBatis 대신 JPA 를 쓴 이유는?\" → MyBatis 는 SQL 을 XML 로 옮겨 주는 도구라 위의 네 문제를 그대로 남긴다. JPA 는 저장소를 컬렉션처럼 보이게 만드는 쪽이다.\n- \"객체 그래프 탐색이 왜 문제인가요?\" → 서비스 계층이 DAO 의 SQL 을 알아야 하는 상태가 되므로 계층 분리가 형식만 남는다."
+    }
+  ],
+  "recap": [
+    "필드 하나를 늘리면 INSERT·SELECT·UPDATE 의 모든 사본을 사람이 찾아 고쳐야 하고, 컴파일러는 도와주지 않는다.",
+    "패러다임 불일치가 어긋나는 자리는 네 곳이다 — 상속, 연관관계, 객체 그래프 탐색, 동일성 비교.",
+    "가장 큰 피해는 코드가 지저분해지는 것이 아니라, DB 사정에 맞춰 도메인 설계를 포기하게 되는 것이다.",
+    "목표는 '자바 컬렉션에 넣고 꺼내듯 쓰는데 실제로는 RDB 에 저장되는 것' 이다."
+  ],
+  "drills": [
+    {
+      "task": "지금 참여 중인(또는 예전에 만든) 프로젝트에서 DAO 하나를 골라, 필드를 하나 추가한다고 가정하고 손대야 하는 지점을 전부 적어 본다.",
+      "done_when": "고쳐야 할 파일과 줄 수를 숫자로 말할 수 있고, 그중 '컴파일러가 못 잡아 주는 곳' 이 몇 군데인지 셀 수 있다.",
+      "hint": "SELECT 절과 ResultSet 매핑은 짝이다. 한쪽만 고치면 런타임에 터진다.",
+      "minutes": 20
+    },
+    {
+      "task": "JDBC 로 회원을 두 번 조회해 `==` 이 false 인 것을 직접 찍어 본다. 그다음 `HashMap` 에 캐시를 붙여 true 가 되게 만들어 본다.",
+      "done_when": "캐시를 붙였을 때 true 가 나오고, '그럼 이 캐시는 언제 비워야 하지?' 라는 질문이 떠오른다.",
+      "hint": "그 질문의 답이 4장 영속성 컨텍스트다. 지금은 질문만 남겨 두면 된다.",
+      "minutes": 30
+    },
+    {
+      "task": "상품–앨범–영화–책 구조를 테이블 두 벌(ITEM + 자식)로 만들고, 앨범 하나를 저장·조회하는 JDBC 코드를 끝까지 써 본다.",
+      "done_when": "`Item` 타입으로 조회해서 실제 타입을 알아내는 코드까지 작성했고, 그게 얼마나 번거로운지 손으로 겪었다.",
+      "minutes": 40
+    }
+  ],
+  "quiz": [
+    {
+      "q": "\"SQL 중심적인 개발\" 에서 필드 하나를 추가할 때 가장 위험한 지점은 어디인가?",
+      "a": "SELECT 절과 ResultSet 매핑처럼 **문자열과 코드가 짝을 이루는 자리**다. 순서나 이름이 어긋나도 컴파일이 통과하므로, 그 화면을 실제로 열어 보기 전까지 오류를 알 수 없다."
+    },
+    {
+      "q": "상속을 쓰는 도메인을 RDB 에 저장할 때 개발자들이 결국 상속을 포기하게 되는 이유는?",
+      "a": "저장은 INSERT 두 번, 조회는 자식 타입마다 다른 조인이 필요해서 DAO 가 자식 수만큼 늘어난다. 부모 타입으로 조회하는 다형성을 유지하는 비용이 너무 커서, 상속을 안 쓰는 쪽이 싸진다."
+    },
+    {
+      "q": "객체 그래프 탐색이 계층 분리를 무너뜨린다는 말은 무슨 뜻인가?",
+      "a": "`member.getOrder()` 가 동작할지 여부가 DAO 안의 SQL 에 달려 있으므로, 서비스 계층 코드를 쓰려면 DAO 의 SQL 을 열어 봐야 한다. 계층이 형식상 나뉘어 있을 뿐 실제로는 결합되어 있다."
+    },
+    {
+      "q": "`equals()` 를 잘 구현하면 동일성 문제도 해결되는가?",
+      "a": "아니다. `equals()` 는 동등성만 맞춘다. 두 번 조회한 결과가 서로 다른 인스턴스라는 사실은 그대로이므로, 한쪽을 수정해도 다른 쪽은 옛 값을 들고 있다. 동일성은 저장소가 같은 인스턴스를 돌려줘야 해결된다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "패러다임 불일치",
+      "en": "paradigm mismatch / impedance mismatch",
+      "what": "객체지향 모델과 관계형 모델이 표현할 수 있는 것이 서로 달라서 생기는 근본적 간극. 상속·참조·탐색·동일성 네 자리에서 드러난다."
+    },
+    {
+      "term": "객체 그래프 탐색",
+      "en": "object graph traversal",
+      "what": "참조를 따라 객체에서 객체로 걸어가는 것. `a.getB().getC()`. 객체 모델의 기본 능력인데 SQL 중심 개발에서는 SQL 이 정해 준 만큼만 가능하다."
+    },
+    {
+      "term": "동일성 / 동등성",
+      "en": "identity / equality",
+      "what": "동일성은 `==` — 같은 인스턴스인가. 동등성은 `equals()` — 값이 같은가. 컬렉션은 둘 다 보장하지만 SQL 직접 사용은 동등성만 맞출 수 있다."
+    },
+    {
+      "term": "DAO",
+      "en": "Data Access Object",
+      "what": "데이터 접근 코드를 모아 둔 객체. SQL 을 감추는 것이 목적이지만, 감춘 SQL 의 내용에 바깥 코드가 의존하게 되는 것이 이 절의 문제다."
+    },
+    {
+      "term": "SQL 매퍼",
+      "en": "SQL mapper",
+      "what": "MyBatis 처럼 SQL 을 XML/애노테이션으로 옮기고 결과를 객체에 채워 주는 도구. 반복 코드는 줄지만 패러다임 불일치는 그대로 남는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Persistence 3.1 Specification",
+      "url": "https://jakarta.ee/specifications/persistence/3.1/",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Object-Relational Impedance Mismatch",
+      "url": "https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "자바 ORM 표준 JPA 프로그래밍 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/ORM-JPA-Basic",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

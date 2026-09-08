@@ -319,6 +319,56 @@ def save_closures(ledger: dict, path: Path = CLOSURES_PATH) -> None:
     tmp.replace(path)
 
 
+def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
+    """이번 회차에 새로 판정한 것만 job_closure_check 에 남긴다.
+
+    **왜 여기서 쓰는가.** 이 원장을 DB 로 옮기는 일을 `store.backfill` 이 대신
+    하고 있었다. 그런데 backfill 은 사이클마다 원장 **전체**를 다시 insert 했다 —
+    append-only 표라 막아 주는 제약도 없어서, 공고 14,288건에 대해 175,140행이
+    쌓여 있었다(12배). 판정한 쪽이 판정한 것만 남기면 그런 일이 없다.
+
+    실패는 치명적이지 않다 — JSON 원장에는 이미 남았고, 다음 회차가 다시 쓴다.
+    """
+    if not verdicts:
+        return 0
+    try:
+        import sys as _s
+        _s.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from store import conn as store_conn
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [close_check] DB 기록 건너뜀: {e}", flush=True)
+        return 0
+
+    n = 0
+    try:
+        with store_conn.connect() as db:
+            with db.cursor() as cur:
+                for key, e in verdicts:
+                    site, _, pid = key.partition(":")
+                    cur.execute("SELECT id FROM job WHERE site=%s AND pid=%s", (site, pid))
+                    row = cur.fetchone()
+                    if not row:
+                        continue        # 아직 DB 에 안 들어온 공고 — 다음 회차에 잡힌다
+                    dl = e.get("deadline")
+                    try:
+                        dl_date = datetime.fromisoformat(dl).date() if dl else None
+                    except (ValueError, TypeError):
+                        dl_date = None
+                    cur.execute(
+                        """INSERT INTO job_closure_check
+                               (job_id, checked_at, closed, deadline_on, evidence, checker)
+                           VALUES (%s,%s,%s,%s,%s,'close_check')""",
+                        (row["id"], e.get("checked_at"), e["status"] == "closed",
+                         dl_date, e.get("reason")),
+                    )
+                    n += 1
+            db.commit()
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [close_check] DB 기록 실패 — JSON 원장에는 남았습니다: {e}", flush=True)
+        return 0
+    return n
+
+
 def _source_jobs() -> tuple[list[dict], str]:
     """확인 대상 공고 목록. 최신 통합 스냅샷 우선, 없으면 뷰어 데이터."""
     latest = LATEST_DIR / "all_jobs.json"
@@ -401,6 +451,7 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
           flush=True)
 
     cache: dict = {}
+    fresh: list[tuple[str, dict]] = []       # 이번 회차 판정 — DB 에도 남긴다
     stats = {"checked": 0, "closed": 0, "active": 0, "unknown": 0}
     per_site: dict[str, list[int]] = {}
     for job in targets[:limit]:
@@ -418,7 +469,8 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
             print(f"  ✖ {site:<8} {str(job.get('company'))[:14]:<14} "
                   f"{str(job.get('title'))[:34]:<34} {reason}", flush=True)
         if not dry_run:
-            entries[closure_key(job)] = {
+            key = closure_key(job)
+            entry = {
                 "status": status,
                 "reason": reason,
                 "deadline": iso,
@@ -427,6 +479,9 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
                 "company": job.get("company", ""),
                 "title": job.get("title", ""),
             }
+            entries[key] = entry
+            if key:
+                fresh.append((key, entry))
             if stats["checked"] % SAVE_EVERY == 0:
                 save_closures(ledger)
         _sleep()
@@ -434,6 +489,9 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
     if not dry_run:
         ledger["updated_at"] = now.isoformat(timespec="seconds")
         save_closures(ledger)
+        n_db = record_to_db(fresh)
+        if n_db:
+            print(f"[close_check] 정본 DB 에 {n_db:,}건 기록", flush=True)
 
     print(f"[close_check] 확인 {stats['checked']:,}건 → 마감 {stats['closed']:,} / "
           f"모집중 {stats['active']:,} / 판정불가 {stats['unknown']:,}"
