@@ -1,0 +1,149 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-body-json-2",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "HTTP 요청 메시지 — JSON",
+ "summary": "객체로 바로 받는다. @RequestBody 를 빼면 생기는 일.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JSON 을 객체로 바로 받을 수 있다.",
+  "`@RequestBody` 를 빼면 왜 조용히 실패하는지 안다.",
+  "제네릭 컬렉션을 받는 법을 안다.",
+  "3.8절과 무엇이 같고 다른지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.8절을 다시 쓴다.** 그때는 이랬다.\n\n```java\nString messageBody = StreamUtils.copyToString(inputStream, UTF_8);\nHelloData data = objectMapper.readValue(messageBody, HelloData.class);\n```\n\n**두 단계가 한 줄이 된다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "단계별",
+   "code": "// v1 — 3.8 절 그대로\n@PostMapping(\"/request-body-json-v1\")\npublic void requestBodyJsonV1(HttpServletRequest request, HttpServletResponse response)\n        throws IOException {\n\n    String messageBody = StreamUtils.copyToString(request.getInputStream(), UTF_8);\n    HelloData data = objectMapper.readValue(messageBody, HelloData.class);\n    response.getWriter().write(\"ok\");\n}\n\n// v2 — @RequestBody 로 문자열까지 (7.8 절)\n@ResponseBody\n@PostMapping(\"/request-body-json-v2\")\npublic String requestBodyJsonV2(@RequestBody String messageBody) throws IOException {\n    HelloData data = objectMapper.readValue(messageBody, HelloData.class);\n    return \"ok\";\n}\n\n// v3 — 객체로 바로\n@ResponseBody\n@PostMapping(\"/request-body-json-v3\")\npublic String requestBodyJsonV3(@RequestBody HelloData data) {\n    log.info(\"username={}, age={}\", data.getUsername(), data.getAge());\n    return \"ok\";\n}\n\n// v4 — 객체를 그대로 반환 (7.11 절)\n@ResponseBody\n@PostMapping(\"/request-body-json-v4\")\npublic HelloData requestBodyJsonV4(@RequestBody HelloData data) {\n    return data;\n}",
+   "note": "**v3 에서 `ObjectMapper` 가 사라졌다.** 그리고 v4 에서는 **응답도 객체로 준다** — JSON 으로 나간다.\n\n3.11절에서 `writeValueAsString` 을 하던 것도 없어진 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "요구사항은 3.8절과 같다",
+   "md": "`HelloData` 에 필요한 것이 3.8절과 똑같다.\n\n- **기본 생성자**\n- **setter** (읽을 때) / **getter** (쓸 때)\n\n**같은 Jackson 이 하는 일**이기 때문이다. 스프링이 `MappingJackson2HttpMessageConverter` 안에서 `ObjectMapper` 를 쓴다.\n\n그래서 3.8절에서 적은 것이 다 적용된다.\n\n- `final` 필드는 그대로는 안 된다 → `record` 나 `@JsonCreator`\n- 필드 이름이 곧 JSON 키다\n- **이름이 안 맞으면 예외가 아니라 `null`**\n\n**7.7절의 `@ModelAttribute` 도 같은 순서**였다(기본 생성자 → setter). 셋이 같은 모양인데 **읽는 곳이 다르다** — 파라미터냐 바디냐."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@RequestBody 를 빼면 조용히 실패한다",
+   "md": "7.8절에서 예고한 것이다.\n\n```java\n@PostMapping(\"/request-body-json-v3\")\npublic String v3(HelloData data) {          // @RequestBody 를 뺐다\n    log.info(\"username={}\", data.getUsername());\n    return \"ok\";\n}\n```\n\n**7.7절 규칙에 따라 `@ModelAttribute` 로 판단된다.** 그러면 **요청 파라미터**를 찾는데, JSON 바디에는 파라미터가 없다.\n\n```\nusername=null, age=0\n```\n\n**예외가 안 난다.** 빈 객체가 만들어지고 그대로 진행된다.\n\n이 책에서 여러 번 나온 종류다 — **조용한 실패.** 3.5절의 복수 파라미터, 3.8절의 이름 불일치, 7.7절의 모델 이름.\n\n**증상이 \"값이 안 들어와요\" 로만 나타나서** 원인을 찾기 어렵다. `@RequestBody` 를 빠뜨린 것인지 JSON 키가 틀린 것인지 구분도 안 된다.\n\n**확인 방법** — `@RequestBody String` 으로 먼저 받아서 바디가 오는지 본다(7.8절 v2). 바디가 있으면 파싱 문제, 없으면 요청 문제다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "컬렉션을 받으려면",
+   "md": "```json\n[{\"username\":\"kim\",\"age\":20}, {\"username\":\"lee\",\"age\":30}]\n```\n\n```java\n@PostMapping(\"/users\")\npublic String users(@RequestBody List<HelloData> users) { ... }\n```\n\n**`List` 로 받으면 된다.** 3.8절에서 `ObjectMapper` 로 하려면 `TypeReference` 가 필요했던 일이다.\n\n```java\n// 3.8 절 방식\nList<HelloData> list = objectMapper.readValue(body,\n        new TypeReference<List<HelloData>>() {});\n```\n\n자바는 **제네릭 타입 정보가 런타임에 지워진다**(타입 소거). 그래서 `List.class` 만으로는 안에 무엇이 들었는지 모른다.\n\n스프링은 **메서드 시그니처에서 제네릭 정보를 읽을 수 있어서** 그것을 컨버터에 넘긴다. 6.5절에서 \"리플렉션으로 시그니처를 읽는다\" 고 한 것의 또 다른 이득이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "Content-Type 이 맞아야 한다",
+   "md": "```\nContent-Type: application/json\n```\n\n**이것이 없으면 415** 다.\n\n3.8절에서는 **`Content-Type` 을 빼도 동작했다.** 우리가 스트림을 직접 읽었으니 컨테이너의 판단이 필요 없었기 때문이다.\n\n**여기서는 필수다.** 스프링이 `Content-Type` 을 보고 **어느 컨버터를 쓸지 정하기** 때문이다(7.13절).\n\n3.8절 마지막에서 이렇게 적어 뒀다.\n\n> 그렇다고 안 붙여도 되는 것은 아니다. **7장에서 스프링이 `Content-Type` 을 보고 어떤 컨버터를 쓸지 정한다.** 그때부터는 필수다.\n\n**그 자리다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /request-body-json-v3 HTTP/1.1\nContent-Type: application/json\nContent-Length: 26\n\n{\"username\":\"kim\",\"age\":20}\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\n\nok\n\n# 서버 로그\nusername=kim, age=20\n\n# v4 — 객체를 반환하면\nPOST /request-body-json-v4 HTTP/1.1\nContent-Type: application/json\n\n{\"username\":\"kim\",\"age\":20}\n\nHTTP/1.1 200 \nContent-Type: application/json\n\n{\"username\":\"kim\",\"age\":20}\n#   3.11 절의 writeValueAsString 이 사라졌다\n\n# @RequestBody 를 빼면\nHTTP/1.1 200 \nok\n# 서버 로그: username=null, age=0     <- 조용히 실패\n\n# Content-Type 을 빼면\nHTTP/1.1 415 \n#   3.8 절에서는 동작했다",
+   "note": "**v4 의 응답 `Content-Type` 이 `application/json`** 이다. 내가 안 적었다 — **반환 타입이 객체라서 컨버터가 정했다.**\n\n7.8절에서 `String` 을 돌려줬을 때는 `text/plain` 이었다. **같은 자리인데 타입에 따라 다르다.**\n\n아래 둘이 이 절의 함정이다. **하나는 200 이면서 틀렸고, 하나는 415 다.** 415 가 훨씬 낫다 — 무엇이 문제인지 알려 준다."
+  }
+ ],
+ "recap": [
+  "**`@RequestBody HelloData data`** 로 JSON 을 객체로 바로 받는다.",
+  "요구사항은 3.8절과 같다 — **기본 생성자 · setter/getter.** 같은 Jackson 이다.",
+  "**`@RequestBody` 를 빼면 `@ModelAttribute` 로 판단**되어 빈 객체가 온다.",
+  "**예외가 안 난다.** \"값이 안 들어와요\" 로만 나타나는 조용한 실패.",
+  "확인법 — **`@RequestBody String` 으로 먼저 받아** 바디가 오는지 본다.",
+  "**`List<HelloData>`** 로 컬렉션을 받는다. `TypeReference` 가 필요 없다.",
+  "스프링이 **시그니처에서 제네릭 정보를 읽어** 컨버터에 넘기기 때문이다.",
+  "**`Content-Type: application/json` 이 필수**다. 없으면 415.",
+  "3.8절에서는 안 붙여도 됐다 — **컨버터를 고르는 근거**가 되면서 필수가 됐다.",
+  "**반환 타입에 따라 응답 `Content-Type` 이 달라진다.**"
+ ],
+ "drills": [
+  {
+   "task": "v1~v4 를 만들고 같은 JSON 을 보낸다.",
+   "done_when": "네 방식이 같은 결과를 내는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@RequestBody` 를 빼고 실행한다.",
+   "done_when": "200 이면서 값이 비어 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Content-Type` 을 빼고 보낸다.",
+   "done_when": "415 를 확인했고 3.8절과 왜 다른지 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "JSON 배열을 `List<HelloData>` 로 받는다.",
+   "done_when": "동작하는 것과 3.8절의 `TypeReference` 가 필요 없다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "v4 응답의 `Content-Type` 을 7.8절 v4 와 비교한다.",
+   "done_when": "반환 타입에 따라 다르다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JSON 을 객체로 받는 방법은?",
+   "a": "`@RequestBody HelloData data` 로 받는다. `ObjectMapper` 를 직접 쓸 필요가 없다."
+  },
+  {
+   "q": "객체에 필요한 것은?",
+   "a": "기본 생성자와 setter 다. 3.8절과 같다. 같은 Jackson 이 변환하기 때문이다."
+  },
+  {
+   "q": "`@RequestBody` 를 빼면?",
+   "a": "`@ModelAttribute` 로 판단되어 요청 파라미터를 찾는다. JSON 바디에는 파라미터가 없어 빈 객체가 만들어지고 예외도 안 난다."
+  },
+  {
+   "q": "그 실수를 어떻게 확인하나?",
+   "a": "`@RequestBody String` 으로 먼저 받아 바디가 오는지 본다. 바디가 있으면 파싱 문제, 없으면 요청 문제다."
+  },
+  {
+   "q": "컬렉션을 받으려면?",
+   "a": "`@RequestBody List<HelloData>` 로 받는다. 스프링이 메서드 시그니처에서 제네릭 정보를 읽어 컨버터에 넘긴다."
+  },
+  {
+   "q": "`Content-Type` 이 3.8절에서는 없어도 됐는데 여기서는 필수인 이유는?",
+   "a": "3.8절에서는 스트림을 직접 읽었고, 여기서는 스프링이 `Content-Type` 을 보고 어느 컨버터를 쓸지 정하기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "타입 소거",
+   "en": "type erasure",
+   "what": "자바 제네릭이 런타임에 타입 정보를 잃는 것. `List.class` 만으로는 안의 타입을 모른다."
+  },
+  {
+   "term": "MappingJackson2HttpMessageConverter",
+   "en": "",
+   "what": "JSON 을 자바 객체로, 또는 그 반대로 바꾸는 스프링 메시지 컨버터. 내부에서 Jackson 을 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Handler Methods",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

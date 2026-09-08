@@ -1,0 +1,168 @@
+{
+ "book": "spring-mvc-1",
+ "id": "response-static",
+ "no": "7.10",
+ "chapter": 7,
+ "title": "응답 — 정적 리소스, 뷰 템플릿",
+ "summary": "/static 과 /templates 의 차이.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "응답을 만드는 세 가지 방법을 구분할 수 있다.",
+  "정적 리소스와 뷰 템플릿의 차이를 안다.",
+  "뷰 이름을 반환하는 세 가지 형태를 안다.",
+  "`@Controller` 와 `@RestController` 의 차이가 어디서 갈리는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "요청을 다 다뤘으니 **응답**이다.\n\n2.4절에서 \"서버가 줄 수 있는 것 셋\" 을 이야기했는데, **스프링에서 그것이 어떻게 갈리는지**가 이 절이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지",
+   "ascii": "   1) 정적 리소스        resources/static/...         파일 그대로\n   2) 뷰 템플릿          resources/templates/...      렌더링해서 HTML\n   3) HTTP 메시지 바디   @ResponseBody                컨버터가 변환\n\n   1 과 2 는 파일이 있고, 3 은 만든다",
+   "note": "**1·2 는 웹 브라우저에 화면을 주는 것**이고 **3 은 HTTP API** 다 — 2.4절의 구분 그대로."
+  },
+  {
+   "type": "heading",
+   "text": "정적 리소스"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "7.1절에서 이미 썼다",
+   "md": "```\nsrc/main/resources/static/basic/hello-form.html\n```\n\n```\nGET /basic/hello-form.html\n```\n\n**`static` 아래 경로가 그대로 URL** 이 된다. 컨트롤러가 필요 없다.\n\n6.3절에서 본 **`ResourceHttpRequestHandler`** 가 처리하고, 7.1절에서 경로 넷을 나열했다.\n\n**변경 없이 그대로 나가는 것**이라 CSS·JS·이미지에 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "뷰 템플릿"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "resources/templates/response/hello.html",
+   "code": "<!DOCTYPE html>\n<html xmlns:th=\"http://www.thymeleaf.org\">\n<body>\n<p th:text=\"${data}\">empty</p>\n</body>\n</html>",
+   "note": "**`th:text` 가 처음 나왔다.** 타임리프 문법이고 8.3절에서 제대로 다룬다.\n\n`empty` 는 **템플릿을 그냥 브라우저로 열었을 때 보이는 것**이다. 렌더링하면 `${data}` 값으로 바뀐다. 3.10절에서 남긴 마지막 문제(브라우저로 미리 볼 수 없다)가 여기서 풀린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "세 가지 반환 방식",
+   "code": "// 1. ModelAndView (6.5 절)\n@RequestMapping(\"/response-view-v1\")\npublic ModelAndView responseViewV1() {\n    return new ModelAndView(\"response/hello\")\n            .addObject(\"data\", \"hello!\");\n}\n\n// 2. String — 뷰 이름 (6.7 절)\n@RequestMapping(\"/response-view-v2\")\npublic String responseViewV2(Model model) {\n    model.addAttribute(\"data\", \"hello!\");\n    return \"response/hello\";\n}\n\n// 3. void — 권장하지 않는다\n@RequestMapping(\"/response/hello\")\npublic void responseViewV3(Model model) {\n    model.addAttribute(\"data\", \"hello!\");\n}",
+   "note": "**3번은 URL 이 곧 뷰 이름**이 된다. `@RequestMapping` 경로가 `/response/hello` 니까 `response/hello` 템플릿을 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "void 반환은 쓰지 않는다",
+   "md": "동작은 한다. 그런데 **URL 과 뷰 이름이 묶인다.**\n\n- URL 을 바꾸면 **템플릿 파일도 옮겨야** 한다\n- **어느 뷰를 쓰는지 코드에 안 보인다** — 메서드만 봐서는 모른다\n- 규칙을 모르는 사람이 읽으면 **화면이 어떻게 나오는지 알 수 없다**\n\n이 책에서 반복된 것이다 — **암묵 규칙은 정보를 뺀다**(앞 책 6장, 7.3절의 `params`).\n\n**명시적으로 뷰 이름을 반환한다.** 스프링 공식 문서도 이 방식은 권장하지 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "String 반환의 두 얼굴",
+   "md": "```java\n@Controller\npublic String v2(Model model) {\n    return \"response/hello\";       // 뷰 이름\n}\n\n@Controller\n@ResponseBody\npublic String v3() {\n    return \"response/hello\";       // 응답 바디 — 그 문자열이 그대로 나간다\n}\n```\n\n**같은 반환값인데 완전히 다르다.**\n\n`@ResponseBody` 가 있으면 뷰를 안 찾는다. **7.2절에서 `@RestController` 를 처음 쓸 때 \"뷰를 안 거친다\" 고 한 것**이 이것이다.\n\n실수하면 **화면 대신 `response/hello` 라는 글자가 브라우저에 뜬다.** 3.10절의 `Content-Type` 문제와 증상이 비슷한데 원인이 다르다.\n\n**7.11절에서 이 갈림을 정확히 다룬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "static 과 templates 를 헷갈리지 않는다",
+   "md": "| | 무엇 | URL |\n|---|---|---|\n| **`static`** | 그대로 나간다 | **파일 경로 = URL** |\n| **`templates`** | 렌더링한다 | **컨트롤러가 정한다** |\n\n**`templates` 아래 파일은 URL 로 직접 못 연다.**\n\n```\nGET /response/hello.html   ->  404\n```\n\n4.5절의 **`WEB-INF`** 와 같은 발상이다 — **뷰가 컨트롤러를 안 거치고 열리면 안 된다.** JSP 는 폴더 규칙으로 막았고, 타임리프는 **아예 다른 경로**에 두어 막는다.\n\n그래서 6.4절에서 말한 대로 **타임리프는 `WEB-INF` 가 필요 없다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 세 가지",
+   "sql": "# 1) 정적 리소스\nGET /basic/hello-form.html HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html\nLast-Modified: Tue, 09 Sep 2026 04:00:00 GMT\n\n<!DOCTYPE html> ... (파일 그대로)\n\n# 2) 뷰 템플릿\nGET /response-view-v2 HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<!DOCTYPE html>\n<html>\n<body>\n<p>hello!</p>        <- empty 가 hello! 로 바뀌었다\n</body>\n</html>\n\n# templates 를 직접 열면\nGET /response/hello.html HTTP/1.1\n\nHTTP/1.1 404 \n\n# 3) @ResponseBody\nGET /response-body-string HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=UTF-8\n\nok",
+   "note": "**1번에만 `Last-Modified` 가 있다.** 2.1절에서 정적/동적을 가르는 헤더로 꼽은 그것이다 — **파일이 이미 있어서** 언제 바뀌었는지 말할 수 있다.\n\n2번에서 **`empty` 가 `hello!` 로 바뀐 것**을 봐 두자. 템플릿의 기본값이 렌더링으로 대체됐다.\n\n**3번의 404** 가 4.5절 `WEB-INF` 와 같은 자리다."
+  }
+ ],
+ "recap": [
+  "응답 세 가지 — **정적 리소스 · 뷰 템플릿 · HTTP 메시지 바디.**",
+  "**`static` 은 파일 경로가 곧 URL** 이다. 컨트롤러가 없다.",
+  "**`templates` 는 컨트롤러가 뷰 이름을 정한다.** URL 로 직접 못 연다.",
+  "**4.5절의 `WEB-INF` 와 같은 발상** — 뷰가 컨트롤러 없이 열리면 안 된다.",
+  "뷰 이름 반환 세 형태 — **`ModelAndView` · `String` · `void`.**",
+  "**`void` 는 쓰지 않는다** — URL 과 뷰 이름이 묶이고 코드에 안 보인다.",
+  "**`String` 반환은 `@ResponseBody` 유무로 완전히 달라진다**(7.11절).",
+  "타임리프 템플릿은 **그냥 열어도 깨지지 않는다** — 3.10절의 마지막 문제."
+ ],
+ "drills": [
+  {
+   "task": "`static` 과 `templates` 에 같은 이름의 HTML 을 두고 각각 호출한다.",
+   "done_when": "URL 규칙이 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`templates` 아래 파일을 URL 로 직접 열어 본다.",
+   "done_when": "404 를 확인했고 4.5절과 이었다.",
+   "minutes": 5
+  },
+  {
+   "task": "세 가지 반환 방식을 다 만든다.",
+   "done_when": "같은 화면이 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@ResponseBody` 를 붙이고 뷰 이름을 반환한다.",
+   "done_when": "화면 대신 문자열이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "타임리프 템플릿 파일을 브라우저로 직접 연다.",
+   "done_when": "`empty` 가 보이고 깨지지 않는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "응답을 만드는 세 가지 방법은?",
+   "a": "정적 리소스를 그대로 주기, 뷰 템플릿을 렌더링하기, HTTP 메시지 바디에 직접 쓰기다."
+  },
+  {
+   "q": "`static` 과 `templates` 의 차이는?",
+   "a": "`static` 은 파일 경로가 곧 URL 이고 그대로 나간다. `templates` 는 컨트롤러가 뷰 이름을 정해야 렌더링된다."
+  },
+  {
+   "q": "`templates` 아래 파일을 URL 로 열면?",
+   "a": "404 다. 뷰가 컨트롤러를 거치지 않고 열리는 것을 막는다. 4.5절의 `WEB-INF` 와 같은 발상이다."
+  },
+  {
+   "q": "`void` 반환을 쓰지 않는 이유는?",
+   "a": "URL 이 곧 뷰 이름이 되어 둘이 묶이고, 어느 뷰를 쓰는지 코드에 나타나지 않는다."
+  },
+  {
+   "q": "`String` 을 반환할 때 무엇이 갈림길인가?",
+   "a": "`@ResponseBody` 다. 없으면 뷰 이름, 있으면 응답 바디로 나간다."
+  },
+  {
+   "q": "타임리프 템플릿을 그냥 브라우저로 열면?",
+   "a": "깨지지 않고 `th:text` 의 기본값이 보인다. 3.10절에서 남긴 마지막 문제가 이것으로 풀린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "뷰 템플릿",
+   "en": "view template",
+   "what": "`templates` 아래에 두고 컨트롤러가 뷰 이름으로 지정해 렌더링하는 파일. URL 로 직접 접근할 수 없다."
+  },
+  {
+   "term": "th:text",
+   "en": "",
+   "what": "타임리프에서 태그의 텍스트를 값으로 바꾸는 속성. 그냥 열면 원래 텍스트가 보인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Handler Methods",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

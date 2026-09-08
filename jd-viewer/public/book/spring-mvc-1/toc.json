@@ -495,7 +495,7 @@
           "title": "HTTP 요청 파라미터 — @ModelAttribute",
           "summary": "파라미터를 객체로 묶는다. 생략했을 때의 규칙.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -503,7 +503,7 @@
           "title": "HTTP 요청 메시지 — 단순 텍스트",
           "summary": "`@RequestBody`. `InputStream` 부터 시작해서 단계적으로 줄인다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",
@@ -511,7 +511,7 @@
           "title": "HTTP 요청 메시지 — JSON",
           "summary": "객체로 바로 받는다. `@RequestBody` 를 빼면 생기는 일.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.10",
@@ -519,7 +519,7 @@
           "title": "응답 — 정적 리소스, 뷰 템플릿",
           "summary": "`/static` 과 `/templates` 의 차이.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.11",
