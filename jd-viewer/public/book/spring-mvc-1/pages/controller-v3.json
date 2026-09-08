@@ -1,0 +1,197 @@
+{
+ "book": "spring-mvc-1",
+ "id": "controller-v3",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "스프링 MVC — 실용적인 방식",
+ "summary": "Model·@RequestParam·@GetMapping. 실무에서 쓰는 형태가 여기서 완성된다.",
+ "minutes": 16,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Model` 파라미터와 `@RequestParam` 을 쓸 수 있다.",
+  "`@GetMapping`·`@PostMapping` 으로 HTTP 메서드를 구분할 수 있다.",
+  "이것이 5장 v4 와 같은 결론이라는 것을 안다.",
+  "5.8절에서 '안 만든 것' 중 무엇이 채워졌는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6장의 도착점이자 실무 코드의 모양**이다.\n\n1.1절에서 \"설명해야 할 것이 여덟 가지쯤 된다\" 며 보여 준 코드가 이 절에서 완성된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SpringMemberControllerV3.java",
+   "code": "@Controller\n@RequestMapping(\"/springmvc/v3/members\")\npublic class SpringMemberControllerV3 {\n\n    private MemberRepository memberRepository = MemberRepository.getInstance();\n\n    @GetMapping(\"/new-form\")\n    public String newForm() {\n        return \"new-form\";\n    }\n\n    @PostMapping(\"/save\")\n    public String save(@RequestParam(\"username\") String username,\n                      @RequestParam(\"age\") int age,\n                      Model model) {\n\n        Member member = new Member(username, age);\n        memberRepository.save(member);\n\n        model.addAttribute(\"member\", member);\n        return \"save-result\";\n    }\n\n    @GetMapping\n    public String members(Model model) {\n        List<Member> members = memberRepository.findAll();\n\n        model.addAttribute(\"members\", members);\n        return \"members\";\n    }\n}",
+   "note": "**`HttpServletRequest` 가 사라졌다.** 5.4절 v3 에서 한 것을 스프링이 어노테이션으로 한다.\n\n그리고 **`Integer.parseInt` 도 사라졌다.** `int age` 라고 적었더니 스프링이 변환해 줬다."
+  },
+  {
+   "type": "figure",
+   "caption": "5장과 같은 결론",
+   "ascii": "   5 장                                 6.7\n   ---                                 ---\n   Map<String,String> paramMap         @RequestParam String username\n     전부 문자열                          타입 변환까지 해 준다\n\n   Map<String,Object> model            Model model\n     프론트 컨트롤러가 만들어 넘긴다          어댑터가 만들어 넘긴다\n\n   String process(...)                 String save(...)\n     뷰 이름 반환                          뷰 이름 반환\n\n   같은 결론에 다른 길로 도착했다",
+   "note": "**우리는 `Map` 으로 풀었고 스프링은 어노테이션으로 풀었다.** 결과는 같다 — 컨트롤러가 웹을 덜 안다."
+  },
+  {
+   "type": "heading",
+   "text": "달라진 것 넷"
+  },
+  {
+   "type": "table",
+   "caption": "6.6 → 6.7",
+   "note": "**4번이 5.8절에서 '안 만든 것' 으로 꼽은 것 중 둘을 채운다** — HTTP 메서드 구분과 타입 변환.",
+   "columns": [
+    "#",
+    "무엇",
+    "무엇을 대신하나"
+   ],
+   "rows": [
+    [
+     "1",
+     "**`Model` 파라미터**",
+     "`ModelAndView` 를 안 만든다"
+    ],
+    [
+     "2",
+     "**`String` 반환**",
+     "뷰 이름만 돌려준다"
+    ],
+    [
+     "3",
+     "**`@RequestParam`**",
+     "`request.getParameter()`"
+    ],
+    [
+     "4",
+     "**`@GetMapping`·`@PostMapping`**",
+     "`@RequestMapping` + HTTP 메서드 지정"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1·2번은 v4 와 같다",
+   "md": "```java\n// 우리 v4 (5.5절)\nString process(Map<String,String> paramMap, Map<String,Object> model)\n\n// 스프링\nString save(@RequestParam String username, Model model)\n```\n\n**모델을 파라미터로 받고 뷰 이름을 문자열로 돌려준다.** 5.5절에서 적은 그대로다.\n\n1.1절에서 던진 질문 — **\"`Model` 은 어디서 나타나나\"** — 의 답도 같다. **어댑터가 만들어서 넣어 준다.**\n\n5.5절에서 우리 프론트 컨트롤러가 `new HashMap<>()` 을 한 것을, 스프링에서는 `RequestMappingHandlerAdapter` 가 한다.\n\n**부수 효과로 값을 전달하는 것**도 그대로다(5.5절). `model.addAttribute()` 가 밖으로 나간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3번 — 타입 변환이 딸려 온다",
+   "md": "```java\n// 6.6\nint age = Integer.parseInt(request.getParameter(\"age\"));\n\n// 6.7\n@RequestParam(\"age\") int age\n```\n\n**`int` 라고 적었더니 변환해 준다.**\n\n3.5절에서 \"모든 파라미터는 `String` 이다. 변환은 내가 한다\" 고 했고, 4.2절에서 `Integer.parseInt` 가 터지면 500 이 난다고 했다.\n\n**그 처리도 같이 온다.** `age=abc` 를 보내면 스프링이 **400 Bad Request** 를 돌려준다 — 500 이 아니다.\n\n서버 잘못(500)이 아니라 **요청 잘못(400)** 이라고 정확히 판정하는 것이다. 손으로 하면 `try-catch` 를 써야 하는 일이다.\n\n**5.8절에서 '안 만든 것' 3번(타입 변환)이 여기서 채워진다.** 자세한 것은 7.6절이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4번 — HTTP 메서드를 구분한다",
+   "md": "```java\n@RequestMapping(value = \"/new-form\", method = RequestMethod.GET)\n// 줄여서\n@GetMapping(\"/new-form\")\n```\n\n**`@GetMapping` 안에 `@RequestMapping(method = GET)` 이 들어 있다.** 앞 책 6.2절의 메타 어노테이션이다.\n\n이게 왜 중요한가 — **3.1절에서 `service()` 를 재정의하며 405 를 잃었던 것**을 기억하자.\n\n```\nGET  /springmvc/v3/members/save  ->  405 Method Not Allowed\nPOST /springmvc/v3/members/save  ->  200\n```\n\n**되돌아왔다.** 그리고 이번에는 **내가 선언한 대로** 동작한다.\n\n5.8절의 '안 만든 것' 2번(HTTP 메서드 구분)이 채워지는 자리다. 우리 v5 는 URL 만 봤다.\n\n실무에서 이것을 안 쓰면 **`GET /items/1/delete` 로 삭제가 되는** 코드가 나온다. 검색 엔진 크롤러가 링크를 따라가면서 데이터를 지운다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "@RequestParam 을 생략할 수 있다",
+   "md": "```java\npublic String save(String username, int age, Model model)\n```\n\n**파라미터 이름이 요청 파라미터 이름과 같으면 어노테이션을 생략**할 수 있다.\n\n짧아서 좋아 보이는데 **주의할 것이 있다.**\n\n자바는 컴파일할 때 **파라미터 이름을 클래스 파일에 안 남길 수 있다.** `-parameters` 옵션이 필요하다. 앞 책 7.6절에서 필드 명 매칭을 말리며 같은 이야기를 했다.\n\n스프링 부트는 Gradle/Maven 플러그인이 이 옵션을 켜 주므로 대개 동작한다. 그런데 **IDE 에서 직접 컴파일하거나 다른 빌드 설정이면 깨진다.**\n\n실무에서는 팀마다 다르다. **명시하는 쪽이 안전하고, 생략하는 쪽이 짧다.** 7.6절에서 다시 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "6장이 끝났다",
+   "md": "5장에서 만든 것에 이름을 붙이고, 스프링이 더 하는 것을 확인했다.\n\n**5.8절의 '안 만든 것 다섯' 이 어떻게 됐나.**\n\n| | 어디서 |\n|---|---|\n| 패턴 URL 매핑 | **7.3절** (`@PathVariable`) |\n| HTTP 메서드 구분 | **6.7절 — 방금** |\n| 파라미터 타입 변환 | **6.7절 — 방금** (자세히는 7.6절) |\n| 복수 파라미터 | **7.6절** (`List<String>`) |\n| 뷰 기술 선택 | **7.11~7.13절** |\n\n**둘이 채워지고 셋이 남았다.** 7장이 그것이다.\n\n그리고 7장부터는 **새 프로젝트로 간다.** JSP 를 안 쓰니 War 도 `WEB-INF` 도 필요 없다(6.4절)."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 405 와 400 이 돌아왔다",
+   "sql": "POST /springmvc/v3/members/save HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nusername=hello&age=20\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html> ... 성공 ... </html>\n\n# GET 으로 보내면\nGET /springmvc/v3/members/save?username=hello&age=20 HTTP/1.1\n\nHTTP/1.1 405 \nAllow: POST\n\n# age 에 문자를 보내면\nPOST /springmvc/v3/members/save HTTP/1.1\n\nusername=hello&age=abc\n\nHTTP/1.1 400 \n#   500 이 아니다",
+   "note": "**405 와 400 — 이 절의 결과가 응답 코드로 나타난다.**\n\n4장·5장에서 HTTP 가 한 번도 안 바뀌었는데, **여기서 처음 바뀐다.**\n\n`Allow: POST` 헤더도 봐 두자. **405 를 줄 때는 어떤 메서드가 되는지 알려 주는 것**이 HTTP 규약이고, 스프링이 알아서 붙인다.\n\n그리고 `age=abc` 가 **500 이 아니라 400** 이다. 4.2절에서 `NumberFormatException` 으로 500 이 나던 자리다 — **누구 잘못인지가 정확해졌다.**"
+  }
+ ],
+ "recap": [
+  "**`Model` 파라미터 + `String` 반환** — 5장 v4 와 같은 모양이다.",
+  "`Model` 은 **어댑터가 만들어서 넣어 준다** — 1.1절 질문의 답.",
+  "**`@RequestParam` 이 `getParameter()` 를 대신**하고 타입 변환까지 한다.",
+  "**`age=abc` 가 500 이 아니라 400** 이다 — 누구 잘못인지가 정확해졌다.",
+  "**`@GetMapping`·`@PostMapping`** 으로 HTTP 메서드를 구분한다.",
+  "3.1절에서 잃었던 **405 가 돌아왔다.** `Allow` 헤더까지 붙는다.",
+  "이걸 안 쓰면 **`GET /items/1/delete` 로 삭제되는 코드**가 나온다.",
+  "`@RequestParam` 생략은 **컴파일 옵션에 의존**한다 — 앞 책 7.6절과 같은 이야기.",
+  "5.8절의 '안 만든 것' 중 **둘이 채워지고 셋이 남았다.**",
+  "**4·5장에서 안 바뀌던 HTTP 가 여기서 처음 바뀐다.**"
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러를 `Model`·`@RequestParam`·`@GetMapping` 방식으로 고친다.",
+   "done_when": "`HttpServletRequest` 가 사라졌고 동작이 같다.",
+   "minutes": 25
+  },
+  {
+   "task": "`/save` 를 GET 으로 호출한다.",
+   "done_when": "405 와 `Allow: POST` 헤더를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`age=abc` 로 보낸다.",
+   "done_when": "400 이 나오는 것과, 4.2절에서는 500 이었다는 것을 비교했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@RequestParam` 을 생략하고 동작하는지 확인한다.",
+   "done_when": "동작하는 것과, 컴파일 옵션에 의존한다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "5.5절 v4 컨트롤러와 나란히 놓고 비교한다.",
+   "done_when": "결론이 같다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Model` 파라미터는 누가 넣어 주나?",
+   "a": "`RequestMappingHandlerAdapter` 가 만들어서 넣어 준다. 5장 v4 에서 프론트 컨트롤러가 하던 일이다."
+  },
+  {
+   "q": "`@RequestParam(\"age\") int age` 가 하는 일은?",
+   "a": "요청 파라미터를 읽고 `int` 로 변환까지 한다. 변환에 실패하면 400 Bad Request 가 나간다."
+  },
+  {
+   "q": "`age=abc` 가 400 인 것이 왜 중요한가?",
+   "a": "서버 잘못(500)이 아니라 요청 잘못(400)이라고 정확히 판정하기 때문이다. 손으로 하면 `try-catch` 가 필요하다."
+  },
+  {
+   "q": "`@GetMapping` 은 무엇인가?",
+   "a": "`@RequestMapping(method = RequestMethod.GET)` 을 품은 메타 어노테이션이다."
+  },
+  {
+   "q": "HTTP 메서드를 구분하지 않으면 무슨 문제가 생기나?",
+   "a": "`GET /items/1/delete` 같은 URL 로 삭제가 되고, 크롤러가 링크를 따라가며 데이터를 지울 수 있다."
+  },
+  {
+   "q": "`@RequestParam` 을 생략할 때 주의할 점은?",
+   "a": "파라미터 이름이 클래스 파일에 남아야 하므로 `-parameters` 컴파일 옵션에 의존한다. 빌드 설정에 따라 깨질 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@RequestParam",
+   "en": "",
+   "what": "요청 파라미터를 컨트롤러 메서드 파라미터로 받는 어노테이션. 타입 변환도 함께 한다."
+  },
+  {
+   "term": "@GetMapping",
+   "en": "",
+   "what": "`@RequestMapping(method = GET)` 을 품은 축약 어노테이션. `@PostMapping` 등도 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Annotated Controllers",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

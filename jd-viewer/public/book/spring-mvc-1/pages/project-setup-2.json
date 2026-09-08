@@ -1,0 +1,169 @@
+{
+ "book": "spring-mvc-1",
+ "id": "project-setup-2",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "프로젝트 생성",
+ "summary": "이번에는 Thymeleaf 도 넣는다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "7장용 프로젝트를 만들 수 있다.",
+  "왜 War 가 아니라 Jar 인지 안다.",
+  "웰컴 페이지를 만드는 법을 안다.",
+  "7장의 진행 방식을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**새 프로젝트로 간다.** 앞의 것은 서블릿과 JSP 를 겪기 위한 것이었고, 7장부터는 **스프링 MVC 만** 쓴다."
+  },
+  {
+   "type": "table",
+   "caption": "1.3절과 무엇이 다른가",
+   "note": "**Packaging 이 바뀌는 것이 핵심**이다. 그리고 그 이유가 6.4절에 있다.",
+   "columns": [
+    "항목",
+    "1.3절 (1~6장)",
+    "7장부터"
+   ],
+   "rows": [
+    [
+     "Packaging",
+     "**War**",
+     "**Jar**"
+    ],
+    [
+     "Dependencies",
+     "Spring Web, Lombok",
+     "Spring Web, **Thymeleaf**, Lombok"
+    ],
+    [
+     "JSP 라이브러리",
+     "네 개 추가",
+     "**없다**"
+    ],
+    [
+     "뷰 위치",
+     "`webapp/WEB-INF/views`",
+     "**`resources/templates`**"
+    ],
+    [
+     "정적 리소스",
+     "`webapp`",
+     "**`resources/static`**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이제 Jar 를 쓴다",
+   "md": "1.3절에서 War 를 고른 이유는 **4장의 JSP 하나**였다. 그리고 그때 이렇게 적었다.\n\n> 실무에서는 Jar 를 쓴다. JSP 를 안 쓰니까. **8장부터는 사실 Jar 로 해도 된다.**\n\n**그 자리다.**\n\n6.4절에서 이유가 채워졌다 — **JSP 는 `forward` 로 렌더링해야 하고**, 그것이 서블릿 컨테이너의 `WEB-INF` 규칙에 묶여 있다. **타임리프는 스프링이 직접 렌더링**하므로 그 제약이 없다.\n\nJar 로 얻는 것.\n\n- **내장 서버로 바로 실행**된다. `java -jar app.jar`\n- **`webapp` 폴더가 필요 없다.** 전부 `resources` 아래로\n- **빌드가 단순하다**\n\n실무 스프링 부트 프로젝트는 사실상 전부 Jar 다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "War 프로젝트에서 타임리프를 쓰면",
+   "md": "**동작은 한다.** 그런데 섞어 쓸 때 헷갈리는 자리가 생긴다.\n\n- JSP 는 `webapp/WEB-INF/views/`\n- 타임리프는 `resources/templates/`\n- `spring.mvc.view.prefix` 는 **JSP 용**이고 타임리프는 자기 설정을 쓴다\n\n두 뷰 리졸버가 동시에 등록돼서 **뷰 이름이 겹치면 순서로 결정된다**(6.4절).\n\n**이 책은 프로젝트를 나눠서 그 혼란을 피한다.** 실무에서도 새 프로젝트에 JSP 를 섞을 이유가 없다."
+  },
+  {
+   "type": "heading",
+   "text": "웰컴 페이지"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "src/main/resources/static/index.html",
+   "code": "<!DOCTYPE HTML>\n<html>\n<body>\n<ul>\n    <li>로그 출력\n        <ul>\n            <li><a href=\"/log-test\">로그 테스트</a></li>\n        </ul>\n    </li>\n    <li>요청 매핑\n        <ul>\n            <li><a href=\"/mapping/hello-basic\">기본 요청</a></li>\n        </ul>\n    </li>\n</ul>\n</body>\n</html>",
+   "note": "**`static/index.html`** 을 두면 스프링 부트가 웰컴 페이지로 쓴다. 매핑을 안 적어도 `/` 로 열린다.\n\n7장에서 만들 것이 많아서 **링크 목록을 여기 모아 둔다.** 실습할 때 편하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "정적 리소스 경로 넷",
+   "md": "스프링 부트가 정적 리소스를 찾는 곳이 넷이다. **위에서부터** 찾는다.\n\n```\nclasspath:/META-INF/resources/\nclasspath:/resources/\nclasspath:/static/\nclasspath:/public/\n```\n\n실무에서는 **`static`** 을 쓴다. 나머지는 라이브러리가 리소스를 끼워 넣을 때 쓰는 자리다.\n\n6.2절에서 `DispatcherServlet` 이 `/` 에 매핑되는데도 정적 파일이 나온다고 했는데, **`ResourceHttpRequestHandler`** 가 이 경로들을 뒤진다(6.3절).\n\n**웰컴 페이지도 그 규칙의 일부**다 — `index.html` 을 찾고, 없으면 `index` 라는 뷰를 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "7장을 읽는 법",
+   "md": "7장은 **사전처럼 써도 되는 장**이다. 각 절이 기능 하나씩이라 순서대로 안 읽어도 된다.\n\n다만 셋은 정독을 권한다.\n\n- **7.13 HTTP 메시지 컨버터** — 이 장에서 가장 중요하다. 3.7~3.8절과 3.11절이 여기서 하나로 묶인다\n- **7.14 `ArgumentResolver`** — 1.1절의 질문(\"파라미터가 어떻게 채워지나\")의 최종 답\n- **7.6 `@RequestParam`** — 실무에서 가장 자주 쓴다\n\n그리고 **7장의 절들은 5.8절의 '안 만든 것' 을 하나씩 채운다.** 6.7절 끝의 표를 옆에 두고 읽으면 위치가 잡힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 웰컴 페이지",
+   "sql": "GET / HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html\nLast-Modified: Tue, 09 Sep 2026 04:00:00 GMT\nContent-Length: 312\n\n<!DOCTYPE HTML>\n<html>\n<body>\n<ul> ... </ul>\n</body>\n</html>\n\n# 서버 시작 로그\nTomcat started on port 8080 (http)\nStarted ItemServiceApplication in 1.234 seconds\n\n# War 였을 때와 다른 점\n# - webapp 폴더가 없다\n# - java -jar build/libs/app.jar 로 바로 실행된다",
+   "note": "**`Last-Modified` 가 있다.** 2.1절에서 정적 리소스와 동적 응답의 차이로 꼽은 그 헤더다 — **파일이 이미 있으니 언제 바뀌었는지 말할 수 있다.**\n\n컨트롤러를 하나도 안 만들었는데 화면이 나온다. `ResourceHttpRequestHandler` 가 처리한 것이다(6.3절).\n\n**7장의 나머지는 전부 컨트롤러 이야기**다."
+  }
+ ],
+ "recap": [
+  "**새 프로젝트로 간다.** 7장부터는 스프링 MVC 만 쓴다.",
+  "**Packaging 이 War 에서 Jar 로** 바뀐다. 1.3절에서 예고한 자리.",
+  "이유는 6.4절에 있다 — **타임리프는 `forward` 가 필요 없다.**",
+  "Jar 로 얻는 것 — **`java -jar` 로 바로 실행 · `webapp` 불필요 · 빌드 단순.**",
+  "뷰는 **`resources/templates`**, 정적 리소스는 **`resources/static`**.",
+  "**`static/index.html`** 이 웰컴 페이지가 된다. 매핑을 안 적어도 된다.",
+  "정적 리소스 경로는 넷이고 **`static`** 을 쓴다.",
+  "7장은 **사전처럼 써도 되는 장**이다. 다만 **7.13·7.14·7.6** 은 정독한다.",
+  "7장의 절들이 **5.8절의 '안 만든 것' 을 하나씩 채운다.**"
+ ],
+ "drills": [
+  {
+   "task": "start.spring.io 에서 Jar + Thymeleaf 로 새 프로젝트를 만든다.",
+   "done_when": "`bootRun` 으로 뜬다.",
+   "minutes": 15
+  },
+  {
+   "task": "`static/index.html` 을 만들고 `/` 로 연다.",
+   "done_when": "매핑 없이 화면이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "응답 헤더에서 `Last-Modified` 를 찾는다.",
+   "done_when": "정적 리소스라서 있는 것을 2.1절과 이어 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "`./gradlew build` 후 `java -jar` 로 실행한다.",
+   "done_when": "톰캣 설치 없이 서버가 뜨는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "7장부터 Jar 를 쓰는 이유는?",
+   "a": "JSP 를 안 쓰기 때문이다. 타임리프는 스프링이 직접 렌더링하므로 `forward` 와 `WEB-INF` 규칙에 묶이지 않는다."
+  },
+  {
+   "q": "뷰와 정적 리소스는 어디에 두나?",
+   "a": "뷰는 `resources/templates`, 정적 리소스는 `resources/static` 이다."
+  },
+  {
+   "q": "웰컴 페이지는 어떻게 만드나?",
+   "a": "`resources/static/index.html` 을 두면 스프링 부트가 `/` 요청에 그것을 준다. 매핑을 적지 않아도 된다."
+  },
+  {
+   "q": "정적 리소스를 처리하는 것은?",
+   "a": "`ResourceHttpRequestHandler` 다. `DispatcherServlet` 이 `/` 에 매핑돼 있어도 이 핸들러가 정해진 경로들을 뒤진다."
+  },
+  {
+   "q": "7장에서 정독을 권하는 절은?",
+   "a": "7.13(HTTP 메시지 컨버터), 7.14(ArgumentResolver), 7.6(@RequestParam)이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Annotated Controllers",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

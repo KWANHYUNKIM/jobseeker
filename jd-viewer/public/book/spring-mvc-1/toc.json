@@ -424,7 +424,7 @@
           "title": "스프링 MVC — 컨트롤러 통합",
           "summary": "URL 을 클래스 레벨로 올린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -432,7 +432,7 @@
           "title": "스프링 MVC — 실용적인 방식",
           "summary": "`Model`·`@RequestParam`·`@GetMapping`. 실무에서 쓰는 형태가 여기서 완성된다.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -447,7 +447,7 @@
           "title": "프로젝트 생성",
           "summary": "이번에는 Thymeleaf 도 넣는다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -455,7 +455,7 @@
           "title": "로깅 알아보기",
           "summary": "`System.out.println` 을 쓰면 안 되는 이유. 레벨과 설정.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",

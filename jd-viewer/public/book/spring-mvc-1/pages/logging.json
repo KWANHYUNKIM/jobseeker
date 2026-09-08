@@ -1,0 +1,231 @@
+{
+ "book": "spring-mvc-1",
+ "id": "logging",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "로깅 알아보기",
+ "summary": "System.out.println 을 쓰면 안 되는 이유. 레벨과 설정.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Slf4j` 로 로그를 남길 수 있다.",
+  "`System.out.println` 대비 무엇이 나은지 다섯 가지를 말할 수 있다.",
+  "로그 레벨을 환경별로 다르게 줄 수 있다.",
+  "`+` 연산과 `{}` 의 차이가 왜 중요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "이 책은 3장부터 **`System.out.println`** 을 써 왔다. 설명에는 편했는데 **실무에서는 쓰면 안 된다.**\n\n이 절에서 바꾼다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "LogTestController.java",
+   "code": "@Slf4j\n@RestController\npublic class LogTestController {\n\n    @RequestMapping(\"/log-test\")\n    public String logTest() {\n        String name = \"Spring\";\n\n        log.trace(\"trace log={}\", name);\n        log.debug(\"debug log={}\", name);\n        log.info(\" info log={}\", name);\n        log.warn(\" warn log={}\", name);\n        log.error(\"error log={}\", name);\n\n        return \"ok\";\n    }\n}",
+   "note": "**`@Slf4j`** 는 롬복이다(앞 책 7.4절 표). 아래 한 줄을 대신 써 준다.\n\n```java\nprivate static final Logger log = LoggerFactory.getLogger(LogTestController.class);\n```\n\n`static final` 인 것에 주의한다 — **로거는 클래스마다 하나면 된다.** 앞 책 5.4절의 무상태 규칙을 지키는 자리이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@RestController 가 처음 나왔다",
+   "md": "```java\n@Controller       // 반환값이 뷰 이름\n@RestController   // 반환값이 응답 바디\n```\n\n6.7절까지 `@Controller` 는 문자열을 **뷰 이름**으로 봤다. `@RestController` 는 그것을 **HTTP 응답 바디**로 쓴다.\n\n그래서 위 코드는 `\"ok\"` 라는 뷰를 찾지 않고 **`ok` 라는 두 글자를 그대로 내보낸다.**\n\n**7.11절**에서 정확히 다룬다. 지금은 \"뷰를 안 거친다\" 정도로 알면 된다."
+  },
+  {
+   "type": "heading",
+   "text": "왜 println 이면 안 되나"
+  },
+  {
+   "type": "table",
+   "caption": "다섯 가지",
+   "note": "**4번이 실무에서 가장 크다.** 서버에 SSH 로 들어가서 콘솔을 보는 시대가 아니다.",
+   "columns": [
+    "#",
+    "`System.out.println`",
+    "로거"
+   ],
+   "rows": [
+    [
+     "1",
+     "**항상 출력**된다",
+     "**레벨로 끈다** — 운영에서 디버그 로그를 안 남긴다"
+    ],
+    [
+     "2",
+     "시각·스레드 정보가 없다",
+     "**자동으로 붙는다** — 2.3절의 쓰레드 이름도"
+    ],
+    [
+     "3",
+     "어느 클래스인지 모른다",
+     "**클래스 이름이 찍힌다**"
+    ],
+    [
+     "4",
+     "**콘솔에만** 나간다",
+     "**파일·롤링·원격 수집**으로 보낸다"
+    ],
+    [
+     "5",
+     "성능에 그대로 부담",
+     "**끈 레벨은 문자열도 안 만든다** (아래)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5번 — {} 를 쓰는 진짜 이유",
+   "md": "```java\nlog.debug(\"data=\" + data);      // 나쁘다\nlog.debug(\"data={}\", data);     // 좋다\n```\n\n**둘의 차이가 성능이다.**\n\n첫 줄은 **`+` 연산이 먼저 실행된다.** 로그 레벨이 `info` 라서 이 줄이 출력되지 않아도, **문자열은 이미 만들어졌다.**\n\n```java\nString temp = \"data=\" + data;   // 항상 실행\nlog.debug(temp);                // 여기서 버린다\n```\n\n둘째 줄은 **레벨을 먼저 확인**하고, 출력할 때만 `{}` 를 채운다.\n\n요청이 초당 수백 건이고 디버그 로그가 수십 줄이면 — **버려질 문자열을 초당 수만 개 만드는 셈**이다.\n\n2.3절에서 쓰레드가 유한하고 비싼 자원이라고 했는데, **CPU 와 메모리도 마찬가지**다. 안 쓰는 일을 안 하는 것이 성능이다."
+  },
+  {
+   "type": "heading",
+   "text": "레벨"
+  },
+  {
+   "type": "table",
+   "caption": "다섯 단계",
+   "note": "**위로 갈수록 심각하다.** 레벨을 `info` 로 두면 `info` 이상만 나온다 — `trace`·`debug` 는 안 나온다.",
+   "columns": [
+    "레벨",
+    "언제"
+   ],
+   "rows": [
+    [
+     "`error`",
+     "**즉시 봐야 하는 것.** 알림을 걸어 둔다"
+    ],
+    [
+     "`warn`",
+     "지금은 괜찮은데 이상한 것. 재시도 성공, 폴백 동작"
+    ],
+    [
+     "`info`",
+     "**운영에서 남길 것.** 주문 생성, 결제 완료 같은 비즈니스 이벤트"
+    ],
+    [
+     "`debug`",
+     "개발할 때 보는 것. 변수 값, 분기"
+    ],
+    [
+     "`trace`",
+     "아주 자세한 것. 거의 안 쓴다"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "file": "application.properties",
+   "code": "# 전체 기본 레벨\nlogging.level.root=info\n\n# 특정 패키지만 다르게\nlogging.level.hello.springmvc=debug\n\n# 스프링 내부 (6.2절에서 켠 그것)\nlogging.level.org.springframework.web=debug",
+   "note": "**패키지 단위로 다르게 줄 수 있다.** 내 코드는 `debug`, 라이브러리는 `info` 로 두는 식이다.\n\n운영에서는 대개 `root=info` 이고, 문제가 생기면 **특정 패키지만 잠깐 `debug` 로 올린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "SLF4J 와 Logback",
+   "md": "```\n내 코드  ->  SLF4J (인터페이스)  ->  Logback (구현)\n```\n\n**`log.info()` 를 부를 때 내 코드가 아는 것은 SLF4J 뿐**이다. 실제로 파일에 쓰는 것은 Logback 이다.\n\n앞 책 1.3절의 역할·구현 분리이고, 6.4절의 `ViewResolver` 와 같은 구조다.\n\n그래서 **Logback 을 Log4j2 로 바꿔도 내 코드는 안 바뀐다.** 의존성만 갈아 끼우면 된다.\n\n스프링 부트는 **Logback 을 기본으로** 넣어 준다. 대부분 그대로 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "무엇을 남기고 무엇을 안 남기나",
+   "md": "로그도 **비용이고 위험**이다.\n\n**남기면 안 되는 것**\n- 비밀번호·토큰·카드번호 — **로그 파일이 유출되면 그대로 노출**된다\n- 개인정보 — 주민번호, 전화번호. 남기더라도 마스킹한다\n- 요청 바디 전체 — 위 둘이 섞여 들어온다\n\n**남겨야 하는 것**\n- **누가 무엇을 했는지** — 사용자 ID, 액션\n- **왜 실패했는지** — 예외와 스택 트레이스\n- **요청을 구분할 수 있는 것** — 요청 ID (앞 책 9.6절의 그 UUID)\n\n앞 책 9.6절에서 request 스코프로 요청마다 UUID 를 붙인 것이 **이것을 위한 것**이었다. 동시 요청이 뒤섞인 로그에서 한 요청을 따라가려면 필요하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 로그 한 줄에 무엇이 들어 있나",
+   "sql": "GET /log-test\n\n# logging.level.hello.springmvc=info 일 때\n2026-09-09 04:10:00.123  INFO 12345 --- [nio-8080-exec-1] h.s.b.LogTestController :  info log=Spring\n2026-09-09 04:10:00.123  WARN 12345 --- [nio-8080-exec-1] h.s.b.LogTestController :  warn log=Spring\n2026-09-09 04:10:00.123 ERROR 12345 --- [nio-8080-exec-1] h.s.b.LogTestController : error log=Spring\n#   trace, debug 는 안 나온다\n\n# =debug 로 올리면\n... DEBUG ... : debug log=Spring\n... INFO  ... :  info log=Spring\n#   trace 는 여전히 안 나온다\n\n# 한 줄의 구성\n2026-09-09 04:10:00.123   시각\nINFO                      레벨\n12345                     프로세스 ID\n[nio-8080-exec-1]         쓰레드 이름     <- 2.3 절의 그것\nh.s.b.LogTestController   클래스\ninfo log=Spring           메시지",
+   "note": "**`[nio-8080-exec-1]`** 을 봐 두자. 2.3절에서 동시 요청을 실험하며 본 그 쓰레드 이름이다.\n\n`println` 에는 이것이 없다. **동시 요청이 뒤섞인 로그에서 어느 줄이 한 묶음인지** 알려면 이 정보가 필요하다.\n\n그리고 레벨을 바꿨더니 **코드를 안 고쳤는데 출력이 달라졌다.** `println` 으로는 못 하는 일이다."
+  }
+ ],
+ "recap": [
+  "**`@Slf4j`** 가 `private static final Logger` 한 줄을 대신 써 준다.",
+  "`@RestController` 는 반환 문자열을 **뷰 이름이 아니라 응답 바디**로 쓴다(7.11절).",
+  "`println` 대비 — **레벨로 끈다 · 시각·쓰레드·클래스가 붙는다 · 파일로 보낸다 · 성능.**",
+  "**`+` 대신 `{}`** — `+` 는 출력 안 해도 문자열을 만든다.",
+  "레벨 다섯 — **error · warn · info · debug · trace.**",
+  "**패키지 단위로 레벨을 다르게** 줄 수 있다. 운영은 `info`, 문제 생기면 잠깐 올린다.",
+  "**SLF4J 는 인터페이스, Logback 은 구현**이다 — 앞 책 1.3절의 구조.",
+  "**비밀번호·토큰·개인정보는 안 남긴다.** 로그 파일이 유출되면 그대로 노출된다.",
+  "쓰레드 이름이 찍히는 것이 **2.3절의 동시 요청**과 이어진다."
+ ],
+ "drills": [
+  {
+   "task": "`LogTestController` 를 만들고 다섯 레벨을 전부 찍는다.",
+   "done_when": "기본 레벨에서 셋만 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`logging.level` 을 바꿔 가며 출력이 달라지는 것을 본다.",
+   "done_when": "코드를 안 고치고 출력을 바꿨다.",
+   "minutes": 10
+  },
+  {
+   "task": "`log.debug(\"x\" + expensive())` 형태로 쓰고 `expensive()` 에 출력문을 넣는다.",
+   "done_when": "레벨이 꺼져 있어도 호출되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "동시에 두 요청을 보내고 쓰레드 이름을 비교한다.",
+   "done_when": "2.3절과 같은 `exec-1`, `exec-2` 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "이 책 3~6장에서 쓴 `System.out.println` 을 로거로 바꿔 본다.",
+   "done_when": "클래스 이름과 시각이 자동으로 붙는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Slf4j` 는 무엇을 대신하나?",
+   "a": "`private static final Logger log = LoggerFactory.getLogger(클래스.class);` 한 줄이다. 롬복 어노테이션이다."
+  },
+  {
+   "q": "`System.out.println` 을 쓰면 안 되는 이유는?",
+   "a": "레벨로 끌 수 없고, 시각·쓰레드·클래스 정보가 없고, 콘솔에만 나가며, 성능에 부담을 준다."
+  },
+  {
+   "q": "`log.debug(\"data=\" + data)` 가 왜 나쁜가?",
+   "a": "레벨이 꺼져 있어도 `+` 연산이 먼저 실행되어 버려질 문자열을 만든다. `{}` 를 쓰면 출력할 때만 채운다."
+  },
+  {
+   "q": "로그 레벨 다섯은?",
+   "a": "error, warn, info, debug, trace. 설정한 레벨 이상만 출력된다."
+  },
+  {
+   "q": "SLF4J 와 Logback 의 관계는?",
+   "a": "SLF4J 가 인터페이스이고 Logback 이 구현체다. 구현을 바꿔도 내 코드는 안 바뀐다."
+  },
+  {
+   "q": "로그에 남기면 안 되는 것은?",
+   "a": "비밀번호·토큰·카드번호·개인정보다. 요청 바디 전체를 남기면 이것들이 섞여 들어온다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SLF4J",
+   "en": "Simple Logging Facade for Java",
+   "what": "로깅 인터페이스. 구현체(Logback, Log4j2)를 갈아 끼워도 코드가 안 바뀐다."
+  },
+  {
+   "term": "@RestController",
+   "en": "",
+   "what": "반환값을 뷰 이름이 아니라 HTTP 응답 바디로 쓰는 컨트롤러 어노테이션. 7.11절에서 다룬다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "SLF4J user manual",
+   "url": "https://www.slf4j.org/manual.html",
+   "publisher": "QOS.ch"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

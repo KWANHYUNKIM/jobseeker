@@ -1,0 +1,159 @@
+{
+ "book": "spring-mvc-1",
+ "id": "controller-v2",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "스프링 MVC — 컨트롤러 통합",
+ "summary": "URL 을 클래스 레벨로 올린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "클래스 레벨 `@RequestMapping` 을 쓸 수 있다.",
+  "클래스와 메서드의 URL 이 어떻게 조합되는지 안다.",
+  "컨트롤러를 어떤 기준으로 묶는지 안다.",
+  "5장에서 못 했던 것이 왜 여기서 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "6.5절에서 컨트롤러 셋을 만들었다. **셋이 전부 회원 관련**인데 클래스가 셋이다.\n\n```\nSpringMemberFormControllerV1\nSpringMemberSaveControllerV1\nSpringMemberListControllerV1\n```\n\n그리고 URL 도 앞부분이 같다.\n\n```\n/springmvc/v1/members/new-form\n/springmvc/v1/members/save\n/springmvc/v1/members\n```\n\n**둘 다 합칠 수 있다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SpringMemberControllerV2.java",
+   "code": "@Controller\n@RequestMapping(\"/springmvc/v2/members\")\npublic class SpringMemberControllerV2 {\n\n    private MemberRepository memberRepository = MemberRepository.getInstance();\n\n    @RequestMapping(\"/new-form\")\n    public ModelAndView newForm() {\n        return new ModelAndView(\"new-form\");\n    }\n\n    @RequestMapping(\"/save\")\n    public ModelAndView save(HttpServletRequest request,\n                            HttpServletResponse response) {\n\n        String username = request.getParameter(\"username\");\n        int age = Integer.parseInt(request.getParameter(\"age\"));\n\n        Member member = new Member(username, age);\n        memberRepository.save(member);\n\n        ModelAndView mv = new ModelAndView(\"save-result\");\n        mv.addObject(\"member\", member);\n        return mv;\n    }\n\n    @RequestMapping\n    public ModelAndView members() {\n        List<Member> members = memberRepository.findAll();\n\n        ModelAndView mv = new ModelAndView(\"members\");\n        mv.addObject(\"members\", members);\n        return mv;\n    }\n}",
+   "note": "**메서드 이름이 의미를 갖게 됐다.** `newForm`, `save`, `members` — 6.5절에서는 전부 `process` 였다.\n\n클래스가 하나라 이름이 겹치면 안 되고, 그래서 **자연스럽게 좋은 이름을 붙이게 된다.**"
+  },
+  {
+   "type": "table",
+   "caption": "URL 조합",
+   "note": "**마지막 줄이 재미있다.** 메서드에 `@RequestMapping` 만 붙이고 경로를 안 적으면 클래스 경로가 그대로 URL 이 된다.",
+   "columns": [
+    "클래스",
+    "메서드",
+    "최종 URL"
+   ],
+   "rows": [
+    [
+     "`/springmvc/v2/members`",
+     "`/new-form`",
+     "`/springmvc/v2/members/new-form`"
+    ],
+    [
+     "`/springmvc/v2/members`",
+     "`/save`",
+     "`/springmvc/v2/members/save`"
+    ],
+    [
+     "`/springmvc/v2/members`",
+     "**(없음)**",
+     "`/springmvc/v2/members`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5장에서는 왜 못 했나",
+   "md": "우리 v5 의 매핑은 이랬다.\n\n```java\nhandlerMappingMap.put(\"/front-controller/v5/v3/members/new-form\",\n                      new MemberFormControllerV3());\n```\n\n**`Map` 의 값이 객체 하나**다. 그러니 **URL 하나에 클래스 하나**여야 한다.\n\n스프링은 다르다. 핸들러가 **객체가 아니라 `HandlerMethod`** — **어느 객체의 어느 메서드**인지를 담는다.\n\n```\n{/springmvc/v2/members/new-form}: SpringMemberControllerV2#newForm()\n{/springmvc/v2/members/save}:     SpringMemberControllerV2#save(...)\n```\n\n6.5절 시작 로그에서 본 그 표다. **`#메서드명` 이 붙어 있는 이유가 이것이다.**\n\n5.6절에서 핸들러를 `Object` 로 열었는데, **스프링은 한 걸음 더 갔다** — 핸들러가 객체일 필요도 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "무엇을 기준으로 묶나",
+   "md": "\"관련된 것을 한 클래스에\" 는 알겠는데 **기준이 애매하다.**\n\n실무에서 흔한 기준 둘.\n\n**1. 리소스 단위** — `/items` 를 다루는 것을 `ItemController` 로\n```\nItemController      /items/**\nMemberController    /members/**\nOrderController     /orders/**\n```\n\n**2. 화면 단위** — 한 화면에서 쓰는 것을 하나로\n```\nItemBasicController   /basic/items/**\nItemAdminController   /admin/items/**\n```\n\n둘을 섞기도 한다. **8장에서 `BasicItemController` 를 만들 텐데 그것이 1번과 2번의 중간**이다.\n\n기준보다 중요한 것은 **클래스가 너무 커지지 않는 것**이다. 메서드가 열 개를 넘어가면 나눌 때가 된 것이고, 앞 책 7.3절에서 \"생성자 파라미터가 많으면 책임이 많다는 신호\" 라고 한 것과 같은 감각이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "슬래시를 두 번 쓰지 않는다",
+   "md": "```java\n@RequestMapping(\"/springmvc/v2/members/\")   // 끝에 /\n@RequestMapping(\"/new-form\")\n// -> /springmvc/v2/members//new-form  ?\n```\n\n스프링이 **정규화해 주기는 한다.** 그런데 헷갈리니 관례를 지키는 것이 낫다.\n\n> **클래스 경로는 `/` 로 시작하고 `/` 로 끝나지 않는다. 메서드 경로도 `/` 로 시작한다.**\n\n그리고 **스프링 6 부터 후행 슬래시 매칭이 기본으로 꺼졌다.** 예전에는 `/members` 와 `/members/` 가 둘 다 됐는데 이제 아니다.\n\n```\nGET /members   -> 200\nGET /members/  -> 404\n```\n\n오래된 프로젝트를 부트 3 으로 올릴 때 만나는 자리다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실행 결과 — 매핑 표에 메서드가 보인다",
+   "sql": "# 애플리케이션 시작 시\nRequestMappingHandlerMapping :\n  {/springmvc/v2/members/new-form}: newForm()\n  {/springmvc/v2/members/save}:     save(HttpServletRequest, HttpServletResponse)\n  {/springmvc/v2/members}:          members()\n\n# 요청\nDispatcherServlet : GET \"/springmvc/v2/members\"\nRequestMappingHandlerMapping : Mapped to SpringMemberControllerV2#members()\n\n# v1 과 비교\nRequestMappingHandlerMapping : Mapped to SpringMemberListControllerV1#process()\n#                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^  클래스가 다르다\n\n# HTTP 응답은 v1 과 완전히 같다",
+   "note": "**`Mapped to 클래스#메서드`** — 클래스 하나에 메서드 셋이 붙었다.\n\nv1 은 클래스 셋에 `process()` 하나씩이었다. **핸들러가 객체가 아니라 메서드라는 것**이 이 로그에 그대로 나온다.\n\n그리고 응답은 여전히 같다. **6장도 5장처럼 코드만 바뀐다.**"
+  }
+ ],
+ "recap": [
+  "**클래스에 `@RequestMapping`** 을 붙여 공통 경로를 올린다.",
+  "클래스 경로 + 메서드 경로가 **조합**된다.",
+  "메서드에 경로를 안 적으면 **클래스 경로가 그대로** URL 이 된다.",
+  "**메서드 이름이 의미를 갖게 된다** — 클래스가 하나라 겹칠 수 없어서.",
+  "5장에서 못 한 이유 — **`Map` 의 값이 객체 하나**였다. URL 하나에 클래스 하나.",
+  "스프링의 핸들러는 **`HandlerMethod`** — 어느 객체의 어느 메서드인지를 담는다.",
+  "그래서 로그에 **`클래스#메서드`** 로 찍힌다.",
+  "묶는 기준은 **리소스 단위나 화면 단위**. 중요한 것은 클래스가 안 커지는 것.",
+  "**스프링 6 부터 후행 슬래시 매칭이 꺼졌다** — `/members/` 는 404."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러 셋을 하나로 합친다.",
+   "done_when": "세 URL 이 그대로 동작한다.",
+   "minutes": 20
+  },
+  {
+   "task": "시작 로그의 매핑 표를 v1 과 비교한다.",
+   "done_when": "클래스 이름이 하나로 줄고 메서드 이름이 다양해진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드의 `@RequestMapping` 에서 경로를 지운다.",
+   "done_when": "클래스 경로가 그대로 URL 이 되는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "URL 끝에 `/` 를 붙여 호출해 본다.",
+   "done_when": "404 가 나는 것과 스프링 6 의 변화를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "클래스 레벨 `@RequestMapping` 은 무엇을 하나?",
+   "a": "공통 URL 접두사를 지정한다. 메서드 레벨 경로와 조합되어 최종 URL 이 된다."
+  },
+  {
+   "q": "메서드에 경로를 안 적으면?",
+   "a": "클래스 경로가 그대로 URL 이 된다."
+  },
+  {
+   "q": "5장의 v5 에서는 왜 컨트롤러를 합칠 수 없었나?",
+   "a": "`Map` 의 값이 객체 하나여서 URL 하나에 클래스 하나가 대응해야 했다."
+  },
+  {
+   "q": "스프링의 핸들러는 무엇인가?",
+   "a": "`HandlerMethod` 다. 어느 객체의 어느 메서드인지를 담는다. 그래서 한 클래스에 여러 URL 을 둘 수 있다."
+  },
+  {
+   "q": "컨트롤러를 묶는 기준은?",
+   "a": "리소스 단위(`/items` 는 `ItemController`)나 화면 단위다. 중요한 것은 클래스가 너무 커지지 않는 것이다."
+  },
+  {
+   "q": "스프링 6 에서 달라진 매칭 규칙은?",
+   "a": "후행 슬래시 매칭이 기본으로 꺼졌다. `/members` 는 되고 `/members/` 는 404 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HandlerMethod",
+   "en": "",
+   "what": "스프링이 핸들러로 다루는 단위. 객체와 메서드를 함께 담아서 한 클래스에 여러 URL 을 둘 수 있게 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework Reference — Annotated Controllers",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html",
+   "publisher": "VMware"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
