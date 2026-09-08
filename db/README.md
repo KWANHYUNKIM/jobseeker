@@ -148,6 +148,7 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | `trends.json`, `trends_reports/*.md` | `trend_day`/`trend_metric` 에서 빌드 | `build_trends.py` |
 | `similar_jobs.json`, `similar_posts.json` | `job_similar`, `post_similar` | |
 | `tech_relations.json` | `job_tech` 조인 질의 | 미리 굳힐 이유가 없다 |
+| `tech_blogs.json` | `post` (분류 축 포함) | 크롤러가 쓰고 `ingest_posts` 가 옮긴다 |
 | `semantic.db` | `job_embedding`, `post_embedding` | 위 표 참조 |
 | `guide/`, `reveng/`, `study/` **본문** | **파일 그대로** | 사람이 쓴 글, git 리뷰 대상 |
 | `guide-engine/validate.py --gaps` | `guide_gap` 뷰 | |
@@ -211,6 +212,8 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 |
 | 파일 원장 이관 | `catch_capture/store/ledgers.py` | ✅ 트렌드 54일·22,304행 · 판본 30,431 |
 | 사이클 중복 제거 | `refresh-data.sh` 에서 `backfill` 제거 | ✅ export 만 남김 · 산출물 무변화 확인 |
+| 빌더 입력 전환 | `jd-viewer/bin/jobs_filter.py` `load_jobs`/`load_posts` | ✅ 빌더 7개 · 운영에서 산출물 대조 |
+| 마감 재확인 대상 | `job_recheck_queue` → `pipeline.close_check` | ✅ 후보 10,496 → 12,548건 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
