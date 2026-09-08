@@ -45,6 +45,21 @@ STALE_RECORDS = 12
 
 
 def _recent_records(keyword: str, n: int) -> list[dict]:
+    """최근 n회차. 정본 DB 우선, 못 읽으면 health_history.jsonl.
+
+    이상 탐지가 "지난 몇 회차와 견주어" 판단하므로 기록이 머신마다 따로 놀면
+    같은 크롤이 한쪽에선 이상, 한쪽에선 정상이 된다(운영 568줄 / 로컬 548줄).
+    """
+    try:
+        import sys as _s
+        _s.path.insert(0, str(BASE))
+        from store.ledgers import load_health
+        rows = load_health(keyword, n)
+        if rows:
+            return rows
+    except Exception:
+        pass
+
     if not HISTORY.exists():
         return []
     out = []
@@ -123,22 +138,48 @@ def record(keyword, site_counts, all_jobs, active_jobs, closed_jobs,
     with open(HISTORY, "a", encoding="utf-8") as f:
         f.write(json.dumps(cur, ensure_ascii=False) + "\n")
     LATEST.write_text(json.dumps(cur, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 정본 DB 에도. ingest_crawl 이 방금 만든 이번 사이클의 crawl_run 행에 얹는다.
+    # 실패해도 사이클을 죽이지 않는다 — 파일에는 이미 남았고, 밀린 회차는
+    # `store.ledgers seed --health` 가 멱등하게 채운다.
+    try:
+        import sys as _s
+        _s.path.insert(0, str(BASE))
+        from store import conn as _store_conn
+        from store.ledgers import write_health
+        with _store_conn.connect() as _db:
+            with _db.cursor() as _cur:
+                write_health(_cur, cur)
+            _db.commit()
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [health] 정본 DB 기록 실패(파일에는 남았습니다): {e}", flush=True)
+
     return cur, cur["anomalies"]
 
 
 def report(n: int = 12) -> None:
-    if not HISTORY.exists():
-        print("(헬스 기록 없음 — 아직 사이클이 안 돌았거나 health 미적용)")
-        return
-    lines = [l for l in HISTORY.read_text(encoding="utf-8").splitlines() if l.strip()][-n:]
+    records: list[dict] = []
+    try:
+        import sys as _s
+        _s.path.insert(0, str(BASE))
+        from store.ledgers import load_health
+        records = load_health(None, n)
+    except Exception:
+        records = []
+    if not records:
+        if not HISTORY.exists():
+            print("(헬스 기록 없음 — 아직 사이클이 안 돌았거나 health 미적용)")
+            return
+        lines = [l for l in HISTORY.read_text(encoding="utf-8").splitlines() if l.strip()][-n:]
+        records = [json.loads(l) for l in lines]
+
     print(f"{'시각':19}  {'모집중':>5} {'마감':>4}  주요업무  | 사이트별")
-    for l in lines:
-        r = json.loads(l)
+    for r in records:
         sc = " ".join(f"{s}={c}" for s, c in r["site_counts"].items())
         fr = r["fill_rates"].get("main_tasks", 0)
         flag = f"  ⚠️{len(r['anomalies'])}" if r.get("anomalies") else ""
         print(f"{r['ts']:19}  {r['active']:>5} {r['closed']:>4}  {fr:>6.0%}  | {sc}{flag}")
-    last = json.loads(lines[-1])
+    last = records[-1]
     if last.get("anomalies"):
         print("\n[최근 사이클 이상]")
         for a in last["anomalies"]:

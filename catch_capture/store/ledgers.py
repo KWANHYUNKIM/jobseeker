@@ -11,6 +11,7 @@
   trend_day / trend_metric   trends_history.jsonl      → build_trends.py 가 읽는다
   job_version                job_history.jsonl         → build_reposts.py 가 읽고 쓴다
   engagement_event           engagement/events.jsonl   → engagement.score 가 읽는다
+  crawl_run / crawl_run_site health_history.jsonl      → monitoring.health 가 읽고 쓴다
 
 읽기 함수(`load_trend_days`, `load_job_versions`)는 **파일이 주던 것과 똑같은
 모양**을 돌려준다. 빌더의 집계 로직(급상승 창 계산, 재공고 판정)은 손대지 않는다 —
@@ -40,6 +41,10 @@ EVENTS_JSONL = BASE / "engagement" / "events.jsonl"
 EVENTS_ROTATED = BASE / "engagement" / "events.jsonl.1"
 
 KINDS = ("session", "view", "click", "dwell", "search", "filter")
+HEALTH_JSONL = BASE / "health_history.jsonl"
+# crawl_run_site.site 는 ENUM 이다. 표에 없는 이름이 오면 그 줄만 버린다 —
+# 사이트 하나가 사이클 기록 전체를 죽이면 안 된다(ingest_crawl 과 같은 판단).
+HEALTH_SITES = ("wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats")
 
 
 # ── 공통 ────────────────────────────────────────────────────────────
@@ -373,6 +378,146 @@ def seed_events(*paths: _Path) -> tuple[int, int]:
     return len(rows), append_events(rows)
 
 
+# ── 크롤 헬스 (사이클 기록) ─────────────────────────────────────────
+def write_health(cur, rec: dict) -> int:
+    """헬스 기록 한 장 → crawl_run(+crawl_run_site).
+
+    **이번 사이클의 행에 얹는다.** aggregate 는 ingest_crawl 을 먼저 부르고 그때
+    crawl_run 행이 하나 생긴다 — 여기서 새 행을 또 만들면 한 사이클에 두 행이
+    남는다. 같은 label 의 가장 최근 행이 아직 이 기록을 안 받았으면 거기에 얹고,
+    없으면 새로 만든다(백필이 이 경우다).
+
+    n_new 는 건드리지 않는다. 헬스 기록에는 그 숫자가 없고, ingest_crawl 이
+    넣어 둔 값을 0 으로 덮으면 "신규 0건"이라는 거짓말이 된다.
+    """
+    label = rec.get("keyword") or ""
+    ts = rec.get("ts")
+    detail = {k: rec.get(k) for k in
+              ("fill_rates", "fill_rates_by_site", "anomalies", "failures",
+               "cross_dups", "overridden", "active")}
+
+    cur.execute(
+        """SELECT id FROM crawl_run
+            WHERE label = %s AND NOT (detail ? 'fill_rates')
+            ORDER BY started_at DESC LIMIT 1"""
+        , (label,))
+    row = cur.fetchone()
+    if row:
+        run_id = row["id"]
+        cur.execute(
+            """UPDATE crawl_run SET n_raw = %s, n_upserted = %s, n_closed = %s,
+                      detail = detail || %s::jsonb
+                WHERE id = %s""",
+            (rec.get("raw_total"), rec.get("deduped"), rec.get("closed"),
+             json.dumps(detail, ensure_ascii=False), run_id),
+        )
+    else:
+        cur.execute(
+            """INSERT INTO crawl_run (label, started_at, ended_at, ok,
+                                      n_raw, n_upserted, n_closed, detail)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+            (label, ts, ts, not rec.get("failures"),
+             rec.get("raw_total"), rec.get("deduped"), rec.get("closed"),
+             json.dumps(detail, ensure_ascii=False)),
+        )
+        run_id = cur.fetchone()["id"]
+
+    n = 0
+    for site, cnt in (rec.get("site_counts") or {}).items():
+        if site not in HEALTH_SITES:
+            continue
+        cur.execute(
+            """INSERT INTO crawl_run_site (crawl_run_id, site, n_raw, ok)
+               VALUES (%s,%s,%s,%s)
+               ON CONFLICT (crawl_run_id, site) DO UPDATE SET
+                   n_raw = EXCLUDED.n_raw, ok = EXCLUDED.ok""",
+            (run_id, site, int(cnt or 0), int(cnt or 0) > 0),
+        )
+        n += 1
+    return n
+
+
+def load_health(label: str | None = None, limit: int = 0) -> list[dict]:
+    """DB → monitoring.health 가 받던 기록 모양 그대로(오래된 것부터)."""
+    with store_conn.cursor(autocommit=True) as cur:
+        cur.execute(
+            """SELECT r.id, r.label, r.started_at, r.n_raw, r.n_upserted, r.n_closed,
+                      r.detail,
+                      COALESCE(jsonb_object_agg(s.site, s.n_raw)
+                               FILTER (WHERE s.site IS NOT NULL), '{}'::jsonb) AS sites
+                 FROM crawl_run r
+                 LEFT JOIN crawl_run_site s ON s.crawl_run_id = r.id
+                WHERE r.detail ? 'fill_rates' AND (%s IS NULL OR r.label = %s)
+                GROUP BY r.id
+                ORDER BY r.started_at""",
+            (label, label),
+        )
+        rows = cur.fetchall()
+    out = []
+    for r in rows:
+        d = r["detail"] or {}
+        out.append({
+            "ts": r["started_at"].isoformat(timespec="seconds"),
+            "keyword": r["label"],
+            "site_counts": {k: int(v) for k, v in (r["sites"] or {}).items()},
+            "raw_total": r["n_raw"] or 0,
+            "deduped": r["n_upserted"] or 0,
+            "closed": r["n_closed"] or 0,
+            "cross_dups": d.get("cross_dups") or 0,
+            "active": d.get("active") or 0,
+            "overridden": d.get("overridden") or 0,
+            "fill_rates": d.get("fill_rates") or {},
+            "fill_rates_by_site": d.get("fill_rates_by_site") or {},
+            "failures": d.get("failures") or [],
+            "anomalies": d.get("anomalies") or [],
+        })
+    return out[-limit:] if limit else out
+
+
+def seed_health(*paths: _Path) -> tuple[int, int]:
+    """health_history.jsonl → crawl_run. 이미 들어온 시각은 건너뛴다(멱등)."""
+    rows: list[dict] = []
+    for path in (paths or (HEALTH_JSONL,)):
+        rows.extend(_read_jsonl(path))
+    rows = [r for r in rows if r.get("ts")]
+    rows.sort(key=lambda r: r["ts"])
+
+    with store_conn.connect() as db:
+        with db.cursor() as cur:
+            cur.execute("SELECT label, started_at FROM crawl_run WHERE detail ? 'fill_rates'")
+            have = {(r["label"], r["started_at"].isoformat(timespec="seconds"))
+                    for r in cur.fetchall()}
+            n = 0
+            for rec in rows:
+                if (rec.get("keyword") or "", rec["ts"]) in have:
+                    continue
+                # 백필은 언제나 새 행이다 — 옛 사이클에 맞는 crawl_run 행이 없다.
+                cur.execute(
+                    """INSERT INTO crawl_run (label, started_at, ended_at, ok,
+                                              n_raw, n_upserted, n_closed, detail)
+                       VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                    (rec.get("keyword") or "", rec["ts"], rec["ts"],
+                     not rec.get("failures"), rec.get("raw_total"),
+                     rec.get("deduped"), rec.get("closed"),
+                     json.dumps({k: rec.get(k) for k in
+                                 ("fill_rates", "fill_rates_by_site", "anomalies",
+                                  "failures", "cross_dups", "overridden", "active")},
+                                ensure_ascii=False)),
+                )
+                run_id = cur.fetchone()["id"]
+                for site, cnt in (rec.get("site_counts") or {}).items():
+                    if site not in HEALTH_SITES:
+                        continue
+                    cur.execute(
+                        "INSERT INTO crawl_run_site (crawl_run_id, site, n_raw, ok) "
+                        "VALUES (%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+                        (run_id, site, int(cnt or 0), int(cnt or 0) > 0),
+                    )
+                n += 1
+        db.commit()
+    return len(rows), n
+
+
 # ── CLI ─────────────────────────────────────────────────────────────
 def _status() -> None:
     with store_conn.cursor(autocommit=True) as cur:
@@ -402,6 +547,13 @@ def _status() -> None:
         print(f"\n행동 기록(engagement_event): {r['n']:,}건 / 세션 {r['s']:,}개"
               + (f"  {r['lo']} ~ {r['hi']}" if r["n"] else " (비어 있음)"))
 
+        cur.execute("""SELECT count(*) n, min(started_at)::date::text lo,
+                              max(started_at)::date::text hi FROM crawl_run
+                        WHERE detail ? 'fill_rates'""")
+        r = cur.fetchone()
+        print(f"크롤 헬스(crawl_run): {r['n']:,}회차"
+              + (f"  {r['lo']} ~ {r['hi']}" if r["n"] else " (비어 있음)"))
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="파일 원장 → 정본 DB")
@@ -409,6 +561,7 @@ def main() -> int:
     ap.add_argument("--trends", action="store_true", help="트렌드만")
     ap.add_argument("--history", action="store_true", help="공고 판본만")
     ap.add_argument("--events", action="store_true", help="행동 기록만")
+    ap.add_argument("--health", action="store_true", help="크롤 헬스만")
     ap.add_argument("--also", action="append", default=[], metavar="JSONL",
                     help="다른 머신에서 가져온 원장 파일을 함께 넣는다 (여러 번 가능)")
     args = ap.parse_args()
@@ -423,7 +576,7 @@ def main() -> int:
         _status()
         return 0
 
-    both = not (args.trends or args.history or args.events)
+    both = not (args.trends or args.history or args.events or args.health)
     if args.trends or both:
         srcs = [TRENDS_JSONL] + [x for x in extra if "trend" in x.name]
         d, m = seed_trends(*srcs)
@@ -435,6 +588,10 @@ def main() -> int:
     if args.events or both:
         n, added = seed_events()
         print(f"행동 기록: 읽은 {n:,}줄 중 {added:,}건 적재  ← events.jsonl(+회전본)")
+    if args.health or both:
+        srcs = [HEALTH_JSONL] + [x for x in extra if "health" in x.name]
+        n, added = seed_health(*srcs)
+        print(f"크롤 헬스: 읽은 {n:,}줄 중 새로 {added:,}회차  ← {', '.join(x.name for x in srcs)}")
     return 0
 
 
