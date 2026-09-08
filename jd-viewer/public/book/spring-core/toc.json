@@ -167,7 +167,7 @@
           "title": "주문과 할인 도메인 실행과 테스트",
           "summary": "동작한다. 그런데 OCP·DIP 를 지키고 있는가.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -182,7 +182,7 @@
           "title": "새로운 할인 정책 개발",
           "summary": "정률 할인으로 바꿔 본다. 인터페이스를 만들어 뒀으니 쉬울 줄 알았는데.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -190,7 +190,7 @@
           "title": "새로운 할인 정책 적용과 문제점",
           "summary": "OrderService 를 고쳐야 한다. **인터페이스에도 의존하고 구현에도 의존하고 있었다.**",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -198,7 +198,7 @@
           "title": "관심사의 분리",
           "summary": "'무엇을 쓸지 고르는 일' 을 밖으로 뺀다. AppConfig 의 등장.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

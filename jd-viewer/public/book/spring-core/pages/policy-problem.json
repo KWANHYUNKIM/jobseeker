@@ -1,0 +1,186 @@
+{
+  "book": "spring-core",
+  "id": "policy-problem",
+  "no": "3.2",
+  "chapter": 3,
+  "title": "새로운 할인 정책 적용과 문제점",
+  "summary": "OrderService 를 고쳐야 한다. 인터페이스에도 의존하고 구현에도 의존하고 있었다.",
+  "minutes": 16,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "새 정책을 적용하면서 무엇을 고쳐야 하는지 정확히 센다.",
+    "한 줄의 코드가 두 개의 의존관계라는 것을 그림으로 설명할 수 있다.",
+    "구현체를 안 넣어 보는 시도가 왜 실패하는지 안다.",
+    "그래서 해법이 어떤 모양이어야 하는지 스스로 도출한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.1절에서 `RateDiscountPolicy` 를 만들었다. 이제 **적용한다.**\n\n그리고 이 절에서 2장이 쌓아 둔 문제가 전부 드러난다."
+    },
+    {
+      "type": "heading",
+      "text": "적용하려면"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "file": "OrderServiceImpl.java",
+      "caption": "이 줄을 고친다",
+      "code": "public class OrderServiceImpl implements OrderService {\n\n    private final MemberRepository memberRepository = new MemoryMemberRepository();\n\n//  private final DiscountPolicy discountPolicy = new FixDiscountPolicy();\n    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();\n    //                                                ^^^^^^^^^^^^^^^^^^^^\n    //                                                여기를 고쳤다\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과 — 잘 동작한다",
+      "sql": "OrderServiceTest > VIP는_1000원_할인() FAILED\n  expected: 1000\n   but was: 1000\n\n// 10000원의 10% 도 1000원이라 이 테스트는 우연히 통과한다.\n// 20000원으로 바꿔 보면 2000원이 나온다 — 정률이 적용된 것이다.",
+      "note": "**테스트 데이터가 나빴다.** 10000원의 10% 가 마침 정액 1000원과 같아서, 정책이 바뀐 것을 테스트가 못 잡는다. 3.1절에서 실패 케이스를 강조한 것과 같은 종류의 문제다."
+    },
+    {
+      "type": "heading",
+      "text": "무엇이 문제인가"
+    },
+    {
+      "type": "figure",
+      "caption": "코드 한 줄이 화살표 두 개다",
+      "ascii": "   기대한 의존관계                        실제 의존관계\n\n\n   OrderServiceImpl                    OrderServiceImpl\n        │                                  │              │\n        │ depends on                       │              │\n        ▼                                  ▼              ▼\n   ┌──────────────────┐            ┌──────────────────┐ ┌──────────────────┐\n   │ DiscountPolicy   │            │ DiscountPolicy   │ │FixDiscountPolicy │\n   │  (interface)     │            │  (interface)     │ │  (class)         │\n   └──────────────────┘            └──────────────────┘ └──────────────────┘\n\n     추상에만 의존한다                 추상에도 구체에도 의존한다\n\n\n   코드 한 줄이 화살표 두 개다\n\n     private final DiscountPolicy discountPolicy = new FixDiscountPolicy();\n                   ^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^^\n                   왼쪽 화살표                          오른쪽 화살표\n\n\n   그래서 정책을 바꾸려면\n\n     new FixDiscountPolicy()  ->  new RateDiscountPolicy()\n\n   기능을 확장했는데 OrderServiceImpl 을 열어서 고쳤다."
+    },
+    {
+      "type": "table",
+      "caption": "어긴 원칙",
+      "note": "1.4절과 2.8절에서 예고한 그대로다. **DIP 위반이 원인이고 OCP 위반이 결과다.**",
+      "columns": [
+        "원칙",
+        "무엇을 어겼나",
+        "증거"
+      ],
+      "rows": [
+        [
+          "**DIP**",
+          "추상만이 아니라 **구체에도 의존**한다",
+          "`OrderServiceImpl` 안에 `FixDiscountPolicy` 라는 이름이 있다"
+        ],
+        [
+          "**OCP**",
+          "확장했는데 **기존 코드를 고쳤다**",
+          "정책을 추가만 했는데 `OrderServiceImpl` 을 열었다"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 '인터페이스에 의존한다' 고 착각했나",
+      "md": "코드를 다시 보자.\n\n```java\nprivate final DiscountPolicy discountPolicy = new FixDiscountPolicy();\n```\n\n**필드 타입이 인터페이스**다. 그래서 \"나는 추상에 의존한다\" 고 생각하기 쉽다.\n\n그런데 `=` 오른쪽에 구현 클래스 이름이 있다. **이 파일은 `FixDiscountPolicy` 를 컴파일 시점에 알아야 한다** — import 도 필요하다.\n\n의존한다는 것은 **\"그것이 바뀌면 나도 바뀔 수 있다\"** 는 뜻이었다(1.4절). `FixDiscountPolicy` 클래스 이름이 바뀌면 이 파일이 컴파일되지 않는다. 그러면 의존하는 것이다.\n\n**타입만 보고 판단하면 안 된다.** import 문을 보는 것이 더 정확하다."
+    },
+    {
+      "type": "heading",
+      "text": "그럼 구현체를 안 넣으면?"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "DIP 만 생각하고 지워 본다",
+      "code": "public class OrderServiceImpl implements OrderService {\n\n    private final DiscountPolicy discountPolicy;   // 선언만\n\n    // 아무도 값을 넣어 주지 않는다\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "error: variable discountPolicy might not have been initialized\n\n// final 을 빼면 컴파일은 되지만\nOrderServiceTest > VIP는_1000원_할인() FAILED\n  java.lang.NullPointerException:\n    Cannot invoke \"DiscountPolicy.discount(...)\" because \"this.discountPolicy\" is null",
+      "note": "**당연하다.** 누군가는 실제 객체를 넣어 줘야 한다. DIP 를 지키려고 구현체 이름을 지웠더니 아무것도 안 들어오게 됐다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "여기가 막다른 곳처럼 보이는 지점이다",
+      "md": "정리하면 이렇다.\n\n- 구현체를 **직접 만들면** DIP 를 어긴다\n- 구현체를 **안 만들면** NPE 가 난다\n\n두 선택지밖에 없어 보인다. 그리고 실제로 `OrderServiceImpl` 안에서는 두 선택지뿐이다.\n\n**그래서 답은 `OrderServiceImpl` 밖에 있다.**\n\n> 누군가 대신 `DiscountPolicy` 구현 객체를 만들어서 **넣어 줘야** 한다.\n\n이 문장이 3장의 나머지 전부다. 1.5절에서 \"공연 기획자\" 로 비유했던 것이고, 3.3절에서 그 기획자를 만든다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "테스트 데이터도 같이 고쳐 둔다",
+      "md": "위에서 10000원의 10% 가 1000원이라 정책 변경을 테스트가 못 잡았다. **정액과 정률이 같은 값을 내는 금액**을 테스트에 쓰면 안 된다.\n\n```java\nOrder order = orderService.createOrder(memberId, \"itemA\", 20000);\nassertThat(order.getDiscountPrice()).isEqualTo(2000);   // 정률이면 2000\n```\n\n앞 책 4.5절에서 \"같은 값으로 setter 를 부르면 UPDATE 가 안 나간다\" 를 확인했던 것과 비슷한 감각이다 — **테스트가 실제로 그것을 검증하고 있는지**를 의심해 봐야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"필드 타입이 인터페이스면 DIP 를 지킨 건가요?\"** → 아니다. `= new Impl()` 이 있으면 구체에도 의존한다. **import 문을 보는 것이 더 정확한 판단**이다.\n- **\"DIP 를 지키려고 구현체를 안 만들면?\"** → NPE 가 난다. 누군가는 실제 객체를 넣어 줘야 한다.\n- **\"그럼 어떻게 하나요?\"** → 클래스 밖에서 만들어 **주입**한다. 그 '밖' 을 만드는 것이 DI 컨테이너다.\n- **\"OCP 와 DIP 중 무엇이 원인인가요?\"** → DIP 가 원인, OCP 가 결과다. 구체에 의존하니까 구체가 바뀔 때 고치게 된다."
+    }
+  ],
+  "recap": [
+    "새 정책을 적용하려면 `OrderServiceImpl` 을 고쳐야 한다 — **OCP 위반의 실물**이다.",
+    "`private final DiscountPolicy p = new FixDiscountPolicy();` **한 줄이 화살표 두 개**다.",
+    "필드 타입이 인터페이스여도 DIP 를 지킨 것이 아니다. **import 문을 보는 편이 정확하다.**",
+    "구현체를 안 만들면 NPE 가 난다 — 누군가는 실제 객체를 넣어 줘야 한다.",
+    "**`OrderServiceImpl` 안에는 두 선택지뿐이다. 그래서 답은 밖에 있다.**",
+    "10000원의 10% 가 1000원이라 테스트가 정책 변경을 못 잡았다. 테스트 데이터도 의심해야 한다."
+  ],
+  "drills": [
+    {
+      "task": "`RateDiscountPolicy` 로 바꾸고 주문 금액을 20000원으로 해서 테스트한다.",
+      "done_when": "2000원 할인이 나오는 것을 확인했다.",
+      "minutes": 15
+    },
+    {
+      "task": "`OrderServiceImpl` 의 import 문을 보고 구현 클래스가 몇 개나 import 되어 있는지 센다.",
+      "done_when": "`MemoryMemberRepository` 와 `RateDiscountPolicy` 둘이 나왔다.",
+      "hint": "같은 패키지면 import 가 없을 수 있다. 그때는 클래스 이름 등장 횟수로 센다.",
+      "minutes": 10
+    },
+    {
+      "task": "필드에서 `= new RateDiscountPolicy()` 를 지우고 실행한다.",
+      "done_when": "컴파일 오류 또는 NPE 를 직접 봤다. **이 실습이 3.3절이 필요한 이유다.**",
+      "minutes": 15
+    },
+    {
+      "task": "\"누가 구현체를 넣어 줄 수 있을까\" 를 세 가지쯤 떠올려 적어 본다.",
+      "done_when": "생성자·setter·별도 설정 클래스 같은 후보가 나왔다. 3.3절과 비교한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "새 할인 정책을 적용하면서 무엇을 고쳤는가?",
+      "a": "`OrderServiceImpl` 의 필드 선언 한 줄이다. 기능을 확장했는데 기존 코드를 열어 고쳤으므로 OCP 위반이다."
+    },
+    {
+      "q": "필드 타입이 인터페이스인데도 DIP 위반인 이유는?",
+      "a": "`= new FixDiscountPolicy()` 때문에 그 파일이 구현 클래스를 컴파일 시점에 알아야 한다. 구현 클래스가 바뀌면 이 파일도 영향을 받으므로 의존하는 것이다."
+    },
+    {
+      "q": "DIP 를 지키려고 구현체 생성을 지우면?",
+      "a": "`final` 이면 컴파일 오류, 아니면 NPE 가 난다. 누군가는 실제 객체를 넣어 줘야 하기 때문이다."
+    },
+    {
+      "q": "`OrderServiceImpl` 안에서 이 문제를 풀 수 없는 이유는?",
+      "a": "직접 만들면 DIP 위반, 안 만들면 NPE — 두 선택지뿐이다. 해법은 클래스 밖에서 만들어 주입하는 것이다."
+    },
+    {
+      "q": "10000원 테스트가 정책 변경을 못 잡은 이유는?",
+      "a": "10000원의 10% 가 정액 할인 1000원과 같아서 기대값이 우연히 일치했다. 테스트 데이터가 두 정책을 구분하지 못했다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "주입",
+      "en": "injection",
+      "what": "필요한 객체를 밖에서 넣어 주는 것. 3.3절에서 생성자로 구현한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

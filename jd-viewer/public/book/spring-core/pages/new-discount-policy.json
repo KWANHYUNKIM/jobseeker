@@ -1,0 +1,145 @@
+{
+  "book": "spring-core",
+  "id": "new-discount-policy",
+  "no": "3.1",
+  "chapter": 3,
+  "title": "새로운 할인 정책 개발",
+  "summary": "정률 할인으로 바꿔 본다. 인터페이스를 만들어 뒀으니 쉬울 줄 알았는데.",
+  "minutes": 12,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "정률 할인 정책을 구현하고 테스트할 수 있다.",
+    "인터페이스가 있어서 '확장' 부분은 실제로 쉽다는 것을 확인한다.",
+    "그런데 아직 적용은 안 됐다는 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절에서 예고된 변경이 왔다.\n\n> **\"할인 정책을 정률 10% 로 바꿔 주세요. VIP 는 주문 금액의 10% 를 할인해 주세요.\"**\n\n인터페이스를 만들어 뒀으니 새 클래스만 추가하면 될 것 같다. **절반은 맞다.**"
+    },
+    {
+      "type": "heading",
+      "text": "정률 할인 정책"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "RateDiscountPolicy.java",
+      "code": "public class RateDiscountPolicy implements DiscountPolicy {\n\n    private final int discountPercent = 10;\n\n    @Override\n    public int discount(Member member, int price) {\n        if (member.getGrade() == Grade.VIP) {\n            return price * discountPercent / 100;\n        }\n        return 0;\n    }\n}",
+      "note": "2.7절에서 `FixDiscountPolicy` 가 안 쓰던 `price` 파라미터가 **여기서 쓰인다.** 인터페이스를 설계할 때 넣어 둔 것이 여기서 값어치를 낸다(2.6절)."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "인터페이스에 미리 넣어 둔 파라미터",
+      "md": "정액 할인만 있을 때는 `price` 가 필요 없었다. 그래도 인터페이스에 넣어 둔 이유는 **할인 계산에 가격이 필요할 수 있다고 봤기 때문**이다.\n\n만약 `discount(Member member)` 로 만들었다면 지금 **인터페이스를 고쳐야 하고**, 그러면 기존 구현체와 모든 클라이언트가 다 바뀐다(1.3절).\n\n인터페이스 설계에서 **필요할 것 같은 정보는 미리 넘기는 편**이 대체로 낫다. 안 쓰면 그만이지만, 없으면 시그니처를 바꿔야 한다. 다만 과하면 인터페이스가 지저분해지므로 균형의 문제다."
+    },
+    {
+      "type": "heading",
+      "text": "테스트부터"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "RateDiscountPolicyTest.java",
+      "code": "class RateDiscountPolicyTest {\n\n    RateDiscountPolicy discountPolicy = new RateDiscountPolicy();\n\n    @Test\n    void VIP는_10퍼센트_할인() {\n        Member member = new Member(1L, \"memberVIP\", Grade.VIP);\n\n        int discount = discountPolicy.discount(member, 10000);\n\n        assertThat(discount).isEqualTo(1000);\n    }\n\n    @Test\n    void VIP가_아니면_할인_없음() {\n        Member member = new Member(2L, \"memberBASIC\", Grade.BASIC);\n\n        int discount = discountPolicy.discount(member, 10000);\n\n        assertThat(discount).isEqualTo(0);\n    }\n}",
+      "note": "**두 번째 테스트를 빠뜨리기 쉽다.** 성공 케이스만 짜면 \"모두에게 10% 할인\" 같은 버그를 못 잡는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "RateDiscountPolicyTest > VIP는_10퍼센트_할인() PASSED\nRateDiscountPolicyTest > VIP가_아니면_할인_없음() PASSED\n\nBUILD SUCCESSFUL\n5 tests completed",
+      "note": "**새 정책이 잘 동작한다.** 기존 코드는 한 줄도 안 고쳤다."
+    },
+    {
+      "type": "heading",
+      "text": "여기까지는 OCP 를 지켰다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "'확장' 부분은 정말로 쉬웠다",
+      "md": "지금까지 한 일을 정리하면.\n\n- **클래스 하나를 추가**했다 (`RateDiscountPolicy`)\n- **테스트 하나를 추가**했다\n- **기존 코드는 한 줄도 안 고쳤다**\n\n이게 OCP 의 \"확장에는 열려 있다\" 다. 인터페이스를 만들어 둔 덕분이고, **1.3절과 2.6절의 판단이 옳았다는 증거**다.\n\n만약 `DiscountPolicy` 인터페이스가 없었다면? `OrderServiceImpl` 안에 있는 할인 계산 `if` 문을 찾아서 고쳐야 했을 것이다. 그리고 그 로직을 쓰는 다른 곳이 있다면 거기도.\n\n**문제는 다음 절이다.** 이 새 정책을 실제로 쓰려면 무엇을 해야 하는가."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "아직 아무 데서도 안 쓰인다",
+      "md": "테스트는 통과하지만 **`OrderServiceImpl` 은 여전히 `FixDiscountPolicy` 를 쓴다.** 지금 주문을 만들면 1000원 정액 할인이 나온다.\n\n```java\n// OrderServiceImpl - 안 바뀌었다\nprivate final DiscountPolicy discountPolicy = new FixDiscountPolicy();\n```\n\n새 정책을 적용하려면 이 줄을 고쳐야 하고, **그 순간 OCP 의 '변경에는 닫혀 있다' 가 깨진다.**\n\n3.2절이 그 이야기다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"인터페이스를 만들어 두면 OCP 를 지킬 수 있나요?\"** → 확장(새 구현 추가)은 지켜진다. **하지만 그것을 적용하는 순간 클라이언트를 고치게 되므로 변경 부분이 깨진다.** 이 구분을 하면 잘 아는 것으로 읽힌다.\n- **\"인터페이스 파라미터를 넉넉히 두는 게 좋나요?\"** → 필요할 것 같은 정보는 미리 넘기는 편이 낫다. 안 쓰면 그만이지만 없으면 시그니처를 바꿔야 하고, 그러면 모든 구현체와 클라이언트가 바뀐다.\n- **\"할인 정책 테스트에서 무엇을 빠뜨리기 쉽나요?\"** → 실패 케이스. VIP 가 아닐 때 0원인지 확인하지 않으면 '모두에게 할인' 버그를 못 잡는다."
+    }
+  ],
+  "recap": [
+    "`RateDiscountPolicy` 클래스 하나를 추가했고 **기존 코드는 한 줄도 안 고쳤다.**",
+    "2.6절에서 인터페이스에 넣어 둔 `price` 파라미터가 여기서 쓰인다.",
+    "필요할 것 같은 정보를 미리 넘기는 편이 낫다 — 없으면 시그니처를 바꿔야 하고 파급이 크다.",
+    "테스트는 성공 케이스와 **실패 케이스 둘 다** 짠다. 후자가 '모두에게 할인' 버그를 잡는다.",
+    "여기까지는 OCP 의 '확장에는 열려 있다' 를 지켰다.",
+    "**그런데 아직 아무 데서도 안 쓰인다.** 적용하는 순간 '변경에는 닫혀 있다' 가 깨진다."
+  ],
+  "drills": [
+    {
+      "task": "`RateDiscountPolicy` 와 테스트 두 개를 만든다.",
+      "done_when": "5 tests completed 를 봤다.",
+      "minutes": 20
+    },
+    {
+      "task": "실패 케이스 테스트를 지우고, `discount()` 에서 등급 확인을 빼 본다.",
+      "done_when": "테스트가 여전히 통과하는 것을 확인했다. 실패 케이스가 없으면 못 잡는 버그다.",
+      "minutes": 15
+    },
+    {
+      "task": "주문을 실제로 만들어 할인액을 확인한다.",
+      "done_when": "여전히 1000원 정액인 것을 확인했다. 새 정책이 적용되지 않았다는 뜻이다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "새 할인 정책을 추가하면서 기존 코드를 몇 줄 고쳤는가?",
+      "a": "한 줄도 안 고쳤다. 클래스와 테스트를 추가만 했다. 이것이 OCP 의 '확장에는 열려 있다' 다."
+    },
+    {
+      "q": "`FixDiscountPolicy` 가 안 쓰던 `price` 파라미터가 여기서 어떻게 쓰이는가?",
+      "a": "정률 계산에 필요하다(`price * 10 / 100`). 인터페이스 설계 때 미리 넣어 둔 덕분에 시그니처를 안 바꿔도 됐다."
+    },
+    {
+      "q": "할인 정책 테스트에서 실패 케이스가 왜 필요한가?",
+      "a": "성공 케이스만으로는 '등급 확인 없이 모두에게 할인' 같은 버그를 잡을 수 없기 때문이다."
+    },
+    {
+      "q": "지금 주문을 만들면 어떤 할인이 적용되는가?",
+      "a": "여전히 정액 1000원이다. `OrderServiceImpl` 이 `FixDiscountPolicy` 를 쓰고 있고, 그걸 바꾸는 것이 3.2절의 주제다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "정률 할인",
+      "en": "rate discount",
+      "what": "가격의 일정 비율을 할인. 가격 정보가 필요하다."
+    },
+    {
+      "term": "확장에는 열려 있다",
+      "en": "open for extension",
+      "what": "새 구현을 추가하는 것이 기존 코드 수정 없이 가능한 상태."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

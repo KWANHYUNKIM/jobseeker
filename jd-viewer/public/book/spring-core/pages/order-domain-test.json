@@ -1,0 +1,170 @@
+{
+  "book": "spring-core",
+  "id": "order-domain-test",
+  "no": "2.8",
+  "chapter": 2,
+  "title": "주문과 할인 도메인 실행과 테스트",
+  "summary": "동작한다. 그런데 OCP·DIP 를 지키고 있는가.",
+  "minutes": 14,
+  "updated_at": "2026-09-09",
+  "goals": [
+    "주문 도메인을 여러 경우로 검증할 수 있다.",
+    "2장이 만든 코드 전체를 한 장으로 볼 수 있다.",
+    "지금 코드가 어떤 원칙을 어기고 있는지 파일 단위로 셀 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.7절에서 한 케이스만 확인했다. **경계를 채우고 2장을 닫는다.**"
+    },
+    {
+      "type": "heading",
+      "text": "테스트를 제대로"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "file": "OrderServiceTest.java",
+      "code": "class OrderServiceTest {\n\n    MemberService memberService = new MemberServiceImpl();\n    OrderService orderService = new OrderServiceImpl();\n\n    @Test\n    void VIP는_1000원_할인() {\n        Long memberId = 1L;\n        memberService.join(new Member(memberId, \"memberVIP\", Grade.VIP));\n\n        Order order = orderService.createOrder(memberId, \"itemA\", 10000);\n\n        assertThat(order.getDiscountPrice()).isEqualTo(1000);\n        assertThat(order.calculatePrice()).isEqualTo(9000);\n    }\n\n    @Test\n    void BASIC은_할인_없음() {\n        Long memberId = 2L;\n        memberService.join(new Member(memberId, \"memberBasic\", Grade.BASIC));\n\n        Order order = orderService.createOrder(memberId, \"itemA\", 10000);\n\n        assertThat(order.getDiscountPrice()).isEqualTo(0);\n    }\n}",
+      "note": "**두 등급 다 확인한다.** 할인 로직에서 분기는 하나뿐이니 이 둘로 경계가 채워진다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실행 결과",
+      "sql": "OrderServiceTest > VIP는_1000원_할인() PASSED\nOrderServiceTest > BASIC은_할인_없음() PASSED\nMemberServiceTest > join() PASSED\n\nBUILD SUCCESSFUL\n3 tests completed",
+      "note": "**요구사항을 전부 만족한다.** 2장의 목표는 여기까지다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "테스트 이름을 한글로 쓰는 것",
+      "md": "`VIP는_1000원_할인()` 처럼 한글 메서드명을 쓰는 팀이 많다. 자바에서 문법적으로 문제가 없고, **테스트 이름은 코드가 아니라 문서**이기 때문이다.\n\n실패했을 때 리포트에 이렇게 찍힌다.\n\n```\nOrderServiceTest > VIP는_1000원_할인() FAILED\n```\n\n`testCreateOrder1()` 보다 훨씬 빨리 읽힌다. JUnit 5 의 `@DisplayName` 을 쓰는 방법도 있는데, 메서드명을 그냥 한글로 쓰면 어노테이션 한 줄이 줄어든다.\n\n다만 **운영 코드에는 쓰지 않는다.** 빌드 도구나 라이브러리가 메서드명을 문자열로 다루는 경우가 있어서 위험하다."
+    },
+    {
+      "type": "heading",
+      "text": "2장이 만든 것 전부"
+    },
+    {
+      "type": "figure",
+      "caption": "전체 구조",
+      "ascii": "   2장이 만든 것 전부\n\n\n   MemberServiceImpl                  OrderServiceImpl\n        │                                  │        │\n        │ new                              │ new    │ new\n        ▼                                  ▼        ▼\n   ┌──────────────────┐   ┌──────────────────┐ ┌──────────────────┐\n   │MemoryMemberRepo  │   │MemoryMemberRepo  │ │FixDiscountPolicy │\n   │  (instance #1)   │   │  (instance #2)   │ │                  │\n   └──────────────────┘   └──────────────────┘ └──────────────────┘\n            │                      │\n            └──────────┬───────────┘\n                       ▼\n              static Map<Long, Member> store\n                       ^\n                       └── 인스턴스가 둘인데 데이터는 하나다.\n                           그래서 우연히 동작한다.\n\n\n   구현 클래스 이름을 알고 있는 곳\n\n     MemberServiceImpl  ->  MemoryMemberRepository\n     OrderServiceImpl   ->  MemoryMemberRepository\n     OrderServiceImpl   ->  FixDiscountPolicy\n\n   저장소를 바꾸면 두 파일, 할인 정책을 바꾸면 한 파일을 고친다."
+    },
+    {
+      "type": "table",
+      "caption": "만든 파일",
+      "note": "**인터페이스 넷, 구현 넷, 도메인 셋.** 작지만 이 책의 3~9장이 전부 이 코드를 다룬다.",
+      "columns": [
+        "구분",
+        "파일"
+      ],
+      "rows": [
+        [
+          "도메인",
+          "`Member`, `Grade`, `Order`"
+        ],
+        [
+          "회원 역할",
+          "`MemberService`, `MemberRepository`"
+        ],
+        [
+          "회원 구현",
+          "`MemberServiceImpl`, `MemoryMemberRepository`"
+        ],
+        [
+          "주문 역할",
+          "`OrderService`, `DiscountPolicy`"
+        ],
+        [
+          "주문 구현",
+          "`OrderServiceImpl`, `FixDiscountPolicy`"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "그래서, OCP·DIP 를 지키고 있는가"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "지키지 않고 있다",
+      "md": "1.4절의 기준으로 세어 보면 이렇다.\n\n**DIP 위반** — 구현 클래스 이름을 알고 있는 곳이 **세 군데**다.\n\n```java\n// MemberServiceImpl\nnew MemoryMemberRepository()\n\n// OrderServiceImpl\nnew MemoryMemberRepository()\nnew FixDiscountPolicy()\n```\n\n**OCP 위반** — 무엇을 바꾸면 어디를 고쳐야 하는지 세어 보면.\n\n| 바꾸는 것 | 고쳐야 하는 파일 |\n|---|---|\n| 저장소를 DB 로 | `MemberServiceImpl`, `OrderServiceImpl` |\n| 할인 정책을 정률로 | `OrderServiceImpl` |\n\n**기능을 확장하는데 기존 코드를 고친다.** 정의 그대로 OCP 위반이다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그런데 아직 증상이 없다",
+      "md": "테스트 세 개가 전부 통과한다. 요구사항도 다 만족한다. **코드만 보고는 이게 문제인지 알기 어렵다.**\n\n그래서 3장은 요구사항을 하나 바꾸는 것으로 시작한다.\n\n> **\"할인 정책을 정률 10% 로 바꿔 주세요.\"**\n\n2.2절에서 예고된 변경이다. 그리고 이 변경 하나가 위 표를 실제 작업량으로 바꿔 준다. **설계 결함은 그때 처음 보인다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "- **\"이 코드가 DIP 를 어긴 곳은 몇 군데인가요?\"** → 세 군데. 구현 클래스 이름이 나타나는 모든 `new` 가 위반 지점이다.\n- **\"동작하고 테스트도 통과하는데 왜 문제인가요?\"** → 설계 결함은 동작으로 드러나지 않는다. **요구사항이 바뀔 때 고칠 곳의 개수**로 드러난다.\n- **\"테스트 이름을 한글로 써도 되나요?\"** → 테스트는 문서에 가까워서 괜찮다. 실패 리포트가 훨씬 빨리 읽힌다. 다만 운영 코드에는 쓰지 않는다."
+    }
+  ],
+  "recap": [
+    "두 등급을 다 검증해 경계를 채웠다. 테스트 세 개가 전부 통과한다.",
+    "테스트 이름은 문서에 가까워 한글로 써도 된다. 운영 코드에는 쓰지 않는다.",
+    "2장이 만든 것 — 인터페이스 넷, 구현 넷, 도메인 셋.",
+    "**DIP 위반이 세 군데** — 구현 클래스 이름이 나타나는 `new` 가 전부 위반 지점이다.",
+    "**OCP 위반** — 저장소를 바꾸면 두 파일, 할인 정책을 바꾸면 한 파일을 고쳐야 한다.",
+    "그런데 증상이 없다. 3장이 요구사항을 바꿔 그 표를 실제 작업량으로 만든다."
+  ],
+  "drills": [
+    {
+      "task": "BASIC 등급 테스트를 추가하고 두 테스트를 모두 통과시킨다.",
+      "done_when": "3 tests completed 를 봤다.",
+      "minutes": 15
+    },
+    {
+      "task": "구현 클래스 이름이 나타나는 `new` 를 프로젝트 전체에서 찾아 센다.",
+      "done_when": "세 군데인 것을 확인했다. 위치도 적어 둔다 — 3.3절에서 사라지는 것을 비교할 것이다.",
+      "minutes": 10
+    },
+    {
+      "task": "\"저장소를 DB 로 바꾼다\" 를 가정하고 고쳐야 할 파일과 줄 수를 센다.",
+      "done_when": "숫자를 적었다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "지금 코드에서 DIP 를 어긴 곳은 몇 군데인가?",
+      "a": "세 군데다. `MemberServiceImpl` 의 `new MemoryMemberRepository()`, `OrderServiceImpl` 의 `new MemoryMemberRepository()` 와 `new FixDiscountPolicy()`."
+    },
+    {
+      "q": "테스트가 다 통과하는데 왜 설계가 잘못됐다고 하는가?",
+      "a": "설계 결함은 동작이 아니라 '요구사항이 바뀔 때 고칠 곳의 개수' 로 드러나기 때문이다. 지금은 바뀐 요구사항이 없어서 증상이 없다."
+    },
+    {
+      "q": "테스트 메서드 이름을 한글로 쓰는 것이 괜찮은 이유는?",
+      "a": "테스트는 코드보다 문서에 가깝고, 실패 리포트에 그대로 찍혀 훨씬 빨리 읽히기 때문이다. 다만 운영 코드에는 쓰지 않는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "경계값 테스트",
+      "en": "",
+      "what": "분기마다 대표 케이스를 채우는 것. 여기서는 VIP 와 BASIC 둘."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JUnit 5 User Guide",
+      "url": "https://junit.org/junit5/docs/current/user-guide/",
+      "publisher": "JUnit Team"
+    },
+    {
+      "title": "Spring Framework Reference — IoC Container",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "스프링 핵심 원리 - 기본편 (차례 출처)",
+      "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
