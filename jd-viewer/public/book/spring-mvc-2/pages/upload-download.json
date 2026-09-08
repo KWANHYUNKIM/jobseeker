@@ -1,0 +1,156 @@
+{
+ "book": "spring-mvc-2",
+ "id": "upload-download",
+ "no": "12.5",
+ "chapter": 12,
+ "title": "다운로드",
+ "summary": "Content-Disposition 과 한글 파일명.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Content-Disposition` 으로 다운로드를 만들 수 있다.",
+  "한글 파일명 문제를 안다.",
+  "이미지 표시와 다운로드의 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**올린 파일을 내보내는 쪽**이다. 12.4절에서 화면에 두 가지가 나왔다.\n\n```html\n<img src=\"/images/a1b2c3d4-....png\">      <- 화면에 표시\n<a href=\"/attach/1\">명세서.pdf</a>         <- 내려받기\n```\n\n**둘의 차이가 헤더 하나**다."
+  },
+  {
+   "type": "figure",
+   "caption": "inline 과 attachment",
+   "ascii": "   Content-Disposition: inline\n        |\n        +--> 브라우저가 열 수 있으면 화면에 띄운다\n\n   Content-Disposition: attachment; filename=\"cat.png\"\n        |\n        +--> 내려받기 창이 뜬다\n\n   korean filename\n   ---------------\n   filename=\"명세서.pdf\"                broken in some browsers\n   filename*=UTF-8''%EB%AA%85%EC%84%B8%EC%84%9C.pdf   RFC 5987\n\n   둘을 같이 보내면 이해하는 쪽이 골라 쓴다",
+   "note": "**같은 파일도 헤더에 따라 다르게** 동작한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "이미지 표시",
+   "code": "@ResponseBody\n@GetMapping(\"/images/{filename}\")\npublic Resource downloadImage(@PathVariable String filename) throws MalformedURLException {\n    return new UrlResource(\"file:\" + fileStore.getFullPath(filename));\n}",
+   "note": "**`Resource` 를 반환**하면 `ResourceHttpMessageConverter` 가 바이트를 내보낸다 — 1편 7.12절의 그 컨버터 목록에 있던 것이다.\n\n**`Content-Disposition` 이 없으니 `inline`** 이다. `<img>` 로 표시된다.\n\n**`UrlResource(\"file:...\")`** 가 파일 시스템의 자원을 가리킨다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "다운로드",
+   "code": "@GetMapping(\"/attach/{itemId}\")\npublic ResponseEntity<Resource> downloadAttach(@PathVariable Long itemId)\n        throws MalformedURLException {\n\n    Item item = itemRepository.findById(itemId);\n    String storeFileName = item.getAttachFile().getStoreFileName();\n    String uploadFileName = item.getAttachFile().getUploadFileName();\n\n    UrlResource resource = new UrlResource(\"file:\" + fileStore.getFullPath(storeFileName));\n\n    String encodedUploadFileName = UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);\n    String contentDisposition = \"attachment; filename=\\\"\" + encodedUploadFileName + \"\\\"\";\n\n    return ResponseEntity.ok()\n            .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)\n            .body(resource);\n}",
+   "note": "**저장 이름으로 찾고 원본 이름으로 내보낸다** — 12.4절에서 둘을 나눈 값이 여기서 드러난다.\n\n**`UriUtils.encode`** 로 퍼센트 인코딩한다. 한글이 헤더에 그대로 들어가면 깨진다.\n\n**`ResponseEntity`** 를 쓰는 것은 헤더를 붙여야 해서다 — 10.6절에서 상태 코드를 정할 때 쓴 그것."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "헤더에 한글을 넣을 수 없다",
+   "md": "**HTTP 헤더는 원칙적으로 ASCII** 다.\n\n```\nContent-Disposition: attachment; filename=\"명세서.pdf\"\n```\n\n**브라우저마다 다르게 해석**한다. 어떤 것은 UTF-8 로 읽고 어떤 것은 Latin-1 로 읽어 **글자가 깨진다.**\n\n**표준 방법이 있다** — RFC 5987 의 `filename*`.\n\n```\nContent-Disposition: attachment;\n    filename=\"download.pdf\";\n    filename*=UTF-8''%EB%AA%85%EC%84%B8%EC%84%9C.pdf\n```\n\n**둘을 같이 보낸다.** `filename*` 을 이해하는 브라우저는 그것을, 모르는 쪽은 `filename` 을 쓴다.\n\n**요즘 브라우저는 다 `filename*` 을 안다.** 다만 **모바일 앱이나 다운로드 매니저**가 옛날 것일 수 있다.\n\n> **가장 안전한 방법은 파일명에 한글을 안 쓰는 것**이지만, 사용자가 올린 이름을 그대로 돌려줘야 하니 피할 수 없다.\n\n**따옴표 안의 따옴표**도 문제다. 파일명에 `\"` 가 있으면 헤더가 깨진다 — **인코딩이 그것도 막아 준다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "inline 이 위험할 때",
+   "md": "**`Content-Disposition` 을 안 붙이면 브라우저가 열려고** 한다.\n\n**HTML 파일을 올려 두면**\n\n```\nGET /images/uploaded.html\n\nHTTP/1.1 200\nContent-Type: text/html\n```\n\n**그 HTML 이 우리 도메인에서 실행**된다. **2.2절의 XSS** 와 같은 결과인데 **이스케이프로 막을 수 없다** — 파일 자체가 HTML 이다.\n\n**쿠키도 접근된다.** 같은 도메인이니까.\n\n**대응 셋**\n\n| | |\n|---|---|\n| **항상 `attachment`** | 표시가 필요 없으면 이게 안전 |\n| **`X-Content-Type-Options: nosniff`** | 브라우저의 타입 추측을 막는다 |\n| **다른 도메인에서 서빙** | 쿠키가 안 간다 |\n\n**세 번째가 정석**이다. `cdn.example.com` 처럼 **별도 도메인**에서 내보내면 우리 쿠키와 무관해진다.\n\n**이미지를 표시해야 하면** `Content-Type` 을 서버가 정해서 보낸다 — **업로드된 파일의 것을 믿지 않고** 확장자나 실제 내용으로 판단한다(12.6절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "인가 검사를 잊지 않는다",
+   "md": "```java\n@GetMapping(\"/attach/{itemId}\")\npublic ResponseEntity<Resource> downloadAttach(@PathVariable Long itemId) { ... }\n```\n\n**누구나 받을 수 있다.** 12.4절에서 UUID 로 추측을 막았는데 **여기는 `itemId` 로 순회**할 수 있다.\n\n```java\n@GetMapping(\"/attach/{itemId}\")\npublic ResponseEntity<Resource> downloadAttach(@PathVariable Long itemId,\n                                               @Login Member member) {\n    Item item = itemRepository.findById(itemId);\n    if (!item.getOwnerId().equals(member.getId())) {\n        throw new NoPermissionException();\n    }\n    ...\n}\n```\n\n**7.8절의 `@Login`** 과 **10장의 예외**가 여기서 만난다.\n\n**6.5절에서 본 그 구분**이다.\n\n> **값의 모양은 검증이, 써도 되는지는 인가**가 본다.\n\n**파일은 특히 놓치기 쉽다** — 화면에는 링크가 없으니 안전하다고 생각하기 쉽다. **7.9절에서 본 그 착각**이다.\n\n> **화면을 감춘 것과 접근을 막은 것은 다르다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 이미지 표시 - Content-Disposition 이 없다\nGET /images/a1b2c3d4-e5f6.png HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: image/png\nContent-Length: 12345\n\n(binary)\n\n# 브라우저가 화면에 그린다\n\n# 다운로드\nGET /attach/1 HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: application/octet-stream\nContent-Disposition: attachment; filename=\"%EB%AA%85%EC%84%B8%EC%84%9C.pdf\"\nContent-Length: 54321\n\n(binary)\n\n# 내려받기 창이 뜨고 파일명이 명세서.pdf 로 저장된다\n\n# 인코딩 없이 보내면\nContent-Disposition: attachment; filename=\"명세서.pdf\"\n\n# 브라우저에 따라\n#   Chrome    명세서.pdf\n#   일부 환경  ���.pdf\n\n# 남의 파일도 받아진다\nGET /attach/2 HTTP/1.1\n\nHTTP/1.1 200 ",
+   "note": "**앞의 두 응답이 같은 종류의 데이터**인데 헤더 하나로 동작이 갈린다. 첫째는 화면에 그려지고 둘째는 저장 창이 뜬다.\n\n**`%EB%AA%85...` 이 `명세서` 의 UTF-8 퍼센트 인코딩**이다. 브라우저가 디코딩해서 원래 이름으로 저장한다.\n\n**셋째가 인코딩을 빠뜨렸을 때**다. 환경에 따라 글자가 깨진다.\n\n**맨 아래가 인가를 안 한 결과**다. `itemId` 만 바꿔도 200 이 온다 — **6.5절에서 본 `id=2` 문제**가 파일에서 반복된다."
+  }
+ ],
+ "recap": [
+  "**`Content-Disposition` 하나로 표시와 다운로드**가 갈린다.",
+  "**없으면 `inline`** — 브라우저가 열려고 한다.",
+  "**`Resource` 를 반환**하면 컨버터가 바이트를 내보낸다.",
+  "**저장 이름으로 찾고 원본 이름으로** 내보낸다 — 12.4절의 값.",
+  "**HTTP 헤더는 ASCII** 라 한글이 깨진다.",
+  "**`UriUtils.encode`** 로 퍼센트 인코딩한다.",
+  "**`filename*` (RFC 5987)** 을 같이 보내는 것이 표준이다.",
+  "**HTML 을 올려 두고 `inline` 이면 XSS** 가 된다 — 이스케이프로 못 막는다.",
+  "**별도 도메인에서 서빙**하는 것이 정석이다.",
+  "**인가 검사를 잊지 않는다** — `itemId` 로 순회된다."
+ ],
+ "drills": [
+  {
+   "task": "이미지를 `Resource` 로 내보낸다.",
+   "done_when": "`<img>` 로 표시되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Content-Disposition: attachment` 를 붙인다.",
+   "done_when": "내려받기 창이 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "한글 파일명을 인코딩 없이 보낸다.",
+   "done_when": "브라우저에서 어떻게 보이는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "HTML 파일을 올리고 `inline` 으로 열어 본다.",
+   "done_when": "스크립트가 실행되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`itemId` 를 바꿔 남의 파일을 받아 본다.",
+   "done_when": "인가가 없는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "표시와 다운로드를 무엇이 가르나?",
+   "a": "`Content-Disposition` 헤더다. 없으면 `inline`, `attachment` 면 저장 창이 뜬다."
+  },
+  {
+   "q": "한글 파일명이 왜 문제인가?",
+   "a": "HTTP 헤더는 ASCII 라 브라우저마다 다르게 해석해 깨진다. 퍼센트 인코딩하거나 `filename*` 을 쓴다."
+  },
+  {
+   "q": "`inline` 이 왜 위험한가?",
+   "a": "올린 HTML 이 우리 도메인에서 실행되어 XSS 가 된다. 이스케이프로 막을 수 없다."
+  },
+  {
+   "q": "정석적인 대응은?",
+   "a": "별도 도메인에서 서빙해 쿠키가 안 가게 하는 것이다."
+  },
+  {
+   "q": "다운로드에 무엇을 잊기 쉬운가?",
+   "a": "인가 검사다. 화면에 링크가 없어도 `itemId` 로 순회할 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Content-Disposition",
+   "en": "",
+   "what": "응답 본문을 화면에 표시할지 파일로 저장할지 알리는 헤더."
+  },
+  {
+   "term": "filename*",
+   "en": "RFC 5987",
+   "what": "헤더에 비 ASCII 파일명을 인코딩해 담는 표준 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 6266 — Content-Disposition in HTTP",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6266",
+   "publisher": "IETF"
+  },
+  {
+   "title": "OWASP — File Upload Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

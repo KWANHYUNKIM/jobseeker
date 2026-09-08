@@ -910,7 +910,7 @@
           "title": "다운로드",
           "summary": "Content-Disposition 과 한글 파일명.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.6",
@@ -918,7 +918,7 @@
           "title": "업로드의 위험",
           "summary": "파일명 · 크기 · 확장자 · 저장 위치.",
           "minutes": 16,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -933,7 +933,7 @@
           "title": "다음 단계",
           "summary": "JPA · 스프링 부트 · HTTP. 그리고 서가의 다음 책.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

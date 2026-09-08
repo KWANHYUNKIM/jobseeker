@@ -1,0 +1,173 @@
+{
+ "book": "spring-mvc-2",
+ "id": "upload-security",
+ "no": "12.6",
+ "chapter": 12,
+ "title": "업로드의 위험",
+ "summary": "파일명 · 크기 · 확장자 · 저장 위치.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "업로드의 위험 여섯 가지를 안다.",
+  "확장자 검사가 왜 부족한지 안다.",
+  "허용 목록 방식을 적용할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "여섯 가지",
+   "ascii": "   name       ->  path traversal, overwrite      ->  uuid\n   size       ->  disk full, memory              ->  limits\n   extension  ->  executable upload              ->  allowlist\n   content    ->  disguised file, malware        ->  inspect bytes\n   location   ->  served and executed            ->  outside web root\n   access     ->  anyone downloads               ->  authorization\n\n   여섯 가지가 각각 다른 대응을 요구한다",
+   "note": "**앞의 다섯은 앞 절들에서 조금씩 나왔다.** 여기서 모은다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "업로드는 사용자가 서버에 파일을 쓰는 것이다",
+   "md": "**이것이 위험의 뿌리**다.\n\n지금까지의 입력은 **값**이었다. 검증하고 저장하면 끝이었다.\n\n**파일은 다르다.** 사용자가 준 것이 **서버의 파일 시스템에 그대로 남고**, 나중에 **다시 서빙되거나 실행될 수 있다.**\n\n**5.1절에서 검증을 여섯 겹으로 그렸는데**, 파일에는 그 층이 잘 안 맞는다. \"이 바이트열이 올바른가\" 를 판단하기가 어렵다.\n\n**그래서 방어가 겹겹이**다.\n\n> **OWASP 가 파일 업로드를 별도 문서로 다루는 이유**가 이것이다."
+  },
+  {
+   "type": "table",
+   "caption": "크기 제한",
+   "note": "**기본값이 작다.** 이미지를 받으려면 늘려야 하는데, **늘릴수록 위험**이 는다.",
+   "columns": [
+    "",
+    "무엇",
+    "기본"
+   ],
+   "rows": [
+    [
+     "`max-file-size`",
+     "파일 하나",
+     "1MB"
+    ],
+    [
+     "`max-request-size`",
+     "요청 전체",
+     "10MB"
+    ],
+    [
+     "`file-size-threshold`",
+     "메모리에 둘 한계",
+     "0 (전부 디스크)"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "확장자 검사만으로는 부족하다",
+   "md": "**세 겹으로 속일 수 있다.**\n\n**1. 확장자를 바꾼다**\n\n`shell.jsp` 를 `shell.png` 로 바꿔 올린다. **확장자 검사를 통과**한다.\n\n**2. `Content-Type` 을 바꾼다**\n\n12.1절에서 본 대로 **브라우저가 추측한 값**이라 `curl` 로 아무거나 보낼 수 있다.\n\n```bash\ncurl -F \"file=@shell.jsp;type=image/png\" ...\n```\n\n**3. 이중 확장자**\n\n`a.png.jsp` 또는 `a.jsp.png`. **서버 설정에 따라** 앞의 것으로 해석되기도 한다.\n\n**그래서 대응도 여러 겹**\n\n| | |\n|---|---|\n| **허용 목록** | `png` `jpg` `pdf` 만. **차단 목록은 안 된다** |\n| **저장 이름을 우리가 만든다** | 12.4절의 UUID |\n| **내용 검사** | 매직 넘버(파일 시그니처) 확인 |\n| **웹 루트 밖에 저장** | 12.4절 |\n| **실행 권한 제거** | 저장 후 `chmod` |\n\n**8.3절의 그 원칙이 또 나온다.**\n\n> **화이트리스트여야** 한다 — 새 URL 이 자동으로 보호된다.\n\n**이 책에서 네 번째**다 — 2.2절 이스케이프, 6.4절 살균, 8.3절 인증, 그리고 여기."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "허용 목록과 내용 검사",
+   "code": "private static final Set<String> ALLOWED_EXT = Set.of(\"png\", \"jpg\", \"jpeg\", \"pdf\");\n\nprivate void validate(MultipartFile file) throws IOException {\n    String ext = extractExt(file.getOriginalFilename()).toLowerCase();\n    if (!ALLOWED_EXT.contains(ext)) {\n        throw new InvalidFileException(\"허용하지 않는 형식입니다\");\n    }\n\n    // 실제 내용 확인 - PNG 는 89 50 4E 47 로 시작한다\n    byte[] head = new byte[4];\n    try (InputStream in = file.getInputStream()) {\n        if (in.read(head) < 4) {\n            throw new InvalidFileException(\"파일이 손상되었습니다\");\n        }\n    }\n    if (ext.equals(\"png\") && !isPng(head)) {\n        throw new InvalidFileException(\"내용이 형식과 다릅니다\");\n    }\n}",
+   "note": "**`toLowerCase()`** 를 빠뜨리면 `.PNG` 가 막힌다.\n\n**매직 넘버**로 실제 내용을 본다. `Tika` 같은 라이브러리가 이 일을 제대로 해 준다.\n\n**완벽하지는 않다** — **PNG 헤더를 붙인 악성 파일**도 만들 수 있다. 다만 **공격 난이도가 올라간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이미지도 안전하지 않다",
+   "md": "**진짜 PNG 라도 위험할 수 있다.**\n\n**1. 이미지 파싱 취약점**\n\n썸네일을 만들려고 라이브러리로 열면, **그 라이브러리의 버그를 노린 이미지**가 있다. ImageMagick 의 유명한 취약점들이 그런 것이다.\n\n**2. 압축 폭탄**\n\n**작은 파일이 풀면 거대**해진다. `100KB` PNG 가 메모리에서 `10GB` 가 되는 식이다. **크기 제한을 통과**한다.\n\n**3. 메타데이터**\n\nEXIF 에 **GPS 좌표**가 들어 있다. 사용자가 모르고 올린 사진에서 **집 위치가 드러난다.**\n\n**대응**\n\n| | |\n|---|---|\n| 이미지 처리는 **별도 프로세스** | 터져도 서버가 안 죽는다 |\n| **픽셀 수도 제한** | 압축 폭탄 |\n| **EXIF 제거** | 재인코딩하면 없어진다 |\n\n**세 번째는 보안이라기보다 개인정보**인데, **서비스가 사진을 다루면 반드시** 해야 한다.\n\n> **가장 안전한 것은 다시 인코딩하는 것**이다. 받은 이미지를 열어서 **우리가 다시 저장**하면 원본의 이상한 것들이 대부분 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 순서",
+   "md": "**막을 것을 순서대로** 둔다.\n\n```\n1. 크기 제한          설정으로. 파싱 전에 막힌다\n2. 확장자 허용 목록    가장 싸다\n3. 매직 넘버 확인      스트림 앞부분만 읽는다\n4. 저장 이름 생성      UUID\n5. 웹 루트 밖에 저장\n6. 서빙할 때 인가 검사\n7. Content-Disposition\n```\n\n**싼 것부터** 한다. 크기 제한은 **바디를 다 읽기 전에** 걸리므로 제일 먼저다.\n\n**그리고 대부분은 직접 안 만든다.**\n\n| | |\n|---|---|\n| **오브젝트 스토리지** | S3 등. 실행될 일이 없다 |\n| **프리사인드 URL** | 서버를 안 거치고 직접 올린다 |\n| **바이러스 검사** | 별도 서비스 |\n\n**두 번째가 요즘 흔하다** — 서버가 파일을 만지지 않으니 **위험의 절반이 사라진다.** 대신 **검증을 나중에** 해야 한다.\n\n> **12장에서 만든 것은 학습용**이다. 실무에서 파일 업로드를 직접 다룰 일은 줄고 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "# 확장자를 속인 요청\nPOST /items/new HTTP/1.1\nContent-Type: multipart/form-data; boundary=----boundary\n\n------boundary\nContent-Disposition: form-data; name=\"attachFile\"; filename=\"shell.png\"\nContent-Type: image/png\n\n<%@ page import=\"java.io.*\" %><% Runtime.getRuntime().exec(request...); %>\n------boundary--\n\n# 확장자만 보면 통과한다\n\nHTTP/1.1 200 \n\n# 매직 넘버를 확인하면\nHTTP/1.1 400 \n{\"code\":\"INVALID_FILE\",\"message\":\"내용이 형식과 다릅니다\"}\n\n# 크기 초과 - 바디를 다 읽기 전에 막힌다\nPOST /items/new HTTP/1.1\nContent-Length: 104857600\n\nHTTP/1.1 413 \n{\"code\":\"FILE_TOO_LARGE\",\"message\":\"파일이 너무 큽니다\"}\n\n# 10 장의 @ExceptionHandler 로 500 을 413 으로 바꿨다",
+   "note": "**첫 요청의 `filename` 과 `Content-Type` 이 둘 다 이미지인 척**한다. 내용은 JSP 다 — **클라이언트가 보낸 것은 전부 위조 가능**하다는 것이 여기서도 반복된다(7.4절 · 5.1절).\n\n**둘째가 매직 넘버 검사의 결과**다. 확장자는 통과했는데 **내용의 첫 4바이트**가 PNG 가 아니라 막혔다.\n\n**셋째의 413** 이 12.2절에서 예고한 것이다. 스프링 기본은 500 이었는데 **`MaxUploadSizeExceededException` 을 10.6절의 `@ExceptionHandler` 로 잡아** 상태 코드를 고쳤다.\n\n**오류 응답 형식이 10장의 그것**이다 — `code` 와 `message`. **책 전체가 이어져 있다.**"
+  }
+ ],
+ "recap": [
+  "**업로드는 사용자가 서버에 파일을 쓰는 것**이다 — 위험의 뿌리.",
+  "위험 여섯 — **이름 · 크기 · 확장자 · 내용 · 위치 · 접근**.",
+  "**확장자·`Content-Type` 은 둘 다 위조**된다.",
+  "**허용 목록**을 쓴다 — 이 책에서 네 번째 같은 원칙.",
+  "**매직 넘버로 실제 내용**을 확인한다.",
+  "**진짜 이미지도 안전하지 않다** — 파싱 취약점 · 압축 폭탄 · EXIF.",
+  "**다시 인코딩하는 것**이 가장 안전하다.",
+  "**싼 것부터** 막는다 — 크기 제한이 제일 먼저.",
+  "**오브젝트 스토리지와 프리사인드 URL** 이 위험의 절반을 없앤다.",
+  "**12장에서 만든 것은 학습용**이다."
+ ],
+ "drills": [
+  {
+   "task": "확장자만 바꾼 파일을 올린다.",
+   "done_when": "통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "매직 넘버 검사를 추가한다.",
+   "done_when": "막히는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`curl -F` 로 `Content-Type` 을 속인다.",
+   "done_when": "믿을 수 없다는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`MaxUploadSizeExceededException` 을 잡아 413 을 만든다.",
+   "done_when": "500 이 413 이 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "이미지를 열어 다시 저장하는 코드를 넣는다.",
+   "done_when": "EXIF 가 사라지는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "업로드가 왜 특별히 위험한가?",
+   "a": "사용자가 준 것이 서버 파일 시스템에 남고 나중에 다시 서빙되거나 실행될 수 있기 때문이다."
+  },
+  {
+   "q": "확장자 검사만으로 부족한 이유는?",
+   "a": "확장자도 `Content-Type` 도 클라이언트가 정하는 값이라 둘 다 위조된다."
+  },
+  {
+   "q": "매직 넘버란?",
+   "a": "파일 형식마다 정해진 첫 몇 바이트다. 실제 내용이 확장자와 맞는지 확인한다."
+  },
+  {
+   "q": "진짜 이미지의 위험은?",
+   "a": "파싱 라이브러리 취약점, 압축 폭탄, EXIF 의 GPS 같은 개인정보다."
+  },
+  {
+   "q": "가장 안전한 처리는?",
+   "a": "받은 이미지를 열어 다시 인코딩해 저장하는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "매직 넘버",
+   "en": "magic number",
+   "what": "파일 형식을 나타내는 앞부분 바이트열. 실제 형식을 확인하는 데 쓴다."
+  },
+  {
+   "term": "프리사인드 URL",
+   "en": "presigned URL",
+   "what": "서버를 거치지 않고 스토리지에 직접 업로드하도록 서명된 임시 URL."
+  }
+ ],
+ "sources": [
+  {
+   "title": "OWASP — File Upload Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
