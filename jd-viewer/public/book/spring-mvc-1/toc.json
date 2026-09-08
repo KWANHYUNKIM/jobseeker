@@ -171,7 +171,7 @@
           "title": "HTTP 요청 데이터 — 개요",
           "summary": "클라이언트가 데이터를 보내는 세 가지 방법.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -179,7 +179,7 @@
           "title": "GET 쿼리 파라미터",
           "summary": "URL 뒤에 붙는 것. 복수 파라미터는 어떻게 되나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -187,7 +187,7 @@
           "title": "POST HTML Form",
           "summary": "`application/x-www-form-urlencoded`. GET 과 읽는 방법이 같은 이유.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -195,7 +195,7 @@
           "title": "API 메시지 바디 — 단순 텍스트",
           "summary": "`InputStream` 을 직접 읽는다. 인코딩을 지정해야 하는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",

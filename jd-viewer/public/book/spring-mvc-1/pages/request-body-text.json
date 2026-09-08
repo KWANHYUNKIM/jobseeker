@@ -1,0 +1,171 @@
+{
+ "book": "spring-mvc-1",
+ "id": "request-body-text",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "API 메시지 바디 — 단순 텍스트",
+ "summary": "InputStream 을 직접 읽는다. 인코딩을 지정해야 하는 이유.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`getInputStream()` 으로 바디를 직접 읽을 수 있다.",
+  "바이트를 문자열로 바꿀 때 인코딩을 지정해야 하는 이유를 안다.",
+  "`getInputStream()` 을 두 번 읽을 수 없다는 것을 안다.",
+  "여기서부터가 HTTP API 의 영역이라는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "3.4절의 세 번째 방법이다. **HTML 폼이 아니라 앱이나 자바스크립트가 데이터를 보내는 방식**이고, 2.4절에서 말한 HTTP API 가 이것을 쓴다.\n\n먼저 가장 단순한 것부터 — **그냥 텍스트**를 보낸다. JSON 은 3.8절이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "RequestBodyStringServlet.java",
+   "code": "@WebServlet(name = \"requestBodyStringServlet\", urlPatterns = \"/request-body-string\")\npublic class RequestBodyStringServlet extends HttpServlet {\n\n    @Override\n    protected void service(HttpServletRequest request,\n                          HttpServletResponse response) throws IOException {\n\n        ServletInputStream inputStream = request.getInputStream();\n        String messageBody = StreamUtils.copyToString(inputStream,\n                                                      StandardCharsets.UTF_8);\n\n        System.out.println(\"messageBody = \" + messageBody);\n\n        response.getWriter().write(\"ok\");\n    }\n}",
+   "note": "**`getParameter()` 가 없다.** 바디를 통째로 읽는다.\n\n`StreamUtils` 는 스프링이 주는 유틸이다. 순수 자바로 하려면 `BufferedReader` 로 한 줄씩 읽어야 하는데, 이 책의 관심사가 아니라 유틸을 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "바이트를 문자로 바꾸는 지점"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "InputStream 은 바이트다",
+   "md": "```java\nServletInputStream inputStream = request.getInputStream();\n```\n\n**이것은 문자열이 아니라 바이트 스트림**이다. HTTP 바디는 원래 바이트이고, 그것이 글자인지 이미지인지 서블릿은 모른다.\n\n그래서 문자열로 바꾸려면 **어떤 문자셋으로 해석할지 내가 정해야** 한다.\n\n```java\nStreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);\n//                                    ^^^^^^^^^^^^^^^^^^^^^^\n```\n\n이 인자를 빼면 컴파일이 안 된다. **빠뜨릴 수 없게 API 가 설계돼 있는 것**이다.\n\n1.3절의 응답 인코딩, 3.5절의 쿼리 인코딩에 이어 **세 번째로 나오는 같은 문제**다. HTTP 를 다루는 한 계속 나온다 — **바이트와 문자 사이에는 항상 문자셋이 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "Content-Type 에 charset 이 있다",
+   "md": "```\nContent-Type: text/plain; charset=UTF-8\n```\n\n요청에 이 정보가 들어 있으면 **그것을 따르는 것이 맞다.**\n\n```java\nString encoding = request.getCharacterEncoding();   // UTF-8\n```\n\n3.5절에서 \"쿼리 스트링에는 charset 정보가 없다\" 고 했는데, **바디는 다르다.** 헤더로 알려 줄 수 있다.\n\n다만 **클라이언트가 안 적어 보내는 경우가 많고**, 그러면 `getCharacterEncoding()` 이 `null` 이거나 `ISO-8859-1` 이 된다. 그래서 실무에서는 대개 **UTF-8 로 못 박는다.** 요즘 API 는 사실상 UTF-8 이 표준이다."
+  },
+  {
+   "type": "heading",
+   "text": "스트림은 한 번만 읽힌다"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "두 번째 읽으면 빈 문자열이다",
+   "md": "```java\nString first  = StreamUtils.copyToString(request.getInputStream(), UTF_8);\nString second = StreamUtils.copyToString(request.getInputStream(), UTF_8);\n\n// first  = \"hello\"\n// second = \"\"          <- 비어 있다\n```\n\n**예외가 안 난다.** 그냥 빈 문자열이 나온다.\n\n스트림은 **읽은 만큼 커서가 앞으로 간다.** 끝까지 읽었으면 더 읽을 것이 없다. 파일을 읽는 것과 같다.\n\n이게 왜 문제가 되나 — **로그를 남기려고 바디를 한 번 읽으면, 진짜 처리 코드가 못 읽는다.** 요청/응답 로깅 필터를 만들 때 반드시 만나는 문제다.\n\n해결하려면 **읽은 내용을 캐시해 두는 래퍼**가 필요하다. 스프링에 `ContentCachingRequestWrapper` 가 있다. 지금은 **한 번만 읽을 수 있다는 사실**만 기억한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "getReader() 도 있다",
+   "md": "```java\nBufferedReader reader = request.getReader();\n```\n\n**문자 단위로 읽어 준다.** 인코딩은 `Content-Type` 의 `charset` 을 따르고, 없으면 `ISO-8859-1` 이다.\n\n`getInputStream()` 과 **둘 중 하나만** 쓸 수 있다. 둘 다 부르면 `IllegalStateException` 이 난다 — 같은 스트림을 두 방식으로 여는 것이기 때문이다.\n\n이 책은 인코딩을 명시적으로 정하려고 `getInputStream()` 을 쓴다."
+  },
+  {
+   "type": "heading",
+   "text": "여기서부터가 API 다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 달라졌나",
+   "md": "3.5·3.6절에서는 **서블릿이 파싱해 준 것을 꺼내 썼다.** 여기서는 **바이트를 직접 받아서 내가 해석한다.**\n\n| | 3.5·3.6 | 3.7 |\n|---|---|---|\n| 서블릿이 하는 일 | **파싱해서 파라미터로** | **그냥 넘긴다** |\n| 내가 하는 일 | `getParameter()` | **읽고 · 디코딩하고 · 해석한다** |\n| 형식 | 정해져 있다 | **내가 정한다** |\n\n자유로워진 대신 **할 일이 늘었다.** 3.8절에서 JSON 을 다루면 여기에 \"객체로 변환\" 이 더 붙는다.\n\n그리고 **7.12·7.13절에서 스프링이 이 셋을 전부 대신해 준다.** `@RequestBody` 한 줄이 이 절의 코드 전부를 대체한다. 그때 그 편의가 어떤 수고를 없앤 것인지 알려면 지금 손으로 해 봐야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /request-body-string HTTP/1.1\nHost: localhost:8080\nContent-Type: text/plain; charset=UTF-8\nContent-Length: 18\n\nhello 안녕하세요\n\nHTTP/1.1 200 \nContent-Type: text/plain;charset=utf-8\nContent-Length: 2\n\nok\n\n# 서버 콘솔\nmessageBody = hello 안녕하세요\ngetParameter(\"hello\")     = null\ngetCharacterEncoding()    = UTF-8\n\n# 인코딩을 ISO-8859-1 로 읽으면 (한글 3바이트가 라틴 3글자로 보인다)\nmessageBody = hello (glyph)(glyph)(glyph)...",
+   "note": "**`Content-Length: 18`** 을 봐 두자. `\"hello 안녕하세요\"` 는 글자로 11자인데 **바이트로는 18**이다 — 한글 한 자가 UTF-8 에서 3바이트라서다.\n\n`Content-Length` 는 **글자 수가 아니라 바이트 수**다. 스트림이 바이트라는 것과 같은 이야기다.\n\n맨 아래는 인코딩을 틀렸을 때다. **예외가 안 나고 깨진 글자가 나온다.** 바이트는 멀쩡한데 해석을 잘못한 것이라 서버는 아무 문제를 못 느낀다."
+  }
+ ],
+ "recap": [
+  "바디는 **`getInputStream()`** 으로 직접 읽는다. `getParameter()` 는 안 먹는다.",
+  "**스트림은 바이트**다. 문자열로 바꾸려면 문자셋을 지정해야 한다.",
+  "`StreamUtils.copyToString(is, UTF_8)` — **인자를 빼면 컴파일이 안 된다.**",
+  "요청의 **`Content-Type` 에 `charset`** 이 있으면 그것을 따르는 것이 맞다.",
+  "**스트림은 한 번만 읽힌다.** 두 번째는 예외 없이 빈 문자열이다.",
+  "로깅 필터 등에서 이 문제를 만난다 — **캐싱 래퍼**가 필요하다.",
+  "`getReader()` 와 **둘 중 하나만** 쓸 수 있다.",
+  "여기서부터는 **읽고 · 디코딩하고 · 해석하는 것이 전부 내 일**이다.",
+  "**`Content-Length` 는 글자 수가 아니라 바이트 수**다."
+ ],
+ "drills": [
+  {
+   "task": "`RequestBodyStringServlet` 을 만들어 텍스트를 보낸다.",
+   "done_when": "바디가 그대로 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한글을 보내고 인코딩을 `ISO_8859_1` 로 바꿔 읽어 본다.",
+   "done_when": "예외 없이 글자가 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getInputStream()` 을 두 번 읽는다.",
+   "done_when": "두 번째가 빈 문자열인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getInputStream()` 과 `getReader()` 를 둘 다 호출한다.",
+   "done_when": "`IllegalStateException` 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "한글이 섞인 문자열의 글자 수와 `Content-Length` 를 비교한다.",
+   "done_when": "한글 한 자가 3바이트인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메시지 바디를 읽는 방법은?",
+   "a": "`request.getInputStream()` 으로 바이트 스트림을 받아 문자셋을 지정해 문자열로 변환한다."
+  },
+  {
+   "q": "왜 문자셋을 지정해야 하나?",
+   "a": "`InputStream` 은 바이트이고, 바이트를 문자로 해석하려면 어떤 인코딩인지 알아야 하기 때문이다."
+  },
+  {
+   "q": "인코딩을 틀리면 어떻게 되나?",
+   "a": "예외가 나지 않고 글자가 깨진 상태로 나온다. 바이트는 멀쩡한데 해석만 잘못된 것이라 서버는 오류를 못 느낀다."
+  },
+  {
+   "q": "`getInputStream()` 을 두 번 부르면?",
+   "a": "두 번째는 빈 문자열이다. 스트림은 읽은 만큼 커서가 이동하고 되감을 수 없다."
+  },
+  {
+   "q": "그 문제가 실무에서 언제 나타나나?",
+   "a": "요청 로깅 필터에서 바디를 한 번 읽으면 실제 처리 코드가 못 읽는다. `ContentCachingRequestWrapper` 같은 캐싱 래퍼가 필요하다."
+  },
+  {
+   "q": "`Content-Length` 는 무엇을 세는가?",
+   "a": "바이트 수다. 글자 수가 아니다. UTF-8 에서 한글 한 자는 3바이트다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ServletInputStream",
+   "en": "",
+   "what": "HTTP 요청 바디를 바이트로 읽는 스트림. 한 번만 읽을 수 있다."
+  },
+  {
+   "term": "ContentCachingRequestWrapper",
+   "en": "",
+   "what": "읽은 바디를 캐시해 여러 번 읽을 수 있게 하는 스프링 래퍼. 요청 로깅에 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "MDN — Content-Type",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
