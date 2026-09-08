@@ -1,0 +1,149 @@
+{
+ "book": "spring-mvc-2",
+ "id": "v1-direct",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "V1 — 직접 처리",
+ "summary": "Map 에 오류를 담는다. 되긴 되는데.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "검증 실패 시 폼을 다시 그리는 흐름을 안다.",
+  "왜 리다이렉트가 아니라 포워드인지 안다.",
+  "직접 만든 방식의 한계 네 가지를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**스프링 기능을 안 쓰고 만들어 본다.** 무엇이 필요한지 알아야 스프링이 무엇을 해 주는지 보인다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@PostMapping(\"/add\")\npublic String addItem(@ModelAttribute Item item, Model model) {\n\n    Map<String, String> errors = new HashMap<>();\n\n    // 필드 검증\n    if (!StringUtils.hasText(item.getItemName())) {\n        errors.put(\"itemName\", \"상품 이름은 필수입니다.\");\n    }\n    if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {\n        errors.put(\"price\", \"가격은 1,000 ~ 1,000,000 까지 허용합니다.\");\n    }\n    if (item.getQuantity() == null || item.getQuantity() >= 9999) {\n        errors.put(\"quantity\", \"수량은 최대 9,999 까지 허용합니다.\");\n    }\n\n    // 글로벌 검증\n    if (item.getPrice() != null && item.getQuantity() != null) {\n        int resultPrice = item.getPrice() * item.getQuantity();\n        if (resultPrice < 10000) {\n            errors.put(\"globalError\",\n                    \"가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = \" + resultPrice);\n        }\n    }\n\n    if (!errors.isEmpty()) {\n        model.addAttribute(\"errors\", errors);\n        return \"validation/v1/addForm\";\n    }\n\n    Item savedItem = itemRepository.save(item);\n    return \"redirect:/validation/v1/items/{itemId}\";\n}",
+   "note": "**`StringUtils.hasText`** 가 null·빈 문자열·공백만 있는 것을 다 걸러 준다. `!= null && !isEmpty()` 를 매번 쓰지 않는다.\n\n**글로벌 검증 앞의 null 체크**가 지저분한데, 필드 검증에서 이미 걸렀어도 **거기서 멈추지 않기 때문**에 필요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "성공과 실패의 흐름이 다르다",
+   "ascii": "   POST /add\n     |\n     v\n   validate  ->  errors is empty?\n                   |          |\n                 yes          no\n                   |          |\n                   v          v\n                 save       model.addAttribute(\"errors\", errors)\n                   |          return \"addForm\"\n                   v            |\n               redirect         v\n                              forward, 200\n\n   실패는 redirect 가 아니라 forward 다",
+   "note": "**성공은 리다이렉트, 실패는 포워드.** 이 비대칭에 이유가 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 실패는 리다이렉트가 아닌가",
+   "md": "1편 8.10절에서 **PRG(Post/Redirect/Get)** 를 배웠다.\n\n> 저장 후 리다이렉트하지 않으면 **새로고침할 때 POST 가 다시 나간다.** 상품이 두 번 등록된다.\n\n**성공에는 이 규칙을 지킨다.** 그런데 **실패에는 안 지킨다.**\n\n왜냐하면 — **리다이렉트하면 사용자가 입력한 값이 사라진다.**\n\n```\n실패 -> 302 -> GET /add -> 새 요청 -> 모델이 비어 있다\n```\n\n**새 요청이라 아무것도 안 남는다.** 사용자는 다시 다 입력해야 한다.\n\n**포워드하면** 같은 요청 안이라 `item` 도 `errors` 도 그대로 있다.\n\n| | 새로고침하면 | 입력값 |\n|---|---|---|\n| 리다이렉트 | 안전 | **사라진다** |\n| **포워드** | POST 재전송 경고 | **남는다** |\n\n**실패한 폼을 새로고침하는 것은 흔치 않고, 다시 입력하는 것은 매번 겪는다.** 그래서 포워드다.\n\n> 굳이 리다이렉트하려면 `RedirectAttributes.addFlashAttribute` 로 값을 넘겨야 한다(1편 8.11절). **복잡한 것에 비해 얻는 게 적다.**"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "화면",
+   "code": "<div th:if=\"${errors?.containsKey('globalError')}\">\n    <p class=\"field-error\" th:text=\"${errors['globalError']}\">전체 오류</p>\n</div>\n\n<input type=\"text\" id=\"itemName\" th:field=\"*{itemName}\"\n       th:class=\"${errors?.containsKey('itemName')} ? 'form-control field-error' : 'form-control'\"\n       class=\"form-control\">\n<div class=\"field-error\" th:if=\"${errors?.containsKey('itemName')}\"\n     th:text=\"${errors['itemName']}\">상품명 오류</div>",
+   "note": "**`errors?.` 의 물음표**를 봐 둔다. **안전 탐색(safe navigation)** 이다.\n\n등록 폼을 처음 열 때는 `errors` 가 없어서 `null` 인데, `null.containsKey(...)` 는 예외다. `?.` 는 **왼쪽이 null 이면 전체를 null** 로 만든다. 2.11절대로 `null` 은 거짓이라 조건이 안 걸린다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "되긴 되는데 — 한계 넷",
+   "md": "**1. 타입 오류를 못 잡는다**\n\n5.1절에서 본 그것이다. `price=abc` 면 **컨트롤러에 들어오지도 못하고** 400 이다. `errors` 에 담을 기회가 없다.\n\n**2. 입력값이 사라진다**\n\n```\n가격에 abc 를 넣으면 -> 400\n가격에 500 을 넣으면 -> 화면은 뜨는데 value=\"500\" 이 나온다\n```\n\n둘째는 되는 것처럼 보이는데, **타입 오류일 때는 `Item.price` 가 `Integer` 라 `abc` 를 담을 수 없다.** 담을 곳이 없으니 화면에 되살릴 방법도 없다.\n\n**3. 화면이 지저분하다**\n\n`th:class` 의 삼항, `containsKey` 반복, 안전 탐색. **2.8절에서 \"중첩 삼항이 나오면 신호\"** 라고 한 그 신호다.\n\n**4. 메시지가 자바 코드에 박혀 있다**\n\n4장에서 화면의 글자를 다 뺐는데 **오류 메시지는 자바에 박혀 있다.** 국제화도 안 되고 기획자가 못 고친다.\n\n**5.3절이 1·2 를, 5.4절이 2 를 마저, 5.5~5.7절이 4 를, 5.9절이 3 을 푼다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 얻은 것",
+   "md": "**흐름은 이걸로 완성됐다.**\n\n```\n검증 -> 실패하면 오류를 모아 모델에 담고 폼을 다시 그린다\n     -> 성공하면 저장하고 리다이렉트\n```\n\n**남은 장들이 이 흐름을 안 바꾼다.** `Map` 이 `BindingResult` 가 되고, 문자열이 메시지 코드가 되고, 검증 로직이 클래스로 빠질 뿐이다.\n\n**틀을 먼저 만들고 부품을 갈아 끼운다** — 1편 5장에서 프론트 컨트롤러를 v1 부터 만든 것과 같다."
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "POST /validation/v1/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=&price=500&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<div class=\"field-error\">상품 이름은 필수입니다.</div>\n<input type=\"text\" id=\"itemName\" name=\"itemName\" value=\"\"\n       class=\"form-control field-error\">\n\n<div class=\"field-error\">가격은 1,000 ~ 1,000,000 까지 허용합니다.</div>\n<input type=\"text\" id=\"price\" name=\"price\" value=\"500\"\n       class=\"form-control field-error\">\n\n<div class=\"field-error\">가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = 5000</div>\n\n# 302 가 아니라 200 이다 - 포워드\n\n# 타입 오류는 여전히 못 잡는다\nitemName=itemA&price=abc&quantity=10\n\nHTTP/1.1 400 ",
+   "note": "**응답이 302 가 아니라 200** 이다. 리다이렉트하지 않았다는 증거이고, 그래서 **`value=\"500\"` 이 남아 있다.**\n\n오류가 **셋 다 한 번에** 나왔다 — 첫 오류에서 멈추지 않았기 때문이다. 사용자가 고칠 것을 한꺼번에 본다.\n\n`class=\"form-control field-error\"` 로 **입력 칸 자체에도 표시**가 붙었다. 화면 쪽 삼항이 만든 것이다.\n\n**아래 400 이 이 절이 못 넘은 벽**이다. 응답 바이트가 위와 완전히 다르다 — HTML 이 아니라 JSON 이 온다."
+  }
+ ],
+ "recap": [
+  "**`Map` 에 오류를 담고 모델로 넘겨** 폼을 다시 그린다.",
+  "**성공은 리다이렉트(PRG), 실패는 포워드**다.",
+  "**리다이렉트하면 입력값이 사라진다** — 새 요청이라 모델이 빈다.",
+  "**`StringUtils.hasText`** 가 null·빈 문자열·공백을 다 거른다.",
+  "**`errors?.`** 는 안전 탐색 — 왼쪽이 null 이면 전체가 null 이다.",
+  "**첫 오류에서 멈추지 않는다** — 고칠 것을 한꺼번에 보여 준다.",
+  "한계 넷 — **타입 오류 못 잡음 · 입력값 소실 · 지저분한 화면 · 박힌 메시지**.",
+  "**흐름은 완성됐다** — 남은 장은 부품을 갈아 끼운다."
+ ],
+ "drills": [
+  {
+   "task": "V1 컨트롤러를 만들고 빈 상품명으로 제출한다.",
+   "done_when": "200 으로 폼이 다시 그려지는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "여러 필드를 동시에 틀린다.",
+   "done_when": "오류가 한꺼번에 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "실패 시 `redirect:` 로 바꿔 본다.",
+   "done_when": "입력값이 사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "가격에 `abc` 를 넣는다.",
+   "done_when": "여전히 400 인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`errors?.` 의 물음표를 지운다.",
+   "done_when": "등록 폼을 처음 열 때 예외가 나는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "검증 실패 시 왜 리다이렉트하지 않나?",
+   "a": "리다이렉트는 새 요청이라 모델이 비어 사용자가 입력한 값이 사라지기 때문이다."
+  },
+  {
+   "q": "성공에는 왜 리다이렉트하나?",
+   "a": "PRG 패턴이다. 포워드하면 새로고침할 때 POST 가 다시 나가 중복 등록된다."
+  },
+  {
+   "q": "`errors?.containsKey(...)` 의 물음표는?",
+   "a": "안전 탐색이다. 왼쪽이 null 이면 전체가 null 이 되어 예외 대신 거짓으로 평가된다."
+  },
+  {
+   "q": "V1 의 한계 넷은?",
+   "a": "타입 오류를 못 잡고, 타입 오류 시 입력값이 사라지고, 화면이 지저분하고, 메시지가 자바 코드에 박혀 있다."
+  },
+  {
+   "q": "첫 오류에서 멈추지 않는 이유는?",
+   "a": "사용자가 고칠 것을 한꺼번에 보여 주기 위해서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "안전 탐색",
+   "en": "safe navigation",
+   "what": "`?.`. 왼쪽이 null 이면 전체를 null 로 평가해 예외를 피한다."
+  },
+  {
+   "term": "PRG",
+   "en": "Post/Redirect/Get",
+   "what": "POST 처리 후 리다이렉트해 새로고침 시 재전송을 막는 패턴."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Validation, Data Binding",
+   "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 MVC 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

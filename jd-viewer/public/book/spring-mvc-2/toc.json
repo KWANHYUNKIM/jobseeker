@@ -334,7 +334,7 @@
           "title": "LocaleResolver",
           "summary": "언어를 무엇으로 정하나. 쿠키·세션·헤더.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -349,7 +349,7 @@
           "title": "검증 요구사항",
           "summary": "1편 8.7절에서 음수 가격이 저장되던 그 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -357,7 +357,7 @@
           "title": "V1 — 직접 처리",
           "summary": "Map 에 오류를 담는다. 되긴 되는데.",
           "minutes": 18,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
