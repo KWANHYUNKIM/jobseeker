@@ -1,0 +1,149 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-edit",
+ "no": "8.9",
+ "chapter": 8,
+ "title": "상품 수정",
+ "summary": "GET 으로 폼을 주고 POST 로 받는다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "수정 폼과 처리를 만들 수 있다.",
+  "등록 폼과 무엇이 다른지 안다.",
+  "수정 후 리다이렉트를 쓰는 이유를 안다.",
+  "8.10절이 왜 필요한지 여기서 절반 이해한다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@GetMapping(\"/{itemId}/edit\")\npublic String editForm(@PathVariable Long itemId, Model model) {\n    Item item = itemRepository.findById(itemId);\n    model.addAttribute(\"item\", item);\n    return \"basic/editForm\";\n}\n\n@PostMapping(\"/{itemId}/edit\")\npublic String edit(@PathVariable Long itemId, @ModelAttribute Item item) {\n    itemRepository.update(itemId, item);\n    return \"redirect:/basic/items/{itemId}\";\n}",
+   "note": "**`GET` 과 `POST` 가 같은 URL** 이다 — 8.1절의 설계.\n\n그리고 **`redirect:`** 가 처음 나왔다. 6.4절에서 뷰 이름 접두사로 언급한 그것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "수정 폼은 값이 채워져 있다",
+   "md": "등록 폼(8.6절)과 비교하면 차이가 둘이다.\n\n```html\n<!-- 등록 -->\n<input type=\"text\" name=\"itemName\" placeholder=\"이름을 입력하세요\">\n\n<!-- 수정 -->\n<input type=\"text\" name=\"itemName\" th:value=\"${item.itemName}\">\n```\n\n**1. `th:value` 로 기존 값을 채운다.** 그래서 컨트롤러가 모델에 `item` 을 담아야 한다 — 등록 폼에는 없던 것이다.\n\n**2. `id` 필드가 있다.** `readonly` 로 두고 보여만 준다.\n\n8.5절에서 상세 화면에 `<input readonly>` 를 쓴 이유가 여기서 드러난다 — **`readonly` 만 떼면 수정 폼이 된다.** 레이아웃이 같아서 만들기 쉽다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "templates/basic/editForm.html",
+   "code": "<form action=\"item.html\" th:action method=\"post\">\n    <div>\n        <label for=\"id\">상품 ID</label>\n        <input type=\"text\" id=\"id\" name=\"id\"\n               th:value=\"${item.id}\" readonly>\n    </div>\n    <div>\n        <label for=\"itemName\">상품명</label>\n        <input type=\"text\" id=\"itemName\" name=\"itemName\"\n               th:value=\"${item.itemName}\">\n    </div>\n    <div>\n        <label for=\"price\">가격</label>\n        <input type=\"text\" id=\"price\" name=\"price\"\n               th:value=\"${item.price}\">\n    </div>\n    <button type=\"submit\">저장</button>\n</form>",
+   "note": "**`id` 필드에 `name=\"id\"` 가 있다.** 그러면 폼 제출 시 `id` 도 함께 나간다.\n\n그런데 **컨트롤러는 그것을 안 쓴다.** `@PathVariable` 로 받은 `itemId` 를 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "폼의 id 를 안 쓰는 이유",
+   "md": "8.2절에서 `update` 가 `id` 를 따로 받는 이유를 적었다.\n\n> **폼에서 오는 데이터에는 `id` 가 없을 수 있고, 있어도 믿으면 안 되기 때문**이다.\n\n**여기가 그 자리다.**\n\n```java\npublic String edit(@PathVariable Long itemId, @ModelAttribute Item item) {\n    itemRepository.update(itemId, item);\n    //                    ^^^^^^  URL 에서 온 것\n    //                            item.getId() 는 안 쓴다\n}\n```\n\n`readonly` 는 **개발자 도구로 떼면 그만**이다(8.5절). 누군가 `id` 를 `2` 로 바꿔 보내면 **남의 상품이 수정된다.**\n\n**URL 은 매핑에 쓰이니 바꿔 봐야 그 상품으로 간다.** 그래서 안전하다.\n\n더 나아가면 **폼에 `id` 를 아예 안 넣는 것**도 방법이다. 보여 줄 필요가 있으면 `name` 을 빼고 `th:text` 로 표시한다.\n\n**실무 기준** — 서버가 정해야 하는 값은 클라이언트에서 받지 않는다. `id`, 생성 시각, 작성자, 가격(할인 계산 결과) 같은 것들."
+  },
+  {
+   "type": "heading",
+   "text": "redirect: 를 쓴다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여기서는 상세 화면을 재사용하지 않는다",
+   "md": "8.7절 등록에서는 **`return \"basic/item\"`** 으로 상세 템플릿을 바로 렌더링했다.\n\n수정에서는 **리다이렉트**한다.\n\n```java\nreturn \"redirect:/basic/items/{itemId}\";\n```\n\n**같은 이유로 등록도 그래야 하는데**(새로고침 문제) 8.7절에서는 안 했다. 문제를 겪게 하려고.\n\n**수정은 먼저 고친다.** 이유가 있다.\n\n- 수정 후 새로고침하면 **같은 값으로 또 수정**된다. 등록만큼 눈에 띄지는 않지만 요청은 낭비다\n- **주소창이 `/1/edit` 인 채로 상세 화면**이 보이는 것도 이상하다\n\n**8.10절에서 등록도 같게 고친다.** 여기서는 결과만 먼저 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "redirect: 에서 {itemId} 가 치환된다",
+   "md": "```java\nreturn \"redirect:/basic/items/{itemId}\";\n```\n\n**`{itemId}` 가 그대로 문자열로 나가는 것이 아니다.** `@PathVariable` 로 받은 값으로 치환된다.\n\n스프링이 **`@PathVariable` 로 바인딩된 값들을 리다이렉트 URL 의 템플릿 변수에 채워 준다.**\n\n문자열로 이으면 이렇게 된다.\n\n```java\nreturn \"redirect:/basic/items/\" + itemId;   // 동작은 한다\n```\n\n**차이는 URL 인코딩**이다. 8.5절에서 링크를 두고 한 이야기와 같다 — `itemId` 가 문자열이고 특수문자가 들어가면 앞의 것만 안전하다.\n\n**8.11절에서 `RedirectAttributes` 를 쓰면** 더 명확해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리다이렉트하면 모델이 사라진다",
+   "md": "4.5절 표에서 본 것이다.\n\n| | forward | redirect |\n|---|---|---|\n| `request` 객체 | **유지** | **새로 만들어진다** |\n| Model 전달 | 된다 | **안 된다** |\n\n```java\nmodel.addAttribute(\"message\", \"저장했습니다\");\nreturn \"redirect:/basic/items/1\";     // message 가 사라진다\n```\n\n**새 요청**이라 모델이 초기화된다. 3.2절에서 임시 저장소가 \"요청이 살아 있는 동안\" 이라고 한 그것이다.\n\n그래서 **\"저장했습니다\" 같은 메시지를 못 넘긴다.**\n\n**8.11절의 `RedirectAttributes` 가 이것을 푼다.** 지금은 넘길 것이 없어서 문제가 안 되는데, **8.10절에서 등록을 고치면 바로 필요해진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 두 번 오간다",
+   "sql": "# 1. 수정 폼\nGET /basic/items/1/edit HTTP/1.1\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<form action=\"/basic/items/1/edit\" method=\"post\">\n    <input type=\"text\" name=\"id\" value=\"1\" readonly>\n    <input type=\"text\" name=\"itemName\" value=\"itemA\">\n    ...\n</form>\n\n# 2. 수정 처리\nPOST /basic/items/1/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nid=1&itemName=itemB&price=20000&quantity=30\n\nHTTP/1.1 302 \nLocation: /basic/items/1\nContent-Length: 0\n\n# 3. 브라우저가 이어서\nGET /basic/items/1 HTTP/1.1\n\nHTTP/1.1 200 \n<html> ... 상품 상세 ... </html>\n\n# 새로고침을 눌러도\nGET /basic/items/1 HTTP/1.1\n#   GET 이 다시 나갈 뿐이다",
+   "note": "**`302` 와 `Location` 이 나갔다.** 3.9절에서 `sendRedirect` 가 하는 일이 이 두 줄이라고 했는데, `redirect:` 접두사가 같은 것을 만든다.\n\n**`{itemId}` 가 `1` 로 치환**돼서 `Location: /basic/items/1` 이 됐다.\n\n**맨 아래가 이 절의 결과다.** 마지막 요청이 `GET` 이라 새로고침해도 **조회가 다시 될 뿐**이다. 8.7절의 문제가 여기서는 안 생긴다.\n\n1.2절에서 예고한 그 흐름이고, **8.10절에서 등록도 이렇게 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`GET` 과 `POST` 가 같은 URL** 이다 — 8.1절의 설계.",
+  "수정 폼은 **`th:value` 로 기존 값**이 채워져 있다. 그래서 모델이 필요하다.",
+  "8.5절에서 `<input readonly>` 를 쓴 이유가 여기서 드러난다 — **`readonly` 만 떼면 수정 폼**이다.",
+  "**폼의 `id` 를 안 쓰고 URL 의 `itemId` 를 쓴다** — 8.2절의 그 이유.",
+  "`readonly` 는 개발자 도구로 떼면 그만이지만 **URL 은 매핑에 쓰인다.**",
+  "**서버가 정해야 하는 값은 클라이언트에서 받지 않는다.**",
+  "**`redirect:`** 로 응답한다. 새로고침해도 `GET` 이 다시 나갈 뿐이다.",
+  "**`{itemId}` 가 `@PathVariable` 값으로 치환**된다. URL 인코딩까지 처리한다.",
+  "**리다이렉트하면 모델이 사라진다** — 4.5절 표. 8.11절이 푼다."
+ ],
+ "drills": [
+  {
+   "task": "수정 폼과 처리를 만들고 상품을 수정한다.",
+   "done_when": "302 가 나가고 상세 화면으로 이동하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "수정 후 새로고침을 눌러 본다.",
+   "done_when": "8.7절과 달리 아무 일도 안 생기는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "개발자 도구로 `readonly` 를 떼고 `id` 를 바꿔 제출한다.",
+   "done_when": "URL 의 상품이 수정되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`redirect:` 앞에 모델을 담고 다음 화면에서 꺼내 본다.",
+   "done_when": "사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`redirect:/basic/items/{itemId}` 를 문자열 연결로 바꿔 본다.",
+   "done_when": "동작은 같은데 인코딩 차이가 있다는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "수정 폼이 등록 폼과 다른 점은?",
+   "a": "`th:value` 로 기존 값이 채워져 있고 `id` 필드가 있다. 그래서 컨트롤러가 모델에 `item` 을 담아야 한다."
+  },
+  {
+   "q": "폼의 `id` 를 안 쓰고 URL 의 `itemId` 를 쓰는 이유는?",
+   "a": "`readonly` 는 개발자 도구로 뗄 수 있어 폼의 `id` 를 믿을 수 없기 때문이다. URL 은 매핑에 쓰이므로 안전하다."
+  },
+  {
+   "q": "수정 후 왜 리다이렉트하나?",
+   "a": "새로고침해도 `GET` 이 다시 나갈 뿐이라 같은 수정이 반복되지 않고, 주소창과 화면이 맞는다."
+  },
+  {
+   "q": "`redirect:/basic/items/{itemId}` 의 `{itemId}` 는?",
+   "a": "`@PathVariable` 로 바인딩된 값으로 치환된다. URL 인코딩도 처리된다."
+  },
+  {
+   "q": "리다이렉트하면 모델은?",
+   "a": "사라진다. 새 요청이라 `request` 가 새로 만들어지기 때문이다. `RedirectAttributes` 로 넘긴다(8.11절)."
+  },
+  {
+   "q": "클라이언트에서 받으면 안 되는 값은?",
+   "a": "서버가 정해야 하는 값들이다. `id`, 생성 시각, 작성자, 계산 결과 같은 것."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

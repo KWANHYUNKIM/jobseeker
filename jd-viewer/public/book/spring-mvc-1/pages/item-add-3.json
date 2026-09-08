@@ -1,0 +1,157 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-add-3",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "상품 등록 처리 — @ModelAttribute",
+ "summary": "파라미터 셋이 객체 하나가 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@ModelAttribute` 로 등록 처리를 줄일 수 있다.",
+  "모델에 자동으로 담기는 것이 여기서 어떻게 쓰이는지 안다.",
+  "생략 단계마다 무엇을 잃는지 안다.",
+  "어디까지 생략할지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.7절을 실제 화면에 적용한다.** 8.7절 코드가 얼마나 줄어드는지 보는 절이다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 단계",
+   "ascii": "   8.7  v1\n        @RequestParam String itemName\n        @RequestParam int price\n        @RequestParam Integer quantity\n        Model model\n        + new Item() + setter 3 개 + addAttribute\n\n   8.8  v2   @ModelAttribute(\"item\") Item item\n             + save\n\n   8.8  v3   @ModelAttribute Item item      모델 이름을 클래스에서 유추\n\n   8.8  v4   Item item                      어노테이션도 생략",
+   "note": "**8.7 의 여덟 줄이 두 줄이 된다.** 그리고 v2 부터는 `model.addAttribute` 도 없다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "v2 — @ModelAttribute",
+   "code": "@PostMapping(\"/add\")\npublic String addItemV2(@ModelAttribute(\"item\") Item item) {\n    itemRepository.save(item);\n    // model.addAttribute(\"item\", item);   <- 안 해도 된다\n    return \"basic/item\";\n}",
+   "note": "**두 줄이다.** 8.7절의 여덟 줄이 줄었다.\n\n그리고 **`model.addAttribute` 가 사라진 것**이 이 절의 두 번째 이득이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "모델에 자동으로 담긴다",
+   "md": "7.7절에서 이렇게 적었다.\n\n> **받기만 하는 것이 아니다.** 받은 객체를 **모델에도 담아 준다.**\n\n**8.7절에서는 이 두 줄을 손으로 썼다.**\n\n```java\nitemRepository.save(item);\nmodel.addAttribute(\"item\", item);   // 상세 화면이 ${item} 을 쓴다\n```\n\n**하나가 사라졌다.** `@ModelAttribute(\"item\")` 의 그 이름으로 모델에 들어가 있기 때문이다.\n\n그래서 **`Model` 파라미터 자체가 필요 없어졌다.** 7.13절에서 `ModelMethodProcessor` 를 봤는데, 여기서는 아예 안 받는다.\n\n**이름이 `ModelAttribute` 인 이유**가 이 자리에서 분명해진다 — 파라미터를 받는 것과 모델에 담는 것을 **한 어노테이션이 한다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "v3 — 이름 생략",
+   "code": "@PostMapping(\"/add\")\npublic String addItemV3(@ModelAttribute Item item) {\n    itemRepository.save(item);\n    return \"basic/item\";\n}",
+   "note": "**`(\"item\")` 을 지웠다.** 7.7절의 규칙대로 **클래스 이름의 첫 글자를 소문자**로 한 `item` 이 된다.\n\n템플릿의 `${item.itemName}` 이 그대로 동작한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "클래스 이름을 바꾸면 화면이 깨진다",
+   "md": "`Item` 을 `Product` 로 리팩터링한다고 하자.\n\n```java\n@ModelAttribute Product product      // 모델 이름이 product 가 된다\n```\n\n```html\n<td th:text=\"${item.itemName}\">    <!-- 모델에 item 이 없다 -->\n```\n\n**IDE 가 안 잡아 준다.** 자바 쪽 이름은 다 바뀌는데 **템플릿의 `${item}` 은 문자열**이라 그대로 남는다.\n\n그리고 7.7절에서 적은 대로 — **오류가 아니라 빈 값**이다.\n\n이 책에서 반복된 것이다. 4.6절의 viewPath, 6.2절의 basePackages, 7.7절의 모델 이름. **문자열은 컴파일러가 안 본다.**\n\n**클래스 이름을 바꿀 때 템플릿도 검색해서 고친다.** 7.7절에서 이름을 바꾸지 말라고 한 것도 같은 이유다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "v4 — 어노테이션까지 생략",
+   "code": "@PostMapping(\"/add\")\npublic String addItemV4(Item item) {\n    itemRepository.save(item);\n    return \"basic/item\";\n}",
+   "note": "**7.7절의 생략 규칙**이다 — 단순 타입이 아니면 `@ModelAttribute` 로 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "v4 까지 갈 것인가",
+   "md": "7.6절에서 `@RequestParam` 생략을 두고 **의견이 갈린다**고 했다. 여기서도 같다.\n\n**생략하자는 쪽** — 짧다. 스프링 공식 예제도 이렇게 쓴다.\n\n**적자는 쪽**\n\n1. **\"이것이 요청 데이터\" 라는 표시가 없다.** 그냥 자바 파라미터로 보인다\n2. **모델에도 담긴다는 것이 안 보인다.** 이게 더 크다 — 템플릿에서 `${item}` 을 쓸 수 있는 이유가 코드에 없다\n3. **7.7절의 판단 규칙을 알아야** 읽을 수 있다\n\n**2번이 v4 의 진짜 비용**이다. `@RequestParam` 생략은 \"파라미터를 받는다\" 는 것만 감추는데, `@ModelAttribute` 생략은 **부수 효과까지 감춘다.**\n\n**이 책은 v3(`@ModelAttribute` 는 적고 이름은 생략)를 기본으로 한다.** 어노테이션 하나로 두 가지 일이 다 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "8.7절의 문제는 그대로다",
+   "md": "코드가 짧아졌지만 **동작은 하나도 안 바뀌었다.**\n\n- 주소창은 여전히 `/basic/items/add`\n- **새로고침하면 여전히 상품이 또 등록된다**\n\n**8.8절은 코드를 줄이는 절이고 8.10절이 동작을 고치는 절**이다(8.7절 표).\n\n4·5장에서 \"HTTP 는 안 바뀌고 코드만 바뀐다\" 고 여러 번 적었는데, **여기서도 그렇다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP — 8.7절과 똑같다",
+   "sql": "POST /basic/items/add HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nitemName=itemA&price=10000&quantity=10\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html> ... 상품 상세 ... </html>\n\n# 새로고침하면\nPOST /basic/items/add HTTP/1.1\n#   여전히 다시 나간다\n\n# 필드 이름이 안 맞으면 (name=\"item_name\")\nPOST /basic/items/add HTTP/1.1\n\nitem_name=itemA&price=10000&quantity=10\n\nHTTP/1.1 200 \n# 화면: 상품명이 비어 있다     <- 오류가 아니다",
+   "note": "**8.7절과 응답이 한 글자도 안 다르다.** 컨트롤러가 여섯 줄 줄었는데.\n\n맨 아래가 이 절의 함정이다. **`name` 이 프로퍼티 이름과 안 맞으면 오류 없이 빈 값**이다(7.7절).\n\n8.6절에서 **\"`name` 이 `Item` 의 프로퍼티 이름과 맞아야 한다\"** 고 한 자리이고, 확인 방법은 **화면을 보는 것**뿐이다."
+  }
+ ],
+ "recap": [
+  "**8.7절의 여덟 줄이 두 줄**이 된다.",
+  "**`model.addAttribute` 가 사라진다** — `@ModelAttribute` 가 모델에도 담는다(7.7절).",
+  "그래서 **`Model` 파라미터 자체가 필요 없어진다.**",
+  "**이름이 `ModelAttribute` 인 이유**가 이 자리에서 분명해진다.",
+  "이름을 생략하면 **클래스 이름의 첫 글자 소문자**가 된다.",
+  "**클래스 이름을 바꾸면 템플릿이 조용히 깨진다** — 문자열이라 IDE 가 안 잡는다.",
+  "어노테이션까지 생략할 수 있는데 **모델에 담긴다는 것까지 감춘다.**",
+  "**이 책은 v3 를 기본**으로 한다 — 어노테이션은 적고 이름은 생략.",
+  "**코드만 줄었고 동작은 안 바뀌었다.** 새로고침 문제는 8.10절이다."
+ ],
+ "drills": [
+  {
+   "task": "v1 을 v2·v3·v4 로 차례로 바꾼다.",
+   "done_when": "네 방식이 같은 결과를 내는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "v2 에서 `model.addAttribute` 를 지우고 화면을 본다.",
+   "done_when": "그래도 값이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "폼의 `name` 을 `item_name` 으로 바꾼다.",
+   "done_when": "오류 없이 빈 값이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Item` 을 `Product` 로 리팩터링하고 템플릿을 안 고쳐 본다.",
+   "done_when": "화면이 조용히 깨지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "새로고침을 눌러 본다.",
+   "done_when": "8.7절과 똑같이 상품이 또 등록되는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ModelAttribute` 로 무엇이 줄어드나?",
+   "a": "파라미터 셋과 객체 생성 코드가 하나로 줄고, `model.addAttribute` 와 `Model` 파라미터도 필요 없어진다."
+  },
+  {
+   "q": "`model.addAttribute` 를 안 해도 되는 이유는?",
+   "a": "`@ModelAttribute` 가 받은 객체를 모델에도 담아 주기 때문이다. 이름이 그래서 `ModelAttribute` 다."
+  },
+  {
+   "q": "이름을 생략하면 모델 이름은?",
+   "a": "클래스 이름의 첫 글자를 소문자로 한 것이다. `Item` 이면 `item`."
+  },
+  {
+   "q": "클래스 이름을 바꾸면 무엇이 문제인가?",
+   "a": "모델 이름도 바뀌는데 템플릿의 `${item}` 은 문자열이라 안 바뀐다. 오류 없이 빈 값이 나온다."
+  },
+  {
+   "q": "어노테이션까지 생략하는 것의 비용은?",
+   "a": "요청 데이터라는 표시도, 모델에 담긴다는 것도 코드에 안 보인다. 후자가 더 크다."
+  },
+  {
+   "q": "8.8절에서 동작이 바뀌었나?",
+   "a": "안 바뀌었다. 코드만 줄었고 새로고침하면 여전히 상품이 또 등록된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

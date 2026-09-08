@@ -1,0 +1,153 @@
+{
+ "book": "spring-mvc-1",
+ "id": "item-add-1",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "상품 등록 폼",
+ "summary": "th:action 과 빈 문자열의 뜻.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "등록 폼 화면을 만들 수 있다.",
+  "`th:action` 을 값 없이 쓰는 이유를 안다.",
+  "폼의 `name` 이 왜 중요한지 안다.",
+  "`action=\"item.html\"` 을 남겨 두는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "code": "@GetMapping(\"/add\")\npublic String addForm() {\n    return \"basic/addForm\";\n}",
+   "note": "**모델이 없다.** 빈 폼을 보여 주기만 하니 넘길 데이터가 없다.\n\n8.1절 URL 표에서 `GET /basic/items/add` 가 이것이다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "file": "templates/basic/addForm.html",
+   "code": "<html xmlns:th=\"http://www.thymeleaf.org\">\n<body>\n<div class=\"container\">\n    <h2>상품 등록 폼</h2>\n    <form action=\"item.html\" th:action method=\"post\">\n        <div>\n            <label for=\"itemName\">상품명</label>\n            <input type=\"text\" id=\"itemName\" name=\"itemName\" placeholder=\"이름을 입력하세요\">\n        </div>\n        <div>\n            <label for=\"price\">가격</label>\n            <input type=\"text\" id=\"price\" name=\"price\" placeholder=\"가격을 입력하세요\">\n        </div>\n        <div>\n            <label for=\"quantity\">수량</label>\n            <input type=\"text\" id=\"quantity\" name=\"quantity\" placeholder=\"수량을 입력하세요\">\n        </div>\n        <button type=\"submit\">상품 등록</button>\n        <button type=\"button\"\n                th:onclick=\"|location.href='@{/basic/items}'|\">취소</button>\n    </form>\n</div>\n</body>\n</html>",
+   "note": "**`th:action` 에 값이 없다.** 오타가 아니다."
+  },
+  {
+   "type": "heading",
+   "text": "th:action 에 값을 안 준다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빈 th:action 은 현재 URL 로 보낸다",
+   "md": "```html\n<form action=\"item.html\" th:action method=\"post\">\n```\n\n**`th:action` 이 값 없이 있으면 현재 URL 로 전송**한다.\n\n지금 화면의 URL 이 `/basic/items/add` 이니 폼도 그리로 간다. **`GET` 으로 열고 `POST` 로 보내는 것**이다 — 8.1절에서 정한 설계 그대로.\n\n**왜 이게 좋은가.**\n\n- **URL 을 두 번 안 쓴다** — 컨트롤러의 `@GetMapping(\"/add\")` 하나만 고치면 된다\n- **오타가 안 난다** — 4.6절부터 계속 나온 문자열 문제\n\n8.1절에서 **\"같은 URL 에 메서드로 구분하는 것이 그나마 원칙에 가깝다\"** 고 했는데, **템플릿도 그 덕을 본다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "action=\"item.html\" 은 왜 남겨 두나",
+   "md": "```html\n<form action=\"item.html\" th:action method=\"post\">\n```\n\n렌더링되면 `th:action` 이 `action` 을 덮어쓴다. **`item.html` 은 서버에서 아무 의미가 없다.**\n\n그런데 **브라우저로 파일을 그냥 열면** 그것이 살아난다 — 등록 버튼을 누르면 `item.html` 로 간다.\n\n**8.3절의 내추럴 템플릿**이다. 퍼블리싱 단계에서 **화면 흐름까지 확인**할 수 있다.\n\n```\n정적 상태:  addForm.html  ->  item.html       (파일 이동)\n렌더링 후:  /basic/items/add  ->  /basic/items/add  (POST)\n```\n\n**같은 파일이 두 가지로 동작한다.** 이것이 타임리프를 쓰는 실용적 이유 중 하나다.\n\n다만 **혼란을 줄 수도 있다.** `action` 값이 실제로는 안 쓰이는데 코드에 남아 있으니, 모르는 사람은 그리로 간다고 읽는다. **팀에 따라 지우기도 한다.**"
+  },
+  {
+   "type": "heading",
+   "text": "name 이 파라미터 이름이다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3.6절에서 이미 본 것",
+   "md": "```html\n<input type=\"text\" id=\"itemName\" name=\"itemName\">\n```\n\n**`name` 이 파라미터 이름**이 된다. `id` 가 아니다 — 3.6절에서 짚은 그것.\n\n그리고 이 이름이 **두 곳과 맞아야** 한다.\n\n```\nHTML   name=\"itemName\"\n         │\n         ▼\n서버    @RequestParam(\"itemName\")   또는\n        Item.setItemName()          <- @ModelAttribute (7.7 절)\n```\n\n**8.8절에서 `@ModelAttribute` 를 쓰면** 이 이름이 `Item` 의 프로퍼티 이름과 맞아야 한다.\n\n안 맞으면 **오류 없이 `null`** 이다 — 7.7절의 그 조용한 실패.\n\n`id` 는 `<label for=\"...\">` 와 자바스크립트가 쓴다. **역할이 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "label 의 for 를 빠뜨리지 않는다",
+   "md": "```html\n<label for=\"itemName\">상품명</label>\n<input type=\"text\" id=\"itemName\" name=\"itemName\">\n```\n\n`for` 와 `id` 가 맞으면 **라벨을 클릭해도 입력칸에 포커스가 간다.**\n\n작아 보이는데 **접근성에서 중요하다** — 스크린 리더가 \"이 입력칸의 이름이 상품명\" 이라고 읽어 준다. `for` 가 없으면 그냥 텍스트와 빈 입력칸이다.\n\n체크박스·라디오에서는 더 크다. **클릭 영역이 넓어져서** 쓰기 편해진다.\n\n예제라 CSS 도 없는 화면이지만, **이것은 습관으로 붙여 둘 값이 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "취소 버튼에 type=\"button\" 을 준다",
+   "md": "```html\n<button type=\"submit\">상품 등록</button>\n<button type=\"button\" th:onclick=\"...\">취소</button>\n```\n\n**`<button>` 의 기본 `type` 은 `submit`** 이다. 폼 안에 있으면 누르는 순간 제출된다.\n\n취소 버튼에 `type=\"button\"` 을 안 주면 **취소를 눌렀는데 상품이 등록된다.**\n\n흔한 실수이고, **화면을 눌러 보기 전까지 모른다.** 4.2절에서 \"태그를 안 닫아도 컴파일된다\" 고 한 것과 같은 종류다 — **HTML 은 조용히 잘못 동작한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "실제로 오간 HTTP",
+   "sql": "GET /basic/items/add HTTP/1.1\nHost: localhost:8080\n\nHTTP/1.1 200 \nContent-Type: text/html;charset=UTF-8\n\n<html>\n<body>\n<div class=\"container\">\n    <h2>상품 등록 폼</h2>\n    <form action=\"/basic/items/add\" method=\"post\">\n        <div>\n            <label for=\"itemName\">상품명</label>\n            <input type=\"text\" id=\"itemName\" name=\"itemName\"\n                   placeholder=\"이름을 입력하세요\">\n        </div>\n        ...\n        <button type=\"submit\">상품 등록</button>\n        <button type=\"button\" onclick=\"location.href='/basic/items'\">취소</button>\n    </form>\n</div>\n</body>\n</html>",
+   "note": "**`action=\"item.html\"` 이 `action=\"/basic/items/add\"` 로 바뀌었다.** 값 없는 `th:action` 이 현재 URL 을 채운 것이다.\n\n그리고 **`th:action` 속성 자체는 사라졌다** — 8.3절에서 본 대로 응답에는 `th:` 가 안 남는다.\n\n**이 폼을 제출하면 무엇이 나가는지**는 3.6절에서 확인했다. `Content-Type: application/x-www-form-urlencoded` 에 `itemName=...&price=...&quantity=...` 다. **8.7절에서 그것을 받는다.**"
+  }
+ ],
+ "recap": [
+  "**모델이 없는 컨트롤러** — 빈 폼을 보여 주기만 한다.",
+  "**값 없는 `th:action` 은 현재 URL 로** 보낸다.",
+  "URL 을 두 번 안 써도 되고 **오타가 안 난다.**",
+  "`action=\"item.html\"` 은 **브라우저로 그냥 열었을 때 살아난다** — 내추럴 템플릿.",
+  "**같은 파일이 두 가지로 동작한다.** 다만 혼란을 줄 수 있어 지우기도 한다.",
+  "**`name` 이 파라미터 이름**이다. `id` 가 아니다(3.6절).",
+  "그 이름이 **`Item` 의 프로퍼티 이름과 맞아야** 한다(7.7·8.8절).",
+  "**`<label for>` 는 접근성**에 중요하다 — 습관으로 붙인다.",
+  "**`<button>` 의 기본 `type` 은 `submit`** 이다. 취소 버튼에 `type=\"button\"` 을 준다."
+ ],
+ "drills": [
+  {
+   "task": "등록 폼 컨트롤러와 템플릿을 만든다.",
+   "done_when": "목록에서 등록 버튼을 눌러 폼이 열린다.",
+   "minutes": 20
+  },
+  {
+   "task": "템플릿 파일을 브라우저로 직접 열고 등록 버튼을 누른다.",
+   "done_when": "`item.html` 로 이동하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "취소 버튼에서 `type=\"button\"` 을 지운다.",
+   "done_when": "취소를 눌렀는데 제출되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`name` 을 지우고 폼을 제출한 뒤 요청 바디를 본다.",
+   "done_when": "그 필드가 안 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "라벨을 클릭해 포커스가 가는지 확인하고 `for` 를 지워 본다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값 없는 `th:action` 은 무엇을 하나?",
+   "a": "현재 URL 로 폼을 전송한다. `GET` 으로 연 URL 에 `POST` 로 보내게 된다."
+  },
+  {
+   "q": "그것이 왜 좋은가?",
+   "a": "URL 을 템플릿에 또 쓰지 않아도 되고 오타가 나지 않는다."
+  },
+  {
+   "q": "`action=\"item.html\"` 을 남겨 두는 이유는?",
+   "a": "브라우저로 파일을 그냥 열었을 때 화면 흐름을 확인할 수 있기 때문이다. 렌더링되면 `th:action` 이 덮어쓴다."
+  },
+  {
+   "q": "폼에서 파라미터 이름이 되는 속성은?",
+   "a": "`name` 이다. `id` 는 `<label for>` 와 자바스크립트가 쓴다."
+  },
+  {
+   "q": "`<label for>` 가 왜 중요한가?",
+   "a": "라벨을 클릭해도 입력칸에 포커스가 가고, 스크린 리더가 입력칸의 이름을 읽어 준다."
+  },
+  {
+   "q": "취소 버튼에 `type=\"button\"` 을 주는 이유는?",
+   "a": "`<button>` 의 기본 타입이 `submit` 이라 폼 안에서 누르면 제출되기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "스프링 MVC 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-mvc-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
