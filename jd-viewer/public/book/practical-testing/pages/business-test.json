@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "business-test",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "Business Layer 테스트",
+ "summary": "트랜잭션 경계까지.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서비스 테스트에서 뭘 검증하는지 안다.",
+  "트랜잭션을 테스트한다.",
+  "실패 경로의 DB 상태를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여기가 가장 값어치 있다**(5.1절). **다른 계층이 못 보는 걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "서비스 테스트만 볼 수 있는 것",
+   "ascii": "   what a service test checks that nothing else can\n\n   the rule                did stock go down by exactly two\n   the orchestration       were both repositories called\n   the transaction         did everything roll back together\n   the exception path      did the failure leave the db clean\n\n   a repository test cannot see the rule\n   a controller test should not see the database",
+   "note": "**규칙과 조합과 트랜잭션**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderService",
+   "code": "@Service\n@RequiredArgsConstructor\npublic class OrderService {\n\n    private final ProductRepository productRepository;\n    private final OrderRepository orderRepository;\n    private final StockRepository stockRepository;\n\n    @Transactional\n    public OrderResponse createOrder(OrderCreateRequest request,\n                                     LocalDateTime registeredDateTime) {\n        List<String> productNumbers = request.getProductNumbers();\n        List<Product> products = findProductsBy(productNumbers);\n\n        deductStockQuantities(products);\n\n        Order order = Order.create(products, registeredDateTime);\n        Order savedOrder = orderRepository.save(order);\n        return OrderResponse.of(savedOrder);\n    }\n\n    private void deductStockQuantities(List<Product> products) {\n        List<String> stockProductNumbers = extractStockProductNumbers(products);\n        Map<String, Stock> stockMap = createStockMapBy(stockProductNumbers);\n        Map<String, Long> productCountingMap =\n                createCountingMapBy(stockProductNumbers);\n\n        for (String stockProductNumber : new HashSet<>(stockProductNumbers)) {\n            Stock stock = stockMap.get(stockProductNumber);\n            int quantity = productCountingMap.get(stockProductNumber).intValue();\n\n            if (stock.isQuantityLessThan(quantity)) {\n                throw new IllegalArgumentException(\"재고가 부족한 상품이 있습니다.\");\n            }\n            stock.deductQuantity(quantity);\n        }\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "네 가지를 검증한다",
+   "md": "**① 규칙**\n\n```java\nassertThat(stock.getQuantity()).isEqualTo(1);   // 2에서 1을 뺐다\n```\n\n> **`deductQuantity` 자체는 `Stock` 의 단위 테스트가** 본다.\n> **서비스는 \"주문 개수만큼\" 뺐는지**를 본다.\n>\n> **같은 상품을 두 개 주문하면 2를 빼야** 한다. **그게 `createCountingMapBy`** 다.\n\n**② 조합**\n\n```java\nassertThat(orderRepository.findAll()).hasSize(1);\nassertThat(stockRepository.findAll()).extracting(\"quantity\").containsExactly(1);\n```\n\n> **주문이 저장되고 재고가 줄었다.** **둘 다** 확인한다.\n> **리포지토리 테스트는 하나씩만** 본다.\n\n**③ 트랜잭션**\n\n> **실패했을 때 아무것도 안 남아야** 한다.\n> **아래에서 따로** 본다.\n\n**④ 예외 경로**\n\n```java\nassertThatThrownBy(() -> orderService.createOrder(request, now))\n        .isInstanceOf(IllegalArgumentException.class)\n        .hasMessage(\"재고가 부족한 상품이 있습니다.\");\n```\n\n> **2.4절의 예외 케이스**다. **여기서는 DB 상태까지** 같이 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "서비스 테스트만 쓸 수 있는 테스트",
+   "ascii": "   the test that only a service test can write\n\n   order two products, one of them out of stock\n\n   expected\n     an exception\n     no order row\n     stock unchanged for the first product too\n\n   the third line is the one people forget\n   and it is the one that catches a missing transaction",
+   "note": "**세 번째 줄을 빠뜨린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "트랜잭션을 어떻게 확인하나",
+   "md": "**`@Transactional` 을 빼 본다.**\n\n> **가장 확실한 방법**이다. **테스트가 빨개져야** 한다.\n>\n> **안 빨개지면 그 테스트는 트랜잭션을 안** 보고 있다.\n\n**전형적인 부족한 테스트**\n\n```java\n// then\nassertThatThrownBy(() -> orderService.createOrder(request, now))\n        .isInstanceOf(IllegalArgumentException.class);\n```\n\n> **예외만** 본다. **`@Transactional` 을 빼도 통과**한다.\n> **재고가 절반만 빠진 채로 남아** 있어도 모른다.\n\n**DB 상태를 같이 본다.**\n\n```java\n// then\nassertThatThrownBy(...).isInstanceOf(IllegalArgumentException.class);\n\nassertThat(orderRepository.findAll()).isEmpty();\nassertThat(stockRepository.findAll())\n        .extracting(\"productNumber\", \"quantity\")\n        .containsExactlyInAnyOrder(\n                tuple(\"001\", 2),    // 안 줄었다\n                tuple(\"002\", 0)     // 원래 0이었다\n        );\n```\n\n> **`001` 의 재고가 그대로인 게** 핵심이다.\n>\n> **`@Transactional` 없이 돌리면 `001` 은 1로 줄고 `002` 에서** 터진다.\n\n**주의** — **테스트에 `@Transactional` 을 붙이면 이걸 못** 본다.\n\n> **테스트 자체가 트랜잭션 안에서** 돌면 **서비스의 트랜잭션이 있으나 없으나 같아** 보인다.\n>\n> **5.6절의 함정**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 정상 주문 ---\n\n@SpringBootTest\nclass OrderServiceTest {\n\n    @Autowired OrderService orderService;\n    @Autowired ProductRepository productRepository;\n    @Autowired StockRepository stockRepository;\n    @Autowired OrderRepository orderRepository;\n\n    @AfterEach\n    void tearDown() {\n        orderProductRepository.deleteAllInBatch();\n        orderRepository.deleteAllInBatch();\n        stockRepository.deleteAllInBatch();\n        productRepository.deleteAllInBatch();\n    }\n\n    @DisplayName(\"같은 상품을 두 개 주문하면 재고가 두 개 줄어든다\")\n    @Test\n    void createOrderWithSameProduct() {\n        // given\n        Product product = createProduct(\"001\", BOTTLE, \"아메리카노\", 4000);\n        productRepository.save(product);\n        stockRepository.save(Stock.create(\"001\", 2));\n\n        OrderCreateRequest request =\n                OrderCreateRequest.builder()\n                        .productNumbers(List.of(\"001\", \"001\"))\n                        .build();\n\n        // when\n        OrderResponse response = orderService.createOrder(request, 영업중);\n\n        // then\n        assertThat(response.getTotalPrice()).isEqualTo(8000);\n\n        List<Stock> stocks = stockRepository.findAll();\n        assertThat(stocks).hasSize(1)\n                .extracting(\"productNumber\", \"quantity\")\n                .containsExactly(tuple(\"001\", 0));\n    }\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into stock (product_number,quantity) values (?,?)\nHibernate: select p1_0.id, ... from product p1_0 where p1_0.product_number in (?,?)\nHibernate: select s1_0.id, ... from stock s1_0 where s1_0.product_number in (?)\nHibernate: insert into orders (order_status,registered_date_time,total_price)\n           values (?,?,?)\nHibernate: insert into order_product (order_id,product_id) values (?,?)\nHibernate: insert into order_product (order_id,product_id) values (?,?)\nHibernate: update stock set product_number=?, quantity=? where id=?\nbinding parameter (2:INTEGER) <- [0]\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   재고가 2 -> 0 이다\n\n#   update 가 한 번만 나갔다\n#   같은 상품 둘을 세어서 한 번에 뺐다\n\n# --- 재고 부족 ---\n\n@DisplayName(\"재고가 부족하면 예외가 나고 아무것도 저장되지 않는다\")\n@Test\nvoid createOrderWithNotEnoughStock() {\n    // given\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", BOTTLE, \"아메리카노\", 4000),\n            createProduct(\"002\", BOTTLE, \"카페라떼\", 4500)));\n    stockRepository.saveAll(List.of(\n            Stock.create(\"001\", 2),\n            Stock.create(\"002\", 0)));\n\n    OrderCreateRequest request = OrderCreateRequest.builder()\n            .productNumbers(List.of(\"001\", \"002\"))\n            .build();\n\n    // when & then\n    assertThatThrownBy(() -> orderService.createOrder(request, 영업중))\n            .isInstanceOf(IllegalArgumentException.class)\n            .hasMessage(\"재고가 부족한 상품이 있습니다.\");\n\n    assertThat(orderRepository.findAll()).isEmpty();\n    assertThat(stockRepository.findAll())\n            .extracting(\"productNumber\", \"quantity\")\n            .containsExactlyInAnyOrder(\n                    tuple(\"001\", 2),\n                    tuple(\"002\", 0));\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into stock (...) values (?,?)\nHibernate: insert into stock (...) values (?,?)\nHibernate: select ... from product p1_0 where p1_0.product_number in (?,?)\nHibernate: select ... from stock s1_0 where s1_0.product_number in (?,?)\n\n#   (예외 발생. 롤백)\n\nHibernate: select ... from orders o1_0\nHibernate: select ... from stock s1_0\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\n#   update 가 안 나갔다\n\n#   001 의 재고가 2 그대로다\n\n# --- @Transactional 을 빼면 ---\n\npublic OrderResponse createOrder(...) {      // @Transactional 없음\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: select ... from stock s1_0 where s1_0.product_number in (?,?)\n\n#   (001 의 재고를 1로 깎고 002 에서 예외)\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 FAILED\n    java.lang.AssertionError:\n    Expecting ArrayList:\n      [(\"001\", 1), (\"002\", 0)]\n    to contain exactly in any order:\n      [(\"001\", 2), (\"002\", 0)]\n\n#   001 이 1로 줄어 있다\n\n#   주문은 안 만들어졌는데 재고만 깎였다\n\n#   실무에서 가장 흔한 데이터 정합성 사고다\n\n#   되돌린다\n\n# --- 예외만 검증하는 테스트였다면 ---\n\n@Test\nvoid createOrderWithNotEnoughStock() {\n    // given ...\n\n    // when & then\n    assertThatThrownBy(() -> orderService.createOrder(request, 영업중))\n            .isInstanceOf(IllegalArgumentException.class);\n}\n\n#   @Transactional 이 있든 없든\n\nOrderServiceTest > ... PASSED\nOrderServiceTest > ... PASSED\n\n#   둘 다 통과한다\n\n#   1.1절의 기준으로 이 테스트는 트랜잭션을 안 지킨다\n\n#   DB 상태를 봐야 지킨다\n\n# --- 왜 @AfterEach 가 필요한가 ---\n\n#   tearDown 을 지우고 두 테스트를 연달아 돌리면\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... PASSED\nOrderServiceTest > 재고가 부족하면 ... FAILED\n    Expecting ArrayList:\n      [(\"001\", 0), (\"001\", 2), (\"002\", 0)]\n    to contain exactly in any order:\n      [(\"001\", 2), (\"002\", 0)]\n\n#   앞 테스트의 데이터가 남아 있다\n\n#   2.1절의 '독립적이다' 가 깨졌다\n\n#   static 필드보다 고약하다. 순서에 따라 결과가 바뀐다\n\n#   5.9절에서 다룬다\n\n# --- 다음 절에서 ---\n\n#   프레젠테이션 계층으로 올라간다",
+   "note": "**같은 상품 둘을 주문하니 `update` 가 한 번**만 나갔다. **세어서 한 번에** 뺐다.\n\n**재고 부족에서 `update` 가 안** 나갔다. **`001` 의 재고가 2 그대로**다.\n\n**`@Transactional` 을 빼면 `(\"001\", 1)`** 이다. **주문은 안 만들어졌는데 재고만** 깎였다.\n\n**예외만 검증하는 테스트는 `@Transactional` 이 있든 없든** 통과한다. **DB 상태를 봐야** 지킨다.\n\n**`tearDown` 을 지우면 앞 테스트 데이터가 남아** 깨진다."
+  }
+ ],
+ "recap": [
+  "**서비스 테스트가 규칙·조합·트랜잭션·예외 경로**를 본다.",
+  "**같은 상품을 세어서 한 번에** 뺀다.",
+  "**실패 경로에서 DB 상태를 같이** 본다.",
+  "**예외만 검증하면 `@Transactional` 이 없어도** 통과한다.",
+  "**`@Transactional` 을 빼서 빨개지는지 확인**한다.",
+  "**주문은 안 만들어졌는데 재고만 깎이는 게 흔한 사고**다.",
+  "**테스트에 `@Transactional` 을 붙이면 이걸 못** 본다 — 5.6절.",
+  "**`@AfterEach` 로 데이터를** 지운다.",
+  "**앞 테스트 데이터가 남으면 2.1절의 독립성이** 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "재고 차감 서비스 테스트를 짠다.",
+   "done_when": "`update` 가 한 번 나가는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "실패 경로에 DB 상태 검증을 더한다.",
+   "done_when": "재고가 그대로인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Transactional` 을 빼 본다.",
+   "done_when": "재고만 깎이는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@AfterEach` 를 지우고 두 테스트를 돌린다.",
+   "done_when": "앞 데이터가 남아 깨지는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서비스 테스트만 볼 수 있는 것은?",
+   "a": "규칙, 여러 리포지토리 조합, 트랜잭션, 실패 경로의 DB 상태다."
+  },
+  {
+   "q": "예외만 검증하면 무엇을 못 잡나?",
+   "a": "트랜잭션이다. `@Transactional` 이 없어도 통과한다."
+  },
+  {
+   "q": "트랜잭션을 어떻게 확인하나?",
+   "a": "`@Transactional` 을 빼서 테스트가 빨개지는지 본다."
+  },
+  {
+   "q": "가장 흔한 데이터 정합성 사고는?",
+   "a": "주문은 안 만들어졌는데 재고만 깎이는 것이다."
+  },
+  {
+   "q": "`@AfterEach` 가 없으면?",
+   "a": "앞 테스트의 데이터가 남아 순서에 따라 결과가 바뀐다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

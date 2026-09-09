@@ -261,7 +261,7 @@
           "title": "Business Layer 테스트",
           "summary": "트랜잭션 경계까지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -269,7 +269,7 @@
           "title": "Presentation Layer 테스트",
           "summary": "요청과 응답만.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",

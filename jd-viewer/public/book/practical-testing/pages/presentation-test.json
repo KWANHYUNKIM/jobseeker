@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "presentation-test",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "Presentation Layer 테스트",
+ "summary": "요청과 응답만.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`MockMvc` 로 요청·응답을 검증한다.",
+  "검증을 어디에 둘지 가른다.",
+  "서비스를 목으로 대체한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**가장 얇은 계층**이다. **검증할 것도 가장** 적다."
+  },
+  {
+   "type": "figure",
+   "caption": "볼 수 있는 것과 없는 것",
+   "ascii": "   what a controller test can and cannot see\n\n   can see\n     the url and method matched\n     json parsed into the request object\n     @Valid rejected a bad body\n     the response status and json shape\n\n   cannot see\n     whether the price is right\n     whether stock went down\n     whether the transaction committed\n\n   the service is a mock, so it has no opinion",
+   "note": "**서비스가 목이라 의견이** 없다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderControllerTest",
+   "code": "@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerTest {\n\n    @Autowired\n    private MockMvc mockMvc;\n\n    @Autowired\n    private ObjectMapper objectMapper;\n\n    @MockBean\n    private OrderService orderService;\n\n    @DisplayName(\"신규 주문을 등록한다\")\n    @Test\n    void createOrder() throws Exception {\n        // given\n        OrderCreateRequest request = OrderCreateRequest.builder()\n                .productNumbers(List.of(\"001\"))\n                .build();\n\n        // when & then\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(request))\n                        .contentType(APPLICATION_JSON))\n                .andDo(print())\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.code\").value(\"200\"))\n                .andExpect(jsonPath(\"$.status\").value(\"OK\"));\n    }\n\n    @DisplayName(\"신규 주문 시 상품 번호는 1개 이상이어야 한다\")\n    @Test\n    void createOrderWithEmptyProductNumbers() throws Exception {\n        // given\n        OrderCreateRequest request = OrderCreateRequest.builder()\n                .productNumbers(List.of())\n                .build();\n\n        // when & then\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(request))\n                        .contentType(APPLICATION_JSON))\n                .andExpect(status().isBadRequest())\n                .andExpect(jsonPath(\"$.code\").value(\"400\"))\n                .andExpect(jsonPath(\"$.message\").value(\"상품 번호 리스트는 필수입니다.\"));\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`@WebMvcTest` 가 띄우는 것",
+   "md": "| 뜬다 | 안 뜬다 |\n|---|---|\n| `@Controller`·`@RestController` | `@Service` |\n| `@ControllerAdvice` | `@Repository` |\n| `Converter`·`Filter` | `@Component` 일반 |\n| **Jackson 설정** | **DataSource·JPA** |\n\n> **`controllers = OrderController.class` 로 하나만** 띄운다.\n> **안 쓰면 모든 컨트롤러가** 뜬다.\n\n**`@MockBean` 이 필요한 이유**\n\n```java\n@MockBean\nprivate OrderService orderService;\n```\n\n> **`OrderController` 가 `OrderService` 를 주입**받는다.\n> **서비스 빈이 안 뜨니 컨텍스트 로딩이** 실패한다.\n>\n> ```\n> No qualifying bean of type 'OrderService' available\n> ```\n>\n> **가짜를 넣어 채운다.** **6.6절**에서 자세히 다룬다.\n\n**목이라 아무것도 안** 한다.\n\n> **`orderService.createOrder(...)` 가 `null` 을** 반환한다.\n> **그래도 `200` 이** 나온다 — **컨트롤러가 `ApiResponse.ok(null)` 을** 만드니까.\n>\n> **응답 본문의 `data` 를 검증하려면 스텁이** 필요하다.\n\n**`.andDo(print())`**\n\n> **요청·응답 전문을 찍는다.** **디버깅에 쓴다.**\n> **커밋 전에 지우는 팀도** 있다 — **CI 로그가 길어진다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "검증을 어디에 두나",
+   "ascii": "   where validation belongs\n\n   @NotBlank on the request dto\n     a field is empty        -> 400, no service call\n\n   a rule in the service\n     product does not exist  -> the service decides\n\n   the line between them\n     if you can judge it from the request alone, it is the dto\n     if it needs the database, it is the service",
+   "note": "**요청만으로 판단되면 DTO** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "DTO 검증과 서비스 검증",
+   "md": "**DTO 검증**\n\n```java\npublic class OrderCreateRequest {\n    @NotEmpty(message = \"상품 번호 리스트는 필수입니다.\")\n    private List<String> productNumbers;\n}\n```\n\n| | |\n|---|---|\n| 판단 근거 | **요청 본문만** |\n| 시점 | **컨트롤러 진입 전** |\n| 서비스 호출 | **안 한다** |\n| 응답 | 400 |\n\n**서비스 검증**\n\n```java\nif (products.size() != productNumbers.size()) {\n    throw new IllegalArgumentException(\"존재하지 않는 상품이 있습니다.\");\n}\n```\n\n| | |\n|---|---|\n| 판단 근거 | **DB** |\n| 시점 | 트랜잭션 안 |\n| 응답 | 400 또는 404 |\n\n**경계**\n\n> **요청만 보고 판단되면 DTO, DB 가 필요하면 서비스**다.\n>\n> **「MVC 2편」과 「활용 2편」 2.3절에서 같은 이야기**를 했다.\n> **여기서는 그걸 테스트로** 가른다.\n\n**컨트롤러 테스트는 DTO 검증만** 본다.\n\n> **\"존재하지 않는 상품\" 은 서비스 테스트가** 본다.\n> **컨트롤러에서 그걸 검증하려면 목을 스텁해야 하는데**, **그건 서비스 로직을 컨트롤러 테스트에 복사하는** 것이다.\n\n**`@NotEmpty` 와 `@NotBlank` 와 `@NotNull`**\n\n| | `null` | `\"\"` | `\" \"` |\n|---|---|---|---|\n| `@NotNull` | ❌ | ✅ | ✅ |\n| `@NotEmpty` | ❌ | ❌ | ✅ |\n| `@NotBlank` | ❌ | ❌ | ❌ |\n\n> **문자열은 `@NotBlank`, 컬렉션은 `@NotEmpty`** 다.\n> **2.5절의 경계값이 여기도** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 정상 요청 ---\n\n$ ./gradlew test --tests OrderControllerTest\n\n2026-09-09T16:55:12.331  INFO --- Started OrderControllerTest in 1.842 seconds\n\nMockHttpServletRequest:\n      HTTP Method = POST\n      Request URI = /api/v1/orders/new\n       Parameters = {}\n          Headers = [Content-Type:\"application/json\", Content-Length:\"25\"]\n             Body = {\"productNumbers\":[\"001\"]}\n\n           Handler:\n             Type = sample.cafekiosk.api.controller.order.OrderController\n           Method = createOrder(OrderCreateRequest)\n\nMockHttpServletResponse:\n           Status = 200\n    Content type = application/json\n            Body = {\"code\":200,\"status\":\"OK\",\"message\":\"OK\",\"data\":null}\n\nOrderControllerTest > 신규 주문을 등록한다 PASSED\n\nBUILD SUCCESSFUL in 4s\n\n#   Hibernate 로그가 하나도 없다\n#   DB 가 안 뜬다\n\n#   data 가 null 이다. 목이 null 을 반환했다\n\n# --- 검증 실패 ---\n\n$ ./gradlew test --tests OrderControllerTest\n\nMockHttpServletRequest:\n             Body = {\"productNumbers\":[]}\n\nMockHttpServletResponse:\n           Status = 400\n            Body = {\"code\":400,\"status\":\"BAD_REQUEST\",\n                    \"message\":\"상품 번호 리스트는 필수입니다.\",\"data\":null}\n\nOrderControllerTest > 신규 주문 시 상품 번호는 1개 이상이어야 한다 PASSED\n\n#   서비스가 안 불렸다\n\n# --- 서비스가 정말 안 불렸는지 ---\n\n// then\nverify(orderService, never()).createOrder(any(), any());\n\nOrderControllerTest > 신규 주문 시 상품 번호는 1개 이상이어야 한다 PASSED\n\n#   확인됐다\n\n#   @Valid 가 컨트롤러 메서드 진입 전에 막았다\n\n# --- @Valid 를 지우면 ---\n\npublic ApiResponse<OrderResponse> createOrder(\n        @RequestBody OrderCreateRequest request) {   // @Valid 없음\n\n$ ./gradlew test --tests OrderControllerTest\n\nMockHttpServletResponse:\n           Status = 200\n            Body = {\"code\":200,\"status\":\"OK\",\"message\":\"OK\",\"data\":null}\n\nOrderControllerTest > 신규 주문 시 상품 번호는 1개 이상이어야 한다 FAILED\n    java.lang.AssertionError: Status expected:<400> but was:<200>\n\n#   빈 목록으로 주문이 통과한다\n\n#   애노테이션 하나를 테스트가 지킨다\n\n#   되돌린다\n\n# --- @NotEmpty 를 @NotNull 로 바꾸면 ---\n\n@NotNull(message = \"상품 번호 리스트는 필수입니다.\")\nprivate List<String> productNumbers;\n\n$ ./gradlew test --tests OrderControllerTest\n\nOrderControllerTest > 신규 주문 시 상품 번호는 1개 이상이어야 한다 FAILED\n    java.lang.AssertionError: Status expected:<400> but was:<200>\n\n#   빈 리스트는 null 이 아니라 통과한다\n\n#   경계값이다. 2.5절과 같은 종류다\n\n#   되돌린다\n\n# --- 응답 data 를 검증하려면 ---\n\n// given\ngiven(orderService.createOrder(any(), any()))\n        .willReturn(OrderResponse.builder()\n                .id(1L)\n                .totalPrice(4000)\n                .build());\n\n// when & then\nmockMvc.perform(post(\"/api/v1/orders/new\")\n                .content(objectMapper.writeValueAsString(request))\n                .contentType(APPLICATION_JSON))\n        .andExpect(status().isOk())\n        .andExpect(jsonPath(\"$.data.totalPrice\").value(4000));\n\nMockHttpServletResponse:\n            Body = {\"code\":200,\"status\":\"OK\",\"message\":\"OK\",\n                    \"data\":{\"id\":1,\"totalPrice\":4000,\"orderProducts\":null}}\n\nOrderControllerTest > 신규 주문을 등록한다 PASSED\n\n#   4000 은 내가 스텁한 값이다\n\n#   계산이 맞는지는 검증한 게 아니다\n#   응답 형식만 검증했다\n\n#   그게 이 계층의 몫이다  (5.1절)\n\n# --- @SpringBootTest 로 바꿔 보면 ---\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass OrderControllerTest { ... }\n\n2026-09-09T16:58:22.104  INFO --- Started OrderControllerTest in 3.481 seconds\n\nHibernate: create table product (...)\nHibernate: create table orders (...)\n\nOrderControllerTest > 신규 주문을 등록한다 PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   1.8초가 3.5초가 됐다\n#   DB 테이블이 만들어진다\n\n#   컨트롤러 테스트에 DB 가 필요 없다\n\n#   5.8절에서 이 선택을 다룬다\n\n# --- 다음 절에서 ---\n\n#   given 이 길어지는 문제를 다룬다",
+   "note": "**`Hibernate` 로그가 하나도** 없다. **DB 가 안** 뜬다.\n\n**`data` 가 `null`** 이다 — **목이 `null` 을** 반환했다.\n\n**`verify(never())` 로 서비스가 안 불린 걸** 확인했다. **`@Valid` 가 진입 전에** 막았다.\n\n**`@Valid` 를 지우면 빈 목록이** 통과한다. **애노테이션 하나를 테스트가** 지킨다.\n\n**`@NotEmpty` 를 `@NotNull` 로 바꾸면 빈 리스트가** 통과한다 — **2.5절의 경계값**이다.\n\n**`4000` 은 내가 스텁한 값**이다. **계산이 맞는지는 검증한 게** 아니다."
+  }
+ ],
+ "recap": [
+  "**`@WebMvcTest` 는 컨트롤러만** 띄운다 — DB 가 없다.",
+  "**서비스 빈이 없어 `@MockBean` 이** 필요하다.",
+  "**목이 `null` 을 반환해도 `200`** 이 나온다.",
+  "**요청만으로 판단되면 DTO, DB 가 필요하면 서비스** 검증이다.",
+  "**컨트롤러 테스트는 DTO 검증만** 본다.",
+  "**`verify(never())` 로 서비스가 안 불린 걸** 확인한다.",
+  "**`@Valid` 를 지우면 빈 목록이** 통과한다.",
+  "**`@NotEmpty` 와 `@NotNull` 의 차이가 경계값**이다.",
+  "**스텁한 값을 검증하는 건 형식 검증**이지 계산 검증이 아니다."
+ ],
+ "drills": [
+  {
+   "task": "`@WebMvcTest` 로 컨트롤러 테스트를 짠다.",
+   "done_when": "`Hibernate` 로그가 없는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@Valid` 를 지워 본다.",
+   "done_when": "빈 목록이 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@NotEmpty` 를 `@NotNull` 로 바꿔 본다.",
+   "done_when": "빈 리스트가 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@SpringBootTest` 로 바꿔 시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@WebMvcTest` 가 안 띄우는 것은?",
+   "a": "`@Service`, `@Repository`, DataSource, JPA 다."
+  },
+  {
+   "q": "`@MockBean` 이 왜 필요한가?",
+   "a": "컨트롤러가 주입받는 서비스 빈이 없어 컨텍스트 로딩이 실패한다."
+  },
+  {
+   "q": "DTO 검증과 서비스 검증의 경계는?",
+   "a": "요청만으로 판단되면 DTO, DB 가 필요하면 서비스다."
+  },
+  {
+   "q": "`@NotEmpty` 와 `@NotNull` 의 차이는?",
+   "a": "빈 리스트를 `@NotNull` 은 통과시키고 `@NotEmpty` 는 막는다."
+  },
+  {
+   "q": "스텁한 `4000` 을 검증하면 뭘 검증한 건가?",
+   "a": "응답 형식이다. 계산이 맞는지는 아니다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — MockMvc",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://beanvalidation.org/3.0/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
