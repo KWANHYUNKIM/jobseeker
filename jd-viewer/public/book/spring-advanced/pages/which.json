@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "which",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "어느 것이 만들어졌나",
+ "summary": "이름으로 확인한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 가지를 묻는다.",
+  "숨은 인터페이스를 본다.",
+  "이름만으로는 모자란 걸 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 창구를** 열었다. **그 안이 어떻게 도는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "물어볼 만한 넷",
+   "ascii": "   four questions worth asking about an injected object\n\n   is it a proxy at all\n   which technique made it\n   what is the real class underneath\n   what is attached to it\n\n   the name alone answers only the second, and not always",
+   "note": "**이름만으로는 둘째밖에 못 답하고 그것도** 늘은 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 만들어졌는지 알아야 왜 안 걸리는지 안다",
+   "md": "**둘이** 다르다.\n\n> **6.7절의 제약이** 갈린다.\n> **아래에서 그** 표를 본다.\n> **어느 쪽인지 알아야** 한다.\n\n**이름이 안 알려 줄 때가** 있다.\n\n> **6.3절의 `$Proxy142`** 다.\n> **원본이 안** 보인다.\n> **아래에서 물어**본다.\n\n**원본을 알아야** 한다.\n\n> **12장에서 이걸 자주** 쓴다.\n> **아래에서 꺼내** 본다.\n> **여러 겹이면 끝까지** 벗긴다.\n\n**무엇이 붙었는지도** 묻는다.\n\n> **7.5절의 그** 목록이다.\n> **아래에서 다시** 본다.\n> **안 걸릴 때 제일 먼저** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "몰래 구현하는 인터페이스들",
+   "ascii": "   the interfaces a spring proxy quietly implements\n\n   a marker saying this is a spring proxy\n   an interface exposing the advisor list and the target\n   serializable, so it can be written out\n\n   the second is what every question below goes through",
+   "note": "**아래의 모든 질문이 둘째를** 지난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "테스트에서 원본으로 착각하기 쉽다",
+   "md": "**타입 검사가** 통과한다.\n\n> **인터페이스가 같으니** 그렇다.\n> **아래에서 그걸** 본다.\n> **필드를 보면 비어** 있다.\n\n**목을 넣으면 안** 걸린다.\n\n> **⑨ 4장의 그것**이다.\n> **프록시가 아닌 걸 넣는다.**\n> **아래에서 확인**한다.\n\n**동등성이** 어긋난다.\n\n> **5.2절과 6.3절에서** 봤다.\n> **아래에서 다시** 센다.\n> **집합에 둘이** 들어간다.\n\n**직렬화하면** 달라진다.\n\n> **프록시가 같이** 나간다.\n> **아래에서 그걸** 본다.\n> **원본만 보내야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 네 가지를 묻는다\n\n@GetMapping(value = \"/who\", produces = \"text/plain\")\nString who(String name) {\n    Object bean = ctx.getBean(name);\n    var sb = new StringBuilder();\n    sb.append(\"주입된 것: \").append(bean.getClass().getName()).append('\\n');\n    sb.append(\"프록시인가: \").append(AopUtils.isAopProxy(bean)).append('\\n');\n    sb.append(\"JDK:       \").append(AopUtils.isJdkDynamicProxy(bean)).append('\\n');\n    sb.append(\"CGLIB:     \").append(AopUtils.isCglibProxy(bean)).append('\\n');\n    sb.append(\"원본:      \").append(AopProxyUtils.ultimateTargetClass(bean).getName());\n    return sb.append('\\n').toString();\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1'\n주입된 것: jdk.proxy2.$Proxy142\n프록시인가: true\nJDK:       true\nCGLIB:     false\n원본:      study.adv.app.OrderServiceV1Impl\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2'\n주입된 것: study.adv.app.OrderServiceV2$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n원본:      study.adv.app.OrderServiceV2\n\n--   이름만으로는 위쪽 원본을 못 안다\n\n\n-- 이름이 안 알려 준다\n\n$ curl -s localhost:8080/who/all | grep -c 'jdk.proxy'\n3\n\n$ curl -s localhost:8080/who/all | grep 'jdk.proxy'\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\n\n--   번호만 다르다\n--   무엇을 감쌌는지 이름으로는 모른다\n\n\n-- 상속 쪽은 알려 준다\n\n$ curl -s localhost:8080/who/all | grep 'SpringCGLIB'\norderControllerV2    study.adv.app.OrderControllerV2$$SpringCGLIB$$0\norderServiceV2       study.adv.app.OrderServiceV2$$SpringCGLIB$$0\norderRepositoryV2    study.adv.app.OrderRepositoryV2$$SpringCGLIB$$0\n\n--   앞부분이 원본이다\n--   6.6 절에서 본 그 차이다\n\n\n-- 숨은 인터페이스를 본다\n\n$ curl -s 'localhost:8080/proxy/interfaces?name=orderServiceV1'\nstudy.adv.app.OrderServiceV1\norg.springframework.aop.SpringProxy\norg.springframework.aop.framework.Advised\njava.io.Serializable\n\n$ curl -s 'localhost:8080/proxy/interfaces?name=orderServiceV2'\norg.springframework.aop.SpringProxy\norg.springframework.aop.framework.Advised\njava.io.Serializable\n\n--   7.1 절에서 본 그 셋이다\n--   상속 쪽도 셋을 구현한다\n\n\n-- 그 인터페이스로 묻는다\n\n@GetMapping(value = \"/proxy/advised\", produces = \"text/plain\")\nString advised(String name) {\n    Advised advised = (Advised) ctx.getBean(name);\n    var sb = new StringBuilder();\n    sb.append(\"대상 클래스: \").append(advised.getTargetClass().getName()).append('\\n');\n    sb.append(\"어드바이저:  \").append(advised.getAdvisors().length).append(\" 개\\n\");\n    for (Advisor a : advised.getAdvisors())\n        sb.append(\"  \").append(a.getAdvice().getClass().getSimpleName()).append('\\n');\n    sb.append(\"인터페이스:  \").append(advised.getProxiedInterfaces().length).append(\" 개\\n\");\n    sb.append(\"고정됨:      \").append(advised.isFrozen()).append('\\n');\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/proxy/advised?name=orderServiceV1'\n대상 클래스: study.adv.app.OrderServiceV1Impl\n어드바이저:  3 개\n  LogTraceAdvice\n  TimeAdvice\n  AuditAdvice\n인터페이스:  1 개\n고정됨:      false\n\n--   7.5 절에서 센 그 셋이다\n--   1.3 절의 창구가 이걸로 돌아간다\n\n\n-- 원본 객체도 꺼낸다\n\nTargetSource ts = advised.getTargetSource();\nObject target = ts.getTarget();\n\n$ curl -s 'localhost:8080/proxy/target?name=orderServiceV1'\n대상 원본:   study.adv.app.OrderServiceV1Impl@4f21a1c9\n대상 종류:   SingletonTargetSource\n정적인가:    true\n\n--   객체까지 꺼낼 수 있다\n--   12 장에서 이걸 쓴다\n\n\n-- 여러 겹이면 끝까지 벗긴다\n\n// 7.5 절에서 겹쳐 만든 것\n$ curl -s 'localhost:8080/who?name=doubleProxy'\n주입된 것: jdk.proxy2.$Proxy143\n원본:      study.adv.app.OrderServiceV1Impl\n\n$ curl -s 'localhost:8080/proxy/advised?name=doubleProxy' | head -1\n대상 클래스: jdk.proxy2.$Proxy142\n\n--   한 겹만 벗기면 프록시가 나온다\n--   끝까지 벗기는 것이 따로 있다\n\n\n-- 실무 앱에서 세어 본다\n\n$ curl -s localhost:8080/proxy/census\n전체 빈:      187\n프록시:        14\n  JDK:          4\n  CGLIB:       10\n어드바이저 합계: 21\n\n$ curl -s localhost:8080/proxy/census/detail | head -5\ntransactionManager        JDK    1 개  [TransactionInterceptor]\nentityManagerFactory      JDK    0 개  []\norderServiceImpl          CGLIB  2 개  [TransactionInterceptor, LogTraceAdvice]\ncacheService              CGLIB  1 개  [CacheInterceptor]\nmailService               CGLIB  1 개  [AsyncExecutionInterceptor]\n\n--   1.4 절에서 열둘이라 했다\n--   내 것을 더해 열넷이다\n\n\n-- 어드바이저가 0 개인 프록시\n\n$ curl -s localhost:8080/proxy/census/detail | grep '0 개'\nentityManagerFactory      JDK    0 개  []\nsharedEntityManager       JDK    0 개  []\n\n$ curl -s 'localhost:8080/proxy/interfaces?name=entityManagerFactory'\njakarta.persistence.EntityManagerFactory\norg.springframework.orm.jpa.EntityManagerFactoryInfo\n\n$ curl -s 'localhost:8080/proxy/interfaces?name=entityManagerFactory' \\\n    | grep -c 'SpringProxy'\n0\n\n--   AOP 프록시가 아니다\n--   5.1 절에서 말한 다른 용도의 프록시다\n\n\n-- 안 걸릴 때 여기부터 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/health'\n$ grep -c 'healthCheck' logs/app.log\n0\n\n$ curl -s 'localhost:8080/advisor/matrix?bean=orderServiceV1'\n메서드         걸린 어드바이저\norderItem      [LogTraceAdvice, TimeAdvice, AuditAdvice]\nhealthCheck    []\n\n--   7.5 절의 그 표다\n--   6.12 절에서 조건 보고서를 읽던 자리와 같다\n\n\n-- 타입 검사가 통과한다\n\n@Test\nvoid 프록시도_타입이_같다() {\n    OrderServiceV1 bean = ctx.getBean(OrderServiceV1.class);\n    assertThat(bean).isInstanceOf(OrderServiceV1.class);       // 통과\n    assertThat(bean).isNotInstanceOf(OrderServiceV1Impl.class); // 이것도 통과\n}\n\n$ ./gradlew test --tests '*프록시도_타입*' 2>&1 | tail -2\nBUILD SUCCESSFUL in 3s\n\n--   같은 타입인데 구현 타입은 아니다\n--   1.4 절과 6.3 절에서 본 그 자리다\n\n\n-- 필드를 보면 비어 있다\n\n@GetMapping(value = \"/proxy/fields\", produces = \"text/plain\")\nString fields(String name) throws Exception {\n    Object bean = ctx.getBean(name);\n    Class<?> target = AopProxyUtils.ultimateTargetClass(bean);\n    var sb = new StringBuilder();\n    for (Field f : target.getDeclaredFields()) {\n        f.setAccessible(true);\n        sb.append(String.format(\"%-18s 프록시=%s%n\", f.getName(),\n            AopUtils.isCglibProxy(bean) ? f.get(bean) : \"(볼 수 없음)\"));\n    }\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/proxy/fields?name=orderServiceV2'\norderRepository    프록시=null\n\n$ curl -s 'localhost:8080/proxy/target?name=orderServiceV2' | head -1\n대상 원본:   study.adv.app.OrderServiceV2@8b23e04f\n\n--   5.3 절에서 본 그 두 벌이다\n--   프록시 쪽 필드는 비어 있다\n\n\n-- 목을 넣으면 안 걸린다\n\n@SpringBootTest\nclass MockTest {\n    @MockitoBean OrderRepositoryV1 repository;\n\n    @Autowired OrderServiceV1 service;\n\n    @Test\n    void 목은_프록시가_아니다() {\n        assertThat(AopUtils.isAopProxy(repository)).isFalse();\n        assertThat(AopUtils.isAopProxy(service)).isTrue();\n    }\n}\n\n$ ./gradlew test --tests '*목은_프록시*' -i 2>&1 | grep -E 'PASSED|FAILED'\nMockTest > 목은_프록시가_아니다 PASSED\n\n$ ./gradlew test --tests '*목은_프록시*' -i 2>&1 | grep -c 'study.adv.trace'\n0\n\n--   목으로 바뀐 빈은 감싸지지 않는다\n--   ⑨ 4장에서 쓰던 그것이다\n--   그래서 로그가 안 찍힌다\n\n\n-- 동등성이 어긋난다\n\n$ curl -s localhost:8080/proxy/equals?name=orderServiceV1\n프록시 == 원본:      false\n프록시.equals(원본):  true\n원본.equals(프록시):  false\nhashCode 같은가:     true\n\n$ curl -s localhost:8080/proxy/set-size\n집합에 둘 다 넣으면: 2\n\n--   5.2 절과 6.3 절에서 본 그것이다\n--   한쪽만 참이라 집합이 깨진다\n\n\n-- 직렬화하면\n\n$ curl -s localhost:8080/proxy/serialize?name=orderServiceV1\n직렬화 크기: 2412 바이트\n복원된 것:   jdk.proxy2.$Proxy142\n\n$ curl -s localhost:8080/proxy/serialize?name=orderServiceV1\\&unwrap=true\n직렬화 크기: 184 바이트\n복원된 것:   study.adv.app.OrderServiceV1Impl\n\n--   프록시가 통째로 나간다\n--   원본만 보내려면 벗겨야 한다\n\n\n-- 이름으로만 판단하면 틀린다\n\n$ curl -s localhost:8080/who/all | grep 'Config'\nappConfig            study.adv.AppConfig$$SpringCGLIB$$0\n\n$ curl -s 'localhost:8080/who?name=appConfig' | sed -n '2p'\n프록시인가: false\n\n--   1.4 절에서 본 그것이다\n--   이름은 프록시 모양인데 AOP 프록시가 아니다\n\n\n-- 반대도 있다\n\n$ curl -s 'localhost:8080/who?name=dataSource'\n주입된 것: jdk.proxy2.$Proxy118\n프록시인가: false\nJDK:       false\nCGLIB:     false\n원본:      jdk.proxy2.$Proxy118\n\n$ curl -s 'localhost:8080/proxy/interfaces?name=dataSource' | grep -c 'SpringProxy'\n0\n\n--   동적 프록시인데 스프링 AOP 가 아니다\n--   6.5 절에서 만든 그 종류다\n\n\n-- 넷을 다 물어야 한다\n\n$ printf '%-24s %-10s %-10s %s\\n' \\\n  '이름'         '알려 줌'   '못 알려 줌'  'JDK 는 무관' \\\n  'isAopProxy'   'AOP 인가'  ''            '설정 클래스는 false' \\\n  'ultimate'     '원본'      ''            '끝까지 벗김' \\\n  'Advised'      '무엇이'    ''            '목록과 대상'\n\n이름                     알려 줌     못 알려 줌    JDK 는 무관\nisAopProxy               AOP 인가                  설정 클래스는 false\nultimate                 원본                      끝까지 벗김\nAdvised                  무엇이                    목록과 대상\n\n\n-- 확인한다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1'\n주입된 것: jdk.proxy2.$Proxy142\n프록시인가: true\nJDK:       true\nCGLIB:     false\n원본:      study.adv.app.OrderServiceV1Impl\n\n$ curl -s 'localhost:8080/proxy/advised?name=orderServiceV1' | head -2\n대상 클래스: study.adv.app.OrderServiceV1Impl\n어드바이저:  3 개\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ git add -A && git commit -q -m 'feat: v8 확인 도구' && git tag v8-inspect\n\n--   7.7 절에서 아직 남은 문제를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '넷'          '여부, 방식, 원본, 목록' \\\n  'JDK 이름'    '아무것도 안 알림' \\\n  'CGLIB 이름'  '원본이 앞에' \\\n  '숨은 것'     '표시 셋' \\\n  '원본'        '끝까지 벗김' \\\n  '실무'        '187 중 14' \\\n  '0 개'        'AOP 가 아님' \\\n  '타입 검사'   '통과함' \\\n  '목'          '안 감싸짐' \\\n  '직렬화'      '프록시가 나감'\n\n넷                         여부, 방식, 원본, 목록\nJDK 이름                   아무것도 안 알림\nCGLIB 이름                 원본이 앞에\n숨은 것                    표시 셋\n원본                       끝까지 벗김\n실무                       187 중 14\n0 개                       AOP 가 아님\n타입 검사                  통과함\n목                         안 감싸짐\n직렬화                     프록시가 나감",
+   "note": "**같은 창구가 `jdk.proxy2.$Proxy142` 와 `$$SpringCGLIB$$0` 을 갈라 답하고 원본까지** 알려 준다.\n\n**프록시가 몰래 구현한 세 인터페이스 중 하나로 대상·어드바이저 3 개·인터페이스 수를** 묻는다.\n\n**빈 187 개 중 프록시가 14 개인데 어드바이저 0 개인 것은 AOP 프록시가** 아니다.\n\n**목으로 바꾼 빈은 감싸지지 않아 로그가 0 줄, 동등성은 한쪽만 참이라 집합에 둘이** 들어간다.\n\n**직렬화하면 2412 바이트로 프록시가 통째로 나가고 벗기면 184 바이트**다."
+  }
+ ],
+ "recap": [
+  "**넷을** 묻는다.",
+  "**이름은** 모자라다.",
+  "**표시가** 있다.",
+  "**목록을** 본다.",
+  "**원본을** 벗긴다.",
+  "**187 중 14 개**다.",
+  "**0 개는 AOP 가** 아니다.",
+  "**목은 안** 감싸진다.",
+  "**동등성이** 어긋난다."
+ ],
+ "drills": [
+  {
+   "task": "네 가지를 묻는 창구를 만든다.",
+   "done_when": "둘이 다르게 답하는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "숨은 인터페이스를 본다.",
+   "done_when": "셋을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 전체를 세어 본다.",
+   "done_when": "몇 개가 감싸졌는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "목을 넣고 확인한다.",
+   "done_when": "안 감싸지는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이름만으로 알 수 없는 것은?",
+   "a": "인터페이스 방식일 때의 원본이다."
+  },
+  {
+   "q": "어드바이저 목록은 어떻게 보나?",
+   "a": "프록시가 몰래 구현한 인터페이스로 형변환해 묻는다."
+  },
+  {
+   "q": "어드바이저가 0 개인 프록시는?",
+   "a": "AOP 프록시가 아니라 다른 용도의 프록시다."
+  },
+  {
+   "q": "목으로 바꾼 빈은?",
+   "a": "감싸지지 않아 부가 기능이 안 돈다."
+  },
+  {
+   "q": "직렬화하면?",
+   "a": "프록시가 통째로 나가므로 원본을 벗겨 보내야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "확인 도구",
+   "def": "주입된 객체가 프록시인지, 무엇으로 만들어졌는지 묻는 유틸."
+  },
+  {
+   "term": "원본 벗기기",
+   "def": "여러 겹을 지나 진짜 대상 클래스까지 가는 일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — AopUtils",
+   "url": "https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/support/AopUtils.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

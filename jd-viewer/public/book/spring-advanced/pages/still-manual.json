@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "still-manual",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "그래도 손으로 만든다",
+ "summary": "설정이 대상 수만큼 는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "남은 것을 센다.",
+  "실무 크기로 환산한다.",
+  "7장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장이 클래스와 부가 기능을** 없앴다. **설정은 그대로** 남았다."
+  },
+  {
+   "type": "figure",
+   "caption": "준 것과 안 준 것",
+   "ascii": "   what shrank and what did not\n\n   the proxy classes went from nine to zero\n   the advice went from two files to one\n   the configuration stayed at two lines per bean\n\n   the third line is what the next chapter removes",
+   "note": "**셋째 줄을 다음 장이** 없앤다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빈마다 두 줄이 남아 있다",
+   "md": "**만들고 걸어야** 한다.\n\n> **팩토리와 어드바이저**다.\n> **아래에서 세어** 본다.\n> **7.4절에서 이미** 봤다.\n\n**스캔된 빈은 아예 못** 건드린다.\n\n> **5.7절의 그** 이야기다.\n> **아래에서 다시** 겪는다.\n> **실무는 대개** 스캔이다.\n\n**깜빡하면** 빠진다.\n\n> **2.6절부터 계속** 나온다.\n> **아래에서 마지막으로** 센다.\n> **8장이 그걸** 끝낸다.\n\n**원본을 빈으로 못** 둔다.\n\n> **5.5절에서 애너테이션을** 뗐다.\n> **아래에서 그** 값을 센다.\n> **8장에서 되돌린**다."
+  },
+  {
+   "type": "figure",
+   "caption": "실무 크기의 설정",
+   "ascii": "   the configuration at real size\n\n   two lines per bean, times every bean\n   plus one line for every bean I forgot\n\n   the second cost is invisible until something is missing",
+   "note": "**둘째 값은 뭔가 빠지기 전까지 안** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "설정 파일이 곧 대상 목록이 된다",
+   "md": "**어디에 걸리는지 두 곳에** 적힌다.\n\n> **거르개와 설정**이다.\n> **아래에서 그 겹침을** 본다.\n> **어긋날 수** 있다.\n\n**거르개가 무의미해질 수** 있다.\n\n> **설정에 없으면 애초에 안** 걸린다.\n> **아래에서 그걸** 확인한다.\n> **두 번 거르는 셈**이다.\n\n**설정을 읽어야 안다.**\n\n> **어느 빈이 감싸졌나**다.\n> **7.6절의 창구가** 필요하다.\n> **아래에서 그렇게** 센다.\n\n**8장이 이걸 다** 없앤다.\n\n> **어드바이저만 등록**한다.\n> **아래에서 그 목표를** 적는다.\n> **5.7절의 셋째 길**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 7 장이 줄인 것\n\n$ printf '%-16s %-16s %-16s %s\\n' \\\n  '5 장'  '프록시 9 개'   '어드바이스 -'   '설정 32 줄' \\\n  '6 장'  '프록시 0 개'   '핸들러 2 개'    '설정 84 줄' \\\n  '7 장'  '프록시 0 개'   '어드바이스 1'   '설정 52 줄'\n\n5 장     프록시 9 개      어드바이스 -      설정 32 줄\n6 장     프록시 0 개      핸들러 2 개       설정 84 줄\n7 장     프록시 0 개      어드바이스 1      설정 52 줄\n\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n$ ls src/main/java/study/adv/factory/*.java | wc -l\n       2\n\n\n-- 남은 두 줄\n\n@Bean\npublic OrderServiceV1 orderServiceV1(Advisor advisor) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(advisor));\n    ProxyFactory factory = new ProxyFactory(target);     // 한 줄\n    factory.addAdvisor(advisor);                          // 두 줄\n    return (OrderServiceV1) factory.getProxy();\n}\n\n$ grep -c 'new ProxyFactory' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'addAdvisor' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'getProxy()' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n--   빈 여섯에 열여덟 줄이다\n\n\n-- 실무 크기로 환산한다\n\n$ python3 -c \"\nbeans = 30\nprint('빈', beans)\nprint('설정 줄', beans * 3)\nprint('빈 메서드', beans, '개')\"\n빈 30\n설정 줄 90\n빈 메서드 30 개\n\n// 5.8 절에서는\n$ python3 -c \"print('프록시 클래스 90 개, 감싸는 줄 4050')\"\n프록시 클래스 90 개, 감싸는 줄 4050\n\n--   4050 줄이 90 줄이 됐다\n--   그래도 빈마다 손이 간다\n\n\n-- 스캔된 빈은 못 건드린다\n\n@Service\npublic class MemberServiceV3 {\n    public void join(String name) { ... }\n}\n\n$ curl -s 'localhost:8080/who?name=memberServiceV3'\n주입된 것: study.adv.app.MemberServiceV3\n프록시인가: false\n\n$ curl -s -o /dev/null 'localhost:8080/v3/join?name=철수'\n$ grep -c 'MemberService' logs/app.log\n0\n\n$ grep -rn 'MemberServiceV3' src/main/java/study/adv/factory/\n(없음)\n\n--   5.7 절의 그 자리다\n--   설정에 없으니 안 감싸진다\n\n\n-- 실무 비율을 다시 본다\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nimport collections\nc = collections.Counter()\nfor k, v in b.items():\n    r = str(v.get('resource'))\n    c['스캔' if '.class]' in r else '설정'] += 1\nprint(dict(c))\"\n{'스캔': 142, '설정': 45}\n\n$ python3 -c \"print('%.0f%% 는 설정에 없다' % (142/187*100))\"\n76% 는 설정에 없다\n\n--   5.7 절에서 센 그 숫자다\n--   설정 방식으로는 못 닿는다\n\n\n-- 깜빡하면 빠진다\n\n@Bean\npublic MemberServiceV1 memberServiceV1() {\n    return new MemberServiceV1Impl();          // 감싸는 걸 잊었다\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/join?name=철수'\n$ grep -c 'MemberService' logs/app.log\n0\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      187\n프록시:        14\n\n--   2.6, 3.7, 4.4, 5.7, 6.4, 7.4 절과 똑같다\n--   여섯 번째로 같은 자리다\n\n\n-- 감싸진 빈을 세어야 안다\n\n@Component\nclass ProxyAudit implements InitializingBean {\n    private static final List<String> SHOULD = List.of(\n        \"orderServiceV1\", \"orderRepositoryV1\", \"orderControllerV1\",\n        \"memberServiceV1\");\n\n    @Override\n    public void afterPropertiesSet() {\n        for (String name : SHOULD) {\n            Object bean = ctx.getBean(name);\n            if (!AopUtils.isAopProxy(bean))\n                log.warn(\"안 감싸짐: {}\", name);\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '안 감싸짐'\nWARN ... : 안 감싸짐: memberServiceV1\n\n--   6.2 절과 6.7 절에서 하던 그 검사다\n--   목록을 또 손으로 적었다\n\n\n-- 두 곳에 적힌다\n\n// 거르개에\npointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\");\n\n// 설정에\n@Bean public OrderServiceV1 orderServiceV1(...) { ... }\n@Bean public OrderRepositoryV1 orderRepositoryV1(...) { ... }\n@Bean public OrderControllerV1 orderControllerV1(...) { ... }\n\n$ grep -c 'join\\*' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n1\n$ grep -c 'memberServiceV1' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n0\n\n--   거르개는 join 을 걸겠다고 적혀 있다\n--   설정에는 그 빈이 없다\n--   두 곳이 어긋났다\n\n\n-- 거르개가 무의미해질 수 있다\n\n$ curl -s 'localhost:8080/advisor/matrix?bean=orderServiceV1'\n메서드         걸린 어드바이저\norderItem      [LogTraceAdvice]\njoin           [LogTraceAdvice]\n\n$ curl -s 'localhost:8080/who?name=memberServiceV1' | sed -n '2p'\n프록시인가: false\n\n--   거르개는 join 을 걸 준비가 돼 있다\n--   그 빈이 프록시가 아니라 소용없다\n--   두 번 거르는 셈이다\n\n\n-- 원본을 빈으로 못 둔다\n\n@Service\npublic class OrderServiceV1Impl implements OrderServiceV1 { ... }\n\n$ ./gradlew bootRun 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor required a single bean, but 2 were found:\n\t- orderServiceV1: defined by method 'orderServiceV1' in ProxyFactoryConfig\n\t- orderServiceV1Impl: defined in file [.../OrderServiceV1Impl.class]\n\n$ grep -c '@Service\\|@Repository' src/main/java/study/adv/app/*Impl.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n--   5.5 절에서 뗀 그대로다\n--   그래서 스캔의 이점을 못 쓴다\n\n\n-- 원본에 주입도 안 된다\n\npublic class OrderServiceV1Impl implements OrderServiceV1 {\n    @Autowired private SomeHelper helper;      // 안 들어온다\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -1\njava.lang.NullPointerException: Cannot invoke \"SomeHelper.check()\"\n  because \"this.helper\" is null\n\n$ grep -n 'new OrderServiceV1Impl' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n18:        OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(advisor));\n\n--   내가 만들었으니 컨테이너가 안 채운다\n--   생성자 인자를 다 손으로 넘겨야 한다\n\n\n-- 손으로 넘긴다\n\nOrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(advisor), helper());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n200\n\n$ grep -c 'helper()' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n1\n\n--   의존성이 늘 때마다 설정을 고친다\n--   ② 에서 벗어난 그 수동 조립으로 돌아갔다\n\n\n-- 7 장이 만든 것\n\n$ printf '%-8s %-26s %s\\n' \\\n  '7.1'  '프록시 팩토리'   '갈래가 사라짐' \\\n  '7.2'  '어드바이스'      '두 벌이 한 벌' \\\n  '7.3'  '포인트컷'        '거르개가 밖으로' \\\n  '7.4'  '어드바이저'      '한 묶음' \\\n  '7.5'  '여럿'            '프록시는 하나' \\\n  '7.6'  '확인'            '네 가지 질문' \\\n  '7.7'  '남은 것'         '빈마다 두 줄'\n\n7.1    프록시 팩토리             갈래가 사라짐\n7.2    어드바이스                두 벌이 한 벌\n7.3    포인트컷                  거르개가 밖으로\n7.4    어드바이저                한 묶음\n7.5    여럿                      프록시는 하나\n7.6    확인                      네 가지 질문\n7.7    남은 것                   빈마다 두 줄\n\n\n-- 전체를 센다\n\n$ find src/main/java/study/adv -name '*.java' | wc -l\n      14\n$ wc -l $(find src/main/java/study/adv -name '*.java') | tail -1\n     284 total\n\n$ printf '%-10s %s\\n' \\\n  'v0'  '92 줄' \\\n  'v2'  '196 줄' \\\n  'v4'  '196 줄' \\\n  'v5'  '182 줄' \\\n  'v6'  '292 줄' \\\n  'v7'  '246 줄' \\\n  'v8'  '284 줄'\n\nv0         92 줄\nv2        196 줄\nv4        196 줄\nv5        182 줄\nv6        292 줄\nv7        246 줄\nv8        284 줄\n\n--   버전이 늘었는데 줄이 크게 안 준다\n--   업무 코드가 v0 로 돌아간 값이다\n\n\n-- 업무 코드만 보면\n\n$ wc -l src/main/java/study/adv/app/*V1*.java | tail -1\n      92 total\n\n$ grep -c 'trace\\|Trace\\|try {' src/main/java/study/adv/app/*V1*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n$ git show v0:src/main/java/study/adv/OrderService.java | wc -l\n      16\n$ wc -l < src/main/java/study/adv/app/OrderServiceV1Impl.java\n      18\n\n--   v0 과 두 줄 차이다\n--   인터페이스를 구현한 것뿐이다\n\n\n-- 다음 장의 목표\n\n$ printf '%-8s %-26s %s\\n' \\\n  '지금'  '설정 52 줄, 빈 6 개'  '스캔은 못 건드림' \\\n  '8 장'  '설정 5 줄'            '어드바이저만 등록'\n\n지금     설정 52 줄, 빈 6 개        스캔은 못 건드림\n8 장     설정 5 줄                  어드바이저만 등록\n\n\n-- 마지막 확인\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ curl -s localhost:8080/proxy/census | head -3\n전체 빈:      187\n프록시:        14\n  JDK:          4\n\n$ curl -s 'localhost:8080/who?name=memberServiceV1' | sed -n '2p'\n프록시인가: false\n\n$ git add -A && git commit -q -m 'chore: v8 정리' && git tag v8-done\n\n--   8.1 절에서 설정을 없앤다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '클래스'      '9 에서 0' \\\n  '부가 기능'   '2 에서 1' \\\n  '설정'        '빈마다 세 줄' \\\n  '실무 크기'   '90 줄' \\\n  '스캔'        '76% 는 못 닿음' \\\n  '깜빡함'      '여섯 번째' \\\n  '두 곳'       '거르개와 설정' \\\n  '원본'        '빈으로 못 둠' \\\n  '주입'        '손으로 넘김'\n\n클래스                     9 에서 0\n부가 기능                  2 에서 1\n설정                       빈마다 세 줄\n실무 크기                  90 줄\n스캔                       76% 는 못 닿음\n깜빡함                     여섯 번째\n두 곳                      거르개와 설정\n원본                       빈으로 못 둠\n주입                       손으로 넘김",
+   "note": "**프록시 클래스 아홉이 0 개, 부가 기능 두 벌이 한 벌인데 설정은 빈마다 세 줄로 남아** 있다.\n\n**5.8절의 4050 줄이 90 줄이 됐지만 빈 187 개 중 142 개가 스캔이라 76% 는 이 방식으로 못** 닿는다.\n\n**거르개에는 `join*` 이 적혀 있는데 그 빈이 설정에 없어 두 곳이** 어긋난다.\n\n**원본에 애너테이션을 못 붙여 `@Autowired` 가 안 들어오고 생성자 인자를 손으로 다** 넘긴다.\n\n**업무 코드는 v0 과 두 줄 차이인데 감싸는 걸 깜빡한 빈이 여섯 번째로 또** 나왔다."
+  }
+ ],
+ "recap": [
+  "**클래스는** 없앴다.",
+  "**부가 기능도** 하나다.",
+  "**설정이** 남았다.",
+  "**빈마다 세** 줄이다.",
+  "**스캔은 못** 닿는다.",
+  "**깜빡함이** 남았다.",
+  "**두 곳에** 적힌다.",
+  "**원본을 빈으로 못** 둔다.",
+  "**손으로** 조립한다."
+ ],
+ "drills": [
+  {
+   "task": "남은 줄을 센다.",
+   "done_when": "빈마다 몇 줄인지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "실무 크기로 환산한다.",
+   "done_when": "5.8 절과 비교했다.",
+   "minutes": 15
+  },
+  {
+   "task": "감싸진 빈을 검사한다.",
+   "done_when": "빠진 것을 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "원본에 주입해 본다.",
+   "done_when": "안 들어오는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "7장이 못 없앤 것은?",
+   "a": "빈마다 프록시를 만들고 묶음을 거는 설정이다."
+  },
+  {
+   "q": "왜 스캔된 빈에 못 닿나?",
+   "a": "설정에서 직접 만들지 않으면 감쌀 자리가 없어서다."
+  },
+  {
+   "q": "거르개와 설정이 왜 겹치나?",
+   "a": "어디에 걸지가 두 곳에 적혀 어긋날 수 있다."
+  },
+  {
+   "q": "원본에 주입이 왜 안 되나?",
+   "a": "내가 만든 객체라 컨테이너가 채우지 않는다."
+  },
+  {
+   "q": "다음 장의 목표는?",
+   "a": "설정을 없애고 묶음만 등록하는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "수동 등록",
+   "def": "설정 클래스에서 빈마다 프록시를 만들어 올리는 방식."
+  },
+  {
+   "term": "이중 지정",
+   "def": "적용 대상이 거르개와 설정 두 곳에 적혀 어긋날 수 있는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — BeanPostProcessor",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
