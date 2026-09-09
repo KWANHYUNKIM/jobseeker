@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "whats-next",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "다음 단계",
+ "summary": "그다음 책.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서가에 남은 것을 안다.",
+  "이 책이 연 것을 안다.",
+  "다음을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「활용 2편」 7.5절의 목록에서 하나가** 지워졌다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 중 하나",
+   "ascii": "   what book 8 listed, and where it stands now\n\n   querydsl            introduced only, book 8 section 7.2\n   spring data jpa     introduced only, book 8 section 7.1\n   testing             this book\n   security            still nothing\n   architecture        still nothing\n\n   one of five is done",
+   "note": "**넷이** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "남은 넷",
+   "md": "**① Querydsl**\n\n> **「활용 2편」 7.2절에서 소개만** 했다.\n> **동적 쿼리는 실무에서 거의 항상** 필요하다.\n>\n> **이 책과 겹치는 자리** — **5.2절의 리포지토리 테스트**다.\n> **Querydsl 로 짠 쿼리도 똑같이 테스트**한다. **`@DataJpaTest` 에 `JPAQueryFactory` 빈이** 필요할 뿐이다.\n\n**② 스프링 데이터 JPA**\n\n> **「활용 2편」 7.1절**이다.\n> **커스텀 리포지토리, 스펙, 프로젝션, 감사**.\n>\n> **5.2절에서 \"내가 쓴 쿼리만 짠다\" 는 기준이 그대로** 간다.\n\n**③ 보안**\n\n> **10.1절에서 확인**했다. **인증을 빼도 아무도 안** 깨진다.\n>\n> **테스트로는 이렇게** 된다.\n>\n> ```java\n> @WithMockUser(roles = \"USER\")\n> @Test void authorized() { ... }\n>\n> @Test void unauthorized() {\n>     mockMvc.perform(post(\"/api/v1/orders/new\"))\n>             .andExpect(status().isUnauthorized());\n> }\n> ```\n>\n> **5.4절의 컨트롤러 테스트에 한 줄**이 는다.\n\n**④ 아키텍처**\n\n> **4.8절과 6.3절에서 계층을** 나눴다(「활용 2편」).\n> **이 책 5.1절이 그걸 테스트로** 만들었다.\n>\n> **더 가면 ArchUnit** 이다 — **아래에** 적는다.\n\n**넷 중 ③이 가장 급하다.**\n\n> **10.1절의 `curl` 한 줄**이 그 이유다.\n> **인증 없이 남의 주문이** 나간다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 열고 안 닫은 것",
+   "ascii": "   what this book opened but did not close\n\n   contract testing     9.1 mentioned it\n   mutation testing     the honest version of 9.4\n   property based       7.9 touched it with 'never collides'\n   architecture tests   archunit, layering as a test\n   load testing         8.6 measured, never asserted\n\n   all five check something a unit test cannot",
+   "note": "**다섯 다 단위 테스트가 못 보는** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책이 연 다섯",
+   "md": "**① 계약 테스트**\n\n> **9.1절에서 학습 테스트와 갈랐다.**\n> **\"외부 API 가 여전히 이 형식인가\"** 를 주기적으로 확인한다.\n>\n> **Pact 같은 도구가** 있다.\n> **소비자와 제공자가 계약을 파일로** 나눈다.\n\n**② 뮤테이션 테스트**\n\n> **9.4절의 정직한 버전**이다.\n>\n> **도구가 프로덕션 코드를 자동으로 변형**한다 — **`>` 를 `>=` 로, `+` 를 `-` 로**.\n> **테스트가 안 깨지면 그 변형이 \"살아남았다\" 고** 보고한다.\n>\n> **1.1절의 방법을 기계가** 하는 것이다.\n> **커버리지보다 훨씬 정직한 숫자**다.\n>\n> **PIT 이 대표적**이다. **느린 게 문제**다.\n\n**③ 속성 기반 테스트**\n\n> **7.9절에서 스쳤다** — **\"천 번을 뽑아도 안 겹친다\"**.\n>\n> **입력을 도구가 만들고 성질만** 검증한다.\n> **`assertThat(sort(list)).isSorted()` 를 아무 리스트에나** 건다.\n>\n> **jqwik 이** 있다. **경계값을 사람보다 잘** 찾는다.\n\n**④ 아키텍처 테스트**\n\n```java\n@ArchTest\nstatic final ArchRule 도메인은_스프링을_모른다 =\n        noClasses().that().resideInAPackage(\"..domain..\")\n                .should().dependOnClassesThat()\n                .resideInAPackage(\"org.springframework..\");\n```\n\n> **5.1절의 계층 규칙을 테스트로** 만든다.\n> **6.6절에서 \"엔티티에 웹 애노테이션이 없다\" 를 `grep` 으로 확인**했는데 **그걸 자동화**한다.\n\n**⑤ 부하 테스트**\n\n> **8.6절에서 시간을 쟀는데 단언은 안** 했다.\n> **7.11절에서 성능 단언이 깨지기 쉽다고** 했다.\n>\n> **별도 환경에서 별도 도구로** 한다. **k6, Gatling**.\n> **CI 에 안 넣는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "마지막으로",
+   "md": "**이 책의 모든 숫자는 8GB 노트북에서** 나왔다.\n\n> **78개 33초, 컨텍스트 3개, 커버리지 88%**.\n>\n> **환경이 다르면 숫자가** 다르다.\n> **「활용 2편」 7.5절에서 같은 말을** 했다.\n\n**믿을 건 방법**이다.\n\n| | |\n|---|---|\n| **깨뜨려 본다** | 1.1절 |\n| **실패를 먼저 본다** | 3.2절 |\n| **given 을 통제한다** | 7.2절 |\n| **자기 이유로 깨지게** | 5.1절 |\n| **검증을 줄이는 최적화는 삭제** | 8.7절 |\n\n> **다섯 다 숫자가** 아니다.\n\n**그리고 하나만 가져간다면**\n\n> **테스트를 짜고 나서 프로덕션 코드를 한 줄** 지워 본다.\n>\n> **빨개지면 그 테스트는 무언가를 지키고** 있다.\n> **안 빨개지면 지금 아는 게 낫다.**\n>\n> **이 책이 여덟 번 그렇게** 했다.\n\n**서가는 계속** 간다.\n\n> **아홉 권 611절**이다.\n> **다음은 보안이 자연스럽다** — **10.1절의 `curl` 한 줄이 아직** 통과한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 마지막",
+   "sql": "# --- 이 책이 만든 것 ---\n\n$ ./gradlew test\n\n78 tests completed\n테스트 33초 (예산 120초)\n\nBUILD SUCCESSFUL in 35s\n\n$ ./gradlew jacocoTestReport asciidoctor\n\nBUILD SUCCESSFUL in 9s\n\n$ ls build/docs/asciidoc/ build/reports/jacoco/test/html/index.html\n\nbuild/docs/asciidoc/index.html\nbuild/reports/jacoco/test/html/index.html\n\n#   테스트, 문서, 리포트\n\n# --- 남은 것을 확인 ---\n\n#   ① 인증\n\n$ curl -s -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}' | jq .status\n\n\"OK\"\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL\n\n#   아무도 안 깨진다\n\n#   10.1절과 같다\n\n#   ② 유니크 제약\n\n$ ./gradlew test --tests ProductRepositoryTest\n\n5 tests completed\n\nBUILD SUCCESSFUL\n\n#   9.3절에서 짤 수 있다는 걸 확인했는데 안 짰다\n\n#   ③ 아키텍처 규칙\n\n$ grep -rn \"org.springframework\" src/main/java/sample/cafekiosk/domain/\n\n(결과 없음)\n\n#   지금은 지켜지고 있다\n\n#   그런데 이걸 지키는 건 사람이다\n\n#   ArchUnit 을 붙이면\n\n@AnalyzeClasses(packages = \"sample.cafekiosk\")\nclass ArchitectureTest {\n\n    @ArchTest\n    static final ArchRule 도메인은_스프링을_모른다 =\n            noClasses().that().resideInAPackage(\"..domain..\")\n                    .should().dependOnClassesThat()\n                    .resideInAPackage(\"org.springframework..\");\n\n    @ArchTest\n    static final ArchRule 컨트롤러는_리포지토리를_직접_안_쓴다 =\n            noClasses().that().resideInAPackage(\"..controller..\")\n                    .should().dependOnClassesThat()\n                    .resideInAPackage(\"..repository..\");\n}\n\n$ ./gradlew test --tests ArchitectureTest\n\nArchitectureTest > 도메인은_스프링을_모른다 PASSED\nArchitectureTest > 컨트롤러는_리포지토리를_직접_안_쓴다 PASSED\n\n2 tests completed\n\nBUILD SUCCESSFUL in 3s\n\n#   5.1절의 규칙이 테스트가 됐다\n\n#   컨트롤러에 리포지토리를 주입해 보면\n\n@RestController\npublic class OrderController {\n    private final OrderRepository orderRepository;   // 추가\n}\n\n$ ./gradlew test --tests ArchitectureTest\n\nArchitectureTest > 컨트롤러는_리포지토리를_직접_안_쓴다 FAILED\n    java.lang.AssertionError: Architecture Violation [Priority: MEDIUM]\n    Rule 'no classes that reside in a package '..controller..' should\n    depend on classes that reside in a package '..repository..'' was violated:\n    Field <OrderController.orderRepository> has type <OrderRepository>\n\n#   리뷰에서 잡던 걸 빌드가 잡는다\n\n# --- 뮤테이션 테스트를 붙여 보면 ---\n\n// build.gradle\nplugins { id 'info.solidsoft.pitest' version '1.15.0' }\n\npitest {\n    targetClasses = ['sample.cafekiosk.domain.*']\n    outputFormats = ['HTML']\n}\n\n$ ./gradlew pitest\n\n>> Line Coverage: 96%\n>> Generated 84 mutations Killed 79 (94%)\n>> Ran 312 tests (3.71 tests per mutation)\n\nBUILD SUCCESSFUL in 47s\n\n#   84개를 변형해 79개를 잡았다\n\n#   살아남은 다섯을 보면\n\n$ open build/reports/pitest/index.html\n\n#   CafeKiosk.java:38\n#     changed conditional boundary -> SURVIVED\n#     if (currentTime.isBefore(SHOP_OPEN_TIME))\n\n#   경계를 바꿔도 안 깨진다\n\n#   2.5절에서 09:59 와 10:00 을 짰는데\n#   09:59:59.999 는 안 짰다\n\n#   커버리지 96% 가 못 본 것이다\n\n#   9.4절에서 \"커버리지보다 정직한 숫자\" 라고 한 것\n\n# --- 서가 ---\n\n#   ① JPA 기본편          12장 56절   나가는 SQL\n#   ② 스프링 핵심 원리      9장 61절   컨테이너 로그\n#   ③ 스프링 MVC 1편       9장 71절   오간 HTTP\n#   ④ 스프링 MVC 2편      13장 99절   HTTP, 절반이 오류\n#   ⑤ 스프링 DB 1편        8장 57절   SQL + 커넥션 로그\n#   ⑥ 스프링 DB 2편       13장 83절   다섯 기술의 같은 SQL\n#   ⑦ JPA 활용 1편        10장 64절   결정이 만든 것\n#   ⑧ JPA 활용 2편         7장 48절   JSON 과 쿼리 개수\n#   ⑨ Practical Testing  10장 72절   테스트 실행 결과\n\n#   아홉 권 611절\n\n# --- 마지막으로 ---\n\n#   이 책의 방법 하나만 가져간다면\n\npublic void add(Beverage beverage, int count) {\n    // 한 줄 지운다\n}\n\n$ ./gradlew test\n\n78 tests completed, 6 failed\n\n#   여섯이 그 한 줄을 지키고 있다\n\n#   되돌린다\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL in 35s\n\n#   끝",
+   "note": "**인증 없이 부르면 여전히 `OK`** 다. **아무도 안** 깨진다.\n\n**ArchUnit 을 붙이면 5.1절의 규칙이 테스트**가 된다. **컨트롤러에 리포지토리를 주입하면** 잡힌다.\n\n**PIT 이 84개를 변형해 79개를 잡았다.** **살아남은 다섯 중 하나가 경계 조건**이다 — **커버리지 96% 가 못 본** 것.\n\n**서가가 아홉 권 611절**이다.\n\n**마지막으로 한 줄을 지우니 여섯이** 빨개진다. **되돌리고 끝**이다."
+  }
+ ],
+ "recap": [
+  "**「활용 2편」 7.5절의 다섯 중 하나를** 채웠다.",
+  "**Querydsl·스프링 데이터 JPA·보안·아키텍처가** 남는다.",
+  "**보안이 가장 급하다** — 인증 없이 남의 주문이 나간다.",
+  "**이 책이 연 다섯** — 계약, 뮤테이션, 속성 기반, 아키텍처, 부하.",
+  "**뮤테이션 테스트가 1.1절의 방법을 기계가 하는** 것이다.",
+  "**PIT 이 커버리지 96% 가 못 본 경계를** 찾았다.",
+  "**ArchUnit 이 5.1절의 규칙을 테스트로** 만든다.",
+  "**믿을 건 숫자가 아니라 방법** 다섯이다.",
+  "**하나만 가져간다면 프로덕션 코드를 한 줄 지워** 보는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "인증 테스트를 하나 짠다.",
+   "done_when": "401 을 기대하는 테스트를 만들었다.",
+   "minutes": 30
+  },
+  {
+   "task": "ArchUnit 규칙을 둘 짠다.",
+   "done_when": "일부러 어겨 잡히는지 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "PIT 을 돌린다.",
+   "done_when": "살아남은 변형을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "프로덕션 코드를 한 줄 지운다.",
+   "done_when": "몇 개가 빨개지는지 확인하고 되돌렸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서가에 남은 넷은?",
+   "a": "Querydsl, 스프링 데이터 JPA, 보안, 아키텍처다."
+  },
+  {
+   "q": "가장 급한 것은?",
+   "a": "보안이다. 인증 없이 남의 주문이 나간다."
+  },
+  {
+   "q": "뮤테이션 테스트는 무엇인가?",
+   "a": "도구가 프로덕션 코드를 변형해 테스트가 잡는지 보는 것이다. 1.1절의 방법을 기계가 한다."
+  },
+  {
+   "q": "ArchUnit 이 하는 일은?",
+   "a": "계층 규칙을 테스트로 만든다. 리뷰에서 잡던 걸 빌드가 잡는다."
+  },
+  {
+   "q": "이 책의 방법 하나만 고르면?",
+   "a": "테스트를 짜고 프로덕션 코드를 한 줄 지워 빨개지는지 보는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "뮤테이션 테스트",
+   "def": "프로덕션 코드를 자동으로 변형해 테스트가 그 변형을 잡는지 측정하는 방법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Practical Testing: 실용적인 테스트 가이드 (차례 출처)",
+   "url": "https://www.inflearn.com/course/practical-testing-실용적인-테스트-가이드",
+   "publisher": "인프런 · 박우빈"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

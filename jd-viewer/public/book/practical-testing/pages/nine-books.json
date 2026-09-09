@@ -1,0 +1,126 @@
+{
+ "book": "practical-testing",
+ "id": "nine-books",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "아홉 권",
+ "summary": "무엇을 배웠나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서가 아홉 권을 정리한다.",
+  "이 책의 한 줄을 찾는다.",
+  "다시 볼 절을 꼽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여덟 권이 만든 것을 아홉 번째가** 검증한다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가 아홉 권",
+   "ascii": "   the shelf, nine books\n\n   1  jpa basic       the sql that goes out\n   2  spring core     the container log\n   3  spring mvc 1    the http that went\n   4  spring mvc 2    the http, half of it errors\n   5  spring db 1     the sql, plus connection and tx logs\n   6  spring db 2     the same sql from five technologies\n   7  jpa app 1       what a decision produced\n   8  jpa app 2       the json, and how many queries made it\n   9  practical test  the test run. half of it red.\n\n   the ninth one checks the other eight",
+   "note": "**아홉 번째가 앞의 여덟을** 확인한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 책이 앞의 여덟을 부른 자리",
+   "md": "| 부른 곳 | 무엇 |\n|---|---|\n| ① 2.3절 | 1차 캐시 — 5.9절의 `id` |\n| ① 3장 | `flush` 시점 — 5.6절 |\n| ① 8.2절 | 프록시 — 5.6절, 9.3절 |\n| ② 8.5절 | 프록시 내부 호출 — 3.2절 |\n| ② 9장 | AOP — 3.3절의 `TimerAspect` |\n| ③ 6.5절 | `MockMvc` — 5.4절 |\n| ④ 8장 | 예외 처리 — 5.4절 |\n| ⑤ 4·5장 | 트랜잭션 — 5.3절, 5.6절 |\n| ⑥ 4.5절 | `readOnly` — 5.6절 |\n| ⑦ 9.7절 | **스물한 개 — 10.1절** |\n| ⑧ 5.7절 | 배치 사이즈 — 7.6절 |\n| ⑧ 6.2절 | OSIV — 5.6절 |\n| ⑧ 7.5절 | **\"여덟 권이 다 건너뛰었다\" — 1.1절** |\n\n> **⑦과 ⑧의 두 자리가 이 책의 존재 이유**다.\n\n**각 권이 무엇으로 끝나나**\n\n| | |\n|---|---|\n| ① | 나가는 SQL |\n| ② | 컨테이너 로그 |\n| ③ | 오간 HTTP |\n| ④ | HTTP, 절반이 오류 |\n| ⑤ | SQL + 커넥션·트랜잭션 로그 |\n| ⑥ | 다섯 기술이 만든 같은 SQL |\n| ⑦ | 결정이 만든 것 |\n| ⑧ | JSON 과 쿼리 개수 |\n| ⑨ | **테스트 실행 결과. 절반이 빨강** |\n\n> **아홉 권이 다 \"눈으로 확인할 수 있는 것\" 으로** 끝난다.\n>\n> **⑨만 그 확인을 자동으로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책을 관통하는 한 문장",
+   "ascii": "   the one idea running through this book\n\n   a passing test proves nothing on its own\n\n   1.1  delete add(), see which tests go red\n   2.1  a println can never produce exit code 1\n   3.1  100 percent coverage, half the requirements\n   6.7  the mock test stayed green through two real bugs\n   9.4  zero assertions, coverage went up\n\n   five sections, one sentence",
+   "note": "**다섯 절이 같은 말**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "통과하는 테스트는 그 자체로 아무것도 증명하지 않는다",
+   "md": "**1.1절에서 시작**했다.\n\n> **`add()` 를 지웠더니 넷 중 셋만** 빨개졌다.\n> **통과한 하나는 아무것도 안 지키고** 있었다.\n\n**2.1절**\n\n> **`println` 은 종료 코드 1 을 못** 만든다.\n> **`add()` 를 지워도 `BUILD SUCCESSFUL`** 이다.\n\n**3.1절**\n\n> **커버리지 100% 가 요구사항 절반을** 놓쳤다.\n\n**6.7절**\n\n> **목 테스트가 쿼리 오타와 트랜잭션 누락을 둘 다** 통과시켰다.\n\n**9.4절**\n\n> **단언 0개짜리 테스트가 커버리지를 2%** 올렸다.\n\n**다섯 다 같은 문장**이다.\n\n> **초록은 정보가** 아니다.\n> **\"이 테스트가 무엇을 지키나\" 를 물어야** 정보가 된다.\n\n**묻는 방법도 하나**다.\n\n> **깨뜨려 본다.**\n>\n> **1.1절, 2.8절, 3.4절, 4.5절, 5.11절, 7.12절, 8.7절, 10.1절에서** 그렇게 했다.\n> **여덟 번**이다.\n\n**그게 이 책의 방법**이다.\n\n> **매 절이 실제로 돌린 테스트 결과로 끝나고 절반이 빨간 막대인** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "다시 볼 절",
+   "md": "**표만 보면 되는 것**\n\n| | |\n|---|---|\n| **2.8절** | 좋은 단위 테스트의 조건 여섯 |\n| **5.11절** | 계층별 기본값 표 |\n| **6.9절** | 가짜에 손 뻗는 순서 넷 |\n| **7.12절** | 조언 열하나 |\n| **8.7절** | 느린 테스트를 고치는 순서 |\n\n> **한 번 이해하면 표만 보면** 된다.\n\n**증상별로 찾을 때**\n\n| 증상 | 절 |\n|---|---|\n| 테스트가 가끔 깨진다 | **7.11** |\n| CI 가 느리다 | **8.1, 8.5** |\n| given 이 너무 길다 | **5.5, 7.5** |\n| 목을 얼마나 쓸지 모르겠다 | **6.7, 6.9** |\n| `LazyInitializationException` | **5.6** |\n| 컨텍스트가 여러 개 뜬다 | **8.1** |\n| `private` 을 테스트하고 싶다 | **7.4** |\n| 커버리지를 요구받는다 | **9.4** |\n\n**한 절만 고르면 6.7절**이다.\n\n> **목 테스트와 통합 테스트를 나란히 놓고 네 가지를** 바꿨다.\n> **거짓 경보 둘, 놓친 버그 둘**이다.\n>\n> **이 책에서 가장 많은 사람이 반대로 하고 있는** 부분이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 아홉 권째의 최종 상태",
+   "sql": "# --- 전체 ---\n\n$ ./gradlew test\n\n카페 키오스크\n  음료를 담을 때 ... 4 tests\n  음료를 뺄 때 ... 3 tests\n  주문 목록을 비울 때 ... 1 test\n  총 금액을 계산할 때 ... 1 test\n  주문을 생성할 때 ... 4 tests\n주문\n  금액을 계산할 때 ... 5 tests\n할인 계산 ... 7 tests\n상품 타입 ... 5 tests\n상품 ... 4 tests\n재고 차감 시나리오 ... 2 tests\n주문 상태 전이 시나리오 ... 5 tests\nProductOrderResolverTest ... 3 tests\nProductRepositoryTest ... 5 tests\nProductServiceTest ... 3 tests\nOrderServiceTest ... 5 tests\nOrderControllerTest ... 3 tests\nOrderControllerDocsTest ... 1 test\nMailServiceTest ... 3 tests\nOrderStatisticsServiceTest ... 2 tests\nOrderStatisticsServiceFakeTest ... 2 tests\nConcurrencyTest ... 1 test\nAsyncTest ... 1 test\nGuavaLearningTest ... 2 tests\nJacksonLearningTest ... 2 tests\nAssertJTest ... 4 tests\n\n78 tests completed\n테스트 33초 (예산 120초)\n\nBUILD SUCCESSFUL in 35s\n\n# --- 이 목록이 요구사항 문서다  (4.1절) ---\n\n#   1.3절의 요구사항은 여섯 줄이었다\n\n#   지금은 78개다\n\n# --- 숫자 ---\n\n#   테스트          78개\n#   단위            47개  2초\n#   통합            31개  31초\n#   컨텍스트         3개\n#   목              4곳\n#   페이크           1곳\n#   verify          4번\n#   커버리지         88%\n#   CI              1분 12초\n#   예산            120초 중 33초\n\n# --- 깨뜨려 본다 ---\n\n#   ① 도메인 계산\npublic int calculateTotalPrice() { return 0; }\n\n$ ./gradlew test\n\n78 tests completed, 6 failed\n\n#   ② 리포지토리 쿼리\nList<Product> findAllByProductNumberNotIn(...);\n\n78 tests completed, 5 failed\n\n#   ③ @Valid\npublic ApiResponse<OrderResponse> createOrder(@RequestBody OrderCreateRequest r)\n\n78 tests completed, 1 failed\n\n#   ④ @Transactional\npublic OrderResponse createOrder(...)\n\n78 tests completed, 1 failed\n\n#   ⑤ 배치 사이즈\n# default_batch_fetch_size 제거\n\n78 tests completed, 1 failed\n\n#   ⑥ 재고 락\n# @Lock 제거\n\n78 tests completed, 1 failed\n\n#   ⑦ 메일 계산\nString content = \"총 매출: \" + 0;\n\n78 tests completed, 2 failed\n\n#   ⑧ 응답 필드 추가 후 문서 미수정\n\n78 tests completed, 1 failed\n\n#   여덟 가지가 다 잡힌다\n\n#   그리고 위로 안 번진다  (5.11절)\n\n# --- 잡히는 개수가 겹치는지 ---\n\n#   ①과 ②를 같이 깨뜨리면\n\n78 tests completed, 10 failed\n\n#   6 + 5 = 11 이 아니라 10 이다\n\n#   OrderServiceTest 의 하나가 둘 다에 걸린다\n\n#   5.1절의 '자기 이유로 깨진다' 가 완벽하지는 않다\n\n#   서비스는 도메인도 쿼리도 쓰니까\n\n# --- 「활용 1편」 9.7절과 비교 ---\n\n#   거기\n#     문제 21개\n#     깨진 테스트 0개\n\n#   여기\n#     깨뜨린 것 8가지\n#     깨진 테스트 18개\n\n#   \"하나도 테스트를 안 깼다\" 의 반대다\n\n# --- 서가 ---\n\n#   ① JPA 기본편          12장 56절\n#   ② 스프링 핵심 원리      9장 61절\n#   ③ 스프링 MVC 1편       9장 71절\n#   ④ 스프링 MVC 2편      13장 99절\n#   ⑤ 스프링 DB 1편        8장 57절\n#   ⑥ 스프링 DB 2편       13장 83절\n#   ⑦ JPA 활용 1편        10장 64절\n#   ⑧ JPA 활용 2편         7장 48절\n#   ⑨ Practical Testing  10장 72절\n\n#   아홉 권 611절\n\n# --- 다음 절에서 ---\n\n#   그다음 책을 정한다",
+   "note": "**78개가 33초**다. **이 목록이 요구사항 문서**다.\n\n**여덟 가지를 깨뜨려 보니 다** 잡힌다.\n\n**①과 ②를 같이 깨뜨리면 11이 아니라 10** 이다 — **서비스 테스트 하나가 둘 다에** 걸린다. **5.1절의 규칙이 완벽하지는** 않다.\n\n**「활용 1편」 9.7절은 문제 21개에 깨진 테스트 0개**였다. **여기는 여덟 가지에 18개**다.\n\n**서가가 아홉 권 611절**이 됐다."
+  }
+ ],
+ "recap": [
+  "**아홉 번째가 앞의 여덟을** 검증한다.",
+  "**⑦ 9.7절과 ⑧ 7.5절이 이 책의 존재 이유**다.",
+  "**아홉 권이 다 눈으로 확인할 수 있는 것으로** 끝난다.",
+  "**⑨만 그 확인을 자동으로** 만든다.",
+  "**한 문장** — 통과하는 테스트는 그 자체로 아무것도 증명하지 않는다.",
+  "**다섯 절이 같은 말**이다.",
+  "**묻는 방법은 깨뜨려 보는 것** — 여덟 번 했다.",
+  "**여덟 가지를 깨뜨리면 18개가** 잡힌다.",
+  "**한 절만 고르면 6.7절**이다."
+ ],
+ "drills": [
+  {
+   "task": "자기 프로젝트에서 여덟 가지를 깨뜨려 본다.",
+   "done_when": "몇 개가 잡히는지 셌다.",
+   "minutes": 40
+  },
+  {
+   "task": "다시 볼 표 다섯을 북마크한다.",
+   "done_when": "증상별 색인을 만들었다.",
+   "minutes": 15
+  },
+  {
+   "task": "6.7절을 다시 읽는다.",
+   "done_when": "자기 목 테스트를 점검했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 서가에서 하는 일은?",
+   "a": "앞의 여덟 권이 만든 것을 자동으로 검증한다."
+  },
+  {
+   "q": "책 전체를 관통하는 한 문장은?",
+   "a": "통과하는 테스트는 그 자체로 아무것도 증명하지 않는다."
+  },
+  {
+   "q": "그걸 확인하는 방법은?",
+   "a": "프로덕션 코드를 깨뜨려 어느 테스트가 빨개지는지 본다."
+  },
+  {
+   "q": "깨진 개수가 왜 안 더해지나?",
+   "a": "서비스 테스트가 도메인과 쿼리를 둘 다 쓰기 때문이다."
+  },
+  {
+   "q": "한 절만 다시 본다면?",
+   "a": "6.7절이다. 가장 많이 반대로 하고 있는 부분이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Practical Testing: 실용적인 테스트 가이드 (차례 출처)",
+   "url": "https://www.inflearn.com/course/practical-testing-실용적인-테스트-가이드",
+   "publisher": "인프런 · 박우빈"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

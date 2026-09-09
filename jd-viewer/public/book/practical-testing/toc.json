@@ -632,7 +632,7 @@
           "title": "서가가 빠뜨렸던 것",
           "summary": "여덟 권이 안 짠 테스트.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -640,7 +640,7 @@
           "title": "내 프로젝트에 적용하기",
           "summary": "어디부터.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -648,7 +648,7 @@
           "title": "아홉 권",
           "summary": "무엇을 배웠나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
@@ -656,7 +656,7 @@
           "title": "다음 단계",
           "summary": "그다음 책.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

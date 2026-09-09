@@ -1,0 +1,120 @@
+{
+ "book": "practical-testing",
+ "id": "what-shelf-missed",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "서가가 빠뜨렸던 것",
+ "summary": "여덟 권이 안 짠 테스트.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 출발점을 확인한다.",
+  "무엇이 채워졌는지 센다.",
+  "여전히 안 채워진 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 인용한 문장으로** 돌아간다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 시작된 문장",
+   "ascii": "   the sentence this book started from\n\n   book 7, section 9.7\n     twenty one problems, and\n     \"하나도 테스트를 안 깼다\"\n\n   book 8, section 7.3\n     the list again. \"테스트 부족\" still there.\n\n   book 8, section 7.5\n     \"테스트 — 여덟 권이 다 건너뛰었다\"\n\n   three mentions, no coverage",
+   "note": "**세 번 언급되고 한 번도 안** 채워졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "\"하나도 테스트를 안 깼다\"",
+   "md": "**「활용 1편」 9.7절**의 결말이다.\n\n> **문제 스물한 개를 세어 놓고 마지막에 그 문장으로** 끝난다.\n>\n> **깰 테스트가** 없었다.\n\n**그 뜻이 둘**이다.\n\n**① 아무것도 안 지키고 있었다**\n\n> **엔티티를 화면에 넘기고, `merge` 로 덮고, 동적 쿼리를 문자열로** 만들었다.\n> **전부 조용히 통과**했다.\n\n**② 그래서 고쳐도 확인이 안 된다**\n\n> **「활용 2편」이 그걸 고쳤다.**\n> **고쳤는지는 로그를 사람이 읽어서** 확인했다.\n>\n> **1.2절에서 그 목록을 만들었다** — **4.3절, 4.5절, 5.7절, 6.2절에서 매번 사람이** 셌다.\n\n**이 책이 한 것**\n\n> **문제를 고친 게 아니다.**\n> **고쳤는지 확인할 수 있게** 만들었다.\n\n| 「활용 2편」이 로그로 확인한 것 | 이 책이 테스트로 |\n|---|---|\n| 쿼리 3개(5.7절) | **7.6절의 상한 단언** |\n| `merge` 가 필드를 덮음(1편 8.10절) | **1.2절의 재현 테스트** |\n| 동시 가입(7.3절) | **7.11절의 동시성 테스트** |\n| OSIV 를 끄면 깨짐(6.2절) | **5.6절의 `LazyInitializationException`** |\n\n> **넷 다 그 책에서는 `curl` 과 로그**였다.\n> **여기서는 빨간 막대**다."
+  },
+  {
+   "type": "figure",
+   "caption": "스물한 개를 다시 센다",
+   "ascii": "   the same twenty one, checked against this book\n\n   entity exposed        book 8 fixed it, no test\n   n+1                   book 8 fixed it   -> 7.6 asserts it now\n   merge overwrite       book 8 fixed it   -> 1.2 reproduces it\n   dynamic query         book 8 fixed it\n   member.name unique    open              -> 9.3 can assert it\n   no authentication     open\n   concurrent signup     open              -> 7.11 reproduces it\n\n   this book did not fix them. it made them provable.",
+   "note": "**고친 게 아니라 증명 가능하게** 만들었다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "채워진 것과 안 채워진 것",
+   "md": "**채워졌다**\n\n| | |\n|---|---|\n| **테스트 부족** | 78개 33초 |\n| **회귀 방지** | 6.7절의 네 실험 |\n| **문서** | 4장, 9.2절 |\n| **성능 회귀** | 7.6절의 쿼리 상한 |\n| **동시성 검증** | 7.11절 |\n\n**안 채워졌다**\n\n| | 어디로 |\n|---|---|\n| **보안** | 스프링 시큐리티 |\n| **DB 제약·마이그레이션** | Flyway (8.3절에서 스쳤다) |\n| **아키텍처** | 10.4절 |\n| **관측** | APM, 로그 수집 |\n\n> **「활용 2편」 7.5절의 목록에서 테스트 하나가** 빠졌다.\n> **넷이** 남는다.\n\n**그리고 이 책이 새로 만든 목록도** 있다.\n\n| | 어디서 |\n|---|---|\n| 중복 회원 409 | 「활용 2편」 2.8절 — 여전히 열림 |\n| `member.name` 유니크 | 9.3절에서 **테스트는 짤 수 있게** 됐다 |\n| 상품 이름 길이 | 8.3절에서 **H2 가 못 잡는 걸** 확인 |\n\n> **셋 다 \"테스트를 짤 수 있는데 프로덕션을 안 고쳤다\"** 는 상태다.\n>\n> **1.2절의 표현을 빌리면** — **이번엔 깰 테스트가 있는데 안 깨고** 있다.\n>\n> **그게 진전**이다. **문제가 보이는 상태와 안 보이는 상태는** 다르다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 「활용 1편」의 문장을 재현한다 ---\n\n#   테스트가 하나도 없는 상태\n\n$ ./gradlew test\n\n> Task :test NO-SOURCE\n\nBUILD SUCCESSFUL in 512ms\n\n#   1.3절에서 본 것이다\n\n#   여기서 엔티티를 화면에 넘기고 merge 로 덮어도\n\n$ ./gradlew test\n\nBUILD SUCCESSFUL\n\n#   \"하나도 테스트를 안 깼다\"\n\n# --- 지금 같은 짓을 하면 ---\n\n#   ① 엔티티를 응답에 노출\n\n@GetMapping(\"/api/v1/orders/{id}\")\npublic Order getOrder(@PathVariable Long id) {\n    return orderRepository.findById(id).orElseThrow();\n}\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API FAILED\n    org.springframework.restdocs.snippet.SnippetException:\n    The following parts of the payload were not documented:\n    { \"orderProducts\" : [...], \"registeredDateTime\" : ... }\n\n#   9.2절의 문서 테스트가 잡는다\n\n#   ② merge 로 덮기\n\nitemRepository.save(partialItem);\n\n$ ./gradlew test\n\nProductRepositoryTest > 안 보낸 필드는 덮이지 않는다 FAILED\n    expected: \"kim\" but was: null\n\n#   1.2절에서 짠 재현 테스트다\n\n#   ③ 배치 사이즈 제거\n\n$ ./gradlew test\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 FAILED\n    Expecting actual: 21L to be less than or equal to: 5L\n\n#   7.6절이 잡는다\n\n#   ④ 재고 차감 락 제거\n\n$ ./gradlew test\n\nConcurrencyTest > 동시에 주문해도 재고가 정확히 차감된다 FAILED\n    Expecting ArrayList: [4] to contain exactly: [0]\n\n#   7.11절이 잡는다\n\n#   ⑤ 트랜잭션 제거\n\n$ ./gradlew test\n\nOrderServiceTest > 재고가 부족하면 아무것도 저장되지 않는다 FAILED\n    Expecting ArrayList: [(\"001\", 1), (\"002\", 0)]\n\n#   5.3절이 잡는다\n\n# --- 다섯을 한꺼번에 하면 ---\n\n$ ./gradlew test\n\n78 tests completed, 11 failed\n\nBUILD FAILED in 34s\n\n#   열하나가 빨갛다\n\n#   \"하나도 테스트를 안 깼다\" 의 반대다\n\n# --- 안 잡히는 것들 ---\n\n#   ⑥ 인증을 뺀다\n\n$ curl -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}'\n\n{\"code\":200,\"status\":\"OK\",\"data\":{\"id\":1,\"totalPrice\":4000}}\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL\n\n#   아무도 안 깨진다\n\n#   인증 테스트가 없어서다\n\n#   ⑦ 유니크 제약을 뺀다\n\n#   (product_number 에 unique 가 원래 없다)\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL\n\n#   9.3절에서 saveAndFlush 로 짤 수 있다는 걸 확인했는데\n#   프로덕션에 제약이 없어 테스트를 안 짰다\n\n#   짜면\n\n@Test\nvoid duplicateProductNumber() {\n    productRepository.saveAndFlush(createProduct(\"001\", 4000));\n\n    assertThatThrownBy(() ->\n            productRepository.saveAndFlush(createProduct(\"001\", 4500)))\n            .isInstanceOf(DataIntegrityViolationException.class);\n}\n\nProductRepositoryTest > duplicateProductNumber() FAILED\n    Expecting code to raise a throwable.\n\n#   빨간 막대가 나온다\n\n#   1.1절의 방법으로 '지금 안 지켜지고 있다' 를 보였다\n\n#   고치려면 @Column(unique = true) 한 줄이다\n\n#   이 책의 주제가 아니라 안 한다\n\n#   대신 이제 그게 보인다\n\n# --- 「활용 2편」 7.5절의 목록 ---\n\n#   Querydsl          안 다뤘다\n#   스프링 데이터 JPA   안 다뤘다\n#   테스트            이 책\n#   보안              안 다뤘다\n#   아키텍처          안 다뤘다\n\n#   다섯 중 하나를 채웠다\n\n# --- 다음 절에서 ---\n\n#   테스트가 하나도 없는 프로젝트에 어디부터 짜나",
+   "note": "**테스트가 없으면 뭘 해도 `BUILD SUCCESSFUL`** 이다. **「활용 1편」의 문장 그대로**다.\n\n**같은 짓 다섯을 지금 하면 열하나가** 빨갛다.\n\n**인증을 빼도 아무도 안** 깨진다 — **인증 테스트가** 없어서다.\n\n**유니크 제약 테스트를 짜면 빨간 막대**가 나온다. **고치려면 애노테이션 한 줄**인데 주제가 아니라 안 한다 — **대신 이제 그게** 보인다.\n\n**7.5절의 다섯 중 하나를** 채웠다."
+  }
+ ],
+ "recap": [
+  "**「활용 1편」 9.7절의 \"하나도 테스트를 안 깼다\" 가 출발점**이다.",
+  "**깰 테스트가 없었다는** 뜻이다.",
+  "**이 책은 문제를 고친 게 아니라 증명 가능하게** 만들었다.",
+  "**「활용 2편」이 로그로 본 넷이 여기서 빨간 막대**다.",
+  "**같은 짓 다섯을 하면 열하나가** 빨갛다.",
+  "**인증은 여전히 아무도 안** 깬다.",
+  "**유니크 제약은 테스트를 짜면 빨개진다** — 안 고쳤을 뿐이다.",
+  "**깰 테스트가 있는데 안 깨는 상태가** 진전이다.",
+  "**7.5절의 다섯 중 하나를** 채웠다."
+ ],
+ "drills": [
+  {
+   "task": "「활용 1편」 9.7절의 목록을 다시 읽는다.",
+   "done_when": "테스트로 잡을 수 있는 걸 표시했다.",
+   "minutes": 20
+  },
+  {
+   "task": "안티패턴 다섯을 한꺼번에 넣어 본다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "안 잡히는 것을 찾는다.",
+   "done_when": "왜 안 잡히는지 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책의 출발점 문장은?",
+   "a": "「활용 1편」 9.7절의 \"하나도 테스트를 안 깼다\" 다."
+  },
+  {
+   "q": "그 문장의 뜻은?",
+   "a": "깰 테스트가 없었다는 것이다."
+  },
+  {
+   "q": "이 책이 한 것은?",
+   "a": "문제를 고친 게 아니라 고쳤는지 확인할 수 있게 만들었다."
+  },
+  {
+   "q": "안 잡히는 것은?",
+   "a": "인증·인가다. 테스트가 없어 아무도 안 깨진다."
+  },
+  {
+   "q": "유니크 제약은 어떤 상태인가?",
+   "a": "테스트를 짜면 빨개진다. 깰 테스트가 있는데 안 깨고 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
