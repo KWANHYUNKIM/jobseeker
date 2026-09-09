@@ -86,7 +86,7 @@
           "title": "H2 와 접속",
           "summary": "로그로 확인한다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -94,7 +94,7 @@
           "title": "스프링 부트 설정",
           "summary": "JPA 와 SQL 로그.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",

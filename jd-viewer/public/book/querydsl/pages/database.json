@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "database",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "H2 와 접속",
+ "summary": "로그로 확인한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "접속 방식을 고른다.",
+  "방언이 무엇을 정하는지 안다.",
+  "실제 접속을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절까지는 컴파일** 얘기였다. **이제 실제로 붙을 DB 를** 고른다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 엔진, 세 가지 주소",
+   "ascii": "   three ways to reach the same H2 engine\n\n   in memory     jdbc:h2:mem:test, gone when the jvm stops\n   a file        jdbc:h2:~/querydsl, a real file in the home directory\n   a server      jdbc:h2:tcp://localhost/~/querydsl, several clients at once\n\n   the third row is how the console and the tests share one database",
+   "note": "**셋째로 콘솔과 테스트가 한 DB 를** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트는 메모리, 눈으로 볼 때는 서버",
+   "md": "**메모리가 제일** 빠르다.\n\n> **JVM 이 끝나면 같이** 사라진다.\n> **테스트마다 깨끗한 상태**다.\n> **⑨ 3.2절의 격리와 같은 결**이다.\n\n**그런데 눈으로 못** 본다.\n\n> **테스트가 끝나면 DB 도** 없다.\n> **콘솔로 붙을 대상이** 없다.\n> **그래서 서버 모드를** 쓴다.\n\n**서버 모드는 파일을 공유**한다.\n\n> **`h2.sh` 를 띄워** 둔다.\n> **애플리케이션과 콘솔이 같은 파일을** 본다.\n> **넣은 데이터를 눈으로** 확인한다.\n\n**둘을 나눠** 쓴다.\n\n> **`application.yml` 은 서버**로 둔다.\n> **`application-test.yml` 은 메모리**로 둔다.\n> **아래에서 둘 다** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "방언이 정하는 것",
+   "ascii": "   what the dialect decides, and what it does not\n\n   the paging syntax     offset rows fetch first rows only, here\n   the identity strategy sequences or auto increment columns\n   the function names    which sql functions can even be called\n   the jpql you wrote    nothing, that part never changes\n\n   the last line is why the same code runs on another database",
+   "note": "**내가 쓴 JPQL 은 안** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "H2 에서 되던 게 운영 DB 에서 안 될 수 있다",
+   "md": "**문장 모양이** 다르다.\n\n> **H2 는 `fetch first ? rows only`** 다.\n> **MySQL 은 `limit ?`** 다.\n> **같은 JPQL 이 다른 SQL 이** 된다.\n\n**함수 이름이** 다르다.\n\n> **5.10절의 `function('replace', ...)` 이 그렇**다.\n> **방언에 등록된 것만** 부른다.\n> **DB 를 바꾸면 안 되는 게** 생긴다.\n\n**대소문자 처리도** 다르다.\n\n> **H2 는 기본이 대문자 식별자**다.\n> **⑭ 8.7절의 별칭 문제가 여기서도** 난다.\n> **네이티브를 쓸 때** 조심한다.\n\n**그래서 통합 테스트는 같은 DB 로** 한다.\n\n> **단위는 H2 로 빠르게** 돈다.\n> **배포 전에는 운영과 같은 걸로** 돌린다.\n> **⑪ 8.3절의 컨테이너가 그** 답이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 서버 모드로 띄운다\n\n$ ~/h2/bin/h2.sh -tcp -web -ifNotExists &\n\nTCP server running at tcp://192.168.0.10:9092 (only local connections)\nWeb Console server running at http://127.0.0.1:8082\n\n$ ls ~/querydsl.mv.db\n/Users/kwanhyun/querydsl.mv.db\n\n--   파일 하나가 곧 DB 다\n\n\n-- 애플리케이션 설정\n\n# application.yml\nspring:\n  datasource:\n    url: jdbc:h2:tcp://localhost/~/querydsl\n    username: sa\n    password:\n    driver-class-name: org.h2.Driver\n  jpa:\n    hibernate:\n      ddl-auto: create\n    properties:\n      hibernate:\n        format_sql: true\n        use_sql_comments: true\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace\n\n--   1.1절의 두 겹 설정이 여기 들어 있다\n\n\n-- 붙었는지 로그로 본다\n\n$ ./gradlew bootRun | grep -i 'hikari\\|dialect\\|h2'\n\nINFO  HikariPool-1 - Starting...\nINFO  HikariPool-1 - Added connection conn0: url=jdbc:h2:tcp://localhost/~/querydsl\nINFO  HikariPool-1 - Start completed.\nINFO  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect\n\n--   URL 이 그대로 찍힌다\n--   방언을 자동으로 골랐다\n\n\n-- 테이블이 생겼는지 본다\n\n$ ./gradlew bootRun | grep -A6 'create table member'\n\nHibernate:\n    create table member (\n        age integer not null,\n        member_id bigint not null,\n        team_id bigint,\n        username varchar(255),\n        primary key (member_id)\n    )\n\n--   ddl-auto: create 가 만들었다\n\n\n-- 콘솔에서도 보인다\n\n-- http://127.0.0.1:8082 에서\nselect * from member;\n\nMEMBER_ID | AGE | TEAM_ID | USERNAME\n--------- | --- | ------- | --------\n1         | 10  | 1       | m1\n2         | 20  | 1       | m2\n\n--   애플리케이션이 넣은 걸 눈으로 본다\n--   메모리 모드였으면 못 본다\n\n\n-- 테스트는 메모리로 돌린다\n\n# src/test/resources/application.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1\n    username: sa\n  jpa:\n    hibernate:\n      ddl-auto: create-drop\n\n@Test\nvoid 테스트_DB() {\n    String url = ((HikariDataSource) dataSource).getJdbcUrl();\n    System.out.println(\"URL: \" + url);\n}\n\nURL: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1\n\n--   테스트만 메모리다\n--   서버를 안 띄워도 돈다\n\n\n-- 방언이 바꾸는 것\n\n@Test\nvoid 페이징_문장() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .offset(1).limit(2)\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [1]\nTRACE binding parameter (2:INTEGER) <- [2]\n\n--   JPQL 에는 offset 이 없다\n--   방언이 SQL 에서 붙였다\n\n\n-- MySQL 방언으로 바꿔 본다\n\nspring:\n  jpa:\n    database-platform: org.hibernate.dialect.MySQLDialect\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    limit ?, ?\n\n--   같은 JPQL 이 다른 SQL 이 됐다\n--   내 코드는 한 글자도 안 바뀌었다\n\n\n-- 식별자 전략도 다르다\n\n// H2\nHibernate: create table member (member_id bigint not null, ...)\nHibernate: create sequence member_seq start with 1 increment by 50\n\n// MySQL\nHibernate: create table member (member_id bigint not null auto_increment, ...)\n\n--   같은 @GeneratedValue 가 다르게 풀렸다\n\n\n-- 대소문자를 확인한다\n\n@Test\nvoid 식별자_대소문자() {\n    List<?> rows = em.createNativeQuery(\n            \"select username from member\").getResultList();\n    System.out.println(\"건수: \" + rows.size());\n\n    List<?> upper = em.createNativeQuery(\n            \"select USERNAME from MEMBER\").getResultList();\n    System.out.println(\"대문자로도: \" + upper.size());\n}\n\nHibernate: select username from member\n건수: 2\nHibernate: select USERNAME from MEMBER\n대문자로도: 2\n\n--   H2 는 둘 다 받는다\n--   운영 DB 는 안 그럴 수 있다\n\n\n-- 접속이 안 될 때\n\n$ ./gradlew bootRun\n\nERROR HikariPool-1 - Exception during pool initialization.\norg.h2.jdbc.JdbcSQLNonTransientConnectionException:\n  Connection is broken: \"java.net.ConnectException: Connection refused:\n  localhost\" [90067-224]\n\n--   서버를 안 띄웠다\n--   h2.sh 를 먼저 돌린다\n\n\n-- 파일이 없을 때\n\n$ ~/h2/bin/h2.sh -tcp &          # -ifNotExists 없이\n\nERROR Database \"~/querydsl\" not found, either pre-create it or\n      allow remote database creation\n\n--   빈 파일을 먼저 만들거나 -ifNotExists 를 준다\n\n\n-- 잠겨 있을 때\n\n$ ./gradlew bootRun\n\nERROR Database may be already in use: null.\n      Possible solutions: close all other connection(s)\n\n--   파일 모드로 두 프로세스가 붙었다\n--   서버 모드를 쓰는 이유다\n\n\n-- 최종 확인\n\n@Test\n@Transactional\nvoid 접속_확인() {\n    em.clear();\n    List<Member> result = queryFactory\n            .selectFrom(member)\n            .orderBy(member.username.asc())\n            .fetch();\n    result.forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.username asc */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.username\nm1\nm2\n\n--   2.5절에서 로그 설정을 정리한다",
+   "note": "**서버 모드로 띄우니 `HikariPool-1 - Added connection ... url=jdbc:h2:tcp://...` 와 `Using dialect: H2Dialect`** 가 찍힌다.\n\n**JPQL 에는 `offset` 이 없고 방언이 SQL 에서 `offset ? rows fetch first ? rows only` 를** 붙였다.\n\n**MySQL 방언으로 바꾸면 같은 JPQL 이 `limit ?, ?` 가** 된다.\n\n**`@GeneratedValue` 가 H2 는 `create sequence`, MySQL 은 `auto_increment` 로** 풀린다.\n\n**서버를 안 띄우면 `Connection refused`, 파일 모드로 둘이 붙으면 `Database may be already in use`** 다."
+  }
+ ],
+ "recap": [
+  "**접속 방식이 셋**이다.",
+  "**메모리는** 빠르다.",
+  "**대신 눈으로 못** 본다.",
+  "**서버 모드로** 공유한다.",
+  "**테스트만 메모리로** 나눈다.",
+  "**방언이 SQL 을** 정한다.",
+  "**JPQL 은 안** 바뀐다.",
+  "**식별자 전략도** 다르다.",
+  "**통합은 같은 DB 로** 한다."
+ ],
+ "drills": [
+  {
+   "task": "서버 모드로 띄운다.",
+   "done_when": "콘솔에서 데이터를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "테스트용 설정을 나눈다.",
+   "done_when": "URL 이 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "방언을 바꿔 본다.",
+   "done_when": "SQL 이 달라지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서버 없이 실행한다.",
+   "done_when": "접속 실패 메시지를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트에 메모리 모드를 쓰는 이유는?",
+   "a": "빠르고 매번 깨끗한 상태로 시작하기 때문이다."
+  },
+  {
+   "q": "그때 못 하는 것은?",
+   "a": "콘솔로 붙어 데이터를 눈으로 확인하는 일이다."
+  },
+  {
+   "q": "방언이 정하는 것은?",
+   "a": "페이징 문법, 식별자 전략, 호출 가능한 함수 같은 SQL 쪽이다."
+  },
+  {
+   "q": "방언을 바꾸면 내 코드가 바뀌나?",
+   "a": "안 바뀐다. JPQL 은 그대로고 SQL 만 달라진다."
+  },
+  {
+   "q": "`Database may be already in use` 는 왜 나나?",
+   "a": "파일 모드 DB 에 두 프로세스가 붙어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "서버 모드",
+   "def": "여러 프로세스가 TCP 로 한 H2 파일에 함께 붙는 실행 방식."
+  },
+  {
+   "term": "방언(Dialect)",
+   "def": "DB 별 SQL 차이를 흡수해 문장을 만들어 주는 하이버네이트 계층."
+  }
+ ],
+ "sources": [
+  {
+   "title": "H2 Database Engine — Features",
+   "url": "https://h2database.com/html/features.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "Spring Boot — Application Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
