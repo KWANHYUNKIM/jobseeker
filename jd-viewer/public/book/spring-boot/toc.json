@@ -330,7 +330,7 @@
           "title": "자동 구성이란",
           "summary": "누가 언제 빈을 만드나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -338,7 +338,7 @@
           "title": "목록 파일",
           "summary": "후보는 어디에 적혀 있나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",

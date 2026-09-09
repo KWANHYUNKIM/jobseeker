@@ -1,0 +1,129 @@
+{
+ "book": "spring-boot",
+ "id": "what-autoconfig",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "자동 구성이란",
+ "summary": "누가 언제 빈을 만드나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빈이 어디서 오는지 안다.",
+  "두 더미를 구분한다.",
+  "애너테이션 셋을 푼다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장에서 JAR 를** 골랐다. **그 JAR 가 빈을** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "구성 클래스가 두 더미다",
+   "ascii": "   two piles of configuration classes, not one\n\n   mine       found by scanning my package\n   the boot   read from a list inside a jar\n\n   mine is registered first; the list is consulted after",
+   "note": "**내 것이 먼저 등록되고 목록은 나중에** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "내가 안 만든 빈이 이백 개다",
+   "md": "**빈이 어디서 오나**.\n\n> **②에서는 내가 다** 적었다.\n> **여기선 안 적었는데** 있다.\n> **아래에서 세어** 본다.\n\n**애너테이션 하나가 셋**이다.\n\n> **`@SpringBootApplication`** 이다.\n> **풀면 구성·스캔·자동 구성**이다.\n> **아래에서 풀어** 본다.\n\n**목록을 읽는다**.\n\n> **4.6절의 그 161 줄**이다.\n> **6.2절에서 연다.**\n> **후보일 뿐**이다.\n\n**조건이 거른**다.\n\n> **161 중 실제로는 훨씬** 적다.\n> **아래에서 그 차이를** 센다.\n> **6.3절부터 조건을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "main 과 첫 빈 사이",
+   "ascii": "   what happens between main and the first bean\n\n   1 the annotation turns scanning on\n   2 the same annotation pulls in the imported list\n   3 every entry on the list is asked its conditions\n   4 the ones that match contribute their beans\n\n   step 3 is where almost everything is decided",
+   "note": "**셋째 걸음에서 거의 다** 정해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "내 패키지 밖은 스캔되지 않는다",
+   "md": "**스캔 범위는 내 자리부터**다.\n\n> **`main` 클래스가 있는 패키지**다.\n> **위로는 안** 간다.\n> **아래에서 옮겨** 본다.\n\n**자동 구성은 스캔이** 아니다.\n\n> **목록을 읽는 것**이다.\n> **패키지와 상관** 없다.\n> **그래서 남의 JAR 도** 된다.\n\n**목록에 있다고 도는 게** 아니다.\n\n> **조건이 다 안** 맞는다.\n> **아래에서 161 대 실제를** 센다.\n> **6.7절이 그 보고서**다.\n\n**내 빈이 있으면 물러선**다.\n\n> **6.5절의 이야기**다.\n> **그래서 덮어쓰기가** 된다.\n> **아래에서 미리** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 내가 적은 건 이게 전부다\n\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n@RestController\nclass BeanController {\n    private final ApplicationContext ctx;\n    BeanController(ApplicationContext ctx) { this.ctx = ctx; }\n\n    @GetMapping(value = \"/beans/count\", produces = \"text/plain\")\n    String count() {\n        return \"전체: \" + ctx.getBeanDefinitionNames().length + \"\\n\";\n    }\n}\n\n$ find src/main/java -name '*.java' | wc -l\n       2\n\n\n-- 그런데 빈은 이만큼이다\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 1.041 seconds\n\n$ curl -s localhost:8080/beans/count\n전체: 187\n\n--   자바 파일 두 개로 빈 187 개다\n\n\n-- 누가 만들었는지 센다\n\n@GetMapping(value = \"/beans/by-source\", produces = \"text/plain\")\nString bySource() {\n    var bf = (ConfigurableListableBeanFactory) ctx.getAutowireCapableBeanFactory();\n    int mine = 0, auto = 0, infra = 0;\n    for (String n : ctx.getBeanDefinitionNames()) {\n        var d = bf.getBeanDefinition(n);\n        String src = String.valueOf(d.getResourceDescription());\n        if (src.contains(\"study.boot\")) mine++;\n        else if (n.contains(\"AutoConfiguration\")) auto++;\n        else infra++;\n    }\n    return \"내 것:     \" + mine + \"\\n자동 구성: \" + auto + \"\\n그 밖:     \" + infra + \"\\n\";\n}\n\n$ curl -s localhost:8080/beans/by-source\n내 것:     2\n자동 구성: 41\n그 밖:     144\n\n--   내가 만든 건 둘이다\n--   나머지는 자동 구성이 만들었거나 그것이 만든 것이 만들었다\n\n\n-- 애너테이션 하나를 푼다\n\n$ javap -v \\\n  ~/.gradle/caches/.../spring-boot-autoconfigure-3.3.2.jar \\\n  2>/dev/null || true\n\n$ unzip -p $AUTOCFG \\\n    org/springframework/boot/autoconfigure/SpringBootApplication.class \\\n  > /tmp/sba.class\n$ javap -v /tmp/sba.class | grep -A1 'RuntimeVisibleAnnotations' | head -8\nRuntimeVisibleAnnotations:\n  0: #24(): SPRING_BOOT_CONFIGURATION\n  1: #25(): ENABLE_AUTO_CONFIGURATION\n  2: #26(#27=[...]): COMPONENT_SCAN\n\n// 소스로는 이렇다\n@SpringBootConfiguration\n@EnableAutoConfiguration\n@ComponentScan(excludeFilters = { ... })\npublic @interface SpringBootApplication { }\n\n--   셋이 하나로 묶여 있었다\n\n\n-- 셋을 손으로 풀어 써 본다\n\n@SpringBootConfiguration\n@EnableAutoConfiguration\n@ComponentScan\npublic class BootApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n$ curl -s localhost:8080/beans/count\n전체: 187\n\n--   똑같다\n--   묶여 있던 걸 풀어 적었을 뿐이다\n\n\n-- 자동 구성만 뺀다\n\n@SpringBootConfiguration\n@ComponentScan\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started|Exception'\nINFO ... : Started BootApplication in 0.412 seconds\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/beans/count\n000\n\n--   5.5절에서 톰캣을 뺐을 때와 같은 모습이다\n--   이번엔 JAR 는 그대로인데 목록을 안 읽었다\n\n\n-- 스캔만 뺀다\n\n@SpringBootConfiguration\n@EnableAutoConfiguration\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 0.981 seconds\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/beans/count\n404\n\n--   서버는 떴는데 내 컨트롤러가 없다\n--   포트는 열려 있으니 404 다\n--   앞의 000 과 다른 자리다\n\n\n-- 스캔은 내 자리부터다\n\n$ find src/main/java -name '*.java'\nsrc/main/java/study/boot/BootApplication.java\nsrc/main/java/study/boot/BeanController.java\n\n// 컨트롤러를 위 패키지로 옮긴다\n$ mkdir -p src/main/java/study/other\n$ git mv src/main/java/study/boot/BeanController.java \\\n         src/main/java/study/other/\n$ sed -i '' 's/^package study.boot;/package study.other;/' \\\n         src/main/java/study/other/BeanController.java\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/beans/count\n404\n\n--   study.boot 아래만 훑는다\n--   study.other 는 안 본다\n\n\n-- 자동 구성은 패키지와 상관없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/nowhere\n404\n\n--   404 라는 건 서버가 떴다는 뜻이다\n--   톰캣 자동 구성은 org.springframework 패키지에 있는데도 돌았다\n--   스캔이 아니라 목록을 읽어서다\n\n\n-- 목록을 미리 본다\n\n$ AC=$(find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar' | head -1)\n$ unzip -p \"$AC\" META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | wc -l\n     161\n\n$ unzip -p \"$AC\" META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | head -4\norg.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration\norg.springframework.boot.autoconfigure.aop.AopAutoConfiguration\norg.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration\norg.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration\n\n--   4.6절에서 세던 그 161 이다\n--   6.2절에서 이 파일을 제대로 연다\n\n\n-- 후보와 실제가 다르다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 > /tmp/dbg.txt\n\n$ grep -c 'matched:' /tmp/dbg.txt\n      23\n\n$ grep -c 'Did not match' /tmp/dbg.txt\n     138\n\n$ python3 -c \"print(23 + 138)\"\n161\n\n--   161 개 중 23 개만 걸렸다\n--   나머지는 조건이 안 맞았다\n--   6.7절에서 이 보고서를 읽는다\n\n\n-- 걸린 23 개를 본다\n\n$ grep -B1 'matched:' /tmp/dbg.txt | grep -oE '[A-Za-z]+AutoConfiguration' \\\n    | sort -u | head -8\nAopAutoConfiguration\nDispatcherServletAutoConfiguration\nErrorMvcAutoConfiguration\nHttpEncodingAutoConfiguration\nJacksonAutoConfiguration\nRestTemplateAutoConfiguration\nServletWebServerFactoryAutoConfiguration\nTaskExecutionAutoConfiguration\n\n--   ③ 1장의 디스패처 서블릿이 여기 있다\n--   ④ 8장의 오류 페이지도 여기서 나온다\n\n\n-- 내가 만들면 물러선다\n\n@Configuration\nclass MyJackson {\n    @Bean ObjectMapper objectMapper() {\n        return new ObjectMapper().findAndRegisterModules();\n    }\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'JacksonAutoConfiguration#jacksonObjectMapper' | head -3\n   JacksonAutoConfiguration#jacksonObjectMapper:\n      Did not match:\n         - @ConditionalOnMissingBean found beans of type 'ObjectMapper'\n\n$ curl -s localhost:8080/beans/count\n전체: 187\n\n--   내 빈이 있으니 부트가 안 만들었다\n--   6.5절에서 이 조건을 본다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '내가 쓴 자바 파일'  '2 개' \\\n  '빈'                 '187 개' \\\n  '내가 만든 빈'       '2 개' \\\n  '후보'               '161 개' \\\n  '걸린 것'            '23 개' \\\n  '안 걸린 것'         '138 개'\n\n내가 쓴 자바 파일          2 개\n빈                         187 개\n내가 만든 빈               2 개\n후보                       161 개\n걸린 것                    23 개\n안 걸린 것                 138 개\n\n--   6.2절에서 그 161 이 어디 적혀 있는지 본다",
+   "note": "**자바 파일 두 개로 빈이 187 개, 그중 내가 만든 건** 둘이다.\n\n**`@SpringBootApplication` 이 구성·자동 구성·스캔 셋을 묶은 것이라 풀어 써도 결과가** 같다.\n\n**자동 구성만 빼면 포트가 안 열려 `000`, 스캔만 빼면 서버는 떠서 `404`** 다.\n\n**컨트롤러를 위 패키지로 옮기면 `404` — 스캔은 내 자리부터**다.\n\n**후보 161 중 `matched` 23·`Did not match` 138 로 딱** 맞는다."
+  }
+ ],
+ "recap": [
+  "**빈이 187 개**다.",
+  "**내 것은** 둘이다.",
+  "**애너테이션은** 셋이다.",
+  "**자동 구성을 빼면 000**이다.",
+  "**스캔을 빼면 404**다.",
+  "**스캔은 내** 자리부터다.",
+  "**자동 구성은 목록을** 읽는다.",
+  "**후보는 161**이다.",
+  "**걸린 건 23**이다."
+ ],
+ "drills": [
+  {
+   "task": "빈 수를 센다.",
+   "done_when": "내 것과 나머지를 나눴다.",
+   "minutes": 20
+  },
+  {
+   "task": "애너테이션을 풀어 쓴다.",
+   "done_when": "결과가 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "하나씩 빼 본다.",
+   "done_when": "000 과 404 를 둘 다 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "후보와 걸린 수를 센다.",
+   "done_when": "합이 161 인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@SpringBootApplication` 은 무엇의 묶음인가?",
+   "a": "구성 클래스 표시, 자동 구성 켜기, 컴포넌트 스캔 셋이다."
+  },
+  {
+   "q": "자동 구성만 뺐을 때 왜 `000` 인가?",
+   "a": "서버 자동 구성이 안 돌아 포트가 안 열려서다."
+  },
+  {
+   "q": "스캔만 뺐을 때 왜 `404` 인가?",
+   "a": "서버는 떴고 내 컨트롤러만 등록이 안 돼서다."
+  },
+  {
+   "q": "자동 구성은 왜 남의 패키지에서도 도나?",
+   "a": "스캔이 아니라 JAR 안의 목록을 읽기 때문이다."
+  },
+  {
+   "q": "목록에 있으면 다 도나?",
+   "a": "아니다. 조건이 맞는 것만 돈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 구성",
+   "def": "JAR 안 목록에 적힌 구성 클래스를 조건에 맞을 때만 적용하는 장치."
+  },
+  {
+   "term": "컴포넌트 스캔",
+   "def": "지정한 패키지 아래를 훑어 빈을 찾는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

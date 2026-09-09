@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "imports-file",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "목록 파일",
+ "summary": "후보는 어디에 적혀 있나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "파일 자리를 안다.",
+  "여러 JAR 것을 합치는 걸 본다.",
+  "옛 자리도 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 161 개가 후보**였다. **그게 어디 적혀 있는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "파일 자리",
+   "ascii": "   where the list lives inside a jar\n\n   META-INF/spring/\n     org.springframework.boot.autoconfigure.AutoConfiguration.imports\n\n   one fully qualified class name per line, nothing else",
+   "note": "**한 줄에 클래스 이름 하나**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파일 하나면 남의 JAR 도 낄 수 있다",
+   "md": "**약속된 자리**다.\n\n> **JAR 안 정해진 경로**다.\n> **거기 있으면 읽는**다.\n> **아래에서 열어** 본다.\n\n**여러 JAR 것이 합쳐진**다.\n\n> **부트 것만 있는 게** 아니다.\n> **5.3절의 마이바티스도** 넣는다.\n> **아래에서 세어** 본다.\n\n**클래스 이름만 적는**다.\n\n> **조건은 클래스 안에** 있다.\n> **6.3절에서 그걸** 본다.\n> **목록은 후보일** 뿐이다.\n\n**빼는 것도 이름으로** 한다.\n\n> **`exclude` 로 뺀**다.\n> **아래에서 빼** 본다.\n> **JAR 는 그대로** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리가 한 번 바뀌었다",
+   "ascii": "   the old place and the new place\n\n   until 2.7   spring.factories, a properties file, one long line\n   from 3.0    the imports file, one class per line\n\n   an old jar still works; a new one is not read by an old boot",
+   "note": "**옛 JAR 는 그대로 읽어** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "목록에 적었는데 안 도는 일이 흔하다",
+   "md": "**조건이 안 맞는 게 제일** 많다.\n\n> **6.7절 보고서에서 이유가** 나온다.\n> **6.12절에서 그걸** 판다.\n> **목록 탓이 아닐 때가** 많다.\n\n**파일 이름을 틀리면** 조용하다.\n\n> **오류가 안** 난다.\n> **그냥 안** 읽는다.\n> **아래에서 틀려** 본다.\n\n**옛 자리에 적으면 안** 읽는다.\n\n> **3.0 부터 안** 본다.\n> **아래에서 확인**한다.\n> **옛 라이브러리는 다르**다.\n\n**스캔되는 자리에 두면 두 번** 돈다.\n\n> **내 패키지 안에 두면 그렇**다.\n> **자동 구성은 밖에 둬야** 한다.\n> **6.11절에서 그렇게** 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 파일을 연다\n\n$ AC=$(find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar' | head -1)\n$ unzip -l \"$AC\" | grep 'META-INF/spring'\n     8891  2024-07-18 05:12   META-INF/spring/org.springframework.boot\n                              .autoconfigure.AutoConfiguration.imports\n      269  2024-07-18 05:12   META-INF/spring.factories\n\n$ IMP='META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports'\n$ unzip -p \"$AC\" \"$IMP\" | wc -l\n     161\n\n$ unzip -p \"$AC\" \"$IMP\" | sed -n '30,34p'\norg.springframework.boot.autoconfigure.gson.GsonAutoConfiguration\norg.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration\norg.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration\norg.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration\norg.springframework.boot.autoconfigure.http.codec.CodecsAutoConfiguration\n\n--   한 줄에 하나씩이다\n--   조건은 안 적혀 있다\n\n\n-- 옛 자리에는 뭐가 있나\n\n$ unzip -p \"$AC\" META-INF/spring.factories\n# Failure analyzers\norg.springframework.boot.diagnostics.FailureAnalyzer=\\\norg.springframework.boot.autoconfigure.diagnostics.analyzer.\\\nNoSuchBeanDefinitionFailureAnalyzer,\\\norg.springframework.boot.autoconfigure.jdbc.\\\nDataSourceBeanCreationFailureAnalyzer\n\n$ unzip -p \"$AC\" META-INF/spring.factories | grep -c 'EnableAutoConfiguration'\n0\n\n--   자동 구성 목록은 여기 없다\n--   3.0 부터 옮겨 갔다\n\n\n-- 여러 JAR 것이 합쳐진다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'\n}\n\n$ ./gradlew bootJar -q\n$ mkdir -p /tmp/x && (cd /tmp/x && unzip -oq \\\n    ~/proj/build/libs/app.jar 'BOOT-INF/lib/*')\n\n$ for j in /tmp/x/BOOT-INF/lib/*.jar; do\n    n=$(unzip -p \"$j\" \\\n      'META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports' \\\n      2>/dev/null | grep -c .)\n    [ \"$n\" -gt 0 ] && printf '%-52s %s\\n' \"$(basename $j)\" \"$n\"\n  done\n\nspring-boot-autoconfigure-3.3.2.jar                  161\nmybatis-spring-boot-autoconfigure-3.0.3.jar            2\n\n$ python3 -c \"print(161 + 2)\"\n163\n\n--   두 JAR 것이 합쳐져 163 이 후보다\n\n\n-- 실제로 세어 본다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 > /tmp/dbg2.txt\n$ python3 - <<'PY'\nimport re\nt = open('/tmp/dbg2.txt').read()\nprint('matched     ', t.count('matched:'))\nprint('did not     ', t.count('Did not match'))\nprint('합계        ', t.count('matched:') + t.count('Did not match'))\nPY\nmatched      44\ndid not      119\n합계         163\n\n--   6.1절에서는 161 이었다\n--   마이바티스 JAR 가 둘을 더했다\n\n\n-- 마이바티스 둘을 본다\n\n$ unzip -p /tmp/x/BOOT-INF/lib/mybatis-spring-boot-autoconfigure-3.0.3.jar \\\n    'META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports'\norg.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration\norg.mybatis.spring.boot.autoconfigure.MybatisLanguageDriverAutoConfiguration\n\n$ grep -A1 'MybatisAutoConfiguration matched' /tmp/dbg2.txt | head -2\n   MybatisAutoConfiguration matched:\n      - @ConditionalOnClass found required classes 'org.apache.ibatis.session.SqlSessionFactory'\n\n$ ./gradlew bootRun 2>&1 | grep -i mybatis | head -1\nINFO ... : Init MyBatis with DataSource ...\n\n--   ⑥ 8장에서 쓰던 그 마이바티스가 이렇게 들어온다\n\n\n-- 이름으로 뺀다\n\n@SpringBootApplication(exclude = { MybatisAutoConfiguration.class })\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'Exclusions' | head -3\n\nExclusions:\n-----------\n    org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'Init MyBatis'\n0\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c mybatis\n3\n\n--   JAR 는 그대로 있는데 안 돈다\n--   5.5절의 제외와 다른 자리다\n\n\n-- 속성으로도 뺀다\n\n// application.yml\nspring:\n  autoconfigure:\n    exclude:\n      - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -A2 'Exclusions' | tail -1\n    org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration\n\n--   7장에서 이 설정을 다시 본다\n\n\n-- 목록에 없는 이름을 빼면\n\n@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })\n// 그런데 JPA 스타터를 뺀 상태라면\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nThe following classes could not be excluded because they are not auto-configuration classes:\n\n--   빼려는 게 후보에 없으면 기동이 멈춘다\n--   조용하지 않다\n\n\n-- 내가 파일을 만들어 본다\n\n$ mkdir -p src/main/resources/META-INF/spring\n$ cat > src/main/resources/META-INF/spring/\\\norg.springframework.boot.autoconfigure.AutoConfiguration.imports <<'EOF'\nstudy.lib.HelloAutoConfiguration\nEOF\n\n// src/main/java/study/lib/HelloAutoConfiguration.java\npackage study.lib;\n\n@AutoConfiguration\npublic class HelloAutoConfiguration {\n    @Bean\n    public String helloMessage() { return \"자동 구성이 만든 빈\"; }\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'HelloAutoConfiguration'\n2\n\n$ curl -s localhost:8080/beans/one?name=helloMessage\n자동 구성이 만든 빈\n\n--   내 프로젝트 안에서도 목록이 읽힌다\n--   6.10절에서 제대로 만든다\n\n\n-- 파일 이름을 틀리면\n\n$ mv src/main/resources/META-INF/spring/\\\norg.springframework.boot.autoconfigure.AutoConfiguration.imports \\\n   src/main/resources/META-INF/spring/AutoConfiguration.imports\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'HelloAutoConfiguration'\n0\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'localhost:8080/beans/one?name=helloMessage'\n404\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   오류 한 줄 없이 그냥 안 읽는다\n--   5.5절에서 톰캣을 뺐을 때와 같은 조용함이다\n\n\n-- 옛 자리에 적으면\n\n$ rm src/main/resources/META-INF/spring/AutoConfiguration.imports\n$ cat > src/main/resources/META-INF/spring.factories <<'EOF'\norg.springframework.boot.autoconfigure.EnableAutoConfiguration=\\\nstudy.lib.HelloAutoConfiguration\nEOF\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'HelloAutoConfiguration'\n0\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'spring.factories'\n0\n\n--   3.0 부터는 안 읽는다\n--   경고도 없다\n\n\n-- 스캔되는 자리에 두면\n\n$ mv src/main/java/study/lib src/main/java/study/boot/lib\n$ sed -i '' 's/^package study.lib;/package study.boot.lib;/' \\\n    src/main/java/study/boot/lib/HelloAutoConfiguration.java\n// imports 파일도 되살리고 이름을 고친다\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s 'localhost:8080/beans/def?name=helloMessage'\n출처: study.boot.lib.HelloAutoConfiguration\n횟수: 1\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -c 'HelloAutoConfiguration'\n2\n\n--   스캔으로도 잡히고 목록으로도 잡힌다\n--   같은 클래스라 빈은 하나지만 순서가 꼬인다\n--   6.9절에서 그 순서를 본다\n\n\n-- 정리\n\n$ printf '%-28s %s\\n' \\\n  '자리'          'META-INF/spring/...imports' \\\n  '부트 것'       '161' \\\n  '마이바티스'    '2' \\\n  '합계'          '163' \\\n  '이름으로 빼기' 'JAR 는 그대로' \\\n  '없는 걸 빼면'  '기동 실패' \\\n  '이름 틀리면'   '조용함' \\\n  '옛 자리'       '안 읽음'\n\n자리                         META-INF/spring/...imports\n부트 것                      161\n마이바티스                   2\n합계                         163\n이름으로 빼기                JAR 는 그대로\n없는 걸 빼면                 기동 실패\n이름 틀리면                  조용함\n옛 자리                      안 읽음\n\n--   6.3절에서 조건을 코드로 쓴다",
+   "note": "**목록은 `META-INF/spring/...AutoConfiguration.imports` 에 한 줄 하나로 161 개** 있다.\n\n**마이바티스 JAR 가 둘을 더해 `matched` 44 · `Did not match` 119 로 합이 163**이다.\n\n**`exclude` 로 이름을 빼면 JAR 는 3 줄 그대로인데 `Init MyBatis` 가** 사라진다.\n\n**후보에 없는 걸 빼면 `APPLICATION FAILED TO START` 로** 멈춘다.\n\n**파일 이름을 틀리거나 옛 `spring.factories` 에 적으면 경고 없이 그냥 안** 읽힌다."
+  }
+ ],
+ "recap": [
+  "**자리가 정해져** 있다.",
+  "**한 줄에** 하나다.",
+  "**여러 JAR 것이** 합쳐진다.",
+  "**조건은 클래스 안에** 있다.",
+  "**이름으로** 뺀다.",
+  "**JAR 는** 남는다.",
+  "**없는 걸 빼면** 멈춘다.",
+  "**이름 틀리면** 조용하다.",
+  "**옛 자리는 안** 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "목록 파일을 연다.",
+   "done_when": "줄 수를 셌다.",
+   "minutes": 10
+  },
+  {
+   "task": "JAR 별로 목록을 센다.",
+   "done_when": "합이 보고서와 맞는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "이름으로 하나를 뺀다.",
+   "done_when": "JAR 는 남고 안 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "파일 이름을 틀려 본다.",
+   "done_when": "조용히 무시되는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "후보 목록은 어디 있나?",
+   "a": "JAR 안 `META-INF/spring` 의 정해진 이름 파일이다."
+  },
+  {
+   "q": "목록에는 조건도 적나?",
+   "a": "안 적는다. 클래스 이름만 적고 조건은 클래스 안에 있다."
+  },
+  {
+   "q": "`exclude` 로 빼면 JAR 도 빠지나?",
+   "a": "안 빠진다. 후보에서만 제외된다."
+  },
+  {
+   "q": "후보에 없는 클래스를 빼면?",
+   "a": "기동이 실패한다."
+  },
+  {
+   "q": "파일 이름을 틀리면?",
+   "a": "오류 없이 그냥 안 읽힌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "imports 파일",
+   "def": "자동 구성 후보 클래스 이름을 한 줄씩 적어 둔 JAR 안 파일."
+  },
+  {
+   "term": "자동 구성 제외",
+   "def": "JAR 는 두고 후보 목록에서만 특정 클래스를 빼는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Creating Your Own Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
