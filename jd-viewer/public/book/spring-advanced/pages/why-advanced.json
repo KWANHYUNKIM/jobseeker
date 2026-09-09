@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "why-advanced",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 고급편인가",
+ "summary": "②는 빈을 만들었고 여기선 그 빈을 바꾼다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 관심사를 가른다.",
+  "왜 안 빠지는지 안다.",
+  "이 책의 목표를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**메서드마다 같은 줄이** 있다. **빼내려 하면 부르는 줄이** 남는다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 메서드에 둘이 있다",
+   "ascii": "   two kinds of concern in one method\n\n   the core    the thing the method is named after\n   the rest    logging, timing, transactions, retries, checks\n\n   the second kind is identical in every method and cannot be extracted",
+   "note": "**둘째가 모든 메서드에서 똑같고 빼낼 수가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빼낼 수 없는 중복이 있다",
+   "md": "**본문은 빼낼 수** 있다.\n\n> **메서드로 뽑으면** 된다.\n> **②에서 늘 하던 일**이다.\n> **여기선 그게 안** 된다.\n\n**부르는 줄이** 남는다.\n\n> **모든 메서드에 한 줄씩**이다.\n> **아래에서 세어** 본다.\n> **그게 진짜** 중복이다.\n\n**앞뒤로 감싸야** 한다.\n\n> **시작과 끝이 다** 필요하다.\n> **예외가 나도** 끝나야 한다.\n> **아래에서 그 모양을** 본다.\n\n**본문을 안 고치고 넣고** 싶다.\n\n> **그게 이 책의 목표**다.\n> **9장에서 그걸** 한다.\n> **아래에서 미리** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 안 빠지나",
+   "ascii": "   why the second kind spreads\n\n   it has to run before and after the core, in every method\n   a helper method still has to be called from every method\n   so the call itself is the duplication, not the body\n\n   moving the body out does not move the call out",
+   "note": "**본문을 밖으로 옮겨도 부르는 줄은 안** 옮겨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "숨기면 안 보이는 것도 값이다",
+   "md": "**코드에 안** 보인다.\n\n> **읽어도 무엇이 붙었는지** 모른다.\n> **10.7절에서 그 값을** 센다.\n> **로그와 이름으로** 확인한다.\n\n**안 걸릴 수도** 있다.\n\n> **12장 전체가 그** 이야기다.\n> **조용히 안** 찍힌다.\n> **6장의 그 조용함과** 같다.\n\n**성능도** 든다.\n\n> **한 겹이** 는다.\n> **아래에서 재** 본다.\n> **대개는 무시할 만**하다.\n\n**어디에 걸릴지 적어야** 한다.\n\n> **11장이 그것만** 다룬다.\n> **넓으면 엉뚱한 게** 걸린다.\n> **좁으면 안** 걸린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 요구사항이 하나 온다\n\n// 모든 서비스 메서드의 실행 시간을 남겨 주세요\n\n$ find src/main/java -name '*Service.java' | wc -l\n       8\n$ grep -c 'public ' src/main/java/study/adv/*Service.java | awk -F: '{s+=$2} END {print s}'\n      34\n\n--   서른네 곳이다\n\n\n-- 손으로 넣어 본다\n\n@Service\npublic class OrderService {\n    public void order(String item) {\n        long t0 = System.nanoTime();\n        try {\n            repository.save(item);\n        } finally {\n            log.info(\"order {} ms\", (System.nanoTime() - t0) / 1_000_000);\n        }\n    }\n\n    public void cancel(Long id) {\n        long t0 = System.nanoTime();\n        try {\n            repository.delete(id);\n        } finally {\n            log.info(\"cancel {} ms\", (System.nanoTime() - t0) / 1_000_000);\n        }\n    }\n}\n\n$ git diff --stat\n src/main/java/study/adv/OrderService.java   | 42 ++++++++++----\n src/main/java/study/adv/MemberService.java  | 38 +++++++++---\n ... 8 files changed, 214 insertions(+), 68 deletions(-)\n\n--   214 줄이 늘었다\n\n\n-- 본문을 빼내 본다\n\nclass TimeUtil {\n    static <T> T measure(String name, Supplier<T> body) {\n        long t0 = System.nanoTime();\n        try {\n            return body.get();\n        } finally {\n            log.info(\"{} {} ms\", name, (System.nanoTime() - t0) / 1_000_000);\n        }\n    }\n}\n\npublic void order(String item) {\n    TimeUtil.measure(\"order\", () -> { repository.save(item); return null; });\n}\n\npublic void cancel(Long id) {\n    TimeUtil.measure(\"cancel\", () -> { repository.delete(id); return null; });\n}\n\n$ git diff --stat\n 9 files changed, 76 insertions(+), 214 deletions(-)\n\n$ grep -c 'TimeUtil.measure' src/main/java/study/adv/*Service.java \\\n    | awk -F: '{s+=$2} END {print s}'\n      34\n\n--   214 줄이 76 줄이 됐다\n--   그런데 부르는 줄이 34 개 그대로다\n--   이게 안 빠지는 중복이다\n\n\n-- 이름도 손으로 적는다\n\n$ grep -o 'measure(\"[a-zA-Z]*\"' src/main/java/study/adv/*Service.java \\\n    | awk -F'\"' '{print $2}' | sort | uniq -c | sort -rn | head -4\n   2 order\n   2 save\n   1 cancel\n   1 find\n\n$ grep -n 'measure(\"save\"' src/main/java/study/adv/OrderService.java\n41:        TimeUtil.measure(\"save\", () -> { ... });\n\n$ sed -n '38,42p' src/main/java/study/adv/OrderService.java\n    public void update(Long id, String item) {\n        TimeUtil.measure(\"save\", () -> { repository.update(id, item); return null; });\n    }\n\n--   update 인데 save 라고 적혀 있다\n--   손으로 적으니 어긋난다\n\n\n-- 새 메서드가 하나 늘면\n\npublic void refund(Long id) {\n    repository.refund(id);\n}\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/refund?id=1'\n$ tail -1 logs/app.log\n(아무것도 없음)\n\n$ grep -c 'TimeUtil' src/main/java/study/adv/OrderService.java\n5\n\n--   깜빡하면 그냥 안 찍힌다\n--   경고도 없다\n\n\n-- 목표는 이것이다\n\n@Aspect\n@Component\nclass TimeAspect {\n    @Around(\"execution(* study.adv..*Service.*(..))\")\n    public Object around(ProceedingJoinPoint pjp) throws Throwable {\n        long t0 = System.nanoTime();\n        try {\n            return pjp.proceed();\n        } finally {\n            log.info(\"{} {} ms\", pjp.getSignature().getName(),\n                     (System.nanoTime() - t0) / 1_000_000);\n        }\n    }\n}\n\n$ git checkout src/main/java/study/adv/\n$ git diff --stat\n src/main/java/study/adv/TimeAspect.java | 17 +++++++++++++++++\n 1 file changed, 17 insertions(+)\n\n$ grep -rc 'TimeUtil\\|System.nanoTime' src/main/java/study/adv/*Service.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n--   서비스 코드가 한 줄도 안 바뀌었다\n\n\n-- 깜빡할 수가 없다\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/refund?id=1'\n$ tail -1 logs/app.log\n07:18:02 INFO  s.a.TimeAspect - refund 2 ms\n\n$ curl -s localhost:8080/who\n주입된 것: study.adv.OrderService$$SpringCGLIB$$0\n원본:      study.adv.OrderService\n프록시인가: true\n\n--   새로 만든 메서드도 저절로 걸린다\n--   1.1 절에서 본 그 이름이다\n\n\n-- 그런데 안 보인다\n\n$ grep -n 'nanoTime\\|측정\\|ms' src/main/java/study/adv/OrderService.java\n(없음)\n\n$ sed -n '10,14p' src/main/java/study/adv/OrderService.java\n    public void refund(Long id) {\n        repository.refund(id);\n    }\n\n--   이 코드를 읽으면 아무 일도 안 하는 것 같다\n--   10.7절에서 이 값을 센다\n\n\n-- 한 겹이 얼마나 드나\n\n$ curl -s 'localhost:8080/bench?n=1000000&proxy=false'\n프록시 없이: 8 ms\n$ curl -s 'localhost:8080/bench?n=1000000&proxy=true'\n프록시 통과: 41 ms\n\n$ python3 -c \"print('한 번에', round((41-8)*1000/1000000, 3), '마이크로초')\"\n한 번에 0.033 마이크로초\n\n--   백만 번에 33 밀리초다\n--   DB 한 번이 1 밀리초다\n\n\n-- 넓게 걸면\n\n@Around(\"execution(* study.adv..*.*(..))\")\n\n$ curl -s -o /dev/null 'localhost:8080/order?item=연필'\n$ wc -l < logs/app.log\n     142\n\n@Around(\"execution(* study.adv..*Service.*(..))\")\n\n$ curl -s -o /dev/null 'localhost:8080/order?item=연필'\n$ wc -l < logs/app.log\n       2\n\n--   한 요청에 142 줄과 2 줄이다\n--   11장이 이 한 줄을 다룬다\n\n\n-- 정리\n\n$ printf '%-24s %-12s %s\\n' \\\n  '손으로 넣기'  '+214 줄'  '34 곳' \\\n  '본문 빼내기'  '+76 줄'   '부르는 줄 34 개' \\\n  '이름'         '손으로'   'update 가 save' \\\n  '새 메서드'    '안 찍힘'  '경고 없음' \\\n  '애스펙트'     '+17 줄'   '서비스 0 줄' \\\n  '한 겹'        '0.033 us' '무시할 만함' \\\n  '넓게 걸면'    '142 줄'   '11 장'\n\n손으로 넣기               +214 줄      34 곳\n본문 빼내기               +76 줄       부르는 줄 34 개\n이름                      손으로       update 가 save\n새 메서드                 안 찍힘      경고 없음\n애스펙트                  +17 줄       서비스 0 줄\n한 겹                     0.033 us     무시할 만함\n넓게 걸면                 142 줄       11 장\n\n--   1.3 절에서 로그를 볼 수 있게 해 둔다",
+   "note": "**서른네 곳에 손으로 넣으니 214 줄이 늘고 본문을 빼내도 부르는 줄 34 개가 그대로** 남는다.\n\n**손으로 적은 이름이 어긋나 `update` 메서드에 `save` 라고** 적혀 있다.\n\n**새 메서드를 하나 만드니 경고 없이 그냥 안** 찍힌다.\n\n**애스펙트 17 줄로 바꾸니 서비스 코드가 0 줄 바뀌고 새 메서드도 저절로** 걸린다.\n\n**대신 그 코드를 읽으면 아무 일도 안 하는 것처럼 보이고 넓게 걸면 한 요청에 142 줄이** 찍힌다."
+  }
+ ],
+ "recap": [
+  "**관심사가** 둘이다.",
+  "**본문은** 빠진다.",
+  "**부르는 줄은 안** 빠진다.",
+  "**앞뒤로** 감싼다.",
+  "**이름이** 어긋난다.",
+  "**깜빡하면 안** 찍힌다.",
+  "**애스펙트는 0 줄**이다.",
+  "**대신 안** 보인다.",
+  "**어디에 걸지가** 남는다."
+ ],
+ "drills": [
+  {
+   "task": "손으로 넣어 본다.",
+   "done_when": "늘어난 줄 수를 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "본문을 빼내 본다.",
+   "done_when": "부르는 줄이 남는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "새 메서드를 하나 만든다.",
+   "done_when": "안 찍히는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "애스펙트로 바꾼다.",
+   "done_when": "서비스가 안 바뀐 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "본문을 유틸로 빼내면 무엇이 남나?",
+   "a": "그 유틸을 부르는 줄이 모든 메서드에 남는다."
+  },
+  {
+   "q": "왜 그냥 메서드로는 못 빼나?",
+   "a": "본문 앞뒤를 감싸야 해서 호출 자체가 중복이 된다."
+  },
+  {
+   "q": "손으로 넣을 때의 위험은?",
+   "a": "이름을 잘못 적거나 새 메서드에 깜빡한다."
+  },
+  {
+   "q": "애스펙트로 바꾸면 무엇을 잃나?",
+   "a": "코드를 읽어도 무엇이 붙었는지 안 보인다."
+  },
+  {
+   "q": "무엇을 더 정해야 하나?",
+   "a": "어디에 걸지다. 넓으면 엉뚱한 것까지 걸린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "횡단 관심사",
+   "def": "여러 메서드에 똑같이 필요한, 본래 기능이 아닌 일."
+  },
+  {
+   "term": "빠지지 않는 중복",
+   "def": "본문을 옮겨도 호출 줄이 남아 사라지지 않는 중복."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 로그와 진짜 클래스 이름으로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇으로 끝나는지 안다.",
+  "왜 그 둘인지 안다.",
+  "책의 모양을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**②에서 컨테이너가 빈을 만들었다.** **여기선 만들어진 그 빈이** 바뀐다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 자리",
+   "ascii": "   every section ends with two things\n\n   the log that was actually printed\n   the real class name of the bean that printed it\n\n   when the second one stops matching the source, something wrapped it",
+   "note": "**둘째가 소스와 안 맞기 시작하면 무언가 감싼** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클래스 이름이 이 책의 주제다",
+   "md": "**소스에 적은 이름이** 아니다.\n\n> **뒤에 이상한 글자가** 붙는다.\n> **아래에서 그걸** 본다.\n> **누가 붙였는지가 열두 장**이다.\n\n**로그는 결과**다.\n\n> **내가 안 쓴 줄이** 찍힌다.\n> **어디서 왔는지** 묻는다.\n> **아래에서 그 줄을** 만든다.\n\n**둘을 같이 봐야** 안다.\n\n> **로그만 보면 마법**이다.\n> **이름을 보면 물체**다.\n> **매 절 마지막이 그** 둘이다.\n\n**⑯과 짝**이다.\n\n> **거기선 빈이 왜 생겼나**였다.\n> **여기선 그 빈이 왜 다른가**다.\n> **6장에서 그걸** 이었다."
+  },
+  {
+   "type": "figure",
+   "caption": "책의 모양",
+   "ascii": "   the shape of the book\n\n   chapters two and three   the problem, written by hand\n   chapters four to six     patterns, then generated classes\n   chapters seven to nine   what spring already had\n   chapters ten to twelve   the name for it, and where it breaks\n\n   the same log comes out of all four; the code shrinks each time",
+   "note": "**네 덩이가 같은 로그를 내는데 코드만 계속** 줄어든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "패턴 이름을 외우는 책이 아니다",
+   "md": "**손으로 먼저** 만든다.\n\n> **2·3장은 다 손**이다.\n> **아프고** 길다.\n> **그래야 뒤가** 보인다.\n\n**같은 로그를 여섯 번** 만든다.\n\n> **방법만** 바뀐다.\n> **9.6절에서 나란히** 센다.\n> **줄 수가** 답이다.\n\n**마지막이 제일** 중요하다.\n\n> **12장은 안 걸리는 자리**다.\n> **여기서 대부분** 넘어진다.\n> **로그가 안 찍히는 걸로** 안다.\n\n**⑤와도** 이어진다.\n\n> **트랜잭션이 같은 장치**다.\n> **12.7절에서 그걸** 본다.\n> **거기서 겪은 게 여기** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 소스에 적은 것\n\n@Service\npublic class OrderService {\n    public void order(String item) {\n        System.out.println(\"주문 \" + item);\n    }\n}\n\n$ grep -n 'class OrderService' src/main/java/study/adv/OrderService.java\n7:public class OrderService {\n\n\n-- 실제로 만들어진 것\n\n@RestController\nclass WhoController {\n    private final OrderService service;\n    WhoController(OrderService service) { this.service = service; }\n\n    @GetMapping(value = \"/who\", produces = \"text/plain\")\n    String who() {\n        return \"주입된 것: \" + service.getClass().getName() + \"\\n\"\n             + \"원본:      \" + AopProxyUtils.ultimateTargetClass(service).getName() + \"\\n\"\n             + \"프록시인가: \" + AopUtils.isAopProxy(service) + \"\\n\";\n    }\n}\n\n$ curl -s localhost:8080/who\n주입된 것: study.adv.OrderService\n원본:      study.adv.OrderService\n프록시인가: false\n\n--   아직은 같다\n--   이 책은 이 셋이 갈라지는 이야기다\n\n\n-- 한 줄을 더한다\n\n@Aspect\n@Component\nclass TimeAspect {\n    @Around(\"execution(* study.adv..*Service.*(..))\")\n    public Object around(ProceedingJoinPoint pjp) throws Throwable {\n        long t0 = System.nanoTime();\n        try {\n            return pjp.proceed();\n        } finally {\n            System.out.printf(\"[측정] %s %.2f ms%n\",\n                pjp.getSignature().getName(), (System.nanoTime() - t0) / 1e6);\n        }\n    }\n}\n\n$ curl -s localhost:8080/who\n주입된 것: study.adv.OrderService$$SpringCGLIB$$0\n원본:      study.adv.OrderService\n프록시인가: true\n\n--   이름 뒤에 글자가 붙었다\n--   6장과 7장에서 이걸 만든다\n\n\n-- 로그도 달라진다\n\n$ curl -s -o /dev/null 'localhost:8080/order?item=연필'\n$ tail -2 logs/app.log\n주문 연필\n[측정] order 0.14 ms\n\n$ grep -c '측정' src/main/java/study/adv/OrderService.java\n0\n\n--   OrderService 에는 그런 코드가 없다\n--   그런데 그 메서드 뒤에 붙었다\n\n\n-- 이 책이 만들 로그\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ cat logs/trace.log\n[a3f9c1b2] OrderController.request()\n[a3f9c1b2] |-->OrderService.orderItem()\n[a3f9c1b2] |   |-->OrderRepository.save()\n[a3f9c1b2] |   |<--OrderRepository.save() time=1002ms\n[a3f9c1b2] |<--OrderService.orderItem() time=1003ms\n[a3f9c1b2] OrderController.request() time=1004ms\n\n--   2장에서 이걸 손으로 만든다\n--   9장에서 애너테이션 한 줄로 만든다\n--   같은 여섯 줄이다\n\n\n-- 열두 장을 센다\n\n$ printf '%-8s %-26s %s\\n' \\\n  '2 장'  '손으로 로그'      '메서드 시그니처가 다 바뀜' \\\n  '3 장'  '쓰레드 로컬'      '파라미터가 사라짐' \\\n  '4 장'  '템플릿과 콜백'    '가운데만 뚫음' \\\n  '5 장'  '프록시'           '원본을 안 고침' \\\n  '6 장'  '동적 프록시'      '클래스를 안 만듦' \\\n  '7 장'  '프록시 팩토리'    '스프링이 감쌈' \\\n  '8 장'  '빈 후처리기'      '설정이 하나로' \\\n  '9 장'  '@Aspect'          '애너테이션 하나' \\\n  '10 장' '개념'             '이제 이름을 붙임' \\\n  '11 장' '포인트컷'         '어디에 걸지' \\\n  '12 장' '주의사항'         '안 걸리는 자리'\n\n2 장    손으로 로그                메서드 시그니처가 다 바뀜\n3 장    쓰레드 로컬                파라미터가 사라짐\n4 장    템플릿과 콜백              가운데만 뚫음\n5 장    프록시                     원본을 안 고침\n6 장    동적 프록시                클래스를 안 만듦\n7 장    프록시 팩토리              스프링이 감쌈\n8 장    빈 후처리기                설정이 하나로\n9 장    @Aspect                    애너테이션 하나\n10 장   개념                       이제 이름을 붙임\n11 장   포인트컷                   어디에 걸지\n12 장   주의사항                   안 걸리는 자리\n\n\n-- 마지막 확인\n\n$ curl -s localhost:8080/who\n주입된 것: study.adv.OrderService$$SpringCGLIB$$0\n원본:      study.adv.OrderService\n프록시인가: true\n\n--   1.2 절에서 왜 이 책이 ② 다음인지 본다",
+   "note": "**소스에 적은 이름과 주입된 이름이 처음엔 같다가 애스펙트 한 줄에 `$$SpringCGLIB$$0` 이** 붙는다.\n\n**`OrderService` 에는 `측정` 이라는 글자가 0 번 나오는데 그 메서드 뒤에 로그가** 찍힌다.\n\n**2장에서 손으로 만들 여섯 줄과 9장에서 한 줄로 만들 여섯 줄이 같은** 것이다.\n\n**매 절은 찍힌 로그와 `getClass().getName()` 두 가지로** 끝난다.\n\n**열두 장이 같은 로그를 점점 적은 코드로** 만든다."
+  }
+ ],
+ "recap": [
+  "**둘로** 끝난다.",
+  "**로그와 이름**이다.",
+  "**이름이** 갈린다.",
+  "**소스에 없는 줄이** 찍힌다.",
+  "**손으로 먼저** 만든다.",
+  "**여섯 번** 만든다.",
+  "**코드가** 줄어든다.",
+  "**마지막이** 중요하다.",
+  "**⑤와** 이어진다."
+ ],
+ "drills": [
+  {
+   "task": "주입된 클래스 이름을 찍는다.",
+   "done_when": "소스와 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "애스펙트를 하나 붙인다.",
+   "done_when": "이름이 달라진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "소스에서 그 글자를 찾는다.",
+   "done_when": "0 건인 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "차례를 훑는다.",
+   "done_when": "같은 로그를 몇 번 만드는지 셌다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매 절은 무엇으로 끝나나?",
+   "a": "실제로 찍힌 로그와 그 빈의 진짜 클래스 이름이다."
+  },
+  {
+   "q": "클래스 이름이 왜 중요한가?",
+   "a": "소스와 달라지는 순간이 무언가 감쌌다는 증거다."
+  },
+  {
+   "q": "소스에 없는 로그가 왜 찍히나?",
+   "a": "그 메서드 앞뒤에 다른 코드가 끼어들어서다."
+  },
+  {
+   "q": "같은 로그를 몇 번 만드나?",
+   "a": "방법을 바꿔 가며 여러 번 만든다. 코드량만 줄어든다."
+  },
+  {
+   "q": "어느 장이 실무에서 제일 자주 문제가 되나?",
+   "a": "안 걸리는 자리를 다루는 마지막 장이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프록시",
+   "def": "원본 대신 호출을 받아 앞뒤에 무언가를 더하는 물체."
+  },
+  {
+   "term": "진짜 클래스 이름",
+   "def": "주입된 객체의 실제 타입. 감싸졌으면 소스와 달라진다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
