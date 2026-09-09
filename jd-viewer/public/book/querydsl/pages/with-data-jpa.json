@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "with-data-jpa",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "⑭와 나란히",
+ "summary": "선언과 조립이 만나는 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 출처를 가른다.",
+  "고르는 기준을 세운다.",
+  "한 화면을 끝까지 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**⑭는 선언으로 갈 수 있는 데까지** 갔다. **이 책은 그 끝에서** 시작했다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 리포지토리, 세 출처",
+   "ascii": "   one repository, three sources of methods\n\n   inherited    save, findById, delete, count, and paging\n   generated    findByUsername, from the method name alone\n   assembled    search, from conditions decided at call time\n\n   the caller sees one type and cannot tell them apart",
+   "note": "**부르는 쪽은 셋을 구분하지** 못한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "셋이 서로를 대신하지 않는다",
+   "md": "**상속은 구현이** 없다.\n\n> **`save`·`findById`** 다.\n> **⑭ 4.2절이 지운** 것들이다.\n> **6.1절에서 다시 쓴 게** 낭비였다.\n\n**생성은 조건이 고정일 때**다.\n\n> **`findByUsername` 한 줄**이다.\n> **⑭ 5.1절의 이름 규칙**이다.\n> **조건이 늘면 이름이** 진다.\n\n**조립은 나머지 전부**다.\n\n> **조건이 실행 시점에** 정해진다.\n> **DTO 나 조인이** 필요하다.\n> **⑭ 8.1·8.2절이 못 푼** 자리다.\n\n**한 인터페이스에** 모인다.\n\n> **7.2절에서 붙였다.**\n> **⑭ 6.1절의 그 구조**다.\n> **부르는 쪽은 하나만** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 고를까",
+   "ascii": "   how to decide which of the three to use\n\n   is it save or find by id     inherited, write nothing\n   is the condition fixed       a method name, if it stays short\n   does the condition vary      assembled, always\n   is a dto or a join needed    assembled, always\n\n   the last two rows are what book 14 could not answer",
+   "note": "**아래 두 줄이 ⑭가 답 못 한 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "선언으로 되는 것을 조립으로 쓰지 않는다",
+   "md": "**`findById` 를 조립하면** 손해다.\n\n> **1차 캐시를 안** 본다.\n> **6.1절에서 확인**했다.\n> **쿼리가 매번** 나간다.\n\n**`save` 는 아예 못** 한다.\n\n> **Querydsl 에 `insert` 가** 없다.\n> **6.1절에서 본** 것이다.\n> **`persist` 를** 쓴다.\n\n**이름이 짧으면 생성이** 낫다.\n\n> **`findByUsername` 은 한 줄**이다.\n> **조립하면 다섯 줄**이다.\n> **길어지면 그때** 옮긴다.\n\n**⑭ 6.2절의 나누기도 그대로** 쓴다.\n\n> **화면 전용 조회는 따로** 둔다.\n> **7.2절에서 커스텀을 여럿** 붙였다.\n> **기준은 쿼리의 수명**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 최종 구조\n\npublic interface MemberRepository extends\n        JpaRepository<Member, Long>,          // 상속\n        MemberRepositoryCustom {              // 조립\n\n    List<Member> findByUsername(String username);   // 생성\n}\n\npublic interface MemberRepositoryCustom {\n    List<MemberTeamDto> search(MemberSearchCondition cond);\n    Page<MemberTeamDto> searchPage(MemberSearchCondition cond,\n                                   Pageable pageable);\n    Slice<MemberTeamDto> searchSlice(MemberSearchCondition cond,\n                                     Pageable pageable);\n}\n\npublic class MemberRepositoryCustomImpl extends QuerydslSupport\n        implements MemberRepositoryCustom { ... }\n\n$ wc -l MemberRepository.java MemberRepositoryCustom.java \\\n        MemberRepositoryCustomImpl.java QuerydslSupport.java\n       9 MemberRepository.java\n       8 MemberRepositoryCustom.java\n      52 MemberRepositoryCustomImpl.java\n      44 QuerydslSupport.java\n     113 total\n\n--   앞 둘은 선언만이다\n\n\n-- 셋을 나란히 부른다\n\n@Test\n@Transactional\nvoid 세_출처() {\n    em.clear();\n    System.out.println(\"--- 상속 ---\");\n    memberRepository.findById(1L);\n\n    em.clear();\n    System.out.println(\"--- 생성 ---\");\n    memberRepository.findByUsername(\"m1\");\n\n    em.clear();\n    System.out.println(\"--- 조립 ---\");\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    memberRepository.search(cond);\n}\n\n--- 상속 ---\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n--- 생성 ---\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n--- 조립 ---\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n\n--   앞 둘은 JPQL 주석이 없다\n--   ⑭ 5.1절은 이름을 파싱해 만든다\n--   조립만 주석이 붙는다\n\n\n-- findById 를 조립하면\n\n@Test\n@Transactional\nvoid 조립으로_findById() {\n    Member first = memberRepository.findById(1L).orElseThrow();\n\n    em.clear();\n    System.out.println(\"--- 상속 (캐시 있음) ---\");\n    memberRepository.findById(first.getId());\n\n    System.out.println(\"--- 조립 ---\");\n    queryFactory.selectFrom(member)\n            .where(member.id.eq(first.getId()))\n            .fetchOne();\n}\n\nHibernate: select ... where m1_0.member_id=?\n--- 상속 (캐시 있음) ---\nHibernate: select ... where m1_0.member_id=?\n--- 조립 ---\n/* select member1 from Member member1 where member1.id = ?1 */\nHibernate: select ... where m1_0.member_id=?\n\n--   em.clear() 뒤라 상속도 나갔다\n\n\n-- 캐시가 있으면 다르다\n\n@Test\n@Transactional\nvoid 캐시_있을_때() {\n    memberRepository.findById(1L);\n    sqlCounter.clear();\n\n    System.out.println(\"--- 상속 두 번째 ---\");\n    memberRepository.findById(1L);\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n\n    sqlCounter.clear();\n    System.out.println(\"--- 조립 ---\");\n    queryFactory.selectFrom(member).where(member.id.eq(1L)).fetchOne();\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\n--- 상속 두 번째 ---\n쿼리: 0개\n--- 조립 ---\nHibernate: select ... where m1_0.member_id=?\n쿼리: 1개\n\n--   6.1절에서 본 그것이다\n--   선언으로 되는 건 선언으로 한다\n\n\n-- 조건이 하나면 생성이 짧다\n\n// 생성\nList<Member> findByUsername(String username);\n\n// 조립\npublic List<Member> findByUsernameQ(String username) {\n    return query()\n            .selectFrom(member)\n            .where(member.username.eq(username))\n            .fetch();\n}\n\n$ awk '/findByUsernameQ/,/^    }/' Impl.java | wc -l\n       6\n\n--   한 줄 대 여섯 줄이다\n--   SQL 은 같다\n\n\n-- 조건이 늘면 뒤집힌다\n\n// 생성으로 가면\nList<Member> findByUsernameAndAgeGreaterThanEqualAndTeamName(\n        String username, int age, String teamName);\n\n// 조건 넷이면\n$ python3 -c 'print(2**4 - 1)'\n15\n\n// 조립은 하나다\nList<MemberTeamDto> search(MemberSearchCondition cond);\n\n$ printf '%-14s %s\\n' '조건 1개' '생성 1줄' '조건 4개' '생성 15개 / 조립 1개'\n조건 1개       생성 1줄\n조건 4개       생성 15개 / 조립 1개\n\n--   7.1절에서 센 그 수다\n\n\n-- ⑭ 의 세 시도와 나란히\n\n// ⑭ 6.1 커스텀 (문자열)\nif (username != null) jpql.append(\" and m.username = :username\");\n\n// ⑭ 8.1 명세\nreturn (root, query, cb) -> cb.equal(root.get(\"username\"), username);\n\n// ⑭ 8.2 QBE\nprobe.setUsername(username);\n\n// 이 책\nreturn hasText(username) ? member.username.eq(username) : null;\n\n$ printf '%-16s %-8s %-10s %-10s %s\\n' \\\n  '⑭ 6.1 문자열' '가능'   '컴파일 X' '읽힘'    'where 1=1' \\\n  '⑭ 8.1 명세'   '가능'   '컴파일 X' '안 읽힘' '조인 중복' \\\n  '⑭ 8.2 QBE'    '등호만' '컴파일 X' '읽힘'    'inner 만' \\\n  '이 책'        '가능'   '컴파일 O' '읽힘'    'where 없음'\n\n⑭ 6.1 문자열     가능     컴파일 X   읽힘       where 1=1\n⑭ 8.1 명세       가능     컴파일 X   안 읽힘    조인 중복\n⑭ 8.2 QBE       등호만   컴파일 X   읽힘       inner 만\n이 책             가능     컴파일 O   읽힘       where 없음\n\n--   1.2절의 표를 다 채웠다\n\n\n-- 조건 없이 넷을 나란히 돌린다\n\n@Test\n@Transactional\nvoid 조건_없이_넷() {\n    em.clear();\n    System.out.println(\"--- ⑭ 6.1 문자열 ---\");\n    memberRepository.searchByStringBuilder(null, null);\n\n    em.clear();\n    System.out.println(\"--- ⑭ 8.1 명세 ---\");\n    memberRepository.findAll(Specification.where(null));\n\n    em.clear();\n    System.out.println(\"--- 이 책 ---\");\n    memberRepository.search(new MemberSearchCondition());\n}\n\n--- ⑭ 6.1 문자열 ---\nHibernate:\n    select ... from member m1_0 where 1=1\n--- ⑭ 8.1 명세 ---\nHibernate:\n    select ... from member m1_0\n--- 이 책 ---\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n\n--   문자열만 1=1 이 남았다\n--   명세는 컬럼이 넷이다\n--   이 책은 다섯 컬럼에 조인이 있다\n\n\n-- 한 화면을 끝까지 만든다\n\n@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class MemberQueryService {\n\n    private final MemberRepository memberRepository;\n\n    public PageResponse<MemberTeamDto> search(MemberSearchCondition cond,\n                                              Pageable pageable) {\n        return PageResponse.of(memberRepository.searchPage(cond, pageable));\n    }\n\n    @Transactional\n    public Long join(String username, int age) {\n        return memberRepository.save(new Member(username, age)).getId();\n    }\n}\n\n@RestController\n@RequiredArgsConstructor\npublic class MemberFinalController {\n\n    private final MemberQueryService service;\n\n    @GetMapping(\"/final/members\")\n    public PageResponse<MemberTeamDto> search(MemberSearchCondition cond,\n                                              Pageable pageable) {\n        return service.search(cond, pageable);\n    }\n}\n\n$ curl -s 'localhost:8080/final/members?teamName=teamA&ageGoe=20&size=2&sort=age,desc' \\\n    | jq .\n\n{\n  \"content\": [\n    { \"memberId\": 99, \"username\": \"member98\", \"age\": 48,\n      \"teamId\": 1, \"teamName\": \"teamA\" },\n    { \"memberId\": 97, \"username\": \"member96\", \"age\": 46,\n      \"teamId\": 1, \"teamName\": \"teamA\" }\n  ],\n  \"page\": 0,\n  \"size\": 2,\n  \"totalElements\": 15,\n  \"totalPages\": 8,\n  \"hasNext\": true\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n\n--   조건은 6.4절, 정렬은 7.7절, 페이징은 8.3절이다\n--   응답 껍데기는 7.6절이다\n--   트랜잭션은 ⑭ 7.2절이 준 것이다\n\n\n-- 두 권이 만든 파일을 센다\n\n$ printf '%-26s %-8s %s\\n' \\\n  'MemberRepository'          '9줄'  '⑭ (선언)' \\\n  'MemberRepositoryCustom'    '8줄'  '이 책 (선언)' \\\n  'MemberRepositoryCustomImpl' '52줄' '이 책 (조립)' \\\n  'QuerydslSupport'          '44줄' '이 책 (공통)' \\\n  'MemberExpressions'        '26줄' '이 책 (조건)' \\\n  'SimpleJpaRepository'      '861줄' '⑭ (라이브러리)'\n\nMemberRepository             9줄     ⑭ (선언)\nMemberRepositoryCustom       8줄     이 책 (선언)\nMemberRepositoryCustomImpl   52줄    이 책 (조립)\nQuerydslSupport              44줄    이 책 (공통)\nMemberExpressions            26줄    이 책 (조건)\nSimpleJpaRepository          861줄   ⑭ (라이브러리)\n\n--   내가 쓴 건 130 줄이다\n--   ⑭ 7.1절에서 읽은 861 줄은 그대로 쓴다\n--   8.7절에서 여기서 어디로 갈지 본다",
+   "note": "**상속·생성 조회는 JPQL 주석이 없고 조립만 주석이** 붙는다.\n\n**캐시가 있으면 `findById` 는 쿼리 0개, 조립은 1개**다.\n\n**조건 1개면 생성 1줄 대 조립 6줄, 조건 4개면 생성 15개 대 조립 1개**다.\n\n**조건 없이 돌리면 ⑭ 6.1절만 `where 1=1` 이 남고 이 책은 `where` 가** 없다.\n\n**최종 화면 한 요청이 두 문장을 내고 각 절의 출처가 다** 다르다."
+  }
+ ],
+ "recap": [
+  "**출처가 셋**이다.",
+  "**서로를 대신 못** 한다.",
+  "**상속은 구현이** 없다.",
+  "**생성은 조건이 고정일 때**다.",
+  "**조립은 나머지**다.",
+  "**`findById` 는 캐시를** 본다.",
+  "**조건이 늘면** 뒤집힌다.",
+  "**⑭의 표를 다** 채웠다.",
+  "**내가 쓴 건 130줄**이다."
+ ],
+ "drills": [
+  {
+   "task": "세 출처를 나란히 부른다.",
+   "done_when": "JPQL 주석 유무를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "캐시가 있을 때 쿼리를 센다.",
+   "done_when": "0개와 1개를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건 수별로 줄 수를 센다.",
+   "done_when": "뒤집히는 지점을 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "한 화면을 끝까지 만든다.",
+   "done_when": "각 절의 출처를 댔다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "한 리포지토리의 메서드 출처 셋은?",
+   "a": "상속, 이름 생성, 직접 조립이다."
+  },
+  {
+   "q": "`findById` 를 조립하면 무엇을 잃나?",
+   "a": "1차 캐시 조회를 잃어 매번 쿼리가 나간다."
+  },
+  {
+   "q": "생성과 조립의 분기점은?",
+   "a": "조건이 고정이고 이름이 짧으면 생성이다."
+  },
+  {
+   "q": "⑭의 세 시도와 무엇이 다른가?",
+   "a": "컴파일 검증과 조인 통제를 동시에 가진다."
+  },
+  {
+   "q": "부르는 쪽은 셋을 구분하나?",
+   "a": "못 한다. 한 타입으로 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메서드 출처",
+   "def": "상속·이름 생성·직접 조립 중 어디서 온 메서드인지."
+  },
+  {
+   "term": "선언 우선",
+   "def": "선언으로 되는 것은 조립하지 않는다는 기준."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

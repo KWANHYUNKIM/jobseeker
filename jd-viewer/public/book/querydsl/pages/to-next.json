@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "to-next",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "다음으로",
+ "summary": "여기서 어디로 가나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이 책이 바꾼 것을 센다.",
+  "남은 위험을 안다.",
+  "다음 방향을 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 문자열이 안 지켜 준다고** 했다. **얼마나 지켜졌는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 실제로 바꾼 것",
+   "ascii": "   what this book actually changed\n\n   the sql            not at all, and that was checked every chapter\n   the failure time   from runtime to compile time, for most mistakes\n   the leftover risk  four places where a string is still a string\n\n   the middle line is the whole argument for the library",
+   "note": "**가운데 줄이 이 라이브러리를 쓰는 이유 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SQL 은 안 바뀌고 실패 시점만 앞당겼다",
+   "md": "**8.5절에서 `diff` 가 계속** 같았다.\n\n> **⑭ 4.2절부터 이어진 결론**이다.\n> **문장은 하이버네이트가** 만든다.\n> **바뀐 건 무엇을 타이핑하느냐**다.\n\n**실패가 앞으로** 왔다.\n\n> **여섯 개가 컴파일에서** 잡혔다.\n> **문자열이면 실행에서** 났다.\n> **1.2절의 약속**이다.\n\n**넷은 아직** 남았다.\n\n> **같은 타입 순서·`as`·함수 이름·`new` 경로**다.\n> **8.5절에서 센** 것이다.\n> **거기만 조심하면** 된다.\n\n**조용한 실패는 여전히** 있다.\n\n> **아홉 개를 8.5절에서** 모았다.\n> **타입이 못 잡는 종류**다.\n> **문장을 읽어야** 잡힌다."
+  },
+  {
+   "type": "figure",
+   "caption": "여기서 갈 세 방향",
+   "ascii": "   three directions from here, and what each is for\n\n   jpa internals     when the statement is right but slow\n   sql and indexes   when the statement itself is the problem\n   other data stores when the model no longer fits a table\n\n   all three start by reading a statement, which is where we end",
+   "note": "**셋 다 문장을 읽는 데서** 시작한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "다음 책이 아니라 다음 습관이다",
+   "md": "**문장을 켜 두는** 습관이다.\n\n> **2.5절의 설정 넷**이다.\n> **운영에서는 끈다(2.5절).**\n> **개발에서는 항상 켜** 둔다.\n\n**쿼리 수를 세는** 습관이다.\n\n> **6.6절의 수집기**다.\n> **N+1 은 그것으로만** 잡힌다.\n> **⑦ 8.2절에서 처음** 썼다.\n\n**계획을 읽는** 습관이다.\n\n> **5.10·7.5절에서 `explain` 을** 봤다.\n> **문장이 맞는데 느릴 때** 쓴다.\n> **인덱스가 그다음** 이야기다.\n\n**두 겹을 읽는** 습관이다.\n\n> **이 책이 매 절에서 한** 것이다.\n> **JPQL 과 SQL 이 어긋나는** 자리다.\n> **거기가 배울 자리였다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 1.2절의 실험을 다시 한다\n\n// 문자열 판\n@Query(\"select m form Member m where m.username = :username\")\nList<Member> typo(@Param(\"username\") String username);\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -A2 'APPLICATION FAILED'\n***************************\nAPPLICATION FAILED TO START\n***************************\nCaused by: org.hibernate.query.SyntaxException: At 1:10 and token 'form'\n\n// 조립 판\nqueryFactory.selectFrom(member).where(member.username.eqq(username))\n\n$ ./gradlew compileJava\n\n> Task :compileJava FAILED\nerror: cannot find symbol\n  symbol:   method eqq(String)\n  location: variable username of type StringPath\n\n--   1.2절 그대로다\n\n\n-- 실패 시점을 센다\n\n$ printf '%-26s %-12s %s\\n' \\\n  '메서드 이름 오타'  '컴파일'   '1.2절' \\\n  '타입 불일치'       '컴파일'   '1.2절' \\\n  '경로 타입'         '컴파일'   '2.2절' \\\n  'DTO 인자 개수'     '컴파일'   '5.5절' \\\n  'Predicate 조합'    '컴파일'   '5.8절' \\\n  'from 서브쿼리'     '컴파일'   '4.14절' \\\n  '같은 타입 순서'    '안 잡힘'  '5.5절' \\\n  'as 문자열'         '안 잡힘'  '5.6절' \\\n  '함수 이름'         '실행'     '5.10절' \\\n  'new 패키지 경로'   '실행'     '5.3절'\n\n메서드 이름 오타            컴파일     1.2절\n타입 불일치                 컴파일     1.2절\n경로 타입                   컴파일     2.2절\nDTO 인자 개수               컴파일     5.5절\nPredicate 조합              컴파일     5.8절\nfrom 서브쿼리               컴파일     4.14절\n같은 타입 순서              안 잡힘    5.5절\nas 문자열                   안 잡힘    5.6절\n함수 이름                   실행       5.10절\nnew 패키지 경로             실행       5.3절\n\n--   여섯이 앞으로 왔다\n--   넷이 남았다\n\n\n-- 남은 넷을 줄이는 법\n\n// ① 같은 타입 순서 -> 테스트로 잡는다\n@Test\nvoid 순서_검증() {\n    em.clear();\n    NameDto d = queryFactory\n            .select(new QNameDto(member.username, team.name))\n            .from(member).join(member.team, team)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    assertThat(d.getUsername()).isEqualTo(\"m1\");\n    assertThat(d.getTeamName()).isEqualTo(\"teamA\");\n}\n\nHibernate:\n    select m1_0.username, t1_0.name from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.username=?\n\n--   6.6절의 결과 단언이다\n\n// ② as 문자열 -> constructor 를 쓴다\n// ③ 함수 이름 -> 경로 메서드를 먼저 찾는다 (5.10절)\n// ④ new 경로 -> @QueryProjection 을 쓴다 (5.5절)\n\n$ grep -rn 'Projections.fields\\|Projections.bean' --include='*.java' src/main \\\n    | wc -l\n0\n\n--   이름 매칭을 안 쓰면 ② 가 사라진다\n\n\n-- 조용한 실패는 문장으로 잡는다\n\n@Test\n@Transactional\nvoid 문장_감시() {\n    em.clear();\n    sqlCounter.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n    memberRepository.searchPage(cond, PageRequest.of(0, 3, Sort.by(\"age\")));\n\n    String sql = sqlCounter.all().get(0);\n    assertThat(sql).contains(\"left join\");\n    assertThat(sql).contains(\"order by\");\n    assertThat(sqlCounter.count()).isEqualTo(2);\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n    order by m1_0.age\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n\nBUILD SUCCESSFUL\n\n--   6.6절의 방식이다\n--   조인·정렬·쿼리 수를 한 번에 지킨다\n\n\n-- 문장이 맞는데 느릴 때\n\n@Test\n@Transactional\nvoid 계획을_읽는다() {\n    em.createNativeQuery(\"create index idx_age on member(age)\")\n            .executeUpdate();\n\n    System.out.println(em.createNativeQuery(\n            \"explain analyze select count(*) from member where age >= 40\")\n        .getResultList().get(0));\n\n    System.out.println(em.createNativeQuery(\n            \"explain analyze select count(*) from member\" +\n            \" where age * 2 >= 80\").getResultList().get(0));\n}\n\nSELECT COUNT(*) FROM PUBLIC.MEMBER\n    /* PUBLIC.IDX_AGE: AGE >= 40 */\n    /* scanCount: 2001 */\n\nSELECT COUNT(*) FROM PUBLIC.MEMBER\n    /* PUBLIC.MEMBER.tableScan */\n    /* scanCount: 30011 */\n\n--   5.10절에서 본 그 차이다\n--   같은 답에 15배다\n--   여기서부터는 SQL 과 인덱스 이야기다\n\n\n-- 이 책이 안 다룬 것\n\n$ printf '%-26s %s\\n' \\\n  'SQLQueryFactory'    'JPA 없이 Querydsl SQL' \\\n  'Querydsl Collections' '자바 컬렉션에 질의' \\\n  'Blaze Persistence'  'CTE·윈도우 함수 확장' \\\n  'JOOQ'               'SQL 중심 대안' \\\n  'JdbcClient'         '⑭ 8.7절에서 본 것'\n\nSQLQueryFactory        JPA 없이 Querydsl SQL\nQuerydsl Collections   자바 컬렉션에 질의\nBlaze Persistence      CTE·윈도우 함수 확장\nJOOQ                   SQL 중심 대안\nJdbcClient             ⑭ 8.7절에서 본 것\n\n--   4.14절에서 못 한 from 서브쿼리는 셋째가 푼다\n--   ⑭ 8.6절의 네이티브도 여전히 답이다\n\n\n-- 개발 설정을 다시 확인한다\n\n$ cat src/test/resources/application.yml\n\nspring:\n  datasource:\n    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1\n    username: sa\n  jpa:\n    hibernate:\n      ddl-auto: create-drop\n    properties:\n      hibernate:\n        format_sql: true\n        use_sql_comments: true\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace\n\n--   2.5절에서 정한 그대로다\n--   이걸 끄면 이 책의 방법이 안 된다\n\n\n-- 마지막으로 두 겹을 본다\n\n@Test\n@Transactional\nvoid 마지막_두_겹() {\n    em.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(40);\n\n    List<MemberTeamDto> r = memberRepository.search(cond);\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\nTRACE binding parameter (1:INTEGER) <- [40]\n건수: 15\n\n--   위가 내가 조립한 것이 된 문장이다\n--   아래가 그 문장이 된 문장이다\n--   1.1절에서 약속한 두 겹이다\n\n$ grep -rn 'createQuery(\"' --include='*.java' src/main | wc -l\n0\n$ grep -rn '@Query' --include='*.java' src/main | wc -l\n0\n\n--   문자열 쿼리가 한 줄도 없다\n--   그런데 나가는 문장은 ⑭와 같다\n--   61 절 동안 그것만 확인했다",
+   "note": "**문자열 오타는 여전히 기동에서, 조립 오타는 컴파일에서** 난다.\n\n**실패 시점이 앞으로 온 게 여섯, 남은 게 넷 — 셋은 습관으로 줄일 수** 있다.\n\n**문장 단언으로 조인·정렬·쿼리 수를 한 번에** 지킨다.\n\n**같은 답인데 `age * 2 >= 80` 은 `scanCount` 가 15배**다.\n\n**`createQuery(\"` 도 `@Query` 도 `0` 개인데 나가는 문장은 ⑭와** 같다."
+  }
+ ],
+ "recap": [
+  "**SQL 은 안** 바뀌었다.",
+  "**실패 시점이** 앞당겨졌다.",
+  "**여섯이 컴파일에서** 잡힌다.",
+  "**넷이** 남았다.",
+  "**셋은 습관으로** 줄인다.",
+  "**조용한 실패는 문장으로** 잡는다.",
+  "**느리면 계획을** 읽는다.",
+  "**설정을 켜** 둔다.",
+  "**문자열이 한 줄도** 없다."
+ ],
+ "drills": [
+  {
+   "task": "1.2절 실험을 다시 한다.",
+   "done_when": "두 실패 시점을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "남은 넷을 표로 만든다.",
+   "done_when": "줄일 방법을 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "문장 단언 테스트를 쓴다.",
+   "done_when": "조인·정렬·개수를 지켰다.",
+   "minutes": 25
+  },
+  {
+   "task": "실행 계획을 읽는다.",
+   "done_when": "인덱스가 죽는 조건을 찾았다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 SQL 을 바꿨나?",
+   "a": "안 바꿨다. 매 장에서 `diff` 로 확인했다."
+  },
+  {
+   "q": "그럼 무엇이 바뀌었나?",
+   "a": "대부분의 실수가 실행에서 컴파일로 옮겨졌다."
+  },
+  {
+   "q": "아직 컴파일이 못 잡는 것은?",
+   "a": "같은 타입 인자 순서, `as` 문자열, 함수 이름, `new` 경로다."
+  },
+  {
+   "q": "조용한 실패는 어떻게 잡나?",
+   "a": "나간 문장과 쿼리 수를 단언한다."
+  },
+  {
+   "q": "문장이 맞는데 느리면?",
+   "a": "실행 계획을 읽고 인덱스를 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "실패 시점",
+   "def": "오류가 드러나는 단계. 컴파일이 실행보다 이르다."
+  },
+  {
+   "term": "실행 계획",
+   "def": "DB 가 문장을 어떻게 처리할지 보여 주는 설명."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
