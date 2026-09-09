@@ -380,7 +380,7 @@
           "title": "2xx — 성공",
           "summary": "200 · 201 · 202 · 204.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -388,7 +388,7 @@
           "title": "3xx — 리다이렉션",
           "summary": "영구와 일시, 그리고 메서드가 바뀌는 문제.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",

@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "status-2xx",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "2xx — 성공",
+ "summary": "200 · 201 · 202 · 204.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "넷을 구분한다.",
+  "201 의 헤더를 안다.",
+  "202 의 책임을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**성공에도 종류가** 있다. **무엇을 했는지가 코드에 담긴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 성공",
+   "ascii": "   four ways to say it worked\n\n   200 ok            here is the result, in the body\n   201 created       something new exists, and Location says where\n   202 accepted      i took it, and it has not run yet\n   204 no content    it worked, and there is nothing to send\n\n   the difference is not politeness, it tells the client what to do next",
+   "note": "**다음에 무엇을 할지를** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "201 은 위치를 알려야 한다",
+   "md": "**`Location` 이 사실상 필수**다.\n\n> **무엇이 어디에 생겼는지 말하는 게 이 코드의** 요점이다.\n> **5.3절·6.6절에서 계속** 썼다.\n> **없으면 클라이언트가 다시 찾아야** 한다.\n\n**본문은 선택**이다.\n\n> **만든 것을 같이 주면 왕복 하나를** 아낀다.\n> **`Location` 만 주고 끝내도** 된다.\n> **팀에서 정해 둔다.**\n\n**204 는 본문이 없어야** 한다.\n\n> **`Content-Length: 0`** 이다.\n> **7.1절에서 본문을 실었더니 경계가** 깨졌다.\n> **DELETE 와 PUT 갱신에 흔히** 쓴다(5.4·5.5절).\n\n**200 에 빈 본문과 204 는** 다르다.\n\n> **`200` 에 `{}` 를 주는 것과 `204` 는 다른** 말이다.\n> **앞은 \"결과가 빈 객체\", 뒤는 \"보낼 게** 없다\"다.\n> **클라이언트가 파싱을 시도할지가** 갈린다."
+  },
+  {
+   "type": "figure",
+   "caption": "202 가 지는 책임",
+   "ascii": "   what 202 obliges you to provide\n\n   a way to ask later      Location, pointing at a job resource\n   a state to read there   queued, running, done, failed\n   a result when finished  or a link to it\n\n   without those three, 202 is just 200 with less information",
+   "note": "**셋이 없으면 정보만 적은 200** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "202 를 주고 끝내면 안 된다",
+   "md": "**\"받았다\" 만으로는 쓸모가** 없다.\n\n> **성공했는지 실패했는지 알 방법이 있어야** 한다.\n> **`Location` 으로 작업 자원을** 가리킨다.\n> **거기를 폴링하거나 웹훅을 받는다**(4.2절).\n\n**작업 자원이 상태를** 준다.\n\n```json\n{\"id\": \"job-9\", \"state\": \"running\",\n \"result\": null, \"error\": null}\n```\n\n> **끝나면 `state` 가 `done` 이 되고 결과가** 붙는다.\n> **⑫ 5.7절의 잡과 같은** 모양이다.\n\n**205 와 206 도** 있다.\n\n| 코드 | 무엇 |\n|---|---|\n| `205 Reset Content` | 폼을 비우라는 뜻. 거의 안 쓴다 |\n| `206 Partial Content` | 범위 요청의 응답 |\n\n> **`206` 은 이어받기와 동영상 탐색에** 쓴다.\n> **`Range` 요청에 답하는** 것이다 — **8장**.\n\n**207 은 WebDAV** 다.\n\n> **여러 결과를 한 응답에** 담는다.\n> **일괄 처리 API 가 흉내 내기도** 한다.\n> **표준 HTTP 에는 일괄 결과를 담을 코드가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 넷을 나란히 ---\n\n$ cat two.py\n\nimport http.server, json\nJOBS = {}\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _s(self, code, obj=None, extra=None):\n        b = b\"\" if obj is None else json.dumps(\n            obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        if b: self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        for k, v in (extra or {}).items(): self.send_header(k, v)\n        self.end_headers(); self.wfile.write(b)\n\n    def do_GET(self):\n        if self.path.startswith(\"/jobs/\"):\n            j = JOBS.get(self.path.split(\"/\")[-1])\n            return self._s(200, j) if j else self._s(404, {\"e\": \"없음\"})\n        self._s(200, {\"id\": 5, \"item\": \"노트북\"})\n\n    def do_POST(self):\n        if self.path == \"/reports\":\n            jid = f\"job-{len(JOBS)+1}\"\n            JOBS[jid] = {\"id\": jid, \"state\": \"queued\",\n                         \"result\": None, \"error\": None}\n            return self._s(202, {\"id\": jid, \"state\": \"queued\"},\n                           {\"Location\": f\"/jobs/{jid}\"})\n        self._s(201, {\"id\": 9, \"item\": \"새것\"},\n                {\"Location\": \"/orders/9\"})\n\n    def do_PUT(self):\n        self._s(204)\n\nhttp.server.HTTPServer((\"\", 9052), H).serve_forever()\n\n$ python3 two.py & sleep 1\n\n$ curl -s -D - http://localhost:9052/orders/5 | head -1\n$ curl -s -D - -X POST -d '{}' http://localhost:9052/orders \\\n    | grep -E 'HTTP|Location'\n$ curl -s -D - -X POST -d '{}' http://localhost:9052/reports \\\n    | grep -E 'HTTP|Location'\n$ curl -s -D - -X PUT -d '{}' http://localhost:9052/orders/5 | head -1\n\nHTTP/1.1 200 OK\nHTTP/1.1 201 Created\nLocation: /orders/9\nHTTP/1.1 202 Accepted\nLocation: /jobs/job-1\nHTTP/1.1 204 No Content\n\n#   넷 다 성공이다\n\n#   다음에 무엇을 할지가 다르다\n\n# --- 201 은 위치를 준다 ---\n\n$ L=$(curl -s -D - -o /dev/null -X POST -d '{}' \\\n      http://localhost:9052/orders | grep -i '^location' \\\n      | tr -d '\\r' | cut -d' ' -f2)\n$ curl -s \"http://localhost:9052$L\"\n\n{\"id\": 5, \"item\": \"노트북\"}\n\n#   그 자리에 있다\n\n#   Location 이 없으면 클라이언트가 찾아야 한다\n\n$ curl -s -X POST -d '{}' http://localhost:9052/orders\n\n{\"id\": 9, \"item\": \"새것\"}\n\n#   본문도 같이 줬다\n\n#   왕복 하나를 아꼈다\n\n# --- 204 는 본문이 없다 ---\n\n$ curl -s -D - -X PUT -d '{}' http://localhost:9052/orders/5 | cat -A\n\nHTTP/1.1 204 No Content$\nServer: BaseHTTP/0.6 Python/3.12.4$\nContent-Length: 0$\n$\n\n$ curl -s -X PUT -d '{}' http://localhost:9052/orders/5 | wc -c\n\n       0\n\n#   공백 줄 뒤가 비었다\n\n#   7.1절에서 여기 본문을 실었더니 경계가 깨졌다\n\n# --- 200 에 빈 객체와 204 ---\n\n$ python3 - <<'EOF'\nimport json\nfor label, body in [(\"200 + {}\", \"{}\"), (\"204\", \"\")]:\n    try:\n        d = json.loads(body) if body else None\n        print(f\"{label:<10} 파싱 결과 {d!r}\")\n    except Exception as e:\n        print(f\"{label:<10} 파싱 실패 {e}\")\nEOF\n\n200 + {}   파싱 결과 {}\n204        파싱 결과 None\n\n#   앞은 결과가 빈 객체다\n\n#   뒤는 보낼 게 없다는 말이다\n\n#   클라이언트가 파싱을 시도할지가 갈린다\n\n$ curl -s -X PUT -d '{}' http://localhost:9052/orders/5 \\\n  | python3 -c 'import sys,json; json.load(sys.stdin)' 2>&1 | tail -1\n\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n\n#   204 를 파싱하려 하면 이렇게 된다\n\n#   상태 코드를 먼저 봐야 한다\n\n# --- 202 를 끝까지 따라간다 ---\n\n$ J=$(curl -s -D - -o /dev/null -X POST -d '{}' \\\n      http://localhost:9052/reports | grep -i '^location' \\\n      | tr -d '\\r' | cut -d' ' -f2)\n$ echo $J\n\n/jobs/job-2\n\n$ curl -s \"http://localhost:9052$J\"\n\n{\"id\": \"job-2\", \"state\": \"queued\", \"result\": null, \"error\": null}\n\n#   상태를 읽을 수 있다\n\n#   이게 없으면 202 는 쓸모가 없다\n\n$ cat worker.py\n\nimport time, urllib.request, json\n#  (작업이 끝난 척한다)\nJOBS[\"job-2\"] = {\"id\": \"job-2\", \"state\": \"done\",\n                 \"result\": {\"url\": \"/reports/2026-09.pdf\"},\n                 \"error\": None}\n\n$ curl -s \"http://localhost:9052$J\"\n\n{\"id\": \"job-2\", \"state\": \"done\",\n \"result\": {\"url\": \"/reports/2026-09.pdf\"}, \"error\": null}\n\n#   끝나면 결과가 붙는다\n\n#   ⑫ 5.7절의 잡과 같은 모양이다\n\n# --- 202 만 주고 끝내면 ---\n\n$ cat bad202.py\n\n    def do_POST(self):\n        self._s(202)\n\n$ python3 bad202.py & sleep 1\n$ curl -s -D - -X POST -d '{}' http://localhost:9051/reports\n\nHTTP/1.1 202 Accepted\nContent-Length: 0\n\n#   받았다는 말뿐이다\n\n#   성공했는지 실패했는지 알 수 없다\n\n#   정보만 적은 200 이다\n\n$ kill %1 2>/dev/null\n\n# --- 206 은 범위 응답이다 ---\n\n$ curl -s -D - -o /dev/null -r 0-99 http://localhost:8080/big.txt \\\n  | grep -E 'HTTP|Content-Range|Content-Length'\n\nHTTP/1.1 206 Partial Content\nContent-Length: 100\nContent-Range: bytes 0-99/270544\n\n$ curl -s -r 0-9 http://localhost:8080/big.txt | wc -c\n\n      10\n\n#   전체가 270544 인데 100바이트만 왔다\n\n#   이어받기와 동영상 탐색이 이걸 쓴다\n\n#   8장에서 다시 본다\n\n$ curl -s -o /dev/null -w '범위 없이 %{http_code} %{size_download}\\n' \\\n    http://localhost:8080/big.txt\n\n범위 없이 200 270544\n\n# --- 일괄 결과는 담을 코드가 없다 ---\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d '[{\"id\":1},{\"id\":2},{\"id\":999}]' \\\n    http://localhost:9052/orders/batch 2>/dev/null | head -c 60; echo\n\n{\"id\": 9, \"item\": \"새것\"}\n\n$ python3 - <<'EOF'\nprint(\"셋 중 둘 성공, 하나 실패면 무슨 코드인가\")\nprint(\"  200 -> 실패가 있었는데 성공이라고 한다\")\nprint(\"  4xx -> 성공한 둘은 어떻게 되나\")\nprint(\"  207 -> WebDAV 확장이다\")\nEOF\n\n셋 중 둘 성공, 하나 실패면 무슨 코드인가\n  200 -> 실패가 있었는데 성공이라고 한다\n  4xx -> 성공한 둘은 어떻게 되나\n  207 -> WebDAV 확장이다\n\n#   표준에 일괄 결과를 담을 코드가 없다\n\n#   대개 200 에 항목별 결과를 담는다\n\n#   7.7절에서 그 문제를 본다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   여기 말고 저기로 가라고 할 때",
+   "note": "**`200`·`201`·`202`·`204` 가 다음에 무엇을 할지를 다르게** 말한다.\n\n**`201` 이 준 `Location` 을 따라가니 그 자리에** 있다.\n\n**`204` 를 JSON 으로 파싱하면 `JSONDecodeError`** 다.\n\n**`202` 의 `Location` 이 작업 자원을 가리키고 끝나면 `state: done` 에 결과가** 붙는다.\n\n**`-r 0-99` 에 `206` 과 `Content-Range: bytes 0-99/270544`** 가 온다."
+  }
+ ],
+ "recap": [
+  "**성공에도 네 가지가** 있다.",
+  "**`201` 은 `Location` 이 요점**이다.",
+  "**본문을 같이 주면 왕복을** 아낀다.",
+  "**`204` 는 본문이 없어야** 한다.",
+  "**빈 객체와 본문 없음은** 다르다.",
+  "**`202` 는 상태를 읽을 자리를 줘야** 한다.",
+  "**작업 자원이 결과를** 담는다.",
+  "**`206` 은 범위 응답**이다.",
+  "**일괄 결과를 담을 표준 코드가** 없다."
+ ],
+ "drills": [
+  {
+   "task": "네 코드를 돌려주는 서버를 만든다.",
+   "done_when": "헤더 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`204` 를 파싱해 본다.",
+   "done_when": "오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`202` 와 작업 자원을 만든다.",
+   "done_when": "상태 변화를 따라갔다.",
+   "minutes": 25
+  },
+  {
+   "task": "범위 요청을 보낸다.",
+   "done_when": "`206` 과 `Content-Range` 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`201` 에 꼭 필요한 헤더는?",
+   "a": "새 자원의 위치를 알리는 `Location` 이다."
+  },
+  {
+   "q": "`204` 의 제약은?",
+   "a": "본문을 보내면 안 된다."
+  },
+  {
+   "q": "`200` 에 빈 객체와 `204` 의 차이는?",
+   "a": "결과가 빈 객체인 것과 보낼 것이 없는 것이다."
+  },
+  {
+   "q": "`202` 가 지는 책임은?",
+   "a": "나중에 상태와 결과를 확인할 자리를 제공해야 한다."
+  },
+  {
+   "q": "`206` 은 언제 나오나?",
+   "a": "`Range` 요청에 부분 응답을 줄 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "작업 자원",
+   "def": "비동기 처리의 상태와 결과를 담아 조회하게 하는 URI."
+  },
+  {
+   "term": "부분 응답",
+   "def": "요청한 바이트 범위만 담아 보내는 응답."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "IANA — HTTP Status Code Registry",
+   "url": "https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml",
+   "publisher": "IANA"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
