@@ -528,7 +528,7 @@
           "title": "Querydsl Web 지원",
           "summary": "주소가 조건이 되는 방식.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -536,7 +536,7 @@
           "title": "다시 보는 SQL",
           "summary": "이 책이 만든 문장들.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",

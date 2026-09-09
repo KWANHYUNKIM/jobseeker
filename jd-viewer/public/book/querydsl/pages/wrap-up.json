@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "wrap-up",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "다시 보는 SQL",
+ "summary": "이 책이 만든 문장들.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 겹을 되짚는다.",
+  "조용한 실패를 모은다.",
+  "무엇이 SQL 을 바꿨는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 두 겹을** 약속했다. **그 두 겹이 무엇을 보여 줬는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 올라온 사다리",
+   "ascii": "   the ladder this book climbed\n\n   chapter 4   the clauses, one at a time, against jpql\n   chapter 5   the shape of the result, and the shape of a condition\n   chapter 6   a repository built by hand, and its remaining gaps\n   chapter 7   those gaps handed back to spring data\n   chapter 8   the provided shortcuts, and why they are refused\n\n   every rung was checked against the jpql it produced",
+   "note": "**칸마다 만들어 낸 JPQL 로** 확인했다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타이핑은 줄었고 SQL 은 안 바뀌었다",
+   "md": "**같은 문장을 계속** 봤다.\n\n> **1.3절에서 `@Query` 와 `diff` 가** 같았다.\n> **6.4절·7.2절·8.3절도** 그랬다.\n> **⑭에서 계속 나온 결론**이다.\n\n**바뀐 건 검사 시점**이다.\n\n> **1.2절에서 컴파일이** 잡았다.\n> **문자열은 실행에서** 났다.\n> **그게 이 책의 이유**다.\n\n**SQL 을 바꾼 건 따로** 있다.\n\n> **페치 조인·`Slice`·개수 분리**다.\n> **구조가 아니라 선택**이다.\n> **아래에서 표로** 센다.\n\n**두 겹이 필요했던 자리가** 있다.\n\n> **JPQL 에 없고 SQL 에만 있는 것**이다.\n> **3.5절에서 셋을** 봤다.\n> **거기가 배울 자리**였다."
+  },
+  {
+   "type": "figure",
+   "caption": "아무 말도 없던 실패들",
+   "ascii": "   the failures that raised nothing at all\n\n   a sort that was silently dropped\n   an inner join that quietly removed rows\n   a total that was simply wrong\n   a condition that never made it into the where clause\n\n   every one of them was found by reading the printed statement",
+   "note": "**전부 찍힌 문장을 읽어서** 찾았다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "조용한 실패는 결과만 봐서는 안 보인다",
+   "md": "**정렬이 사라진** 일.\n\n> **7.3절에서 `Sort` 가** 무시됐다.\n> **화면은 정렬된 줄** 알았다.\n> **7.7절에서** 이었다.\n\n**행이 사라진** 일.\n\n> **4.6·4.10·6.4절의 묵시적 조인**이다.\n> **10건이 4건이** 됐다.\n> **`leftJoin` 을 명시해** 고쳤다.\n\n**총계가 틀린** 일.\n\n> **4.5·7.3·8.2절의 개수 추측**이다.\n> **7행에 총계 2를** 봤다.\n> **직접 세서** 고쳤다.\n\n**조건이 빠진** 일.\n\n> **6.3절의 빈 문자열, 6.6절의 누락**이다.\n> **6.6절에서 문장을 봐야** 잡혔다.\n> **결과 건수로는 통과**했다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 1.3절의 확인을 다시 한다\n\n$ for f in annotation querydsl ; do\n    printf '%-12s ' \"$f\"\n    md5 -q \"sql-$f.txt\"\n  done\n\nannotation   9c1f4a2b7e8d3f0a5c6b2d8e1f3a4c9b\nquerydsl     9c1f4a2b7e8d3f0a5c6b2d8e1f3a4c9b\n\n--   1.3절에서 본 그대로다\n\n\n-- 장마다 SQL 이 바뀌었나\n\n$ for pair in \"6-4 7-2\" \"7-4 8-3\" \"6-3 6-4\" ; do\n    a=${pair% *}; b=${pair#* }\n    printf '%-12s ' \"$a vs $b\"\n    diff \"sql-$a.txt\" \"sql-$b.txt\" >/dev/null && echo SAME || echo DIFF\n  done\n\n6-4 vs 7-2   SAME\n7-4 vs 8-3   SAME\n6-3 vs 6-4   SAME\n\n--   구조를 옮겨도 문장은 그대로였다\n\n\n-- 무엇이 SQL 을 바꿨나\n\n$ printf '%-20s %s\\n' \\\n  '4.13 fetchJoin'   '3쿼리 -> 1쿼리' \\\n  '5.1 값 프로젝션'  '4컬럼 -> 1컬럼' \\\n  '5.9 벌크'         '4쿼리 -> 1쿼리' \\\n  '7.4 개수 분리'    '38ms -> 21ms' \\\n  '7.5 Slice'        '2쿼리 -> 1쿼리' \\\n  '7.5 커서'         '58ms -> 4ms' \\\n  '5.10 함수 조건'   'scanCount 2 -> 20013'\n\n4.13 fetchJoin     3쿼리 -> 1쿼리\n5.1 값 프로젝션    4컬럼 -> 1컬럼\n5.9 벌크           4쿼리 -> 1쿼리\n7.4 개수 분리      38ms -> 21ms\n7.5 Slice          2쿼리 -> 1쿼리\n7.5 커서           58ms -> 4ms\n5.10 함수 조건     scanCount 2 -> 20013\n\n--   구조가 아니라 이것들이 바꿨다\n\n\n-- 두 겹이 어긋난 자리\n\n$ printf '%-24s %s\\n' \\\n  '3.5 페이징'     'JPQL 에 offset 이 없다' \\\n  '3.5 프로젝션'   'select member1 이 네 컬럼' \\\n  '3.5 조인'       'JPQL 에 on 이 없다' \\\n  '4.15 상수'      'JPQL·SQL 어디에도 없다' \\\n  '5.6 as'         'JPQL 에만 있다' \\\n  '4.15 concat'    'concat/str 이 ||/cast'\n\n3.5 페이징           JPQL 에 offset 이 없다\n3.5 프로젝션         select member1 이 네 컬럼\n3.5 조인             JPQL 에 on 이 없다\n4.15 상수            JPQL·SQL 어디에도 없다\n5.6 as               JPQL 에만 있다\n4.15 concat          concat/str 이 ||/cast\n\n--   한 겹만 봤으면 못 봤다\n\n\n-- 조용히 틀린 자리\n\n$ printf '%-24s %s\\n' \\\n  '4.2 같은 별칭'   '0건이 정답처럼 보임' \\\n  '4.5 fetchResults' '7행에 총계 2' \\\n  '4.10 묵시적 조인' '10건이 7건' \\\n  '5.2 Tuple 오독'   '예외가 아니라 null' \\\n  '5.3 같은 타입'    '값이 뒤바뀜' \\\n  '5.4 이름 불일치'  'null 과 0' \\\n  '6.3 빈 문자열'    '0건' \\\n  '7.3 Sort 무시'    '정렬이 사라짐' \\\n  '8.4 없는 파라미터' '전부 나옴'\n\n4.2 같은 별칭        0건이 정답처럼 보임\n4.5 fetchResults     7행에 총계 2\n4.10 묵시적 조인     10건이 7건\n5.2 Tuple 오독       예외가 아니라 null\n5.3 같은 타입        값이 뒤바뀜\n5.4 이름 불일치      null 과 0\n6.3 빈 문자열        0건\n7.3 Sort 무시        정렬이 사라짐\n8.4 없는 파라미터    전부 나옴\n\n--   아홉 개 다 예외가 없었다\n--   6.6절에서 문장을 봐야 잡혔다\n\n\n-- 컴파일이 잡은 자리\n\n$ printf '%-24s %s\\n' \\\n  '1.2 메서드 오타'  'goee -> 컴파일 실패' \\\n  '1.2 타입 불일치'  'eq(\"스무살\") -> 실패' \\\n  '2.2 경로 타입'    'age.contains -> 실패' \\\n  '5.5 인자 개수'    'QMemberDto 셋 -> 실패' \\\n  '5.8 Predicate'    '.and 없음 -> 실패' \\\n  '4.14 from 서브쿼리' 'from(JPQLQuery) -> 실패'\n\n1.2 메서드 오타      goee -> 컴파일 실패\n1.2 타입 불일치      eq(\"스무살\") -> 실패\n2.2 경로 타입        age.contains -> 실패\n5.5 인자 개수        QMemberDto 셋 -> 실패\n5.8 Predicate        .and 없음 -> 실패\n4.14 from 서브쿼리   from(JPQLQuery) -> 실패\n\n--   여섯 개가 실행 전에 잡혔다\n--   1.2절의 약속이다\n\n\n-- 아직 못 잡는 자리\n\n$ printf '%-24s %s\\n' \\\n  '5.5 같은 타입 순서' '컴파일 통과' \\\n  '5.6 as 문자열'      '컴파일 통과' \\\n  '5.10 함수 이름'     '컴파일 통과' \\\n  '5.3 new 경로'       '컴파일 통과'\n\n5.5 같은 타입 순서    컴파일 통과\n5.6 as 문자열         컴파일 통과\n5.10 함수 이름        컴파일 통과\n5.3 new 경로          컴파일 통과\n\n--   문자열이 남은 자리다\n\n\n-- 다른 책과 이어진 자리\n\n$ printf '%-16s %s\\n' \\\n  '① 5.2절'   'IDENTITY 즉시 insert -> 3.1절' \\\n  '① 10.4절'  'fetch join -> 4.13절' \\\n  '⑤ 4.4절'   '준영속 -> 5.9절' \\\n  '⑦ 8.2절'   '통계로 쿼리 수 -> 2.5절' \\\n  '⑨ 6.2절'   '슬라이스 테스트 -> 2.6절' \\\n  '⑩ 4.5절'   '입력 검증 -> 4.3·7.7절' \\\n  '⑫ 6.6절'   'total 이 비싸다 -> 7.5절' \\\n  '⑭ 5.13절'  'N+1 -> 4.13절' \\\n  '⑭ 6.1절'   '커스텀 자리 -> 7.2절' \\\n  '⑭ 8.1절'   '명세의 한계 -> 1.2·8.1절'\n\n① 5.2절     IDENTITY 즉시 insert -> 3.1절\n① 10.4절    fetch join -> 4.13절\n⑤ 4.4절     준영속 -> 5.9절\n⑦ 8.2절     통계로 쿼리 수 -> 2.5절\n⑨ 6.2절     슬라이스 테스트 -> 2.6절\n⑩ 4.5절     입력 검증 -> 4.3·7.7절\n⑫ 6.6절     total 이 비싸다 -> 7.5절\n⑭ 5.13절    N+1 -> 4.13절\n⑭ 6.1절     커스텀 자리 -> 7.2절\n⑭ 8.1절     명세의 한계 -> 1.2·8.1절\n\n--   열 권이 여기서 만난다\n\n\n-- 이 책이 만든 마지막 문장\n\n@Test\n@Transactional\nvoid 마지막() {\n    em.clear();\n    sqlCounter.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page = memberRepository.searchPage(\n            cond, PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, \"age\")));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n내용: 2\n전체: 3\n쿼리: 2개\n\n--   이 두 문장에 이 책이 다 있다\n--   select 다섯 컬럼은 5.5절이 골랐다\n--   left join 은 4.12·6.4절이 지켰다\n--   where 두 줄은 6.4·6.5절이 만들었다\n--   order by 는 7.7절이 이었다\n--   offset 은 7.3절이 넣었다\n--   count 는 7.4절이 나눴다\n--   그리고 문자열은 한 글자도 없다\n\n$ grep -rn 'createQuery(\"' --include='*.java' src/main | wc -l\n0\n\n--   8.6절에서 ⑭와 나란히 둔다",
+   "note": "**`@Query` 판과 조립판의 SQL md5 가 같고 6.4·7.2·8.3절 사이도 전부 `SAME`** 이다.\n\n**SQL 을 실제로 바꾼 건 페치 조인·프로젝션·벌크·개수 분리·`Slice`·커서 여섯**이다.\n\n**두 겹이 어긋난 자리가 여섯, 조용히 틀린 자리가 아홉**이었다.\n\n**컴파일이 잡은 게 여섯, 문자열이 남아 못 잡은 게 넷**이다.\n\n**마지막 두 문장의 각 절을 만든 절이 다르고 `createQuery(\"` 는 `0`** 개다."
+  }
+ ],
+ "recap": [
+  "**SQL 은 안** 바뀌었다.",
+  "**검사 시점이** 바뀌었다.",
+  "**바꾼 건 선택들**이다.",
+  "**두 겹이 어긋난 자리가** 있다.",
+  "**조용한 실패가** 아홉이다.",
+  "**결과로는 못** 잡는다.",
+  "**문장을 봐야** 보인다.",
+  "**컴파일이 여섯을** 잡았다.",
+  "**문자열이 넷** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "장별 SQL 을 `diff` 한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "SQL 을 바꾼 절을 모은다.",
+   "done_when": "표로 정리했다.",
+   "minutes": 20
+  },
+  {
+   "task": "조용한 실패를 재현한다.",
+   "done_when": "예외가 없는 걸 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "마지막 쿼리의 절을 대응시킨다.",
+   "done_when": "모든 절의 출처를 댔다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "구조를 옮기면 SQL 이 바뀌나?",
+   "a": "안 바뀐다. `diff` 가 매번 같았다."
+  },
+  {
+   "q": "그럼 무엇이 바꿨나?",
+   "a": "페치 조인, 프로젝션, 벌크, 개수 분리 같은 선택이다."
+  },
+  {
+   "q": "조용한 실패의 공통점은?",
+   "a": "예외가 없어 나간 문장을 봐야만 보인다."
+  },
+  {
+   "q": "컴파일이 못 잡는 것은?",
+   "a": "같은 타입 인자 순서, `as` 문자열, 함수 이름 같은 문자열이다."
+  },
+  {
+   "q": "이 책의 마지막 쿼리에 문자열이 있나?",
+   "a": "없다. `createQuery(\"` 가 0개다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조용한 실패",
+   "def": "예외 없이 결과만 틀리는 오류. 문장을 봐야 드러난다."
+  },
+  {
+   "term": "두 겹 읽기",
+   "def": "조립이 만든 JPQL 과 그 JPQL 이 만든 SQL 을 함께 확인하는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Querydsl Extension",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "web-support",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "Querydsl Web 지원",
+ "summary": "주소가 조건이 되는 방식.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "동작을 본다.",
+  "열린 범위를 안다.",
+  "왜 안 쓰는지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.6절에서 조건 객체를** 만들었다. **그마저 없애는 기능이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리 문자열이 술어가 된다",
+   "ascii": "   what the web extension does with a query string\n\n   ?username=m1   ->  a Predicate, built from the parameter name\n   the parameter name is matched against the entity properties\n   the binding is equality, unless a customizer says otherwise\n\n   nothing in the controller says which columns are searchable",
+   "note": "**어떤 컬럼이 검색 대상인지 컨트롤러에 안** 적힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파라미터 이름이 곧 속성 이름이 된다",
+   "md": "**`@QuerydslPredicate` 하나**다.\n\n> **컨트롤러 파라미터에** 붙인다.\n> **`Predicate` 가 만들어져** 온다.\n> **8.1절의 그 타입**이다.\n\n**조건 객체가 필요** 없다.\n\n> **7.6절의 `MemberSearchCondition` 이** 사라진다.\n> **6.3절의 `hasText` 도** 없다.\n> **코드가 제일** 짧다.\n\n**기본은 등호**다.\n\n> **⑭ 8.2절의 QBE 와 비슷**하다.\n> **범위 조건이 안** 된다.\n> **커스터마이저로 바꿀 수** 있다.\n\n**그런데 범위가 너무** 넓다.\n\n> **엔티티의 모든 속성이** 열린다.\n> **막는 게 아니라 여는 방식이어야** 한다.\n> **아래에서 그걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "커스터마이저 없이 닿는 곳",
+   "ascii": "   what a caller can reach without a customizer\n\n   any simple property of the entity\n   a property of an associated entity, through a dot\n   a column the screen was never meant to filter by\n\n   the binding list is opt out, not opt in",
+   "note": "**목록이 열기가 아니라 막기** 방식이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "범위 조건이 안 되어 결국 커스텀으로 돌아간다",
+   "md": "**`ageGoe` 같은 게** 안 된다.\n\n> **`?age=20` 은 등호**다.\n> **`?ageGoe=20` 은 속성이 없어** 무시된다.\n> **⑭ 8.2절의 그** 한계다.\n\n**커스터마이저로 바꿀 수** 있다.\n\n> **`QuerydslBinderCustomizer` 를 리포지토리에** 붙인다.\n> **속성마다 바인딩을** 정한다.\n> **코드가 다시** 는다.\n\n**조인은 여전히 안** 된다.\n\n> **8.1절의 실행기를** 쓴다.\n> **`leftJoin` 을 줄 데가** 없다.\n> **DTO 도 못** 받는다.\n\n**그래서 잘 안** 쓴다.\n\n> **짧은 대신 통제가** 없다.\n> **7.6절의 조건 객체가** 낫다.\n> **아래에서 나란히** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 컨트롤러에 붙인다\n\n@RestController\n@RequiredArgsConstructor\npublic class MemberWebController {\n\n    private final MemberRepository memberRepository;\n\n    @GetMapping(\"/w1/members\")\n    public Iterable<Member> search(\n            @QuerydslPredicate(root = Member.class) Predicate predicate) {\n        return memberRepository.findAll(predicate);\n    }\n}\n\n--   조건 객체가 없다\n--   8.1절의 실행기를 쓴다\n\n\n-- 주소가 조건이 된다\n\n$ curl -s 'localhost:8080/w1/members?username=member1' \\\n    | jq '.[].username'\n\"member1\"\n\n/* select\n    m1_0.member_id,\n    m1_0.age,\n    m1_0.team_id,\n    m1_0.username\nfrom\n    member m1_0\nwhere\n    m1_0.username=? */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [member1]\n\n--   파라미터 이름이 속성 이름이 됐다\n--   7.6절의 조건 객체가 없다\n\n\n-- 둘을 주면 and 다\n\n$ curl -s 'localhost:8080/w1/members?username=member1&age=1' \\\n    | jq 'length'\n1\n\n/* select\n    ...\nwhere\n    m1_0.username=?\n    and m1_0.age=? */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username=? and m1_0.age=?\n\n--   4.4절의 쉼표와 같다\n\n\n-- 같은 이름을 두 번 주면 in 이다\n\n$ curl -s 'localhost:8080/w1/members?username=member1&username=member2' \\\n    | jq 'length'\n2\n\n/* select\n    ...\nwhere\n    m1_0.username in (?, ?) */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username in (?, ?)\n\n--   4.3절의 in 이 됐다\n\n\n-- 없는 파라미터는 무시된다\n\n$ curl -s 'localhost:8080/w1/members?ageGoe=20' | jq 'length'\n100\n\n/* select\n    m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\nfrom\n    member m1_0 */\n\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0\n\n--   where 가 없다\n--   ageGoe 라는 속성이 없다\n--   오타를 쳐도 전부 나온다\n\n\n-- 범위 조건이 안 된다\n\n$ curl -s 'localhost:8080/w1/members?age=20' | jq 'length'\n2\n\nHibernate:\n    select ... where m1_0.age=?\n\n--   등호다\n--   \"20살 이상\" 을 못 쓴다\n--   ⑭ 8.2절의 QBE 와 같다\n\n\n-- 연관도 열려 있다\n\n$ curl -s 'localhost:8080/w1/members?team.name=teamA' | jq 'length'\n50\n\n/* select\n    ...\nfrom\n    member m1_0\n  join\n    team t1_0 on t1_0.team_id=m1_0.team_id\nwhere\n    t1_0.name=? */\n\nHibernate:\n    select ... from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n\n--   점 하나로 조인이 생겼다\n--   inner 다 (8.1절)\n\n\n-- 외래키까지 닿는다\n\n$ curl -s 'localhost:8080/w1/members?team=1' | jq 'length'\n50\n\nHibernate:\n    select ... from member m1_0 where m1_0.team_id=?\nTRACE binding parameter (1:BIGINT) <- [1]\n\n--   화면이 안 쓰는 값이다\n--   7.7절의 일반 변환기와 같은 문제다\n\n\n-- 커스터마이저로 좁힌다\n\npublic interface MemberRepository extends\n        JpaRepository<Member, Long>,\n        QuerydslPredicateExecutor<Member>,\n        QuerydslBinderCustomizer<QMember> {\n\n    @Override\n    default void customize(QuerydslBindings bindings, QMember member) {\n        bindings.excludeUnlistedProperties(true);\n        bindings.including(member.username, member.age);\n        bindings.bind(member.username)\n                .first((path, value) -> path.contains(value));\n    }\n}\n\n$ curl -s 'localhost:8080/w1/members?username=member1' | jq 'length'\n11\n\n/* select\n    ...\nwhere\n    m1_0.username like ? escape '!' */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '!'\nTRACE binding parameter (1:VARCHAR) <- [%member1%]\n\n--   등호가 contains 가 됐다\n--   4.3절의 contains 다\n\n\n-- 목록에 없으면 무시된다\n\n$ curl -s 'localhost:8080/w1/members?team.name=teamA' | jq 'length'\n100\n\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0\n\n--   excludeUnlistedProperties 가 막았다\n--   조인도 안 생겼다\n\n\n-- 그래도 범위는 안 된다\n\n@Override\ndefault void customize(QuerydslBindings bindings, QMember member) {\n    bindings.excludeUnlistedProperties(true);\n    bindings.including(member.username, member.age);\n    bindings.bind(member.age)\n            .all((path, values) -> {\n                Iterator<? extends Integer> it = values.iterator();\n                Integer from = it.next();\n                Integer to = it.hasNext() ? it.next() : null;\n                return Optional.of(to == null\n                        ? path.goe(from) : path.between(from, to));\n            });\n}\n\n$ curl -s 'localhost:8080/w1/members?age=20&age=30' | jq 'length'\n11\n\n/* select\n    ...\nwhere\n    m1_0.age between ? and ? */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.age between ? and ?\nTRACE binding parameter (1:INTEGER) <- [20]\nTRACE binding parameter (2:INTEGER) <- [30]\n\n--   되긴 된다\n--   같은 이름을 두 번 주는 규약을 내가 만들었다\n--   문서가 없으면 아무도 모른다\n\n\n-- 페이징도 된다\n\n@GetMapping(\"/w2/members\")\npublic Page<Member> searchPage(\n        @QuerydslPredicate(root = Member.class) Predicate predicate,\n        Pageable pageable) {\n    return memberRepository.findAll(predicate, pageable);\n}\n\n$ curl -s 'localhost:8080/w2/members?age=20&size=3' \\\n    | jq '{n: (.content|length), total: .totalElements}'\n{ \"n\": 2, \"total\": 2 }\n\nHibernate:\n    select ... from member m1_0 where m1_0.age=?\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0 where m1_0.age=?\n\n--   8.1절의 페이징이다\n--   개수 쿼리까지 해 준다\n\n\n-- 그런데 엔티티가 그대로 나간다\n\n$ curl -s 'localhost:8080/w2/members?age=20&size=1' | jq '.content[0] | keys'\n[\n  \"age\",\n  \"id\",\n  \"team\",\n  \"username\"\n]\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.age=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n\n--   team 이 통째로 나갔다\n--   지연 로딩까지 깨웠다\n--   ⑭ 6.8절의 그 문제다\n\n\n-- 7.6 절과 나란히 둔다\n\n$ printf '%-22s %-12s %-14s %s\\n' \\\n  'Web 지원'  '코드 없음'  '등호만'    '엔티티 반환' \\\n  '조건 객체' 'DTO 하나'   '범위·like' 'DTO 반환'\n\nWeb 지원                코드 없음      등호만          엔티티 반환\n조건 객체               DTO 하나       범위·like       DTO 반환\n\n$ curl -s 'localhost:8080/v3/members?ageGoe=20&size=1' \\\n    | jq '.content[0] | keys'\n[\n  \"age\",\n  \"memberId\",\n  \"teamId\",\n  \"teamName\",\n  \"username\"\n]\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.age>=?\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   7.6절은 컬럼 다섯에 leftJoin 이다\n--   여기는 지연 로딩이 하나 더 나갔다\n\n\n-- 언제 쓸 만한가\n\n$ printf '%-26s %s\\n' \\\n  '관리자 화면 필터'   '쓸 만하다' \\\n  '등호 검색만 필요'   '쓸 만하다' \\\n  '범위·정렬 필요'     '커스터마이저가 는다' \\\n  '조인 필요'          '안 된다' \\\n  'DTO 필요'           '안 된다'\n\n관리자 화면 필터        쓸 만하다\n등호 검색만 필요        쓸 만하다\n범위·정렬 필요          커스터마이저가 는다\n조인 필요               안 된다\nDTO 필요                안 된다\n\n--   8.5절에서 이 책의 SQL 을 다시 본다",
+   "note": "**파라미터 이름이 속성 이름이 되어 `?username=member1` 이 그대로 `where`** 가 된다.\n\n**같은 이름을 두 번 주면 `in (?, ?)`, 없는 이름은 조용히** 무시된다.\n\n**커스터마이저 없이는 `?team=1` 로 외래키까지** 닿는다.\n\n**`excludeUnlistedProperties(true)` 를 켜면 `team.name` 이 무시되고 조인도 안** 생긴다.\n\n**엔티티가 그대로 나가 `team` 이 통째로 나가고 지연 로딩이 하나 더** 나간다."
+  }
+ ],
+ "recap": [
+  "**파라미터가 속성이** 된다.",
+  "**조건 객체가 필요** 없다.",
+  "**기본은 등호**다.",
+  "**같은 이름 둘은 `in`** 이다.",
+  "**없는 이름은** 무시된다.",
+  "**범위가 안** 된다.",
+  "**연관까지** 열린다.",
+  "**커스터마이저로** 막는다.",
+  "**조인·DTO 는 안** 된다."
+ ],
+ "drills": [
+  {
+   "task": "`@QuerydslPredicate` 를 붙인다.",
+   "done_when": "주소가 조건이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 파라미터를 준다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "커스터마이저로 좁힌다.",
+   "done_when": "연관이 막히는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "7.6절과 응답을 비교한다.",
+   "done_when": "컬럼과 쿼리 수를 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@QuerydslPredicate` 는 무엇을 만들어 주나?",
+   "a": "쿼리 파라미터로 만든 `Predicate` 다."
+  },
+  {
+   "q": "기본 바인딩은?",
+   "a": "등호다. 범위 조건은 안 된다."
+  },
+  {
+   "q": "커스터마이저 없이 열리는 범위는?",
+   "a": "엔티티의 모든 속성과 연관 경로다."
+  },
+  {
+   "q": "범위를 쓰려면?",
+   "a": "`QuerydslBinderCustomizer` 로 직접 규약을 만든다."
+  },
+  {
+   "q": "왜 실무에서 잘 안 쓰나?",
+   "a": "조인과 DTO 가 안 되고 통제가 어렵기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@QuerydslPredicate",
+   "def": "쿼리 파라미터를 술어로 바꿔 주는 웹 확장 어노테이션."
+  },
+  {
+   "term": "QuerydslBinderCustomizer",
+   "def": "속성별 바인딩 방식과 허용 목록을 정하는 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Querydsl Extension",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  }
+ ]
+}
