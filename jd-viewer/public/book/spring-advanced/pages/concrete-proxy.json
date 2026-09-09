@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "concrete-proxy",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "구체 클래스 기반",
+ "summary": "인터페이스가 없을 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "상속으로 만든다.",
+  "생성자 문제를 본다.",
+  "막히는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절은 인터페이스가** 있었다. **없으면 어떻게 하는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 없으면 자식이 된다",
+   "ascii": "   without an interface, the proxy must be a subclass\n\n   the caller holds the concrete type\n   only a subclass satisfies that type\n   so the proxy extends the target class\n\n   which means the parent constructor runs, whether wanted or not",
+   "note": "**원하든 아니든 부모 생성자가** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 만들 수 없을 때가 있다",
+   "md": "**남의 클래스**다.\n\n> **라이브러리 안의 것**이다.\n> **고칠 수** 없다.\n> **아래에서 그** 경우다.\n\n**인터페이스가 과하기도** 하다.\n\n> **구현이 하나뿐**이다.\n> **파일만 하나 더** 는다.\n> **아래에서 견줘** 본다.\n\n**타입이 구체 클래스**다.\n\n> **부르는 쪽이 그렇게 적어** 뒀다.\n> **1.4절에서 그게** 터졌다.\n> **자식만 그 타입**이다.\n\n**대신 제약이** 생긴다.\n\n> **넷이** 있다.\n> **아래에서 하나씩** 깨 본다.\n> **12.6절에서 다시** 만난다."
+  },
+  {
+   "type": "figure",
+   "caption": "자식을 못 만드는 네 가지",
+   "ascii": "   four things that stop a subclass from being made\n\n   the class is final\n   the method is final\n   the method is private\n   there is no constructor the subclass can call\n\n   the first two are silent at runtime, not at compile time",
+   "note": "**앞의 둘은 컴파일이 아니라 실행 때** 조용하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부모 생성자가 두 번 도는 셈이 된다",
+   "md": "**자식도 부모**다.\n\n> **필드가 두 벌** 생긴다.\n> **아래에서 그걸** 본다.\n> **인터페이스 쪽엔 없던 일**이다.\n\n**인자를 맞춰야** 한다.\n\n> **부모 생성자를 불러야** 한다.\n> **기본 생성자가 없으면** 곤란하다.\n> **아래에서 그걸** 겪는다.\n\n**초기화가 두 번** 돈다.\n\n> **DB 를 두 번 읽기도** 한다.\n> **아래에서 그** 로그를 본다.\n> **6.7절에서 다시** 본다.\n\n**부모 필드는 안** 쓴다.\n\n> **원본 것을** 쓴다.\n> **자식 필드는 비어** 있다.\n> **아래에서 그걸** 확인한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 인터페이스가 없는 원본\n\n@Service\npublic class OrderServiceV2 {\n    private final OrderRepositoryV2 orderRepository;\n\n    public OrderServiceV2(OrderRepositoryV2 orderRepository) {\n        this.orderRepository = orderRepository;\n    }\n\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n$ grep -c 'implements' src/main/java/study/adv/app/OrderServiceV2.java\n0\n\n$ grep -n 'OrderServiceV2' src/main/java/study/adv/app/OrderControllerV2.java\n8:    private final OrderServiceV2 orderService;\n\n--   부르는 쪽이 구체 타입을 들고 있다\n\n\n-- 인터페이스 프록시를 끼워 보면\n\npublic class OrderServiceProxyV2 implements SomeInterface { ... }\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.adv.app.OrderControllerV2 required a bean\nof type 'study.adv.app.OrderServiceV2' that could not be found.\n\n--   1.4 절과 5.1 절에서 본 그 오류다\n\n\n-- 상속으로 만든다\n\npublic class OrderServiceConcreteProxy extends OrderServiceV2 {\n\n    private final OrderServiceV2 target;\n    private final LogTrace trace;\n\n    public OrderServiceConcreteProxy(OrderServiceV2 target, LogTrace trace) {\n        super(null);                       // 부모 생성자를 불러야 한다\n        this.target = target;\n        this.trace = trace;\n    }\n\n    @Override\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            target.orderItem(itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ grep -n 'super(null)' src/main/java/study/adv/proxy/OrderServiceConcreteProxy.java\n10:        super(null);\n\n--   super(null) 이 눈에 걸린다\n--   부모 생성자를 꼭 불러야 한다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2'\n빈 이름:   orderServiceV2\n주입된 것: study.adv.proxy.OrderServiceConcreteProxy\n원본:     study.adv.proxy.OrderServiceConcreteProxy\n프록시:   false\n\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderService.orderItem()\n[796bccd9] |-->OrderRepository.save()\n[796bccd9] |<--OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n\n--   인터페이스 없이도 됐다\n--   5.2 절과 같은 로그다\n\n\n-- 자식도 부모다\n\n$ curl -s localhost:8080/proxy/fields?name=orderServiceV2\n클래스:       study.adv.proxy.OrderServiceConcreteProxy\n부모:         study.adv.app.OrderServiceV2\n자기 필드:    target, trace\n물려받은 필드: orderRepository = null\ntarget 의 필드: orderRepository = study.adv.app.OrderRepositoryV2@4f21a1c9\n\n--   필드가 두 벌이다\n--   물려받은 쪽은 null 이다\n--   super(null) 이 그래서 통했다\n\n\n-- 물려받은 필드를 쓰면\n\n@Override\npublic void orderItem(String itemId) {\n    TraceStatus status = trace.begin(\"...\");\n    super.orderItem(itemId);            // target 이 아니라 super\n    trace.end(status);\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -2\njava.lang.NullPointerException: Cannot invoke\n  \"study.adv.app.OrderRepositoryV2.save(String)\" because \"this.orderRepository\" is null\n\n--   super(null) 로 넣은 그 null 이다\n--   target 을 불러야 한다\n\n\n-- 기본 생성자가 없으면\n\n@Service\npublic class OrderServiceV2 {\n    private final OrderRepositoryV2 orderRepository;\n    public OrderServiceV2(OrderRepositoryV2 r) {\n        if (r == null) throw new IllegalArgumentException(\"저장소가 필요하다\");\n        this.orderRepository = r;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'IllegalArgument' | head -2\njava.lang.IllegalArgumentException: 저장소가 필요하다\n\tat study.adv.app.OrderServiceV2.<init>(OrderServiceV2.java:12)\n\n--   super(null) 이 막혔다\n--   6.7 절에서 이 문제를 다시 본다\n\n\n-- 진짜 값을 넘기면\n\npublic OrderServiceConcreteProxy(OrderServiceV2 target, LogTrace trace,\n                                 OrderRepositoryV2 repository) {\n    super(repository);                    // 진짜를 넘긴다\n    this.target = target;\n    this.trace = trace;\n}\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ curl -s localhost:8080/proxy/fields?name=orderServiceV2 | tail -2\n물려받은 필드: orderRepository = study.adv.app.OrderRepositoryV2@4f21a1c9\ntarget 의 필드: orderRepository = study.adv.app.OrderRepositoryV2@4f21a1c9\n\n--   같은 것을 두 번 들고 있다\n--   자식 쪽은 안 쓴다\n\n\n-- 초기화가 두 번 돈다\n\n@Service\npublic class OrderServiceV2 {\n    private final Map<String, Integer> priceTable;\n\n    public OrderServiceV2(OrderRepositoryV2 r) {\n        this.orderRepository = r;\n        System.out.println(\"[초기화] 가격표를 읽는다\");\n        this.priceTable = loadPriceTable();      // 3 초 걸린다\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n2\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[초기화\\]|Started' | tail -3\n[초기화] 가격표를 읽는다\n[초기화] 가격표를 읽는다\nINFO ... : Started AdvApplication in 8.412 seconds\n\n// 프록시 없이는\nINFO ... : Started AdvApplication in 2.104 seconds\n\n--   원본 한 번, 프록시 한 번이다\n--   기동이 6 초 늘었다\n\n\n-- 막히는 자리 ① 클래스가 final\n\n@Service\npublic final class OrderServiceV2 { ... }\n\npublic class OrderServiceConcreteProxy extends OrderServiceV2 { ... }\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: cannot inherit from final study.adv.app.OrderServiceV2\n\n--   손으로 쓰면 컴파일이 막는다\n--   6.7 절에서는 조용히 실패한다\n\n\n-- 막히는 자리 ② 메서드가 final\n\npublic final void orderItem(String itemId) { ... }\n\n@Override\npublic void orderItem(String itemId) { ... }\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: orderItem(String) in OrderServiceConcreteProxy cannot override\n  orderItem(String) in OrderServiceV2\n  overridden method is final\n\n--   4.2 절에서 내가 final 을 붙였던 그 자리다\n--   이번엔 내가 막히는 쪽이다\n\n\n-- 막히는 자리 ③ private\n\nprivate void validate(String itemId) { ... }\n\npublic void orderItem(String itemId) {\n    validate(itemId);              // 자기 자신을 부른다\n    orderRepository.save(itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep -c 'validate' logs/app.log\n1\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] OrderService.orderItem()\n[3d81f0a2] OrderService.orderItem() time=1004ms\n\n--   validate 는 로그에 안 나온다\n--   덮어쓸 수가 없다\n--   12.1 절의 그 문제와 같은 뿌리다\n\n\n-- 막히는 자리 ④ 정적 메서드\n\npublic static String describe() { return \"주문 서비스\"; }\n\n@Override\npublic static String describe() { ... }\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: method does not override or implement a method from a supertype\n\n--   정적 메서드는 덮어쓰는 개념이 없다\n\n\n-- 인터페이스 쪽과 견준다\n\n$ printf '%-20s %-16s %s\\n' \\\n  '인터페이스'   '구현'        '제약 없음' \\\n  ''             '필드 한 벌'  '생성자 자유' \\\n  ''             '기본 메서드' '샘' \\\n  '구체 클래스'  '상속'        'final 이면 막힘' \\\n  ''             '필드 두 벌'  '생성자를 맞춰야' \\\n  ''             'private'     '안 지남' \\\n  ''             '초기화'      '두 번 돎'\n\n인터페이스           구현             제약 없음\n                     필드 한 벌       생성자 자유\n                     기본 메서드      샘\n구체 클래스          상속             final 이면 막힘\n                     필드 두 벌       생성자를 맞춰야\n                     private          안 지남\n                     초기화           두 번 돎\n\n\n-- 둘 다 만들어 둘 수도 있다\n\n$ curl -s localhost:8080/who/all\norderController      study.adv.app.OrderController\norderService         study.adv.proxy.OrderServiceProxy\norderRepository      study.adv.proxy.OrderRepositoryProxy\norderControllerV2    study.adv.app.OrderControllerV2\norderServiceV2       study.adv.proxy.OrderServiceConcreteProxy\norderRepositoryV2    study.adv.proxy.OrderRepositoryConcreteProxy\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n2\n\n--   두 방식이 같은 로그를 낸다\n\n\n-- 클래스가 몇 개인가\n\n$ find src/main/java/study/adv/proxy -name '*.java' | wc -l\n       5\n$ find src/main/java/study/adv/app -name '*.java' | wc -l\n       8\n\n$ python3 -c \"print('대상 4 개에 프록시 4 개')\"\n대상 4 개에 프록시 4 개\n\n--   5.8 절에서 이걸 센다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2' | head -3\n빈 이름:   orderServiceV2\n주입된 것: study.adv.proxy.OrderServiceConcreteProxy\n원본:     study.adv.proxy.OrderServiceConcreteProxy\n\n$ git add -A && git commit -q -m 'feat: v6 구체 클래스 프록시' && git tag v6-concrete\n\n--   5.4 절에서 두 이름을 정리한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '인터페이스 없음' '상속으로' \\\n  'super'         '꼭 불러야 함' \\\n  '필드'          '두 벌' \\\n  '물려받은 것'   '안 씀' \\\n  '기본 생성자'   '없으면 곤란' \\\n  '초기화'        '두 번, 기동 6 초' \\\n  'final 클래스'  '못 만듦' \\\n  'final 메서드'  '못 덮음' \\\n  'private'       '안 지남' \\\n  '정적'          '덮는 개념 없음'\n\n인터페이스 없음            상속으로\nsuper                      꼭 불러야 함\n필드                       두 벌\n물려받은 것                안 씀\n기본 생성자                없으면 곤란\n초기화                     두 번, 기동 6 초\nfinal 클래스               못 만듦\nfinal 메서드               못 덮음\nprivate                    안 지남\n정적                       덮는 개념 없음",
+   "note": "**인터페이스가 없으니 상속으로 만들어 `super(null)` 을 적어야 하고 필드가 두 벌** 생긴다.\n\n**물려받은 필드를 쓰면 그 `null` 때문에 `NullPointerException`, `target` 을 불러야** 한다.\n\n**생성자에서 가격표를 읽게 하니 `[초기화]` 가 두 번 찍히고 기동이 2.104 초에서 8.412 초가** 됐다.\n\n**클래스나 메서드가 `final` 이면 컴파일이 막고 `private` 메서드는 로그에 아예 안** 나온다.\n\n**두 방식이 같은 로그를 내지만 제약은 구체 클래스 쪽이 넷 더** 많다."
+  }
+ ],
+ "recap": [
+  "**자식이** 된다.",
+  "**super 를** 부른다.",
+  "**필드가 두** 벌이다.",
+  "**물려받은 건 안** 쓴다.",
+  "**생성자가** 걸린다.",
+  "**초기화가 두 번** 돈다.",
+  "**final 이면** 막힌다.",
+  "**private 은 안** 지난다.",
+  "**정적도 안** 된다."
+ ],
+ "drills": [
+  {
+   "task": "상속으로 프록시를 만든다.",
+   "done_when": "같은 로그가 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "물려받은 필드를 써 본다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성자에 무거운 일을 넣는다.",
+   "done_when": "두 번 도는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`final` 을 붙여 본다.",
+   "done_when": "막히는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스가 없으면 어떻게 만드나?",
+   "a": "원본을 상속한 자식으로 만든다."
+  },
+  {
+   "q": "왜 `super` 를 불러야 하나?",
+   "a": "자식이 곧 부모라서 부모 생성자가 반드시 돈다."
+  },
+  {
+   "q": "물려받은 필드는 왜 쓰면 안 되나?",
+   "a": "비어 있고 실제 상태는 원본 객체가 들고 있어서다."
+  },
+  {
+   "q": "생성자가 무거우면?",
+   "a": "원본과 프록시에서 두 번 돌아 기동이 느려진다."
+  },
+  {
+   "q": "`private` 메서드는?",
+   "a": "덮어쓸 수 없어 프록시를 지나지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "구체 클래스 프록시",
+   "def": "인터페이스 없이 원본을 상속해 만든 프록시."
+  },
+  {
+   "term": "이중 초기화",
+   "def": "원본과 프록시 양쪽에서 생성자가 도는 일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "JLS — Classes",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  }
+ ]
+}

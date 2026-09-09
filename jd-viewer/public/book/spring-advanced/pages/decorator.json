@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "decorator",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "데코레이터",
+ "summary": "기능을 덧붙인다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "의도로 가른다.",
+  "결과를 고쳐 본다.",
+  "겹쳐 쌓는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 코드가 같다고** 했다. **의도가 어떻게 다른지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 모양, 다른 의도",
+   "ascii": "   same shape, different intent\n\n   access control   decides whether the target runs at all\n   caching          decides whether the target runs this time\n   decoration       always runs the target, adds something around\n\n   only the third one promises the target is always called",
+   "note": "**원본을 늘 부른다고 약속하는 건 셋째**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부를지 말지를 정하느냐 아니냐가 갈림이다",
+   "md": "**통제는 안 부를 수** 있다.\n\n> **권한이 없으면 막는**다.\n> **아래에서 그걸** 만든다.\n> **원본이 안** 돈다.\n\n**캐시는 이번만 안** 부른다.\n\n> **5.1절에서 그걸** 봤다.\n> **아래에서 다시** 센다.\n> **결과는 돌려준**다.\n\n**덧붙이기는 늘** 부른다.\n\n> **앞뒤에만** 손댄다.\n> **로그가 그** 예다.\n> **아래에서 확인**한다.\n\n**결과를 고칠 수도** 있다.\n\n> **돌아온 값을** 바꾼다.\n> **아래에서 그걸** 한다.\n> **겹쳐 쌓기가** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 덧붙이기는 쌓이나",
+   "ascii": "   why decorators stack and proxies usually do not\n\n   a decorator returns what the target returned, possibly changed\n   so another decorator can wrap it and change it again\n\n   an access check has nothing to hand to the next one",
+   "note": "**막는 것은 다음에 넘길 게** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "결과를 고치면 부르는 쪽이 모른다",
+   "md": "**타입이** 같다.\n\n> **바뀐 걸 알 수** 없다.\n> **아래에서 그걸** 겪는다.\n> **로그로만** 안다.\n\n**순서가 결과를** 바꾼다.\n\n> **압축하고 암호화냐 반대냐**다.\n> **아래에서 견줘** 본다.\n> **9.4절에서 이 순서를** 정한다.\n\n**널을 다뤄야** 한다.\n\n> **원본이 널을 줄 수** 있다.\n> **아래에서 그게 터진**다.\n> **감싸는 쪽 책임**이다.\n\n**깊으면 못** 읽는다.\n\n> **어디서 바뀌었는지** 모른다.\n> **아래에서 다섯 겹을** 본다.\n> **디버깅이** 어렵다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 셋을 나란히 만든다\n\n// ① 통제 — 안 부를 수 있다\npublic class PermissionProxy implements OrderService {\n    private final OrderService target;\n\n    @Override\n    public void orderItem(String itemId) {\n        if (!currentUser().hasRole(\"USER\")) {\n            log.warn(\"막았다 user={}\", currentUser().name());\n            throw new AccessDeniedException(\"권한 없음\");\n        }\n        target.orderItem(itemId);\n    }\n}\n\n// ② 캐시 — 이번만 안 부른다\npublic class CacheProxy implements OrderService {\n    private final OrderService target;\n    private final Map<String, String> cache = new ConcurrentHashMap<>();\n\n    @Override\n    public String find(String itemId) {\n        return cache.computeIfAbsent(itemId, k -> {\n            log.info(\"원본을 부른다 {}\", k);\n            return target.find(k);\n        });\n    }\n}\n\n// ③ 덧붙이기 — 늘 부른다\npublic class TraceDecorator implements OrderService {\n    private final OrderService target;\n\n    @Override\n    public String find(String itemId) {\n        TraceStatus status = trace.begin(\"OrderService.find()\");\n        String result = target.find(itemId);      // 반드시 부른다\n        trace.end(status);\n        return result;\n    }\n}\n\n$ grep -c 'target\\.' src/main/java/study/adv/proxy/PermissionProxy.java\n1\n$ grep -c 'target\\.' src/main/java/study/adv/proxy/TraceDecorator.java\n2\n\n\n-- 통제는 원본을 안 부른다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -H 'X-User: guest' \\\n    'localhost:8080/request?itemId=연필'\n403\n\n$ curl -s localhost:8080/order/count\n연필: 0 개\n\n$ grep '막았다' logs/app.log | tail -1 | cut -c56-\n막았다 user=guest\n\n$ grep -c 'OrderRepository.save' logs/app.log\n0\n\n--   저장이 아예 안 됐다\n--   5.1 절에서 참조를 뺐을 때와 같은 모습이다\n--   여기선 의도한 것이다\n\n\n-- 캐시는 한 번만 부른다\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/find?itemId=연필'\n  done\n1.008\n0.003\n0.002\n\n$ grep -c '원본을 부른다' logs/app.log\n1\n\n--   세 번 불렀는데 원본은 한 번이다\n--   1.4 절의 @Cacheable 이 이것이다\n\n\n-- 덧붙이기는 늘 부른다\n\n$ for i in 1 2 3; do curl -s -o /dev/null 'localhost:8080/trace-only?itemId=연필'; done\n$ grep -c 'OrderService.find()' logs/app.log\n6\n$ grep -c 'OrderRepository.findById' logs/app.log\n3\n\n--   세 번 다 원본까지 갔다\n\n\n-- 결과를 고쳐 본다\n\npublic class UpperDecorator implements OrderService {\n    @Override\n    public String find(String itemId) {\n        String result = target.find(itemId);\n        log.info(\"고치기 전 {}\", result);\n        return result.toUpperCase();          // 바꿔서 돌려준다\n    }\n}\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\nPENCIL\n\n$ grep '고치기 전' logs/app.log | tail -1 | cut -c56-\n고치기 전 pencil\n\n$ grep -n 'toUpperCase' src/main/java/study/adv/app/*.java\n(없음)\n\n--   업무 코드에 그런 게 없는데 대문자다\n--   부르는 쪽은 모른다\n\n\n-- 겹쳐 쌓는다\n\n@Bean\npublic OrderService orderService(LogTrace trace) {\n    OrderService target = new OrderServiceImpl(orderRepository(trace));\n    OrderService a = new TraceDecorator(target, trace);\n    OrderService b = new UpperDecorator(a);\n    OrderService c = new PrefixDecorator(b, \"[상품] \");\n    return c;\n}\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\n[상품] PENCIL\n\n$ curl -s 'localhost:8080/proxy/chain?name=orderService'\n빈:      study.adv.proxy.PrefixDecorator\n  안의 target: study.adv.proxy.UpperDecorator\n    안의 target: study.adv.proxy.TraceDecorator\n      안의 target: study.adv.app.OrderServiceImpl\n\n--   세 겹이 차례로 손댔다\n--   5.2 절에서 본 그 체인이다\n\n\n-- 순서를 바꾸면 결과가 바뀐다\n\nOrderService b = new PrefixDecorator(a, \"[상품] \");\nOrderService c = new UpperDecorator(b);\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\n[상품] PENCIL\n\n// 접두사를 소문자로 두면\nOrderService b = new PrefixDecorator(a, \"[item] \");\nOrderService c = new UpperDecorator(b);\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\n[ITEM] PENCIL\n\n// 반대로 하면\nOrderService b = new UpperDecorator(a);\nOrderService c = new PrefixDecorator(b, \"[item] \");\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\n[item] PENCIL\n\n--   설정 두 줄의 순서가 결과를 바꿨다\n--   9.4 절에서 이 순서를 숫자로 정한다\n\n\n-- 통제는 못 쌓는다\n\nOrderService a = new PermissionProxy(target);\nOrderService b = new UpperDecorator(a);      // a 가 던지면 여기까지 안 온다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -H 'X-User: guest' \\\n    'localhost:8080/find?itemId=pencil'\n403\n\n$ grep -c '고치기 전' logs/app.log\n0\n\n--   위쪽 데코레이터가 아예 안 돌았다\n--   막는 것은 다음에 넘길 게 없다\n\n\n-- 널을 안 다루면\n\npublic String find(String itemId) {\n    String result = target.find(itemId);\n    return result.toUpperCase();          // null 이면 터진다\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/find?itemId=없는것'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -2\njava.lang.NullPointerException: Cannot invoke \"String.toUpperCase()\"\n  because \"result\" is null\n\n$ grep -n 'return null' src/main/java/study/adv/app/OrderRepositoryImpl.java\n18:        return null;\n\n--   원본은 정상이다\n--   감싸는 쪽이 안 다뤘다\n--   2.2 절의 요구사항 ② 를 어겼다\n\n\n-- 고친다\n\npublic String find(String itemId) {\n    String result = target.find(itemId);\n    return result == null ? null : result.toUpperCase();\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/find?itemId=없는것'\n200\n$ curl -s 'localhost:8080/find?itemId=없는것'\n\n--   빈 응답이다\n--   원본과 같아졌다\n\n\n-- 깊으면 못 읽는다\n\n@Bean\npublic OrderService orderService(LogTrace trace) {\n    OrderService s = new OrderServiceImpl(orderRepository(trace));\n    s = new TraceDecorator(s, trace);\n    s = new TimeDecorator(s);\n    s = new UpperDecorator(s);\n    s = new PrefixDecorator(s, \"[상품] \");\n    s = new CacheProxy(s);\n    return s;\n}\n\n$ curl -s 'localhost:8080/proxy/chain?name=orderService'\n빈:      study.adv.proxy.CacheProxy\n  안의 target: study.adv.proxy.PrefixDecorator\n    안의 target: study.adv.proxy.UpperDecorator\n      안의 target: study.adv.proxy.TimeDecorator\n        안의 target: study.adv.proxy.TraceDecorator\n          안의 target: study.adv.app.OrderServiceImpl\n\n$ curl -s 'localhost:8080/find?itemId=pencil'\n[상품] PENCIL\n\n$ curl -s -o /dev/null 'localhost:8080/find?itemId=pencil'\n$ grep -A14 'IllegalState' logs/app.log 2>/dev/null | grep -c 'Decorator\\|Proxy'\n0\n\n--   여섯 겹이다\n--   어디서 대문자가 됐는지 로그로만 안다\n\n\n-- 스택으로 본다\n\n$ curl -s -o /dev/null 'localhost:8080/find?itemId=ex'\n$ grep -A10 'IllegalStateException' logs/app.log | head -8\njava.lang.IllegalStateException: 예외 발생!\n\tat study.adv.app.OrderServiceImpl.find(OrderServiceImpl.java:22)\n\tat study.adv.proxy.TraceDecorator.find(TraceDecorator.java:24)\n\tat study.adv.proxy.TimeDecorator.find(TimeDecorator.java:18)\n\tat study.adv.proxy.UpperDecorator.find(UpperDecorator.java:16)\n\tat study.adv.proxy.PrefixDecorator.find(PrefixDecorator.java:17)\n\tat study.adv.proxy.CacheProxy.find(CacheProxy.java:21)\n\tat study.adv.app.OrderController.find(OrderController.java:26)\n\n--   여섯 겹이 그대로 보인다\n--   4.8 절의 람다 프레임보다는 읽기 낫다\n\n\n-- 이름을 정리한다\n\n$ printf '%-16s %-18s %s\\n' \\\n  '통제'      '안 부를 수 있음'  '권한, 잠금' \\\n  '캐시'      '이번만 안 부름'   '결과 보관' \\\n  '지연'      '늦게 부름'        '무거운 초기화' \\\n  '덧붙이기'  '늘 부름'          '로그, 시간, 변환' \\\n  '어댑터'    '다른 타입으로'    '얼굴이 바뀜'\n\n통제             안 부를 수 있음      권한, 잠금\n캐시             이번만 안 부름       결과 보관\n지연             늦게 부름            무거운 초기화\n덧붙이기         늘 부름              로그, 시간, 변환\n어댑터           다른 타입으로        얼굴이 바뀜\n\n--   앞의 셋을 프록시, 넷째를 데코레이터라 부른다\n--   다섯째는 얼굴이 바뀌니 아예 다른 것이다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -2\n빈 이름:   orderService\n주입된 것: study.adv.proxy.OrderServiceProxy\n\n$ git add -A && git commit -q -m 'feat: v6 데코레이터' && git tag v6-decorator\n\n--   5.5 절에서 세 버전에 다 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '통제'      '아예 안 부름' \\\n  '캐시'      '세 번에 한 번' \\\n  '덧붙이기'  '세 번 다 부름' \\\n  '결과 수정' '부르는 쪽은 모름' \\\n  '겹치기'    '차례로 손댐' \\\n  '순서'      '결과가 바뀜' \\\n  '통제 위'   '안 돎' \\\n  '널'        '감싸는 쪽 책임' \\\n  '여섯 겹'   '스택에는 보임'\n\n통제                       아예 안 부름\n캐시                       세 번에 한 번\n덧붙이기                   세 번 다 부름\n결과 수정                  부르는 쪽은 모름\n겹치기                     차례로 손댐\n순서                       결과가 바뀜\n통제 위                    안 돎\n널                         감싸는 쪽 책임\n여섯 겹                    스택에는 보임",
+   "note": "**통제는 `403` 에 저장 0 건, 캐시는 세 번 불러 원본 한 번, 덧붙이기는 세 번 다** 부른다.\n\n**업무 코드에 `toUpperCase` 가 없는데 응답이 `PENCIL` 로 나와 부르는 쪽은 바뀐 걸** 모른다.\n\n**설정 두 줄의 순서에 따라 `[ITEM] PENCIL` 과 `[item] PENCIL` 로** 갈린다.\n\n**막는 프록시 위에 데코레이터를 얹으면 `고치기 전` 이 0 건으로 아예 안** 돈다.\n\n**여섯 겹을 쌓으면 어디서 바뀌었는지 로그로만 알고 스택 트레이스에는 여섯 줄이 그대로** 보인다."
+  }
+ ],
+ "recap": [
+  "**의도가** 갈린다.",
+  "**통제는 안** 부른다.",
+  "**캐시는 이번만** 안 부른다.",
+  "**덧붙이기는 늘** 부른다.",
+  "**결과를** 고친다.",
+  "**부르는 쪽은** 모른다.",
+  "**순서가** 바꾼다.",
+  "**널은 내** 책임이다.",
+  "**깊으면 못** 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "셋을 다 만든다.",
+   "done_when": "원본 호출 횟수를 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "결과를 고쳐 본다.",
+   "done_when": "부르는 쪽이 모르는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "순서를 바꿔 본다.",
+   "done_when": "결과가 달라진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "널을 흘려 본다.",
+   "done_when": "감싸는 쪽에서 터지는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "통제와 덧붙이기의 차이는?",
+   "a": "원본을 아예 안 부를 수 있느냐 늘 부르느냐다."
+  },
+  {
+   "q": "결과를 고치면 부르는 쪽이 아나?",
+   "a": "타입이 같아 모른다. 로그로만 알 수 있다."
+  },
+  {
+   "q": "겹치는 순서가 왜 중요한가?",
+   "a": "차례로 손대므로 순서가 결과를 바꾼다."
+  },
+  {
+   "q": "막는 프록시 위의 데코레이터는?",
+   "a": "예외가 나면 아예 돌지 않는다."
+  },
+  {
+   "q": "널 처리는 누구 책임인가?",
+   "a": "감싸는 쪽이다. 원본은 정상인데 감싸는 쪽이 터진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "데코레이터",
+   "def": "원본을 반드시 부르고 앞뒤나 결과에 무언가를 더하는 것."
+  },
+  {
+   "term": "접근 통제 프록시",
+   "def": "조건에 따라 원본을 아예 부르지 않을 수 있는 프록시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Decorator",
+   "url": "https://refactoring.guru/design-patterns/decorator",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

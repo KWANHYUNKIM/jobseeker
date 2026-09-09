@@ -275,7 +275,7 @@
           "title": "구체 클래스 기반",
           "summary": "인터페이스가 없을 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -283,7 +283,7 @@
           "title": "데코레이터",
           "summary": "기능을 덧붙인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
