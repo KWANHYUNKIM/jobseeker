@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "subquery",
+ "no": "4.14",
+ "chapter": 4,
+ "title": "서브 쿼리",
+ "summary": "from 절이 안 되는 이유.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "where 와 select 에 쓴다.",
+  "별칭을 나눈다.",
+  "from 절의 대안을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.13절까지 조인으로** 풀었다. **조인으로 안 되는 걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "서브 쿼리가 갈 수 있는 자리",
+   "ascii": "   three places a subquery can go, and whether jpql allows it\n\n   in the where clause    yes, this is the common case\n   in the select clause   yes, one value per row\n   in the from clause     no, jpql has no inline view\n\n   the third line is a limit of jpql itself, not of querydsl",
+   "note": "**셋째는 Querydsl 이 아니라 JPQL 의** 한계다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JPAExpressions 로 안쪽을 만든다",
+   "md": "**팩토리가 따로** 있다.\n\n> **`JPAExpressions.select(...)`** 다.\n> **`queryFactory` 가** 아니다.\n> **실행하지 않고 표현식만** 만든다.\n\n**별칭을 나눠야** 한다.\n\n> **바깥과 안이 같으면** 섞인다.\n> **4.2절에서 예고한** 것이다.\n> **`new QMember(\"memberSub\")`** 다.\n\n**`select` 절에도** 쓴다.\n\n> **행마다 값 하나를** 붙인다.\n> **평균 같은 걸 옆에** 단다.\n> **아래에서** 만든다.\n\n**`from` 절은 안** 된다.\n\n> **JPQL 에 인라인 뷰가** 없다.\n> **1.2절에서 말한 그** 한계다.\n> **⑭ 8.6절의 네이티브가 마지막 수단**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "from 절 대신",
+   "ascii": "   what to do instead of a from clause subquery\n\n   join it            rewrite as a join, usually possible\n   two queries        run the inner one, feed the result to the outer\n   a native query     when the shape truly needs an inline view\n\n   the first one is the answer far more often than people expect",
+   "note": "**첫째로 풀리는 경우가 생각보다** 많다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "별칭이 같으면 상관 서브쿼리가 된다",
+   "md": "**바깥 행을 참조하게** 된다.\n\n> **안쪽이 바깥 별칭을 그대로** 쓴다.\n> **행마다 안쪽이 다시** 돈다.\n> **결과가 조용히** 달라진다.\n\n**예외가 안** 난다.\n\n> **문법상 맞는 문장**이다.\n> **4.2절의 자기 조인 실수와 같은 종류**다.\n> **아래에서 둘을 비교**한다.\n\n**상관 서브쿼리 자체는 정당한 도구**다.\n\n> **\"자기 팀 평균보다 많은\" 같은 것**이다.\n> **일부러 별칭을 쓸 때는 맞**다.\n> **의도인지 실수인지가 문제**다.\n\n**`in`·`exists` 도 같은** 식이다.\n\n> **`JPAExpressions` 로 안쪽을** 만든다.\n> **`notIn`·`notExists` 도** 있다.\n> **아래에서 다** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 나이가 가장 많은 회원\n\n@Test\nvoid 최대_나이() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    List<Member> r = queryFactory\n            .selectFrom(member)\n            .where(member.age.eq(\n                    JPAExpressions.select(sub.age.max()).from(sub)))\n            .fetch();\n    r.forEach(m -> System.out.println(m.getUsername() + \" \" + m.getAge()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age = (\n        select\n            max(memberSub.age)\n        from\n            Member memberSub\n    ) */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age=(\n            select\n                max(m2_0.age)\n            from\n                member m2_0\n        )\nm4 40\n\n--   별칭이 memberSub 과 member1 로 나뉘었다\n--   SQL 에서는 m1_0 과 m2_0 이다\n\n\n-- 평균 이상\n\n@Test\nvoid 평균_이상() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    List<String> r = queryFactory\n            .select(member.username)\n            .from(member)\n            .where(member.age.goe(\n                    JPAExpressions.select(sub.age.avg()).from(sub)))\n            .fetch();\n    System.out.println(r);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age >= (\n        select\n            avg(memberSub.age)\n        from\n            Member memberSub\n    ) */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>=(\n            select avg(m2_0.age) from member m2_0\n        )\n[m3, m4, m6, m7, m9, m10]\n\n--   4.8절에서 평균이 23.5 였다\n\n\n-- 별칭을 안 나누면\n\n@Test\nvoid 별칭_같음() {\n    em.clear();\n    List<String> r = queryFactory\n            .select(member.username)\n            .from(member)\n            .where(member.age.goe(\n                    JPAExpressions.select(member.age.avg()).from(member)))\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age >= (\n        select\n            avg(member1.age)\n        from\n            Member member1\n    ) */\n\nHibernate:\n    select m1_0.username from member m1_0\n    where m1_0.age>=(select avg(m2_0.age) from member m2_0)\n건수: 6\n\n--   여기서는 우연히 같았다\n--   JPQL 에 member1 이 두 번이다\n--   하이버네이트가 안쪽을 새로 붙였다\n\n\n-- 상관 서브쿼리를 일부러 쓴다\n\n@Test\nvoid 상관() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    List<String> r = queryFactory\n            .select(member.username)\n            .from(member)\n            .where(member.age.gt(\n                    JPAExpressions.select(sub.age.avg())\n                            .from(sub)\n                            .where(sub.team.eq(member.team))))\n            .fetch();\n    System.out.println(r);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age > (\n        select\n            avg(memberSub.age)\n        from\n            Member memberSub\n        where\n            memberSub.team = member1.team\n    ) */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>(\n            select\n                avg(m2_0.age)\n            from\n                member m2_0\n            where\n                m2_0.team_id=m1_0.team_id\n        )\n[m3, m4, m7]\n\n--   안쪽이 바깥 별칭을 참조한다\n--   팀 평균보다 많은 회원이다\n--   전체 평균이었으면 6명이었다\n\n\n-- in 서브쿼리\n\n@Test\nvoid in_서브() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    List<String> r = queryFactory\n            .select(member.username)\n            .from(member)\n            .where(member.age.in(\n                    JPAExpressions.select(sub.age)\n                            .from(sub)\n                            .where(sub.age.gt(20))))\n            .fetch();\n    System.out.println(r);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age in (\n        select\n            memberSub.age\n        from\n            Member memberSub\n        where\n            memberSub.age > ?1\n    ) */\n\nHibernate:\n    select m1_0.username from member m1_0\n    where m1_0.age in (\n        select m2_0.age from member m2_0 where m2_0.age>?\n    )\n[m3, m4, m6, m7, m10]\n\n--   4.3절의 in 과 달리 자리를 안 펼친다\n\n\n-- exists\n\n@Test\nvoid exists() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    List<String> r = queryFactory\n            .select(team.name)\n            .from(team)\n            .where(JPAExpressions.selectOne()\n                    .from(sub)\n                    .where(sub.team.eq(team), sub.age.gt(35))\n                    .exists())\n            .fetch();\n    System.out.println(r);\n}\n\n/* select\n    team.name\nfrom\n    Team team\nwhere\n    exists (\n        select\n            1\n        from\n            Member memberSub\n        where\n            memberSub.team = team\n            and memberSub.age > ?1\n    ) */\n\nHibernate:\n    select\n        t1_0.name\n    from\n        team t1_0\n    where\n        exists(\n            select\n                1\n            from\n                member m1_0\n            where\n                m1_0.team_id=t1_0.team_id\n                and m1_0.age>?\n        )\n[teamA]\n\n--   selectOne 이 select 1 이 됐다\n\n\n-- select 절에 쓴다\n\n@Test\nvoid select_서브() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    queryFactory\n            .select(member.username,\n                    JPAExpressions.select(sub.age.avg()).from(sub))\n            .from(member)\n            .limit(3)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %.1f%n\",\n                    t.get(member.username),\n                    t.get(1, Double.class)));\n}\n\n/* select\n    member1.username,\n    (\n        select\n            avg(memberSub.age)\n        from\n            Member memberSub\n    )\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        (select avg(m2_0.age) from member m2_0)\n    from\n        member m1_0\n    fetch first ? rows only\nm1   23.5\nm2   23.5\nm3   23.5\n\n--   행마다 같은 값이 붙었다\n--   상관이 아니라 상수처럼 쓰였다\n\n\n-- from 절은 안 된다\n\n// queryFactory.select(...)\n//     .from(JPAExpressions.select(...).from(member))\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: no suitable method found for from(JPQLQuery<Integer>)\n\n--   컴파일에서 막힌다\n--   JPQL 에 인라인 뷰가 없다\n\n\n-- 조인으로 바꾼다\n\n// 하고 싶었던 것: 팀별 평균 나이를 회원 옆에 붙이기\n\n@Test\nvoid 조인으로() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    queryFactory\n            .select(member.username,\n                    JPAExpressions.select(sub.age.avg())\n                            .from(sub)\n                            .where(sub.team.eq(member.team)))\n            .from(member)\n            .where(member.team.isNotNull())\n            .limit(3)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %.1f%n\",\n                    t.get(member.username), t.get(1, Double.class)));\n}\n\n/* select\n    member1.username,\n    (\n        select\n            avg(memberSub.age)\n        from\n            Member memberSub\n        where\n            memberSub.team = member1.team\n    )\nfrom\n    Member member1\nwhere\n    member1.team is not null */\n\nHibernate:\n    select\n        m1_0.username,\n        (select avg(m2_0.age) from member m2_0\n         where m2_0.team_id=m1_0.team_id)\n    from\n        member m1_0\n    where\n        m1_0.team_id is not null\n    fetch first ? rows only\nm1   25.0\nm2   25.0\nm3   25.0\n\n--   from 절 없이 됐다\n--   행마다 서브쿼리가 도는 건 감수한다\n\n\n-- 쿼리 둘로 나눠도 된다\n\n@Test\nvoid 두_쿼리() {\n    em.clear();\n    Double avg = queryFactory.select(member.age.avg())\n            .from(member).fetchOne();\n\n    List<String> r = queryFactory.select(member.username)\n            .from(member)\n            .where(member.age.goe(avg))\n            .fetch();\n    System.out.println(avg + \" 이상: \" + r);\n}\n\n/* select avg(member1.age) from Member member1 */\nHibernate: select avg(m1_0.age) from member m1_0\n/* select member1.username from Member member1\n   where member1.age >= ?1 */\nHibernate: select m1_0.username from member m1_0 where m1_0.age>=?\nTRACE binding parameter (1:DOUBLE) <- [23.5]\n23.5  이상: [m3, m4, m6, m7, m9, m10]\n\n--   쿼리가 둘이지만 문장이 단순하다\n--   값이 로그에 보인다\n\n\n-- 정리\n\n$ printf '%-16s %-8s %s\\n' \\\n  'where'   '가능'  'eq, in, exists' \\\n  'select'  '가능'  '행마다 값 하나' \\\n  'from'    '불가'  'JPQL 의 한계' \\\n  '대안 1'  '조인'  '대개 이걸로 된다' \\\n  '대안 2'  '두 쿼리' '값을 먼저 구한다' \\\n  '대안 3'  '네이티브' '⑭ 8.6절'\n\nwhere      가능     eq, in, exists\nselect     가능     행마다 값 하나\nfrom       불가     JPQL 의 한계\n대안 1     조인     대개 이걸로 된다\n대안 2     두 쿼리  값을 먼저 구한다\n대안 3     네이티브 ⑭ 8.6절\n\n--   4.15절에서 case 와 상수를 본다",
+   "note": "**별칭을 나누면 JPQL 이 `member1`/`memberSub`, SQL 이 `m1_0`/`m2_0` 으로** 갈린다.\n\n**같은 별칭을 써도 하이버네이트가 안쪽에 새 별칭을 붙여 여기선 결과가 같았지만 JPQL 에 `member1` 이 두 번** 나온다.\n\n**상관 서브쿼리는 `m2_0.team_id=m1_0.team_id` 가 붙어 결과가 6명에서 3명으로** 달라진다.\n\n**`selectOne()` 이 `select 1`, `exists` 가 그대로** 나간다.\n\n**`from` 절 서브쿼리는 `no suitable method found for from(JPQLQuery<Integer>)` 로 컴파일에서** 막힌다."
+  }
+ ],
+ "recap": [
+  "**`JPAExpressions` 로** 만든다.",
+  "**별칭을 나눈**다.",
+  "**같으면 상관이** 된다.",
+  "**예외가 안** 난다.",
+  "**`in`·`exists` 도** 된다.",
+  "**`select` 절에도** 쓴다.",
+  "**`from` 절은 안** 된다.",
+  "**조인으로 대개** 풀린다.",
+  "**두 쿼리도** 답이다."
+ ],
+ "drills": [
+  {
+   "task": "최대 나이를 서브쿼리로 찾는다.",
+   "done_when": "별칭 둘을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "상관 서브쿼리를 만든다.",
+   "done_when": "결과가 달라지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`exists` 를 쓴다.",
+   "done_when": "`select 1` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`from` 절을 시도한다.",
+   "done_when": "컴파일 실패를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서브쿼리는 무엇으로 만드나?",
+   "a": "`JPAExpressions` 다."
+  },
+  {
+   "q": "별칭을 나눠야 하는 이유는?",
+   "a": "같으면 상관 서브쿼리가 되어 의미가 달라진다."
+  },
+  {
+   "q": "`from` 절 서브쿼리가 안 되는 이유는?",
+   "a": "JPQL 에 인라인 뷰가 없기 때문이다."
+  },
+  {
+   "q": "그 대안 셋은?",
+   "a": "조인으로 바꾸기, 쿼리 둘로 나누기, 네이티브 쿼리다."
+  },
+  {
+   "q": "`select` 절 서브쿼리는?",
+   "a": "된다. 행마다 값 하나가 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JPAExpressions",
+   "def": "실행하지 않고 서브쿼리 표현식만 만드는 팩토리."
+  },
+  {
+   "term": "상관 서브쿼리",
+   "def": "바깥 행을 참조해 행마다 다시 계산되는 서브쿼리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "join-fetch",
+ "no": "4.13",
+ "chapter": 4,
+ "title": "페치 조인",
+ "summary": "N+1 을 여기서도 만난다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "낱말 하나를 붙인다.",
+  "select 절이 바뀌는 걸 본다.",
+  "컬렉션의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.10절에서 조인해도 쿼리가 3개** 였다. **낱말 하나를** 더한다."
+  },
+  {
+   "type": "figure",
+   "caption": "낱말 하나가 옮기는 것",
+   "ascii": "   one extra word, and what it moves\n\n   join            the team is joined, but not selected\n   join fetchJoin  the team columns join the select list\n\n   the join was already there; only the select list changed",
+   "note": "**조인은 이미 있었고 `select` 만** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조인은 조건을 위한 것이고 페치는 값을 위한 것이다",
+   "md": "**`join` 은 `where` 를 위한** 것이다.\n\n> **조건을 걸 표를 붙인**다.\n> **`select` 에는 안** 들어간다.\n> **4.10절에서 확인**했다.\n\n**`fetchJoin` 은 값을 같이** 가져온다.\n\n> **그 표의 컬럼이 `select` 에** 붙는다.\n> **프록시가 아니라 진짜 객체**가 온다.\n> **① 10.4절의 그것**이다.\n\n**⑭ 5.13절과 같은 문제**다.\n\n> **거기는 `@EntityGraph` 로** 풀었다.\n> **여기는 낱말 하나**다.\n> **결과 SQL 은 거의** 같다.\n\n**별칭이 있어야** 한다.\n\n> **`join(member.team, team).fetchJoin()`** 이다.\n> **묵시적 조인에는 못** 붙인다.\n> **4.10절의 이유가 여기서도** 통한다."
+  },
+  {
+   "type": "figure",
+   "caption": "컬렉션을 페치하면",
+   "ascii": "   what a collection fetch does to the row count\n\n   two teams alone         two rows\n   two teams, fetch members seven rows, one per member\n   with a limit of one     the limit cuts rows, not teams\n\n   so hibernate reads everything and cuts in memory instead",
+   "note": "**`limit` 이 팀이 아니라 행을** 자른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컬렉션 페치와 페이징은 같이 못 쓴다",
+   "md": "**행이 늘어난**다.\n\n> **4.10절에서 팀 둘이 7행이** 됐다.\n> **`limit 1` 이 팀 하나가** 아니다.\n> **엉뚱한 결과가** 나온다.\n\n**하이버네이트가 메모리로** 옮긴다.\n\n> **`limit` 을 빼고 전부** 읽는다.\n> **`HHH90003004` 경고가** 뜬다.\n> **⑭ 5.13절에서 본 그 벽**이다.\n\n**둘 이상 컬렉션은 아예 안** 된다.\n\n> **`MultipleBagFetchException`** 이다.\n> **행이 곱절로** 는다.\n> **하나만 페치하고 나머지는 배치**다.\n\n**해법도** 같다.\n\n> **`to-one` 만 페치**한다.\n> **컬렉션은 `default_batch_fetch_size`** 다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 페치 없이\n\n@Test\nvoid 페치_없이() {\n    em.clear();\n    long n = counter.count(() -> {\n        List<Member> members = queryFactory.selectFrom(member)\n                .join(member.team, team)\n                .fetch();\n        members.forEach(m -> m.getTeam().getName());\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n쿼리 3개\n\n--   4.10절과 같다\n\n\n-- 낱말 하나를 붙인다\n\n@Test\nvoid 페치() {\n    em.clear();\n    long n = counter.count(() -> {\n        List<Member> members = queryFactory.selectFrom(member)\n                .join(member.team, team).fetchJoin()\n                .fetch();\n        members.forEach(m -> m.getTeam().getName());\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    fetch member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n쿼리 1개\n\n--   JPQL 에 fetch 가 생겼다\n--   SQL 의 select 에 팀 컬럼이 붙었다\n--   join 절은 그대로다\n\n\n-- 두 SQL 을 비교한다\n\n$ diff no-fetch.sql fetch.sql\n3a4,5\n>         t1_0.team_id,\n>         t1_0.name,\n\n--   조인은 그대로고 select 만 늘었다\n\n\n-- 프록시가 아닌지 본다\n\n@Test\nvoid 프록시_여부() {\n    em.clear();\n    Member a = queryFactory.selectFrom(member)\n            .join(member.team, team)\n            .where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"페치 없이: \" + a.getTeam().getClass().getSimpleName());\n\n    em.clear();\n    Member b = queryFactory.selectFrom(member)\n            .join(member.team, team).fetchJoin()\n            .where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"페치 있고: \" + b.getTeam().getClass().getSimpleName());\n}\n\nHibernate: select ... join team t1_0 on ... where m1_0.username=?\n페치 없이: Team$HibernateProxy$k2Lm9\nHibernate: select m1_0.member_id, ..., t1_0.team_id, t1_0.name, ...\n           from member m1_0 join team t1_0 on ... where m1_0.username=?\n페치 있고: Team\n\n--   3.2절에서 본 프록시가 사라졌다\n\n\n-- 외부 페치 조인\n\n@Test\nvoid 외부_페치() {\n    em.clear();\n    List<Member> r = queryFactory.selectFrom(member)\n            .leftJoin(member.team, team).fetchJoin()\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n    System.out.println(\"팀 없는 회원의 팀: \" + r.stream()\n            .filter(m -> m.getTeam() == null).count() + \"명\");\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  left join\n    fetch member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age,\n        t1_0.team_id, t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 10\n팀 없는 회원의 팀: 3명\n\n--   4.12절의 leftJoin 에도 붙는다\n\n\n-- 묵시적 조인에는 못 붙인다\n\n// queryFactory.selectFrom(member)\n//     .where(member.team.name.eq(\"teamA\"))\n//     .fetchJoin()\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol: method fetchJoin()\n\n--   붙일 조인이 없다\n--   4.10절의 이유다\n\n\n-- 컬렉션을 페치한다\n\n@Test\nvoid 컬렉션_페치() {\n    em.clear();\n    List<Team> teams = queryFactory.selectFrom(team)\n            .join(team.members, member).fetchJoin()\n            .fetch();\n    System.out.println(\"건수: \" + teams.size());\n    teams.forEach(t -> System.out.println(\n            t.getName() + \" \" + t.getMembers().size() + \"명\"));\n}\n\n/* select\n    team\nfrom\n    Team team\n  inner join\n    fetch team.members as member1 */\n\nHibernate:\n    select\n        t1_0.team_id,\n        m1_0.team_id,\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.username,\n        t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0 on t1_0.team_id=m1_0.team_id\n건수: 2\nteamA 4명\nteamB 3명\n\n--   행은 7이었는데 팀은 2다\n--   하이버네이트가 묶어 줬다\n--   4.10절에서 distinct 가 필요했던 것과 다르다\n\n\n-- 페이징을 걸면\n\n@Test\nvoid 컬렉션_페치_페이징() {\n    em.clear();\n    List<Team> teams = queryFactory.selectFrom(team)\n            .join(team.members, member).fetchJoin()\n            .limit(1)\n            .fetch();\n    System.out.println(\"건수: \" + teams.size());\n}\n\nWARN  HHH90003004: firstResult/maxResults specified with collection fetch;\n      applying in memory\n\n/* select\n    team\nfrom\n    Team team\n  inner join\n    fetch team.members as member1 */\n\nHibernate:\n    select\n        t1_0.team_id, m1_0.team_id, m1_0.member_id,\n        m1_0.age, m1_0.username, t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0 on t1_0.team_id=m1_0.team_id\n건수: 1\n\n--   limit 이 SQL 에서 사라졌다\n--   전부 읽고 메모리에서 잘랐다\n--   ⑭ 5.13절과 같은 경고다\n\n\n-- 컬렉션 둘이면 아예 안 된다\n\n@Test\nvoid 컬렉션_둘() {\n    try {\n        queryFactory.selectFrom(team)\n                .join(team.members, member).fetchJoin()\n                .join(team.projects, project).fetchJoin()\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\":\")[0]);\n    }\n}\n\n예외: MultipleBagFetchException\n말:   cannot simultaneously fetch multiple bags\n\n--   SQL 이 안 나갔다\n\n\n-- 배치로 푼다\n\n# application.yml\nspring:\n  jpa:\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100\n\n@Test\nvoid 배치() {\n    em.clear();\n    long n = counter.count(() -> {\n        List<Team> teams = queryFactory.selectFrom(team)\n                .limit(1)\n                .fetch();\n        teams.forEach(t -> t.getMembers().size());\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select\n    team\nfrom\n    Team team */\n\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0\n    fetch first ? rows only\nHibernate:\n    select\n        m1_0.team_id, m1_0.member_id, m1_0.age, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.team_id = ?\n쿼리 2개\n\n--   limit 이 살아 있다\n--   경고도 없다\n--   ⑭ 5.13절의 그 해법이다\n\n\n-- to-one 은 페치, 컬렉션은 배치\n\n@Test\nvoid 함께() {\n    em.clear();\n    long n = counter.count(() -> {\n        List<Member> members = queryFactory.selectFrom(member)\n                .leftJoin(member.team, team).fetchJoin()\n                .limit(5)\n                .fetch();\n        members.forEach(m -> {\n            if (m.getTeam() != null) m.getTeam().getMembers().size();\n        });\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  left join\n    fetch member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age,\n        t1_0.team_id, t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    fetch first ? rows only\nHibernate:\n    select m1_0.team_id, m1_0.member_id, m1_0.age, m1_0.username\n    from member m1_0 where m1_0.team_id in (?, ?)\n쿼리 2개\n\n--   limit 이 살아 있다\n--   in 에 팀 둘이 들어갔다\n--   ⑭ 5.13절의 결론과 같다\n\n\n-- 정리\n\n$ printf '%-26s %-8s %s\\n' \\\n  'join'                    '3쿼리'  'select 에 안 들어감' \\\n  'join + fetchJoin'        '1쿼리'  'select 에 컬럼이 붙음' \\\n  'leftJoin + fetchJoin'    '1쿼리'  '없는 쪽도 남음' \\\n  '컬렉션 페치'             '1쿼리'  '행이 늘고 묶어 줌' \\\n  '컬렉션 페치 + limit'     '경고'   '메모리에서 자름' \\\n  '컬렉션 둘'               '예외'   'MultipleBagFetch' \\\n  '배치'                    '2쿼리'  'limit 이 살아 있음'\n\njoin                       3쿼리    select 에 안 들어감\njoin + fetchJoin           1쿼리    select 에 컬럼이 붙음\nleftJoin + fetchJoin       1쿼리    없는 쪽도 남음\n컬렉션 페치                1쿼리    행이 늘고 묶어 줌\n컬렉션 페치 + limit        경고     메모리에서 자름\n컬렉션 둘                  예외     MultipleBagFetch\n배치                       2쿼리    limit 이 살아 있음\n\n--   4.14절에서 서브 쿼리를 본다",
+   "note": "**`fetchJoin()` 하나로 쿼리가 3개에서 1개가 되고 `diff` 는 `select` 에 팀 컬럼 둘이 늘었을 뿐**이다.\n\n**연관이 프록시(`Team$HibernateProxy$k2Lm9`)에서 진짜 `Team` 으로** 바뀐다.\n\n**컬렉션 페치는 7행을 팀 2개로 묶어 주지만 `limit` 을 붙이면 `HHH90003004` 와 함께 SQL 에서 `limit` 이** 사라진다.\n\n**컬렉션 둘을 페치하면 `MultipleBagFetchException` 으로 SQL 이 아예 안** 나간다.\n\n**`to-one` 페치 + 배치면 `limit` 이 살아 있고 `in (?, ?)` 한 방으로 2쿼리**다."
+  }
+ ],
+ "recap": [
+  "**낱말 하나가 `select` 를** 바꾼다.",
+  "**조인은 이미** 있었다.",
+  "**프록시가** 사라진다.",
+  "**외부 조인에도** 붙는다.",
+  "**묵시적에는 못** 붙인다.",
+  "**컬렉션은 묶어** 준다.",
+  "**페이징이** 깨진다.",
+  "**컬렉션 둘은** 예외다.",
+  "**배치로** 푼다."
+ ],
+ "drills": [
+  {
+   "task": "`fetchJoin` 을 붙인다.",
+   "done_when": "쿼리가 1개로 주는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 SQL 을 `diff` 한다.",
+   "done_when": "`select` 만 바뀐 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컬렉션에 `limit` 을 건다.",
+   "done_when": "경고를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "배치 사이즈를 준다.",
+   "done_when": "`limit` 이 살아 있는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`join` 과 `fetchJoin` 의 차이는?",
+   "a": "`fetchJoin` 은 그 표의 컬럼을 `select` 에 넣는다."
+  },
+  {
+   "q": "페치하면 연관 객체는?",
+   "a": "프록시가 아니라 실제 엔티티가 온다."
+  },
+  {
+   "q": "묵시적 조인에 `fetchJoin` 을 붙일 수 있나?",
+   "a": "없다. 붙일 조인 표현이 없다."
+  },
+  {
+   "q": "컬렉션 페치에 페이징을 걸면?",
+   "a": "경고와 함께 전부 읽고 메모리에서 자른다."
+  },
+  {
+   "q": "컬렉션 둘을 페치하면?",
+   "a": "`MultipleBagFetchException` 이 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "페치 조인",
+   "def": "조인한 표의 값까지 함께 조회해 연관을 채우는 조인."
+  },
+  {
+   "term": "배치 페치",
+   "def": "연관을 `in` 절로 모아 한 번에 읽는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

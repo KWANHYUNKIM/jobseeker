@@ -260,7 +260,7 @@
           "title": "페치 조인",
           "summary": "N+1 을 여기서도 만난다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.14",
@@ -268,7 +268,7 @@
           "title": "서브 쿼리",
           "summary": "from 절이 안 되는 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.15",
