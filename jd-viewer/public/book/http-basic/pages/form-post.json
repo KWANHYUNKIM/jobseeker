@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "form-post",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "HTML 폼 — POST 전송",
+ "summary": "urlencoded 본문.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "본문 형식을 안다.",
+  "GET 과 무엇이 같고 다른지 안다.",
+  "CSRF 를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절의 같은 폼에 `method` 하나만** 바꾼다. **바이트는 같고 자리만** 옮긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리만 바뀐다",
+   "ascii": "   the same bytes, moved from the url to the body\n\n   GET   /search?q=book&page=2\n         nothing after the blank line\n\n   POST  /search\n         Content-Type: application/x-www-form-urlencoded\n         Content-Length: 15\n\n         q=book&page=2\n\n   the encoding rules are identical, only the location changed",
+   "note": "**인코딩 규칙은 똑같다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "urlencoded 는 쿼리 문법 그대로다",
+   "md": "**`key=value&key=value`** 다.\n\n> **3.3절의 퍼센트 인코딩이 그대로** 적용된다.\n> **공백은 `+`, 진짜 `+` 는 `%2B`** 다.\n> **`&` 와 `=` 도** 피해야 한다.\n\n**`Content-Type` 이 필수**다.\n\n> **없으면 서버가 어떻게 읽을지** 모른다.\n> **브라우저가 자동으로** 붙인다.\n> **`curl -d` 도 이걸 기본으로** 쓴다(5.3절).\n\n**바뀌는 것 넷**\n\n| | GET | POST |\n|---|---|---|\n| 주소로 가리키기 | 된다 | 안 된다 |\n| 로그에 값 | 남는다 | 안 남는다 |\n| 새로고침 | 안전 | 재전송 |\n| 크기 | 8KB 쯤 | 사실상 무제한 |\n\n> **6.1절에서 본 그 표**다.\n> **`action` 의 쿼리가 남는 것도** 차이다(6.2절).\n\n**한글은 세 배 그대로**다.\n\n> **본문이라 414 는 안 나지만 크기는** 같다.\n> **`Content-Length` 로 확인할 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "폼 POST 가 위험한 이유",
+   "ascii": "   why a plain form post is a security problem\n\n   a form on any site may target any url\n   the browser attaches your cookies, because it always does\n   the server sees a normal, authenticated request\n\n   and no preflight happens, because a plain form post is a simple request\n   which is exactly why the token in the body exists",
+   "note": "**단순 요청이라 프리플라이트가 안** 붙는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "다른 사이트의 폼이 내 서버로 온다",
+   "md": "**폼의 `action` 은 어디든 될 수** 있다.\n\n> **악성 페이지가 내 은행 주소로 폼을** 만든다.\n> **사용자가 그 페이지를 열면 자동 제출**된다.\n> **브라우저가 쿠키를 붙인다** — **원래 그러기로 돼** 있다.\n\n**서버는 구분을 못** 한다.\n\n> **정상 로그인 사용자의 정상 요청처럼** 보인다.\n> **5.8절의 프리플라이트도 안 붙는다** — **단순 요청**이라서다.\n\n**그래서 토큰을 넣는다.**\n\n> **서버가 준 값을 숨은 입력으로 같이** 보낸다(6.2절).\n> **다른 사이트는 그 값을 모른다.**\n> **⑩ 에서 이걸 다뤘다.**\n\n**`SameSite` 쿠키가 요즘의 방어**다.\n\n| 값 | 언제 보내나 |\n|---|---|\n| `Strict` | 같은 사이트에서만 |\n| `Lax` | 같은 사이트, 그리고 최상위 GET 이동 |\n| `None` | 언제나. `Secure` 필수 |\n\n> **`Lax` 가 요즘 기본값**이다.\n> **그래서 다른 사이트의 폼 POST 에는 쿠키가 안** 간다.\n> **토큰과 같이 쓰는 게** 정석이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- method 하나만 바꾼다 ---\n\n$ cat post-form.html\n\n<form action=\"http://localhost:9065/search\" method=\"post\">\n  <input name=\"q\" value=\"책 두 권\">\n  <input name=\"page\" value=\"2\">\n  <input name=\"sign\" value=\"a+b\">\n  <input type=\"checkbox\" name=\"tag\" value=\"a\" checked>\n  <input type=\"checkbox\" name=\"tag\" value=\"b\" checked>\n  <button>보내기</button>\n</form>\n\n$ python3 echo.py > /tmp/echo.log 2>&1 & sleep 1\n$ open -a \"Google Chrome\" file://$PWD/post-form.html 2>/dev/null; sleep 4\n$ tail -1 /tmp/echo.log\n\n(브라우저가 보낸 것을 curl 로 재현한다)\n\n$ curl -s -X POST \\\n    --data-urlencode 'q=책 두 권' -d 'page=2' \\\n    --data-urlencode 'sign=a+b' -d 'tag=a' -d 'tag=b' \\\n    http://localhost:9065/search\n\n{\n \"메서드\": \"POST\",\n \"경로\": \"/search\",\n \"타입\": \"application/x-www-form-urlencoded\",\n \"본문\": \"q=%EC%B1%85%20%EB%91%90%20%EA%B6%8C&page=2&sign=a%2Bb&tag=a&tag=b\"\n}\n\n#   6.2절의 쿼리와 같은 문법이다\n\n#   자리만 본문으로 옮겼다\n\n#   sign 의 + 가 %2B 다\n\n# --- 브라우저는 공백을 + 로 쓴다 ---\n\n$ python3 - <<'EOF'\nfrom urllib.parse import quote, quote_plus, parse_qs\nprint(\"curl 방식   \", quote(\"책 두 권\"))\nprint(\"브라우저 방식\", quote_plus(\"책 두 권\"))\nprint()\nfor q in [\"q=%EC%B1%85%20%EB%91%90\", \"q=%EC%B1%85+%EB%91%90\"]:\n    print(q, \"->\", parse_qs(q)[\"q\"])\nEOF\n\ncurl 방식    %EC%B1%85%20%EB%91%90%20%EA%B6%8C\n브라우저 방식 %EC%B1%85+%EB%91%90+%EA%B6%8C\n\nq=%EC%B1%85%20%EB%91%90 -> ['책 두']\nq=%EC%B1%85+%EB%91%90 -> ['책 두']\n\n#   둘 다 같게 읽힌다\n\n#   3.3절의 그 규칙이다\n\n# --- Content-Type 이 없으면 ---\n\n$ curl -s -X POST -H 'Content-Type:' --data-binary 'q=책' \\\n    http://localhost:9065/search \\\n  | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n      print(\"타입:\", d[\"타입\"]); print(\"본문:\", d[\"본문\"])'\n\n타입: (없음)\n본문: q=%EC%B1%85\n\n#   바이트는 갔는데 무엇인지 안 말했다\n\n#   서버가 파싱을 안 할 수도 있다\n\n#   415 를 주는 서버도 있다 (5.4절)\n\n# --- 크기 ---\n\n$ curl -s -o /dev/null -v -X POST \\\n    --data-urlencode 'q=검색어를 아주 길게 적는다' \\\n    http://localhost:9065/search 2>&1 | grep '^> Content-Length'\n\n> Content-Length: 116\n\n$ python3 -c \"\nfrom urllib.parse import quote\ns='검색어를 아주 길게 적는다'\nprint(len(s), '자 ->', len(quote(s)), '바이트')\"\n\n14 자 -> 114 바이트\n\n#   14자가 114바이트다\n\n#   본문이라 414 는 안 난다\n\n#   크기는 그대로다 (3.3절)\n\n# --- 새로고침 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST -d 'q=x' \\\n    http://localhost:9065/search\n\n200\n\n#   브라우저였다면 새로고침에 재전송 경고가 뜬다\n\n#   5.3절의 303 이 그 답이다\n\n# --- 다른 사이트의 폼 ---\n\n$ cat evil.html\n\n<!DOCTYPE html>\n<html><body>\n<h1>사은품 당첨 안내</h1>\n<form id=\"f\" action=\"http://localhost:9065/transfer\" method=\"post\">\n  <input type=\"hidden\" name=\"to\" value=\"attacker\">\n  <input type=\"hidden\" name=\"amount\" value=\"1000000\">\n</form>\n<script>document.getElementById(\"f\").submit()</script>\n</body></html>\n\n$ open -a \"Google Chrome\" file://$PWD/evil.html 2>/dev/null; sleep 4\n$ grep -o '\"POST /transfer[^\"]*\"' /tmp/echo.log | tail -1\n\n\"POST /transfer HTTP/1.1\"\n\n#   내가 안 누른 요청이 갔다\n\n#   스크립트가 자동 제출했다\n\n#   5.8절의 프리플라이트가 안 붙었다\n\n$ grep -c 'OPTIONS /transfer' /tmp/echo.log\n\n0\n\n#   단순 요청이라 그렇다\n\n#   JSON 이었다면 OPTIONS 가 먼저 갔을 것이다\n\n# --- 쿠키가 붙는가 ---\n\n$ cat cookie_srv.py\n\n    def do_GET(self):\n        if self.path == \"/login\":\n            self.send_response(200)\n            self.send_header(\"Set-Cookie\",\n                             \"sid=abc123; Path=/; SameSite=Lax\")\n            self.send_header(\"Content-Length\", \"0\")\n            self.end_headers()\n            return\n        self._echo()\n    def do_POST(self):\n        print(\"쿠키:\", self.headers.get(\"Cookie\", \"(없음)\"))\n        self._echo()\n\n$ python3 cookie_srv.py > /tmp/ck.log 2>&1 & sleep 1\n$ curl -s -c /tmp/jar -o /dev/null http://localhost:9064/login\n$ curl -s -b /tmp/jar -o /dev/null -X POST -d 'to=x' \\\n    http://localhost:9064/transfer\n$ grep '쿠키:' /tmp/ck.log | tail -1\n\n쿠키: sid=abc123\n\n#   curl 은 SameSite 를 안 본다\n\n#   브라우저는 다르다\n\n$ open -a \"Google Chrome\" \\\n    'http://localhost:9064/login' 2>/dev/null; sleep 2\n$ open -a \"Google Chrome\" file://$PWD/evil2.html 2>/dev/null; sleep 4\n$ grep '쿠키:' /tmp/ck.log | tail -1\n\n쿠키: (없음)\n\n#   SameSite=Lax 라 안 붙었다\n\n#   다른 사이트의 POST 다\n\n#   요즘 브라우저 기본값이다\n\n# --- None 이면 붙는다 ---\n\n$ sed -i '' 's/SameSite=Lax/SameSite=None; Secure/' cookie_srv.py\n$ kill %1 2>/dev/null; python3 cookie_srv.py > /tmp/ck2.log 2>&1 & sleep 1\n\n#   Secure 라 http 에서는 아예 저장이 안 된다\n\n#   실험하려면 https 가 필요하다\n\n#   그 자체가 방어의 일부다\n\n# --- 토큰으로 막는다 ---\n\n$ cat csrf_srv.py\n\nTOKENS = set()\n    def do_GET(self):\n        if self.path == \"/form\":\n            t = \"tok-\" + str(len(TOKENS))\n            TOKENS.add(t)\n            b = f'<form method=post action=/transfer>' \\\n                f'<input type=hidden name=csrf value={t}>' \\\n                f'</form>'.encode()\n            ...\n    def do_POST(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = dict(p.split(\"=\") for p in\n                 self.rfile.read(n).decode().split(\"&\") if \"=\" in p)\n        if d.get(\"csrf\") in TOKENS:\n            self._send(200, {\"결과\": \"처리됨\"})\n        else:\n            self._send(403, {\"결과\": \"토큰 없음\"})\n\n$ python3 csrf_srv.py & sleep 1\n$ curl -s -X POST -d 'to=x&amount=1000' http://localhost:9063/transfer\n\n{\"결과\": \"토큰 없음\"}\n\n$ T=$(curl -s http://localhost:9063/form | grep -o 'tok-[0-9]*')\n$ curl -s -X POST -d \"to=x&amount=1000&csrf=$T\" \\\n    http://localhost:9063/transfer\n\n{\"결과\": \"처리됨\"}\n\n#   다른 사이트는 이 값을 모른다\n\n#   6.2절의 숨은 입력이 이 쓰임이다\n\n#   SameSite 와 같이 쓰는 게 정석이다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   파일이 섞이면 형식이 바뀐다",
+   "note": "**같은 폼이 `q=%EC%B1%85%20...&tag=a&tag=b` 로 본문에** 실린다 — 쿼리와 같은 문법이다.\n\n**`Content-Type` 을 비우면 바이트는 가는데 무엇인지 말하지** 않는다.\n\n**다른 사이트의 폼이 자동 제출돼 `POST /transfer` 가 갔고 `OPTIONS` 는 0건**이다.\n\n**`SameSite=Lax` 라 그 요청에는 `쿠키: (없음)`** 이다.\n\n**토큰이 없으면 `토큰 없음`, 있으면 `처리됨`** 이다."
+  }
+ ],
+ "recap": [
+  "**같은 데이터가 본문으로 자리만** 옮긴다.",
+  "**urlencoded 는 쿼리 문법 그대로**다.",
+  "**`Content-Type` 이** 필수다.",
+  "**주소로 못 가리키고 로그에 안** 남는다.",
+  "**새로고침이 재전송을** 부른다.",
+  "**크기 제한이 사실상** 없다.",
+  "**다른 사이트의 폼이 내 서버로** 온다.",
+  "**단순 요청이라 프리플라이트가** 없다.",
+  "**토큰과 `SameSite` 로** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 폼을 GET·POST 로 보낸다.",
+   "done_when": "바이트 위치만 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Content-Type` 을 뺀다.",
+   "done_when": "서버 반응을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "자동 제출 폼을 만든다.",
+   "done_when": "요청이 가는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "CSRF 토큰을 붙인다.",
+   "done_when": "없을 때 403 인 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "urlencoded 본문의 문법은?",
+   "a": "쿼리 문자열과 같다. 퍼센트 인코딩 규칙도 같다."
+  },
+  {
+   "q": "GET 과 POST 폼의 차이 넷은?",
+   "a": "주소 지정, 로그 노출, 새로고침 동작, 크기 한계다."
+  },
+  {
+   "q": "CSRF 가 가능한 이유는?",
+   "a": "폼은 어느 사이트로든 보낼 수 있고 브라우저가 쿠키를 붙이기 때문이다."
+  },
+  {
+   "q": "폼 POST 에 프리플라이트가 없는 이유는?",
+   "a": "단순 요청으로 분류되기 때문이다."
+  },
+  {
+   "q": "`SameSite=Lax` 의 효과는?",
+   "a": "다른 사이트에서 온 POST 에는 쿠키를 붙이지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CSRF",
+   "def": "사용자의 쿠키를 이용해 의도치 않은 요청을 보내게 하는 공격."
+  },
+  {
+   "term": "SameSite",
+   "def": "쿠키를 언제 붙일지 정하는 속성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "WHATWG HTML — Form submission",
+   "url": "https://html.spec.whatwg.org/multipage/form-control-infrastructure.html",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "OWASP — Cross-Site Request Forgery Prevention Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
