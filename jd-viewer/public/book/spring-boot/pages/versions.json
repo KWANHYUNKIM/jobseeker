@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "versions",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "버전과 호환",
+ "summary": "무엇이 무엇을 정하나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "결정 순서를 안다.",
+  "BOM 을 연다.",
+  "바꿔 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 버전 다섯 줄을 손으로** 적었다. **지금은 두 줄인데 누가 정하는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 정하나",
+   "ascii": "   who decides which version, in order\n\n   the boot plugin      pins the boot version itself\n   the dependency mgmt  reads a bom and pins everything else\n   the bom              a list of about a thousand versions\n   your build file      may override any single line\n\n   you only write the first line, and the rest follows",
+   "note": "**내가 쓰는 건 첫 줄뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부트 버전 하나가 나머지를 끌고 온다",
+   "md": "**플러그인에 버전이** 있다.\n\n> **`id 'org.springframework.boot' version '3.3.2'`** 다.\n> **그게 유일하게 내가 적는 숫자**다.\n> **1.3절에서 고정**했다.\n\n**BOM 이 나머지를** 정한다.\n\n> **천 줄 가까운 목록**이다.\n> **잭슨·로그백·톰캣이 다 거기** 있다.\n> **아래에서** 연다.\n\n**스프링 버전도 거기** 있다.\n\n> **부트 3.3 이면 프레임워크 6.1**이다.\n> **내가 못** 고른다.\n> **바꾸면 안 뜰 수** 있다.\n\n**하나만 바꿀 수는** 있다.\n\n> **속성으로 덮어**쓴다.\n> **5.2절에서** 한다.\n> **책임은 내가** 진다."
+  },
+  {
+   "type": "figure",
+   "caption": "맞아야 하는 세 숫자",
+   "ascii": "   three version numbers that must agree\n\n   the jdk that compiles   set by the toolchain\n   the spring framework    decided by the boot version\n   the jakarta namespace   decided by the spring version\n\n   the last one is why javax imports stopped compiling",
+   "note": "**셋째가 `javax` 임포트가 안 되던** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "javax 와 jakarta 는 같이 못 산다",
+   "md": "**이름공간이** 바뀌었다.\n\n> **`javax.servlet` 이 `jakarta.servlet`** 이다.\n> **부트 3부터 후자만** 쓴다.\n> **⑮ 2.1절에서 겪은** 그것이다.\n\n**옛 라이브러리가 안** 붙는다.\n\n> **`javax` 로 컴파일된 JAR** 이다.\n> **클래스를 못** 찾는다.\n> **아래에서 그 오류를** 본다.\n\n**자바 버전도** 걸린다.\n\n> **부트 3은 자바 17 이상**이다.\n> **낮으면 기동에서** 막힌다.\n> **아래에서 확인**한다.\n\n**버전 표를 볼 데가** 있다.\n\n> **부트 문서의 호환 표**다.\n> **1.2절에서 손으로 맞추던 그** 표다.\n> **이제는 안 봐도** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 내가 적는 숫자를 센다\n\n$ grep -n \"version '\" build.gradle\n3:    id 'org.springframework.boot' version '3.3.2'\n4:    id 'io.spring.dependency-management' version '1.1.6'\n\n$ grep -c ':[0-9]' build.gradle\n0\n\n--   의존성 줄에는 버전이 없다\n--   1.2절에서는 다섯이었다\n\n\n-- BOM 을 연다\n\n$ find ~/.gradle/caches -name 'spring-boot-dependencies-3.3.2.pom' | head -1\n/Users/kwanhyun/.gradle/caches/.../spring-boot-dependencies-3.3.2.pom\n\n$ grep -c '<version>' \"$POM\"\n     942\n\n$ grep -A1 'jackson-bom' \"$POM\" | head -4\n        <groupId>com.fasterxml.jackson</groupId>\n        <artifactId>jackson-bom</artifactId>\n        <version>${jackson-bom.version}</version>\n\n$ grep 'jackson-bom.version\\|tomcat.version\\|logback.version' \"$POM\"\n    <jackson-bom.version>2.17.2</jackson-bom.version>\n    <logback.version>1.5.6</logback.version>\n    <tomcat.version>10.1.26</tomcat.version>\n\n--   1.2절에서 손으로 적은 그 숫자들이다\n--   942 개가 적혀 있다\n\n\n-- 스프링 버전도 거기 있다\n\n$ grep 'spring-framework.version' \"$POM\"\n    <spring-framework.version>6.1.11</spring-framework.version>\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep 'spring-core'\n|    +--- org.springframework:spring-core:6.1.11\n\n--   부트 3.3.2 가 프레임워크 6.1.11 을 데려왔다\n\n\n-- 기동 로그에도 버전이 있다\n\n$ ./gradlew bootRun 2>&1 | head -8 | tail -2\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.3.2)\n\n--   배너가 알려 준다\n--   1.4절에서 끄면 이것도 사라진다\n\n\n-- 액츄에이터로도 본다\n\n# application.yml\nmanagement:\n  info:\n    java:\n      enabled: true\n    os:\n      enabled: true\n\n$ curl -s localhost:9090/actuator/info | jq .\n{\n  \"java\": {\n    \"version\": \"21.0.3\",\n    \"vendor\": { \"name\": \"Eclipse Adoptium\" },\n    \"runtime\": { \"name\": \"OpenJDK Runtime Environment\",\n                 \"version\": \"21.0.3+9-LTS\" }\n  },\n  \"os\": { \"name\": \"Mac OS X\", \"version\": \"14.5\", \"arch\": \"aarch64\" }\n}\n\n--   8.4절에서 이 엔드포인트를 다시 본다\n\n\n-- 부트 버전을 낮춰 본다\n\nid 'org.springframework.boot' version '2.7.18'\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'spring-core|tomcat-embed-core'\n|    +--- org.springframework:spring-core:5.3.31\n|    +--- org.apache.tomcat.embed:tomcat-embed-core:9.0.83\n\n--   한 줄을 바꿨더니 전부 바뀌었다\n--   톰캣도 10 에서 9 가 됐다\n\n\n-- 그런데 임포트가 깨진다\n\nimport jakarta.servlet.http.HttpServletRequest;\n\n$ ./gradlew compileJava\n\n> Task :compileJava FAILED\nerror: package jakarta.servlet.http does not exist\nimport jakarta.servlet.http.HttpServletRequest;\n                           ^\n\n--   부트 2.7 은 javax 다\n--   ⑮ 2.1절의 그 분류자 이야기와 같은 뿌리다\n\n\n-- 되돌리고 확인한다\n\nid 'org.springframework.boot' version '3.3.2'\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'jakarta.servlet|javax.servlet'\n|    +--- jakarta.servlet:jakarta.servlet-api:6.0.0\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -c 'javax.servlet'\n0\n\n--   javax 가 하나도 없다\n--   섞어 쓸 수 없다\n\n\n-- 자바 버전이 낮으면\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(11) }\n}\n\n$ ./gradlew bootRun\n\n> Task :compileJava FAILED\nerror: invalid source release: 17\n\n// 또는 이미 빌드된 JAR 를 자바 11 로 돌리면\n$ java -jar build/libs/app.jar\n\nError: LinkageError occurred while loading main class\n  study.boot.BootApplication\n  java.lang.UnsupportedClassVersionError: study/boot/BootApplication has been\n  compiled by a more recent version of the Java Runtime (class file version\n  65.0), this version of the Java Runtime only recognizes class file versions\n  up to 55.0\n\n--   부트 3은 자바 17 이상이다\n--   65.0 이 자바 21, 55.0 이 자바 11 이다\n\n\n-- 하나만 바꿔 본다\n\next['tomcat.version'] = '10.1.20'\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep tomcat-embed-core\n|    +--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26 -> 10.1.20\n\n$ ./gradlew bootRun 2>&1 | grep 'Servlet engine'\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.20]\n\n--   로그에 그대로 나온다\n--   5.2절에서 이걸 다시 한다\n\n\n-- 너무 낮추면 안 뜬다\n\next['tomcat.version'] = '9.0.83'\n\n$ ./gradlew bootRun\n\njava.lang.NoClassDefFoundError: jakarta/servlet/ServletContext\n\n--   톰캣 9는 javax 다\n--   BOM 이 맞춰 주던 걸 내가 깼다\n\n\n-- 지금 무엇이 도는지 확인한다\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Spring Boot ::|Java|Servlet engine'\n :: Spring Boot ::                (v3.3.2)\nINFO ... : Starting BootApplication using Java 21.0.3 with PID 12043\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.26]\n\n$ printf '%-22s %s\\n' \\\n  '내가 적은 것'   '부트 3.3.2, 자바 21' \\\n  '따라온 것'      '스프링 6.1.11' \\\n  '따라온 것'      '톰캣 10.1.26' \\\n  '따라온 것'      '잭슨 2.17.2' \\\n  '따라온 것'      '로그백 1.5.6'\n\n내가 적은 것           부트 3.3.2, 자바 21\n따라온 것              스프링 6.1.11\n따라온 것              톰캣 10.1.26\n따라온 것              잭슨 2.17.2\n따라온 것              로그백 1.5.6\n\n--   1.2절에서 손으로 적던 넷이 따라왔다\n--   2.4절에서 프로젝트 구조를 뜯는다",
+   "note": "**의존성 줄에 버전이 `0` 개이고 BOM 에 `<version>` 이 942개** 있다.\n\n**1.2절에서 손으로 적던 잭슨 2.17.2·톰캣 10.1.26·로그백 1.5.6 이 거기** 있다.\n\n**부트를 2.7.18 로 낮추면 스프링 5.3.31·톰캣 9.0.83 이 되고 `jakarta.servlet` 임포트가** 깨진다.\n\n**자바 11 로 돌리면 `class file version 65.0` 대 `55.0`** 이다.\n\n**톰캣만 9.0.83 으로 내리면 `NoClassDefFoundError: jakarta/servlet/ServletContext`** 다."
+  }
+ ],
+ "recap": [
+  "**내가 적는 건 한 줄**이다.",
+  "**BOM 이 나머지를** 정한다.",
+  "**942개가** 적혀 있다.",
+  "**스프링 버전도 거기** 있다.",
+  "**낮추면 다 같이** 바뀐다.",
+  "**`javax` 와 섞을 수** 없다.",
+  "**자바 17 이상**이다.",
+  "**하나만 바꿀 수** 있다.",
+  "**깨지면 내 책임**이다."
+ ],
+ "drills": [
+  {
+   "task": "BOM 파일을 연다.",
+   "done_when": "버전 수를 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "부트 버전을 낮춘다.",
+   "done_when": "따라 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`jakarta` 임포트를 시도한다.",
+   "done_when": "컴파일 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "톰캣 버전만 바꾼다.",
+   "done_when": "로그에 반영되는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "의존성 버전은 누가 정하나?",
+   "a": "부트가 가리키는 BOM 이 정한다."
+  },
+  {
+   "q": "내가 적는 버전은 몇 개인가?",
+   "a": "부트 플러그인 버전 하나다."
+  },
+  {
+   "q": "부트 버전을 낮추면?",
+   "a": "스프링·톰캣 등이 함께 낮아진다."
+  },
+  {
+   "q": "`javax` 와 `jakarta` 를 섞을 수 있나?",
+   "a": "없다. 부트 3부터는 `jakarta` 만 쓴다."
+  },
+  {
+   "q": "개별 버전을 바꿀 수 있나?",
+   "a": "속성으로 덮어쓸 수 있지만 호환은 내 책임이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BOM",
+   "def": "라이브러리 버전 목록을 모아 둔 의존성 관리 문서."
+  },
+  {
+   "term": "이름공간 이동",
+   "def": "`javax` 에서 `jakarta` 로 패키지가 바뀐 변화."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

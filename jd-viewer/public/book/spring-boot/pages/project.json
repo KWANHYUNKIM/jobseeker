@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "project",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "프로젝트 구조",
+ "summary": "생성기가 만든 것을 뜯는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 생기는지 안다.",
+  "JAR 에 뭐가 들어가는지 안다.",
+  "설정 파일 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절까지 버전** 이야기였다. **파일이 어디에 놓이는지를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "생성기가 만든 것",
+   "ascii": "   what the generator produces, and who reads each part\n\n   build gradle          the build tool\n   src main java         the compiler\n   src main resources    the classpath, at runtime\n   src test java         the test task only\n   gradlew and wrapper   anyone without gradle installed\n\n   only the second and third end up inside the jar",
+   "note": "**JAR 에 들어가는 건 둘째와 셋째뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "resources 는 클래스패스가 된다",
+   "md": "**빌드하면 클래스와 같이** 간다.\n\n> **`build/resources/main` 을** 거친다.\n> **JAR 안에서는 루트**다.\n> **아래에서** 확인한다.\n\n**`application.yml` 이 거기** 있다.\n\n> **기동 때 자동으로** 읽는다.\n> **내 코드가 부르기 전**이다.\n> **7장에서 그 순서를** 본다.\n\n**`static` 은 그냥 준**다.\n\n> **요청이 오면 파일을** 내보낸다.\n> **③ 3장에서 본** 것이다.\n> **컨트롤러가 필요** 없다.\n\n**래퍼가 같이** 온다.\n\n> **그레이들이 없어도** 된다.\n> **버전까지 같이** 고정한다.\n> **1.3절의 고정과 같은 결**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "resources 아래 셋",
+   "ascii": "   three files under resources, and when each is read\n\n   application yml   during startup, before beans are made\n   static and templates  when a request asks for them\n   a properties file you added  only if some code asks for it\n\n   the first one is read before your code runs at all",
+   "note": "**첫째는 내 코드가 돌기 전에** 읽힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "테스트에는 다른 resources 가 있다",
+   "md": "**`src/test/resources` 가 이긴다.**\n\n> **테스트에서는 그쪽을** 읽는다.\n> **1.3절에서 그렇게** 나눴다.\n> **운영 설정이 테스트에 안** 샌다.\n\n**같은 이름이면 헷갈**린다.\n\n> **둘 다 `application.yml`** 이다.\n> **어느 쪽인지 로그로** 본다.\n> **아래에서 확인**한다.\n\n**JAR 안에는 테스트가 안** 들어간다.\n\n> **`src/test` 는 빠**진다.\n> **4.8절에서 열어** 본다.\n> **크기 차이가** 난다.\n\n**패키지 위치가 스캔을** 정한다.\n\n> **2.1절에서 404 를** 봤다.\n> **`main` 클래스를 맨 위에** 둔다.\n> **생성기가 그렇게** 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 생성기가 만든 것\n\n$ tree -L 3 -I 'build|.gradle|.git'\n\n.\n├── build.gradle\n├── gradle\n│   └── wrapper\n│       ├── gradle-wrapper.jar\n│       └── gradle-wrapper.properties\n├── gradlew\n├── gradlew.bat\n├── settings.gradle\n└── src\n    ├── main\n    │   ├── java\n    │   │   └── study\n    │   │       └── boot\n    │   └── resources\n    │       ├── application.yml\n    │       ├── static\n    │       └── templates\n    └── test\n        ├── java\n        └── resources\n\n$ find . -path ./build -prune -o -type f -print | grep -v '\\.git' | wc -l\n      12\n\n--   열두 파일이다\n\n\n-- 그레이들 없이도 빌드된다\n\n$ which gradle\ngradle not found\n\n$ ./gradlew --version | grep Gradle\nGradle 8.8\n\n$ cat gradle/wrapper/gradle-wrapper.properties | grep distributionUrl\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.8-bin.zip\n\n--   래퍼가 버전을 고정한다\n--   ⑪ 2장의 이미지 고정과 같은 발상이다\n\n\n-- 빌드하면 무엇이 생기나\n\n$ ./gradlew build -q\n$ tree build -L 2 -I 'tmp|reports|test-results'\n\nbuild\n├── classes\n│   └── java\n├── libs\n│   ├── app-0.0.1-SNAPSHOT.jar\n│   └── app-0.0.1-SNAPSHOT-plain.jar\n└── resources\n    └── main\n\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff    21M  app-0.0.1-SNAPSHOT.jar\n-rw-r--r--  1 kwanhyun  staff   4.2K  app-0.0.1-SNAPSHOT-plain.jar\n\n--   JAR 가 둘이다\n--   21M 과 4.2K 다\n--   4.7절에서 이 차이를 판다\n\n\n-- resources 가 클래스패스가 된다\n\n$ ls build/resources/main\napplication.yml  static  templates\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | grep 'application.yml'\n      189  09-10-2026 05:00   BOOT-INF/classes/application.yml\n\n--   클래스와 같은 자리에 들어갔다\n--   4.8절에서 이 구조를 다 본다\n\n\n-- 테스트는 안 들어간다\n\n$ ls src/test/java/study/boot/\nBootApplicationTests.java\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | grep -c 'Tests'\n0\n\n--   테스트 클래스가 없다\n\n\n-- 설정 파일을 읽는 순간\n\n# src/main/resources/application.yml\nserver:\n  port: 8081\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8081 (http) with context path '/'\n\n--   내 코드가 아무것도 안 했는데 반영됐다\n--   7장에서 이 순서를 본다\n\n\n-- 테스트에서는 다른 파일을 읽는다\n\n# src/test/resources/application.yml\nserver:\n  port: 0\n\n@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)\nclass PortTest {\n    @Test\n    void 포트() { }\n}\n\n$ ./gradlew test --tests '*PortTest*' -i 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 54211 (http) with context path '/'\n\n--   0 이면 빈 포트를 고른다\n--   운영 설정의 8081 이 아니다\n\n\n-- 어느 파일을 읽었는지 본다\n\n$ curl -s localhost:9090/actuator/env \\\n    | jq -r '.propertySources[].name' | head -6\n\nserver.ports\ncommandLineArgs\nservletContextInitParams\nsystemProperties\nsystemEnvironment\nConfigurationProperty: 'spring.config.location'\napplicationConfig: [classpath:/application.yml]\n\n--   마지막 줄이 그 파일이다\n--   7.12절에서 이 목록 전체를 읽는다\n\n\n-- static 은 그냥 나간다\n\n$ echo '<h1>정적 파일</h1>' > src/main/resources/static/index.html\n$ ./gradlew bootRun &\n$ curl -s localhost:8081/index.html\n<h1>정적 파일</h1>\n\n$ curl -s localhost:8081/\n<h1>정적 파일</h1>\n\n--   컨트롤러가 없다\n--   ③ 3장의 정적 자원 처리다\n\n\n-- 패키지 위치가 스캔을 정한다\n\n$ find src/main/java -name '*.java' | sed 's|src/main/java/||'\nstudy/boot/BootApplication.java\nstudy/boot/HelloController.java\n\n@SpringBootApplication\npublic class BootApplication { }   // study.boot 에 있다\n\n--   컨트롤러가 같은 패키지 아래다\n--   2.1절에서 밖에 두니 404 였다\n\n\n-- 위로 옮기면\n\n// study.BootApplication 으로 옮기면 study.* 를 다 스캔한다\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Mapped'\n0\n$ curl -s localhost:8081/hello\nhello\n\n--   된다\n--   대신 남의 패키지까지 스캔한다\n\n\n-- 이름을 바꿔도 된다\n\n$ mv src/main/resources/application.yml \\\n     src/main/resources/config/application.yml\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8081 (http) with context path '/'\n\n$ curl -s localhost:9090/actuator/env \\\n    | jq -r '.propertySources[].name' | grep applicationConfig\napplicationConfig: [classpath:/config/application.yml]\n\n--   config 폴더도 찾는다\n--   7.12절에서 찾는 자리 넷을 다 본다\n\n\n-- 엉뚱한 데 두면\n\n$ mv src/main/resources/config/application.yml src/main/java/\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   기본 포트로 돌아왔다\n--   java 폴더는 클래스패스에 안 실린다\n--   예외도 경고도 없다\n\n\n-- 정리\n\n$ printf '%-28s %-12s %s\\n' \\\n  'src/main/java'      'JAR 에 들어감' '컴파일됨' \\\n  'src/main/resources' 'JAR 에 들어감' '클래스패스 루트' \\\n  'src/test/*'         '안 들어감'    '테스트에서만' \\\n  'gradle/wrapper'     '안 들어감'    '빌드 도구 고정' \\\n  'build/libs'         '산출물'       'JAR 둘'\n\nsrc/main/java                JAR 에 들어감   컴파일됨\nsrc/main/resources           JAR 에 들어감   클래스패스 루트\nsrc/test/*                   안 들어감      테스트에서만\ngradle/wrapper               안 들어감      빌드 도구 고정\nbuild/libs                   산출물         JAR 둘\n\n--   3.1절에서 부트 이전 방식으로 간다",
+   "note": "**생성기가 만든 파일이 열둘이고 `gradle` 이 안 깔려 있어도 래퍼로** 빌드된다.\n\n**빌드하면 JAR 가 둘 — 21M 과 4.2K** 다.\n\n**`application.yml` 이 JAR 안 `BOOT-INF/classes/` 에 들어가고 테스트 클래스는 `0`** 개다.\n\n**설정 파일을 옮기면 `applicationConfig: [classpath:/config/application.yml]` 로 출처가** 바뀐다.\n\n**`src/main/java` 에 두면 클래스패스에 안 실려 예외 없이 기본 포트로** 돌아간다."
+  }
+ ],
+ "recap": [
+  "**파일 열둘로** 시작한다.",
+  "**래퍼가 도구를** 고정한다.",
+  "**JAR 가** 둘이다.",
+  "**`resources` 가 클래스패스**다.",
+  "**설정을 자동으로** 읽는다.",
+  "**테스트 쪽이** 이긴다.",
+  "**테스트는 JAR 에 안** 들어간다.",
+  "**`static` 은 그냥** 나간다.",
+  "**엉뚱한 데 두면 조용히** 무시된다."
+ ],
+ "drills": [
+  {
+   "task": "프로젝트 파일을 센다.",
+   "done_when": "무엇이 왜 있는지 말했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JAR 안을 들여다본다.",
+   "done_when": "설정 파일 위치를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트용 설정을 따로 둔다.",
+   "done_when": "다른 값이 쓰이는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "설정 파일을 옮긴다.",
+   "done_when": "출처가 바뀌는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JAR 에 들어가는 소스 폴더는?",
+   "a": "`src/main/java` 와 `src/main/resources` 다."
+  },
+  {
+   "q": "`application.yml` 은 언제 읽히나?",
+   "a": "빈을 만들기 전, 기동 초반에 읽힌다."
+  },
+  {
+   "q": "테스트에서는 어느 설정을 쓰나?",
+   "a": "`src/test/resources` 쪽이 우선한다."
+  },
+  {
+   "q": "래퍼가 하는 일은?",
+   "a": "그레이들 설치 없이 정해진 버전으로 빌드하게 한다."
+  },
+  {
+   "q": "설정 파일을 `java` 폴더에 두면?",
+   "a": "클래스패스에 안 실려 조용히 무시된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "클래스패스",
+   "def": "실행 시 클래스와 자원을 찾는 경로."
+  },
+  {
+   "term": "래퍼",
+   "def": "빌드 도구 버전을 프로젝트에 고정해 주는 스크립트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Initializr",
+   "url": "https://start.spring.io/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

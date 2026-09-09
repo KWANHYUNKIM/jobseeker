@@ -1,0 +1,129 @@
+{
+ "book": "spring-boot",
+ "id": "not-magic",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "마법이 아니다",
+ "summary": "조건이 맞으면 등록될 뿐이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조건을 눈으로 본다.",
+  "내가 이기는 걸 확인한다.",
+  "보고서를 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 안 만든 빈이** 있었다. **누가 무슨 근거로 만들었는지를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "자동 구성의 정체",
+   "ascii": "   what an auto configuration really is\n\n   a plain configuration class, listed in a file\n   guarded by conditions that are checked at startup\n   producing beans only when nothing else already did\n\n   there is no reflection trick here, only if statements",
+   "note": "**리플렉션 묘기가 아니라 `if` 문**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "평범한 설정 클래스에 조건이 붙은 것이다",
+   "md": "**`@Configuration` 이 붙어** 있다.\n\n> **② 3장에서 쓰던 그것**이다.\n> **`@Bean` 메서드가** 들어 있다.\n> **특별한 문법이** 없다.\n\n**목록 파일에 이름이** 적혀 있다.\n\n> **JAR 안의 텍스트 파일**이다.\n> **6.2절에서** 연다.\n> **거기 없으면 안** 돈다.\n\n**조건이 앞에** 있다.\n\n> **`@ConditionalOnClass` 같은 것**이다.\n> **기동 때 하나씩** 본다.\n> **맞아야 등록**된다.\n\n**보고서에 다** 남는다.\n\n> **걸린 것과 안 걸린 것 모두**다.\n> **1.3절에서 켰다.**\n> **아래에서 읽는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 빈을 둘이 만들면",
+   "ascii": "   who wins when both sides define the same bean\n\n   your own bean          registered first, from the component scan\n   the auto configuration checks and steps aside\n\n   so the default is a fallback, not an override",
+   "note": "**기본값은 덮어쓰기가 아니라 비켜서기**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 걸린 이유도 보고서에 있다",
+   "md": "**빈이 없다고 헤매지** 않는다.\n\n> **`did not match` 줄을** 읽는다.\n> **어떤 조건에서 떨어졌는지** 나온다.\n> **6.12절에서 그걸** 한다.\n\n**클래스가 없어서일 때가** 많다.\n\n> **의존성을 안 넣은** 것이다.\n> **`OnClassCondition` 이** 찍힌다.\n> **아래에서 확인**한다.\n\n**내가 만들어서일 수도** 있다.\n\n> **`OnBeanCondition` 이** 찍힌다.\n> **의도한 거면 정상**이다.\n> **모르고 그랬으면 사고**다.\n\n**설정 한 줄로 꺼질 수도** 있다.\n\n> **`OnPropertyCondition`** 이다.\n> **6.6절에서** 쓴다.\n> **끈 걸 잊으면 오래** 헤맨다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 자동 구성 클래스를 열어 본다\n\n$ find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar' | head -1\n/Users/kwanhyun/.gradle/caches/.../spring-boot-autoconfigure-3.3.2.jar\n\n$ unzip -p \"$JAR\" org/springframework/boot/autoconfigure/web/servlet/\\\nDispatcherServletAutoConfiguration.class > /dev/null && echo '있다'\n있다\n\n// 소스는 이렇게 생겼다\n@AutoConfiguration(after = ServletWebServerFactoryAutoConfiguration.class)\n@ConditionalOnWebApplication(type = Type.SERVLET)\n@ConditionalOnClass(DispatcherServlet.class)\npublic class DispatcherServletAutoConfiguration {\n\n    @Bean\n    @ConditionalOnMissingBean(name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)\n    public DispatcherServlet dispatcherServlet(\n            WebMvcProperties webMvcProperties) {\n        ...\n    }\n}\n\n--   @Configuration 에 조건이 붙은 것뿐이다\n--   ② 3장에서 쓰던 그 문법이다\n\n\n-- 목록 파일에 이름이 있다\n\n$ unzip -p \"$JAR\" META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | wc -l\n     161\n\n$ unzip -p \"$JAR\" META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | grep -i dispatcherservlet\norg.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration\n\n--   161 개가 후보다\n--   6.2절에서 이 파일을 다시 연다\n\n\n-- 보고서에서 걸린 걸 본다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A4 'DispatcherServletAutoConfiguration matched'\n\n   DispatcherServletAutoConfiguration matched:\n      - @ConditionalOnClass found required class\n        'org.springframework.web.servlet.DispatcherServlet' (OnClassCondition)\n      - found 'session' scope (OnWebApplicationCondition)\n\n   DispatcherServletAutoConfiguration#dispatcherServlet matched:\n      - @ConditionalOnMissingBean (names: dispatcherServlet;\n        types: org.springframework.web.servlet.DispatcherServlet;\n        SearchStrategy: all) did not find any beans (OnBeanCondition)\n\n--   조건 셋이 다 적혀 있다\n--   \"did not find any beans\" 가 핵심이다\n\n\n-- 걸린 것과 안 걸린 것을 센다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c ' matched:'\n     127\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c ' did not match:'\n     285\n\n--   127 이 걸리고 285 가 안 걸렸다\n--   161 개 후보에서 갈렸다\n\n\n-- 안 걸린 이유를 본다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'DataSourceAutoConfiguration:'\n\n   DataSourceAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'javax.sql.DataSource' (OnClassCondition)\n\n--   의존성이 없어서다\n--   6.4절에서 이걸 다시 본다\n\n\n-- 의존성을 넣으면 바뀐다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-jdbc'\n    runtimeOnly 'com.h2database:h2'\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'DataSourceAutoConfiguration matched'\n\n   DataSourceAutoConfiguration matched:\n      - @ConditionalOnClass found required classes\n        'javax.sql.DataSource', 'org.springframework.jdbc.datasource\n        .embedded.EmbeddedDatabaseType' (OnClassCondition)\n\nINFO 12211 --- [           main] com.zaxxer.hikari.HikariDataSource\n     : HikariPool-1 - Starting...\nINFO 12211 --- [           main] com.zaxxer.hikari.HikariDataSource\n     : HikariPool-1 - Start completed.\n\n--   로그에 커넥션 풀이 생겼다\n--   의존성 두 줄이 빈을 만들었다\n\n\n-- 내가 만들면 진다\n\n@Configuration\nclass MyConfig {\n    @Bean\n    DataSource dataSource() {\n        System.out.println(\"내가 만든 DataSource\");\n        return new DriverManagerDataSource(\n                \"jdbc:h2:mem:mine\", \"sa\", \"\");\n    }\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -B1 -A3 'Hikari.*did not match\\|DataSourceConfiguration.Hikari'\n\n   DataSourceConfiguration.Hikari:\n      Did not match:\n         - @ConditionalOnMissingBean (types: javax.sql.DataSource;\n           SearchStrategy: all) found beans of type 'javax.sql.DataSource'\n           dataSource (OnBeanCondition)\n\n내가 만든 DataSource\n\n$ ./gradlew bootRun 2>&1 | grep -c HikariPool\n0\n\n--   히카리가 안 떴다\n--   내 빈을 찾아서 비켜섰다\n\n\n-- 순서가 아니라 조건이다\n\n@Test\nvoid 누가_만들었나() {\n    String[] names = ctx.getBeanNamesForType(DataSource.class);\n    for (String n : names) {\n        System.out.println(n + \" <- \"\n                + ctx.getBeanDefinition(n).getResourceDescription());\n    }\n}\n\ndataSource <- class path resource [study/boot/MyConfig.class]\n\n--   하나뿐이다\n--   자동 구성 쪽은 아예 안 만들어졌다\n\n\n-- 내 빈을 지우면 되돌아온다\n\n// MyConfig 를 지우고\n\n$ ./gradlew bootRun 2>&1 | grep HikariPool\nINFO ... com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Starting...\nINFO ... com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Start completed.\n\n@Test\nvoid 다시() {\n    String n = ctx.getBeanNamesForType(DataSource.class)[0];\n    System.out.println(n + \" <- \"\n            + ctx.getBeanDefinition(n).getResourceDescription());\n}\n\ndataSource <- class path resource [org/springframework/boot/autoconfigure/\n              jdbc/DataSourceConfiguration$Hikari.class]\n\n--   기본값이 돌아왔다\n--   덮어쓴 게 아니라 비켜선 것이었다\n\n\n-- 설정 한 줄로도 꺼진다\n\n# application.yml\nspring:\n  autoconfigure:\n    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'Exclusions:'\n\nExclusions:\n-----------\n\n    org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration\n\n$ ./gradlew bootRun 2>&1 | grep -c HikariPool\n0\n\n--   의존성은 그대로다\n--   목록에서 뺐다\n\n\n-- 어노테이션으로도 뺀다\n\n@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'Exclusions'\n1\n\n--   같은 결과다\n\n\n-- 조건 종류를 센다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -o 'On[A-Za-z]*Condition' | sort | uniq -c | sort -rn\n\n 268 OnClassCondition\n  94 OnBeanCondition\n  61 OnPropertyCondition\n  22 OnWebApplicationCondition\n  11 OnResourceCondition\n   4 OnExpressionCondition\n\n--   대부분이 \"클래스가 있나\" 다\n--   6.3~6.6절에서 하나씩 만든다\n\n\n-- 액츄에이터로도 본다\n\n$ curl -s localhost:9090/actuator/conditions \\\n    | jq '.contexts.application.positiveMatches | keys | length'\n127\n$ curl -s localhost:9090/actuator/conditions \\\n    | jq '.contexts.application.negativeMatches | keys | length'\n285\n\n$ curl -s localhost:9090/actuator/conditions | jq -r \\\n    '.contexts.application.negativeMatches\n     .\"DataSourceAutoConfiguration\".notMatched[0].message'\n@ConditionalOnClass did not find required class 'javax.sql.DataSource'\n\n--   로그와 같은 수다\n--   8.2절에서 이 엔드포인트를 다시 본다\n--   2.3절에서 버전 이야기로 간다",
+   "note": "**자동 구성 클래스는 `@Configuration` 에 조건이 붙은 것이고 후보가 목록 파일에 161개** 적혀 있다.\n\n**보고서에 `matched` 127개, `did not match` 285개가** 남는다.\n\n**`DataSource` 빈을 직접 만들면 히카리가 `found beans of type` 으로 비켜서고 로그에서** 사라진다.\n\n**내 빈을 지우면 출처가 `DataSourceConfiguration$Hikari` 로** 돌아온다.\n\n**조건 종류는 `OnClassCondition` 이 268개로 제일** 많다."
+  }
+ ],
+ "recap": [
+  "**평범한 설정 클래스**다.",
+  "**목록 파일에** 있다.",
+  "**조건이 앞에** 있다.",
+  "**보고서에 다** 남는다.",
+  "**127 대 285** 였다.",
+  "**내가 만들면** 비켜선다.",
+  "**덮어쓰기가** 아니다.",
+  "**설정으로도** 뺀다.",
+  "**대부분 클래스 조건**이다."
+ ],
+ "drills": [
+  {
+   "task": "목록 파일을 연다.",
+   "done_when": "후보 수를 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "보고서에서 하나를 찾는다.",
+   "done_when": "조건 줄을 읽었다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 타입 빈을 직접 만든다.",
+   "done_when": "기본값이 비켜서는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자동 구성을 제외한다.",
+   "done_when": "`Exclusions` 를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자동 구성 클래스의 정체는?",
+   "a": "조건이 붙은 평범한 `@Configuration` 클래스다."
+  },
+  {
+   "q": "후보 목록은 어디에 있나?",
+   "a": "JAR 안의 `AutoConfiguration.imports` 파일이다."
+  },
+  {
+   "q": "내가 같은 빈을 만들면?",
+   "a": "자동 구성이 비켜서고 내 빈만 남는다."
+  },
+  {
+   "q": "그건 덮어쓰기인가?",
+   "a": "아니다. 조건에서 떨어져 아예 안 만들어진다."
+  },
+  {
+   "q": "왜 안 걸렸는지 어떻게 아나?",
+   "a": "보고서의 `did not match` 이유를 읽는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 구성",
+   "def": "조건이 맞을 때만 빈을 등록하는 설정 클래스."
+  },
+  {
+   "term": "조건 평가",
+   "def": "기동 때 각 조건을 검사해 등록 여부를 정하는 과정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -70,7 +70,7 @@
           "title": "마법이 아니다",
           "summary": "조건이 맞으면 등록될 뿐이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -78,7 +78,7 @@
           "title": "버전과 호환",
           "summary": "무엇이 무엇을 정하나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -86,7 +86,7 @@
           "title": "프로젝트 구조",
           "summary": "생성기가 만든 것을 뜯는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
