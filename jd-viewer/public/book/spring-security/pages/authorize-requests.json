@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "authorize-requests",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "요청 인가",
+ "summary": "authorizeHttpRequests().",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "필터 안에서 무슨 일이 나는지 안다.",
+  "anyRequest 를 왜 꼭 쓰는지 안다.",
+  "결정 셋을 구별한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절부터 `anyRequest().authenticated()` 한 줄**이었다. **그 안을 연다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "AuthorizationFilter 안",
+   "ascii": "   what happens inside AuthorizationFilter\n\n   AuthorizationFilter\n     RequestMatcherDelegatingAuthorizationManager\n       walk the rules top to bottom\n       first matching rule wins\n         its AuthorizationManager returns a decision\n           granted true  -> chain.doFilter\n           granted false -> throw AccessDeniedException\n           null          -> abstain, treated as granted\n\n   no rule matched at all? also granted",
+   "note": "**아무 규칙도 안 맞으면** 허용이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "규칙과 결정",
+   "md": "```java\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/\", \"/about\", \"/login\").permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .requestMatchers(HttpMethod.POST, \"/api/**\").hasAuthority(\"SCOPE_write\")\n        .anyRequest().authenticated());\n```\n\n> **각 줄이 `매처 → AuthorizationManager` 쌍** 하나다.\n> **위에서 아래로 보고 처음 맞는 하나만** 쓴다.\n\n**결정이 셋**이다.\n\n```java\npublic interface AuthorizationDecision {\n    boolean isGranted();\n}\n// 그리고 매니저는 null 을 돌려줄 수 있다 — 기권\n```\n\n| 결과 | 뜻 |\n|---|---|\n| `granted=true` | 통과 |\n| `granted=false` | `AccessDeniedException` |\n| `null` | 기권 — 통과로 취급 |\n\n> **기권이 통과라는 게 중요**하다.\n> **아무 규칙도 안 맞아도** 통과다.\n\n**6.x 에서 바뀐 것**\n\n> **5.x 의 `authorizeRequests` 는 `FilterSecurityInterceptor`** 였다.\n> **6.x 는 `authorizeHttpRequests` 와 `AuthorizationFilter`** 다.\n>\n> | | 5.x | 6.x |\n> |---|---|---|\n> | 자리 | 필터 체인 맨 끝 | 같음 |\n> | 인증 조회 | 늘 조회 | 필요할 때만 |\n> | 기본 거부 | `access(\"denyAll\")` | 규칙 없으면 허용 |\n>\n> **둘째가 5.1절의 지연 로딩과 짝**이다 — **`permitAll` 이면 인증을 아예 안** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "anyRequest 가 없으면",
+   "ascii": "   why anyRequest is not optional in practice\n\n   with no anyRequest\n     /orders   matched by a rule   -> checked\n     /secret   matched by nothing  -> allowed\n\n   a new controller is public the day it is written\n   and nobody notices, because nothing fails",
+   "note": "**아무것도 안 깨지니 아무도** 모른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빠뜨리면 조용히 열린다",
+   "md": "**새 컨트롤러를 하나 만들면**\n\n> **매처에 안 적혀 있으니 아무 규칙도 안** 맞는다.\n> **기권 → 통과**다.\n> **로그인 없이** 열린다.\n>\n> **테스트를 안 짜면 배포될 때까지** 모른다.\n\n**그래서 마지막 줄이 관례**다.\n\n```java\n.anyRequest().authenticated()\n// 또는 더 엄하게\n.anyRequest().denyAll()\n```\n\n> **`denyAll` 이면 새 경로가 403 으로** 막힌다.\n> **불편한데 그 불편이 알려 준다.**\n\n**순서 검사가 있긴 하다.**\n\n> **`anyRequest()` 뒤에 규칙을 더 쓰면 기동이** 실패한다.\n>\n> ```\n> IllegalStateException: Can't configure requestMatchers after anyRequest\n> ```\n>\n> **하지만 아예 안 쓴 것은 안** 잡아 준다.\n\n**`AuthorizationFilter` 는 `dispatcherType` 도** 본다.\n\n> **6.x 기본은 `REQUEST` 와 `ASYNC` 만** 검사한다.\n> **`FORWARD`·`ERROR` 는 안** 본다 — **6.2절의 `accessDeniedPage` 가 통과한** 이유다.\n> **`/error` 도 그래서 따로 안 열어 줘도** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 규칙을 여러 줄 준다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/\", \"/about\", \"/login\").permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .requestMatchers(\"/orders/**\").authenticated()\n        .anyRequest().authenticated());\n\n$ ./gradlew bootRun 2>&1 | grep -A6 \"RequestMatcherDelegating\"\n\nDEBUG RequestMatcherDelegatingAuthorizationManager : mappings=[\n  { Ant [pattern='/'] : permitAll },\n  { Ant [pattern='/about'] : permitAll },\n  { Ant [pattern='/login'] : permitAll },\n  { Ant [pattern='/admin/**'] : hasRole('ROLE_ADMIN') },\n  { Ant [pattern='/orders/**'] : authenticated },\n  { any request : authenticated }]\n\n#   기동 로그에 규칙표가 그대로 나온다\n\n#   hasRole('ADMIN') 이 ROLE_ADMIN 으로 바뀌어 있다 (7.7절)\n\n# --- 결정을 본다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/about\n200\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Authorized filter invocation\n\n#   permitAll 이라 인증을 안 봤다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Retrieved SecurityContextImpl\"\n0\n\n#   5.1절의 지연 로딩이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n403\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation for\n  SecurityContextHolderAwareRequestWrapper GET /admin/panel with attributes\n  AuthorizationDecision [granted=false]\n\n#   granted=false 다\n\n# --- anyRequest 를 뺀다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/\", \"/about\", \"/login\").permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .requestMatchers(\"/orders/**\").authenticated());\n\n#   anyRequest 가 없다\n\n$ ./gradlew bootRun\n\n#   기동은 된다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/orders\n302\n\n#   여기는 규칙이 있다\n\n@RestController\npublic class SecretController {\n    @GetMapping(\"/internal/dump\")\n    public String dump() { return \"모든 회원 이메일...\"; }\n}\n\n$ curl -s localhost:8080/internal/dump\n\n모든 회원 이메일...\n\n#   로그인 없이 열렸다\n\nDEBUG RequestMatcherDelegatingAuthorizationManager :\n  Denying request since did not find matching RequestMatcher\n\n#   (6.x 초기 버전 로그, 최신은 조용히 통과)\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG FilterChainProxy : Secured GET /internal/dump\n\n#   Secured 가 찍혔다\n\n#   아무것도 안 깨졌다\n\n#   그래서 아무도 모른다\n\n# --- anyRequest 를 넣으면 ---\n\n.anyRequest().authenticated()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/internal/dump\n302\n\n#   막혔다\n\n# --- denyAll 로 더 엄하게 ---\n\n.anyRequest().denyAll()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/internal/dump\n403\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/orders\n200\n\n#   적어 둔 것만 열린다\n\n#   새 경로는 403 으로 알려 준다\n\n# --- anyRequest 뒤에 규칙을 쓰면 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .anyRequest().authenticated()\n        .requestMatchers(\"/about\").permitAll());\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\njava.lang.IllegalStateException: Can't configure requestMatchers after\nanyRequest\n\n#   이건 잡아 준다\n\n#   안 쓴 것은 안 잡아 준다\n\n# --- FORWARD 는 검사 안 한다 ---\n\nhttp.exceptionHandling(e -> e.accessDeniedPage(\"/denied\"))\n    .authorizeHttpRequests(a -> a\n            .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n            .anyRequest().denyAll());\n\n#   /denied 에 아무 규칙도 없다. denyAll 에 걸린다\n\n$ curl -s -b user.txt localhost:8080/admin/panel | grep -c '권한이 없습니다'\n1\n\n#   그래도 보인다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Securing GET /denied\"\n0\n\n#   FORWARD 라 필터를 안 탄다\n\n#   6.2절에서 본 그것이다\n\n# --- 직접 검사하게 만들면 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .shouldFilterAllDispatcherTypes(true)\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().denyAll());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n\n403\n\n$ curl -s -b user.txt localhost:8080/admin/panel | grep -c '권한이 없습니다'\n0\n\n#   403 페이지도 막혔다\n\n#   빈 응답이다\n\n#   /denied 를 permitAll 로 열어야 한다\n\n# --- 다음 절에서 ---\n\n#   규칙 순서를 잘못 쓰면 어떻게 되는지 본다",
+   "note": "**기동 로그에 규칙표가 그대로** 나오고 `hasRole('ADMIN')` 이 `ROLE_ADMIN` 으로 바뀌어 있다.\n\n**`permitAll` 자리에서는 `Retrieved SecurityContextImpl` 이 0회**다 — **인증을 아예 안** 본다.\n\n**`anyRequest` 를 빼면 새 `/internal/dump` 가 로그인 없이 열리고 `Secured` 까지** 찍힌다. **아무것도 안 깨져서 아무도** 모른다.\n\n**`anyRequest` 뒤에 규칙을 쓰면 기동이 실패**하지만 **아예 안 쓴 것은 안** 잡아 준다.\n\n**`shouldFilterAllDispatcherTypes(true)` 를 주면 `FORWARD` 도 검사돼 403 페이지가** 빈다."
+  }
+ ],
+ "recap": [
+  "**규칙은 매처와 매니저의 쌍**이다.",
+  "**위에서 아래로 보고 처음 맞는 하나만** 쓴다.",
+  "**결정은 허용 · 거부 · 기권** 셋이다.",
+  "**기권과 무매칭은 통과**다.",
+  "**`anyRequest` 를 빼면 새 경로가 조용히** 열린다.",
+  "**`denyAll` 로 두면 새 경로가 403 으로** 알려 준다.",
+  "**`anyRequest` 뒤 규칙은 기동 실패로** 잡힌다.",
+  "**`permitAll` 이면 인증을 아예 안** 본다.",
+  "**기본은 `REQUEST`·`ASYNC` 만** 검사한다."
+ ],
+ "drills": [
+  {
+   "task": "기동 로그의 규칙표를 확인한다.",
+   "done_when": "내가 쓴 순서와 같은지 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`anyRequest` 를 빼고 새 컨트롤러를 만든다.",
+   "done_when": "열리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`denyAll` 로 바꾼다.",
+   "done_when": "새 경로가 403 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`shouldFilterAllDispatcherTypes` 를 켜 본다.",
+   "done_when": "403 페이지가 막히는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙이 하나도 안 맞으면?",
+   "a": "기권으로 처리돼 통과한다."
+  },
+  {
+   "q": "`anyRequest` 를 빼면 무슨 일이 나나?",
+   "a": "규칙에 없는 새 경로가 조용히 열린다."
+  },
+  {
+   "q": "`anyRequest` 뒤에 규칙을 쓰면?",
+   "a": "기동이 실패한다."
+  },
+  {
+   "q": "`permitAll` 자리에서 인증을 조회하나?",
+   "a": "안 한다. 그래서 세션도 안 건드린다."
+  },
+  {
+   "q": "`FORWARD` 는 검사하나?",
+   "a": "기본은 안 한다. `shouldFilterAllDispatcherTypes` 로 바꿀 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "기권(abstain)",
+   "def": "매니저가 `null` 을 돌려주는 것. 판단하지 않겠다는 뜻이고 통과로 취급된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

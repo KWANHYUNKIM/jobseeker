@@ -420,7 +420,7 @@
           "title": "정리",
           "summary": "끄기 전에 아는 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -435,7 +435,7 @@
           "title": "요청 인가",
           "summary": "authorizeHttpRequests().",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",

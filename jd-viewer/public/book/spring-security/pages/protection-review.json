@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "protection-review",
+ "no": "6.9",
+ "chapter": 6,
+ "title": "정리",
+ "summary": "끄기 전에 아는 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "기본으로 켜진 것과 꺼진 것을 센다.",
+  "끄기 전에 던질 질문을 안다.",
+  "6장이 갚은 빚을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6장은 전부 \"막는\" 얘기**였다. **무엇이 이미 켜져 있었나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄도 안 썼을 때 켜진 것",
+   "ascii": "   what is on before you write a line\n\n   csrf                on, for state changing methods\n   session fixation    on, changeSessionId\n   six response headers on\n   hsts                on, but only over https\n   secure cookie       on, but only over https\n   cors                off, until you declare a source\n   csp                 off, always\n\n   two of the seven are off, and one of them is the strongest",
+   "note": "**일곱 중 둘이 꺼져 있고 그중 하나가 가장** 강하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "6장이 만진 것",
+   "md": "| 절 | 켠 것 / 고친 것 |\n|---|---|\n| 6.2 | 위임 진입점 — 화면은 302, API 는 401 |\n| 6.3 | `ProblemDetail` 로 오류 형식 통일 |\n| 6.4 | CSRF 는 그대로 두고 API 체인만 끔 |\n| 6.5 | SPA 용 쿠키 저장소 + 토큰 엔드포인트 |\n| 6.6 | `CorsConfigurationSource` + `http.cors()` |\n| 6.7 | CSP 를 `reportOnly` 로 시작 |\n| 6.8 | `forward-headers-strategy` |\n\n**빚 표를 갱신**한다.\n\n| 빚 | 상태 |\n|---|---|\n| 인증 없이 주문이 200 | 갚음 (1.4·2.7) |\n| API 가 401 이 아니라 302 | **갚음 (6.2·6.3)** |\n| CSRF 를 왜 켜 두나 | **갚음 (6.4·6.5)** |\n| 직접 만든 로그인 방식 | 10장 |\n| 비동기 로그인의 302 | 11.3 |\n| 인가 규칙이 `authenticated()` 하나 | **다음 장** |\n\n> **여섯 중 셋이** 지워졌다.\n> **남은 셋 중 하나를 7장이** 맡는다."
+  },
+  {
+   "type": "figure",
+   "caption": "끄기 전에 던질 질문",
+   "ascii": "   the question to ask before turning something off\n\n   csrf                do you authenticate with a cookie?\n   frame options       does anything legitimately frame you?\n   cache control       is this page really public?\n   channel security    is there a proxy in front?\n   headers entirely    what replaced them?\n\n   every off in this book had a reason and a test",
+   "note": "**끄는 데는 이유와 테스트가** 있어야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "가장 흔한 다섯 줄",
+   "md": "**인터넷에서 복사되는 설정**이다.\n\n```java\nhttp.csrf(c -> c.disable())                    // 왜?\n    .cors(c -> c.disable())                    // 왜?\n    .headers(h -> h.frameOptions(f -> f.disable()))   // H2 때문에?\n    .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n    .authorizeHttpRequests(a -> a.anyRequest().permitAll());\n```\n\n> **마지막 줄이 가장 위험**하다.\n> **다섯 줄이 시큐리티를 사실상 껐다.**\n\n**각 줄에 물어야 할 것**\n\n| 줄 | 질문 |\n|---|---|\n| `csrf.disable` | 쿠키로 인증하나? |\n| `cors.disable` | 끄면 오히려 기본 동작이다 |\n| `frameOptions.disable` | H2 라면 `sameOrigin` 이면 된다 |\n| `STATELESS` | 폼 로그인을 쓰나? |\n| `permitAll` | 전부? |\n\n> **`cors.disable()` 은 자주 오해**된다 — **CORS 를 끄는 게 아니라 시큐리티의 CORS 처리를** 끈다.\n> **애초에 안 켜져 있으니 대개 아무 의미가** 없다.\n\n**6장의 확인 기준**\n\n> **테스트가 84개**다(6.3·6.7 에서 셋 늘었다).\n> **`isForbidden` 이 1개, `isUnauthorized` 가 1개**다.\n> **여전히 권한별 인가 테스트는** 없다.\n>\n> **7장에서 규칙을 만들고 8.8절에서 그걸** 지킨다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 지금 켜진 것을 한 번에 확인한다 ---\n\n@Test\nvoid 기본_보호가_켜져_있다() throws Exception {\n    // 1) CSRF\n    mockMvc.perform(post(\"/orders/new\").with(user(\"user@a.com\")))\n            .andExpect(status().isForbidden());\n\n    // 2) 보안 헤더\n    mockMvc.perform(get(\"/orders\").with(user(\"user@a.com\")))\n            .andExpect(header().string(\"X-Frame-Options\", \"DENY\"))\n            .andExpect(header().string(\"X-Content-Type-Options\", \"nosniff\"));\n\n    // 3) 세션 고정\n    MvcResult before = mockMvc.perform(get(\"/login\")).andReturn();\n    String oldId = before.getRequest().getSession().getId();\n    MvcResult after = mockMvc.perform(post(\"/login\").with(csrf())\n                    .session((MockHttpSession) before.getRequest().getSession())\n                    .param(\"username\", \"user@a.com\").param(\"password\", \"1234\"))\n            .andReturn();\n    assertThat(after.getRequest().getSession().getId()).isNotEqualTo(oldId);\n}\n\n$ ./gradlew test --tests SecurityDefaultsTest\n\nBUILD SUCCESSFUL\n\n#   셋 다 켜져 있다\n\n# --- 흔한 다섯 줄을 넣어 본다 ---\n\nhttp.csrf(c -> c.disable())\n    .cors(c -> c.disable())\n    .headers(h -> h.frameOptions(f -> f.disable()))\n    .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n    .authorizeHttpRequests(a -> a.anyRequest().permitAll());\n\n$ ./gradlew test\n\n기본_보호가_켜져_있다 FAILED\n    Status expected:<403> but was:<302>\n\n인증_없는_api_는_401_problem_json FAILED\n    Status expected:<401> but was:<200>\n\n권한_없는_api_는_403_problem_json FAILED\n    Status expected:<403> but was:<200>\n\n84 tests completed, 12 failed\n\n#   열두 개가 빨갛다\n\n#   책 ⑨ 의 방식이 여기서 값을 한다\n\n#   설정 다섯 줄이 무엇을 껐는지 테스트가 말해 준다\n\n# --- 아무 인증 없이 다 열린다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/orders\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/admin/panel\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/api/v1/orders\n200\n\n$ curl -s -X POST localhost:8080/orders/new -d 'productNumbers=001' \\\n    -o /dev/null -w '%{http_code}\\n'\n302\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n6\n\n#   로그인도 안 했는데 주문이 들어갔다\n\n#   1.3절로 돌아왔다\n\n#   책 ⑨ 10.4절에 적어 둔 그 상태다\n\n# --- 되돌린다 ---\n\n#   (다섯 줄을 지운다)\n\n$ ./gradlew test\n\n84 tests completed\n\nBUILD SUCCESSFUL\n\n# --- cors.disable 이 무엇을 하나 ---\n\nhttp.cors(c -> c.disable());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -c Cors\n0\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X OPTIONS \\\n    localhost:8080/api/v1/orders -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n401\n\n#   6.6절 이전으로 돌아갔다\n\n#   CORS 를 끈 게 아니라 처리를 뺀 것이다\n\n#   브라우저의 CORS 는 그대로 작동한다\n\n# --- frameOptions 는 sameOrigin 이면 된다 ---\n\nhttp.headers(h -> h.frameOptions(f -> f.sameOrigin()));\n\n$ curl -is localhost:8080/h2-console | grep -i x-frame\nX-Frame-Options: SAMEORIGIN\n\n$ curl -is localhost:8080/orders -b user.txt | grep -i x-frame\nX-Frame-Options: SAMEORIGIN\n\n#   H2 는 보이고 남의 사이트는 여전히 못 넣는다\n\n#   disable 까지 갈 이유가 없었다\n\n# --- 6장 전체를 한 요청으로 ---\n\n$ curl -is -k https://localhost:8443/orders -H 'X-Forwarded-Proto: https' \\\n    -b user.txt | sed -n '1,14p'\n\nHTTP/1.1 200\nStrict-Transport-Security: max-age=31536000 ; includeSubDomains\nX-Content-Type-Options: nosniff\nX-XSS-Protection: 0\nCache-Control: no-cache, no-store, max-age=0, must-revalidate\nPragma: no-cache\nExpires: 0\nX-Frame-Options: SAMEORIGIN\nContent-Security-Policy-Report-Only: default-src 'self'\nVary: Origin\nContent-Type: text/html;charset=UTF-8\n\n$ curl -s -k https://localhost:8443/orders -b user.txt | grep -c _csrf\n1\n\n#   헤더 여덟 줄과 토큰 하나\n\n#   6장이 만든 응답이다\n\n# --- 다음 장에서 ---\n\n#   지금까지 규칙은 authenticated() 하나뿐이었다",
+   "note": "**기본 보호 셋을 한 테스트로 확인**했다.\n\n**흔한 다섯 줄을 넣으니 테스트 열두 개가 빨개지고 로그인 없이 주문이** 들어간다 — **1.3절, 책 ⑨ 10.4절로** 되돌아간 것이다.\n\n**`cors.disable()` 은 CORS 를 끄는 게 아니라 시큐리티의 처리를** 뺀다.\n\n**`frameOptions` 는 `sameOrigin` 이면 H2 도 보이고 남의 사이트는 여전히** 막힌다.\n\n**6장이 만든 응답은 헤더 여덟 줄과 토큰** 하나다."
+  }
+ ],
+ "recap": [
+  "**한 줄도 안 써도 다섯 가지가 켜져** 있다.",
+  "**CORS 와 CSP 는 꺼져** 있다.",
+  "**HSTS 와 `Secure` 는 `https` 일 때만** 붙는다.",
+  "**끄기 전에 이유와 테스트를** 갖춘다.",
+  "**흔한 다섯 줄이 시큐리티를 사실상** 끈다.",
+  "**`cors.disable()` 은 대개 의미가** 없다.",
+  "**`frameOptions` 는 `sameOrigin` 으로 충분한 경우가** 많다.",
+  "**6장에서 빚 여섯 중 셋이** 지워졌다.",
+  "**남은 인가 규칙은 여전히 `authenticated()` 하나**다."
+ ],
+ "drills": [
+  {
+   "task": "기본 보호를 한 테스트로 묶는다.",
+   "done_when": "셋을 단언했다.",
+   "minutes": 30
+  },
+  {
+   "task": "흔한 다섯 줄을 넣고 테스트를 돌린다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "`cors.disable()` 의 효과를 확인한다.",
+   "done_when": "사전 요청이 401 로 돌아가는 것을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "내 프로젝트의 `disable` 을 전부 찾는다.",
+   "done_when": "각각에 이유를 적었다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본으로 꺼져 있는 두 가지는?",
+   "a": "CORS 처리와 CSP 다."
+  },
+  {
+   "q": "`cors.disable()` 은 무엇을 하나?",
+   "a": "시큐리티의 CORS 처리를 뺀다. 브라우저의 CORS 는 그대로다."
+  },
+  {
+   "q": "H2 콘솔 때문에 `frameOptions` 를 끄는 게 맞나?",
+   "a": "`sameOrigin` 이면 충분하다."
+  },
+  {
+   "q": "6장에서 갚은 빚은?",
+   "a": "API 의 302 와 CSRF 두 가지다."
+  },
+  {
+   "q": "남은 가장 큰 구멍은?",
+   "a": "인가 규칙이 `authenticated()` 하나뿐이라는 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Protection Against Exploits",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/exploits/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP Top Ten",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
