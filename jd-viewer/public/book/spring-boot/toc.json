@@ -481,7 +481,7 @@
           "title": "@Value",
           "summary": "한 값씩 꽂는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -489,7 +489,7 @@
           "title": "@ConfigurationProperties",
           "summary": "묶어서 받는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",

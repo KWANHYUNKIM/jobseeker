@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "config-props",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "@ConfigurationProperties",
+ "summary": "묶어서 받는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "묶어 받는다.",
+  "두 바인딩을 안다.",
+  "느슨함을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.7절에서 키가 여섯 파일에** 흩어졌다. **한 클래스로** 묶는다."
+  },
+  {
+   "type": "figure",
+   "caption": "클래스 모양이 키 모양이다",
+   "ascii": "   the shape of the class mirrors the shape of the keys\n\n   a prefix on the class\n   a field per leaf key\n   a nested class per dotted group\n   a list or map field for repeated entries\n\n   so the class is the documentation of what may be set",
+   "note": "**클래스가 곧 무엇을 적을 수 있는지에 대한** 설명이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 군데를 열면 다 보인다",
+   "md": "**접두사로** 묶는다.\n\n> **`study.db` 아래를 한 클래스**로.\n> **6.10절에서 이미** 썼다.\n> **아래에서 늘려** 본다.\n\n**느슨하게 붙는**다.\n\n> **7.2절의 그** 규칙이다.\n> **7.6·7.7절과 여기가** 갈린다.\n> **아래에서 넷을 다** 본다.\n\n**도움말이** 나온다.\n\n> **6.11절에서 봤다.**\n> **편집기가 키를 알려** 준다.\n> **아래에서 확인**한다.\n\n**액츄에이터가 모아** 준다.\n\n> **어느 빈이 무엇을 쓰는지**다.\n> **7.7절에선 안** 보였다.\n> **아래에서 그걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "값이 들어가는 두 길",
+   "ascii": "   two ways the object gets its values\n\n   setters      the object is created empty, then filled\n   constructor  all values are gathered, then the object is made\n\n   only the second one can be immutable, a record for instance",
+   "note": "**둘째만 불변으로 만들 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "등록을 빼먹으면 빈이 없다",
+   "md": "**세 가지 길이** 있다.\n\n> **애너테이션 하나·스캔·빈 선언**이다.\n> **6.10절에서 하나** 썼다.\n> **아래에서 셋 다** 본다.\n\n**세터가 없으면 안** 채워진다.\n\n> **첫째 길에서** 그렇다.\n> **조용히 기본값이** 남는다.\n> **아래에서 그걸** 겪는다.\n\n**모르는 키는 여전히** 조용하다.\n\n> **오타를 여기서도 못** 잡는다.\n> **7.9절이 그걸** 잡는다.\n> **아래에서 확인**한다.\n\n**생성자 바인딩은 섞으면 안** 된다.\n\n> **생성자가 둘이면** 헷갈린다.\n> **아래에서 그걸** 본다.\n> **레코드가 제일** 깔끔하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 흩어진 것을 묶는다\n\n$ grep -rn '@Value' src/main/java | wc -l\n      14\n\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    private String mode = \"none\";\n    private List<String> hosts = new ArrayList<>();\n    private Duration timeout = Duration.ofSeconds(30);\n    private final Db db = new Db();\n    private Map<String, String> labels = new LinkedHashMap<>();\n\n    public static class Db {\n        private String url = \"jdbc:h2:mem:test\";\n        private int poolSize = 10;\n        private String password;\n        // getter, setter\n    }\n    // getter, setter\n}\n\n@SpringBootApplication\n@EnableConfigurationProperties(StudyProperties.class)\npublic class BootApplication { ... }\n\n$ grep -rn '@Value' src/main/java | wc -l\n       0\n\n--   열네 곳이 한 클래스가 됐다\n\n\n-- 값을 넣는다\n\n// application.yml\nstudy:\n  mode: dev\n  hosts:\n    - a.example.com\n    - b.example.com\n  timeout: 90s\n  db:\n    url: jdbc:postgresql://db:5432/app\n    pool-size: 20\n  labels:\n    team: backend\n    tier: api\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/props\nmode:     dev\nhosts:    [a.example.com, b.example.com]\ntimeout:  PT1M30S\ndb.url:   jdbc:postgresql://db:5432/app\ndb.pool:  20\nlabels:   {team=backend, tier=api}\n\n--   중첩도 목록도 맵도 다 채워졌다\n\n\n-- 느슨하게 붙는다\n\n$ for k in study.db.poolSize study.db.pool-size study.db.pool_size \\\n           study.db.POOL_SIZE STUDY_DB_POOLSIZE; do\n    printf '%-24s ' \"$k\"\n    case $k in\n      STUDY_*) env \"$k=42\" java -jar build/libs/app.jar > /dev/null 2>&1 & ;;\n      *)       java -jar build/libs/app.jar \"--$k=42\" > /dev/null 2>&1 & ;;\n    esac\n    until curl -sf localhost:8080/props > /dev/null 2>&1; do sleep 0.1; done\n    curl -s localhost:8080/props | grep 'db.pool' | awk '{print $2}'\n    pkill -f app.jar\n  done\n\nstudy.db.poolSize        42\nstudy.db.pool-size       42\nstudy.db.pool_size       42\nstudy.db.POOL_SIZE       42\nSTUDY_DB_POOLSIZE        42\n\n--   다섯이 다 붙는다\n--   7.7절에서는 두 가지만 됐다\n\n\n-- 목록과 맵을 인수로도 넣는다\n\n$ java -jar build/libs/app.jar \\\n    '--study.hosts[0]=x.com' '--study.hosts[1]=y.com' \\\n    '--study.labels.env=prod' > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/props | grep -E 'hosts|labels'\nhosts:    [x.com, y.com]\nlabels:   {env=prod}\n\n$ java -jar build/libs/app.jar --study.hosts=x.com,y.com > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep hosts\nhosts:    [x.com, y.com]\n\n--   대괄호로도 쉼표로도 된다\n--   환경 변수는 7.2절의 밑줄 규칙이다\n\n\n-- 목록은 덮어쓴다, 합치지 않는다\n\n// application.yml 에 둘이 있는 상태에서\n$ java -jar build/libs/app.jar '--study.hosts[0]=z.com' > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep hosts\nhosts:    [z.com]\n\n$ curl -s localhost:8080/props/hosts/size\n1\n\n--   b.example.com 이 사라졌다\n--   더 센 출처가 목록 전체를 가져간다\n\n\n-- 등록하는 세 가지 길\n\n// ① 애너테이션으로\n@EnableConfigurationProperties(StudyProperties.class)\n\n// ② 스캔으로\n@ConfigurationPropertiesScan\n\n// ③ 빈으로\n@Bean\n@ConfigurationProperties(prefix = \"study\")\nStudyProperties studyProperties() { return new StudyProperties(); }\n\n$ for way in enable scan bean; do\n    printf '%-8s ' \"$way\"\n    ./gradlew bootRun -Pway=$way -q > /dev/null 2>&1 &\n    until curl -sf localhost:8080/props > /dev/null 2>&1; do sleep 0.1; done\n    curl -s localhost:8080/props | head -1\n    pkill -f bootRun\n  done\nenable   mode:     dev\nscan     mode:     dev\nbean     mode:     dev\n\n--   셋 다 같다\n--   6.10절에서는 첫째를 썼다\n\n\n-- 하나도 안 하면\n\n// 셋 다 지우면\n$ java -jar build/libs/app.jar 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor required a bean of type\n'study.boot.StudyProperties' that could not be found.\n\n--   6.10절에서 겪은 그것이다\n\n\n-- 세터가 없으면\n\npublic static class Db {\n    private int poolSize = 10;\n    public int getPoolSize() { return poolSize; }\n    // 세터를 지웠다\n}\n\n$ java -jar build/libs/app.jar --study.db.pool-size=42 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep 'db.pool'\ndb.pool:  10\n\n$ java -jar build/libs/app.jar --study.db.pool-size=42 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   조용히 기본값이다\n--   중첩 객체 자체는 세터가 없어도 된다, 안의 필드는 필요하다\n\n\n-- 생성자로 받는다\n\n@ConfigurationProperties(prefix = \"study\")\npublic record StudyProperties(\n        String mode,\n        List<String> hosts,\n        @DefaultValue(\"30s\") Duration timeout,\n        Db db) {\n    public record Db(@DefaultValue(\"jdbc:h2:mem:test\") String url,\n                     @DefaultValue(\"10\") int poolSize) {}\n}\n\n$ java -jar build/libs/app.jar --study.mode=dev --study.db.pool-size=42 \\\n    > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/props\nmode:     dev\nhosts:    null\ntimeout:  PT30S\ndb.url:   jdbc:h2:mem:test\ndb.pool:  42\n\n--   세터가 하나도 없다\n--   기본값은 애너테이션으로 준다\n--   안 준 hosts 는 null 이다\n\n\n-- 빈 목록을 원하면\n\npublic record StudyProperties(\n        @DefaultValue List<String> hosts, ...) {}\n\n$ curl -s localhost:8080/props | grep hosts\nhosts:    []\n\n--   값 없이 붙이면 빈 것이 된다\n\n\n-- 불변인지 확인한다\n\n@GetMapping(\"/props/mutate\")\nString mutate() {\n    // props.setMode(\"changed\");   컴파일이 안 된다\n    return \"세터 수: \" + Arrays.stream(props.getClass().getMethods())\n        .filter(m -> m.getName().startsWith(\"set\")).count() + \"\\n\";\n}\n\n$ curl -s localhost:8080/props/mutate\n세터 수: 0\n\n--   7.7절의 필드 주입과 다른 자리다\n\n\n-- 생성자가 둘이면\n\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    public StudyProperties() {}\n    public StudyProperties(String mode) { this.mode = mode; }\n}\n\n$ java -jar build/libs/app.jar --study.mode=dev > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     none\n\n--   기본 생성자를 쓰고 세터로 채우려 했다\n--   세터가 없어서 안 채워졌다\n--   섞지 않는 게 낫다\n\n\n-- 도움말이 생긴다\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar \\\n    BOOT-INF/classes/META-INF/spring-configuration-metadata.json \\\n  | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('그룹', len(d['groups']))\nfor p in d['properties']:\n    print(' ', p['name'], p['type'].split('.')[-1])\n\"\n그룹 2\n  study.mode String\n  study.hosts List\n  study.timeout Duration\n  study.db.url String\n  study.db.pool-size Integer\n  study.labels Map\n\n--   7.7절에서는 파일 자체가 없었다\n--   6.11절에서 본 그 프로세서다\n\n\n-- 액츄에이터가 모아 준다\n\n$ curl -s localhost:8080/actuator/configprops \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['contexts']['application']['beans']\nfor k, v in d.items():\n    if 'study' in k:\n        print(k)\n        print(json.dumps(v['properties'], ensure_ascii=False, indent=1))\n\"\nstudy-study.boot.StudyProperties\n{\n \"mode\": \"dev\",\n \"hosts\": [\"a.example.com\", \"b.example.com\"],\n \"timeout\": \"PT1M30S\",\n \"db\": {\n  \"url\": \"jdbc:postgresql://db:5432/app\",\n  \"poolSize\": 20,\n  \"password\": \"******\"\n },\n \"labels\": {\"team\": \"backend\", \"tier\": \"api\"}\n}\n\n--   어느 빈이 무엇을 쓰는지 한눈에 보인다\n--   비밀번호는 가려져 있다\n--   7.7절에서는 빈 목록이었다\n\n\n-- 오타는 여전히 조용하다\n\n$ java -jar build/libs/app.jar --study.db.pool-siz=42 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep 'db.pool'\ndb.pool:  10\n\n$ java -jar build/libs/app.jar --study.db.pool-siz=42 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ curl -s localhost:8080/actuator/env/study.db.pool-siz \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['property']['value'])\"\n42\n\n--   값은 들어와 있는데 아무도 안 쓴다\n--   7.9절에서 이걸 잡는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '묶기'        '한 클래스' \\\n  '느슨함'      '다섯 표기 다 됨' \\\n  '중첩'        '안쪽 클래스' \\\n  '목록'        '덮어씀' \\\n  '등록'        '세 가지 길' \\\n  '세터 없으면' '조용히 기본값' \\\n  '생성자'      '불변, 레코드' \\\n  '도움말'      '생김' \\\n  '오타'        '여전히 조용함'\n\n묶기                       한 클래스\n느슨함                     다섯 표기 다 됨\n중첩                       안쪽 클래스\n목록                       덮어씀\n등록                       세 가지 길\n세터 없으면                조용히 기본값\n생성자                     불변, 레코드\n도움말                     생김\n오타                       여전히 조용함\n\n--   7.9절에서 틀린 값으로 못 뜨게 한다",
+   "note": "**`@Value` 열네 곳이 한 클래스가 되고 중첩·목록·맵이 다** 채워진다.\n\n**다섯 가지 표기가 다 42 로 붙어 7.7절의 둘보다** 넓다.\n\n**더 센 출처가 목록을 덮어써 항목이 둘에서** 하나가 된다.\n\n**세터를 지우면 경고 없이 기본값 10 이 남고 레코드로 받으면 세터 수가 0**이다.\n\n**도움말 JSON 이 생기고 `/actuator/configprops` 가 어느 빈이 무엇을 쓰는지 보여 주며 비밀번호는 `******`** 다."
+  }
+ ],
+ "recap": [
+  "**한 클래스로** 묶는다.",
+  "**느슨하게** 붙는다.",
+  "**중첩이** 된다.",
+  "**목록은** 덮어쓴다.",
+  "**등록이** 셋이다.",
+  "**세터가** 필요하다.",
+  "**생성자면** 불변이다.",
+  "**도움말이** 생긴다.",
+  "**오타는 여전히** 조용하다."
+ ],
+ "drills": [
+  {
+   "task": "흩어진 키를 묶는다.",
+   "done_when": "`@Value` 가 0 이 된 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "다섯 표기로 넣어 본다.",
+   "done_when": "다 붙는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세터를 지워 본다.",
+   "done_when": "조용히 기본값인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "레코드로 바꾼다.",
+   "done_when": "세터가 0 인 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "여기서만 느슨한 것은?",
+   "a": "대소문자·하이픈·밑줄을 가리지 않고 같은 속성으로 붙는다."
+  },
+  {
+   "q": "목록에 더 센 출처가 값을 주면?",
+   "a": "합치지 않고 목록 전체를 덮어쓴다."
+  },
+  {
+   "q": "세터가 없으면?",
+   "a": "경고 없이 기본값이 남는다."
+  },
+  {
+   "q": "불변으로 만들려면?",
+   "a": "생성자 바인딩을 쓴다. 레코드가 가장 간단하다."
+  },
+  {
+   "q": "오타 난 키는 잡히나?",
+   "a": "여기서도 안 잡힌다. 값만 환경에 남아 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "묶음 바인딩",
+   "def": "접두사 아래 키들을 한 클래스의 필드로 채우는 방식."
+  },
+  {
+   "term": "생성자 바인딩",
+   "def": "값을 모아 한 번에 객체를 만드는 방식. 불변으로 둘 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Type-safe Configuration Properties",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
