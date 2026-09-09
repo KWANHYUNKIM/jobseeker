@@ -417,7 +417,7 @@
           "title": "새로운 엔티티 판단",
           "summary": "식별자가 null 이냐 아니냐.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -425,7 +425,7 @@
           "title": "Persistable",
           "summary": "직접 만든 id 를 쓸 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
