@@ -1,0 +1,144 @@
+{
+ "book": "http-basic",
+ "id": "first-request",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "첫 요청 원문",
+ "summary": "브라우저 주소창 한 번에 오간 바이트.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요청·응답 원문의 구조를 처음 본다.",
+  "한 번의 주소 입력에 몇 번이 오가는지 안다.",
+  "이 책 전체의 지도를 그린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**주소창에 `http://localhost:8080/users/1` 을 치고 엔터를** 누른다. **그 한 번에 실제로 무슨 일이 일어나나.**"
+  },
+  {
+   "type": "steps",
+   "caption": "엔터 한 번에 일어나는 일",
+   "items": [
+    {
+     "title": "주소를 쪼갠다",
+     "md": "**스킴 `http`, 호스트 `localhost`, 포트 `8080`, 경로 `/users/1`** 로 나눈다. **3.2절**"
+    },
+    {
+     "title": "이름을 주소로",
+     "md": "**DNS 로 `localhost` → `127.0.0.1`.** **2.6절**"
+    },
+    {
+     "title": "TCP 연결을 맺는다",
+     "md": "**3-way handshake.** SYN → SYN+ACK → ACK. **2.3절**"
+    },
+    {
+     "title": "(https 면) TLS 핸드셰이크",
+     "md": "**왕복이 한두 번 더 는다.** **3.5절**"
+    },
+    {
+     "title": "HTTP 요청을 보낸다",
+     "md": "**시작 줄 + 헤더 + 빈 줄 + (본문).** **4.5절**"
+    },
+    {
+     "title": "응답을 받는다",
+     "md": "**상태 줄 + 헤더 + 빈 줄 + 본문.** **4.5·7장**"
+    },
+    {
+     "title": "연결을 유지하거나 닫는다",
+     "md": "**`Connection: keep-alive`.** **4.4절**"
+    }
+   ]
+  },
+  {
+   "type": "figure",
+   "caption": "오가는 것의 전체 모습",
+   "ascii": "   browser                                  server\n      |                                        |\n      |  DNS: localhost -> 127.0.0.1           |     2.6\n      |                                        |\n      |------------- SYN --------------------->|     2.3\n      |<------------ SYN + ACK ----------------|\n      |------------- ACK --------------------->|\n      |                                        |\n      |  GET /users/1 HTTP/1.1                 |     4.5\n      |  Host: localhost:8080                  |\n      |  Accept: text/html                     |\n      |  (blank line)                          |\n      |--------------------------------------->|\n      |                                        |\n      |<---------------------------------------|\n      |  HTTP/1.1 200 OK                       |     7.2\n      |  Content-Type: application/json        |     8.2\n      |  Content-Length: 32                    |\n      |  (blank line)                          |\n      |  {\"id\":1,...}                          |\n      |                                        |\n      |  connection stays open (keep-alive)    |     4.4\n\n   빈 줄 하나가 헤더의 끝이자 본문의 시작이다",
+   "note": "**저 빈 줄이 없으면 서버는 헤더가 계속되는 줄** 안다. **4.5절에서 다시** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "HTML 한 장에 요청이 하나가 아니다",
+   "md": "**브라우저는 HTML 을 받고 나서 그 안의 것들을 또** 받는다.\n\n```\nGET /            -> index.html\nGET /app.css     -> 스타일\nGET /app.js      -> 스크립트\nGET /logo.png    -> 이미지\nGET /api/users   -> 스크립트가 부른 API\n```\n\n**한 화면에 수십~수백 개의 요청**이 나간다.\n\n> **그래서 4.4절의 연결 유지와 9장의 캐시가 성능의 거의** 전부다.\n> **HTTP/2 가 나온 이유도 이것**이다(4.1절) — **한 연결에서 여러 요청을 동시에.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "요청과 응답은 같은 모양이다",
+   "md": "```\n<시작 줄>\n<헤더>: <값>\n<헤더>: <값>\n<빈 줄>\n<본문>\n```\n\n**요청과 응답의 차이는 시작 줄 하나**뿐이다.\n\n| | 시작 줄 |\n|---|---|\n| 요청 | `GET /users/1 HTTP/1.1` — **메서드 · 경로 · 버전** |\n| 응답 | `HTTP/1.1 200 OK` — **버전 · 상태 코드 · 이유 구절** |\n\n> **이 구조 하나가 HTTP 의 거의 전부**다. **나머지는 헤더 이름을 아는 일**이다.\n> **그래서 8~9장이 가장 두껍다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "http",
+   "caption": "한 번의 요청을 끝까지 따라간다",
+   "sql": "$ docker run -d --name lab -p 8080:80 nginx:1.27 >/dev/null && sleep 1\n\n# --- 가장 단순한 왕복 ---\n\n$ curl -v --http1.1 http://localhost:8080/\n*   Trying 127.0.0.1:8080...\n* Connected to localhost (127.0.0.1) port 8080\n> GET / HTTP/1.1\n> Host: localhost:8080\n> User-Agent: curl/8.9.1\n> Accept: */*\n>\n< HTTP/1.1 200 OK\n< Server: nginx/1.27.2\n< Date: Wed, 09 Sep 2026 14:41:02 GMT\n< Content-Type: text/html\n< Content-Length: 615\n< Last-Modified: Tue, 20 Aug 2026 15:31:36 GMT\n< Connection: keep-alive\n< ETag: \"66c4c8b8-267\"\n< Accept-Ranges: bytes\n<\n<!DOCTYPE html>\n<html>\n<head><title>Welcome to nginx!</title></head>\n...\n* Connection #0 to host localhost left intact\n\n#   요청 4줄(빈 줄 포함), 응답 헤더 8줄, 본문 615바이트\n#   마지막 줄: 연결을 안 끊었다 (4.4절)\n\n\n# --- 실제로 흐른 바이트 ---\n\n$ curl --http1.1 -s -o /dev/null --trace-ascii - http://localhost:8080/ 2>&1 | sed -n '1,12p'\n== Info: Connected to localhost (127.0.0.1) port 8080\n=> Send header, 82 bytes (0x52)\n0000: GET / HTTP/1.1\n0010: Host: localhost:8080\n0026: User-Agent: curl/8.9.1\n003e: Accept: */*\n004b:\n<= Recv header, 17 bytes (0x11)\n0000: HTTP/1.1 200 OK\n\n#   82바이트가 전부다. 004b 의 빈 줄이 헤더의 끝\n\n\n# --- 각 단계에 걸린 시간 ---\n\n$ curl -s -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} first_byte=%{time_starttransfer} total=%{time_total}\\n' http://localhost:8080/\ndns=0.000031 tcp=0.000411 first_byte=0.001204 total=0.001256\n\n#   로컬이라 거의 0이다. 2장에서 원격과 비교한다\n\n$ curl -s -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} first_byte=%{time_starttransfer} total=%{time_total}\\n' https://example.com\ndns=0.004112 tcp=0.041887 tls=0.118331 first_byte=0.161204 total=0.161810\n\n#   TLS 가 77ms 다. 3.5절\n\n\n# --- HTML 한 장에 요청이 여럿이다 ---\n\n#   브라우저 개발자 도구 Network 탭:\n#\n#   Name          Status  Type        Size     Time\n#   /             200     document    615 B    3 ms\n#   app.css       200     stylesheet  12.4 kB  5 ms\n#   app.js        200     script      248 kB   31 ms\n#   logo.png      200     png         44 kB    12 ms\n#   /api/users    200     xhr         1.2 kB   18 ms\n#   ...\n#   47 requests | 1.1 MB transferred | Finish: 842 ms\n#\n#   주소창에 한 번 쳤는데 47번 오갔다\n\n\n# --- 응답 헤더만 빠르게 ---\n\n$ curl -sI http://localhost:8080/ | head -5\nHTTP/1.1 200 OK\nServer: nginx/1.27.2\nDate: Wed, 09 Sep 2026 14:42:31 GMT\nContent-Type: text/html\nContent-Length: 615\n\n#   -I 는 HEAD 요청이다. 본문 없이 헤더만 (5.8절)\n\n$ docker rm -f lab >/dev/null"
+  }
+ ],
+ "recap": [
+  "엔터 한 번에 주소 분해 → DNS → TCP → (TLS) → HTTP 요청 → 응답 순으로 일어난다.",
+  "요청과 응답은 같은 모양이다 — 시작 줄, 헤더, 빈 줄, 본문. 차이는 시작 줄뿐이다.",
+  "빈 줄 하나가 헤더의 끝을 알린다.",
+  "HTML 한 장에 수십 개의 요청이 따라 나간다. 그래서 연결 유지와 캐시가 성능의 거의 전부다."
+ ],
+ "drills": [
+  {
+   "task": "nginx 컨테이너를 띄우고 `curl -v --http1.1` 로 요청·응답 줄 수를 세어 본다.",
+   "done_when": "보낸 줄과 받은 줄을 각각 셀 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "`--trace-ascii` 로 보낸 바이트 수와 헤더의 끝(빈 줄)을 확인한다.",
+   "done_when": "몇 바이트를 보냈는지 말할 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "자주 쓰는 사이트를 열고 개발자 도구에서 요청이 몇 개 나가는지 센다.",
+   "done_when": "한 화면에 수십 개가 나가는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "HTTP 메시지의 네 부분은.",
+   "a": "시작 줄, 헤더, 빈 줄, 본문."
+  },
+  {
+   "q": "요청과 응답의 구조적 차이는.",
+   "a": "시작 줄뿐이다. 요청은 메서드·경로·버전, 응답은 버전·상태 코드·이유 구절."
+  },
+  {
+   "q": "주소창에 한 번 입력했는데 요청이 수십 개인 이유는.",
+   "a": "HTML 안의 CSS·JS·이미지와 스크립트가 부르는 API 까지 브라우저가 따로 요청한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "시작 줄",
+   "en": "start-line",
+   "what": "요청 줄 또는 상태 줄. 메시지의 첫 줄."
+  },
+  {
+   "term": "빈 줄",
+   "en": "empty line (CRLF)",
+   "what": "헤더의 끝을 알리는 줄. 없으면 파싱이 안 끝난다."
+  },
+  {
+   "term": "keep-alive",
+   "what": "응답 뒤에도 TCP 연결을 유지하는 것. 4.4절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "MDN — An overview of HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+   "publisher": "MDN"
+  },
+  {
+   "title": "RFC 9112 — HTTP/1.1",
+   "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+   "publisher": "IETF"
+  }
+ ]
+}
