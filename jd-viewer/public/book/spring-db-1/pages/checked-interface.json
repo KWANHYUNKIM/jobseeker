@@ -1,0 +1,134 @@
+{
+ "book": "spring-db-1",
+ "id": "checked-interface",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "체크 예외와 인터페이스",
+ "summary": "인터페이스에 SQLException 이 새어 나온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인터페이스에 체크 예외가 왜 문제인지 안다.",
+  "구현을 갈아 끼울 수 없는 이유를 안다.",
+  "언체크로 바꾸면 무엇이 달라지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절에서 문제로 꼽은 것**을 정면으로 본다.\n\n> **인터페이스가 기술에 묶인다** — JPA 구현이 거짓말을 하게 된다.\n\n**왜 인터페이스를 만드나**부터 짚는다."
+  },
+  {
+   "type": "figure",
+   "caption": "구현이 시그니처에 새어 나왔다",
+   "ascii": "   interface MemberRepository {\n       Member save(Member member) throws SQLException;\n   }\n                                        |\n                                        +--> jdbc leaks through\n\n   jdbc impl        throws SQLException        ok\n   jpa impl         throws SQLException        never thrown. a lie\n   memory impl      throws SQLException        never thrown. a lie\n\n   the interface exists to hide the implementation\n   그런데 구현이 시그니처에 새어 나왔다",
+   "note": "**감추려고 만든 것이 드러낸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 만드는 이유",
+   "md": "**구현을 갈아 끼우려고** 만든다.\n\n```java\npublic interface MemberRepository {\n    Member save(Member member);\n    Member findById(String memberId);\n}\n```\n\n**서비스는 인터페이스만** 본다.\n\n```java\nprivate final MemberRepository memberRepository;   // 무엇이 올지 모른다\n```\n\n**3.3절에서 `DataSource` 로 한 것**과 같다.\n\n> **리포지토리 코드가 한 글자도 안 바뀐다** — 넘기는 구현만 바뀐다.\n\n**여기는 리포지토리 자체를 갈아 끼운다.**\n\n| | 언제 |\n|---|---|\n| JDBC 구현 | 지금 |\n| JdbcTemplate 구현 | 7.6절 |\n| JPA 구현 | 다음 단계 |\n| 메모리 구현 | **테스트** |\n\n**마지막이 실무에서 유용**하다. DB 없이 서비스 로직만 테스트한다.\n\n**그런데 체크 예외가 이것을 막는다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "무엇이 문제인가",
+   "code": "public interface MemberRepository {\n    Member save(Member member) throws SQLException;\n}\n\n// 메모리 구현\npublic class MemoryMemberRepository implements MemberRepository {\n    private final Map<String, Member> store = new ConcurrentHashMap<>();\n\n    @Override\n    public Member save(Member member) throws SQLException {\n        //         ^^^^^^^^^^^^^^^^^^^^^ 절대 안 던지는데 선언해야 한다\n        store.put(member.getMemberId(), member);\n        return member;\n    }\n}",
+   "note": "**`SQLException` 을 던질 일이 없다.** DB 를 안 쓴다.\n\n**그런데 선언은 남는다** — 안 써도 되지만, **부르는 쪽이 잡아야** 한다는 것은 그대로다.\n\n```java\ntry {\n    repository.save(member);\n} catch (SQLException e) { }   // 절대 안 오는 예외를 잡는다\n```\n\n**죽은 코드**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "반대는 아예 안 된다",
+   "md": "```java\npublic interface MemberRepository {\n    Member save(Member member);   // throws 없음\n}\n\npublic class JdbcMemberRepository implements MemberRepository {\n    @Override\n    public Member save(Member member) throws SQLException {   // 컴파일 오류\n        ...\n    }\n}\n```\n\n```\nException SQLException is not compatible with throws clause in\nMemberRepository.save(Member)\n```\n\n**자바의 규칙**이다 — **부모가 선언 안 한 체크 예외를 자식이 못 던진다.**\n\n**왜인가** — **다형성 때문**이다.\n\n```java\nMemberRepository repo = new JdbcMemberRepository();\nrepo.save(member);   // 인터페이스만 보고 부른다. 예외를 예상 못 한다\n```\n\n**부르는 쪽이 인터페이스만 보는데** 구현이 몰래 던지면 **잡을 수가 없다.**\n\n**그래서 선택지가 둘뿐**이다.\n\n1. **인터페이스에 `throws SQLException`** — 다른 구현이 거짓말한다\n2. **`throws` 를 없애고 구현이 안 던지게** — **언체크로 바꾼다**\n\n**두 번째가 7.2절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "throws Exception 은 답이 아니다",
+   "md": "**\"그럼 제일 넓은 것을 선언하면\"** 이라고 생각할 수 있다.\n\n```java\npublic interface MemberRepository {\n    Member save(Member member) throws Exception;\n}\n```\n\n**모든 구현이 무엇이든 던질 수 있다.** 문제가 없어 보인다.\n\n**그런데 부르는 쪽이 지옥**이다.\n\n```java\ntry {\n    repository.save(member);\n} catch (Exception e) {\n    // 무엇이 났는지 모른다\n}\n```\n\n**정보가 없다.** 6.5절에서 말한 그것이다.\n\n> **`throws Exception` 은 아무 의미가 없다.** 무엇이든 던질 수 있다는 뜻이고 호출자가 `Exception` 을 잡아야 한다.\n\n**그리고 `Exception` 을 잡으면** 6.1절의 문제가 온다 — **모든 예외가 다 걸린다.** `IllegalArgumentException` 같은 **버그도 같이** 잡힌다.\n\n**타입으로 구분하는 것을 포기**한 셈이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "인터페이스를 언제 만드나",
+   "md": "**구현이 하나뿐이면 안 만들어도** 된다.\n\n**\"나중에 바꿀 수도 있으니\"** 는 약한 이유다. **정말 바꿀 때 만들면** 된다 — IDE 가 추출해 준다.\n\n**만들 만한 경우**\n\n| | |\n|---|---|\n| **구현이 둘 이상** | JDBC 와 JPA, 운영과 테스트 |\n| **테스트에서 갈아 끼운다** | 메모리 구현 |\n| **계층 경계를 명확히** | 서비스가 무엇을 쓰는지 선언 |\n\n**두 번째가 실무에서 제일 흔하다.** 다만 **요즘은 Mockito 로 대신**하는 경우가 많다 — 인터페이스 없이도 가짜를 만든다.\n\n**그래도 인터페이스가 나은 경우**가 있다. **가짜가 진짜처럼 동작해야** 할 때다. Mock 은 \"이 메서드를 부르면 이것을 반환\" 이고, **메모리 구현은 진짜 저장소처럼** 동작한다.\n\n> **이 절의 요점은 인터페이스를 만들라는 것이 아니다.** **체크 예외가 인터페이스를 못 쓰게 만든다**는 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 인터페이스에 체크 예외를 두면\npublic interface MemberRepositoryEx {\n    Member save(Member member) throws SQLException;\n    Member findById(String memberId) throws SQLException;\n}\n\n# 서비스\npublic void accountTransfer(...) throws SQLException {   <- 또 번진다\n    memberRepository.findById(fromId);\n}\n\n# 6 장에서 없앤 throws 가 돌아왔다\n\n# 메모리 구현을 만들면\npublic class MemoryMemberRepository implements MemberRepositoryEx {\n    public Member save(Member member) throws SQLException {\n        store.put(member.getMemberId(), member);   // SQL 이 안 나간다\n        return member;\n    }\n}\n\n# 테스트\nMemberService service = new MemberService(new MemoryMemberRepository());\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   (SQL 로그가 하나도 없다)\n#   (커넥션 로그도 없다)\n#   테스트가 0.01 초에 끝난다\n\n# 그런데 여전히\ntry {\n    service.accountTransfer(...);\n} catch (SQLException e) { }    <- 절대 안 나는 예외\n\n# throws 를 없애면\npublic interface MemberRepository {\n    Member save(Member member);\n}\n\n# JDBC 구현이 컴파일 오류\n#   Exception SQLException is not compatible with throws clause",
+   "note": "**메모리 구현에서 SQL 로그가 하나도 안 나온다.** DB 를 안 쓰니 당연하고, **테스트가 훨씬 빠르다.**\n\n**그런데 `catch (SQLException)` 이 남아 있다** — 절대 안 나는 예외를 잡는 죽은 코드다.\n\n**`throws` 를 없애면** JDBC 구현이 컴파일이 안 된다. **어느 쪽으로도 못 간다.**\n\n**7.2절이 이 매듭을 푼다** — **구현이 언체크로 바꿔 던지면** 인터페이스가 깨끗해진다."
+  }
+ ],
+ "recap": [
+  "**인터페이스는 구현을 갈아 끼우려고** 만든다.",
+  "**체크 예외가 시그니처에 드러나** 기술이 새어 나온다.",
+  "**다른 구현이 안 던지는 예외를 선언**하게 된다 — 거짓말이다.",
+  "**부르는 쪽은 절대 안 오는 예외를 잡는다** — 죽은 코드.",
+  "**반대는 아예 안 된다** — 부모가 선언 안 한 체크를 자식이 못 던진다.",
+  "**다형성 때문**이다 — 인터페이스만 보는 쪽이 예상 못 한다.",
+  "**`throws Exception` 은 답이 아니다** — 정보가 없고 버그까지 잡힌다.",
+  "**메모리 구현이 테스트에서 유용**하다 — SQL 로그가 안 나오고 빠르다.",
+  "**요즘은 Mockito 로 대신**하기도 한다.",
+  "**요점은 체크 예외가 인터페이스를 못 쓰게 만든다**는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "인터페이스에 `throws SQLException` 을 두고 메모리 구현을 만든다.",
+   "done_when": "안 던지는 예외를 선언하게 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메모리 구현으로 서비스를 테스트한다.",
+   "done_when": "SQL 로그가 없고 빠른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "인터페이스에서 `throws` 를 지운다.",
+   "done_when": "JDBC 구현이 컴파일 오류인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`throws Exception` 으로 바꿔 본다.",
+   "done_when": "부르는 쪽이 정보를 잃는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스에 체크 예외를 두면?",
+   "a": "다른 구현이 안 던지는 예외를 선언하게 되고 부르는 쪽은 절대 안 오는 예외를 잡는다."
+  },
+  {
+   "q": "인터페이스에서 `throws` 를 빼면?",
+   "a": "JDBC 구현이 컴파일되지 않는다. 부모가 선언 안 한 체크 예외를 자식이 못 던진다."
+  },
+  {
+   "q": "왜 그런 규칙이 있나?",
+   "a": "다형성 때문이다. 인터페이스만 보고 부르는 쪽이 예상하지 못한 예외를 잡을 수 없다."
+  },
+  {
+   "q": "`throws Exception` 이 왜 답이 아닌가?",
+   "a": "무엇이 났는지 알 수 없고 버그성 언체크 예외까지 같이 잡힌다."
+  },
+  {
+   "q": "이 절의 요점은?",
+   "a": "인터페이스를 만들라는 것이 아니라 체크 예외가 인터페이스를 못 쓰게 만든다는 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

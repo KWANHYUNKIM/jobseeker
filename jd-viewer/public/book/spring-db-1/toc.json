@@ -471,7 +471,7 @@
           "title": "언체크 예외 활용",
           "summary": "복구할 수 없으면 던지지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -479,7 +479,7 @@
           "title": "예외 포함과 스택 트레이스",
           "summary": "원인을 안 넘기면 진짜 이유가 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -487,7 +487,7 @@
           "title": "정리",
           "summary": "무엇을 체크로 하고 무엇을 언체크로 할까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -502,7 +502,7 @@
           "title": "체크 예외와 인터페이스",
           "summary": "인터페이스에 SQLException 이 새어 나온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",

@@ -1,0 +1,142 @@
+{
+ "book": "spring-db-1",
+ "id": "exception-cause",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "예외 포함과 스택 트레이스",
+ "summary": "원인을 안 넘기면 진짜 이유가 사라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "원인 예외를 넘기는 이유를 안다.",
+  "스택 트레이스를 읽을 수 있다.",
+  "로그를 어떻게 남길지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "한 줄 차이",
+   "ascii": "   with the cause\n   --------------\n   MyDbException\n     at MemberRepositoryV4_1.findById(line 60)\n     at MemberServiceV4.bizLogic(line 35)\n   Caused by: JdbcSQLNonTransientConnectionException\n     Connection is broken: Connection refused\n     at ... 15 more\n\n   without the cause\n   -----------------\n   MyDbException\n     at MemberRepositoryV4_1.findById(line 60)\n     at MemberServiceV4.bizLogic(line 35)\n\n   왜 실패했는지가 통째로 사라졌다",
+   "note": "**`Caused by` 가 있느냐 없느냐**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "두 가지 방법",
+   "code": "// 원인을 넘긴다\ncatch (SQLException e) {\n    throw new MyDbException(e);\n}\n\n// 안 넘긴다 - 하면 안 된다\ncatch (SQLException e) {\n    throw new MyDbException();\n}",
+   "note": "**한 글자 차이**다.\n\n**아래를 쓰면** `Connection refused` 인지 `문법 오류` 인지 `제약 위반` 인지 **알 수 없다.**\n\n**2.8절에서 본 그것**이다.\n\n> **`finally` 의 예외가 원래 예외를 덮는다** — 진짜 원인이 사라진다.\n\n**같은 종류의 손실**이고 여기는 **우리가 일부러 하는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "로그가 유일한 단서다",
+   "md": "**운영에서는 재현이 안 된다.**\n\n```\n사용자: \"저장이 안 돼요\"\n로그:   MyDbException\n         at MemberRepository.save(line 45)\n```\n\n**`save` 에서 실패했다는 것만** 안다. **왜인지는 모른다.**\n\n**원인이 있으면**\n\n```\nCaused by: JdbcSQLIntegrityConstraintViolationException:\n  Unique index or primary key violation: \"PRIMARY KEY ON PUBLIC.MEMBER\"\n```\n\n**중복 키였다는 것**을 안다. **고칠 수 있다.**\n\n**「MVC 2편」 8.2절에서 한 이야기**와 이어진다.\n\n> **`try-finally`** 여야 예외가 나도 RESPONSE 가 찍힌다 — **그게 제일 알고 싶은 요청**이다.\n\n**로그는 실패했을 때를 위한 것**이고, **그때 정보가 없으면 로그가 없는 것과 같다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "스택 트레이스 읽는 법",
+   "md": "```\nMyDbException: 회원 저장 실패\n  at MemberRepositoryV4_1.save(MemberRepositoryV4_1.java:45)\n  at MemberServiceV4.join(MemberServiceV4.java:22)\n  at MemberController.create(MemberController.java:18)\n  ... 42 more\nCaused by: JdbcSQLIntegrityConstraintViolationException: Unique index ...\n  at org.h2.message.DbException.getJdbcSQLException(DbException.java:...)\n  ... 15 more\n```\n\n**위에서부터 읽는다.**\n\n| | 무엇 |\n|---|---|\n| 첫 줄 | **예외 타입과 메시지** |\n| `at ...` | **호출 경로** — 위가 안쪽 |\n| `... 42 more` | 프레임워크 내부. 생략됐다 |\n| **`Caused by`** | **원인 예외** |\n\n**우리 코드를 먼저 찾는다.** 패키지 이름으로 걸러 보면 **`MemberRepositoryV4_1.java:45`** 가 진짜 자리다.\n\n**`Caused by` 가 여러 겹**일 수 있다.\n\n```\nCaused by: A\nCaused by: B\nCaused by: C   <- 진짜 원인\n```\n\n**제일 아래가 처음 난 것**이다. 4.7절에서 본 것처럼 **감쌀 때마다 한 겹**씩 는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "로그를 두 번 찍지 않는다",
+   "md": "```java\n// 리포지토리\ncatch (SQLException e) {\n    log.error(\"DB 오류\", e);          // 여기서 한 번\n    throw new MyDbException(e);\n}\n\n// 핸들러\ncatch (MyDbException e) {\n    log.error(\"처리 실패\", e);        // 또 한 번\n}\n```\n\n**같은 예외가 로그에 두 번** 나온다.\n\n**무엇이 나쁜가**\n\n- **로그가 두 배**로 커진다\n- **같은 사고가 두 번 난 것처럼** 보인다\n- **모니터링의 오류 수가 부풀려진다**\n\n**던질 때는 로그를 안 찍는다.** 6.2절에서 한 말이다.\n\n> **로그만 찍을 거면 잡지 말고 던진다.** 로그는 위에서 한 번만.\n\n**예외를 만들 때 정보를 담는 것**이 낫다.\n\n```java\nthrow new MyDbException(\"회원 저장 실패 memberId=\" + memberId, e);\n```\n\n**`memberId` 가 메시지에 있으면** 로그 한 줄로 충분하다.\n\n> **「MVC 2편」 10.6절에서 본 그것**이다. **업무 예외는 `warn`, 스택 트레이스는 안 남긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "예외 메시지에 민감한 것을 담지 않는다",
+   "md": "**2.5절에서 본 그것**이다.\n\n```\nUnique index or primary key violation:\n  \"PRIMARY KEY ON PUBLIC.MEMBER(MEMBER_ID) ( /* key:5 */ 'hi5', 10000)\"\n```\n\n**데이터 값이 메시지에** 들어 있다.\n\n**로그에는 남아도 된다** — 개발자가 본다.\n\n**사용자에게 보이면 안 된다.** 「MVC 2편」 9.3절의 그 이야기다.\n\n> **예외 객체를 화면에 뿌리면 안 된다** — SQL·제약 조건 이름이 샌다.\n\n**10장에서 만든 구조**가 이것을 막는다.\n\n```java\n@ExceptionHandler(MyDbException.class)\npublic ErrorResult handle(MyDbException e) {\n    log.error(\"db error\", e);                      // 로그에는 전부\n    return new ErrorResult(\"DB_ERROR\", \"처리 중 오류\");  // 화면에는 최소\n}\n```\n\n**로그와 응답을 분리**한다.\n\n**그리고 비밀번호가 예외 메시지에 들어가지 않게** 조심한다 — **바인딩 값이 그대로 찍히는** 경우가 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 중복 키로 실패\nrepository.save(new Member(\"hi5\", 10000));\nrepository.save(new Member(\"hi5\", 20000));\n\n# 원인을 넘긴 경우\n# hello.jdbc.repository.ex.MyDbException:\n#   org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException:\n#     Unique index or primary key violation:\n#     \"PRIMARY KEY ON PUBLIC.MEMBER(MEMBER_ID) ( /* key:5 */ 'hi5', 10000)\"\n#     SQL statement: insert into member(member_id, money) values(?, ?) [23505-232]\n#   at hello.jdbc.repository.MemberRepositoryV4_1.save(MemberRepositoryV4_1.java:45)\n#   at hello.jdbc.service.MemberServiceV4.join(MemberServiceV4.java:22)\n# Caused by: org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: ...\n#   at org.h2.message.DbException.getJdbcSQLException(DbException.java:520)\n#   ... 15 more\n\n# 코드 23505 가 보인다 - 7.5 절에서 이 숫자를 쓴다\n\n# 원인을 안 넘긴 경우\n# hello.jdbc.repository.ex.MyDbException\n#   at hello.jdbc.repository.MemberRepositoryV4_1.save(MemberRepositoryV4_1.java:45)\n#   at hello.jdbc.service.MemberServiceV4.join(MemberServiceV4.java:22)\n\n# 중복 키인지 연결 실패인지 문법 오류인지 알 수 없다\n\n# 나간 SQL 은 같다\n#   insert into member(member_id, money) values(?, ?)   {1: 'hi5', 2: 20000}",
+   "note": "**두 로그의 차이가 `Caused by` 세 줄**이다.\n\n**위에서는 `23505` 라는 코드**까지 보인다 — 2.5절과 4.9절에서 봐 둔 그 숫자다. **7.5절에서 이것으로 예외를 변환**한다.\n\n**아래는 아무 정보가 없다.** 같은 SQL 이 나갔고 같은 자리에서 실패했는데 **왜인지 모른다.**\n\n**운영에서 이 로그를 받으면** 재현해 볼 수밖에 없고, **재현이 안 되면 못 고친다.**"
+  }
+ ],
+ "recap": [
+  "**한 글자 차이**로 원인이 남거나 사라진다.",
+  "**2.8절의 `finally` 문제와 같은 종류**인데 일부러 하는 것이다.",
+  "**운영에서는 재현이 안 된다** — 로그가 유일한 단서.",
+  "**정보 없는 로그는 없는 것과 같다.**",
+  "**위에서부터 읽고 우리 코드를 먼저** 찾는다.",
+  "**`Caused by` 가 여러 겹**이면 제일 아래가 처음 난 것이다.",
+  "**던질 때는 로그를 안 찍는다** — 두 번 나온다.",
+  "**예외 메시지에 정보를 담는 편**이 낫다.",
+  "**예외 메시지에 데이터 값이 들어 있다** — 로그에는 되고 화면에는 안 된다.",
+  "**로그와 응답을 분리**한다 — 「MVC 2편」 10장의 구조.",
+  "**`23505` 같은 코드**가 7.5절에서 쓰인다."
+ ],
+ "drills": [
+  {
+   "task": "원인을 넘기고 안 넘기고를 각각 실행한다.",
+   "done_when": "`Caused by` 유무를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스택 트레이스에서 우리 코드 줄을 찾는다.",
+   "done_when": "실제 실패 지점을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외를 두 번 감싸고 `Caused by` 를 본다.",
+   "done_when": "두 겹이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "리포지토리와 핸들러 둘 다에서 로그를 찍는다.",
+   "done_when": "같은 예외가 두 번 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "제약 위반 메시지에 어떤 데이터가 들어 있는지 본다.",
+   "done_when": "화면에 뿌리면 안 되는 이유를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "원인을 안 넘기면?",
+   "a": "왜 실패했는지가 통째로 사라진다. 중복 키인지 연결 실패인지 알 수 없다."
+  },
+  {
+   "q": "스택 트레이스를 어떻게 읽나?",
+   "a": "위에서부터 읽고 우리 패키지의 줄을 먼저 찾는다. `Caused by` 의 제일 아래가 처음 난 예외다."
+  },
+  {
+   "q": "로그를 왜 한 번만 찍나?",
+   "a": "던지면서 찍고 잡으면서 또 찍으면 같은 사고가 두 번 난 것처럼 보이고 모니터링 수치가 부풀려진다."
+  },
+  {
+   "q": "예외 메시지에 무엇을 담나?",
+   "a": "식별자 같은 조사에 필요한 정보다. 다만 그 메시지를 화면에 뿌리면 안 된다."
+  },
+  {
+   "q": "`23505` 는 무엇인가?",
+   "a": "표준 SQL 상태 코드다. 7.5절에서 이 숫자로 예외를 변환한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "원인 예외",
+   "en": "cause",
+   "what": "예외를 감쌀 때 넘기는 원래 예외. `Caused by` 로 스택 트레이스에 남는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

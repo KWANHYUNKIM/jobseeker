@@ -1,0 +1,176 @@
+{
+ "book": "spring-db-1",
+ "id": "exception-summary",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "정리",
+ "summary": "무엇을 체크로 하고 무엇을 언체크로 할까.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "체크와 언체크를 고르는 기준을 정리한다.",
+  "6장이 5장의 무엇을 끝냈는지 안다.",
+  "7장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "판단",
+   "ascii": "   can the caller do something meaningful?\n        |                        |\n       no                       yes\n        |                        |\n        v                        v\n   unchecked                how many layers away?\n                                 |            |\n                                one         three or more\n                                 |            |\n                                 v            v\n                            checked ok    unchecked\n\n   거의 모든 길이 언체크로 간다",
+   "note": "**거의 모든 길이 언체크로** 간다."
+  },
+  {
+   "type": "table",
+   "caption": "정리",
+   "note": "**두 조건이 다 맞아야** 체크다.",
+   "columns": [
+    "",
+    "체크",
+    "언체크"
+   ],
+   "rows": [
+    [
+     "복구 가능",
+     "**그렇다**",
+     "아니다"
+    ],
+    [
+     "계층 거리",
+     "**바로 위**",
+     "멀다"
+    ],
+    [
+     "`throws` 전파",
+     "모든 계층",
+     "**없다**"
+    ],
+    [
+     "인터페이스",
+     "기술이 드러난다",
+     "**깨끗하다**"
+    ],
+    [
+     "롤백 (5.6절)",
+     "**커밋된다**",
+     "롤백된다"
+    ],
+    [
+     "실무 빈도",
+     "드물다",
+     "**기본**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "6장이 5장의 무엇을 끝냈나",
+   "md": "**5.11절에서 이렇게 남겼다.**\n\n```java\npublic void accountTransfer(...) throws SQLException\n```\n\n> **5.1절의 첫 문제가 완전히 안 끝났다.** JDBC API 는 사라졌는데 **JDBC 예외가 남았다.**\n\n**6.6절에서 언체크로 감싸** 끝냈다.\n\n```java\n// 리포지토리에서만 안다\ncatch (SQLException e) { throw new MyDbException(e); }\n\n// 서비스\n@Transactional\npublic void accountTransfer(String fromId, String toId, int money) { }\n```\n\n**서비스에 `java.sql` 이 한 글자도 없다.**\n\n**5.1절의 네 문제가 이제 다 끝났다.**\n\n| | 어디서 |\n|---|---|\n| 1. 서비스가 JDBC 를 안다 | 5.2 · 5.8 · **6.6절** |\n| 2. 커넥션 전달 | 5.3 · 5.5절 |\n| 3. `try-catch` | 5.6절 |\n| 4. 반복 | 5.8절 |\n\n**첫 문제가 제일 오래 걸렸다** — API · 트랜잭션 코드 · 예외 셋을 다 걷어야 했다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그런데 새 문제가 생겼다",
+   "md": "**6.6절의 `MyDbException` 을 다시 본다.**\n\n```java\ncatch (SQLException e) {\n    throw new MyDbException(e);\n}\n```\n\n**전부 하나로 뭉갰다.**\n\n```\n연결 실패      -> MyDbException\n중복 키        -> MyDbException\n문법 오류      -> MyDbException\n락 타임아웃    -> MyDbException\n```\n\n**구분이 안 된다.** 6.6절에서 **중복 키는 복구 가능**하다고 했는데 **골라낼 방법이 없다.**\n\n**골라내려면 오류 코드를 봐야** 한다.\n\n```java\ncatch (SQLException e) {\n    if (e.getErrorCode() == 23505) {   // 2.5·6.7절에서 본 그 숫자\n        throw new MyDuplicateKeyException(e);\n    }\n    throw new MyDbException(e);\n}\n```\n\n**동작하는데 문제가 둘**이다.\n\n1. **숫자가 DB 마다 다르다** — H2 는 23505, MySQL 은 1062\n2. **경우가 수백 가지**다 — 전부 `if` 로 쓸 수 없다\n\n**7.3절에서 이것을 직접 만들어 보고**, **7.4절에서 스프링이 이미 만들어 뒀다**는 것을 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장에서 알아 둘 것",
+   "md": "**7장 이후로도 남는 것들**이다.\n\n**1. 잡으면 정상 흐름이 된다**(6.2절)\n\n**트랜잭션이 커밋**된다. 5장에서 만든 것이 `try-catch` 하나로 무력화된다.\n\n**2. 원인을 넘긴다**(6.7절)\n\n**`Caused by` 가 없으면 못 고친다.** 스프링이 변환할 때도 원인을 넘긴다.\n\n**3. 체크는 커밋된다**(5.6절)\n\n**6장을 하고 나면 이 규칙이 이해된다.** 스프링이 체크를 \"복구 가능한 상황\" 으로 본 것.\n\n**4. 마지막 그물이 필요하다**(6.4절)\n\n**언체크는 컴파일러가 안 도와준다.** 웹은 `@ControllerAdvice`, 배치는 직접.\n\n**5. 로그는 한 번만**(6.7절)\n\n**던지면서 찍지 않는다.**\n\n> **다섯 다 프레임워크가 안 해 준다.** 우리가 판단할 것들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다른 언어는 어떻게 하나",
+   "md": "**체크 예외가 없는 언어**들이 어떻게 사는지 보면 판단에 도움이 된다.\n\n| | 방식 |\n|---|---|\n| **코틀린** | 전부 언체크. 문서로 남긴다 |\n| **C#** | 전부 언체크 |\n| **Go** | **예외가 없다** — 반환값으로 오류를 준다 |\n| **러스트** | `Result<T, E>` — **타입으로 강제**한다 |\n\n**Go 와 러스트가 흥미롭다.** \"오류를 무시하면 안 된다\" 는 **체크 예외의 목표**를 **다른 방법으로** 이룬다.\n\n```rust\nlet member = repository.find_by_id(id)?;   // ? 가 위로 전파\n```\n\n**타입에 오류가 들어 있어서** 처리를 안 하면 컴파일이 안 된다. **그런데 `throws` 처럼 시그니처에 번지지 않는다** — 반환 타입 하나로 표현된다.\n\n**자바도 비슷한 것을 쓸 수 있다.**\n\n```java\nOptional<Member> findById(String id);\n```\n\n**\"없을 수 있다\" 를 타입으로** 표현한다 — 2.6절에서 본 그것이다. **오류 전체를 이렇게 하지는 않지만** 방향은 같다.\n\n> **체크 예외의 목표는 옳았고 수단이 문제였다**는 것이 지금의 평가다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그 — 6장의 결과",
+   "sql": "# 6 장 전 (5.11 절)\n# MemberRepositoryV3\npublic Member findById(String id) throws SQLException\n# MemberServiceV3_3\npublic void accountTransfer(...) throws SQLException\n# 테스트\nvoid accountTransfer() throws SQLException\n\n# 6 장 후\n# MemberRepositoryV4_1\npublic Member findById(String id)              // throws 없음\n# MemberServiceV4\npublic void accountTransfer(...)               // throws 없음\n# 테스트\nvoid accountTransfer()                         // throws 없음\n\n# import java.sql 이 리포지토리에만 남았다\n\n# 실행 로그는 그대로\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n\n# 그런데 예외 구분이 안 된다\nrepository.save(new Member(\"hi5\", 10000));\nrepository.save(new Member(\"hi5\", 20000));\n\n# hello.jdbc.repository.ex.MyDbException\n# Caused by: JdbcSQLIntegrityConstraintViolationException [23505-232]\n\nrepository.findById(\"memberA\");   // DB 가 죽은 상태\n\n# hello.jdbc.repository.ex.MyDbException\n# Caused by: JdbcSQLNonTransientConnectionException [90067-232]\n\n# 둘 다 MyDbException 이다. 잡는 쪽에서 구분할 수 없다",
+   "note": "**`throws SQLException` 이 세 파일에서 다 사라졌다.** 6.5절에서 센 그 임포트들이다.\n\n**로그는 그대로**다 — 5장과 마찬가지로 **자바 코드만** 바뀌었다.\n\n**맨 아래가 6장이 만든 새 문제**다. **중복 키와 연결 실패가 같은 예외**로 온다. `Caused by` 를 파헤치면 알 수 있는데 **코드로 분기할 수는 없다.**\n\n**`23505` 와 `90067`** 이 그 단서이고, **7장이 이 숫자들을 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**복구 가능하고 바로 위가 처리하면** 체크, 아니면 언체크.",
+  "**두 조건이 다 맞아야** 체크다 — 거의 언체크로 간다.",
+  "**5.1절의 네 문제가 다 끝났다.**",
+  "**첫 문제가 제일 오래 걸렸다** — API · 트랜잭션 · 예외 셋.",
+  "**새 문제가 생겼다** — 전부 `MyDbException` 으로 뭉갰다.",
+  "**중복 키를 골라낼 방법이 없다.**",
+  "**오류 코드가 DB 마다 다르고 경우가 수백 가지**다.",
+  "6장에서 알아 둘 것 다섯 — **잡으면 커밋 · 원인 · 체크는 커밋 · 마지막 그물 · 로그 한 번**.",
+  "**다섯 다 프레임워크가 안 해 준다.**",
+  "**Go 와 러스트는 타입으로** 같은 목표를 이룬다.",
+  "**목표는 옳았고 수단이 문제였다.**"
+ ],
+ "drills": [
+  {
+   "task": "세 파일의 `throws` 와 `import` 를 6.5절과 비교한다.",
+   "done_when": "리포지토리에만 남은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "중복 키와 연결 실패를 각각 내고 예외 타입을 본다.",
+   "done_when": "둘 다 같은 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`e.getErrorCode()` 로 구분해 본다.",
+   "done_when": "숫자가 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "MySQL 의 중복 키 코드를 찾아본다.",
+   "done_when": "H2 와 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "6장에서 알아 둘 것 다섯을 각각 재현한다.",
+   "done_when": "7장 이후로도 남을 것들이라는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "체크로 만들 두 조건은?",
+   "a": "호출자가 복구할 수 있고 계층이 바로 위여야 한다. 둘 다 맞는 경우가 드물다."
+  },
+  {
+   "q": "6장이 5장의 무엇을 끝냈나?",
+   "a": "5.1절의 첫 문제다. API 와 트랜잭션 코드를 없앤 뒤 남아 있던 `throws SQLException` 을 언체크로 감쌌다."
+  },
+  {
+   "q": "6장이 만든 새 문제는?",
+   "a": "모든 데이터 접근 오류가 `MyDbException` 하나가 되어 중복 키 같은 복구 가능한 것을 골라낼 수 없다."
+  },
+  {
+   "q": "오류 코드로 구분하면 무엇이 문제인가?",
+   "a": "숫자가 DB 마다 다르고 경우가 수백 가지라 `if` 로 다 쓸 수 없다."
+  },
+  {
+   "q": "Go 나 러스트는 어떻게 하나?",
+   "a": "오류를 반환 타입에 담아 처리를 강제한다. 시그니처가 번지지 않으면서 같은 목표를 이룬다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — DataAccessException",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/dao.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

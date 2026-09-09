@@ -1,0 +1,136 @@
+{
+ "book": "spring-db-1",
+ "id": "unchecked-usage",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "언체크 예외 활용",
+ "summary": "복구할 수 없으면 던지지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "체크 예외를 언체크로 바꾸는 방법을 안다.",
+  "무엇을 체크로 남길지 판단한다.",
+  "예외를 어디서 끝낼지 정할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "리포지토리에서 감싸고 위에서 끝낸다",
+   "ascii": "   repository\n   ----------\n   catch (SQLException e)\n       throw new MyDbException(e)      unchecked, cause kept\n\n   service                             no throws, no import\n   controller                          no throws, no import\n\n   handler\n   -------\n   catch (MyDbException e)\n       log.error(\"db error\", e)        the cause is in the log\n       return 500\n\n   기술 예외는 여기서 끝난다",
+   "note": "**중간 계층은 아무것도 모른다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "감싸기",
+   "code": "public class MyDbException extends RuntimeException {\n    public MyDbException(Throwable cause) {\n        super(cause);\n    }\n    public MyDbException(String message, Throwable cause) {\n        super(message, cause);\n    }\n}\n\npublic Member findById(String memberId) {\n    try {\n        ...\n    } catch (SQLException e) {\n        throw new MyDbException(e);      // 원인을 넘긴다\n    }\n}",
+   "note": "**`throws SQLException` 이 사라졌다.**\n\n**생성자가 `Throwable cause` 를 받는다.** 이것이 6.7절의 주제이고, **빠뜨리면 진짜 원인이 사라진다.**\n\n**메시지 없는 생성자도 흔하다** — 원인 예외의 메시지가 그대로 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "복구할 수 없으면 언체크",
+   "md": "**6.3절의 기준**을 다시 본다.\n\n> **호출자가 잡아서 의미 있는 일을 할 수 있나.**\n\n**대부분의 데이터 접근 오류는 못 한다.**\n\n| | 할 수 있나 |\n|---|---|\n| DB 연결 실패 | **못 한다** — 서버가 죽었다 |\n| SQL 문법 오류 | **못 한다** — 코드 버그다 |\n| 제약 조건 위반 | **경우에 따라** — 7.3절 |\n| 락 타임아웃 | **재시도할 수 있다** — 4.9절 |\n\n**셋째와 넷째가 갈린다.**\n\n**중복 회원 등록**이면 \"이미 사용 중인 아이디입니다\" 를 보여 줄 수 있다 — **복구 가능**하다. **7.3절에서 이것만 따로 만든다.**\n\n**나머지는 500 이고 로그를 남기는 것이 전부**다.\n\n**그래서 기본은 언체크로 감싸고**, **의미가 있는 것만 골라낸다.**\n\n> **「MVC 2편」 10.4절에서 본 그것**과 같은 구조다.\n>\n> **`RuntimeException` 을 상속하고 계층을 만든다** — 부모로 한 번에 잡을 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "무엇을 체크로 남길까",
+   "md": "**드물지만 있다.**\n\n```java\n// 잔고 부족 - 사용자가 대응할 수 있다\npublic class NotEnoughMoneyException extends Exception { }\n```\n\n**세 조건이 다 맞을 때** 체크를 고려한다.\n\n1. **호출자가 반드시 처리해야** 한다\n2. **처리할 수 있다** — 안내하거나 대안이 있다\n3. **계층이 얕다** — 바로 위가 처리한다\n\n**셋째가 자주 빠진다.** 리포지토리에서 컨트롤러까지 네 계층이면 **아무리 복구 가능해도 언체크**가 낫다.\n\n**5.6절의 롤백 규칙**도 고려한다.\n\n> **언체크는 롤백, 체크는 커밋**한다.\n\n**\"잔고 부족\" 을 체크로 만들면** 트랜잭션이 **커밋**된다. 그것이 의도면 맞고, 아니면 **`rollbackFor` 를 줘야** 한다.\n\n**모르고 쓰면 사고**라고 한 것이 이 조합이다.\n\n> **실무의 기본은 언체크**다. 체크는 **정말 필요한 하나둘**만."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "감싸기만 하고 안 잡으면",
+   "md": "**언체크로 바꾸면 컴파일러가 안 도와준다**(6.4절).\n\n```java\n// 리포지토리 - 언체크로 던진다\nthrow new MyDbException(e);\n\n// 아무도 안 잡는다\n// -> WAS 까지 올라간다\n```\n\n**웹이면 「MVC 2편」 9장의 흐름**을 탄다. 500 에 오류 페이지다.\n\n**API 면 10장의 `@ControllerAdvice`** 가 잡는다.\n\n**둘 다 없으면** — **`Whitelabel Error Page`** 다.\n\n**최소한 이것은 있어야** 한다.\n\n```java\n@ExceptionHandler(Exception.class)\npublic ErrorResult handle(Exception e) {\n    log.error(\"예상 못 한 오류\", e);\n    return new ErrorResult(\"EX\", \"내부 오류\");\n}\n```\n\n**로그가 남는 것이 핵심**이다. 6.4절에서 \"마지막 그물\" 이라고 한 것.\n\n**배치는 직접 만든다.**\n\n```java\ntry {\n    job.run();\n} catch (Exception e) {\n    log.error(\"배치 실패\", e);\n    alertService.notify(e);   // 알림까지\n}\n```\n\n**웹은 프레임워크가 해 주는데 배치는 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "예외 계층을 만든다",
+   "md": "```\nMyDbException                    (RuntimeException)\n  +-- MyDuplicateKeyException    중복 키. 복구 가능\n  +-- MyNotFoundException        없음\n```\n\n**부모로 한 번에 잡고 자식으로 구분**한다.\n\n```java\ntry {\n    repository.save(member);\n} catch (MyDuplicateKeyException e) {\n    // 아이디를 바꿔 재시도\n} catch (MyDbException e) {\n    // 나머지는 못 고친다\n}\n```\n\n**6.1절에서 본 규칙**이 여기 쓰인다.\n\n> **부모로 잡으면 자식도 잡힌다.** 구체적인 것을 먼저 쓴다.\n\n**「MVC 2편」 10.4절에서 만든 것**과 같은 모양이다.\n\n```\nBusinessException\n  +-- ItemNotFoundException\n  +-- NoPermissionException\n```\n\n**거기는 업무 예외**였고 **여기는 데이터 접근 예외**다. **둘 다 필요**하고, **7.4절에서 스프링이 후자를 이미 만들어 뒀다**는 것을 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 리포지토리에서 감싼 뒤\n# MemberRepositoryV4_1\npublic Member findById(String memberId) {    // throws 가 없다\n    try { ... }\n    catch (SQLException e) { throw new MyDbException(e); }\n}\n\n# MemberServiceV4\n@Transactional\npublic void accountTransfer(String fromId, String toId, int money) {\n    // throws 가 없다. import java.sql 도 없다\n}\n\n# 정상 실행\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n\n# DB 가 죽은 상태\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#   Could not obtain JDBC Connection\n#   Initiating transaction rollback\n#\n# hello.jdbc.repository.ex.MyDbException:\n#   org.h2.jdbc.JdbcSQLNonTransientConnectionException:\n#     Connection is broken: \"java.net.ConnectException: Connection refused\"\n#   at hello.jdbc.repository.MemberRepositoryV4_1.findById(MemberRepositoryV4_1.java:60)\n#   at hello.jdbc.service.MemberServiceV4.bizLogic(MemberServiceV4.java:35)\n# Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: ...\n\n# 원인이 남아 있고 서비스는 이 예외를 모른다",
+   "note": "**서비스에 `throws` 도 `import java.sql` 도 없다.** 6.5절에서 세 파일에 있던 것이 리포지토리에만 남았다.\n\n**5.1절의 첫 문제가 이제야 완전히** 끝났다 — 5.8절에서 API 를 없애고 여기서 예외를 없앴다.\n\n**`Caused by`** 로 원인이 남아 있다. **`Connection refused`** 라는 진짜 이유를 로그에서 볼 수 있다.\n\n**스택 트레이스에 리포지토리와 서비스가 둘 다** 있다 — 어디서 났고 누가 불렀는지 다 나온다."
+  }
+ ],
+ "recap": [
+  "**리포지토리에서 언체크로 감싸고** 위에서 끝낸다.",
+  "**생성자가 원인을 받아야** 한다 — 6.7절.",
+  "**복구할 수 없으면 언체크**다.",
+  "**중복 키와 락 타임아웃만 복구 가능**하다 — 7.3절.",
+  "체크로 남길 조건 셋 — **반드시 처리 · 처리 가능 · 계층이 얕음**.",
+  "**셋째가 자주 빠진다** — 계층이 깊으면 언체크가 낫다.",
+  "**체크는 커밋된다**(5.6절) — 의도가 아니면 `rollbackFor`.",
+  "**실무의 기본은 언체크**다.",
+  "**컴파일러가 안 도와주니 마지막 그물**이 필요하다.",
+  "**배치는 직접 만든다** — 웹은 프레임워크가 해 준다.",
+  "**예외 계층을 만든다** — 부모로 잡고 자식으로 구분."
+ ],
+ "drills": [
+  {
+   "task": "`MyDbException` 을 만들고 리포지토리에서 감싼다.",
+   "done_when": "서비스의 `throws` 가 사라진 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "서비스와 테스트의 `import` 를 다시 센다.",
+   "done_when": "`java.sql` 이 없어진 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "DB 를 끄고 실행한다.",
+   "done_when": "`Caused by` 에 원인이 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외 계층을 만들고 자식·부모로 각각 잡아 본다.",
+   "done_when": "구체적인 것이 먼저 잡히는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@ControllerAdvice` 없이 언체크를 던져 본다.",
+   "done_when": "`Whitelabel` 이 나오는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "언체크로 감싸면 무엇이 좋아지나?",
+   "a": "중간 계층에서 `throws` 와 임포트가 사라져 기술이 새어 나가지 않는다."
+  },
+  {
+   "q": "체크로 남길 조건은?",
+   "a": "호출자가 반드시 처리해야 하고, 처리할 수 있고, 계층이 얕을 때다."
+  },
+  {
+   "q": "체크 예외의 롤백은?",
+   "a": "기본이 커밋이다. 롤백하려면 `rollbackFor` 를 줘야 한다."
+  },
+  {
+   "q": "언체크의 대가를 어떻게 보완하나?",
+   "a": "최상위에 잡는 곳을 둔다. 웹은 `@ControllerAdvice`, 배치는 직접 만든다."
+  },
+  {
+   "q": "예외 계층을 왜 만드나?",
+   "a": "부모로 한 번에 잡고 자식으로 복구 가능한 것을 구분하기 위해서다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
