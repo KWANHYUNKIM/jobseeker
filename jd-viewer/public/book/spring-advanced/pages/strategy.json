@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "strategy",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "전략 패턴",
+ "summary": "상속 대신 위임.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "위임으로 바꾼다.",
+  "필드와 인자를 견준다.",
+  "싱글턴 문제를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.5절에서 상속이** 묶었다. **가지는 관계로** 바꾼다."
+  },
+  {
+   "type": "figure",
+   "caption": "이다에서 가진다로",
+   "ascii": "   from is a kind of to has a\n\n   inheritance   the body is a subclass of the template\n   delegation    the template holds a reference to the body\n\n   the second can be swapped after the object exists",
+   "note": "**둘째는 객체가 만들어진 뒤에도 갈아** 끼운다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "본문이 독립된 물체가 된다",
+   "md": "**따로 만들 수** 있다.\n\n> **틀 없이도** 만든다.\n> **4.5절에서 못 하던 것**이다.\n> **아래에서 시험**한다.\n\n**갈아 끼울 수** 있다.\n\n> **런타임에** 고른다.\n> **3.4절의 그 교체**다.\n> **아래에서 그렇게** 한다.\n\n**부모가 안** 필요하다.\n\n> **다른 상속과 안** 부딪힌다.\n> **4.5절의 그** 충돌이다.\n> **아래에서 확인**한다.\n\n**람다가** 된다.\n\n> **인터페이스라 그렇**다.\n> **4.3절에서 막혔던 것**이다.\n> **아래에서 그걸** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "전략을 어디 두나",
+   "ascii": "   two places to keep the strategy\n\n   in a field, set once when the object is built\n   in a parameter, given fresh on every call\n\n   a singleton can only use the second one safely",
+   "note": "**싱글턴은 둘째만 안전하게 쓸 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "필드에 담으면 3장의 문제가 돌아온다",
+   "md": "**빈은 하나**다.\n\n> **3.1절에서 그걸** 봤다.\n> **필드도** 하나다.\n> **아래에서 그걸** 겪는다.\n\n**바꾸면 남이** 본다.\n\n> **3.2절의 그** 섞임이다.\n> **아래에서 재현**한다.\n> **같은 자리**다.\n\n**인자로 주면 안전**하다.\n\n> **매번 새로** 준다.\n> **아래에서 견줘** 본다.\n> **4.7절이 그** 길이다.\n\n**틀을 여러 개 만들면 또** 늘어난다.\n\n> **조립마다 하나씩**이다.\n> **아래에서 세어** 본다.\n> **필드 방식의** 값이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 인터페이스로 바꾼다\n\n// 전 (추상 클래스)\npublic abstract class AbstractTemplate<T> {\n    public final T execute(String message) { ... }\n    protected abstract T call();\n}\n\n// 후 (인터페이스와 구체 클래스)\npublic interface Callback<T> {\n    T call();\n}\n\npublic class TraceTemplate {\n    private final LogTrace trace;\n    private final Callback<?> callback;      // 가진다\n\n    public TraceTemplate(LogTrace trace, Callback<?> callback) {\n        this.trace = trace;\n        this.callback = callback;\n    }\n\n    public Object execute(String message) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(message);\n            Object result = callback.call();\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ grep -c 'abstract' src/main/java/study/adv/template/TraceTemplate.java\n0\n\n--   추상 클래스가 사라졌다\n\n\n-- 본문을 따로 만든다\n\nCallback<Void> body = () -> { orderRepository.save(itemId); return null; };\n\npublic void orderItem(String itemId) {\n    Callback<Void> body = () -> { orderRepository.save(itemId); return null; };\n    new TraceTemplate(trace, body).execute(\"OrderService.orderItem()\");\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   4.4 절과 똑같은 여섯 줄이다\n\n\n-- 클래스 파일이 안 생긴다\n\n$ ./gradlew compileJava -q\n$ ls build/classes/java/main/study/adv/ | grep -c '\\$1'\n0\n\n// 4.4 절에서는\n3\n\n$ ls build/classes/java/main/study/adv/\nOrderController.class\nOrderRepository.class\nOrderService.class\nWhoController.class\n\n--   4.3 절에서 예고한 그것이다\n--   인터페이스라 람다가 된다\n\n\n-- 본문만 시험할 수 있다\n\n@Test\nvoid 본문만_시험한다() {\n    Callback<Void> body = () -> { repository.save(\"연필\"); return null; };\n    body.call();\n    verify(repository).save(\"연필\");\n}\n\n$ ./gradlew test --tests '*본문만*' 2>&1 | tail -2\nBUILD SUCCESSFUL in 3s\n\n// 4.5 절에서는\nerror: call() has protected access in AbstractTemplate\n\n--   틀 없이 부를 수 있다\n\n\n-- 다른 상속과 안 부딪힌다\n\n@Repository\npublic class OrderRepository extends JdbcDaoSupport {\n    public void save(String itemId) {\n        new TraceTemplate(trace, () -> { sleep(1000); return null; })\n            .execute(\"OrderRepository.save()\");\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ javap build/classes/java/main/study/adv/OrderRepository.class | head -1\npublic class study.adv.OrderRepository extends org.springframework.jdbc.core.support.JdbcDaoSupport {\n\n--   4.5 절에서 막혔던 자리다\n\n\n-- 런타임에 고를 수 있다\n\nCallback<Void> body = useSlow\n    ? () -> { sleep(1000); return null; }\n    : () -> { return null; };\n\nnew TraceTemplate(trace, body).execute(\"OrderRepository.save()\");\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/request?itemId=연필&slow=false'\n0.012\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/request?itemId=연필&slow=true'\n1.014\n\n--   4.5 절에서 안 되던 것이다\n\n\n-- 틀을 여러 개 만들면\n\n$ grep -c 'new TraceTemplate' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n$ curl -s 'localhost:8080/bench/template?n=1000000&mode=strategy-field'\n필드 방식: 1000000 개 객체\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'TraceTemplate' | head -1\n  62:       1000000       24000000  study.adv.template.TraceTemplate\n\n--   부를 때마다 틀도 새로 만든다\n--   본문마다 틀이 하나씩이다\n\n\n-- 빈으로 만들어 재사용하려면\n\n@Bean\nTraceTemplate traceTemplate(LogTrace trace) {\n    return new TraceTemplate(trace, null);      // 전략을 아직 모른다\n}\n\n$ curl -s 'localhost:8080/who?name=traceTemplate'\n빈 이름:   traceTemplate\n주입된 것: study.adv.template.TraceTemplate\n원본:     study.adv.template.TraceTemplate\n프록시:   false\n\n--   전략을 나중에 넣어야 한다\n\n\n-- 필드를 바꾸면\n\npublic class TraceTemplate {\n    private Callback<?> callback;              // final 을 뗐다\n\n    public void setCallback(Callback<?> cb) { this.callback = cb; }\n}\n\npublic void orderItem(String itemId) {\n    template.setCallback(() -> { orderRepository.save(itemId); return null; });\n    template.execute(\"OrderService.orderItem()\");\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n\n--   혼자 쓰면 멀쩡하다\n--   3.1 절과 같은 말이다\n\n\n-- 동시에 부르면\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | cut -c56- | head -6\n[3d81f0a2] OrderController.request()\n[c14e0b93] OrderController.request()\n[3d81f0a2] |-->OrderService.orderItem()\n[c14e0b93] |-->OrderService.orderItem()\n[3d81f0a2] |   |-->OrderRepository.save()\n[c14e0b93] |   |-->OrderRepository.save()\n\n$ curl -s localhost:8080/order/count\n연필: 0 개\n지우개: 2 개\n\n--   로그는 멀쩡한데 저장이 어긋났다\n--   3.2 절의 그 자리다\n--   이번엔 전략이 섞였다\n\n\n-- 최소 재현\n\n@Test\nvoid 전략_필드_동시성() throws Exception {\n    var t = new TraceTemplate(trace, null);\n    var t1 = new Thread(() -> { t.setCallback(() -> \"A\"); sleep(100);\n                                log.info(\"A 결과 {}\", t.execute(\"A\")); });\n    var t2 = new Thread(() -> { t.setCallback(() -> \"B\");\n                                log.info(\"B 결과 {}\", t.execute(\"B\")); });\n    t1.start(); sleep(50); t2.start(); t1.join(); t2.join();\n}\n\n$ ./gradlew test --tests '*전략_필드*' -i 2>&1 | grep '결과'\n[Thread-1] B 결과 B\n[Thread-0] A 결과 B\n\n--   3.2 절과 똑같은 모양이다\n\n\n-- 생성자로 주면 안전하다\n\nprivate final Callback<?> callback;          // final 로 되돌린다\n\npublic void orderItem(String itemId) {\n    new TraceTemplate(trace, () -> { orderRepository.save(itemId); return null; })\n        .execute(\"OrderService.orderItem()\");\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1 && curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ curl -s localhost:8080/order/count\n연필: 1 개\n지우개: 1 개\n\n--   매번 새로 만드니 안 섞인다\n--   대신 객체가 요청마다 생긴다\n\n\n-- 셋을 견준다\n\n$ printf '%-20s %-14s %-12s %s\\n' \\\n  '상속'          '자식 클래스'  '컴파일 고정'  '본문만 못 뗌' \\\n  '위임 (필드)'   '틀 재사용'    '섞임'         '3.2 절 재현' \\\n  '위임 (생성자)' '매번 새 틀'   '안전'         '객체가 늚'\n\n상속                 자식 클래스     컴파일 고정   본문만 못 뗌\n위임 (필드)          틀 재사용       섞임          3.2 절 재현\n위임 (생성자)        매번 새 틀      안전          객체가 늚\n\n--   4.7 절이 넷째 길을 낸다\n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n      64 total\n\n// 4.4 절에서는\n      76 total\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | cat -n\n     1\t    public void orderItem(String itemId) {\n     2\t        new TraceTemplate(trace, () -> { orderRepository.save(itemId); return null; })\n     3\t            .execute(\"OrderService.orderItem()\");\n     4\t    }\n\n$ python3 -c \"print('업무 1 줄에 감싸는 코드 2 줄')\"\n업무 1 줄에 감싸는 코드 2 줄\n\n--   일 대 오에서 일 대 이가 됐다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ ls build/classes/java/main/study/adv/*\\$1.class 2>/dev/null | wc -l\n       0\n\n$ git add -A && git commit -q -m 'feat: v5 전략 패턴' && git tag v5\n\n--   4.7 절에서 인자로 넘긴다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '관계'        '이다에서 가진다로' \\\n  '추상 클래스' '사라짐' \\\n  '람다'        '됨' \\\n  '클래스 파일' '0 개' \\\n  '본문 시험'   '틀 없이' \\\n  '다른 상속'   '안 부딪힘' \\\n  '런타임 교체' '됨' \\\n  '필드'        '섞임' \\\n  '생성자'      '안전, 객체 늚' \\\n  '비율'        '일 대 이'\n\n관계                       이다에서 가진다로\n추상 클래스                사라짐\n람다                       됨\n클래스 파일                0 개\n본문 시험                  틀 없이\n다른 상속                  안 부딪힘\n런타임 교체                됨\n필드                       섞임\n생성자                     안전, 객체 늚\n비율                       일 대 이",
+   "note": "**추상 클래스를 인터페이스로 바꾸니 람다가 되어 익명 클래스 파일 셋이 0 개가** 된다.\n\n**본문을 틀 없이 부를 수 있고 다른 상속과도 안 부딪히며 런타임에 갈아 끼울 수** 있다.\n\n**전략을 필드에 담고 바꾸니 로그는 멀쩡한데 저장이 `연필: 0 개, 지우개: 2 개` 로** 어긋난다.\n\n**최소 재현에서 `Thread-0` 이 `B 결과 B` 를 받아 3.2절과 똑같은 모양**이다.\n\n**생성자로 주면 안전하고 비율이 일 대 오에서 일 대 이가 되지만 요청마다 틀 객체가** 생긴다."
+  }
+ ],
+ "recap": [
+  "**가진다로** 바꾼다.",
+  "**추상이** 사라진다.",
+  "**람다가** 된다.",
+  "**파일도 안** 생긴다.",
+  "**본문만** 시험한다.",
+  "**상속과 안** 부딪힌다.",
+  "**런타임에** 고른다.",
+  "**필드는** 섞인다.",
+  "**생성자가** 안전하다."
+ ],
+ "drills": [
+  {
+   "task": "인터페이스로 바꾼다.",
+   "done_when": "클래스 파일이 0 개인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "본문만 시험한다.",
+   "done_when": "틀 없이 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "전략을 필드에 담아 본다.",
+   "done_when": "섞이는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "비율을 다시 잰다.",
+   "done_when": "4.4 절과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "상속과 위임의 차이는?",
+   "a": "이다 관계와 가진다 관계다. 뒤쪽은 나중에 갈아 끼울 수 있다."
+  },
+  {
+   "q": "왜 람다를 쓸 수 있게 됐나?",
+   "a": "추상 클래스가 아니라 메서드 하나짜리 인터페이스라서다."
+  },
+  {
+   "q": "전략을 필드에 담으면?",
+   "a": "빈이 하나라 동시 요청끼리 섞인다."
+  },
+  {
+   "q": "생성자로 주면 무엇을 치르나?",
+   "a": "부를 때마다 틀 객체가 새로 만들어진다."
+  },
+  {
+   "q": "본문을 따로 시험할 수 있는 이유는?",
+   "a": "본문이 틀과 무관한 독립된 물체라서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "전략",
+   "def": "바뀌는 부분을 담은, 따로 만들 수 있는 물체."
+  },
+  {
+   "term": "위임",
+   "def": "물려받는 대신 참조로 들고 있다가 넘겨 부르는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Strategy",
+   "url": "https://refactoring.guru/design-patterns/strategy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — JdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

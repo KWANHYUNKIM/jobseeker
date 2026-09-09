@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "inheritance-cost",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "상속의 값",
+ "summary": "부모가 바뀌면 다 바뀐다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "묶이는 것을 안다.",
+  "축이 둘이면 어떻게 되나 본다.",
+  "위임과 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 줄이** 줄었다. **상속으로 얻은 만큼 묶인 것도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "상속이 묶는 것",
+   "ascii": "   what inheritance ties together\n\n   the child is fixed to one parent, chosen at compile time\n   the child sees everything the parent has, wanted or not\n   a change in the parent reaches every child at once\n\n   the third line is useful until the day it is not",
+   "note": "**셋째 줄은 그렇지 않은 날이 오기 전까지** 이롭다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구멍 하나에 부모 하나가 붙는다",
+   "md": "**부모를 못** 바꾼다.\n\n> **컴파일 때** 정해진다.\n> **아래에서 그걸** 겪는다.\n> **런타임에 못** 고른다.\n\n**필요 없는 것도 따라**온다.\n\n> **부모의 모든 것이** 보인다.\n> **아래에서 그 수를** 센다.\n> **`protected` 도 다** 열린다.\n\n**부모가 바뀌면 다** 바뀐다.\n\n> **4.2절에서 그게** 이점이었다.\n> **여기선 그게** 위험이다.\n> **아래에서 그걸** 만든다.\n\n**축이 둘이면** 터진다.\n\n> **곱하기가** 된다.\n> **아래에서 세어** 본다.\n> **4.6절이 그걸** 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "바꿀 것이 둘이면",
+   "ascii": "   what happens when there are two things to vary\n\n   one hole per parent means one axis per hierarchy\n   two axes need a parent per combination\n\n   three of one and three of the other gives nine classes",
+   "note": "**셋과 셋이면 아홉** 클래스다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이미 부모가 있으면 못 붙인다",
+   "md": "**자바는 하나만** 상속한다.\n\n> **다른 부모가 있으면** 끝이다.\n> **아래에서 그걸** 겪는다.\n> **위임은 그런 게** 없다.\n\n**틀을 바꾸면 자식이** 깨진다.\n\n> **구멍 모양이 바뀌면** 그렇다.\n> **아래에서 그** 오류를 본다.\n> **한꺼번에 다** 깨진다.\n\n**틀을 두 개 못** 쓴다.\n\n> **로그와 시간 재기 둘 다면**.\n> **아래에서 그걸** 본다.\n> **껍데기가 두 겹이** 된다.\n\n**테스트가** 얽힌다.\n\n> **부모 없이 자식만 못** 만든다.\n> **아래에서 그걸** 확인한다.\n> **⑨의 그** 이야기다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 부모가 무엇을 물려주나\n\n$ javap -p build/classes/java/main/study/adv/OrderService\\$1.class\nfinal class study.adv.OrderService$1 extends study.adv.template.AbstractTemplate<java.lang.Void> {\n  final java.lang.String val$itemId;\n  final study.adv.OrderService this$0;\n  study.adv.OrderService$1(study.adv.OrderService, study.adv.trace.LogTrace, java.lang.String);\n  protected java.lang.Void call();\n}\n\n$ javap -p build/classes/java/main/study/adv/template/AbstractTemplate.class\npublic abstract class study.adv.template.AbstractTemplate<T> {\n  private final study.adv.trace.LogTrace trace;\n  protected study.adv.template.AbstractTemplate(study.adv.trace.LogTrace);\n  public final T execute(java.lang.String);\n  protected abstract T call();\n}\n\n$ javap build/classes/java/main/study/adv/OrderService\\$1.class | grep -c 'public\\|protected'\n2\n\n--   자식이 부모의 것을 다 받는다\n\n\n-- 부모를 바꿔 본다\n\n// 요구사항 ⑨ 실행 전에 권한을 확인한다\npublic final T execute(String message) {\n    checkPermission();                 // 한 줄 추가\n    TraceStatus status = null;\n    ...\n}\n\n$ git diff --stat\n AbstractTemplate.java | 1 +\n 1 file changed, 1 insertion(+)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n403\n\n$ grep 'study.adv.trace' logs/app.log | tail -1 | cut -c56-\n(없음)\n\n--   세 곳이 한꺼번에 막혔다\n--   4.2 절에서는 이게 이점이었다\n\n\n-- 하나만 빼고 싶으면\n\n// 저장소만 권한 확인을 건너뛰고 싶다\nclass NoCheckTemplate<T> extends AbstractTemplate<T> {\n    @Override public final T execute(String message) { ... }   // final 이라 못 한다\n}\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: execute(String) in NoCheckTemplate cannot override execute(String)\n  in AbstractTemplate\n  overridden method is final\n\n--   4.2 절에서 final 로 막아 둔 그 자리다\n--   막은 값이 여기서 청구된다\n\n\n-- 구멍을 하나 더 뚫으면\n\npublic final T execute(String message) {\n    if (needsPermission()) checkPermission();     // 훅을 만든다\n    ...\n}\nprotected boolean needsPermission() { return true; }\n\nnew AbstractTemplate<Void>(trace) {\n    @Override protected Void call() { ... }\n    @Override protected boolean needsPermission() { return false; }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n200\n\n$ grep -c 'protected' src/main/java/study/adv/template/AbstractTemplate.java\n3\n\n--   요구사항마다 구멍이 하나씩 는다\n--   부모가 점점 두꺼워진다\n\n\n-- 구멍 모양을 바꾸면\n\n// call 에 인자를 하나 더한다\nprotected abstract T call(TraceStatus status);\n\n$ ./gradlew compileJava 2>&1 | head -5\n> Task :compileJava FAILED\nOrderController.java:18: error: <anonymous ...> is not abstract and does not\n  override abstract method call(TraceStatus) in AbstractTemplate\nOrderService.java:16: error: ...\nOrderRepository.java:14: error: ...\n\n$ ./gradlew compileJava 2>&1 | grep -c 'error:'\n3\n\n--   자식 셋이 한꺼번에 깨졌다\n\n\n-- 이미 부모가 있으면\n\n@Repository\npublic class OrderRepository extends JdbcDaoSupport {     // 이미 상속했다\n    public void save(String itemId) {\n        new AbstractTemplate<Void>(trace) { ... }.execute(\"...\");\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   익명 클래스라 괜찮다\n\n// 그런데 이름 있는 클래스로 하려면\nclass OrderSaveTemplate extends AbstractTemplate<Void> { ... }\nclass OrderRepository extends JdbcDaoSupport { ... }\n\n// 저장소 자신이 틀이 되게 하려면\nclass OrderRepository extends JdbcDaoSupport, AbstractTemplate<Void> { }\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: '{' expected\n\n--   부모를 둘 못 가진다\n\n\n-- 축이 둘이면\n\n// 로그 방식 셋 x 시간 재기 셋\nabstract class LogOnlyTemplate<T> { ... }\nabstract class TimeOnlyTemplate<T> { ... }\nabstract class LogAndTimeTemplate<T> { ... }\n\n$ python3 -c \"\nlog, time = 3, 3\nprint('상속으로:', log*time, '개 클래스')\nprint('위임으로:', log+time, '개 조각')\"\n상속으로: 9 개 클래스\n위임으로: 6 개 조각\n\n--   곱하기와 더하기의 차이다\n\n\n-- 실제로 만들어 본다\n\n$ find src/main/java -name '*Template.java' | wc -l\n       1\n\n// 시간 재기 틀을 하나 더 만들면\nabstract class TimeTemplate<T> {\n    public final T execute() {\n        long t0 = System.nanoTime();\n        try { return call(); }\n        finally { log.info(\"{} ms\", (System.nanoTime()-t0)/1000000); }\n    }\n    protected abstract T call();\n}\n\n// 둘 다 쓰려면\npublic void orderItem(String itemId) {\n    new AbstractTemplate<Void>(trace) {\n        @Override protected Void call() {\n            return new TimeTemplate<Void>() {          // 겹쳐 쓴다\n                @Override protected Void call() {\n                    orderRepository.save(itemId);\n                    return null;\n                }\n            }.execute();\n        }\n    }.execute(\"OrderService.orderItem()\");\n}\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | wc -l\n14\n\n// 하나만 쓸 때는\n8\n\n--   껍데기가 두 겹이 됐다\n--   업무 한 줄에 열세 줄이다\n\n\n-- 순서를 바꾸려면\n\n// 시간이 바깥, 로그가 안쪽이면\nnew TimeTemplate<Void>() {\n    @Override protected Void call() {\n        return new AbstractTemplate<Void>(trace) { ... }.execute(\"...\");\n    }\n}.execute();\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -E 'study.adv.trace|ms$' logs/app.log | tail -3\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n1008 ms\n\n--   중첩 순서를 손으로 바꿔야 한다\n--   9.4 절에서 이걸 숫자 하나로 정한다\n\n\n-- 테스트가 얽힌다\n\n@Test\nvoid 본문만_시험한다() {\n    // call 만 부르고 싶다\n    var t = new AbstractTemplate<Void>(null) {\n        @Override protected Void call() { repository.save(\"연필\"); return null; }\n    };\n    t.call();\n}\n\n$ ./gradlew test 2>&1 | head -3\n> Task :compileTestJava FAILED\nerror: call() has protected access in AbstractTemplate\n\n// execute 를 부르면\n    t.execute(\"test\");\n\n$ ./gradlew test 2>&1 | head -2\njava.lang.NullPointerException: Cannot invoke \"LogTrace.begin(String)\"\n  because \"this.trace\" is null\n\n--   본문만 떼어 시험할 수 없다\n--   부모를 꼭 끼워야 한다\n\n\n-- 위임이면 다르다\n\ninterface Callback<T> { T call(); }\n\n@Test\nvoid 본문만_시험한다() {\n    Callback<Void> body = () -> { repository.save(\"연필\"); return null; };\n    body.call();                                  // 틀 없이 부른다\n    verify(repository).save(\"연필\");\n}\n\n$ ./gradlew test --tests '*본문만*' 2>&1 | tail -2\nBUILD SUCCESSFUL in 3s\n\n--   본문이 독립된 물체가 됐다\n--   4.6 절에서 이 길로 간다\n\n\n-- 런타임에 못 고른다\n\n// 설정으로 틀을 고르고 싶다\nAbstractTemplate<Void> t = useLog\n    ? new AbstractTemplate<Void>(trace) { ... }\n    : new TimeTemplate<Void>() { ... };\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: incompatible types: bad type in conditional expression\n  TimeTemplate<Void> cannot be converted to AbstractTemplate<Void>\n\n--   부모가 다르면 같은 변수에 못 담는다\n--   3.4 절에서 인터페이스로 갈아 끼우던 것과 반대다\n\n\n-- 지금까지의 값을 센다\n\n$ printf '%-20s %-12s %s\\n' \\\n  '얻은 것' '줄 24 감소'  '4.4 절' \\\n  ''        '실수 방지'   '4.2 절' \\\n  ''        '정책 한 곳'  '4.2 절' \\\n  '치른 값' '부모 고정'   '런타임 교체 불가' \\\n  ''        '한 부모만'   '다른 상속과 충돌' \\\n  ''        '구멍이 늚'   '요구사항마다' \\\n  ''        '겹치면 두 겹' '순서를 손으로' \\\n  ''        '테스트 얽힘' '본문만 못 뗌'\n\n얻은 것              줄 24 감소     4.4 절\n                     실수 방지      4.2 절\n                     정책 한 곳     4.2 절\n치른 값              부모 고정      런타임 교체 불가\n                     한 부모만      다른 상속과 충돌\n                     구멍이 늚      요구사항마다\n                     겹치면 두 겹   순서를 손으로\n                     테스트 얽힘    본문만 못 뗌\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n--   4.6 절에서 상속을 위임으로 바꾼다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '부모'        '컴파일 때 고정' \\\n  '물려받는 것' '전부' \\\n  '부모 변경'   '자식 전부' \\\n  'final'       '예외를 못 둠' \\\n  '구멍'        '요구사항마다 늚' \\\n  '모양 변경'   '자식 셋 깨짐' \\\n  '다른 상속'   '충돌' \\\n  '축 둘'       '3 x 3 = 9' \\\n  '테스트'      '본문만 못 뗌'\n\n부모                       컴파일 때 고정\n물려받는 것                전부\n부모 변경                  자식 전부\nfinal                      예외를 못 둠\n구멍                       요구사항마다 늚\n모양 변경                  자식 셋 깨짐\n다른 상속                  충돌\n축 둘                      3 x 3 = 9\n테스트                     본문만 못 뗌",
+   "note": "**부모에 권한 확인 한 줄을 넣으니 세 곳이 한꺼번에 403 이 되고 하나만 빼려니 `overridden method is final` 로** 막힌다.\n\n**구멍 모양을 바꾸니 자식 셋이 한꺼번에 `error:` 셋으로** 깨진다.\n\n**틀을 두 개 겹쳐 쓰니 업무 한 줄에 열세 줄이 되고 순서를 손으로 뒤집어야** 한다.\n\n**본문만 떼어 시험하려니 `protected access` 로 막히고 `execute` 를 부르면 `NullPointerException`** 이다.\n\n**부모가 다르면 같은 변수에 못 담아 런타임 교체가 안 되고 축이 둘이면 3×3 = 9 클래스**다."
+  }
+ ],
+ "recap": [
+  "**부모가** 고정된다.",
+  "**전부** 물려받는다.",
+  "**하나 고치면 다** 바뀐다.",
+  "**예외를 못** 둔다.",
+  "**구멍이** 는다.",
+  "**모양 바꾸면** 깨진다.",
+  "**부모는** 하나다.",
+  "**축 둘이면** 곱해진다.",
+  "**본문만 못** 뗀다."
+ ],
+ "drills": [
+  {
+   "task": "부모에 한 줄을 넣는다.",
+   "done_when": "셋이 한꺼번에 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "구멍 모양을 바꾼다.",
+   "done_when": "자식이 다 깨지는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "틀을 두 개 겹친다.",
+   "done_when": "줄 수를 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "본문만 시험해 본다.",
+   "done_when": "막히는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부모를 언제 정하나?",
+   "a": "컴파일 때다. 런타임에 못 바꾼다."
+  },
+  {
+   "q": "부모를 고치면?",
+   "a": "모든 자식이 한꺼번에 바뀐다. 예외를 두기 어렵다."
+  },
+  {
+   "q": "틀이 둘 필요하면?",
+   "a": "겹쳐 써야 해서 껍데기가 두 겹이 된다."
+  },
+  {
+   "q": "축이 둘이면 클래스는?",
+   "a": "곱해진다. 셋과 셋이면 아홉이다."
+  },
+  {
+   "q": "테스트에서 무엇이 불편한가?",
+   "a": "본문만 떼어 부를 수 없고 부모를 꼭 끼워야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "상속 결합",
+   "def": "자식이 한 부모에 컴파일 시점에 묶이는 성질."
+  },
+  {
+   "term": "훅 메서드",
+   "def": "자식이 골라 덮어쓸 수 있게 부모가 열어 둔 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Template Method",
+   "url": "https://refactoring.guru/design-patterns/template-method",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "JLS — Classes",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
