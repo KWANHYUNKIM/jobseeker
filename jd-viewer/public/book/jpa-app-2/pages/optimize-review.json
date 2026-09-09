@@ -1,0 +1,137 @@
+{
+ "book": "jpa-app-2",
+ "id": "optimize-review",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "정리",
+ "summary": "실무의 기본값.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "6장의 결정을 모은다.",
+  "실무 기본값을 정한다.",
+  "화면이 있는 프로젝트의 선택을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**설정 다섯 줄과 규칙 하나**로 요약된다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 끝나는 기본값",
+   "ascii": "   the defaults this book ends with\n\n   fetch                 LAZY everywhere\n   ToOne                 fetch join\n   ToMany                default_batch_fetch_size 100\n   open-in-view          false\n   conversion            inside the transaction\n   read services         @Transactional(readOnly = true)\n   entities on the wire  never\n   cache                 not yet\n\n   five settings and one rule",
+   "note": "**전부 앞에서 근거를 봤다.**"
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "caption": "최종 application.yml",
+   "code": "spring:\n  jpa:\n    open-in-view: false                 # 6.2절\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100   # 5.7절\n        generate_statistics: true       # 3.3절. 운영에서는 끈다\n        query:\n          fail_on_pagination_over_collection_fetch: true   # 5.6절\n\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace\n    org.hibernate.stat: debug"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "각 줄의 근거",
+   "md": "| 설정 | 절 | 왜 |\n|---|---|---|\n| `open-in-view: false` | 6.1~6.2 | 커넥션을 서비스 끝에 놓는다 |\n| `default_batch_fetch_size: 100` | 5.7~5.8 | 컬렉션 N+1 을 `in` 절로 묶는다 |\n| `generate_statistics` | 3.3 | 쿼리 개수를 센다. **운영에서는 끈다** |\n| `fail_on_pagination_...` | 5.6 | `WARN` 을 예외로 올린다 |\n\n**규칙 하나**\n\n> **엔티티를 API 로 주고받지 않는다.**\n>\n> **2.8절에서 세운 것**이다. **요청·응답 양방향, 예외 없이.**\n\n**그리고 이 규칙에서 파생된 것들**\n\n| | |\n|---|---|\n| DTO 변환은 **트랜잭션 안** | 6.3절 |\n| 조회 서비스는 **`readOnly`** | 6.3절 |\n| 쿼리 전용 리포지토리를 **분리** | 4.8절 |\n| `ToOne` 은 페치 조인, `ToMany` 는 배치 | 5.13절 |\n\n**엔티티에 안 붙인 것들**\n\n```java\n// 이 책이 끝날 때까지 하나도 안 붙였다\n@JsonIgnore\n@JsonProperty\n@NotEmpty\n@BatchSize\nfetch = EAGER\n```\n\n> **API 열여섯 개, 화면 그대로**다.\n>\n> **엔티티가 웹을 모른다.** **그게 2장의 규칙이 지켜졌다는 증거**다."
+  },
+  {
+   "type": "figure",
+   "caption": "화면이 있는 프로젝트",
+   "ascii": "   what osiv off implies for a project with screens\n\n   one application\n     osiv off breaks every server rendered page\n     that touches a lazy field\n\n   two applications\n     api        osiv off. high traffic.\n     admin      osiv on.  few users, fast to build.\n\n   the setting is global, so the split is the workaround",
+   "note": "**설정이 전역이라 나누는 게 우회**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "OSIV 를 못 끄는 경우",
+   "md": "**1편의 화면이 6.2절에서 깨졌다.** **안 고쳤다.**\n\n**실무에서는 셋 중 하나**다.\n\n**① 화면도 전부 DTO 로**\n\n> **정공법**이다. **컨트롤러가 DTO 를 모델에** 담는다.\n>\n> **1편 9.1절의 \"목록만 DTO\" 가 \"전부 DTO\" 로** 바뀐다.\n> **작업량이 크다.**\n\n**② 애플리케이션을 나눈다**\n\n```\napi-server     osiv false\nadmin-server   osiv true\n```\n\n> **같은 도메인 코드를 모듈로** 공유하고 **설정만** 나눈다.\n>\n> **트래픽 특성이 다르니 서버도 다른 게 맞을 때가** 많다.\n\n**③ 켜 둔다**\n\n> **트래픽이 적으면 아무 일도 안** 난다.\n>\n> **6.1절에서 본 대로 커넥션 풀이 마르지 않으면 문제가** 아니다.\n>\n> **다만 \"알고 켜 두는 것\" 과 \"몰라서 기본값인 것\" 은** 다르다.\n\n**이 책의 입장**\n\n> **API 를 만드는 책이라 껐다.**\n>\n> **화면이 주력이면 켜 두는 게 합리적일 수** 있다. **판단 기준을 6.1절에** 뒀다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "운영에서 켜고 끄는 것",
+   "md": "**끄는 것**\n\n```yaml\n# 운영\nspring.jpa.properties.hibernate.generate_statistics: false\nlogging.level.org.hibernate.SQL: info\nlogging.level.org.hibernate.orm.jdbc.bind: info\n```\n\n> **통계는 오버헤드**가 있다. **SQL 로그는 디스크를 채운다.**\n>\n> **1편 2.6절에서 `bind` 로그가 성능에 영향을 준다고** 했다.\n\n**켜 두는 것**\n\n```yaml\nspring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch: true\nspring.jpa.open-in-view: false\n```\n\n> **둘 다 사고를 막는 설정**이다. **성능 비용이** 없다.\n\n**대신 보는 것**\n\n| | |\n|---|---|\n| **APM** | 요청별 쿼리 수와 시간 |\n| **슬로우 쿼리 로그** | DB 쪽에서 |\n| **커넥션 풀 지표** | `active`·`waiting` |\n\n> **`generate_statistics` 는 개발용**이다.\n> **운영에서는 APM 이 같은 일을 더 싸게** 한다.\n>\n> **3.3절에서 \"주 지표는 쿼리 개수\" 라고** 했다. **운영에서도 그건 같다.** **재는 도구만** 바뀐다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 6장이 끝난 상태",
+   "sql": "# --- 최종 설정으로 부팅 ---\n\n#   (open-in-view 경고가 없다)\n\n#   Started JpashopApplication in 3.241 seconds\n\n# --- 대표 API ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   DEBUG JpaTransactionManager : Beginning JPA transaction ... readOnly=true\n#   DEBUG HikariPool : Pool stats (total=10, active=1, idle=9, waiting=0)\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#            d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#            m1_0.name, m1_0.street, m1_0.zipcode, o1_0.order_date,\n#            o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     offset ? rows fetch first ? rows only\n\n#   Hibernate:\n#     select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#            oi1_0.item_id, oi1_0.order_price\n#     from order_item oi1_0 where oi1_0.order_id in (?,?,...)\n\n#   Hibernate:\n#     select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#            i1_0.stock_quantity, ...\n#     from item i1_0 left join album ... left join book ... left join movie ...\n#     where i1_0.item_id in (?,?,...)\n\n#   DEBUG JpaTransactionManager : Committing JPA transaction\n#   DEBUG HikariPool : Pool stats (total=10, active=0, idle=10, waiting=0)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     ...\n#   ]}\n\n#   커넥션이 커밋과 함께 돌아갔다\n\n# --- 사고 방지 설정이 도는지 ---\n\nGET /api/v3/orders?offset=0&limit=2\n\n#   500 Internal Server Error\n#   org.hibernate.HibernateException:\n#     firstResult/maxResults specified with collection fetch.\n#     In memory pagination was about to be applied.\n\n#   5.6절의 사고가 예외로 잡힌다\n\n# --- 엔티티를 확인 ---\n\n$ grep -rn \"JsonIgnore\\|JsonProperty\\|NotEmpty\\|BatchSize\\|EAGER\" \\\n    src/main/java/jpabook/jpashop/domain/\n\n#   (결과 없음)\n\n#   도메인 패키지에 웹 관련 애노테이션이 하나도 없다\n\n# --- 화면은 ---\n\nGET /orders\n\n#   500 Internal Server Error\n#   LazyInitializationException\n\nGET /members\n#   200 OK\n\nGET /items\n#   200 OK\n\n#   /orders 하나가 깨져 있다\n\n#   이 책이 안 고친 것이다\n#   고치는 방법 셋을 6.6절에 적었다\n\n# --- 6장이 결정한 것 ---\n\n#   open-in-view          false\n#   변환 위치              트랜잭션 안\n#   조회 서비스            readOnly\n#   캐시                  안 쓴다\n#   내려가는 순서          측정 -> 페치 조인 -> 배치 -> 그다음\n\n# --- 남은 것 ---\n\n#   EntityManager 를 직접 쓰고 있다\n#   동적 쿼리가 없다\n#   1편 9.7절의 목록에 아직 남은 것들\n\n# --- 다음 장에서 ---\n\n#   이 위에 무엇을 올릴까",
+   "note": "**부팅에 `open-in-view` 경고가 없다.**\n\n**커넥션이 커밋과 함께** 돌아간다. **쿼리 3개**다.\n\n**V3 에 페이징을 걸면 이제 `500`** 이다 — **5.6절의 사고가 예외로** 잡힌다.\n\n**도메인 패키지에 웹 관련 애노테이션이 하나도** 없다.\n\n**`/orders` 화면 하나가 깨져** 있다. **이 책이 안 고친 것**이다.\n\n**`EntityManager` 를 아직 직접** 쓰고 있다."
+  }
+ ],
+ "recap": [
+  "**설정 다섯 줄과 규칙 하나**로 요약된다.",
+  "**`open-in-view: false`** — 커넥션을 서비스 끝에 놓는다.",
+  "**`default_batch_fetch_size: 100`** — 컬렉션 N+1 을 묶는다.",
+  "**`fail_on_pagination_...`** — `WARN` 을 예외로 올린다.",
+  "**`generate_statistics` 는 운영에서** 끈다.",
+  "**엔티티를 API 로 주고받지 않는다** — 나머지가 여기서 파생된다.",
+  "**도메인에 웹 애노테이션이 하나도** 없다.",
+  "**OSIV 를 못 끄면 화면을 전부 DTO 로 하거나 앱을** 나눈다.",
+  "**\"알고 켜 두는 것\" 과 \"몰라서 기본값인 것\" 은** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "최종 `application.yml` 을 적용한다.",
+   "done_when": "부팅 경고가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "V3 에 페이징을 걸어 예외를 확인한다.",
+   "done_when": "500 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "도메인 패키지에서 웹 애노테이션을 찾는다.",
+   "done_when": "하나도 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "운영용 설정 파일을 따로 만든다.",
+   "done_when": "통계와 SQL 로그를 끈 프로파일을 만들었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "최종 설정 네 줄은?",
+   "a": "`open-in-view: false`, 배치 사이즈 100, 통계(개발용), 페이징 실패 시 예외다."
+  },
+  {
+   "q": "운영에서 끄는 것은?",
+   "a": "`generate_statistics` 와 SQL·bind 로그다."
+  },
+  {
+   "q": "규칙 하나는?",
+   "a": "엔티티를 API 로 주고받지 않는다. 나머지가 여기서 파생된다."
+  },
+  {
+   "q": "도메인에 웹 애노테이션이 없다는 건 무슨 뜻인가?",
+   "a": "2장의 규칙이 끝까지 지켜졌다는 증거다."
+  },
+  {
+   "q": "OSIV 를 못 끄면?",
+   "a": "화면을 전부 DTO 로 하거나, 애플리케이션을 나누거나, 알고 켜 둔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

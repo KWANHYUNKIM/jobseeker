@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "spring-data-jpa",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "스프링 데이터 JPA",
+ "summary": "EntityManager 를 걷어낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 사라지는지 안다.",
+  "무엇이 남는지 안다.",
+  "이 책의 최적화가 그대로 통하는지 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`EntityManager` 를 직접 쓰고** 있었다. **1편 4.4절부터**다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 사라지나",
+   "ascii": "   what disappears\n\n   before\n     @Repository\n     class MemberRepository {\n       @PersistenceContext EntityManager em;\n       void save(Member m) { em.persist(m); }\n       Member findOne(Long id) { return em.find(Member.class, id); }\n       List<Member> findAll() { return em.createQuery(...).getResultList(); }\n     }\n\n   after\n     interface MemberRepository extends JpaRepository<Member, Long> { }",
+   "note": "**클래스가 인터페이스 한 줄이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "공짜로 오는 것들",
+   "md": "```java\npublic interface MemberRepository extends JpaRepository<Member, Long> { }\n```\n\n| | |\n|---|---|\n| `save`·`saveAll` | |\n| `findById`·`findAll`·`findAllById` | |\n| `delete`·`deleteById` | |\n| `count`·`existsById` | |\n| **페이징** | `findAll(Pageable)` |\n| **정렬** | `findAll(Sort)` |\n\n**메서드 이름으로 쿼리도** 만든다.\n\n```java\nList<Member> findByName(String name);\n```\n\n> **`select m from Member m where m.name = :name`** 이 만들어진다.\n>\n> **1편 5.2절의 `validateDuplicateMember` 가 쓰던 쿼리**다.\n\n**이름이 길어지면 `@Query`** 로 간다.\n\n```java\n@Query(\"select o from Order o join fetch o.member join fetch o.delivery\")\nList<Order> findAllWithMemberDelivery();\n```\n\n> **4.5절의 페치 조인이 그대로** 들어간다.\n>\n> **차이는 `em.createQuery` 를 안 쓴다는 것뿐**이다.\n\n**`@EntityGraph` 도** 있다.\n\n```java\n@EntityGraph(attributePaths = {\"member\", \"delivery\"})\nList<Order> findAll();\n```\n\n> **페치 조인을 애노테이션으로** 쓴 것이다. **JPA 표준**이다.\n>\n> **컬렉션에 쓰면 5.6절의 페이징 문제가 똑같이** 생긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 안 사라지나",
+   "ascii": "   what does not disappear\n\n   findAllWithMemberDelivery      still a custom query\n   OrderQueryRepository           still plain EntityManager\n\n   spring data jpa replaces the boring half\n   the half this book spent five chapters on stays",
+   "note": "**이 책이 다섯 장을 쓴 쪽은 그대로**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책의 최적화가 그대로 통하나",
+   "md": "**전부 통한다.** **바뀌는 건 껍데기**다.\n\n| | 스프링 데이터 JPA 에서 |\n|---|---|\n| **`ToOne` 페치 조인** | `@Query` 또는 `@EntityGraph` |\n| **배치 사이즈** | **설정 그대로** |\n| **DTO 직접 조회** | `@Query` 의 `new` 절, 또는 인터페이스 프로젝션 |\n| **`in` 절 최적화** | 커스텀 리포지토리 |\n| **OSIV** | **설정 그대로** |\n| **`readOnly`** | **서비스 그대로** |\n\n> **N+1 은 스프링 데이터 JPA 를 써도** 난다. **오히려 더 잘 숨는다.**\n>\n> **`findAll()` 한 줄이 뒤에서 쿼리 401개를** 낸다.\n\n**`Pageable` 이 편해진다.**\n\n```java\nPage<Order> findAll(Pageable pageable);\n```\n\n> **3.4절에서 안 쓴 이유가 \"`count` 쿼리가 하나 더 나가서\"** 였다.\n> **실무에서는 전체 개수가 필요**하니 그게 맞다.\n>\n> **`Slice` 를 쓰면 `count` 가 안** 나간다. **\"다음 페이지 있음\" 만** 준다.\n\n**커스텀 리포지토리로 섞는다.**\n\n```java\npublic interface OrderRepository\n        extends JpaRepository<Order, Long>, OrderRepositoryCustom { }\n\npublic interface OrderRepositoryCustom {\n    List<Order> findComplex(OrderSearch search);\n}\n\npublic class OrderRepositoryImpl implements OrderRepositoryCustom {\n    private final EntityManager em;   // 필요하면 직접 쓴다\n}\n```\n\n> **4.8절에서 나눈 구조가 인터페이스로** 표현된다.\n>\n> **`OrderQueryRepository` 는 그냥 별도 클래스로** 두는 게 낫다. **섞지 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조심할 것",
+   "md": "**① `findAll()` 이 위험하다**\n\n> **전 건**이다. **1편 8.11절의 `findAllByString` 과 같은 문제**다.\n>\n> **페이징 없는 `findAll` 을 프로덕션 코드에 두지** 않는다.\n\n**② 메서드 이름이 길어진다**\n\n```java\nList<Order> findByMemberNameAndStatusOrderByOrderDateDesc(String name, OrderStatus status);\n```\n\n> **읽기 어렵다.** **`@Query` 나 Querydsl 로** 간다.\n>\n> **조건이 셋을 넘으면 이름으로 안** 만든다.\n\n**③ 동적 쿼리가 안 된다**\n\n> **조건이 있을 때만 붙이는 쿼리**다.\n> **메서드 이름으로도 `@Query` 로도 못** 만든다.\n>\n> **1편 8.11절에서 JPQL 문자열을 이어 붙인 그것**이다.\n>\n> **7.2절**이다.\n\n**④ `save` 가 `merge` 를 부를 수 있다**\n\n```java\npublic <S extends T> S save(S entity) {\n    if (entityInformation.isNew(entity)) { em.persist(entity); return entity; }\n    else { return em.merge(entity); }\n}\n```\n\n> **식별자가 있으면 `merge`** 다. **1편 8.10절의 문제**가 온다.\n>\n> **준영속 엔티티에 `save` 를 부르면 전 필드가** 덮인다.\n>\n> **2.4절처럼 변경 감지를** 쓴다. **`save` 를 안 부른다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 인터페이스로 바꾸면 ---\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    List<Member> findByName(String name);\n}\n\n# --- 회원 등록 ---\n\nPOST /api/v2/members\n{\"name\": \"hello7\"}\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0 where m1_0.name=?\n#   binding parameter (1:VARCHAR) <- [hello7]\n\n#   Hibernate: insert into member (city,name,street,zipcode,member_id)\n#              values (?,?,?,?,?)\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   {\"id\": 7}\n\n#   2.3절과 완전히 같다\n#   findByName 이 만든 SQL 도 같다\n\n# --- 주문 조회 V3.1 ---\n\npublic interface OrderRepository extends JpaRepository<Order, Long> {\n    @Query(\"select o from Order o join fetch o.member join fetch o.delivery\")\n    List<Order> findAllWithMemberDelivery(Pageable pageable);\n}\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.*, m1_0.*, o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on ... join member m1_0 on ...\n#     offset ? rows fetch first ? rows only\n\n#   Hibernate: select ... from order_item where order_id in (?,?,...)\n#   Hibernate: select ... from item where item_id in (?,?,...)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   5.7절과 완전히 같다\n\n#   배치 사이즈 설정이 그대로 듣는다\n\n# --- Page 로 받으면 ---\n\nPage<Order> findAll(Pageable pageable);\n\nGET /api/page/orders?page=0&size=100\n\n#   Hibernate: select count(o1_0.order_id) from orders o1_0\n#   Hibernate: select ... from orders o1_0 offset ? rows fetch first ?\n#   Hibernate: select ... from order_item where order_id in (...)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   Session Metrics { 4 JDBC statements were executed }\n\n#   count 쿼리가 하나 더 나갔다\n\n#   3.4절에서 Pageable 을 안 쓴 이유다\n#   전체 개수가 필요하면 이게 맞다\n\n# --- Slice 로 받으면 ---\n\nSlice<Order> findBy(Pageable pageable);\n\n#   Hibernate: select ... offset ? rows fetch first ? rows only\n#              (limit 이 size + 1 이다)\n#   Hibernate: select ... from order_item where order_id in (...)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   count 가 없다. 하나 더 읽어서 다음 페이지 유무만 본다\n\n# --- findAll() 을 그냥 부르면 ---\n\nList<Order> orders = orderRepository.findAll();\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n\n#   (DTO 변환에서)\n#   Hibernate: select ... from member where member_id in (...)\n#   Hibernate: select ... from delivery where delivery_id in (...)\n#   Hibernate: select ... from order_item where order_id in (...)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   Session Metrics {\n#       5 JDBC statements were executed\n#       5000 entities were loaded\n#   }\n\n#   쿼리는 배치 덕에 5개인데 전 건을 읽었다\n\n#   findAll() 은 페이징이 없다\n\n#   한 줄이라 위험이 안 보인다\n\n# --- save 로 수정하면 ---\n\n@Transactional\npublic void update(Long id, String name) {\n    Member member = memberRepository.findById(id).orElseThrow();\n    member.setName(name);\n    memberRepository.save(member);      // 부를 필요가 없다\n}\n\n#   Hibernate: select ... from member where member_id=?\n#   Hibernate: update member set city=?, name=?, street=?, zipcode=?\n#              where member_id=?\n\n#   영속 상태라 save 가 아무 일도 안 했다\n#   변경 감지가 UPDATE 를 냈다\n\n#   준영속이었다면 merge 가 돌았다 (1편 8.10절)\n\n# --- 다음 절에서 ---\n\n#   동적 쿼리를 다룬다",
+   "note": "**회원 등록이 2.3절과 완전히** 같다. **`findByName` 이 만든 SQL 도** 같다.\n\n**V3.1 도 5.7절과 같은 쿼리 3개**다. **배치 사이즈 설정이 그대로** 듣는다.\n\n**`Page` 로 받으면 `count` 가 하나 더** 나간다. **`Slice` 는 안 나간다.**\n\n**`findAll()` 은 쿼리 5개인데 전 건을** 읽는다. **한 줄이라 위험이 안 보인다.**\n\n**영속 상태에서 `save` 는 아무 일도 안** 한다. **준영속이면 `merge`** 다."
+  }
+ ],
+ "recap": [
+  "**리포지토리 클래스가 인터페이스 한 줄이** 된다.",
+  "**CRUD·페이징·정렬이 공짜로** 온다.",
+  "**메서드 이름으로 쿼리를** 만든다.",
+  "**페치 조인은 `@Query` 나 `@EntityGraph`** 로 쓴다.",
+  "**이 책의 최적화가 전부 그대로** 통한다 — 배치 사이즈도 OSIV 도 설정 그대로다.",
+  "**N+1 이 오히려 더 잘 숨는다** — `findAll()` 한 줄이 401개를 낸다.",
+  "**`Page` 는 `count` 가 하나 더, `Slice` 는 안** 나간다.",
+  "**조건이 셋을 넘으면 이름으로 안 만든다.**",
+  "**`save` 가 준영속이면 `merge`** 다 — 변경 감지를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`MemberRepository` 를 인터페이스로 바꾼다.",
+   "done_when": "API 가 그대로 도는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Query` 로 페치 조인을 옮긴다.",
+   "done_when": "V3.1 이 쿼리 3개인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Page` 와 `Slice` 를 비교한다.",
+   "done_when": "`count` 쿼리 유무를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "영속 상태에서 `save` 를 불러 본다.",
+   "done_when": "아무 일도 안 하는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇이 사라지나?",
+   "a": "CRUD 와 단순 조회를 위한 `EntityManager` 호출 코드다."
+  },
+  {
+   "q": "무엇이 남나?",
+   "a": "페치 조인·DTO 직접 조회 같은 이 책의 최적화 코드다."
+  },
+  {
+   "q": "배치 사이즈는 어떻게 되나?",
+   "a": "설정 그대로 듣는다. 바뀌는 게 없다."
+  },
+  {
+   "q": "`Page` 와 `Slice` 의 차이는?",
+   "a": "`Page` 는 `count` 쿼리를 하나 더 내고 `Slice` 는 안 낸다."
+  },
+  {
+   "q": "`save` 를 왜 조심하나?",
+   "a": "준영속 엔티티면 `merge` 가 돌아 전 필드가 덮인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
