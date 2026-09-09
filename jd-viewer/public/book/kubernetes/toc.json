@@ -286,7 +286,7 @@
           "title": "데몬셋",
           "summary": "모든 노드에 하나씩.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -294,7 +294,7 @@
           "title": "잡과 크론잡",
           "summary": "끝나야 정상인 워크로드.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

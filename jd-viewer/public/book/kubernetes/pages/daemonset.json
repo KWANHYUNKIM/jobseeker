@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "daemonset",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "데몬셋",
+ "summary": "모든 노드에 하나씩.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "레플리카가 없는 이유를 안다.",
+  "노드를 늘렸을 때를 본다.",
+  "톨러레이션이 왜 필요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 `kube-proxy` 가 노드마다 하나** 있었다. **그게 데몬셋**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "개수가 아니라 노드",
+   "ascii": "   one pod per node, and the scheduler is barely involved\n\n   a Deployment says   how many\n   a DaemonSet says    which nodes\n\n   add a node   a pod appears on it, without changing anything\n   drain a node the pod goes with it, and comes back on return\n\n   there is no replicas field, because the node count is the count",
+   "note": "**`replicas` 필드가 아예** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "노드가 늘면 따라 는다",
+   "md": "```yaml\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: node-agent\nspec:\n  selector:\n    matchLabels: { app: node-agent }\n  template:\n    metadata:\n      labels: { app: node-agent }\n    spec:\n      containers:\n        - name: agent\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"while true; do sleep 3600; done\"]\n```\n\n> **`spec.replicas` 가** 없다.\n> **노드 수가 곧 파드 수**다.\n\n**일부 노드에만 둘 수도** 있다.\n\n```yaml\nspec:\n  template:\n    spec:\n      nodeSelector:\n        node-role: logging\n```\n\n> **그 라벨이 붙은 노드에만** 뜬다.\n> **9장의 노드 셀렉터와 같은** 방식이다.\n\n**호스트 자원을 많이 쓴다.**\n\n| 필요 | 무엇 |\n|---|---|\n| `hostPath` 볼륨 | 노드의 `/var/log` 를 읽는다 |\n| `hostNetwork` | 노드의 네트워크를 그대로 |\n| `hostPID` | 노드의 프로세스를 본다 |\n\n> **셋 다 격리를 깨는** 것이다.\n> **로그 수집기가 `/var/log/pods` 를 읽어야 해서 어쩔 수** 없다.\n> **그래서 데몬셋은 권한이 센 경우가** 많다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 데몬셋인가",
+   "ascii": "   what actually runs as a DaemonSet\n\n   log collection   read every container log on this node\n   metrics          read this node's cpu and memory\n   networking       the cni plugin itself\n   storage          a csi driver\n\n   all four need something that only exists per node",
+   "note": "**넷 다 노드마다 하나씩만 있어야 하는** 것들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "톨러레이션이 필요하다",
+   "md": "**컨트롤 플레인 노드에는 테인트가** 있다.\n\n```\nnode-role.kubernetes.io/control-plane:NoSchedule\n```\n\n> **일반 파드는 거기 안** 간다.\n> **데몬셋도 기본으로는 안** 간다.\n>\n> **그런데 로그 수집기는 거기서도 돌아야** 한다.\n> **톨러레이션을 붙여** 준다.\n\n```yaml\nspec:\n  template:\n    spec:\n      tolerations:\n        - operator: Exists\n```\n\n> **`operator: Exists` 만 쓰면 모든 테인트를** 견딘다.\n> **`kube-proxy` 가 그렇게** 돼 있다.\n> **9장에서 테인트를 제대로** 다룬다.\n\n**`drain` 때도 다르다.**\n\n> **`kubectl drain` 이 데몬셋 파드는 안** 쫓아낸다.\n> **`--ignore-daemonsets` 를 안 주면 거부**한다.\n> **5.4절에서 이 플래그를 썼다.**\n\n**롤아웃도 된다.**\n\n```yaml\nspec:\n  updateStrategy:\n    type: RollingUpdate\n    rollingUpdate:\n      maxUnavailable: 1\n```\n\n> **노드 하나씩 바꾼다.**\n> **`maxSurge` 는 기본이 0** 이다 — **한 노드에 둘을 못 띄우니까**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 기존 데몬셋을 본다 ---\n\n$ kubectl get daemonset -A --no-headers\n\nkube-system   kindnet      3   3   3   3   3   <none>   2h\nkube-system   kube-proxy   3   3   3   3   3   <none>   2h\n\n#   DESIRED 가 3 이다\n\n#   노드가 셋이라서다\n\n$ kubectl get nodes --no-headers | wc -l\n\n3\n\n$ kubectl get ds kube-proxy -n kube-system -o jsonpath=\\\n'{.spec.replicas}{\"\\n\"}'\n\n#   (비어 있다)\n\n#   replicas 필드가 없다\n\n# --- 하나 만든다 ---\n\n$ cat ds.yaml\n\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: agent\nspec:\n  selector:\n    matchLabels: { app: agent }\n  template:\n    metadata:\n      labels: { app: agent }\n    spec:\n      containers:\n        - name: agent\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"echo $(hostname) 시작; sleep 3600\"]\n\n$ kubectl apply -f ds.yaml > /dev/null && sleep 12\n$ kubectl get ds agent --no-headers\n\nagent   2   2   2   2   2   <none>   12s\n\n#   2 다\n\n#   노드는 셋인데\n\n$ kubectl get pods -l app=agent -o wide --no-headers | awk '{print $1, $7}'\n\nagent-k2m9v   lab-worker\nagent-w7t4x   lab-worker2\n\n#   컨트롤 플레인에는 없다\n\n$ kubectl describe node lab-control-plane | grep Taints\n\nTaints:  node-role.kubernetes.io/control-plane:NoSchedule\n\n#   테인트가 있다\n\n# --- 톨러레이션을 붙인다 ---\n\n$ kubectl patch ds agent --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/template/spec/tolerations\",\n  \"value\":[{\"operator\":\"Exists\"}]}]' > /dev/null\n\n$ sleep 12 && kubectl get ds agent --no-headers\n\nagent   3   3   3   3   3   <none>   1m\n\n#   3 이 됐다\n\n$ kubectl get pods -l app=agent -o wide --no-headers | awk '{print $7}' | sort\n\nlab-control-plane\nlab-worker\nlab-worker2\n\n#   컨트롤 플레인에도 떴다\n\n$ kubectl get ds kube-proxy -n kube-system -o jsonpath=\\\n'{.spec.template.spec.tolerations[*].operator}{\"\\n\"}'\n\nExists\n\n#   kube-proxy 도 같은 방식이다\n\n# --- 노드를 늘리면 ---\n\n$ docker exec lab-control-plane kubeadm token create --print-join-command \\\n    2>/dev/null | head -c 40\n\nkubeadm join 172.18.0.4:6443 --token ...\n\n#   (kind 로는 노드를 나중에 못 붙인다)\n\n#   대신 노드를 잠시 빼 본다\n\n$ kubectl cordon lab-worker2\n\nnode/lab-worker2 cordoned\n\n$ sleep 5 && kubectl get ds agent --no-headers\n\nagent   3   3   3   3   3   <none>   2m\n\n#   그대로다\n\n#   cordon 은 새 파드만 막는다\n\n$ kubectl drain lab-worker2 --ignore-daemonsets --delete-emptydir-data \\\n    --force > /dev/null 2>&1\n\n$ kubectl get pods -l app=agent -o wide --no-headers | awk '{print $7}' | sort\n\nlab-control-plane\nlab-worker\nlab-worker2\n\n#   데몬셋 파드는 남았다\n\n#   --ignore-daemonsets 가 그 뜻이다\n\n$ kubectl drain lab-worker2 --delete-emptydir-data --force 2>&1 | head -2\n\nerror: unable to drain node \"lab-worker2\" due to error: cannot delete\n  DaemonSet-managed Pods (use --ignore-daemonsets to ignore):\n  default/agent-w7t4x\n\n#   플래그 없이는 거부한다\n\n$ kubectl uncordon lab-worker2 > /dev/null\n\n# --- 노드를 죽이면 ---\n\n$ docker stop lab-worker2 > /dev/null\n$ sleep 50 && kubectl get ds agent --no-headers\n\nagent   3   2   2   2   2   <none>   4m\n\n#   DESIRED 는 3 인데 READY 가 2 다\n\n#   노드가 NotReady 라 못 센다\n\n$ kubectl get nodes --no-headers | grep worker2\n\nlab-worker2   NotReady   <none>   2h   v1.31.0\n\n$ docker start lab-worker2 > /dev/null\n$ sleep 40 && kubectl get ds agent --no-headers\n\nagent   3   3   3   3   3   <none>   5m\n\n#   돌아오자 다시 3 이다\n\n#   내가 아무것도 안 했다\n\n# --- 일부 노드에만 ---\n\n$ kubectl label node lab-worker node-role=logging\n\nnode/lab-worker labeled\n\n$ kubectl patch ds agent --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/template/spec/nodeSelector\",\n  \"value\":{\"node-role\":\"logging\"}}]' > /dev/null\n\n$ sleep 10 && kubectl get ds agent --no-headers\n\nagent   1   1   1   1   1   node-role=logging   6m\n\n#   1 이다\n\n#   NODE SELECTOR 열에 나온다\n\n$ kubectl get pods -l app=agent -o wide --no-headers | awk '{print $7}'\n\nlab-worker\n\n$ kubectl label node lab-worker2 node-role=logging > /dev/null\n$ sleep 8 && kubectl get ds agent --no-headers\n\nagent   2   2   2   2   2   node-role=logging   7m\n\n#   라벨을 붙이자 늘었다\n\n#   노드가 늘어난 것과 같은 효과다\n\n$ kubectl label node lab-worker lab-worker2 node-role- > /dev/null\n$ kubectl patch ds agent --type=json -p='[{\"op\":\"remove\",\n  \"path\":\"/spec/template/spec/nodeSelector\"}]' > /dev/null\n\n# --- 노드 로그를 읽는 데몬셋 ---\n\n$ cat logreader.yaml\n\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: logreader\nspec:\n  selector:\n    matchLabels: { app: logreader }\n  template:\n    metadata:\n      labels: { app: logreader }\n    spec:\n      tolerations: [{ operator: Exists }]\n      containers:\n        - name: reader\n          image: busybox:1.36\n          command: [\"sh\", \"-c\",\n            \"ls /var/log/pods | head -3; sleep 3600\"]\n          volumeMounts:\n            - { name: podlogs, mountPath: /var/log/pods, readOnly: true }\n      volumes:\n        - name: podlogs\n          hostPath: { path: /var/log/pods }\n\n$ kubectl apply -f logreader.yaml > /dev/null && sleep 12\n$ kubectl logs -l app=logreader --prefix | head -4\n\n[pod/logreader-h4n8q/reader] default_agent-k2m9v_8f3a2b1c\n[pod/logreader-h4n8q/reader] kube-system_coredns-7db6d8ff4d-4k2mv_3d5b8e1a\n[pod/logreader-h4n8q/reader] kube-system_etcd-lab-control-plane_7e4c2a9f\n[pod/logreader-r5t2w/reader] default_agent-w7t4x_9a1c4f7b\n\n#   노드의 파드 로그 디렉터리가 보인다\n\n#   3.5절에서 kubectl logs 가 읽던 그 파일들이다\n\n#   hostPath 로 격리를 깼다\n\n#   그래서 로그 수집기는 데몬셋이다\n\n# --- 롤아웃 ---\n\n$ kubectl set image ds/agent agent=busybox:1.37 > /dev/null\n$ for i in 1 2 3; do\n    kubectl get ds agent --no-headers | awk '{print $4, $6}'\n    sleep 5\n  done\n\n2 3\n2 3\n3 3\n\n#   하나씩 바뀐다\n\n$ kubectl get ds agent -o jsonpath=\\\n'{.spec.updateStrategy.rollingUpdate}{\"\\n\"}'\n\n{\"maxSurge\":0,\"maxUnavailable\":1}\n\n#   maxSurge 가 0 이다\n\n#   한 노드에 둘을 못 띄운다\n\n#   5.3절과 다른 점이다\n\n$ kubectl rollout status ds/agent\n\ndaemon set \"agent\" successfully rolled out\n\n# --- 치운다 ---\n\n$ kubectl delete ds agent logreader\n\ndaemonset.apps \"agent\" deleted\ndaemonset.apps \"logreader\" deleted\n\n# --- 다음 절에서 ---\n\n#   끝나야 정상인 워크로드를 본다",
+   "note": "**`kube-proxy` 의 DESIRED 가 노드 수와 같고 `replicas` 필드는** 없다.\n\n**컨트롤 플레인 테인트 때문에 처음엔 2 이고, `operator: Exists` 톨러레이션을 붙이니 3** 이 된다.\n\n**`drain` 이 `--ignore-daemonsets` 없이는 `cannot delete DaemonSet-managed Pods` 로** 거부한다.\n\n**노드를 멈추면 DESIRED 3 · READY 2 가 되고 되살리면 저절로 3** 이다.\n\n**`hostPath` 로 `/var/log/pods` 를 읽어 3.5절의 그 파일들이** 보인다."
+  }
+ ],
+ "recap": [
+  "**데몬셋에는 `replicas` 가** 없다.",
+  "**노드 수가 곧 파드** 수다.",
+  "**노드 라벨로 일부에만 둘 수** 있다.",
+  "**컨트롤 플레인에는 톨러레이션이** 필요하다.",
+  "**`drain` 이 데몬셋 파드는 안** 쫓아낸다.",
+  "**`hostPath`·`hostNetwork` 로 격리를** 깬다.",
+  "**로그·메트릭·CNI·CSI 가 대표** 용례다.",
+  "**롤아웃은 `maxSurge: 0`** 이다.",
+  "**노드가 살아나면 저절로** 돌아온다."
+ ],
+ "drills": [
+  {
+   "task": "데몬셋을 만들고 개수를 본다.",
+   "done_when": "노드 수와 같은지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "톨러레이션을 붙인다.",
+   "done_when": "컨트롤 플레인에도 뜨는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`drain` 을 플래그 없이 해 본다.",
+   "done_when": "거부 메시지를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`hostPath` 로 노드 로그를 읽는다.",
+   "done_when": "파드 로그 디렉터리를 봤다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "데몬셋에 `replicas` 가 없는 이유는?",
+   "a": "노드 수가 곧 파드 수라서다."
+  },
+  {
+   "q": "컨트롤 플레인에 안 뜨는 이유는?",
+   "a": "테인트가 있고 톨러레이션이 없어서다."
+  },
+  {
+   "q": "`drain` 과 데몬셋의 관계는?",
+   "a": "`--ignore-daemonsets` 없이는 거부한다."
+  },
+  {
+   "q": "왜 로그 수집기가 데몬셋인가?",
+   "a": "노드의 로그 디렉터리를 읽어야 하고 노드마다 하나면 된다."
+  },
+  {
+   "q": "데몬셋 롤아웃의 `maxSurge` 는?",
+   "a": "0이다. 한 노드에 둘을 띄울 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테인트",
+   "def": "노드에 붙이는 표시. 톨러레이션이 없는 파드는 그 노드에 스케줄되지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — DaemonSet",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Taints and Tolerations",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

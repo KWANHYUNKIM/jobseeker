@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "job-cronjob",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "잡과 크론잡",
+ "summary": "끝나야 정상인 워크로드.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 숫자를 안다.",
+  "동시성 정책을 고른다.",
+  "실패한 잡을 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 정상 종료인데 `CrashLoopBackOff`** 였다. **끝나는 게 정상인 워크로드가** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "잡은 반대다",
+   "ascii": "   a Job is the opposite of a Deployment\n\n   Deployment   the pod must never end\n   Job          the pod must end, with zero\n\n   completions   how many successful runs are needed\n   parallelism   how many may run at once\n   backoffLimit  how many failures before giving up\n\n   restartPolicy must be OnFailure or Never, never Always",
+   "note": "**`restartPolicy: Always` 는 못** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 숫자",
+   "md": "```yaml\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: work\nspec:\n  completions: 5        # 다섯 번 성공해야 끝\n  parallelism: 2        # 동시에 두 개까지\n  backoffLimit: 3       # 세 번 실패하면 포기\n  activeDeadlineSeconds: 600\n  template:\n    spec:\n      restartPolicy: Never\n      containers: ...\n```\n\n| 필드 | 기본값 | 뜻 |\n|---|---|---|\n| `completions` | 1 | 필요한 성공 횟수 |\n| `parallelism` | 1 | 동시 실행 수 |\n| `backoffLimit` | 6 | 포기까지 실패 횟수 |\n| `activeDeadlineSeconds` | 없음 | 전체 시간 제한 |\n| `ttlSecondsAfterFinished` | 없음 | 끝난 뒤 정리 |\n\n> **마지막이 없으면 끝난 잡이 계속** 쌓인다.\n> **크론잡이 매일 돌면 한 달에 서른 개**다.\n\n**`restartPolicy` 둘 중 하나**\n\n| 값 | 실패하면 |\n|---|---|\n| `Never` | 새 파드를 만든다 |\n| `OnFailure` | 같은 파드에서 컨테이너를 재시작한다 |\n\n> **`Never` 면 실패한 파드가** 남는다 — **로그를 볼 수** 있다.\n> **`OnFailure` 는 파드 하나에 `RESTARTS` 만** 는다.\n> **디버깅에는 `Never` 가** 낫다.\n\n**인덱스가 필요하면**\n\n```yaml\nspec:\n  completionMode: Indexed\n  completions: 5\n```\n\n> **각 파드가 `JOB_COMPLETION_INDEX` 환경 변수를** 받는다.\n> **0..4 로 일을 나눌 때** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "크론잡은 잡을 만든다",
+   "ascii": "   a CronJob makes Jobs, and that indirection matters\n\n   CronJob   at 03:00, create a Job\n   Job       run a pod until it succeeds\n   Pod       the actual work\n\n   concurrencyPolicy decides what happens if 03:00 arrives\n   while yesterday's job is still running",
+   "note": "**한 겹 사이에 동시성 정책이** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "겹치면 어떻게 하나",
+   "md": "```yaml\nspec:\n  schedule: \"0 3 * * *\"\n  timeZone: \"Asia/Seoul\"\n  concurrencyPolicy: Forbid\n  startingDeadlineSeconds: 300\n  successfulJobsHistoryLimit: 3\n  failedJobsHistoryLimit: 1\n```\n\n| 정책 | 뜻 |\n|---|---|\n| `Allow` | 기본. 겹쳐도 그냥 만든다 |\n| `Forbid` | 이전 것이 안 끝났으면 건너뛴다 |\n| `Replace` | 이전 것을 죽이고 새로 |\n\n> **기본이 `Allow`** 다.\n> **작업이 예상보다 길어지면 두 개가 동시에** 돈다.\n> **DB 배치라면 사고**다.\n\n**시간대**\n\n> **`timeZone` 이 없으면 컨트롤러의 시간대**다.\n> **대개 UTC** 라서 `0 3 * * *` 이 한국 시간 정오다.\n> **1.27 부터 `timeZone` 을 쓸 수** 있다.\n\n**놓친 실행**\n\n> **컨트롤 플레인이 꺼져 있던 동안의 스케줄은** 놓친다.\n> **`startingDeadlineSeconds` 안이면 늦게라도** 돈다.\n> **없으면 놓친 게 100개를 넘을 때 아예** 멈춘다.\n>\n> ```\n> Cannot determine if job needs to be started: too many missed start times\n> ```\n\n**한 번만 도는 보장은 없다.**\n\n> **드물게 두 번 돌 수** 있다.\n> **작업 자체를 멱등하게** 만든다 — **2.1절과 같은** 얘기다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 잡 하나 ---\n\n$ kubectl create job hello --image=busybox:1.36 -- sh -c 'echo 안녕; sleep 3'\n\njob.batch/hello created\n\n$ sleep 8 && kubectl get job hello --no-headers\n\nhello   1/1   4s   8s\n\n$ kubectl get pods -l job-name=hello --no-headers\n\nhello-x9k2m   0/1   Completed   0   8s\n\n#   Completed 다\n\n#   4.1절의 CrashLoopBackOff 와 다르다\n\n$ kubectl get pod -l job-name=hello -o jsonpath=\\\n'{.items[0].spec.restartPolicy}{\"\\n\"}'\n\nNever\n\n#   create job 이 Never 로 만든다\n\n$ kubectl delete job hello > /dev/null\n\n# --- Always 는 못 쓴다 ---\n\n$ cat badjob.yaml\n\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: bad\nspec:\n  template:\n    spec:\n      restartPolicy: Always\n      containers:\n        - name: work\n          image: busybox:1.36\n          command: [\"echo\", \"끝\"]\n\n$ kubectl apply -f badjob.yaml\n\nThe Job \"bad\" is invalid: spec.template.spec.restartPolicy: Required value:\n  valid values: \"OnFailure\", \"Never\"\n\n#   거부한다\n\n#   끝나야 하는데 계속 다시 띄우면 모순이다\n\n# --- completions 와 parallelism ---\n\n$ cat batch.yaml\n\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: batch\nspec:\n  completions: 6\n  parallelism: 2\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n        - name: work\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"echo $(hostname); sleep 4\"]\n\n$ kubectl apply -f batch.yaml > /dev/null\n$ for i in 1 2 3 4; do\n    kubectl get job batch --no-headers | awk '{print $2}' | tr '\\n' ' '\n    kubectl get pods -l job-name=batch --no-headers | grep -c Running\n    sleep 5\n  done\n\n0/6 2\n2/6 2\n4/6 2\n6/6 0\n\n#   동시에 둘씩 여섯 번이다\n\n$ kubectl get pods -l job-name=batch --no-headers | wc -l\n\n6\n\n#   파드가 여섯 개 남아 있다\n\n$ kubectl logs -l job-name=batch --tail=1 | sort | head -3\n\nbatch-2k9mv\nbatch-7x4bn\nbatch-h4n8q\n\n#   각자 자기 이름을 찍었다\n\n$ kubectl delete job batch > /dev/null\n\n# --- 인덱스 모드 ---\n\n$ cat indexed.yaml\n\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: shard\nspec:\n  completionMode: Indexed\n  completions: 3\n  parallelism: 3\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n        - name: work\n          image: busybox:1.36\n          command: [\"sh\", \"-c\",\n            \"echo \\\"샤드 $JOB_COMPLETION_INDEX 처리\\\"\"]\n\n$ kubectl apply -f indexed.yaml > /dev/null && sleep 10\n$ kubectl logs -l job-name=shard | sort\n\n샤드 0 처리\n샤드 1 처리\n샤드 2 처리\n\n$ kubectl get pods -l job-name=shard --no-headers | awk '{print $1}'\n\nshard-0-k2m9v\nshard-1-w7t4x\nshard-2-p3w8t\n\n#   파드 이름에 인덱스가 있다\n\n$ kubectl delete job shard > /dev/null\n\n# --- 실패와 backoffLimit ---\n\n$ cat failjob.yaml\n\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: fail\nspec:\n  backoffLimit: 2\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n        - name: work\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"echo 시도; exit 1\"]\n\n$ kubectl apply -f failjob.yaml > /dev/null\n$ sleep 60 && kubectl get job fail --no-headers\n\nfail   0/1   60s   60s\n\n$ kubectl get pods -l job-name=fail --no-headers\n\nfail-h4n8q   0/1   Error   0   58s\nfail-r5t2w   0/1   Error   0   48s\nfail-x9m2k   0/1   Error   0   28s\n\n#   셋이다\n\n#   backoffLimit 2 면 3번 시도다\n\n$ kubectl get job fail -o jsonpath=\\\n'{range .status.conditions[*]}{.type}={.status} {.reason}{\"\\n\"}{end}'\n\nFailed=True BackoffLimitExceeded\n\n#   포기했다\n\n$ kubectl logs -l job-name=fail --tail=1 | head -1\n\n시도\n\n#   Never 라 파드가 남아 로그를 본다\n\n$ kubectl delete job fail > /dev/null\n\n# --- OnFailure 와 비교 ---\n\n$ sed 's/restartPolicy: Never/restartPolicy: OnFailure/' failjob.yaml \\\n    | kubectl apply -f - > /dev/null\n$ sleep 40 && kubectl get pods -l job-name=fail --no-headers\n\nfail-k2m9v   0/1   CrashLoopBackOff   3   40s\n\n#   파드가 하나다\n\n#   RESTARTS 가 는다\n\n#   로그를 보려면 --previous 다\n\n$ kubectl delete job fail > /dev/null\n\n# --- 끝난 잡이 쌓인다 ---\n\n$ for i in 1 2 3; do\n    kubectl create job keep-$i --image=busybox:1.36 -- echo $i > /dev/null\n  done\n$ sleep 12 && kubectl get job --no-headers | wc -l\n\n3\n\n#   안 지워진다\n\n$ kubectl create job clean --image=busybox:1.36 \\\n    --dry-run=client -o yaml -- echo 끝 \\\n    | python3 -c \"\nimport sys, yaml\nd = yaml.safe_load(sys.stdin)\nd['spec']['ttlSecondsAfterFinished'] = 10\nprint(yaml.dump(d))\" | kubectl apply -f - > /dev/null\n\n$ sleep 8 && kubectl get job clean --no-headers\n\nclean   1/1   3s   8s\n\n$ sleep 15 && kubectl get job clean --no-headers 2>&1\n\nNo resources found in default namespace.\n\n#   스스로 지워졌다\n\n#   ttlSecondsAfterFinished 다\n\n$ kubectl delete job keep-1 keep-2 keep-3 > /dev/null\n\n# --- 크론잡 ---\n\n$ cat cron.yaml\n\napiVersion: batch/v1\nkind: CronJob\nmetadata:\n  name: every-minute\nspec:\n  schedule: \"* * * * *\"\n  timeZone: \"Asia/Seoul\"\n  concurrencyPolicy: Forbid\n  successfulJobsHistoryLimit: 2\n  failedJobsHistoryLimit: 1\n  jobTemplate:\n    spec:\n      ttlSecondsAfterFinished: 120\n      template:\n        spec:\n          restartPolicy: Never\n          containers:\n            - name: work\n              image: busybox:1.36\n              command: [\"sh\", \"-c\", \"date +%T; sleep 5\"]\n\n$ kubectl apply -f cron.yaml > /dev/null\n$ kubectl get cronjob every-minute --no-headers\n\nevery-minute   * * * * *   Asia/Seoul   False   0   <none>   8s\n\n#   TIMEZONE 열이 있다\n\n$ sleep 130 && kubectl get job --no-headers | awk '{print $1, $2}'\n\nevery-minute-29234461   1/1\nevery-minute-29234462   1/1\n\n#   두 개가 남았다\n\n#   successfulJobsHistoryLimit: 2 다\n\n$ kubectl logs -l job-name=every-minute-29234462 | head -1\n\n22:03:00\n\n#   한국 시간이다\n\n#   timeZone 이 없었으면 UTC 였다\n\n# --- 겹치면 ---\n\n$ kubectl patch cronjob every-minute --type=json -p='[\n  {\"op\":\"replace\",\"path\":\"/spec/jobTemplate/spec/template/spec/containers/0/command/2\",\n   \"value\":\"date +%T; sleep 90\"}]' > /dev/null\n\n#   90초 걸리는 작업을 매분 돌린다\n\n$ sleep 200 && kubectl get job --no-headers | wc -l\n\n2\n\n$ kubectl get events --field-selector reason=JobAlreadyActive --no-headers \\\n    | tail -1\n\n35s   Normal   JobAlreadyActive   cronjob/every-minute   Not starting job\n  because prior execution is running and concurrency policy is Forbid\n\n#   건너뛰었다\n\n#   Allow 였으면 겹쳐서 돌았다\n\n$ kubectl patch cronjob every-minute -p \\\n    '{\"spec\":{\"concurrencyPolicy\":\"Allow\"}}' > /dev/null\n\n$ sleep 140 && kubectl get pods -l app!=none --no-headers \\\n    | grep every-minute | grep -c Running\n\n2\n\n#   둘이 동시에 돈다\n\n#   DB 배치였다면 사고다\n\n# --- 멈춰 둔다 ---\n\n$ kubectl patch cronjob every-minute -p '{\"spec\":{\"suspend\":true}}' > /dev/null\n$ kubectl get cronjob every-minute --no-headers | awk '{print $4}'\n\nTrue\n\n#   SUSPEND 가 True 다\n\n#   장애 대응 때 쓴다\n\n# --- 치운다 ---\n\n$ kubectl delete cronjob every-minute\n\ncronjob.batch \"every-minute\" deleted\n\n$ kubectl get job --no-headers | wc -l\n\n0\n\n#   만든 잡도 같이 지워졌다\n\n#   2.3절의 소유 사슬이다\n\n# --- 다음 장에서 ---\n\n#   파드 IP 가 사라지는 문제로 간다",
+   "note": "**`restartPolicy: Always` 인 잡은 `valid values: OnFailure, Never` 로** 거부된다.\n\n**`completions: 6, parallelism: 2` 면 둘씩 세 번**에 나눠 돈다.\n\n**`backoffLimit: 2` 면 파드가 셋 생기고 `BackoffLimitExceeded`** 로 포기한다.\n\n**끝난 잡은 안 지워지고 `ttlSecondsAfterFinished` 를 주면 스스로** 사라진다.\n\n**`concurrencyPolicy: Forbid` 는 `JobAlreadyActive` 로 건너뛰고, `Allow` 로 바꾸니 둘이 동시에** 돈다."
+  }
+ ],
+ "recap": [
+  "**잡은 끝나야 정상**이다.",
+  "**`restartPolicy: Always` 는 못** 쓴다.",
+  "**`completions`·`parallelism`·`backoffLimit`** 셋이다.",
+  "**`Never` 면 실패한 파드가 남아 로그를** 본다.",
+  "**끝난 잡은 스스로 안** 지워진다.",
+  "**`ttlSecondsAfterFinished` 로** 정리한다.",
+  "**크론잡은 잡을** 만든다.",
+  "**기본 `Allow` 라 겹칠 수** 있다.",
+  "**`timeZone` 이 없으면 대개 UTC** 다."
+ ],
+ "drills": [
+  {
+   "task": "`completions` 와 `parallelism` 을 준다.",
+   "done_when": "동시 실행 수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "실패하는 잡을 만든다.",
+   "done_when": "파드 수와 포기 이유를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ttlSecondsAfterFinished` 를 준다.",
+   "done_when": "스스로 사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "긴 작업을 매분 돌린다.",
+   "done_when": "동시성 정책 차이를 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "잡에 `restartPolicy: Always` 를 쓰면?",
+   "a": "거부된다. 끝나야 하는데 계속 다시 띄우면 모순이다."
+  },
+  {
+   "q": "`Never` 와 `OnFailure` 의 차이는?",
+   "a": "전자는 새 파드를, 후자는 같은 파드의 컨테이너를 재시작한다."
+  },
+  {
+   "q": "끝난 잡을 어떻게 정리하나?",
+   "a": "`ttlSecondsAfterFinished` 를 준다."
+  },
+  {
+   "q": "크론잡이 겹치면 기본 동작은?",
+   "a": "`Allow` 라 겹쳐서 돈다."
+  },
+  {
+   "q": "스케줄 시간대는?",
+   "a": "`timeZone` 이 없으면 컨트롤러 기준이며 대개 UTC 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "concurrencyPolicy",
+   "def": "이전 실행이 안 끝났을 때 새 실행을 어떻게 할지 정하는 크론잡 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Jobs",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — CronJob",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
