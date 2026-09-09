@@ -1,0 +1,136 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-n-plus-one",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "컬렉션의 N+1",
+ "summary": "1 + N + N + N.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컬렉션의 N+1 을 식으로 쓴다.",
+  "4장과 무엇이 다른지 안다.",
+  "왜 페치 조인이 다르게 작동하는지 예고한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절의 식이 `1 + 2N`** 이었다. **여기서는 변수가 둘**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리 나무",
+   "ascii": "   the query tree for 2 orders\n\n   1  orders\n      |\n      +-- order 4\n      |     member       1\n      |     delivery     1\n      |     orderItems   1\n      |       +-- item   1\n      |       +-- item   1\n      |\n      +-- order 11   (the same five)\n\n   1 + 2*(1+1+1) + 4*(1) = 11",
+   "note": "**주문마다 셋, 주문상품마다 하나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "식으로 쓰면",
+   "md": "**주문 수를 `N`, 주문당 상품 수를 `M`** 이라 하면\n\n```\n1 + 3N + N*M\n```\n\n| | |\n|---|---|\n| **1** | 주문 목록 |\n| **N** | 회원 |\n| **N** | 배송 |\n| **N** | 주문상품 컬렉션 |\n| **N×M** | 상품 |\n\n**이 샘플은 `N=2, M=2`** 다.\n\n```\n1 + 6 + 4 = 11\n```\n\n**4장과 비교**\n\n| | 4장 | 5장 |\n|---|---|---|\n| 식 | `1 + 2N` | **`1 + 3N + NM`** |\n| 변수 | **하나** | **둘** |\n| 100건 | 201 | **501** (M=2) |\n\n> **`N×M` 항이 새로** 생겼다. **곱**이다.\n>\n> **주문 100건에 상품 5개씩이면 1101개**다.\n\n**컬렉션 쿼리가 왜 주문마다 하나인가**\n\n```sql\nselect ... from order_item where order_id = ?\n```\n\n> **`order_id` 로** 찾는다. **주문마다 따로**다.\n>\n> **`in (?, ?)` 로 묶으면 하나로** 될 텐데 안 그런다. **그게 5.7절의 배치 사이즈**다."
+  },
+  {
+   "type": "figure",
+   "caption": "어떻게 자라나",
+   "ascii": "   how it grows\n\n   orders  items each   queries\n      2         2          11\n     10         2          51\n    100         2         501\n    100         5        1101\n\n   two variables now, not one\n   chapter 4 only had orders",
+   "note": "**변수가 둘이라 더 빨리** 자란다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1차 캐시가 여기서 하는 일",
+   "md": "**상품이 겹치면 준다.**\n\n```\n주문 100건이 전부 같은 상품 2개를 샀다면\n\n1 + 300 + 2 = 303\n\n1 + 300 + 200 = 501 이 아니다\n```\n\n> **`Item` 은 겹치기 쉽다.** **인기 상품이** 있다.\n>\n> **그래서 실제 운영에서는 `N×M` 이 계산보다 작을 수** 있다.\n\n**컬렉션은 안 겹친다.**\n\n> **`order_item where order_id=?` 는 주문마다 다른** 쿼리다.\n> **1차 캐시가 못 막는다.**\n\n**그런데 이걸 믿으면 안 된다.**\n\n| | |\n|---|---|\n| **데이터에 달렸다** | 상품이 다양하면 안 준다 |\n| **측정이 안 된다** | 개발 DB 로 예측 불가 |\n| **갑자기 는다** | 신상품이 쏟아지면 |\n\n> **3.2절에서 상품을 넷 다 다르게 만든 이유**다. **최악을 본다.**\n\n**컬렉션 초기화 시점도** 보라.\n\n> **`order.getOrderItems()` 를 부르는 게 아니라 `.stream()` 을 부를 때** 나간다.\n>\n> **`PersistentBag` 이 반환되고**, **실제로 순회할 때 초기화**된다.\n>\n> **`size()` 를 불러도 나간다.** **`@LazyCollection` 이나 `extra` 옵션으로 `count` 만 날릴 수도 있는데 잘 안 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "4장의 해법이 왜 안 통하나",
+   "md": "**4.5절의 답은 페치 조인**이었다.\n\n```java\n\"select o from Order o join fetch o.member join fetch o.delivery\"\n```\n\n**여기에 컬렉션을 더하면**\n\n```java\n\"... join fetch o.orderItems oi join fetch oi.item\"\n```\n\n**쿼리는 1개가** 된다. **세 가지가 깨진다.**\n\n| | |\n|---|---|\n| **행이 는다** | 주문 2건이 4행 |\n| **`distinct` 가 필요** | 안 하면 주문이 4개로 보인다 |\n| **페이징이 메모리로** | `HHH90003004` |\n\n> **5.4·5.5·5.6절이 각각 이것**이다.\n>\n> **하나씩 만나야 왜 V3.1 이 필요한지** 보인다.\n\n**그리고 하나 더**\n\n> **컬렉션을 둘 이상 페치 조인하면 `MultipleBagFetchException`** 이다.\n>\n> **`Order` 에 `orderItems` 하나뿐이라 여기선 안** 걸린다.\n> **`Member` 에 `orders` 와 `coupons` 가 있고 둘 다 페치하면** 걸린다.\n>\n> **5.7절에서 이 이야기를 다시** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 11개를 순서대로 ---\n\nGET /api/v2/orders\n\n#   1\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n\n#   2  (주문 4의 member)\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [1]\n\n#   3  (주문 4의 delivery)\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [4]\n\n#   4  (주문 4의 orderItems)\n#   Hibernate: select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#              from order_item oi1_0 where oi1_0.order_id=?  [4]\n\n#   5, 6  (주문상품 2개의 item)\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [2]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [3]\n\n#   7, 8, 9, 10, 11  (주문 11 도 같은 순서로)\n\n#   Session Metrics { 11 JDBC statements were executed }\n\n# --- 상품을 겹치게 하면 ---\n\n#   두 주문이 같은 상품 2개를 샀다면\n\nGET /api/v2/orders\n\n#   Hibernate: select ... from orders o1_0\n#   Hibernate: select ... from member ...  [1]\n#   Hibernate: select ... from delivery ...  [4]\n#   Hibernate: select ... from order_item ... where order_id=?  [4]\n#   Hibernate: select ... from item ... where item_id=?  [2]\n#   Hibernate: select ... from item ... where item_id=?  [3]\n#   Hibernate: select ... from member ...  [8]\n#   Hibernate: select ... from delivery ...  [11]\n#   Hibernate: select ... from order_item ... where order_id=?  [11]\n\n#   Session Metrics { 9 JDBC statements were executed }\n\n#   item 쿼리가 4개에서 2개로 줄었다\n#   1차 캐시가 막았다\n\n#   order_item 은 그대로 2개다. order_id 가 달라서다\n\n# --- 컬렉션이 언제 초기화되나 ---\n\n@Transactional(readOnly = true)\npublic void when() {\n    Order order = orderRepository.findOne(4L);\n    System.out.println(\"1\");\n\n    List<OrderItem> items = order.getOrderItems();\n    System.out.println(\"2  \" + items.getClass());\n\n    int size = items.size();\n    System.out.println(\"3  \" + size);\n}\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   1\n#   2  class org.hibernate.collection.spi.PersistentBag\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   3  2\n\n#   getOrderItems() 는 쿼리를 안 낸다\n#   size() 가 낸다\n\n# --- 페치 조인을 걸면 (미리) ---\n\nselect o from Order o\n  join fetch o.member m\n  join fetch o.delivery d\n  join fetch o.orderItems oi\n  join fetch oi.item i\n\nGET /api/v3/orders\n\n#   Hibernate: select o1_0.order_id, ..., m1_0.*, d1_0.*, oi1_0.*, i1_0.*\n#              from orders o1_0\n#              join member m1_0 on ...\n#              join delivery d1_0 on ...\n#              join order_item oi1_0 on oi1_0.order_id=o1_0.order_id\n#              join item i1_0 on i1_0.item_id=oi1_0.item_id\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",...,\"orderItems\":[...]},\n#     {\"orderId\":4,\"name\":\"userA\",...,\"orderItems\":[...]},\n#     {\"orderId\":11,\"name\":\"userB\",...,\"orderItems\":[...]},\n#     {\"orderId\":11,\"name\":\"userB\",...,\"orderItems\":[...]}\n#   ]}\n\n#   쿼리는 1개인데 주문이 4개다\n\n#   2건짜리 응답이 4건이 됐다\n\n#   3.4절의 계약이 깨졌다\n\n# --- 다음 절에서 ---\n\n#   이 4개를 다룬다",
+   "note": "**11개가 `1 + 3N + NM`** 이다. **`N=2, M=2`** 다.\n\n**상품을 겹치게 하면 9개**로 준다. **1차 캐시가 `item` 을** 막았다. **`order_item` 은 그대로**다.\n\n**`getOrderItems()` 는 쿼리를 안 내고 `size()` 가** 낸다. **`PersistentBag`** 이다.\n\n**페치 조인을 걸면 쿼리 1개인데 주문이 4개**다. **3.4절의 계약이 깨졌다.**\n\n**다음 절에서 이 4개를 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**식이 `1 + 3N + NM`** 이다 — 변수가 둘이다.",
+  "**`N×M` 항이 곱**이라 더 빨리 자란다.",
+  "**주문 100건에 상품 5개씩이면 1101개**다.",
+  "**1차 캐시가 `item` 을 막는다** — 상품은 겹치기 쉽다.",
+  "**컬렉션 쿼리는 안 겹친다** — `order_id` 가 다르다.",
+  "**1차 캐시를 믿으면 안 된다** — 데이터에 달렸고 측정이 안 된다.",
+  "**`getOrderItems()` 가 아니라 `size()` 나 순회가 초기화**한다.",
+  "**페치 조인을 걸면 쿼리 1개인데 주문이 4개**가 된다.",
+  "**컬렉션을 둘 이상 페치하면 `MultipleBagFetchException`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "11개 쿼리를 로그에서 순서대로 표시한다.",
+   "done_when": "식의 각 항에 대응시켰다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 주문이 같은 상품을 사도록 데이터를 바꾼다.",
+   "done_when": "쿼리가 9개로 주는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`getOrderItems()` 와 `size()` 사이에 로그를 넣는다.",
+   "done_when": "어디서 쿼리가 나가는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컬렉션까지 페치 조인해 본다.",
+   "done_when": "주문이 4개로 보이는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컬렉션 N+1 의 식은?",
+   "a": "`1 + 3N + N×M` 이다. N 은 주문 수, M 은 주문당 상품 수다."
+  },
+  {
+   "q": "4장과 무엇이 다른가?",
+   "a": "변수가 둘이고 `N×M` 이라는 곱 항이 생긴다."
+  },
+  {
+   "q": "1차 캐시가 무엇을 막나?",
+   "a": "`item` 조회다. 컬렉션 조회는 `order_id` 가 달라 못 막는다."
+  },
+  {
+   "q": "컬렉션은 언제 초기화되나?",
+   "a": "`getOrderItems()` 가 아니라 `size()` 나 순회 시점이다."
+  },
+  {
+   "q": "페치 조인을 걸면 무엇이 깨지나?",
+   "a": "행이 늘어 주문 2건이 4개로 보인다. 응답 계약이 깨진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MultipleBagFetchException",
+   "def": "`List` 컬렉션을 둘 이상 페치 조인할 때 하이버네이트가 내는 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  }
+ ]
+}

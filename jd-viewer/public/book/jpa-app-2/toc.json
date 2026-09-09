@@ -287,7 +287,7 @@
           "title": "주문 조회 V1",
           "summary": "컬렉션이 붙으면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -295,7 +295,7 @@
           "title": "V2 — DTO 로 변환",
           "summary": "DTO 안의 DTO.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -303,7 +303,7 @@
           "title": "컬렉션의 N+1",
           "summary": "1 + N + N + N.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",

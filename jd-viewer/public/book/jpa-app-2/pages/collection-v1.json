@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v1",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "주문 조회 V1",
+ "summary": "컬렉션이 붙으면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컬렉션이 포함된 조회를 만든다.",
+  "4.1절과 무엇이 다른지 안다.",
+  "강제 초기화가 왜 더 나빠지는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`orderItems` 하나가 붙는다.** **그래프 깊이가 2가** 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderApiController — V1",
+   "code": "@RestController\n@RequiredArgsConstructor\npublic class OrderApiController {\n\n    private final OrderRepository orderRepository;\n\n    @GetMapping(\"/api/v1/orders\")\n    public List<Order> ordersV1() {\n        List<Order> all = orderRepository.findAllByString(new OrderSearch());\n        for (Order order : all) {\n            order.getMember().getName();\n            order.getDelivery().getAddress();\n\n            List<OrderItem> orderItems = order.getOrderItems();\n            orderItems.forEach(o -> o.getItem().getName());   // 컬렉션까지\n        }\n        return all;\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "그래프가 얼마나 깊어졌나",
+   "ascii": "   how deep the graph goes now\n\n   Order\n     member      -> Member\n     delivery    -> Delivery\n     orderItems  -> OrderItem\n                      order  -> Order        cycle\n                      item   -> Item\n\n   chapter 4 stopped at depth 1\n   here it goes to depth 2, and item is a whole entity",
+   "note": "**깊이 2에 `Item` 이라는 엔티티가 통째로** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4.1절과 무엇이 다른가",
+   "md": "**순환의 개수는 같다** — 셋.\n\n**깊이가 다르다.**\n\n| | 4장 | 5장 |\n|---|---|---|\n| 깊이 | **1** | **2** |\n| 끝나는 곳 | `Member`·`Delivery` | **`Item`** |\n| 초기화할 대상 | 주문당 2개 | **주문당 2 + 주문상품 수** |\n\n> **`Item` 은 상속 구조**다(1편 3.8절). **`Book`·`Album`·`Movie`.**\n>\n> **`dtype` 과 하위 타입 필드가 전부** 나간다.\n\n**강제 초기화가 중첩 반복문이** 된다.\n\n```java\norderItems.forEach(o -> o.getItem().getName());\n```\n\n> **4.2절에서 \"반환값을 안 쓰는 호출\" 이라고** 했다. **여기서는 그게 이중**이다.\n>\n> **주문 100건에 상품 3개씩이면 300번**을 부른다.\n\n**`@JsonIgnore` 도 하나 더** 필요하다.\n\n```java\n@JsonIgnore private Order order;   // OrderItem\n```\n\n> **4.1절에서 붙였다 4.3절에서 지운 것**이다. **다시 붙인다.**\n>\n> **그리고 `Item.orderItems` 같은 역방향이 있었다면 하나 더** 였다. **1편 3.7절에서 안 만들어 뒀다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "강제 초기화의 모양",
+   "ascii": "   what forcing initialization looks like now\n\n   for each order\n     order.getMember().getName()\n     order.getDelivery().getAddress()\n     for each orderItem\n       orderItem.getItem().getName()\n\n   a nested loop whose return values nobody uses\n   4.2 called this absurd. it got worse.",
+   "note": "**4.2절에서 터무니없다고 한 것이 더 나빠졌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "응답에 뭐가 실리나",
+   "md": "**`Item` 이 통째로** 나간다.\n\n```json\n\"item\": {\n  \"id\": 2,\n  \"name\": \"JPA1 BOOK\",\n  \"price\": 10000,\n  \"stockQuantity\": 99,\n  \"categories\": null,\n  \"author\": \"kim\",\n  \"isbn\": \"111\"\n}\n```\n\n| 필드 | 주문 목록에 필요한가 |\n|---|---|\n| `name` | **그렇다** |\n| `price` | 주문 시점 가격은 `orderPrice` 다 |\n| **`stockQuantity`** | **재고가 왜 나가나** |\n| `author`·`isbn` | 아니다 |\n| `categories` | 아니다 |\n\n**`stockQuantity` 가 특히 문제**다.\n\n> **경쟁사가 재고를 실시간으로 볼 수** 있다.\n> **1편 8.7절의 보안 항목과 같은 종류**인데 **더 직접적**이다.\n>\n> **화면에서는 템플릿이 안 부르면 안 나갔다.** **API 는 나간다**(2.1절).\n\n**`orderPrice` 와 `item.price` 가 둘 다** 나가는 것도 이상하다.\n\n> **주문 시점 가격(`orderPrice`)이 맞고 현재 가격(`item.price`)은 응답에 있을 이유가** 없다.\n>\n> **클라이언트가 어느 걸 써야 할지** 모른다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 강제 초기화 없이, @JsonIgnore 없이 ---\n\nGET /api/v1/orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select o1_0.member_id, ... from orders o1_0\n#              where o1_0.member_id=?\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   Infinite recursion (StackOverflowError)\n#     Order[\"member\"]->Member[\"orders\"]->PersistentBag[0]->Order[\"member\"]\n\n# --- @JsonIgnore 넷을 붙이면 ---\n\n#   Member.orders      @JsonIgnore\n#   Delivery.order     @JsonIgnore\n#   OrderItem.order    @JsonIgnore\n#   Category.items     @JsonIgnore   (Item.categories 쪽)\n\nGET /api/v1/orders\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   No serializer found for class ByteBuddyInterceptor\n#     Order[\"member\"]->Member$HibernateProxy$k2m9x[\"handler\"]\n\n#   4.1절과 같다\n\n# --- 강제 초기화까지 넣으면 ---\n\nGET /api/v1/orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n\n#   (order.getMember().getName())\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [1]\n\n#   (order.getDelivery().getAddress())\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [4]\n\n#   (order.getOrderItems() - 컬렉션 초기화)\n#   Hibernate: select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price from order_item oi1_0\n#              where oi1_0.order_id=?  [4]\n\n#   (orderItem.getItem().getName() x 2)\n#   Hibernate: select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_1.artist, i1_1.etc, i1_2.author,\n#              i1_2.isbn, i1_3.actor, i1_3.director\n#              from item i1_0\n#              left join album i1_1 on i1_0.item_id=i1_1.item_id\n#              left join book i1_2 on i1_0.item_id=i1_2.item_id\n#              left join movie i1_3 on i1_0.item_id=i1_3.item_id\n#              where i1_0.item_id=?  [2]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [3]\n\n#   (두 번째 주문도 같은 순서로 5개)\n\n#   Session Metrics {\n#       11 JDBC statements were executed\n#       14 entities were loaded\n#       2 collections were fetched\n#   }\n\n#   200 OK\n#   [\n#     {\"id\": 4,\n#      \"member\": {\"id\":1,\"name\":\"userA\",\"address\":{...}},\n#      \"orderItems\": [\n#        {\"id\": 6,\n#         \"item\": {\"id\":2,\"name\":\"JPA1 BOOK\",\"price\":10000,\n#                  \"stockQuantity\":99,\"categories\":null,\n#                  \"author\":\"kim\",\"isbn\":\"111\"},\n#         \"orderPrice\": 10000, \"count\": 1, \"totalPrice\": 10000},\n#        {\"id\": 7, \"item\": {...\"name\":\"JPA2 BOOK\",\"stockQuantity\":98...},\n#         \"orderPrice\": 20000, \"count\": 2, \"totalPrice\": 40000}\n#      ],\n#      \"delivery\": {\"id\":4,\"address\":{...},\"status\":null},\n#      \"orderDate\": \"2026-09-09T15:12:03.331\",\n#      \"status\": \"ORDER\",\n#      \"totalPrice\": 50000},\n#     {\"id\": 11, ...}\n#   ]\n\n#   1214 bytes\n\n# --- Item 조회 SQL 을 보라 ---\n\n#   left join album, left join book, left join movie\n\n#   JOINED 상속이라 세 테이블을 다 건드린다  (1편 3.8절)\n#   Book 하나 가져오는데 조인 셋이다\n\n# --- 응답에 실린 것 ---\n\n#   stockQuantity: 99      재고가 나간다\n#   author, isbn           주문 목록에 필요 없다\n#   item.price 와 orderPrice 가 둘 다\n\n# --- 4장과 비교 ---\n\n#   4장 V1   쿼리 5    612 bytes\n#   5장 V1   쿼리 11  1214 bytes\n\n#   컬렉션 하나에 둘 다 두 배다\n\n# --- 다음 절에서 ---\n\n#   DTO 로 바꾼다\n#   그런데 한 번에 안 된다",
+   "note": "**`@JsonIgnore` 를 넷 붙이고 강제 초기화까지 넣어야 `200`** 이다. **쿼리 11개**다.\n\n**`Item` 조회 SQL 에 `left join album`·`book`·`movie` 셋**이 붙는다. **`JOINED` 상속이라 그렇다**(1편 3.8절).\n\n**응답에 `stockQuantity: 99` 가** 나간다. **재고가 나간다.**\n\n**`item.price` 와 `orderPrice` 가 둘 다** 있다. **클라이언트가 어느 걸 쓸지 모른다.**\n\n**4장 V1 이 5개에 612바이트**였다. **컬렉션 하나에 둘 다 두 배**다."
+  }
+ ],
+ "recap": [
+  "**컬렉션이 붙어 그래프 깊이가 2** 가 된다.",
+  "**`Item` 이라는 엔티티가 통째로** 나간다.",
+  "**`@JsonIgnore` 가 넷** 필요하다.",
+  "**강제 초기화가 중첩 반복문이** 된다.",
+  "**`Item` 조회에 `left join` 셋**이 붙는다 — `JOINED` 상속이다.",
+  "**`stockQuantity` 가 나간다** — 재고 유출이다.",
+  "**`item.price` 와 `orderPrice` 가 둘 다** 나간다.",
+  "**쿼리 11개에 1214 바이트** — 4장의 두 배다.",
+  "**컬렉션 하나가 모든 숫자를 두 배로** 만들었다."
+ ],
+ "drills": [
+  {
+   "task": "V1 을 그대로 부른다.",
+   "done_when": "재귀 500 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@JsonIgnore` 넷과 강제 초기화를 넣는다.",
+   "done_when": "쿼리 11개와 200 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Item` 조회 SQL 의 조인을 센다.",
+   "done_when": "`album`·`book`·`movie` 셋인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "응답에서 안 나가야 할 필드를 센다.",
+   "done_when": "다섯 개 이상 꼽았다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "4장과 그래프가 어떻게 다른가?",
+   "a": "깊이가 1 에서 2 가 됐고 끝이 `Item` 이라는 엔티티다."
+  },
+  {
+   "q": "`Item` 조회에 왜 조인 셋이 붙나?",
+   "a": "`JOINED` 상속이라 `album`·`book`·`movie` 를 다 건드린다."
+  },
+  {
+   "q": "가장 위험한 노출 필드는?",
+   "a": "`stockQuantity` 다. 재고가 그대로 나간다."
+  },
+  {
+   "q": "`orderPrice` 와 `item.price` 중 맞는 건?",
+   "a": "주문 시점 가격인 `orderPrice` 다."
+  },
+  {
+   "q": "4장 V1 과 숫자가 어떻게 다른가?",
+   "a": "쿼리 5→11, 응답 612→1214 바이트로 둘 다 두 배다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

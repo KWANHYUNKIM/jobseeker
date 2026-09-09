@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v2",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "V2 — DTO 로 변환",
+ "summary": "DTO 안의 DTO.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컬렉션까지 DTO 로 바꾼다.",
+  "\"절반만 DTO\" 를 직접 만들어 본다.",
+  "3.4절의 계약을 맞춘다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절에서 \"DTO 는 DTO 만 품는다\" 고** 했다. **여기서 한 번 어겨** 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "① 절반만 DTO (틀린 버전)",
+   "code": "@Data\nstatic class OrderDto {\n    private Long orderId;\n    private String name;\n    private LocalDateTime orderDate;\n    private OrderStatus orderStatus;\n    private Address address;\n    private List<OrderItem> orderItems;   // 엔티티다\n\n    public OrderDto(Order order) {\n        orderId = order.getId();\n        name = order.getMember().getName();\n        orderDate = order.getOrderDate();\n        orderStatus = order.getStatus();\n        address = order.getDelivery().getAddress();\n        order.getOrderItems().forEach(o -> o.getItem().getName());\n        orderItems = order.getOrderItems();   // 그대로 넘긴다\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "절반만 DTO",
+   "ascii": "   the mistake this section makes on purpose\n\n   OrderDto\n     orderId, name, orderDate, orderStatus, address\n     orderItems -> List<OrderItem>      still an entity\n\n   the outer layer is a dto\n   the inner layer is not\n\n   half a dto is not a dto",
+   "note": "**바깥은 DTO, 안은 엔티티**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇이 안 고쳐졌나",
+   "md": "**`OrderDto` 를 만들었는데 응답에 엔티티가 그대로** 있다.\n\n```json\n\"orderItems\": [\n  {\"id\": 6,\n   \"item\": {\"id\":2, \"name\":\"JPA1 BOOK\", \"stockQuantity\":99, ...},\n   \"orderPrice\": 10000, \"count\": 1, \"totalPrice\": 10000}\n]\n```\n\n| 5.1절의 문제 | 고쳐졌나 |\n|---|---|\n| `Order` 노출 | ✅ |\n| `Member` 노출 | ✅ — `name` 만 |\n| `Delivery` 노출 | ✅ — `address` 만 |\n| **`OrderItem` 노출** | ❌ |\n| **`Item` 노출** | ❌ |\n| **`stockQuantity`** | ❌ |\n| **`@JsonIgnore`** | ❌ — `OrderItem.order` 는 여전히 필요 |\n\n> **절반이 남았다.** **그런데 `200` 은 나온다.**\n>\n> **테스트를 안 짜면 통과한 줄** 안다.\n\n**\"DTO 를 만들었다\" 가 아니라 \"엔티티가 안 나간다\" 가** 기준이다.\n\n> **바깥 껍데기만 DTO 면 안 만든 것과 같다.**\n>\n> **실무에서 흔한 실수**다. **최상위만 보고 넘어간다.**\n\n**강제 초기화도 여전**하다.\n\n```java\norder.getOrderItems().forEach(o -> o.getItem().getName());\n```\n\n> **엔티티를 넘기니 프록시를 깨야** 한다. **4.2절의 그 코드**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "② 전부 DTO (맞는 버전)",
+   "code": "@Data\nstatic class OrderDto {\n    private Long orderId;\n    private String name;\n    private LocalDateTime orderDate;\n    private OrderStatus orderStatus;\n    private Address address;\n    private List<OrderItemDto> orderItems;\n\n    public OrderDto(Order order) {\n        orderId = order.getId();\n        name = order.getMember().getName();\n        orderDate = order.getOrderDate();\n        orderStatus = order.getStatus();\n        address = order.getDelivery().getAddress();\n        orderItems = order.getOrderItems().stream()\n                .map(OrderItemDto::new)\n                .toList();\n    }\n}\n\n@Data\nstatic class OrderItemDto {\n    private String itemName;\n    private int orderPrice;\n    private int count;\n\n    public OrderItemDto(OrderItem orderItem) {\n        itemName = orderItem.getItem().getName();\n        orderPrice = orderItem.getOrderPrice();\n        count = orderItem.getCount();\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "고친 뒤",
+   "ascii": "   after the fix\n\n   OrderDto\n     orderId, name, orderDate, orderStatus, address\n     orderItems -> List<OrderItemDto>\n                     itemName, orderPrice, count\n\n   every level is a dto. nothing entity shaped is left.",
+   "note": "**모든 층이 DTO** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "고쳐진 것과 안 고쳐진 것",
+   "md": "**고쳐진 것**\n\n| | |\n|---|---|\n| **엔티티가 안 나간다** | 모든 층이 DTO |\n| **`@JsonIgnore` 전부 제거** | 순환이 없다 |\n| **`stockQuantity` 안 나감** | `itemName` 만 |\n| **강제 초기화 제거** | `OrderItemDto` 생성자가 대신 |\n| **3.4절의 계약** | 정확히 일치 |\n| **응답 1214 → 429 바이트** | |\n\n**안 고쳐진 것**\n\n> **쿼리가 11개 그대로**다.\n>\n> **4.3절에서 본 것과 똑같다.** **DTO 는 무엇을 내보낼지만 정한다.**\n\n**`OrderItemDto` 생성자가 `getItem().getName()` 을** 부른다.\n\n```java\nitemName = orderItem.getItem().getName();   // 프록시를 깬다\n```\n\n> **강제 초기화를 지운 게 아니라 자리를 옮긴** 것이다.\n>\n> **다른 점은 \"이 값을 쓰려고 부른다\" 가** 보인다는 것이다. **반환값을 쓴다.**\n\n**`OrderItemDto` 를 왜 중첩 클래스로 뒀나**\n\n> **이 API 의 응답 모양**이다. **다른 데서 안 쓴다.**\n>\n> **5.9절의 V4 에서는 리포지토리 옆으로** 간다 — **거기선 `new` 절이 부른다**(4.6절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- ① 절반만 DTO ---\n\nGET /api/v2/orders\n\n#   Hibernate: select ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 left join album ... where item_id=?\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?\n#   (두 번째 주문 5개)\n\n#   Session Metrics { 11 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"id\":6,\n#         \"item\":{\"id\":2,\"name\":\"JPA1 BOOK\",\"price\":10000,\n#                 \"stockQuantity\":99,\"categories\":null,\n#                 \"author\":\"kim\",\"isbn\":\"111\"},\n#         \"orderPrice\":10000,\"count\":1,\"totalPrice\":10000},\n#        {\"id\":7,\"item\":{...},\"orderPrice\":20000,\"count\":2,...}\n#      ]},\n#     {\"orderId\":11, ...}\n#   ]}\n\n#   1049 bytes\n\n#   OrderDto 를 만들었는데 stockQuantity 가 나간다\n#   200 이라 통과한 줄 안다\n\n# --- ② 전부 DTO ---\n\nGET /api/v2/orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [1]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [4]\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?  [4]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [2]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [3]\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [8]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [11]\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?  [11]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [9]\n#   Hibernate: select ... from item i1_0 ... where i1_0.item_id=?  [10]\n\n#   Session Metrics {\n#       11 JDBC statements were executed\n#       14 entities were loaded\n#       2 collections were fetched\n#   }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}\n#      ]},\n#     {\"orderId\":11,\"name\":\"userB\",...,\n#      \"orderItems\":[\n#        {\"itemName\":\"SPRING1 BOOK\",\"orderPrice\":20000,\"count\":3},\n#        {\"itemName\":\"SPRING2 BOOK\",\"orderPrice\":40000,\"count\":4}\n#      ]}\n#   ]}\n\n#   429 bytes\n\n#   3.4절에서 못 박은 JSON 과 정확히 같다\n\n# --- 엔티티를 확인 ---\n\n@Entity\npublic class OrderItem {\n    @ManyToOne(fetch = LAZY)\n    private Order order;      // @JsonIgnore 없음\n}\n\n#   전부 지웠다\n\n# --- 세 응답을 나란히 ---\n\n#   V1          쿼리 11   1214 bytes   엔티티\n#   V2 절반      쿼리 11   1049 bytes   절반 엔티티\n#   V2 전부      쿼리 11    429 bytes   DTO. 계약 일치\n\n#   쿼리는 셋 다 11개다\n\n# --- 11개가 어디서 왔나 ---\n\n#   1  주문 목록\n#   2  회원      (주문당 1)\n#   2  배송      (주문당 1)\n#   2  주문상품   (주문당 1)\n#   4  상품      (주문상품당 1)\n\n#   = 11\n\n# --- 다음 절에서 ---\n\n#   이 11 을 식으로 쓴다",
+   "note": "**절반만 DTO 인 버전도 `200`** 이다. **`stockQuantity` 가 나가는데 통과한 줄** 안다.\n\n**전부 DTO 로 바꾸면 429 바이트**다. **1214 → 1049 → 429**.\n\n**3.4절에서 못 박은 JSON 과 정확히** 같다.\n\n**`@JsonIgnore` 를 전부 지웠다.**\n\n**쿼리는 셋 다 11개**다. **1 + 2 + 2 + 2 + 4** 다.\n\n**다음 절에서 이 11 을 식으로 쓴다.**"
+  }
+ ],
+ "recap": [
+  "**절반만 DTO 를 일부러 만들어** 본다.",
+  "**바깥이 DTO 여도 안이 엔티티면 안 만든 것**이다.",
+  "**`200` 이 나와서 통과한 줄** 안다.",
+  "**기준은 \"DTO 를 만들었다\" 가 아니라 \"엔티티가 안 나간다\"** 다.",
+  "**전부 DTO 로 바꾸면 1214 → 429 바이트**다.",
+  "**`@JsonIgnore` 를 전부** 지운다.",
+  "**강제 초기화가 `OrderItemDto` 생성자로 자리를** 옮겼다.",
+  "**차이는 \"반환값을 쓴다\" 는 것**이다.",
+  "**쿼리는 11개 그대로** — `1 + 2 + 2 + 2 + 4`."
+ ],
+ "drills": [
+  {
+   "task": "절반만 DTO 인 버전을 만든다.",
+   "done_when": "200 인데 `stockQuantity` 가 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`OrderItemDto` 를 만들어 고친다.",
+   "done_when": "3.4절의 JSON 과 일치하는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@JsonIgnore` 를 전부 지운다.",
+   "done_when": "V2 가 그대로 도는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "응답 크기 셋을 잰다.",
+   "done_when": "1214·1049·429 를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "\"절반만 DTO\" 의 문제는?",
+   "a": "바깥만 DTO 고 안이 엔티티라 엔티티가 그대로 나간다."
+  },
+  {
+   "q": "왜 이 실수를 알아채기 어렵나?",
+   "a": "200 이 나오고 최상위 모양만 보면 DTO 로 보여서다."
+  },
+  {
+   "q": "옳은 기준은?",
+   "a": "\"DTO 를 만들었다\" 가 아니라 \"엔티티가 안 나간다\" 다."
+  },
+  {
+   "q": "강제 초기화가 어떻게 됐나?",
+   "a": "지워진 게 아니라 `OrderItemDto` 생성자로 옮겨졌다. 다만 반환값을 쓴다."
+  },
+  {
+   "q": "11개는 어떻게 나온 숫자인가?",
+   "a": "1(주문) + 2(회원) + 2(배송) + 2(주문상품) + 4(상품)이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  }
+ ]
+}
