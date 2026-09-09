@@ -759,7 +759,7 @@
           "title": "관리 화면 인가",
           "summary": "권한을 DB 에서.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -767,7 +767,7 @@
           "title": "자원 관리",
           "summary": "URL 권한을 화면에서 바꾼다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",

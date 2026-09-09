@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "resource-management",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "자원 관리",
+ "summary": "URL 권한을 화면에서 바꾼다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "규칙 한 줄의 일생을 만든다.",
+  "저장 전에 시험한다.",
+  "잠기는 경로를 막는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.7절의 `url_authority` 표를 화면으로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙 한 줄의 일생",
+   "ascii": "   the life of one rule row\n\n   an admin types a pattern and an authority\n   validate    is the pattern well formed, is the authority known\n   insert      with a sort number that leaves gaps\n   reload      publish an event, every node rebuilds its cache\n   verify      probe the path as a test user, show the result\n\n   the last step is what stops a typo from locking everyone out",
+   "note": "**마지막 단계가 오타로 인한 잠금을** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "검증 셋",
+   "md": "```java\npublic void addRule(UrlAuthorityRequest request) {\n    // 1) 패턴이 올바른가\n    try {\n        new AntPathRequestMatcher(request.pattern());\n    } catch (IllegalArgumentException e) {\n        throw new InvalidRuleException(\"패턴이 올바르지 않다\");\n    }\n    // 2) 아는 권한인가\n    if (!authorityRepository.exists(request.authority())) {\n        throw new InvalidRuleException(\"없는 권한이다: \" + request.authority());\n    }\n    // 3) 편집 경로를 덮지 않는가\n    if (new AntPathRequestMatcher(request.pattern())\n            .matches(new MockHttpServletRequest(\"GET\", \"/admin/authorities\"))) {\n        throw new InvalidRuleException(\"규칙 편집 화면을 덮는다\");\n    }\n    repository.save(request.toEntity());\n    publisher.publishEvent(new RulesChangedEvent(this));\n}\n```\n\n> **둘째가 8.2절의 대소문자 실수를** 막는다.\n> **`ORDER_CANCLE` 같은 게 표에** 안 들어간다.\n\n**정렬 번호는 띄엄띄엄**\n\n> **10·20·30 으로** 넣는다.\n> **사이에 끼울 자리가** 생긴다.\n> **1·2·3 이면 재정렬이** 필요하다.\n\n**순서가 사람 손에 넘어갔다.**\n\n> **7.2절에서 코드 순서가 규칙 순서**였다.\n> **표에서는 숫자다.**\n> **더 틀리기** 쉽다 — **화면에서 정렬 결과를 보여** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "모두를 잠그는 법",
+   "ascii": "   how a rule editor locks everyone out\n\n   an admin adds   pattern that matches everything,\n                   authority ROLE_NOBODY, sort 5\n   reload\n   the next request matches rule 5 first, and nobody has it\n   including the admin, including the rule editor\n\n   the fix is that the editor path is not in the table (11.5)\n   and that a new rule is tried before it is saved",
+   "note": "**편집 경로가 표 밖에 있어야** 산다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "저장 전에 시험한다",
+   "md": "**규칙을 넣기 전에 돌려** 본다.\n\n```java\npublic RulePreview preview(UrlAuthorityRequest candidate, String probePath) {\n    List<UrlAuthority> simulated = new ArrayList<>(repository.findAllByOrderBySort());\n    simulated.add(candidate.toEntity());\n    simulated.sort(comparingInt(UrlAuthority::getSort));\n\n    return new RulePreview(simulated.stream()\n            .filter(rule -> rule.matches(probePath))\n            .findFirst()\n            .orElse(null));\n}\n```\n\n> **\"이 경로는 어느 규칙에 걸리나\" 를 저장 전에** 보여 준다.\n> **8.8절의 인가표를 화면으로 옮긴** 셈이다.\n\n**시험할 경로 목록**\n\n> **`/`, `/login`, `/admin/authorities`, 그리고 대표 경로 몇** 개다.\n> **`/admin/authorities` 가 다른 규칙에 걸리면** 경고한다.\n\n**되돌릴 길을 남긴다.**\n\n> **규칙 표에 `enabled` 컬럼을** 둔다.\n> **지우지 말고 끈다.**\n> **잘못됐을 때 되살리기 쉽다.**\n>\n> **더 확실한 건 부팅 시 안전 모드**다 — **환경 변수 하나로 표를 무시하고 코드 규칙만** 쓴다.\n> **잠겼을 때 재배포 없이 들어갈 길**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 표를 확장한다 ---\n\nalter table url_authority add column enabled boolean not null default true;\nalter table url_authority add column memo varchar(200);\n\nselect id, pattern, method, authority, sort, enabled from url_authority\n order by sort;\n\nID | PATTERN      | METHOD | AUTHORITY     | SORT | ENABLED\n---+--------------+--------+---------------+------+---------\n 1 | /admin/**    |        | ROLE_ADMIN    |   10 | t\n 2 | /report/**   |        | REPORT_READ   |   20 | t\n 3 | /api/**      | DELETE | ORDER_CANCEL  |   30 | t\n 4 | /orders/**   |        | ORDER_READ    |   40 | t\n\n#   10 단위로 띄웠다\n\n# --- 없는 권한을 넣어 본다 ---\n\n$ curl -s -b superadmin.txt -X POST localhost:8080/admin/authorities \\\n    -d \"pattern=/stats/**&authority=STAT_READ&sort=25&_csrf=$T\" \\\n    | grep -o '없는 권한이다[^<]*'\n\n없는 권한이다: STAT_READ\n\nselect count(*) from url_authority where authority = 'STAT_READ';\n0\n\n#   8.2절의 죽은 데이터를 막았다\n\n#   권한을 먼저 만든다\n\ninsert into role_authority values ('ROLE_MANAGER', 'STAT_READ');\ninsert into role_authority values ('ROLE_ADMIN', 'STAT_READ');\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b superadmin.txt -X POST \\\n    localhost:8080/admin/authorities \\\n    -d \"pattern=/stats/**&authority=STAT_READ&sort=25&_csrf=$T\"\n\n302\n\ninsert into url_authority (pattern, method, authority, sort, enabled, memo)\n            values (?, ?, ?, ?, ?, ?)\n\n>>> 규칙 5건 로드\n\n#   갱신 신호가 나갔다 (8.7절)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b manager.txt localhost:8080/stats/x\n403\n\n#   세션이 옛것이다 (10.9절)\n\n$ curl -s -o /dev/null -b m2.txt -c m2.txt -X POST localhost:8080/login -d \"...\"\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b m2.txt localhost:8080/stats/x\n200\n\n#   규칙은 즉시, 권한은 재로그인 뒤다\n\n#   10.9절의 비대칭이다\n\n# --- 저장 전 시험 ---\n\n$ curl -s -b superadmin.txt \\\n    'localhost:8080/admin/authorities/preview?pattern=/**&authority=ROLE_NOBODY&sort=5&probe=/admin/authorities'\n\n{\"matched\":{\"pattern\":\"/**\",\"authority\":\"ROLE_NOBODY\",\"sort\":5},\n \"warning\":\"규칙 편집 화면을 덮는다\"}\n\n#   저장 전에 보인다\n\n$ curl -s -b superadmin.txt \\\n    'localhost:8080/admin/authorities/preview?pattern=/stats/**&authority=STAT_READ&sort=25&probe=/stats/daily'\n\n{\"matched\":{\"pattern\":\"/stats/**\",\"authority\":\"STAT_READ\",\"sort\":25}}\n\n#   의도한 규칙에 걸린다\n\n$ curl -s -b superadmin.txt \\\n    'localhost:8080/admin/authorities/preview?pattern=/stats/**&authority=STAT_READ&sort=5&probe=/admin/panel'\n\n{\"matched\":{\"pattern\":\"/admin/**\",\"authority\":\"ROLE_ADMIN\",\"sort\":10}}\n\n#   정렬 5 여도 /admin 은 안 덮는다\n\n#   패턴이 안 맞아서다\n\n# --- 모두를 잠가 본다 ---\n\n#   (검증을 끄고)\n\n$ curl -s -o /dev/null -b superadmin.txt -X POST \\\n    localhost:8080/admin/authorities \\\n    -d \"pattern=/**&authority=ROLE_NOBODY&sort=5&_csrf=$T\"\n\n>>> 규칙 6건 로드\n\n$ for f in superadmin.txt admin.txt manager.txt; do\n    printf '%-16s ' $f\n    curl -s -o /dev/null -w '%{http_code}\\n' -b $f localhost:8080/orders\n  done\n\nsuperadmin.txt   403\nadmin.txt        403\nmanager.txt      403\n\n#   전부 막혔다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b superadmin.txt \\\n    localhost:8080/admin/authorities\n\n200\n\n#   편집 화면만 산다\n\n#   11.5절에서 코드에 박아 둬서다\n\n#   표에 뒀다면 여기서 끝이었다\n\n$ curl -s -o /dev/null -b superadmin.txt -X POST \\\n    localhost:8080/admin/authorities/6/disable -d \"_csrf=$T\"\n\nupdate url_authority set enabled = false where id = ?\n\n>>> 규칙 5건 로드\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/orders\n200\n\n#   되살렸다\n\n#   enabled 컬럼 덕이다\n\n# --- 안전 모드 ---\n\napp.security.dynamic-rules.enabled=false\n\n@Bean\nSecurityFilterChain chain(HttpSecurity http,\n        @Value(\"${app.security.dynamic-rules.enabled:true}\") boolean dynamic)\n        throws Exception {\n    http.authorizeHttpRequests(a -> {\n        a.requestMatchers(\"/admin/authorities/**\").hasRole(\"SUPER_ADMIN\");\n        if (dynamic) {\n            a.anyRequest().access(dbAuthorizationManager);\n        } else {\n            a.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n             .anyRequest().authenticated();\n        }\n    });\n    return http.build();\n}\n\n$ SPRING_APPLICATION_JSON='{\"app\":{\"security\":{\"dynamic-rules\":{\"enabled\":false}}}}' \\\n    ./gradlew bootRun\n\n$ ./gradlew bootRun 2>&1 | grep -A3 \"RequestMatcherDelegating\"\n\nmappings=[\n  { Ant [pattern='/admin/authorities/**'] : hasRole('ROLE_SUPER_ADMIN') },\n  { Ant [pattern='/admin/**'] : hasRole('ROLE_ADMIN') },\n  { any request : authenticated }]\n\n#   표를 안 본다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/orders\n200\n\n#   재배포 없이 들어갈 길이다\n\n#   환경 변수 하나다\n\n# --- 정렬 재조정 ---\n\n$ curl -s -o /dev/null -b superadmin.txt -X POST \\\n    localhost:8080/admin/authorities/2/move-up -d \"_csrf=$T\"\n\nupdate url_authority set sort = ? where id = ?\nupdate url_authority set sort = ? where id = ?\n\nselect id, pattern, sort from url_authority where enabled order by sort;\n\nID | PATTERN      | SORT\n---+--------------+------\n 2 | /report/**   |   10\n 1 | /admin/**    |   20\n 5 | /stats/**    |   25\n 3 | /api/**      |   30\n 4 | /orders/**   |   40\n\n#   둘을 맞바꿨다\n\n#   10 단위라 25 는 그대로다\n\n#   1·2·3 이었다면 전부 다시 매겼다\n\n# --- 화면에 순서를 보여 준다 ---\n\n$ curl -s -b superadmin.txt localhost:8080/admin/authorities | grep -o '<tr[^>]*>.*</tr>' | head -3\n\n<tr><td>10</td><td>/report/**</td><td>REPORT_READ</td><td>켜짐</td></tr>\n<tr><td>20</td><td>/admin/**</td><td>ROLE_ADMIN</td><td>켜짐</td></tr>\n<tr><td>25</td><td>/stats/**</td><td>STAT_READ</td><td>켜짐</td></tr>\n\n#   7.2절의 순서가 화면에 있다\n\n#   기동 로그를 안 봐도 된다\n\n# --- 테스트 ---\n\n@Test\nvoid 편집_화면을_덮는_규칙은_거부된다() {\n    assertThatThrownBy(() -> ruleService.addRule(\n            new UrlAuthorityRequest(\"/**\", null, \"ROLE_ADMIN\", 5)))\n            .isInstanceOf(InvalidRuleException.class)\n            .hasMessageContaining(\"편집 화면\");\n}\n\n@Test\nvoid 없는_권한은_거부된다() {\n    assertThatThrownBy(() -> ruleService.addRule(\n            new UrlAuthorityRequest(\"/x/**\", null, \"ORDER_CANCLE\", 50)))\n            .isInstanceOf(InvalidRuleException.class);\n}\n\n$ ./gradlew test\n\n160 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   11장에서 직접 만든 것을 센다",
+   "note": "**없는 권한(`STAT_READ`)은 저장이 거부**돼 8.2절의 죽은 데이터를 막는다.\n\n**규칙은 즉시 반영되는데 권한은 재로그인 뒤**다 — 10.9절의 비대칭이다.\n\n**미리보기가 저장 전에 `warning: 규칙 편집 화면을 덮는다`** 를 보여 준다.\n\n**`/**`+`ROLE_NOBODY` 를 넣으면 전부 403 인데 편집 화면만 200** 이다 — 코드에 박아 둔 덕이다.\n\n**`enabled=false` 로 되살리고, 안전 모드는 환경 변수 하나로 표를** 무시한다."
+  }
+ ],
+ "recap": [
+  "**규칙 한 줄에 검증 셋을** 건다.",
+  "**없는 권한을 막아 죽은 데이터를** 없앤다.",
+  "**정렬 번호는 띄엄띄엄** 넣는다.",
+  "**순서가 사람 손에 넘어가 더 틀리기** 쉽다.",
+  "**저장 전에 미리보기로** 시험한다.",
+  "**편집 경로를 덮는 규칙은** 거부한다.",
+  "**그래도 잠기면 편집 화면만** 산다.",
+  "**`enabled` 컬럼으로 되살린다.**",
+  "**안전 모드로 표를 통째로 무시할 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "규칙 검증 셋을 만든다.",
+   "done_when": "세 경우가 다 거부되는 것을 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "미리보기를 만든다.",
+   "done_when": "저장 전에 결과가 보이는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "모두를 잠가 본다.",
+   "done_when": "편집 화면만 사는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "안전 모드를 만든다.",
+   "done_when": "환경 변수로 표를 무시하는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙 저장 전 검증 셋은?",
+   "a": "패턴 형식, 아는 권한인지, 편집 경로를 덮지 않는지다."
+  },
+  {
+   "q": "정렬 번호를 왜 띄엄띄엄 넣나?",
+   "a": "사이에 끼울 자리를 남겨 재정렬을 피한다."
+  },
+  {
+   "q": "미리보기가 하는 일은?",
+   "a": "저장 전에 어느 규칙에 걸리는지 보여 준다."
+  },
+  {
+   "q": "모두가 잠겼을 때 살아남는 것은?",
+   "a": "코드에 박아 둔 규칙 편집 화면이다."
+  },
+  {
+   "q": "안전 모드가 필요한 이유는?",
+   "a": "잠겼을 때 재배포 없이 표를 무시하고 들어가려고다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

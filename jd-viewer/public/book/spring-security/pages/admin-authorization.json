@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "admin-authorization",
+ "no": "11.5",
+ "chapter": 11,
+ "title": "관리 화면 인가",
+ "summary": "권한을 DB 에서.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "관리 화면 셋을 구별한다.",
+  "자기 권한을 못 지우게 한다.",
+  "권한 부여를 즉시 반영한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.7절에서 규칙을 표로** 옮겼다. **그 표를 고치는 화면을** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "관리 화면 셋",
+   "ascii": "   an admin area has three kinds of screen\n\n   read only     a member list, an audit log\n   change data   grant a role, lock an account\n   change rules  edit the url authority table\n\n   the third kind is the one that can unlock all the others\n   so it never lives in the table it edits",
+   "note": "**셋째는 자기가 편집하는 표에 살지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 층으로 나눈다",
+   "md": "```java\nhttp.authorizeHttpRequests(a -> a\n        // 규칙 편집 — 코드에 박아 둔다 (8.7절)\n        .requestMatchers(\"/admin/authorities/**\").hasRole(\"SUPER_ADMIN\")\n        // 데이터 변경\n        .requestMatchers(HttpMethod.POST, \"/admin/**\").hasAuthority(\"MEMBER_MANAGE\")\n        // 조회\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().access(dbAuthorizationManager));\n```\n\n> **좁은 것부터**다(7.2절).\n> **`POST` 규칙이 조회 규칙보다** 위다.\n\n**메서드 보안도 같이** 건다.\n\n```java\n@IsMemberManager                                  // 8.5절의 메타 애너테이션\npublic void grantRole(Long memberId, String role) { ... }\n```\n\n> **7.6절에서 서비스에 두기로** 했다.\n> **관리 화면이 여럿이어도 한 자리에서** 막힌다.\n\n**감사 로그를 남긴다.**\n\n> **9.3절의 `security_audit` 에 관리 행위도** 넣는다.\n> **\"누가 누구에게 권한을 줬나\" 는 나중에 반드시** 묻는다.\n>\n> **거부만 남기면 반쪽**이다 — **성공한 권한 부여가 더** 중요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "잊는 두 규칙",
+   "ascii": "   two rules an admin screen forgets\n\n   an admin must not remove their own last admin role\n     otherwise the last one out locks the door\n   an admin must not lock their own account\n     the same door, a different handle\n\n   both are business rules, not framework rules,\n   and neither shows up in an authorization matrix",
+   "note": "**인가표에 안 나오는 규칙**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "마지막 관리자",
+   "md": "**자기 권한을 지우면**\n\n> **다시 줄 사람이** 없다.\n> **DB 를 직접 고쳐야** 한다.\n> **운영 중이면 사고**다.\n\n```java\npublic void revokeRole(Long memberId, String role, Authentication actor) {\n    Member member = memberRepository.findById(memberId).orElseThrow();\n    if (\"ROLE_ADMIN\".equals(role)) {\n        if (member.getEmail().equals(actor.getName())) {\n            throw new IllegalStateException(\"자기 관리자 권한은 못 지운다\");\n        }\n        if (memberRepository.countByRole(\"ROLE_ADMIN\") <= 1) {\n            throw new IllegalStateException(\"마지막 관리자다\");\n        }\n    }\n    member.removeRole(role);\n}\n```\n\n> **둘 다** 필요하다.\n> **자기 것만 막으면 관리자 둘이 서로 지워** 버린다.\n\n**계정 잠금도 같다.**\n\n> **자기를 잠그면 못** 들어온다.\n> **10.8절의 30분 자동 해제가 있으니 덜 치명적**이긴 하다.\n\n**인가표가 못 잡는다.**\n\n> **8.8절의 표는 \"누가 어디에 갈 수 있나\"** 다.\n> **\"무엇을 하면 안 되나\" 는 업무 규칙**이다.\n> **따로 테스트를 쓴다.**\n>\n> **7.9절의 다섯 자리에 여섯째를 더할 수도** 있다 — **업무 규칙 누락**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 세 층을 건다 ---\n\n$ ./gradlew bootRun 2>&1 | grep -A5 \"RequestMatcherDelegating\"\n\nmappings=[\n  { Ant [pattern='/admin/authorities/**'] : hasRole('ROLE_SUPER_ADMIN') },\n  { Ant [pattern='/admin/**', POST] : hasAuthority('MEMBER_MANAGE') },\n  { Ant [pattern='/admin/**'] : hasRole('ROLE_ADMIN') },\n  { any request : DbAuthorizationManager }]\n\n$ for f in admin.txt manager.txt superadmin.txt; do\n    printf '%-14s ' $f\n    printf '%s ' $(curl -s -o /dev/null -w '%{http_code}' -b $f \\\n        localhost:8080/admin/members)\n    printf '%s ' $(curl -s -o /dev/null -w '%{http_code}' -b $f -X POST \\\n        localhost:8080/admin/members/2/roles -d \"role=ROLE_MANAGER&_csrf=$T\")\n    printf '%s\\n' $(curl -s -o /dev/null -w '%{http_code}' -b $f \\\n        localhost:8080/admin/authorities)\n  done\n\nadmin.txt      200 302 403\nmanager.txt    403 403 403\nsuperadmin.txt 200 302 200\n\n#   조회 · 변경 · 규칙편집이 갈린다\n\n#   admin 은 규칙 편집을 못 한다\n\n#   8.7절에서 정한 대로다\n\n# --- 권한 부여 ---\n\n$ curl -s -o /dev/null -b admin.txt -X POST \\\n    localhost:8080/admin/members/2/roles -d \"role=ROLE_MANAGER&_csrf=$T\"\n\nselect m1_0.id, ... from member m1_0 where m1_0.id = ?\ninsert into member_role (member_id, role) values (?, ?)\ninsert into security_audit (at, kind, principal, detail, ip)\n            values (?, ?, ?, ?, ?)\n\nselect at, kind, principal, detail from security_audit order by id desc limit 1;\n\nAT                  | KIND       | PRINCIPAL    | DETAIL\n--------------------+------------+--------------+---------------------------\n2026-09-09 20:53:44 | RoleGrant  | admin@a.com  | member=2 role=ROLE_MANAGER\n\n#   누가 누구에게 줬는지 남는다\n\n#   9.3절의 표를 그대로 쓴다\n\n# --- 즉시 반영 ---\n\n$ curl -s -b target.txt localhost:8080/authorities\n\n[ROLE_USER, ORDER_READ]\n\n#   방금 ROLE_MANAGER 를 줬는데 안 보인다\n\n#   10.9절의 문제다\n\n@PostMapping(\"/admin/members/{id}/roles\")\npublic String grant(@PathVariable Long id, @RequestParam String role,\n        Authentication actor) {\n    memberService.grantRole(id, role, actor);\n    expireSessionsOf(memberService.findEmail(id));\n    return \"redirect:/admin/members/\" + id;\n}\n\nprivate void expireSessionsOf(String email) {\n    sessionRegistry.getAllPrincipals().stream()\n            .filter(p -> p instanceof CustomUserDetails u\n                    && u.getUsername().equals(email))\n            .flatMap(p -> sessionRegistry.getAllSessions(p, false).stream())\n            .forEach(SessionInformation::expireNow);\n}\n\n$ curl -s -o /dev/null -b admin.txt -X POST \\\n    localhost:8080/admin/members/2/roles -d \"role=ROLE_MANAGER&_csrf=$T\"\n\n$ curl -is -b target.txt localhost:8080/orders | grep -i location\n\nLocation: http://localhost:8080/login?expired\n\n#   쫓겨났다 (5.5절)\n\n$ curl -s -o /dev/null -b t2.txt -c t2.txt -X POST localhost:8080/login -d \"...\"\n$ curl -s -b t2.txt localhost:8080/authorities\n\n[ROLE_USER, ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]\n\n#   반영됐다\n\n# --- 자기 권한을 지운다 ---\n\n#   (규칙을 안 넣은 상태)\n\nselect m.email from member m join member_role mr on mr.member_id = m.id\n where mr.role = 'ROLE_ADMIN';\n\nEMAIL\n--------------\nadmin@a.com\n\n#   관리자가 하나다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt -X POST \\\n    localhost:8080/admin/members/3/roles/revoke -d \"role=ROLE_ADMIN&_csrf=$T\"\n\n302\n\ndelete from member_role where member_id = ? and role = ?\n\nselect count(*) from member_role where role = 'ROLE_ADMIN';\n\nCOUNT(*)\n--------\n0\n\n#   관리자가 없어졌다\n\n$ curl -s -o /dev/null -b a2.txt -c a2.txt -X POST localhost:8080/login \\\n    -d \"username=admin@a.com&password=1234&_csrf=$T\"\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b a2.txt localhost:8080/admin/members\n403\n\n#   아무도 못 들어간다\n\n#   DB 를 직접 고쳐야 한다\n\ninsert into member_role\n    select m.id, 'ROLE_ADMIN' from member m where m.email = 'admin@a.com';\n\n#   운영 중이었다면 사고다\n\n# --- 규칙을 넣는다 ---\n\npublic void revokeRole(Long memberId, String role, Authentication actor) {\n    Member member = memberRepository.findById(memberId).orElseThrow();\n    if (\"ROLE_ADMIN\".equals(role)) {\n        if (member.getEmail().equals(actor.getName())) {\n            throw new IllegalStateException(\"자기 관리자 권한은 못 지운다\");\n        }\n        if (memberRepository.countByRole(\"ROLE_ADMIN\") <= 1) {\n            throw new IllegalStateException(\"마지막 관리자다\");\n        }\n    }\n    member.removeRole(role);\n}\n\n$ curl -s -b admin.txt -X POST \\\n    localhost:8080/admin/members/3/roles/revoke -d \"role=ROLE_ADMIN&_csrf=$T\" \\\n    | grep -o '마지막 관리자다'\n\n마지막 관리자다\n\nselect count(*) from member_role where role = 'ROLE_ADMIN';\n1\n\n#   막혔다\n\n#   둘로 늘리면\n\ninsert into member_role\n    select m.id, 'ROLE_ADMIN' from member m where m.email = 'second@a.com';\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt -X POST \\\n    localhost:8080/admin/members/3/roles/revoke -d \"role=ROLE_ADMIN&_csrf=$T\"\n\n302\n\nselect count(*) from member_role where role = 'ROLE_ADMIN';\n1\n\n#   지워졌다\n\n#   자기 것을 지우려 하면\n\n$ curl -s -b admin.txt -X POST \\\n    \"localhost:8080/admin/members/$(psql -tc \"select id from member where email='admin@a.com'\")/roles/revoke\" \\\n    -d \"role=ROLE_ADMIN&_csrf=$T\" | grep -o '자기 관리자 권한은[^<]*'\n\n자기 관리자 권한은 못 지운다\n\n#   둘 다 필요하다\n\n#   자기 것만 막았다면\n\n#   관리자 둘이 서로를 지워 0이 된다\n\n# --- 인가표는 못 잡는다 ---\n\n$ ./gradlew test --tests AuthorizationMatrixTest\n\n11 tests completed\n\nBUILD SUCCESSFUL\n\n#   규칙을 지워도 통과한다\n\n#   업무 규칙이라서다\n\n@Test\nvoid 마지막_관리자는_못_지운다() {\n    assertThatThrownBy(() -> memberService.revokeRole(\n            adminId, \"ROLE_ADMIN\", authOf(\"other@a.com\")))\n            .isInstanceOf(IllegalStateException.class)\n            .hasMessageContaining(\"마지막 관리자\");\n}\n\n@Test\nvoid 자기_관리자_권한은_못_지운다() {\n    assertThatThrownBy(() -> memberService.revokeRole(\n            adminId, \"ROLE_ADMIN\", authOf(\"admin@a.com\")))\n            .isInstanceOf(IllegalStateException.class);\n}\n\n$ ./gradlew test\n\n156 tests completed\n\nBUILD SUCCESSFUL\n\n#   7.9절의 다섯 자리에 여섯째가 붙는다\n\n#   업무 규칙 누락\n\n# --- 계정 잠금도 ---\n\n$ curl -s -b admin.txt -X POST \\\n    \"localhost:8080/admin/members/1/lock\" -d \"_csrf=$T\" \\\n    | grep -o '자기 계정은[^<]*'\n\n자기 계정은 못 잠근다\n\n#   같은 문 다른 손잡이다\n\n# --- 다음 절에서 ---\n\n#   URL 권한 표를 화면에서 고친다",
+   "note": "**조회·변경·규칙편집 세 층이 `admin` 에게 200·302·403** 으로 갈린다.\n\n**권한 부여가 `security_audit` 에 `RoleGrant member=2 role=ROLE_MANAGER`** 로 남는다.\n\n**세션을 만료시키니 `?expired` 로 쫓겨나고 재로그인하면** 반영된다.\n\n**규칙 없이 마지막 관리자 권한을 지우면 `count = 0` 이 되어 아무도 못** 들어간다.\n\n**인가표 테스트는 그래도 통과**한다 — 업무 규칙이라 따로 테스트가 필요하다."
+  }
+ ],
+ "recap": [
+  "**관리 화면은 조회·변경·규칙편집** 셋이다.",
+  "**규칙 편집은 자기가 고치는 표에 살지** 않는다.",
+  "**좁은 규칙부터** 쓴다.",
+  "**서비스에도 메서드 보안을** 건다.",
+  "**성공한 권한 부여를 감사에** 남긴다.",
+  "**세션 만료로 즉시** 반영한다.",
+  "**마지막 관리자와 자기 권한 둘 다** 막는다.",
+  "**하나만 막으면 서로 지워** 0이 된다.",
+  "**인가표가 업무 규칙은 못** 잡는다."
+ ],
+ "drills": [
+  {
+   "task": "관리 화면을 세 층으로 나눈다.",
+   "done_when": "세 신분의 결과를 표로 만들었다.",
+   "minutes": 30
+  },
+  {
+   "task": "권한 부여를 감사에 남긴다.",
+   "done_when": "누가 누구에게 줬는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "마지막 관리자를 지워 본다.",
+   "done_when": "잠기는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 규칙을 테스트로 고정한다.",
+   "done_when": "인가표가 못 잡는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙 편집 화면을 어디에 두나?",
+   "a": "코드에 박아 둔다. 자기가 편집하는 표에 두면 안 된다."
+  },
+  {
+   "q": "권한 부여를 왜 감사에 남기나?",
+   "a": "\"누가 누구에게 줬나\" 를 나중에 반드시 묻게 된다."
+  },
+  {
+   "q": "권한을 즉시 반영하려면?",
+   "a": "그 사람의 세션을 만료시킨다."
+  },
+  {
+   "q": "관리자 권한 회수에 규칙이 둘인 이유는?",
+   "a": "자기 것만 막으면 관리자 둘이 서로 지워 0이 된다."
+  },
+  {
+   "q": "인가표가 이 규칙을 잡나?",
+   "a": "못 잡는다. 업무 규칙이라 따로 테스트한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
