@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "profile-file",
+ "no": "7.11",
+ "chapter": 7,
+ "title": "프로필과 파일 분리",
+ "summary": "한 파일에 여러 환경.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 모양을 안다.",
+  "덮이는 단위를 안다.",
+  "문서 안에서 프로필을 켠다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.10절에서 이름을** 붙였다. **파일을 어떻게 나누는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 것을 두 모양으로",
+   "ascii": "   the same thing written two ways\n\n   many files   one per profile, the name carries the profile\n   one file     documents separated by three dashes, each labelled\n\n   both produce the same property sources at startup",
+   "note": "**기동 결과는** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "공통을 한 번만 적는다",
+   "md": "**바탕이** 있다.\n\n> **어디서나 같은 값**들이다.\n> **평범한 파일에** 적는다.\n> **아래에서 그걸** 본다.\n\n**다른 것만 덧쓴**다.\n\n> **이름 붙은 파일**이다.\n> **키 단위로** 덮인다.\n> **아래에서 그 단위를** 확인한다.\n\n**한 파일로도** 된다.\n\n> **줄표 셋으로** 나눈다.\n> **작은 프로젝트에** 편하다.\n> **아래에서 둘을** 견준다.\n\n**밖에도 둘 수** 있다.\n\n> **7.1절에서 봤다.**\n> **JAR 를 안 건드린**다.\n> **아래에서 다시** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "읽는 순서",
+   "ascii": "   the order files are read, and why it matters\n\n   the plain file first, as the base\n   then one file per active profile, in the order they were listed\n\n   a later file overrides, key by key, not file by file",
+   "note": "**파일 단위가 아니라 키 단위로** 덮인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "파일 전체가 통째로 바뀐다고 생각하면 틀린다",
+   "md": "**키 단위**다.\n\n> **안 적은 건 바탕이** 남는다.\n> **아래에서 세어** 본다.\n> **목록은 예외**다.\n\n**목록은 통째로** 바뀐다.\n\n> **7.8절에서** 봤다.\n> **한 항목만 못** 고친다.\n> **아래에서 확인**한다.\n\n**한 파일 안에서 순서가 중요**하다.\n\n> **아래 문서가** 이긴다.\n> **아래에서 뒤집어** 본다.\n> **여러 파일과 같은 결**이다.\n\n**문서 안에서 켤 수도** 있다.\n\n> **조건을 걸어** 켠다.\n> **자리 제약이** 있다.\n> **아래에서 그걸** 겪는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 파일을 나눈다\n\n$ ls src/main/resources/\napplication.yml\napplication-dev.yml\napplication-prod.yml\n\n$ cat src/main/resources/application.yml\nstudy:\n  mode: none\n  timeout: 30s\n  db:\n    url: jdbc:h2:mem:test\n    pool-size: 10\n  hosts: [localhost]\nlogging:\n  level:\n    root: INFO\n\n$ cat src/main/resources/application-prod.yml\nstudy:\n  mode: prod\n  db:\n    url: jdbc:postgresql://db.prod:5432/app\n    pool-size: 50\n\n\n-- 키 단위로 덮인다\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/props\nmode:     prod\ntimeout:  PT30S\ndb.url:   jdbc:postgresql://db.prod:5432/app\ndb.pool:  50\nhosts:    [localhost]\n\n$ curl -s localhost:8080/actuator/env/logging.level.root \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['property']['value'])\"\nINFO\n\n--   운영 파일에 안 적은 것은 바탕이 남았다\n--   timeout 과 hosts 와 로그 수준이 그렇다\n\n\n-- 덩어리가 둘이다\n\n$ curl -s localhost:8080/sources | grep applicationConfig\n 7  applicationConfig: [classpath:/application-prod.yml]  3\n 8  applicationConfig: [classpath:/application.yml]       7\n\n$ curl -s 'localhost:8080/which?key=study.timeout'\n값:   PT30S\n출처: applicationConfig: [classpath:/application.yml] (8 번)\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   prod\n출처: applicationConfig: [classpath:/application-prod.yml] (7 번)\n\n--   7.6절의 그 순회다\n--   프로필 파일이 위에 있다\n\n\n-- 목록은 통째로 바뀐다\n\n// application-prod.yml 에\nstudy:\n  hosts: [a.prod.com]\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep hosts\nhosts:    [a.prod.com]\n\n$ curl -s localhost:8080/props/hosts/size\n1\n\n--   localhost 가 사라졌다\n--   7.8절에서 본 그것이다\n\n\n-- 한 파일로 합친다\n\n$ rm src/main/resources/application-dev.yml \\\n     src/main/resources/application-prod.yml\n\n$ cat src/main/resources/application.yml\nstudy:\n  mode: none\n  timeout: 30s\n  db:\n    url: jdbc:h2:mem:test\n    pool-size: 10\nlogging:\n  level:\n    root: INFO\n---\nspring:\n  config:\n    activate:\n      on-profile: dev\nstudy:\n  mode: dev\nlogging:\n  level:\n    root: DEBUG\n---\nspring:\n  config:\n    activate:\n      on-profile: prod\nstudy:\n  mode: prod\n  db:\n    url: jdbc:postgresql://db.prod:5432/app\n    pool-size: 50\n\n$ ls src/main/resources/\napplication.yml\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props\nmode:     prod\ntimeout:  PT30S\ndb.url:   jdbc:postgresql://db.prod:5432/app\ndb.pool:  50\n\n--   파일을 나눴을 때와 같다\n\n\n-- 덩어리 이름이 다르다\n\n$ curl -s localhost:8080/sources | grep applicationConfig\n 7  applicationConfig: [classpath:/application.yml] (document #2)  3\n 8  applicationConfig: [classpath:/application.yml]                6\n\n--   같은 파일인데 문서 번호가 붙었다\n\n\n-- 아래 문서가 이긴다\n\n---\nspring:\n  config:\n    activate:\n      on-profile: prod\nstudy:\n  timeout: 5s\n---\nspring:\n  config:\n    activate:\n      on-profile: prod\nstudy:\n  timeout: 90s\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep timeout\ntimeout:  PT1M30S\n\n--   같은 프로필 문서가 둘이면 뒤가 이긴다\n\n\n-- 프로퍼티스 파일은 느낌표다\n\n$ cat src/main/resources/application.properties\nstudy.mode=none\nstudy.timeout=30s\n#---\nspring.config.activate.on-profile=prod\nstudy.mode=prod\nstudy.timeout=5s\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -2\nmode:     prod\ntimeout:  PT5S\n\n--   YAML 은 줄표 셋, 프로퍼티스는 샵과 줄표 셋이다\n\n\n-- 둘을 같이 두면\n\n$ ls src/main/resources/\napplication.properties\napplication.yml\n\n$ curl -s localhost:8080/sources | grep applicationConfig\n 7  applicationConfig: [classpath:/application.yml]         4\n 8  applicationConfig: [classpath:/application.properties]  2\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   none\n출처: applicationConfig: [classpath:/application.yml] (7 번)\n\n--   둘 다 읽히고 YAML 이 위다\n--   섞어 두지 않는 게 낫다\n\n\n-- 이름을 바꿀 수도 있다\n\n$ mv src/main/resources/application.yml src/main/resources/study.yml\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     (없음)\n\n$ java -jar build/libs/app.jar --spring.config.name=study > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     none\n\n$ java -jar build/libs/app.jar --spring.config.name=study 2>&1 \\\n    | grep -i 'config' | head -1\n\n--   기본 이름은 application 이다\n\n\n-- 자리를 바꿀 수도 있다\n\n$ mkdir -p /tmp/conf && cat > /tmp/conf/application-prod.yml <<'EOF'\nstudy:\n  mode: from-outside\n  db:\n    pool-size: 99\nEOF\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod \\\n    --spring.config.additional-location=file:/tmp/conf/ > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/props | head -1\nmode:     from-outside\n$ curl -s localhost:8080/props | grep 'db.pool'\ndb.pool:  99\n\n$ curl -s localhost:8080/sources | grep applicationConfig\n 7  applicationConfig: [file:/tmp/conf/application-prod.yml]  2\n 8  applicationConfig: [classpath:/application-prod.yml]      3\n 9  applicationConfig: [classpath:/application.yml]           7\n\n--   밖의 것이 위다\n--   JAR 를 다시 안 만들었다\n--   7.1절에서 본 그 이야기다\n\n\n-- 문서 안에서 프로필을 켠다\n\n// application.yml 첫 문서에\nspring:\n  profiles:\n    active: dev\n\n$ java -jar build/libs/app.jar 2>&1 | grep -i 'profile is active'\nINFO ... : The following 1 profile is active: \"dev\"\n\n// 그런데 프로필 문서 안에 적으면\n---\nspring:\n  config:\n    activate:\n      on-profile: prod\n  profiles:\n    active: metrics\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\nProperty 'spring.profiles.active' imported from location\n'class path resource [application.yml]' is invalid in a profile specific resource\n\n--   프로필 문서 안에서는 못 켠다\n--   순환이 되기 때문이다\n\n\n-- 덧붙이는 건 된다\n\n// 첫 문서에\nspring:\n  profiles:\n    active: prod\n    include: base\n\n$ java -jar build/libs/app.jar 2>&1 | grep -i 'profiles are active'\nINFO ... : The following 2 profiles are active: \"base\", \"prod\"\n\n$ curl -s localhost:8080/profiles\n켜진 것: [base, prod]\n\n--   덧붙인 것이 앞에 온다\n--   그래서 prod 가 이긴다\n\n\n-- 조건으로 켜기\n\n---\nspring:\n  config:\n    activate:\n      on-profile: prod\n      on-cloud-platform: kubernetes\nstudy:\n  mode: k8s\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     prod\n\n$ KUBERNETES_SERVICE_HOST=10.0.0.1 KUBERNETES_SERVICE_PORT=443 \\\n  java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     k8s\n\n--   ⑫ 5장의 그 환경 변수를 보고 판단했다\n\n\n-- 다른 파일을 끌어온다\n\n// application.yml\nspring:\n  config:\n    import: optional:file:/tmp/conf/secret.yml\n\n$ cat > /tmp/conf/secret.yml <<'EOF'\nstudy:\n  db:\n    password: p@ssw0rd\nEOF\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/env/study.db.password \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['property']['value'])\"\n******\n\n$ rm /tmp/conf/secret.yml\n$ java -jar build/libs/app.jar 2>&1 | grep -c 'Started BootApplication'\n1\n\n// optional: 을 빼면\n$ java -jar build/libs/app.jar 2>&1 | head -3\nException ... ConfigDataResourceNotFoundException:\n  Config data resource not found: file [/tmp/conf/secret.yml]\n\n--   optional 이 있고 없고가 갈린다\n\n\n-- 어느 파일들이 읽혔나\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod \\\n    --spring.config.additional-location=file:/tmp/conf/ > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env \\\n    | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    if 'applicationConfig' in s['name']:\n        print(s['name'].split(': ')[1], len(s['properties']))\n\"\n[file:/tmp/conf/application-prod.yml] 2\n[classpath:/application-prod.yml] 3\n[classpath:/application.yml] 7\n\n--   세 파일에서 열둘이 왔다\n--   6.12절에서 제외를 찾을 때 쓴 그 방법이다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '모양'        '여러 파일 또는 한 파일' \\\n  '결과'        '같음' \\\n  '덮이는 단위' '키' \\\n  '목록'        '통째로' \\\n  'YAML'        '줄표 셋' \\\n  '프로퍼티스'  '샵과 줄표 셋' \\\n  '아래 문서'   '이김' \\\n  '밖의 파일'   '이김' \\\n  '프로필 문서' '프로필 못 켬'\n\n모양                       여러 파일 또는 한 파일\n결과                       같음\n덮이는 단위                키\n목록                       통째로\nYAML                       줄표 셋\n프로퍼티스                 샵과 줄표 셋\n아래 문서                  이김\n밖의 파일                  이김\n프로필 문서                프로필 못 켬\n\n--   7.12절에서 전부 줄 세운다",
+   "note": "**운영 파일에 안 적은 `timeout`·`hosts`·로그 수준은 바탕이 남아 키 단위로** 덮인다.\n\n**목록만은 통째로 바뀌어 `[localhost]` 가 `[a.prod.com]` 하나로** 줄었다.\n\n**한 파일로 합쳐도 결과가 같고 덩어리 이름에 `(document #2)` 가** 붙는다.\n\n**밖의 `application-prod.yml` 을 더하니 그쪽이 위에 놓여 `from-outside`·`99` 가** 됐다.\n\n**프로필 문서 안에서 프로필을 켜려 하면 `invalid in a profile specific resource` 로** 멈춘다."
+  }
+ ],
+ "recap": [
+  "**모양이** 둘이다.",
+  "**결과는** 같다.",
+  "**키 단위로** 덮인다.",
+  "**목록만** 통째다.",
+  "**줄표 셋으로** 나눈다.",
+  "**아래가** 이긴다.",
+  "**밖이** 이긴다.",
+  "**이름과 자리를** 바꾼다.",
+  "**프로필 문서에선 못** 켠다."
+ ],
+ "drills": [
+  {
+   "task": "파일을 나눠 본다.",
+   "done_when": "안 적은 값이 남는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "한 파일로 합친다.",
+   "done_when": "결과가 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "밖에 파일을 둔다.",
+   "done_when": "그쪽이 이기는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "프로필 문서에서 프로필을 켜 본다.",
+   "done_when": "기동이 멈추는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프로필 파일이 바탕 파일을 어떻게 덮나?",
+   "a": "파일 전체가 아니라 키 단위로 덮는다."
+  },
+  {
+   "q": "목록은 어떻게 되나?",
+   "a": "통째로 바뀐다. 한 항목만 고칠 수 없다."
+  },
+  {
+   "q": "한 파일 안에서 문서를 나누는 표시는?",
+   "a": "YAML 은 줄표 셋, 프로퍼티스는 샵을 붙인 줄표 셋이다."
+  },
+  {
+   "q": "같은 프로필 문서가 둘이면?",
+   "a": "아래 문서가 이긴다."
+  },
+  {
+   "q": "프로필 문서 안에서 프로필을 켤 수 있나?",
+   "a": "없다. 기동이 멈춘다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프로필 파일",
+   "def": "이름에 프로필을 담아 그 프로필일 때만 읽히는 설정 파일."
+  },
+  {
+   "term": "문서 구분",
+   "def": "한 파일 안을 여러 설정 덩어리로 나누는 표시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Config Data Files",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Profiles",
+   "url": "https://docs.spring.io/spring-boot/reference/features/profiles.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

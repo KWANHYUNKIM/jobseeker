@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "priority",
+ "no": "7.12",
+ "chapter": 7,
+ "title": "우선순위 전부",
+ "summary": "같은 키가 여러 곳에 있으면.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "사다리를 세운다.",
+  "한 키로 확인한다.",
+  "7장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장 내내 이긴 쪽을 하나씩** 봤다. **한 줄로** 세운다."
+  },
+  {
+   "type": "figure",
+   "caption": "사다리",
+   "ascii": "   the ladder, strongest at the top\n\n   command line arguments\n   java system properties\n   os environment variables\n   config files outside the jar, profile ones first\n   config files inside the jar, profile ones first\n   defaults written in the code\n\n   this is just the source list from 7 point 6, read downward",
+   "note": "**7.6절의 덩어리 목록을 위에서 아래로 읽은** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "밖에서 온 것일수록 세다",
+   "md": "**바꾸기 어려운 게** 아래다.\n\n> **코드 기본값이 제일** 밑이다.\n> **다시 빌드해야** 한다.\n> **아래에서 그 순서를** 본다.\n\n**그 자리에서 주는 게** 위다.\n\n> **인수가 제일** 세다.\n> **7.5절에서** 봤다.\n> **급할 때 그걸로** 덮는다.\n\n**프로필 것이 바탕보다** 세다.\n\n> **7.11절에서** 봤다.\n> **안과 밖 양쪽에서** 그렇다.\n> **아래에서 넷을 한 줄에** 놓는다.\n\n**키마다 따로** 정한다.\n\n> **출처끼리 겨루는 게** 아니다.\n> **아래에서 그걸** 확인한다.\n> **7.6절의 순회 그대로**다."
+  },
+  {
+   "type": "figure",
+   "caption": "키마다 따로다",
+   "ascii": "   the rule is per key, not per source\n\n   a source that wins one key may lose the next\n   a source only competes for keys it actually has\n\n   so no source ever overrides another wholesale",
+   "note": "**어떤 출처도 다른 출처를 통째로 덮지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "사다리를 외우면 잘못 짚는다",
+   "md": "**물어보는 게** 낫다.\n\n> **액츄에이터가 답한**다.\n> **6.12절에서 그렇게** 했다.\n> **아래에서 한 줄로** 묻는다.\n\n**목록은 안** 합쳐진다.\n\n> **7.8·7.11절에서** 봤다.\n> **위의 것이 통째로** 가져간다.\n> **아래에서 다시** 확인한다.\n\n**바인딩 시점이 또** 있다.\n\n> **7.6절의 맨 위 덩어리**다.\n> **느슨한 이름이 거기서** 붙는다.\n> **아래에서 그걸** 본다.\n\n**같은 층에서도 순서가** 있다.\n\n> **프로필 여럿·문서 여럿**이다.\n> **7.10·7.11절에서** 봤다.\n> **아래에서 한꺼번에** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 한 키를 여섯 자리에 심는다\n\n// ① 코드 기본값\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    private String mode = \"코드\";\n}\n\n// ② JAR 안 application.yml\nstudy:\n  mode: 안-바탕\n\n// ③ JAR 안 application-prod.yml\nstudy:\n  mode: 안-프로필\n\n// ④ 밖 ./application.yml\nstudy:\n  mode: 밖-바탕\n\n// ⑤ 밖 ./application-prod.yml\nstudy:\n  mode: 밖-프로필\n\n// ⑥ 환경 변수 / 시스템 속성 / 인수\n\n\n-- 아래에서부터 하나씩 걷어낸다\n\n$ cd /tmp/run\n$ P='--spring.profiles.active=prod'\n\n$ STUDY_MODE=환경 java -Dstudy.mode=속성 -jar ~/proj/build/libs/app.jar $P \\\n    --study.mode=인수 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     인수\n\n$ STUDY_MODE=환경 java -Dstudy.mode=속성 -jar ~/proj/build/libs/app.jar $P \\\n    > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     속성\n\n$ STUDY_MODE=환경 java -jar ~/proj/build/libs/app.jar $P > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     환경\n\n$ java -jar ~/proj/build/libs/app.jar $P > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     밖-프로필\n\n$ rm application-prod.yml\n$ java -jar ~/proj/build/libs/app.jar $P > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     밖-바탕\n\n$ rm application.yml\n$ java -jar ~/proj/build/libs/app.jar $P > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     안-프로필\n\n$ java -jar ~/proj/build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     안-바탕\n\n$ java -jar ~/proj/build/libs/app-nofile.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     코드\n\n--   일곱 층이 그대로 나왔다\n\n\n-- 덩어리로도 본다\n\n$ cd /tmp/run\n$ STUDY_MODE=환경 java -Dstudy.mode=속성 -jar ~/proj/build/libs/app.jar \\\n    --spring.profiles.active=prod --study.mode=인수 > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.mode | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('이긴 것:', d['property']['source'])\nfor s in d['propertySources']:\n    if 'property' in s:\n        print(' ', s['name'][:52], '=', s['property']['value'])\n\"\n이긴 것: commandLineArgs\n  commandLineArgs = 인수\n  systemProperties = 속성\n  systemEnvironment = 환경\n  applicationConfig: [file:./application-prod.yml] = 밖-프로필\n  applicationConfig: [file:./application.yml] = 밖-바탕\n  applicationConfig: [classpath:/application-prod.yml] = 안-프로필\n  applicationConfig: [classpath:/application.yml] = 안-바탕\n\n--   일곱이 한 화면에 나온다\n--   외울 필요 없이 이걸 본다\n\n\n-- 키마다 따로다\n\n$ cat /tmp/run/application.yml\nstudy:\n  mode: 밖-바탕\n  timeout: 90s\n\n$ STUDY_MODE=환경 java -jar ~/proj/build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   환경\n출처: systemEnvironment (5 번)\n\n$ curl -s 'localhost:8080/which?key=study.timeout'\n값:   PT1M30S\n출처: applicationConfig: [file:./application.yml] (7 번)\n\n--   환경 변수가 mode 는 이기고 timeout 은 안 겨뤘다\n--   그 키가 없으니 그렇다\n\n\n-- 목록은 합쳐지지 않는다\n\n// 밖 application.yml\nstudy:\n  hosts: [a.com, b.com, c.com]\n\n$ STUDY_HOSTS_0=x.com java -jar ~/proj/build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep hosts\nhosts:    [x.com]\n$ curl -s localhost:8080/props/hosts/size\n1\n\n--   셋이 하나가 됐다\n--   7.8·7.11절에서 본 그것이다\n\n\n-- 같은 층 안의 순서\n\n$ java -jar ~/proj/build/libs/app.jar \\\n    --spring.profiles.active=prod,metrics > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/sources | grep applicationConfig\n 7  applicationConfig: [classpath:/application-metrics.yml]  2\n 8  applicationConfig: [classpath:/application-prod.yml]     3\n 9  applicationConfig: [classpath:/application.yml]          7\n\n$ curl -s localhost:8080/props | grep timeout\ntimeout:  PT1M\n\n$ java -jar ~/proj/build/libs/app.jar \\\n    --spring.profiles.active=metrics,prod > /dev/null 2>&1 &\n$ curl -s localhost:8080/sources | grep applicationConfig | head -2\n 7  applicationConfig: [classpath:/application-prod.yml]     3\n 8  applicationConfig: [classpath:/application-metrics.yml]  2\n\n$ curl -s localhost:8080/props | grep timeout\ntimeout:  PT5S\n\n--   7.10절에서 본 그것이다\n--   나중에 적은 프로필이 위로 온다\n\n\n-- 바인딩 시점의 덩어리\n\n$ curl -s localhost:8080/sources | head -1\n 0  configurationProperties                     -1\n\n$ STUDY_DB_POOLSIZE=42 java -jar ~/proj/build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s 'localhost:8080/which?key=study.db.pool-size'\n값:   42\n출처: configurationProperties (0 번)\n\n$ curl -s 'localhost:8080/raw2?key=study.db.pool_size'\n(없음)\n$ curl -s localhost:8080/props | grep 'db.pool'\ndb.pool:  42\n\n--   7.8절의 느슨함이 이 0 번 덩어리에서 나온다\n--   7.6·7.7절이 덜 느슨했던 이유다\n\n\n-- 인수를 막으면 층이 하나 빠진다\n\napp.setAddCommandLinePropertySource(false);\n\n$ java -jar ~/proj/build/libs/app-noargs.jar --study.mode=인수 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     밖-바탕\n\n$ curl -s localhost:8080/sources | grep -c commandLineArgs\n0\n\n--   7.5절에서 본 그것이다\n\n\n-- 내 덩어리를 맨 위에 얹으면\n\nenv.getPropertySources().addFirst(new MapPropertySource(\"myExtra\",\n    Map.of(\"study.mode\", \"내-덩어리\")));\n\n$ java -jar ~/proj/build/libs/app-extra.jar --study.mode=인수 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\nmode:     내-덩어리\n\n$ curl -s localhost:8080/sources | head -3\n 0  configurationProperties                     -1\n 1  myExtra                                      1\n 2  server.ports                                 1\n\n--   7.6절에서 본 그것이다\n--   사다리를 내가 늘렸다\n\n\n-- 실무에서 흔한 짝\n\n$ cat /tmp/run/application.yml\nstudy:\n  db:\n    url: jdbc:postgresql://db:5432/app\n    pool-size: 20\n    password: 여기에-안-적는다\n\n$ STUDY_DB_PASSWORD='p@ssw0rd' java -jar ~/proj/build/libs/app.jar \\\n    --spring.profiles.active=prod > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.db.password | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('이긴 것:', d['property']['source'])\nfor s in d['propertySources']:\n    if 'property' in s: print(' ', s['name'][:44], '=', s['property']['value'])\n\"\n이긴 것: systemEnvironment\n  systemEnvironment = ******\n  applicationConfig: [file:./application.yml] = ******\n\n--   파일에는 자리만 두고 값은 환경 변수로 준다\n--   7.1절에서 말한 그 이유다\n\n\n-- 7장에서 만든 것들\n\n$ printf '%-8s %-24s %s\\n' \\\n  '7.1'  '네 가지'        '같은 JAR, 값만' \\\n  '7.2'  '환경 변수'      '대문자, 하이픈은 지움' \\\n  '7.3'  '시스템 속성'    'JAR 앞에' \\\n  '7.4'  '인수'           '파싱은 내 몫' \\\n  '7.5'  '부트 인수'      '--키=값이 속성' \\\n  '7.6'  'Environment'    '덩어리 여덟' \\\n  '7.7'  '@Value'         '한 값씩, 흩어짐' \\\n  '7.8'  '묶어 받기'      '한 클래스, 느슨함' \\\n  '7.9'  '검증'           '기동에서 멈춤' \\\n  '7.10' '프로필'         '241 자가 63 자' \\\n  '7.11' '파일 분리'      '키 단위로 덮임' \\\n  '7.12' '우선순위'       '일곱 층'\n\n7.1    네 가지                  같은 JAR, 값만\n7.2    환경 변수                대문자, 하이픈은 지움\n7.3    시스템 속성              JAR 앞에\n7.4    인수                     파싱은 내 몫\n7.5    부트 인수                --키=값이 속성\n7.6    Environment              덩어리 여덟\n7.7    @Value                   한 값씩, 흩어짐\n7.8    묶어 받기                한 클래스, 느슨함\n7.9    검증                     기동에서 멈춤\n7.10   프로필                   241 자가 63 자\n7.11   파일 분리                키 단위로 덮임\n7.12   우선순위                 일곱 층\n\n\n-- 마지막 확인\n\n$ java -jar ~/proj/build/libs/app.jar --spring.profiles.active=prod 2>&1 \\\n    | grep -E 'profile is active|Started BootApplication'\nINFO ... : The following 1 profile is active: \"prod\"\nINFO ... : Started BootApplication in 1.212 seconds\n\n$ curl -s localhost:8080/props\nmode:     밖-프로필\ntimeout:  PT5S\ndb.url:   jdbc:postgresql://db:5432/app\ndb.pool:  20\n\n--   8.1절에서 뜬 뒤의 상태를 들여다본다",
+   "note": "**같은 키를 일곱 자리에 심고 위에서부터 걷어내니 인수→속성→환경→밖 프로필→밖 바탕→안 프로필→안 바탕→코드 순으로** 나온다.\n\n**`/actuator/env/study.mode` 가 그 일곱을 한 화면에 세워** 준다.\n\n**환경 변수가 `mode` 는 이기고 `timeout` 은 그 키가 없어 겨루지도** 않는다.\n\n**목록은 `[a.com, b.com, c.com]` 이 `[x.com]` 하나로 통째** 바뀐다.\n\n**느슨한 이름이 붙는 자리는 맨 위 `configurationProperties` 덩어리**였다."
+  }
+ ],
+ "recap": [
+  "**층이** 일곱이다.",
+  "**밖일수록** 세다.",
+  "**인수가 제일** 위다.",
+  "**코드가 제일** 밑이다.",
+  "**키마다** 따로다.",
+  "**없으면 안** 겨룬다.",
+  "**목록은** 통째다.",
+  "**같은 층에도 순서가** 있다.",
+  "**물어보면** 된다."
+ ],
+ "drills": [
+  {
+   "task": "한 키를 일곱 자리에 심는다.",
+   "done_when": "걷어내며 순서를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "액츄에이터로 한 번에 본다.",
+   "done_when": "일곱이 다 보이는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "키마다 다른 걸 확인한다.",
+   "done_when": "안 겨루는 경우를 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "덩어리를 얹어 사다리를 늘린다.",
+   "done_when": "인수를 이긴 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 센 것과 가장 약한 것은?",
+   "a": "커맨드 라인 인수가 가장 세고 코드에 적은 기본값이 가장 약하다."
+  },
+  {
+   "q": "우선순위는 무엇 단위로 정해지나?",
+   "a": "출처가 아니라 키 단위다."
+  },
+  {
+   "q": "목록 값은 어떻게 되나?",
+   "a": "합쳐지지 않고 이긴 쪽이 통째로 가져간다."
+  },
+  {
+   "q": "프로필을 여럿 켜면 순서는?",
+   "a": "나중에 적은 프로필 파일이 위로 온다."
+  },
+  {
+   "q": "사다리를 확인하는 가장 빠른 방법은?",
+   "a": "액츄에이터에 그 키를 물어보는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "우선순위",
+   "def": "같은 키가 여러 출처에 있을 때 어느 값이 쓰이는지 정하는 규칙."
+  },
+  {
+   "term": "층",
+   "def": "사다리에서 한 자리를 차지하는 속성 출처 묶음."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Profiles",
+   "url": "https://docs.spring.io/spring-boot/reference/features/profiles.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

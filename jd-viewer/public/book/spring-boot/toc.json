@@ -513,7 +513,7 @@
           "title": "프로필과 파일 분리",
           "summary": "한 파일에 여러 환경.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.12",
@@ -521,7 +521,7 @@
           "title": "우선순위 전부",
           "summary": "같은 키가 여러 곳에 있으면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
