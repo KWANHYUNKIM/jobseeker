@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "simple-jpa-repo",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "구현체 SimpleJpaRepository",
+ "summary": "결국 EntityManager 다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "실제 클래스를 확인한다.",
+  "메서드 안을 본다.",
+  "4장과 같은 걸 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 구현을** 지웠다. **그 구현이 어디로 갔는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 번의 호출이 지나는 길",
+   "ascii": "   what one findById call actually passes through\n\n   the interface       no code at all, just a declaration\n   the JDK proxy       decides who answers this method\n   SimpleJpaRepository the one real class, holding an EntityManager\n   the EntityManager   em.find, which is what you would have written\n\n   the bottom line is chapter four's hand written repository",
+   "note": "**맨 아래가 4장에서 손으로 쓴** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구현체는 하나뿐이고 이름이 있다",
+   "md": "**인터페이스마다 클래스가 생기는 게** 아니다.\n\n> **`SimpleJpaRepository` 하나**다.\n> **모든 리포지토리가 그걸 대상으로** 쓴다.\n> **4.3절의 프록시가 그 앞에** 있다.\n\n**그 안은 `EntityManager`** 다.\n\n> **`em.find`·`em.persist`·`em.remove`** 다.\n> **4.1절에서 쓴 것과 같은 호출**이다.\n> **한 겹 얇게 감싼 것뿐**이다.\n\n**소스를 직접 볼 수** 있다.\n\n> **의존성 jar 안에** 있다.\n> **IDE 로 열면 200줄 남짓**이다.\n> **아래에서 뽑아** 본다.\n\n**바꿔 끼울 수도** 있다.\n\n> **`repositoryBaseClass` 로 다른 걸 지정**한다.\n> **모든 리포지토리에 공통 메서드가** 생긴다.\n> **6.1절의 커스텀과 범위가** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드마다 하는 일",
+   "ascii": "   the whole implementation, method by method\n\n   save        em.persist or em.merge, chosen by one question\n   findById    em.find, wrapped in Optional\n   findAll     a criteria query with no restriction\n   delete      em.remove, after loading the row if needed\n   count       a criteria count query\n\n   there is nothing else down there",
+   "note": "**그 아래에는 아무것도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "save 가 persist 인지 merge 인지가 갈린다",
+   "md": "**질문 하나로** 정한다.\n\n> **\"새 엔티티인가\"** 다.\n> **맞으면 `persist`, 아니면 `merge`** 다.\n> **7.3절에서 그 판단을** 본다.\n\n**`merge` 는 조회를 한 번 더** 한다.\n\n> **DB 에서 읽어 값을 덮**는다.\n> **`select` 뒤 `update`** 다.\n> **4.6절에서 이미** 봤다.\n\n**`getReferenceById` 는 안** 읽는다.\n\n> **프록시만** 준다.\n> **`getById` 는 이름이** 바뀐 것이다.\n> **`findById` 와 쓰임이** 다르다.\n\n**`deleteAll` 은 건마다 지운다.**\n\n> **4.7절에서 봤고 5.12절에서 벌크와** 비교했다.\n> **구현이 반복문이라** 그렇다.\n> **아래에서 그 반복문을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 대상이 무엇인지 본다\n\n@Test\nvoid 대상() throws Exception {\n    System.out.println(\"프록시: \" + memberRepository.getClass().getName());\n    Object target = ((Advised) memberRepository).getTargetSource().getTarget();\n    System.out.println(\"대상:   \" + target.getClass().getName());\n    System.out.println(\"부모:   \" +\n            target.getClass().getSuperclass().getName());\n}\n\n프록시: jdk.proxy2.$Proxy123\n대상:   org.springframework.data.jpa.repository.support.SimpleJpaRepository\n부모:   java.lang.Object\n\n--   4.3절에서 본 그것이다\n\n\n-- 여러 리포지토리가 같은 클래스를 쓴다\n\n@Test\nvoid 공통() throws Exception {\n    for (Object repo : List.of(memberRepository, teamRepository)) {\n        Object t = ((Advised) repo).getTargetSource().getTarget();\n        System.out.println(repo.getClass().getSimpleName()\n                + \" -> \" + t.getClass().getSimpleName());\n    }\n}\n\n$Proxy123 -> SimpleJpaRepository\n$Proxy124 -> SimpleJpaRepository\n\n--   인터페이스는 둘, 클래스는 하나다\n\n\n-- 안에 무엇이 있나\n\n@Test\nvoid 필드() throws Exception {\n    Object t = ((Advised) memberRepository).getTargetSource().getTarget();\n    for (Field f : t.getClass().getDeclaredFields()) {\n        f.setAccessible(true);\n        System.out.printf(\"%-24s %s%n\",\n                f.getName(), f.getType().getSimpleName());\n    }\n}\n\nentityInformation        JpaEntityInformation\nem                       SessionImpl\nprovider                 PersistenceProvider\ncrudMethodMetadata       CrudMethodMetadata\nescapeCharacter          EscapeCharacter\nprojectionFactory        ProjectionFactory\n\n--   em 이 있다\n--   4.1절에서 내가 주입받던 그것이다\n\n\n-- 소스를 뽑아 본다\n\n$ find ~/.gradle/caches -name 'spring-data-jpa-3.3*-sources.jar' | head -1\n/Users/kwanhyun/.gradle/caches/.../spring-data-jpa-3.3.2-sources.jar\n\n$ unzip -p \"$(find ~/.gradle/caches -name 'spring-data-jpa-3.3*-sources.jar' \\\n    | head -1)\" \\\n    org/springframework/data/jpa/repository/support/SimpleJpaRepository.java \\\n    > /tmp/SimpleJpaRepository.java\n\n$ wc -l /tmp/SimpleJpaRepository.java\n     861 /tmp/SimpleJpaRepository.java\n\n\n-- findById 를 본다\n\n$ awk '/public Optional<T> findById/,/^\\t}/' /tmp/SimpleJpaRepository.java\n\n\tpublic Optional<T> findById(ID id) {\n\n\t\tAssert.notNull(id, ID_MUST_NOT_BE_NULL);\n\n\t\tClass<T> domainType = getDomainClass();\n\n\t\tif (metadata == null) {\n\t\t\treturn Optional.ofNullable(entityManager.find(domainType, id));\n\t\t}\n\n\t\tLockModeType type = metadata.getLockModeType();\n\t\tMap<String, Object> hints = getHints();\n\n\t\treturn Optional.ofNullable(type == null\n\t\t\t\t? entityManager.find(domainType, id, hints)\n\t\t\t\t: entityManager.find(domainType, id, type, hints));\n}\n\n--   em.find 다\n--   힌트와 락이 낀다 (7.5·7.6절)\n\n\n-- save 를 본다\n\n$ awk '/public <S extends T> S save/,/^\\t}/' /tmp/SimpleJpaRepository.java\n\n\tpublic <S extends T> S save(S entity) {\n\n\t\tAssert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);\n\n\t\tif (entityInformation.isNew(entity)) {\n\t\t\tentityManager.persist(entity);\n\t\t\treturn entity;\n\t\t} else {\n\t\t\treturn entityManager.merge(entity);\n\t\t}\n}\n\n--   질문 하나로 갈린다\n--   7.3절에서 isNew 를 본다\n\n\n-- deleteAll 을 본다\n\n$ awk '/public void deleteAll\\(\\)/,/^\\t}/' /tmp/SimpleJpaRepository.java\n\n\tpublic void deleteAll() {\n\n\t\tfor (T element : findAll()) {\n\t\t\tdelete(element);\n\t\t}\n}\n\n--   반복문이다\n--   4.7절에서 본 그 쿼리 수의 이유다\n\n\n-- 직접 확인한다\n\n@Test\n@Transactional\nvoid deleteAll_쿼리() {\n    em.clear();\n    long n = counter.count(() -> memberRepository.deleteAll());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select ... from member m1_0\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\n쿼리 4개\n\n--   위 반복문 그대로다\n\n\n-- findAll 을 본다\n\n$ awk '/public List<T> findAll\\(\\)/,/^\\t}/' /tmp/SimpleJpaRepository.java\n\n\tpublic List<T> findAll() {\n\t\treturn getQuery(null, Sort.unsorted()).getResultList();\n}\n\n@Test\n@Transactional\nvoid findAll_SQL() {\n    em.clear();\n    memberRepository.findAll();\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n        m1_0.last_modified_by, m1_0.last_modified_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n\n--   조건 없는 criteria 쿼리다\n\n\n-- 손으로 쓴 것과 나란히 둔다\n\n// 4.1절\npublic Member find(Long id) { return em.find(Member.class, id); }\npublic List<Member> findAll() {\n    return em.createQuery(\"select m from Member m\", Member.class)\n             .getResultList();\n}\n\n@Test\n@Transactional\nvoid 나란히() {\n    em.clear();\n    System.out.println(\"--- 손으로 ---\");\n    memberJpaRepository.find(1L);\n    em.clear();\n    System.out.println(\"--- 스프링 데이터 ---\");\n    memberRepository.findById(1L);\n}\n\n--- 손으로 ---\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n           m1_0.last_modified_by, m1_0.last_modified_date,\n           m1_0.team_id, m1_0.username\n    from member m1_0 where m1_0.member_id=?\n--- 스프링 데이터 ---\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n           m1_0.last_modified_by, m1_0.last_modified_date,\n           m1_0.team_id, m1_0.username\n    from member m1_0 where m1_0.member_id=?\n\n--   같다\n--   4.2절의 diff 를 여기서 이유까지 봤다\n\n\n-- getReferenceById 는 안 읽는다\n\n@Test\n@Transactional\nvoid 프록시() {\n    em.clear();\n    System.out.println(\"--- getReferenceById ---\");\n    Member ref = memberRepository.getReferenceById(1L);\n    System.out.println(\"타입: \" + ref.getClass().getSimpleName());\n    System.out.println(\"--- 값을 부른다 ---\");\n    System.out.println(\"이름: \" + ref.getUsername());\n}\n\n--- getReferenceById ---\n타입: Member$HibernateProxy$aB3kQ1\n--- 값을 부른다 ---\nHibernate: select ... where m1_0.member_id=?\n이름: m1\n\n--   부를 때 SQL 이 나갔다\n--   ① 6.2절의 em.getReference 다\n\n\n-- 없는 id 로 부르면\n\n@Test\n@Transactional\nvoid 없는_프록시() {\n    Member ref = memberRepository.getReferenceById(999L);\n    System.out.println(\"객체는 나왔다\");\n    try {\n        ref.getUsername();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n객체는 나왔다\nHibernate: select ... where m1_0.member_id=?\n예외: EntityNotFoundException\n\n--   반환 시점에는 모른다\n--   findById 는 그때 바로 Optional.empty 였다 (5.8절)\n\n\n-- 기반 클래스를 바꿔 끼운다\n\npublic class BaseRepositoryImpl<T, ID>\n        extends SimpleJpaRepository<T, ID> {\n\n    private final EntityManager em;\n\n    public BaseRepositoryImpl(JpaEntityInformation<T, ?> info,\n                              EntityManager em) {\n        super(info, em);\n        this.em = em;\n    }\n\n    public void flushAndClear() {\n        em.flush();\n        em.clear();\n    }\n}\n\n@EnableJpaRepositories(repositoryBaseClass = BaseRepositoryImpl.class)\n\n@Test\nvoid 바꿔_끼움() throws Exception {\n    Object t = ((Advised) memberRepository).getTargetSource().getTarget();\n    System.out.println(\"대상: \" + t.getClass().getSimpleName());\n}\n\n대상: BaseRepositoryImpl\n\n--   모든 리포지토리가 한꺼번에 바뀐다\n--   6.1절의 커스텀은 한 인터페이스였다\n\n\n-- 정리\n\n$ grep -c 'entityManager\\.' /tmp/SimpleJpaRepository.java\n34\n\n$ grep -o 'entityManager\\.[a-zA-Z]*' /tmp/SimpleJpaRepository.java \\\n    | sort | uniq -c | sort -rn | head -6\n\n   9 entityManager.find\n   6 entityManager.createQuery\n   4 entityManager.merge\n   3 entityManager.remove\n   3 entityManager.persist\n   2 entityManager.getCriteriaBuilder\n\n--   결국 EntityManager 다\n--   7.2절에서 트랜잭션을 본다",
+   "note": "**리포지토리 둘이 같은 `SimpleJpaRepository` 를 대상으로** 쓴다.\n\n**필드에 `em`(`SessionImpl`) 이 있고, `findById` 소스가 `entityManager.find`** 다.\n\n**`deleteAll` 이 반복문이라 4.7절의 쿼리 4개가** 설명된다.\n\n**손으로 쓴 `em.find` 와 `findById` 의 SQL 이 같은 문장**이다.\n\n**`entityManager.` 호출이 34번, 그중 `find` 가 9번**이다."
+  }
+ ],
+ "recap": [
+  "**구현체는 하나**다.",
+  "**모든 리포지토리가 같이** 쓴다.",
+  "**안에 `em` 이** 있다.",
+  "**`findById` 는 `em.find`** 다.",
+  "**`save` 는 질문 하나로** 갈린다.",
+  "**`deleteAll` 은 반복문**이다.",
+  "**손으로 쓴 것과 SQL 이** 같다.",
+  "**`getReferenceById` 는 안** 읽는다.",
+  "**기반 클래스를 바꿀 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "대상 클래스를 찍는다.",
+   "done_when": "`SimpleJpaRepository` 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "소스 jar 를 열어 `save` 를 읽는다.",
+   "done_when": "`persist`/`merge` 분기를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`deleteAll` 쿼리를 센다.",
+   "done_when": "반복문 결과를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "기반 클래스를 바꿔 끼운다.",
+   "done_when": "대상이 바뀐 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리포지토리 인터페이스의 실제 구현체는?",
+   "a": "`SimpleJpaRepository` 하나다."
+  },
+  {
+   "q": "`findById` 안에서 무엇을 부르나?",
+   "a": "`entityManager.find` 다."
+  },
+  {
+   "q": "`save` 는 무엇으로 갈리나?",
+   "a": "새 엔티티인지 아닌지로 `persist` 와 `merge` 가 갈린다."
+  },
+  {
+   "q": "`deleteAll` 이 건마다 쿼리를 내는 이유는?",
+   "a": "구현이 조회 후 반복문으로 지우기 때문이다."
+  },
+  {
+   "q": "모든 리포지토리에 공통 메서드를 넣으려면?",
+   "a": "`repositoryBaseClass` 로 기반 클래스를 바꾼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SimpleJpaRepository",
+   "def": "스프링 데이터 JPA 리포지토리의 유일한 실제 구현 클래스."
+  },
+  {
+   "term": "repositoryBaseClass",
+   "def": "모든 리포지토리의 기반 구현 클래스를 바꾸는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

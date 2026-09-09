@@ -401,7 +401,7 @@
           "title": "구현체 SimpleJpaRepository",
           "summary": "결국 EntityManager 다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -409,7 +409,7 @@
           "title": "@Transactional 의 위치",
           "summary": "리포지토리에 이미 걸려 있다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
