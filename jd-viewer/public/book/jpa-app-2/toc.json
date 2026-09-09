@@ -375,7 +375,7 @@
           "title": "여섯 버전을 한 표에",
           "summary": "무엇을 고를까.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.13",
@@ -383,7 +383,7 @@
           "title": "정리",
           "summary": "권장 순서.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -398,7 +398,7 @@
           "title": "OSIV 의 비용",
           "summary": "커넥션을 언제까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",

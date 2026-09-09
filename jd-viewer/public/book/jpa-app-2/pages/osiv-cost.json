@@ -1,0 +1,147 @@
+{
+ "book": "jpa-app-2",
+ "id": "osiv-cost",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "OSIV 의 비용",
+ "summary": "커넥션을 언제까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "OSIV 가 무엇인지 정확히 안다.",
+  "커넥션 점유 시간이 왜 중요한지 안다.",
+  "언제 문제가 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 9.3절에서 미뤘다.** **부팅 때마다 경고가** 나오고 있었다."
+  },
+  {
+   "type": "code",
+   "lang": "text",
+   "caption": "1편부터 나오던 경고",
+   "code": "WARN 12345 --- [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration :\n  spring.jpa.open-in-view is enabled by default. Therefore, database\n  queries may be performed during view rendering. Explicitly configure\n  spring.jpa.open-in-view to disable this warning"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "OSIV 가 하는 일",
+   "md": "**Open Session In View** — **영속성 컨텍스트를 뷰까지 열어** 둔다.\n\n**스프링이 필터·인터셉터에서 영속성 컨텍스트를** 만든다.\n\n```\n요청 시작 -> 영속성 컨텍스트 생성\n  컨트롤러\n  서비스 (@Transactional 시작~끝)\n  컨트롤러로 복귀\n  뷰 렌더링 / JSON 직렬화\n요청 끝 -> 영속성 컨텍스트 종료\n```\n\n> **트랜잭션은 서비스에서 끝난다.** **영속성 컨텍스트는 안** 끝난다.\n>\n> **그래서 컨트롤러에서 지연 로딩이** 된다.\n\n**이 책이 그것에 기대 왔다.**\n\n```java\n// 4.3절, 컨트롤러 안\nname = order.getMember().getName();   // 프록시 초기화\n```\n\n> **서비스가 이미 끝났는데 쿼리가** 나간다. **OSIV 덕분**이다.\n>\n> **끄면 `LazyInitializationException`** 이다.\n\n**커넥션은 어떻게 되나**\n\n> **영속성 컨텍스트가 살아 있으면 DB 커넥션도 안** 놓는다.\n>\n> **정확히는 하이버네이트가 커넥션을 지연 획득**하는데, **한 번 잡으면 컨텍스트가 닫힐 때까지** 문다.\n>\n> **그게 비용**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "커넥션을 얼마나 오래 무나",
+   "ascii": "   how long the connection is held\n\n   osiv on\n   |-- filter --|-- controller --|-- service --|-- view --|\n   |<--------------- one connection ------------------->|\n\n   osiv off\n                                |-- service --|\n                                |<-- conn -->|\n\n   the difference is everything outside the service layer",
+   "note": "**서비스 밖 전부가 차이**다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 문제가 되나",
+   "ascii": "   why holding matters at scale\n\n   pool of 10 connections\n   each request holds one for 200ms\n\n   osiv on    200ms of holding per request\n              10 / 0.2s = 50 requests per second\n\n   osiv off    20ms of holding per request\n              10 / 0.02s = 500 requests per second\n\n   same code, same queries, ten times the throughput",
+   "note": "**같은 코드로 처리량이 열 배** 갈린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "언제 터지나",
+   "md": "**커넥션 풀은 유한**하다.\n\n```yaml\nspring.datasource.hikari.maximum-pool-size: 10   # 기본값\n```\n\n> **동시 요청이 10개를 넘으면 기다린다.**\n\n**OSIV 가 켜져 있으면 점유 시간이** 는다.\n\n| 구간 | OSIV 켬 | OSIV 끔 |\n|---|---|---|\n| 컨트롤러 진입 | **문다** | 안 문다 |\n| 서비스 | 문다 | **문다** |\n| JSON 직렬화 | **문다** | 안 문다 |\n| 뷰 렌더링 | **문다** | 안 문다 |\n\n**JSON 직렬화가 생각보다** 길다.\n\n> **주문 100건에 상품 500개**면 **수 ms ~ 수십 ms** 다.\n> **응답을 네트워크로 내보내는 시간까지 포함**될 수 있다.\n>\n> **클라이언트가 느리면 그동안 커넥션을** 문다.\n\n**외부 API 를 부르면 최악**이다.\n\n```java\n@GetMapping(\"/api/v3.1/orders\")\npublic Result orders() {\n    List<Order> orders = orderService.findOrders();\n    String rate = exchangeRateClient.get();   // 외부 호출 500ms\n    ...\n}\n```\n\n> **500ms 동안 DB 커넥션을** 문다. **DB 는 아무것도 안 하는데.**\n>\n> **외부 API 가 느려지면 DB 커넥션이 말라 서비스 전체가** 죽는다.\n>\n> **1편 9.3절에서 \"트래픽을 봐야\" 라고 한 게 이것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그럼 왜 기본값이 켬인가",
+   "md": "**개발이 훨씬 편하다.**\n\n| | |\n|---|---|\n| **컨트롤러에서 지연 로딩** | 된다 |\n| **뷰에서 지연 로딩** | 된다 |\n| **`LazyInitializationException`** | 안 난다 |\n| **DTO 변환 위치** | 아무 데나 |\n\n> **1편의 화면이 전부 이것에 기대** 있다.\n> **타임리프가 `order.member.name` 을** 부른다.\n\n**작은 서비스에서는 문제가 안** 된다.\n\n| | |\n|---|---|\n| **트래픽이 적다** | 커넥션이 남는다 |\n| **관리자 화면** | 동시 사용자가 몇 명 |\n| **사내 시스템** | |\n\n> **켜 둬도 아무 일도 안** 난다.\n\n**결론은 트래픽이** 정한다.\n\n| | |\n|---|---|\n| **실시간 API, 트래픽 많음** | **끈다** |\n| **ADMIN, 트래픽 적음** | **켠다** |\n\n> **한 프로젝트 안에서 나눌 수는** 없다. **전역 설정**이다.\n>\n> **그래서 트래픽 많은 API 와 ADMIN 을 애플리케이션으로 분리**하기도 한다.\n>\n> **6.2절에서 끄고 무엇이 깨지는지** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 커넥션을 언제 잡고 놓는지 ---\n\nlogging:\n  level:\n    com.zaxxer.hikari.pool.HikariPool: debug\n    org.springframework.orm.jpa: debug\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   DEBUG JpaTransactionManager : Opened new EntityManager for JPA transaction\n#         (OpenEntityManagerInViewInterceptor - 요청 시작)\n\n#   DEBUG JpaTransactionManager : Beginning JPA transaction\n#   DEBUG HikariPool : Pool stats (total=10, active=1, idle=9, waiting=0)\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where order_id in (...)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   DEBUG JpaTransactionManager : Committing JPA transaction\n#         (서비스 끝. 트랜잭션은 여기서 끝난다)\n\n#   DEBUG HikariPool : Pool stats (total=10, active=1, idle=9, waiting=0)\n#         active 가 아직 1 이다\n\n#   (DTO 변환)\n#   (JSON 직렬화)\n\n#   DEBUG EntityManagerFactoryUtils : Closing JPA EntityManager\n#         (요청 끝. 여기서 커넥션이 돌아간다)\n\n#   DEBUG HikariPool : Pool stats (total=10, active=0, idle=10, waiting=0)\n\n#   200 OK\n#   {\"data\":[...100건...]}\n\n#   트랜잭션 커밋과 커넥션 반납 사이에 간격이 있다\n\n# --- 컨트롤러에서 지연 로딩이 되는 것 ---\n\n@GetMapping(\"/api/osiv-test\")\npublic String test() {\n    Order order = orderService.findOne(4L);   // @Transactional 끝\n\n    // 여기는 트랜잭션 밖이다\n    String name = order.getMember().getName();\n\n    return name;\n}\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   (트랜잭션 커밋)\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#         <- 트랜잭션 밖인데 쿼리가 나갔다\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   userA\n\n#   OSIV 가 켜져 있어서다\n\n# --- 외부 호출을 흉내 내면 ---\n\n@GetMapping(\"/api/slow\")\npublic Result slow() throws InterruptedException {\n    List<Order> orders = orderService.findOrders();\n    Thread.sleep(500);                    // 외부 API 호출이라 치자\n    return new Result(convert(orders));\n}\n\n#   DEBUG HikariPool : Pool stats (total=10, active=1, ...)\n#   (500ms 동안 active=1)\n#   DEBUG EntityManagerFactoryUtils : Closing JPA EntityManager\n#   DEBUG HikariPool : Pool stats (total=10, active=0, ...)\n\n#   500ms 동안 커넥션을 물고 있었다\n#   그동안 DB 에는 아무 요청도 안 갔다\n\n# --- 동시 요청 20개를 던지면 ---\n\n$ ab -n 100 -c 20 http://localhost:8080/api/slow\n\n#   DEBUG HikariPool : Pool stats (total=10, active=10, idle=0, waiting=10)\n\n#   10개가 대기 중이다\n\n#   Requests per second:    19.42 [#/sec]\n\n#   커넥션 10개를 500ms 씩 물어서다\n\n# --- 같은 요청, OSIV 끄고 (미리) ---\n\nspring.jpa.open-in-view: false\n\n$ ab -n 100 -c 20 http://localhost:8080/api/slow\n\n#   DEBUG HikariPool : Pool stats (total=10, active=0, idle=10, waiting=0)\n\n#   sleep 동안 커넥션이 놀고 있다\n\n#   Requests per second:    39.51 [#/sec]\n\n#   두 배다\n\n#   그런데 다른 API 들이 깨진다\n\n# --- 다음 절에서 ---\n\n#   무엇이 깨지는지 본다",
+   "note": "**트랜잭션 커밋과 커넥션 반납 사이에 간격이** 있다. **`active` 가 커밋 뒤에도 1** 이다.\n\n**컨트롤러에서 트랜잭션 밖인데 쿼리가** 나간다. **OSIV 덕분**이다.\n\n**500ms 를 흘려 보내면 그동안 커넥션을 문다.** **DB 에는 아무 요청도 안 간다.**\n\n**동시 요청 20개면 `waiting=10`** 이다. **초당 19건**이다.\n\n**끄면 초당 39건**이다. **두 배**다. **그런데 다른 API 들이 깨진다.**"
+  }
+ ],
+ "recap": [
+  "**OSIV 는 영속성 컨텍스트를 뷰까지 열어** 둔다.",
+  "**트랜잭션은 서비스에서 끝나고 컨텍스트는 요청 끝까지** 산다.",
+  "**그래서 컨트롤러에서 지연 로딩이** 된다.",
+  "**커넥션을 컨텍스트가 닫힐 때까지** 문다.",
+  "**JSON 직렬화와 응답 전송 시간까지 포함**된다.",
+  "**외부 API 를 부르면 그동안도** 문다.",
+  "**커넥션 풀이 유한**해서 처리량이 갈린다.",
+  "**기본값이 켬인 건 개발이 편해서**다.",
+  "**트래픽이 정한다** — 실시간 API 는 끄고 ADMIN 은 켠다."
+ ],
+ "drills": [
+  {
+   "task": "HikariCP 로그를 켜고 요청을 보낸다.",
+   "done_when": "커밋과 반납 사이 간격을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨트롤러에서 지연 로딩을 해 본다.",
+   "done_when": "트랜잭션 밖에서 쿼리가 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Thread.sleep(500)` 을 넣고 풀 상태를 본다.",
+   "done_when": "`active` 가 유지되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "동시 요청을 20개 던진다.",
+   "done_when": "`waiting` 이 생기는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "OSIV 가 무엇을 하나?",
+   "a": "영속성 컨텍스트를 요청 끝까지 열어 둬 컨트롤러·뷰에서 지연 로딩이 되게 한다."
+  },
+  {
+   "q": "무엇이 비용인가?",
+   "a": "영속성 컨텍스트가 살아 있는 동안 DB 커넥션을 놓지 않는다."
+  },
+  {
+   "q": "언제 가장 위험한가?",
+   "a": "컨트롤러에서 외부 API 를 부를 때다. DB 는 놀면서 커넥션만 문다."
+  },
+  {
+   "q": "왜 기본값이 켬인가?",
+   "a": "컨트롤러·뷰 어디서든 지연 로딩이 돼 개발이 편하기 때문이다."
+  },
+  {
+   "q": "끌지 말지를 무엇이 정하나?",
+   "a": "트래픽이다. 실시간 API 는 끄고 트래픽 적은 ADMIN 은 켠다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "OSIV",
+   "def": "Open Session In View. 영속성 컨텍스트를 뷰 렌더링까지 열어 두는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "HikariCP",
+   "url": "https://github.com/brettwooldridge/HikariCP",
+   "publisher": "HikariCP"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

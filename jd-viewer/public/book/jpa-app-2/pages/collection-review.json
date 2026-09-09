@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-review",
+ "no": "5.13",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "권장 순서.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "권장 순서를 정한다.",
+  "5장이 증명한 것을 정리한다.",
+  "6장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**일곱 버전에서 순서 하나가** 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "권장 순서",
+   "ascii": "   the recommended order\n\n   1  entity query, everything lazy\n   2  fetch join the ToOne side\n   3  batch size for the collections\n      -> stop here. this is v3.1.\n\n   4  dto direct query with in clause     v5\n   5  native sql or jdbc template\n\n   most services never go past step 3",
+   "note": "**대부분 3단계에서** 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 순서인 이유",
+   "md": "**1단계 — 엔티티 조회, 전부 지연 로딩**\n\n> **일단 돌아가게** 만든다. **N+1 이 나도 괜찮다.**\n>\n> **`EAGER` 를 절대 안 쓴다**(4.4절).\n\n**2단계 — `ToOne` 페치 조인**\n\n> **행이 안 는다.** **부작용이** 없다.\n> **4장에서 이것만으로 끝났다.**\n\n**3단계 — 컬렉션은 배치 사이즈**\n\n> **설정 한 줄**이다. **코드를 안 고친다.**\n> **페이징이 되고 재사용도** 된다.\n>\n> **여기가 V3.1** 이다. **대부분 여기서** 끝난다.\n\n**4단계 — DTO 직접 조회**\n\n> **여기부터 코드가 는다.** **재사용을 잃는다.**\n>\n> **가야 할 이유**\n> | | |\n> |---|---|\n> | 컬럼이 무겁다 | `TEXT`·`BLOB` |\n> | 집계가 필요하다 | `group by` |\n> | 그 API 만 트래픽이 크다 | |\n\n**5단계 — 네이티브 SQL·JdbcTemplate**\n\n> **JPQL 로 못 쓰는 쿼리**가 있다. **윈도 함수, DB 고유 문법.**\n>\n> **「DB 2편」 2장의 JdbcTemplate 을 같이** 쓴다. **버리는 게 아니라 더하는 것**이다.\n\n**단계를 건너뛰지 않는다**\n\n> **1단계에서 바로 5단계로 가면 재사용과 유지보수를 통째로** 버린다.\n> **측정하고 한 단계씩** 내려간다."
+  },
+  {
+   "type": "figure",
+   "caption": "5장이 증명한 것",
+   "ascii": "   what chapter 5 proved\n\n   one collection turned\n     fetch join      into a duplicate problem\n     paging          into a memory problem\n     dto queries     into an n+1 problem\n     one query       into a wrong answer\n\n   chapter 4 had none of these\n   the technique did not change. the data shape did.",
+   "note": "**기술이 아니라 데이터 모양이** 바뀌었다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컬렉션 하나가 바꾼 것",
+   "md": "| 4장에서는 | 5장에서는 |\n|---|---|\n| 페치 조인이 답 | **중복이 생긴다**(5.4) |\n| `distinct` 불필요 | **필요하다**(5.5) |\n| 페이징이 SQL 로 | **메모리로**(5.6) |\n| 페치 조인 여러 개 가능 | **컬렉션은 하나만**(5.5) |\n| DTO 직접 조회가 컬럼을 줄임 | **N+1 이 생긴다**(5.9) |\n| 쿼리 1개가 최선 | **틀린 답일 수 있다**(5.11) |\n\n**여섯 줄이 전부 뒤집혔다.**\n\n> **같은 JPA, 같은 페치 조인, 같은 DTO** 다.\n> **`@OneToMany` 하나가 붙었을 뿐**이다.\n>\n> **3.1절에서 4장 9절, 5장 13절로 나눈 이유**가 이것이다.\n\n**그래서 규칙 하나**\n\n> **`ToOne` 과 `ToMany` 를 다르게** 다룬다.\n>\n> **`ToOne` 은 페치 조인**, **`ToMany` 는 배치 사이즈**다.\n>\n> **이 한 줄이 5장 전체의 요약**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장이 이어받는 것",
+   "md": "**쿼리는 다 줄였다.** **남은 게 둘**이다.\n\n**① OSIV**\n\n> **1편 9.3절에서 \"트래픽을 봐야 판단된다\" 고** 미뤘다.\n> **1.2절에서 이 책의 몫으로** 가져왔다.\n>\n> **지금까지 켜 둔 채로** 왔다. **6.1절에서 그 비용을** 잰다.\n\n**② 계층**\n\n> **OSIV 를 끄면 컨트롤러에서 지연 로딩이** 안 된다.\n> **4.3절의 `SimpleOrderDto` 생성자가 깨진다.**\n>\n> **트랜잭션 안으로 옮겨야** 한다. **그게 6.3절의 쿼리 서비스**다.\n\n**미리 말하면**\n\n| | |\n|---|---|\n| **OSIV 켬** | 개발이 편하다. 커넥션을 오래 문다 |\n| **OSIV 끔** | 커넥션을 빨리 놓는다. 코드를 옮겨야 한다 |\n\n> **정답이** 없다. **트래픽이 정한다.**\n>\n> **6.2절에서 끄고 무엇이 깨지는지** 본다. **1편의 화면이 실제로** 깨진다.\n>\n> **1.3절에서 화면을 안 지운 이유**가 이것이었다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 5장이 끝난 상태",
+   "sql": "# --- 권장 순서대로 만든 API ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.*, m1_0.*, o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     offset ? rows fetch first ? rows only\n\n#   Hibernate:\n#     select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#            oi1_0.item_id, oi1_0.order_price\n#     from order_item oi1_0 where oi1_0.order_id in (?,?,...)\n\n#   Hibernate:\n#     select i1_0.item_id, ... from item i1_0\n#     left join album ... left join book ... left join movie ...\n#     where i1_0.item_id in (?,?,...)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...,\n#             \"orderItems\":[{\"itemName\":\"JPA1 BOOK\",...}]}, ...]}\n\n# --- 화면도 같이 좋아졌다 ---\n\nGET /orders\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   1편 9.4절: 31\n#   지금: 3\n\n#   설정 한 줄이 화면과 API 를 같이 고쳤다\n\n# --- 엔티티는 어떻게 됐나 ---\n\n@Entity\npublic class Order {\n    @ManyToOne(fetch = LAZY)\n    private Member member;\n\n    @OneToMany(mappedBy = \"order\", cascade = ALL)\n    private List<OrderItem> orderItems = new ArrayList<>();\n\n    @OneToOne(fetch = LAZY, cascade = ALL)\n    private Delivery delivery;\n}\n\n#   @JsonIgnore 없음\n#   @NotEmpty 없음\n#   @BatchSize 없음  (전역 설정을 쓴다)\n#   EAGER 없음\n\n#   1편이 만든 그대로다\n\n#   API 다섯 버전, 조회 API 열한 개를 만들면서\n#   엔티티에 애노테이션을 하나도 안 더했다\n\n# --- 리포지토리 구조 ---\n\n$ tree src/main/java/jpabook/jpashop/repository\nrepository\n├── ItemRepository.java\n├── MemberRepository.java\n├── OrderRepository.java\n├── OrderSearch.java\n└── order\n    ├── query\n    │   ├── OrderFlatDto.java\n    │   ├── OrderItemQueryDto.java\n    │   ├── OrderQueryDto.java\n    │   └── OrderQueryRepository.java\n    └── simplequery\n        ├── OrderSimpleQueryDto.java\n        └── OrderSimpleQueryRepository.java\n\n#   4.8절의 규칙대로다\n#   핵심은 위에, 화면용은 아래에\n\n# --- 아직 안 건드린 것 ---\n\n#   application.yml\n\nspring:\n  jpa:\n    open-in-view: true      # 기본값. 아직 안 껐다\n\n#   WARN  spring.jpa.open-in-view is enabled by default.\n#         Therefore, database queries may be performed during view\n#         rendering. Explicitly configure spring.jpa.open-in-view\n#         to disable this warning\n\n#   부팅 때마다 나오는 경고다\n#   1편부터 계속 무시해 왔다\n\n#   다음 장에서 이것을 다룬다\n\n# --- 5장이 남긴 것 ---\n\n#   쿼리:  31 -> 3\n#   규칙:  ToOne 은 페치 조인, ToMany 는 배치 사이즈\n#   순서:  엔티티 -> 페치 조인 -> 배치 -> DTO -> 네이티브\n\n# --- 다음 장에서 ---\n\n#   커넥션을 언제까지 들고 있나",
+   "note": "**V3.1 이 쿼리 3개**다. **화면도 31 → 3** 이 됐다. **설정 한 줄이 둘을 같이** 고쳤다.\n\n**엔티티에 애노테이션을 하나도 안 더했다.** **API 열여섯 개를 만들면서**다.\n\n**리포지토리가 4.8절의 규칙대로** 나뉘어 있다.\n\n**`open-in-view` 경고가 1편부터 계속** 나오고 있었다. **다음 장에서 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**순서는 엔티티 → `ToOne` 페치 조인 → 배치 사이즈 → DTO → 네이티브**다.",
+  "**대부분 3단계(V3.1)에서** 끝난다.",
+  "**단계를 건너뛰지 않는다** — 측정하고 한 단계씩 내려간다.",
+  "**컬렉션 하나가 여섯 줄을 뒤집었다.**",
+  "**기술이 아니라 데이터 모양이** 바뀐 것이다.",
+  "**`ToOne` 은 페치 조인, `ToMany` 는 배치 사이즈** — 5장 전체의 요약이다.",
+  "**엔티티에 애노테이션을 하나도 안 더했다.**",
+  "**화면도 31 → 3** 이 됐다.",
+  "**`open-in-view` 경고가 1편부터 나오고** 있었다."
+ ],
+ "drills": [
+  {
+   "task": "권장 순서를 적어 둔다.",
+   "done_when": "다섯 단계와 각각의 이유를 적었다.",
+   "minutes": 10
+  },
+  {
+   "task": "엔티티 파일들을 열어 애노테이션을 센다.",
+   "done_when": "API 관련 애노테이션이 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편의 화면 쿼리를 다시 센다.",
+   "done_when": "3개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "부팅 로그에서 `open-in-view` 경고를 찾는다.",
+   "done_when": "위치를 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "권장 순서는?",
+   "a": "엔티티 조회 → `ToOne` 페치 조인 → 배치 사이즈 → DTO 직접 조회 → 네이티브다."
+  },
+  {
+   "q": "대부분 어디서 끝나나?",
+   "a": "3단계 V3.1 이다."
+  },
+  {
+   "q": "5장의 한 줄 요약은?",
+   "a": "`ToOne` 은 페치 조인, `ToMany` 는 배치 사이즈다."
+  },
+  {
+   "q": "컬렉션 하나가 무엇을 바꿨나?",
+   "a": "페치 조인·`distinct`·페이징·DTO 조회·쿼리 1개의 의미가 전부 뒤집혔다."
+  },
+  {
+   "q": "6장이 이어받는 것은?",
+   "a": "OSIV 와, 그것을 끄면 필요해지는 계층 구조다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

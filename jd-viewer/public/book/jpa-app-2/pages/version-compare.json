@@ -1,0 +1,204 @@
+{
+ "book": "jpa-app-2",
+ "id": "version-compare",
+ "no": "5.12",
+ "chapter": 5,
+ "title": "여섯 버전을 한 표에",
+ "summary": "무엇을 고를까.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여섯을 같은 조건에서 잰다.",
+  "쿼리 개수만으로 못 고르는 것을 확인한다.",
+  "고르는 기준을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 JSON 을 일곱 번 만들었다.** **숫자를 한 자리에** 놓는다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 버전",
+   "ascii": "   six versions, 1000 orders, page of 100\n\n          queries  entities  time    paging  response\n   v1        401      5000   520ms   broken  entity\n   v2        401      5000   480ms   broken  contract\n   v3          1      5000  4218ms   memory  contract\n   v3.1        3       500    19ms   sql     contract\n   v4        101         0   187ms   sql     contract\n   v5          2         0    14ms   sql     contract\n   v6          1         0    22ms   broken  contract\n\n   the fewest queries is not the fastest row",
+   "note": "**쿼리가 가장 적은 줄이 가장 빠른 줄이 아니다.**"
+  },
+  {
+   "type": "table",
+   "caption": "주문 1000건, 페이지 100건",
+   "columns": [
+    "",
+    "쿼리",
+    "엔티티",
+    "시간",
+    "페이징",
+    "재사용",
+    "코드"
+   ],
+   "rows": [
+    [
+     "V1",
+     "401",
+     "5000",
+     "520ms",
+     "**깨짐**",
+     "—",
+     "짧다"
+    ],
+    [
+     "V2",
+     "401",
+     "5000",
+     "480ms",
+     "**깨짐**",
+     "높다",
+     "짧다"
+    ],
+    [
+     "V3",
+     "**1**",
+     "5000",
+     "**4218ms**",
+     "**메모리**",
+     "높다",
+     "짧다"
+    ],
+    [
+     "**V3.1**",
+     "3",
+     "500",
+     "19ms",
+     "**SQL**",
+     "**높다**",
+     "**짧다**"
+    ],
+    [
+     "V4",
+     "101",
+     "**0**",
+     "187ms",
+     "SQL",
+     "낮다",
+     "길다"
+    ],
+    [
+     "**V5**",
+     "**2**",
+     "**0**",
+     "**14ms**",
+     "**SQL**",
+     "낮다",
+     "길다"
+    ],
+    [
+     "V6",
+     "**1**",
+     "**0**",
+     "22ms",
+     "**깨짐**",
+     "낮다",
+     "**가장 길다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 표에서 읽을 것 넷",
+   "md": "**① 쿼리 1개짜리가 둘인데 둘 다 못 쓴다**\n\n> **V3 는 4218ms** 다. **가장 느리다.**\n> **V6 는 페이징이 조용히 틀린다.**\n>\n> **쿼리 개수를 목표로 잡으면 이 둘에** 도달한다.\n\n**② 가장 빠른 건 쿼리 2개짜리다**\n\n> **V5, 14ms** 다.\n> **V3.1(3개)이 19ms 로 근소하게** 뒤다.\n>\n> **1 → 2 → 3 순서가 성능 순서가** 아니다.\n\n**③ V1 과 V2 가 V3 보다 빠르다**\n\n> **쿼리 401개인데 520ms**다. **V3 는 1개인데 4218ms**다.\n>\n> **왕복 400번보다 힙에 5000개 올리고 4500개 버리는 게 더** 비싸다.\n>\n> **H2 인메모리라 왕복이 싼 탓도** 있다(3.3절). **실무면 V1 이 더 느릴** 것이다.\n> **그래도 \"쿼리가 적으면 빠르다\" 가 항상은 아니라는 건** 사실이다.\n\n**④ `entities` 열이 시간과 더 잘 맞는다**\n\n| | 엔티티 | 시간 |\n|---|---|---|\n| V3 | 5000 | 4218ms |\n| V3.1 | 500 | 19ms |\n| V5 | 0 | 14ms |\n\n> **힙에 올린 객체 수가 시간을 더 잘** 설명한다.\n>\n> **3.3절에서 \"쿼리 개수가 못 보여 주는 것\" 이라고** 한 자리다."
+  },
+  {
+   "type": "figure",
+   "caption": "어느 열이 결정하나",
+   "ascii": "   which column decides\n\n   if paging is needed        v3 and v6 are out\n   if reuse matters           v3.1\n   if the columns are heavy   v5\n   if it is a one off export  v6\n\n   everything else            v3.1",
+   "note": "**페이징이 첫 관문**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "고르는 순서",
+   "md": "**① 페이징이 필요한가**\n\n> **필요하면 V3·V6 는 탈락**이다. **여기서 절반이** 걸러진다.\n>\n> **목록 API 에 페이징이 없는 경우가** 있나. **거의 없다.**\n\n**② 재사용이 필요한가**\n\n> **`List<Order>` 를 받는 V3.1 은 다른 API 도** 쓴다.\n> **V5 는 이 API 전용**이다.\n>\n> **4.7절의 저울과 같은 기준**이다.\n\n**③ 컬럼이 무거운가**\n\n> **`TEXT`·`BLOB` 이 있으면 V5**.\n> **없으면 V3.1 의 엔티티 조회로 충분**하다.\n\n**④ 일회성인가**\n\n> **엑셀 내보내기, 정기 리포트면 V6 도** 된다.\n> **페이징이 없으니까.**\n\n**나머지는 전부 V3.1**\n\n> **설정 한 줄에 코드가 짧고 재사용되고 페이징이** 된다.\n> **V5 와 5ms 차이**다.\n>\n> **그 5ms 를 위해 묶는 로직을 손으로 쓰고 유지할 이유가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이 숫자를 그대로 믿지 않는다",
+   "md": "**H2 인메모리·8GB 노트북·주문 1000건**이다.\n\n| 바뀌면 | 어떻게 |\n|---|---|\n| **실제 DB** | 왕복이 비싸져 V1·V4 가 훨씬 나빠진다 |\n| **네트워크 건너** | 쿼리 개수 차이가 커진다 |\n| **데이터 10만 건** | V3 가 OOM 으로 죽는다 |\n| **컬렉션이 크다** | V6 의 중복이 심해진다 |\n| **컬럼에 `TEXT`** | V5 의 이득이 커진다 |\n\n**변하지 않는 것**\n\n> **V3 는 전 건을 힙에** 올린다.\n> **V6 는 페이징이** 틀린다.\n> **V3.1 과 V5 는 페이지 크기에 비례**한다.\n>\n> **이 구조적 성질은 환경과 무관**하다.\n\n**그래서 표에서 봐야 할 건 시간이 아니라 `페이징` 열**이다.\n\n> **3.3절에서 \"노트북의 시간은 못 믿는다\" 고** 했다.\n> **여기 시간 열도 참고**다.\n>\n> **믿을 건 쿼리 개수가 데이터에 따라 어떻게 자라는지**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 일곱을 순서대로",
+   "sql": "# --- 주문 1000건, 주문당 상품 5개, 페이지 100건 ---\n\nGET /api/v1/orders?offset=0&limit=100\n#   Session Metrics { 401 JDBC statements; 5000 entities }\n#   INFO  TimerAspect : ordersV1 took 520ms\n#   (강제 초기화 + @JsonIgnore. 엔티티 노출)\n\nGET /api/v2/orders?offset=0&limit=100\n#   Session Metrics { 401 JDBC statements; 5000 entities }\n#   INFO  TimerAspect : ordersV2 took 480ms\n#   {\"data\":[...100건...]}   계약 일치\n\nGET /api/v3/orders?offset=0&limit=100\n#   WARN  HHH90003004: ... applying in memory\n#   Session Metrics { 1 JDBC statements; 5000 entities }\n#   INFO  TimerAspect : ordersV3 took 4218ms\n#   {\"data\":[...100건...]}   계약 일치. 그런데 전 건을 읽었다\n\nGET /api/v3.1/orders?offset=0&limit=100\n#   Hibernate: select ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where order_id in (...100개)\n#   Hibernate: select ... from item where item_id in (...)\n#   Session Metrics { 3 JDBC statements; 500 entities }\n#   INFO  TimerAspect : ordersV31 took 19ms\n\nGET /api/v4/orders?offset=0&limit=100\n#   Session Metrics { 101 JDBC statements; 0 entities }\n#   INFO  TimerAspect : ordersV4 took 187ms\n\nGET /api/v5/orders?offset=0&limit=100\n#   Hibernate: select ... offset ? fetch first ?\n#   Hibernate: select ... where order_id in (...100개)\n#   Session Metrics { 2 JDBC statements; 0 entities }\n#   INFO  TimerAspect : ordersV5 took 14ms\n\nGET /api/v6/orders?offset=0&limit=100\n#   Hibernate: select ... join order_item ... offset ? fetch first ?\n#   Session Metrics { 1 JDBC statements; 0 entities }\n#   INFO  TimerAspect : ordersV6 took 22ms\n#   {\"data\":[...20건...]}\n\n#   100건을 원했는데 20건이 왔다\n#   500행을 100행으로 잘랐고 그게 주문 20건이었다\n#   경고 없음\n\n# --- 응답 바이트 ---\n\n$ for v in v1 v2 v3 v3.1 v4 v5 v6; do\n>   echo -n \"$v \"; curl -s \"localhost:8080/api/$v/orders?offset=0&limit=100\" | wc -c\n> done\nv1   61204\nv2   21471\nv3   21471\nv3.1 21471\nv4   21471\nv5   21471\nv6    4294\n\n#   V2 부터 V5 까지 바이트 단위로 같다\n#   V1 은 세 배, V6 는 20건이라 적다\n\n# --- 데이터를 10만 건으로 (V3 만) ---\n\nGET /api/v3/orders?offset=0&limit=100\n\n#   WARN  HHH90003004: ... applying in memory\n\n#   java.lang.OutOfMemoryError: Java heap space\n\n#   죽는다\n\n#   V3.1, V5 는 같은 데이터에서\n#   Session Metrics { 3 JDBC statements; 500 entities }\n#   INFO  TimerAspect : took 21ms\n\n#   데이터가 100배인데 시간이 거의 같다\n#   페이지 크기에만 비례한다\n\n# --- 표에서 믿을 것 ---\n\n#   시간 열   환경에 따라 다르다\n#   쿼리 열   왕복 비용에 따라 다르다\n\n#   페이징 열  환경과 무관하다\n#   성장 방식  환경과 무관하다\n\n#     V1, V2   데이터에 비례\n#     V3, V6   전 건 (환경 무관하게 위험)\n#     V3.1, V5 페이지 크기에 비례\n\n# --- 다음 절에서 ---\n\n#   5장을 정리한다",
+   "note": "**일곱을 같은 조건에서** 쟀다.\n\n**V3 가 쿼리 1개인데 4218ms 로 가장 느리다.** **V1 은 401개인데 520ms** 다.\n\n**V6 는 100건을 원했는데 20건**이 왔다. **경고 없이 틀렸다.**\n\n**V2~V5 의 응답이 바이트 단위로** 같다.\n\n**10만 건으로 늘리면 V3 는 `OutOfMemoryError`** 다. **V3.1·V5 는 21ms** 로 거의 그대로다 — **페이지 크기에만 비례**한다.\n\n**믿을 건 시간이 아니라 성장 방식**이다."
+  }
+ ],
+ "recap": [
+  "**쿼리 1개짜리가 둘인데 둘 다 못 쓴다** — V3 는 느리고 V6 는 틀린다.",
+  "**가장 빠른 건 쿼리 2개짜리 V5** 다.",
+  "**V1(401개)이 V3(1개)보다 빠르다.**",
+  "**`entities` 열이 시간과 더 잘** 맞는다.",
+  "**첫 관문은 페이징** — 여기서 절반이 걸러진다.",
+  "**나머지는 전부 V3.1** — V5 와 5ms 차이다.",
+  "**그 5ms 로 손으로 묶는 로직을 살 이유가** 없다.",
+  "**10만 건이면 V3 는 `OutOfMemoryError`** 다.",
+  "**믿을 건 시간이 아니라 데이터에 따라 자라는 방식**이다."
+ ],
+ "drills": [
+  {
+   "task": "일곱 버전을 같은 조건에서 잰다.",
+   "done_when": "표를 채웠다.",
+   "minutes": 30
+  },
+  {
+   "task": "응답 바이트를 전부 잰다.",
+   "done_when": "V2~V5 가 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "V6 의 응답 건수를 센다.",
+   "done_when": "100건이 아닌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "데이터를 늘려 V3 를 죽여 본다.",
+   "done_when": "`OutOfMemoryError` 를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿼리가 가장 적은 두 버전의 문제는?",
+   "a": "V3 는 전 건을 힙에 올려 느리고, V6 는 페이징이 조용히 틀린다."
+  },
+  {
+   "q": "가장 빠른 버전은?",
+   "a": "V5 다. 쿼리 2개에 14ms 다."
+  },
+  {
+   "q": "시간과 가장 잘 맞는 열은?",
+   "a": "`entities` 다. 힙에 올린 객체 수가 시간을 잘 설명한다."
+  },
+  {
+   "q": "고르는 첫 기준은?",
+   "a": "페이징이 필요한가다. 필요하면 V3·V6 가 탈락한다."
+  },
+  {
+   "q": "표에서 환경과 무관한 것은?",
+   "a": "페이징 가능 여부와 데이터에 따라 자라는 방식이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
