@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "review-summary",
+ "no": "9.8",
+ "chapter": 9,
+ "title": "정리",
+ "summary": "설계 결정과 그 청구서.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "9장을 정리한다.",
+  "결정과 대가를 짝짓는다.",
+  "무엇을 다르게 할지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9장이 끝났다.** **3장의 결정이 어디까지 왔는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "사슬",
+   "ascii": "   the chain, end to end\n\n   3.8  fetch = LAZY\n   4.2  transaction boundary at the service\n   8.4  entity handed to the view\n   9.2  queries fire during rendering\n   9.3  osiv holds the connection\n   9.4  31 queries for 10 orders\n\n   six chapters, one decision at the top",
+   "note": "**1.1절의 그림이 실물이 됐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1.1절의 예고를 확인한다",
+   "md": "**이렇게 적었다.**\n\n> **6장에서 편하려고 한 결정이 8장에서 값을 청구하고, 9장에서 그것을 읽는다.**\n\n**실제로는 3장이 더 컸다.**\n\n| 장 | 결정 | 청구 |\n|---|---|---|\n| **3.5** | `SINGLE_TABLE` | **8.5, 8.7** |\n| **3.8** | 전부 `LAZY` | **9.2, 9.4** |\n| **3.8** | `cascade = ALL` | **9.6** |\n| 4.2 | 경계를 서비스에 | 9.2, 9.3 |\n| 6.1 | 로직을 엔티티에 | 9.5 |\n| 6.3 | `merge` | **8.9** |\n| 8.4 | 엔티티를 화면에 | 9.1 |\n\n**여섯 중 셋이 3장**이다.\n\n> **1.1절에서 \"이 책의 나머지가 전부 3장의 설계 결정에서 나온다\" 고** 했다. **맞았다.**\n\n**하나만 8장에서 고쳤다.**\n\n| 고친 것 | |\n|---|---|\n| **`merge` → 변경 감지** | 8.8절 |\n\n**나머지는 그대로 두고 9장에서 셌다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 개의 청구서",
+   "ascii": "   the four bills\n\n   SINGLE_TABLE      cheap reads, expensive edit screens\n   LAZY everywhere   no wasted loads, n+1 to manage\n   entity to view    no dto code, queries in html\n   cascade ALL       one repository, four unused behaviours\n\n   none of them was wrong. all of them had a price.",
+   "note": "**틀린 결정은 없었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다시 만든다면",
+   "md": "**바꿀 것 셋**이다.\n\n**① `cascade = PERSIST`** (9.6절)\n\n**`ALL` 이 아니라.** **비용이 0** 이다.\n\n**② 주문 목록만 DTO** (9.1절)\n\n**네 화면 중 하나**만. **나머지는 엔티티로 둔다.**\n\n> **전면 도입은 과하다.** **아픈 곳만 고친다.**\n\n**③ 배치 사이즈를 처음부터** (9.4절)\n\n```yaml\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n```\n\n**설정 한 줄**이다. **켜 두면 손해가 없다.**\n\n---\n\n**바꾸지 않을 것 셋**\n\n**① `SINGLE_TABLE`** (3.5절)\n\n**수정 화면이 아픈데**, **`JOINED` 여도 똑같이** 아프다(8.7절). **조회가 많으니 그대로.**\n\n**② 전부 `LAZY`** (3.8절)\n\n**N+1 을 관리해야 하는데**, **`EAGER` 는 더 나쁘다**(3.8절).\n\n**③ 로직을 엔티티에** (6.1절)\n\n**9.5절에서 결산**했다. **테스트가 천 배 빠르다.**\n\n---\n\n**보류할 것**\n\n**OSIV** (9.3절)\n\n**끄는 것이 맞는데**, **끄려면 조회 전용 서비스가 필요**하다. **구조가 커진다.**\n\n> **트래픽이 있으면 끈다.** **관리자 화면이면 켜 둔다.**\n>\n> **판단할 정보가 이 책에는 없다** — 예제니까."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "9장이 남긴 방법",
+   "md": "**세 가지 도구**가 생겼다.\n\n**① 쿼리 개수 세기** (9.4절)\n\n```yaml\nspring.jpa.properties.hibernate.generate_statistics: true\nlogging.level.org.hibernate.stat: debug\n```\n\n```\nSession Metrics { 31 JDBC statements were executed }\n```\n\n**화면마다 한 번씩** 재 본다.\n\n**② 경계선 찾기** (9.2절)\n\n```\nNot closing pre-bound JPA EntityManager after transaction\n```\n\n**그 뒤의 쿼리가 화면**이다.\n\n**③ 쿼리 개수 테스트** (9.4절)\n\n```java\nassertThat(stats.getPrepareStatementCount()).isLessThanOrEqualTo(3);\n```\n\n**회귀를 막는다.**\n\n---\n\n**세 도구가 이 책의 실질적 산출물**이다.\n\n> **1.1절에서 \"설계를 말로 논하지 않는다. 그 설계가 만든 것을 본다\" 고** 했다.\n>\n> **위 셋이 \"본다\" 의 방법**이다.\n\n**다음 장에서 서가를 정리한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 쿼리 개수 — 최종",
+   "sql": "# --- 지금 상태 (주문 10건) ---\n\nGET /                 0 queries\nGET /members          1\nGET /items            1\nGET /order            2\nGET /orders          31\nGET /items/1/edit     1\n\nPOST /members/new     3   (select, seq, insert)\nPOST /items/new       2   (seq, insert)\nPOST /order           9\nPOST /items/1/edit     2   (select, update)\nPOST /orders/4/cancel  6   (select x4, update x2)\n\n#   화면 열한 개\n#   주문 목록만 31 이다\n\n# --- 셋을 고치면 ---\n\n#   1  cascade = PERSIST      쿼리 변화 없음\n#   2  주문 목록 DTO           31 -> 1\n#   3  배치 사이즈 100         (DTO 면 무관, 안 쓰면 31 -> 3)\n\nGET /orders           1\n\n#   나머지는 그대로\n\n# --- 배치만 켜면 (DTO 없이) ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\nGET /orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#              join member m1_0 on m1_0.member_id=o1_0.member_id\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id in (?,?)\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id in (?,?,...)\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id in (?,?,?)\n\n#   Session Metrics { 4 JDBC statements were executed }\n\n#   31 -> 4\n\n#   설정 한 줄이다\n\n# --- 주문을 100건으로 늘리면 ---\n\n#   (설정 없이)    301\n#   (배치 100)       4\n#   (DTO)            1\n\n#   배치와 DTO 는 건수와 무관하다\n\n# --- 이 책이 만든 애플리케이션 ---\n\n#   엔티티 10, 테이블 7\n#   리포지토리 3, 서비스 3, 컨트롤러 4\n#   화면 11\n#   테스트 3개 클래스\n\n#   DDL 27줄 (내가 안 씀)\n#   SQL 종류 20개쯤\n\n# --- 3장의 결정 여덟 개가 ---\n\n#   여섯 장을 거쳐\n#   쿼리 개수와 화면 코드와 예외 처리로\n#   전부 청구됐다\n\n# --- 9장이 한 일 ---\n\n#   숫자를 셌다\n\n#   \"엔티티를 노출하지 마라\" 가 아니라\n#   \"31개다\" 라고 적었다\n\n#   다음 장에서 서가를 정리한다",
+   "note": "**화면 열한 개 중 주문 목록만 31개**다.\n\n**배치 사이즈 한 줄로 31 이 4** 가 된다. **DTO 면 1** 이다.\n\n**주문 100건이어도 배치는 4, DTO 는 1** 이다. **건수와 무관**하다.\n\n**3장의 결정 여덟 개가 여섯 장을 거쳐 전부 청구**됐다.\n\n**9장이 한 일은 숫자를 센 것**이다. **\"엔티티를 노출하지 마라\" 가 아니라 \"31개다\" 라고** 적었다.\n\n**다음 장에서 서가를 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**3장의 결정 셋이 가장 크게** 청구됐다.",
+  "**8장에서 고친 것은 `merge` 하나**다.",
+  "**틀린 결정은 없었고 전부 값이 있었다.**",
+  "**다시 만들면 셋을 바꾼다** — `PERSIST`·주문 목록 DTO·배치 사이즈.",
+  "**셋은 안 바꾼다** — `SINGLE_TABLE`·`LAZY`·엔티티 로직.",
+  "**OSIV 는 트래픽을 봐야** 판단된다.",
+  "**도구 셋이 남았다** — 쿼리 개수·경계선·개수 테스트.",
+  "**배치 한 줄로 31 이 4** 가 된다.",
+  "**9장이 한 일은 숫자를 센 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "화면 열한 개의 쿼리를 전부 센다.",
+   "done_when": "표로 만들었다.",
+   "minutes": 30
+  },
+  {
+   "task": "배치 사이즈만 켜고 다시 센다.",
+   "done_when": "31 이 4 가 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "\"다시 만든다면\" 목록을 자기 것으로 만든다.",
+   "done_when": "바꿀 것과 안 바꿀 것을 갈랐다.",
+   "minutes": 20
+  },
+  {
+   "task": "도구 셋을 설정 파일에 정리한다.",
+   "done_when": "다음 프로젝트에 쓸 수 있게 됐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 크게 청구된 장은?",
+   "a": "3장이다. 여섯 결정 중 셋이 3장의 것이다."
+  },
+  {
+   "q": "8장에서 고친 것은?",
+   "a": "`merge` 를 변경 감지로 바꾼 것 하나다."
+  },
+  {
+   "q": "다시 만들면 바꿀 셋은?",
+   "a": "`cascade = PERSIST`, 주문 목록만 DTO, 배치 사이즈다."
+  },
+  {
+   "q": "안 바꿀 셋은?",
+   "a": "`SINGLE_TABLE`, 전부 `LAZY`, 엔티티에 로직이다."
+  },
+  {
+   "q": "9장이 한 일은?",
+   "a": "숫자를 셌다. \"노출하지 마라\" 가 아니라 \"31개다\" 라고 적었다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

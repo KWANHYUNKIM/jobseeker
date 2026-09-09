@@ -603,7 +603,7 @@
           "title": "영속성 전이를 어디까지",
           "summary": "주문에는 되고 회원에는 안 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
@@ -611,7 +611,7 @@
           "title": "무엇이 어색했나",
           "summary": "다음 권이 고칠 것들.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.8",
@@ -619,7 +619,7 @@
           "title": "정리",
           "summary": "설계 결정과 그 청구서.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

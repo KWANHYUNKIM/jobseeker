@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "cascade-decision",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "영속성 전이를 어디까지",
+ "summary": "주문에는 되고 회원에는 안 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`cascade` 범위를 결산한다.",
+  "`ALL` 이 위험한 이유를 안다.",
+  "무엇으로 바꿀지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.8절에서 기준을 세우고 7.1절에서 적용**했다. **결산한다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "어디에 걸었나",
+   "ascii": "   where cascade was applied\n\n   Order -> OrderItem    ALL     the order owns them\n   Order -> Delivery     ALL     the order owns it\n   Order -> Member       none    the member outlives the order\n   OrderItem -> Item     none    the item is independent\n\n   the rule: does it live and die with the parent",
+   "note": "**기준은 생명주기 종속**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "얻은 것",
+   "md": "**리포지토리가 하나**다(7.6절).\n\n```java\norderRepository.save(order);\n// delivery, orderItem 이 같이 저장된다\n```\n\n**없었다면**\n\n```java\ndeliveryRepository.save(delivery);\norderItemRepository.save(orderItem);\norderRepository.save(order);\n```\n\n**리포지토리 셋**과 **순서**가 필요하다.\n\n**저장 경로가 하나**인 것도 크다.\n\n> **`Order.createOrder()` 로만 만들고**(7.3절) **`orderRepository.save()` 로만 저장**한다.\n>\n> **배송이나 주문상품을 따로 저장하는 코드가 없다.** **찾을 것이 없다.**\n\n**7.1절의 기준**이 맞았다.\n\n| 관계 | 결과 |\n|---|---|\n| 주문 → 주문상품 | **맞았다** |\n| 주문 → 배송 | **맞았다** |\n| 주문 → 회원 | **안 건 것이 맞았다** |\n\n**회원에 걸었다면**\n\n```java\n@ManyToOne(cascade = CascadeType.ALL)\nprivate Member member;\n```\n\n**주문을 지울 때 회원이** 지워진다. **다른 주문이 참조하고 있는데**도.\n\n> **이 책에 `delete` 가 없어서**(5.6절) **안 터진다.** **있었으면 터졌다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "`ALL` 이 포함하는 것",
+   "ascii": "   what ALL includes\n\n   PERSIST   used                save the graph\n   MERGE     never fired\n   REMOVE    never fired         no delete in this book\n   REFRESH   never fired\n   DETACH    never fired\n\n   one of five is doing work. four are loaded weapons.",
+   "note": "**넷은 안 쓰는데 켜져 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`ALL` 대신 `PERSIST` 였어야 한다",
+   "md": "**이 책에서 실제로 쓰인 것은 `PERSIST` 뿐**이다.\n\n```java\n@OneToMany(mappedBy = \"order\", cascade = CascadeType.PERSIST)\n```\n\n**이걸로 충분**했다.\n\n**`ALL` 을 쓰면 나중에 사고**가 난다.\n\n**① `REMOVE`**\n\n```java\n// 언젠가 이런 코드가 추가되면\norderRepository.delete(order);\n```\n\n**배송과 주문상품이 같이 지워진다.**\n\n> **의도한 것일 수도** 있다. **문제는 의도를 안 밝히고 켜 뒀다**는 것이다.\n>\n> **`ALL` 은 \"전부 다\" 이지 \"삭제도 전파한다\" 가 아니다.** **읽는 사람이 그것까지 생각 안 한다.**\n\n**② `MERGE`**\n\n```java\nem.merge(order);\n// delivery, orderItem 도 merge 된다\n```\n\n**8.9절의 `null` 덮어쓰기가 연쇄**로 일어난다.\n\n> **8.8절에서 `merge` 를 걷어냈으니 지금은 안 탄다.** **누군가 `JpaRepository` 를 도입하면**(다음 권) **`save()` 가 `merge` 를 부른다.**\n\n**③ `DETACH`·`REFRESH`**\n\n**쓸 일이 거의 없다.** **켜져 있어도 해가 없다.**\n\n---\n\n**규칙**\n\n> **필요한 것만 켠다.**\n\n**`orphanRemoval` 도 같다.**\n\n```java\n@OneToMany(mappedBy = \"order\", cascade = ALL, orphanRemoval = true)\n```\n\n**컬렉션에서 빼면 DB 에서 지워진다.** **이 책은 안 걸었다**(7.1절).\n\n> **주문상품을 빼는 기능이 없어서**다. **생기면 그때 켠다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`cascade` 를 안 쓰는 선택",
+   "md": "**아예 안 쓰는 쪽**도 있다.\n\n```java\n@Transactional\npublic Long order(...) {\n    Delivery delivery = new Delivery();\n    deliveryRepository.save(delivery);       // 명시적으로\n\n    OrderItem orderItem = OrderItem.createOrderItem(...);\n    orderItemRepository.save(orderItem);     // 명시적으로\n\n    Order order = Order.createOrder(member, delivery, orderItem);\n    orderRepository.save(order);\n}\n```\n\n| | `cascade` | 명시적 저장 |\n|---|---|---|\n| 코드 | **짧다** | 길다 |\n| **무엇이 저장되는지** | **안 보인다** | **보인다** |\n| 리포지토리 | 하나 | 셋 |\n| 실수 | 순서를 하이버네이트가 | **내가 맞춘다** |\n\n**두 번째 줄이 논거**다.\n\n> **`orderRepository.save(order)` 한 줄을 읽고 `insert` 가 셋 나가는 것을 아는가.**\n>\n> **1.1절에서 예고**했다 — **\"`insert` 를 하나만 썼는데 셋이 나간다\"**.\n\n**언제 `cascade` 를 쓰나.**\n\n| 조건 | |\n|---|---|\n| **소유자가 하나** | 주문만 배송을 참조 |\n| **생명주기가 같다** | 주문이 없으면 배송도 무의미 |\n| **같은 트랜잭션에서 만든다** | |\n\n**셋 다 맞을 때만** 쓴다.\n\n> **이 책의 두 관계는 셋 다 맞다.** **그래서 `cascade` 가 맞는 선택**이다.\n>\n> **`ALL` 대신 `PERSIST`** 였어야 할 뿐이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- cascade = ALL (지금) ---\n\norderRepository.save(order);\nem.flush();\n\n#   Hibernate: insert into delivery (...) values (?,?,?,?,?)\n#   Hibernate: insert into orders (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n\n#   persist 하나에 insert 셋\n\n# --- cascade = PERSIST 로 바꿔도 ---\n\n@OneToMany(mappedBy = \"order\", cascade = CascadeType.PERSIST)\n@OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST)\n\norderRepository.save(order);\nem.flush();\n\n#   Hibernate: insert into delivery (...) values (?,?,?,?,?)\n#   Hibernate: insert into orders (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n\n#   똑같다\n\n#   이 책이 쓰는 기능은 PERSIST 뿐이다\n\n# --- delete 를 넣어 보면 ---\n\n# (cascade = ALL)\nem.remove(order);\nem.flush();\n\n#   Hibernate: delete from order_item where order_item_id=?\n#   Hibernate: delete from orders where order_id=?\n#   Hibernate: delete from delivery where delivery_id=?\n\n#   셋이 지워졌다\n\n# (cascade = PERSIST)\nem.remove(order);\nem.flush();\n\n#   Hibernate: delete from orders where order_id=?\n\n#   org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException:\n#     Referential integrity constraint violation:\n#     \"FKQ7UMEIU8NFHNQWTHFN0BVPJ7A: PUBLIC.ORDER_ITEM FOREIGN KEY(ORDER_ID)\n#      REFERENCES PUBLIC.ORDERS(ORDER_ID)\"\n\n#   주문상품이 남아 있어서 못 지운다\n\n#   시끄럽게 터졌다\n\n#   ALL 이면 조용히 셋이 지워지고\n#   PERSIST 면 터진다\n\n# --- 어느 쪽이 나은가 ---\n\n#   의도가 '주문을 지우면 다 지운다' 면 ALL\n#   의도가 없으면 PERSIST 가 낫다\n\n#   터지는 것이 조용히 지워지는 것보다 낫다\n\n# --- 회원에 cascade 를 걸면 ---\n\n@ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)\n@JoinColumn(name = \"member_id\")\nprivate Member member;\n\nem.remove(order);\nem.flush();\n\n#   Hibernate: delete from order_item where order_item_id=?\n#   Hibernate: delete from orders where order_id=?\n#   Hibernate: delete from delivery where delivery_id=?\n#   Hibernate: delete from member where member_id=?\n\n#   회원이 지워졌다\n\n#   다른 주문이 있으면\n\n#   Referential integrity constraint violation:\n#     PUBLIC.ORDERS FOREIGN KEY(MEMBER_ID) REFERENCES PUBLIC.MEMBER\n\n#   터진다\n\n#   없으면 조용히 지워진다\n\n#   주문 하나를 취소했는데 회원 탈퇴가 됐다\n\n# --- cascade 없이 명시적으로 저장하면 ---\n\ndeliveryRepository.save(delivery);\norderItemRepository.save(orderItem);\norderRepository.save(order);\nem.flush();\n\n#   Hibernate: insert into delivery (...) values (?,?,?,?,?)\n#   Hibernate: insert into orders (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n\n#   SQL 이 같다\n\n#   순서도 같다 (하이버네이트가 정한다 - 7.3절)\n\n#   달라지는 것은 서비스 코드의 줄 수와\n#   '무엇이 저장되는지' 가 보이느냐다\n\n# --- 이 책은 ALL 을 남긴다 ---\n\n#   9.7절 목록에 넣는다\n#   PERSIST 로 바꾸는 것이 맞다",
+   "note": "**`ALL` 과 `PERSIST` 의 `insert` 가 똑같다.** **이 책이 쓰는 기능은 하나뿐**이다.\n\n**`delete` 를 넣으면 갈린다.** **`ALL` 은 조용히 셋을 지우고 `PERSIST` 는 제약 위반으로 터진다.**\n\n**터지는 것이 낫다.** **의도를 안 밝힌 삭제 전파보다는.**\n\n**회원에 걸면 주문 취소가 회원 탈퇴**가 된다. **다른 주문이 없으면 조용히**다.\n\n**`cascade` 없이 명시적으로 저장해도 SQL 이 같다.** **서비스 코드의 줄 수와 가시성만 다르다.**\n\n**다음 절에서 어색했던 것들을 모은다.**"
+  }
+ ],
+ "recap": [
+  "**주문 → 주문상품·배송에만** 걸었다 — 기준이 맞았다.",
+  "**회원에 안 건 것이 맞았다.**",
+  "**리포지토리가 하나**로 줄었다.",
+  "**`ALL` 중 `PERSIST` 만** 쓰인다.",
+  "**`REMOVE` 는 나중에 사고**를 낸다.",
+  "**`MERGE` 는 `null` 덮어쓰기를 연쇄**시킨다.",
+  "**필요한 것만 켠다** — `PERSIST` 였어야 한다.",
+  "**터지는 것이 조용히 지워지는 것보다** 낫다.",
+  "**명시적 저장은 SQL 이 같고 가시성만** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "`ALL` 을 `PERSIST` 로 바꿔 본다.",
+   "done_when": "`insert` 가 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`em.remove(order)` 를 두 설정에서 해 본다.",
+   "done_when": "하나는 지워지고 하나는 터지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "회원에 `cascade` 를 걸고 주문을 지운다.",
+   "done_when": "회원이 지워지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`cascade` 없이 명시적으로 저장해 본다.",
+   "done_when": "SQL 이 같은 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`cascade` 의 기준은?",
+   "a": "그것의 생명주기가 부모에 완전히 종속되느냐다."
+  },
+  {
+   "q": "이 책에서 실제로 쓰이는 타입은?",
+   "a": "`PERSIST` 하나뿐이다."
+  },
+  {
+   "q": "`ALL` 이 왜 위험한가?",
+   "a": "의도를 안 밝힌 채 `REMOVE`·`MERGE` 까지 켜 두는 것이다."
+  },
+  {
+   "q": "회원에 걸면?",
+   "a": "주문을 지울 때 회원이 지워진다. 다른 주문이 없으면 조용히 지워진다."
+  },
+  {
+   "q": "`cascade` 없이 저장하면?",
+   "a": "SQL 은 같고 서비스 코드가 길어지는 대신 무엇이 저장되는지 보인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

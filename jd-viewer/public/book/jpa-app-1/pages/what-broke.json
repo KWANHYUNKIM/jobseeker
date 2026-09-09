@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "what-broke",
+ "no": "9.7",
+ "chapter": 9,
+ "title": "무엇이 어색했나",
+ "summary": "다음 권이 고칠 것들.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "책 전체에서 미룬 것을 모은다.",
+  "실무 격차를 확인한다.",
+  "우선순위를 매긴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1장부터 \"9.7절 목록\" 이라고 적어 온 것들**이다. **여기서 모은다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "스물한 개",
+   "ascii": "   the list, by kind\n\n   db constraints        4    unique, not null, index, fk names\n   api and errors        3    500 pages, no handler, inconsistent\n   entity design         5    setters, Optional, equals, naming\n   query and screen      4    dto, n+1, [0], full dropdowns\n   security              2    id tampering, no auth\n   business rules        3    negative stock, double cancel, price\n\n   21 items. none of them broke a test.",
+   "note": "**하나도 테스트를 깨지 않았다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "DB 제약 넷",
+   "md": "| 항목 | 어디서 | 결과 |\n|---|---|---|\n| **`member.name` 유니크** | 3.3, 5.3 | **동시 가입이 뚫린다** |\n| **`not null`** | 3.3 | 주소 없는 회원이 저장된다 |\n| **인덱스** | 5.3 | `findByName` 이 풀 스캔 |\n| **외래 키 제약 이름** | 3.6 | `FK5l65mvymoc8t2eeef1f0lucm3` |\n\n**첫 번째가 가장 크다.**\n\n> **5.3절에서 스레드 둘로 재현**했다. **애플리케이션 검증만으로는 못 막는다.**\n\n**세 번째는 규모가 커지면 아프다.**\n\n```sql\nselect ... from member where name = ?\n```\n\n**회원 백만이면 풀 스캔**이다. **`@Table(indexes = ...)`** 로 건다.\n\n**네 번째는 사소한데 운영에서 불편**하다.\n\n```java\n@JoinColumn(name = \"member_id\",\n            foreignKey = @ForeignKey(name = \"fk_orders_member\"))\n```\n\n**제약 위반 로그를 읽을 수** 있게 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "예외와 화면 셋",
+   "md": "| 항목 | 어디서 |\n|---|---|\n| **`NotEnoughStockException` 이 500** | 6.2, 8.10 |\n| **`@ExceptionHandler` 가 없다** | 6.2 |\n| **폼 검증은 200, 서비스 예외는 500** | 8.2, 8.3 |\n\n**셋이 같은 문제**다.\n\n> **사용자 입장에서는 다 \"입력이 잘못됐다\"** 인데 응답이 다르다.\n\n**고치는 법은 8.3절에** 적었다.\n\n```java\ntry {\n    orderService.order(memberId, itemId, count);\n} catch (NotEnoughStockException e) {\n    result.reject(\"notEnoughStock\", e.getMessage());\n    return \"order/orderForm\";\n}\n```\n\n**또는 `@ControllerAdvice`** 로 한곳에.\n\n> **「MVC 2편」이 다룬 주제**라 이 책이 반복하지 않았다(1.3절).\n\n**엔티티 설계 다섯**\n\n| 항목 | 어디서 |\n|---|---|\n| **`Member`·`Item` 에 setter 가 남았다** | 8.2, 8.5 |\n| **`findOne` 이 `null` 을 돌려준다** | 4.4, 5.6 |\n| **`equals`/`hashCode` 가 없다** | 3.8 |\n| **`setMember` 라는 이름** | 7.1 |\n| **상품명 스냅숏이 없다** | 7.2 |\n\n**두 번째가 8.4절에서 NPE 위험**이었다.\n\n**다섯 번째**는 이렇다.\n\n> **주문 시점 가격은 복사했는데 상품명은 안 했다.** **상품명이 바뀌면 과거 주문의 상품명도 바뀐다.**\n>\n> **7.2절에서 스냅숏의 원칙을 세우고 일부만 적용**했다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "나머지 아홉",
+   "md": "**쿼리와 화면 넷**\n\n| 항목 | 어디서 |\n|---|---|\n| **엔티티를 화면에 넘김** | 8.4, 9.1 |\n| **N+1 을 안 고침** | 9.4 |\n| **`orderItems[0]` 하드코딩** | 8.11 |\n| **선택 상자에 전체를 뿌림** | 8.10 |\n\n**보안 둘**\n\n| 항목 | 어디서 |\n|---|---|\n| **`hidden` 의 id 조작** | 8.7 |\n| **인증·인가 없음** | 1.3 |\n\n**첫 번째가 실제 취약점**이다.\n\n> **8.7절에서 재현**했다. **`id=2` 로 바꿔 남의 상품을 수정**했다.\n>\n> **권한 검사가 있어야** 한다.\n\n**비즈니스 규칙 셋**\n\n| 항목 | 어디서 |\n|---|---|\n| **`removeStock(-5)` 이 재고를 늘림** | 6.1 |\n| **이미 취소된 주문을 또 취소** | 8.12 |\n| **가격이 음수여도 통과** | 8.5 |\n\n**셋 다 검증 한 줄**이면 된다.\n\n```java\npublic void removeStock(int quantity) {\n    if (quantity <= 0) throw new IllegalArgumentException();\n    // ...\n}\n\npublic void cancel() {\n    if (this.status == OrderStatus.CANCEL) {\n        throw new IllegalStateException(\"이미 취소된 주문입니다\");\n    }\n    // ...\n}\n```\n\n> **8.12절에서 두 번 취소하면 재고가 101** 이 됐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 안 고쳤나",
+   "md": "**고치면 그 주제의 절이 된다.**\n\n| 고치면 | 필요한 것 |\n|---|---|\n| 유니크 제약 | 동시성·격리 수준 절 |\n| `@ExceptionHandler` | 「MVC 2편」 반복 |\n| 인증·인가 | 스프링 시큐리티 |\n| DTO 전면 도입 | 다음 권의 주제 |\n\n**이 책의 주제가 아니다**(1.2절).\n\n> **1.1절에서 \"설계 결정이 어떻게 흘러가나\" 가 주제**라고 했다.\n>\n> **각 항목을 고치는 것보다 \"고쳐야 할 것이 여기 있다\" 를 아는 것**이 이 책의 몫이다."
+  },
+  {
+   "type": "figure",
+   "caption": "목록이 정직한 이유",
+   "ascii": "   why a book collects these instead of fixing them\n\n   fixing each one adds a section about that topic\n   the book becomes about validation, about security\n\n   a list is honest: here is what a tutorial leaves out\n   and a real project must not",
+   "note": "**튜토리얼이 생략하는 것**의 목록이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 미룬 것들의 증거",
+   "sql": "# --- 동시 가입 (5.3절) ---\n\n#   [pool-1-thread-1] Hibernate: select ... where m1_0.name=?  -> 0\n#   [pool-1-thread-2] Hibernate: select ... where m1_0.name=?  -> 0\n#   [pool-1-thread-1] Hibernate: insert into member (...)\n#   [pool-1-thread-2] Hibernate: insert into member (...)\n\nselect name, count(*) from member group by name;\n#   kim  2\n\n# --- not null 이 없어서 (3.3절) ---\n\nMember m = new Member();\nm.setName(\"주소없는회원\");\nmemberService.join(m);\n\n#   Hibernate: insert into member (city, street, zipcode, name, member_id)\n#              values (?, ?, ?, ?, ?)\n#   binding parameter [1] as [VARCHAR] - [null]\n#   binding parameter [2] as [VARCHAR] - [null]\n#   binding parameter [3] as [VARCHAR] - [null]\n\n#   통과한다\n\n# --- 인덱스가 없어서 (5.3절) ---\n\nexplain select * from member where name = 'userA';\n\n#   H2:  PUBLIC.MEMBER.tableScan\n\n#   (인덱스를 걸면)\n#   PUBLIC.IDX_MEMBER_NAME: NAME = 'userA'\n\n# --- 음수 재고 (6.1절) ---\n\nitem.removeStock(-5);\nem.flush();\n\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   binding parameter [3] as [INTEGER] - [15]\n\n#   재고가 늘었다\n\n# --- 이중 취소 (8.12절) ---\n\norder.cancel();\norder.cancel();\nem.flush();\n\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   binding parameter [3] as [INTEGER] - [102]\n\n#   재고가 원래보다 많아졌다\n\n#   status 는 이미 CANCEL 인데 또 바꿨다\n\n# --- id 조작 (8.7절) ---\n\nPOST /items/1/edit\nid=2&name=조작됨&price=1&stockQuantity=0\n\n#   Hibernate: select ... where i1_0.item_id=?\n#   binding parameter [1] as [BIGINT] - [2]\n#   Hibernate: update item set name=? ... where item_id=?\n#   binding parameter [1] as [VARCHAR] - [조작됨]\n\nHTTP/1.1 302\n\n#   2번 상품이 바뀌었다\n\n# --- 상품명 스냅숏이 없어서 (7.2절) ---\n\n#   주문 후 상품명을 바꾸면\nitem.change(\"완전히 다른 책\", 10000, 100);\nem.flush();\n\n#   Hibernate: update item set name=? ... where item_id=?\n\nGET /orders\n\n#   Hibernate: select i1_0.item_id, i1_0.name, ... where i1_0.item_id=?\n\n<td>완전히 다른 책</td>\n\n#   과거 주문의 상품명이 바뀌었다\n\n#   order_price 는 안 바뀌는데 이름은 바뀐다\n\n# --- 21개 중 하나도 ---\n\n#   테스트를 깨지 않았다\n#   예외를 던지지 않았다\n#   로그에 경고가 안 나왔다\n\n#   전부 '정상 동작' 이다\n\n# --- 그것이 이 목록의 요점이다ㅤ---\n\n#   9.2절에서 말한 조용한 문제들과 같은 성질이다",
+   "note": "**동시 가입이 뚫리고, 주소 없는 회원이 저장되고, 인덱스 없이 풀 스캔**한다.\n\n**음수 재고와 이중 취소로 재고가 늘어난다.** **`id` 조작으로 남의 상품이 바뀐다.**\n\n**상품명 스냅숏이 없어 과거 주문의 상품명이 바뀐다.** **`order_price` 는 안 바뀌는데** 이름은 바뀐다 — **원칙을 일부만 적용한 결과**다.\n\n**스물한 개 중 하나도 테스트를 안 깨고 예외를 안 던진다.** **전부 \"정상 동작\"** 이다.\n\n**그것이 이 목록의 요점**이다.\n\n**다음 절에서 9장을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**미룬 것이 스물한 개**다.",
+  "**DB 제약 넷** — 유니크·`not null`·인덱스·FK 이름.",
+  "**예외 처리 셋이 같은 문제**다 — 응답이 제각각.",
+  "**엔티티 설계 다섯** — setter·`Optional`·`equals`·이름·스냅숏.",
+  "**쿼리와 화면 넷, 보안 둘, 규칙 셋.**",
+  "**`id` 조작이 실제 취약점**이다.",
+  "**상품명 스냅숏을 안 해 과거 주문이 바뀐다.**",
+  "**고치면 그 주제의 절이 된다** — 이 책의 주제가 아니다.",
+  "**스물한 개 중 하나도 테스트를 안 깬다.**"
+ ],
+ "drills": [
+  {
+   "task": "목록 스물한 개를 우선순위로 정렬한다.",
+   "done_when": "무엇부터 고칠지 정했다.",
+   "minutes": 20
+  },
+  {
+   "task": "유니크 제약과 인덱스를 걸어 본다.",
+   "done_when": "동시 가입이 막히고 실행 계획이 바뀌는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "이중 취소와 음수 재고를 막는다.",
+   "done_when": "검사 두 줄로 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "상품명을 바꾸고 과거 주문을 본다.",
+   "done_when": "이름이 바뀌는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "미룬 것이 몇 개인가?",
+   "a": "스물한 개다."
+  },
+  {
+   "q": "DB 제약 중 가장 큰 것은?",
+   "a": "`member.name` 유니크다. 동시 가입을 못 막는다."
+  },
+  {
+   "q": "실제 취약점은?",
+   "a": "`hidden` 의 id 를 조작해 남의 상품을 수정할 수 있다."
+  },
+  {
+   "q": "상품명 스냅숏이 없으면?",
+   "a": "상품명을 바꾸면 과거 주문의 상품명도 바뀐다."
+  },
+  {
+   "q": "이 항목들의 공통점은?",
+   "a": "하나도 테스트를 깨거나 예외를 던지지 않는다. 전부 정상 동작으로 보인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
