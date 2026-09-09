@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-review",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "정리",
+ "summary": "엔티티가 로직을 가지면.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "6장을 정리한다.",
+  "`update` 가 모든 컬럼을 쓰는 이유를 안다.",
+  "7장이 무엇을 더하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**두 번째 도메인이 끝났다.** **5장과 무엇이 달라졌는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "6장이 만든 SQL",
+   "ascii": "   the sql this chapter produced\n\n   select next value for item_seq\n   insert into item (..., dtype, item_id)      per type\n   select ... from item where item_id = ?\n   select ... from item\n   select ... from item where dtype = 'B'\n   update item set (all columns) where item_id = ?\n\n   six. the update is new since chapter 5.",
+   "note": "**`update` 가 새로 생겼다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "5장과 비교",
+   "md": "| | 5장 회원 | 6장 상품 |\n|---|---|---|\n| 엔티티 로직 | **없다** | **`addStock`·`removeStock`** |\n| 예외 | 서비스가 던진다 | **엔티티가 던진다** |\n| 서비스 | 검증 + 위임 | **위임만** |\n| SQL | 5개 | **6개** |\n| **`update`** | **없다** | **있다** |\n| 상속 | 없다 | **`dtype`** |\n\n**세 번째 줄이 뒤집혔다.**\n\n> **회원은 서비스에 로직(중복 검증)이 있고 엔티티는 비었다.**\n> **상품은 엔티티에 로직이 있고 서비스가 비었다.**\n\n**규칙이 데이터를 필요로 하면 엔티티**로 간다.\n\n| 규칙 | 필요한 데이터 | 어디로 |\n|---|---|---|\n| 재고 부족 검사 | **`stockQuantity`** | **엔티티** |\n| 중복 이름 검사 | **다른 회원 전부** | **서비스** |\n\n**두 번째는 엔티티가 알 수 없다.** **`member.isDuplicate()`** 를 만들 수 없다 — 자기 밖을 봐야 한다.\n\n> **9.5절에서 이 기준을** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "`update` 가 모든 컬럼을 쓴다",
+   "ascii": "   update item set name=?, price=?, stock_quantity=?,\n                   author=?, isbn=? where item_id=?\n\n   only stock_quantity changed\n\n   why send all of them\n     one prepared statement, reused                 cache friendly\n     no need to compare before building the sql\n\n   @DynamicUpdate changes it, and costs the reuse",
+   "note": "**바꾸려면 대가가 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 전부 쓰나",
+   "md": "**`stock_quantity` 만 바뀌었는데 다섯 컬럼**을 쓴다.\n\n**이유가 둘**이다.\n\n**① `PreparedStatement` 재사용**\n\n**SQL 이 항상 같으면 한 번 준비해 계속** 쓴다. **DB 도 실행 계획을 캐시**한다.\n\n**컬럼 조합마다 다른 SQL 이면** — **책 하나에 `2⁵ = 32` 가지**다.\n\n**② 미리 만들어 둘 수 있다**\n\n**하이버네이트가 뜰 때 엔티티마다 `update` 문을 준비**한다. **실행 시점에 조립할 필요가 없다.**\n\n**`@DynamicUpdate` 로 바꿀 수 있다.**\n\n```java\n@Entity\n@DynamicUpdate\npublic class Item { }\n```\n\n```sql\nupdate item set stock_quantity=? where item_id=?\n```\n\n**바뀐 것만 쓴다.**\n\n| | 기본 | `@DynamicUpdate` |\n|---|---|---|\n| SQL | 고정 | **매번 조립** |\n| 재사용 | **된다** | 안 된다 |\n| 컬럼이 많으면 | 낭비 | **이득** |\n| 낙관적 락 | 무관 | 무관 |\n\n**언제 쓰나.**\n\n> **컬럼이 서른 개인데 하나만 바뀔 때**다. **`text` 컬럼이 있으면 특히** — 안 바뀐 큰 값을 매번 보낸다.\n>\n> **컬럼이 다섯이면 안 쓴다.** **이 책도 안 쓴다.**\n\n**`@DynamicInsert`** 도 있다. **`null` 인 컬럼을 `insert` 에서 뺀다** — **`SINGLE_TABLE` 에서 값을 하나**, **기본값이 있는 컬럼에 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장에서 남은 것",
+   "md": "**셋을 뒤로** 미뤘다.\n\n**① `merge` 를 쓰고 있다** (6.3절)\n\n**8.8절에서 변경 감지로** 바꾼다.\n\n**② 음수 검사가 없다** (6.1절)\n\n```java\nitem.removeStock(-5);   // 재고가 는다\n```\n\n**9.7절 목록**이다.\n\n**③ 오류 화면이 없다** (6.2절)\n\n**`NotEnoughStockException` 이 500 페이지**로 뜬다.\n\n---\n\n**7장이 더하는 것**\n\n| | |\n|---|---|\n| **엔티티 셋을 한 트랜잭션에** | 주문·주문상품·배송 |\n| **`cascade`** | `insert` 가 셋 |\n| **정적 팩토리** | 생성 규칙 |\n| **동적 쿼리** | 주문 검색 |\n| **여러 테이블 `update`** | 취소하면 재고도 |\n\n> **1.1절에서 \"7장이 가장 어렵다\" 고** 했다. **5·6장의 모양을 그대로 확장**한 것이라 순서대로 읽으면 따라간다.\n\n**6장의 `removeStock` 이 7장에서 불린다.**\n\n```java\n// 7.3절\nOrderItem.createOrderItem(item, price, count);\n// 안에서 item.removeStock(count)\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 6장 전체",
+   "sql": "# --- 상품 등록 ---\n\nitemService.saveItem(book);\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n\n# --- 상품 목록 ---\n\nitemService.findItems();\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0\n\n# --- 상품 하나 ---\n\nitemService.findOne(1L);\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, ... from item i1_0\n#       where i1_0.item_id=?\n\n# --- 재고 감소 ---\n\nitem.removeStock(3);\n\n#   (커밋 시)\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n\n# --- 상품 수정 (merge) ---\n\nitemService.saveItem(detached);\n\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where i1_0.item_id=?\n#   Hibernate: update item set name=?, price=?, ... where item_id=?\n\n#   select 가 하나 더 나간다\n\n# --- 6장이 만든 SQL, 전부 ---\n\n#   1  select next value for item_seq\n#   2  insert into item (..., dtype, item_id) values (..., 'B', ?)\n#   3  select ... from item i1_0 where i1_0.item_id=?\n#   4  select ... from item i1_0\n#   5  select ... from item i1_0 where i1_0.dtype='B'\n#   6  update item set (모든 컬럼) where item_id=?\n\n#   여섯 개\n\n#   4.1절 예상: 네 개\n#   실제: 여섯 개\n\n#   dtype 조회와 merge 의 select 를 예상 못 했다\n\n# --- 5장과 나란히 ---\n\n#   5장  select next value / insert / select x3        = 5\n#   6장  select next value / insert / select x3 / update = 6\n\n#   update 하나가 늘었다\n\n# --- @DynamicUpdate 를 켜면 ---\n\n@Entity\n@DynamicUpdate\npublic abstract class Item { }\n\nitem.removeStock(3);\n\n#   Hibernate: \n#       update item set stock_quantity=? where item_id=?\n\n#   컬럼 하나만 쓴다\n\n#   대신 PreparedStatement 를 매번 새로 만든다\n\n# --- 이 책은 안 켠다 ---\n\n#   컬럼이 다섯뿐이다\n\n# --- 지금 상태 ---\n\n#   리포지토리 2개, 서비스 2개\n#   엔티티에 로직이 처음 생겼다\n#   화면은 여전히 0개\n\n# 다음 장에서 셋을 한 트랜잭션에 묶는다",
+   "note": "**6장이 SQL 여섯 개**를 만들었다. **4.1절 예상은 넷**이었다 — `dtype` 조회와 `merge` 의 `select` 를 예상 못 했다.\n\n**5장과의 차이가 `update` 하나**다.\n\n**`@DynamicUpdate` 를 켜면 컬럼 하나만** 쓴다. **이 책은 안 켠다** — 컬럼이 다섯뿐이다.\n\n**`merge` 경로에 `select` 가 하나 더** 나간다. **8.8절에서 이것을 없앤다.**\n\n**다음 장에서 엔티티 셋을 한 트랜잭션에 묶는다.**"
+  }
+ ],
+ "recap": [
+  "**6장이 SQL 여섯 개**를 만들었다 — 예상보다 둘 많다.",
+  "**5장과의 차이가 `update`** 하나다.",
+  "**회원은 서비스에, 상품은 엔티티에** 로직이 있다.",
+  "**규칙이 자기 데이터만 필요로 하면 엔티티**로 간다.",
+  "**중복 검사는 자기 밖을 봐야** 해서 서비스다.",
+  "**`update` 가 모든 컬럼**을 쓴다 — `PreparedStatement` 재사용 때문.",
+  "**`@DynamicUpdate` 는 컬럼이 많을 때** 쓴다.",
+  "**`merge` 경로에 `select` 가 하나 더** 나간다.",
+  "**7장이 엔티티 셋·`cascade`·정적 팩토리·동적 쿼리**를 더한다."
+ ],
+ "drills": [
+  {
+   "task": "6장의 SQL 여섯 개를 적어 둔다.",
+   "done_when": "4.1절 예상과 대조했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@DynamicUpdate` 를 켜고 `update` 를 본다.",
+   "done_when": "컬럼 하나만 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "회원과 상품의 로직 위치를 비교한다.",
+   "done_when": "무엇이 기준인지 한 줄로 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`merge` 경로와 변경 감지 경로의 SQL 을 센다.",
+   "done_when": "개수가 같은 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "6장이 5장에 더한 SQL 은?",
+   "a": "`update` 다. 변경 감지가 만든다."
+  },
+  {
+   "q": "로직을 엔티티에 둘지 서비스에 둘지의 기준은?",
+   "a": "규칙이 자기 데이터만 필요로 하면 엔티티, 다른 엔티티들을 봐야 하면 서비스다."
+  },
+  {
+   "q": "`update` 가 왜 모든 컬럼을 쓰나?",
+   "a": "SQL 이 고정되어야 `PreparedStatement` 와 실행 계획을 재사용할 수 있기 때문이다."
+  },
+  {
+   "q": "`@DynamicUpdate` 는 언제 쓰나?",
+   "a": "컬럼이 아주 많거나 큰 텍스트 컬럼이 있을 때다."
+  },
+  {
+   "q": "7장이 더하는 것은?",
+   "a": "엔티티 셋을 한 트랜잭션에, `cascade`, 정적 팩토리, 동적 쿼리다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

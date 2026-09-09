@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-inheritance",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "상속 매핑이 만든 SQL",
+ "summary": "한 테이블에 셋이 들어간다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "상속 전략이 만드는 SQL 을 본다.",
+  "3.5절의 선택을 SQL 로 확인한다.",
+  "다형성 조회를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절에서 `SINGLE_TABLE` 을 골랐다.** **그 결과를 SQL 로** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 전략의 SQL",
+   "ascii": "   what each strategy sends for the same operations\n\n                    SINGLE_TABLE          JOINED\n   save a book      insert item           insert item\n                                          insert book\n\n   find by id       select from item      select item\n                                            left join book\n                                            left join album\n                                            left join movie\n\n   find all         select from item      the same four way join\n\n   one insert versus two, one table versus four",
+   "note": "**조인 유무가 가장 크다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "저장할 때",
+   "md": "**`SINGLE_TABLE` 은 `insert` 하나**다.\n\n```sql\ninsert into item (name, price, stock_quantity, author, isbn, dtype, item_id)\nvalues (?, ?, ?, ?, ?, 'B', ?)\n```\n\n**`JOINED` 는 둘**이다.\n\n```sql\ninsert into item (name, price, stock_quantity, item_id) values (?, ?, ?, ?)\ninsert into book (author, isbn, item_id) values (?, ?, ?)\n```\n\n**대량 저장에서 두 배**다.\n\n> **`JOINED` 의 이득은 정규화**다. **`author` 에 `not null` 을 걸 수** 있고 **`null` 컬럼이 없다**(3.3절).\n>\n> **저장이 적고 조회가 많으면 `SINGLE_TABLE`** 이 낫다. **상품이 그렇다.**\n\n**앨범을 저장하면 컬럼 목록이 달라진다.**\n\n```sql\ninsert into item (name, price, stock_quantity, artist, etc, dtype, item_id)\nvalues (?, ?, ?, ?, ?, 'A', ?)\n```\n\n**`author`·`isbn` 이 빠졌다.** **하이버네이트가 타입마다 다른 `insert`** 를 준비한다(3.5절)."
+  },
+  {
+   "type": "figure",
+   "caption": "다형성 조회",
+   "ascii": "   select i from Item i\n\n   SINGLE_TABLE\n     select ... from item i1_0\n     dtype tells hibernate which class to build\n\n   JOINED\n     select ... from item i1_0\n       left join book  ...\n       left join album ...\n       left join movie ...\n     a non null child column tells it which class\n\n   both return Book, Album, Movie instances",
+   "note": "**둘 다 자식 인스턴스**를 돌려준다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`select i from Item i` 가 되는 이유",
+   "md": "**`Item` 은 `abstract`** 다(3.5절). **인스턴스를 못 만든다.**\n\n**그런데 조회가 된다.**\n\n```java\nList<Item> items = em.createQuery(\"select i from Item i\", Item.class)\n        .getResultList();\n\nfor (Item item : items) {\n    log.info(\"{}\", item.getClass());\n}\n// class ...Book\n// class ...Album\n// class ...Movie\n```\n\n**`dtype` 을 보고 정한다.**\n\n**이것이 다형성의 이득**이다.\n\n```java\n// 6.4절\npublic List<Item> findItems() {\n    return itemRepository.findAll();\n}\n```\n\n**세 종류를 한 번에** 가져온다. **타입별로 세 번 조회할 필요가 없다.**\n\n**특정 타입만 조회**할 수도 있다.\n\n```java\nem.createQuery(\"select b from Book b\", Book.class).getResultList();\n```\n\n```sql\nselect b1_0.item_id, b1_0.name, b1_0.price, b1_0.stock_quantity,\n       b1_0.author, b1_0.isbn\nfrom item b1_0\nwhere b1_0.dtype = 'B'\n```\n\n**`where dtype = 'B'` 가 자동으로** 붙는다.\n\n> **`JOINED` 였다면 `inner join book`** 이 된다. **결과는 같다.**\n\n**`type()` 으로 조건을 걸 수도** 있다.\n\n```java\nem.createQuery(\"select i from Item i where type(i) = Book\", Item.class);\n```\n\n**`where i1_0.dtype = 'B'`** 가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "8장에서 아플 자리",
+   "md": "**조회는 다형성으로 되는데 화면은 안 된다.**\n\n**상품 목록**은 괜찮다.\n\n```html\n<tr th:each=\"item : ${items}\">\n    <td th:text=\"${item.name}\"></td>\n    <td th:text=\"${item.price}\"></td>\n</tr>\n```\n\n**공통 필드만 쓴다.** **8.6절.**\n\n**수정 화면이 문제**다.\n\n```java\n// 8.7절\n@GetMapping(\"/items/{itemId}/edit\")\npublic String updateItemForm(@PathVariable Long itemId, Model model) {\n    Book item = (Book) itemService.findOne(itemId);   // 캐스팅\n    BookForm form = new BookForm();\n    form.setAuthor(item.getAuthor());\n    form.setIsbn(item.getIsbn());\n}\n```\n\n**`Book` 으로 캐스팅**한다. **앨범이 오면 `ClassCastException`** 이다.\n\n**제대로 하려면**\n\n```java\nif (item instanceof Book book) {\n    // 책 폼\n} else if (item instanceof Album album) {\n    // 앨범 폼\n}\n```\n\n**타입마다 폼과 화면이 필요**하다.\n\n> **3.5절에서 \"다형성이 안 통하는 자리\" 라고** 했다. **8.7절에서 실물**을 본다.\n>\n> **4.1절에서 책만 만들기로** 한 이유이기도 하다.\n\n**9.7절에서 \"상속이 여기서 값을 했나\" 를** 묻는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 책 저장 ---\n\nBook book = new Book();\nbook.setName(\"JPA\"); book.setPrice(10000); book.setStockQuantity(10);\nbook.setAuthor(\"김영한\"); book.setIsbn(\"123\");\nem.persist(book); em.flush();\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n\n#   insert 하나\n\n# --- 앨범 저장 ---\n\nAlbum album = new Album();\nalbum.setName(\"좋은앨범\"); album.setPrice(15000); album.setStockQuantity(5);\nalbum.setArtist(\"아이유\"); album.setEtc(\"발라드\");\nem.persist(album); em.flush();\n\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, artist, etc,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'A', ?)\n\n#   컬럼 목록이 다르다\n#   author, isbn 이 빠졌다\n\n# --- 전체 조회 ---\n\nem.createQuery(\"select i from Item i\", Item.class).getResultList();\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0\n\n#   조인이 없다\n\nfor (Item i : items) log.info(\"{}\", i.getClass().getSimpleName());\n#   Book\n#   Album\n\n#   dtype 을 보고 만들었다\n\n# --- 책만 조회 ---\n\nem.createQuery(\"select b from Book b\", Book.class).getResultList();\n\n#   Hibernate: \n#       select b1_0.item_id, b1_0.name, b1_0.price, b1_0.stock_quantity,\n#              b1_0.author, b1_0.isbn\n#       from item b1_0\n#       where b1_0.dtype='B'\n\n#   where dtype='B' 가 자동으로 붙었다\n#   컬럼도 Book 것만 가져온다\n\n# --- type() 으로 조건 ---\n\nem.createQuery(\"select i from Item i where type(i) = Book\", Item.class);\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, ... from item i1_0\n#       where i1_0.dtype='B'\n\n# --- JOINED 로 바꾸면 (비교) ---\n\n@Inheritance(strategy = InheritanceType.JOINED)\n\n#   (저장)\n#   Hibernate: insert into item (name, price, stock_quantity, item_id)\n#              values (?, ?, ?, ?)\n#   Hibernate: insert into book (author, isbn, item_id) values (?, ?, ?)\n\n#   insert 가 둘이다\n\n#   (전체 조회)\n#   Hibernate: \n#       select i1_0.item_id,\n#              case when i1_1.item_id is not null then 1\n#                   when i1_2.item_id is not null then 2\n#                   when i1_3.item_id is not null then 3\n#                   when i1_0.item_id is not null then 0 end,\n#              i1_0.name, i1_0.price, i1_0.stock_quantity,\n#              i1_1.artist, i1_1.etc, i1_2.author, i1_2.isbn,\n#              i1_3.actor, i1_3.director\n#       from item i1_0\n#       left join album i1_1 on i1_0.item_id=i1_1.item_id\n#       left join book i1_2 on i1_0.item_id=i1_2.item_id\n#       left join movie i1_3 on i1_0.item_id=i1_3.item_id\n\n#   조인 셋과 case 문\n\n#   dtype 컬럼이 없으니 case 로 타입을 판단한다\n\n# --- 3.5절의 선택을 SQL 로 확인했다 ---\n\n#   SINGLE_TABLE\n#     insert 1, select 조인 없음\n#     null 컬럼 넷, not null 못 검\n\n#   JOINED\n#     insert 2, select 조인 셋 + case\n#     null 컬럼 없음, not null 가능\n\n#   이 프로젝트는 조회가 많다 -> SINGLE_TABLE\n\n# --- 8.7절에서 아플 자리 ---\n\nBook item = (Book) itemService.findOne(itemId);\n\n#   앨범 id 로 부르면\n#   java.lang.ClassCastException:\n#     class ...Album cannot be cast to class ...Book\n\n#   조회는 다형성이 되는데 화면은 안 된다",
+   "note": "**책과 앨범의 `insert` 컬럼 목록이 다르다.** **타입마다 다른 SQL** 을 준비한다.\n\n**전체 조회에 조인이 없다.** **3.5절의 가장 큰 이득**이다.\n\n**`select b from Book b` 에 `where dtype='B'`** 가 자동으로 붙는다.\n\n**`JOINED` 로 바꾸면 `case when` 과 조인 셋**이다. **비교하면 차이가 분명**하다.\n\n**맨 아래가 8.7절의 예고**다. **조회는 다형성이 되는데 캐스팅은 터진다.**\n\n**다음 절에서 6장을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**`SINGLE_TABLE` 은 `insert` 하나, `JOINED` 는 둘**이다.",
+  "**타입마다 `insert` 컬럼 목록이 다르다.**",
+  "**전체 조회에 조인이 없다** — 가장 큰 이득.",
+  "**`JOINED` 는 조인 셋과 `case when`** 이 붙는다.",
+  "**`select i from Item i` 가 자식 인스턴스**를 돌려준다.",
+  "**`select b from Book b` 에 `where dtype='B'`** 가 자동으로 붙는다.",
+  "**`type(i) = Book`** 으로 조건을 걸 수 있다.",
+  "**조회는 다형성이 되는데 화면은 안 된다.**",
+  "**8.7절에서 `ClassCastException`** 을 만난다."
+ ],
+ "drills": [
+  {
+   "task": "책과 앨범을 저장하고 `insert` 를 비교한다.",
+   "done_when": "컬럼 목록이 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`select i from Item i` 로 조회하고 클래스를 찍는다.",
+   "done_when": "자식 타입이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`select b from Book b` 의 SQL 을 본다.",
+   "done_when": "`where dtype` 이 붙는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`JOINED` 로 바꿔 같은 조회를 해 본다.",
+   "done_when": "조인과 `case when` 을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`SINGLE_TABLE` 과 `JOINED` 의 `insert` 개수는?",
+   "a": "하나와 둘이다."
+  },
+  {
+   "q": "전체 조회의 차이는?",
+   "a": "`SINGLE_TABLE` 은 조인이 없고 `JOINED` 는 자식 수만큼 조인과 `case when` 이 붙는다."
+  },
+  {
+   "q": "`select i from Item i` 는 무엇을 돌려주나?",
+   "a": "`dtype` 을 보고 만든 `Book`·`Album`·`Movie` 인스턴스다."
+  },
+  {
+   "q": "특정 타입만 조회하면?",
+   "a": "`where dtype = 'B'` 가 자동으로 붙는다."
+  },
+  {
+   "q": "다형성이 안 통하는 자리는?",
+   "a": "화면이다. 타입마다 필드가 달라 캐스팅과 별도 폼이 필요하다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

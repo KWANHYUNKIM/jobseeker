@@ -358,7 +358,7 @@
           "title": "상속 매핑이 만든 SQL",
           "summary": "한 테이블에 셋이 들어간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -366,7 +366,7 @@
           "title": "정리",
           "summary": "엔티티가 로직을 가지면.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
