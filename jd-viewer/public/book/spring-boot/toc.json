@@ -362,7 +362,7 @@
           "title": "빈이 없으면",
           "summary": "내가 만들면 진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -370,7 +370,7 @@
           "title": "설정이 있으면",
           "summary": "한 줄로 켜고 끈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

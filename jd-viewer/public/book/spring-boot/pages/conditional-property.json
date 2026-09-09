@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "conditional-property",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "설정이 있으면",
+ "summary": "한 줄로 켜고 끈다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "속성 조건을 안다.",
+  "없을 때 규칙을 안다.",
+  "구현을 고르는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절은 JAR 가** 스위치였다. **여기선 설정 한 줄이** 스위치다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 보고 정하나",
+   "ascii": "   how the property condition decides\n\n   prefix plus name give the key to look up\n   havingValue names the value that counts as on\n   matchIfMissing decides what an absent key means\n\n   an absent key is false unless that last switch says otherwise",
+   "note": "**없으면 거짓, 마지막 스위치가 그걸** 뒤집는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다시 빌드하지 않고 바꾸는 유일한 스위치다",
+   "md": "**JAR 는 다시 빌드해야** 한다.\n\n> **6.4절의 그것**이다.\n> **운영 중에는 못** 바꾼다.\n> **설정은 인자로도** 준다.\n\n**환경마다 다르게** 켠다.\n\n> **개발에만 켜는 것들**이다.\n> **H2 콘솔이 그** 예다.\n> **아래에서 그걸** 본다.\n\n**끄는 스위치를 남겨** 둔다.\n\n> **뭔가 잘못됐을 때 끈**다.\n> **다시 빌드 안 해도** 된다.\n> **아래에서 내 것에** 단다.\n\n**구현을 고르기도** 한다.\n\n> **값에 따라 다른 빈**이다.\n> **아래에서 셋 중 하나를** 고른다.\n> **7장에서 그 값이 어디서 오는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 자리에 같은 스위치",
+   "ascii": "   the same switch at three levels\n\n   on the class    the whole feature\n   on the method   one bean of it\n   on an inner one a variant of it\n\n   boot uses the third for choosing between implementations",
+   "note": "**부트는 셋째로 구현을** 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "없을 때 무엇으로 볼지가 늘 함정이다",
+   "md": "**기본은 거짓**이다.\n\n> **안 적으면 안** 걸린다.\n> **켜 두려면 스위치를 켜야** 한다.\n> **아래에서 둘 다** 본다.\n\n**값 비교는 대소문자를 안** 가린다.\n\n> **`TRUE` 도** 맞는다.\n> **아래에서 확인**한다.\n> **빈 문자열은 다르**다.\n\n**끄는 쪽은 값을 적어야** 한다.\n\n> **`false` 로 명시**한다.\n> **키만 지우면 기본으로** 돌아간다.\n> **아래에서 그 차이를** 본다.\n\n**기동 뒤에 바꿔도 소용** 없다.\n\n> **조건은 기동 때 한 번**이다.\n> **아래에서 확인**한다.\n> **⑯ 8장의 액츄에이터와 다르**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 부트 것을 하나 본다\n\n// H2ConsoleAutoConfiguration\n@AutoConfiguration(after = DataSourceAutoConfiguration.class)\n@ConditionalOnWebApplication(type = Type.SERVLET)\n@ConditionalOnClass(WebServlet.class)\n@ConditionalOnProperty(prefix = \"spring.h2.console\", name = \"enabled\",\n                       havingValue = \"true\")\npublic class H2ConsoleAutoConfiguration { ... }\n\n// 아무것도 안 적었을 때\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'H2ConsoleAutoConfiguration' | head -4\n   H2ConsoleAutoConfiguration:\n      Did not match:\n         - @ConditionalOnProperty (spring.h2.console.enabled) did not find property\n           'enabled'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/h2-console\n404\n\n\n-- 한 줄을 켠다\n\n// application.yml\nspring:\n  h2:\n    console:\n      enabled: true\n\n$ ./gradlew bootRun 2>&1 | grep -i 'h2 console'\nINFO ... : H2 console available at '/h2-console'. Database available at\n           'jdbc:h2:mem:...'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/h2-console\n302\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'H2ConsoleAutoConfiguration matched' | head -3\n   H2ConsoleAutoConfiguration matched:\n      - @ConditionalOnProperty (spring.h2.console.enabled=true) matched\n\n--   설정 한 줄이 엔드포인트를 만들었다\n--   ⑤ 3장에서 이 콘솔을 썼었다\n\n\n-- 다시 빌드 없이 바꾼다\n\n$ ./gradlew bootJar -q\n$ java -jar build/libs/app.jar 2>&1 | grep -ci 'h2 console'\n1\n\n$ java -jar build/libs/app.jar --spring.h2.console.enabled=false 2>&1 \\\n    | grep -ci 'h2 console'\n0\n\n$ SPRING_H2_CONSOLE_ENABLED=false java -jar build/libs/app.jar 2>&1 \\\n    | grep -ci 'h2 console'\n0\n\n--   같은 JAR 인데 기능이 달라졌다\n--   6.4절의 JAR 스위치와 다른 점이다\n--   7장에서 이 셋을 제대로 본다\n\n\n-- 내 것에 스위치를 단다\n\npackage study.lib;\n\n@AutoConfiguration\n@ConditionalOnProperty(prefix = \"study.audit\", name = \"enabled\",\n                       havingValue = \"true\", matchIfMissing = true)\npublic class AuditAutoConfiguration {\n    @Bean\n    public AuditFilter auditFilter() {\n        System.out.println(\"[감사] 필터 등록\");\n        return new AuditFilter();\n    }\n}\n\n// 안 적었을 때\n$ ./gradlew bootRun 2>&1 | grep '\\[감사\\]'\n[감사] 필터 등록\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-audit'\nX-Audit: on\n\n--   matchIfMissing 이라 켜져 있다\n\n\n-- 끄려면 값을 적어야 한다\n\n$ java -jar build/libs/app.jar --study.audit.enabled=false 2>&1 | grep -c '\\[감사\\]'\n0\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -ci '^x-audit'\n0\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'AuditAutoConfiguration' | head -4\n   AuditAutoConfiguration:\n      Did not match:\n         - @ConditionalOnProperty (study.audit.enabled=true) found different value\n           in property 'enabled'\n\n--   키를 지우면 다시 켜진다\n--   메시지가 없을 때와 다르다\n\n\n-- 없을 때와 다른 값일 때\n\n// matchIfMissing = false 로 두고\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep 'study.audit' | head -1\n         - @ConditionalOnProperty (study.audit.enabled) did not find property 'enabled'\n\n// 값을 no 로 주면\n$ ./gradlew bootRun --args='--study.audit.enabled=no --debug' 2>&1 \\\n    | grep 'study.audit' | head -1\n         - @ConditionalOnProperty (study.audit.enabled=true) found different value\n           in property 'enabled'\n\n--   메시지가 둘로 갈린다\n--   6.12절에서 이 차이가 실마리가 된다\n\n\n-- 대소문자는 안 가린다\n\n$ for v in true TRUE True; do\n    printf '%-6s ' \"$v\"\n    java -jar build/libs/app.jar --study.audit.enabled=$v 2>&1 | grep -c '\\[감사\\]'\n  done\ntrue   1\nTRUE   1\nTrue   1\n\n$ for v in false yes 1 ''; do\n    printf '%-6s ' \"[$v]\"\n    java -jar build/libs/app.jar --study.audit.enabled=$v 2>&1 | grep -c '\\[감사\\]'\n  done\n[false] 0\n[yes]   0\n[1]     0\n[]      0\n\n--   havingValue 와 같은 글자만 켠다\n\n\n-- havingValue 를 안 적으면\n\n@ConditionalOnProperty(prefix = \"study.audit\", name = \"enabled\")\n\n$ for v in true false abc; do\n    printf '%-6s ' \"$v\"\n    java -jar build/libs/app.jar --study.audit.enabled=$v 2>&1 | grep -c '\\[감사\\]'\n  done\ntrue   1\nfalse  0\nabc    1\n\n--   false 만 아니면 켜진다\n--   그래서 대개 havingValue 를 적는다\n\n\n-- 값으로 구현을 고른다\n\n@AutoConfiguration\npublic class StorageAutoConfiguration {\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnProperty(name = \"study.storage.type\", havingValue = \"memory\",\n                           matchIfMissing = true)\n    static class Memory {\n        @Bean Storage storage() { return new MemoryStorage(); }\n    }\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnProperty(name = \"study.storage.type\", havingValue = \"file\")\n    static class File {\n        @Bean Storage storage() { return new FileStorage(); }\n    }\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnProperty(name = \"study.storage.type\", havingValue = \"jdbc\")\n    static class Jdbc {\n        @Bean Storage storage(DataSource ds) { return new JdbcStorage(ds); }\n    }\n}\n\n$ for t in '' memory file jdbc; do\n    printf '%-8s ' \"[$t]\"\n    java -jar build/libs/app.jar ${t:+--study.storage.type=$t} > /dev/null 2>&1 &\n    until curl -sf localhost:8080/storage > /dev/null 2>&1; do sleep 0.1; done\n    curl -s localhost:8080/storage\n    pkill -f app.jar\n  done\n\n[]       study.lib.MemoryStorage\n[memory] study.lib.MemoryStorage\n[file]   study.lib.FileStorage\n[jdbc]   study.lib.JdbcStorage\n\n--   같은 JAR 가 값 하나로 세 구현을 오간다\n--   ⑥ 6장에서 손으로 갈아 끼우던 그것이다\n\n\n-- 엉뚱한 값을 주면\n\n$ java -jar build/libs/app.jar --study.storage.type=redis 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.boot.StorageController required a bean\nof type 'study.lib.Storage' that could not be found.\n\n$ java -jar build/libs/app.jar --study.storage.type=redis --debug 2>&1 \\\n    | grep -c 'StorageAutoConfiguration\\$'\n3\n\n--   셋 다 안 걸렸다\n--   6.5절의 없음 조건으로 기본을 하나 두면 낫다\n\n\n-- 기동 뒤에 바꿔도 소용없다\n\n$ java -jar build/libs/app.jar --study.storage.type=memory > /dev/null 2>&1 &\n$ curl -s localhost:8080/storage\nstudy.lib.MemoryStorage\n\n$ curl -s -X POST 'localhost:8080/actuator/env' \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"name\":\"study.storage.type\",\"value\":\"file\"}'\n{\"study.storage.type\":\"file\"}\n\n$ curl -s localhost:8080/storage\nstudy.lib.MemoryStorage\n\n--   값은 바뀌었는데 빈은 그대로다\n--   조건은 기동 때 한 번 물었다\n--   8장에서 이 엔드포인트를 제대로 본다\n\n\n-- 정리\n\n$ printf '%-30s %s\\n' \\\n  '스위치'          '설정 한 줄' \\\n  '다시 빌드'       '필요 없음' \\\n  '없으면'          '거짓' \\\n  'matchIfMissing'  '없을 때도 참' \\\n  '대소문자'        '안 가림' \\\n  'havingValue 없음' 'false 만 끔' \\\n  '값으로'          '구현 고르기' \\\n  '기동 뒤'         '안 바뀜'\n\n스위치                           설정 한 줄\n다시 빌드                        필요 없음\n없으면                           거짓\nmatchIfMissing                   없을 때도 참\n대소문자                         안 가림\nhavingValue 없음                 false 만 끔\n값으로                           구현 고르기\n기동 뒤                          안 바뀜\n\n--   6.7절에서 이 보고서를 제대로 읽는다",
+   "note": "**H2 콘솔은 `did not find property 'enabled'` 로 꺼져 있다가 한 줄에 `302` 로** 열린다.\n\n**같은 JAR 를 인자나 환경 변수로 켜고 끌 수 있어 다시 빌드가 필요** 없다.\n\n**없을 때와 다른 값일 때 보고서 메시지가 `did not find property` 와 `found different value` 로** 갈린다.\n\n**`havingValue` 를 안 적으면 `abc` 도 켜지고 `false` 만** 끈다.\n\n**값 하나로 `MemoryStorage`·`FileStorage`·`JdbcStorage` 를 오가고 기동 뒤에 값을 바꿔도 빈은 그대로**다."
+  }
+ ],
+ "recap": [
+  "**설정이** 스위치다.",
+  "**다시 빌드 안 해도** 된다.",
+  "**없으면** 거짓이다.",
+  "**뒤집는 스위치가** 있다.",
+  "**대소문자는 안** 가린다.",
+  "**값 없으면 false 만** 끈다.",
+  "**메시지가** 갈린다.",
+  "**구현을** 고른다.",
+  "**기동 뒤엔 안** 바뀐다."
+ ],
+ "drills": [
+  {
+   "task": "H2 콘솔을 켜 본다.",
+   "done_when": "404 가 302 가 된 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 JAR 를 인자로 켜고 끈다.",
+   "done_when": "다시 빌드 없이 바뀐 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없을 때와 다른 값일 때를 비교한다.",
+   "done_when": "메시지가 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "값으로 구현을 고른다.",
+   "done_when": "셋을 오간 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "키가 없으면 기본은?",
+   "a": "거짓이다. 뒤집는 스위치를 켜야 참이 된다."
+  },
+  {
+   "q": "`havingValue` 를 안 적으면?",
+   "a": "값이 `false` 일 때만 꺼지고 나머지는 다 켜진다."
+  },
+  {
+   "q": "JAR 스위치와 무엇이 다른가?",
+   "a": "다시 빌드하지 않고 인자나 환경 변수로 바꿀 수 있다."
+  },
+  {
+   "q": "값에 따라 구현을 고르려면?",
+   "a": "안쪽 구성 클래스마다 다른 값을 조건으로 단다."
+  },
+  {
+   "q": "기동 뒤에 값을 바꾸면?",
+   "a": "조건은 기동 때 한 번 물었으므로 빈은 안 바뀐다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "속성 조건",
+   "def": "설정 키의 값으로 적용 여부를 가르는 조건."
+  },
+  {
+   "term": "없을 때 참",
+   "def": "키가 아예 없을 때도 맞는 것으로 볼지 정하는 스위치."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "conditional-bean",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "빈이 없으면",
+ "summary": "내가 만들면 진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "물러서는 조건을 안다.",
+  "왜 내가 이기는지 안다.",
+  "순서에 기대는 위험을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 내가 만드니 부트가 안** 만들었다. **그 조건**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 내가 이기나",
+   "ascii": "   why the boot bean loses to mine\n\n   my own configuration is registered first\n   the imported list is consulted after that\n   by then a bean of that type already has a definition\n\n   so the condition on the boot side sees it and steps aside",
+   "note": "**내 것이 먼저 등록되고 목록은 나중에** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "기본값을 주되 비키는 방식이다",
+   "md": "**기본값이** 필요하다.\n\n> **아무것도 안 적어도 돌아야** 한다.\n> **6.1절의 187 개가** 그것이다.\n> **대부분은 그대로** 쓴다.\n\n**바꾸고 싶을 때가** 있다.\n\n> **내가 하나 만들면** 된다.\n> **부트가 물러선**다.\n> **아래에서 그걸** 본다.\n\n**끄는 게 아니라 대체**다.\n\n> **6.2절의 `exclude` 와 다르**다.\n> **그건 통째로 뺀다.**\n> **이건 그 빈만** 바뀐다.\n\n**타입으로도 이름으로도** 본다.\n\n> **기본은 반환 타입**이다.\n> **아래에서 셋 다** 쓴다.\n> **이름이 더 좁**다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇으로 찾나",
+   "ascii": "   what the condition can look for\n\n   by type    any definition assignable to it\n   by name    one exact bean name\n   by value   a type, written as the annotation value\n\n   on a bean method the return type is the default",
+   "note": "**빈 메서드에서는 반환 타입이** 기본이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이 조건은 자동 구성 밖에서는 못 믿는다",
+   "md": "**순서에 기댄 조건**이다.\n\n> **내 구성끼리는 순서가** 불확실하다.\n> **먼저 물어지면 없다고** 본다.\n> **아래에서 둘 다** 만들어진다.\n\n**자동 구성 안에서만 안전**하다.\n\n> **내 것 다음에** 본다.\n> **부트가 그 순서를** 보장한다.\n> **문서도 그렇게** 적는다.\n\n**타입이 넓으면 엉뚱한 게** 걸린다.\n\n> **인터페이스면 구현이 다** 걸린다.\n> **아래에서 그걸** 겪는다.\n> **이름으로 좁힌**다.\n\n**늦게 만드는 빈은 못** 본다.\n\n> **정의가 있어야** 보인다.\n> **직접 등록하면 안** 보인다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 부트 것을 하나 연다\n\n// JacksonAutoConfiguration 안쪽\n@Bean\n@Primary\n@ConditionalOnMissingBean\nObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {\n    return builder.createXmlMapper(false).build();\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'JacksonAutoConfiguration.*jacksonObjectMapper matched' | head -3\n   JacksonAutoConfiguration$JacksonObjectMapperConfiguration#jacksonObjectMapper matched:\n      - @ConditionalOnMissingBean (types: com.fasterxml.jackson.databind.ObjectMapper;\n        SearchStrategy: all) did not find any beans\n\n$ curl -s 'localhost:8080/beans/def?name=jacksonObjectMapper'\n출처: ...JacksonAutoConfiguration$JacksonObjectMapperConfiguration\n\n\n-- 내가 만든다\n\n@Configuration\npublic class MyJacksonConfig {\n    @Bean\n    public ObjectMapper objectMapper() {\n        var om = new ObjectMapper();\n        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);\n        return om;\n    }\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'jacksonObjectMapper:' | head -3\n   JacksonAutoConfiguration$JacksonObjectMapperConfiguration#jacksonObjectMapper:\n      Did not match:\n         - @ConditionalOnMissingBean found beans of type\n           'com.fasterxml.jackson.databind.ObjectMapper' objectMapper\n\n$ curl -s 'localhost:8080/beans/names?type=ObjectMapper'\nobjectMapper\n\n$ curl -s 'localhost:8080/beans/def?name=objectMapper'\n출처: study.boot.MyJacksonConfig\n\n--   내 것 이름이 조건 메시지에 적혀 있다\n--   빈은 하나뿐이다\n\n\n-- 실제로 응답이 바뀐다\n\n@GetMapping(\"/item\")\nItem item() { return new Item(\"연필\", null); }\n\nrecord Item(String name, String memo) {}\n\n// 부트 기본일 때\n$ curl -s localhost:8080/item\n{\"name\":\"연필\",\"memo\":null}\n\n// 내 빈이 있을 때\n$ curl -s localhost:8080/item\n{\"name\":\"연필\"}\n\n--   같은 컨트롤러인데 응답이 다르다\n\n\n-- 끄는 것과 다르다\n\n@SpringBootApplication(exclude = JacksonAutoConfiguration.class)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/item\n500\n$ ./gradlew bootRun 2>&1 | grep -i 'No converter' | head -1\nNo converter for [class study.boot.Item] with preset Content-Type 'null'\n\n--   통째로 빼면 다른 빈들까지 사라진다\n--   대체와 제외는 다른 자리다\n\n\n-- 내가 하나 만든다\n\npackage study.lib;\n\n@AutoConfiguration\npublic class GreeterAutoConfiguration {\n    @Bean\n    @ConditionalOnMissingBean\n    public Greeter greeter() { return name -> \"안녕 \" + name; }\n}\n\npublic interface Greeter { String greet(String name); }\n\n$ curl -s 'localhost:8080/greet?name=철수'\n안녕 철수\n\n$ curl -s 'localhost:8080/beans/def?name=greeter'\n출처: study.lib.GreeterAutoConfiguration\n\n\n-- 내 것을 넣으면\n\n@Configuration\nclass MyGreeterConfig {\n    @Bean Greeter greeter() { return name -> name + \"님 반갑습니다\"; }\n}\n\n$ curl -s 'localhost:8080/greet?name=철수'\n철수님 반갑습니다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'GreeterAutoConfiguration#greeter:' | head -3\n   GreeterAutoConfiguration#greeter:\n      Did not match:\n         - @ConditionalOnMissingBean found beans of type\n           'study.lib.Greeter' greeter\n\n$ curl -s 'localhost:8080/beans/names?type=Greeter'\ngreeter\n\n--   이름이 같아도 하나뿐이다\n\n\n-- 이름을 다르게 해도 진다\n\n@Bean Greeter politeGreeter() { return name -> name + \"님\"; }\n\n$ curl -s 'localhost:8080/beans/names?type=Greeter'\npoliteGreeter\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'GreeterAutoConfiguration#greeter:' | tail -2\n         - @ConditionalOnMissingBean found beans of type\n           'study.lib.Greeter' politeGreeter\n\n--   타입으로 보니 이름이 달라도 걸린다\n\n\n-- 타입이 넓으면 엉뚱한 게 걸린다\n\n@Bean\n@ConditionalOnMissingBean\npublic Executor taskExecutor() { return Executors.newFixedThreadPool(4); }\n\n// 어딘가에 이런 게 있으면\n@Bean Executor mailExecutor() { return Executors.newSingleThreadExecutor(); }\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'taskExecutor:' | tail -2\n         - @ConditionalOnMissingBean found beans of type\n           'java.util.concurrent.Executor' mailExecutor\n\n$ curl -s 'localhost:8080/beans/names?type=Executor'\nmailExecutor\n\n--   전혀 다른 용도인데 걸렸다\n--   이름으로 좁혀야 한다\n\n\n-- 이름으로 좁힌다\n\n@Bean\n@ConditionalOnMissingBean(name = \"taskExecutor\")\npublic Executor taskExecutor() { return Executors.newFixedThreadPool(4); }\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'taskExecutor matched' | head -3\n   MyAsyncAutoConfiguration#taskExecutor matched:\n      - @ConditionalOnMissingBean (names: taskExecutor; SearchStrategy: all)\n        did not find any beans\n\n$ curl -s 'localhost:8080/beans/names?type=Executor'\nmailExecutor,taskExecutor\n\n--   둘 다 산다\n\n\n-- 값으로도 적을 수 있다\n\n@Bean\n@ConditionalOnMissingBean(Greeter.class)\npublic Greeter greeter() { ... }\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep 'GreeterAutoConfiguration#greeter' | head -1\n   GreeterAutoConfiguration#greeter matched\n\n--   반환 타입과 같으면 안 적어도 된다\n\n\n-- 내 구성끼리는 못 믿는다\n\n@Configuration\nclass ConfigA {\n    @Bean @ConditionalOnMissingBean Greeter a() { return n -> \"A\"; }\n}\n\n@Configuration\nclass ConfigB {\n    @Bean @ConditionalOnMissingBean Greeter b() { return n -> \"B\"; }\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of method greet in study.boot.GreetController required a single bean,\nbut 2 were found:\n\t- a: defined by method 'a' in class path resource [study/boot/ConfigA.class]\n\t- b: defined by method 'b' in class path resource [study/boot/ConfigB.class]\n\n$ curl -s 'localhost:8080/beans/names?type=Greeter'\n\n--   둘 다 만들어졌다\n--   서로 물을 때 아직 상대가 없었다\n--   자동 구성 밖에서는 못 쓴다\n\n\n-- 자동 구성 안에서는 다르다\n\n// study.lib.GreeterAutoConfiguration 과 study.lib.PoliteAutoConfiguration\n// 둘 다 @ConditionalOnMissingBean 을 붙이고 imports 에 적으면\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s 'localhost:8080/beans/names?type=Greeter'\ngreeter\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'PoliteAutoConfiguration#politeGreeter:' | tail -2\n         - @ConditionalOnMissingBean found beans of type\n           'study.lib.Greeter' greeter\n\n--   하나만 남았다\n--   순서가 정해져 있어서다\n--   6.9절에서 그 순서를 정한다\n\n\n-- 늦게 등록하면 못 본다\n\n@Component\nclass LateRegistrar implements BeanDefinitionRegistryPostProcessor {\n    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry r) {\n        r.registerBeanDefinition(\"lateGreeter\",\n            BeanDefinitionBuilder.genericBeanDefinition(LateGreeter.class)\n                .getBeanDefinition());\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nrequired a single bean, but 2 were found:\n\t- greeter: ...GreeterAutoConfiguration\n\t- lateGreeter: ...\n\n--   조건이 물을 때는 정의가 없었다\n--   나중에 끼워 넣으면 둘이 된다\n\n\n-- 싱글턴을 직접 넣어도 못 본다\n\nctx.getBeanFactory().registerSingleton(\"runtimeGreeter\", (Greeter) n -> \"런타임\");\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -c 'GreeterAutoConfiguration#greeter matched'\n1\n\n$ curl -s 'localhost:8080/beans/names?type=Greeter'\ngreeter,runtimeGreeter\n\n--   정의가 아니라 객체를 넣은 것이다\n--   조건은 그걸 못 봤다\n\n\n-- 정리\n\n$ printf '%-28s %s\\n' \\\n  '기본'          '반환 타입으로 찾음' \\\n  '내가 만들면'   '부트가 물러섬' \\\n  '이름 달라도'   '타입이면 걸림' \\\n  '넓은 타입'     '엉뚱한 게 걸림' \\\n  '이름으로'      '둘 다 삶' \\\n  '제외와'        '다른 자리' \\\n  '내 구성끼리'   '둘 다 만들어짐' \\\n  '늦은 등록'     '못 봄'\n\n기본                         반환 타입으로 찾음\n내가 만들면                  부트가 물러섬\n이름 달라도                  타입이면 걸림\n넓은 타입                    엉뚱한 게 걸림\n이름으로                     둘 다 삶\n제외와                       다른 자리\n내 구성끼리                  둘 다 만들어짐\n늦은 등록                    못 봄\n\n--   6.6절에서 설정 한 줄로 켜고 끈다",
+   "note": "**내가 `ObjectMapper` 를 만드니 보고서에 `found beans of type ... objectMapper` 로 부트가** 물러섰다.\n\n**같은 컨트롤러 응답이 `{\"name\":\"연필\",\"memo\":null}` 에서 `{\"name\":\"연필\"}` 로** 바뀐다.\n\n**타입으로 찾으니 이름이 다른 `politeGreeter` 도 걸리고, 넓은 `Executor` 는 `mailExecutor` 까지** 잡는다.\n\n**내 구성 둘에 같은 조건을 달면 `2 were found` 로 둘 다** 만들어진다.\n\n**늦게 정의를 끼우거나 싱글턴을 직접 넣으면 조건이 그걸 못 봐서 결국 둘이** 된다."
+  }
+ ],
+ "recap": [
+  "**없으면** 만든다.",
+  "**있으면** 물러선다.",
+  "**내 것이** 먼저다.",
+  "**기본은 반환** 타입이다.",
+  "**이름이 달라도** 걸린다.",
+  "**넓으면 엉뚱한 게** 걸린다.",
+  "**이름으로** 좁힌다.",
+  "**제외와는 다른** 자리다.",
+  "**내 구성끼리는 못** 믿는다."
+ ],
+ "drills": [
+  {
+   "task": "부트 빈을 하나 대체한다.",
+   "done_when": "응답이 달라진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "제외와 비교한다.",
+   "done_when": "500 이 나는 자리를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "넓은 타입으로 겪어 본다.",
+   "done_when": "이름으로 좁혀 고쳤다.",
+   "minutes": 20
+  },
+  {
+   "task": "내 구성 둘에 같은 조건을 단다.",
+   "done_when": "둘 다 만들어지는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "내가 만든 빈이 왜 이기나?",
+   "a": "내 구성이 먼저 등록되고 자동 구성은 그다음에 조건을 묻기 때문이다."
+  },
+  {
+   "q": "이름을 다르게 지으면 둘 다 사나?",
+   "a": "타입으로 찾으므로 안 산다. 이름 조건을 써야 둘 다 산다."
+  },
+  {
+   "q": "제외와 무엇이 다른가?",
+   "a": "제외는 구성 전체를 빼고 이건 그 빈만 대체한다."
+  },
+  {
+   "q": "내 구성끼리 이 조건을 쓰면?",
+   "a": "순서가 정해지지 않아 둘 다 만들어질 수 있다."
+  },
+  {
+   "q": "싱글턴을 직접 넣으면 조건이 보나?",
+   "a": "못 본다. 정의가 아니라 객체를 넣은 것이라서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빈 없음 조건",
+   "def": "같은 타입이나 이름의 빈 정의가 없을 때만 등록하는 조건."
+  },
+  {
+   "term": "대체",
+   "def": "구성을 끄지 않고 특정 빈만 내 것으로 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Creating Your Own Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
