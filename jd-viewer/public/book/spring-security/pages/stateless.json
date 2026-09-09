@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "stateless",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "세션을 안 쓰면",
+ "summary": "STATELESS 가 바꾸는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "STATELESS 가 무엇을 끄는지 안다.",
+  "그래도 세션이 생기는 경로를 찾는다.",
+  "무엇을 포기하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절 API 체인에 `STATELESS` 를** 줬다. **정확히 무엇이 꺼진 건가.**"
+  },
+  {
+   "type": "figure",
+   "caption": "그래도 세션을 만드는 것들",
+   "ascii": "   who creates a session, even in a stateless chain\n\n   SessionCreationPolicy.STATELESS only tells security\n     do not create one, do not read one\n\n   but these still can\n     RequestCache            saving the denied request  (3.10)\n     CsrfTokenRepository     the default is session backed\n     a controller            request.getSession()\n     Spring MVC              a @SessionAttributes model\n\n   so a stateless app can still hand out JSESSIONID",
+   "note": "**시큐리티에만 말한 것**이지 애플리케이션 전체가 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "두 가지를 동시에 끈다",
+   "md": "```java\nhttp.sessionManagement(s -> s\n        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));\n```\n\n> **① 시큐리티가 세션을 안** 만든다.\n> **② 있는 세션도 안** 읽는다.\n\n**둘째가 더** 중요하다.\n\n> **브라우저가 `JSESSIONID` 를 보내도 무시**된다.\n> **매 요청이 헤더로 자기를** 증명해야 한다.\n\n**저장소가 바뀐다.**\n\n> **`SecurityContextRepository` 가 `NullSecurityContextRepository` 로** 바뀐다.\n> **5.2절에서 로그인이 다음 요청에 안 남던** 그것이다.\n> **여기서는 그게 의도**다.\n\n**필터 목록에서도 티가 난다.**\n\n| | |\n|---|---|\n| **`SessionManagementFilter`** | 6.x 에서는 기본으로 없다 |\n| **`RequestCacheAwareFilter`** | 남아 있지만 할 일이 없다 |\n| **`SecurityContextHolderFilter`** | 남아 있고 늘 빈 컨텍스트를 준다 |\n\n> **필터 개수는 거의 안 변한다** — **동작만** 바뀐다."
+  },
+  {
+   "type": "figure",
+   "caption": "잃는 것과 얻는 것",
+   "ascii": "   what you give up with no session\n\n   kept        remember me is gone, form login is pointless\n   kept        concurrent session control cannot count sessions\n   kept        session fixation protection has nothing to fix\n   kept        csrf must move to a cookie or be turned off\n\n   what you gain\n     any node can answer any request\n     no memory grows with the number of visitors",
+   "note": "**3장에서 배운 절반이 쓸모없어진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무상태인데 세션이 쌓인다",
+   "md": "**3.10절에서 이미** 봤다.\n\n> **`RequestCache` 가 막힌 요청을 세션에** 적었다.\n> **`STATELESS` 를 줬는데도 세션이 생겼다.**\n> **`NullRequestCache` 로 꺼야** 멈춘다.\n\n**CSRF 도 그렇다.**\n\n> **기본 `HttpSessionCsrfTokenRepository` 가 토큰을 세션에** 둔다.\n> **API 라면 대개 `csrf().disable()` 이라 안 겪는데**, **켜 두면 세션이** 생긴다.\n> **`CookieCsrfTokenRepository` 로 옮기면** 된다 — **6.5절**.\n\n**컨트롤러가 부를 수도** 있다.\n\n> **`request.getSession()` 한 줄이면** 만들어진다.\n> **`@SessionAttributes` 나 `SessionStatus` 도** 그렇다.\n> **시큐리티는 이걸 막지** 않는다.\n\n**아예 못 만들게 하려면**\n\n> **서블릿 컨테이너 설정이나 테스트로** 잡는다.\n> **아래에서 `tomcat.sessions.created` 지표로** 확인한다.\n\n**무상태의 실제 값**\n\n> **`Set-Cookie` 가 한 번도 안 나가는 것**이다.\n> **그게 확인 기준**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- STATELESS 를 준다 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(c -> c.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS));\n    return http.build();\n}\n\n$ curl -i -u user@a.com:1234 localhost:8080/api/v1/orders | grep -ci set-cookie\n\n0\n\n#   쿠키가 안 나간다\n\n# --- 세션 쿠키를 보내 본다 ---\n\n#   (웹 체인으로 로그인해 쿠키를 얻는다)\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/api/v1/orders -w '%{http_code}\\n'\n401\n\n#   같은 쿠키인데 API 는 401 이다\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/11)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n#   Retrieved 줄이 없다\n\n#   있는 세션도 안 읽는다\n\n# --- 저장소를 확인 ---\n\npublic class PeekConfigurer\n        extends AbstractHttpConfigurer<PeekConfigurer, HttpSecurity> {\n    @Override\n    public void configure(HttpSecurity http) {\n        System.out.println(\">>> repo = \"\n                + http.getSharedObject(SecurityContextRepository.class));\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep \">>> repo\"\n\n>>> repo = org.springframework.security.web.context\n     .NullSecurityContextRepository@3f2a1b\n\n#   5.2절의 그 저장소다\n\n# --- 그래도 세션이 생기는지 센다 ---\n\nmanagement.endpoints.web.exposure.include=metrics\n\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"measurements\"][0][\"value\"])'\n\n0.0\n\n#   인증 실패를 세 번 시킨다\n$ for i in 1 2 3; do curl -s -o /dev/null localhost:8080/api/v1/orders; done\n\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created | ...\n\n0.0\n\n#   안 생긴다\n\n#   RequestCache 를 안 껐는데도 그렇다\n\n#   401 은 EntryPoint 가 바로 내보내서 저장 자체를 안 한다\n\n#   폼 로그인이면 달랐다 (3.10절)\n\n# --- 컨트롤러가 만들면 ---\n\n@GetMapping(\"/api/v1/oops\")\npublic String oops(HttpServletRequest req) {\n    req.getSession();                       // 한 줄\n    return \"ok\";\n}\n\n$ curl -is -u user@a.com:1234 localhost:8080/api/v1/oops | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=B1C3...; Path=/; HttpOnly\n\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created | ...\n\n1.0\n\n#   무상태인데 쿠키가 나갔다\n\n#   시큐리티는 이걸 안 막는다\n\n#   STATELESS 는 시큐리티에게 한 말이다\n\n# --- 테스트로 잡는다 ---\n\n@Test\nvoid api_는_세션을_안_만든다() throws Exception {\n    MvcResult result = mockMvc.perform(get(\"/api/v1/orders\")\n                    .with(httpBasic(\"user@a.com\", \"1234\")))\n            .andExpect(status().isOk())\n            .andReturn();\n\n    assertThat(result.getRequest().getSession(false)).isNull();\n}\n\n$ ./gradlew test --tests StatelessTest\n\nBUILD SUCCESSFUL\n\n@Test\nvoid oops_는_세션을_만든다() throws Exception {\n    MvcResult result = mockMvc.perform(get(\"/api/v1/oops\")\n                    .with(httpBasic(\"user@a.com\", \"1234\")))\n            .andReturn();\n\n    assertThat(result.getRequest().getSession(false)).isNull();\n}\n\n$ ./gradlew test --tests StatelessTest\n\noops_는_세션을_만든다 FAILED\n    expected: null\n     but was: org.springframework.mock.web.MockHttpSession@6f1a2b\n\n#   테스트가 잡아 준다\n\n#   책 ⑨ 의 방식이다 - 규칙을 테스트로 고정한다\n\n#   80개가 됐다\n\n# --- 기억하기를 켜 보면 ---\n\nhttp.securityMatcher(\"/api/**\")\n    .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n    .rememberMe(withDefaults());\n\n$ curl -is -u user@a.com:1234 localhost:8080/api/v1/orders | grep -ci remember\n\n0\n\n#   쿠키가 안 나간다\n\n#   폼 로그인이 없으니 성공 지점이 없다\n\n#   3장의 절반이 여기선 의미가 없다\n\n# --- 다음 절에서 ---\n\n#   STATELESS 말고 나머지 셋을 본다",
+   "note": "**`STATELESS` 체인은 `Set-Cookie` 가 0개**이고 **같은 세션 쿠키를 보내도 API 는 401** 이다 — `Retrieved` 줄이 없다.\n\n**저장소가 `NullSecurityContextRepository`** 로 바뀌어 있다.\n\n**인증 실패 셋에도 `tomcat.sessions.created` 가 0** 이다 — **401 은 저장 자체를 안** 한다.\n\n**컨트롤러의 `req.getSession()` 한 줄이면 무상태인데도 쿠키가** 나간다.\n\n**테스트로 잡으면 `expected: null but was: MockHttpSession`** 이다."
+  }
+ ],
+ "recap": [
+  "**`STATELESS` 는 안 만들고 안 읽는 둘을 동시에** 끈다.",
+  "**세션 쿠키를 보내도** 무시된다.",
+  "**저장소가 `NullSecurityContextRepository` 로** 바뀐다.",
+  "**필터 개수는 거의 안 변하고 동작만** 바뀐다.",
+  "**`RequestCache`·CSRF·컨트롤러는 여전히 세션을 만들 수** 있다.",
+  "**폼 로그인 · 기억하기 · 동시 세션 제어가 쓸모** 없어진다.",
+  "**확인 기준은 `Set-Cookie` 가 한 번도 안 나가는** 것이다.",
+  "**컨트롤러 한 줄이 그걸** 깬다.",
+  "**테스트로 고정하면 잡힌다.**"
+ ],
+ "drills": [
+  {
+   "task": "세션 쿠키를 API 에 보내 본다.",
+   "done_when": "401 과 `Retrieved` 부재를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세션 생성 지표를 확인한다.",
+   "done_when": "0인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨트롤러에서 `getSession()` 을 부른다.",
+   "done_when": "쿠키가 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "세션을 안 만드는지 테스트로 고정한다.",
+   "done_when": "위반 시 실패하는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`STATELESS` 가 끄는 두 가지는?",
+   "a": "세션 생성과, 있는 세션 읽기다."
+  },
+  {
+   "q": "무상태 체인의 저장소는?",
+   "a": "`NullSecurityContextRepository` 다."
+  },
+  {
+   "q": "무상태인데 세션이 생기는 경로는?",
+   "a": "`RequestCache`, CSRF 토큰 저장소, 컨트롤러의 `getSession()` 이다."
+  },
+  {
+   "q": "무상태를 무엇으로 확인하나?",
+   "a": "`Set-Cookie` 가 한 번도 안 나가는지 본다."
+  },
+  {
+   "q": "무상태에서 쓸모없어지는 기능은?",
+   "a": "폼 로그인, 기억하기, 동시 세션 제어, 세션 고정 보호다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -301,7 +301,7 @@
           "title": "세션을 안 쓰면",
           "summary": "STATELESS 가 바꾸는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -309,7 +309,7 @@
           "title": "세션 생성 정책",
           "summary": "네 가지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -317,7 +317,7 @@
           "title": "동시 세션 제어",
           "summary": "두 번째 로그인이 오면.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -325,7 +325,7 @@
           "title": "세션 고정 보호",
           "summary": "로그인 때 세션이 바뀐다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",

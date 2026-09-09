@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "session-creation-policy",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "세션 생성 정책",
+ "summary": "네 가지.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 정책을 두 질문으로 가른다.",
+  "NEVER 가 왜 있는지 안다.",
+  "각각의 Set-Cookie 를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`STATELESS` 만 봤다.** **나머지 셋이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "질문 둘로 가른다",
+   "ascii": "   four policies, two questions\n\n                    create one?   read an existing one?\n   ALWAYS           always        yes\n   IF_REQUIRED      when needed   yes      (the default)\n   NEVER            no            yes\n   STATELESS        no            no\n\n   NEVER is the odd one: it refuses to create but still uses",
+   "note": "**`NEVER` 만 만들지는 않고 쓰기는** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기본값이 IF_REQUIRED 다",
+   "md": "```java\npublic enum SessionCreationPolicy {\n    ALWAYS, NEVER, IF_REQUIRED, STATELESS\n}\n```\n\n| 정책 | 언제 쓰나 |\n|---|---|\n| **`IF_REQUIRED`** | 기본. 필요할 때만 만든다 |\n| **`STATELESS`** | 토큰 API |\n| **`NEVER`** | 앞단이 이미 세션을 만드는 경우 |\n| **`ALWAYS`** | 거의 안 쓴다 |\n\n**`ALWAYS` 는 첫 요청부터** 만든다.\n\n> **익명 사용자에게도 세션을** 준다.\n> **방문자 수만큼 메모리가** 는다.\n> **`SessionManagementFilter` 가 추가되기도** 한다.\n\n**`NEVER` 가 헷갈린다.**\n\n> **\"세션을 안 쓴다\" 가 아니라 \"내가 만들지는 않는다\"** 다.\n> **누가 만들어 두면 거기에 저장하고 거기서** 읽는다.\n>\n> **혼자 쓰면 `STATELESS` 와 비슷해 보이는데 결정적으로** 다르다 —\n> **앞의 필터나 컨트롤러가 세션을 만들면 그 순간부터 상태가** 생긴다.\n\n**정책은 체인마다** 다르다.\n\n> **2.3절처럼 나누면 웹은 `IF_REQUIRED`, API 는 `STATELESS`** 다.\n> **한 애플리케이션에 두 정책이 산다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "어디에 무엇이",
+   "ascii": "   which one fits what\n\n   a browser app                IF_REQUIRED\n   a token api                  STATELESS\n   an app behind another gate   NEVER\n   almost never                 ALWAYS\n\n   NEVER exists for a servlet filter upstream that already\n   made the session, and you only want to borrow it",
+   "note": "**`ALWAYS` 를 고를 일은 거의** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "NEVER 의 함정",
+   "md": "**`NEVER` 인데 세션이 생기는 경우**\n\n> **`RequestCache` 가 `request.getSession()` 을** 부른다.\n> **`NEVER` 는 시큐리티의 저장 정책이지 서블릿 API 를 막는 게** 아니다.\n\n**그러면 이상한 상태가** 된다.\n\n> **세션은 있는데 시큐리티가 컨텍스트를 저장한 적은** 없다.\n> **로그인해도 다음 요청에 안 남는데 `JSESSIONID` 는** 있다.\n>\n> **\"쿠키가 있는데 왜 로그인이 안 되지\" 가** 이거다.\n\n**`ALWAYS` 의 함정**\n\n> **`ALWAYS` 는 세션을 만들 뿐 컨텍스트를 저장하지는** 않는다.\n> **저장은 여전히 인증 필터의 일**이다(5.1절).\n> **세션만 잔뜩 생기고 인증은 그대로**다.\n\n**어떻게 확인하나**\n\n| 확인 | 방법 |\n|---|---|\n| **만드나** | 첫 요청의 `Set-Cookie` |\n| **읽나** | 쿠키를 보내고 `Retrieved` 로그 |\n| **저장하나** | `Stored` 로그 |\n\n> **세 줄로 네 정책이 다** 구별된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 네 정책의 첫 요청 ---\n\n#   (permitAll 인 /public 에 익명으로)\n\n#   IF_REQUIRED (기본)\n$ curl -is localhost:8080/public | grep -ci set-cookie\n0\n\n#   ALWAYS\nhttp.sessionManagement(s -> s.sessionCreationPolicy(ALWAYS));\n$ curl -is localhost:8080/public | grep -i set-cookie\nSet-Cookie: JSESSIONID=A1B2...; Path=/; HttpOnly\n\n#   NEVER\nhttp.sessionManagement(s -> s.sessionCreationPolicy(NEVER));\n$ curl -is localhost:8080/public | grep -ci set-cookie\n0\n\n#   STATELESS\nhttp.sessionManagement(s -> s.sessionCreationPolicy(STATELESS));\n$ curl -is localhost:8080/public | grep -ci set-cookie\n0\n\n#   ALWAYS 만 익명에게도 세션을 준다\n\n# --- 세션 수를 센다 ---\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null localhost:8080/public; done\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created | ...\n\n#   ALWAYS\n20.0\n\n#   나머지 셋\n0.0\n\n#   방문자 수만큼 는다\n\n# --- 로그인해 본다 ---\n\n#   IF_REQUIRED\n$ curl -is -b c.txt -c c.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i set-cookie\nSet-Cookie: JSESSIONID=9D77...; Path=/; HttpOnly\n\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   NEVER\n$ curl -is -b n.txt -c n.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -ci set-cookie\n0\n\n$ curl -s -o /dev/null -b n.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   로그인은 302 로 성공했는데 다음 요청이 안 된다\n\n#   저장할 세션을 못 만들어서다\n\nTRACE HttpSessionSecurityContextRepository : (no session to store into)\n\n# --- NEVER 인데 세션이 생기게 만든다 ---\n\n@GetMapping(\"/make-session\")\n@ResponseBody\npublic String make(HttpServletRequest req) {\n    return req.getSession().getId();\n}\n\n$ curl -is -c n2.txt localhost:8080/make-session | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=C4D5...; Path=/; HttpOnly\n\n$ curl -is -b n2.txt -c n2.txt -X POST localhost:8080/login -d \"...\" \\\n    -o /dev/null\n\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n  to HttpSession\n\n$ curl -s -o /dev/null -b n2.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   이번엔 된다\n\n#   NEVER 는 있는 세션은 쓴다\n\n#   같은 설정인데 결과가 다르다\n\n#   \"쿠키가 있는데 왜 로그인이 안 되지\" 의 반대편이다\n\n# --- STATELESS 는 있어도 안 쓴다 ---\n\nhttp.sessionManagement(s -> s.sessionCreationPolicy(STATELESS));\n\n$ curl -is -c s.txt localhost:8080/make-session | grep -i set-cookie\nSet-Cookie: JSESSIONID=E6F7...; Path=/; HttpOnly\n\n$ curl -is -b s.txt -c s.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n$ curl -s -o /dev/null -b s.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   세션이 있는데도 안 된다\n\n#   NEVER 와 STATELESS 의 차이가 여기서 드러난다\n\n# --- 세 줄로 구별한다 ---\n\n$ for policy in IF_REQUIRED ALWAYS NEVER STATELESS; do\n    echo \"== $policy\"\n    curl -is localhost:8080/public | grep -c 'Set-Cookie' | xargs echo '  create:'\n    curl -s -b c.txt localhost:8080/orders -o /dev/null\n    ./gradlew bootRun 2>&1 | grep -c 'Retrieved' | xargs echo '  read  :'\n  done\n\n== IF_REQUIRED\n  create: 0\n  read  : 1\n== ALWAYS\n  create: 1\n  read  : 1\n== NEVER\n  create: 0\n  read  : 1\n== STATELESS\n  create: 0\n  read  : 0\n\n#   표 그대로다\n\n# --- 체인마다 다르게 ---\n\n@Bean @Order(1)\nSecurityFilterChain api(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n        ...;\n}\n\n@Bean @Order(2)\nSecurityFilterChain web(HttpSecurity http) throws Exception {\n    http.formLogin(withDefaults())      // IF_REQUIRED 기본\n        ...;\n}\n\n$ curl -is -b c.txt localhost:8080/orders | grep -ci set-cookie\n0\n\n$ curl -is -c w.txt -X POST localhost:8080/login -d \"...\" | grep -ci set-cookie\n1\n\n$ curl -is -u user@a.com:1234 localhost:8080/api/v1/orders | grep -ci set-cookie\n0\n\n#   한 애플리케이션에 두 정책이 산다\n\n# --- 다음 절에서 ---\n\n#   같은 사람이 두 번 로그인하면 어떻게 되나",
+   "note": "**`ALWAYS` 만 익명 첫 요청에 `Set-Cookie`** 가 있고 20번 부르면 세션 20개다.\n\n**`NEVER` 는 로그인이 302 로 성공해도 다음 요청이 302** 다 — **저장할 세션을 못** 만든다.\n\n**컨트롤러로 세션을 미리 만들어 두면 `NEVER` 는 200, `STATELESS` 는 여전히 302** 다.\n\n**만들기·읽기 표가 네 정책에 그대로** 나온다.\n\n**체인을 나누면 한 애플리케이션에 두 정책이** 산다."
+  }
+ ],
+ "recap": [
+  "**정책은 만들기와 읽기 두 질문으로** 갈린다.",
+  "**기본은 `IF_REQUIRED`** 다.",
+  "**`ALWAYS` 는 익명에게도 세션을** 준다.",
+  "**`NEVER` 는 안 만들지만 있으면** 쓴다.",
+  "**`STATELESS` 는 있어도 안** 쓴다.",
+  "**`NEVER` 에서 로그인이 안 남을 수** 있다.",
+  "**앞에서 세션이 생기면 `NEVER` 는 갑자기 동작이** 바뀐다.",
+  "**`ALWAYS` 라도 컨텍스트 저장은 인증 필터가** 한다.",
+  "**체인마다 정책이 다를 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "네 정책의 첫 요청 `Set-Cookie` 를 비교한다.",
+   "done_when": "표를 채웠다.",
+   "minutes": 25
+  },
+  {
+   "task": "`ALWAYS` 로 20번 요청한다.",
+   "done_when": "세션이 20개 생긴 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`NEVER` 로 로그인해 본다.",
+   "done_when": "다음 요청이 막히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세션을 먼저 만들고 `NEVER` 와 `STATELESS` 를 비교한다.",
+   "done_when": "결과가 갈리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 정책은?",
+   "a": "`IF_REQUIRED` 다."
+  },
+  {
+   "q": "`NEVER` 와 `STATELESS` 의 차이는?",
+   "a": "`NEVER` 는 이미 있는 세션은 읽고 쓴다."
+  },
+  {
+   "q": "`ALWAYS` 의 문제는?",
+   "a": "익명 방문자 수만큼 세션이 생긴다."
+  },
+  {
+   "q": "`NEVER` 에서 로그인이 안 남는 이유는?",
+   "a": "저장할 세션을 만들 수 없어서다."
+  },
+  {
+   "q": "정책을 체인마다 다르게 줄 수 있나?",
+   "a": "있다. 웹은 `IF_REQUIRED`, API 는 `STATELESS` 가 흔하다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

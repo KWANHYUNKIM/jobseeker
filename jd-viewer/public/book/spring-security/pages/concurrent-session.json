@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "concurrent-session",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "동시 세션 제어",
+ "summary": "두 번째 로그인이 오면.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 가지 응답 방식을 안다.",
+  "레지스트리가 무엇을 세는지 안다.",
+  "리스너를 빠뜨리면 어떻게 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.8절에서 폰의 세션은 안** 끊겼다. **끊고 싶다면.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 번째 로그인에 답하는 법",
+   "ascii": "   two ways to answer the second login\n\n   maxSessionsPreventsLogin = false   (the default)\n     the new login wins\n     the old session is marked expired\n     the old browser finds out on its next request\n\n   maxSessionsPreventsLogin = true\n     the new login is refused\n     the old session keeps working\n\n   banks pick the first, game accounts often pick the second",
+   "note": "**새 것을 살릴지 옛 것을 살릴지**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정 세 줄",
+   "md": "```java\nhttp.sessionManagement(s -> s\n        .maximumSessions(1)\n        .maxSessionsPreventsLogin(false)\n        .expiredUrl(\"/login?expired\"));\n```\n\n> **`maximumSessions(1)` 이면 한 사람 한 세션**이다.\n> **`-1` 이면 제한이** 없다.\n\n**리스너가** 필요하다.\n\n```java\n@Bean\nHttpSessionEventPublisher httpSessionEventPublisher() {\n    return new HttpSessionEventPublisher();\n}\n```\n\n> **세션이 죽을 때 레지스트리에서 빼는 역할**이다.\n> **이걸 빠뜨리는 게 가장 흔한 실수**다.\n\n**필터가 하나 는다.**\n\n> **`ConcurrentSessionFilter` 가 매 요청 레지스트리를** 확인한다.\n> **만료 표시가 있으면 세션을 무효화하고 `expiredUrl` 로** 보낸다.\n>\n> **옛 브라우저는 즉시 쫓겨나는 게 아니라 다음 요청에서** 안다.\n> **서버가 브라우저에게 먼저 말을 걸 수** 없어서다.\n\n**누구를 같은 사람으로 보나**\n\n> **`Authentication.getPrincipal()` 의 `equals`·`hashCode`** 로 센다.\n> **`UserDetails` 를 직접 만들었다면 그 둘을 구현해야** 한다.\n> **안 하면 로그인할 때마다 다른 사람으로 세어 제한이 안** 걸린다."
+  },
+  {
+   "type": "figure",
+   "caption": "레지스트리",
+   "ascii": "   who keeps the count\n\n   SessionRegistry\n     principal -> [ SessionInformation, SessionInformation ]\n       sessionId, lastRequest, expired flag\n\n   filled by   ConcurrentSessionControlAuthenticationStrategy\n   read by     ConcurrentSessionFilter, every request\n   emptied by  HttpSessionEventPublisher, on session destroy\n\n   forget the publisher and the count only ever goes up",
+   "note": "**리스너를 빠뜨리면 수가 줄지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빠뜨리면 나중에 잠긴다",
+   "md": "**`HttpSessionEventPublisher` 없이 `maxSessionsPreventsLogin(true)`** 를 쓰면\n\n> **로그아웃해도 레지스트리에 세션이** 남는다.\n> **다시 로그인하면 \"이미 최대\" 라고** 막힌다.\n> **로그인이 아예 안 되는 상태**가 된다.\n\n```\nSessionAuthenticationException: Maximum sessions of 1 for this principal exceeded\n```\n\n> **재시작 전까지 안** 풀린다.\n> **개발 중에는 재시작으로 넘어가고 운영에서 터진다.**\n\n**`false` 쪽은 티가 덜** 난다.\n\n> **옛 세션을 만료시키는 쪽이라 로그인은 늘** 된다.\n> **다만 이미 죽은 세션까지 세어 애먼 것을 만료**시킨다.\n\n**여러 대로 띄우면 또 다르다.**\n\n> **`SessionRegistryImpl` 은 그 JVM 의 메모리**다.\n> **1번 서버의 로그인을 2번 서버가 모른다.**\n> **제한이 사실상 서버 수만큼** 늘어난다.\n>\n> **5.7절의 Spring Session 이 이걸** 푼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 켜기 전 ---\n\n$ curl -s -b a.txt -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -b b.txt -c b.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n$ for f in a.txt b.txt; do\n    printf '%-6s ' $f\n    curl -s -o /dev/null -b $f localhost:8080/orders -w '%{http_code}\\n'\n  done\n\na.txt  200\nb.txt  200\n\n#   둘 다 산다\n\n# --- 켠다 ---\n\nhttp.sessionManagement(s -> s\n        .maximumSessions(1)\n        .expiredUrl(\"/login?expired\"));\n\n@Bean\nHttpSessionEventPublisher httpSessionEventPublisher() {\n    return new HttpSessionEventPublisher();\n}\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -n Concurrent\n\n4:   ConcurrentSessionFilter\n\n#   필터가 하나 늘었고 앞쪽이다\n\n# --- 두 번 로그인한다 ---\n\n$ curl -s -b a.txt -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -o /dev/null -b a.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n$ curl -s -b b.txt -c b.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\nDEBUG ConcurrentSessionControlAuthenticationStrategy :\n  Max sessions of 1 for user@a.com. Expiring session 9D77...\n\n$ curl -s -o /dev/null -b b.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n$ curl -i -b a.txt localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?expired\n\nTRACE FilterChainProxy : Invoking ConcurrentSessionFilter (4/15)\nDEBUG ConcurrentSessionFilter : Terminating session 9D77... (expired)\n\n#   먼저 로그인한 쪽이 쫓겨났다\n\n#   그런데 자기 요청을 보내야 알았다\n\n#   그 전까지는 자기가 로그인 상태인 줄 안다\n\n# --- 막는 쪽으로 바꾼다 ---\n\n.maximumSessions(1).maxSessionsPreventsLogin(true)\n\n$ curl -s -b a.txt -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -i -b b.txt -c b.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -iE 'HTTP/|location'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error\n\nDEBUG UsernamePasswordAuthenticationFilter : Failed to process\n  authentication request\norg.springframework.security.web.authentication.session\n  .SessionAuthenticationException:\n  Maximum sessions of 1 for this principal exceeded\n\n$ curl -s -o /dev/null -b a.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   먼저 들어온 쪽이 산다\n\n# --- 레지스트리를 들여다본다 ---\n\n@Bean\nSessionRegistry sessionRegistry() { return new SessionRegistryImpl(); }\n\n@GetMapping(\"/sessions\")\n@ResponseBody\npublic String sessions() {\n    for (Object p : registry.getAllPrincipals()) {\n        for (SessionInformation info : registry.getAllSessions(p, true)) {\n            System.out.printf(\">>> %-14s %s expired=%s last=%s%n\",\n                    ((UserDetails) p).getUsername(), info.getSessionId(),\n                    info.isExpired(), info.getLastRequest());\n        }\n    }\n    return \"ok\";\n}\n\n$ curl -s -b a.txt localhost:8080/sessions\n\n>>> user@a.com    9D77AB31 expired=true  last=Tue Sep 09 19:31:02 KST 2026\n>>> user@a.com    C4E5F6A7 expired=false last=Tue Sep 09 19:31:44 KST 2026\n\n#   만료된 것도 남아 있다\n\n#   ConcurrentSessionFilter 가 만나야 지워진다\n\n# --- 리스너를 빼 본다 ---\n\n//  @Bean\n//  HttpSessionEventPublisher httpSessionEventPublisher() { ... }\n\n.maximumSessions(1).maxSessionsPreventsLogin(true)\n\n$ curl -s -b a.txt -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ TOKEN=$(curl -s -b a.txt localhost:8080/orders | grep _csrf | sed '...')\n$ curl -s -b a.txt -X POST localhost:8080/logout -d \"_csrf=$TOKEN\" -o /dev/null\n\n$ curl -s -o /dev/null -b a.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   로그아웃은 됐다\n\n$ curl -i -b a2.txt -c a2.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i location\n\nLocation: http://localhost:8080/login?error\n\nSessionAuthenticationException: Maximum sessions of 1 for this principal\n  exceeded\n\n#   로그아웃했는데 다시 로그인이 안 된다\n\n$ curl -s localhost:8080/sessions\n\n>>> user@a.com    9D77AB31 expired=false last=...\n\n#   죽은 세션이 레지스트리에 남아 있다\n\n#   재시작 전까지 이 계정은 못 들어온다\n\n#   리스너를 넣으면\n\n@Bean\nHttpSessionEventPublisher httpSessionEventPublisher() {\n    return new HttpSessionEventPublisher();\n}\n\n$ curl -s -b a.txt -X POST localhost:8080/logout -d \"_csrf=$TOKEN\" -o /dev/null\n$ curl -s localhost:8080/sessions\n\n#   (아무것도 안 나온다)\n\n$ curl -i -b a2.txt -c a2.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i location\n\nLocation: http://localhost:8080/\n\n#   된다\n\n# --- principal 의 equals 를 안 만들면 ---\n\npublic class CustomUserDetails implements UserDetails {\n    // equals / hashCode 없음\n}\n\n$ curl -s -b a.txt -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -b b.txt -c b.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n$ curl -s -o /dev/null -b a.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n$ curl -s -o /dev/null -b b.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   제한이 안 걸린다\n\n$ curl -s localhost:8080/sessions\n\n>>> user@a.com    9D77AB31 expired=false\n>>> user@a.com    C4E5F6A7 expired=false\n\n#   같은 아이디인데 다른 사람으로 세고 있다\n\n#   equals 와 hashCode 를 넣으면 제한이 걸린다\n\n# --- 다음 절에서 ---\n\n#   로그인할 때 세션 ID 가 바뀌는 이유를 본다",
+   "note": "**두 번째 로그인이 첫 세션을 만료시키고, 첫 브라우저는 다음 요청에서야 `?expired` 로** 쫓겨난다.\n\n**`maxSessionsPreventsLogin(true)` 면 새 로그인이 `SessionAuthenticationException` 으로** 막힌다.\n\n**리스너를 빼면 로그아웃 후에도 레지스트리에 세션이 남아 재로그인이 영영** 막힌다.\n\n**`equals`/`hashCode` 가 없으면 같은 아이디를 다른 사람으로 세어 제한이 안** 걸린다."
+  }
+ ],
+ "recap": [
+  "**두 번째 로그인에 답하는 방식이** 둘이다.",
+  "**기본은 옛 세션을** 만료시킨다.",
+  "**옛 브라우저는 다음 요청에서야** 안다.",
+  "**`maxSessionsPreventsLogin(true)` 면 새 로그인이** 막힌다.",
+  "**`SessionRegistry` 가 사람별 세션 목록을** 센다.",
+  "**`HttpSessionEventPublisher` 가 죽은 세션을** 뺀다.",
+  "**빠뜨리면 재로그인이 영영** 막힌다.",
+  "**`principal` 의 `equals`·`hashCode` 로 같은 사람을** 센다.",
+  "**메모리 레지스트리라 여러 대에서는 안** 통한다."
+ ],
+ "drills": [
+  {
+   "task": "쿠키 파일 둘로 두 번 로그인한다.",
+   "done_when": "첫 쪽이 `?expired` 로 가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "막는 쪽으로 바꿔 본다.",
+   "done_when": "새 로그인이 막히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "리스너를 빼고 로그아웃 후 재로그인한다.",
+   "done_when": "막히는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`equals`/`hashCode` 를 지운다.",
+   "done_when": "제한이 안 걸리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 동작은?",
+   "a": "새 로그인을 받고 옛 세션을 만료시킨다."
+  },
+  {
+   "q": "쫓겨난 브라우저는 언제 아나?",
+   "a": "자기가 다음 요청을 보낼 때다."
+  },
+  {
+   "q": "`HttpSessionEventPublisher` 를 빠뜨리면?",
+   "a": "죽은 세션이 안 빠져 재로그인이 막힐 수 있다."
+  },
+  {
+   "q": "같은 사람인지 무엇으로 판단하나?",
+   "a": "`principal` 의 `equals`·`hashCode` 다."
+  },
+  {
+   "q": "여러 대로 띄우면?",
+   "a": "레지스트리가 JVM 메모리라 서버마다 따로 센다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SessionRegistry",
+   "def": "사람별 세션 목록을 들고 있는 저장소. 동시 세션 제어의 근거 자료다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
