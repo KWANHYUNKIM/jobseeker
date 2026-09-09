@@ -117,7 +117,7 @@
           "title": "연관관계 매핑",
           "summary": "외래 키가 어디에 생기나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -125,7 +125,7 @@
           "title": "지연 로딩 기본",
           "summary": "@ManyToOne 의 기본값이 함정이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

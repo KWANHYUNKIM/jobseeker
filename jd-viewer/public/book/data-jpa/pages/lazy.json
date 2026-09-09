@@ -1,0 +1,139 @@
+{
+ "book": "data-jpa",
+ "id": "lazy",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "지연 로딩 기본",
+ "summary": "@ManyToOne 의 기본값이 함정이다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "기본값 넷을 안다.",
+  "프록시 초기화 시점을 안다.",
+  "N+1 이 어디서 나는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절에서 컬렉션은 읽을 때 나갔다.** **`@ManyToOne` 은 기본이** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "기본값이 대칭이 아니다",
+   "ascii": "   the defaults are not symmetric, and that is the trap\n\n   ManyToOne     EAGER by default\n   OneToOne      EAGER by default\n   OneToMany     LAZY by default\n   ManyToMany    LAZY by default\n\n   so the two that point at a single row are the ones that fetch eagerly,\n   and those are exactly the ones that multiply across a list",
+   "note": "**한 행을 가리키는 쪽이 즉시**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "즉시 로딩이 목록에서 폭발한다",
+   "md": "**한 건이면 조인 한 번**이다.\n\n> **`em.find` 면 조인해서 한 번에** 가져온다.\n> **그것만 보면 괜찮아** 보인다.\n\n**JPQL 이면 다르다.**\n\n> **`select m from Member m` 은 조인을 안** 한다.\n> **회원을 다 읽은 뒤 팀을 하나씩** 읽는다.\n> **회원 100명이면 쿼리 101개**다.\n\n**그게 N+1** 이다.\n\n> **1.2절에서 이미** 봤다.\n> **즉시 로딩이면 피할 방법이** 없다.\n> **지연으로 두고 필요할 때 조인하는 게** 답이다.\n\n**그래서 다 `LAZY` 로** 박는다.\n\n> **실무 규칙에 가깝다.**\n> **`@ManyToOne(fetch = LAZY)` 를 항상** 적는다.\n> **`@OneToOne` 도** 그렇다 — 게다가 그쪽은 더 나쁘다."
+  },
+  {
+   "type": "figure",
+   "caption": "프록시가 언제 깨지나",
+   "ascii": "   what a lazy field actually holds, and when it stops being a proxy\n\n   after a find     a proxy subclass, uninitialised\n   reading the id   still nothing, the id was already known\n   reading a field  now the select goes out\n   outside a tx     no session, so it throws instead\n\n   the last row is why a controller returning an entity fails at render time",
+   "note": "**마지막 줄이 컨트롤러에서 터지는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "프록시는 상속으로 만들어진다",
+   "md": "**`Team$HibernateProxy$...`** 다(1.4절).\n\n> **원본 클래스를 상속한** 것이다.\n> **`final` 클래스면 프록시를 못** 만든다.\n> **기본 생성자가 `private` 이어도** 그렇다(3.1절).\n\n**`==` 이 안** 맞는다.\n\n> **프록시와 원본은 다른 객체**다.\n> **`instanceof` 는 통과**한다 — 상속이니까.\n> **`getClass()` 비교는 실패**한다.\n> **`equals` 를 만들 때 조심해야** 한다.\n\n**초기화 여부를 확인할 수** 있다.\n\n```java\nemf.getPersistenceUnitUtil().isLoaded(member.getTeam())\n```\n\n> **하이버네이트의 `Hibernate.isInitialized()` 도** 있다.\n> **테스트에서 지연이 유지됐는지 단언할 때** 쓴다.\n\n**`@OneToOne` 은 지연이 잘 안** 된다.\n\n> **주인이 아닌 쪽은 프록시를 못** 만든다.\n> **`null` 인지 알려면 조회해야** 해서다.\n> **`LAZY` 를 적어도 즉시로** 동작한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 준비\n\n@BeforeEach\nvoid init() {\n    Team a = new Team(\"A팀\"); em.persist(a);\n    Team b = new Team(\"B팀\"); em.persist(b);\n    em.persist(new Member(\"m1\", 10, a));\n    em.persist(new Member(\"m2\", 20, a));\n    em.persist(new Member(\"m3\", 30, b));\n    em.flush(); em.clear();\n}\n\n\n-- LAZY 일 때 find\n\n@ManyToOne(fetch = FetchType.LAZY)\n@JoinColumn(name = \"team_id\")\nprivate Team team;\n\n@Test\nvoid lazy_find() {\n    Member m = em.find(Member.class, 1L);\n    System.out.println(\"--- 조회 끝 ---\");\n    System.out.println(\"프록시: \" + m.getTeam().getClass().getSimpleName());\n    System.out.println(\"--- 이름을 읽는다 ---\");\n    System.out.println(m.getTeam().getName());\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n--- 조회 끝 ---\n프록시: Team$HibernateProxy$8kD2mQ\n--- 이름을 읽는다 ---\nHibernate:\n    select\n        t1_0.team_id,\n        t1_0.name\n    from\n        team t1_0\n    where\n        t1_0.team_id=?\nA팀\n\n--   조인이 없다\n--   이름을 읽을 때 나갔다\n\n\n-- EAGER 로 바꾸면\n\n@ManyToOne(fetch = FetchType.EAGER)\n\n@Test\nvoid eager_find() {\n    Member m = em.find(Member.class, 1L);\n    System.out.println(\"--- 조회 끝 ---\");\n    System.out.println(\"클래스: \" + m.getTeam().getClass().getSimpleName());\n    System.out.println(m.getTeam().getName());\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.member_id=?\n--- 조회 끝 ---\n클래스: Team\nA팀\n\n--   조인해서 한 번에 가져왔다\n--   한 건이면 이게 낫다\n\n\n-- 그런데 JPQL 이면\n\n@Test\nvoid eager_jpql() {\n    List<Member> members = em.createQuery(\n            \"select m from Member m\", Member.class).getResultList();\n    System.out.println(\"--- 조회 끝, 회원 \" + members.size() + \"명 ---\");\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n--- 조회 끝, 회원 3명 ---\n\n--   조인을 안 했다\n--   팀을 하나씩 읽었다\n--   아직 아무것도 안 건드렸는데 나갔다\n--   EAGER 라 즉시 채워야 해서다\n\n\n-- 회원이 늘면\n\n@Test\nvoid eager_많으면() {\n    for (int i = 0; i < 100; i++) {\n        Team t = new Team(\"t\" + i); em.persist(t);\n        em.persist(new Member(\"m\" + i, i, t));\n    }\n    em.flush(); em.clear();\n\n    long n = counter.count(() ->\n        em.createQuery(\"select m from Member m\", Member.class)\n          .getResultList());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n쿼리 101개\n\n--   1 + 100 이다\n--   즉시 로딩이면 피할 방법이 없다\n\n\n-- LAZY 로 두면\n\n@ManyToOne(fetch = FetchType.LAZY)\n\n@Test\nvoid lazy_jpql() {\n    long n = counter.count(() ->\n        em.createQuery(\"select m from Member m\", Member.class)\n          .getResultList());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n쿼리 1개\n\n--   안 건드리면 안 나간다\n\n@Test\nvoid lazy_건드리면() {\n    long n = counter.count(() -> {\n        List<Member> list = em.createQuery(\n                \"select m from Member m\", Member.class).getResultList();\n        list.forEach(m -> m.getTeam().getName());\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n쿼리 101개\n\n--   건드리면 똑같다\n--   지연은 미루는 것이지 없애는 게 아니다\n--   5.13절에서 이걸 푼다\n\n\n-- id 만 읽으면\n\n@Test\nvoid id_만() {\n    Member m = em.find(Member.class, 1L);\n    System.out.println(\"--- id 를 읽는다 ---\");\n    System.out.println(\"team id: \" + m.getTeam().getId());\n    System.out.println(\"--- 끝 ---\");\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\n--- id 를 읽는다 ---\nteam id: 1\n--- 끝 ---\n\n--   SQL 이 안 나갔다\n--   외래 키로 이미 알고 있다\n--   1.4절의 getReferenceById 와 같은 원리다\n\n\n-- 초기화 여부를 확인한다\n\n@Test\nvoid 초기화_확인() {\n    Member m = em.find(Member.class, 1L);\n    PersistenceUnitUtil util = emf.getPersistenceUnitUtil();\n    System.out.println(\"읽기 전: \" + util.isLoaded(m.getTeam()));\n    m.getTeam().getName();\n    System.out.println(\"읽은 후: \" + util.isLoaded(m.getTeam()));\n}\n\n읽기 전: false\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n읽은 후: true\n\n--   테스트에서 단언할 때 쓴다\n\n\n-- 프록시와 원본은 다른 객체다\n\n@Test\nvoid 동일성() {\n    Member m = em.find(Member.class, 1L);\n    Team proxy = m.getTeam();\n    Team real = em.find(Team.class, 1L);\n\n    System.out.println(\"프록시 클래스: \" + proxy.getClass().getSimpleName());\n    System.out.println(\"원본 클래스  : \" + real.getClass().getSimpleName());\n    System.out.println(\"== 비교      : \" + (proxy == real));\n    System.out.println(\"instanceof   : \" + (proxy instanceof Team));\n    System.out.println(\"getClass 비교: \" +\n            (proxy.getClass() == real.getClass()));\n}\n\n프록시 클래스: Team$HibernateProxy$8kD2mQ\n원본 클래스  : Team$HibernateProxy$8kD2mQ\n== 비교      : true\ninstanceof   : true\ngetClass 비교: true\n\n--   같은 영속성 컨텍스트라 같은 객체다\n--   먼저 프록시가 만들어져서 원본 조회도 프록시를 준다\n--   순서가 반대면 둘 다 원본이다\n\n\n-- 트랜잭션 밖에서 읽으면\n\n@Test\nvoid 트랜잭션_밖() {\n    Member m = txTemplate.execute(status ->\n            em.find(Member.class, 1L));\n    System.out.println(\"--- 트랜잭션이 끝났다 ---\");\n    m.getTeam().getName();\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n--- 트랜잭션이 끝났다 ---\n\norg.hibernate.LazyInitializationException:\n    could not initialize proxy [study.datajpa.entity.Team#1] - no Session\n\n--   2.5절에서 본 그것이다\n--   컨트롤러가 엔티티를 반환하면 렌더링에서 터진다\n--   ⑧ 에서 DTO 로 바꾼 이유다\n\n\n-- @OneToOne 은 지연이 잘 안 된다\n\n@Entity\npublic class Member {\n    @OneToOne(mappedBy = \"member\", fetch = FetchType.LAZY)\n    private Locker locker;\n}\n\n@Test\nvoid onetoone_지연() {\n    Member m = em.find(Member.class, 1L);\n    System.out.println(\"--- 조회 끝 ---\");\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\nHibernate: select l1_0.locker_id, l1_0.member_id, l1_0.name from locker l1_0\n           where l1_0.member_id=?\n--- 조회 끝 ---\n\n--   LAZY 를 적었는데 나갔다\n--   주인이 아닌 쪽은 null 인지 알아야 한다\n--   그러려면 조회해야 한다",
+   "note": "**`@ManyToOne` 기본이 EAGER 라 JPQL 목록에서 쿼리가 `101개`** 가 된다.\n\n**`LAZY` 면 `1개` 인데 건드리면 다시 `101개`** 다 — 미루는 것이지 없애는 게 아니다.\n\n**`getTeam().getId()` 는 SQL 을 안** 낸다.\n\n**`isLoaded` 가 `false` → `true` 로** 바뀐다.\n\n**`@OneToOne` 은 `LAZY` 를 적어도 `select` 가** 나간다."
+  }
+ ],
+ "recap": [
+  "**기본값이 대칭이** 아니다.",
+  "**`@ManyToOne`·`@OneToOne` 이 즉시**다.",
+  "**한 건이면 조인 한 번**이다.",
+  "**JPQL 목록이면 N+1** 이다.",
+  "**즉시면 피할 방법이** 없다.",
+  "**지연은 미루는 것**이다.",
+  "**id 만 읽으면 SQL 이** 없다.",
+  "**트랜잭션 밖이면** 터진다.",
+  "**`@OneToOne` 은 지연이 잘 안** 된다."
+ ],
+ "drills": [
+  {
+   "task": "EAGER 로 목록을 조회한다.",
+   "done_when": "쿼리 수를 세었다.",
+   "minutes": 20
+  },
+  {
+   "task": "LAZY 로 바꾼다.",
+   "done_when": "1개와 101개를 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getId()` 만 읽는다.",
+   "done_when": "SQL 이 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "트랜잭션 밖에서 읽는다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ManyToOne` 의 기본 페치는?",
+   "a": "EAGER 다."
+  },
+  {
+   "q": "즉시 로딩이 목록에서 위험한 이유는?",
+   "a": "JPQL 은 조인을 안 해 연관마다 쿼리가 나간다."
+  },
+  {
+   "q": "지연 로딩이 N+1 을 없애나?",
+   "a": "아니다. 미룰 뿐이고 건드리면 똑같이 난다."
+  },
+  {
+   "q": "`getId()` 가 SQL 을 안 내는 이유는?",
+   "a": "외래 키로 식별자를 이미 알고 있어서다."
+  },
+  {
+   "q": "`@OneToOne` 의 지연이 잘 안 되는 이유는?",
+   "a": "주인이 아닌 쪽은 null 여부를 알려면 조회해야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "즉시 로딩",
+   "def": "엔티티를 읽을 때 연관까지 함께 가져오는 전략."
+  },
+  {
+   "term": "프록시 초기화",
+   "def": "미뤄 둔 연관 조회가 실제로 실행되는 순간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
