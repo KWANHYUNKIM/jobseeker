@@ -441,7 +441,7 @@
           "title": "스프링 데이터 JPA 리포지토리",
           "summary": "선언과 조립을 나눈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -449,7 +449,7 @@
           "title": "사용자 정의 리포지토리",
           "summary": "Impl 에 조립을 넣는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",

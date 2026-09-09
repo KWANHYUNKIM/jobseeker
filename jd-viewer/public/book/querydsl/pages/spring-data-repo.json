@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "spring-data-repo",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "스프링 데이터 JPA 리포지토리",
+ "summary": "선언과 조립을 나눈다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "인터페이스로 바꾼다.",
+  "무엇이 사라지는지 본다.",
+  "SQL 이 같은 걸 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절에서 저장 계열을 다시** 썼다. **⑭가 지웠던 걸 되돌려** 받는다."
+  },
+  {
+   "type": "figure",
+   "caption": "각자 가져오는 것",
+   "ascii": "   what each side brings to the same repository\n\n   spring data   save, findById, findAll, count, delete, paging\n   querydsl      the reads whose conditions are decided at call time\n\n   neither one covers what the other does, so both stay",
+   "note": "**서로를 대신 못 해서 둘 다** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "둘은 겹치지 않는다",
+   "md": "**선언으로 되는 건 선언으로** 한다.\n\n> **`save`·`findById` 는 구현이** 없다.\n> **⑭ 4.2절이 그것을 지웠다.**\n> **6.1절에서 다시 쓴 게** 낭비였다.\n\n**조립이 필요한 건 Querydsl 로** 한다.\n\n> **조건이 실행 시점에** 정해진다.\n> **⑭ 8.1·8.2절이 못 푼** 것이다.\n> **1.2절의 표에서 마지막 줄**이다.\n\n**한 인터페이스에** 모인다.\n\n> **⑭ 6.1절의 사용자 정의 리포지토리**다.\n> **부르는 쪽은 구분을** 못 한다.\n> **7.2절에서 붙인다.**\n\n**SQL 은 안** 바뀐다.\n\n> **6.4절의 조건이 그대로 쓰인**다.\n> **여기서도 `diff` 를** 본다.\n> **이 책이 계속 하는** 확인이다."
+  },
+  {
+   "type": "figure",
+   "caption": "6장이 쓴 것을 누가 가져가나",
+   "ascii": "   what chapter 6 wrote by hand, and who takes it back\n\n   save and findById   the generated proxy, again\n   findByUsername      a method name, no body at all\n   the search method   still querydsl, and 7.2 gives it a home\n\n   only the third line is work that had to be written",
+   "note": "**셋째 줄만 진짜로 써야 했던** 일이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름으로 만드는 메서드에도 한계가 있다",
+   "md": "**조건 수만큼 메서드가** 는다.\n\n> **⑭ 5.2절에서 이름이** 길어졌다.\n> **조건 넷이면 열다섯 개**다.\n> **그래서 조립이** 필요하다.\n\n**`@Query` 도 문자열**이다.\n\n> **1.2절에서 본** 문제다.\n> **동적으로 못** 만든다.\n> **⑭ 5.4절의 그** 한계다.\n\n**트랜잭션이 돌아온**다.\n\n> **⑭ 7.2절의 구현체에 붙어** 있다.\n> **6.1절에서 내가 걸던 것이** 사라진다.\n> **아래에서 확인**한다.\n\n**`readOnly` 도 같이** 온다.\n\n> **조회 메서드는 읽기 전용**이다.\n> **⑭ 7.5절의 스냅샷 이야기**다.\n> **여기서는 그냥 얻는**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 인터페이스로 바꾼다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    List<Member> findByUsername(String username);\n}\n\n$ wc -l MemberJpaRepository.java MemberRepository.java\n      94 MemberJpaRepository.java\n       7 MemberRepository.java\n\n--   94 줄이 7 줄이다\n--   ⑭ 4.2절의 그 장면이다\n\n\n-- 저장이 그대로 된다\n\n@Test\n@Transactional\nvoid 저장() {\n    Member m = memberRepository.save(new Member(\"새회원\", 99));\n    em.flush();\n    System.out.println(\"id: \" + m.getId());\n}\n\nHibernate:\n    select\n        next value for member_seq\nHibernate:\n    insert\n    into\n        member (age, team_id, username, member_id)\n    values\n        (?, ?, ?, ?)\nid: 61\n\n--   6.1절에서 내가 쓴 save 와 SQL 이 같다\n--   구현을 안 썼다\n\n\n-- 이름으로 만든 조회\n\n@Test\n@Transactional\nvoid 이름_조회() {\n    em.clear();\n    memberRepository.findByUsername(\"m1\");\n}\n\n/* select\n    m1_0.member_id,\n    m1_0.age,\n    m1_0.team_id,\n    m1_0.username\nfrom\n    member m1_0\nwhere\n    m1_0.username=? */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n\n--   JPQL 주석이 SQL 과 같다\n--   ⑭ 5.1절은 JPQL 을 만들고 하이버네이트가 번역한다\n--   여기서는 주석이 이미 SQL 모양이다\n\n\n-- 6.1 과 SQL 을 비교한다\n\n$ diff pure.sql spring-data.sql && echo SAME\nSAME\n\n--   ⑭ 4.2절과 같은 결론이다\n\n\n-- 트랜잭션이 돌아왔다\n\n@SpringBootTest\nclass NoTxTest {\n\n    @Autowired MemberRepository memberRepository;\n\n    @Test\n    void 저장() {\n        Member m = memberRepository.save(new Member(\"트랜잭션없이\", 1));\n        System.out.println(\"id: \" + m.getId());\n    }\n}\n\nDEBUG Creating new transaction with name\n      [...SimpleJpaRepository.save]: PROPAGATION_REQUIRED\nHibernate: insert into member (...) values (?, ?, ?, ?)\nDEBUG Initiating transaction commit\nid: 62\n\n--   6.1절에서는 TransactionRequiredException 이었다\n--   ⑭ 7.2절의 구현체에 붙어 있다\n\n\n-- readOnly 도 온다\n\n@Test\nvoid readOnly() {\n    Object target = ((Advised) memberRepository)\n            .getTargetSource().getTarget();\n    Transactional tx = target.getClass()\n            .getAnnotation(Transactional.class);\n    System.out.println(\"클래스: \" + target.getClass().getSimpleName());\n    System.out.println(\"readOnly: \" + tx.readOnly());\n}\n\n클래스: SimpleJpaRepository\nreadOnly: true\n\n--   ⑭ 7.1·7.2절에서 본 그대로다\n\n\n-- 조건이 늘면 이름이 감당 못 한다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    List<Member> findByUsername(String username);\n    List<Member> findByAgeGreaterThanEqual(int age);\n    List<Member> findByUsernameAndAgeGreaterThanEqual(String u, int age);\n    List<Member> findByTeamName(String teamName);\n    List<Member> findByUsernameAndTeamName(String u, String t);\n    List<Member> findByAgeGreaterThanEqualAndAgeLessThanEqual(int g, int l);\n    // ...\n}\n\n$ python3 -c 'print(2**4 - 1)'\n15\n\n--   조건 넷이면 열다섯이다\n--   ⑭ 5.2절과 6.1절에서 본 그 벽이다\n\n\n-- @Query 로도 동적이 안 된다\n\n@Query(\"select m from Member m\" +\n       \" where (:username is null or m.username = :username)\" +\n       \"   and (:minAge is null or m.age >= :minAge)\")\nList<Member> searchByQuery(@Param(\"username\") String username,\n                           @Param(\"minAge\") Integer minAge);\n\n@Test\n@Transactional\nvoid 조건_없이() {\n    em.clear();\n    memberRepository.searchByQuery(null, null);\n}\n\n/* select\n    m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\nfrom\n    member m1_0\nwhere\n    (? is null or m1_0.username=?)\n    and (? is null or m1_0.age>=?) */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        (? is null or m1_0.username=?)\n        and (? is null or m1_0.age>=?)\nTRACE binding parameter (1:VARCHAR) <- [null]\nTRACE binding parameter (2:VARCHAR) <- [null]\n\n--   조건이 문장에 그대로 남았다\n--   인덱스를 못 탄다\n--   6.4절은 절 자체가 안 생겼다\n\n\n-- 실행 계획을 비교한다\n\n@Test\nvoid 계획() {\n    for (int i = 0; i < 20000; i++) em.persist(new Member(\"p\" + i, 10));\n    em.createNativeQuery(\"create index idx_username on member(username)\")\n            .executeUpdate();\n    em.flush(); em.clear();\n\n    System.out.println(em.createNativeQuery(\n            \"explain analyze select * from member\" +\n            \" where (null is null or username = null)\")\n        .getResultList().get(0));\n\n    System.out.println(em.createNativeQuery(\n            \"explain analyze select * from member where username = 'p1'\")\n        .getResultList().get(0));\n}\n\nSELECT * FROM PUBLIC.MEMBER\n    /* PUBLIC.MEMBER.tableScan */\n    /* scanCount: 20011 */\n\nSELECT * FROM PUBLIC.MEMBER\n    /* PUBLIC.IDX_USERNAME: USERNAME = 'p1' */\n    /* scanCount: 2 */\n\n--   조건을 문장에 남기면 전체를 훑는다\n--   5.10절에서 본 그 문제다\n\n\n-- Querydsl 은 절을 안 만든다\n\n@Test\n@Transactional\nvoid querydsl_조건_없이() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(usernameEq(null), ageGoe(null))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n\n--   where 가 없다\n--   4.4절부터 계속 본 그것이다\n\n\n-- 둘을 한 인터페이스에 둔다\n\npublic interface MemberRepository\n        extends JpaRepository<Member, Long>, MemberRepositoryCustom {\n\n    List<Member> findByUsername(String username);\n}\n\npublic interface MemberRepositoryCustom {\n    List<MemberTeamDto> search(MemberSearchCondition cond);\n}\n\n--   ⑭ 6.1절의 그 구조다\n--   7.2절에서 구현을 붙인다\n\n\n-- 6장에서 지울 것을 센다\n\n$ printf '%-24s %s\\n' \\\n  'save'        '지운다 (선언)' \\\n  'findById'    '지운다 (선언)' \\\n  'findAll'     '지운다 (선언)' \\\n  'findByUsername' '지운다 (이름)' \\\n  'count'       '지운다 (선언)' \\\n  'search'      '남긴다 (조립)' \\\n  'searchPage'  '남긴다 (7.3절)'\n\nsave                     지운다 (선언)\nfindById                 지운다 (선언)\nfindAll                  지운다 (선언)\nfindByUsername           지운다 (이름)\ncount                    지운다 (선언)\nsearch                   남긴다 (조립)\nsearchPage               남긴다 (7.3절)\n\n$ git diff --stat\n MemberJpaRepository.java | 94 -----------------------\n MemberRepository.java    |  9 +++\n 2 files changed, 9 insertions(+), 94 deletions(-)\n\n--   85 줄이 사라졌다\n--   7.2절에서 남긴 둘에 자리를 준다",
+   "note": "**94줄 클래스가 7줄 인터페이스가 되고 `save` 의 SQL 은 6.1절과** 같다.\n\n**트랜잭션 없이 저장이 되며 `SimpleJpaRepository.save` 가 직접** 연다.\n\n**조건 넷을 이름으로 만들면 메서드가 15개** 필요하다.\n\n**`@Query` 로 흉내 내면 `(? is null or ...)` 이 문장에 남아 `scanCount` 가 20011 대 2** 다.\n\n**Querydsl 은 조건이 `null` 이면 `where` 절 자체가 안** 생긴다."
+  }
+ ],
+ "recap": [
+  "**선언으로 되는 건 선언으로** 한다.",
+  "**94줄이 7줄이** 된다.",
+  "**SQL 은** 같다.",
+  "**트랜잭션이** 돌아온다.",
+  "**`readOnly` 도** 온다.",
+  "**이름은 조건 수에** 진다.",
+  "**`@Query` 는 동적이** 아니다.",
+  "**문장에 남으면 인덱스를** 못 탄다.",
+  "**조립은 절을 안** 만든다."
+ ],
+ "drills": [
+  {
+   "task": "인터페이스로 바꾼다.",
+   "done_when": "줄 수 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "트랜잭션 없이 저장한다.",
+   "done_when": "6.1절과 달라진 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Query` 로 동적을 흉내 낸다.",
+   "done_when": "문장에 조건이 남는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "실행 계획을 비교한다.",
+   "done_when": "스캔 수 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스프링 데이터가 되돌려 주는 것은?",
+   "a": "`save`·`findById` 같은 기본 CRUD 와 페이징이다."
+  },
+  {
+   "q": "Querydsl 이 남는 이유는?",
+   "a": "조건이 실행 시점에 정해지는 조회는 선언으로 못 만든다."
+  },
+  {
+   "q": "트랜잭션은 누가 여나?",
+   "a": "구현체 `SimpleJpaRepository` 가 연다."
+  },
+  {
+   "q": "`@Query` 로 동적을 흉내 내면?",
+   "a": "조건이 문장에 남아 인덱스를 못 탄다."
+  },
+  {
+   "q": "Querydsl 은 조건이 없으면?",
+   "a": "`where` 절 자체를 만들지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "선언적 조회",
+   "def": "메서드 이름이나 어노테이션만으로 쿼리를 얻는 방식."
+  },
+  {
+   "term": "조립형 조회",
+   "def": "조건을 코드로 만들어 실행 시점에 문장을 정하는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Custom Implementations",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/custom-implementations.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
