@@ -1,0 +1,133 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-form",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "상품 등록",
+ "summary": "책 · 앨범 · 영화 중 하나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "상품 등록 화면을 만든다.",
+  "타입마다 폼이 필요한 것을 본다.",
+  "3.5절의 대가를 만난다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 책만 만들기로** 했다. **왜 그랬는지 여기서** 보인다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`BookForm`",
+   "code": "@Getter @Setter\npublic class BookForm {\n\n    private Long id;\n\n    private String name;\n    private int price;\n    private int stockQuantity;\n\n    private String author;\n    private String isbn;\n}",
+   "note": "**`id` 가 있다.** **등록에는 안 쓰고 수정에 쓴다**(8.7절).\n\n**검증 애너테이션이 없다.**\n\n> **8.3절에서 회원 이름에 `@NotEmpty` 를** 붙였다. **여기는 안 붙인다.**\n>\n> **강의 예제를 따랐다.** **가격이 음수여도 통과**한다 — 9.7절 목록이다.\n\n**폼 필드가 엔티티와 거의 같다.**\n\n> **8.2절의 `MemberForm` 은 `Address` 때문에 모양이 달랐다.**\n>\n> **여기는 값 타입이 없어 똑같다.** **\"그럼 엔티티를 그냥 쓰지\" 라는 생각이** 든다.\n>\n> **못 쓴다** — `Item` 이 `abstract` 이고 `@Setter` 가 없다(3.5절, 3.8절)."
+  },
+  {
+   "type": "figure",
+   "caption": "폼과 엔티티",
+   "ascii": "   BookForm                        Book\n   --------                        ----\n   Long id                         Long id\n   String name                     String name\n   int price                       int price\n   int stockQuantity               int stockQuantity\n   String author                   String author\n   String isbn                     String isbn\n\n   one form per subtype. album and movie would need two more.",
+   "note": "**타입마다 폼 하나**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@Controller\n@RequiredArgsConstructor\npublic class ItemController {\n\n    private final ItemService itemService;\n\n    @GetMapping(\"/items/new\")\n    public String createForm(Model model) {\n        model.addAttribute(\"form\", new BookForm());\n        return \"items/createItemForm\";\n    }\n\n    @PostMapping(\"/items/new\")\n    public String create(BookForm form) {\n        Book book = new Book();\n        book.setName(form.getName());\n        book.setPrice(form.getPrice());\n        book.setStockQuantity(form.getStockQuantity());\n        book.setAuthor(form.getAuthor());\n        book.setIsbn(form.getIsbn());\n\n        itemService.saveItem(book);\n        return \"redirect:/items\";\n    }\n}",
+   "note": "**`new Book()`** 을 컨트롤러가 만든다. **`Item` 은 `abstract`** 라 못 만든다.\n\n**`setName` 등을 쓴다.**\n\n> **3.8절에서 `Item` 의 `@Setter` 를 뗐다고** 했는데 여기서 쓰고 있다.\n>\n> **`Item` 에는 남겨 뒀다.** **`Order` 에서만 뺐다.** **일관성이 없다** — 9.7절 목록.\n>\n> **제대로 하려면 `Book.createBook(name, price, stock, author, isbn)`** 정적 팩토리다.\n\n**`@Valid` 가 없다.** **`BindingResult` 도 없다.** **8.3절과 다르다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 책만인가",
+   "ascii": "   why only Book\n\n   the fields differ per type, so the form differs\n   the form differs, so the html differs\n   the html differs, so the controller method differs\n\n   three files per subtype\n   the inheritance did not save any of them",
+   "note": "**상속이 아무것도 안 아껴 줬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "3.5절의 대가",
+   "md": "**세 종류를 다 만들면** 이렇게 된다.\n\n| 타입 | 폼 | HTML | 컨트롤러 메서드 |\n|---|---|---|---|\n| 책 | `BookForm` | `createBookForm.html` | `createBook` |\n| 앨범 | `AlbumForm` | `createAlbumForm.html` | `createAlbum` |\n| 영화 | `MovieForm` | `createMovieForm.html` | `createMovie` |\n\n**아홉 개 파일**이다.\n\n**공통 부분을 뽑을 수는** 있다.\n\n```java\n@Getter @Setter\npublic abstract class ItemForm {\n    private Long id;\n    private String name;\n    private int price;\n    private int stockQuantity;\n}\n\npublic class BookForm extends ItemForm {\n    private String author;\n    private String isbn;\n}\n```\n\n**HTML 도 프래그먼트로** 나눈다.\n\n**그래도 세 벌**이다.\n\n> **3.5절에서 \"다형성이 안 통하는 자리\" 라고** 했다. **화면은 필드가 다르면 다른 화면**이다.\n>\n> **조회는 다형성이 통한다**(6.5절). **`select i from Item i` 하나로 셋을 다** 가져온다.\n>\n> **쓰기는 안 통한다.**\n\n**타입을 하나 고르게 하는 화면**도 있다.\n\n```html\n<select name=\"type\" onchange=\"changeForm()\">\n    <option value=\"BOOK\">도서</option>\n    <option value=\"ALBUM\">음반</option>\n</select>\n```\n\n**자바스크립트로 폼을 바꾼다.** **서버는 `type` 을 보고 분기**한다.\n\n```java\n@PostMapping(\"/items/new\")\npublic String create(@RequestParam String type, ItemForm form) {\n    Item item = switch (type) {\n        case \"BOOK\" -> createBook(form);\n        case \"ALBUM\" -> createAlbum(form);\n        default -> throw new IllegalArgumentException();\n    };\n    itemService.saveItem(item);\n}\n```\n\n**`switch` 가 생겼다.** **다형성을 쓰겠다고 상속을 골랐는데 화면 쪽에 `switch`** 가 있다.\n\n> **9.7절에서 \"상속이 여기서 값을 했나\" 를** 묻는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 등록 폼 ---\n\nGET /items/new HTTP/1.1\n\n#   (SQL 없음)\n\nHTTP/1.1 200\n\n<form th:action=\"@{/items/new}\" th:object=\"${form}\" method=\"post\">\n    <div class=\"form-group\">\n        <label th:for=\"name\">상품명</label>\n        <input type=\"text\" th:field=\"*{name}\" class=\"form-control\">\n    </div>\n    <div class=\"form-group\">\n        <label th:for=\"price\">가격</label>\n        <input type=\"number\" th:field=\"*{price}\" class=\"form-control\">\n    </div>\n    <div class=\"form-group\">\n        <label th:for=\"stockQuantity\">수량</label>\n        <input type=\"number\" th:field=\"*{stockQuantity}\" class=\"form-control\">\n    </div>\n    <div class=\"form-group\">\n        <label th:for=\"author\">저자</label>\n        <input type=\"text\" th:field=\"*{author}\" class=\"form-control\">\n    </div>\n    <div class=\"form-group\">\n        <label th:for=\"isbn\">ISBN</label>\n        <input type=\"text\" th:field=\"*{isbn}\" class=\"form-control\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n</form>\n\n#   저자와 ISBN 이 있다\n#   앨범 폼이면 이 두 칸이 아티스트와 등급이다\n\n# --- 등록 ---\n\nPOST /items/new HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nid=&name=JPA2+BOOK&price=20000&stockQuantity=100&author=%EA%B9%80%EC%98%81%ED%95%9C&isbn=9788960777330\n\n#   id 가 비어 있다 (등록이라)\n\n#   Getting transaction for [ItemService.saveItem]\n#   Creating new transaction with name [ItemService.saveItem]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: select next value for item_seq\n\n#   (id 가 null 이라 persist 로 갔다 - 6.3절)\n\n#   Initiating transaction commit\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n#   binding parameter [1] as [VARCHAR] - [JPA2 BOOK]\n#   binding parameter [2] as [INTEGER] - [20000]\n#   binding parameter [3] as [INTEGER] - [100]\n#   binding parameter [4] as [VARCHAR] - [김영한]\n#   binding parameter [5] as [VARCHAR] - [9788960777330]\n\n#   dtype='B' 가 하드코딩돼 나갔다 (3.5절)\n\nHTTP/1.1 302\nLocation: /items\n\n# --- 가격을 음수로 넣으면 ---\n\nPOST /items/new\nname=이상한책&price=-1000&stockQuantity=10&...\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: insert into item (...) values (?, ?, ?, ?, ?, 'B', ?)\n#   binding parameter [2] as [INTEGER] - [-1000]\n\nHTTP/1.1 302\nLocation: /items\n\n#   통과했다\n\n#   @Valid 도 없고 엔티티 검증도 없다\n#   9.7절 목록\n\n# --- 가격에 글자를 넣으면 ---\n\nPOST /items/new\nprice=abc\n\n#   (바인딩 실패)\n\nHTTP/1.1 400\n{\n    \"status\": 400,\n    \"error\": \"Bad Request\",\n    \"message\": \"Failed to convert value of type 'java.lang.String'\n                to required type 'int'\"\n}\n\n#   BindingResult 가 없어서 400 이다\n#   8.3절에서 본 그것\n\n# --- 앨범 폼이 없다 ---\n\nGET /items/new\n\n#   책 폼만 나온다\n\n#   앨범을 등록하려면 AlbumForm, createAlbumForm.html,\n#   컨트롤러 메서드가 더 필요하다\n\n#   상속이 이것을 안 아껴 줬다",
+   "note": "**폼에 저자와 ISBN**이 있다. **앨범이면 다른 두 칸**이다.\n\n**`id=` 가 비어서 온다.** **`persist` 로 간다**(6.3절).\n\n**`dtype='B'` 가 하드코딩**돼 나갔다. **3.5절의 그것**이다.\n\n**가격이 음수여도 통과**한다. **검증이 없다** — 9.7절 목록.\n\n**글자를 넣으면 `400`** 이다. **`BindingResult` 가 없어서**다 — 8.3절.\n\n**앨범 폼이 없다.** **상속이 아무것도 안 아껴 줬다.**\n\n**다음 절에서 목록을 만든다.**"
+  }
+ ],
+ "recap": [
+  "**타입마다 폼이 하나**씩 필요하다.",
+  "**세 종류면 파일이 아홉 개**다.",
+  "**공통 부모 폼을 뽑아도 세 벌**은 남는다.",
+  "**조회는 다형성이 통하고 쓰기는 안 통한다.**",
+  "**타입 분기를 넣으면 `switch`** 가 생긴다.",
+  "**`Item` 이 `abstract` 라 컨트롤러가 `new Book()`** 을 만든다.",
+  "**`Item` 에 setter 가 남아 있다** — 9.7절 목록.",
+  "**검증이 없어 음수 가격이 통과**한다.",
+  "**`dtype='B'` 가 하드코딩**돼 나간다."
+ ],
+ "drills": [
+  {
+   "task": "`BookForm` 과 등록 화면을 만든다.",
+   "done_when": "상품이 등록되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "가격을 음수로 넣어 본다.",
+   "done_when": "통과하는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`AlbumForm` 을 추가해 본다.",
+   "done_when": "파일이 몇 개 느는지 세었다.",
+   "minutes": 30
+  },
+  {
+   "task": "타입 분기를 넣어 본다.",
+   "done_when": "`switch` 가 생기는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 타입마다 폼이 필요한가?",
+   "a": "하위 타입마다 필드가 달라 화면도 달라지기 때문이다."
+  },
+  {
+   "q": "상속이 화면에서 무엇을 아껴 줬나?",
+   "a": "아무것도 못 아껴 줬다. 조회만 다형성이 통한다."
+  },
+  {
+   "q": "타입 분기를 넣으면?",
+   "a": "화면 쪽에 `switch` 가 생긴다. 다형성을 쓰려고 상속을 골랐는데."
+  },
+  {
+   "q": "가격이 음수여도 왜 통과하나?",
+   "a": "폼에도 엔티티에도 검증이 없다."
+  },
+  {
+   "q": "가격에 글자를 넣으면?",
+   "a": "바인딩 실패로 `400` 이다. `BindingResult` 가 없기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

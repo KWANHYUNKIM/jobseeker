@@ -1,0 +1,133 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-edit-form",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "상품 수정 폼",
+ "summary": "준영속 엔티티가 나타난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "수정 폼을 만든다.",
+  "준영속 엔티티가 어디서 생기는지 안다.",
+  "캐스팅의 위험을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**이 장에서 가장 중요한 절**이다. **6.3절의 `merge` 가 왜 있었는지** 여기서 보인다."
+  },
+  {
+   "type": "figure",
+   "caption": "왕복",
+   "ascii": "   the edit round trip\n\n   GET  /items/1/edit    load Item, fill BookForm, render\n                         transaction ends here\n   ...browser...         the entity is gone, only html remains\n   POST /items/1/edit    a fresh BookForm arrives\n                         it has an id, and nothing else is managed\n\n   an object with an id that jpa has never seen: detached",
+   "note": "**마지막 줄이 준영속의 정의**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "수정 폼 (GET)",
+   "code": "@GetMapping(\"/items/{itemId}/edit\")\npublic String updateItemForm(@PathVariable(\"itemId\") Long itemId, Model model) {\n    Book item = (Book) itemService.findOne(itemId);\n\n    BookForm form = new BookForm();\n    form.setId(item.getId());\n    form.setName(item.getName());\n    form.setPrice(item.getPrice());\n    form.setStockQuantity(item.getStockQuantity());\n    form.setAuthor(item.getAuthor());\n    form.setIsbn(item.getIsbn());\n\n    model.addAttribute(\"form\", form);\n    return \"items/updateItemForm\";\n}",
+   "note": "**`(Book)` 캐스팅**이 있다. **6.5절에서 예고한 그것**이다.\n\n**엔티티를 폼으로 옮긴다.** **한 줄씩 여섯 번.**\n\n> **엔티티를 그대로 넘길 수도** 있다(8.4절, 8.6절). **여기서는 폼을 쓴다.**\n>\n> **왜 다른가.** **수정 폼은 `th:field` 로 값을 채우는데**, **`Item` 에 setter 가 없으면 바인딩할 때 문제**가 된다.\n>\n> **일관성이 없다** — 목록은 엔티티, 수정은 폼이다. **9.7절 목록**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "캐스팅",
+   "ascii": "   the cast\n\n   Book item = (Book) itemService.findOne(itemId)\n\n   itemId points to an Album?   ClassCastException\n\n   nothing in the type system stops it\n   the url is a string from the browser",
+   "note": "**타입 시스템이 못 막는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "URL 이 문자열이다",
+   "md": "```\nGET /items/100/edit\n```\n\n**`100` 이 앨범이면**\n\n```\njava.lang.ClassCastException:\n  class jpabook.jpashop.domain.item.Album cannot be cast to\n  class jpabook.jpashop.domain.item.Book\n```\n\n**`500`** 이다.\n\n**목록 화면의 수정 버튼은 안전**하다. **책만 있으니까.**\n\n**주소창에 직접 치면 터진다.**\n\n> **8.6절에서 앨범을 직접 넣어 봤다.** **그것의 수정 버튼을 누르면** 이 예외다.\n\n**막으려면**\n\n```java\nItem item = itemService.findOne(itemId);\nif (!(item instanceof Book book)) {\n    throw new IllegalArgumentException(\"책만 수정할 수 있습니다\");\n}\n```\n\n**또는 타입별로 URL 을 나눈다.**\n\n```\n/items/books/{id}/edit\n/items/albums/{id}/edit\n```\n\n**컨트롤러가 셋**이다(8.5절).\n\n> **3.5절에서 `SINGLE_TABLE` 을 골랐다.** **저장은 이득**이었다(`insert` 하나). **여기서 갚는다.**\n>\n> **`JOINED` 였어도 같다.** **상속을 쓰면 생기는 문제**이지 전략의 문제가 아니다.\n\n**9.7절에서 이것을** 다시 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "수정 (POST) — 지금 방식",
+   "code": "@PostMapping(\"/items/{itemId}/edit\")\npublic String updateItem(@ModelAttribute(\"form\") BookForm form) {\n    Book book = new Book();\n    book.setId(form.getId());        // 화면에서 온 id\n    book.setName(form.getName());\n    book.setPrice(form.getPrice());\n    book.setStockQuantity(form.getStockQuantity());\n    book.setAuthor(form.getAuthor());\n    book.setIsbn(form.getIsbn());\n\n    itemService.saveItem(book);      // merge 로 간다\n    return \"redirect:/items\";\n}",
+   "note": "**`new Book()` 에 `id` 를 넣는다.** **준영속 엔티티**다.\n\n**`saveItem` 이 `merge`** 로 간다(6.3절).\n\n**여섯 필드를 다 채웠으니 지금은 안전**하다.\n\n> **하나라도 빠뜨리면 `null` 로 덮인다**(6.3절).\n>\n> **8.9절에서 그 사고를** 본다.\n\n**8.8절에서 이 코드를 변경 감지로** 바꾼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 수정 폼 ---\n\nGET /items/1/edit HTTP/1.1\n\n#   Getting transaction for [ItemService.findOne]\n#   Creating new transaction with name [ItemService.findOne]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0 where i1_0.item_id=?\n\n#   Resetting read-only flag\n\n#   (트랜잭션 종료 - 여기서 엔티티가 준영속이 된다)\n\nHTTP/1.1 200\n\n<form th:object=\"${form}\" method=\"post\">\n    <input type=\"hidden\" th:field=\"*{id}\">\n    <div class=\"form-group\">\n        <label th:for=\"name\">상품명</label>\n        <input type=\"text\" th:field=\"*{name}\" class=\"form-control\">\n    </div>\n    ...\n</form>\n\n#   렌더링된 HTML\n\n<input type=\"hidden\" id=\"id\" name=\"id\" value=\"1\">\n<input type=\"text\" id=\"name\" name=\"name\" value=\"JPA1 BOOK\">\n<input type=\"number\" id=\"price\" name=\"price\" value=\"10000\">\n<input type=\"number\" id=\"stockQuantity\" name=\"stockQuantity\" value=\"99\">\n<input type=\"text\" id=\"author\" name=\"author\" value=\"김영한\">\n<input type=\"text\" id=\"isbn\" name=\"isbn\" value=\"9788960777330\">\n\n#   id 가 hidden 으로 나갔다\n\n# --- 수정 제출 ---\n\nPOST /items/1/edit HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nid=1&name=JPA1+BOOK+SECOND&price=12000&stockQuantity=99&author=%EA%B9%80%EC%98%81%ED%95%9C&isbn=9788960777330\n\n#   Getting transaction for [ItemService.saveItem]\n#   Creating new transaction with name [ItemService.saveItem]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   (id 가 있으니 merge)\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   merge 가 먼저 조회한다 (6.3절)\n\n#   Initiating transaction commit\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [1] as [VARCHAR] - [JPA1 BOOK SECOND]\n#   binding parameter [2] as [INTEGER] - [12000]\n\nHTTP/1.1 302\nLocation: /items\n\n#   select 둘 (폼 로딩, merge), update 하나\n\n# --- 앨범의 수정 버튼을 누르면 ---\n\nGET /items/100/edit\n\n#   Hibernate: select i1_0.item_id, i1_0.dtype, ... where i1_0.item_id=?\n\n#   java.lang.ClassCastException:\n#     class jpabook.jpashop.domain.item.Album cannot be cast to\n#     class jpabook.jpashop.domain.item.Book\n#     (jpabook.jpashop.domain.item.Album and\n#      jpabook.jpashop.domain.item.Book are in unnamed module\n#      of loader 'app')\n\nHTTP/1.1 500\n\n#   3.5절에서 예고한 그것\n\n# --- id 를 조작하면 ---\n\nPOST /items/1/edit\nid=2&name=해킹&price=1&stockQuantity=0&author=&isbn=\n\n#   Hibernate: select ... where i1_0.item_id=?\n#   binding parameter [1] as [BIGINT] - [2]\n\n#   Hibernate: update item set name=?, price=?, ... where item_id=?\n#   binding parameter [1] as [VARCHAR] - [해킹]\n\nHTTP/1.1 302\n\n#   2번 상품이 바뀌었다\n\n#   hidden 필드를 믿었다\n#   권한 검사가 없다 (1.3절에서 뺐다)\n\n#   9.7절 목록\n\n# --- 8.8절에서 이 방식을 바꾼다 ---",
+   "note": "**`GET` 에서 트랜잭션이 끝나면 엔티티가 준영속**이 된다. **그 뒤에 화면이 렌더링**된다.\n\n**`id` 가 `hidden` 으로 나간다.** **그것이 돌아와 준영속 엔티티가 된다.**\n\n**`merge` 가 `select` 를 먼저** 날린다(6.3절). **폼 로딩까지 합치면 `select` 둘**이다.\n\n**앨범의 수정 버튼은 `ClassCastException`** 이다. **3.5절에서 예고한 것**이다.\n\n**`id` 를 조작하면 남의 상품이 바뀐다.** **권한 검사가 없다** — 9.7절 목록.\n\n**다음 절에서 변경 감지로 바꾼다.**"
+  }
+ ],
+ "recap": [
+  "**`GET` 의 트랜잭션이 끝나면 엔티티가 준영속**이 된다.",
+  "**`id` 가 `hidden` 으로 왕복**한다.",
+  "**돌아온 폼으로 만든 객체가 준영속 엔티티**다.",
+  "**`(Book)` 캐스팅이 앨범에서 터진다** — URL 은 문자열이다.",
+  "**타입별 URL 로 나누면 컨트롤러가 셋**이다.",
+  "**상속을 쓰면 생기는 문제**이지 전략의 문제가 아니다.",
+  "**`merge` 가 `select` 를 먼저** 날린다.",
+  "**여섯 필드를 다 채워야** 안전하다 — 8.9절.",
+  "**`id` 를 조작하면 남의 상품이 바뀐다** — 9.7절 목록."
+ ],
+ "drills": [
+  {
+   "task": "수정 폼과 제출을 만든다.",
+   "done_when": "`select` 둘과 `update` 하나를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "앨범의 수정 URL 로 들어가 본다.",
+   "done_when": "`ClassCastException` 을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`hidden` 의 `id` 를 바꿔 제출한다.",
+   "done_when": "다른 상품이 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`instanceof` 검사를 넣어 본다.",
+   "done_when": "캐스팅 예외를 막는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "준영속 엔티티가 어디서 생기나?",
+   "a": "`GET` 의 트랜잭션이 끝난 뒤 화면을 거쳐 돌아온 데이터로 만든 객체다."
+  },
+  {
+   "q": "`(Book)` 캐스팅이 왜 위험한가?",
+   "a": "URL 의 id 가 앨범을 가리키면 `ClassCastException` 이 난다."
+  },
+  {
+   "q": "타입별로 나누면?",
+   "a": "컨트롤러와 폼과 화면이 타입 수만큼 늘어난다."
+  },
+  {
+   "q": "`merge` 는 SQL 을 몇 개 만드나?",
+   "a": "`select` 하나와 `update` 하나다."
+  },
+  {
+   "q": "`id` 조작이 왜 통하나?",
+   "a": "`hidden` 값을 그대로 믿고 권한 검사가 없기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

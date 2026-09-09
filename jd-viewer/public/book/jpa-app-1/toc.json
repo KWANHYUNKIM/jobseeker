@@ -492,7 +492,7 @@
           "title": "상품 등록",
           "summary": "책 · 앨범 · 영화 중 하나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -500,7 +500,7 @@
           "title": "상품 목록",
           "summary": "상속이 화면에서 어떻게 보이나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",
@@ -508,7 +508,7 @@
           "title": "상품 수정 폼",
           "summary": "준영속 엔티티가 나타난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.8",
