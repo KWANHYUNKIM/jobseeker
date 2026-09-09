@@ -600,7 +600,7 @@
           "title": "열면 안 되는 것",
           "summary": "무엇이 새어 나가나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -615,7 +615,7 @@
           "title": "무엇을 재나",
           "summary": "로그로는 안 되는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",

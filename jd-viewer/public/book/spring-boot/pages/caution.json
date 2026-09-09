@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "caution",
+ "no": "8.9",
+ "chapter": 8,
+ "title": "열면 안 되는 것",
+ "summary": "무엇이 새어 나가나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 나가는지 본다.",
+  "가리기의 한계를 안다.",
+  "8장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 별표를 한 번** 썼다. **그때 무엇이 보였는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "각각이 내주는 것",
+   "ascii": "   what each one hands over\n\n   env          every variable in the process, secrets included\n   heapdump     a file containing every live object, so every string\n   threaddump   class names, call paths, and what is being waited on\n   configprops  the shape of the config, masked only where it can tell\n   shutdown     the process itself\n\n   the first two are the ones that end careers",
+   "note": "**앞의 둘이 사람 인생을** 바꾼다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안쪽을 보여 주는 장치는 안쪽을 다 보여 준다",
+   "md": "**8장 내내 유용**했다.\n\n> **7.12절의 사다리를** 봤다.\n> **6.7절의 보고서도** 봤다.\n> **그게 다 밖에서 보인다는 뜻**이다.\n\n**환경 변수가 제일** 크다.\n\n> **7.2절에서 비밀을 거기 넣**었다.\n> **그 자리가 그대로** 열린다.\n> **아래에서 세어** 본다.\n\n**덤프는 통째**다.\n\n> **살아 있는 객체가 다** 있다.\n> **문자열도 다** 있다.\n> **아래에서 찾아** 본다.\n\n**가리기는** 짐작이다.\n\n> **이름만** 본다.\n> **아래에서 뚫어** 본다.\n> **믿으면 안** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "가리기는 이름만 본다",
+   "ascii": "   masking is a guess, not a guarantee\n\n   it looks at the key name, never at the value\n   a key called token or secret is hidden\n   a key called dsn or connection is not\n\n   so a password inside a url goes out in full",
+   "note": "**주소 안에 든 비밀번호는 그대로** 나간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 열었다고 안심하면 안 된다",
+   "md": "**인수로** 열린다.\n\n> **8.7절에서** 봤다.\n> **실행 명령을 쥔 사람이면** 된다.\n> **포트를 나눠야** 한다.\n\n**프록시가 통째로 넘길 수** 있다.\n\n> **`/` 를 다 넘기면** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **경로를 막아야** 한다.\n\n**개발 설정이 그대로 나갈 수** 있다.\n\n> **7.10절의 프로필**이다.\n> **운영에 dev 가 켜지면** 그렇다.\n> **아래에서 확인**한다.\n\n**로그에도 남는**다.\n\n> **8.5절에서 올려** 놨다.\n> **비밀이 로그로** 간다.\n> **아래에서 그걸** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 다 연 상태로 센다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    print('%-46s %d' % (s['name'][:46], len(s['properties'])))\n\"\nserver.ports                                   1\ncommandLineArgs                                3\nsystemProperties                              69\nsystemEnvironment                             42\napplicationConfig: [classpath:/application.yml] 7\n\n$ curl -s localhost:8080/actuator/env | wc -c\n   18420\n\n--   프로세스가 아는 걸 통째로 준다\n\n\n-- 무엇이 그 안에 있나\n\n$ STUDY_DB_PASSWORD='p@ssw0rd' AWS_SECRET_ACCESS_KEY='wJalrXUt...' \\\n  GITHUB_TOKEN='ghp_abc123...' java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    if s['name'] != 'systemEnvironment': continue\n    for k, v in s['properties'].items():\n        if any(w in k.upper() for w in ('PASSWORD','SECRET','TOKEN','KEY')):\n            print('%-28s %s' % (k, v['value']))\n\"\nAWS_SECRET_ACCESS_KEY        ******\nGITHUB_TOKEN                 ******\nSTUDY_DB_PASSWORD            ******\n\n--   가려졌다\n--   이름에 그 낱말이 있어서다\n\n\n-- 이름이 다르면 안 가려진다\n\n$ STUDY_DB_DSN='postgres://app:p@ssw0rd@db.prod:5432/app' \\\n  SLACK_HOOK='https://hooks.slack.com/services/T00/B00/XXXXXXXX' \\\n  java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    if s['name'] != 'systemEnvironment': continue\n    for k in ('STUDY_DB_DSN','SLACK_HOOK'):\n        if k in s['properties']: print('%-14s %s' % (k, s['properties'][k]['value']))\n\"\nSTUDY_DB_DSN   postgres://app:p@ssw0rd@db.prod:5432/app\nSLACK_HOOK     https://hooks.slack.com/services/T00/B00/XXXXXXXX\n\n$ curl -s localhost:8080/actuator/env | grep -c 'p@ssw0rd'\n1\n\n--   비밀번호가 주소 안에 있어 안 보였다\n--   가리기는 이름만 본다\n\n\n-- 규칙을 넓힌다\n\nmanagement:\n  endpoint:\n    env:\n      show-values: never\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    if s['name'] != 'systemEnvironment': continue\n    print(list(s['properties'].items())[0])\n\"\n('AWS_SECRET_ACCESS_KEY', {'value': '******'})\n\n$ curl -s localhost:8080/actuator/env | grep -c 'p@ssw0rd'\n0\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nn = sum(len(s['properties']) for s in json.load(sys.stdin)['propertySources'])\nprint(n, '개 이름은 여전히 보인다')\"\n122 개 이름은 여전히 보인다\n\n--   값은 다 가려도 이름은 남는다\n--   무엇을 쓰는지는 알 수 있다\n\n\n-- 덤프는 통째다\n\n$ curl -s -o /tmp/heap.hprof localhost:8080/actuator/heapdump\n$ ls -lh /tmp/heap.hprof | awk '{print $5}'\n182M\n\n$ strings /tmp/heap.hprof | grep -c 'p@ssw0rd'\n7\n\n$ strings /tmp/heap.hprof | grep -o 'ghp_[A-Za-z0-9]*' | head -1\nghp_abc123XXXXXXXXXXXXXXXXXXXXXXXXX\n\n$ strings /tmp/heap.hprof | grep -oE 'Bearer [A-Za-z0-9._-]{20,}' | head -1\nBearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n\n--   가리기가 전혀 안 걸린다\n--   메모리에 있던 문자열이 다 있다\n--   방금 지나간 토큰까지 있다\n\n\n-- 얼마나 걸리나\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/actuator/heapdump\n4.812\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/actuator/health &\n$ curl -s -o /dev/null localhost:8080/actuator/heapdump\n$ wait\n4.688\n\n--   그 사이 다른 요청이 멈춘다\n--   8.3절의 프로브가 이걸 기다린다\n\n\n-- 스레드 덤프도 적지 않다\n\n$ curl -s localhost:8080/actuator/threaddump | python3 -c \"\nimport json,sys\nt = json.load(sys.stdin)['threads']\ncl = set()\nfor th in t:\n    for f in th['stackTrace']: cl.add(f['className'])\nprint('클래스', len(cl))\nprint([c for c in sorted(cl) if c.startswith('study')][:3])\n\"\n클래스 214\n['study.boot.OrderService', 'study.boot.PaymentClient', 'study.boot.Warmer']\n\n$ curl -s -H 'Accept: text/plain' localhost:8080/actuator/threaddump \\\n    | grep -c 'jdbc:postgresql'\n2\n\n--   내부 구조가 그대로 보인다\n--   연결 주소도 나온다\n\n\n-- 매핑도 지도다\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    p = str(x.get('predicate',''))\n    if 'admin' in p or 'internal' in p: print(p)\n\"\n{POST [/internal/reindex]}\n{DELETE [/admin/users/{id}]}\n\n--   안 알려진 주소가 다 드러난다\n\n\n-- 종료는 되돌릴 수 없다\n\nmanagement:\n  endpoint:\n    shutdown:\n      access: unrestricted\n\n$ curl -s -X POST localhost:8080/actuator/shutdown\n{\"message\":\"Shutting down, bye...\"}\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n000\n\n--   8.2절에서 본 그것이다\n--   인증이 없으면 누구나 누른다\n\n\n-- 로거도 쓰기다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n\n$ curl -s -X POST 'localhost:8080/orders?item=연필&qty=1' > /dev/null\n$ grep -c 'p@ssw0rd' logs/app.log\n3\n\n$ grep -o 'Authorization: Bearer [A-Za-z0-9.]*' logs/app.log | head -1\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIs\n\n--   8.5절에서 올린 그 레벨이다\n--   로그 파일로 비밀이 흘러간다\n\n\n-- 프록시가 통째로 넘기면\n\n// nginx\nlocation / {\n    proxy_pass http://app:8080;\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' https://api.example.com/actuator/env\n200\n\n// 막는다\nlocation /actuator/ {\n    return 404;\n}\nlocation / {\n    proxy_pass http://app:8080;\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' https://api.example.com/actuator/env\n404\n$ curl -s -o /dev/null -w '%{http_code}\\n' https://api.example.com/hello\n200\n\n--   8.7절에서 포트를 나눴으면 이 실수가 없다\n\n\n-- 프로필이 잘못 켜지면\n\n// application-dev.yml\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ java -jar build/libs/app.jar --spring.profiles.active=dev > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n200\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n404\n\n$ curl -s localhost:8080/actuator/env 2>/dev/null \\\n  || curl -s localhost:8080/actuator/health | python3 -c \\\n     \"import json,sys; print(json.load(sys.stdin)['status'])\"\nUP\n\n--   7.10절에서 이름을 틀려도 조용했다\n--   운영에 dev 가 켜지면 다 열린다\n\n\n-- 무엇을 열지 정한다\n\nmanagement:\n  server:\n    port: 9090\n    address: 127.0.0.1\n  endpoints:\n    web:\n      exposure:\n        include: health,info,metrics,prometheus\n    access:\n      default: read-only\n  endpoint:\n    health:\n      show-details: when-authorized\n      roles: OPS\n    env:\n      access: none\n    heapdump:\n      access: none\n    threaddump:\n      access: none\n\n$ curl -s localhost:9090/actuator | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['_links']))\"\n['health', 'health-path', 'info', 'metrics', 'metrics-requiredMetricName',\n 'prometheus', 'self']\n\n$ for e in env heapdump threaddump beans configprops shutdown; do\n    printf '%-14s ' \"$e\"\n    curl -s -o /dev/null -w '%{http_code}\\n' \"localhost:9090/actuator/$e\"\n  done\nenv            404\nheapdump       404\nthreaddump     404\nbeans          404\nconfigprops    404\nshutdown       404\n\n$ curl -s localhost:9090/eps | head -1\nEndpoint 빈: 10\n\n--   빈까지 없앤 것과 안 연 것이 섞여 있다\n--   8.1절의 두 스위치다\n\n\n-- 필요할 때만 연다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/heapdump\n404\n\n// 조사할 때만 그 자리에서\n$ kubectl exec -it app-0 -- \\\n    jcmd 1 GC.heap_dump /tmp/heap.hprof\n$ kubectl cp app-0:/tmp/heap.hprof ./heap.hprof\n\n--   ⑫ 3장의 그 명령이다\n--   엔드포인트를 열어 둘 이유가 없다\n\n\n-- 8장에서 만든 것들\n\n$ printf '%-8s %-22s %s\\n' \\\n  '8.1'  '켜기'          '빈 13, 열린 것 1' \\\n  '8.2'  '목록'          '덤프 98KB' \\\n  '8.3'  '헬스'          '넷이 모여 하나' \\\n  '8.4'  '정보'          '빌드와 커밋' \\\n  '8.5'  '로거'          '재기동 없이' \\\n  '8.6'  '요청 기록'     '고리 100 개' \\\n  '8.7'  '보안'          '벽 셋' \\\n  '8.8'  '직접'          '열넷째' \\\n  '8.9'  '조심'          '가리기는 짐작'\n\n8.1    켜기                   빈 13, 열린 것 1\n8.2    목록                   덤프 98KB\n8.3    헬스                   넷이 모여 하나\n8.4    정보                   빌드와 커밋\n8.5    로거                   재기동 없이\n8.6    요청 기록              고리 100 개\n8.7    보안                   벽 셋\n8.8    직접                   열넷째\n8.9    조심                   가리기는 짐작\n\n\n-- 마지막 확인\n\n$ curl -s -o /dev/null -w '밖에서      %{http_code}\\n' \\\n    --max-time 2 192.168.0.12:9090/actuator/health\n밖에서      000\n$ curl -s localhost:9090/actuator/health\n{\"status\":\"UP\"}\n$ curl -s -o /dev/null -w '앱 포트     %{http_code}\\n' localhost:8080/hello\n앱 포트     200\n\n--   9.1절에서 무엇을 잴지 정한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  'env'        '122 개, 이름은 남음' \\\n  '가리기'     '이름만 봄' \\\n  '주소 안'    '안 가려짐' \\\n  'heapdump'   '182MB, 다 보임' \\\n  '덤프 시간'  '4.8 초, 다 멈춤' \\\n  'threaddump' '내부 구조' \\\n  'mappings'   '숨은 주소' \\\n  'shutdown'   '되돌릴 수 없음' \\\n  'loggers'    '로그로 흘러감'\n\nenv                        122 개, 이름은 남음\n가리기                     이름만 봄\n주소 안                    안 가려짐\nheapdump                   182MB, 다 보임\n덤프 시간                  4.8 초, 다 멈춤\nthreaddump                 내부 구조\nmappings                   숨은 주소\nshutdown                   되돌릴 수 없음\nloggers                    로그로 흘러감",
+   "note": "**이름에 비밀 낱말이 든 것은 `******` 인데 주소 안에 든 비밀번호는 그대로** 나간다.\n\n**값을 다 가려도 이름 122 개는 남아 무엇을 쓰는지는** 드러난다.\n\n**힙 덤프 182MB 에서 비밀번호가 7 번, 토큰과 방금 지나간 `Bearer` 까지** 나온다.\n\n**덤프를 뜨는 4.8 초 동안 헬스 요청도 같이** 멈춘다.\n\n**필요한 것만 남기니 `env`·`heapdump`·`threaddump`·`shutdown` 이 다 404 이고 엔드포인트 빈은 10 개**다."
+  }
+ ],
+ "recap": [
+  "**안쪽을 다** 보여 준다.",
+  "**환경이 제일** 크다.",
+  "**가리기는** 짐작이다.",
+  "**주소 안은 안** 가려진다.",
+  "**이름은** 남는다.",
+  "**덤프는** 통째다.",
+  "**뜨는 동안** 멈춘다.",
+  "**프록시가** 넘긴다.",
+  "**필요한 것만** 연다."
+ ],
+ "drills": [
+  {
+   "task": "환경을 열어 세어 본다.",
+   "done_when": "가려진 것과 안 가려진 것을 갈랐다.",
+   "minutes": 20
+  },
+  {
+   "task": "덤프에서 문자열을 찾는다.",
+   "done_when": "비밀이 나오는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "덤프 중 다른 요청을 재 본다.",
+   "done_when": "같이 멈추는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필요한 것만 남긴다.",
+   "done_when": "나머지가 404 인 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가리기는 무엇을 보고 판단하나?",
+   "a": "키 이름만 본다. 값은 안 본다."
+  },
+  {
+   "q": "값을 다 가려도 남는 것은?",
+   "a": "키 이름이다. 무엇을 쓰는지는 알 수 있다."
+  },
+  {
+   "q": "힙 덤프의 위험은?",
+   "a": "메모리의 모든 문자열이 담겨 가리기가 전혀 안 걸린다."
+  },
+  {
+   "q": "덤프를 뜨는 동안 무슨 일이 나나?",
+   "a": "다른 요청도 함께 멈춘다."
+  },
+  {
+   "q": "조사가 필요할 때는?",
+   "a": "그 자리에서 직접 뜨고 엔드포인트는 닫아 둔다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "값 가리기",
+   "def": "키 이름을 보고 값을 별표로 바꾸는 처리."
+  },
+  {
+   "term": "힙 덤프",
+   "def": "그 순간 살아 있는 모든 객체를 담은 파일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

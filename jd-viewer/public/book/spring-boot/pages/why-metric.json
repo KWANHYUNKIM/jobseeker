@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "why-metric",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "무엇을 재나",
+ "summary": "로그로는 안 되는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "로그와 다른 점을 안다.",
+  "네 종류를 안다.",
+  "무엇을 잴지 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.6절에서 백 건이** 밀려났다. **오래 남는 것이** 필요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "아는 방법이 셋이다",
+   "ascii": "   three ways to know what a server is doing\n\n   logs     one line per event, exact, and enormous\n   traces   one record per request, across services\n   metrics  one number per window, tiny, and lossy\n\n   the third answers is it bad now; the first answers why",
+   "note": "**셋째는 지금 나쁘냐에, 첫째는 왜냐에** 답한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "숫자는 접히고 줄은 안 접힌다",
+   "md": "**로그는 건마다** 는다.\n\n> **8.5절에서 31MB 가** 됐다.\n> **오래 못** 둔다.\n> **아래에서 다시** 잰다.\n\n**숫자는 안** 는다.\n\n> **세어 두면 크기가** 같다.\n> **일 년도** 둔다.\n> **아래에서 그 차이를** 본다.\n\n**대신 잃는 게** 있다.\n\n> **어느 요청인지** 모른다.\n> **8.6절에서 그걸** 봤다.\n> **둘을 같이** 쓴다.\n\n**종류가** 넷이다.\n\n> **세기·재기·요약·시간**이다.\n> **아래에서 하나씩** 본다.\n> **고르는 게** 중요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 세는 쪽이 이기나",
+   "ascii": "   why counting beats reading\n\n   a log line for every request grows with traffic\n   a counter for every request stays the same size\n\n   so one can be kept for a year and the other cannot",
+   "note": "**하나는 일 년을 둘 수 있고 하나는** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "꼬리표를 잘못 붙이면 폭발한다",
+   "md": "**조합마다 계열이** 생긴다.\n\n> **주문 번호를 붙이면 무한**이다.\n> **아래에서 그걸** 만든다.\n> **메모리가** 찬다.\n\n**평균은** 거짓말한다.\n\n> **⑨ 8장에서 비슷한 이야기를** 했다.\n> **백분위를 봐야** 한다.\n> **9.6절에서 그걸** 쓴다.\n\n**합계는 되돌릴 수** 없다.\n\n> **어느 요청인지 못** 찾는다.\n> **8.6절이 그 자리를** 메운다.\n> **둘을 같이** 본다.\n\n**다시 뜨면 0 부터**다.\n\n> **누적값이** 끊긴다.\n> **아래에서 그걸** 본다.\n> **9.6절에서 다루는 법을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 로그로 세어 본다\n\n$ for i in $(seq 1 1000); do\n    curl -s -o /dev/null \"localhost:8080/orders?item=x$i&qty=1\"\n  done\n\n$ wc -l < logs/app.log\n    1043\n$ ls -lh logs/app.log | awk '{print $5}'\n116K\n\n$ grep -c 'INFO.*주문 완료' logs/app.log\n1000\n\n$ awk '/주문 완료/ {print $1}' logs/app.log | cut -c1-5 | uniq -c\n 412 06:49\n 588 06:50\n\n--   셀 수는 있다\n--   파일을 읽어야 한다\n\n\n-- 한 달치면\n\n$ python3 -c \"\nper = 116 * 1024 / 1000\nday = per * 1000 * 60 * 60 * 24 / 1e9\nprint('한 건 %.0f 바이트' % per)\nprint('초당 1000 건이면 하루 %.1f GB' % day)\nprint('한 달 %.0f GB' % (day * 30))\n\"\n한 건 119 바이트\n초당 1000 건이면 하루 10.3 GB\n한 달 308 GB\n\n--   못 둔다\n--   그래서 며칠 뒤 버린다\n\n\n-- 숫자로 세어 본다\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -m json.tool\n{\n    \"name\": \"http.server.requests\",\n    \"baseUnit\": \"seconds\",\n    \"measurements\": [\n        { \"statistic\": \"COUNT\", \"value\": 1004.0 },\n        { \"statistic\": \"TOTAL_TIME\", \"value\": 12.481 },\n        { \"statistic\": \"MAX\", \"value\": 1.204 }\n    ],\n    \"availableTags\": [ ... ]\n}\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' | wc -c\n    1204\n\n--   천 건이 1.2KB 다\n--   백만 건이어도 같다\n\n\n-- 크기를 견준다\n\n$ for n in 1000 10000; do\n    printf '%-8s ' \"$n\"\n    python3 -c \"print('로그 %.1f MB' % ($n * 119 / 1e6), end='  ')\"\n    curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n      | wc -c | xargs printf '메트릭 %s 바이트\\n'\n  done\n1000     로그 0.1 MB  메트릭 1204 바이트\n10000    로그 1.2 MB  메트릭 1204 바이트\n\n--   하나는 늘고 하나는 안 는다\n\n\n-- 대신 어느 요청인지 모른다\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -c \"\nimport json,sys\nfor m in json.load(sys.stdin)['measurements']:\n    print(m['statistic'], m['value'])\"\nCOUNT 1004.0\nTOTAL_TIME 12.481\nMAX 1.204\n\n$ grep '주문 완료' logs/app.log | tail -1\n06:50:12.418 INFO  s.b.OrderService - 주문 완료 id=1000\n\n--   1.204 초 걸린 게 어느 건지 숫자로는 못 찾는다\n--   8.6절이나 로그로 가야 한다\n\n\n-- 꼬리표로 쪼갠다\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['availableTags']:\n    print('%-12s %s' % (t['tag'], t['values'][:4]))\"\nexception    ['none', 'IllegalArgumentException']\nmethod       ['GET', 'POST']\nuri          ['/hello', '/orders', '/actuator/health', '/report']\noutcome      ['SUCCESS', 'CLIENT_ERROR', 'SERVER_ERROR']\nstatus       ['200', '201', '400', '500']\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests?tag=status:500' \\\n    | python3 -c \"\nimport json,sys\nfor m in json.load(sys.stdin)['measurements']: print(m['statistic'], m['value'])\"\nCOUNT 3.0\nTOTAL_TIME 0.212\nMAX 0.104\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests?tag=uri:/orders&tag=outcome:SUCCESS' \\\n    | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n1000.0\n\n--   조합해서 좁힌다\n--   9.3절에서 이걸 제대로 본다\n\n\n-- 종류가 넷이다\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys\nn = json.load(sys.stdin)['names']\nimport re\nfor kind, pat in (('세기', r'\\.(total|count)$|logback|error'),\n                  ('재기', r'^jvm\\.memory|^system\\.cpu|threads\\.live'),\n                  ('시간', r'requests$|\\.time$|latency')):\n    print('%-6s %s' % (kind, [x for x in n if re.search(pat, x)][:3]))\n\"\n세기   ['logback.events', 'hikaricp.connections.timeout.total', 'spring.security.authorizations']\n재기   ['jvm.memory.used', 'jvm.threads.live', 'system.cpu.usage']\n시간   ['http.server.requests', 'application.ready.time', 'tasks.scheduled.execution']\n\n\n-- 세는 것\n\n$ curl -s 'localhost:8080/actuator/metrics/logback.events?tag=level:error' \\\n    | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n3.0\n\n$ curl -s -o /dev/null 'localhost:8080/orders?item=&qty=0'\n$ curl -s 'localhost:8080/actuator/metrics/logback.events?tag=level:error' \\\n    | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n4.0\n\n--   올라가기만 한다\n--   내려가지 않는다\n\n\n-- 재는 것\n\n$ for i in 1 2 3; do\n    curl -s localhost:8080/actuator/metrics/jvm.memory.used \\\n      | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n    sleep 1\n  done\n182 MB\n204 MB\n148 MB\n\n--   오르내린다\n--   지금 값이다\n\n\n-- 시간을 재는 것\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests?tag=uri:/orders' \\\n    | python3 -c \"\nimport json,sys\nd = {m['statistic']: m['value'] for m in json.load(sys.stdin)['measurements']}\nprint('건수    ', d['COUNT'])\nprint('합계    ', round(d['TOTAL_TIME'], 3), '초')\nprint('평균    ', round(d['TOTAL_TIME']/d['COUNT']*1000, 1), 'ms')\nprint('최댓값  ', round(d['MAX']*1000, 1), 'ms')\n\"\n건수     1000.0\n합계     11.482 초\n평균     11.5 ms\n최댓값   1204.0 ms\n\n--   평균 11.5ms 인데 최악이 1204ms 다\n--   평균만 보면 아무 일도 없다\n--   9.6절에서 백분위를 본다\n\n\n-- 꼬리표를 잘못 붙이면\n\n@GetMapping(\"/orders/{id}\")\nOrder one(@PathVariable Long id) {\n    Metrics.counter(\"order.lookup\", \"id\", String.valueOf(id)).increment();\n    ...\n}\n\n$ for i in $(seq 1 5000); do curl -s -o /dev/null \"localhost:8080/orders/$i\"; done\n\n$ curl -s localhost:8080/actuator/metrics/order.lookup \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('꼬리표 값', len(d['availableTags'][0]['values']))\"\n꼬리표 값 5000\n\n$ curl -s localhost:8080/actuator/metrics/jvm.memory.used \\\n    | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n412 MB\n\n$ curl -s localhost:8080/actuator/prometheus | grep -c '^order_lookup'\n5000\n\n--   계열이 오천 개가 됐다\n--   9.4절에서 이게 어떻게 나가는지 본다\n\n\n-- 주소도 같은 함정이다\n\n@GetMapping(\"/orders/{id}\")\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['availableTags']:\n    if t['tag'] == 'uri': print(len(t['values']), t['values'][:3])\"\n6 ['/hello', '/orders', '/orders/{id}', ...]\n\n--   중괄호 그대로다\n--   부트가 알아서 묶었다\n--   내가 만들 때는 내가 해야 한다\n\n\n-- 다시 뜨면 0 부터다\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['measurements'][0]['value'])\"\n6012.0\n\n$ pkill -f app.jar && java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['measurements'][0]['value'])\"\n1.0\n\n--   누적이 끊긴다\n--   9.6절에서 이걸 다루는 법을 본다\n\n\n-- 무엇을 잴지 고른다\n\n$ printf '%-24s %-10s %s\\n' \\\n  '요청 수'      '세기'   '트래픽' \\\n  '오류 수'      '세기'   '건강' \\\n  '응답 시간'    '시간'   '체감' \\\n  '메모리'       '재기'   '여유' \\\n  '커넥션 풀'    '재기'   '병목' \\\n  '큐 길이'      '재기'   '밀림' \\\n  '업무 건수'    '세기'   '매출'\n\n요청 수                  세기       트래픽\n오류 수                  세기       건강\n응답 시간                시간       체감\n메모리                   재기       여유\n커넥션 풀                재기       병목\n큐 길이                  재기       밀림\n업무 건수                세기       매출\n\n--   9.2절에서 이 숫자들이 어떻게 만들어지는지 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '로그'      '건마다 늚' \\\n  '한 달'     '308 GB' \\\n  '메트릭'    '1.2KB 고정' \\\n  '잃는 것'   '어느 요청인지' \\\n  '꼬리표'    '조합해 좁힘' \\\n  '평균'      '거짓말' \\\n  '꼬리표 폭발' '계열 5000' \\\n  '재기동'    '0 부터'\n\n로그                       건마다 늚\n한 달                      308 GB\n메트릭                     1.2KB 고정\n잃는 것                    어느 요청인지\n꼬리표                     조합해 좁힘\n평균                       거짓말\n꼬리표 폭발                계열 5000\n재기동                     0 부터",
+   "note": "**요청 천 건이 로그로는 116KB 인데 메트릭은 1204 바이트로 만 건이어도** 같다.\n\n**초당 천 건이면 로그가 하루 10.3GB·한 달 308GB 라 오래 못** 둔다.\n\n**꼬리표로 `status:500` 은 3 건, `uri:/orders` 성공은 1000 건으로** 좁힌다.\n\n**평균이 11.5ms 인데 최댓값이 1204ms 라 평균만 보면 아무 일도** 없다.\n\n**주문 번호를 꼬리표로 붙이니 계열이 5000 개, 메모리가 412MB 로** 늘었다."
+  }
+ ],
+ "recap": [
+  "**로그는** 는다.",
+  "**숫자는 안** 는다.",
+  "**오래** 둔다.",
+  "**어느 건지는** 잃는다.",
+  "**꼬리표로** 좁힌다.",
+  "**종류가** 넷이다.",
+  "**평균은** 거짓말한다.",
+  "**꼬리표가** 폭발한다.",
+  "**재기동에** 끊긴다."
+ ],
+ "drills": [
+  {
+   "task": "로그와 메트릭 크기를 견준다.",
+   "done_when": "하나만 느는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "꼬리표로 좁혀 본다.",
+   "done_when": "조합으로 걸러 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "평균과 최댓값을 견준다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "꼬리표를 폭발시켜 본다.",
+   "done_when": "계열 수와 메모리를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메트릭이 로그보다 오래 남을 수 있는 이유는?",
+   "a": "건수와 상관없이 크기가 거의 같아서다."
+  },
+  {
+   "q": "메트릭으로 못 하는 것은?",
+   "a": "어느 요청이 느렸는지 짚는 것이다."
+  },
+  {
+   "q": "평균만 보면 왜 위험한가?",
+   "a": "드문 아주 느린 요청이 평균에 묻힌다."
+  },
+  {
+   "q": "꼬리표에 무엇을 넣으면 안 되나?",
+   "a": "값이 무한히 늘어나는 것, 식별자 같은 것이다."
+  },
+  {
+   "q": "다시 뜨면 누적값은?",
+   "a": "0 부터 다시 센다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메트릭",
+   "def": "일정 시간마다 접어서 남기는 숫자. 크기가 트래픽에 비례하지 않는다."
+  },
+  {
+   "term": "꼬리표",
+   "def": "메트릭을 쪼개는 이름과 값의 짝. 값 종류가 많으면 계열이 폭발한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Metrics",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/metrics.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Micrometer — Concepts",
+   "url": "https://docs.micrometer.io/micrometer/reference/concepts.html",
+   "publisher": "Micrometer"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
