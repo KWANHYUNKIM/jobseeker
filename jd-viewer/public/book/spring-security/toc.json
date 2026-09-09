@@ -743,7 +743,7 @@
           "title": "비동기 예외 처리",
           "summary": "리다이렉트를 없앤다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
@@ -751,7 +751,7 @@
           "title": "토큰 인증은 어떤가",
           "summary": "세션과 무엇이 다른가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",

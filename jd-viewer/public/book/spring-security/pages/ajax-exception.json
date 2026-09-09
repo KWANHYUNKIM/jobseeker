@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "ajax-exception",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "비동기 예외 처리",
+ "summary": "리다이렉트를 없앤다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리다이렉트가 나오는 네 자리를 안다.",
+  "fetch 가 왜 문제를 감추는지 안다.",
+  "마지막 빚을 갚는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절 표의 마지막 줄**이다. **11.2절의 필터가 아직 302 를** 낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "리다이렉트가 새는 네 자리",
+   "ascii": "   four places a redirect can still sneak out\n\n   login success   SavedRequestAwareAuthenticationSuccessHandler\n   login failure   SimpleUrlAuthenticationFailureHandler\n   not logged in   LoginUrlAuthenticationEntryPoint\n   logout          SimpleUrlLogoutSuccessHandler\n\n   chapter 6 fixed the third one, this section fixes the rest",
+   "note": "**6장이 셋째를 고쳤고 나머지가** 남았다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "핸들러 셋을 바꾼다",
+   "md": "```java\n@Component\n@RequiredArgsConstructor\npublic class JsonAuthenticationHandlers {\n\n    private final ObjectMapper objectMapper;\n\n    public AuthenticationSuccessHandler success() {\n        return (request, response, authentication) -> {\n            response.setStatus(HttpServletResponse.SC_OK);\n            response.setContentType(MediaType.APPLICATION_JSON_VALUE);\n            objectMapper.writeValue(response.getWriter(),\n                    MemberResponse.from(authentication));\n        };\n    }\n\n    public AuthenticationFailureHandler failure() {\n        return (request, response, exception) -> write(request, response,\n                HttpStatus.UNAUTHORIZED, code(exception));\n    }\n\n    public LogoutSuccessHandler logout() {\n        return (request, response, authentication) -> {\n            response.setStatus(HttpServletResponse.SC_NO_CONTENT);\n        };\n    }\n}\n```\n\n> **성공은 200 + 사용자 정보, 실패는 401 + 문제 상세, 로그아웃은 204** 다.\n> **10.6절의 `code(exception)` 을 그대로** 쓴다.\n\n**로그아웃도 잊지 않는다.**\n\n> **3.9절에서 봤다** — **기본이 302** 다.\n> **네 자리 중 가장 자주** 잊는다.\n\n**진입점은 이미 고쳤다.**\n\n> **6.2절의 `DelegatingAuthenticationEntryPoint`** 다.\n> **`/api/**` 는 401, 화면은 302**다.\n> **11장에서는 체인을 나눴으니 API 체인 진입점만 401 로 두면** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "fetch 가 감춘다",
+   "ascii": "   what fetch does with a 302, and why it hides the problem\n\n   redirect: follow   is the default\n     fetch follows, gets the login page, and resolves ok\n     response.ok is true, status is 200, body is html\n     the client thinks the login worked\n\n   redirect: manual   makes it visible\n     type is opaqueredirect, status reads 0",
+   "note": "**`response.ok` 가 `true` 라 성공으로** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "성공한 줄 안다",
+   "md": "**`fetch` 의 기본이 `redirect: 'follow'`** 다.\n\n> **302 를 따라가 로그인 화면 HTML 을** 받는다.\n> **`response.ok` 가 `true`, `status` 가 200**이다.\n> **클라이언트는 로그인이 됐다고 판단**한다.\n>\n> **그리고 `response.json()` 에서** 터진다.\n>\n> ```\n> SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON\n> ```\n>\n> **원인이 로그인 실패인데 파싱 오류로** 보인다.\n\n**`XMLHttpRequest` 도 같다.**\n\n> **브라우저가 리다이렉트를 투명하게** 따라간다.\n> **자바스크립트에서 302 를 볼 방법이** 없다.\n\n**그래서 서버가 302 를 안 내야** 한다.\n\n> **`redirect: 'manual'` 로 보이게 할 수는** 있는데 **응답 본문을 못** 읽는다.\n> **`type` 이 `opaqueredirect`** 다.\n> **진단에는 쓰고 해법은 서버 쪽**이다.\n\n**테스트로 고정**한다.\n\n> **API 경로 응답이 3xx 가 아닌 것을** 단언한다.\n> **8.8절의 인가표처럼 훑는 테스트를 만들면 새 엔드포인트도** 잡힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 지금 상태 ---\n\n$ curl -s -o /dev/null -w '로그인성공 %{http_code} %{redirect_url}\\n' \\\n    -X POST localhost:8080/api/login -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\n로그인성공 302 http://localhost:8080/\n\n$ curl -s -o /dev/null -w '로그인실패 %{http_code} %{redirect_url}\\n' \\\n    -X POST localhost:8080/api/login -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n\n로그인실패 302 http://localhost:8080/login?error=bad\n\n$ curl -s -o /dev/null -w '로그아웃 %{http_code} %{redirect_url}\\n' \\\n    -b j.txt -X POST localhost:8080/logout -H \"X-XSRF-TOKEN: $XSRF\"\n\n로그아웃 302 http://localhost:8080/login?logout\n\n$ curl -s -o /dev/null -w '미인증 %{http_code}\\n' localhost:8080/api/v1/orders\n\n미인증 401\n\n#   셋이 302 고 하나만 401 이다\n\n#   6.2절에서 고친 게 그 하나다\n\n# --- fetch 로 보면 ---\n\n<script>\nconst res = await fetch('/api/login', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({email: 'user@a.com', password: '틀림'})\n});\nconsole.log('ok =', res.ok, 'status =', res.status, 'url =', res.url);\nconst data = await res.json();\n</script>\n\n#   브라우저 콘솔\n\nok = true status = 200 url = http://localhost:8080/login?error=bad\nUncaught SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON\n\n#   ok 가 true 다\n\n#   로그인은 실패했는데\n\n#   url 을 보면 알 수 있지만 아무도 안 본다\n\n#   redirect: 'manual' 로 하면\n\nconst res = await fetch('/api/login', {..., redirect: 'manual'});\nconsole.log('type =', res.type, 'status =', res.status);\n\ntype = opaqueredirect status = 0\n\n#   보이긴 하는데 본문을 못 읽는다\n\n#   진단용이다\n\n# --- 핸들러 셋을 바꾼다 ---\n\nfilter.setAuthenticationSuccessHandler(handlers.success());\nfilter.setAuthenticationFailureHandler(handlers.failure());\n\nhttp.logout(l -> l\n        .logoutUrl(\"/api/logout\")\n        .logoutSuccessHandler(handlers.logout()));\n\n$ curl -i -c j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\nHTTP/1.1 200\nContent-Type: application/json\nSet-Cookie: JSESSIONID=D8E9F0; Path=/; HttpOnly\n\n{\"email\":\"user@a.com\",\"nickname\":\"관훈\",\n \"authorities\":[\"ROLE_USER\",\"ORDER_READ\"]}\n\n$ curl -i -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\n \"detail\":\"bad\",\"instance\":\"/api/login\"}\n\n$ curl -i -b j.txt -X POST localhost:8080/api/logout \\\n    -H \"X-XSRF-TOKEN: $XSRF\"\n\nHTTP/1.1 204\n\n#   셋 다 리다이렉트가 없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j.txt localhost:8080/api/v1/orders\n401\n\n#   로그아웃도 됐다\n\n# --- 잠긴 계정 ---\n\n$ for i in 1 2 3 4 5; do\n    curl -s -o /dev/null -X POST localhost:8080/api/login \\\n        -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n        -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n  done\n\n$ curl -s -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}' \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"detail\"])'\n\nlocked\n\n#   10.6절의 코드가 그대로 온다\n\n#   화면 쪽은 ?error=locked 였다\n\n#   같은 매핑 함수를 쓴다\n\n# --- fetch 다시 ---\n\nconst res = await fetch('/api/login', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json', 'X-XSRF-TOKEN': token},\n  body: JSON.stringify({email, password})\n});\nif (!res.ok) {\n  const problem = await res.json();\n  showError(problem.detail);\n  return;\n}\nconst me = await res.json();\n\n#   콘솔\n\nok = false status = 401\ndetail = locked\n\n#   이제 클라이언트가 안다\n\n# --- 화면 체인은 그대로 ---\n\n$ curl -s -o /dev/null -w '%{http_code} %{redirect_url}\\n' -b c.txt \\\n    -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$T\"\n\n302 http://localhost:8080/\n\n#   화면은 여전히 리다이렉트다\n\n#   그게 맞다\n\n#   체인을 나눠서 가능한 일이다 (2.3절)\n\n# --- 훑는 테스트 ---\n\n@Test\nvoid api_는_리다이렉트를_안_낸다() throws Exception {\n    List<String> apiPaths = handlerMapping.getHandlerMethods().keySet().stream()\n            .flatMap(info -> info.getPathPatternsCondition()\n                    .getPatternValues().stream())\n            .filter(p -> p.startsWith(\"/api/\"))\n            .toList();\n\n    for (String path : apiPaths) {\n        MvcResult result = mockMvc.perform(get(path.replace(\"{id}\", \"1\")))\n                .andReturn();\n        System.out.printf(\"%-28s %d%n\", path, result.getResponse().getStatus());\n        assertThat(result.getResponse().getStatus())\n                .describedAs(path)\n                .isNotBetween(300, 399);\n    }\n}\n\n$ ./gradlew test --tests ApiRedirectTest\n\n/api/csrf                    200\n/api/login                   405\n/api/logout                  405\n/api/v1/orders               401\n/api/v1/orders/{id}          401\n/api/v1/admin/stats          401\n/api/members                 401\n\nBUILD SUCCESSFUL\n\n#   3xx 가 하나도 없다\n\n#   새 API 를 만들면 여기서 잡힌다\n\n# --- 4.8절의 표 ---\n\n#   인증 없이 주문이 200        갚음 (1.4 · 2.7)\n#   API 가 401 이 아니라 302    갚음 (6.2 · 6.3)\n#   CSRF 를 왜 켜 두나          갚음 (6.4 · 6.5)\n#   인가 규칙이 하나뿐          갚음 (7장)\n#   직접 만든 로그인 방식        갚음 (10장 · 11.2)\n#   비동기 로그인의 302         갚음 (여기)\n\n#   여섯이 다 지워졌다\n\n#   책 ⑨ 10.4절에서 적은 것부터 셋이다\n\n$ ./gradlew test\n\n152 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   세션 말고 토큰은 어떤지 본다",
+   "note": "**로그인 성공·실패·로그아웃 셋이 302** 였고 미인증만 401 이었다.\n\n**`fetch` 는 302 를 따라가 `ok = true, status = 200`** 을 주고 `response.json()` 에서 터진다 — 원인이 감춰진다.\n\n**핸들러 셋을 바꾸니 200·401·204** 가 되고 잠긴 계정은 `detail: locked` 로 온다.\n\n**화면 체인은 여전히 302** 다 — 체인을 나눠서 가능한 일이다.\n\n**API 경로 일곱을 훑어 3xx 가 0개**다. **4.8절의 빚 여섯이 다 지워졌다.**"
+  }
+ ],
+ "recap": [
+  "**리다이렉트가 새는 자리가** 넷이다.",
+  "**성공·실패·로그아웃 셋을 바꿔야** 한다.",
+  "**로그아웃을 가장 자주** 잊는다.",
+  "**`fetch` 는 302 를 따라가 성공처럼** 보인다.",
+  "**파싱 오류로 원인이** 감춰진다.",
+  "**`redirect: manual` 은 진단용**이다.",
+  "**해법은 서버가 302 를 안 내는** 것이다.",
+  "**화면 체인은 그대로** 둔다.",
+  "**빚 여섯이 다** 지워졌다."
+ ],
+ "drills": [
+  {
+   "task": "네 자리의 상태 코드를 잰다.",
+   "done_when": "302 가 몇 개인지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "`fetch` 로 실패 로그인을 해 본다.",
+   "done_when": "`ok = true` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "핸들러 셋을 바꾼다.",
+   "done_when": "200·401·204 를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "API 훑는 테스트를 만든다.",
+   "done_when": "3xx 가 0인 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리다이렉트가 새는 네 자리는?",
+   "a": "로그인 성공·실패, 진입점, 로그아웃이다."
+  },
+  {
+   "q": "`fetch` 가 왜 문제를 감추나?",
+   "a": "302 를 따라가 `ok` 가 `true` 가 되고 HTML 을 받는다."
+  },
+  {
+   "q": "클라이언트에서 302 를 볼 수 있나?",
+   "a": "`redirect: manual` 로 볼 수는 있지만 본문을 못 읽는다."
+  },
+  {
+   "q": "화면 체인도 바꿔야 하나?",
+   "a": "아니다. 체인을 나눠 화면은 리다이렉트를 유지한다."
+  },
+  {
+   "q": "새 API 의 리다이렉트를 어떻게 막나?",
+   "a": "매핑을 훑어 3xx 를 금지하는 테스트를 둔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Handling Security Exceptions",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9457",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
