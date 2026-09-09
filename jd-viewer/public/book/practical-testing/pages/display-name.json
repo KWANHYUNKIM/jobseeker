@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "display-name",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "@DisplayName 을 섬세하게",
+ "summary": "메서드 이름으로는 부족하다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이름의 다섯 단계를 안다.",
+  "빼야 할 단어를 안다.",
+  "도메인 용어로 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**메서드 이름에는 한글을 못 쓴다** — **쓸 수는 있는데 관례가** 아니다. **`@DisplayName` 이 그 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 테스트, 다섯 가지 이름",
+   "ascii": "   the same test, named five ways\n\n   1  test1\n   2  add\n   3  addSeveralBeverages\n   4  음료 여러 잔 추가 테스트\n   5  음료를 여러 잔 담으면 담은 만큼 목록에 들어간다\n\n   1 to 3 name the method\n   4 names the test\n   5 names the behaviour",
+   "note": "**1~3 은 메서드, 4 는 테스트, 5 는 행위**를 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메서드 이름을 붙이면 생기는 일",
+   "md": "```java\n@Test void add() { }\n@Test void addSeveralBeverages() { }\n@Test void addZero() { }\n@Test void addNegative() { }\n```\n\n> **전부 `add` 로** 시작한다. **어느 메서드를 테스트하는지는 아는데 뭘 검증하는지는** 모른다.\n>\n> **`addZero` 가 \"0을 담으면 되나 안 되나\" 를 안** 말한다.\n\n**그리고 메서드 이름은 구현에** 묶인다.\n\n> **`add` 를 `put` 으로 리팩터링하면 테스트 이름도 바꾸고** 싶어진다.\n> **행위는 안 바뀌었는데**.\n\n**`@DisplayName` 은 행위를** 말한다.\n\n```java\n@DisplayName(\"음료를 여러 잔 담으면 담은 만큼 목록에 들어간다\")\n@Test\nvoid addSeveralBeverages() { }\n```\n\n> **메서드 이름은 짧게 두고 문장은 `@DisplayName`** 에 쓴다.\n>\n> **IDE 와 CI 리포트가 `@DisplayName` 을** 보여 준다.\n\n**`_` 로 한글 메서드 이름을 쓰는 방법도** 있다.\n\n```java\n@Test\nvoid 음료를_여러_잔_담으면_담은_만큼_목록에_들어간다() { }\n```\n\n| | |\n|---|---|\n| **장점** | 애노테이션이 하나 준다 |\n| **단점** | `_` 가 섞이고 문장 부호를 못 쓴다 |\n\n> **팀에서 하나로 정하면** 된다. **이 책은 `@DisplayName`** 을 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "빼야 할 단어",
+   "ascii": "   words that add nothing\n\n   테스트          every one of them is a test\n   성공한다        pass or fail is the assertion's job\n   정상적으로      compared to what\n   ~를 검증한다    that is what a test does\n\n   what to say instead\n     the condition, and what happens",
+   "note": "**전부 아무것도 안 더한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "쓰지 않는 표현",
+   "md": "**① \"테스트\"**\n\n```\n음료 추가 테스트          ->  전부 테스트다\n```\n\n**② \"성공한다\" / \"실패한다\"**\n\n```\n음료 추가에 성공한다      ->  통과 여부는 단언이 정한다\n```\n\n> **\"성공\" 은 결과가 아니라 판정**이다.\n> **무엇이 일어나는지를** 쓴다.\n\n**③ \"정상적으로\"**\n\n```\n음료가 정상적으로 담긴다   ->  비정상은 뭔가\n```\n\n**④ \"~를 검증한다\"**\n\n```\n총 금액 계산을 검증한다    ->  테스트가 하는 일이다\n```\n\n**⑤ 구현 용어**\n\n```\nArrayList 에 add 된다     ->  자료구조가 바뀌면 이름도 바뀐다\n스트림으로 합계를 낸다      ->  구현이지 요구사항이 아니다\n```\n\n> **도메인 용어**로 쓴다. **`beverages` 가 아니라 \"음료\", `List` 가 아니라 \"주문 목록\"**.\n\n**대신 쓸 것**\n\n```\n[조건] 하면 [결과] 한다\n```\n\n| | |\n|---|---|\n| **음료를 0잔 담으면** | **예외가 난다** |\n| **마감 시각 정각에는** | **주문할 수 없다** |\n| **빈 주문의** | **금액은 0원이다** |\n\n> **조건이 없으면 결과만** 쓴다 — **\"빈 주문의 금액은 0원이다\"**.\n>\n> **4.3절의 given-when-then 과 같은 구조**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`@Nested` 로 묶기",
+   "md": "**테스트가 늘면 목록이** 평평해진다.\n\n```java\n@DisplayName(\"카페 키오스크\")\nclass CafeKioskTest {\n\n    @Nested\n    @DisplayName(\"음료를 담을 때\")\n    class Add {\n        @DisplayName(\"한 잔을 담으면 목록에 하나가 들어간다\")\n        @Test void one() { }\n\n        @DisplayName(\"0잔을 담으면 예외가 난다\")\n        @Test void zero() { }\n    }\n\n    @Nested\n    @DisplayName(\"주문을 생성할 때\")\n    class CreateOrder {\n        @DisplayName(\"영업 시작 정각에는 주문할 수 있다\")\n        @Test void atOpen() { }\n    }\n}\n```\n\n**실행 결과가 계층으로** 나온다.\n\n```\n카페 키오스크\n  음료를 담을 때\n    한 잔을 담으면 목록에 하나가 들어간다\n    0잔을 담으면 예외가 난다\n  주문을 생성할 때\n    영업 시작 정각에는 주문할 수 있다\n```\n\n> **목차가 생긴다.** **`@BeforeEach` 도 중첩 클래스별로** 둘 수 있다.\n\n**대가**\n\n| | |\n|---|---|\n| **들여쓰기가 는다** | 클래스가 중첩된다 |\n| **`static` 이면 안 된다** | 내부 클래스여야 한다 |\n| **과하면 찾기 어렵다** | 두 단계까지 |\n\n> **테스트가 열 개 넘으면 쓸 만하다.** **다섯 개면 평평한 게** 낫다.\n>\n> **7.5절에서 `@BeforeEach` 공유와 같이** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 이름 다섯 단계를 실행 결과로 ---\n\n@Test void test1() { }\n@Test void add() { }\n@Test void addSeveralBeverages() { }\n@DisplayName(\"음료 여러 잔 추가 테스트\") @Test void v4() { }\n@DisplayName(\"음료를 여러 잔 담으면 담은 만큼 목록에 들어간다\") @Test void v5() { }\n\n$ ./gradlew test --tests NamingTest\n\nNamingTest > test1() PASSED\nNamingTest > add() PASSED\nNamingTest > addSeveralBeverages() PASSED\nNamingTest > 음료 여러 잔 추가 테스트 PASSED\nNamingTest > 음료를 여러 잔 담으면 담은 만큼 목록에 들어간다 PASSED\n\n#   다섯 번째만 읽어서 안다\n\n# --- 실패했을 때 ---\n\n$ ./gradlew test --tests NamingTest\n\nNamingTest > addSeveralBeverages() FAILED\n    expected: 2 but was: 1\n\n#   무슨 규칙이 깨졌는지 모른다\n\nNamingTest > 음료를 여러 잔 담으면 담은 만큼 목록에 들어간다 FAILED\n    expected: 2 but was: 1\n\n#   담은 만큼 안 들어갔다는 걸 안다\n\n# --- 빼야 할 단어를 넣어 보면 ---\n\n@DisplayName(\"음료 추가 성공 테스트\")\n@Test void v6() { }\n\n@DisplayName(\"음료가 정상적으로 추가되는지 검증한다\")\n@Test void v7() { }\n\n$ ./gradlew test --tests NamingTest\n\nNamingTest > 음료 추가 성공 테스트 PASSED\nNamingTest > 음료가 정상적으로 추가되는지 검증한다 PASSED\n\n#   '성공', '테스트', '정상적으로', '검증한다'\n#   네 단어를 빼도 정보가 안 줄어든다\n\n#   빼고 나면 '음료가 추가된다' 인데\n#   그건 조건이 없어서 여전히 부족하다\n\n#   조건을 넣는다\n\n@DisplayName(\"음료를 한 잔 담으면 주문 목록에 담긴다\")\n\n# --- 구현 용어를 넣어 보면 ---\n\n@DisplayName(\"beverages 리스트에 add 된다\")\n@Test void v8() { }\n\n#   자료구조를 Set 으로 바꾸면\n\nNamingTest > beverages 리스트에 add 된다 PASSED\n\n#   통과하는데 이름이 거짓말이 됐다\n\n#   4.1절의 주석과 같은 상태다\n\n# --- @Nested 로 묶으면 ---\n\n@DisplayName(\"카페 키오스크\")\nclass CafeKioskTest {\n    @Nested @DisplayName(\"음료를 담을 때\")\n    class Add { ... }\n    @Nested @DisplayName(\"음료를 뺄 때\")\n    class Remove { ... }\n    @Nested @DisplayName(\"주문을 생성할 때\")\n    class CreateOrder { ... }\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n카페 키오스크 > 음료를 담을 때 > 한 잔을 담으면 주문 목록에 담긴다 PASSED\n카페 키오스크 > 음료를 담을 때 > 여러 잔을 담으면 담은 만큼 들어간다 PASSED\n카페 키오스크 > 음료를 담을 때 > 0잔을 담으면 예외가 난다 PASSED\n카페 키오스크 > 음료를 담을 때 > 음수로 담으면 예외가 난다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 담은 음료를 빼면 목록에서 사라진다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 없는 음료를 빼면 예외가 난다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 마지막 한 잔을 빼면 목록이 빈다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 영업 시작 1분 전에는 주문할 수 없다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 영업 시작 정각에는 주문할 수 있다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 마감 1분 전에는 주문할 수 있다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 마감 시각 정각에는 주문할 수 없다 PASSED\n\n11 tests completed\n\n#   목차가 생겼다\n\n#   2장의 열셋과 같은 테스트인데 읽기가 다르다\n\n# --- HTML 리포트에서도 ---\n\n$ open build/reports/tests/test/index.html\n\n#   클래스별로 계층이 그대로 나온다\n\n#   @Nested 없이 평평하게 두면\n#   이름 순으로 정렬돼 순서가 뒤섞인다\n\n# --- 다음 절에서 ---\n\n#   본문 구조를 정리한다",
+   "note": "**다섯 이름 중 마지막만 읽어서** 안다.\n\n**실패했을 때 차이가 크다** — **`addSeveralBeverages() FAILED` 는 무슨 규칙이 깨졌는지** 모른다.\n\n**\"성공\"·\"테스트\"·\"정상적으로\"·\"검증한다\" 를 빼도 정보가 안** 줄어든다.\n\n**구현 용어를 쓰면 자료구조를 바꿨을 때 이름이 거짓말**이 된다. **4.1절의 주석과 같은 상태**다.\n\n**`@Nested` 로 목차가** 생긴다. **2장의 같은 테스트인데 읽기가** 다르다."
+  }
+ ],
+ "recap": [
+  "**메서드 이름은 구현에 묶이고 `@DisplayName` 은 행위를** 말한다.",
+  "**이름의 다섯 단계** — `test1` 부터 문장까지.",
+  "**\"테스트\"·\"성공한다\"·\"정상적으로\"·\"검증한다\" 를** 뺀다.",
+  "**\"성공\" 은 결과가 아니라 판정**이다.",
+  "**구현 용어를 쓰면 이름이 거짓말이** 된다.",
+  "**`[조건] 하면 [결과] 한다`** 로 쓴다.",
+  "**조건이 없으면 결과만** 쓴다.",
+  "**`@Nested` 로 목차가** 생긴다.",
+  "**열 개 넘으면 쓸 만하고 다섯 개면 평평한 게** 낫다."
+ ],
+ "drills": [
+  {
+   "task": "자기 테스트 이름 다섯 개를 다섯 단계로 분류한다.",
+   "done_when": "몇 단계인지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빼야 할 단어를 찾아 지운다.",
+   "done_when": "정보가 안 줄어드는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "구현 용어가 들어간 이름을 찾는다.",
+   "done_when": "도메인 용어로 바꿨다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트 클래스 하나를 `@Nested` 로 묶는다.",
+   "done_when": "실행 결과에 계층이 나오는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메서드 이름 대신 `@DisplayName` 을 쓰는 이유는?",
+   "a": "메서드 이름은 구현에 묶이고 행위를 문장으로 못 쓴다."
+  },
+  {
+   "q": "\"성공한다\" 를 왜 빼나?",
+   "a": "통과 여부는 단언이 정한다. 무엇이 일어나는지를 써야 한다."
+  },
+  {
+   "q": "구현 용어를 쓰면?",
+   "a": "자료구조나 메서드를 바꿨을 때 이름이 거짓말이 된다."
+  },
+  {
+   "q": "권장 형식은?",
+   "a": "`[조건] 하면 [결과] 한다` 다. 조건이 없으면 결과만 쓴다."
+  },
+  {
+   "q": "`@Nested` 는 언제 쓰나?",
+   "a": "테스트가 열 개 넘어 목차가 필요할 때다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 — Display Names",
+   "url": "https://junit.org/junit5/docs/current/user-guide/#writing-tests-display-names",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Introducing BDD (개념 출처)",
+   "url": "https://dannorth.net/introducing-bdd/",
+   "publisher": "Dan North"
+  }
+ ]
+}
