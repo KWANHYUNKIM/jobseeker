@@ -102,7 +102,7 @@
           "title": "동작 확인",
           "summary": "테스트 하나로 검증한다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -117,7 +117,7 @@
           "title": "도메인 설계",
           "summary": "회원과 팀.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",

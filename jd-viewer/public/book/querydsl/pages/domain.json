@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "domain",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "도메인 설계",
+ "summary": "회원과 팀.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "표 둘을 만든다.",
+  "각 컬럼의 쓸모를 안다.",
+  "DDL 을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장이 환경을** 끝냈다. **이제 61절 내내 쓸 표 두 개를** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "표 둘이면 충분하다",
+   "ascii": "   two tables, and everything this book asks of them\n\n   member   an id, a name, an age, and a team it belongs to\n   team     an id and a name, and the members that point at it\n\n   a name to filter by, a number to compare, and a join to cross\n   is the smallest model that can show every clause",
+   "note": "**모든 절을 보여 줄 수 있는 최소 모형**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컬럼마다 보여 줄 문법이 있다",
+   "md": "**문자열이** 하나 필요하다.\n\n> **`like`·`contains`·`startsWith` 를 보여** 준다.\n> **4.3절의 검색 조건 절반**이다.\n> **`username` 이 그것**이다.\n\n**숫자도** 하나 필요하다.\n\n> **`goe`·`between`·`avg` 를 보여** 준다.\n> **4.8절의 집합도 여기서** 나온다.\n> **`age` 가 그것**이다.\n\n**연관도** 필요하다.\n\n> **조인할 데가 있어야** 한다.\n> **4.10~4.13절이 전부 여기** 걸린다.\n> **`team` 이 그것**이다.\n\n**더는 안** 만든다.\n\n> **주문·상품까지 만들면 산만해**진다.\n> **5장에서 DTO 를 만들 때 늘린다.**\n> **⑭에서 쓴 모형과 같은 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "컬럼의 쓸모",
+   "ascii": "   why each column is there\n\n   username  a string, so like and startsWith have something to do\n   age       a number, so goe and between and avg have something to do\n   team      an association, so join and fetch join have somewhere to go\n\n   nothing else is needed until chapter 5 asks for a DTO",
+   "note": "**5장 전까지는 이걸로** 충분하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "롬복을 어디까지 붙일지 정해 둔다",
+   "md": "**`@Setter` 는 위험**하다.\n\n> **아무 데서나 값이** 바뀐다.\n> **⑦ 4.2절에서 경고한** 것이다.\n> **여기서는 예제라 열어** 둔다.\n\n**`@ToString` 은 연관을 빼**야 한다.\n\n> **양방향이면 무한 재귀**다.\n> **`of` 로 필드를** 고른다.\n> **아래에서 그것도 만들어** 본다.\n\n**기본 생성자는 `PROTECTED`** 다.\n\n> **JPA 가 프록시를 만들 때** 쓴다.\n> **`private` 이면 프록시가 안** 된다.\n> **① 6.2절의 그 이유**다.\n\n**연관 편의 메서드를** 둔다.\n\n> **양쪽을 한 번에** 맞춘다.\n> **한쪽만 넣으면 조회가** 어긋난다.\n> **3.2절에서 그걸** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- Member\n\n@Entity\n@Getter @Setter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@ToString(of = {\"id\", \"username\", \"age\"})\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"member_id\")\n    private Long id;\n\n    private String username;\n    private int age;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"team_id\")\n    private Team team;\n\n    public Member(String username) {\n        this(username, 0, null);\n    }\n\n    public Member(String username, int age) {\n        this(username, age, null);\n    }\n\n    public Member(String username, int age, Team team) {\n        this.username = username;\n        this.age = age;\n        if (team != null) {\n            changeTeam(team);\n        }\n    }\n\n    public void changeTeam(Team team) {\n        this.team = team;\n        team.getMembers().add(this);\n    }\n}\n\n--   ToString 에 team 이 없다\n--   changeTeam 이 양쪽을 맞춘다\n\n\n-- Team\n\n@Entity\n@Getter @Setter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@ToString(of = {\"id\", \"name\"})\npublic class Team {\n\n    @Id @GeneratedValue\n    @Column(name = \"team_id\")\n    private Long id;\n\n    private String name;\n\n    @OneToMany(mappedBy = \"team\")\n    private List<Member> members = new ArrayList<>();\n\n    public Team(String name) {\n        this.name = name;\n    }\n}\n\n--   mappedBy 라 읽기 전용이다\n\n\n-- DDL 을 본다\n\n$ ./gradlew test --tests '*DomainTest*' | grep -A8 'create table'\n\nHibernate:\n    create table member (\n        age integer not null,\n        member_id bigint not null,\n        team_id bigint,\n        username varchar(255),\n        primary key (member_id)\n    )\nHibernate:\n    create table team (\n        team_id bigint not null,\n        name varchar(255),\n        primary key (team_id)\n    )\nHibernate:\n    alter table if exists member\n       add constraint FKcjte2v8vypbqm8n6nkm2sgw3f\n       foreign key (team_id) references team\n\n--   외래키가 member 에 있다\n--   3.2절에서 그 이유를 본다\n\n\n-- 시퀀스도 생겼다\n\n$ ./gradlew test | grep 'create sequence'\n\nHibernate: create sequence member_seq start with 1 increment by 50\nHibernate: create sequence team_seq start with 1 increment by 50\n\n--   @GeneratedValue 기본이 AUTO 다\n--   H2 라 시퀀스가 됐다 (2.4절)\n\n\n-- ToString 에 연관을 넣으면\n\n@ToString(of = {\"id\", \"username\", \"team\"})   // team 을 넣었다\n\n@Test\nvoid 무한_재귀() {\n    Member m = memberRepository.findAll().get(0);\n    try {\n        System.out.println(m);\n    } catch (StackOverflowError e) {\n        System.out.println(\"StackOverflowError\");\n    }\n}\n\nHibernate: select ... from member m1_0\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nStackOverflowError\n\n--   Team 의 toString 이 members 를 부른다\n--   Member 의 toString 이 team 을 부른다\n--   Team 쪽에도 members 가 없어야 안전하다\n\n\n-- 기본 생성자를 private 으로 두면\n\n@NoArgsConstructor(access = AccessLevel.PRIVATE)\n\n$ ./gradlew test --tests '*DomainTest*'\n\nERROR HHH000142: Bytecode enhancement failed because no public,\n      protected or package-private default constructor was found for\n      entity: study.querydsl.entity.Member\n\n--   프록시를 못 만든다\n--   PROTECTED 여야 한다\n\n\n-- 값을 넣어 본다\n\n@Test\n@Transactional\nvoid 저장() {\n    Team teamA = new Team(\"teamA\");\n    em.persist(teamA);\n\n    em.persist(new Member(\"m1\", 10, teamA));\n    em.persist(new Member(\"m2\", 20, teamA));\n    em.flush();\n    em.clear();\n\n    List<Member> all = queryFactory.selectFrom(member).fetch();\n    all.forEach(System.out::println);\n}\n\nHibernate: select next value for team_seq\nHibernate: select next value for member_seq\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\n/* select\n    member1\nfrom\n    Member member1 */\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\nMember(id=1, username=m1, age=10)\nMember(id=2, username=m2, age=20)\n\n--   시퀀스를 한 번만 불렀다\n--   allocationSize 가 50 이라 그렇다\n--   ToString 에 team 이 없어 조용하다\n\n\n-- 세 컬럼이 각각 무엇을 할 수 있나\n\n@Test\n@Transactional\nvoid 세_컬럼() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.contains(\"m\"),\n                   member.age.between(10, 30),\n                   member.team.name.eq(\"teamA\"))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age between ?2 and ?3\n    and team.name = ?4 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age between ? and ?\n        and t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [%m%]\nTRACE binding parameter (2:INTEGER) <- [10]\nTRACE binding parameter (3:INTEGER) <- [30]\nTRACE binding parameter (4:VARCHAR) <- [teamA]\n\n--   문자열, 숫자, 연관이 다 나왔다\n--   member.team.name 이 조인을 만들었다\n--   4.10절에서 이걸 명시적으로 쓴다\n\n\n-- 표는 이게 전부다\n\n$ ls src/main/java/study/querydsl/entity/\nMember.java\nTeam.java\n\n$ wc -l src/main/java/study/querydsl/entity/*.java\n      42 Member.java\n      24 Team.java\n      66 total\n\n--   66 줄로 61 절을 간다\n--   3.2절에서 연관관계를 더 본다",
+   "note": "**`member` 에 외래키가 생기고 시퀀스 둘이 `increment by 50` 으로** 만들어진다.\n\n**`@ToString` 에 `team` 을 넣으면 양쪽이 서로를 불러 `StackOverflowError`** 다.\n\n**기본 생성자를 `private` 으로 두면 `Bytecode enhancement failed`** 다.\n\n**`allocationSize` 50 이라 시퀀스를 한 번만** 불렀다.\n\n**`member.team.name` 한 줄이 `join team t1_0` 을** 만들었다."
+  }
+ ],
+ "recap": [
+  "**표 둘이면** 충분하다.",
+  "**문자열·숫자·연관이** 필요하다.",
+  "**더는 안** 만든다.",
+  "**외래키는 `member` 에** 있다.",
+  "**`@ToString` 에 연관을 빼**야 한다.",
+  "**기본 생성자는 `PROTECTED`** 다.",
+  "**편의 메서드로 양쪽을** 맞춘다.",
+  "**시퀀스를 한 번만** 부른다.",
+  "**66줄로 61절을** 간다."
+ ],
+ "drills": [
+  {
+   "task": "엔티티 둘을 만든다.",
+   "done_when": "DDL 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@ToString` 에 연관을 넣는다.",
+   "done_when": "재귀를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "기본 생성자를 `private` 으로 둔다.",
+   "done_when": "실패 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "세 컬럼을 다 쓰는 조건을 짠다.",
+   "done_when": "조인이 생기는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "표를 둘만 만드는 이유는?",
+   "a": "문자열·숫자·연관 셋이면 모든 절을 보여 줄 수 있어서다."
+  },
+  {
+   "q": "외래키는 어느 표에 있나?",
+   "a": "다대일 쪽인 `member` 에 있다."
+  },
+  {
+   "q": "`@ToString` 에 연관을 넣으면?",
+   "a": "양쪽이 서로를 불러 무한 재귀가 난다."
+  },
+  {
+   "q": "기본 생성자 접근 수준은?",
+   "a": "`PROTECTED` 이상이어야 프록시를 만들 수 있다."
+  },
+  {
+   "q": "`member.team.name` 을 조건에 쓰면?",
+   "a": "묵시적 조인이 생겨 SQL 에 `join` 이 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "연관 편의 메서드",
+   "def": "양방향 연관의 양쪽을 한 번에 맞춰 주는 메서드."
+  },
+  {
+   "term": "묵시적 조인",
+   "def": "점 표기로 연관을 타고 들어갈 때 자동으로 생기는 조인."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  }
+ ]
+}

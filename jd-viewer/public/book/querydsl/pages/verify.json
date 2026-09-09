@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "verify",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "동작 확인",
+ "summary": "테스트 하나로 검증한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "한 테스트로 넷을 본다.",
+  "실패를 절에 대응시킨다.",
+  "환경을 굳힌다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1~2.5절이 각각 하나씩** 걸었다. **여기서 한 번에 다** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트 하나가 증명하는 것",
+   "ascii": "   what one passing test proves, layer by layer\n\n   the Q type exists      the import compiled\n   the factory works      an EntityManager was injected\n   the mapping is right   the table and columns were found\n   the two logs appear    both halves of every later section\n\n   if any of those is broken, chapter 4 is unreadable",
+   "note": "**하나라도 깨지면 4장을 못** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "환경 확인은 한 번만 하고 넘어간다",
+   "md": "**넷을 한꺼번에** 본다.\n\n> **Q 타입·팩토리·매핑·로그**다.\n> **하나라도 없으면 통과가 안** 된다.\n> **⑨ 2.4절의 스모크 테스트**다.\n\n**실패가 절을** 가리킨다.\n\n> **컴파일이면 2.3절**이다.\n> **`NullPointerException` 이면 3.4절**이다.\n> **로그가 없으면 2.5절**이다.\n\n**한 번 통과하면 안 본다.**\n\n> **환경 테스트는 매번 돌릴 게** 아니다.\n> **깨졌을 때만 다시** 온다.\n> **⑨ 7.3절의 태그로** 나눈다.\n\n**같은 데이터로** 간다.\n\n> **3장에서 만들 열 건이 이후 전부에** 쓰인다.\n> **여기서는 두 건이면** 된다.\n> **3.3절에서 늘린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "실패마다 갈 곳",
+   "ascii": "   what to check when the test fails, in order\n\n   a compile error   the Q type, so go back to 2.3\n   a null factory    the bean or the field, so go to 3.4\n   a table not found the entity mapping or the ddl setting\n   no jpql comment   use_sql_comments, so go back to 2.5\n\n   each failure points at exactly one earlier section",
+   "note": "**실패 하나가 앞 절 하나를** 가리킨다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "@SpringBootTest 말고도 방법이 있다",
+   "md": "**컨텍스트가 무겁**다.\n\n> **전체 빈을 다** 띄운다.\n> **환경 확인에는 과할 수** 있다.\n> **⑨ 6.2절에서 다룬** 이야기다.\n\n**`@DataJpaTest` 가 가볍**다.\n\n> **JPA 관련 빈만** 띄운다.\n> **롤백이** 기본이다.\n> **`JPAQueryFactory` 는 직접 만들어야** 한다.\n\n**직접 만드는 게 오히려** 낫다.\n\n> **`new JPAQueryFactory(em)` 한 줄**이다.\n> **빈 등록 여부와 무관하게** 돈다.\n> **3.4절에서 빈으로 바꾼다.**\n\n**롤백을 끄고 볼 수도** 있다.\n\n> **`@Rollback(false)` 로** 남긴다.\n> **콘솔에서 눈으로** 본다.\n> **2.4절의 서버 모드와 같이** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 확인 테스트\n\n@SpringBootTest\n@Transactional\nclass EnvironmentTest {\n\n    @PersistenceContext EntityManager em;\n    JPAQueryFactory queryFactory;\n\n    @BeforeEach\n    void init() {\n        queryFactory = new JPAQueryFactory(em);\n        Team teamA = new Team(\"teamA\");\n        em.persist(teamA);\n        em.persist(new Member(\"m1\", 10, teamA));\n        em.persist(new Member(\"m2\", 20, teamA));\n        em.flush();\n        em.clear();\n    }\n\n    @Test\n    void 환경_확인() {\n        Member found = queryFactory\n                .selectFrom(member)\n                .where(member.username.eq(\"m1\"))\n                .fetchOne();\n\n        assertThat(found.getUsername()).isEqualTo(\"m1\");\n        assertThat(found.getTeam().getName()).isEqualTo(\"teamA\");\n    }\n}\n\n$ ./gradlew test --tests '*EnvironmentTest*'\n\nBUILD SUCCESSFUL in 4s\n\n\n-- 나온 로그를 본다\n\nHibernate:\n    insert into team (name, team_id) values (?, ?)\nHibernate:\n    insert into member (age, team_id, username, member_id)\n    values (?, ?, ?, ?)\nHibernate:\n    insert into member (age, team_id, username, member_id)\n    values (?, ?, ?, ?)\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nHibernate:\n    select\n        t1_0.team_id,\n        t1_0.name\n    from\n        team t1_0\n    where\n        t1_0.team_id=?\n\n--   JPQL 이 있다 (2.5절)\n--   SQL 이 있다 (2.5절)\n--   값이 있다 (2.5절)\n--   팀 조회가 따로 나갔다 (지연 로딩)\n\n\n-- 넷을 하나씩 확인한다\n\n@Test\nvoid 네_가지() {\n    System.out.println(\"① Q 타입: \" + member.getClass().getSimpleName());\n    System.out.println(\"② 팩토리: \" + (queryFactory != null));\n    System.out.println(\"③ 매핑:   \" +\n            em.getMetamodel().entity(Member.class).getName());\n    System.out.println(\"④ 방언:   \" +\n            em.getEntityManagerFactory().getProperties()\n              .get(\"hibernate.dialect\"));\n}\n\n① Q 타입: QMember\n② 팩토리: true\n③ 매핑:   Member\n④ 방언:   org.hibernate.dialect.H2Dialect\n\n--   2.1~2.4 절이 다 걸려 있다\n\n\n-- Q 타입이 없을 때\n\n$ ./gradlew test --tests '*EnvironmentTest*'\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\nimport static study.querydsl.entity.QMember.member;\n\n--   2.3절로 간다\n\n\n-- 팩토리가 null 일 때\n\n// @BeforeEach 를 안 썼다\n\n@Test\nvoid 팩토리_없이() {\n    queryFactory.selectFrom(member).fetch();\n}\n\nEnvironmentTest > 팩토리_없이() FAILED\n    java.lang.NullPointerException:\n      Cannot invoke \"JPAQueryFactory.selectFrom(...)\" because\n      \"this.queryFactory\" is null\n\n--   3.4절에서 빈으로 바꾸면 안 겪는다\n\n\n-- 매핑이 틀렸을 때\n\n// @Entity 를 뺐다\n\nEnvironmentTest > 환경_확인() FAILED\n    java.lang.IllegalArgumentException:\n      Not a managed type: class study.querydsl.entity.Member\n\n--   Q 타입도 같이 없어졌을 것이다\n\n\n-- 테이블이 없을 때\n\n// ddl-auto 를 none 으로 두고 스키마도 없다\n\nHibernate: select ... from member m1_0 where m1_0.username=?\n\nEnvironmentTest > 환경_확인() FAILED\n    org.hibernate.exception.SQLGrammarException:\n      Table \"MEMBER\" not found; SQL statement:\n\n--   SQL 은 나갔다\n--   DB 쪽 문제다\n\n\n-- JPQL 주석이 없을 때\n\n// use_sql_comments: false\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n\n--   테스트는 통과한다\n--   이 책을 읽을 수가 없다\n--   2.5절로 간다\n\n\n-- 가벼운 테스트로도 된다\n\n@DataJpaTest\nclass LightTest {\n\n    @PersistenceContext EntityManager em;\n\n    @Test\n    void 가볍게() {\n        JPAQueryFactory queryFactory = new JPAQueryFactory(em);\n        Long count = queryFactory.select(member.count())\n                .from(member).fetchOne();\n        System.out.println(\"건수: \" + count);\n    }\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1 */\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n건수: 0\n\n--   빈 DB 다 (롤백이 기본)\n--   컨텍스트가 가볍다\n\n\n-- 뜨는 시간을 비교한다\n\n$ ./gradlew test --tests '*EnvironmentTest*' --info \\\n    | grep -i 'Started .*Test in'\nStarted EnvironmentTest in 2.418 seconds\n\n$ ./gradlew test --tests '*LightTest*' --info \\\n    | grep -i 'Started .*Test in'\nStarted LightTest in 1.104 seconds\n\n--   절반쯤이다\n--   ⑨ 6.2절의 그 이야기다\n\n\n-- 롤백을 끄고 눈으로 본다\n\n@Test\n@Rollback(false)\nvoid 남긴다() {\n    em.persist(new Member(\"남는회원\", 99));\n}\n\nHibernate:\n    insert into member (age, team_id, username, member_id)\n    values (?, ?, ?, ?)\nTRACE binding parameter (3:VARCHAR) <- [남는회원]\n\n-- H2 콘솔에서\nselect username, age from member where age = 99;\n\nUSERNAME  | AGE\n--------- | ---\n남는회원   | 99\n\n--   2.4절의 서버 모드라 보인다\n--   메모리였으면 못 본다\n\n\n-- 환경 테스트에 태그를 단다\n\n@Tag(\"env\")\n@SpringBootTest\n@Transactional\nclass EnvironmentTest { ... }\n\n// build.gradle\ntest {\n    useJUnitPlatform {\n        excludeTags 'env'\n    }\n}\n\n$ ./gradlew test | grep -c EnvironmentTest\n0\n\n$ ./gradlew test -PincludeTags=env --tests '*EnvironmentTest*'\nBUILD SUCCESSFUL\n\n--   평소에는 안 돈다\n--   깨졌을 때만 부른다\n\n\n-- 2장을 닫는다\n\n@Test\nvoid 이_장의_결론() {\n    em.clear();\n    List<String> names = queryFactory\n            .select(member.username)\n            .from(member)\n            .where(member.age.between(10, 30))\n            .orderBy(member.age.asc())\n            .fetch();\n    System.out.println(names);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age between ?1 and ?2\norder by\n    member1.age asc */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age between ? and ?\n    order by\n        m1_0.age\nTRACE binding parameter (1:INTEGER) <- [10]\nTRACE binding parameter (2:INTEGER) <- [30]\n[m1, m2]\n\n--   between 이 그대로 between 이 됐다\n--   3장에서 쓸 도메인을 만든다",
+   "note": "**테스트 하나가 Q 타입·팩토리·매핑·방언 넷을 한 번에** 확인해 준다.\n\n**로그에 JPQL·SQL·바인딩 값이 다 있고 팀 조회가 따로 나가 지연 로딩까지** 보인다.\n\n**실패마다 가리키는 절이 다르다 — 컴파일은 2.3, `NullPointerException` 은 3.4, `Table \"MEMBER\" not found` 는 DB** 쪽.\n\n**`use_sql_comments` 가 꺼지면 테스트는 통과하지만 이 책을 읽을 수** 없다.\n\n**`@DataJpaTest` 는 2.418초가 1.104초로** 줄었다."
+  }
+ ],
+ "recap": [
+  "**한 테스트로 넷을** 본다.",
+  "**실패가 절을** 가리킨다.",
+  "**컴파일이면 2.3절**이다.",
+  "**널이면 3.4절**이다.",
+  "**로그가 없으면 2.5절**이다.",
+  "**`@DataJpaTest` 가** 가볍다.",
+  "**팩토리는 직접** 만든다.",
+  "**롤백을 끄면 눈으로** 본다.",
+  "**태그로 빼** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "환경 확인 테스트를 쓴다.",
+   "done_when": "두 겹 로그를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "설정을 하나씩 깨뜨린다.",
+   "done_when": "실패 메시지를 절과 짝지었다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@DataJpaTest` 로 바꾼다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "태그로 분리한다.",
+   "done_when": "평소 실행에서 빠지는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "환경 확인 테스트가 증명하는 넷은?",
+   "a": "Q 타입, 팩토리, 매핑, 로그 설정이다."
+  },
+  {
+   "q": "컴파일 에러가 나면 어디로 가나?",
+   "a": "Q 타입 문제이므로 2.3절이다."
+  },
+  {
+   "q": "`use_sql_comments` 가 꺼져 있으면?",
+   "a": "테스트는 통과하지만 JPQL 을 못 본다."
+  },
+  {
+   "q": "`@DataJpaTest` 의 장단점은?",
+   "a": "가볍지만 `JPAQueryFactory` 를 직접 만들어야 한다."
+  },
+  {
+   "q": "데이터를 눈으로 보려면?",
+   "a": "`@Rollback(false)` 와 서버 모드 DB 를 같이 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스모크 테스트",
+   "def": "환경이 최소한 돌아가는지만 빠르게 확인하는 테스트."
+  },
+  {
+   "term": "@DataJpaTest",
+   "def": "JPA 관련 빈만 띄우는 가벼운 슬라이스 테스트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
