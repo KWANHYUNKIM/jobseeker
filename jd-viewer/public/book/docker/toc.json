@@ -215,7 +215,7 @@
           "title": "다이제스트",
           "summary": "태그는 움직이고 다이제스트는 안 움직인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -223,7 +223,7 @@
           "title": "사설 레지스트리와 인증",
           "summary": "회사 이미지는 어디에 두는가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

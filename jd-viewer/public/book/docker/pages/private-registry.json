@@ -1,0 +1,159 @@
+{
+ "book": "docker",
+ "id": "private-registry",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "사설 레지스트리와 인증",
+ "summary": "회사 이미지는 어디에 두는가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "로그인 자격이 어디에 저장되는지 안다.",
+  "레지스트리 선택지를 안다.",
+  "CI 에서 인증하는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**회사 이미지를 Docker Hub 에 공개로 올릴 수는** 없다. **어디에 두나.**"
+  },
+  {
+   "type": "table",
+   "caption": "레지스트리 선택지",
+   "columns": [
+    "",
+    "무엇",
+    "특징"
+   ],
+   "rows": [
+    [
+     "**GHCR**",
+     "`ghcr.io` GitHub Container Registry",
+     "**GitHub Actions 와 붙이기 가장 쉽다**(11.2절). 토큰이 이미 있다"
+    ],
+    [
+     "**ECR**",
+     "AWS",
+     "IAM 으로 권한. **리포지터리를 미리 만들어야** 한다. 로그인 토큰이 12시간마다 만료"
+    ],
+    [
+     "**GAR / ACR**",
+     "GCP / Azure",
+     "각 클라우드의 IAM 과 붙는다"
+    ],
+    [
+     "**Docker Hub 유료**",
+     "`docker.io`",
+     "가장 단순. 조직 단위 비공개"
+    ],
+    [
+     "**Harbor**",
+     "자체 호스팅",
+     "취약점 스캔·복제·정책. 사내 구축"
+    ],
+    [
+     "**registry:2**",
+     "공식 이미지로 직접",
+     "**실습·CI 캐시용.** 인증·GC 를 직접 붙여야 한다"
+    ]
+   ],
+   "note": "**클라우드를 이미 쓰면 그 클라우드의 것을 쓰는 게 인증이 제일 간단**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "docker login 은 자격을 평문으로 남길 수 있다",
+   "md": "```bash\n$ docker login ghcr.io -u kwan\nPassword:\nWARNING! Your password will be stored unencrypted in /root/.docker/config.json.\nConfigure a credential helper to remove this warning.\n```\n\n```json\n{\n  \"auths\": {\n    \"ghcr.io\": { \"auth\": \"a3dhbjpnaHBfeHh4eHh4\" }\n  }\n}\n```\n\n> **`auth` 는 암호화가 아니라 base64** 다. **`base64 -d` 하면 그대로** 나온다.\n\n| 대응 | 어떻게 |\n|---|---|\n| 자격 헬퍼 | macOS Keychain·`pass`·`wincred`. Docker Desktop 은 기본으로 쓴다 |\n| **CI 에서** | **`--password-stdin` 을 쓴다.** 히스토리와 `ps` 에 안 남는다 |\n| 개인 토큰 | 비밀번호 대신 **범위를 좁힌 토큰**을 쓴다 |\n\n```bash\n# 이렇게 하지 않는다 -- ps 와 셸 히스토리에 남는다\ndocker login -u kwan -p ghp_xxxx ghcr.io\n\n# 이렇게 한다\necho \"$GITHUB_TOKEN\" | docker login ghcr.io -u kwan --password-stdin\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "사설 레지스트리를 직접 띄울 때",
+   "md": "**실습·사내 캐시용으로 `registry:2` 를 띄우는 건 한 줄**이다.\n\n```bash\ndocker run -d --name reg -p 5000:5000 -v regdata:/var/lib/registry registry:2\n```\n\n**그런데 운영으로 쓰려면 셋을 붙여야** 한다.\n\n| 붙일 것 | 왜 |\n|---|---|\n| **TLS** | 없으면 `http: server gave HTTP response to HTTPS client` |\n| **인증** | 기본은 누구나 push 할 수 있다 |\n| **가비지 컬렉션** | 지운 태그의 blob 이 안 지워진다. 디스크가 계속 큰다 |\n\n**평문 HTTP 를 쓰려면 데몬 설정에 예외를 넣어야** 한다.\n\n```json\n// /etc/docker/daemon.json\n{ \"insecure-registries\": [\"registry.internal:5000\"] }\n```\n\n> **`localhost` 는 예외라 설정 없이도** 된다. **그래서 실습이 그냥 됐다.**\n> **운영에서 `insecure-registries` 를 쓰지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "CI 에서의 인증 (11.2절 예고)",
+   "md": "**GitHub Actions 는 토큰이 이미 있어서 세 줄이면** 된다.\n\n```yaml\n- uses: docker/login-action@v3\n  with:\n    registry: ghcr.io\n    username: ${{ github.actor }}\n    password: ${{ secrets.GITHUB_TOKEN }}\n```\n\n**ECR 은 로그인 토큰을 매번 받아야** 한다.\n\n```bash\naws ecr get-login-password --region ap-northeast-2 \\\n  | docker login --password-stdin \\\n      123456789012.dkr.ecr.ap-northeast-2.amazonaws.com\n```\n\n> **ECR 토큰은 12시간짜리**다. **CI 마다 새로 받는 게 정상**이고, **저장해 두려 하면 안 된다.**\n> **그리고 ECR 은 리포지터리를 미리 만들어야** 한다 — `name unknown` 의 흔한 원인이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "인증이 붙은 사설 레지스트리를 만들어 본다",
+   "sql": "# --- 인증 없는 레지스트리는 누구나 push 한다 ---\n\n$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n$ docker tag alpine:3.20 localhost:5000/anything:1\n$ docker push -q localhost:5000/anything:1 >/dev/null && echo pushed\npushed\n\n#   로그인도 안 했는데 올라갔다\n\n$ docker rm -f reg >/dev/null\n\n\n# --- basic auth 를 붙인다 ---\n\n$ mkdir -p /tmp/reg-auth\n$ docker run --rm --entrypoint htpasswd httpd:2 -Bbn kwan s3cret > /tmp/reg-auth/htpasswd\n$ cat /tmp/reg-auth/htpasswd\nkwan:$2y$05$8f3k2j...\n\n$ docker run -d --name reg -p 5000:5000 \\\n    -v /tmp/reg-auth:/auth \\\n    -e REGISTRY_AUTH=htpasswd \\\n    -e REGISTRY_AUTH_HTPASSWD_REALM=\"Registry Realm\" \\\n    -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \\\n    registry:2 >/dev/null\n\n\n# --- 이제 로그인 없이는 안 된다 ---\n\n$ docker push localhost:5000/anything:1\nThe push refers to repository [localhost:5000/anything]\nno basic auth credentials\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:5000/v2/\n401\n\n\n# --- 로그인 (히스토리에 안 남게) ---\n\n$ echo 's3cret' | docker login localhost:5000 -u kwan --password-stdin\nLogin Succeeded\n\n$ docker push -q localhost:5000/anything:1 >/dev/null && echo pushed\npushed\n\n\n# --- 자격이 어디에 저장됐나 ---\n\n$ cat ~/.docker/config.json\n{\n  \"auths\": {\n    \"localhost:5000\": {\n      \"auth\": \"a3dhbjpzM2NyZXQ=\"\n    }\n  },\n  \"credsStore\": \"desktop\"\n}\n\n$ echo 'a3dhbjpzM2NyZXQ=' | base64 -d\nkwan:s3cret\n\n#   base64 다. 암호화가 아니다\n#   credsStore 가 있으면 실제 값은 OS 키체인에 들어간다\n\n\n# --- 로그아웃 ---\n\n$ docker logout localhost:5000\nRemoving login credentials for localhost:5000\n\n$ docker pull -q localhost:5000/anything:1\nError response from daemon: Head \"http://localhost:5000/v2/anything/manifests/1\":\nno basic auth credentials\n\n\n# --- 평문 HTTP 는 localhost 라서 됐다 ---\n\n$ docker info --format '{{.RegistryConfig.IndexConfigs}}' | head -c 120\nmap[docker.io:0x...]\n\n#   다른 호스트 이름으로 접근하면 이렇게 된다:\n#   $ docker push registry.internal:5000/app:1\n#   http: server gave HTTP response to HTTPS client\n#\n#   -> TLS 를 붙이거나 daemon.json 의 insecure-registries 에 넣어야 한다\n\n$ docker rm -f reg >/dev/null && rm -rf /tmp/reg-auth\n$ docker rmi localhost:5000/anything:1 >/dev/null"
+  }
+ ],
+ "recap": [
+  "레지스트리는 쓰는 클라우드에 맞춰 고르는 게 인증이 가장 간단하다. GitHub 을 쓰면 GHCR.",
+  "docker login 의 자격은 config.json 에 base64 로 남는다. 자격 헬퍼나 키체인을 쓴다.",
+  "CI 에서는 --password-stdin 을 쓴다. -p 로 주면 ps 와 히스토리에 남는다.",
+  "registry:2 를 직접 띄우면 TLS·인증·GC 를 직접 붙여야 한다.",
+  "localhost 는 평문 HTTP 가 허용되지만 다른 호스트는 insecure-registries 설정이 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "htpasswd 로 basic auth 를 붙인 registry:2 를 띄우고, 로그인 전후로 push 를 시도한다.",
+   "done_when": "로그인 전에는 no basic auth credentials, 후에는 성공하는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "`~/.docker/config.json` 의 auth 값을 `base64 -d` 로 풀어 본다.",
+   "done_when": "아이디:비밀번호가 그대로 나오는 것을 확인한다.",
+   "hint": "credsStore 가 있으면 값이 없을 수도 있다.",
+   "minutes": 3
+  },
+  {
+   "task": "`docker login -u x -p y` 와 `--password-stdin` 두 방식으로 로그인하고 셸 히스토리를 비교한다.",
+   "done_when": "앞의 것만 비밀번호가 남는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "config.json 의 auth 값은 암호화된 것인가.",
+   "a": "아니다. base64 인코딩일 뿐이라 그대로 복원된다. 자격 헬퍼를 쓰면 OS 키체인에 들어간다."
+  },
+  {
+   "q": "CI 에서 `docker login -p $TOKEN` 을 쓰면 안 되는 이유는.",
+   "a": "프로세스 목록과 셸 히스토리, 로그에 토큰이 남는다. --password-stdin 을 쓴다."
+  },
+  {
+   "q": "사설 레지스트리를 운영으로 쓰려면 무엇을 붙여야 하나.",
+   "a": "TLS, 인증, 가비지 컬렉션. 셋 다 registry:2 기본값에는 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자격 헬퍼",
+   "en": "credential helper",
+   "what": "로그인 자격을 OS 키체인 등 안전한 곳에 넣어 주는 보조 프로그램."
+  },
+  {
+   "term": "htpasswd",
+   "what": "basic auth 용 사용자·비밀번호 파일을 만드는 도구."
+  },
+  {
+   "term": "가비지 컬렉션",
+   "en": "garbage collection",
+   "what": "어떤 manifest 도 참조하지 않는 blob 을 실제로 지우는 작업."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker login",
+   "url": "https://docs.docker.com/reference/cli/docker/login/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Deploy a registry server",
+   "url": "https://distribution.github.io/distribution/about/deploying/",
+   "publisher": "CNCF Distribution"
+  },
+  {
+   "title": "GitHub Docs — Working with the Container registry",
+   "url": "https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry",
+   "publisher": "GitHub"
+  }
+ ]
+}
