@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-jdk",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "적용한다",
+ "summary": "클래스 하나로 전부.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 곳에 붙인다.",
+  "걸러 낸다.",
+  "설정을 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절에서 하나를** 만들었다. **세 곳에 다 붙이면 뭐가 생기는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "다 걸리니 걸러야 한다",
+   "ascii": "   one handler for everything means filtering somewhere\n\n   without a filter, every method of every bean is logged\n   with a filter, only the names that match are\n\n   the filter is the first appearance of what chapter eleven names",
+   "note": "**이 거르개가 11장이 이름 붙일 것의 첫** 모습이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "하나로 다 받으면 원치 않는 것도 받는다",
+   "md": "**메서드를 안** 가린다.\n\n> **5.2절에서는 골라** 썼다.\n> **여기선 다** 온다.\n> **아래에서 세어** 본다.\n\n**빈도 안** 가린다.\n\n> **감쌀 것을 내가** 정한다.\n> **설정에** 적는다.\n> **아래에서 그** 줄이다.\n\n**거르개가** 필요하다.\n\n> **이름으로** 고른다.\n> **아래에서 만든**다.\n> **11장이 이걸** 늘린다.\n\n**두 자리가** 있다.\n\n> **안에서냐 밖에서냐**다.\n> **아래에서 견줘** 본다.\n> **8장이 밖으로** 옮긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "거르개를 둘 자리",
+   "ascii": "   two places the filter can sit\n\n   inside the handler, checked on every call\n   outside, deciding whether to make a proxy at all\n\n   the second skips the object entirely, which is cheaper",
+   "note": "**둘째는 객체를 아예 안 만들어 더** 싸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "설정은 아직 대상마다 한 벌이다",
+   "md": "**클래스는** 없앴다.\n\n> **6.3절에서** 확인했다.\n> **아래에서 다시** 센다.\n> **설정은** 남았다.\n\n**빈마다 세 줄**이다.\n\n> **5.5절과 거의** 같다.\n> **아래에서 견줘** 본다.\n> **7.7절에서 터진**다.\n\n**새 빈은 또** 적는다.\n\n> **깜빡하면** 빠진다.\n> **아래에서 그걸** 겪는다.\n> **2.6절부터 같은** 자리다.\n\n**핸들러도 빈마다** 만든다.\n\n> **원본을 들고** 있어서다.\n> **아래에서 세어** 본다.\n> **7.2절에서 그걸** 나눈다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 세 곳에 붙인다\n\n@Configuration\npublic class DynamicProxyConfig {\n\n    @Bean\n    public OrderRepositoryV1 orderRepositoryV1(LogTrace trace) {\n        OrderRepositoryV1 target = new OrderRepositoryV1Impl();\n        return (OrderRepositoryV1) Proxy.newProxyInstance(\n                OrderRepositoryV1.class.getClassLoader(),\n                new Class[]{OrderRepositoryV1.class},\n                new LogTraceHandler(target, trace));\n    }\n\n    @Bean\n    public OrderServiceV1 orderServiceV1(LogTrace trace) { ... }\n\n    @Bean\n    public OrderControllerV1 orderControllerV1(LogTrace trace) { ... }\n}\n\n$ grep -c 'newProxyInstance' src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n3\n$ grep -c 'new LogTraceHandler' src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n3\n\n--   핸들러도 셋 만든다\n--   원본이 다르니 그렇다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v1/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep V1\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\n\n--   5.5 절과 같은 여섯 줄이다\n--   프록시 클래스는 소스에 0 개다\n\n\n-- 다 걸린다\n\npublic interface OrderServiceV1 {\n    void orderItem(String itemId);\n    String find(String itemId);\n    int count();\n    String healthCheck();          // 로그를 남기고 싶지 않다\n}\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n10\n\n$ wc -l < logs/app.log\n     142\n\n--   ⑯ 8.3절의 그 프로브가 로그를 채운다\n--   5.2 절에서는 안 감싸면 그만이었다\n\n\n-- 안에서 거른다\n\npublic class LogTraceFilterHandler implements InvocationHandler {\n    private final String[] patterns;\n\n    @Override\n    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n        if (!PatternMatchUtils.simpleMatch(patterns, method.getName())) {\n            return method.invoke(target, args);      // 그냥 넘긴다\n        }\n        ... 감싼다 ...\n    }\n}\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    return (OrderServiceV1) Proxy.newProxyInstance(\n            loader, new Class[]{OrderServiceV1.class},\n            new LogTraceFilterHandler(target, trace,\n                                      new String[]{\"order*\", \"find*\", \"save*\"}));\n}\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   프로브가 조용해졌다\n--   11.1 절에서 이 패턴을 제대로 본다\n\n\n-- 무엇이 걸렸나 세어 본다\n\n@GetMapping(value = \"/proxy/filter\", produces = \"text/plain\")\nString filter() {\n    return Arrays.stream(OrderServiceV1.class.getMethods())\n        .map(m -> String.format(\"%-14s %s\", m.getName(),\n             PatternMatchUtils.simpleMatch(PATTERNS, m.getName()) ? \"걸림\" : \"통과\"))\n        .collect(Collectors.joining(\"\\n\")) + \"\\n\";\n}\n\n$ curl -s localhost:8080/proxy/filter\norderItem      걸림\nfind           걸림\ncount          통과\nhealthCheck    통과\n\n--   이름으로 갈랐다\n--   11 장에서 반환형과 인자로도 가른다\n\n\n-- 밖에서 거르면\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    if (!shouldProxy(OrderServiceV1.class)) return target;    // 아예 안 감싼다\n    return (OrderServiceV1) Proxy.newProxyInstance(...);\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: study.adv.app.OrderServiceV1Impl\n\n$ curl -s 'localhost:8080/bench/proxy?n=10000000&mode=filtered-inside'\n안에서 거르기: 284 ms\n$ curl -s 'localhost:8080/bench/proxy?n=10000000&mode=no-proxy'\n프록시 없이:    24 ms\n\n--   안 감싸면 값이 아예 없다\n--   8.7 절에서 이 판단을 자동으로 한다\n\n\n-- 핸들러가 셋이다\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'LogTraceFilterHandler'\n 812:             3            120  study.adv.dynamic.LogTraceFilterHandler\n\n$ grep -c 'new LogTraceFilterHandler' \\\n    src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n3\n\n--   원본을 들고 있어서 공유가 안 된다\n--   7.2 절에서 이걸 나눈다\n\n\n-- 설정을 센다\n\n$ wc -l < src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n      42\n\n// 5.5 절에서는\n$ git show v6-v1:src/main/java/study/adv/proxy/InterfaceProxyConfig.java | wc -l\n      32\n\n$ grep -c '@Bean' src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n3\n\n--   설정이 오히려 길어졌다\n--   newProxyInstance 가 네 줄씩이라 그렇다\n\n\n-- 전체를 견준다\n\n$ printf '%-20s %-14s %-14s %s\\n' \\\n  '5 장'  '프록시 126 줄'  '설정 32 줄'  '합 158' \\\n  '6 장'  '핸들러 34 줄'   '설정 42 줄'  '합 76'\n\n5 장          프록시 126 줄    설정 32 줄     합 158\n6 장          핸들러 34 줄     설정 42 줄     합 76\n\n$ python3 -c \"print('절반 아래로 줄었다: %.0f%%' % (76/158*100))\"\n절반 아래로 줄었다: 48%\n\n\n-- 새 빈을 만들면\n\n@Bean\npublic MemberServiceV1 memberServiceV1(LogTrace trace) {\n    return new MemberServiceV1Impl();          // 감싸는 걸 잊었다\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/join?name=철수'\n$ grep -c 'MemberService' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=memberServiceV1' | head -2\n빈 이름:   memberServiceV1\n주입된 것: study.adv.app.MemberServiceV1Impl\n\n--   2.6, 3.7, 4.4, 5.7 절과 똑같다\n--   8 장까지 안 없어진다\n\n\n-- 인터페이스가 여럿인 빈\n\npublic class OrderServiceV1Impl implements OrderServiceV1, Auditable { ... }\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    return (OrderServiceV1) Proxy.newProxyInstance(\n            loader, new Class[]{OrderServiceV1.class},     // 하나만 적었다\n            handler);\n}\n\n$ curl -s localhost:8080/proxy/instanceof?name=orderServiceV1\nOrderServiceV1: true\nAuditable:      false\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor required a bean of type 'study.adv.app.Auditable'\n\n--   적은 것만 구현한다\n--   원본이 구현한 걸 다 적어야 한다\n\n\n-- 다 적으면\n\nnew Class[]{OrderServiceV1.class, Auditable.class}\n\n// 또는 자동으로\ntarget.getClass().getInterfaces()\n\n$ curl -s localhost:8080/proxy/instanceof?name=orderServiceV1\nOrderServiceV1: true\nAuditable:      true\n\n$ curl -s localhost:8080/proxy/interfaces?name=orderServiceV1\nstudy.adv.app.OrderServiceV1\nstudy.adv.app.Auditable\n\n--   7.6 절에서 스프링이 이걸 자동으로 한다\n\n\n-- 컨트롤러가 아직 걸린다\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    if 'v1' in str(x.get('predicate','')): print(x['handler'][:52])\"\njdk.proxy2.$Proxy144#request(String)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n200\n\n--   5.2 절처럼 애너테이션을 인터페이스에 뒀다\n--   그래서 프록시가 핸들러가 됐다\n\n\n-- 애너테이션을 구현에 두면\n\npublic class OrderControllerV1Impl implements OrderControllerV1 {\n    @GetMapping(\"/v1/request\")          // 여기 뒀다\n    public String request(String itemId) { ... }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n404\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nprint(len([x for x in d if 'v1' in str(x.get('predicate',''))]))\"\n0\n\n--   프록시에는 그 애너테이션이 없다\n--   생성된 클래스가 안 물려받는다\n\n\n-- 그 클래스를 확인한다\n\n$ javap -v 'jdk/proxy2/$Proxy144.class' | grep -c 'RuntimeVisibleAnnotations'\n0\n\n$ javap -v build/classes/java/main/study/adv/app/OrderControllerV1.class \\\n    | grep -c 'RuntimeVisibleAnnotations'\n2\n\n--   인터페이스에는 있고 프록시에는 없다\n--   프록시가 인터페이스에서 찾아 준 게 아니다\n--   스프링이 인터페이스를 보고 찾은 것이다\n\n\n-- 세 버전 중 하나만 된다\n\n$ curl -s -o /dev/null -w 'v1 %{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\nv1 200\n$ curl -s -o /dev/null -w 'v2 %{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\nv2 200\n\n$ curl -s localhost:8080/who/all | grep V2\norderControllerV2    study.adv.proxy.OrderControllerConcreteProxy\norderServiceV2       study.adv.proxy.OrderServiceConcreteProxy\norderRepositoryV2    study.adv.proxy.OrderRepositoryConcreteProxy\n\n--   V2 는 아직 5 장의 클래스를 쓴다\n--   인터페이스가 없어서다\n--   6.5 절에서 그걸 확인한다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep -c 'jdk.proxy'\n3\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n\n$ git add -A && git commit -q -m 'feat: v7 적용' && git tag v7-final\n\n--   6.5 절에서 인터페이스가 없을 때를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '세 곳'      '프록시 클래스 0 개' \\\n  '로그'       '5.5 절과 같음' \\\n  '다 걸림'    '프로브까지' \\\n  '거르개'     '이름으로' \\\n  '두 자리'    '안과 밖' \\\n  '핸들러'     '빈마다 하나' \\\n  '설정'       '오히려 길어짐' \\\n  '전체'       '158 에서 76' \\\n  '새 빈'      '또 깜빡함' \\\n  '애너테이션' '인터페이스에'\n\n세 곳                      프록시 클래스 0 개\n로그                       5.5 절과 같음\n다 걸림                    프로브까지\n거르개                     이름으로\n두 자리                    안과 밖\n핸들러                     빈마다 하나\n설정                       오히려 길어짐\n전체                       158 에서 76\n새 빈                      또 깜빡함\n애너테이션                 인터페이스에",
+   "note": "**세 곳에 붙여 5.5절과 같은 여섯 줄이 나오는데 프록시 클래스는 소스에 0 개**다.\n\n**메서드를 안 가리니 프로브까지 열 줄이 찍혀 이름 패턴으로 걸러 내야** 한다.\n\n**설정은 32 줄에서 42 줄로 오히려 길어졌지만 전체는 158 줄에서 76 줄로** 줄었다.\n\n**적은 인터페이스만 구현해 `Auditable` 을 빠뜨리면 기동이** 멈춘다.\n\n**애너테이션을 구현 클래스에 두면 프록시에 안 붙어 404 가 나고 `javap` 로 보면 프록시에는 애너테이션이 0 개**다."
+  }
+ ],
+ "recap": [
+  "**클래스가 0 개**다.",
+  "**로그는** 같다.",
+  "**다** 걸린다.",
+  "**걸러야** 한다.",
+  "**자리가** 둘이다.",
+  "**핸들러는 빈마다**다.",
+  "**설정은** 남았다.",
+  "**깜빡함도** 남았다.",
+  "**애너테이션은 인터페이스에** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "세 곳에 붙인다.",
+   "done_when": "클래스가 0 개인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "거르개를 넣는다.",
+   "done_when": "프로브가 조용해진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "인터페이스를 빠뜨려 본다.",
+   "done_when": "기동이 멈추는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "애너테이션을 구현에 둬 본다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 거르개가 필요한가?",
+   "a": "핸들러 하나가 모든 메서드를 받아 원치 않는 것까지 감싸서다."
+  },
+  {
+   "q": "거르개를 어디 두는 게 싼가?",
+   "a": "밖이다. 아예 프록시를 안 만들면 비용이 없다."
+  },
+  {
+   "q": "핸들러는 왜 빈마다 만드나?",
+   "a": "원본을 들고 있어 공유할 수 없어서다."
+  },
+  {
+   "q": "인터페이스를 다 안 적으면?",
+   "a": "적은 것만 구현해 다른 타입으로 주입할 수 없다."
+  },
+  {
+   "q": "요청 매핑 애너테이션은 어디 둬야 하나?",
+   "a": "인터페이스다. 프록시는 구현의 애너테이션을 안 물려받는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메서드 거르개",
+   "def": "이름 같은 조건으로 감쌀 메서드를 고르는 장치."
+  },
+  {
+   "term": "인터페이스 목록",
+   "def": "동적 프록시가 구현할 타입들. 빠뜨리면 그 타입으로 못 받는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.reflect — Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

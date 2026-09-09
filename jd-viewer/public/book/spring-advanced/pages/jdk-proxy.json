@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "jdk-proxy",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "JDK 동적 프록시",
+ "summary": "런타임에 클래스가 생긴다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "런타임에 만든다.",
+  "핸들러 하나로 받는다.",
+  "생긴 클래스를 들여다본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.8절에서 프록시 클래스가 아홉**이었다. **하나도 안 쓰고** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "클래스를 런타임이 쓴다",
+   "ascii": "   the class is written by the runtime, not by me\n\n   I hand over a class loader, a list of interfaces, and one object\n   the runtime builds a class implementing those interfaces\n   every method in it forwards to that one object\n\n   so one object handles every method of every interface",
+   "note": "**객체 하나가 모든 인터페이스의 모든 메서드를** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "6.1절의 그 공통 코드를 자바가 대신 부른다",
+   "md": "**클래스를 안** 쓴다.\n\n> **5.2절에서 42 줄씩** 썼다.\n> **아래에서 0 줄로** 만든다.\n> **런타임이 쓴다.**\n\n**핸들러가** 하나다.\n\n> **모든 메서드가 거기로** 온다.\n> **6.1절의 공통 코드가 거기** 있다.\n> **아래에서 그걸** 본다.\n\n**이름을 안** 적는다.\n\n> **넘어온 메서드가** 안다.\n> **6.1절에서 물어** 봤다.\n> **2.6절의 문자열이** 사라진다.\n\n**인터페이스가 있어야** 한다.\n\n> **없으면 못** 만든다.\n> **6.5절에서 그걸** 겪는다.\n> **6.6절이 그 답**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "그 하나의 메서드가 받는 셋",
+   "ascii": "   what arrives at that one method\n\n   the proxy itself, rarely useful and easy to misuse\n   the method that was called, as a value\n   the arguments, as an array that may be null\n\n   the third being null instead of empty is a common surprise",
+   "note": "**셋째가 빈 배열이 아니라 널인 게 흔한** 함정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "오브젝트 메서드까지 다 들어온다",
+   "md": "**`toString` 도** 온다.\n\n> **디버거가 부르면** 그렇다.\n> **아래에서 로그가** 는다.\n> **걸러야** 한다.\n\n**`equals` 는 위험**하다.\n\n> **원본에 넘기면** 이상해진다.\n> **아래에서 그걸** 겪는다.\n> **5.2절에서 예고한 자리**다.\n\n**첫 인자를 쓰면** 무한이다.\n\n> **프록시 자신**이다.\n> **거기에 다시 부르면** 돈다.\n> **아래에서 그걸** 본다.\n\n**인터페이스 타입만** 된다.\n\n> **구체 타입으로 못** 받는다.\n> **1.4절에서 본 그것**이다.\n> **아래에서 다시** 확인한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 핸들러 하나를 쓴다\n\npublic class LogTraceHandler implements InvocationHandler {\n\n    private final Object target;\n    private final LogTrace trace;\n\n    @Override\n    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n        TraceStatus status = null;\n        try {\n            String message = method.getDeclaringClass().getSimpleName()\n                             + \".\" + method.getName() + \"()\";\n            status = trace.begin(message);\n            Object result = method.invoke(target, args);\n            trace.end(status);\n            return result;\n        } catch (InvocationTargetException e) {\n            trace.exception(status, (Exception) e.getTargetException());\n            throw e.getTargetException();\n        }\n    }\n}\n\n$ wc -l < src/main/java/study/adv/dynamic/LogTraceHandler.java\n      28\n\n$ find src/main/java/study/adv/dynamic -name '*.java' | wc -l\n       1\n\n--   6.1 절에서 뽑은 공통 코드가 그대로 왔다\n--   파일이 하나다\n\n\n-- 클래스를 안 쓰고 만든다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    return (OrderServiceV1) Proxy.newProxyInstance(\n            OrderServiceV1.class.getClassLoader(),\n            new Class[]{OrderServiceV1.class},\n            new LogTraceHandler(target, trace));\n}\n\n$ find src/main/java/study/adv/proxy -name '*InterfaceProxy.java' | wc -l\n       0\n\n$ git rm -q src/main/java/study/adv/proxy/*InterfaceProxy.java\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   5.2 절의 세 클래스를 지웠다\n\n\n-- 이름을 본다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1'\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy142\n원본:     jdk.proxy2.$Proxy142\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   1.4 절에서 본 그 이름이다\n--   그때는 스프링이 만든 것이었다\n--   여기선 내가 만들었다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v1/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n--   2.4 절의 여섯 줄이다\n--   이름이 인터페이스 이름으로 나온다\n\n\n-- 이름을 손으로 안 적었다\n\n$ grep -rn 'begin(\"' src/main/java/study/adv/ | wc -l\n0\n\n$ grep -n 'getSimpleName\\|getName' src/main/java/study/adv/dynamic/LogTraceHandler.java\n14:            String message = method.getDeclaringClass().getSimpleName()\n15:                             + \".\" + method.getName() + \"()\";\n\n--   2.6 절부터 계속 남아 있던 문자열이 사라졌다\n--   4.8 절에서 placeOrder 로 어긋났던 그 문제가 없어졌다\n\n\n-- 이름을 바꿔 본다\n\n$ sed -i '' 's/void orderItem(/void placeOrder(/' \\\n    src/main/java/study/adv/app/OrderServiceV1.java\n$ sed -i '' 's/void orderItem(/void placeOrder(/' \\\n    src/main/java/study/adv/app/OrderServiceV1Impl.java\n$ sed -i '' 's/orderService.orderItem(/orderService.placeOrder(/' \\\n    src/main/java/study/adv/app/OrderControllerV1Impl.java\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -5 | head -1 | cut -c56-\n[3d81f0a2] |-->OrderServiceV1.placeOrder()\n\n--   로그도 같이 바뀌었다\n--   4.8 절에서는 orderItem 으로 남아 있었다\n\n\n-- 클래스가 몇 개나 생겼나\n\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep -c 'jdk.proxy'\n3\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'jdk.proxy' | head -3\n 412:             1             16  jdk.proxy2.$Proxy142\n 418:             1             16  jdk.proxy2.$Proxy143\n 421:             1             16  jdk.proxy2.$Proxy144\n\n--   소스에는 0 개, 메모리에는 3 개다\n--   인터페이스 조합마다 하나씩이다\n\n\n-- 생긴 클래스를 들여다본다\n\n$ java -Djdk.proxy.ProxyGenerator.saveGeneratedFiles=true \\\n    -jar build/libs/app.jar > /dev/null 2>&1 &\n$ sleep 5 && find . -name '$Proxy*.class' | head -3\n./jdk/proxy2/$Proxy142.class\n./jdk/proxy2/$Proxy143.class\n./jdk/proxy2/$Proxy144.class\n\n$ javap -p 'jdk/proxy2/$Proxy142.class' | head -12\nfinal class jdk.proxy2.$Proxy142 extends java.lang.reflect.Proxy\n        implements study.adv.app.OrderServiceV1 {\n  private static final java.lang.reflect.Method m0;\n  private static final java.lang.reflect.Method m1;\n  private static final java.lang.reflect.Method m2;\n  private static final java.lang.reflect.Method m3;\n  private static final java.lang.reflect.Method m4;\n  public jdk.proxy2.$Proxy142(java.lang.reflect.InvocationHandler);\n  public final boolean equals(java.lang.Object);\n  public final int hashCode();\n  public final java.lang.String toString();\n  public final void placeOrder(java.lang.String);\n}\n\n--   Proxy 를 상속했다\n--   메서드를 미리 찾아 필드에 담아 뒀다\n--   6.1 절에서 캐시가 빠르다고 한 그것이다\n\n\n-- 안에서 무엇을 하나\n\n$ javap -p -c 'jdk/proxy2/$Proxy142.class' | sed -n '/placeOrder/,/return/p' | head -10\n  public final void placeOrder(java.lang.String);\n    Code:\n       0: aload_0\n       1: getfield      #16    // Field java/lang/reflect/Proxy.h:...InvocationHandler;\n       4: aload_0\n       5: getstatic     #62    // Field m3:Ljava/lang/reflect/Method;\n       8: iconst_1\n       ...\n      16: invokeinterface #70  // InterfaceMethod ...InvocationHandler.invoke:...\n\n--   전부 핸들러로 넘긴다\n--   내 핸들러가 그 자리다\n\n\n-- 오브젝트 메서드도 온다\n\n@Override\npublic Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n    System.out.println(\"[핸들러] \" + method.getName());\n    ...\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep '\\[핸들러\\]' logs/app.log | tail -5\n[핸들러] placeOrder\n[핸들러] save\n\n$ curl -s -o /dev/null 'localhost:8080/who/all'\n$ grep '\\[핸들러\\]' logs/app.log | tail -3\n[핸들러] toString\n[핸들러] toString\n[핸들러] toString\n\n--   getClass().getName() 을 부르니 toString 이 왔다\n--   로그에 안 나오게 걸러야 한다\n\n\n-- 걸러 낸다\n\nif (method.getDeclaringClass() == Object.class) {\n    return method.invoke(target, args);        // 그냥 넘긴다\n}\n\n$ curl -s -o /dev/null 'localhost:8080/who/all'\n$ grep -c 'Object.toString' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   여섯 줄만 남았다\n\n\n-- equals 가 이상해진다\n\n// 안 거르면\n$ curl -s localhost:8080/proxy/equals\n프록시.equals(원본):   true\n원본.equals(프록시):   false\n\n$ curl -s localhost:8080/proxy/set-size\n원본과 프록시를 다 넣으면: 2\n\n--   한쪽만 참이다\n--   집합에 둘 다 들어간다\n--   5.2 절에서 예고한 그 자리다\n\n\n-- 첫 인자를 쓰면 무한이다\n\n@Override\npublic Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n    status = trace.begin(...);\n    Object result = method.invoke(proxy, args);      // target 이 아니라 proxy\n    ...\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n500\n\n$ grep -c 'StackOverflowError' logs/app.log\n1\n\n$ grep -A3 'StackOverflow' logs/app.log | head -4\njava.lang.StackOverflowError\n\tat study.adv.dynamic.LogTraceHandler.invoke(LogTraceHandler.java:16)\n\tat jdk.proxy2.$Proxy142.placeOrder($Proxy142.java)\n\tat study.adv.dynamic.LogTraceHandler.invoke(LogTraceHandler.java:16)\n\n--   자기가 자기를 부른다\n--   첫 인자는 거의 안 쓴다\n\n\n-- 인자가 널일 때가 있다\n\npublic interface OrderServiceV1 {\n    void placeOrder(String itemId);\n    int count();                        // 인자가 없다\n}\n\n@Override\npublic Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n    log.info(\"인자 {} 개\", args.length);\n    ...\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/count'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -1\njava.lang.NullPointerException: Cannot read the array length because \"args\" is null\n\n// 고치면\nint n = (args == null) ? 0 : args.length;\n\n$ curl -s 'localhost:8080/v1/count'\n3\n\n--   빈 배열이 아니라 널이다\n\n\n-- 구체 타입으로 못 받는다\n\n@RestController\npublic class SomeController {\n    private final OrderServiceV1Impl service;      // 구현 타입\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor required a bean of type\n'study.adv.app.OrderServiceV1Impl' that could not be found.\n\n$ javap -p 'jdk/proxy2/$Proxy142.class' | head -2\nfinal class jdk.proxy2.$Proxy142 extends java.lang.reflect.Proxy\n        implements study.adv.app.OrderServiceV1 {\n\n--   Proxy 를 상속했지 원본을 상속한 게 아니다\n--   1.4 절과 5.1 절에서 본 그 오류다\n\n\n-- 인터페이스를 여럿 주면\n\nreturn Proxy.newProxyInstance(\n        loader,\n        new Class[]{OrderServiceV1.class, Closeable.class},\n        handler);\n\n$ javap -p 'jdk/proxy2/$Proxy145.class' | head -2\nfinal class jdk.proxy2.$Proxy145 extends java.lang.reflect.Proxy\n        implements study.adv.app.OrderServiceV1, java.io.Closeable {\n\n$ curl -s localhost:8080/proxy/instanceof?name=orderServiceV1\nOrderServiceV1: true\nCloseable:      true\nOrderServiceV1Impl: false\n\n--   둘 다 구현했다\n--   7.6 절에서 스프링이 이걸 쓴다\n\n\n-- 순서가 중요하다\n\nnew Class[]{Closeable.class, OrderServiceV1.class}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy146\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] |-->OrderServiceV1.placeOrder()\n[c14e0b93] |<--OrderServiceV1.placeOrder() time=1004ms\n\n--   같은 메서드면 앞에 적은 것이 이긴다\n--   여기선 겹치는 게 없어 상관없다\n\n\n-- 세 줄이 됐다\n\n$ grep -c 'newProxyInstance' src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n3\n$ wc -l < src/main/java/study/adv/dynamic/DynamicProxyConfig.java\n      36\n\n// 5.5 절에서는\n$ git show v6-v1:src/main/java/study/adv/proxy/InterfaceProxyConfig.java | wc -l\n      32\n\n--   설정은 비슷하다\n--   클래스가 셋 사라진 것이 다르다\n\n\n-- 줄 수를 센다\n\n$ python3 -c \"\nold_proxy = 42*3\nnew_handler = 28\nprint('5 장 프록시 클래스', old_proxy, '줄')\nprint('6 장 핸들러', new_handler, '줄')\nprint('줄었다', old_proxy - new_handler)\"\n5 장 프록시 클래스 126 줄\n6 장 핸들러 28 줄\n줄었다 98\n\n$ find src/main/java/study/adv -name '*.java' | wc -l\n      12\n// 5 장 끝에서는\n      18\n\n--   파일이 여섯 줄었다\n\n\n-- 실무 크기라면\n\n$ python3 -c \"\ncls, per = 30, 5\nprint('5 장: 프록시 클래스', cls, '개, 감싸는 줄', cls*per*9)\nprint('6 장: 핸들러 1 개, 감싸는 줄 9')\"\n5 장: 프록시 클래스 30 개, 감싸는 줄 1350\n6 장: 핸들러 1 개, 감싸는 줄 9\n\n--   5.8 절에서 4050 줄이라 했다\n--   그게 아홉 줄이 됐다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep V1\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\n\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n\n$ git add -A && git commit -q -m 'feat: v7 JDK 동적 프록시' && git tag v7\n\n--   프록시 클래스를 한 줄도 안 썼다\n--   6.4 절에서 세 곳에 다 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '클래스'      '소스 0, 메모리 3' \\\n  '핸들러'      '파일 하나, 28 줄' \\\n  '이름'        'jdk.proxy2.$ProxyNNN' \\\n  '문자열'      '사라짐' \\\n  '이름 바꾸기' '로그도 따라감' \\\n  '오브젝트'    '걸러야 함' \\\n  'equals'      '한쪽만 참' \\\n  '첫 인자'     '쓰면 무한' \\\n  'args'        '없으면 널' \\\n  '구체 타입'   '못 받음'\n\n클래스                     소스 0, 메모리 3\n핸들러                     파일 하나, 28 줄\n이름                       jdk.proxy2.$ProxyNNN\n문자열                     사라짐\n이름 바꾸기                로그도 따라감\n오브젝트                   걸러야 함\nequals                     한쪽만 참\n첫 인자                    쓰면 무한\nargs                       없으면 널\n구체 타입                  못 받음",
+   "note": "**프록시 클래스를 한 줄도 안 썼는데 메모리에는 `jdk.proxy2.$Proxy142` 셋이** 생긴다.\n\n**생성된 클래스를 `javap` 로 열어 보니 `Proxy` 를 상속하고 메서드를 미리 찾아 필드에 담아** 뒀다.\n\n**메서드 이름을 `placeOrder` 로 바꾸니 로그도 따라 바뀌어 4.8절의 어긋남이** 사라졌다.\n\n**`toString` 까지 핸들러로 들어와 걸러야 하고 첫 인자를 쓰면 `StackOverflowError`** 다.\n\n**5장의 프록시 126 줄이 핸들러 28 줄이 되고 실무 크기로는 4050 줄이 아홉 줄이** 된다."
+  }
+ ],
+ "recap": [
+  "**런타임이** 쓴다.",
+  "**핸들러가** 하나다.",
+  "**클래스를 안** 쓴다.",
+  "**이름을 안** 적는다.",
+  "**바꾸면** 따라간다.",
+  "**오브젝트도** 온다.",
+  "**첫 인자는 안** 쓴다.",
+  "**널이 올 수** 있다.",
+  "**인터페이스만** 된다."
+ ],
+ "drills": [
+  {
+   "task": "핸들러 하나로 만든다.",
+   "done_when": "여섯 줄이 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "생성된 클래스를 저장해 연다.",
+   "done_when": "무엇을 상속했는지 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "오브젝트 메서드를 걸러 본다.",
+   "done_when": "로그가 여섯 줄로 준 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "첫 인자를 써 본다.",
+   "done_when": "무한 호출을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프록시 클래스는 누가 쓰나?",
+   "a": "런타임이 만든다. 소스에는 없다."
+  },
+  {
+   "q": "메서드 이름을 왜 안 적어도 되나?",
+   "a": "넘어온 메서드 객체가 자기 이름을 알고 있어서다."
+  },
+  {
+   "q": "첫 인자를 쓰면 왜 위험한가?",
+   "a": "프록시 자신이라 다시 핸들러로 들어와 무한이 된다."
+  },
+  {
+   "q": "인자 배열이 널일 때는?",
+   "a": "인자가 하나도 없는 메서드다. 빈 배열이 아니다."
+  },
+  {
+   "q": "이 방식의 한계는?",
+   "a": "인터페이스가 있어야 하고 구체 타입으로는 못 받는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동적 프록시",
+   "def": "런타임에 인터페이스를 구현해 만들어지는 프록시 클래스."
+  },
+  {
+   "term": "호출 핸들러",
+   "def": "프록시의 모든 메서드 호출이 모여드는 한 곳."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.reflect — Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "java.lang.reflect — InvocationHandler",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/InvocationHandler.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JLS — Classes",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
