@@ -78,7 +78,7 @@
           "title": "요청 하나를 잇는다",
           "summary": "같은 요청인지 어떻게 아나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -86,7 +86,7 @@
           "title": "깊이 표시",
           "summary": "화살표로 층을 그린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",

@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "trace-id",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "요청 하나를 잇는다",
+ "summary": "같은 요청인지 어떻게 아나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "섞이는 걸 본다.",
+  "ID 를 만든다.",
+  "이어서 넘긴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 대괄호가 비어** 있었다. **요구사항 ⑥을** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 그대로는 못 읽나",
+   "ascii": "   why the lines cannot be read as they are\n\n   three requests arrive at nearly the same moment\n   each prints six lines\n   the eighteen lines interleave in one file\n\n   without a per request marker, no two lines can be paired",
+   "note": "**요청마다 표시가 없으면 두 줄을 짝지을 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 파일에 여러 요청이 섞여 들어온다",
+   "md": "**혼자 쓰면 안** 섞인다.\n\n> **개발할 땐 몰랐**다.\n> **1.3절에서 동시에 부르면** 갈렸다.\n> **아래에서 그걸** 겪는다.\n\n**쓰레드 이름으로는** 부족하다.\n\n> **재사용된**다.\n> **다음 요청이 같은 이름을** 쓴다.\n> **아래에서 그걸** 본다.\n\n**시각으로도 못** 잇는다.\n\n> **밀리초가** 겹친다.\n> **아래에서 세어** 본다.\n> **순서도 안** 맞는다.\n\n**표시를 하나 만들어** 붙인다.\n\n> **요청마다** 다르게.\n> **아래에서 만든**다.\n> **짧게** 자른다."
+  },
+  {
+   "type": "figure",
+   "caption": "표시가 갖춰야 하는 것",
+   "ascii": "   what the marker has to satisfy\n\n   the same for every line of one request\n   different for every other request\n   short enough to read at a glance\n\n   the third one is why the identifier gets cut to eight characters",
+   "note": "**셋째 때문에 여덟 자로** 자른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "만든 ID 를 아래로 어떻게 넘기나",
+   "md": "**만드는 건** 쉽다.\n\n> **한 줄이면** 된다.\n> **아래에서 만든**다.\n> **문제는 그다음**이다.\n\n**아래 층이 그걸 알아야** 한다.\n\n> **컨트롤러가 만든 걸 저장소가** 써야 한다.\n> **어떻게** 넘기나.\n> **2.5절이 그** 이야기다.\n\n**여기선 반쪽만** 한다.\n\n> **첫 줄만 제대로** 나온다.\n> **아래 둘은 새 ID 를** 만든다.\n> **아래에서 그걸** 확인한다.\n\n**로거 자체에 담는 길도** 있다.\n\n> **진단 문맥**이다.\n> **아래에서 견줘** 본다.\n> **3장의 그것과 같은 물건**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 섞이는 것을 본다\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 | cut -c1-84\n07:29:12.104 INFO  [http-nio-8080-exec-1] ... - [] OrderController.request()\n07:29:12.105 INFO  [http-nio-8080-exec-2] ... - [] OrderController.request()\n07:29:12.106 INFO  [http-nio-8080-exec-1] ... - [] OrderService.orderItem()\n07:29:12.106 INFO  [http-nio-8080-exec-3] ... - [] OrderController.request()\n07:29:12.107 INFO  [http-nio-8080-exec-2] ... - [] OrderService.orderItem()\n07:29:12.107 INFO  [http-nio-8080-exec-1] ... - [] OrderRepository.save()\n...\n\n$ grep -c 'study.adv.trace' logs/app.log\n      18\n\n--   열여덟 줄이 섞여 있다\n--   대괄호가 다 비어 있어 짝을 못 짓는다\n\n\n-- 시각으로 이어 보려 하면\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 \\\n    | awk '{print $1}' | sort | uniq -c | sort -rn | head -3\n   3 07:29:12.106\n   2 07:29:12.107\n   2 07:29:12.104\n\n--   같은 밀리초에 세 줄이 있다\n--   시각으로는 못 나눈다\n\n\n-- 쓰레드 이름으로는\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 \\\n    | grep -o 'exec-[0-9]*' | sort | uniq -c\n   6 exec-1\n   6 exec-2\n   6 exec-3\n\n--   지금은 나뉜다\n\n$ for i in $(seq 1 6); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n  done\n\n$ grep 'study.adv.trace' logs/app.log | tail -36 \\\n    | grep -o 'exec-[0-9]*' | sort | uniq -c\n  36 exec-1\n\n--   순차로 부르면 같은 쓰레드다\n--   서로 다른 여섯 요청인데 이름이 같다\n--   3.6 절에서 왜 그런지 본다\n\n\n-- ID 를 만든다\n\npublic class TraceId {\n    private final String id;\n    private final int level;\n\n    public TraceId() {\n        this.id = createId();\n        this.level = 0;\n    }\n\n    private String createId() {\n        return UUID.randomUUID().toString().substring(0, 8);\n    }\n}\n\n$ jshell -q\njshell> java.util.UUID.randomUUID().toString()\n$1 ==> \"796bccd9-54b1-4c40-a56a-5eb1c8b1c9b3\"\njshell> java.util.UUID.randomUUID().toString().substring(0, 8)\n$2 ==> \"b7119f27\"\njshell> java.util.UUID.randomUUID().toString().substring(0, 8)\n$3 ==> \"a3f9c1b2\"\n\n--   여덟 자면 눈으로 읽힌다\n\n\n-- 얼마나 겹치나\n\n$ jshell -q <<'EOF'\nvar set = new java.util.HashSet<String>();\nint dup = 0;\nfor (int i = 0; i < 1_000_000; i++)\n    if (!set.add(java.util.UUID.randomUUID().toString().substring(0, 8))) dup++;\nSystem.out.println(\"백만 개 중 겹침: \" + dup);\nEOF\n백만 개 중 겹침: 116\n\n$ python3 -c \"print('겹칠 확률 %.4f%%' % (116/1000000*100))\"\n겹칠 확률 0.0116%\n\n--   로그를 읽는 데는 충분하다\n--   전역 식별자로 쓰면 안 된다\n\n\n-- 붙인다\n\n@Slf4j\n@Component\npublic class TraceV2 {\n\n    public TraceStatus begin(String message) {\n        TraceId traceId = new TraceId();\n        long startTimeMs = System.currentTimeMillis();\n        log.info(\"[{}] {}\", traceId.getId(), message);\n        return new TraceStatus(traceId, startTimeMs, message);\n    }\n\n    private void complete(TraceStatus status, Exception e) {\n        long resultTimeMs = System.currentTimeMillis() - status.getStartTimeMs();\n        TraceId traceId = status.getTraceId();\n        if (e == null) log.info(\"[{}] {} time={}ms\", traceId.getId(),\n                                status.getMessage(), resultTimeMs);\n        else log.info(\"[{}] {} time={}ms ex={}\", traceId.getId(),\n                      status.getMessage(), resultTimeMs, e.toString());\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[b7119f27] OrderService.orderItem()\n[a3f9c1b2] OrderRepository.save()\n[a3f9c1b2] OrderRepository.save() time=1004ms\n[b7119f27] OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   짝은 맞는데 셋이 다 다르다\n--   같은 요청인데 ID 가 셋이다\n\n\n-- 왜 그런가\n\n$ grep -n 'new TraceId()' src/main/java/study/adv/trace/TraceV2.java\n9:        TraceId traceId = new TraceId();\n\n$ grep -c 'trace.begin' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n\n--   begin 마다 새로 만든다\n--   세 번 불렀으니 셋이다\n\n\n-- 이어 받는 메서드를 만든다\n\npublic TraceStatus beginSync(TraceId beforeTraceId, String message) {\n    TraceId nextId = beforeTraceId.createNextId();\n    long startTimeMs = System.currentTimeMillis();\n    log.info(\"[{}] {}\", nextId.getId(), message);\n    return new TraceStatus(nextId, startTimeMs, message);\n}\n\npublic TraceId createNextId() {\n    return new TraceId(id, level + 1);      // id 는 그대로, level 만 올린다\n}\n\n// 컨트롤러는 begin, 아래는 beginSync\nstatus = trace.beginSync(traceId, \"OrderService.orderItem()\");\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] OrderService.orderItem()\n[796bccd9] OrderRepository.save()\n[796bccd9] OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   여섯 줄이 같은 ID 다\n--   요구사항 ⑥ 을 채웠다\n\n\n-- 다른 요청은 다르다\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort | uniq -c\n   6 [3d81f0a2]\n   6 [796bccd9]\n   6 [c14e0b93]\n\n--   셋씩 여섯 줄이다\n\n\n-- 이제 골라 읽을 수 있다\n\n$ grep '796bccd9' logs/app.log | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] OrderService.orderItem()\n[796bccd9] OrderRepository.save()\n[796bccd9] OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   섞여 있어도 하나만 뽑힌다\n\n\n-- 그런데 넘기는 게 문제다\n\n$ grep -n 'TraceId' src/main/java/study/adv/OrderController.java\n18:        TraceId traceId = status.getTraceId();\n19:        orderService.orderItem(traceId, itemId);\n\n$ grep -n 'public void orderItem' src/main/java/study/adv/OrderService.java\n14:    public void orderItem(TraceId traceId, String itemId) {\n\n$ grep -n 'public void save' src/main/java/study/adv/OrderRepository.java\n11:    public void save(TraceId traceId, String itemId) {\n\n--   메서드 시그니처가 다 바뀌었다\n--   2.5 절에서 이게 왜 문제인지 본다\n\n\n-- 로거에 담는 길도 있다\n\nimport org.slf4j.MDC;\n\n@Component\nclass TraceIdFilter extends OncePerRequestFilter {\n    protected void doFilterInternal(HttpServletRequest req,\n                                    HttpServletResponse res, FilterChain chain)\n            throws ServletException, IOException {\n        MDC.put(\"traceId\", UUID.randomUUID().toString().substring(0, 8));\n        try {\n            chain.doFilter(req, res);\n        } finally {\n            MDC.clear();\n        }\n    }\n}\n\nlogging:\n  pattern:\n    console: \"%d{HH:mm:ss.SSS} [%X{traceId}] %-5level [%thread] %logger - %msg%n\"\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv' logs/app.log | tail -3 | cut -c1-72\n07:30:12.104 [d4a91c02] INFO  [http-nio-8080-exec-4] study.adv.OrderService\n07:30:13.108 [d4a91c02] INFO  [http-nio-8080-exec-4] study.adv.OrderRepository\n07:30:13.109 [d4a91c02] INFO  [http-nio-8080-exec-4] study.adv.OrderController\n\n$ grep -c 'TraceId traceId' src/main/java/study/adv/OrderService.java\n0\n\n--   메서드 시그니처를 안 바꿨다\n--   이게 3장에서 만들 물건과 같은 것이다\n--   여기선 일부러 손으로 간다\n\n\n-- MDC 도 지워야 한다\n\n// finally 의 MDC.clear() 를 지우면\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ curl -s -o /dev/null localhost:8080/who/all\n\n$ grep 'who/all\\|WhoController' logs/app.log | tail -1 | cut -c1-56\n07:30:22.104 [d4a91c02] INFO  [http-nio-8080-exec-4] study\n\n--   다음 요청에 앞의 ID 가 남아 있다\n--   3.5 절에서 이 문제를 제대로 만든다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[e82f14b0] OrderController.request()\n[e82f14b0] OrderService.orderItem()\n[e82f14b0] OrderRepository.save()\n[e82f14b0] OrderRepository.save() time=1ms ex=java.lang.IllegalStateException: 예외 발생!\n[e82f14b0] OrderService.orderItem() time=3ms ex=java.lang.IllegalStateException: 예외 발생!\n[e82f14b0] OrderController.request() time=5ms ex=java.lang.IllegalStateException: 예외 발생!\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ git add -A && git commit -q -m 'feat: v2 요청 ID' && git tag v2\n\n--   2.4 절에서 들여쓰기를 넣는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '섞임'        '열여덟 줄' \\\n  '시각'        '같은 밀리초에 셋' \\\n  '쓰레드'      '순차면 같음' \\\n  'ID'          '여덟 자' \\\n  '겹침'        '백만에 116' \\\n  'begin 마다'  '셋이 다름' \\\n  'beginSync'   '여섯 줄이 같음' \\\n  '대가'        '시그니처가 바뀜' \\\n  'MDC'         '안 바꿔도 됨'\n\n섞임                       열여덟 줄\n시각                       같은 밀리초에 셋\n쓰레드                     순차면 같음\nID                         여덟 자\n겹침                       백만에 116\nbegin 마다                 셋이 다름\nbeginSync                  여섯 줄이 같음\n대가                       시그니처가 바뀜\nMDC                        안 바꿔도 됨\n\n--   2.4 절에서 깊이를 그린다",
+   "note": "**동시 요청 셋이 열여덟 줄로 섞이고 같은 밀리초에 세 줄이 있어 시각으로는 못** 나눈다.\n\n**순차로 여섯 번 부르면 서른여섯 줄이 다 `exec-1` 이라 쓰레드 이름으로도 못** 나눈다.\n\n**`begin` 마다 새로 만드니 한 요청에 ID 가 셋, 이어 받게 고치니 여섯 줄이 같은 `796bccd9`** 다.\n\n**대신 세 메서드의 시그니처에 `TraceId` 가** 끼어들었다.\n\n**진단 문맥을 쓰면 시그니처를 안 바꿔도 되는데 안 지우면 다음 요청에 앞의 ID 가** 남는다."
+  }
+ ],
+ "recap": [
+  "**섞여** 들어온다.",
+  "**시각으로는 못** 나눈다.",
+  "**쓰레드로도** 부족하다.",
+  "**ID 를** 만든다.",
+  "**여덟 자면** 읽힌다.",
+  "**이어** 받아야 한다.",
+  "**시그니처가** 바뀐다.",
+  "**MDC 도** 있다.",
+  "**지워야** 한다."
+ ],
+ "drills": [
+  {
+   "task": "동시에 부르고 섞인 걸 본다.",
+   "done_when": "짝을 못 짓는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "ID 를 만들어 붙인다.",
+   "done_when": "셋이 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "이어 받게 고친다.",
+   "done_when": "여섯 줄이 같아진 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "MDC 로도 해 본다.",
+   "done_when": "시그니처를 안 바꾼 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "시각으로 요청을 나눌 수 있나?",
+   "a": "없다. 같은 밀리초에 여러 줄이 찍힌다."
+  },
+  {
+   "q": "쓰레드 이름으로는?",
+   "a": "부족하다. 순차 요청은 같은 쓰레드를 재사용한다."
+  },
+  {
+   "q": "`begin` 마다 ID 를 만들면?",
+   "a": "한 요청 안에서도 ID 가 여러 개가 된다."
+  },
+  {
+   "q": "이어 받게 하면 무엇을 치르나?",
+   "a": "메서드 시그니처가 다 바뀐다."
+  },
+  {
+   "q": "진단 문맥의 함정은?",
+   "a": "안 지우면 다음 요청에 앞의 값이 남는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "추적 ID",
+   "def": "한 요청의 모든 로그 줄에 같이 붙는 짧은 표시."
+  },
+  {
+   "term": "진단 문맥",
+   "def": "로거가 쓰레드마다 들고 있는 값 주머니. 형식에서 꺼내 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.util.UUID",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

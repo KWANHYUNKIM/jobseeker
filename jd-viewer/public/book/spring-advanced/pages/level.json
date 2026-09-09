@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "level",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "깊이 표시",
+ "summary": "화살표로 층을 그린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "깊이를 그린다.",
+  "올리고 내린다.",
+  "예외 표시를 넣는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 여섯 줄이 같은 ID 가** 됐다. **요구사항 ⑤를** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄에 결정이 둘",
+   "ascii": "   the drawing is made of two decisions per line\n\n   how many columns to indent, which is the depth\n   which arrow to use, which is enter or leave or fail\n\n   both come from one number that goes up and down",
+   "note": "**둘 다 오르내리는 숫자 하나에서** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여섯 줄을 보고 구조를 알 수 있어야 한다",
+   "md": "**평평하면 못** 읽는다.\n\n> **2.3절의 여섯 줄이** 그랬다.\n> **누가 누구를 불렀는지** 모른다.\n> **아래에서 견줘** 본다.\n\n**깊이는 이미 갖고** 있다.\n\n> **2.3절의 `createNextId` 가 올렸다.**\n> **쓰기만 하면** 된다.\n> **아래에서 그걸** 쓴다.\n\n**들어갈 때 올린**다.\n\n> **찍기 전에** 올린다.\n> **아래에서 그 순서를** 본다.\n> **뒤집으면 한 칸씩** 밀린다.\n\n**나올 때 내린**다.\n\n> **찍고 나서** 내린다.\n> **안 내리면 계속** 오른쪽이다.\n> **아래에서 그걸** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "양쪽으로 움직여야 한다",
+   "ascii": "   the number has to move in both directions\n\n   going in    increase by one before printing\n   coming out  print, then decrease by one\n\n   forget the second and every later line drifts to the right",
+   "note": "**둘째를 잊으면 이후 줄이 계속 오른쪽으로** 밀린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "깊이가 상태라서 어디에 둘지가 문제다",
+   "md": "**넘겨받아야** 안다.\n\n> **2.3절에서 ID 와 같이** 넘겼다.\n> **그래서 시그니처가** 바뀌었다.\n> **2.5절에서 그게** 커진다.\n\n**돌아온 값을 안 쓰면** 어긋난다.\n\n> **불변으로 만들면** 그렇다.\n> **아래에서 그** 실수를 본다.\n> **새 것을 받아 써야** 한다.\n\n**예외도 층이** 있다.\n\n> **터진 자리와 위로 퍼진 자리**다.\n> **표시를 다르게** 한다.\n> **아래에서 그** 모양을 만든다.\n\n**너무 깊으면 못** 읽는다.\n\n> **열 겹이면 화면을** 넘는다.\n> **아래에서 재** 본다.\n> **11장에서 범위를** 좁힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금은 평평하다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] OrderService.orderItem()\n[796bccd9] OrderRepository.save()\n[796bccd9] OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   누가 누구를 불렀는지 안 보인다\n--   순서만 있다\n\n\n-- 깊이는 이미 있다\n\npublic TraceId createNextId() {\n    return new TraceId(id, level + 1);\n}\n\n$ grep -n 'level' src/main/java/study/adv/trace/TraceId.java\n7:    private final int level;\n15:        return new TraceId(id, level + 1);\n19:    public TraceId createPreviousId() { return new TraceId(id, level - 1); }\n20:    public boolean isFirstLevel() { return level == 0; }\n\n--   2.3 절에서 만들 때 같이 올렸다\n--   찍기만 안 했다\n\n\n-- 그림을 그린다\n\nprivate static final String START_PREFIX = \"-->\";\nprivate static final String COMPLETE_PREFIX = \"<--\";\nprivate static final String EX_PREFIX = \"<X-\";\n\nprivate static String addSpace(String prefix, int level) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < level; i++) {\n        sb.append((i == level - 1) ? \"|\" + prefix : \"|   \");\n    }\n    return sb.toString();\n}\n\n$ jshell -q\njshell> addSpace(\"-->\", 0)\n$1 ==> \"\"\njshell> addSpace(\"-->\", 1)\n$2 ==> \"|-->\"\njshell> addSpace(\"-->\", 2)\n$3 ==> \"|   |-->\"\njshell> addSpace(\"<--\", 2)\n$4 ==> \"|   |<--\"\n\n--   층마다 네 칸이다\n--   마지막 층만 화살표다\n\n\n-- 붙인다\n\nlog.info(\"[{}] {}{}\", traceId.getId(),\n         addSpace(START_PREFIX, traceId.getLevel()), message);\n\nlog.info(\"[{}] {}{} time={}ms\", traceId.getId(),\n         addSpace(COMPLETE_PREFIX, traceId.getLevel()),\n         status.getMessage(), resultTimeMs);\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   1.1 절에서 본 그 모양이다\n--   요구사항 ⑤ 를 채웠다\n\n\n-- 예외는 표시가 다르다\n\nif (e == null) log.info(\"[{}] {}{} time={}ms\", ..., COMPLETE_PREFIX, ...);\nelse log.info(\"[{}] {}{} time={}ms ex={}\", ..., EX_PREFIX, ..., e.toString());\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[b7119f27] OrderController.request()\n[b7119f27] |-->OrderService.orderItem()\n[b7119f27] |   |-->OrderRepository.save()\n[b7119f27] |   |<X-OrderRepository.save() time=1ms ex=java.lang.IllegalStateException: 예외 발생!\n[b7119f27] |<X-OrderService.orderItem() time=3ms ex=java.lang.IllegalStateException: 예외 발생!\n[b7119f27] OrderController.request() time=5ms ex=java.lang.IllegalStateException: 예외 발생!\n\n$ grep -c '<X-' logs/app.log\n2\n\n--   터진 자리부터 위로 다 X 다\n--   어디서 시작됐는지 제일 안쪽을 보면 된다\n\n\n-- 올리는 순서를 뒤집으면\n\n// 찍고 나서 올리면\nlog.info(\"[{}] {}{}\", ..., addSpace(START_PREFIX, traceId.getLevel()), message);\nTraceId next = traceId.createNextId();\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[c14e0b93] OrderController.request()\n[c14e0b93] OrderService.orderItem()\n[c14e0b93] |-->OrderRepository.save()\n[c14e0b93] |-->OrderRepository.save() time=1004ms\n[c14e0b93] OrderService.orderItem() time=1006ms\n[c14e0b93] OrderController.request() time=1007ms\n\n--   한 칸씩 왼쪽으로 밀렸다\n--   서비스가 컨트롤러와 같은 층이 됐다\n\n\n-- 안 내리면\n\n// 돌아온 값을 안 쓰고 필드에 계속 쌓으면\nprivate int level = 0;\npublic TraceStatus beginSync(String message) {\n    level++;\n    log.info(\"[{}] {}{}\", id, addSpace(START_PREFIX, level), message);\n    ...\n}\npublic void end(TraceStatus status) {\n    log.info(...);\n    // level--;  안 했다\n}\n\n$ for i in 1 2 3; do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | cut -c1-64\n[a3f9c1b2] |   |   |   |   |   |   |-->OrderController.request()\n[a3f9c1b2] |   |   |   |   |   |   |   |-->OrderService.orderItem()\n[a3f9c1b2] |   |   |   |   |   |   |   |   |-->OrderRepository.save()\n[a3f9c1b2] |   |   |   |   |   |   |   |   |<--OrderRepository.save() time=1004\n[a3f9c1b2] |   |   |   |   |   |   |   |<--OrderService.orderItem() time=1006ms\n[a3f9c1b2] |   |   |   |   |   |   |<--OrderController.request() time=1007ms\n\n--   요청마다 세 칸씩 오른쪽으로 간다\n--   9 번째 요청은 화면을 넘는다\n\n\n-- 돌아온 값을 안 쓰면\n\n// 불변인데 반환을 버리면\npublic void orderItem(TraceId traceId, String itemId) {\n    traceId.createNextId();                    // 버렸다\n    status = trace.beginSync(traceId, \"OrderService.orderItem()\");\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -3 | cut -c56-\n[d4a91c02] OrderRepository.save() time=1004ms\n[d4a91c02] OrderService.orderItem() time=1006ms\n[d4a91c02] OrderController.request() time=1007ms\n\n$ grep -c '\\-\\->' logs/app.log\n0\n\n--   화살표가 하나도 안 나온다\n--   다 0 층이다\n--   불변이라 반환을 받아 써야 한다\n\n\n-- 깊이가 깊으면\n\n// 열 겹짜리를 만들어 본다\n$ curl -s -o /dev/null 'localhost:8080/deep?n=10'\n$ grep 'study.adv.trace' logs/app.log | tail -1 | cut -c56- | wc -c\n      74\n\n$ grep 'study.adv.trace' logs/app.log | tail -20 | head -1 | cut -c56-\n[e82f14b0] Level0.call()\n$ grep 'study.adv.trace' logs/app.log | tail -11 | head -1 | cut -c56- | cut -c1-72\n[e82f14b0] |   |   |   |   |   |   |   |   |-->Level9.call()\n\n--   열 겹이면 42 칸이 들여쓰기다\n--   11 장에서 어디까지 걸지 좁힌다\n\n\n-- 지금 코드가 얼마나 됐나\n\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n     104 total\n$ wc -l src/main/java/study/adv/trace/*.java | tail -1\n      92 total\n\n$ git diff --stat v0 HEAD -- src/main/java/study/adv/Order*.java\n OrderController.java | 22 +++++++++++++++++---\n OrderRepository.java | 18 ++++++++++++++---\n OrderService.java    | 20 ++++++++++++++----\n 3 files changed, 48 insertions(+), 12 deletions(-)\n\n--   v0 의 56 줄이 104 줄이 됐다\n--   추적기까지 하면 196 줄이다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ git add -A && git commit -q -m 'feat: v2 깊이 표시' && git tag v2-level\n\n--   요구사항 여섯이 다 됐다\n--   그런데 코드가 두 배가 됐다\n--   2.5 절에서 넘기는 문제를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '평평하면'   '구조가 안 보임' \\\n  '깊이'       '이미 갖고 있음' \\\n  '한 층'      '네 칸' \\\n  '들어갈 때'  '올리고 찍음' \\\n  '나올 때'    '찍고 내림' \\\n  '뒤집으면'   '왼쪽으로 밀림' \\\n  '안 내리면'  '오른쪽으로 쌓임' \\\n  '반환 버리면' '다 0 층' \\\n  '예외'       '<X- 로 표시' \\\n  '줄'         '56 에서 104'\n\n평평하면                   구조가 안 보임\n깊이                       이미 갖고 있음\n한 층                      네 칸\n들어갈 때                  올리고 찍음\n나올 때                    찍고 내림\n뒤집으면                   왼쪽으로 밀림\n안 내리면                  오른쪽으로 쌓임\n반환 버리면                다 0 층\n예외                       <X- 로 표시\n줄                         56 에서 104",
+   "note": "**평평하던 여섯 줄에 `|-->` 와 `|   |-->` 가 붙어 1.1절의 그 모양이** 됐다.\n\n**터진 자리부터 위로 `<X-` 가 둘 찍혀 제일 안쪽이 시작점**이다.\n\n**올리는 순서를 뒤집으니 한 칸씩 왼쪽으로 밀려 서비스가 컨트롤러와 같은 층이** 된다.\n\n**깊이를 안 내리면 요청마다 세 칸씩 오른쪽으로 쌓이고 반환을 버리면 화살표가 0 개**다.\n\n**요구사항 여섯이 다 됐는데 코드가 56 줄에서 104 줄, 추적기까지 196 줄이** 됐다."
+  }
+ ],
+ "recap": [
+  "**평평하면 못** 읽는다.",
+  "**깊이는 이미** 있다.",
+  "**한 층이 네** 칸이다.",
+  "**올리고** 찍는다.",
+  "**찍고** 내린다.",
+  "**뒤집으면** 밀린다.",
+  "**안 내리면** 쌓인다.",
+  "**반환을 받아** 쓴다.",
+  "**예외는 X** 다."
+ ],
+ "drills": [
+  {
+   "task": "들여쓰기를 붙인다.",
+   "done_when": "목표 모양이 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "올리는 순서를 뒤집는다.",
+   "done_when": "밀리는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "깊이를 안 내려 본다.",
+   "done_when": "쌓이는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "줄 수를 센다.",
+   "done_when": "v0 과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "깊이 숫자는 어디서 오나?",
+   "a": "이어 받을 때 이미 하나씩 올려 두었다."
+  },
+  {
+   "q": "올리는 순서가 왜 중요한가?",
+   "a": "찍기 전에 올려야 화살표가 제 층에 온다."
+  },
+  {
+   "q": "깊이를 안 내리면?",
+   "a": "요청마다 오른쪽으로 계속 밀려 읽을 수 없게 된다."
+  },
+  {
+   "q": "불변으로 만들 때 주의할 점은?",
+   "a": "반환값을 받아 써야 한다. 버리면 다 0 층이 된다."
+  },
+  {
+   "q": "예외 줄은 어떻게 다른가?",
+   "a": "표시가 다르고 터진 자리부터 위로 다 그 표시다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "깊이",
+   "def": "메서드 호출이 몇 겹 안쪽인지 나타내는 수."
+  },
+  {
+   "term": "접두 그림",
+   "def": "깊이와 방향으로 만든 화살표 문자열."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
