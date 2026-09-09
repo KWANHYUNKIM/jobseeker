@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "status-5xx",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "5xx — 서버 오류",
+ "summary": "다시 보내면 될 수도 있다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 코드를 구분한다.",
+  "누가 쓴 응답인지 안다.",
+  "재시도 조건을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.5절은 요청을 고쳐야** 했다. **여기는 고칠 게** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 코드",
+   "ascii": "   four codes, and who actually failed\n\n   500   the application threw, and nobody caught it\n   502   a proxy asked upstream and got nonsense back\n   503   the server is up and deliberately refusing right now\n   504   a proxy asked upstream and waited too long\n\n   502 and 504 are written by the proxy, never by your application\n   so seeing them means your process may not even have been reached",
+   "note": "**`502`·`504` 는 프록시가** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "누가 쓴 응답인지가 단서다",
+   "md": "**`500` 은 내 앱이** 쓴다.\n\n> **예외가 안 잡혀 프레임워크가** 만든 것이다.\n> **로그에 스택 트레이스가** 있다.\n> **⑧ 에서 예외를 응답으로 옮기던 자리**다.\n\n**`502`·`504` 는 앞단이** 쓴다.\n\n| 코드 | 무슨 일 |\n|---|---|\n| `502` | 뒤에서 이상한 걸 받았다 |\n| `504` | 뒤가 시간 안에 답을 안 했다 |\n\n> **내 앱 로그에 아무것도 없을 수** 있다.\n> **⑫ 10.6절에서 여덟 명령으로 좁히던 것과 같은** 상황이다.\n> **`502` 는 앱이 죽었거나 포트가 다를 때가** 흔하다.\n\n**`503` 은 의도적**이다.\n\n> **점검 중이거나 과부하** 때다.\n> **`Retry-After` 를 같이** 준다(7.1절).\n> **큐가 꽉 찼을 때 이걸 주는 게 무한정 기다리게 하는 것보다** 낫다.\n\n**5xx 를 남발하면 안** 된다.\n\n> **입력이 잘못됐는데 `500` 을 주면 4xx 로 처리했어야 할 걸 재시도**한다(7.1절).\n> **검증을 빼먹으면 이렇게** 된다.\n> **6.5절의 잘못된 JSON 이 `500` 이던 것이 그** 예다."
+  },
+  {
+   "type": "figure",
+   "caption": "재시도 조건",
+   "ascii": "   retrying a 5xx is only safe when two things hold\n\n   the method is idempotent    or the request carries an idempotency key\n   the backoff grows           or every client retries at the same moment\n\n   a thundering herd is what turns one slow query into an outage\n   and a fixed one second retry from ten thousand clients is that herd",
+   "note": "**같은 시각에 몰리면 그게 무리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "재시도가 장애를 키운다",
+   "md": "**서버가 느려져 타임아웃이** 난다.\n\n> **클라이언트가 다시** 보낸다.\n> **부하가 두 배가** 된다.\n> **더 느려지고 더 많이 재시도**한다.\n\n**지터를 넣는다.**\n\n> **1초·2초·4초에 무작위를 더** 한다.\n> **다 같이 4초에 오면 여전히 무리**다.\n> **`Retry-After` 도 같은 값이면 같은 문제**다.\n\n**회로 차단기**\n\n> **연속 실패가 쌓이면 아예 안** 보낸다.\n> **잠시 뒤 하나만 보내** 본다.\n> **되면 다시 연다.**\n\n**멱등이 아니면 재시도를 못** 한다.\n\n> **5.6절에서 타임아웃은 구분이 안 된다고** 했다.\n> **`504` 는 특히 그렇다** — **뒤에서 이미 처리했을 수도** 있다.\n> **멱등 키가 답**이다(5.3절).\n\n**오류 본문에 내부를 담지** 않는다.\n\n> **스택 트레이스에 경로·버전·쿼리가 다** 있다.\n> **⑩ 에서 오류 페이지를 막은 이유**다.\n> **추적 ID 만 주고 로그에서** 찾는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 500 은 앱이 쓴다 ---\n\n$ cat boom.py\n\nimport http.server, json, time, random\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        if self.path == \"/boom\":\n            raise ValueError(\"의도한 예외\")\n        if self.path == \"/slow\":\n            time.sleep(10)\n        b = b'{\"ok\":true}'\n        self.send_response(200)\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9044), H).serve_forever()\n\n$ python3 boom.py > /tmp/boom.log 2>&1 & sleep 1\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9044/boom\n\n500\n\n$ grep -c 'ValueError' /tmp/boom.log\n\n1\n\n$ grep -A1 'Traceback' /tmp/boom.log | tail -1\n\n  File \"boom.py\", line 7, in do_GET\n\n#   내 앱 로그에 스택이 있다\n\n#   내가 쓴 것이다\n\n# --- 502 는 앞단이 쓴다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80;\\n\\\n  location /up/ { proxy_pass http://127.0.0.1:9999/; }\\n\\\n  location /slow/ { proxy_pass http://host.docker.internal:9044/;\\n\\\n    proxy_read_timeout 3s; }\\n\\\n  location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/up/\n\n502\n\n$ curl -s http://localhost:8080/up/ | grep -o '<center>[^<]*</center>' | head -2\n\n<center>502 Bad Gateway</center>\n<center>nginx/1.27.2</center>\n\n#   nginx 가 만든 페이지다\n\n#   내 앱은 존재하지도 않는다\n\n$ docker logs --tail 1 lab 2>&1 | grep -o 'connect() failed[^,]*'\n\nconnect() failed (111: Connection refused) while connecting to upstream\n\n#   앞단 로그에만 있다\n\n#   앱 로그에는 아무것도 없다\n\n#   ⑫ 10.6절의 그 상황이다\n\n# --- 504 는 기다리다 포기한 것이다 ---\n\n$ time curl -s -o /dev/null -w '%{http_code}\\n' \\\n    http://localhost:8080/slow/slow\n\n504\nreal    0m3.041s\n\n#   3초에 끊었다\n\n#   proxy_read_timeout 이다\n\n$ grep -c '/slow' /tmp/boom.log\n\n1\n\n#   앱은 요청을 받았다\n\n#   10초 걸려 처리하고 있었다\n\n#   응답을 아무도 안 받는다\n\n#   그래서 504 는 재시도가 위험하다\n\n#   이미 처리됐을 수 있다 (5.6절)\n\n# --- 503 은 의도한 것이다 ---\n\n$ cat maint.py\n\n    def do_GET(self):\n        b = json.dumps({\"title\": \"점검 중\"}, ensure_ascii=False).encode()\n        self.send_response(503)\n        self.send_header(\"Retry-After\", \"120\")\n        self.send_header(\"Content-Type\", \"application/problem+json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\n\n$ python3 maint.py & sleep 1\n$ curl -s -D - http://localhost:9043/ | grep -E 'HTTP|Retry-After|title'\n\nHTTP/1.1 503 Service Unavailable\nRetry-After: 120\n{\"title\": \"점검 중\"}\n\n#   언제 오라고 말한다\n\n#   무한정 기다리게 하는 것보다 낫다\n\n$ kill %1 2>/dev/null\n\n# --- 4xx 를 500 으로 주면 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    -H 'Content-Type: application/json' -d '{\"item\": }' \\\n    http://localhost:9080/orders 2>/dev/null\n\n500\n\n$ curl -s --retry 3 -o /dev/null -w '재시도 결과 %{http_code}\\n' \\\n    -X POST -d '{\"item\": }' http://localhost:9080/orders 2>/dev/null\n\n재시도 결과 500\n\n#   클라이언트가 세 번 더 보냈다\n\n#   400 이었다면 안 보냈다 (7.1절)\n\n#   검증을 빼먹으면 이렇게 된다\n\n#   6.5절에서 본 그것이다\n\n# --- 재시도가 부하를 키운다 ---\n\n$ cat herd.py\n\nimport http.server, threading, time\nCOUNT = [0]\nLOCK = threading.Lock()\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        with LOCK:\n            COUNT[0] += 1\n            n = COUNT[0]\n        if self.path == \"/count\":\n            b = f\"총 {n-1}회\\n\".encode()\n            self.send_response(200)\n        else:\n            time.sleep(0.3)\n            b = b\"\"\n            self.send_response(503)\n            self.send_header(\"Retry-After\", \"1\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\n\n$ python3 herd.py & sleep 1\n$ for i in $(seq 1 10); do\n    curl -s --retry 3 --retry-delay 1 -o /dev/null \\\n      http://localhost:9042/api &\n  done; wait\n$ curl -s http://localhost:9042/count\n\n총 40회\n\n#   요청 10개가 40번이 됐다\n\n#   전부 1초 뒤에 몰린다\n\n#   Retry-After 가 같은 값이라 그렇다\n\n$ python3 - <<'EOF'\nimport random\nprint(\"고정 백오프  \", [1, 2, 4, 8])\nprint(\"지터 넣으면  \",\n      [round(2**i * random.uniform(0.5, 1.5), 2) for i in range(4)])\nEOF\n\n고정 백오프   [1, 2, 4, 8]\n지터 넣으면   [0.73, 2.41, 3.12, 11.28]\n\n#   무작위를 더해 흩는다\n\n#   다 같이 4초에 오면 여전히 무리다\n\n$ kill %1 2>/dev/null\n\n# --- 내부를 흘리지 않는다 ---\n\n$ curl -s http://localhost:9044/boom 2>/dev/null | head -c 200; echo\n\n$ curl -s -D - -o /dev/null http://localhost:9044/boom | head -1\n\nHTTP/1.1 500 Internal Server Error\n\n$ cat leaky.py\n\n    def do_GET(self):\n        import traceback\n        try:\n            raise ValueError(\"DB 접속 실패: postgres://app:pw@10.0.1.5/orders\")\n        except Exception:\n            b = traceback.format_exc().encode()\n            self.send_response(500)\n            self.send_header(\"Content-Length\", str(len(b)))\n            self.end_headers(); self.wfile.write(b)\n\n$ python3 leaky.py & sleep 1\n$ curl -s http://localhost:9041/ | tail -2\n\nValueError: DB 접속 실패: postgres://app:pw@10.0.1.5/orders\n\n#   비밀번호와 내부 IP 가 나갔다\n\n#   ⑩ 에서 오류 페이지를 막은 이유다\n\n$ kill %1 2>/dev/null\n\n$ cat good.py\n\n        import uuid\n        tid = uuid.uuid4().hex[:12]\n        print(f\"[{tid}] {traceback.format_exc()}\")   # 로그에만\n        b = json.dumps({\"title\": \"처리 중 오류\",\n                        \"traceId\": tid}, ensure_ascii=False).encode()\n\n$ python3 good.py > /tmp/good.log 2>&1 & sleep 1\n$ curl -s http://localhost:9040/\n\n{\"title\": \"처리 중 오류\", \"traceId\": \"a3f9c21b4e70\"}\n\n$ grep -c 'a3f9c21b4e70' /tmp/good.log\n\n1\n\n#   밖에는 ID 만 준다\n\n#   로그에서 그 ID 로 찾는다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   200 에 오류를 담으면 무엇을 잃나",
+   "note": "**`500` 은 앱 로그에 스택이 있고 `502` 는 nginx 페이지에 앱 로그는** 비어 있다.\n\n**`504` 가 3초에 끊겼는데 앱은 그 요청을 받아 처리하고** 있었다.\n\n**파싱 오류에 `500` 을 주자 `--retry` 가 세 번 더** 보냈다.\n\n**요청 10개가 재시도로 `총 40회`** 가 됐다.\n\n**스택 트레이스를 그대로 주면 `postgres://app:pw@10.0.1.5/orders` 가** 나간다."
+  }
+ ],
+ "recap": [
+  "**5xx 는 고칠 게** 없다.",
+  "**`500` 은 앱이** 쓴다.",
+  "**`502`·`504` 는 앞단이** 쓴다.",
+  "**앱 로그가 비어 있을 수** 있다.",
+  "**`503` 은 의도적**이다.",
+  "**`Retry-After` 를 같이** 준다.",
+  "**4xx 를 `500` 으로 주면 재시도를** 부른다.",
+  "**재시도가 장애를 키울 수** 있다.",
+  "**내부를 본문에 담지** 않는다."
+ ],
+ "drills": [
+  {
+   "task": "예외를 던져 `500` 을 만든다.",
+   "done_when": "앱 로그의 스택을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "죽은 업스트림에 프록시한다.",
+   "done_when": "`502` 와 빈 앱 로그를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "느린 응답에 타임아웃을 건다.",
+   "done_when": "`504` 뒤에도 앱이 도는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "동시 재시도를 세어 본다.",
+   "done_when": "요청이 몇 배가 되는지 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`500` 과 `502` 의 차이는?",
+   "a": "전자는 앱이, 후자는 앞단 프록시가 만든 응답이다."
+  },
+  {
+   "q": "`504` 재시도가 위험한 이유는?",
+   "a": "뒤에서 이미 처리 중이거나 처리했을 수 있어서다."
+  },
+  {
+   "q": "입력 오류에 `500` 을 주면?",
+   "a": "클라이언트가 재시도해 부하만 늘린다."
+  },
+  {
+   "q": "재시도에 지터를 넣는 이유는?",
+   "a": "모든 클라이언트가 같은 시각에 몰리는 것을 막기 위해서다."
+  },
+  {
+   "q": "오류 본문에 담으면 안 되는 것은?",
+   "a": "스택 트레이스와 내부 주소·자격 증명이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "지터",
+   "def": "재시도 간격에 무작위를 더해 요청이 몰리지 않게 하는 것."
+  },
+  {
+   "term": "회로 차단기",
+   "def": "연속 실패가 쌓이면 잠시 요청을 아예 보내지 않는 장치."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "IANA — HTTP Status Code Registry",
+   "url": "https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml",
+   "publisher": "IANA"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

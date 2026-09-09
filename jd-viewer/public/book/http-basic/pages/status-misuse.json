@@ -1,0 +1,144 @@
+{
+ "book": "http-basic",
+ "id": "status-misuse",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "200 에 오류를 담는 API",
+ "summary": "왜 그렇게들 하고 무엇을 잃나.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 그렇게 하는지 안다.",
+  "무엇을 잃는지 안다.",
+  "정당한 경우를 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장을 여기서** 닫는다. **코드를 안 쓰면 어떻게 되는지가 이 장의 요약**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 실패, 두 표현",
+   "ascii": "   the same failure, told two ways\n\n   HTTP/1.1 422 Unprocessable Content\n   {\"title\": \"validation failed\", \"errors\": [...]}\n\n   HTTP/1.1 200 OK\n   {\"success\": false, \"code\": \"E1042\", \"message\": \"validation failed\"}\n\n   the second one works, and every layer above it now believes it succeeded",
+   "note": "**위층이 전부 성공으로** 믿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그렇게 하는 이유가 있기는 하다",
+   "md": "**대개 이 넷 중 하나**다.\n\n| 이유 | 실제로는 |\n|---|---|\n| 클라이언트 코드가 편하다 | 예외 처리를 안 하려는 것이다 |\n| 오류 코드를 세밀히 주고 싶다 | 본문에 담으면 된다. 상태와 별개다 |\n| 프록시가 4xx 본문을 지운다 | 옛 장비 이야기다 |\n| SOAP 시절 관행 | 그때는 HTTP 를 전송으로만 봤다 |\n\n> **둘째가 제일 흔한 오해**다.\n> **`422` 를 주면서 본문에 `E1042` 를 담으면** 된다(7.5절).\n> **둘은 배타적이지** 않다.\n\n**세밀함은 본문에 있다.**\n\n> **상태 코드는 스무 개쯤**이다(7.1절).\n> **도메인 오류는 수백 개일 수** 있다.\n> **그래서 6.5절의 `problem+json` 이** 있다.\n\n**5.7절과 같은 병**이다.\n\n> **거기서는 메서드를 안** 나눴고,\n> **여기서는 상태 코드를 안** 쓴다.\n> **둘 다 남이 해 주던 일을** 잃는다."
+  },
+  {
+   "type": "figure",
+   "caption": "상태 줄만 읽는 것들",
+   "ascii": "   who reads the status line, and never the body\n\n   the http client library      raises or does not raise\n   the retry policy             5xx yes, 4xx no\n   the proxy and the cdn        may cache a 200\n   the monitoring dashboard     error rate, drawn from status codes\n   the load balancer            health checks and outlier detection\n\n   every one of them sees success, while your users see failures",
+   "note": "**전부 성공으로 보는데 사용자만 실패를** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "모니터링이 조용해지는 게 가장 나쁘다",
+   "md": "**오류율이 0으로 그려**진다.\n\n> **장애가 나도 그래프가 평평**하다.\n> **알림이 안** 울린다.\n> **⑫ 10.4절에서 지표만 보던 것이 여기서 막힌다.**\n\n**캐시가 오류를 저장**한다.\n\n> **`200` 이니 캐시 가능**하다(5.6절).\n> **\"재고 없음\" 을 한 시간 동안** 준다.\n> **`4xx` 였다면 대부분 캐시가 안** 한다.\n\n**재시도 정책이 안** 돈다.\n\n> **`503` 이었으면 재시도했을 것**이다(7.6절).\n> **`200` 이니 한 번에** 끝난다.\n> **일시적 실패가 영구 실패가** 된다.\n\n**헬스체크가 못** 걸러낸다.\n\n> **⑫ 4.5절의 준비성 프로브가 `200` 을** 본다.\n> **다 망가진 파드에 트래픽이 계속** 간다.\n\n**정당한 경우는 좁다.**\n\n> **GraphQL 은 부분 성공이** 있다 — 필드 하나만 실패한다.\n> **일괄 처리도 그렇다**(7.2절).\n> **그때도 전부 실패면 4xx 를 주는 게** 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 두 서버를 나란히 ---\n\n$ cat both.py\n\nimport http.server, json\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _s(self, code, obj, extra=None):\n        b = json.dumps(obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        for k, v in (extra or {}).items(): self.send_header(k, v)\n        self.end_headers(); self.wfile.write(b)\n    def do_POST(self):\n        if self.path == \"/proper\":\n            return self._s(422, {\"title\": \"검증 실패\", \"code\": \"E1042\",\n                \"errors\": [{\"field\": \"qty\", \"message\": \"1 이상\"}]})\n        return self._s(200, {\"success\": False, \"code\": \"E1042\",\n                             \"message\": \"검증 실패\"})\nhttp.server.HTTPServer((\"\", 9039), H).serve_forever()\n\n$ python3 both.py & sleep 1\n\n$ curl -s -D - -X POST -d '{}' http://localhost:9039/proper | head -1\n$ curl -s -D - -X POST -d '{}' http://localhost:9039/wrapped | head -1\n\nHTTP/1.1 422 Unprocessable Content\nHTTP/1.1 200 OK\n\n#   같은 실패다\n\n#   본문 내용도 거의 같다\n\n# --- 클라이언트가 다르게 본다 ---\n\n$ python3 - <<'EOF'\nimport urllib.request, urllib.error, json\nfor p in (\"proper\", \"wrapped\"):\n    req = urllib.request.Request(\n        f\"http://localhost:9039/{p}\", data=b\"{}\", method=\"POST\")\n    try:\n        r = urllib.request.urlopen(req)\n        print(f\"{p:<8} 예외 없음 -> 성공으로 처리됨 ({r.status})\")\n    except urllib.error.HTTPError as e:\n        print(f\"{p:<8} 예외 발생 -> 오류로 처리됨 ({e.code})\")\nEOF\n\nproper   예외 발생 -> 오류로 처리됨 (422)\nwrapped  예외 없음 -> 성공으로 처리됨 (200)\n\n#   둘째는 아무 일도 안 일어난다\n\n#   success 를 안 보면 그냥 지나간다\n\n#   그게 편하다고 느껴지는 지점이다\n\n# --- 모니터링이 조용해진다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80;\\n\\\n  location /api/ { proxy_pass http://host.docker.internal:9039/; }\\n\\\n  location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ for i in $(seq 1 10); do\n    curl -s -o /dev/null -X POST -d '{}' http://localhost:8080/api/wrapped\n  done\n$ for i in $(seq 1 10); do\n    curl -s -o /dev/null -X POST -d '{}' http://localhost:8080/api/proper\n  done\n\n$ docker logs --tail 20 lab 2>&1 | awk '{print $9}' | sort | uniq -c\n\n  10 200\n  10 422\n\n$ docker logs --tail 20 lab 2>&1 | awk '$9 >= 400' | wc -l\n\n      10\n\n#   오류율이 절반인데 절반만 보인다\n\n#   wrapped 쪽은 그래프가 평평하다\n\n#   알림이 안 울린다\n\n#   ⑫ 10.4절에서 지표만 보던 것이 여기서 막힌다\n\n# --- 캐시가 오류를 저장한다 ---\n\n$ cat cacheable.py\n\n    def do_GET(self):\n        self._s(200, {\"success\": False, \"message\": \"재고 없음\"},\n                {\"Cache-Control\": \"max-age=3600\"})\n\n$ python3 cacheable.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9038/stock \\\n  | grep -iE 'HTTP|cache-control'\n\nHTTP/1.1 200 OK\nCache-Control: max-age=3600\n\n#   한 시간 동안 재고 없음을 준다\n\n#   재고가 들어와도 그렇다\n\n$ curl -s -D - -o /dev/null -X POST -d '{}' \\\n    http://localhost:9039/proper | grep -ci cache-control\n\n0\n\n#   4xx 는 대개 캐시가 안 한다\n\n#   5.6절의 캐시 가능이 여기서 작동한다\n\n$ kill %1 2>/dev/null\n\n# --- 재시도가 안 돈다 ---\n\n$ cat flaky2.py\n\nN = [0]\n    def do_POST(self):\n        N[0] += 1\n        ok = N[0] >= 3\n        if self.path == \"/proper\":\n            return self._s(200 if ok else 503,\n                {\"ok\": ok}, {} if ok else {\"Retry-After\": \"1\"})\n        self._s(200, {\"success\": ok, \"message\": \"일시 오류\"})\n\n$ python3 flaky2.py & sleep 1\n$ curl -s --retry 3 -o /dev/null -w 'proper  %{http_code}\\n' \\\n    -X POST -d '{}' http://localhost:9037/proper\n\nproper  200\n\n$ kill %1 2>/dev/null; python3 flaky2.py & sleep 1\n$ curl -s --retry 3 -X POST -d '{}' http://localhost:9037/wrapped\n\n{\"success\": false, \"message\": \"일시 오류\"}\n\n#   앞은 재시도해서 성공했다\n\n#   뒤는 한 번에 끝났다\n\n#   일시적 실패가 영구 실패가 됐다\n\n$ kill %1 2>/dev/null\n\n# --- 헬스체크가 못 거른다 ---\n\n$ cat broken_health.py\n\n    def do_GET(self):\n        if self.path == \"/health\":\n            return self._s(200, {\"status\": \"DOWN\",\n                                 \"db\": \"연결 실패\"})\n        self._s(200, {\"success\": False, \"message\": \"DB 없음\"})\n\n$ python3 broken_health.py & sleep 1\n$ curl -s -o /dev/null -w 'health 코드 %{http_code}\\n' \\\n    http://localhost:9036/health\n$ curl -s http://localhost:9036/health\n\nhealth 코드 200\n{\"status\": \"DOWN\", \"db\": \"연결 실패\"}\n\n#   DOWN 이라고 적혀 있는데 200 이다\n\n#   프로브는 코드만 본다\n\n#   ⑫ 4.5절의 준비성 프로브가 통과시킨다\n\n#   다 망가진 파드에 트래픽이 계속 간다\n\n$ kill %1 2>/dev/null\n\n# --- 부분 성공은 다르다 ---\n\n$ cat partial.py\n\n    def do_POST(self):\n        self._s(200, {\n            \"results\": [\n                {\"id\": 1, \"status\": \"ok\"},\n                {\"id\": 2, \"status\": \"ok\"},\n                {\"id\": 999, \"status\": \"error\", \"code\": \"NOT_FOUND\"}],\n            \"summary\": {\"ok\": 2, \"failed\": 1}})\n\n$ python3 partial.py & sleep 1\n$ curl -s -X POST -d '[1,2,999]' http://localhost:9035/batch \\\n  | python3 -m json.tool --no-ensure-ascii | tail -6\n\n    \"summary\": {\n        \"ok\": 2,\n        \"failed\": 1\n    }\n}\n\n#   셋 중 둘은 됐다\n\n#   4xx 를 주면 성공한 둘이 애매해진다\n\n#   7.2절에서 담을 코드가 없다고 했다\n\n#   이건 정당한 200 이다\n\n#   전부 실패면 4xx 가 낫다\n\n$ kill %1 %2 2>/dev/null\n\n# --- GraphQL 도 같은 이유다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"query\":\"{ 없는필드 }\"}' \\\n    https://countries.trevorblades.com/ 2>/dev/null\n\n400\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d '{\"query\":\"{ country(code:\\\"XX\\\") { name } }\"}' \\\n    https://countries.trevorblades.com/ 2>/dev/null \\\n  | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n      print(\"data\", d.get(\"data\"))'\n\ndata {'country': None}\n\n#   질의 문법이 틀리면 400 이다\n\n#   결과가 없는 건 200 이다\n\n#   둘을 나눴다\n\n#   5.7절에서 본 그 태도다\n\n# --- 이 장을 한 줄로 ---\n\n$ printf '%s\\n' \\\n  '상태 코드는 기계가 읽고' \\\n  '본문은 사람과 코드가 읽는다' \\\n  '둘 다 쓰면 된다'\n\n상태 코드는 기계가 읽고\n본문은 사람과 코드가 읽는다\n둘 다 쓰면 된다\n\n# --- 다음 장에서 ---\n\n#   헤더를 하나씩 읽는다",
+   "note": "**같은 실패가 `422` 와 `200` 으로 갈리고 클라이언트는 뒤에서 예외조차 안** 던진다.\n\n**nginx 로그에 오류가 절반인데 `422` 열 건만** 보인다.\n\n**`200` 에 `max-age=3600` 이 붙어 재고 없음을 한 시간** 준다.\n\n**같은 일시 오류를 `503` 은 재시도로 성공하고 `200` 은 한 번에** 끝난다.\n\n**`{\"status\": \"DOWN\"}` 인데 코드가 `200` 이라 프로브가** 통과시킨다."
+  }
+ ],
+ "recap": [
+  "**상태 코드를 안 쓰면 위층이 다 성공으로** 본다.",
+  "**세밀한 코드는 본문에 담으면** 된다.",
+  "**둘은 배타적이지** 않다.",
+  "**모니터링이 조용해**진다.",
+  "**캐시가 오류를** 저장한다.",
+  "**재시도 정책이 안** 돈다.",
+  "**헬스체크가 못** 거른다.",
+  "**5.7절과 같은 병**이다.",
+  "**부분 성공만 정당한 `200`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "두 방식 서버를 만든다.",
+   "done_when": "클라이언트 반응 차이를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "프록시 로그를 센다.",
+   "done_when": "오류율이 안 보이는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`200` 에 캐시 헤더를 붙인다.",
+   "done_when": "오류가 캐시되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "일시 오류를 두 방식으로 준다.",
+   "done_when": "재시도 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`200` 에 오류를 담으면 무엇을 잃나?",
+   "a": "재시도, 캐시 정책, 모니터링, 헬스체크가 모두 오작동한다."
+  },
+  {
+   "q": "세밀한 오류 코드를 주려면?",
+   "a": "적절한 상태 코드와 함께 본문에 담으면 된다."
+  },
+  {
+   "q": "모니터링이 조용해지는 이유는?",
+   "a": "오류율이 상태 코드로 집계되기 때문이다."
+  },
+  {
+   "q": "정당한 `200` 은 언제인가?",
+   "a": "일부는 성공하고 일부는 실패한 부분 성공일 때다."
+  },
+  {
+   "q": "5.7절과 무엇이 같은가?",
+   "a": "프로토콜이 주는 이점을 스스로 포기한다는 점이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "부분 성공",
+   "def": "여러 항목 중 일부만 성공한 결과."
+  },
+  {
+   "term": "봉투 응답",
+   "def": "실제 결과를 `success` 같은 필드로 감싸 항상 200 으로 주는 형식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "GraphQL over HTTP",
+   "url": "https://graphql.github.io/graphql-over-http/draft/",
+   "publisher": "GraphQL Foundation"
+  },
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

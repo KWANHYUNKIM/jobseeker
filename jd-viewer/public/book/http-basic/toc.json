@@ -412,7 +412,7 @@
           "title": "5xx — 서버 오류",
           "summary": "다시 보내면 될 수도 있다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -420,7 +420,7 @@
           "title": "200 에 오류를 담는 API",
           "summary": "왜 그렇게들 하고 무엇을 잃나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
