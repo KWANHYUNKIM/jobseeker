@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "delegating-filter-proxy",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "DelegatingFilterProxy",
+ "summary": "서블릿과 스프링 사이.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 다리가 필요한지 안다.",
+  "빈 이름으로 찾는 것을 안다.",
+  "지연 조회의 결과를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서블릿 컨테이너는 스프링 빈을** 모른다. **그 사이에 다리가 하나** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 세계와 다리",
+   "ascii": "   two worlds, and the bridge\n\n   servlet container\n     knows: Filter, Servlet, web.xml\n     does not know: beans, DI, proxies\n\n   spring container\n     knows: beans, DI, lifecycle\n     is not visible to the container\n\n   DelegatingFilterProxy\n     registered as a servlet filter\n     looks up a bean by name and calls it",
+   "note": "**서블릿 필터로 등록되고 빈을** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 직접 등록하면 안 되나",
+   "md": "**시큐리티 필터를 서블릿 필터로 직접 등록하면**\n\n```java\n// 이렇게 하면\nnew CsrfFilter(repository)\n```\n\n> **서블릿 컨테이너가 그 객체를** 만든다.\n> **의존성 주입이 안** 된다.\n>\n> **`CsrfTokenRepository` 를 어떻게 넣나.**\n\n**「MVC 1편」의 필터**와 같은 문제다.\n\n> **거기서는 `FilterRegistrationBean` 으로** 풀었다.\n> **부트가 스프링 빈인 `Filter` 를 자동 등록**해 준다.\n\n**시큐리티는 더 복잡**하다.\n\n| | |\n|---|---|\n| **필터가 열다섯** | 하나씩 등록하면 순서 지옥 |\n| **URL 별로 다른 체인** | 2.5절 |\n| **설정에 따라 개수가 변함** | 2.1절에서 봤다 |\n\n> **하나로 묶어 등록하고 안에서 분배**한다.\n> **그게 `FilterChainProxy`** 다(2.3절).\n\n**`DelegatingFilterProxy` 가 그걸 스프링에서 꺼내** 준다.\n\n```java\npublic class DelegatingFilterProxy extends GenericFilterBean {\n\n    private String targetBeanName;\n    private volatile Filter delegate;\n\n    public void doFilter(request, response, chain) {\n        Filter delegateToUse = this.delegate;\n        if (delegateToUse == null) {\n            synchronized (this.delegateMonitor) {\n                WebApplicationContext wac = findWebApplicationContext();\n                delegateToUse = wac.getBean(getTargetBeanName(), Filter.class);\n                this.delegate = delegateToUse;\n            }\n        }\n        delegateToUse.doFilter(request, response, chain);\n    }\n}\n```\n\n> **빈 이름이 `springSecurityFilterChain`** 이다.\n> **그 이름의 빈이 `FilterChainProxy`** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 지연 조회인가",
+   "ascii": "   why the lookup is lazy\n\n   the servlet container starts filters first\n   the spring context may not exist yet\n\n   so DelegatingFilterProxy.init does nothing\n   the first doFilter looks the bean up and caches it\n\n   that is why a broken security bean fails on the\n   first request, not at startup",
+   "note": "**첫 요청에서 터진다** — 기동이 아니라."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "지연 조회의 결과",
+   "md": "**서블릿 컨테이너가 먼저** 뜬다.\n\n> **필터를 등록할 때 스프링 컨텍스트가 아직 없을 수** 있다.\n> **전통적인 `web.xml` 환경에서 특히** 그렇다.\n>\n> **그래서 `init()` 에서 안 찾고 첫 `doFilter()` 에서** 찾는다.\n\n**부트에서는 순서가 다르다.**\n\n> **`ServletContextInitializer` 로 등록해 컨텍스트가 이미** 있다.\n> **그래도 코드는 같다.**\n\n**결과 하나** — **오류가 첫 요청에서** 난다.\n\n```\njava.lang.IllegalStateException: No WebApplicationContext found\n```\n\n> **기동은 성공**한다. **첫 요청이** 터진다.\n>\n> **9권 8.2절의 \"설정 오류는 통합 테스트가 잡는다\" 와 같은** 종류다.\n\n**이름으로 찾는다는 것**\n\n```java\npublic static final String DEFAULT_FILTER_NAME = \"springSecurityFilterChain\";\n```\n\n> **타입이 아니라 이름**이다.\n> **빈 이름을 바꾸면 못** 찾는다.\n>\n> **`@EnableWebSecurity` 가 그 이름으로 `FilterChainProxy` 를** 등록한다.\n\n**직접 등록해 볼 수도** 있다.\n\n```java\n@Bean\npublic FilterRegistrationBean<DelegatingFilterProxy> securityFilter() {\n    DelegatingFilterProxy proxy =\n            new DelegatingFilterProxy(\"springSecurityFilterChain\");\n    FilterRegistrationBean<DelegatingFilterProxy> bean =\n            new FilterRegistrationBean<>(proxy);\n    bean.setOrder(-100);\n    return bean;\n}\n```\n\n> **부트가 자동으로** 한다. **순서가 `-100`** 이다.\n> **다른 필터보다 앞에** 선다.\n>\n> **6.6절의 CORS 필터 순서 문제가 여기서** 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 서블릿 필터 목록 ---\n\n@SpringBootTest(webEnvironment = RANDOM_PORT)\nclass ServletFilterTest {\n    @Autowired ServletContext servletContext;\n\n    @Test\n    void servletFilters() {\n        servletContext.getFilterRegistrations()\n                .forEach((name, reg) ->\n                        System.out.println(name + \" -> \" + reg.getClassName()));\n    }\n}\n\n$ ./gradlew test --tests ServletFilterTest\n\ncharacterEncodingFilter -> org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilter\nformContentFilter -> org.springframework.boot.web.servlet.filter.OrderedFormContentFilter\nrequestContextFilter -> org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter\nspringSecurityFilterChain -> org.springframework.web.filter.DelegatingFilterProxy\n\n#   시큐리티는 하나다\n\n#   열다섯이 아니라 하나\n\n#   그 하나가 DelegatingFilterProxy 다\n\n# --- 그 안에 뭐가 있나 ---\n\n@Test\nvoid whatIsInside() throws Exception {\n    FilterRegistration reg =\n            servletContext.getFilterRegistration(\"springSecurityFilterChain\");\n    System.out.println(\">>> servlet filter: \" + reg.getClassName());\n\n    Filter bean = context.getBean(\"springSecurityFilterChain\", Filter.class);\n    System.out.println(\">>> spring bean:    \" + bean.getClass().getName());\n}\n\n>>> servlet filter: org.springframework.web.filter.DelegatingFilterProxy\n>>> spring bean:    org.springframework.security.web.FilterChainProxy\n\n#   서블릿에는 프록시가, 스프링에는 진짜가 있다\n\n# --- 이름으로 찾는지 확인 ---\n\n@Test\nvoid byName() {\n    boolean byType = context.getBeanNamesForType(FilterChainProxy.class).length > 0;\n    boolean byName = context.containsBean(\"springSecurityFilterChain\");\n\n    System.out.println(\">>> by type: \" + byType);\n    System.out.println(\">>> by name: \" + byName);\n}\n\n>>> by type: true\n>>> by name: true\n\n#   둘 다 있는데 프록시는 이름으로 찾는다\n\n# --- 이름을 바꿔 보면 ---\n\n@Bean\npublic FilterRegistrationBean<DelegatingFilterProxy> wrongName() {\n    return new FilterRegistrationBean<>(\n            new DelegatingFilterProxy(\"mySecurityChain\"));\n}\n\n$ ./gradlew bootRun\n\n2026-09-09T18:46:11.882  INFO --- Started CafekioskApplication in 3.221 seconds\n\n#   기동은 성공한다\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 500\n\nERROR o.a.c.c.C.[.[.[/].[dispatcherServlet] :\n  Servlet.service() for servlet [dispatcherServlet] threw exception\n\norg.springframework.beans.factory.NoSuchBeanDefinitionException:\n  No bean named 'mySecurityChain' available\n\tat DelegatingFilterProxy.initDelegate(DelegatingFilterProxy.java:333)\n\tat DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:250)\n\n#   첫 요청에서 터졌다\n\n#   기동 때가 아니다\n\n#   지연 조회라서다\n\n# --- 캐시되는지 ---\n\n#   두 번째 요청\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 500\n\n#   같은 오류다. 못 찾은 건 캐시가 안 된다\n\n#   정상일 때는\n\nTRACE DelegatingFilterProxy : Initializing filter 'springSecurityFilterChain'\nDEBUG DelegatingFilterProxy : Filter 'springSecurityFilterChain'\n  configured for use\n\n#   첫 요청에 한 번만 나온다\n\n$ curl -s localhost:8080/api/v1/orders > /dev/null\n$ curl -s localhost:8080/api/v1/orders > /dev/null\n\n#   두 번째부터는 Initializing 이 안 나온다\n\n#   delegate 필드에 캐시됐다\n\n# --- 순서 ---\n\n@Test\nvoid filterOrder() {\n    context.getBeansOfType(FilterRegistrationBean.class)\n            .forEach((name, bean) ->\n                    System.out.println(bean.getOrder() + \"  \" + name));\n}\n\n-2147483648  characterEncodingFilter\n-9900        formContentFilter\n-105         requestContextFilter\n-100         securityFilterChainRegistration\n\n#   시큐리티가 -100 이다\n\n#   인코딩 필터보다는 뒤, 대부분보다는 앞이다\n\n#   내가 만든 필터를 앞에 두려면\n\n@Bean\npublic FilterRegistrationBean<MyFilter> myFilter() {\n    FilterRegistrationBean<MyFilter> bean =\n            new FilterRegistrationBean<>(new MyFilter());\n    bean.setOrder(-101);\n    return bean;\n}\n\n$ curl -s localhost:8080/api/v1/orders\n\n>>> MyFilter before\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\n...\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n>>> MyFilter after\n\n#   시큐리티를 감쌌다\n\n#   -99 로 하면\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\n>>> MyFilter before\n>>> MyFilter after\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   시큐리티 안에서 돈다\n\n#   6.6절의 CORS 순서 문제가 이것이다\n\n# --- 인증 정보가 있는지가 갈린다 ---\n\npublic class MyFilter implements Filter {\n    public void doFilter(req, res, chain) {\n        Authentication auth =\n                SecurityContextHolder.getContext().getAuthentication();\n        System.out.println(\">>> auth: \" + auth);\n        chain.doFilter(req, res);\n    }\n}\n\n#   order = -101 (시큐리티 앞)\n>>> auth: null\n\n#   order = -99 (시큐리티 뒤)\n>>> auth: UsernamePasswordAuthenticationToken [Principal=user, ...]\n\n#   같은 필터인데 순서가 다르면 보이는 게 다르다\n\n#   4.2절의 SecurityContextHolder 이야기다\n\n# --- 다음 절에서 ---\n\n#   그 하나가 열다섯을 어떻게 부르는지 본다",
+   "note": "**서블릿 필터 목록에 시큐리티가 하나**다. **`DelegatingFilterProxy`** 다.\n\n**서블릿에는 프록시가, 스프링에는 `FilterChainProxy`** 가 있다.\n\n**빈 이름을 바꾸면 기동은 성공하고 첫 요청이** 터진다. **지연 조회**라서다.\n\n**두 번째 요청부터 `Initializing` 이 안** 나온다 — **캐시**됐다.\n\n**순서가 `-100`** 이다. **`-101` 이면 시큐리티를 감싸고 `-99` 면 안에서** 돈다.\n\n**같은 필터인데 순서에 따라 `auth` 가 `null` 이거나** 아니다."
+  }
+ ],
+ "recap": [
+  "**서블릿 컨테이너는 스프링 빈을** 모른다.",
+  "**서블릿 필터로 등록된 시큐리티는 하나**뿐이다.",
+  "**`DelegatingFilterProxy` 가 이름으로 빈을** 찾는다.",
+  "**이름이 `springSecurityFilterChain`** 이다.",
+  "**지연 조회라 첫 요청에서** 터진다.",
+  "**기동은 성공**한다.",
+  "**찾은 뒤에는 캐시**된다.",
+  "**순서가 `-100`** 이다.",
+  "**순서에 따라 `SecurityContext` 가 보이거나 안** 보인다."
+ ],
+ "drills": [
+  {
+   "task": "서블릿 필터 목록을 찍는다.",
+   "done_when": "시큐리티가 하나인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈 이름을 잘못 지정해 본다.",
+   "done_when": "첫 요청에서 터지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필터를 하나 만들어 순서를 바꿔 본다.",
+   "done_when": "시큐리티 앞뒤 로그를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "그 필터에서 `Authentication` 을 찍는다.",
+   "done_when": "순서에 따라 달라지는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `DelegatingFilterProxy` 가 필요한가?",
+   "a": "서블릿 컨테이너가 스프링 빈을 모르기 때문이다."
+  },
+  {
+   "q": "무엇으로 찾나?",
+   "a": "빈 이름이다. `springSecurityFilterChain` 이다."
+  },
+  {
+   "q": "왜 지연 조회인가?",
+   "a": "필터 등록 시점에 스프링 컨텍스트가 없을 수 있어서다."
+  },
+  {
+   "q": "그 결과는?",
+   "a": "설정 오류가 기동이 아니라 첫 요청에서 터진다."
+  },
+  {
+   "q": "순서가 왜 중요한가?",
+   "a": "시큐리티 앞뒤에 따라 `SecurityContext` 가 보이는지가 달라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DelegatingFilterProxy",
+   "def": "서블릿 필터로 등록되어 스프링 빈인 필터에 위임하는 다리 역할의 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  }
+ ]
+}

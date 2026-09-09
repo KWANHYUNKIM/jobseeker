@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "autoconfig",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "의존성 하나가 한 일",
+ "summary": "자동 설정이 켠 것들.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "어느 자동 설정이 무엇을 켰는지 안다.",
+  "물러나는 조건을 안다.",
+  "덮어쓰기와 확장을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 일곱 가지가** 켜졌다. **누가 켰는지 여기서** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "자동 설정의 사슬",
+   "ascii": "   the chain of auto configuration\n\n   spring-boot-starter-security on the classpath\n     -> SecurityAutoConfiguration\n          -> SpringBootWebSecurityConfiguration\n               -> a default SecurityFilterChain bean\n     -> SecurityFilterAutoConfiguration\n          -> registers DelegatingFilterProxy as a servlet filter\n     -> UserDetailsServiceAutoConfiguration\n          -> an in memory user with a random password\n\n   three auto configurations, one dependency",
+   "note": "**의존성 하나에 자동 설정 셋**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "셋이 각각 하는 일",
+   "md": "**`SecurityAutoConfiguration`**\n\n> **`SpringBootWebSecurityConfiguration` 을** 가져온다.\n> **거기서 기본 `SecurityFilterChain` 빈이** 만들어진다.\n>\n> ```java\n> @Bean\n> @Order(SecurityProperties.BASIC_AUTH_ORDER)\n> SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {\n>     http.authorizeHttpRequests(r -> r.anyRequest().authenticated());\n>     http.formLogin(withDefaults());\n>     http.httpBasic(withDefaults());\n>     return http.build();\n> }\n> ```\n>\n> **세 줄**이다. **1.4절의 일곱 중 다섯이 여기서** 나왔다.\n\n**`SecurityFilterAutoConfiguration`**\n\n> **`DelegatingFilterProxy` 를 서블릿 필터로** 등록한다.\n> **이름이 `springSecurityFilterChain`** 이다.\n>\n> **2.2절**의 주제다.\n\n**`UserDetailsServiceAutoConfiguration`**\n\n> **`user` 계정과 랜덤 비밀번호**다.\n> **로그에 찍힌 그것**이다.\n\n**어떻게 확인하나**\n\n```\n--debug\n```\n\n> **자동 설정 보고서가** 나온다.\n> **`Positive matches` 와 `Negative matches`** 다.\n>\n> **「스프링 핵심 원리」의 조건부 빈** 이야기다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 물러나게 하나",
+   "ascii": "   what turns each one off\n\n   define any SecurityFilterChain bean\n     the default chain is gone. all of it.\n\n   define any UserDetailsService bean\n     the generated password disappears from the log\n\n   this is @ConditionalOnMissingBean, not a merge\n     you replace, you do not extend",
+   "note": "**병합이 아니라 교체**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "덮어쓰기지 확장이 아니다",
+   "md": "**`SecurityFilterChain` 빈을 하나라도 만들면**\n\n```java\n@Bean\nSecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(r -> r\n            .requestMatchers(\"/api/**\").permitAll());\n    return http.build();\n}\n```\n\n> **기본 체인이 통째로** 사라진다.\n> **`formLogin` 도 `httpBasic` 도 안** 켜진다.\n>\n> **로그인 페이지가 없어진다.**\n\n**초보가 자주 겪는 것**\n\n> **\"`/api/**` 만 열려고 했는데 로그인이 안 된다\"**\n>\n> **`@ConditionalOnMissingBean` 이라** 그렇다.\n> **내 빈이 있으면 기본을 안** 만든다.\n\n**필터 개수가 준다.**\n\n```\n기본:      15개\n위 설정:   12개\n```\n\n> **`UsernamePasswordAuthenticationFilter`, `DefaultLoginPageGeneratingFilter`, `DefaultLogoutPageGeneratingFilter`** 셋이 빠졌다.\n> **`formLogin` 이 그 셋을 켜는** 것이었다.\n>\n> **2.4절에서 설정이 필터가 되는 과정**을 본다.\n\n**`UserDetailsService` 도** 같다.\n\n> **하나 만들면 랜덤 비밀번호가 로그에서** 사라진다.\n> **`AuthenticationManagerBuilder` 를 건드려도** 그렇다.\n\n**`SecurityFilterAutoConfiguration` 은 안** 물러난다.\n\n> **`DelegatingFilterProxy` 등록은 계속**된다.\n> **체인이 있든 없든 그 진입점은** 필요하다.\n\n**규칙**\n\n> **기본값을 하나라도 바꾸려면 전부 다시** 쓴다.\n> **2.7절에서 그걸** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 자동 설정 보고서 ---\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -A2 \"SecurityAutoConfiguration\"\n\n   SecurityAutoConfiguration matched:\n      - @ConditionalOnClass found required class\n        'org.springframework.security.authentication.DefaultAuthenticationEventPublisher'\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n>   | grep -B1 -A3 \"SpringBootWebSecurityConfiguration\"\n\n   SpringBootWebSecurityConfiguration.SecurityFilterChainConfiguration matched:\n      - @ConditionalOnMissingBean (types: SecurityFilterChain) did not find\n        any beans (OnBeanCondition)\n      - @ConditionalOnWebApplication (required) found 'session' scope\n\n#   내 SecurityFilterChain 빈이 없어서 기본이 만들어졌다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n>   | grep -A2 \"UserDetailsServiceAutoConfiguration\"\n\n   UserDetailsServiceAutoConfiguration matched:\n      - @ConditionalOnMissingBean (types: AuthenticationManager,\n        AuthenticationProvider, UserDetailsService,\n        AuthenticationManagerResolver) did not find any beans\n\n#   넷 중 하나만 있어도 물러난다\n\n# --- 필터 개수를 센다 ---\n\n@SpringBootTest\nclass FilterChainTest {\n    @Autowired FilterChainProxy filterChainProxy;\n\n    @Test\n    void filters() {\n        List<SecurityFilterChain> chains = filterChainProxy.getFilterChains();\n        System.out.println(\">>> chains: \" + chains.size());\n        chains.get(0).getFilters().forEach(f ->\n                System.out.println(\"    \" + f.getClass().getSimpleName()));\n    }\n}\n\n$ ./gradlew test --tests FilterChainTest\n\n>>> chains: 1\n    DisableEncodeUrlFilter\n    WebAsyncManagerIntegrationFilter\n    SecurityContextHolderFilter\n    HeaderWriterFilter\n    CsrfFilter\n    LogoutFilter\n    UsernamePasswordAuthenticationFilter\n    DefaultLoginPageGeneratingFilter\n    DefaultLogoutPageGeneratingFilter\n    BasicAuthenticationFilter\n    RequestCacheAwareFilter\n    SecurityContextHolderAwareRequestFilter\n    AnonymousAuthenticationFilter\n    ExceptionTranslationFilter\n    AuthorizationFilter\n\n#   체인 하나에 필터 열다섯이다\n\n# --- 내 빈을 하나 만들면 ---\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        http.authorizeHttpRequests(auth -> auth\n                .requestMatchers(\"/api/**\").permitAll()\n                .anyRequest().authenticated());\n        return http.build();\n    }\n}\n\n$ ./gradlew bootRun\n\n2026-09-09T18:44:11.882  INFO --- Will secure any request with\n  [DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter,\n   SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter,\n   LogoutFilter, RequestCacheAwareFilter,\n   SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter,\n   ExceptionTranslationFilter, AuthorizationFilter]\n\n#   열한 개다\n\n#   빠진 넷\n#     UsernamePasswordAuthenticationFilter\n#     DefaultLoginPageGeneratingFilter\n#     DefaultLogoutPageGeneratingFilter\n#     BasicAuthenticationFilter\n\n#   formLogin() 과 httpBasic() 을 안 켜서다\n\n#   그리고 랜덤 비밀번호도 안 찍혔다? 아니다\n\n2026-09-09T18:44:10.117  WARN ---\nUsing generated security password: 3c8f2a91-...\n\n#   UserDetailsService 는 안 만들었으니 그건 그대로다\n\n# --- 로그인 화면이 없다 ---\n\n$ curl -i localhost:8080/login\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\n#   무한 리다이렉트다\n\nDEBUG FilterChainProxy : Securing GET /login\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  [GET /login] with attribute[authenticated]\nDEBUG ExceptionTranslationFilter : Sending to authentication entry point\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to /login\n\n#   /login 을 요청하면 인증이 필요하다고 /login 으로 보낸다\n\n#   DefaultLoginPageGeneratingFilter 가 없어서\n#   /login 을 처리할 게 아무것도 없다\n\n$ curl -sL -o /dev/null -w \"%{num_redirects}\\n\" localhost:8080/login\n\n50\n\n#   curl 이 리다이렉트 한도에서 멈췄다\n\n#   \"api 만 열려고 했는데 로그인이 안 된다\" 가 이것이다\n\n# --- formLogin 을 다시 켜면 ---\n\nhttp.authorizeHttpRequests(auth -> auth\n        .requestMatchers(\"/api/**\").permitAll()\n        .anyRequest().authenticated());\nhttp.formLogin(withDefaults());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\"\n\n  [... UsernamePasswordAuthenticationFilter,\n   DefaultLoginPageGeneratingFilter, DefaultLogoutPageGeneratingFilter, ...]\n\n#   열네 개다 (httpBasic 은 아직 안 켰다)\n\n$ curl -s localhost:8080/login | grep -c \"Please sign in\"\n\n1\n\n#   화면이 돌아왔다\n\n# --- api 는 열렸나 ---\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 200\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG AuthorizationFilter : Authorized filter invocation\n  [GET /api/v1/orders] with attribute[permitAll]\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   permitAll 로 통과했다\n\n#   1.3절의 구멍이 다시 열렸다\n\n#   설정으로 연 것이라 의도한 것이다\n#   7장에서 제대로 닫는다\n\n# --- UserDetailsService 를 만들면 ---\n\n@Bean\npublic UserDetailsService userDetailsService() {\n    UserDetails user = User.withUsername(\"user\")\n            .password(\"{noop}1234\")\n            .roles(\"USER\")\n            .build();\n    return new InMemoryUserDetailsManager(user);\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c \"generated security password\"\n\n0\n\n#   랜덤 비밀번호가 사라졌다\n\n#   UserDetailsServiceAutoConfiguration 이 물러났다\n\n# --- 병합이 아니라 교체다 ---\n\n#   내 빈           기본 빈\n#   SecurityFilterChain  ->  없어진다 (전부)\n#   UserDetailsService   ->  없어진다\n\n#   \"내가 안 쓴 것은 기본값으로\" 가 아니다\n\n#   기본값을 하나라도 바꾸려면 전부 다시 쓴다\n\n# --- 다음 절에서 ---\n\n#   DelegatingFilterProxy 를 본다",
+   "note": "**`--debug` 로 `@ConditionalOnMissingBean` 이 안 찾아서 기본이 만들어진 걸** 확인했다.\n\n**체인 하나에 필터 열다섯**이다.\n\n**내 빈을 만드니 열한 개**로 준다. **`formLogin` 이 켜던 셋이** 빠졌다.\n\n**`/login` 이 무한 리다이렉트**다 — **처리할 필터가** 없다. **`curl` 이 50번에서** 멈췄다.\n\n**`formLogin` 을 다시 켜니 화면이** 돌아왔다.\n\n**`UserDetailsService` 를 만드니 랜덤 비밀번호가** 사라졌다.\n\n**병합이 아니라 교체**다."
+  }
+ ],
+ "recap": [
+  "**자동 설정 셋이 일곱 가지를** 켰다.",
+  "**기본 `SecurityFilterChain` 이 세 줄**이다.",
+  "**`@ConditionalOnMissingBean` 이라 내 빈이 있으면** 물러난다.",
+  "**병합이 아니라 교체**다.",
+  "**`SecurityFilterChain` 을 만들면 기본 체인이 통째로** 사라진다.",
+  "**`formLogin` 을 안 켜면 `/login` 이 무한 리다이렉트**다.",
+  "**필터가 열다섯에서 열하나로** 준다.",
+  "**`UserDetailsService` 를 만들면 랜덤 비밀번호가** 사라진다.",
+  "**`SecurityFilterAutoConfiguration` 은 안** 물러난다."
+ ],
+ "drills": [
+  {
+   "task": "`--debug` 로 자동 설정 보고서를 본다.",
+   "done_when": "셋이 왜 매칭됐는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`SecurityFilterChain` 빈을 하나 만든다.",
+   "done_when": "필터 개수가 주는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`/login` 을 요청해 본다.",
+   "done_when": "무한 리다이렉트를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`UserDetailsService` 를 만든다.",
+   "done_when": "랜덤 비밀번호가 사라지는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자동 설정 셋은?",
+   "a": "`SecurityAutoConfiguration`, `SecurityFilterAutoConfiguration`, `UserDetailsServiceAutoConfiguration` 이다."
+  },
+  {
+   "q": "기본 체인이 하는 세 줄은?",
+   "a": "`anyRequest().authenticated()`, `formLogin()`, `httpBasic()` 이다."
+  },
+  {
+   "q": "내 빈을 만들면?",
+   "a": "기본 체인이 통째로 사라진다. 병합이 아니라 교체다."
+  },
+  {
+   "q": "`/login` 이 왜 무한 리다이렉트인가?",
+   "a": "`DefaultLoginPageGeneratingFilter` 가 없어 `/login` 을 처리할 게 없다."
+  },
+  {
+   "q": "안 물러나는 자동 설정은?",
+   "a": "`SecurityFilterAutoConfiguration` 이다. 진입점 등록은 계속 필요하다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Security",
+   "url": "https://docs.spring.io/spring-boot/reference/web/spring-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  }
+ ]
+}

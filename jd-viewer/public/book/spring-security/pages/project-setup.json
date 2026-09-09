@@ -1,0 +1,137 @@
+{
+ "book": "spring-security",
+ "id": "project-setup",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "프로젝트 세팅",
+ "summary": "의존성 하나와 첫 로그인 화면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "의존성 하나가 무엇을 켜는지 본다.",
+  "로그를 켠다.",
+  "기존 테스트가 왜 깨지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**의존성 한 줄**이다. **그 한 줄이 일곱 가지를** 켠다."
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "build.gradle",
+   "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-security'\n\n    testImplementation 'org.springframework.security:spring-security-test'\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄이 켜는 것",
+   "ascii": "   what one dependency turns on\n\n   a login page you did not write\n   a logout page you did not write\n   a generated password in the startup log\n   csrf protection on every POST\n   five response headers\n   fifteen filters\n   every url requiring authentication\n\n   none of it was configured. all of it is a default.",
+   "note": "**설정한 게 하나도 없는데 전부** 켜졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기동 로그가 알려 주는 것",
+   "md": "```\nUsing generated security password: 8f3a91c8-4b1e-4d2a-9c3f-8e7d6a5b4c3d\n\nThis generated password is for development use only.\nYour security configuration must be updated before running\nyour application in production.\n```\n\n> **`user` 라는 계정 하나가** 만들어졌다.\n> **비밀번호가 기동할 때마다** 바뀐다.\n>\n> **`InMemoryUserDetailsManager`** 다. **4.6절**에서 다룬다.\n\n**설정으로 고정할 수** 있다.\n\n```yaml\nspring:\n  security:\n    user:\n      name: user\n      password: 1234\n      roles: USER\n```\n\n> **개발 초기에만** 쓴다.\n> **10.3절에서 DB 로** 바꾼다.\n\n**로그인 화면도 안 만들었는데** 있다.\n\n```\nGET /login\n```\n\n> **`DefaultLoginPageGeneratingFilter` 가 HTML 을 직접** 만든다.\n> **1.1절의 필터 목록에서 `(8/15)`** 였다.\n>\n> **필터가 응답을 만든다는 게 이상하게** 들리는데, **그게 시큐리티의 방식**이다.\n> **`DispatcherServlet` 에 안 간다.**\n\n**`spring-security-test` 를 같이** 넣는다.\n\n> **`@WithMockUser` 같은 게 거기** 있다.\n> **8.8절에서 쓴다.**\n>\n> **9권 1.4절에서 `testImplementation` 이 프로덕션에 안 보인다고** 했다.\n> **같은 이유로 여기 둔다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "로그 설정 셋",
+   "ascii": "   the three log settings this book needs\n\n   org.springframework.security = TRACE\n     the filter list, per request\n\n   org.springframework.security.web.FilterChainProxy = DEBUG\n     just the chain, quieter\n\n   @EnableWebSecurity(debug = true)\n     a formatted chain dump at startup\n\n   the first one is what every section in this book prints",
+   "note": "**첫째가 이 책이 매 절 찍는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "로그를 반드시 켠다",
+   "md": "```yaml\nlogging:\n  level:\n    org.springframework.security: TRACE\n```\n\n> **이 책의 절반이 이 로그**다.\n> **1.1절에서 \"필터 목록을 볼 줄 알아야 한다\" 고** 했다.\n\n**너무 시끄러우면**\n\n```yaml\nlogging:\n  level:\n    org.springframework.security.web.FilterChainProxy: DEBUG\n```\n\n> **필터 이름만** 나온다.\n> **`Securing GET /...` 와 `Secured GET /...`** 두 줄이다.\n\n**기동 때 한 번만 보려면**\n\n```java\n@EnableWebSecurity(debug = true)\n```\n\n```\nSecurity filter chain: [\n  DisableEncodeUrlFilter\n  WebAsyncManagerIntegrationFilter\n  SecurityContextHolderFilter\n  ...\n]\n```\n\n> **요청마다가 아니라 시작할 때 한 번** 찍는다.\n> **`debug = true` 를 운영에 두면 안** 된다 — **경고가 뜬다.**\n\n**운영에서는 끈다.**\n\n> **`TRACE` 는 요청마다 스무 줄**이다.\n> **비밀번호가 찍히진 않는데** **경로와 권한이** 남는다.\n\n**9권 8.2절의 기준과 같다.**\n\n> **환경이 다른 것만** 나눈다.\n> **로그 레벨은 환경이 다른 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "78개 중 몇 개가 깨지나",
+   "md": "**의존성만 넣고 테스트를** 돌린다.\n\n> **컨트롤러 테스트가 다** 깨진다.\n> **`@WebMvcTest` 에도 시큐리티 필터가** 붙는다.\n\n```\nMockHttpServletResponse:\n           Status = 401\n```\n\n> **`@WebMvcTest` 는 `SecurityFilterAutoConfiguration` 을** 가져온다.\n\n**세 가지 길**\n\n| | |\n|---|---|\n| **`@WithMockUser`** | 인증된 척한다 |\n| **`.with(csrf())`** | CSRF 토큰을 붙인다 |\n| **`@AutoConfigureMockMvc(addFilters = false)`** | 필터를 끈다 |\n\n> **셋째가 가장 쉽고 가장** 나쁘다.\n> **9권 7.3절의 테스트 훅과 같은** 상태다 — **검증을 없앤다.**\n\n**이 책은 첫째와 둘째**를 쓴다.\n\n> **8.8절에서 제대로** 다룬다.\n> **지금은 깨진 채로** 둔다.\n>\n> **깨진 게 정보**다 — **1.3절의 `curl` 이 이제 막힌다는 뜻**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 의존성을 넣고 기동 ---\n\n$ ./gradlew bootRun\n\n2026-09-09T18:41:02.117  INFO --- Starting CafekioskApplication\n2026-09-09T18:41:03.882  WARN --- \n\nUsing generated security password: 8f3a91c8-4b1e-4d2a-9c3f-8e7d6a5b4c3d\n\nThis generated password is for development use only.\nYour security configuration must be updated before running your\napplication in production.\n\n2026-09-09T18:41:04.331  INFO --- Will secure any request with\n  [DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter,\n   SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter,\n   LogoutFilter, UsernamePasswordAuthenticationFilter,\n   DefaultLoginPageGeneratingFilter, DefaultLogoutPageGeneratingFilter,\n   BasicAuthenticationFilter, RequestCacheAwareFilter,\n   SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter,\n   ExceptionTranslationFilter, AuthorizationFilter]\n2026-09-09T18:41:04.918  INFO --- Started CafekioskApplication in 3.412 seconds\n\n#   열다섯 개다\n\n#   Will secure any request 가 기본값이다\n\n# --- 1.3절의 curl 을 다시 ---\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}'\n\nHTTP/1.1 403\nSet-Cookie: JSESSIONID=8A2B; Path=/; HttpOnly\nX-Content-Type-Options: nosniff\nX-XSS-Protection: 0\nCache-Control: no-cache, no-store, max-age=0, must-revalidate\nPragma: no-cache\nExpires: 0\nX-Frame-Options: DENY\n\nDEBUG FilterChainProxy : Securing POST /api/v1/orders/new\nTRACE FilterChainProxy : Invoking CsrfFilter (5/15)\nDEBUG CsrfFilter : Invalid CSRF token found for\n  http://localhost:8080/api/v1/orders/new\nDEBUG AccessDeniedHandlerImpl : Responding with 403 status code\n\n#   막혔다\n\n#   401 이 아니라 403 이다. CsrfFilter 가 먼저 걸었다\n\n#   그리고 응답 헤더가 다섯 개 붙었다  (6.7절)\n\n# --- 조회는 ---\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  [GET /api/v1/orders] with attribute[authenticated]\nDEBUG ExceptionTranslationFilter : Sending AnonymousAuthenticationToken\n  to authentication entry point since access is denied\nDEBUG LoginUrlAuthenticationEntryPoint :\n  Redirecting to http://localhost:8080/login\n\n#   GET 은 CSRF 대상이 아니라 15번째까지 갔다\n\n#   같은 '인증 필요' 인데\n#   POST 는 403, GET 은 302 다\n\n#   1.1절에서 말한 그것이다\n\n# --- 안 만든 로그인 화면 ---\n\n$ curl -s localhost:8080/login | head -20\n\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Please sign in</title>\n    <link href=\"https://cdn.jsdelivr.net/.../bootstrap.min.css\" rel=\"stylesheet\">\n  </head>\n  <body>\n    <div class=\"container\">\n      <form class=\"form-signin\" method=\"post\" action=\"/login\">\n        <h2 class=\"form-signin-heading\">Please sign in</h2>\n        <input type=\"text\" name=\"username\" placeholder=\"Username\" required>\n        <input type=\"password\" name=\"password\" placeholder=\"Password\" required>\n        <input name=\"_csrf\" type=\"hidden\" value=\"kR8x...\">\n        <button type=\"submit\">Sign in</button>\n      </form>\n\nDEBUG FilterChainProxy : Securing GET /login\nTRACE FilterChainProxy : Invoking DefaultLoginPageGeneratingFilter (8/15)\n\n#   8번째 필터가 HTML 을 만들었다\n\n#   컨트롤러가 없다\n\n$ curl -s localhost:8080/login | grep -c \"_csrf\"\n1\n\n#   CSRF 토큰이 폼에 박혀 있다\n\n# --- 로그인해 본다 ---\n\n$ TOKEN=$(curl -s -c cookies.txt localhost:8080/login \\\n>   | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n\n$ curl -i -b cookies.txt -c cookies.txt -X POST localhost:8080/login \\\n>   -d \"username=user&password=8f3a91c8-4b1e-4d2a-9c3f-8e7d6a5b4c3d&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\nSet-Cookie: JSESSIONID=C9D4; Path=/; HttpOnly\n\nDEBUG FilterChainProxy : Securing POST /login\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (7/15)\nDEBUG ProviderManager : Authenticating request with\n  DaoAuthenticationProvider\nDEBUG ChangeSessionIdAuthenticationStrategy :\n  Changed session id from 8A2B\nDEBUG UsernamePasswordAuthenticationFilter :\n  Set SecurityContextHolder to UsernamePasswordAuthenticationToken\n  [Principal=user, Granted Authorities=[ROLE_USER]]\n\n#   7번째에서 인증됐다\n\n#   세션 ID 가 8A2B 에서 C9D4 로 바뀌었다  (1.2절의 세션 고정)\n\n# --- 이제 조회가 되나 ---\n\n$ curl -s -b cookies.txt localhost:8080/api/v1/orders | jq .status\n\n\"OK\"\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/15)\nDEBUG SecurityContextHolderFilter :\n  Set SecurityContextHolder to UsernamePasswordAuthenticationToken\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Authorized filter invocation\n  [GET /api/v1/orders] with attribute[authenticated]\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   3번째가 세션에서 꺼냈고 15번째가 통과시켰다\n\n#   Secured 로 끝난다\n\n#   이 두 줄(Securing / Secured)이 통과의 표시다\n\n# --- 테스트는 ---\n\n$ ./gradlew test\n\nOrderControllerTest > 신규 주문을 등록한다 FAILED\n    java.lang.AssertionError: Status expected:<200> but was:<401>\nOrderControllerTest > 주문 시 상품 번호는 1개 이상이어야 한다 FAILED\n    Status expected:<400> but was:<401>\nOrderControllerTest > 주문 응답에 총 금액이 담긴다 FAILED\n    Status expected:<200> but was:<401>\nOrderControllerDocsTest > 신규 주문을 등록하는 API FAILED\n    Status expected:<200> but was:<401>\n\n78 tests completed, 4 failed\n\nBUILD FAILED in 36s\n\n#   넷이 깨졌다\n\n#   @WebMvcTest 에도 필터가 붙는다\n\n#   9권 10.1절에서 \"인증을 빼도 아무도 안 깨진다\" 고 했다\n\n#   이제 인증을 넣으니 넷이 깨진다\n\n#   깨진 게 정보다\n\n# --- 필터를 꺼서 통과시키면 ---\n\n@AutoConfigureMockMvc(addFilters = false)\nclass OrderControllerTest { }\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL in 35s\n\n#   통과한다\n\n#   그런데 인증을 검증하는 게 하나도 없다\n\n#   9권 7.3절의 테스트 훅과 같다\n\n#   되돌린다. 8.8절에서 제대로 한다\n\n# --- 지금 상태 ---\n\n#   필터 15개\n#   기본 계정 하나\n#   모든 URL 이 인증 필요\n#   테스트 4개 실패\n\n#   설정 파일을 한 줄도 안 썼다\n\n# --- 다음 장에서 ---\n\n#   그 열다섯을 누가 만들었는지 본다",
+   "note": "**의존성 한 줄에 필터 열다섯이** 뜬다. **`Will secure any request` 가 기본**이다.\n\n**1.3절의 `curl` 이 `403`** 이다 — **`CsrfFilter (5/15)`** 가 먼저 걸었다. **`GET` 은 `302`** 다.\n\n**로그인 화면을 `DefaultLoginPageGeneratingFilter (8/15)` 가** 만든다. **컨트롤러가** 없다.\n\n**로그인하면 세션 ID 가 바뀐다** — 1.2절의 세션 고정.\n\n**테스트 넷이** 깨졌다. **9권 10.1절의 \"아무도 안 깨진다\" 의 반대**다."
+  }
+ ],
+ "recap": [
+  "**의존성 한 줄이 일곱 가지를** 켠다.",
+  "**필터 열다섯이 자동으로** 등록된다.",
+  "**기본 계정의 비밀번호가 기동마다** 바뀐다.",
+  "**로그인 화면을 필터가** 만든다 — 컨트롤러가 없다.",
+  "**`TRACE` 로그가 이 책의 절반**이다.",
+  "**운영에서는 끈다** — 요청마다 스무 줄이다.",
+  "**같은 인증 필요인데 POST 는 403, GET 은 302** 다.",
+  "**테스트 넷이 깨진다** — `@WebMvcTest` 에도 필터가 붙는다.",
+  "**`addFilters = false` 는 검증을 없앤다** — 9권 7.3절."
+ ],
+ "drills": [
+  {
+   "task": "의존성을 넣고 기동 로그를 읽는다.",
+   "done_when": "필터 열다섯을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1.3절의 `curl` 을 다시 보낸다.",
+   "done_when": "어느 필터가 막았는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성된 로그인 페이지의 HTML 을 본다.",
+   "done_when": "CSRF 토큰이 박혀 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트를 돌린다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "의존성 하나가 켜는 것은?",
+   "a": "로그인·로그아웃 페이지, 기본 계정, CSRF, 보안 헤더, 필터 열다섯, 전 URL 인증이다."
+  },
+  {
+   "q": "로그인 화면은 누가 만드나?",
+   "a": "`DefaultLoginPageGeneratingFilter` 다. 컨트롤러가 아니다."
+  },
+  {
+   "q": "왜 POST 는 403 이고 GET 은 302 인가?",
+   "a": "POST 는 `CsrfFilter(5/15)` 에서, GET 은 `AuthorizationFilter(15/15)` 에서 끝나서다."
+  },
+  {
+   "q": "테스트가 왜 깨지나?",
+   "a": "`@WebMvcTest` 에도 시큐리티 필터가 붙는다."
+  },
+  {
+   "q": "`addFilters = false` 의 문제는?",
+   "a": "통과하지만 인증을 검증하는 게 하나도 없어진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Security",
+   "url": "https://docs.spring.io/spring-boot/reference/web/spring-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  }
+ ]
+}
