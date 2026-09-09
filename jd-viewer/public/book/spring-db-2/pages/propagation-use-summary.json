@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "propagation-use-summary",
+ "no": "12.8",
+ "chapter": 12,
+ "title": "정리",
+ "summary": "전파를 쓰기 전에 볼 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여섯 배선의 결과를 정리한다.",
+  "전파를 쓸지 판단하는 순서를 안다.",
+  "12장의 결론을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 요구사항을 여섯 번 배선**했다. **결과를 나란히** 놓는다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 배선",
+   "ascii": "   the six wirings, and what each gave us\n\n   12.1  no service tx     member 1  log 0   physical 2   by accident\n   12.2  service tx        member 0  log 0   physical 1   requirement broken\n   12.4  catch it          member 0  log 0   physical 1   + exception\n   12.5  REQUIRES_NEW      member 1  log 0   physical 2   works, costs\n   12.7  facade            member 1  log 0   physical 2   works, cheap\n\n   12.1 and 12.7 look the same in the log\n   the difference is that 12.7 meant it",
+   "note": "**마지막 두 줄이 이 장의 결론**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "12.1 과 12.7 이 같은 이유",
+   "md": "**로그가 거의 같다.**\n\n```\nCreating new transaction   [MemberService.join]\nReleasing JDBC Connection  [conn0]\nCreating new transaction   [LogService.write]\nReleasing JDBC Connection  [conn0]\n```\n\n**둘 다 물리 2, 순차 실행**이다.\n\n**차이는 의도**다.\n\n| | 왜 그렇게 됐나 |\n|---|---|\n| **12.1** | **트랜잭션 경계를 안 정했다** — 우연 |\n| **12.7** | **경계를 두 개로 정했다** — 설계 |\n\n**12.1 의 문제는 회원 저장이 여러 단계면 통제가 안 된다는 것**이었다.\n\n```java\n// 12.1: 서비스에 트랜잭션이 없다\npublic void joinV1(String username) {\n    회원저장();      // 각각 커밋\n    권한부여();      // 각각 커밋\n    로그저장();      // 각각 커밋\n}\n```\n\n**앞의 둘도 따로 커밋된다.** **원하지 않은 분리**다.\n\n**12.7 은 필요한 곳만** 나눴다.\n\n```java\n// 12.7: 주 작업은 묶고 부수 작업만 뺐다\npublic void join(String username) {\n    memberService.join(username);    // 회원저장 + 권한부여, 한 트랜잭션\n    try { logService.write(username); } catch (Exception e) { }\n}\n```\n\n> **트랜잭션 경계를 정하지 않은 것과 두 개로 정한 것은 다르다.** **로그가 같아도 다른 코드**다."
+  },
+  {
+   "type": "figure",
+   "caption": "물어볼 순서",
+   "ascii": "   before reaching for propagation, ask\n\n   1  must both succeed together?      -> REQUIRED, done\n   2  must the side work survive?      -> is that really true?\n   3  can it wait until after commit?  -> AFTER_COMMIT event\n   4  can it leave the request?        -> async or a queue\n   5  can the boundary move outward?   -> facade\n   6  none of the above                -> REQUIRES_NEW, knowingly",
+   "note": "**6번까지 가는 경우가 드물다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2번을 특히 의심한다",
+   "md": "**\"부수 작업이 남아야 한다\"** 가 정말인지 묻는다.\n\n| 요구 | 정말인가 |\n|---|---|\n| **주문 로그** | **주문이 없는데 주문 로그가 왜 필요한가** |\n| **가입 환영 메일** | 가입이 안 됐는데 환영을? |\n| **조회수 갱신** | 조회가 실패했는데 카운트를? |\n| **감사 로그** | **필요하다** — 시도 자체가 기록 대상 |\n| **재시도 횟수** | **필요하다** — 11.6절 |\n\n**위 셋은 `AFTER_COMMIT` 이 맞다.** **아래 둘만 `REQUIRES_NEW`** 다.\n\n**구분 기준**이 있다.\n\n> **주 작업의 결과를 기록하나, 주 작업의 시도를 기록하나.**\n\n**결과를 기록하는 것이면 커밋 후**여야 한다. **시도를 기록하는 것이면 실패해도 남아야** 한다.\n\n**대부분의 \"로그\" 는 결과 기록**이다.\n\n> **12장 예제의 `Log` 도 사실 그렇다.** **회원이 없는데 가입 로그만 남는 것이 정말 원하는 것인지** 의심해야 한다.\n>\n> **예제라서 요구사항을 그렇게 세웠을 뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "12장이 남긴 규칙",
+   "md": "| | |\n|---|---|\n| 1 | **기본은 `REQUIRED`** — 손대지 않는다 |\n| 2 | **예외를 잡아도 롤백된다** — 12.4절 |\n| 3 | **`UnexpectedRollbackException` 은 결과**, 원인은 로그에 |\n| 4 | **`REQUIRES_NEW` 는 커넥션을 둘** 쓴다 |\n| 5 | **엔티티를 `REQUIRES_NEW` 로 넘기지 않는다** |\n| 6 | **`AFTER_COMMIT` 을 먼저** 고려한다 |\n| 7 | **경계를 밖으로 옮길 수 있는지** 본다 |\n\n**2번이 가장 많이 마주친다.**\n\n**진단 순서를 다시 적으면**\n\n```\n1  UnexpectedRollbackException 을 만난다\n2  로그에서 'marking existing transaction as rollback-only' 를 찾는다\n3  그 앞줄의 예외가 원인이다\n4  그 메서드에 @Transactional 이 있는지 본다\n5  있으면 12.5 또는 12.7 로 간다\n```\n\n> **10.10절의 체크리스트에 이어지는 것**이다. **거기 여덟 번째가 `Participating in existing` 이었다.**\n\n**로그 설정은 계속 켜 둔다.** **이 책 후반부의 모든 절이 로그를 읽는 것**이었다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 여섯 배선의 로그 특징 ---\n\n# 12.1  서비스 트랜잭션 없음\n#   Creating new transaction   [MemberRepository.save]\n#   Releasing JDBC Connection  [conn0]\n#   Creating new transaction   [LogRepository.save]\n#   Rolling back JPA transaction\n#   -> member 1, log 0\n\n# 12.2  서비스 트랜잭션\n#   Creating new transaction   [MemberService.joinV1]\n#   Participating in existing transaction   x2\n#   Participating transaction failed - marking ... rollback-only\n#   Initiating transaction rollback\n#   -> member 0, log 0\n\n# 12.4  예외를 잡음\n#   (12.2 와 같고)\n#   log 저장에 실패했습니다.\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   UnexpectedRollbackException\n#   -> member 0, log 0\n\n# 12.5  REQUIRES_NEW\n#   Creating new transaction   [MemberService.joinV2]\n#   Participating in existing transaction\n#   Suspending current transaction, creating new transaction\n#   Acquired Connection [conn1]\n#   Rolling back JPA transaction on EntityManager [SessionImpl@2]\n#   Resuming suspended transaction after completion\n#   Initiating transaction commit\n#   -> member 1, log 0\n\n# 12.7  퍼사드\n#   Creating new transaction   [MemberService.join]\n#   Committing JPA transaction\n#   Releasing JDBC Connection [conn0]\n#   Creating new transaction   [LogService.write]\n#   Rolling back JPA transaction\n#   Releasing JDBC Connection [conn0]\n#   -> member 1, log 0\n\n# --- 결정적인 한 줄씩 ---\n\n#   12.2, 12.4   Participating transaction failed - marking ...\n#   12.5         Suspending current transaction, creating new transaction\n#   12.7         (없다)\n\n#   문제를 만든 줄과 푼 줄과, 아예 안 만든 경우\n\n# --- 커넥션 점유 구간 ---\n\n#   12.5\n#     conn0 ####################\n#     conn1        #######\n#              동시에 둘\n\n#   12.7\n#     conn0 ########\n#     conn0            ########\n#              순차로 하나\n\n# --- 이 책 후반부에서 읽은 로그 문장 ---\n\n#   Getting transaction for [X]                          10.1\n#   Creating new transaction with name [X]: OPTIONS      10.8\n#   Acquired Connection [connN] for JDBC transaction     10.5\n#   Switching JDBC Connection to manual commit\n#   Setting JDBC Connection read-only                    10.9\n#   Participating in existing transaction                11.3\n#   Suspending current transaction, creating new         12.5\n#   Resuming suspended transaction after completion      12.5\n#   Participating transaction failed - marking ...       11.7\n#   Setting JDBC transaction rollback-only               11.7\n#   Global transaction is marked as rollback-only ...    11.7\n#   Completing transaction for [X] after exception: E    10.6\n#   Initiating transaction commit / rollback             10.6\n#   Committing JDBC transaction on Connection [connN]\n#   Releasing JDBC Connection [connN] after transaction\n\n#   열다섯 문장이다\n#   이것을 읽을 줄 알면 후반부를 다 읽은 것이다",
+   "note": "**여섯 배선의 로그를 나란히** 놓았다. **결정적인 한 줄씩**이 그 아래에 있다.\n\n**커넥션 점유 구간 그림**이 12.5 와 12.7 의 차이다. **결과는 같은데 자원 사용이 다르다.**\n\n**맨 아래 열다섯 문장이 이 책 후반부의 전부**다. **10장부터 12장까지 매 절이 이 문장들을 하나씩** 설명했다.\n\n**책이 거의 끝났다.**"
+  }
+ ],
+ "recap": [
+  "**여섯 번 배선**해서 같은 요구사항을 시험했다.",
+  "**12.1 과 12.7 은 로그가 같지만 의도가 다르다.**",
+  "**경계를 안 정한 것과 둘로 정한 것은 다르다.**",
+  "**\"부수 작업이 남아야 한다\" 를 의심**한다.",
+  "**결과를 기록하나 시도를 기록하나**가 기준이다.",
+  "**대부분의 로그는 결과 기록**이라 `AFTER_COMMIT` 이 맞다.",
+  "**규칙 일곱 개**가 12장의 정리다.",
+  "**`UnexpectedRollbackException` 진단은 로그 다섯 단계**로 한다.",
+  "**후반부의 로그 문장은 열다섯 개**다."
+ ],
+ "drills": [
+  {
+   "task": "여섯 배선을 다 실행해 결과를 표로 만든다.",
+   "done_when": "member/log 개수와 물리 개수를 채웠다.",
+   "minutes": 40
+  },
+  {
+   "task": "12.1 과 12.7 의 로그를 나란히 놓는다.",
+   "done_when": "같아 보이는 이유와 다른 점을 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금 프로젝트의 부수 작업을 분류한다.",
+   "done_when": "결과 기록인지 시도 기록인지 갈랐다.",
+   "minutes": 25
+  },
+  {
+   "task": "로그 문장 열다섯 개를 정리해 둔다.",
+   "done_when": "각각의 뜻을 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "12.1 과 12.7 의 차이는?",
+   "a": "로그는 같지만 12.1 은 경계를 안 정한 것이고 12.7 은 둘로 정한 것이다."
+  },
+  {
+   "q": "부수 작업을 나누는 기준은?",
+   "a": "주 작업의 결과를 기록하는지, 시도를 기록하는지다."
+  },
+  {
+   "q": "대부분의 로그는 어디에 속하나?",
+   "a": "결과 기록이다. `AFTER_COMMIT` 이 맞다."
+  },
+  {
+   "q": "`REQUIRES_NEW` 가 맞는 경우는?",
+   "a": "감사 로그나 재시도 횟수처럼 시도 자체를 기록할 때다."
+  },
+  {
+   "q": "`UnexpectedRollbackException` 진단 순서는?",
+   "a": "로그에서 `marking ... rollback-only` 를 찾고 앞줄의 예외와 그 메서드의 애너테이션을 확인한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
