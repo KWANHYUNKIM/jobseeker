@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "permit-all-trap",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "permitAll 의 함정",
+ "summary": "허용했는데 막힌다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "permitAll 이 어느 층까지인지 안다.",
+  "정적 리소스와 오류 페이지 문제를 푼다.",
+  "익명과 permitAll 의 차이를 다시 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`permitAll` 을 줬는데 403 이** 난다. **누가 막고 있나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "permitAll 은 한 층만 말한다",
+   "ascii": "   permitAll only speaks for one layer\n\n   the filter chain     permitAll says yes\n   method security      @PreAuthorize still runs\n   the controller       your own if statement still runs\n   the service          a business rule still throws\n\n   permitAll is not a master key, it is one vote out of four",
+   "note": "**만능 열쇠가 아니라 네 표 중** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 가지 원인",
+   "md": "| 증상 | 원인 | 절 |\n|---|---|---|\n| 403 인데 규칙은 `permitAll` | `@PreAuthorize` 가 따로 막음 | 7.5 |\n| CSS 가 302 | 규칙 순서 | 7.2 |\n| `POST` 만 403 | CSRF 토큰 없음 | 6.4 |\n| 빈 화면 | 오류 페이지가 막힘 | 아래 |\n| 로그인한 사람만 403 | `anonymous()` 를 씀 | 3.7 |\n\n> **다섯 중 셋은 `permitAll` 과 무관**하다.\n> **인가 규칙만 보고 있으면 못** 찾는다.\n\n**확인 순서**\n\n> **① `Securing` 로그가 찍혔나** — 안 찍혔으면 `ignoring` 이다(2.6절).\n> **② 어느 필터에서 끊겼나** — `(n/M)` 를 본다.\n> **③ `Secured` 가 찍혔나** — 찍혔으면 필터 밖의 문제다.\n>\n> **셋째면 메서드 보안이나 내 코드**다."
+  },
+  {
+   "type": "figure",
+   "caption": "오류 페이지 고리",
+   "ascii": "   the error page loop\n\n   1  GET /orders           403, forwarded to /error\n   2  /error is a request too, if you filter all dispatcher types\n   3  /error is not in the rules, so denyAll\n   4  403 again, forwarded to /error\n\n   the browser shows an empty page and the log says nothing useful",
+   "note": "**로그에 아무 단서가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "오류 페이지를 열어 둔다",
+   "md": "**기본은 문제가 안** 된다.\n\n> **`ERROR` 디스패치는 검사하지 않는다**(7.1절).\n> **그래서 `/error` 를 규칙에 안 적어도** 된다.\n\n**`shouldFilterAllDispatcherTypes(true)` 를 켜면 달라진다.**\n\n```java\nhttp.authorizeHttpRequests(a -> a\n        .shouldFilterAllDispatcherTypes(true)\n        .requestMatchers(\"/error\").permitAll()      // 이걸 안 쓰면 빈 화면\n        .anyRequest().denyAll());\n```\n\n> **왜 켜냐면 `FORWARD` 로 인가를 우회하는 경우가** 있어서다.\n> **켜면 `/error` 를 꼭 열어** 준다.\n\n**정적 리소스는 두 갈래**다.\n\n| 방식 | 특징 |\n|---|---|\n| `permitAll` | 필터를 다 타고 보안 헤더가 붙는다 |\n| `web.ignoring()` | 필터를 아예 안 탄다 |\n\n> **2.6절에서 봤다.**\n> **`permitAll` 쪽이 기본 권장**이고, **그 대신 순서를 위로** 올린다.\n\n**`permitAll` 이 인증을 지우지는 않는다.**\n\n> **로그인한 사람이 `permitAll` 경로에 오면 인증은 그대로** 있다.\n> **`Authentication` 을 읽는 컨트롤러가 정상 동작**한다.\n> **다만 인증을 조회 안 할 수도 있어서**(7.1절) **`@AuthenticationPrincipal` 이 `null` 로 보일 때가** 있다 — **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- permitAll 인데 403 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/api/v1/stats\").permitAll()\n        .anyRequest().authenticated());\n\n@GetMapping(\"/api/v1/stats\")\n@PreAuthorize(\"hasRole('ADMIN')\")\npublic String stats() { return \"...\"; }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/api/v1/stats\n403\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured GET /api/v1/stats\nDEBUG DispatcherServlet : Mapped to StatsController#stats()\n\norg.springframework.security.access.AccessDeniedException: Access Denied\n  at ...MethodSecurityInterceptor...\n\n#   Secured 가 찍혔다\n\n#   필터는 통과시켰다\n\n#   컨트롤러 호출 중에 막혔다\n\n#   permitAll 은 필터 층의 말이다\n\n# --- 확인 순서를 적용해 본다 ---\n\n$ ./gradlew bootRun 2>&1 | grep -E \"Securing GET /api/v1/stats|Secured GET /api/v1/stats\"\n\nDEBUG FilterChainProxy : Securing GET /api/v1/stats\nDEBUG FilterChainProxy : Secured GET /api/v1/stats\n\n#   둘 다 있다 -> 필터 밖의 문제다\n\n#   메서드 보안이나 내 코드를 본다\n\n# --- POST 만 403 인 경우 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/contact\").permitAll()\n        .anyRequest().authenticated());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/contact\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/contact \\\n    -d 'message=hi'\n403\n\nTRACE FilterChainProxy : Invoking CsrfFilter (5/15)\nDEBUG CsrfFilter : Invalid CSRF token found\n\n#   (6/15) 가 없다\n\n#   permitAll 과 무관하다\n\n#   6.4절의 그것이다\n\n$ TOKEN=$(curl -s -c c.txt localhost:8080/contact \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt -X POST \\\n    localhost:8080/contact -d \"message=hi&_csrf=$TOKEN\"\n200\n\n# --- 오류 페이지 고리 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .shouldFilterAllDispatcherTypes(true)\n        .requestMatchers(\"/\", \"/login\").permitAll()\n        .anyRequest().denyAll());\n\n$ curl -i -b user.txt localhost:8080/orders\n\nHTTP/1.1 403\nContent-Length: 0\n\n#   본문이 비어 있다\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation for\n  GET /orders\nDEBUG AuthorizationFilter : Failed to authorize filter invocation for\n  ERROR /error\n\n#   /error 도 막혔다\n\n#   기본 오류 본문조차 못 만든다\n\n.requestMatchers(\"/\", \"/login\", \"/error\").permitAll()\n\n$ curl -i -b user.txt localhost:8080/orders\n\nHTTP/1.1 403\nContent-Type: application/json\n\n{\"timestamp\":\"2026-09-09T10:55:12.331+00:00\",\"status\":403,\n \"error\":\"Forbidden\",\"path\":\"/orders\"}\n\n#   본문이 돌아왔다\n\n# --- 기본값에서는 안 겪는다 ---\n\n#   (shouldFilterAllDispatcherTypes 를 지운다)\n\n.requestMatchers(\"/\", \"/login\").permitAll()\n.anyRequest().denyAll()\n\n$ curl -i -b user.txt localhost:8080/orders | head -3\n\nHTTP/1.1 403\nContent-Type: application/json\n\n#   /error 를 안 적었는데도 나온다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"ERROR /error\"\n0\n\n#   ERROR 디스패치는 검사 자체를 안 한다\n\n# --- permitAll 자리의 인증 ---\n\n@GetMapping(\"/about\")\n@ResponseBody\npublic String about(@AuthenticationPrincipal UserDetails user,\n        Authentication auth) {\n    System.out.println(\">>> principal = \" + user);\n    System.out.println(\">>> auth      = \" + auth);\n    return \"ok\";\n}\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/about\").permitAll()\n        .anyRequest().authenticated());\n\n#   로그인한 채로\n$ curl -s -b user.txt localhost:8080/about\n\n>>> principal = CustomUserDetails [username=user@a.com]\n>>> auth      = UsernamePasswordAuthenticationToken [Principal=...]\n\n#   인증이 살아 있다\n\n#   permitAll 이라도 지우지 않는다\n\n#   로그인 안 한 채로\n$ curl -s localhost:8080/about\n\n>>> principal = null\n>>> auth      = AnonymousAuthenticationToken [Principal=anonymousUser]\n\n#   3.7절의 그 null 이다\n\n# --- ignoring 과 비교 ---\n\n@Bean\nWebSecurityCustomizer webSecurityCustomizer() {\n    return web -> web.ignoring().requestMatchers(\"/about\");\n}\n\n$ curl -s -b user.txt localhost:8080/about\n\n>>> principal = null\n>>> auth      = null\n\n#   auth 가 null 이다\n\n#   익명 토큰조차 없다\n\n#   필터를 아예 안 탔다 (2.6절)\n\n$ curl -is -b user.txt localhost:8080/about | grep -ci x-frame-options\n0\n\n#   보안 헤더도 없다\n\n#   permitAll 쪽이 기본 권장인 이유다\n\n# --- 다섯 원인을 테스트로 ---\n\n@Test\nvoid permitAll_경로는_익명도_200() throws Exception {\n    mockMvc.perform(get(\"/about\"))\n            .andExpect(status().isOk())\n            .andExpect(header().string(\"X-Frame-Options\", \"DENY\"));\n}\n\n@Test\nvoid permitAll_이어도_메서드보안은_막는다() throws Exception {\n    mockMvc.perform(get(\"/api/v1/stats\").with(user(\"u\").roles(\"USER\")))\n            .andExpect(status().isForbidden());\n}\n\n$ ./gradlew test\n\n94 tests completed\n\nBUILD SUCCESSFUL\n\n#   94 다\n\n#   보안 헤더 단언이 ignoring 을 잘못 넣는 걸 막아 준다\n\n# --- 다음 절에서 ---\n\n#   방금 나온 @PreAuthorize 를 제대로 본다",
+   "note": "**`permitAll` 인데 403** 이고 로그에 `Secured` 가 찍혀 있다 — **필터는 통과했고 메서드 보안이** 막았다.\n\n**`POST` 만 403 인 것은 `(6/15)` 가 없는 CSRF** 다. `permitAll` 과 무관하다.\n\n**`shouldFilterAllDispatcherTypes(true)` 를 켜면 `/error` 까지 막혀 본문이** 빈다. 기본값에서는 `ERROR` 검사를 아예 안 한다.\n\n**`permitAll` 자리에도 인증은 살아 있고 `ignoring` 은 `auth` 가 `null` 이며 보안 헤더도** 없다."
+  }
+ ],
+ "recap": [
+  "**`permitAll` 은 필터 층에서만 말한다.**",
+  "**메서드 보안은 그 뒤에서 따로** 막는다.",
+  "**`Secured` 로그가 있으면 필터 밖 문제**다.",
+  "**`POST` 만 403 이면 CSRF** 다.",
+  "**`shouldFilterAllDispatcherTypes` 를 켜면 `/error` 를 열어** 줘야 한다.",
+  "**기본은 `ERROR` 디스패치를 검사 안** 한다.",
+  "**`permitAll` 은 인증을 지우지** 않는다.",
+  "**`ignoring` 은 익명 토큰도 헤더도** 없다.",
+  "**정적 리소스는 `permitAll` + 순서 위로가** 권장이다."
+ ],
+ "drills": [
+  {
+   "task": "`permitAll` 경로에 `@PreAuthorize` 를 건다.",
+   "done_when": "`Secured` 후 403 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`shouldFilterAllDispatcherTypes` 를 켜 본다.",
+   "done_when": "빈 본문과 `/error` 로그를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`permitAll` 과 `ignoring` 의 `auth` 를 비교한다.",
+   "done_when": "`null` 여부를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다섯 원인을 내 프로젝트에서 점검한다.",
+   "done_when": "해당하는 것을 적었다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`permitAll` 인데 403 이면 어디를 보나?",
+   "a": "`Secured` 로그가 있는지 보고, 있으면 메서드 보안이나 내 코드를 본다."
+  },
+  {
+   "q": "`shouldFilterAllDispatcherTypes` 를 켜면 무엇을 열어야 하나?",
+   "a": "`/error` 다. 안 열면 오류 본문조차 못 만든다."
+  },
+  {
+   "q": "`permitAll` 자리에서 인증이 사라지나?",
+   "a": "사라지지 않는다. 로그인 상태면 그대로 있다."
+  },
+  {
+   "q": "`ignoring` 자리의 `Authentication` 은?",
+   "a": "`null` 이다. 익명 토큰도 안 만들어진다."
+  },
+  {
+   "q": "정적 리소스의 권장 방식은?",
+   "a": "`permitAll` 을 쓰되 규칙 순서를 위로 올린다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

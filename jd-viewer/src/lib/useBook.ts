@@ -122,17 +122,54 @@ export interface BookToc {
   blurb?: string
   /** 머리말 */
   preface?: string
-  how_to_read?: string[]
-  prereq?: string[]
-  env?: { name: string; value: string; note?: string }[]
+  // 아래 셋은 두 가지 모양을 다 받는다. 앞 여덟 권은 배열로 썼고 뒤 두 권부터
+  // 한 문단짜리 문자열로 썼다. 화면이 normList/normEnv 로 한쪽으로 모아 그린다.
+  how_to_read?: string | string[]
+  prereq?: string | string[]
+  env?: string | EnvItem[]
   /** 차례의 출처. 본문은 직접 쓰지만 뼈대는 남의 커리큘럼에서 왔으므로 밝힌다 */
-  source?: { name: string; url?: string; note?: string }
+  source?: TocSource
   chapters: TocChapter[]
   updated_at: string
 }
 
+export interface EnvItem {
+  name: string
+  value: string
+  note?: string
+}
+
+/** `name` 과 `title`·`publisher` 두 표기가 섞여 있다 — 읽는 쪽에서 하나로 본다 */
+export interface TocSource {
+  name?: string
+  title?: string
+  url?: string
+  note?: string
+  publisher?: string
+}
+
+/** 문자열로 쓴 것도 한 줄짜리 목록으로 본다 */
+export function normList(v?: string | string[]): string[] {
+  if (!v) return []
+  return typeof v === 'string' ? (v.trim() ? [v.trim()] : []) : v
+}
+
+/** 실습 환경이 문자열이면 이름 없는 한 줄로 본다 */
+export function normEnv(v?: string | EnvItem[]): EnvItem[] {
+  if (!v) return []
+  return typeof v === 'string' ? (v.trim() ? [{ name: '', value: v.trim() }] : []) : v
+}
+
+export function sourceLabel(s?: TocSource): string {
+  if (!s) return ''
+  const base = s.name ?? s.title ?? ''
+  return s.publisher && !base.includes(s.publisher) ? `${base} · ${s.publisher}` : base
+}
+
 export interface ShelfBook {
   id: string
+  /** 어느 갈래의 책인가. 서가 왼쪽 차례가 이걸로 묶는다 */
+  track?: string
   title: string
   subtitle?: string
   blurb?: string
@@ -145,9 +182,18 @@ export interface ShelfBook {
   updated_at: string
 }
 
+export interface ShelfTrack {
+  id: string
+  label: string
+  emoji?: string
+  note?: string
+}
+
 export interface Shelf {
   updated_at: string
   note?: string
+  /** 서가의 갈래. 없으면 화면이 한 덩어리로 그린다 */
+  tracks?: ShelfTrack[]
   books: ShelfBook[]
 }
 

@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "method-security",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "메서드 보안",
+ "summary": "@PreAuthorize.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 애너테이션을 구별한다.",
+  "프록시라서 안 도는 경우를 본다.",
+  "PostAuthorize 의 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.4절에서 `@PreAuthorize` 가 필터 뒤에서** 막았다. **어떻게 도는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "프록시에는 가장자리가 있다",
+   "ascii": "   method security is a proxy, and proxies have edges\n\n   caller -> proxy -> interceptor -> the real object\n\n   works\n     another bean calls the method through the proxy\n   does not work\n     the object calls its own method with this.method()\n     a private method\n     a final class or final method with a cglib proxy\n\n   the annotation is there, the check simply never runs",
+   "note": "**애너테이션은 있는데 검사가 안** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "켜야 돈다",
+   "md": "```java\n@Configuration\n@EnableMethodSecurity          // 6.x\npublic class MethodSecurityConfig { }\n```\n\n> **5.x 의 `@EnableGlobalMethodSecurity(prePostEnabled = true)` 를** 대체한다.\n> **6.x 는 `prePostEnabled` 가 기본 `true`** 다.\n> **`@Secured` 와 `@RolesAllowed` 는 따로 켠다.**\n>\n> ```java\n> @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)\n> ```\n\n**네 가지**\n\n| 애너테이션 | 표현식 | 반환값 접근 |\n|---|---|---|\n| `@PreAuthorize` | 됨 | — |\n| `@PostAuthorize` | 됨 | `returnObject` |\n| `@Secured` | 안 됨 | — |\n| `@RolesAllowed` | 안 됨 | — |\n\n```java\n@PreAuthorize(\"hasRole('ADMIN')\")\n@PreAuthorize(\"hasRole('ADMIN') or #userId == authentication.name\")\n@PreAuthorize(\"@orderChecker.isOwner(#orderId, authentication)\")\n@PostAuthorize(\"returnObject.ownerEmail == authentication.name\")\n@Secured(\"ROLE_ADMIN\")\n```\n\n> **`#파라미터명` 으로 인자를** 읽는다.\n> **`@빈이름.메서드()` 로 내 코드를 부를 수** 있다 — **8.5절에서** 쓴다.\n\n**필터 인가와 다른 점**\n\n> **필터는 URL 을 보고 메서드 보안은 인자를** 본다.\n> **\"내 주문만\" 같은 규칙은 URL 로 표현이 안** 된다.\n> **7.6절에서 어디에 둘지** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 애너테이션",
+   "ascii": "   four annotations, two families\n\n   the modern pair\n     PreAuthorize    an expression, before the call\n     PostAuthorize   an expression, after, can read returnObject\n\n   the older pair\n     Secured         a list of role names, no expression\n     RolesAllowed    the same, from jakarta annotations\n\n   all four are off until you enable them",
+   "note": "**켜기 전에는 넷 다 장식**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "PostAuthorize 는 이미 실행된 뒤다",
+   "md": "**메서드가 다 돌고 나서** 검사한다.\n\n> **조회면 괜찮다** — **읽고 나서 안 준다.**\n> **변경이면 이미 바뀌었다.**\n>\n> ```java\n> @PostAuthorize(\"returnObject.owner == authentication.name\")\n> @Transactional\n> public Order cancel(Long id) { ... }   // 이미 취소됐다\n> ```\n>\n> **`@Transactional` 이 같이 있으면 롤백은** 된다.\n> **`AccessDeniedException` 이 런타임 예외라 롤백 대상**이다.\n> **다만 순서에** 달렸다 — **트랜잭션 프록시가 바깥이어야** 한다.\n>\n> **애초에 변경 메서드에는 `@PreAuthorize` 를** 쓴다.\n\n**자기 호출은 안 걸린다.**\n\n```java\n@Service\npublic class OrderService {\n    public void batch() {\n        for (Long id : ids) {\n            cancel(id);              // this.cancel — 프록시를 안 거친다\n        }\n    }\n\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void cancel(Long id) { ... }\n}\n```\n\n> **`batch()` 를 부르면 `cancel` 의 검사가 통째로** 건너뛴다.\n> **책 ⑥ 의 `@Transactional` 자기 호출과 똑같은 문제**다.\n\n**`private` 도 안** 걸린다.\n\n> **프록시가 못 감싸서다.**\n> **경고도 안 뜬다.**\n\n**`@Async` 와 같이 쓰면**\n\n> **다른 스레드라 `SecurityContext` 가** 없다(4.2절).\n> **`AuthenticationCredentialsNotFoundException`** 이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 켜지 않으면 ---\n\n@Service\npublic class OrderService {\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void cancel(Long id) {\n        System.out.println(\">>> cancel \" + id);\n    }\n}\n\n#   @EnableMethodSecurity 없음\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/1/cancel -d \"_csrf=$TOKEN\"\n302\n\n>>> cancel 1\n\nselect status from orders where id = 1;\n\nSTATUS\n---------\nCANCELED\n\n#   일반 사용자가 취소했다\n\n#   애너테이션이 장식이었다\n\n# --- 켠다 ---\n\n@Configuration\n@EnableMethodSecurity\npublic class MethodSecurityConfig { }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/2/cancel -d \"_csrf=$TOKEN\"\n403\n\n#   >>> cancel 2 가 안 찍혔다\n\nselect status from orders where id = 2;\n\nSTATUS\n---------\nORDERED\n\n#   메서드가 아예 안 돌았다\n\norg.springframework.security.access.AccessDeniedException: Access Denied\n  at org.springframework.security.authorization.method\n     .AuthorizationManagerBeforeMethodInterceptor.attemptAuthorization\n\n# --- 자기 호출 ---\n\n@Service\npublic class OrderService {\n    public void cancelAll(List<Long> ids) {\n        System.out.println(\">>> cancelAll\");\n        for (Long id : ids) {\n            cancel(id);                       // this.cancel\n        }\n    }\n\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void cancel(Long id) {\n        System.out.println(\">>> cancel \" + id);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/cancel-all -d \"ids=3,4&_csrf=$TOKEN\"\n302\n\n>>> cancelAll\n>>> cancel 3\n>>> cancel 4\n\nselect id, status from orders where id in (3,4);\n\nID | STATUS\n---+----------\n3  | CANCELED\n4  | CANCELED\n\n#   검사가 안 돌았다\n\n#   프록시를 안 거쳐서다\n\n#   책 ⑥ 의 @Transactional 자기 호출과 같다\n\n# --- 확인 ---\n\n@GetMapping(\"/proxy-check\")\n@ResponseBody\npublic String proxyCheck() {\n    return orderService.getClass().getName();\n}\n\n$ curl -s localhost:8080/proxy-check\n\ncom.example.OrderService$$SpringCGLIB$$0\n\n#   빈은 프록시가 맞다\n\n#   그런데 내부에서는 this 를 쓴다\n\n#   해결: 호출하는 쪽을 밖으로 뺀다\n\n@RestController\npublic class OrderController {\n    public void cancelAll(List<Long> ids) {\n        for (Long id : ids) {\n            orderService.cancel(id);      // 프록시를 거친다\n        }\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/cancel-all -d \"ids=5&_csrf=$TOKEN\"\n403\n\nselect status from orders where id = 5;\n\nSTATUS\n---------\nORDERED\n\n#   이제 막힌다\n\n# --- private 메서드 ---\n\n@Service\npublic class ReportService {\n    public String report() {\n        return build();\n    }\n\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    private String build() { return \"비밀 보고서\"; }\n}\n\n$ curl -s -b user.txt localhost:8080/report\n\n비밀 보고서\n\n#   경고도 없다\n\n#   프록시가 못 감싼다\n\n# --- PostAuthorize 의 대가 ---\n\n@PostAuthorize(\"returnObject.ownerEmail == authentication.name\")\n@Transactional\npublic Order cancelAndReturn(Long id) {\n    Order order = repository.findById(id).orElseThrow();\n    order.cancel();\n    System.out.println(\">>> canceled \" + id);\n    return order;\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/6/cancel2 -d \"_csrf=$TOKEN\"\n403\n\n>>> canceled 6\n\nupdate orders set status = 'CANCELED' where id = 6\n\n#   SQL 이 나갔다\n\n#   그리고\n\nDEBUG JpaTransactionManager : Initiating transaction rollback\n\nselect status from orders where id = 6;\n\nSTATUS\n---------\nORDERED\n\n#   롤백됐다\n\n#   AccessDeniedException 이 런타임 예외라서다\n\n#   readOnly 였다면, 혹은 트랜잭션 밖이었다면\n\n@PostAuthorize(\"returnObject.ownerEmail == authentication.name\")\npublic Order cancelAndReturn2(Long id) {      // @Transactional 없음\n    ...\n}\n\n#   서비스 안쪽에서 트랜잭션이 이미 커밋되면\n\nselect status from orders where id = 7;\n\nSTATUS\n---------\nCANCELED\n\n#   막았는데 바뀌었다\n\n#   변경 메서드에는 PreAuthorize 를 쓴다\n\n# --- 인자를 쓰는 규칙 ---\n\n@PreAuthorize(\"hasRole('ADMIN') or #email == authentication.name\")\npublic Member findByEmail(String email) { ... }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/members?email=user@a.com'\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/members?email=other@a.com'\n403\n\n#   URL 은 같고 인자만 다르다\n\n#   필터 인가로는 표현할 수 없는 규칙이다\n\n# --- @Async 와 같이 쓰면 ---\n\n@Async\n@PreAuthorize(\"hasRole('ADMIN')\")\npublic void heavyJob() { }\n\n$ curl -s -o /dev/null -b admin.txt localhost:8080/jobs/heavy\n\nAuthenticationCredentialsNotFoundException:\n  An Authentication object was not found in the SecurityContext\n\n#   다른 스레드에 컨텍스트가 없다 (4.2절)\n\n#   DelegatingSecurityContextExecutor 가 필요하다\n\n# --- 다음 절에서 ---\n\n#   이걸 컨트롤러에 둘지 서비스에 둘지 정한다",
+   "note": "**`@EnableMethodSecurity` 가 없으면 애너테이션이** 장식이라 일반 사용자가 주문을 취소한다.\n\n**켜면 `>>> cancel` 이 안 찍히고 상태가 `ORDERED`** 로 남는다.\n\n**자기 호출(`this.cancel`)은 검사가 통째로** 건너뛴다 — 빈은 CGLIB 프록시가 맞는데도 그렇다.\n\n**`@PostAuthorize` 는 `update` SQL 이 나간 뒤 403** 이고, `@Transactional` 이 있어 롤백된다. **없으면 막았는데 바뀐다.**\n\n**`#email == authentication.name` 은 같은 URL 을 인자로** 가른다."
+  }
+ ],
+ "recap": [
+  "**`@EnableMethodSecurity` 를 켜야** 돈다.",
+  "**안 켜면 애너테이션이** 장식이다.",
+  "**`@PreAuthorize` 는 표현식, `@Secured` 는 역할 목록**이다.",
+  "**`#파라미터` 로 인자를 읽는다** — URL 로 못 쓰는 규칙이다.",
+  "**프록시라서 자기 호출은 안** 걸린다.",
+  "**`private` 도 안** 걸린다.",
+  "**`@PostAuthorize` 는 이미 실행된 뒤**다.",
+  "**트랜잭션이 있으면 롤백되고 없으면** 남는다.",
+  "**`@Async` 는 컨텍스트가 없어** 실패한다."
+ ],
+ "drills": [
+  {
+   "task": "`@EnableMethodSecurity` 없이 시험한다.",
+   "done_when": "검사가 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "자기 호출로 검사를 건너뛴다.",
+   "done_when": "데이터가 바뀐 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@PostAuthorize` 로 변경 메서드를 막는다.",
+   "done_when": "SQL 이 나간 뒤 롤백되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`#파라미터` 규칙을 쓴다.",
+   "done_when": "같은 URL 이 인자로 갈리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "애너테이션만 붙이면 도나?",
+   "a": "안 돈다. `@EnableMethodSecurity` 가 필요하다."
+  },
+  {
+   "q": "자기 호출이 안 걸리는 이유는?",
+   "a": "프록시를 거치지 않고 `this` 로 직접 부르기 때문이다."
+  },
+  {
+   "q": "`@PostAuthorize` 의 위험은?",
+   "a": "메서드가 이미 실행된 뒤에 검사한다."
+  },
+  {
+   "q": "메서드 보안이 필터 인가보다 나은 점은?",
+   "a": "인자를 볼 수 있어 \"내 것만\" 같은 규칙을 쓸 수 있다."
+  },
+  {
+   "q": "`@Async` 와 같이 쓰면?",
+   "a": "다른 스레드에 컨텍스트가 없어 예외가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@PreAuthorize",
+   "def": "메서드 실행 전에 표현식을 평가해 인가를 결정하는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
