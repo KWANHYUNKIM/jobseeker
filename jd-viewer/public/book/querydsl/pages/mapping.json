@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "mapping",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "연관관계 매핑",
+ "summary": "외래키가 어디에 있나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "주인을 안다.",
+  "한쪽만 넣었을 때를 본다.",
+  "지연 로딩을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `changeTeam` 을** 만들었다. **왜 양쪽을 맞춰야 하는지를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "외래키 하나, 자바 필드 둘",
+   "ascii": "   one foreign key, two java fields\n\n   member.team    the owning side, it writes team_id\n   team.members   the inverse side, mappedBy, it writes nothing\n\n   the column exists once, so only one of the two can own it",
+   "note": "**컬럼이 하나라 주인도** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "mappedBy 는 내가 주인이 아니라는 뜻이다",
+   "md": "**컬럼은 `member` 에** 있다.\n\n> **3.1절의 DDL 에서** 봤다.\n> **다대일 쪽이 외래키를** 든다.\n> **그쪽이 주인**이다.\n\n**`mappedBy` 는 읽기 전용**이다.\n\n> **`team.members` 에 넣어도 SQL 이 안** 나간다.\n> **①  6.5절에서 본** 규칙이다.\n> **조회할 때만** 쓴다.\n\n**그래서 편의 메서드가** 필요하다.\n\n> **주인 쪽을 반드시** 채운다.\n> **반대쪽은 메모리 일관성을** 위해서다.\n> **`changeTeam` 이 둘 다** 한다.\n\n**Querydsl 도 같은 규칙**이다.\n\n> **`member.team` 으로 조인**한다.\n> **`team.members` 로도 조인이** 된다.\n> **어느 쪽이든 SQL 은 같은 외래키를** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "한쪽만 넣으면",
+   "ascii": "   what happens when only one side is set\n\n   set member.team only    the column is written, the list is stale\n   set team.members only   nothing is written, the row keeps a null\n\n   the second case looks like it worked until the context is cleared",
+   "note": "**둘째는 컨텍스트를 비우기 전까진 된 것처럼** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨텍스트가 있는 동안은 틀린 게 안 보인다",
+   "md": "**1차 캐시가 답**한다.\n\n> **내가 리스트에 넣은 걸 그대로 돌려**준다.\n> **DB 는 아직 `null`** 이다.\n> **⑭ 5.12절과 같은 종류의 착각**이다.\n\n**`flush` 와 `clear` 로** 드러난다.\n\n> **비우고 다시 읽으면 빈** 리스트다.\n> **테스트에 `em.clear()` 를 넣는** 이유다.\n> **아래에서 그 차이를** 본다.\n\n**`cascade` 는 다른 이야기**다.\n\n> **저장을 전파할 뿐 컬럼을 채우진** 않는다.\n> **주인 쪽이 비면 여전히 `null`** 이다.\n> **자주 헷갈리는 자리**다.\n\n**지연 로딩은 기본으로** 둔다.\n\n> **`@ManyToOne` 기본이 `EAGER`** 다.\n> **3.1절에서 `LAZY` 로 바꿔** 놨다.\n> **아래에서 그 차이를 재** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 주인 쪽만 넣는다\n\n@Test\n@Transactional\nvoid 주인만() {\n    Team teamA = new Team(\"teamA\");\n    em.persist(teamA);\n\n    Member m = new Member(\"m1\", 10);\n    m.setTeam(teamA);              // 주인 쪽만\n    em.persist(m);\n    em.flush(); em.clear();\n\n    Team found = queryFactory.selectFrom(team).fetchOne();\n    System.out.println(\"팀 회원 수: \" + found.getMembers().size());\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nTRACE binding parameter (2:BIGINT) <- [1]\n/* select\n    team\nfrom\n    Team team */\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0\nHibernate:\n    select m1_0.team_id, m1_0.member_id, m1_0.age, m1_0.username\n    from member m1_0 where m1_0.team_id=?\n팀 회원 수: 1\n\n--   team_id 가 채워졌다\n--   비우고 다시 읽으니 리스트도 맞다\n\n\n-- 반대쪽만 넣는다\n\n@Test\n@Transactional\nvoid 반대만() {\n    Team teamA = new Team(\"teamA\");\n    Member m = new Member(\"m1\", 10);\n    teamA.getMembers().add(m);     // 반대쪽만\n\n    em.persist(teamA);\n    em.persist(m);\n    em.flush();\n\n    System.out.println(\"비우기 전: \" + teamA.getMembers().size());\n\n    Long teamId = (Long) em.createNativeQuery(\n            \"select team_id from member\").getSingleResult();\n    System.out.println(\"DB 의 team_id: \" + teamId);\n\n    em.clear();\n    Team found = queryFactory.selectFrom(team).fetchOne();\n    System.out.println(\"비운 뒤:   \" + found.getMembers().size());\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nTRACE binding parameter (2:BIGINT) <- [null]\n비우기 전: 1\nHibernate: select team_id from member\nDB 의 team_id: null\n비운 뒤:   0\n\n--   insert 에 null 이 들어갔다\n--   비우기 전에는 1 로 보였다\n--   비우니 0 이다\n\n\n-- 편의 메서드를 쓴다\n\n@Test\n@Transactional\nvoid 편의_메서드() {\n    Team teamA = new Team(\"teamA\");\n    em.persist(teamA);\n\n    Member m = new Member(\"m1\", 10, teamA);   // changeTeam 이 돈다\n    em.persist(m);\n    em.flush();\n\n    System.out.println(\"비우기 전: \" + teamA.getMembers().size());\n    em.clear();\n    System.out.println(\"비운 뒤:   \" +\n            queryFactory.selectFrom(team).fetchOne().getMembers().size());\n}\n\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nTRACE binding parameter (2:BIGINT) <- [1]\n비우기 전: 1\nHibernate: select t1_0.team_id, t1_0.name from team t1_0\nHibernate: select m1_0.team_id, ... from member m1_0 where m1_0.team_id=?\n비운 뒤:   1\n\n--   양쪽이 다 맞다\n\n\n-- Querydsl 로 어느 쪽에서든 조인한다\n\n@Test\n@Transactional\nvoid 양쪽_조인() {\n    em.clear();\n    System.out.println(\"--- member 에서 ---\");\n    queryFactory.selectFrom(member)\n            .join(member.team, team)\n            .where(team.name.eq(\"teamA\"))\n            .fetch();\n\n    em.clear();\n    System.out.println(\"--- team 에서 ---\");\n    queryFactory.selectFrom(team)\n            .join(team.members, member)\n            .where(member.username.eq(\"m1\"))\n            .fetch();\n}\n\n--- member 에서 ---\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    team.name = ?1 */\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n--- team 에서 ---\n/* select\n    team\nfrom\n    Team team\n  inner join\n    team.members as member1\nwhere\n    member1.username = ?1 */\nHibernate:\n    select\n        t1_0.team_id, t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n\n--   같은 외래키를 양쪽에서 탔다\n--   on 절이 똑같다\n\n\n-- 지연 로딩을 확인한다\n\n@Test\n@Transactional\nvoid 지연() {\n    em.clear();\n    System.out.println(\"--- 조회 ---\");\n    Member m = queryFactory.selectFrom(member).fetchFirst();\n    System.out.println(\"타입: \" + m.getTeam().getClass().getSimpleName());\n    System.out.println(\"--- 이름 부르기 ---\");\n    System.out.println(m.getTeam().getName());\n}\n\n--- 조회 ---\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0 fetch first ? rows only\n타입: Team$HibernateProxy$k2Lm9\n--- 이름 부르기 ---\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nteamA\n\n--   프록시가 왔다\n--   부를 때 나갔다\n\n\n-- EAGER 로 바꾸면\n\n@ManyToOne(fetch = FetchType.EAGER)\n\n@Test\n@Transactional\nvoid 즉시() {\n    em.clear();\n    System.out.println(\"--- 조회 ---\");\n    Member m = queryFactory.selectFrom(member).fetchFirst();\n    System.out.println(\"타입: \" + m.getTeam().getClass().getSimpleName());\n}\n\n--- 조회 ---\n/* select\n    member1\nfrom\n    Member member1 */\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0 fetch first ? rows only\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n타입: Team\n\n--   JPQL 은 그대로다\n--   SQL 이 하나 더 나갔다\n--   조인이 아니라 별도 쿼리다\n\n\n-- 여러 건이면 그만큼 는다\n\n@Test\n@Transactional\nvoid 즉시_여러건() {\n    em.clear();\n    long n = counter.count(() -> queryFactory.selectFrom(member).fetch());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select ... from member m1_0\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n쿼리 3개\n\n--   ⑭ 5.13절의 N+1 이다\n--   EAGER 라 안 건드려도 난다\n--   그래서 3.1절에서 LAZY 로 뒀다\n\n\n-- LAZY 로 되돌리고 다시 센다\n\n@Test\n@Transactional\nvoid 지연_여러건() {\n    em.clear();\n    long n = counter.count(() -> queryFactory.selectFrom(member).fetch());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select ... from member m1_0\n쿼리 1개\n\n--   안 건드리면 안 나간다\n--   4.13절에서 fetch join 으로 같이 읽는다\n\n\n-- cascade 는 컬럼을 안 채운다\n\n@OneToMany(mappedBy = \"team\", cascade = CascadeType.ALL)\nprivate List<Member> members = new ArrayList<>();\n\n@Test\n@Transactional\nvoid cascade() {\n    Team teamA = new Team(\"teamA\");\n    teamA.getMembers().add(new Member(\"m1\", 10));   // 반대쪽만\n    em.persist(teamA);\n    em.flush(); em.clear();\n\n    Long teamId = (Long) em.createNativeQuery(\n            \"select team_id from member\").getSingleResult();\n    System.out.println(\"DB 의 team_id: \" + teamId);\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nTRACE binding parameter (2:BIGINT) <- [null]\nHibernate: select team_id from member\nDB 의 team_id: null\n\n--   저장은 전파됐다\n--   컬럼은 여전히 null 이다\n--   주인 쪽을 채워야 한다\n\n\n-- 정리\n\n$ printf '%-22s %-10s %s\\n' \\\n  'member.team 만'  'team_id 채움' '리스트는 낡음' \\\n  'team.members 만' '아무것도 안 함' '비우면 0' \\\n  'changeTeam'      '둘 다'        '항상 맞음' \\\n  'cascade'         '저장만 전파'  '컬럼은 null'\n\nmember.team 만        team_id 채움   리스트는 낡음\nteam.members 만       아무것도 안 함  비우면 0\nchangeTeam            둘 다          항상 맞음\ncascade               저장만 전파    컬럼은 null\n\n--   3.3절에서 테스트 데이터를 만든다",
+   "note": "**반대쪽만 넣으면 `insert` 에 `[null]` 이 들어가고 비우기 전 `1` 이 비운 뒤 `0`** 이 된다.\n\n**`member` 에서든 `team` 에서든 조인하면 `on` 절이 똑같은 외래키를** 탄다.\n\n**`EAGER` 면 JPQL 은 그대로인데 SQL 이 하나 더 나가 두 건에 쿼리 3개**다.\n\n**`LAZY` 면 안 건드릴 때 쿼리 1개**다.\n\n**`cascade` 는 저장만 전파하고 `team_id` 는 여전히 `null`** 이다."
+  }
+ ],
+ "recap": [
+  "**컬럼이 하나라 주인도** 하나다.",
+  "**`mappedBy` 는 읽기 전용**이다.",
+  "**한쪽만 넣으면** 어긋난다.",
+  "**비우기 전엔 안** 보인다.",
+  "**편의 메서드로 둘 다** 맞춘다.",
+  "**양쪽에서 조인이** 된다.",
+  "**`on` 절은** 같다.",
+  "**`EAGER` 는 N+1 을** 만든다.",
+  "**`cascade` 는 컬럼을 안** 채운다."
+ ],
+ "drills": [
+  {
+   "task": "반대쪽만 넣어 본다.",
+   "done_when": "`null` 이 들어가는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "비우기 전후를 비교한다.",
+   "done_when": "1과 0의 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "양쪽에서 조인한다.",
+   "done_when": "`on` 절이 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`EAGER` 로 바꿔 센다.",
+   "done_when": "쿼리가 느는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "연관관계의 주인은 어느 쪽인가?",
+   "a": "외래키 컬럼을 가진 다대일 쪽이다."
+  },
+  {
+   "q": "`mappedBy` 쪽에 값을 넣으면?",
+   "a": "SQL 이 나가지 않는다. 읽기 전용이다."
+  },
+  {
+   "q": "한쪽만 넣은 게 왜 늦게 드러나나?",
+   "a": "1차 캐시가 메모리 값을 그대로 돌려주기 때문이다."
+  },
+  {
+   "q": "`EAGER` 의 문제는?",
+   "a": "연관을 안 건드려도 건수만큼 추가 쿼리가 나간다."
+  },
+  {
+   "q": "`cascade` 가 외래키를 채워 주나?",
+   "a": "아니다. 저장만 전파하고 컬럼은 주인 쪽이 채운다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "연관관계의 주인",
+   "def": "외래키 컬럼을 실제로 쓰는 쪽의 필드."
+  },
+  {
+   "term": "mappedBy",
+   "def": "이 필드가 주인이 아니며 반대편이 관리한다는 표시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  }
+ ]
+}

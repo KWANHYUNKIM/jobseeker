@@ -125,7 +125,7 @@
           "title": "연관관계 매핑",
           "summary": "외래키가 어디에 있나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -133,7 +133,7 @@
           "title": "테스트 데이터",
           "summary": "매 절이 쓸 열 건.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

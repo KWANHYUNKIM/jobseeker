@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "test-data",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "테스트 데이터",
+ "summary": "매 절이 쓸 열 건.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "데이터를 고정한다.",
+  "팀 없는 회원을 둔다.",
+  "둘 곳을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절까지 표를** 만들었다. **이제 61절이 계속 쓸 값을** 넣는다."
+  },
+  {
+   "type": "figure",
+   "caption": "이후 모든 절이 읽는 열 건",
+   "ascii": "   the ten rows every later section reads\n\n   teamA   m1 10, m2 20, m3 30, m4 40\n   teamB   m5 15, m6 25, m7 35\n   no team m8 10, m9 20, m10 30\n\n   two teams so a join has something to choose,\n   and three orphans so an outer join has something to show",
+   "note": "**팀 없는 셋이 외부 조인의 재료**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "데이터가 문법을 보여 줄 수 있어야 한다",
+   "md": "**팀이 둘이어야** 한다.\n\n> **하나면 조인이 뭘 고르는지 안** 보인다.\n> **`group by` 도 결과가** 하나다.\n> **4.9절에서 두 줄이** 나온다.\n\n**팀 없는 회원이** 필요하다.\n\n> **내부 조인과 외부 조인이** 갈린다.\n> **4.12절이 그** 절이다.\n> **⑭ 8.2절에서 못 했던 것**이다.\n\n**나이가 겹치면** 좋다.\n\n> **`m1` 과 `m8` 이 둘 다 10**이다.\n> **정렬이 흔들리는 걸 보여** 준다.\n> **4.6절에서 그** 이야기다.\n\n**열 건이면** 충분하다.\n\n> **페이징이 세 쪽으로** 나뉜다.\n> **눈으로 세어 확인이** 된다.\n> **성능은 6.7절에서 따로** 늘린다."
+  },
+  {
+   "type": "figure",
+   "caption": "데이터를 둘 세 자리",
+   "ascii": "   three places the same rows can come from\n\n   a BeforeEach     rebuilt per test, slow but isolated\n   an sql script    loaded once, fast, but written twice\n   a runner on boot only for the running application, not for tests\n\n   this book uses the first, and the last one for the console",
+   "note": "**이 책은 첫째를 쓰고 콘솔용으로 셋째를** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@BeforeEach 는 매번 다시 만든다",
+   "md": "**id 가 계속** 바뀐다.\n\n> **시퀀스가 안 되돌아**간다.\n> **`id` 를 단언에 쓰면** 깨진다.\n> **`username` 으로** 단언한다.\n\n**느려질 수** 있다.\n\n> **테스트마다 열 번 `insert`** 다.\n> **지금은 문제가** 없다.\n> **⑨ 6.4절에서 다룬** 균형이다.\n\n**`clear` 를 꼭** 부른다.\n\n> **안 그러면 1차 캐시가** 답한다.\n> **SQL 이 안 나가** 버린다.\n> **이 책은 SQL 을 봐야** 한다.\n\n**콘솔용은 따로** 둔다.\n\n> **`ApplicationRunner` 로 넣는**다.\n> **테스트가 아니라 실행 때만** 돈다.\n> **아래에서 만든다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 공통 준비 코드\n\n@SpringBootTest\n@Transactional\npublic abstract class QuerydslTestSupport {\n\n    @PersistenceContext protected EntityManager em;\n    protected JPAQueryFactory queryFactory;\n\n    @BeforeEach\n    void setUp() {\n        queryFactory = new JPAQueryFactory(em);\n\n        Team teamA = new Team(\"teamA\");\n        Team teamB = new Team(\"teamB\");\n        em.persist(teamA);\n        em.persist(teamB);\n\n        em.persist(new Member(\"m1\", 10, teamA));\n        em.persist(new Member(\"m2\", 20, teamA));\n        em.persist(new Member(\"m3\", 30, teamA));\n        em.persist(new Member(\"m4\", 40, teamA));\n        em.persist(new Member(\"m5\", 15, teamB));\n        em.persist(new Member(\"m6\", 25, teamB));\n        em.persist(new Member(\"m7\", 35, teamB));\n        em.persist(new Member(\"m8\", 10));      // 팀 없음\n        em.persist(new Member(\"m9\", 20));\n        em.persist(new Member(\"m10\", 30));\n\n        em.flush();\n        em.clear();\n    }\n}\n\n--   이 클래스를 상속해서 쓴다\n--   clear 까지가 준비다\n\n\n-- 들어간 걸 확인한다\n\n@Test\nvoid 데이터_확인() {\n    List<Tuple> rows = queryFactory\n            .select(member.username, member.age, member.team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .orderBy(member.id.asc())\n            .fetch();\n\n    rows.forEach(t -> System.out.printf(\"%-4s %2d %s%n\",\n            t.get(member.username), t.get(member.age),\n            t.get(member.team.name)));\n}\n\n/* select\n    member1.username,\n    member1.age,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        m1_0.member_id\nm1   10 teamA\nm2   20 teamA\nm3   30 teamA\nm4   40 teamA\nm5   15 teamB\nm6   25 teamB\nm7   35 teamB\nm8   10 null\nm9   20 null\nm10  30 null\n\n--   left join 이라 팀 없는 셋도 나왔다\n--   4.12절에서 이걸 쓴다\n\n\n-- 내부 조인이면 일곱이다\n\n@Test\nvoid 내부_조인() {\n    System.out.println(\"건수: \" + queryFactory\n            .selectFrom(member)\n            .join(member.team, team)\n            .fetch().size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team */\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 7\n\n--   열 중 일곱이다\n--   팀 없는 셋이 빠졌다\n\n\n-- 나이가 겹치는 걸 확인한다\n\n@Test\nvoid 동점() {\n    List<Tuple> rows = queryFactory\n            .select(member.age, member.count())\n            .from(member)\n            .groupBy(member.age)\n            .having(member.count().gt(1))\n            .orderBy(member.age.asc())\n            .fetch();\n\n    rows.forEach(t -> System.out.println(\n            t.get(member.age) + \"살: \" + t.get(member.count()) + \"명\"));\n}\n\n/* select\n    member1.age,\n    count(member1)\nfrom\n    Member member1\ngroup by\n    member1.age\nhaving\n    count(member1) > ?1\norder by\n    member1.age asc */\n\nHibernate:\n    select\n        m1_0.age,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    group by\n        m1_0.age\n    having\n        count(m1_0.member_id)>?\n    order by\n        m1_0.age\n10살: 2명\n20살: 2명\n30살: 2명\n\n--   세 나이가 겹친다\n--   4.6절의 정렬 함정 재료다\n\n\n-- 팀별로도 갈린다\n\n@Test\nvoid 팀별() {\n    queryFactory\n            .select(team.name, member.count(), member.age.avg())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-6s %d명 평균 %.1f%n\",\n                    t.get(team.name), t.get(member.count()),\n                    t.get(member.age.avg())));\n}\n\n/* select\n    team.name,\n    count(member1),\n    avg(member1.age)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id),\n        avg(m1_0.age)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\nteamA  4명 평균 25.0\nteamB  3명 평균 25.0\n\n--   평균이 같도록 짰다\n--   4.9절에서 이 표를 다시 쓴다\n\n\n-- id 는 매번 달라진다\n\n@Test\nvoid id_확인() {\n    Long first = queryFactory.select(member.id.min())\n            .from(member).fetchOne();\n    System.out.println(\"가장 작은 id: \" + first);\n}\n\n// 첫 실행\n가장 작은 id: 3\n// 두 번째 실행 (같은 JVM 안의 다른 테스트 뒤)\n가장 작은 id: 55\n\n--   시퀀스가 안 되돌아간다\n--   단언에 id 를 쓰면 안 된다\n\n\n-- clear 를 빼면\n\n@BeforeEach\nvoid setUp() {\n    ...\n    em.flush();\n    // em.clear();  <- 뺐다\n}\n\n@Test\nvoid 캐시() {\n    Member m = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"이름: \" + m.getUsername());\n    System.out.println(\"팀:   \" + m.getTeam().getName());\n}\n\nHibernate: select ... from member m1_0 where m1_0.username=?\n이름: m1\n팀:   teamA\n\n--   팀 조회 SQL 이 안 나갔다\n--   1차 캐시에 이미 있어서다\n--   지연 로딩을 못 보게 된다\n\n\n-- 콘솔용 데이터는 따로 넣는다\n\n@Profile(\"local\")\n@Component\n@RequiredArgsConstructor\npublic class InitMember {\n\n    private final InitMemberService initMemberService;\n\n    @PostConstruct\n    public void init() {\n        initMemberService.init();\n    }\n\n    @Component\n    static class InitMemberService {\n        @PersistenceContext EntityManager em;\n\n        @Transactional\n        public void init() {\n            Team teamA = new Team(\"teamA\");\n            Team teamB = new Team(\"teamB\");\n            em.persist(teamA);\n            em.persist(teamB);\n            for (int i = 0; i < 100; i++) {\n                em.persist(new Member(\"member\" + i, i,\n                        i % 2 == 0 ? teamA : teamB));\n            }\n        }\n    }\n}\n\n$ SPRING_PROFILES_ACTIVE=local ./gradlew bootRun | grep -c 'insert into member'\n100\n\n-- H2 콘솔에서\nselect count(*) from member;\n100\n\n--   테스트에는 안 들어간다\n--   7.6절의 컨트롤러 확인에 쓴다\n\n\n-- 준비가 끝났는지 본다\n\n@Test\nvoid 최종() {\n    Long total = queryFactory.select(member.count()).from(member).fetchOne();\n    Long withTeam = queryFactory.select(member.count()).from(member)\n            .where(member.team.isNotNull()).fetchOne();\n    System.out.println(\"전체 \" + total + \", 팀 있음 \" + withTeam);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.team is not null */\n\nHibernate:\n    select count(m1_0.member_id) from member m1_0\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.team_id is not null\n전체 10, 팀 있음 7\n\n--   team is not null 이 조인 없이 풀렸다\n--   외래키만 보면 되니까다\n--   3.4절에서 팩토리를 빈으로 올린다",
+   "note": "**열 건 중 팀 있는 일곱, 없는 셋 — `left join` 은 10건, `join` 은 7건**이다.\n\n**나이 10·20·30 이 각각 두 명이라 `having count > 1` 이 세 줄** 나온다.\n\n**두 팀의 평균이 25.0 으로 같도록** 짰다.\n\n**`em.clear()` 를 빼면 팀 조회 SQL 이 아예 안 나가 지연 로딩을 못** 본다.\n\n**`member.team.isNotNull()` 은 조인 없이 `team_id is not null` 로** 풀린다."
+  }
+ ],
+ "recap": [
+  "**열 건으로** 간다.",
+  "**팀이 둘이어야** 한다.",
+  "**팀 없는 셋을** 둔다.",
+  "**나이를** 겹친다.",
+  "**`clear` 를 꼭** 부른다.",
+  "**안 하면 SQL 이 안** 나간다.",
+  "**id 는 매번** 다르다.",
+  "**단언은 이름으로** 한다.",
+  "**콘솔용은 따로** 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "공통 준비 클래스를 만든다.",
+   "done_when": "열 건이 들어간 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "내부·외부 조인 건수를 비교한다.",
+   "done_when": "7과 10을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`clear` 를 빼 본다.",
+   "done_when": "SQL 이 줄어드는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "콘솔용 초기 데이터를 넣는다.",
+   "done_when": "100건을 콘솔에서 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "팀 없는 회원을 두는 이유는?",
+   "a": "내부 조인과 외부 조인의 차이를 보여 주기 위해서다."
+  },
+  {
+   "q": "나이를 겹치게 둔 이유는?",
+   "a": "정렬이 흔들리는 상황과 `group by` 결과를 보이기 위해서다."
+  },
+  {
+   "q": "`em.clear()` 를 부르는 이유는?",
+   "a": "1차 캐시가 답해서 SQL 이 안 나가는 걸 막기 위해서다."
+  },
+  {
+   "q": "단언에 `id` 를 쓰면 왜 안 되나?",
+   "a": "시퀀스가 되돌아가지 않아 실행마다 값이 달라진다."
+  },
+  {
+   "q": "`member.team.isNotNull()` 은 조인을 만드나?",
+   "a": "안 만든다. 외래키 컬럼만 보면 되기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테스트 픽스처",
+   "def": "테스트가 시작할 때 만들어 두는 고정된 데이터."
+  },
+  {
+   "term": "ApplicationRunner",
+   "def": "애플리케이션 기동 뒤 한 번 실행되는 초기화 지점."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}
