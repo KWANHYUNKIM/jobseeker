@@ -1,0 +1,137 @@
+{
+ "book": "jpa-app-2",
+ "id": "distinct-problem",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "distinct 와 중복",
+ "summary": "행이 늘어난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`distinct` 로 응답을 고친다.",
+  "SQL 의 `distinct` 와 JPA 의 `distinct` 를 가른다.",
+  "하이버네이트 6에서 무엇이 바뀌었는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**한 단어로 응답이 맞아** 진다. **그 단어가 두 가지 일을 한다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderRepository — distinct",
+   "code": "public List<Order> findAllWithItem() {\n    return em.createQuery(\n            \"select distinct o from Order o\" +\n            \" join fetch o.member m\" +\n            \" join fetch o.delivery d\" +\n            \" join fetch o.orderItems oi\" +\n            \" join fetch oi.item i\", Order.class)\n        .getResultList();\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "`distinct` 가 하는 두 가지 일",
+   "ascii": "   distinct does two different things\n\n   in sql\n     dedupe rows where every column matches\n     order_item_id differs, so nothing is deduped\n\n   in jpa\n     dedupe the root entity by identifier\n     Order#4 appears twice, one is dropped\n\n   the sql keyword does nothing useful here.\n   the jpa behaviour is what fixes the response.",
+   "note": "**쓸모 있는 쪽은 JPA 쪽**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SQL 의 `distinct` 는 왜 소용없나",
+   "md": "**SQL 의 `distinct` 는 모든 컬럼이 같아야** 지운다.\n\n```\norder_id | name  | order_item_id | item_name\n4        | userA | 6             | JPA1 BOOK\n4        | userA | 7             | JPA2 BOOK\n```\n\n> **`order_item_id` 가 다르다.** **`item_name` 도 다르다.**\n>\n> **완전히 같은 행이 하나도** 없다. **`distinct` 를 붙여도 4행 그대로**다.\n\n**JPA 의 `distinct` 는 다르다.**\n\n> **조회 결과의 루트 엔티티를 식별자로** 걸러 준다.\n>\n> **`Order#4` 가 두 번 나오면 하나를** 버린다.\n>\n> **애플리케이션 메모리에서** 한다.\n\n**그래서 이렇게 된다.**\n\n| | |\n|---|---|\n| DB 에서 오는 행 | **4행 그대로** |\n| 결과 리스트 | **2개** |\n\n> **네트워크 비용은 안 줄었다.** **응답만 맞아졌다.**\n>\n> **5.6절에서 이게 문제가** 된다.\n\n**`orderItems` 는 왜 안 망가지나**\n\n> **하이버네이트가 행을 읽으며 `Order#4` 의 컬렉션에 `OrderItem#6`·`#7` 을 채운다.**\n> **`distinct` 로 버려지는 건 리스트의 참조지 컬렉션 내용이** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "하이버네이트 6에서 바뀐 것",
+   "ascii": "   hibernate 6 changed this\n\n   hibernate 5\n     select distinct o from Order o join fetch o.orderItems\n     -> select distinct o.*, oi.* from ...\n        the keyword goes to the database, uselessly\n        jpa then dedupes in memory\n\n   hibernate 6\n     the keyword is not sent for fetch joins\n     dedupe happens in memory anyway\n\n   so on hibernate 6 you may not need to write it at all",
+   "note": "**이제 안 써도 되는 경우가** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "하이버네이트 6",
+   "md": "**하이버네이트 5 까지**\n\n```sql\nselect distinct o.order_id, ..., oi.order_item_id, ... from orders o ...\n```\n\n> **`distinct` 키워드가 DB 로** 갔다. **아무것도 못 지우면서 DB 에 정렬·해시 부담**만 줬다.\n>\n> **`hibernate.query.passDistinctThrough=false` 로 끄는 설정**이 있었다.\n\n**하이버네이트 6 부터**\n\n> **페치 조인이 있으면 `distinct` 를 DB 로 안** 보낸다.\n>\n> **더 나아가 컬렉션 페치 조인의 결과를 기본으로 중복 제거**한다.\n>\n> **`distinct` 를 안 써도 2개가** 온다.\n\n**그럼 안 써도 되나**\n\n| | |\n|---|---|\n| **하이버네이트 6 + 페치 조인** | 안 써도 된다 |\n| **의도를 남기려면** | 쓰는 게 낫다 |\n| **다른 구현체** | 필요할 수 있다 |\n\n> **이 책은 쓴다.** **\"중복을 지우고 있다\" 가 코드에 보여야** 한다.\n>\n> **버전에 기대는 코드는 옮기면 깨진다.**\n\n**5.9절의 V4 에서는 사정이 다르다.**\n\n> **DTO 직접 조회는 루트 엔티티가** 없다. **`distinct` 가 식별자로 못 거른다.**\n>\n> **거기서는 직접 묶어야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "여전히 안 고쳐진 것",
+   "md": "**응답은 맞아졌는데 두 가지가** 남았다.\n\n**① DB 에서 오는 행이 그대로**\n\n```\n주문 100건, 상품 5개씩\n\n행 500개\n결과 100개\n```\n\n> **400행을 버리려고 받는다.**\n> **`member`·`delivery` 컬럼이 5번씩 중복**돼서 온다.\n\n**② 페이징이 안 된다**\n\n```java\n.setFirstResult(0)\n.setMaxResults(100)\n```\n\n> **`distinct` 를 붙여도 SQL 은 행 단위**다.\n> **`limit 100` 이 주문 100건이 아니라 100행**이다.\n>\n> **하이버네이트가 이걸 알고 다른 짓을** 한다. **5.6절**이다.\n\n**③ 컬렉션을 둘 이상 페치 못 한다**\n\n```java\n\"... join fetch o.orderItems join fetch o.coupons\"\n```\n\n> **`MultipleBagFetchException`** 이다.\n>\n> **곱의 곱**이 되기 때문이다. **주문 2 × 상품 2 × 쿠폰 3 = 12행**.\n>\n> **`Set` 으로 바꾸거나 `@OrderColumn` 을 쓰면 우회**되는데, **둘 다 부작용이** 있다.\n> **배치 사이즈가 답**이다(5.7절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- distinct 를 붙인 V3 ---\n\nGET /api/v3/orders\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.*, m1_0.*, o1_0.order_date,\n#            oi1_0.*, i1_0.*, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on ...\n#     join member m1_0 on ...\n#     join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n#     join item i1_0 on i1_0.item_id=oi1_0.item_id\n#     left join album ... left join book ... left join movie ...\n\n#   (하이버네이트 6: select distinct 가 안 나갔다)\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       14 entities were loaded\n#       2 collections were fetched\n#   }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     {\"orderId\":11,\"name\":\"userB\",...,\n#      \"orderItems\":[\n#        {\"itemName\":\"SPRING1 BOOK\",\"orderPrice\":20000,\"count\":3},\n#        {\"itemName\":\"SPRING2 BOOK\",\"orderPrice\":40000,\"count\":4}]}\n#   ]}\n\n#   429 bytes\n\n#   3.4절의 계약과 정확히 같다\n#   V2 와 바이트 단위로 같다\n\n# --- 하이버네이트 5 였다면 ---\n\n#   Hibernate: select distinct o1_0.order_id, ... from orders o1_0 ...\n\n#   키워드가 DB 로 간다\n#   DB 는 27개 컬럼을 다 비교해서 아무것도 못 지운다\n\n# --- SQL 로 확인 ---\n\nselect distinct o.order_id, m.name, oi.order_item_id, i.name\n  from orders o\n  join member m on m.member_id = o.member_id\n  join order_item oi on oi.order_id = o.order_id\n  join item i on i.item_id = oi.item_id;\n\n#   ORDER_ID | NAME  | ORDER_ITEM_ID | NAME\n#   ---------+-------+---------------+--------------\n#   4        | userA | 6             | JPA1 BOOK\n#   4        | userA | 7             | JPA2 BOOK\n#   11       | userB | 13            | SPRING1 BOOK\n#   11       | userB | 14            | SPRING2 BOOK\n\n#   여전히 4행이다\n\n#   distinct 를 붙였는데 안 줄었다\n#   order_item_id 가 달라서다\n\n# --- 결과 리스트를 확인 ---\n\nList<Order> orders = orderRepository.findAllWithItem();\n\nSystem.out.println(orders.size());\n#   2\n\nSystem.out.println(orders.get(0).getOrderItems().size());\n#   2\n\n#   리스트는 2개, 컬렉션은 온전하다\n\n# --- distinct 를 빼면 (하이버네이트 6) ---\n\nselect o from Order o join fetch o.orderItems oi ...\n\nList<Order> orders = ...;\nSystem.out.println(orders.size());\n#   2\n\n#   안 써도 2개다\n#   하이버네이트 6 이 기본으로 걸러 준다\n\n#   그래도 쓴다. 의도가 보여야 한다\n\n# --- 컬렉션을 둘 페치하면 ---\n\nselect distinct o from Order o\n  join fetch o.orderItems\n  join fetch o.coupons\n\n#   org.hibernate.loader.MultipleBagFetchException:\n#     cannot simultaneously fetch multiple bags:\n#       [jpabook.jpashop.domain.Order.orderItems,\n#        jpabook.jpashop.domain.Order.coupons]\n\n#   애플리케이션이 안 뜬다 (쿼리 파싱 시점)\n\n# --- 여기까지 ---\n\n#   쿼리 1개\n#   응답이 계약과 일치\n#   429 bytes\n\n#   그런데 DB 에서는 여전히 4행이 온다\n\n# --- 다음 절에서 ---\n\n#   페이징을 걸어 본다",
+   "note": "**`distinct` 한 단어로 429 바이트**가 됐다. **V2 와 바이트 단위로** 같다.\n\n**하이버네이트 6 이라 `select distinct` 가 SQL 에 안** 나갔다.\n\n**SQL 로 직접 `distinct` 를 날려도 4행**이다. **`order_item_id` 가 달라서**다.\n\n**리스트는 2개, 컬렉션은 온전**하다.\n\n**`distinct` 를 빼도 하이버네이트 6 은 2개**를 준다. **그래도 쓴다** — **의도가 보여야** 한다.\n\n**컬렉션을 둘 페치하면 `MultipleBagFetchException`** 이다.\n\n**DB 에서는 여전히 4행이** 온다."
+  }
+ ],
+ "recap": [
+  "**`distinct` 한 단어로 응답이 계약과** 맞아진다.",
+  "**SQL 의 `distinct` 는 모든 컬럼이 같아야** 지운다 — 여기선 아무것도 못 지운다.",
+  "**JPA 의 `distinct` 는 루트 엔티티를 식별자로** 거른다.",
+  "**애플리케이션 메모리에서 거른다** — DB 에서 오는 행은 그대로다.",
+  "**하이버네이트 6 은 키워드를 DB 로 안 보내고 기본으로** 걸러 준다.",
+  "**그래도 쓴다** — 의도가 코드에 보여야 하고 버전에 기대면 안 된다.",
+  "**컬렉션은 온전**하다 — 버려지는 건 리스트의 참조다.",
+  "**페이징이 여전히 안** 된다.",
+  "**컬렉션을 둘 페치하면 `MultipleBagFetchException`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`distinct` 를 붙이고 응답을 확인한다.",
+   "done_when": "주문 2개와 429 바이트를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "SQL 에 `distinct` 를 직접 날린다.",
+   "done_when": "4행 그대로인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`distinct` 를 빼고 결과 크기를 본다.",
+   "done_when": "하이버네이트 6 에서 2개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Order` 에 컬렉션을 하나 더 만들어 둘 다 페치해 본다.",
+   "done_when": "`MultipleBagFetchException` 을 확인하고 되돌렸다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "SQL 의 `distinct` 가 왜 소용없나?",
+   "a": "모든 컬럼이 같아야 지우는데 `order_item_id` 가 달라서다."
+  },
+  {
+   "q": "JPA 의 `distinct` 는 무엇을 하나?",
+   "a": "루트 엔티티를 식별자로 걸러 준다. 메모리에서 한다."
+  },
+  {
+   "q": "하이버네이트 6 에서 무엇이 바뀌었나?",
+   "a": "키워드를 DB 로 안 보내고 페치 조인 결과를 기본으로 중복 제거한다."
+  },
+  {
+   "q": "그래도 왜 쓰나?",
+   "a": "의도가 코드에 보여야 하고 버전이나 구현체에 기대면 안 된다."
+  },
+  {
+   "q": "안 고쳐진 것 셋은?",
+   "a": "DB 에서 오는 행 수, 페이징, 컬렉션 둘 이상 페치다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate 6 Migration Guide",
+   "url": "https://github.com/hibernate/hibernate-orm/blob/main/migration-guide.adoc",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

@@ -1,0 +1,137 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v3",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "V3 — 페치 조인",
+ "summary": "쿼리 하나가 되는데.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컬렉션까지 페치 조인한다.",
+  "쿼리가 1개가 되는 것을 확인한다.",
+  "응답이 왜 틀리는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11 이 1 이** 된다. **그리고 주문이 2건에서 4건이** 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderRepository — 컬렉션 페치 조인",
+   "code": "public List<Order> findAllWithItem() {\n    return em.createQuery(\n            \"select o from Order o\" +\n            \" join fetch o.member m\" +\n            \" join fetch o.delivery d\" +\n            \" join fetch o.orderItems oi\" +\n            \" join fetch oi.item i\", Order.class)\n        .getResultList();\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "조인이 실제로 돌려주는 것",
+   "ascii": "   what the join actually returns\n\n   order_id | name  | order_item_id | item_name\n   ---------+-------+---------------+--------------\n   4        | userA | 6             | JPA1 BOOK\n   4        | userA | 7             | JPA2 BOOK\n   11       | userB | 13            | SPRING1 BOOK\n   11       | userB | 14            | SPRING2 BOOK\n\n   4 rows. jpa builds 4 Order references,\n   but only 2 distinct Order objects exist.",
+   "note": "**4행이 온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 4행인가",
+   "md": "**SQL 의 조인은 곱**이다.\n\n```sql\norders (2행) join order_item (4행)\n```\n\n> **주문 4번에 주문상품 2개** → **2행**\n> **주문 11번에 주문상품 2개** → **2행**\n>\n> **합 4행**이다.\n\n**`ManyToOne` 은 안 그랬다.**\n\n```sql\norders (2행) join member\n```\n\n> **주문 하나에 회원 하나**다. **여전히 2행**이다.\n>\n> **4.5절에서 아무 문제 없던 이유**다.\n\n**JPA 는 4행을 어떻게 처리하나**\n\n> **`order_id` 로 같은 것을 알아본다.** **`Order#4` 객체는 하나만** 만든다.\n>\n> **그런데 결과 `List` 에는 4개를** 넣는다. **행이 4개니까.**\n\n**같은 객체가 네 번**이다.\n\n```java\nList<Order> orders = ...;\norders.get(0) == orders.get(1);   // true\n```\n\n> **메모리에 중복이 있는 게 아니다.** **리스트에 참조가 중복**이다.\n>\n> **영속성 컨텍스트가 `@Id` 로 동일성을 보장**한다(「JPA 기본편」 2.4절)."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 객체가 네 번",
+   "ascii": "   the same object, four times\n\n   result list\n     [0] --+\n     [1] --+--> Order#4     one object in the context\n     [2] --+\n     [3] --+--> Order#11\n\n   list.get(0) == list.get(1)   is true\n   the duplication is in the list, not in memory",
+   "note": "**중복은 리스트에 있지 메모리에 있지 않다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "응답이 어떻게 틀리나",
+   "md": "**3.4절의 계약**\n\n```json\n{\"data\": [\n  {\"orderId\": 4, ...},\n  {\"orderId\": 11, ...}\n]}\n```\n\n**V3 가 만드는 것**\n\n```json\n{\"data\": [\n  {\"orderId\": 4, ...},\n  {\"orderId\": 4, ...},\n  {\"orderId\": 11, ...},\n  {\"orderId\": 11, ...}\n]}\n```\n\n> **주문이 두 배**다. **`orderItems` 는 각각 온전**하다.\n>\n> **클라이언트가 주문 4개로** 읽는다.\n\n**1.1절에서 말한 함정이 이것**이다.\n\n> **\"최적화가 응답을 바꾸면 최적화가 아니다\"**\n>\n> **쿼리는 11 → 1** 이다. **최선의 숫자**다.\n> **응답은 틀렸다.**\n>\n> **숫자만 보면 못 잡는다.** **그래서 매 절이 JSON 도 같이** 보여 준다.\n\n**주문상품 개수가 다르면 더 이상**해진다.\n\n| 주문 | 상품 수 | 응답에 나오는 횟수 |\n|---|---|---|\n| 4 | 2 | **2번** |\n| 11 | 5 | **5번** |\n\n> **주문마다 중복 횟수가** 다르다. **규칙이 없어 보인다.**\n\n**다음 절에서 `distinct` 로 고친다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿼리 하나는 확실히 얻었다",
+   "md": "**응답이 틀린 것과 별개로 쿼리는 1개**다.\n\n```\nV2  11개\nV3   1개\n```\n\n**그리고 컬럼이 많다.**\n\n> **`o.*`·`m.*`·`d.*`·`oi.*`·`i.*`** 다.\n> **`Item` 은 상속이라 `left join` 셋이 더** 붙는다.\n>\n> **한 쿼리가 무거워졌다.** **3.3절에서 \"쿼리 개수가 못 보여 주는 것\" 이라고** 한 그것이다.\n\n**행 수도 봐야 한다.**\n\n```\nentities were loaded: 14\ncollections were fetched: 2\n```\n\n> **V2 와 같다.** **엔티티 개수는 안 늘었다.**\n>\n> **DB 에서 온 행만 4개**다.\n\n**주문 100건에 상품 5개씩이면**\n\n| | |\n|---|---|\n| 쿼리 | **1** |\n| 행 | **500** |\n| 응답 주문 | **500개** (틀림) |\n\n> **행 500개를 네트워크로** 받는다. **`member`·`delivery` 컬럼이 5번씩 중복**돼서 온다.\n>\n> **이게 5.11절의 플랫 데이터에서 다시 문제**가 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V3 ---\n\nGET /api/v3/orders\n\n#   Hibernate:\n#     select o1_0.order_id,\n#            d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#            d1_0.status,\n#            m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#            m1_0.zipcode,\n#            o1_0.order_date,\n#            oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#            i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#            i1_0.stock_quantity, i1_1.artist, i1_1.etc,\n#            i1_2.author, i1_2.isbn, i1_3.actor, i1_3.director,\n#            oi1_0.order_price,\n#            o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n#     join item i1_0 on i1_0.item_id=oi1_0.item_id\n#     left join album i1_1 on i1_0.item_id=i1_1.item_id\n#     left join book i1_2 on i1_0.item_id=i1_2.item_id\n#     left join movie i1_3 on i1_0.item_id=i1_3.item_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       14 entities were loaded\n#       2 collections were fetched\n#   }\n\n#   쿼리 1개. 11 -> 1\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     {\"orderId\":4,\"name\":\"userA\", ... 같은 내용 ... },\n#     {\"orderId\":11,\"name\":\"userB\", ... },\n#     {\"orderId\":11,\"name\":\"userB\", ... }\n#   ]}\n\n#   858 bytes  (V2 는 429)\n\n#   주문이 4개다. 계약은 2개였다\n\n# --- SQL 을 직접 날려 보면 ---\n\nselect o.order_id, m.name, oi.order_item_id, i.name\n  from orders o\n  join member m on m.member_id = o.member_id\n  join order_item oi on oi.order_id = o.order_id\n  join item i on i.item_id = oi.item_id;\n\n#   ORDER_ID | NAME  | ORDER_ITEM_ID | NAME\n#   ---------+-------+---------------+--------------\n#   4        | userA | 6             | JPA1 BOOK\n#   4        | userA | 7             | JPA2 BOOK\n#   11       | userB | 13            | SPRING1 BOOK\n#   11       | userB | 14            | SPRING2 BOOK\n\n#   4행이다\n\n#   userA 가 두 번, 서울 주소가 두 번 실려 왔다\n\n# --- 리스트에 뭐가 들었는지 ---\n\nList<Order> orders = orderRepository.findAllWithItem();\n\nSystem.out.println(orders.size());\n#   4\n\nSystem.out.println(orders.get(0) == orders.get(1));\n#   true\n\nSystem.out.println(orders.get(0).getId() + \" \" + orders.get(1).getId());\n#   4 4\n\nSystem.out.println(System.identityHashCode(orders.get(0)));\nSystem.out.println(System.identityHashCode(orders.get(1)));\n#   1234567890\n#   1234567890\n\n#   같은 객체다\n#   중복은 리스트에 있지 메모리에 있지 않다\n\n# --- entities were loaded 를 보라 ---\n\n#   V2  14 entities were loaded\n#   V3  14 entities were loaded\n\n#   같다. 엔티티는 안 늘었다\n#   DB 에서 온 행만 4개다\n\n# --- 4장의 V3 와 비교 ---\n\nGET /api/v3/simple-orders\n\n#   Session Metrics { 1 JDBC statements were executed }\n#   {\"data\":[{\"orderId\":4,...},{\"orderId\":11,...}]}\n\n#   주문 2개. 정상이다\n\nGET /api/v3/orders\n\n#   Session Metrics { 1 JDBC statements were executed }\n#   {\"data\":[{\"orderId\":4,...},{\"orderId\":4,...},\n#            {\"orderId\":11,...},{\"orderId\":11,...}]}\n\n#   주문 4개. 틀렸다\n\n#   같은 기술, 같은 쿼리 개수, 다른 결과\n\n# --- 다음 절에서 ---\n\n#   distinct 를 붙인다",
+   "note": "**쿼리 1개**다. **11 → 1** 이다.\n\n**응답에 주문이 4개**다. **계약은 2개**였다. **858 바이트**로 V2 의 두 배다.\n\n**SQL 을 직접 날리면 4행**이다. **`userA` 와 서울 주소가 두 번** 실려 왔다.\n\n**`orders.get(0) == orders.get(1)` 이 `true`** 다. **중복은 리스트에 있지 메모리에** 있지 않다.\n\n**`entities were loaded` 는 14 로 V2 와** 같다.\n\n**4장의 V3 는 같은 기술로 정상**이었다. **다른 결과**다."
+  }
+ ],
+ "recap": [
+  "**컬렉션까지 페치 조인하면 쿼리가 11 → 1** 이다.",
+  "**SQL 조인이 곱이라 주문 2건이 4행**이 된다.",
+  "**`ManyToOne` 은 행을 안 늘렸다** — 그래서 4장이 쉬웠다.",
+  "**JPA 가 `Order` 객체는 하나만 만들되 리스트에 4개를** 넣는다.",
+  "**`orders.get(0) == orders.get(1)` 이 `true`** 다.",
+  "**중복은 리스트에 있지 메모리에** 있지 않다.",
+  "**응답에 주문이 4개** — 3.4절의 계약이 깨졌다.",
+  "**쿼리는 최선인데 응답이 틀렸다** — 숫자만 보면 못 잡는다.",
+  "**주문마다 상품 수가 다르면 중복 횟수도** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "V3 를 만들고 쿼리를 센다.",
+   "done_when": "1개인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답의 주문 개수를 센다.",
+   "done_when": "4개인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "H2 콘솔에서 같은 조인을 날린다.",
+   "done_when": "4행인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`orders.get(0) == orders.get(1)` 을 찍는다.",
+   "done_when": "`true` 인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 주문 2건이 4행이 되나?",
+   "a": "SQL 조인이 곱이고 주문마다 주문상품이 2개씩이라서다."
+  },
+  {
+   "q": "메모리에 `Order` 객체가 몇 개인가?",
+   "a": "둘이다. 리스트에 참조가 4개일 뿐이다."
+  },
+  {
+   "q": "왜 같은 객체인가?",
+   "a": "영속성 컨텍스트가 `@Id` 로 동일성을 보장하기 때문이다."
+  },
+  {
+   "q": "쿼리가 1개인데 왜 문제인가?",
+   "a": "응답이 3.4절의 계약과 다르다. 주문이 4개로 나간다."
+  },
+  {
+   "q": "4장의 V3 는 왜 괜찮았나?",
+   "a": "`ManyToOne`·`OneToOne` 만이라 조인해도 행이 안 늘었다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

@@ -311,7 +311,7 @@
           "title": "V3 — 페치 조인",
           "summary": "쿼리 하나가 되는데.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -319,7 +319,7 @@
           "title": "distinct 와 중복",
           "summary": "행이 늘어난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -327,7 +327,7 @@
           "title": "페이징이 안 된다",
           "summary": "경고 한 줄과 전 건 로딩.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
