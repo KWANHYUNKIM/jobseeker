@@ -364,7 +364,7 @@
           "title": "테스트 대역 다섯",
           "summary": "더미 페이크 스텁 스파이 목.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -372,7 +372,7 @@
           "title": "Spy",
           "summary": "진짜인데 일부만 가짜.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",

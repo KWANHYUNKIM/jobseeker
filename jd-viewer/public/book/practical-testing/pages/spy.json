@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "spy",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "Spy",
+ "summary": "진짜인데 일부만 가짜.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스파이가 무엇인지 안다.",
+  "`given` 이 왜 위험한지 안다.",
+  "언제 쓰고 언제 안 쓸지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**목은 전부 가짜**다. **스파이는 진짜인데 일부만** 가짜다."
+  },
+  {
+   "type": "figure",
+   "caption": "스파이",
+   "ascii": "   a spy is the real object with a recorder attached\n\n   mock(Foo.class)\n     no real code runs. everything returns a default.\n\n   spy(new Foo())\n     real code runs, unless you override a method\n     every call is recorded\n\n   so a spy can be half real and half stubbed",
+   "note": "**진짜 객체에 녹음기를** 붙인 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "언제 쓰나",
+   "md": "**메서드가 여럿인데 하나만 가짜여야** 할 때.\n\n```java\npublic class MailService {\n    public boolean sendMail(...) { }        // 진짜로 돌리고 싶다\n    public void sendSlack(...) { }          // 이건 막고 싶다\n}\n```\n\n> **목으로 만들면 `sendMail` 도 아무것도 안** 한다.\n> **스파이면 `sendSlack` 만** 막는다.\n\n**레거시에서 자주** 쓴다.\n\n> **클래스가 크고 의존성이 많아 목으로 만들면 스텁이 열** 개다.\n> **스파이면 필요한 하나만** 막는다.\n>\n> **바꿔 말하면 설계가 나쁠 때 쓰는 도구**다.\n\n**새 코드에서는 대개 안** 쓴다.\n\n| | |\n|---|---|\n| **클래스가 작으면** | 목으로 충분하다 |\n| **책임이 하나면** | 반만 가짜일 이유가 없다 |\n\n> **\"스파이를 쓰고 싶다\" 가 \"이 클래스가 두 가지 일을 한다\" 는 신호**일 때가 많다.\n> **7.4절의 `private` 메서드와 같은 종류의 신호**다.\n\n**`@Spy` 애노테이션**\n\n```java\n@Spy\nprivate MailSendClient mailSendClient;   // 인터페이스면 안 된다\n```\n\n> **인터페이스는 진짜 구현이 없어 스파이가 안** 된다.\n> **구체 클래스여야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "`given` 이 위험한 이유",
+   "ascii": "   why given does not work on a spy\n\n   given(spy.send()).willReturn(true)\n     to build the stub, mockito calls spy.send() for real\n     the real email goes out, and then the stub is set\n\n   doReturn(true).when(spy).send()\n     the real method is never called\n\n   this is the one place the two syntaxes are not the same",
+   "note": "**스텁을 만들면서 진짜를** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "`given` 과 `doReturn` 이 다르다",
+   "md": "**목에서는 같다.**\n\n```java\ngiven(mock.send()).willReturn(true);\ndoReturn(true).when(mock).send();\n```\n\n> **둘 다 진짜 코드가 없어 차이가** 없다.\n\n**스파이에서는 다르다.**\n\n```java\ngiven(spy.send()).willReturn(true);\n```\n\n> **`spy.send()` 를 평가해야 `given` 에 넘길 수** 있다.\n> **자바가 인자를 먼저 계산**한다.\n>\n> **진짜 `send()` 가 돈다.** **메일이 나간다.**\n> **그 뒤에 스텁이** 걸린다.\n\n```java\ndoReturn(true).when(spy).send();\n```\n\n> **`when(spy)` 가 프록시를 만들고 `.send()` 를 가로**챈다.\n> **진짜가 안** 돈다.\n\n**규칙** — **스파이에는 `doReturn`**.\n\n> **`doThrow`, `doNothing`, `doAnswer` 도** 같다.\n>\n> **`void` 메서드도 `given` 을 못** 쓴다 — **반환값이 없어 인자로 못** 넘긴다.\n> **`doNothing().when(spy).sendSlack()`** 이다.\n\n**6.3절과 이어** 보면\n\n> **`verify` 는 스파이에서도** 된다.\n> **진짜로 돌면서 호출도 기록**한다.\n>\n> **그게 스파이의 이름**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 목과 스파이 ---\n\n@Test\nvoid mockDoesNothing() {\n    MailSendClient mock = mock(SmtpMailSendClient.class);\n\n    boolean result = mock.sendEmail(\"a\", \"b\", \"c\", \"d\");\n\n    System.out.println(\">>> mock: \" + result);\n}\n\n@Test\nvoid spyRunsReal() {\n    SmtpMailSendClient spy = spy(new SmtpMailSendClient());\n\n    boolean result = spy.sendEmail(\"a\", \"b\", \"c\", \"d\");\n\n    System.out.println(\">>> spy: \" + result);\n}\n\n$ ./gradlew test --tests SpyTest\n\n>>> mock: false\n\n2026-09-09T17:14:11.882 DEBUG --- Connecting to SMTP host smtp.gmail.com:587\n2026-09-09T17:14:14.331 DEBUG --- Sent message successfully\n\n>>> spy: true\n\nSpyTest > mockDoesNothing() PASSED\nSpyTest > spyRunsReal() PASSED\n\n#   스파이는 진짜로 보냈다\n\n# --- given 을 스파이에 쓰면 ---\n\n@Test\nvoid spyWithGiven() {\n    SmtpMailSendClient spy = spy(new SmtpMailSendClient());\n\n    given(spy.sendEmail(any(), any(), any(), any())).willReturn(true);\n\n    boolean result = spy.sendEmail(\"a\", \"b\", \"c\", \"d\");\n\n    assertThat(result).isTrue();\n}\n\n$ ./gradlew test --tests SpyTest\n\n2026-09-09T17:15:02.117 DEBUG --- Connecting to SMTP host smtp.gmail.com:587\n2026-09-09T17:15:04.882 DEBUG --- Sent message successfully\n\nSpyTest > spyWithGiven() PASSED\n\n#   통과했다\n\n#   그런데 SMTP 로그가 있다\n\n#   given(spy.sendEmail(...)) 를 평가하면서 진짜로 보냈다\n\n#   메일을 안 보내려고 스파이를 썼는데 보냈다\n\n# --- doReturn 으로 바꾸면 ---\n\n@Test\nvoid spyWithDoReturn() {\n    SmtpMailSendClient spy = spy(new SmtpMailSendClient());\n\n    doReturn(true).when(spy).sendEmail(any(), any(), any(), any());\n\n    boolean result = spy.sendEmail(\"a\", \"b\", \"c\", \"d\");\n\n    assertThat(result).isTrue();\n}\n\n$ ./gradlew test --tests SpyTest\n\nSpyTest > spyWithDoReturn() PASSED\n\nBUILD SUCCESSFUL in 2s\n\n#   SMTP 로그가 없다\n\n#   진짜가 안 돌았다\n\n#   3.5초가 빠졌다\n\n# --- 목에서는 둘이 같다 ---\n\n@Test\nvoid mockBothWork() {\n    MailSendClient mock1 = mock(MailSendClient.class);\n    given(mock1.sendEmail(any(), any(), any(), any())).willReturn(true);\n\n    MailSendClient mock2 = mock(MailSendClient.class);\n    doReturn(true).when(mock2).sendEmail(any(), any(), any(), any());\n\n    System.out.println(\">>> \" + mock1.sendEmail(\"\",\"\",\"\",\"\"));\n    System.out.println(\">>> \" + mock2.sendEmail(\"\",\"\",\"\",\"\"));\n}\n\n>>> true\n>>> true\n\n#   차이가 없다. 진짜 코드가 없어서다\n\n# --- 일부만 가짜로 ---\n\npublic class NotificationService {\n    public boolean notifyOrder(Order order) {\n        String message = buildMessage(order);      // 진짜로 돌리고 싶다\n        return sendSlack(message);                 // 막고 싶다\n    }\n\n    protected String buildMessage(Order order) {\n        return \"주문 \" + order.getId() + \" / \" + order.getTotalPrice() + \"원\";\n    }\n\n    protected boolean sendSlack(String message) {\n        // 진짜 슬랙 전송\n    }\n}\n\n@Test\nvoid spyPartial() {\n    NotificationService spy = spy(new NotificationService());\n    doReturn(true).when(spy).sendSlack(anyString());\n\n    boolean result = spy.notifyOrder(createOrder(1L, 8500));\n\n    assertThat(result).isTrue();\n    verify(spy).sendSlack(\"주문 1 / 8500원\");\n}\n\n$ ./gradlew test --tests SpyTest\n\nSpyTest > spyPartial() PASSED\n\n#   buildMessage 는 진짜로 돌았다\n#   sendSlack 은 막혔다\n\n#   그리고 만들어진 메시지를 검증했다\n\n# --- 목으로 하면 ---\n\n@Test\nvoid mockPartial() {\n    NotificationService mock = mock(NotificationService.class);\n    doReturn(true).when(mock).sendSlack(anyString());\n\n    boolean result = mock.notifyOrder(createOrder(1L, 8500));\n\n    System.out.println(\">>> \" + result);\n}\n\n>>> false\n\n#   notifyOrder 도 가짜라 아무것도 안 한다\n\n#   buildMessage 를 검증할 수가 없다\n\n# --- 그런데 이 설계가 맞나 ---\n\n#   buildMessage 와 sendSlack 이 한 클래스에 있다\n\n#   나누면\n\npublic class NotificationService {\n    private final SlackClient slackClient;      // 인터페이스\n\n    public boolean notifyOrder(Order order) {\n        return slackClient.send(MessageBuilder.build(order));\n    }\n}\n\n@Test\nvoid withoutSpy() {\n    given(slackClient.send(anyString())).willReturn(true);\n\n    boolean result = notificationService.notifyOrder(createOrder(1L, 8500));\n\n    assertThat(result).isTrue();\n    verify(slackClient).send(\"주문 1 / 8500원\");\n}\n\nSpyTest > withoutSpy() PASSED\n\n#   스파이가 필요 없어졌다\n\n#   MessageBuilder 는 순수 함수라 따로 단위 테스트한다  (2.7절)\n\n#   '스파이를 쓰고 싶다' 가 설계 신호였다\n\n# --- 인터페이스로 스파이를 만들면 ---\n\n@Test\nvoid spyOnInterface() {\n    MailSendClient spy = spy(MailSendClient.class);\n\n    boolean result = spy.sendEmail(\"a\", \"b\", \"c\", \"d\");\n\n    System.out.println(\">>> \" + result);\n}\n\n>>> false\n\n#   인터페이스는 진짜 구현이 없다\n\n#   목과 똑같이 동작한다\n\n# --- 다음 절에서 ---\n\n#   @MockBean 을 본다",
+   "note": "**목은 `false` 를 주고 스파이는 진짜로 메일을** 보낸다.\n\n**`given(spy.sendEmail(...))` 을 쓰면 SMTP 로그가** 나온다. **메일을 안 보내려고 스파이를 썼는데** 보냈다.\n\n**`doReturn` 으로 바꾸면 로그가 사라지고 3.5초가** 빠진다.\n\n**목에서는 둘이 같다** — **진짜 코드가** 없어서다.\n\n**설계를 나누면 스파이가 필요** 없어진다. **\"스파이를 쓰고 싶다\" 가 설계 신호**였다."
+  }
+ ],
+ "recap": [
+  "**스파이는 진짜 객체에 녹음기를 붙인** 것이다.",
+  "**일부만 가짜로** 만들 수 있다.",
+  "**`given(spy.x())` 은 스텁을 만들면서 진짜를** 부른다.",
+  "**스파이에는 `doReturn`** 을 쓴다.",
+  "**목에서는 둘이** 같다 — 진짜 코드가 없어서다.",
+  "**`void` 메서드는 `doNothing`** 이다.",
+  "**인터페이스로는 스파이가 안** 된다 — 목과 같아진다.",
+  "**레거시에서 자주** 쓴다.",
+  "**\"스파이를 쓰고 싶다\" 가 설계 신호**일 때가 많다."
+ ],
+ "drills": [
+  {
+   "task": "목과 스파이의 반환값을 비교한다.",
+   "done_when": "진짜가 도는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`given` 을 스파이에 써 본다.",
+   "done_when": "진짜가 도는 것을 로그로 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`doReturn` 으로 바꾼다.",
+   "done_when": "로그가 사라지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "스파이가 필요한 코드를 인터페이스로 나눈다.",
+   "done_when": "스파이 없이 테스트가 되는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스파이가 목과 다른 점은?",
+   "a": "진짜 코드가 돌고 스텁한 메서드만 가짜다."
+  },
+  {
+   "q": "`given` 이 스파이에서 왜 위험한가?",
+   "a": "인자를 평가하느라 진짜 메서드가 먼저 불린다."
+  },
+  {
+   "q": "무엇을 쓰나?",
+   "a": "`doReturn(...).when(spy).method()` 다. 진짜가 안 돈다."
+  },
+  {
+   "q": "인터페이스로 스파이를 만들면?",
+   "a": "진짜 구현이 없어 목과 똑같이 동작한다."
+  },
+  {
+   "q": "스파이를 쓰고 싶어지면?",
+   "a": "그 클래스가 두 가지 일을 한다는 신호일 때가 많다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "Test Double (개념 출처)",
+   "url": "https://martinfowler.com/bliki/TestDouble.html",
+   "publisher": "Martin Fowler"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

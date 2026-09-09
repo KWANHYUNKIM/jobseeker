@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "test-double",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "테스트 대역 다섯",
+ "summary": "더미 페이크 스텁 스파이 목.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 가지를 구분한다.",
+  "Mockito 의 용어와 맞춘다.",
+  "어느 것을 언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절에서 둘을 봤다.** **다섯으로 나누는 분류가 널리** 쓰인다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 가지",
+   "ascii": "   five doubles, ordered by how much they do\n\n   dummy    exists to fill a parameter. never called.\n   fake     a working simplification. an in memory map.\n   stub     answers with what you told it to answer.\n   spy      the real object, recording what happened.\n   mock     answers, and its calls are what you assert on.\n\n   only the last one changes what the test asserts",
+   "note": "**마지막 하나만 단언 대상을** 바꾼다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯을 하나씩",
+   "md": "**① 더미**\n\n```java\nnew OrderService(dummyRepo, dummyRepo2, dummyRepo3);\n```\n\n> **파라미터 자리를 채우려고** 있다. **안 불린다.**\n> **`null` 을 못 넣을 때** 쓴다.\n\n**② 페이크**\n\n```java\npublic class FakeProductRepository implements ProductRepository {\n    private final Map<Long, Product> store = new HashMap<>();\n\n    @Override public Product save(Product p) { store.put(p.getId(), p); return p; }\n    @Override public Optional<Product> findById(Long id) {\n        return Optional.ofNullable(store.get(id));\n    }\n}\n```\n\n> **진짜로 동작**한다. **단순할** 뿐이다.\n> **6.1절의 `FakeMailSendClient` 가** 그것이다.\n\n**③ 스텁**\n\n```java\ngiven(client.sendEmail(any(), any(), any(), any())).willReturn(true);\n```\n\n> **정해진 답을** 준다. **6.3절**이다.\n\n**④ 스파이**\n\n```java\nMailSendClient spy = spy(new SmtpMailSendClient());\n```\n\n> **진짜 객체인데 호출을** 기록한다. **6.5절**이다.\n\n**⑤ 목**\n\n```java\nverify(repo).save(any());\n```\n\n> **호출 자체가 단언 대상**이다.\n\n**경계가 흐릿**하다.\n\n> **스텁과 목이 같은 객체일 수** 있다(6.3절).\n> **분류를 외우는 게 목적이 아니라 \"이 가짜가 뭘 하고 있나\" 를 묻는 게** 목적이다."
+  },
+  {
+   "type": "figure",
+   "caption": "Mockito 의 용어",
+   "ascii": "   what mockito calls them\n\n   mock(Foo.class)                  a dummy until you stub it\n   given(...).willReturn(x)         now it is a stub\n   verify(...)                      now you are using it as a mock\n   spy(realObject)                  a spy\n\n   fake has no mockito equivalent. you write the class.",
+   "note": "**페이크만 직접** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "페이크가 목보다 나은 경우",
+   "md": "**리포지토리를 목으로 두면**\n\n```java\ngiven(productRepository.findAllByProductNumberIn(List.of(\"001\")))\n        .willReturn(List.of(product1));\n```\n\n> **\"001 을 넣으면 product1 이 나온다\"** 를 손으로 정한다.\n>\n> **여러 테스트에서 이걸 반복**한다.\n> **조회 조건이 바뀌면 스텁을 다** 고친다.\n\n**페이크로 두면**\n\n```java\npublic class FakeProductRepository implements ProductRepository {\n    private final List<Product> store = new ArrayList<>();\n\n    @Override public List<Product> saveAll(List<Product> products) {\n        store.addAll(products); return products;\n    }\n    @Override public List<Product> findAllByProductNumberIn(List<String> numbers) {\n        return store.stream()\n                .filter(p -> numbers.contains(p.getProductNumber()))\n                .toList();\n    }\n}\n```\n\n> **한 번 만들면 모든 테스트가** 쓴다.\n> **`saveAll` 하고 `findAll...` 하면 진짜처럼** 돈다.\n>\n> **given 이 짧아**진다 — **스텁이 아니라 데이터를** 넣는다.\n\n**대가**\n\n| | |\n|---|---|\n| **클래스를 만든다** | 인터페이스 메서드가 많으면 부담 |\n| **구현이 틀릴 수** 있다 | 진짜 DB 와 다르게 동작 |\n| **인터페이스가 필요** | 스프링 데이터 JPA 는 인터페이스라 구현이 는다 |\n\n> **마지막이 실질적인 걸림돌**이다.\n> **`JpaRepository` 를 구현하면 메서드가 스무 개** 넘는다.\n>\n> **자체 인터페이스를 따로 두는 설계**라면 쉽다 — **6.8절**에서 다룬다.\n\n**이 책의 선택**\n\n> **리포지토리는 진짜를 쓴다**(5장).\n> **외부 시스템은 목이나 페이크**로 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 더미 ---\n\n@Test\nvoid dummy() {\n    ProductRepository dummy = mock(ProductRepository.class);\n    StockRepository dummy2 = mock(StockRepository.class);\n    OrderRepository dummy3 = mock(OrderRepository.class);\n\n    OrderService service = new OrderService(dummy, dummy2, dummy3);\n\n    assertThat(service).isNotNull();\n}\n\n$ ./gradlew test --tests TestDoubleTest\n\nTestDoubleTest > dummy() PASSED\n\n#   생성만 확인했다. 셋 다 안 불렸다\n\n# --- 스텁 ---\n\n@Test\nvoid stub() {\n    given(productRepository.findAllByProductNumberIn(List.of(\"001\")))\n            .willReturn(List.of(createProduct(\"001\", 4000)));\n\n    List<Product> products =\n            productRepository.findAllByProductNumberIn(List.of(\"001\"));\n\n    assertThat(products).hasSize(1);\n}\n\nTestDoubleTest > stub() PASSED\n\n#   내가 정한 답이 나왔다\n\n# --- 스텁 안 한 인자를 넣으면 ---\n\nList<Product> products =\n        productRepository.findAllByProductNumberIn(List.of(\"002\"));\n\nSystem.out.println(\">>> \" + products);\n\n>>> []\n\n#   002 는 스텁을 안 했다. 빈 목록이다\n\n#   6.2절의 기본값이다\n\n# --- 페이크 ---\n\npublic class FakeProductRepository implements ProductRepository {\n    private final List<Product> store = new ArrayList<>();\n\n    @Override\n    public List<Product> saveAll(Iterable<Product> products) {\n        products.forEach(store::add);\n        return store;\n    }\n\n    @Override\n    public List<Product> findAllByProductNumberIn(List<String> numbers) {\n        return store.stream()\n                .filter(p -> numbers.contains(p.getProductNumber()))\n                .toList();\n    }\n    // ... JpaRepository 의 나머지 메서드는 UnsupportedOperationException\n}\n\n@Test\nvoid fake() {\n    FakeProductRepository fake = new FakeProductRepository();\n    fake.saveAll(List.of(\n            createProduct(\"001\", 4000),\n            createProduct(\"002\", 4500)));\n\n    List<Product> products = fake.findAllByProductNumberIn(List.of(\"001\"));\n\n    assertThat(products).hasSize(1)\n            .extracting(\"productNumber\").containsExactly(\"001\");\n}\n\nTestDoubleTest > fake() PASSED\n\n#   스텁을 안 했는데 002 를 걸러 냈다\n\n#   진짜처럼 동작한다\n\n# --- 페이크로 002 를 조회하면 ---\n\nList<Product> products = fake.findAllByProductNumberIn(List.of(\"002\"));\n\nSystem.out.println(\">>> \" + products.size());\n\n>>> 1\n\n#   목이었으면 빈 목록이 나왔을 자리다\n\n#   페이크는 넣은 데이터를 기억한다\n\n# --- 인터페이스 메서드가 많으면 ---\n\n$ ./gradlew compileTestJava\n\nFakeProductRepository.java:12: error: FakeProductRepository is not abstract\n  and does not override abstract method\n  findAll(Sort) in ListPagingAndSortingRepository\n\n#   JpaRepository 를 구현하면 다 채워야 한다\n\n$ grep -c \"@Override\" FakeProductRepository.java\n23\n\n#   23개다. 그중 두 개만 쓴다\n\n#   나머지는 UnsupportedOperationException 이다\n\n#   그래서 이 책은 리포지토리를 페이크로 안 만든다\n\n# --- 스텁과 목이 같은 객체인 것 ---\n\n@Test\nvoid stubAndMock() {\n    // 스텁으로 쓴다\n    given(mailSendClient.sendEmail(any(), any(), any(), any()))\n            .willReturn(true);\n\n    boolean result = mailService.sendMail(\"\", \"\", \"\", \"\");\n\n    assertThat(result).isTrue();\n\n    // 같은 객체를 목으로 쓴다\n    verify(mailSendClient).sendEmail(any(), any(), any(), any());\n}\n\nTestDoubleTest > stubAndMock() PASSED\n\n#   객체는 하나다\n\n#   쓰는 방식이 이름을 정한다\n\n# --- 다섯을 한 표로 ---\n\n#            불리나   답을 주나   기록하나   단언 대상\n#   dummy    아니오    -          -          -\n#   fake     예       진짜로      -          결과\n#   stub     예       정해진 답    -          결과\n#   spy      예       진짜로      예         결과 또는 호출\n#   mock     예       정해진 답    예         호출\n\n#   fake 와 stub 의 차이는 '어디서 답이 오나' 다\n\n# --- 다음 절에서 ---\n\n#   스파이를 본다",
+   "note": "**더미는 셋 다 안 불린다.**\n\n**스텁은 `001` 만 정했고 `002` 는 빈 목록**이다.\n\n**페이크는 스텁을 안 했는데 `002` 를 걸러** 낸다. **넣은 데이터를** 기억한다.\n\n**`JpaRepository` 를 구현하면 `@Override` 가 23개**다. **그중 둘만** 쓴다.\n\n**스텁과 목이 같은 객체**다. **쓰는 방식이 이름을** 정한다."
+  }
+ ],
+ "recap": [
+  "**다섯** — 더미, 페이크, 스텁, 스파이, 목.",
+  "**목만 호출이 단언 대상**이다.",
+  "**페이크는 진짜로 동작**한다 — 단순할 뿐이다.",
+  "**Mockito 는 페이크를 안** 준다 — 클래스를 직접 만든다.",
+  "**페이크는 한 번 만들면 모든 테스트가** 쓴다.",
+  "**given 이 스텁이 아니라 데이터 입력이** 된다.",
+  "**`JpaRepository` 를 구현하면 메서드가 23개**다.",
+  "**그래서 리포지토리는 진짜를** 쓴다.",
+  "**분류를 외우는 게 아니라 \"이 가짜가 뭘 하나\" 를** 묻는다."
+ ],
+ "drills": [
+  {
+   "task": "다섯 가지를 각각 하나씩 만들어 본다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "스텁 안 한 인자를 넣어 본다.",
+   "done_when": "빈 목록이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "페이크 리포지토리를 만들어 본다.",
+   "done_when": "구현할 메서드 개수를 셌다.",
+   "minutes": 30
+  },
+  {
+   "task": "한 객체를 스텁과 목으로 같이 써 본다.",
+   "done_when": "가능한 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "다섯 가지는?",
+   "a": "더미, 페이크, 스텁, 스파이, 목이다."
+  },
+  {
+   "q": "페이크와 스텁의 차이는?",
+   "a": "페이크는 진짜로 동작하고 스텁은 정해진 답만 준다."
+  },
+  {
+   "q": "Mockito 가 안 주는 것은?",
+   "a": "페이크다. 클래스를 직접 만들어야 한다."
+  },
+  {
+   "q": "리포지토리를 페이크로 안 만드는 이유는?",
+   "a": "`JpaRepository` 구현 메서드가 스무 개 넘어 부담이 크다."
+  },
+  {
+   "q": "스텁과 목이 같은 객체일 수 있나?",
+   "a": "그렇다. 쓰는 방식이 이름을 정한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테스트 대역",
+   "def": "실제 협력 객체를 대신하는 가짜. 더미·페이크·스텁·스파이·목 다섯으로 나눈다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Test Double (개념 출처)",
+   "url": "https://martinfowler.com/bliki/TestDouble.html",
+   "publisher": "Martin Fowler"
+  },
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}
