@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "events",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "이벤트로 원인 찾기",
+ "summary": "describe 아래쪽이 답인 경우가 많다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이벤트가 오브젝트임을 안다.",
+  "한 시간 제한을 안다.",
+  "reason 으로 거른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절부터 `describe` 아래쪽을 계속** 읽었다. **그게 무엇인지 이제** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "이벤트도 오브젝트다",
+   "ascii": "   an event is an object, and it expires\n\n   who wrote it     a controller, the kubelet, the scheduler\n   what it names    involvedObject, one specific resource\n   how long it stays  one hour by default, then it is gone\n\n   describe shows only events for that one object\n   get events shows the namespace, which is usually what you want",
+   "note": "**한 시간 지나면 사라**진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "한 시간이면 없어진다",
+   "md": "**etcd 에 쌓이면 안 되니** 지운다.\n\n> **기본 TTL 이 1시간**이다.\n> **어젯밤 장애를 오늘 아침에 못** 본다.\n> **10.3절의 로그 회전과 같은 이유로 같은** 한계다.\n>\n> **그래서 모니터링이 이벤트도 같이** 수집한다.\n\n**두 API 가** 있다.\n\n> **`v1` 과 `events.k8s.io/v1`** 이다.\n> **`kubectl get events` 는 앞의 것을** 본다.\n> **같은 내용을 다르게 담은** 것이다.\n\n**`describe` 는 그 오브젝트 것만** 보여준다.\n\n> **파드가 안 뜨는데 원인이 레플리카셋에 있으면 파드 `describe` 에는** 없다.\n> **7.5절의 쿼터 거부가 그런 경우**였다.\n> **`get events` 로 네임스페이스 전체를** 본다.\n\n**정렬이 기본이** 아니다.\n\n```bash\nkubectl get events --sort-by=.lastTimestamp\nkubectl get events -w\nkubectl get events -A --field-selector type=Warning\n```\n\n> **안 정렬하면 순서가** 뒤죽박죽이다.\n> **`-w` 로 지켜보면 배포가 어떻게 흘러가는지** 보인다."
+  },
+  {
+   "type": "figure",
+   "caption": "읽어야 할 칸",
+   "ascii": "   the columns that matter\n\n   type       Normal or Warning, and Warning is not always a problem\n   reason     a short machine word, this is what you filter on\n   object     which pod, node, or claim it happened to\n   count      how many times, and this one is the tell\n\n   a count of 1 is a moment, a count of 340 is a loop",
+   "note": "**횟수가 진짜 단서**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "reason 은 기계 낱말이다",
+   "md": "**메시지는 바뀌어도 `reason` 은 잘 안** 바뀐다.\n\n> **그래서 필터와 알림은 `reason` 으로** 건다.\n> **이 책에서 계속 만난 것들**이다.\n\n| reason | 어디서 봤나 |\n|---|---|\n| `Scheduled` | 9.1절 |\n| `FailedScheduling` | 9.1·9.2·9.3절 |\n| `BackOff` | 4.7절 |\n| `Failed` | 4.8절 |\n| `Unhealthy` | 4.5절 |\n| `Killing` | 4.7절 |\n| `FailedMount` | 8.1절 |\n| `WaitForFirstConsumer` | 8.3절 |\n| `Evicted` | 9.4절 |\n| `Preempted` | 9.4절 |\n| `SuccessfulRescale` | 9.5절 |\n| `TaintManagerEviction` | 9.3절 |\n\n**`Warning` 이 늘 문제는** 아니다.\n\n> **`Unhealthy` 가 기동 중에 몇 번 뜨는 건** 정상이다.\n> **`BackOff` 가 한 번은 재시도**다.\n> **횟수와 지속이** 문제다.\n\n**직접 만들 수도** 있다.\n\n> **컨트롤러를 짜면 이벤트를 남긴다.**\n> **오퍼레이터가 자기 판단을 남기는 표준 방식**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 이벤트도 오브젝트다 ---\n\n$ kubectl api-resources | grep -E '^events'\n\nevents   ev   v1                    true   Event\nevents   ev   events.k8s.io/v1      true   Event\n\n#   둘이다\n\n$ kubectl run demo --image=nginx:1.27 > /dev/null && sleep 10\n$ kubectl get events --field-selector involvedObject.name=demo \\\n    -o custom-columns=TYPE:.type,REASON:.reason,MSG:.message --no-headers\n\nNormal   Scheduled   Successfully assigned default/demo to kind-worker\nNormal   Pulling     Pulling image \"nginx:1.27\"\nNormal   Pulled      Successfully pulled image \"nginx:1.27\" in 1.842s\nNormal   Created     Created container: nginx\nNormal   Started     Started container nginx\n\n#   다섯 줄이 파드가 뜬 이야기 전부다\n\n$ kubectl get events --field-selector involvedObject.name=demo \\\n    -o jsonpath='{.items[0].source.component} / \\\n{.items[1].source.component}{\"\\n\"}'\n\ndefault-scheduler / kubelet\n\n#   누가 썼는지 적혀 있다\n\n#   9.1절의 스케줄러와 kubelet 이다\n\n$ kubectl get event -o jsonpath=\\\n'{.items[0].involvedObject.kind}/{.items[0].involvedObject.name}{\"\\n\"}'\n\nPod/demo\n\n#   대상이 정확히 하나다\n\n$ kubectl delete pod demo --now > /dev/null\n\n# --- describe 는 그 오브젝트 것만 본다 ---\n\n$ kubectl create namespace tight > /dev/null\n$ kubectl apply -f - > /dev/null <<'EOF'\napiVersion: v1\nkind: ResourceQuota\nmetadata: { name: q, namespace: tight }\nspec:\n  hard: { pods: \"1\" }\nEOF\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3 -n tight \\\n    > /dev/null\n$ sleep 12 && kubectl get pods -n tight --no-headers | wc -l\n\n       1\n\n$ kubectl describe pod -n tight $(kubectl get pod -n tight -o name \\\n    | head -1 | cut -d/ -f2) | grep -c FailedCreate\n\n0\n\n#   파드에는 아무 단서가 없다\n\n#   못 만들어진 파드는 describe 할 수도 없다\n\n$ kubectl get events -n tight --field-selector reason=FailedCreate \\\n    -o jsonpath='{.items[0].involvedObject.kind}: {.items[0].message}{\"\\n\"}'\n\nReplicaSet: (combined from similar events): Error creating: pods\n  \"web-6d8f4b9c7-x2k4m\" is forbidden: exceeded quota: q, requested:\n  pods=1, used: pods=1, limited: pods=1\n\n#   레플리카셋에 있었다\n\n#   7.5절에서 본 그것이다\n\n#   파드만 보면 절대 못 찾는다\n\n$ kubectl get events -n tight --field-selector reason=FailedCreate \\\n    -o jsonpath='{.items[0].count}{\"\\n\"}'\n\n27\n\n#   27번이다\n\n#   계속 재시도하고 있다\n\n#   횟수가 진짜 단서다\n\n$ kubectl delete namespace tight > /dev/null\n\n# --- 정렬해야 읽을 수 있다 ---\n\n$ kubectl create deployment noisy --image=nginx:1.27 --replicas=2 > /dev/null\n$ sleep 10 && kubectl get events --no-headers | awk '{print $1}' | head -4\n\n8s\n10s\n7s\n9s\n\n#   순서가 뒤죽박죽이다\n\n$ kubectl get events --sort-by=.lastTimestamp --no-headers \\\n    | awk '{print $1, $3, $4}' | tail -4\n\n9s    Pulled    pod/noisy-7c9d4f6b8-k2n8x\n8s    Created   pod/noisy-7c9d4f6b8-k2n8x\n8s    Started   pod/noisy-7c9d4f6b8-k2n8x\n7s    Started   pod/noisy-7c9d4f6b8-p5r3m\n\n#   정렬이 기본이 아니다\n\n$ kubectl delete deployment noisy > /dev/null\n\n# --- Warning 이 늘 문제는 아니다 ---\n\n$ cat slow.yaml\n\n      containers:\n        - name: app\n          image: nginx:1.27\n          command: [\"sh\", \"-c\", \"sleep 20; nginx -g 'daemon off;'\"]\n          readinessProbe:\n            httpGet: { path: /, port: 80 }\n            periodSeconds: 3\n\n$ kubectl apply -f slow.yaml > /dev/null && sleep 40\n$ kubectl get pod slowstart --no-headers\n\nslowstart   1/1   Running   0   40s\n\n$ kubectl get events --field-selector involvedObject.name=slowstart,\\\ntype=Warning -o jsonpath='{.items[0].reason} {.items[0].count}회{\"\\n\"}'\n\nUnhealthy 6회\n\n#   경고가 6번 떴는데 지금은 정상이다\n\n#   4.5절의 기동 시간 문제다\n\n#   startupProbe 를 줬으면 안 떴다\n\n$ kubectl delete pod slowstart --now > /dev/null\n\n# --- 한 시간이면 사라진다 ---\n\n$ kubectl get events -o jsonpath=\\\n'{range .items[*]}{.lastTimestamp}{\"\\n\"}{end}' | sort | head -1\n\n2026-09-09T21:58:12Z\n\n$ date -u +%Y-%m-%dT%H:%M:%SZ\n\n2026-09-09T22:54:31Z\n\n#   가장 오래된 게 56분 전이다\n\n#   그 앞은 이미 지워졌다\n\n$ kubectl get pod -n kube-system -l component=kube-apiserver \\\n    -o jsonpath='{.items[0].spec.containers[0].command}' \\\n    | tr ',' '\\n' | grep -i event-ttl\n\n(없음)\n\n#   안 적으면 기본 1시간이다\n\n#   어젯밤 장애는 못 본다\n\n#   그래서 모니터링이 같이 수집한다\n\n# --- 지켜보기 ---\n\n$ kubectl get events -w --no-headers &\n$ kubectl create deployment watched --image=nginx:1.27 > /dev/null\n\n0s   Normal   ScalingReplicaSet   deployment/watched   Scaled up replica\n                                                       set to 1\n0s   Normal   SuccessfulCreate    replicaset/watched   Created pod\n0s   Normal   Scheduled           pod/watched-...      Successfully assigned\n0s   Normal   Pulling             pod/watched-...      Pulling image\n1s   Normal   Pulled              pod/watched-...      Successfully pulled\n1s   Normal   Created             pod/watched-...      Created container\n1s   Normal   Started             pod/watched-...      Started container\n\n#   디플로이먼트 -> 레플리카셋 -> 파드 순이다\n\n#   5.1절의 세 겹이 그대로 보인다\n\n$ kill %1 2>/dev/null\n$ kubectl delete deployment watched > /dev/null\n\n# --- 클러스터 전체의 경고 ---\n\n$ kubectl get events -A --field-selector type=Warning \\\n    --sort-by=.lastTimestamp -o custom-columns=\\\nNS:.metadata.namespace,REASON:.reason,OBJ:.involvedObject.name,\\\nCOUNT:.count --no-headers | tail -3\n\ndefault   Unhealthy   slowstart   6\ndefault   BackOff     crasher     14\ndefault   Failed      missing     3\n\n#   아침에 이 한 줄부터 친다\n\n# --- 다음 절에서 ---\n\n#   여덟 개 명령으로 좁혀 간다",
+   "note": "**파드가 뜨는 이야기가 `Scheduled`→`Pulling`→`Pulled`→`Created`→`Started` 다섯 줄**이다.\n\n**쿼터 거부는 파드가 아니라 `ReplicaSet` 에 `FailedCreate count=27`** 로 있다.\n\n**`--sort-by` 없이는 `8s 10s 7s 9s` 로 순서가** 뒤죽박죽이다.\n\n**정상인 파드에도 `Unhealthy 6회` 경고가** 남아 있다.\n\n**가장 오래된 이벤트가 56분 전**이다 — 그 앞은 이미 지워졌다."
+  }
+ ],
+ "recap": [
+  "**이벤트도 오브젝트**다.",
+  "**기본 1시간 뒤** 사라진다.",
+  "**`describe` 는 그 오브젝트 것만** 본다.",
+  "**원인이 상위 컨트롤러에 있을 수** 있다.",
+  "**정렬은 기본이** 아니다.",
+  "**`reason` 은 기계 낱말이라 필터에** 쓴다.",
+  "**횟수가 순간과 반복을** 가른다.",
+  "**`Warning` 이 늘 문제는** 아니다.",
+  "**`-w` 로 배포 흐름이** 보인다."
+ ],
+ "drills": [
+  {
+   "task": "파드 하나의 이벤트를 다 본다.",
+   "done_when": "다섯 줄의 뜻을 말할 수 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "쿼터로 생성을 막는다.",
+   "done_when": "레플리카셋 쪽 이벤트를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "`-w` 로 배포를 지켜본다.",
+   "done_when": "세 겹의 순서를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "경고만 모아 본다.",
+   "done_when": "횟수 기준으로 읽었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이벤트는 얼마나 남나?",
+   "a": "기본 1시간이다."
+  },
+  {
+   "q": "`describe pod` 에 원인이 없을 수 있는 이유는?",
+   "a": "이벤트 대상이 레플리카셋 같은 상위 오브젝트일 수 있어서다."
+  },
+  {
+   "q": "필터를 `reason` 으로 거는 이유는?",
+   "a": "메시지와 달리 잘 바뀌지 않는 기계 낱말이라서다."
+  },
+  {
+   "q": "`count` 가 왜 중요한가?",
+   "a": "한 번은 순간이고 여러 번은 반복되는 문제라는 뜻이다."
+  },
+  {
+   "q": "`Warning` 이면 항상 문제인가?",
+   "a": "아니다. 기동 중 `Unhealthy` 처럼 정상 과정에서도 뜬다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "involvedObject",
+   "def": "이벤트가 가리키는 대상 오브젝트."
+  },
+  {
+   "term": "event-ttl",
+   "def": "API 서버가 이벤트를 보관하는 기간. 기본 1시간이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Event v1",
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Troubleshooting Applications",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-application/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

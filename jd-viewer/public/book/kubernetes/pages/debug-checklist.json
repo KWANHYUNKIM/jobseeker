@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "debug-checklist",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "장애 대응 순서",
+ "summary": "여덟 개 명령으로 좁혀 간다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "순서를 외운다.",
+  "상태로 갈래를 탄다.",
+  "한 벌 스크립트를 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**이 책에서 흩어져 나온 명령들을 한 줄에** 세운다."
+  },
+  {
+   "type": "figure",
+   "caption": "여덟 개, 이 순서로",
+   "ascii": "   eight commands, in this order, always\n\n   1  kubectl get pods -o wide          what state, on which node\n   2  kubectl describe pod NAME         events, at the bottom\n   3  kubectl logs NAME --previous      why it died last time\n   4  kubectl get events --sort-by=...  what else happened nearby\n   5  kubectl get endpointslices        is the service even wired\n   6  kubectl top pod / node            is anything starved\n   7  kubectl auth can-i --as=...       is it a permission problem\n   8  kubectl debug / exec              go inside and look\n\n   the first four solve most of it, and cost about a minute",
+   "note": "**앞 넷이 대부분을 푼다 — 1분** 걸린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "상태 한 칸이 갈래를 정한다",
+   "md": "**`STATUS` 와 `READY` 두 칸이면** 충분하다.\n\n> **6.7절의 사다리도 같은 생각**이었다.\n> **거기는 연결, 여기는 파드부터** 전체다.\n\n**넓게 보고 좁힌다**\n\n| 범위 | 명령 |\n|---|---|\n| 클러스터 | `kubectl get nodes` |\n| 네임스페이스 | `kubectl get all` |\n| 워크로드 | `kubectl rollout status` |\n| 파드 | `describe`·`logs` |\n| 안쪽 | `exec`·`debug` |\n\n> **반대로 하면 시간을** 버린다.\n> **노드가 `NotReady` 인데 파드 로그를 읽고** 있게 된다.\n\n**바뀐 게 뭔지부터** 묻는다.\n\n> **`kubectl rollout history` 로 최근 배포를** 본다.\n> **`kubectl get events` 로 최근 한 시간을** 본다(10.5절).\n> **대부분 방금 바꾼 것이** 원인이다.\n\n**되돌리는 게 먼저**다.\n\n> **원인을 다 알기 전에 `rollout undo` 를** 한다(5.3절).\n> **불을 끄고 나서** 조사한다.\n> **11장의 깃옵스면 되돌리기가 커밋 하나**다."
+  },
+  {
+   "type": "figure",
+   "caption": "첫 갈래",
+   "ascii": "   the first fork, from the STATUS column alone\n\n   Pending             it was never placed          go to 9.1\n   ContainerCreating   placed, but the setup failed  go to 8.1 and 7.1\n   CrashLoopBackOff    it runs and dies              go to logs previous\n   Running but 0/1     it runs and is not ready      go to 4.5\n   Running and 1/1     the pod is fine               the problem is elsewhere\n\n   the last row is the one people skip, and it is the most common",
+   "note": "**마지막 줄을 다들 건너뛴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "파드가 멀쩡한데 안 될 때",
+   "md": "**제일 흔한데 제일 늦게 본다.**\n\n> **`1/1 Running` 이면 파드는 끝**이다.\n> **문제는 서비스·인그레스·DNS·정책**이다.\n> **6.7절의 사다리로** 넘어간다.\n\n**그다음 흔한 셋**\n\n| 증상 | 어디로 |\n|---|---|\n| 설정을 바꿨는데 반영 안 됨 | 7.4절 |\n| 배포가 안 끝남 | 5.2·9.6절 |\n| 파드가 노드를 못 옮김 | 8.2·9.2절 |\n\n**임시 컨테이너가 마지막 수단**이다.\n\n```bash\nkubectl debug -it POD --image=nicolaka/netshoot --target=app\nkubectl debug node/NODE -it --image=busybox\n```\n\n> **첫째는 파드 안, 둘째는 노드** 안이다.\n> **3.4절과 6.7절에서** 썼다.\n> **원래 컨테이너를 안** 건드린다.\n\n**한 벌로 만들어 둔다.**\n\n> **장애 때 명령을 떠올리는 게 제일 느린** 일이다.\n> **스크립트 하나면 20초에 다** 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 고장을 하나 만든다 ---\n\n$ kubectl apply -f broken.yaml > /dev/null\n$ sleep 20 && kubectl get pods -o wide --no-headers | grep shop\n\nshop-7c9d4f6b8-k2n8x   0/1   ContainerCreating   0   20s   <none>  kind-worker\nshop-7c9d4f6b8-p5r3m   0/1   ContainerCreating   0   20s   <none>  kind-worker2\n\n#   1번 명령이다\n\n#   Pending 이 아니다, 노드는 정해졌다\n\n#   설정 단계에서 막혔다\n\n$ kubectl describe pod shop-7c9d4f6b8-k2n8x | tail -4\n\nEvents:\n  Type     Reason       Age   From      Message\n  ----     ------       ----  ----      -------\n  Warning  FailedMount  8s    kubelet   MountVolume.SetUp failed for volume\n    \"cfg\" : configmap \"shop-config\" not found\n\n#   2번 명령이다\n\n#   아래쪽에 답이 있다\n\n#   7.1절의 그것이다\n\n$ kubectl get configmap shop-config 2>&1 | tail -1\n\nError from server (NotFound): configmaps \"shop-config\" not found\n\n$ kubectl create configmap shop-config --from-literal=MODE=prod > /dev/null\n$ sleep 25 && kubectl get pods --no-headers | grep shop\n\nshop-7c9d4f6b8-k2n8x   0/1   CrashLoopBackOff   2 (5s ago)   50s\nshop-7c9d4f6b8-p5r3m   0/1   CrashLoopBackOff   2 (7s ago)   50s\n\n#   다음 고장으로 넘어갔다\n\n#   갈래가 바뀌었다\n\n$ kubectl logs shop-7c9d4f6b8-k2n8x\n\n(빈 줄)\n\n#   지금은 비어 있다\n\n$ kubectl logs shop-7c9d4f6b8-k2n8x --previous\n\n설정 읽는 중: MODE=prod\n오류: DB_HOST 가 없다\n\n#   3번 명령이다\n\n#   10.3절에서 말한 그 플래그다\n\n$ kubectl set env deployment/shop DB_HOST=postgres > /dev/null\n$ kubectl rollout status deployment/shop --timeout=60s\n\nWaiting for deployment \"shop\" rollout to finish: 1 of 2 updated replicas\n  are available...\ndeployment \"shop\" successfully rolled out\n\n$ kubectl get pods --no-headers | grep shop\n\nshop-5f8c7d9b4-m3n7q   1/1   Running   0   35s\nshop-5f8c7d9b4-w2k8t   1/1   Running   0   32s\n\n#   파드는 멀쩡해졌다\n\n# --- 그런데 안 된다 ---\n\n$ kubectl run t --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=3 shop 2>&1 | tail -1\n\nwget: download timed out\npod \"t\" deleted\n\n#   여기가 다들 건너뛰는 줄이다\n\n#   1/1 Running 인데 안 된다\n\n$ kubectl get endpointslices -l kubernetes.io/service-name=shop \\\n    -o jsonpath='{.items[*].endpoints[*].addresses[0]}{\"[끝]\\n\"}'\n\n[끝]\n\n#   5번 명령이다\n\n#   비었다\n\n$ kubectl get service shop -o jsonpath='{.spec.selector}{\"\\n\"}'\n\n{\"app\":\"shop-web\"}\n\n$ kubectl get pods -l app=shop --show-labels --no-headers | head -1 \\\n    | awk '{print $6}'\n\napp=shop,pod-template-hash=5f8c7d9b4\n\n#   6.7절의 4단이다\n\n#   shop-web 과 shop 이다\n\n$ kubectl patch service shop -p '{\"spec\":{\"selector\":{\"app\":\"shop\"}}}' \\\n    > /dev/null\n$ sleep 3 && kubectl run t --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=3 shop 2>&1 | head -1\n\n<!DOCTYPE html>\npod \"t\" deleted\n\n#   세 고장이 겹쳐 있었다\n\n#   순서대로 하나씩 나왔다\n\n# --- 한 벌로 만든다 ---\n\n$ cat triage.sh\n\n#!/bin/bash\nNS=\"${1:-default}\"\n\necho \"===== 1) 노드\"\nkubectl get nodes --no-headers | awk '{print \"  \" $1, $2}'\n\necho \"===== 2) 정상 아닌 파드\"\nkubectl get pods -n \"$NS\" -o wide --no-headers \\\n  | awk '$3!=\"Running\" || $2!~/^([0-9]+)\\/\\1$/ {print \"  \" $1, $2, $3, $7}'\n\necho \"===== 3) 최근 경고\"\nkubectl get events -n \"$NS\" --field-selector type=Warning \\\n  --sort-by=.lastTimestamp -o custom-columns=\\\nR:.reason,O:.involvedObject.name,C:.count --no-headers 2>/dev/null \\\n  | tail -5 | sed 's/^/  /'\n\necho \"===== 4) 재시작 많은 컨테이너\"\nkubectl get pods -n \"$NS\" --no-headers \\\n  | awk '$4>0 {print \"  \" $1, \"재시작\", $4}'\n\necho \"===== 5) 엔드포인트 빈 서비스\"\nfor s in $(kubectl get svc -n \"$NS\" -o name | cut -d/ -f2); do\n  n=$(kubectl get endpointslices -n \"$NS\" \\\n      -l kubernetes.io/service-name=\"$s\" \\\n      -o jsonpath='{range .items[*].endpoints[*]}x{end}' | wc -c)\n  [ \"$n\" -le 1 ] && echo \"  $s 비었음\"\ndone\n\necho \"===== 6) 최근 롤아웃\"\nkubectl get deploy -n \"$NS\" --no-headers \\\n  | awk '{print \"  \" $1, $2, \"나이\", $5}'\n\n$ ./triage.sh\n\n===== 1) 노드\n  kind-control-plane Ready\n  kind-worker Ready\n  kind-worker2 Ready\n===== 2) 정상 아닌 파드\n===== 3) 최근 경고\n  FailedMount shop-7c9d4f6b8-k2n8x 4\n  BackOff shop-7c9d4f6b8-p5r3m 6\n  Unhealthy slowstart 6\n===== 4) 재시작 많은 컨테이너\n===== 5) 엔드포인트 빈 서비스\n===== 6) 최근 롤아웃\n  shop 2/2 나이 4m\n\n#   20초에 한 화면이다\n\n#   지나간 고장의 흔적이 3번에 남아 있다\n\n#   이벤트는 한 시간이면 사라진다 (10.5절)\n\n# --- 노드가 문제일 때 ---\n\n$ docker stop kind-worker2 > /dev/null\n$ sleep 60 && ./triage.sh 2>/dev/null | head -6\n\n===== 1) 노드\n  kind-control-plane Ready\n  kind-worker Ready\n  kind-worker2 NotReady\n===== 2) 정상 아닌 파드\n  shop-5f8c7d9b4-w2k8t 1/1 Running kind-worker2\n\n#   1번에서 바로 끝났다\n\n#   파드 로그를 읽을 이유가 없었다\n\n$ kubectl get node kind-worker2 -o jsonpath=\\\n'{range .spec.taints[*]}{.key}:{.effect}{\"\\n\"}{end}'\n\nnode.kubernetes.io/unreachable:NoSchedule\nnode.kubernetes.io/unreachable:NoExecute\n\n#   9.3절의 그 테인트다\n\n#   5분 뒤 파드가 옮겨진다\n\n$ docker start kind-worker2 > /dev/null && sleep 45\n$ kubectl get nodes --no-headers | awk '{print $1, $2}' | tail -1\n\nkind-worker2 Ready\n\n# --- 치운다 ---\n\n$ kubectl delete deployment shop && kubectl delete service shop \\\n    && kubectl delete configmap shop-config\n\ndeployment.apps \"shop\" deleted\nservice \"shop\" deleted\nconfigmap \"shop-config\" deleted\n\n# --- 다음 절에서 ---\n\n#   API 가 사라지기 전에 올린다",
+   "note": "**세 고장이 겹쳐 있었고 `ContainerCreating`→`CrashLoopBackOff`→`1/1 Running` 인데 안 됨** 순으로 하나씩 나왔다.\n\n**`describe` 아래쪽이 `configmap \"shop-config\" not found`** 였다.\n\n**빈 로그에 `--previous` 를 붙이니 `DB_HOST 가 없다`** 가 나왔다.\n\n**파드가 멀쩡한데 안 되는 건 셀렉터가 `shop-web`** 이어서다.\n\n**노드를 멈추자 점검 스크립트 1번에서 바로** 끝났다."
+  }
+ ],
+ "recap": [
+  "**여덟 개를 순서대로** 친다.",
+  "**앞 넷이 대부분을** 푼다.",
+  "**`STATUS` 와 `READY` 가 갈래를** 정한다.",
+  "**넓게 보고** 좁힌다.",
+  "**`1/1 Running` 이면 파드 밖을** 본다.",
+  "**바뀐 게 뭔지부터** 묻는다.",
+  "**원인보다 되돌리기가** 먼저다.",
+  "**임시 컨테이너가 마지막** 수단이다.",
+  "**한 벌 스크립트를 미리 만들어** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "고장을 셋 겹쳐 만든다.",
+   "done_when": "순서대로 하나씩 찾았다.",
+   "minutes": 40
+  },
+  {
+   "task": "점검 스크립트를 만든다.",
+   "done_when": "여섯 항목이 한 화면에 나왔다.",
+   "minutes": 35
+  },
+  {
+   "task": "노드를 멈춘다.",
+   "done_when": "1번에서 끝나는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "셀렉터를 틀리게 둔다.",
+   "done_when": "파드가 멀쩡한 채 안 되는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 먼저 치는 명령은?",
+   "a": "`kubectl get pods -o wide` 로 상태와 노드를 본다."
+  },
+  {
+   "q": "`ContainerCreating` 이 뜻하는 것은?",
+   "a": "배치는 됐고 볼륨이나 설정 단계에서 막혔다는 뜻이다."
+  },
+  {
+   "q": "`1/1 Running` 인데 안 되면?",
+   "a": "파드는 정상이니 서비스·DNS·인그레스·정책을 본다."
+  },
+  {
+   "q": "원인 파악과 롤백 중 먼저는?",
+   "a": "롤백이다. 불을 끄고 조사한다."
+  },
+  {
+   "q": "점검 스크립트를 미리 만드는 이유는?",
+   "a": "장애 때 명령을 떠올리는 것이 가장 느린 일이라서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임시 컨테이너",
+   "def": "떠 있는 파드에 도구를 붙여 넣는 디버깅용 컨테이너."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Troubleshooting Applications",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-application/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Troubleshooting Clusters",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
