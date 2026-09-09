@@ -357,7 +357,7 @@
           "title": "스토어와 컨트롤 URI",
           "summary": "클라이언트가 정할 때, 그리고 안 떨어질 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -372,7 +372,7 @@
           "title": "다섯 갈래",
           "summary": "첫 자리만 봐도 절반은 안다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",

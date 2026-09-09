@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "api-store-controller",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "스토어와 컨트롤 URI",
+ "summary": "클라이언트가 정할 때, 그리고 안 떨어질 때.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 종류를 구분한다.",
+  "스토어를 언제 쓰는지 안다.",
+  "컨트롤러를 절제한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절은 서버가 이름을** 지었다. **여기서 나머지 둘을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 종류",
+   "ascii": "   three kinds of uri, and who names the thing\n\n   collection   the server names it\n                POST /orders     -> Location: /orders/9\n\n   store        the client names it\n                PUT /files/report.pdf, and that is the name from now on\n\n   controller   nothing is being named at all\n                POST /orders/9/cancel, because it is a verb\n\n   the first two are nouns, and the third is the escape hatch",
+   "note": "**셋째가 비상구**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스토어는 클라이언트가 이름을 안다",
+   "md": "**POST 가 아니라 PUT** 이다.\n\n> **어디에 놓을지 이미 알고** 있다.\n> **서버에 물어볼 이유가** 없다.\n> **5.4절에서 없는 주소에 PUT 하면 `201` 이라고** 했다.\n\n**멱등이라는 게** 크다.\n\n> **타임아웃이면 그냥 다시** 보낸다(5.6절).\n> **같은 이름에 다시 쓰면 덮어쓸** 뿐이다.\n> **컬렉션 POST 였다면 둘이** 생긴다.\n\n**판별법은 하나**다.\n\n> **요청하기 전에 URL 을 계산할 수** 있나.\n> **파일 이름·사용자명·기기 ID·날짜가** 그렇다.\n> **주문 번호는 아니다** — **서버가 발급**한다.\n\n**충돌을 다뤄야** 한다.\n\n> **같은 이름이 이미 있으면 덮을지 거부할지** 정한다.\n> **거부하려면 `If-None-Match: *`** 를 쓴다.\n> **없을 때만 만들라는** 뜻이다 — 있으면 `412` 다."
+  },
+  {
+   "type": "figure",
+   "caption": "스토어가 맞는 경우",
+   "ascii": "   when the name comes from outside, use a store\n\n   a filename            PUT /files/2026-report.pdf\n   a username            PUT /users/kwanhyun\n   a device id           PUT /devices/AA-BB-CC\n   a date or a period    PUT /reports/2026-09\n\n   the test is simple, can the client compute the url before asking",
+   "note": "**미리 계산할 수 있으면 스토어**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨트롤 URI 는 늘어나기 쉽다",
+   "md": "**한 번 열면 다 그리로** 간다.\n\n> **`/orders/9/cancel` 다음엔 `/orders/9/approve`,**\n> **곧 `/orders/9/doEverything`** 이다.\n> **5.1절에서 걷어낸 동사가 다시** 돌아온다.\n\n**먼저 자원으로 바꿔 본다.**\n\n| 동사 | 자원으로 |\n|---|---|\n| `/cancel` | `POST /orders/9/cancellation` |\n| `/approve` | `POST /orders/9/approval` |\n| `/publish` | `PUT /posts/9/status` |\n\n> **셋째가 특히 좋다** — **상태를 필드로** 본다.\n> **`{\"status\": \"published\"}` 를 PUT 하면 멱등**이다.\n\n**그래도 안 되는 게** 있다.\n\n> **`POST /search`, `POST /emails/send`, `POST /jobs/5/retry`** 다.\n> **명령이 진짜 명령일 때가** 있다.\n> **억지 명사보다 낫다**(5.1절).\n\n**컨트롤러는 대개 POST** 다.\n\n> **안전하지도 멱등하지도** 않다(5.6절).\n> **재시도가 필요하면 멱등 키를** 준다(5.3절).\n> **`202` 로 받아만 두는 것도** 흔하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 스토어 서버 ---\n\n$ cat store.py\n\nimport http.server, json\nFILES = {}\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, obj=None, extra=None):\n        b = b\"\" if obj is None else json.dumps(\n            obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        if b: self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        for k, v in (extra or {}).items(): self.send_header(k, v)\n        self.end_headers(); self.wfile.write(b)\n\n    def do_PUT(self):\n        name = self.path[len(\"/files/\"):]\n        n = int(self.headers.get(\"Content-Length\", 0))\n        body = self.rfile.read(n)\n        if self.headers.get(\"If-None-Match\") == \"*\" and name in FILES:\n            return self._send(412, {\"error\": \"이미 있음\"})\n        created = name not in FILES\n        FILES[name] = body\n        self._send(201 if created else 204,\n                   {\"name\": name, \"size\": len(body)} if created else None)\n\n    def do_GET(self):\n        name = self.path[len(\"/files/\"):]\n        if name not in FILES:\n            return self._send(404, {\"error\": \"없음\"})\n        b = FILES[name]\n        self.send_response(200)\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\n\nhttp.server.HTTPServer((\"\", 9057), H).serve_forever()\n\n$ python3 store.py & sleep 1\n\n# --- 클라이언트가 이름을 정한다 ---\n\n$ curl -s -D - -X PUT --data-binary '2026 보고서 내용' \\\n    http://localhost:9057/files/2026-report.pdf | head -1\n\nHTTP/1.1 201 Created\n\n$ curl -s http://localhost:9057/files/2026-report.pdf\n\n2026 보고서 내용\n\n#   Location 을 안 봤다\n\n#   내가 정한 주소로 바로 갔다\n\n#   6.6절과 반대다\n\n# --- 멱등이라 재시도가 안전하다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{http_code} ' -X PUT \\\n      --data-binary '같은 내용' http://localhost:9057/files/a.txt\n  done; echo\n\n201 204 204 \n\n$ curl -s -o /dev/null -w '파일 수 확인\\n' \\\n    http://localhost:9057/files/a.txt\n$ curl -s http://localhost:9057/files/a.txt\n\n파일 수 확인\n같은 내용\n\n#   세 번 보냈는데 하나다\n\n#   5.6절의 멱등이다\n\n$ B=$(curl -s http://localhost:9058/orders 2>/dev/null \\\n      | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"page\"][\"total\"])' \\\n      2>/dev/null || echo \"-\")\n$ echo \"컬렉션이었다면 세 번에 셋이 생겼다\"\n\n컬렉션이었다면 세 번에 셋이 생겼다\n\n# --- 덮어쓸지 거부할지 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -H 'If-None-Match: *' --data-binary 'x' \\\n    http://localhost:9057/files/a.txt\n\n412\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -H 'If-None-Match: *' --data-binary 'x' \\\n    http://localhost:9057/files/새파일.txt\n\n201\n\n#   없을 때만 만든다\n\n#   있으면 412 다\n\n#   5.4절의 If-Match 와 짝이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    --data-binary '덮어씀' http://localhost:9057/files/a.txt\n\n204\n\n$ curl -s http://localhost:9057/files/a.txt\n\n덮어씀\n\n#   조건이 없으면 그냥 덮는다\n\n# --- 미리 계산할 수 있나 ---\n\n$ python3 - <<'EOF'\nimport datetime\nname = f\"/reports/{datetime.date.today():%Y-%m}\"\nprint(\"클라이언트가 계산:\", name)\nprint(\"서버에 안 물어봤다\")\nEOF\n\n클라이언트가 계산: /reports/2026-09\n서버에 안 물어봤다\n\n#   이게 판별법이다\n\n#   주문 번호는 이렇게 못 만든다\n\n# --- 컨트롤 URI ---\n\n$ cat ctrl.py\n\nORDERS = {9: {\"id\": 9, \"status\": \"paid\"}}\n    def do_POST(self):\n        p = self.path.strip(\"/\").split(\"/\")\n        if p[-1] == \"cancel\":\n            ORDERS[9][\"status\"] = \"cancelled\"\n            self._send(200, ORDERS[9])\n        elif p[-1] == \"cancellation\":\n            ORDERS[9][\"status\"] = \"cancelled\"\n            self._send(201, {\"cancelled\": 9},\n                       {\"Location\": \"/orders/9/cancellation\"})\n        elif p[-1] == \"retry\":\n            self._send(202, {\"status\": \"큐에 넣음\"})\n        else:\n            self._send(404, {\"error\": \"없음\"})\n    def do_PUT(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = json.loads(self.rfile.read(n) or b\"{}\")\n        ORDERS[9][\"status\"] = d.get(\"status\", ORDERS[9][\"status\"])\n        self._send(200, ORDERS[9])\n\n$ python3 ctrl.py & sleep 1\n\n$ curl -s -X POST http://localhost:9056/orders/9/cancel\n\n{\"id\": 9, \"status\": \"cancelled\"}\n\n$ curl -s -D - -X POST http://localhost:9056/orders/9/cancellation \\\n  | grep -E 'HTTP|Location'\n\nHTTP/1.1 201 Created\nLocation: /orders/9/cancellation\n\n#   둘 다 된다\n\n#   뒤는 취소라는 것이 생겼다고 말한다\n\n#   5.1절에서 본 그 선택이다\n\n# --- 상태를 필드로 보면 ---\n\n$ curl -s -X PUT -d '{\"status\":\"published\"}' \\\n    http://localhost:9056/orders/9/status\n\n{\"id\": 9, \"status\": \"published\"}\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -X PUT -d '{\"status\":\"published\"}' \\\n      http://localhost:9056/orders/9/status\n  done\n$ curl -s -X PUT -d '{\"status\":\"published\"}' \\\n    http://localhost:9056/orders/9/status\n\n{\"id\": 9, \"status\": \"published\"}\n\n#   네 번 해도 같다\n\n#   멱등이다\n\n#   POST /publish 였다면 아니다\n\n# --- 컨트롤러는 멱등이 아니다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{http_code} ' -X POST \\\n      http://localhost:9056/orders/9/retry\n  done; echo\n\n202 202 202 \n\n#   세 번 큐에 들어갔다\n\n#   재시도가 세 번 돈다\n\n#   멱등 키가 필요하다 (5.3절)\n\n# --- GET 으로 만들면 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    http://localhost:9056/orders/9/cancel\n\n404\n\n#   POST 만 받게 했다\n\n#   GET 으로 열어 두면 크롤러가 취소한다 (5.1절)\n\n#   5.6절의 안전이 지켜져야 한다\n\n# --- 셋을 한 화면에 ---\n\n$ printf '%-12s %s\\n' \\\n    컬렉션 'POST /orders -> Location: /orders/9' \\\n    스토어 'PUT /files/report.pdf' \\\n    컨트롤러 'POST /orders/9/cancel'\n\n컬렉션       POST /orders -> Location: /orders/9\n스토어       PUT /files/report.pdf\n컨트롤러     POST /orders/9/cancel\n\n$ kill %1 %2 2>/dev/null\n\n# --- 다음 장에서 ---\n\n#   응답의 첫 줄을 하나씩 읽는다",
+   "note": "**`PUT /files/2026-report.pdf` 가 `Location` 없이 내가 정한 주소로 바로** 간다.\n\n**세 번 PUT 해도 `201 204 204` 로 파일은 하나**다 — 컬렉션이었다면 셋이다.\n\n**`If-None-Match: *` 면 있을 때 `412`, 없을 때 `201`** 이다.\n\n**`{\"status\":\"published\"}` 를 네 번 PUT 해도 결과가** 같다.\n\n**`retry` 컨트롤러는 세 번에 `202 202 202` 로 세 번** 돈다."
+  }
+ ],
+ "recap": [
+  "**컬렉션·스토어·컨트롤러** 셋이다.",
+  "**컬렉션은 서버가 이름을** 짓는다.",
+  "**스토어는 클라이언트가** 안다.",
+  "**스토어는 PUT 이고** 멱등이다.",
+  "**미리 URL 을 계산할 수 있으면** 스토어다.",
+  "**`If-None-Match: *` 로 덮어쓰기를** 막는다.",
+  "**컨트롤러는** 비상구다.",
+  "**먼저 자원으로 바꿔** 본다.",
+  "**컨트롤러는 멱등이** 아니다."
+ ],
+ "drills": [
+  {
+   "task": "스토어에 PUT 을 세 번 한다.",
+   "done_when": "하나만 생기는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`If-None-Match: *` 를 건다.",
+   "done_when": "`412` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "동사를 자원으로 바꿔 본다.",
+   "done_when": "두 방식을 다 만들었다.",
+   "minutes": 20
+  },
+  {
+   "task": "상태를 PUT 으로 바꾼다.",
+   "done_when": "멱등인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스토어와 컬렉션의 차이는?",
+   "a": "이름을 클라이언트가 정하느냐 서버가 정하느냐다."
+  },
+  {
+   "q": "스토어에 PUT 을 쓰는 이점은?",
+   "a": "멱등이라 타임아웃 후 재시도가 안전하다."
+  },
+  {
+   "q": "스토어인지 판별하는 법은?",
+   "a": "요청 전에 클라이언트가 URL 을 계산할 수 있는지 보면 된다."
+  },
+  {
+   "q": "덮어쓰기를 막으려면?",
+   "a": "`If-None-Match: *` 를 붙여 없을 때만 만들게 한다."
+  },
+  {
+   "q": "컨트롤 URI 를 쓰기 전에 할 일은?",
+   "a": "그 행위를 자원이나 상태 필드로 표현할 수 있는지 먼저 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스토어",
+   "def": "클라이언트가 식별자를 정해 PUT 으로 관리하는 저장소형 URI."
+  },
+  {
+   "term": "컨트롤 URI",
+   "def": "자원으로 표현하기 어려운 동작을 위한 동사형 경로."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
