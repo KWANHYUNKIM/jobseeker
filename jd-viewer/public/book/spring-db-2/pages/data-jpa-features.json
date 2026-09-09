@@ -1,0 +1,140 @@
+{
+ "book": "spring-db-2",
+ "id": "data-jpa-features",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "주요 기능",
+ "summary": "쿼리 메서드 · @Query · 페이징.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리 메서드의 규칙을 안다.",
+  "`@Query` 를 언제 쓸지 안다.",
+  "페이징의 세 반환 타입을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**메서드 이름이 쿼리가 된다.** **7.1절의 3번 규칙**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 파싱되는 방식",
+   "ascii": "   findByItemNameLikeAndPriceLessThanEqual\n   ----  ------------- --- -----------------\n     |         |        |        |\n   subject   property  and    property + keyword\n             + keyword\n\n   becomes\n     select i from Item i\n      where i.itemName like ?1\n        and i.price <= ?2\n\n   subjects:  find  read  get  query  count  exists  delete",
+   "note": "**주제어 다음이 조건**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "쿼리 메서드",
+   "code": "public interface ItemJpaRepository extends JpaRepository<Item, Long> {\n\n    List<Item> findByItemNameLike(String itemName);\n\n    List<Item> findByPriceLessThanEqual(Integer price);\n\n    List<Item> findByItemNameLikeAndPriceLessThanEqual(\n            String itemName, Integer price);\n\n    Optional<Item> findFirstByItemNameOrderByPriceDesc(String itemName);\n\n    long countByPriceGreaterThan(Integer price);\n\n    boolean existsByItemName(String itemName);\n}",
+   "note": "**구현이 하나도 없다.** **이름만으로 여섯 개의 쿼리**가 생긴다.\n\n**주요 키워드**를 몇 개 본다.\n\n| 키워드 | JPQL |\n|---|---|\n| `And`, `Or` | `and`, `or` |\n| `Between` | `between ?1 and ?2` |\n| `LessThan`, `GreaterThanEqual` | `<`, `>=` |\n| `Like`, `StartingWith`, `Containing` | `like` |\n| `IsNull`, `IsNotNull` | `is null` |\n| `In`, `NotIn` | `in (?1)` |\n| `OrderBy...Desc` | `order by ... desc` |\n| `First`, `Top3` | `limit` |\n\n> **`Like` 는 `%` 를 내가 붙여야** 한다. **`Containing` 은 붙여 준다** — `%값%`. **헷갈리는 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이름이 길어진다",
+   "md": "**조건이 셋만 돼도** 이렇게 된다.\n\n```java\nList<Item> findByItemNameLikeAndPriceLessThanEqualAndQuantityGreaterThanOrderByPriceDesc(\n        String itemName, Integer price, Integer quantity);\n```\n\n**메서드 이름이 90 자**다. **읽기도 쓰기도 어렵다.**\n\n**7.4절이 이 문제를 정면으로** 다룬다. **여기서는 규칙만** 본다.\n\n> **조건이 둘까지가 쓸 만하다**는 것이 대체적인 감각이다. **셋부터는 `@Query`** 로 간다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`@Query`",
+   "code": "public interface ItemJpaRepository extends JpaRepository<Item, Long> {\n\n    @Query(\"select i from Item i \" +\n           \"where i.itemName like :itemName and i.price <= :price\")\n    List<Item> search(@Param(\"itemName\") String itemName,\n                      @Param(\"price\") Integer price);\n\n    @Query(\"select new hello.dto.ItemDto(i.id, i.itemName) from Item i\")\n    List<ItemDto> findAllDto();\n\n    @Query(value = \"select * from item where item_name = ?1\",\n           nativeQuery = true)\n    List<Item> findNative(String itemName);\n\n    @Modifying(clearAutomatically = true)\n    @Query(\"update Item i set i.price = i.price * 1.1 where i.price < :price\")\n    int raisePrice(@Param(\"price\") Integer price);\n}",
+   "note": "**`@Query` 의 JPQL 은 뜰 때 검증**된다 — 7.1절의 그 장점이다.\n\n**`@Modifying` 이 중요**하다. **없으면** 이렇게 된다.\n\n```\nQueryExecutionRequestException: Not supported for DML operations\n```\n\n**`clearAutomatically = true`** 는 **실행 후 영속성 컨텍스트를 비운다.** **벌크 연산은 컨텍스트를 거치지 않고 DB 로 바로** 가서, **캐시에 남은 엔티티가 낡은 값**을 들고 있게 된다.\n\n> **6.6절의 flush 규칙과 반대 방향의 문제**다. **거기서는 안 보낸 것이 있었고, 여기서는 안 읽은 것이 있다.**\n\n**네이티브 쿼리는 실행할 때** 검증된다. **6.4절의 대가가 그대로** 온다."
+  },
+  {
+   "type": "figure",
+   "caption": "페이징의 세 타입",
+   "ascii": "   Page<Item>    content + total count      2 queries\n   Slice<Item>   content + hasNext          1 query, limit+1\n   List<Item>    content only               1 query\n\n   PageRequest.of(0, 10, Sort.by(\"price\").descending())\n        |\n   select ... order by price desc limit ? offset ?\n   select count(i1_0.id) from item i1_0",
+   "note": "**`Page` 만 카운트 쿼리를 더** 날린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "페이징",
+   "code": "Page<Item> findByPriceLessThanEqual(Integer price, Pageable pageable);\n\n// 쓰는 쪽\nPageRequest req = PageRequest.of(0, 10, Sort.by(\"price\").descending());\nPage<Item> page = repository.findByPriceLessThanEqual(20000, req);\n\npage.getContent();          // List<Item>\npage.getTotalElements();    // 전체 개수\npage.getTotalPages();\npage.hasNext();\n\n// DTO 로 변환\nPage<ItemDto> dtos = page.map(i -> new ItemDto(i.getId(), i.getItemName()));",
+   "note": "**`Pageable` 을 마지막 인자**로 받는다.\n\n**`Page` 는 카운트 쿼리를 같이** 날린다. **전체 개수가 필요 없으면 `Slice`** 를 쓴다 — **더보기 버튼**이면 충분하다.\n\n**카운트 쿼리가 무거우면 따로** 지정한다.\n\n```java\n@Query(value = \"select i from Item i join i.category c where ...\",\n       countQuery = \"select count(i) from Item i where ...\")\nPage<Item> search(Pageable pageable);\n```\n\n> **조인이 있는 조회의 카운트에는 조인이 필요 없을 때**가 많다. **분리하면 카운트가 훨씬 빨라진다.**\n\n**`page.map()` 으로 DTO 변환**을 한다. **엔티티를 화면까지 내보내지 않는** 습관이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 쿼리 메서드\nrepository.findByItemNameLike(\"%itemA%\");\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.item_name like ? escape ''\n#   binding parameter [1] as [VARCHAR] - [%itemA%]\n\n# 조건 둘\nrepository.findByItemNameLikeAndPriceLessThanEqual(\"%itemA%\", 10000);\n\n#   Hibernate: select ... from item i1_0\n#              where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n#   6.4절에서 JPQL 로 만든 것과 같은 SQL 이다\n#   다만 andFlag 를 안 썼다\n\n# Top / OrderBy\nrepository.findFirstByItemNameOrderByPriceDesc(\"itemA\");\n\n#   Hibernate: select ... from item i1_0 where i1_0.item_name=?\n#              order by i1_0.price desc fetch first ? rows only\n\n# count\nrepository.countByPriceGreaterThan(5000);\n\n#   Hibernate: select count(i1_0.id) from item i1_0 where i1_0.price>?\n\n# --- Page ---\nrepository.findByPriceLessThanEqual(20000, PageRequest.of(0, 10));\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.price<=?\n#              order by i1_0.price desc offset ? rows fetch first ? rows only\n#   Hibernate: select count(i1_0.id) from item i1_0 where i1_0.price<=?\n\n#   쿼리 2개\n\n# --- Slice ---\n#   Hibernate: select ... where i1_0.price<=? offset ? rows\n#              fetch first ? rows only\n#   binding parameter [2] as [INTEGER] - [11]\n\n#   쿼리 1개. 11개를 요청해서 11번째가 있으면 hasNext.\n\n# --- @Modifying 벌크 ---\nrepository.raisePrice(10000);\n\n#   Hibernate: update item set price=price*1.1 where price<?\n#   -> 2\n\n#   (컨텍스트를 안 거쳤다)\n\n# --- clearAutomatically 없이 이어서 조회하면 ---\nItem item = repository.findById(1L).get();\n#   (SQL 없음 - 1차 캐시)\nitem.getPrice();\n#   -> 10000       (DB 는 11000 인데)\n\n# --- @Modifying(clearAutomatically = true) 이면 ---\nItem item = repository.findById(1L).get();\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\nitem.getPrice();\n#   -> 11000",
+   "note": "**두 번째 블록의 SQL 이 6.4절과 같다.** **다만 `andFlag` 와 `setParameter` 를 안 썼다** — **메서드 이름 하나**로 끝났다.\n\n**`Slice` 가 11개를 요청**한 것을 본다. **`hasNext` 를 알려고 하나 더** 읽는다.\n\n**맨 아래 두 블록이 벌크 연산의 함정**이다. **DB 는 11000 인데 자바 객체는 10000** 이다. **`clearAutomatically` 가 그것을 막는다.**\n\n**다음 절에서 이것으로 리포지토리를 갈아 끼운다.**"
+  }
+ ],
+ "recap": [
+  "**메서드 이름이 파싱**돼 쿼리가 된다.",
+  "**주제어(`find`·`count`·`exists`·`delete`) 다음이 조건**이다.",
+  "**`Like` 는 `%` 를 내가, `Containing` 은 자동**이다.",
+  "**조건이 셋부터는 이름이 감당이 안 된다** — 7.4절.",
+  "**`@Query` 의 JPQL 은 뜰 때 검증**된다.",
+  "**벌크 연산에는 `@Modifying`** 이 필요하다.",
+  "**`clearAutomatically`** 가 낡은 캐시를 막는다.",
+  "**`Page` 는 카운트 쿼리를 더**, `Slice` 는 하나 더 읽는다.",
+  "**카운트 쿼리는 분리**할 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "쿼리 메서드 여섯 개를 만들고 로그를 본다.",
+   "done_when": "이름이 SQL 이 되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`Like` 와 `Containing` 을 비교한다.",
+   "done_when": "`%` 를 누가 붙이는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "벌크 `@Modifying` 후 `findById` 를 부른다.",
+   "done_when": "낡은 값이 오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Page` 와 `Slice` 를 각각 돌린다.",
+   "done_when": "쿼리 개수와 limit 값이 다른 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿼리 메서드의 주제어에는 무엇이 있나?",
+   "a": "`find`, `read`, `get`, `query`, `count`, `exists`, `delete` 등이다."
+  },
+  {
+   "q": "`Like` 와 `Containing` 의 차이는?",
+   "a": "`Like` 는 `%` 를 인자에 내가 붙이고 `Containing` 은 자동으로 붙는다."
+  },
+  {
+   "q": "벌크 연산에 `@Modifying` 이 왜 필요한가?",
+   "a": "없으면 DML 을 지원하지 않는다는 예외가 난다."
+  },
+  {
+   "q": "`clearAutomatically` 는 무엇을 막나?",
+   "a": "벌크가 DB 만 고쳐 1차 캐시의 엔티티가 낡은 값을 들고 있는 것을 막는다."
+  },
+  {
+   "q": "`Page` 와 `Slice` 의 차이는?",
+   "a": "`Page` 는 카운트 쿼리를 더 날리고, `Slice` 는 하나 더 읽어 `hasNext` 만 안다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Query Methods",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "data-jpa-apply",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "적용",
+ "summary": "리포지토리가 인터페이스 하나가 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Data JPA 로 구현을 갈아 끼운다.",
+  "어댑터 한 겹이 필요한 이유를 안다.",
+  "`update` 가 어떻게 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 번째 구현**이다. **`@Import` 한 줄**은 그대로다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스 둘",
+   "code": "public interface ItemJpaRepository extends JpaRepository<Item, Long> {\n\n    List<Item> findByItemNameLike(String itemName);\n\n    List<Item> findByPriceLessThanEqual(Integer price);\n\n    List<Item> findByItemNameLikeAndPriceLessThanEqual(\n            String itemName, Integer price);\n}",
+   "note": "**메서드 셋**이다. **`findAll()` 은 `JpaRepository` 에 이미** 있다.\n\n**조건이 없는 경우 · 이름만 · 가격만 · 둘 다** — **2.5절의 네 케이스**가 그대로 메서드 넷이 됐다.\n\n> **여기서 이미 이상하다.** **경우의 수마다 메서드를 하나씩** 만들고 있다. **조건이 셋이면 여덟 개**다. **7.4절의 주제**다."
+  },
+  {
+   "type": "figure",
+   "caption": "층이 하나 늘었다",
+   "ascii": "   6장\n   ---\n   ItemRepository (interface)\n        JpaItemRepository (class, 50 lines, EntityManager)\n\n   7장\n   ---\n   ItemRepository (interface)\n        JpaItemRepositoryV2 (class, 30 lines, delegates)\n             ItemJpaRepository (interface, extends JpaRepository)\n                  SimpleJpaRepository (spring wrote it)\n\n   one more layer, less code",
+   "note": "**맨 아랫줄이 이 절의 거래**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "어댑터",
+   "code": "@Repository\n@RequiredArgsConstructor\n@Transactional\npublic class JpaItemRepositoryV2 implements ItemRepository {\n\n    private final ItemJpaRepository repository;\n\n    @Override\n    public Item save(Item item) {\n        return repository.save(item);\n    }\n\n    @Override\n    public void update(Long itemId, ItemUpdateDto updateParam) {\n        Item findItem = repository.findById(itemId).orElseThrow();\n        findItem.setItemName(updateParam.getItemName());\n        findItem.setPrice(updateParam.getPrice());\n        findItem.setQuantity(updateParam.getQuantity());\n    }\n\n    @Override\n    public Optional<Item> findById(Long id) {\n        return repository.findById(id);\n    }\n\n    @Override\n    public List<Item> findAll(ItemSearchCond cond) {\n        String itemName = cond.getItemName();\n        Integer maxPrice = cond.getMaxPrice();\n\n        if (StringUtils.hasText(itemName) && maxPrice != null) {\n            return repository.findByItemNameLikeAndPriceLessThanEqual(\n                    \"%\" + itemName + \"%\", maxPrice);\n        } else if (StringUtils.hasText(itemName)) {\n            return repository.findByItemNameLike(\"%\" + itemName + \"%\");\n        } else if (maxPrice != null) {\n            return repository.findByPriceLessThanEqual(maxPrice);\n        } else {\n            return repository.findAll();\n        }\n    }\n}",
+   "note": "**`update` 에 저장이 없다.** **6.3절과 같다** — 변경 감지다.\n\n**`findAll` 에 `if` 가 넷**이다. **문자열을 안 붙이는 대신 분기를 나열**한다.\n\n> **3.3절의 `andFlag` 는 사라졌다.** **대신 경우의 수를 내가 다 적었다.** **문제가 옮겨 갔지 사라지지 않았다.**\n\n**`\"%\" + itemName + \"%\"`** 를 여기서 붙인다. **`Like` 키워드의 규칙**이다(7.2절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 어댑터가 필요한가",
+   "md": "**\"`ItemRepository` 가 `JpaRepository` 를 상속하면 되지 않나\"**\n\n```java\n// 이렇게 하면 안 되나\npublic interface ItemRepository extends JpaRepository<Item, Long> {\n    List<Item> findAll(ItemSearchCond cond);   // 이건 못 만든다\n}\n```\n\n**세 가지 문제**가 있다.\n\n| 문제 | |\n|---|---|\n| **`findAll(cond)` 를 이름으로 못 만든다** | 동적 쿼리다 |\n| **`update(id, dto)` 도 못 만든다** | 변경 감지를 시켜야 한다 |\n| **다른 구현이 `JpaRepository` 를 못 따른다** | 메모리·JdbcTemplate 구현 |\n\n**세 번째가 이 책에서 결정적**이다. **2.3절의 `ItemRepository` 는 여섯 구현의 공통 인터페이스**다. **거기에 `JpaRepository` 를 상속시키면 메모리 구현이 `flush()`·`getReferenceById()` 를 다 구현**해야 한다.\n\n> **실무에서 구현이 하나뿐이면** 이 한 겹을 없애도 된다. **`ItemRepository extends JpaRepository`** 로 두고 **필요한 것만 `@Query`** 로 붙인다. **흔한 선택**이다.\n>\n> **7.5절에서 세 번째 길**을 본다 — **사용자 정의 리포지토리**로 `findAll(cond)` 를 인터페이스에 끼워 넣는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`save` 의 두 얼굴",
+   "md": "**7.1절에서 본 `isNew`** 를 확인한다.\n\n```java\nrepository.save(new Item(\"itemA\", 10000, 10));   // id 가 null -> persist\nrepository.save(이미저장된item);                 // id 가 있음 -> merge\n```\n\n**`merge` 가 함정**이다.\n\n| | `persist` | `merge` |\n|---|---|---|\n| 하는 일 | 새로 저장 | **DB 에서 읽어와 덮어쓴다** |\n| **`null` 필드** | 그대로 저장 | **`null` 로 덮는다** |\n| SQL | `insert` | **`select` + `update`** |\n\n**두 번째 줄이 사고**를 낸다.\n\n```java\nItem item = new Item();\nitem.setId(1L);\nitem.setItemName(\"수정\");\n// price, quantity 를 안 넣었다\nrepository.save(item);\n// price 와 quantity 가 null 이 된다\n```\n\n> **그래서 수정에는 `save` 를 안 쓴다.** **변경 감지**를 쓴다 — 위 `update` 메서드가 그것이다.\n>\n> **7.6절에서 다시** 짚는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# save\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\n#   (6장과 같다)\n\n# update\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.id=?\n#   (메서드 종료)\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n\n#   (6장과 같다. 변경 감지다.)\n\n# findAll - 조건 없음\nrepository.findAll(new ItemSearchCond());\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n\n# findAll - 이름만\nrepository.findAll(new ItemSearchCond(\"itemA\", null));\n\n#   Hibernate: select ... from item i1_0 where i1_0.item_name like ? escape ''\n#   binding parameter [1] as [VARCHAR] - [%itemA%]\n\n# findAll - 가격만\nrepository.findAll(new ItemSearchCond(null, 10000));\n\n#   Hibernate: select ... from item i1_0 where i1_0.price<=?\n\n# findAll - 둘 다\nrepository.findAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   Hibernate: select ... from item i1_0\n#              where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# --- 네 기술의 SQL 을 나란히 ---\n\n#   3장  select id, item_name, price, quantity from item\n#        where item_name like concat('%',?,'%') and price <= ?\n#   5장  select id, item_name, price, quantity from item\n#        WHERE item_name like concat('%', ?, '%') and price <= ?\n#   6장  select i1_0.id, ... from item i1_0\n#        where i1_0.item_name like ? escape '' and i1_0.price<=?\n#   7장  select i1_0.id, ... from item i1_0\n#        where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# 6장과 7장은 완전히 같다. 아래가 같은 기술이니까.\n\n# --- save 로 수정하면 (하지 말 것) ---\n\nItem partial = new Item();\npartial.setId(1L);\npartial.setItemName(\"수정\");\nrepository.save(partial);\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n#   binding parameter [2] as [INTEGER] - [null]\n#   binding parameter [3] as [INTEGER] - [null]\n\n# price 와 quantity 가 null 로 덮였다",
+   "note": "**6장과 7장의 SQL 이 완전히 같다.** **당연하다 — 같은 하이버네이트**다.\n\n**바뀐 것은 자바 코드뿐**이다. **50줄이 30줄**이 됐고, **JPQL 문자열이 사라졌다.**\n\n**맨 아래가 `merge` 의 실물**이다. **`null` 두 개가 바인딩**됐다. **예외 없이 데이터가 지워진다.**\n\n**다음 절에서 `findAll` 의 `if` 넷을 다시** 본다."
+  }
+ ],
+ "recap": [
+  "**인터페이스 하나에 메서드 셋**이면 조회가 다 된다.",
+  "**어댑터 한 겹**을 둔다 — 여섯 구현의 공통 인터페이스 때문이다.",
+  "**`findAll(cond)`·`update(id,dto)` 는 이름으로 못 만든다.**",
+  "**`andFlag` 대신 `if` 넷**이 됐다 — 문제가 옮겨 갔다.",
+  "**`update` 는 변경 감지**다 — 6장과 같다.",
+  "**`save` 는 `isNew` 로 `persist`/`merge`** 를 고른다.",
+  "**`merge` 는 `null` 필드를 `null` 로 덮는다** — 수정에 쓰지 않는다.",
+  "**SQL 이 6장과 완전히 같다** — 아래가 같은 기술이다.",
+  "**자바 코드가 50줄에서 30줄**, JPQL 문자열은 0개."
+ ],
+ "drills": [
+  {
+   "task": "`ItemJpaRepository` 와 어댑터를 만들고 갈아 끼운다.",
+   "done_when": "테스트가 그대로 초록인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "6장과 7장의 SQL 을 나란히 비교한다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`save` 로 일부 필드만 채워 수정해 본다.",
+   "done_when": "나머지가 `null` 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`ItemRepository` 가 직접 `JpaRepository` 를 상속하게 해 본다.",
+   "done_when": "메모리 구현이 왜 깨지는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 어댑터 한 겹이 필요한가?",
+   "a": "`findAll(cond)`·`update` 를 이름으로 못 만들고, 다른 구현이 `JpaRepository` 를 못 따르기 때문이다."
+  },
+  {
+   "q": "`andFlag` 가 무엇으로 바뀌었나?",
+   "a": "경우의 수마다의 `if` 분기다. 문제가 옮겨 갔을 뿐이다."
+  },
+  {
+   "q": "`save` 로 수정하면 왜 위험한가?",
+   "a": "`merge` 가 되어 채우지 않은 필드를 `null` 로 덮는다."
+  },
+  {
+   "q": "6장과 7장의 SQL 은?",
+   "a": "완전히 같다. 아래가 같은 하이버네이트다."
+  },
+  {
+   "q": "실무에서 어댑터를 없앨 수 있나?",
+   "a": "구현이 하나뿐이면 `ItemRepository extends JpaRepository` 로 둘 수 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

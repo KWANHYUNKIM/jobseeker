@@ -1,0 +1,155 @@
+{
+ "book": "spring-db-2",
+ "id": "query-method-limit",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "쿼리 메서드의 한계",
+ "summary": "이름이 길어지고 동적 쿼리가 안 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리 메서드가 어디서 무너지는지 안다.",
+  "동적 쿼리가 왜 불가능한지 안다.",
+  "8장이 필요한 이유를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절의 `findAll` 에 `if` 가 넷**이었다. **그것이 우연이 아니다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "메서드가 늘어나는 속도",
+   "ascii": "   conditions   methods needed\n   ----------   --------------\n       1              2\n       2              4\n       3              8\n       4             16\n\n   3.3 counted sql variants. this counts java methods.\n   same 2^n, now in the source file.",
+   "note": "**3.3절에서 센 그 2ⁿ**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 동적 쿼리가 안 되나",
+   "md": "**쿼리 메서드는 이름으로 쿼리를 만든다.** **이름은 컴파일 시점에 정해진다.**\n\n```java\nList<Item> findByItemNameLikeAndPriceLessThanEqual(String name, Integer price);\n```\n\n**이 메서드는 `and` 가 있는 쿼리 하나**만 만든다. **`price` 에 `null` 을 넣으면 `price <= null` 이 되어 아무것도 안 나온다.**\n\n**\"조건이 없으면 그 절을 빼\" 라고 말할 방법이 없다.** **이름은 문자열이 아니라 코드**이고, **코드는 실행 시점에 안 바뀐다.**\n\n> **이것이 3.3절의 문제와 정확히 반대 방향의 한계**다.\n>\n> | | 3장 | 7장 |\n> |---|---|---|\n> | SQL 이 | **문자열** | **메서드 이름** |\n> | 그래서 | **실행 때 조립 가능** | **조립 불가** |\n> | 대신 | **컴파일러가 못 잡음** | **뜰 때 검증됨** |\n>\n> **안전함과 유연함을 맞바꿨다.** **둘 다 갖는 방법이 8장**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름의 길이",
+   "ascii": "   findByItemNameLikeAndPriceLessThanEqualAndQuantityGreaterThan\n   OrderByPriceDescItemNameAsc\n\n   87 characters\n\n   add one optional condition and this becomes eight methods,\n   each with a name like this one",
+   "note": "**조건 하나가 더 늘면 이런 이름이 여덟 개**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`@Query` 로 가면 6장으로 돌아간다",
+   "md": "**\"그럼 `@Query` 를 쓰면 되지\"** — **6.4절로 돌아간다.**\n\n```java\n@Query(\"select i from Item i \" +\n       \"where (:itemName is null or i.itemName like :itemName) \" +\n       \"  and (:maxPrice is null or i.price <= :maxPrice)\")\nList<Item> search(@Param(\"itemName\") String itemName,\n                  @Param(\"maxPrice\") Integer maxPrice);\n```\n\n**이 방법은 실제로 쓰인다.** **`:param is null or ...`** 로 조건을 무력화한다.\n\n**대가가 있다.**\n\n| 대가 | |\n|---|---|\n| **인덱스를 못 탄다** | `or` 때문에 옵티마이저가 포기하기도 |\n| **읽기 어렵다** | 조건이 다섯이면 `is null or` 가 다섯 벌 |\n| **`null` 캐스팅 문제** | DB 에 따라 타입 힌트가 필요 |\n\n**첫 번째가 진짜 문제**다. **조건이 없을 때도 `where` 절이 붙어** 있어, **DB 가 인덱스를 안 쓰기로 결정**할 수 있다.\n\n> **동적으로 절을 빼는 것과 절을 무력화하는 것은 다르다.** **DB 입장에서 완전히 다른 쿼리**다.\n>\n> **MyBatis 의 `<where>`** 는 절을 **뺐다**. **이것은 남긴다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "지금까지의 동적 쿼리 방법",
+   "left": {
+    "title": "절을 뺀다",
+    "points": [
+     "**3.3절** 문자열 조립 — `andFlag`",
+     "**5.4절** `<where>`·`<if>` — 태그가 관리",
+     "**6.4절** JPQL 조립 — `andFlag` 재등장",
+     "**8장** Querydsl — `BooleanExpression`",
+     "**SQL 이 깔끔하고 인덱스를 탄다**"
+    ]
+   },
+   "right": {
+    "title": "절을 남긴다",
+    "points": [
+     "**7.2절** `:p is null or ...`",
+     "**7.3절** 경우마다 메서드 — 절을 빼긴 하지만 2ⁿ",
+     "코드는 단순하다",
+     "**인덱스와 실행 계획이 나빠질 수 있다**",
+     "조건이 적을 때만 쓸 만하다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래서 실무는 어떻게 하나",
+   "md": "**섞어 쓴다.**\n\n| 무엇 | 무엇으로 |\n|---|---|\n| **CRUD** | `JpaRepository` 기본 메서드 |\n| **조건 한둘의 고정 조회** | **쿼리 메서드** |\n| **복잡하지만 고정된 쿼리** | **`@Query`** |\n| **동적 쿼리** | **Querydsl** |\n\n**7.5절이 그 마지막 칸을 끼워 넣는 방법**이다.\n\n```java\npublic interface ItemRepository\n        extends JpaRepository<Item, Long>, ItemRepositoryCustom {\n}\n```\n\n**하나의 인터페이스에 세 가지가 다 들어온다** — **기본 메서드, 쿼리 메서드, 그리고 내가 쓴 구현.**\n\n> **이것이 스프링 데이터 JPA + Querydsl 조합**이고, **실무에서 가장 흔한 모양**이다. **9.3절에서 다시** 정리한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 쿼리 메서드에 null 을 넣으면 ---\n\nrepository.findByItemNameLikeAndPriceLessThanEqual(\"%itemA%\", null);\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.item_name like ? escape '' and i1_0.price<=?\n#   binding parameter [1] as [VARCHAR] - [%itemA%]\n#   binding parameter [2] as [INTEGER] - [null]\n\n#   <== 0 rows\n\n#   price <= null 은 항상 unknown 이다\n#   예외도 안 난다. 결과만 비었다.\n\n# --- 그래서 7.3절은 분기를 나열했다 ---\n\n#   if (name && price)  -> findByItemNameLikeAndPriceLessThanEqual\n#   else if (name)      -> findByItemNameLike\n#   else if (price)     -> findByPriceLessThanEqual\n#   else                -> findAll\n\n#   조건 3개면 이 if 가 8개다\n\n# --- @Query 로 무력화하면 ---\n\nrepository.search(null, 10000);\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where (? is null or i1_0.item_name like ? escape '')\n#                and (? is null or i1_0.price<=?)\n#   binding parameter [1] as [VARCHAR] - [null]\n#   binding parameter [2] as [VARCHAR] - [null]\n#   binding parameter [3] as [INTEGER] - [10000]\n#   binding parameter [4] as [INTEGER] - [10000]\n\n#   <== 1 row      (결과는 맞다)\n\n# --- 실행 계획을 보면 ---\n\nexplain select * from item\n where (null is null or item_name like '%itemA%')\n   and (10000 is null or price <= 10000);\n\n#   H2:     tableScan\n\nexplain select * from item where price <= 10000;\n\n#   H2:     PUBLIC.IDX_ITEM_PRICE: PRICE <= 10000\n\n# 같은 결과, 다른 계획\n\n# --- 8장이 만들 SQL ---\n\n#   select item0_.id, ... from item item0_ where item0_.price<=?\n\n# 조건이 없으면 절이 아예 없다",
+   "note": "**첫 블록이 이 절의 출발점**이다. **`price <= null` 은 예외가 아니라 빈 결과**다. **가장 찾기 어려운 종류**다.\n\n**세 번째 블록에서 파라미터가 네 개** 바인딩됐다. **같은 값을 두 번씩** 넘긴다.\n\n**네 번째 블록의 `tableScan` 과 인덱스**가 갈렸다. **결과는 같은데 계획이 다르다.**\n\n**맨 아래가 8장**이다. **조건이 없으면 절이 아예 없다** — 5.4절의 `<where>` 가 자바로 온다.\n\n**다음 절에서 그것을 끼워 넣을 자리**를 만든다."
+  }
+ ],
+ "recap": [
+  "**조건 n 개면 메서드가 2ⁿ** 필요하다.",
+  "**메서드 이름은 컴파일 시점에 고정**이라 동적으로 못 바꾼다.",
+  "**`null` 을 넣으면 `<= null` 이 되어 결과가 빈다** — 예외가 아니다.",
+  "**안전함과 유연함을 맞바꿨다** — 3장과 정반대의 한계.",
+  "**`:p is null or ...`** 는 절을 무력화할 뿐 빼지 않는다.",
+  "**인덱스를 못 탈 수 있다** — 결과는 같아도 계획이 다르다.",
+  "**절을 빼는 방법과 남기는 방법**은 DB 에게 다른 쿼리다.",
+  "**CRUD·쿼리 메서드·`@Query`·Querydsl 을 섞어** 쓴다.",
+  "**7.5절이 마지막 칸을 끼워 넣는 자리**다."
+ ],
+ "drills": [
+  {
+   "task": "쿼리 메서드에 `null` 을 넘겨 본다.",
+   "done_when": "예외 없이 빈 결과인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조건 세 개짜리 쿼리 메서드 이름을 지어 본다.",
+   "done_when": "몇 자인지 세어 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`:p is null or` 방식으로 `@Query` 를 쓴다.",
+   "done_when": "파라미터가 두 번씩 바인딩되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 방식의 실행 계획을 비교한다.",
+   "done_when": "인덱스 사용 여부가 갈리는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 쿼리 메서드로 동적 쿼리를 못 만드나?",
+   "a": "메서드 이름이 컴파일 시점에 고정이라 실행 시점에 절을 뺄 수 없다."
+  },
+  {
+   "q": "`price <= null` 은 어떻게 되나?",
+   "a": "예외 없이 결과가 비어 나온다."
+  },
+  {
+   "q": "3장과 7장의 한계는 어떻게 반대인가?",
+   "a": "3장은 문자열이라 유연하지만 안 잡히고, 7장은 안전하지만 조립이 안 된다."
+  },
+  {
+   "q": "`:p is null or ...` 의 문제는?",
+   "a": "절을 빼지 않고 남겨 인덱스를 못 탈 수 있다."
+  },
+  {
+   "q": "실무의 조합은?",
+   "a": "CRUD 는 기본 메서드, 고정 조회는 쿼리 메서드·`@Query`, 동적 쿼리는 Querydsl 이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Query Methods",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

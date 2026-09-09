@@ -446,7 +446,7 @@
           "title": "주요 기능",
           "summary": "쿼리 메서드 · @Query · 페이징.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -454,7 +454,7 @@
           "title": "적용",
           "summary": "리포지토리가 인터페이스 하나가 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -462,7 +462,7 @@
           "title": "쿼리 메서드의 한계",
           "summary": "이름이 길어지고 동적 쿼리가 안 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
