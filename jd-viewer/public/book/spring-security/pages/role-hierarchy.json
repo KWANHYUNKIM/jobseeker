@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "role-hierarchy",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "역할 계층",
+ "summary": "ADMIN 은 USER 인가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "계층을 선언한다.",
+  "어디에 적용되고 어디에 안 되는지 안다.",
+  "6.x 의 빈 등록 방식을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`hasRole('USER')` 인 자리에 관리자가** 왔다. **통과할까.**"
+  },
+  {
+   "type": "figure",
+   "caption": "관리자가 사용자를 겸하는 두 방법",
+   "ascii": "   two ways to say an admin can do what a user can\n\n   without a hierarchy\n     give the admin account both roles\n     every new role means editing every account\n\n   with a hierarchy\n     ROLE_ADMIN > ROLE_MANAGER\n     ROLE_MANAGER > ROLE_USER\n     one declaration, and hasRole USER now passes for an admin\n\n   the token still carries only ROLE_ADMIN either way",
+   "note": "**토큰이 들고 있는 권한은 어느 쪽이든 하나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기본은 통과 못 한다",
+   "md": "**권한은 문자열 집합**이다.\n\n> **`[ROLE_ADMIN]` 안에 `ROLE_USER` 가** 없다.\n> **`hasRole('USER')` 는 그냥 `false`** 다.\n>\n> **\"관리자면 당연히 사용자\" 는 사람의 생각이지 코드의 사실이** 아니다.\n\n**두 가지 해법**\n\n```java\n// 1) 계정에 둘 다 준다\nUser.withUsername(\"admin\").roles(\"ADMIN\", \"USER\").build();\n\n// 2) 계층을 선언한다\n@Bean\nstatic RoleHierarchy roleHierarchy() {\n    return RoleHierarchyImpl.fromHierarchy(\"\"\"\n            ROLE_ADMIN > ROLE_MANAGER\n            ROLE_MANAGER > ROLE_USER\n            \"\"\");\n}\n```\n\n> **첫째는 역할이 늘 때마다 모든 계정을 고쳐야** 한다.\n> **둘째는 선언이 한 군데**다.\n\n**6.x 의 등록 방식**\n\n> **`static` 메서드로** 만든다.\n> **웹 인가에는 자동으로 적용**된다.\n> **메서드 보안에는 표현식 핸들러에 따로 물려** 줘야 한다.\n>\n> ```java\n> @Bean\n> static MethodSecurityExpressionHandler expressionHandler(\n>         RoleHierarchy roleHierarchy) {\n>     DefaultMethodSecurityExpressionHandler handler =\n>             new DefaultMethodSecurityExpressionHandler();\n>     handler.setRoleHierarchy(roleHierarchy);\n>     return handler;\n> }\n> ```\n>\n> **이걸 빠뜨려 \"웹은 되는데 `@PreAuthorize` 는 안 되는\" 상태가** 흔하다."
+  },
+  {
+   "type": "figure",
+   "caption": "적용되는 곳과 아닌 곳",
+   "ascii": "   where the hierarchy is applied, and where it is not\n\n   applied\n     hasRole and hasAnyRole in web rules\n     hasRole in method security, if the bean is wired\n     the thymeleaf sec:authorize tag\n\n   not applied\n     authentication.getAuthorities() read by your own code\n     a manual contains check\n\n   so an if statement you wrote yourself will disagree",
+   "note": "**내가 쓴 `if` 는 계층을 모른다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "내 코드는 계층을 모른다",
+   "md": "```java\nboolean isUser = auth.getAuthorities().stream()\n        .anyMatch(a -> a.getAuthority().equals(\"ROLE_USER\"));\n```\n\n> **관리자에게 `false`** 다.\n> **`hasRole('USER')` 는 `true` 인데 이 코드는 `false`** 다.\n> **같은 질문에 답이** 갈린다.\n\n**계층을 반영해 읽으려면**\n\n```java\nCollection<? extends GrantedAuthority> reachable =\n        roleHierarchy.getReachableGrantedAuthorities(auth.getAuthorities());\n```\n\n> **`[ROLE_ADMIN, ROLE_MANAGER, ROLE_USER]` 가** 나온다.\n> **이걸 안 쓰면 화면과 서버의 판단이** 어긋난다.\n\n**계층을 너무 쓰지는 않는다.**\n\n> **역할이 늘면 계층도 복잡해진다.**\n> **`ROLE_A > ROLE_B` 가 열 줄이 되면 아무도 전체를 못** 읽는다.\n>\n> **권한(authority)을 잘게 쪼개는 편이 나을 때가** 많다 — **`ORDER_READ`·`ORDER_CANCEL`**.\n> **8.7절에서 DB 로 관리하는 방법을** 본다.\n\n**순환을 만들면 기동이 실패**한다.\n\n```\nIllegalArgumentException: Cycle detected in role hierarchy definition\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 계층 없이 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .requestMatchers(\"/orders/**\").hasRole(\"USER\")\n        .anyRequest().authenticated());\n\n$ curl -s -b admin.txt localhost:8080/whoami-roles\n[ROLE_ADMIN]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/orders\n403\n\n#   관리자가 주문 화면에 못 들어간다\n\n#   ROLE_USER 가 없어서다\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n# --- 계층을 선언한다 ---\n\n@Bean\nstatic RoleHierarchy roleHierarchy() {\n    return RoleHierarchyImpl.fromHierarchy(\"\"\"\n            ROLE_ADMIN > ROLE_MANAGER\n            ROLE_MANAGER > ROLE_USER\n            \"\"\");\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/orders\n200\n\n$ curl -s -b admin.txt localhost:8080/whoami-roles\n[ROLE_ADMIN]\n\n#   토큰은 그대로다\n\n#   판단할 때만 펼친다\n\n$ for f in admin.txt manager.txt user.txt; do\n    printf '%-12s ' $f\n    for p in /admin/panel /report/x /orders; do\n      printf '%s ' $(curl -s -o /dev/null -w '%{http_code}' -b $f \"localhost:8080$p\")\n    done\n    echo\n  done\n\nadmin.txt    200 200 200\nmanager.txt  403 200 200\nuser.txt     403 403 200\n\n#   계단이 만들어졌다\n\n# --- 메서드 보안에는 안 붙는다 ---\n\n@Service\npublic class OrderService {\n    @PreAuthorize(\"hasRole('USER')\")\n    public List<OrderDto> myOrders() { ... }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    localhost:8080/api/my-orders\n403\n\n#   웹 규칙은 통과했는데 여기서 막힌다\n\nDEBUG FilterChainProxy : Secured GET /api/my-orders\n\nAccessDeniedException: Access Denied\n  at ...AuthorizationManagerBeforeMethodInterceptor\n\n#   같은 hasRole('USER') 인데 결과가 다르다\n\n# --- 표현식 핸들러에 물려 준다 ---\n\n@Bean\nstatic MethodSecurityExpressionHandler expressionHandler(\n        RoleHierarchy roleHierarchy) {\n    DefaultMethodSecurityExpressionHandler handler =\n            new DefaultMethodSecurityExpressionHandler();\n    handler.setRoleHierarchy(roleHierarchy);\n    return handler;\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    localhost:8080/api/my-orders\n200\n\n#   이제 같다\n\n# --- 내 코드는 여전히 모른다 ---\n\n@GetMapping(\"/is-user\")\n@ResponseBody\npublic String isUser(Authentication auth) {\n    boolean plain = auth.getAuthorities().stream()\n            .anyMatch(a -> a.getAuthority().equals(\"ROLE_USER\"));\n    boolean expanded = roleHierarchy\n            .getReachableGrantedAuthorities(auth.getAuthorities()).stream()\n            .anyMatch(a -> a.getAuthority().equals(\"ROLE_USER\"));\n    System.out.println(\">>> plain    = \" + plain);\n    System.out.println(\">>> expanded = \" + expanded);\n    return plain + \" / \" + expanded;\n}\n\n$ curl -s -b admin.txt localhost:8080/is-user\n\nfalse / true\n\n>>> plain    = false\n>>> expanded = true\n\n#   같은 질문, 다른 답\n\n#   화면에서 메뉴를 숨기는 코드가 이러면\n\n#   관리자에게 주문 메뉴가 안 보인다\n\n#   그런데 URL 로는 들어가진다\n\n# --- 계층을 펼쳐 본다 ---\n\n@Test\nvoid 계층을_펼친다() {\n    RoleHierarchy h = RoleHierarchyImpl.fromHierarchy(\"\"\"\n            ROLE_ADMIN > ROLE_MANAGER\n            ROLE_MANAGER > ROLE_USER\n            \"\"\");\n    for (String role : List.of(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_USER\")) {\n        System.out.println(role + \" -> \" + h.getReachableGrantedAuthorities(\n                List.of(new SimpleGrantedAuthority(role))));\n    }\n}\n\n$ ./gradlew test --tests RoleHierarchyTest\n\nROLE_ADMIN -> [ROLE_ADMIN, ROLE_MANAGER, ROLE_USER]\nROLE_MANAGER -> [ROLE_MANAGER, ROLE_USER]\nROLE_USER -> [ROLE_USER]\n\n#   전이가 된다\n\n#   ADMIN > MANAGER 와 MANAGER > USER 만 썼는데\n\n#   ADMIN 이 USER 까지 닿는다\n\n# --- 순환을 만들면 ---\n\nRoleHierarchyImpl.fromHierarchy(\"\"\"\n        ROLE_ADMIN > ROLE_USER\n        ROLE_USER > ROLE_ADMIN\n        \"\"\");\n\n$ ./gradlew bootRun\n\nIllegalArgumentException: Cycle detected in role hierarchy definition:\n  role ROLE_ADMIN already declared\n\n#   기동 때 잡힌다\n\n# --- 테스트로 계단을 고정 ---\n\n@ParameterizedTest\n@CsvSource({\n    \"ADMIN,   /admin/panel, 200\", \"ADMIN,   /report/x, 200\",\n    \"ADMIN,   /orders,      200\",\n    \"MANAGER, /admin/panel, 403\", \"MANAGER, /report/x, 200\",\n    \"MANAGER, /orders,      200\",\n    \"USER,    /admin/panel, 403\", \"USER,    /report/x, 403\",\n    \"USER,    /orders,      200\"\n})\nvoid 역할_계단(String role, String path, int expected) throws Exception {\n    mockMvc.perform(get(path).with(user(\"u\").roles(role)))\n            .andExpect(status().is(expected));\n}\n\n$ ./gradlew test\n\n107 tests completed\n\nBUILD SUCCESSFUL\n\n#   계층을 지우면 여기서 다섯 개가 깨진다\n\n# --- 다음 절에서 ---\n\n#   7장을 정리한다",
+   "note": "**계층 없이는 관리자가 `/orders` 에 403** 이다 — `[ROLE_ADMIN]` 안에 `ROLE_USER` 가 없다.\n\n**계층을 선언하면 200** 이 되는데 **토큰은 여전히 `[ROLE_ADMIN]`** 이다.\n\n**메서드 보안에는 따로 물려 줘야** 한다 — `Secured` 는 찍혔는데 `@PreAuthorize` 가 막았다.\n\n**내 `if` 는 `false`, 펼친 것은 `true`** 로 같은 질문에 답이 갈린다.\n\n**전이가 돼 `ROLE_ADMIN → [ADMIN, MANAGER, USER]`** 이고 순환은 기동 때 잡힌다."
+  }
+ ],
+ "recap": [
+  "**권한은 문자열 집합이라 계층이 없으면 안** 통한다.",
+  "**계정에 다 주거나 계층을** 선언한다.",
+  "**계층은 `static` 빈으로** 등록한다.",
+  "**웹 인가에는 자동으로** 붙는다.",
+  "**메서드 보안에는 표현식 핸들러에 물려** 줘야 한다.",
+  "**토큰이 들고 있는 권한은 안** 바뀐다.",
+  "**전이가 돼 두 줄이 세 단계를** 만든다.",
+  "**내가 쓴 `if` 는 계층을 모른다.**",
+  "**순환은 기동 때** 잡힌다."
+ ],
+ "drills": [
+  {
+   "task": "계층 없이 관리자로 사용자 화면에 간다.",
+   "done_when": "403 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "계층을 선언한다.",
+   "done_when": "200 이 되고 토큰은 그대로인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메서드 보안에서 다르게 도는 것을 본다.",
+   "done_when": "핸들러를 물려 고쳤다.",
+   "minutes": 25
+  },
+  {
+   "task": "역할 계단을 테스트로 만든다.",
+   "done_when": "계층을 지웠을 때 깨지는지 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "계층이 없으면 관리자가 `hasRole('USER')` 를 통과하나?",
+   "a": "통과 못 한다. 권한 집합에 `ROLE_USER` 가 없다."
+  },
+  {
+   "q": "계층을 선언하면 토큰이 바뀌나?",
+   "a": "안 바뀐다. 판단할 때만 펼친다."
+  },
+  {
+   "q": "메서드 보안에 계층이 안 붙는 이유는?",
+   "a": "표현식 핸들러에 별도로 물려 줘야 해서다."
+  },
+  {
+   "q": "내가 쓴 권한 검사 코드는?",
+   "a": "계층을 모른다. `getReachableGrantedAuthorities` 를 써야 한다."
+  },
+  {
+   "q": "순환 계층은 어떻게 되나?",
+   "a": "기동 때 예외로 잡힌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "RoleHierarchy",
+   "def": "역할 사이의 포함 관계를 선언해 상위 역할이 하위 역할의 권한을 갖게 하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Role Hierarchy",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html#authz-hierarchical-roles",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

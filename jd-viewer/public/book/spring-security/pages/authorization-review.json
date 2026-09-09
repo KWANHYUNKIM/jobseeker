@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "authorization-review",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "정리",
+ "summary": "인가 기본값.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 층을 나눠 쓴다.",
+  "실패하는 다섯 자리를 안다.",
+  "7장이 갚은 빚을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장은 규칙을** 만들었다. **어디에 무엇을 두는지** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 층, 두 질문",
+   "ascii": "   two layers, two questions\n\n   the filter chain\n     asks   which url, which method, which role\n     cheap, runs once, visible in one config block\n\n   method security\n     asks   which arguments, which return value, whose data\n     costs a proxy, spread across the codebase\n\n   use the first for walls and the second for locks",
+   "note": "**벽은 필터, 자물쇠는** 메서드다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 어디에",
+   "md": "| 규칙 | 자리 | 절 |\n|---|---|---|\n| `/admin/**` 은 관리자만 | 필터 인가 | 7.1 |\n| `DELETE` 는 관리자만 | 필터 인가 (메서드 매처) | 7.2 |\n| 정적 리소스 공개 | 필터 인가, 맨 위 | 7.2 |\n| 내 주문만 조회 | 서비스, 조회 조건 | 7.6 |\n| 취소는 관리자만 | 서비스, `@PreAuthorize` | 7.5 |\n| 관리자는 사용자도 | 역할 계층 | 7.8 |\n\n**기본 구성**\n\n```java\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())\n            .permitAll()\n        .requestMatchers(\"/\", \"/about\", \"/login\", \"/error\").permitAll()\n        .requestMatchers(HttpMethod.DELETE, \"/api/**\").hasRole(\"ADMIN\")\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .requestMatchers(\"/report/**\").hasAnyRole(\"ADMIN\", \"MANAGER\")\n        .requestMatchers(\"/api/**\", \"/orders/**\").authenticated()\n        .anyRequest().denyAll());\n```\n\n> **좁은 것부터, 마지막은 `denyAll`** 이다.\n> **여섯 줄이 이 애플리케이션의 벽 전체**다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙이 안 도는 다섯 가지",
+   "ascii": "   the five ways an authorization rule fails to run\n\n   1  no rule matched, and there was no catch all\n   2  a broader rule above it won\n   3  the annotation was never enabled\n   4  the call did not go through the proxy\n   5  the expression had a typo and evaluated to null\n\n   in all five the code looks right and nothing throws",
+   "note": "**다섯 다 코드는 멀쩡해** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "다섯 자리 점검표",
+   "md": "| 자리 | 확인 방법 | 절 |\n|---|---|---|\n| **무매칭** | `anyRequest` 가 있나 | 7.1 |\n| **순서** | 기동 로그의 `mappings` 를 훑는다 | 7.2 |\n| **미활성** | `@EnableMethodSecurity` 가 있나 | 7.5 |\n| **자기 호출** | `this.` 로 부르지 않나 | 7.5 |\n| **표현식 오타** | 통과·거부 양쪽을 테스트했나 | 7.7 |\n\n> **다섯 다 예외가 안** 난다.\n> **테스트만이 알려** 준다.\n\n**빚 표**\n\n| 빚 | 상태 |\n|---|---|\n| 인증 없이 주문이 200 | 갚음 (1.4·2.7) |\n| API 가 401 이 아니라 302 | 갚음 (6.2·6.3) |\n| CSRF 를 왜 켜 두나 | 갚음 (6.4·6.5) |\n| 인가 규칙이 `authenticated()` 하나 | **갚음 (7장)** |\n| 직접 만든 로그인 방식 | 10장 |\n| 비동기 로그인의 302 | 11.3 |\n\n> **여섯 중 넷이** 지워졌다.\n> **남은 둘은 10장과 11장**이다.\n\n**테스트가 107개**다.\n\n> **책 ⑨ 이 남긴 78개에서 스물아홉이** 늘었다.\n> **그중 열여섯이 인가 테스트**다.\n> **8.8절에서 더 체계적으로** 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 지금 규칙 전체 ---\n\n$ ./gradlew bootRun 2>&1 | grep -A9 \"RequestMatcherDelegating\"\n\nmappings=[\n  { Or [/css/**, /js/**, /images/**, /webjars/**, /favicon.ico] : permitAll },\n  { Or [/, /about, /login, /error] : permitAll },\n  { Ant [pattern='/api/**', DELETE] : hasRole('ROLE_ADMIN') },\n  { Ant [pattern='/admin/**'] : hasRole('ROLE_ADMIN') },\n  { Ant [pattern='/report/**'] : hasAnyRole('ROLE_ADMIN','ROLE_MANAGER') },\n  { Or [/api/**, /orders/**] : authenticated },\n  { any request : denyAll }]\n\n#   일곱 줄이다\n\n#   위에서 아래로, 좁은 것부터다\n\n# --- 전체 인가표를 한 번에 ---\n\n$ printf '%-22s %6s %8s %8s %8s\\n' PATH ANON USER MANAGER ADMIN\n$ for p in /about /css/app.css /orders /report/x /admin/panel \\\n           /api/v1/orders /internal/dump; do\n    printf '%-22s ' \"$p\"\n    for f in anon.txt user.txt manager.txt admin.txt; do\n      if [ \"$f\" = anon.txt ]; then\n        printf '%6s ' $(curl -s -o /dev/null -w '%{http_code}' \"localhost:8080$p\")\n      else\n        printf '%8s ' $(curl -s -o /dev/null -w '%{http_code}' -b $f \"localhost:8080$p\")\n      fi\n    done\n    echo\n  done\n\nPATH                     ANON     USER  MANAGER    ADMIN\n/about                    200      200      200      200\n/css/app.css              200      200      200      200\n/orders                   302      200      200      200\n/report/x                 302      403      200      200\n/admin/panel              302      403      403      200\n/api/v1/orders            401      200      200      200\n/internal/dump            302      403      403      403\n\n#   /api 만 401 이다 (6.2절 위임 진입점)\n\n#   /internal/dump 는 아무도 못 본다 (denyAll)\n\n#   이 표가 이 애플리케이션의 벽이다\n\n# --- 다섯 자리를 하나씩 부순다 ---\n\n#   1) anyRequest 를 지운다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/internal/dump\n200\n\n#   2) /** 를 맨 위로\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n200\n\n#   3) @EnableMethodSecurity 를 지운다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/api/orders/1/cancel\n200\n\n#   4) 서비스 안에서 this.cancel 을 부른다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/api/orders/cancel-all -d 'ids=1'\n200\n\n#   5) #email 을 #emial 로\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/members?email=user@a.com'\n403\n\n#   다섯 다 예외가 안 난다\n\n#   넷은 열리고 하나는 잘못 막는다\n\n$ ./gradlew bootRun 2>&1 | grep -ciE 'ERROR|WARN.*author'\n0\n\n#   로그에 아무 경고도 없다\n\n# --- 테스트는 다 잡는다 ---\n\n$ ./gradlew test\n\n인가표(/internal/dump, USER, 403) FAILED\n    Status expected:<403> but was:<200>\n인가표(/admin/panel, USER, 403) FAILED\n    Status expected:<403> but was:<200>\n권한_없는_취소는_막힌다 FAILED\n    Status expected:<403> but was:<200>\n내_정보는_볼_수_있다 FAILED\n    Status expected:<200> but was:<403>\n\n107 tests completed, 9 failed\n\n#   아홉 개가 빨갛다\n\n#   기동도 로그도 못 하던 일이다\n\n#   책 ⑨ 이 남긴 방법이 여기서 값을 한다\n\n# --- 되돌린다 ---\n\n$ ./gradlew test\n\n107 tests completed\n\nBUILD SUCCESSFUL\n\n$ grep -rn \"isForbidden\\|is(403)\\|isUnauthorized\" src/test | wc -l\n\n16\n\n#   인가 테스트가 열여섯이다\n\n#   4.8절 · 5.8절 · 6.9절에서 0이었다\n\n# --- 아직 없는 것 ---\n\n$ grep -rn \"hasRole\\|hasAuthority\" src/main --include='*.java' | wc -l\n\n11\n\n$ grep -rn \"@PreAuthorize\\|@PostAuthorize\" src/main --include='*.java' | wc -l\n\n6\n\n#   규칙이 열일곱 군데다\n\n#   전부 문자열이다\n\n#   철자가 틀려도 컴파일이 안 잡는다 (7.7절)\n\n#   8.8절에서 이걸 다 훑는 테스트를 만든다\n\n# --- 다음 장에서 ---\n\n#   이 판단을 실제로 누가 내리는지 본다",
+   "note": "**규칙 일곱 줄이 기동 로그에 그대로** 있고, **네 신분 × 일곱 경로 표**가 이 애플리케이션의 벽 전체다.\n\n**다섯 자리를 부수면 넷은 열리고 하나는 잘못 막는데 로그에 경고가 0개**다.\n\n**테스트는 아홉 개를 빨갛게** 만든다 — **기동도 로그도 못 하던 일**이다.\n\n**인가 테스트가 열여섯**이다. 4.8·5.8·6.9절에서 0이었다.\n\n**규칙이 열일곱 군데인데 전부** 문자열이다."
+  }
+ ],
+ "recap": [
+  "**필터 인가는 벽, 메서드 보안은 자물쇠**다.",
+  "**URL·메서드·역할은 필터**로 쓴다.",
+  "**인자·반환값·소유권은 서비스**에서 본다.",
+  "**좁은 것부터, 마지막은 `denyAll`** 이다.",
+  "**규칙이 안 도는 자리가** 다섯이다.",
+  "**다섯 다 예외도 경고도 없다.**",
+  "**테스트만이 알려** 준다.",
+  "**빚 여섯 중 넷이** 지워졌다.",
+  "**규칙 열일곱 군데가 전부** 문자열이다."
+ ],
+ "drills": [
+  {
+   "task": "인가표를 셸로 한 번에 뽑는다.",
+   "done_when": "네 신분의 표를 만들었다.",
+   "minutes": 25
+  },
+  {
+   "task": "다섯 자리를 하나씩 부순다.",
+   "done_when": "로그에 경고가 없는 것을 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "테스트가 몇 개 깨지는지 센다.",
+   "done_when": "숫자를 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "내 프로젝트의 규칙 개수를 센다.",
+   "done_when": "문자열 규칙이 몇 군데인지 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "필터 인가와 메서드 보안을 어떻게 나누나?",
+   "a": "URL·역할은 필터, 인자·소유권은 메서드다."
+  },
+  {
+   "q": "규칙이 안 도는 다섯 자리는?",
+   "a": "무매칭, 순서, 미활성, 자기 호출, 표현식 오타다."
+  },
+  {
+   "q": "다섯 자리의 공통점은?",
+   "a": "예외도 경고도 나지 않는다."
+  },
+  {
+   "q": "무엇이 그걸 잡아 주나?",
+   "a": "권한별 경로별 인가 테스트다."
+  },
+  {
+   "q": "7장이 갚은 빚은?",
+   "a": "인가 규칙이 `authenticated()` 하나뿐이던 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,115 @@
+{
+ "book": "docker",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 실제로 친 명령과 그 출력으로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 방법을 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "왜 출력을 보는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 열한 번째 책**이다. **앞의 열 권과 다루는 층이** 다르다.\n\n> **앞의 열 권은 애플리케이션 안쪽**이었다 — 나가는 SQL, 오간 HTTP, 빨간 막대, 막은 필터.\n>\n> **이 책은 그것을 어떻게 남에게 건네는지**다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가가 다뤄 온 층과 이 책의 층",
+   "ascii": "   books 1-10                        this book\n   ----------                        ---------\n   your code                         your code\n   Spring / JPA                      Spring / JPA\n   JVM                               JVM\n   ------------------------------    JVM version, locale, TZ\n   (assumed: my laptop)              OS packages, libs\n                                     ------------------------\n                                     the machine\n\n   앞의 열 권은 점선 아래를 없는 셈 쳤다",
+   "note": "**\"내 컴퓨터에서는 됐는데\" 가 나오는 자리**가 저 점선이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 명령과 출력인가",
+   "md": "**도커는 읽어서 아는 도구가** 아니다. **쳐 보면 즉시 답이 나오는** 도구다.\n\n> **이미지가 왜 1.2GB 인가** — `docker history` 가 레이어마다 몇 바이트인지 그대로 말해 준다.\n> **컨테이너가 왜 죽었나** — `docker inspect` 의 `ExitCode` 에 적혀 있다.\n> **왜 접속이 안 되나** — `docker port` 한 줄이면 끝난다.\n\n**추측할 일이 거의** 없다. **그런데도 사람들이 도커에서 헤매는 이유**는 그 한 줄을 안 쳐 보고 개념부터 외우려 하기 때문이다.\n\n**그래서 이 책의 매 절은 터미널로** 끝난다.\n\n| 블록 | 무엇 |\n|---|---|\n| `code` | 내가 쓴 것 — Dockerfile, compose.yaml |\n| **마지막 블록** | **그것을 실제로 돌렸을 때 나온 것** |\n\n**성공한 출력만 싣지** 않는다. **막힌 출력도 같이** 싣는다.\n\n> `Error response from daemon: ...` 를 읽을 줄 아는 것이 이 책의 절반이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "책의 뼈대",
+   "md": "| 장 | 무엇 | 끝나는 것 |\n|---|---|---|\n| **1** | 시작하기 전에 | 첫 `docker run` |\n| **2** | **가상화 기술** — 컨테이너가 무엇이 아닌지 | 프로세스 목록 |\n| **3** | **이미지와 컨테이너** — 레이어 | `history` · `inspect` |\n| **4** | 레지스트리 — 이미지는 어디서 오나 | `pull` 의 레이어 목록 |\n| **5** | **이미지 빌드** — Dockerfile | 빌드 로그와 캐시 |\n| **6** | 컨테이너 구성 — 포트·환경변수·재시작 | `ps` · `logs` |\n| **7** | 네트워크 | `curl` 이 되고 안 되고 |\n| **8** | 스토리지와 볼륨 | 지운 뒤에도 남은 것 |\n| **9** | 도커 컴포즈 | `up` 한 줄 |\n| **10** | 실무 적용 — 자바·JVM·보안 | 이미지 크기와 OOM |\n| **11** | 빌드 자동화 | CI 로그 |\n\n**2장과 3장을 건너뛰지** 않는다.\n\n> **레이어를 모르면 5장의 캐시 이야기가 통째로 안** 읽힌다.\n> **\"이미지는 파일 시스템의 스냅숏이고 컨테이너는 거기에 얹힌 쓰기 레이어\"** 라는 한 문장이 이 책 전부의 기초다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "앞의 책들과 이어지는 자리",
+   "md": "| 앞 책 | 이 책 |\n|---|---|\n| 「스프링 MVC 1편」 포트와 서블릿 컨테이너 | 6.1절 포트 |\n| 「스프링 DB 1편」 커넥션 풀 | 6.6절 자원 제한 |\n| 「Practical Testing」 8.5절 Testcontainers | 10.5절 |\n| 「스프링 시큐리티」 시크릿 관리 | 10.7절 |\n| 「활용 1편」이 만든 애플리케이션 | 10.1~10.2절이 이미지로 만든다 |\n\n**그리고 이 책이 끝나는 자리에서 「쿠버네티스 입문」이** 시작한다.\n\n> **11.5절**에서 \"컨테이너가 여러 대가 되면\" 을 적고 넘긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이 책이 다루지 않는 것",
+   "md": "**정직하게 적어** 둔다.\n\n| 안 다룸 | 이유 |\n|---|---|\n| Swarm 모드 | 실무에서 사실상 쿠버네티스로 갔다 |\n| 도커 내부 구현(containerd·runc) | 2.5절에서 이름만 짚고 넘어간다 |\n| 윈도우 컨테이너 | 리눅스 컨테이너만 다룬다 |\n| 클라우드별 배포 | 「쿠버네티스 입문」 11장에서 |\n\n**실습은 전부 리눅스 컨테이너**다. **맥·윈도우에서도 같은 명령이** 돈다 — 왜 그런지는 2.6절에서 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책이 매 절 끝에 싣는 것 (미리 보기)",
+   "sql": "# --- 명령 한 줄 ---\n\n$ docker run -d --name web -p 8080:80 nginx:1.27\nUnable to find image 'nginx:1.27' locally\n1.27: Pulling from library/nginx\n2d429b9e73a6: Pull complete\n4c7e6b7e5c1a: Pull complete\n...\nStatus: Downloaded newer image for nginx:1.27\n9f2b1c0a7e31d5c4a8b6f0e2d1c3b5a7e9f0d2c4b6a8e0f2d4c6b8a0e2f4d6c8\n\n\n# --- 그래서 무엇이 생겼나 ---\n\n$ docker ps\nCONTAINER ID   IMAGE        COMMAND                  STATUS         PORTS                  NAMES\n9f2b1c0a7e31   nginx:1.27   \"/docker-entrypoint.…\"   Up 3 seconds   0.0.0.0:8080->80/tcp   web\n\n\n# --- 실제로 되나 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080\n200\n\n\n#   여기까지가 한 절의 마지막 블록이다.\n#   개념 설명이 아니라, 방금 친 것이 실제로 무엇을 만들었는지."
+  }
+ ],
+ "recap": [
+  "이 책은 애플리케이션 바깥 — 환경을 옮기는 층을 다룬다.",
+  "매 절은 실제로 친 명령과 그 출력으로 끝난다. 막힌 출력도 같이 싣는다.",
+  "2장(가상화)과 3장(레이어)이 나머지 전부의 기초다.",
+  "이 책이 끝나는 자리에서 「쿠버네티스 입문」이 시작한다."
+ ],
+ "drills": [
+  {
+   "task": "터미널에서 `docker version` 을 쳐서 Client 와 Server 두 덩어리가 다 나오는지 본다.",
+   "done_when": "Server(Engine) 쪽 버전이 같이 찍힌다.",
+   "hint": "Server 가 안 나오면 데몬이 안 떠 있는 것이다 — 2.5절에서 왜 둘로 나뉘는지 본다.",
+   "minutes": 3
+  },
+  {
+   "task": "`docker run -d -p 8080:80 nginx:1.27` 를 띄우고 `docker ps` 와 `curl localhost:8080` 으로 확인한 뒤 `docker rm -f` 로 지운다.",
+   "done_when": "200 을 받아 보고, 지운 뒤 `docker ps` 가 비어 있다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책의 매 절은 무엇으로 끝나는가.",
+   "a": "실제로 친 명령과 그 출력. 성공한 것뿐 아니라 막힌 출력도 함께 본다."
+  },
+  {
+   "q": "2장과 3장을 건너뛰면 무엇이 안 읽히나.",
+   "a": "5장의 캐시. 레이어를 모르면 Dockerfile 줄 순서가 왜 빌드 시간을 정하는지 이해할 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이미지",
+   "en": "image",
+   "what": "실행에 필요한 파일 시스템을 통째로 굳혀 둔 것. 3.1절."
+  },
+  {
+   "term": "컨테이너",
+   "en": "container",
+   "what": "이미지 위에 쓰기 레이어 한 겹을 얹어 실행 중인 프로세스. 3.3절."
+  },
+  {
+   "term": "레지스트리",
+   "en": "registry",
+   "what": "이미지를 보관·배포하는 곳. Docker Hub 가 기본값이다. 4장."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Get started",
+   "url": "https://docs.docker.com/get-started/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "개발자를 위한 쉬운 도커 (차례 출처)",
+   "url": "https://www.inflearn.com/course/개발자를-위한-쉬운-도커",
+   "publisher": "인프런 · 황현우"
+  }
+ ]
+}

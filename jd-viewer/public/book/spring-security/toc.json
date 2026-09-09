@@ -491,7 +491,7 @@
           "title": "역할 계층",
           "summary": "ADMIN 은 USER 인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",
@@ -499,7 +499,7 @@
           "title": "정리",
           "summary": "인가 기본값.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
