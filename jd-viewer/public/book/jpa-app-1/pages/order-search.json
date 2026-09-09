@@ -1,0 +1,139 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-search",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "주문 검색",
+ "summary": "동적 쿼리를 네 번째로 만난다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "동적 쿼리를 JPQL 로 만든다.",
+  "앞의 세 번과 비교한다.",
+  "Criteria 를 확인하고 버린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항은 \"회원 이름과 주문 상태로 검색\"** 이다(1.3절). **조건이 둘, 각각 선택**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 번째다",
+   "ascii": "   the same problem, the fourth time\n\n   book 6, 3.3   jdbctemplate   string + andFlag      25 lines\n   book 6, 5.4   mybatis xml    <where> <if>          10 lines\n   book 6, 6.4   jpql           string + andFlag      27 lines\n   book 6, 8.3   querydsl       null conditions        4 lines\n\n   this book, 7.9   jpql again   string + isFirstCondition",
+   "note": "**「DB 2편」에서 세 번 만났다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderSearch`",
+   "code": "@Getter @Setter\npublic class OrderSearch {\n    private String memberName;      // 회원 이름\n    private OrderStatus orderStatus; // ORDER, CANCEL\n}",
+   "note": "**「DB 2편」 1.3절의 `ItemSearchCond`** 와 같은 자리다.\n\n**둘 다 `null` 일 수 있다.** **그것이 동적 쿼리의 조건**이다.\n\n**`OrderStatus` 가 `enum`** 이라 `null` 검사가 자연스럽다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "JPQL 로 조립",
+   "code": "public List<Order> findAll(OrderSearch orderSearch) {\n    String jpql = \"select o from Order o join o.member m\";\n    boolean isFirstCondition = true;\n\n    if (orderSearch.getOrderStatus() != null) {\n        if (isFirstCondition) {\n            jpql += \" where\";\n            isFirstCondition = false;\n        } else {\n            jpql += \" and\";\n        }\n        jpql += \" o.status = :status\";\n    }\n\n    if (StringUtils.hasText(orderSearch.getMemberName())) {\n        if (isFirstCondition) {\n            jpql += \" where\";\n            isFirstCondition = false;\n        } else {\n            jpql += \" and\";\n        }\n        jpql += \" m.name like :name\";\n    }\n\n    TypedQuery<Order> query = em.createQuery(jpql, Order.class)\n            .setMaxResults(1000);\n\n    if (orderSearch.getOrderStatus() != null) {\n        query.setParameter(\"status\", orderSearch.getOrderStatus());\n    }\n    if (StringUtils.hasText(orderSearch.getMemberName())) {\n        query.setParameter(\"name\", orderSearch.getMemberName());\n    }\n\n    return query.getResultList();\n}",
+   "note": "**「DB 2편」 6.4절의 그 코드**다. **`andFlag` 가 `isFirstCondition`** 으로 이름만 바뀌었다.\n\n**`if` 가 여섯**이다. **조건 검사 둘, `where`/`and` 넷.**\n\n**`setParameter` 를 위해 같은 `if` 를 두 번 더** 쓴다.\n\n**`setMaxResults(1000)`** 이 있다. **페이징이 아니라 안전장치**다 — 주문이 백만 건이면 다 가져오면 안 된다.\n\n> **「DB 2편」 3.3절에서 센 문제 넷이 그대로** 있다.\n>\n> | 문제 | |\n> |---|---|\n> | 문자열을 붙인다 | ✓ |\n> | 공백·`and` 를 맞춘다 | ✓ |\n> | 컴파일러가 안 잡는다 | ✓ |\n> | 조건 n 개면 2ⁿ | ✓ |"
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 선택",
+   "ascii": "   the three options here\n\n   jpql string        readable sql, unreadable java\n   criteria api       unreadable java, type-ish safe\n   querydsl           readable java, needs a build step\n\n   this book uses the first. the next book uses the third.",
+   "note": "**이 책은 첫째**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Criteria 를 확인하고 버린다",
+   "md": "**JPA 표준의 답**이다(「DB 2편」 6.4절).\n\n```java\npublic List<Order> findAllByCriteria(OrderSearch orderSearch) {\n    CriteriaBuilder cb = em.getCriteriaBuilder();\n    CriteriaQuery<Order> cq = cb.createQuery(Order.class);\n    Root<Order> o = cq.from(Order.class);\n    Join<Order, Member> m = o.join(\"member\", JoinType.INNER);\n\n    List<Predicate> criteria = new ArrayList<>();\n\n    if (orderSearch.getOrderStatus() != null) {\n        criteria.add(cb.equal(o.get(\"status\"), orderSearch.getOrderStatus()));\n    }\n    if (StringUtils.hasText(orderSearch.getMemberName())) {\n        criteria.add(cb.like(m.get(\"name\"), \"%\" + orderSearch.getMemberName() + \"%\"));\n    }\n\n    cq.where(cb.and(criteria.toArray(new Predicate[0])));\n    return em.createQuery(cq).setMaxResults(1000).getResultList();\n}\n```\n\n**`isFirstCondition` 이 사라졌다.** **리스트에 담고 `cb.and` 가 이어 준다.**\n\n**그런데 안 쓴다.**\n\n| 이유 | |\n|---|---|\n| **무슨 쿼리인지 안 보인다** | 위 코드를 읽고 SQL 을 그려 보라 |\n| **`o.get(\"status\")` 가 문자열** | **결국 오타를 못 잡는다** |\n| 조인이 늘면 급격히 복잡 | |\n\n**두 번째가 결정적**이다.\n\n> **그렇게 복잡해졌는데 오타는 여전히 실행할 때** 안다.\n>\n> **메타모델(`Order_.status`)을 생성하면 잡히는데**, **그러면 Querydsl 만큼 빌드가 복잡**해진다. **그럴 바에는 Querydsl** 이다.\n\n**「DB 2편」 6.4절에서 \"실패한 시도\" 라고** 했다. **여기서 실물을 보고 같은 결론**에 도달한다.\n\n**Querydsl 이 답인데** — **다음 권**이다(1.2절)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`join o.member m` 이 하는 일",
+   "md": "**JPQL 의 조인**이다.\n\n```\nselect o from Order o join o.member m\n```\n\n**`o.member` 를 따라간다.** **`on` 절이 없다** — 매핑에 있으니까.\n\n**SQL 로는**\n\n```sql\nselect o1_0.order_id, ... from orders o1_0\njoin member m1_0 on m1_0.member_id=o1_0.member_id\n```\n\n**`on` 을 하이버네이트가 만든다.**\n\n**주의할 것**이 있다.\n\n> **이 조인은 페치 조인이 아니다.** **`member` 를 조회 조건에만** 쓴다.\n>\n> **결과의 `order.getMember()` 는 여전히 프록시**다.\n\n```java\nList<Order> orders = orderRepository.findAll(cond);\norders.get(0).getMember().getName();\n// 여기서 select member 가 또 나간다\n```\n\n**조인했는데 회원을 또 조회**한다.\n\n> **페치 조인이면 안 그렇다.**\n>\n> ```\n> select o from Order o join fetch o.member\n> ```\n>\n> **9.4절에서 이 차이를** 센다.\n\n**조건이 없으면 조인이 낭비**다.\n\n```java\n// memberName 이 null 이어도\nselect o from Order o join o.member m\n```\n\n**`m` 을 안 쓰는데 조인**한다. **`inner join` 이라 회원 없는 주문은 빠지기도** 한다 — 여기서는 항상 있어서 문제가 안 된다.\n\n> **조건에 따라 조인도 빼야** 정확하다. **Querydsl 이면 쉽다.** **9.7절 목록**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 조건 없음 ---\n\norderRepository.findAll(new OrderSearch());\n\n#   jpql = select o from Order o join o.member m\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   where 가 없다\n#   조인은 있다 (안 쓰는데)\n\n# --- 상태만 ---\n\nOrderSearch cond = new OrderSearch();\ncond.setOrderStatus(OrderStatus.ORDER);\n\n#   jpql = select o from Order o join o.member m where o.status = :status\n\n#   Hibernate: \n#       select o1_0.order_id, ... from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       where o1_0.status=?\n#   binding parameter [1] as [VARCHAR] - [ORDER]\n\n# --- 이름만 ---\n\ncond.setMemberName(\"회원1\");\n\n#   jpql = select o from Order o join o.member m where m.name like :name\n\n#   Hibernate: \n#       select o1_0.order_id, ... from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       where m1_0.name like ? escape ''\n\n#   「DB 2편」 3.3절에서 가장 잘 깨지던 경우다\n#   where 앞에 and 가 붙으면 안 된다\n\n# --- 둘 다 ---\n\n#   jpql = select o from Order o join o.member m\n#          where o.status = :status and m.name like :name\n\n#   Hibernate: \n#       select o1_0.order_id, ... from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       where o1_0.status=? and m1_0.name like ? escape ''\n\n# --- isFirstCondition 을 빠뜨리면 ---\n\n#   jpql = select o from Order o join o.member m\n#          where o.status = :status where m.name like :name\n\n#   QuerySyntaxException: unexpected token: where\n\n#   네 번째 경우에서만 터진다\n#   「DB 2편」 3.3절과 똑같다\n\n# --- 결과의 member 를 쓰면 ---\n\nList<Order> orders = orderRepository.findAll(cond);\nfor (Order o : orders) {\n    log.info(\"{}\", o.getMember().getName());\n}\n\n#   Hibernate: select ... from orders o1_0 join member m1_0 on ...\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n#   ... (주문 건수만큼)\n\n#   조인했는데 회원을 또 조회한다\n\n#   join 은 조건용이고 페치 조인이 아니다\n\n# --- 페치 조인으로 바꾸면 ---\n\nselect o from Order o join fetch o.member\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0.member_id, m1_0.city, m1_0.street,\n#              m1_0.zipcode, m1_0.name, o1_0.delivery_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   회원 컬럼이 같이 왔다\n#   추가 쿼리가 없다\n\n#   다만 동적 쿼리와 섞기가 까다롭다\n\n# --- Criteria 로 하면 ---\n\n#   Hibernate: \n#       select o1_0.order_id, ... from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       where o1_0.status=? and m1_0.name like ?\n\n#   SQL 이 똑같다\n\n#   자바 코드만 다르다\n\n# --- 「DB 2편」의 결론이 여기서도 ---\n\n#   기술은 SQL 을 안 바꾼다\n#   누가 쓰느냐만 바꾼다",
+   "note": "**조건 없을 때도 조인이 나간다.** **`m` 을 안 쓰는데**다.\n\n**세 번째 경우가 「DB 2편」 3.3절에서 가장 잘 깨지던 것**이다. **`where` 앞에 `and` 가 붙으면 안 된다.**\n\n**`isFirstCondition` 을 빠뜨리면 네 번째 경우에서만** 터진다. **똑같다.**\n\n**조인했는데 회원을 또 조회**한다. **페치 조인이 아니라서**다 — 9.4절에서 센다.\n\n**Criteria 로 해도 SQL 이 똑같다.** **「DB 2편」의 결론**이 여기서도 성립한다.\n\n**7장이 끝났다. 다음 장에서 화면을 붙인다.**"
+  }
+ ],
+ "recap": [
+  "**동적 쿼리를 네 번째로** 만난다.",
+  "**`isFirstCondition` 이 「DB 2편」의 `andFlag`** 다.",
+  "**`if` 가 여섯**이고 `setParameter` 에 둘 더 있다.",
+  "**「DB 2편」 3.3절의 문제 넷이 그대로**다.",
+  "**`setMaxResults(1000)`** 은 안전장치다.",
+  "**Criteria 는 `isFirstCondition` 을 없애는데** 읽기 어렵고 오타를 못 잡는다.",
+  "**`join o.member m` 은 조건용**이고 페치 조인이 아니다.",
+  "**조인했는데 회원을 또 조회**한다.",
+  "**Criteria 든 JPQL 이든 SQL 이 같다.**"
+ ],
+ "drills": [
+  {
+   "task": "`findAll(OrderSearch)` 를 만들고 네 경우를 돌린다.",
+   "done_when": "SQL 넷이 다른 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`isFirstCondition` 을 빠뜨린다.",
+   "done_when": "네 번째 경우에서만 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "결과의 `getMember().getName()` 을 부른다.",
+   "done_when": "추가 쿼리가 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "Criteria 로 같은 것을 만든다.",
+   "done_when": "SQL 이 같고 코드만 다른 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책에서 동적 쿼리가 몇 번째인가?",
+   "a": "네 번째다. 「DB 2편」에서 JdbcTemplate·MyBatis·JPQL·Querydsl 로 세 번 봤다."
+  },
+  {
+   "q": "`isFirstCondition` 을 빠뜨리면?",
+   "a": "조건이 둘 다 있는 경우에만 문법 오류가 난다."
+  },
+  {
+   "q": "Criteria 를 왜 안 쓰나?",
+   "a": "읽기 어렵고 `get(\"필드명\")` 이 문자열이라 결국 오타를 못 잡는다."
+  },
+  {
+   "q": "`join o.member m` 의 성격은?",
+   "a": "조건용 조인이다. 페치 조인이 아니라 결과의 `member` 는 프록시다."
+  },
+  {
+   "q": "Criteria 와 JPQL 의 SQL 차이는?",
+   "a": "없다. 자바 코드만 다르다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -445,7 +445,7 @@
           "title": "주문 검색",
           "summary": "동적 쿼리를 네 번째로 만난다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -460,7 +460,7 @@
           "title": "홈 화면과 레이아웃",
           "summary": "부트스트랩과 프래그먼트.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",

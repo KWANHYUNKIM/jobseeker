@@ -1,0 +1,133 @@
+{
+ "book": "jpa-app-1",
+ "id": "home-layout",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "홈 화면과 레이아웃",
+ "summary": "부트스트랩과 프래그먼트.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "홈 화면을 만든다.",
+  "레이아웃을 나눈다.",
+  "초기 데이터를 넣는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8장이 시작된다.** **5~7장에서 만든 것에 화면을 붙인다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`HomeController`",
+   "code": "@Slf4j\n@Controller\npublic class HomeController {\n\n    @RequestMapping(\"/\")\n    public String home() {\n        log.info(\"home controller\");\n        return \"home\";\n    }\n}",
+   "note": "**2.3절의 `HelloController` 를 지우고** 이것을 만든다.\n\n**`@RequestMapping(\"/\")`** 이다. **`@GetMapping` 이 더 정확**한데 강의 예제를 따랐다.\n\n> **`static/index.html` 이 있으면 그것이 이긴다**(2.3절). **지워야 이 컨트롤러가 탄다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "템플릿 구조",
+   "ascii": "   templates/\n     fragments/\n       header.html      <head> contents\n       bodyHeader.html  the top bar\n       footer.html\n     home.html\n     members/ items/ order/\n\n   each page pulls the three fragments in",
+   "note": "**「MVC 2편」의 프래그먼트**다."
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "프래그먼트를 쓰는 쪽",
+   "code": "<!DOCTYPE HTML>\n<html xmlns:th=\"http://www.thymeleaf.org\">\n<head th:replace=\"~{fragments/header :: header}\">\n</head>\n<body>\n<div class=\"container\">\n\n    <div th:replace=\"~{fragments/bodyHeader :: bodyHeader}\"></div>\n\n    <div class=\"jumbotron\">\n        <h1>HELLO SHOP</h1>\n        <p class=\"lead\">회원 기능</p>\n        <p>\n            <a class=\"btn btn-lg btn-secondary\" href=\"/members/new\">회원 가입</a>\n            <a class=\"btn btn-lg btn-secondary\" href=\"/members\">회원 목록</a>\n        </p>\n    </div>\n\n    <div th:replace=\"~{fragments/footer :: footer}\"></div>\n\n</div>\n</body>\n</html>",
+   "note": "**`th:replace`** 가 그 자리를 통째로 바꾼다. **`th:insert` 는 안에 넣는다.**\n\n**`~{...}`** 는 타임리프 3 의 프래그먼트 표현식이다. **없어도 되는데 명시하는 편**이 낫다.\n\n> **「MVC 2편」에서 다룬 것**이라 자세히 안 본다. **이 책의 주제가 아니다**(1.2절).\n\n**부트스트랩을 `static/css`** 에 둔다(2.3절). **CDN 을 안 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "초기 데이터",
+   "ascii": "   test data at startup\n\n   @PostConstruct           no transaction yet     book 6, 10.4\n   ApplicationReadyEvent    the proxy exists       works\n\n   this book uses an @PostConstruct that calls\n   a separate @Transactional bean method",
+   "note": "**「DB 2편」 10.4절의 함정**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "초기 데이터를 어떻게 넣나",
+   "md": "**2.4절에서 `ddl-auto: create`** 로 뒀다. **뜰 때마다 데이터가 날아간다.**\n\n**화면을 보려면 몇 건 있어야** 한다.\n\n```java\n@Component\n@RequiredArgsConstructor\npublic class InitDb {\n\n    private final InitService initService;\n\n    @PostConstruct\n    public void init() {\n        initService.dbInit1();\n        initService.dbInit2();\n    }\n\n    @Component\n    @Transactional\n    @RequiredArgsConstructor\n    static class InitService {\n\n        private final EntityManager em;\n\n        public void dbInit1() {\n            Member member = createMember(\"userA\", \"서울\", \"1\", \"1111\");\n            em.persist(member);\n\n            Book book1 = createBook(\"JPA1 BOOK\", 10000, 100);\n            em.persist(book1);\n            // ...\n            Order order = Order.createOrder(member, delivery, orderItem1);\n            em.persist(order);\n        }\n    }\n}\n```\n\n**`@PostConstruct` 인데 동작**한다. **왜인가.**\n\n> **`init()` 에는 `@Transactional` 이 없다.** **`initService.dbInit1()` 을 부르는데**, **`initService` 는 주입받은 빈**이다.\n>\n> **프록시를 거친다.** **「DB 2편」 10.3절의 클래스 분리**다.\n\n**직접 붙였다면 안 됐다.**\n\n```java\n@PostConstruct\n@Transactional\npublic void init() {\n    em.persist(member);   // TransactionRequiredException\n}\n```\n\n**「DB 2편」 10.4절**이다 — **프록시가 아직 없다.**\n\n**`ApplicationReadyEvent` 로도** 된다.\n\n```java\n@EventListener(ApplicationReadyEvent.class)\n@Transactional\npublic void init() { }\n```\n\n> **이쪽이 더 단순**하다. **내부 클래스를 안 만들어도** 된다.\n>\n> **강의 예제가 `@PostConstruct` + 분리**를 쓴다. **둘 다 두 문제를 피하는 방법**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 애플리케이션 시작 ---\n\n#   Hibernate: create table ... (DDL 27줄)\n\n#   (InitDb.init - @PostConstruct)\n#   Getting transaction for [InitService.dbInit1]\n#   Creating new transaction with name [InitService.dbInit1]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: select next value for member_seq\n#   Hibernate: select next value for item_seq\n#   Hibernate: select next value for item_seq\n#   Hibernate: select next value for order_item_seq\n#   Hibernate: select next value for order_item_seq\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n\n#   Initiating transaction commit\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: insert into item (...) values (?,?,?,?,?,'B',?)\n#   Hibernate: insert into item (...) values (?,?,?,?,?,'B',?)\n#   Hibernate: insert into delivery (...) values (?,?,?,?,?)\n#   Hibernate: insert into orders (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n\n#   Started JpashopApplication in 3.128 seconds\n\n#   프록시를 거쳐서 트랜잭션이 걸렸다\n\n# --- @PostConstruct 에 직접 붙였다면 ---\n\n@PostConstruct\n@Transactional\npublic void init() {\n    em.persist(member);\n}\n\n#   jakarta.persistence.TransactionRequiredException:\n#     No EntityManager with actual transaction available for current thread\n\n#   (애플리케이션이 안 뜬다)\n\n#   「DB 2편」 10.4절\n\n# --- 홈 화면 요청 ---\n\nGET / HTTP/1.1\nHost: localhost:8080\n\n#   home controller\n\n#   (SQL 없음)\n\nHTTP/1.1 200\nContent-Type: text/html;charset=UTF-8\n\n<!DOCTYPE HTML>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <link href=\"/css/jumbotron-narrow.css\" rel=\"stylesheet\">\n    <title>Hello, world!</title>\n</head>\n<body>\n<div class=\"container\">\n    <div class=\"header\">\n        <ul class=\"nav nav-pills pull-right\">\n            <li><a href=\"/\">Home</a></li>\n        </ul>\n        <a href=\"/\"><h3 class=\"text-muted\">HELLO SHOP</h3></a>\n    </div>\n    <div class=\"jumbotron\">\n        <h1>HELLO SHOP</h1>\n        ...\n    </div>\n    <div class=\"footer\">\n        <p>&copy; Hello Shop V2</p>\n    </div>\n</div>\n</body>\n</html>\n\n#   프래그먼트 셋이 끼워졌다\n\n# --- 정적 파일 ---\n\nGET /css/bootstrap.min.css\n#   200 OK\n#   (컨트롤러를 안 거친다)\n\n# --- 이 장의 첫 화면이다 ---\n\n#   SQL 은 아직 안 나갔다\n#   다음 절부터 데이터가 화면에 붙는다",
+   "note": "**초기 데이터가 뜰 때 들어간다.** **주문까지 만들어 둔다** — 8.11절의 주문 목록에서 볼 것이다.\n\n**`@PostConstruct` 에 직접 붙였으면 앱이 안 뜬다.** **「DB 2편」 10.4절**이다.\n\n**홈 화면 요청에 SQL 이 없다.** **정적 화면**이다.\n\n**응답 HTML 에 프래그먼트 셋**이 끼워졌다.\n\n**이 장은 이 책의 규칙대로 오간 HTTP 로 끝난다**(1.1절).\n\n**다음 절에서 회원 등록을 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`HomeController` 가 `home` 뷰**를 반환한다.",
+  "**`static/index.html` 이 있으면 그것이 이긴다.**",
+  "**프래그먼트 셋**을 `th:replace` 로 끼운다.",
+  "**부트스트랩을 `static/css`** 에 파일로 둔다.",
+  "**`ddl-auto: create` 라 뜰 때마다 데이터가 날아간다.**",
+  "**`InitDb` 가 초기 데이터**를 넣는다.",
+  "**`@PostConstruct` 에 직접 붙이면 앱이 안 뜬다** — 「DB 2편」 10.4절.",
+  "**주입받은 빈을 거치면 프록시가 있어** 동작한다.",
+  "**홈 화면에 SQL 이 없다** — 정적이다."
+ ],
+ "drills": [
+  {
+   "task": "홈 화면과 프래그먼트를 만든다.",
+   "done_when": "`/` 가 뜨는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`InitDb` 를 만들어 초기 데이터를 넣는다.",
+   "done_when": "시작 로그에서 `insert` 를 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@PostConstruct` 에 `@Transactional` 을 직접 붙여 본다.",
+   "done_when": "앱이 안 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`ApplicationReadyEvent` 로 바꿔 본다.",
+   "done_when": "내부 클래스 없이 되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`th:replace` 와 `th:insert` 의 차이는?",
+   "a": "`replace` 는 그 자리를 통째로 바꾸고 `insert` 는 안에 넣는다."
+  },
+  {
+   "q": "초기 데이터가 왜 필요한가?",
+   "a": "`ddl-auto: create` 라 뜰 때마다 테이블이 새로 만들어진다."
+  },
+  {
+   "q": "`@PostConstruct` 에 `@Transactional` 을 직접 붙이면?",
+   "a": "프록시가 아직 없어 `TransactionRequiredException` 이 난다."
+  },
+  {
+   "q": "왜 별도 빈으로 나누면 되나?",
+   "a": "주입받은 빈은 프록시라 그것을 거치면 트랜잭션이 걸린다."
+  },
+  {
+   "q": "홈 화면에 SQL 이 없는 이유는?",
+   "a": "데이터를 안 쓰는 정적 화면이기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Thymeleaf Documentation",
+   "url": "https://www.thymeleaf.org/documentation.html",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "Spring Boot Reference",
+   "url": "https://docs.spring.io/spring-boot/reference/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
