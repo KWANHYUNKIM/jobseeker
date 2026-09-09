@@ -483,7 +483,7 @@
           "title": "인증",
           "summary": "Authorization 과 WWW-Authenticate.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.8",
@@ -491,7 +491,7 @@
           "title": "쿠키",
           "summary": "무상태 위에 상태를 얹는 법.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.9",

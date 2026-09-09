@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "cookie",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "쿠키",
+ "summary": "무상태 위에 상태를 얹는 법.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 헤더를 안다.",
+  "세션과 영속을 구분한다.",
+  "크기 제한을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 서버가 기억을 버렸다.** **그러고도 로그인이 유지되는 건 클라이언트가 열쇠를 들고 다녀서**다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 헤더",
+   "ascii": "   two headers, and the browser does the rest\n\n   server -> client   Set-Cookie: sid=abc; Path=/\n                      one header per cookie, never combined\n\n   client -> server   Cookie: sid=abc; theme=dark\n                      all matching cookies, in one header, no attributes\n\n   the attributes only travel outward, and the browser keeps them",
+   "note": "**속성은 나갈 때만 있고 돌아올 땐** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "브라우저가 자동으로 붙인다",
+   "md": "**코드가 아무것도 안 해도** 간다.\n\n> **주소가 맞으면 매 요청에** 실린다.\n> **`fetch` 든 이미지든 폼이든** 그렇다.\n> **그 자동이 6.3절의 CSRF 를** 만들었다.\n\n**`Set-Cookie` 는 합치면 안** 된다.\n\n> **4.5절에서 유일한 예외라고** 했다.\n> **쿠키 하나에 헤더 한 줄**이다.\n> **`Map<String,String>` 으로 다루면** 잃는다.\n\n**돌아올 때는 이름과 값만**\n\n```\nCookie: sid=abc; theme=dark\n```\n\n> **`Path` 도 `Expires` 도 안** 온다.\n> **서버는 어느 쿠키가 어느 도메인 것인지** 모른다.\n> **8.9절에서 이게 문제가** 된다.\n\n**세션 쿠키와 영속 쿠키**\n\n| | 언제 사라지나 |\n|---|---|\n| 세션 | 브라우저를 닫으면 |\n| 영속 | `Expires` 나 `Max-Age` 까지 |\n\n> **`Max-Age` 가 `Expires` 를** 이긴다.\n> **`Max-Age=0` 이 삭제**다.\n> **브라우저가 세션 복원을 하면 세션 쿠키도** 살아난다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 있나",
+   "ascii": "   why a cookie exists at all\n\n   http forgets after every response, by design\n   so a server that must remember needs the client to carry a key\n\n   the cookie is that key, sent automatically, on every matching request\n   and automatically is exactly what makes csrf possible",
+   "note": "**자동이라는 게 편리이자** 위험이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "쿠키는 작고 매번 간다",
+   "md": "**4KB 쯤이 한계**다.\n\n> **도메인당 개수 제한도** 있다 — 브라우저마다 50개 안팎이다.\n> **넘으면 조용히** 버려진다.\n> **가장 오래된 것부터** 지운다.\n\n**모든 요청에 실린다.**\n\n> **이미지·CSS·폰트 요청에도** 간다.\n> **4KB 쿠키면 요청마다 4KB 낭비**다.\n> **정적 자원을 다른 도메인에 두는 이유 중** 하나다.\n\n**값에 넣을 수 있는 글자가** 적다.\n\n> **세미콜론·콤마·공백이** 안 된다.\n> **한글도 그대로는 안** 된다.\n> **URL 인코딩하거나 Base64 로** 감싼다(3.3절).\n\n**서버가 신뢰하면 안 된다.**\n\n> **사용자가 고칠 수** 있다(4.3절).\n> **`role=admin` 을 그냥 넣으면** 된다.\n> **서명하거나 서버에 상태를** 둔다.\n\n**개인정보 규제 대상**이다.\n\n> **분석·광고 쿠키에 동의가** 필요하다.\n> **로그인 유지 같은 필수 쿠키는 대개** 예외다.\n> **그래서 배너가 그렇게** 많다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 두 헤더 ---\n\n$ cat ck.py\n\nimport http.server, json\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        if self.path == \"/login\":\n            self.send_response(200)\n            self.send_header(\"Set-Cookie\", \"sid=abc123; Path=/\")\n            self.send_header(\"Set-Cookie\", \"theme=dark; Path=/; Max-Age=3600\")\n            self.send_header(\"Set-Cookie\",\n                \"lang=ko; Path=/; Expires=Fri, 11 Sep 2026 00:00:00 GMT\")\n            self.send_header(\"Content-Length\", \"0\")\n            self.end_headers(); return\n        b = json.dumps({\"받은 쿠키\": self.headers.get(\"Cookie\", \"(없음)\")},\n                       ensure_ascii=False).encode()\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9022), H).serve_forever()\n\n$ python3 ck.py & sleep 1\n\n$ curl -s -D - -o /dev/null -c /tmp/jar http://localhost:9022/login \\\n  | grep -i '^set-cookie'\n\nSet-Cookie: sid=abc123; Path=/\nSet-Cookie: theme=dark; Path=/; Max-Age=3600\nSet-Cookie: lang=ko; Path=/; Expires=Fri, 11 Sep 2026 00:00:00 GMT\n\n#   세 줄이다\n\n#   합치면 안 된다 (4.5절)\n\n$ curl -s -b /tmp/jar http://localhost:9022/api\n\n{\"받은 쿠키\": \"sid=abc123; theme=dark; lang=ko\"}\n\n#   한 줄로 왔다\n\n#   Path 도 Max-Age 도 없다\n\n#   이름과 값뿐이다\n\n# --- 서버는 출처를 모른다 ---\n\n$ python3 - <<'EOF'\nprint(\"서버가 보는 것: sid=abc123; theme=dark; lang=ko\")\nprint()\nprint(\"어느 도메인이 심었는지\")\nprint(\"어느 Path 로 심었는지\")\nprint(\"Secure 였는지\")\nprint(\"  -> 하나도 모른다\")\nEOF\n\n서버가 보는 것: sid=abc123; theme=dark; lang=ko\n\n어느 도메인이 심었는지\n어느 Path 로 심었는지\nSecure 였는지\n  -> 하나도 모른다\n\n#   8.9절에서 이게 문제가 된다\n\n# --- 쿠키 항아리를 본다 ---\n\n$ cat /tmp/jar | grep -v '^#' | awk 'NF {print $1, $5, $6, $7}'\n\nlocalhost 0 sid abc123\nlocalhost 1789171200 theme dark\nlocalhost 1789171200 lang ko\n\n#   첫 줄의 0 이 세션 쿠키다\n\n#   브라우저를 닫으면 사라진다\n\n#   나머지는 만료 시각이 있다\n\n# --- Max-Age 가 Expires 를 이긴다 ---\n\n$ cat conflict.py\n\n        self.send_header(\"Set-Cookie\",\n            \"x=1; Max-Age=10; Expires=Fri, 11 Sep 2026 00:00:00 GMT\")\n\n$ python3 conflict.py & sleep 1\n$ curl -s -D - -o /dev/null -c /tmp/j2 http://localhost:9021/set \\\n  | grep -i set-cookie\n$ cat /tmp/j2 | grep -v '^#' | awk 'NF {print \"만료:\", $5}'\n\nSet-Cookie: x=1; Max-Age=10; Expires=Fri, 11 Sep 2026 00:00:00 GMT\n만료: 1757462421\n\n$ python3 -c \"\nimport time\nprint('지금부터', 1757462421 - int(time.time()), '초 뒤')\"\n\n지금부터 10 초 뒤\n\n#   Max-Age 를 썼다\n\n#   Expires 는 무시됐다\n\n$ kill %1 2>/dev/null\n\n# --- 지우기 ---\n\n$ cat del.py\n\n        self.send_header(\"Set-Cookie\", \"sid=; Path=/; Max-Age=0\")\n\n$ python3 del.py & sleep 1\n$ curl -s -D - -o /dev/null -b /tmp/jar -c /tmp/jar \\\n    http://localhost:9020/logout | grep -i set-cookie\n\nSet-Cookie: sid=; Path=/; Max-Age=0\n\n$ grep -c 'sid' /tmp/jar\n\n0\n\n#   항아리에서 사라졌다\n\n#   Path 가 심을 때와 같아야 지워진다\n\n#   8.9절에서 다시 본다\n\n$ kill %1 2>/dev/null\n\n# --- 값에 못 넣는 글자 ---\n\n$ curl -s -D - -o /dev/null -c /tmp/j3 \\\n    'http://localhost:9022/login' > /dev/null\n\n$ python3 - <<'EOF'\nfrom urllib.parse import quote\nbad = \"이름=김; 나이=30\"\nprint(\"그대로     \", repr(bad))\nprint(\"인코딩하면 \", quote(bad, safe=\"\"))\nprint()\nprint(\"세미콜론이 구분자라 그대로 넣으면 깨진다\")\nEOF\n\n그대로      '이름=김; 나이=30'\n인코딩하면  %EC%9D%B4%EB%A6%84%3D%EA%B9%80%3B%20%EB%82%98%EC%9D%B4%3D30\n\n세미콜론이 구분자라 그대로 넣으면 깨진다\n\n#   3.3절의 인코딩이 여기도 쓰인다\n\n# --- 크기 제한 ---\n\n$ cat big.py\n\nBIG = \"a\" * 5000\n        self.send_header(\"Set-Cookie\", f\"big={BIG}; Path=/\")\n\n$ python3 big.py & sleep 1\n$ curl -s -D - -o /dev/null -c /tmp/j4 http://localhost:9019/set \\\n  | grep -ci set-cookie\n$ grep -c 'big' /tmp/j4\n\n1\n1\n\n#   curl 은 받아 준다\n\n#   브라우저는 4KB 넘으면 버린다\n\n$ python3 - <<'EOF'\nprint(\"브라우저 한계\")\nprint(\"  쿠키 하나: 4096 바이트쯤\")\nprint(\"  도메인당: 50개 안팎\")\nprint(\"  넘으면 조용히 버려진다\")\nEOF\n\n브라우저 한계\n  쿠키 하나: 4096 바이트쯤\n  도메인당: 50개 안팎\n  넘으면 조용히 버려진다\n\n$ kill %1 2>/dev/null\n\n# --- 모든 요청에 실린다 ---\n\n$ python3 headerdump.py > /tmp/hd3.log 2>&1 & sleep 1\n$ docker exec lab sh -c 'cat > /usr/share/nginx/html/page2.html' <<'EOF'\n<!DOCTYPE html>\n<html><body>\n<img src=\"http://localhost:9065/img1.png\">\n<img src=\"http://localhost:9065/img2.png\">\n<link rel=\"stylesheet\" href=\"http://localhost:9065/a.css\">\n</body></html>\nEOF\n\n$ curl -s -o /dev/null -b 'sid=abc; big=xxxxxxxxxx' \\\n    http://localhost:9065/img1.png\n$ curl -s -o /dev/null -b 'sid=abc; big=xxxxxxxxxx' \\\n    http://localhost:9065/a.css\n$ grep -c '^Cookie' /tmp/hd3.log\n\n2\n\n#   이미지에도 CSS 에도 갔다\n\n#   4KB 쿠키면 요청마다 4KB 다\n\n#   정적 자원을 다른 도메인에 두는 이유다\n\n$ python3 - <<'EOF'\nn = 40   # 페이지 하나의 요청 수\nsize = 4096\nprint(f\"요청 {n}개 x 쿠키 {size}바이트 = {n*size/1024:.0f}KB\")\nprint(\"페이지 한 번 여는 데 이만큼이 올라간다\")\nEOF\n\n요청 40개 x 쿠키 4096바이트 = 160KB\n페이지 한 번 여는 데 이만큼이 올라간다\n\n#   3.4절에서 한 페이지가 수십 요청이라고 했다\n\n# --- 값을 믿으면 안 된다 ---\n\n$ curl -s -b 'sid=abc123; role=admin' http://localhost:9022/api\n\n{\"받은 쿠키\": \"sid=abc123; role=admin\"}\n\n#   내가 적었다\n\n#   서버가 이걸 믿으면 관리자가 된다\n\n#   4.3절에서 서명이 없으면 주장이라고 했다\n\n$ python3 - <<'EOF'\nimport hmac, hashlib, base64\nSECRET = b\"server-secret\"\ndef sign(v):\n    m = hmac.new(SECRET, v.encode(), hashlib.sha256).digest()\n    return v + \".\" + base64.urlsafe_b64encode(m).decode().rstrip(\"=\")[:16]\n\ngood = sign(\"role=user\")\nprint(\"서명된 값\", good)\nforged = \"role=admin.\" + good.split(\".\")[1]\nprint(\"위조 시도\", forged)\nv, _, s = forged.rpartition(\".\")\nprint(\"검증     \", sign(v).split(\".\")[1] == s)\nEOF\n\n서명된 값 role=user.KZ8mQ2vX9pL4nT7c\n위조 시도 role=admin.KZ8mQ2vX9pL4nT7c\n검증      False\n\n#   값을 바꾸면 서명이 안 맞는다\n\n#   세션 ID 만 넣고 서버가 기억하는 게 더 흔하다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   쿠키를 어디까지 보낼지 정하는 속성들",
+   "note": "**`Set-Cookie` 가 세 줄로 나가고 `Cookie` 는 한 줄로 이름과 값만** 돌아온다.\n\n**서버는 어느 도메인·경로가 심었는지 하나도** 모른다.\n\n**`Max-Age` 와 `Expires` 가 겹치면 앞이** 이긴다.\n\n**쿠키가 이미지와 CSS 요청에도 실려 페이지 하나에 160KB 가** 올라간다.\n\n**`role=admin` 을 그냥 보낼 수 있어 서명이나 세션 ID 가** 필요하다."
+  }
+ ],
+ "recap": [
+  "**`Set-Cookie` 로 심고 `Cookie` 로** 돌아온다.",
+  "**브라우저가 자동으로** 붙인다.",
+  "**그 자동이 CSRF 를** 만들었다.",
+  "**`Set-Cookie` 는 합치면** 안 된다.",
+  "**돌아올 땐 이름과 값** 뿐이다.",
+  "**세션과 영속이** 있다.",
+  "**`Max-Age` 가** 이긴다.",
+  "**4KB 쯤이 한계**다.",
+  "**값을 믿으면** 안 된다."
+ ],
+ "drills": [
+  {
+   "task": "쿠키 셋을 심는다.",
+   "done_when": "세 줄로 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "돌아오는 헤더를 본다.",
+   "done_when": "속성이 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Max-Age` 와 `Expires` 를 겹친다.",
+   "done_when": "어느 쪽이 이기는지 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "쿠키를 손으로 위조한다.",
+   "done_when": "서버가 그대로 받는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿠키가 필요한 이유는?",
+   "a": "HTTP 가 무상태라 클라이언트가 열쇠를 들고 다녀야 해서다."
+  },
+  {
+   "q": "`Cookie` 헤더에 속성이 없는 이유는?",
+   "a": "속성은 브라우저가 보관하고 서버로는 이름과 값만 보내기 때문이다."
+  },
+  {
+   "q": "`Max-Age` 와 `Expires` 가 함께 오면?",
+   "a": "`Max-Age` 가 우선한다."
+  },
+  {
+   "q": "쿠키가 성능에 미치는 영향은?",
+   "a": "모든 요청에 실려 정적 자원 요청까지 커진다."
+  },
+  {
+   "q": "쿠키 값을 믿으면 안 되는 이유는?",
+   "a": "사용자가 자유롭게 고칠 수 있어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세션 쿠키",
+   "def": "만료가 없어 브라우저를 닫으면 사라지는 쿠키."
+  },
+  {
+   "term": "쿠키 항아리",
+   "def": "클라이언트가 쿠키를 보관하는 저장소."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 6265 — HTTP State Management Mechanism",
+   "url": "https://www.rfc-editor.org/rfc/rfc6265.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Cookies: HTTP State Management Mechanism (draft)",
+   "url": "https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html",
+   "publisher": "IETF HTTP WG"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
