@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-2",
+ "id": "api-basic-review",
+ "no": "2.8",
+ "chapter": 2,
+ "title": "정리",
+ "summary": "엔티티를 API 에 쓰면.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "2장에서 고친 것을 센다.",
+  "규칙 하나를 남긴다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**API 다섯 개를 만들면서 열 가지를** 고쳤다. **하나가 남았다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "2장의 장부",
+   "ascii": "   chapter 2, counted\n\n   request side\n     entity as parameter        fixed  2.3\n     validation on entity       fixed  2.3\n     id injected from client    fixed  2.3\n\n   response side\n     infinite recursion         fixed  2.6\n     over exposure              fixed  2.6\n     17 queries -> 1            fixed  2.6\n     array at top level         fixed  2.6\n\n   error side\n     reason missing             fixed  2.7\n     404 sent as 500            fixed  2.7\n     duplicate -> INTERNAL      open\n\n   entity\n     no @NotEmpty, no @JsonIgnore left",
+   "note": "**하나가 열려 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "숫자로 본 2장",
+   "md": "| API | 쿼리 | 응답 |\n|---|---|---|\n| 등록 V1 | 2 | `{\"id\":1}` — 그런데 `id` 를 보내면 500 |\n| 등록 V2 | **2** | 같다 |\n| 조회 V1 | **9** | **500 재귀** |\n| 조회 V1 + `@JsonIgnore` | **17** | 200, 전 필드 |\n| 조회 V2 | **1** | `{\"count\":3,\"data\":[...]}` |\n| 수정 | 3 | `{\"id\":1,\"name\":\"...\"}` |\n\n**여기서 읽을 것 둘**\n\n**① 등록은 쿼리가 안 줄었다**\n\n> **V1 도 V2 도 2개**다. **DTO 의 값이 성능이 아니다.**\n>\n> **계약·검증·안전**이다. **숫자로 안 드러나는 값**이 있다.\n\n**② 조회는 17 이 1 이 됐다**\n\n> **여기서는 성능이 값**이다.\n>\n> **같은 처방(DTO)인데 얻는 것이 다르다.**\n\n**이 둘의 차이가 4장·5장으로** 이어진다.\n\n> **조회는 DTO 만으로 안 끝난다.** **회원 목록은 연관관계를 안 써서 1개가 됐을 뿐**이다.\n>\n> **주문 목록은 연관관계를 써야** 한다. **DTO 를 써도 쿼리가 남는다.**\n>\n> **그게 N+1** 이다."
+  },
+  {
+   "type": "figure",
+   "caption": "2장이 얻은 규칙",
+   "ascii": "   the rule this chapter earned\n\n   entity                        never crosses the wire\n     |         request dto  ->  controller\n     |         response dto <-  controller\n\n   both directions. no exceptions.",
+   "note": "**양방향 모두, 예외 없이.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "규칙 하나",
+   "md": "**엔티티를 API 로 주고받지 않는다.**\n\n**1편 9.1절의 결론과 비교**한다.\n\n| | 1편(화면) | 2편(API) |\n|---|---|---|\n| 기준 | **화면 복잡도에 따라** | **항상** |\n| 근거 | 스펙이 서버 안에 있다 | **스펙이 밖으로 나간다** |\n| 예외 | 간단한 상세 화면 | **없다** |\n\n**\"항상\" 인 이유를 다시** 정리하면\n\n| | |\n|---|---|\n| **잭슨이 안 멈춘다** | 화면은 템플릿이 멈춘다 |\n| **양방향이 재귀** | 화면은 순환을 안 돈다 |\n| **필드가 곧 키** | 이름 변경이 클라이언트를 깬다 |\n| **필드 추가가 유출** | 화면은 안 부르면 안 나간다 |\n| **요청도 뚫린다** | `id`·`orders` 유입 |\n\n**대가를 정직하게** 적으면\n\n```\nMemberApiController 안에\n  CreateMemberRequest\n  CreateMemberResponse\n  UpdateMemberRequest\n  UpdateMemberResponse\n  Result\n  MemberDto\n\n클래스 6개, API 5개\n```\n\n> **API 하나에 한두 개씩** 는다. **이게 DTO 의 값**이다.\n>\n> **줄이려는 유혹이** 온다 — **\"등록과 수정 요청을 하나로\", \"응답 DTO 를 공유\"**.\n>\n> **합치는 순간 2.2절로 돌아간다.** **DTO 하나가 두 API 의 스펙을 겸하면 어느 필드가 어느 API 것인지** 모른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "열려 있는 하나",
+   "md": "**중복 회원이 `INTERNAL` 로** 잡힌다(2.7절).\n\n```java\nthrow new IllegalStateException(\"이미 존재하는 회원입니다.\");\n```\n\n> **`Exception` 핸들러가** 잡는다. **`409 CONFLICT` 여야** 한다.\n\n**고치려면 전용 예외**가 필요하다.\n\n```java\npublic class DuplicateMemberException extends RuntimeException { }\n```\n\n> **1편 9.7절 목록의 \"예외 처리 3\" 중 하나**다. **1.2절에서 \"2.7절에서 최소한만\" 이라고** 했다.\n>\n> **안 고치고 남긴다.** **이 책의 주제가 조회 성능**이라서다.\n>\n> **7.3절에서 다시 센다.**\n\n**같이 남는 것들**\n\n| | 어디로 |\n|---|---|\n| `member.name` 유니크 없음 | 7.3절 |\n| 인증·인가 없음 | 7.3절 |\n| 페이징 없음 | **3.4절** — 조회 API 에서 다룬다 |\n| 정렬 없음 | 3.4절 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 2장 전체",
+   "sql": "# --- 2장이 만든 API 다섯 ---\n\nPOST /api/v1/members     쿼리 2   {\"id\":1}      id 보내면 500\nPOST /api/v2/members     쿼리 2   {\"id\":5}\nPUT  /api/v2/members/1   쿼리 3   {\"id\":1,\"name\":\"...\"}\nGET  /api/v1/members     쿼리 9   500 Infinite recursion\nGET  /api/v2/members     쿼리 1   {\"count\":3,\"data\":[...]}\n\n# --- 엔티티가 어떻게 됐나 ---\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n    private String name;\n    @Embedded\n    private Address address;\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders = new ArrayList<>();\n}\n\n#   @NotEmpty 없음\n#   @JsonIgnore 없음\n#   @JsonProperty 없음\n\n#   1편이 만든 그대로다\n\n# --- 그런데 아직 안 건드린 것 ---\n\nGET /orders\n\n#   Session Metrics { 31 JDBC statements were executed }\n\n#   1편 9.4절의 31 이 그대로다\n\n#   2장은 회원만 다뤘다\n#   회원은 연관관계를 안 써서 쉬웠다\n\n# --- 주문을 DTO 로 만들어 보면 (미리) ---\n\n#   List<Order> -> List<SimpleOrderDto>\n#     dto.name = order.getMember().getName()   <- 프록시를 깬다\n#     dto.address = order.getDelivery().getAddress()\n\nGET /api/v2/simple-orders\n\n#   Hibernate: select ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n\n#   Session Metrics { 5 JDBC statements were executed }\n\n#   DTO 를 썼는데 쿼리가 5개다\n\n#   2.6절의 회원 목록은 1개였다\n#   차이는 연관관계를 쓰느냐다\n\n#   이것이 N+1 이다\n\n# --- 2장이 남긴 것 ---\n\n#   고친 것 10\n#   연 것 1 (중복 회원 409)\n#   미룬 것 4 (7.3절)\n\n#   그리고 DTO 만으로 안 끝나는 문제 하나를 찾았다\n\n# --- 다음 장에서 ---\n\n#   무엇을 재고 무엇을 비교할지 정한다",
+   "note": "**API 다섯의 쿼리와 응답을 한 표에** 놨다.\n\n**엔티티에 `@NotEmpty`·`@JsonIgnore`·`@JsonProperty` 가 하나도 없다.** **1편이 만든 그대로**다.\n\n**`/orders` 는 여전히 31개**다. **2장은 회원만 다뤘고 회원은 연관관계를 안 써서 쉬웠다.**\n\n**주문을 DTO 로 만들면 쿼리가 5개**다. **DTO 를 썼는데 안 줄었다.**\n\n**차이는 연관관계를 쓰느냐**다. **이것이 N+1** 이다.\n\n**다음 장에서 무엇을 잴지 정한다.**"
+  }
+ ],
+ "recap": [
+  "**2장에서 열 가지를 고치고 하나를 열어** 뒀다.",
+  "**등록은 쿼리가 안 줄었다** — DTO 의 값이 성능이 아니다.",
+  "**조회는 17 이 1** 이 됐다 — 여기서는 성능이 값이다.",
+  "**같은 처방인데 얻는 것이 다르다.**",
+  "**엔티티를 API 로 주고받지 않는다** — 양방향 모두, 예외 없이.",
+  "**1편은 \"화면 복잡도에 따라\" 였고 2편은 \"항상\"** 이다.",
+  "**대가는 API 다섯에 클래스 여섯**이다.",
+  "**합치려는 유혹을 참는다** — 합치면 2.2절로 돌아간다.",
+  "**주문은 DTO 를 써도 쿼리가 5개** 다 — 그게 N+1 이다."
+ ],
+ "drills": [
+  {
+   "task": "2장의 API 다섯을 순서대로 부른다.",
+   "done_when": "쿼리 개수를 표로 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Member` 를 열어 애노테이션을 센다.",
+   "done_when": "API 관련 애노테이션이 없는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`/orders` 화면의 쿼리를 센다.",
+   "done_when": "여전히 31개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "왜 회원은 1개고 주문은 5개일지 예상해 본다.",
+   "done_when": "연관관계 사용 여부로 설명했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "등록 API 는 왜 쿼리가 안 줄었나?",
+   "a": "연관관계를 안 쓰고 원래 2개였다. DTO 의 값이 계약·검증·안전이다."
+  },
+  {
+   "q": "2장이 남긴 규칙은?",
+   "a": "엔티티를 API 로 주고받지 않는다. 요청·응답 양방향 모두다."
+  },
+  {
+   "q": "1편과 결론이 왜 다른가?",
+   "a": "화면은 스펙이 서버 안에 있고 API 는 밖으로 나가서다."
+  },
+  {
+   "q": "열려 있는 하나는?",
+   "a": "중복 회원이 `INTERNAL` 로 잡힌다. 409 여야 한다."
+  },
+  {
+   "q": "주문 DTO 가 쿼리 5개인 이유는?",
+   "a": "`getMember()`·`getDelivery()` 로 프록시를 깨기 때문이다. N+1 이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  }
+ ]
+}

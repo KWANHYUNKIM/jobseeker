@@ -1,0 +1,141 @@
+{
+ "book": "jpa-app-2",
+ "id": "api-error",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "API 예외 처리",
+ "summary": "화면과 다른 오류 응답.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "2.2·2.4절이 남긴 500 을 고친다.",
+  "검증 실패의 이유를 응답에 담는다.",
+  "핸들러를 어디에 둘지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절의 `400` 은 이유가 없었고 2.4절의 `500` 은 `404` 여야** 했다. **둘 다 여기서 고친다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 예외, 다른 독자",
+   "ascii": "   the same exception, two audiences\n\n   screen                        api\n     500 page                      500 json\n     a human reads it              a program reads it\n     back button                   retry? give up? show what?\n\n   the human can guess. the program cannot.\n   so the api body has to carry the reason.",
+   "note": "**사람은 짐작하고 프로그램은 못 한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "화면의 예외 처리와 무엇이 다른가",
+   "md": "**「MVC 2편」 8장에서 이미 다뤘다.** **거기서 정리한 것**\n\n| | |\n|---|---|\n| `BasicErrorController` | 화면은 `error/500.html`, API 는 JSON |\n| `@ExceptionHandler` | 예외별 처리 |\n| `@ControllerAdvice` | 전역 처리 |\n\n**API 에서 달라지는 것**\n\n**① 본문이 계약**이다\n\n> **화면은 `error/404.html` 만 있으면** 된다. **사람이 읽는다.**\n>\n> **API 는 클라이언트가 분기**한다. **\"재고 부족\" 과 \"없는 상품\" 을 코드로 구분**해야 한다.\n\n**② 상태 코드가 의미를 진다**\n\n| 상황 | 코드 |\n|---|---|\n| 검증 실패 | **400** |\n| 없는 리소스 | **404** |\n| 중복 회원 | **409** |\n| 재고 부족 | **400** 또는 **422** |\n| 서버 잘못 | **500** |\n\n> **2.4절에서 없는 회원에 `500`** 이 났다. **서버 잘못이 아니다.**\n\n**③ 예외 메시지를 그대로 내보내면 안 된다**\n\n```\n\"No class jpabook.jpashop.domain.Member entity with id 999\"\n```\n\n> **패키지 경로가 나간다.** **1편 8.7절의 보안 항목과 같은 종류**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "전역 핸들러",
+   "code": "@RestControllerAdvice\npublic class ApiExceptionAdvice {\n\n    @ResponseStatus(HttpStatus.BAD_REQUEST)\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ErrorResult validation(MethodArgumentNotValidException e) {\n        List<FieldError> errors = e.getBindingResult().getFieldErrors().stream()\n                .map(f -> new FieldError(f.getField(), f.getDefaultMessage()))\n                .toList();\n        return new ErrorResult(\"VALIDATION\", \"입력값이 올바르지 않습니다\", errors);\n    }\n\n    @ResponseStatus(HttpStatus.NOT_FOUND)\n    @ExceptionHandler(NoSuchElementException.class)\n    public ErrorResult notFound(NoSuchElementException e) {\n        return new ErrorResult(\"NOT_FOUND\", \"대상을 찾을 수 없습니다\", null);\n    }\n\n    @ResponseStatus(HttpStatus.BAD_REQUEST)\n    @ExceptionHandler(NotEnoughStockException.class)\n    public ErrorResult stock(NotEnoughStockException e) {\n        return new ErrorResult(\"NOT_ENOUGH_STOCK\", e.getMessage(), null);\n    }\n\n    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)\n    @ExceptionHandler(Exception.class)\n    public ErrorResult unexpected(Exception e) {\n        log.error(\"unexpected\", e);\n        return new ErrorResult(\"INTERNAL\", \"서버 오류가 발생했습니다\", null);\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "핸들러가 앉는 자리",
+   "ascii": "   where the handler sits\n\n   controller throws\n        |\n   @ExceptionHandler in the same controller   local\n        |  not found\n   @RestControllerAdvice                      global\n        |  not found\n   BasicErrorController                       spring boot default\n\n   the closest one wins",
+   "note": "**가까운 것이 이긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`@RestControllerAdvice` 의 순서",
+   "md": "**`@ExceptionHandler` 는 가장 구체적인 것이** 잡는다.\n\n```java\n@ExceptionHandler(NoSuchElementException.class)   // 먼저\n@ExceptionHandler(Exception.class)                // 나중\n```\n\n> **선언 순서가 아니라 타입의 구체성**이다. **`RuntimeException` 과 `Exception` 이 둘 다 있으면 `RuntimeException` 이** 잡는다.\n\n**`Exception.class` 를 마지막에 두는 이유**\n\n> **예상 못 한 것을 밖으로 안 흘리기** 위해서다.\n>\n> **없으면 `BasicErrorController` 가 스택트레이스를 담아** 줄 수 있다.\n\n**적용 범위를 좁힐 수도** 있다.\n\n```java\n@RestControllerAdvice(basePackages = \"jpabook.jpashop.api\")\n```\n\n> **화면 컨트롤러가 이 어드바이스에 안 걸리게** 한다. **화면은 오류 페이지가 나야** 한다.\n>\n> **이걸 안 하면 1편의 화면이 오류 때 JSON 을** 뱉는다.\n\n**표준 형식도** 있다 — **`ProblemDetail`**(RFC 9457).\n\n```json\n{\"type\": \"about:blank\", \"title\": \"Bad Request\",\n \"status\": 400, \"detail\": \"...\", \"instance\": \"/api/v2/members\"}\n```\n\n> **스프링 6 부터 지원**한다. **팀 규약이 없으면 이걸 쓰는 게 무난**하다.\n>\n> **이 책은 직접 만든 `ErrorResult` 를** 쓴다. **필드가 보여야 설명이 되기** 때문이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 검증 실패 (2.2절에서 이유가 없던 것) ---\n\nPOST /api/v2/members\n{\"name\": \"\"}\n\n#   Session Metrics { 0 JDBC statements were executed }\n\n#   전\n#   400 Bad Request\n#   {\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\",\n#    \"path\":\"/api/v2/members\"}\n\n#   후\n#   400 Bad Request\n#   {\n#     \"code\": \"VALIDATION\",\n#     \"message\": \"입력값이 올바르지 않습니다\",\n#     \"errors\": [\n#       {\"field\": \"name\", \"message\": \"공백일 수 없습니다\"}\n#     ]\n#   }\n\n#   어느 필드가 왜 틀렸는지 나온다\n\n# --- 없는 회원 (2.4절의 500) ---\n\nPUT /api/v2/members/999\n{\"name\": \"x\"}\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?\n#   binding parameter (1:BIGINT) <- [999]\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   전\n#   500 Internal Server Error\n#   \"No class jpabook.jpashop.domain.Member entity with id 999\"\n\n#   후\n#   404 Not Found\n#   {\"code\": \"NOT_FOUND\",\n#    \"message\": \"대상을 찾을 수 없습니다\",\n#    \"errors\": null}\n\n#   패키지 경로가 안 나간다\n\n# --- 중복 회원 (1편 5.2절) ---\n\nPOST /api/v2/members\n{\"name\": \"userA\"}\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   400 Bad Request\n#   {\"code\": \"INTERNAL\", ...}\n\n#   IllegalStateException 이라 Exception 핸들러가 잡았다\n#   409 CONFLICT 가 맞다\n\n#   -> 전용 예외를 만들어야 한다는 뜻이다\n#      (1편 9.7절 목록의 '예외 처리 3' 중 하나)\n\n# --- 재고 부족 (1편 6.1절) ---\n\nPOST /api/v2/orders\n{\"memberId\": 1, \"itemId\": 2, \"count\": 99999}\n\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   400 Bad Request\n#   {\"code\": \"NOT_ENOUGH_STOCK\",\n#    \"message\": \"need more stock\",\n#    \"errors\": null}\n\n#   INSERT 가 안 나갔다. 롤백됐다\n#   (「DB 2편」 5장 — 언체크 예외라 롤백)\n\n# --- 화면은 안 걸렸는지 확인 ---\n\nGET /orders/999999\nAccept: text/html\n\n#   200 OK\n#   Content-Type: text/html\n\n#   (error/4xx.html)\n\n#   basePackages 로 좁혔기 때문이다\n#   안 좁혔으면 화면이 JSON 을 뱉는다\n\n# --- 다음 절에서 ---\n\n#   2장을 정리한다\n#   엔티티를 API 에 쓰면 무엇이 깨졌나",
+   "note": "**검증 실패에 어느 필드가 왜 틀렸는지가** 나온다. **쿼리 0개**다.\n\n**없는 회원이 `500` 에서 `404`** 가 됐다. **패키지 경로가 안 나간다.**\n\n**중복 회원은 아직 `INTERNAL`** 이다 — **`IllegalStateException` 이라 마지막 핸들러가** 잡았다. **`409` 가 맞다** — **전용 예외가 필요하다는 뜻**이다.\n\n**재고 부족에서 `INSERT` 가 안 나갔다.** **언체크 예외라 롤백**됐다(「DB 2편」 5장).\n\n**화면은 여전히 HTML** 이다 — **`basePackages` 로 좁혔기** 때문이다."
+  }
+ ],
+ "recap": [
+  "**API 는 본문이 계약**이다 — 클라이언트가 분기한다.",
+  "**상태 코드가 의미를 진다** — 400·404·409·500.",
+  "**예외 메시지를 그대로 내보내면 패키지 경로가** 나간다.",
+  "**`@RestControllerAdvice` 로 전역** 처리한다.",
+  "**가장 구체적인 타입의 핸들러가** 잡는다 — 선언 순서가 아니다.",
+  "**`Exception.class` 를 마지막에** 둬 밖으로 안 흘린다.",
+  "**`basePackages` 로 좁혀 화면이 JSON 을 안 뱉게** 한다.",
+  "**중복 회원이 `INTERNAL` 로 잡힌다** — 전용 예외가 필요하다.",
+  "**표준 형식은 `ProblemDetail`**(RFC 9457)이다."
+ ],
+ "drills": [
+  {
+   "task": "빈 이름으로 등록한다.",
+   "done_when": "필드와 이유가 담긴 400 을 받았다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 회원을 수정한다.",
+   "done_when": "404 를 받고 패키지 경로가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "중복 회원을 등록한다.",
+   "done_when": "`INTERNAL` 로 잡히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`basePackages` 를 지워 본다.",
+   "done_when": "화면이 JSON 을 뱉는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "API 예외 처리가 화면과 다른 첫째 이유는?",
+   "a": "본문이 계약이라 클라이언트가 코드로 분기해야 한다."
+  },
+  {
+   "q": "예외 메시지를 그대로 내보내면?",
+   "a": "패키지 경로 같은 내부 정보가 유출된다."
+  },
+  {
+   "q": "여러 `@ExceptionHandler` 중 무엇이 잡나?",
+   "a": "선언 순서가 아니라 가장 구체적인 타입이다."
+  },
+  {
+   "q": "`basePackages` 를 왜 쓰나?",
+   "a": "화면 컨트롤러가 어드바이스에 걸려 JSON 을 뱉지 않게 하려고다."
+  },
+  {
+   "q": "중복 회원이 왜 `INTERNAL` 인가?",
+   "a": "`IllegalStateException` 이라 마지막 핸들러가 잡는다. 전용 예외가 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ProblemDetail",
+   "def": "RFC 9457 이 정한 HTTP 오류 본문 형식. 스프링 6 이 지원한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Error Handling",
+   "url": "https://docs.spring.io/spring-boot/reference/web/servlet.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://beanvalidation.org/3.0/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
