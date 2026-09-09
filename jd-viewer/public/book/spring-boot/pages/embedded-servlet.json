@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "embedded-servlet",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "서블릿을 코드로 등록한다",
+ "summary": "web.xml 이 없다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 줄로 등록한다.",
+  "내가 만드는 걸 안다.",
+  "XML 과 비교한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 서버가 404 를** 줬다. **서블릿을 붙인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "XML 없이 등록하기",
+   "ascii": "   registering a servlet, without any xml\n\n   make the object    you decide when, not the container\n   add it to context  give it a name\n   add a mapping      give it a url pattern\n\n   the three lines replace the eight lines of markup from 3.6",
+   "note": "**세 줄이 3.6절의 마크업 여덟 줄을** 대신한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "내가 만들면 생성자를 쓸 수 있다",
+   "md": "**컨테이너는 기본 생성자만** 쓴다.\n\n> **리플렉션으로** 만든다.\n> **3.3절에서 그걸** 봤다.\n> **인자를 못** 넘긴다.\n\n**내가 만들면 아무거나** 넘긴다.\n\n> **`new HelloServlet(service)`** 다.\n> **의존성 주입이 여기서** 가능해진다.\n> **4.3절의 씨앗**이다.\n\n**언제 만들지도 내가** 정한다.\n\n> **3.3절의 `loadOnStartup` 이 필요** 없다.\n> **이미 만들어 놓고** 넘긴다.\n> **첫 요청이 안** 느리다.\n\n**이름과 패턴을 따로** 준다.\n\n> **`addServlet` 과 `addServletMappingDecoded`** 다.\n> **`web.xml` 의 두 덩어리와 같은 구조**다.\n> **3.6절에서 XML 로 쓴** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 서블릿을 만드나",
+   "ascii": "   who makes the servlet, in each arrangement\n\n   the container   reflection, using the no argument constructor\n   your code       new, so a constructor with arguments is fine\n\n   the second row is why dependency injection fits at all",
+   "note": "**둘째 줄 덕분에 주입이 성립**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨텍스트 문서 기준 폴더가 있어야 한다",
+   "md": "**두 번째 인자가 폴더**다.\n\n> **`addContext(\"\", \"/\")` 의 `/`** 다.\n> **없는 경로를 주면** 터진다.\n> **아래에서 확인**한다.\n\n**임시 폴더를 쓰는 게** 안전하다.\n\n> **부트도 그렇게** 한다.\n> **4.1절에서 본** 그것이다.\n> **정적 파일이 없으면 아무거나** 된다.\n\n**어노테이션은 안** 읽는다.\n\n> **`@WebServlet` 이 무시**된다.\n> **스캔을 안 해서**다.\n> **아래에서 그걸** 본다.\n\n**그래서 3.8절의 스캔 비용이** 없다.\n\n> **내가 적은 것만** 등록된다.\n> **6.8 초가 안** 걸린다.\n> **대신 다 적어야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 서블릿을 만든다\n\npackage study.embed;\n\nimport jakarta.servlet.http.*;\nimport java.io.IOException;\n\npublic class HelloServlet extends HttpServlet {\n\n    private final String message;\n\n    public HelloServlet(String message) {      // 인자가 있는 생성자\n        this.message = message;\n        System.out.println(\"서블릿을 만들었다: \" + message);\n    }\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        resp.setContentType(\"text/plain;charset=UTF-8\");\n        resp.getWriter().write(message + \" / \"\n                + Thread.currentThread().getName());\n    }\n}\n\n--   기본 생성자가 없다\n--   3.3절 방식으로는 못 만든다\n\n\n-- 세 줄로 등록한다\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n\n    Context context = tomcat.addContext(\"\", \"/\");\n\n    HelloServlet servlet = new HelloServlet(\"hello embedded\");\n    tomcat.addServlet(\"\", \"hello\", servlet);\n    context.addServletMappingDecoded(\"/hello\", \"hello\");\n\n    tomcat.start();\n    tomcat.getServer().await();\n}\n\n$ ./gradlew run -q\n\n서블릿을 만들었다: hello embedded\n10-Sep-2026 05:22:11.204 INFO [main] o.apache.catalina.core.StandardService\n  .startInternal  Starting service [Tomcat]\n10-Sep-2026 05:22:11.418 INFO [main] o.a.coyote.http11.Http11NioProtocol.start\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n--   서블릿이 start 전에 만들어졌다\n--   3.3절에서는 첫 요청 때였다\n\n\n-- 부른다\n\n$ curl -s localhost:8080/hello\nhello embedded / http-nio-8080-exec-1\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/hello\n0.003\n\n--   4.1절의 404 가 사라졌다\n--   첫 요청이 안 느리다 (3.3절과 다르다)\n\n\n-- 3.6 의 XML 과 비교한다\n\n<!-- 3.6절 -->\n<servlet>\n    <servlet-name>hello</servlet-name>\n    <servlet-class>study.war.HelloServlet</servlet-class>\n</servlet>\n<servlet-mapping>\n    <servlet-name>hello</servlet-name>\n    <url-pattern>/hello</url-pattern>\n</servlet-mapping>\n\n// 지금\ntomcat.addServlet(\"\", \"hello\", servlet);\ncontext.addServletMappingDecoded(\"/hello\", \"hello\");\n\n$ printf '%-16s %s\\n' 'XML' '8줄, 클래스 이름을 문자열로' \\\n                      '코드' '2줄, 객체를 그대로'\nXML              8줄, 클래스 이름을 문자열로\n코드             2줄, 객체를 그대로\n\n--   클래스 이름이 문자열이 아니다\n--   오타가 컴파일에서 잡힌다\n\n\n-- 생성자로 의존성을 넘긴다\n\npublic class GreetingService {\n    String greet(String name) { return \"안녕 \" + name; }\n}\n\npublic class GreetServlet extends HttpServlet {\n    private final GreetingService service;\n\n    public GreetServlet(GreetingService service) {\n        this.service = service;\n    }\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        resp.setContentType(\"text/plain;charset=UTF-8\");\n        resp.getWriter().write(\n                service.greet(req.getParameter(\"name\")));\n    }\n}\n\n// main 에서\nGreetingService service = new GreetingService();\ntomcat.addServlet(\"\", \"greet\", new GreetServlet(service));\ncontext.addServletMappingDecoded(\"/greet\", \"greet\");\n\n$ curl -s 'localhost:8080/greet?name=관현'\n안녕 관현\n\n--   컨테이너가 만들었으면 못 넘겼다\n--   4.3절에서 스프링이 이 자리를 가져간다\n\n\n-- 어노테이션은 무시된다\n\n@WebServlet(urlPatterns = \"/annotated\")\npublic class AnnotatedServlet extends HttpServlet {\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        resp.getWriter().write(\"annotated\");\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/annotated\n404\n\n$ ./gradlew run -q 2>&1 | grep -ci 'scanning\\|annotation'\n0\n\n--   스캔을 안 한다\n--   3.8절의 6.8 초가 여기 없다\n\n\n-- 등록된 것만 나온다\n\n// 목록을 찍는 서블릿\npublic class ListServlet extends HttpServlet {\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        resp.setContentType(\"text/plain;charset=UTF-8\");\n        var out = resp.getWriter();\n        getServletContext().getServletRegistrations()\n                .forEach((name, reg) ->\n                        out.println(name + \" -> \" + reg.getMappings()));\n    }\n}\n\n$ curl -s localhost:8080/servlets\nhello -> [/hello]\ngreet -> [/greet]\nservlets -> [/servlets]\n\n$ curl -s localhost:8080/servlets | wc -l\n       3\n\n--   3.6절에서는 여섯이었다\n--   jsp 도 default 도 없다\n\n\n-- 기본 서블릿이 없어서\n\n$ echo '<h1>정적</h1>' > /tmp/docbase/index.html\n\n// 컨텍스트 문서 폴더를 정해도\nContext context = tomcat.addContext(\"\", \"/tmp/docbase\");\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/index.html\n404\n\n--   정적 파일을 줄 서블릿이 없다\n--   3.4절에서는 그냥 나갔다\n\n\n-- 붙이면 나간다\n\nWrapper defaultServlet = tomcat.addServlet(\"\", \"default\",\n        new org.apache.catalina.servlets.DefaultServlet());\ndefaultServlet.addInitParameter(\"listings\", \"false\");\ncontext.addServletMappingDecoded(\"/\", \"default\");\n\n$ curl -s localhost:8080/index.html\n<h1>정적</h1>\n\n--   내가 다 적어야 한다\n--   부트는 이걸 자동으로 붙인다\n\n\n-- 없는 문서 폴더를 주면\n\nContext context = tomcat.addContext(\"\", \"/없는폴더\");\n\n$ ./gradlew run -q\n\n10-Sep-2026 05:22:41.204 SEVERE [main] o.a.catalina.core.StandardContext\n  .startInternal  One or more components marked the context as failed\n\nException in thread \"main\" java.lang.IllegalStateException:\n  Error starting child\n\n--   폴더가 있어야 한다\n--   임시 폴더를 쓰는 게 안전하다\n\n\n-- 필터도 코드로 붙인다\n\nFilterDef filterDef = new FilterDef();\nfilterDef.setFilterName(\"log\");\nfilterDef.setFilter(new Filter() {\n    @Override\n    public void doFilter(ServletRequest req, ServletResponse resp,\n                         FilterChain chain) throws IOException, ServletException {\n        System.out.println(\"필터: \"\n                + ((HttpServletRequest) req).getRequestURI());\n        chain.doFilter(req, resp);\n    }\n});\ncontext.addFilterDef(filterDef);\n\nFilterMap filterMap = new FilterMap();\nfilterMap.setFilterName(\"log\");\nfilterMap.addURLPattern(\"/*\");\ncontext.addFilterMap(filterMap);\n\n$ curl -s localhost:8080/hello > /dev/null\n필터: /hello\n\n--   ④ 1장의 그 필터다\n--   XML 대신 코드로 등록했다\n\n\n-- 지금까지의 줄 수\n\n$ wc -l src/main/java/study/embed/*.java\n      18 GreetServlet.java\n       5 GreetingService.java\n      20 HelloServlet.java\n      14 ListServlet.java\n      52 EmbeddedTomcatMain.java\n     109 total\n\n$ grep -c 'addServlet\\|addServletMappingDecoded\\|addFilter' \\\n    src/main/java/study/embed/EmbeddedTomcatMain.java\n9\n\n--   등록 코드가 아홉 줄이다\n--   서블릿이 늘면 같이 는다\n--   4.3절에서 스프링이 이걸 줄인다\n\n\n-- 부트에서는 어떻게 하나\n\n@Bean\npublic ServletRegistrationBean<HelloServlet> helloServlet() {\n    return new ServletRegistrationBean<>(\n            new HelloServlet(\"hello boot\"), \"/hello\");\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'servlet.*hello'\nINFO ... o.s.b.w.servlet.ServletRegistrationBean\n     : Servlet helloServlet mapped to [/hello]\n\n$ curl -s localhost:8080/hello\nhello boot / http-nio-8080-exec-1\n\n--   같은 일을 빈으로 한다\n--   로그가 매핑을 알려 준다\n--   4.3절에서 디스패처를 이렇게 붙인다",
+   "note": "**서블릿이 `start()` 전에 만들어져 `서블릿을 만들었다` 가 먼저** 찍힌다.\n\n**첫 요청이 0.003초 — 3.3절의 0.184초와** 다르다.\n\n**인자 있는 생성자로 의존성을 넘길 수 있어 `안녕 관현` 이** 나온다.\n\n**`@WebServlet` 은 무시되어 404 이고 스캔 로그가 `0` 줄**이다.\n\n**서블릿 목록이 셋뿐 — 3.6절의 여섯과 달리 `jsp` 도 `default` 도** 없다."
+  }
+ ],
+ "recap": [
+  "**세 줄로** 등록한다.",
+  "**내가** 만든다.",
+  "**생성자를 쓸 수** 있다.",
+  "**미리 만들어** 둔다.",
+  "**첫 요청이 안** 느리다.",
+  "**어노테이션은** 무시된다.",
+  "**스캔 비용이** 없다.",
+  "**기본 서블릿도 내가** 붙인다.",
+  "**등록 코드가** 늘어난다."
+ ],
+ "drills": [
+  {
+   "task": "서블릿을 코드로 등록한다.",
+   "done_when": "응답을 받았다.",
+   "minutes": 20
+  },
+  {
+   "task": "생성자로 의존성을 넘긴다.",
+   "done_when": "주입이 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@WebServlet` 을 붙여 본다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필터를 코드로 붙인다.",
+   "done_when": "로그가 찍히는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "코드로 등록하면 누가 서블릿을 만드나?",
+   "a": "내가 만든다. 그래서 생성자 인자를 쓸 수 있다."
+  },
+  {
+   "q": "첫 요청이 안 느린 이유는?",
+   "a": "이미 만들어 등록했기 때문이다."
+  },
+  {
+   "q": "`@WebServlet` 은 왜 무시되나?",
+   "a": "어노테이션 스캔을 하지 않기 때문이다."
+  },
+  {
+   "q": "정적 파일이 404 인 이유는?",
+   "a": "기본 서블릿을 직접 붙이지 않아서다."
+  },
+  {
+   "q": "이 방식의 부담은?",
+   "a": "등록 코드가 서블릿 수만큼 늘어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "서블릿 등록",
+   "def": "이름과 URL 패턴을 붙여 컨테이너에 서블릿을 알리는 일."
+  },
+  {
+   "term": "문서 기준 폴더",
+   "def": "컨텍스트가 정적 자원을 찾는 기준 디렉터리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

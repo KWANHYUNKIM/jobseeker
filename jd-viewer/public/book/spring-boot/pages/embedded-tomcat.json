@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "embedded-tomcat",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "내장 톰캣을 코드로 띄운다",
+ "summary": "main 하나로 서버가 뜬다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯 줄로 띄운다.",
+  "두 로그 줄을 만든다.",
+  "await 를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.9절에서 클래스를** 열었다. **이제 실제로 띄운다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "서버를 띄우는 다섯 줄",
+   "ascii": "   five lines that start a server\n\n   make the object   new Tomcat, nothing is listening yet\n   set the port      still nothing is listening\n   add a context     a place for servlets to live\n   start it          the port opens here\n   await             the main thread parks so the jvm stays up\n\n   the last line is the one people forget, and the process just exits",
+   "note": "**마지막 줄을 빼먹으면 프로세스가 그냥** 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "main 이 시작점이 되면 나머지는 평범한 자바다",
+   "md": "**객체를 만든**다.\n\n> **`new Tomcat()` 이다.**\n> **아직 아무 포트도 안** 연다.\n> **3.1절에서 없던 자리**다.\n\n**컨텍스트가** 필요하다.\n\n> **서블릿이 살 자리**다.\n> **3.1절의 그 컨텍스트 경로**다.\n> **`\"\"` 를 주면 루트**다.\n\n**`start()` 에서 열린**다.\n\n> **여기서 소켓이** 붙는다.\n> **1.4절의 두 줄이 이걸** 나눈 것이다.\n> **아래에서 그 순간을** 찍는다.\n\n**`await()` 가 붙잡는다.**\n\n> **`main` 이 끝나면 JVM 이** 끝난다.\n> **톰캣 스레드는 데몬이** 아니지만 그렇다.\n> **아래에서 빼** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "부트가 찍는 두 줄",
+   "ascii": "   the two log lines boot prints, and where they come from\n\n   initialized with port   the object exists and the port is set\n   started on port         start returned, the socket is bound\n\n   1.4 showed a failed startup that printed only the first",
+   "note": "**1.4절의 실패한 기동은 첫 줄만** 찍혔다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "베이스 디렉터리가 임시 폴더에 생긴다",
+   "md": "**톰캣이 작업 폴더를** 만든다.\n\n> **3.7절의 `work` 같은 것**이다.\n> **안 정해 주면 임시 폴더**다.\n> **아래에서 그 경로를** 본다.\n\n**임시 폴더가 지워지면** 깨진다.\n\n> **운영체제가 청소할 수** 있다.\n> **업로드 파일도 거기** 간다.\n> **`server.tomcat.basedir` 로** 정한다.\n\n**컨텍스트 없이 시작하면** 터진다.\n\n> **호스트에 붙일 게** 없다.\n> **아래에서 그 예외를** 본다.\n> **부트는 자동으로 하나** 만든다.\n\n**포트 0 을 주면 골라** 준다.\n\n> **테스트에서 쓰는 방식**이다.\n> **2.4절에서 본** 그것이다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 의존성은 하나면 된다\n\ndependencies {\n    implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | tail -3\n\\--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n\n--   스프링도 부트도 없다\n\n\n-- 다섯 줄을 쓴다\n\npackage study.embed;\n\nimport org.apache.catalina.startup.Tomcat;\n\npublic class EmbeddedTomcatMain {\n\n    public static void main(String[] args) throws Exception {\n        System.out.println(\"1. main 시작 \" + Thread.currentThread().getName());\n\n        Tomcat tomcat = new Tomcat();\n        System.out.println(\"2. 객체를 만들었다\");\n\n        tomcat.setPort(8080);\n        System.out.println(\"3. 포트를 정했다\");\n\n        tomcat.addContext(\"\", \"/\");\n        System.out.println(\"4. 컨텍스트를 붙였다\");\n\n        tomcat.start();\n        System.out.println(\"5. start() 가 돌아왔다\");\n\n        tomcat.getServer().await();\n        System.out.println(\"6. await 가 끝났다\");\n    }\n}\n\n$ wc -l src/main/java/study/embed/EmbeddedTomcatMain.java\n      24\n\n\n-- 띄운다\n\n$ ./gradlew run -q\n\n1. main 시작 main\n2. 객체를 만들었다\n3. 포트를 정했다\n4. 컨텍스트를 붙였다\n10-Sep-2026 05:20:41.204 INFO [main] o.apache.catalina.core.StandardService\n  .startInternal  Starting service [Tomcat]\n10-Sep-2026 05:20:41.207 INFO [main] o.apache.catalina.core.StandardEngine\n  .startInternal  Starting Servlet engine: [Apache Tomcat/10.1.26]\n10-Sep-2026 05:20:41.418 INFO [main] o.a.coyote.http11.Http11NioProtocol.start\n  Starting ProtocolHandler [\"http-nio-8080\"]\n5. start() 가 돌아왔다\n\n--   3.2절에서 서버를 깔고 본 그 로그다\n--   이번엔 내 main 에서 나왔다\n--   스레드가 main 이다\n\n\n-- 포트가 언제 열리나\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n    tomcat.addContext(\"\", \"/\");\n\n    System.out.println(\"start 전: \" + isOpen(8080));\n    tomcat.start();\n    System.out.println(\"start 후: \" + isOpen(8080));\n\n    tomcat.getServer().await();\n}\n\nstatic boolean isOpen(int port) {\n    try (var s = new java.net.Socket(\"localhost\", port)) {\n        return true;\n    } catch (Exception e) {\n        return false;\n    }\n}\n\n$ ./gradlew run -q\nstart 전: false\n...\nstart 후: true\n\n--   start() 에서 열렸다\n--   1.4절의 두 줄이 이 순간을 나눈 것이다\n\n\n-- await 를 빼면\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n    tomcat.addContext(\"\", \"/\");\n    tomcat.start();\n    System.out.println(\"main 이 끝난다\");\n}\n\n$ ./gradlew run -q\n...\nStarting ProtocolHandler [\"http-nio-8080\"]\nmain 이 끝난다\n\nBUILD SUCCESSFUL in 2s\n\n$ curl -s -m 1 localhost:8080/\ncurl: (7) Failed to connect to localhost port 8080\n\n--   떴다가 바로 끝났다\n--   1.4절에서 웹 없을 때와 같은 모양이다\n\n\n-- 왜 그런가\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n    tomcat.addContext(\"\", \"/\");\n    tomcat.start();\n\n    Thread.getAllStackTraces().keySet().stream()\n            .filter(t -> t.getName().contains(\"http\") || t.getName().equals(\"main\"))\n            .forEach(t -> System.out.println(\n                    t.getName() + \" daemon=\" + t.isDaemon()));\n}\n\nmain daemon=false\nhttp-nio-8080-Acceptor daemon=true\nhttp-nio-8080-exec-1 daemon=true\n\n--   워커가 전부 데몬이다\n--   데몬만 남으면 JVM 이 끝난다\n--   await 가 main 을 붙잡는 이유다\n\n\n-- 컨텍스트를 안 붙이면\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n    tomcat.start();          // addContext 가 없다\n    tomcat.getServer().await();\n}\n\n$ ./gradlew run -q\n\nException in thread \"main\" java.lang.IllegalStateException:\n  No context was added, use addContext or addWebapp\n\tat org.apache.catalina.startup.Tomcat.getHost(Tomcat.java:...)\n\n--   붙일 자리가 없다\n--   부트는 이걸 자동으로 만든다\n\n\n-- 베이스 디렉터리가 어디인가\n\npublic static void main(String[] args) throws Exception {\n    Tomcat tomcat = new Tomcat();\n    tomcat.setPort(8080);\n    tomcat.addContext(\"\", \"/\");\n    tomcat.start();\n    System.out.println(\"베이스: \" + tomcat.getServer().getCatalinaBase());\n    tomcat.getServer().await();\n}\n\n$ ./gradlew run -q\n베이스: /var/folders/kx/8vq.../T/tomcat.8080.1839472301\n\n$ ls /var/folders/kx/8vq.../T/tomcat.8080.1839472301\nwork\n\n--   임시 폴더다\n--   3.7절의 work 가 여기 생긴다\n\n\n-- 정해 줄 수 있다\n\ntomcat.setBaseDir(\"/tmp/mytomcat\");\n\n$ ./gradlew run -q\n베이스: /tmp/mytomcat\n\n$ ls -R /tmp/mytomcat | head -4\nwork\n\n/tmp/mytomcat/work:\nTomcat\n\n--   부트는 server.tomcat.basedir 로 준다\n--   7장에서 그 설정을 본다\n\n\n-- 포트 0 을 주면\n\ntomcat.setPort(0);\n...\ntomcat.start();\nSystem.out.println(\"실제 포트: \"\n        + tomcat.getConnector().getLocalPort());\n\n$ ./gradlew run -q\n실제 포트: 54782\n\n--   OS 가 골라 줬다\n--   2.4절의 테스트 설정이 이걸 쓴다\n\n\n-- 두 개도 띄운다\n\npublic static void main(String[] args) throws Exception {\n    for (int port : new int[]{8080, 8081}) {\n        Tomcat t = new Tomcat();\n        t.setPort(port);\n        t.setBaseDir(\"/tmp/tomcat-\" + port);\n        t.addContext(\"\", \"/\");\n        t.start();\n        System.out.println(\"떴다: \" + t.getConnector().getLocalPort());\n    }\n    Thread.currentThread().join();\n}\n\n$ ./gradlew run -q\n떴다: 8080\n떴다: 8081\n\n$ lsof -iTCP -sTCP:LISTEN -P | grep -c java\n2\n\n--   한 JVM 에 서버 둘이다\n--   3.2절에서는 폴더를 복사했다\n\n\n-- 끄는 것도 코드다\n\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    try {\n        System.out.println(\"종료 훅\");\n        tomcat.stop();\n        tomcat.destroy();\n    } catch (Exception e) {\n        e.printStackTrace();\n    }\n}));\n\n$ ./gradlew run -q &\n$ sleep 2 && pkill -f EmbeddedTomcatMain\n\n종료 훅\n10-Sep-2026 05:21:31.204 INFO [Thread-0] o.apache.catalina.core.StandardService\n  .stopInternal  Stopping service [Tomcat]\n\n--   3.2절의 8005 포트가 필요 없다\n--   프로세스 신호로 끝난다\n\n\n-- 부트와 나란히 둔다\n\n$ ./gradlew run -q 2>&1 | grep -E 'Starting service|Servlet engine|ProtocolHandler'\n  Starting service [Tomcat]\n  Starting Servlet engine: [Apache Tomcat/10.1.26]\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Starting service|Servlet engine|Tomcat started'\nINFO ... : Starting service [Tomcat]\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.26]\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   가운데 두 줄이 같다\n--   부트가 이 코드를 대신 쓴 것이다\n\n\n-- 부트의 그 코드를 찾는다\n\n$ unzip -p \"$BOOT_JAR\" org/springframework/boot/web/embedded/tomcat/\\\nTomcatServletWebServerFactory.class > /dev/null && echo '있다'\n있다\n\n// 소스는 이렇게 생겼다\npublic WebServer getWebServer(ServletContextInitializer... initializers) {\n    Tomcat tomcat = new Tomcat();\n    File baseDir = (this.baseDirectory != null) ? this.baseDirectory\n            : createTempDir(\"tomcat\");\n    tomcat.setBaseDir(baseDir.getAbsolutePath());\n    Connector connector = new Connector(this.protocol);\n    connector.setThrowOnFailure(true);\n    tomcat.getService().addConnector(connector);\n    ...\n    return getTomcatWebServer(tomcat);\n}\n\n--   내가 쓴 다섯 줄이 여기 있다\n--   createTempDir 도 위에서 본 그것이다\n\n\n-- 아직 응답은 없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/\n404\n\n--   서버는 떴는데 서블릿이 없다\n--   4.2절에서 붙인다",
+   "note": "**`new Tomcat()` 다섯 줄이 3.2절과 같은 `Starting Servlet engine` 로그를 `[main]` 스레드에서** 낸다.\n\n**`start()` 전후로 포트가 `false` → `true`** 다.\n\n**`await()` 를 빼면 워커가 전부 데몬이라 JVM 이 그냥** 끝난다.\n\n**컨텍스트 없이 시작하면 `No context was added`, 베이스 디렉터리는 임시 폴더에** 생긴다.\n\n**부트의 `TomcatServletWebServerFactory` 소스에 같은 다섯 줄이** 있다."
+  }
+ ],
+ "recap": [
+  "**`main` 이 시작점**이다.",
+  "**객체를** 만든다.",
+  "**`start()` 에서** 열린다.",
+  "**`await` 가** 붙잡는다.",
+  "**워커는 데몬**이다.",
+  "**컨텍스트가** 필요하다.",
+  "**임시 폴더를** 쓴다.",
+  "**한 JVM 에 둘도** 뜬다.",
+  "**부트가 이걸 대신** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "다섯 줄로 서버를 띄운다.",
+   "done_when": "톰캣 로그를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`await` 를 빼 본다.",
+   "done_when": "프로세스가 끝나는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "베이스 디렉터리를 찍는다.",
+   "done_when": "임시 폴더를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한 JVM 에 둘을 띄운다.",
+   "done_when": "포트 둘을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "포트는 언제 열리나?",
+   "a": "`start()` 를 부를 때다."
+  },
+  {
+   "q": "`await()` 가 필요한 이유는?",
+   "a": "워커가 전부 데몬이라 `main` 이 끝나면 JVM 이 끝난다."
+  },
+  {
+   "q": "컨텍스트를 안 붙이면?",
+   "a": "붙일 자리가 없어 예외가 난다."
+  },
+  {
+   "q": "베이스 디렉터리는 어디에 생기나?",
+   "a": "지정하지 않으면 임시 폴더에 생긴다."
+  },
+  {
+   "q": "부트는 이 코드를 어디에 두었나?",
+   "a": "`TomcatServletWebServerFactory` 안에 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내장 톰캣",
+   "def": "코드가 직접 만들어 띄우는 톰캣 인스턴스."
+  },
+  {
+   "term": "데몬 스레드",
+   "def": "이것만 남으면 JVM 이 종료되는 배경 스레드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

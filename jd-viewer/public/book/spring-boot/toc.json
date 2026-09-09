@@ -188,7 +188,7 @@
           "title": "내장 톰캣을 코드로 띄운다",
           "summary": "main 하나로 서버가 뜬다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -196,7 +196,7 @@
           "title": "서블릿을 코드로 등록한다",
           "summary": "web.xml 이 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
