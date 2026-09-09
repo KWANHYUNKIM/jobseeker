@@ -1,0 +1,129 @@
+{
+ "book": "querydsl",
+ "id": "boolean-builder",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "동적 쿼리 — BooleanBuilder",
+ "summary": "조건을 모아 붙인다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빌더를 쓴다.",
+  "빈 빌더를 본다.",
+  "쉼표와 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 쉼표가 `null` 을** 버렸다. **여기는 다른 방식**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "빌더의 정체",
+   "ascii": "   what the builder is, underneath\n\n   a mutable holder of one predicate\n   and() replaces it with the old one anded to the new\n   an empty builder produces no where clause at all\n\n   so it is a StringBuilder that cannot be typed wrong",
+   "note": "**타입이 틀릴 수 없는 `StringBuilder`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "⑭ 6.1절의 문자열 조립을 타입으로 옮긴 것이다",
+   "md": "**거기서 `StringBuilder` 를** 썼다.\n\n> **`if` 안에서 문자열을 이어** 붙였다.\n> **띄어쓰기와 파라미터 이름을 챙**겼다.\n> **1.2절에서 그게 터졌다.**\n\n**여기는 조건 객체를** 모은다.\n\n> **`builder.and(...)` 로** 쌓는다.\n> **컴파일이** 잡는다.\n> **모양은 그대로 `if`** 다.\n\n**빈 빌더는 조건이** 없다.\n\n> **`where(builder)` 가 `where` 를 안** 만든다.\n> **⑭ 6.1절의 `where 1=1` 이 안** 생긴다.\n> **4.4절과 같은 결과**다.\n\n**초기값을 줄 수** 있다.\n\n> **`new BooleanBuilder(조건)`** 이다.\n> **필수 조건을 먼저** 둔다.\n> **아래에서 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "빌더와 쉼표",
+   "ascii": "   the builder against the comma form\n\n   builder   conditions are added inside if statements\n   comma     conditions are methods that may return null\n\n   the first keeps the branching visible in one place",
+   "note": "**빌더는 분기가 한자리에** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빌더는 조합해서 재사용하기 어렵다",
+   "md": "**메서드로 쪼개기 어렵**다.\n\n> **빌더를 넘겨 받아 고치는 꼴이** 된다.\n> **부수효과가 생긴**다.\n> **5.8절이 그걸** 푼다.\n\n**`or` 를 섞으면 헷갈**린다.\n\n> **`and`·`or` 를 번갈아 부르면 우선순위가** 애매하다.\n> **4.3절처럼 괄호를 직접** 만든다.\n> **아래에서 확인**한다.\n\n**빌더가 비었는지 물어볼 수** 있다.\n\n> **`hasValue()`** 다.\n> **아무 조건도 없으면 막을 수** 있다.\n> **전체 조회를 방지**한다.\n\n**조건이 하나도 없으면 전부** 나온다.\n\n> **⑭ 6.7절의 상한 이야기가 여기서도** 온다.\n> **`limit` 을 같이** 준다.\n> **아래에서 그것도** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 빌더로 조립한다\n\nprivate List<Member> searchByBuilder(String username, Integer minAge,\n                                     Integer maxAge, String teamName) {\n    BooleanBuilder builder = new BooleanBuilder();\n\n    if (username != null)  builder.and(member.username.startsWith(username));\n    if (minAge != null)    builder.and(member.age.goe(minAge));\n    if (maxAge != null)    builder.and(member.age.loe(maxAge));\n    if (teamName != null)  builder.and(member.team.name.eq(teamName));\n\n    return queryFactory.selectFrom(member).where(builder).fetch();\n}\n\n--   ⑭ 6.1절의 StringBuilder 자리에 이게 들어갔다\n\n\n-- 조건 없이\n\n@Test\nvoid 조건_없음() {\n    em.clear();\n    System.out.println(\"건수: \" +\n            searchByBuilder(null, null, null, null).size());\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n건수: 10\n\n--   where 가 없다\n--   4.4절과 같다\n\n\n-- 하나만\n\n@Test\nvoid 하나() {\n    em.clear();\n    searchByBuilder(\"m1\", null, null, null);\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!' */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '!'\n\n\n-- 셋을\n\n@Test\nvoid 셋() {\n    em.clear();\n    searchByBuilder(\"m\", 15, 35, null);\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age >= ?2\n    and member1.age <= ?3 */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '!'\n      and m1_0.age>=?\n      and m1_0.age<=?\n\n\n-- 넷을 다\n\n@Test\nvoid 넷() {\n    em.clear();\n    searchByBuilder(\"m\", 15, 35, \"teamB\")\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age >= ?2\n    and member1.age <= ?3\n    and team.name = ?4 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age>=?\n        and m1_0.age<=?\n        and t1_0.name=?\nm5\nm6\nm7\n\n--   4.4절과 같은 결과다\n\n\n-- 4.4절과 SQL 을 비교한다\n\n$ diff builder.sql comma.sql && echo SAME\nSAME\n\n$ diff builder.jpql comma.jpql && echo SAME\nSAME\n\n--   완전히 같다\n--   차이는 자바 코드뿐이다\n\n\n-- 빈 빌더를 본다\n\n@Test\nvoid 빈_빌더() {\n    BooleanBuilder builder = new BooleanBuilder();\n    System.out.println(\"조건 있나: \" + builder.hasValue());\n    System.out.println(\"값:       \" + builder.getValue());\n\n    builder.and(member.age.goe(20));\n    System.out.println(\"넣은 뒤:  \" + builder.getValue());\n}\n\n조건 있나: false\n값:       null\n넣은 뒤:  member1.age >= 20\n\n--   빈 빌더의 값이 null 이다\n--   4.4절의 null 생략과 같은 자리에 걸린다\n\n\n-- 아무 조건 없으면 막는다\n\nprivate List<Member> searchSafe(String username, Integer minAge) {\n    BooleanBuilder builder = new BooleanBuilder();\n    if (username != null) builder.and(member.username.startsWith(username));\n    if (minAge != null)   builder.and(member.age.goe(minAge));\n\n    if (!builder.hasValue()) {\n        throw new IllegalArgumentException(\"조건이 하나는 있어야 한다\");\n    }\n    return queryFactory.selectFrom(member).where(builder).fetch();\n}\n\n@Test\nvoid 막기() {\n    try {\n        searchSafe(null, null);\n    } catch (Exception e) {\n        System.out.println(e.getClass().getSimpleName() + \": \"\n                + e.getMessage());\n    }\n}\n\nIllegalArgumentException: 조건이 하나는 있어야 한다\n\n--   SQL 이 안 나갔다\n--   ⑭ 6.7절의 상한과 같은 방어다\n\n\n-- 초기값을 준다\n\nprivate List<Member> searchActive(String username) {\n    BooleanBuilder builder = new BooleanBuilder(member.team.isNotNull());\n    if (username != null) builder.and(member.username.startsWith(username));\n    return queryFactory.selectFrom(member).where(builder).fetch();\n}\n\n@Test\nvoid 초기값() {\n    em.clear();\n    System.out.println(\"건수: \" + searchActive(null).size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.team is not null */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.team_id is not null\n건수: 7\n\n--   필수 조건이 항상 붙는다\n\n\n-- or 를 섞으면\n\n@Test\nvoid or_섞기() {\n    BooleanBuilder builder = new BooleanBuilder();\n    builder.and(member.age.goe(20));\n    builder.or(member.username.eq(\"m1\"));\n    builder.and(member.team.isNotNull());\n\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory.selectFrom(member)\n            .where(builder).fetch().size());\n    System.out.println(\"조건: \" + builder.getValue());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    (\n        member1.age >= ?1\n        or member1.username = ?2\n    )\n    and member1.team is not null */\n\nHibernate:\n    select ... from member m1_0\n    where (m1_0.age>=? or m1_0.username=?)\n      and m1_0.team_id is not null\n건수: 5\n조건: member1.age >= 20 || member1.username = m1 && member1.team is not null\n\n--   부른 순서대로 감싼다\n--   괄호가 어디 생길지 코드만 보면 헷갈린다\n\n\n-- 조건을 메서드로 빼기 어렵다\n\n// 이렇게 하면 부수효과가 생긴다\nprivate void addUsername(BooleanBuilder builder, String username) {\n    if (username != null) builder.and(member.username.startsWith(username));\n}\n\n@Test\nvoid 부수효과() {\n    BooleanBuilder builder = new BooleanBuilder();\n    addUsername(builder, \"m\");\n    System.out.println(\"밖에서 본 값: \" + builder.getValue());\n}\n\n밖에서 본 값: member1.username like m% escape '!'\n\n--   메서드가 빌더를 고쳤다\n--   반환값이 아니라 인자를 바꾼다\n--   5.8절이 이걸 다르게 푼다\n\n\n-- 조합해 쓰기도 어렵다\n\n@Test\nvoid 조합() {\n    BooleanBuilder a = new BooleanBuilder(member.age.goe(20));\n    BooleanBuilder b = new BooleanBuilder(member.team.isNotNull());\n\n    BooleanBuilder merged = new BooleanBuilder();\n    merged.and(a).and(b);\n\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory.selectFrom(member)\n            .where(merged).fetch().size());\n    System.out.println(\"a 는 그대로? \" + a.getValue());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1\n    and member1.team is not null */\n\nHibernate:\n    select ... where m1_0.age>=? and m1_0.team_id is not null\n건수: 5\na 는 그대로? member1.age >= 20\n\n--   되긴 된다\n--   빌더를 세 개나 만들었다\n--   5.8절은 메서드 셋이면 끝난다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '빌더'         'if 안에서 and 로 쌓는다' \\\n  '빈 빌더'      'where 절이 안 생긴다' \\\n  'hasValue()'   '전체 조회를 막는다' \\\n  '초기값'       '필수 조건을 먼저 둔다' \\\n  'or 섞기'      '부른 순서로 감싼다' \\\n  '메서드 분리'  '부수효과가 생긴다'\n\n빌더                     if 안에서 and 로 쌓는다\n빈 빌더                  where 절이 안 생긴다\nhasValue()               전체 조회를 막는다\n초기값                   필수 조건을 먼저 둔다\nor 섞기                  부른 순서로 감싼다\n메서드 분리              부수효과가 생긴다\n\n--   5.8절에서 메서드로 나눈다",
+   "note": "**빌더판과 4.4절 쉼표판의 JPQL·SQL 이 `diff` 결과 `SAME`** 이다.\n\n**빈 빌더는 `hasValue()` 가 `false` 이고 `getValue()` 가 `null` 이라 `where` 가 안** 붙는다.\n\n**`hasValue()` 로 막으면 SQL 이 아예 안** 나간다.\n\n**`and`·`or` 를 번갈아 부르면 `(age >= ? or username = ?) and team is not null` 로 부른 순서대로** 감싼다.\n\n**메서드로 빼면 반환이 아니라 인자를 고치는 부수효과가** 생긴다."
+  }
+ ],
+ "recap": [
+  "**문자열 조립을 타입으로** 옮긴 것이다.",
+  "**`if` 안에서** 쌓는다.",
+  "**SQL 은 쉼표판과** 같다.",
+  "**빈 빌더는 `where` 가** 없다.",
+  "**`hasValue` 로** 막는다.",
+  "**초기값을 줄 수** 있다.",
+  "**`or` 는 부른 순서로** 감싼다.",
+  "**메서드로 빼면 부수효과**다.",
+  "**조합이** 번거롭다."
+ ],
+ "drills": [
+  {
+   "task": "빌더로 조건 넷을 만든다.",
+   "done_when": "조합마다 SQL 이 바뀌는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "4.4절 판과 SQL 을 비교한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`hasValue` 로 막는다.",
+   "done_when": "SQL 이 안 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`or` 를 섞는다.",
+   "done_when": "괄호 위치를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`BooleanBuilder` 는 무엇에 대응하나?",
+   "a": "문자열 조립의 `StringBuilder` 자리다."
+  },
+  {
+   "q": "빈 빌더를 `where` 에 주면?",
+   "a": "`where` 절이 생기지 않는다."
+  },
+  {
+   "q": "조건이 하나도 없을 때 막으려면?",
+   "a": "`hasValue()` 를 보고 거른다."
+  },
+  {
+   "q": "`and` 와 `or` 를 섞으면?",
+   "a": "부른 순서대로 괄호가 생긴다."
+  },
+  {
+   "q": "메서드로 분리할 때의 문제는?",
+   "a": "빌더를 인자로 고치는 부수효과가 생긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BooleanBuilder",
+   "def": "조건을 쌓아 하나의 술어로 만드는 가변 객체."
+  },
+  {
+   "term": "hasValue",
+   "def": "빌더에 조건이 하나라도 담겼는지 묻는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

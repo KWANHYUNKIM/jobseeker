@@ -331,7 +331,7 @@
           "title": "이름이 다를 때",
           "summary": "별칭과 서브쿼리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -339,7 +339,7 @@
           "title": "동적 쿼리 — BooleanBuilder",
           "summary": "조건을 모아 붙인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",

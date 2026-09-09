@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "alias-mismatch",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "이름이 다를 때",
+ "summary": "별칭과 서브쿼리.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "언제 별칭이 필요한지 안다.",
+  "as 를 쓴다.",
+  "서브쿼리에 이름을 준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.4절에서 `as` 를 잠깐** 썼다. **언제 필요하고 언제 안 필요한지를** 가른다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 필요한 자리",
+   "ascii": "   when a name has to be attached, and when it does not\n\n   bean and fields   yes, the name is how the value finds its field\n   constructor       no, position decides everything\n   QueryProjection   no, the generated constructor knows the order\n\n   so an alias is only ever needed for the two name based ways",
+   "note": "**이름 기반 둘에만** 필요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름 매칭이 실패해도 아무 말이 없다",
+   "md": "**5.4절에서** 봤다.\n\n> **`fields` 가 `null 10` 을** 줬다.\n> **예외가** 없었다.\n> **⑭ 8.7절의 그 종류**다.\n\n**`as` 로 이름을** 붙인다.\n\n> **`member.username.as(\"name\")`** 이다.\n> **JPQL 에만** 나간다.\n> **Querydsl 이 매칭에** 쓴다.\n\n**순서 기반에는 필요** 없다.\n\n> **`constructor` 와 `@QueryProjection`** 이다.\n> **`as` 를 붙여도 무시**된다.\n> **아래에서 확인**한다.\n\n**서브쿼리는 이름이 아예** 없다.\n\n> **`as` 를 붙일 데가** 없다.\n> **`ExpressionUtils.as(...)` 로** 감싼다.\n> **5.4절에서 한 번** 썼다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름을 줘야 하는 둘",
+   "ascii": "   two things that need a name of their own\n\n   a column whose name differs from the field\n   a subquery, which has no name at all to begin with\n\n   the second one cannot use as() and needs ExpressionUtils",
+   "note": "**둘째는 `as()` 가 아니라 `ExpressionUtils`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "as 는 SQL 에 안 나간다",
+   "md": "**JPQL 까지만** 간다.\n\n> **SQL 의 `select` 에 별칭이** 없다.\n> **하이버네이트가 안** 붙인다.\n> **네이티브와 다른 점**이다.\n\n**⑭ 8.7절과** 대비된다.\n\n> **거기는 별칭이 곧 계약**이었다.\n> **여기는 조립이 이미 알고** 있다.\n> **문자열이 없어서 가능한** 일이다.\n\n**필드 이름을 바꾸면 `as` 도 바꿔야** 한다.\n\n> **`as` 안은 문자열**이다.\n> **컴파일이 안** 잡는다.\n> **1.2절의 목표에서 남은 구멍**이다.\n\n**그래서 `constructor` 가** 편하다.\n\n> **이름을 아예 안** 쓴다.\n> **5.5절이면 개수·타입까지** 잡는다.\n> **저울질은 5.5절에서** 했다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 이름이 다른 DTO\n\n@Getter @Setter @NoArgsConstructor\npublic class UserDto {\n    private String name;        // 엔티티는 username 이다\n    private int age;\n\n    public UserDto(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n}\n\n\n-- fields 로 받으면\n\n@Test\nvoid 별칭_없이() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"name: \" + d.getName() + \", age: \" + d.getAge());\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n    where m1_0.username=?\nname: null, age: 10\n\n--   5.4절의 그 상태다\n\n\n-- as 를 붙인다\n\n@Test\nvoid 별칭() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"), member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"name: \" + d.getName() + \", age: \" + d.getAge());\n}\n\n/* select\n    member1.username as name,\n    member1.age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n    where\n        m1_0.username=?\nname: m1, age: 10\n\n--   JPQL 에 as name 이 있다\n--   SQL 에는 없다\n\n\n-- 두 JPQL 을 비교한다\n\n$ diff no-alias.jpql alias.jpql\n2c2\n<     member1.username,\n---\n>     member1.username as name,\n\n$ diff no-alias.sql alias.sql && echo SAME\nSAME\n\n--   SQL 은 한 글자도 안 다르다\n--   매칭에만 쓰인다\n\n\n-- bean 도 마찬가지다\n\n@Test\nvoid bean_별칭() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(Projections.bean(UserDto.class,\n                    member.username.as(\"name\"), member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nm1 10\n\n--   세터 이름을 찾는다\n\n\n-- constructor 는 as 를 무시한다\n\n@Test\nvoid constructor_별칭() {\n    em.clear();\n    UserDto a = queryFactory\n            .select(Projections.constructor(UserDto.class,\n                    member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n\n    em.clear();\n    UserDto b = queryFactory\n            .select(Projections.constructor(UserDto.class,\n                    member.username.as(\"엉뚱한이름\"), member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n\n    System.out.println(\"as 없이: \" + a.getName());\n    System.out.println(\"as 있고: \" + b.getName());\n}\n\n/* select member1.username, member1.age from Member member1\n   where member1.username = ?1 */\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\n/* select member1.username as 엉뚱한이름, member1.age from Member member1\n   where member1.username = ?1 */\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nas 없이: m1\nas 있고: m1\n\n--   JPQL 에는 별칭이 나갔다\n--   결과는 같다\n--   순서로만 맞춘다\n\n\n-- @QueryProjection 도 같다\n\n@Test\nvoid qproj_별칭() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(new QUserDto(member.username.as(\"x\"), member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\n/* select member1.username as x, member1.age from Member member1\n   where member1.username = ?1 */\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nm1 10\n\n--   생성자 순서가 이긴다\n\n\n-- 서브쿼리에는 as 를 못 붙인다\n\nQMember sub = new QMember(\"memberSub\");\n\n// JPAExpressions.select(sub.age.max()).from(sub).as(\"age\")\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol: method as(String)\n\n--   JPQLQuery 에는 as 가 없다\n\n\n-- ExpressionUtils 로 감싼다\n\n@Test\nvoid 서브쿼리_이름() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"),\n                    ExpressionUtils.as(\n                            JPAExpressions.select(sub.age.max()).from(sub),\n                            \"age\")))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\n/* select\n    member1.username as name,\n    (\n        select\n            max(memberSub.age)\n        from\n            Member memberSub\n    ) as age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.username,\n        (select max(m2_0.age) from member m2_0)\n    from\n        member m1_0\n    where\n        m1_0.username=?\nm1 40\n\n--   4.14절의 select 절 서브쿼리다\n--   as age 가 JPQL 에만 있다\n\n\n-- 이름을 안 주면\n\n@Test\nvoid 서브쿼리_이름_없이() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"),\n                    JPAExpressions.select(sub.age.max()).from(sub)))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\nHibernate:\n    select m1_0.username,\n           (select max(m2_0.age) from member m2_0)\n    from member m1_0 where m1_0.username=?\nm1 0\n\n--   age 가 0 이다\n--   붙일 이름이 없어 못 찾았다\n\n\n-- constructor 면 이름이 필요 없다\n\n@Test\nvoid 서브쿼리_생성자() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    UserDto d = queryFactory\n            .select(Projections.constructor(UserDto.class,\n                    member.username,\n                    JPAExpressions.select(sub.age.max()).from(sub)))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\nHibernate:\n    select m1_0.username,\n           (select max(m2_0.age) from member m2_0)\n    from member m1_0 where m1_0.username=?\nm1 40\n\n--   순서로 맞아서 그냥 된다\n\n\n-- 필드 이름을 바꾸면\n\n// UserDto 의 name 을 nickname 으로 리팩터링\n\n@Test\nvoid 리팩터링_후() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"),      // 안 고쳤다\n                    member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"nickname: \" + d.getNickname());\n}\n\n$ ./gradlew compileTestJava -q && echo 'compile OK'\ncompile OK\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nnickname: null\n\n--   컴파일이 통과했다\n--   as 안은 문자열이라 안 잡힌다\n--   1.2절에서 못 메운 구멍이다\n\n\n-- 정리\n\n$ printf '%-20s %-10s %s\\n' \\\n  'bean'             '필요'  '세터 이름을 찾는다' \\\n  'fields'           '필요'  '필드 이름을 찾는다' \\\n  'constructor'      '불필요' '순서로 맞춘다' \\\n  '@QueryProjection' '불필요' '순서로 맞춘다' \\\n  '서브쿼리'         'ExpressionUtils' 'as() 가 없다'\n\nbean                 필요      세터 이름을 찾는다\nfields               필요      필드 이름을 찾는다\nconstructor          불필요    순서로 맞춘다\n@QueryProjection     불필요    순서로 맞춘다\n서브쿼리             ExpressionUtils   as() 가 없다\n\n--   5.7절에서 동적 쿼리로 넘어간다",
+   "note": "**`as(\"name\")` 은 JPQL 에만 나가고 SQL 은 `diff` 결과 `SAME`** 이다.\n\n**`constructor` 와 `@QueryProjection` 은 별칭을 무시하고 순서로만** 맞춘다.\n\n**서브쿼리에는 `as()` 가 없어 `ExpressionUtils.as(...)` 로** 감싼다.\n\n**이름을 안 주면 `age` 가 `0` — 붙일 이름이 없어 못** 찾는다.\n\n**필드를 `nickname` 으로 바꿔도 `as(\"name\")` 은 컴파일을 통과하고 값만 `null`** 이다."
+  }
+ ],
+ "recap": [
+  "**이름 기반 둘만** 필요하다.",
+  "**`as` 로** 붙인다.",
+  "**JPQL 에만** 나간다.",
+  "**SQL 은 안** 바뀐다.",
+  "**순서 기반은** 무시한다.",
+  "**서브쿼리는 이름이** 없다.",
+  "**`ExpressionUtils` 로** 감싼다.",
+  "**안 주면 기본값**이다.",
+  "**`as` 안은 문자열**이다."
+ ],
+ "drills": [
+  {
+   "task": "이름이 다른 DTO 로 받는다.",
+   "done_when": "`null` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`as` 를 붙인다.",
+   "done_when": "JPQL 만 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`constructor` 에 `as` 를 준다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "서브쿼리에 이름을 준다.",
+   "done_when": "값이 채워지는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "별칭이 필요한 방법은?",
+   "a": "이름으로 맞추는 `bean` 과 `fields` 다."
+  },
+  {
+   "q": "`as` 는 어디까지 나가나?",
+   "a": "JPQL 까지다. SQL 에는 안 나온다."
+  },
+  {
+   "q": "`constructor` 에 `as` 를 붙이면?",
+   "a": "무시된다. 순서로만 맞춘다."
+  },
+  {
+   "q": "서브쿼리에 이름을 주려면?",
+   "a": "`ExpressionUtils.as(...)` 로 감싼다."
+  },
+  {
+   "q": "`as` 안의 문자열은 컴파일이 잡나?",
+   "a": "안 잡는다. 필드를 바꿔도 통과한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ExpressionUtils.as",
+   "def": "이름이 없는 표현식에 별칭을 붙여 주는 도우미."
+  },
+  {
+   "term": "이름 기반 매칭",
+   "def": "별칭과 필드 이름을 맞춰 값을 채우는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
