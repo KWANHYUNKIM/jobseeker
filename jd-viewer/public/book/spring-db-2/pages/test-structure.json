@@ -1,0 +1,139 @@
+{
+ "book": "spring-db-2",
+ "id": "test-structure",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "테스트 구조",
+ "summary": "같은 테스트로 여섯 구현을 검증한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "구현과 무관한 테스트를 쓴다.",
+  "동적 쿼리 네 경우를 다 검증한다.",
+  "테스트가 기술을 몰라야 하는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**테스트도 안 바뀌는 것 중 하나**다. 여섯 구현이 **같은 시험지**를 푼다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "테스트",
+   "code": "@SpringBootTest\nclass ItemRepositoryTest {\n\n    @Autowired\n    ItemRepository itemRepository;\n\n    @AfterEach\n    void afterEach() {\n        if (itemRepository instanceof MemoryItemRepository) {\n            ((MemoryItemRepository) itemRepository).clearStore();\n        }\n    }\n\n    @Test\n    void save() {\n        Item item = new Item(\"itemA\", 10000, 10);\n\n        Item savedItem = itemRepository.save(item);\n\n        Item findItem = itemRepository.findById(item.getId()).get();\n        assertThat(findItem).isEqualTo(savedItem);\n    }\n}",
+   "note": "**`@Autowired ItemRepository`** — **인터페이스로 받는다.** 어떤 구현이 들어오는지 테스트는 모른다.\n\n**`afterEach` 의 `instanceof` 하나가 눈에 거슬린다.** 맞다. **4.4절에서 이 줄을 지운다** — `@Transactional` 이 대신한다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트가 보는 것",
+   "ascii": "   ItemRepositoryTest\n   ------------------\n   @SpringBootTest\n   @Autowired ItemRepository itemRepository;      <-- interface\n\n   save()      -> findById   equals\n   updateItem  -> findById   equals\n   findItems   -> 4 cases    (null,null) (name,null) (null,max) (name,max)\n\n   the test never names a technology",
+   "note": "**마지막 줄이 이 절의 규칙**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적 쿼리 네 경우",
+   "code": "@Test\nvoid findItems() {\n    Item item1 = new Item(\"itemA-1\", 10000, 10);\n    Item item2 = new Item(\"itemA-2\", 20000, 20);\n    Item item3 = new Item(\"itemB-1\", 30000, 30);\n\n    itemRepository.save(item1);\n    itemRepository.save(item2);\n    itemRepository.save(item3);\n\n    test(null, null, item1, item2, item3);\n    test(\"itemA\", null, item1, item2);\n    test(null, 10000, item1);\n    test(\"itemA\", 10000, item1);\n}\n\nvoid test(String itemName, Integer maxPrice, Item... items) {\n    List<Item> result = itemRepository.findAll(new ItemSearchCond(itemName, maxPrice));\n    assertThat(result).containsExactly(items);\n}",
+   "note": "**1.2절에서 센 `2² = 4` 가지**를 전부 돌린다.\n\n**셋째 줄이 가장 잘 깨진다** — 이름은 없고 가격만 있는 경우다. **`where` 앞에 `and` 가 붙는 그 실수**가 여기서 잡힌다.\n\n> **테스트가 없으면 화면에서 이 조합을 손으로 눌러 봐야** 한다. **여섯 번씩.**"
+  },
+  {
+   "type": "figure",
+   "caption": "한 파일 · 여섯 열",
+   "ascii": "               memory  jdbc  mybatis  jpa  datajpa  querydsl\n   save          .      .      .       .      .        .\n   update        .      .      .       .      .        .\n   findById      .      .      .       .      .        .\n   findAll x4    .      .      .       .      .        .\n\n   one test file. six columns.",
+   "note": "**세로가 기능, 가로가 기술**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트가 기술을 몰라야 하는 이유",
+   "md": "**테스트가 기술을 알면 비교가 아니라 각자 시험**이 된다.\n\n**이렇게 쓰고 싶은 유혹**이 온다.\n\n```java\n// JPA 테스트라서\nem.flush();\nem.clear();\nItem findItem = itemRepository.findById(id).get();\n```\n\n**JPA 는 1차 캐시가 있어** 안 비우면 **DB 를 안 가고 그냥 돌려준다**(「JPA 기본편」 3장). 그러니 저 두 줄이 필요해 **보인다.**\n\n**그런데 저것을 넣으면** 메모리 구현에서는 **컴파일도 안 된다.** `EntityManager` 가 없다.\n\n| | 어떻게 되나 |\n|---|---|\n| 테스트에 `flush` 를 넣는다 | **JPA 전용 테스트**가 된다 |\n| 테스트를 그대로 둔다 | **JPA 의 캐시 동작까지 그대로 검증**된다 |\n\n**두 번째가 맞다.** **저장 직후 조회가 캐시에서 오는 것도 그 기술의 성질**이다. 그것까지 포함해서 **같은 결과가 나오는지**를 본다.\n\n> **6.7절에서 그 로그를 직접 본다** — 같은 테스트가 초록인데 **SQL 이 안 나간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "지금은 테스트가 못 미덥다",
+   "md": "**이 테스트에는 문제가 셋** 있다. 4장 전체가 그 이야기다.\n\n| 문제 | 어디서 푸나 |\n|---|---|\n| **실행 중인 DB 를 그대로 쓴다** | 4.2절 — 테스트용 DB 를 나눈다 |\n| **테스트끼리 데이터가 섞인다** | 4.3절 — 격리 |\n| **`instanceof` 로 정리한다** | 4.4절 — `@Transactional` |\n\n**세 번째가 특히 나쁘다.** 저 `if` 는 **메모리 구현만 아는 코드**다 — **방금 세운 규칙을 테스트가 스스로 어기고 있다.**\n\n> **그래서 4장이 3장 바로 뒤**에 있다. **구현이 여섯인데 테스트가 못 미더우면 비교 전체가 못 미덥다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- MemoryConfig 로 테스트 ---\n\nfindItems()\n#   (SQL 없음)\n#   4 cases pass\n\n# --- JdbcTemplateV1Config 로 같은 테스트 ---\n\nfindItems()\n\n#   insert into item (item_name, price, quantity) values (?, ?, ?)  x3\n\n#   test(null, null)\n#     select id, item_name, price, quantity from item\n\n#   test(\"itemA\", null)\n#     select id, item_name, price, quantity from item\n#     where item_name like concat('%',?,'%')\n\n#   test(null, 10000)\n#     select id, item_name, price, quantity from item\n#     where price <= ?\n\n#   test(\"itemA\", 10000)\n#     select id, item_name, price, quantity from item\n#     where item_name like concat('%',?,'%') and price <= ?\n\n#   4 cases pass\n\n# 테스트 코드는 한 글자도 안 바뀌었다",
+   "note": "**같은 메서드가 SQL 을 네 개 만들었다.** 위는 아예 안 만들었다.\n\n**세 번째를 잘 본다** — `where price <= ?` 다. **`and` 가 안 붙었다.** 이것이 동적 쿼리에서 가장 자주 깨지는 자리이고, **테스트가 그것을 잡는다.**\n\n**맨 아랫줄이 이 절의 결론**이다."
+  }
+ ],
+ "recap": [
+  "**`@Autowired ItemRepository`** — 인터페이스로 받는다.",
+  "**테스트가 기술 이름을 안 쓴다.**",
+  "**동적 쿼리 네 경우**를 전부 돌린다.",
+  "**이름 없이 가격만** 있는 경우가 가장 잘 깨진다.",
+  "**JPA 라고 `flush` 를 넣지 않는다** — 캐시 동작까지 검증 대상이다.",
+  "**한 파일이 여섯 구현의 시험지**다.",
+  "**`instanceof` 한 줄**이 지금 규칙을 어기고 있다.",
+  "**실행 DB 를 쓰고, 데이터가 섞인다** — 4장에서 다 고친다.",
+  "**테스트가 못 미더우면 비교가 못 미덥다.**"
+ ],
+ "drills": [
+  {
+   "task": "`ItemRepositoryTest` 를 만들고 메모리 구현으로 돌린다.",
+   "done_when": "네 경우가 전부 초록인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`findAll` 에서 `and` 를 일부러 빠뜨린다.",
+   "done_when": "어느 경우가 깨지는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트를 두 번 연달아 돌린다.",
+   "done_when": "데이터가 쌓여 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`afterEach` 의 `instanceof` 를 지워 본다.",
+   "done_when": "왜 지금은 못 지우는지 설명할 수 있다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트가 왜 인터페이스로 주입받나?",
+   "a": "구현이 여섯인데 테스트는 하나여야 하기 때문이다."
+  },
+  {
+   "q": "동적 쿼리를 왜 네 번 검증하나?",
+   "a": "조건이 둘이면 SQL 이 네 가지 나오기 때문이다."
+  },
+  {
+   "q": "어느 경우가 가장 잘 깨지나?",
+   "a": "이름 없이 가격만 있는 경우다. `where` 앞에 `and` 가 붙기 쉽다."
+  },
+  {
+   "q": "JPA 테스트에 `flush` 를 넣으면 왜 안 되나?",
+   "a": "메모리 구현에서 컴파일이 안 되고, 캐시 동작 자체가 검증 대상이기 때문이다."
+  },
+  {
+   "q": "지금 테스트의 문제 셋은?",
+   "a": "실행 DB 를 쓴다, 데이터가 섞인다, `instanceof` 로 정리한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

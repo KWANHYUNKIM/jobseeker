@@ -123,7 +123,7 @@
           "title": "설정과 프로파일",
           "summary": "구현을 바꾸는 것이 설정 한 줄이 되게.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -131,7 +131,7 @@
           "title": "테스트 구조",
           "summary": "같은 테스트로 여섯 구현을 검증한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -139,7 +139,7 @@
           "title": "테이블 만들기",
           "summary": "스키마와 초기 데이터를 어디에 둘까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
