@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "statefulset-storage",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "스테이트풀셋의 저장소",
+ "summary": "파드마다 자기 디스크.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "볼륨 클레임 템플릿을 안다.",
+  "PVC 가 왜 안 지워지는지 안다.",
+  "줄였다 늘렸을 때를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.5절에서 스테이트풀셋이 이름과 순서를 준다고** 했다. **디스크가 나머지 절반**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "나눠 쓰기와 각자 갖기",
+   "ascii": "   a Deployment shares, a StatefulSet does not\n\n   Deployment + one PVC\n     web-abc -> data\n     web-def -> data          the same disk, and RWO fights over it\n\n   StatefulSet + volumeClaimTemplates\n     db-0 -> data-db-0\n     db-1 -> data-db-1        one disk each, named after the pod\n\n   the claim name is derived, so a replacement pod finds its own disk",
+   "note": "**요청 이름이 파생돼서 대체 파드가 자기 디스크를** 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "디플로이먼트로는 안 된다",
+   "md": "**템플릿이 하나니 PVC 도** 하나다.\n\n> **레플리카가 셋이면 셋이 같은 디스크에** 붙는다.\n> **`RWO` 면 같은 노드가 아닌 이상 둘째부터 안** 뜬다.\n> **붙어도 DB 두 개가 같은 파일을 쓰면** 깨진다.\n\n**`volumeClaimTemplates` 가 파드마다 하나씩** 만든다.\n\n```yaml\nvolumeClaimTemplates:\n  - metadata:\n      name: data\n    spec:\n      accessModes: [ReadWriteOnce]\n      storageClassName: standard\n      resources:\n        requests: { storage: 1Gi }\n```\n\n> **이름 규칙은 `<템플릿>-<스테이트풀셋>-<번호>`** 다.\n> **`data-db-0`·`data-db-1`** 이다.\n> **파드 이름이 안정적이라 요청 이름도** 안정적이다 — **5.5절의 이유가** 이것이다.\n\n**대체 파드가 같은 디스크를 다시** 잡는다.\n\n> **`db-0` 이 죽으면 새 `db-0` 이 `data-db-0` 에** 붙는다.\n> **디플로이먼트의 파드는 이름이 매번** 바뀐다 — **그래서 못 한다.**\n\n**노드도 따라간다**\n\n> **8.3절에서 PV 에 `nodeAffinity` 가 박혔다.**\n> **`db-0` 은 그 디스크가 있는 노드로만 갈 수** 있다.\n> **그 노드가 죽으면 `db-0` 은 `Pending`** 이다."
+  },
+  {
+   "type": "figure",
+   "caption": "디스크는 안 지워진다",
+   "ascii": "   what happens to the disks, by action\n\n   pod deleted            the claim stays, the new pod remounts it\n   scaled down            the claim stays, by default\n   scaled back up         the old claim is reused, data is still there\n   statefulset deleted    the claims stay, by default\n\n   that default is deliberate, and it is also how you leak disks",
+   "note": "**의도한 기본값이고 디스크가 새는 경로이기도** 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 지워지는 게 기본이다",
+   "md": "**스테이트풀셋을 지워도 PVC 는** 남는다.\n\n> **데이터를 실수로 날리지 않게 하려는** 것이다.\n> **다시 만들면 옛 데이터가 그대로 붙는다** — **좋기도 하고 무섭기도** 하다.\n> **정리는 손으로** 한다.\n\n**1.27 부터 정책을 적을 수** 있다.\n\n```yaml\npersistentVolumeClaimRetentionPolicy:\n  whenDeleted: Delete\n  whenScaled: Retain\n```\n\n> **`whenDeleted` 는 스테이트풀셋을 지울** 때다.\n> **`whenScaled` 는 줄일** 때다.\n> **둘 다 기본은 `Retain`** 이다.\n\n**줄였다 늘리면 옛 데이터가 돌아**온다.\n\n> **`db-2` 를 줄였다가 다시 늘리면 `data-db-2` 를 다시** 잡는다.\n> **테스트할 때 이전 실험의 데이터가 살아 있어** 놀란다.\n> **`whenScaled: Delete` 로 바꿔** 둘 수 있다.\n\n**템플릿은 못 바꾼다**\n\n> **`volumeClaimTemplates` 는 생성 후** 불변이다.\n> **크기를 키우려면 PVC 를 하나씩** 손본다.\n> **스테이트풀셋을 `--cascade=orphan` 으로 지우고 다시 만드는 수법을** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 디플로이먼트로 해 본다 ---\n\n$ kubectl apply -f - > /dev/null <<'EOF'\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata: { name: shared }\nspec:\n  accessModes: [ReadWriteOnce]\n  resources: { requests: { storage: 1Gi } }\nEOF\n\n$ kubectl apply -f dep-shared.yaml > /dev/null && sleep 20\n$ kubectl get pods -l app=shared --no-headers\n\nshared-7c9d4f6b8-2xk4m   1/1     Running   0     20s\nshared-7c9d4f6b8-9wq7t   0/1     Pending   0     20s\nshared-7c9d4f6b8-mn3fz   0/1     Pending   0     20s\n\n$ kubectl describe pod shared-7c9d4f6b8-9wq7t | grep -A1 Warning | tail -1\n\n  Warning  FailedScheduling  5s  default-scheduler  0/3 nodes are available:\n    1 node(s) had volume node affinity conflict, 2 node(s) didn't match\n    pod affinity/anti-affinity rules\n\n#   RWO 라 한 노드에만 붙는다\n\n#   나머지는 갈 데가 없다\n\n#   PVC 가 하나뿐이라 그렇다\n\n$ kubectl delete deployment shared > /dev/null\n$ kubectl delete pvc shared > /dev/null\n\n# --- 스테이트풀셋 ---\n\n$ cat sts.yaml\n\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: db\nspec:\n  serviceName: db\n  replicas: 3\n  selector:\n    matchLabels: { app: db }\n  template:\n    metadata:\n      labels: { app: db }\n    spec:\n      containers:\n        - name: t\n          image: busybox:1.36\n          command: [\"sh\", \"-c\",\n            \"echo \\\"$(hostname) 가 썼다\\\" >> /d/owner.txt; \\\n             cat /d/owner.txt; sleep 3600\"]\n          volumeMounts:\n            - { name: data, mountPath: /d }\n  volumeClaimTemplates:\n    - metadata:\n        name: data\n      spec:\n        accessModes: [ReadWriteOnce]\n        resources:\n          requests: { storage: 1Gi }\n\n$ kubectl apply -f sts.yaml > /dev/null\n$ kubectl rollout status statefulset/db > /dev/null\n$ kubectl get pods -l app=db --no-headers | awk '{print $1, $3}'\n\ndb-0 Running\ndb-1 Running\ndb-2 Running\n\n$ kubectl get pvc --no-headers | awk '{print $1, $2, $3}'\n\ndata-db-0 Bound pvc-4a1c...\ndata-db-1 Bound pvc-8f3e...\ndata-db-2 Bound pvc-b72d...\n\n#   파드마다 하나씩이다\n\n#   이름이 <템플릿>-<이름>-<번호> 다\n\n$ for i in 0 1 2; do kubectl logs db-$i | tail -1; done\n\ndb-0 가 썼다\ndb-1 가 썼다\ndb-2 가 썼다\n\n#   각자 자기 디스크에 썼다\n\n# --- 파드를 죽여도 자기 디스크를 다시 잡는다 ---\n\n$ kubectl delete pod db-1 --now > /dev/null\n$ sleep 18 && kubectl logs db-1\n\ndb-1 가 썼다\ndb-1 가 썼다\n\n#   두 줄이다\n\n#   옛 줄이 남아 있다\n\n$ kubectl get pod db-1 -o jsonpath=\\\n'{.spec.volumes[0].persistentVolumeClaim.claimName}{\"\\n\"}'\n\ndata-db-1\n\n#   이름이 파생되니 다시 찾는다\n\n#   5.5절에서 이름이 왜 안정적이어야 했는지가 이것이다\n\n# --- 노드가 따라붙는다 ---\n\n$ kubectl get pv -o custom-columns=\\\nNAME:.metadata.name,CLAIM:.spec.claimRef.name,\\\nNODE:.spec.nodeAffinity.required.nodeSelectorTerms[0].matchExpressions[0].values[0] \\\n  --no-headers\n\npvc-4a1c...   data-db-0   kind-worker\npvc-8f3e...   data-db-1   kind-worker2\npvc-b72d...   data-db-2   kind-worker\n\n$ kubectl get pod db-1 -o jsonpath='{.spec.nodeName}{\"\\n\"}'\n\nkind-worker2\n\n#   디스크가 있는 노드로만 간다\n\n#   그 노드가 죽으면 db-1 은 Pending 이다\n\n# --- 줄인다 ---\n\n$ kubectl scale statefulset db --replicas=1 > /dev/null\n$ sleep 15 && kubectl get pods -l app=db --no-headers | wc -l\n\n       1\n\n$ kubectl get pvc --no-headers | awk '{print $1, $2}'\n\ndata-db-0 Bound\ndata-db-1 Bound\ndata-db-2 Bound\n\n#   파드는 하나인데 PVC 는 셋이다\n\n#   기본이 Retain 이다\n\n#   디스크가 새는 자리다\n\n# --- 늘리면 옛 데이터가 돌아온다 ---\n\n$ kubectl scale statefulset db --replicas=3 > /dev/null\n$ kubectl rollout status statefulset/db > /dev/null\n$ kubectl logs db-2\n\ndb-2 가 썼다\ndb-2 가 썼다\n\n#   지운 적 없는 데이터가 살아 있다\n\n#   좋기도 하고 무섭기도 하다\n\n# --- 정책을 준다 ---\n\n$ kubectl patch statefulset db -p '{\"spec\":\n    {\"persistentVolumeClaimRetentionPolicy\":\n      {\"whenScaled\":\"Delete\",\"whenDeleted\":\"Delete\"}}}' > /dev/null\n\n$ kubectl scale statefulset db --replicas=1 > /dev/null\n$ sleep 20 && kubectl get pvc --no-headers | awk '{print $1, $2}'\n\ndata-db-0 Bound\n\n#   줄이면서 같이 지워졌다\n\n$ kubectl get pvc data-db-1 2>&1 | tail -1\n\nError from server (NotFound): persistentvolumeclaims \"data-db-1\" not found\n\n# --- 소유자가 적혀 있다 ---\n\n$ kubectl get pvc data-db-0 -o jsonpath=\\\n'{.metadata.ownerReferences[0].kind}/{.metadata.ownerReferences[0].name}{\"\\n\"}'\n\nStatefulSet/db\n\n#   정책을 켜면 소유자가 붙는다\n\n#   가비지 컬렉션이 이걸 보고 지운다\n\n# --- 템플릿은 못 바꾼다 ---\n\n$ kubectl patch statefulset db --type=json -p='[{\"op\":\"replace\",\n  \"path\":\"/spec/volumeClaimTemplates/0/spec/resources/requests/storage\",\n  \"value\":\"2Gi\"}]'\n\nStatefulSet.apps \"db\" is invalid: spec: Forbidden: updates to statefulset\n  spec for fields other than 'replicas', 'ordinals', 'template',\n  'updateStrategy', 'persistentVolumeClaimRetentionPolicy' and\n  'minReadySeconds' are forbidden\n\n#   볼륨 템플릿은 불변이다\n\n#   PVC 를 하나씩 손보거나\n\n#   --cascade=orphan 으로 다시 만든다\n\n# --- 지워도 남는지 확인한다 ---\n\n$ kubectl delete statefulset db > /dev/null && sleep 10\n$ kubectl get pvc --no-headers | wc -l\n\n       0\n\n#   whenDeleted: Delete 로 바꿔 놨으니 같이 갔다\n\n#   기본이었다면 남았을 것이다\n\n$ kubectl get pv --no-headers | wc -l\n\n       0\n\n#   PV 도 갔다\n\n#   reclaimPolicy 가 Delete 라서다\n\n#   다음 절이 그 이야기다\n\n# --- 다음 절에서 ---\n\n#   그 한 줄이 데이터를 지운다",
+   "note": "**디플로이먼트에 PVC 하나면 둘째부터 `volume node affinity conflict` 로** 못 뜬다.\n\n**스테이트풀셋은 `data-db-0`·`data-db-1`·`data-db-2` 를 파드마다** 만든다.\n\n**`db-1` 을 지워도 새 파드가 `data-db-1` 을 다시 잡아 줄이** 쌓인다.\n\n**줄여도 PVC 는 셋 다 남고, 다시 늘리면 옛 데이터가** 돌아온다.\n\n**`volumeClaimTemplates` 수정은 `Forbidden`** 이다."
+  }
+ ],
+ "recap": [
+  "**디플로이먼트는 PVC 를 나눠** 쓴다.",
+  "**`volumeClaimTemplates` 가 파드마다** 만든다.",
+  "**이름이 `<템플릿>-<이름>-<번호>`** 다.",
+  "**대체 파드가 같은 디스크를 다시** 잡는다.",
+  "**PV 의 노드가 파드 배치를** 묶는다.",
+  "**줄이거나 지워도 PVC 가 남는 게** 기본이다.",
+  "**`persistentVolumeClaimRetentionPolicy` 로** 바꾼다.",
+  "**늘리면 옛 데이터가** 돌아온다.",
+  "**볼륨 템플릿은** 불변이다."
+ ],
+ "drills": [
+  {
+   "task": "디플로이먼트에 PVC 하나를 붙인다.",
+   "done_when": "둘째 파드가 못 뜨는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스테이트풀셋으로 바꾼다.",
+   "done_when": "PVC 가 파드마다 생기는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "파드를 지운다.",
+   "done_when": "같은 디스크를 다시 잡는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "줄였다 다시 늘린다.",
+   "done_when": "옛 데이터가 돌아오는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "디플로이먼트로 파드마다 디스크를 못 주는 이유는?",
+   "a": "템플릿이 하나라 PVC 도 하나이기 때문이다."
+  },
+  {
+   "q": "PVC 이름 규칙은?",
+   "a": "`<볼륨템플릿이름>-<스테이트풀셋이름>-<번호>` 다."
+  },
+  {
+   "q": "대체 파드가 같은 디스크를 찾는 이유는?",
+   "a": "파드 이름이 안정적이라 요청 이름도 그대로 파생되기 때문이다."
+  },
+  {
+   "q": "줄였을 때 PVC 의 기본 처리는?",
+   "a": "`Retain` 이라 남는다."
+  },
+  {
+   "q": "볼륨 템플릿 크기를 키우려면?",
+   "a": "직접 못 바꾸므로 PVC 를 개별 확장하거나 스테이트풀셋을 다시 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "volumeClaimTemplates",
+   "def": "스테이트풀셋이 파드마다 PVC 를 찍어 내는 틀."
+  },
+  {
+   "term": "PVC 보존 정책",
+   "def": "스테이트풀셋을 줄이거나 지울 때 PVC 를 남길지 정하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — StatefulSets",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Persistent Volumes",
+   "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

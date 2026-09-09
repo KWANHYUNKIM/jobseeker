@@ -443,7 +443,7 @@
           "title": "스테이트풀셋의 저장소",
           "summary": "파드마다 자기 디스크.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -451,7 +451,7 @@
           "title": "데이터를 잃지 않으려면",
           "summary": "reclaim 정책과 백업.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
