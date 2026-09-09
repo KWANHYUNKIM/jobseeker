@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-1",
+ "id": "repository-style",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "리포지토리를 어떻게 쓸까",
+ "summary": "EntityManager 를 직접 쓴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 방식을 비교한다.",
+  "이 책이 1번을 고르는 이유를 안다.",
+  "`EntityManager` 주입 방식을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4장의 마지막 결정**이다. **1.2절에서 예고한 것**을 여기서 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 방식",
+   "ascii": "   three ways to write a repository\n\n   1  EntityManager directly        this book\n        @PersistenceContext\n        em.persist / em.find / createQuery\n\n   2  JpaRepository\n        interface, no code at all\n\n   3  JpaRepository + custom\n        the mix from 「DB 2편」 7.5\n\n   book 6 covered 2 and 3. this book goes back to 1.",
+   "note": "**「DB 2편」이 2·3번을 다뤘다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 되돌아가나",
+   "md": "**「DB 2편」 7.6절에서 이렇게** 끝냈다.\n\n> **쿼리 문자열이 0개가 됐다.** **엔티티가 열 개여도 인터페이스 한 줄씩**이다.\n\n**그것이 더 낫다.** **그런데 이 책은 1번**이다.\n\n**이유가 셋**이다.\n\n**① 무엇이 자동인지 보려면 손으로 해 봐야 한다**\n\n> **「DB 2편」 6장 다음에 7장이 온 순서**와 같다. **`em.persist` 를 써 봐야 `save()` 가 무엇을 대신하는지** 안다.\n>\n> **이 책은 7장에서 `cascade` 로 `insert` 가 셋 나가는 것**을 본다. **`JpaRepository.save()` 만 쓰면 그 안이 안 보인다.**\n\n**② 이 책의 주제가 리포지토리가 아니다**\n\n**설계 결정이 어떻게 SQL 이 되는지**가 주제다. **리포지토리는 그 SQL 이 나가는 통로**일 뿐이다.\n\n> **`JpaRepository` 를 쓰면 `findAll()` 이 무슨 SQL 을 만드는지 한 겹 더** 생각해야 한다. **`em.createQuery(\"select m from Member m\")` 는 그럴 것이 없다.**\n\n**③ 조회 메서드가 몇 개 안 된다**\n\n| 리포지토리 | 메서드 |\n|---|---|\n| `MemberRepository` | 4 |\n| `ItemRepository` | 3 |\n| `OrderRepository` | 3 |\n\n**열 개**다. **`JpaRepository` 로 줄일 코드가 많지 않다.**\n\n> **실무 프로젝트라면 3번**이다. **「DB 2편」 9.3절의 구조**다.\n>\n> **다음 권에서 이 프로젝트를 그쪽으로** 옮긴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "1번 — 이 책",
+   "code": "@Repository\npublic class MemberRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public void save(Member member) {\n        em.persist(member);\n    }\n\n    public Member findOne(Long id) {\n        return em.find(Member.class, id);\n    }\n\n    public List<Member> findAll() {\n        return em.createQuery(\"select m from Member m\", Member.class)\n                .getResultList();\n    }\n\n    public List<Member> findByName(String name) {\n        return em.createQuery(\"select m from Member m where m.name = :name\",\n                        Member.class)\n                .setParameter(\"name\", name)\n                .getResultList();\n    }\n}",
+   "note": "**「DB 2편」 6.3절과 같은 모양**이다.\n\n**`save` 가 `void`** 다. **`persist` 후에 `member.getId()` 로 꺼내면 된다.**\n\n> **id 를 반환하는 쪽도 있다.** **이 책은 서비스가 `member.getId()`** 를 부른다 — 5.2절.\n\n**`findOne` 이 `null` 을 돌려줄 수 있다.**\n\n> **「DB 2편」에서는 `Optional`** 을 썼다. **여기서는 `null`** 이다.\n>\n> **강의 예제를 따랐다.** **실무라면 `Optional`** 이 낫다 — **9.7절의 \"무엇이 어색했나\"** 에 넣는다."
+  },
+  {
+   "type": "figure",
+   "caption": "`EntityManager` 주입",
+   "ascii": "   two ways to get the EntityManager\n\n   @PersistenceContext                 the jpa standard\n     EntityManager em;                 spring injects a proxy\n\n   @RequiredArgsConstructor            boot 2.6+ only\n     private final EntityManager em;   same proxy, shorter\n\n   the proxy is what makes it thread safe",
+   "note": "**둘 다 프록시**를 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 프록시인가",
+   "md": "**`EntityManager` 는 스레드 안전하지 않다.**\n\n**영속성 컨텍스트를 들고** 있으니 **여러 요청이 공유하면 안 된다.**\n\n**그런데 스프링 빈은 싱글턴**이다.\n\n```java\n@Repository\npublic class MemberRepository {\n    @PersistenceContext\n    private EntityManager em;      // 싱글턴 빈의 필드\n}\n```\n\n**스프링이 프록시를 주입**한다.\n\n```java\nlog.info(\"em = {}\", em.getClass());\n// class jdk.proxy2.$Proxy123\n```\n\n**메서드를 부를 때마다 \"지금 이 스레드의 `EntityManager`\"** 를 찾아 위임한다.\n\n> **「DB 1편」 5.4절의 트랜잭션 동기화 매니저**가 그 저장소다. **`ThreadLocal`** 이다.\n>\n> **트랜잭션이 없으면?** **매번 새로 만들거나 예외**다 — 「DB 2편」 6.6절.\n\n**부트 2.6 부터 생성자 주입도** 된다.\n\n```java\n@Repository\n@RequiredArgsConstructor\npublic class MemberRepository {\n    private final EntityManager em;\n}\n```\n\n**스프링이 `EntityManager` 타입에 프록시를 넣어** 준다. **`@PersistenceContext` 와 같은 것**이다.\n\n> **이 책은 `@PersistenceContext`** 를 쓴다. **JPA 표준이고 무슨 일이 벌어지는지 이름에 나타난다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "`@Repository` 를 붙이는 이유",
+   "md": "**두 가지**다(「DB 2편」 6.5절).\n\n| | |\n|---|---|\n| **`@Component`** | 빈 등록 |\n| **예외 변환 AOP** | `PersistenceException` → `DataAccessException` |\n\n**두 번째가 이 프로젝트에서 값을 하나.**\n\n**대부분 안 한다.** **이 책은 예외를 잡아서 처리하는 곳이 거의 없다.**\n\n```java\n// 5.3절\nprivate void validateDuplicateMember(Member member) {\n    List<Member> found = memberRepository.findByName(member.getName());\n    if (!found.isEmpty()) {\n        throw new IllegalStateException(\"이미 존재하는 회원입니다.\");\n    }\n}\n```\n\n**DB 예외를 잡는 것이 아니라 조회 결과로 판단**한다.\n\n> **DB 유니크 제약을 걸었다면 달랐을 것**이다. **`DataIntegrityViolationException` 을 잡아야** 한다.\n>\n> **3.3절에서 유니크를 일부러 안 걸었다.** **5.3절에서 그 대가**를 본다.\n\n**그래도 붙인다.** **관례이고, 나중에 필요해질 때 이미 있다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 아직 없다",
+   "sql": "# --- 리포지토리를 만들어도 SQL 은 안 나간다 ---\n\n#   아무도 안 불렀다\n\n# --- 뜰 때의 차이 ---\n\n#   (1번 - EntityManager 직접)\n#   Bootstrapping Spring Data JPA repositories in DEFAULT mode.\n#   Finished Spring Data JPA repository scanning in 2 ms.\n#     Found 0 JPA repository interfaces.\n\n#   2.1절에서 본 그 줄이 그대로 0 이다\n\n#   (2번 - JpaRepository 였다면)\n#     Found 3 JPA repository interfaces.\n\n# --- 프록시 확인 ---\n\nlog.info(\"em class = {}\", em.getClass());\n\n#   em class = class jdk.proxy2.$Proxy123\n\n#   내가 안 만든 클래스다\n#   (「DB 2편」 5.7절의 $Proxy67 과 같은 종류)\n\nlog.info(\"repository class = {}\", memberRepository.getClass());\n\n#   repository class = class jpabook.jpashop.repository.MemberRepository\n#     $$SpringCGLIB$$0\n\n#   @Repository 의 예외 변환 프록시다\n#   (「DB 2편」 6.5절)\n\n# --- 트랜잭션 없이 부르면 ---\n\nmemberRepository.save(new Member());\n\n#   jakarta.persistence.TransactionRequiredException:\n#     No EntityManager with actual transaction available for current thread\n#     - cannot reliably process 'persist' call\n\n#   「DB 2편」 6.6절의 그 예외\n\n#   트랜잭션은 서비스에 있다 (4.2절)\n#   리포지토리를 직접 부르면 안 된다\n\n# --- 조회는 된다 ---\n\nmemberRepository.findAll();\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0\n\n#   이 책에서 처음으로 select 가 나갔다\n#   결과는 0건이다\n\n# --- 4장이 끝났다 ---\n\n#   정한 것\n#     구현 범위          4.1\n#     계층과 트랜잭션 경계  4.2\n#     패키지             4.3\n#     리포지토리 방식      4.4\n\n#   아직 안 만든 것\n#     리포지토리 본문, 서비스, 화면\n\n# --- 5장부터 ---\n\n#   매 절이 나간 SQL 로 끝난다\n#   2~3장의 DDL 에서 바뀐다",
+   "note": "**`Found 0 JPA repository interfaces`** 가 2.1절 그대로다. **이 책의 방침**이 로그에 그대로 남는다.\n\n**`$Proxy123` 과 `$$SpringCGLIB$$0`** — **프록시가 둘**이다. **하나는 `EntityManager`, 하나는 리포지토리 자신**이다.\n\n**트랜잭션 없이 `save` 를 부르면 터진다.** **4.2절에서 경계를 서비스에 뒀으니 리포지토리를 직접 부르면 안 된다.**\n\n**`findAll()` 이 이 책의 첫 `select`** 다. **결과는 0건**이다.\n\n**4장이 끝났다. 5장부터 절 끝이 DDL 에서 SQL 로 바뀐다.**"
+  }
+ ],
+ "recap": [
+  "**`EntityManager` 를 직접** 쓴다 — 「DB 2편」이 다룬 2·3번에서 되돌아간다.",
+  "**손으로 해 봐야 무엇이 자동인지** 안다.",
+  "**이 책의 주제가 리포지토리가 아니다** — 통로일 뿐이다.",
+  "**조회 메서드가 열 개**라 줄일 것이 적다.",
+  "**실무라면 `JpaRepository` + 사용자 정의**다 — 다음 권.",
+  "**`@PersistenceContext`** 로 프록시를 받는다.",
+  "**`EntityManager` 는 스레드 안전하지 않아** 프록시가 필요하다.",
+  "**`@Repository` 는 빈 등록 + 예외 변환**이다.",
+  "**트랜잭션 없이 `persist` 하면 터진다** — 경계는 서비스에 있다."
+ ],
+ "drills": [
+  {
+   "task": "`MemberRepository` 를 만든다.",
+   "done_when": "`Found 0 JPA repository interfaces` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`em.getClass()` 를 찍는다.",
+   "done_when": "프록시인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "트랜잭션 없이 `save` 를 부른다.",
+   "done_when": "`TransactionRequiredException` 을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`JpaRepository` 로 같은 것을 만들어 본다.",
+   "done_when": "코드가 얼마나 줄고 무엇이 안 보이는지 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `EntityManager` 를 직접 쓰나?",
+   "a": "손으로 해 봐야 `JpaRepository` 가 무엇을 대신하는지 알기 때문이다."
+  },
+  {
+   "q": "`EntityManager` 에 왜 프록시를 주입하나?",
+   "a": "스레드 안전하지 않은데 빈은 싱글턴이라, 호출 시점에 그 스레드의 것을 찾아 위임한다."
+  },
+  {
+   "q": "`@Repository` 의 두 역할은?",
+   "a": "빈 등록과 예외 변환 AOP 다."
+  },
+  {
+   "q": "트랜잭션 없이 `persist` 하면?",
+   "a": "`TransactionRequiredException` 이 난다. 경계는 서비스에 있다."
+  },
+  {
+   "q": "실무라면 어떻게 하나?",
+   "a": "`JpaRepository` 에 사용자 정의 구현을 섞는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

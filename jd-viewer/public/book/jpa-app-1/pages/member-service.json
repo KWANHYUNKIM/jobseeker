@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-service",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "회원 서비스",
+ "summary": "가입과 조회.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서비스 계층을 만든다.",
+  "`readOnly` 패턴을 적용한다.",
+  "무엇을 반환할지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 정한 트랜잭션 경계**를 코드로 만든다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`MemberService`",
+   "code": "@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class MemberService {\n\n    private final MemberRepository memberRepository;\n\n    @Transactional\n    public Long join(Member member) {\n        validateDuplicateMember(member);\n        memberRepository.save(member);\n        return member.getId();\n    }\n\n    private void validateDuplicateMember(Member member) {\n        List<Member> found = memberRepository.findByName(member.getName());\n        if (!found.isEmpty()) {\n            throw new IllegalStateException(\"이미 존재하는 회원입니다.\");\n        }\n    }\n\n    public List<Member> findMembers() {\n        return memberRepository.findAll();\n    }\n\n    public Member findOne(Long memberId) {\n        return memberRepository.findOne(memberId);\n    }\n}",
+   "note": "**클래스에 `readOnly = true`, `join` 에만 덮어쓴다.** **「DB 2편」 10.2절의 패턴**이다.\n\n**`join` 이 `Long` 을 반환**한다. **엔티티가 아니다.**\n\n**`validateDuplicateMember` 가 `private`** 이다. **트랜잭션이 필요 없다** — 이미 `join` 의 트랜잭션 안이다.\n\n> **`private` 에 `@Transactional` 을 붙이면 안 걸린다**(「DB 2편」 10.2절). **여기서는 붙일 이유가 없다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "서비스의 모양",
+   "ascii": "   MemberService\n\n   join(Member)          @Transactional      validate + save\n   findMembers()         readOnly\n   findOne(Long)         readOnly\n\n   class:  @Transactional(readOnly = true)\n   join:   @Transactional               overrides it",
+   "note": "**클래스 기본값을 메서드가 덮는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`readOnly` 를 클래스에 거는 이유",
+   "md": "**「DB 2편」 10.9절에서 본 것**이다.\n\n| 얻는 것 | |\n|---|---|\n| **스냅숏을 안 만든다** | 조회 시 메모리 절반 |\n| **커밋 때 비교 안 한다** | CPU |\n| **드라이버에 읽기 전용** | DB 가 최적화하기도 |\n\n**조회가 대부분**이다. **기본값을 그쪽으로** 둔다.\n\n**더 큰 이유가 하나** 있다.\n\n> **쓰기 메서드에 `@Transactional` 을 빠뜨리면 조용히 안 되는 게 아니라 예외**가 난다.\n>\n> **「DB 2편」 10.2절에서 \"조용한 실패를 하나 줄이는 장치\" 라고** 했다.\n\n**실제로 그렇게 된다.**\n\n```java\n// @Transactional 을 빠뜨리면\npublic Long join(Member member) {\n    memberRepository.save(member);\n    return member.getId();\n}\n```\n\n**`readOnly` 트랜잭션이라 `insert` 가 막힌다.**\n\n> **JPA 는 `persist` 자체는 통과시키기도** 한다(「DB 2편」 10.9절). **커밋 시점에 드라이버가 거부**한다.\n>\n> **어느 층에서 막히든 시끄럽게 터진다.** **그것이 목적이다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 반환하나",
+   "ascii": "   what join returns\n\n   void          the caller has no id\n   Member        the caller holds an entity outside the tx\n   Long          the id, and nothing else\n\n   this book returns Long\n   the entity stays inside the boundary",
+   "note": "**엔티티를 경계 밖으로 안 내보낸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 `Long` 인가",
+   "md": "**엔티티를 반환하면 트랜잭션 밖으로** 나간다.\n\n```java\n// 이렇게 반환하면\npublic Member join(Member member) { ... }\n\n// 컨트롤러에서\nMember member = memberService.join(form);\nmember.getOrders().size();      // 트랜잭션이 끝났다\n```\n\n**지연 로딩이 안 된다**(4.2절, 9.2절).\n\n**`Long` 이면 그럴 일이 없다.**\n\n```java\nLong id = memberService.join(member);\nreturn \"redirect:/members\";     // id 만 쓰거나 안 쓴다\n```\n\n> **8.2절에서 회원 등록 후 목록으로 리다이렉트**한다. **id 도 안 쓴다.**\n>\n> **그래도 `Long` 을 반환**한다 — **테스트에서 쓴다**(5.4절).\n\n**조회 메서드는 엔티티를 반환**한다.\n\n```java\npublic List<Member> findMembers() {\n    return memberRepository.findAll();\n}\n```\n\n**여기서는 엔티티가 나간다.**\n\n> **일관성이 없어 보인다.** 맞다.\n>\n> **8.4절에서 이 엔티티가 화면까지** 간다. **9.1절에서 그 대가**를 센다.\n>\n> **DTO 로 바꾸는 것이 답인데**, **이 책은 문제를 먼저 보여 주려고 그대로** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- join ---\n\nMember member = new Member();\nmember.setName(\"kim\");\nLong id = memberService.join(member);\n\n#   Getting transaction for [MemberService.join]\n#   Creating new transaction with name [MemberService.join]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [conn0] for JPA transaction\n\n#   (validateDuplicateMember)\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.name=?\n#   binding parameter [1] as [VARCHAR] - [kim]\n\n#   (save)\n#   Hibernate: \n#       select next value for member_seq\n\n#   (persist 했지만 insert 는 아직)\n\n#   Completing transaction for [MemberService.join]\n#   Initiating transaction commit\n#   Hibernate: \n#       insert into member (city, street, zipcode, name, member_id)\n#       values (?, ?, ?, ?, ?)\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Releasing JDBC Connection [conn0]\n\n#   SQL 셋: select, select next value, insert\n\n#   insert 가 커밋 시점에 나갔다 (쓰기 지연)\n\n# --- findMembers ---\n\nmemberService.findMembers();\n\n#   Creating new transaction with name [MemberService.findMembers]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: \n#       select m1_0.member_id, ... from member m1_0\n\n#   Initiating transaction commit\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n#   readOnly 가 로그 첫 줄에 찍혔다\n\n# --- join 에서 @Transactional 을 빼면 ---\n\n@Service\n@Transactional(readOnly = true)\npublic class MemberService {\n    // @Transactional 없음\n    public Long join(Member member) { ... }\n}\n\n#   Creating new transaction with name [MemberService.join]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n#   Hibernate: select next value for member_seq\n\n#   Initiating transaction commit\n#   Hibernate: insert into member (...) values (?, ?, ?, ?, ?)\n\n#   SQL Error: 90097, SQLState: 90097\n#   The database is read only; SQL statement: insert into member ...\n\n#   org.springframework.dao.InvalidDataAccessApiUsageException\n\n#   시끄럽게 터졌다\n#   조용히 안 저장되는 것보다 낫다\n\n# --- 중복 이름으로 가입하면 ---\n\nmemberService.join(member1);   // kim\nmemberService.join(member2);   // kim\n\n#   Hibernate: select ... where m1_0.name=?     -> 0건\n#   Hibernate: select next value for member_seq\n#   Hibernate: insert into member ...\n\n#   Hibernate: select ... where m1_0.name=?     -> 1건\n#   java.lang.IllegalStateException: 이미 존재하는 회원입니다.\n\n#   Initiating transaction rollback\n\n#   막았다\n\n#   그런데 동시에 들어오면?  -> 5.3절",
+   "note": "**`join` 이 SQL 셋**을 만든다. **중복 검사 `select`, 시퀀스, `insert`.**\n\n**`insert` 가 커밋 시점**에 나갔다. **쓰기 지연**이다.\n\n**`findMembers` 의 로그 첫 줄에 `readOnly`** 가 찍혔다. **10.2절에서 본 확인 방법**이다.\n\n**`@Transactional` 을 빼면 시끄럽게 터진다.** **`The database is read only`** — 그것이 이 패턴의 값어치다.\n\n**중복 가입은 막힌다.** **다음 절에서 \"동시에 들어오면\"** 을 본다."
+  }
+ ],
+ "recap": [
+  "**클래스에 `readOnly = true`, 쓰기 메서드에만 덮어쓴다.**",
+  "**빠뜨리면 조용히 안 되는 게 아니라 예외**가 난다.",
+  "**`join` 이 `Long` 을 반환**한다 — 엔티티를 경계 밖으로 안 내보낸다.",
+  "**조회 메서드는 엔티티를 반환**한다 — 8·9장에서 대가를 본다.",
+  "**`private` 검증 메서드에 애너테이션을 안 붙인다.**",
+  "**`join` 이 SQL 셋**을 만든다.",
+  "**`insert` 가 커밋 시점**에 나간다.",
+  "**로그 첫 줄의 `readOnly`** 로 무엇이 적용됐는지 안다.",
+  "**중복 가입은 막히는데 동시 요청은 못 막는다** — 5.3절."
+ ],
+ "drills": [
+  {
+   "task": "`MemberService` 를 만들고 가입시킨다.",
+   "done_when": "SQL 셋을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`join` 의 `@Transactional` 을 뗀다.",
+   "done_when": "`The database is read only` 를 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "조회 메서드의 로그 첫 줄을 본다.",
+   "done_when": "`readOnly` 가 찍히는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 이름으로 두 번 가입한다.",
+   "done_when": "예외와 롤백을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`readOnly` 를 클래스에 거는 이유는?",
+   "a": "조회가 대부분이고, 쓰기 애너테이션을 빠뜨렸을 때 시끄럽게 터지기 때문이다."
+  },
+  {
+   "q": "`join` 이 왜 `Long` 을 반환하나?",
+   "a": "엔티티가 트랜잭션 밖으로 나가면 지연 로딩을 못 하기 때문이다."
+  },
+  {
+   "q": "조회 메서드는 무엇을 반환하나?",
+   "a": "엔티티다. 그 대가를 9.1절에서 센다."
+  },
+  {
+   "q": "`insert` 는 언제 나가나?",
+   "a": "커밋 시점이다. 쓰기 지연 때문이다."
+  },
+  {
+   "q": "`readOnly` 가 적용됐는지 어떻게 아나?",
+   "a": "`Creating new transaction` 로그 뒤에 `readOnly` 가 찍힌다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

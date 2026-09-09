@@ -256,7 +256,7 @@
           "title": "리포지토리를 어떻게 쓸까",
           "summary": "EntityManager 를 직접 쓴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -271,7 +271,7 @@
           "title": "회원 리포지토리",
           "summary": "저장과 조회.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -279,7 +279,7 @@
           "title": "회원 서비스",
           "summary": "가입과 조회.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

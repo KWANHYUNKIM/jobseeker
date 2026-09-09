@@ -1,0 +1,127 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-repository",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "회원 리포지토리",
+ "summary": "저장과 조회.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "첫 리포지토리를 만든다.",
+  "`find` 와 JPQL 의 차이를 안다.",
+  "이 책의 첫 SQL 을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장이 시작된다.** **가장 단순한 도메인으로 계층의 모양**을 잡는다(4.1절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`MemberRepository`",
+   "code": "@Repository\npublic class MemberRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public void save(Member member) {\n        em.persist(member);\n    }\n\n    public Member findOne(Long id) {\n        return em.find(Member.class, id);\n    }\n\n    public List<Member> findAll() {\n        return em.createQuery(\"select m from Member m\", Member.class)\n                .getResultList();\n    }\n\n    public List<Member> findByName(String name) {\n        return em.createQuery(\"select m from Member m where m.name = :name\",\n                        Member.class)\n                .setParameter(\"name\", name)\n                .getResultList();\n    }\n}",
+   "note": "**네 메서드**다. **4.4절에서 정한 그대로**다.\n\n**`createQuery` 에 두 번째 인자로 타입**을 준다. **없으면 `Query` 가 오고 캐스팅**해야 한다.\n\n```java\n// 타입을 안 주면\nList result = em.createQuery(\"select m from Member m\").getResultList();\n// 경고와 캐스팅\n```\n\n**`setParameter` 로 바인딩**한다. **문자열을 안 붙인다.**\n\n> **「DB 2편」 5.3절의 `${}` 이야기**다. **`\"... where m.name = '\" + name + \"'\"` 은 절대 안 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 메서드",
+   "ascii": "   MemberRepository\n\n   save(Member)          em.persist\n   findOne(Long)         em.find             pk lookup, uses the cache\n   findAll()             createQuery         always hits the db\n   findByName(String)    createQuery + param\n\n   two of them go through the cache, two do not",
+   "note": "**둘은 캐시를 거치고 둘은 안 거친다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`find` 와 JPQL 이 다르다",
+   "md": "**「JPA 기본편」에서 본 것**인데, **여기서 처음 실감**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무슨 일이 벌어지나",
+   "ascii": "   em.find(Member.class, 1L)\n     1  look in the persistence context\n     2  found?  return it, no sql\n     3  not found?  select, cache it, return\n\n   createQuery(\"select m from Member m\")\n     1  flush pending changes\n     2  send the sql\n     3  for each row: already in the context?  return that instance\n\n   step 3 of the query is the surprising one",
+   "note": "**쿼리의 3단계가 헷갈리는 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿼리도 캐시를 쓴다 — 결과만",
+   "md": "**JPQL 은 항상 DB 로** 간다. **캐시를 안 본다.**\n\n**그런데 결과를 만들 때는 캐시를 본다.**\n\n```java\nMember m1 = em.find(Member.class, 1L);      // 캐시에 들어감\nm1.setName(\"바뀐이름\");                       // 아직 flush 전\n\nList<Member> all = em.createQuery(\"select m from Member m\", Member.class)\n        .getResultList();\n\nMember m2 = all.get(0);\nlog.info(\"{}\", m1 == m2);          // true\nlog.info(\"{}\", m2.getName());      // 바뀐이름\n```\n\n**DB 에서 읽어 왔는데 캐시의 인스턴스**를 준다.\n\n**왜 그러나.** **같은 트랜잭션에서 같은 엔티티가 두 인스턴스면 어느 것이 진짜인지** 알 수 없다. **동일성을 보장**하려고 그렇게 한다.\n\n> **DB 의 값을 버리고 캐시의 값을 쓴다.** **내가 고친 것이 살아남는다.**\n\n**한 가지 더**가 있다.\n\n**JPQL 실행 전에 flush** 한다(「DB 2편」 6.6절). **안 그러면 방금 저장한 것이 결과에서 빠진다.**\n\n```java\nem.persist(member);\n// insert 가 아직 안 나갔다\nList<Member> all = em.createQuery(\"select m from Member m\").getResultList();\n// 여기서 insert 가 먼저 나간다\n```\n\n**5.6절의 로그에서 이 순서를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- save ---\n\n@Test\n@Transactional\nvoid 저장() {\n    Member member = new Member();\n    member.setName(\"kim\");\n    memberRepository.save(member);\n    em.flush();\n}\n\n#   Hibernate: \n#       select next value for member_seq\n#   Hibernate: \n#       insert into member (city, street, zipcode, name, member_id)\n#       values (?, ?, ?, ?, ?)\n#   binding parameter [1] as [VARCHAR] - [null]\n#   binding parameter [2] as [VARCHAR] - [null]\n#   binding parameter [3] as [VARCHAR] - [null]\n#   binding parameter [4] as [VARCHAR] - [kim]\n#   binding parameter [5] as [BIGINT] - [1]\n\n#   주소를 안 넣어서 null 셋이 들어갔다\n\n# --- findOne, 방금 저장한 것 ---\n\nMember found = memberRepository.findOne(member.getId());\n\n#   (SQL 없음)\n\n#   1차 캐시에서 왔다\n\nlog.info(\"{}\", found == member);\n#   true\n\n# --- findOne, 새 트랜잭션에서 ---\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n#   binding parameter [1] as [BIGINT] - [1]\n\n# --- findAll ---\n\nmemberRepository.findAll();\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0\n\n#   where 가 없다\n#   방금 findOne 으로 캐시에 넣었어도 SQL 이 나간다\n\n# --- findByName ---\n\nmemberRepository.findByName(\"kim\");\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.name=?\n#   binding parameter [1] as [VARCHAR] - [kim]\n\n#   내가 쓴 JPQL: select m from Member m where m.name = :name\n#   나간 SQL:     select ... from member m1_0 where m1_0.name=?\n\n#   엔티티 이름 Member 가 테이블 member 로\n#   필드 m.name 이 컬럼 m1_0.name 으로 바뀌었다\n\n# --- 캐시가 이기는 것 ---\n\nMember m1 = memberRepository.findOne(1L);\nm1.setName(\"바뀐이름\");\n\nList<Member> all = memberRepository.findAll();\n\n#   Hibernate: \n#       update member set city=?, street=?, zipcode=?, name=?\n#       where member_id=?\n#   binding parameter [4] as [VARCHAR] - [바뀐이름]\n\n#   (JPQL 전에 flush 가 먼저 나갔다)\n\n#   Hibernate: \n#       select m1_0.member_id, ... from member m1_0\n\nlog.info(\"{}\", all.get(0) == m1);       # true\nlog.info(\"{}\", all.get(0).getName());   # 바뀐이름\n\n# --- 이 책의 첫 SQL 들이다 ---\n\n#   select next value / insert / select x3 / update\n\n#   3장까지는 DDL 만이었다",
+   "note": "**`save` 에 `null` 셋**이 들어갔다. **주소를 안 넣어서**다. **3.3절에서 `not null` 을 안 걸었으니 통과**한다.\n\n**방금 저장한 것을 `findOne` 하면 SQL 이 없다.** **`==` 가 `true`** 다 — 2.5절에서 확인한 그것이다.\n\n**`findAll` 은 캐시에 있어도 SQL 을 날린다.** **JPQL 은 DB 로 간다.**\n\n**맨 아래 블록이 이 절의 요점**이다. **JPQL 전에 `update` 가 먼저** 나갔고(flush), **결과는 캐시의 인스턴스**가 왔다.\n\n**이 책의 첫 SQL 들**이다. **다음 절에서 서비스를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**네 메서드**로 시작한다 — `save`·`findOne`·`findAll`·`findByName`.",
+  "**`createQuery` 에 타입**을 준다.",
+  "**`setParameter` 로 바인딩**한다 — 문자열을 안 붙인다.",
+  "**`em.find` 는 캐시를 먼저** 본다.",
+  "**JPQL 은 항상 DB 로** 간다.",
+  "**JPQL 실행 전에 flush** 한다.",
+  "**결과를 만들 때는 캐시의 인스턴스**를 준다 — 동일성 보장.",
+  "**DB 값보다 내가 고친 값이 살아남는다.**",
+  "**이 책의 첫 SQL** 이 나갔다."
+ ],
+ "drills": [
+  {
+   "task": "`MemberRepository` 를 만들고 저장한다.",
+   "done_when": "`insert` 로그를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "저장 직후 `findOne` 을 부른다.",
+   "done_when": "SQL 이 없고 `==` 가 `true` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "엔티티를 고치고 `findAll` 을 부른다.",
+   "done_when": "`update` 가 먼저 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JPQL 과 나간 SQL 을 나란히 적는다.",
+   "done_when": "엔티티명·필드명이 테이블명·컬럼명으로 바뀐 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`em.find` 와 JPQL 의 차이는?",
+   "a": "`find` 는 캐시를 먼저 보고 JPQL 은 항상 DB 로 간다."
+  },
+  {
+   "q": "JPQL 실행 전에 무엇을 하나?",
+   "a": "flush 한다. 안 그러면 방금 저장한 것이 결과에서 빠진다."
+  },
+  {
+   "q": "JPQL 결과가 왜 캐시의 인스턴스인가?",
+   "a": "같은 트랜잭션에서 같은 엔티티의 동일성을 보장하기 위해서다."
+  },
+  {
+   "q": "DB 값과 캐시 값이 다르면?",
+   "a": "캐시의 값, 즉 내가 고친 값이 살아남는다."
+  },
+  {
+   "q": "`setParameter` 를 왜 쓰나?",
+   "a": "문자열을 붙이면 SQL 인젝션과 오타 위험이 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
