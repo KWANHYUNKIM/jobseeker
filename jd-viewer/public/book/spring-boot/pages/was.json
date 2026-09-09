@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "was",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "WAR 와 WAS",
+ "summary": "서버가 애플리케이션을 품던 시절.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "소유 관계를 안다.",
+  "층을 가른다.",
+  "왜 main 이 없었는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장까지 부트가 한 일을** 봤다. **3장은 부트 이전 방식을 직접** 해 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 누구를 품나",
+   "ascii": "   who owns whom, in the old arrangement\n\n   the server was installed first, and it kept running\n   the application was a file, copied into a directory\n   one server could hold several applications at once\n\n   the application had no main method, and could not start itself",
+   "note": "**애플리케이션에 `main` 이 없어 스스로 못** 떴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서버가 먼저 있고 애플리케이션이 나중이었다",
+   "md": "**서버는 상주**했다.\n\n> **한 번 띄워 두고 계속** 뒀다.\n> **1.2절에서 깔아** 봤다.\n> **여러 애플리케이션을 같이** 품었다.\n\n**애플리케이션은 파일**이었다.\n\n> **WAR 하나를 폴더에** 넣었다.\n> **서버가 그걸 풀고** 읽었다.\n> **3.5절에서 해** 본다.\n\n**`main` 이** 없었다.\n\n> **스스로 시작할 방법이** 없었다.\n> **서버가 불러 줘야** 돌았다.\n> **4.1절에서 이걸** 뒤집는다.\n\n**서블릿 규약이 그 계약**이었다.\n\n> **\"이 인터페이스를 구현하면 불러 준다\"** 다.\n> **⑬ 1장의 HTTP 아래** 층이다.\n> **3.3절에서 그걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "소켓과 내 코드 사이",
+   "ascii": "   what sits between a socket and your code\n\n   the socket        bytes arrive on a port\n   the connector     parses the request line and headers\n   the container     picks a servlet by url pattern\n   your servlet      finally sees a request object\n\n   book 13 explained the first two, this one explains the third",
+   "note": "**⑬이 앞 둘을, 이 책이 셋째를** 설명한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "부트에서도 이 층은 그대로 있다",
+   "md": "**커넥터가 여전히** 있다.\n\n> **1.4절의 `nio-8080-exec-1` 이 그것**이다.\n> **이름이 그대로 남아** 있다.\n> **없어진 게 아니**다.\n\n**컨테이너도 그대로**다.\n\n> **디스패처 서블릿이 등록**된다.\n> **③ 2장에서 본** 것이다.\n> **2.1절에서 출처를** 확인했다.\n\n**바뀐 건 누가 띄우느냐**다.\n\n> **예전엔 서버가 애플리케이션을** 품었다.\n> **지금은 애플리케이션이 서버를** 품는다.\n> **3.9절에서 그 뒤집기를** 본다.\n\n**그래서 로그가 같**다.\n\n> **`Starting Servlet engine` 이 양쪽에** 나온다.\n> **3.10절에서 나란히** 띄운다.\n> **문구가 똑같**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 서버가 먼저 있다\n\n$ ls ~/apache-tomcat-10.1.26/webapps/\nROOT  docs  examples  host-manager  manager\n\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\nUsing CATALINA_BASE:   /Users/kwanhyun/apache-tomcat-10.1.26\nUsing CATALINA_HOME:   /Users/kwanhyun/apache-tomcat-10.1.26\nTomcat started.\n\n$ tail -5 ~/apache-tomcat-10.1.26/logs/catalina.out\n10-Sep-2026 05:03:11.204 INFO [main] o.a.catalina.startup.VersionLoggerListener\n  Server version name:   Apache Tomcat/10.1.26\n10-Sep-2026 05:03:11.891 INFO [main] o.a.catalina.core.StandardService.startInternal\n  Starting service [Catalina]\n10-Sep-2026 05:03:11.892 INFO [main] o.a.catalina.core.StandardEngine.startInternal\n  Starting Servlet engine: [Apache Tomcat/10.1.26]\n10-Sep-2026 05:03:12.418 INFO [main] o.a.coyote.http11.Http11NioProtocol.start\n  Starting ProtocolHandler [\"http-nio-8080\"]\n10-Sep-2026 05:03:12.431 INFO [main] o.a.catalina.startup.Catalina.start\n  Server startup in [1227] milliseconds\n\n--   내 애플리케이션은 아직 없다\n--   서버만 떠 있다\n\n\n-- 그런데 이미 응답한다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/\n200\n\n$ curl -s localhost:8080/ | head -3\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\n--   webapps/ROOT 가 응답했다\n--   서버가 애플리케이션을 여럿 품는다\n\n\n-- 무엇이 떠 있나\n\n$ curl -s -u admin:admin localhost:8080/manager/text/list\nOK - Listed applications for virtual host [localhost]\n/:running:0:ROOT\n/examples:running:0:examples\n/docs:running:0:docs\n/manager:running:0:manager\n/host-manager:running:0:host-manager\n\n--   다섯이 같은 포트를 나눠 쓴다\n--   경로로 갈린다\n\n\n-- 부트는 하나다\n\n$ ./gradlew bootRun 2>&1 | grep 'context path'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   경로가 하나다\n--   3.9절에서 이 차이를 본다\n\n\n-- 서블릿에는 main 이 없다\n\npackage study.war;\n\nimport jakarta.servlet.http.*;\nimport jakarta.servlet.annotation.WebServlet;\nimport java.io.IOException;\n\n@WebServlet(name = \"helloServlet\", urlPatterns = \"/hello-servlet\")\npublic class HelloServlet extends HttpServlet {\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        System.out.println(\"HelloServlet.doGet\");\n        resp.setContentType(\"text/plain;charset=UTF-8\");\n        resp.getWriter().write(\"hello servlet\");\n    }\n}\n\n$ grep -c 'public static void main' src/main/java/study/war/HelloServlet.java\n0\n\n--   시작점이 없다\n--   누가 불러 줘야 한다\n\n\n-- 직접 실행해 본다\n\n$ java -cp build/classes/java/main study.war.HelloServlet\n\nError: Main method not found in class study.war.HelloServlet, please define\nthe main method as:\n   public static void main(String[] args)\n\n--   자바가 시작할 방법이 없다\n--   4.1절에서 이 자리를 만든다\n\n\n-- 서버가 부르면 돈다\n\n$ curl -s localhost:8080/app/hello-servlet\nhello servlet\n\n$ grep 'HelloServlet.doGet' ~/apache-tomcat-10.1.26/logs/catalina.out\nHelloServlet.doGet\n\n--   내 코드가 돌았다\n--   시작한 건 서버다\n\n\n-- 층을 확인한다\n\n@WebServlet(urlPatterns = \"/layers\")\npublic class LayerServlet extends HttpServlet {\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        resp.setContentType(\"text/plain;charset=UTF-8\");\n        var out = resp.getWriter();\n        out.println(\"스레드:   \" + Thread.currentThread().getName());\n        out.println(\"프로토콜: \" + req.getProtocol());\n        out.println(\"메서드:   \" + req.getMethod());\n        out.println(\"경로:     \" + req.getRequestURI());\n        out.println(\"서버:     \" + getServletContext().getServerInfo());\n        out.println(\"컨텍스트: \" + req.getContextPath());\n    }\n}\n\n$ curl -s localhost:8080/app/layers\n스레드:   http-nio-8080-exec-3\n프로토콜: HTTP/1.1\n메서드:   GET\n경로:     /app/layers\n서버:     Apache Tomcat/10.1.26\n컨텍스트: /app\n\n--   ⑬ 3장의 요청 줄이 객체가 됐다\n--   커넥터가 파싱한 결과다\n\n\n-- 부트에서도 같은 값이 나온다\n\n@RestController\nclass LayerController {\n    @GetMapping(value = \"/layers\", produces = \"text/plain;charset=UTF-8\")\n    String layers(HttpServletRequest req, ServletContext ctx) {\n        return \"스레드:   \" + Thread.currentThread().getName() + \"\\n\"\n             + \"프로토콜: \" + req.getProtocol() + \"\\n\"\n             + \"서버:     \" + ctx.getServerInfo() + \"\\n\"\n             + \"컨텍스트: \" + req.getContextPath() + \"\\n\";\n    }\n}\n\n$ curl -s localhost:8080/layers\n스레드:   http-nio-8080-exec-1\n프로토콜: HTTP/1.1\n서버:     Apache Tomcat/10.1.26\n컨텍스트: \n\n--   서버 이름이 같다\n--   컨텍스트만 비었다\n--   같은 층 위에 있다\n\n\n-- 두 로그를 나란히 둔다\n\n$ grep 'Starting Servlet engine' ~/apache-tomcat-10.1.26/logs/catalina.out\n  Starting Servlet engine: [Apache Tomcat/10.1.26]\n\n$ ./gradlew bootRun 2>&1 | grep 'Starting Servlet engine'\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.26]\n\n--   문구가 같다\n--   같은 톰캣이 같은 말을 한다\n\n\n-- 서버를 끄면\n\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n\n$ curl -s -m 1 localhost:8080/app/hello-servlet\ncurl: (7) Failed to connect to localhost port 8080\n\n$ tail -2 ~/apache-tomcat-10.1.26/logs/catalina.out\n10-Sep-2026 05:04:02.118 INFO [main] o.a.catalina.core.StandardService.stopInternal\n  Stopping service [Catalina]\n\n--   애플리케이션도 같이 죽는다\n--   내가 끈 건 서버다\n\n\n-- 정리\n\n$ printf '%-20s %-22s %s\\n' \\\n  '누가 먼저'   '서버'       '애플리케이션이 나중' \\\n  '시작점'      '서버의 main' '내 코드에는 없음' \\\n  '단위'        'WAR 파일'   '폴더에 복사' \\\n  '개수'        '여럿'       '경로로 구분' \\\n  '끄면'        '다 죽음'    '서버가 주인'\n\n누가 먼저             서버                   애플리케이션이 나중\n시작점                서버의 main            내 코드에는 없음\n단위                  WAR 파일               폴더에 복사\n개수                  여럿                   경로로 구분\n끄면                  다 죽음                서버가 주인\n\n--   3.2절에서 그 서버를 제대로 띄운다",
+   "note": "**톰캣만 띄웠는데 `/` 가 200 을 돌려주고 애플리케이션 다섯이 같은 포트를 나눠** 쓴다.\n\n**서블릿에 `main` 이 없어 `java -cp` 로는 `Main method not found`** 다.\n\n**서버가 부르면 `HelloServlet.doGet` 이 `catalina.out` 에** 찍힌다.\n\n**서블릿과 부트 컨트롤러가 같은 `Apache Tomcat/10.1.26` 을 서버 이름으로** 돌려준다.\n\n**`Starting Servlet engine` 문구가 양쪽 로그에 똑같이** 나온다."
+  }
+ ],
+ "recap": [
+  "**서버가** 먼저였다.",
+  "**애플리케이션은 파일**이었다.",
+  "**`main` 이** 없었다.",
+  "**서버가 불러** 줬다.",
+  "**여럿을 같이** 품었다.",
+  "**경로로** 갈렸다.",
+  "**층은 지금도** 같다.",
+  "**로그 문구가** 같다.",
+  "**서버를 끄면 다** 죽었다."
+ ],
+ "drills": [
+  {
+   "task": "톰캣만 띄운다.",
+   "done_when": "기본 애플리케이션 응답을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서블릿을 직접 실행해 본다.",
+   "done_when": "`main` 이 없다는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "요청 정보를 찍는다.",
+   "done_when": "서버 이름과 컨텍스트를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 로그를 비교한다.",
+   "done_when": "같은 문구를 찾았다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예전 방식에서 무엇이 먼저 떴나?",
+   "a": "서버가 먼저 떠 있고 애플리케이션이 나중에 들어갔다."
+  },
+  {
+   "q": "서블릿에 `main` 이 없는 이유는?",
+   "a": "스스로 시작하지 않고 서버가 불러 주기 때문이다."
+  },
+  {
+   "q": "한 서버에 애플리케이션이 몇 개인가?",
+   "a": "여럿이며 컨텍스트 경로로 구분한다."
+  },
+  {
+   "q": "부트에서 이 층이 사라졌나?",
+   "a": "아니다. 커넥터와 컨테이너가 그대로 있다."
+  },
+  {
+   "q": "무엇이 뒤집혔나?",
+   "a": "서버가 애플리케이션을 품던 것이 반대가 되었다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WAS",
+   "def": "서블릿 컨테이너를 갖춘 상주 웹 애플리케이션 서버."
+  },
+  {
+   "term": "컨텍스트 경로",
+   "def": "한 서버 안에서 애플리케이션을 구분하는 URL 앞부분."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

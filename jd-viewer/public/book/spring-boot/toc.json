@@ -101,7 +101,7 @@
           "title": "WAR 와 WAS",
           "summary": "서버가 애플리케이션을 품던 시절.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -109,7 +109,7 @@
           "title": "톰캣 설치와 기동",
           "summary": "깔고 띄우고 로그를 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",

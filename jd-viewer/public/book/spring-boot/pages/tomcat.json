@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "tomcat",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "톰캣 설치와 기동",
+ "summary": "깔고 띄우고 로그를 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "구조를 안다.",
+  "설정을 고친다.",
+  "로그를 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 서버를 그냥** 띄웠다. **안에 무엇이 있는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "풀린 서버 안",
+   "ascii": "   what the unpacked server contains\n\n   bin      the scripts that start and stop it\n   conf     ports, users, and defaults\n   lib      the servlet api and the server itself\n   webapps  where applications are dropped\n   logs     where the evidence goes\n\n   the third directory is what becomes a dependency in chapter four",
+   "note": "**셋째가 4장에서 의존성이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "설정이 파일이고 재기동이 필요했다",
+   "md": "**포트가 XML 에** 있다.\n\n> **`conf/server.xml`** 이다.\n> **고치면 껐다 켜야** 한다.\n> **7장의 외부 설정과** 대비된다.\n\n**서버마다 다** 달랐다.\n\n> **개발자 컴퓨터마다 설정이** 갈렸다.\n> **\"내 컴에선 되는데\" 의 절반**이다.\n> **⑪ 1장에서 한 이야기**다.\n\n**`lib` 에 서블릿 API 가** 있다.\n\n> **애플리케이션이 그걸 빌려** 썼다.\n> **그래서 WAR 에 안** 넣었다.\n> **3.4절에서 그 규칙을** 본다.\n\n**로그가 파일로** 쌓였다.\n\n> **`catalina.out` 하나에 다** 들어갔다.\n> **표준 출력이 아니**다.\n> **컨테이너 시대에 문제가** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "기본으로 여는 포트 셋",
+   "ascii": "   three ports one tomcat opens by default\n\n   8080   http, the one everybody knows\n   8005   shutdown, a local socket that waits for a word\n   8009   ajp, disabled in recent versions\n\n   the second one is how the stop script talks to it",
+   "note": "**둘째로 종료 스크립트가** 말을 건다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "종료가 안 되면 프로세스가 남는다",
+   "md": "**`shutdown.sh` 는 부탁**이다.\n\n> **8005 로 낱말 하나를** 보낸다.\n> **서버가 안 들으면 안** 죽는다.\n> **아래에서 그걸** 본다.\n\n**포트가 남아** 있다.\n\n> **다음 기동이** 막힌다.\n> **1.3절의 그 메시지**다.\n> **`kill` 로** 끝낸다.\n\n**여러 개를 띄우려면 셋 다** 바꿔야 한다.\n\n> **8080 만 바꾸면 8005 가** 겹친다.\n> **아래에서 확인**한다.\n> **부트는 포트 하나면** 된다.\n\n**로그 파일이 안** 돌아간다.\n\n> **`catalina.out` 이 계속** 커진다.\n> **따로 잘라 줘야** 한다.\n> **부트는 표준 출력이 기본**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 안을 본다\n\n$ ls ~/apache-tomcat-10.1.26\nBUILDING.txt     LICENSE  README.md    bin   lib   temp     work\nCONTRIBUTING.md  NOTICE   RUNNING.txt  conf  logs  webapps\n\n$ du -sh ~/apache-tomcat-10.1.26/*/ | sort -rh | head -5\n 12M\t/Users/kwanhyun/apache-tomcat-10.1.26/lib\n2.6M\t/Users/kwanhyun/apache-tomcat-10.1.26/webapps\n744K\t/Users/kwanhyun/apache-tomcat-10.1.26/bin\n212K\t/Users/kwanhyun/apache-tomcat-10.1.26/conf\n  0B\t/Users/kwanhyun/apache-tomcat-10.1.26/logs\n\n--   lib 이 제일 크다\n--   4장에서 이게 의존성이 된다\n\n\n-- lib 에 무엇이 있나\n\n$ ls ~/apache-tomcat-10.1.26/lib | head -8\nannotations-api.jar\ncatalina-ant.jar\ncatalina-ha.jar\ncatalina-ssi.jar\ncatalina-storeconfig.jar\ncatalina-tribes.jar\ncatalina.jar\nel-api.jar\n\n$ ls ~/apache-tomcat-10.1.26/lib | wc -l\n      27\n\n$ ls ~/apache-tomcat-10.1.26/lib | grep servlet\njakarta.servlet-api.jar\n\n--   서블릿 API 가 서버에 있다\n--   내 WAR 에는 안 넣는다 (3.4절)\n\n\n-- 부트의 의존성과 비교한다\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'tomcat-embed|jakarta.servlet-api'\n\n+--- org.springframework.boot:spring-boot-starter-tomcat -> 3.3.2\n|    +--- jakarta.annotation:jakarta.annotation-api:2.1.1\n|    +--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n|    +--- org.apache.tomcat.embed:tomcat-embed-el:10.1.26\n|    \\--- org.apache.tomcat.embed:tomcat-embed-websocket:10.1.26\n\n$ find ~/.gradle/caches -name 'tomcat-embed-core-10.1.26.jar' \\\n    -exec ls -lh {} \\; | awk '{print $5}'\n3.6M\n\n--   27 개가 3 개로 줄었다\n--   embed 판은 관리자 앱 같은 게 빠졌다\n\n\n-- 설정 파일을 본다\n\n$ grep -n 'port=' ~/apache-tomcat-10.1.26/conf/server.xml | head -4\n22:<Server port=\"8005\" shutdown=\"SHUTDOWN\">\n69:    <Connector port=\"8080\" protocol=\"HTTP/1.1\"\n72:               redirectPort=\"8443\" />\n116:   <!-- <Connector port=\"8009\" protocol=\"AJP/1.3\" ... /> -->\n\n$ wc -l ~/apache-tomcat-10.1.26/conf/server.xml\n     172\n\n--   172 줄이다\n--   포트가 XML 안에 있다\n\n\n-- 포트를 바꾼다\n\n$ sed -i '' 's/Connector port=\"8080\"/Connector port=\"9080\"/' \\\n    ~/apache-tomcat-10.1.26/conf/server.xml\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n\n$ grep 'ProtocolHandler' ~/apache-tomcat-10.1.26/logs/catalina.out | tail -1\n  Starting ProtocolHandler [\"http-nio-9080\"]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9080/\n200\n\n--   파일을 고치고 재기동했다\n--   7.5절의 --server.port 와 비교된다\n\n\n-- 부트는 재기동이 필요 없다\n\n$ ./gradlew bootRun --args='--server.port=9081' 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 9081 (http) with context path '/'\n\n--   파일을 안 고쳤다\n--   7장에서 이 방식들을 본다\n\n\n-- 포트 셋을 확인한다\n\n$ lsof -iTCP -sTCP:LISTEN -P | grep java\njava    13022 kwanhyun   50u  IPv6  TCP *:9080 (LISTEN)\njava    13022 kwanhyun   62u  IPv6  TCP localhost:8005 (LISTEN)\n\n--   8005 는 로컬만 듣는다\n--   8009 는 주석 처리돼 안 열렸다\n\n\n-- 종료는 부탁이다\n\n$ printf 'SHUTDOWN' | nc localhost 8005\n\n$ tail -2 ~/apache-tomcat-10.1.26/logs/catalina.out\n10-Sep-2026 05:05:41.204 INFO [main] o.a.catalina.core.StandardService.stopInternal\n  Stopping service [Catalina]\n\n$ lsof -i :9080 | wc -l\n       0\n\n--   낱말 하나를 보냈다\n--   shutdown.sh 가 하는 일이 이거다\n\n\n-- 안 들으면 안 죽는다\n\n// 애플리케이션이 스레드를 붙잡고 있으면\n\n@WebServlet(urlPatterns = \"/hang\")\npublic class HangServlet extends HttpServlet {\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        while (true) { }\n    }\n}\n\n$ curl -s -m 1 localhost:9080/app/hang &\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ sleep 5 && lsof -i :9080 | grep -c LISTEN\n1\n\n$ ps aux | grep -c '[c]atalina'\n1\n\n--   포트는 닫혔는데 프로세스가 남았다\n--   kill 로 끝내야 한다\n\n$ pkill -f catalina && echo '끝냈다'\n끝냈다\n\n\n-- 두 개를 띄우려면\n\n$ cp -r ~/apache-tomcat-10.1.26 ~/tomcat-second\n$ sed -i '' 's/port=\"8005\"/port=\"8006\"/' ~/tomcat-second/conf/server.xml\n$ sed -i '' 's/Connector port=\"9080\"/Connector port=\"9090\"/' \\\n    ~/tomcat-second/conf/server.xml\n\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n$ ~/tomcat-second/bin/startup.sh\n\n$ lsof -iTCP -sTCP:LISTEN -P | grep -c java\n4\n\n--   포트 둘씩 넷이다\n--   8005 를 안 바꾸면 둘째가 안 뜬다\n\n\n-- 안 바꾸면\n\n$ sed -i '' 's/port=\"8006\"/port=\"8005\"/' ~/tomcat-second/conf/server.xml\n$ ~/tomcat-second/bin/startup.sh\n\n$ tail -3 ~/tomcat-second/logs/catalina.out\n10-Sep-2026 05:06:12.418 SEVERE [main] o.a.catalina.core.StandardServer.await\n  StandardServer.await: create[localhost:8005]:\n  java.net.BindException: Address already in use\n\n--   HTTP 포트만 바꿔서는 안 된다\n--   부트는 server.port 하나면 된다\n\n\n-- 로그가 파일로 쌓인다\n\n$ ls -lh ~/apache-tomcat-10.1.26/logs/\n-rw-r-----  1 kwanhyun  staff    18K  catalina.2026-09-10.log\n-rw-r-----  1 kwanhyun  staff    42K  catalina.out\n-rw-r-----  1 kwanhyun  staff   1.2K  localhost.2026-09-10.log\n-rw-r-----  1 kwanhyun  staff   842B  localhost_access_log.2026-09-10.txt\n\n$ tail -2 ~/apache-tomcat-10.1.26/logs/localhost_access_log.2026-09-10.txt\n0:0:0:0:0:0:0:1 - - [10/Sep/2026:05:05:12 +0900] \"GET / HTTP/1.1\" 200 11215\n0:0:0:0:0:0:0:1 - - [10/Sep/2026:05:05:31 +0900] \"GET /app/layers HTTP/1.1\" 200 142\n\n--   접근 로그가 따로 있다\n--   부트는 기본이 표준 출력이다\n\n\n-- 부트에서 접근 로그를 켜면\n\nserver:\n  tomcat:\n    accesslog:\n      enabled: true\n      directory: logs\n\n$ ./gradlew bootRun &\n$ curl -s localhost:8080/hello > /dev/null\n$ tail -1 logs/access_log.2026-09-10.log\n0:0:0:0:0:0:0:1 - - [10/Sep/2026:05:07:02 +0900] \"GET /hello HTTP/1.1\" 200 5\n\n--   같은 형식이다\n--   같은 톰캣이라 그렇다\n\n\n-- 정리\n\n$ printf '%-22s %-22s %s\\n' \\\n  '설치'     '풀고 27개 JAR'  '부트: 의존성 3개' \\\n  '포트'     'server.xml 172줄' '부트: 한 줄' \\\n  '재기동'   '설정마다 필요'   '부트: 인수로' \\\n  '종료'     '8005 로 부탁'    '부트: 프로세스 종료' \\\n  '두 개'    '포트 셋을 다'    '부트: 하나만' \\\n  '로그'     '파일로 쌓임'     '부트: 표준 출력'\n\n설치                   풀고 27개 JAR            부트: 의존성 3개\n포트                   server.xml 172줄         부트: 한 줄\n재기동                 설정마다 필요            부트: 인수로\n종료                   8005 로 부탁             부트: 프로세스 종료\n두 개                  포트 셋을 다             부트: 하나만\n로그                   파일로 쌓임              부트: 표준 출력\n\n--   3.3절에서 서블릿 컨테이너를 본다",
+   "note": "**`lib` 이 12MB 에 JAR 27개, 부트는 `tomcat-embed-core` 3.6MB 를 포함해** 셋이다.\n\n**포트가 `server.xml` 172줄 안에 있고 고치면 재기동이** 필요하다.\n\n**`SHUTDOWN` 낱말을 8005 로 보내면 서버가 멈추지만 스레드가 물려 있으면 프로세스가** 남는다.\n\n**둘째 톰캣은 8080 만 바꾸면 `BindException: Address already in use`** 다.\n\n**접근 로그 형식이 부트에서 켠 것과 똑같다 — 같은 톰캣이라** 그렇다."
+  }
+ ],
+ "recap": [
+  "**`lib` 이 제일** 크다.",
+  "**서블릿 API 가 서버에** 있다.",
+  "**포트가 XML 에** 있다.",
+  "**고치면 재기동**이다.",
+  "**포트를 셋** 연다.",
+  "**종료는 부탁**이다.",
+  "**안 들으면** 남는다.",
+  "**둘 띄우려면 셋 다** 바꾼다.",
+  "**로그가 파일로** 쌓인다."
+ ],
+ "drills": [
+  {
+   "task": "서버 디렉터리를 센다.",
+   "done_when": "무엇이 큰지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "포트를 바꾼다.",
+   "done_when": "재기동이 필요한 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "8005 로 종료 낱말을 보낸다.",
+   "done_when": "멈추는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "톰캣을 둘 띄운다.",
+   "done_when": "포트 셋을 다 바꿔야 하는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿 API 는 어디에 있었나?",
+   "a": "서버의 `lib` 에 있어 애플리케이션이 빌려 썼다."
+  },
+  {
+   "q": "포트를 바꾸려면?",
+   "a": "`server.xml` 을 고치고 재기동해야 했다."
+  },
+  {
+   "q": "종료 포트는 무엇을 하나?",
+   "a": "정해진 낱말을 받으면 서버를 멈춘다."
+  },
+  {
+   "q": "종료가 안 될 때는?",
+   "a": "스레드가 물려 있으면 프로세스를 직접 죽여야 한다."
+  },
+  {
+   "q": "톰캣 둘을 띄우려면?",
+   "a": "HTTP 포트뿐 아니라 종료 포트도 바꿔야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CATALINA_HOME",
+   "def": "톰캣이 설치된 디렉터리."
+  },
+  {
+   "term": "종료 포트",
+   "def": "정해진 문자열을 받아 서버를 멈추는 로컬 포트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
