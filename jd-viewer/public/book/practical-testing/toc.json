@@ -396,7 +396,7 @@
           "title": "가짜를 안 쓰는 길",
           "summary": "인터페이스와 페이크.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.9",
@@ -404,7 +404,7 @@
           "title": "정리",
           "summary": "쓸 자리와 안 쓸 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

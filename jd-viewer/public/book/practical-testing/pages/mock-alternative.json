@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "mock-alternative",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "가짜를 안 쓰는 길",
+ "summary": "인터페이스와 페이크.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "내 인터페이스를 만드는 이유를 안다.",
+  "페이크를 쓸 만한 조건을 안다.",
+  "목을 줄이는 설계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절에서 목의 대가를** 봤다. **줄이는 길이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스를 누가 소유하나",
+   "ascii": "   who owns the interface\n\n   the library owns it\n     JavaMailSender, RestTemplate, JpaRepository\n     wide, generic, twenty methods you do not use\n\n   you own it\n     MailSendClient { boolean sendEmail(from, to, subject, body) }\n     one method, your words, your return type\n\n   a fake is cheap for the second one and expensive for the first",
+   "note": "**내 것이면 페이크가 싸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "내 인터페이스를 만든다",
+   "md": "**라이브러리 인터페이스를 직접 쓰면**\n\n```java\n@Service\npublic class MailService {\n    private final JavaMailSender mailSender;   // 스프링 것\n\n    public boolean sendMail(...) {\n        MimeMessage message = mailSender.createMimeMessage();\n        MimeMessageHelper helper = new MimeMessageHelper(message, true);\n        helper.setFrom(...);\n        ...\n        mailSender.send(message);\n    }\n}\n```\n\n> **테스트하려면 `JavaMailSender` 를 목으로** 만든다.\n> **`createMimeMessage()` 도 스텁**해야 한다. **`MimeMessage` 도 목**이다.\n>\n> **목이 목을** 낳는다.\n\n**내 인터페이스로 감싸면**\n\n```java\npublic interface MailSendClient {\n    boolean sendEmail(String from, String to, String subject, String content);\n}\n```\n\n| | |\n|---|---|\n| **메서드가 하나** | 페이크가 다섯 줄 |\n| **내 용어** | `content` 지 `MimeMessage` 가 아니다 |\n| **반환이 `boolean`** | 내가 정한 계약 |\n\n> **6.1절에서 이미 이렇게** 했다.\n> **여기서 그 이유를** 정리한다.\n\n**구현은 프로덕션에**\n\n```java\n@Component\npublic class SmtpMailSendClient implements MailSendClient {\n    private final JavaMailSender mailSender;\n    // 라이브러리 코드가 여기 갇힌다\n}\n```\n\n> **`SmtpMailSendClient` 는 테스트를 안** 짠다.\n> **테스트할 로직이 없다.** **위임만** 한다.\n>\n> **테스트할 게 없게 만드는 게 요점**이다.\n\n**「스프링 핵심 원리」의 DIP** 다.\n\n> **상위 모듈이 하위 모듈에 의존하지 않는다.**\n> **테스트 가능성이 그 부산물**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 방식",
+   "ascii": "   the same test, three ways\n\n   real client       12s   sends mail    network dependent\n   mock              8s    nothing       stub per test\n   own fake          8s    records       write once, reuse\n\n   the fake also answers 'what was sent'\n   without a verify and without argument matchers",
+   "note": "**페이크는 \"뭘 보냈나\" 도** 답한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "페이크가 목보다 나은 점",
+   "md": "**① 한 번 만들면 재사용**\n\n```java\npublic class FakeMailSendClient implements MailSendClient {\n    private final List<SentMail> sent = new ArrayList<>();\n    private boolean shouldFail = false;\n\n    @Override\n    public boolean sendEmail(String from, String to, String subject, String content) {\n        if (shouldFail) return false;\n        sent.add(new SentMail(from, to, subject, content));\n        return true;\n    }\n\n    public List<SentMail> getSent() { return sent; }\n    public void failNext() { shouldFail = true; }\n}\n```\n\n> **테스트마다 `given(...)` 을 안** 쓴다.\n> **`new FakeMailSendClient()` 하나**다.\n\n**② 검증이 단언이 된다**\n\n```java\n// 목\nverify(mailSendClient).sendEmail(\n        eq(\"no-reply@cafekiosk.com\"), eq(\"admin@cafekiosk.com\"),\n        contains(\"매출 통계\"), contains(\"12000\"));\n\n// 페이크\nassertThat(fake.getSent()).hasSize(1)\n        .extracting(\"to\", \"subject\")\n        .containsExactly(tuple(\"admin@cafekiosk.com\", \"2026-09-09 매출 통계\"));\n```\n\n> **AssertJ 를 쓴다.** **2.3절의 실패 메시지가** 나온다.\n> **`ArgumentMatchers` 를 안** 배워도 된다.\n\n**③ 구현에 안 묶인다**\n\n> **6.7절의 문제**다. **`verify` 가 없으니 호출 방식이 바뀌어도** 안 깨진다.\n> **\"보낸 메일이 하나\" 만** 본다.\n\n**대가**\n\n| | |\n|---|---|\n| **클래스를 만든다** | 인터페이스가 좁으면 싸다 |\n| **동작이 진짜와 다를 수** 있다 | 페이크가 틀리면 테스트가 거짓말 |\n| **스프링에 등록해야** | `@TestConfiguration` |\n\n> **둘째가 실질적**이다.\n> **페이크가 복잡해지면 그것도 테스트를 짜야** 한다.\n>\n> **그럼 너무 복잡한 것**이다. **인터페이스를 더 좁힌다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 라이브러리 인터페이스를 목으로 ---\n\n@ExtendWith(MockitoExtension.class)\nclass MailServiceWithJavaMailSenderTest {\n\n    @Mock JavaMailSender mailSender;\n    @Mock MimeMessage mimeMessage;\n    @InjectMocks MailService mailService;\n\n    @Test\n    void sendMail() {\n        given(mailSender.createMimeMessage()).willReturn(mimeMessage);\n\n        boolean result = mailService.sendMail(\"a\", \"b\", \"c\", \"d\");\n\n        assertThat(result).isTrue();\n        verify(mailSender).send(mimeMessage);\n    }\n}\n\n$ ./gradlew test --tests MailServiceWithJavaMailSenderTest\n\nMailServiceWithJavaMailSenderTest > sendMail() PASSED\n\n#   목이 둘이다\n\n#   MimeMessage 를 목으로 만들었는데\n#   그 안에 뭐가 담겼는지는 검증할 수가 없다\n\n#   setFrom, setTo, setSubject 가 전부 목 위에서 돈다\n\n# --- 제목을 안 넣어도 ---\n\nhelper.setSubject(null);      // 버그\n\n$ ./gradlew test --tests MailServiceWithJavaMailSenderTest\n\nMailServiceWithJavaMailSenderTest > sendMail() PASSED\n\n#   통과한다\n\n#   목이 다 받아 준다  (6.7절)\n\n# --- 내 인터페이스로 ---\n\npublic interface MailSendClient {\n    boolean sendEmail(String from, String to, String subject, String content);\n}\n\n@Component\npublic class SmtpMailSendClient implements MailSendClient {\n    private final JavaMailSender mailSender;\n\n    @Override\n    public boolean sendEmail(String from, String to, String subject, String content) {\n        try {\n            MimeMessage message = mailSender.createMimeMessage();\n            MimeMessageHelper helper = new MimeMessageHelper(message, true);\n            helper.setFrom(from);\n            helper.setTo(to);\n            helper.setSubject(subject);\n            helper.setText(content, true);\n            mailSender.send(message);\n            return true;\n        } catch (MessagingException e) {\n            return false;\n        }\n    }\n}\n\n#   라이브러리 코드가 이 클래스에 갇혔다\n\n# --- 페이크 ---\n\npublic class FakeMailSendClient implements MailSendClient {\n\n    private final List<SentMail> sent = new ArrayList<>();\n    private boolean shouldFail = false;\n\n    @Override\n    public boolean sendEmail(String from, String to, String subject, String content) {\n        if (shouldFail) return false;\n        sent.add(new SentMail(from, to, subject, content));\n        return true;\n    }\n\n    public List<SentMail> getSent() { return sent; }\n    public void failNext() { shouldFail = true; }\n\n    public record SentMail(String from, String to, String subject, String content) { }\n}\n\n$ wc -l FakeMailSendClient.java\n21 FakeMailSendClient.java\n\n#   21줄이다\n\n# --- 페이크로 테스트 ---\n\n@TestConfiguration\nstatic class FakeMailConfig {\n    @Bean\n    @Primary\n    MailSendClient fakeMailSendClient() {\n        return new FakeMailSendClient();\n    }\n}\n\n@SpringBootTest\n@Import(FakeMailConfig.class)\nclass OrderStatisticsServiceFakeTest {\n\n    @Autowired MailSendClient mailSendClient;\n    @Autowired OrderStatisticsService orderStatisticsService;\n\n    @DisplayName(\"매출 통계 메일에 총 매출이 담긴다\")\n    @Test\n    void sendOrderStatisticsMail() {\n        // given\n        주문_3건_저장();\n\n        // when\n        orderStatisticsService.sendOrderStatisticsMail(\n                LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n        // then\n        FakeMailSendClient fake = (FakeMailSendClient) mailSendClient;\n        assertThat(fake.getSent()).hasSize(1)\n                .extracting(\"to\", \"subject\", \"content\")\n                .containsExactly(tuple(\n                        \"admin@cafekiosk.com\",\n                        \"2026-09-09 매출 통계\",\n                        \"총 매출: 12000\"));\n    }\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceFakeTest\n\nHibernate: insert into orders (...) values (?,?,?)\nHibernate: select ... from orders o1_0 where o1_0.registered_date_time between ? and ?\nHibernate: insert into mail_send_history (...) values (?,?,?,?)\n\nOrderStatisticsServiceFakeTest > 매출 통계 메일에 총 매출이 담긴다 PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   given 에 스텁이 하나도 없다\n\n#   그리고 '뭘 보냈는지' 를 AssertJ 로 검증했다\n\n# --- 계산을 틀리게 하면 ---\n\nString content = \"총 매출: \" + 0;\n\n$ ./gradlew test --tests OrderStatisticsServiceFakeTest\n\nOrderStatisticsServiceFakeTest > 매출 통계 메일에 총 매출이 담긴다 FAILED\n    java.lang.AssertionError:\n    Expecting ArrayList:\n      [(\"admin@cafekiosk.com\", \"2026-09-09 매출 통계\", \"총 매출: 0\")]\n    to contain exactly:\n      [(\"admin@cafekiosk.com\", \"2026-09-09 매출 통계\", \"총 매출: 12000\")]\n\n#   잡는다\n\n#   목의 ArgumentsAreDifferent 보다 읽기 쉽다  (6.3절)\n\n# --- 실패 경로 ---\n\n@DisplayName(\"메일 전송에 실패하면 예외가 난다\")\n@Test\nvoid sendFail() {\n    // given\n    ((FakeMailSendClient) mailSendClient).failNext();\n    주문_3건_저장();\n\n    // when & then\n    assertThatThrownBy(() -> orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\"))\n            .isInstanceOf(IllegalArgumentException.class);\n}\n\nOrderStatisticsServiceFakeTest > 메일 전송에 실패하면 예외가 난다 PASSED\n\n#   failNext() 한 줄이다\n\n#   목이었으면 given(...).willReturn(false) 다\n#   비슷한데 페이크는 메서드 이름이 의도를 말한다\n\n# --- 호출 방식을 바꿔 보면 ---\n\n#   MailService 가 sendEmail 을 두 번 부르도록 리팩터링\n\npublic boolean sendMail(...) {\n    boolean result = mailSendClient.sendEmail(from, to, subject, content);\n    if (!result) {\n        result = mailSendClient.sendEmail(from, to, subject, content);   // 재시도\n    }\n    ...\n}\n\n#   목 테스트\n\nverify(mailSendClient, times(1)).sendEmail(any(), any(), any(), any());\n\nOrderStatisticsServiceTest > ... PASSED\n\n#   성공하면 한 번이라 안 깨진다\n\n#   그런데 실패 케이스 테스트는\n\nverify(mailSendClient, times(1)).sendEmail(...);\n\nOrderStatisticsServiceTest > 메일 전송에 실패하면 ... FAILED\n    Wanted 1 time but was 2 times\n\n#   페이크 테스트는\n\nOrderStatisticsServiceFakeTest > 메일 전송에 실패하면 예외가 난다 PASSED\n\n#   보낸 결과만 보니 안 깨진다\n\n# --- 정리 ---\n\n#   라이브러리 목    목 2개, 내용 검증 불가\n#   내 인터페이스 목  목 1개, verify + matcher\n#   내 인터페이스 페이크  클래스 21줄, AssertJ 로 단언\n\n# --- 다음 절에서 ---\n\n#   6장을 정리한다",
+   "note": "**라이브러리 인터페이스를 목으로 하면 목이 목을** 낳는다. **`MimeMessage` 안의 내용은 검증할 수가** 없다. **제목을 `null` 로 해도** 통과한다.\n\n**내 인터페이스는 메서드가 하나**라 **페이크가 21줄**이다.\n\n**페이크 판은 given 에 스텁이 하나도** 없고 **\"뭘 보냈는지\" 를 AssertJ 로** 검증한다.\n\n**계산이 틀리면 `총 매출: 0` 이** 잡힌다. **`ArgumentsAreDifferent` 보다 읽기** 쉽다.\n\n**재시도를 넣으면 `verify(times(1))` 은 깨지고 페이크는 안** 깨진다."
+  }
+ ],
+ "recap": [
+  "**라이브러리 인터페이스를 목으로 하면 목이 목을** 낳는다.",
+  "**내 인터페이스는 메서드가 하나라 페이크가** 싸다.",
+  "**라이브러리 코드를 구현 클래스에** 가둔다.",
+  "**그 구현은 테스트를 안 짠다** — 테스트할 로직이 없다.",
+  "**페이크는 한 번 만들면 모든 테스트가** 쓴다.",
+  "**검증이 `verify` 가 아니라 `assertThat`** 이 된다.",
+  "**실패 메시지가 읽기** 쉽다.",
+  "**호출 방식이 바뀌어도 안** 깨진다.",
+  "**페이크가 복잡해지면 인터페이스를 더** 좁힌다."
+ ],
+ "drills": [
+  {
+   "task": "라이브러리 인터페이스를 목으로 테스트해 본다.",
+   "done_when": "목이 몇 개 필요한지 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "내 인터페이스로 감싼다.",
+   "done_when": "메서드가 하나가 된 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "페이크를 만들어 등록한다.",
+   "done_when": "`given` 없이 테스트가 도는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "호출 방식을 바꿔 본다.",
+   "done_when": "목만 깨지는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "라이브러리 인터페이스를 목으로 하면?",
+   "a": "반환 타입도 목이라 목이 목을 낳고 내용 검증이 안 된다."
+  },
+  {
+   "q": "내 인터페이스의 이점은?",
+   "a": "메서드가 하나라 페이크가 싸고 내 용어로 계약을 정한다."
+  },
+  {
+   "q": "구현 클래스는 테스트하나?",
+   "a": "안 한다. 위임만 하고 테스트할 로직이 없게 만드는 게 요점이다."
+  },
+  {
+   "q": "페이크의 검증은?",
+   "a": "`verify` 가 아니라 `assertThat` 이다. 실패 메시지가 읽기 쉽다."
+  },
+  {
+   "q": "페이크가 복잡해지면?",
+   "a": "인터페이스를 더 좁힌다. 페이크에 테스트가 필요하면 너무 복잡한 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Test Double (개념 출처)",
+   "url": "https://martinfowler.com/bliki/TestDouble.html",
+   "publisher": "Martin Fowler"
+  },
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
