@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "v0",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "요구사항 없는 버전",
+ "summary": "아무것도 안 하는 세 겹.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "출발점을 만든다.",
+  "감싸진 게 없는 걸 확인한다.",
+  "요구사항을 적는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 열둘이 이미 감싸져** 있었다. **다 떼고 맨손으로** 시작한다."
+  },
+  {
+   "type": "figure",
+   "caption": "예제의 모양",
+   "ascii": "   the sample, and why it is shaped this way\n\n   three layers, so nesting is visible\n   one slow call at the bottom, so time means something\n   one input that throws, so the failure path is real\n\n   nothing else; every line added from here is the requirement",
+   "note": "**여기서부터 더해지는 모든 줄이 곧** 요구사항이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "출발점이 깨끗해야 diff 가 이야기가 된다",
+   "md": "**애너테이션을 다** 뗀다.\n\n> **1.4절에서 붙였던 것들**이다.\n> **감싸진 게 0 개여야** 한다.\n> **아래에서 확인**한다.\n\n**세 겹은** 둔다.\n\n> **1.3절에서 만든 그것**이다.\n> **중첩을 보여야** 한다.\n> **2.4절의 화살표가 여기서** 나온다.\n\n**느린 것 하나를** 둔다.\n\n> **시간이 뜻을 갖게** 한다.\n> **1 초를** 잔다.\n> **아래에서 재** 본다.\n\n**터지는 입력도** 둔다.\n\n> **실패 경로가** 필요하다.\n> **2.2절에서 그게** 문제가 된다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "일부러 없는 것들",
+   "ascii": "   what the starting point deliberately does not have\n\n   no annotations that wrap anything\n   no logging beyond one line per layer\n   no try blocks, no timers, no identifiers\n\n   so the diff of every later chapter is the whole story",
+   "note": "**이후 장들의 diff 가 이야기 전체가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "요구사항을 미리 다 읽고 설계하면 안 된다",
+   "md": "**한 줄씩 온**다.\n\n> **실무에서 그렇게** 온다.\n> **아래에서 순서대로** 적는다.\n> **그때마다 고쳐** 본다.\n\n**처음엔 쉬워** 보인다.\n\n> **로그 한 줄이면 되는** 줄 안다.\n> **2.3절부터 아프**다.\n> **그 순서를 겪어야** 한다.\n\n**미리 프록시로 가면 안** 된다.\n\n> **왜 필요한지 모르고** 쓴다.\n> **5장까지 안** 간다.\n> **손으로 다** 해 본다.\n\n**되돌릴 수 있게 커밋해** 둔다.\n\n> **버전마다 태그를** 단다.\n> **아래에서 그렇게** 한다.\n> **나중에 나란히** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 붙였던 것을 뗀다\n\n$ grep -rn '@Transactional\\|@Async\\|@Cacheable' src/main/java/\nsrc/main/java/study/adv/OrderServiceImpl.java:14:    @Transactional\nsrc/main/java/study/adv/MailService.java:11:    @Async\nsrc/main/java/study/adv/PriceService.java:12:    @Cacheable(\"price\")\n\n$ git rm -q src/main/java/study/adv/MailService.java \\\n           src/main/java/study/adv/PriceService.java\n$ sed -i '' '/@Transactional/d' src/main/java/study/adv/OrderServiceImpl.java\n\n$ grep -rc '@Transactional\\|@Async\\|@Cacheable' src/main/java/ | grep -v ':0'\n\n\n-- 인터페이스도 뺀다\n\n$ git rm -q src/main/java/study/adv/OrderService.java\n$ git mv src/main/java/study/adv/OrderServiceImpl.java \\\n         src/main/java/study/adv/OrderService.java\n$ sed -i '' 's/class OrderServiceImpl implements OrderService/class OrderService/' \\\n         src/main/java/study/adv/OrderService.java\n\n$ find src/main/java -name '*.java' | sort\nsrc/main/java/study/adv/AdvApplication.java\nsrc/main/java/study/adv/OrderController.java\nsrc/main/java/study/adv/OrderRepository.java\nsrc/main/java/study/adv/OrderService.java\nsrc/main/java/study/adv/WhoController.java\n\n--   다섯 개다\n--   5장에서 인터페이스를 다시 만든다\n\n\n-- 지금 코드 전부\n\n@RestController\n@RequiredArgsConstructor\npublic class OrderController {\n    private final OrderService orderService;\n\n    @GetMapping(\"/request\")\n    public String request(String itemId) {\n        orderService.orderItem(itemId);\n        return \"ok\";\n    }\n}\n\n@Service\n@RequiredArgsConstructor\npublic class OrderService {\n    private final OrderRepository orderRepository;\n\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n@Repository\npublic class OrderRepository {\n    public void save(String itemId) {\n        if (itemId.equals(\"ex\")) throw new IllegalStateException(\"예외 발생!\");\n        sleep(1000);\n    }\n}\n\n$ wc -l src/main/java/study/adv/Order*.java\n      18 src/main/java/study/adv/OrderController.java\n      16 src/main/java/study/adv/OrderService.java\n      22 src/main/java/study/adv/OrderRepository.java\n      56 total\n\n--   56 줄이다\n--   이 숫자를 계속 센다\n\n\n-- 감싸진 게 없다\n\n$ ./gradlew bootRun > /dev/null 2>&1 &\n$ curl -s localhost:8080/who/all\norderController      study.adv.OrderController\norderService         study.adv.OrderService\norderRepository      study.adv.OrderRepository\nwhoController        study.adv.WhoController\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$\\|Proxy'\n0\n\n$ curl -s localhost:8080/who/count\n전체 빈:        174\n감싸진 것:      3\n  CGLIB:        0\n  JDK:          3\n\n$ curl -s localhost:8080/who/proxies\ntransactionManager             jdk.proxy2.$Proxy118\nentityManagerFactory           jdk.proxy2.$Proxy126\nsharedEntityManager            jdk.proxy2.$Proxy131\n\n--   1.4절의 12 개가 3 개로 줄었다\n--   내 클래스는 하나도 안 감싸졌다\n--   남은 셋은 부트가 안에서 쓰는 것들이다\n\n\n-- 정상 흐름\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/request?itemId=연필'\n1.008\n\n$ wc -l < logs/app.log\n      42\n$ tail -1 logs/app.log\n07:25:41.204 INFO  [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]\n  - Initializing Spring DispatcherServlet 'dispatcherServlet'\n\n--   내 코드가 찍은 줄이 하나도 없다\n\n\n-- 예외 흐름\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n$ curl -s 'localhost:8080/request?itemId=ex' | python3 -m json.tool\n{\n    \"timestamp\": \"2026-09-10T07:25:52.104+00:00\",\n    \"status\": 500,\n    \"error\": \"Internal Server Error\",\n    \"path\": \"/request\"\n}\n\n$ grep -c 'IllegalStateException' logs/app.log\n1\n\n--   ⑯ 8장에서 본 그 기본 오류 응답이다\n--   어디서 터졌는지는 스택 트레이스뿐이다\n\n\n-- 태그를 달아 둔다\n\n$ git add -A && git commit -q -m 'chore: v0 출발점'\n$ git tag v0\n$ git log --oneline -1\na41c9f2 chore: v0 출발점\n\n$ git tag\nv0\n\n--   버전마다 태그를 단다\n--   2.7절에서 나란히 센다\n\n\n-- 요구사항이 온다\n\n$ cat 요구사항.md\n① 모든 PUBLIC 메서드의 호출과 응답 로그를 남긴다\n② 애플리케이션의 흐름을 변경하면 안 된다\n   - 로그 때문에 기능이 바뀌면 안 된다\n③ 메서드 호출에 걸린 시간을 남긴다\n④ 정상 흐름과 예외 흐름을 구분한다\n   - 예외가 나도 로그가 남아야 한다\n⑤ 메서드 호출의 깊이를 표현한다\n⑥ HTTP 요청 하나를 구분할 수 있어야 한다\n   - 요청마다 같은 ID 를 남긴다\n   - HTTP 요청이 다르면 다른 ID 여야 한다\n\n$ wc -l < 요구사항.md\n      10\n\n--   ①부터 하나씩 한다\n--   ②가 제일 어렵다\n\n\n-- 만들 로그의 모양\n\n$ cat 목표.txt\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ cat 목표-예외.txt\n[b7119f27] OrderController.request()\n[b7119f27] |-->OrderService.orderItem()\n[b7119f27] |   |-->OrderRepository.save()\n[b7119f27] |   |<X-OrderRepository.save() time=0ms ex=java.lang.IllegalStateException: 예외 발생!\n[b7119f27] |<X-OrderService.orderItem() time=10ms ex=java.lang.IllegalStateException: 예외 발생!\n[b7119f27] OrderController.request() time=11ms ex=java.lang.IllegalStateException: 예외 발생!\n\n--   1.1 절에서 본 그 여섯 줄이다\n--   9장에서 애너테이션 한 줄로 다시 만든다\n\n\n-- 지금 상태를 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -c 'study.adv' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=orderService'\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   2.2 절에서 첫 로그를 넣는다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '파일'      '5 개' \\\n  '줄'        '56' \\\n  '내 프록시' '0 개' \\\n  '부트 것'   '3 개' \\\n  '정상'      '1.008 초' \\\n  '예외'      '500' \\\n  '내 로그'   '0 줄' \\\n  '요구사항'  '여섯' \\\n  '태그'      'v0'\n\n파일                     5 개\n줄                       56\n내 프록시                0 개\n부트 것                  3 개\n정상                     1.008 초\n예외                     500\n내 로그                  0 줄\n요구사항                 여섯\n태그                     v0",
+   "note": "**1.4절에서 붙였던 애너테이션을 다 떼니 내 클래스 중 감싸진 것이 0 개, 남은 셋은 부트가 안에서 쓰는** 것들이다.\n\n**세 클래스가 56 줄이고 내 코드가 찍은 로그가 0 줄**이다.\n\n**정상은 1.008 초, `ex` 를 주면 500 에 스택 트레이스** 하나다.\n\n**요구사항 여섯 개가 한꺼번에 왔고 ②가 제일** 어렵다.\n\n**목표 로그 여섯 줄이 1.1절에서 본 그것이고 9장에서 한 줄로 다시** 만든다."
+  }
+ ],
+ "recap": [
+  "**다** 뗐다.",
+  "**세 겹은** 남겼다.",
+  "**56 줄**이다.",
+  "**내 프록시는 0 개**다.",
+  "**1 초** 걸린다.",
+  "**예외 입력도** 있다.",
+  "**내 로그는 0 줄**이다.",
+  "**요구사항이** 여섯이다.",
+  "**태그를** 단다."
+ ],
+ "drills": [
+  {
+   "task": "애너테이션을 다 뗀다.",
+   "done_when": "감싸진 게 0 개인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "줄 수를 센다.",
+   "done_when": "출발점 숫자를 적어 뒀다.",
+   "minutes": 10
+  },
+  {
+   "task": "정상과 예외를 둘 다 부른다.",
+   "done_when": "1.008 초와 500 을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "태그를 단다.",
+   "done_when": "되돌릴 수 있게 해 뒀다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "출발점을 왜 깨끗하게 만드나?",
+   "a": "이후 장의 diff 가 그대로 이야기가 되게 하려고다."
+  },
+  {
+   "q": "왜 세 겹인가?",
+   "a": "메서드 호출 깊이를 보이려면 최소 셋이 필요해서다."
+  },
+  {
+   "q": "저장소가 왜 잠드나?",
+   "a": "시간 로그가 뜻을 갖게 하려고다."
+  },
+  {
+   "q": "요구사항 중 제일 어려운 것은?",
+   "a": "흐름을 바꾸지 않는다는 것이다."
+  },
+  {
+   "q": "내 클래스 중 감싸진 것은 몇 개인가?",
+   "a": "0 개다. 남은 셋은 부트가 안에서 쓰는 것들이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "출발점",
+   "def": "요구사항을 하나도 반영하지 않은 최소 구조."
+  },
+  {
+   "term": "요구사항 목록",
+   "def": "한 줄씩 반영해 가며 코드가 어떻게 망가지는지 보는 재료."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -62,7 +62,7 @@
           "title": "요구사항 없는 버전",
           "summary": "아무것도 안 하는 세 겹.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -70,7 +70,7 @@
           "title": "로그 넣기",
           "summary": "들어오고 나가는 것을 찍는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",

@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "v1-log",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "로그 넣기",
+ "summary": "들어오고 나가는 것을 찍는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "짝으로 찍는다.",
+  "예외에도 남긴다.",
+  "흐름을 안 바꾼다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 ①과 ③과 ④를 한꺼번에** 한다. **②를 지키면서** 해야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "짝으로 나와야 한다",
+   "ascii": "   a log that must come in pairs\n\n   one line when the method is entered\n   one line when it leaves, whichever way it leaves\n\n   the second line is the one people forget on the failure path",
+   "note": "**실패 경로의 둘째 줄을 사람들이** 잊는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예외가 났을 때가 제일 알고 싶다",
+   "md": "**정상은 굳이 안 봐도** 된다.\n\n> **잘 돌면 안** 본다.\n> **터졌을 때 로그를** 찾는다.\n> **그때 없으면 소용** 없다.\n\n**`try` 만으로는 안** 된다.\n\n> **`return` 뒤가 안** 돈다.\n> **아래에서 그걸** 겪는다.\n> **`finally` 가** 필요하다.\n\n**삼키면 안** 된다.\n\n> **요구사항 ②**다.\n> **로그 때문에 500 이 200 이 되면** 안 된다.\n> **아래에서 그 실수를** 만든다.\n\n**시간도 같이** 잰다.\n\n> **들어올 때 찍어** 둔다.\n> **나갈 때 뺀**다.\n> **아래에서 그** 값을 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "나가는 길이 셋",
+   "ascii": "   three ways a method can leave\n\n   it returns\n   it throws\n   it throws something not declared\n\n   only a finally block covers all three, and it must not swallow",
+   "note": "**셋을 다 덮는 건 `finally` 뿐이고 삼키면 안** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "로그가 흐름을 바꾸면 그건 버그다",
+   "md": "**삼키면 오류가** 사라진다.\n\n> **`catch` 만 쓰고 안 던지면** 그렇다.\n> **아래에서 500 이 200 이** 된다.\n> **제일 나쁜 실수**다.\n\n**로그에서 터지면** 죽는다.\n\n> **인자를 문자열로** 만들 때다.\n> **`toString` 이 터진**다.\n> **아래에서 그걸** 겪는다.\n\n**성능도** 든다.\n\n> **문자열을 미리** 만든다.\n> **자리표시자를** 쓴다.\n> **아래에서 재** 본다.\n\n**세 곳에 똑같이** 적는다.\n\n> **1.2절의 그** 중복이다.\n> **아래에서 세어** 본다.\n> **2.6절에서 그게** 커진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 로그를 담을 것을 만든다\n\n@Slf4j\n@Component\npublic class TraceV1 {\n\n    public TraceStatus begin(String message) {\n        long startTimeMs = System.currentTimeMillis();\n        log.info(\"[{}] {}\", \"\", message);\n        return new TraceStatus(startTimeMs, message);\n    }\n\n    public void end(TraceStatus status) {\n        complete(status, null);\n    }\n\n    public void exception(TraceStatus status, Exception e) {\n        complete(status, e);\n    }\n\n    private void complete(TraceStatus status, Exception e) {\n        long resultTimeMs = System.currentTimeMillis() - status.getStartTimeMs();\n        if (e == null) log.info(\"[{}] {} time={}ms\", \"\", status.getMessage(), resultTimeMs);\n        else log.info(\"[{}] {} time={}ms ex={}\", \"\", status.getMessage(), resultTimeMs, e.toString());\n    }\n}\n\n$ wc -l src/main/java/study/adv/trace/TraceV1.java\n      28\n\n\n-- 세 곳에 넣는다\n\npublic String request(String itemId) {\n    TraceStatus status = null;\n    try {\n        status = trace.begin(\"OrderController.request()\");\n        orderService.orderItem(itemId);\n        trace.end(status);\n        return \"ok\";\n    } catch (Exception e) {\n        trace.exception(status, e);\n        throw e;                    // 반드시 다시 던진다\n    }\n}\n\n$ grep -c 'trace.begin' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n      98 total\n\n--   56 줄이 98 줄이 됐다\n--   42 줄이 늘었다\n\n\n-- 정상 흐름\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6\n07:26:12.104 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderController.request()\n07:26:12.105 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderService.orderItem()\n07:26:12.106 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderRepository.save()\n07:26:13.110 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderRepository.save() time=1004ms\n07:26:13.111 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderService.orderItem() time=1006ms\n07:26:13.112 INFO  [http-nio-8080-exec-1] study.adv.trace.TraceV1 - [] OrderController.request() time=1007ms\n\n--   여섯 줄이 나왔다\n--   대괄호가 비어 있다, 2.3 절에서 채운다\n--   들여쓰기가 없다, 2.4 절에서 넣는다\n\n\n-- 예외 흐름\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n$ grep 'study.adv.trace' logs/app.log | tail -6\n07:26:22.104 INFO  ... - [] OrderController.request()\n07:26:22.105 INFO  ... - [] OrderService.orderItem()\n07:26:22.106 INFO  ... - [] OrderRepository.save()\n07:26:22.107 INFO  ... - [] OrderRepository.save() time=1ms\n  ex=java.lang.IllegalStateException: 예외 발생!\n07:26:22.108 INFO  ... - [] OrderService.orderItem() time=3ms\n  ex=java.lang.IllegalStateException: 예외 발생!\n07:26:22.109 INFO  ... - [] OrderController.request() time=5ms\n  ex=java.lang.IllegalStateException: 예외 발생!\n\n--   예외에도 여섯 줄이 나왔다\n--   500 도 그대로다\n\n\n-- 삼켜 보면\n\n} catch (Exception e) {\n    trace.exception(status, e);\n    // throw e;   지웠다\n}\nreturn \"ok\";\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n200\n$ curl -s 'localhost:8080/request?itemId=ex'\nok\n\n$ grep -c 'ex=java.lang.IllegalState' logs/app.log\n3\n\n--   로그는 남았는데 오류가 사라졌다\n--   요구사항 ② 를 어겼다\n--   제일 나쁜 실수다\n\n$ git checkout src/main/java/study/adv/\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n\n-- try 만 쓰면\n\ntry {\n    status = trace.begin(\"...\");\n    orderService.orderItem(itemId);\n    trace.end(status);\n    return \"ok\";\n} finally {\n    // 여기서 end 를 부르면?\n}\n\n// 이렇게 쓰면 안 된다\ntry {\n    status = trace.begin(\"...\");\n    orderService.orderItem(itemId);\n    return \"ok\";\n} finally {\n    trace.end(status);       // 예외인데 정상으로 찍힌다\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep 'trace' logs/app.log | tail -1\n07:26:41.204 INFO  ... - [] OrderController.request() time=4ms\n\n$ grep -c 'ex=' logs/app.log\n0\n\n--   예외가 났는데 정상처럼 찍혔다\n--   catch 와 finally 를 섞으면 안 된다\n--   catch 로 나누고 다시 던진다\n\n\n-- 로그에서 터지면\n\npublic TraceStatus begin(String message) {\n    log.info(\"[{}] {} args={}\", \"\", message, args.toString());\n    ...\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -2\n07:26:52.104 ERROR ... - Servlet.service() threw exception:\n  java.lang.NullPointerException: Cannot invoke \"Object.toString()\"\n\n--   로그가 흐름을 바꿨다\n--   요구사항 ② 를 또 어겼다\n\n\n-- 자리표시자를 쓴다\n\n// 나쁜 것\nlog.info(\"[\" + id + \"] \" + message + \" time=\" + ms + \"ms\");\n\n// 좋은 것\nlog.info(\"[{}] {} time={}ms\", id, message, ms);\n\n$ curl -s 'localhost:8080/bench/log?n=1000000&mode=concat'\n문자열 이어 붙이기: 412 ms\n$ curl -s 'localhost:8080/bench/log?n=1000000&mode=placeholder'\n자리표시자:        18 ms\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.adv \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"WARN\"}'\n$ curl -s 'localhost:8080/bench/log?n=1000000&mode=concat'\n문자열 이어 붙이기: 398 ms\n$ curl -s 'localhost:8080/bench/log?n=1000000&mode=placeholder'\n자리표시자:        2 ms\n\n--   레벨이 꺼져 있어도 앞의 것은 만든다\n--   ⑯ 8.5절에서 레벨을 바꾸던 그 방법이다\n\n\n-- 세 곳이 똑같다\n\n$ diff <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderController.java | sed 's/request/X/g') \\\n       <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderService.java | sed 's/orderItem/X/g') \\\n  | grep -c '^[<>]'\n4\n\n$ grep -c 'try {' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'catch (Exception e)' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'throw e;' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n\n--   본문 한 줄에 감싸는 코드가 여덟 줄이다\n--   1.2 절에서 말한 그 중복이다\n\n\n-- 이름도 손으로 적는다\n\n$ grep -o 'begin(\"[A-Za-z.()]*\"' src/main/java/study/adv/Order*.java\nsrc/main/java/study/adv/OrderController.java:begin(\"OrderController.request()\"\nsrc/main/java/study/adv/OrderService.java:begin(\"OrderService.orderItem()\"\nsrc/main/java/study/adv/OrderRepository.java:begin(\"OrderRepository.save()\"\n\n--   1.2 절에서 어긋났던 그 자리다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'trace' logs/app.log | tail -2\n07:27:02.110 INFO  ... - [] OrderService.orderItem() time=1006ms\n07:27:02.111 INFO  ... - [] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ git add -A && git commit -q -m 'feat: v1 로그 추적기' && git tag v1\n\n--   아직 아무것도 안 감싸졌다\n--   전부 손으로 넣었다\n--   2.3 절에서 대괄호를 채운다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '줄'          '56 에서 98' \\\n  '넣은 곳'     '3' \\\n  '정상'        '여섯 줄' \\\n  '예외'        '여섯 줄, 500 유지' \\\n  '삼키면'      '200 이 됨' \\\n  'finally 만'  '정상처럼 찍힘' \\\n  '로그가 터지면' '흐름이 바뀜' \\\n  '자리표시자'  '412 대 18 ms' \\\n  '프록시'      '여전히 0 개'\n\n줄                         56 에서 98\n넣은 곳                    3\n정상                       여섯 줄\n예외                       여섯 줄, 500 유지\n삼키면                     200 이 됨\nfinally 만                 정상처럼 찍힘\n로그가 터지면              흐름이 바뀜\n자리표시자                 412 대 18 ms\n프록시                     여전히 0 개",
+   "note": "**56 줄이 98 줄이 되고 본문 한 줄에 감싸는 코드가 여덟 줄** 붙는다.\n\n**정상과 예외 둘 다 여섯 줄이 나오고 500 도 그대로**다.\n\n**다시 안 던지면 로그는 남는데 500 이 200 이 되어 요구사항 ②를** 어긴다.\n\n**`finally` 만 쓰면 예외인데 `ex=` 없이 정상처럼** 찍힌다.\n\n**자리표시자를 쓰면 412 ms 가 18 ms 이고 레벨을 꺼도 이어 붙이기는 398 ms 그대로**다."
+  }
+ ],
+ "recap": [
+  "**짝으로** 찍는다.",
+  "**예외에도** 남긴다.",
+  "**다시** 던진다.",
+  "**삼키면** 버그다.",
+  "**finally 만 쓰면** 안 된다.",
+  "**로그가 터지면** 안 된다.",
+  "**자리표시자를** 쓴다.",
+  "**여덟 줄이** 붙는다.",
+  "**이름은 손으로** 적는다."
+ ],
+ "drills": [
+  {
+   "task": "세 곳에 로그를 넣는다.",
+   "done_when": "여섯 줄이 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "다시 던지지 말아 본다.",
+   "done_when": "500 이 200 이 되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`finally` 만 써 본다.",
+   "done_when": "정상처럼 찍히는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 방식의 속도를 잰다.",
+   "done_when": "레벨을 꺼도 차이가 나는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 예외 경로가 더 중요한가?",
+   "a": "정상은 안 보고 터졌을 때 로그를 찾기 때문이다."
+  },
+  {
+   "q": "예외를 다시 안 던지면?",
+   "a": "오류가 사라져 흐름이 바뀐다. 요구사항 위반이다."
+  },
+  {
+   "q": "`finally` 하나로만 처리하면?",
+   "a": "예외인데 정상처럼 찍힌다. 나눠서 처리해야 한다."
+  },
+  {
+   "q": "자리표시자를 쓰는 이유는?",
+   "a": "레벨이 꺼져 있으면 문자열을 아예 안 만든다."
+  },
+  {
+   "q": "본문 한 줄에 몇 줄이 붙었나?",
+   "a": "여덟 줄이다. 세 곳에 똑같이 붙었다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "추적기",
+   "def": "시작과 끝을 짝으로 남기고 걸린 시간을 재는 도구."
+  },
+  {
+   "term": "자리표시자",
+   "def": "값을 나중에 끼워 넣는 로그 표기. 레벨이 꺼지면 만들지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  }
+ ]
+}
