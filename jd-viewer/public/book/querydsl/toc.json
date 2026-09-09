@@ -196,7 +196,7 @@
           "title": "결과 조회",
           "summary": "fetch 다섯 가지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -204,7 +204,7 @@
           "title": "정렬",
           "summary": "nulls last 까지.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",

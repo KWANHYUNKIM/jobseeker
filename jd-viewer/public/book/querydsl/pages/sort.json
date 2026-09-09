@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "sort",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "정렬",
+ "summary": "nulls last 까지.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "여러 키를 준다.",
+  "null 자리를 정한다.",
+  "동점을 없앤다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.5절에서 첫 건이 미정의라고** 했다. **정렬을 제대로 주는 법을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "null 은 어디로 가나",
+   "ascii": "   where a null goes when you sort by a nullable column\n\n   asc, unspecified   the database decides, and they disagree\n   asc nulls first    the empty ones come before everything\n   asc nulls last     the empty ones come after everything\n\n   the first row is portable code that behaves differently per database",
+   "note": "**첫 줄은 DB 마다 다르게** 군다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "정렬은 조립에서도 그냥 목록이다",
+   "md": "**`orderBy` 에 여러 개를** 준다.\n\n> **쉼표로** 나열한다.\n> **준 순서대로 `order by` 에** 붙는다.\n> **4.4절의 쉼표와 달리 여기는 순서가** 중요하다.\n\n**`asc`·`desc` 를 경로에** 붙인다.\n\n> **`member.age.desc()` 다.**\n> **`OrderSpecifier` 가** 나온다.\n> **⑭ 5.10절의 `Sort` 와 같은 자리**다.\n\n**`nullsFirst`·`nullsLast` 가** 있다.\n\n> **`desc().nullsLast()` 처럼** 잇는다.\n> **JPQL 에 그대로** 나간다.\n> **안 주면 DB 가** 정한다.\n\n**정렬 키가 유일해야** 한다.\n\n> **동점이면 순서가 안** 정해진다.\n> **⑭ 5.9절에서 한 이야기**다.\n> **`id` 를 보조로** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "동점이 있으면",
+   "ascii": "   the same data, sorted by age only\n\n   ten rows, three ages appear twice\n   the order inside each pair is not defined\n   two runs can return the pairs in different orders\n\n   adding the id as a second key makes the order total",
+   "note": "**`id` 를 더하면 순서가** 확정된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "정렬 컬럼이 select 에 없어도 된다",
+   "md": "**읽되 안 돌려** 준다.\n\n> **⑭ 8.3절에서 본 그것**이다.\n> **프로젝션과 정렬은 따로** 논다.\n> **인덱스를 못 타면 느려질 수** 있다.\n\n**연관을 타면 조인이** 생긴다.\n\n> **`member.team.name.asc()`** 다.\n> **4.2절의 점 하나가 여기서도** 그렇다.\n> **팀 없는 회원이 어떻게 되는지** 본다.\n\n**정렬을 동적으로 주려면 타입이** 필요하다.\n\n> **`OrderSpecifier` 배열로** 넘긴다.\n> **문자열로는 못** 준다.\n> **7.7절에서 그** 문제다.\n\n**대소문자 정렬도 DB 를** 탄다.\n\n> **H2 는 대문자가 앞**이다.\n> **`lower()` 로 맞출 수** 있다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 한 키로 정렬한다\n\n@Test\nvoid 한_키() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.age.desc())\n            .fetch()\n            .forEach(m -> System.out.println(m.getUsername() + \" \" + m.getAge()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age desc\nm4 40\nm7 35\nm3 30\nm10 30\nm6 25\n...\n\n--   30 이 둘인데 순서가 안 정해졌다\n\n\n-- 두 번 돌려 본다\n\n@Test\nvoid 두_번() {\n    for (int i = 0; i < 2; i++) {\n        em.clear();\n        List<String> names = queryFactory\n                .select(member.username).from(member)\n                .where(member.age.eq(30))\n                .orderBy(member.age.desc())\n                .fetch();\n        System.out.println(names);\n    }\n}\n\nHibernate: select m1_0.username from member m1_0\n           where m1_0.age=? order by m1_0.age desc\n[m3, m10]\nHibernate: select m1_0.username from member m1_0\n           where m1_0.age=? order by m1_0.age desc\n[m3, m10]\n\n--   여기서는 같았다\n--   보장된 것이 아니다\n--   ⑭ 5.9절의 그 이야기다\n\n\n-- 보조 키를 준다\n\n@Test\nvoid 보조_키() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.age.desc(), member.id.asc())\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.age desc,\n    member1.id asc */\n\nHibernate:\n    select ... from member m1_0\n    order by\n        m1_0.age desc,\n        m1_0.member_id\n\n--   asc 는 SQL 에서 생략됐다\n--   id 가 유일하니 순서가 확정이다\n\n\n-- 준 순서대로 붙는다\n\n@Test\nvoid 순서() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.username.asc(), member.age.desc())\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.username asc,\n    member1.age desc */\n\nHibernate:\n    select ... order by m1_0.username, m1_0.age desc\n\n--   4.4절의 where 와 달리 순서가 의미를 가진다\n\n\n-- null 이 섞이면\n\n@Test\nvoid null_섞임() {\n    em.clear();\n    queryFactory\n            .select(member.username, member.team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .orderBy(team.name.asc())\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %s%n\",\n                    t.get(member.username), t.get(member.team.name)));\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    team.name asc */\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    order by t1_0.name\nm1   teamA\nm2   teamA\nm3   teamA\nm4   teamA\nm5   teamB\nm6   teamB\nm7   teamB\nm8   null\nm9   null\nm10  null\n\n--   H2 는 null 을 뒤로 보냈다\n--   지정하지 않았는데도 그렇다\n\n\n-- 명시한다\n\n@Test\nvoid nulls_first() {\n    em.clear();\n    queryFactory\n            .select(member.username, member.team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .orderBy(team.name.asc().nullsFirst())\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %s%n\",\n                    t.get(member.username), t.get(member.team.name)));\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    team.name asc nulls first */\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    order by t1_0.name nulls first\nm8   null\nm9   null\nm10  null\nm1   teamA\n...\n\n--   앞으로 왔다\n--   DB 를 안 믿고 적는 게 낫다\n\n\n-- 정렬 컬럼이 select 에 없어도 된다\n\n@Test\nvoid select_밖() {\n    em.clear();\n    queryFactory\n            .select(member.username)\n            .from(member)\n            .orderBy(member.age.desc())\n            .fetch();\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age desc\n\n--   age 는 select 에 없다\n--   ⑭ 8.3절에서 본 그것이다\n\n\n-- 연관으로 정렬하면 조인이 생긴다\n\n@Test\nvoid 연관_정렬() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.team.name.asc())\n            .fetch()\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\norder by\n    team.name asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        t1_0.name\nm1\nm2\nm3\nm4\nm5\nm6\nm7\n\n--   inner join 이라 팀 없는 셋이 사라졌다\n--   정렬만 바꿨는데 건수가 줄었다\n--   4.12절에서 leftJoin 으로 푼다\n\n\n-- 대소문자 정렬\n\n@Test\nvoid 대소문자() {\n    em.persist(new Member(\"Zeta\", 1));\n    em.persist(new Member(\"alpha\", 1));\n    em.flush(); em.clear();\n\n    System.out.println(\"그대로: \" + queryFactory\n            .select(member.username).from(member)\n            .where(member.age.eq(1))\n            .orderBy(member.username.asc()).fetch());\n\n    em.clear();\n    System.out.println(\"lower:  \" + queryFactory\n            .select(member.username).from(member)\n            .where(member.age.eq(1))\n            .orderBy(member.username.lower().asc()).fetch());\n}\n\nHibernate: select m1_0.username from member m1_0\n           where m1_0.age=? order by m1_0.username\n그대로: [Zeta, alpha]\n/* select\n    member1.username\nfrom\n    Member member1\nwhere\n    member1.age = ?1\norder by\n    lower(member1.username) asc */\nHibernate:\n    select m1_0.username from member m1_0\n    where m1_0.age=? order by lower(m1_0.username)\nlower:  [alpha, Zeta]\n\n--   대문자가 앞이었다\n--   lower 로 맞췄다\n--   함수가 붙으면 인덱스를 못 탄다\n\n\n-- 동적으로 주려면 타입이 필요하다\n\n@Test\nvoid 동적_정렬() {\n    em.clear();\n    OrderSpecifier<?> order = true\n            ? member.age.desc()\n            : member.username.asc();\n\n    queryFactory.selectFrom(member).orderBy(order).fetch();\n}\n\n/* select member1 from Member member1 order by member1.age desc */\nHibernate: select ... order by m1_0.age desc\n\n--   문자열로는 못 준다\n--   7.7절에서 Sort 를 변환한다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  'desc()'         'order by ... desc' \\\n  'asc()'          'SQL 에서 생략됨' \\\n  'nullsLast()'    'nulls last 가 붙음' \\\n  '보조 키'        '동점을 없앤다' \\\n  '연관 정렬'      '조인이 생긴다' \\\n  'lower()'        '인덱스를 못 탄다'\n\ndesc()                   order by ... desc\nasc()                    SQL 에서 생략됨\nnullsLast()              nulls last 가 붙음\n보조 키                  동점을 없앤다\n연관 정렬                조인이 생긴다\nlower()                  인덱스를 못 탄다\n\n--   4.7절에서 페이징을 본다",
+   "note": "**`asc()` 는 SQL 에서 생략되고 `desc` 만** 남는다.\n\n**H2 는 지정 안 해도 `null` 을 뒤로 보내지만 `nullsFirst()` 를 주면 `nulls first` 가** 붙는다.\n\n**`select` 에 없는 `age` 로 정렬이** 된다.\n\n**`member.team.name` 으로 정렬하니 `inner join` 이 생겨 10건이 7건으로** 줄었다.\n\n**`Zeta` 가 `alpha` 앞이었고 `lower()` 를 씌우자** 뒤집혔다."
+  }
+ ],
+ "recap": [
+  "**여러 키를 나열**한다.",
+  "**순서가** 의미다.",
+  "**`asc` 는** 생략된다.",
+  "**`null` 자리를 적**는다.",
+  "**안 적으면 DB 가** 정한다.",
+  "**동점은 보조 키로** 없앤다.",
+  "**`select` 밖으로도** 정렬한다.",
+  "**연관 정렬은 조인을** 만든다.",
+  "**함수는 인덱스를** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "두 키로 정렬한다.",
+   "done_when": "순서가 반영되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`nullsFirst` 를 준다.",
+   "done_when": "JPQL 에 붙는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "연관으로 정렬한다.",
+   "done_when": "건수가 주는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`lower()` 로 정렬한다.",
+   "done_when": "결과가 바뀌는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`asc()` 가 SQL 에 안 보이는 이유는?",
+   "a": "기본값이라 생략되기 때문이다."
+  },
+  {
+   "q": "`null` 자리를 안 정하면?",
+   "a": "DB 마다 다르게 정렬된다."
+  },
+  {
+   "q": "동점 정렬의 해법은?",
+   "a": "유일한 보조 키를 함께 준다."
+  },
+  {
+   "q": "연관으로 정렬하면 무엇이 달라지나?",
+   "a": "내부 조인이 생겨 결과 건수가 줄 수 있다."
+  },
+  {
+   "q": "정렬을 동적으로 주려면?",
+   "a": "`OrderSpecifier` 로 넘긴다. 문자열은 안 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "OrderSpecifier",
+   "def": "정렬 대상과 방향, null 처리까지 담은 정렬 지정 객체."
+  },
+  {
+   "term": "전순서",
+   "def": "동점이 없어 결과 순서가 하나로 확정되는 정렬."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

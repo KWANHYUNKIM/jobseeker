@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "result-fetch",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "결과 조회",
+ "summary": "fetch 다섯 가지.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯을 가른다.",
+  "없앤 둘의 이유를 안다.",
+  "개수를 직접 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절까지 조건을** 만들었다. **이제 실행하는 낱말들을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "끝내는 다섯 가지",
+   "ascii": "   five ways to finish a query\n\n   fetch()        a list, empty if nothing matched\n   fetchOne()     one row, null if none, an exception if two\n   fetchFirst()   one row, with a limit of one added for you\n   fetchCount()   a count query, removed in 5.0\n   fetchResults() rows plus a count, removed in 5.0\n\n   the last two still compile, and they are deprecated for a reason",
+   "note": "**뒤 둘은 아직 컴파일되지만 이유가 있어** 사라졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "fetch 를 부르기 전엔 아무것도 안 나간다",
+   "md": "**1.3절에서 이미** 봤다.\n\n> **조립은 객체를 만드는** 일이다.\n> **`fetch` 가 실행 지점**이다.\n> **그 전엔 로그가 한 줄도** 없다.\n\n**`fetchOne` 은 `null` 을** 준다.\n\n> **JPQL 은 `NoResultException` 이었다.**\n> **4.1절에서 비교**했다.\n> **⑭ 5.8절과 같은 결**이다.\n\n**`fetchFirst` 는 `limit(1)`** 이다.\n\n> **두 건이어도 안** 터진다.\n> **SQL 에 `fetch first ? rows only` 가** 붙는다.\n> **⑭ 5.1절의 `findFirstBy` 와** 같다.\n\n**정렬이 없으면 첫 건이 미정의**다.\n\n> **어느 행이 올지 DB 가** 정한다.\n> **⑭ 5.9절에서 한 이야기**다.\n> **`orderBy` 를 같이** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "개수 쌍이 사라진 이유",
+   "ascii": "   why the count pair was taken away\n\n   it guessed the count query from the select query\n   a group by or a distinct made that guess wrong\n   the wrong number came back with no warning at all\n\n   so now you write the count query yourself, and you can see it",
+   "note": "**틀린 수가 경고 없이** 돌아왔다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "fetchResults 는 group by 에서 틀린 수를 준다",
+   "md": "**개수 쿼리를 추측**했다.\n\n> **`select` 를 `count` 로 바꿔** 썼다.\n> **`group by` 가 있으면 그게 안** 맞는다.\n> **묶기 전 행 수가** 나온다.\n\n**예외가 안** 났다.\n\n> **숫자가 그냥** 틀렸다.\n> **⑭ 8.7절의 조용한 `null` 과 같은 종류**다.\n> **그래서 5.0에서** 뺐다.\n\n**직접 쓰면 눈에** 보인다.\n\n> **`select(member.count())` 를 따로** 부른다.\n> **⑭ 5.11절의 `countQuery` 와 같은 발상**이다.\n> **7.4절에서 페이징에 쓴다.**\n\n**`fetchCount` 도 같은 이유**다.\n\n> **호출은 되지만 `@Deprecated`** 다.\n> **내부에서 같은 추측을** 한다.\n> **아래에서 경고를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- fetch\n\n@Test\nvoid fetch() {\n    em.clear();\n    List<Member> result = queryFactory.selectFrom(member).fetch();\n    System.out.println(\"건수: \" + result.size());\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n건수: 10\n\n\n-- 없으면 빈 리스트다\n\n@Test\nvoid fetch_없을_때() {\n    em.clear();\n    List<Member> r = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"없음\")).fetch();\n    System.out.println(\"건수: \" + r.size() + \", null? \" + (r == null));\n}\n\nHibernate: select ... where m1_0.username=?\n건수: 0, null? false\n\n--   ⑭ 5.8절의 컬렉션 계약과 같다\n\n\n-- fetchOne\n\n@Test\nvoid fetchOne() {\n    em.clear();\n    Member m = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(\"이름: \" + m.getUsername());\n\n    em.clear();\n    Member none = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"없음\")).fetchOne();\n    System.out.println(\"없을 때: \" + none);\n}\n\nHibernate: select ... where m1_0.username=?\n이름: m1\nHibernate: select ... where m1_0.username=?\n없을 때: null\n\n--   예외가 아니라 null 이다\n\n\n-- 두 건이면 터진다\n\n@Test\nvoid fetchOne_두_건() {\n    em.clear();\n    try {\n        queryFactory.selectFrom(member)\n                .where(member.age.eq(10)).fetchOne();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage());\n    }\n}\n\nHibernate: select ... from member m1_0 where m1_0.age=?\n예외: NonUniqueResultException\n말:   Only one result expected, but 2 results were found\n\n--   3.3절에서 10살이 둘이다\n\n\n-- fetchFirst\n\n@Test\nvoid fetchFirst() {\n    em.clear();\n    Member m = queryFactory.selectFrom(member)\n            .where(member.age.eq(10))\n            .orderBy(member.username.asc())\n            .fetchFirst();\n    System.out.println(\"이름: \" + m.getUsername());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age = ?1\norder by\n    member1.username asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age=?\n    order by\n        m1_0.username\n    fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [1]\n이름: m1\n\n--   limit 1 이 붙었다\n--   두 건이어도 안 터진다\n\n\n-- limit(1).fetchOne() 과 같다\n\n@Test\nvoid 같은_것() {\n    em.clear();\n    Member a = queryFactory.selectFrom(member)\n            .where(member.age.eq(10))\n            .orderBy(member.username.asc())\n            .limit(1).fetchOne();\n    System.out.println(\"이름: \" + a.getUsername());\n}\n\nHibernate:\n    select ... order by m1_0.username fetch first ? rows only\n이름: m1\n\n--   fetchFirst 가 이걸 줄인 것이다\n\n\n-- 정렬이 없으면\n\n@Test\nvoid 정렬_없이_첫_건() {\n    em.clear();\n    Member m = queryFactory.selectFrom(member)\n            .where(member.age.eq(10))\n            .fetchFirst();\n    System.out.println(\"이름: \" + m.getUsername());\n}\n\nHibernate:\n    select ... from member m1_0 where m1_0.age=?\n    fetch first ? rows only\n이름: m1\n\n--   여기서는 m1 이 왔다\n--   보장된 것이 아니다\n--   ⑭ 5.9절의 그 이야기다\n\n\n-- fetchResults 를 부르면\n\n@Test\nvoid fetchResults() {\n    em.clear();\n    QueryResults<Member> results = queryFactory.selectFrom(member)\n            .fetchResults();\n    System.out.println(\"전체: \" + results.getTotal());\n    System.out.println(\"내용: \" + results.getResults().size());\n}\n\n$ ./gradlew compileTestJava\n\nwarning: [deprecation] fetchResults() in FetchableQuery has been deprecated\n\n/* select\n    count(member1)\nfrom\n    Member member1 */\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n/* select\n    member1\nfrom\n    Member member1 */\nHibernate:\n    select ... from member m1_0\n전체: 10\n내용: 10\n\n--   쿼리가 둘이다\n--   개수를 먼저 셌다\n--   여기서는 맞았다\n\n\n-- group by 를 넣으면 틀린다\n\n@Test\nvoid fetchResults_group_by() {\n    em.clear();\n    QueryResults<Integer> results = queryFactory\n            .select(member.age)\n            .from(member)\n            .groupBy(member.age)\n            .fetchResults();\n\n    System.out.println(\"getTotal():   \" + results.getTotal());\n    System.out.println(\"실제 행 수:   \" + results.getResults().size());\n}\n\n/* select\n    count(member1.age)\nfrom\n    Member member1\ngroup by\n    member1.age */\nHibernate:\n    select\n        count(m1_0.age)\n    from\n        member m1_0\n    group by\n        m1_0.age\nHibernate:\n    select m1_0.age from member m1_0 group by m1_0.age\ngetTotal():   2\n실제 행 수:   7\n\n--   전체가 7 인데 2 라고 한다\n--   count 가 그룹마다 나와 첫 줄만 읽었다\n--   예외가 없다\n\n\n-- 직접 세면 맞는다\n\n@Test\nvoid 직접_센다() {\n    em.clear();\n    Long total = queryFactory\n            .select(member.age.countDistinct())\n            .from(member)\n            .fetchOne();\n\n    List<Integer> ages = queryFactory\n            .select(member.age)\n            .from(member)\n            .groupBy(member.age)\n            .fetch();\n\n    System.out.println(\"개수: \" + total + \", 행: \" + ages.size());\n}\n\n/* select\n    count(distinct member1.age)\nfrom\n    Member member1 */\nHibernate:\n    select\n        count(distinct m1_0.age)\n    from\n        member m1_0\n/* select member1.age from Member member1 group by member1.age */\nHibernate:\n    select m1_0.age from member m1_0 group by m1_0.age\n개수: 7, 행: 7\n\n--   내가 쓴 개수 쿼리라 맞는다\n--   ⑭ 5.11절의 countQuery 와 같은 발상이다\n\n\n-- fetchCount 도 같은 문제다\n\n@Test\nvoid fetchCount() {\n    em.clear();\n    long n = queryFactory.select(member.age).from(member)\n            .groupBy(member.age)\n            .fetchCount();\n    System.out.println(\"fetchCount: \" + n);\n}\n\nwarning: [deprecation] fetchCount() in FetchableQuery has been deprecated\n\nHibernate:\n    select count(m1_0.age) from member m1_0 group by m1_0.age\nfetchCount: 2\n\n--   같은 추측을 한다\n\n\n-- 요즘 쓰는 방법\n\n@Test\nvoid 개수() {\n    em.clear();\n    Long count = queryFactory\n            .select(member.count())\n            .from(member)\n            .where(member.age.goe(20))\n            .fetchOne();\n    System.out.println(\"건수: \" + count);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n건수: 6\n\n--   내가 쓴 문장이라 눈에 보인다\n\n\n-- Stream 으로도 받는다\n\n@Test\nvoid stream() {\n    em.clear();\n    try (Stream<Member> s = queryFactory.selectFrom(member).stream()) {\n        System.out.println(\"20살 이상: \" +\n                s.filter(m -> m.getAge() >= 20).count());\n    }\n}\n\n/* select member1 from Member member1 */\nHibernate:\n    select ... from member m1_0\n20살 이상: 6\n\n--   ⑭ 5.8절처럼 닫아야 한다\n\n\n-- 다섯을 정리한다\n\n$ printf '%-16s %-24s %s\\n' \\\n  'fetch()'        '리스트'          '없으면 빈 리스트' \\\n  'fetchOne()'     '단건'            '없으면 null, 둘이면 예외' \\\n  'fetchFirst()'   '단건 + limit 1'  '둘이어도 안전' \\\n  'fetchCount()'   '삭제됨'          '개수를 추측' \\\n  'fetchResults()' '삭제됨'          'group by 에서 틀림'\n\nfetch()          리스트                    없으면 빈 리스트\nfetchOne()       단건                      없으면 null, 둘이면 예외\nfetchFirst()     단건 + limit 1            둘이어도 안전\nfetchCount()     삭제됨                    개수를 추측\nfetchResults()   삭제됨                    group by 에서 틀림\n\n--   4.6절에서 정렬을 본다",
+   "note": "**`fetchOne` 은 없을 때 `null`, 두 건이면 `Only one result expected, but 2 results were found`** 다.\n\n**`fetchFirst` 는 `fetch first ? rows only` 에 `[1]` 을 바인딩해 두 건이어도 안** 터진다.\n\n**`fetchResults` 는 `group by` 에서 `getTotal()` 이 `2` 인데 실제 행이 `7` — 예외가** 없다.\n\n**개수 쿼리를 직접 쓰면 `count(distinct m1_0.age)` 로 `7`** 이 맞는다.\n\n**둘 다 `deprecation` 경고가 뜨고 5.0에서** 빠졌다."
+  }
+ ],
+ "recap": [
+  "**`fetch` 가 실행 지점**이다.",
+  "**없으면 빈 리스트**다.",
+  "**`fetchOne` 은 `null`** 이다.",
+  "**둘이면** 터진다.",
+  "**`fetchFirst` 는 `limit 1`** 이다.",
+  "**정렬이 없으면** 미정의다.",
+  "**개수 쌍은** 삭제됐다.",
+  "**`group by` 에서** 틀렸다.",
+  "**직접 세면** 보인다."
+ ],
+ "drills": [
+  {
+   "task": "다섯을 다 불러 본다.",
+   "done_when": "SQL 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`fetchOne` 을 두 건에 쓴다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`fetchResults` 에 `group by` 를 넣는다.",
+   "done_when": "틀린 수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "개수 쿼리를 직접 쓴다.",
+   "done_when": "맞는 값을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "SQL 은 언제 나가나?",
+   "a": "`fetch` 계열을 부를 때다."
+  },
+  {
+   "q": "`fetchOne` 이 결과가 없을 때는?",
+   "a": "`null` 을 준다."
+  },
+  {
+   "q": "`fetchFirst` 가 안전한 이유는?",
+   "a": "`limit 1` 이 붙어 여러 건이어도 예외가 안 난다."
+  },
+  {
+   "q": "`fetchResults` 가 사라진 이유는?",
+   "a": "개수 쿼리를 추측해 `group by` 등에서 틀린 수를 줬다."
+  },
+  {
+   "q": "지금은 개수를 어떻게 세나?",
+   "a": "`select(...count())` 로 개수 쿼리를 직접 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "종단 연산",
+   "def": "조립을 끝내고 실제로 쿼리를 실행하는 메서드."
+  },
+  {
+   "term": "개수 추측",
+   "def": "본 쿼리에서 개수 쿼리를 자동으로 만들어 내던 옛 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
