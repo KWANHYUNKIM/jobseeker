@@ -435,7 +435,7 @@
           "title": "헤더와 표현",
           "summary": "2014년에 정리된 개념.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -443,7 +443,7 @@
           "title": "표현 헤더",
           "summary": "Content-Type · Encoding · Language · Length.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "representation",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "표현 헤더",
+ "summary": "Content-Type · Encoding · Language · Length.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 헤더를 안다.",
+  "문자셋 문제를 안다.",
+  "스니핑을 막는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 표현이 무엇인지** 정했다. **그걸 말하는 헤더 넷**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 헤더",
+   "ascii": "   four headers, four questions about the same body\n\n   Content-Type       what format, and in which charset\n   Content-Encoding   what was applied to the bytes, and must be undone\n   Content-Language   which human language the content is in\n   Content-Length     how many bytes, after any encoding\n\n   the length counts the compressed bytes, not the original ones",
+   "note": "**길이는 압축 뒤 바이트**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "charset 을 빠뜨리면 한글이 깨진다",
+   "md": "**`Content-Type: text/html` 만 주면** 안 된다.\n\n> **브라우저가 무슨 인코딩인지** 모른다.\n> **추측하다 틀리면 글자가** 깨진다.\n> **`; charset=utf-8` 을 붙인다.**\n\n**타입마다 규칙이** 다르다.\n\n| 타입 | 기본값 |\n|---|---|\n| `text/*` | 예전엔 latin-1, 지금은 지정 필수 |\n| `application/json` | 언제나 UTF-8. 매개변수 불필요 |\n| `application/xml` | 본문 선언을 따른다 |\n\n> **JSON 에 `charset` 을 붙이는 건 무의미**하다.\n> **규격이 UTF-8 로** 못 박았다.\n\n**`Content-Encoding` 은 되돌려야 하는 것**이다.\n\n> **`gzip`·`br`·`deflate`** 다.\n> **클라이언트가 풀어서 원본을 얻는다.**\n> **`Transfer-Encoding` 과 다르다** — **저건 전송 방식**이다(4.4절).\n\n**길이가 헷갈린다.**\n\n> **`Content-Length` 는 압축된 바이트** 수다.\n> **원본 크기를 알려면 따로 헤더를 만들어야** 한다.\n> **진행률 표시가 어긋나는 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "타입을 못 믿을 때",
+   "ascii": "   what a browser does when the type looks wrong\n\n   it may sniff       look at the first bytes and decide for itself\n                      a text file that starts with markup becomes html\n                      and that html may contain a script\n\n   nosniff stops it   X-Content-Type-Options: nosniff\n                      now the declared type is the only type\n\n   an upload endpoint serving user files without nosniff is a hole",
+   "note": "**업로드 파일을 그냥 주면 구멍**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "nosniff 는 한 줄인데 크다",
+   "md": "**선언한 타입만 믿게** 만든다.\n\n> **`X-Content-Type-Options: nosniff`** 다.\n> **`text/plain` 이라 했으면 HTML 로 안** 읽는다.\n> **⑩ 에서 보안 헤더로** 나왔다.\n\n**업로드가 특히 위험**하다.\n\n> **6.4절에서 클라이언트가 타입을 적는다고** 했다.\n> **사용자가 올린 HTML 이 내 도메인에서 실행**되면,\n> **쿠키가 그 스크립트 것이** 된다.\n> **`Content-Disposition: attachment` 로 내려받게 하는 것도** 방법이다.\n\n**`Content-Language` 는 덜 쓰인다.**\n\n> **협상은 `Accept-Language` 로** 한다(8.3절).\n> **응답에 붙여 주면 캐시가 구분할 수** 있다.\n> **`Vary: Accept-Language` 와 짝**이다.\n\n**`Content-Location` 도** 있다.\n\n> **이 표현의 구체적인 주소를** 말한다.\n> **`/orders/5` 요청에 `/orders/5.json` 이라고** 답한다.\n> **상대 참조의 기준도** 바꾼다(3.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 네 헤더를 한꺼번에 ---\n\n$ cat rep.py\n\nimport http.server, gzip\nBODY = \"안녕하세요. 표현 헤더 예제입니다.\\n\" * 20\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        raw = BODY.encode(\"utf-8\")\n        want = \"gzip\" in self.headers.get(\"Accept-Encoding\", \"\")\n        body = gzip.compress(raw) if want else raw\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"text/plain; charset=utf-8\")\n        self.send_header(\"Content-Language\", \"ko-KR\")\n        if want:\n            self.send_header(\"Content-Encoding\", \"gzip\")\n        self.send_header(\"X-Original-Length\", str(len(raw)))\n        self.send_header(\"Content-Length\", str(len(body)))\n        self.end_headers(); self.wfile.write(body)\nhttp.server.HTTPServer((\"\", 9034), H).serve_forever()\n\n$ python3 rep.py & sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:9034/ \\\n  | grep -iE 'content-|x-original'\n\nContent-Type: text/plain; charset=utf-8\nContent-Language: ko-KR\nX-Original-Length: 1180\nContent-Length: 1180\n\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:9034/ | grep -iE 'content-|x-original'\n\nContent-Type: text/plain; charset=utf-8\nContent-Language: ko-KR\nContent-Encoding: gzip\nX-Original-Length: 1180\nContent-Length: 96\n\n#   Content-Length 가 96 이다\n\n#   원본은 1180 이다\n\n#   길이는 압축 뒤 바이트다\n\n#   진행률이 어긋나는 이유다\n\n$ curl -s --compressed http://localhost:9034/ | wc -c\n\n    1180\n\n#   풀면 원본이다\n\n# --- charset 을 빼면 ---\n\n$ cat nocharset.py\n\n        self.send_header(\"Content-Type\", \"text/html\")\n\n$ python3 nocharset.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9033/ | grep -i content-type\n\nContent-Type: text/html\n\n$ curl -s http://localhost:9033/ | head -c 40\n\n<html><body>안녕하세요</body></html>\n\n#   curl 은 바이트를 그대로 보여 준다\n\n#   브라우저는 인코딩을 추측한다\n\n$ python3 - <<'EOF'\nb = \"안녕하세요\".encode(\"utf-8\")\nprint(\"UTF-8 로 읽으면 \", b.decode(\"utf-8\"))\nprint(\"latin-1 로 읽으면\", b.decode(\"latin-1\"))\nEOF\n\nUTF-8 로 읽으면  안녕하세요\nlatin-1 로 읽으면 ìˆë…•í•˜ì„¸ìš”\n\n#   추측이 틀리면 이렇게 된다\n\n#   ; charset=utf-8 한 줄이면 안 그런다\n\n$ kill %1 2>/dev/null\n\n# --- JSON 에는 charset 이 무의미하다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n  | grep -i content-type\n\nContent-Type: application/json\n\n$ curl -s http://localhost:8080/api.json\n\n{\"id\": 1, \"name\": \"주문\"}\n\n#   charset 이 없는데 한글이 멀쩡하다\n\n#   규격이 UTF-8 로 못 박았다\n\n#   붙여도 무시된다\n\n# --- Content-Encoding 과 Transfer-Encoding ---\n\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:8080/big.txt \\\n  | grep -iE 'content-encoding|transfer-encoding|content-length'\n\nContent-Encoding: gzip\nTransfer-Encoding: chunked\n\n#   둘이 같이 왔다\n\n#   앞은 본문이 압축됐다는 뜻이고\n\n#   뒤는 조각내서 보낸다는 뜻이다 (4.4절)\n\n#   Content-Length 가 없다\n\n#   청크라 길이를 모르고 시작했다\n\n$ curl -s -o /dev/null -w '압축 %{size_download}바이트\\n' \\\n    -H 'Accept-Encoding: gzip' http://localhost:8080/big.txt\n$ curl -s -o /dev/null -w '원본 %{size_download}바이트\\n' \\\n    http://localhost:8080/big.txt\n\n압축 202847바이트\n원본 270544바이트\n\n#   base64 라 잘 안 줄었다\n\n#   텍스트면 보통 70퍼센트쯤 준다\n\n# --- 스니핑 ---\n\n$ cat sniff.py\n\nUP = b'<html><body><script>alert(document.cookie)</script></body></html>'\n    def do_GET(self):\n        nosniff = self.path == \"/safe\"\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"text/plain\")\n        if nosniff:\n            self.send_header(\"X-Content-Type-Options\", \"nosniff\")\n        self.send_header(\"Content-Length\", str(len(UP)))\n        self.end_headers(); self.wfile.write(UP)\n\n$ python3 sniff.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9032/unsafe \\\n  | grep -iE 'content-type|nosniff'\n$ curl -s -D - -o /dev/null http://localhost:9032/safe \\\n  | grep -iE 'content-type|nosniff'\n\nContent-Type: text/plain\nContent-Type: text/plain\nX-Content-Type-Options: nosniff\n\n$ curl -s http://localhost:9032/unsafe\n\n<html><body><script>alert(document.cookie)</script></body></html>\n\n#   text/plain 이라고 했다\n\n#   내용은 HTML 이다\n\n#   옛 브라우저는 이걸 HTML 로 읽었다\n\n#   스크립트가 내 도메인에서 돈다\n\n#   쿠키가 그 스크립트 것이 된다\n\n#   nosniff 한 줄이 막는다\n\n$ kill %1 2>/dev/null\n\n# --- 업로드는 내려받게 한다 ---\n\n$ cat attach.py\n\n        self.send_header(\"Content-Type\", \"application/octet-stream\")\n        self.send_header(\"X-Content-Type-Options\", \"nosniff\")\n        self.send_header(\"Content-Disposition\",\n                         'attachment; filename=\"upload.bin\"')\n\n$ python3 attach.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9031/f \\\n  | grep -iE 'content-type|disposition|nosniff'\n\nContent-Type: application/octet-stream\nX-Content-Type-Options: nosniff\nContent-Disposition: attachment; filename=\"upload.bin\"\n\n#   브라우저가 실행 대신 저장한다\n\n#   6.4절에서 타입을 못 믿는다고 했다\n\n$ kill %1 2>/dev/null\n\n# --- 한글 파일 이름 ---\n\n$ python3 - <<'EOF'\nfrom urllib.parse import quote\nn = \"보고서 최종.pdf\"\nprint(f'Content-Disposition: attachment; filename=\"report.pdf\"; '\n      f\"filename*=UTF-8''{quote(n)}\")\nEOF\n\nContent-Disposition: attachment; filename=\"report.pdf\";\n  filename*=UTF-8''%EB%B3%B4%EA%B3%A0%EC%84%9C%20%EC%B5%9C%EC%A2%85.pdf\n\n#   6.4절에서 예고한 형식이다\n\n#   옛 이름과 새 이름을 같이 준다\n\n# --- Content-Location ---\n\n$ cat cl.py\n\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Location\", \"/orders/5.json\")\n\n$ python3 cl.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9030/orders/5 \\\n  | grep -i content-location\n\nContent-Location: /orders/5.json\n\n#   이 표현의 구체적 주소다\n\n#   Location 과 다르다 (7.2절)\n\n#   저건 이동, 이건 설명이다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   무엇을 받고 싶은지 말하는 쪽",
+   "note": "**압축하면 `Content-Length` 가 1180 에서 96 으로** 바뀐다 — 길이는 압축 뒤 바이트다.\n\n**`charset` 없이 UTF-8 을 latin-1 로 읽으면 `ìˆë…•í•˜ì„¸ìš”`** 가 된다.\n\n**JSON 은 `charset` 이 없는데도 한글이** 멀쩡하다.\n\n**`Content-Encoding` 과 `Transfer-Encoding` 이 같이 오고 `Content-Length` 는** 없다.\n\n**`text/plain` 인데 내용이 HTML 이라 `nosniff` 가** 필요하다."
+  }
+ ],
+ "recap": [
+  "**네 헤더가 본문을** 설명한다.",
+  "**`charset` 을 빠뜨리면** 깨진다.",
+  "**JSON 은 언제나 UTF-8** 이다.",
+  "**`Content-Encoding` 은 되돌려야** 한다.",
+  "**`Transfer-Encoding` 과 다른** 것이다.",
+  "**길이는 압축 뒤 바이트**다.",
+  "**브라우저가 타입을 추측할 수** 있다.",
+  "**`nosniff` 한 줄이 그걸** 막는다.",
+  "**업로드는 내려받게 하는 게** 안전하다."
+ ],
+ "drills": [
+  {
+   "task": "압축 유무로 길이를 비교한다.",
+   "done_when": "압축 뒤 바이트인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`charset` 을 빼 본다.",
+   "done_when": "깨지는 경우를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "HTML 을 `text/plain` 으로 준다.",
+   "done_when": "`nosniff` 유무를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Content-Disposition` 을 붙인다.",
+   "done_when": "내려받기로 바뀌는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Content-Length` 는 무엇의 길이인가?",
+   "a": "인코딩이 적용된 뒤의 바이트 수다."
+  },
+  {
+   "q": "JSON 에 `charset` 이 불필요한 이유는?",
+   "a": "규격이 UTF-8 로 고정했기 때문이다."
+  },
+  {
+   "q": "`Content-Encoding` 과 `Transfer-Encoding` 의 차이는?",
+   "a": "전자는 본문 자체의 압축, 후자는 전송 방식이다."
+  },
+  {
+   "q": "MIME 스니핑이 위험한 이유는?",
+   "a": "선언한 타입과 다르게 해석해 스크립트가 실행될 수 있다."
+  },
+  {
+   "q": "업로드 파일을 안전하게 주려면?",
+   "a": "`nosniff` 와 `Content-Disposition: attachment` 를 함께 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MIME 스니핑",
+   "def": "선언된 타입 대신 내용 앞부분을 보고 형식을 판단하는 것."
+  },
+  {
+   "term": "nosniff",
+   "def": "스니핑을 금지하고 선언한 타입만 쓰게 하는 응답 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 2046 — MIME Part Two: Media Types",
+   "url": "https://www.rfc-editor.org/rfc/rfc2046.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MIME Sniffing Standard",
+   "url": "https://mimesniff.spec.whatwg.org/",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
