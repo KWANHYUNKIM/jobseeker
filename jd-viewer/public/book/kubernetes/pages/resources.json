@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "resources",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "requests 와 limits",
+ "summary": "스케줄링과 제한은 다른 숫자다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 숫자의 역할을 가른다.",
+  "CPU 와 메모리의 차이를 안다.",
+  "QoS 클래스를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 `Pending` 과 `OOMKilled` 를** 봤다. **각각 다른 숫자가** 원인이다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 숫자",
+   "ascii": "   two numbers, two different jobs\n\n   requests   used by the scheduler to pick a node\n                a promise the node makes to you\n                nothing enforces it at runtime\n   limits     used by the kernel to cap the container\n                cpu is throttled, memory is killed\n\n   requests decide where, limits decide what happens under load",
+   "note": "**`requests` 는 어디에, `limits` 는 무슨 일이** 나느냐다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "단위와 의미",
+   "md": "```yaml\nresources:\n  requests:\n    cpu: \"500m\"        # 0.5 코어\n    memory: \"256Mi\"\n  limits:\n    cpu: \"1\"           # 1 코어\n    memory: \"512Mi\"\n```\n\n| 단위 | 뜻 |\n|---|---|\n| `1` (cpu) | 코어 하나 |\n| `500m` | 0.5 코어 |\n| `256Mi` | 256 메비바이트 (2의 거듭제곱) |\n| `256M` | 256 메가바이트 (10의 거듭제곱) |\n\n> **`Mi` 와 `M` 이 다르다** — **`256M` 은 244Mi** 다.\n> **작아 보이는 차이가 JVM 힙 설정에서 문제가** 된다.\n\n**CPU 와 메모리가 근본적으로 다르다.**\n\n| | CPU | 메모리 |\n|---|---|---|\n| 압축 가능 | 가능 | 불가능 |\n| 한도 초과 | 스로틀 (느려진다) | OOMKilled (죽는다) |\n| 회수 | 뺏을 수 있다 | 못 뺏는다 |\n\n> **CPU 한도를 넘으면 느려질 뿐**이다.\n> **메모리는 죽는다.**\n> **그래서 메모리 `limits` 를 정하는 게 CPU 보다** 중요하다.\n\n**`requests` 는 강제되지 않는다.**\n\n> **`requests: 100m` 인데 2코어를 써도** 막히지 않는다.\n> **노드에 여유가 있으면 그냥** 쓴다.\n> **스케줄러가 자리를 잡을 때만 쓰는** 숫자다."
+  },
+  {
+   "type": "figure",
+   "caption": "QoS 세 등급",
+   "ascii": "   the three classes, and who gets evicted first\n\n   Guaranteed   requests == limits, for every container\n   Burstable    requests set, limits higher or absent\n   BestEffort   nothing set at all\n\n   when a node runs out of memory it evicts\n     BestEffort first, then Burstable, then Guaranteed\n\n   setting nothing is not neutral, it is last in line",
+   "note": "**아무것도 안 정하는 건 중립이 아니라 맨 뒤**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JVM 이 limits 를 본다",
+   "md": "**옛날에는 노드 전체를** 봤다.\n\n> **컨테이너에 512Mi 를 줬는데 JVM 이 호스트의 16GB 를 보고 힙을 4GB 로** 잡았다.\n> **바로 `OOMKilled`** 다.\n\n**자바 10 부터 컨테이너를** 안다.\n\n```bash\njava -XX:MaxRAMPercentage=75 -jar app.jar\n```\n\n> **`limits.memory` 의 75% 를 힙으로** 쓴다.\n> **나머지는 메타스페이스·스레드 스택·네이티브 버퍼**다.\n>\n> **`-Xmx` 를 직접 주면 컨테이너 인식이 무의미**해진다.\n> **`MaxRAMPercentage` 가** 낫다.\n\n**힙만이 전부가 아니다.**\n\n> **`OOMKilled` 는 컨테이너 전체 메모리** 기준이다.\n> **힙이 400Mi 여도 메타스페이스와 스레드가 150Mi 면 550Mi** 다.\n> **`limits: 512Mi` 면** 죽는다.\n>\n> **JVM 은 `OutOfMemoryError` 를 안 던지고 커널이 그냥** 죽인다.\n> **로그에 아무것도 안** 남는다 — **`Last State` 의 `OOMKilled` 만** 있다.\n\n**CPU limits 는 논쟁거리**다.\n\n> **스로틀이 지연을 만든다.**\n> **GC 스레드까지 느려져 응답이** 튄다.\n> **`limits` 를 아예 안 주고 `requests` 만 주는 팀도** 많다.\n>\n> **메모리는 반드시 주고 CPU 는 상황을 보고** 정한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- requests 가 자리를 정한다 ---\n\n$ kubectl describe node lab-worker | grep -A5 'Allocatable'\n\nAllocatable:\n  cpu:                8\n  memory:             8039068Ki\n  pods:               110\n\n$ kubectl create deployment big --image=nginx:1.27 > /dev/null\n$ kubectl set resources deployment/big --requests=memory=6Gi > /dev/null\n$ sleep 5 && kubectl get pods -l app=big --no-headers\n\nbig-7f9c8d6b5-x4m2k   1/1   Running   0   5s\n\n#   뜬다\n\n$ kubectl scale deployment big --replicas=6 > /dev/null\n$ sleep 8 && kubectl get pods -l app=big --no-headers | awk '{print $3}' \\\n    | sort | uniq -c\n\n   3 Pending\n   3 Running\n\n#   셋만 떴다\n\n#   노드가 셋이고 각 6Gi 씩이다\n\n$ kubectl describe pod -l app=big | grep -A3 FailedScheduling | tail -2\n\n  Warning  FailedScheduling  8s  default-scheduler  0/3 nodes are available:\n    3 Insufficient memory.\n\n#   1.4절의 그 메시지다\n\n$ kubectl describe node lab-worker | grep -A6 'Allocated resources'\n\nAllocated resources:\n  Resource           Requests    Limits\n  --------           --------    ------\n  cpu                150m (1%)   0 (0%)\n  memory             6Gi (78%)   0 (0%)\n\n#   78% 가 잡혀 있다\n\n#   실제로 쓰는 게 아니라 예약이다\n\n$ kubectl top pod -l app=big 2>/dev/null || echo '(메트릭 서버 없음)'\n\n(메트릭 서버 없음)\n\n#   9장에서 깐다\n\n$ kubectl delete deployment big > /dev/null\n\n# --- requests 는 강제되지 않는다 ---\n\n$ cat greedy.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: greedy\nspec:\n  containers:\n    - name: burn\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"while true; do :; done\"]\n      resources:\n        requests: { cpu: \"100m\" }\n\n$ kubectl apply -f greedy.yaml > /dev/null && sleep 10\n$ NODE=$(kubectl get pod greedy -o jsonpath='{.spec.nodeName}')\n$ docker exec $NODE top -bn1 | grep -m1 'sh' | awk '{print $8, $9}'\n\nR 99.9\n\n#   100m 을 요청했는데 한 코어를 다 쓴다\n\n#   requests 는 약속이지 제한이 아니다\n\n$ kubectl delete pod greedy > /dev/null\n\n# --- CPU limits 는 스로틀 ---\n\n$ sed -i '' 's/requests: { cpu: \"100m\" }/requests: { cpu: \"100m\" }\\n        limits: { cpu: \"200m\" }/' greedy.yaml\n$ kubectl apply -f greedy.yaml > /dev/null && sleep 10\n$ docker exec $NODE top -bn1 | grep -m1 'sh' | awk '{print $9}'\n\n19.8\n\n#   20% 다\n\n#   200m 으로 잘렸다\n\n$ kubectl get pod greedy --no-headers\n\ngreedy   1/1   Running   0   12s\n\n#   안 죽는다\n\n#   느려질 뿐이다\n\n$ POD_UID=$(kubectl get pod greedy -o jsonpath='{.metadata.uid}')\n$ docker exec $NODE sh -c \\\n  \"cat /sys/fs/cgroup/kubepods.slice/*/*$POD_UID*/cpu.stat 2>/dev/null | head -3\"\n\nusage_usec 2481039\nnr_periods 118\nnr_throttled 116\n\n#   118 번 중 116 번 스로틀됐다\n\n#   이게 지연이 된다\n\n$ kubectl delete pod greedy > /dev/null\n\n# --- 메모리 limits 는 죽인다 ---\n\n$ cat eat.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: eat\nspec:\n  restartPolicy: Never\n  containers:\n    - name: eat\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"dd if=/dev/zero of=/dev/shm/fill bs=1M count=200; sleep 60\"]\n      resources:\n        limits: { memory: \"64Mi\" }\n\n$ kubectl apply -f eat.yaml > /dev/null && sleep 8\n$ kubectl get pod eat --no-headers\n\neat   0/1   OOMKilled   0   8s\n\n$ kubectl get pod eat -o jsonpath=\\\n'{.status.containerStatuses[0].state.terminated.reason} \\\n{.status.containerStatuses[0].state.terminated.exitCode}{\"\\n\"}'\n\nOOMKilled 137\n\n$ kubectl logs eat\n\n#   (비어 있다)\n\n#   아무 말도 없이 죽었다\n\n#   커널이 죽인 것이다\n\n$ kubectl describe pod eat | grep -B1 -A3 'OOMKilled'\n\n    State:          Terminated\n      Reason:       OOMKilled\n      Exit Code:    137\n\n#   여기서만 보인다\n\n$ kubectl delete pod eat > /dev/null\n\n# --- QoS 세 등급 ---\n\n$ kubectl run best --image=nginx:1.27 > /dev/null\n$ kubectl run burst --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"burst\",\"image\":\"nginx:1.27\",\n      \"resources\":{\"requests\":{\"memory\":\"64Mi\"},\"limits\":{\"memory\":\"128Mi\"}}}]}}' \\\n    > /dev/null\n$ kubectl run guar --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"guar\",\"image\":\"nginx:1.27\",\n      \"resources\":{\"requests\":{\"memory\":\"64Mi\",\"cpu\":\"100m\"},\n                   \"limits\":{\"memory\":\"64Mi\",\"cpu\":\"100m\"}}}]}}' > /dev/null\n\n$ sleep 8 && kubectl get pod best burst guar \\\n    -o custom-columns=NAME:.metadata.name,QOS:.status.qosClass --no-headers\n\nbest    BestEffort\nburst   Burstable\nguar    Guaranteed\n\n#   세 등급이 나온다\n\n#   아무것도 안 주면 BestEffort 다\n\n$ kubectl get pod best -o jsonpath='{.spec.containers[0].resources}{\"\\n\"}'\n\n{}\n\n#   비어 있다\n\n#   노드가 부족하면 가장 먼저 쫓겨난다\n\n#   중립이 아니다\n\n$ kubectl delete pod best burst guar > /dev/null\n\n# --- Mi 와 M ---\n\n$ kubectl run unit --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"unit\",\"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"cat /sys/fs/cgroup/memory.max\"],\n      \"resources\":{\"limits\":{\"memory\":\"256M\"}}}]}}' > /dev/null\n\n$ sleep 4 && kubectl logs unit\n\n256000000\n\n$ python3 -c \"print(256000000 / 1024 / 1024)\"\n\n244.140625\n\n#   256M 은 244Mi 다\n\n$ kubectl delete pod unit > /dev/null\n$ kubectl run unit --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"unit\",\"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"cat /sys/fs/cgroup/memory.max\"],\n      \"resources\":{\"limits\":{\"memory\":\"256Mi\"}}}]}}' > /dev/null\n\n$ sleep 4 && kubectl logs unit\n\n268435456\n\n#   이쪽이 256Mi 다\n\n$ kubectl delete pod unit > /dev/null\n\n# --- JVM 이 limits 를 본다 ---\n\n$ kubectl run jvm --image=eclipse-temurin:21-jre --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"jvm\",\n      \"image\":\"eclipse-temurin:21-jre\",\n      \"command\":[\"java\",\"-XX:+PrintFlagsFinal\",\"-version\"],\n      \"resources\":{\"limits\":{\"memory\":\"512Mi\"}}}]}}' > /dev/null\n\n$ sleep 8 && kubectl logs jvm | grep -E 'MaxHeapSize|MaxRAMPercentage'\n\n   size_t MaxHeapSize     = 134217728    {product} {ergonomic}\n   double MaxRAMPercentage = 25.000000   {product} {default}\n\n$ python3 -c \"print(134217728/1024/1024, '=', 512*0.25)\"\n\n128.0 = 128.0\n\n#   512Mi 의 25% 를 힙으로 잡았다\n\n#   컨테이너 한도를 본 것이다\n\n#   기본이 25% 라 아깝다\n\n$ kubectl delete pod jvm > /dev/null\n$ kubectl run jvm --image=eclipse-temurin:21-jre --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"jvm\",\n      \"image\":\"eclipse-temurin:21-jre\",\n      \"command\":[\"java\",\"-XX:MaxRAMPercentage=75\",\"-XX:+PrintFlagsFinal\",\n                 \"-version\"],\n      \"resources\":{\"limits\":{\"memory\":\"512Mi\"}}}]}}' > /dev/null\n\n$ sleep 8 && kubectl logs jvm | grep MaxHeapSize\n\n   size_t MaxHeapSize     = 402653184    {product} {ergonomic}\n\n$ python3 -c \"print(402653184/1024/1024)\"\n\n384.0\n\n#   384Mi 다\n\n#   512 의 75% 다\n\n#   나머지 128Mi 가 메타스페이스와 스택이다\n\n$ kubectl delete pod jvm > /dev/null\n\n# --- 힙만 보면 안 된다 ---\n\n$ kubectl run heap --image=eclipse-temurin:21-jre --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"heap\",\n      \"image\":\"eclipse-temurin:21-jre\",\n      \"command\":[\"sh\",\"-c\",\"java -Xmx480m -XX:+UseSerialGC -version;\n                 echo 시작; sleep 30\"],\n      \"resources\":{\"limits\":{\"memory\":\"512Mi\"}}}]}}' > /dev/null\n\n#   힙을 480m 으로 직접 줬다\n\n#   한도는 512Mi 다\n\n#   여유가 32Mi 뿐이다\n\n$ sleep 10 && kubectl get pod heap --no-headers\n\nheap   0/1   OOMKilled   0   10s\n\n#   죽었다\n\n#   힙은 480 인데 전체가 512 를 넘었다\n\n#   -Xmx 대신 MaxRAMPercentage 를 쓰는 이유다\n\n$ kubectl delete pod heap > /dev/null\n\n# --- 다음 절에서 ---\n\n#   파드가 지나는 상태들을 순서대로 본다",
+   "note": "**`requests: 6Gi` 로 6개를 띄우니 셋만 뜨고 셋은 `Insufficient memory`** 다 — 노드에 78% 가 예약된다.\n\n**`requests: 100m` 인데 CPU 를 99.9% 쓴다** — 강제되지 않는다. `limits: 200m` 을 주니 19.8% 로 잘리고 `nr_throttled` 가 116이다.\n\n**메모리 한도를 넘으면 로그 없이 `OOMKilled 137`** 이다.\n\n**`256M` 은 244Mi, `256Mi` 는 268435456 바이트**다.\n\n**JVM 이 `limits` 의 25% 를 힙으로** 잡고, `-Xmx480m` + `limits 512Mi` 는 `OOMKilled` 다."
+  }
+ ],
+ "recap": [
+  "**`requests` 는 스케줄링, `limits` 는 런타임 제한**이다.",
+  "**`requests` 는 예약일 뿐 강제되지** 않는다.",
+  "**CPU 는 스로틀, 메모리는** 죽인다.",
+  "**`OOMKilled` 는 로그를 안** 남긴다.",
+  "**`Mi` 와 `M` 이** 다르다.",
+  "**아무것도 안 주면 `BestEffort` 로 먼저** 쫓겨난다.",
+  "**JVM 이 `limits` 를 보고 힙을** 정한다.",
+  "**기본이 25% 라 `MaxRAMPercentage` 를** 준다.",
+  "**힙만 맞추면 전체가 한도를** 넘는다."
+ ],
+ "drills": [
+  {
+   "task": "`requests` 를 크게 줘 `Pending` 을 만든다.",
+   "done_when": "메시지를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "CPU 를 태우고 `limits` 유무를 비교한다.",
+   "done_when": "스로틀 횟수를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "메모리를 넘겨 `OOMKilled` 를 만든다.",
+   "done_when": "로그가 비는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JVM 힙 크기를 확인한다.",
+   "done_when": "`limits` 와의 비율을 계산했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`requests` 와 `limits` 의 역할은?",
+   "a": "전자는 스케줄링, 후자는 런타임 제한이다."
+  },
+  {
+   "q": "CPU 와 메모리 한도 초과의 차이는?",
+   "a": "CPU 는 느려지고 메모리는 죽는다."
+  },
+  {
+   "q": "`OOMKilled` 를 어디서 확인하나?",
+   "a": "`describe` 의 `State`/`Last State` 다. 로그에는 안 남는다."
+  },
+  {
+   "q": "아무 자원도 안 정하면?",
+   "a": "`BestEffort` 가 되어 축출 순위가 가장 앞이다."
+  },
+  {
+   "q": "JVM 에 `-Xmx` 대신 무엇을 쓰나?",
+   "a": "`MaxRAMPercentage` 로 `limits` 에 비례하게 둔다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "QoS 클래스",
+   "def": "자원 설정에 따라 정해지는 등급. 노드가 부족할 때 축출 순서를 정한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Resource Management for Pods and Containers",
+   "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Pod Quality of Service Classes",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "OpenJDK — Container Awareness",
+   "url": "https://openjdk.org/",
+   "publisher": "OpenJDK"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

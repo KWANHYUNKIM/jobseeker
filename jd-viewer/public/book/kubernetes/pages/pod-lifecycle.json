@@ -1,0 +1,125 @@
+{
+ "book": "kubernetes",
+ "id": "pod-lifecycle",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "파드의 생애",
+ "summary": "Pending 에서 Succeeded 까지.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 페이즈를 안다.",
+  "종료 순서를 안다.",
+  "preStop 이 왜 필요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`STATUS` 열에 나오는 말이** 많다. **페이즈는 다섯**뿐이다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 페이즈",
+   "ascii": "   five phases, and only two of them are endings\n\n   Pending     accepted, but not all containers are running yet\n   Running     bound to a node, at least one container is up\n   Succeeded   all containers ended with 0, will not restart\n   Failed      all ended, at least one non zero\n   Unknown     the node stopped reporting\n\n   phase is coarse, conditions and container states carry the detail",
+   "note": "**끝은 `Succeeded` 와 `Failed`** 둘이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "STATUS 는 페이즈가 아니다",
+   "md": "**`kubectl get pods` 의 `STATUS` 는 합성된 문자열**이다.\n\n| STATUS | 실제 |\n|---|---|\n| `Running` | 페이즈 |\n| `Completed` | 페이즈 `Succeeded` |\n| `CrashLoopBackOff` | 페이즈는 `Running`, 컨테이너 상태가 대기 |\n| `ImagePullBackOff` | 페이즈는 `Pending` |\n| `Init:0/2` | 페이즈는 `Pending` |\n| `Terminating` | 페이즈는 그대로, `deletionTimestamp` 가 있다 |\n\n> **`Terminating` 은 페이즈가 아니다.**\n> **`kubectl get pod -o jsonpath='{.status.phase}'` 로 보면 여전히 `Running`** 이다.\n\n**컨디션이 따로** 있다.\n\n| 컨디션 | 뜻 |\n|---|---|\n| `PodScheduled` | 노드가 정해졌다 |\n| `Initialized` | 초기화 컨테이너가 끝났다 |\n| `ContainersReady` | 모든 컨테이너가 준비 |\n| `Ready` | 서비스에 넣어도 된다 |\n\n> **`Ready` 가 4.5절의 `readiness`** 다.\n> **`0/1` 일 때 `Ready=False` 이고 이유가** 적혀 있다.\n\n**재시작은 페이즈를 안 바꾼다.**\n\n> **컨테이너가 죽었다 살아도 파드는 `Running`** 이다.\n> **`RESTARTS` 만** 는다.\n> **4.1절에서 IP 가 유지된 것과 같은** 얘기다."
+  },
+  {
+   "type": "figure",
+   "caption": "종료 순서",
+   "ascii": "   what happens between delete and gone\n\n   0s    the pod is marked for deletion, deletionTimestamp set\n         it is removed from every service endpoint, in parallel\n   0s    preStop hook runs, if there is one\n   0s    SIGTERM to pid 1\n   ..    the app has terminationGracePeriodSeconds to finish\n   30s   SIGKILL, if it is still there\n\n   endpoint removal and SIGTERM race, which is why preStop exists",
+   "note": "**엔드포인트 제거와 SIGTERM 이 경쟁**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "preStop 이 필요한 이유",
+   "md": "**둘이 동시에 일어난다.**\n\n> **① 서비스 엔드포인트에서 빼는 것**\n> **② 컨테이너에 SIGTERM 을 보내는 것**\n>\n> **①이 클러스터 전체에 퍼지는 데 시간이** 걸린다.\n> **각 노드의 `kube-proxy` 가 규칙을 고쳐야** 한다.\n> **그동안 ②는 이미 앱을 종료시키고** 있다.\n>\n> **결과: 이미 종료 중인 파드로 요청이** 온다.\n\n**해법은 잠깐 기다리는 것**이다.\n\n```yaml\nlifecycle:\n  preStop:\n    exec:\n      command: [\"sleep\", \"5\"]\n```\n\n> **아무것도 안 하고 5초를** 잔다.\n> **그동안 엔드포인트 제거가 퍼진다.**\n> **그 뒤에 SIGTERM 이** 간다.\n>\n> **우아해 보이지 않는데 공식 문서도 이 방법을** 안내한다.\n\n**앱도 SIGTERM 을 받아야** 한다.\n\n> **스프링 부트는 기본으로** 받는다.\n> **`server.shutdown=graceful` 로 진행 중 요청을 끝내고** 종료한다.\n> **`spring.lifecycle.timeout-per-shutdown-phase` 를 `terminationGracePeriodSeconds` 보다 작게** 둔다.\n\n**PID 1 문제**\n\n> **`sh -c \"java -jar app.jar\"` 로 띄우면 `sh` 가 PID 1** 이다.\n> **`sh` 가 SIGTERM 을 자식에게 안** 넘긴다.\n> **30초 뒤 SIGKILL 로 강제 종료**된다.\n>\n> **`exec java -jar app.jar` 로 자리를 넘겨** 준다.\n> **「도커」에서 한 얘기가 여기서 종료 지연으로** 나타난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 페이즈와 STATUS ---\n\n$ kubectl run once --image=busybox:1.36 --restart=Never -- echo done\n$ sleep 4 && kubectl get pod once --no-headers\n\nonce   0/1   Completed   0   4s\n\n$ kubectl get pod once -o jsonpath='{.status.phase}{\"\\n\"}'\n\nSucceeded\n\n#   STATUS 는 Completed 인데 페이즈는 Succeeded 다\n\n$ kubectl run fail --image=busybox:1.36 --restart=Never -- sh -c 'exit 3'\n$ sleep 4 && kubectl get pod fail \\\n    -o custom-columns=STATUS:.status.phase,CODE:.status.containerStatuses[0].state.terminated.exitCode \\\n    --no-headers\n\nFailed   3\n\n$ kubectl get pod fail --no-headers | awk '{print $3}'\n\nError\n\n#   STATUS 는 Error, 페이즈는 Failed 다\n\n$ kubectl delete pod once fail > /dev/null\n\n# --- CrashLoopBackOff 의 페이즈 ---\n\n$ kubectl run crash --image=busybox:1.36 -- sh -c 'exit 1'\n$ sleep 25 && kubectl get pod crash --no-headers\n\ncrash   0/1   CrashLoopBackOff   3   25s\n\n$ kubectl get pod crash -o jsonpath='{.status.phase}{\"\\n\"}'\n\nRunning\n\n#   페이즈는 Running 이다\n\n#   컨테이너 상태가 waiting 인 것이다\n\n$ kubectl get pod crash -o jsonpath=\\\n'{.status.containerStatuses[0].state}{\"\\n\"}'\n\n{\"waiting\":{\"message\":\"back-off 40s restarting failed container...\",\n \"reason\":\"CrashLoopBackOff\"}}\n\n$ kubectl delete pod crash > /dev/null\n\n# --- 컨디션 ---\n\n$ kubectl run web --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"web\",\"image\":\"nginx:1.27\",\n      \"readinessProbe\":{\"httpGet\":{\"path\":\"/nope\",\"port\":80},\n                        \"periodSeconds\":3}}]}}' > /dev/null\n\n$ sleep 12 && kubectl get pod web --no-headers\n\nweb   0/1   Running   0   12s\n\n$ kubectl get pod web -o jsonpath=\\\n'{range .status.conditions[*]}{.type}={.status}{\"\\n\"}{end}'\n\nPodReadyToStartContainers=True\nInitialized=True\nReady=False\nContainersReady=False\nPodScheduled=True\n\n#   Ready 만 False 다\n\n$ kubectl get pod web -o jsonpath=\\\n'{.status.conditions[?(@.type==\"Ready\")].message}{\"\\n\"}'\n\ncontainers with unready status: [web]\n\n#   4.5절의 readiness 다\n\n$ kubectl delete pod web > /dev/null\n\n# --- 종료 과정 ---\n\n$ cat term.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: term\nspec:\n  terminationGracePeriodSeconds: 30\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"trap 'echo SIGTERM 받음; sleep 5; echo 정리 끝; exit 0' TERM;\n         echo 시작; while true; do sleep 1; done\"]\n\n$ kubectl apply -f term.yaml > /dev/null && sleep 5\n$ kubectl logs term\n\n시작\n\n$ time kubectl delete pod term\n\npod \"term\" deleted\n\nreal    0m6.412s\n\n#   6초 걸렸다\n\n#   30초를 다 안 쓴다\n\n#   앱이 5초 뒤 스스로 나갔다\n\n$ kubectl logs term 2>&1 | tail -2\n\nError from server (NotFound): pods \"term\" not found\n\n#   이미 사라졌다\n\n#   로그를 보려면 지우기 전에 봐야 한다\n\n# --- SIGTERM 을 무시하면 ---\n\n$ sed -i '' \"s/trap '.*' TERM;/trap '' TERM;/\" term.yaml\n$ kubectl apply -f term.yaml > /dev/null && sleep 5\n$ time kubectl delete pod term\n\npod \"term\" deleted\n\nreal    0m30.522s\n\n#   30초를 다 기다렸다\n\n#   그 뒤 SIGKILL 이다\n\n$ sed -i '' 's/terminationGracePeriodSeconds: 30/terminationGracePeriodSeconds: 5/' \\\n    term.yaml\n$ kubectl apply -f term.yaml > /dev/null && sleep 5\n$ time kubectl delete pod term\n\nreal    0m5.401s\n\n#   5초로 줄었다\n\n#   10장에서 이 값을 정한다\n\n# --- PID 1 문제 ---\n\n$ cat pid1.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: pid1\nspec:\n  terminationGracePeriodSeconds: 10\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"sleep 3600\"]\n\n$ kubectl apply -f pid1.yaml > /dev/null && sleep 4\n$ kubectl exec pid1 -- ps aux\n\nPID   USER     TIME  COMMAND\n    1 root      0:00 sh -c sleep 3600\n    7 root      0:00 sleep 3600\n\n#   sh 가 1번이다\n\n$ time kubectl delete pod pid1\n\nreal    0m10.388s\n\n#   10초를 다 썼다\n\n#   sh 가 SIGTERM 을 sleep 에게 안 넘겼다\n\n$ sed -i '' 's/\"sleep 3600\"\\]/\"exec sleep 3600\"]/' pid1.yaml\n$ kubectl apply -f pid1.yaml > /dev/null && sleep 4\n$ kubectl exec pid1 -- ps aux\n\nPID   USER     TIME  COMMAND\n    1 root      0:00 sleep 3600\n\n#   sleep 이 1번이다\n\n$ time kubectl delete pod pid1\n\nreal    0m0.612s\n\n#   즉시 끝났다\n\n#   exec 한 줄 차이다\n\n#   「도커」에서 한 얘기가 종료 지연으로 나타난다\n\n# --- 엔드포인트와 SIGTERM 이 경쟁한다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3 > /dev/null\n$ kubectl expose deployment web --port=80 > /dev/null\n$ sleep 10\n\n$ kubectl run load --image=curlimages/curl --restart=Never -- \\\n    sh -c 'while true; do\n             curl -s -o /dev/null -m 1 -w \"%{http_code} \" http://web; sleep 0.05;\n           done' > /dev/null\n\n$ sleep 5 && kubectl delete pod -l app=web --wait=false > /dev/null\n$ sleep 15 && kubectl logs load | tr \" \" \"\\n\" | sort | uniq -c\n\n  12 000\n 187 200\n\n#   000 이 열둘이다\n\n#   지워지는 파드로 간 요청이다\n\n$ kubectl delete pod load > /dev/null\n\n# --- preStop 을 넣는다 ---\n\n$ kubectl patch deployment web --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/template/spec/containers/0/lifecycle\",\n  \"value\":{\"preStop\":{\"exec\":{\"command\":[\"sleep\",\"5\"]}}}}]' > /dev/null\n\n$ sleep 20\n$ kubectl run load --image=curlimages/curl --restart=Never -- \\\n    sh -c 'while true; do\n             curl -s -o /dev/null -m 1 -w \"%{http_code} \" http://web; sleep 0.05;\n           done' > /dev/null\n\n$ sleep 5 && kubectl delete pod -l app=web --wait=false > /dev/null\n$ sleep 20 && kubectl logs load | tr \" \" \"\\n\" | sort | uniq -c\n\n 243 200\n\n#   000 이 없다\n\n#   5초 자는 동안 엔드포인트에서 빠졌다\n\n#   아무것도 안 하는 sleep 이 답이다\n\n# --- Terminating 은 페이즈가 아니다 ---\n\n$ kubectl delete pod -l app=web --wait=false > /dev/null\n$ kubectl get pods -l app=web --no-headers | head -1\n\nweb-7c9d8f6b5-h4n8q   1/1   Terminating   0   2m\n\n$ kubectl get pod -l app=web -o jsonpath=\\\n'{.items[0].status.phase} {.items[0].metadata.deletionTimestamp}{\"\\n\"}'\n\nRunning 2026-09-09T12:47:41Z\n\n#   페이즈는 Running 이다\n\n#   deletionTimestamp 가 있을 뿐이다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web pod/load 2>/dev/null; kubectl delete service web\n\ndeployment.apps \"web\" deleted\nservice \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   안 뜨는 파드를 상태별로 읽는다",
+   "note": "**`STATUS` 는 합성 문자열**이다 — `Completed` 의 페이즈는 `Succeeded`, `CrashLoopBackOff` 의 페이즈는 `Running` 이다.\n\n**SIGTERM 을 무시하면 30초를 다 기다리고**, `terminationGracePeriodSeconds` 를 5로 줄이면 5초다.\n\n**`sh -c \"sleep\"` 은 삭제에 10초, `exec sleep` 은 0.6초**다 — `exec` 한 줄 차이다.\n\n**삭제 중 요청에 `000` 이 12번 섞이고, `preStop: sleep 5` 를 넣으니 0회**다.\n\n**`Terminating` 은 페이즈가 아니라 `deletionTimestamp` 가 있는** 것이다."
+  }
+ ],
+ "recap": [
+  "**페이즈는 다섯이고 끝은** 둘이다.",
+  "**`STATUS` 는 합성된 문자열**이다.",
+  "**`CrashLoopBackOff` 의 페이즈는 `Running`** 이다.",
+  "**`Terminating` 은 페이즈가** 아니다.",
+  "**`Ready` 컨디션이 4.5절의 readiness** 다.",
+  "**종료는 엔드포인트 제거와 SIGTERM 이** 동시다.",
+  "**그래서 `preStop` 으로 잠깐** 기다린다.",
+  "**SIGTERM 을 무시하면 유예 시간을 다** 쓴다.",
+  "**`exec` 로 PID 1 을 넘겨** 준다."
+ ],
+ "drills": [
+  {
+   "task": "여러 상태의 파드를 만들고 페이즈를 본다.",
+   "done_when": "STATUS 와 페이즈 차이를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "SIGTERM 을 무시하는 파드를 지운다.",
+   "done_when": "유예 시간을 다 쓰는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`exec` 유무로 삭제 시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`preStop` 없이/있이 롤링 중 요청을 센다.",
+   "done_when": "실패 수 차이를 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Completed` 파드의 페이즈는?",
+   "a": "`Succeeded` 다."
+  },
+  {
+   "q": "`CrashLoopBackOff` 의 페이즈는?",
+   "a": "`Running` 이다. 컨테이너 상태가 대기일 뿐이다."
+  },
+  {
+   "q": "`preStop` 이 왜 필요한가?",
+   "a": "엔드포인트 제거가 퍼지기 전에 SIGTERM 이 가기 때문이다."
+  },
+  {
+   "q": "SIGTERM 을 무시하면?",
+   "a": "유예 시간을 다 기다린 뒤 SIGKILL 로 죽는다."
+  },
+  {
+   "q": "`sh -c` 로 띄우면 왜 느린가?",
+   "a": "`sh` 가 PID 1 이 되어 신호를 자식에게 넘기지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "preStop",
+   "def": "컨테이너에 SIGTERM 을 보내기 전에 실행하는 훅. 엔드포인트 제거를 기다리는 데 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Pod Lifecycle",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
