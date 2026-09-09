@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "dashboard",
+ "no": "9.8",
+ "chapter": 9,
+ "title": "대시보드",
+ "summary": "무엇을 한 화면에 두나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 숫자를 고른다.",
+  "세 줄로 배치한다.",
+  "고장을 만들어 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.7절에서 패널 여섯을** 넣었다. **왜 그 여섯인지** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 숫자",
+   "ascii": "   four numbers, in this order, on every service board\n\n   how much is coming in\n   how much of it is failing\n   how long it is taking\n   how full the thing is\n\n   the first three are what users feel; the fourth is why",
+   "note": "**앞의 셋은 사람이 겪는 것이고 넷째는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다 그리면 아무것도 안 보인다",
+   "md": "**9.3절에서 74 개**였다.\n\n> **다 그리면 74 개** 패널이다.\n> **아무도 안** 본다.\n> **넷으로** 줄인다.\n\n**앞의 셋이 사람이 겪는 것**이다.\n\n> **들어오고 실패하고 느리다**.\n> **9.6절에서 다** 만들었다.\n> **아래에서 배치**한다.\n\n**넷째는 왜 그런지**다.\n\n> **풀·힙·스레드**다.\n> **⑤ 6장과 ⑫ 3장의 그것들**이다.\n> **아래에서 붙인**다.\n\n**위에서 멈출 수 있어야** 한다.\n\n> **첫 줄만 보고 괜찮으면** 끝이다.\n> **아래에서 그 배치를** 만든다.\n> **고장 때 그 순서로** 내려간다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 줄",
+   "ascii": "   one screen, three rows, top to bottom\n\n   row one    is it bad right now\n   row two    where is it bad\n   row three  what inside is under pressure\n\n   you should be able to stop reading after row one",
+   "note": "**첫 줄만 보고 덮을 수 있어야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예쁜 화면과 쓸모 있는 화면은 다르다",
+   "md": "**패널이 많으면 안** 읽힌다.\n\n> **한 화면에 열 개** 안쪽이다.\n> **아래에서 세어** 본다.\n> **스크롤하면 안** 본다.\n\n**평균만 두면** 속는다.\n\n> **9.3절에서 40.2ms 가** 나왔다.\n> **분위를 같이** 둔다.\n> **아래에서 둘을 나란히** 본다.\n\n**대마다 그리면** 못 읽는다.\n\n> **9.6절에서 34 줄이** 됐다.\n> **접어서 두고 필요할 때** 편다.\n> **아래에서 그렇게** 한다.\n\n**축을 0 부터 안 두면** 과장된다.\n\n> **작은 흔들림이 절벽처럼** 보인다.\n> **아래에서 그걸** 본다.\n> **비율은 특히** 그렇다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 다 그리면\n\n$ curl -s localhost:9090/actuator/metrics | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['names']), '개')\"\n74 개\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^[a-z]'\n436\n\n--   패널 74 개를 만들 수는 있다\n--   아무도 안 본다\n\n\n-- 첫 줄: 지금 나쁜가\n\n$ Q() { curl -sG localhost:9091/api/v1/query --data-urlencode \"query=$1\" \\\n    | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    m = {k:v for k,v in r['metric'].items() if k != '__name__'}\n    print('%-34s %s' % (str(m)[:34], round(float(r['value'][1]), 4)))\n\"; }\n\n// ① 들어오는 양\n$ Q 'sum(rate(http_server_requests_seconds_count{uri!~\"/actuator.*\"}[5m]))'\n{}                                 14.2\n\n// ② 실패하는 비율\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 0.0053\n\n// ③ 걸리는 시간\n$ Q 'histogram_quantile(0.95,\n       sum by (le) (rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[5m])))'\n{}                                 0.0412\n\n// ④ 얼마나 찼나\n$ Q 'max(sum by (instance) (jvm_memory_used_bytes{area=\"heap\"})\n         / sum by (instance) (jvm_memory_max_bytes{area=\"heap\"}))'\n{}                                 0.42\n\n--   네 숫자다\n--   9.6절에서 만든 것들이다\n\n\n-- 액츄에이터를 빼는 이유\n\n$ Q 'sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 14.4\n$ Q 'sum(rate(http_server_requests_seconds_count{uri!~\"/actuator.*\"}[5m]))'\n{}                                 14.2\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count{uri=~\"/actuator.*\"}[5m]))'\n{'uri': '/actuator/health'}        0.2\n\n--   9.5절의 긁기와 8.3절의 프로브가 섞여 든다\n--   빠르고 늘 성공해서 분위를 낮춘다\n\n\n-- 살아 있는 대수도 첫 줄이다\n\n$ Q 'count(up{job=\"orders\"} == 1)'\n{}                                 3\n\n$ Q 'count(up{job=\"orders\"})'\n{}                                 3\n\n--   둘이 다르면 한 대가 죽은 것이다\n--   9.5절에서 만든 그 값이다\n\n\n-- 둘째 줄: 어디가 나쁜가\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count[5m]))'\n{'uri': '/hello'}                  12.4\n{'uri': '/orders'}                 1.0\n{'uri': '/report'}                 1.0\n{'uri': '/actuator/health'}        0.2\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le, uri) (rate(http_server_requests_seconds_bucket[5m])))'\n{'uri': '/hello'}                  0.0043\n{'uri': '/orders'}                 0.0412\n{'uri': '/report'}                 2.1\n\n$ Q 'sum by (uri, status) (rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))'\n{'status': '500', 'uri': '/report'}  0.5\n\n--   주소별로 갈랐다\n--   9.3절에서 40.2ms 가 감췄던 그것이다\n\n\n-- 셋째 줄: 안이 어떤가\n\n$ Q 'sum by (instance) (hikaricp_connections_active)'\n{'instance': 'app-1:9090'}         8\n{'instance': 'app-2:9090'}         3\n{'instance': 'app-3:9090'}         10\n\n$ Q 'sum by (instance) (hikaricp_connections_pending)'\n{'instance': 'app-3:9090'}         4\n\n$ Q 'sum by (instance) (rate(jvm_gc_pause_seconds_sum[5m]))'\n{'instance': 'app-1:9090'}         0.012\n{'instance': 'app-3:9090'}         0.412\n\n$ Q 'sum by (instance) (jvm_threads_live_threads)'\n{'instance': 'app-1:9090'}         31\n{'instance': 'app-3:9090'}         88\n\n--   ⑤ 6장의 풀과 ⑫ 3장의 힙이다\n--   app-3 만 셋 다 이상하다\n\n\n-- 화면을 만든다\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nrows = {}\nfor p in d['panels']:\n    rows.setdefault(p['gridPos']['y'], []).append(p)\nfor y in sorted(rows):\n    print('y=%-3d %s' % (y, ' | '.join(p['title'] for p in rows[y])))\n\"\ny=0   초당 요청 | 오류율 | 95 분위 | 살아 있는 대수\ny=6   주소별 요청 | 주소별 95 분위 | 상태별 오류\ny=14  커넥션 활성 | 커넥션 대기 | GC 시간 | 힙 사용률\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nprint('패널', len(d['panels']))\nh = max(p['gridPos']['y'] + p['gridPos']['h'] for p in d['panels'])\nprint('세로 칸', h, '(24 이하면 한 화면)')\"\n패널 11\n세로 칸 22 (24 이하면 한 화면)\n\n--   열한 개가 한 화면에 들어간다\n--   스크롤하면 셋째 줄을 안 본다\n\n\n-- 첫 줄은 큰 숫자로\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nfor p in d['panels']:\n    if p['gridPos']['y'] == 0:\n        c = p['fieldConfig']['defaults']\n        print('%-16s %-12s %-10s %s' % (\n            p['title'], p['type'], c.get('unit'),\n            c.get('thresholds', {}).get('steps', [{}])[-1].get('value')))\n\"\n초당 요청         stat         ops        None\n오류율            stat         percentunit 0.01\n95 분위           stat         s          0.5\n살아 있는 대수    stat         short      None\n\n--   9.7절의 단위들이다\n--   빨간 선을 어디 둘지가 9.10 절의 문턱이다\n\n\n-- 평균만 두면 속는다\n\n$ Q 'sum(rate(http_server_requests_seconds_sum[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 0.1521\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le) (rate(http_server_requests_seconds_bucket[5m])))'\n{}                                 0.0412\n\n$ Q 'histogram_quantile(0.99,\n       sum by (le) (rate(http_server_requests_seconds_bucket[5m])))'\n{}                                 2.104\n\n--   평균이 분위보다 크다\n--   드문 2 초짜리가 평균을 끌어올렸다\n--   9.3절에서 본 그 함정이다\n\n\n-- 축을 0 부터 두지 않으면\n\n$ Q 'sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 14.2\n\n$ curl -sG localhost:9091/api/v1/query_range \\\n    --data-urlencode 'query=sum(rate(http_server_requests_seconds_count[5m]))' \\\n    --data-urlencode \"start=$(date -v-10M +%s)\" --data-urlencode \"end=$(date +%s)\" \\\n    --data-urlencode 'step=120' | python3 -c \"\nimport json,sys\nv = [round(float(x[1]),2) for x in json.load(sys.stdin)['data']['result'][0]['values']]\nprint('값   ', v)\nprint('범위 ', min(v), '에서', max(v))\nprint('0 부터 보면 흔들림', round((max(v)-min(v))/max(v)*100), '%')\n\"\n값    [14.1, 14.2, 14.0, 14.4, 14.2, 14.1]\n범위  14.0 에서 14.4\n0 부터 보면 흔들림 3 %\n\n--   축을 14.0 에서 시작하면 절벽처럼 보인다\n--   3% 흔들림이다\n\n\n-- 고장을 만들어 확인한다\n\n$ docker exec app-3 sh -c 'kill -STOP 1'\n\n$ sleep 30\n$ Q 'count(up{job=\"orders\"} == 1)'\n{}                                 2\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 0.0921\n\n--   첫 줄에서 둘 다 움직였다\n--   여기서 멈추면 안 된다는 걸 안다\n\n\n-- 둘째 줄로 내려간다\n\n$ Q 'sum by (uri, status) (rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))'\n{'status': '503', 'uri': '/orders'}   1.2\n{'status': '500', 'uri': '/report'}   0.5\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le, uri) (rate(http_server_requests_seconds_bucket[5m])))'\n{'uri': '/hello'}                  0.0044\n{'uri': '/orders'}                 3.041\n{'uri': '/report'}                 2.1\n\n--   /orders 만 0.041 에서 3.041 이 됐다\n\n\n-- 셋째 줄로 내려간다\n\n$ Q 'sum by (instance) (hikaricp_connections_pending)'\n{'instance': 'app-1:9090'}         12\n{'instance': 'app-2:9090'}         11\n\n$ Q 'sum by (instance) (hikaricp_connections_active)'\n{'instance': 'app-1:9090'}         10\n{'instance': 'app-2:9090'}         10\n\n$ Q 'sum by (instance) (hikaricp_connections_max)'\n{'instance': 'app-1:9090'}         10\n{'instance': 'app-2:9090'}         10\n\n--   남은 두 대의 풀이 꽉 찼다\n--   한 대가 빠져 나머지가 다 받았다\n--   ⑤ 6장에서 본 그 대기다\n\n\n-- 되돌린다\n\n$ docker exec app-3 sh -c 'kill -CONT 1'\n$ sleep 40\n\n$ Q 'count(up{job=\"orders\"} == 1)'\n{}                                 3\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 0.0182\n$ Q 'sum by (instance) (hikaricp_connections_pending)'\n(결과 없음)\n\n--   위에서 아래로 세 걸음이었다\n--   9.10 절에서 어느 줄을 알림으로 걸지 정한다\n\n\n-- 대마다 그리는 것은 접어 둔다\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nfor p in d['panels']:\n    if p['type'] == 'row':\n        print('%-16s 접힘=%s 안에 %d 개' % (\n            p['title'], p.get('collapsed'), len(p.get('panels', []))))\n\"\n대별 상세        접힘=True 안에 6 개\n\n$ Q 'sum by (instance, uri) (rate(http_server_requests_seconds_count[5m]))' | wc -l\n      14\n\n--   14 줄은 접어 둔다\n--   9.6절에서 34 줄이 됐던 그것이다\n\n\n-- 확인한다\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nprint('제목    ', d['title'])\nprint('패널    ', len([p for p in d['panels'] if p['type'] != 'row']))\nprint('접힌 행 ', len([p for p in d['panels'] if p['type'] == 'row']))\nprint('새로고침', d['refresh'])\nprint('기본 구간', d['time'])\"\n제목     주문 서비스\n패널     11\n접힌 행  1\n새로고침 30s\n기본 구간 {'from': 'now-1h', 'to': 'now'}\n\n$ git add provisioning/dashboards/orders.json\n$ git commit -q -m 'chore: 대시보드 세 줄로 정리'\n\n--   9.9절에서 업무 숫자를 하나 더 얹는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '숫자'      '넷' \\\n  '줄'        '셋' \\\n  '첫 줄'     '지금 나쁜가' \\\n  '둘째 줄'   '어디가' \\\n  '셋째 줄'   '왜' \\\n  '패널'      '한 화면 열 개 안쪽' \\\n  '평균'      '분위와 같이' \\\n  '대별'      '접어 둠' \\\n  '축'        '0 부터'\n\n숫자                       넷\n줄                         셋\n첫 줄                      지금 나쁜가\n둘째 줄                    어디가\n셋째 줄                    왜\n패널                       한 화면 열 개 안쪽\n평균                       분위와 같이\n대별                       접어 둠\n축                         0 부터",
+   "note": "**계기 74 개에서 네 숫자만 골라 첫 줄에** 뒀다.\n\n**액츄에이터 주소를 빼니 14.4 가 14.2 로, 그 0.2 가 분위를** 낮춘다.\n\n**평균 0.1521 이 95 분위 0.0412 보다 큰데 99 분위가 2.104 라 드문 것이 평균을** 끌었다.\n\n**한 대를 멈추니 첫 줄에서 대수 2·오류율 9.2%, 둘째 줄에서 `/orders` 만 3.041 초, 셋째 줄에서 남은 두 대 풀이 10/10 에 대기 12**였다.\n\n**되돌리니 세 줄이 차례로 돌아와 위에서 아래로 세 걸음**이었다."
+  }
+ ],
+ "recap": [
+  "**숫자는** 넷이다.",
+  "**줄은** 셋이다.",
+  "**첫 줄에서** 멈춘다.",
+  "**액츄에이터는** 뺀다.",
+  "**대수도** 본다.",
+  "**주소별로** 가른다.",
+  "**안쪽은 셋째** 줄이다.",
+  "**평균만 두면** 속는다.",
+  "**대별은** 접는다."
+ ],
+ "drills": [
+  {
+   "task": "네 숫자를 고른다.",
+   "done_when": "첫 줄을 만들었다.",
+   "minutes": 25
+  },
+  {
+   "task": "액츄에이터를 빼고 견준다.",
+   "done_when": "값이 달라진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "고장을 만들어 본다.",
+   "done_when": "세 줄이 차례로 움직인 걸 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "평균과 분위를 나란히 둔다.",
+   "done_when": "역전을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "첫 줄에 두는 네 숫자는?",
+   "a": "들어오는 양, 실패 비율, 걸리는 시간, 얼마나 찼나다."
+  },
+  {
+   "q": "액츄에이터 주소를 왜 빼나?",
+   "a": "빠르고 늘 성공해서 분위와 오류율을 왜곡한다."
+  },
+  {
+   "q": "평균만 두면 왜 안 되나?",
+   "a": "드문 아주 느린 것이 평균을 끌어 실제와 어긋난다."
+  },
+  {
+   "q": "세 줄의 뜻은?",
+   "a": "지금 나쁜가, 어디가 나쁜가, 안에서 무엇이 눌리나다."
+  },
+  {
+   "q": "대별 패널은 어떻게 두나?",
+   "a": "접어 두고 필요할 때만 편다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "네 신호",
+   "def": "트래픽·오류·지연·포화. 서비스 화면의 첫 줄에 두는 숫자들."
+  },
+  {
+   "term": "포화",
+   "def": "풀이나 힙처럼 한계가 있는 자원이 얼마나 찼는지."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Google SRE Book — Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "publisher": "Google"
+  },
+  {
+   "title": "Grafana — Documentation",
+   "url": "https://grafana.com/docs/grafana/latest/",
+   "publisher": "Grafana Labs"
+  },
+  {
+   "title": "Prometheus — Documentation",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "publisher": "Prometheus"
+  }
+ ]
+}

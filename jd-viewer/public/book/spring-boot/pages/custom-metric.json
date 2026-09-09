@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "custom-metric",
+ "no": "9.9",
+ "chapter": 9,
+ "title": "직접 만든다",
+ "summary": "내 카운터를 올린다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "업무 숫자를 만든다.",
+  "어디서 셀지 정한다.",
+  "화면까지 잇는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.8절의 넷은 다 기술 숫자**였다. **업무 숫자를 하나** 얹는다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 종류가 한 화면에",
+   "ascii": "   two kinds of number on the same board\n\n   technical   requests, threads, connections, heap\n   business    orders, refunds, signups, revenue\n\n   the second kind is the only one anyone else reads",
+   "note": "**둘째만 다른 사람이** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "요청 수는 늘었는데 주문이 안 늘 수 있다",
+   "md": "**요청은 성공했는데 실패한 일**이 있다.\n\n> **재고가 없어 반려된 주문**이다.\n> **9.8절 화면에는 200 으로** 보인다.\n> **아래에서 그걸** 만든다.\n\n**배포가 망친 걸 빨리** 안다.\n\n> **오류율은 그대로인데 주문이** 준다.\n> **아래에서 그걸** 겪는다.\n> **기술 숫자로는 못** 본다.\n\n**어디서 셀지가** 중요하다.\n\n> **컨트롤러는 요청을** 센다.\n> **서비스는 결과를** 센다.\n> **아래에서 셋을** 견준다.\n\n**꼬리표를** 조심한다.\n\n> **9.1절에서 5000 계열이** 됐다.\n> **업무 숫자가 특히** 위험하다.\n> **아래에서 그 선을** 긋는다."
+  },
+  {
+   "type": "figure",
+   "caption": "셀 자리가 셋",
+   "ascii": "   three places to put the counting\n\n   in the controller   counts requests, not outcomes\n   in the service      counts what actually happened\n   in an aspect        counts without touching the code\n\n   the middle one is right far more often than it looks",
+   "note": "**가운데가 보기보다 자주** 맞다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외가 나면 세다 만다",
+   "md": "**증가 뒤에 터지면** 어긋난다.\n\n> **저장 전에 세면** 그렇다.\n> **아래에서 그걸** 만든다.\n> **성공 뒤에** 센다.\n\n**롤백은 안 되돌려**진다.\n\n> **9.2절에서 세기는 올라만** 갔다.\n> **트랜잭션 밖 이야기**다.\n> **아래에서 확인**한다.\n\n**금액을 세기로 두면** 는다.\n\n> **요약이** 맞다.\n> **9.2절의 넷째 계기**다.\n> **아래에서 갈라** 쓴다.\n\n**시간 재기를 뜨거운 자리에** 두면 느리다.\n\n> **9.2절에서 재** 봤다.\n> **필드로 잡아** 둔다.\n> **아래에서 다시** 확인한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 기술 숫자로는 안 보인다\n\n@PostMapping(\"/orders\")\nResponseEntity<?> create(@RequestBody Req req) {\n    var r = service.place(req.item(), req.qty());\n    return r.ok() ? ResponseEntity.status(201).body(r.order())\n                  : ResponseEntity.ok(Map.of(\"reason\", r.reason()));\n}\n\n$ Q 'sum by (status) (rate(http_server_requests_seconds_count{uri=\"/orders\"}[5m]))'\n{'status': '201'}                  6.2\n{'status': '200'}                  3.8\n\n$ Q 'sum(rate(http_server_requests_seconds_count{uri=\"/orders\",outcome=\"SERVER_ERROR\"}[5m]))'\n(결과 없음)\n\n--   오류는 0 인데 열 건 중 넷이 반려됐다\n--   9.8절 화면에는 아무 일도 없다\n\n\n-- 어디서 셀까 ① 컨트롤러\n\n@PostMapping(\"/orders\")\nResponseEntity<?> create(@RequestBody Req req) {\n    counter.increment();\n    ...\n}\n\n$ Q 'rate(order_placed_total[5m])'\n{}                                 10.0\n\n--   요청 수와 같다\n--   반려도 세어 버렸다\n\n\n-- ② 서비스\n\n@Service\nclass OrderService {\n    private final Counter placed;\n    private final Counter rejected;\n    private final DistributionSummary amount;\n    private final Timer timer;\n\n    OrderService(MeterRegistry registry) {\n        this.placed = Counter.builder(\"order.placed\")\n                .description(\"실제로 접수된 주문\").register(registry);\n        this.rejected = Counter.builder(\"order.rejected\")\n                .description(\"반려된 주문\").register(registry);\n        this.amount = DistributionSummary.builder(\"order.amount\")\n                .baseUnit(\"won\").publishPercentiles(0.5, 0.95).register(registry);\n        this.timer = Timer.builder(\"order.place\").register(registry);\n    }\n\n    Result place(String item, int qty) {\n        return timer.record(() -> {\n            if (!stock.has(item, qty)) {\n                Metrics.counter(\"order.rejected\", \"reason\", \"stock\").increment();\n                return Result.rejected(\"stock\");\n            }\n            var o = repo.save(new Order(item, qty));   // 저장이 먼저다\n            placed.increment();\n            amount.record(o.getTotal());\n            return Result.ok(o);\n        });\n    }\n}\n\n$ Q 'rate(order_placed_total[5m])'\n{}                                 6.2\n$ Q 'sum by (reason) (rate(order_rejected_total[5m]))'\n{'reason': 'stock'}                3.1\n{'reason': 'payment'}              0.7\n\n--   201 건수와 맞는다\n--   왜 반려됐는지도 나온다\n\n\n-- ③ 애스펙트\n\n@Timed(value = \"order.place\", percentiles = {0.5, 0.95})\nResult place(String item, int qty) { ... }\n\n@Bean\nTimedAspect timedAspect(MeterRegistry registry) {\n    return new TimedAspect(registry);\n}\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^order_place_seconds' | head -3\norder_place_seconds_count{class=\"study.boot.OrderService\",method=\"place\",...} 1000.0\norder_place_seconds_sum{class=\"study.boot.OrderService\",method=\"place\",...} 11.482\norder_place_seconds{...,quantile=\"0.95\"} 0.041\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c 'spring-boot-starter-aop'\n1\n\n--   클래스와 메서드가 꼬리표로 붙는다\n--   코드는 애너테이션 한 줄이다\n\n\n-- 증가 뒤에 터지면\n\nResult place(String item, int qty) {\n    placed.increment();                    // 먼저 셌다\n    var o = repo.save(new Order(item, qty));\n    return Result.ok(o);\n}\n\n$ for i in $(seq 1 100); do\n    curl -s -o /dev/null -X POST localhost:8080/orders \\\n      -H 'Content-Type: application/json' -d \"{\\\"item\\\":\\\"x$i\\\",\\\"qty\\\":1}\"\n  done\n\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print('센 것', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n센 것 100\n\n$ psql -tAc 'select count(*) from orders'\n93\n\n$ Q 'sum(rate(logback_events_total{level=\"error\"}[5m]))'\n{}                                 0.23\n\n--   일곱 건이 저장에서 터졌다\n--   숫자는 100 이다\n\n\n-- 성공 뒤에 센다\n\nvar o = repo.save(new Order(item, qty));\nplaced.increment();\n\n$ psql -tAc 'select count(*) from orders'\n186\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print('센 것', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n센 것 93\n\n$ python3 -c \"print('93 + 93 =', 93+93)\"\n93 + 93 = 186\n\n--   맞는다\n\n\n-- 롤백은 안 되돌려진다\n\n@Transactional\nResult place(String item, int qty) {\n    var o = repo.save(new Order(item, qty));\n    placed.increment();\n    audit.write(o);          // 여기서 터지면 롤백된다\n    return Result.ok(o);\n}\n\n$ curl -s -o /dev/null -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"item\":\"터짐\",\"qty\":1}'\n\n$ psql -tAc \"select count(*) from orders where item='터짐'\"\n0\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print(int(json.load(sys.stdin)['measurements'][0]['value']))\"\n94\n\n--   DB 는 되돌아갔는데 숫자는 안 되돌아갔다\n--   ⑤ 5장의 그 경계 밖이다\n\n\n-- 커밋 뒤에 센다\n\n@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)\nvoid onPlaced(OrderPlacedEvent e) {\n    placed.increment();\n    amount.record(e.total());\n}\n\n$ curl -s -o /dev/null -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"item\":\"터짐\",\"qty\":1}'\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print(int(json.load(sys.stdin)['measurements'][0]['value']))\"\n94\n\n$ curl -s -o /dev/null -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"item\":\"정상\",\"qty\":1}'\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print(int(json.load(sys.stdin)['measurements'][0]['value']))\"\n95\n\n--   성공한 것만 센다\n\n\n-- 금액은 요약으로\n\n// 세기로 두면\nCounter revenue = registry.counter(\"order.revenue\");\nrevenue.increment(o.getTotal());\n\n$ Q 'rate(order_revenue_total[5m])'\n{}                                 84200\n\n--   초당 8.4 만 원이라는 뜻이다\n--   한 건이 얼마인지는 모른다\n\n// 요약으로 두면\n$ Q 'histogram_quantile(0.5, sum by (le) (rate(order_amount_won_bucket[5m])))'\n{}                                 8200\n$ Q 'rate(order_amount_won_sum[5m]) / rate(order_amount_won_count[5m])'\n{}                                 8420\n\n--   중앙값 8200 원, 평균 8420 원이다\n--   9.2절의 넷째 계기다\n\n\n-- 꼬리표에 선을 긋는다\n\n// 위험한 것\nMetrics.counter(\"order.placed\", \"orderId\", o.getId().toString()).increment();\nMetrics.counter(\"order.placed\", \"item\", item).increment();\nMetrics.counter(\"order.placed\", \"userId\", userId).increment();\n\n$ for i in $(seq 1 2000); do curl -s -o /dev/null -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d \"{\\\"item\\\":\\\"item-$i\\\",\\\"qty\\\":1}\"; done\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^order_placed_total'\n2000\n\n$ Q 'prometheus_tsdb_head_series'\n{}                                 6108\n\n--   9.1절에서 본 그 폭발이다\n\n// 안전한 것\nMetrics.counter(\"order.placed\", \"channel\", channel,\n                \"category\", categoryOf(item),\n                \"paid\", String.valueOf(paid)).increment();\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^order_placed_total'\n12\n\n$ python3 -c \"print('2 x 3 x 2 =', 2*3*2)\"\n2 x 3 x 2 = 12\n\n--   값 종류가 정해진 것만 붙인다\n--   조합 수를 미리 셀 수 있어야 한다\n\n\n-- 필터로 막아 둔다\n\n@Bean\nMeterFilter capOrderTags() {\n    return MeterFilter.maximumAllowableTags(\"order.placed\", \"category\", 20,\n                                            MeterFilter.deny());\n}\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^order_placed_total'\n12\n\n--   9.2절에서 만든 그 그물이다\n\n\n-- 게이지도 하나 둔다\n\n@Bean\nGauge pendingGauge(MeterRegistry registry, OrderRepository repo) {\n    return Gauge.builder(\"order.pending\", repo, r -> r.countByStatus(PENDING))\n            .description(\"처리 대기 주문\")\n            .register(registry);\n}\n\n$ Q 'order_pending'\n{'instance': 'app-1:9090'}         42\n{'instance': 'app-2:9090'}         42\n{'instance': 'app-3:9090'}         42\n\n$ Q 'avg(order_pending)'\n{}                                 42\n$ Q 'sum(order_pending)'\n{}                                 126\n\n--   같은 DB 를 보므로 세 대가 같은 값이다\n--   합치면 안 된다\n--   9.2절에서 게이지는 남의 것을 가리킨다고 했다\n\n\n-- 값을 부를 때마다 DB 를 친다\n\n$ Q 'rate(hikaricp_connections_acquire_seconds_count[5m])'\n{}                                 14.4\n\n$ Q 'rate(hikaricp_connections_acquire_seconds_count[5m])'\n{}                                 14.6\n\n--   9.5절에서 15 초마다 긁는다\n--   그때마다 count 질의가 나간다\n--   무거우면 캐시를 끼운다\n\n\n-- 화면에 얹는다\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nfor p in d['panels']:\n    if p['gridPos']['y'] == 0:\n        print('%-18s %s' % (p['title'], p['targets'][0]['expr'][:52]))\n\"\n초당 주문           sum(rate(order_placed_total[$__rate_interval]))\n반려율             sum(rate(order_rejected_total[$__rate_interval])) /\n주문 금액 중앙값    histogram_quantile(0.5, sum by (le) (rate(order_amo\n오류율             sum(rate(http_server_requests_seconds_count{outcome\n\n--   9.8절의 첫 줄에 업무 숫자가 들어갔다\n\n\n-- 배포가 망친 것을 본다\n\n$ Q 'sum(rate(http_server_requests_seconds_count{uri=\"/orders\"}[5m]))'\n{}                                 10.1\n$ Q 'sum(rate(order_placed_total[5m]))'\n{}                                 1.2\n$ Q 'sum by (reason) (rate(order_rejected_total[5m]))'\n{'reason': 'stock'}                8.9\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                 0.0\n\n--   요청은 그대로고 오류율은 0 이다\n--   주문만 6.2 에서 1.2 가 됐다\n--   재고 조회가 늘 빈 값을 주고 있었다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '기술 숫자'   '오류율 0' \\\n  '업무 숫자'   '주문이 준 걸 봄' \\\n  '컨트롤러'    '요청을 셈' \\\n  '서비스'      '결과를 셈' \\\n  '애스펙트'    '건드리지 않음' \\\n  '먼저 세면'   '100 대 93' \\\n  '롤백'        '안 되돌려짐' \\\n  '커밋 뒤'     '맞음' \\\n  '금액'        '요약으로' \\\n  '꼬리표'      '2000 대 12'\n\n기술 숫자                  오류율 0\n업무 숫자                  주문이 준 걸 봄\n컨트롤러                   요청을 셈\n서비스                     결과를 셈\n애스펙트                   건드리지 않음\n먼저 세면                  100 대 93\n롤백                       안 되돌려짐\n커밋 뒤                    맞음\n금액                       요약으로\n꼬리표                     2000 대 12\n\n--   9.10 절에서 언제 깨울지 정한다",
+   "note": "**요청 열 건 중 넷이 반려됐는데 오류율은 0 이라 기술 숫자로는 안** 보인다.\n\n**저장 전에 세니 숫자 100 대 DB 93, 커밋 뒤에 세니 93 과** 맞는다.\n\n**롤백된 건도 숫자는 안 되돌아가 트랜잭션 밖이라는 게** 드러난다.\n\n**품목을 꼬리표로 붙이니 계열 2000 개, 정해진 셋만 붙이니 2×3×2 로 12**다.\n\n**요청 10.1 에 오류율 0 인데 주문만 6.2 에서 1.2 로 떨어져 재고 조회가 빈 값을 주고 있었다는 게** 보인다."
+  }
+ ],
+ "recap": [
+  "**업무 숫자가** 필요하다.",
+  "**컨트롤러는 요청**이다.",
+  "**서비스가** 결과다.",
+  "**애스펙트는 안** 건드린다.",
+  "**성공 뒤에** 센다.",
+  "**롤백은 안** 돌아온다.",
+  "**커밋 뒤가** 맞다.",
+  "**금액은** 요약이다.",
+  "**꼬리표에 선을** 긋는다."
+ ],
+ "drills": [
+  {
+   "task": "업무 카운터를 만든다.",
+   "done_when": "상태 코드와 맞는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "먼저 세고 어긋나게 한다.",
+   "done_when": "DB 수와 차이를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "커밋 뒤로 옮긴다.",
+   "done_when": "맞아떨어지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "꼬리표를 폭발시켰다 줄인다.",
+   "done_when": "조합 수를 셀 수 있게 만들었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "업무 숫자가 왜 필요한가?",
+   "a": "요청은 성공했는데 일은 안 된 경우를 기술 숫자로 못 봐서다."
+  },
+  {
+   "q": "어디서 세는 게 맞나?",
+   "a": "요청이 아니라 결과가 정해지는 자리, 대개 서비스다."
+  },
+  {
+   "q": "롤백되면 숫자는?",
+   "a": "안 되돌아간다. 커밋 뒤에 세야 맞는다."
+  },
+  {
+   "q": "금액을 세기로 두면?",
+   "a": "합계만 알고 한 건이 얼마인지 모른다. 요약을 쓴다."
+  },
+  {
+   "q": "업무 꼬리표의 기준은?",
+   "a": "값 종류가 정해져 조합 수를 미리 셀 수 있어야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "업무 메트릭",
+   "def": "요청이 아니라 실제로 일어난 일을 세는 숫자."
+  },
+  {
+   "term": "커밋 후 처리",
+   "def": "트랜잭션이 실제로 반영된 뒤에만 실행되는 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Micrometer — Concepts",
+   "url": "https://docs.micrometer.io/micrometer/reference/concepts.html",
+   "publisher": "Micrometer"
+  },
+  {
+   "title": "Spring Boot — Metrics",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/metrics.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Google SRE Book — Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "publisher": "Google"
+  }
+ ]
+}
