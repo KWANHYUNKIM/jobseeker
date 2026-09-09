@@ -608,7 +608,7 @@
           "title": "GitOps",
           "summary": "클러스터의 상태를 Git 에 둔다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -616,7 +616,7 @@
           "title": "파이프라인에서 배포까지",
           "summary": "「도커」 11장이 만든 이미지를 여기에 잇는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
