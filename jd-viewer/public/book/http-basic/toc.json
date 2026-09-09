@@ -570,7 +570,7 @@
           "title": "캐시 무효화",
           "summary": "확실히 안 쓰게 만들기.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.8",
@@ -578,7 +578,7 @@
           "title": "실전 — 정적 자원과 API",
           "summary": "파일 이름에 해시를 넣는 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.9",
@@ -586,7 +586,7 @@
           "title": "다음으로",
           "summary": "이 책이 남긴 것과 이어지는 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

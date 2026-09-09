@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "cache-invalidation",
+ "no": "9.7",
+ "chapter": 9,
+ "title": "캐시 무효화",
+ "summary": "확실히 안 쓰게 만들기.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "닿을 수 없는 곳을 안다.",
+  "세 방법을 구분한다.",
+  "URL 변경이 왜 확실한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.5절에서 1년짜리 `max-age` 를** 봤다. **잘못 내보내면 1년 동안 못 고친다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "닿는 곳과 못 닿는 곳",
+   "ascii": "   what you can and cannot reach\n\n   your own cdn         a purge api, and it works in seconds\n   a corporate proxy    no api, and you do not know it exists\n   a browser on a phone in someone else's pocket\n                        nothing, no api, no reach, ever\n\n   so a max-age you already sent is a promise you cannot take back",
+   "note": "**이미 보낸 `max-age` 는 회수가 안** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "브라우저 캐시는 지울 수 없다",
+   "md": "**API 가** 없다.\n\n> **CDN 은 지운다.**\n> **회사 프록시는 존재조차** 모른다.\n> **남의 휴대폰은 아무 방법이** 없다.\n\n**그래서 긴 `max-age` 가** 무섭다.\n\n> **`max-age=31536000` 을 잘못 붙이면 1년**이다.\n> **9.5절에서 그걸 권한 건 조건이** 있었다.\n> **파일 이름이 바뀐다는 전제**다.\n\n**HTML 은 짧게 두는 이유**가 이것이다.\n\n> **`no-cache` 면 매번 검증**한다(9.5절).\n> **그 안의 자원 주소는 언제든 바꿀 수** 있다.\n> **입구만 짧으면 나머지는 길어도** 된다.\n\n**변경 요청이 캐시를 지우기도** 한다.\n\n> **같은 URL 에 `POST`·`PUT`·`DELETE` 가 성공하면 그 항목이** 무효화된다.\n> **`Location` 이 가리킨 곳도** 그렇다.\n> **다른 서버가 바꾼 건 모른다** — 한 캐시 안에서만이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 방법",
+   "ascii": "   three ways to make a client stop using the old bytes\n\n   change the url       new name, so the old entry is simply never asked for\n   purge the shared     works for cdn and proxy, not for browsers\n   short lifetime       revalidate often, and pay a round trip for it\n\n   only the first one reaches every client, and it needs no cooperation",
+   "note": "**첫째만 모두에게** 닿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "주소를 바꾸면 무효화가 필요 없다",
+   "md": "**옛 주소를 아무도 안** 부른다.\n\n> **지울 필요가** 없다.\n> **캐시에 남아 있어도 상관** 없다.\n> **9.8절이 이 이야기**다.\n\n**쿼리로 바꾸는 건 반쪽**이다.\n\n> **`app.js?v=2` 도 다른 URL** 이다.\n> **캐시가 쿼리를 키에** 넣는다.\n> **그런데 어떤 CDN 은 쿼리를 무시하게 설정돼** 있다.\n> **경로에 넣는 게** 안전하다.\n\n**퍼지에도 종류가** 있다.\n\n| 방식 | 무엇 |\n|---|---|\n| URL 퍼지 | 그 주소 하나 |\n| 태그 퍼지 | 태그가 붙은 것 전부 |\n| 전체 퍼지 | 다 지운다. 원본이 죽을 수 있다 |\n\n> **전체 퍼지 뒤에 트래픽이 원본으로 다** 온다.\n> **9.6절의 스탬피드가 전면적으로** 일어난다.\n\n**`Clear-Site-Data` 가** 있다.\n\n> **응답 헤더로 브라우저 저장소를 지우라고** 한다.\n> **로그아웃할 때** 쓴다.\n> **캐시·쿠키·스토리지를 골라** 지운다.\n> **그 응답을 받아야만 동작**한다 — 이미 떠난 사용자에겐 소용없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 긴 max-age 를 잘못 내보내면 ---\n\n$ docker exec lab sh -c \\\n    'echo \"버전 1\" > /usr/share/nginx/html/app.js && \\\n     printf \"server { listen 80; root /usr/share/nginx/html;\\n\\\n  location ~ \\\\.js\\$ { expires max; add_header Cache-Control \\\"max-age=31536000, immutable\\\"; }\\n\\\n}\\n\" > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - http://localhost:8080/app.js | grep -iE 'cache-control|버전'\n\nCache-Control: max-age=31536000, immutable\n버전 1\n\n$ docker exec lab sh -c 'echo \"버전 2\" > /usr/share/nginx/html/app.js'\n$ curl -s http://localhost:8080/app.js\n\n버전 2\n\n#   curl 은 캐시가 없어서 새것을 받는다\n\n#   브라우저는 다르다\n\n$ open -a \"Google Chrome\" http://localhost:8080/app.js 2>/dev/null; sleep 2\n$ docker exec lab sh -c 'echo \"버전 3\" > /usr/share/nginx/html/app.js'\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/app.js 2>/dev/null; sleep 3\n$ docker logs --tail 3 lab 2>&1 | awk '{print $7, $9}' | grep app.js | wc -l\n\n       0\n\n#   요청이 아예 안 왔다\n\n#   버전 2 를 계속 쓴다\n\n#   서버에서 할 수 있는 게 없다\n\n#   1년 동안 그렇다\n\n# --- 강제 새로고침도 immutable 은 ---\n\n$ python3 - <<'EOF'\nprint(\"새로고침       : immutable 이면 요청을 안 보낸다\")\nprint(\"강제 새로고침  : no-cache 를 보내 새로 받는다\")\nprint()\nprint(\"그런데 사용자에게 강제 새로고침을 시킬 방법이 없다\")\nEOF\n\n새로고침       : immutable 이면 요청을 안 보낸다\n강제 새로고침  : no-cache 를 보내 새로 받는다\n\n그런데 사용자에게 강제 새로고침을 시킬 방법이 없다\n\n# --- 주소를 바꾼다 ---\n\n$ docker exec lab sh -c \\\n    'echo \"버전 3\" > /usr/share/nginx/html/app.a1b2c3.js && \\\n     cat > /usr/share/nginx/html/index2.html' <<'EOF'\n<!DOCTYPE html>\n<html><head><script src=\"/app.a1b2c3.js\"></script></head>\n<body>버전 3</body></html>\nEOF\n\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/index2.html 2>/dev/null\n$ sleep 3 && docker logs --tail 4 lab 2>&1 | awk '{print $7, $9}'\n\n/index2.html 200\n/app.a1b2c3.js 200\n\n#   새 주소라 받았다\n\n#   옛 app.js 는 캐시에 남아 있다\n\n#   아무도 안 부르니 상관없다\n\n#   지울 필요가 없다\n\n# --- 쿼리로 바꾸기 ---\n\n$ docker exec lab sh -c \\\n    'printf \"proxy_cache_path /tmp/pc5 levels=1:2 keys_zone=z5:1m;\\n\\\nserver { listen 80; root /usr/share/nginx/html;\\n\\\n  location /q/ { proxy_pass http://host.docker.internal:9003/;\\n\\\n    proxy_cache z5; proxy_cache_key \\\"\\$uri\\\";\\n\\\n    add_header X-Cache \\$upstream_cache_status; }\\n\\\n  location /w/ { proxy_pass http://host.docker.internal:9003/;\\n\\\n    proxy_cache z5; proxy_cache_key \\\"\\$uri\\$is_args\\$args\\\";\\n\\\n    add_header X-Cache \\$upstream_cache_status; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ python3 cc.py & sleep 1\n\n$ curl -s -o /dev/null 'http://localhost:8080/q/public?v=1'\n$ curl -s -D - -o /dev/null 'http://localhost:8080/q/public?v=2' \\\n  | grep -i x-cache\n\nX-Cache: HIT\n\n#   v=2 인데 v=1 의 응답이 왔다\n\n#   캐시 키에 쿼리가 없다\n\n$ curl -s -o /dev/null 'http://localhost:8080/w/public?v=1'\n$ curl -s -D - -o /dev/null 'http://localhost:8080/w/public?v=2' \\\n  | grep -i x-cache\n\nX-Cache: MISS\n\n#   여기는 나뉜다\n\n#   설정에 달렸다\n\n#   그래서 경로에 넣는 게 안전하다\n\n# --- 변경 요청이 무효화한다 ---\n\n$ curl -s -o /dev/null 'http://localhost:8080/w/public'\n$ curl -s -D - -o /dev/null 'http://localhost:8080/w/public' | grep -i x-cache\n\nX-Cache: HIT\n\n$ curl -s -o /dev/null -X POST -d '{}' 'http://localhost:8080/w/public'\n$ curl -s -D - -o /dev/null 'http://localhost:8080/w/public' | grep -i x-cache\n\nX-Cache: HIT\n\n#   nginx 는 안 지웠다\n\n#   규격은 지우라고 한다\n\n#   구현마다 다르다\n\n$ python3 - <<'EOF'\nprint(\"RFC 9111\")\nprint(\"  같은 URL 에 안전하지 않은 메서드가 성공하면\")\nprint(\"  그 항목을 무효화해야 한다\")\nprint(\"  Location 이 가리킨 곳도 마찬가지다\")\nprint()\nprint(\"단, 다른 서버가 바꾼 것은 모른다\")\nprint(\"한 캐시 안에서만 통한다\")\nEOF\n\nRFC 9111\n  같은 URL 에 안전하지 않은 메서드가 성공하면\n  그 항목을 무효화해야 한다\n  Location 이 가리킨 곳도 마찬가지다\n\n단, 다른 서버가 바꾼 것은 모른다\n한 캐시 안에서만 통한다\n\n# --- 퍼지 ---\n\n$ docker exec lab sh -c 'find /tmp/pc5 -type f | wc -l'\n\n       3\n\n$ docker exec lab sh -c 'rm -rf /tmp/pc5/* && echo 지웠다'\n\n지웠다\n\n$ curl -s -D - -o /dev/null 'http://localhost:8080/w/public' \\\n  | grep -i x-cache\n\nX-Cache: MISS\n\n#   파일을 지우는 게 가장 단순한 퍼지다\n\n#   상용 CDN 은 API 를 준다\n\n$ python3 - <<'EOF'\nprint(\"퍼지 종류\")\nprint(\"  URL  : 그 주소 하나\")\nprint(\"  태그 : Surrogate-Key 같은 헤더로 묶은 것 전부\")\nprint(\"  전체 : 다 지운다\")\nprint()\nprint(\"전체 퍼지 뒤에는 트래픽이 원본으로 다 온다\")\nprint(\"9.6절의 스탬피드가 전면적으로 일어난다\")\nEOF\n\n퍼지 종류\n  URL  : 그 주소 하나\n  태그 : Surrogate-Key 같은 헤더로 묶은 것 전부\n  전체 : 다 지운다\n\n전체 퍼지 뒤에는 트래픽이 원본으로 다 온다\n9.6절의 스탬피드가 전면적으로 일어난다\n\n$ kill %1 2>/dev/null\n\n# --- Clear-Site-Data ---\n\n$ cat clear.py\n\nimport http.server\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        self.send_response(200)\n        self.send_header(\"Clear-Site-Data\",\n                         '\"cache\", \"cookies\", \"storage\"')\n        self.send_header(\"Content-Type\", \"text/html; charset=utf-8\")\n        b = \"로그아웃했습니다\\n\".encode()\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 8997), H).serve_forever()\n\n$ python3 clear.py & sleep 1\n$ curl -s -D - http://localhost:8997/logout | grep -iE 'clear-site-data|로그'\n\nClear-Site-Data: \"cache\", \"cookies\", \"storage\"\n로그아웃했습니다\n\n#   브라우저가 이 응답을 받으면 지운다\n\n#   로그아웃에 쓴다\n\n#   이미 떠난 사용자에겐 소용없다\n\n$ python3 -c \"\nprint('\\\"*\\\" 로 전부 지울 수도 있다')\nprint('executionContexts 를 넣으면 탭까지 새로 고친다')\nprint('https 에서만 동작한다')\"\n\n\"*\" 로 전부 지울 수도 있다\nexecutionContexts 를 넣으면 탭까지 새로 고친다\nhttps 에서만 동작한다\n\n$ kill %1 2>/dev/null\n\n# --- 입구만 짧게 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80; root /usr/share/nginx/html;\\n\\\n  location ~ \\\\.html\\$ { add_header Cache-Control \\\"no-cache\\\"; }\\n\\\n  location ~ \\\\.[0-9a-f]{6}\\\\.js\\$ { add_header Cache-Control \\\"max-age=31536000, immutable\\\"; }\\n\\\n}\\n\" > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/index2.html \\\n  | grep -i cache-control\n$ curl -s -D - -o /dev/null http://localhost:8080/app.a1b2c3.js \\\n  | grep -i cache-control\n\nCache-Control: no-cache\nCache-Control: max-age=31536000, immutable\n\n#   입구는 매번 확인한다\n\n#   자산은 1년이다\n\n#   입구가 새 주소를 알려 준다\n\n#   무효화가 필요 없어진다\n\n# --- 다음 절에서 ---\n\n#   그 해시 이름이 어떻게 만들어지나",
+   "note": "**`immutable` 자산을 바꾸자 브라우저가 요청을 아예 안** 보낸다 — 서버가 할 수 있는 게 없다.\n\n**새 이름 `app.a1b2c3.js` 는 그냥** 받는다 — 옛것은 캐시에 남아도 상관없다.\n\n**`proxy_cache_key` 설정에 따라 `?v=2` 가 `HIT` 이 되기도 `MISS` 가 되기도** 한다.\n\n**POST 뒤에도 nginx 는 캐시를 안 지운다** — 규격과 구현이 다르다.\n\n**`Clear-Site-Data` 는 그 응답을 받아야만** 동작한다."
+  }
+ ],
+ "recap": [
+  "**브라우저 캐시는 지울 수** 없다.",
+  "**이미 보낸 `max-age` 는 회수가 안** 된다.",
+  "**주소를 바꾸는 게 가장** 확실하다.",
+  "**옛 주소는 아무도 안** 부른다.",
+  "**쿼리는 설정에** 달렸다.",
+  "**퍼지는 공유 캐시에만** 통한다.",
+  "**전체 퍼지는 원본을 위험하게** 한다.",
+  "**변경 요청 무효화는 구현마다** 다르다.",
+  "**입구만 짧게 두면** 된다."
+ ],
+ "drills": [
+  {
+   "task": "긴 `max-age` 자산을 바꾼다.",
+   "done_when": "요청이 안 오는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "새 이름으로 배포한다.",
+   "done_when": "바로 받는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "캐시 키 설정을 바꾼다.",
+   "done_when": "쿼리 처리 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Clear-Site-Data` 를 보낸다.",
+   "done_when": "헤더 형식을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "브라우저 캐시를 서버가 지울 수 있나?",
+   "a": "없다. 이미 보낸 신선도는 회수할 수 없다."
+  },
+  {
+   "q": "가장 확실한 무효화는?",
+   "a": "URL 을 바꿔 옛 항목을 아무도 부르지 않게 하는 것이다."
+  },
+  {
+   "q": "쿼리로 버전을 바꾸는 것의 약점은?",
+   "a": "캐시가 쿼리를 키에 넣지 않도록 설정돼 있을 수 있다."
+  },
+  {
+   "q": "전체 퍼지의 위험은?",
+   "a": "트래픽이 한꺼번에 원본으로 몰린다."
+  },
+  {
+   "q": "`Clear-Site-Data` 의 한계는?",
+   "a": "그 응답을 받은 클라이언트에만 적용된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "퍼지",
+   "def": "공유 캐시에 저장된 항목을 지우는 것."
+  },
+  {
+   "term": "Clear-Site-Data",
+   "def": "브라우저 저장소를 지우라고 지시하는 응답 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "web.dev — HTTP caching",
+   "url": "https://web.dev/articles/http-cache",
+   "publisher": "Google"
+  }
+ ]
+}

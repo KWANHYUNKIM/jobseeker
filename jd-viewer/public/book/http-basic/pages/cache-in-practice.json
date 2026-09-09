@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "cache-in-practice",
+ "no": "9.8",
+ "chapter": 9,
+ "title": "실전 — 정적 자원과 API",
+ "summary": "파일 이름에 해시를 넣는 이유.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 정책을 조합한다.",
+  "해시 이름의 원리를 안다.",
+  "API 캐시를 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.7절의 결론이 \"주소를 바꿔라\"** 였다. **그걸 자동으로 하는 게 빌드 도구**다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 정책",
+   "ascii": "   two policies, and the whole strategy is choosing between them\n\n   the entry point     html, no-cache, revalidated every time\n                       it is small, and it names everything else\n\n   everything named    hashed filenames, a year, immutable\n                       the name changes when the bytes change\n\n   a deploy changes the entry point, and the entry point changes the names",
+   "note": "**입구가 나머지 이름을** 바꾼다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "해시 이름이 무효화를 없앤다",
+   "md": "**내용이 바뀌면 이름이** 바뀐다.\n\n> **`app.a1b2c3.js` 에서 `app.d4e5f6.js` 로** 간다.\n> **새 이름이니 캐시에** 없다.\n> **바로 받는다.**\n\n**옛 파일은 그냥 둔다.**\n\n> **캐시에 남아 있어도 아무도 안** 부른다(9.7절).\n> **서버에도 한동안 남겨** 둔다 — **배포 중에 옛 HTML 을 든 사용자가** 있다.\n> **⑫ 5.2절의 롤아웃 중 두 버전이 같이 뜨는 것과 같은** 이유다.\n\n**입구가 짧아야** 한다.\n\n> **HTML 이 1년이면 새 이름을 영영 모른다.**\n> **`no-cache` 로 매번 확인**한다.\n> **작아서 `304` 면 거의 공짜**다(9.1절).\n\n**해시는 내용에서 나와야** 한다.\n\n> **빌드 번호를 쓰면 안 바뀐 파일도 이름이** 바뀐다.\n> **9.3절의 배포 문제가 그대로** 돌아온다.\n> **파일마다 자기 내용의 해시**여야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "API 는 두 질문",
+   "ascii": "   apis need a different question\n\n   how wrong may this be   a product page, seconds are fine\n                           a stock count, not at all\n\n   who may read it         public listing, or one persons orders\n\n   answer those two and the headers write themselves\n   and the second question is the one that leaks when ignored",
+   "note": "**둘째를 놓치면** 샌다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "얼마나 틀려도 되나부터 정한다",
+   "md": "**틀려도 되는 시간을 정하면 숫자가** 나온다.\n\n| 자원 | 정책 |\n|---|---|\n| 공개 목록 | `public, max-age=60, stale-while-revalidate=600` |\n| 상품 상세 | `public, max-age=300` |\n| 내 주문 | `private, no-cache` + `ETag` |\n| 잔액 | `no-store` |\n\n> **둘째 질문이 `public` 과 `private` 을** 가른다(9.6절).\n> **놓치면 남의 잔액이** 간다.\n\n**`ETag` 는 거의 항상 붙인다.**\n\n> **짧은 `max-age` 라도 만료 뒤 `304` 면 본문을** 아낀다(9.4절).\n> **DB 버전 컬럼이면 비용이 거의** 없다.\n> **목록이면 최댓값과 개수를 합쳐** 쓴다.\n\n**`Vary` 를 빠뜨리지 않는다**(8.3절).\n\n> **`Accept`·`Accept-Encoding`·`Accept-Language` 중 쓰는 것만** 적는다.\n> **`Origin` 도 CORS 를 쓰면** 필요하다(8.10절).\n\n**측정으로 확인한다.**\n\n> **`X-Cache` 나 `cf-cache-status` 의 적중률을** 본다.\n> **적중률이 낮으면 `Vary` 가 너무 넓은지 의심**한다.\n> **⑫ 10.4절처럼 숫자로 봐야** 안다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 해시 이름을 만든다 ---\n\n$ cat build.sh\n\n#!/bin/bash\nOUT=/tmp/dist\nrm -rf $OUT && mkdir -p $OUT\nfor f in app.js style.css; do\n  H=$(shasum -a 256 \"src/$f\" | cut -c1-8)\n  NAME=\"${f%.*}.$H.${f##*.}\"\n  cp \"src/$f\" \"$OUT/$NAME\"\n  echo \"$f -> $NAME\"\ndone\n\n$ mkdir -p src && echo \"console.log(1)\" > src/app.js \\\n    && echo \"body{color:red}\" > src/style.css\n$ bash build.sh\n\napp.js -> app.f7d2a91c.js\nstyle.css -> style.3b8e04d5.css\n\n$ echo \"console.log(2)\" > src/app.js && bash build.sh\n\napp.js -> app.9c4e1b73.js\nstyle.css -> style.3b8e04d5.css\n\n#   app 만 이름이 바뀌었다\n\n#   style 은 그대로다\n\n#   빌드 번호를 썼다면 둘 다 바뀌었다\n\n#   9.3절의 배포 문제가 그대로 돌아온다\n\n# --- 두 정책을 건다 ---\n\n$ docker exec lab sh -c 'mkdir -p /usr/share/nginx/html/dist'\n$ docker cp /tmp/dist/. lab:/usr/share/nginx/html/dist/ 2>/dev/null\n$ docker exec lab sh -c 'cat > /usr/share/nginx/html/app.html' <<'EOF'\n<!DOCTYPE html>\n<html><head>\n<link rel=\"stylesheet\" href=\"/dist/style.3b8e04d5.css\">\n<script src=\"/dist/app.9c4e1b73.js\"></script>\n</head><body>앱</body></html>\nEOF\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80; root /usr/share/nginx/html;\\n\\\n  location ~ \\\\.html\\$ { add_header Cache-Control \\\"no-cache\\\" always; }\\n\\\n  location /dist/ { add_header Cache-Control \\\"max-age=31536000, immutable\\\" always; }\\n\\\n}\\n\" > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/app.html \\\n  | grep -i cache-control\n$ curl -s -D - -o /dev/null http://localhost:8080/dist/app.9c4e1b73.js \\\n  | grep -i cache-control\n\nCache-Control: no-cache\nCache-Control: max-age=31536000, immutable\n\n# --- 브라우저로 확인 ---\n\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/app.html 2>/dev/null; sleep 3\n$ docker logs --tail 5 lab 2>&1 | awk '{print $7, $9}'\n\n/app.html 200\n/dist/style.3b8e04d5.css 200\n/dist/app.9c4e1b73.js 200\n\n$ open -a \"Google Chrome\" http://localhost:8080/app.html 2>/dev/null; sleep 3\n$ docker logs --tail 3 lab 2>&1 | awk '{print $7, $9}'\n\n/app.html 304\n\n#   HTML 만 물어봤다\n\n#   304 라 본문도 안 왔다\n\n#   자산은 요청조차 없다\n\n# --- 배포하면 ---\n\n$ echo \"console.log(3)\" > src/app.js && bash build.sh\n\napp.js -> app.55a1d0e8.js\nstyle.css -> style.3b8e04d5.css\n\n$ docker cp /tmp/dist/. lab:/usr/share/nginx/html/dist/ 2>/dev/null\n$ docker exec lab sh -c \\\n    'sed -i \"s|app.9c4e1b73.js|app.55a1d0e8.js|\" \\\n     /usr/share/nginx/html/app.html'\n\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/app.html 2>/dev/null; sleep 3\n$ docker logs --tail 4 lab 2>&1 | awk '{print $7, $9}'\n\n/app.html 200\n/dist/app.55a1d0e8.js 200\n\n#   HTML 은 바뀌어서 200 이다\n\n#   새 js 만 받았다\n\n#   css 는 이름이 같아 요청도 안 했다\n\n#   무효화를 한 적이 없다\n\n$ docker exec lab sh -c 'ls /usr/share/nginx/html/dist/'\n\napp.55a1d0e8.js\napp.9c4e1b73.js\napp.f7d2a91c.js\nstyle.3b8e04d5.css\n\n#   옛 파일을 안 지웠다\n\n#   배포 중에 옛 HTML 을 든 사용자가 있다\n\n#   ⑫ 5.2절의 롤아웃과 같은 이유다\n\n# --- 입구를 길게 두면 ---\n\n$ docker exec lab sh -c \\\n    'sed -i \"s|\\\\\\\\.html\\$ { add_header Cache-Control \\\\\\\"no-cache\\\\\\\"|\\\\\\\\.html\\$ { add_header Cache-Control \\\\\\\"max-age=3600\\\\\\\"|\" \\\n     /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/app.html \\\n  | grep -i cache-control\n\nCache-Control: max-age=3600\n\n$ python3 - <<'EOF'\nprint(\"HTML 을 한 시간 캐시하면\")\nprint(\"  새 자산 이름을 한 시간 동안 모른다\")\nprint(\"  배포가 한 시간 뒤에 보인다\")\nprint()\nprint(\"HTML 은 작다\")\nprint(\"  304 면 헤더뿐이다 (9.1절)\")\nprint(\"  no-cache 로 두는 비용이 거의 없다\")\nEOF\n\nHTML 을 한 시간 캐시하면\n  새 자산 이름을 한 시간 동안 모른다\n  배포가 한 시간 뒤에 보인다\n\nHTML 은 작다\n  304 면 헤더뿐이다 (9.1절)\n  no-cache 로 두는 비용이 거의 없다\n\n$ docker exec lab sh -c \\\n    'sed -i \"s|max-age=3600|no-cache|\" /etc/nginx/conf.d/default.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n# --- API 네 가지 ---\n\n$ cat api9.py\n\nimport http.server, json, hashlib\nORDERS = [{\"id\": 1, \"updated\": 1757400000},\n          {\"id\": 2, \"updated\": 1757500000}]\nPOLICY = {\n  \"/products\": (\"public, max-age=60, stale-while-revalidate=600\", True),\n  \"/products/5\": (\"public, max-age=300\", True),\n  \"/me/orders\": (\"private, no-cache\", True),\n  \"/me/balance\": (\"no-store\", False),\n}\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        cc, tag_ok = POLICY.get(self.path, (\"no-store\", False))\n        b = json.dumps({\"path\": self.path, \"items\": ORDERS}).encode()\n        tag = None\n        if tag_ok:\n            newest = max(o[\"updated\"] for o in ORDERS)\n            tag = f'\"{newest}-{len(ORDERS)}\"'\n            if self.headers.get(\"If-None-Match\") == tag:\n                self.send_response(304)\n                self.send_header(\"ETag\", tag)\n                self.send_header(\"Cache-Control\", cc)\n                self.end_headers(); return\n        self.send_response(200)\n        self.send_header(\"Cache-Control\", cc)\n        if tag: self.send_header(\"ETag\", tag)\n        self.send_header(\"Vary\", \"Accept, Accept-Encoding\")\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 8996), H).serve_forever()\n\n$ python3 api9.py & sleep 1\n$ for p in /products /products/5 /me/orders /me/balance; do\n    printf '%-14s' $p\n    curl -s -D - -o /dev/null \"http://localhost:8996$p\" \\\n      | grep -i '^cache-control' | tr -d '\\r'\n  done\n\n/products     Cache-Control: public, max-age=60, stale-while-revalidate=600\n/products/5   Cache-Control: public, max-age=300\n/me/orders    Cache-Control: private, no-cache\n/me/balance   Cache-Control: no-store\n\n#   두 질문의 답이 헤더가 됐다\n\n#   얼마나 틀려도 되나\n\n#   누가 읽어도 되나\n\n# --- 목록 ETag ---\n\n$ T=$(curl -s -D - -o /dev/null http://localhost:8996/me/orders \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ echo $T\n\n\"1757500000-2\"\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_download}\\n' \\\n    -H \"If-None-Match: $T\" http://localhost:8996/me/orders\n\n304 0\n\n#   최댓값과 개수를 합쳤다\n\n#   9.3절의 삭제 문제를 개수가 잡는다\n\n#   private 이라도 브라우저는 캐시한다\n\n#   no-cache 라 매번 검증하고 304 를 받는다\n\n# --- 개수가 바뀌면 ---\n\n$ python3 -c \"\nprint('행 하나를 지우면')\nprint('  최댓값: 1757500000 (그대로일 수 있다)')\nprint('  개수  : 2 -> 1')\nprint('  ETag  : 1757500000-2 -> 1757500000-1')\nprint('  -> 바뀐 걸 잡는다')\"\n\n행 하나를 지우면\n  최댓값: 1757500000 (그대로일 수 있다)\n  개수  : 2 -> 1\n  ETag  : 1757500000-2 -> 1757500000-1\n  -> 바뀐 걸 잡는다\n\n# --- 적중률을 본다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"log_format cache \\\\\"\\$request_uri \\$upstream_cache_status\\\\\";\\n\" \\\n     > /dev/null'\n\n$ for i in $(seq 1 20); do\n    curl -s -o /dev/null http://localhost:8080/dist/app.55a1d0e8.js\n  done\n$ docker logs --tail 20 lab 2>&1 | awk '{print $9}' | sort | uniq -c\n\n  20 200\n\n#   curl 은 캐시가 없어 다 200 이다\n\n#   브라우저였다면 한 번뿐이다\n\n$ curl -s -D - -o /dev/null https://www.cloudflare.com/ 2>/dev/null \\\n  | grep -iE 'cf-cache-status|age'\n\ncf-cache-status: HIT\nage: 2104\n\n#   상용 CDN 은 적중 여부를 알려 준다\n\n#   적중률이 낮으면 Vary 를 의심한다 (8.3절)\n\n#   ⑫ 10.4절처럼 숫자로 봐야 안다\n\n$ kill %1 2>/dev/null\n\n# --- 이 장을 한 화면에 ---\n\n$ printf '%-16s %s\\n' \\\n  'HTML' 'no-cache' \\\n  '해시 자산' 'max-age=31536000, immutable' \\\n  '공개 목록' 'public, max-age=60, stale-while-revalidate=600' \\\n  '개인 데이터' 'private, no-cache + ETag' \\\n  '비밀' 'no-store'\n\nHTML             no-cache\n해시 자산        max-age=31536000, immutable\n공개 목록        public, max-age=60, stale-while-revalidate=600\n개인 데이터      private, no-cache + ETag\n비밀             no-store\n\n# --- 다음 절에서 ---\n\n#   이 책이 남긴 것",
+   "note": "**`app.js` 만 바꾸자 해시 이름이 바뀌고 `style.css` 는** 그대로다.\n\n**두 번째 방문에 HTML 만 `304` 이고 자산 요청은 아예** 없다.\n\n**배포 뒤 새 js 만 받고 css 는 요청조차 안** 한다 — 무효화를 한 적이 없다.\n\n**옛 파일을 안 지우는 건 배포 중 옛 HTML 을 든 사용자** 때문이다.\n\n**목록 `ETag` 를 `\"1757500000-2\"` 로 만들어 삭제까지** 잡는다."
+  }
+ ],
+ "recap": [
+  "**입구는 짧게, 자산은 길게**다.",
+  "**해시 이름이 무효화를** 없앤다.",
+  "**해시는 파일 내용에서 나와야** 한다.",
+  "**빌드 번호를 쓰면 다** 바뀐다.",
+  "**옛 파일은 한동안 남겨** 둔다.",
+  "**HTML 이 길면 배포가 안** 보인다.",
+  "**API 는 두 질문으로** 정한다.",
+  "**`ETag` 는 거의 항상** 붙인다.",
+  "**적중률을 숫자로** 본다."
+ ],
+ "drills": [
+  {
+   "task": "해시 이름 빌드를 만든다.",
+   "done_when": "바뀐 파일만 이름이 바뀌는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "두 정책을 걸고 브라우저로 연다.",
+   "done_when": "두 번째에 HTML 만 요청되는 걸 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "배포를 흉내 낸다.",
+   "done_when": "새 자산만 받는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "API 네 정책을 만든다.",
+   "done_when": "두 질문의 답을 헤더로 옮겼다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "해시 이름이 푸는 문제는?",
+   "a": "캐시 무효화다. 이름이 바뀌면 옛 항목을 안 부른다."
+  },
+  {
+   "q": "해시를 무엇으로 만들어야 하나?",
+   "a": "각 파일의 내용이다. 빌드 번호는 안 바뀐 파일까지 바꾼다."
+  },
+  {
+   "q": "HTML 을 길게 캐시하면?",
+   "a": "새 자산 이름을 모르니 배포가 늦게 보인다."
+  },
+  {
+   "q": "API 캐시를 정하는 두 질문은?",
+   "a": "얼마나 틀려도 되는가, 누가 읽어도 되는가다."
+  },
+  {
+   "q": "적중률이 낮으면 무엇을 의심하나?",
+   "a": "`Vary` 가 너무 넓은지 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "해시 파일명",
+   "def": "내용 해시를 이름에 넣어 내용이 바뀌면 주소가 바뀌게 하는 방식."
+  },
+  {
+   "term": "적중률",
+   "def": "캐시가 원본에 묻지 않고 답한 비율."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "web.dev — HTTP caching",
+   "url": "https://web.dev/articles/http-cache",
+   "publisher": "Google"
+  }
+ ]
+}
