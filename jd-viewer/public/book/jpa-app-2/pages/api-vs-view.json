@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-2",
+ "id": "api-vs-view",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "API 와 화면은 무엇이 다른가",
+ "summary": "응답이 JSON 이면 바뀌는 것들.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "화면과 API 의 응답 경로 차이를 안다.",
+  "왜 API 에서 엔티티 노출이 더 나쁜지 안다.",
+  "무엇이 스펙이 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 컨트롤러 메서드가 끝나는 방식이 둘**이다. **그 차이가 이 장 전체**다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 끝",
+   "ascii": "   the same controller method, two endings\n\n   @Controller                     @RestController\n     return \"members/list\"           return list\n        |                               |\n     ViewResolver                  HttpMessageConverter\n        |                               |\n     Thymeleaf reads                Jackson reads\n     only what the                  every getter\n     template names                 it can reach\n        |                               |\n     html                           json",
+   "note": "**「MVC 1편」 6장·「MVC 2편」 12장에서 본 갈림길**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타임리프는 멈추고 잭슨은 안 멈춘다",
+   "md": "**결정적인 차이 하나**다.\n\n**화면**\n\n```html\n<td th:text=\"${member.name}\"></td>\n```\n\n**템플릿이 이름을 부른 것만** 읽는다. **`member.orders` 를 안 쓰면 안 읽는다.**\n\n> **1편 8.11절에서 화면에 쿼리가 31개 나간 것**도 **템플릿이 `order.member.name` 과 `order.orderItems` 를 실제로 불렀기** 때문이다.\n>\n> **부르지 않으면 프록시는 프록시로 남는다.**\n\n**API**\n\n```java\nreturn memberService.findMembers();  // List<Member>\n```\n\n**잭슨은 도달 가능한 모든 게터를** 부른다.\n\n| | 타임리프 | 잭슨 |\n|---|---|---|\n| 읽는 범위 | **템플릿이 부른 것** | **닿는 것 전부** |\n| 멈추는 지점 | HTML 이 끝나는 곳 | **없다** |\n| 프록시 | 부르면 초기화 | **부르므로 전부 초기화** |\n| 양방향 참조 | 문제 없다 | **무한 재귀** |\n\n**아래 둘이 화면에는 없던 문제**다.\n\n> **2.5절에서 실제로 터진다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "잭슨이 닿는 곳",
+   "ascii": "   what jackson can reach from one Member\n\n   Member\n     id, name\n     address  ->  city, street, zipcode\n     orders   ->  Order\n                    member  ->  Member  ->  orders  ->  ...\n                    orderItems -> OrderItem -> item -> ...\n                    delivery -> Delivery -> order -> ...\n\n   the template stops where the html stops.\n   jackson does not stop.",
+   "note": "**`Member` 하나에서 도메인 전체**에 닿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 스펙이 되나",
+   "md": "**화면에서 엔티티를 넘기면 대가가 \"쿼리\"** 였다.\n\n**API 에서는 대가가 \"계약\"** 이다.\n\n```java\n@Entity\npublic class Member {\n    private String name;\n}\n```\n\n**이 필드 이름이 그대로 JSON 키**가 된다.\n\n```json\n{\"name\": \"userA\"}\n```\n\n**필드를 `username` 으로 바꾸면**\n\n```json\n{\"username\": \"userA\"}\n```\n\n> **앱이 깨진다.** **DB 컬럼 이름 하나가 클라이언트를 깬다.**\n>\n> **1편 9.7절에서 \"엔티티를 화면에 넘겼다\" 를 21개 목록에 넣은 이유**가 여기서 훨씬 커진다.\n\n**반대도 문제**다.\n\n```java\nprivate String password;   // 추가만 했는데\n```\n\n```json\n{\"name\": \"userA\", \"password\": \"1234\"}\n```\n\n> **화면은 템플릿이 안 부르면 안 나간다.** **API 는 나간다.**\n>\n> **필드 추가가 곧 유출**이다.\n\n**요청도 마찬가지**다.\n\n```java\npublic Long save(@RequestBody Member member)\n```\n\n> **클라이언트가 `id` 를 넣어 보내면 들어온다.** **1편 8.7절의 `hidden` 조작과 같은 구멍**이다.\n>\n> **2.2절에서 확인한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래서 API 는 DTO 다",
+   "md": "**결론이 화면보다 단호**하다.\n\n| | 화면 | API |\n|---|---|---|\n| 엔티티 직접 | **간단한 화면은 괜찮다** | **안 된다** |\n| DTO | 목록·복잡한 화면 | **항상** |\n\n> **1편 9.1절에서는 \"주문 목록만 DTO\" 로** 갈랐다. **화면은 서버가 렌더링하니 스펙이 밖으로 안 나간다.**\n>\n> **API 는 밖으로 나간다.** **예외가 없다.**\n\n**DTO 가 주는 것**\n\n| | |\n|---|---|\n| **API 스펙이 코드에 보인다** | DTO 클래스가 곧 문서 |\n| **엔티티가 자유로워진다** | 필드 이름을 바꿔도 안 깨진다 |\n| **필요한 것만 나간다** | 유출이 없다 |\n| **검증을 API 별로** | `@NotEmpty` 위치가 갈린다 |\n| **프록시·재귀가 없다** | DTO 는 연관관계가 없다 |\n\n**대가는 클래스가 는다는 것**이다.\n\n> **회원 등록·수정·조회에 각각 요청·응답 DTO** 를 두면 여섯이다.\n>\n> **그 여섯을 이 장에서 실제로** 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 같은 데이터, 두 가지 응답",
+   "sql": "# --- 화면 ---\n\nGET /members\nAccept: text/html\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name,\n#              m1_0.street, m1_0.zipcode from member m1_0\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   200 OK\n#   Content-Type: text/html;charset=UTF-8\n\n<tr>\n  <td>1</td>\n  <td>userA</td>\n  <td>서울 1 1111</td>\n</tr>\n\n#   템플릿이 member.orders 를 안 불렀다\n#   그래서 orders 쿼리가 안 나갔다\n\n# --- 같은 데이터를 API 로 (2.5절에서 만든다) ---\n\nGET /api/v1/members\nAccept: application/json\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#   Hibernate: select o1_0.member_id, ... from orders o1_0\n#              where o1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, ... from order_item oi1_0\n#              where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where i1_0.item_id=?\n#   ... (계속)\n\n#   500 Internal Server Error\n#   Could not write JSON: Infinite recursion (StackOverflowError)\n#     (through reference chain:\n#       Member[\"orders\"]->Order[\"member\"]->Member[\"orders\"]-> ... )\n\n#   Session Metrics { 9 JDBC statements were executed }\n\n#   쿼리는 9개 나가고 응답은 500 이다\n\n# --- 같은 데이터를 DTO 로 (2.6절) ---\n\nGET /api/v2/members\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   200 OK\n#   {\n#     \"count\": 3,\n#     \"data\": [\n#       {\"name\": \"userA\"},\n#       {\"name\": \"userB\"},\n#       {\"name\": \"userC\"}\n#     ]\n#   }\n\n# --- 셋을 나란히 ---\n\n#   화면        쿼리 1   200 html\n#   API 엔티티   쿼리 9   500\n#   API DTO     쿼리 1   200 json\n\n#   화면과 API 가 같은 엔티티를 쓰는데 결과가 다르다\n#   타임리프는 멈추고 잭슨은 안 멈춰서다\n\n# --- 다음 절에서 ---\n\n#   요청 쪽부터 본다\n#   엔티티를 @RequestBody 로 받으면",
+   "note": "**화면은 쿼리 1개에 `200`** 이다. **템플릿이 `orders` 를 안 불렀다.**\n\n**같은 엔티티를 API 로 내보내면 쿼리 9개에 `500`** 이다. **`Infinite recursion`** 이다.\n\n**DTO 로 바꾸면 다시 쿼리 1개에 `200`** 이다.\n\n**같은 엔티티인데 결과가 다르다.** **타임리프는 멈추고 잭슨은 안 멈춰서**다.\n\n**다음 절에서 요청 쪽을 본다.**"
+  }
+ ],
+ "recap": [
+  "**`@Controller` 는 뷰 리졸버, `@RestController` 는 메시지 컨버터**로 끝난다.",
+  "**타임리프는 템플릿이 부른 것만, 잭슨은 닿는 것 전부** 읽는다.",
+  "**프록시 초기화와 무한 재귀가 화면에는 없던 문제**다.",
+  "**API 에서는 엔티티 필드가 곧 계약**이다.",
+  "**필드 이름을 바꾸면 클라이언트가 깨진다.**",
+  "**필드를 추가하면 그대로 유출**된다.",
+  "**요청도 뚫린다** — `id` 를 넣어 보내면 들어온다.",
+  "**화면은 \"목록만 DTO\" 였지만 API 는 항상 DTO** 다.",
+  "**대가는 클래스가 는다는 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "`/members` 화면의 쿼리 개수를 센다.",
+   "done_when": "1개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "템플릿에 `member.orders` 를 잠깐 넣어 본다.",
+   "done_when": "쿼리가 느는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Member` 에서 잭슨이 닿는 클래스를 그린다.",
+   "done_when": "순환이 어디서 생기는지 표시했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타임리프와 잭슨의 결정적 차이는?",
+   "a": "타임리프는 템플릿이 부른 것만 읽고 잭슨은 닿는 게터 전부를 부른다."
+  },
+  {
+   "q": "API 에서 엔티티 필드 이름을 바꾸면?",
+   "a": "JSON 키가 바뀌어 클라이언트가 깨진다."
+  },
+  {
+   "q": "필드를 추가하면 화면과 API 가 어떻게 다른가?",
+   "a": "화면은 템플릿이 안 부르면 안 나가고 API 는 그대로 나간다."
+  },
+  {
+   "q": "화면과 API 의 DTO 기준이 왜 다른가?",
+   "a": "화면은 스펙이 밖으로 안 나가지만 API 는 나가기 때문이다."
+  },
+  {
+   "q": "DTO 의 대가는?",
+   "a": "클래스가 는다. API 하나에 요청·응답 둘씩이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HttpMessageConverter",
+   "def": "요청 본문·응답 본문을 자바 객체로 오가게 하는 스프링의 변환기. JSON 은 잭슨이 맡는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  }
+ ]
+}

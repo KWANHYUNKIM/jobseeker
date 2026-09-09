@@ -1,0 +1,149 @@
+{
+ "book": "jpa-app-2",
+ "id": "member-save-v2",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "회원 등록 V2",
+ "summary": "요청 DTO 를 만든다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요청 DTO 를 만든다.",
+  "다섯 개 빚이 어떻게 사라지는지 본다.",
+  "DTO 의 범위를 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**클래스 하나로 2.2절의 다섯이 전부** 사라진다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberApiController — V2",
+   "code": "@PostMapping(\"/api/v2/members\")\npublic CreateMemberResponse saveMemberV2(\n        @RequestBody @Valid CreateMemberRequest request) {\n\n    Member member = new Member();\n    member.setName(request.getName());\n\n    Long id = memberService.join(member);\n    return new CreateMemberResponse(id);\n}\n\n@Data\nstatic class CreateMemberRequest {\n    @NotEmpty\n    private String name;\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "DTO 가 가르는 것",
+   "ascii": "   what the dto separates\n\n   before                        after\n\n   client                        client\n     |                             |\n   Member  <- entity             CreateMemberRequest  <- dto\n     |        and spec             |\n     |        and validation     Member  <- entity only\n   database                        |\n                                 database\n\n   renaming Member.name now breaks nothing outside",
+   "note": "**엔티티가 밖과 끊긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다섯이 사라진 자리",
+   "md": "| 2.2절의 빚 | V2 에서 |\n|---|---|\n| **스펙이 엔티티에 묶임** | `CreateMemberRequest` 가 스펙 |\n| **검증이 엔티티로** | `@NotEmpty` 가 DTO 에 |\n| **`id` 로 500** | DTO 에 `id` 가 없다 |\n| **`orders` 유입** | DTO 에 `orders` 가 없다 |\n| **필수가 안 보임** | **필드 목록이 곧 스펙** |\n\n**핵심은 마지막**이다.\n\n```java\nstatic class CreateMemberRequest {\n    @NotEmpty\n    private String name;\n}\n```\n\n> **이 클래스를 열면 \"등록에는 이름만 필요하고 필수다\" 가** 보인다.\n>\n> **`Member` 를 열면 `id`·`address`·`orders` 가 같이** 보인다. **어느 것이 요청 필드인지 모른다.**\n\n**엔티티가 자유로워진다.**\n\n```java\n// 이제 이렇게 바꿔도 밖이 안 깨진다\nprivate String username;\n```\n\n> **컨트롤러 한 줄만** 고치면 된다.\n>\n> ```java\n> member.setUsername(request.getName());\n> ```\n>\n> **컴파일러가 잡아 준다.** **2.2절에서는 안 잡아 줬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "DTO 를 어디에 두나",
+   "md": "**정적 중첩 클래스로 컨트롤러 안에** 뒀다.\n\n```java\npublic class MemberApiController {\n    @Data static class CreateMemberRequest { ... }\n    @Data static class CreateMemberResponse { ... }\n}\n```\n\n| 방식 | |\n|---|---|\n| **컨트롤러 안 중첩** | **한 화면에서 다 보인다.** API 하나가 곧 한 덩어리 |\n| **별도 `dto` 패키지** | 재사용·공유가 쉽다. 파일이 는다 |\n\n**이 책은 중첩**을 쓴다.\n\n> **API 를 여섯 버전 만들 것**이라 **버전마다 DTO 가** 붙는다. **파일로 빼면 스무 개가** 넘는다.\n>\n> **실무에서는 갈린다.** **여러 컨트롤러가 같은 DTO 를 쓰면 빼는 게** 맞다.\n\n**한 가지는 지킨다** — **DTO 를 API 별로** 만든다.\n\n```java\nCreateMemberRequest   // 등록\nUpdateMemberRequest   // 수정\n```\n\n> **같은 `Member` 인데 왜 둘인가.** **필요한 필드와 검증이 다르기** 때문이다.\n>\n> **등록은 이름 필수, 수정은 선택**일 수 있다. **하나로 합치면 2.2절의 문제가 그대로** 돌아온다.\n>\n> **2.4절에서 `UpdateMemberRequest` 를** 만든다."
+  },
+  {
+   "type": "compare",
+   "caption": "V1 과 V2",
+   "left": {
+    "title": "V1 — 엔티티 파라미터",
+    "points": [
+     "**클래스가 안 는다**",
+     "**변환 코드가 없다**",
+     "**스펙이 엔티티에 묶인다**",
+     "**`id`·`orders` 가 들어온다**",
+     "**필드 이름 변경이 안 잡힌다**"
+    ]
+   },
+   "right": {
+    "title": "V2 — 요청 DTO",
+    "points": [
+     "**클래스가 는다**",
+     "**변환 코드가 는다**",
+     "**스펙이 DTO 에 있다**",
+     "**보낼 수 있는 것만 필드에**",
+     "**변경을 컴파일러가 잡는다**"
+    ]
+   }
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 정상 요청 ---\n\nPOST /api/v2/members\nContent-Type: application/json\n\n{\"name\": \"hello5\"}\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0 where m1_0.name=?\n#   binding parameter (1:VARCHAR) <- [hello5]\n\n#   Hibernate: insert into member (city,name,street,zipcode,member_id)\n#              values (?,?,?,?,?)\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   {\"id\": 5}\n\n#   V1 과 똑같다. 쿼리 2개, 같은 JSON\n\n# --- id 를 같이 보내면 ---\n\nPOST /api/v2/members\n{\"name\": \"hello6\", \"id\": 100}\n\n#   500 Internal Server Error\n#   Unrecognized field \"id\" (class CreateMemberRequest)\n\n#   Session Metrics { 0 JDBC statements were executed }\n\n#   V1 은 detached entity 로 500 이었다\n#   V2 는 DB 에 닿기도 전에 막힌다  (쿼리 0)\n\n# --- 빈 이름 ---\n\nPOST /api/v2/members\n{\"name\": \"\"}\n\n#   Session Metrics { 0 JDBC statements were executed }\n\n#   400 Bad Request\n\n#   검증이 DTO 에 있다. Member 는 깨끗하다\n\n# --- 엔티티 필드를 바꿔 보면 ---\n\n#   Member.name -> Member.username\n\n#   V1: 컴파일 통과. 요청 {\"name\":\"x\"} 가 조용히 무시된다\n#   V2: 컴파일 오류. member.setName 이 없다\n\n#     MemberApiController.java:31: error: cannot find symbol\n#         member.setName(request.getName());\n#               ^\n\n#   컴파일러가 잡아 준다\n\n# --- 엔티티가 깨끗해졌는지 ---\n\n@Entity\npublic class Member {\n    // @NotEmpty 가 없다\n    private String name;\n}\n\n#   API 검증이 엔티티에 없다\n\n# --- 정리 ---\n\n#   같은 JSON, 같은 쿼리 2개\n#   빚 다섯이 사라졌다\n#   클래스 하나와 변환 두 줄이 값이다\n\n# --- 다음 절에서 ---\n\n#   수정 API 를 만든다\n#   변경 감지와 응답 DTO 를 같이 본다",
+   "note": "**정상 경로는 V1 과 똑같다** — 쿼리 2개에 `{\"id\":5}`.\n\n**`id` 를 보내면 `Unrecognized field`** 로 막힌다. **쿼리 0개**다 — **DB 에 닿기도 전**이다.\n\n**엔티티 필드를 바꾸면 V2 는 컴파일 오류**다. **V1 은 조용히 무시**했다.\n\n**`Member` 에 `@NotEmpty` 가 없다.** **엔티티가 API 를 모른다.**\n\n**클래스 하나와 변환 두 줄로 빚 다섯이 사라졌다.**"
+  }
+ ],
+ "recap": [
+  "**요청 DTO 하나로 2.2절의 다섯이 전부** 사라진다.",
+  "**DTO 의 필드 목록이 곧 API 스펙**이다.",
+  "**검증이 DTO 로 내려가 엔티티가 깨끗해진다.**",
+  "**보낼 수 있는 것만 필드에 있다** — `id`·`orders` 가 못 들어온다.",
+  "**엔티티 필드를 바꾸면 컴파일러가 잡아 준다.**",
+  "**이 책은 DTO 를 컨트롤러 중첩 클래스로** 둔다 — 버전이 많아서다.",
+  "**DTO 는 API 별로** 만든다 — 필요한 필드와 검증이 다르다.",
+  "**응답 JSON 과 쿼리 개수는 V1 과 똑같다.**",
+  "**값은 클래스 하나와 변환 두 줄**이다."
+ ],
+ "drills": [
+  {
+   "task": "V2 로 회원을 등록한다.",
+   "done_when": "V1 과 같은 응답·쿼리 개수를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`id` 를 같이 보낸다.",
+   "done_when": "`Unrecognized field` 와 쿼리 0개를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Member.name` 을 잠깐 `username` 으로 바꾼다.",
+   "done_when": "컴파일 오류가 나는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Member` 에서 `@NotEmpty` 를 지운다.",
+   "done_when": "V2 검증이 그대로 도는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DTO 가 없앤 다섯은?",
+   "a": "스펙 결합, 엔티티 검증, `id` 유입, `orders` 유입, 필수 불명이다."
+  },
+  {
+   "q": "`id` 를 보내면 V1 과 V2 가 어떻게 다른가?",
+   "a": "V1 은 `detached entity` 500, V2 는 `Unrecognized field` 로 쿼리 0개에 막힌다."
+  },
+  {
+   "q": "왜 DTO 를 중첩 클래스로 뒀나?",
+   "a": "버전마다 DTO 가 붙어 파일로 빼면 스무 개가 넘어서다."
+  },
+  {
+   "q": "왜 등록과 수정 DTO 를 나누나?",
+   "a": "필요한 필드와 검증 규칙이 다르기 때문이다."
+  },
+  {
+   "q": "V2 의 값은?",
+   "a": "클래스 하나와 변환 두 줄로 빚 다섯을 없앤 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://beanvalidation.org/3.0/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

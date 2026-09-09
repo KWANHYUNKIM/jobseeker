@@ -1,0 +1,130 @@
+{
+ "book": "jpa-app-2",
+ "id": "member-save-v1",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "회원 등록 V1",
+ "summary": "엔티티를 파라미터로 받는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "가장 단순한 등록 API 를 만든다.",
+  "`@RequestBody` 가 엔티티를 채우는 것을 본다.",
+  "무엇이 깨지는지 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**되는 것부터 만든다.** **되기는 된다** — 그게 문제다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberApiController — V1",
+   "code": "package jpabook.jpashop.api;\n\n@RestController\n@RequiredArgsConstructor\npublic class MemberApiController {\n\n    private final MemberService memberService;\n\n    @PostMapping(\"/api/v1/members\")\n    public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {\n        Long id = memberService.join(member);\n        return new CreateMemberResponse(id);\n    }\n\n    @Data\n    static class CreateMemberResponse {\n        private Long id;\n        public CreateMemberResponse(Long id) { this.id = id; }\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`@RestController` 는 둘의 합이다",
+   "md": "```java\n@Controller\n@ResponseBody\npublic @interface RestController { }\n```\n\n> **「MVC 1편」 6.5절에서 본** 그대로다. **모든 메서드에 `@ResponseBody` 가 붙은 것**과 같다.\n\n**`@RequestBody` 는 반대 방향**이다.\n\n| | |\n|---|---|\n| **`@RequestBody`** | 요청 본문 JSON → 객체 |\n| **`@ResponseBody`** | 객체 → 응답 본문 JSON |\n\n**둘 다 `HttpMessageConverter`** 가 한다(「MVC 1편」 6.6절).\n\n**응답은 처음부터 DTO 로** 만들었다.\n\n```java\nreturn new CreateMemberResponse(id);\n```\n\n> **`return id;` 로 `Long` 을 그냥 반환하면**\n>\n> ```\n> 1\n> ```\n>\n> **JSON 이 아니라 숫자 하나**다. **필드를 못 늘린다.**\n>\n> **감싸면 `{\"id\": 1}`** 이다. **나중에 `{\"id\":1,\"name\":\"...\"}` 로 늘릴 수 있다.**\n>\n> **2.6절에서 같은 이야기를 응답 배열에** 대해 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "엔티티를 파라미터로 받으면",
+   "ascii": "   what arrives when the parameter is an entity\n\n   client sends                jackson builds\n   { \"name\": \"hello\" }          Member(name=hello)\n\n   client sends                jackson builds\n   { \"name\": \"hello\",           Member(name=hello,\n     \"id\": 1,                            id=1,\n     \"orders\": [] }                      orders=[])\n\n   every settable field is an entry point",
+   "note": "**세터가 있는 필드가 전부 입구**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇이 깨지나",
+   "md": "**① API 스펙이 엔티티에 묶인다**\n\n```java\n@Entity\npublic class Member {\n    private String name;   // 이 이름이 곧 요청 키\n}\n```\n\n> **`name` 을 `username` 으로 바꾸면 클라이언트가 깨진다.** **컴파일은 통과**한다.\n\n**② 검증을 엔티티에 붙이게 된다**\n\n```java\n@Entity\npublic class Member {\n    @NotEmpty          // 회원 등록 API 때문에 붙인 것\n    private String name;\n}\n```\n\n> **엔티티가 API 사정을 알게 된다.** **1편 4.2절에서 \"엔티티는 도메인\" 이라고** 한 것과 어긋난다.\n>\n> **더 나쁜 건 API 마다 규칙이 다를 때**다. **등록은 이름 필수, 수정은 선택**이면 **엔티티 하나로 둘을 못 맞춘다.**\n\n**③ 받지 말아야 할 것이 들어온다**\n\n```json\n{\"name\": \"hello\", \"id\": 100}\n```\n\n> **`id` 가 채워진 `Member` 가** 온다. **`persist` 는 `id` 가 있으면 다르게** 동작한다(「JPA 기본편」 4.6절).\n>\n> **`orders` 도 마찬가지**다. **컬렉션을 통째로 보낼 수 있다.**\n\n**④ 무엇이 오는지 코드로 안 보인다**\n\n> **`Member` 를 열어도 \"등록 때 무엇이 필수인지\" 를** 모른다. **DTO 면 필드 목록이 곧 스펙**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 정상 요청 ---\n\nPOST /api/v1/members\nContent-Type: application/json\n\n{\"name\": \"hello\"}\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0 where m1_0.name=?\n#   binding parameter (1:VARCHAR) <- [hello]\n\n#   (validateDuplicateMember - 1편 5.2절)\n\n#   Hibernate: insert into member (city,name,street,zipcode,member_id)\n#              values (?,?,?,?,?)\n#   binding parameter (1:VARCHAR) <- [null]\n#   binding parameter (2:VARCHAR) <- [hello]\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   {\"id\": 1}\n\n#   된다\n\n# --- 검증 (엔티티에 @NotEmpty 를 붙인 뒤) ---\n\nPOST /api/v1/members\n{\"name\": \"\"}\n\n#   Session Metrics { 0 JDBC statements were executed }\n\n#   400 Bad Request\n#   {\n#     \"timestamp\": \"2026-09-09T15:20:11.882+00:00\",\n#     \"status\": 400,\n#     \"error\": \"Bad Request\",\n#     \"path\": \"/api/v1/members\"\n#   }\n\n#   왜 400 인지 응답에 없다   (2.7절에서 고친다)\n\n# --- id 를 같이 보내면 ---\n\nPOST /api/v1/members\n{\"name\": \"hello2\", \"id\": 100}\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   detached entity passed to persist: jpabook.jpashop.domain.Member\n\n#   클라이언트가 보낸 값 하나로 서버가 500 을 낸다\n\n# --- orders 를 같이 보내면 ---\n\nPOST /api/v1/members\n{\"name\": \"hello3\", \"orders\": []}\n\n#   200 OK\n#   {\"id\": 2}\n\n#   그냥 들어왔다. 무시됐지만 들어오는 게 맞나\n\n# --- 없는 필드를 보내면 ---\n\nPOST /api/v1/members\n{\"name\": \"hello4\", \"nickname\": \"x\"}\n\n#   500 Internal Server Error\n#   Unrecognized field \"nickname\"\n\n#   (기본 설정. FAIL_ON_UNKNOWN_PROPERTIES)\n\n# --- 여기까지 센 것 ---\n\n#   스펙이 엔티티에 묶였다\n#   검증이 엔티티로 갔다\n#   id 로 500 이 난다\n#   orders 가 들어온다\n#   무엇이 필수인지 코드에 없다\n\n#   그런데 정상 경로는 200 이다\n#   테스트를 안 깼다   (1편 9.7절과 같은 종류의 빚이다)\n\n# --- 다음 절에서 ---\n\n#   요청 DTO 를 만들어 다섯을 한 번에 없앤다",
+   "note": "**정상 경로는 쿼리 2개에 `200 {\"id\":1}`** 이다. **된다.**\n\n**`id` 를 같이 보내면 `detached entity passed to persist`** 로 `500` 이다. **클라이언트 값 하나가 서버를 깬다.**\n\n**`orders` 는 그냥 들어온다.** **`nickname` 은 `Unrecognized field`** 다.\n\n**빚 다섯을 졌는데 정상 경로는 `200`** 이다. **1편 9.7절과 같은 종류**다.\n\n**다음 절에서 요청 DTO 로 한 번에 없앤다.**"
+  }
+ ],
+ "recap": [
+  "**`@RestController` = `@Controller` + `@ResponseBody`** 다.",
+  "**`@RequestBody` 는 JSON → 객체, `@ResponseBody` 는 객체 → JSON** 이다.",
+  "**응답은 처음부터 DTO 로 감쌌다** — `Long` 을 그냥 반환하면 필드를 못 늘린다.",
+  "**엔티티를 파라미터로 받으면 API 스펙이 엔티티에** 묶인다.",
+  "**검증이 엔티티로 올라간다** — API 마다 규칙이 다르면 못 맞춘다.",
+  "**`id` 를 보내면 `detached entity passed to persist`** 로 500 이다.",
+  "**`orders` 도 그대로** 들어온다.",
+  "**무엇이 필수인지 코드로 안 보인다.**",
+  "**그런데 정상 경로는 200** 이다 — 빚이 조용하다."
+ ],
+ "drills": [
+  {
+   "task": "V1 로 회원을 등록한다.",
+   "done_when": "`{\"id\":1}` 을 받았다.",
+   "minutes": 10
+  },
+  {
+   "task": "`id` 를 같이 보낸다.",
+   "done_when": "`detached entity` 500 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "엔티티에 `@NotEmpty` 를 붙이고 빈 이름을 보낸다.",
+   "done_when": "400 이 나오는 것과 이유가 안 보이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Member` 의 `name` 을 `username` 으로 바꿔 본다.",
+   "done_when": "컴파일은 되고 요청이 깨지는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@RestController` 는 무엇의 합인가?",
+   "a": "`@Controller` + `@ResponseBody` 다."
+  },
+  {
+   "q": "왜 `Long` 을 그냥 반환하지 않았나?",
+   "a": "숫자 하나라 필드를 늘릴 수 없어서다."
+  },
+  {
+   "q": "`id` 를 같이 보내면?",
+   "a": "`detached entity passed to persist` 로 500 이다."
+  },
+  {
+   "q": "검증을 엔티티에 붙이면 무엇이 문제인가?",
+   "a": "엔티티가 API 사정을 알게 되고, API 마다 규칙이 다르면 못 맞춘다."
+  },
+  {
+   "q": "V1 의 빚이 왜 조용한가?",
+   "a": "정상 경로는 200 이라 테스트가 안 깨진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "detached",
+   "def": "식별자는 있는데 영속성 컨텍스트가 관리하지 않는 상태. `persist` 대상이 아니다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://beanvalidation.org/3.0/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
