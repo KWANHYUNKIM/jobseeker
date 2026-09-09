@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "advisor",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "어드바이저",
+ "summary": "둘을 한 묶음으로.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "묶음을 만든다.",
+  "빈으로 만든다.",
+  "왜 나눠 뒀는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절에서 둘을 매번 같이** 적었다. **한 묶음으로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "느슨한 둘 대신 한 쌍",
+   "ascii": "   one pair instead of two loose things\n\n   where to apply it\n   what to apply\n\n   keeping them apart lets one be reused with the other swapped",
+   "note": "**나눠 두었기에 한쪽만 바꿔 다시 쓸 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어디에와 무엇을이 늘 함께 다닌다",
+   "md": "**따로 쓸 일이** 없다.\n\n> **7.3절에서 늘 같이** 적었다.\n> **아래에서 세어** 본다.\n> **한 덩어리가 자연**스럽다.\n\n**빈으로 만들 수** 있다.\n\n> **7.2절에서 어드바이스를** 그랬다.\n> **이제 묶음째**다.\n> **아래에서 그렇게** 한다.\n\n**설정이** 준다.\n\n> **두 줄이 한 줄**이 된다.\n> **아래에서 다시** 센다.\n> **8장이 이걸 등록만** 한다.\n\n**그래도 안은 나뉘어** 있다.\n\n> **바꿔 낄 수 있어야** 한다.\n> **아래에서 한쪽만** 바꾼다.\n> **그게 나눠 둔** 이유다."
+  },
+  {
+   "type": "figure",
+   "caption": "묶어 두면 되는 것",
+   "ascii": "   what the pairing makes possible\n\n   the same advice with two different filters\n   the same filter with two different advices\n   a named pair registered once and used everywhere\n\n   the third row is what chapter eight registers",
+   "note": "**셋째 줄이 8장이 등록할** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "묶음을 빈으로 만들면 어디에나 걸린다",
+   "md": "**아직은 설정이** 고른다.\n\n> **`addAdvisor` 를 적어야** 한다.\n> **아래에서 확인**한다.\n> **8장에서 그게** 없어진다.\n\n**그때는 거르개가** 전부다.\n\n> **넓으면 다** 걸린다.\n> **7.3절에서 42 줄이** 됐다.\n> **8.6절에서 그걸** 겪는다.\n\n**이름을 안 지으면** 헷갈린다.\n\n> **빈이 여럿이** 된다.\n> **아래에서 그** 목록을 본다.\n> **9.4절에서 순서도** 붙는다.\n\n**기본 구현이** 있다.\n\n> **거르개를 안 주면 늘** 참이다.\n> **아래에서 그걸** 본다.\n> **7.2절과 같아**진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 7.3 절에서는 매번 둘을 적었다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTraceAdvice advice) {\n    ProxyFactory factory = new ProxyFactory(target);\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(\"order*\", \"find*\");\n    factory.addAdvisor(new DefaultPointcutAdvisor(pointcut, advice));\n    return (OrderServiceV1) factory.getProxy();\n}\n\n$ grep -c 'new NameMatchMethodPointcut' \\\n    src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'setMappedNames' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'new DefaultPointcutAdvisor' \\\n    src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n--   빈마다 세 줄이 거르개다\n\n\n-- 한 묶음으로 만든다\n\n@Bean\npublic Advisor logTraceAdvisor(LogTrace trace) {\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\");\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\n@Bean\npublic OrderServiceV1 orderServiceV1(Advisor advisor) {\n    ProxyFactory factory = new ProxyFactory(target);\n    factory.addAdvisor(advisor);              // 한 줄이다\n    return (OrderServiceV1) factory.getProxy();\n}\n\n$ grep -c 'addAdvisor(advisor)' \\\n    src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'setMappedNames' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n1\n\n--   여섯 벌이 한 벌이 됐다\n\n\n-- 빈으로 만들었다\n\n$ curl -s 'localhost:8080/who?name=logTraceAdvisor'\n빈 이름:   logTraceAdvisor\n주입된 것: org.springframework.aop.support.DefaultPointcutAdvisor\n원본:     org.springframework.aop.support.DefaultPointcutAdvisor\n프록시:   false\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep -c 'DefaultPointcutAdvisor'\n1\n\n--   하나를 여섯이 나눠 쓴다\n--   7.2 절에서 어드바이스가 그랬다\n\n\n-- 돌려 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n0\n\n--   7.3 절과 같다\n\n\n-- 안을 들여다본다\n\n@GetMapping(value = \"/advisor/inside\", produces = \"text/plain\")\nString inside() {\n    PointcutAdvisor a = (PointcutAdvisor) ctx.getBean(\"logTraceAdvisor\");\n    return \"묶음:      \" + a.getClass().getSimpleName() + \"\\n\"\n         + \"거르개:    \" + a.getPointcut().getClass().getSimpleName() + \"\\n\"\n         + \"부가 기능: \" + a.getAdvice().getClass().getSimpleName() + \"\\n\";\n}\n\n$ curl -s localhost:8080/advisor/inside\n묶음:      DefaultPointcutAdvisor\n거르개:    NameMatchMethodPointcut\n부가 기능: LogTraceAdvice\n\n--   안은 여전히 둘이다\n--   묶기만 했다\n\n\n-- 한쪽만 바꾼다\n\n@Bean\npublic Advisor traceByName(LogTrace trace) {\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(\"order*\", \"find*\");\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\n@Bean\npublic Advisor traceByAnnotation(LogTrace trace) {\n    Pointcut pointcut = AnnotationMatchingPointcut.forMethodAnnotation(Traced.class);\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\n$ curl -s localhost:8080/advisor/list\ntraceByName          NameMatchMethodPointcut + LogTraceAdvice\ntraceByAnnotation    AnnotationMatchingPointcut + LogTraceAdvice\n\n--   같은 부가 기능에 다른 거르개다\n--   나눠 뒀기에 된다\n\n\n-- 반대도 된다\n\n@Bean\npublic Advisor traceService(LogTrace trace) {\n    return new DefaultPointcutAdvisor(servicePointcut(), new LogTraceAdvice(trace));\n}\n\n@Bean\npublic Advisor timeService() {\n    return new DefaultPointcutAdvisor(servicePointcut(), new TimeAdvice());\n}\n\n$ curl -s localhost:8080/advisor/list\ntraceService         AspectJExpressionPointcut + LogTraceAdvice\ntimeService          AspectJExpressionPointcut + TimeAdvice\n\n--   같은 거르개에 다른 부가 기능이다\n\n\n-- 거르개를 안 주면\n\nreturn new DefaultPointcutAdvisor(new LogTraceAdvice(trace));   // 하나만\n\n$ curl -s localhost:8080/advisor/inside\n묶음:      DefaultPointcutAdvisor\n거르개:    TruePointcut\n부가 기능: LogTraceAdvice\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n10\n\n--   늘 참인 것이 기본이다\n--   7.2 절과 같아진다\n\n\n-- 설정을 센다\n\n$ wc -l < src/main/java/study/adv/factory/ProxyFactoryConfig.java\n      52\n\n// 7.3 절에서는\n      66\n\n$ printf '%-14s %s\\n' \\\n  '7.1' '62 줄' \\\n  '7.2' '54 줄' \\\n  '7.3' '66 줄' \\\n  '7.4' '52 줄'\n\n7.1            62 줄\n7.2            54 줄\n7.3            66 줄\n7.4            52 줄\n\n--   거르개를 묶어서 다시 줄었다\n\n\n-- 이름을 안 지으면\n\n@Bean\npublic Advisor advisor1(LogTrace trace) { ... }\n@Bean\npublic Advisor advisor2(LogTrace trace) { ... }\n@Bean\npublic Advisor advisor3(LogTrace trace) { ... }\n\n$ curl -s localhost:8080/advisor/list\nadvisor1             NameMatchMethodPointcut + LogTraceAdvice\nadvisor2             AnnotationMatchingPointcut + TimeAdvice\nadvisor3             AspectJExpressionPointcut + LogTraceAdvice\n\n// 이름을 지으면\n$ curl -s localhost:8080/advisor/list\ntraceServiceMethods  AspectJExpressionPointcut + LogTraceAdvice\ntimeSlowMethods      AspectJExpressionPointcut + TimeAdvice\nauditAnnotated       AnnotationMatchingPointcut + AuditAdvice\n\n--   8 장에서 이 목록이 길어진다\n--   이름이 곧 설명이 된다\n\n\n-- 여러 묶음을 걸면\n\nfactory.addAdvisor(traceAdvisor);\nfactory.addAdvisor(timeAdvisor);\n\n$ curl -s localhost:8080/advisor/count?name=orderServiceV1\n어드바이저 2 개\n  1 NameMatchMethodPointcut + LogTraceAdvice\n  2 AspectJExpressionPointcut + TimeAdvice\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -E 'study.adv.trace|ms$' logs/app.log | tail -3\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |<--OrderServiceV1.orderItem() time=1004ms\n1006 ms\n\n--   7.5 절에서 이걸 제대로 본다\n\n\n-- 스프링 것도 같은 모양이다\n\n$ curl -s 'localhost:8080/advisor/list-all' | head -4\ntransactionAdvisor   TransactionAttributeSourcePointcut + TransactionInterceptor\ncacheAdvisor         CacheOperationSourcePointcut + CacheInterceptor\nasyncAdvisor         AsyncAnnotationPointcut + AnnotationAsyncExecutionInterceptor\nlogTraceAdvisor      NameMatchMethodPointcut + LogTraceAdvice\n\n$ curl -s localhost:8080/advisor/list-all | wc -l\n      12\n\n--   1.4 절에서 셋을 붙였던 그것들이다\n--   내 것과 같은 자리에 있다\n\n\n-- 트랜잭션 것을 열어 본다\n\n$ javap -cp $(find ~/.gradle/caches -name 'spring-tx-6.1.11.jar' | head -1) \\\n    org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor \\\n  | head -4\npublic class ...BeanFactoryTransactionAttributeSourceAdvisor\n        extends org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor {\n  public void setTransactionAttributeSource(...);\n  public org.springframework.aop.Pointcut getPointcut();\n\n$ curl -s 'localhost:8080/advisor/inside?name=transactionAdvisor'\n묶음:      BeanFactoryTransactionAttributeSourceAdvisor\n거르개:    TransactionAttributeSourcePointcut\n부가 기능: TransactionInterceptor\n\n--   내가 만든 것과 구조가 같다\n--   7.2 절에서 타입이 같다고 했다\n\n\n-- 애너테이션을 거르개로 쓴다\n\n$ curl -s 'localhost:8080/pointcut/match?bean=orderServiceImpl&advisor=transactionAdvisor'\norderItem      걸림\nfind           통과\n\n$ grep -n '@Transactional' src/main/java/study/adv/OrderServiceImpl.java\n14:    @Transactional\n\n--   7.3 절의 애너테이션 거르개와 같은 방식이다\n\n\n-- 순서가 있다\n\n@Bean\n@Order(1)\npublic Advisor traceAdvisor(LogTrace trace) { ... }\n\n@Bean\n@Order(2)\npublic Advisor timeAdvisor() { ... }\n\n$ curl -s localhost:8080/advisor/count?name=orderServiceV1\n어드바이저 2 개\n  1 [order=1] NameMatchMethodPointcut + LogTraceAdvice\n  2 [order=2] AspectJExpressionPointcut + TimeAdvice\n\n--   9.4 절에서 이 숫자를 제대로 본다\n\n\n-- 아직 설정이 고른다\n\n$ grep -c 'addAdvisor' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n$ grep -c 'new ProxyFactory' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n--   빈마다 두 줄이 남아 있다\n--   7.7 절에서 이게 문제가 된다\n\n\n-- 새 빈을 만들면\n\n@Bean\npublic MemberServiceV1 memberServiceV1() {\n    return new MemberServiceV1Impl();          // 감싸는 걸 잊었다\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/join?name=철수'\n$ grep -c 'MemberService' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=memberServiceV1' | head -2\n빈 이름:   memberServiceV1\n주입된 것: study.adv.app.MemberServiceV1Impl\n\n--   2.6, 3.7, 4.4, 5.7, 6.4 절과 똑같다\n--   8 장까지 안 없어진다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ curl -s localhost:8080/advisor/inside\n묶음:      DefaultPointcutAdvisor\n거르개:    NameMatchMethodPointcut\n부가 기능: LogTraceAdvice\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep -c 'DefaultPointcutAdvisor'\n1\n\n$ git add -A && git commit -q -m 'feat: v8 어드바이저' && git tag v8-advisor\n\n--   7.5 절에서 여럿을 걸어 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '묶음'      '어디에 + 무엇을' \\\n  '빈'        '하나를 나눠 씀' \\\n  '설정'      '66 에서 52 줄' \\\n  '안'        '여전히 둘' \\\n  '한쪽만'    '바꿔 낄 수 있음' \\\n  '거르개 없음' '늘 참' \\\n  '이름'      '설명이 됨' \\\n  '스프링 것' '같은 구조' \\\n  '남은 것'   '빈마다 두 줄'\n\n묶음                       어디에 + 무엇을\n빈                         하나를 나눠 씀\n설정                       66 에서 52 줄\n안                         여전히 둘\n한쪽만                     바꿔 낄 수 있음\n거르개 없음                늘 참\n이름                       설명이 됨\n스프링 것                  같은 구조\n남은 것                    빈마다 두 줄",
+   "note": "**거르개 세 줄씩 여섯 벌이 묶음 하나로 줄어 설정이 66 줄에서 52 줄이** 됐다.\n\n**안을 열어 보면 여전히 `NameMatchMethodPointcut` 과 `LogTraceAdvice` 둘이라 한쪽만 바꿔 낄 수** 있다.\n\n**거르개를 안 주면 `TruePointcut` 이 기본이라 프로브까지 열 줄이** 찍힌다.\n\n**스프링의 트랜잭션 묶음도 거르개와 인터셉터로 된 같은 구조**다.\n\n**빈마다 `new ProxyFactory` 와 `addAdvisor` 두 줄이 남아 새 빈은 여전히 조용히** 빠진다."
+  }
+ ],
+ "recap": [
+  "**둘을** 묶는다.",
+  "**빈으로** 만든다.",
+  "**설정이** 준다.",
+  "**안은 여전히** 둘이다.",
+  "**한쪽만** 바꾼다.",
+  "**기본은 늘** 참이다.",
+  "**이름이** 중요하다.",
+  "**스프링도** 같다.",
+  "**두 줄이** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "묶음을 빈으로 만든다.",
+   "done_when": "설정이 준 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "안을 들여다본다.",
+   "done_when": "둘로 나뉜 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한쪽만 바꿔 본다.",
+   "done_when": "같은 부가 기능에 다른 거르개를 걸었다.",
+   "minutes": 20
+  },
+  {
+   "task": "스프링 것을 열어 본다.",
+   "done_when": "같은 구조인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "묶음은 무엇과 무엇인가?",
+   "a": "어디에 걸지와 무엇을 할지다."
+  },
+  {
+   "q": "왜 안에서는 나눠 두나?",
+   "a": "한쪽만 바꿔 다시 쓸 수 있어야 해서다."
+  },
+  {
+   "q": "거르개를 안 주면?",
+   "a": "늘 참인 것이 기본이라 전부 걸린다."
+  },
+  {
+   "q": "스프링의 트랜잭션은?",
+   "a": "같은 구조의 묶음이다. 거르개와 인터셉터로 되어 있다."
+  },
+  {
+   "q": "아직 남은 것은?",
+   "a": "빈마다 프록시를 만들고 묶음을 거는 두 줄이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "어드바이저",
+   "def": "포인트컷과 어드바이스를 한 쌍으로 묶은 것."
+  },
+  {
+   "term": "늘 참인 거르개",
+   "def": "아무것도 안 거르는 기본 포인트컷."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

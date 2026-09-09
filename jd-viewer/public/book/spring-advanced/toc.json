@@ -417,7 +417,7 @@
           "title": "어드바이저",
           "summary": "둘을 한 묶음으로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -425,7 +425,7 @@
           "title": "여럿을 걸면",
           "summary": "프록시가 몇 개 생기나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
