@@ -1,0 +1,139 @@
+{
+ "book": "kubernetes",
+ "id": "probes",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "프로브",
+ "summary": "살아 있는 것과 받을 수 있는 것.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "셋의 차이를 안다.",
+  "liveness 에 의존성을 넣으면 안 되는 이유를 안다.",
+  "스프링 부트에 붙인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 `Running` 인데 `0/1` 이 가장 헷갈린다고** 했다. **여기가 그 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 프로브",
+   "ascii": "   three probes, three different questions\n\n   startup    has it finished booting yet\n                while it runs, the other two are paused\n   liveness   is it still alive\n                failing means kill and restart the container\n   readiness  can it take traffic right now\n                failing means remove it from the service, keep it running\n\n   liveness restarts, readiness only unplugs",
+   "note": "**liveness 는 죽이고 readiness 는 빼기만** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정 필드",
+   "md": "```yaml\nreadinessProbe:\n  httpGet: { path: /actuator/health/readiness, port: 8080 }\n  initialDelaySeconds: 0\n  periodSeconds: 5\n  timeoutSeconds: 2\n  failureThreshold: 3\n  successThreshold: 1\nlivenessProbe:\n  httpGet: { path: /actuator/health/liveness, port: 8080 }\n  periodSeconds: 10\n  failureThreshold: 3\nstartupProbe:\n  httpGet: { path: /actuator/health/liveness, port: 8080 }\n  periodSeconds: 5\n  failureThreshold: 30      # 5 x 30 = 150초까지 기다린다\n```\n\n> **`startupProbe` 가 있으면 나머지 둘은 그게 성공할 때까지** 안 돈다.\n> **기동이 오래 걸리는 앱에 `initialDelaySeconds` 를 크게 주는 것보다** 낫다.\n> **150초 안에 뜨면 바로 넘어가고 안 뜨면** 죽인다.\n\n**검사 방법 넷**\n\n| 방법 | 언제 |\n|---|---|\n| `httpGet` | HTTP 앱 |\n| `tcpSocket` | 포트만 열리면 되는 것 |\n| `exec` | 명령 종료 코드 |\n| `grpc` | gRPC 서버 |\n\n> **`httpGet` 은 2xx·3xx 를 성공으로** 본다.\n> **`exec` 은 프로세스를 매번 띄워 비싸다** — **주기를 길게**.\n\n**스프링 부트가 만들어 준다.**\n\n```properties\nmanagement.endpoint.health.probes.enabled=true\nmanagement.health.livenessstate.enabled=true\nmanagement.health.readinessstate.enabled=true\n```\n\n> **`/actuator/health/liveness` 와 `/readiness` 가** 생긴다.\n> **`liveness` 는 의존성을 안 보고 `readiness` 는** 본다 — **아래 함정과 정확히 맞는** 설계다."
+  },
+  {
+   "type": "figure",
+   "caption": "고전적인 실수",
+   "ascii": "   the classic mistake\n\n   liveness points at an endpoint that checks the database\n   the database has a bad minute\n   every replica fails liveness at once\n   every replica is killed at once\n   they come back, still cannot reach the database, and die again\n\n   a dependency outage became an outage of your own service",
+   "note": "**남의 장애가 내 장애가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "liveness 에 의존성을 넣지 않는다",
+   "md": "**`liveness` 는 \"이 프로세스가 스스로 회복 불가한가\"** 다.\n\n> **DB 가 죽었을 때 앱을 재시작해도 안** 낫는다.\n> **재시작이 상황을 더** 나쁘게 만든다 — **커넥션 풀을 다시 만들고 캐시가** 비워진다.\n>\n> **`readiness` 를 실패시키면** 된다.\n> **트래픽만 안 오고 프로세스는** 산다.\n> **DB 가 돌아오면 바로 다시** 받는다.\n\n**`readiness` 는 의존성을 봐도** 된다.\n\n> **다만 모든 레플리카가 동시에 빠지면 서비스에 파드가 0개**다.\n> **6장의 엔드포인트가 비고 요청이 다** 실패한다.\n> **어차피 DB 가 없으면 실패할 요청이라 낫긴** 하다.\n\n**주기와 임계값**\n\n| 값 | 뜻 | 흔한 실수 |\n|---|---|---|\n| `periodSeconds` | 검사 간격 | 너무 짧으면 부하 |\n| `timeoutSeconds` | 응답 대기 | 기본 1초, 너무 짧다 |\n| `failureThreshold` | 몇 번 실패해야 | 1이면 예민하다 |\n\n> **`timeoutSeconds` 기본이 1초**다.\n> **GC 한 번에 넘어간다.**\n> **`failureThreshold: 3` 과 같이 써서 여유를** 준다.\n>\n> **liveness 는 readiness 보다 느슨하게** 잡는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- readiness 가 실패하면 ---\n\n$ cat probe.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 3\n  selector:\n    matchLabels: { app: web }\n  template:\n    metadata:\n      labels: { app: web }\n    spec:\n      containers:\n        - name: web\n          image: nginx:1.27\n          readinessProbe:\n            httpGet: { path: /ready, port: 80 }\n            periodSeconds: 3\n            failureThreshold: 2\n\n$ kubectl apply -f probe.yaml > /dev/null\n$ kubectl expose deployment web --port=80 > /dev/null\n$ sleep 12 && kubectl get pods -l app=web --no-headers\n\nweb-7c9d8f6b5-h4n8q   0/1   Running   0   12s\nweb-7c9d8f6b5-r5t2w   0/1   Running   0   12s\nweb-7c9d8f6b5-x9m2k   0/1   Running   0   12s\n\n#   Running 인데 0/1 이다\n\n#   1.1절의 그 상태다\n\n$ kubectl get endpoints web\n\nNAME   ENDPOINTS   AGE\nweb    <none>      12s\n\n#   엔드포인트가 비었다\n\n#   서비스에 아무도 없다\n\n$ kubectl describe pod -l app=web | grep -A2 'Readiness' | head -3\n\n    Readiness:      http-get http://:80/ready delay=0s timeout=1s\n      period=3s #success=1 #failure=2\n\n$ kubectl get events --field-selector reason=Unhealthy --no-headers | tail -1\n\n3s   Warning   Unhealthy   pod/web-7c9d8f6b5-h4n8q   Readiness probe failed:\n  HTTP probe failed with statuscode: 404\n\n#   /ready 가 없어 404 다\n\n#   그래도 컨테이너는 안 죽는다\n\n$ kubectl get pods -l app=web -o jsonpath=\\\n'{.items[0].status.containerStatuses[0].restartCount}{\"\\n\"}'\n\n0\n\n#   재시작 0 이다\n\n#   readiness 는 빼기만 한다\n\n# --- 파일을 만들어 준다 ---\n\n$ for p in $(kubectl get pod -l app=web -o name); do\n    kubectl exec $p -- sh -c 'echo ok > /usr/share/nginx/html/ready'\n  done\n\n$ sleep 5 && kubectl get pods -l app=web --no-headers\n\nweb-7c9d8f6b5-h4n8q   1/1   Running   0   1m\nweb-7c9d8f6b5-r5t2w   1/1   Running   0   1m\nweb-7c9d8f6b5-x9m2k   1/1   Running   0   1m\n\n$ kubectl get endpoints web\n\nNAME   ENDPOINTS                                   AGE\nweb    10.244.1.14:80,10.244.2.11:80,10.244.1.15:80   1m\n\n#   셋이 붙었다\n\n# --- 하나를 빼 본다 ---\n\n$ P=$(kubectl get pod -l app=web -o name | head -1)\n$ kubectl exec $P -- rm /usr/share/nginx/html/ready\n\n$ sleep 8 && kubectl get pods -l app=web --no-headers | awk '{print $2}'\n\n0/1\n1/1\n1/1\n\n$ kubectl get endpoints web -o jsonpath=\\\n'{.subsets[0].addresses[*].ip}{\"\\n\"}'\n\n10.244.2.11 10.244.1.15\n\n#   둘로 줄었다\n\n#   2.3절에서 라벨을 바꿔 뺐던 것과 결과가 같다\n\n#   여기서는 프로브가 뺐다\n\n$ kubectl exec $P -- sh -c 'echo ok > /usr/share/nginx/html/ready'\n$ sleep 5 && kubectl get endpoints web -o jsonpath=\\\n'{.subsets[0].addresses[*].ip}{\"\\n\"}' | tr ' ' '\\n' | wc -l\n\n3\n\n#   돌아왔다\n\n#   재시작 없이 붙었다 뺐다 한다\n\n# --- liveness 는 죽인다 ---\n\n$ kubectl patch deployment web --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/template/spec/containers/0/livenessProbe\",\n  \"value\":{\"httpGet\":{\"path\":\"/alive\",\"port\":80},\"periodSeconds\":3,\n           \"failureThreshold\":2}}]' > /dev/null\n\n$ sleep 25 && kubectl get pods -l app=web --no-headers\n\nweb-5c8f2a9d1-k2m9v   0/1   CrashLoopBackOff   3   25s\nweb-5c8f2a9d1-p3w8t   0/1   Running            2   25s\nweb-5c8f2a9d1-w7t4x   0/1   Running            2   25s\n\n#   RESTARTS 가 는다\n\n$ kubectl get events --field-selector reason=Killing --no-headers | tail -1\n\n4s   Normal   Killing   pod/web-5c8f2a9d1-k2m9v   Container web failed\n  liveness probe, will be restarted\n\n#   죽이고 다시 띄운다\n\n#   readiness 와 정반대다\n\n$ kubectl rollout undo deployment/web > /dev/null\n\n# --- 의존성을 liveness 에 넣으면 ---\n\n$ cat depend.yaml\n\n          livenessProbe:\n            exec:\n              command: [\"sh\", \"-c\", \"nc -z db 5432\"]\n            periodSeconds: 5\n            failureThreshold: 2\n\n$ kubectl apply -f depend.yaml > /dev/null\n$ kubectl create deployment db --image=postgres:16 > /dev/null\n$ kubectl set env deployment/db POSTGRES_PASSWORD=secret > /dev/null\n$ kubectl expose deployment db --port=5432 > /dev/null\n$ sleep 25 && kubectl get pods -l app=web --no-headers | awk '{print $2, $4}'\n\n1/1 0\n1/1 0\n1/1 0\n\n#   DB 가 있으니 잘 돈다\n\n#   DB 를 죽인다\n\n$ kubectl scale deployment db --replicas=0 > /dev/null\n$ sleep 30 && kubectl get pods -l app=web --no-headers\n\nweb-8d3f7a1c9-m2x7k   0/1   CrashLoopBackOff   2   3m\nweb-8d3f7a1c9-q4m2p   0/1   CrashLoopBackOff   2   3m\nweb-8d3f7a1c9-v9k7d   0/1   CrashLoopBackOff   2   3m\n\n#   셋이 한꺼번에 죽는다\n\n#   DB 장애가 내 서비스 장애가 됐다\n\n$ kubectl scale deployment db --replicas=1 > /dev/null\n$ sleep 45 && kubectl get pods -l app=web --no-headers | awk '{print $2, $4}'\n\n1/1 4\n1/1 4\n1/1 4\n\n#   돌아왔는데 재시작이 4 씩이다\n\n#   그동안 커넥션 풀과 캐시가 다 날아갔다\n\n# --- readiness 로 옮긴다 ---\n\n$ kubectl patch deployment web --type=json -p='[\n  {\"op\":\"remove\",\"path\":\"/spec/template/spec/containers/0/livenessProbe\"},\n  {\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/readinessProbe\",\n   \"value\":{\"exec\":{\"command\":[\"sh\",\"-c\",\"nc -z db 5432\"]},\n            \"periodSeconds\":5,\"failureThreshold\":2}}]' > /dev/null\n\n$ sleep 20 && kubectl scale deployment db --replicas=0 > /dev/null\n$ sleep 20 && kubectl get pods -l app=web --no-headers\n\nweb-4a9c2f8e1-h4n8q   0/1   Running   0   1m\nweb-4a9c2f8e1-r5t2w   0/1   Running   0   1m\nweb-4a9c2f8e1-x9m2k   0/1   Running   0   1m\n\n#   0/1 이지만 Running 이다\n\n#   재시작이 0 이다\n\n$ kubectl get endpoints web\n\nNAME   ENDPOINTS   AGE\nweb    <none>      5m\n\n#   트래픽은 안 간다\n\n$ kubectl scale deployment db --replicas=1 > /dev/null\n$ sleep 30 && kubectl get pods -l app=web --no-headers | awk '{print $2, $4}'\n\n1/1 0\n1/1 0\n1/1 0\n\n#   재시작 없이 돌아왔다\n\n#   프로세스가 살아 있었다\n\n# --- startupProbe ---\n\n$ cat slow.yaml\n\n          startupProbe:\n            httpGet: { path: /, port: 80 }\n            periodSeconds: 5\n            failureThreshold: 24\n          livenessProbe:\n            httpGet: { path: /, port: 80 }\n            periodSeconds: 5\n            failureThreshold: 2\n\n#   기동에 최대 120초를 준다\n\n#   그동안 liveness 는 안 돈다\n\n$ kubectl apply -f slow.yaml > /dev/null && sleep 15\n$ kubectl get pods -l app=web --no-headers | head -1\n\nweb-2f8e1a9c4-h4n8q   1/1   Running   0   15s\n\n$ kubectl describe pod -l app=web | grep -E 'Startup|Liveness' | head -2\n\n    Liveness:       http-get http://:80/ delay=0s timeout=1s period=5s\n      #success=1 #failure=2\n    Startup:        http-get http://:80/ delay=0s timeout=1s period=5s\n      #success=1 #failure=24\n\n#   둘이 같이 있다\n\n#   startup 이 성공할 때까지 liveness 는 안 돈다\n\n#   initialDelaySeconds 를 크게 주는 것보다 낫다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web db && kubectl delete service web db\n\ndeployment.apps \"web\" deleted\ndeployment.apps \"db\" deleted\nservice \"web\" deleted\nservice \"db\" deleted\n\n# --- 다음 절에서 ---\n\n#   스케줄링에 쓰는 숫자와 제한하는 숫자를 가른다",
+   "note": "**`readiness` 실패는 `Running` 인데 `0/1` 이고 엔드포인트가 `<none>`, `restartCount` 는 0** 이다.\n\n**`liveness` 실패는 `Container web failed liveness probe, will be restarted` 로** 죽인다.\n\n**`liveness` 에 DB 검사를 넣고 DB 를 죽이니 셋이 한꺼번에 `CrashLoopBackOff`** 다 — 복구 뒤 재시작이 4씩 남는다.\n\n**`readiness` 로 옮기니 `0/1 Running` 에 재시작 0** 이고, DB 가 돌아오자 그대로 붙었다.\n\n**`startupProbe` 가 있으면 그게 성공할 때까지 `liveness` 가 안** 돈다."
+  }
+ ],
+ "recap": [
+  "**프로브가 셋이고 묻는 게 다** 다르다.",
+  "**`readiness` 는 서비스에서 빼기만** 한다.",
+  "**`liveness` 는 컨테이너를** 죽인다.",
+  "**`Running` 인데 `0/1` 은 `readiness` 실패**다.",
+  "**`liveness` 에 의존성을 넣으면** 안 된다.",
+  "**남의 장애가 내 장애가** 된다.",
+  "**의존성 검사는 `readiness` 에** 둔다.",
+  "**`startupProbe` 가 기동 시간을** 준다.",
+  "**`timeoutSeconds` 기본 1초는 너무** 짧다."
+ ],
+ "drills": [
+  {
+   "task": "`readiness` 를 실패시킨다.",
+   "done_when": "`0/1` 과 빈 엔드포인트를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`liveness` 를 실패시킨다.",
+   "done_when": "재시작을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`liveness` 에 의존성을 넣고 그것을 죽인다.",
+   "done_when": "전부 죽는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`readiness` 로 옮겨 다시 시험한다.",
+   "done_when": "재시작 0 을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`readiness` 실패의 결과는?",
+   "a": "서비스 엔드포인트에서 빠지고 컨테이너는 계속 돈다."
+  },
+  {
+   "q": "`liveness` 실패의 결과는?",
+   "a": "컨테이너를 죽이고 재시작한다."
+  },
+  {
+   "q": "`Running` 인데 `0/1` 은?",
+   "a": "`readiness` 프로브가 실패하고 있다."
+  },
+  {
+   "q": "`liveness` 에 DB 검사를 넣으면?",
+   "a": "DB 장애 때 모든 레플리카가 동시에 재시작한다."
+  },
+  {
+   "q": "`startupProbe` 의 역할은?",
+   "a": "기동이 끝날 때까지 다른 프로브를 멈춰 둔다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "readiness",
+   "def": "지금 트래픽을 받을 수 있는지 묻는 프로브. 실패하면 서비스에서 빠진다."
+  },
+  {
+   "term": "liveness",
+   "def": "프로세스가 스스로 회복 불가한지 묻는 프로브. 실패하면 재시작한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Configure Liveness, Readiness and Startup Probes",
+   "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Spring Boot — Kubernetes Probes",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Kubernetes — Pod Lifecycle",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

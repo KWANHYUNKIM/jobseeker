@@ -1,0 +1,120 @@
+{
+ "book": "kubernetes",
+ "id": "init-container",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "초기화 컨테이너",
+ "summary": "본체가 뜨기 전에 끝내야 하는 일.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "순서와 실패 처리를 안다.",
+  "쓰임 네 가지를 안다.",
+  "마이그레이션의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 `initContainers` 를 사이드카로** 썼다. **원래 용도는** 따로다."
+  },
+  {
+   "type": "figure",
+   "caption": "차례로 끝까지",
+   "ascii": "   init containers run one at a time, to completion\n\n   init 1   must exit 0\n   init 2   only starts after init 1 succeeded\n   ...\n   containers   all start together, after every init finished\n\n   an init container that fails is retried, forever if needed\n   the pod sits in Init:0/2 while that happens",
+   "note": "**하나가 실패하면 계속** 재시도한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "본 컨테이너와 다른 점",
+   "md": "| | 초기화 | 본체 |\n|---|---|---|\n| 실행 | 차례로 하나씩 | 동시에 |\n| 끝나야 하나 | 끝나야 다음 | 안 끝난다 |\n| 실패하면 | 재시도, 파드가 대기 | 재시작 정책대로 |\n| 프로브 | 못 쓴다 | 쓴다 |\n| 이미지 | 도구가 많아도 된다 | 작을수록 좋다 |\n\n> **마지막 줄이** 요점이다.\n> **본체는 distroless 로 작게 만들고**(3.4절), **`curl`·`git`·`psql` 은 초기화 컨테이너에** 둔다.\n> **그 컨테이너는 끝나고 사라진다.**\n\n**볼륨을 나눠 쓴다.**\n\n```yaml\ninitContainers:\n  - name: fetch\n    image: curlimages/curl:8.10.1\n    command: [\"sh\", \"-c\", \"curl -fsS $URL -o /work/config.json\"]\n    volumeMounts: [{ name: work, mountPath: /work }]\ncontainers:\n  - name: app\n    image: myapp:1.0\n    volumeMounts: [{ name: work, mountPath: /config, readOnly: true }]\nvolumes:\n  - { name: work, emptyDir: {} }\n```\n\n> **초기화가 받아 두고 본체가** 읽는다.\n> **본체 이미지에 `curl` 이 없어도** 된다.\n\n**기다리는 데 쓴다.**\n\n> **1.3절에서 앱이 죽고 다시 뜨며 붙는 걸** 봤다.\n> **초기화 컨테이너로 기다리면 `CrashLoopBackOff` 대신 `Init:0/1`** 이다.\n> **로그가 깨끗하고 원인이 분명**해진다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓰임 넷",
+   "ascii": "   what an init container is actually for\n\n   wait for something   a database, a config service\n   fetch something      a config file, a certificate, a git clone\n   prepare a volume     chown a directory the app cannot\n   run a migration      but read the warning about replicas first\n\n   it has tools the app image does not, and that is the point",
+   "note": "**본체에 없는 도구를 쓰는 게** 요점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "마이그레이션을 여기 두면",
+   "md": "**파드마다 돈다.**\n\n> **`replicas: 3` 이면 세 번 동시에** 실행된다.\n> **DDL 이 셋이 같이 나가면 충돌**이다.\n> **파드가 재시작할 때마다 또** 돈다.\n>\n> **Flyway·Liquibase 는 잠금이 있어 대개 버티는데**, **버티는 것과 맞는 것은** 다르다.\n\n**제대로 하려면 `Job`** 이다.\n\n```bash\nkubectl apply -f migration-job.yaml\nkubectl wait --for=condition=complete job/migration --timeout=300s\nkubectl apply -f deployment.yaml\n```\n\n> **한 번만** 돈다.\n> **11장의 배포 순서에** 넣는다.\n>\n> **헬름을 쓰면 `pre-install` 훅이 이걸 해** 준다.\n\n**초기화가 오래 걸리면**\n\n> **파드가 그동안 `Init:0/1`** 이다.\n> **디플로이먼트 롤아웃이 안** 끝난다.\n> **`progressDeadlineSeconds`(기본 600)를 넘으면 실패로** 표시된다.\n\n**프로브를 못 쓴다.**\n\n> **초기화 컨테이너에는 `livenessProbe` 가** 없다.\n> **무한정 매달릴 수** 있다.\n> **명령 안에 타임아웃을 넣어** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 기다리는 초기화 컨테이너 ---\n\n$ cat wait.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: waiter\nspec:\n  initContainers:\n    - name: wait-db\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"until nc -z db 5432; do echo db 기다리는 중; sleep 2; done\"]\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 시작; sleep 3600\"]\n\n$ kubectl apply -f wait.yaml > /dev/null && sleep 6\n$ kubectl get pod waiter --no-headers\n\nwaiter   0/1   Init:0/1   0   6s\n\n#   Init:0/1 이다\n\n#   CrashLoopBackOff 가 아니다\n\n$ kubectl logs waiter -c wait-db --tail=3\n\ndb 기다리는 중\ndb 기다리는 중\ndb 기다리는 중\n\n#   무엇을 기다리는지 로그에 있다\n\n#   1.3절에서는 앱이 계속 죽었다\n\n$ kubectl describe pod waiter | grep -E '^(Init Containers|Containers)' -A2 \\\n    | head -6\n\nInit Containers:\n  wait-db:\n    Container ID:  containerd://8f3a2b1c...\n\n$ kubectl get pod waiter -o jsonpath=\\\n'{.status.initContainerStatuses[0].state.running.startedAt}{\"\\n\"}'\n\n2026-09-09T12:41:02Z\n\n#   아직 돌고 있다\n\n# --- 기다리던 것을 만든다 ---\n\n$ kubectl create deployment db --image=postgres:16 \\\n    --port=5432 > /dev/null\n$ kubectl set env deployment/db POSTGRES_PASSWORD=secret > /dev/null\n$ kubectl expose deployment db --port=5432 > /dev/null\n\n$ sleep 20 && kubectl get pod waiter --no-headers\n\nwaiter   1/1   Running   0   1m\n\n#   떴다\n\n$ kubectl logs waiter -c app\n\n시작\n\n$ kubectl get pod waiter -o jsonpath=\\\n'{.status.initContainerStatuses[0].state.terminated.reason}{\"\\n\"}'\n\nCompleted\n\n#   초기화가 끝났다\n\n$ kubectl delete pod waiter > /dev/null\n\n# --- 파일을 받아 둔다 ---\n\n$ cat fetch.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: fetcher\nspec:\n  restartPolicy: Never\n  initContainers:\n    - name: fetch\n      image: curlimages/curl:8.10.1\n      command: [\"sh\", \"-c\",\n        \"curl -fsS --max-time 10 https://httpbin.org/json -o /work/config.json\"]\n      volumeMounts: [{ name: work, mountPath: /work }]\n  containers:\n    - name: app\n      image: gcr.io/distroless/static-debian12\n      command: [\"/bin/true\"]\n      volumeMounts: [{ name: work, mountPath: /config, readOnly: true }]\n  volumes:\n    - { name: work, emptyDir: {} }\n\n#   본체는 distroless 다. curl 이 없다\n\n$ kubectl apply -f fetch.yaml > /dev/null && sleep 12\n$ kubectl get pod fetcher --no-headers\n\nfetcher   0/1   Completed   0   12s\n\n$ kubectl logs fetcher -c fetch\n\n#   (비어 있다. 조용히 성공했다)\n\n#   본체가 파일을 봤는지 확인하려면\n\n$ kubectl run check --rm -it --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"check\",\"image\":\"busybox:1.36\",\n      \"command\":[\"cat\",\"/config/config.json\"],\n      \"volumeMounts\":[{\"name\":\"work\",\"mountPath\":\"/config\"}]}],\n      \"volumes\":[{\"name\":\"work\",\"emptyDir\":{}}]}}' 2>/dev/null | head -2\n\n#   (emptyDir 은 파드마다 따로다. 다른 파드에서는 못 본다)\n\n#   8장에서 이 얘기를 한다\n\n$ kubectl delete pod fetcher > /dev/null\n\n# --- 초기화가 실패하면 ---\n\n$ cat failinit.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: failinit\nspec:\n  initContainers:\n    - name: setup\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 준비 실패; exit 1\"]\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sleep\", \"3600\"]\n\n$ kubectl apply -f failinit.yaml > /dev/null && sleep 25\n$ kubectl get pod failinit --no-headers\n\nfailinit   0/1   Init:CrashLoopBackOff   3   25s\n\n#   초기화가 재시도되고 있다\n\n$ kubectl logs failinit -c setup\n\n준비 실패\n\n$ kubectl get pod failinit -o jsonpath=\\\n'{.status.initContainerStatuses[0].restartCount}{\"\\n\"}'\n\n3\n\n#   세 번 시도했다\n\n#   본체는 아직 시작도 안 했다\n\n$ kubectl get pod failinit -o jsonpath=\\\n'{.status.containerStatuses[0].state}{\"\\n\"}'\n\n{\"waiting\":{\"reason\":\"PodInitializing\"}}\n\n#   PodInitializing 이다\n\n$ kubectl delete pod failinit > /dev/null\n\n# --- 둘 이상이면 차례로 ---\n\n$ cat two-init.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: two-init\nspec:\n  restartPolicy: Never\n  initContainers:\n    - name: first\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 첫째 시작; sleep 5; echo 첫째 끝\"]\n    - name: second\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 둘째 시작; sleep 3; echo 둘째 끝\"]\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 본체 시작\"]\n\n$ kubectl apply -f two-init.yaml > /dev/null\n$ for i in 1 2 3 4; do\n    sleep 3\n    kubectl get pod two-init --no-headers | awk '{print $3}'\n  done\n\nInit:0/2\nInit:1/2\nInit:1/2\nPodInitializing\n\n#   0/2 -> 1/2 -> 본체다\n\n$ kubectl logs two-init -c first && kubectl logs two-init -c second\n\n첫째 시작\n첫째 끝\n둘째 시작\n둘째 끝\n\n$ kubectl logs two-init -c app\n\n본체 시작\n\n#   순서가 지켜졌다\n\n$ kubectl delete pod two-init > /dev/null\n\n# --- 마이그레이션을 초기화에 두면 ---\n\n$ cat badmigrate.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: app\nspec:\n  replicas: 3\n  selector:\n    matchLabels: { app: app }\n  template:\n    metadata:\n      labels: { app: app }\n    spec:\n      initContainers:\n        - name: migrate\n          image: busybox:1.36\n          command: [\"sh\", \"-c\",\n            \"echo \\\"$(date +%T) 마이그레이션 실행\\\"; sleep 2\"]\n      containers:\n        - name: app\n          image: busybox:1.36\n          command: [\"sleep\", \"3600\"]\n\n$ kubectl apply -f badmigrate.yaml > /dev/null && sleep 12\n$ kubectl logs -l app=app -c migrate --prefix\n\n[pod/app-6d8f4b9c7-h4n8q/migrate] 12:43:11 마이그레이션 실행\n[pod/app-6d8f4b9c7-r5t2w/migrate] 12:43:11 마이그레이션 실행\n[pod/app-6d8f4b9c7-x9m2k/migrate] 12:43:11 마이그레이션 실행\n\n#   같은 초에 셋이 동시에 돌았다\n\n#   DDL 이었다면 충돌이다\n\n$ kubectl delete pod -l app=app > /dev/null\n$ sleep 12 && kubectl logs -l app=app -c migrate --prefix | wc -l\n\n3\n\n#   재시작할 때마다 또 돈다\n\n$ kubectl delete deployment app > /dev/null\n\n# --- Job 으로 옮긴다 ---\n\n$ cat migrate-job.yaml\n\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: migration\nspec:\n  backoffLimit: 3\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n        - name: migrate\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"echo 마이그레이션 1회; sleep 2\"]\n\n$ kubectl apply -f migrate-job.yaml > /dev/null\n$ kubectl wait --for=condition=complete job/migration --timeout=60s\n\njob.batch/migration condition met\n\n$ kubectl logs -l job-name=migration\n\n마이그레이션 1회\n\n$ kubectl get job migration --no-headers\n\nmigration   1/1   4s   18s\n\n#   한 번만 돌았다\n\n#   11장의 배포 순서에 넣는다\n\n$ kubectl delete job migration deployment db && kubectl delete service db\n\njob.batch \"migration\" deleted\ndeployment.apps \"db\" deleted\nservice \"db\" deleted\n\n# --- 다음 절에서 ---\n\n#   떴다는 것과 받을 수 있다는 것을 가른다",
+   "note": "**기다리는 초기화 컨테이너는 `Init:0/1` 이고 로그에 무엇을 기다리는지** 있다 — 1.3절의 `CrashLoopBackOff` 와 대비된다.\n\n**초기화가 실패하면 `Init:CrashLoopBackOff` 이고 본체는 `PodInitializing`** 이다.\n\n**둘이면 `Init:0/2` → `Init:1/2` → 본체** 순이다.\n\n**마이그레이션을 초기화에 두면 `replicas: 3` 에서 같은 초에 셋이 동시에** 돌고 재시작마다 또 돈다.\n\n**Job 으로 옮기면 한 번만** 돈다."
+  }
+ ],
+ "recap": [
+  "**초기화 컨테이너는 차례로 끝까지** 돈다.",
+  "**하나가 실패하면 계속** 재시도한다.",
+  "**그동안 파드는 `Init:0/N`** 이다.",
+  "**본체는 `PodInitializing` 으로** 대기한다.",
+  "**도구가 많은 이미지를 여기** 쓴다.",
+  "**본체는 작게** 유지된다.",
+  "**볼륨으로 결과를 넘긴다.**",
+  "**마이그레이션은 파드마다** 돈다.",
+  "**한 번만 돌려야 하면 `Job`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "기다리는 초기화 컨테이너를 만든다.",
+   "done_when": "`Init:0/1` 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "초기화를 실패시켜 본다.",
+   "done_when": "재시도 횟수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "초기화를 둘 두고 순서를 본다.",
+   "done_when": "`Init:1/2` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "마이그레이션을 초기화에 뒀다 Job 으로 옮긴다.",
+   "done_when": "실행 횟수 차이를 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "초기화 컨테이너의 실행 방식은?",
+   "a": "차례로 하나씩, 각각 성공해야 다음이 시작된다."
+  },
+  {
+   "q": "초기화가 실패하면 파드 상태는?",
+   "a": "`Init:CrashLoopBackOff` 이고 본체는 `PodInitializing` 이다."
+  },
+  {
+   "q": "본체 이미지를 작게 유지하는 방법은?",
+   "a": "도구가 필요한 일을 초기화 컨테이너로 옮긴다."
+  },
+  {
+   "q": "마이그레이션을 초기화에 두면?",
+   "a": "레플리카 수만큼, 재시작마다 실행된다."
+  },
+  {
+   "q": "초기화 컨테이너에 프로브를 쓸 수 있나?",
+   "a": "쓸 수 없다. 명령 안에 타임아웃을 넣어야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Kubernetes — Init Containers",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

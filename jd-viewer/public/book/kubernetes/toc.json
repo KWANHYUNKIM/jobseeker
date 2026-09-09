@@ -199,7 +199,7 @@
           "title": "초기화 컨테이너",
           "summary": "본체가 뜨기 전에 끝내야 하는 일.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -207,7 +207,7 @@
           "title": "프로브",
           "summary": "살아 있는 것과 받을 수 있는 것.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
