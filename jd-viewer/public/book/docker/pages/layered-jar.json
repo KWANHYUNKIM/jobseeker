@@ -1,0 +1,113 @@
+{
+ "book": "docker",
+ "id": "layered-jar",
+ "no": "10.2",
+ "chapter": 10,
+ "title": "레이어를 쪼개면 배포가 빨라진다",
+ "summary": "의존성과 내 코드를 나눠 담는다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "jar 하나를 통째로 넣으면 왜 느린지 안다.",
+  "layertools 로 쪼갠다.",
+  "전송량을 숫자로 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.1절의 이미지에는 문제가** 있다.\n\n```dockerfile\nCOPY --from=builder /src/app.jar app.jar     # 47MB 레이어 하나\n```\n\n**코드 한 줄을 고치면 47MB 레이어 전체가 새로** 만들어진다. **4.3절에서 본 그대로**다."
+  },
+  {
+   "type": "figure",
+   "caption": "47MB 안의 구성",
+   "ascii": "   app.jar  47MB\n   +--------------------------------+\n   |  BOOT-INF/lib/*.jar     45MB   |  spring, jackson, hibernate, ...\n   |    changes: monthly            |\n   +--------------------------------+\n   |  BOOT-INF/classes/       1.8MB |  my code\n   |    changes: many times a day   |\n   +--------------------------------+\n   |  spring boot loader      0.2MB |\n   +--------------------------------+\n\n   one COPY -> one layer -> 47MB every deploy\n   split     -> 4 layers  -> 1.8MB most deploys",
+   "note": "**바뀌는 빈도가 다른 것을 한 레이어에 담은 것**이 문제다(5.6절)."
+  },
+  {
+   "type": "code",
+   "lang": "dockerfile",
+   "file": "Dockerfile",
+   "caption": "layertools 로 네 겹으로 쪼갠다",
+   "code": "FROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\nCOPY gradle/ gradle/\nCOPY gradlew build.gradle settings.gradle ./\nRUN --mount=type=cache,target=/root/.gradle ./gradlew dependencies --no-daemon\nCOPY src/ src/\nRUN --mount=type=cache,target=/root/.gradle ./gradlew bootJar --no-daemon\n\n# jar 를 네 덩어리로 푼다\nFROM eclipse-temurin:21-jre AS extractor\nWORKDIR /tmp\nCOPY --from=builder /src/build/libs/*.jar app.jar\nRUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\n\n# 바뀌는 빈도 순서대로 COPY 한다\nCOPY --from=extractor /tmp/extracted/dependencies/ ./\nCOPY --from=extractor /tmp/extracted/spring-boot-loader/ ./\nCOPY --from=extractor /tmp/extracted/snapshot-dependencies/ ./\nCOPY --from=extractor /tmp/extracted/application/ ./\n\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]",
+   "note": "부트 3.3+ 는 `-Djarmode=tools ... extract`, 그 이전은 `-Djarmode=layertools ... extract` 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "네 덩어리가 왜 그 순서인가",
+   "md": "| 레이어 | 무엇 | 얼마나 자주 바뀌나 |\n|---|---|---|\n| `dependencies` | 릴리스된 의존성 jar 들 | **한 달에 한 번** |\n| `spring-boot-loader` | 부트 로더 클래스 | 부트 버전 올릴 때 |\n| `snapshot-dependencies` | SNAPSHOT 의존성 | 사내 라이브러리를 쓰면 자주 |\n| **`application`** | **내 클래스와 리소스** | **하루에 여러 번** |\n\n**5.6절의 규칙 그대로**다 — **안 바뀌는 것을 위에.**\n\n> **`dependencies` 가 45MB 인데 그게 안 바뀌면 배포에서 안** 오간다.\n> **`application` 1.8MB 만 오간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "더 줄이는 방법",
+   "md": "| 방법 | 효과 |\n|---|---|\n| **CDS(클래스 데이터 공유)** | 기동 시간 20~40% 단축. 부트 3.3+ 의 `-Djarmode=tools ... extract` 와 함께 |\n| AOT / GraalVM 네이티브 | 기동 수십 ms, 메모리 절반. **빌드가 오래 걸리고 제약이 있다** |\n| jlink 커스텀 런타임 | 5.8절 |\n\n**기동 시간이 중요한 이유**: **오토스케일링과 롤링 배포**다(2.2절).\n\n> **다만 이 셋은 복잡도를 올린다.** **먼저 레이어를 쪼개고, 그다음에 필요하면 간다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "전송량을 실제로 잰다",
+   "sql": "$ mkdir -p /tmp/app/libs /tmp/app/classes && cd /tmp/app\n$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n\n#   45MB 의존성과 1.8MB 내 코드를 흉내 낸다\n$ dd if=/dev/urandom of=libs/deps.bin bs=1M count=45 2>/dev/null\n$ dd if=/dev/urandom of=classes/app.bin bs=1K count=1800 2>/dev/null\n\n\n# --- 판 A: 한 덩어리 ---\n\n$ mkdir -p fat && cat libs/deps.bin classes/app.bin > fat/app.jar\n$ cat > Dockerfile.fat <<'EOF'\nFROM alpine:3.20\nWORKDIR /app\nCOPY fat/app.jar app.jar\nEOF\n\n$ docker build -q -f Dockerfile.fat -t localhost:5000/fat:1 . >/dev/null\n$ docker push -q localhost:5000/fat:1 >/dev/null\n\n#   코드 한 줄을 고친다\n$ dd if=/dev/urandom of=classes/app.bin bs=1K count=1800 2>/dev/null\n$ cat libs/deps.bin classes/app.bin > fat/app.jar\n$ docker build -q -f Dockerfile.fat -t localhost:5000/fat:2 . >/dev/null\n\n$ docker push localhost:5000/fat:2\nThe push refers to repository [localhost:5000/fat]\n63ca1fbb43ae: Layer already exists\n9f8e7d6c5b4a: Pushed              <- 46.8MB 를 다시 올렸다\n2: digest: sha256:aaa... size: 738\n\n\n# --- 판 B: 나눠 담기 ---\n\n$ cat > Dockerfile.layered <<'EOF'\nFROM alpine:3.20\nWORKDIR /app\nCOPY libs/ ./lib/\nCOPY classes/ ./classes/\nEOF\n\n$ docker build -q -f Dockerfile.layered -t localhost:5000/layered:1 . >/dev/null\n$ docker push -q localhost:5000/layered:1 >/dev/null\n\n$ dd if=/dev/urandom of=classes/app.bin bs=1K count=1800 2>/dev/null\n$ docker build -q -f Dockerfile.layered -t localhost:5000/layered:2 . >/dev/null\n\n$ docker push localhost:5000/layered:2\nThe push refers to repository [localhost:5000/layered]\n63ca1fbb43ae: Layer already exists\n1a2b3c4d5e6f: Layer already exists     <- 45MB 의존성은 그대로\n8e7d6c5b4a39: Pushed                   <- 1.8MB 만\n2: digest: sha256:bbb... size: 946\n\n#   46.8MB -> 1.8MB. 26분의 1 이다\n\n\n# --- 레지스트리에 실제로 쌓인 양 ---\n\n$ docker system df -v | grep -E 'fat|layered'\nlocalhost:5000/fat       2   0   93.6MB   ...\nlocalhost:5000/layered   2   0   48.7MB   ...\n\n#   태그 두 개를 올렸을 때 저장량도 두 배 차이다\n\n\n# --- 실제 스프링 부트 jar 를 쪼개면 ---\n\n#   $ java -Djarmode=tools -jar build/libs/shop-1.4.2.jar list\n#   dependencies\n#   spring-boot-loader\n#   snapshot-dependencies\n#   application\n#\n#   $ java -Djarmode=tools -jar shop-1.4.2.jar extract --layers --destination out\n#   $ du -sh out/*\n#    45M   out/dependencies\n#   232K   out/spring-boot-loader\n#     0B   out/snapshot-dependencies\n#   1.8M   out/application\n#\n#   $ docker history shop:layered --format 'table {{.Size}}\\t{{.CreatedBy}}' | head -6\n#   SIZE     CREATED BY\n#   0B       ENTRYPOINT [\"java\" \"-jar\" \"app.jar\"]\n#   1.84MB   COPY /tmp/extracted/application/ ./\n#   0B       COPY /tmp/extracted/snapshot-dependencies/ ./\n#   238kB    COPY /tmp/extracted/spring-boot-loader/ ./\n#   45.1MB   COPY /tmp/extracted/dependencies/ ./\n#\n#   배포마다 바뀌는 것은 맨 위 1.84MB 뿐이다\n\n$ docker rm -f reg >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/app\n$ docker rmi -f localhost:5000/fat:1 localhost:5000/fat:2 \\\n    localhost:5000/layered:1 localhost:5000/layered:2 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "jar 하나를 통째로 COPY 하면 코드 한 줄에 47MB 레이어가 새로 만들어진다.",
+  "layertools/tools jarmode 로 dependencies·loader·snapshot·application 네 겹으로 쪼갠다.",
+  "바뀌는 빈도 순서로 COPY 하면 배포마다 오가는 것이 1.8MB 로 준다.",
+  "기동 시간이 더 필요하면 CDS·AOT 로 가지만, 먼저 레이어를 쪼갠다."
+ ],
+ "drills": [
+  {
+   "task": "큰 파일과 작은 파일을 한 레이어에 담은 이미지와 나눠 담은 이미지를 각각 push 해 전송량을 비교한다.",
+   "done_when": "작은 파일만 바꿨을 때 오가는 양의 차이를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "스프링 부트 jar 가 있다면 `java -Djarmode=tools -jar app.jar list` 로 레이어 목록을 본다.",
+   "done_when": "네 덩어리의 이름을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "쪼갠 이미지의 `docker history` 로 각 레이어 크기를 확인한다.",
+   "done_when": "application 레이어가 가장 위이고 가장 작은 것을 본다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "jar 를 통째로 COPY 하면 왜 배포가 느린가.",
+   "a": "바뀌는 빈도가 다른 것이 한 레이어에 있어 코드 한 줄에도 전체 레이어가 새로 만들어지고 전송된다."
+  },
+  {
+   "q": "레이어 네 개의 순서를 정하는 기준은.",
+   "a": "바뀌는 빈도. 안 바뀌는 dependencies 를 아래, 자주 바뀌는 application 을 위에."
+  },
+  {
+   "q": "기동 시간을 줄이는 다음 단계는.",
+   "a": "CDS, 그다음 AOT/네이티브 이미지. 다만 복잡도가 올라가므로 레이어 분리를 먼저 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "layertools / tools jarmode",
+   "what": "부트 jar 를 레이어 단위로 풀어 주는 실행 모드."
+  },
+  {
+   "term": "CDS",
+   "en": "Class Data Sharing",
+   "what": "클래스 메타데이터를 미리 만들어 기동을 빠르게 하는 JVM 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Efficient container images",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Dockerfiles",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html",
+   "publisher": "Spring"
+  }
+ ]
+}

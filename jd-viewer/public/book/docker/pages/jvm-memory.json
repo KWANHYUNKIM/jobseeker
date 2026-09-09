@@ -1,0 +1,152 @@
+{
+ "book": "docker",
+ "id": "jvm-memory",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "JVM 은 컨테이너 메모리를 어떻게 보는가",
+ "summary": "OOMKilled 가 나는 진짜 이유.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "힙 밖의 메모리를 안다.",
+  "MaxRAMPercentage 를 정한다.",
+  "OOMKilled 를 진단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절에서 `-m 512m` 에 힙이 128MB 인 것을** 봤다. **그리고 힙을 512MB 로 올리면 반드시 죽는다.**\n\n> **컨테이너 메모리는 힙만이** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨테이너 메모리의 구성",
+   "ascii": "   container memory limit  (--memory 768m)\n   +--------------------------------------------------+\n   |  heap            -Xmx / MaxRAMPercentage     512M|\n   +--------------------------------------------------+\n   |  metaspace       classes                      80M|\n   |  code cache      JIT compiled code            48M|\n   |  thread stacks   1M x threads                 40M|\n   |  GC structures                                30M|\n   |  direct buffers  NIO, netty                   32M|\n   |  native (jvm itself, malloc, JNI)             40M|\n   +--------------------------------------------------+\n\n   heap is roughly 65-75% of the container limit\n   set -Xmx = limit  ->  OOMKilled, guaranteed",
+   "note": "**힙 밖이 200~300MB 다.** **작은 애플리케이션일수록 이 비율이** 크다."
+  },
+  {
+   "type": "table",
+   "caption": "어떤 옵션을 쓰나",
+   "columns": [
+    "옵션",
+    "무엇",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**`-XX:MaxRAMPercentage=75`**",
+     "**컨테이너 한도의 75% 를 최대 힙으로**",
+     "**컨테이너에서는 이걸 쓴다**"
+    ],
+    [
+     "`-Xmx512m`",
+     "고정 값",
+     "한도를 바꾸면 같이 바꿔야 한다"
+    ],
+    [
+     "`-XX:InitialRAMPercentage`",
+     "초기 힙",
+     "기동 시 GC 를 줄인다"
+    ],
+    [
+     "`-XX:MaxMetaspaceSize`",
+     "메타스페이스 상한",
+     "안 주면 무제한으로 큰다"
+    ],
+    [
+     "**`-XX:+UseSerialGC`**",
+     "작은 컨테이너용 GC",
+     "**CPU 1 이하·힙 작을 때 유리**"
+    ],
+    [
+     "`-XX:MaxDirectMemorySize`",
+     "다이렉트 버퍼 상한",
+     "네티·NIO 를 많이 쓰면"
+    ]
+   ],
+   "note": "**`JAVA_TOOL_OPTIONS` 환경변수로 주면 Dockerfile 을 안 고치고 바꿀 수** 있다(5.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨테이너 인식이 언제부터 되나",
+   "md": "| JDK | cgroup 인식 |\n|---|---|\n| 8u131 이전 | **안 한다.** 호스트 메모리의 25% 를 힙으로 잡는다 |\n| 8u191+, 10+ | `UseContainerSupport` 기본 켜짐 |\n| **11+** | 잘 된다 |\n| 15+ | cgroup v2 지원 |\n\n**옛날 이미지에서 나던 사고**:\n\n```\n호스트 64GB, 컨테이너 한도 512MB\n-> JVM 이 힙을 16GB 로 잡는다\n-> 조금 쓰다가 OOMKilled (137)\n```\n\n> **\"자바 컨테이너는 메모리를 많이 먹는다\" 는 인식이 여기서** 나왔다.\n> **지금은 21 이면 대개 잘** 된다. **다만 나머지 계산은 여전히 내 몫**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "OOMKilled 진단 순서",
+   "md": "```bash\ndocker inspect -f '{{.State.OOMKilled}} {{.State.ExitCode}}' myapp\n# true 137\n```\n\n**`true` 면 자바 예외가 아니다.** **힙 덤프도 안 남는다** — **커널이 SIGKILL 했으므로.**\n\n| 확인 | 명령 |\n|---|---|\n| 한도 | `docker inspect -f '{{.HostConfig.Memory}}'` |\n| **JVM 이 본 한도** | `java -XX:+PrintFlagsFinal -version \\| grep MaxHeapSize` |\n| **실제 사용** | `docker stats` 의 MEM USAGE |\n| **힙 밖 상세** | **`-XX:NativeMemoryTracking=summary` + `jcmd VM.native_memory`** |\n\n**`OutOfMemoryError` 와 구분**:\n\n| | 힙 부족 | 컨테이너 한도 초과 |\n|---|---|---|\n| 증상 | `java.lang.OutOfMemoryError` **로그에 남는다** | **로그 없이 죽는다.** 137 |\n| 원인 | 힙이 작거나 누수 | 힙 밖까지 합쳐 한도를 넘었다 |\n| 대응 | 힙을 늘리거나 누수 수정 | **한도를 늘리거나 힙 비율을 낮춘다** |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "숫자를 직접 재 본다",
+   "sql": "# --- JVM 이 보는 한도 ---\n\n$ docker run --rm -m 768m eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version 2>/dev/null \\\n    | grep -E 'MaxHeapSize|MaxRAMPercentage|UseContainerSupport'\n   size_t MaxHeapSize        = 201326592     {product}\n   double MaxRAMPercentage   = 25.000000     {product}\n     bool UseContainerSupport = true         {product}\n\n#   768MB 의 25% = 192MB\n\n$ docker run --rm -m 768m -e JAVA_TOOL_OPTIONS='-XX:MaxRAMPercentage=75' \\\n    eclipse-temurin:21-jre java -XX:+PrintFlagsFinal -version 2>/dev/null \\\n    | grep MaxHeapSize\nPicked up JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75\n   size_t MaxHeapSize        = 603979776\n\n#   576MB. 힙 밖에 192MB 가 남는다\n\n\n# --- 힙을 한도와 같게 주면 반드시 죽는다 ---\n\n$ docker run --name oom -m 512m -e JAVA_TOOL_OPTIONS='-Xmx512m -Xms512m' \\\n    eclipse-temurin:21-jre java -version\nPicked up JAVA_TOOL_OPTIONS: -Xmx512m -Xms512m\nKilled\n\n$ docker inspect -f 'oom={{.State.OOMKilled}} code={{.State.ExitCode}}' oom\noom=true code=137\n\n#   java -version 조차 못 돌았다. 힙을 확보하는 순간 한도를 넘었다\n\n$ docker rm oom >/dev/null\n\n\n# --- 실제 사용량을 본다 ---\n\n$ docker run -d --name app -m 768m \\\n    -e JAVA_TOOL_OPTIONS='-XX:MaxRAMPercentage=75 -XX:NativeMemoryTracking=summary' \\\n    eclipse-temurin:21-jre sh -c 'java -XX:MaxRAMPercentage=75 -XX:NativeMemoryTracking=summary -cp . -version; sleep 300' >/dev/null\n\n$ sleep 2 && docker stats --no-stream app --format 'table {{.Name}}\\t{{.MemUsage}}\\t{{.MemPerc}}'\nNAME   MEM USAGE / LIMIT     MEM %\napp    28.4MiB / 768MiB      3.70%\n\n#   LIMIT 이 768MiB 로 나온다. 2.4절에서 free 가 호스트를 답하던 것과 다르다\n#   docker stats 는 cgroup 을 읽는다\n\n\n# --- 힙 밖을 자세히 (실제 애플리케이션이라면) ---\n\n#   $ docker exec app jcmd 1 VM.native_memory summary | head -20\n#   Total: reserved=1843MB, committed=312MB\n#   -                 Java Heap (reserved=576MB, committed=132MB)\n#   -                     Class (reserved=280MB, committed=42MB)\n#   -                    Thread (reserved=48MB,  committed=48MB)\n#   -                      Code (reserved=246MB, committed=18MB)\n#   -                        GC (reserved=42MB,  committed=42MB)\n#   -                  Internal (reserved=2MB,   committed=2MB)\n#\n#   committed 의 합이 실제로 쓰는 것이다\n#   Heap 132MB 인데 전체는 312MB -- 힙 밖이 180MB 다\n\n\n# --- 컨테이너가 CPU 도 다르게 본다 ---\n\n$ docker run --rm -m 768m --cpus 1 eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E 'ActiveProcessorCount|UseSerialGC|UseG1GC'\n     int ActiveProcessorCount  = -1\n     bool UseG1GC              = false\n     bool UseSerialGC          = true\n\n#   CPU 1 이면 SerialGC 를 고른다. 스레드 풀 크기도 이걸 본다\n\n$ docker run --rm -m 768m --cpus 4 eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version 2>/dev/null | grep UseG1GC\n     bool UseG1GC              = true\n\n#   CPU 를 몇 개 주느냐가 GC 와 스레드 수를 바꾼다\n\n\n# --- 권장 시작점 ---\n\n#   컨테이너 768m, 힙 75%:\n#     -m 768m --cpus 1\n#     JAVA_TOOL_OPTIONS=\"-XX:MaxRAMPercentage=75 -XX:MaxMetaspaceSize=128m\"\n#\n#   부하를 주고 docker stats 로 실제 사용량을 본 뒤 조정한다 (6.6절)\n\n$ docker rm -f app >/dev/null"
+  }
+ ],
+ "recap": [
+  "컨테이너 메모리는 힙 + 메타스페이스 + 스택 + 코드 캐시 + GC + 네이티브다. 힙 밖이 200~300MB 다.",
+  "-Xmx 를 컨테이너 한도와 같게 주면 반드시 OOMKilled 된다.",
+  "컨테이너에서는 MaxRAMPercentage 를 쓴다. 75% 가 흔한 시작점이다.",
+  "OOMKilled=true 면 자바 예외가 아니다. 로그도 힙 덤프도 안 남는다.",
+  "--cpus 가 GC 선택과 스레드 풀 크기까지 바꾼다."
+ ],
+ "drills": [
+  {
+   "task": "`-m 768m` 으로 MaxHeapSize 기본값을 확인하고 MaxRAMPercentage=75 로 바꿔 본다.",
+   "done_when": "192MB 에서 576MB 로 바뀌는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "`-m 512m -Xmx512m` 으로 띄워 OOMKilled 를 재현한다.",
+   "done_when": "oom=true code=137 을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "`--cpus 1` 과 `--cpus 4` 에서 UseSerialGC/UseG1GC 가 어떻게 달라지는지 본다.",
+   "done_when": "GC 선택이 CPU 수에 따라 바뀌는 것을 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "-Xmx 를 컨테이너 메모리 한도와 같게 주면 왜 죽나.",
+   "a": "힙 밖의 메타스페이스·스택·코드 캐시·네이티브가 한도를 넘기기 때문."
+  },
+  {
+   "q": "OutOfMemoryError 와 OOMKilled 를 어떻게 구분하나.",
+   "a": "전자는 로그에 예외가 남고, 후자는 로그 없이 137 로 죽고 inspect 의 OOMKilled 가 true 다."
+  },
+  {
+   "q": "컨테이너에서 -Xmx 대신 MaxRAMPercentage 를 쓰는 이유는.",
+   "a": "컨테이너 한도가 바뀌어도 자동으로 따라간다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "MaxRAMPercentage",
+   "what": "컨테이너 메모리의 몇 %를 최대 힙으로 쓸지 정하는 옵션."
+  },
+  {
+   "term": "NMT",
+   "en": "Native Memory Tracking",
+   "what": "JVM 이 힙 밖 메모리를 영역별로 보고하는 기능."
+  },
+  {
+   "term": "UseContainerSupport",
+   "what": "JVM 이 cgroup 한도를 읽게 하는 옵션. 기본으로 켜져 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Container images: memory",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Docker Docs — Resource constraints",
+   "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+   "publisher": "Docker"
+  }
+ ]
+}

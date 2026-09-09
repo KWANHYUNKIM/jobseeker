@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 kubectl 이 돌려준 것으로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책이 서가의 어느 층인지 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "실습 환경을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**열두 권째**다. **「도커」가 컨테이너 하나를 만들었고 이 책은 그게 여러 대에서 죽지 않게** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가가 다뤄 온 층",
+   "ascii": "   the layers this shelf has covered\n\n   1..9   inside one process\n            sql, http, transactions, tests\n    10    in front of that process\n            which filter stopped the request\n    11    around the process\n            which image, which container, which volume\n    12    above the containers\n            which node, how many copies, what happens when one dies\n\n   each layer answers a question the one below cannot ask",
+   "note": "**층마다 아래에서 못 던지는 질문이** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 kubectl 출력인가",
+   "md": "**서가의 규칙**이다.\n\n> **①은 SQL, ③은 HTTP, ⑨는 테스트 결과, ⑩은 필터 목록, ⑪은 명령과 출력**이었다.\n> **설명은 틀릴 수 있는데 출력은 안** 틀린다.\n\n**쿠버네티스는 특히 그렇다.**\n\n> **YAML 을 적는 것과 그게 실제로 뜬 것 사이가** 멀다.\n> **`kubectl apply` 는 거의 항상 성공**한다 — **\"만들었다\" 는 뜻이지 \"떴다\" 는 뜻이** 아니다.\n>\n> ```\n> deployment.apps/web created\n> ```\n>\n> **이 줄을 보고 끝내면 안** 된다.\n> **`kubectl get pods` 를 쳐야** 안다.\n\n**안 뜬 것도 같이** 싣는다.\n\n| 상태 | 뜻 |\n|---|---|\n| `Pending` | 스케줄이 안 됐다 |\n| `ImagePullBackOff` | 이미지를 못 받았다 |\n| `CrashLoopBackOff` | 떴다가 계속 죽는다 |\n| `Running` 인데 `0/1` | 떴는데 준비가 안 됐다 |\n\n> **마지막이 가장 헷갈린다** — **6.5절에서** 다룬다.\n> **넷을 읽을 줄 아는 게 이 책의 절반**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절의 끝",
+   "ascii": "   what every section in this book ends with\n\n   the command that was actually typed\n   the output kubectl actually printed\n\n   including the output when nothing works\n     Pending, ImagePullBackOff, CrashLoopBackOff\n\n   reading a failure is half of this book",
+   "note": "**실패를 읽는 게 절반**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "책의 뼈대",
+   "md": "| 장 | 무엇 |\n|---|---|\n| 1 | 도커 하나로 안 되는 지점 |\n| 2 | 선언형·오브젝트·컨트롤러 루프 |\n| 3 | 실습 환경 |\n| 4 | 파드 |\n| 5 | 컨트롤러 |\n| 6 | 서비스와 네트워킹 |\n| 7 | 설정과 비밀 |\n| 8 | 스토리지 |\n| 9 | 스케줄링과 자원 |\n| 10 | 운영 |\n| 11 | 배포 |\n\n> **2장이 나머지 전부의** 기초다.\n> **건너뛰면 5장부터 무슨 말인지** 모른다.\n\n**「도커」를 전제로 쓴다.**\n\n> **이미지·레이어·볼륨·네트워크를 다시 설명하지** 않는다.\n> **모르면 그 책 3·5·7·8장을** 먼저 본다.\n\n**환경**\n\n```bash\n# 셋 중 하나면 된다\nbrew install kind && kind create cluster\n# 또는 Docker Desktop 의 Kubernetes 체크박스\n# 또는 minikube start\n```\n\n> **이 책의 출력은 `kind` 1.31 에서 나온** 것이다.\n> **버전이 다르면 숫자와 이름이 조금** 다르다.\n> **3장에서 제대로** 세운다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책이 매 절 끝에 싣는 것 (미리 보기)",
+   "sql": "# --- 클러스터가 있는지 ---\n\n$ kubectl version --client --output=yaml | head -4\n\nclientVersion:\n  gitVersion: v1.31.1\n  goVersion: go1.22.6\n  platform: darwin/arm64\n\n$ kubectl cluster-info\n\nKubernetes control plane is running at https://127.0.0.1:52791\nCoreDNS is running at https://127.0.0.1:52791/api/v1/namespaces/kube-system/\n  services/kube-dns:dns/proxy\n\n$ kubectl get nodes\n\nNAME                 STATUS   ROLES           AGE   VERSION\nkind-control-plane   Ready    control-plane   14m   v1.31.0\n\n#   한 대짜리 클러스터다\n\n#   3장에서 세 대로 늘린다\n\n# --- 하나 띄워 본다 ---\n\n$ kubectl create deployment web --image=nginx:1.27\n\ndeployment.apps/web created\n\n#   \"created\" 다\n\n#   떴다는 말이 아니다\n\n$ kubectl get pods\n\nNAME                  READY   STATUS              RESTARTS   AGE\nweb-6d8f4b9c7-x2n8k   0/1     ContainerCreating   0          2s\n\n#   아직이다\n\n$ kubectl get pods\n\nNAME                  READY   STATUS    RESTARTS   AGE\nweb-6d8f4b9c7-x2n8k   1/1     Running   0          9s\n\n#   이제 떴다\n\n#   apply 와 Running 사이에 9초가 있었다\n\n# --- 안 뜨는 경우도 본다 ---\n\n$ kubectl create deployment oops --image=nginx:없는태그\n\ndeployment.apps/oops created\n\n#   또 created 다\n\n$ kubectl get pods\n\nNAME                   READY   STATUS             RESTARTS   AGE\noops-7c9d8f6b5-q4m2p   0/1     ErrImagePull       0          8s\nweb-6d8f4b9c7-x2n8k    1/1     Running            0          1m\n\n$ kubectl get pods\n\nNAME                   READY   STATUS             RESTARTS   AGE\noops-7c9d8f6b5-q4m2p   0/1     ImagePullBackOff   0          32s\nweb-6d8f4b9c7-x2n8k    1/1     Running            0          2m\n\n#   ErrImagePull 이 ImagePullBackOff 가 됐다\n\n#   계속 재시도하다가 간격을 늘린 것이다\n\n$ kubectl describe pod oops-7c9d8f6b5-q4m2p | tail -8\n\nEvents:\n  Type     Reason     Age                From               Message\n  ----     ------     ----               ----               -------\n  Normal   Scheduled  45s                default-scheduler  Successfully\n    assigned default/oops-7c9d8f6b5-q4m2p to kind-control-plane\n  Normal   Pulling    44s                kubelet            Pulling image\n    \"nginx:없는태그\"\n  Warning  Failed     42s                kubelet            Failed to pull\n    image \"nginx:없는태그\": failed to resolve reference\n  Warning  Failed     42s                kubelet            Error: ErrImagePull\n  Normal   BackOff    16s (x4 over 41s)  kubelet            Back-off pulling\n    image \"nginx:없는태그\"\n\n#   맨 아래 Events 에 이유가 있다\n\n#   이 책에서 가장 자주 칠 명령이다\n\n# --- 죽여 본다 ---\n\n$ kubectl delete pod web-6d8f4b9c7-x2n8k\n\npod \"web-6d8f4b9c7-x2n8k\" deleted\n\n$ kubectl get pods\n\nNAME                  READY   STATUS    RESTARTS   AGE\noops-7c9d8f6b5-q4m2p  0/1     ImagePullBackOff  0    2m\nweb-6d8f4b9c7-p7w3t   1/1     Running   0          6s\n\n#   이름이 바뀌었다\n\n#   지웠는데 새것이 떴다\n\n#   내가 아무 명령도 안 쳤다\n\n#   이게 2장의 주제다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web oops\n\ndeployment.apps \"web\" deleted\ndeployment.apps \"oops\" deleted\n\n$ kubectl get pods\n\nNo resources found in default namespace.\n\n#   이번엔 안 살아난다\n\n#   원하는 상태를 지웠기 때문이다\n\n# --- 다음 절에서 ---\n\n#   서버가 한 대에서 열 대가 될 때 무슨 일이 생기는지 본다",
+   "note": "**`created` 와 `Running` 사이에 9초**가 있다 — \"만들었다\" 는 \"떴다\" 가 아니다.\n\n**없는 태그를 줘도 `created`** 이고, `ErrImagePull` → `ImagePullBackOff` 로 바뀐다.\n\n**`kubectl describe` 맨 아래 `Events` 에 이유가** 있다 — 이 책에서 가장 자주 칠 명령이다.\n\n**파드를 지우면 이름이 바뀐 새것이** 뜬다. **내가 아무 명령도 안** 쳤다.\n\n**디플로이먼트를 지우면 안** 살아난다."
+  }
+ ],
+ "recap": [
+  "**이 책은 컨테이너 위층**이다.",
+  "**매 절은 `kubectl` 출력으로** 끝난다.",
+  "**안 뜬 상태도 같이** 싣는다.",
+  "**`created` 는 떴다는 뜻이** 아니다.",
+  "**`describe` 의 `Events` 가 이유를** 말한다.",
+  "**2장이 나머지의** 기초다.",
+  "**「도커」를 전제로** 쓴다.",
+  "**`kind` 1.31 에서 나온** 출력이다.",
+  "**파드를 지워도 새것이** 뜬다."
+ ],
+ "drills": [
+  {
+   "task": "클러스터를 하나 세운다.",
+   "done_when": "`kubectl get nodes` 가 `Ready` 를 보였다.",
+   "minutes": 20
+  },
+  {
+   "task": "디플로이먼트를 하나 만든다.",
+   "done_when": "`created` 와 `Running` 사이 시간을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 태그로 만들어 본다.",
+   "done_when": "`describe` 의 `Events` 를 읽었다.",
+   "minutes": 15
+  },
+  {
+   "task": "파드를 지워 본다.",
+   "done_when": "새 이름으로 되살아나는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매 절은 무엇으로 끝나나?",
+   "a": "실제로 친 명령과 `kubectl` 이 돌려준 출력이다."
+  },
+  {
+   "q": "`created` 는 무슨 뜻인가?",
+   "a": "원하는 상태를 등록했다는 뜻이고 떴다는 뜻은 아니다."
+  },
+  {
+   "q": "안 뜨는 이유는 어디서 보나?",
+   "a": "`kubectl describe` 맨 아래 `Events` 다."
+  },
+  {
+   "q": "파드를 지웠는데 왜 새것이 뜨나?",
+   "a": "원하는 상태가 그대로라 컨트롤러가 다시 만든다."
+  },
+  {
+   "q": "이 책이 전제하는 것은?",
+   "a": "「도커」 수준의 이미지·컨테이너 경험이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "kubectl",
+   "def": "쿠버네티스 API 서버에 요청을 보내는 명령줄 도구. 이 책의 모든 출력이 여기서 나온다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "kind — Quick Start",
+   "url": "https://kind.sigs.k8s.io/docs/user/quick-start/",
+   "publisher": "kind"
+  },
+  {
+   "title": "초보를 위한 쿠버네티스 안내서 (차례 출처)",
+   "url": "https://www.inflearn.com/course/쿠버네티스-입문",
+   "publisher": "인프런 · subicura"
+  }
+ ]
+}

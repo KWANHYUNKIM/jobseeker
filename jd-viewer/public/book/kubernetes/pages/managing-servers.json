@@ -1,0 +1,125 @@
+{
+ "book": "kubernetes",
+ "id": "managing-servers",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "서버를 관리한다는 것",
+ "summary": "한 대에서 열 대로 갈 때 생기는 일.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "일곱 가지 일을 센다.",
+  "대수가 늘 때 무엇이 곱해지는지 안다.",
+  "스크립트로 못 푸는 지점을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「도커」가 이미지를** 만들었다. **그걸 어디에 몇 개 띄울지는 아직 사람이** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 대와 열 대",
+   "ascii": "   what changes between one server and ten\n\n   one server\n     deploy    ssh in, pull, restart\n     failure   you notice, you fix it\n     capacity  you look at top\n\n   ten servers\n     deploy    ten ssh sessions, or a script that lies to you\n     failure   which one, and did anyone notice\n     capacity  which one is idle while another is on fire\n\n   nothing got harder, everything got multiplied",
+   "note": "**어려워진 게 아니라 곱해진** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누군가는 해야 하는 일곱",
+   "md": "| 일 | 한 대에서 | 열 대에서 |\n|---|---|---|\n| **배치** | 생각할 것 없음 | 어디에 띄울지 |\n| **기동** | `docker run` | 열 번, 설정도 열 벌 |\n| **감시** | 접속해서 본다 | 누가 죽었는지 |\n| **재시작** | 손으로 | 자동이어야 |\n| **라우팅** | 그 서버로 | 살아 있는 것들에게 |\n| **증감** | 필요 없음 | 트래픽 따라 |\n| **교체** | 잠깐 끊고 | 안 끊고 |\n\n> **일곱 다 한 대에서는 사람이 하고 티가 안** 난다.\n> **열 대가 되면 일곱이 각각 열 배**다.\n\n**스크립트로 여섯까지는** 된다.\n\n```bash\nfor host in web-{1..10}; do\n  ssh $host 'docker pull app:v2 && docker stop app && docker run -d app:v2'\ndone\n```\n\n> **한 대가 응답이 없으면 거기서** 멈춘다.\n> **다시 돌리면 앞의 아홉을 또** 건드린다.\n> **중간에 실패하면 v1 과 v2 가 섞여** 있다.\n>\n> **\"지금 어떤 상태인가\" 를 아무도** 모른다.\n\n**일곱째가 진짜 벽**이다.\n\n> **무중단 교체는 라우팅과 감시를 같이 알아야** 한다.\n> **\"새것이 준비됐는지\" 를 아는 것과 \"옛것을 언제 뺄지\" 를 아는 것**이다.\n> **11장에서** 다룬다."
+  },
+  {
+   "type": "figure",
+   "caption": "일곱 가지 일",
+   "ascii": "   the jobs someone has to do, on any number of servers\n\n   place      decide which machine runs what\n   start      launch it, with the right config\n   watch      notice when it dies\n   restart    bring it back\n   route      send traffic to the ones that are up\n   scale      add and remove copies\n   update     replace them without dropping requests\n\n   with one server a person does all seven",
+   "note": "**한 대에서는 사람이 일곱을 다** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "명령이 상태를 못 말한다",
+   "md": "**스크립트는 명령의 나열**이다.\n\n> **\"pull 하고 stop 하고 run 해라\"**\n> **한 번 돌면 끝이고 그 뒤는** 모른다.\n\n**중간에 끊기면**\n\n| 서버 | 상태 |\n|---|---|\n| web-1..4 | v2 |\n| web-5 | 멈춤 (stop 은 됐고 run 이 안 됨) |\n| web-6..10 | v1 |\n\n> **이걸 알려면 열 대에 다시 들어가** 봐야 한다.\n> **스크립트는 자기가 무엇을 남겼는지 안 적어** 둔다.\n\n**필요한 건 다른 질문**이다.\n\n> **\"무엇을 해라\" 가 아니라 \"무엇이어야 한다\"** 다.\n> **\"v2 가 열 개 떠 있는 상태\" 를 적어 두면**, **누군가 계속 지금과 비교해서 차이를** 메운다.\n>\n> **그게 2.1절의 선언형**이다.\n\n**대수가 적어도 값어치가** 있다.\n\n> **두 대에서도 감시와 재시작은** 필요하다.\n> **\"우리는 서버가 세 대라 필요 없다\" 는 대수가 아니라 사람 손이 몇 번 가느냐**의 문제다.\n>\n> **다만 세 대에 쿠버네티스를 얹는 비용도** 있다 — **1.4절에서** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 도커로 열 개를 띄워 본다 ---\n\n$ for i in $(seq 1 10); do\n    docker run -d --name web-$i -p $((8000+i)):80 nginx:1.27\n  done\n\n3f2a1b8c9d...\n7e4c2a9f1b...\n...\n\n$ docker ps --format '{{.Names}}\\t{{.Status}}' | head -3\n\nweb-1   Up 4 seconds\nweb-2   Up 4 seconds\nweb-3   Up 3 seconds\n\n$ docker ps -q | wc -l\n\n10\n\n#   열 개가 떴다\n\n#   포트를 열 개 외웠다\n\n# --- 하나를 죽여 본다 ---\n\n$ docker kill web-5\n\nweb-5\n\n$ docker ps -q | wc -l\n\n9\n\n#   아홉이다\n\n#   아무 일도 안 일어난다\n\n$ sleep 30 && docker ps -q | wc -l\n\n9\n\n#   여전히 아홉이다\n\n#   누가 다시 띄워 주지 않는다\n\n$ docker ps -a --filter name=web-5 --format '{{.Status}}'\n\nExited (137) 34 seconds ago\n\n#   죽은 채로 있다\n\n#   137 은 SIGKILL 이다\n\n# --- restart 정책을 준다 ---\n\n$ docker rm -f web-5\n$ docker run -d --name web-5 --restart=always -p 8005:80 nginx:1.27\n$ docker kill web-5\n$ sleep 3 && docker ps --filter name=web-5 --format '{{.Status}}'\n\nUp 2 seconds\n\n#   되살아났다\n\n#   그런데 이건 그 서버 안에서만이다\n\n#   서버 자체가 죽으면 아무것도 안 된다\n\n$ docker inspect web-5 --format '{{.HostConfig.RestartPolicy.Name}}'\n\nalways\n\n#   도커 데몬이 기억한다\n\n#   데몬이 죽으면 같이 끝난다\n\n# --- 열 개를 v2 로 바꾼다 ---\n\n$ for i in $(seq 1 10); do\n    docker stop web-$i && docker rm web-$i\n    docker run -d --name web-$i -p $((8000+i)):80 nginx:1.27-alpine\n  done\n\nweb-1\nweb-1\n8a3f...\nweb-2\nweb-2\n...\n\n#   순차적으로 바뀐다\n\n#   그동안 그 포트는 죽어 있다\n\n#   중간에 끊어 본다\n\n$ for i in $(seq 1 10); do\n    docker stop web-$i && docker rm web-$i\n    [ $i -eq 5 ] && break\n    docker run -d --name web-$i -p $((8000+i)):80 nginx:1.27-alpine\n  done\n\n$ docker ps --format '{{.Names}}\\t{{.Image}}' | sort\n\nweb-1   nginx:1.27-alpine\nweb-2   nginx:1.27-alpine\nweb-3   nginx:1.27-alpine\nweb-4   nginx:1.27-alpine\nweb-6   nginx:1.27\nweb-7   nginx:1.27\nweb-8   nginx:1.27\nweb-9   nginx:1.27\nweb-10  nginx:1.27\n\n$ docker ps -q | wc -l\n\n9\n\n#   web-5 가 없다\n\n#   두 버전이 섞여 있고 하나는 사라졌다\n\n#   지금 상태를 알려면 이 명령을 쳐야 한다\n\n#   스크립트는 자기가 남긴 걸 안 적어 둔다\n\n# --- 쿠버네티스는 어떻게 하나 ---\n\n$ docker rm -f $(docker ps -aq) > /dev/null\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=10\n\ndeployment.apps/web created\n\n$ kubectl get deployment web\n\nNAME   READY   UP-TO-DATE   AVAILABLE   AGE\nweb    10/10   10           10          18s\n\n#   10/10 이다\n\n#   포트를 외울 필요가 없다 (6장)\n\n$ kubectl get pods --no-headers | wc -l\n\n10\n\n# --- 하나를 죽인다 ---\n\n$ kubectl delete pod $(kubectl get pods -o name | head -1)\n\npod \"web-6d8f4b9c7-x2n8k\" deleted\n\n$ kubectl get pods --no-headers | wc -l\n\n10\n\n#   여전히 열이다\n\n$ kubectl get deployment web\n\nNAME   READY   UP-TO-DATE   AVAILABLE   AGE\nweb    10/10   10           10          1m\n\n#   내가 아무것도 안 했다\n\n$ kubectl get events --sort-by=.lastTimestamp | tail -3\n\n2s    Normal   Killing            pod/web-6d8f4b9c7-x2n8k   Stopping container nginx\n2s    Normal   SuccessfulCreate   replicaset/web-6d8f4b9c7  Created pod:\n  web-6d8f4b9c7-k9m4v\n1s    Normal   Scheduled          pod/web-6d8f4b9c7-k9m4v   Successfully assigned\n  default/web-6d8f4b9c7-k9m4v to kind-control-plane\n\n#   누가 만들었는지 적혀 있다\n\n#   replicaset 이 만들었다\n\n#   5장에서 본다\n\n# --- v2 로 바꾼다 ---\n\n$ kubectl set image deployment/web nginx=nginx:1.27-alpine\n\ndeployment.apps/web image updated\n\n$ kubectl get pods --no-headers | awk '{print $3}' | sort | uniq -c\n\n   3 ContainerCreating\n   9 Running\n\n#   열둘이다\n\n#   새것을 띄우고 옛것을 뺀다\n\n$ kubectl get pods --no-headers | wc -l\n\n10\n\n$ kubectl get deployment web -o jsonpath='{.spec.template.spec.containers[0].image}'\n\nnginx:1.27-alpine\n\n#   섞이지 않았다\n\n#   11장에서 이 과정을 자세히 본다\n\n# --- 지금 상태를 묻는다 ---\n\n$ kubectl get deployment web -o wide\n\nNAME   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES\nweb    10/10   10           10          4m    nginx        nginx:1.27-alpine\n\n#   한 줄이다\n\n#   도커에서는 열 대에 들어가야 알았다\n\n$ kubectl delete deployment web\n\ndeployment.apps \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   이미지는 생겼는데 어디에 띄울 것인가",
+   "note": "**도커로 띄운 컨테이너를 죽이면 30초 뒤에도 아홉**이다 — 아무도 안 띄워 준다.\n\n**`--restart=always` 는 그 서버 안에서만**이고 데몬이 죽으면 같이 끝난다.\n\n**교체 중 끊으면 `nginx:1.27` 과 `1.27-alpine` 이 섞이고 `web-5` 가** 사라진다.\n\n**쿠버네티스는 파드를 지워도 열 개**고 `events` 에 누가 만들었는지 적혀 있다.\n\n**`get deployment -o wide` 한 줄이 지금 상태를** 말한다."
+  }
+ ],
+ "recap": [
+  "**배치·기동·감시·재시작·라우팅·증감·교체 일곱**이다.",
+  "**한 대에서는 사람이 일곱을 다** 한다.",
+  "**열 대가 되면 일곱이 각각 열 배**다.",
+  "**스크립트는 명령의 나열이라 상태를 안** 남긴다.",
+  "**중간에 끊기면 버전이** 섞인다.",
+  "**`--restart` 는 그 서버 안에서만**이다.",
+  "**필요한 건 \"무엇이어야 한다\" 는** 기술이다.",
+  "**파드를 지워도 개수가 유지**된다.",
+  "**한 줄로 지금 상태를 물을 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "도커로 컨테이너 열 개를 띄운다.",
+   "done_when": "하나를 죽이고 아홉인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "교체 스크립트를 중간에 끊는다.",
+   "done_when": "버전이 섞인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "디플로이먼트로 열 개를 띄운다.",
+   "done_when": "파드를 지워도 열인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이미지를 바꿔 본다.",
+   "done_when": "섞이지 않는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "누군가 해야 하는 일곱은?",
+   "a": "배치·기동·감시·재시작·라우팅·증감·교체다."
+  },
+  {
+   "q": "스크립트의 한계는?",
+   "a": "명령의 나열이라 중간에 끊기면 상태를 아무도 모른다."
+  },
+  {
+   "q": "`--restart=always` 로 충분하지 않은 이유는?",
+   "a": "그 서버의 데몬 안에서만 동작한다."
+  },
+  {
+   "q": "파드를 지워도 개수가 유지되는 이유는?",
+   "a": "원하는 상태가 그대로라 컨트롤러가 다시 만든다."
+  },
+  {
+   "q": "지금 상태를 어떻게 묻나?",
+   "a": "`kubectl get deployment -o wide` 한 줄이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Kubernetes — Concepts: Overview",
+   "url": "https://kubernetes.io/docs/concepts/overview/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Google — Site Reliability Engineering",
+   "url": "https://sre.google/books/",
+   "publisher": "Google"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "book": "docker",
+ "id": "java-image",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "자바 애플리케이션 이미지 만들기",
+ "summary": "jar 하나를 담는 가장 단순한 판.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스프링 부트 이미지를 처음부터 만든다.",
+  "빌드를 컨테이너 안에서 할지 밖에서 할지 정한다.",
+  "기본형을 완성한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 앞 책들이 만든 애플리케이션을 이미지로** 만든다. **가장 단순한 판부터** 시작한다."
+  },
+  {
+   "type": "compare",
+   "caption": "빌드를 어디서 할 것인가",
+   "left": {
+    "title": "밖에서 빌드하고 jar 만 넣는다",
+    "lang": "dockerfile",
+    "code": "FROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY build/libs/*.jar app.jar\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\n\n\n# 빌드:\n#   ./gradlew bootJar && docker build -t app .\n#\n# 장점: 빠르다. CI 캐시를 그대로 쓴다\n# 단점: '내 로컬의 JDK' 로 만든 jar 다\n#       빌드 환경이 사람마다 다를 수 있다"
+   },
+   "right": {
+    "title": "컨테이너 안에서 빌드한다",
+    "lang": "dockerfile",
+    "code": "FROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\nCOPY gradle/ gradle/\nCOPY gradlew build.gradle settings.gradle ./\nRUN ./gradlew dependencies --no-daemon\nCOPY src/ src/\nRUN ./gradlew bootJar --no-daemon\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=builder /src/build/libs/*.jar app.jar\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\n\n# 장점: 누가 어디서 빌드해도 같다\n# 단점: 첫 빌드가 느리다 (캐시로 완화, 5.6절)"
+   },
+   "note": "**CI 가 이미 자바를 고정해 준다면 왼쪽도 괜찮다.** **재현성이 중요하면 오른쪽**이다."
+  },
+  {
+   "type": "code",
+   "lang": "dockerfile",
+   "file": "Dockerfile",
+   "caption": "기본형 — 여기에 10.2~10.7절을 얹어 간다",
+   "code": "# syntax=docker/dockerfile:1\n\nFROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\n\n# 5.6절: 잘 안 바뀌는 것부터\nCOPY gradle/ gradle/\nCOPY gradlew build.gradle settings.gradle ./\nRUN --mount=type=cache,target=/root/.gradle \\\n    ./gradlew dependencies --no-daemon\n\nCOPY src/ src/\nRUN --mount=type=cache,target=/root/.gradle \\\n    ./gradlew bootJar --no-daemon\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\n\nCOPY --from=builder /src/build/libs/*.jar app.jar\n\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자주 하는 실수 넷",
+   "md": "| 실수 | 결과 | 어디 |\n|---|---|---|\n| **`COPY build/libs/*.jar`** 인데 `plain.jar` 도 있다 | 두 개가 매칭되어 에러나 잘못된 jar | 아래 |\n| **`CMD java -jar app.jar`** (셸 형식) | SIGTERM 이 안 닿는다 | 5.5절 |\n| `.dockerignore` 없음 | `build/`, `.gradle/` 이 통째로 | 5.4절 |\n| `--no-daemon` 없음 | Gradle 데몬이 남아 빌드가 안 끝난 것처럼 | — |\n\n**첫 번째가 은근히 자주 난다**:\n\n```\nbuild/libs/\n  shop-1.4.2.jar          <- 실행 가능한 부트 jar\n  shop-1.4.2-plain.jar    <- 클래스만 든 것\n```\n\n```gradle\n// build.gradle -- plain jar 를 안 만든다\ntasks.named('jar') { enabled = false }\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "Dockerfile 없이 만드는 방법도 있다",
+   "md": "| 방법 | 명령 | 비고 |\n|---|---|---|\n| **스프링 부트 플러그인** | `./gradlew bootBuildImage` | Cloud Native Buildpacks. **Dockerfile 이 필요 없다** |\n| Jib | `./gradlew jib` | 도커 데몬 없이 레지스트리로 바로 |\n\n```bash\n./gradlew bootBuildImage --imageName=ghcr.io/acme/shop:1.4.2\n```\n\n> **레이어 분리·non-root·JVM 튜닝이 기본으로 되어** 있다.\n> **대신 무슨 일이 일어나는지 안 보인다** — **이 책이 Dockerfile 을 쓰는** 이유다.\n>\n> **실무에서는 buildpacks 가 합리적인 선택**일 때가 많다. **다만 안에서 무슨 일이 일어나는지는 알고 골라야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들고 띄운다",
+   "sql": "$ mkdir -p /tmp/app/src/main/java/hello && cd /tmp/app\n\n$ cat > src/main/java/hello/App.java <<'EOF'\npackage hello;\nimport com.sun.net.httpserver.HttpServer;\nimport java.net.InetSocketAddress;\n\npublic class App {\n  public static void main(String[] a) throws Exception {\n    var s = HttpServer.create(new InetSocketAddress(8080), 0);\n    s.createContext(\"/actuator/health\", ex -> {\n      byte[] b = \"{\\\"status\\\":\\\"UP\\\"}\".getBytes();\n      ex.sendResponseHeaders(200, b.length);\n      ex.getResponseBody().write(b); ex.close();\n    });\n    s.start();\n    System.out.println(\"started on 8080\");\n    Runtime.getRuntime().addShutdownHook(new Thread(() ->\n      System.out.println(\"graceful shutdown\")));\n  }\n}\nEOF\n\n$ cat > .dockerignore <<'EOF'\n.git\nbuild\n.gradle\n*.log\nEOF\n\n$ cat > Dockerfile <<'EOF'\nFROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir -p out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=builder /src/app.jar app.jar\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\nEOF\n\n$ docker build -t shop:1.0 .\n[+] Building 6.2s (12/12) FINISHED\n => [builder 2/3] COPY src/ src/                            0.0s\n => [builder 3/3] RUN mkdir -p out && javac ...             2.1s\n => [stage-1 3/3] COPY --from=builder /src/app.jar app.jar  0.0s\n => => naming to docker.io/library/shop:1.0\n\n$ docker images shop:1.0 --format '{{.Size}}'\n280MB\n\n\n# --- 띄운다 ---\n\n$ docker run -d --name shop -p 8080:8080 shop:1.0 >/dev/null\n$ sleep 1\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n$ docker logs shop\nstarted on 8080\n\n\n# --- 5.5절이 지켜졌는지 확인 ---\n\n$ docker exec shop ps -ef | head -3\nPID   USER     COMMAND\n    1 root     java -jar /app/app.jar\n\n#   PID 1 이 java 다\n\n$ time docker stop shop\nreal    0m0.6s\n\n$ docker logs shop | tail -1\ngraceful shutdown\n\n$ docker inspect -f '{{.State.ExitCode}}' shop\n143\n\n#   143 = SIGTERM 정상 종료 (3.5절)\n\n\n# --- 셸 형식이면 어떻게 되는지 비교 ---\n\n$ sed 's|CMD \\[\"java\", \"-jar\", \"/app/app.jar\"\\]|CMD java -jar /app/app.jar|' Dockerfile > Dockerfile.shell\n$ docker build -q -f Dockerfile.shell -t shop:shell . >/dev/null\n$ docker run -d --name shop-shell shop:shell >/dev/null\n$ sleep 1\n$ docker exec shop-shell ps -ef | head -3\nPID   USER     COMMAND\n    1 root     /bin/sh -c java -jar /app/app.jar\n    7 root     java -jar /app/app.jar\n\n$ time docker stop shop-shell\nreal    0m10.3s\n\n$ docker logs shop-shell | grep -c 'graceful shutdown'\n0\n\n#   종료 훅이 아예 안 돌았다. 10초 뒤 강제 종료됐다\n\n\n# --- root 로 돌고 있다 (10.6절에서 고친다) ---\n\n$ docker run --rm shop:1.0 id\nuid=0(root) gid=0(root) groups=0(root)\n\n$ docker rm -f shop shop-shell >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/app && docker rmi -f shop:shell >/dev/null"
+  }
+ ],
+ "recap": [
+  "빌드를 밖에서 하면 빠르고 안에서 하면 재현된다. CI 가 자바를 고정한다면 둘 다 괜찮다.",
+  "부트 jar 와 plain jar 가 둘 다 생기면 COPY 가 깨진다. plain jar 를 끈다.",
+  "CMD 는 반드시 exec 형식으로. 셸 형식이면 종료 훅이 아예 안 돈다.",
+  "bootBuildImage·Jib 은 Dockerfile 없이도 만든다. 안에서 무슨 일이 일어나는지 알고 고른다."
+ ],
+ "drills": [
+  {
+   "task": "멀티 스테이지 Dockerfile 로 자바 애플리케이션 이미지를 만들고 띄운다.",
+   "done_when": "curl 로 응답을 받고 이미지 크기를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "CMD 를 exec 형식과 셸 형식으로 각각 만들어 stop 시간과 종료 훅 로그를 비교한다.",
+   "done_when": "셸 형식에서 종료 훅이 안 도는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "`docker run --rm <이미지> id` 로 어떤 사용자로 도는지 확인한다.",
+   "done_when": "root 인 것을 확인한다. 10.6절에서 고친다.",
+   "minutes": 2
+  }
+ ],
+ "quiz": [
+  {
+   "q": "build/libs 에 jar 가 두 개 생기는 이유는.",
+   "a": "부트 jar 와 plain jar. plain jar 생성을 꺼야 COPY 가 안 깨진다."
+  },
+  {
+   "q": "CMD 를 셸 형식으로 쓰면 종료할 때 무슨 일이 생기나.",
+   "a": "PID 1 이 sh 라 SIGTERM 이 자바에 안 가고, 종료 훅이 안 돌고 10초 뒤 강제 종료된다."
+  },
+  {
+   "q": "컨테이너 안에서 빌드하는 것의 장단점은.",
+   "a": "누가 어디서 빌드해도 같다는 것이 장점, 첫 빌드가 느린 것이 단점(캐시로 완화)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "부트 jar",
+   "en": "executable jar",
+   "what": "의존성까지 담아 java -jar 로 바로 실행되는 jar."
+  },
+  {
+   "term": "buildpacks",
+   "what": "Dockerfile 없이 소스에서 이미지를 만드는 표준. bootBuildImage 가 쓴다."
+  },
+  {
+   "term": "Jib",
+   "what": "도커 데몬 없이 자바 이미지를 만들어 레지스트리에 올리는 도구."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Container Images",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Docker Docs — Java language guide",
+   "url": "https://docs.docker.com/guides/java/",
+   "publisher": "Docker"
+  }
+ ]
+}

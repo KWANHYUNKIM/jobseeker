@@ -1,0 +1,139 @@
+{
+ "book": "docker",
+ "id": "dev-env",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "개발 환경을 컨테이너로",
+ "summary": "새 노트북에서 한 줄로 시작하기.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "개발 환경을 어디까지 컨테이너로 할지 정한다.",
+  "의존 서비스만 띄우는 구성을 만든다.",
+  "팀 온보딩을 짧게 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**새 팀원이 왔다.** **첫날 무엇을 하나.**\n\n> **위키의 \"개발 환경 세팅\" 문서를 따라 반나절**을 쓴다. **그 문서는 6개월 전 것**이다(1.2절).\n> **`docker compose up -d` 한 줄로 끝낼 수 있는 부분이** 있다."
+  },
+  {
+   "type": "table",
+   "caption": "어디까지 컨테이너로 할 것인가",
+   "columns": [
+    "범위",
+    "장점",
+    "단점"
+   ],
+   "rows": [
+    [
+     "**의존 서비스만** (DB·캐시·큐)",
+     "**설치가 사라진다.** IDE 는 그대로",
+     "가장 흔하고 합리적"
+    ],
+    [
+     "+ 애플리케이션도",
+     "환경이 완전히 같다",
+     "**재빌드 루프가 느리다.** 디버거 연결이 번거롭다"
+    ],
+    [
+     "**Dev Container**",
+     "IDE 까지 컨테이너 안",
+     "VS Code·IntelliJ 지원. 설정이 늘어난다"
+    ],
+    [
+     "원격 개발 환경",
+     "노트북이 가벼워도 된다",
+     "비용·네트워크"
+    ]
+   ],
+   "note": "**자바 프로젝트는 첫 번째가 대개 정답**이다 — **DB 만 컨테이너, 애플리케이션은 IDE.**"
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "compose.dev.yaml",
+   "caption": "의존 서비스만 띄우는 구성",
+   "code": "name: shop-dev\n\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_USER: shop\n      POSTGRES_PASSWORD: devpass\n    ports:\n      - \"127.0.0.1:5432:5432\"      # IDE 에서 붙는다\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n      - ./docker/initdb:/docker-entrypoint-initdb.d:ro\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U shop\"]\n      interval: 3s\n      start_period: 15s\n\n  redis:\n    image: redis:7.4-alpine\n    ports: [\"127.0.0.1:6379:6379\"]\n\n  mailhog:\n    image: mailhog/mailhog\n    ports:\n      - \"127.0.0.1:8025:8025\"      # 웹 UI\n      - \"127.0.0.1:1025:1025\"      # SMTP\n    profiles: [tools]\n\n  adminer:\n    image: adminer\n    ports: [\"127.0.0.1:8081:8080\"]\n    profiles: [tools]\n\nvolumes:\n  pgdata:",
+   "note": "**애플리케이션은 IDE 에서 돌린다.** 그때 접속 주소는 `localhost:5432` 다(7.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것만으로 무엇이 사라지나",
+   "md": "| 없어지는 일 | |\n|---|---|\n| PostgreSQL 설치·버전 맞추기 | **운영과 같은 버전이 보장**된다 |\n| Redis 설치 | |\n| 로컬 SMTP 설정 | mailhog 가 메일을 잡아 준다 |\n| \"내 노트북의 DB 만 이상해요\" | `down -v` 로 초기화 |\n| 프로젝트마다 다른 DB 버전 | 프로젝트마다 컴포즈 |\n\n**README 가 이렇게 줄어든다**:\n\n```markdown\n## 개발 환경\n\n    docker compose -f compose.dev.yaml up -d\n    ./gradlew bootRun\n\n초기화가 필요하면 `docker compose -f compose.dev.yaml down -v` 후 다시.\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "팀에서 지키면 좋은 것",
+   "md": "| 규칙 | 왜 |\n|---|---|\n| **버전을 고정한다** | `postgres:16.5` — `latest` 금지(4.2절) |\n| **운영과 같은 메이저 버전** | 로컬 16, 운영 14 면 로컬에서 안 잡히는 SQL 이 있다 |\n| **포트는 127.0.0.1 바인딩** | 카페 와이파이에서 남이 못 붙게(6.1절) |\n| 초기 데이터는 스크립트로 | 8.5절. 단 처음 한 번만 돈다 |\n| 도구는 프로필로 | 9.5절. 필요할 때만 뜬다 |\n| **`.env` 는 커밋 안 한다** | `.env.example` 을 커밋한다 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "새 노트북에서 한 줄",
+   "sql": "$ git clone https://github.com/acme/shop.git && cd shop\n$ cp .env.example .env\n\n$ cat compose.dev.yaml | head -8\nname: shop-dev\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_USER: shop\n      POSTGRES_PASSWORD: devpass\n\n$ docker compose -f compose.dev.yaml up -d\n[+] Running 4/4\n ✔ Network shop-dev_default  Created\n ✔ Volume shop-dev_pgdata    Created\n ✔ Container shop-dev-db-1    Started\n ✔ Container shop-dev-redis-1 Started\n\n$ docker compose -f compose.dev.yaml ps --format 'table {{.Service}}\\t{{.Status}}\\t{{.Ports}}'\nSERVICE   STATUS                   PORTS\ndb        Up 8 seconds (healthy)   127.0.0.1:5432->5432/tcp\nredis     Up 8 seconds             127.0.0.1:6379->6379/tcp\n\n\n# --- IDE 에서 애플리케이션을 돌린다 ---\n\n$ ./gradlew bootRun\n...\nHikariPool-1 - Start completed.\nStarted ShopApplication in 2.14 seconds\n\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n#   접속 주소는 localhost:5432 다 (7.5절: 호스트 -> 컨테이너)\n\n\n# --- 도구가 필요하면 ---\n\n$ docker compose -f compose.dev.yaml --profile tools up -d\n[+] Running 4/4\n ✔ Container shop-dev-adminer-1  Started\n ✔ Container shop-dev-mailhog-1  Started\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8081\n200\n\n\n# --- 이상해지면 초기화 ---\n\n$ docker compose -f compose.dev.yaml --profile tools down -v\n[+] Running 6/6\n ✔ Volume shop-dev_pgdata  Removed\n ...\n\n$ docker compose -f compose.dev.yaml up -d >/dev/null\n$ sleep 8\n$ docker compose -f compose.dev.yaml exec -T db psql -U shop -d shop -tAc \\\n    \"select count(*) from information_schema.tables where table_schema='public'\"\n3\n\n#   초기화 스크립트가 다시 돌았다 (빈 데이터 디렉터리이므로, 8.5절)\n\n\n# --- 운영과 같은 버전인지 확인 ---\n\n$ docker compose -f compose.dev.yaml exec -T db postgres --version\npostgres (PostgreSQL) 16.5\n\n#   운영도 16.5 면 \"로컬에서는 됐는데\" 의 한 종류가 사라진다\n\n\n# --- 팀원이 늘어날 때 걸리는 시간 ---\n\n#   before:  위키 문서 -> brew install postgresql@14 -> 버전이 다름\n#            -> initdb -> 권한 -> 3시간\n#   after:   git clone -> docker compose up -d -> 2분\n\n$ docker compose -f compose.dev.yaml down -v >/dev/null"
+  }
+ ],
+ "recap": [
+  "자바 프로젝트는 의존 서비스만 컨테이너로 띄우고 애플리케이션은 IDE 에서 돌리는 게 대개 정답이다.",
+  "설치 문서가 compose 파일로 대체된다. 버전이 운영과 같아진다.",
+  "포트는 127.0.0.1 로 바인딩하고 이미지 버전은 고정한다.",
+  "개발 도구(adminer·mailhog)는 프로필로 넣어 필요할 때만 띄운다.",
+  "이상해지면 down -v 로 초기화한다."
+ ],
+ "drills": [
+  {
+   "task": "자기 프로젝트의 의존 서비스만 담은 compose.dev.yaml 을 만든다.",
+   "done_when": "up -d 후 IDE 에서 애플리케이션이 붙는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "adminer 를 프로필로 추가하고 필요할 때만 띄운다.",
+   "done_when": "--profile 없이는 안 뜨는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "README 의 개발 환경 세팅 절차를 두 줄로 줄여 본다.",
+   "done_when": "clone → compose up → bootRun 으로 끝나는지 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자바 개발에서 애플리케이션까지 컨테이너에 넣지 않는 이유는.",
+   "a": "재빌드 루프가 느려지고 디버거 연결이 번거롭다. 의존 서비스만 컨테이너로 두면 대부분의 이득을 얻는다."
+  },
+  {
+   "q": "개발용 DB 포트를 127.0.0.1 로 묶는 이유는.",
+   "a": "0.0.0.0 이면 같은 네트워크의 다른 기기에서 붙을 수 있다."
+  },
+  {
+   "q": "로컬 DB 가 이상해졌을 때 초기화 방법은.",
+   "a": "docker compose down -v 로 볼륨까지 지우고 다시 up. 초기화 스크립트가 다시 돈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Dev Container",
+   "what": "IDE 까지 컨테이너 안에서 돌리는 개발 환경 방식."
+  },
+  {
+   "term": "mailhog",
+   "what": "개발용 SMTP 서버. 보낸 메일을 웹 UI 로 확인한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Development environments",
+   "url": "https://docs.docker.com/desktop/features/dev-environments/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Compose in development",
+   "url": "https://docs.docker.com/compose/how-tos/",
+   "publisher": "Docker"
+  }
+ ]
+}
