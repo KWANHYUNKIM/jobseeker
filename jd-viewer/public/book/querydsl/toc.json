@@ -489,7 +489,7 @@
           "title": "정렬의 함정",
           "summary": "Sort 를 그대로 못 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -504,7 +504,7 @@
           "title": "인터페이스 지원 — QuerydslPredicateExecutor",
           "summary": "조인이 안 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",

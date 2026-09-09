@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "predicate-executor",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "인터페이스 지원 — QuerydslPredicateExecutor",
+ "summary": "조인이 안 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "붙여 쓴다.",
+  "무엇이 되는지 본다.",
+  "왜 안 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장까지 커스텀 구현을** 썼다. **스프링 데이터가 주는 것도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "상속만 하면 생기는 넷",
+   "ascii": "   one interface, four methods, no implementation to write\n\n   findOne(predicate)             a single result\n   findAll(predicate)             a list\n   findAll(predicate, pageable)   a page\n   count(predicate) exists(...)   the numbers\n\n   the predicate is the same object chapter 6 was assembling",
+   "note": "**술어는 6장에서 조립하던 그 객체**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건을 인자로 받는 메서드가 생긴다",
+   "md": "**인터페이스 하나를 더** 상속한다.\n\n> **`QuerydslPredicateExecutor<Member>`** 다.\n> **구현을 안** 쓴다.\n> **⑭ 8.1절의 `JpaSpecificationExecutor` 와 같은 자리**다.\n\n**술어를 그대로** 넘긴다.\n\n> **6.4절의 조건 메서드가 그대로** 쓰인다.\n> **`null` 도 그대로** 받는다.\n> **타입도 지켜**진다.\n\n**페이징도 같이** 온다.\n\n> **`findAll(predicate, pageable)`** 이다.\n> **개수 쿼리까지 해** 준다.\n> **7.3절을 안 써도** 된다.\n\n**여기까지는 좋**다.\n\n> **간단한 조회면 이걸로** 끝난다.\n> **문제는 조인이** 없다는 것이다.\n> **아래에서 그** 벽을 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "못 하는 것",
+   "ascii": "   what it cannot express, and why that is fatal\n\n   a join           there is no place to put one\n   a select list    it always returns the entity, never a dto\n   a fetch join     no place for that either\n\n   so any screen needing a joined column is out",
+   "note": "**조인 컬럼이 필요한 화면은 전부** 탈락이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "묵시적 조인은 되지만 내부 조인이다",
+   "md": "**`member.team.name` 은** 된다.\n\n> **4.10절의 묵시적 조인**이다.\n> **조건에 쓰면 조인이** 생긴다.\n> **그런데 항상 `inner`** 다.\n\n**팀 없는 회원이** 사라진다.\n\n> **4.10·6.4절에서 본 그** 사고다.\n> **`leftJoin` 을 줄 데가** 없다.\n> **아래에서 건수로** 확인한다.\n\n**DTO 로 못** 받는다.\n\n> **항상 엔티티**다.\n> **5.1절의 컬럼 절약이** 안 된다.\n> **⑭ 8.1절의 명세와 같은 한계**다.\n\n**페치 조인도 안** 된다.\n\n> **N+1 을 못** 막는다.\n> **4.13절의 낱말을 쓸 자리가** 없다.\n> **아래에서 쿼리를** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 상속을 하나 더 한다\n\npublic interface MemberRepository extends\n        JpaRepository<Member, Long>,\n        MemberRepositoryCustom,\n        QuerydslPredicateExecutor<Member> {\n}\n\n$ javap -cp \"$SPRING_JAR\" \\\n    org.springframework.data.querydsl.QuerydslPredicateExecutor | head -8\n\npublic interface QuerydslPredicateExecutor<T> {\n  java.util.Optional<T> findOne(com.querydsl.core.types.Predicate);\n  java.lang.Iterable<T> findAll(com.querydsl.core.types.Predicate);\n  java.lang.Iterable<T> findAll(Predicate, Sort);\n  Page<T> findAll(Predicate, Pageable);\n  long count(Predicate);\n  boolean exists(Predicate);\n}\n\n--   구현을 안 쓴다\n\n\n-- 술어를 넘긴다\n\n@Test\n@Transactional\nvoid 기본() {\n    em.clear();\n    Iterable<Member> r = memberRepository.findAll(\n            member.age.between(20, 40)\n                    .and(member.username.startsWith(\"m\")));\n    r.forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    m1_0.member_id,\n    m1_0.age,\n    m1_0.team_id,\n    m1_0.username\nfrom\n    member m1_0\nwhere\n    m1_0.age between ? and ?\n    and m1_0.username like ? escape '!' */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age between ? and ?\n        and m1_0.username like ? escape '!'\nm2\nm3\nm4\nm6\nm7\nm9\nm10\n\n--   4.3절의 조건이 그대로 갔다\n--   구현을 안 썼다\n\n\n-- 6.4절의 조건 메서드를 쓴다\n\n@Test\n@Transactional\nvoid 조건_메서드() {\n    em.clear();\n    BooleanExpression predicate = Expressions.allOf(\n            MemberExpressions.usernameEq(null),\n            MemberExpressions.ageBetween(20, 30));\n\n    memberRepository.findAll(predicate)\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0\n    where m1_0.age>=? and m1_0.age<=?\nm2\nm3\nm6\nm9\nm10\n\n--   6.5절의 allOf 가 그대로 쓰인다\n--   null 이 빠졌다\n\n\n-- 조건이 전부 null 이면\n\n@Test\n@Transactional\nvoid 전부_null() {\n    em.clear();\n    try {\n        memberRepository.findAll(Expressions.allOf(\n                MemberExpressions.usernameEq(null),\n                MemberExpressions.ageGoe(null)));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: IllegalArgumentException\n\n--   술어가 null 이면 못 받는다\n--   6.4절의 where 는 받아 줬다\n\n\n-- 페이징도 된다\n\n@Test\n@Transactional\nvoid 페이징() {\n    em.clear();\n    Page<Member> page = memberRepository.findAll(\n            member.age.goe(20),\n            PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n내용: 3\n전체: 6\n\n--   개수 쿼리까지 해 준다\n--   Sort 도 그대로 걸린다\n--   7.7절에서 손으로 이은 그것이다\n\n\n-- 정렬은 왜 되나\n\n@Test\nvoid 정렬_경로() {\n    // 스프링 데이터가 Sort 를 OrderSpecifier 로 바꾼다\n    // QuerydslJpaPredicateExecutor 내부에서 PathBuilder 를 쓴다\n    System.out.println(\"7.7절의 일반 변환기와 같은 방식이다\");\n}\n\n@Test\n@Transactional\nvoid 없는_속성() {\n    em.clear();\n    try {\n        memberRepository.findAll(member.age.goe(20),\n                PageRequest.of(0, 3, Sort.by(\"없는것\")));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: PropertyReferenceException\n\n--   7.7절의 일반 변환기와 같은 결과다\n--   허용 목록이 없다\n\n\n-- 조인을 걸 데가 없다\n\n// memberRepository.findAll(predicate).leftJoin(...)\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol: method leftJoin(...)\n\n--   반환이 Iterable 이다\n--   조립할 자리가 없다\n\n\n-- 묵시적으로는 된다\n\n@Test\n@Transactional\nvoid 묵시적() {\n    em.clear();\n    Iterable<Member> r = memberRepository.findAll(\n            member.team.name.eq(\"teamA\"));\n    System.out.println(\"건수: \" +\n            StreamSupport.stream(r.spliterator(), false).count());\n}\n\n/* select\n    m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\nfrom\n    member m1_0\n  join\n    team t1_0 on t1_0.team_id=m1_0.team_id\nwhere\n    t1_0.name=? */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n건수: 4\n\n--   join 이 생겼다\n--   inner 다\n\n\n-- 팀 없는 회원을 못 찾는다\n\n@Test\n@Transactional\nvoid 팀_없는_회원() {\n    em.clear();\n    Iterable<Member> r = memberRepository.findAll(\n            member.team.name.eq(\"teamA\").or(member.team.isNull()));\n    System.out.println(\"건수: \" +\n            StreamSupport.stream(r.spliterator(), false).count());\n}\n\n/* select\n    ...\nfrom\n    member m1_0\n  join\n    team t1_0 on t1_0.team_id=m1_0.team_id\nwhere\n    t1_0.name=?\n    or m1_0.team_id is null */\n\nHibernate:\n    select ... from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=? or m1_0.team_id is null\n건수: 4\n\n--   or 를 넣었는데 4 다\n--   inner join 이 이미 걸렀다\n--   4.12절에서 본 그 현상이다\n\n\n-- 커스텀 구현으로는 된다\n\n@Test\n@Transactional\nvoid 커스텀으로() {\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory\n            .selectFrom(member)\n            .leftJoin(member.team, team)\n            .where(team.name.eq(\"teamA\").or(member.team.isNull()))\n            .fetch().size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    or member1.team is null */\n\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=? or m1_0.team_id is null\n건수: 7\n\n--   4 가 7 이 됐다\n--   leftJoin 을 줄 수 있어서다\n\n\n-- DTO 로 못 받는다\n\n// memberRepository.findAll(predicate) 는 항상 Member 다\n\n@Test\n@Transactional\nvoid 항상_엔티티() {\n    em.clear();\n    Iterable<Member> r = memberRepository.findAll(member.age.goe(20));\n    System.out.println(\"타입: \" + r.iterator().next().getClass()\n            .getSimpleName());\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0 where m1_0.age>=?\n타입: Member\n\n--   컬럼 넷을 다 읽었다\n--   5.1절의 절약이 안 된다\n\n\n-- 페치 조인도 못 준다\n\n@Test\n@Transactional\nvoid N더하기1() {\n    em.clear();\n    sqlCounter.clear();\n\n    memberRepository.findAll(member.team.isNotNull())\n            .forEach(m -> m.getTeam().getName());\n\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate: select ... from member m1_0 where m1_0.team_id is not null\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n쿼리: 3개\n\n--   4.13절의 fetchJoin 을 붙일 데가 없다\n--   ⑭ 8.1절의 명세와 같은 자리다\n\n\n-- 언제 쓰나\n\n$ printf '%-26s %s\\n' \\\n  '조건만 있는 단순 조회'   '쓸 만하다' \\\n  '페이징'                  '해 준다' \\\n  'DTO 반환'                '안 된다' \\\n  '외부 조인'               '안 된다' \\\n  '페치 조인'               '안 된다' \\\n  '정렬 허용 목록'          '없다'\n\n조건만 있는 단순 조회      쓸 만하다\n페이징                     해 준다\nDTO 반환                   안 된다\n외부 조인                  안 된다\n페치 조인                  안 된다\n정렬 허용 목록             없다\n\n--   ⑭ 8.1·8.2절과 같은 결론이다\n--   8.2절에서 지원 클래스를 본다",
+   "note": "**상속만 하면 `findAll(Predicate)`·`count`·페이징이 생기고 구현을 안** 쓴다.\n\n**6.5절의 `allOf` 술어가 그대로 쓰이지만 전부 `null` 이면 `IllegalArgumentException`** 이다.\n\n**묵시적 조인은 항상 `inner` 라 `or member.team.isNull()` 을 줘도 여전히 4건 — 커스텀 `leftJoin` 판은 7건**이다.\n\n**항상 엔티티라 컬럼 넷을 다 읽고 DTO 로 못** 받는다.\n\n**페치 조인을 붙일 자리가 없어 쿼리가 3개**다."
+  }
+ ],
+ "recap": [
+  "**상속만 하면** 생긴다.",
+  "**술어를 그대로** 넘긴다.",
+  "**전부 `null` 은 못** 받는다.",
+  "**페이징도 해** 준다.",
+  "**정렬 허용 목록이** 없다.",
+  "**조인을 걸 데가** 없다.",
+  "**묵시적은 내부 조인**이다.",
+  "**항상 엔티티**다.",
+  "**페치도 못** 준다."
+ ],
+ "drills": [
+  {
+   "task": "인터페이스를 상속한다.",
+   "done_when": "메서드가 생긴 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "6장 조건 메서드를 넘긴다.",
+   "done_when": "그대로 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "팀 없는 회원을 찾아 본다.",
+   "done_when": "못 찾는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "쿼리 수를 센다.",
+   "done_when": "N+1 을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`QuerydslPredicateExecutor` 로 얻는 것은?",
+   "a": "술어를 인자로 받는 조회·개수·페이징 메서드다."
+  },
+  {
+   "q": "조인을 걸 수 있나?",
+   "a": "없다. 조립할 자리가 없다."
+  },
+  {
+   "q": "묵시적 조인은 어떤 종류인가?",
+   "a": "항상 내부 조인이다."
+  },
+  {
+   "q": "DTO 로 받을 수 있나?",
+   "a": "없다. 항상 엔티티가 온다."
+  },
+  {
+   "q": "N+1 을 막을 수 있나?",
+   "a": "없다. 페치 조인을 붙일 자리가 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "QuerydslPredicateExecutor",
+   "def": "술어를 인자로 받는 조회 메서드를 제공하는 인터페이스."
+  },
+  {
+   "term": "Predicate",
+   "def": "조건 하나를 나타내는 Querydsl 의 최상위 타입."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Querydsl Extension",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data Commons — Repositories",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

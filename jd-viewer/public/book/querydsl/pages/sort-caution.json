@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "sort-caution",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "정렬의 함정",
+ "summary": "Sort 를 그대로 못 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 안 되는지 안다.",
+  "변환기를 만든다.",
+  "허용 목록을 건다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절부터 `Sort` 가 조용히** 무시됐다. **여기서** 잇는다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 것을 말하는 두 객체",
+   "ascii": "   two objects that describe the same thing, differently\n\n   Sort           a property name as a string, and a direction\n   OrderSpecifier a typed path, and a direction\n\n   converting means turning a string back into a path, by hand",
+   "note": "**변환은 문자열을 경로로 되돌리는** 일이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "문자열을 경로로 바꾸는 다리가 없다",
+   "md": "**`Sort` 는 이름을 문자열로** 든다.\n\n> **⑭ 5.10절에서 본** 타입이다.\n> **스프링 데이터가 속성 이름을** 검증한다.\n> **Querydsl 은 그걸 모른**다.\n\n**`OrderSpecifier` 는 경로를** 든다.\n\n> **4.6절에서 본** 타입이다.\n> **`member.age` 같은 객체**다.\n> **문자열로는 못** 만든다.\n\n**리플렉션으로 만들 수는** 있다.\n\n> **`PathBuilder` 가 그걸** 한다.\n> **문자열을 경로로** 바꾼다.\n> **검증이 사라진**다.\n\n**그래서 허용 목록이** 낫다.\n\n> **6.7절에서 `switch` 로** 했다.\n> **화면이 쓸 정렬은 몇 개** 안 된다.\n> **아래에서 둘을** 비교한다."
+  },
+  {
+   "type": "figure",
+   "caption": "검증 없는 이름이 닿는 곳",
+   "ascii": "   what an unchecked property name can reach\n\n   a column the screen never shows\n   a column of a joined table, through a dot\n   a name that matches nothing, and throws at runtime\n\n   the second row is why a whitelist beats a generic converter",
+   "note": "**둘째 줄 때문에 일반 변환기보다 허용 목록이** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무시되는 게 제일 나쁘다",
+   "md": "**예외가 안** 난다.\n\n> **7.3절에서 `age desc` 가** 사라졌다.\n> **화면은 정렬된 줄** 안다.\n> **⑭ 8.7절의 조용한 `null` 과 같은 종류**다.\n\n**페이지가** 흔들린다.\n\n> **정렬이 없으면 순서가** 미정의다.\n> **4.7절·⑭ 5.9절의 그** 이야기다.\n> **쪽마다 겹치거나** 빠진다.\n\n**변환기를 만들면 검증이** 없다.\n\n> **없는 속성은 실행에서** 터진다.\n> **연관 경로도 그대로** 통한다.\n> **아래에서 그걸** 만든다.\n\n**목록에 없으면 기본값으로** 보낸다.\n\n> **6.7절에서 그렇게** 했다.\n> **⑭ 6.6절은 500 이었다.**\n> **여기가 더** 안전하다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 지금 상태\n\n@Test\n@Transactional\nvoid 무시됨() {\n    em.clear();\n    memberRepository.searchPageComplex(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    member1.id asc */\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   age desc 가 어디에도 없다\n--   7.3절에서 본 그대로다\n\n\n-- 왜 못 넘기나\n\n@Test\nvoid 타입_차이() {\n    Sort sort = Sort.by(Sort.Direction.DESC, \"age\");\n    Sort.Order order = sort.iterator().next();\n\n    System.out.println(\"Sort 쪽:\");\n    System.out.println(\"  속성: \" + order.getProperty()\n            + \" (\" + order.getProperty().getClass().getSimpleName() + \")\");\n    System.out.println(\"  방향: \" + order.getDirection());\n\n    OrderSpecifier<?> spec = member.age.desc();\n    System.out.println(\"Querydsl 쪽:\");\n    System.out.println(\"  대상: \" + spec.getTarget()\n            + \" (\" + spec.getTarget().getClass().getSimpleName() + \")\");\n    System.out.println(\"  방향: \" + spec.getOrder());\n}\n\nSort 쪽:\n  속성: age (String)\n  방향: DESC\nQuerydsl 쪽:\n  대상: member1.age (NumberPath)\n  방향: DESC\n\n--   한쪽은 문자열, 한쪽은 경로다\n--   2.2절에서 본 그 타입이다\n\n\n-- 허용 목록으로 잇는다\n\nprivate OrderSpecifier<?>[] toOrders(Sort sort) {\n    if (sort.isUnsorted()) {\n        return new OrderSpecifier[]{ member.id.asc() };\n    }\n    return sort.stream()\n            .map(o -> switch (o.getProperty()) {\n                case \"age\"      -> o.isAscending()\n                        ? member.age.asc() : member.age.desc();\n                case \"username\" -> o.isAscending()\n                        ? member.username.asc() : member.username.desc();\n                case \"teamName\" -> o.isAscending()\n                        ? team.name.asc() : team.name.desc();\n                default         -> member.id.asc();\n            })\n            .toArray(OrderSpecifier[]::new);\n}\n\n@Override\npublic Page<MemberTeamDto> searchPageSorted(MemberSearchCondition cond,\n                                            Pageable pageable) {\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member).leftJoin(member.team, team)\n            .where(predicate)\n            .orderBy(toOrders(pageable.getSort()))\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n    ...\n}\n\n\n-- 이제 걸린다\n\n@Test\n@Transactional\nvoid 정렬_적용() {\n    em.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")))\n            .getContent()\n            .forEach(d -> System.out.println(\n                    d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\nm4 40\nm7 35\nm3 30\n\n--   age desc 가 나갔다\n\n\n-- 여러 키도 된다\n\n@Test\n@Transactional\nvoid 여러_키() {\n    em.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\n                    Sort.Order.desc(\"age\"), Sort.Order.asc(\"username\"))));\n}\n\n/* select\n    ...\norder by\n    member1.age desc,\n    member1.username asc */\n\nHibernate:\n    select ... order by m1_0.age desc, m1_0.username\n    offset ? rows fetch first ? rows only\n\n--   준 순서대로 붙었다\n--   4.6절 그대로다\n\n\n-- 연관도 목록에 있으면 된다\n\n@Test\n@Transactional\nvoid 연관_정렬() {\n    em.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\"teamName\")));\n}\n\n/* select\n    ...\norder by\n    team.name asc */\n\nHibernate:\n    select ... left join team t1_0 on t1_0.team_id=m1_0.team_id\n    order by t1_0.name\n    offset ? rows fetch first ? rows only\n\n--   leftJoin 이 이미 있어 별칭을 쓴다\n--   6.4절의 그 규칙이다\n\n\n-- 목록에 없으면 기본값이다\n\n@Test\n@Transactional\nvoid 없는_속성() {\n    em.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\"비밀번호\")));\n}\n\n/* select\n    ...\norder by\n    member1.id asc */\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   기본 정렬로 갔다\n--   ⑭ 6.6절은 500 이었다\n\n\n-- 일반 변환기를 만들면\n\nprivate OrderSpecifier<?>[] toOrdersGeneric(Sort sort) {\n    PathBuilder<Member> path =\n            new PathBuilder<>(Member.class, \"member1\");\n    return sort.stream()\n            .map(o -> new OrderSpecifier(\n                    o.isAscending() ? Order.ASC : Order.DESC,\n                    path.get(o.getProperty())))\n            .toArray(OrderSpecifier[]::new);\n}\n\n@Test\n@Transactional\nvoid 일반_변환기() {\n    em.clear();\n    memberRepository.searchPageGeneric(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n}\n\n/* select\n    ...\norder by\n    member1.age desc */\n\nHibernate:\n    select ... order by m1_0.age desc\n    offset ? rows fetch first ? rows only\n\n--   된다\n--   switch 가 필요 없다\n\n\n-- 그런데 아무 컬럼이나 통한다\n\n@Test\n@Transactional\nvoid 아무_컬럼() {\n    em.clear();\n    memberRepository.searchPageGeneric(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\"team\")));\n}\n\n/* select\n    ...\norder by\n    member1.team desc */\n\nHibernate:\n    select ... order by m1_0.team_id\n    offset ? rows fetch first ? rows only\n\n--   화면이 안 쓰는 컬럼으로 정렬됐다\n--   외래키가 그대로 노출됐다\n\n\n-- 없는 속성이면 터진다\n\n@Test\n@Transactional\nvoid 일반_변환기_오타() {\n    try {\n        memberRepository.searchPageGeneric(new MemberSearchCondition(),\n                PageRequest.of(0, 3, Sort.by(\"없는것\")));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: IllegalArgumentException\n말:   Could not resolve attribute '없는것' of 'Member'\n\n--   실행에서 났다\n--   ⑭ 6.6절과 같은 500 이다\n\n\n-- 컨트롤러에서 확인한다\n\n$ curl -s 'localhost:8080/v5/members?size=3&sort=age,desc' \\\n    | jq '.content[].age'\n49\n49\n48\n\nHibernate:\n    select ... order by m1_0.age desc\n    offset ? rows fetch first ? rows only\n\n$ curl -s -w '\\n%{http_code}\\n' \\\n    'localhost:8080/v5/members?size=3&sort=없는것,desc' | tail -1\n200\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   허용 목록판은 200 이다\n--   기본 정렬로 갔다\n\n\n-- 일반 변환기판은\n\n$ curl -s -w '\\n%{http_code}\\n' \\\n    'localhost:8080/v6/members?size=3&sort=없는것,desc' | tail -1\n500\n\n--   ⑭ 6.6절의 그 500 이다\n\n\n-- 정렬이 없으면\n\n@Test\n@Transactional\nvoid 정렬_없이() {\n    em.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(0, 3));\n}\n\n/* select\n    ...\norder by\n    member1.id asc */\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   기본 정렬이 붙었다\n--   4.7절의 요구를 지켰다\n\n\n-- 개수 쿼리에는 정렬을 안 넘긴다\n\n@Test\n@Transactional\nvoid 개수_쿼리() {\n    em.clear();\n    sqlCounter.clear();\n    memberRepository.searchPageSorted(new MemberSearchCondition(),\n            PageRequest.of(1, 3, Sort.by(\"age\")));\n\n    sqlCounter.all().forEach(s ->\n            System.out.println(s.contains(\"order by\") ? \"정렬 있음\" : \"정렬 없음\"));\n}\n\nHibernate: select ... order by m1_0.age offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\n정렬 있음\n정렬 없음\n\n--   7.4절에서 뗀 그대로다\n\n\n-- 두 방식을 비교한다\n\n$ printf '%-20s %-10s %-12s %s\\n' \\\n  '허용 목록'   'switch'  '없으면 기본값' '컬럼이 노출 안 됨' \\\n  '일반 변환기' 'PathBuilder' '없으면 500'   '아무 컬럼이나 통함'\n\n허용 목록             switch       없으면 기본값   컬럼이 노출 안 됨\n일반 변환기           PathBuilder  없으면 500      아무 컬럼이나 통함\n\n\n-- 7장을 닫는다\n\n@Test\n@Transactional\nvoid 7장_결론() {\n    em.clear();\n    sqlCounter.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page = memberRepository.searchPageSorted(\n            cond, PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, \"age\")));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\n내용: 2\n전체: 3\n쿼리: 2개\n\n--   조건은 6.4절, 페이징은 7.4절, 정렬은 7.7절이다\n--   개수 쿼리에 조인이 남은 건 조건이 팀을 봐서다\n--   8.1절에서 제공되는 기능을 본다",
+   "note": "**`Sort` 는 속성이 `String`, `OrderSpecifier` 는 `NumberPath` 라 다리가** 없다.\n\n**허용 목록으로 이으니 `order by m1_0.age desc` 가 나가고 없는 속성은 기본 정렬로** 간다.\n\n**`PathBuilder` 일반 변환기는 `sort=team` 으로 외래키까지 정렬에** 노출한다.\n\n**없는 속성일 때 허용 목록판은 200, 일반 변환기판은 500** 이다.\n\n**개수 쿼리에는 `order by` 가 안 붙는다 — 7.4절에서 뗀** 그대로다."
+  }
+ ],
+ "recap": [
+  "**한쪽은 문자열, 한쪽은 경로**다.",
+  "**그냥은 무시**된다.",
+  "**예외도 안** 난다.",
+  "**허용 목록으로** 잇는다.",
+  "**없으면 기본값**이다.",
+  "**여러 키도** 된다.",
+  "**연관도** 된다.",
+  "**일반 변환기는 다** 통한다.",
+  "**개수엔 정렬을 안** 넘긴다."
+ ],
+ "drills": [
+  {
+   "task": "`Sort` 와 `OrderSpecifier` 를 찍는다.",
+   "done_when": "타입 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "허용 목록 변환기를 만든다.",
+   "done_when": "정렬이 걸리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`PathBuilder` 판을 만든다.",
+   "done_when": "아무 컬럼이나 통하는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 속성을 보낸다.",
+   "done_when": "200 과 500 의 차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Sort` 를 그대로 못 쓰는 이유는?",
+   "a": "속성이 문자열이라 타입 있는 경로로 바꿔야 한다."
+  },
+  {
+   "q": "안 바꾸면 어떻게 되나?",
+   "a": "예외 없이 정렬이 무시된다."
+  },
+  {
+   "q": "허용 목록의 장점은?",
+   "a": "노출할 정렬만 열고 없는 값은 기본값으로 보낸다."
+  },
+  {
+   "q": "`PathBuilder` 변환기의 위험은?",
+   "a": "화면이 안 쓰는 컬럼까지 정렬로 열린다."
+  },
+  {
+   "q": "개수 쿼리에 정렬을 넣나?",
+   "a": "안 넣는다. 7.4절에서 뗀 그대로다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PathBuilder",
+   "def": "문자열 속성 이름으로 경로를 만들어 주는 Querydsl 도구."
+  },
+  {
+   "term": "정렬 허용 목록",
+   "def": "정렬에 쓸 수 있는 속성만 미리 정해 둔 매핑."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Repositories",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
