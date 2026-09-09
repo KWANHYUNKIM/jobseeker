@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "authorization-manager",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "AuthorizationManager",
+ "summary": "인가의 단일 진입점.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인터페이스 하나가 두 층을 덮는 것을 안다.",
+  "Supplier 인 이유를 안다.",
+  "구현들을 조합한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**필터 인가와 메서드 보안이 다른 물건처럼** 보였다. **같은 인터페이스**다."
+  },
+  {
+   "type": "figure",
+   "caption": "하나의 인터페이스",
+   "ascii": "   one interface, both layers\n\n   AuthorizationManager<T>\n     check(Supplier<Authentication>, T)  ->  AuthorizationDecision\n\n   T is the thing being protected\n     a web request      T = RequestAuthorizationContext\n     a method call      T = MethodInvocation\n\n   the filter and the interceptor ask the very same question",
+   "note": "**보호 대상만 타입 인자로** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터페이스",
+   "md": "```java\n@FunctionalInterface\npublic interface AuthorizationManager<T> {\n    default void verify(Supplier<Authentication> authentication, T object) {\n        AuthorizationDecision decision = check(authentication, object);\n        if (decision != null && !decision.isGranted()) {\n            throw new AccessDeniedException(\"Access Denied\");\n        }\n    }\n\n    AuthorizationDecision check(Supplier<Authentication> authentication, T object);\n}\n```\n\n> **`check` 는 판단만 하고 `verify` 가** 던진다.\n> **필터도 인터셉터도 `verify` 를** 부른다.\n\n**기본 구현들**\n\n| 구현 | 만드는 법 |\n|---|---|\n| `AuthorityAuthorizationManager` | `hasRole`·`hasAuthority` |\n| `AuthenticatedAuthorizationManager` | `authenticated`·`anonymous`·`fullyAuthenticated` |\n| `WebExpressionAuthorizationManager` | `access(표현식)` |\n| `RequestMatcherDelegatingAuthorizationManager` | 규칙 목록 전체 |\n| `AuthorizationManagers.allOf` / `anyOf` | 여럿을 묶는다 |\n\n> **7.1절에서 본 그 위임 매니저가 목록을 들고** 있다.\n> **각 줄의 오른쪽이 하나의 매니저**다.\n\n**6.x 가 통합한 것**\n\n> **5.x 에는 `AccessDecisionManager` 와 `AccessDecisionVoter` 가** 있었다.\n> **투표를 모아 과반이니 만장일치니 하는 전략이** 있었다.\n> **거의 안 쓰였고 이해하기만** 어려웠다.\n>\n> **6.x 는 `AuthorizationManager` 하나로** 줄였다.\n> **여럿이 필요하면 `allOf`·`anyOf` 로** 묶는다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 Supplier 인가",
+   "ascii": "   why the first argument is a Supplier\n\n   permitAll ignores it entirely\n     so the session is never touched\n\n   hasRole calls get()\n     only then is the context read from the session\n\n   this is the same laziness as the deferred context in 5.1\n   and it is why a public page creates no session",
+   "note": "**안 물으면 세션을 안** 건드린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조합할 수 있다",
+   "md": "```java\nAuthorizationManager<RequestAuthorizationContext> manager =\n        AuthorizationManagers.allOf(\n                AuthorityAuthorizationManager.hasRole(\"ADMIN\"),\n                new IpAuthorizationManager(\"10.0.0.0/8\"));\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/admin/**\").access(manager)\n        .anyRequest().authenticated());\n```\n\n> **`allOf` 는 전부 통과해야, `anyOf` 는 하나만 통과하면**이다.\n> **`not` 도** 있다.\n\n**기권의 뜻**\n\n> **`check` 가 `null` 을 돌려주면** 기권이다.\n> **`verify` 가 안 던지니 통과**다 — **7.1절의 그** 규칙.\n>\n> **`allOf` 안에서 하나가 기권하면 나머지로** 판단한다.\n> **전부 기권이면 전체가** 기권이다.\n\n**로그를 켜면 다 보인다.**\n\n```properties\nlogging.level.org.springframework.security.authorization=TRACE\n```\n\n> **어느 매니저가 어떤 결정을 냈는지** 나온다.\n> **7.9절의 다섯 자리 중 순서와 무매칭을 찾을 때** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 같은 인터페이스인지 확인 ---\n\n@Test\nvoid 두_층이_같은_인터페이스다() {\n    AuthorizationManager<RequestAuthorizationContext> web =\n            AuthorityAuthorizationManager.hasRole(\"ADMIN\");\n    AuthorizationManager<MethodInvocation> method =\n            AuthorityAuthorizationManager.hasRole(\"ADMIN\");\n\n    System.out.println(\">>> web    = \" + web.getClass().getName());\n    System.out.println(\">>> method = \" + method.getClass().getName());\n}\n\n$ ./gradlew test --tests ManagerTest\n\n>>> web    = org.springframework.security.authorization\n              .AuthorityAuthorizationManager\n>>> method = org.springframework.security.authorization\n              .AuthorityAuthorizationManager\n\n#   같은 클래스다\n\n#   제네릭만 다르다\n\n# --- 직접 불러 본다 ---\n\n@Test\nvoid 직접_판단시킨다() {\n    AuthorizationManager<Object> manager =\n            AuthorityAuthorizationManager.hasRole(\"ADMIN\");\n\n    Authentication user = UsernamePasswordAuthenticationToken.authenticated(\n            \"u\", null, List.of(new SimpleGrantedAuthority(\"ROLE_USER\")));\n    Authentication admin = UsernamePasswordAuthenticationToken.authenticated(\n            \"a\", null, List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\")));\n\n    System.out.println(\">>> user  = \" + manager.check(() -> user, null));\n    System.out.println(\">>> admin = \" + manager.check(() -> admin, null));\n}\n\n$ ./gradlew test --tests ManagerTest\n\n>>> user  = AuthorizationDecision [granted=false]\n>>> admin = AuthorizationDecision [granted=true]\n\n#   HTTP 도 프록시도 없이 판단만 시켰다\n\n# --- Supplier 가 안 불리는 것을 본다 ---\n\n@Test\nvoid permitAll_은_인증을_안_본다() {\n    AtomicInteger calls = new AtomicInteger();\n    Supplier<Authentication> supplier = () -> {\n        calls.incrementAndGet();\n        return null;\n    };\n\n    new AuthenticatedAuthorizationManager<>().check(supplier, null);\n    System.out.println(\">>> authenticated 가 부른 횟수 = \" + calls.get());\n\n    calls.set(0);\n    AuthorizationManager<Object> permitAll = (a, o) ->\n            new AuthorizationDecision(true);\n    permitAll.check(supplier, null);\n    System.out.println(\">>> permitAll 이 부른 횟수    = \" + calls.get());\n}\n\n$ ./gradlew test --tests ManagerTest\n\n>>> authenticated 가 부른 횟수 = 1\n>>> permitAll 이 부른 횟수    = 0\n\n#   permitAll 은 아예 안 본다\n\n#   그래서 세션을 안 건드린다 (5.1절 · 7.1절)\n\n$ curl -is localhost:8080/about | grep -ci set-cookie\n0\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Retrieved SecurityContextImpl\"\n0\n\n# --- allOf 로 묶는다 ---\n\npublic class IpAuthorizationManager\n        implements AuthorizationManager<RequestAuthorizationContext> {\n    private final IpAddressMatcher matcher;\n\n    @Override\n    public AuthorizationDecision check(Supplier<Authentication> auth,\n            RequestAuthorizationContext context) {\n        boolean ok = matcher.matches(context.getRequest());\n        System.out.println(\">>> ip \" + context.getRequest().getRemoteAddr()\n                + \" -> \" + ok);\n        return new AuthorizationDecision(ok);\n    }\n}\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/admin/**\").access(AuthorizationManagers.allOf(\n                AuthorityAuthorizationManager.hasRole(\"ADMIN\"),\n                new IpAuthorizationManager(\"127.0.0.1/32\")))\n        .anyRequest().authenticated());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n200\n\n>>> ip 127.0.0.1 -> true\n\nserver.forward-headers-strategy=native\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    -H 'X-Forwarded-For: 203.0.113.9' localhost:8080/admin/panel\n403\n\n>>> ip 203.0.113.9 -> false\n\n#   역할은 맞는데 IP 가 아니라 막혔다\n\n#   allOf 는 둘 다 통과해야 한다\n\n# --- 일반 사용자는 IP 검사까지 안 간다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n403\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> ip\"\n0\n\n#   앞에서 이미 false 라 뒤를 안 본다\n\n#   allOf 는 단락 평가다\n\n# --- anyOf 로 바꾸면 ---\n\n.access(AuthorizationManagers.anyOf(\n        AuthorityAuthorizationManager.hasRole(\"ADMIN\"),\n        new IpAuthorizationManager(\"127.0.0.1/32\")))\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n200\n\n>>> ip 127.0.0.1 -> true\n\n#   일반 사용자가 들어갔다\n\n#   IP 만 맞으면 되니까\n\n#   사무실에서는 다 통과하는 설정이 된다\n\n#   allOf 와 anyOf 를 헷갈리면 이렇게 된다\n\n# --- 로그로 판단 과정을 본다 ---\n\nlogging.level.org.springframework.security.authorization=TRACE\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\nTRACE RequestMatcherDelegatingAuthorizationManager : Authorizing GET /admin/panel\nTRACE RequestMatcherDelegatingAuthorizationManager : Checking authorization on\n  GET /admin/panel using AuthorityAuthorizationManager\n  [authorities=[ROLE_ADMIN]]\nDEBUG AuthorizationFilter : Failed to authorize filter invocation with\n  attributes AuthorizationDecision [granted=false]\n\n#   어느 매니저가 판단했는지 나온다\n\n#   7.9절의 다섯 자리 중 둘을 여기서 찾는다\n\n# --- 기권을 만들어 본다 ---\n\nAuthorizationManager<RequestAuthorizationContext> abstain = (a, c) -> null;\n\n.requestMatchers(\"/maybe/**\").access(abstain)\n.anyRequest().denyAll()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/maybe/x\n200\n\n#   null 은 통과다\n\n#   denyAll 까지 안 간다. 먼저 맞는 규칙이 이겼다\n\n#   실수로 null 을 돌려주는 매니저를 만들면\n\n#   조용히 다 열린다\n\n# --- 다음 절에서 ---\n\n#   ROLE_ 접두어가 어디서 붙는지 본다",
+   "note": "**웹과 메서드가 같은 `AuthorityAuthorizationManager` 클래스**를 쓴다.\n\n**`permitAll` 은 `Supplier` 를 0회, `authenticated` 는 1회** 부른다 — **그래서 세션을 안** 건드린다.\n\n**`allOf` 는 단락 평가**라 역할이 틀리면 IP 매니저가 아예 안 돈다.\n\n**`anyOf` 로 바꾸면 일반 사용자가 IP 만으로 관리자 화면에** 들어간다.\n\n**`null` 을 돌려주는 매니저는 조용히 통과**시킨다."
+  }
+ ],
+ "recap": [
+  "**`AuthorizationManager` 하나가 두 층을** 덮는다.",
+  "**타입 인자만 요청이냐 메서드 호출이냐로** 다르다.",
+  "**`check` 는 판단, `verify` 가** 던진다.",
+  "**첫 인자가 `Supplier` 라 안 물으면 세션을 안** 건드린다.",
+  "**`permitAll` 은 인증을 0회** 본다.",
+  "**`allOf`·`anyOf`·`not` 으로** 조합한다.",
+  "**`allOf` 는 단락 평가**다.",
+  "**6.x 가 `AccessDecisionManager` 를 이걸로** 대체했다.",
+  "**`null` 은 기권이고 통과**다."
+ ],
+ "drills": [
+  {
+   "task": "매니저를 테스트에서 직접 부른다.",
+   "done_when": "결정 객체를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Supplier` 호출 횟수를 센다.",
+   "done_when": "`permitAll` 이 0인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "IP 매니저를 만들어 `allOf` 로 묶는다.",
+   "done_when": "둘 다 통과해야 하는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`anyOf` 로 바꿔 본다.",
+   "done_when": "일반 사용자가 들어가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "필터 인가와 메서드 보안의 인터페이스는?",
+   "a": "둘 다 `AuthorizationManager` 다."
+  },
+  {
+   "q": "첫 인자가 왜 `Supplier` 인가?",
+   "a": "필요할 때만 인증을 조회해 세션을 안 건드리려고다."
+  },
+  {
+   "q": "`allOf` 와 `anyOf` 의 차이는?",
+   "a": "전부 통과해야 하는 것과 하나만 통과하면 되는 것이다."
+  },
+  {
+   "q": "`check` 가 `null` 을 돌려주면?",
+   "a": "기권이고 통과로 취급된다."
+  },
+  {
+   "q": "6.x 가 없앤 것은?",
+   "a": "`AccessDecisionManager` 와 `AccessDecisionVoter` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "AuthorizationDecision",
+   "def": "인가 판단 결과. `granted` 를 들고 있고 `null` 은 기권을 뜻한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Migrating to 6.0",
+   "url": "https://docs.spring.io/spring-security/reference/migration/servlet/authorization.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

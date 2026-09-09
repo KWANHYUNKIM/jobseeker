@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "method-interceptor",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "메서드 보안의 내부",
+ "summary": "AOP 프록시.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인터셉터 넷과 순서를 안다.",
+  "트랜잭션과의 순서를 안다.",
+  "PreFilter 와 PostFilter 를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.5절에서 프록시라고** 했다. **그 프록시 안에 뭐가 쌓여** 있나."
+  },
+  {
+   "type": "figure",
+   "caption": "프록시 더미",
+   "ascii": "   the proxy stack around one service method\n\n   caller\n     -> transaction interceptor        order 2147483647 by default\n       -> authorization interceptor    order 200 for PreAuthorize\n         -> the real method\n\n   lower order runs first, so security wraps outside transactions\n   which is why a denial rolls back nothing, it never began",
+   "note": "**보안이 트랜잭션 바깥**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터셉터가 넷이다",
+   "md": "| 인터셉터 | 순서 | 애너테이션 |\n|---|---|---|\n| `PreFilterAuthorizationMethodInterceptor` | 100 | `@PreFilter` |\n| `AuthorizationManagerBeforeMethodInterceptor` | 200 | `@PreAuthorize` |\n| `AuthorizationManagerAfterMethodInterceptor` | 300 | `@PostAuthorize` |\n| `PostFilterAuthorizationMethodInterceptor` | 400 | `@PostFilter` |\n\n> **숫자가 작을수록** 바깥이다.\n> **`@Transactional` 은 기본이 `Ordered.LOWEST_PRECEDENCE`** 라 안쪽이다.\n\n**그래서 거부는 롤백할 게 없다.**\n\n> **`@PreAuthorize` 가 막으면 트랜잭션이 시작도 안** 했다.\n> **7.5절의 `@PostAuthorize` 는 안쪽에서 이미 시작된 뒤라** 롤백이 필요했다.\n\n**`@PreFilter` 와 `@PostFilter`**\n\n```java\n@PreFilter(\"filterObject.ownerEmail == authentication.name\")\npublic void cancelAll(List<OrderDto> orders) { ... }\n\n@PostFilter(\"filterObject.ownerEmail == authentication.name\")\npublic List<OrderDto> findAll() { ... }\n```\n\n> **거부가 아니라** 걸러낸다.\n> **`filterObject` 가 원소 하나**다.\n>\n> **입력 컬렉션을 실제로 수정**한다 — **불변 리스트면 예외**다.\n> **`List.of(...)` 를 넘기면 `UnsupportedOperationException`** 이다.\n\n**`@PostFilter` 는 비싸다.**\n\n> **다 읽고 나서** 버린다.\n> **천 건 읽어 세 건만 남기면 구백구십칠 건이 낭비**다.\n> **페이징과 같이 쓰면 페이지 크기가** 망가진다.\n>\n> **책 ⑧ 이 쿼리 개수를 줄인 것과 정반대 방향**이다.\n> **조회 조건에 넣는 편이 낫다**(7.6절)."
+  },
+  {
+   "type": "figure",
+   "caption": "네 인터셉터의 순서",
+   "ascii": "   the four interceptors and their order values\n\n   100   PreFilter\n   200   PreAuthorize\n   300   PostAuthorize\n   400   PostFilter\n\n   Secured and RolesAllowed sit at the same place as PreAuthorize\n   two of them on one method means two checks, both must pass",
+   "note": "**둘을 같이 붙이면 둘 다 통과해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "프록시 방식이 결과를 바꾼다",
+   "md": "**인터페이스가 있으면 JDK 프록시가 될 수** 있다.\n\n```properties\nspring.aop.proxy-target-class=true    # 부트 기본값\n```\n\n> **부트는 CGLIB 이 기본**이다.\n> **`false` 로 바꾸면 인터페이스 기반**이 된다.\n> **그러면 인터페이스에 없는 메서드는 프록시가 안** 된다.\n\n**`final` 이면 CGLIB 도 못 감싼다.**\n\n> **클래스나 메서드에 `final` 이 있으면** 그렇다.\n> **코틀린은 클래스가 기본 `final` 이라 자주** 겪는다.\n> **자바에서도 `record` 나 `final class` 서비스는 안** 걸린다.\n>\n> **스프링 6 은 이걸 기동 때 경고**한다.\n>\n> ```\n> WARN Method security annotation on a final method will not be applied\n> ```\n\n**`@EnableMethodSecurity(proxyTargetClass = true)` 로 강제할 수** 있다.\n\n**AspectJ 로 바꾸면 이 제약이** 없다.\n\n> **`@EnableMethodSecurity(mode = AdviceMode.ASPECTJ)`** 다.\n> **컴파일 시 위빙이 필요해 설정이** 는다.\n> **자기 호출도 잡히지만 거기까지 가는 팀은** 드물다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 프록시 더미를 본다 ---\n\n@GetMapping(\"/advisors\")\n@ResponseBody\npublic String advisors() {\n    Advised advised = (Advised) orderService;\n    for (Advisor a : advised.getAdvisors()) {\n        System.out.println(\">>> \" + a.getClass().getSimpleName()\n                + \"  \" + (a instanceof Ordered o ? o.getOrder() : \"-\"));\n    }\n    return \"ok\";\n}\n\n$ curl -s localhost:8080/advisors\n\n>>> AuthorizationManagerBeforeMethodInterceptor  200\n>>> AuthorizationManagerAfterMethodInterceptor   300\n>>> BeanFactoryTransactionAttributeSourceAdvisor 2147483647\n\n#   보안이 앞이다\n\n#   숫자가 작을수록 바깥이다\n\n# --- 거부하면 트랜잭션이 시작도 안 한다 ---\n\n@PreAuthorize(\"hasRole('ADMIN')\")\n@Transactional\npublic void cancel(Long id) {\n    System.out.println(\">>> cancel\");\n}\n\nlogging.level.org.springframework.orm.jpa=DEBUG\n\n$ curl -s -o /dev/null -b user.txt \\\n    -X POST localhost:8080/api/orders/1/cancel\n\nAccessDeniedException: Access Denied\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Creating new transaction\"\n0\n\n#   트랜잭션이 없다\n\n#   커넥션도 안 빌렸다\n\n#   책 ⑤ 에서 센 그 커넥션이다\n\n#   PostAuthorize 라면\n\n@PostAuthorize(\"returnObject.ownerEmail == authentication.name\")\n@Transactional\npublic Order find(Long id) { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -cE \"Creating new transaction|Initiating transaction rollback\"\n\n2\n\n#   시작하고 롤백했다\n\n# --- PostFilter 를 써 본다 ---\n\n@PostFilter(\"filterObject.ownerEmail == authentication.name\")\npublic List<OrderDto> findAll() {\n    List<OrderDto> all = repository.findAll().stream()\n            .map(OrderDto::from).toList();\n    System.out.println(\">>> 읽은 건수 = \" + all.size());\n    return new ArrayList<>(all);\n}\n\n$ curl -s -b user.txt localhost:8080/api/orders | python3 -c \\\n    'import sys,json;print(len(json.load(sys.stdin)))'\n\n3\n\n>>> 읽은 건수 = 1000\n\nselect o.* from orders o\n\n#   천 건 읽어 세 건 준다\n\n#   구백구십칠 건이 낭비다\n\n#   조회 조건에 넣으면\n\npublic List<OrderDto> findMine(String email) {\n    return repository.findByOwnerEmail(email).stream()\n            .map(OrderDto::from).toList();\n}\n\nselect o.* from orders o where o.owner_email = ?\n\n>>> 읽은 건수 = 3\n\n#   세 건만 읽는다\n\n#   책 ⑧ 이 하던 그 얘기다\n\n# --- 불변 리스트를 넘기면 ---\n\n@PostFilter(\"filterObject.ownerEmail == authentication.name\")\npublic List<OrderDto> findAll() {\n    return repository.findAll().stream().map(OrderDto::from).toList();\n}\n\n#   toList() 는 불변이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/api/orders\n500\n\njava.lang.UnsupportedOperationException\n  at java.base/java.util.ImmutableCollections.uoe\n  at ...PostFilterAuthorizationMethodInterceptor...\n\n#   입력 컬렉션을 직접 수정한다\n\n#   new ArrayList<>(...) 로 감싸야 한다\n\n# --- PreFilter ---\n\n@PreFilter(\"filterObject.ownerEmail == authentication.name\")\npublic void cancelAll(List<OrderDto> orders) {\n    System.out.println(\">>> 남은 건수 = \" + orders.size());\n}\n\n$ curl -s -b user.txt -X POST localhost:8080/api/orders/cancel-batch \\\n    -H 'Content-Type: application/json' \\\n    -d '[{\"id\":1,\"ownerEmail\":\"user@a.com\"},{\"id\":17,\"ownerEmail\":\"other@a.com\"}]'\n\n>>> 남은 건수 = 1\n\n#   남의 것이 조용히 빠졌다\n\n#   막지 않고 걸러낸다\n\n#   사용자는 둘 다 취소된 줄 안다\n\n#   403 을 주는 게 나을 때가 많다\n\n# --- final 메서드 ---\n\n@Service\npublic class ReportService {\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public final String secret() { return \"비밀\"; }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i final\n\nWARN AuthorizationAnnotationUtils : Method security annotation on\n  public final java.lang.String ReportService.secret() will not be applied\n  because it is final\n\n$ curl -s -b user.txt localhost:8080/report/secret\n\n비밀\n\n#   경고는 떴고 검사는 안 돈다\n\n#   final 을 지우면\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/report/secret\n403\n\n# --- 두 애너테이션을 같이 ---\n\n@PreAuthorize(\"hasRole('USER')\")\n@Secured(\"ROLE_ADMIN\")\npublic void both() { }\n\n@EnableMethodSecurity(securedEnabled = true)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/both\n403\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/both\n403\n\n#   둘 다 막힌다\n\n#   USER 는 Secured 에, ADMIN 은 PreAuthorize 에 걸린다\n\n#   (계층이 없다면)\n\n#   같은 자리에 둘을 붙이면 교집합이다\n\n#   섞어 쓰지 않는 게 낫다\n\n# --- 다음 절에서 ---\n\n#   매니저를 직접 만들어 본다",
+   "note": "**어드바이저 목록에 보안 200·300, 트랜잭션 2147483647** 이 찍힌다 — **보안이** 바깥이다.\n\n**`@PreAuthorize` 거부에는 `Creating new transaction` 이 0회**다. `@PostAuthorize` 는 시작하고 롤백한다.\n\n**`@PostFilter` 는 천 건 읽어 세 건**을 준다. 조회 조건이면 세 건만 읽는다.\n\n**`toList()` 불변 리스트를 돌려주면 `UnsupportedOperationException`** 이다.\n\n**`final` 메서드는 경고만 뜨고 검사가 안** 돈다."
+  }
+ ],
+ "recap": [
+  "**인터셉터가 넷이고 순서가 100·200·300·400** 이다.",
+  "**보안이 트랜잭션보다** 바깥이다.",
+  "**`@PreAuthorize` 거부는 트랜잭션을 시작도 안** 한다.",
+  "**`@PostFilter` 는 다 읽고 나서** 버린다.",
+  "**불변 리스트를 돌려주면** 터진다.",
+  "**`@PreFilter` 는 막지 않고 조용히** 걸러낸다.",
+  "**`final` 이면 경고만 뜨고 안** 걸린다.",
+  "**두 애너테이션을 같이 붙이면** 교집합이다.",
+  "**AspectJ 로 바꾸면 제약이 없지만 설정이** 는다."
+ ],
+ "drills": [
+  {
+   "task": "어드바이저 목록과 순서를 찍는다.",
+   "done_when": "보안이 바깥인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "거부 시 트랜잭션 로그를 센다.",
+   "done_when": "0회인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@PostFilter` 로 천 건을 걸러 본다.",
+   "done_when": "읽은 건수를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`final` 메서드에 애너테이션을 붙인다.",
+   "done_when": "경고와 통과를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "보안과 트랜잭션 중 누가 바깥인가?",
+   "a": "보안이다. 순서 숫자가 훨씬 작다."
+  },
+  {
+   "q": "`@PreAuthorize` 거부에 롤백이 필요 없는 이유는?",
+   "a": "트랜잭션이 시작되기 전에 막혀서다."
+  },
+  {
+   "q": "`@PostFilter` 의 비용은?",
+   "a": "다 읽고 나서 버린다. 페이징도 망가진다."
+  },
+  {
+   "q": "불변 리스트를 돌려주면?",
+   "a": "입력 컬렉션을 직접 수정하려다 예외가 난다."
+  },
+  {
+   "q": "`final` 메서드는?",
+   "a": "프록시가 못 감싸 경고만 뜨고 검사가 안 돈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@PostFilter",
+   "def": "반환 컬렉션에서 조건에 맞지 않는 원소를 걸러내는 애너테이션. 거부가 아니라 제거다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

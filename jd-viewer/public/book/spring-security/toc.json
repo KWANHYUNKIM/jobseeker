@@ -514,7 +514,7 @@
           "title": "AuthorizationManager",
           "summary": "인가의 단일 진입점.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -522,7 +522,7 @@
           "title": "GrantedAuthority",
           "summary": "ROLE_ 접두어의 정체.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -530,7 +530,7 @@
           "title": "AuthorizationFilter",
           "summary": "체인의 마지막.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -538,7 +538,7 @@
           "title": "메서드 보안의 내부",
           "summary": "AOP 프록시.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",

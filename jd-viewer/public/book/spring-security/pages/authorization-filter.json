@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "authorization-filter",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "AuthorizationFilter",
+ "summary": "체인의 마지막.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 마지막인지 안다.",
+  "예외가 어디로 가는지 안다.",
+  "디스패치 타입 설정을 이해한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**모든 로그에서 `(15/15)`** 였다. **마지막인 데는 이유가** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "마지막 필터",
+   "ascii": "   the last filter, and what that means\n\n   1..14   every other filter has already run\n             the context is loaded, the user is known\n   15      AuthorizationFilter asks the manager\n             granted -> chain.doFilter, the servlet runs\n             denied  -> throw, and filter 12 catches it\n\n   it is last because it needs everything the others produced",
+   "note": "**앞의 열넷이 만든 걸 다** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "필터의 전부",
+   "md": "```java\n@Override\nprotected void doFilterInternal(HttpServletRequest request,\n        HttpServletResponse response, FilterChain chain)\n        throws ServletException, IOException {\n    if (this.observeOncePerRequest && isApplied(request)) {\n        chain.doFilter(request, response);\n        return;\n    }\n    ...\n    try {\n        AuthorizationDecision decision =\n                this.authorizationManager.check(this::getAuthentication, request);\n        this.eventPublisher.publishAuthorizationEvent(\n                this::getAuthentication, request, decision);\n        if (decision != null && !decision.isGranted()) {\n            throw new AuthorizationDeniedException(\"Access Denied\", decision);\n        }\n        chain.doFilter(request, response);\n    }\n    finally {\n        request.removeAttribute(alreadyFilteredAttributeName);\n    }\n}\n```\n\n> **하는 일이 셋**이다 — **묻고, 알리고, 통과시키거나 던진다.**\n\n**이벤트를 여기서** 낸다.\n\n> **`AuthorizationGrantedEvent` 와 `AuthorizationDeniedEvent`** 다.\n> **9.2절에서 이걸 받아 감사 로그를** 만든다.\n\n**왜 마지막인가**\n\n| 앞 필터 | 만들어 주는 것 |\n|---|---|\n| 3번 | 세션에서 꺼낸 인증 |\n| 6번 | 방금 로그인한 인증 |\n| 11번 | 기억하기로 되살린 인증 |\n| 12번 | 익명 인증 |\n\n> **넷 중 하나가 홀더를 채운** 뒤여야 판단할 수 있다.\n> **12번 익명까지 지난 뒤라 `getAuthentication()` 이 절대 `null` 이** 아니다.\n\n**던진 예외는 12번이** 받는다.\n\n> **`ExceptionTranslationFilter` 가 자기 뒤를 감싼 `try`** 다(6.1절).\n> **15번은 12번 안쪽**이라 잡힌다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청당 한 번",
+   "ascii": "   why it runs once per request, not per dispatch\n\n   an attribute is set on the request the first time\n     __spring_security_filterSecurityInterceptor_filterApplied\n\n   a FORWARD reuses the same request object\n     so the attribute is still there\n     and the check would be skipped anyway\n\n   6.x replaced that with a dispatcher type list instead",
+   "note": "**6.x 는 디스패치 타입 목록으로** 바꿨다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인가 없이 지나는 길",
+   "md": "**`FORWARD` 와 `INCLUDE`** 다.\n\n> **7.1절에서 봤다.**\n> **`accessDeniedPage` 가 그 덕에** 동작한다.\n\n**하지만 컨트롤러가 `forward` 를 하면**\n\n```java\n@GetMapping(\"/go\")\npublic String go() {\n    return \"forward:/admin/panel\";\n}\n```\n\n> **`/go` 는 인가를 거치고 `/admin/panel` 은 안** 거친다.\n> **`/go` 가 `permitAll` 이면 누구나 관리자 화면을** 본다.\n>\n> **`shouldFilterAllDispatcherTypes(true)` 로** 막는다.\n> **대신 `/error` 를 열어** 줘야 한다(7.4절).\n\n**컨트롤러 없이 정적 파일로 우회할 수도** 있다.\n\n> **`/static/admin/secret.html` 같은 걸 `permitAll` 한 정적 규칙이** 덮는다.\n> **정적 경로에 비밀을 두지 않는 게** 답이다.\n\n**서블릿이 여럿이면 체인이 따로 돌 수도** 있다.\n\n> **7.3절의 H2 콘솔이 그** 예다.\n> **다른 서블릿이라도 `DelegatingFilterProxy` 매핑이 `/*` 라 필터는** 탄다.\n> **다만 규칙 패턴이 서블릿 경로 기준인지 전체 경로 기준인지 헷갈린다** — **`PathRequest` 를 쓰는** 이유다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 마지막인 것을 확인 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | tail -3\n\n   AnonymousAuthenticationFilter\n   ExceptionTranslationFilter\n   AuthorizationFilter]\n\n#   맨 끝이다\n\n#   그리고 ExceptionTranslationFilter 바로 뒤다\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (13/15)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (14/15)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nDEBUG ExceptionTranslationFilter : Sending AccessDeniedHandler\n\n#   15번이 던지고 14번이 받는다\n\n#   번호는 작은데 바깥이다\n\n# --- 인증이 null 이 아닌 것을 확인 ---\n\npublic class PeekAuthorizationFilter extends AuthorizationFilter {\n    @Override\n    protected void doFilterInternal(HttpServletRequest req,\n            HttpServletResponse res, FilterChain chain)\n            throws ServletException, IOException {\n        System.out.println(\">>> auth = \"\n                + SecurityContextHolder.getContext().getAuthentication());\n        super.doFilterInternal(req, res, chain);\n    }\n}\n\n#   로그인 안 함\n$ curl -s -o /dev/null localhost:8080/about\n\n>>> auth = AnonymousAuthenticationToken [Principal=anonymousUser]\n\n#   null 이 아니다\n\n#   12번이 채워 준 덕이다 (3.7절)\n\n#   로그인함\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders\n\n>>> auth = UsernamePasswordAuthenticationToken [Principal=...]\n\n# --- 이벤트가 나가는지 ---\n\n@Component\npublic class AuthorizationLogger {\n    @EventListener\n    public void onDenied(AuthorizationDeniedEvent<?> event) {\n        System.out.println(\">>> DENIED \" + event.getAuthentication().get().getName());\n    }\n}\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\n>>> DENIED user@a.com\n\n#   9.2절에서 이걸 쓴다\n\n# --- forward 로 우회한다 ---\n\n@Controller\npublic class GoController {\n    @GetMapping(\"/go\")\n    public String go() {\n        return \"forward:/admin/panel\";\n    }\n}\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/go\").permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().authenticated());\n\n$ curl -s localhost:8080/go | grep -c '관리자 화면'\n\n1\n\n#   로그인도 안 했는데 관리자 화면이 보인다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Securing GET /admin/panel\"\n0\n\n#   시큐리티가 그 경로를 본 적이 없다\n\n$ ./gradlew bootRun 2>&1 | grep \"Securing\"\n\nDEBUG FilterChainProxy : Securing GET /go\n\n#   요청은 하나였다\n\n# --- 막는다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .shouldFilterAllDispatcherTypes(true)\n        .requestMatchers(\"/go\", \"/error\").permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().authenticated());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/go\n302\n\n$ ./gradlew bootRun 2>&1 | grep \"Securing\"\n\nDEBUG FilterChainProxy : Securing GET /go\nDEBUG FilterChainProxy : Securing FORWARD /admin/panel\n\n#   FORWARD 도 검사한다\n\n#   /error 를 안 열었다면 빈 응답이었다 (7.4절)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/go\n200\n\n#   관리자는 통과한다\n\n# --- 정적 파일 우회 ---\n\n$ ls src/main/resources/static/admin/\nsecret.html\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())\n            .permitAll()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().authenticated());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/admin/secret.html\n302\n\n#   막힌다\n\n#   /admin/** 규칙이 정적 파일에도 걸린다\n\n#   atCommonLocations 는 /css /js /images /webjars /favicon.ico 뿐이다\n\n#   그런데 규칙 순서를 바꾸면\n\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n\n#   를 아래로 내리고\n\n.requestMatchers(\"/**\").permitAll()\n\n#   를 위에 두면\n\n$ curl -s localhost:8080/admin/secret.html | head -1\n<h1>관리자 전용 문서</h1>\n\n#   7.2절의 순서 문제가 정적 파일에도 그대로다\n\n# --- 요청당 한 번인지 ---\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Authorizing GET /orders\"\n1\n\n#   한 번이다\n\n#   shouldFilterAllDispatcherTypes 를 켜고 오류가 나면\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\n$ ./gradlew bootRun 2>&1 | grep \"Authorizing\"\n\nTRACE ... : Authorizing GET /admin/panel\nTRACE ... : Authorizing ERROR /error\n\n#   두 번이다\n\n#   오류 페이지도 검사 대상이 됐다\n\n# --- 테스트로 forward 를 막는다 ---\n\n@Test\nvoid forward_로_관리자_화면을_못_본다() throws Exception {\n    mockMvc.perform(get(\"/go\"))\n            .andExpect(status().is3xxRedirection());\n}\n\n@Test\n@WithMockUser(roles = \"ADMIN\")\nvoid 관리자는_forward_로_본다() throws Exception {\n    mockMvc.perform(get(\"/go\"))\n            .andExpect(status().isOk());\n}\n\n$ ./gradlew test\n\n109 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   메서드 쪽은 어떻게 도는지 본다",
+   "note": "**`AuthorizationFilter` 가 15번, `ExceptionTranslationFilter` 가 14번**이다 — **번호는 작은데 바깥**이라 예외를 받는다.\n\n**익명 요청에도 `auth` 가 `null` 이 아니다** — 12번이 채워 줬다.\n\n**`forward:/admin/panel` 은 `Securing GET /admin/panel` 이 0회**라 로그인 없이 관리자 화면이 보인다.\n\n**`shouldFilterAllDispatcherTypes(true)` 를 켜면 `Securing FORWARD /admin/panel` 이 찍히고** 302 가 된다.\n\n**정적 파일도 `/admin/**` 규칙에** 걸리지만 순서를 뒤집으면 그대로 열린다."
+  }
+ ],
+ "recap": [
+  "**인가 필터는 체인의** 마지막이다.",
+  "**앞의 넷 중 하나가 홀더를 채운** 뒤다.",
+  "**그래서 인증이 절대 `null` 이** 아니다.",
+  "**던진 예외는 바로 앞 필터가** 받는다.",
+  "**허용·거부 이벤트를 여기서** 낸다.",
+  "**기본은 `REQUEST`·`ASYNC` 만** 검사한다.",
+  "**컨트롤러의 `forward` 로 인가를 우회할 수** 있다.",
+  "**`shouldFilterAllDispatcherTypes` 로** 막는다.",
+  "**켜면 `/error` 를 열어** 줘야 한다."
+ ],
+ "drills": [
+  {
+   "task": "필터 순서에서 마지막인 것을 확인한다.",
+   "done_when": "예외를 받는 필터가 앞인 것을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`forward:` 컨트롤러를 만든다.",
+   "done_when": "우회되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "디스패치 타입 설정을 켠다.",
+   "done_when": "`FORWARD` 로그를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "거부 이벤트를 받아 로그를 남긴다.",
+   "done_when": "누가 막혔는지 찍었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 마지막 필터인가?",
+   "a": "앞 필터들이 인증을 채운 뒤여야 판단할 수 있어서다."
+  },
+  {
+   "q": "던진 예외는 누가 받나?",
+   "a": "바로 앞의 `ExceptionTranslationFilter` 다."
+  },
+  {
+   "q": "`forward` 로 어떻게 우회되나?",
+   "a": "기본 설정이 `FORWARD` 디스패치를 검사하지 않아서다."
+  },
+  {
+   "q": "그걸 막으면 무엇이 필요한가?",
+   "a": "`/error` 를 `permitAll` 로 열어야 한다."
+  },
+  {
+   "q": "인가 필터가 내는 이벤트는?",
+   "a": "허용과 거부 이벤트 둘이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
