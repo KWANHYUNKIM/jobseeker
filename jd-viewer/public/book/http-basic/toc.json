@@ -160,7 +160,7 @@
           "title": "그 사이에 끼는 TLS",
           "summary": "https 가 추가하는 왕복.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -175,7 +175,7 @@
           "title": "HTTP 의 버전들",
           "summary": "0.9 부터 3 까지, 무엇이 바뀌었나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
