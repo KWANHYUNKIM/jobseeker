@@ -232,7 +232,7 @@
           "title": "여기서 N+1 이 나온다",
           "summary": "1 + N + N.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -240,7 +240,7 @@
           "title": "V3 — 페치 조인",
           "summary": "쿼리 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -248,7 +248,7 @@
           "title": "V4 — DTO 로 바로 조회",
           "summary": "컬럼도 줄인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",

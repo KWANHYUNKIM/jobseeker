@@ -1,0 +1,148 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-v3",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "V3 — 페치 조인",
+ "summary": "쿼리 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "페치 조인으로 N 을 없앤다.",
+  "일반 조인과의 차이를 안다.",
+  "무엇이 안 바뀌는지 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5 가 1 이 된다.** **DTO 도 컨트롤러도 안 바꾼다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderRepository — 페치 조인",
+   "code": "public List<Order> findAllWithMemberDelivery() {\n    return em.createQuery(\n            \"select o from Order o\" +\n            \" join fetch o.member m\" +\n            \" join fetch o.delivery d\", Order.class)\n        .getResultList();\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러 — V3",
+   "code": "@GetMapping(\"/api/v3/simple-orders\")\npublic Result ordersV3() {\n    List<Order> orders = orderRepository.findAllWithMemberDelivery();\n\n    List<SimpleOrderDto> result = orders.stream()\n            .map(SimpleOrderDto::new)     // V2 와 같은 DTO\n            .toList();\n\n    return new Result(result);\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "페치 조인이 바꾸는 것",
+   "ascii": "   what fetch join changes\n\n   plain join\n     select o from Order o join o.member m\n     -> select o.* from orders o join member m\n     member is still a proxy. n+1 stays.\n\n   fetch join\n     select o from Order o join fetch o.member m\n     -> select o.*, m.* from orders o join member m\n     member arrives filled. no proxy, no n+1.\n\n   the word fetch decides which columns come back",
+   "note": "**`fetch` 한 단어가 컬럼을 정한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "일반 조인과 페치 조인",
+   "md": "**둘 다 SQL 에 `join` 이** 나간다. **`select` 절이** 다르다.\n\n**일반 조인**\n\n```java\n\"select o from Order o join o.member m\"\n```\n\n```sql\nselect o.order_id, o.member_id, ... from orders o\n  join member m on m.member_id = o.member_id\n```\n\n> **`m.*` 이 `select` 에 없다.** **조인은 조건에만** 쓰였다.\n>\n> **`order.member` 는 여전히 프록시**다. **N+1 이 그대로**다.\n\n**페치 조인**\n\n```java\n\"select o from Order o join fetch o.member m\"\n```\n\n```sql\nselect o.order_id, ..., m.member_id, m.name, m.city, ...\n  from orders o\n  join member m on m.member_id = o.member_id\n```\n\n> **`m.*` 이 `select` 에** 들어간다. **`Member` 가 값으로 채워져** 온다.\n>\n> **프록시가 아니다.** **`getName()` 을 불러도 쿼리가 안** 나간다.\n\n**`fetch` 는 JPA 표준이 아니라 JPQL 의 확장**이다.\n\n| | |\n|---|---|\n| **JPQL `join fetch`** | 하이버네이트·이클립스링크 다 지원 |\n| **`@EntityGraph`** | JPA 2.1 표준. 스프링 데이터에서 자주 쓴다 |\n| **`@BatchSize`** | 5.7절. 다른 접근 |\n\n> **「JPA 기본편」 10.5절**에서 다뤘다. **여기서는 쓰는 자리를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리 하나, 테이블 셋, 행 둘",
+   "ascii": "   one query, three tables, two rows\n\n   orders          member         delivery\n   4  ...          1  userA       4  서울\n   11 ...          8  userB       11 진주\n\n   joined into\n\n   order_id | name  | city\n   4        | userA | 서울\n   11       | userB | 진주\n\n   two orders in, two rows out. ManyToOne does not multiply.",
+   "note": "**`ManyToOne` 은 행을 안 늘린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "안 바뀐 것",
+   "md": "**DTO 가 그대로**다.\n\n```java\npublic SimpleOrderDto(Order order) {\n    name = order.getMember().getName();   // 그대로 둔다\n}\n```\n\n> **`getName()` 이 프록시를 안 깬다.** **이미 채워져** 있다.\n>\n> **DTO 코드를 안 고쳐도 되는 게** 중요하다. **리포지토리만 바꿨다.**\n\n**컨트롤러도 한 줄만** 바뀌었다.\n\n```java\n// V2\norderRepository.findAllByString(new OrderSearch());\n// V3\norderRepository.findAllWithMemberDelivery();\n```\n\n**응답 JSON 이 정확히 같다.**\n\n> **3.4절의 계약**이다. **1.1절에서 \"응답이 같아야 비교된다\" 고** 했다.\n>\n> **여기서 그게 성립**한다. **쿼리만 5 → 1** 이다.\n\n**엔티티를 그대로 받는 것도** 중요하다.\n\n| | |\n|---|---|\n| **`List<Order>` 를 받는다** | 다른 API 도 이 메서드를 쓸 수 있다 |\n| **DTO 는 컨트롤러가 만든다** | 화면이 바뀌어도 리포지토리는 그대로 |\n\n> **4.6절의 V4 가 이걸 버린다.** **그 대가를 4.7절에서** 잰다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "페치 조인의 제약",
+   "md": "**여기서는 안 걸리는데 5장에서 걸린다.** **미리 적어 둔다.**\n\n| 제약 | 여기 | 5장 |\n|---|---|---|\n| **별칭에 `where` 를 걸면 위험** | 안 건다 | 안 건다 |\n| **둘 이상의 컬렉션 페치 불가** | 컬렉션이 없다 | **걸린다** |\n| **페이징이 메모리로** | **안 걸린다** | **걸린다** |\n| **`distinct` 필요** | **안 걸린다** | **걸린다** |\n\n**\"별칭에 `where`\" 만 여기서 짚는다.**\n\n```java\n\"select o from Order o join fetch o.orderItems oi where oi.count > 1\"\n```\n\n> **컬렉션 일부만 담긴 `Order` 가** 온다.\n>\n> **`order.getOrderItems()` 가 조건에 맞는 것만** 들고 있다. **영속성 컨텍스트에 그 상태로** 올라간다.\n>\n> **다른 코드가 그 `Order` 를 꺼내면 컬렉션이 불완전**하다. **데이터가 사라진 것처럼** 보인다.\n>\n> **`ManyToOne` 페치 조인에는 이 문제가** 없다. **하나뿐이라 자를 게** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V3 ---\n\nGET /api/v3/simple-orders\n\n#   Hibernate:\n#     select o1_0.order_id,\n#            d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#            d1_0.status,\n#            m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#            m1_0.zipcode,\n#            o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       6 entities were loaded\n#   }\n\n#   200 OK\n#   {\n#     \"data\": [\n#       {\"orderId\": 4, \"name\": \"userA\",\n#        \"orderDate\": \"2026-09-09T15:12:03.331\",\n#        \"orderStatus\": \"ORDER\",\n#        \"address\": {\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"}},\n#       {\"orderId\": 11, \"name\": \"userB\", ...}\n#     ]\n#   }\n\n#   V2 와 완전히 같은 JSON\n#   쿼리는 5 -> 1\n\n# --- select 절에 무엇이 들었는지 ---\n\n#   o1_0.*  주문\n#   d1_0.*  배송   <- fetch 라서 들어왔다\n#   m1_0.*  회원   <- fetch 라서 들어왔다\n\n#   13개 컬럼이다\n\n# --- fetch 를 빼면 ---\n\nselect o from Order o join o.member m join o.delivery d\n\n#   Hibernate:\n#     select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#            o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n\n#   Session Metrics { 5 JDBC statements were executed }\n\n#   조인은 나갔는데 컬럼이 안 왔다\n#   그래서 N+1 이 그대로다\n\n#   fetch 한 단어 차이다\n\n# --- 프록시인지 확인 ---\n\nList<Order> orders = orderRepository.findAllWithMemberDelivery();\nSystem.out.println(orders.get(0).getMember().getClass());\n\n#   class jpabook.jpashop.domain.Member\n\n#   4.1절에서는 Member$HibernateProxy$8fk3lq 였다\n\nSystem.out.println(Hibernate.isInitialized(orders.get(0).getMember()));\n\n#   true\n\n# --- 행이 안 늘었는지 ---\n\nselect count(*) from orders o\n  join member m on m.member_id = o.member_id\n  join delivery d on d.delivery_id = o.delivery_id;\n\n#   COUNT(*)\n#   --------\n#   2\n\n#   주문 2건 -> 2행\n#   ManyToOne 과 OneToOne 은 행을 안 늘린다\n\n# --- 페이징도 된다 ---\n\nGET /api/v3/simple-orders?offset=1&limit=1\n\n#   Hibernate: select ... from orders o1_0 join delivery ... join member ...\n#              offset ? rows fetch first ? rows only\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   {\"data\": [{\"orderId\": 11, \"name\": \"userB\", ...}]}\n\n#   경고가 없다. SQL 에 페이징이 들어갔다\n\n#   5.6절에서 이게 안 된다\n\n# --- 4장의 숫자 ---\n\n#   V1  쿼리 5   엔티티 노출\n#   V2  쿼리 5   DTO\n#   V3  쿼리 1   DTO\n\n# --- 다음 절에서 ---\n\n#   컬럼도 줄인다\n#   13개를 5개로",
+   "note": "**쿼리 1개**다. **`select` 절에 `o1_0.*`·`d1_0.*`·`m1_0.*` 13개 컬럼**이 들어왔다.\n\n**`fetch` 를 빼면 조인은 나가는데 컬럼이 안 와서 다시 5개**다. **한 단어 차이**다.\n\n**`getMember().getClass()` 가 `Member`** 다. **프록시가 아니다.**\n\n**주문 2건에 2행**이다. **`ManyToOne` 은 행을 안 늘린다.**\n\n**페이징도 SQL 에 그대로** 들어간다. **경고가 없다** — **5.6절에서는 안 된다.**"
+  }
+ ],
+ "recap": [
+  "**페치 조인으로 5 가 1** 이 된다.",
+  "**DTO 와 컨트롤러를 안 고친다** — 리포지토리만 바꿨다.",
+  "**일반 조인은 `select` 절에 컬럼이 안** 들어간다.",
+  "**`fetch` 한 단어가 N+1 을 없앤다.**",
+  "**페치 조인된 `Member` 는 프록시가 아니다.**",
+  "**응답 JSON 이 V2 와 정확히** 같다.",
+  "**`ManyToOne`·`OneToOne` 은 행을 안 늘린다** — 페이징이 된다.",
+  "**엔티티를 그대로 받아 다른 API 도 쓸 수** 있다.",
+  "**별칭에 `where` 를 거는 것은 컬렉션에서 위험**하다."
+ ],
+ "drills": [
+  {
+   "task": "V3 를 만들고 쿼리를 센다.",
+   "done_when": "1개인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`fetch` 를 빼고 다시 부른다.",
+   "done_when": "5개로 돌아가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getMember().getClass()` 를 출력한다.",
+   "done_when": "프록시가 아닌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "V3 에 페이징을 건다.",
+   "done_when": "SQL 에 `offset`/`fetch first` 가 들어간 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "일반 조인과 페치 조인의 차이는?",
+   "a": "`select` 절에 연관 엔티티 컬럼이 들어가느냐다."
+  },
+  {
+   "q": "V3 에서 DTO 를 왜 안 고쳤나?",
+   "a": "`getName()` 이 이미 채워진 값을 읽어 쿼리가 안 나가서다."
+  },
+  {
+   "q": "왜 행이 안 느나?",
+   "a": "`ManyToOne`·`OneToOne` 은 한 행에 하나만 대응해서다."
+  },
+  {
+   "q": "페치 조인의 별칭에 `where` 를 걸면?",
+   "a": "컬렉션 일부만 담긴 엔티티가 영속성 컨텍스트에 올라간다."
+  },
+  {
+   "q": "V3 에서 페이징이 왜 되나?",
+   "a": "행이 안 늘어 SQL 의 행 단위 페이징이 그대로 의미를 가져서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "페치 조인",
+   "def": "JPQL 의 `join fetch`. 연관 엔티티의 컬럼까지 `select` 에 넣어 한 번에 채워 온다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

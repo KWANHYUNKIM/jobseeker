@@ -1,0 +1,136 @@
+{
+ "book": "jpa-app-2",
+ "id": "n-plus-one-simple",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "여기서 N+1 이 나온다",
+ "summary": "1 + N + N.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "N+1 을 정확히 센다.",
+  "`EAGER` 가 왜 답이 아닌지 안다.",
+  "영속성 컨텍스트가 몇 개를 가려 주는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 9.4절에서 31 을 세고 안 고쳤다.** **여기서 이름을 붙인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이 샘플에서 센 1+N",
+   "ascii": "   1 + n, counted on this sample\n\n   1   select from orders               2 rows come back\n   +\n   2   select from member    per row\n   2   select from delivery  per row\n\n   = 5 for 2 orders\n   = 21 for 10 orders\n   = 201 for 100 orders\n\n   the 1 does not matter. the n does.",
+   "note": "**1 은 중요하지 않다. N 이 중요하다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 \"N+1\" 이라 부르나",
+   "md": "**목록 쿼리 1개**가 나가고, **그 결과 N 건마다 추가 쿼리**가 나간다.\n\n```\n1 + N\n```\n\n**여기서는 연관관계가 둘이라 `1 + 2N`** 이다.\n\n| 주문 건수 | 쿼리 |\n|---|---|\n| 2 | **5** |\n| 10 | **21** |\n| 100 | **201** |\n| 1000 | **2001** |\n\n> **선형으로** 는다. **그게 문제**다.\n>\n> **데이터가 열 배면 쿼리도 열 배**다. **정상적인 시스템은 그러면 안 된다.**\n\n**\"1\" 이 중요하지 않은 이유**\n\n> **`1 + N` 이든 `2 + N` 이든 같다.** **N 이 지배**한다.\n>\n> **그래서 4.5절의 목표가 \"N 을 없애는 것\"** 이다. **1로 만드는 게 아니라.**\n\n**주의할 점 하나** — **지연 로딩이라서 나는 게** 아니다.\n\n> **즉시 로딩이어도** 난다. **오히려 더 나쁘다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "`EAGER` 가 왜 답이 아닌가",
+   "ascii": "   why EAGER does not fix it\n\n   from a single find(id)\n     one join. fine.\n\n   from a jpql list query\n     jpql is translated as written\n     select o from Order o   ->   select ... from orders\n     then hibernate notices member must be eager\n     then it fires one select per row anyway\n\n   eager makes n+1 unpredictable instead of removing it",
+   "note": "**없애는 게 아니라 예측 불가능하게** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "즉시 로딩으로 바꾸면",
+   "md": "```java\n@ManyToOne(fetch = EAGER)   // LAZY 를 EAGER 로\nprivate Member member;\n```\n\n**`em.find()` 하나면 조인이** 나간다.\n\n```sql\nselect o.*, m.* from orders o join member m on ...\n```\n\n> **좋아 보인다.**\n\n**JPQL 목록 조회는 다르다.**\n\n```java\nem.createQuery(\"select o from Order o\", Order.class).getResultList();\n```\n\n> **JPQL 은 적힌 그대로 SQL 이** 된다. **`select ... from orders`** 다.\n>\n> **그 다음에 하이버네이트가 \"`member` 는 `EAGER` 인데?\" 를** 깨닫는다.\n> **행마다 `select` 를** 날린다.\n>\n> **결국 `1 + N`** 이다. **「JPA 기본편」 8.4절**의 그것이다.\n\n**더 나쁜 점 셋**\n\n| | |\n|---|---|\n| **끌 수가 없다** | 필요 없는 API 도 가져온다 |\n| **연쇄된다** | `member` 가 또 `EAGER` 를 가지면 |\n| **어디서 나가는지 모른다** | 코드에 호출이 없다 |\n\n> **지연 로딩은 최소한 \"`getName()` 을 불렀으니 나갔구나\" 가** 보인다.\n> **즉시 로딩은 아무 데서나** 나간다.\n\n**규칙**\n\n> **모든 연관관계를 `LAZY` 로** 둔다. **필요한 곳에서 페치 조인으로 가져온다.**\n>\n> **`@ManyToOne` 과 `@OneToOne` 의 기본값이 `EAGER`** 다. **명시적으로 바꿔야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "영속성 컨텍스트가 가리는 것",
+   "md": "**같은 회원이 두 번 나오면 쿼리가 한 번만** 나간다.\n\n```\n주문 4건, 회원 2명 (한 명이 2건씩)\n\n1 + 2(회원) + 4(배송) = 7\n\n1 + 4 + 4 = 9 가 아니다\n```\n\n> **1차 캐시**다(「JPA 기본편」 2.3절). **같은 `id` 면 안 나간다.**\n>\n> **3.2절에서 회원을 서로 다르게 만든 이유**가 이것이다. **같았으면 N+1 이 덜 보였다.**\n\n**이게 최적화로 착각되기** 쉽다.\n\n| 데이터 | 쿼리 |\n|---|---|\n| 주문 100건, 회원 100명 | **201** |\n| 주문 100건, 회원 2명 | **103** |\n\n> **같은 코드인데 데이터에 따라 두 배 차이**다.\n>\n> **개발 DB 에서 회원 3명으로 테스트하면 안 보인다.** **운영에서 터진다.**\n>\n> **3.2절에서 샘플 모양을 따진 이유**가 이것이기도 하다.\n\n**배송은 안 가려진다.**\n\n> **`Delivery` 는 주문마다 하나**다(1편 3.6절). **`id` 가 전부 다르다.**\n>\n> **그래서 주문 건수만큼 정직하게** 나간다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V2, 주문 2건 ---\n\nGET /api/v2/simple-orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [1]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [4]\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [8]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [11]\n\n#   Session Metrics { 5 JDBC statements were executed }\n\n#   1 + 2 + 2 = 5\n\n# --- 같은 회원의 주문을 하나 더 넣으면 ---\n\n#   userA 가 주문 2건, userB 가 1건. 총 3건\n\nGET /api/v2/simple-orders\n\n#   Hibernate: select ... from orders o1_0\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [1]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [4]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [15]\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?  [8]\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?  [11]\n\n#   Session Metrics { 6 JDBC statements were executed }\n\n#   1 + 2 + 3 = 6\n\n#   주문이 3건인데 member 쿼리는 2개다\n#   userA 의 두 번째 주문에서 1차 캐시가 막았다\n\n#   delivery 는 3개 전부 나갔다. id 가 다 다르다\n\n# --- EAGER 로 바꾸면 ---\n\n@ManyToOne(fetch = EAGER)\nprivate Member member;\n\nGET /api/v2/simple-orders\n\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?  [1]\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?  [8]\n\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n\n#   Session Metrics { 5 JDBC statements were executed }\n\n#   똑같이 5개다\n\n#   조인이 안 나갔다\n#   JPQL 이 적힌 대로 번역되고 그 뒤에 EAGER 를 채운 것이다\n\n# --- em.find 는 다르다 ---\n\nem.find(Order.class, 4L);\n\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, m1_0.member_id,\n#              m1_0.city, m1_0.name, m1_0.street, m1_0.zipcode,\n#              o1_0.order_date, o1_0.status\n#              from orders o1_0\n#              join member m1_0 on m1_0.member_id=o1_0.member_id\n#              where o1_0.order_id=?\n\n#   조인 하나로 끝났다\n\n#   같은 EAGER 인데 경로에 따라 다르다\n#   그래서 예측이 안 된다\n\n# --- LAZY 로 되돌린다 ---\n\n@ManyToOne(fetch = LAZY)\nprivate Member member;\n\n#   응답 JSON 은 전부 같았다\n#   3.4절의 계약 그대로다\n\n#   바뀐 건 쿼리가 나가는 방식뿐이다\n\n# --- 주문을 100건으로 늘리면 (계산) ---\n\n#   회원 100명    1 + 100 + 100 = 201\n#   회원 2명      1 +   2 + 100 = 103\n\n#   같은 코드, 두 배 차이\n#   개발 DB 로는 안 보인다\n\n# --- 다음 절에서 ---\n\n#   N 을 없앤다. 1 로 만드는 게 아니라 N 을 없앤다",
+   "note": "**주문 2건에 쿼리 5개** — `1 + 2 + 2` 다.\n\n**같은 회원의 주문을 하나 더 넣으면 6개**다. **`member` 쿼리가 2개**다 — **1차 캐시가 막았다.** **`delivery` 는 3개 전부** 나갔다.\n\n**`EAGER` 로 바꿔도 5개**다. **조인이 안 나갔다** — **JPQL 이 적힌 대로 번역되고 그 뒤에 채운 것**이다.\n\n**`em.find` 는 조인 하나로** 끝난다. **같은 `EAGER` 인데 경로에 따라 다르다.**\n\n**응답 JSON 은 전부 같았다.** **바뀐 건 쿼리가 나가는 방식뿐**이다."
+  }
+ ],
+ "recap": [
+  "**목록 1개 + 건마다 추가 쿼리**가 N+1 이다.",
+  "**연관관계가 둘이라 `1 + 2N`** 이다.",
+  "**주문 100건이면 201개** — 선형으로 는다.",
+  "**\"1\" 은 중요하지 않다** — N 이 지배한다.",
+  "**`EAGER` 로 바꿔도 JPQL 목록 조회에서는 그대로** 난다.",
+  "**`em.find` 는 조인이 나가고 JPQL 은 안** 나간다 — 예측 불가.",
+  "**모든 연관관계를 `LAZY` 로** 두고 필요한 곳에서 페치 조인한다.",
+  "**1차 캐시가 같은 `id` 의 두 번째 조회를** 막는다.",
+  "**개발 DB 의 적은 회원 수가 N+1 을** 가린다."
+ ],
+ "drills": [
+  {
+   "task": "같은 회원의 주문을 하나 더 넣는다.",
+   "done_when": "`member` 쿼리가 안 느는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`member` 를 `EAGER` 로 바꾼다.",
+   "done_when": "쿼리 개수가 그대로인 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "`em.find(Order.class, id)` 를 `EAGER` 상태에서 날린다.",
+   "done_when": "조인이 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "주문 100건일 때의 쿼리 수를 계산한다.",
+   "done_when": "회원 수에 따라 201 과 103 을 계산했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "여기서 N+1 의 정확한 식은?",
+   "a": "`1 + 2N` 이다. 연관관계가 `member` 와 `delivery` 둘이다."
+  },
+  {
+   "q": "`EAGER` 가 왜 답이 아닌가?",
+   "a": "JPQL 목록 조회는 적힌 대로 번역된 뒤 행마다 select 가 나가 결국 N+1 이다."
+  },
+  {
+   "q": "`em.find` 와 JPQL 이 왜 다른가?",
+   "a": "`em.find` 는 하이버네이트가 조인을 만들 수 있고 JPQL 은 적힌 SQL 이 먼저 나간다."
+  },
+  {
+   "q": "1차 캐시가 무엇을 가리나?",
+   "a": "같은 식별자의 두 번째 조회 쿼리를 막아 N+1 을 덜 보이게 한다."
+  },
+  {
+   "q": "4.5절의 목표는?",
+   "a": "N 을 없애는 것이다. 쿼리를 1로 만드는 게 목표가 아니다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "N+1",
+   "def": "목록 조회 1건 뒤에 결과 건수 N 만큼 추가 쿼리가 나가는 현상."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  }
+ ]
+}

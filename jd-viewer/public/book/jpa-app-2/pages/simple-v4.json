@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-v4",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "V4 — DTO 로 바로 조회",
+ "summary": "컬럼도 줄인다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JPQL 의 `new` 로 DTO 를 직접 만든다.",
+  "무엇을 얻고 무엇을 잃는지 안다.",
+  "DTO 를 어디에 둘지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**쿼리는 이미 1개**다. **여기서 줄이는 건 컬럼**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderSimpleQueryRepository",
+   "code": "package jpabook.jpashop.repository.order.simplequery;\n\n@Repository\n@RequiredArgsConstructor\npublic class OrderSimpleQueryRepository {\n\n    private final EntityManager em;\n\n    public List<OrderSimpleQueryDto> findOrderDtos() {\n        return em.createQuery(\n                \"select new jpabook.jpashop.repository.order.simplequery\" +\n                \".OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)\" +\n                \" from Order o\" +\n                \" join o.member m\" +\n                \" join o.delivery d\", OrderSimpleQueryDto.class)\n            .getResultList();\n    }\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderSimpleQueryDto",
+   "code": "package jpabook.jpashop.repository.order.simplequery;\n\n@Data\npublic class OrderSimpleQueryDto {\n    private Long orderId;\n    private String name;\n    private LocalDateTime orderDate;\n    private OrderStatus orderStatus;\n    private Address address;\n\n    public OrderSimpleQueryDto(Long orderId, String name,\n                               LocalDateTime orderDate,\n                               OrderStatus orderStatus, Address address) {\n        this.orderId = orderId;\n        this.name = name;\n        this.orderDate = orderDate;\n        this.orderStatus = orderStatus;\n        this.address = address;\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "컬럼 개수",
+   "ascii": "   how many columns cross the wire\n\n   v3  select o.*, m.*, d.*\n       order_id, delivery_id, member_id, order_date, status,\n       m.member_id, m.name, m.city, m.street, m.zipcode,\n       d.delivery_id, d.city, d.street, d.zipcode, d.status\n       15 columns, and 6 entities get managed\n\n   v4  select o.order_id, m.name, o.order_date, o.status, d.city, ...\n       7 columns, and nothing gets managed",
+   "note": "**15개가 7개**가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`new` 절의 규칙",
+   "md": "**① 패키지 이름을 전부 적는다**\n\n```\nselect new jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto(...)\n```\n\n> **JPQL 은 import 를** 모른다. **완전한 이름**이 필요하다.\n>\n> **길다.** **그래서 오타가 나기 쉽고 컴파일러가 안 잡아 준다.**\n\n**② 생성자가 시그니처와 맞아야 한다**\n\n> **파라미터 순서·타입이 어긋나면 런타임 오류**다.\n>\n> **`Address` 처럼 임베디드 타입은 그대로 넘길 수** 있다.\n\n**③ `join fetch` 가 아니라 `join`** 이다\n\n```\nfrom Order o join o.member m join o.delivery d\n```\n\n> **엔티티를 안 만든다.** **`fetch` 할 게 없다.**\n>\n> **`fetch` 를 쓰면 오류**다 — **`query specified join fetching, but the owner of the fetched association was not present in the select list`**.\n\n**④ 별칭으로 컬럼을 직접 고른다**\n\n```\nm.name, o.orderDate, d.address\n```\n\n> **필요한 것만 `select` 에** 넣는다. **이게 V4 의 값**이다.\n\n**Querydsl 이면 ②③ 이 사라진다.**\n\n```java\nqueryFactory.select(Projections.constructor(OrderSimpleQueryDto.class,\n        order.id, member.name, order.orderDate, order.status,\n        delivery.address))\n```\n\n> **문자열이 아니라 코드**다. **컴파일러가 잡아 준다.** **7.2절**에서 다룬다."
+  },
+  {
+   "type": "figure",
+   "caption": "V4 가 포기하는 것",
+   "ascii": "   what v4 gives up\n\n   persistence context\n     v3  entities are managed. dirty checking works.\n     v4  dtos. changing one changes nothing.\n\n   reuse\n     v3  any api can call findAllWithMemberDelivery\n     v4  only this api wants this dto\n\n   layering\n     v3  repository knows entities\n     v4  repository knows the api response shape",
+   "note": "**셋을 준다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "잃는 것 셋",
+   "md": "**① 영속성 컨텍스트 밖이다**\n\n```java\nList<OrderSimpleQueryDto> dtos = repository.findOrderDtos();\ndtos.get(0).setName(\"바꿔도\");   // 아무 일도 안 일어난다\n```\n\n> **변경 감지가 없다.** **조회 전용**이다.\n>\n> **1차 캐시도 없다.** **같은 주문을 두 번 조회하면 두 번** 나간다.\n>\n> **조회 API 니까 괜찮다.** **의도한 것**이다.\n\n**② 재사용이 안 된다**\n\n| | |\n|---|---|\n| `findAllWithMemberDelivery()` | **어느 API 든 쓴다** |\n| `findOrderDtos()` | **이 API 전용** |\n\n> **화면에 필드가 하나 추가되면 이 메서드를 고쳐야** 한다.\n>\n> **V3 는 안 고쳐도 된다** — **DTO 만 고친다.**\n\n**③ 리포지토리가 API 를 안다**\n\n> **`OrderSimpleQueryRepository` 가 응답 모양을** 안다.\n>\n> **계층이 섞였다.** **그래서 패키지를 나눴다**(3.4절, 4.8절).\n\n**DTO 를 리포지토리 옆에 둔 이유**가 여기 있다.\n\n> **`new` 절이 클래스 이름을 직접** 부른다.\n>\n> **컨트롤러 중첩 클래스로 두면 리포지토리 → 컨트롤러 의존**이 생긴다. **거꾸로**다.\n>\n> **그래서 `OrderSimpleQueryDto` 는 `repository.order.simplequery` 패키지**에 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V4 ---\n\nGET /api/v4/simple-orders\n\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       0 entities were loaded\n#   }\n\n#   200 OK\n#   {\n#     \"data\": [\n#       {\"orderId\": 4, \"name\": \"userA\",\n#        \"orderDate\": \"2026-09-09T15:12:03.331\",\n#        \"orderStatus\": \"ORDER\",\n#        \"address\": {\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"}},\n#       {\"orderId\": 11, \"name\": \"userB\", ...}\n#     ]\n#   }\n\n#   V3 와 완전히 같은 JSON\n\n# --- V3 와 select 절을 비교 ---\n\n#   V3  15개 컬럼\n#       o.order_id, o.delivery_id, o.member_id, o.order_date, o.status,\n#       m.member_id, m.name, m.city, m.street, m.zipcode,\n#       d.delivery_id, d.city, d.street, d.zipcode, d.status\n\n#   V4  7개 컬럼\n#       o.order_id, m.name, o.order_date, o.status,\n#       d.city, d.street, d.zipcode\n\n#   member_id, zipcode 중복, delivery.status 가 빠졌다\n\n# --- entities were loaded 를 보라 ---\n\n#   V3  6 entities were loaded\n#   V4  0 entities were loaded\n\n#   V4 는 엔티티를 안 만든다\n#   영속성 컨텍스트가 비어 있다\n\n# --- 그래서 변경이 안 된다 ---\n\n@Transactional\npublic void tryUpdate() {\n    List<OrderSimpleQueryDto> dtos = repo.findOrderDtos();\n    dtos.get(0).setName(\"바꿔도\");\n}\n\n#   (커밋)\n\n#   UPDATE 가 안 나간다\n\n#   V3 였다면\n\n@Transactional\npublic void tryUpdate2() {\n    List<Order> orders = orderRepository.findAllWithMemberDelivery();\n    orders.get(0).getMember().setName(\"바꾸면\");\n}\n\n#   Hibernate: update member set city=?, name=?, street=?, zipcode=?\n#              where member_id=?\n\n#   나간다\n\n# --- fetch 를 쓰면 어떻게 되나 ---\n\nselect new ...OrderSimpleQueryDto(...) from Order o join fetch o.member m\n\n#   org.hibernate.query.SemanticException:\n#     query specified join fetching, but the owner of the fetched\n#     association was not present in the select list\n\n#   엔티티를 안 select 하는데 fetch 할 대상이 없다\n\n# --- 응답 크기 ---\n\n$ curl -s localhost:8080/api/v3/simple-orders | wc -c\n     281\n$ curl -s localhost:8080/api/v4/simple-orders | wc -c\n     281\n\n#   같다. JSON 이 같으니 당연하다\n\n#   줄어든 건 DB 에서 오는 컬럼이지 나가는 JSON 이 아니다\n\n# --- 4장의 숫자 ---\n\n#   V1  쿼리 5   컬럼 5+   엔티티 노출\n#   V2  쿼리 5   컬럼 5+   DTO\n#   V3  쿼리 1   컬럼 15   DTO. 엔티티 조회\n#   V4  쿼리 1   컬럼 7    DTO. 직접 조회\n\n# --- 다음 절에서 ---\n\n#   V3 와 V4 중 무엇을 쓸지 정한다",
+   "note": "**쿼리 1개에 컬럼 7개**다. **V3 는 15개**였다.\n\n**`entities were loaded` 가 `0`** 이다. **엔티티를 안 만든다.**\n\n**그래서 DTO 를 고쳐도 `UPDATE` 가 안** 나간다. **V3 였으면 나간다.**\n\n**`fetch` 를 쓰면 `SemanticException`** 이다 — **엔티티를 `select` 안 하는데 fetch 할 대상이 없다.**\n\n**응답 크기는 281 로 같다.** **줄어든 건 DB 에서 오는 컬럼이지 나가는 JSON 이** 아니다.\n\n**다음 절에서 V3 와 V4 중 무엇을 쓸지 정한다.**"
+  }
+ ],
+ "recap": [
+  "**JPQL 의 `new` 절로 DTO 를 직접** 만든다.",
+  "**컬럼이 15개에서 7개**로 준다.",
+  "**패키지 이름을 전부 적어야** 한다 — 컴파일러가 안 잡아 준다.",
+  "**`join fetch` 를 쓰면 `SemanticException`** 이다.",
+  "**`entities were loaded` 가 0** — 영속성 컨텍스트 밖이다.",
+  "**변경 감지가 없다** — 조회 전용이다.",
+  "**재사용이 안 된다** — 이 API 전용이다.",
+  "**리포지토리가 응답 모양을 안다** — 계층이 섞인다.",
+  "**DTO 를 리포지토리 옆에 둔다** — `new` 절이 클래스를 직접 부른다."
+ ],
+ "drills": [
+  {
+   "task": "V4 를 만들고 `select` 컬럼을 센다.",
+   "done_when": "7개인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`entities were loaded` 를 V3·V4 에서 비교한다.",
+   "done_when": "6 과 0 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`join fetch` 로 바꿔 본다.",
+   "done_when": "`SemanticException` 을 확인하고 되돌렸다.",
+   "minutes": 10
+  },
+  {
+   "task": "DTO 를 컨트롤러 중첩 클래스로 옮겨 본다.",
+   "done_when": "리포지토리가 컨트롤러를 의존하게 되는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`new` 절에 왜 전체 패키지 이름을 적나?",
+   "a": "JPQL 이 import 를 모르기 때문이다."
+  },
+  {
+   "q": "왜 `join fetch` 를 못 쓰나?",
+   "a": "엔티티를 `select` 하지 않아 fetch 할 대상이 없어서다."
+  },
+  {
+   "q": "`entities were loaded` 가 0 이면 무슨 뜻인가?",
+   "a": "영속성 컨텍스트가 관리하는 엔티티가 없다. 변경 감지가 안 된다."
+  },
+  {
+   "q": "V4 가 재사용이 안 되는 이유는?",
+   "a": "리포지토리 메서드가 이 API 의 응답 모양에 묶여 있어서다."
+  },
+  {
+   "q": "응답 크기가 왜 V3 와 같나?",
+   "a": "JSON 이 같기 때문이다. 줄어든 건 DB 에서 오는 컬럼이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
