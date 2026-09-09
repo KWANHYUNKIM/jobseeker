@@ -257,7 +257,7 @@
           "title": "@Transactional 테스트",
           "summary": "테스트가 끝나면 롤백한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -265,7 +265,7 @@
           "title": "롤백과 커밋",
           "summary": "@Commit 이 필요한 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -273,7 +273,7 @@
           "title": "임베디드 모드 DB",
           "summary": "테스트가 DB 를 띄운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",

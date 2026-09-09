@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "test-transactional",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "@Transactional 테스트",
+ "summary": "테스트가 끝나면 롤백한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Transactional` 로 테스트를 격리한다.",
+  "왜 지우지 않아도 되는지 안다.",
+  "`instanceof` 줄을 지운다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**지우지 않고 없던 일로** 만든다. **4장의 답**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션 하나",
+   "code": "@Transactional\n@SpringBootTest\nclass ItemRepositoryTest {\n\n    @Autowired\n    ItemRepository itemRepository;\n\n    // @AfterEach 가 통째로 사라졌다\n\n    @Test\n    void findItems() {\n        // 그대로\n    }\n}",
+   "note": "**`@AfterEach` 가 사라졌다.** `instanceof` 도, `delete from item` 도, `JdbcTemplate` 주입도.\n\n**2.5절에서 \"이 줄이 규칙을 어기고 있다\" 고 했던 것**을 지금 지웠다.\n\n> **테스트가 다시 기술을 모른다.** **여섯 구현이 같은 시험지**를 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "지우기와 롤백",
+   "ascii": "   without @Transactional          with @Transactional\n   ----------------------          -------------------\n   begin                           begin\n   insert  commit                  insert\n   select  commit                  select\n   delete  commit                  ...\n                                   rollback\n\n   rows are gone because i          rows are gone because\n   deleted them                     they were never committed",
+   "note": "**오른쪽은 커밋이 아예 없었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트에서 `@Transactional` 은 다르게 동작한다",
+   "md": "**서비스에 붙였을 때와 정반대**다.\n\n| 어디에 | 끝나면 |\n|---|---|\n| 서비스 | **커밋** |\n| **테스트** | **롤백** |\n\n**스프링 테스트가 일부러 그렇게** 만들었다. **테스트가 성공해도 롤백**한다.\n\n**이렇게 돌아간다.**\n\n```\n1  테스트 시작 전   트랜잭션 시작\n2  테스트 실행      insert, select, update ... (커밋 안 함)\n3  테스트 종료      롤백\n```\n\n**2번에서 넣은 행을 3번이 없던 일로** 만든다.\n\n> **1편 5.5절에서 배운 트랜잭션 AOP** 가 그대로 쓰인다. 다만 **`TransactionalTestExecutionListener`** 가 **끝에서 커밋 대신 롤백**을 부른다.\n\n**직접 지우기와 비교**한다.\n\n| | `delete` | `@Transactional` |\n|---|---|---|\n| 테이블 열 개면 | **열 줄** | **그대로** |\n| 외래 키 | **순서를 맞춘다** | **상관없다** |\n| 시퀀스 | **안 돌아간다** | **안 돌아간다** |\n| 테스트가 SQL 을 아나 | **안다** | **모른다** |\n| 속도 | 지우는 SQL 이 는다 | **커밋조차 안 한다** |\n\n> **시퀀스만 똑같이 안 돌아간다.** **H2 도 오라클도 시퀀스는 트랜잭션 밖**이다 — 롤백해도 번호는 소비된다. **id 값을 기대값에 쓰지 않는 것**이 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 커밋 안 한 것이 조회되나",
+   "md": "**넣고 바로 조회하는데 왜 보이나.** 커밋을 안 했는데.\n\n**같은 커넥션이기 때문**이다.\n\n**1편 3.4절의 격리 수준**을 떠올린다. **커밋 안 한 데이터는 다른 커넥션이 못 본다**(READ COMMITTED). **같은 커넥션은 본다.**\n\n**그리고 테스트 코드와 리포지토리가 같은 커넥션을 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "하나의 커넥션",
+   "ascii": "   test thread\n   -----------\n   TransactionSynchronizationManager\n        con0  (bound to this thread)\n             |\n        +----+-----+\n        |          |\n     test code   repository\n\n   both see con0, so both see uncommitted rows\n   1편 5.4절의 그 그림이다",
+   "note": "**1편 5.4절의 트랜잭션 동기화 매니저**가 이것을 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그래서 놓치는 것",
+   "md": "**같은 커넥션이라 편한데, 같은 커넥션이라 못 보는 것**이 있다.\n\n| 못 잡는 것 | 왜 |\n|---|---|\n| **커밋 시점의 제약 위반** | `DEFERRABLE` 제약은 커밋 때 검사된다 |\n| **다른 커넥션과의 락 경합** | 커넥션이 하나뿐이다 |\n| **트리거·커밋 훅** | 커밋을 안 한다 |\n| **`@Transactional` 전파 문제** | 테스트가 이미 트랜잭션 안이다 |\n\n**마지막이 이 책에서 중요**하다.\n\n```java\n@Transactional          // 테스트\nvoid 테스트() {\n    service.어떤일();    // 여기도 @Transactional\n}\n```\n\n**서비스의 트랜잭션이 새로 안 생긴다.** **테스트의 것에 참여**한다. **11장 전파**가 그 이야기다.\n\n> **10~12장을 읽고 나면 이 절을 다시** 보게 된다. **테스트에 `@Transactional` 을 붙이는 순간 전파 실험이 다 망가진다** — 그래서 12장 예제는 **테스트에 안 붙인다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 트랜잭션 로그",
+   "sql": "# --- save() ---\n\n#   Begin transaction for test context\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection to manual commit\n\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n#   {1: 'itemA', 2: 10000, 3: 10}\n#   generated key = 1\n\n#   [select id, item_name, price, quantity from item where id = ?]\n#   {1: 1}\n#   -> Item(id=1, itemName=itemA, ...)\n\n#   커밋 안 했는데 조회됐다. 같은 커넥션이다.\n\n#   Rolled back transaction for test\n#   Releasing JDBC Connection [conn0]\n\n#   (delete 가 없다)\n\n# --- 다음 테스트 findItems() ---\n\n#   Begin transaction for test context\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn0]\n\n#   [insert into item ...] x3\n#   [select id, item_name, price, quantity from item]\n#   -> 3 rows\n\n#   Rolled back transaction for test\n\n# --- 몇 번을 돌려도 3 rows ---\n\n# --- 그런데 id 를 보면 ---\n#   1회차: id 1,2,3\n#   2회차: id 4,5,6\n\n# 시퀀스는 롤백 밖이다\n\n# --- 테스트가 끝난 뒤 DB 를 직접 열어 보면 ---\nselect count(*) from item;\n#   -> 0",
+   "note": "**`Rolled back` 다음에 `delete` 가 없다.** **지우는 SQL 이 하나도 안 나갔는데 테이블이 비었다.**\n\n**`Switching JDBC Connection to manual commit`** 이 1편 3.2절에서 손으로 `setAutoCommit(false)` 하던 그 줄이다.\n\n**커밋 안 한 행이 조회된다** — 같은 `conn0` 이다.\n\n**시퀀스만 여전히 큰다.** **롤백으로도 못 되돌리는 유일한 것**이다.\n\n**다음 절에서 이 롤백을 일부러 끄는 경우**를 본다."
+  }
+ ],
+ "recap": [
+  "**`@Transactional` 한 줄**로 격리한다.",
+  "**`@AfterEach` 가 통째로 사라진다.**",
+  "**테스트에서는 성공해도 롤백**한다 — 서비스와 정반대다.",
+  "**`TransactionalTestExecutionListener`** 가 커밋 대신 롤백을 부른다.",
+  "**지우는 SQL 이 하나도 안 나간다.**",
+  "**커밋 안 한 행이 조회되는 것**은 같은 커넥션이기 때문이다.",
+  "**1편 5.4절의 트랜잭션 동기화 매니저**가 그 커넥션을 묶는다.",
+  "**시퀀스는 롤백 밖**이다 — id 를 기대값에 쓰지 않는다.",
+  "**전파 실험은 이걸 붙이면 망가진다** — 12장은 안 붙인다."
+ ],
+ "drills": [
+  {
+   "task": "`@Transactional` 을 붙이고 `@AfterEach` 를 지운다.",
+   "done_when": "여러 번 돌려도 초록인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그에서 `Rolled back` 을 찾는다.",
+   "done_when": "`delete` 가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트 후 DB 를 직접 조회한다.",
+   "done_when": "0 건인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "id 를 회차마다 찍어 본다.",
+   "done_when": "롤백해도 시퀀스가 커지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트의 `@Transactional` 은 끝나면 무엇을 하나?",
+   "a": "롤백한다. 서비스에 붙였을 때와 정반대다."
+  },
+  {
+   "q": "커밋을 안 했는데 왜 조회되나?",
+   "a": "테스트 코드와 리포지토리가 같은 커넥션을 쓰기 때문이다."
+  },
+  {
+   "q": "직접 지우기보다 나은 점은?",
+   "a": "테이블 수·외래 키 순서와 무관하고, 테스트가 SQL 을 몰라도 된다."
+  },
+  {
+   "q": "롤백해도 안 돌아가는 것은?",
+   "a": "시퀀스다. 트랜잭션 밖에서 번호를 소비한다."
+  },
+  {
+   "q": "이 방식이 못 잡는 것은?",
+   "a": "커밋 시점 제약, 다른 커넥션과의 락 경합, 트랜잭션 전파 동작이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management in Tests",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

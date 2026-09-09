@@ -1,0 +1,162 @@
+{
+ "book": "spring-db-2",
+ "id": "test-rollback-commit",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "롤백과 커밋",
+ "summary": "@Commit 이 필요한 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "롤백을 끄는 방법을 안다.",
+  "언제 커밋이 필요한지 안다.",
+  "그 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**롤백이 기본**인데, **일부러 남기고 싶을 때**가 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 조합",
+   "ascii": "   @Transactional            rollback at the end   (default)\n   @Transactional @Commit    commit at the end\n   @Transactional @Rollback(false)   same as @Commit\n\n   no annotation at all      every statement commits as it runs\n\n\n   per method too\n   --------------\n   class @Transactional\n     method @Commit      this one commits, the rest roll back",
+   "note": "**메서드가 클래스를 이긴다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "커밋시키기",
+   "code": "@Transactional\n@SpringBootTest\nclass ItemRepositoryTest {\n\n    @Test\n    @Commit                       // 이것만 커밋\n    void 데이터를_남긴다() {\n        itemRepository.save(new Item(\"itemA\", 10000, 10));\n    }\n\n    @Test\n    void 나머지는_롤백() {\n        // ...\n    }\n}",
+   "note": "**`@Rollback(false)` 도 같은 뜻**이다. `@Commit` 이 읽기 쉽다.\n\n**클래스에 `@Transactional`, 메서드에 `@Commit`** — 이 조합이 흔하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "언제 커밋이 필요한가",
+   "md": "| 상황 | 왜 |\n|---|---|\n| **눈으로 확인하고 싶다** | 테스트가 만든 데이터를 DB 툴로 본다 |\n| **화면 확인용 데이터를 넣는다** | 개발 중 편의 |\n| **커밋 시점에만 나는 문제** | 지연 제약, 트리거 |\n| **JPA 의 쓰기 지연을 보고 싶다** | 6장 — 커밋해야 SQL 이 나간다 |\n\n**세 번째와 네 번째가 진짜 이유**다. 앞의 둘은 **개발 편의**다.\n\n**네 번째가 이 책에서 곧 온다.**\n\n```java\n// 6장\n@Test\nvoid updateItem() {\n    itemRepository.update(1L, new ItemUpdateDto(\"수정\", 20000, 30));\n    // 여기서 update SQL 이 아직 안 나갔다\n}\n```\n\n**JPA 는 커밋할 때 모아서 보낸다.** **롤백하면 `update` SQL 을 영영 못 본다.**\n\n> **그때는 `@Commit` 대신 `em.flush()`** 를 쓴다 — 2.5절에서 \"테스트에 `flush` 를 넣지 않는다\" 고 한 것과 충돌한다. **6.7절에서 이 딜레마를 다룬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`@Commit` 을 남기면 4.1절로 돌아간다",
+   "md": "**`@Commit` 을 붙인 테스트는 데이터를 남긴다.** **그것이 목적**이다. **그런데 다음 테스트가 그것을 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "실패한 `@Commit` 테스트",
+   "ascii": "   @Commit on a test that fails\n\n   run 1   inserts 3 rows, assertion fails, rows stay\n   run 2   inserts 3 more, now 6, fails harder\n   run 3   9 rows\n\n   back to 4.1",
+   "note": "**실패하면 롤백도 안 된다** — 예외가 나도 `@Commit` 이면 커밋을 시도한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "쓰는 법",
+   "md": "**① 임시로만 쓴다.**\n\n```java\n@Test\n// @Commit          <- 확인하고 지운다\nvoid save() { ... }\n```\n\n**주석으로 두고 필요할 때만 켠다.** **커밋된 채로 커밋하지 않는다** — 다음 사람이 못 돌린다.\n\n**② 남길 것이면 별도 클래스로.**\n\n```java\n@SpringBootTest\n@Commit\nclass 화면확인용_데이터생성 {\n    @Test\n    void 상품_열개() { ... }\n}\n```\n\n**이름으로 의도를 밝힌다.** **CI 에서는 `@Disabled` 나 태그로** 뺀다.\n\n**③ 커밋 시점 검증은 다른 방법도** 있다.\n\n```java\n@Test\n@Transactional\nvoid 제약위반() {\n    // ...\n    assertThatThrownBy(() -> em.flush())\n            .isInstanceOf(ConstraintViolationException.class);\n}\n```\n\n**`flush` 로 SQL 을 미리 내보내면** 커밋 없이도 제약을 검사할 수 있다. **롤백은 그대로** 된다.\n\n> **커밋해야만 잡히는 것은 생각보다 적다.** **`@Commit` 을 쓰기 전에 `flush` 로 되는지** 먼저 본다."
+  },
+  {
+   "type": "compare",
+   "caption": "롤백 vs 커밋",
+   "left": {
+    "title": "롤백 (기본)",
+    "points": [
+     "**격리가 공짜**다",
+     "지우는 SQL 이 없다",
+     "**커밋 시점 문제를 못 본다**",
+     "JPA 쓰기 지연이 안 보인다",
+     "**전파 실험이 망가진다**"
+    ]
+   },
+   "right": {
+    "title": "`@Commit`",
+    "points": [
+     "**진짜로 저장된다**",
+     "커밋 시점까지 검증된다",
+     "**다음 테스트를 오염**시킨다",
+     "실패해도 남는다",
+     "**직접 지워야** 한다"
+    ]
+   }
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 트랜잭션 로그",
+   "sql": "# --- @Transactional (기본) ---\n\nsave()\n#   Begin transaction for test context\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n#   generated key = 1\n#   Rolled back transaction for test\n\nselect count(*) from item;   -- 다른 세션에서\n#   -> 0\n\n# --- @Commit 을 붙이면 ---\n\nsave()\n#   Begin transaction for test context\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n#   generated key = 1\n#   Committed transaction for test\n\nselect count(*) from item;   -- 다른 세션에서\n#   -> 1\n\n# --- 그리고 다음 테스트 ---\n\nfindItems()\n#   Begin transaction for test context\n#   [insert into item ...] x3\n#   [select id, item_name, price, quantity from item]\n#   -> 4 rows          (@Commit 이 남긴 한 건이 섞였다)\n\n#   containsExactly 3   FAILED\n#   Rolled back transaction for test\n\n# --- @Commit 테스트가 실패하면 ---\n\nsave()\n#   [insert into item ...]\n#   AssertionError\n#   Committed transaction for test\n\n#   실패했는데 커밋됐다\n\nselect count(*) from item;\n#   -> 1",
+   "note": "**`Rolled back` 이 `Committed` 로 바뀐 한 줄**이 전부다.\n\n**세 번째 블록에서 4행**이 나왔다. **`@Commit` 하나가 다른 테스트를 깨뜨렸다.**\n\n**마지막 블록이 가장 조심할 것**이다. **AssertionError 가 났는데 `Committed`** 다. **테스트가 실패했는데 데이터는 남았다.**\n\n> **롤백이 기본인 이유**가 이 네 블록에 다 있다.\n\n**다음 절에서 DB 자체를 테스트가 만들게** 한다."
+  }
+ ],
+ "recap": [
+  "**`@Commit`·`@Rollback(false)`** 로 롤백을 끈다.",
+  "**메서드 애너테이션이 클래스를 이긴다.**",
+  "**눈으로 확인·화면 데이터·커밋 시점 문제·JPA 쓰기 지연**이 이유다.",
+  "**`@Commit` 은 다음 테스트를 오염**시킨다.",
+  "**실패해도 커밋된다** — AssertionError 뒤에 `Committed`.",
+  "**임시로만 쓰고 커밋하지 않는다.**",
+  "**남길 것이면 별도 클래스로** 이름을 붙인다.",
+  "**`flush` 로 되는지 먼저** 본다 — 롤백을 지킬 수 있다.",
+  "**롤백이 기본인 데는 이유가 있다.**"
+ ],
+ "drills": [
+  {
+   "task": "테스트 하나에 `@Commit` 을 붙인다.",
+   "done_when": "다른 세션에서 데이터가 보이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "그 상태로 다른 테스트를 돌린다.",
+   "done_when": "개수가 안 맞아 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Commit` 테스트를 일부러 실패시킨다.",
+   "done_when": "실패했는데 커밋된 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Commit` 대신 `flush` 로 검증해 본다.",
+   "done_when": "롤백을 지키면서 검증되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "롤백을 끄는 두 방법은?",
+   "a": "`@Commit` 과 `@Rollback(false)` 다."
+  },
+  {
+   "q": "언제 커밋이 필요한가?",
+   "a": "커밋 시점에만 나는 제약·트리거를 검증할 때, JPA 쓰기 지연을 볼 때다."
+  },
+  {
+   "q": "`@Commit` 테스트가 실패하면?",
+   "a": "그래도 커밋된다. 데이터가 남아 다음 테스트를 오염시킨다."
+  },
+  {
+   "q": "커밋 없이 SQL 을 내보내는 방법은?",
+   "a": "`em.flush()` 다. 롤백은 그대로 된다."
+  },
+  {
+   "q": "`@Commit` 을 쓸 때의 원칙은?",
+   "a": "임시로만 쓰고 커밋하지 않는다. 남길 것이면 별도 클래스로 분리한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management in Tests",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
