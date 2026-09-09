@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "validation-etag",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "검증 — ETag",
+ "summary": "날짜로 안 되는 경우.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "ETag 를 무엇으로 만들지 안다.",
+  "강함과 약함을 안다.",
+  "둘을 같이 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절의 세 한계를 다** 푼다. **대신 값을 만드는 비용이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇으로 만드나",
+   "ascii": "   an etag can be anything, and the choice matters\n\n   content hash    identical bytes give an identical tag, always\n                   costs a read and a hash on every response\n\n   version column  cheap, and it changes exactly when the row changes\n\n   mtime and size  what nginx does, and it changes on a redeploy\n\n   only the first two survive a file being copied back into place",
+   "note": "**앞 둘만 복사를** 견딘다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "불투명하다는 게 계약이다",
+   "md": "**클라이언트가 해석하면** 안 된다.\n\n> **7.4절에서 이미** 말했다.\n> **6.6절의 커서와 같은** 원칙이다.\n> **서버가 형식을 바꿔도 클라이언트가 안** 깨진다.\n\n**내용 해시가 가장** 정확하다.\n\n> **바이트가 같으면 태그가** 같다.\n> **배포해도 안 바뀐다** — **9.3절의 그 문제가** 사라진다.\n> **대신 매 응답에 읽고 해시해야** 한다.\n\n**미리 계산해 둔다.**\n\n> **빌드 때 파일별 해시를 만들어** 둔다.\n> **DB 라면 버전 컬럼을** 쓴다 — **⑤ 의 낙관적 잠금이 이미 그** 값이다.\n> **`updated_at` 을 그대로 써도** 된다.\n\n**약한 태그는 의미가 같을 때**다.\n\n> **`W/` 접두어**다(7.4절).\n> **압축 여부만 다를 때** 쓴다.\n> **범위 요청에는 강한 것만 쓸 수** 있다(8.4절)."
+  },
+  {
+   "type": "figure",
+   "caption": "여러 개를 보낼 수 있다",
+   "ascii": "   what a client may send back\n\n   If-None-Match: \"v3\"            do i still have the current one\n   If-None-Match: \"v1\", \"v2\"      i have several, is any of them current\n   If-None-Match: *               only if nothing exists at all\n\n   the last form is for creation, and it answers 412 when it exists",
+   "note": "**`*` 는 생성용**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "둘을 같이 보내는 게 관행이다",
+   "md": "**클라이언트가 `ETag` 를** 고른다.\n\n> **7.4절에서 확인**했다.\n> **`Last-Modified` 는 옛 프록시를 위한** 것이다.\n> **`Vary` 처럼 둘 다 있어서 손해 볼 게** 없다.\n\n**목록으로 보내면 여러 판본을 물어본다.**\n\n> **캐시가 여러 표현을 들고 있을 수** 있다(8.1절).\n> **하나라도 맞으면 그걸 쓰라고** 답한다.\n> **`304` 에 어느 것인지 `ETag` 로** 알려준다.\n\n**`*` 는 5.4절에서 봤다.**\n\n> **`If-None-Match: *` 는 없을 때만** 만든다.\n> **`If-Match: *` 는 있을 때만** 고친다.\n> **경쟁 조건을 막는 방법**이다.\n\n**비용이 있다.**\n\n> **큰 파일마다 해시하면 CPU 를** 쓴다.\n> **동적 응답이면 만들고 나서 해시해야** 한다.\n> **그러면 서버 일은 이미 다 한 뒤라 대역폭만** 아낀다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 세 가지 방식 ---\n\n$ cat etags.py\n\nimport http.server, hashlib, json, os, time\nDATA = b\"content that never changes\\n\"\nVERSION = [3]\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _etag(self):\n        if self.path == \"/hash\":\n            return '\"' + hashlib.sha256(DATA).hexdigest()[:16] + '\"'\n        if self.path == \"/version\":\n            return f'\"v{VERSION[0]}\"'\n        st = os.stat(__file__)\n        return f'\"{int(st.st_mtime):x}-{st.st_size:x}\"'\n\n    def do_GET(self):\n        tag = self._etag()\n        inm = self.headers.get(\"If-None-Match\", \"\")\n        tags = [t.strip() for t in inm.split(\",\") if t.strip()]\n        if inm == \"*\" or tag in tags:\n            self.send_response(304)\n            self.send_header(\"ETag\", tag)\n            self.end_headers(); return\n        self.send_response(200)\n        self.send_header(\"ETag\", tag)\n        self.send_header(\"Content-Length\", str(len(DATA)))\n        self.end_headers(); self.wfile.write(DATA)\nhttp.server.HTTPServer((\"\", 9005), H).serve_forever()\n\n$ python3 etags.py & sleep 1\n\n$ for p in hash version mtime; do\n    printf '%-9s' $p\n    curl -s -D - -o /dev/null \"http://localhost:9005/$p\" \\\n      | grep -i '^etag' | tr -d '\\r'\n  done\n\nhash      ETag: \"a3f9c21b4e708f2c\"\nversion   ETag: \"v3\"\nmtime     ETag: \"68c0b41f-2f1\"\n\n#   무엇으로 만들어도 된다\n\n#   불투명한 값이다\n\n$ T=$(curl -s -D - -o /dev/null http://localhost:9005/hash \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ curl -s -o /dev/null -w '%{http_code} %{size_download}\\n' \\\n    -H \"If-None-Match: $T\" http://localhost:9005/hash\n\n304 0\n\n# --- 복사를 견딘다 ---\n\n$ E1=$(curl -s -D - -o /dev/null http://localhost:8080/a3.txt \\\n       | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ H1=$(curl -s http://localhost:8080/a3.txt | shasum -a 256 | cut -c1-16)\n\n$ docker exec lab sh -c \\\n    'cp /usr/share/nginx/html/a3.txt /tmp/z && \\\n     cp /tmp/z /usr/share/nginx/html/a3.txt'\n\n$ E2=$(curl -s -D - -o /dev/null http://localhost:8080/a3.txt \\\n       | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ H2=$(curl -s http://localhost:8080/a3.txt | shasum -a 256 | cut -c1-16)\n\n$ echo \"nginx ETag: $E1 -> $E2\"\n$ echo \"내용 해시 : $H1 -> $H2\"\n\nnginx ETag: \"68c0b2f5-6994\" -> \"68c0b41c-6994\"\n내용 해시 : 7d3a91f28c4b06e5 -> 7d3a91f28c4b06e5\n\n#   nginx 것은 바뀌었다\n\n#   내용 해시는 그대로다\n\n#   9.3절의 배포 문제가 여기서 갈린다\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_download}\\n' \\\n    -H \"If-None-Match: $E1\" http://localhost:8080/a3.txt\n\n200 27044\n\n#   nginx 는 다시 보냈다\n\n#   내용 해시를 썼다면 304 였다\n\n# --- 1초 해상도 문제가 사라진다 ---\n\n$ docker exec lab sh -c \\\n    'echo w1 > /usr/share/nginx/html/w.txt; \\\n     echo w2-완전히-다르다 > /usr/share/nginx/html/w.txt'\n$ M=$(curl -s -D - -o /dev/null http://localhost:8080/w.txt \\\n      | grep -i '^last-modified' | tr -d '\\r' | cut -d' ' -f2-)\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/w.txt \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ docker exec lab sh -c 'echo w3 > /usr/share/nginx/html/w.txt'\n\n$ curl -s -o /dev/null -w 'If-Modified-Since %{http_code}\\n' \\\n    -H \"If-Modified-Since: $M\" http://localhost:8080/w.txt\n$ curl -s -o /dev/null -w 'If-None-Match    %{http_code}\\n' \\\n    -H \"If-None-Match: $E\" http://localhost:8080/w.txt\n\nIf-Modified-Since 304\nIf-None-Match    200\n\n$ curl -s http://localhost:8080/w.txt\n\nw3\n\n#   날짜로는 틀렸다\n\n#   크기가 달라 ETag 는 맞췄다\n\n#   내용 해시였다면 언제나 맞는다\n\n# --- 둘 다 보내면 ETag 가 이긴다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H \"If-None-Match: $E\" -H \"If-Modified-Since: $M\" \\\n    http://localhost:8080/w.txt\n\n200\n\n#   7.4절에서 본 규칙이다\n\n#   ETag 가 우선한다\n\n#   둘 다 보내도 손해가 없다\n\n# --- 목록으로 물어본다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'If-None-Match: \"없는값\", \"v3\", \"또다른값\"' \\\n    http://localhost:9005/version\n\n304\n\n$ curl -s -D - -o /dev/null \\\n    -H 'If-None-Match: \"없는값\", \"v3\"' \\\n    http://localhost:9005/version | grep -iE 'HTTP|etag'\n\nHTTP/1.1 304 Not Modified\nETag: \"v3\"\n\n#   셋 중 하나가 맞았다\n\n#   어느 것인지 알려 준다\n\n#   캐시가 여러 표현을 들고 있을 때 쓴다\n\n# --- 별표 ---\n\n$ curl -s -o /dev/null -w 'If-None-Match: * -> %{http_code}\\n' \\\n    -H 'If-None-Match: *' http://localhost:9005/version\n\nIf-None-Match: * -> 304\n\n$ python3 - <<'EOF'\nprint(\"조회에서 * 는 있으면 304\")\nprint(\"생성에서 * 는 있으면 412\")\nprint()\nprint(\"PUT + If-None-Match: * = 없을 때만 만든다 (6.7절)\")\nprint(\"PUT + If-Match: *     = 있을 때만 고친다\")\nEOF\n\n조회에서 * 는 있으면 304\n생성에서 * 는 있으면 412\n\nPUT + If-None-Match: * = 없을 때만 만든다 (6.7절)\nPUT + If-Match: *     = 있을 때만 고친다\n\n# --- 약한 태그 ---\n\n$ docker exec lab sh -c \\\n    'printf \"gzip on;\\ngzip_types text/plain;\\n\" \\\n     > /etc/nginx/conf.d/gzip.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/a1.txt | grep -i etag\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:8080/a1.txt | grep -i etag\n\nETag: \"68c0b41c-69a4\"\nETag: W/\"68c0b41c-69a4\"\n\n#   같은 자원, 다른 표현이다 (8.1절)\n\n#   압축본은 약하다\n\n$ curl -s -o /dev/null -w '강한 태그로 범위 %{http_code}\\n' \\\n    -r 0-9 -H 'If-Range: \"68c0b41c-69a4\"' http://localhost:8080/a1.txt\n$ curl -s -o /dev/null -w '약한 태그로 범위 %{http_code}\\n' \\\n    -r 0-9 -H 'If-Range: W/\"68c0b41c-69a4\"' http://localhost:8080/a1.txt\n\n강한 태그로 범위 206\n약한 태그로 범위 200\n\n#   8.4절에서 본 규칙이다\n\n# --- DB 버전을 쓴다 ---\n\n$ cat dbetag.py\n\nROWS = {5: {\"id\": 5, \"item\": \"노트북\", \"version\": 7}}\n    def do_GET(self):\n        r = ROWS[5]\n        tag = f'\"{r[\"id\"]}-{r[\"version\"]}\"'\n        if self.headers.get(\"If-None-Match\") == tag:\n            self.send_response(304)\n            self.send_header(\"ETag\", tag)\n            self.end_headers(); return\n        ...\n    def do_PUT(self):\n        r = ROWS[5]\n        tag = f'\"{r[\"id\"]}-{r[\"version\"]}\"'\n        if self.headers.get(\"If-Match\") not in (tag, \"*\", None):\n            return self._s(412, {\"title\": \"그 사이 바뀌었습니다\"})\n        r[\"version\"] += 1\n        self._s(200, r)\n\n$ python3 dbetag.py & sleep 1\n$ T=$(curl -s -D - -o /dev/null http://localhost:9004/orders/5 \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ echo $T\n\n\"5-7\"\n\n$ curl -s -o /dev/null -w '조회 %{http_code}\\n' \\\n    -H \"If-None-Match: $T\" http://localhost:9004/orders/5\n$ curl -s -o /dev/null -w '갱신 %{http_code}\\n' -X PUT \\\n    -H \"If-Match: $T\" -d '{}' http://localhost:9004/orders/5\n$ curl -s -o /dev/null -w '재갱신 %{http_code}\\n' -X PUT \\\n    -H \"If-Match: $T\" -d '{}' http://localhost:9004/orders/5\n\n조회 304\n갱신 200\n재갱신 412\n\n#   같은 값을 조회와 갱신에 쓴다\n\n#   ⑤ 의 낙관적 잠금이 이미 이 값이다\n\n#   버전 컬럼이 곧 ETag 다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 비용 ---\n\n$ python3 - <<'EOF'\nimport hashlib, time, os\ndata = os.urandom(5 * 1024 * 1024)\nt = time.time()\nfor _ in range(20):\n    hashlib.sha256(data).hexdigest()\nprint(f\"5MB x 20회 해시: {time.time()-t:.3f}초\")\nprint(\"매 요청에 하면 부담이다\")\nprint(\"빌드 때 미리 계산해 둔다\")\nEOF\n\n5MB x 20회 해시: 0.412초\n매 요청에 하면 부담이다\n빌드 때 미리 계산해 둔다\n\n# --- 다음 절에서 ---\n\n#   지시어를 언제 무엇으로 쓸지",
+   "note": "**같은 파일을 복사하자 nginx `ETag` 는 바뀌는데 내용 해시는** 그대로다.\n\n**같은 초 두 번 수정에 `If-Modified-Since` 는 `304`, `If-None-Match` 는 `200`** 이다.\n\n**목록으로 물으면 맞는 것 하나를 `ETag` 로 알려**준다.\n\n**압축본은 `W/` 라 범위 요청에서 `206` 이 아니라 `200`** 이다.\n\n**버전 컬럼 `\"5-7\"` 하나로 조회 `304`·갱신 `200`·재갱신 `412`** 가 다 된다."
+  }
+ ],
+ "recap": [
+  "**무엇으로 만들어도** 된다.",
+  "**불투명하다는 게** 계약이다.",
+  "**내용 해시가 가장** 정확하다.",
+  "**복사와 배포를** 견딘다.",
+  "**미리 계산해** 둔다.",
+  "**둘을 같이 보내면 `ETag` 가** 이긴다.",
+  "**목록으로 여러 판본을** 물어본다.",
+  "**`*` 는 생성과 갱신에** 쓴다.",
+  "**약한 태그는 범위 요청에 못** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "세 방식으로 태그를 만든다.",
+   "done_when": "무엇이 언제 바뀌는지 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "파일을 복사한다.",
+   "done_when": "nginx 와 해시의 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "목록으로 물어본다.",
+   "done_when": "맞는 태그를 돌려받았다.",
+   "minutes": 15
+  },
+  {
+   "task": "버전 컬럼으로 둘 다 한다.",
+   "done_when": "`304` 와 `412` 를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`ETag` 를 무엇으로 만드는 게 가장 정확한가?",
+   "a": "본문 내용의 해시다."
+  },
+  {
+   "q": "불투명하다는 말의 뜻은?",
+   "a": "클라이언트가 값의 구조를 해석하면 안 된다는 것이다."
+  },
+  {
+   "q": "`ETag` 와 `Last-Modified` 를 같이 보내면?",
+   "a": "클라이언트는 `ETag` 를 우선 사용한다."
+  },
+  {
+   "q": "약한 `ETag` 를 못 쓰는 곳은?",
+   "a": "범위 요청의 `If-Range` 다."
+  },
+  {
+   "q": "DB 버전 컬럼을 쓰면 좋은 점은?",
+   "a": "조회 검증과 낙관적 잠금에 같은 값을 쓸 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내용 해시",
+   "def": "본문 바이트로 계산한 값. 같은 내용이면 항상 같다."
+  },
+  {
+   "term": "불투명 값",
+   "def": "받은 쪽이 구조를 해석하지 않고 그대로 되돌려 주는 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "web.dev — HTTP caching",
+   "url": "https://web.dev/articles/http-cache",
+   "publisher": "Google"
+  }
+ ]
+}

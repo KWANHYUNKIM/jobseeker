@@ -538,7 +538,7 @@
           "title": "검증 — Last-Modified",
           "summary": "304 를 만드는 첫 방법.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -546,7 +546,7 @@
           "title": "검증 — ETag",
           "summary": "날짜로 안 되는 경우.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
