@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "authorization-test",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "인가를 테스트한다",
+ "summary": "아홉 번째 책의 방법으로.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인가 스위트의 네 부분을 안다.",
+  "빠진 엔드포인트를 자동으로 찾는다.",
+  "규칙을 지워 빨간 막대를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절·5.8절·6.9절에서 세 번 \"인가 테스트 0\" 이라고** 썼다. **여기서** 끝낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "인가 스위트의 모양",
+   "ascii": "   the shape of an authorization suite\n\n   a matrix        role by path by method, one assertion each\n   a negative      every rule proved by a failing case too\n   a sweep         every mapped endpoint appears in the matrix\n   a red bar       delete a rule, and something must turn red\n\n   the fourth one is the only proof the other three are real",
+   "note": "**넷째가 앞의 셋이 진짜인지** 증명한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "도구 넷",
+   "md": "```groovy\ntestImplementation 'org.springframework.security:spring-security-test'\n```\n\n| 도구 | 하는 일 |\n|---|---|\n| `@WithMockUser` | 이름·역할을 가진 인증을 만든다 |\n| `with(user(...))` | 같은 일을 요청마다 |\n| `with(anonymous())` | 익명으로 |\n| `with(csrf())` | CSRF 토큰을 붙인다 |\n| `@WithUserDetails` | 실제 `UserDetailsService` 로 읽는다 |\n\n> **`@WithMockUser(roles = \"ADMIN\")` 은 `ROLE_ADMIN` 을** 만든다.\n> **`authorities = \"ADMIN\"` 은 `ADMIN`** 이다 — **7.7절의 그** 구별이다.\n\n**`@WithUserDetails` 가 더 진짜**다.\n\n```java\n@WithUserDetails(value = \"manager@a.com\",\n        setupBefore = TestExecutionEvent.TEST_EXECUTION)\nvoid 매니저는_취소할_수_있다() { ... }\n```\n\n> **8.2절의 권한 표를 실제로** 조인해 온다.\n> **`@WithMockUser` 는 내가 적은 권한만** 준다 — **표가 틀려도 테스트는** 통과한다.\n>\n> **둘을 섞어** 쓴다 — **규칙 검증은 `MockUser`, 권한 매핑 검증은 `UserDetails`**.\n\n**슬라이스에서 주의**\n\n> **`@WebMvcTest` 는 `SecurityFilterChain` 빈을 안 올릴 수** 있다.\n> **`@Import(SecurityConfig.class)` 를** 해 준다.\n> **안 하면 부트 기본 설정으로 돌아 규칙이 다** 다르다.\n>\n> **책 ⑨ 5.11절에서 슬라이스가 무엇을 안 올리는지** 봤다."
+  },
+  {
+   "type": "figure",
+   "caption": "훑기",
+   "ascii": "   the sweep, and why it matters\n\n   ask the RequestMappingHandlerMapping for every mapping\n   subtract the paths the matrix already covers\n   whatever is left is an endpoint nobody tested\n\n   a new controller now fails the build instead of shipping open",
+   "note": "**새 컨트롤러가 열린 채 나가는 걸** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "규칙을 지워 본다",
+   "md": "**책 ⑨ 이 여덟 번 쓴 방법**이다.\n\n> **테스트가 진짜 무언가를 지키는지 확인하려면 지켜야 할 것을** 부순다.\n> **빨간 막대가 안 나오면 그 테스트는 아무것도 안 지킨** 것이다.\n\n**7.9절에서 다섯 자리를 부쉈다.**\n\n> **아홉 개가** 빨개졌다.\n> **그때는 즉흥이었고 여기서는 목록으로** 만든다.\n\n```java\n@Test\n@Disabled(\"수동으로 규칙을 지우고 돌린다\")\nvoid 규칙을_지우면_빨개진다() { }\n```\n\n> **자동화가 어렵다** — **설정을 지우는 건 컴파일 대상**이라서다.\n> **대신 문서로** 남긴다.\n>\n> **프로필로 나쁜 설정을 만들어 두는 방법도** 있다.\n>\n> ```java\n> @Profile(\"broken-authz\")\n> @Configuration\n> public class BrokenSecurityConfig { ... }\n> ```\n>\n> **`@ActiveProfiles(\"broken-authz\")` 인 테스트가 403 을 기대하다 실패하면** 된다.\n> **거기까지 하는 팀은 드물지만 한 번은 해** 볼 만하다.\n\n**빠진 엔드포인트 훑기**\n\n> **`RequestMappingHandlerMapping` 에서 매핑 전부를** 꺼낸다.\n> **인가표가 덮은 경로를** 뺀다.\n> **남으면 실패**시킨다.\n>\n> **7.1절의 `/internal/dump` 가 이 테스트에** 걸린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 인가표 ---\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass AuthorizationMatrixTest {\n\n    static Stream<Arguments> matrix() {\n        return Stream.of(\n            Arguments.of(\"GET\",    \"/about\",         \"ANON\",    200),\n            Arguments.of(\"GET\",    \"/orders\",        \"ANON\",    302),\n            Arguments.of(\"GET\",    \"/orders\",        \"USER\",    200),\n            Arguments.of(\"GET\",    \"/report/x\",      \"USER\",    403),\n            Arguments.of(\"GET\",    \"/report/x\",      \"MANAGER\", 200),\n            Arguments.of(\"GET\",    \"/admin/panel\",   \"MANAGER\", 403),\n            Arguments.of(\"GET\",    \"/admin/panel\",   \"ADMIN\",   200),\n            Arguments.of(\"GET\",    \"/api/v1/orders\", \"ANON\",    401),\n            Arguments.of(\"DELETE\", \"/api/v1/orders/1\", \"USER\",  403),\n            Arguments.of(\"DELETE\", \"/api/v1/orders/1\", \"ADMIN\", 200),\n            Arguments.of(\"GET\",    \"/internal/dump\", \"ADMIN\",   403));\n    }\n\n    @ParameterizedTest(name = \"{0} {1} as {2} -> {3}\")\n    @MethodSource(\"matrix\")\n    void 인가표(String method, String path, String role, int expected)\n            throws Exception {\n        var request = request(HttpMethod.valueOf(method), path).with(csrf());\n        if (!\"ANON\".equals(role)) {\n            request = request.with(user(\"someone@a.com\").roles(role));\n        }\n        mockMvc.perform(request).andExpect(status().is(expected));\n    }\n}\n\n$ ./gradlew test --tests AuthorizationMatrixTest\n\nGET /about as ANON -> 200            PASSED\nGET /orders as ANON -> 302           PASSED\nGET /orders as USER -> 200           PASSED\nGET /report/x as USER -> 403         PASSED\nGET /report/x as MANAGER -> 200      PASSED\nGET /admin/panel as MANAGER -> 403   PASSED\nGET /admin/panel as ADMIN -> 200     PASSED\nGET /api/v1/orders as ANON -> 401    PASSED\nDELETE /api/v1/orders/1 as USER -> 403   PASSED\nDELETE /api/v1/orders/1 as ADMIN -> 200  PASSED\nGET /internal/dump as ADMIN -> 403   PASSED\n\n11 tests completed\n\n#   한 줄이 규칙 하나다\n\n#   403 이 넷, 302 가 하나, 401 이 하나다\n\n#   막히는 쪽이 절반이다\n\n# --- 권한 매핑은 진짜로 읽는다 ---\n\n@Test\n@WithUserDetails(value = \"manager@a.com\",\n        setupBefore = TestExecutionEvent.TEST_EXECUTION)\nvoid 매니저는_취소할_수_있다() throws Exception {\n    mockMvc.perform(post(\"/api/orders/1/cancel\").with(csrf()))\n            .andExpect(status().isOk());\n}\n\n$ ./gradlew test --tests AuthorityMappingTest\n\nselect m.id, m.email, ... from member m where m.email = ?\nselect ra.role, ra.authority from member_role mr\n  join role_authority ra on ra.role = mr.role where mr.member_id = ?\n\nBUILD SUCCESSFUL\n\n#   8.2절의 표를 실제로 조인했다\n\n#   행을 지우면\n\ndelete from role_authority\n where role = 'ROLE_MANAGER' and authority = 'ORDER_CANCEL';\n\n$ ./gradlew test --tests AuthorityMappingTest\n\n매니저는_취소할_수_있다 FAILED\n    Status expected:<200> but was:<403>\n\n#   빨개진다\n\n#   @WithMockUser 였다면 통과했을 것이다\n\n@Test\n@WithMockUser(authorities = \"ORDER_CANCEL\")\nvoid 이건_표를_안_본다() throws Exception {\n    mockMvc.perform(post(\"/api/orders/1/cancel\").with(csrf()))\n            .andExpect(status().isOk());\n}\n\n$ ./gradlew test --tests AuthorityMappingTest\n\n이건_표를_안_본다 PASSED\n\n#   표가 비었는데 통과한다\n\n#   내가 적은 권한을 그대로 준다\n\n#   둘을 다 써야 하는 이유다\n\n# --- 빠진 엔드포인트 훑기 ---\n\n@Test\nvoid 모든_엔드포인트가_인가표에_있다() {\n    Set<String> tested = AuthorizationMatrixTest.matrix()\n            .map(a -> a.get()[1].toString())\n            .collect(Collectors.toSet());\n\n    List<String> missing = new ArrayList<>();\n    handlerMapping.getHandlerMethods().forEach((info, method) -> {\n        for (String pattern : info.getPathPatternsCondition().getPatternValues()) {\n            boolean covered = tested.stream()\n                    .anyMatch(t -> new AntPathMatcher().match(pattern, t));\n            if (!covered) missing.add(pattern);\n        }\n    });\n\n    System.out.println(\">>> 안 덮인 경로 \" + missing.size() + \"개\");\n    missing.forEach(m -> System.out.println(\"    \" + m));\n    assertThat(missing).isEmpty();\n}\n\n$ ./gradlew test --tests EndpointSweepTest\n\n>>> 안 덮인 경로 3개\n    /contact\n    /user/{email}/settings\n    /api/csrf\n\n모든_엔드포인트가_인가표에_있다 FAILED\n    Expecting empty but was: [\"/contact\", \"/user/{email}/settings\", \"/api/csrf\"]\n\n#   셋이 나왔다\n\n#   6.5절에서 만든 /api/csrf 도 있다\n\n#   표에 추가한다\n\nArguments.of(\"GET\", \"/contact\", \"ANON\", 200),\nArguments.of(\"GET\", \"/user/user@a.com/settings\", \"USER\", 200),\nArguments.of(\"GET\", \"/api/csrf\", \"ANON\", 200)\n\n$ ./gradlew test --tests EndpointSweepTest\n\nBUILD SUCCESSFUL\n\n#   이제 새 컨트롤러를 만들면 빌드가 깨진다\n\n#   7.1절의 조용한 구멍이 시끄러워졌다\n\n# --- 규칙을 지워 빨간 막대를 본다 ---\n\n#   1) /admin/** 규칙을 지운다\n\n$ ./gradlew test --tests AuthorizationMatrixTest\n\nGET /admin/panel as MANAGER -> 403 FAILED\n    Status expected:<403> but was:<200>\n\n#   2) anyRequest().denyAll() 을 지운다\n\nGET /internal/dump as ADMIN -> 403 FAILED\n    Status expected:<403> but was:<200>\n\n#   3) @EnableMethodSecurity 를 지운다\n\nDELETE /api/v1/orders/1 as USER -> 403 FAILED\n    Status expected:<403> but was:<200>\n\n#   4) 역할 계층을 지운다\n\nGET /orders as ADMIN -> 200 FAILED\n    Status expected:<200> but was:<403>\n\n#   5) hasRole 을 hasAuthority 로 바꾼다\n\nGET /admin/panel as ADMIN -> 200 FAILED\n    Status expected:<200> but was:<403>\n\n#   다섯 자리가 다 빨간 막대를 낸다\n\n#   7.9절에서 로그가 조용하던 그 다섯이다\n\n# --- 전체 ---\n\n$ ./gradlew test\n\n126 tests completed\n\nBUILD SUCCESSFUL\n\n$ grep -rn \"isForbidden\\|is(403)\\|isUnauthorized\" src/test | wc -l\n\n21\n\n#   책 ⑨ 이 남긴 78개에서 126개가 됐다\n\n#   인가 테스트가 스물하나다\n\n#   4.8절 · 5.8절 · 6.9절의 0이 끝났다\n\n# --- 다음 절에서 ---\n\n#   8장을 정리한다",
+   "note": "**인가표 11줄 중 403 이 넷, 401 이 하나, 302 가 하나**로 막히는 쪽이 절반이다.\n\n**`@WithUserDetails` 는 권한 표를 실제로 조인**해 행을 지우면 빨개지고, **`@WithMockUser(authorities=…)` 는 표가 비었는데도** 통과한다.\n\n**엔드포인트 훑기가 안 덮인 경로 셋**을 찾아냈다 — 6.5절의 `/api/csrf` 포함.\n\n**다섯 자리를 지우면 다섯 다 빨간 막대**가 난다. **7.9절에서 로그가 조용하던 그 다섯**이다.\n\n**테스트 126개, 인가 테스트 21개**다."
+  }
+ ],
+ "recap": [
+  "**인가 스위트는 표·부정·훑기·빨간 막대** 넷이다.",
+  "**한 줄이 규칙 하나**다.",
+  "**`@WithMockUser` 는 내가 적은 권한만** 준다.",
+  "**`@WithUserDetails` 는 표를 실제로** 읽는다.",
+  "**둘을 나눠 써야 매핑도** 검증된다.",
+  "**슬라이스에는 보안 설정을 `@Import`** 한다.",
+  "**엔드포인트 훑기가 빠진 경로를** 찾는다.",
+  "**규칙을 지워 빨간 막대를 확인**한다.",
+  "**세 번 세었던 0이** 끝났다."
+ ],
+ "drills": [
+  {
+   "task": "인가표를 `@MethodSource` 로 만든다.",
+   "done_when": "막히는 쪽이 절반인지 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "`@WithUserDetails` 로 권한 매핑을 검증한다.",
+   "done_when": "행을 지웠을 때 빨개지는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "엔드포인트 훑기 테스트를 만든다.",
+   "done_when": "안 덮인 경로를 찾았다.",
+   "minutes": 35
+  },
+  {
+   "task": "규칙 다섯을 하나씩 지운다.",
+   "done_when": "다섯 다 빨간 막대를 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인가 스위트의 네 부분은?",
+   "a": "인가표, 부정 사례, 엔드포인트 훑기, 규칙을 지운 빨간 막대다."
+  },
+  {
+   "q": "`@WithMockUser` 의 한계는?",
+   "a": "내가 적은 권한만 줘서 권한 표가 틀려도 통과한다."
+  },
+  {
+   "q": "권한 매핑을 검증하려면?",
+   "a": "`@WithUserDetails` 로 실제 서비스를 태운다."
+  },
+  {
+   "q": "엔드포인트 훑기는 무엇을 잡나?",
+   "a": "인가표에 없는 새 엔드포인트다."
+  },
+  {
+   "q": "테스트가 진짜인지 어떻게 아나?",
+   "a": "지켜야 할 규칙을 지워 빨간 막대가 나는지 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@WithUserDetails",
+   "def": "실제 `UserDetailsService` 로 사용자를 읽어 인증을 만드는 테스트 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Testing",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/test/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Testing MockMvc",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
