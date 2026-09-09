@@ -775,7 +775,7 @@
           "title": "정리",
           "summary": "직접 만든 것들.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -790,7 +790,7 @@
           "title": "열려 있던 curl 한 줄",
           "summary": "아홉 번째 책의 숙제.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.2",

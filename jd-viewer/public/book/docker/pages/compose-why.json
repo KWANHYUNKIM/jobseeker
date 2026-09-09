@@ -1,0 +1,153 @@
+{
+ "book": "docker",
+ "id": "compose-why",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "docker run 이 길어질 때",
+ "summary": "명령 한 줄이 열두 줄이 되는 지점.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컴포즈가 무엇을 대신하는지 안다.",
+  "선언형과 명령형의 차이를 안다.",
+  "컴포즈가 자동으로 해 주는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.5절의 명령을 다시** 본다.\n\n```bash\ndocker run -d --name shop-db --network shop \\\n  -v shop-pgdata:/var/lib/postgresql/data \\\n  -e POSTGRES_DB=shop -e POSTGRES_USER=shop \\\n  -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n  -v \"$PWD/secrets/pgpass:/run/secrets/pgpass:ro\" \\\n  -p 127.0.0.1:5432:5432 --restart unless-stopped --memory 1g \\\n  --health-cmd 'pg_isready -U shop' --health-interval 5s \\\n  postgres:16.4\n```\n\n**이게 DB 하나**다. **애플리케이션과 캐시까지 세 개면 이런 줄이** 셋이다.\n\n> **어딘가 적어 둬야** 한다. **README 에 적으면 낡는다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "같은 것을 두 가지로",
+   "left": {
+    "title": "셸 스크립트로 적으면",
+    "lang": "bash",
+    "bad": true,
+    "code": "#!/bin/bash\ndocker network create shop 2>/dev/null\ndocker volume create pgdata 2>/dev/null\n\ndocker rm -f db api 2>/dev/null\n\ndocker run -d --name db --network shop \\\n  -v pgdata:/var/lib/postgresql/data ... postgres:16\n\n# db 가 뜰 때까지 기다려야 하는데\nsleep 10       # 이게 충분한가?\n\ndocker run -d --name api --network shop \\\n  -e SPRING_DATASOURCE_URL=... myapp:1.4\n\n#   순서·대기·정리를 전부 내가 쓴다\n#   두 번 돌리면 어떻게 되는지 매번 생각해야 한다"
+   },
+   "right": {
+    "title": "컴포즈로 적으면",
+    "lang": "yaml",
+    "code": "services:\n  db:\n    image: postgres:16\n    volumes: [pgdata:/var/lib/postgresql/data]\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U shop\"]\n      interval: 5s\n\n  api:\n    image: myapp:1.4\n    depends_on:\n      db: { condition: service_healthy }\n    environment:\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shop\n\nvolumes:\n  pgdata:\n\n# docker compose up -d\n# 네트워크·볼륨 생성, 순서, 대기까지 전부"
+   }
+  },
+  {
+   "type": "table",
+   "caption": "컴포즈가 대신해 주는 것",
+   "columns": [
+    "무엇",
+    "안 쓰면"
+   ],
+   "rows": [
+    [
+     "**네트워크 생성**",
+     "`docker network create` 를 직접. 7.3절"
+    ],
+    [
+     "**볼륨 생성**",
+     "`docker volume create` 를 직접"
+    ],
+    [
+     "**기동 순서**",
+     "`sleep` 으로 때운다. 9.3절"
+    ],
+    [
+     "**정리**",
+     "`docker rm -f` 목록을 관리"
+    ],
+    [
+     "**여러 개 띄우기**",
+     "`--scale` 없이는 손으로"
+    ],
+    [
+     "**설정의 기록**",
+     "README 나 스크립트. 낡는다"
+    ]
+   ],
+   "note": "**\"이 프로젝트를 어떻게 띄우나\" 의 답이 파일 하나가 된다** — **그게 컴포즈의 핵심 가치**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "명령형에서 선언형으로",
+   "md": "| | 명령형 | 선언형 |\n|---|---|---|\n| 적는 것 | **무엇을 하라** | **무엇이어야 한다** |\n| 예 | `docker run ...` | `services: db: ...` |\n| 두 번 실행 | **컨테이너가 둘 생기거나 이름 충돌** | **이미 맞으면 아무것도 안 한다** |\n| 부분 변경 | 전부 다시 | **바뀐 서비스만 다시 만든다** |\n\n```bash\n$ docker compose up -d\n[+] Running 3/3\n ✔ Container shop-db-1   Started\n ✔ Container shop-api-1  Started\n\n$ docker compose up -d\n[+] Running 3/3\n ✔ Container shop-db-1   Running     <- 아무것도 안 했다\n ✔ Container shop-api-1  Running\n```\n\n> **이 성질을 멱등성**이라고 한다.\n> **「쿠버네티스 입문」 2.1절이 같은 이야기를 훨씬 크게** 한다 — **컴포즈가 그 예고편**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "docker-compose 와 docker compose",
+   "md": "| | 무엇 |\n|---|---|\n| `docker-compose` (하이픈) | **v1.** 파이썬으로 만든 별도 도구. **끝났다** |\n| **`docker compose` (공백)** | **v2.** 도커 CLI 의 하위 명령. Go 로 다시 만들었다 |\n\n**파일 이름도 바뀌었다**:\n\n```\ndocker-compose.yml   (여전히 인식한다)\ncompose.yaml         (권장)\n```\n\n**그리고 `version: \"3.8\"` 줄은 이제 안 쓴다** — **v2 는 무시하고 경고를** 낸다.\n\n> **오래된 블로그의 예제를 그대로 쓰면 이 셋에서** 걸린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "명령 열두 줄이 파일 하나가 된다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_USER: shop\n      POSTGRES_PASSWORD: devpass\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U shop\"]\n      interval: 3s\n      start_period: 20s\n\n  cache:\n    image: redis:7-alpine\n\nvolumes:\n  pgdata:\nEOF\n\n$ docker compose up -d\n[+] Running 4/4\n ✔ Network lab_default   Created\n ✔ Volume \"lab_pgdata\"   Created\n ✔ Container lab-cache-1  Started\n ✔ Container lab-db-1     Started\n\n#   네트워크와 볼륨을 알아서 만들었다\n\n$ docker compose ps\nNAME          IMAGE             STATUS                    PORTS\nlab-cache-1   redis:7-alpine    Up 3 seconds              6379/tcp\nlab-db-1      postgres:16       Up 3 seconds (starting)   5432/tcp\n\n\n# --- 두 번 돌려도 아무 일도 안 일어난다 ---\n\n$ docker compose up -d\n[+] Running 2/2\n ✔ Container lab-cache-1  Running\n ✔ Container lab-db-1     Running\n\n#   Started 가 아니라 Running 이다. 이미 원하는 상태다\n\n\n# --- 한 서비스만 고치면 그것만 다시 만든다 ---\n\n$ sed -i '' 's/redis:7-alpine/redis:7.4-alpine/' compose.yaml 2>/dev/null || \\\n  sed -i 's/redis:7-alpine/redis:7.4-alpine/' compose.yaml\n\n$ docker compose up -d\n[+] Running 2/2\n ✔ Container lab-cache-1  Recreated\n ✔ Container lab-db-1     Running\n\n#   db 는 안 건드렸다\n\n\n# --- 이름 규칙 ---\n\n$ docker ps --format 'table {{.Names}}\\t{{.Image}}'\nNAMES         IMAGE\nlab-cache-1   redis:7.4-alpine\nlab-db-1      postgres:16\n\n#   <프로젝트>-<서비스>-<번호>\n#   프로젝트 이름은 기본이 디렉터리 이름이다\n\n$ docker network ls | grep lab\n8f2a1b3c4d5e   lab_default   bridge   local\n\n$ docker volume ls | grep lab\nlocal     lab_pgdata\n\n\n# --- 이름으로 서로 부른다 (7.3절이 자동으로 된다) ---\n\n$ docker compose exec cache sh -c 'nc -z -w2 db 5432 && echo \"cache -> db OK\"'\ncache -> db OK\n\n#   네트워크를 만들고 붙이는 걸 아무것도 안 했는데 된다\n\n\n# --- 여러 개 띄우기 ---\n\n$ docker compose up -d --scale cache=3\n[+] Running 4/4\n ✔ Container lab-cache-1  Running\n ✔ Container lab-cache-2  Started\n ✔ Container lab-cache-3  Started\n\n$ docker compose exec db getent hosts cache\n172.20.0.3  cache\n172.20.0.4  cache\n172.20.0.5  cache\n\n#   서비스 이름이 세 IP 로 풀린다 (7.3절의 별칭과 같은 구조)\n\n\n# --- 통째로 내린다 ---\n\n$ docker compose down\n[+] Running 5/5\n ✔ Container lab-cache-3  Removed\n ✔ Container lab-cache-2  Removed\n ✔ Container lab-cache-1  Removed\n ✔ Container lab-db-1     Removed\n ✔ Network lab_default    Removed\n\n$ docker volume ls | grep lab\nlocal     lab_pgdata\n\n#   볼륨은 남았다. 9.7절에서 이 이야기를 자세히\n\n$ docker volume rm lab_pgdata >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "컴포즈는 '이 프로젝트를 어떻게 띄우나' 의 답을 파일 하나로 만든다.",
+  "네트워크·볼륨 생성, 기동 순서, 정리, 스케일을 대신해 준다.",
+  "선언형이라 두 번 실행해도 이미 맞으면 아무것도 안 한다. 바뀐 서비스만 다시 만든다.",
+  "v2 는 `docker compose`(공백), 파일은 compose.yaml, version: 줄은 쓰지 않는다."
+ ],
+ "drills": [
+  {
+   "task": "서비스 둘짜리 compose.yaml 을 만들어 up -d 하고, 다시 한 번 up -d 해 본다.",
+   "done_when": "두 번째에 Started 가 아니라 Running 이 나오는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "한 서비스의 이미지 태그만 바꾸고 up -d 한다.",
+   "done_when": "그 서비스만 Recreated 되는 것을 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker compose exec` 로 한 서비스에서 다른 서비스 이름을 부른다.",
+   "done_when": "네트워크 설정을 안 했는데 이름이 통하는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컴포즈가 docker run 대비 자동으로 해 주는 것 셋은.",
+   "a": "네트워크·볼륨 생성, 기동 순서와 대기, 정리(down)."
+  },
+  {
+   "q": "`docker compose up -d` 를 두 번 실행하면.",
+   "a": "이미 원하는 상태면 아무것도 안 한다. 선언형이라 멱등하다."
+  },
+  {
+   "q": "오래된 예제에서 고쳐야 할 것 셋은.",
+   "a": "docker-compose(하이픈) → docker compose, 파일명 compose.yaml, version: 줄 제거."
+  }
+ ],
+ "terms": [
+  {
+   "term": "선언형",
+   "en": "declarative",
+   "what": "할 일이 아니라 원하는 상태를 적는 방식."
+  },
+  {
+   "term": "멱등성",
+   "what": "여러 번 실행해도 결과가 같은 성질."
+  },
+  {
+   "term": "프로젝트 이름",
+   "what": "컴포즈가 리소스 이름 앞에 붙이는 접두사. 기본은 디렉터리 이름."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker Compose overview",
+   "url": "https://docs.docker.com/compose/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Migrate to Compose V2",
+   "url": "https://docs.docker.com/compose/releases/migrate/",
+   "publisher": "Docker"
+  }
+ ]
+}

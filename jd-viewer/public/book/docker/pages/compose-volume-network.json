@@ -1,0 +1,126 @@
+{
+ "book": "docker",
+ "id": "compose-volume-network",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "컴포즈의 볼륨과 네트워크",
+ "summary": "이름이 프로젝트 이름으로 붙는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컴포즈가 만드는 리소스 이름 규칙을 안다.",
+  "외부 리소스를 참조하는 법을 안다.",
+  "프로젝트를 나누는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절에서 `lab_pgdata`, `lab_default` 가 생겼다.** **접두사가 프로젝트 이름**이다.\n\n```\n<프로젝트>_<볼륨이름>       shop_pgdata\n<프로젝트>_<네트워크이름>   shop_default\n<프로젝트>-<서비스>-<번호>  shop-api-1\n```\n\n> **프로젝트 이름은 `name:` 필드 > `-p` 옵션 > `COMPOSE_PROJECT_NAME` > 디렉터리 이름** 순으로 정해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "접두사가 프로젝트를 격리한다",
+   "md": "**7.2절에서 기본 bridge 에는 격리가 없다고** 했다. **컴포즈는 프로젝트마다 네트워크를 만들어 이 문제를** 없앤다.\n\n```\n~/shop/compose.yaml    -> shop_default 네트워크\n~/blog/compose.yaml    -> blog_default 네트워크\n\nshop 의 api 는 blog 의 db 를 못 본다\n```\n\n**같은 디렉터리 이름이면 충돌**한다:\n\n```\n~/work/app/compose.yaml   -> app_default\n~/side/app/compose.yaml   -> app_default    <- 같다!\n```\n\n> **둘째를 띄우면 첫째의 컨테이너를 \"이미 있는 것\" 으로 보고 재사용하거나 지운다.**\n> **`name:` 을 명시하는 습관**이 안전하다."
+  },
+  {
+   "type": "table",
+   "caption": "볼륨을 적는 여러 형태",
+   "columns": [
+    "형태",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`- pgdata:/var/lib/postgresql/data`",
+     "**이름 있는 볼륨.** `<프로젝트>_pgdata` 로 만들어진다"
+    ],
+    [
+     "`- ./config:/app/config:ro`",
+     "**바인드 마운트.** compose.yaml 기준 상대 경로"
+    ],
+    [
+     "`- /var/lib/postgresql/data`",
+     "익명 볼륨(8.1절). 쓰지 않는다"
+    ],
+    [
+     "`- type: tmpfs`",
+     "tmpfs(8.4절)"
+    ]
+   ],
+   "note": "**컴포즈에서는 상대 경로가 된다** — **`docker run` 과 다른** 점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기존 리소스를 그대로 쓰기 — external",
+   "md": "**이미 있는 볼륨·네트워크를 쓰고 싶으면**:\n\n```yaml\nvolumes:\n  pgdata:\n    external: true          # 이름 그대로 pgdata 를 찾는다. 없으면 에러\n\nnetworks:\n  shared:\n    external: true\n    name: infra-net\n```\n\n**쓰는 자리**:\n\n| 상황 | 왜 |\n|---|---|\n| **여러 컴포즈 프로젝트가 한 DB 를 공유** | 각자 `external` 로 같은 네트워크에 붙는다 |\n| 운영 볼륨을 실수로 안 지우게 | `down -v` 가 external 볼륨은 안 지운다 |\n| 기존 인프라와 연결 | |\n\n**이름만 바꾸고 싶으면 `name:`**:\n\n```yaml\nvolumes:\n  pgdata:\n    name: shop-production-data     # 접두사 없이 이 이름 그대로\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이름 규칙과 프로젝트 격리를 확인한다",
+   "sql": "$ mkdir -p /tmp/lab/shop /tmp/lab/blog && cd /tmp/lab/shop\n\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n    volumes: [pgdata:/var/lib/postgresql/data]\n  api:\n    image: alpine\n    command: sleep 3600\nvolumes:\n  pgdata:\nEOF\n\n$ docker compose up -d\n[+] Running 4/4\n ✔ Network shop_default  Created\n ✔ Volume shop_pgdata    Created\n ✔ Container shop-db-1   Started\n ✔ Container shop-api-1  Started\n\n#   디렉터리 이름이 프로젝트 이름이 됐다\n\n\n# --- 다른 프로젝트 ---\n\n$ cd ../blog\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n  api:\n    image: alpine\n    command: sleep 3600\nEOF\n\n$ docker compose up -d >/dev/null\n\n$ docker network ls | grep -E 'shop|blog'\n8f2a1b3c4d5e   blog_default   bridge   local\n1a2b3c4d5e6f   shop_default   bridge   local\n\n\n# --- 프로젝트끼리 안 보인다 ---\n\n$ docker compose exec api getent hosts db\n172.22.0.2  db\n\n#   blog 의 api 는 blog 의 db 를 본다\n\n$ docker exec shop-api-1 getent hosts db\n172.21.0.2  db\n\n#   shop 의 api 는 shop 의 db 를 본다. 같은 이름인데 다른 것이다\n\n$ docker exec blog-api-1 sh -c 'nc -z -w1 172.21.0.2 5432 && echo reachable || echo \"cannot reach shop db\"'\ncannot reach shop db\n\n#   7.2절의 기본 bridge 였다면 닿았을 것이다\n\n\n# --- 볼륨 이름 ---\n\n$ docker volume ls | grep -E 'shop|blog'\nlocal     shop_pgdata\nlocal     blog_...(익명)\n\n$ docker compose -f ../shop/compose.yaml -p shop config --volumes\npgdata\n\n$ docker volume inspect shop_pgdata -f '{{index .Labels \"com.docker.compose.project\"}}'\nshop\n\n#   라벨로 어느 프로젝트 것인지 표시된다 (익명 볼륨과 다른 점)\n\n\n# --- 이름을 고정하기 ---\n\n$ cd ../shop\n$ cat > compose.yaml <<'EOF'\nname: shop-prod\n\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n    volumes: [pgdata:/var/lib/postgresql/data]\n\nvolumes:\n  pgdata:\n    name: shop-production-data\nEOF\n\n$ docker compose up -d >/dev/null\n$ docker volume ls | grep production\nlocal     shop-production-data\n\n$ docker ps --format '{{.Names}}' | grep shop-prod\nshop-prod-db-1\n\n#   접두사 없이 지정한 이름 그대로다\n\n\n# --- external: 기존 것을 쓴다 ---\n\n$ docker network create infra-net >/dev/null\n$ cat > compose.yaml <<'EOF'\nname: shop-prod\n\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n    networks: [infra]\n\nnetworks:\n  infra:\n    external: true\n    name: infra-net\nEOF\n\n$ docker compose up -d\n[+] Running 1/1\n ✔ Container shop-prod-db-1  Recreated\n\n$ docker network ls | grep -c shop-prod_default\n0\n\n$ docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}' shop-prod-db-1\ninfra-net\n\n#   자기 네트워크를 안 만들고 기존 것에 붙었다\n\n\n# --- 없는 external 은 에러 ---\n\n$ sed -i '' 's/infra-net/no-such-net/' compose.yaml 2>/dev/null || sed -i 's/infra-net/no-such-net/' compose.yaml\n$ docker compose up -d 2>&1 | tail -1\nnetwork no-such-net declared as external, but could not be found\n\n$ docker compose -f /tmp/lab/blog/compose.yaml -p blog down >/dev/null\n$ docker rm -f shop-prod-db-1 shop-api-1 shop-db-1 >/dev/null 2>&1\n$ docker network rm infra-net shop_default >/dev/null 2>&1\n$ docker volume rm shop-production-data shop_pgdata >/dev/null 2>&1\n$ cd /tmp && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "컴포즈는 프로젝트 이름을 접두사로 붙여 네트워크·볼륨·컨테이너를 만든다.",
+  "프로젝트마다 네트워크가 달라 서로 격리된다. 같은 디렉터리 이름이면 충돌하니 name: 을 적는다.",
+  "컴포즈의 볼륨 경로는 compose.yaml 기준 상대 경로가 된다.",
+  "external: true 로 기존 볼륨·네트워크를 쓴다. down -v 가 그것은 안 지운다.",
+  "volumes 의 name: 을 주면 접두사 없이 그 이름으로 만든다."
+ ],
+ "drills": [
+  {
+   "task": "디렉터리가 다른 두 프로젝트를 띄우고 서로의 DB 에 닿는지 확인한다.",
+   "done_when": "같은 서비스 이름이 각자 다른 컨테이너로 풀리고 서로 못 닿는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "volumes 에 name: 을 지정해 접두사 없는 볼륨을 만든다.",
+   "done_when": "docker volume ls 에서 지정한 이름 그대로인 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "external: true 로 미리 만든 네트워크에 붙이고, 없는 이름으로 바꿔 에러를 본다.",
+   "done_when": "declared as external, but could not be found 를 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컴포즈의 리소스 이름 앞에 붙는 접두사는 무엇으로 정해지나.",
+   "a": "프로젝트 이름. name: 필드, -p 옵션, COMPOSE_PROJECT_NAME, 디렉터리 이름 순."
+  },
+  {
+   "q": "두 프로젝트의 디렉터리 이름이 같으면 무슨 일이 생기나.",
+   "a": "프로젝트 이름이 같아져 서로의 리소스를 재사용하거나 지운다. name: 을 명시한다."
+  },
+  {
+   "q": "external: true 볼륨의 장점은.",
+   "a": "컴포즈가 만들거나 지우지 않는다. down -v 로도 안 지워져 운영 데이터를 보호한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "external",
+   "what": "컴포즈 밖에서 만든 리소스를 참조만 하겠다는 선언."
+  },
+  {
+   "term": "컴포즈 라벨",
+   "what": "컴포즈가 만든 리소스에 붙이는 project/service 표시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Networking in Compose",
+   "url": "https://docs.docker.com/compose/how-tos/networking/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Compose file: volumes",
+   "url": "https://docs.docker.com/reference/compose-file/volumes/",
+   "publisher": "Docker"
+  }
+ ]
+}

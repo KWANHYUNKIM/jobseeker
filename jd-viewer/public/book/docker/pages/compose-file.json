@@ -1,0 +1,150 @@
+{
+ "book": "docker",
+ "id": "compose-file",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "compose.yaml 읽기",
+ "summary": "services · networks · volumes.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "주요 필드를 안다.",
+  "docker run 옵션과의 대응을 안다.",
+  "변수 치환을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "compose.yaml",
+   "caption": "자주 쓰는 필드를 한 번에",
+   "code": "name: shop                        # 프로젝트 이름 (기본: 디렉터리 이름)\n\nservices:\n  api:\n    build:                        # 이미지를 여기서 빌드한다\n      context: .\n      dockerfile: Dockerfile\n      target: runtime             # 5.7절\n      args:\n        APP_VERSION: 1.4.2\n    image: ghcr.io/acme/shop:1.4.2   # 빌드 결과에 붙일 이름 (또는 받아 쓸 이름)\n\n    ports:\n      - \"127.0.0.1:8080:8080\"     # 6.1절\n\n    environment:\n      SPRING_PROFILES_ACTIVE: prod\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shop\n    env_file:\n      - .env.api                  # 6.2절\n\n    depends_on:\n      db:\n        condition: service_healthy   # 9.3절\n\n    volumes:\n      - ./config:/app/config:ro\n\n    restart: unless-stopped       # 6.3절\n    deploy:\n      resources:\n        limits: { memory: 768M, cpus: '1.0' }   # 6.6절\n\n    healthcheck:                  # 6.5절\n      test: [\"CMD\", \"curl\", \"-fsS\", \"http://localhost:8080/actuator/health\"]\n      interval: 10s\n      timeout: 3s\n      retries: 3\n      start_period: 40s\n\n    logging:                      # 6.4절\n      driver: json-file\n      options: { max-size: \"10m\", max-file: \"3\" }\n\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 5s\n      start_period: 20s\n\nvolumes:\n  pgdata:\n\nnetworks:\n  default:\n    name: shop-net",
+   "note": "**6장의 옵션들이 그대로 필드가 된다.** **새로 외울 게 거의 없다.**"
+  },
+  {
+   "type": "table",
+   "caption": "docker run 옵션과의 대응",
+   "columns": [
+    "`docker run`",
+    "compose"
+   ],
+   "rows": [
+    [
+     "`-p`",
+     "`ports:`"
+    ],
+    [
+     "`-e`",
+     "`environment:`"
+    ],
+    [
+     "`--env-file`",
+     "`env_file:`"
+    ],
+    [
+     "`-v`",
+     "`volumes:`"
+    ],
+    [
+     "`--restart`",
+     "`restart:`"
+    ],
+    [
+     "`--memory` / `--cpus`",
+     "**`deploy.resources.limits`**"
+    ],
+    [
+     "`--health-cmd` 등",
+     "`healthcheck:`"
+    ],
+    [
+     "`--network`",
+     "`networks:`"
+    ],
+    [
+     "`--name`",
+     "`container_name:` (**대개 안 쓴다**)"
+    ]
+   ],
+   "note": "**`container_name` 을 박아 두면 `--scale` 이 안 된다** — **꼭 필요할 때만** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "환경변수 치환과 .env 파일",
+   "md": "**compose.yaml 안의 `${...}` 는 `.env` 파일과 셸 환경에서** 채워진다.\n\n```\n# .env  (compose.yaml 옆)\nDB_PASSWORD=devpass\nTAG=1.4.2\n```\n\n```yaml\nimage: ghcr.io/acme/shop:${TAG}\n```\n\n| 문법 | 뜻 |\n|---|---|\n| `${VAR}` | 없으면 **빈 문자열** |\n| `${VAR:-기본값}` | 없거나 비면 기본값 |\n| **`${VAR:?메시지}`** | **없으면 에러.** 필수 값에 쓴다 |\n\n**6.2절에서 예고한 헷갈림**:\n\n| | 무엇 |\n|---|---|\n| **`.env`** | **compose.yaml 의 `${}` 치환용** |\n| **`env_file:`** | **컨테이너의 환경변수** |\n| `environment:` | 컨테이너의 환경변수 (인라인) |\n\n> **`.env` 의 값은 자동으로 컨테이너에 안 들어간다.** **가장 자주 헷갈리는 자리**다.\n\n**확인하는 법**:\n\n```bash\ndocker compose config      # 치환이 끝난 최종 형태를 보여 준다\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "YAML 자체의 함정",
+   "md": "| 함정 | 예 | 결과 |\n|---|---|---|\n| **포트를 따옴표 없이** | `- 8080:8080` | 대개 괜찮지만 `- 22:22` 는 **60진수로 해석**된다 |\n| **불리언처럼 보이는 문자열** | `SOME_FLAG: yes` | **`true` 가 된다.** `\"yes\"` 로 쓴다 |\n| 들여쓰기 | 탭 사용 | 파싱 에러 |\n| `environment` 두 형식 | `KEY: value` 와 `- KEY=value` | 섞어 쓰면 헷갈린다. 하나로 |\n\n**항상 `docker compose config` 로 확인**한다 — **YAML 이 어떻게 해석됐는지 그대로 보여** 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "config 로 최종 형태를 확인한다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n$ cat > .env <<'EOF'\nTAG=7.4-alpine\nDB_PASSWORD=devpass\nEOF\n\n$ cat > compose.yaml <<'EOF'\nname: shop\n\nservices:\n  cache:\n    image: redis:${TAG}\n    ports:\n      - \"127.0.0.1:6379:6379\"\n    environment:\n      FLAG: yes\n      QUOTED: \"yes\"\n    restart: unless-stopped\n    deploy:\n      resources:\n        limits: { memory: 128M }\n\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?required}\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n\nvolumes:\n  pgdata:\nEOF\n\n\n# --- 치환 결과를 본다 ---\n\n$ docker compose config\nname: shop\nservices:\n  cache:\n    deploy:\n      resources:\n        limits:\n          memory: \"134217728\"\n    environment:\n      FLAG: \"true\"\n      QUOTED: \"yes\"\n    image: redis:7.4-alpine\n    ports:\n      - mode: ingress\n        host_ip: 127.0.0.1\n        target: 6379\n        published: \"6379\"\n        protocol: tcp\n    restart: unless-stopped\n  db:\n    environment:\n      POSTGRES_PASSWORD: devpass\n    image: postgres:16.5\n    volumes:\n      - type: volume\n        source: pgdata\n        target: /var/lib/postgresql/data\nvolumes:\n  pgdata:\n    name: shop_pgdata\n\n#   FLAG 가 \"true\" 가 됐다. YAML 이 yes 를 불리언으로 읽었다\n#   QUOTED 는 그대로다\n\n\n# --- 필수 값이 없으면 ---\n\n$ DB_PASSWORD= docker compose config 2>&1 | head -2\nservice \"db\": environment variable \"DB_PASSWORD\" is required: required\n\n#   :? 덕분에 up 하기 전에 걸렸다\n\n\n# --- .env 는 컨테이너 환경변수가 아니다 ---\n\n$ docker compose up -d cache >/dev/null 2>&1\n$ docker compose exec cache printenv TAG || echo \"TAG not in container\"\nTAG not in container\n\n$ docker compose exec cache printenv FLAG\ntrue\n\n#   .env 의 TAG 는 compose.yaml 치환에만 쓰였다\n#   컨테이너에 넣으려면 environment 나 env_file 에 적어야 한다\n\n\n# --- env_file 로 넣으면 ---\n\n$ cat > cache.env <<'EOF'\nCACHE_MODE=lru\nEOF\n$ cat >> compose.yaml <<'EOF'\n    env_file:\n      - cache.env\nEOF\n\n$ docker compose up -d cache >/dev/null 2>&1\n$ docker compose exec cache printenv CACHE_MODE\nlru\n\n\n# --- 실제로 만들어진 것 ---\n\n$ docker inspect -f 'mem={{.HostConfig.Memory}} restart={{.HostConfig.RestartPolicy.Name}} ports={{.HostConfig.PortBindings}}' shop-cache-1\nmem=134217728 restart=unless-stopped ports=map[6379/tcp:[{127.0.0.1 6379}]]\n\n#   compose 의 필드가 docker run 옵션 그대로다\n\n$ docker compose down -v >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "compose 의 필드는 대부분 docker run 옵션과 1:1 이다. 자원 제한만 deploy.resources 아래에 있다.",
+  "${VAR:?메시지} 로 필수 값을 up 전에 잡는다.",
+  ".env 는 compose.yaml 치환용이고 컨테이너 환경변수는 environment/env_file 이다.",
+  "YAML 이 yes 를 true 로 읽는 등의 함정이 있다. docker compose config 로 최종 형태를 확인한다.",
+  "container_name 을 박으면 --scale 이 안 된다."
+ ],
+ "drills": [
+  {
+   "task": "`${VAR:?required}` 를 쓴 compose.yaml 에서 변수를 비우고 `docker compose config` 를 돌린다.",
+   "done_when": "에러가 나는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "environment 에 `FLAG: yes` 를 넣고 config 로 어떻게 해석됐는지 본다.",
+   "done_when": "\"true\" 가 되는 것을 확인한다.",
+   "minutes": 3
+  },
+  {
+   "task": ".env 의 값이 컨테이너에 들어가는지 `printenv` 로 확인한다.",
+   "done_when": "안 들어가는 것을 확인하고 env_file 로 넣어 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": ".env 와 env_file 의 차이는.",
+   "a": ".env 는 compose.yaml 의 ${} 치환에 쓰이고, env_file 은 컨테이너의 환경변수가 된다."
+  },
+  {
+   "q": "메모리 제한은 compose 의 어디에 쓰나.",
+   "a": "deploy.resources.limits.memory."
+  },
+  {
+   "q": "`FLAG: yes` 가 위험한 이유는.",
+   "a": "YAML 이 불리언으로 읽어 \"true\" 문자열이 된다. 따옴표로 감싼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "docker compose config",
+   "what": "변수 치환과 병합이 끝난 최종 설정을 출력하는 명령."
+  },
+  {
+   "term": "프로젝트 이름",
+   "what": "name: 필드나 디렉터리 이름. 리소스 접두사가 된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Compose file reference",
+   "url": "https://docs.docker.com/reference/compose-file/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Environment variables in Compose",
+   "url": "https://docs.docker.com/compose/how-tos/environment-variables/",
+   "publisher": "Docker"
+  }
+ ]
+}

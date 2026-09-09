@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "what-was-open",
+ "no": "12.1",
+ "chapter": 12,
+ "title": "열려 있던 curl 한 줄",
+ "summary": "아홉 번째 책의 숙제.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "1.3절의 요청을 다시 보낸다.",
+  "빚 여섯이 어디서 갚였는지 짚는다.",
+  "무엇이 바뀌었는지 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 `curl` 한 줄이 인증 없이 주문을** 넣었다. **같은 줄을 다시** 보낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "그때와 지금",
+   "ascii": "   the curl from section 1.3, then and now\n\n   then\n     POST /api/v1/orders, no cookie, no header\n     200 OK, and a row in the orders table\n\n   now\n     401, application/problem+json, no row\n\n   the same command, ninety sections apart",
+   "note": "**같은 명령, 아흔 절 사이**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 그 사이에 생겼나",
+   "md": "| 그때 | 지금 |\n|---|---|\n| 필터 0개 | 체인 둘, 필터 12·18개 |\n| 인가 규칙 없음 | 일곱 줄 + 표 |\n| 회원 표 없음 | 표 넷 |\n| 테스트 78개 | 160개 |\n| 인가 테스트 0개 | 25개 |\n\n**책 ⑨ 10.4절의 문장**\n\n> **\"가장 급하다\" 고 적었다.**\n> **인증 없이 `curl` 한 줄로 주문이 들어가는데 테스트 78개가 전부 초록**이었다.\n>\n> **그 문장이 이 책의 시작**이었다.\n\n**그 사이에 배운 것**\n\n> **막는 판단이 컨트롤러 앞에서 끝난다는 것**(2장).\n> **누구인지와 무엇을 할 수 있는지가 다른 질문**이라는 것(4장·8장).\n> **막히는 것을 테스트하지 않으면 아무것도 안 지킨다는 것**(8.8절).\n>\n> **셋째가 책 ⑨ 이 준** 방법이다."
+  },
+  {
+   "type": "figure",
+   "caption": "빚 여섯",
+   "ascii": "   six debts, and where each one was paid\n\n   ordering without auth        1.4  2.7\n   an api redirect instead of 401   6.2  6.3\n   csrf left on without knowing why  6.4  6.5\n   one authorization rule for everything  chapter 7\n   no login method of our own   chapter 10  11.2\n   a redirect in an ajax response   11.3\n\n   three of them were written down in book nine, section 10.4",
+   "note": "**셋은 책 ⑨ 10.4절에 적혀** 있었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 78개가 다 초록이었나",
+   "md": "**테스트가 \"되는 길\" 만** 지켰다.\n\n> **주문이 만들어지나 · 목록이 나오나 · 재고가 주나**.\n> **전부 \"되어야 하는 것\"** 이다.\n>\n> **\"안 되어야 하는 것\" 을 아무도 안** 적었다.\n\n**책 ⑨ 이 그걸 여덟 번** 보여 줬다.\n\n> **지켜야 할 것을 부수고 빨간 막대가 나는지** 본다.\n> **인증을 지우면 아무것도 안** 깨졌다.\n> **그게 아무것도 안 지키고 있었다는 증거**다.\n\n**지금은 다르다.**\n\n> **1.3절의 `curl` 을 다시 통하게 만들려면 테스트 여러 개를 같이 지워야** 한다.\n> **아래에서 실제로 세어** 본다.\n\n**남은 것도 있다.**\n\n> **10.9절의 안 만든 여섯**이다.\n> **12.2절에서 이 책이 안 다룬 것과 같이** 센다.\n> **\"안 했다\" 를 적어 두는 게 이 책의 마지막 습관**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 1.3절의 그 명령 ---\n\n$ curl -i -X POST localhost:8080/api/v1/orders \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"productNumbers\":[\"001\",\"002\"]}'\n\n#   1.3절의 응답\n\nHTTP/1.1 200\nContent-Type: application/json\n\n{\"code\":200,\"status\":\"OK\",\"data\":{\"id\":4,\"totalPrice\":8500,...}}\n\n#   지금의 응답\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\n \"detail\":\"authentication required\",\"instance\":\"/api/v1/orders\"}\n\nDEBUG FilterChainProxy : Securing POST /api/v1/orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/12)\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (9/12)\nTRACE FilterChainProxy : Invoking RequestTraceFilter (10/12)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (11/12)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (12/12)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nINFO RequestTraceFilter : POST /api/v1/orders 401 user=anonymousUser\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n3\n\n#   안 늘었다\n\n#   1.3절에서는 4가 됐다\n\n# --- 인증하면 ---\n\n$ XSRF=$(curl -s -c f.txt localhost:8080/api/csrf \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"token\"])')\n\n$ curl -s -o /dev/null -b f.txt -c f.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"hunter2secret\"}'\n\n$ curl -i -b f.txt -X POST localhost:8080/api/v1/orders \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"productNumbers\":[\"001\",\"002\"]}'\n\nHTTP/1.1 200\n\n{\"code\":200,\"status\":\"OK\",\"data\":{\"id\":4,\"totalPrice\":8500,...}}\n\nselect count(*) from orders;\n4\n\n#   되는 길은 그대로다\n\n#   막는 길이 생겼을 뿐이다\n\n# --- 그때와 지금 ---\n\n#   1.3절\n$ git show 책9-마지막:build/filters.txt 2>/dev/null | wc -l\n0\n\n#   필터가 없었다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Will secure\"\n2\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n30\n\n#   체인 둘에 필터 서른이다\n\nselect table_name from information_schema.tables\n where table_schema='PUBLIC'\n   and table_name in ('MEMBER','MEMBER_ROLE','ROLE_AUTHORITY',\n                      'SECURITY_AUDIT','URL_AUTHORITY','PERSISTENT_LOGINS');\n\nTABLE_NAME\n-------------------\nMEMBER\nMEMBER_ROLE\nPERSISTENT_LOGINS\nROLE_AUTHORITY\nSECURITY_AUDIT\nURL_AUTHORITY\n\n#   여섯이다\n\n#   1.3절에는 하나도 없었다\n\n$ ./gradlew test\n\n160 tests completed\n\n#   책 ⑨ 이 78개를 남겼다\n\n#   여든둘이 늘었다\n\n# --- 인증을 지워 본다 ---\n\n#   (SecurityConfig 를 통째로 지운다)\n\n$ ./gradlew test 2>&1 | grep -c FAILED\n\n41\n\n#   마흔한 개가 빨갛다\n\n$ ./gradlew test 2>&1 | grep FAILED | head -6\n\nAuthorizationMatrixTest > 인가표(GET, /orders, ANON, 302) FAILED\nAuthorizationMatrixTest > 인가표(GET, /admin/panel, USER, 403) FAILED\nApiRedirectTest > api_는_리다이렉트를_안_낸다 FAILED\nEndpointSweepTest > 모든_엔드포인트가_인가표에_있다 FAILED\nAuthSystemRequirementTest > 잠긴_계정은_다른_메시지 FAILED\nSecurityDefaultsTest > 기본_보호가_켜져_있다 FAILED\n\n#   1.3절에서는 0개였다\n\n#   그때는 아무것도 안 지키고 있었다\n\n#   책 ⑨ 10.4절이 말한 게 이거였다\n\n# --- 빚 여섯을 짚는다 ---\n\n#   1) 인증 없이 주문이 200\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/api/v1/orders -H 'Content-Type: application/json' \\\n    -d '{\"productNumbers\":[\"001\"]}'\n401\n\n#   2) API 가 401 이 아니라 302\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/api/v1/orders\n401\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/orders\n302\n\n#   3) CSRF\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b f.txt -X POST \\\n    localhost:8080/api/v1/orders -H 'Content-Type: application/json' \\\n    -d '{\"productNumbers\":[\"001\"]}'\n403\n\n#   토큰 없이는 막힌다\n\n#   4) 인가 규칙\n$ ./gradlew bootRun 2>&1 | grep -A7 \"RequestMatcherDelegating\" | grep -c '{'\n7\n\n#   5) 직접 만든 로그인\n$ ./gradlew bootRun 2>&1 | grep -c JsonLoginFilter\n1\n\n#   6) 비동기 302\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n401\n\n#   여섯이 다 확인된다\n\n# --- 아직 열려 있는 것 ---\n\n$ cat docs/not-implemented.md | grep -c '^-'\n6\n\n#   여섯이 남아 있다\n\n#   적어 뒀으니 안 잊는다\n\n$ grep -rn \"TODO\\|FIXME\" src/main --include='*.java' | wc -l\n0\n\n#   코드에는 없다\n\n#   문서에 있다\n\n#   TODO 는 사라지고 문서는 남는다\n\n# --- 다음 절에서 ---\n\n#   이 책이 안 다룬 것을 센다",
+   "note": "**1.3절의 그 `curl` 이 지금은 401 이고 `count` 가 3에서 안** 는다.\n\n**인증하면 200 과 같은 응답**이다 — 되는 길은 그대로고 막는 길이 생겼다.\n\n**체인 둘에 필터 서른, 표 여섯, 테스트 160개**다.\n\n**`SecurityConfig` 를 통째로 지우면 41개가 빨개진다** — 1.3절에서는 0개였다.\n\n**빚 여섯이 명령 여섯 줄로 다** 확인된다."
+  }
+ ],
+ "recap": [
+  "**같은 `curl` 이 200 에서 401 이** 됐다.",
+  "**되는 길은 그대로고 막는 길이** 생겼다.",
+  "**필터 서른, 표 여섯, 테스트 160개**다.",
+  "**설정을 지우면 41개가** 빨개진다.",
+  "**1.3절에서는 0개**였다.",
+  "**78개가 다 초록이었던 건 되는 길만 지켜서**다.",
+  "**빚 여섯이 다** 갚였다.",
+  "**셋은 책 ⑨ 10.4절에 적혀** 있었다.",
+  "**안 만든 여섯은 문서에** 있다."
+ ],
+ "drills": [
+  {
+   "task": "1.3절의 명령을 다시 보낸다.",
+   "done_when": "401 과 행 수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "설정을 지우고 테스트를 돌린다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "빚 여섯을 명령으로 확인한다.",
+   "done_when": "여섯 줄을 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "내 프로젝트에서 같은 `curl` 을 해 본다.",
+   "done_when": "결과를 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "1.3절의 요청이 지금은?",
+   "a": "401 이고 데이터가 안 들어간다."
+  },
+  {
+   "q": "설정을 지우면 몇 개가 깨지나?",
+   "a": "41개다. 1.3절에서는 0개였다."
+  },
+  {
+   "q": "78개가 다 초록이었던 이유는?",
+   "a": "되는 길만 테스트하고 안 되는 길을 아무도 안 적었다."
+  },
+  {
+   "q": "책 ⑨ 이 준 방법은?",
+   "a": "지켜야 할 것을 부숴 빨간 막대가 나는지 보는 것이다."
+  },
+  {
+   "q": "안 만든 것을 어디에 적었나?",
+   "a": "코드의 TODO 가 아니라 문서다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Testing",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/test/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP Top Ten",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

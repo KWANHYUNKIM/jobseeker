@@ -1,0 +1,128 @@
+{
+ "book": "docker",
+ "id": "depends-on",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "depends_on 은 기다려 주지 않는다",
+ "summary": "떠 있는 것과 준비된 것.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "depends_on 의 기본 동작을 안다.",
+  "service_healthy 조건을 쓴다.",
+  "애플리케이션 쪽 재시도가 왜 필요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "```yaml\napi:\n  depends_on:\n    - db\n```\n\n**이렇게 쓰면 DB 가 준비된 뒤에 API 가 뜰 것 같다.** **아니다.**\n\n> **`depends_on` 의 기본은 \"컨테이너를 먼저 시작한다\" 뿐**이다.\n> **postgres 는 컨테이너가 뜨고 나서 5~10초 뒤에야 접속을 받는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "기본 depends_on 이 보장하는 것",
+   "ascii": "   t=0.0  db container created\n   t=0.1  db container started        <- depends_on is satisfied here\n   t=0.2  api container started\n   t=0.4  api connects to db  ->  Connection refused\n   t=0.4  api exits (1)\n   t=6.2  postgres ready to accept connections\n\n   컨테이너가 시작된 것과 서비스가 준비된 것은 6초 차이다",
+   "note": "**6.5절의 헬스체크가 이 간격을 메운다.**"
+  },
+  {
+   "type": "table",
+   "caption": "depends_on 의 조건",
+   "columns": [
+    "조건",
+    "기다리는 것"
+   ],
+   "rows": [
+    [
+     "`service_started` (기본)",
+     "**컨테이너가 시작될 때까지.** 사실상 안 기다린다"
+    ],
+    [
+     "**`service_healthy`**",
+     "**헬스체크가 healthy 가 될 때까지**"
+    ],
+    [
+     "`service_completed_successfully`",
+     "그 서비스가 **0 으로 종료**할 때까지. 마이그레이션 작업에 쓴다"
+    ]
+   ],
+   "note": "**`service_healthy` 를 쓰려면 상대 서비스에 `healthcheck:` 가 있어야** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "compose.yaml",
+   "caption": "제대로 기다리게 하기",
+   "code": "services:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_PASSWORD: devpass\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 3s\n      timeout: 3s\n      retries: 10\n      start_period: 20s\n\n  migrate:\n    image: myapp:1.4.2\n    command: [\"java\", \"-jar\", \"/app/app.jar\", \"--migrate-only\"]\n    depends_on:\n      db: { condition: service_healthy }\n\n  api:\n    image: myapp:1.4.2\n    depends_on:\n      db: { condition: service_healthy }\n      migrate: { condition: service_completed_successfully }"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그래도 애플리케이션 쪽 재시도가 필요하다",
+   "md": "**`service_healthy` 로도 안 되는 경우가** 있다.\n\n| 상황 | 왜 |\n|---|---|\n| **DB 가 도중에 재시작** | 기동 순서와 무관하다 |\n| **운영 환경** | 컴포즈가 없다. 쿠버네티스에는 `depends_on` 이 없다 |\n| 네트워크 순단 | 언제든 일어난다 |\n| 헬스체크가 통과했는데 아직 | `pg_isready` 는 접속만 본다. 마이그레이션 중일 수 있다 |\n\n> **기동 순서에 의존하는 설계는 언젠가 깨진다.**\n> **애플리케이션이 \"연결이 안 되면 잠시 후 다시\" 를 할 줄 알아야** 한다.\n\n**스프링 부트라면**:\n\n```properties\nspring.datasource.hikari.initialization-fail-timeout=-1\n```\n\n> **기동 시 커넥션 실패로 죽지 않고 계속 시도**한다.\n> **「스프링 DB 1편」의 커넥션 풀 이야기가 여기서 다시** 나온다.\n\n**`depends_on` 은 개발 편의**고 **재시도는 정확성**이다. **둘 다 한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기다리지 않는 것과 기다리는 것",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 기본 depends_on ---\n\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_PASSWORD: devpass\n\n  api:\n    image: postgres:16.5\n    depends_on:\n      - db\n    command: >\n      sh -c 'echo \"[api] trying at $$(date +%T)\";\n             pg_isready -h db -U postgres || echo \"[api] db NOT ready\";\n             exit 1'\nEOF\n\n$ docker compose up 2>&1 | grep -E '\\[api\\]|api-1'\napi-1  | [api] trying at 22:58:31\napi-1  | db:5432 - no response\napi-1  | [api] db NOT ready\napi-1 exited with code 1\n\n$ docker compose logs db | grep -c 'ready to accept'\n1\n\n$ docker compose logs -t db | grep 'ready to accept'\n2026-09-09T22:58:37.412Z  LOG:  database system is ready to accept connections\n\n#   api 는 22:58:31 에 시도했고 db 는 22:58:37 에 준비됐다\n#   6초 차이로 실패했다\n\n$ docker compose down >/dev/null\n\n\n# --- service_healthy 로 바꾼다 ---\n\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_PASSWORD: devpass\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 2s\n      timeout: 3s\n      retries: 15\n      start_period: 5s\n\n  api:\n    image: postgres:16.5\n    depends_on:\n      db:\n        condition: service_healthy\n    command: >\n      sh -c 'echo \"[api] trying at $$(date +%T)\";\n             pg_isready -h db -U postgres && echo \"[api] connected\"'\nEOF\n\n$ docker compose up 2>&1 | grep -E '\\[api\\]|Waiting|Healthy'\n ⠋ Container lab-db-1  Waiting\n ✔ Container lab-db-1  Healthy\napi-1  | [api] trying at 22:59:12\napi-1  | db:5432 - accepting connections\napi-1  | [api] connected\n\n#   Waiting -> Healthy 를 거친 뒤에 api 가 떴다\n\n$ docker compose down >/dev/null\n\n\n# --- 마이그레이션 작업을 끼워 넣는다 ---\n\n$ cat > compose.yaml <<'EOF'\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_PASSWORD: devpass\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 2s\n      retries: 15\n      start_period: 5s\n\n  migrate:\n    image: postgres:16.5\n    depends_on:\n      db: { condition: service_healthy }\n    environment:\n      PGPASSWORD: devpass\n    command: >\n      sh -c 'psql -h db -U postgres -c \"create table if not exists t(id int)\" &&\n             echo \"[migrate] done\"'\n\n  api:\n    image: postgres:16.5\n    depends_on:\n      migrate: { condition: service_completed_successfully }\n    environment:\n      PGPASSWORD: devpass\n    command: >\n      sh -c 'psql -h db -U postgres -tAc \"select count(*) from t\" &&\n             echo \"[api] table exists\"'\nEOF\n\n$ docker compose up 2>&1 | grep -E '\\[migrate\\]|\\[api\\]|Exited|Healthy'\n ✔ Container lab-db-1       Healthy\nmigrate-1  | CREATE TABLE\nmigrate-1  | [migrate] done\n ✔ Container lab-migrate-1  Exited\napi-1      | 0\napi-1      | [api] table exists\n\n#   db healthy -> migrate 성공 종료 -> api 시작\n\n\n# --- 마이그레이션이 실패하면 api 는 아예 안 뜬다 ---\n\n$ sed -i '' 's/create table if not exists t(id int)/this is not sql/' compose.yaml 2>/dev/null || \\\n  sed -i 's/create table if not exists t(id int)/this is not sql/' compose.yaml\n\n$ docker compose up 2>&1 | tail -4\nmigrate-1  | ERROR:  syntax error at or near \"this\"\nmigrate-1 exited with code 1\ndependency failed to start: container lab-migrate-1 exited (1)\n\n$ docker compose ps -a --format 'table {{.Service}}\\t{{.Status}}'\nSERVICE   STATUS\napi       Created\ndb        Up 12 seconds (healthy)\nmigrate   Exited (1)\n\n#   api 는 Created 에서 멈췄다. 깨진 스키마로 안 뜬 것이 낫다\n\n$ docker compose down -v >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "depends_on 의 기본은 '컨테이너를 먼저 시작한다' 뿐이다. 준비를 기다리지 않는다.",
+  "condition: service_healthy 로 헬스체크를 기다린다. 상대에 healthcheck 가 있어야 한다.",
+  "service_completed_successfully 로 마이그레이션 같은 일회성 작업을 먼저 끝내게 한다.",
+  "그래도 애플리케이션 쪽 재시도가 필요하다. 운영에는 depends_on 이 없고 DB 는 언제든 재시작한다."
+ ],
+ "drills": [
+  {
+   "task": "depends_on 만 쓴 compose 로 API 가 Connection refused 로 죽는 것을 재현한다.",
+   "done_when": "로그의 타임스탬프로 몇 초 차이인지 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "healthcheck 와 condition: service_healthy 를 붙여 다시 돌린다.",
+   "done_when": "Waiting → Healthy 후에 뜨는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "migrate 서비스를 일부러 실패시켜 api 가 안 뜨는 것을 확인한다.",
+   "done_when": "api 가 Created 에서 멈추는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 depends_on 이 보장하는 것은.",
+   "a": "컨테이너의 시작 순서뿐. 서비스가 요청을 받을 준비가 됐는지는 안 본다."
+  },
+  {
+   "q": "service_healthy 를 쓰려면 무엇이 필요한가.",
+   "a": "상대 서비스에 healthcheck 정의가 있어야 한다."
+  },
+  {
+   "q": "depends_on 이 있어도 애플리케이션 재시도가 필요한 이유는.",
+   "a": "DB 는 도중에도 재시작하고, 운영(쿠버네티스 등)에는 depends_on 이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "service_healthy",
+   "what": "상대 서비스의 헬스체크가 통과할 때까지 기다리는 depends_on 조건."
+  },
+  {
+   "term": "service_completed_successfully",
+   "what": "상대 서비스가 종료 코드 0 으로 끝날 때까지 기다리는 조건."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Control startup order",
+   "url": "https://docs.docker.com/compose/how-tos/startup-order/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Compose file: depends_on",
+   "url": "https://docs.docker.com/reference/compose-file/services/#depends_on",
+   "publisher": "Docker"
+  }
+ ]
+}

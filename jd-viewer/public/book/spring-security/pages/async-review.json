@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "async-review",
+ "no": "11.7",
+ "chapter": 11,
+ "title": "정리",
+ "summary": "직접 만든 것들.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "직접 만든 열한 조각을 센다.",
+  "만들지 말았어야 할 것을 가른다.",
+  "두 장의 결과를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10장과 11장에서 만든 것을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "11장이 더한 것",
+   "ascii": "   what chapter 11 added\n\n   a json login filter        four pieces, one of them optional\n   three json handlers        success, failure, logout\n   an admin area              three layers of screen\n   a rule editor              with validation and a preview\n   a safe mode                one environment variable\n\n   and one thing removed: the last redirect in an api response",
+   "note": "**뺀 것도 하나** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "만든 열한 조각",
+   "md": "| 조각 | 절 | 대신할 수 있었나 |\n|---|---|---|\n| `MemberUserDetailsService` | 10.3 | 아니다 |\n| `CustomUserDetails` | 10.3 | 아니다 |\n| 폼 성공·실패 핸들러 | 10.6 | 아니다 |\n| `RequestTraceFilter` | 10.7 | MDC 필터 라이브러리로 |\n| 로그인 리스너 둘 | 10.5·10.8 | 아니다 |\n| `JsonLoginFilter` | 11.2 | **폼 인코딩으로** |\n| JSON 핸들러 셋 | 11.3 | 아니다 |\n| `DbAuthorizationManager` | 8.7 | 규칙이 안 바뀌면 안 만든다 |\n\n> **여섯 번째가 논쟁거리**다.\n> **11.1절에서 클라이언트가 폼 인코딩을 보내면 서버 수정이** 0이었다.\n> **필터를 만들면 JSON 을 받을 수 있는데 그게 얼마나** 값어치인가.\n>\n> **답은 상황에 따라 다르고, 물어봤다는 게** 중요하다.\n\n**여덟 번째도 그렇다.**\n\n> **8.7절에서 규칙을 표로 옮기며 테스트가 시드에** 묶였다.\n> **규칙이 정말 자주 바뀌는가**를 먼저 묻는다.\n> **1년에 두 번 바뀌면 배포가** 낫다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 장의 결과",
+   "ascii": "   everything we built ourselves, across two chapters\n\n   user details service   role and authority lookup\n   user details adapter   four flags from four columns\n   two form handlers      success and failure\n   one trace filter       one line per request\n   one json login filter  plus three handlers\n   two event listeners    last login, failed count\n   one authorization manager  the dynamic rule table\n\n   eleven pieces, and the framework classes we replaced: four",
+   "note": "**열한 조각, 바꾼 프레임워크 클래스는** 넷이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "만들면 지켜야 한다",
+   "md": "**직접 만든 것마다 함정이 붙는다.**\n\n| 조각 | 붙어 온 함정 |\n|---|---|\n| 어댑터 | 직렬화·`equals` (10.3·5.7) |\n| 트레이스 필터 | 자리·중복 등록 (10.7) |\n| JSON 필터 | 저장소·본문 재읽기 (11.2) |\n| 동적 매니저 | 갱신 신호·기본값 (8.7) |\n| 관리 화면 | 마지막 관리자 (11.5) |\n\n> **다섯 다 프레임워크를 그대로 썼으면 없었을** 문제다.\n> **만드는 값어치와 지키는 비용을 같이** 센다.\n\n**테스트가 그 비용을 갚아 준다.**\n\n> **160개 중 스물다섯이 인가·인증** 관련이다.\n> **8.8절의 인가표, 11.3절의 리다이렉트 훑기, 11.5절의 업무 규칙**.\n>\n> **셋 다 \"새로 만든 것을 자동으로 잡는\"** 테스트다.\n> **하나씩 쓴 테스트가 아니라 훑는 테스트**다.\n\n**남은 것**\n\n> **10.9절의 안 만든 목록 여섯**이다.\n> **12.2절에서 이 책이 안 다룬 것과 같이** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 직접 만든 것을 센다 ---\n\n$ grep -rln \"implements UserDetailsService\\|implements UserDetails\\|\\\n extends OncePerRequestFilter\\|extends AbstractAuthenticationProcessingFilter\\|\\\n implements AuthorizationManager\\|implements AuthenticationSuccessHandler\\|\\\n extends SavedRequestAware\\|extends SimpleUrlAuthenticationFailure\" \\\n    src/main --include='*.java'\n\nsrc/main/java/com/example/security/MemberUserDetailsService.java\nsrc/main/java/com/example/security/CustomUserDetails.java\nsrc/main/java/com/example/security/MemberLoginSuccessHandler.java\nsrc/main/java/com/example/security/MemberLoginFailureHandler.java\nsrc/main/java/com/example/security/RequestTraceFilter.java\nsrc/main/java/com/example/security/JsonLoginFilter.java\nsrc/main/java/com/example/security/JsonAuthenticationHandlers.java\nsrc/main/java/com/example/security/DbAuthorizationManager.java\n\n#   여덟 파일이다\n\n$ grep -rn \"@EventListener\" src/main --include='*.java' | wc -l\n11\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\"\n\nWill secure Ant [pattern='/api/**'] with [DisableEncodeUrlFilter,\n  WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter,\n  HeaderWriterFilter, CorsFilter, JsonLoginFilter, RequestCacheAwareFilter,\n  SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter,\n  RequestTraceFilter, ExceptionTranslationFilter, AuthorizationFilter]\nWill secure any request with [DisableEncodeUrlFilter, ...,\n  UsernamePasswordAuthenticationFilter, ..., RequestTraceFilter,\n  ExceptionTranslationFilter, AuthorizationFilter]\n\n#   API 체인 12개, 웹 체인 18개\n\n#   내 필터가 각각 둘씩이다\n\n#   1.4절에는 열다섯 개짜리 체인 하나였다\n\n# --- 두 체인의 차이 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure Ant\" | tr ',' '\\n' | wc -l\n12\n$ ./gradlew bootRun 2>&1 | grep \"Will secure any\" | tr ',' '\\n' | wc -l\n18\n\n#   API 에 없는 여섯\n\n#   CsrfFilter — 아니다, 있다\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure Ant\" | tr ',' '\\n' | grep -c Csrf\n1\n\n#   세션 쿠키를 쓰니 켜 뒀다 (11.1절)\n\n$ diff <(./gradlew bootRun 2>&1 | grep \"Will secure any\" | tr ',' '\\n' | sed 's/^ *//') \\\n       <(./gradlew bootRun 2>&1 | grep \"Will secure Ant\" | tr ',' '\\n' | sed 's/^ *//')\n\n< LogoutFilter\n< UsernamePasswordAuthenticationFilter\n> JsonLoginFilter\n< DefaultLoginPageGeneratingFilter\n< DefaultLogoutPageGeneratingFilter\n< ConcurrentSessionFilter\n< RememberMeAuthenticationFilter\n< SessionManagementFilter\n\n#   화면용 필터가 API 에 없다\n\n#   기억하기와 동시 세션은 화면에만 켰다\n\n# --- 한 요청을 두 체인으로 ---\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders\n\nTRACE FilterChainProxy : Invoking RequestTraceFilter (16/18)\nINFO RequestTraceFilter : GET /orders 200 user=user@a.com\n\n$ curl -s -o /dev/null -b j.txt localhost:8080/api/v1/orders\n\nTRACE FilterChainProxy : Invoking RequestTraceFilter (10/12)\nINFO RequestTraceFilter : GET /api/v1/orders 200 user=user@a.com\n\n#   같은 필터가 두 체인에 있다\n\n#   자리는 다르고 하는 일은 같다\n\n# --- 만들지 말 수도 있었던 것 ---\n\n#   JsonLoginFilter 를 빼고\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt -X POST \\\n    localhost:8080/login \\\n    -H 'Content-Type: application/x-www-form-urlencoded' \\\n    -H \"X-CSRF-TOKEN: $T\" \\\n    --data-urlencode 'username=user@a.com' --data-urlencode 'password=1234'\n\n302\n\n#   11.1절의 방법이다\n\n#   서버 코드가 0줄이다\n\n#   대신 302 를 클라이언트가 감당한다\n\n#   그것도 11.3절의 핸들러로 고칠 수 있다\n\nhttp.formLogin(f -> f\n        .successHandler(handlers.success())\n        .failureHandler(handlers.failure()));\n\n$ curl -s -w '\\n%{http_code}\\n' -b c.txt -X POST localhost:8080/login \\\n    -H 'Content-Type: application/x-www-form-urlencoded' \\\n    -H \"X-CSRF-TOKEN: $T\" \\\n    --data-urlencode 'username=user@a.com' --data-urlencode 'password=1234'\n\n{\"email\":\"user@a.com\",\"nickname\":\"관훈\",\"authorities\":[\"ROLE_USER\",\"ORDER_READ\"]}\n200\n\n#   필터 없이 JSON 응답이다\n\n#   요청만 폼 인코딩이면 된다\n\n#   그런데 화면도 같은 체인이면\n\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$T\" | head -c 40\n\n{\"email\":\"user@a.com\",\"nickname\":\"관훈\",...\n\n#   브라우저 폼 제출도 JSON 을 받는다\n\n#   화면이 깨진다\n\n#   그래서 체인을 나눴고\n\n#   나눴으면 필터를 하나 더 만드는 게 자연스럽다\n\n#   결국 만든 게 맞았다\n\n#   물어보고 만든 것과 안 물어보고 만든 것은 다르다\n\n# --- 지키는 비용 ---\n\n$ grep -rn \"JsonLoginFilter\\|RequestTraceFilter\\|CustomUserDetails\\|\\\nDbAuthorizationManager\" src/test --include='*.java' | wc -l\n\n23\n\n#   테스트 스물셋이 내가 만든 것을 지킨다\n\n$ ./gradlew test\n\n160 tests completed\n\nBUILD SUCCESSFUL\n\n$ grep -rn \"isForbidden\\|isUnauthorized\\|is(403)\\|is(401)\" src/test | wc -l\n25\n\n# --- 훑는 테스트 셋 ---\n\n$ ./gradlew test --tests EndpointSweepTest --tests ApiRedirectTest \\\n    --tests AuthorizationMatrixTest\n\nEndpointSweepTest > 모든_엔드포인트가_인가표에_있다 PASSED\nApiRedirectTest > api_는_리다이렉트를_안_낸다 PASSED\nAuthorizationMatrixTest > 인가표 (11 cases) PASSED\n\n13 tests completed\n\n#   새 컨트롤러를 하나 만들어 본다\n\n@RestController\npublic class NewController {\n    @GetMapping(\"/api/v1/new-thing\")\n    public String newThing() { return \"...\"; }\n}\n\n$ ./gradlew test --tests EndpointSweepTest\n\n>>> 안 덮인 경로 1개\n    /api/v1/new-thing\n\n모든_엔드포인트가_인가표에_있다 FAILED\n\n#   자동으로 잡힌다\n\n#   7.1절의 조용한 구멍이 시끄럽다\n\n# --- 안 만든 것 ---\n\n$ cat docs/not-implemented.md | wc -l\n\n8\n\n$ cat docs/not-implemented.md | grep '^-'\n\n- 이메일 인증 — member.email_verified, verification_token 표\n- 비밀번호 재설정 — 같은 토큰 표, 만료 30분\n- 비밀번호 변경 — 현재 비밀번호 재확인 필요\n- 2단계 인증 — AuthenticationProvider 하나 더\n- 소셜 로그인 — oauth2Login, 별도 장\n- 관리자 해제 화면 — locked 컬럼 위의 화면\n\n#   10.1절에서 적기로 한 것이다\n\n#   12.2절에서 다시 센다\n\n# --- 다음 장에서 ---\n\n#   1.3절의 그 curl 로 돌아간다",
+   "note": "**직접 만든 파일 여덟, 리스너 열하나, 체인 둘(12개·18개)** 이다 — 1.4절에는 열다섯 개짜리 하나였다.\n\n**API 체인에 화면용 필터 여섯이** 없다.\n\n**`JsonLoginFilter` 없이도 폼 인코딩 + JSON 핸들러로 200 과 JSON** 이 나오는데, **브라우저 폼 제출까지 JSON 을 받아** 화면이 깨진다 — 체인을 나눴으니 필터가 맞았다.\n\n**테스트 스물셋이 내가 만든 것을** 지킨다.\n\n**새 컨트롤러 하나를 만들면 훑기 테스트가 자동으로** 잡는다."
+  }
+ ],
+ "recap": [
+  "**두 장에서 열한 조각을** 만들었다.",
+  "**바꾼 프레임워크 클래스는** 넷이다.",
+  "**만든 것마다 함정이 붙어** 온다.",
+  "**만드는 값어치와 지키는 비용을 같이** 센다.",
+  "**JSON 필터는 안 만들 수도** 있었다.",
+  "**체인을 나눴으니 만든 게** 맞았다.",
+  "**물어보고 만든 것과 아닌 것은** 다르다.",
+  "**훑는 테스트가 새것을 자동으로** 잡는다.",
+  "**안 만든 여섯은 목록으로** 남아 있다."
+ ],
+ "drills": [
+  {
+   "task": "직접 만든 파일을 센다.",
+   "done_when": "각각 대신할 수 있었는지 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "두 체인의 필터를 비교한다.",
+   "done_when": "차이 여섯을 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "JSON 필터 없이 해 본다.",
+   "done_when": "화면이 깨지는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "새 컨트롤러를 만들어 본다.",
+   "done_when": "훑기 테스트가 잡는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 장에서 만든 조각은 몇 개인가?",
+   "a": "열하나다. 바꾼 프레임워크 클래스는 넷이다."
+  },
+  {
+   "q": "JSON 로그인 필터를 안 만들 수 있었나?",
+   "a": "체인이 하나면 가능하지만 화면이 JSON 을 받게 된다."
+  },
+  {
+   "q": "직접 만들 때의 숨은 비용은?",
+   "a": "조각마다 붙어 오는 함정과 그걸 지키는 테스트다."
+  },
+  {
+   "q": "훑는 테스트가 왜 중요한가?",
+   "a": "새로 만든 것을 자동으로 잡아 준다."
+  },
+  {
+   "q": "동적 인가를 만들기 전에 물을 것은?",
+   "a": "규칙이 정말 자주 바뀌는가다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
