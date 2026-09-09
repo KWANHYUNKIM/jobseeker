@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "login-flow",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "로그인 흐름",
+ "summary": "전체 필터를 다시 본다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "우리 조각이 어디 끼어 있는지 본다.",
+  "쿼리와 시간을 잰다.",
+  "직접 로그인 경로를 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절에서 아홉 객체를** 봤다. **이제 그중 셋이 내 코드**다."
+  },
+  {
+   "type": "figure",
+   "caption": "우리 조각이 낀 전 구간",
+   "ascii": "   one login, through the whole chain, with our own pieces\n\n   POST /login\n     6  CsrfFilter\n     8  UsernamePasswordAuthenticationFilter\n          ProviderManager\n            DaoAuthenticationProvider\n              MemberUserDetailsService   two queries\n              four flags from columns\n              DelegatingPasswordEncoder  bcrypt matches\n              CustomUserDetails becomes the principal\n          session id changed\n          context saved\n          our success handler\n     302",
+   "note": "**바깥을 바꾸고 가운데는 그대로** 뒀다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 바꿨나",
+   "md": "| 자리 | 기본 | 우리 것 |\n|---|---|---|\n| 사용자 조회 | `InMemory…` | `MemberUserDetailsService` |\n| 사용자 표현 | `User` | `CustomUserDetails` |\n| 저장소 | 메모리 | `member` 표 셋 |\n| 로그인 화면 | 생성기 | 내 템플릿 (2.7절) |\n| 성공 처리 | `SavedRequestAware…` | 다음 절 |\n\n> **필터·매니저·프로바이더·인코더는 그대로**다.\n> **4.8절에서 \"가장 작은 것을 고른다\" 고** 했다.\n\n**성능을 재 본다.**\n\n> **로그인 한 번에 쿼리 둘, bcrypt 한 번**이다.\n> **bcrypt 가 시간의 대부분**이다 — **4.7절에서 cost 10 이 60ms** 였다.\n>\n> **로그인이 100ms 대인 건 정상**이다.\n> **더 빠르면 해시를 의심**한다.\n\n**직접 로그인시키는 경로**\n\n> **10.4절의 `autoLogin` 이 그** 형태다.\n> **여섯 단계를 다** 해야 한다.\n>\n> | 단계 | 안 하면 |\n> |---|---|\n> | `changeSessionId` | 세션 고정 (5.6절) |\n> | 컨텍스트 생성·설정 | 이 요청에서도 안 된다 |\n> | `saveContext` | 다음 요청에 안 남는다 (5.1절) |\n> | 이벤트 발행 | 잠금 카운터가 안 준다 (9.3절) |\n> | 마지막 로그인 기록 | 요구사항 7번 |\n> | `RequestCache` 소비 | 원래 가려던 곳을 잊는다 (3.10절) |\n>\n> **필터가 대신 해 주던 게 여섯**이었다."
+  },
+  {
+   "type": "figure",
+   "caption": "우리 것과 기본",
+   "ascii": "   which parts are ours now\n\n   framework   the filter, the manager, the provider, the encoder\n   ours        the user details service and its two queries\n   ours        the adapter and its four flags\n   ours        the member table and the role tables\n   next        the success and failure handlers\n\n   we replaced the edges and kept the middle",
+   "note": "**다음 절에서 하나 더** 가져온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "마지막 로그인을 기록한다",
+   "md": "**요구사항 7번**이다.\n\n```java\n@Component\n@RequiredArgsConstructor\npublic class LastLoginListener {\n\n    private final MemberRepository memberRepository;\n\n    @EventListener\n    @Transactional\n    public void onLogin(InteractiveAuthenticationSuccessEvent event) {\n        Authentication auth = event.getAuthentication();\n        String ip = auth.getDetails() instanceof WebAuthenticationDetails d\n                ? d.getRemoteAddress() : null;\n        memberRepository.findByEmail(auth.getName())\n                .ifPresent(m -> m.recordLogin(LocalDateTime.now(), ip));\n    }\n}\n```\n\n> **9.1절에서 `Interactive` 를 고른 이유가** 여기다.\n> **기본 인증 API 마다 `update` 하면 안** 된다.\n\n**이벤트가 로그인 경로에 쓰기를 더한다.**\n\n> **9.3절의 잠금 초기화와 여기 둘**이다.\n> **한 트랜잭션으로 묶으면 `update` 하나로** 준다.\n>\n> **리스너를 하나로 합치는 게 낫다.**\n> **아래에서 쿼리 수를** 센다.\n\n**IP 는 프록시를 조심**한다.\n\n> **`WebAuthenticationDetails.getRemoteAddress()` 는 서블릿의 `getRemoteAddr()`** 다.\n> **6.8절의 `forward-headers-strategy` 를 안 켜면 프록시 IP 가** 찍힌다.\n> **모든 로그인이 같은 IP 로 보인다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 로그인 한 번의 전 구간 ---\n\nlogging.level.org.springframework.security=TRACE\nlogging.level.org.hibernate.SQL=DEBUG\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=manager@a.com&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/report/x\nSet-Cookie: JSESSIONID=9D77AB31; Path=/; HttpOnly\n\nDEBUG FilterChainProxy : Securing POST /login\nTRACE FilterChainProxy : Invoking CsrfFilter (6/16)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (8/16)\nDEBUG ProviderManager : Authenticating request with\n  DaoAuthenticationProvider (1/1)\n\nselect m1_0.id, m1_0.active, ..., r1_0.role\n  from member m1_0 left join member_role r1_0 on m1_0.id = r1_0.member_id\n where m1_0.email = ?\n\nselect ra1_0.authority from role_authority ra1_0 where ra1_0.role in (?)\n\nTRACE DaoAuthenticationProvider : (pre checks passed)\nTRACE DaoAuthenticationProvider : (password matched)\nDEBUG ChangeSessionIdAuthenticationStrategy : Changed session id from 4A1C\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n  [username=manager@a.com], Granted Authorities=[ROLE_MANAGER, ORDER_READ,\n  ORDER_CANCEL, REPORT_READ]]\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n\nupdate member set failed_count = 0 where id = ?\nupdate member set last_login_at = ?, last_login_ip = ? where id = ?\n\nDEBUG SavedRequestAwareAuthenticationSuccessHandler :\n  Redirecting to http://localhost:8080/report/x\n\n#   조회 둘 갱신 둘이다\n\n#   그리고 원래 가려던 곳으로 갔다 (3.10절)\n\n# --- update 를 하나로 줄인다 ---\n\n@Component\npublic class LoginSuccessListener {\n    @EventListener\n    @Transactional\n    public void onLogin(InteractiveAuthenticationSuccessEvent event) {\n        memberRepository.findByEmail(event.getAuthentication().getName())\n                .ifPresent(m -> {\n                    m.resetFailedCount();\n                    m.recordLogin(LocalDateTime.now(), ip(event));\n                });\n    }\n}\n\nselect m1_0.id, ... from member m1_0 where m1_0.email = ?\nupdate member set failed_count = ?, last_login_at = ?, last_login_ip = ?\n where id = ?\n\n#   조회 셋 갱신 하나다\n\n#   리스너 둘이 각자 조회하던 걸 합쳤다\n\n#   책 ⑧ 이 하던 정리다\n\n# --- 시간을 잰다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{time_total}\\n' -b c.txt -X POST \\\n        localhost:8080/login -d \"username=manager@a.com&password=1234&_csrf=$T\"\n  done\n\n0.141\n0.129\n0.133\n\n#   130ms 대다\n\n#   bcrypt 를 빼면\n\n#   (cost 를 4로 낮춰 본다)\n\n0.071\n0.068\n0.070\n\n#   60ms 가 해시였다\n\n#   4.7절의 그 숫자다\n\n#   이게 정상이다\n\n# --- 요구사항 7번 ---\n\nselect email, last_login_at, last_login_ip from member\n where email = 'manager@a.com';\n\nEMAIL          | LAST_LOGIN_AT           | LAST_LOGIN_IP\n---------------+-------------------------+---------------\nmanager@a.com  | 2026-09-09 20:35:12.441 | 127.0.0.1\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n로그인하면_시각과_IP_가_남는다 PASSED\n\n3 tests completed, 3 failed\n\n#   아홉 중 여섯이 초록이다\n\n# --- API 로그인은 안 찍힌다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -u manager@a.com:1234 localhost:8080/api/v1/orders\n  done\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set failed_count\"\n0\n\n#   Interactive 를 골라서다 (9.1절)\n\n#   AuthenticationSuccessEvent 였다면 세 번이었다\n\n# --- 프록시 뒤의 IP ---\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -H 'X-Forwarded-For: 203.0.113.9' -d \"...\"\n\nselect last_login_ip from member where email = 'manager@a.com';\n\nLAST_LOGIN_IP\n--------------\n127.0.0.1\n\n#   프록시 헤더를 안 본다\n\nserver.forward-headers-strategy=native\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -H 'X-Forwarded-For: 203.0.113.9' -d \"...\"\n\nLAST_LOGIN_IP\n--------------\n203.0.113.9\n\n#   6.8절을 안 켰으면 전부 프록시 IP 로 남는다\n\n# --- 직접 로그인 경로 ---\n\n@PostMapping(\"/dev/login-as\")\n@ResponseBody\npublic String loginAs(@RequestParam String email,\n        HttpServletRequest request, HttpServletResponse response) {\n    UserDetails details = userDetailsService.loadUserByUsername(email);\n    Authentication auth = UsernamePasswordAuthenticationToken.authenticated(\n            details, null, details.getAuthorities());\n\n    request.changeSessionId();\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);\n    SecurityContextHolder.setContext(context);\n    securityContextRepository.saveContext(context, request, response);\n    publisher.publishEvent(new InteractiveAuthenticationSuccessEvent(\n            auth, this.getClass()));\n    return \"ok as \" + email;\n}\n\n#   운영에 나가면 안 되는 코드다\n\n@Profile(\"local\")\n\n$ curl -s -c dev.txt -X POST 'localhost:8080/dev/login-as?email=admin@a.com'\n\nok as admin@a.com\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b dev.txt localhost:8080/admin/panel\n200\n\nupdate member set failed_count = ?, last_login_at = ?, last_login_ip = ?\n where id = ?\n\n#   여섯 단계를 다 했다\n\n#   하나라도 빼면\n\n//  securityContextRepository.saveContext(...)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b dev2.txt localhost:8080/admin/panel\n302\n\n//  publisher.publishEvent(...)\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set failed_count\"\n0\n\n#   9.3절의 카운터가 안 준다\n\n#   필터가 대신 해 주던 게 여섯이었다\n\n# --- 다음 절에서 ---\n\n#   성공과 실패의 끝을 내가 정한다",
+   "note": "**로그인 한 번에 조회 둘·갱신 둘**이고 `Location` 이 원래 가려던 `/report/x` 다.\n\n**리스너 둘을 합치니 조회 셋·갱신 하나**로 줄었다.\n\n**시간이 130ms 대이고 cost 를 낮추면 70ms** 다 — **60ms 가 bcrypt** 였다.\n\n**API 로그인 셋에는 `update` 가 0회** 다(9.1절의 이벤트 선택).\n\n**`forward-headers-strategy` 를 안 켜면 IP 가 전부 `127.0.0.1`** 이다."
+  }
+ ],
+ "recap": [
+  "**아홉 객체 중 셋이 내** 코드다.",
+  "**필터·매니저·프로바이더·인코더는 그대로** 뒀다.",
+  "**로그인에 조회 둘, 갱신 하나면** 충분하다.",
+  "**리스너를 합치면 조회가** 준다.",
+  "**시간의 절반이 bcrypt** 다.",
+  "**`Interactive` 이벤트라 API 호출에는 안** 찍힌다.",
+  "**프록시 설정을 안 켜면 IP 가 다** 같다.",
+  "**직접 로그인은 여섯 단계를 다** 해야 한다.",
+  "**아홉 중 여섯이** 초록이다."
+ ],
+ "drills": [
+  {
+   "task": "로그인 전 구간 로그를 뽑는다.",
+   "done_when": "쿼리 개수를 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "리스너 둘을 하나로 합친다.",
+   "done_when": "`update` 가 하나로 준 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "cost 를 바꿔 시간을 잰다.",
+   "done_when": "해시가 차지하는 비율을 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "직접 로그인 경로를 만든다.",
+   "done_when": "여섯 단계를 하나씩 빼 봤다.",
+   "minutes": 35
+  }
+ ],
+ "quiz": [
+  {
+   "q": "우리가 바꾼 세 자리는?",
+   "a": "사용자 조회, 사용자 표현, 저장소다."
+  },
+  {
+   "q": "로그인 시간의 대부분은?",
+   "a": "bcrypt 해시 비교다."
+  },
+  {
+   "q": "마지막 로그인을 왜 `Interactive` 로 찍나?",
+   "a": "일반 성공 이벤트는 API 호출마다 나온다."
+  },
+  {
+   "q": "IP 가 전부 같게 찍히는 이유는?",
+   "a": "프록시 헤더 설정을 안 켜 프록시 주소가 남는다."
+  },
+  {
+   "q": "직접 로그인시킬 때 여섯 단계는?",
+   "a": "세션 ID 변경, 컨텍스트 생성·설정, 저장, 이벤트, 기록, 캐시 소비다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -672,7 +672,7 @@
           "title": "회원 가입",
           "summary": "비밀번호를 어떻게 저장하나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -680,7 +680,7 @@
           "title": "로그인 흐름",
           "summary": "전체 필터를 다시 본다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",

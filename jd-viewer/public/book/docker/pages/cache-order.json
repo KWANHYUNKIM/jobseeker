@@ -1,0 +1,120 @@
+{
+ "book": "docker",
+ "id": "cache-order",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "캐시가 깨지는 자리",
+ "summary": "줄 순서가 빌드 시간을 정한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "의존성과 소스를 왜 나누는지 안다.",
+  "순서를 바꿔 빌드 시간을 줄인다.",
+  "전송량까지 함께 줄어드는 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 \"한 단계가 깨지면 아래가 전부 깨진다\" 고** 했다. **그러면 규칙은 하나**다.\n\n> **잘 안 바뀌는 것을 위에, 자주 바뀌는 것을 아래에.**\n\n**이 한 줄이 빌드 시간을 몇 분에서 몇 초로** 바꾼다."
+  },
+  {
+   "type": "compare",
+   "caption": "자바 프로젝트의 두 가지 Dockerfile",
+   "left": {
+    "title": "소스를 먼저 넣는다",
+    "lang": "dockerfile",
+    "bad": true,
+    "code": "FROM eclipse-temurin:21-jdk\nWORKDIR /src\n\nCOPY . .\nRUN ./gradlew bootJar --no-daemon\n\nCMD [\"java\",\"-jar\",\"build/libs/app.jar\"]\n\n\n# 코드 한 줄만 고쳐도\n#   COPY . .   -> 파일 해시가 바뀐다 -> 캐시 깨짐\n#   RUN gradle -> 의존성부터 전부 다시 받는다\n#\n# 매 빌드 3분 40초"
+   },
+   "right": {
+    "title": "의존성 파일만 먼저",
+    "lang": "dockerfile",
+    "code": "FROM eclipse-temurin:21-jdk\nWORKDIR /src\n\n# 잘 안 바뀌는 것\nCOPY gradle/ gradle/\nCOPY gradlew build.gradle settings.gradle ./\nRUN ./gradlew dependencies --no-daemon\n\n# 자주 바뀌는 것\nCOPY src/ src/\nRUN ./gradlew bootJar --no-daemon\n\nCMD [\"java\",\"-jar\",\"build/libs/app.jar\"]\n\n\n# 코드만 고치면\n#   앞의 COPY/RUN 은 CACHED\n#   뒤의 두 줄만 다시\n#\n# 매 빌드 28초"
+   },
+   "note": "**같은 결과물이다.** **줄 순서만 바꿨다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 얼마나 자주 바뀌나",
+   "ascii": "   changes rarely            put near the top\n   -------------------------------------------\n   FROM base image           once a month\n   OS packages (apt/apk)     once a month\n   dependency manifest       once a week\n   downloaded dependencies   once a week\n   -------------------------------------------\n   application source        many times a day\n   -------------------------------------------\n   changes often             put near the bottom\n\n   the cost of a broken step = that step + everything below it",
+   "note": "**\"바뀌는 빈도\" 로 줄을 정렬하면 대부분 답이** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "COPY 하나에 다 넣으면 순서가 의미를 잃는다",
+   "md": "```dockerfile\nCOPY . .          # 이 한 줄이 모든 노력을 무효로 만든다\n```\n\n**`.dockerignore` 로 걸러도 소스 한 줄만 바뀌면 이 단계의 해시가** 바뀐다.\n\n**언어별로 나누는 지점**:\n\n| 언어 | 먼저 COPY 할 것 |\n|---|---|\n| **Gradle** | `gradlew`, `gradle/`, `build.gradle`, `settings.gradle` |\n| **Maven** | `mvnw`, `.mvn/`, `pom.xml` |\n| **Node** | `package.json`, `package-lock.json` |\n| **Python** | `requirements.txt` 또는 `pyproject.toml`+`poetry.lock` |\n| **Go** | `go.mod`, `go.sum` |\n\n**그다음 의존성 받는 명령**(`npm ci`, `mvn dependency:go-offline`, `pip install -r`)**을 돌리고, 그 뒤에 소스를 COPY** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "순서를 고치면 배포 전송량도 준다",
+   "md": "**4.3절에서 본 것**이다. **캐시와 전송은 같은 레이어 구조를 쓴다.**\n\n```\n소스 먼저 넣는 판  -> 매 배포에 큰 레이어가 통째로 새로 생긴다 -> 매번 전송\n의존성을 나눈 판   -> 의존성 레이어는 그대로 -> 바뀐 것만 전송\n```\n\n> **빌드 시간과 배포 전송량이 같은 방법으로 같이** 준다.\n> **10.2절에서 자바 jar 를 더 잘게 쪼개 이 효과를 극대화**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "순서만 바꿔서 3분 40초를 28초로",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 실제 프로젝트를 흉내 낸다 (의존성 받는 데 오래 걸리는 상황) ---\n\n$ mkdir -p src\n$ echo 'print(\"v1\")' > src/app.py\n$ cat > requirements.txt <<'EOF'\nflask==3.0.3\nrequests==2.32.3\npandas==2.2.2\nEOF\n\n\n# --- 나쁜 순서 ---\n\n$ cat > Dockerfile.bad <<'EOF'\nFROM python:3.12-slim\nWORKDIR /app\nCOPY . .\nRUN pip install --no-cache-dir -r requirements.txt\nCMD [\"python\", \"src/app.py\"]\nEOF\n\n$ time docker build -q -f Dockerfile.bad -t bad . >/dev/null\nreal    0m51.3s\n\n#   소스 한 줄만 고친다\n$ echo 'print(\"v2\")' > src/app.py\n\n$ time docker build -q -f Dockerfile.bad -t bad . >/dev/null\nreal    0m47.9s\n\n#   거의 그대로다. pandas 를 다시 받았다\n\n\n# --- 좋은 순서 ---\n\n$ cat > Dockerfile.good <<'EOF'\nFROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY src/ src/\nCMD [\"python\", \"src/app.py\"]\nEOF\n\n$ time docker build -q -f Dockerfile.good -t good . >/dev/null\nreal    0m49.7s\n\n#   처음은 같다\n\n$ echo 'print(\"v3\")' > src/app.py\n\n$ time docker build -f Dockerfile.good -t good .\n[+] Building 0.9s (10/10) FINISHED\n => CACHED [2/5] WORKDIR /app                              0.0s\n => CACHED [3/5] COPY requirements.txt .                   0.0s\n => CACHED [4/5] RUN pip install --no-cache-dir -r requ…   0.0s\n => [5/5] COPY src/ src/                                   0.1s\n\nreal    0m1.0s\n\n#   47.9초 -> 1.0초\n\n\n# --- requirements 를 고치면 그때는 다시 받는다 ---\n\n$ echo 'httpx==0.27.2' >> requirements.txt\n$ time docker build -q -f Dockerfile.good -t good . >/dev/null\nreal    0m53.1s\n\n#   당연하다. 의존성이 바뀌었으므로\n#   중요한 건 '코드만 바뀔 때' 가 압도적으로 잦다는 것이다\n\n\n# --- 전송량도 같이 준다 ---\n\n$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n\n$ docker tag good localhost:5000/good:1 && docker push -q localhost:5000/good:1 >/dev/null\n$ echo 'print(\"v4\")' > src/app.py\n$ docker build -q -f Dockerfile.good -t localhost:5000/good:2 . >/dev/null\n\n$ docker push localhost:5000/good:2\nThe push refers to repository [localhost:5000/good]\n8f2a1b3c4d5e: Layer already exists\n9e8d7c6b5a49: Layer already exists\n1a2b3c4d5e6f: Layer already exists     <- pip install 레이어 (172MB)\n7d6c5b4a3928: Pushed                   <- src 레이어 (1.2kB)\n2: digest: sha256:ccc... size: 1156\n\n#   172MB 는 안 올라갔다\n\n$ docker tag bad localhost:5000/bad:1 && docker push -q localhost:5000/bad:1 >/dev/null\n$ echo 'print(\"v5\")' > src/app.py\n$ docker build -q -f Dockerfile.bad -t localhost:5000/bad:2 . >/dev/null\n\n$ docker push localhost:5000/bad:2\nThe push refers to repository [localhost:5000/bad]\n8f2a1b3c4d5e: Layer already exists\n3c2b1a0f9e8d: Pushed                   <- COPY . . 레이어\n5f4e3d2c1b0a: Pushed                   <- pip install 레이어 172MB 를 다시\n2: digest: sha256:ddd... size: 1156\n\n#   172MB 를 다시 올렸다. 소스 한 줄 때문에\n\n$ docker rm -f reg >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f bad good localhost:5000/good:1 localhost:5000/good:2 \\\n    localhost:5000/bad:1 localhost:5000/bad:2 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "규칙은 하나다 — 잘 안 바뀌는 것을 위에, 자주 바뀌는 것을 아래에.",
+  "의존성 목록만 먼저 COPY 하고 설치한 다음 소스를 COPY 한다.",
+  "COPY . . 한 줄이면 순서가 의미를 잃는다. 언어마다 나누는 지점이 정해져 있다.",
+  "빌드 시간과 배포 전송량이 같은 방법으로 같이 준다."
+ ],
+ "drills": [
+  {
+   "task": "의존성이 무거운 프로젝트로 나쁜 순서와 좋은 순서 Dockerfile 을 만들고, 소스만 고쳐 재빌드 시간을 비교한다.",
+   "done_when": "둘의 시간 차이를 숫자로 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 이미지를 사설 레지스트리에 push 해서 전송되는 레이어를 비교한다.",
+   "done_when": "좋은 순서 쪽만 작은 레이어를 올리는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "자기 프로젝트의 Dockerfile 을 열고 COPY 순서를 점검한다.",
+   "done_when": "의존성 파일과 소스가 분리되어 있는지 확인하고 아니면 고친다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Dockerfile 줄 순서를 정하는 기준 한 줄은.",
+   "a": "바뀌는 빈도. 잘 안 바뀌는 것을 위에 둔다."
+  },
+  {
+   "q": "`COPY . .` 뒤에 의존성 설치를 두면 무엇이 문제인가.",
+   "a": "소스 한 줄만 바뀌어도 COPY 단계의 해시가 바뀌어 그 아래 의존성 설치까지 전부 다시 돈다."
+  },
+  {
+   "q": "순서를 고치면 빌드 시간 말고 무엇이 더 좋아지나.",
+   "a": "배포 전송량. 안 바뀐 레이어는 push/pull 에서 건너뛴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "레이어 캐시",
+   "what": "단계별 결과를 재사용하는 것. 부모가 깨지면 자식도 깨진다."
+  },
+  {
+   "term": "의존성 매니페스트",
+   "what": "build.gradle·pom.xml·package.json 처럼 의존성을 적은 파일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Optimize cache usage",
+   "url": "https://docs.docker.com/build/cache/optimize/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Best practices for building images",
+   "url": "https://docs.docker.com/build/building/best-practices/",
+   "publisher": "Docker"
+  }
+ ]
+}

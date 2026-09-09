@@ -1,0 +1,146 @@
+{
+ "book": "docker",
+ "id": "cmd-entrypoint",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "CMD 와 ENTRYPOINT",
+ "summary": "누가 PID 1 이 되는가.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "CMD 와 ENTRYPOINT 의 관계를 안다.",
+  "exec 형식과 셸 형식의 차이를 안다.",
+  "엔트리포인트 스크립트를 올바로 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절에서 \"PID 1 이 셸이면 SIGTERM 이 안 닿는다\" 고** 했다. **그 이야기의 본편**이다.\n\n> **두 지시어의 관계는 한 줄로 요약**된다.\n> **`ENTRYPOINT` 는 바꾸기 어려운 부분, `CMD` 는 바꾸기 쉬운 기본값.**"
+  },
+  {
+   "type": "table",
+   "caption": "둘이 어떻게 합쳐지나",
+   "columns": [
+    "Dockerfile",
+    "`docker run img`",
+    "`docker run img ls -l`"
+   ],
+   "rows": [
+    [
+     "`CMD [\"nginx\"]`",
+     "`nginx`",
+     "**`ls -l`** (CMD 가 통째로 교체됨)"
+    ],
+    [
+     "`ENTRYPOINT [\"nginx\"]`",
+     "`nginx`",
+     "**`nginx ls -l`** (인자로 붙음)"
+    ],
+    [
+     "`ENTRYPOINT [\"nginx\"]` + `CMD [\"-g\",\"daemon off;\"]`",
+     "`nginx -g daemon off;`",
+     "**`nginx ls -l`**"
+    ]
+   ],
+   "note": "**`CMD` 는 인자로 덮이고 `ENTRYPOINT` 는 안 덮인다**(`--entrypoint` 로만 바꾼다)."
+  },
+  {
+   "type": "compare",
+   "caption": "exec 형식과 셸 형식",
+   "left": {
+    "title": "셸 형식 — 문자열",
+    "lang": "dockerfile",
+    "bad": true,
+    "code": "CMD java -jar /app/app.jar\n\n# 실제 실행\n#   /bin/sh -c \"java -jar /app/app.jar\"\n#\n# PID 1 = sh\n# PID 7 = java\n#\n# 문제:\n#  - SIGTERM 이 java 에 안 간다 (3.5절)\n#  - 좀비 프로세스를 회수 안 한다\n#  - stop 이 10초를 다 쓴다\n#\n# 되는 것:\n#  - $HOME 같은 셸 변수 확장\n#  - 파이프, 리다이렉션"
+   },
+   "right": {
+    "title": "exec 형식 — JSON 배열",
+    "lang": "dockerfile",
+    "code": "CMD [\"java\", \"-jar\", \"/app/app.jar\"]\n\n# 실제 실행\n#   java -jar /app/app.jar\n#\n# PID 1 = java\n#\n# 좋은 것:\n#  - SIGTERM 이 직접 간다\n#  - graceful shutdown 이 돈다\n#  - stop 이 즉시 끝난다\n#\n# 안 되는 것:\n#  - 셸 변수 확장 (\"$JAVA_OPTS\" 가 문자열 그대로)\n#  - 파이프, 리다이렉션"
+   },
+   "note": "**따옴표는 반드시 큰따옴표**다. **작은따옴표를 쓰면 JSON 이 아니라 셸 형식으로 해석**된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "환경변수를 쓰고 싶으면 어떻게 하나",
+   "md": "**exec 형식에서는 `$JAVA_OPTS` 가 확장이 안** 된다.\n\n```dockerfile\nCMD [\"java\", \"$JAVA_OPTS\", \"-jar\", \"/app/app.jar\"]   # 문자열 그대로 넘어간다\n```\n\n**방법 셋**:\n\n**① 엔트리포인트 스크립트 + exec**\n\n```bash\n#!/bin/sh\nset -e\nexec java $JAVA_OPTS -jar /app/app.jar     # exec 가 핵심이다\n```\n\n**② JVM 의 환경변수 규약을 쓴다**\n\n```dockerfile\nENV JAVA_TOOL_OPTIONS=\"-XX:MaxRAMPercentage=75\"\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\n```\n\n> **JVM 이 `JAVA_TOOL_OPTIONS` 를 알아서 읽는다.** **10.3절에서 이걸 쓴다.**\n\n**③ 셸 형식을 exec 로 감싼다**\n\n```dockerfile\nCMD [\"sh\", \"-c\", \"exec java $JAVA_OPTS -jar /app/app.jar\"]\n```\n\n**`exec` 를 붙이면 셸이 자기 자신을 java 로 바꾼다** — **PID 1 이 java 가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "엔트리포인트 스크립트에서 exec 를 빠뜨리는 실수",
+   "md": "```bash\n#!/bin/sh\n# 마이그레이션 같은 준비 작업\n/app/migrate.sh\n\njava -jar /app/app.jar        # exec 가 없다\n```\n\n**이러면 PID 1 은 스크립트고 java 는 자식**이다. **3.5절의 문제가 그대로** 온다.\n\n```bash\nexec java -jar /app/app.jar   # 이렇게\n```\n\n**공식 이미지들의 엔트리포인트를 열어 보면 마지막이 전부 `exec \"$@\"`** 다.\n\n```bash\n# postgres 의 docker-entrypoint.sh 마지막 줄\nexec \"$@\"\n```\n\n> **`\"$@\"` 는 CMD 로 넘어온 인자**다. **그래서 `ENTRYPOINT` 스크립트 + `CMD` 조합이** 성립한다.\n\n**신호 처리가 정말 복잡하면 init 을 쓴다**:\n\n```bash\ndocker run --init myapp     # tini 를 PID 1 로 넣어 준다\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "PID 1 이 누구인지 직접 확인한다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 셸 형식 ---\n\n$ printf 'FROM alpine:3.20\\nCMD sleep 600\\n' > Dockerfile.shell\n$ docker build -q -f Dockerfile.shell -t shellform . >/dev/null\n$ docker run -d --name s1 shellform >/dev/null\n\n$ docker exec s1 ps -ef\nPID   USER     COMMAND\n    1 root     /bin/sh -c sleep 600\n    7 root     sleep 600\n\n$ docker inspect -f 'entrypoint={{.Config.Entrypoint}} cmd={{.Config.Cmd}}' shellform\nentrypoint=[] cmd=[/bin/sh -c sleep 600]\n\n#   도커가 알아서 /bin/sh -c 로 감쌌다\n\n$ time docker stop s1\nreal    0m10.3s\n\n\n# --- exec 형식 ---\n\n$ printf 'FROM alpine:3.20\\nCMD [\"sleep\", \"600\"]\\n' > Dockerfile.exec\n$ docker build -q -f Dockerfile.exec -t execform . >/dev/null\n$ docker run -d --name s2 execform >/dev/null\n\n$ docker exec s2 ps -ef\nPID   USER     COMMAND\n    1 root     sleep 600\n\n$ time docker stop s2\nreal    0m0.4s\n\n#   3.5절에서 본 것과 같다. 10.3초 대 0.4초\n\n\n# --- CMD 는 덮이고 ENTRYPOINT 는 안 덮인다 ---\n\n$ printf 'FROM alpine:3.20\\nCMD [\"echo\", \"from-cmd\"]\\n' > Dockerfile.c\n$ docker build -q -f Dockerfile.c -t only-cmd . >/dev/null\n\n$ docker run --rm only-cmd\nfrom-cmd\n\n$ docker run --rm only-cmd echo overridden\noverridden\n\n#   CMD 가 통째로 교체됐다\n\n$ printf 'FROM alpine:3.20\\nENTRYPOINT [\"echo\", \"from-entry\"]\\nCMD [\"default-arg\"]\\n' > Dockerfile.e\n$ docker build -q -f Dockerfile.e -t with-entry . >/dev/null\n\n$ docker run --rm with-entry\nfrom-entry default-arg\n\n$ docker run --rm with-entry other-arg\nfrom-entry other-arg\n\n#   ENTRYPOINT 는 남고 CMD 자리만 바뀌었다\n\n$ docker run --rm --entrypoint ls with-entry /\nbin\ndev\netc\n...\n\n#   --entrypoint 로만 바꿀 수 있다\n\n\n# --- 엔트리포인트 스크립트: exec 있고 없고 ---\n\n$ cat > entry-bad.sh <<'EOF'\n#!/bin/sh\necho preparing\nsleep 600\nEOF\n\n$ cat > entry-good.sh <<'EOF'\n#!/bin/sh\necho preparing\nexec \"$@\"\nEOF\n\n$ chmod +x entry-bad.sh entry-good.sh\n\n$ printf 'FROM alpine:3.20\\nCOPY entry-bad.sh /e.sh\\nENTRYPOINT [\"/e.sh\"]\\n' > Dockerfile.bad\n$ docker build -q -f Dockerfile.bad -t e-bad . >/dev/null\n$ docker run -d --name b1 e-bad >/dev/null\n$ docker exec b1 ps -ef\nPID   USER     COMMAND\n    1 root     /bin/sh /e.sh\n    8 root     sleep 600\n\n$ time docker stop b1\nreal    0m10.3s\n\n$ printf 'FROM alpine:3.20\\nCOPY entry-good.sh /e.sh\\nENTRYPOINT [\"/e.sh\"]\\nCMD [\"sleep\",\"600\"]\\n' > Dockerfile.good\n$ docker build -q -f Dockerfile.good -t e-good . >/dev/null\n$ docker run -d --name g1 e-good >/dev/null\n$ docker logs g1\npreparing\n\n$ docker exec g1 ps -ef\nPID   USER     COMMAND\n    1 root     sleep 600\n\n#   exec \"$@\" 가 스크립트를 sleep 으로 바꿔치웠다. PID 1 이 sleep 이다\n\n$ time docker stop g1\nreal    0m0.4s\n\n\n# --- 실행 권한을 잊으면 126 ---\n\n$ chmod -x entry-good.sh\n$ docker build -q -f Dockerfile.good -t e-noexec . >/dev/null\n$ docker run --rm e-noexec\ndocker: Error response from daemon: failed to create task for container:\nfailed to create shim task: OCI runtime create failed: exec: \"/e.sh\":\npermission denied\n\n$ docker run --name x e-noexec >/dev/null 2>&1; docker inspect -f '{{.State.ExitCode}}' x\n126\n\n#   1.5절의 표에 있던 126 이다\n\n$ docker rm -f s1 s2 b1 g1 x >/dev/null 2>&1\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f shellform execform only-cmd with-entry e-bad e-good e-noexec >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "ENTRYPOINT 는 바꾸기 어려운 부분, CMD 는 인자로 덮이는 기본값이다.",
+  "exec 형식(JSON 배열)은 PID 1 이 애플리케이션이 되고, 셸 형식은 sh 가 된다.",
+  "셸 형식이면 SIGTERM 이 안 닿아 graceful shutdown 이 안 돌고 stop 이 10초를 다 쓴다.",
+  "환경변수가 필요하면 엔트리포인트 스크립트에서 exec 로 넘기거나 JAVA_TOOL_OPTIONS 를 쓴다.",
+  "엔트리포인트 스크립트의 마지막은 exec \"$@\" 다. 이걸 빠뜨리면 같은 문제가 생긴다."
+ ],
+ "drills": [
+  {
+   "task": "`CMD sleep 600` 과 `CMD [\"sleep\",\"600\"]` 두 이미지를 만들고 `ps -ef` 와 `time docker stop` 을 비교한다.",
+   "done_when": "PID 1 이 다르고 stop 시간이 10초 대 0.4초인 것을 확인한다.",
+   "minutes": 7
+  },
+  {
+   "task": "ENTRYPOINT 와 CMD 를 같이 둔 이미지에 `docker run <img> 인자` 를 줘 본다.",
+   "done_when": "CMD 자리만 바뀌는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "`exec \"$@\"` 가 있는 스크립트와 없는 스크립트로 각각 이미지를 만들어 PID 1 을 비교한다.",
+   "done_when": "exec 가 있으면 PID 1 이 애플리케이션인 것을 본다.",
+   "minutes": 7
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`CMD java -jar app.jar` 의 PID 1 은 무엇인가.",
+   "a": "/bin/sh. 도커가 셸 형식을 sh -c 로 감싸기 때문이다."
+  },
+  {
+   "q": "엔트리포인트 스크립트에서 exec 를 쓰는 이유는.",
+   "a": "셸이 자기 자신을 애플리케이션 프로세스로 바꿔치워 PID 1 이 되게 하려고. 그래야 신호가 직접 간다."
+  },
+  {
+   "q": "`docker run img ls -l` 이 ENTRYPOINT 가 있을 때와 없을 때 어떻게 다른가.",
+   "a": "ENTRYPOINT 가 없으면 CMD 를 통째로 교체하고, 있으면 ENTRYPOINT 의 인자로 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "exec 형식",
+   "what": "JSON 배열로 쓴 CMD/ENTRYPOINT. 셸을 안 거친다."
+  },
+  {
+   "term": "exec (셸 내장)",
+   "what": "현재 프로세스를 다른 프로그램으로 교체하는 명령. PID 가 유지된다."
+  },
+  {
+   "term": "tini / --init",
+   "what": "PID 1 노릇을 대신해 좀비를 회수하고 신호를 전달하는 작은 init."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Dockerfile: CMD / ENTRYPOINT",
+   "url": "https://docs.docker.com/reference/dockerfile/#cmd",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Best practices: entrypoint",
+   "url": "https://docs.docker.com/build/building/best-practices/#entrypoint",
+   "publisher": "Docker"
+  }
+ ]
+}

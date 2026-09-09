@@ -1,0 +1,138 @@
+{
+ "book": "docker",
+ "id": "copy-add",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "COPY · ADD · .dockerignore",
+ "summary": "무엇을 이미지에 넣고 무엇을 뺄 것인가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "COPY 와 ADD 를 구분한다.",
+  "dockerignore 를 왜 쓰는지 안다.",
+  "WORKDIR 과 상대 경로를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "COPY 와 ADD",
+   "columns": [
+    "",
+    "`COPY`",
+    "`ADD`"
+   ],
+   "rows": [
+    [
+     "파일 복사",
+     "✓",
+     "✓"
+    ],
+    [
+     "**로컬 tar 자동 압축 해제**",
+     "✗",
+     "**✓**"
+    ],
+    [
+     "**URL 에서 받기**",
+     "✗",
+     "✓ (권장하지 않음)"
+    ],
+    [
+     "Git 저장소에서",
+     "✗",
+     "✓ (BuildKit)"
+    ],
+    [
+     "**권장**",
+     "**이걸 쓴다**",
+     "tar 를 풀 때만"
+    ]
+   ],
+   "note": "**기본은 `COPY`** 다. **`ADD` 는 하는 일이 많아서 실수가** 난다 — tar 를 넣었더니 풀려 버리는 식."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "ADD 로 URL 을 받지 않는다",
+   "md": "```dockerfile\nADD https://example.com/app.tar.gz /tmp/     # 이렇게 안 한다\n```\n\n| 문제 | 왜 |\n|---|---|\n| **검증이 없다** | 체크섬 확인을 못 한다 |\n| **레이어에 남는다** | 압축 파일이 이미지에 그대로 |\n| **캐시** | 5.3절과 같은 문제. 내용이 바뀌어도 안 다시 받는다 |\n\n**필요하면 RUN 에서 검증까지 한 줄로**:\n\n```dockerfile\nRUN curl -fsSL https://example.com/app.tar.gz -o /tmp/a.tgz \\\n && echo \"abc123...  /tmp/a.tgz\" | sha256sum -c - \\\n && tar -xzf /tmp/a.tgz -C /opt \\\n && rm /tmp/a.tgz\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": ".dockerignore 가 없으면 무엇이 들어가나",
+   "md": "**`COPY . .` 은 정말 전부**다.\n\n| 들어가는 것 | 결과 |\n|---|---|\n| `.git/` | **저장소 전체 히스토리.** 수백 MB 일 수 있다 |\n| `node_modules/` | 호스트에서 빌드된 것. **아키텍처가 다르면 안 돈다** |\n| `.env`, `*.pem` | **비밀이 이미지에 들어간다**(3.2절) |\n| `build/`, `target/` | 로컬 빌드 산출물 |\n| `.idea/`, `.DS_Store` | 잡동사니 |\n\n**그리고 빌드 컨텍스트 전송도 느려진다**(5.9절).\n\n```\n# .dockerignore\n.git\n.gitignore\nnode_modules\nbuild\ntarget\n*.log\n.env*\n*.pem\n.idea\n.DS_Store\nDockerfile*\n```\n\n> **`.dockerignore` 는 `.gitignore` 와 문법이 비슷하지만 별개 파일**이다.\n> **없으면 만든다.** **이건 선택이 아니라 기본**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "WORKDIR 을 쓴다",
+   "md": "```dockerfile\n# 이렇게 하지 않는다\nRUN cd /app && ./gradlew build     # cd 는 그 RUN 안에서만 유효하다\n\n# 이렇게 한다\nWORKDIR /app\nCOPY . .\nRUN ./gradlew build\n```\n\n| | |\n|---|---|\n| `WORKDIR` | **이후 모든 RUN·COPY·CMD 의 기준.** 없으면 만들어 준다 |\n| `RUN cd` | 그 RUN 안에서만. 다음 줄은 다시 `/` |\n\n**COPY 의 경로 규칙**:\n\n```dockerfile\nCOPY src/ /app/src/      # 슬래시로 끝나면 디렉터리\nCOPY app.jar /app/       # /app/app.jar\nCOPY app.jar /app/x.jar  # 이름을 바꿔서\nCOPY --chown=1000:1000 app.jar /app/   # 소유자 지정 (10.6절)\n```\n\n> **컨텍스트 밖은 못 복사한다** — `COPY ../secret .` 은 에러다. **빌드 컨텍스트가 데몬에 보낸 것만 보인다**(5.9절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": ".dockerignore 하나로 크기와 시간이 달라진다",
+   "sql": "$ mkdir -p /tmp/lab/src && cd /tmp/lab\n\n# --- 흔한 프로젝트 폴더를 흉내 낸다 ---\n\n$ git init -q . && mkdir -p .git/objects\n$ dd if=/dev/urandom of=.git/objects/pack.bin bs=1M count=120 2>/dev/null\n$ mkdir -p node_modules && dd if=/dev/urandom of=node_modules/lib.bin bs=1M count=60 2>/dev/null\n$ echo 'DB_PASSWORD=hunter2' > .env\n$ echo 'console.log(1)' > src/app.js\n$ du -sh . \n183M    .\n\n$ printf 'FROM alpine:3.20\\nWORKDIR /app\\nCOPY . .\\n' > Dockerfile\n\n\n# --- .dockerignore 없이 ---\n\n$ time docker build -q -t fat .\n[+] Building 6.8s\n => [internal] load build context     4.9s\n => => transferring context: 189.21MB 4.8s\n\nreal    0m6.9s\n\n$ docker images fat --format '{{.Size}}'\n197MB\n\n$ docker run --rm fat cat /app/.env\nDB_PASSWORD=hunter2\n\n#   비밀번호가 이미지에 들어갔다\n\n$ docker run --rm fat ls -a /app\n.\n..\n.env\n.git\nnode_modules\nsrc\n\n\n# --- .dockerignore 를 넣는다 ---\n\n$ cat > .dockerignore <<'EOF'\n.git\nnode_modules\n.env*\n*.log\nDockerfile*\nEOF\n\n$ time docker build -q -t slim .\n[+] Building 0.5s\n => [internal] load build context     0.0s\n => => transferring context: 1.24kB   0.0s\n\nreal    0m0.6s\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E '^fat|^slim'\nslim    8.83MB\nfat     197MB\n\n#   197MB -> 8.83MB, 6.9초 -> 0.6초\n#   전송량이 189MB -> 1.24kB 다\n\n$ docker run --rm slim ls -a /app\n.\n..\nsrc\n\n\n# --- ADD 는 tar 를 자동으로 푼다 ---\n\n$ tar -czf src.tar.gz src/\n$ printf 'FROM alpine:3.20\\nWORKDIR /app\\nADD src.tar.gz .\\n' > Dockerfile.add\n$ printf 'FROM alpine:3.20\\nWORKDIR /app\\nCOPY src.tar.gz .\\n' > Dockerfile.copy\n\n$ docker build -q -f Dockerfile.add -t with-add . >/dev/null\n$ docker build -q -f Dockerfile.copy -t with-copy . >/dev/null\n\n$ docker run --rm with-add ls /app\nsrc\n\n$ docker run --rm with-copy ls /app\nsrc.tar.gz\n\n#   ADD 는 풀었고 COPY 는 그대로 뒀다\n#   의도하지 않으면 놀란다\n\n\n# --- WORKDIR 없이 cd 를 쓰면 ---\n\n$ cat > Dockerfile.cd <<'EOF'\nFROM alpine:3.20\nRUN mkdir /app && cd /app\nRUN pwd > /where\nEOF\n$ docker build -q -f Dockerfile.cd -t cdtest . >/dev/null\n$ docker run --rm cdtest cat /where\n/\n\n#   cd 는 그 RUN 안에서만 유효했다\n\n\n# --- 컨텍스트 밖은 못 가져온다 ---\n\n$ printf 'FROM alpine:3.20\\nCOPY ../outside.txt /\\n' > Dockerfile.out\n$ echo x > ../outside.txt\n$ docker build -f Dockerfile.out -t out . 2>&1 | tail -2\nERROR: failed to solve: failed to compute cache key: failed to calculate\nchecksum of ref ...: \"/outside.txt\": not found\n\n$ cd - >/dev/null && rm -rf /tmp/lab /tmp/outside.txt\n$ docker rmi -f fat slim with-add with-copy cdtest >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "기본은 COPY 다. ADD 는 tar 를 자동으로 풀고 URL 을 받는 등 하는 일이 많아 실수가 난다.",
+  "URL 다운로드는 RUN 에서 체크섬 검증까지 한 줄로 한다.",
+  ".dockerignore 가 없으면 .git·node_modules·.env 가 그대로 이미지에 들어간다.",
+  "WORKDIR 을 쓴다. RUN cd 는 그 RUN 안에서만 유효하다.",
+  "빌드 컨텍스트 밖의 파일은 COPY 할 수 없다."
+ ],
+ "drills": [
+  {
+   "task": ".git 과 node_modules 를 흉내 낸 큰 파일을 만들고 .dockerignore 유무로 빌드 시간과 이미지 크기를 비교한다.",
+   "done_when": "transferring context 의 바이트 수가 크게 줄어드는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "tar 파일을 ADD 와 COPY 로 각각 넣고 컨테이너 안을 비교한다.",
+   "done_when": "ADD 만 풀리는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "자기 프로젝트에 .dockerignore 가 있는지 보고 없으면 만든다.",
+   "done_when": ".git·빌드 산출물·비밀 파일이 제외되는 것을 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "COPY 대신 ADD 를 쓰면 안 되는 이유는.",
+   "a": "tar 자동 해제와 URL 다운로드 같은 부수 동작이 있어 의도치 않은 결과가 나온다. 검증도 안 된다."
+  },
+  {
+   "q": ".dockerignore 가 없을 때 이미지에 들어갈 수 있는 위험한 것은.",
+   "a": ".env·인증서 같은 비밀, .git 히스토리, 호스트에서 빌드된 node_modules."
+  },
+  {
+   "q": "`RUN cd /app` 이 다음 줄에 영향을 주지 않는 이유는.",
+   "a": "각 RUN 은 별도 셸에서 실행된다. 디렉터리는 WORKDIR 로 정한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": ".dockerignore",
+   "what": "빌드 컨텍스트에서 제외할 경로 목록. .gitignore 와 비슷한 문법."
+  },
+  {
+   "term": "WORKDIR",
+   "what": "이후 지시어의 기준 디렉터리. 없으면 만들어 준다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Dockerfile: COPY / ADD",
+   "url": "https://docs.docker.com/reference/dockerfile/#copy",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — .dockerignore file",
+   "url": "https://docs.docker.com/build/concepts/context/#dockerignore-files",
+   "publisher": "Docker"
+  }
+ ]
+}

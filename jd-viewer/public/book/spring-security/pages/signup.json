@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "signup",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "회원 가입",
+ "summary": "비밀번호를 어떻게 저장하나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "가입 다섯 단계를 만든다.",
+  "중복 검사의 경쟁을 안다.",
+  "가입 직후 로그인을 붙인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.1절 1·2·3번 요구사항**이다. **SQL 로 넣던 회원을 화면으로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "가입이 하는 다섯",
+   "ascii": "   what a signup request actually has to do\n\n   1  reject a duplicate email, without a race\n   2  hash the password, never store or log the raw one\n   3  insert the member row\n   4  insert the default role row\n   5  decide whether to log the new user in right away\n\n   step 1 needs a unique index, not just a select",
+   "note": "**중복 검사는 인덱스가** 보장한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "서비스",
+   "md": "```java\n@Service\n@RequiredArgsConstructor\npublic class SignupService {\n\n    private final MemberRepository memberRepository;\n    private final PasswordEncoder passwordEncoder;\n\n    @Transactional\n    public Long signup(SignupRequest request) {\n        if (memberRepository.existsByEmail(request.email())) {\n            throw new DuplicateEmailException(request.email());\n        }\n        Member member = Member.builder()\n                .email(request.email())\n                .password(passwordEncoder.encode(request.password()))\n                .nickname(request.nickname())\n                .passwordChangedAt(LocalDateTime.now())\n                .createdAt(LocalDateTime.now())\n                .build();\n        member.addRole(\"ROLE_USER\");\n        return memberRepository.save(member).getId();\n    }\n}\n```\n\n> **`encode` 는 4.7절의 위임 인코더**다.\n> **`{bcrypt}` 접두어가 붙는다.**\n\n**요청 객체에서 조심할 것**\n\n```java\npublic record SignupRequest(\n        @Email @NotBlank String email,\n        @NotBlank @Size(min = 8, max = 64) String password,\n        @NotBlank @Size(max = 50) String nickname) {\n\n    @Override\n    public String toString() {\n        return \"SignupRequest[email=\" + email + \"]\";     // 비밀번호를 뺀다\n    }\n}\n```\n\n> **`record` 의 기본 `toString` 이 비밀번호를 찍는다.**\n> **`@Slf4j` 로 요청을 찍는 순간 평문이 로그에** 남는다.\n> **9.1절에서 이벤트 얘기를 했는데 여기가 더** 흔하다.\n\n**길이 제한**\n\n> **최소 8자는 요즘 권고**다.\n> **최대는 bcrypt 가 72바이트까지만 본다** — **그 뒤는 무시**된다.\n> **한글이면 세 배라 24자 넘으면 잘린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "중복 검사의 경쟁",
+   "ascii": "   the duplicate check race, in two requests\n\n   request A   select ... where email = x   -> none\n   request B   select ... where email = x   -> none\n   request A   insert                       -> ok\n   request B   insert                       -> constraint violation\n\n   the select is a courtesy, the index is the guarantee",
+   "note": "**`select` 는 예의고 인덱스가** 보장이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "가입 직후 로그인",
+   "md": "**두 가지 방법**이 있다.\n\n```java\n// 1) 컨텍스트를 직접 만든다\nUserDetails details = userDetailsService.loadUserByUsername(email);\nAuthentication auth = UsernamePasswordAuthenticationToken.authenticated(\n        details, null, details.getAuthorities());\nSecurityContext context = SecurityContextHolder.createEmptyContext();\ncontext.setAuthentication(auth);\nSecurityContextHolder.setContext(context);\nsecurityContextRepository.saveContext(context, request, response);\n\n// 2) 로그인 화면으로 보낸다\nreturn \"redirect:/login?signup\";\n```\n\n> **첫째는 5.1절의 저장을 꼭 해야** 한다.\n> **안 하면 가입은 됐는데 로그인이 안 된** 상태다.\n>\n> **그리고 세션 고정 보호가 안** 걸린다(5.6절).\n> **가입 전 세션 ID 가 그대로**다.\n> **직접 `changeSessionId()` 를 부르거나 둘째를 쓴다.**\n\n**트랜잭션 안에서 로그인시키면**\n\n> **커밋 전에 컨텍스트가** 만들어진다.\n> **롤백되면 없는 회원으로 로그인된 상태**다.\n> **`@Transactional` 밖에서** 한다.\n\n**비밀번호를 로그에 안 남기는 확인**\n\n> **접근 로그·요청 본문 로깅·예외 스택 세 곳을** 본다.\n> **`CommonsRequestLoggingFilter` 를 켜 두면 폼 본문이 통째로** 찍힌다.\n> **아래에서 실제로** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 가입한다 ---\n\n$ TOKEN=$(curl -s -c c.txt localhost:8080/signup \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n\n$ curl -i -b c.txt -X POST localhost:8080/signup \\\n    -d \"email=new@a.com&password=hunter2secret&nickname=새사람&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?signup\n\nselect count(*) from member m where m.email = ?\ninsert into member (active, created_at, email, failed_count, last_login_at,\n                    last_login_ip, locked, locked_at, nickname, password,\n                    password_changed_at, id)\n            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)\ninsert into member_role (member_id, role) values (?, ?)\n\n#   조회 하나 insert 둘이다\n\nselect email, password, nickname from member where email = 'new@a.com';\n\nEMAIL       | PASSWORD                                    | NICKNAME\n------------+---------------------------------------------+----------\nnew@a.com   | {bcrypt}$2a$10$N9qo8uLOickgx2ZMRZoMye/IjZ... | 새사람\n\n#   요구사항 1번과 2번이다\n\nselect role from member_role mr join member m on m.id = mr.member_id\n where m.email = 'new@a.com';\n\nROLE\n-----------\nROLE_USER\n\n#   3번이다\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n가입하면_회원이_생긴다 PASSED\n비밀번호는_해시로_저장된다 PASSED\n가입하면_ROLE_USER_를_받는다 PASSED\n역할이_권한을_물고_온다 PASSED\n삼십분_뒤_풀린다 PASSED\n\n4 tests completed, 4 failed\n\n#   아홉 중 다섯이 초록이다\n\n# --- 로그인해 본다 ---\n\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=new@a.com&password=hunter2secret&_csrf=$TOKEN\" -o /dev/null\n\n$ curl -s -b c.txt localhost:8080/authorities\n\n[ROLE_USER, ORDER_READ]\n\n#   10.3절의 어댑터가 권한을 물고 왔다\n\n# --- 중복 가입 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt -X POST \\\n    localhost:8080/signup \\\n    -d \"email=new@a.com&password=hunter2secret&nickname=또&_csrf=$TOKEN\"\n\n400\n\nselect count(*) from member m where m.email = ?\n\n#   insert 가 안 나갔다\n\n#   DuplicateEmailException 이다\n\n# --- 경쟁을 만들어 본다 ---\n\n#   유니크 인덱스를 지운다\n\nalter table member drop constraint if exists uk_member_email;\n\n$ for i in 1 2; do\n    curl -s -o /dev/null -b c.txt -X POST localhost:8080/signup \\\n        -d \"email=race@a.com&password=hunter2secret&nickname=경쟁&_csrf=$TOKEN\" &\n  done; wait\n\nselect count(*) from member where email = 'race@a.com';\n\nCOUNT(*)\n--------\n2\n\n#   둘이 들어갔다\n\n#   select 만으로는 못 막는다\n\n#   인덱스를 되살린다\n\nalter table member add constraint uk_member_email unique (email);\n\nERROR: could not create unique index \"uk_member_email\"\nDETAIL: Key (email)=(race@a.com) is duplicated.\n\n#   이미 들어간 걸 먼저 지워야 한다\n\ndelete from member where email = 'race@a.com';\nalter table member add constraint uk_member_email unique (email);\n\n$ for i in 1 2; do\n    curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt -X POST \\\n        localhost:8080/signup \\\n        -d \"email=race@a.com&password=hunter2secret&nickname=경쟁&_csrf=$TOKEN\" &\n  done; wait\n\n302\n500\n\norg.hibernate.exception.ConstraintViolationException:\n  could not execute statement [Unique index or primary key violation:\n  \"PUBLIC.UK_MEMBER_EMAIL_INDEX_5 ON PUBLIC.MEMBER(EMAIL)\"]\n\nselect count(*) from member where email = 'race@a.com';\n1\n\n#   하나만 들어갔다\n\n#   500 을 400 으로 바꿔 준다\n\n@ExceptionHandler(DataIntegrityViolationException.class)\nProblemDetail duplicate() {\n    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,\n            \"이미 가입된 이메일입니다\");\n}\n\n302\n400\n\n# --- 비밀번호가 로그에 남나 ---\n\n@Bean\nCommonsRequestLoggingFilter requestLoggingFilter() {\n    CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();\n    filter.setIncludePayload(true);\n    filter.setMaxPayloadLength(1000);\n    return filter;\n}\n\nlogging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/signup \\\n    -d \"email=log@a.com&password=hunter2secret&nickname=로그&_csrf=$TOKEN\"\n\nDEBUG CommonsRequestLoggingFilter : POST /signup, payload=\n  email=log@a.com&password=hunter2secret&nickname=로그&_csrf=tKmM...\n\n#   평문이다\n\n#   /login 도 마찬가지다\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login -d \"...\"\n\nDEBUG CommonsRequestLoggingFilter : POST /login, payload=\n  username=user@a.com&password=1234&_csrf=...\n\n#   개발 편의로 켰다가 운영에 남는 설정이다\n\n#   경로를 빼거나 안 켠다\n\nfilter.setIncludePayload(false);\n\n#   record 의 toString 도 확인한다\n\nlog.info(\"signup request {}\", request);\n\nINFO SignupController : signup request SignupRequest[email=log@a.com]\n\n#   toString 을 덮어써 뒀다\n\n#   안 덮었다면\n\nINFO SignupController : signup request SignupRequest[email=log@a.com,\n  password=hunter2secret, nickname=로그]\n\n# --- 72바이트 제한 ---\n\n@Test\nvoid bcrypt_는_72바이트까지만_본다() {\n    PasswordEncoder encoder = new BCryptPasswordEncoder();\n    String base = \"a\".repeat(72);\n    String hashed = encoder.encode(base);\n\n    System.out.println(\">>> 72자 그대로 = \" + encoder.matches(base, hashed));\n    System.out.println(\">>> 뒤에 더 붙여 = \"\n            + encoder.matches(base + \"무엇이든\", hashed));\n}\n\n$ ./gradlew test --tests PasswordLengthTest\n\n>>> 72자 그대로 = true\n>>> 뒤에 더 붙여 = true\n\n#   73번째부터는 없는 것과 같다\n\n#   긴 비밀번호가 더 안전하지 않다\n\n#   최대 길이를 제한하는 편이 정직하다\n\n# --- 가입 직후 로그인 ---\n\n@PostMapping(\"/signup\")\npublic String signup(@Valid SignupRequest request,\n        HttpServletRequest httpRequest, HttpServletResponse httpResponse) {\n    Long id = signupService.signup(request);          // 트랜잭션 안\n    autoLogin(request.email(), httpRequest, httpResponse);   // 트랜잭션 밖\n    return \"redirect:/\";\n}\n\nprivate void autoLogin(String email, HttpServletRequest request,\n        HttpServletResponse response) {\n    UserDetails details = userDetailsService.loadUserByUsername(email);\n    Authentication auth = UsernamePasswordAuthenticationToken.authenticated(\n            details, null, details.getAuthorities());\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);\n    SecurityContextHolder.setContext(context);\n    securityContextRepository.saveContext(context, request, response);\n}\n\n$ curl -is -c s.txt localhost:8080/signup > /dev/null\n$ OLD=$(grep JSESSIONID s.txt | awk '{print $NF}')\n\n$ curl -is -b s.txt -c s.txt -X POST localhost:8080/signup \\\n    -d \"email=auto@a.com&password=hunter2secret&nickname=자동&_csrf=$T\" \\\n    | grep -iE 'location|set-cookie'\n\nLocation: http://localhost:8080/\n\n$ NEW=$(grep JSESSIONID s.txt | awk '{print $NF}')\n$ [ \"$OLD\" = \"$NEW\" ] && echo \"세션 ID 그대로\" || echo \"바뀜\"\n\n세션 ID 그대로\n\n#   세션 고정 보호가 안 걸렸다 (5.6절)\n\n#   필터가 안 했으니 당연하다\n\n#   직접 부른다\n\nhttpRequest.changeSessionId();\n\n$ ... \n바뀜\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b s.txt localhost:8080/orders\n200\n\n#   가입하자마자 로그인됐다\n\n# --- saveContext 를 빼면 ---\n\n//  securityContextRepository.saveContext(context, request, response);\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b s2.txt localhost:8080/orders\n302\n\n#   5.1절의 그 함정이다\n\n# --- 다음 절에서 ---\n\n#   로그인 흐름 전체를 다시 본다",
+   "note": "**가입에 조회 하나와 `insert` 둘**이 나가고 `{bcrypt}$2a$10$…` 로 저장된다 — 요구사항 1·2·3번이 초록이다.\n\n**유니크 인덱스를 지우고 동시에 두 번 부르면 두 행이** 들어가고, 되살리면 하나는 `ConstraintViolationException` 이다.\n\n**`CommonsRequestLoggingFilter` 를 켜면 가입·로그인 본문이 평문으로** 찍힌다.\n\n**bcrypt 는 72바이트까지만** 봐서 뒤에 뭘 붙여도 `matches` 가 `true` 다.\n\n**가입 직후 로그인은 세션 ID 가 그대로**라 `changeSessionId()` 를 직접 불러야 한다."
+  }
+ ],
+ "recap": [
+  "**가입은 중복·해시·삽입·역할·로그인 다섯**이다.",
+  "**중복은 `select` 가 아니라 유니크 인덱스가** 보장한다.",
+  "**제약 위반을 400 으로 바꿔** 준다.",
+  "**`record` 의 `toString` 이 비밀번호를** 찍는다.",
+  "**요청 본문 로깅 필터도 평문을** 남긴다.",
+  "**bcrypt 는 72바이트까지만** 본다.",
+  "**가입 직후 로그인은 `saveContext` 가** 필요하다.",
+  "**세션 고정 보호도 직접 불러야** 한다.",
+  "**트랜잭션 밖에서** 로그인시킨다."
+ ],
+ "drills": [
+  {
+   "task": "가입을 만들고 쿼리를 센다.",
+   "done_when": "조회 1 삽입 2 를 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "인덱스를 지우고 동시 요청을 보낸다.",
+   "done_when": "두 행이 들어가는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "요청 로깅 필터를 켜 본다.",
+   "done_when": "평문이 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "가입 직후 로그인을 붙인다.",
+   "done_when": "세션 ID 가 바뀌는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "중복 이메일을 무엇이 보장하나?",
+   "a": "유니크 인덱스다. `select` 만으로는 경쟁을 못 막는다."
+  },
+  {
+   "q": "비밀번호가 로그에 새는 흔한 경로는?",
+   "a": "`record` 의 기본 `toString` 과 요청 본문 로깅 필터다."
+  },
+  {
+   "q": "bcrypt 의 길이 제한은?",
+   "a": "72바이트까지만 보고 나머지는 무시한다."
+  },
+  {
+   "q": "가입 직후 로그인에서 빠뜨리기 쉬운 둘은?",
+   "a": "`saveContext` 호출과 세션 ID 변경이다."
+  },
+  {
+   "q": "왜 트랜잭션 밖에서 로그인시키나?",
+   "a": "롤백되면 없는 회원으로 로그인된 상태가 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "OWASP — Password Storage Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security — Password Storage",
+   "url": "https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

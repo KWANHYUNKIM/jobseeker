@@ -262,7 +262,7 @@
           "title": "COPY · ADD · .dockerignore",
           "summary": "무엇을 이미지에 넣고 무엇을 뺄 것인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -270,7 +270,7 @@
           "title": "CMD 와 ENTRYPOINT",
           "summary": "누가 PID 1 이 되는가.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -278,7 +278,7 @@
           "title": "캐시가 깨지는 자리",
           "summary": "줄 순서가 빌드 시간을 정한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
