@@ -1,0 +1,136 @@
+{
+ "book": "spring-db-1",
+ "id": "unchecked-exception",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "언체크 예외",
+ "summary": "안 잡아도 컴파일된다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "언체크 예외의 성질을 안다.",
+  "`throws` 를 선언하는 것이 왜 여전히 유용한지 안다.",
+  "무엇을 잃는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "중간이 몰라도 된다",
+   "ascii": "   checked                        unchecked\n   -------                        ---------\n   throws is required             throws is optional\n   every layer declares it        only the layer that cares\n   compiler catches you           nothing catches you\n\n   repository  throws MyUnchecked\n        ^\n   service     (no throws)\n        ^\n   controller  (no throws)\n        ^\n   handler     catch MyUnchecked\n\n   중간 계층이 그 예외를 몰라도 된다",
+   "note": "**6.3절의 문제가 이렇게 풀린다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "만들고 던지기",
+   "code": "public class MyUncheckedException extends RuntimeException {\n    public MyUncheckedException(String message) {\n        super(message);\n    }\n    public MyUncheckedException(String message, Throwable cause) {\n        super(message, cause);\n    }\n}\n\npublic class Repository {\n    public void call() {          // throws 가 없다\n        throw new MyUncheckedException(\"ex\");\n    }\n}",
+   "note": "**`RuntimeException` 을 상속**한다(6.1절).\n\n**생성자를 둘 만든다.** 두 번째가 **원인을 받는 것**이고, 6.7절에서 이것이 중요해진다.\n\n**`throws` 가 없어도** 컴파일된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "중간 계층이 자유로워진다",
+   "md": "**6.3절에서 본 그 상황**과 비교한다.\n\n```java\n// 체크 - 다 붙는다\nrepository.call() throws MyCheckedException\nservice.logic()   throws MyCheckedException\ncontroller.req()  throws MyCheckedException\n\n// 언체크 - 리포지토리만\nrepository.call()   // throws 없이 던진다\nservice.logic()     // 모른다\ncontroller.req()    // 모른다\n```\n\n**서비스와 컨트롤러가 그 예외를 안 봐도** 된다.\n\n**\"몰라도 되는 것을 모른다\"** 가 좋은 설계다.\n\n**7.1절의 인터페이스 문제도 풀린다.**\n\n```java\npublic interface MemberRepository {\n    Member findById(String id);   // 깨끗하다\n}\n```\n\n**JDBC 든 JPA 든 시그니처가 같다.** 3.3절에서 `DataSource` 로 얻은 것을 예외가 뚫지 않는다.\n\n> **7.2절이 실제로 이 작업**을 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "선언을 안 하면 안 보인다",
+   "md": "**대가가 있다.**\n\n```java\npublic Member findById(String id) { ... }\n```\n\n**이 메서드가 무슨 예외를 던지는지 모른다.** 시그니처에 없다.\n\n**6.3절에서 체크 예외의 장점으로 꼽은 것**이 사라졌다.\n\n> **시그니처가 문서가 된다.**\n\n**보완하는 방법 둘**\n\n**1. `throws` 를 선언한다**\n\n```java\npublic Member findById(String id) throws MyDbException {\n    ...\n}\n```\n\n**언체크도 `throws` 를 쓸 수 있다.** **강제되지 않을 뿐**이다.\n\n**부르는 쪽이 안 잡아도 컴파일된다.** 그런데 **문서로는 남는다.**\n\n**2. 문서화 주석**\n\n```java\n/**\n * @throws MyDbException DB 접근에 실패한 경우\n */\n```\n\n**첫 번째가 낫다.** IDE 가 읽어 주고 **리팩터링할 때 따라온다.**\n\n**실무에서는 중요한 것만** 선언한다. 전부 쓰면 체크 예외와 다를 것이 없어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "빠뜨리면 조용히 터진다",
+   "md": "**컴파일러가 안 도와주니** 처리를 잊을 수 있다.\n\n```java\npublic void order() {\n    inventoryService.decrease(itemId);   // OutOfStockException 을 던지는데\n    orderRepository.save(order);\n}\n```\n\n**모르고 지나가면** 그 예외가 **컨트롤러까지** 올라간다.\n\n**웹에서는 그나마 낫다** — 「MVC 2편」 10장의 `@ControllerAdvice` 가 **마지막에 잡는다.**\n\n```java\n@ExceptionHandler(Exception.class)\npublic ErrorResult handle(Exception e) {\n    log.error(\"예상 못 한 오류\", e);\n    return new ErrorResult(\"EX\", \"내부 오류\");\n}\n```\n\n**500 이 나가고 로그가 남는다.** 최소한 **알 수는 있다.**\n\n**배치나 스케줄러는 더 나쁘다** — **조용히 실패**하고 아무도 모른다.\n\n> **그래서 최상위에 잡는 곳을 두는 것**이 중요하다. 웹이면 `@ControllerAdvice`, 배치면 `try-catch` 와 알림.\n\n**언체크를 쓰는 대신 \"마지막 그물\" 을 만든다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "요즘의 기본은 언체크다",
+   "md": "**스프링이 그렇게 만들었다.**\n\n```java\nDataAccessException          extends RuntimeException   // 7.4 절\nTransactionException         extends RuntimeException   // 5.2 절\nRestClientException          extends RuntimeException\nBeansException               extends RuntimeException\n```\n\n**스프링의 예외는 거의 전부 언체크**다.\n\n**JPA 도 그렇다.**\n\n```java\nPersistenceException extends RuntimeException\n```\n\n**JDBC 만 체크**인데 **1997년에 만들어진 것**이다(2.1절). **그때는 체크 예외가 좋다고 생각했다.**\n\n**시간이 지나며 판단이 바뀌었다.**\n\n| | |\n|---|---|\n| **자바 1** | 체크 예외가 안전하다 |\n| **2000년대** | 실무에서 `throws` 가 번지는 문제가 드러난다 |\n| **지금** | 새 API 는 거의 언체크 |\n\n> **코틀린은 체크 예외를 아예 없앴다**(6.3절). **자바의 실험 결과를 보고 내린 결정**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 언체크로 감싸면 (7.2 절의 미리보기)\npublic Member findById(String memberId) {\n    try {\n        ...\n    } catch (SQLException e) {\n        throw new MyDbException(e);      // 언체크로 바꿔 던진다\n    }\n}\n\n# 서비스\n@Transactional\npublic void accountTransfer(String fromId, String toId, int money) {\n    // throws 가 없다\n    memberRepository.findById(fromId);\n}\n\n# DB 가 죽은 상태로 실행\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#   Could not obtain JDBC Connection\n#   Initiating transaction rollback\n#\n# hello.jdbc.repository.ex.MyDbException:\n#   org.h2.jdbc.JdbcSQLNonTransientConnectionException:\n#     Connection is broken: \"java.net.ConnectException: Connection refused\"\n#   at hello.jdbc.repository.MemberRepositoryV4_1.findById\n# Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: ...\n\n# 원인이 남아 있다\n\n# 원인을 안 넘기면\n#   throw new MyDbException();\n#\n# hello.jdbc.repository.ex.MyDbException\n#   at hello.jdbc.repository.MemberRepositoryV4_1.findById\n#\n# 진짜 이유가 사라졌다 - 6.7 절",
+   "note": "**서비스에 `throws` 가 없다.** 6.3절에서 세 계층에 다 붙던 것이 리포지토리에만 남았다.\n\n**`Caused by`** 로 원래 예외가 남아 있다. **`Connection refused` 라는 진짜 이유**를 볼 수 있다.\n\n**맨 아래가 원인을 안 넘겼을 때**다. `MyDbException` 만 있고 **왜 실패했는지 없다** — 2.8절과 6.7절의 그 문제다.\n\n**언체크로 바꾸는 것과 원인을 넘기는 것은 세트**다."
+  }
+ ],
+ "recap": [
+  "**`RuntimeException` 을 상속**하면 언체크다.",
+  "**생성자에 원인을 받는 것**을 꼭 만든다 — 6.7절.",
+  "**중간 계층이 그 예외를 몰라도** 된다.",
+  "**인터페이스가 깨끗해진다** — 7.1절의 문제가 풀린다.",
+  "**대가는 시그니처에 안 보이는 것**이다.",
+  "**언체크도 `throws` 를 쓸 수 있다** — 강제되지 않을 뿐.",
+  "**중요한 것만 선언**한다. 전부 쓰면 체크와 같아진다.",
+  "**빠뜨리면 조용히 터진다** — 배치가 특히 위험하다.",
+  "**최상위에 잡는 곳**을 둔다 — 「MVC 2편」 10장의 구조.",
+  "**스프링의 예외는 거의 전부 언체크**다.",
+  "**JDBC 만 체크**인데 1997년의 판단이다."
+ ],
+ "drills": [
+  {
+   "task": "언체크 예외를 만들고 세 계층에 걸쳐 던진다.",
+   "done_when": "`throws` 가 안 붙는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "언체크에 `throws` 를 선언해 본다.",
+   "done_when": "안 잡아도 컴파일되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "예외를 안 잡고 실행한다.",
+   "done_when": "어디까지 올라가는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@ControllerAdvice` 로 마지막에 잡는다.",
+   "done_when": "500 이 나가고 로그가 남는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스프링 예외 몇 개의 부모를 확인한다.",
+   "done_when": "다 `RuntimeException` 인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "언체크 예외의 이득은?",
+   "a": "중간 계층이 그 예외를 몰라도 되고 인터페이스가 특정 기술에 안 묶인다."
+  },
+  {
+   "q": "대가는?",
+   "a": "시그니처에 안 보여서 무슨 예외가 나는지 알기 어렵다."
+  },
+  {
+   "q": "어떻게 보완하나?",
+   "a": "중요한 것은 `throws` 로 선언한다. 강제되지 않지만 문서로 남고 IDE 가 읽어 준다."
+  },
+  {
+   "q": "빠뜨리면 무엇이 위험한가?",
+   "a": "배치나 스케줄러에서 조용히 실패한다. 최상위에 잡는 곳을 둬야 한다."
+  },
+  {
+   "q": "요즘의 기본은?",
+   "a": "언체크다. 스프링과 JPA 의 예외는 거의 전부 `RuntimeException` 을 상속한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

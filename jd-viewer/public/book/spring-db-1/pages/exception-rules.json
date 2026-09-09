@@ -1,0 +1,124 @@
+{
+ "book": "spring-db-1",
+ "id": "exception-rules",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "예외 기본 규칙",
+ "summary": "잡거나 던지거나. 두 가지뿐.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예외 처리의 두 규칙을 안다.",
+  "부모로 잡으면 자식도 잡힌다는 것을 안다.",
+  "예외를 어디서 잡을지 판단할 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "둘뿐이다",
+   "ascii": "   two rules\n   ---------\n   1  catch it, and it stops here\n   2  throw it, and the caller deals with it\n\n   catching a parent catches the children\n\n   controller\n        ^\n        |  nobody caught it\n   service\n        ^\n        |\n   repository  <-- throw\n\n   아무도 안 잡으면 위로 올라간다. 9.1 절의 그 그림이다",
+   "note": "**「MVC 2편」 9.1절에서 본 그 그림**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "잡거나 던지거나",
+   "md": "**선택지가 둘뿐**이다.\n\n```java\n// 1. 잡는다 - 여기서 끝난다\ntry {\n    repository.save(member);\n} catch (SQLException e) {\n    log.error(\"저장 실패\", e);\n}\n\n// 2. 던진다 - 부르는 쪽이 처리한다\npublic void save(Member m) throws SQLException {\n    repository.save(m);\n}\n```\n\n**세 번째는 없다.** 무시하는 방법이 없다.\n\n**언체크 예외는 \"던진다\" 가 기본**이다. `throws` 를 안 써도 자동으로 올라간다.\n\n**아무도 안 잡으면**\n\n```\nmain 까지 올라가고 애플리케이션이 죽는다\n```\n\n**웹에서는 WAS 까지** 올라간다 — 「MVC 2편」 9.1절의 그것이다.\n\n> **예외는 위로 올라간다** — 컨트롤러에서 WAS 까지."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "잡으면 정상 흐름이 된다",
+   "md": "```java\ntry {\n    repository.save(member);\n} catch (SQLException e) {\n    log.error(\"저장 실패\", e);\n}\n// 여기부터 정상 흐름이다\nreturn \"성공\";\n```\n\n**예외를 잡은 순간 \"처리됐다\" 는 뜻**이 된다.\n\n**「MVC 2편」 9.1절에서 본 그 문제**다.\n\n> **예외를 삼키면 200 이 나간다** — 모니터링이 못 잡는다.\n\n**여기는 더 나쁘다.** 저장이 실패했는데 **\"성공\" 을 반환**한다.\n\n**잡는 것은 처리할 수 있을 때만** 한다.\n\n| | 할 수 있는 것 |\n|---|---|\n| **재시도** | 일시적 오류면 다시 |\n| **대안** | 캐시나 기본값 |\n| **변환** | 다른 예외로 바꿔 던진다 |\n| **로그만** | **던져야 한다** |\n\n**마지막이 핵심**이다. **로그만 찍을 거면 잡지 말고 던진다.** 로그는 위에서 한 번만 찍는 편이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈 catch 는 하지 않는다",
+   "md": "```java\ntry {\n    repository.save(member);\n} catch (SQLException e) {\n    // 아무것도 안 한다\n}\n```\n\n**제일 나쁘다.** 실패했는데 **아무도 모른다.**\n\n**언제 이런 코드가 생기나**\n\n1. **컴파일 오류를 없애려고** — IDE 가 자동으로 만들어 준 `try-catch` 를 그대로 둔다\n2. **\"나중에 처리하자\"** — 그 나중이 안 온다\n3. **정말 무시해도 될 때** — 드물다\n\n**첫 번째가 체크 예외의 부작용**이다. **컴파일러가 강제하니 형식만 채우게** 된다. 6.5절에서 다룬다.\n\n**정말 무시해도 되면 이유를 적는다.**\n\n```java\ntry {\n    stream.close();\n} catch (IOException e) {\n    // 이미 응답을 다 보냈다. 닫기 실패는 무시한다\n}\n```\n\n**2.8절에서 본 그것**이다.\n\n> **닫기 실패는 로그만** 찍고 넘어간다. 던져 봐야 할 수 있는 것이 없고 원래 예외를 덮는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "어디서 잡을까",
+   "md": "**\"처리할 수 있는 곳\"** 이다. 그리고 대개 **위쪽**이다.\n\n```\n리포지토리: SQLException 을 어떻게 처리하나  ->  못 한다. 던진다\n서비스:     업무적으로 의미가 있나         ->  대개 못 한다. 던진다\n컨트롤러:   사용자에게 무엇을 보여 줄까     ->  여기서 결정한다\n```\n\n**「MVC 2편」 10장에서 만든 구조**다.\n\n> **`@ControllerAdvice`** 로 예외 처리를 컨트롤러 밖으로 뺀다.\n\n**한곳에서 잡는다.** 리포지토리와 서비스는 **던지기만** 한다.\n\n**예외적으로 아래에서 잡는 경우**\n\n| | |\n|---|---|\n| **재시도** | 리포지토리에서 몇 번 다시 |\n| **대안 값** | 캐시 실패 시 DB 로 |\n| **의미 변환** | `SQLException` → `중복 회원` (7.3절) |\n\n**세 번째가 7장의 주제**다. **아래에서 잡아 의미를 바꿔 다시 던진다.**\n\n> **잡는 것과 처리하는 것은 다르다.** 잡아서 다시 던지는 것은 **처리한 것이 아니다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 던진다 - 위로 올라간다\n@Test\nvoid throwsUp() {\n    assertThatThrownBy(() -> service.accountTransfer(\"memberA\", \"ex\", 2000))\n            .isInstanceOf(IllegalStateException.class);\n}\n\n#   Creating new transaction with name [MemberServiceV3_3.accountTransfer]\n#     select ... select ... update ...\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n#\n# java.lang.IllegalStateException: 이체중 예외 발생\n\n# 잡으면 - 롤백이 안 된다\n@Transactional\npublic void accountTransfer(...) {\n    try {\n        bizLogic(fromId, toId, money);\n    } catch (IllegalStateException e) {\n        log.error(\"이체 실패\", e);      // 잡았다\n    }\n}\n\n#   Creating new transaction\n#     select ... select ... update ...\n#   Initiating transaction commit        <- 커밋된다\n#   Committing JDBC transaction on Connection [conn0]\n\nselect * from member;\n# memberA | 8000        <- 첫 update 만 저장됐다\n# ex      | 10000\n\n# 4.6 절의 상태로 돌아갔다",
+   "note": "**둘째가 이 절에서 제일 중요한 로그**다. 예외를 잡았더니 **`Initiating transaction commit`** 이 나갔다.\n\n**스프링은 예외가 밖으로 나와야 롤백**한다(5.6절). **잡아서 삼키면 정상 종료**로 본다.\n\n**결과가 4.6절 그대로**다 — 첫 `update` 만 저장됐고 합계가 안 맞는다.\n\n**5장에서 만든 트랜잭션이 `try-catch` 하나로 무력화**됐다. 「MVC 2편」 9.1절의 \"예외를 삼키면 200\" 과 같은 성질인데 **데이터가 깨진다는 점에서 더 나쁘다.**"
+  }
+ ],
+ "recap": [
+  "**잡거나 던지거나** 둘뿐이다. 무시하는 방법은 없다.",
+  "**언체크는 던지는 것이 기본**이다.",
+  "**아무도 안 잡으면 위로** 올라간다 — 「MVC 2편」 9.1절.",
+  "**잡으면 정상 흐름**이 된다 — 실패했는데 성공을 반환한다.",
+  "**로그만 찍을 거면 잡지 말고 던진다.**",
+  "**빈 `catch` 가 제일 나쁘다** — 아무도 모른다.",
+  "**컴파일 오류를 없애려고** 생기는 것이 체크 예외의 부작용이다.",
+  "**무시해도 되면 이유를 적는다.**",
+  "**대개 위쪽에서 잡는다** — 「MVC 2편」 10장의 구조.",
+  "**아래에서 잡는 경우 셋** — 재시도 · 대안 · 의미 변환.",
+  "**잡아서 다시 던지는 것은 처리한 것이 아니다.**"
+ ],
+ "drills": [
+  {
+   "task": "서비스에서 예외를 잡아 로그만 찍는다.",
+   "done_when": "커밋되고 데이터가 깨지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다시 던지도록 고친다.",
+   "done_when": "롤백되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 `catch` 를 만들고 실패시킨다.",
+   "done_when": "아무 흔적도 안 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부모 예외로 잡고 자식을 던져 본다.",
+   "done_when": "잡히는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예외 처리의 두 규칙은?",
+   "a": "잡거나 던지거나다. 무시하는 방법은 없다."
+  },
+  {
+   "q": "잡으면 무엇이 달라지나?",
+   "a": "정상 흐름이 된다. 스프링은 예외가 밖으로 나와야 롤백하므로 잡으면 커밋된다."
+  },
+  {
+   "q": "로그만 찍을 거면?",
+   "a": "잡지 말고 던진다. 로그는 위에서 한 번만 찍는 편이 낫다."
+  },
+  {
+   "q": "빈 `catch` 가 왜 생기나?",
+   "a": "체크 예외의 컴파일 오류를 없애려고 형식만 채우기 때문이다."
+  },
+  {
+   "q": "아래에서 잡아도 되는 경우는?",
+   "a": "재시도, 대안 값 제공, 의미 변환이다. 세 번째가 7장의 주제다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

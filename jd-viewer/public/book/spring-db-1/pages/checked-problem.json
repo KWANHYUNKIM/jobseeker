@@ -1,0 +1,141 @@
+{
+ "book": "spring-db-1",
+ "id": "checked-problem",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "체크 예외의 문제",
+ "summary": "throws 가 위로 번진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "체크 예외의 세 문제를 안다.",
+  "왜 실무에서 언체크를 쓰는지 안다.",
+  "의존관계 관점에서 문제를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "세 가지",
+   "ascii": "   problem 1  the exception leaks upward\n   ---------\n   repository  throws SQLException\n   service     throws SQLException     does not care\n   controller  throws SQLException     does not care\n\n   problem 2  the interface is tied to a technology\n   ---------\n   interface MemberRepository {\n       Member findById(String id) throws SQLException;\n   }\n        |\n        +--> jpa version needs a different signature\n\n   problem 3  people just swallow it\n   ---------\n   catch (SQLException e) { }",
+   "note": "**6.3절에서 본 것들을 모은다.**"
+  },
+  {
+   "type": "heading",
+   "text": "1. 예외가 위로 번진다"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "의존관계 문제다",
+   "md": "**`throws` 는 그냥 선언이 아니다.**\n\n```java\npublic void logic() throws SQLException\n```\n\n**서비스가 `java.sql.SQLException` 에 의존**한다는 뜻이다.\n\n```java\nimport java.sql.SQLException;   // 컴파일하려면 필요하다\n```\n\n**5.1절에서 정확히 이것을 문제로** 꼽았다.\n\n> **1. 서비스가 JDBC 를 안다** — JPA 로 바꾸면 서비스도 바뀐다.\n\n**5.8절에서 API 는 다 없앴는데 예외가 남았다.**\n\n**컨트롤러까지 가면 더 이상하다.** 웹 계층이 **`java.sql`** 을 임포트한다.\n\n**4.11절의 계층 이야기**로 돌아간다.\n\n> **서비스가 제일 오래 산다.** 저장 기술이 바뀐다고 업무 규칙이 바뀌지 않는다.\n\n**체크 예외가 그 원칙을 뚫는다.**"
+  },
+  {
+   "type": "heading",
+   "text": "2. 인터페이스가 기술에 묶인다"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "추상화의 목적이 무너진다",
+   "md": "```java\npublic interface MemberRepository {\n    Member findById(String id) throws SQLException;\n}\n```\n\n**인터페이스는 구현을 감추려고** 만든다. 그런데 **`SQLException` 이 JDBC 를 드러낸다.**\n\n**JPA 구현을 만들면**\n\n```java\npublic class JpaMemberRepository implements MemberRepository {\n    public Member findById(String id) throws SQLException {\n        // JPA 는 SQLException 을 안 던지는데\n    }\n}\n```\n\n**안 던지는 예외를 선언**하게 된다. **거짓말하는 시그니처**다.\n\n**반대는 아예 안 된다.**\n\n```java\npublic Member findById(String id) throws PersistenceException   // 컴파일 오류\n```\n\n**부모가 선언 안 한 체크 예외를 자식이 못 던진다.** 자바의 규칙이다.\n\n**그러면 인터페이스에 `throws Exception`** 을 쓰게 되는데 — **아무 의미가 없다.** 무엇이든 던질 수 있다는 뜻이고, **부르는 쪽은 `Exception` 을 잡아야** 한다.\n\n> **3.3절과 5.2절에서 추상화로 얻은 것**을 예외 하나가 무너뜨린다."
+  },
+  {
+   "type": "heading",
+   "text": "3. 삼키게 된다"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "강제하니까 형식만 채운다",
+   "md": "```java\ntry {\n    repository.save(member);\n} catch (SQLException e) {\n    e.printStackTrace();   // 이것도 나쁘다\n}\n```\n\n**컴파일 오류를 없애는 것이 목적**이 된다.\n\n**IDE 가 도와주는 것이 오히려 문제**다 — `Surround with try/catch` 를 누르면 **빈 블록**이 생기고, 그대로 두게 된다.\n\n**`e.printStackTrace()` 도 나쁘다.**\n\n| | 왜 |\n|---|---|\n| **표준 출력으로 간다** | 로그 파일에 안 남는다 |\n| **레벨이 없다** | 필터링이 안 된다 |\n| **컨텍스트가 없다** | 어느 요청인지 모른다 |\n\n**「MVC 2편」 8.2절의 MDC** 를 안 탄다.\n\n**6.2절에서 말한 그것**이다.\n\n> **빈 `catch` 가 제일 나쁘다** — 아무도 모른다.\n\n**체크 예외가 그 코드를 만들어 낸다.** **좋은 의도가 나쁜 코드를 낳는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그러면 체크 예외는 실패인가",
+   "md": "**설계 자체가 틀린 것은 아니다.**\n\n**작은 범위에서는 잘 동작**한다.\n\n```java\ntry {\n    Files.readString(path);\n} catch (IOException e) {\n    return defaultConfig;   // 여기서 처리한다\n}\n```\n\n**바로 부르는 쪽이 처리하면** 문제가 없다. **번질 일이 없다.**\n\n**문제는 계층이 깊을 때**다. 리포지토리에서 컨트롤러까지 **네 계층**이면 **셋이 몰라도 되는 것을 안다.**\n\n**그리고 예외가 많을 때**다. 메서드 하나가 **다섯 가지 체크 예외**를 던지면 시그니처가 읽을 수 없게 된다.\n\n**판단 기준을 다시 보면**(6.3절)\n\n> **호출자가 잡아서 의미 있는 일을 할 수 있나.**\n\n**\"호출자\" 가 바로 위 한 계층**이면 체크가 맞다. **네 계층 위**면 언체크다.\n\n> **6.6절에서 이 판단을 정리**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 지금 상태 - throws 가 번진 모습\n# MemberRepositoryV3\npublic Member findById(String memberId) throws SQLException\n\n# MemberServiceV3_3\n@Transactional\npublic void accountTransfer(String fromId, String toId, int money)\n        throws SQLException\n\n# 테스트\n@Test\nvoid accountTransfer() throws SQLException\n\n# 세 파일의 import\n#   import java.sql.SQLException;\n#   import java.sql.SQLException;\n#   import java.sql.SQLException;\n\n# 실행 로그는 정상\n#   Creating new transaction with name [MemberServiceV3_3.accountTransfer]\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n\n# 삼킨 경우\ntry {\n    memberRepository.update(fromId, money);\n} catch (SQLException e) {\n    e.printStackTrace();\n}\n\n#   Creating new transaction\n#     select ... select ... update ...\n#   Initiating transaction commit          <- 실패했는데 커밋\n#\n# (표준 출력에만 스택 트레이스가 찍힌다. 로그 파일에는 없다)\n\nselect * from member;\n# 데이터가 안 맞는다",
+   "note": "**세 파일이 `java.sql.SQLException` 을 임포트**한다. 서비스와 테스트는 JDBC 와 무관한데도 그렇다.\n\n**5.8절에서 `import java.sql.Connection` 을 없앴는데** 예외 임포트는 남았다.\n\n**아래가 삼킨 경우**다. **트랜잭션이 커밋**됐고(6.2절), **스택 트레이스는 표준 출력에만** 있어 로그 수집 시스템이 못 본다.\n\n**세 문제가 한 코드에 다 있다** — 번지고, 기술이 드러나고, 삼켰다."
+  }
+ ],
+ "recap": [
+  "**`throws` 는 의존관계**다 — 서비스가 `java.sql` 을 임포트한다.",
+  "**5.1절의 첫 문제**가 예외로 남았다.",
+  "**컨트롤러까지 가면 웹 계층이 `java.sql` 을** 안다.",
+  "**인터페이스가 기술에 묶인다** — JPA 구현이 거짓말을 하게 된다.",
+  "**부모가 선언 안 한 체크 예외를 자식이 못 던진다.**",
+  "**`throws Exception` 은 아무 의미가 없다.**",
+  "**강제하니 형식만 채운다** — 빈 `catch` 와 `printStackTrace`.",
+  "**`printStackTrace` 는 로그 파일에 안 남는다.**",
+  "**작은 범위에서는 잘 동작**한다 — 바로 위가 처리하면.",
+  "**계층이 깊을 때 문제**다.",
+  "**\"호출자\" 가 한 계층 위면 체크, 네 계층 위면 언체크**다."
+ ],
+ "drills": [
+  {
+   "task": "서비스와 테스트의 `import` 를 확인한다.",
+   "done_when": "`java.sql.SQLException` 이 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인터페이스에 `throws SQLException` 을 두고 JPA 구현을 만들어 본다.",
+   "done_when": "안 던지는 예외를 선언하게 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자식에서 부모가 선언 안 한 체크 예외를 던져 본다.",
+   "done_when": "컴파일 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`e.printStackTrace()` 로 처리하고 로그 파일을 확인한다.",
+   "done_when": "안 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외를 삼키고 트랜잭션을 확인한다.",
+   "done_when": "커밋되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`throws` 가 왜 의존관계 문제인가?",
+   "a": "선언하려면 그 타입을 임포트해야 해서 서비스와 컨트롤러가 JDBC 에 의존하게 된다."
+  },
+  {
+   "q": "인터페이스에 체크 예외를 두면?",
+   "a": "특정 기술에 묶인다. 다른 구현이 안 던지는 예외를 선언하거나 아예 못 던진다."
+  },
+  {
+   "q": "`throws Exception` 은 왜 안 되나?",
+   "a": "무엇이든 던질 수 있다는 뜻이라 정보가 없고 호출자가 `Exception` 을 잡아야 한다."
+  },
+  {
+   "q": "`printStackTrace` 가 왜 나쁜가?",
+   "a": "표준 출력으로 가서 로그 파일에 안 남고 레벨과 컨텍스트가 없다."
+  },
+  {
+   "q": "체크 예외가 잘 동작하는 경우는?",
+   "a": "바로 위 호출자가 처리하는 작은 범위다. 계층이 깊으면 번진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,132 @@
+{
+ "book": "spring-db-1",
+ "id": "checked-exception",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "체크 예외",
+ "summary": "컴파일러가 강제한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "체크 예외의 의도를 안다.",
+  "`throws` 가 어떻게 번지는지 본다.",
+  "언제 쓸 만한지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "의도와 현실",
+   "ascii": "   why they exist\n   --------------\n   the compiler forces you to think about it\n   the signature documents what can go wrong\n\n   what actually happens\n   ---------------------\n   public void a() throws SQLException\n        ^\n   public void b() throws SQLException\n        ^\n   public void c() throws SQLException\n\n   한 곳에서 던지면 위로 다 번진다",
+   "note": "**좋은 의도인데 결과가 다르다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "만들고 던지기",
+   "code": "public class MyCheckedException extends Exception {\n    public MyCheckedException(String message) {\n        super(message);\n    }\n}\n\npublic class Repository {\n    public void call() throws MyCheckedException {\n        throw new MyCheckedException(\"ex\");\n    }\n}",
+   "note": "**`Exception` 을 상속**하면 체크다(6.1절).\n\n**`throws` 를 안 쓰면 컴파일 오류**다.\n\n```\nUnhandled exception type MyCheckedException\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 만들었나",
+   "md": "**자바의 설계 의도**는 둘이다.\n\n**1. 잊지 않게 한다**\n\n```java\nFileInputStream fis = new FileInputStream(\"a.txt\");   // 파일이 없을 수 있다\n```\n\n**파일이 없을 가능성**을 컴파일러가 알려 준다. **모르고 넘어갈 수 없다.**\n\n**2. 시그니처가 문서가 된다**\n\n```java\npublic Member findById(String id) throws SQLException\n```\n\n**\"이 메서드는 DB 오류가 날 수 있다\"** 를 타입으로 표현한다. **주석보다 확실**하다.\n\n**좋은 의도**다. **자바가 거의 유일하게** 이 기능을 가진 언어인 것도 그 때문이다.\n\n> **C# · 코틀린 · 파이썬 · 자바스크립트에는 없다.** 코틀린은 **자바에서 배운 뒤 일부러 뺐다.**\n\n**왜 뺐나** — 6.5절에서 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "번지는 모습",
+   "code": "// 리포지토리\npublic void call() throws MyCheckedException { ... }\n\n// 서비스 - 잡거나 던지거나\npublic void logic() throws MyCheckedException {\n    repository.call();      // 던진다\n}\n\n// 컨트롤러 - 또 선택\npublic void request() throws MyCheckedException {\n    service.logic();\n}\n\n// 결국 어디선가 잡는다\npublic void main() {\n    try {\n        controller.request();\n    } catch (MyCheckedException e) {\n        // 여기서 무엇을 하나\n    }\n}",
+   "note": "**`throws` 가 세 계층에 다 붙었다.**\n\n**컨트롤러가 `MyCheckedException` 을 왜 알아야 하나** — 몰라도 되는데 **선언에 있어야** 한다.\n\n**6.5절의 문제**가 이것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래도 쓸 만한 자리",
+   "md": "**드물지만 있다.**\n\n**호출하는 쪽이 반드시 처리해야 하고, 처리할 수 있을 때**다.\n\n```java\n// 잔고 부족 - 호출자가 알아야 하고 대응할 수 있다\npublic void withdraw(int amount) throws NotEnoughMoneyException\n```\n\n**\"돈이 부족합니다\" 를 사용자에게 보여 주고 다시 입력받으면** 된다. **복구 가능**하다.\n\n**반대로 `SQLException` 은**\n\n```java\ncatch (SQLException e) {\n    // 무엇을 하나. DB 를 고칠 수도, 다시 시도할 수도 없다\n}\n```\n\n**복구할 수 없다.** 그러면 **체크 예외로 만들 이유가 없다.**\n\n**판단 기준 하나**\n\n> **호출자가 잡아서 의미 있는 일을 할 수 있나.**\n\n**할 수 있으면 체크, 없으면 언체크**다.\n\n**대부분은 언체크**다. 실무에서 체크 예외를 새로 만드는 일은 **거의 없다.**\n\n> **5.6절에서 본 그것**과 이어진다. **스프링이 체크 예외를 커밋하는 것**도 \"복구 가능한 비즈니스 상황\" 으로 보기 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스에 새어 나온다",
+   "md": "**7.1절의 주제를 미리** 본다.\n\n```java\npublic interface MemberRepository {\n    Member findById(String id) throws SQLException;   // JDBC 가 드러난다\n}\n```\n\n**인터페이스를 만든 이유가 구현을 감추는 것**인데 **`SQLException` 이 새어 나왔다.**\n\n**JPA 로 바꾸면**\n\n```java\nMember findById(String id) throws PersistenceException;   // 시그니처가 바뀐다\n```\n\n**인터페이스가 특정 기술에 묶였다.** 구현을 갈아 끼울 수 없다.\n\n**3.3절에서 `DataSource` 로 얻은 것**이 무너진다.\n\n> **리포지토리 코드가 한 글자도 안 바뀐다** — 넘기는 구현만 바뀐다.\n\n**체크 예외가 이 추상화를 뚫는다.**\n\n**7.1·7.2절에서 이것을 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 지금의 리포지토리\npublic Member findById(String memberId) throws SQLException {\n    ...\n}\n\n# 서비스\npublic void accountTransfer(String fromId, String toId, int money)\n        throws SQLException {          <- 어쩔 수 없다\n    memberRepository.findById(fromId);\n}\n\n# 테스트\n@Test\nvoid transfer() throws SQLException {   <- 여기까지\n    service.accountTransfer(\"memberA\", \"memberB\", 2000);\n}\n\n# throws 를 지우면\n#   Unhandled exception type SQLException\n\n# 실행 로그는 정상\n#   Creating new transaction with name [MemberServiceV3_3.accountTransfer]\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n\n# DB 가 죽으면\n#   get connection ... 실패\n# java.sql.SQLException:\n#   Connection is broken: \"java.net.ConnectException: Connection refused\"\n\n# 이 예외를 잡아서 무엇을 할 수 있나\n#   재시도?  DB 가 죽었는데\n#   대안값?  없다\n#   -> 복구할 수 없다. 체크 예외일 이유가 없다",
+   "note": "**`throws SQLException` 이 리포지토리에서 테스트까지** 세 계층에 다 붙었다.\n\n**하나만 지워도 컴파일이 안 된다** — 컴파일러가 강제한다.\n\n**아래가 이 절의 결론**이다. `Connection refused` 를 잡아서 **할 수 있는 것이 없다.** 재시도해도 DB 는 여전히 죽어 있고, 대안 값도 없다.\n\n**복구할 수 없는데 컴파일러가 처리를 강제**한다 — 그것이 6.5절의 문제다."
+  }
+ ],
+ "recap": [
+  "**`Exception` 을 상속**하면 체크다.",
+  "**`throws` 를 안 쓰면 컴파일 오류**다.",
+  "설계 의도 둘 — **잊지 않게 · 시그니처가 문서**.",
+  "**자바가 거의 유일**하다 — 코틀린은 배운 뒤 일부러 뺐다.",
+  "**`throws` 가 세 계층에 다 붙는다.**",
+  "**컨트롤러가 몰라도 되는 것을 선언**해야 한다.",
+  "**호출자가 잡아서 의미 있는 일을 할 수 있나**가 기준이다.",
+  "**`SQLException` 은 복구할 수 없다** — 체크일 이유가 없다.",
+  "**실무에서 체크 예외를 새로 만드는 일은 거의 없다.**",
+  "**인터페이스에 새어 나온다** — 추상화를 뚫는다.",
+  "**7.1·7.2절에서 푼다.**"
+ ],
+ "drills": [
+  {
+   "task": "체크 예외를 만들고 세 계층에 걸쳐 던진다.",
+   "done_when": "`throws` 가 다 붙는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "중간에서 `throws` 를 지운다.",
+   "done_when": "컴파일 오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인터페이스에 `throws SQLException` 을 붙인다.",
+   "done_when": "기술이 드러나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`SQLException` 을 잡아 복구를 시도해 본다.",
+   "done_when": "할 수 있는 것이 없다는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "체크 예외의 설계 의도는?",
+   "a": "처리를 잊지 않게 하고 시그니처가 무엇이 잘못될 수 있는지 문서가 되게 하는 것이다."
+  },
+  {
+   "q": "무엇이 문제인가?",
+   "a": "`throws` 가 모든 계층으로 번져 몰라도 되는 계층까지 그 예외를 알게 된다."
+  },
+  {
+   "q": "체크로 만들 기준은?",
+   "a": "호출자가 잡아서 의미 있는 일을 할 수 있느냐다. 없으면 언체크다."
+  },
+  {
+   "q": "`SQLException` 이 왜 부적절한가?",
+   "a": "잡아도 재시도나 대안이 없어 복구할 수 없기 때문이다."
+  },
+  {
+   "q": "인터페이스에 어떤 영향을 주나?",
+   "a": "`throws SQLException` 이 드러나 인터페이스가 특정 기술에 묶인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Exceptions",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
