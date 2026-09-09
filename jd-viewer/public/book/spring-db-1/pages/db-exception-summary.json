@@ -1,0 +1,156 @@
+{
+ "book": "spring-db-1",
+ "id": "db-exception-summary",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "정리",
+ "summary": "리포지토리 밖으로 무엇이 나가나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "리포지토리의 경계를 정리한다.",
+  "6·7장이 무엇을 끝냈는지 안다.",
+  "남은 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "경계",
+   "ascii": "   what crosses the repository boundary\n   ------------------------------------\n   in    Member, String, int\n   out   Member, List<Member>\n   out   DataAccessException\n\n   what does NOT cross\n   -------------------\n   Connection\n   PreparedStatement, ResultSet\n   SQLException\n   the sql string\n\n   기술이 리포지토리 안에서 끝난다",
+   "note": "**기술이 리포지토리 안에서 끝난다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예외도 계약이다",
+   "md": "**메서드의 계약**은 시그니처만이 아니다.\n\n```java\nMember findById(String memberId);\n```\n\n**이것만 봐서는 반쪽**이다. **무엇이 던져지는지**도 계약이다.\n\n| | 계약 |\n|---|---|\n| 파라미터 | `String` |\n| 반환 | `Member` |\n| **예외** | **`DataAccessException`** |\n\n**7.4절에서 이것이 기술과 무관해졌다.**\n\n> **JDBC 든 JPA 든 `DuplicateKeyException`** 이 온다.\n\n**「MVC 2편」에서 본 그 이야기**와 같다.\n\n> 6.8절: **오류 응답 형식도 계약**이다 — 바뀌면 클라이언트가 깨진다.\n\n**거기는 HTTP 응답**이었고 **여기는 자바 예외**다. **경계를 넘는 것은 다 계약**이다."
+  },
+  {
+   "type": "table",
+   "caption": "6·7장이 끝낸 것",
+   "note": "**5.1절의 첫 문제가 완전히** 끝났다.",
+   "columns": [
+    "",
+    "어디서"
+   ],
+   "rows": [
+    [
+     "`throws SQLException` 전파",
+     "6.6절 — 언체크로 감쌈"
+    ],
+    [
+     "인터페이스에 기술 노출",
+     "7.2절"
+    ],
+    [
+     "오류 코드가 DB 마다 다름",
+     "7.5절 — 코드 표"
+    ],
+    [
+     "**반복 코드**",
+     "**7.6절** — `JdbcTemplate`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2장의 진단이 다 풀렸다",
+   "md": "**2.9절에서 셋을 꼽았다.**\n\n| | 어디서 |\n|---|---|\n| 1. 커넥션을 매번 새로 | **3장** |\n| 2. `SQLException` 이 번짐 | **6·7장** |\n| 3. 같은 코드가 반복 | **7.6절** |\n\n**그리고 \"트랜잭션이 없다\" 를 덧붙였는데** 4·5장이 했다.\n\n**책 전체가 2.9절의 목록**을 따라온 셈이다.\n\n**코드 줄 수로 보면**\n\n```\n2 장 리포지토리   약 80 줄 (네 메서드)\n7.6 리포지토리    약 12 줄\n\n4.7 서비스        업무 5 줄 + 트랜잭션 16 줄\n5.8 서비스        업무 5 줄 + 애너테이션 1 줄\n```\n\n**나가는 SQL 은 처음부터 끝까지 같다.** 1.1절에서 로그를 강조한 이유이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "남은 것",
+   "md": "**SQL 을 여전히 우리가 쓴다.**\n\n```java\nString sql = \"select * from member where member_id = ?\";\n```\n\n**2.3절에서 본 그 갈래**다.\n\n| | SQL 은 | 매핑은 |\n|---|---|---|\n| 순수 JDBC | 내가 | **내가** |\n| **`JdbcTemplate`** | **내가** | 해 준다 |\n| ORM | 만들어 준다 | 해 준다 |\n\n**`JdbcTemplate` 은 가운데**다. **SQL 은 그대로 손으로** 쓴다.\n\n**그래서 남는 문제**\n\n- **CRUD 가 테이블 수만큼** 반복된다\n- **컬럼이 늘면 SQL 을 다 고친다**\n- **동적 쿼리가 어렵다** — 조건에 따라 `where` 가 달라질 때\n\n**세 번째가 실무에서 크다.**\n\n```java\nString sql = \"select * from item\";\nif (StringUtils.hasText(itemName)) {\n    sql += \" where item_name like concat('%', ?, '%')\";\n}\n// 조건이 셋만 되어도 문자열 조립이 지옥이 된다\n```\n\n**MyBatis 나 QueryDSL 이 이것을 푼다** — **「스프링 DB 2편」**의 내용이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "7장에서 알아 둘 것",
+   "md": "**도구가 바뀌어도 남는 것**들이다.\n\n**1. 예외는 리포지토리에서 끝낸다**\n\n**기술 예외가 서비스로 나가면** 계층 분리가 무너진다. JPA 를 써도 마찬가지다.\n\n**2. 복구 가능한 것만 타입으로**\n\n**`DuplicateKeyException` 은 잡고 나머지는 던진다.** 7.3절의 판단이다.\n\n**3. 원인을 넘긴다**\n\n**6.7절의 규칙**이고 스프링도 지킨다.\n\n**4. `queryForObject` 는 예외를 던진다**\n\n**`null` 이 아니다.** 7.6절의 함정.\n\n**5. 재시도는 `Transient` 만**\n\n**7.4절의 갈림**이다. 문법 오류를 재시도하면 무한 반복이다.\n\n> **다섯 다 프레임워크가 판단해 주지 않는다.** 6.8절에서 꼽은 다섯에 이어 **열 개가 우리 몫**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그 — 7장의 결과",
+   "sql": "# 리포지토리\npublic class MemberRepositoryV5 implements MemberRepository {\n    private final JdbcTemplate template;\n\n    public Member findById(String memberId) {\n        String sql = \"select * from member where member_id = ?\";\n        return template.queryForObject(sql, memberRowMapper(), memberId);\n    }\n}\n\n# 서비스\n@Transactional\npublic void accountTransfer(String fromId, String toId, int money) {\n    Member fromMember = memberRepository.findById(fromId);\n    ...\n}\n\n# import 목록\n#   리포지토리: JdbcTemplate, RowMapper, DataSource\n#   서비스:     RequiredArgsConstructor, Transactional\n#   테스트:     (아무것도 없음)\n\n# 실행\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select * from member where member_id = ?\n#     select * from member where member_id = ?\n#     update member set money=? where member_id=?\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n\n# 2 장의 로그\n#   get connection=conn0   insert into member ...   close\n#   get connection=conn1   select * from member ... close\n\n# 나가는 SQL 은 처음부터 같았다\n# 커넥션과 트랜잭션만 달라졌다",
+   "note": "**테스트에 `import` 가 하나도 없다.** 2장에서는 `java.sql.SQLException` 이 있었다(6.5절).\n\n**서비스에 둘, 리포지토리에 셋**이다. **기술이 리포지토리 안에서 끝났다.**\n\n**맨 아래 두 로그를 비교하면** 이 책의 전부다. **`select`·`update` 자체는 처음부터 같았고**, 달라진 것은 **커넥션이 하나인 것**과 **`autoCommit` 과 커밋 시점**이다.\n\n**1.1절에서 봐야 한다고 한 그 세 가지**다."
+  }
+ ],
+ "recap": [
+  "**기술이 리포지토리 안에서 끝난다.**",
+  "**예외도 계약**이다 — 시그니처만이 아니다.",
+  "**「MVC 2편」 6.8절의 \"오류 응답도 계약\"** 과 같은 이야기다.",
+  "**5.1절의 첫 문제가 완전히** 끝났다.",
+  "**2.9절의 진단 셋이 다 풀렸다** — 3장 · 6·7장 · 7.6절.",
+  "**책 전체가 2.9절의 목록**을 따라왔다.",
+  "**SQL 은 여전히 우리가 쓴다** — `JdbcTemplate` 은 가운데다.",
+  "**동적 쿼리가 어렵다** — 「스프링 DB 2편」의 몫.",
+  "7장에서 알아 둘 것 다섯 — **경계 · 복구 가능성 · 원인 · `queryForObject` · 재시도**.",
+  "**6.8절의 다섯과 합쳐 열 개가 우리 몫**이다.",
+  "**나가는 SQL 은 처음부터 같았다.**"
+ ],
+ "drills": [
+  {
+   "task": "세 파일의 `import` 를 센다.",
+   "done_when": "기술이 리포지토리에만 있는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "2장과 7.6절의 코드 줄 수를 비교한다.",
+   "done_when": "얼마나 줄었는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "2장과 7장의 SQL 로그를 나란히 놓는다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건이 셋인 동적 쿼리를 문자열로 만들어 본다.",
+   "done_when": "왜 어려운지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "7장에서 알아 둘 다섯을 각각 적어 본다.",
+   "done_when": "프레임워크가 안 해 주는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리포지토리 경계를 무엇이 넘나?",
+   "a": "도메인 객체와 `DataAccessException` 이다. 커넥션·`SQLException`·SQL 문자열은 안 넘는다."
+  },
+  {
+   "q": "예외가 왜 계약인가?",
+   "a": "부르는 쪽이 무엇을 잡아야 할지 정하기 때문이다. 바뀌면 호출자가 깨진다."
+  },
+  {
+   "q": "2.9절의 세 진단은 어디서 풀렸나?",
+   "a": "커넥션은 3장, 예외 전파는 6·7장, 반복은 7.6절이다."
+  },
+  {
+   "q": "`JdbcTemplate` 이 못 하는 것은?",
+   "a": "SQL 을 만들어 주지 않는다. CRUD 반복과 동적 쿼리가 남는다."
+  },
+  {
+   "q": "7장에서 알아 둘 다섯은?",
+   "a": "예외를 리포지토리에서 끝내기, 복구 가능한 것만 타입으로, 원인 넘기기, `queryForObject` 의 예외, `Transient` 만 재시도다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — JdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

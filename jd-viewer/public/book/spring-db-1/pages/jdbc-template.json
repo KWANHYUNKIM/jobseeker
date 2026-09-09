@@ -1,0 +1,147 @@
+{
+ "book": "spring-db-1",
+ "id": "jdbc-template",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "JdbcTemplate — 반복 제거",
+ "summary": "2장의 네 반복이 사라진다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`JdbcTemplate` 으로 리포지토리를 다시 쓸 수 있다.",
+  "무엇이 자동으로 되는지 안다.",
+  "`RowMapper` 를 쓸 수 있다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "남는 것은 셋",
+   "ascii": "   2.9  what repeated in every method\n   ---------------------------------\n   getConnection      DataSourceUtils         5.3\n   prepareStatement\n   setXxx\n   executeQuery\n   map ResultSet\n   catch SQLException translate                7.5\n   finally close      DataSourceUtils\n\n   what is left\n   ------------\n   the sql\n   the parameters\n   the row mapper\n\n   나머지를 템플릿이 가져간다",
+   "note": "**2.9절에서 \"다른 것은 두 줄\" 이라고 한 그것**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "전부",
+   "code": "public class MemberRepositoryV5 implements MemberRepository {\n\n    private final JdbcTemplate template;\n\n    public MemberRepositoryV5(DataSource dataSource) {\n        this.template = new JdbcTemplate(dataSource);\n    }\n\n    @Override\n    public Member save(Member member) {\n        String sql = \"insert into member(member_id, money) values(?, ?)\";\n        template.update(sql, member.getMemberId(), member.getMoney());\n        return member;\n    }\n\n    @Override\n    public Member findById(String memberId) {\n        String sql = \"select * from member where member_id = ?\";\n        return template.queryForObject(sql, memberRowMapper(), memberId);\n    }\n\n    @Override\n    public void update(String memberId, int money) {\n        String sql = \"update member set money=? where member_id=?\";\n        template.update(sql, money, memberId);\n    }\n\n    @Override\n    public void delete(String memberId) {\n        String sql = \"delete from member where member_id=?\";\n        template.update(sql, memberId);\n    }\n\n    private RowMapper<Member> memberRowMapper() {\n        return (rs, rowNum) -> {\n            Member member = new Member();\n            member.setMemberId(rs.getString(\"member_id\"));\n            member.setMoney(rs.getInt(\"money\"));\n            return member;\n        };\n    }\n}",
+   "note": "**2장에서 스무 줄이던 메서드가 두 줄**이다.\n\n**`update` 가 insert·update·delete 를 다 한다** — 2.5절의 `executeUpdate` 와 같은 이름이다.\n\n**파라미터를 가변 인자로** 넘긴다. `setString`·`setInt` 를 안 쓴다 — **타입을 보고 알아서** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 자동으로 되나",
+   "md": "**이 책에서 만든 것이 다 들어 있다.**\n\n| | 어디서 봤나 |\n|---|---|\n| 커넥션 얻고 반납 | 2.4·2.8절 |\n| **트랜잭션 동기화** | **5.3절** — `DataSourceUtils` |\n| `PreparedStatement` 생성·바인딩 | 2.5절 |\n| `ResultSet` 매핑 | 2.6절 |\n| **예외 변환** | **7.5절** — `SQLExceptionTranslator` |\n| 자원 정리 순서 | 2.8절 |\n\n**여섯 개가 한 줄 뒤에** 있다.\n\n**5.3절의 것이 특히 중요**하다. `JdbcTemplate` 이 **`DataSourceUtils` 를 쓰기 때문에** `@Transactional` 과 같이 동작한다.\n\n> 5.5절에서 말한 그것이다.\n>\n> **`DataSourceUtils` 를 안 쓰면 조용히 깨진다** — 롤백이 안 먹는다.\n\n**`JdbcTemplate` 은 그것을 안 틀린다.** 손으로 안 써도 되니 **실수할 자리가 없다.**\n\n**7.5절의 예외 변환도** 안에서 한다. `translate` 를 부를 필요가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "RowMapper 가 매핑을 맡는다",
+   "md": "```java\n(rs, rowNum) -> {\n    Member member = new Member();\n    member.setMemberId(rs.getString(\"member_id\"));\n    member.setMoney(rs.getInt(\"money\"));\n    return member;\n}\n```\n\n**`rs.next()` 를 안 부른다.** 템플릿이 **행마다 이 함수를 부른다** — 2.6절의 `while` 이 사라졌다.\n\n**`rowNum` 은 몇 번째 행인지**다. 거의 안 쓴다.\n\n**더 짧게 쓰는 방법**도 있다.\n\n```java\nBeanPropertyRowMapper.newInstance(Member.class)\n```\n\n**컬럼 이름과 프로퍼티 이름을 맞춰** 자동 매핑한다. `member_id` → `setMemberId` 처럼 **스네이크와 카멜을 변환**해 준다.\n\n**편한데 조심할 것 둘**\n\n- **이름이 안 맞으면 조용히 `null`** 이다 — 오타가 안 잡힌다\n- **`select *` 를 쓰게 된다** — 2.6절에서 안 쓴다고 한 것\n\n**컬럼이 적으면 직접 쓰는 편**이 명확하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "queryForObject 의 함정",
+   "md": "**7.4절에서 본 그것**이다.\n\n```java\ntemplate.queryForObject(sql, mapper, memberId);\n```\n\n| | 결과 |\n|---|---|\n| 0건 | **`EmptyResultDataAccessException`** |\n| 1건 | 정상 |\n| 2건 이상 | **`IncorrectResultSizeDataAccessException`** |\n\n**둘 다 예외**다. `null` 이 아니다.\n\n**\"없으면 `null`\"** 로 쓰면 500 이 난다.\n\n**대응 둘**\n\n```java\n// 잡는다\ntry {\n    return template.queryForObject(sql, mapper, id);\n} catch (EmptyResultDataAccessException e) {\n    return null;\n}\n\n// query 로 받는다\nList<Member> result = template.query(sql, mapper, id);\nreturn result.stream().findAny().orElse(null);\n```\n\n**둘째가 낫다.** 예외를 흐름 제어에 쓰지 않는다.\n\n**2.6절에서 정한 판단**이 여기서도 필요하다.\n\n> **`null` 을 돌려주지 않는다** — 예외나 `Optional`.\n\n**`Optional<Member>` 를 반환**하는 것이 가장 명확하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이름 있는 파라미터",
+   "md": "**`?` 가 많아지면 헷갈린다.**\n\n```java\nString sql = \"update member set money=?, name=?, grade=? where member_id=?\";\ntemplate.update(sql, money, name, grade, memberId);   // 순서를 세야 한다\n```\n\n**2.7절에서 본 그 함정**이다 — `set` 이 `where` 보다 먼저라 순서가 헷갈린다.\n\n**`NamedParameterJdbcTemplate`** 이 이것을 푼다.\n\n```java\nString sql = \"update member set money=:money where member_id=:memberId\";\nMap<String, Object> param = Map.of(\"money\", money, \"memberId\", memberId);\nnamedTemplate.update(sql, param);\n```\n\n**이름으로 넘긴다.** 순서가 상관없다.\n\n**객체를 그대로 넘길 수도** 있다.\n\n```java\nSqlParameterSource param = new BeanPropertySqlParameterSource(member);\nnamedTemplate.update(sql, param);\n```\n\n**`:memberId` 가 `member.getMemberId()`** 를 찾는다.\n\n> **컬럼이 셋을 넘으면 이름 있는 쪽**이 낫다. 「스프링 DB 2편」에서 자세히 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "service.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n#   JdbcTemplate - Executing prepared SQL query\n#   JdbcTemplate - Executing prepared SQL statement\n#     [select * from member where member_id = ?]\n#   DataSourceUtils - Fetching JDBC Connection from DataSource\n#     select * from member where member_id = ?    {1: 'memberA'}\n#   DataSourceUtils - Returning JDBC Connection to DataSource\n#   ...\n#   JdbcTemplate - Executing prepared SQL update\n#     update member set money=? where member_id=?  {1: 8000, 2: 'memberA'}\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n\n# DataSourceUtils 가 보인다 - 5.3 절의 그것\n# 나가는 SQL 은 2 장과 같다\n\n# 예외도 변환된다\nrepository.save(new Member(\"hi5\", 10000));\nrepository.save(new Member(\"hi5\", 20000));\n\n# org.springframework.dao.DuplicateKeyException:\n#   PreparedStatementCallback; SQL [insert into member(member_id, money) values(?, ?)];\n#   Unique index or primary key violation ... [23505-232]\n# Caused by: org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: ...\n\n# translate 를 안 불렀는데 변환됐다\n\n# 코드 줄 수\n#   2 장:  네 메서드에 약 80 줄\n#   7.6:   네 메서드에 약 12 줄",
+   "note": "**로그에 `DataSourceUtils`** 가 보인다. 5.3절에서 손으로 쓰던 것을 **템플릿이 부른다** — 그래서 `@Transactional` 과 같이 동작한다.\n\n**`Fetching`·`Returning`** 이 짝을 이룬다. 트랜잭션 중이라 **실제로는 같은 커넥션**이고 반납도 안 한다(5.3절).\n\n**나가는 SQL 이 2장과 같다.** 이 책 내내 그랬다 — **자바 코드만** 바뀐다.\n\n**예외가 `DuplicateKeyException`** 이다. **`translate` 를 안 불렀는데** 변환됐다 — 7.5절을 템플릿이 안에서 한다."
+  }
+ ],
+ "recap": [
+  "**스무 줄이 두 줄**이 된다.",
+  "**`update` 가 insert·update·delete** 를 다 한다.",
+  "**파라미터를 가변 인자**로 넘긴다.",
+  "자동으로 되는 것 여섯 — **커넥션 · 동기화 · 바인딩 · 매핑 · 예외 변환 · 정리**.",
+  "**`DataSourceUtils` 를 쓰니** `@Transactional` 과 같이 동작한다.",
+  "**손으로 안 쓰니 실수할 자리가 없다.**",
+  "**`RowMapper` 는 행마다** 불린다 — `rs.next()` 가 없다.",
+  "**`BeanPropertyRowMapper` 는 이름이 안 맞으면 조용히 `null`** 이다.",
+  "**`queryForObject` 는 0건과 2건 이상이 다 예외**다.",
+  "**`query` 로 받아 `findAny`** 하는 편이 낫다.",
+  "**`?` 가 셋을 넘으면 이름 있는 파라미터**를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "리포지토리를 `JdbcTemplate` 으로 다시 쓴다.",
+   "done_when": "줄 수가 얼마나 줄었는지 세었다.",
+   "minutes": 30
+  },
+  {
+   "task": "로그에서 `DataSourceUtils` 를 찾는다.",
+   "done_when": "트랜잭션과 이어지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "중복 키를 내고 예외 타입을 본다.",
+   "done_when": "`translate` 없이 변환되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`queryForObject` 로 없는 것을 조회한다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`BeanPropertyRowMapper` 로 바꾸고 컬럼 이름을 틀린다.",
+   "done_when": "조용히 `null` 이 되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`JdbcTemplate` 이 자동으로 하는 것은?",
+   "a": "커넥션 관리, 트랜잭션 동기화, 파라미터 바인딩, 결과 매핑, 예외 변환, 자원 정리다."
+  },
+  {
+   "q": "왜 `@Transactional` 과 같이 동작하나?",
+   "a": "안에서 `DataSourceUtils` 를 쓰기 때문이다. 손으로 쓸 때 틀리던 부분을 안 틀린다."
+  },
+  {
+   "q": "`RowMapper` 에서 `rs.next()` 를 왜 안 부르나?",
+   "a": "템플릿이 행마다 이 함수를 부르기 때문이다."
+  },
+  {
+   "q": "`queryForObject` 의 함정은?",
+   "a": "0건이면 `EmptyResultDataAccessException`, 2건 이상이면 `IncorrectResultSizeDataAccessException` 이다. `null` 이 아니다."
+  },
+  {
+   "q": "`BeanPropertyRowMapper` 를 조심하는 이유는?",
+   "a": "컬럼 이름이 안 맞으면 예외 없이 `null` 이 되고 `select *` 를 쓰게 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JdbcTemplate",
+   "en": "",
+   "what": "JDBC 의 반복 코드를 대신하는 스프링 클래스. 예외 변환과 트랜잭션 동기화까지 한다."
+  },
+  {
+   "term": "RowMapper",
+   "en": "",
+   "what": "`ResultSet` 의 한 행을 객체로 바꾸는 함수형 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — JdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

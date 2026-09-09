@@ -542,7 +542,7 @@
           "title": "JdbcTemplate — 반복 제거",
           "summary": "2장의 네 반복이 사라진다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -550,7 +550,7 @@
           "title": "정리",
           "summary": "리포지토리 밖으로 무엇이 나가나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -565,7 +565,7 @@
           "title": "다음 단계",
           "summary": "JPA · 스프링 DB 2편. 그리고 서가의 다음 책.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }
