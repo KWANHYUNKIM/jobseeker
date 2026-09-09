@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "ajax-filter",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "비동기 인증 필터",
+ "summary": "직접 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "필터·토큰·프로바이더 셋을 만든다.",
+  "본문을 한 번만 읽을 수 있는 것을 안다.",
+  "배선 실수를 구별한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절의 여섯 단계를 프레임워크에** 맡긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 조각",
+   "ascii": "   the four pieces of a login filter\n\n   a token type        carries what your login form sends\n   a filter            reads the request, builds the token\n   a provider          says supports, then verifies\n   wiring              add the filter, register the provider\n\n   miss the provider and you get ProviderNotFound, which is loud\n   miss the wiring and nothing happens at all, which is not",
+   "note": "**프로바이더를 빠뜨리면 시끄럽고 배선을 빠뜨리면** 조용하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "필터",
+   "md": "```java\npublic class JsonLoginFilter extends AbstractAuthenticationProcessingFilter {\n\n    private final ObjectMapper objectMapper;\n\n    public JsonLoginFilter(ObjectMapper objectMapper) {\n        super(new AntPathRequestMatcher(\"/api/login\", \"POST\"));\n        this.objectMapper = objectMapper;\n    }\n\n    @Override\n    public Authentication attemptAuthentication(HttpServletRequest request,\n            HttpServletResponse response) throws IOException {\n        if (!MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {\n            throw new AuthenticationServiceException(\n                    \"Content-Type not supported: \" + request.getContentType());\n        }\n        LoginRequest body = objectMapper.readValue(\n                request.getInputStream(), LoginRequest.class);\n        return getAuthenticationManager().authenticate(\n                UsernamePasswordAuthenticationToken.unauthenticated(\n                        body.email(), body.password()));\n    }\n}\n```\n\n> **3.2절의 부모 클래스**다.\n> **성공·실패 처리와 세션·저장·이벤트를 다 물려받는다.**\n> **11.1절의 여섯 단계가 공짜**다.\n\n**토큰을 새로 안 만들어도** 된다.\n\n> **아이디와 비밀번호가 오는 건 같다.**\n> **`UsernamePasswordAuthenticationToken` 을 그대로** 쓰면 `DaoAuthenticationProvider` 도 그대로다.\n>\n> **새 토큰 타입은 인증 재료가 다를 때**다 — **SMS 코드, 사원증 번호**.\n> **11.4절에서 그** 얘기를 한다.\n\n**배선**\n\n```java\n@Bean\nSecurityFilterChain apiChain(HttpSecurity http,\n        AuthenticationManager manager, ObjectMapper objectMapper) throws Exception {\n    JsonLoginFilter filter = new JsonLoginFilter(objectMapper);\n    filter.setAuthenticationManager(manager);\n    filter.setSecurityContextRepository(securityContextRepository);\n    filter.setAuthenticationSuccessHandler(jsonSuccessHandler);\n    filter.setAuthenticationFailureHandler(jsonFailureHandler);\n\n    http.securityMatcher(\"/api/**\")\n        .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)\n        ...;\n    return http.build();\n}\n```\n\n> **`setSecurityContextRepository` 를 빠뜨리면 저장을 안** 한다.\n> **6.x 기본이 `RequestAttribute…`** 라서다(5.2절).\n> **10.5절에서 손으로 하던 그** 단계다."
+  },
+  {
+   "type": "figure",
+   "caption": "본문은 한 번만",
+   "ascii": "   why the body can only be read once\n\n   the servlet input stream is a stream\n     filter reads it   -> the bytes are gone\n     controller reads  -> empty\n\n   for a login filter this is fine, nothing downstream needs it\n   for any other filter, wrap with ContentCachingRequestWrapper",
+   "note": "**로그인 필터에서는 문제가 안** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조용한 실패 셋",
+   "md": "| 빠뜨린 것 | 증상 |\n|---|---|\n| `setAuthenticationManager` | `IllegalArgumentException` (기동) |\n| `addFilterBefore` | 아무 일도 안 일어남 |\n| `setSecurityContextRepository` | 로그인은 되는데 안 남음 |\n| 성공 핸들러 | 302 가 나감 |\n\n> **첫째만 기동 때** 잡힌다.\n> **나머지 셋은 요청을 보내야** 안다.\n\n**기본 성공 핸들러가 302 를** 낸다.\n\n> **`SavedRequestAwareAuthenticationSuccessHandler`** 다.\n> **API 인데 리다이렉트가** 나간다.\n> **11.3절의 그** 문제다.\n\n**필터 자리**\n\n> **`UsernamePasswordAuthenticationFilter` 앞**이다.\n> **뒤에 둬도 매처가 다르니 동작은** 같다.\n> **관례상 앞에** 둔다 — **같은 종류끼리 모여** 있다.\n>\n> **10.7절의 기준으로는 \"인증 전 요청을 읽어야 하니 인증 필터 근처\"** 다.\n\n**체인을 나누는 편이** 낫다.\n\n> **`/api/**` 전용 체인에 이 필터만** 둔다.\n> **화면 체인에는 폼 로그인이** 그대로 있다.\n> **2.3절의 그** 구조다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 배선만 하고 필터를 안 넣으면 ---\n\nJsonLoginFilter filter = new JsonLoginFilter(objectMapper);\nfilter.setAuthenticationManager(manager);\n//  http.addFilterBefore(filter, ...);\n\n$ ./gradlew bootRun\n\nStarted Application\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\n401\n\n#   그냥 인증 안 된 요청이다\n\n$ ./gradlew bootRun 2>&1 | grep -c JsonLoginFilter\n0\n\n#   아무 로그도 없다\n\n#   만들어 놓고 안 끼운 것이다\n\n# --- 끼운다 ---\n\nhttp.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -n Json\n\n7:   JsonLoginFilter\n\n$ curl -i -c j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\nSet-Cookie: JSESSIONID=C6D7E8; Path=/; HttpOnly\n\nTRACE FilterChainProxy : Invoking JsonLoginFilter (7/12)\nDEBUG ProviderManager : Authenticating request with DaoAuthenticationProvider\nDEBUG ChangeSessionIdAuthenticationStrategy : Changed session id\nDEBUG JsonLoginFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n  [username=user@a.com]]\nDEBUG SavedRequestAwareAuthenticationSuccessHandler : Redirecting to /\n\n#   (8/12) 가 없다\n\n#   7번이 끝냈다\n\n#   세션 ID 변경도 컨텍스트 설정도 다 했다\n\n#   11.1절의 여섯 단계를 안 썼는데 다 됐다\n\n#   그런데 302 다\n\n# --- 저장은 되나 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j.txt localhost:8080/api/v1/orders\n\n401\n\n#   안 남았다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Stored SecurityContextImpl\"\n0\n\n#   저장소를 안 줬다\n\nfilter.setSecurityContextRepository(\n        new HttpSessionSecurityContextRepository());\n\n$ curl -s -o /dev/null -b j2.txt -c j2.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j2.txt localhost:8080/api/v1/orders\n200\n\n#   남았다\n\n#   5.2절의 그 한 줄이다\n\n# --- 이벤트도 나온다 ---\n\n$ ./gradlew bootRun 2>&1 | grep \">>> \"\n\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n>>> INTERACTIVE user@a.com by JsonLoginFilter\n\nupdate member set failed_count = ?, last_login_at = ?, last_login_ip = ?\n where id = ?\n\n#   10.5절의 기록이 그대로 돈다\n\n#   9.4절의 request.login 과 다르다\n\n#   저건 INTERACTIVE 가 안 나왔다\n\n# --- Content-Type 이 다르면 ---\n\n$ curl -i -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/x-www-form-urlencoded' \\\n    -d 'email=user@a.com&password=1234'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error=bad\n\nAuthenticationServiceException: Content-Type not supported:\n  application/x-www-form-urlencoded\n\n#   AuthenticationServiceException 이다\n\n#   4.5절대로 즉시 던져진다\n\n#   InternalAuthenticationServiceException 의 부모다\n\n#   프로바이더까지 안 간다\n\n# --- 본문을 두 번 읽으면 ---\n\n@Override\npublic Authentication attemptAuthentication(HttpServletRequest request,\n        HttpServletResponse response) throws IOException {\n    LoginRequest first = objectMapper.readValue(\n            request.getInputStream(), LoginRequest.class);\n    LoginRequest second = objectMapper.readValue(\n            request.getInputStream(), LoginRequest.class);   // 두 번째\n    ...\n}\n\ncom.fasterxml.jackson.databind.exc.MismatchedInputException:\n  No content to map due to end-of-input\n\n#   스트림이 비었다\n\n#   다른 필터가 본문을 먼저 읽었어도 같다\n\n#   10.7절의 추적 필터가 본문을 로깅했다면\n\n#   로그인이 통째로 깨진다\n\n#   ContentCachingRequestWrapper 로 감싸야 한다\n\n# --- 프로바이더가 없으면 ---\n\n#   (새 토큰 타입을 만들었다고 치고)\n\npublic class JsonAuthenticationToken extends AbstractAuthenticationToken { }\n\nreturn getAuthenticationManager().authenticate(\n        new JsonAuthenticationToken(body.email(), body.password()));\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\n302\n\nProviderNotFoundException: No AuthenticationProvider found for\n  com.example.JsonAuthenticationToken\n\n#   4.5절의 그 예외다\n\n#   시끄러워서 다행이다\n\n#   토큰을 그대로 쓰면 이 문제가 없다\n\n#   UsernamePasswordAuthenticationToken 으로 되돌린다\n\n# --- 체인을 나눈다 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http, ...) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .addFilterBefore(jsonLoginFilter, UsernamePasswordAuthenticationFilter.class)\n        .authorizeHttpRequests(a -> a\n                .requestMatchers(\"/api/login\", \"/api/csrf\").permitAll()\n                .anyRequest().authenticated());\n    return http.build();\n}\n\n@Bean @Order(2)\nSecurityFilterChain webChain(HttpSecurity http) throws Exception {\n    http.formLogin(f -> f.loginPage(\"/login\").permitAll()) ...;\n    return http.build();\n}\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\"\n\nWill secure Ant [pattern='/api/**'] with [... JsonLoginFilter ...]\nWill secure any request with [... UsernamePasswordAuthenticationFilter ...]\n\n#   체인마다 다른 로그인 필터다\n\n$ curl -s -o /dev/null -w 'API %{http_code}\\n' -b j2.txt -X POST \\\n    localhost:8080/api/login -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\nAPI 302\n\n$ curl -s -o /dev/null -w '화면 %{http_code}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$T\"\n화면 302\n\n#   둘 다 302 다\n\n#   API 쪽이 문제다\n\n# --- 다음 절에서 ---\n\n#   그 302 를 없앤다",
+   "note": "**필터를 안 끼우면 로그가 0줄**이고 그냥 401 이다 — 조용한 실패다.\n\n**끼우면 `(8/12)` 없이 7번이 끝내고 세션 ID 변경·컨텍스트 설정이 다** 된다 — 여섯 단계를 안 썼는데 다 됐다.\n\n**저장소를 안 주면 `Stored` 가 0회**라 다음 요청이 401 이다.\n\n**본문을 두 번 읽으면 `No content to map due to end-of-input`** 이다.\n\n**새 토큰 타입을 쓰면 `ProviderNotFoundException`** 이 나 시끄럽게 알려 준다."
+  }
+ ],
+ "recap": [
+  "**`AbstractAuthenticationProcessingFilter` 를** 상속한다.",
+  "**여섯 단계를 부모가 다** 해 준다.",
+  "**토큰 타입은 재료가 같으면 그대로** 쓴다.",
+  "**저장소를 안 주면 안** 남는다.",
+  "**필터를 안 끼우면 아무 로그도** 없다.",
+  "**`Content-Type` 검사는 즉시 던지는 예외로** 한다.",
+  "**본문은 한 번만 읽을 수** 있다.",
+  "**앞 필터가 읽었으면 로그인이** 깨진다.",
+  "**체인을 나눠 화면과 API 를 따로** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "JSON 로그인 필터를 만든다.",
+   "done_when": "7번에서 끝나는 로그를 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "저장소를 빼 본다.",
+   "done_when": "다음 요청이 401 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "본문을 두 번 읽어 본다.",
+   "done_when": "빈 스트림 예외를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "체인을 둘로 나눈다.",
+   "done_when": "각 체인의 필터 목록을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부모 클래스가 대신 해 주는 것은?",
+   "a": "세션 ID 변경, 컨텍스트 설정·저장, 이벤트, 핸들러 호출이다."
+  },
+  {
+   "q": "토큰 타입을 새로 만들어야 하나?",
+   "a": "인증 재료가 같으면 그대로 쓰는 게 낫다."
+  },
+  {
+   "q": "필터를 안 끼우면?",
+   "a": "아무 로그도 없이 그냥 인증 안 된 요청이 된다."
+  },
+  {
+   "q": "본문을 두 번 읽으면?",
+   "a": "스트림이 비어 파싱이 실패한다."
+  },
+  {
+   "q": "새 토큰에 프로바이더가 없으면?",
+   "a": "`ProviderNotFoundException` 이 난다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

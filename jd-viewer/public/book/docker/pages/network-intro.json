@@ -1,0 +1,140 @@
+{
+ "book": "docker",
+ "id": "network-intro",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "컨테이너끼리 부르기",
+ "summary": "IP 를 적어 두면 다음 배포에서 깨진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨테이너 IP 가 왜 불안정한지 안다.",
+  "네트워크 드라이버 종류를 안다.",
+  "무엇을 이름으로 불러야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**애플리케이션 컨테이너와 DB 컨테이너를 띄웠다.** **애플리케이션이 DB 를 어떻게 찾나.**\n\n```\nspring.datasource.url=jdbc:postgresql://???:5432/shop\n```\n\n**IP 를 적으면** 된다. **한 번은.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "IP 는 매번 바뀐다",
+   "md": "```bash\n$ docker run -d --name db postgres:16\n$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db\n172.17.0.2\n\n$ docker rm -f db && docker run -d --name db postgres:16\n$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db\n172.17.0.4\n```\n\n> **컨테이너를 다시 만들 때마다 IP 가 다시** 배정된다.\n> **컨테이너를 다시 만드는 일은 배포할 때마다 일어난다.**\n\n**그래서 정답은 하나**다 — **이름으로 부른다.**\n\n```\nspring.datasource.url=jdbc:postgresql://db:5432/shop\n```\n\n**그러려면 조건이 하나** 있다 — **사용자 정의 네트워크에 있어야** 한다(7.3절). **기본 bridge 에서는 이름이 안** 된다."
+  },
+  {
+   "type": "table",
+   "caption": "네트워크 드라이버",
+   "columns": [
+    "드라이버",
+    "무엇",
+    "쓰는 데"
+   ],
+   "rows": [
+    [
+     "**`bridge`**",
+     "**기본.** 가상 스위치 하나에 컨테이너를 붙인다",
+     "**단일 호스트의 거의 모든 경우**"
+    ],
+    [
+     "`host`",
+     "호스트 네트워크를 그대로 쓴다. 격리 없음",
+     "성능이 절실할 때. 7.4절"
+    ],
+    [
+     "`none`",
+     "네트워크 없음",
+     "외부와 통신할 일이 없는 배치"
+    ],
+    [
+     "`overlay`",
+     "여러 호스트를 잇는다",
+     "Swarm·쿠버네티스 영역"
+    ],
+    [
+     "`macvlan`",
+     "컨테이너가 물리 네트워크의 MAC 을 갖는다",
+     "레거시 장비 연동"
+    ]
+   ],
+   "note": "**이 장은 `bridge` 를 제대로 쓰는 법이 거의 전부**다."
+  },
+  {
+   "type": "figure",
+   "caption": "기본 bridge 에 붙은 컨테이너들",
+   "ascii": "   host\n   +--------------------------------------------------+\n   |  eth0  192.168.0.10                              |\n   |    |                                             |\n   |  [ NAT / iptables ]                              |\n   |    |                                             |\n   |  docker0  172.17.0.1        <- virtual switch    |\n   |    |        |        |                           |\n   |  veth     veth     veth                          |\n   |    |        |        |                           |\n   |  .0.2     .0.3     .0.4                          |\n   |  api       db      cache                         |\n   +--------------------------------------------------+\n\n   서로 IP 로는 닿는다. 이름으로는 안 닿는다 (7.2절)",
+   "note": "**`veth` 는 가상 랜선**이다 — **한쪽 끝은 호스트, 한쪽 끝은 컨테이너 안**에 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 장에서 확인할 것 세 가지",
+   "md": "**네트워크 문제는 대개 이 셋 중 하나**다.\n\n| 질문 | 확인 |\n|---|---|\n| **같은 네트워크에 있나** | `docker inspect -f '{{json .NetworkSettings.Networks}}'` |\n| **이름이 풀리나** | `docker exec api getent hosts db` |\n| **포트가 열려 있나** | `docker exec api nc -zv db 5432` |\n\n**7.6절에서 이걸 순서대로 좁히는 법**을 정리한다.\n\n> **`getent hosts` 는 대부분의 이미지에** 있다. **`ping` 은 없는 이미지가 많고, DB 는 ICMP 를 안 받으므로 `ping` 이 실패해도 정상**일 수 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "IP 는 바뀌고 이름은 안 바뀐다",
+   "sql": "# --- IP 는 배포마다 바뀐다 ---\n\n$ docker run -d --name db postgres:16 -c 'shared_buffers=32MB' >/dev/null 2>&1 || \\\n  docker run -d --name db -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n\n$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db\n172.17.0.2\n\n$ docker run -d --name cache redis:7 >/dev/null\n$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cache\n172.17.0.3\n\n$ docker rm -f db >/dev/null\n$ docker run -d --name db -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db\n172.17.0.4\n\n#   같은 이름의 컨테이너인데 IP 가 .2 -> .4 로 바뀌었다\n#   설정 파일에 172.17.0.2 를 적어 뒀다면 여기서 깨진다\n\n\n# --- 기본 bridge 에서는 IP 로는 닿고 이름으로는 안 닿는다 ---\n\n$ docker exec cache sh -c 'getent hosts db || echo \"NAME NOT RESOLVED\"'\nNAME NOT RESOLVED\n\n$ docker exec cache sh -c 'nc -z -w2 172.17.0.4 5432 && echo \"IP OK\"'\nIP OK\n\n#   IP 로는 되는데 이름으로는 안 된다. 7.2절에서 왜인지 본다\n\n\n# --- 네트워크 목록 ---\n\n$ docker network ls\nNETWORK ID     NAME      DRIVER    SCOPE\n8f2a1b3c4d5e   bridge    bridge    local\n1a2b3c4d5e6f   host      host      local\n9e8d7c6b5a49   none      null      local\n\n#   기본 셋이 항상 있다\n\n$ docker network inspect bridge -f '{{.IPAM.Config}}'\n[{172.17.0.0/16  172.17.0.1 map[]}]\n\n$ docker network inspect bridge -f '{{range $k,$v := .Containers}}{{$v.Name}} {{$v.IPv4Address}}{{println}}{{end}}'\ncache 172.17.0.3/16\ndb 172.17.0.4/16\n\n\n# --- 가상 랜선(veth)을 확인 (리눅스 호스트) ---\n\n$ ip -br link show type veth | head -3\nveth1a2b3c@if12   UP  9a:1b:2c:3d:4e:5f\nveth4d5e6f@if14   UP  ba:2c:3d:4e:5f:60\n\n$ ip -br addr show docker0\ndocker0   UP   172.17.0.1/16\n\n#   docker0 이 가상 스위치, veth 가 각 컨테이너로 가는 랜선이다\n\n\n# --- 컨테이너 안에서 본 네트워크 ---\n\n$ docker exec cache ip -br addr\nlo      UNKNOWN  127.0.0.1/8\neth0    UP       172.17.0.3/16\n\n$ docker exec cache ip route\ndefault via 172.17.0.1 dev eth0\n172.17.0.0/16 dev eth0 scope link src 172.17.0.3\n\n#   기본 게이트웨이가 docker0 이다. 밖으로 나갈 때 여기를 거친다\n\n$ docker rm -f db cache >/dev/null"
+  }
+ ],
+ "recap": [
+  "컨테이너 IP 는 다시 만들 때마다 바뀐다. 배포할 때마다 다시 만든다.",
+  "그래서 이름으로 부른다. 다만 기본 bridge 에서는 이름이 안 풀린다(7.2·7.3절).",
+  "단일 호스트에서는 bridge 드라이버가 거의 전부다. host/none 은 특수한 경우.",
+  "네트워크 문제는 '같은 네트워크인가 / 이름이 풀리나 / 포트가 열렸나' 셋으로 좁힌다."
+ ],
+ "drills": [
+  {
+   "task": "컨테이너를 지우고 같은 이름으로 다시 만들어 IP 가 바뀌는 것을 확인한다.",
+   "done_when": "두 IP 가 다른 것을 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker network inspect bridge` 로 지금 붙어 있는 컨테이너와 IP 를 나열한다.",
+   "done_when": "목록을 읽을 수 있다.",
+   "minutes": 3
+  },
+  {
+   "task": "컨테이너 안에서 `ip route` 로 기본 게이트웨이를 확인한다.",
+   "done_when": "docker0 의 주소가 게이트웨이인 것을 본다.",
+   "minutes": 3
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정에 컨테이너 IP 를 적으면 왜 안 되나.",
+   "a": "컨테이너를 다시 만들 때마다 IP 가 새로 배정되고, 배포는 곧 다시 만드는 일이다."
+  },
+  {
+   "q": "단일 호스트에서 기본으로 쓰는 네트워크 드라이버는.",
+   "a": "bridge."
+  },
+  {
+   "q": "네트워크 문제를 좁히는 세 가지 질문은.",
+   "a": "같은 네트워크에 있나, 이름이 풀리나, 포트가 열려 있나."
+  }
+ ],
+ "terms": [
+  {
+   "term": "bridge",
+   "what": "호스트 안의 가상 스위치. 컨테이너들이 여기 붙어 서로 통신한다."
+  },
+  {
+   "term": "veth",
+   "what": "양 끝이 짝인 가상 이더넷 장치. 한쪽은 호스트, 한쪽은 컨테이너에 있다."
+  },
+  {
+   "term": "docker0",
+   "what": "기본 bridge 네트워크의 호스트 쪽 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Networking overview",
+   "url": "https://docs.docker.com/engine/network/",
+   "publisher": "Docker"
+  }
+ ]
+}

@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "ajax-login",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "비동기 로그인",
+ "summary": "폼이 아니라 JSON 으로.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "폼 필터가 JSON 을 못 읽는 이유를 안다.",
+  "세 가지 방법을 비교한다.",
+  "CSRF 를 어떻게 할지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.6절에서 JSON 로그인이 302** 였다. **마지막 빚**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 못 읽나",
+   "ascii": "   why the form filter cannot read json\n\n   obtainUsername(request)\n     request.getParameter(\"username\")\n       the servlet container parses parameters from\n         the query string, and\n         a body of type application/x-www-form-urlencoded\n\n   a json body is none of those, so getParameter returns null\n   and 4.4 turns a null username into Bad credentials",
+   "note": "**`getParameter` 가 JSON 을 안** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실패가 조용하다",
+   "md": "**`username` 이 `null` 이면**\n\n```java\n// UsernamePasswordAuthenticationFilter\nString username = obtainUsername(request);\nusername = (username != null) ? username.trim() : \"\";\n```\n\n> **빈 문자열이** 된다.\n> **`loadUserByUsername(\"\")` 가 없는 사용자로** 끝난다.\n> **`BadCredentialsException`** 이다.\n>\n> **3.1절에서 파라미터 이름을 틀렸을 때와 같은 로그**다.\n> **`Failed to find user ''`**\n\n**세 가지 방법**\n\n| 방법 | 장점 | 단점 |\n|---|---|---|\n| 컨트롤러 | 이해하기 쉽다 | 여섯 단계를 손으로 (10.5절) |\n| 필터 | 프레임워크가 다 한다 | 만들 게 있다 |\n| 클라이언트가 폼 인코딩 | 서버 수정 0 | 클라이언트를 고쳐야 |\n\n**셋째를 먼저** 물어본다.\n\n```javascript\nawait fetch('/login', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/x-www-form-urlencoded'},\n  body: new URLSearchParams({username, password, _csrf: token})\n});\n```\n\n> **서버를 하나도 안** 고친다.\n> **`fetch` 가 JSON 을 보내야 할 이유는** 없다.\n> **로그인만 폼 인코딩이면 그만**이다.\n>\n> **다만 리다이렉트가 온다** — **11.3절에서** 고친다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 방법",
+   "ascii": "   three ways to accept a json login\n\n   a controller that calls the manager\n     simple, but you redo the six steps from 10.5\n   a filter of your own\n     the framework does the six steps for you\n   send the form encoding from the client\n     no server change at all, and often the right answer\n\n   the third one is worth asking about before writing code",
+   "note": "**세 번째를 먼저 물어본다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨트롤러 방식의 여섯 단계",
+   "md": "**10.5절에서 셌다.**\n\n```java\n@PostMapping(\"/api/login\")\npublic ResponseEntity<MemberResponse> login(\n        @RequestBody @Valid LoginRequest body,\n        HttpServletRequest request, HttpServletResponse response) {\n\n    Authentication auth = authenticationManager.authenticate(\n            UsernamePasswordAuthenticationToken.unauthenticated(\n                    body.email(), body.password()));\n\n    request.changeSessionId();                                   // 1\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);                             // 2\n    SecurityContextHolder.setContext(context);\n    securityContextRepository.saveContext(context, request, response);  // 3\n    publisher.publishEvent(new InteractiveAuthenticationSuccessEvent(\n            auth, this.getClass()));                             // 4\n    return ResponseEntity.ok(MemberResponse.from(auth));\n}\n```\n\n> **5번(마지막 로그인 기록)은 4번 이벤트가 대신** 해 준다.\n> **6번(`RequestCache` 소비)은 API 라 필요** 없다.\n\n**실패 처리도 직접**이다.\n\n> **`AuthenticationException` 이 그대로 올라온다.**\n> **6.3절의 `ProblemDetail` 로** 바꾼다.\n> **10.6절의 코드 매핑을 재사용**한다.\n\n**CSRF 는 어떻게 하나**\n\n> **세션 쿠키로 인증하니 CSRF 가 성립**한다(6.4절).\n> **API 라고 끄면 안** 된다.\n> **6.5절의 쿠키 저장소 + 헤더가** 답이다.\n>\n> **로그인 요청 자체에도 토큰이** 필요하다 — **`/api/csrf` 를 먼저** 부른다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- JSON 을 보내 본다 ---\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"username\":\"user@a.com\",\"password\":\"1234\",\"_csrf\":\"'$TOKEN'\"}'\n\nHTTP/1.1 403\n\nDEBUG CsrfFilter : Invalid CSRF token found\n\n#   CSRF 부터 막힌다\n\n#   _csrf 를 본문에 넣었는데 파라미터로 안 읽힌다\n\n#   헤더로 보낸다\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -H 'Content-Type: application/json' \\\n    -H \"X-CSRF-TOKEN: $TOKEN\" \\\n    -d '{\"username\":\"user@a.com\",\"password\":\"1234\"}'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error=bad\n\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (8/17)\nDEBUG DaoAuthenticationProvider : Failed to find user ''\n>>> failure BadCredentialsException -> bad\n\n#   빈 사용자 이름이다\n\n#   본문을 아무도 안 읽었다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"select .* from member\"\n1\n\n#   빈 문자열로 조회는 나갔다\n\n#   4.4절의 타이밍 방어까지 돌았다\n\n# --- 폼 인코딩으로 보내면 ---\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -H 'Content-Type: application/x-www-form-urlencoded' \\\n    -H \"X-CSRF-TOKEN: $TOKEN\" \\\n    --data-urlencode 'username=user@a.com' \\\n    --data-urlencode 'password=1234'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\n\n#   된다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt localhost:8080/orders\n200\n\n#   서버를 하나도 안 고쳤다\n\n#   클라이언트가 URLSearchParams 를 쓰면 끝이다\n\n#   그런데 302 다\n\n#   fetch 가 따라가면 로그인 HTML 을 받는다\n\n$ curl -s -b c.txt -L -X POST localhost:8080/login \\\n    -H 'Content-Type: application/x-www-form-urlencoded' \\\n    -H \"X-CSRF-TOKEN: $TOKEN\" \\\n    --data-urlencode 'username=user@a.com' --data-urlencode 'password=1234' \\\n    | head -c 60\n\n<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n\n#   JSON 을 기대했는데 HTML 이다\n\n#   11.3절의 자리다\n\n# --- 컨트롤러 방식 ---\n\n@PostMapping(\"/api/login\")\npublic ResponseEntity<MemberResponse> login(@RequestBody @Valid LoginRequest body,\n        HttpServletRequest request, HttpServletResponse response) {\n    Authentication auth = authenticationManager.authenticate(\n            UsernamePasswordAuthenticationToken.unauthenticated(\n                    body.email(), body.password()));\n    request.changeSessionId();\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);\n    SecurityContextHolder.setContext(context);\n    securityContextRepository.saveContext(context, request, response);\n    publisher.publishEvent(new InteractiveAuthenticationSuccessEvent(\n            auth, this.getClass()));\n    return ResponseEntity.ok(MemberResponse.from(auth));\n}\n\n$ XSRF=$(curl -s -c j.txt localhost:8080/api/csrf \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"token\"])')\n\n$ curl -i -b j.txt -c j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' \\\n    -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\nHTTP/1.1 200\nContent-Type: application/json\nSet-Cookie: JSESSIONID=B4C5D6; Path=/; HttpOnly\n\n{\"email\":\"user@a.com\",\"nickname\":\"관훈\",\n \"authorities\":[\"ROLE_USER\",\"ORDER_READ\"]}\n\n#   200 과 JSON 이다\n\nselect m1_0.id, ... from member m1_0 where m1_0.email = ?\nselect ra1_0.authority from role_authority ra1_0 where ra1_0.role in (?)\nupdate member set failed_count = ?, last_login_at = ?, last_login_ip = ?\n where id = ?\n\n#   10.5절과 같은 쿼리다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j.txt localhost:8080/orders\n200\n\n#   다음 요청에도 남았다\n\n# --- 여섯 단계를 하나씩 빼 본다 ---\n\n//  request.changeSessionId();\n\n$ OLD=$(grep JSESSIONID j2.txt | awk '{print $NF}')\n$ curl -s -o /dev/null -b j2.txt -c j2.txt -X POST localhost:8080/api/login -d '...'\n$ NEW=$(grep JSESSIONID j2.txt | awk '{print $NF}')\n$ [ \"$OLD\" = \"$NEW\" ] && echo 같음 || echo 바뀜\n\n같음\n\n#   세션 고정 보호가 없다 (5.6절)\n\n//  securityContextRepository.saveContext(...)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j3.txt localhost:8080/orders\n302\n\n#   다음 요청에 안 남는다 (5.1절)\n\n//  publisher.publishEvent(...)\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set failed_count\"\n0\n\n#   잠금 카운터가 안 준다 (10.8절)\n\n#   마지막 로그인도 안 남는다\n\n#   셋 다 조용하다\n\n# --- 실패는 ---\n\n$ curl -i -b j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n\nHTTP/1.1 500\n\n{\"timestamp\":\"...\",\"status\":500,\"error\":\"Internal Server Error\"}\n\n#   AuthenticationException 이 그대로 올라왔다\n\n#   6.3절의 형식으로 바꾼다\n\n@ExceptionHandler(AuthenticationException.class)\nProblemDetail authFailed(AuthenticationException e, HttpServletRequest request) {\n    String code = switch (e) {\n        case LockedException x -> \"locked\";\n        case DisabledException x -> \"disabled\";\n        default -> \"bad\";\n    };\n    ProblemDetail body = ProblemDetail.forStatusAndDetail(\n            HttpStatus.UNAUTHORIZED, code);\n    body.setInstance(URI.create(request.getRequestURI()));\n    return body;\n}\n\n$ curl -i -b j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\n \"detail\":\"bad\",\"instance\":\"/api/login\"}\n\n#   10.6절의 코드를 그대로 쓴다\n\n$ for i in 1 2 3 4 5; do\n    curl -s -o /dev/null -b j.txt -X POST localhost:8080/api/login \\\n        -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n        -d '{\"email\":\"user@a.com\",\"password\":\"틀림\"}'\n  done\n\nselect failed_count, locked from member where email = 'user@a.com';\n\nFAILED_COUNT | LOCKED\n-------------+--------\n           5 | t\n\n#   잠금도 돈다\n\n#   이벤트는 매니저가 내니까 (10.6절)\n\n$ curl -s -b j.txt -X POST localhost:8080/api/login \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}' \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"detail\"])'\n\nlocked\n\n#   메시지도 구별된다\n\n# --- CSRF 를 안 보내면 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b j.txt -X POST \\\n    localhost:8080/api/login -H 'Content-Type: application/json' \\\n    -d '{\"email\":\"user@a.com\",\"password\":\"1234\"}'\n\n403\n\n#   막힌다\n\n#   세션 쿠키를 쓰니 CSRF 가 필요하다 (6.4절)\n\n#   끄면 남의 페이지가 로그인시킬 수 있다\n\n#   로그인 CSRF 라는 공격이다\n\n#   공격자 계정으로 로그인시켜 두고 그 사람의 활동을 본다\n\n# --- 다음 절에서 ---\n\n#   여섯 단계를 프레임워크에 맡긴다",
+   "note": "**JSON 본문은 `getParameter` 가 못 읽어 `Failed to find user ''`** 로 끝난다 — 빈 문자열로 조회까지 나간다.\n\n**클라이언트가 폼 인코딩으로 보내면 서버 수정 없이** 되는데 응답이 302 라 HTML 을 받는다.\n\n**컨트롤러 방식은 200 과 JSON** 이고 쿼리는 10.5절과 같다. **여섯 단계를 하나씩 빼면 셋 다 조용히** 깨진다.\n\n**실패는 500 이라 `ProblemDetail` 로 바꿨고 잠금 카운터는 그대로** 돈다.\n\n**CSRF 토큰이 없으면 403** 이다 — 세션 쿠키를 쓰므로 필요하다."
+  }
+ ],
+ "recap": [
+  "**폼 필터는 `getParameter` 라 JSON 을 못** 읽는다.",
+  "**빈 사용자 이름이 돼 조용히** 실패한다.",
+  "**클라이언트가 폼 인코딩을 보내는 게 가장** 싸다.",
+  "**컨트롤러 방식은 여섯 단계를 손으로** 한다.",
+  "**빼먹으면 셋 다 조용히** 깨진다.",
+  "**실패는 500 이라 직접** 매핑한다.",
+  "**잠금 카운터는 매니저가 내는 이벤트라 그대로** 돈다.",
+  "**세션 쿠키를 쓰면 CSRF 가** 필요하다.",
+  "**로그인 CSRF 라는 공격이** 있다."
+ ],
+ "drills": [
+  {
+   "task": "JSON 을 폼 로그인에 보내 본다.",
+   "done_when": "빈 사용자 이름 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "클라이언트만 폼 인코딩으로 바꾼다.",
+   "done_when": "서버 수정 없이 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨트롤러 방식을 만든다.",
+   "done_when": "여섯 단계를 하나씩 빼 봤다.",
+   "minutes": 35
+  },
+  {
+   "task": "실패를 `ProblemDetail` 로 바꾼다.",
+   "done_when": "401 과 코드를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "폼 필터가 JSON 을 왜 못 읽나?",
+   "a": "`getParameter` 는 쿼리와 폼 인코딩 본문만 본다."
+  },
+  {
+   "q": "읽기 실패가 왜 조용한가?",
+   "a": "`null` 이 빈 문자열이 되고 없는 사용자로 처리된다."
+  },
+  {
+   "q": "가장 싼 해결은?",
+   "a": "클라이언트가 폼 인코딩으로 보내는 것이다."
+  },
+  {
+   "q": "컨트롤러 방식에서 빠뜨리기 쉬운 셋은?",
+   "a": "세션 ID 변경, 컨텍스트 저장, 이벤트 발행이다."
+  },
+  {
+   "q": "JSON 로그인에 CSRF 가 필요한가?",
+   "a": "세션 쿠키로 인증한다면 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "로그인 CSRF",
+   "def": "피해자를 공격자 계정으로 로그인시켜 그 계정에 쌓이는 활동을 들여다보는 공격."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Cross Site Request Forgery (CSRF)",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "MDN — Using the Fetch API",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+   "publisher": "MDN"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

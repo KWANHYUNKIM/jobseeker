@@ -372,7 +372,7 @@
           "title": "컨테이너끼리 부르기",
           "summary": "IP 를 적어 두면 다음 배포에서 깨진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -380,7 +380,7 @@
           "title": "기본 bridge 네트워크",
           "summary": "아무것도 안 정했을 때 벌어지는 일.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -388,7 +388,7 @@
           "title": "사용자 정의 네트워크와 DNS",
           "summary": "컨테이너 이름이 호스트 이름이 된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",

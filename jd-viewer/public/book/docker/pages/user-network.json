@@ -1,0 +1,148 @@
+{
+ "book": "docker",
+ "id": "user-network",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "사용자 정의 네트워크와 DNS",
+ "summary": "컨테이너 이름이 호스트 이름이 된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "사용자 정의 네트워크를 만들고 쓴다.",
+  "내장 DNS 의 동작을 안다.",
+  "별칭과 다중 네트워크를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절의 정답을 여기서** 만든다.\n\n```bash\ndocker network create shop\ndocker run -d --network shop --name db -e POSTGRES_PASSWORD=x postgres:16\ndocker run -d --network shop --name api myapp:1.4.2\n```\n\n**이제 `api` 안에서 `db` 라는 이름이** 통한다."
+  },
+  {
+   "type": "figure",
+   "caption": "내장 DNS 가 이름을 푼다",
+   "ascii": "   inside a container on a user-defined network\n\n   /etc/resolv.conf\n     nameserver 127.0.0.11        <- docker embedded DNS\n\n   getent hosts db\n     |\n   127.0.0.11 (embedded DNS)\n     |\n     +-- knows: container names, --network-alias, service names\n     |\n     +-- not found? -> forwards to the host's real DNS\n     |\n   172.18.0.3  db\n\n   컨테이너를 다시 만들어 IP 가 바뀌어도 이름은 그대로다",
+   "note": "**`127.0.0.11` 은 각 컨테이너의 네트워크 네임스페이스 안에만 있는 주소**다."
+  },
+  {
+   "type": "table",
+   "caption": "네트워크 명령",
+   "columns": [
+    "명령",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`docker network create shop`",
+     "만든다"
+    ],
+    [
+     "`docker run --network shop`",
+     "만들면서 붙인다"
+    ],
+    [
+     "`docker network connect shop api`",
+     "**도는 컨테이너를 붙인다**"
+    ],
+    [
+     "`docker network disconnect shop api`",
+     "뗀다"
+    ],
+    [
+     "`docker network inspect shop`",
+     "누가 붙어 있나"
+    ],
+    [
+     "`docker network rm shop`",
+     "지운다(붙은 게 없어야)"
+    ],
+    [
+     "`docker network prune`",
+     "안 쓰는 네트워크 정리"
+    ]
+   ],
+   "note": "**서브넷을 정하고 싶으면** `--subnet 172.30.0.0/16`. **사내망과 충돌할 때 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "별칭과 다중 네트워크",
+   "md": "**한 컨테이너가 여러 이름을 가질 수** 있다.\n\n```bash\ndocker run -d --network shop --name postgres-16 \\\n  --network-alias db --network-alias database postgres:16\n```\n\n> **`db`, `database`, `postgres-16` 셋 다** 통한다.\n> **DB 를 교체할 때 애플리케이션 설정을 안 고치고 별칭만 옮길 수** 있다.\n\n**한 컨테이너가 여러 네트워크에 붙을 수도** 있다.\n\n```\nfrontend  --  [ web-net ]  --  api  --  [ db-net ]  --  db\n```\n\n> **`api` 만 두 네트워크에** 있다. **`frontend` 는 `db` 에 못 닿는다.**\n> **이게 사용자 정의 네트워크로 만드는 가장 실용적인 구조**다 — **DB 를 웹 계층에서 격리**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "DNS 캐시와 라운드로빈",
+   "md": "**같은 별칭을 여러 컨테이너가 가지면 DNS 가 여러 IP 를 돌려** 준다.\n\n```bash\ndocker run -d --network shop --network-alias api myapp\ndocker run -d --network shop --network-alias api myapp   # 두 개\n```\n\n```\ngetent hosts api\n172.18.0.4  api\n172.18.0.5  api\n```\n\n**간단한 로드밸런싱**처럼 보인다. **그런데 함정이** 있다.\n\n| 함정 | 왜 |\n|---|---|\n| **JVM 의 DNS 캐시** | 자바는 성공한 조회를 캐시한다. 한 IP 에 붙어 있으면 새 컨테이너로 안 간다 |\n| 연결 유지 | HTTP keep-alive 로 붙어 있으면 DNS 를 다시 안 본다 |\n| 죽은 컨테이너 | DNS 에서 빠지는 데 시간이 걸린다 |\n\n```\n-Dnetworkaddress.cache.ttl=30\n```\n\n> **진짜 로드밸런싱이 필요하면 이걸로 때우지** 않는다. **「쿠버네티스 입문」 6장의 서비스가 그 답**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이름으로 붙고, 계층을 나눈다",
+   "sql": "# --- 네트워크를 만들고 붙인다 ---\n\n$ docker network create shop\n7f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c\n\n$ docker network inspect shop -f '{{.IPAM.Config}}'\n[{172.18.0.0/16  172.18.0.1 map[]}]\n\n$ docker run -d --network shop --name db -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ docker run -d --network shop --name api alpine sleep 3600 >/dev/null\n\n\n# --- 이름이 풀린다 ---\n\n$ docker exec api getent hosts db\n172.18.0.2  db\n\n$ docker exec api cat /etc/resolv.conf\nnameserver 127.0.0.11\noptions ndots:0\n\n#   7.2절에서는 호스트의 DNS 였다. 여기서는 도커 내장 DNS 다\n\n$ docker exec api sh -c 'nc -z -w2 db 5432 && echo connected'\nconnected\n\n\n# --- IP 가 바뀌어도 이름은 그대로 ---\n\n$ docker rm -f db >/dev/null\n$ docker run -d --network shop --name db -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ docker exec api getent hosts db\n172.18.0.4  db\n\n#   IP 는 .2 -> .4 로 바뀌었는데 이름은 그대로 통한다\n#   설정 파일을 안 고쳐도 된다. 이것이 목적이었다\n\n\n# --- 별칭 ---\n\n$ docker rm -f db >/dev/null\n$ docker run -d --network shop --name postgres-16 \\\n    --network-alias db --network-alias database \\\n    -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n\n$ for n in db database postgres-16; do\n>   printf '%-12s %s\\n' \"$n\" \"$(docker exec api getent hosts $n)\"\n> done\ndb           172.18.0.5  db\ndatabase     172.18.0.5  database\npostgres-16  172.18.0.5  postgres-16\n\n\n# --- 네트워크로 계층을 나눈다 ---\n\n$ docker network create web-net >/dev/null\n$ docker network create db-net >/dev/null\n\n$ docker run -d --network db-net --name pg -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ docker run -d --network web-net --name backend alpine sleep 3600 >/dev/null\n$ docker network connect db-net backend\n$ docker run -d --network web-net --name frontend alpine sleep 3600 >/dev/null\n\n$ docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} {{end}}' backend frontend pg\ndb-net web-net \nweb-net \ndb-net \n\n$ docker exec backend sh -c 'getent hosts pg >/dev/null && echo \"backend -> pg OK\"'\nbackend -> pg OK\n\n$ docker exec frontend sh -c 'getent hosts pg >/dev/null && echo OK || echo \"frontend -> pg BLOCKED\"'\nfrontend -> pg BLOCKED\n\n$ docker exec frontend sh -c 'getent hosts backend >/dev/null && echo \"frontend -> backend OK\"'\nfrontend -> backend OK\n\n#   프런트는 백엔드에 닿고 DB 에는 못 닿는다\n#   네트워크를 나누는 것만으로 계층 격리가 된다\n\n\n# --- 같은 별칭 여럿이면 여러 IP 가 온다 ---\n\n$ docker run -d --network shop --network-alias worker alpine sleep 3600 >/dev/null\n$ docker run -d --network shop --network-alias worker alpine sleep 3600 >/dev/null\n$ docker exec api getent hosts worker\n172.18.0.6  worker\n172.18.0.7  worker\n\n#   순서를 바꿔 가며 돌려준다. 다만 클라이언트가 캐시하면 소용없다\n\n\n# --- 정리 ---\n\n$ docker rm -f api postgres-16 pg backend frontend $(docker ps -q --filter network=shop) >/dev/null 2>&1\n$ docker network rm shop web-net db-net >/dev/null"
+  }
+ ],
+ "recap": [
+  "사용자 정의 네트워크에 붙이면 컨테이너 이름이 DNS 로 풀린다. IP 가 바뀌어도 이름은 그대로다.",
+  "각 컨테이너의 resolv.conf 는 127.0.0.11(도커 내장 DNS)을 가리킨다.",
+  "--network-alias 로 여러 이름을 줄 수 있다. DB 교체 시 설정을 안 고쳐도 된다.",
+  "한 컨테이너를 여러 네트워크에 붙여 계층을 나눈다 — 프런트는 DB 에 못 닿게.",
+  "같은 별칭 여럿은 라운드로빈처럼 보이지만 클라이언트 DNS 캐시 때문에 로드밸런서가 아니다."
+ ],
+ "drills": [
+  {
+   "task": "네트워크를 만들고 두 컨테이너를 붙여 이름으로 통신한다.",
+   "done_when": "getent hosts 로 이름이 풀리는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "DB 컨테이너를 지우고 다시 만든 뒤에도 같은 이름으로 붙는지 확인한다.",
+   "done_when": "IP 는 바뀌었는데 이름은 그대로인 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "web-net 과 db-net 을 만들어 프런트가 DB 에 못 닿는 구조를 만든다.",
+   "done_when": "backend 는 되고 frontend 는 안 되는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "사용자 정의 네트워크에서 이름이 풀리는 원리는.",
+   "a": "컨테이너의 resolv.conf 가 도커 내장 DNS(127.0.0.11)를 가리키고, 그것이 컨테이너 이름과 별칭을 안다."
+  },
+  {
+   "q": "프런트엔드가 DB 에 못 닿게 하려면.",
+   "a": "네트워크를 둘로 나누고 API 만 양쪽에 붙인다."
+  },
+  {
+   "q": "같은 별칭을 여러 컨테이너에 주면 로드밸런싱이 되나.",
+   "a": "DNS 가 여러 IP 를 주지만 클라이언트 캐시와 연결 유지 때문에 실질적인 로드밸런싱은 아니다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "사용자 정의 네트워크",
+   "what": "docker network create 로 만든 bridge 네트워크. 내장 DNS 가 붙는다."
+  },
+  {
+   "term": "network-alias",
+   "what": "그 네트워크 안에서 컨테이너를 부를 추가 이름."
+  },
+  {
+   "term": "127.0.0.11",
+   "what": "컨테이너 안에서만 보이는 도커 내장 DNS 주소."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Bridge network driver",
+   "url": "https://docs.docker.com/engine/network/drivers/bridge/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Container networking: DNS services",
+   "url": "https://docs.docker.com/engine/network/#dns-services",
+   "publisher": "Docker"
+  }
+ ]
+}
