@@ -183,7 +183,7 @@
           "title": "파드 YAML 읽기",
           "summary": "필드 하나씩 무엇을 정하는가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -191,7 +191,7 @@
           "title": "한 파드에 컨테이너 둘",
           "summary": "사이드카가 성립하는 조건.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",

@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "pod-yaml",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "파드 YAML 읽기",
+ "summary": "필드 하나씩 무엇을 정하는가.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "자주 쓰는 필드를 안다.",
+  "command 와 args 를 가른다.",
+  "securityContext 를 켠다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 다섯 필드를** 봤다. **`spec.containers` 안을** 연다."
+  },
+  {
+   "type": "figure",
+   "caption": "실제로 쓰는 필드",
+   "ascii": "   the fields you will actually write\n\n   spec.containers[]\n     name, image, imagePullPolicy\n     command, args          entrypoint and cmd, renamed\n     env, envFrom           7 covers the rest\n     ports                  documentation only (4.1)\n     resources              9 covers this\n     volumeMounts           8 covers this\n     securityContext        who the process runs as\n\n   spec.restartPolicy, spec.nodeSelector, spec.serviceAccountName",
+   "note": "**나머지는 7·8·9장에서** 다룬다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "최소 YAML",
+   "md": "```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: app\nspec:\n  containers:\n    - name: app\n      image: myapp:1.0\n```\n\n> **`name` 과 `image` 만 있으면** 된다.\n> **나머지는 기본값이 채워진다** — **`kubectl get pod app -o yaml` 로** 보면 안다.\n\n**기본값이 붙는 것들**\n\n| 필드 | 기본값 |\n|---|---|\n| `imagePullPolicy` | 태그가 `latest` 면 `Always`, 아니면 `IfNotPresent` |\n| `restartPolicy` | `Always` |\n| `terminationGracePeriodSeconds` | 30 |\n| `dnsPolicy` | `ClusterFirst` |\n| `serviceAccountName` | `default` |\n\n> **첫째가 3.2절에서 겪은** 것이다.\n> **셋째는 10장에서 종료를 다룰 때** 쓴다.\n\n**`env` 세 가지 형태**\n\n```yaml\nenv:\n  - name: MODE\n    value: \"prod\"\n  - name: POD_IP\n    valueFrom:\n      fieldRef: { fieldPath: status.podIP }\n  - name: DB_PASSWORD\n    valueFrom:\n      secretKeyRef: { name: db, key: password }\n```\n\n> **둘째를 다운워드 API 라고** 한다.\n> **자기 이름·네임스페이스·노드·IP 를 환경 변수로 받을 수** 있다.\n> **로그에 파드 이름을 넣을 때** 쓴다.\n>\n> **셋째는 7장**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "command 와 args",
+   "ascii": "   command and args, versus the image\n\n   image has        ENTRYPOINT [java -jar]  CMD [app.jar]\n\n   neither set      java -jar app.jar\n   args only        java -jar other.jar\n   command only     the new command, and CMD is dropped\n   both set         exactly what you wrote\n\n   command replaces ENTRYPOINT, args replaces CMD",
+   "note": "**`command` 가 ENTRYPOINT, `args` 가 CMD** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "셸이 필요할 때",
+   "md": "**`command` 는 셸을 안** 거친다.\n\n```yaml\ncommand: [\"echo $HOME\"]        # 안 된다. 그런 파일이 없다\ncommand: [\"echo\", \"$HOME\"]     # $HOME 이 그대로 찍힌다\ncommand: [\"sh\", \"-c\", \"echo $HOME\"]   # 이게 맞다\n```\n\n> **`exec` 형식이라 그렇다.**\n> **「도커」에서 `ENTRYPOINT` 배열 형식과 같은** 얘기다.\n\n**쿠버네티스 변수는 `$(VAR)`** 다.\n\n```yaml\nenv:\n  - name: PORT\n    value: \"8080\"\n  - name: URL\n    value: \"http://localhost:$(PORT)\"\n```\n\n> **`$(...)` 는 쿠버네티스가 치환**하고 **`${...}` 나 `$VAR` 는 셸**이다.\n> **섞이면 헷갈린다.**\n\n**`securityContext` 를 켠다.**\n\n```yaml\nspec:\n  securityContext:\n    runAsNonRoot: true\n    runAsUser: 10001\n    fsGroup: 10001\n  containers:\n    - name: app\n      securityContext:\n        allowPrivilegeEscalation: false\n        readOnlyRootFilesystem: true\n        capabilities: { drop: [\"ALL\"] }\n```\n\n> **파드 수준과 컨테이너 수준이** 있다.\n> **컨테이너 쪽이** 이긴다.\n>\n> **`readOnlyRootFilesystem` 이 실제로 뭘 깨는지 아래에서** 본다.\n> **⑩ 의 습관과 같다** — **끄기 전에 이유를 대고, 켤 때는 무엇이 깨지는지** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 최소 YAML 과 채워진 기본값 ---\n\n$ cat min.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: app\nspec:\n  containers:\n    - name: app\n      image: nginx:1.27\n\n$ kubectl apply -f min.yaml > /dev/null\n$ kubectl get pod app -o yaml | grep -E \\\n'imagePullPolicy|restartPolicy|terminationGrace|dnsPolicy|serviceAccount'\n\n      imagePullPolicy: IfNotPresent\n  dnsPolicy: ClusterFirst\n  restartPolicy: Always\n  serviceAccount: default\n  serviceAccountName: default\n  terminationGracePeriodSeconds: 30\n\n#   여섯 줄이 저절로 붙었다\n\n#   내가 적은 건 세 줄이다\n\n$ kubectl get pod app -o yaml | wc -l\n\n104\n\n#   104 줄이 됐다\n\n# --- latest 면 정책이 바뀐다 ---\n\n$ kubectl run latest --image=nginx --dry-run=client -o yaml \\\n    | grep imagePullPolicy\n\n#   (없다. dry-run 은 기본값을 안 채운다)\n\n$ kubectl run latest --image=nginx > /dev/null\n$ kubectl get pod latest -o jsonpath=\\\n'{.spec.containers[0].imagePullPolicy}{\"\\n\"}'\n\nAlways\n\n$ kubectl get pod app -o jsonpath=\\\n'{.spec.containers[0].imagePullPolicy}{\"\\n\"}'\n\nIfNotPresent\n\n#   태그 하나로 갈린다\n\n#   3.2절에서 이것 때문에 막혔다\n\n# --- command 와 args ---\n\n$ cat args.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: args-demo\nspec:\n  restartPolicy: Never\n  containers:\n    - name: a\n      image: busybox:1.36\n      args: [\"echo\", \"args 만 줬다\"]\n\n$ kubectl apply -f args.yaml > /dev/null && sleep 3\n$ kubectl logs args-demo\n\nargs 만 줬다\n\n#   busybox 의 ENTRYPOINT 는 없고 CMD 가 sh 다\n\n#   args 가 CMD 를 대체했다\n\n$ kubectl delete pod args-demo > /dev/null\n\n# --- 셸이 필요한 경우 ---\n\n$ kubectl run shellless --image=busybox:1.36 --restart=Never \\\n    --command -- echo '$HOME'\n\n$ sleep 3 && kubectl logs shellless\n\n$HOME\n\n#   그대로 찍혔다\n\n#   셸을 안 거쳤다\n\n$ kubectl run withshell --image=busybox:1.36 --restart=Never \\\n    --command -- sh -c 'echo $HOME'\n\n$ sleep 3 && kubectl logs withshell\n\n/root\n\n#   이번엔 풀렸다\n\n$ kubectl delete pod shellless withshell > /dev/null\n\n# --- 쿠버네티스 변수 치환 ---\n\n$ cat vars.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: vars\nspec:\n  restartPolicy: Never\n  containers:\n    - name: a\n      image: busybox:1.36\n      env:\n        - name: PORT\n          value: \"8080\"\n        - name: URL\n          value: \"http://localhost:$(PORT)\"\n        - name: NOT_REPLACED\n          value: \"http://localhost:${PORT}\"\n      command: [\"sh\", \"-c\", \"env | grep -E '^(URL|NOT_REPLACED)='\"]\n\n$ kubectl apply -f vars.yaml > /dev/null && sleep 3\n$ kubectl logs vars\n\nURL=http://localhost:8080\nNOT_REPLACED=http://localhost:${PORT}\n\n#   $(PORT) 는 쿠버네티스가 치환했다\n\n#   ${PORT} 는 그대로다\n\n#   셸이 아니라 값 정의 자리라서 안 풀린다\n\n$ kubectl delete pod vars > /dev/null\n\n# --- 다운워드 API ---\n\n$ cat downward.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: downward\nspec:\n  restartPolicy: Never\n  containers:\n    - name: a\n      image: busybox:1.36\n      env:\n        - name: POD_NAME\n          valueFrom:\n            fieldRef: { fieldPath: metadata.name }\n        - name: POD_IP\n          valueFrom:\n            fieldRef: { fieldPath: status.podIP }\n        - name: NODE_NAME\n          valueFrom:\n            fieldRef: { fieldPath: spec.nodeName }\n      command: [\"sh\", \"-c\", \"env | grep -E '^(POD|NODE)_'\"]\n\n$ kubectl apply -f downward.yaml > /dev/null && sleep 4\n$ kubectl logs downward\n\nPOD_NAME=downward\nPOD_IP=10.244.2.12\nNODE_NAME=lab-worker2\n\n#   자기 정보를 환경 변수로 받는다\n\n#   로그에 파드 이름을 넣을 때 쓴다\n\n$ kubectl delete pod downward > /dev/null\n\n# --- securityContext ---\n\n$ kubectl exec app -- id\n\nuid=0(root) gid=0(root) groups=0(root)\n\n#   root 다\n\n$ cat secure.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: secure\nspec:\n  securityContext:\n    runAsNonRoot: true\n    runAsUser: 10001\n  containers:\n    - name: app\n      image: nginx:1.27\n      securityContext:\n        allowPrivilegeEscalation: false\n        readOnlyRootFilesystem: true\n        capabilities: { drop: [\"ALL\"] }\n\n$ kubectl apply -f secure.yaml > /dev/null && sleep 8\n$ kubectl get pod secure --no-headers\n\nsecure   0/1   CrashLoopBackOff   2   18s\n\n#   깨졌다\n\n$ kubectl logs secure --previous | tail -3\n\n/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt\n  to perform configuration\n2026/09/09 12:38:41 [emerg] 1#1: mkdir() \"/var/cache/nginx/client_temp\"\n  failed (30: Read-only file system)\n\n#   nginx 가 쓸 곳이 필요하다\n\n#   readOnlyRootFilesystem 이 막았다\n\n#   쓰기가 필요한 곳만 볼륨으로 열어 준다\n\n$ cat secure2.yaml\n\n  containers:\n    - name: app\n      image: nginx:1.27\n      securityContext:\n        allowPrivilegeEscalation: false\n        readOnlyRootFilesystem: true\n        capabilities: { drop: [\"ALL\"] }\n      volumeMounts:\n        - { name: cache, mountPath: /var/cache/nginx }\n        - { name: run, mountPath: /var/run }\n  volumes:\n    - { name: cache, emptyDir: {} }\n    - { name: run, emptyDir: {} }\n\n$ kubectl delete pod secure > /dev/null\n$ kubectl apply -f secure2.yaml > /dev/null && sleep 8\n$ kubectl get pod secure --no-headers\n\nsecure   1/1   Running   0   9s\n\n#   떴다\n\n$ kubectl exec secure -- id\n\nuid=10001 gid=0(root) groups=0(root)\n\n#   root 가 아니다\n\n$ kubectl exec secure -- touch /tmp2 2>&1\n\ntouch: cannot touch '/tmp2': Read-only file system\n\n#   루트가 읽기 전용이다\n\n$ kubectl exec secure -- ls /var/cache/nginx\n\nclient_temp\nfastcgi_temp\n\n#   열어 준 곳만 쓴다\n\n#   8장의 emptyDir 이다\n\n# --- runAsNonRoot 검사 ---\n\n$ kubectl run rootpod --image=nginx:1.27 --restart=Never \\\n    --overrides='{\"spec\":{\"securityContext\":{\"runAsNonRoot\":true}}}'\n\npod/rootpod created\n\n$ sleep 5 && kubectl get pod rootpod --no-headers\n\nrootpod   0/1   CreateContainerConfigError   0   5s\n\n$ kubectl describe pod rootpod | grep -A2 Warning | tail -2\n\n  Warning  Failed  3s  kubelet  Error: container has runAsNonRoot and image\n    will run as root (pod: \"rootpod_default(...)\", container: rootpod)\n\n#   이미지가 root 로 도니 거부한다\n\n#   runAsUser 를 같이 줘야 한다\n\n#   또는 이미지를 non-root 로 만든다 (「도커」 5장)\n\n$ kubectl delete pod rootpod app latest secure > /dev/null\n\npod \"rootpod\" deleted\npod \"app\" deleted\npod \"latest\" deleted\npod \"secure\" deleted\n\n# --- 다음 절에서 ---\n\n#   컨테이너를 둘 두는 게 맞는 경우를 따진다",
+   "note": "**세 줄짜리 YAML 이 104줄이** 된다 — 기본값 여섯이 저절로 붙는다.\n\n**태그가 `latest` 면 `imagePullPolicy` 가 `Always`, 아니면 `IfNotPresent`** 다.\n\n**`command` 는 셸을 안 거쳐 `$HOME` 이 그대로** 찍히고, `$(PORT)` 는 쿠버네티스가 치환하지만 `${PORT}` 는 안 한다.\n\n**`readOnlyRootFilesystem` 을 켜니 nginx 가 `/var/cache/nginx` 를 못 만들어** 죽고, `emptyDir` 두 개로 살아났다.\n\n**`runAsNonRoot` 만 주면 `CreateContainerConfigError`** 다."
+  }
+ ],
+ "recap": [
+  "**`name` 과 `image` 만 있으면** 된다.",
+  "**기본값 여섯이 저절로** 붙는다.",
+  "**태그가 `latest` 면 풀 정책이** 달라진다.",
+  "**`command` 가 ENTRYPOINT, `args` 가 CMD** 다.",
+  "**`command` 는 셸을 안** 거친다.",
+  "**`$(VAR)` 는 쿠버네티스, `${VAR}` 는 셸**이다.",
+  "**다운워드 API 로 자기 정보를** 받는다.",
+  "**`readOnlyRootFilesystem` 은 쓸 곳을 열어** 줘야 한다.",
+  "**`runAsNonRoot` 만으로는 안** 뜬다."
+ ],
+ "drills": [
+  {
+   "task": "최소 YAML 을 적용하고 뽑아 본다.",
+   "done_when": "몇 줄이 되는지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "`command` 로 `$HOME` 을 찍어 본다.",
+   "done_when": "셸 유무 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "다운워드 API 로 파드 이름을 받는다.",
+   "done_when": "환경 변수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`readOnlyRootFilesystem` 을 켠다.",
+   "done_when": "무엇이 깨지는지 찾아 열어 줬다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`command` 와 `args` 는 무엇에 대응하나?",
+   "a": "`ENTRYPOINT` 와 `CMD` 다."
+  },
+  {
+   "q": "`command` 에서 환경 변수가 안 풀리는 이유는?",
+   "a": "셸을 거치지 않는 exec 형식이라서다."
+  },
+  {
+   "q": "`$(VAR)` 와 `${VAR}` 의 차이는?",
+   "a": "앞은 쿠버네티스가, 뒤는 셸이 치환한다."
+  },
+  {
+   "q": "다운워드 API 는 무엇인가?",
+   "a": "파드 자신의 메타데이터를 환경 변수나 파일로 받는 방법이다."
+  },
+  {
+   "q": "`runAsNonRoot` 만 주면?",
+   "a": "이미지가 root 로 돌면 컨테이너 생성이 거부된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "다운워드 API",
+   "def": "파드가 자기 이름·IP·노드 같은 정보를 환경 변수나 파일로 받는 방법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes API — Pod v1",
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Configure a Security Context",
+   "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Pods",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
