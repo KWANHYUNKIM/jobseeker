@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "all-logical",
+ "no": "12.2",
+ "chapter": 12,
+ "title": "모든 논리 트랜잭션",
+ "summary": "하나로 묶었을 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서비스에 트랜잭션을 걸어 본다.",
+  "물리 하나로 줄어드는 것을 확인한다.",
+  "요구사항이 깨지는 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.1절 마지막에서 \"묶어야 한다\" 고 했다.** **묶는다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션 하나 추가",
+   "code": "@Service\n@RequiredArgsConstructor\npublic class MemberService {\n\n    private final MemberRepository memberRepository;\n    private final LogRepository logRepository;\n\n    @Transactional                       // 추가\n    public void joinV1(String username) {\n        Member member = new Member(username);\n        Log logMessage = new Log(username);\n\n        memberRepository.save(member);\n        logRepository.save(logMessage);\n    }\n}",
+   "note": "**한 줄**이다. **리포지토리는 안 건드렸다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "셋이 하나가 된다",
+   "ascii": "   MemberService.joinV1     @Transactional   new\n     MemberRepository.save  @Transactional   join\n     LogRepository.save     @Transactional   join\n\n   physical 1, logical 3\n\n   member and log now live or die together\n   which is what we asked for, and what we will regret",
+   "note": "**마지막 줄이 이 장의 문제**다."
+  },
+  {
+   "type": "figure",
+   "caption": "개수로 확인",
+   "ascii": "   12.1  no service tx     physical 2   logical 2\n   12.2  service tx        physical 1   logical 3\n\n   the only change is one annotation\n   the log count tells you which one you are in",
+   "note": "**로그를 세면 어느 상태인지 안다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "성공할 때는 좋다",
+   "md": "**정상 흐름에서는 이것이 맞다.**\n\n| 12.1 (묶기 전) | 12.2 (묶은 뒤) |\n|---|---|\n| 회원 저장 커밋 | — |\n| 로그 저장 커밋 | — |\n| — | **한 번에 커밋** |\n\n**회원 저장이 실패하면 로그도 안 남는다.** **당연하다.**\n\n**12.1 에서는 그것이 안 됐다.**\n\n```java\n// 12.1 (서비스 트랜잭션 없음)\nmemberRepository.save(member);   // 커밋됨\nlogRepository.save(logMessage);  // 여기서 실패해도\n// member 는 이미 남아 있다\n```\n\n**작업이 셋 넷으로 늘면** 더 분명해진다.\n\n```java\n@Transactional\npublic void 주문() {\n    재고차감();\n    결제저장();\n    배송등록();\n    포인트적립();\n}\n```\n\n**넷 중 하나가 실패하면 전부 되돌아간다.** **1편 3장이 요구한 그것**이다.\n\n> **11.8절의 \"운명을 공유한다\" 가 여기서는 장점**이다.\n\n**그런데 12.1절의 요구사항이 깨진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "로그가 실패하면 회원도 죽는다",
+   "md": "```java\nmemberService.joinV1(\"로그예외\");\n```\n\n**회원도 저장이 안 된다.**\n\n**12.1절에서는 회원이 남았다.** **묶었더니 같이 죽는다.**\n\n| | 회원 | 로그 |\n|---|---|---|\n| **12.1** (안 묶음) | **남는다** | 사라진다 |\n| **12.2** (묶음) | **사라진다** | 사라진다 |\n\n**요구사항은 첫 줄**이었다.\n\n> **\"로그가 실패해도 회원 가입은 되어야 한다\"**\n\n**묶으면 그것이 안 된다.**\n\n**그래서 \"예외를 잡으면 되지 않나\" 로 간다.** **12.4절이 그 시도**다.\n\n> **11.7절을 읽었으면 결과를 안다.** **안 된다.** **그래도 직접 해 보는 것이 12장의 방법**이다 — **2.1절에서 \"직접 본 것으로 고른다\" 고 한 것**과 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 리포지토리에도 애너테이션이 있나",
+   "md": "**실무에서는 리포지토리에 안 붙인다.**\n\n```java\n// 보통은 이렇다\n@Repository\npublic class MemberRepository {\n    public void save(Member member) { }   // 애너테이션 없음\n}\n```\n\n**서비스에만 붙이고 리포지토리는 그 안에서** 돈다(10.3절 마지막).\n\n**12장에서 붙인 이유는 실험** 때문이다.\n\n| 붙이면 볼 수 있는 것 |\n|---|\n| **`Participating in existing transaction`** 로그 |\n| 논리 트랜잭션 개수 |\n| **`REQUIRES_NEW` 를 붙일 자리** |\n\n**마지막이 중요**하다. **12.5절에서 `LogRepository.save` 에 `REQUIRES_NEW` 를 붙인다.** **애너테이션이 없으면 붙일 데가 없다.**\n\n> **7.1절에서 본 `SimpleJpaRepository`** 에는 `@Transactional` 이 붙어 있다. **스프링 데이터 JPA 를 쓰면 리포지토리에 이미 트랜잭션이** 있는 셈이다.\n>\n> **그래서 실무에서도 이 구조가 흔하다** — 서비스와 리포지토리 양쪽에 트랜잭션이 있고, **리포지토리 것이 참여**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 성공 ---\n\nmemberService.joinV1(\"outerTxOn_success\");\n\n#   Getting transaction for [MemberService.joinV1]\n#   Creating new transaction with name [MemberService.joinV1]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JPA transaction\n\n#   Getting transaction for [MemberRepository.save]\n#   Participating in existing transaction\n#   member 저장\n#   Completing transaction for [MemberRepository.save]\n\n#   Getting transaction for [LogRepository.save]\n#   Participating in existing transaction\n#   log 저장\n#   Completing transaction for [LogRepository.save]\n\n#   Completing transaction for [MemberService.joinV1]\n#   Initiating transaction commit\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Hibernate: insert into log (message,id) values (?,?)\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Releasing JDBC Connection [conn0] after transaction\n\n#   Getting          3\n#   Completing       3\n#   Creating new     1\n#   Participating    2\n#   Acquired         1\n#   Releasing        1\n\n#   물리 1, 논리 3\n\nselect count(*) from member;   # -> 1\nselect count(*) from log;      # -> 1\n\n# --- insert 두 개가 맨 끝에 몰려 있다 ---\n\n#   member 저장 로그와 insert 사이에\n#   log 저장 로그가 있다\n\n#   JPA 의 쓰기 지연이다 (6.6절)\n#   커밋 시점에 한꺼번에 나갔다\n\n# --- 로그 실패 ---\n\nmemberService.joinV1(\"로그예외\");\n\n#   Creating new transaction with name [MemberService.joinV1]\n#   Acquired Connection [conn0] for JPA transaction\n\n#   Participating in existing transaction\n#   member 저장\n#   Completing transaction for [MemberRepository.save]\n\n#   Participating in existing transaction\n#   log 저장\n#   log 저장시 예외 발생\n#   Completing transaction for [LogRepository.save] after exception:\n#     java.lang.RuntimeException: 예외 발생\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n\n#   Completing transaction for [MemberService.joinV1] after exception:\n#     java.lang.RuntimeException: 예외 발생\n#   Initiating transaction rollback\n#   Rolling back JPA transaction on EntityManager [SessionImpl@1]\n\n#   (insert 가 하나도 안 나갔다)\n\nselect count(*) from member;   # -> 0\nselect count(*) from log;      # -> 0\n\n#   회원도 사라졌다\n\n# --- 12.1 과 비교 ---\n\n#   12.1  member 1, log 0\n#   12.2  member 0, log 0\n\n#   묶었더니 요구사항이 깨졌다\n\n# --- 예외는 어디까지 갔나 ---\n\n#   RuntimeException 이 테스트까지 올라왔다\n#   UnexpectedRollbackException 은 안 났다\n\n#   바깥도 같은 예외를 받아 롤백을 원했기 때문이다 (11.6절)",
+   "note": "**성공 로그에서 `insert` 두 개가 맨 끝에 몰려** 있다. **6.6절의 쓰기 지연**이 11.5절의 \"커밋 시점이 미뤄진다\" 와 겹친 결과다.\n\n**실패 로그에서 `insert` 가 하나도 안 나갔다.** **쓰기 지연 덕분에 SQL 조차 안 나갔다.**\n\n**`marking existing transaction as rollback-only`** 가 여기서도 나온다. **다만 예외가 바깥까지 올라가 바깥도 롤백을 원했으니** `UnexpectedRollbackException` 은 안 난다 — **11.6절의 그 구도**다.\n\n**맨 아래 비교가 이 절의 결론**이다. **묶었더니 요구사항이 깨졌다.**\n\n**다음 절에서 경계를 어디에 둘지 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**서비스에 `@Transactional` 한 줄**로 셋이 하나가 된다.",
+  "**물리 1, 논리 3.**",
+  "**정상 흐름에서는 이것이 맞다** — 작업이 늘수록 분명해진다.",
+  "**로그가 실패하면 회원도 사라진다.**",
+  "**12.1절에서는 회원이 남았다** — 묶었더니 깨졌다.",
+  "**쓰기 지연 덕에 `insert` 가 아예 안 나간다.**",
+  "**예외가 바깥까지 올라가면 `UnexpectedRollbackException` 은 안 난다.**",
+  "**리포지토리의 애너테이션은 실험용**이자 `REQUIRES_NEW` 를 붙일 자리다.",
+  "**`SimpleJpaRepository` 에도 `@Transactional` 이** 있다."
+ ],
+ "drills": [
+  {
+   "task": "서비스에 `@Transactional` 을 붙이고 로그를 센다.",
+   "done_when": "물리 1, 논리 3 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "성공 시 `insert` 위치를 본다.",
+   "done_when": "맨 끝에 몰린 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`\"로그예외\"` 로 실행한다.",
+   "done_when": "회원도 사라지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "12.1 과 결과를 표로 비교한다.",
+   "done_when": "요구사항이 깨진 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서비스에 트랜잭션을 걸면 개수가 어떻게 되나?",
+   "a": "물리 1, 논리 3 이다."
+  },
+  {
+   "q": "묶으면 무엇이 좋아지나?",
+   "a": "작업 중 하나가 실패하면 전부 되돌아간다."
+  },
+  {
+   "q": "무엇이 깨지나?",
+   "a": "로그가 실패하면 회원 가입도 취소된다."
+  },
+  {
+   "q": "실패 시 `insert` 가 왜 안 나가나?",
+   "a": "JPA 쓰기 지연이라 커밋 시점에 나가는데 커밋 전에 롤백됐다."
+  },
+  {
+   "q": "왜 `UnexpectedRollbackException` 이 안 나나?",
+   "a": "예외가 바깥까지 올라가 바깥도 롤백을 원했기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

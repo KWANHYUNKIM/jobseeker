@@ -745,7 +745,7 @@
           "title": "모든 논리 트랜잭션",
           "summary": "하나로 묶었을 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -753,7 +753,7 @@
           "title": "서비스 계층 트랜잭션",
           "summary": "경계를 어디에 둘까.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",
@@ -761,7 +761,7 @@
           "title": "복구를 시도하면",
           "summary": "예외를 잡아도 롤백된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.5",

@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "recovery-attempt",
+ "no": "12.4",
+ "chapter": 12,
+ "title": "복구를 시도하면",
+ "summary": "예외를 잡아도 롤백된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예외를 잡아도 안 되는 것을 확인한다.",
+  "순서를 이해한다.",
+  "이 예외를 만났을 때의 대응을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12장의 핵심 절**이다. **가장 자연스러운 시도가 안 통한다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "복구 시도",
+   "code": "@Transactional\npublic void joinV2(String username) {\n    Member member = new Member(username);\n    Log logMessage = new Log(username);\n\n    memberRepository.save(member);\n\n    try {\n        logRepository.save(logMessage);\n    } catch (RuntimeException e) {\n        log.info(\"log 저장에 실패했습니다. logMessage={}\", logMessage.getMessage());\n        log.info(\"정상 흐름 반환\");\n    }\n}",
+   "note": "**요구사항을 그대로 코드로** 옮겼다.\n\n> **\"로그가 실패해도 회원 가입은 되어야 한다\"**\n\n**예외를 잡고 정상 반환**한다. **회원은 남을 것 같다.**\n\n**안 남는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "직관과 실제",
+   "ascii": "   the intuition\n     catch it, and the outer work survives\n\n   what actually happens\n     LogRepository.save throws\n       -> proxy marks rollback-only\n     MemberService catches it\n       -> business logic continues\n     MemberService.joinV2 returns normally\n       -> proxy requests commit\n       -> flag says no\n       -> rollback + UnexpectedRollbackException\n\n   the mark was set before the catch ran",
+   "note": "**마지막 줄이 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "순서",
+   "ascii": "   order of events\n\n   1  throw            inside LogRepository.save\n   2  proxy of save    sees it, marks rollback-only, rethrows\n   3  catch            in MemberService, too late\n   4  return normally\n   5  proxy of joinV2  requests commit\n   6  manager          reads the flag, rolls back, throws\n\n   step 2 is invisible in my code",
+   "note": "**2번이 내 코드에 안 보인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 잡아도 소용없나",
+   "md": "**예외를 잡은 것은 3번**이다. **표시는 2번에서 이미** 세워졌다.\n\n**2번이 안 보이는 이유**는 프록시라서다.\n\n```java\nlogRepository.save(logMessage);\n```\n\n**이 한 줄에 프록시가 끼어** 있다.\n\n```\nMemberService  ->  LogRepository$$SpringCGLIB  ->  LogRepository\n                        |                              |\n                        |                          throw\n                   catch, mark rollback-only,\n                   rethrow\n```\n\n**프록시가 먼저 잡고 표시를 세운 뒤 다시 던진다.** **내가 잡는 것은 그다음**이다.\n\n> **10.1절에서 \"프록시가 빈이다\" 라고 했다.** **그 결과가 여기서 나타난다.**\n\n**표시는 되돌릴 수 없다.**\n\n```java\nDefaultTransactionStatus.setRollbackOnly()\n// 되돌리는 메서드가 없다\n```\n\n**의도적**이다. **한 번 \"이 트랜잭션은 글렀다\" 고 판단된 것을 나중에 뒤집으면** 데이터 일관성을 보장할 수 없다.\n\n**11.7절의 그 예외가 난다.**\n\n```\nUnexpectedRollbackException:\n  Transaction rolled back because it has been marked as rollback-only\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 예외를 만났을 때",
+   "md": "**증상이 헷갈린다.**\n\n| 보이는 것 | 실제 |\n|---|---|\n| `UnexpectedRollbackException` | **결과** |\n| 스택 트레이스에 원인 없음 | **잡혔으니까** |\n| 내 코드에는 `try-catch` 뿐 | **프록시가 안 보인다** |\n\n**진단 순서**\n\n**① 로그에서 `marking existing transaction as rollback-only` 를 찾는다**\n\n**② 그 앞줄의 예외가 원인이다**\n\n**③ 그 예외를 던진 메서드에 `@Transactional` 이 있는지 본다**\n\n**세 번째가 확인 사항**이다. **애너테이션이 없으면 이 문제가 아니다.**\n\n```java\n// 이러면 문제없다\npublic void save(Log logMessage) {     // @Transactional 없음\n    em.persist(logMessage);\n    throw new RuntimeException();\n}\n```\n\n**프록시가 없으니 표시도 없다.** **잡으면 정말로 잡힌다.**\n\n> **12.2절에서 \"리포지토리의 애너테이션은 실험용\" 이라고 했다.** **실무에서 안 붙이면 이 문제가 덜 생긴다.**\n>\n> **그런데 스프링 데이터 JPA 를 쓰면 `SimpleJpaRepository` 에 이미** 붙어 있다(7.1절). **피하기 어렵다.**\n\n**서비스끼리 부를 때는 거의 항상** 이 문제가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "안 되는 대안들",
+   "md": "**① `rollbackFor` 를 조정한다** — 안 된다\n\n```java\n@Transactional(noRollbackFor = RuntimeException.class)   // LogRepository 에\npublic void save(Log logMessage) { }\n```\n\n**이러면 표시가 안 세워진다.** **되긴 한다.**\n\n**그런데 로그 저장 자체도 롤백이 안 된다.** **`persist` 한 것이 남는다** — **부분 저장**이다.\n\n**② 예외를 안 던지고 반환값으로** — 부분적으로 된다\n\n```java\npublic boolean save(Log logMessage) {\n    try {\n        em.persist(logMessage);\n        return true;\n    } catch (Exception e) {\n        return false;\n    }\n}\n```\n\n**프록시가 예외를 못 보니 표시가 없다.**\n\n**그런데 `persist` 가 실패한 상태로 영속성 컨텍스트가 남는다** — **6.5절의 경고**다. **JPA 에서는 위험**하다.\n\n**③ `REQUIRES_NEW`** — 된다\n\n**12.5절**이다.\n\n**④ 구조를 바꾼다** — 가장 낫다\n\n**12.7절**이다.\n\n> **①②는 증상을 가린다.** **③④가 원인을 다룬다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 예외를 잡아도 ---\n\nmemberService.joinV2(\"로그예외\");\n\n#   Getting transaction for [MemberService.joinV2]\n#   Creating new transaction with name [MemberService.joinV2]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n\n#   Getting transaction for [MemberRepository.save]\n#   Participating in existing transaction\n#   member 저장\n#   Completing transaction for [MemberRepository.save]\n\n#   Getting transaction for [LogRepository.save]\n#   Participating in existing transaction\n#   log 저장\n#   log 저장시 예외 발생\n#   Completing transaction for [LogRepository.save] after exception:\n#     java.lang.RuntimeException: 예외 발생\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n#   Setting JPA transaction on EntityManager [SessionImpl@1] rollback-only\n\n#   log 저장에 실패했습니다. logMessage=로그예외\n#   정상 흐름 반환\n\n#   (내 catch 가 여기서 돌았다. 표시는 이미 위에서 세워졌다.)\n\n#   Completing transaction for [MemberService.joinV2]\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   Initiating transaction rollback\n#   Rolling back JPA transaction on EntityManager [SessionImpl@1]\n#   Closing JPA EntityManager [SessionImpl@1] after transaction\n\n#   org.springframework.transaction.UnexpectedRollbackException:\n#     Transaction silently rolled back because it has been marked\n#     as rollback-only\n\nselect count(*) from member;   # -> 0\nselect count(*) from log;      # -> 0\n\n#   회원도 로그도 없다\n#   예외를 잡았는데\n\n# --- 순서를 로그에서 확인 ---\n\n#   1  log 저장시 예외 발생\n#   2  Participating transaction failed - marking ... rollback-only\n#   3  log 저장에 실패했습니다.        <- 내 catch\n#   4  정상 흐름 반환\n#   5  Global transaction is marked as rollback-only\n#   6  Initiating transaction rollback\n\n#   2번이 3번보다 먼저다\n\n# --- 리포지토리의 @Transactional 을 떼면 ---\n\n@Repository\npublic class LogRepository {\n    // @Transactional 없음\n    public void save(Log logMessage) {\n        em.persist(logMessage);\n        throw new RuntimeException(\"예외 발생\");\n    }\n}\n\n#   Creating new transaction with name [MemberService.joinV2]\n#   member 저장\n#   log 저장\n#   log 저장시 예외 발생\n#   log 저장에 실패했습니다.\n#   정상 흐름 반환\n#   Initiating transaction commit\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Hibernate: insert into log (message,id) values (?,?)\n\n#   (marking 로그가 없다)\n\nselect count(*) from member;   # -> 1\nselect count(*) from log;      # -> 1\n\n#   커밋됐다. 그런데 로그도 저장됐다.\n#   persist 는 이미 컨텍스트에 있었으니까.\n#   원한 것이 아니다.\n\n# --- 12.5절에서 볼 것 ---\n\n#   Suspending current transaction, creating new transaction with name\n#     [LogRepository.save]\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn1]\n#   Rolling back JPA transaction\n#   Releasing JDBC Connection [conn1]\n#   Resuming suspended transaction after completion\n\n#   회원은 남고 로그만 사라진다",
+   "note": "**순서 블록이 이 절의 증거**다. **`marking` 이 내 `catch` 보다 먼저** 찍혔다.\n\n**`Transaction silently rolled back`** 이라는 표현이 나온다. **\"조용히\" 롤백됐다는 뜻**인데, **예외를 던져서 조용하지 않게** 만든 것이다.\n\n**세 번째 블록이 애너테이션을 뗀 경우**다. **`marking` 이 없고 커밋된다.** **그런데 로그도 같이 저장**됐다 — **`persist` 는 이미 컨텍스트에 들어갔으니까.** **원한 결과가 아니다.**\n\n**맨 아래가 다음 절**이다. **`Suspending` 과 `conn1` 이 새로 나온다.**"
+  }
+ ],
+ "recap": [
+  "**예외를 잡아도 롤백된다.**",
+  "**프록시가 내 `catch` 보다 먼저** 표시를 세운다.",
+  "**그 프록시가 내 코드에 안 보인다.**",
+  "**`setRollbackOnly()` 는 되돌릴 수 없다** — 의도적이다.",
+  "**`UnexpectedRollbackException` 은 결과지 원인이 아니다.**",
+  "**원인은 `marking ... rollback-only` 앞줄**에 있다.",
+  "**그 메서드에 `@Transactional` 이 있는지** 확인한다.",
+  "**애너테이션을 떼면 표시가 없지만** 부분 저장이 남는다.",
+  "**`REQUIRES_NEW` 나 구조 변경**이 진짜 답이다."
+ ],
+ "drills": [
+  {
+   "task": "예외를 잡는 `joinV2` 를 만들고 실행한다.",
+   "done_when": "`UnexpectedRollbackException` 을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그에서 `marking` 과 내 `catch` 의 순서를 본다.",
+   "done_when": "`marking` 이 먼저인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리의 애너테이션을 떼고 돌린다.",
+   "done_when": "커밋되지만 로그도 저장되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`noRollbackFor` 로 시도해 본다.",
+   "done_when": "부분 저장이 생기는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예외를 잡았는데 왜 롤백되나?",
+   "a": "프록시가 잡기 전에 이미 `rollback-only` 표시를 세웠기 때문이다."
+  },
+  {
+   "q": "그 프록시는 어디에 있나?",
+   "a": "예외를 던진 메서드의 `@Transactional` 프록시다."
+  },
+  {
+   "q": "표시를 되돌릴 수 있나?",
+   "a": "없다. 의도적으로 되돌리는 메서드가 없다."
+  },
+  {
+   "q": "진단은 어떻게 하나?",
+   "a": "로그에서 `marking ... rollback-only` 를 찾고 그 앞줄의 예외를 본다."
+  },
+  {
+   "q": "애너테이션을 떼면 해결되나?",
+   "a": "표시는 없어지지만 실패한 작업이 부분 저장으로 남는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "service-tx",
+ "no": "12.3",
+ "chapter": 12,
+ "title": "서비스 계층 트랜잭션",
+ "summary": "경계를 어디에 둘까.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "트랜잭션 경계를 정하는 기준을 안다.",
+  "왜 서비스인지 안다.",
+  "경계가 여럿일 때를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.2절에서 서비스에 걸었다.** **왜 거기인지** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디에 두나",
+   "ascii": "   where to put the boundary\n\n   controller     no      request scope, not a work unit\n   service        yes     one business operation\n   repository     no*     too small to be a unit\n\n   * spring data jpa puts one there anyway; it joins\n\n   the boundary is 'what must succeed or fail together'",
+   "note": "**마지막 줄이 기준**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "\"같이 성공하거나 같이 실패해야 하는 것\"",
+   "md": "**그 단위가 트랜잭션 경계**다.\n\n**컨트롤러가 아닌 이유**\n\n```java\n@PostMapping(\"/order\")\npublic String order(OrderForm form) {\n    orderService.주문(form);\n    mailService.발송(form);      // 실패해도 주문은 유효하다\n    return \"redirect:/orders\";\n}\n```\n\n**요청 하나가 곧 작업 단위는 아니다.** **한 요청에 여러 작업 단위가 있을 수** 있다.\n\n**컨트롤러에 걸면 부작용**도 있다.\n\n| 부작용 | |\n|---|---|\n| **뷰 렌더링까지 트랜잭션** | 6.7절의 `open-in-view` 와 같은 문제 |\n| **파일 업로드·외부 호출 포함** | 11.5절의 긴 트랜잭션 |\n| **예외 처리와 뒤섞인다** | 「MVC 2편」의 예외 처리가 트랜잭션 밖이어야 |\n\n**리포지토리가 아닌 이유**\n\n```java\n// 각각 커밋된다\nmemberRepository.save(member);\nlogRepository.save(logMessage);\n```\n\n**12.1절의 상태**다. **11.2절에서 본 \"따로 쓰기\"** 이고, **10.3절의 계좌이체 사고**다.\n\n> **저장 하나는 작업 단위가 아니다.** **\"회원 가입\" 이 작업 단위**다."
+  },
+  {
+   "type": "figure",
+   "caption": "계층과 경계",
+   "ascii": "   web        no transaction\n     |\n   service    @Transactional      <-- the boundary\n     |\n   repository joins\n     |\n   db\n\n   one request may cross the boundary many times\n   or not at all",
+   "note": "**한 요청이 경계를 여러 번 넘을 수도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "경계가 여럿인 경우",
+   "md": "**한 요청에 트랜잭션이 둘 이상**일 수 있다.\n\n```java\n@PostMapping(\"/bulk\")\npublic String bulk(List<OrderForm> forms) {\n    for (OrderForm form : forms) {\n        orderService.주문(form);      // @Transactional\n    }\n    return \"ok\";\n}\n```\n\n**주문 하나가 트랜잭션 하나**다. **셋째가 실패해도 첫째와 둘째는 남는다.**\n\n**요구사항이 그렇다면 맞는 설계**다.\n\n**전부 아니면 전무여야 한다면** 바깥을 감싼다.\n\n```java\n@Transactional\npublic void 일괄주문(List<OrderForm> forms) {\n    for (OrderForm form : forms) {\n        orderService.주문(form);      // 참여한다\n    }\n}\n```\n\n> **애너테이션 위치 하나가 요구사항을 바꾼다.** **그래서 \"어디에 붙일까\" 가 설계 결정**이다.\n\n**11.6절의 사고**를 여기서 다시 본다. **재시도 횟수를 같은 트랜잭션에서 늘리면 롤백된다.** **그것은 \"같이 실패해야 하는 것\" 이 아니다.**\n\n**경계를 정할 때 물어볼 것**이 있다.\n\n> **\"이것이 실패하면 저것도 없던 일이 되어야 하나?\"**\n\n**아니라면 다른 트랜잭션**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "서비스가 서비스를 부를 때",
+   "md": "**실무에서 흔한 구조**다.\n\n```java\n@Service\npublic class OrderService {\n    @Transactional\n    public void 주문() {\n        재고서비스.차감();      // @Transactional\n        결제서비스.결제();      // @Transactional\n    }\n}\n```\n\n**전부 참여**한다. **물리 1, 논리 3.**\n\n**여기서 두 가지를 조심**한다.\n\n**① 안쪽 서비스가 단독으로도 쓰인다**\n\n```java\n// 다른 곳에서\n재고서비스.차감();      // 혼자 부르면 새 트랜잭션\n```\n\n**같은 메서드가 상황에 따라 새로 시작하거나 참여**한다. **`REQUIRED` 의 정의**다.\n\n**② 안쪽에서 예외가 나면 바깥이 못 잡는다**\n\n**12.4절의 주제**다.\n\n> **경계를 서비스에 두면 서비스끼리 호출할 때 자동으로 묶인다.** **대개 좋은 일**인데, **부수 작업까지 묶여** 12장의 문제가 된다.\n\n**「스프링 핵심 원리」의 계층 분리**가 여기서도 값을 한다. **트랜잭션 경계와 책임 경계가 같은 자리**에 있으면 코드를 읽기 쉽다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 서비스에 경계 (12.2절과 같다) ---\n\nmemberService.joinV1(\"hello\");\n\n#   Getting transaction for [MemberService.joinV1]\n#   Creating new transaction with name [MemberService.joinV1]\n#   Acquired Connection [conn0] for JPA transaction\n#   Participating in existing transaction   (MemberRepository.save)\n#   Participating in existing transaction   (LogRepository.save)\n#   Initiating transaction commit\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Hibernate: insert into log (message,id) values (?,?)\n#   Releasing JDBC Connection [conn0]\n\n#   물리 1\n\n# --- 컨트롤러에 걸면 ---\n\n@Transactional\n@PostMapping(\"/join\")\npublic String join(String username) {\n    memberService.joinV1(username);\n    mailService.발송(username);       // 2초\n    return \"redirect:/\";\n}\n\n#   Creating new transaction with name [MemberController.join]\n#   Acquired Connection [conn0] for JPA transaction\n#   Participating in existing transaction   x3\n#   (메일 발송 2초 - 커넥션을 쥔 채로)\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0]\n\n#   커넥션을 2초 더 쥐었다\n#   메일 발송이 실패하면 회원 가입도 롤백된다\n\n# --- 리포지토리에만 걸면 (12.1절) ---\n\n#   Creating new transaction with name [MemberRepository.save]\n#   Committing JPA transaction\n#   Releasing JDBC Connection [conn0]\n#   Creating new transaction with name [LogRepository.save]\n#   Committing JPA transaction\n#   Releasing JDBC Connection [conn0]\n\n#   물리 2\n#   회원만 저장되고 로그가 실패하는 상태가 생긴다\n\n# --- 반복문 안에서 부르면 ---\n\nfor (OrderForm form : forms) {\n    orderService.주문(form);\n}\n\n#   Creating new transaction with name [OrderService.주문]\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0]\n\n#   Creating new transaction with name [OrderService.주문]\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0]\n\n#   Creating new transaction with name [OrderService.주문]\n#   Rolling back JDBC transaction on Connection [conn0]\n\n#   물리 3. 앞의 둘은 남았다.\n\n# --- 바깥을 감싸면 ---\n\n@Transactional\npublic void 일괄주문(List<OrderForm> forms) { ... }\n\n#   Creating new transaction with name [일괄주문]\n#   Participating in existing transaction   x3\n#   Initiating transaction rollback\n\n#   물리 1. 전부 사라졌다.\n\n# 애너테이션 위치 하나가 결과를 바꿨다",
+   "note": "**두 번째 블록에서 커넥션을 2초 더** 쥐었다. **11.5절의 긴 트랜잭션 문제**가 컨트롤러 경계에서 커진다.\n\n**네 번째와 다섯 번째 블록의 대비**가 이 절의 요점이다. **같은 코드, 애너테이션 위치만 다른데** **물리 3 과 물리 1** 로 갈린다.\n\n> **\"셋째가 실패하면 첫째도 취소되어야 하나\"** 에 답하면 어느 쪽인지 정해진다.\n\n**다음 절에서 예외를 잡아 본다.**"
+  }
+ ],
+ "recap": [
+  "**경계는 \"같이 성공하거나 같이 실패해야 하는 단위\"** 다.",
+  "**컨트롤러는 요청 범위**라 작업 단위가 아니다.",
+  "**컨트롤러에 걸면 뷰·외부 호출까지** 트랜잭션에 들어온다.",
+  "**리포지토리는 너무 작다** — 저장 하나는 작업 단위가 아니다.",
+  "**한 요청에 트랜잭션이 여럿**일 수 있다.",
+  "**애너테이션 위치 하나가 요구사항을 바꾼다.**",
+  "**서비스가 서비스를 부르면 자동으로 묶인다.**",
+  "**같은 메서드가 새로 시작하거나 참여**한다 — `REQUIRED`.",
+  "**\"이것이 실패하면 저것도 없던 일이 되어야 하나\"** 를 묻는다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러에 `@Transactional` 을 붙여 본다.",
+   "done_when": "커넥션을 오래 쥐는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "반복문 안에서 서비스를 부른다.",
+   "done_when": "물리 트랜잭션이 여러 개인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "바깥을 감싸고 다시 돌린다.",
+   "done_when": "물리 1 로 줄고 전부 롤백되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금 프로젝트의 트랜잭션 경계를 점검한다.",
+   "done_when": "각 경계가 작업 단위인지 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "트랜잭션 경계의 기준은?",
+   "a": "같이 성공하거나 같이 실패해야 하는 작업 단위다."
+  },
+  {
+   "q": "컨트롤러에 걸면 안 되는 이유는?",
+   "a": "요청 범위라 작업 단위가 아니고 뷰·외부 호출까지 들어온다."
+  },
+  {
+   "q": "리포지토리에만 걸면?",
+   "a": "각각 커밋되어 부분 성공 상태가 생긴다."
+  },
+  {
+   "q": "반복문 안과 밖의 차이는?",
+   "a": "안이면 건마다 트랜잭션, 밖이면 전부 하나다."
+  },
+  {
+   "q": "경계를 정할 때 물어볼 질문은?",
+   "a": "이것이 실패하면 저것도 없던 일이 되어야 하나다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
