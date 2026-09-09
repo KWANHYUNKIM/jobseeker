@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "actuator-security",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "보안",
+ "summary": "포트를 나누고 잠근다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "포트를 나눈다.",
+  "역할로 잠근다.",
+  "규칙이 안 맞는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8장 내내 다 열어 놓고** 봤다. **이제** 잠근다."
+  },
+  {
+   "type": "figure",
+   "caption": "벽이 셋이다",
+   "ascii": "   three independent walls, weakest to strongest\n\n   expose only what is needed\n   move it to a port the outside cannot reach\n   require a role on every request to it\n\n   the second one is the only wall a misconfigured rule cannot undo",
+   "note": "**규칙 실수로도 못 무너뜨리는 건** 둘째뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "밖에서 닿을 수 없으면 규칙이 틀려도 안전하다",
+   "md": "**노출은 약한** 벽이다.\n\n> **설정 한 줄이면** 열린다.\n> **7.5절의 인수로도** 열린다.\n> **아래에서 그걸** 본다.\n\n**포트를 나누면 막힌**다.\n\n> **방화벽이 그 포트를** 안 연다.\n> **운영에서는 이게** 기본이다.\n> **아래에서 나눈**다.\n\n**역할까지 걸면 더** 낫다.\n\n> **안에서도 아무나 못** 부른다.\n> **⑩ 2장의 그** 규칙이다.\n> **아래에서** 건다.\n\n**읽기와 쓰기를** 나눈다.\n\n> **8.5절은** 쓰기였다.\n> **헬스는 열어** 둔다.\n> **아래에서 갈라** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "포트를 나누면 달라지는 것",
+   "ascii": "   what changes when the port is split\n\n   a second connector opens, with its own context\n   the base path resets to slash by default\n   filters registered for the main port do not apply\n\n   the third line is why a security rule can silently stop matching",
+   "note": "**셋째 줄이 보안 규칙이 조용히 안 맞게 되는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "규칙을 걸었는데 안 걸리는 일이 흔하다",
+   "md": "**포트를 나누면 문맥이** 달라진다.\n\n> **경로가 `/actuator` 가** 아니다.\n> **아래에서 그걸** 겪는다.\n> **전용 짝짓기를** 쓴다.\n\n**보안 스타터가 없으면 규칙도** 없다.\n\n> **6.4절의 조건**이다.\n> **넣어야 잠긴**다.\n> **아래에서 확인**한다.\n\n**기본 비밀번호는 로그에** 찍힌다.\n\n> **⑩ 1장에서** 봤다.\n> **매번 바뀐**다.\n> **운영에서 쓰면 안** 된다.\n\n**헬스만 열어도 새어 나갈 수** 있다.\n\n> **자세히 보기가 켜져** 있으면.\n> **8.3절에서 주소가** 보였다.\n> **아래에서 그걸** 막는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 다 열린 상태\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n200\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n204\n\n--   누구나 로그를 켤 수 있다\n\n\n-- ① 노출을 줄인다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n404\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n--   8.1절에서 본 그것이다\n\n\n-- 그런데 인수로 다시 열린다\n\n$ java -jar build/libs/app.jar \\\n    --management.endpoints.web.exposure.include='*' > /dev/null 2>&1 &\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n200\n\n--   7.12절의 사다리다\n--   실행 명령을 바꿀 수 있으면 무너진다\n--   그래서 약한 벽이다\n\n\n-- ② 포트를 나눈다\n\nmanagement:\n  server:\n    port: 9090\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ ./gradlew bootRun 2>&1 | grep -iE 'Tomcat started|Exposing'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Exposing 13 endpoints beneath base path '/actuator'\nINFO ... : Tomcat started on port 9090 (http) with context path '/'\n\n$ curl -s -o /dev/null -w '8080 %{http_code}\\n' localhost:8080/actuator/env\n8080 404\n$ curl -s -o /dev/null -w '9090 %{http_code}\\n' localhost:9090/actuator/env\n9090 200\n\n$ curl -s -o /dev/null -w '9090 %{http_code}\\n' localhost:9090/hello\n9090 404\n\n--   서버가 둘 떴다\n--   서로 상대 경로를 모른다\n\n\n-- 밖에서 못 닿게 한다\n\nmanagement:\n  server:\n    port: 9090\n    address: 127.0.0.1\n\n$ ./gradlew bootRun 2>&1 | grep 'port 9090'\nINFO ... : Tomcat started on port 9090 (http) with context path '/'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 127.0.0.1:9090/actuator/env\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' --max-time 2 192.168.0.12:9090/actuator/env\n000\n\n$ lsof -nP -iTCP:9090 -sTCP:LISTEN | tail -1\njava   18902 kwanhyun  52u  IPv4 ...  TCP 127.0.0.1:9090 (LISTEN)\n\n$ lsof -nP -iTCP:8080 -sTCP:LISTEN | tail -1\njava   18902 kwanhyun  50u  IPv6 ...  TCP *:8080 (LISTEN)\n\n--   하나는 별표고 하나는 루프백이다\n--   이건 인수로 못 뚫는다\n\n\n-- 컨테이너에서는 포트를 안 내보낸다\n\n$ docker run -d -p 8080:8080 app:latest\n$ docker port $(docker ps -q)\n8080/tcp -> 0.0.0.0:8080\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n200\n$ curl -s -o /dev/null -w '%{http_code}\\n' --max-time 2 localhost:9090/actuator/env\n000\n\n$ docker exec $(docker ps -q) \\\n    curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/env\n200\n\n--   ⑪ 3장의 그 -p 다\n--   안에서만 닿는다\n\n\n-- 경로도 바꾼다\n\nmanagement:\n  server:\n    port: 9090\n    base-path: /internal\n  endpoints:\n    web:\n      base-path: /admin\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/health\n404\n$ curl -s localhost:9090/internal/admin/health\n{\"status\":\"UP\"}\n\n--   둘이 겹쳐 붙는다\n\n\n-- ③ 역할로 잠근다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-security'\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'password'\nUsing generated security password: 8f2a1c04-3e97-4b62-a018-52c9d7e3b410\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/env\n401\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -u user:8f2a1c04-3e97-4b62-a018-52c9d7e3b410 localhost:9090/actuator/env\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n401\n\n--   ⑩ 1장에서 본 그 로그다\n--   앱 쪽까지 다 잠겼다\n\n\n-- 규칙을 적는다\n\n@Bean\n@Order(1)\nSecurityFilterChain actuatorChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(EndpointRequest.toAnyEndpoint())\n        .authorizeHttpRequests(a -> a\n            .requestMatchers(EndpointRequest.to(HealthEndpoint.class,\n                                                InfoEndpoint.class)).permitAll()\n            .anyRequest().hasRole(\"OPS\"))\n        .httpBasic(Customizer.withDefaults())\n        .csrf(c -> c.disable());\n    return http.build();\n}\n\n@Bean\nSecurityFilterChain appChain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().permitAll());\n    return http.build();\n}\n\n$ curl -s -o /dev/null -w 'hello   %{http_code}\\n' localhost:8080/hello\nhello   200\n$ curl -s -o /dev/null -w 'health  %{http_code}\\n' localhost:9090/actuator/health\nhealth  200\n$ curl -s -o /dev/null -w 'env     %{http_code}\\n' localhost:9090/actuator/env\nenv     401\n$ curl -s -o /dev/null -w 'env+인증 %{http_code}\\n' \\\n    -u ops:secret localhost:9090/actuator/env\nenv+인증 200\n\n--   헬스만 열고 나머지는 잠갔다\n\n\n-- 짝짓기를 경로로 쓰면 안 걸린다\n\nhttp.securityMatcher(\"/actuator/**\")\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/env\n200\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Will secure'\nINFO ... : Will secure Ant [pattern='/actuator/**'] with filters: ...\n\n$ curl -s localhost:9090/actuator/env -o /dev/null -w '%{url_effective}\\n'\nhttp://localhost:9090/actuator/env\n\n--   경로는 맞는데 안 걸렸다\n\n\n-- 왜 안 걸리나\n\n@GetMapping(value = \"/where\", produces = \"text/plain\")\nString where(HttpServletRequest req) {\n    return \"servletPath: \" + req.getServletPath() + \"\\n\"\n         + \"contextPath: \" + req.getContextPath() + \"\\n\";\n}\n\n$ curl -s localhost:9090/actuator/where\nservletPath: /env\ncontextPath: /actuator\n\n--   관리 서버에서는 문맥이 /actuator 다\n--   그래서 경로가 /actuator/env 가 아니다\n--   전용 짝짓기를 써야 한다\n\n\n-- 읽기와 쓰기를 나눈다\n\n.authorizeHttpRequests(a -> a\n    .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()\n    .requestMatchers(HttpMethod.POST, \"/**\").hasRole(\"ADMIN\")\n    .requestMatchers(HttpMethod.DELETE, \"/**\").hasRole(\"ADMIN\")\n    .anyRequest().hasRole(\"OPS\"))\n\n$ curl -s -o /dev/null -w 'GET  loggers  %{http_code}\\n' \\\n    -u ops:secret localhost:9090/actuator/loggers\nGET  loggers  200\n\n$ curl -s -o /dev/null -w 'POST loggers  %{http_code}\\n' -X POST \\\n    -u ops:secret localhost:9090/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\nPOST loggers  403\n\n$ curl -s -o /dev/null -w 'POST loggers  %{http_code}\\n' -X POST \\\n    -u admin:secret localhost:9090/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\nPOST loggers  204\n\n--   8.5절의 그 쓰기를 갈랐다\n\n\n-- 읽기 전용으로 아예 막을 수도 있다\n\nmanagement:\n  endpoints:\n    access:\n      default: read-only\n  endpoint:\n    loggers:\n      access: unrestricted\n\n$ curl -s -o /dev/null -w 'loggers POST %{http_code}\\n' -X POST \\\n    -u admin:secret localhost:9090/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"INFO\"}'\nloggers POST 204\n\n$ curl -s -o /dev/null -w 'shutdown     %{http_code}\\n' -X POST \\\n    -u admin:secret localhost:9090/actuator/shutdown\nshutdown     404\n\n--   보안 규칙 없이도 쓰기를 막는다\n--   8.2절에서 켜던 그 종료가 안 열린다\n\n\n-- 헬스도 새어 나간다\n\nmanagement:\n  endpoint:\n    health:\n      show-details: always\n\n$ curl -s localhost:9090/actuator/health | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['components']\nprint(d['db']['details'])\nprint(d['diskSpace']['details']['path'])\"\n{'database': 'PostgreSQL', 'validationQuery': 'isValid()'}\n/Users/kwanhyun/proj/.\n\n--   8.3절에서 켠 그것이다\n--   무엇을 쓰는지, 어디에 있는지가 보인다\n\n\n-- 인증된 사람에게만 보여 준다\n\nmanagement:\n  endpoint:\n    health:\n      show-details: when-authorized\n      roles: OPS\n\n$ curl -s localhost:9090/actuator/health\n{\"status\":\"UP\"}\n\n$ curl -s -u ops:secret localhost:9090/actuator/health | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['components']))\"\n['db', 'diskSpace', 'ping', 'redis']\n\n--   같은 주소가 사람 따라 다르게 답한다\n\n\n-- 보안 스타터가 없으면\n\n// starter-security 를 빼면\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'SecurityAutoConfiguration' | head -3\n   SecurityAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'org.springframework.security.authentication.DefaultAuthenticationEventPublisher'\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: package org.springframework.security.config.annotation.web does not exist\n\n--   규칙 코드 자체가 컴파일이 안 된다\n--   6.4절의 그 조건이다\n\n\n-- 셋을 다 걸고 확인한다\n\nmanagement:\n  server:\n    port: 9090\n    address: 127.0.0.1\n  endpoints:\n    web:\n      exposure:\n        include: health,info,metrics,loggers,prometheus\n    access:\n      default: read-only\n  endpoint:\n    health:\n      show-details: when-authorized\n      roles: OPS\n\n$ curl -s -o /dev/null -w '밖 9090      %{http_code}\\n' \\\n    --max-time 2 192.168.0.12:9090/actuator/health\n밖 9090      000\n$ curl -s -o /dev/null -w '안 health    %{http_code}\\n' 127.0.0.1:9090/actuator/health\n안 health    200\n$ curl -s -o /dev/null -w '안 env       %{http_code}\\n' \\\n    -u ops:secret 127.0.0.1:9090/actuator/env\n안 env       404\n$ curl -s -o /dev/null -w '안 loggers   %{http_code}\\n' \\\n    -u ops:secret 127.0.0.1:9090/actuator/loggers\n안 loggers   200\n$ curl -s -o /dev/null -w '안 POST      %{http_code}\\n' -X POST \\\n    -u ops:secret 127.0.0.1:9090/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"DEBUG\"}'\n안 POST      403\n$ curl -s -o /dev/null -w '앱 8080      %{http_code}\\n' localhost:8080/hello\n앱 8080      200\n\n--   8.8절에서 내 엔드포인트를 만든다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '노출 줄이기' '인수로 다시 열림' \\\n  '포트 나누기' '서버 둘' \\\n  '주소 묶기'   '밖에서 000' \\\n  '역할'        '401 과 403' \\\n  '경로 짝짓기' '안 걸림' \\\n  '전용 짝짓기' '걸림' \\\n  '읽기 전용'   '쓰기가 404' \\\n  '헬스 자세히' '인증된 사람만'\n\n노출 줄이기                인수로 다시 열림\n포트 나누기                서버 둘\n주소 묶기                  밖에서 000\n역할                       401 과 403\n경로 짝짓기                안 걸림\n전용 짝짓기                걸림\n읽기 전용                  쓰기가 404\n헬스 자세히                인증된 사람만",
+   "note": "**노출을 줄여도 인수 한 줄로 다시 열려 약한** 벽이다.\n\n**포트를 나누니 톰캣이 둘 뜨고 주소를 루프백에 묶으니 밖에서 `000`, 안에서 200**이다.\n\n**경로로 짝지은 규칙이 안 걸리는데 관리 서버에서는 문맥이 `/actuator` 라 경로가 `/env`** 였다.\n\n**읽기 전용으로 두니 보안 규칙 없이도 종료가 404, 로거 등록만 열린다.**\n\n**헬스를 인증된 사람에게만 자세히 보이게 하니 같은 주소가 `{\"status\":\"UP\"}` 와 구성 요소 넷으로** 갈린다."
+  }
+ ],
+ "recap": [
+  "**벽이** 셋이다.",
+  "**노출은** 약하다.",
+  "**포트를** 나눈다.",
+  "**주소를** 묶는다.",
+  "**역할로** 잠근다.",
+  "**경로 짝짓기는 안** 걸린다.",
+  "**전용 짝짓기를** 쓴다.",
+  "**읽기와 쓰기를** 나눈다.",
+  "**헬스도** 가린다."
+ ],
+ "drills": [
+  {
+   "task": "인수로 다시 열어 본다.",
+   "done_when": "노출이 약한 벽인 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "포트를 나눈다.",
+   "done_when": "서버가 둘 뜬 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "경로로 짝지어 본다.",
+   "done_when": "안 걸리는 이유를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "읽기와 쓰기를 가른다.",
+   "done_when": "403 과 204 를 둘 다 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "노출 줄이기가 왜 약한 벽인가?",
+   "a": "실행 명령을 바꿀 수 있으면 인수로 다시 열려서다."
+  },
+  {
+   "q": "포트를 나누면 무엇이 달라지나?",
+   "a": "서버가 하나 더 뜨고 문맥과 필터가 따로 논다."
+  },
+  {
+   "q": "경로로 짝지은 규칙이 왜 안 걸리나?",
+   "a": "관리 서버에서는 문맥이 앞부분을 가져가 경로가 다르다."
+  },
+  {
+   "q": "보안 없이 쓰기를 막으려면?",
+   "a": "기본 접근을 읽기 전용으로 둔다."
+  },
+  {
+   "q": "헬스 자세히 보기의 위험은?",
+   "a": "무엇을 쓰는지와 경로 같은 것이 그대로 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "관리 포트",
+   "def": "액츄에이터만 받는 별도 포트. 밖에 안 내보내는 것이 보통이다."
+  },
+  {
+   "term": "엔드포인트 짝짓기",
+   "def": "경로 대신 엔드포인트 자체를 가리켜 규칙을 거는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Security",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.security",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

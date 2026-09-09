@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "custom-endpoint",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "직접 만든다",
+ "summary": "내 엔드포인트를 연다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "하나 만든다.",
+  "인자와 쓰기를 붙인다.",
+  "컨트롤러와 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 열셋을** 봤다. **열넷째를** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "애너테이션이 셋이다",
+   "ascii": "   three annotations, three reaches\n\n   endpoint          available over http and over jmx\n   web endpoint      http only\n   controller style  http only, and I shape the response myself\n\n   the first one is the default choice",
+   "note": "**보통은** 첫째다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "운영자용은 운영자 자리에 둔다",
+   "md": "**컨트롤러로도** 된다.\n\n> **주소 하나 더 여는 것**이다.\n> **그런데 앱 포트에** 붙는다.\n> **8.7절에서 나눈 그 포트가** 아니다.\n\n**같은 규칙을 따르게** 한다.\n\n> **노출과 접근 설정**이다.\n> **아래에서 그걸** 확인한다.\n> **공짜로 따라온**다.\n\n**모양이 정해져** 있다.\n\n> **8.2절의 그 규칙**이다.\n> **읽기는 조회, 쓰기는 등록**이다.\n> **아래에서 붙여** 본다.\n\n**JMX 로도** 열린다.\n\n> **HTTP 를 안 열어도** 된다.\n> **아래에서 그걸** 본다.\n> **첫째 애너테이션의 값**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨트롤러가 자리가 아닌 이유",
+   "ascii": "   when a controller is the wrong place for this\n\n   it is for operators, not for users of the api\n   it should sit behind the management port\n   it should follow the same exposure and access rules\n\n   a plain controller gets none of that for free",
+   "note": "**평범한 컨트롤러는 그걸 하나도 못** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무거운 일을 여기 두면 프로브가 같이 느려진다",
+   "md": "**같은 스레드 풀**이다.\n\n> **관리 포트도** 그렇다.\n> **8.3절에서 재** 봤다.\n> **아래에서 다시** 본다.\n\n**쓰기는 되돌릴 수** 없다.\n\n> **8.2절의 종료가** 그랬다.\n> **기본은 막아** 둔다.\n> **8.7절의 읽기 전용**이다.\n\n**응답이 그대로 나간**다.\n\n> **가려 주지** 않는다.\n> **7.8절의 `******` 는 다른** 곳이다.\n> **아래에서 그걸** 겪는다.\n\n**이름이 곧** 경로다.\n\n> **소문자 한 덩어리**로 짓는다.\n> **아래에서 확인**한다.\n> **점이나 슬래시는 못** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 하나 만든다\n\n@Component\n@Endpoint(id = \"cachestat\")\npublic class CacheStatEndpoint {\n    private final CacheManager cacheManager;\n\n    @ReadOperation\n    public Map<String, Object> all() {\n        var m = new LinkedHashMap<String, Object>();\n        for (String name : cacheManager.getCacheNames()) {\n            var c = (CaffeineCache) cacheManager.getCache(name);\n            var s = c.getNativeCache().stats();\n            m.put(name, Map.of(\n                \"크기\", c.getNativeCache().estimatedSize(),\n                \"적중\", s.hitCount(),\n                \"실패\", s.missCount(),\n                \"적중률\", String.format(\"%.1f%%\", s.hitRate() * 100)));\n        }\n        return m;\n    }\n}\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info,cachestat\n\n$ curl -s localhost:9090/actuator | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['_links']))\"\n['cachestat', 'health', 'health-path', 'info', 'self']\n\n$ curl -s localhost:9090/actuator/cachestat | python3 -m json.tool\n{\n    \"orders\": { \"크기\": 128, \"적중\": 4102, \"실패\": 311, \"적중률\": \"93.0%\" },\n    \"users\": { \"크기\": 42, \"적중\": 880, \"실패\": 120, \"적중률\": \"88.0%\" }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Exposing'\nINFO ... : Exposing 3 endpoints beneath base path '/actuator'\n\n--   8.2절의 목록에 하나 늘었다\n\n\n-- 이름이 곧 경로다\n\n@Endpoint(id = \"cache-stat\")\n\n$ ./gradlew bootRun 2>&1 | head -3\nException ... IllegalStateException:\n  Endpoint id 'cache-stat' is invalid: must only contain letters and digits\n\n$ curl -s localhost:9090/actuator/cachestat > /dev/null && echo OK\nOK\n\n--   소문자 한 덩어리여야 한다\n\n\n-- 인자를 받는다\n\n@ReadOperation\npublic Map<String, Object> one(@Selector String name) {\n    var c = cacheManager.getCache(name);\n    if (c == null) return Map.of(\"오류\", \"그런 캐시 없음: \" + name);\n    ...\n}\n\n$ curl -s localhost:9090/actuator/cachestat/orders | python3 -m json.tool\n{\n    \"크기\": 128,\n    \"적중\": 4102,\n    \"실패\": 311,\n    \"적중률\": \"93.0%\"\n}\n\n$ curl -s localhost:9090/actuator/cachestat/nope\n{\"오류\":\"그런 캐시 없음: nope\"}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'localhost:9090/actuator/cachestat?name=orders'\n200\n$ curl -s 'localhost:9090/actuator/cachestat?name=orders' | head -c 30\n{\"orders\":{\"크기\":128,\"적중\":41\n\n--   8.2절에서 본 그 규칙이다\n--   질의 문자열은 무시하고 목록을 준다\n\n\n-- 없으면 404 로 만든다\n\n@ReadOperation\npublic WebEndpointResponse<Map<String, Object>> one(@Selector String name) {\n    var c = cacheManager.getCache(name);\n    if (c == null) return new WebEndpointResponse<>(404);\n    return new WebEndpointResponse<>(stat(c));\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/cachestat/nope\n404\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/cachestat/orders\n200\n\n\n-- 쓰기를 붙인다\n\n@WriteOperation\npublic Map<String, Object> warm(@Selector String name, Integer size) {\n    var c = cacheManager.getCache(name);\n    int n = (size == null) ? 100 : size;\n    warmer.load(c, n);\n    return Map.of(\"데운 개수\", n, \"현재 크기\", estimated(c));\n}\n\n@DeleteOperation\npublic Map<String, Object> clear(@Selector String name) {\n    cacheManager.getCache(name).clear();\n    return Map.of(\"비움\", name);\n}\n\n$ curl -s -X POST localhost:9090/actuator/cachestat/orders \\\n    -H 'Content-Type: application/json' -d '{\"size\":500}'\n{\"데운 개수\":500,\"현재 크기\":500}\n\n$ curl -s -X DELETE localhost:9090/actuator/cachestat/orders\n{\"비움\":\"orders\"}\n\n$ curl -s localhost:9090/actuator/cachestat/orders | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['크기'])\"\n0\n\n--   본문 키가 인자 이름과 짝을 이룬다\n\n\n-- 읽기 전용을 켜면 막힌다\n\nmanagement:\n  endpoints:\n    access:\n      default: read-only\n\n$ curl -s -o /dev/null -w 'GET    %{http_code}\\n' \\\n    localhost:9090/actuator/cachestat\nGET    200\n$ curl -s -o /dev/null -w 'POST   %{http_code}\\n' -X POST \\\n    localhost:9090/actuator/cachestat/orders \\\n    -H 'Content-Type: application/json' -d '{\"size\":10}'\nPOST   405\n$ curl -s -o /dev/null -w 'DELETE %{http_code}\\n' -X DELETE \\\n    localhost:9090/actuator/cachestat/orders\nDELETE 405\n\n--   8.7절의 설정이 내 것에도 그대로 걸린다\n--   컨트롤러였다면 안 걸렸다\n\n\n-- 보안 규칙도 그대로 걸린다\n\n.requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()\n.anyRequest().hasRole(\"OPS\")\n\n$ curl -s -o /dev/null -w '인증 없이 %{http_code}\\n' \\\n    localhost:9090/actuator/cachestat\n인증 없이 401\n$ curl -s -o /dev/null -w '인증 있이 %{http_code}\\n' \\\n    -u ops:secret localhost:9090/actuator/cachestat\n인증 있이 200\n\n$ curl -s -o /dev/null -w 'toAnyEndpoint 에 포함되나 %{http_code}\\n' \\\n    localhost:9090/actuator/health\ntoAnyEndpoint 에 포함되나 200\n\n--   8.7절의 전용 짝짓기가 내 것도 포함한다\n\n\n-- 컨트롤러와 견준다\n\n@RestController\nclass CacheStatController {\n    @GetMapping(\"/ops/cachestat\")\n    Map<String, Object> all() { ... }\n}\n\n$ curl -s -o /dev/null -w '9090 %{http_code}\\n' localhost:9090/ops/cachestat\n9090 404\n$ curl -s -o /dev/null -w '8080 %{http_code}\\n' localhost:8080/ops/cachestat\n8080 200\n\n$ curl -s localhost:8080/ops/cachestat | head -c 40\n{\"orders\":{\"크기\":128,\"적중\":4102,\"실패\"\n\n--   앱 포트에 붙었다\n--   밖에서 그대로 보인다\n--   노출 설정도 접근 설정도 안 걸린다\n\n\n-- 셋째 방식\n\n@Component\n@ControllerEndpoint(id = \"report\")\npublic class ReportEndpoint {\n    @GetMapping(value = \"/csv\", produces = \"text/csv\")\n    ResponseEntity<String> csv() {\n        return ResponseEntity.ok()\n            .header(\"Content-Disposition\", \"attachment; filename=cache.csv\")\n            .body(\"name,size,hitRate\\norders,128,0.93\\nusers,42,0.88\\n\");\n    }\n}\n\n$ curl -s -D - localhost:9090/actuator/report/csv | head -4\nHTTP/1.1 200\nContent-Disposition: attachment; filename=cache.csv\nContent-Type: text/csv\n\n$ curl -s localhost:9090/actuator/report/csv\nname,size,hitRate\norders,128,0.93\nusers,42,0.88\n\n--   JSON 말고 다른 걸 줄 때 쓴다\n--   대신 JMX 로는 안 열린다\n\n\n-- JMX 로도 열린다\n\nmanagement:\n  endpoints:\n    jmx:\n      exposure:\n        include: \"*\"\n    web:\n      exposure:\n        include: health\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/cachestat\n404\n\n$ jcmd $(pgrep -f app.jar) VM.command_line > /dev/null\n$ java -jar jmxterm.jar -l localhost:9999 -n <<'EOF'\nbeans -d org.springframework.boot\nEOF\norg.springframework.boot:type=Endpoint,name=Cachestat\norg.springframework.boot:type=Endpoint,name=Health\n\n--   HTTP 는 닫고 JMX 만 열 수 있다\n--   ControllerEndpoint 는 여기 안 나온다\n\n\n-- 무거운 일을 두면\n\n@ReadOperation\npublic Map<String, Object> all() {\n    var full = repo.scanEverything();   // 3 초\n    ...\n}\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:9090/actuator/cachestat\n3.021\n\n$ for i in 1 2 3 4 5 6 7 8 9 10; do\n    curl -s -o /dev/null localhost:9090/actuator/cachestat &\n  done\n$ curl -s -o /dev/null -w 'health %{time_total}\\n' localhost:9090/actuator/health\nhealth 2.884\n\n--   같은 풀을 쓴다\n--   8.3절에서 본 그 문제가 여기서도 난다\n\n\n-- 응답은 안 가려진다\n\n@ReadOperation\npublic Map<String, Object> all() {\n    return Map.of(\"dbUrl\", props.getDb().getUrl(),\n                  \"dbPassword\", props.getDb().getPassword());\n}\n\n$ curl -s localhost:9090/actuator/cachestat\n{\"dbUrl\":\"jdbc:postgresql://db:5432/app\",\"dbPassword\":\"p@ssw0rd\"}\n\n$ curl -s localhost:9090/actuator/configprops \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['contexts']['application']['beans']\nfor k, v in d.items():\n    if 'study' in k: print(v['properties']['db']['password'])\"\n******\n\n--   7.8절에서 가려 주던 것이 여기선 안 걸린다\n--   내가 안 넣어야 한다\n--   8.9절에서 이런 것을 모아 본다\n\n\n-- 마지막으로 확인한다\n\n$ curl -s -u ops:secret localhost:9090/actuator | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['_links']))\"\n['cachestat', 'cachestat-name', 'health', 'health-path', 'info', 'report', 'self']\n\n$ curl -s -u ops:secret localhost:9090/actuator/cachestat/orders \\\n    | python3 -m json.tool\n{\n    \"크기\": 128,\n    \"적중\": 4102,\n    \"실패\": 311,\n    \"적중률\": \"93.0%\"\n}\n\n--   8.9절에서 열면 안 되는 것들을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '애너테이션'  '셋' \\\n  '이름'        '소문자 한 덩어리' \\\n  '읽기'        'GET' \\\n  '인자'        '경로 조각' \\\n  '쓰기'        'POST 와 DELETE' \\\n  '읽기 전용'   '405' \\\n  '보안'        '전용 짝짓기에 포함' \\\n  '컨트롤러'    '앱 포트, 규칙 없음' \\\n  '가리기'      '안 됨'\n\n애너테이션                 셋\n이름                       소문자 한 덩어리\n읽기                       GET\n인자                       경로 조각\n쓰기                       POST 와 DELETE\n읽기 전용                  405\n보안                       전용 짝짓기에 포함\n컨트롤러                   앱 포트, 규칙 없음\n가리기                     안 됨",
+   "note": "**엔드포인트 하나를 만드니 링크 목록에 `cachestat` 이 늘고 `Exposing 3 endpoints` 로** 찍힌다.\n\n**이름에 하이픈을 넣으면 `must only contain letters and digits` 로 기동이** 멈춘다.\n\n**읽기 전용을 켜니 내가 만든 등록·삭제도 405 가 되고 보안 전용 짝짓기에도 그대로** 포함된다.\n\n**같은 일을 컨트롤러로 하면 관리 포트에서 404, 앱 포트에서 200 으로 규칙을 하나도 못** 받는다.\n\n**응답은 안 가려져 비밀번호가 그대로 나가는데 같은 값이 `configprops` 에서는 `******`** 다."
+  }
+ ],
+ "recap": [
+  "**애너테이션이** 셋이다.",
+  "**이름이** 경로다.",
+  "**읽기는** 조회다.",
+  "**인자는** 경로다.",
+  "**쓰기도** 붙는다.",
+  "**설정이 그대로** 걸린다.",
+  "**보안도** 걸린다.",
+  "**컨트롤러는 못** 받는다.",
+  "**가려 주지** 않는다."
+ ],
+ "drills": [
+  {
+   "task": "엔드포인트 하나를 만든다.",
+   "done_when": "링크 목록에 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "인자와 쓰기를 붙인다.",
+   "done_when": "등록과 삭제가 도는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "읽기 전용을 켠다.",
+   "done_when": "405 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨트롤러와 견준다.",
+   "done_when": "포트와 규칙 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "엔드포인트 이름 규칙은?",
+   "a": "글자와 숫자만 쓴다. 하이픈을 넣으면 기동이 멈춘다."
+  },
+  {
+   "q": "인자는 어떻게 받나?",
+   "a": "경로 조각으로 받는다. 질의 문자열은 안 먹는다."
+  },
+  {
+   "q": "컨트롤러로 만들면 무엇을 못 받나?",
+   "a": "관리 포트, 노출 설정, 접근 설정, 전용 보안 짝짓기다."
+  },
+  {
+   "q": "읽기 전용 설정이 내 엔드포인트에도 걸리나?",
+   "a": "걸린다. 등록과 삭제가 405 가 된다."
+  },
+  {
+   "q": "응답에 비밀 값이 있으면?",
+   "a": "가려 주지 않는다. 내가 안 넣어야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "읽기 연산",
+   "def": "엔드포인트에서 조회로 매핑되는 메서드."
+  },
+  {
+   "term": "선택기 인자",
+   "def": "경로 조각으로 넘어오는 엔드포인트 인자."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
