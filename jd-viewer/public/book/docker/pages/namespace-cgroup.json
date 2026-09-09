@@ -1,0 +1,172 @@
+{
+ "book": "docker",
+ "id": "namespace-cgroup",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "namespace 와 cgroup",
+ "summary": "도커가 발명하지 않은 두 가지.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "namespace 종류와 각각이 무엇을 가리는지 안다.",
+  "cgroup 이 무엇을 제한하는지 안다.",
+  "도커 없이도 격리를 만들어 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 \"커널이 프로세스에게 거짓말을 한다\" 고** 했다. **그 거짓말의 이름이 namespace 고, 제한의 이름이 cgroup** 이다.\n\n> **둘 다 도커보다** 먼저다. namespace 는 2002년(mount)부터, cgroup 은 2007년 구글이 커널에 넣었다.\n> **도커는 2013년에 이 둘을 묶어서 쓰기 좋게 만든** 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "namespace 종류와 가리는 것",
+   "columns": [
+    "종류",
+    "가리는 것",
+    "컨테이너에서 보이는 결과"
+   ],
+   "rows": [
+    [
+     "**PID**",
+     "프로세스 번호",
+     "내 애플리케이션이 PID 1 이다"
+    ],
+    [
+     "**MNT**",
+     "마운트 지점",
+     "`/` 아래가 이미지의 내용이다"
+    ],
+    [
+     "**NET**",
+     "네트워크 장치·IP·포트·라우팅",
+     "컨테이너마다 자기 IP 와 자기 8080"
+    ],
+    [
+     "**UTS**",
+     "호스트 이름·도메인",
+     "`hostname` 이 컨테이너 ID"
+    ],
+    [
+     "**IPC**",
+     "공유 메모리·세마포어",
+     "다른 컨테이너의 공유 메모리가 안 보인다"
+    ],
+    [
+     "**USER**",
+     "UID/GID 매핑",
+     "안에서는 root, 밖에서는 일반 사용자로 보이게 할 수 있다"
+    ],
+    [
+     "**CGROUP**",
+     "cgroup 루트",
+     "자기 cgroup 만 보인다"
+    ],
+    [
+     "**TIME**",
+     "시스템 시각 오프셋",
+     "(리눅스 5.6+, 도커는 잘 안 쓴다)"
+    ]
+   ],
+   "note": "**전부 다 쓰는 게 아니라 골라 쓸 수** 있다. **`--network host`(7.4절)는 NET 만 공유하는 것**이고, **`--pid host` 는 PID 만 공유**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "namespace 는 세계를 나누고 cgroup 은 몫을 정한다",
+   "ascii": "   namespace: what you can SEE          cgroup: how much you can USE\n   ---------------------------          ----------------------------\n   pid   -> only my processes           memory.max   -> 512M\n   mnt   -> only my filesystem          cpu.max      -> 50000 100000\n   net   -> only my interfaces          pids.max     -> 100\n   uts   -> my own hostname             io.max       -> device limits\n\n   docker run --memory 512m --cpus 0.5 --pids-limit 100 myapp\n              |______________________________________|\n                        all of this is cgroup\n\n   보이는 것과 쓸 수 있는 것은 다른 문제다",
+   "note": "**둘을 헷갈리면 \"격리했는데 왜 호스트가 죽나\" 를 이해 못** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "cgroup 이 없으면 격리는 반쪽이다",
+   "md": "**namespace 만 있으면 이런 일이** 난다.\n\n> **컨테이너 A 가 메모리를 8GB 먹는다.**\n> **A 는 B 를 볼 수도 없다.** **그런데 호스트 메모리가 바닥나서 커널이 B 를 죽인다.**\n\n**보이지 않는 것과 영향을 안 주는 것은 다른** 문제다. **2.1절의 ④가 정확히 이것**이다.\n\n**cgroup v2 가 제한하는 것들**:\n\n| 파일 | 무엇 | 도커 플래그 |\n|---|---|---|\n| `memory.max` | 메모리 상한. 넘으면 **OOMKill** | `--memory 512m` |\n| `memory.high` | 상한 근처에서 스로틀 | (도커는 잘 안 쓴다) |\n| `cpu.max` | 주기당 쓸 수 있는 CPU 시간 | `--cpus 0.5` |\n| `pids.max` | 만들 수 있는 프로세스 수 | `--pids-limit 100` |\n| `io.max` | 디스크 IOPS·대역폭 | `--device-read-bps` |\n\n> **`pids.max` 가 은근히 중요**하다. **포크 폭탄 하나가 호스트를 마비**시킬 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "도커 없이 손으로 만들어 보면",
+   "md": "**리눅스에서 `unshare` 한 줄이면 namespace 를 직접** 만든다.\n\n```bash\n# PID 와 마운트 네임스페이스를 새로 만들고 셸을 띄운다\nsudo unshare --pid --mount --fork --mount-proc /bin/bash\n\n# 이 안에서\nps -ef        # 나와 ps 만 보인다\necho $$       # 1\n```\n\n**여기에 파일 시스템을 알파인 루트로 바꾸면**(`chroot`) **거의 컨테이너**다.\n\n> **그래서 \"컨테이너는 리눅스 기능의 조합\" 이라는 말이** 나온다.\n> **도커가 판 것은 기술이 아니라 \"이미지 형식 + 배포 + 한 줄 명령\"** 이다(4장에서 이 이야기를 다시 한다).\n\n**맥·윈도우에서는 이 실습이** 안 된다 — **호스트에 리눅스 커널이 없기** 때문이다(2.6절). **대신 `docker run --privileged` 로 리눅스 컨테이너 안에서 해 볼 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "USER namespace 를 안 쓰면 컨테이너의 root 는 호스트의 root 다",
+   "md": "**기본 설정에서 컨테이너 안의 `root` 는 호스트의 UID 0 과 같은** 번호다.\n\n```bash\n$ docker run --rm -v /etc:/host-etc alpine cat /host-etc/shadow\nroot:$6$xyz...:19800:0:99999:7:::\n```\n\n> **호스트의 `/etc/shadow` 를** 읽었다. **컨테이너 안에서 root 였기** 때문이다.\n\n**이게 \"docker 그룹은 사실상 root\"**(1.3절)**라는 말의 근거**다.\n\n**막는 방법 셋**:\n\n| 방법 | 어디 |\n|---|---|\n| 이미지에서 `USER` 를 non-root 로 | 10.6절 |\n| `--user 1000:1000` 으로 실행 | 8.4절 |\n| rootless 모드 / USER namespace 재매핑 | 10.6절 |\n\n**8장에서 볼 파일 권한 문제도 전부 여기서** 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "cgroup 파일을 직접 읽어 본다",
+   "sql": "# --- 제한을 걸고 띄운다 ---\n\n$ docker run -d --name limited --memory 256m --cpus 0.5 --pids-limit 50 \\\n    alpine sh -c 'sleep 3600'\n\n$ docker inspect -f 'mem={{.HostConfig.Memory}} cpus={{.HostConfig.NanoCpus}} pids={{.HostConfig.PidsLimit}}' limited\nmem=268435456 cpus=500000000 pids=50\n\n\n# --- 컨테이너 안에서 cgroup 을 읽으면 (cgroup v2) ---\n\n$ docker exec limited cat /sys/fs/cgroup/memory.max\n268435456\n\n$ docker exec limited cat /sys/fs/cgroup/cpu.max\n50000 100000\n\n#   100ms 주기마다 50ms 쓸 수 있다 = 0.5 코어\n\n$ docker exec limited cat /sys/fs/cgroup/pids.max\n50\n\n\n# --- 그런데 /proc 은 여전히 호스트 값을 보여 준다 ---\n\n$ docker exec limited free -m | head -2\n               total        used        free\nMem:            7834         912        4102\n\n#   256MB 로 제한했는데 7834MB 라고 나온다\n#   /proc/meminfo 는 namespace 로 안 가려진다\n#   이것이 10.3절 JVM 메모리 문제의 뿌리다\n\n$ docker exec limited nproc\n8\n\n#   --cpus 0.5 인데 8 이라고 답한다\n\n\n# --- 제한이 실제로 도는지 확인 ---\n\n$ docker run --rm --memory 32m --memory-swap 32m alpine \\\n    sh -c 'dd if=/dev/zero of=/dev/shm/f bs=1M count=64'\nKilled\n\n$ echo $?\n137\n\n#   137 = SIGKILL. cgroup 이 한도에서 죽인 것이다\n\n\n# --- namespace 는 실제로 다른가 ---\n\n$ docker exec limited readlink /proc/self/ns/pid\npid:[4026532501]\n\n$ readlink /proc/self/ns/pid\npid:[4026531836]\n\n#   다르다\n\n\n# --- 도커 없이 만들어 보기 (리눅스 호스트) ---\n\n$ sudo unshare --pid --mount --fork --mount-proc /bin/bash\n\nroot@host:/# echo $$\n1\n\nroot@host:/# ps -ef\nUID   PID  PPID  CMD\nroot    1     0  /bin/bash\nroot   12     1  ps -ef\n\n#   호스트의 프로세스가 하나도 안 보인다. 도커는 안 썼다\n\nroot@host:/# exit\n\n$ docker rm -f limited"
+  }
+ ],
+ "recap": [
+  "namespace 는 '무엇이 보이나' 를, cgroup 은 '얼마나 쓸 수 있나' 를 정한다. 둘은 다른 문제다.",
+  "namespace 는 PID·MNT·NET·UTS·IPC·USER·CGROUP 등이 있고 골라 쓸 수 있다.",
+  "cgroup 을 안 주면 컨테이너는 호스트 자원을 무제한으로 쓴다. 격리는 반쪽이 된다.",
+  "/proc 은 namespace 로 안 가려져서 free 와 nproc 이 호스트 값을 답한다 — 10.3절의 뿌리다.",
+  "기본 설정에서 컨테이너의 root 는 호스트의 root 다."
+ ],
+ "drills": [
+  {
+   "task": "`docker run -d --memory 256m --cpus 0.5 alpine sleep 3600` 을 띄우고 컨테이너 안에서 `/sys/fs/cgroup/memory.max` 와 `cpu.max` 를 읽어 본다.",
+   "done_when": "268435456 과 `50000 100000` 을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 컨테이너에서 `free -m` 과 `nproc` 을 쳐 본다.",
+   "done_when": "제한과 무관하게 호스트 값이 나오는 것을 확인하고, 왜 그런지 설명할 수 있다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker run --rm --memory 32m --memory-swap 32m alpine sh -c 'dd if=/dev/zero of=/dev/shm/f bs=1M count=64'` 로 한도를 넘겨 본다.",
+   "done_when": "Killed 와 종료 코드 137 을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "namespace 와 cgroup 의 차이를 한 줄로.",
+   "a": "namespace 는 보이는 범위를 나누고, cgroup 은 쓸 수 있는 양을 제한한다."
+  },
+  {
+   "q": "컨테이너 안의 `free -m` 이 호스트 메모리를 답하는 이유는.",
+   "a": "/proc/meminfo 는 namespace 로 가려지지 않는다. 제한은 cgroup 파일에 있다."
+  },
+  {
+   "q": "`--pids-limit` 이 왜 필요한가.",
+   "a": "포크 폭탄처럼 프로세스를 무한히 만드는 것으로 호스트를 마비시킬 수 있기 때문."
+  }
+ ],
+ "terms": [
+  {
+   "term": "unshare",
+   "what": "현재 프로세스를 새 namespace 로 떼어내는 리눅스 명령."
+  },
+  {
+   "term": "cgroup v2",
+   "what": "자원 제어 그룹의 2세대. 파일 하나로 한도를 읽고 쓴다. 요즘 배포판의 기본값."
+  },
+  {
+   "term": "rootless",
+   "what": "데몬과 컨테이너를 일반 사용자 권한으로 돌리는 방식. USER namespace 를 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "man7 — namespaces(7)",
+   "url": "https://man7.org/linux/man-pages/man7/namespaces.7.html",
+   "publisher": "Linux man-pages"
+  },
+  {
+   "title": "Linux kernel — Control Group v2",
+   "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+   "publisher": "kernel.org"
+  },
+  {
+   "title": "Docker Docs — Runtime metrics (cgroups)",
+   "url": "https://docs.docker.com/engine/containers/runmetrics/",
+   "publisher": "Docker"
+  }
+ ]
+}

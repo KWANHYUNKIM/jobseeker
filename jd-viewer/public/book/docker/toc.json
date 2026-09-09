@@ -97,7 +97,7 @@
           "title": "namespace 와 cgroup",
           "summary": "도커가 발명하지 않은 두 가지.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -105,7 +105,7 @@
           "title": "도커 아키텍처",
           "summary": "클라이언트가 치고 데몬이 한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -113,7 +113,7 @@
           "title": "맥과 윈도우에는 리눅스가 없다",
           "summary": "내 노트북에서 도는 것의 정체.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

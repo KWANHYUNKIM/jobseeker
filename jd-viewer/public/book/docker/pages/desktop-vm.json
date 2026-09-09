@@ -1,0 +1,148 @@
+{
+ "book": "docker",
+ "id": "desktop-vm",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "맥과 윈도우에는 리눅스가 없다",
+ "summary": "내 노트북에서 도는 것의 정체.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "맥·윈도우의 도커가 VM 위에서 돈다는 것을 안다.",
+  "그래서 생기는 성능·경로 문제를 안다.",
+  "아키텍처 차이가 어디서 터지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 \"컨테이너는 호스트 커널을 공유한다\" 고** 했다. **그런데 맥에는 리눅스 커널이** 없다.\n\n> **그러면 맥에서 도는 저 알파인 컨테이너는 누구의 커널을 쓰고 있나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "맥에서 docker run 을 치면",
+   "ascii": "   macOS                                        Linux host\n   -----                                        ----------\n   docker CLI (darwin/arm64)                    docker CLI\n       |  socket forwarded                          |\n       v                                            v\n   +-----------------------------+              dockerd\n   |  lightweight Linux VM       |                  |\n   |  (Virtualization.framework) |              container\n   |    dockerd                  |\n   |    containerd               |\n   |    container (linux/arm64)  |\n   +-----------------------------+\n\n   1.3절에서 Client 는 darwin, Server 는 linux 였던 이유",
+   "note": "**\"도커 데스크톱을 깐다\" 는 말은 사실상 \"리눅스 VM 을 하나 받는다\"** 는 뜻이다."
+  },
+  {
+   "type": "table",
+   "caption": "환경마다 실제로 무엇이 도는가",
+   "columns": [
+    "호스트",
+    "도커 데몬이 도는 곳",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**Linux**",
+     "호스트 그 자체",
+     "VM 없음. 가장 빠르다"
+    ],
+    [
+     "**macOS**",
+     "Docker Desktop 의 리눅스 VM",
+     "Apple Virtualization.framework. Colima·Lima 도 같은 방식"
+    ],
+    [
+     "**Windows + WSL2**",
+     "WSL2 안의 리눅스",
+     "WSL2 자체가 경량 VM 이다"
+    ],
+    [
+     "**Windows 컨테이너**",
+     "윈도우 커널",
+     "이 책에서 안 다룬다. 리눅스 이미지가 안 돈다"
+    ]
+   ],
+   "note": "**맥·윈도우에서도 명령이 같은 이유는 CLI 가 소켓 너머의 리눅스 데몬과 이야기하기** 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 사실이 실제로 문제가 되는 자리",
+   "md": "**평소에는 안 느껴지다가 정확히 세 곳에서** 튄다.\n\n| 자리 | 무슨 일이 | 어디서 다시 |\n|---|---|---|\n| **바인드 마운트가 느리다** | 맥의 파일을 VM 이 보려면 파일 공유 계층(virtiofs)을 거친다. `node_modules` 나 `.gradle` 처럼 파일이 많으면 눈에 띄게 느리다 | 8.3절 |\n| **호스트 프로세스가 안 보인다** | 2.3절의 `ps -ef` 실습이 맥에서는 안 된다. 그 프로세스는 VM 안에 있다 | — |\n| **`localhost` 의 의미** | 컨테이너에서 호스트를 부르려면 `host.docker.internal` 을 쓴다 | 7.5절 |\n\n**그리고 자원**:\n\n> **VM 에 떼어 준 메모리가 상한**이다. **`docker stats` 의 LIMIT 이 노트북 램이 아니라 VM 램**으로 나온다.\n> **`--memory 8g` 를 줘도 VM 이 4GB 면 안 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "M1 맥에서 만든 이미지가 서버에서 안 돈다",
+   "md": "**1.2절에서 예고한 자리**다.\n\n```\nstandard_init_linux.go: exec user process caused: exec format error\n```\n\n**또는 조금 더 친절하게**:\n\n```\nWARNING: The requested image's platform (linux/arm64/v8) does not match the\ndetected host platform (linux/amd64/v3) and no specific platform was requested\n```\n\n**왜**: **M1 은 arm64**, **대부분의 서버는 amd64**. **바이너리가 다르다.**\n\n| 상황 | 되나 |\n|---|---|\n| 공식 이미지 pull (nginx, postgres) | **된다.** 멀티 아키텍처로 올려 뒀다(4.3절) |\n| 내가 `docker build` 한 이미지 | **내 아키텍처 하나만** 만들어진다 |\n| `--platform linux/amd64` 로 실행 | 에뮬레이션으로 돌긴 한다. **느리다** |\n| `docker buildx --platform linux/amd64,linux/arm64` | 둘 다 만든다. **정답** |\n\n> **5.9절과 11.2절에서 CI 로 이걸 자동화**한다. **로컬에서만 빌드해 올리는 습관이 이 사고를** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "맥에서도 VM 안으로 들어가 볼 수 있다",
+   "md": "**2.3~2.4절의 실습을 맥에서 하고 싶으면 특권 컨테이너로 호스트(=VM) 네임스페이스에** 들어간다.\n\n```bash\ndocker run -it --rm --privileged --pid=host \\\n  alpine nsenter -t 1 -m -u -n -i sh\n```\n\n**이 셸이 VM 의 루트 셸**이다. **여기서 `ps -ef` 를 치면 dockerd·containerd·shim 이** 보인다.\n\n> **`--privileged` 와 `--pid=host` 를 같이 주면 격리가 사실상 없다는 뜻**이기도 하다.\n> **실습 외에는 쓰지** 않는다(10.6절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "맥에서 실제로 확인한 것",
+   "sql": "# --- 클라이언트와 서버의 OS 가 다르다 ---\n\n$ docker version --format 'client={{.Client.Os}}/{{.Client.Arch}} server={{.Server.Os}}/{{.Server.Arch}}'\nclient=darwin/arm64 server=linux/arm64\n\n$ uname -sr\nDarwin 24.5.0\n\n$ docker run --rm alpine uname -sr\nLinux 6.10.14-linuxkit\n\n#   호스트는 Darwin 인데 컨테이너는 Linux 6.10 을 본다\n#   그 커널은 Docker Desktop 이 켜 둔 VM 의 것이다\n\n\n# --- VM 안으로 들어가 본다 ---\n\n$ docker run -it --rm --privileged --pid=host alpine \\\n    nsenter -t 1 -m -u -n -i sh\n\n/ # hostname\ndocker-desktop\n\n/ # ps -ef | head -6\nPID   USER     COMMAND\n    1 root     /sbin/init\n  512 root     /usr/bin/containerd\n  588 root     /usr/local/bin/dockerd\n  702 root     containerd-shim-runc-v2 -namespace moby -id ...\n\n#   2.5절의 계보가 여기 있다. 맥이 아니라 VM 안이다\n\n/ # free -m | head -2\n               total        used        free\nMem:            7838        1204       4021\n\n#   이게 노트북 램이 아니라 VM 에 준 램이다\n\n/ # exit\n\n\n# --- 아키텍처 ---\n\n$ docker run --rm alpine uname -m\naarch64\n\n$ docker run --rm --platform linux/amd64 alpine uname -m\nWARNING: The requested image's platform (linux/amd64) does not match the\ndetected host platform (linux/arm64/v8) and no specific platform was requested\nx86_64\n\n#   돌긴 한다. QEMU 에뮬레이션이라 느리다\n\n$ time docker run --rm alpine sh -c 'i=0; while [ $i -lt 200000 ]; do i=$((i+1)); done'\nreal    0m1.284s\n\n$ time docker run --rm --platform linux/amd64 alpine sh -c 'i=0; while [ $i -lt 200000 ]; do i=$((i+1)); done'\nreal    0m9.517s\n\n#   7배 넘게 느리다. CI 에서 이러면 빌드가 몇 배가 된다\n\n\n# --- 내가 빌드한 이미지는 한 아키텍처뿐이다 ---\n\n$ docker build -t myapp:local .\n$ docker inspect -f '{{.Os}}/{{.Architecture}}' myapp:local\nlinux/arm64\n\n#   이대로 amd64 서버에 올리면 exec format error 가 난다 (5.9절)"
+  }
+ ],
+ "recap": [
+  "맥·윈도우의 도커는 리눅스 VM 안에서 돈다. CLI 만 호스트 것이다.",
+  "그래서 바인드 마운트가 느리고, 호스트 프로세스가 안 보이고, localhost 의 의미가 다르다.",
+  "docker stats 의 메모리 상한은 노트북 램이 아니라 VM 에 준 램이다.",
+  "M1 에서 빌드한 이미지는 arm64 하나뿐이다. amd64 서버에서 exec format error 가 난다.",
+  "--platform 으로 에뮬레이션은 되지만 몇 배 느리다. buildx 로 둘 다 만드는 것이 정답이다."
+ ],
+ "drills": [
+  {
+   "task": "`docker version --format 'client={{.Client.Os}}/{{.Client.Arch}} server={{.Server.Os}}/{{.Server.Arch}}'` 를 친다.",
+   "done_when": "맥이면 darwin/arm64 와 linux/arm64 로 다른 것을 확인한다.",
+   "minutes": 2
+  },
+  {
+   "task": "`docker run -it --rm --privileged --pid=host alpine nsenter -t 1 -m -u -n -i sh` 로 VM 안에 들어가 `ps -ef` 를 본다.",
+   "done_when": "dockerd·containerd·shim 이 보이는 것을 확인한다.",
+   "hint": "리눅스 호스트면 그냥 호스트 셸이 된다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 셸 반복 연산을 native 와 `--platform linux/amd64` 로 각각 `time` 재 본다.",
+   "done_when": "에뮬레이션 쪽이 몇 배 느린 것을 숫자로 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "맥에서 `docker run alpine uname -r` 이 리눅스 커널 버전을 답하는 이유는.",
+   "a": "Docker Desktop 이 켜 둔 리눅스 VM 안에서 돌기 때문. 맥에는 리눅스 커널이 없다."
+  },
+  {
+   "q": "맥에서 바인드 마운트가 느린 이유는.",
+   "a": "맥 파일 시스템을 VM 이 보려면 파일 공유 계층을 거치기 때문. 파일이 많을수록 눈에 띈다."
+  },
+  {
+   "q": "M1 에서 빌드한 이미지를 amd64 서버에 올리면 무슨 에러가 나나.",
+   "a": "exec format error. 아키텍처가 달라 바이너리를 실행할 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "virtiofs",
+   "what": "호스트 폴더를 VM 안에 공유하는 방식. 맥 도커의 바인드 마운트가 이걸 쓴다."
+  },
+  {
+   "term": "host.docker.internal",
+   "what": "컨테이너에서 호스트를 가리키는 특수 이름. 7.5절."
+  },
+  {
+   "term": "buildx",
+   "what": "여러 아키텍처를 한 번에 빌드하는 도커 빌더. 5.9절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker Desktop on Mac",
+   "url": "https://docs.docker.com/desktop/setup/install/mac-install/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Multi-platform builds",
+   "url": "https://docs.docker.com/build/building/multi-platform/",
+   "publisher": "Docker"
+  }
+ ]
+}

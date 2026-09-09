@@ -1,0 +1,157 @@
+{
+ "book": "docker",
+ "id": "docker-arch",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "도커 아키텍처",
+ "summary": "클라이언트가 치고 데몬이 한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "CLI·데몬·containerd·runc 의 역할을 구분한다.",
+  "docker.sock 이 왜 위험한지 안다.",
+  "데몬이 죽으면 컨테이너가 어떻게 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 `docker version` 이 Client 와 Server 를 따로** 찍었다. **왜 둘로 나뉘어 있나.**\n\n> **`docker` 는 아무 일도 안 한다.** **REST 요청을 보내는 클라이언트일** 뿐이다."
+  },
+  {
+   "type": "figure",
+   "caption": "docker run 한 줄이 지나가는 길",
+   "ascii": "   docker CLI\n       |  HTTP over /var/run/docker.sock\n       v\n   dockerd                    <- images, networks, volumes, API\n       |  gRPC\n       v\n   containerd                 <- container lifecycle, image pull\n       |\n       v\n   containerd-shim            <- one per container, stays alive\n       |\n       v\n   runc                       <- creates namespaces + cgroups, execs, exits\n       |\n       v\n   your process (PID 1 in the container)\n\n   runc 는 만들고 바로 빠진다. shim 이 남아서 부모 노릇을 한다",
+   "note": "**2.3절에서 nginx 의 부모가 containerd-shim 이었던** 이유다."
+  },
+  {
+   "type": "table",
+   "caption": "누가 무엇을 하나",
+   "columns": [
+    "조각",
+    "하는 일",
+    "없으면"
+   ],
+   "rows": [
+    [
+     "**docker (CLI)**",
+     "명령을 REST 로 바꿔 보낸다",
+     "다른 클라이언트로 대체 가능하다"
+    ],
+    [
+     "**dockerd**",
+     "이미지·네트워크·볼륨 관리, API 제공, 빌드",
+     "`docker build`·`docker network` 가 안 된다"
+    ],
+    [
+     "**containerd**",
+     "컨테이너 생애·이미지 pull 의 실무",
+     "쿠버네티스는 dockerd 없이 이걸 직접 쓴다"
+    ],
+    [
+     "**shim**",
+     "컨테이너마다 하나. 부모 노릇과 로그 중계",
+     "데몬이 죽으면 컨테이너도 죽는다"
+    ],
+    [
+     "**runc**",
+     "namespace·cgroup 을 실제로 만든다",
+     "OCI 표준 구현체. 다른 것으로 갈아끼울 수 있다"
+    ]
+   ],
+   "note": "**runc 와 이미지 형식은 OCI 표준**이다. **그래서 podman·containerd 가 같은 이미지를** 돌린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "shim 이 있어서 데몬을 재시작해도 컨테이너가 산다",
+   "md": "**옛날 도커는 데몬이 컨테이너의 부모**였다. **데몬을 업그레이드하려면 컨테이너를 다 내려야** 했다.\n\n**지금은 shim 이 부모**다.\n\n```\ndockerd 재시작   ->  컨테이너는 계속 돈다\n                    (shim 이 살아 있으므로)\n```\n\n**확인하는 법**:\n\n```bash\nsudo systemctl restart docker\ndocker ps          # 여전히 Up\n```\n\n> **다만 `live-restore` 설정이 꺼져 있으면 데몬이 재시작하며 컨테이너를 정리**한다. **운영에서는 켜** 둔다.\n>\n> **쿠버네티스가 dockerd 를 걷어내고 containerd 를 직접 쓴** 것도 이 층이 이미 충분했기 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "docker.sock 을 컨테이너에 넣는 것은 root 를 주는 것이다",
+   "md": "**CI 에서 흔히 보는 줄**이다.\n\n```yaml\nvolumes:\n  - /var/run/docker.sock:/var/run/docker.sock   # \"컨테이너 안에서 도커 쓰기\"\n```\n\n**이 한 줄이 주는 권한**:\n\n```bash\n# 그 컨테이너 안에서\ndocker run -v /:/host -it alpine chroot /host sh\n# 호스트의 root 셸\n```\n\n> **소켓을 가진 쪽은 데몬에게 무엇이든 시킬 수** 있다. **데몬은 root 로** 돈다.\n> **\"컨테이너 안이니까 안전하다\" 가 정확히 반대로 되는** 자리다.\n\n| 대안 | 어디 |\n|---|---|\n| CI 에서 이미지 빌드 | Kaniko·BuildKit rootless, 11.2절 |\n| 테스트에서 컨테이너 띄우기 | Testcontainers 는 소켓이 필요하다 — CI 러너를 격리한다. 10.5절 |\n| 정말 필요하면 | 소켓 프록시로 API 를 좁힌다 |"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 구조가 남긴 흔적들",
+   "md": "**나중에 만날 현상들이 여기서 설명**된다.\n\n| 현상 | 이유 |\n|---|---|\n| `docker build` 가 내 폴더를 통째로 전송한다 | **빌드는 데몬이 한다.** 파일을 데몬에게 보내야 한다(5.9절) |\n| `-v ./data:/data` 의 경로가 **데몬 기준** | 원격 데몬을 쓰면 내 노트북 경로가 아니다(8.3절) |\n| `docker ps` 가 다른 사용자의 컨테이너까지 보여 준다 | 데몬은 하나, 컨테이너는 데몬 소유다 |\n| 컨테이너 로그가 `/var/lib/docker/containers/...` 에 쌓인다 | 데몬이 stdout 을 받아 파일로 쓴다(6.4절) |\n\n> **\"내가 친 명령을 실제로는 다른 프로세스가 한다\" 는 사실 하나로 위 넷이 전부** 설명된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "프로세스 계보와 소켓을 실제로 본다",
+   "sql": "# --- 데몬과 그 아래 (리눅스 호스트) ---\n\n$ pstree -p $(pgrep -f 'dockerd' | head -1)\ndockerd(812)-+-{dockerd}(813)\n             `-{dockerd}(814)\n\n$ pstree -p $(pgrep -f 'containerd$' | head -1)\ncontainerd(1043)-+-{containerd}(1044)\n\n$ docker run -d --name web nginx:1.27\n$ ps -ef --forest | grep -A3 shim | head -8\nroot  1043     1  containerd\nroot  2860  1043    \\_ containerd-shim-runc-v2 -namespace moby -id 9f2b1c0a...\nroot  2871  2860        \\_ nginx: master process nginx -g daemon off;\nsyst+ 2905  2871            \\_ nginx: worker process\n\n#   dockerd 가 아니라 shim 이 nginx 의 부모다\n#   runc 는 안 보인다 -- 만들고 이미 빠졌다\n\n\n# --- 소켓이 실제로 REST 다 ---\n\n$ curl -s --unix-socket /var/run/docker.sock http://localhost/version | head -c 200\n{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"27.3.1\",\"ApiVersion\":\"1.47\"\n\n$ curl -s --unix-socket /var/run/docker.sock \\\n    'http://localhost/containers/json' | python3 -m json.tool | head -8\n[\n    {\n        \"Id\": \"9f2b1c0a7e31d5c4...\",\n        \"Names\": [\"/web\"],\n        \"Image\": \"nginx:1.27\",\n        \"State\": \"running\",\n\n#   docker ps 가 하는 일이 이것이다\n\n$ ls -l /var/run/docker.sock\nsrw-rw---- 1 root docker 0 Sep  9 19:02 /var/run/docker.sock\n\n#   그룹이 docker 다. 이 그룹에 들어간다는 게 무슨 뜻인지 (1.3절)\n\n\n# --- 데몬을 재시작해도 컨테이너가 사나 ---\n\n$ docker info --format '{{.LiveRestoreEnabled}}'\nfalse\n\n$ sudo systemctl restart docker\n$ docker ps --format '{{.Names}} {{.Status}}'\nweb Up 2 seconds\n\n#   재시작됐다 (Up 2 seconds). live-restore 가 꺼져 있으면 이렇게 된다\n#   켜 두면 Up 5 minutes 처럼 원래 시각이 유지된다\n\n\n# --- 컨테이너 런타임 정보 ---\n\n$ docker info --format 'runtime={{.DefaultRuntime}} cgroup={{.CgroupVersion}} driver={{.Driver}}'\nruntime=runc cgroup=2 driver=overlay2\n\n$ docker rm -f web"
+  }
+ ],
+ "recap": [
+  "`docker` 는 REST 클라이언트다. 실제 일은 dockerd → containerd → shim → runc 가 한다.",
+  "컨테이너의 부모는 데몬이 아니라 shim 이다. 그래서 데몬을 재시작해도 컨테이너가 살 수 있다(live-restore).",
+  "docker.sock 을 넘겨주는 것은 호스트 root 를 넘겨주는 것이다.",
+  "빌드도 마운트 경로도 로그도 전부 '데몬 기준' 이다. 이 사실 하나로 여러 현상이 설명된다."
+ ],
+ "drills": [
+  {
+   "task": "`curl -s --unix-socket /var/run/docker.sock http://localhost/version` 을 쳐 본다.",
+   "done_when": "docker version 과 같은 정보가 JSON 으로 오는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "리눅스에서 `ps -ef --forest` 로 컨테이너 프로세스의 부모가 containerd-shim 인 것을 확인한다.",
+   "done_when": "shim → 애플리케이션 프로세스 계보를 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker info --format '{{.CgroupVersion}} {{.Driver}} {{.DefaultRuntime}}'` 로 내 환경의 값을 적어 둔다.",
+   "done_when": "cgroup 버전과 스토리지 드라이버를 안다. 3.2절에서 쓴다.",
+   "minutes": 2
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker` 명령이 실제로 하는 일은.",
+   "a": "유닉스 소켓으로 데몬에 REST 요청을 보내는 것. 컨테이너를 만드는 일은 데몬 쪽이 한다."
+  },
+  {
+   "q": "컨테이너에 docker.sock 을 마운트하면 왜 위험한가.",
+   "a": "데몬은 root 로 돌고, 소켓을 쥔 쪽은 데몬에게 무엇이든 시킬 수 있다. 호스트 루트를 마운트한 컨테이너를 띄우면 그대로 호스트 root 다."
+  },
+  {
+   "q": "`docker build` 가 폴더를 통째로 전송하는 이유는.",
+   "a": "빌드를 데몬이 하기 때문이다. 데몬이 파일을 봐야 해서 컨텍스트를 보낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "OCI",
+   "en": "Open Container Initiative",
+   "what": "이미지 형식과 런타임의 표준. 덕분에 도커 이미지를 다른 런타임이 돌린다."
+  },
+  {
+   "term": "shim",
+   "what": "컨테이너마다 하나씩 남아 부모 노릇과 로그 중계를 하는 프로세스."
+  },
+  {
+   "term": "live-restore",
+   "what": "데몬 재시작 중에도 컨테이너를 계속 돌리는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker architecture",
+   "url": "https://docs.docker.com/get-started/docker-overview/#docker-architecture",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Live restore",
+   "url": "https://docs.docker.com/engine/daemon/live-restore/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "OCI — Runtime Specification",
+   "url": "https://github.com/opencontainers/runtime-spec",
+   "publisher": "Open Container Initiative"
+  }
+ ]
+}
