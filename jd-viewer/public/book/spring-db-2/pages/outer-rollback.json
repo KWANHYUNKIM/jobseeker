@@ -1,0 +1,125 @@
+{
+ "book": "spring-db-2",
+ "id": "outer-rollback",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "외부 롤백",
+ "summary": "안쪽이 성공해도 같이 롤백된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "바깥 롤백이 안쪽을 삼키는 것을 본다.",
+  "이것이 왜 옳은지 안다.",
+  "안 되기를 원할 때를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 경우 중 두 번째**다. **안쪽은 성공했는데 바깥이 실패**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "안쪽이 커밋해도",
+   "ascii": "   outer.getTransaction   new\n     inner.getTransaction  join\n       insert itemB\n     inner.commit          nothing happens\n   outer.rollback          con.rollback()\n\n   itemB is gone, even though inner committed\n\n   the inner code has no way to know",
+   "note": "**안쪽 코드는 알 방법이 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 옳은 동작이다",
+   "md": "**1편 3장의 계좌이체**를 떠올린다.\n\n```java\n@Transactional\npublic void 이체(String from, String to, int 금액) {\n    출금(from, 금액);      // 성공\n    입금(to, 금액);        // 실패 -> 예외\n}\n```\n\n**출금이 성공했어도 롤백돼야** 한다. **그것이 트랜잭션**이다.\n\n**11.5절과 같은 이야기의 뒷면**이다.\n\n| | |\n|---|---|\n| 11.5 | **전부 커밋해야 커밋** |\n| **11.6** | **바깥이 롤백하면 전부 롤백** |\n\n**안쪽의 `commit` 이 아무 일도 안 했으니**(11.4절), **되돌릴 것도 없다.** **애초에 커밋된 적이 없다.**\n\n> **\"안쪽이 커밋했는데 롤백됐다\" 는 표현이 오해**를 부른다. **커밋한 적이 없다.** **논리 트랜잭션이 정상 종료했을 뿐**이다.\n\n**로그가 그것을 정확히 말한다.**\n\n```\n(commit(inner) 에 아무 로그도 없다)\n...\nInitiating transaction rollback\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "안쪽 입장에서는 알 수 없다",
+   "md": "**안쪽 서비스가 자기 작업의 결과를 확인할 방법이 없다.**\n\n```java\n@Transactional\npublic void 이력저장(String 내용) {\n    이력repository.save(new 이력(내용));\n    // 저장됐다고 믿는다\n}\n```\n\n**바깥이 롤백하면 사라진다.** **이 메서드는 그것을 모른다.**\n\n**이것이 문제가 되는 경우**가 있다.\n\n| 상황 | |\n|---|---|\n| **감사 로그** | 실패한 시도도 기록해야 한다 |\n| **알림 발송 이력** | |\n| **재시도 횟수** | 롤백되면 무한 재시도 |\n\n**세 번째가 실제 사고**를 낸다. **\"시도 횟수 +1\" 을 같은 트랜잭션에서 하면**, **실패로 롤백될 때 카운트도 사라진다.** **영원히 재시도한다.**\n\n> **12장의 `REQUIRES_NEW`** 가 이것을 푼다. **별도의 물리 트랜잭션으로 분리**한다.\n>\n> **11.2절에서 \"겹치지 않는 것이 필요한 경우도 있다\" 고 한 것**이 이 목록이다.\n\n**또는 트랜잭션 밖으로** 뺀다.\n\n```java\npublic void 주문() {          // @Transactional 없음\n    try {\n        주문서비스.처리();      // @Transactional\n    } catch (Exception e) {\n        이력서비스.실패기록();  // 별도 트랜잭션\n    }\n}\n```\n\n**10.3절의 클래스 분리와 같은 발상**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "`@TransactionalEventListener`",
+   "md": "**커밋 이후에만 무언가 하고 싶을 때** 쓴다.\n\n```java\n@Transactional\npublic void 주문() {\n    repository.save(order);\n    publisher.publishEvent(new 주문완료이벤트(order.getId()));\n}\n\n@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)\npublic void 알림발송(주문완료이벤트 e) {\n    // 커밋된 뒤에만 실행된다\n}\n```\n\n**롤백되면 이 리스너가 안 돈다.**\n\n| phase | 언제 |\n|---|---|\n| `AFTER_COMMIT` | **커밋 후** (기본) |\n| `AFTER_ROLLBACK` | 롤백 후 |\n| `AFTER_COMPLETION` | 둘 다 |\n| `BEFORE_COMMIT` | 커밋 직전 |\n\n> **11.5절에서 \"외부 호출은 트랜잭션 밖으로\" 라고 했다.** **이것이 그 방법**이다. **메일 발송을 `AFTER_COMMIT` 으로** 옮기면 **트랜잭션이 짧아지고, 롤백되면 메일도 안 나간다.**\n>\n> **`AFTER_COMMIT` 리스너 안에서 DB 를 쓰면** 트랜잭션이 이미 끝났으니 **`REQUIRES_NEW` 가 필요**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 안쪽 커밋, 바깥 롤백 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\njdbcTemplate.update(\"insert into item ... values ('itemA', 10000, 10)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\nTransactionStatus inner = txManager.getTransaction(def);\n#   Participating in existing transaction\n\njdbcTemplate.update(\"insert into item ... values ('itemB', 20000, 20)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\ntxManager.commit(inner);\n#   (로그 없음)\n\ntxManager.rollback(outer);\n\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\nselect count(*) from item;\n#   -> 0\n\n#   itemB 도 사라졌다. inner 를 커밋했는데.\n\n# --- 예외가 없다 ---\n\n#   commit(inner) 는 성공적으로 반환했다\n#   rollback(outer) 도 조용히 끝났다\n#   아무도 뭐라고 안 했다\n\n#   11.7절은 다르다. 거기서는 예외가 난다.\n\n# --- 애너테이션으로 ---\n\n@Transactional\npublic void 이체() {\n    출금();        // @Transactional, 참여\n    입금();        // @Transactional, 참여 -> 예외\n}\n\n#   Getting transaction for [이체]\n#   Creating new transaction\n#   Getting transaction for [출금]\n#   Participating in existing transaction\n#   Hibernate: update account set balance=? where id=?\n#   Completing transaction for [출금]\n#   Getting transaction for [입금]\n#   Participating in existing transaction\n#   Completing transaction for [입금] after exception: RuntimeException\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n#   Completing transaction for [이체] after exception: RuntimeException\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\n#   출금의 update 가 되돌려졌다\n\n#   (여기서는 예외가 바깥까지 올라가서 바깥도 롤백을 원했다.\n#    그래서 UnexpectedRollbackException 이 안 난다.)\n\n# --- 이력이 사라지는 사고 ---\n\n@Transactional\npublic void 결제시도() {\n    시도횟수증가();        // @Transactional, 참여\n    결제();                // 실패\n}\n\n#   Hibernate: update payment_try set count=count+1 where id=?\n#   Completing transaction after exception\n#   Initiating transaction rollback\n\nselect count from payment_try where id = 1;\n#   -> 0\n\n#   횟수가 안 늘었다. 다음에도 같은 상태로 재시도한다.",
+   "note": "**첫 블록에서 `commit(inner)` 이 로그를 안 남기고 `rollback(outer)` 이 전부 되돌렸다.** **`itemB` 도 사라졌다.**\n\n**두 번째 블록이 중요**하다. **예외가 하나도 안 났다.** **11.7절과 다른 점**이다.\n\n**세 번째 블록의 `marking existing transaction as rollback-only`** 는 예외가 안쪽에서 났기 때문이다. **바깥도 같은 예외를 받아 롤백을 원했으니** 충돌이 없다.\n\n**맨 아래가 실무 사고**다. **시도 횟수가 롤백돼 무한 재시도**가 된다.\n\n**다음 절이 예외가 나는 유일한 경우**다."
+  }
+ ],
+ "recap": [
+  "**바깥이 롤백하면 안쪽 작업도 전부** 사라진다.",
+  "**안쪽은 커밋한 적이 없다** — 논리 종료였을 뿐이다.",
+  "**계좌이체가 요구하는 동작**이다.",
+  "**안쪽 코드는 결과를 알 방법이 없다.**",
+  "**감사 로그·알림 이력·재시도 횟수**가 같이 사라진다.",
+  "**시도 횟수가 롤백되면 무한 재시도**가 된다.",
+  "**`REQUIRES_NEW` 나 트랜잭션 밖 분리**로 푼다.",
+  "**`@TransactionalEventListener(AFTER_COMMIT)`** 로 커밋 후 작업을 뺀다.",
+  "**이 경우에는 예외가 안 난다** — 11.7절과의 차이다."
+ ],
+ "drills": [
+  {
+   "task": "안쪽 커밋 후 바깥을 롤백한다.",
+   "done_when": "두 건 다 사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외가 나는지 확인한다.",
+   "done_when": "안 나는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "시도 횟수 증가를 같은 트랜잭션에서 해 본다.",
+   "done_when": "롤백되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@TransactionalEventListener` 를 붙여 본다.",
+   "done_when": "롤백 시 안 도는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "바깥이 롤백하면 안쪽은?",
+   "a": "같이 사라진다. 안쪽은 애초에 커밋한 적이 없다."
+  },
+  {
+   "q": "왜 이것이 옳은가?",
+   "a": "계좌이체처럼 하나의 작업 단위여야 하기 때문이다."
+  },
+  {
+   "q": "무엇이 문제가 되나?",
+   "a": "감사 로그·알림 이력·재시도 횟수처럼 남아야 할 기록도 사라진다."
+  },
+  {
+   "q": "어떻게 푸나?",
+   "a": "`REQUIRES_NEW` 로 물리 트랜잭션을 분리하거나 트랜잭션 밖으로 뺀다."
+  },
+  {
+   "q": "이 경우에 예외가 나나?",
+   "a": "안 난다. 11.7절과의 차이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

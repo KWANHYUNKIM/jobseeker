@@ -690,7 +690,7 @@
           "title": "물리 트랜잭션과 논리 트랜잭션",
           "summary": "이 구분이 전부다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -698,7 +698,7 @@
           "title": "전체 커밋",
           "summary": "안쪽은 커밋하지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -706,7 +706,7 @@
           "title": "외부 롤백",
           "summary": "안쪽이 성공해도 같이 롤백된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",

@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "physical-logical",
+ "no": "11.4",
+ "chapter": 11,
+ "title": "물리 트랜잭션과 논리 트랜잭션",
+ "summary": "이 구분이 전부다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 트랜잭션 개념을 구분한다.",
+  "두 규칙을 안다.",
+  "누가 커넥션을 만지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11장의 중심 개념**이다. **나머지 절은 이 구분의 결과**다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 트랜잭션",
+   "ascii": "   physical transaction\n     the real thing on the connection\n     setAutoCommit(false) ... commit() or rollback()\n     exactly one\n\n   logical transaction\n     one getTransaction / commit pair in my code\n     as many as i wrote\n\n   outer   logical 1   isNewTransaction = true    -> owns the physical one\n   inner   logical 2   isNewTransaction = false   -> owns nothing",
+   "note": "**물리는 하나, 논리는 여럿**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이 구분이 필요한가",
+   "md": "**11.3절에서 이상한 일**이 있었다.\n\n```java\ntxManager.commit(inner);    // 아무 로그도 없다\ntxManager.commit(outer);    // 여기서 진짜 커밋\n```\n\n**`commit` 을 두 번 불렀는데 커밋은 한 번**이었다.\n\n**\"내 코드가 부른 트랜잭션\" 과 \"DB 에서 실제로 도는 트랜잭션\" 이 다르다.**\n\n| | 개수 | 무엇 |\n|---|---|---|\n| **논리** | **내가 부른 만큼** | `getTransaction`/`commit` 쌍 |\n| **물리** | **하나** | 커넥션의 `setAutoCommit(false)`~`commit()` |\n\n**논리 둘이 물리 하나에 얹힌다.**\n\n> **스프링이 이 층을 만든 이유**가 있다. **메서드마다 `@Transactional` 을 붙일 수 있게** 하려면, **각 메서드가 \"내가 트랜잭션 안이어야 한다\" 고 선언**하되 **실제 트랜잭션은 하나여야** 한다.\n>\n> **10.3절 마지막의 그 요구**다 — **\"바깥에 붙이면 안쪽이 다 묶인다.\"**\n\n**그래서 안쪽은 아무것도 못 한다.** **커밋도 롤백도 물리 트랜잭션의 주인만** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 규칙",
+   "ascii": "   the two rules\n\n   1  all logical transactions commit\n        -> the physical one commits\n\n   2  any one of them rolls back\n        -> the physical one rolls back\n\n   who acts on the connection\n     only the one with isNewTransaction = true",
+   "note": "**두 번째가 11.7절**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "스프링 코드로 보면",
+   "code": "// AbstractPlatformTransactionManager.commit() 안, 개념적으로\n\npublic void commit(TransactionStatus status) {\n\n    if (status.isRollbackOnly()) {\n        processRollback(status);          // 11.7절\n        return;\n    }\n\n    processCommit(status);\n}\n\nprivate void processCommit(DefaultTransactionStatus status) {\n\n    if (status.hasSavepoint()) {\n        status.releaseHeldSavepoint();    // NESTED\n    }\n    else if (status.isNewTransaction()) {\n        doCommit(status);                 // 진짜 커밋\n    }\n    // 아니면 아무것도 안 한다\n}",
+   "note": "**`isNewTransaction()` 이 아니면 `doCommit` 을 안 부른다.**\n\n**11.1절에서 \"이 두 줄의 차이가 11장 전체\" 라고 한 것**이 이 `if` 다.\n\n**롤백도 같다.**\n\n```java\nprivate void processRollback(DefaultTransactionStatus status) {\n    if (status.isNewTransaction()) {\n        doRollback(status);                    // 진짜 롤백\n    }\n    else if (status.hasTransaction()) {\n        status.setRollbackOnly();              // 표시만 한다\n    }\n}\n```\n\n> **`else if` 가 11.7절의 씨앗**이다. **안쪽은 롤백을 못 하니 표시만** 남긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "네 가지 경우",
+   "md": "**바깥과 안쪽이 각각 커밋/롤백하면 네 가지**다.\n\n| 바깥 | 안쪽 | 결과 | 절 |\n|---|---|---|---|\n| 커밋 | 커밋 | **커밋** | 11.5 |\n| **롤백** | 커밋 | **롤백** | 11.6 |\n| 커밋 | **롤백** | **롤백 + 예외** | **11.7** |\n| 롤백 | 롤백 | 롤백 | — |\n\n**세 번째만 예외**가 난다.\n\n**왜 그런지는 규칙 2번**이다. **안쪽이 롤백을 원했는데 바깥이 커밋을 요청**했다. **둘 다 만족시킬 수 없다.**\n\n> **스프링의 선택은 \"롤백하고 예외를 던진다\"** 다. **조용히 커밋하면 데이터가 깨지고, 조용히 롤백하면 바깥이 성공한 줄** 안다.\n>\n> **9.2절의 조용한 실패를 안 만들려는 설계**다. **이 책에서 몇 안 되는, 시끄럽게 실패하는 자리**다.\n\n**네 번째는 조용하다** — 둘 다 롤백을 원했으니 문제가 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "로그로 구분하는 법",
+   "md": "| 로그 | 무엇 |\n|---|---|\n| **`Creating new transaction`** | **물리 트랜잭션 시작** |\n| **`Participating in existing transaction`** | 논리만 추가 |\n| **`Acquired Connection`** | 물리가 시작됐다 |\n| **`Switching ... to manual commit`** | 물리가 시작됐다 |\n| **`Committing JDBC transaction`** | **물리 커밋** |\n| **`Releasing JDBC Connection`** | 물리 종료 |\n\n**`Creating new` 와 `Participating` 개수를 세면** 논리 개수를 안다.\n\n**`Acquired`/`Releasing` 개수를 세면** 물리 개수를 안다.\n\n> **11.2절**: 논리 2, 물리 2.\n> **11.3절**: 논리 2, 물리 1.\n\n**이 두 숫자가 다르면 전파가 일어난 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 논리 2, 물리 1 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   outer.isNewTransaction()=true\n\nTransactionStatus inner = txManager.getTransaction(def);\n\n#   Participating in existing transaction\n\n#   inner.isNewTransaction()=false\n#   (커넥션을 안 빌렸다)\n\njdbcTemplate.update(\"insert into item ... values ('itemA', 10000, 10)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\ntxManager.commit(inner);\n\n#   (아무 로그도 없다)\n#   (SQL 도 안 나갔다)\n\ntxManager.commit(outer);\n\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 개수를 세면\n#   Creating new       1\n#   Participating      1     -> 논리 2\n#   Acquired           1\n#   Releasing          1     -> 물리 1\n\n# --- 11.2절과 나란히 ---\n\n#   11.2  Creating new 2  Participating 0   Acquired 2  Releasing 2\n#         논리 2, 물리 2\n\n#   11.4  Creating new 1  Participating 1   Acquired 1  Releasing 1\n#         논리 2, 물리 1\n\n# --- 안쪽에서 롤백하면 (11.7 미리보기) ---\n\nTransactionStatus outer = txManager.getTransaction(def);\nTransactionStatus inner = txManager.getTransaction(def);\n\ntxManager.rollback(inner);\n\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n#   Setting JDBC transaction [conn0] rollback-only\n\n#   (진짜 롤백이 아니다. 표시만 했다.)\n\ntxManager.commit(outer);\n\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\n#   UnexpectedRollbackException:\n#     Transaction rolled back because it has been marked as rollback-only\n\n# 커밋을 요청했는데 롤백됐고, 예외까지 났다",
+   "note": "**`commit(inner)` 에 로그가 없다.** **`processCommit` 의 `if` 를 통과 못 했다.**\n\n**개수 비교가 이 절의 도구**다. **논리 2 / 물리 1** 이면 참여한 것이다.\n\n**맨 아래가 11.7절**이다. **`marking existing transaction as rollback-only`** 한 줄이 안쪽이 남긴 흔적이고, **바깥의 커밋 요청이 그것 때문에 뒤집힌다.**\n\n> **10.6절 마지막에서 `setRollbackOnly()` 를 봤을 때 나온 그 문장**이다.\n\n**다음 절부터 네 경우를 하나씩** 본다."
+  }
+ ],
+ "recap": [
+  "**물리 트랜잭션은 커넥션의 진짜 트랜잭션** — 하나다.",
+  "**논리 트랜잭션은 내가 부른 `getTransaction`/`commit` 쌍** — 여럿이다.",
+  "**전부 커밋해야 물리가 커밋**된다.",
+  "**하나라도 롤백하면 물리가 롤백**된다.",
+  "**`isNewTransaction()` 이 `true` 인 것만 커넥션을 만진다.**",
+  "**안쪽의 `commit` 은 아무것도 안 한다.**",
+  "**안쪽의 `rollback` 은 표시만** 남긴다.",
+  "**네 경우 중 셋째만 예외**가 난다 — 조용한 실패를 안 만들려는 설계다.",
+  "**`Creating new`/`Participating` 개수와 `Acquired`/`Releasing` 개수**로 구분한다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 트랜잭션의 로그에서 네 종류 줄을 센다.",
+   "done_when": "논리 2, 물리 1 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "11.2절과 개수를 비교한다.",
+   "done_when": "논리와 물리 개수가 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`commit(inner)` 전후로 SQL 이 나가는지 본다.",
+   "done_when": "아무 일도 안 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "네 경우의 표를 만들어 본다.",
+   "done_when": "셋째만 예외인 이유를 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "물리 트랜잭션과 논리 트랜잭션의 차이는?",
+   "a": "물리는 커넥션의 실제 트랜잭션으로 하나, 논리는 내가 부른 쌍의 개수만큼이다."
+  },
+  {
+   "q": "두 규칙은?",
+   "a": "전부 커밋해야 커밋되고, 하나라도 롤백하면 롤백된다."
+  },
+  {
+   "q": "누가 커넥션을 만지나?",
+   "a": "`isNewTransaction()` 이 `true` 인 것뿐이다."
+  },
+  {
+   "q": "안쪽의 `rollback` 은 무엇을 하나?",
+   "a": "진짜 롤백이 아니라 `rollback-only` 표시만 남긴다."
+  },
+  {
+   "q": "네 경우 중 예외가 나는 것은?",
+   "a": "안쪽이 롤백하고 바깥이 커밋을 요청한 경우다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "book": "spring-db-2",
+ "id": "all-commit",
+ "no": "11.5",
+ "chapter": 11,
+ "title": "전체 커밋",
+ "summary": "안쪽은 커밋하지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "안쪽 커밋이 아무 일도 안 하는 것을 본다.",
+  "커밋 시점을 안다.",
+  "실무 코드로 옮겨 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 경우 중 첫 번째**다. **둘 다 커밋하면 커밋**된다 — 당연한데, **언제** 커밋되는지가 요점이다."
+  },
+  {
+   "type": "figure",
+   "caption": "커넥션이 받은 호출",
+   "ascii": "   outer.getTransaction   new     setAutoCommit(false)\n     inner.getTransaction  join    nothing\n       insert\n     inner.commit                  nothing\n   outer.commit                    con.commit()\n\n   the connection saw two calls, not four",
+   "note": "**네 번 불렀는데 커넥션은 두 번만** 들었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "커밋 시점이 미뤄진다",
+   "md": "**안쪽이 끝나도 데이터가 확정되지 않는다.**\n\n```java\n@Transactional\npublic void 주문() {\n    재고서비스.차감();      // @Transactional — 참여\n    // 여기서 재고가 커밋됐나? 아니다.\n    결제서비스.결제();      // @Transactional — 참여\n    // 여기서도 아니다.\n}\n// 여기서 한 번에 커밋된다\n```\n\n**이것이 원하는 동작**이다. **1편 3장의 계좌이체가 이것을 요구**했다.\n\n**그런데 부작용**이 있다.\n\n| 부작용 | |\n|---|---|\n| **다른 세션이 못 본다** | 커밋 전이니까 |\n| **락이 오래 걸린다** | 물리 트랜잭션이 길어진다 |\n| **커넥션을 오래 쥔다** | 반납이 맨 끝이다 |\n\n**세 번째가 10.3절에서 말한 그 문제**다.\n\n```java\n@Transactional\npublic void 주문() {\n    재고차감();\n    결제저장();\n    이메일발송();      // 3초. 커넥션을 쥔 채로.\n}\n```\n\n> **트랜잭션이 길어지면 커넥션 풀이 마른다.** **동시 요청이 풀 크기를 넘으면 대기**하고, **`connectionTimeout` 에 걸린다**(10.8절).\n>\n> **외부 호출은 트랜잭션 밖으로** 뺀다.\n\n**JPA 면 더 미뤄진다.** **6.6절의 쓰기 지연**까지 겹쳐, **SQL 자체가 맨 끝에 몰려** 나간다."
+  },
+  {
+   "type": "figure",
+   "caption": "실무 코드로",
+   "ascii": "   the same thing with annotations\n\n   OrderService.order()      @Transactional   -> new\n     StockService.reduce()   @Transactional   -> join\n     PayService.pay()        @Transactional   -> join\n\n   three logical, one physical\n   one commit at the end of order()",
+   "note": "**논리 셋에 물리 하나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "어디서 커밋되는지 아는 법",
+   "md": "**로그의 `Committing JDBC transaction` 위치**를 본다.\n\n```\nGetting transaction for [OrderService.order]\nCreating new transaction\n  Getting transaction for [StockService.reduce]\n  Participating in existing transaction\n  Hibernate: update item set quantity=? where id=?\n  Completing transaction for [StockService.reduce]\n  Getting transaction for [PayService.pay]\n  Participating in existing transaction\n  Hibernate: insert into payment ...\n  Completing transaction for [PayService.pay]\nCompleting transaction for [OrderService.order]\nInitiating transaction commit\nCommitting JDBC transaction on Connection [conn0]\n```\n\n**`Completing transaction for` 가 셋**이다. **`Initiating transaction commit` 은 하나**다.\n\n> **`Completing` 은 \"이 논리 트랜잭션이 끝났다\"** 는 뜻이다. **커밋이 아니다.**\n>\n> **10.10절의 로그 아홉 줄**에서 이 구분이 이제 의미가 생긴다.\n\n**안쪽이 끝난 뒤 무엇을 확인하면 안 되나.**\n\n```java\n@Transactional\npublic void 주문() {\n    재고서비스.차감();\n    // 다른 트랜잭션에서 재고를 조회하면 아직 안 줄었다\n}\n```\n\n**9.3절의 함정과 다른 이야기**다. **거기는 같은 트랜잭션 안에서 쓰기 지연 문제**였고, **여기는 다른 트랜잭션이 커밋 전 데이터를 못 보는** 것이다 — **1편 3.4절의 격리 수준**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 직접 호출 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\njdbcTemplate.update(\"insert into item ... values ('itemA', 10000, 10)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\nTransactionStatus inner = txManager.getTransaction(def);\n#   Participating in existing transaction\n\njdbcTemplate.update(\"insert into item ... values ('itemB', 20000, 20)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\ntxManager.commit(inner);\n#   (로그 없음)\n\n# --- 이 시점에 다른 세션에서 조회하면 ---\nselect count(*) from item;\n#   -> 0\n\n#   두 건 다 안 보인다. 아직 커밋 전이다.\n\ntxManager.commit(outer);\n\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# --- 이제 조회하면 ---\nselect count(*) from item;\n#   -> 2\n\n#   두 건이 한꺼번에 나타났다\n\n# --- 애너테이션으로 같은 것 ---\n\norderService.order();\n\n#   Getting transaction for [OrderService.order]\n#   Creating new transaction with name [OrderService.order]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n\n#   Getting transaction for [StockService.reduce]\n#   Participating in existing transaction\n#   Hibernate: update item set quantity=? where id=?\n#   Completing transaction for [StockService.reduce]\n\n#   Getting transaction for [PayService.pay]\n#   Participating in existing transaction\n#   Hibernate: insert into payment (order_id,amount) values (?,?)\n#   Completing transaction for [PayService.pay]\n\n#   Completing transaction for [OrderService.order]\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# Getting        3\n# Completing     3\n# Creating new   1\n# commit         1\n\n# --- 긴 트랜잭션 ---\n\n@Transactional\npublic void 주문() {\n    재고차감();\n    이메일발송();       // 3초\n}\n\n#   Acquired Connection [conn0] for JDBC transaction\n#   Hibernate: update item set quantity=? where id=?\n#   (3초)\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n#   3초 동안 conn0 를 쥐고 있었다\n#   풀 크기가 10 이면 동시 요청 11번째부터 대기한다",
+   "note": "**중간의 `select count(*) -> 0`** 이 이 절의 요점이다. **안쪽 커밋 뒤에도 데이터가 안 보인다.**\n\n**애너테이션 로그에서 `Getting` 셋, `Completing` 셋, `Creating new` 하나, 커밋 하나**다. **이 네 숫자가 전파를 읽는 눈**이다.\n\n**맨 아래가 실무의 사고**다. **3초짜리 외부 호출이 커넥션을 3초 잡는다.**\n\n**다음 절에서 바깥이 롤백하는 경우를** 본다."
+  }
+ ],
+ "recap": [
+  "**둘 다 커밋하면 물리 트랜잭션이 커밋**된다.",
+  "**커밋 시점은 바깥이 끝날 때**다.",
+  "**안쪽이 끝나도 데이터가 확정되지 않는다.**",
+  "**다른 세션은 커밋 전까지 못 본다.**",
+  "**락과 커넥션을 그동안 쥐고** 있다.",
+  "**외부 호출은 트랜잭션 밖**으로 뺀다.",
+  "**JPA 면 쓰기 지연까지 겹쳐** SQL 이 맨 끝에 몰린다.",
+  "**`Completing` 은 논리 종료, `Committing` 이 물리 커밋**이다.",
+  "**Getting/Completing/Creating new/commit 네 숫자**로 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 트랜잭션 중간에 다른 세션에서 조회한다.",
+   "done_when": "안 보이는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "애너테이션 셋을 중첩해 로그의 네 숫자를 센다.",
+   "done_when": "3/3/1/1 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "트랜잭션 안에 `Thread.sleep(3000)` 을 넣는다.",
+   "done_when": "커넥션을 그동안 쥐는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "풀 크기를 2로 줄이고 동시 요청을 보낸다.",
+   "done_when": "대기가 생기는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "언제 커밋되나?",
+   "a": "바깥 논리 트랜잭션이 끝날 때 한 번이다."
+  },
+  {
+   "q": "안쪽이 끝난 뒤 다른 세션에서 조회하면?",
+   "a": "아직 커밋 전이라 안 보인다."
+  },
+  {
+   "q": "긴 트랜잭션의 문제는?",
+   "a": "락과 커넥션을 오래 쥐어 풀이 마른다."
+  },
+  {
+   "q": "`Completing` 과 `Committing` 의 차이는?",
+   "a": "앞은 논리 트랜잭션 종료, 뒤는 물리 커밋이다."
+  },
+  {
+   "q": "전파를 읽는 네 숫자는?",
+   "a": "Getting, Completing, Creating new, 커밋 횟수다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
