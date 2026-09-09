@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "page-dto",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "DTO 로 변환하기",
+ "summary": "엔티티를 그대로 반환하지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 새는지 안다.",
+  "map 으로 바꾼다.",
+  "응답 모양을 고정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.10절에서 경고를** 봤다. **여기서 그 경고를** 없앤다."
+  },
+  {
+   "type": "figure",
+   "caption": "그대로 내보내면 새는 것",
+   "ascii": "   what leaks when a page of entities is returned as is\n\n   every column of the entity, including the ones nobody asked for\n   the whole pageable object, nested, with its own sort object\n   the shape itself, which changes when the framework changes\n\n   the first line is a data problem, the other two are a contract problem",
+   "note": "**첫 줄은 데이터, 나머지는 계약 문제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "응답 모양은 계약이고 엔티티는 계약이 아니다",
+   "md": "**엔티티는 저장을 위한 모양**이다.\n\n> **컬럼이 늘면 응답도** 는다.\n> **비밀번호 해시도 같이** 나간다.\n> **⑧ 3.1절에서 한 이야기**다.\n\n**`PageImpl` 은 내부 구조**다.\n\n> **`pageable` 이 통째로** 나온다.\n> **`sort` 가 두 군데** 있다.\n> **플래그가 여덟 개 더** 있다.\n\n**버전이 바뀌면 모양도** 바뀐다.\n\n> **스프링 데이터 3.3 이 경고를** 붙였다.\n> **직렬화 방식을 바꾸겠다는** 예고다.\n> **클라이언트가 같이** 깨진다.\n\n**`map` 하나면** 된다.\n\n> **5.10절에서 이미** 썼다.\n> **쿼리는 안** 는다.\n> **페이지 정보도 따라** 온다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 페이지, 두 모양",
+   "ascii": "   the same page, two shapes\n\n   PageImpl serialized   content, pageable{...}, sort{...}, 8 more flags\n   a DTO envelope        content, page, size, totalElements, totalPages\n\n   the second one is written down somewhere, and that is the point",
+   "note": "**둘째는 어딘가에 적혀** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "map 안에서 연관을 건드리면 N+1 이다",
+   "md": "**DTO 만들다 프록시를** 깨운다.\n\n> **`m.getTeam().getName()` 한 줄**이다.\n> **페이지 크기만큼 쿼리가** 난다.\n> **5.13절의 그것이 여기서** 터진다.\n\n**`@EntityGraph` 로 미리** 읽는다.\n\n> **`to-one` 이라 페이징이 안** 깨진다.\n> **5.13절에서 확인**했다.\n> **아니면 5.5절의 `new` 로 바로 DTO 를** 뽑는다.\n\n**`PageImpl` 을 직접 만들면 개수를 내가** 센다.\n\n> **커스텀에서 그렇게** 했다(6.1절).\n> **그때도 반환은 DTO 로** 감싼다.\n> **모양은 하나로** 맞춘다.\n\n**부트 3.3 은 설정으로 바꿀 수도** 있다.\n\n> **`pageSerializationMode: VIA_DTO`** 다.\n> **경고가 사라지고 모양이** 바뀐다.\n> **내가 감싸는 것과 결과가 비슷**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 그대로 내보내면\n\n@GetMapping(\"/bad\")\npublic Page<Member> bad(@PageableDefault(size = 2, sort = \"id\")\n                        Pageable pageable) {\n    return memberRepository.findAll(pageable);\n}\n\n$ curl -s 'localhost:8080/bad' | jq .\n\n{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"createdDate\": \"2026-09-10T02:38:01.1\",\n      \"lastModifiedDate\": \"2026-09-10T02:38:01.1\",\n      \"createdBy\": \"kwanhyun\",\n      \"lastModifiedBy\": \"kwanhyun\",\n      \"username\": \"m1\",\n      \"age\": 10,\n      \"team\": { \"id\": 1, \"name\": \"teamA\", \"members\": [ ... ] }\n    }\n  ],\n  \"pageable\": {\n    \"pageNumber\": 0, \"pageSize\": 2,\n    \"sort\": { \"empty\": false, \"sorted\": true, \"unsorted\": false },\n    \"offset\": 0, \"paged\": true, \"unpaged\": false\n  },\n  \"totalPages\": 6, \"totalElements\": 12, \"last\": false, \"size\": 2,\n  \"number\": 0,\n  \"sort\": { \"empty\": false, \"sorted\": true, \"unsorted\": false },\n  \"first\": true, \"numberOfElements\": 2, \"empty\": false\n}\n\nWARN  Serializing PageImpl instances as-is is not supported\n\n--   감사 컬럼 넷이 다 나갔다 (6.3·6.4절)\n--   team 이 통째로 나갔다\n--   pageable 이 중첩으로 나왔다\n--   sort 가 두 군데다\n\n\n-- 쿼리도 세 본다\n\n$ curl -s 'localhost:8080/bad' >/dev/null\n\nHibernate:\n    select ... from member m1_0\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate:\n    select m1_0.team_id, m1_0.member_id, ... from member m1_0\n    where m1_0.team_id=?\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate:\n    select m1_0.team_id, m1_0.member_id, ... from member m1_0\n    where m1_0.team_id=?\n\n--   두 건 응답에 쿼리 여섯이다\n--   직렬화가 프록시를 다 깨웠다\n--   ⑧ 6.7절의 OSIV 문제다\n\n\n-- DTO 를 만든다\n\npublic record MemberDto(Long id, String username, String teamName) {\n    public static MemberDto of(Member m) {\n        return new MemberDto(m.getId(), m.getUsername(),\n                m.getTeam() == null ? null : m.getTeam().getName());\n    }\n}\n\n\n-- map 으로 바꾼다\n\n@GetMapping(\"/dto\")\npublic Page<MemberDto> dto(@PageableDefault(size = 2, sort = \"id\")\n                           Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/dto' | jq '.content'\n\n[\n  { \"id\": 1, \"username\": \"m1\", \"teamName\": \"teamA\" },\n  { \"id\": 2, \"username\": \"m2\", \"teamName\": \"teamA\" }\n]\n\nHibernate: select ... order by m1_0.member_id\n           offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n\n--   여섯이 셋이 됐다\n--   감사 컬럼이 안 나간다\n--   그래도 팀 조회가 한 번 남았다\n\n\n-- N+1 을 확인한다\n\n$ curl -s 'localhost:8080/dto?size=5' >/dev/null\n\nHibernate: select ... offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n\n--   팀이 셋이라 세 번이다\n--   크기를 키우면 같이 는다\n\n\n-- 그래프로 막는다\n\n@EntityGraph(attributePaths = {\"team\"})\nPage<Member> findWithTeamBy(Pageable pageable);\n\n@GetMapping(\"/dto-graph\")\npublic Page<MemberDto> graph(@PageableDefault(size = 5, sort = \"id\")\n                             Pageable pageable) {\n    return memberRepository.findWithTeamBy(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/dto-graph' >/dev/null\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n        m1_0.last_modified_by, m1_0.last_modified_date,\n        t1_0.team_id, t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   두 개다\n--   5.13절의 EntityGraph 다\n\n\n-- 아예 DTO 로 뽑으면\n\n@Query(\"select new study.datajpa.dto.MemberDto(m.id, m.username, t.name)\"\n     + \" from Member m left join m.team t\")\nPage<MemberDto> findDtoPage(Pageable pageable);\n\n$ curl -s 'localhost:8080/dto-direct' >/dev/null\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n\n--   컬럼이 셋뿐이다\n--   감사 컬럼을 아예 안 읽는다\n--   5.5절의 new 다\n\n\n-- 세 방법의 컬럼 수를 센다\n\n$ for u in bad dto dto-graph dto-direct ; do\n    printf '%-12s ' \"$u\"\n    curl -s \"localhost:8080/$u?size=2\" >/dev/null 2>sql.log\n    grep -c 'Hibernate' sql.log\n  done\n\nbad          6\ndto          3\ndto-graph    2\ndto-direct   2\n\n\n-- 그런데 모양은 아직 그대로다\n\n$ curl -s 'localhost:8080/dto' | jq 'keys'\n\n[\n  \"content\", \"empty\", \"first\", \"last\", \"number\", \"numberOfElements\",\n  \"pageable\", \"size\", \"sort\", \"totalElements\", \"totalPages\"\n]\n\nWARN  Serializing PageImpl instances as-is is not supported\n\n--   경고가 그대로다\n--   내용만 바꿨지 껍데기는 안 바꿨다\n\n\n-- 껍데기를 만든다\n\npublic record PageResponse<T>(\n        List<T> content, int page, int size,\n        long totalElements, int totalPages, boolean hasNext) {\n\n    public static <T> PageResponse<T> of(Page<T> p) {\n        return new PageResponse<>(p.getContent(), p.getNumber(),\n                p.getSize(), p.getTotalElements(), p.getTotalPages(),\n                p.hasNext());\n    }\n}\n\n@GetMapping(\"/final\")\npublic PageResponse<MemberDto> fin(@PageableDefault(size = 2, sort = \"id\")\n                                   Pageable pageable) {\n    return PageResponse.of(\n            memberRepository.findWithTeamBy(pageable).map(MemberDto::of));\n}\n\n$ curl -s 'localhost:8080/final' | jq .\n\n{\n  \"content\": [\n    { \"id\": 1, \"username\": \"m1\", \"teamName\": \"teamA\" },\n    { \"id\": 2, \"username\": \"m2\", \"teamName\": \"teamA\" }\n  ],\n  \"page\": 0,\n  \"size\": 2,\n  \"totalElements\": 12,\n  \"totalPages\": 6,\n  \"hasNext\": true\n}\n\nHibernate:\n    select ... left join team t1_0 on t1_0.team_id=m1_0.team_id\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   경고가 사라졌다\n--   키가 여섯이다\n--   쿼리도 둘이다\n\n\n-- 설정으로도 된다\n\n@EnableSpringDataWebSupport(\n        pageSerializationMode = EnableSpringDataWebSupport\n                .PageSerializationMode.VIA_DTO)\n\n$ curl -s 'localhost:8080/dto' | jq 'keys'\n\n[ \"content\", \"page\" ]\n\n$ curl -s 'localhost:8080/dto' | jq '.page'\n{ \"size\": 2, \"number\": 0, \"totalElements\": 12, \"totalPages\": 6 }\n\n--   경고가 사라졌다\n--   모양이 또 다르다\n--   내가 정한 게 아니다\n\n\n-- 처음과 끝을 비교한다\n\n$ curl -s 'localhost:8080/bad'   | jq 'keys | length'\n11\n$ curl -s 'localhost:8080/final' | jq 'keys | length'\n6\n\n$ curl -s 'localhost:8080/bad'   | jq '.content[0] | keys | length'\n8\n$ curl -s 'localhost:8080/final' | jq '.content[0] | keys | length'\n3\n\n--   껍데기 11 -> 6, 항목 8 -> 3 이다\n--   쿼리는 6 -> 2 다\n--   7장에서 구현체 안으로 들어간다",
+   "note": "**엔티티를 그대로 내보내면 감사 컬럼 넷과 `team` 이 통째로 나가고 두 건 응답에 쿼리 6개**다.\n\n**`map(MemberDto::of)` 로 6→3, `@EntityGraph` 를 더해 2개**가 됐다.\n\n**`new` 로 바로 뽑으면 `select` 컬럼이 셋뿐**이다.\n\n**내용을 바꿔도 `PageImpl` 경고는 그대로 — 껍데기를 감싸야** 사라진다.\n\n**껍데기 키 11→6, 항목 8→3, 쿼리 6→2** 다."
+  }
+ ],
+ "recap": [
+  "**엔티티는 계약이** 아니다.",
+  "**감사 컬럼도 같이** 나간다.",
+  "**직렬화가 프록시를** 깨운다.",
+  "**`map` 으로** 바꾼다.",
+  "**쿼리가** 준다.",
+  "**연관은 그래프로** 막는다.",
+  "**`new` 면 컬럼도** 준다.",
+  "**껍데기는 따로** 감싼다.",
+  "**모양을 내가** 정한다."
+ ],
+ "drills": [
+  {
+   "task": "엔티티 페이지를 그대로 내본다.",
+   "done_when": "새는 것과 쿼리 수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`map` 으로 DTO 로 바꾼다.",
+   "done_when": "쿼리가 준 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@EntityGraph` 를 더한다.",
+   "done_when": "2개가 된 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답 껍데기를 만든다.",
+   "done_when": "경고가 사라진 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "엔티티 페이지를 그대로 반환하면 무엇이 새나?",
+   "a": "안 쓰는 컬럼과 연관, 그리고 `pageable` 내부 구조다."
+  },
+  {
+   "q": "쿼리가 늘어나는 이유는?",
+   "a": "직렬화가 지연 로딩 프록시를 깨우기 때문이다."
+  },
+  {
+   "q": "`map` 만으로 경고가 사라지나?",
+   "a": "아니다. `PageImpl` 자체를 감싸야 사라진다."
+  },
+  {
+   "q": "`map` 안에서 연관을 건드리면?",
+   "a": "페이지 크기만큼 추가 쿼리가 난다."
+  },
+  {
+   "q": "가장 적게 읽는 방법은?",
+   "a": "`new` 로 필요한 컬럼만 DTO 로 뽑는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "응답 껍데기",
+   "def": "페이지 정보를 직접 정의해 고정한 반환 타입."
+  },
+  {
+   "term": "PageSerializationMode",
+   "def": "`Page` 를 어떤 모양으로 직렬화할지 정하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Web Support",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Application Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

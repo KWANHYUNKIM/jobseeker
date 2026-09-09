@@ -378,7 +378,7 @@
           "title": "페이징 기본값",
           "summary": "크기 제한을 안 걸면.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -386,7 +386,7 @@
           "title": "DTO 로 변환하기",
           "summary": "엔티티를 그대로 반환하지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

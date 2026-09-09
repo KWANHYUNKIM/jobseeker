@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "paging-default",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "페이징 기본값",
+ "summary": "크기 제한을 안 걸면.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 자리를 안다.",
+  "우선순위를 확인한다.",
+  "상한을 건다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절에서 `?size=100000` 이 2000 으로** 잘렸다. **2000 도 크다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "크기를 정하는 네 자리",
+   "ascii": "   four places a page size can be decided, weakest first\n\n   the built in default        20, with a hard cap of 2000\n   the application property    one number for the whole app\n   PageableDefault             one number for that one method\n   the request itself          whatever the caller typed\n\n   the last row wins, which is exactly the problem",
+   "note": "**마지막 줄이 이기는 게** 문제다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "기본값은 앱 전체, 어노테이션은 그 메서드",
+   "md": "**설정 파일이 제일** 넓다.\n\n> **`spring.data.web.pageable.default-page-size`** 다.\n> **모든 컨트롤러에** 걸린다.\n> **한 줄로 20을 10으로** 바꾼다.\n\n**어노테이션이 그 위**다.\n\n> **`@PageableDefault(size = 5)`** 다.\n> **그 메서드에만** 적용된다.\n> **정렬 기본값도 같이 줄 수** 있다.\n\n**요청이 제일 세**다.\n\n> **`?size=50` 이 둘 다** 덮는다.\n> **그래서 상한이** 필요하다.\n> **`max-page-size` 가 그** 벽이다.\n\n**정렬 기본값이 더** 중요하다.\n\n> **5.9절에서 순서가 미정의라고** 했다.\n> **`@PageableDefault(sort = \"id\")` 로** 못 박는다.\n> **안 주면 페이지마다 중복이 날 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 요청이 요구할 수 있는 양",
+   "ascii": "   what one request can ask a database for\n\n   size 20      one page, a few milliseconds\n   size 2000    the built in cap, still one request\n   size 2000 x 50 concurrent   a hundred thousand rows in flight\n\n   nothing in the framework stops the third line",
+   "note": "**셋째 줄을 막는 장치가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "상한을 안 걸면 남이 부하를 정한다",
+   "md": "**기본 상한이 2000**이다.\n\n> **끄는 게 아니라 기본값**이다.\n> **아무도 안 정하면 그게** 벽이다.\n> **표가 크면 2000행도** 무겁다.\n\n**동시에 오면** 곱해진다.\n\n> **한 건은 괜찮**다.\n> **오십 건이면 십만 행**이다.\n> **메모리와 커넥션이 같이** 마른다.\n\n**정렬이 없으면 상한도 소용** 없다.\n\n> **뒤 페이지가 앞과 겹칠 수** 있다.\n> **5.9절의 안정 정렬 키**다.\n> **크기와 정렬은 같이** 정한다.\n\n**`Slice` 면 개수 쿼리도** 준다.\n\n> **5.11절에서 본** 것이다.\n> **큰 크기 + 개수 쿼리가 제일** 나쁘다.\n> **무한 스크롤이면 `Slice` 로** 간다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 지금 기본값을 본다\n\n@GetMapping(\"/members\")\npublic Page<MemberDto> list(Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members' | jq '.size'\n20\n\nHibernate:\n    select ... from member m1_0\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [20]\n\n\n-- 앱 전체 기본값을 바꾼다\n\n# application.yml\nspring:\n  data:\n    web:\n      pageable:\n        default-page-size: 10\n        max-page-size: 100\n\n$ curl -s 'localhost:8080/members' | jq '.size'\n10\n\nTRACE binding parameter (2:INTEGER) <- [10]\n\n--   한 줄로 전부 바뀌었다\n\n\n-- 상한을 넘겨 본다\n\n$ curl -s 'localhost:8080/members?size=100000' | jq '.size'\n100\n\nTRACE binding parameter (2:INTEGER) <- [100]\n\n--   2000 이 아니라 100 이다\n--   6.6절에서 2000 이 나가던 걸 막았다\n\n\n-- 메서드마다 다르게 준다\n\n@GetMapping(\"/members-small\")\npublic Page<MemberDto> small(\n        @PageableDefault(size = 3, sort = \"id\") Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-small' | jq '.size'\n3\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [3]\n\n--   설정 파일의 10 을 덮었다\n--   order by 도 생겼다\n\n\n-- 요청이 어노테이션을 덮는다\n\n$ curl -s 'localhost:8080/members-small?size=7' | jq '.size'\n7\n\nTRACE binding parameter (2:INTEGER) <- [7]\n\n--   기본값은 기본값일 뿐이다\n\n\n-- 우선순위를 한 줄로 확인한다\n\n$ for q in '' '?size=7' ; do\n    printf '%-10s ' \"${q:-기본}\"\n    curl -s \"localhost:8080/members-small$q\" | jq -r '.size'\n  done\n\n기본       3\n?size=7    7\n\n$ for q in '' '?size=7' '?size=100000' ; do\n    printf '%-14s ' \"${q:-기본}\"\n    curl -s \"localhost:8080/members$q\" | jq -r '.size'\n  done\n\n기본           10\n?size=7        7\n?size=100000   100\n\n--   설정 10 < 어노테이션 3 < 요청 7 < 상한 100\n\n\n-- 정렬 기본값이 없으면\n\n@GetMapping(\"/members-nosort\")\npublic Page<MemberDto> nosort(\n        @PageableDefault(size = 3) Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-nosort' >/dev/null\n\nHibernate:\n    select ... from member m1_0\n    offset ? rows fetch first ? rows only\n\n--   order by 가 없다\n--   5.9절에서 경고한 상태다\n\n\n-- 정렬 방향도 준다\n\n@GetMapping(\"/members-desc\")\npublic Page<MemberDto> desc(\n        @PageableDefault(size = 3, sort = \"age\",\n                         direction = Sort.Direction.DESC) Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-desc' >/dev/null\n\nHibernate:\n    select ... from member m1_0\n    order by m1_0.age desc\n    offset ? rows fetch first ? rows only\n\n\n-- 정렬을 여럿 준다\n\n@GetMapping(\"/members-multi\")\npublic Page<MemberDto> multi(\n        @PageableDefault(size = 3, sort = {\"age\", \"id\"},\n                         direction = Sort.Direction.DESC) Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-multi' >/dev/null\n\nHibernate:\n    select ...\n    from member m1_0\n    order by\n        m1_0.age desc,\n        m1_0.member_id desc\n    offset ? rows fetch first ? rows only\n\n--   방향은 하나로 다 걸린다\n--   따로 주려면 @SortDefault 를 쓴다\n\n\n-- 정렬만 따로 준다\n\n@GetMapping(\"/members-sortdef\")\npublic Page<MemberDto> sortDef(\n        @PageableDefault(size = 3)\n        @SortDefault.SortDefaults({\n            @SortDefault(sort = \"age\", direction = Sort.Direction.DESC),\n            @SortDefault(sort = \"id\", direction = Sort.Direction.ASC)\n        }) Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-sortdef' >/dev/null\n\nHibernate:\n    select ...\n    order by\n        m1_0.age desc,\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   방향이 따로다\n\n\n-- 1부터 세게 바꾼다\n\nspring:\n  data:\n    web:\n      pageable:\n        one-indexed-parameters: true\n\n$ curl -s 'localhost:8080/members?page=1&size=3' | jq '.number'\n0\n\nTRACE binding parameter (1:INTEGER) <- [0]\n\n--   page=1 이 첫 페이지가 됐다\n--   그런데 응답의 number 는 여전히 0 이다\n--   화면과 응답이 어긋난다\n\n\n-- page=0 을 주면\n\n$ curl -s 'localhost:8080/members?page=0&size=3' | jq '.number'\n0\n\nTRACE binding parameter (1:INTEGER) <- [0]\n\n--   0 도 첫 페이지다\n--   0 과 1 이 같은 페이지다\n--   켜는 걸 권하지 않는 이유다\n\n\n-- 파라미터 이름을 바꾼다\n\nspring:\n  data:\n    web:\n      pageable:\n        page-parameter: p\n        size-parameter: n\n      sort:\n        sort-parameter: order\n\n$ curl -s 'localhost:8080/members?p=1&n=3&order=age,desc' >/dev/null\n\nHibernate:\n    select ... order by m1_0.age desc\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [3]\nTRACE binding parameter (2:INTEGER) <- [3]\n\n--   짧은 이름으로 받았다\n\n\n-- 상한을 실제로 재 본다\n\n@Test\nvoid 상한_효과() {\n    for (int size : new int[]{10, 100, 1000, 2000}) {\n        em.clear();\n        long t = System.nanoTime();\n        memberRepository.findAll(PageRequest.of(0, size, Sort.by(\"id\")))\n                .getContent();\n        System.out.printf(\"size %-5d %d ms%n\",\n                size, (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select ... order by m1_0.member_id\n           offset ? rows fetch first ? rows only\nsize 10    4 ms\nsize 100   9 ms\nsize 1000  38 ms\nsize 2000  71 ms\n\n--   기본 상한 2000 이 20 배다\n--   동시에 오면 곱해진다\n\n\n-- 큰 크기에서는 Slice 가 낫다\n\n@GetMapping(\"/members-slice\")\npublic Slice<MemberDto> slice(\n        @PageableDefault(size = 20, sort = \"id\") Pageable pageable) {\n    return memberRepository.findSliceBy(pageable).map(MemberDto::of);\n}\n\n$ curl -s 'localhost:8080/members-slice' | jq 'has(\"totalElements\")'\nfalse\n\nHibernate:\n    select ... from member m1_0\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [21]\n\n--   개수 쿼리가 없다\n--   limit 이 21 이다 (5.11절)\n\n\n-- 최종 설정\n\nspring:\n  data:\n    web:\n      pageable:\n        default-page-size: 10\n        max-page-size: 100\n\n@PageableDefault(size = 20, sort = \"id\")\n\n$ curl -s 'localhost:8080/members-final?size=100000' | jq '.size'\n100\n\nHibernate:\n    select ... from member m1_0\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [100]\n\n--   상한이 걸렸고 정렬이 있다\n--   6.8절에서 응답 모양을 정리한다",
+   "note": "**설정 10 < 어노테이션 3 < 요청 7 < 상한 100 — 뒤가 앞을** 덮는다.\n\n**`max-page-size: 100` 을 걸자 `?size=100000` 이 `limit [100]`** 이 됐다.\n\n**정렬 기본값이 없으면 `order by` 가 아예** 없다.\n\n**`one-indexed-parameters` 를 켜면 `page=0` 과 `page=1` 이 같은 페이지**가 된다.\n\n**크기 10→2000 이 4ms→71ms 로 20배**다."
+  }
+ ],
+ "recap": [
+  "**크기를 정하는 자리가 넷**이다.",
+  "**뒤가 앞을** 덮는다.",
+  "**요청이 제일** 세다.",
+  "**그래서 상한이** 필요하다.",
+  "**기본 상한은 2000**이다.",
+  "**정렬 기본값이 더** 중요하다.",
+  "**`one-indexed` 는 어긋난**다.",
+  "**파라미터 이름도** 바꾼다.",
+  "**큰 목록은 `Slice`** 다."
+ ],
+ "drills": [
+  {
+   "task": "`max-page-size` 를 건다.",
+   "done_when": "큰 요청이 잘리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@PageableDefault` 를 붙인다.",
+   "done_when": "설정보다 우선하는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "정렬 기본값을 뺐다 넣는다.",
+   "done_when": "`order by` 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "크기별 시간을 잰다.",
+   "done_when": "상한의 근거를 얻었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "페이지 크기를 정하는 네 자리는?",
+   "a": "내장 기본값, 설정 파일, 어노테이션, 요청이다."
+  },
+  {
+   "q": "무엇이 제일 우선하나?",
+   "a": "요청이다. 그래서 상한이 필요하다."
+  },
+  {
+   "q": "상한을 안 걸면 최대 몇인가?",
+   "a": "내장 기본 상한 2000 이다."
+  },
+  {
+   "q": "정렬 기본값을 주는 이유는?",
+   "a": "정렬이 없으면 페이지 간 순서가 보장되지 않는다."
+  },
+  {
+   "q": "`one-indexed-parameters` 의 문제는?",
+   "a": "`page=0` 과 `page=1` 이 같은 페이지가 되고 응답 번호와 어긋난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "max-page-size",
+   "def": "요청이 아무리 크게 줘도 넘지 못하게 하는 페이지 크기 상한."
+  },
+  {
+   "term": "PageableDefault",
+   "def": "그 메서드에만 적용되는 페이지 크기·정렬 기본값 어노테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Application Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Web Support",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
