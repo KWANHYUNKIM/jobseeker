@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-form-validation",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "폼 검증",
+ "summary": "MVC 2편의 그 검증.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Bean Validation 을 붙인다.",
+  "검증이 어디에 있어야 하는지 정한다.",
+  "서비스 예외와의 격차를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 `@NotEmpty` 를 썼다.** **검증이 어디에 있어야 하는지** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙이 사는 세 곳",
+   "ascii": "   three places a rule can live\n\n   form         @NotEmpty            per screen, before the service\n   service      validateDuplicate    needs other rows\n   entity       removeStock          needs its own data\n\n   this project uses all three, for different rules",
+   "note": "**이 프로젝트가 셋 다** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어느 규칙이 어디로 가나",
+   "md": "**판단 기준**이 있다.\n\n> **\"이 규칙을 검사하려면 무엇이 필요한가?\"**\n\n| 규칙 | 필요한 것 | 어디 |\n|---|---|---|\n| 이름이 비었나 | **입력값만** | **폼** |\n| 가격이 음수인가 | 입력값만 | 폼 |\n| **같은 이름이 있나** | **다른 회원 전부** | **서비스** |\n| **재고가 충분한가** | **그 상품의 재고** | **엔티티** |\n| 배송이 완료됐나 | 그 주문의 배송 | 엔티티 |\n\n**6.6절에서 정한 것**이다. **여기에 폼이 하나 더** 붙었다.\n\n**폼 검증의 특징**\n\n| | |\n|---|---|\n| **서비스를 안 부른다** | SQL 이 안 나간다 |\n| **화면으로 바로** 돌아간다 | 200 |\n| **필드마다 메시지** | `BindingResult` |\n| **화면마다 다를 수** 있다 | 등록과 수정이 다른 규칙 |\n\n**마지막이 엔티티에 안 붙이는 이유**다(8.2절).\n\n> **`@NotEmpty` 를 엔티티에 붙이면 배치에서도** 검사한다. **화면 규칙이 도메인에 새는** 것이다.\n\n**중복 검사를 폼에 넣을 수도** 있다.\n\n```java\n@NotEmpty\n@UniqueMemberName        // 커스텀 검증기\nprivate String name;\n```\n\n**검증기가 리포지토리를** 부른다.\n\n> **되기는 한다.** **폼 검증이 DB 를 보게** 되는 것이 어색하다.\n>\n> **그리고 5.3절의 동시성 문제는 여전**하다. **어디서 검사하든 틈은 남는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "요청 처리 흐름",
+   "ascii": "   POST /members/new\n\n   bind      name -> form.name\n   validate  @NotEmpty\n   errors?   yes -> return the view, status 200\n             no  -> call the service\n\n   BindingResult must sit right after the @Valid argument",
+   "note": "**`BindingResult` 위치가 중요**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`BindingResult` 를 빠뜨리면",
+   "md": "```java\n// BindingResult 가 없으면\n@PostMapping(\"/members/new\")\npublic String create(@Valid MemberForm form) { }\n```\n\n**검증 실패 시 예외**가 난다.\n\n```\norg.springframework.web.bind.MethodArgumentNotValidException\n```\n\n**`400 Bad Request`** 가 뜬다. **폼으로 안 돌아간다.**\n\n**위치도 중요**하다.\n\n```java\n// 이러면 안 된다\npublic String create(@Valid MemberForm form, Model model, BindingResult result)\n```\n\n**`@Valid` 바로 뒤**여야 한다. **사이에 다른 인자가 있으면 못 찾는다.**\n\n> **「MVC 2편」에서 다룬 것**이다. **자주 틀리는 자리**라 다시 적는다.\n\n**`@Valid` 와 `@Validated`**\n\n| | |\n|---|---|\n| **`@Valid`** | 자바 표준 |\n| **`@Validated`** | 스프링, **그룹 지정 가능** |\n\n**그룹을 쓰면 화면마다 다른 규칙**을 줄 수 있다.\n\n```java\n@NotEmpty(groups = OnCreate.class)\nprivate String name;\n\n@Validated(OnCreate.class)\npublic String create(...) { }\n```\n\n> **복잡하다.** **폼을 나누는 편**이 낫다 — `MemberCreateForm`, `MemberUpdateForm`.\n>\n> **이 책은 등록만 있어서** 그럴 일이 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "서비스 예외와의 격차",
+   "md": "**8.2절에서 봤다.**\n\n| | 응답 |\n|---|---|\n| **폼 검증 실패** | **200** — 폼으로 |\n| **중복 회원** | **500** — 오류 페이지 |\n| **재고 부족** | **500** |\n\n**사용자 입장에서는 같은 종류의 실패**다. **\"입력이 잘못됐다\".**\n\n**응답이 다르다.**\n\n**맞추려면** 셋 중 하나다.\n\n**① 컨트롤러에서 잡는다**\n\n```java\ntry {\n    memberService.join(member);\n} catch (IllegalStateException e) {\n    result.reject(\"duplicateMember\", e.getMessage());\n    return \"members/createMemberForm\";\n}\n```\n\n**폼으로 돌아간다.** **200 이다.**\n\n> **JPA 예외를 잡으면 위험**한데(「DB 2편」 6.5절), **이것은 비즈니스 예외**라 괜찮다.\n\n**② `@ExceptionHandler`**\n\n```java\n@ExceptionHandler(IllegalStateException.class)\npublic String handle(IllegalStateException e, Model model) {\n    model.addAttribute(\"message\", e.getMessage());\n    return \"error/business\";\n}\n```\n\n**오류 화면으로** 간다. **폼 값이 사라진다.**\n\n**③ 검증기로 옮긴다**\n\n**위에서 본 `@UniqueMemberName`** 이다.\n\n> **이 책은 아무것도 안 한다.** **1.3절에서 오류 화면을 뺐다.**\n>\n> **9.7절 목록**에 넣는다. **실무라면 ①이 가장 단순**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 정상 ---\n\nPOST /members/new\nname=회원25&city=서울&street=강남&zipcode=12345\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n#   Hibernate: select next value for member_seq\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n\nHTTP/1.1 302\nLocation: /\n\n# --- 이름이 비면 ---\n\nPOST /members/new\nname=&city=서울&street=강남&zipcode=12345\n\n#   (SQL 없음)\n\n#   서비스를 안 불렀다\n\nHTTP/1.1 200\n\n<div class=\"form-group\">\n    <input type=\"text\" id=\"name\" name=\"name\"\n           class=\"form-control fieldError\" value=\"\">\n    <p>회원 이름은 필수입니다</p>\n</div>\n<div class=\"form-group\">\n    <input type=\"text\" id=\"city\" name=\"city\"\n           class=\"form-control\" value=\"서울\">\n</div>\n\n#   입력했던 도시가 남아 있다\n#   BindingResult 가 값을 들고 있다\n\n# --- BindingResult 를 빼면 ---\n\npublic String create(@Valid MemberForm form) { }\n\nPOST /members/new  name=\n\n#   org.springframework.web.bind.MethodArgumentNotValidException:\n#     Validation failed for argument [0] in\n#     public String MemberController.create(MemberForm):\n#     [Field error in object 'memberForm' on field 'name':\n#      rejected value []; ... default message [회원 이름은 필수입니다]]\n\nHTTP/1.1 400\n{\n    \"timestamp\": \"2026-09-09T14:25:31.204+00:00\",\n    \"status\": 400,\n    \"error\": \"Bad Request\",\n    \"path\": \"/members/new\"\n}\n\n#   폼으로 안 돌아간다\n\n# --- BindingResult 위치를 틀리면 ---\n\npublic String create(@Valid MemberForm form, Model model,\n                     BindingResult result) { }\n\n#   같은 400 이 난다\n#   result 를 못 찾았다\n\n# --- 중복 이름 ---\n\nPOST /members/new  name=회원25\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n#   -> 1 row\n\n#   IllegalStateException: 이미 존재하는 회원입니다.\n#   Initiating transaction rollback\n\nHTTP/1.1 500\nWhitelabel Error Page\n이미 존재하는 회원입니다.\n\n#   폼 검증은 200, 이것은 500\n\n# --- 컨트롤러에서 잡으면 ---\n\ntry {\n    memberService.join(member);\n} catch (IllegalStateException e) {\n    result.reject(\"duplicateMember\", e.getMessage());\n    return \"members/createMemberForm\";\n}\n\n#   Hibernate: select ... from member m1_0 where m1_0.name=?\n#   IllegalStateException (잡힘)\n\nHTTP/1.1 200\n\n<div class=\"alert alert-danger\">이미 존재하는 회원입니다.</div>\n<form ...>\n    <input name=\"name\" value=\"회원25\">\n\n#   폼으로 돌아왔고 값도 남았다\n\n#   폼 검증과 같은 모양이 됐다\n\n# --- 이 책은 안 한다 ---\n\n#   9.7절 목록",
+   "note": "**검증 실패에 SQL 이 하나도 안 나간다.** **서비스를 안 부른다.**\n\n**폼으로 돌아왔는데 도시 값이 남아** 있다. **`BindingResult` 가 거절된 값을 들고** 있다.\n\n**`BindingResult` 를 빼거나 위치를 틀리면 `400`** 이다. **폼으로 안 돌아간다.**\n\n**중복 이름은 `500`** 이고, **잡으면 `200`** 이 된다. **폼 검증과 같은 모양**이 된다.\n\n**이 책은 안 한다.** **9.7절 목록**이다.\n\n**다음 절에서 회원 목록을 만든다.**"
+  }
+ ],
+ "recap": [
+  "**규칙이 사는 곳이 셋** — 폼·서비스·엔티티.",
+  "**\"검사하려면 무엇이 필요한가\"** 가 기준이다.",
+  "**입력값만 필요하면 폼**이다.",
+  "**폼 검증은 서비스를 안 불러 SQL 이 안 나간다.**",
+  "**`BindingResult` 는 `@Valid` 바로 뒤**여야 한다.",
+  "**빠뜨리면 `400`** 이고 폼으로 안 돌아간다.",
+  "**`BindingResult` 가 거절된 값을** 들고 있다.",
+  "**폼 검증은 `200`, 서비스 예외는 `500`** — 격차가 있다.",
+  "**컨트롤러에서 잡으면 같은 모양**이 된다 — 9.7절."
+ ],
+ "drills": [
+  {
+   "task": "이름을 비우고 제출한다.",
+   "done_when": "SQL 이 안 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`BindingResult` 를 빼 본다.",
+   "done_when": "`400` 이 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`BindingResult` 위치를 옮겨 본다.",
+   "done_when": "같은 오류가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "중복 예외를 컨트롤러에서 잡아 본다.",
+   "done_when": "폼으로 돌아오고 값이 남는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙이 어디로 갈지 어떻게 정하나?",
+   "a": "검사하는 데 무엇이 필요한지를 본다. 입력값만이면 폼, 다른 행이면 서비스, 자기 데이터면 엔티티다."
+  },
+  {
+   "q": "폼 검증 실패 시 SQL 이 나가나?",
+   "a": "안 나간다. 서비스를 안 부른다."
+  },
+  {
+   "q": "`BindingResult` 를 빼면?",
+   "a": "`MethodArgumentNotValidException` 이 나고 `400` 이 된다."
+  },
+  {
+   "q": "위치가 왜 중요한가?",
+   "a": "`@Valid` 인자 바로 뒤여야 스프링이 짝을 찾는다."
+  },
+  {
+   "q": "폼 검증과 서비스 예외의 격차는?",
+   "a": "하나는 `200` 으로 폼, 하나는 `500` 오류 페이지다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://jakarta.ee/specifications/bean-validation/3.0/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

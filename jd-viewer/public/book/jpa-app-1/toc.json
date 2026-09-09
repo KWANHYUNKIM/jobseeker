@@ -468,7 +468,7 @@
           "title": "회원 등록",
           "summary": "폼 객체를 따로 둔다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -476,7 +476,7 @@
           "title": "폼 검증",
           "summary": "MVC 2편의 그 검증.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -484,7 +484,7 @@
           "title": "회원 목록 조회",
           "summary": "엔티티를 그대로 넘겼다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
