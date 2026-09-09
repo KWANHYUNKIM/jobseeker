@@ -97,7 +97,7 @@
           "title": "PORT",
           "summary": "같은 IP 에 여러 프로그램.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -105,7 +105,7 @@
           "title": "DNS",
           "summary": "이름을 주소로. 캐시가 사고를 만드는 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",
@@ -113,7 +113,7 @@
           "title": "패킷이 지나는 길",
           "summary": "curl 한 줄에 실제로 일어나는 일 전부.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

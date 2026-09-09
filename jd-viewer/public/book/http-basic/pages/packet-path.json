@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "packet-path",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "패킷이 지나는 길",
+ "summary": "curl 한 줄에 실제로 일어나는 일 전부.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "일곱 단계를 순서대로 안다.",
+  "왕복 예산을 계산한다.",
+  "어디를 줄일 수 있는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장에서 나눠 본 것을 한 줄에 이어** 붙인다. **`curl` 한 번에 이 전부가** 일어난다."
+  },
+  {
+   "type": "figure",
+   "caption": "일곱 단계",
+   "ascii": "   everything one curl actually does\n\n   1  resolve the name        udp to the resolver, or a cache hit\n   2  open a connection       syn, syn ack, ack\n   3  negotiate tls           client hello, server hello, keys\n   4  send the request        a few hundred bytes of ascii\n   5  wait                    this is the servers time, and only this\n   6  receive the response    headers, then body, in segments\n   7  keep or close           connection reuse, or fin\n\n   steps 1 to 3 are pure round trips, and they happen once per connection",
+   "note": "**1~3단은 연결마다 한 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서버 시간은 5단뿐이다",
+   "md": "**나머지는 전부 네트워크**다.\n\n> **2.1절에서 0.76초 중 0.25초만 서버 몫이라고** 했다.\n> **애플리케이션을 두 배 빠르게 해도 총 시간은 15%쯤** 준다.\n> **왕복을 줄이는 게 더** 크다.\n\n**줄이는 방법이 층마다** 있다.\n\n| 층 | 어떻게 |\n|---|---|\n| DNS | TTL·프리페치·`--resolve` |\n| TCP | 연결 재사용(4.4절) |\n| TLS | 세션 재개·1-RTT(3.5절) |\n| HTTP | 요청 수 줄이기·캐시(9장) |\n| 거리 | CDN |\n\n> **마지막이 제일** 크다.\n> **왕복 240ms 를 20ms 로 줄이면 나머지가 무의미**해진다.\n\n**두 번째 요청이 진짜 성능**이다.\n\n> **첫 요청은 1~3단을 다** 낸다.\n> **두 번째부터는 4단부터** 시작한다.\n> **벤치마크는 두 번째부터 재야** 한다.\n\n**HTTP/2 는 요청 수를 안 줄인다.**\n\n> **한 연결에서 병렬로 보낼 뿐**이다.\n> **왕복 수가 줄어드는** 것이다.\n> **HTTP/1.1 에서 하던 파일 합치기가 덜 중요해진 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "왕복 예산",
+   "ascii": "   where the milliseconds go, on a cold connection\n\n   dns          one round trip, or zero if cached\n   tcp          one round trip\n   tls 1.3      one round trip\n   request      half a round trip\n   server       whatever the application takes\n   response     half a round trip, plus transfer time\n\n   so a cold https request costs about three round trips before any work",
+   "note": "**차가운 HTTPS 는 일하기 전에 왕복 셋**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실패도 이 순서로 읽는다",
+   "md": "**어느 단계에서 멈췄는지가 원인을** 좁힌다.\n\n| 증상 | 어느 단계 |\n|---|---|\n| `Could not resolve host` | 1 |\n| `Connection refused` | 2. 포트에 아무도 없다 |\n| `Connection timed out` | 2. 방화벽이 조용히 버렸다 |\n| `SSL certificate problem` | 3 |\n| `Empty reply from server` | 4~6 사이에서 끊겼다 |\n| 느리기만 함 | 5 |\n\n> **⑫ 6.7절의 사다리와 같은 생각**이다.\n> **거기는 클러스터 안, 여기는 한 요청 안**이다.\n\n**거부와 타임아웃은 다른 말**이다.\n\n> **거부는 RST 가 돌아온** 것이다 — **누가 대답은 했다.**\n> **타임아웃은 아무 말도** 없었다.\n> **⑫ 6.7절에서도 이 둘을** 갈랐다.\n\n**`curl -w` 가 단계별 시간을 준다.**\n\n> **`time_namelookup` 부터 누적**이다.\n> **차를 내야 각 단계 시간이** 나온다.\n> **이 한 줄이면 어디가 느린지 대개** 보인다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 한 줄에 전부 ---\n\n$ cat timing.txt\n\ndns        %{time_namelookup}\\n\ntcp        %{time_connect}\\n\ntls        %{time_appconnect}\\n\n요청 보냄    %{time_pretransfer}\\n\n첫 바이트    %{time_starttransfer}\\n\n총         %{time_total}\\n\n\n$ curl -o /dev/null -s -w \"@timing.txt\" https://www.bbc.co.uk/\n\ndns        0.031412\ntcp        0.273918\ntls        0.512004\n요청 보냄    0.512188\n첫 바이트    0.759233\n총         0.761880\n\n$ curl -o /dev/null -s -w \"@timing.txt\" https://www.bbc.co.uk/ \\\n  | awk 'NR>1{printf \"%-10s %.3f\\n\", $1, $2-p} {p=$2}' 2>/dev/null \\\n  || python3 - <<'EOF'\nv=[0.031412,0.273918,0.512004,0.512188,0.759233,0.761880]\nn=[\"dns\",\"tcp\",\"tls\",\"요청\",\"대기\",\"수신\"]\np=0\nfor i,x in enumerate(v):\n    print(f\"{n[i]:<6} {x-p:.3f}\")\n    p=x\nEOF\n\ndns    0.031\ntcp    0.243\ntls    0.238\n요청    0.000\n대기    0.247\n수신    0.003\n\n#   왕복 셋이 0.72초 중 0.48초다\n\n#   서버가 쓴 건 0.247초다\n\n#   앱을 두 배 빠르게 해도 0.12초 준다\n\n# --- 두 번째부터는 다르다 ---\n\n$ curl -o /dev/null -s -w \"@timing.txt\" \\\n    https://www.bbc.co.uk/ https://www.bbc.co.uk/ 2>/dev/null | tail -6\n\ndns        0.000018\ntcp        0.000021\ntls        0.000024\n요청 보냄    0.000112\n첫 바이트    0.248441\n총         0.251102\n\n#   앞 셋이 0이다\n\n#   연결을 재사용했다 (4.4절)\n\n#   0.76 이 0.25 가 됐다\n\n#   벤치마크는 여기부터 재야 한다\n\n# --- 패킷으로 본 순서 ---\n\n$ sudo tcpdump -i any -n -c 12 'host www.example.com or udp port 53' \\\n    > /tmp/all.txt &\n$ curl -s -o /dev/null https://www.example.com/; sleep 2\n$ grep -oE '(53:|Flags \\[[^]]*\\]|UDP)' /tmp/all.txt | head -8\n\n53:\n53:\nFlags [S]\nFlags [S.]\nFlags [.]\nFlags [P.]\nFlags [.]\nFlags [P.]\n\n#   DNS 둘, 악수 셋, 그리고 데이터다\n\n#   2.4 · 2.3 · 2.6절이 순서대로 나온다\n\n#   P. 가 TLS 악수다\n\n#   HTTP 는 그 뒤에 암호문으로 간다\n\n# --- 평문이면 보인다 ---\n\n$ sudo tcpdump -i lo0 -n -A -c 1 'tcp port 8080 and tcp[32:4] = 0x47455420' &\n$ curl -s http://localhost:8080/ > /dev/null; sleep 1\n\nGET / HTTP/1.1\nHost: localhost:8080\nUser-Agent: curl/8.9.1\nAccept: */*\n\n\n#   1.4절에서 본 그 넉 줄이다\n\n#   와이어에 이대로 있다\n\n#   HTTP 는 글자다\n\n# --- 실패를 단계로 읽는다 ---\n\n$ curl -s -o /dev/null http://없는이름.example/ 2>&1; \\\n  curl -s http://없는이름.example/ 2>&1 | tail -1\n\ncurl: (6) Could not resolve host: 없는이름.example\n\n#   1단이다\n\n$ curl -s -m 3 http://localhost:9099/ 2>&1 | tail -1\n\ncurl: (7) Failed to connect to localhost port 9099: Connection refused\n\n#   2단이다\n\n#   RST 가 돌아왔다\n\n#   누가 대답은 했다\n\n$ curl -s -m 3 http://192.0.2.1/ 2>&1 | tail -1\n\ncurl: (28) Failed to connect to 192.0.2.1 port 80 after 3001 ms:\n  Timeout was reached\n\n#   역시 2단인데 다르다\n\n#   아무 말도 없었다\n\n#   방화벽이 조용히 버렸다\n\n#   ⑫ 6.7절에서 이 둘을 갈랐다\n\n$ curl -s -m 5 https://expired.badssl.com/ 2>&1 | tail -2\n\ncurl: (60) SSL certificate problem: certificate has expired\n\n#   3단이다\n\n#   연결은 됐다\n\n#   3.5절에서 다시 본다\n\n# --- 거리가 제일 크다 ---\n\n$ for h in localhost:8080 www.naver.com www.bbc.co.uk; do\n    printf \"%-18s\" $h\n    curl -s -o /dev/null -w '%{time_total}\\n' \\\n      $( [ \"${h%%:*}\" = localhost ] && echo http://$h/ || echo https://$h/ )\n  done\n\nlocalhost:8080    0.000684\nwww.naver.com     0.089112\nwww.bbc.co.uk     0.761880\n\n#   같은 크기 응답인데 천 배 차이다\n\n#   서버 성능이 아니라 거리다\n\n#   CDN 이 이걸 푼다\n\n# --- 2장을 한 줄로 ---\n\n$ curl -o /dev/null -s -w \\\n'이름 %{time_namelookup} 연결 %{time_connect} 암호 %{time_appconnect} \\\n서버 %{time_starttransfer} 끝 %{time_total}\\n' https://www.bbc.co.uk/\n\n이름 0.001204 연결 0.241887 암호 0.478112 서버 0.726331 끝 0.729114\n\n#   2.6 2.3 3.5 4장 순이다\n\n#   이 한 줄이 이 장의 요약이다\n\n# --- 다음 장에서 ---\n\n#   주소 자체를 뜯어본다",
+   "note": "**왕복 셋이 0.72초 중 0.48초를 쓰고 서버 몫은 0.247초**다.\n\n**두 번째 요청은 앞 세 단계가 0 이라 0.76초가 0.25초가** 된다.\n\n**패킷 순서가 DNS 둘 → 악수 셋 → TLS → 데이터**로 2.6·2.3·3.5절 순이다.\n\n**평문 HTTP 는 `GET / HTTP/1.1` 넉 줄이 와이어에 그대로** 있다.\n\n**`Connection refused` 와 `Timeout` 이 다른 단계의 다른 사건**이다."
+  }
+ ],
+ "recap": [
+  "**일곱 단계가 순서대로** 일어난다.",
+  "**1~3단은 연결마다 한 번**이다.",
+  "**서버 시간은 5단**뿐이다.",
+  "**차가운 HTTPS 는 왕복 셋을 먼저** 낸다.",
+  "**두 번째 요청이 진짜 성능**이다.",
+  "**거리를 줄이는 게 제일** 크다.",
+  "**실패는 멈춘 단계로** 읽는다.",
+  "**거부와 타임아웃은 다른** 사건이다.",
+  "**`curl -w` 한 줄이면 대개** 보인다."
+ ],
+ "drills": [
+  {
+   "task": "단계별 시간을 찍는다.",
+   "done_when": "차를 내서 각 구간을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 곳을 두 번 부른다.",
+   "done_when": "앞 세 단계가 0인 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "패킷 순서를 잡는다.",
+   "done_when": "DNS·악수·데이터 순을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "네 가지 실패를 만든다.",
+   "done_when": "메시지로 단계를 구분했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "일곱 단계 중 서버 시간은?",
+   "a": "요청을 보낸 뒤 첫 바이트가 올 때까지의 5단뿐이다."
+  },
+  {
+   "q": "차가운 HTTPS 요청의 왕복 수는?",
+   "a": "DNS·TCP·TLS 로 대략 세 번이다."
+  },
+  {
+   "q": "두 번째 요청이 빠른 이유는?",
+   "a": "연결을 재사용해 앞 세 단계를 건너뛴다."
+  },
+  {
+   "q": "`Connection refused` 와 타임아웃의 차이는?",
+   "a": "전자는 RST 응답이 왔고 후자는 아무 응답도 없었다."
+  },
+  {
+   "q": "성능 개선에서 제일 큰 지렛대는?",
+   "a": "거리를 줄이는 것, 즉 가까운 곳에서 응답하는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "왕복 시간",
+   "def": "패킷이 갔다 오는 데 걸리는 시간."
+  },
+  {
+   "term": "차가운 연결",
+   "def": "재사용할 연결이 없어 설정부터 하는 요청."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9293 — Transmission Control Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 1035 — Domain Names: Implementation and Specification",
+   "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

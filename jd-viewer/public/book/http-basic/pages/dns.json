@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "dns",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "DNS",
+ "summary": "이름을 주소로. 캐시가 사고를 만드는 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "재귀 질의를 안다.",
+  "TTL 과 캐시 층을 안다.",
+  "레코드 종류를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절의 첫 예제가 DNS** 였다. **HTTP 요청 전에 반드시 지나는 층**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "아무것도 캐시가 없을 때",
+   "ascii": "   who is asked, in order, when nothing is cached\n\n   the stub resolver     your machine, asks one server and waits\n   the recursive resolver  the isp or 8.8.8.8, does the walking\n     root                  ask a com server, here they are\n     com                   ask example.com servers, here they are\n     authoritative         the answer, with a ttl\n\n   your machine sees one question and one answer\n   the resolver may have made three round trips to produce it",
+   "note": "**내 기계는 한 번 묻고 한 번** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재귀는 남이 대신 걷는 것이다",
+   "md": "**내 기계는 게으른 질의만** 한다.\n\n> **\"알아서 찾아 줘\" 라고 한 번** 묻는다.\n> **재귀 리졸버가 루트부터** 걷는다.\n> **루트 → com → 권한 서버** 순이다.\n\n**권한 서버가 진짜 답을 가진 곳**이다.\n\n> **나머지는 \"저기 가서 물어봐\" 만** 한다.\n> **`dig +trace` 로 그 걸음을 볼 수** 있다.\n\n**UDP 를 쓰다가 커지면 TCP 로** 간다.\n\n> **512바이트를 넘으면 잘렸다고(TC) 표시**한다.\n> **그러면 클라이언트가 TCP 로 다시** 묻는다.\n> **EDNS0 로 UDP 에서 더 큰 응답을 받기도** 한다.\n\n**여러 답을 주면 순서를** 바꾼다.\n\n> **간단한 부하 분산**이다.\n> **클라이언트가 첫 번째를 쓰니** 갈린다.\n> **정교하지는 않다** — **죽은 서버도 계속** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 겹의 캐시",
+   "ascii": "   four caches, each with its own idea of the truth\n\n   the browser        seconds to minutes, and it ignores your hosts file\n   the os             varies, sometimes forever until flushed\n   the recursive      honours the ttl, mostly\n   the application    a jvm once cached forever, by default\n\n   a dns change looks instant to you and stale to someone else\n   and the last row is why a failover did not fail over",
+   "note": "**마지막 줄이 장애 전환을 막은** 범인이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "TTL 은 약속이지 보장이 아니다",
+   "md": "**아무도 안 지킬 수** 있다.\n\n> **TTL 60초로 줄여 놔도 어디선가 30분을 들고** 있다.\n> **바꾸기 24시간 전에 TTL 을 미리 낮추는 게** 관행이다.\n> **바꾸고 나서 낮춰 봐야** 늦다.\n\n**자바가 특히 유명**하다.\n\n> **예전 JVM 은 성공한 조회를 영원히** 캐시했다.\n> **`networkaddress.cache.ttl` 로** 바꾼다.\n> **RDS 장애 전환 뒤에도 옛 IP 로 붙는 사고가 이것**이다.\n\n**`hosts` 파일은 브라우저가 무시하기도** 한다.\n\n> **브라우저가 자체 DNS 를 쓰는 경우가** 있다.\n> **DoH(HTTPS 상의 DNS)면 OS 설정을 안** 본다.\n> **`curl` 로는 되는데 브라우저는 안 되는 상황이** 생긴다.\n\n**레코드 종류를 구분한다**\n\n| 종류 | 무엇 |\n|---|---|\n| `A`·`AAAA` | 이름 → IPv4·IPv6 |\n| `CNAME` | 이름 → 다른 이름 |\n| `NS` | 이 구역의 권한 서버 |\n| `MX` | 메일 서버 |\n| `TXT` | 아무 문자열. 소유권 증명에 쓴다 |\n\n> **`CNAME` 은 최상위 도메인에 못 붙인다** — **`example.com` 자체에는 안 된다.**\n> **CDN 을 붙일 때 자주 걸리는 제약**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 한 번 묻고 한 번 받는다 ---\n\n$ dig www.example.com | sed -n '/QUESTION/,/^$/p'\n\n;; QUESTION SECTION:\n;www.example.com.\t\tIN\tA\n\n;; ANSWER SECTION:\nwww.example.com.\t2891\tIN\tA\t23.192.228.84\nwww.example.com.\t2891\tIN\tA\t23.215.0.136\n\n#   2891 이 남은 TTL 이다\n\n#   답이 둘이다\n\n#   클라이언트가 하나를 고른다\n\n# --- 재귀 리졸버는 여러 번 걸었다 ---\n\n$ dig +trace www.example.com 2>/dev/null \\\n    | grep -E '^(\\.|com\\.|example\\.com\\.|www\\.example\\.com\\.)' | head -6\n\n.\t\t\t518400\tIN\tNS\ta.root-servers.net.\ncom.\t\t\t172800\tIN\tNS\ta.gtld-servers.net.\nexample.com.\t\t172800\tIN\tNS\tns1.example.com.\nwww.example.com.\t3600\tIN\tA\t23.192.228.84\n\n#   루트, com, 권한 서버, 답이다\n\n#   내 기계는 이걸 안 봤다\n\n#   리졸버가 대신 걸었다\n\n$ dig +noall +stats www.example.com | grep 'Query time'\n\n;; Query time: 3 msec\n\n$ dig +noall +stats +trace www.example.com 2>/dev/null | tail -1\n\n;; Query time: 41 msec\n\n#   캐시된 답은 3ms 다\n\n#   직접 걸으면 41ms 다\n\n# --- 두 번째는 캐시에서 온다 ---\n\n$ dig +noall +answer +stats bbc.co.uk | grep -E 'IN\\s+A|Query time'\n\nbbc.co.uk.\t\t287\tIN\tA\t151.101.192.81\n;; Query time: 28 msec\n\n$ dig +noall +answer +stats bbc.co.uk | grep -E 'IN\\s+A|Query time'\n\nbbc.co.uk.\t\t285\tIN\tA\t151.101.192.81\n;; Query time: 1 msec\n\n#   TTL 이 287 에서 285 로 줄었다\n\n#   시간이 흐른 만큼 깎인 것이다\n\n#   Query time 이 28 에서 1 로 떨어졌다\n\n#   캐시에서 왔다\n\n# --- 잘리면 TCP 로 다시 묻는다 ---\n\n$ dig +ignore +bufsize=512 google.com TXT 2>/dev/null | grep -E 'flags|MSG SIZE'\n\n;; flags: qr rd ra tc; QUERY: 1, ANSWER: 0, AUTHORITY: 0\n;; MSG SIZE  rcvd: 512\n\n#   tc 가 붙었다\n\n#   잘렸다는 뜻이다\n\n$ dig +tcp google.com TXT 2>/dev/null | grep -cE '^google.com.*TXT'\n\n7\n\n#   TCP 로 다시 물으니 7건이 왔다\n\n# --- 레코드 종류 ---\n\n$ for t in A AAAA NS MX; do\n    printf \"%-5s\" $t\n    dig +short $t google.com | head -1\n  done\n\nA    142.250.196.142\nAAAA 2404:6800:400a:80a::200e\nNS   ns1.google.com.\nMX   10 smtp.google.com.\n\n$ dig +short CNAME www.github.com\n\ngithub.com.\n\n#   이름이 이름을 가리킨다\n\n$ dig +short CNAME github.com\n\n(빈 줄)\n\n#   최상위에는 CNAME 을 못 붙인다\n\n#   CDN 붙일 때 걸리는 제약이다\n\n# --- HTTP 요청 앞에 늘 이게 있다 ---\n\n$ curl -o /dev/null -s -w 'dns %{time_namelookup} connect %{time_connect}\\n' \\\n    https://www.bbc.co.uk/\n\ndns 0.031412 connect 0.273918\n\n$ curl -o /dev/null -s -w 'dns %{time_namelookup} connect %{time_connect}\\n' \\\n    https://www.bbc.co.uk/\n\ndns 0.001204 connect 0.241887\n\n#   두 번째는 DNS 가 1ms 다\n\n#   OS 가 캐시했다\n\n# --- 캐시를 건너뛴다 ---\n\n$ curl -s -o /dev/null -w '%{remote_ip}\\n' \\\n    --resolve www.bbc.co.uk:443:151.101.0.81 https://www.bbc.co.uk/\n\n151.101.0.81\n\n#   DNS 를 아예 안 물었다\n\n#   장애 때 특정 서버만 찔러 볼 때 쓴다\n\n#   Host 헤더는 그대로 www.bbc.co.uk 다\n\n$ curl -s -v --resolve www.bbc.co.uk:443:151.101.0.81 \\\n    https://www.bbc.co.uk/ 2>&1 | grep '^> Host'\n\n> Host: www.bbc.co.uk\n\n#   이름과 주소가 분리돼 있다\n\n#   인증서도 이름으로 검사한다 (3.5절)\n\n# --- 자바의 그 캐시 ---\n\n$ docker run --rm eclipse-temurin:21-jre sh -c \\\n    'java -XshowSettings:properties -version 2>&1 \\\n     | grep -i networkaddress' || echo \"(기본값은 설정에 안 나온다)\"\n\n(기본값은 설정에 안 나온다)\n\n#   보안 속성이라 여기 안 나온다\n\n#   networkaddress.cache.ttl 이다\n\n#   예전엔 성공한 조회를 영원히 들고 있었다\n\n#   장애 전환 뒤에도 옛 IP 로 붙었다\n\n# --- 다음 절에서 ---\n\n#   지금까지를 한 줄에 이어 붙인다",
+   "note": "**`dig +trace` 가 루트→com→권한 서버로 걷고, 그 걸음이 41ms 대 캐시 3ms** 다.\n\n**TTL 이 `287` → `285` 로 깎이고 `Query time` 이 28ms → 1ms 로** 떨어진다.\n\n**512바이트에서 잘리면 `flags: ... tc` 가 붙고 TCP 로 다시 물으면 7건이** 온다.\n\n**최상위 도메인에는 `CNAME` 이** 없다.\n\n**`--resolve` 로 DNS 를 건너뛰어도 `Host` 는 이름 그대로**다."
+  }
+ ],
+ "recap": [
+  "**내 기계는 한 번 묻고 리졸버가 대신** 걷는다.",
+  "**루트 → TLD → 권한 서버** 순이다.",
+  "**권한 서버만 진짜 답을** 가진다.",
+  "**TTL 이 캐시 수명을** 정한다.",
+  "**TTL 은 약속이지 보장이** 아니다.",
+  "**캐시가 네 겹쯤** 있다.",
+  "**자바의 영구 캐시가 유명한** 사고다.",
+  "**512바이트를 넘으면 TCP 로** 간다.",
+  "**최상위에는 `CNAME` 을 못** 붙인다."
+ ],
+ "drills": [
+  {
+   "task": "`dig +trace` 를 찍는다.",
+   "done_when": "세 단계를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 이름을 두 번 조회한다.",
+   "done_when": "TTL 이 줄고 빨라지는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "잘리는 응답을 만든다.",
+   "done_when": "`tc` 플래그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`--resolve` 로 부른다.",
+   "done_when": "DNS 없이 붙는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "재귀 질의란?",
+   "a": "클라이언트가 한 번 묻고 리졸버가 루트부터 대신 찾아 주는 방식이다."
+  },
+  {
+   "q": "TTL 이 하는 일은?",
+   "a": "이 답을 얼마나 캐시해도 되는지 알려 준다."
+  },
+  {
+   "q": "TTL 을 미리 낮추는 이유는?",
+   "a": "옛 TTL 로 캐시된 답이 남아 있어 변경이 즉시 퍼지지 않기 때문이다."
+  },
+  {
+   "q": "응답이 512바이트를 넘으면?",
+   "a": "`tc` 플래그가 붙고 클라이언트가 TCP 로 다시 묻는다."
+  },
+  {
+   "q": "`--resolve` 는 무엇을 하나?",
+   "a": "DNS 조회를 건너뛰고 이름은 그대로 둔 채 특정 IP 로 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "권한 서버",
+   "def": "그 구역의 진짜 레코드를 가진 DNS 서버."
+  },
+  {
+   "term": "TTL",
+   "def": "이 응답을 캐시해도 되는 시간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 1035 — Domain Names: Implementation and Specification",
+   "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 8499 — DNS Terminology",
+   "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
