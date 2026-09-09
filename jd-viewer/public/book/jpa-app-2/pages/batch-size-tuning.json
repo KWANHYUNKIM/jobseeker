@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "batch-size-tuning",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "배치 사이즈를 얼마로",
+ "summary": "100 이냐 1000 이냐.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "숫자가 무엇을 맞바꾸는지 안다.",
+  "`in` 절 길이의 비용을 안다.",
+  "기본값을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**100 을 썼다.** **왜 100 인지 따져** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "숫자가 맞바꾸는 것",
+   "ascii": "   what the number trades\n\n   small   10\n     many round trips\n     tiny in clauses, plan cache friendly\n\n   medium  100\n     few round trips\n     in clause of 100. every database handles this.\n\n   large   1000\n     fewest round trips\n     one big query. more memory at once.\n     some databases refuse. oracle stops at 1000.",
+   "note": "**왕복 수와 한 번에 올리는 양**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쿼리 개수로 보면",
+   "md": "**주문 1000건을 조회할 때**\n\n| 배치 | `order_item` 쿼리 |\n|---|---|\n| 10 | **100개** |\n| 100 | **10개** |\n| 1000 | **1개** |\n\n**작으면 왕복이** 는다.\n\n> **왕복 하나가 1ms 라면 100개면 100ms**다.\n> **10개면 10ms**다.\n\n**크면 한 번에 많이** 올린다.\n\n> **`in (1000개)` 의 결과가 한꺼번에** 온다.\n> **주문당 상품 5개면 5000행**이다.\n>\n> **5.6절의 문제와 같은 종류**인데 **규모가 통제** 된다.\n\n**그런데 페이지 크기가 상한**이다.\n\n```\nlimit 100 으로 조회하면\n주문이 100건뿐이라 in 절도 100개를 못 넘는다\n```\n\n> **배치를 1000 으로 해도 `in` 에 100개**다.\n>\n> **배치 사이즈는 \"최대\" 지 \"항상\" 이** 아니다.\n>\n> **그래서 페이지 크기보다 큰 배치는 의미가** 없다 — **컬렉션 조회에 한해서는.**"
+  },
+  {
+   "type": "figure",
+   "caption": "`in` 절 길이가 왜 비용인가",
+   "ascii": "   why varying in clause length costs something\n\n   in (?)             a distinct sql string\n   in (?,?)           another one\n   in (?,?,?)         another one\n\n   each is parsed and planned separately\n\n   hibernate 6 pads the list up to the batch size\n   so only a few distinct shapes are ever produced",
+   "note": "**길이마다 다른 SQL** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실행 계획 캐시",
+   "md": "**DB 는 SQL 문자열로 실행 계획을** 캐시한다.\n\n```sql\nwhere order_id in (?)\nwhere order_id in (?,?)\nwhere order_id in (?,?,?)\n```\n\n> **셋이 다른 SQL** 이다. **각각 파싱·계획**한다.\n>\n> **길이가 1~100 까지 다양하면 캐시에 100가지**가 쌓인다.\n\n**하이버네이트 6 이 이걸 완화**한다.\n\n> **`in` 절 길이를 2의 거듭제곱 등으로 패딩**한다.\n>\n> **3개면 `in (?,?,?,?)` 로 만들고 남는 자리에 반복된 값을** 넣는다.\n>\n> **길이 종류가 몇 가지로** 준다.\n\n**설정으로 켜고 끈다.**\n\n```yaml\nspring.jpa.properties.hibernate.query.in_clause_parameter_padding: true\n```\n\n> **하이버네이트 6 기본이 켜져** 있다. **5 에서는 꺼져 있었다.**\n\n**오라클의 1000 제한**\n\n> **`in` 절에 1000개를 넘기면 `ORA-01795`** 다.\n>\n> **하이버네이트가 알아서 나눠 주지** 않는다. **배치를 1000 이하로** 둬야 한다.\n>\n> **다른 DB 는 대개 제한이 없거나 훨씬 크다.** **PostgreSQL·MySQL 은 문제없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "결론",
+   "md": "**100 을 기본으로** 쓴다.\n\n| | |\n|---|---|\n| **모든 DB 가 받는다** | 오라클 포함 |\n| **왕복이 충분히 적다** | 1000건에 10회 |\n| **한 번에 올리는 양이 통제된다** | |\n| **강의·문서의 관행** | 읽는 사람이 안다 |\n\n**언제 바꾸나**\n\n| 상황 | |\n|---|---|\n| **페이지가 항상 20건** | 20~50 이면 충분하다 |\n| **컬렉션이 아주 크다** | 주문당 상품 100개면 배치를 줄인다 |\n| **왕복이 아주 비싸다** | 다른 리전이면 크게 |\n| **오라클** | **1000 을 넘기지 않는다** |\n\n**측정 없이 바꾸지 않는다.**\n\n> **100 → 1000 으로 바꿔서 체감되는 경우는 드물다.**\n> **3.3절에서 정한 대로 쿼리 개수부터** 본다.\n\n**한 가지 더** — **배치 사이즈는 `ToOne` 에도** 걸린다.\n\n```java\n// member 를 페치 조인 안 했다면\nselect ... from member where member_id in (?,?,...)\n```\n\n> **`ToOne` 도 N+1 이면 배치로** 묶인다.\n>\n> **그래도 페치 조인이 낫다** — **쿼리 하나가 아예 안 나간다.**\n>\n> **V3.1 이 `ToOne` 은 페치, 컬렉션은 배치인 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 데이터: 주문 1000건, 주문당 상품 3개 ---\n\n# --- 배치 10 ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 10\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?  [0, 100]\n#   Hibernate: select ... from order_item where order_id in (?,?,?,?,?,?,?,?,?,?)\n#   Hibernate: select ... from order_item where order_id in (?,?,?,?,?,?,?,?,?,?)\n#   ... (10번)\n#   Hibernate: select ... from item where item_id in (?,?,?,?,?,?,?,?,?,?)\n#   ... (몇 번)\n\n#   Session Metrics { 15 JDBC statements were executed }\n\n#   INFO  TimerAspect : ordersV31 took 34ms\n\n# --- 배치 100 ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where order_id in (?,?,...,?)\n#              (100개)\n#   Hibernate: select ... from item where item_id in (?,?,...,?)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   INFO  TimerAspect : ordersV31 took 19ms\n\n# --- 배치 1000 ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 1000\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where order_id in (?,?,...,?)\n#              (100개)\n#   Hibernate: select ... from item where item_id in (?,?,...,?)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   INFO  TimerAspect : ordersV31 took 19ms\n\n#   100 과 똑같다\n\n#   페이지가 100건이라 in 절이 100개를 못 넘어서다\n#   배치 사이즈는 최대지 항상이 아니다\n\n# --- 페이지를 키우면 ---\n\nGET /api/v3.1/orders?offset=0&limit=1000\n\n#   배치 100\n#   Hibernate: select ... offset ? fetch first ?  [0, 1000]\n#   Hibernate: select ... from order_item where order_id in (...100개)\n#   ... (10번)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   Session Metrics { 12 JDBC statements were executed }\n\n#   배치 1000\n#   Hibernate: select ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where order_id in (...1000개)\n#   Hibernate: select ... from item where item_id in (...)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   여기서는 차이가 난다\n\n# --- in 절 패딩 확인 ---\n\n#   주문 3건만 조회\n\nGET /api/v3.1/orders?offset=0&limit=3\n\n#   Hibernate: select ... from order_item where order_id in (?,?,?,?)\n#   binding parameter (1:BIGINT) <- [4]\n#   binding parameter (2:BIGINT) <- [11]\n#   binding parameter (3:BIGINT) <- [20]\n#   binding parameter (4:BIGINT) <- [20]\n\n#   3개인데 in 이 4자리다\n#   마지막이 반복됐다\n\n#   in_clause_parameter_padding 이다\n#   SQL 문자열 종류를 줄이려는 것이다\n\n# --- 끄면 ---\n\nspring.jpa.properties.hibernate.query.in_clause_parameter_padding: false\n\n#   Hibernate: select ... where order_id in (?,?,?)\n\n#   3자리다\n\n# --- 응답은 전부 같았다 ---\n\n#   429 bytes\n#   3.4절의 계약\n\n#   배치 사이즈는 응답을 안 바꾼다\n\n# --- 다음 절에서 ---\n\n#   DTO 직접 조회로 간다\n#   쿼리가 다시 는다",
+   "note": "**배치 10 은 15개에 34ms, 100 은 3개에 19ms** 다.\n\n**1000 은 100 과 똑같다** — **페이지가 100건이라 `in` 절이 100개를 못 넘어서**다. **배치는 최대지 항상이** 아니다.\n\n**페이지를 1000 으로 키우면 12개 대 3개로** 갈린다.\n\n**주문 3건을 조회하면 `in` 이 4자리**다. **마지막이 반복**됐다 — **패딩**이다.\n\n**응답은 전부 429 바이트로** 같았다. **배치 사이즈는 응답을 안 바꾼다.**"
+  }
+ ],
+ "recap": [
+  "**작으면 왕복이 늘고 크면 한 번에 많이** 올린다.",
+  "**페이지 크기가 `in` 절의 상한**이다 — 배치는 최대지 항상이 아니다.",
+  "**페이지 100건이면 배치 100 과 1000 이 똑같다.**",
+  "**`in` 절 길이마다 다른 SQL** 이라 실행 계획이 따로 캐시된다.",
+  "**하이버네이트 6 이 패딩으로 종류를** 줄인다.",
+  "**오라클은 `in` 에 1000개 제한**이 있다.",
+  "**100 을 기본으로** 쓴다 — 모든 DB 가 받고 관행이다.",
+  "**측정 없이 바꾸지 않는다.**",
+  "**`ToOne` 은 배치보다 페치 조인이 낫다** — 쿼리가 아예 안 나간다."
+ ],
+ "drills": [
+  {
+   "task": "배치를 10·100·1000 으로 바꿔 쿼리를 센다.",
+   "done_when": "페이지 100건에서 100 과 1000 이 같은 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "페이지를 1000 으로 키워 다시 잰다.",
+   "done_when": "차이가 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "주문 3건만 조회해 `in` 절 자릿수를 센다.",
+   "done_when": "패딩된 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`in_clause_parameter_padding` 을 끈다.",
+   "done_when": "자릿수가 정확히 맞는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "배치 100 과 1000 이 언제 같은 결과인가?",
+   "a": "페이지 크기가 100 이하일 때다. `in` 절이 그 이상 못 커진다."
+  },
+  {
+   "q": "`in` 절 길이가 왜 비용인가?",
+   "a": "길이마다 다른 SQL 이라 실행 계획이 따로 파싱·캐시된다."
+  },
+  {
+   "q": "패딩은 무엇을 하나?",
+   "a": "`in` 절 길이를 반올림해 SQL 문자열 종류를 줄인다."
+  },
+  {
+   "q": "왜 1000 을 넘기면 안 되나?",
+   "a": "오라클이 `in` 절 1000개 제한이 있다."
+  },
+  {
+   "q": "`ToOne` 도 배치로 묶으면 되나?",
+   "a": "되지만 페치 조인이 낫다. 쿼리가 아예 안 나간다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

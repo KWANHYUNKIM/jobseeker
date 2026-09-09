@@ -1,0 +1,148 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v3-1",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "V3.1 — 배치 사이즈",
+ "summary": "1 + 1 + 1.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ToOne` 만 페치 조인하고 컬렉션은 배치로 묶는다.",
+  "쿼리가 3개가 되고 페이징이 되는 것을 본다.",
+  "왜 이것이 실무의 기본인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 9.4절에서 설정 한 줄로 31 이 4 가 되는 걸** 보고 안 켰다. **지금 켠다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderRepository — ToOne 만 페치 조인",
+   "code": "public List<Order> findAllWithMemberDelivery(int offset, int limit) {\n    return em.createQuery(\n            \"select o from Order o\" +\n            \" join fetch o.member m\" +\n            \" join fetch o.delivery d\", Order.class)\n        .setFirstResult(offset)\n        .setMaxResults(limit)\n        .getResultList();\n}"
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "caption": "application.yml",
+   "code": "spring:\n  jpa:\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100"
+  },
+  {
+   "type": "figure",
+   "caption": "페이징이 되게 만드는 분할",
+   "ascii": "   the split that makes paging work\n\n   query 1   orders + member + delivery\n             fetch join. no collection. rows do not multiply.\n             offset and limit go to the database.\n\n   query 2   order_item where order_id in (?, ?)\n             one query for every order on the page\n\n   query 3   item where item_id in (?, ?, ?, ?)\n             one query for every item on the page\n\n   3 queries, and the page is exactly what was asked for",
+   "note": "**쿼리 3개에 페이지가 정확**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이렇게 나누나",
+   "md": "**행을 늘리는 건 컬렉션 하나**다.\n\n| | 행이 느나 |\n|---|---|\n| `o.member` | **아니다** |\n| `o.delivery` | **아니다** |\n| `o.orderItems` | **그렇다** |\n\n> **`ToOne` 은 페치 조인해도 안전**하다(4.5절에서 확인).\n> **컬렉션만 빼면 5.6절의 문제가 사라진다.**\n\n**그럼 `orderItems` 는 N+1 로** 나간다.\n\n```\nselect ... from order_item where order_id = 4\nselect ... from order_item where order_id = 11\n```\n\n> **주문 100건이면 100개**다. **여기까지는 5.3절과 같다.**\n\n**배치 사이즈가 이걸 묶는다.**\n\n```\nselect ... from order_item where order_id in (4, 11, ..., 100개)\n```\n\n> **쿼리 100개가 1개**가 된다.\n> **`item` 도 마찬가지**다.\n\n**결과가 `1 + 1 + 1`** 이다.\n\n> **주문 100건이든 1000건이든 3개**다. **페이지 크기가 100이면.**\n>\n> **정확히는 `1 + ceil(N/batch) + ceil(M/batch)`** 다. **배치 100에 주문 100건이면 3개**."
+  },
+  {
+   "type": "figure",
+   "caption": "배치 사이즈가 하는 일",
+   "ascii": "   what batch size does to the n queries\n\n   without\n     where order_id = 4\n     where order_id = 11\n     where order_id = 20      n round trips\n\n   with batch size 100\n     where order_id in (4, 11, 20)     one round trip\n\n   it does not remove the query. it merges them.",
+   "note": "**없애는 게 아니라 합친다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "페치 조인과 무엇이 다른가",
+   "md": "| | 페치 조인 | 배치 사이즈 |\n|---|---|---|\n| 쿼리 | **1** | 1 + 1 |\n| 행 | **곱** | **안 늘어난다** |\n| 페이징 | **메모리** | **SQL** |\n| 컬렉션 둘 이상 | **불가** | **된다** |\n| 중복 컬럼 전송 | **있다** | **없다** |\n| `distinct` | **필요** | 필요 없다 |\n\n**\"중복 컬럼 전송\" 을 다시** 본다.\n\n```\n페치 조인, 주문 100건 x 상품 5개\n\n500행\nmember 컬럼이 5번씩 중복\ndelivery 컬럼이 5번씩 중복\n```\n\n```\n배치, 같은 데이터\n\n쿼리 1: 100행 (member, delivery 각 1번)\n쿼리 2: 500행 (order_item)\n쿼리 3: 상품 종류만큼\n```\n\n> **총 전송량이 배치 쪽이 적을 수** 있다.\n>\n> **쿼리 개수는 1 대 3 인데 데이터는 배치가 적다.**\n>\n> **3.3절에서 \"쿼리 개수가 못 보여 주는 것\" 이라고** 한 그것이다.\n\n**컬렉션 둘 이상도** 된다.\n\n> **`MultipleBagFetchException` 이 안 난다**(5.5절).\n> **`orderItems` 와 `coupons` 를 둘 다 배치로** 가져오면 쿼리 2개가 더 나갈 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "설정을 어디에 두나",
+   "md": "**전역**\n\n```yaml\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n```\n\n> **모든 지연 로딩에** 걸린다. **가장 흔한 방식**이다.\n\n**엔티티별**\n\n```java\n@BatchSize(size = 1000)\n@OneToMany(mappedBy = \"order\", cascade = ALL)\nprivate List<OrderItem> orderItems = new ArrayList<>();\n```\n\n```java\n@BatchSize(size = 100)\n@Entity\npublic class Item { ... }\n```\n\n> **컬렉션에 붙이면 그 컬렉션**, **클래스에 붙이면 그 엔티티의 `ToOne`** 이다.\n>\n> **특정 연관관계만 크게 가져가고 싶을 때** 쓴다.\n\n**전역을 기본으로, 예외만 개별로**\n\n> **전역 100 을 깔고**, **유난히 큰 컬렉션에만 `@BatchSize`** 를 얹는다.\n>\n> **5.8절에서 이 숫자를 정한다.**\n\n**주의** — **`@BatchSize` 는 하이버네이트 애노테이션**이다.\n\n> **JPA 표준이** 아니다. **`jakarta.persistence` 가 아니라 `org.hibernate.annotations`** 다.\n>\n> **표준으로 가려면 `@EntityGraph` 인데**, **그건 페치 조인 쪽**이라 페이징 문제가 그대로다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V3.1 ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   1  주문 + 회원 + 배송\n#   Hibernate:\n#     select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#            d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#            m1_0.name, m1_0.street, m1_0.zipcode,\n#            o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     offset ? rows fetch first ? rows only\n#   binding parameter (1:INTEGER) <- [0]\n#   binding parameter (2:INTEGER) <- [100]\n\n#   경고가 없다. 페이징이 SQL 로 갔다\n\n#   2  주문상품 (in 절)\n#   Hibernate:\n#     select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#            oi1_0.item_id, oi1_0.order_price\n#     from order_item oi1_0\n#     where oi1_0.order_id in (?,?)\n#   binding parameter (1:BIGINT) <- [4]\n#   binding parameter (2:BIGINT) <- [11]\n\n#   3  상품 (in 절)\n#   Hibernate:\n#     select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#            i1_0.stock_quantity, i1_1.artist, i1_1.etc,\n#            i1_2.author, i1_2.isbn, i1_3.actor, i1_3.director\n#     from item i1_0\n#     left join album i1_1 on i1_0.item_id=i1_1.item_id\n#     left join book i1_2 on i1_0.item_id=i1_2.item_id\n#     left join movie i1_3 on i1_0.item_id=i1_3.item_id\n#     where i1_0.item_id in (?,?,?,?)\n#   binding parameter (1:BIGINT) <- [2]\n#   binding parameter (2:BIGINT) <- [3]\n#   binding parameter (3:BIGINT) <- [9]\n#   binding parameter (4:BIGINT) <- [10]\n\n#   Session Metrics {\n#       3 JDBC statements were executed\n#       14 entities were loaded\n#       2 collections were fetched\n#   }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     {\"orderId\":11,\"name\":\"userB\",...}\n#   ]}\n\n#   429 bytes. 3.4절의 계약과 같다\n\n# --- 배치 사이즈를 끄면 ---\n\n#   default_batch_fetch_size 를 주석 처리\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?\n#   Hibernate: select ... from order_item where oi1_0.order_id=?  [4]\n#   Hibernate: select ... from item ... where i1_0.item_id=?  [2]\n#   Hibernate: select ... from item ... where i1_0.item_id=?  [3]\n#   Hibernate: select ... from order_item where oi1_0.order_id=?  [11]\n#   Hibernate: select ... from item ... where i1_0.item_id=?  [9]\n#   Hibernate: select ... from item ... where i1_0.item_id=?  [10]\n\n#   Session Metrics { 7 JDBC statements were executed }\n\n#   where ... = ? 다. in 이 아니다\n\n#   7 -> 3. 설정 한 줄이다\n\n# --- 데이터 1000건으로 ---\n\n#   주문 1000건, 주문당 상품 3개\n\nGET /api/v3.1/orders?offset=0&limit=10\n\n#   Hibernate: select ... offset ? rows fetch first ? rows only  [0, 10]\n#   Hibernate: select ... from order_item where order_id in (?,?,...,?)\n#              (10개)\n#   Hibernate: select ... from item where item_id in (?,?,...)\n\n#   Session Metrics {\n#       3 JDBC statements were executed\n#       50 entities were loaded\n#   }\n\n#   INFO  TimerAspect : ordersV31 took 11ms\n\n#   5.6절의 V3 는 같은 데이터에서\n#     1 JDBC statement, 5000 entities, 4218ms\n\n#   3 대 1 인데 50 대 5000 이고 11ms 대 4218ms 다\n\n# --- 쿼리 개수가 데이터에 안 따라간다 ---\n\n#   주문 10건 조회     3개\n#   주문 100건 조회    3개\n#   주문 1000건 조회   1 + 10 + ceil(상품종류/100)\n\n#   페이지 크기가 배치 사이즈 이하면 항상 3개다\n\n# --- 1편 9.4절의 31 은 ---\n\nGET /orders\n\n#   화면도 같은 설정을 받는다\n\n#   Hibernate: select ... from orders o1_0 join member ...\n#   Hibernate: select ... from order_item where order_id in (?,?)\n#   Hibernate: select ... from item where item_id in (?,?,?,?)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   31 -> 3\n\n#   1편이 '다시 만들면 바꿀 셋' 에 넣고 미룬 것이 여기서 끝났다\n\n# --- 다음 절에서 ---\n\n#   100 이라는 숫자를 정한다",
+   "note": "**쿼리 3개**다. **`offset`·`fetch first` 가 SQL 에** 들어갔고 **경고가 없다.**\n\n**2번과 3번이 `in (?,?)`** 다. **배치 사이즈를 끄면 `= ?` 로 7개**가 된다.\n\n**주문 1000건에서 V3 는 5000개에 4218ms, V3.1 은 50개에 11ms** 다. **쿼리는 1 대 3** 인데.\n\n**페이지 크기가 배치 사이즈 이하면 항상 3개**다.\n\n**1편 9.4절의 31 이 3 이 됐다.** **미룬 것이 여기서 끝났다.**"
+  }
+ ],
+ "recap": [
+  "**`ToOne` 만 페치 조인하면 행이 안 늘어 페이징이 SQL 로** 간다.",
+  "**컬렉션은 N+1 로 나가고 배치 사이즈가 `in` 절로** 묶는다.",
+  "**배치는 쿼리를 없애는 게 아니라 합친다.**",
+  "**결과가 `1 + 1 + 1`** 이다.",
+  "**페이지 크기가 배치 사이즈 이하면 항상 3개**다.",
+  "**페치 조인보다 쿼리는 많은데 전송량은 적을 수** 있다.",
+  "**`MultipleBagFetchException` 이 안 난다** — 컬렉션 둘 이상도 된다.",
+  "**전역 설정을 기본으로, 예외만 `@BatchSize`** 로 얹는다.",
+  "**1편의 31 이 3 이 됐다.**"
+ ],
+ "drills": [
+  {
+   "task": "V3.1 을 만들고 쿼리를 센다.",
+   "done_when": "3개이고 `in` 절이 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배치 사이즈를 끄고 다시 센다.",
+   "done_when": "7개가 되고 `= ?` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "데이터 1000건으로 V3 와 V3.1 을 비교한다.",
+   "done_when": "`entities were loaded` 와 시간 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "1편의 `/orders` 화면을 다시 부른다.",
+   "done_when": "31 이 3 이 된 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `ToOne` 만 페치 조인하나?",
+   "a": "컬렉션만 행을 늘리기 때문이다. 빼면 페이징이 SQL 로 간다."
+  },
+  {
+   "q": "배치 사이즈가 하는 일은?",
+   "a": "N 개의 `= ?` 쿼리를 하나의 `in` 절 쿼리로 합친다."
+  },
+  {
+   "q": "쿼리가 3개인데 왜 V3 보다 나은가?",
+   "a": "페이징이 SQL 로 가고 중복 컬럼 전송이 없어 힙과 시간이 훨씬 적다."
+  },
+  {
+   "q": "컬렉션이 둘이면?",
+   "a": "배치는 문제없다. 페치 조인은 `MultipleBagFetchException` 이다."
+  },
+  {
+   "q": "`@BatchSize` 는 표준인가?",
+   "a": "아니다. `org.hibernate.annotations` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "default_batch_fetch_size",
+   "def": "하이버네이트가 지연 로딩을 `in` 절로 묶을 때 한 번에 넣을 최대 개수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

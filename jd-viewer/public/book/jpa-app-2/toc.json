@@ -335,7 +335,7 @@
           "title": "V3.1 — 배치 사이즈",
           "summary": "1 + 1 + 1.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -343,7 +343,7 @@
           "title": "배치 사이즈를 얼마로",
           "summary": "100 이냐 1000 이냐.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",
@@ -351,7 +351,7 @@
           "title": "V4 — DTO 직접 조회",
           "summary": "1 + N 으로 돌아온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",

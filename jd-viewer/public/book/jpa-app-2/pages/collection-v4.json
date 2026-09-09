@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v4",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "V4 — DTO 직접 조회",
+ "summary": "1 + N 으로 돌아온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컬렉션을 DTO 로 직접 조회한다.",
+  "왜 쿼리가 다시 느는지 안다.",
+  "V5 로 가는 길을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.6절의 V4 를 컬렉션에 적용**한다. **쿼리가 다시 는다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderQueryRepository",
+   "code": "package jpabook.jpashop.repository.order.query;\n\n@Repository\n@RequiredArgsConstructor\npublic class OrderQueryRepository {\n\n    private final EntityManager em;\n\n    public List<OrderQueryDto> findOrderQueryDtos() {\n        List<OrderQueryDto> result = findOrders();          // 1번\n        result.forEach(o -> {\n            List<OrderItemQueryDto> orderItems =\n                    findOrderItems(o.getOrderId());          // N번\n            o.setOrderItems(orderItems);\n        });\n        return result;\n    }\n\n    private List<OrderQueryDto> findOrders() {\n        return em.createQuery(\n                \"select new jpabook.jpashop.repository.order.query\" +\n                \".OrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address)\" +\n                \" from Order o\" +\n                \" join o.member m\" +\n                \" join o.delivery d\", OrderQueryDto.class)\n            .getResultList();\n    }\n\n    private List<OrderItemQueryDto> findOrderItems(Long orderId) {\n        return em.createQuery(\n                \"select new jpabook.jpashop.repository.order.query\" +\n                \".OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)\" +\n                \" from OrderItem oi\" +\n                \" join oi.item i\" +\n                \" where oi.order.id = :orderId\", OrderItemQueryDto.class)\n            .setParameter(\"orderId\", orderId)\n            .getResultList();\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "두 단계와 돌아온 N",
+   "ascii": "   two steps, and the n that comes back\n\n   step 1   select order dtos\n            join member, join delivery\n            one query, n rows\n\n   step 2   for each order dto\n              select order item dtos where order_id = ?\n            n queries\n\n   1 + n\n\n   this is worse than v3.1. it is also the road to v5.",
+   "note": "**V3.1 보다 나쁘다. 그런데 V5 로 가는 길**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 한 번에 못 가져오나",
+   "md": "**DTO 는 평평**하다. **행도 평평**하다.\n\n```sql\nselect o.order_id, m.name, i.name from orders o join order_item oi ...\n\n4  | userA | JPA1 BOOK\n4  | userA | JPA2 BOOK\n```\n\n> **두 행**이다. **`OrderQueryDto` 를 두 개** 만든다.\n>\n> **5.4절과 같은 중복**인데 **여기서는 아무도 안 접어** 준다.\n\n**엔티티였으면 접혔다.**\n\n| | |\n|---|---|\n| **엔티티** | 영속성 컨텍스트가 `@Id` 로 동일성 보장 |\n| **DTO** | **식별자가 없다.** 그냥 객체다 |\n\n> **`distinct` 도 소용없다**(5.5절). **JPA 의 `distinct` 는 루트 엔티티용**이다.\n>\n> **DTO 에는 걸 게 없다.**\n\n**그래서 나눈다.**\n\n> **주문을 먼저 가져오고**(`ToOne` 만 조인해 행이 안 는다), **주문마다 상품을 따로** 가져온다.\n>\n> **`1 + N`** 이다.\n\n**배치 사이즈가 안 통한다.**\n\n> **배치는 지연 로딩 프록시를 묶는** 것이다.\n> **여기는 프록시가 없다.** **직접 JPQL 을 N 번 부르는** 것이다.\n>\n> **설정으로 못 고친다.** **코드를 고쳐야** 한다 — **5.10절.**"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 같은 `select` 에 못 넣나",
+   "ascii": "   why the collection cannot be in the same select\n\n   a dto is flat. a row is flat.\n   one row can hold one order and one order item.\n\n   select o.id, m.name, i.name\n     4 | userA | JPA1 BOOK\n     4 | userA | JPA2 BOOK\n\n   two rows, and nothing in jpa folds them for you\n   because there is no entity identity to fold on",
+   "note": "**접어 줄 동일성이 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "V3.1 보다 나쁜데 왜 만드나",
+   "md": "**숫자만 보면 후퇴**다.\n\n| | 쿼리 |\n|---|---|\n| V3.1 | **3** |\n| V4 | **1 + N** |\n\n> **주문 100건이면 101개**다. **V3.1 의 3개보다 훨씬** 나쁘다.\n\n**그래도 만드는 이유 셋**\n\n**① V5 의 뼈대다**\n\n> **5.10절은 이 코드에서 `findOrderItems` 하나만 고친다.**\n> **`where oi.order.id = ?` 를 `in (?)` 으로** 바꾼다.\n>\n> **V4 를 안 만들면 V5 가 어디서 왔는지** 모른다.\n\n**② DTO 조회의 한계를 보여 준다**\n\n> **4.6절에서 V4 는 컬럼을 줄였다.** **컬렉션에서는 그게 안** 된다.\n>\n> **컬렉션이 있으면 DTO 직접 조회가 저절로 좋아지지** 않는다.\n\n**③ 집계·조건이 필요할 때 이 형태를 쓴다**\n\n> **상품 이름 대신 카테고리별 합계가 필요하다면**\n> **엔티티로는 못 만든다.**\n>\n> **4.7절의 결론이 여기서도** 같다.\n\n**패키지는 4.8절의 규칙대로**\n\n```\nrepository/order/query/\n  OrderQueryRepository.java\n  OrderQueryDto.java\n  OrderItemQueryDto.java\n```\n\n> **DTO 가 둘**이다. **컬렉션 때문**이다.\n> **`new` 절이 둘 다 직접** 부른다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V4 ---\n\nGET /api/v4/orders\n\n#   1  주문 (ToOne 만 조인)\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   2  주문 4의 상품\n#   Hibernate:\n#     select oi1_0.order_id, i1_0.name, oi1_0.order_price, oi1_0.count\n#     from order_item oi1_0\n#     join item i1_0 on i1_0.item_id=oi1_0.item_id\n#     where oi1_0.order_id=?\n#   binding parameter (1:BIGINT) <- [4]\n\n#   3  주문 11의 상품\n#   Hibernate:\n#     select oi1_0.order_id, i1_0.name, oi1_0.order_price, oi1_0.count\n#     from order_item oi1_0\n#     join item i1_0 on i1_0.item_id=oi1_0.item_id\n#     where oi1_0.order_id=?\n#   binding parameter (1:BIGINT) <- [11]\n\n#   Session Metrics {\n#       3 JDBC statements were executed\n#       0 entities were loaded\n#   }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     {\"orderId\":11,\"name\":\"userB\",...}\n#   ]}\n\n#   429 bytes. 계약과 같다\n\n#   주문 2건이라 3개다. V3.1 과 우연히 같다\n\n# --- 주문을 늘리면 ---\n\n#   주문 1000건, 페이지 100건\n\nGET /api/v4/orders?offset=0&limit=100\n\n#   Hibernate: select ... from orders ... offset ? fetch first ?\n#   Hibernate: select ... where oi1_0.order_id=?  [1]\n#   Hibernate: select ... where oi1_0.order_id=?  [2]\n#   ... (100번)\n\n#   Session Metrics { 101 JDBC statements were executed }\n\n#   INFO  TimerAspect : ordersV4 took 187ms\n\n#   V3.1 은 같은 조건에서\n#     3 JDBC statements, 19ms\n\n#   101 대 3, 187ms 대 19ms\n\n# --- 배치 사이즈를 켜 봐도 ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\nGET /api/v4/orders?offset=0&limit=100\n\n#   Session Metrics { 101 JDBC statements were executed }\n\n#   그대로다\n\n#   배치는 지연 로딩 프록시를 묶는 것이다\n#   여기는 JPQL 을 직접 100번 부른다\n\n#   설정으로 못 고친다\n\n# --- 한 번에 가져와 보면 ---\n\nselect new ...OrderQueryDto(o.id, m.name, o.orderDate, o.status,\n                            d.address, i.name)\n  from Order o join o.member m join o.delivery d\n  join o.orderItems oi join oi.item i\n\n#   Hibernate: select o1_0.order_id, m1_0.name, ..., i1_0.name\n#              from orders o1_0 join member ... join order_item ...\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   결과 4행 -> OrderQueryDto 4개\n\n#   {\"data\":[\n#     {\"orderId\":4,\"itemName\":\"JPA1 BOOK\",...},\n#     {\"orderId\":4,\"itemName\":\"JPA2 BOOK\",...},\n#     {\"orderId\":11,...},\n#     {\"orderId\":11,...}\n#   ]}\n\n#   5.4절과 같은 중복이다\n#   그런데 distinct 도 안 통한다. 루트 엔티티가 없다\n\n#   이 길은 5.11절에서 다시 간다\n\n# --- 엔티티가 하나도 안 올라왔는지 ---\n\n#   0 entities were loaded\n\n#   V3.1 은 14 였다\n\n#   변경 감지가 없다. 1차 캐시도 없다\n#   조회 전용이다\n\n# --- 다음 절에서 ---\n\n#   findOrderItems 한 메서드만 고친다\n#   N 을 1 로 만든다",
+   "note": "**주문 2건이라 3개**다. **V3.1 과 우연히** 같다.\n\n**1000건에 페이지 100 이면 101개에 187ms** 다. **V3.1 은 3개에 19ms** 였다.\n\n**배치 사이즈를 켜도 그대로**다. **배치는 지연 로딩 프록시를 묶는 것**이고 **여기는 JPQL 을 직접 100번** 부른다.\n\n**한 번에 가져오면 쿼리 1개인데 주문이 4개**다. **`distinct` 도 안 통한다** — **루트 엔티티가 없다.**\n\n**`entities were loaded` 가 0** 이다.\n\n**다음 절에서 `findOrderItems` 한 메서드만 고친다.**"
+  }
+ ],
+ "recap": [
+  "**컬렉션을 DTO 로 직접 조회하면 `1 + N`** 이다.",
+  "**DTO 는 평평하고 행도 평평**하다 — 한 행에 하나씩만 담긴다.",
+  "**엔티티였으면 영속성 컨텍스트가 접어** 줬다.",
+  "**DTO 에는 식별자가 없어 `distinct` 가 안** 통한다.",
+  "**배치 사이즈가 안 통한다** — 프록시가 아니라 직접 호출이다.",
+  "**설정으로 못 고치고 코드를 고쳐야** 한다.",
+  "**주문 1000건 페이지 100 이면 101개에 187ms** — V3.1 은 3개에 19ms.",
+  "**그래도 만드는 이유는 V5 의 뼈대**라서다.",
+  "**DTO 가 둘**이다 — 컬렉션 때문이다."
+ ],
+ "drills": [
+  {
+   "task": "V4 를 만들고 쿼리 순서를 본다.",
+   "done_when": "1 + N 인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "배치 사이즈를 켜고 다시 센다.",
+   "done_when": "안 줄어드는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "한 번에 가져오는 JPQL 을 써 본다.",
+   "done_when": "주문이 4개로 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`entities were loaded` 를 V3.1 과 비교한다.",
+   "done_when": "14 와 0 을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 컬렉션을 한 번에 못 가져오나?",
+   "a": "DTO 도 행도 평평해서 한 행에 하나씩만 담기고 접어 줄 동일성이 없다."
+  },
+  {
+   "q": "`distinct` 가 왜 안 통하나?",
+   "a": "JPA 의 `distinct` 는 루트 엔티티용인데 DTO 에는 식별자가 없다."
+  },
+  {
+   "q": "배치 사이즈가 왜 안 통하나?",
+   "a": "배치는 지연 로딩 프록시를 묶는 것이고 여기는 JPQL 을 직접 N 번 부른다."
+  },
+  {
+   "q": "V3.1 보다 나쁜데 왜 만드나?",
+   "a": "V5 의 뼈대이고, DTO 조회가 컬렉션에서 저절로 좋아지지 않음을 보여 준다."
+  },
+  {
+   "q": "DTO 가 왜 둘인가?",
+   "a": "주문과 주문상품이 각각 필요하고 `new` 절이 둘 다 직접 부른다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
