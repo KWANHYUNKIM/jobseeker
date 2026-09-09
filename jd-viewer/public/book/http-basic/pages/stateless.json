@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "stateless",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "무상태",
+ "summary": "서버를 늘릴 수 있는 이유.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무상태의 뜻을 정확히 안다.",
+  "상태를 어디 둘지 고른다.",
+  "그 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 서버만 늘릴 수 있다고** 했다. **그게 되려면 조건이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "기억하느냐 아니냐",
+   "ascii": "   the same two requests, with and without server memory\n\n   stateful\n     request 1   i want to buy the laptop      server remembers\n     request 2   two of them                   only this server knows\n     request 3   pay                           and it must be this one\n\n   stateless\n     request 1   laptop, 2 units, pay          everything, every time\n\n   the second is longer to write and free to route anywhere",
+   "note": "**길게 쓰는 대신 아무 데나 보낼 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무상태는 서버가 기억하지 않는다는 뜻이다",
+   "md": "**요청 하나가 자족적이어야** 한다.\n\n> **앞 요청을 몰라도 처리할 수 있어야** 한다.\n> **그래야 두 번째 요청이 다른 서버로 가도** 된다.\n> **⑫ 5.1절에서 파드를 아무거나 골라 보낼 수 있던 이유**다.\n\n**\"데이터를 안 저장한다\" 가** 아니다.\n\n> **DB 에는 얼마든지** 쓴다.\n> **대화의 진행 상황을 서버 메모리에 안 둔다는** 말이다.\n> **주문은 저장하고, \"장바구니를 보고 있는 중\" 은 안** 둔다.\n\n**그래서 서버를 마음대로** 다룬다.\n\n| 할 수 있는 일 | 왜 |\n|---|---|\n| 아무 서버로나 라우팅 | 어느 서버든 처리 가능 |\n| 갑자기 늘리기 | 기존 상태를 옮길 필요 없음 |\n| 갑자기 죽여도 됨 | 잃을 게 없음 |\n\n> **⑫ 9.4절에서 파드가 축출돼도 괜찮았던 게 이 전제** 덕이다.\n> **상태를 들고 있으면 그 파드는 못 죽인다.**\n\n**대가는 크기**다.\n\n> **매번 다 보내야** 한다.\n> **토큰이 헤더에 매 요청 실린다.**\n> **HTTP/2 의 헤더 압축이 이걸 덜어** 준다(4.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "상태를 어디 둘까",
+   "ascii": "   state has to live somewhere, so pick where\n\n   in the server memory     fastest, and it pins the user to one box\n   in a shared store        one hop away, any box can serve\n   in the client            no server storage, but it travels every time\n                            and it must be signed, or it is just a claim\n\n   http is stateless, applications are not, so this choice is unavoidable",
+   "note": "**애플리케이션은 무상태가 아니라 선택을 해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "고정 세션은 무상태를 포기하는 것이다",
+   "md": "**같은 사용자를 같은 서버로** 보낸다.\n\n> **당장은 제일** 쉽다.\n> **그 서버가 죽으면 그 사용자들만 로그아웃**된다.\n> **배포할 때마다 세션이** 끊긴다.\n> **⑫ 5.7절에서 Redis 로 세션을 뺀 게 이걸 푸는 것**이다.\n\n**클라이언트에 두면 서명이 필요**하다.\n\n> **쿠키 값을 사용자가 고칠 수** 있다.\n> **`role=admin` 을 그냥 넣으면** 된다.\n> **서명이 없으면 그건 데이터가 아니라 주장**이다.\n\n**JWT 는 취소가 어렵다.**\n\n> **서버가 기억을 안 하니 \"이 토큰 무효\" 라고 할 데가** 없다.\n> **만료를 짧게 하거나 블랙리스트를 두는데,**\n> **블랙리스트를 두면 다시 상태가** 생긴다.\n\n**모든 걸 클라이언트에 둘 수는** 없다.\n\n> **크기 제한이** 있다 — 쿠키는 4KB 쯤이다.\n> **비밀은 못 둔다** — **본인이 읽을 수** 있다.\n> **⑫ 7.2절에서 Base64 가 암호화가 아니라던 것과 같은** 함정이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 서버 둘을 띄운다 ---\n\n$ docker run -d --name s1 -p 8081:80 nginx:1.27 > /dev/null\n$ docker run -d --name s2 -p 8082:80 nginx:1.27 > /dev/null\n$ for c in s1 s2; do\n    docker exec $c sh -c \"echo '{\\\"서버\\\": \\\"$c\\\"}' \\\n      > /usr/share/nginx/html/who.json\"\n  done\n\n$ for p in 8081 8082; do curl -s http://localhost:$p/who.json; done\n\n{\"서버\": \"s1\"}\n{\"서버\": \"s2\"}\n\n# --- 무상태면 어디로 가도 된다 ---\n\n$ for i in 1 2 3 4; do\n    p=$(( 8081 + i % 2 ))\n    curl -s -H 'Authorization: Bearer token-abc' \\\n      http://localhost:$p/who.json | tr -d '\\n'\n    printf \" \"\n  done; echo\n\n{\"서버\": \"s2\"} {\"서버\": \"s1\"} {\"서버\": \"s2\"} {\"서버\": \"s1\"} \n\n#   매번 다른 서버인데 다 된다\n\n#   요청이 자기 자신을 다 들고 있어서다\n\n#   토큰이 매번 실린다\n\n# --- 상태를 서버가 들고 있으면 ---\n\n$ cat session.py\n\nimport http.server, uuid\nSESS = {}\nclass H(http.server.BaseHTTPRequestHandler):\n    def do_GET(self):\n        c = self.headers.get(\"Cookie\", \"\")\n        sid = c.split(\"sid=\")[-1].split(\";\")[0] if \"sid=\" in c else None\n        if sid in SESS:\n            SESS[sid] += 1\n            body = f\"장바구니 {SESS[sid]}개\\n\".encode()\n            self.send_response(200)\n        else:\n            sid = uuid.uuid4().hex[:8]\n            SESS[sid] = 1\n            body = f\"새 세션 {sid}\\n\".encode()\n            self.send_response(200)\n            self.send_header(\"Set-Cookie\", f\"sid={sid}; Path=/\")\n        self.send_header(\"Content-Length\", str(len(body)))\n        self.end_headers()\n        self.wfile.write(body)\nhttp.server.HTTPServer((\"\", 9995), H).serve_forever()\n\n$ python3 session.py & sleep 1\n$ curl -s -D - -c /tmp/jar.txt http://localhost:9995/ | grep -E 'Set-Cookie|세션'\n\nSet-Cookie: sid=3f9a2c81; Path=/\n새 세션 3f9a2c81\n\n$ curl -s -b /tmp/jar.txt http://localhost:9995/\n\n장바구니 2개\n\n$ curl -s -b /tmp/jar.txt http://localhost:9995/\n\n장바구니 3개\n\n#   서버가 기억하고 있다\n\n#   쿠키는 열쇠일 뿐이다\n\n#   값은 서버 메모리에 있다\n\n# --- 그래서 서버를 못 바꾼다 ---\n\n$ kill %1 2>/dev/null; sleep 1\n$ python3 session.py & sleep 1\n$ curl -s -b /tmp/jar.txt -D - http://localhost:9995/ | grep -E 'Set-Cookie|세션'\n\nSet-Cookie: sid=8f2a1c0d; Path=/\n새 세션 8f2a1c0d\n\n#   재시작 한 번에 다 날아갔다\n\n#   쿠키는 그대로 보냈는데 모른다고 한다\n\n#   배포할 때마다 이런다\n\n#   ⑫ 5.7절에서 Redis 로 뺀 이유다\n\n$ kill %1 2>/dev/null\n\n# --- 클라이언트에 두면 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8081/who.json \\\n    -H 'Cookie: cart=laptop:2; role=user' | grep -c Set-Cookie\n\n0\n\n$ python3 - <<'EOF'\nimport base64, json\npayload = {\"sub\": \"kim\", \"role\": \"user\"}\nb = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()\nprint(\"토큰 조각\", b)\nprint(\"디코딩  \", base64.urlsafe_b64decode(b + \"==\").decode())\nforged = base64.urlsafe_b64encode(\n    json.dumps({\"sub\": \"kim\", \"role\": \"admin\"}).encode()).decode()\nprint(\"위조    \", forged)\nEOF\n\n토큰 조각 eyJzdWIiOiAia2ltIiwgInJvbGUiOiAidXNlciJ9\n디코딩   {\"sub\": \"kim\", \"role\": \"user\"}\n위조     eyJzdWIiOiAia2ltIiwgInJvbGUiOiAiYWRtaW4ifQ==\n\n#   누구나 읽고 고친다\n\n#   서명이 없으면 데이터가 아니라 주장이다\n\n#   ⑫ 7.2절과 같은 함정이다\n\n# --- 크기가 매번 실린다 ---\n\n$ curl -s -o /dev/null -w '요청 크기 %{size_request}\\n' \\\n    http://localhost:8081/who.json\n\n요청 크기 82\n\n$ curl -s -o /dev/null -w '요청 크기 %{size_request}\\n' \\\n    -H \"Authorization: Bearer $(head -c 600 /dev/urandom | base64 | tr -d '\\n')\" \\\n    http://localhost:8081/who.json\n\n요청 크기 909\n\n#   열한 배다\n\n#   매 요청마다 이만큼 더 간다\n\n#   HTTP/2 의 헤더 압축이 이걸 덜어 준다 (4.1절)\n\n$ curl -s -o /dev/null -w '%{size_request}\\n' --http2 \\\n    -H \"Authorization: Bearer $(head -c 600 /dev/urandom | base64 | tr -d '\\n')\" \\\n    https://example.com/ 2>/dev/null\n\n879\n\n#   curl 이 세는 값이라 압축 전이다\n\n#   실제 와이어에서는 두 번째 요청부터 줄어든다\n\n# --- 아무 서버나 죽여도 된다 ---\n\n$ docker stop s1 > /dev/null\n$ curl -s -m 2 -o /dev/null -w '%{http_code} ' http://localhost:8081/who.json\n$ curl -s http://localhost:8082/who.json\n\n000 {\"서버\": \"s2\"}\n\n#   s1 은 죽었고 s2 는 그대로 답한다\n\n#   토큰만 있으면 아무 데나 된다\n\n#   상태를 들고 있었다면 s1 사용자들만 로그아웃이다\n\n$ docker rm -f s1 s2 > /dev/null\n\n# --- 다음 절에서 ---\n\n#   연결을 매번 맺으면 어떻게 되나",
+   "note": "**같은 토큰으로 s1·s2 를 번갈아 불러도 다** 된다.\n\n**세션 서버를 재시작하자 쿠키를 그대로 보냈는데 `새 세션` 이** 돌아온다.\n\n**토큰 페이로드를 Base64 로 열어 `role` 을 `admin` 으로 바꾸는 게 한 줄**이다.\n\n**긴 토큰 하나에 요청 크기가 82 → 909 바이트로** 는다.\n\n**`s1` 을 죽여도 `s2` 가 그대로** 답한다."
+  }
+ ],
+ "recap": [
+  "**무상태는 서버가 대화를 기억 안 한다는** 뜻이다.",
+  "**데이터를 저장 안 한다는 말이** 아니다.",
+  "**요청 하나가 자족적이어야** 한다.",
+  "**그래야 아무 서버로나 보낼 수** 있다.",
+  "**늘리고 죽이는 게 자유로워**진다.",
+  "**대가는 매번 다 보내는** 크기다.",
+  "**고정 세션은 무상태를** 포기한다.",
+  "**클라이언트 상태는 서명이** 필요하다.",
+  "**전부 클라이언트에 둘 수는** 없다."
+ ],
+ "drills": [
+  {
+   "task": "서버 둘에 같은 토큰으로 요청한다.",
+   "done_when": "둘 다 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메모리 세션 서버를 만든다.",
+   "done_when": "재시작에 날아가는 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "토큰 페이로드를 고쳐 본다.",
+   "done_when": "서명 없이는 주장뿐인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "긴 헤더로 요청 크기를 잰다.",
+   "done_when": "매번 실리는 양을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무상태의 정확한 뜻은?",
+   "a": "서버가 요청 사이의 대화 상태를 기억하지 않는다는 것이다."
+  },
+  {
+   "q": "무상태가 주는 이점은?",
+   "a": "어느 서버로 보내도 되고 늘리거나 죽이기 자유롭다."
+  },
+  {
+   "q": "무상태의 대가는?",
+   "a": "필요한 정보를 매 요청에 전부 실어야 한다."
+  },
+  {
+   "q": "고정 세션의 문제는?",
+   "a": "그 서버가 죽거나 배포되면 그 사용자들의 상태가 사라진다."
+  },
+  {
+   "q": "클라이언트에 상태를 둘 때 필수인 것은?",
+   "a": "서명이다. 없으면 사용자가 마음대로 고칠 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "무상태",
+   "def": "각 요청이 자족적이어서 서버가 이전 요청을 기억할 필요가 없는 성질."
+  },
+  {
+   "term": "고정 세션",
+   "def": "같은 사용자를 항상 같은 서버로 보내는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 6265 — HTTP State Management Mechanism",
+   "url": "https://www.rfc-editor.org/rfc/rfc6265.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "client-server",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "클라이언트 서버 구조",
+ "summary": "왜 이렇게 나눴나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "나눈 이유를 안다.",
+  "역할이 상대적인 걸 안다.",
+  "요청-응답의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 의미와 문법을** 나눴다. **여기서는 사람과 데이터를** 나눈다."
+  },
+  {
+   "type": "figure",
+   "caption": "선을 어디에 긋나",
+   "ascii": "   one line drawn in the right place\n\n   client    presentation, and whatever the user is doing right now\n   server    data, rules, and everything that must be true for everyone\n\n   they meet at an interface, and neither knows the others internals\n   so each can be rewritten, scaled, or replaced on its own\n\n   this is why the same api serves a browser, an app, and a script",
+   "note": "**같은 API 가 브라우저·앱·스크립트를 다** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "따로 진화하게 하려고 나눈다",
+   "md": "**서로의 속을 모르는 게 핵심**이다.\n\n> **서버는 화면이 어떻게 생겼는지 몰라도** 된다.\n> **클라이언트는 DB 가 무엇인지 몰라도** 된다.\n> **⑫ 에서 PVC 가 디스크 종류를 모르던 것과 같은 생각**이다.\n\n**그래서 각자 늘릴 수** 있다.\n\n> **트래픽이 늘면 서버만 늘린다** — **4.3절이 그 조건**이다.\n> **앱을 새로 만들어도 서버는 그대로**다.\n> **⑫ 5장에서 개수를 바꾸던 게 이게 되니까 가능**했다.\n\n**역할은 상대적**이다.\n\n> **CDN 은 브라우저에게 서버, 원본에게 클라이언트**다.\n> **프록시는 둘을 동시에** 한다.\n> **\"서버\" 라는 기계가 따로 있는 게** 아니다.\n\n**요청이 있어야 응답이** 있다.\n\n> **서버가 먼저 말을 못** 건다.\n> **2.2절의 NAT 이 이걸 굳혔다.**\n> **알림을 주려면 폴링·SSE·웹소켓 중** 하나다."
+  },
+  {
+   "type": "figure",
+   "caption": "역할은 상대적이다",
+   "ascii": "   the same machine can be both, and often is\n\n   browser -> cdn        the cdn is a server here\n   cdn -> origin         the same cdn is a client here\n   origin -> database    the origin is a client here\n\n   client and server are roles in one exchange, not machine types\n   which is why a proxy is written as both at once",
+   "note": "**프록시가 둘을 한꺼번에** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "요청-응답만으로 못 하는 것",
+   "md": "**서버가 먼저 알릴 방법이** 없다.\n\n| 방법 | 어떻게 |\n|---|---|\n| 폴링 | 주기적으로 물어본다 |\n| 롱 폴링 | 물어보고 답이 생길 때까지 기다린다 |\n| SSE | 한 응답을 안 끝내고 계속 흘려보낸다 |\n| 웹소켓 | 업그레이드해서 양방향으로 바꾼다 |\n\n> **앞 셋은 HTTP** 다.\n> **웹소켓만 HTTP 를 벗어**난다 — **101 로 시작**한다(7장).\n\n**SSE 가 의외로 쓸 만하다.**\n\n> **응답 본문을 안 닫고 계속** 쓴다.\n> **프록시와 캐시가 그대로 통과**한다.\n> **재연결도 브라우저가 알아서** 한다.\n\n**중간에 누구든 낄 수** 있다.\n\n> **인터페이스만 지키면 캐시·프록시·게이트웨이를 끼울 수** 있다.\n> **8장의 `Via`·`X-Forwarded-For` 가 그 흔적**이다.\n> **⑫ 6.6절의 인그레스도 이 자리**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 같은 서버를 셋이 부른다 ---\n\n$ docker exec lab sh -c 'cat > /usr/share/nginx/html/api.json' <<'EOF'\n{\"id\": 1, \"name\": \"주문\"}\nEOF\n\n$ curl -s -H 'User-Agent: curl/8.9.1' http://localhost:8080/api.json\n\n{\"id\": 1, \"name\": \"주문\"}\n\n$ curl -s -H 'User-Agent: MyApp/1.0 (Android)' http://localhost:8080/api.json\n\n{\"id\": 1, \"name\": \"주문\"}\n\n$ curl -s -H 'User-Agent: Mozilla/5.0' http://localhost:8080/api.json\n\n{\"id\": 1, \"name\": \"주문\"}\n\n#   누가 부르든 같다\n\n#   서버는 화면을 모른다\n\n# --- 서버가 먼저 말을 못 건다 ---\n\n$ nc -l 9997 &\n$ sleep 1 && echo \"서버가 먼저 보냄\" | nc -w 1 localhost 9997\n\n#   이건 되지만\n\n#   서버가 브라우저에게는 못 한다\n\n$ curl -s -m 2 -o /dev/null -w '%{http_code}\\n' http://192.168.0.14:1234/\n\n000\n\n#   내 기계로 밖에서 들어오는 길이 없다\n\n#   2.2절의 NAT 이다\n\n$ kill %1 2>/dev/null\n\n# --- 폴링 ---\n\n$ docker exec lab sh -c 'echo \"0\" > /usr/share/nginx/html/count.txt'\n$ for i in 1 2 3; do\n    curl -s http://localhost:8080/count.txt | tr -d '\\n'\n    printf \" \"\n    sleep 1\n  done; echo\n\n0 0 0 \n\n#   세 번 물어 세 번 다 같은 답이다\n\n#   바뀌지 않아도 매번 왕복한다\n\n$ docker logs --tail 3 lab 2>&1 | awk '{print $7, $9}'\n\n/count.txt 200\n/count.txt 200\n/count.txt 200\n\n#   서버에 세 줄이 남았다\n\n#   대부분 헛걸음이다\n\n# --- SSE 는 응답을 안 닫는다 ---\n\n$ cat sse.py\n\nimport http.server, time\nclass H(http.server.BaseHTTPRequestHandler):\n    def do_GET(self):\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"text/event-stream\")\n        self.send_header(\"Cache-Control\", \"no-cache\")\n        self.end_headers()\n        for i in range(3):\n            self.wfile.write(f\"data: 이벤트 {i}\\n\\n\".encode())\n            self.wfile.flush()\n            time.sleep(1)\nhttp.server.HTTPServer((\"\", 9996), H).serve_forever()\n\n$ python3 sse.py & sleep 1\n$ curl -s -N -D - http://localhost:9996/ | head -12\n\nHTTP/1.0 200 OK\nServer: BaseHTTP/0.6 Python/3.12.4\nContent-Type: text/event-stream\nCache-Control: no-cache\n\ndata: 이벤트 0\n\ndata: 이벤트 1\n\ndata: 이벤트 2\n\n#   응답 하나다\n\n#   헤더는 한 번만 왔다\n\n#   본문이 1초마다 이어졌다\n\n#   요청은 한 번뿐이다\n\n$ kill %1 2>/dev/null\n\n# --- 웹소켓은 HTTP 를 벗어난다 ---\n\n$ curl -s -i -N \\\n    -H 'Connection: Upgrade' -H 'Upgrade: websocket' \\\n    -H 'Sec-WebSocket-Version: 13' \\\n    -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' \\\n    http://localhost:8080/ 2>&1 | head -2\n\nHTTP/1.1 400 Bad Request\n\n#   nginx 는 업그레이드를 안 받는다\n\n#   받는 서버라면 101 이 온다\n\n#   그 뒤로는 HTTP 가 아니다 (7장)\n\n# --- 역할은 상대적이다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80; \\n\\\n location /proxy/ { proxy_pass http://localhost:80/; \\n\\\n   proxy_set_header X-Forwarded-For \\$remote_addr; }\\n\\\n location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s http://localhost:8080/proxy/api.json\n\n{\"id\": 1, \"name\": \"주문\"}\n\n$ docker logs --tail 2 lab 2>&1 | awk '{print $1, $7}'\n\n192.168.65.1 /proxy/api.json\n127.0.0.1 /api.json\n\n#   두 줄이 남았다\n\n#   같은 nginx 가 두 번 나온다\n\n#   한 번은 서버, 한 번은 클라이언트다\n\n#   두 번째 줄의 출발지가 127.0.0.1 이다\n\n#   자기가 자기에게 요청했다\n\n# --- 중간이 흔적을 남긴다 ---\n\n$ docker exec lab sh -c \\\n    'sed -i \"s|root /usr/share/nginx/html;|root /usr/share/nginx/html;\\n\\\n   add_header X-Seen-XFF \\$http_x_forwarded_for always;|\" \\\n     /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/proxy/api.json \\\n    | grep -i x-seen-xff\n\nX-Seen-XFF: 192.168.65.1\n\n#   원래 클라이언트 주소가 헤더로 전달됐다\n\n#   2.2절에서 잃어버린 것을 이렇게 메운다\n\n#   8장에서 다시 본다\n\n# --- 다음 절에서 ---\n\n#   서버를 늘릴 수 있는 조건",
+   "note": "**세 가지 `User-Agent` 로 불러도 응답이** 같다 — 서버는 화면을 모른다.\n\n**폴링 세 번에 서버 로그 세 줄이 남고 답은 다** 같다.\n\n**SSE 는 헤더가 한 번만 오고 본문이 1초마다** 이어진다.\n\n**프록시를 거치자 같은 nginx 가 로그에 두 번** 나온다 — 서버였다가 클라이언트다.\n\n**`X-Seen-XFF: 192.168.65.1` 로 잃어버린 주소를** 메운다."
+  }
+ ],
+ "recap": [
+  "**화면과 데이터 사이에 선을** 긋는다.",
+  "**서로의 속을 모르는 게** 핵심이다.",
+  "**그래서 각자 진화하고 각자** 늘린다.",
+  "**같은 API 가 여러 클라이언트를** 받는다.",
+  "**역할은 기계가 아니라 그 교환에서의** 자리다.",
+  "**프록시는 둘을 동시에** 한다.",
+  "**서버가 먼저 말을 못** 건다.",
+  "**폴링·롱폴링·SSE 는 HTTP** 다.",
+  "**웹소켓만 HTTP 를** 벗어난다."
+ ],
+ "drills": [
+  {
+   "task": "여러 `User-Agent` 로 부른다.",
+   "done_when": "응답이 같은 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "폴링을 돌린다.",
+   "done_when": "헛걸음 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "SSE 서버를 띄운다.",
+   "done_when": "헤더 한 번에 본문이 이어지는 걸 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "프록시를 거친다.",
+   "done_when": "로그에 두 줄이 남는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "클라이언트와 서버를 나눈 이유는?",
+   "a": "서로의 내부를 모른 채 각자 진화하고 확장하기 위해서다."
+  },
+  {
+   "q": "역할이 상대적이라는 말은?",
+   "a": "CDN 처럼 한 기계가 한쪽에는 서버, 다른 쪽에는 클라이언트일 수 있다."
+  },
+  {
+   "q": "서버가 먼저 알릴 수 없는 이유는?",
+   "a": "요청-응답 구조이고 NAT 때문에 밖에서 안으로 못 들어온다."
+  },
+  {
+   "q": "SSE 의 특징은?",
+   "a": "응답 하나를 닫지 않고 본문을 계속 이어 보낸다."
+  },
+  {
+   "q": "웹소켓이 다른 점은?",
+   "a": "101 로 업그레이드한 뒤로는 HTTP 가 아니다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SSE",
+   "def": "응답을 닫지 않고 서버가 이벤트를 계속 흘려보내는 방식."
+  },
+  {
+   "term": "게이트웨이",
+   "def": "클라이언트에게는 서버로, 뒤쪽에는 클라이언트로 동작하는 중개자."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

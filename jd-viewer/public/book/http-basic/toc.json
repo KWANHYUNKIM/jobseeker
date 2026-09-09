@@ -183,7 +183,7 @@
           "title": "클라이언트 서버 구조",
           "summary": "왜 이렇게 나눴나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -191,7 +191,7 @@
           "title": "무상태",
           "summary": "서버를 늘릴 수 있는 이유.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
