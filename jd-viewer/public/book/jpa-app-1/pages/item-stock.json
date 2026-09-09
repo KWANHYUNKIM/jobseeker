@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-stock",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "재고 증가와 감소",
+ "summary": "예외를 어디서 던지나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예외를 만든다.",
+  "체크와 언체크를 고른다.",
+  "누가 잡을지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 예외를 던졌다.** **그 예외를 만든다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`NotEnoughStockException`",
+   "code": "public class NotEnoughStockException extends RuntimeException {\n\n    public NotEnoughStockException() {\n    }\n\n    public NotEnoughStockException(String message) {\n        super(message);\n    }\n\n    public NotEnoughStockException(String message, Throwable cause) {\n        super(message, cause);\n    }\n\n    public NotEnoughStockException(Throwable cause) {\n        super(cause);\n    }\n}",
+   "note": "**생성자 넷을 다** 만든다. **`RuntimeException` 의 것을 그대로** 연다.\n\n**IDE 가 만들어 준다.** **직접 쓸 일이 없다.**\n\n**패키지는 `exception`** 이다(4.3절).\n\n> **`domain.item` 에 두는 쪽**도 있다. **상품 도메인의 예외**니까.\n>\n> **이 책은 예외가 하나뿐**이라 따로 뒀다. **늘어나면 도메인별로 나눈다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "언체크로 만든다",
+   "ascii": "   RuntimeException\n        |\n   NotEnoughStockException\n\n   unchecked, so\n     no throws on the signature\n     rollback by default            10.6 in book 6\n     the caller may ignore it\n\n   checked would mean throws everywhere and commit on throw",
+   "note": "**「DB 2편」 10.6절의 롤백 규칙**이 여기 걸린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 언체크인가",
+   "md": "**「DB 2편」 10.6~10.7절에서 정한 것**이다.\n\n**체크로 만들면 셋이 따라온다.**\n\n**① `throws` 가 호출 체인을 타고 올라간다**\n\n```java\npublic void removeStock(int q) throws NotEnoughStockException { }\n// -> createOrderItem 도 throws\n// -> createOrder 도 throws\n// -> order() 도 throws\n// -> 컨트롤러도 throws\n```\n\n**재고 규칙 하나가 다섯 메서드의 시그니처**를 바꾼다.\n\n**② 커밋된다**\n\n> **「DB 2편」 10.6절**: **체크 예외는 커밋**이다.\n>\n> **재고가 모자란데 주문이 저장**된다. **`rollbackFor` 를 붙여야** 하는데, **그럴 바에는 언체크**다.\n\n**③ 잡을 방법이 없다**\n\n**재고가 모자라면 무엇을 할 수 있나.**\n\n| 복구 | 가능한가 |\n|---|---|\n| 다른 상품으로 | 사용자가 정할 일 |\n| 재고를 늘려서 | 말이 안 된다 |\n| 부분 주문 | 요구사항에 없다 |\n\n**아무것도 못 한다.** **사용자에게 알리는 것**이 전부다.\n\n> **「DB 2편」 10.6절의 기준**이다 — **\"호출자가 처리할 수 있는가\"**.\n>\n> **처리할 수 없으면 언체크**다."
+  },
+  {
+   "type": "figure",
+   "caption": "아무도 안 잡는다",
+   "ascii": "   who throws, who catches\n\n   Item.removeStock       throws\n   OrderItem.createOrderItem   does not catch\n   OrderService.order          does not catch\n   OrderController             does not catch\n   the error page              shows it\n\n   nobody catches it. that is the design.",
+   "note": "**던지고 끝**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "화면에서는 어떻게 되나",
+   "md": "**8장에서 주문 화면**을 만든다.\n\n```java\n@PostMapping(\"/order\")\npublic String order(@RequestParam Long memberId,\n                    @RequestParam Long itemId,\n                    @RequestParam int count) {\n    orderService.order(memberId, itemId, count);\n    return \"redirect:/orders\";\n}\n```\n\n**`try-catch` 가 없다.**\n\n**재고가 모자라면** — **스프링 부트의 기본 오류 페이지**가 뜬다.\n\n```\nWhitelabel Error Page\nThere was an unexpected error (type=Internal Server Error, status=500).\nneed more stock\n```\n\n> **좋지 않다.** **사용자가 볼 화면이 아니다.**\n>\n> **「MVC 2편」에서 `@ExceptionHandler` 와 오류 페이지**를 다뤘다. **그것을 붙이면** 된다.\n>\n> ```java\n> @ExceptionHandler(NotEnoughStockException.class)\n> public String stockError(NotEnoughStockException e, Model model) {\n>     model.addAttribute(\"message\", e.getMessage());\n>     return \"error/stock\";\n> }\n> ```\n\n**이 책은 안 만든다.**\n\n> **1.3절에서 뺀 것 목록**에 오류 화면이 있다. **「MVC 2편」이 다룬 주제**라 반복하지 않는다.\n>\n> **9.7절 목록**에 넣는다.\n\n**롤백은 자동으로** 된다.\n\n```\nCompleting transaction for [OrderService.order] after exception:\n  NotEnoughStockException: need more stock\nInitiating transaction rollback\n```\n\n**언체크라서**다(「DB 2편」 10.6절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "메시지를 어떻게 쓰나",
+   "md": "**`\"need more stock\"`** 이 좋은 메시지인가.\n\n| | |\n|---|---|\n| **개발자에게** | 무슨 일인지 안다 |\n| **사용자에게** | 영어이고 맥락이 없다 |\n| **로그에서** | **어느 상품인지 모른다** |\n\n**세 번째가 문제**다.\n\n```java\nthrow new NotEnoughStockException(\n    \"need more stock. itemId=\" + id + \", requested=\" + quantity\n            + \", stock=\" + stockQuantity);\n```\n\n**이러면 로그만 보고 재현**할 수 있다.\n\n> **사용자 메시지와 로그 메시지는 다른 것**이다.\n>\n> **예외 메시지는 로그용**으로 쓰고, **사용자 메시지는 `@ExceptionHandler` 에서** 만든다.\n>\n> **「MVC 2편」의 메시지 국제화**가 그 자리다.\n\n**이 책은 강의 예제의 `\"need more stock\"`** 을 그대로 쓴다. **9.7절 목록**에 넣는다.\n\n**필드를 넣는 예외**도 있다.\n\n```java\npublic class NotEnoughStockException extends RuntimeException {\n    private final Long itemId;\n    private final int requested;\n    private final int available;\n}\n```\n\n**잡는 쪽이 값을 꺼내 쓸 수** 있다. **메시지를 파싱할 일이 없다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 재고가 충분할 때 ---\n\n@Test\n@Transactional\nvoid 재고감소_성공() {\n    Book book = 책만들기(\"JPA\", 10000, 10);\n    em.persist(book);\n    em.flush();\n\n    book.removeStock(3);\n    em.flush();\n}\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: insert into item (...) values (?, ?, ?, ?, ?, 'B', ?)\n#   binding parameter [3] as [INTEGER] - [10]\n\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [7]\n\n# --- 재고가 모자랄 때 ---\n\n@Test\n@Transactional\nvoid 재고감소_실패() {\n    Book book = 책만들기(\"JPA\", 10000, 10);\n    em.persist(book);\n    em.flush();\n\n    assertThatThrownBy(() -> book.removeStock(20))\n            .isInstanceOf(NotEnoughStockException.class)\n            .hasMessage(\"need more stock\");\n}\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: insert into item (...) values (?, ?, ?, ?, ?, 'B', ?)\n\n#   NotEnoughStockException: need more stock\n\n#   (update 가 없다)\n\n#   stockQuantity 를 안 바꿨으니 변경 감지할 것이 없다\n\n#   PASSED\n\n# --- 서비스를 통해 부르면 ---\n\norderService.order(memberId, itemId, 20);\n\n#   Creating new transaction with name [OrderService.order]\n\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   NotEnoughStockException: need more stock\n\n#   Completing transaction for [OrderService.order] after exception:\n#     jpabook.jpashop.exception.NotEnoughStockException: need more stock\n#   Initiating transaction rollback\n#   Rolling back JPA transaction on EntityManager [SessionImpl@1]\n\n#   (insert 가 하나도 안 나갔다)\n\nselect count(*) from orders;\n#   -> 0\n\n#   언체크라서 자동으로 롤백됐다\n\n# --- 체크 예외였다면 ---\n\npublic class NotEnoughStockException extends Exception { }\n\n#   Completing transaction for [OrderService.order] after exception:\n#     NotEnoughStockException: need more stock\n#   Initiating transaction commit\n#   Hibernate: insert into delivery ...\n#   Hibernate: insert into orders ...\n#   Hibernate: insert into order_item ...\n\nselect count(*) from orders;\n#   -> 1\n\n#   재고가 모자란데 주문이 저장됐다\n\n#   「DB 2편」 10.6절의 그 규칙이다\n\n# --- 화면에서 ---\n\nPOST /order  memberId=1&itemId=1&count=20\n\n#   500 Internal Server Error\n#   Whitelabel Error Page\n#   There was an unexpected error (type=Internal Server Error, status=500).\n#   need more stock\n\n#   사용자가 볼 화면이 아니다\n#   9.7절 목록",
+   "note": "**재고가 모자라면 `update` 가 아예 안 나간다.** **`stockQuantity` 를 안 바꿨으니 변경 감지할 것이 없다.**\n\n**서비스를 통해 부르면 `insert` 도 하나도 안 나간다.** **쓰기 지연 덕에 SQL 자체가 안 나가고 롤백**된다.\n\n**체크 예외였다면 커밋**된다. **재고가 모자란데 주문이 저장**되는 것이 「DB 2편」 10.6절의 그 규칙이다.\n\n**화면에서는 500 페이지**가 뜬다. **9.7절 목록**에 넣는다.\n\n**다음 절에서 리포지토리를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`RuntimeException` 을 상속**한다 — 언체크.",
+  "**체크면 `throws` 가 다섯 메서드**를 타고 올라간다.",
+  "**체크면 커밋된다** — 「DB 2편」 10.6절.",
+  "**재고 부족은 복구할 방법이 없다** — 알리는 것이 전부.",
+  "**아무도 안 잡는다** — 던지고 끝이다.",
+  "**롤백은 자동**이다.",
+  "**화면에서는 500 페이지**가 뜬다 — 9.7절 목록.",
+  "**예외 메시지는 로그용**, 사용자 메시지는 따로다.",
+  "**필드를 넣은 예외**면 잡는 쪽이 값을 쓸 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "`NotEnoughStockException` 을 만든다.",
+   "done_when": "생성자 넷을 다 열었다.",
+   "minutes": 10
+  },
+  {
+   "task": "재고보다 많이 빼고 로그를 본다.",
+   "done_when": "`update` 가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "체크 예외로 바꿔 본다.",
+   "done_when": "커밋되어 주문이 저장되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메시지에 상품 id 와 수량을 넣어 본다.",
+   "done_when": "로그만 보고 재현할 수 있는지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 언체크 예외인가?",
+   "a": "`throws` 가 번지고, 체크면 커밋되고, 호출자가 복구할 방법이 없기 때문이다."
+  },
+  {
+   "q": "체크 예외로 만들면 무슨 일이 생기나?",
+   "a": "재고가 모자란데 주문이 커밋된다."
+  },
+  {
+   "q": "재고 부족 시 `update` 가 왜 안 나가나?",
+   "a": "필드를 안 바꿨으니 변경 감지할 것이 없다."
+  },
+  {
+   "q": "화면에서는 어떻게 보이나?",
+   "a": "부트 기본 500 오류 페이지다. `@ExceptionHandler` 를 붙여야 한다."
+  },
+  {
+   "q": "예외 메시지를 어떻게 쓰나?",
+   "a": "로그용으로 상품 id·요청 수량·재고를 넣는다. 사용자 메시지는 따로 만든다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

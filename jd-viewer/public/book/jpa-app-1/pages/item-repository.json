@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-repository",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "상품 리포지토리",
+ "summary": "저장과 수정이 한 메서드다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ItemRepository` 를 만든다.",
+  "`save` 가 둘로 갈리는 것을 안다.",
+  "`merge` 의 위험을 미리 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**회원과 다르다.** **상품은 수정 기능**이 있다(4.1절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`ItemRepository`",
+   "code": "@Repository\npublic class ItemRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public void save(Item item) {\n        if (item.getId() == null) {\n            em.persist(item);\n        } else {\n            em.merge(item);\n        }\n    }\n\n    public Item findOne(Long id) {\n        return em.find(Item.class, id);\n    }\n\n    public List<Item> findAll() {\n        return em.createQuery(\"select i from Item i\", Item.class)\n                .getResultList();\n    }\n}",
+   "note": "**`save` 하나가 저장과 수정**을 다 한다.\n\n**`id` 가 `null` 이면 새 것**이다. **`@GeneratedValue` 라 저장 전에는 `null`** 이다.\n\n> **「DB 2편」 7.1절의 `SimpleJpaRepository.save()`** 와 같은 모양이다.\n>\n> ```java\n> // 스프링 데이터 JPA 가 쓴 코드\n> if (entityInformation.isNew(entity)) {\n>     em.persist(entity);\n> } else {\n>     return em.merge(entity);\n> }\n> ```\n>\n> **손으로 쓰면 저것이 무엇인지** 보인다. **4.4절에서 말한 이유**다.\n\n**`findAll` 이 `select i from Item i`** 다. **`Item` 은 추상 클래스**인데 조회된다 — **`SINGLE_TABLE` 이라 조인이 없다**(3.5절)."
+  },
+  {
+   "type": "figure",
+   "caption": "한 메서드, 두 동작",
+   "ascii": "   ItemRepository.save(Item item)\n\n   item.getId() == null                item.getId() != null\n   --------------------                --------------------\n   em.persist(item)                    em.merge(item)\n   new row                             select then update\n                                       nulls overwrite\n\n   one method, two completely different behaviours",
+   "note": "**오른쪽이 8.8~8.9절의 주제**다."
+  },
+  {
+   "type": "figure",
+   "caption": "`merge` 가 하는 일",
+   "ascii": "   what merge does\n\n   1  select the row by id\n   2  copy every field from the argument onto the managed entity\n   3  return the managed one   (not the argument)\n\n   step 2 copies nulls too\n   step 3 means the argument stays detached",
+   "note": "**2단계와 3단계가 함정**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`merge` 를 미리 본다",
+   "md": "**「DB 2편」 7.3절에서 본 것**이다. **여기서 진짜 화면과 만난다.**\n\n**① `null` 이 덮어쓴다**\n\n```java\nBook book = new Book();\nbook.setId(1L);\nbook.setName(\"수정된 제목\");\n// price, stockQuantity, author, isbn 을 안 넣었다\n\nitemRepository.save(book);\n```\n\n**나머지가 전부 `null` 또는 `0`** 이 된다.\n\n```sql\nupdate item set name='수정된 제목', price=0, stock_quantity=0,\n                author=null, isbn=null where item_id=1\n```\n\n**② 반환값이 다른 객체다**\n\n```java\nItem merged = em.merge(book);\nlog.info(\"{}\", merged == book);      // false\n\nbook.setName(\"또 바꿈\");              // 아무 일도 안 생긴다\nmerged.setName(\"이건 된다\");          // update 가 나간다\n```\n\n**`merge` 에 넘긴 객체는 여전히 준영속**이다. **반환된 것이 영속**이다.\n\n> **`save` 가 `void` 라 반환값을 버린다.** **호출한 쪽은 준영속 객체를 들고** 있다.\n>\n> **8.8절에서 이것이 문제**가 된다.\n\n**③ `select` 가 먼저 나간다**\n\n**병합하려면 현재 값을 알아야** 한다. **1차 캐시에 없으면 DB 를 조회**한다.\n\n| | SQL |\n|---|---|\n| `persist` | `insert` |\n| **`merge`** | **`select` + `update`** |\n\n**변경 감지를 쓰면 `select` 하나**로 끝난다.\n\n```java\nItem item = itemRepository.findOne(id);   // select\nitem.change(name, price, stock);          // update (커밋 시)\n```\n\n> **8.8절에서 두 방법을 나란히** 놓는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그런데 왜 `merge` 를 쓰나",
+   "md": "**화면에서 온 것은 준영속**이다.\n\n```java\n// 8.7절\n@PostMapping(\"/items/{id}/edit\")\npublic String updateItem(@ModelAttribute BookForm form) {\n    Book book = new Book();\n    book.setId(form.getId());        // 화면에서 온 id\n    book.setName(form.getName());\n    // ...\n    itemService.saveItem(book);\n}\n```\n\n**`new Book()` 은 영속성 컨텍스트가 모른다.** **`id` 만 있다.**\n\n**이것을 저장하려면 `merge` 밖에** 없어 보인다.\n\n**아니다.** **변경 감지로도** 된다.\n\n```java\n@Transactional\npublic void updateItem(Long id, String name, int price, int stock) {\n    Item item = itemRepository.findOne(id);   // 영속 상태로 가져와서\n    item.change(name, price, stock);          // 고친다\n}\n```\n\n**컨트롤러가 엔티티를 안 만든다.** **값만 넘긴다.**\n\n> **8.8절에서 이 두 방법을 비교**하고, **9.7절에서 어느 쪽을 썼어야 했는지** 정리한다.\n>\n> **미리 말하면 변경 감지가 답**이다.\n\n**이 책은 `merge` 를 먼저 만들고 8.8절에서 바꾼다.** **문제를 보여 주는 순서**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 새 상품 저장 (id 가 null) ---\n\nBook book = new Book();\nbook.setName(\"JPA\");\nbook.setPrice(10000);\nbook.setStockQuantity(10);\nitemRepository.save(book);\nem.flush();\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n\n#   persist 로 갔다\n\n# --- 수정 (id 가 있음) ---\n\nBook detached = new Book();\ndetached.setId(1L);\ndetached.setName(\"수정된 제목\");\ndetached.setPrice(20000);\ndetached.setStockQuantity(5);\ndetached.setAuthor(\"김영한\");\ndetached.setIsbn(\"123\");\n\nitemRepository.save(detached);\nem.flush();\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0 where i1_0.item_id=?\n\n#   merge 가 먼저 select 를 날렸다\n\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [1] as [VARCHAR] - [수정된 제목]\n#   binding parameter [2] as [INTEGER] - [20000]\n#   binding parameter [3] as [INTEGER] - [5]\n\n#   select + update. 두 개다.\n\n# --- 일부만 채우고 저장하면 ---\n\nBook partial = new Book();\npartial.setId(1L);\npartial.setName(\"제목만 바꿈\");\n// 나머지를 안 채웠다\n\nitemRepository.save(partial);\nem.flush();\n\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where i1_0.item_id=?\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [1] as [VARCHAR] - [제목만 바꿈]\n#   binding parameter [2] as [INTEGER] - [0]\n#   binding parameter [3] as [INTEGER] - [0]\n#   binding parameter [4] as [VARCHAR] - [null]\n#   binding parameter [5] as [VARCHAR] - [null]\n\nselect price, stock_quantity, author from item where item_id = 1;\n#   0  0  null\n\n#   가격과 재고가 0 이 되고 저자가 사라졌다\n\n#   「DB 2편」 7.3절의 그 사고다\n\n# --- 반환값을 안 쓰면 ---\n\nitemRepository.save(detached);      // save 가 void 다\ndetached.setName(\"또 바꿈\");\nem.flush();\n\n#   (update 가 안 나간다)\n\n#   detached 는 여전히 준영속이다\n#   merge 가 반환한 객체가 영속이었는데 버렸다\n\n# --- 변경 감지로 하면 ---\n\nItem item = itemRepository.findOne(1L);\n\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where i1_0.item_id=?\n\nitem.change(\"수정된 제목\", 20000, 5);\nem.flush();\n\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n\n#   select 하나 + update 하나\n#   개수는 같은데 안 채운 필드가 안 날아간다\n\n# --- findAll ---\n\nitemRepository.findAll();\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0\n\n#   조인이 없다\n#   SINGLE_TABLE 이라서다 (3.5절)\n\n#   JOINED 였다면 left join 셋이 붙었을 것이다",
+   "note": "**`merge` 가 `select` + `update` 둘**을 만든다. **`persist` 는 `insert` 하나**다.\n\n**일부만 채우면 나머지가 `0` 과 `null` 로 덮인다.** **「DB 2편」 7.3절의 그 사고**가 여기서 실물이 됐다.\n\n**`save` 가 `void` 라 반환값을 버린다.** **호출한 쪽은 준영속을 들고 있어 그 뒤의 변경이 안 먹는다.**\n\n**변경 감지로 하면 SQL 개수는 같은데** **안 채운 필드가 안 날아간다.**\n\n**`findAll` 에 조인이 없다.** **3.5절의 `SINGLE_TABLE` 이득**이다.\n\n**다음 절에서 서비스를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`save` 하나가 저장과 수정**을 다 한다.",
+  "**`id` 가 `null` 이면 `persist`, 있으면 `merge`** 다.",
+  "**「DB 2편」 7.1절의 `SimpleJpaRepository`** 와 같은 모양이다.",
+  "**`merge` 는 `select` + `update`** 를 만든다.",
+  "**안 채운 필드가 `null`·`0` 으로 덮인다.**",
+  "**`merge` 의 반환값이 영속**이고 인자는 준영속으로 남는다.",
+  "**`save` 가 `void` 라 그 반환값을 버린다.**",
+  "**변경 감지면 SQL 개수는 같은데 안전**하다.",
+  "**`findAll` 에 조인이 없다** — `SINGLE_TABLE` 이득."
+ ],
+ "drills": [
+  {
+   "task": "`ItemRepository` 를 만들고 저장·수정한다.",
+   "done_when": "`persist` 와 `merge` 로 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "일부 필드만 채우고 `save` 를 부른다.",
+   "done_when": "나머지가 `0`·`null` 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`merge` 의 반환값과 인자를 비교한다.",
+   "done_when": "다른 객체인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "변경 감지로 같은 수정을 해 본다.",
+   "done_when": "SQL 개수가 같고 안전한 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`save` 는 무엇을 보고 갈리나?",
+   "a": "`id` 가 `null` 인지다. `null` 이면 `persist`, 아니면 `merge` 다."
+  },
+  {
+   "q": "`merge` 가 만드는 SQL 은?",
+   "a": "`select` 와 `update` 둘이다."
+  },
+  {
+   "q": "`merge` 의 가장 큰 위험은?",
+   "a": "인자에 안 채운 필드가 `null`·`0` 으로 DB 를 덮는다."
+  },
+  {
+   "q": "`merge` 의 반환값이 왜 중요한가?",
+   "a": "그것이 영속 상태이고 인자는 준영속으로 남기 때문이다."
+  },
+  {
+   "q": "변경 감지와 SQL 개수가 다른가?",
+   "a": "같다. `select` 하나와 `update` 하나다. 안전성만 다르다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

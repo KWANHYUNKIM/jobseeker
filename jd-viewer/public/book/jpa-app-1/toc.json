@@ -334,7 +334,7 @@
           "title": "재고 증가와 감소",
           "summary": "예외를 어디서 던지나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -342,7 +342,7 @@
           "title": "상품 리포지토리",
           "summary": "저장과 수정이 한 메서드다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -350,7 +350,7 @@
           "title": "상품 서비스",
           "summary": "위임만 하는 계층.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

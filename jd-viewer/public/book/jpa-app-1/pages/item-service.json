@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "item-service",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "상품 서비스",
+ "summary": "위임만 하는 계층.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`ItemService` 를 만든다.",
+  "위임만 하는 계층을 왜 두는지 안다.",
+  "언제 없애도 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절의 `MemberService` 보다 더 얇다.** **검증도 없다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`ItemService`",
+   "code": "@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class ItemService {\n\n    private final ItemRepository itemRepository;\n\n    @Transactional\n    public void saveItem(Item item) {\n        itemRepository.save(item);\n    }\n\n    public List<Item> findItems() {\n        return itemRepository.findAll();\n    }\n\n    public Item findOne(Long itemId) {\n        return itemRepository.findOne(itemId);\n    }\n}",
+   "note": "**세 메서드 다 한 줄**이다.\n\n**`MemberService` 에는 `validateDuplicateMember` 가 있었다.** **여기는 없다.**\n\n> **상품에는 검증 규칙이 없다**(1.3절). **이름이 같아도 되고 가격에 제약도 없다.**\n>\n> **실무라면 붙는다** — 가격이 음수인지, 이름이 비었는지. **「MVC 2편」의 폼 검증**이 그 자리다(8.3절)."
+  },
+  {
+   "type": "figure",
+   "caption": "위임만 한다",
+   "ascii": "   ItemService\n\n   saveItem(Item)        -> itemRepository.save(item)\n   findItems()           -> itemRepository.findAll()\n   findOne(Long)         -> itemRepository.findOne(id)\n\n   every method is one line of delegation\n   the only thing it adds is @Transactional",
+   "note": "**더하는 것이 `@Transactional` 뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그래도 두는 이유",
+   "md": "**\"이럴 거면 컨트롤러가 리포지토리를 부르면 되지\"**\n\n**셋 때문에 둔다.**\n\n**① 트랜잭션 경계가 여기다** (4.2절)\n\n**없애면 경계가 컨트롤러로** 간다. **화면 렌더링까지 트랜잭션**이다(「DB 2편」 12.3절).\n\n**`@Transactional` 을 리포지토리에 붙이면?** **4.2절에서 본 대로 `update` 가 조용히 안 나간다.**\n\n**② 컨트롤러가 리포지토리를 모른다**\n\n**계층 규칙**이다. **한 번 뚫으면 다시 못 막는다.**\n\n**③ 내일 무언가 들어온다**\n\n**8.8절에서 실제로 들어온다.**\n\n```java\n@Transactional\npublic void updateItem(Long itemId, String name, int price, int stockQuantity) {\n    Item item = itemRepository.findOne(itemId);\n    item.change(name, price, stockQuantity);\n}\n```\n\n**변경 감지로 바꾸면 서비스에 로직이 생긴다.**\n\n> **지금은 비어 있어도 자리를 만들어 둔다.**\n>\n> **반대 의견도 있다** — **\"필요할 때 만들어라\"**. **YAGNI** 다.\n>\n> **트랜잭션 경계 때문에 여기서는 처음부터** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "없애면 무엇이 깨지나",
+   "ascii": "   why keep a layer that only delegates\n\n   the transaction boundary lives here      4.2\n   the controller must not see the repository\n   tomorrow it will hold something          8.8\n\n   or: delete it and let the controller call the repository\n   then the boundary moves, and 4.2 breaks",
+   "note": "**경계가 움직인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실무의 다른 선택",
+   "md": "**위임만 하는 서비스가 많아지면 답답**하다.\n\n**「DB 2편」 9.3절의 구조**로 가면 달라진다.\n\n```java\n// 리포지토리가 인터페이스이고 스프링 데이터 JPA 라면\npublic interface ItemRepository extends JpaRepository<Item, Long> { }\n\n// 서비스는 여전히 필요하다 — 트랜잭션 때문에\n@Service\n@Transactional(readOnly = true)\npublic class ItemService {\n    private final ItemRepository itemRepository;\n    @Transactional\n    public void saveItem(Item item) { itemRepository.save(item); }\n}\n```\n\n**여전히 위임**이다. **줄어들지 않는다.**\n\n**다른 방향**도 있다.\n\n| 방법 | |\n|---|---|\n| **컨트롤러에 `@Transactional`** | 「DB 2편」 12.3절이 반대한다 |\n| **파사드 없이 리포지토리 직접** | 경계가 사라진다 |\n| **CQRS** | 조회는 직접, 명령만 서비스 |\n\n**세 번째가 현실적**이다.\n\n```java\n// 조회는 컨트롤러가 조회 전용 리포지토리를 직접\n// 명령은 서비스를 거친다\n```\n\n> **「DB 2편」 9.3절의 `ItemQueryRepository`** 가 그 자리다.\n>\n> **이 책은 안 나눈다** — 규모가 작다. **9.7절에서 이 판단**을 다시 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 상품 저장 ---\n\nBook book = new Book();\nbook.setName(\"JPA\");\nbook.setPrice(10000);\nbook.setStockQuantity(10);\nitemService.saveItem(book);\n\n#   Getting transaction for [ItemService.saveItem]\n#   Creating new transaction with name [ItemService.saveItem]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   (readOnly 가 없다 - 메서드가 이겼다)\n\n#   Hibernate: select next value for item_seq\n\n#   Initiating transaction commit\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n#   Committing JPA transaction\n\n# --- 상품 목록 ---\n\nitemService.findItems();\n\n#   Creating new transaction with name [ItemService.findItems]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0\n\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n# --- 상품 수정 (merge 경로) ---\n\nBook detached = new Book();\ndetached.setId(1L);\ndetached.setName(\"수정\");\ndetached.setPrice(20000);\ndetached.setStockQuantity(5);\nitemService.saveItem(detached);\n\n#   Creating new transaction with name [ItemService.saveItem]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: \n#       select i1_0.item_id, ... from item i1_0 where i1_0.item_id=?\n\n#   Initiating transaction commit\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [4] as [VARCHAR] - [null]\n#   binding parameter [5] as [VARCHAR] - [null]\n\n#   author 와 isbn 이 null 로 덮였다\n\n#   6.3절의 그 문제가 서비스를 거쳐도 그대로다\n\n#   계층을 하나 더 거쳤을 뿐이다\n\n# --- 서비스를 없애고 컨트롤러가 직접 부르면 ---\n\n#   (트랜잭션이 없다)\n\nitemRepository.save(book);\n\n#   jakarta.persistence.TransactionRequiredException:\n#     No EntityManager with actual transaction available\n\n#   4.4절에서 본 그 예외\n\n# --- 컨트롤러에 @Transactional 을 붙이면 ---\n\n#   Creating new transaction with name [ItemController.create]\n#   Hibernate: select next value for item_seq\n#   (화면 렌더링)\n#   Initiating transaction commit\n#   Hibernate: insert into item ...\n#   Releasing JDBC Connection [conn0]\n\n#   화면을 그리는 동안 커넥션을 쥐고 있었다\n#   (「DB 2편」 12.3절)\n\n# --- 그래서 서비스에 둔다 ---\n\n#   위임만 해도 그 자리가 필요하다",
+   "note": "**`saveItem` 로그에 `readOnly` 가 없다.** **메서드 애너테이션이 이겼다**(「DB 2편」 10.2절).\n\n**`merge` 문제가 서비스를 거쳐도 그대로**다. **계층이 하나 늘었을 뿐 동작은 같다.**\n\n**서비스를 없애면 `TransactionRequiredException`** 이다.\n\n**컨트롤러에 붙이면 화면 그리는 동안 커넥션을 쥔다.**\n\n**위임만 해도 그 자리가 필요한 이유**가 마지막 세 블록에 있다.\n\n**다음 절에서 상속 매핑의 SQL 을 본다.**"
+  }
+ ],
+ "recap": [
+  "**세 메서드가 다 한 줄** 위임이다.",
+  "**상품에는 검증 규칙이 없다** — 폼 검증은 8.3절.",
+  "**트랜잭션 경계가 여기**라 없앨 수 없다.",
+  "**컨트롤러가 리포지토리를 모르게** 한다.",
+  "**8.8절에서 실제로 로직이 들어온다.**",
+  "**스프링 데이터 JPA 를 써도 서비스는 남는다.**",
+  "**CQRS 로 조회만 분리**하는 방법이 있다.",
+  "**없애면 `TransactionRequiredException`** 이다.",
+  "**컨트롤러에 붙이면 화면 그리는 동안 커넥션**을 쥔다."
+ ],
+ "drills": [
+  {
+   "task": "`ItemService` 를 만들고 저장한다.",
+   "done_when": "`readOnly` 가 없는 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서비스를 빼고 컨트롤러가 리포지토리를 직접 부르게 한다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨트롤러에 `@Transactional` 을 붙여 본다.",
+   "done_when": "커넥션 점유 구간이 늘어나는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "위임만 하는 서비스가 몇 개인지 세어 본다.",
+   "done_when": "언제 CQRS 를 고려할지 판단했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "위임만 하는 서비스를 왜 두나?",
+   "a": "트랜잭션 경계가 거기 있고, 컨트롤러가 리포지토리를 모르게 하며, 나중에 로직이 들어온다."
+  },
+  {
+   "q": "없애면 무엇이 깨지나?",
+   "a": "트랜잭션이 없어 `TransactionRequiredException` 이 나거나 경계가 컨트롤러로 옮겨 간다."
+  },
+  {
+   "q": "스프링 데이터 JPA 를 쓰면 줄어드나?",
+   "a": "안 줄어든다. 트랜잭션 경계 때문에 서비스는 남는다."
+  },
+  {
+   "q": "다른 방법은?",
+   "a": "조회는 조회 전용 리포지토리를 직접 부르고 명령만 서비스를 거치는 CQRS 다."
+  },
+  {
+   "q": "`saveItem` 로그에 왜 `readOnly` 가 없나?",
+   "a": "메서드의 `@Transactional` 이 클래스의 것을 이겼기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
