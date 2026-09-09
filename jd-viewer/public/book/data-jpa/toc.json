@@ -291,7 +291,7 @@
           "title": "스프링 데이터 페이징",
           "summary": "Page 하나에 쿼리 둘.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.11",
@@ -299,7 +299,7 @@
           "title": "Slice 와 count 쿼리",
           "summary": "총 개수가 비쌀 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.12",
