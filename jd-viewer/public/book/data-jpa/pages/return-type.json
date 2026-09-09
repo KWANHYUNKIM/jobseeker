@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "return-type",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "반환 타입",
+ "summary": "없을 때 무엇이 오나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빈 결과의 반환을 안다.",
+  "여러 건일 때를 안다.",
+  "Stream 을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 `Optional` 을 직접** 감쌌다. **이제 선언만 하면 맞춰** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "결과가 없을 때",
+   "ascii": "   what comes back when nothing matches\n\n   List<Member>       an empty list, never null\n   Optional<Member>   Optional.empty\n   Member             null, and only null\n   Stream<Member>     an empty stream, and it must be closed\n\n   the third row is the one that produces a null check nobody wrote",
+   "note": "**셋째가 아무도 안 쓴 널 검사를** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컬렉션은 절대 null 이 아니다",
+   "md": "**빈 리스트를** 준다.\n\n> **`null` 체크가 필요** 없다.\n> **스프링 데이터의 계약**이다.\n> **`isEmpty()` 만 보면** 된다.\n\n**단건은 `null` 일 수** 있다.\n\n> **`Member findByUsername(...)` 은 없으면 `null`** 이다.\n> **JPA 순정은 `NoResultException` 을** 던졌다.\n> **스프링 데이터가 잡아서 `null` 로** 바꾼다.\n\n**그래서 `Optional` 을** 쓴다.\n\n> **없을 수 있다는 게 시그니처에** 드러난다.\n> **`orElseThrow()` 로 의도를** 적는다.\n> **1.1절부터 계속 그렇게** 썼다.\n\n**`@Nullable` 도** 있다.\n\n> **널을 허용한다고 표시**한다.\n> **없으면 널 검사 도구가** 경고한다.\n> **`Optional` 이 더 명시적**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "여러 건이 나오면",
+   "ascii": "   what happens when a single result query matches several rows\n\n   Optional<Member>   IncorrectResultSizeDataAccessException\n   Member             the same exception, not the first row\n\n   so a name that reads like find one is a runtime bomb\n   the moment two rows share the value you searched by",
+   "note": "**단건처럼 읽히는 이름이 시한폭탄**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "단건 조회가 두 건이면 터진다",
+   "md": "**첫 건을 주는 게** 아니다.\n\n> **`IncorrectResultSizeDataAccessException`** 이다.\n> **JPA 의 `NonUniqueResultException` 을** 바꾼 것이다.\n> **개발에서는 한 건뿐이라 안** 드러난다.\n\n**유니크 제약이 없으면 언젠가** 난다.\n\n> **이름으로 조회하는데 동명이인이** 생긴다.\n> **테스트에는 없던 상황**이다.\n> **`List` 로 받거나 제약을 거는 게** 답이다.\n\n**`findFirstBy` 로 명시할 수** 있다.\n\n> **5.1절의 `First`·`Top`** 이다.\n> **`limit` 이 붙어 한 건만** 읽는다.\n> **여러 건이어도 안** 터진다.\n\n**`Stream` 은 닫아야** 한다.\n\n> **커서를 열어 둔** 것이다.\n> **`try-with-resources` 로** 감싼다.\n> **트랜잭션 안에서만 유효**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 세 가지로 선언한다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    List<Member> findListByUsername(String username);\n    Member findMemberByUsername(String username);\n    Optional<Member> findOptionalByUsername(String username);\n}\n\n--   5.1절대로 주어는 무시된다\n--   List/Member/Optional 이 구분자다\n\n\n-- 있을 때\n\n@Test\n@Transactional\nvoid 있을_때() {\n    em.clear();\n    System.out.println(\"List    : \" +\n            memberRepository.findListByUsername(\"m1\").size());\n    em.clear();\n    System.out.println(\"Member  : \" +\n            memberRepository.findMemberByUsername(\"m1\").getUsername());\n    em.clear();\n    System.out.println(\"Optional: \" +\n            memberRepository.findOptionalByUsername(\"m1\").isPresent());\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nList    : 1\nHibernate: select ... where m1_0.username=?\nMember  : m1\nHibernate: select ... where m1_0.username=?\nOptional: true\n\n--   SQL 이 셋 다 같다\n--   반환만 다르다\n\n\n-- 없을 때\n\n@Test\n@Transactional\nvoid 없을_때() {\n    em.clear();\n    List<Member> list = memberRepository.findListByUsername(\"없음\");\n    System.out.println(\"List    : \" + list + \" (null? \" +\n            (list == null) + \")\");\n\n    em.clear();\n    Member one = memberRepository.findMemberByUsername(\"없음\");\n    System.out.println(\"Member  : \" + one);\n\n    em.clear();\n    Optional<Member> opt = memberRepository.findOptionalByUsername(\"없음\");\n    System.out.println(\"Optional: \" + opt);\n}\n\nHibernate: select ... where m1_0.username=?\nList    : [] (null? false)\nHibernate: select ... where m1_0.username=?\nMember  : null\nHibernate: select ... where m1_0.username=?\nOptional: Optional.empty\n\n--   컬렉션은 빈 리스트다\n--   절대 null 이 아니다\n--   단건만 null 이다\n\n\n-- 순수 JPA 는 예외를 던졌다\n\npublic Member findByUsernameJpa(String username) {\n    return em.createQuery(\n            \"select m from Member m where m.username = :username\",\n            Member.class)\n        .setParameter(\"username\", username)\n        .getSingleResult();\n}\n\n@Test\n@Transactional\nvoid 순수_JPA_없을_때() {\n    em.clear();\n    try {\n        memberJpaRepository.findByUsernameJpa(\"없음\");\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select ... where m1_0.username=?\n예외: NoResultException\n\n--   스프링 데이터가 이걸 잡아서 null 로 바꾼다\n--   4.1절에서 손으로 Optional 을 감싼 이유다\n\n\n-- 두 건이면 터진다\n\n@Test\n@Transactional\nvoid 두_건() {\n    em.persist(new Member(\"같은이름\", 10));\n    em.persist(new Member(\"같은이름\", 20));\n    em.flush(); em.clear();\n\n    try {\n        memberRepository.findMemberByUsername(\"같은이름\");\n    } catch (Exception e) {\n        System.out.println(\"Member  : \" + e.getClass().getSimpleName());\n    }\n    em.clear();\n    try {\n        memberRepository.findOptionalByUsername(\"같은이름\");\n    } catch (Exception e) {\n        System.out.println(\"Optional: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: select ... where m1_0.username=?\nMember  : IncorrectResultSizeDataAccessException\nHibernate: select ... where m1_0.username=?\nOptional: IncorrectResultSizeDataAccessException\n\n--   첫 건을 주는 게 아니다\n--   Optional 이라고 안전한 게 아니다\n--   개발에서는 한 건뿐이라 안 드러난다\n\n\n-- 원래 예외를 본다\n\n@Test\n@Transactional\nvoid 원인() {\n    em.persist(new Member(\"둘\", 10));\n    em.persist(new Member(\"둘\", 20));\n    em.flush(); em.clear();\n    try {\n        memberRepository.findOptionalByUsername(\"둘\");\n    } catch (Exception e) {\n        System.out.println(\"겉:  \" + e.getClass().getName());\n        System.out.println(\"속:  \" + e.getCause().getClass().getName());\n        System.out.println(\"말:  \" + e.getMessage());\n    }\n}\n\n겉:  org.springframework.dao.IncorrectResultSizeDataAccessException\n속:  jakarta.persistence.NonUniqueResultException\n말:  Query did not return a unique result: 2 results were returned\n\n--   4.2절의 예외 변환이다\n\n\n-- findFirstBy 는 안 터진다\n\nOptional<Member> findFirstByUsernameOrderByAgeDesc(String username);\n\n@Test\n@Transactional\nvoid 첫_건() {\n    em.persist(new Member(\"셋\", 10));\n    em.persist(new Member(\"셋\", 30));\n    em.persist(new Member(\"셋\", 20));\n    em.flush(); em.clear();\n\n    Member m = memberRepository\n            .findFirstByUsernameOrderByAgeDesc(\"셋\").orElseThrow();\n    System.out.println(\"나이: \" + m.getAge());\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n    order by\n        m1_0.age desc\n    fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [1]\n나이: 30\n\n--   limit 이 붙었다\n--   여러 건이어도 안 터진다\n--   5.1절의 First 다\n\n\n-- 값 타입도 마찬가지다\n\n@Query(\"select m.username from Member m where m.age = :age\")\nList<String> namesByAge(@Param(\"age\") int age);\n\n@Query(\"select m.username from Member m where m.id = :id\")\nOptional<String> nameById(@Param(\"id\") Long id);\n\n@Test\n@Transactional\nvoid 값_타입() {\n    em.clear();\n    System.out.println(\"목록: \" + memberRepository.namesByAge(999));\n    em.clear();\n    System.out.println(\"단건: \" + memberRepository.nameById(999L));\n}\n\nHibernate: select m1_0.username from member m1_0 where m1_0.age=?\n목록: []\nHibernate: select m1_0.username from member m1_0 where m1_0.member_id=?\n단건: Optional.empty\n\n--   5.5절의 값 조회도 같다\n\n\n-- count 와 exists\n\nlong countByUsername(String username);\nboolean existsByUsername(String username);\n\n@Test\n@Transactional\nvoid 없을_때_count() {\n    em.clear();\n    System.out.println(\"count : \" + memberRepository.countByUsername(\"없음\"));\n    em.clear();\n    System.out.println(\"exists: \" + memberRepository.existsByUsername(\"없음\"));\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0\n           where m1_0.username=?\ncount : 0\nHibernate: select m1_0.member_id from member m1_0 where m1_0.username=?\n           fetch first ? rows only\nexists: false\n\n--   0 과 false 다\n--   null 이 아니다\n\n\n-- Stream 은 닫아야 한다\n\n@Query(\"select m from Member m\")\nStream<Member> streamAll();\n\n@Test\n@Transactional\nvoid 스트림() {\n    em.clear();\n    try (Stream<Member> s = memberRepository.streamAll()) {\n        long n = s.filter(m -> m.getAge() > 15).count();\n        System.out.println(\"15살 초과: \" + n);\n    }\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n15살 초과: 2\n\n--   커서를 열어 둔 것이다\n--   try-with-resources 로 닫는다\n\n\n-- 안 닫으면\n\n@Test\n@Transactional\nvoid 안_닫으면() {\n    em.clear();\n    Stream<Member> s = memberRepository.streamAll();\n    System.out.println(\"개수: \" + s.count());\n    // 안 닫았다\n}\n\nHibernate: select ... from member m1_0\n개수: 3\nWARN  ResultSet 이 닫히지 않은 채 연결이 반환됨\n\n--   커넥션 풀이 경고한다\n--   많이 쌓이면 고갈된다\n\n\n-- 트랜잭션 밖에서 쓰면\n\n@Test\nvoid 트랜잭션_밖() {\n    try (Stream<Member> s = memberRepository.streamAll()) {\n        s.forEach(m -> System.out.println(m.getUsername()));\n    }\n}\n\nHibernate: select ... from member m1_0\nm1\nm2\nm3\n\n--   된다\n--   리포지토리 메서드에 트랜잭션이 있어서다 (4.2절)\n--   다만 지연 로딩은 안 된다 (3.3절)\n\n\n-- 컬렉션 타입도 고를 수 있다\n\nSet<Member> findSetByUsername(String username);\nIterable<Member> findIterableByUsername(String username);\n\n@Test\n@Transactional\nvoid 컬렉션_타입() {\n    em.clear();\n    System.out.println(\"Set     : \" +\n            memberRepository.findSetByUsername(\"m1\").getClass()\n                    .getSimpleName());\n    em.clear();\n    System.out.println(\"Iterable: \" +\n            memberRepository.findIterableByUsername(\"m1\").getClass()\n                    .getSimpleName());\n}\n\nHibernate: select ... where m1_0.username=?\nSet     : LinkedHashSet\nHibernate: select ... where m1_0.username=?\nIterable: ArrayList\n\n--   Set 은 중복을 없앤다\n--   SQL 에 distinct 는 없다\n--   자바에서 걸렀다\n\n\n-- distinct 를 원하면\n\n@Query(\"select distinct m.age from Member m\")\nList<Integer> distinctAges();\n\n@Test\n@Transactional\nvoid distinct() {\n    em.clear();\n    memberRepository.distinctAges();\n}\n\nHibernate:\n    select\n        distinct m1_0.age\n    from\n        member m1_0\n\n--   SQL 에 distinct 가 있다\n--   Set 반환과 다르다\n\n\n-- 정리\n\n$ printf '%-22s %-16s %s\\n' \\\n  'List<T>' '빈 리스트' '여러 건 OK' \\\n  'Optional<T>' 'Optional.empty' '여러 건이면 예외' \\\n  'T' 'null' '여러 건이면 예외' \\\n  'findFirstBy...' 'Optional.empty' 'limit 1' \\\n  'Stream<T>' '빈 스트림' '닫아야 한다' \\\n  'long / boolean' '0 / false' '-'\n\nList<T>                빈 리스트         여러 건 OK\nOptional<T>            Optional.empty   여러 건이면 예외\nT                      null             여러 건이면 예외\nfindFirstBy...         Optional.empty   limit 1\nStream<T>              빈 스트림         닫아야 한다\nlong / boolean         0 / false        -\n\n--   5.9절에서 페이징을 손으로 쓴다",
+   "note": "**세 반환 타입이 같은 SQL 을 내고 없을 때만** 갈린다 — `[]`·`null`·`Optional.empty`.\n\n**두 건이면 `Optional` 도 `IncorrectResultSizeDataAccessException`** 이다.\n\n**속 예외가 `NonUniqueResultException` 이고 `2 results were returned`** 라고 말한다.\n\n**`findFirstBy` 는 `fetch first ? rows only` 로 안** 터진다.\n\n**`Set` 반환은 자바에서 거른 것이고 SQL 에 `distinct` 가** 없다."
+  }
+ ],
+ "recap": [
+  "**컬렉션은 절대 `null` 이** 아니다.",
+  "**단건은 `null` 일 수** 있다.",
+  "**JPA 는 예외를** 던졌다.",
+  "**`Optional` 로 의도를** 적는다.",
+  "**두 건이면** 터진다.",
+  "**첫 건을 주는 게** 아니다.",
+  "**`findFirstBy` 는 `limit`** 이다.",
+  "**`Stream` 은 닫아야** 한다.",
+  "**`Set` 은 자바에서** 거른다."
+ ],
+ "drills": [
+  {
+   "task": "세 반환 타입을 선언한다.",
+   "done_when": "없을 때 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 이름을 두 건 넣는다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`findFirstBy` 로 바꾼다.",
+   "done_when": "`limit` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Stream` 을 안 닫아 본다.",
+   "done_when": "경고를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "결과가 없을 때 `List` 는?",
+   "a": "빈 리스트다. `null` 이 아니다."
+  },
+  {
+   "q": "단건 조회가 두 건이면?",
+   "a": "첫 건이 아니라 `IncorrectResultSizeDataAccessException` 이 난다."
+  },
+  {
+   "q": "`Optional` 이 그걸 막아 주나?",
+   "a": "아니다. 없을 때만 다르고 여러 건이면 똑같이 터진다."
+  },
+  {
+   "q": "한 건만 확실히 받으려면?",
+   "a": "`findFirstBy` 처럼 개수를 제한한다."
+  },
+  {
+   "q": "`Stream` 반환의 주의점은?",
+   "a": "커서를 열어 두므로 반드시 닫아야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "IncorrectResultSizeDataAccessException",
+   "def": "단건을 기대했는데 여러 건이 나왔을 때의 스프링 예외."
+  },
+  {
+   "term": "빈 컬렉션 계약",
+   "def": "결과가 없어도 `null` 대신 빈 컬렉션을 준다는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

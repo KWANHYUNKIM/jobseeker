@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "pure-paging",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "순수 JPA 페이징",
+ "summary": "먼저 손으로 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "필요한 조각을 안다.",
+  "두 쿼리를 직접 쓴다.",
+  "오프셋의 비용을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 한 번 썼다.** **여기서 제대로 쓰고 5.10절에서** 지운다."
+  },
+  {
+   "type": "figure",
+   "caption": "페이지 하나가 필요한 것",
+   "ascii": "   what a page needs, and what you have to write for each\n\n   the rows        a query with an offset and a limit\n   the total       a second query, counting without offset or limit\n   the arithmetic  total pages, has next, is last, current index\n\n   the third one is four lines of division that every project rewrites",
+   "note": "**셋째를 모든 프로젝트가 다시** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쿼리가 둘이고 계산이 넷이다",
+   "md": "**목록과 개수는 다른 쿼리**다.\n\n> **`setFirstResult`·`setMaxResults` 로 자른다.**\n> **개수는 `count` 로 따로** 센다.\n> **조건이 같아야 하니 복사가** 생긴다.\n\n**계산이 매번** 같다.\n\n```java\nint totalPages = (int) Math.ceil((double) total / size);\nboolean hasNext = page + 1 < totalPages;\nboolean isLast  = page + 1 >= totalPages;\nboolean isFirst = page == 0;\n```\n\n> **네 줄이 프로젝트마다** 있다.\n> **경계에서 실수하기** 쉽다.\n> **5.10절이 이걸 다 없앤다.**\n\n**정렬이 없으면 순서가 안** 정해진다.\n\n> **DB 가 순서를 보장 안** 한다.\n> **같은 쿼리를 두 번 해도 다를 수** 있다.\n> **페이지마다 중복이나 누락이** 난다.\n\n**정렬 키가 유일해야** 한다.\n\n> **나이로만 정렬하면 동점이** 생긴다.\n> **동점 안에서 순서가** 흔들린다.\n> **id 를 보조 키로 같이** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "오프셋의 비용",
+   "ascii": "   why offset gets slower as the page number grows\n\n   offset 0     read 20 rows, return 20\n   offset 100   read 120 rows, discard 100, return 20\n   offset 10000 read 10020 rows, discard 10000, return 20\n\n   the database still has to walk everything it skips,\n   so the last page of a large table is the slowest page",
+   "note": "**뒤 페이지일수록** 느리다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "총 개수가 제일 비싸다",
+   "md": "**전체를 세야** 한다.\n\n> **인덱스만으로 못 세는 경우가** 많다.\n> **조인이 있으면 더** 그렇다.\n> **목록 쿼리보다 개수 쿼리가 느린 일이** 흔하다.\n\n**⑫ 6.6절에서 같은 이야기를** 했다.\n\n> **거기는 HTTP API 의 페이징**이었다.\n> **`total` 이 비싸면 `next` 유무만 주자고** 했다.\n> **5.11절의 `Slice` 가 그것**이다.\n\n**커서 방식이 대안**이다.\n\n> **\"마지막으로 본 id 다음부터\"** 다.\n> **오프셋이 없어 뒤 페이지도** 빠르다.\n> **대신 임의 페이지로 못** 뛴다.\n\n**여기서는 오프셋으로** 간다.\n\n> **스프링 데이터의 `Pageable` 이 오프셋** 기반이다.\n> **커서는 직접 짜야** 한다.\n> **8.8절의 Querydsl 로 넘길** 이야기다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 손으로 쓴다\n\n@Repository\npublic class MemberJpaRepository {\n\n    @PersistenceContext private EntityManager em;\n\n    public List<Member> findByAge(int age, int offset, int limit) {\n        return em.createQuery(\n                \"select m from Member m where m.age = :age\" +\n                \" order by m.username desc\", Member.class)\n            .setParameter(\"age\", age)\n            .setFirstResult(offset)\n            .setMaxResults(limit)\n            .getResultList();\n    }\n\n    public long totalCount(int age) {\n        return em.createQuery(\n                \"select count(m) from Member m where m.age = :age\",\n                Long.class)\n            .setParameter(\"age\", age)\n            .getSingleResult();\n    }\n}\n\n--   조건이 두 번 나온다\n--   하나만 고치면 어긋난다\n\n\n-- 준비\n\n@BeforeEach\nvoid init() {\n    for (int i = 1; i <= 12; i++) {\n        em.persist(new Member(\"m\" + String.format(\"%02d\", i), 10));\n    }\n    em.flush(); em.clear();\n}\n\n\n-- 첫 페이지\n\n@Test\n@Transactional\nvoid 첫_페이지() {\n    List<Member> rows = memberJpaRepository.findByAge(10, 0, 5);\n    long total = memberJpaRepository.totalCount(10);\n    System.out.println(\"행: \" + rows.stream()\n            .map(Member::getUsername).toList());\n    System.out.println(\"전체: \" + total);\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age=?\n    order by\n        m1_0.username desc\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [0]\nTRACE binding parameter (3:INTEGER) <- [5]\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age=?\n행: [m12, m11, m10, m09, m08]\n전체: 12\n\n--   쿼리가 둘이다\n--   조건이 양쪽에 있다\n\n\n-- 계산은 내가 한다\n\n@Test\n@Transactional\nvoid 계산() {\n    int page = 1, size = 5;\n    List<Member> rows = memberJpaRepository.findByAge(10, page * size, size);\n    long total = memberJpaRepository.totalCount(10);\n\n    int totalPages = (int) Math.ceil((double) total / size);\n    boolean hasNext = page + 1 < totalPages;\n    boolean isLast  = page + 1 >= totalPages;\n    boolean isFirst = page == 0;\n\n    System.out.printf(\"페이지 %d/%d, 다음 %s, 마지막 %s, 처음 %s%n\",\n            page + 1, totalPages, hasNext, isLast, isFirst);\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [5]\nHibernate: select count(m1_0.member_id) from member m1_0 where m1_0.age=?\n페이지 2/3, 다음 true, 마지막 false, 처음 false\n\n--   네 줄을 내가 썼다\n--   프로젝트마다 이 네 줄이 있다\n\n\n-- 마지막 페이지\n\n@Test\n@Transactional\nvoid 마지막() {\n    int page = 2, size = 5;\n    List<Member> rows = memberJpaRepository.findByAge(10, page * size, size);\n    System.out.println(\"행 수: \" + rows.size());\n    System.out.println(\"행: \" + rows.stream()\n            .map(Member::getUsername).toList());\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [10]\nTRACE binding parameter (3:INTEGER) <- [5]\n행 수: 2\n행: [m02, m01]\n\n--   5개를 요청했는데 2개다\n--   남은 만큼만 온다\n\n\n-- 범위를 넘으면\n\n@Test\n@Transactional\nvoid 범위_초과() {\n    List<Member> rows = memberJpaRepository.findByAge(10, 100, 5);\n    System.out.println(\"행 수: \" + rows.size());\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [100]\n행 수: 0\n\n--   빈 리스트다\n--   예외가 아니다\n\n\n-- 정렬이 없으면\n\npublic List<Member> findByAgeNoSort(int age, int offset, int limit) {\n    return em.createQuery(\n            \"select m from Member m where m.age = :age\", Member.class)\n        .setParameter(\"age\", age)\n        .setFirstResult(offset)\n        .setMaxResults(limit)\n        .getResultList();\n}\n\n@Test\n@Transactional\nvoid 정렬_없이() {\n    em.clear();\n    List<Member> p1 = memberJpaRepository.findByAgeNoSort(10, 0, 5);\n    em.clear();\n    List<Member> p2 = memberJpaRepository.findByAgeNoSort(10, 5, 5);\n\n    System.out.println(\"1페이지: \" + p1.stream()\n            .map(Member::getUsername).toList());\n    System.out.println(\"2페이지: \" + p2.stream()\n            .map(Member::getUsername).toList());\n}\n\nHibernate:\n    select ... from member m1_0 where m1_0.age=?\n    offset ? rows fetch first ? rows only\n1페이지: [m01, m02, m03, m04, m05]\n2페이지: [m06, m07, m08, m09, m10]\n\n--   order by 가 없다\n--   H2 는 우연히 순서가 맞았다\n--   보장된 것이 아니다\n\n\n-- 동점이 있으면 흔들린다\n\n@Test\n@Transactional\nvoid 동점() {\n    em.createQuery(\"delete from Member\").executeUpdate();\n    for (int i = 1; i <= 10; i++) {\n        em.persist(new Member(\"x\" + i, 20));   // 나이가 다 같다\n    }\n    em.flush(); em.clear();\n\n    List<Member> p1 = em.createQuery(\n            \"select m from Member m order by m.age\", Member.class)\n        .setFirstResult(0).setMaxResults(3).getResultList();\n    em.clear();\n    List<Member> p2 = em.createQuery(\n            \"select m from Member m order by m.age\", Member.class)\n        .setFirstResult(3).setMaxResults(3).getResultList();\n\n    System.out.println(\"1페이지: \" + p1.stream()\n            .map(Member::getUsername).toList());\n    System.out.println(\"2페이지: \" + p2.stream()\n            .map(Member::getUsername).toList());\n}\n\nHibernate: select ... order by m1_0.age offset ? rows fetch first ? rows only\n1페이지: [x1, x2, x3]\n2페이지: [x4, x5, x6]\n\n--   여기서는 맞았다\n--   나이가 다 같아 순서가 미정의다\n--   다른 DB 나 실행 계획에서는 겹칠 수 있다\n\n\n-- 보조 키를 준다\n\n@Test\n@Transactional\nvoid 보조_키() {\n    List<Member> p1 = em.createQuery(\n            \"select m from Member m order by m.age, m.id\", Member.class)\n        .setFirstResult(0).setMaxResults(3).getResultList();\n\n    System.out.println(\"1페이지: \" + p1.stream()\n            .map(Member::getUsername).toList());\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age,\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\n1페이지: [x1, x2, x3]\n\n--   id 가 유일하니 순서가 확정이다\n\n\n-- 오프셋이 커지면\n\n@Test\n@Transactional\nvoid 큰_오프셋() {\n    em.createQuery(\"delete from Member\").executeUpdate();\n    for (int i = 0; i < 5000; i++) em.persist(new Member(\"p\" + i, 10));\n    em.flush(); em.clear();\n\n    for (int offset : new int[]{0, 2000, 4900}) {\n        em.clear();\n        long t = System.nanoTime();\n        em.createQuery(\"select m from Member m order by m.id\", Member.class)\n          .setFirstResult(offset).setMaxResults(20).getResultList();\n        System.out.printf(\"offset %-6d %d ms%n\",\n                offset, (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select ... order by m1_0.member_id\n           offset ? rows fetch first ? rows only\noffset 0      3 ms\noffset 2000   7 ms\noffset 4900   12 ms\n\n--   뒤로 갈수록 느리다\n--   건너뛴 행도 읽어야 한다\n--   5천 건이라 차이가 작다\n--   백만 건이면 초 단위가 된다\n\n\n-- count 가 더 비쌀 수 있다\n\n@Test\n@Transactional\nvoid count_비용() {\n    em.clear();\n    long t1 = System.nanoTime();\n    em.createQuery(\"select m from Member m order by m.id\", Member.class)\n      .setFirstResult(0).setMaxResults(20).getResultList();\n    long rows = (System.nanoTime() - t1) / 1_000_000;\n\n    em.clear();\n    long t2 = System.nanoTime();\n    em.createQuery(\"select count(m) from Member m\", Long.class)\n      .getSingleResult();\n    long cnt = (System.nanoTime() - t2) / 1_000_000;\n\n    System.out.println(\"목록 20건: \" + rows + \" ms\");\n    System.out.println(\"전체 count: \" + cnt + \" ms\");\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\n목록 20건: 3 ms\n전체 count: 9 ms\n\n--   개수 쿼리가 더 걸렸다\n--   목록은 20건만 읽고 개수는 5천 건을 센다\n--   ⑫ 6.6절에서 한 이야기다\n\n\n-- 조인이 있으면 더 심하다\n\n@Test\n@Transactional\nvoid 조인_count() {\n    em.clear();\n    long n = counter.count(() -> {\n        em.createQuery(\"select m from Member m join m.team t\" +\n                       \" where t.name like 'A%' order by m.id\", Member.class)\n          .setFirstResult(0).setMaxResults(20).getResultList();\n        em.createQuery(\"select count(m) from Member m join m.team t\" +\n                       \" where t.name like 'A%'\", Long.class)\n          .getSingleResult();\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    select ... from member m1_0 join team t1_0 on ...\n    where t1_0.name like ? escape '\\'\n    order by m1_0.member_id offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name like ? escape '\\'\n쿼리 2개\n\n--   개수 쿼리에도 조인이 있다\n--   5.11절에서 이걸 떼는 법을 본다\n\n\n-- 여기까지 쓴 것\n\n$ grep -c 'setFirstResult\\|setMaxResults\\|count(m)' \\\n    MemberJpaRepository.java\n\n3\n\n$ awk '/int totalPages|boolean hasNext|boolean isLast|boolean isFirst/' \\\n    PagingTest.java | wc -l\n\n4\n\n--   메서드 둘, 계산 네 줄이다\n--   5.10절에서 이걸 다 지운다",
+   "note": "**목록과 개수 쿼리가 둘이고 조건이 양쪽에** 있다.\n\n**`offset ? rows fetch first ? rows only` 에 `0`·`5` 가** 바인딩된다.\n\n**마지막 페이지는 5를 요청해도 `2건` 만** 온다.\n\n**오프셋이 0→2000→4900 으로 갈수록 3→7→12ms 로** 느려진다.\n\n**목록 20건이 3ms 인데 전체 `count` 는 9ms** 다."
+  }
+ ],
+ "recap": [
+  "**쿼리가 둘, 계산이 넷**이다.",
+  "**조건이 양쪽에** 있다.",
+  "**계산 네 줄을 매번** 쓴다.",
+  "**정렬이 없으면 순서가 미정의**다.",
+  "**동점이면 흔들린다.**",
+  "**보조 키로 확정**한다.",
+  "**오프셋이 커지면** 느리다.",
+  "**개수 쿼리가 더 비쌀 수** 있다.",
+  "**조인이 있으면 더** 그렇다."
+ ],
+ "drills": [
+  {
+   "task": "페이징 메서드 둘을 쓴다.",
+   "done_when": "두 SQL 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "계산 네 줄을 직접 짠다.",
+   "done_when": "경계값을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "오프셋을 키워 시간을 잰다.",
+   "done_when": "느려지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "목록과 개수 시간을 비교한다.",
+   "done_when": "개수가 비싼 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "페이징에 필요한 쿼리는 몇 개인가?",
+   "a": "목록과 총 개수 두 개다."
+  },
+  {
+   "q": "정렬이 없으면 무엇이 문제인가?",
+   "a": "순서가 보장되지 않아 페이지 간 중복이나 누락이 날 수 있다."
+  },
+  {
+   "q": "동점 정렬의 해법은?",
+   "a": "유일한 보조 키를 정렬에 함께 준다."
+  },
+  {
+   "q": "오프셋이 커지면 왜 느린가?",
+   "a": "건너뛰는 행도 읽어야 하기 때문이다."
+  },
+  {
+   "q": "총 개수가 비싼 이유는?",
+   "a": "조건과 조인을 포함해 전체를 세야 하기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "오프셋 페이징",
+   "def": "건너뛸 개수와 가져올 개수로 페이지를 자르는 방식."
+  },
+  {
+   "term": "안정 정렬 키",
+   "def": "동점을 없애 순서를 확정하는 유일한 정렬 컬럼."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -275,7 +275,7 @@
           "title": "반환 타입",
           "summary": "없을 때 무엇이 오나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",
@@ -283,7 +283,7 @@
           "title": "순수 JPA 페이징",
           "summary": "먼저 손으로 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",
