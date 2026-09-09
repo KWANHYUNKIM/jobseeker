@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "bom",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "버전 목록",
+ "summary": "누가 숫자를 정해 주나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "BOM 이 뭔지 안다.",
+  "누가 정하는지 본다.",
+  "덮어쓰는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 버전을 손으로** 맞췄다. **그 표를 파일로 만든 것**이 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "목록은 의존성이 아니다",
+   "ascii": "   a bill of materials is a list, not a dependency\n\n   it says   if you use this library, use this version\n   it does   nothing until you actually ask for the library\n\n   so importing it adds zero jars to the classpath",
+   "note": "**들여와도 JAR 가 하나도 안** 늘어난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부트는 목록 하나로 이백 개를 정한다",
+   "md": "**`spring-boot-dependencies`** 다.\n\n> **2.3절에서 942 줄을** 봤다.\n> **거기 숫자가 다 적혀** 있다.\n> **아래에서 세어** 본다.\n\n**플러그인이 그걸 자동으로** 들여온다.\n\n> **`io.spring.dependency-management`** 다.\n> **부트 플러그인이 같이 걸어** 준다.\n> **그래서 버전을 안 적어도** 된다.\n\n**적으면 그게** 이긴다.\n\n> **목록보다 내 줄이** 위다.\n> **아래에서 순서를** 본다.\n> **올릴 때 그렇게** 한다.\n\n**속성으로 통째로 바꾼**다.\n\n> **`ext['jackson.version']`** 이다.\n> **한 줄로 여럿이** 바뀐다.\n> **아래에서 그걸** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "숫자가 어디서 오나",
+   "ascii": "   where a version number can come from\n\n   1 the version I typed on the line          highest\n   2 a property I overrode in the build file\n   3 the imported list\n   4 whatever a transitive dependency asked for   lowest\n\n   the first row that has an answer wins",
+   "note": "**답이 있는 첫 줄이** 이긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "목록에 없는 것은 여전히 내 몫이다",
+   "md": "**전부 적혀 있진** 않다.\n\n> **부트가 아는 것만**이다.\n> **없으면 버전을 적어야** 한다.\n> **아래에서 그걸** 만난다.\n\n**한 줄만 올리면** 어긋난다.\n\n> **5.1절에서 겪은 그것**이다.\n> **속성으로 바꾸는 게** 낫다.\n> **묶여 있는 것끼리 같이** 간다.\n\n**부트를 올리면 다 같이** 올라간다.\n\n> **숫자를 안 적었으니** 그렇다.\n> **좋기도 하고 놀랍기도** 하다.\n> **아래에서 `diff` 로** 본다.\n\n**목록을 봐야 알 수** 있다.\n\n> **어떤 버전인지 안 적혀** 있어서다.\n> **5.4절의 도구로** 본다.\n> **의존성 나무를 읽는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 목록을 찾는다\n\n$ find ~/.gradle/caches -name 'spring-boot-dependencies-3.3.2.pom' | head -1\n/Users/kwanhyun/.gradle/caches/modules-2/files-2.1/\n  org.springframework.boot/spring-boot-dependencies/3.3.2/\n  a1c9.../spring-boot-dependencies-3.3.2.pom\n\n$ POM=$(find ~/.gradle/caches -name 'spring-boot-dependencies-3.3.2.pom' | head -1)\n$ wc -l < \"$POM\"\n     942\n\n--   2.3절에서 본 그 파일이다\n\n\n-- 몇 개를 정하나\n\n$ grep -c '<artifactId>' \"$POM\"\n     481\n\n$ grep -c '</dependency>' \"$POM\"\n     297\n\n$ grep -oE '<[a-z-]+\\.version>' \"$POM\" | sort -u | wc -l\n     124\n\n--   297 개 라이브러리의 버전이 적혀 있다\n--   그 뒤에 속성이 124 개다\n\n\n-- 몇 개는 이렇게 생겼다\n\n$ grep -oE '<[a-z0-9.-]+\\.version>[0-9][^<]*' \"$POM\" | head -8\n<jackson-bom.version>2.17.2\n<logback.version>1.5.6\n<slf4j.version>2.0.13\n<tomcat.version>10.1.26\n<hibernate.version>6.5.2.Final\n<postgresql.version>42.7.3\n<junit-jupiter.version>5.10.3\n<micrometer.version>1.13.2\n\n--   5.1절에서 내가 손으로 맞춘 숫자들이다\n\n\n-- 그런데 이건 의존성이 아니다\n\n$ grep -n '<dependencyManagement>' \"$POM\" | head -1\n15:  <dependencyManagement>\n\n$ grep -c '^  <dependencies>' \"$POM\"\n0\n\n--   dependencyManagement 안에만 있다\n--   \"쓰면 이 버전\" 이라는 말일 뿐이다\n\n\n-- 들여와도 JAR 는 안 는다\n\n// build.gradle\nplugins {\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencyManagement {\n    imports {\n        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.3.2'\n    }\n}\ndependencies { }\n\n$ ./gradlew dependencies --configuration runtimeClasspath\n\nruntimeClasspath - Runtime classpath of source set 'main'.\nNo dependencies\n\n--   297 개를 들여왔는데 하나도 안 늘었다\n--   목록일 뿐이라서다\n\n\n-- 이제 하나만 적는다\n\ndependencies {\n    implementation 'com.fasterxml.jackson.core:jackson-databind'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | head -6\n\nruntimeClasspath - Runtime classpath of source set 'main'.\n\\--- com.fasterxml.jackson.core:jackson-databind -> 2.17.2\n     +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2\n     +--- com.fasterxml.jackson.core:jackson-core:2.17.2\n     \\--- com.fasterxml.jackson:jackson-bom:2.17.2 (c)\n\n--   화살표가 붙었다\n--   버전을 안 적었는데 2.17.2 가 됐다\n\n\n-- 누가 걸어 줬나\n\n// 부트 플러그인만 걸어도 같다\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\n// mavenBom 을 안 적었다\n\n$ ./gradlew dependencyManagement | head -8\n\n------------------------------------------------------------\nProject ':'\n------------------------------------------------------------\n\nruntimeClasspath - Dependency management for the runtimeClasspath\n    ch.qos.logback:logback-classic 1.5.6\n    com.fasterxml.jackson.core:jackson-databind 2.17.2\n\n$ ./gradlew dependencyManagement | grep -c '^    [a-z]'\n     892\n\n--   부트 플러그인이 목록을 자동으로 들여왔다\n--   892 줄이 관리되고 있다\n\n\n-- 순서를 확인한다\n\n// ① 내가 적으면 내가 이긴다\ndependencies {\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.2'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep databind\n\\--- com.fasterxml.jackson.core:jackson-databind:2.16.2\n\n--   화살표가 없다\n--   목록이 안 건드렸다\n\n\n// ② 속성을 바꾸면 목록이 바뀐다\next['jackson-bom.version'] = '2.16.2'\ndependencies {\n    implementation 'com.fasterxml.jackson.core:jackson-databind'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep databind\n\\--- com.fasterxml.jackson.core:jackson-databind -> 2.16.2\n\n--   화살표가 있고 값이 바뀌었다\n\n\n-- 속성 하나가 여럿을 바꾼다\n\n$ ./gradlew dependencyManagement | grep -c 'jackson'\n      58\n\n$ ./gradlew dependencyManagement | grep 'jackson' | head -4\n    com.fasterxml.jackson.core:jackson-annotations 2.16.2\n    com.fasterxml.jackson.core:jackson-core 2.16.2\n    com.fasterxml.jackson.core:jackson-databind 2.16.2\n    com.fasterxml.jackson.datatype:jackson-datatype-jsr310 2.16.2\n\n--   한 줄로 58 개가 같이 내려갔다\n--   5.1절에서 손으로 하던 그것이다\n\n\n-- 한 줄만 올리면 어긋난다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -E 'jackson-(core|databind|annotations)' | head -3\n|    +--- com.fasterxml.jackson.core:jackson-databind:2.13.0\n|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2\n|    |    \\--- com.fasterxml.jackson.core:jackson-core:2.17.2\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/json\n500\n\n--   databind 만 내려가고 나머지는 그대로다\n--   5.1절에서 본 그 오류가 다시 난다\n--   속성으로 바꿔야 같이 내려간다\n\n\n-- 목록에 없는 것도 있다\n\ndependencies {\n    implementation 'org.apache.commons:commons-csv'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath 2>&1 | grep commons-csv\n\\--- org.apache.commons:commons-csv FAILED\n\n$ ./gradlew compileJava 2>&1 | grep -A1 'FAILURE' | head -3\n> Could not resolve all files for configuration ':compileClasspath'.\n   > Could not find org.apache.commons:commons-csv:.\n\n$ ./gradlew dependencyManagement | grep -c 'commons-csv'\n0\n\n--   목록에 없으니 버전을 적어야 한다\n--   부트가 모르는 건 여전히 내 몫이다\n\n\n-- 부트를 올리면 다 같이 올라간다\n\n$ ./gradlew dependencyManagement > /tmp/dm-3.3.2.txt\n\n// 부트만 3.2.8 로 내린다\nid 'org.springframework.boot' version '3.2.8'\n\n$ ./gradlew dependencyManagement > /tmp/dm-3.2.8.txt\n\n$ diff /tmp/dm-3.2.8.txt /tmp/dm-3.3.2.txt | grep -c '^[<>]'\n     418\n\n$ diff /tmp/dm-3.2.8.txt /tmp/dm-3.3.2.txt | grep '^[<>].*tomcat-embed-core'\n<     org.apache.tomcat.embed:tomcat-embed-core 10.1.26\n>     org.apache.tomcat.embed:tomcat-embed-core 10.1.26\n\n$ diff /tmp/dm-3.2.8.txt /tmp/dm-3.3.2.txt | grep '^[<>].*:hibernate-core'\n<     org.hibernate.orm:hibernate-core 6.4.9.Final\n>     org.hibernate.orm:hibernate-core 6.5.2.Final\n\n--   숫자 한 곳을 고쳤는데 418 줄이 움직였다\n--   좋기도 하고 놀랍기도 하다\n\n\n-- 실제로 뜨는지 본다\n\next['jackson-bom.version'] = '2.16.2'\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started Boot'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 1.033 seconds\n\n$ curl -s localhost:8080/json\n{\"name\":\"연필\",\"price\":500}\n\n$ curl -s localhost:8080/versions\njackson-databind 2.16.2\nspring-core      6.1.11\ntomcat           10.1.26\n\n--   잭슨만 내려가고 나머지는 그대로다\n--   목록이 맞춰 준 조합이라 돈다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '목록'          '297 개 라이브러리' \\\n  '속성'          '124 개' \\\n  '들여오기'      'JAR 는 0 개' \\\n  '내가 적으면'   '내가 이김' \\\n  '속성 바꾸면'   '묶인 것 같이' \\\n  '목록에 없으면' '내가 적어야 함' \\\n  '부트 올리면'   '418 줄이 움직임'\n\n목록                       297 개 라이브러리\n속성                       124 개\n들여오기                   JAR 는 0 개\n내가 적으면                내가 이김\n속성 바꾸면                묶인 것 같이\n목록에 없으면              내가 적어야 함\n부트 올리면                418 줄이 움직임\n\n--   5.3절에서 그 위의 한 겹을 본다",
+   "note": "**목록 POM 942 줄에 라이브러리 297 개와 속성 124 개가** 있다.\n\n**들여와도 `No dependencies` 로 JAR 가 하나도 안** 는다.\n\n**부트 플러그인만 걸어도 `dependencyManagement` 가 892 줄을 관리**한다.\n\n**속성 하나를 내리면 잭슨 58 개가 같이 내려가고 줄에 직접 적으면 그것만** 내려간다.\n\n**부트를 3.2.8 로 내리니 관리 목록 418 줄이** 움직였다."
+  }
+ ],
+ "recap": [
+  "**목록은 의존성이** 아니다.",
+  "**들여와도 안** 는다.",
+  "**297 개를** 정한다.",
+  "**부트 플러그인이 걸어** 준다.",
+  "**내가 적으면 내가** 이긴다.",
+  "**속성이 묶어서** 바꾼다.",
+  "**한 줄만 바꾸면** 어긋난다.",
+  "**없는 건 내** 몫이다.",
+  "**부트를 올리면 다** 움직인다."
+ ],
+ "drills": [
+  {
+   "task": "목록 POM 을 연다.",
+   "done_when": "몇 개를 정하는지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "목록만 들여온다.",
+   "done_when": "JAR 가 안 느는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "속성으로 잭슨을 내린다.",
+   "done_when": "묶인 것들이 같이 내려간 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "부트 버전을 내려 비교한다.",
+   "done_when": "움직인 줄 수를 셌다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "BOM 을 들여오면 JAR 가 늘어나나?",
+   "a": "안 늘어난다. 버전을 적어 둔 목록일 뿐이다."
+  },
+  {
+   "q": "버전을 직접 적으면?",
+   "a": "목록보다 내 줄이 위라서 내가 적은 값이 쓰인다."
+  },
+  {
+   "q": "묶인 라이브러리들을 같이 바꾸려면?",
+   "a": "줄이 아니라 속성을 바꾼다."
+  },
+  {
+   "q": "목록에 없는 라이브러리는?",
+   "a": "버전을 직접 적어야 한다. 없으면 해석에 실패한다."
+  },
+  {
+   "q": "부트 버전을 올리면 무슨 일이 생기나?",
+   "a": "관리 목록 전체가 같이 움직인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BOM",
+   "def": "라이브러리와 권장 버전을 적어 둔 목록. 자체로는 아무것도 안 끌어온다."
+  },
+  {
+   "term": "의존성 관리 플러그인",
+   "def": "목록을 읽어 버전 없는 선언에 버전을 채워 주는 플러그인."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "io.spring.dependency-management plugin",
+   "url": "https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot Gradle Plugin",
+   "url": "https://docs.spring.io/spring-boot/gradle-plugin/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

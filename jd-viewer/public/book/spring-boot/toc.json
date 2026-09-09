@@ -291,7 +291,7 @@
           "title": "버전 관리 플러그인",
           "summary": "버전을 안 적는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -299,7 +299,7 @@
           "title": "스타터가 묶는 것",
           "summary": "한 줄이 몇 개가 되나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
