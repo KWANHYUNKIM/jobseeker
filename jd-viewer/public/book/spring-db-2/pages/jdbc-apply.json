@@ -1,0 +1,129 @@
+{
+ "book": "spring-db-2",
+ "id": "jdbc-apply",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "적용 — 기본",
+ "summary": "네 메서드를 만든다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`save`·`update`·`findById` 를 만든다.",
+  "생성 키를 `KeyHolder` 로 받는다.",
+  "`queryForObject` 의 예외를 처리한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`findAll` 을 뺀 셋**을 먼저 만든다. **동적 쿼리는 3.3절에서** 따로 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "저장 — 생성 키 받기",
+   "code": "@Override\npublic Item save(Item item) {\n    String sql = \"insert into item (item_name, price, quantity) values (?, ?, ?)\";\n\n    KeyHolder keyHolder = new GeneratedKeyHolder();\n    template.update(connection -> {\n        PreparedStatement ps = connection.prepareStatement(sql, new String[]{\"id\"});\n        ps.setString(1, item.getItemName());\n        ps.setInt(2, item.getPrice());\n        ps.setInt(3, item.getQuantity());\n        return ps;\n    }, keyHolder);\n\n    long key = keyHolder.getKey().longValue();\n    item.setId(key);\n    return item;\n}",
+   "note": "**2.6절에서 예고한 문제**의 답이다. **길다.**\n\n**`new String[]{\"id\"}`** 로 **어느 컬럼의 키를 받을지** 알려 준다. 이걸 안 주면 `keyHolder` 가 비거나 DB 마다 다른 값이 온다.\n\n**람다가 `PreparedStatementCreator`** 다. **커넥션은 여전히 JdbcTemplate 이 준다** — 우리가 여는 것이 아니다.\n\n> **3.7절의 `SimpleJdbcInsert` 가 이 열 줄을 세 줄로** 만든다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "수정과 단건 조회",
+   "code": "@Override\npublic void update(Long itemId, ItemUpdateDto updateParam) {\n    String sql = \"update item set item_name=?, price=?, quantity=? where id=?\";\n\n    template.update(sql,\n            updateParam.getItemName(),\n            updateParam.getPrice(),\n            updateParam.getQuantity(),\n            itemId);\n}\n\n@Override\npublic Optional<Item> findById(Long id) {\n    String sql = \"select id, item_name, price, quantity from item where id = ?\";\n    try {\n        Item item = template.queryForObject(sql, itemRowMapper(), id);\n        return Optional.of(item);\n    } catch (EmptyResultDataAccessException e) {\n        return Optional.empty();\n    }\n}",
+   "note": "**`update` 는 짧다.** 물음표 순서대로 인자를 넘긴다 — **네 개**다. **하나 빠뜨려도 컴파일이 된다.** 3.5절이 그 이야기다.\n\n**`queryForObject` 는 없으면 예외**를 던진다. **`Optional` 로 바꾸려면 `catch` 가 필요**하다.\n\n> **1편 6.5절에서 정한 것**이다 — 리포지토리는 **`null` 도 `SQLException` 도 안 내보낸다.** `EmptyResultDataAccessException` 은 **스프링 예외**라 여기서 잡아도 JDBC 에 안 물린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "RowMapper",
+   "code": "private RowMapper<Item> itemRowMapper() {\n    return (rs, rowNum) -> {\n        Item item = new Item();\n        item.setId(rs.getLong(\"id\"));\n        item.setItemName(rs.getString(\"item_name\"));\n        item.setPrice(rs.getInt(\"price\"));\n        item.setQuantity(rs.getInt(\"quantity\"));\n        return item;\n    };\n}",
+   "note": "**`while (rs.next())` 가 없다.** JdbcTemplate 이 **한 행마다 이 람다를 부른다.**\n\n> **1편 2.6절의 그 반복문**이 사라졌다.\n\n**컬럼 이름이 문자열**이다. **`item_nmae` 이라고 쳐도 컴파일된다** — 실행할 때 터진다.\n\n**`BeanPropertyRowMapper.newInstance(Item.class)`** 를 쓰면 이 메서드가 통째로 사라지지만, **컬럼명 `item_name` 과 필드명 `itemName` 의 변환 규칙**에 기대게 된다(3.8절)."
+  },
+  {
+   "type": "figure",
+   "caption": "네 메서드와 그 예외",
+   "ascii": "   save       template.update(sql, PreparedStatementCreator, KeyHolder)\n   update     template.update(sql, args...)\n   findById   template.queryForObject(sql, rowMapper, id)\n   findAll    template.query(sql, rowMapper, args...)\n\n   queryForObject   0 rows -> EmptyResultDataAccessException\n                    2 rows -> IncorrectResultSizeDataAccessException\n   query            0 rows -> empty list",
+   "note": "**`query` 는 없어도 예외가 아니다** — 빈 리스트다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "메모리 구현과 달라진 것",
+   "md": "**2.2절의 `update` 를 다시 본다.**\n\n```java\n// 메모리\nItem findItem = findById(itemId).orElseThrow();\nfindItem.setItemName(updateParam.getItemName());\n// 끝. 저장 안 한다.\n```\n\n```java\n// JdbcTemplate\ntemplate.update(\"update item set item_name=?, ... where id=?\", ...);\n// 저장해야 한다.\n```\n\n**메모리는 객체를 고치면 끝**이었다. **여기는 `update` SQL 을 보내야** 한다.\n\n| | 고친 뒤에 |\n|---|---|\n| 메모리 | **아무것도 안 한다** |\n| JdbcTemplate | **`update` SQL** |\n| MyBatis | **`update` SQL** |\n| **JPA** | **아무것도 안 한다** ← 6.7절 |\n\n> **JPA 가 메모리 쪽으로 돌아간다.** 그런데 **SQL 은 나간다.** 그 두 줄이 같이 성립하는 것이 변경 감지다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# save\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   Executing prepared SQL statement\n#     [insert into item (item_name, price, quantity) values (?, ?, ?)]\n#   {1: 'itemA', 2: 10000, 3: 10}\n#   generated key = 1\n\n# update\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n\n#   Executing prepared SQL update\n#     [update item set item_name=?, price=?, quantity=? where id=?]\n#   {1: 'itemA-updated', 2: 20000, 3: 30, 4: 1}\n#   -> 1\n\n# findById - 있을 때\nrepository.findById(1L);\n\n#   Executing prepared SQL query\n#     [select id, item_name, price, quantity from item where id = ?]\n#   {1: 1}\n#   -> Optional[Item(id=1, itemName=itemA-updated, price=20000, quantity=30)]\n\n# findById - 없을 때\nrepository.findById(999L);\n\n#   [select id, item_name, price, quantity from item where id = ?]\n#   {1: 999}\n#   EmptyResultDataAccessException  (잡아서 Optional.empty)\n#   -> Optional.empty",
+   "note": "**`update` 의 `-> 1`** 은 **바뀐 행 수**다. `999` 로 수정하면 `-> 0` 이 나오는데 **예외가 아니다.** **없는 것을 고쳐도 조용하다** — 필요하면 반환값을 봐야 한다.\n\n**마지막 블록**에서 **SQL 은 정상적으로 나갔고** 결과가 없었을 뿐이다. **예외는 스프링이 만든 것**이다.\n\n**여기까지가 지루한 부분**이다. **다음 절이 이 장의 본론**이다."
+  }
+ ],
+ "recap": [
+  "**`save` 가 열 줄**이다 — `KeyHolder` 때문이다.",
+  "**`new String[]{\"id\"}`** 로 받을 키 컬럼을 지정한다.",
+  "**`update` 는 물음표 순서대로** 인자를 넘긴다.",
+  "**`queryForObject` 는 없으면 예외**, `query` 는 빈 리스트.",
+  "**`EmptyResultDataAccessException` 을 잡아 `Optional.empty`** 로 바꾼다.",
+  "**`RowMapper` 에 `while` 이 없다** — 행마다 불린다.",
+  "**컬럼 이름이 문자열**이라 오타를 컴파일러가 못 잡는다.",
+  "**메모리와 달리 수정에 SQL 이 필요**하다.",
+  "**JPA 만 메모리 쪽으로 돌아간다** — 6.7절."
+ ],
+ "drills": [
+  {
+   "task": "`save` 를 `KeyHolder` 로 만든다.",
+   "done_when": "`generated key` 로그를 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`new String[]{\"id\"}` 를 빼 본다.",
+   "done_when": "무슨 일이 나는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 id 로 `update` 를 부른다.",
+   "done_when": "예외 없이 `-> 0` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`RowMapper` 의 컬럼명에 오타를 낸다.",
+   "done_when": "컴파일은 되고 실행에서 터지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`save` 가 왜 긴가?",
+   "a": "DB 가 만든 id 를 받으려고 `PreparedStatementCreator` 와 `KeyHolder` 를 쓰기 때문이다."
+  },
+  {
+   "q": "`queryForObject` 와 `query` 의 차이는?",
+   "a": "앞은 결과가 없으면 예외, 뒤는 빈 리스트다."
+  },
+  {
+   "q": "`EmptyResultDataAccessException` 을 왜 잡나?",
+   "a": "`Optional.empty` 로 바꾸기 위해서다. 리포지토리는 `null` 을 안 내보낸다."
+  },
+  {
+   "q": "`RowMapper` 에 `while` 이 없는 이유는?",
+   "a": "JdbcTemplate 이 행마다 람다를 호출하기 때문이다."
+  },
+  {
+   "q": "메모리 구현과 `update` 가 어떻게 다른가?",
+   "a": "메모리는 객체만 고치면 끝이고, 여기는 `update` SQL 을 보내야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -154,7 +154,7 @@
           "title": "소개와 설정",
           "summary": "1편에서 본 것과 무엇이 다른가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -162,7 +162,7 @@
           "title": "적용 — 기본",
           "summary": "네 메서드를 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -170,7 +170,7 @@
           "title": "동적 쿼리 문제",
           "summary": "조건이 넷이면 SQL 이 열여섯 가지다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

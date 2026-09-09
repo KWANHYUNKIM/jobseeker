@@ -1,0 +1,139 @@
+{
+ "book": "spring-db-2",
+ "id": "jdbc-intro",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "소개와 설정",
+ "summary": "1편에서 본 것과 무엇이 다른가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JdbcTemplate 이 무엇을 대신해 주는지 안다.",
+  "설정이 왜 한 줄인지 안다.",
+  "1편과 무엇이 달라졌는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「스프링 DB 1편」 7.6절에서 이미 만났다.** 여기서는 **실전 예제에 붙인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "누가 무엇을 하나",
+   "ascii": "   what jdbctemplate does for you\n   -----------------------------\n   get connection      from datasource (tx-aware)\n   prepare statement\n   bind parameters\n   execute\n   loop resultset      ->  RowMapper (yours)\n   close rs / stmt / con     even on exception\n   translate SQLException -> DataAccessException\n\n   what is left to you\n   -------------------\n   the sql string\n   the RowMapper",
+   "note": "**아래 두 줄만 내 몫**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1편에서 무엇을 봤나",
+   "md": "**1편은 이 순서로 갔다.**\n\n| 1편 | 무엇을 없앴나 |\n|---|---|\n| 2장 `DriverManager` | — |\n| **4장 `DataSource`** | 연결을 만드는 코드 |\n| **5장 `@Transactional`** | 트랜잭션 코드 |\n| **6장 `DataAccessException`** | `catch (SQLException)` |\n| **7.6절 `JdbcTemplate`** | **반복문과 `close`** |\n\n**JdbcTemplate 은 마지막 한 겹**이다. **앞의 셋이 없으면 못 쓴다** — `DataSource` 를 받아서 만들고, 트랜잭션 동기화 매니저에서 커넥션을 꺼내고, 예외를 변환한다.\n\n> **그래서 순서가 저랬다.** JdbcTemplate 은 **혼자 있는 도구가 아니라 스프링 JDBC 위에 얹힌 얇은 층**이다.\n\n**1편 7.6절과 이 장의 차이**는 하나다.\n\n| 1편 7.6절 | 이 장 |\n|---|---|\n| 계좌이체 — **한 건 조회** | 상품 — **조건부 목록** |\n| SQL 이 고정 | **SQL 이 조건마다 다르다** |\n\n**3.3절이 그 차이다.**"
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "의존관계",
+   "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-jdbc'\n    runtimeOnly 'com.h2database:h2'\n}",
+   "note": "**이 한 줄이 다 한다.**\n\n| 딸려 오는 것 | 무엇 |\n|---|---|\n| `spring-jdbc` | `JdbcTemplate` 본체 |\n| **HikariCP** | 커넥션 풀 (1편 4.3절) |\n| `DataSourceAutoConfiguration` | `DataSource` 자동 등록 |\n| `DataSourceTransactionManagerAutoConfiguration` | 트랜잭션 매니저 자동 등록 |\n\n**`spring-boot-starter-data-jpa` 를 쓰면 이것도 딸려 온다.** 6장에서 JPA 를 넣어도 **JdbcTemplate 이 계속 살아 있는** 이유다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "만드는 법",
+   "code": "public class JdbcTemplateItemRepositoryV1 implements ItemRepository {\n\n    private final JdbcTemplate template;\n\n    public JdbcTemplateItemRepositoryV1(DataSource dataSource) {\n        this.template = new JdbcTemplate(dataSource);\n    }\n}",
+   "note": "**`DataSource` 를 받아 직접 `new`** 한다. **부트가 `JdbcTemplate` 빈도 자동 등록**해 주지만, 이 책은 **설정 클래스에서 명시적으로** 만든다(3.4절).\n\n> **1편 4.4절에서 `DataSource` 를 주입받던 그 모양**이다. `DataSource` 만 있으면 **커넥션 풀이든 `DriverManager` 든 코드가 안 바뀐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정은 2.6절에서 이미 끝났다",
+   "md": "```properties\nspring.datasource.url=jdbc:h2:tcp://localhost/~/itemservice\nspring.datasource.username=sa\nspring.datasource.password=\n\nlogging.level.org.springframework.jdbc=debug\n```\n\n**JdbcTemplate 을 쓰려고 추가할 설정이 없다.** `DataSource` 만 있으면 된다.\n\n**로그를 한 겹 더** 볼 수도 있다.\n\n```properties\n# 파라미터 값까지 보고 싶으면\nlogging.level.org.springframework.jdbc.core.JdbcTemplate=debug\n```\n\n> **실무에서는 `p6spy` 같은 것**을 붙여 **물음표에 값이 들어간 완성된 SQL** 을 본다. 이 책은 **부트 기본 로그**로 간다 — 도구를 늘리면 **기술 간 비교가 흐려진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 장을 읽는 법",
+   "md": "**JdbcTemplate 은 이 책에서 가장 낮은 층**이다. **내가 쓴 SQL 이 그대로 나간다.**\n\n**그래서 3장의 SQL 로그는 지루하다.** 재미없는 것이 정상이다.\n\n> **6장부터 이 로그가 재미있어진다** — **내가 안 쓴 SQL** 이 나오기 때문이다.\n\n**3장에서 눈여겨볼 것은 SQL 이 아니라 자바 코드의 부피**다.\n\n| 볼 것 | 어디 |\n|---|---|\n| `RowMapper` 를 매번 쓰는 것 | 3.2절 |\n| **문자열을 붙이는 것** | **3.3절** |\n| 물음표 순서를 세는 것 | 3.5절 |\n| `insert` 문을 손으로 쓰는 것 | 3.7절 |\n\n**이 넷이 나머지 다섯 장의 존재 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# 부트가 뜰 때\n\n#   HikariConfig - jdbcUrl.................jdbc:h2:tcp://localhost/~/itemservice\n#   HikariConfig - maximumPoolSize.........10\n#   HikariPool-1 - Added connection conn0: url=jdbc:h2:...\n#   HikariPool-1 - Start completed.\n\n#   Executing SQL script from class path resource [schema.sql]\n\n# 가장 단순한 호출\n\ntemplate.queryForObject(\"select count(*) from item\", Integer.class);\n\n#   Executing prepared SQL query\n#   Executing prepared SQL statement [select count(*) from item]\n#   Fetching JDBC Connection from DataSource\n#   Returning JDBC Connection to DataSource\n\n#   -> 0\n\n# 커넥션을 빌리고 돌려준 것까지 로그에 있다\n# 1편 4장에서 손으로 하던 것이다",
+   "note": "**`Fetching` 과 `Returning` 이 짝**을 이룬다. **1편 4.4절에서 `try-with-resources` 로 하던 것**을 JdbcTemplate 이 한다.\n\n**예외가 나도 `Returning` 이 찍힌다** — 그것이 이 도구의 값어치다. **1편 2.7절에서 `close` 를 빠뜨려 커넥션이 새던 그 실수**를 할 수가 없다.\n\n**이제 네 메서드를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**JdbcTemplate 은 스프링 JDBC 위의 얇은 한 겹**이다.",
+  "**`DataSource` · 트랜잭션 · 예외 변환** 위에 얹힌다.",
+  "**남는 것은 SQL 문자열과 `RowMapper`** 뿐이다.",
+  "**`spring-boot-starter-jdbc` 한 줄**이면 풀까지 뜬다.",
+  "**추가 설정이 없다** — 2.6절이 이미 끝냈다.",
+  "**1편은 계좌이체(고정 SQL), 이 장은 상품(조건부 SQL)**.",
+  "**3장의 SQL 로그는 지루한 것이 정상**이다 — 내가 쓴 것이 그대로 나간다.",
+  "**볼 것은 자바 코드의 부피**다.",
+  "**`Fetching`/`Returning`** 이 짝을 이룬다 — 커넥션 누수가 불가능하다."
+ ],
+ "drills": [
+  {
+   "task": "`spring-boot-starter-jdbc` 를 넣고 부트를 띄운다.",
+   "done_when": "Hikari 시작 로그를 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`queryForObject` 로 `count(*)` 를 찍어 본다.",
+   "done_when": "Fetching/Returning 로그를 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "SQL 을 일부러 틀리게 써서 예외를 낸다.",
+   "done_when": "예외가 나도 `Returning` 이 찍히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편 7.6절의 코드와 이 장의 시작 코드를 비교한다.",
+   "done_when": "달라진 것이 예제뿐인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JdbcTemplate 이 대신해 주는 것은?",
+   "a": "커넥션 획득·반환, 스테이트먼트, 파라미터 바인딩, 결과 루프, 예외 변환이다."
+  },
+  {
+   "q": "내게 남는 것은?",
+   "a": "SQL 문자열과 `RowMapper` 다."
+  },
+  {
+   "q": "JdbcTemplate 을 쓰려고 추가할 설정은?",
+   "a": "없다. `DataSource` 만 있으면 된다."
+  },
+  {
+   "q": "1편 7.6절과 이 장의 차이는?",
+   "a": "예제가 계좌이체에서 상품으로 바뀌었다. SQL 이 조건마다 달라진다."
+  },
+  {
+   "q": "3장에서 눈여겨볼 것은?",
+   "a": "SQL 이 아니라 자바 코드의 부피다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — SQL Databases",
+   "url": "https://docs.spring.io/spring-boot/reference/data/sql.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
