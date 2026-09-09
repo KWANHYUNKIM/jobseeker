@@ -1,0 +1,144 @@
+{
+ "book": "kubernetes",
+ "id": "spring-on-k8s",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "스프링 부트 앱 올리기",
+ "summary": "서가가 만든 애플리케이션을 실제로 띄운다.",
+ "minutes": 15,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스프링 설정을 이쪽으로 옮긴다.",
+  "프로브 둘을 다르게 준다.",
+  "무중단으로 배포한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**⑦·⑧ 에서 만든 주문 앱을 여기에** 올린다. **책 열두 권이 한 파일에서** 만난다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 무엇이 되나",
+   "ascii": "   what each spring feature becomes on this side\n\n   application.yaml        a ConfigMap, mounted as a file\n   datasource password     a Secret, mounted, never an env var\n   spring.profiles.active  an environment variable\n   actuator health         a readiness probe\n   actuator liveness       a liveness probe, and it is not the same one\n   graceful shutdown       terminationGracePeriodSeconds\n   the jar itself          an image tagged with a commit sha",
+   "note": "**왼쪽은 서가에서 배운 것, 오른쪽은 이 책**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "프로브 둘은 다른 질문이다",
+   "md": "**액추에이터가 둘을 따로** 준다.\n\n```yaml\nmanagement:\n  endpoint:\n    health:\n      probes:\n        enabled: true\n  health:\n    livenessState:\n      enabled: true\n    readinessState:\n      enabled: true\n```\n\n| 경로 | 무엇을 본다 |\n|---|---|\n| `/actuator/health/liveness` | 애플리케이션이 살아 있나 |\n| `/actuator/health/readiness` | 요청을 받을 준비가 됐나 |\n\n> **`/actuator/health` 를 둘 다에 쓰면** 안 된다.\n> **그건 DB 까지 포함한 종합 판정**이다.\n> **DB 가 잠깐 흔들릴 때 앱이 통째로** 재시작된다 — **4.5절에서 경고한** 바로 그것이다.\n\n**기동이 느리니 `startupProbe`** 다.\n\n> **JVM 은 수십 초** 걸린다.\n> **`initialDelaySeconds` 로 때우면 진짜 장애 감지도 그만큼** 늦다.\n> **`startupProbe` 가 끝나야 나머지 둘이** 시작된다.\n\n**메모리는 10.4절 그대로**다.\n\n> **`-XX:MaxRAMPercentage=75`** 로 컨테이너 상한에 맞춘다.\n> **힙 밖을 25% 남긴** 것이다.\n> **`-Xmx` 를 손으로 적으면 상한을 바꿀 때 같이 고쳐야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무중단이 깨지는 자리",
+   "ascii": "   the sequence that decides whether a deploy drops requests\n\n   1  sigterm arrives, and the pod leaves the endpoint list\n   2  those two happen in parallel, not in order\n   3  so a request can arrive after sigterm, briefly\n   4  a preStop sleep covers that window\n   5  spring finishes in flight requests, then the jvm exits\n   6  if it takes too long, sigkill at the grace period\n\n   step 3 is the one nobody believes until they see the 502s",
+   "note": "**3번을 다들 502 를 보고서야** 믿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "SIGTERM 과 엔드포인트 제거는 동시에 일어난다",
+   "md": "**순서가 없다.**\n\n> **4.7절에서 종료 절차를** 봤다.\n> **`kubelet` 이 `SIGTERM` 을 보내는 것과 엔드포인트에서 빼는 게 병렬**이다.\n> **kube-proxy 규칙이 갱신되기 전에 앱이 이미 닫을 수** 있다.\n\n**`preStop` 으로 창을 덮는다.**\n\n```yaml\nlifecycle:\n  preStop:\n    exec:\n      command: [\"sh\", \"-c\", \"sleep 5\"]\n```\n\n> **`SIGTERM` 을 5초 늦게** 보낸다.\n> **그 사이 엔드포인트에서** 빠진다.\n> **스프링의 우아한 종료는 그 뒤에** 시작된다.\n\n**스프링 쪽도 켜야** 한다.\n\n```yaml\nserver:\n  shutdown: graceful\nspring:\n  lifecycle:\n    timeout-per-shutdown-phase: 20s\n```\n\n> **기본이 `immediate`** 다.\n> **켜야 진행 중 요청을 끝내고** 닫는다.\n> **`terminationGracePeriodSeconds` 가 이것보다 커야** 한다.\n\n**액추에이터를 열어 두지 않는다.**\n\n> **⑩ 에서 막았다.**\n> **`/actuator/env` 에 7.3절의 환경변수가 다** 나온다.\n> **`management.server.port` 를 따로 두고 서비스에서** 뺀다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 이미지 ---\n\n$ cat Dockerfile\n\nFROM eclipse-temurin:21-jre-alpine\nWORKDIR /app\nCOPY build/libs/shop.jar app.jar\nRUN addgroup -S app && adduser -S app -G app\nUSER app\nENV JAVA_OPTS=\"-XX:MaxRAMPercentage=75 -XX:+UseContainerSupport\"\nENTRYPOINT [\"sh\", \"-c\", \"exec java $JAVA_OPTS -jar app.jar\"]\n\n$ SHA=$(git rev-parse --short HEAD) && docker build -q -t shop:$SHA . \\\n    > /dev/null && kind load docker-image shop:$SHA > /dev/null && echo $SHA\n\nc4e91f7\n\n#   exec 을 붙여야 PID 1 이 된다\n\n#   안 그러면 SIGTERM 이 자바에 안 간다\n\n#   「도커」 에서 본 그것이다\n\n# --- 설정을 밖으로 ---\n\n$ kubectl create namespace shop > /dev/null\n$ kubectl create configmap shop-config -n shop \\\n    --from-file=application.yaml > /dev/null\n$ kubectl create secret generic shop-db -n shop \\\n    --from-literal=password='p@ssw0rd!' > /dev/null\n\n$ kubectl get configmap shop-config -n shop -o jsonpath='{.data}' \\\n    | head -c 70\n\n{\"application.yaml\":\"server:\\n  shutdown: graceful\\nmanagement:\\n  serve\n\n#   7.1절이다\n\n# --- 매니페스트 ---\n\n$ cat deployment.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: shop\n  namespace: shop\nspec:\n  replicas: 3\n  strategy:\n    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }\n  selector:\n    matchLabels: { app: shop }\n  template:\n    metadata:\n      labels: { app: shop }\n    spec:\n      terminationGracePeriodSeconds: 40\n      containers:\n        - name: app\n          image: shop:c4e91f7\n          ports:\n            - { name: http, containerPort: 8080 }\n            - { name: mgmt, containerPort: 8081 }\n          env:\n            - { name: SPRING_PROFILES_ACTIVE, value: prod }\n            - name: SPRING_DATASOURCE_PASSWORD\n              valueFrom:\n                secretKeyRef: { name: shop-db, key: password }\n          volumeMounts:\n            - { name: cfg, mountPath: /app/config }\n          resources:\n            requests: { cpu: 500m, memory: 768Mi }\n            limits: { memory: 768Mi }\n          startupProbe:\n            httpGet: { path: /actuator/health/liveness, port: mgmt }\n            periodSeconds: 5\n            failureThreshold: 30\n          livenessProbe:\n            httpGet: { path: /actuator/health/liveness, port: mgmt }\n            periodSeconds: 10\n          readinessProbe:\n            httpGet: { path: /actuator/health/readiness, port: mgmt }\n            periodSeconds: 5\n          lifecycle:\n            preStop:\n              exec: { command: [\"sh\", \"-c\", \"sleep 5\"] }\n      volumes:\n        - name: cfg\n          configMap: { name: shop-config }\n\n$ kubectl apply -f deployment.yaml -f service.yaml > /dev/null\n$ kubectl rollout status deployment/shop -n shop --timeout=180s\n\ndeployment \"shop\" successfully rolled out\n\n$ kubectl get pods -n shop --no-headers | awk '{print $2, $3, $5}'\n\n1/1 Running 47s\n1/1 Running 47s\n1/1 Running 47s\n\n# --- 프로브가 진짜 다른가 ---\n\n$ POD=$(kubectl get pod -n shop -o name | head -1)\n$ kubectl exec -n shop $POD -- \\\n    wget -qO- http://localhost:8081/actuator/health/liveness\n\n{\"status\":\"UP\"}\n\n$ kubectl exec -n shop $POD -- \\\n    wget -qO- http://localhost:8081/actuator/health | python3 -m json.tool\n\n{\n    \"status\": \"UP\",\n    \"components\": {\n        \"db\": { \"status\": \"UP\" },\n        \"diskSpace\": { \"status\": \"UP\" },\n        \"livenessState\": { \"status\": \"UP\" },\n        \"ping\": { \"status\": \"UP\" },\n        \"readinessState\": { \"status\": \"UP\" }\n    }\n}\n\n#   종합 판정에는 db 가 들어 있다\n\n#   이걸 livenessProbe 에 쓰면 안 된다\n\n#   DB 가 흔들릴 때 앱이 재시작된다\n\n#   4.5절에서 경고한 그것이다\n\n$ kubectl exec -n shop $POD -- sh -c \\\n    'wget -qO- http://localhost:8081/actuator/env 2>&1 | head -c 40'\n\nwget: server returned error: HTTP/1.1 404 Not Found\n\n#   노출을 안 했다\n\n#   7.3절의 환경변수가 안 새어 나간다\n\n$ kubectl get service shop -n shop -o jsonpath=\\\n'{range .spec.ports[*]}{.name}:{.port}{\"\\n\"}{end}'\n\nhttp:80\n\n#   8081 은 서비스에 없다\n\n#   ⑩ 에서 액추에이터를 막은 것과 같은 생각이다\n\n# --- 기동 시간 ---\n\n$ kubectl logs -n shop $POD | grep -E 'Started|JVM running'\n\nStarted ShopApplication in 8.412 seconds (process running for 9.106)\n\n$ kubectl get pod -n shop ${POD#pod/} -o jsonpath=\\\n'{range .status.containerStatuses[0].state.running}{.startedAt}{end}{\"\\n\"}'\n\n2026-09-09T23:08:12Z\n\n#   startupProbe 가 5초 * 30 = 150초까지 봐 준다\n\n#   8.4초에 끝났으니 여유가 있다\n\n#   initialDelaySeconds 로 때웠다면\n\n#   진짜 장애 감지도 그만큼 늦었다\n\n# --- 메모리 ---\n\n$ kubectl exec -n shop $POD -- sh -c \\\n    'java -XX:+PrintFlagsFinal -version 2>/dev/null \\\n     | grep -E \"MaxHeapSize|MaxRAMPercentage\"'\n\n   size_t MaxHeapSize    = 603979776    {product} {ergonomic}\n   double MaxRAMPercentage = 75.000000  {product} {command line}\n\n$ kubectl top pod -n shop --no-headers | head -1\n\nshop-6d8f4b9c7-2xk4m   12m   241Mi\n\n#   768Mi 의 75% 가 576Mi 다\n\n#   힙 밖에 192Mi 를 남겼다\n\n#   10.4절에서 말한 그것이다\n\n$ kubectl get pod -n shop ${POD#pod/} -o jsonpath=\\\n'{.status.qosClass}{\"\\n\"}'\n\nBurstable\n\n#   cpu 상한을 안 줬다\n\n#   10.4절에서 그게 낫다고 했다\n\n# --- 무중단인가 ---\n\n$ kubectl run load -n shop --restart=Never --image=busybox:1.36 -- \\\n    sh -c 'ok=0; fail=0; end=$(( $(date +%s) + 90 ));\n           while [ $(date +%s) -lt $end ]; do\n             if wget -qO- --timeout=2 http://shop/api/orders > /dev/null 2>&1\n             then ok=$((ok+1)); else fail=$((fail+1)); fi\n           done; echo \"성공 $ok 실패 $fail\"' > /dev/null\n\n$ sleep 10 && kubectl set image deployment/shop app=shop:c4e91f7 -n shop \\\n    --record=false > /dev/null\n$ kubectl patch deployment shop -n shop -p \\\n    '{\"spec\":{\"template\":{\"metadata\":{\"annotations\":\n      {\"redeploy\":\"1\"}}}}}' > /dev/null\n$ kubectl rollout status deployment/shop -n shop > /dev/null\n\n$ sleep 85 && kubectl logs -n shop load\n\n성공 1247 실패 0\n\n#   롤아웃 중에 한 건도 안 놓쳤다\n\n#   maxUnavailable 0 과 preStop 과 우아한 종료가 함께 한 일이다\n\n$ kubectl delete pod load -n shop --now > /dev/null\n\n# --- preStop 을 빼 본다 ---\n\n$ kubectl patch deployment shop -n shop --type=json -p='[{\"op\":\"remove\",\n  \"path\":\"/spec/template/spec/containers/0/lifecycle\"}]' > /dev/null\n$ kubectl rollout status deployment/shop -n shop > /dev/null\n\n$ kubectl run load2 -n shop --restart=Never --image=busybox:1.36 -- \\\n    sh -c 'ok=0; fail=0; end=$(( $(date +%s) + 90 ));\n           while [ $(date +%s) -lt $end ]; do\n             if wget -qO- --timeout=2 http://shop/api/orders > /dev/null 2>&1\n             then ok=$((ok+1)); else fail=$((fail+1)); fi\n           done; echo \"성공 $ok 실패 $fail\"' > /dev/null\n\n$ sleep 10 && kubectl patch deployment shop -n shop -p \\\n    '{\"spec\":{\"template\":{\"metadata\":{\"annotations\":\n      {\"redeploy\":\"2\"}}}}}' > /dev/null\n$ kubectl rollout status deployment/shop -n shop > /dev/null\n$ sleep 85 && kubectl logs -n shop load2\n\n성공 1194 실패 9\n\n#   9건이 떨어졌다\n\n#   SIGTERM 과 엔드포인트 제거가 동시에 일어나서다\n\n#   4.7절의 종료 절차 그대로다\n\n#   preStop 5초가 그 창을 덮고 있었다\n\n$ kubectl delete pod load2 -n shop --now > /dev/null\n\n# --- 종료를 눈으로 본다 ---\n\n$ kubectl apply -f deployment.yaml > /dev/null\n$ kubectl rollout status deployment/shop -n shop > /dev/null\n$ POD=$(kubectl get pod -n shop -o name | head -1 | cut -d/ -f2)\n$ kubectl delete pod -n shop $POD --wait=false > /dev/null\n$ kubectl logs -n shop $POD -f 2>/dev/null | tail -4\n\nCommencing graceful shutdown. Waiting for active requests to complete\nHikariPool-1 - Shutdown initiated...\nHikariPool-1 - Shutdown completed.\nGraceful shutdown complete\n\n#   ⑤ 에서 본 커넥션 풀이 여기서 닫힌다\n\n#   server.shutdown: graceful 이 없으면 이 줄이 안 나온다\n\n$ kubectl get events -n shop --field-selector reason=Killing \\\n    -o jsonpath='{.items[-1].message}{\"\\n\"}'\n\nStopping container app\n\n# --- 한 장으로 요약 ---\n\n$ kubectl get all,configmap,secret,pdb -n shop --no-headers 2>/dev/null \\\n    | awk '{print $1}' | grep -v '^pod/' \n\nservice/shop\ndeployment.apps/shop\nreplicaset.apps/shop-6d8f4b9c7\nconfigmap/kube-root-ca.crt\nconfigmap/shop-config\nsecret/shop-db\n\n#   ⑦⑧ 의 앱이 여기 다 들어 있다\n\n#   설정은 7장, 비밀은 7.2절\n\n#   개수는 5장, 배치는 9장\n\n#   프로브는 4.5절, 종료는 4.7절\n\n#   이미지는 「도커」, 배포는 11장\n\n$ kubectl delete namespace shop\n\nnamespace \"shop\" deleted\n\n# --- 이 책은 여기서 끝난다 ---\n\n#   kubectl 이 돌려준 것을 읽는 법을 배웠다\n\n#   Pending 과 CrashLoopBackOff 가\n\n#   이제 문장으로 읽힌다",
+   "note": "**`/actuator/health` 종합 판정에 `db` 가 들어 있어 그것을 `livenessProbe` 에 쓰면** 안 된다.\n\n**`MaxRAMPercentage=75` 로 `MaxHeapSize` 가 `603979776`(576Mi)** 이고 힙 밖에 192Mi 를 남겼다.\n\n**`preStop` 이 있을 때 롤아웃 중 `성공 1247 실패 0`** 이다.\n\n**`preStop` 을 빼자 `성공 1194 실패 9`** — SIGTERM 과 엔드포인트 제거가 동시라서다.\n\n**종료 로그에 `HikariPool-1 - Shutdown completed` 와 `Graceful shutdown complete`** 가 찍힌다."
+  }
+ ],
+ "recap": [
+  "**설정은 컨피그맵, 비밀은 시크릿 볼륨**이다.",
+  "**프로파일 같은 건 환경변수로** 준다.",
+  "**liveness 와 readiness 는 다른 경로**다.",
+  "**종합 health 를 liveness 에 쓰면** 안 된다.",
+  "**JVM 기동은 `startupProbe`** 로 덮는다.",
+  "**`MaxRAMPercentage` 로 힙을** 맞춘다.",
+  "**`exec` 로 PID 1 을 자바에게** 준다.",
+  "**`preStop` 이 종료 창을** 덮는다.",
+  "**스프링 쪽 우아한 종료도 켜야** 한다."
+ ],
+ "drills": [
+  {
+   "task": "액추에이터 프로브를 나눠 준다.",
+   "done_when": "두 경로의 응답이 다른 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`MaxRAMPercentage` 를 확인한다.",
+   "done_when": "힙 크기가 상한에 맞는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "부하를 주며 롤아웃한다.",
+   "done_when": "실패 0을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`preStop` 을 빼고 다시 한다.",
+   "done_when": "실패가 생기는 걸 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "종합 `/actuator/health` 를 liveness 에 쓰면 왜 위험한가?",
+   "a": "DB 같은 외부 의존이 흔들릴 때 앱이 통째로 재시작된다."
+  },
+  {
+   "q": "`startupProbe` 를 쓰는 이유는?",
+   "a": "느린 JVM 기동을 덮으면서도 이후 장애 감지는 빠르게 유지하려는 것이다."
+  },
+  {
+   "q": "`exec` 로 자바를 띄우는 이유는?",
+   "a": "자바가 PID 1 이 되어 SIGTERM 을 직접 받게 하려는 것이다."
+  },
+  {
+   "q": "`preStop` 이 필요한 이유는?",
+   "a": "SIGTERM 전달과 엔드포인트 제거가 동시에 일어나 짧은 창이 생기기 때문이다."
+  },
+  {
+   "q": "스프링의 우아한 종료 기본값은?",
+   "a": "`immediate` 라 명시적으로 `graceful` 로 켜야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "preStop 훅",
+   "def": "컨테이너에 종료 신호를 보내기 전에 실행하는 동작."
+  },
+  {
+   "term": "우아한 종료",
+   "def": "진행 중 요청을 끝낸 뒤 애플리케이션을 닫는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Production-ready Features",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Kubernetes — Configure Liveness, Readiness and Startup Probes",
+   "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Pod Lifecycle",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
