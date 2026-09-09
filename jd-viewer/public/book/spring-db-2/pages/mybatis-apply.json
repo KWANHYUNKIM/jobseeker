@@ -1,0 +1,135 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-apply",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "적용",
+ "summary": "인터페이스와 XML 로 나눈다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "매퍼 인터페이스와 XML 을 만든다.",
+  "파라미터 전달 규칙을 안다.",
+  "리포지토리가 얇아지는 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장의 네 메서드**를 옮긴다. **`findAll` 은 다음 절**로 미룬다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "매퍼 인터페이스",
+   "code": "@Mapper\npublic interface ItemMapper {\n\n    void save(Item item);\n\n    void update(@Param(\"id\") Long id,\n                @Param(\"updateParam\") ItemUpdateDto updateParam);\n\n    Optional<Item> findById(Long id);\n\n    List<Item> findAll(ItemSearchCond itemSearch);\n}",
+   "note": "**구현이 없다.** **인터페이스만 쓴다.**\n\n**`@Mapper`** 를 보고 스타터가 **구현체를 만들어 빈으로** 등록한다(5.7절).\n\n**`Optional` 을 그대로 반환**할 수 있다. **3.2절의 `try-catch` 가 필요 없다** — MyBatis 는 **결과가 없으면 `null`**, 그것을 `Optional` 로 감싸 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름으로 짝을 짓는다",
+   "ascii": "   ItemMapper.java                ItemMapper.xml\n   ---------------                --------------\n   void save(Item item)           <insert id=\"save\">\n   void update(@Param(\"id\") ...)  <update id=\"update\">\n   Optional<Item> findById(Long)  <select id=\"findById\">\n   List<Item> findAll(cond)       <select id=\"findAll\">\n\n   method name  ==  statement id\n   return type  ==  resultType\n   parameters   ==  #{names}",
+   "note": "**메서드 이름이 곧 `id`** 다."
+  },
+  {
+   "type": "code",
+   "lang": "xml",
+   "caption": "`ItemMapper.xml`",
+   "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"\n        \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n<mapper namespace=\"hello.itemservice.repository.mybatis.ItemMapper\">\n\n    <insert id=\"save\" useGeneratedKeys=\"true\" keyProperty=\"id\">\n        insert into item (item_name, price, quantity)\n        values (#{itemName}, #{price}, #{quantity})\n    </insert>\n\n    <update id=\"update\">\n        update item\n        set item_name = #{updateParam.itemName},\n            price     = #{updateParam.price},\n            quantity  = #{updateParam.quantity}\n        where id = #{id}\n    </update>\n\n    <select id=\"findById\" resultType=\"Item\">\n        select id, item_name, price, quantity\n        from item\n        where id = #{id}\n    </select>\n\n</mapper>",
+   "note": "**`useGeneratedKeys=\"true\" keyProperty=\"id\"`** 가 3.2절의 `KeyHolder` 열 줄을 **속성 둘**로 만든다. **MyBatis 가 저장 후 `item.setId()` 까지** 해 준다.\n\n**`resultType=\"Item\"`** 이 짧은 이유는 **5.2절의 `type-aliases-package`** 때문이다. 없으면 `hello.itemservice.domain.Item` 을 다 써야 한다.\n\n**`insert`·`update` 에는 `resultType` 이 없다.** 반환이 없으니까.\n\n> **SQL 이 여러 줄로 자연스럽게** 쓰인다. **따옴표도 `+` 도 없다.** 5.1절에서 말한 이점이다."
+  },
+  {
+   "type": "figure",
+   "caption": "파라미터 전달 규칙",
+   "ascii": "   one parameter, an object      #{itemName}   getter\n   one parameter, a primitive    #{id}         any name works\n   two or more parameters        @Param needed\n\n   void update(@Param(\"id\") Long id,\n               @Param(\"updateParam\") ItemUpdateDto p)\n\n   #{id}                  #{updateParam.itemName}",
+   "note": "**둘 이상이면 `@Param` 이 필요**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`#{}` 와 `${}`",
+   "md": "**둘이 완전히 다르다.**\n\n| | `#{itemName}` | `${itemName}` |\n|---|---|---|\n| 무엇이 되나 | **`?`** | **문자열 그대로** |\n| 바인딩 | **PreparedStatement** | 없다 |\n| **SQL 인젝션** | **안전** | **위험** |\n\n```xml\n<!-- #{} -->\nwhere item_name = #{itemName}\n  ==>  where item_name = ?      Parameters: itemA(String)\n\n<!-- ${} -->\nwhere item_name = '${itemName}'\n  ==>  where item_name = 'itemA'\n```\n\n**`${}` 에 `' or '1'='1` 이 들어오면** 어떻게 되는지는 굳이 안 적는다.\n\n**`${}` 를 써야만 하는 자리**가 있다.\n\n```xml\norder by ${sortColumn}\n```\n\n**컬럼 이름은 파라미터로 못 바인딩**한다. **이럴 때만 쓰고, 값은 반드시 화이트리스트로** 검사한다.\n\n```java\nif (!List.of(\"price\", \"item_name\").contains(sortColumn)) {\n    throw new IllegalArgumentException();\n}\n```\n\n> **3장의 JdbcTemplate 도 같은 문제**가 있었다. `sql += \" order by \" + col` 은 **`${}` 와 똑같이 위험**하다. **문자열로 SQL 을 만드는 모든 기술의 공통 위험**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리포지토리",
+   "code": "@Repository\n@RequiredArgsConstructor\npublic class MyBatisItemRepository implements ItemRepository {\n\n    private final ItemMapper itemMapper;\n\n    @Override\n    public Item save(Item item) {\n        itemMapper.save(item);\n        return item;\n    }\n\n    @Override\n    public void update(Long itemId, ItemUpdateDto updateParam) {\n        itemMapper.update(itemId, updateParam);\n    }\n\n    @Override\n    public Optional<Item> findById(Long id) {\n        return itemMapper.findById(id);\n    }\n\n    @Override\n    public List<Item> findAll(ItemSearchCond cond) {\n        return itemMapper.findAll(cond);\n    }\n}",
+   "note": "**전부 한 줄씩 넘기기만** 한다. **3장의 96줄이 20줄**이 됐다.\n\n**\"그럼 이 클래스가 왜 있나\"** — 두 가지 때문이다.\n\n| 이유 | |\n|---|---|\n| **`ItemMapper` 가 `ItemRepository` 가 아니다** | 이름·시그니처가 다르다 |\n| **바뀔 여지를 둔다** | 캐시·로깅·여러 매퍼 조합 |\n\n> **7장 스프링 데이터 JPA 에서 이 한 겹을 없앨지** 다시 고민한다. **거기서는 인터페이스가 곧 리포지토리**가 될 수 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# save\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   ==>  Preparing: insert into item (item_name, price, quantity)\n#                   values (?, ?, ?)\n#   ==> Parameters: itemA(String), 10000(Integer), 10(Integer)\n#   <==    Updates: 1\n\n#   item.getId() == 1     (useGeneratedKeys 가 채워 줬다)\n\n# update\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n\n#   ==>  Preparing: update item set item_name = ?, price = ?,\n#                   quantity = ? where id = ?\n#   ==> Parameters: itemA-updated(String), 20000(Integer),\n#                   30(Integer), 1(Long)\n#   <==    Updates: 1\n\n# findById - 있을 때\nrepository.findById(1L);\n\n#   ==>  Preparing: select id, item_name, price, quantity\n#                   from item where id = ?\n#   ==> Parameters: 1(Long)\n#   <==      Total: 1\n#   -> Optional[Item(id=1, itemName=itemA-updated, ...)]\n\n# findById - 없을 때\nrepository.findById(999L);\n\n#   ==>  Preparing: select ... where id = ?\n#   ==> Parameters: 999(Long)\n#   <==      Total: 0\n#   -> Optional.empty\n\n#   (예외가 안 났다. try-catch 가 필요 없다.)\n\n# 3장과 비교\n#   3장  [insert into item (item_name, price, quantity) values (?, ?, ?)]\n#   5장  insert into item (item_name, price, quantity) values (?, ?, ?)\n\n# 같은 SQL 이다",
+   "note": "**`<== Total: 0` 인데 예외가 없다.** **3.2절의 `EmptyResultDataAccessException` 과 `try-catch` 가 사라졌다.**\n\n**`useGeneratedKeys` 가 id 를 채웠다** — `generated key` 로그 없이 조용히 한다.\n\n**맨 아래 두 줄이 이 책의 방법**이다. **로그 형식만 다르고 SQL 이 같다.**\n\n**다음 절이 이 장의 본론**이다."
+  }
+ ],
+ "recap": [
+  "**매퍼 인터페이스에 구현이 없다** — `@Mapper` 만 붙인다.",
+  "**메서드 이름 = 스테이트먼트 `id`**.",
+  "**`useGeneratedKeys`·`keyProperty`** 가 `KeyHolder` 를 대신한다.",
+  "**`resultType`** 은 별칭으로 짧게 쓴다.",
+  "**파라미터가 둘 이상이면 `@Param`**.",
+  "**`#{}` 는 `?`, `${}` 는 문자열 그대로** — 후자는 위험하다.",
+  "**컬럼 이름 정렬은 `${}` 뿐** — 화이트리스트로 막는다.",
+  "**`Optional` 을 그대로 반환**한다 — `try-catch` 가 없다.",
+  "**리포지토리가 96줄에서 20줄**이 됐다."
+ ],
+ "drills": [
+  {
+   "task": "매퍼 인터페이스와 XML 을 만들어 세 메서드를 돌린다.",
+   "done_when": "`==> Preparing` 로그를 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "`useGeneratedKeys` 를 빼 본다.",
+   "done_when": "id 가 `null` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`#{}` 를 `${}` 로 바꿔 로그를 본다.",
+   "done_when": "값이 SQL 에 그대로 박히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Param` 을 지우고 파라미터 둘을 넘겨 본다.",
+   "done_when": "어떤 오류가 나는지 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매퍼 인터페이스의 구현은 누가 만드나?",
+   "a": "`@Mapper` 를 보고 mybatis-spring 이 프록시로 만든다."
+  },
+  {
+   "q": "생성 키를 어떻게 받나?",
+   "a": "`useGeneratedKeys=\"true\" keyProperty=\"id\"` 로 받는다."
+  },
+  {
+   "q": "`#{}` 와 `${}` 의 차이는?",
+   "a": "`#{}` 는 `?` 로 바인딩되고 `${}` 는 문자열이 그대로 박힌다."
+  },
+  {
+   "q": "`${}` 를 써야 하는 자리는?",
+   "a": "컬럼 이름 같은 것 — `order by ${col}`. 화이트리스트 검사가 필수다."
+  },
+  {
+   "q": "`findById` 에 `try-catch` 가 왜 없나?",
+   "a": "MyBatis 는 결과가 없으면 `null` 을 주고 `Optional` 로 감싸 주기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "MyBatis 3 — Mapper XML Files",
+   "url": "https://mybatis.org/mybatis-3/sqlmap-xml.html",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

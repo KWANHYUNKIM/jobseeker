@@ -312,7 +312,7 @@
           "title": "적용",
           "summary": "인터페이스와 XML 로 나눈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -320,7 +320,7 @@
           "title": "동적 쿼리",
           "summary": "3.3절의 문제가 여기서 풀린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -328,7 +328,7 @@
           "title": "XML 과 애너테이션",
           "summary": "어느 쪽에 쓸까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",

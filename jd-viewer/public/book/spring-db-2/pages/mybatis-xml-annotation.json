@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-xml-annotation",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "XML 과 애너테이션",
+ "summary": "어느 쪽에 쓸까.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "애너테이션으로 SQL 을 쓴다.",
+  "둘을 섞는 법을 안다.",
+  "어느 쪽을 쓸지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**XML 이 유일한 방법은 아니다.** **애너테이션**으로도 쓴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션으로",
+   "code": "@Mapper\npublic interface ItemMapper {\n\n    @Select(\"select id, item_name, price, quantity from item where id = #{id}\")\n    Optional<Item> findById(Long id);\n\n    @Insert(\"insert into item (item_name, price, quantity) \" +\n            \"values (#{itemName}, #{price}, #{quantity})\")\n    @Options(useGeneratedKeys = true, keyProperty = \"id\")\n    void save(Item item);\n\n    @Delete(\"delete from item where id = #{id}\")\n    void delete(Long id);\n\n    // findAll 은 XML 에 둔다\n    List<Item> findAll(ItemSearchCond cond);\n}",
+   "note": "**`@Select`·`@Insert`·`@Update`·`@Delete`** 넷이 있다.\n\n**`@Options`** 가 XML 의 `useGeneratedKeys` 속성을 대신한다.\n\n**`findAll` 에는 애너테이션이 없다.** **XML 에서 찾는다.** **한 인터페이스에 섞어 쓸 수 있다.**\n\n> **같은 메서드에 둘 다 있으면** `Result Maps collection already contains value` 로 **뜰 때 터진다.** 어느 쪽이든 하나만."
+  },
+  {
+   "type": "figure",
+   "caption": "둘의 자리",
+   "ascii": "   annotation                      xml\n   ----------                      ---\n   @Select(\"select ... where\")     <select id=\"...\">\n   in the java file                in a separate file\n   short queries                   long queries\n   no dynamic tags                 <if> <where> <foreach>\n   <script> to fake them           native\n\n   both can coexist. same interface.",
+   "note": "**섞어 쓰는 것이 흔하다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "애너테이션이 나은 경우",
+   "md": "**짧고 안 바뀌는 SQL** 이다.\n\n```java\n@Select(\"select count(*) from item\")\nint count();\n\n@Delete(\"delete from item where id = #{id}\")\nvoid delete(Long id);\n```\n\n**XML 파일을 열지 않아도 무슨 SQL 인지 보인다.** **인터페이스 하나만 보면 된다.**\n\n| | 애너테이션 | XML |\n|---|---|---|\n| **짧은 SQL** | ✅ | 파일을 오간다 |\n| **긴 SQL** | 문자열 연결 지옥 | ✅ |\n| **동적 쿼리** | `<script>` 로 억지 | ✅ |\n| **DBA 에게 보여 주기** | 어렵다 | ✅ |\n| **한 파일에서 다 보기** | ✅ | 두 파일 |\n\n**자바 15 의 텍스트 블록**이 두 번째 칸을 많이 낫게 했다.\n\n```java\n@Select(\"\"\"\n        select id, item_name, price, quantity\n          from item\n         where id = #{id}\n        \"\"\")\nOptional<Item> findById(Long id);\n```\n\n> **그래도 세 번째 칸은 안 낫는다.** **동적 쿼리는 XML 이다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션으로 동적 쿼리를 하면",
+   "code": "@Select(\"\"\"\n        <script>\n        select id, item_name, price, quantity from item\n        <where>\n            <if test=\"itemName != null and itemName != ''\">\n                and item_name like concat('%', #{itemName}, '%')\n            </if>\n            <if test=\"maxPrice != null\">\n                and price &lt;= #{maxPrice}\n            </if>\n        </where>\n        </script>\n        \"\"\")\nList<Item> findAll(ItemSearchCond cond);",
+   "note": "**`<script>` 로 감싸면 된다.** **되기는 한다.**\n\n**자바 파일 안에 XML 이 들어왔다.** **`&lt;` 도 그대로 써야** 한다 — 이스케이프 규칙까지 따라온다.\n\n> **문자열 안의 XML 은 편집기가 도와주지 않는다.** **태그 자동완성도, 닫기 검사도 없다.**\n>\n> **이 책은 동적 쿼리를 XML 에** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`@SelectProvider` 라는 세 번째 길",
+   "md": "**자바 코드로 SQL 을 만드는** 방법도 있다.\n\n```java\n@SelectProvider(type = ItemSqlProvider.class, method = \"findAll\")\nList<Item> findAll(ItemSearchCond cond);\n\npublic class ItemSqlProvider {\n    public String findAll(ItemSearchCond cond) {\n        return new SQL() {{\n            SELECT(\"id, item_name, price, quantity\");\n            FROM(\"item\");\n            if (StringUtils.hasText(cond.getItemName())) {\n                WHERE(\"item_name like concat('%', #{itemName}, '%')\");\n            }\n            if (cond.getMaxPrice() != null) {\n                WHERE(\"price <= #{maxPrice}\");\n            }\n        }}.toString();\n    }\n}\n```\n\n**`WHERE()` 를 여러 번 부르면 `and` 로 이어 준다.** **`<where>` 와 같은 일**을 자바로 한다.\n\n| | |\n|---|---|\n| 장점 | **자바다** — `if`, 리팩터링, 디버깅 |\n| 단점 | **컬럼·테이블 이름은 여전히 문자열** |\n\n> **8장 Querydsl 이 이 방향의 끝**이다. **거기서는 컬럼도 자바 객체**다 — `item.itemName` 이라고 쓰면 **컴파일러가 검사**한다.\n>\n> **`SelectProvider` 는 그 중간**에 있다. **실무에서는 잘 안 쓴다** — XML 만큼 읽기 쉽지도, Querydsl 만큼 안전하지도 않아서."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 애너테이션 - findById\nrepository.findById(1L);\n\n#   ==>  Preparing: select id, item_name, price, quantity\n#                   from item where id = ?\n#   ==> Parameters: 1(Long)\n#   <==      Total: 1\n\n# XML - findAll (같은 인터페이스)\nrepository.findAll(new ItemSearchCond(\"itemA\", null));\n\n#   ==>  Preparing: select id, item_name, price, quantity from item\n#                   WHERE item_name like concat('%', ?, '%')\n#   ==> Parameters: itemA(String)\n#   <==      Total: 2\n\n# 하나는 자바에서, 하나는 XML 에서 왔다\n# 로그로는 구분이 안 된다\n\n# --- 같은 메서드에 둘 다 있으면 ---\n\n#   IllegalArgumentException:\n#     Mapped Statements collection already contains value for\n#     hello.itemservice.repository.mybatis.ItemMapper.findById\n\n#   (뜰 때 터진다)\n\n# --- SelectProvider ---\nrepository.findAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   ==>  Preparing: SELECT id, item_name, price, quantity\n#                   FROM item\n#                   WHERE (item_name like concat('%', ?, '%')\n#                     AND price <= ?)\n#   ==> Parameters: itemA(String), 10000(Integer)\n#   <==      Total: 1\n\n# 대문자와 괄호가 SQL 빌더가 만든 흔적이다",
+   "note": "**두 번째 블록까지가 요점**이다. **SQL 이 어디서 왔는지 로그로는 모른다.** **DB 가 받은 것이 같으니 당연하다.**\n\n**세 번째 블록**은 안 되는 조합이다. **뜰 때 터진다** — 5.2절에서 말한 \"일찍 터지는 오류\" 다.\n\n**마지막 블록의 대문자와 괄호**가 `SQL()` 빌더의 흔적이다. **3.7절의 `Compiled insert object` 처럼, 내가 안 쓴 모양의 SQL** 이다.\n\n**다음 절에서 매핑과 재사용을 본다.**"
+  }
+ ],
+ "recap": [
+  "**`@Select`·`@Insert`·`@Update`·`@Delete`** 로 자바에 쓸 수 있다.",
+  "**`@Options`** 가 `useGeneratedKeys` 를 대신한다.",
+  "**한 인터페이스에 섞어 쓸 수 있다** — 메서드마다 하나만.",
+  "**같은 메서드에 둘 다 있으면 뜰 때** 터진다.",
+  "**짧고 안 바뀌는 SQL 은 애너테이션**이 편하다.",
+  "**동적 쿼리는 XML** 이다 — `<script>` 는 억지다.",
+  "**텍스트 블록**이 긴 SQL 을 낫게 했다.",
+  "**`@SelectProvider`** 는 자바로 SQL 을 만든다 — 잘 안 쓴다.",
+  "**그 방향의 끝이 8장 Querydsl** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`findById` 를 애너테이션으로 옮긴다.",
+   "done_when": "XML 에서 지우고도 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 메서드에 애너테이션과 XML 을 둘 다 둔다.",
+   "done_when": "뜰 때 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`<script>` 로 동적 쿼리를 애너테이션에 써 본다.",
+   "done_when": "왜 XML 이 나은지 말할 수 있다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@SelectProvider` 로 `findAll` 을 만든다.",
+   "done_when": "`WHERE()` 가 `and` 로 이어지는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "애너테이션이 나은 경우는?",
+   "a": "짧고 안 바뀌는 SQL 이다. 인터페이스만 보면 된다."
+  },
+  {
+   "q": "동적 쿼리는 왜 XML 인가?",
+   "a": "`<script>` 로 감싸면 되지만 편집기 도움이 없고 이스케이프까지 따라온다."
+  },
+  {
+   "q": "같은 메서드에 둘 다 쓰면?",
+   "a": "`Mapped Statements collection already contains value` 로 뜰 때 터진다."
+  },
+  {
+   "q": "`@SelectProvider` 의 장단점은?",
+   "a": "자바로 조립해 리팩터링이 되지만 컬럼·테이블 이름은 여전히 문자열이다."
+  },
+  {
+   "q": "그 방향의 끝은?",
+   "a": "8장 Querydsl 이다. 컬럼도 자바 객체라 컴파일러가 검사한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "MyBatis 3 — Mapper XML Files",
+   "url": "https://mybatis.org/mybatis-3/sqlmap-xml.html",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "mybatis-spring-boot-starter",
+   "url": "https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
