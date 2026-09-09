@@ -522,7 +522,7 @@
           "title": "스프링 컨텍스트 캐싱",
           "summary": "몇 개가 뜨나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -530,7 +530,7 @@
           "title": "테스트 프로파일",
           "summary": "설정을 나눈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "profile",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "테스트 프로파일",
+ "summary": "설정을 나눈다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇을 나누고 무엇을 안 나눌지 정한다.",
+  "설정 파일의 우선순위를 안다.",
+  "컨텍스트 개수와의 관계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 `properties` 인라인이 컨텍스트를 늘린다고** 했다. **프로파일이 답**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "환경마다 다른 것",
+   "ascii": "   what changes between environments\n\n   datasource      h2 in memory / a real mysql\n   ddl-auto        create / validate / none\n   sql logging     on / off\n   statistics      on / off\n   mail            a fake / smtp\n   batch size      the same everywhere\n\n   the last line matters: keep what is being tested identical",
+   "note": "**마지막 줄이 중요**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 나누고 무엇을 안 나누나",
+   "md": "**나눈다**\n\n| | 테스트 | 운영 |\n|---|---|---|\n| **DataSource** | H2 인메모리 | 진짜 DB |\n| **`ddl-auto`** | `create` | `validate` 또는 `none` |\n| **SQL 로그** | `debug` | `info` |\n| **통계** | `true` | `false` |\n| **메일** | 페이크 | SMTP |\n\n> **환경이 다르니 당연**하다.\n\n**안 나눈다**\n\n| | |\n|---|---|\n| **`default_batch_fetch_size`** | 「활용 2편」 5.7절 |\n| **`open-in-view`** | 「활용 2편」 6.2절 |\n| **트랜잭션 설정** | |\n| **잭슨 설정** | 응답 형식 |\n\n> **테스트하려는 동작 자체가 다르면 안** 된다.\n>\n> **배치 사이즈를 테스트에서만 켜면 7.6절의 쿼리 개수 테스트가 운영을 못** 지킨다.\n> **`open-in-view` 를 테스트에서만 끄면 5.6절의 `LazyInitializationException` 을 못** 본다.\n\n**7.3절의 기준과 같은** 이야기다.\n\n> **\"테스트에서만 다르게 도는 코드\" 가 안 되듯 설정도** 그렇다.\n> **그건 8.1절의 `@DirtiesContext` 가 아니라 7.3절의 테스트 훅**이다.\n\n**애매한 것**\n\n> **H2 대 MySQL** 이다. **문법이 다르면 테스트가 운영을 못** 지킨다.\n> **8.3절의 Testcontainers 가 그 답**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "설정 파일의 자리",
+   "ascii": "   where the files live\n\n   src/main/resources/application.yml\n     the shared base, and the production profile\n\n   src/test/resources/application.yml\n     replaces the main one during tests, entirely\n\n   src/test/resources/application-test.yml\n     added on top when the test profile is active\n\n   the second line surprises people",
+   "note": "**둘째 줄에서 사람들이** 놀란다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "`src/test/resources/application.yml` 은 통째로 대체한다",
+   "md": "**병합이 아니다.**\n\n```\nsrc/main/resources/application.yml       무시된다\nsrc/test/resources/application.yml       이것만 쓰인다\n```\n\n> **클래스패스에서 먼저 찾은 것 하나**만 쓴다.\n> **테스트 소스가 앞에** 있다.\n>\n> **`main` 의 설정을 다 복사해야** 한다.\n\n**그래서 잘 안 쓴다.**\n\n> **`main` 에 설정을 추가하면 테스트가 못** 받는다.\n> **8.1절의 배치 사이즈를 켰는데 테스트에서 안** 도는 식이다.\n\n**프로파일이** 낫다.\n\n```yaml\n# src/main/resources/application.yml\nspring:\n  jpa:\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100    # 공통\n  profiles:\n    default: local\n\n---\nspring:\n  config.activate.on-profile: local\n  datasource:\n    url: jdbc:h2:mem:local\n\n---\nspring:\n  config.activate.on-profile: test\n  datasource:\n    url: jdbc:h2:mem:test\n  jpa:\n    hibernate.ddl-auto: create\n    properties:\n      hibernate.generate_statistics: true\n\n---\nspring:\n  config.activate.on-profile: prod\n  datasource:\n    url: ${DB_URL}\n  jpa:\n    hibernate.ddl-auto: none\n```\n\n> **공통이 위에** 있고 **프로파일이 덮어**쓴다.\n> **배치 사이즈는 셋 다 100**이다.\n\n**`@ActiveProfiles(\"test\")`**\n\n> **부모 클래스에** 붙인다(5.7절).\n> **클래스마다 다르면 컨텍스트가 갈린다**(8.1절).\n\n**`src/test/resources/application-test.yml` 은 더해**진다.\n\n> **`main` 의 `application.yml` 위에 얹힌다.**\n> **테스트 전용 설정만 적으면** 된다.\n>\n> **파일명이 한 글자 차이인데 동작이** 다르다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- src/test/resources/application.yml 을 만들면 ---\n\n# src/main/resources/application.yml\nspring:\n  jpa:\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100\n\n# src/test/resources/application.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:test\n  jpa:\n    hibernate.ddl-auto: create\n\n$ ./gradlew test --tests OrderQueryCountTest\n\nHibernate: select ... from orders o1_0 ... offset ? rows fetch first ? rows only\nHibernate: select ... from order_product op1_0 where op1_0.order_id=?\nHibernate: select ... from order_product op1_0 where op1_0.order_id=?\n... (10번)\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 FAILED\n    Expecting actual: 21L\n    to be less than or equal to: 5L\n\n#   배치 사이즈가 안 걸렸다\n\n#   main 의 application.yml 이 통째로 무시됐다\n\n#   where ... = ? 다. in 이 아니다\n\n# --- 파일 이름을 바꾸면 ---\n\n$ mv src/test/resources/application.yml \\\n>    src/test/resources/application-test.yml\n\n#   그리고 @ActiveProfiles(\"test\")\n\n$ ./gradlew test --tests OrderQueryCountTest\n\nHibernate: select ... from orders o1_0 ... offset ? rows fetch first ?\nHibernate: select ... from order_product op1_0 where op1_0.order_id in (?,?,...)\nHibernate: select ... from product p1_0 where p1_0.id in (?,?,...)\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 PASSED\n\n#   in 절이 나온다\n\n#   main 의 설정이 살아 있고 test 것이 얹혔다\n\n#   파일명 한 글자 차이다\n\n# --- 프로파일별로 무엇이 다른지 ---\n\n@SpringBootTest\n@ActiveProfiles(\"test\")\nclass ProfileTest {\n    @Autowired Environment env;\n    @Autowired DataSource dataSource;\n\n    @Test\n    void showConfig() throws Exception {\n        System.out.println(\">>> profiles: \"\n                + Arrays.toString(env.getActiveProfiles()));\n        System.out.println(\">>> url: \"\n                + dataSource.getConnection().getMetaData().getURL());\n        System.out.println(\">>> ddl-auto: \"\n                + env.getProperty(\"spring.jpa.hibernate.ddl-auto\"));\n        System.out.println(\">>> batch: \"\n                + env.getProperty(\n                    \"spring.jpa.properties.hibernate.default_batch_fetch_size\"));\n        System.out.println(\">>> statistics: \"\n                + env.getProperty(\n                    \"spring.jpa.properties.hibernate.generate_statistics\"));\n    }\n}\n\n$ ./gradlew test --tests ProfileTest\n\n>>> profiles: [test]\n>>> url: jdbc:h2:mem:test\n>>> ddl-auto: create\n>>> batch: 100\n>>> statistics: true\n\n#   batch 100 은 공통이라 그대로다\n\n#   나머지는 test 프로파일 것이다\n\n# --- 운영 프로파일로 띄워 보면 ---\n\n$ SPRING_PROFILES_ACTIVE=prod DB_URL=jdbc:h2:mem:prod ./gradlew bootRun\n\n2026-09-09T17:44:11.882  INFO --- The following 1 profile is active: \"prod\"\n\n>>> batch: 100\n>>> statistics: null\n>>> ddl-auto: none\n\n#   배치는 같고 통계는 꺼졌다\n\n#   7.6절의 쿼리 개수 테스트가 운영을 지킨다\n\n# --- 배치를 test 에서만 켜 보면 ---\n\n# application.yml (main) 에서 batch 를 빼고\n# application-test.yml 에만 넣는다\n\n$ ./gradlew test --tests OrderQueryCountTest\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 PASSED\n\n#   테스트는 통과한다\n\n$ SPRING_PROFILES_ACTIVE=prod ./gradlew bootRun\n\n$ curl localhost:8080/api/v1/orders?offset=0&limit=10\n\n#   (로그)\nHibernate: select ... from order_product where order_id=?\nHibernate: select ... from order_product where order_id=?\n... (10번)\n\n#   운영에서는 N+1 이다\n\n#   테스트가 초록인데 운영이 느리다\n\n#   7.3절의 테스트 훅과 같은 상태다\n\n#   되돌린다\n\n# --- 프로파일이 컨텍스트를 가르는지 ---\n\n@SpringBootTest\n@ActiveProfiles(\"test\")\nclass ATest { }\n\n@SpringBootTest\n@ActiveProfiles(\"integration\")\nclass BTest { }\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 4, maxSize = 32, hitCount = 10, missCount = 4]\n\n#   프로파일이 다르면 컨텍스트도 다르다\n\n#   8.1절의 캐시 키에 프로파일이 있다\n\n#   그래서 프로파일 이름도 하나로 통일한다\n\n# --- 지금 설정 ---\n\n$ cat src/test/resources/application-test.yml\n\nspring:\n  datasource:\n    url: jdbc:h2:mem:test;MODE=MySQL\n    driver-class-name: org.h2.Driver\n  jpa:\n    hibernate:\n      ddl-auto: create\n    properties:\n      hibernate:\n        generate_statistics: true\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace\n\n#   MODE=MySQL 이 붙어 있다\n\n#   H2 를 MySQL 문법으로 흉내 낸다\n\n#   완전하지 않다. 8.3절의 주제다\n\n# --- 다음 절에서 ---\n\n#   진짜 DB 를 띄운다",
+   "note": "**`src/test/resources/application.yml` 을 만드니 `main` 이 통째로** 무시된다. **배치 사이즈가 안 걸려 쿼리가 21개**다.\n\n**`application-test.yml` 로 이름을 바꾸면 `main` 이 살아 있고 `test` 것이** 얹힌다. **파일명 한 글자 차이**다.\n\n**배치를 테스트에서만 켜면 테스트는 초록인데 운영에서 N+1** 이다. **7.3절의 테스트 훅과 같은 상태**다.\n\n**프로파일이 다르면 컨텍스트도** 갈린다.\n\n**`MODE=MySQL` 은 흉내지 진짜가** 아니다."
+  }
+ ],
+ "recap": [
+  "**환경이 다른 것만** 나눈다 — DataSource, `ddl-auto`, 로그, 메일.",
+  "**테스트하려는 동작은 안** 나눈다 — 배치 사이즈, `open-in-view`.",
+  "**`src/test/resources/application.yml` 은 `main` 을 통째로** 대체한다.",
+  "**`application-test.yml` 은 얹힌다** — 파일명 한 글자 차이다.",
+  "**배치를 테스트에서만 켜면 운영이 N+1** 이다.",
+  "**7.3절의 테스트 훅과 같은** 상태다.",
+  "**프로파일이 캐시 키에** 들어간다 — 이름을 통일한다.",
+  "**`@ActiveProfiles` 는 부모 클래스에** 붙인다.",
+  "**`MODE=MySQL` 은 흉내**다 — 8.3절."
+ ],
+ "drills": [
+  {
+   "task": "`src/test/resources/application.yml` 을 만들어 본다.",
+   "done_when": "`main` 설정이 무시되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`application-test.yml` 로 바꾼다.",
+   "done_when": "얹히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "배치 사이즈를 테스트에만 켜 본다.",
+   "done_when": "운영에서 N+1 인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "프로파일 이름을 둘로 나눠 본다.",
+   "done_when": "컨텍스트가 느는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇을 나누고 무엇을 안 나누나?",
+   "a": "환경이 다른 것만 나눈다. 테스트하려는 동작 자체는 같아야 한다."
+  },
+  {
+   "q": "`src/test/resources/application.yml` 의 함정은?",
+   "a": "병합이 아니라 `main` 을 통째로 대체한다."
+  },
+  {
+   "q": "배치 사이즈를 테스트에만 켜면?",
+   "a": "테스트는 초록인데 운영이 N+1 이다. 테스트 훅과 같다."
+  },
+  {
+   "q": "프로파일이 컨텍스트에 미치는 영향은?",
+   "a": "캐시 키에 들어가 프로파일이 다르면 새로 뜬다."
+  },
+  {
+   "q": "`MODE=MySQL` 은 충분한가?",
+   "a": "아니다. 흉내라 문법 차이를 다 못 잡는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Profiles",
+   "url": "https://docs.spring.io/spring-boot/reference/features/profiles.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Context Caching",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "context-caching",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "스프링 컨텍스트 캐싱",
+ "summary": "몇 개가 뜨나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "캐시 키가 무엇으로 정해지는지 안다.",
+  "컨텍스트 개수를 센다.",
+  "줄이는 방법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.7절에서 3개를 1개로** 줄였다. **여기서 제대로** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "캐시 키에 들어가는 것",
+   "ascii": "   what goes into the cache key\n\n   the test class annotations\n     @SpringBootTest / @DataJpaTest / @WebMvcTest\n   the mocked bean types\n     @MockBean(A) is a different key from @MockBean(A, B)\n   active profiles\n   property sources and inline properties\n   context initializers and customizers\n\n   any difference in this list is a new startup",
+   "note": "**하나라도 다르면 새로** 뜬다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨텍스트가 비싼 이유",
+   "md": "**스프링 부트 기동이 3초쯤**이다.\n\n| | |\n|---|---|\n| 클래스 스캔 | |\n| 자동 설정 평가 | 100개 넘는 조건 |\n| 빈 생성 | 312개(5.7절) |\n| DataSource·JPA | 스키마 생성 |\n\n> **테스트 본문은 밀리초**다.\n> **기동이 대부분**이다.\n\n**캐시가 그걸 막아** 준다.\n\n> **같은 키면 재사용**한다.\n> **`hitCount` 가 그것**이다(5.7절).\n\n**JVM 하나 안에서만** 유효하다.\n\n> **그레이들이 `forkEvery` 로 JVM 을 나누면 캐시가** 날아간다.\n> **8.4절의 병렬 실행과도** 얽힌다.\n\n**`maxSize` 는 32**다.\n\n```\nspring.test.context.cache.maxSize=32\n```\n\n> **넘으면 LRU 로** 버린다.\n> **버려진 걸 다시 쓰면 또** 띄운다.\n>\n> **컨텍스트가 40개면 캐시가 계속** 돈다."
+  },
+  {
+   "type": "figure",
+   "caption": "기동 횟수의 값",
+   "ascii": "   what the startup count costs\n\n   100 test classes, 1 context      3s once\n   100 test classes, 7 contexts    21s of startup\n   100 test classes, 40 contexts   120s of startup\n\n   the test bodies did not change\n   only how many times spring booted",
+   "note": "**본문은 안 바뀌었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "줄이는 네 가지",
+   "md": "**① 공통 부모 클래스**\n\n```java\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n    @MockBean protected MailSendClient mailSendClient;\n    @AfterEach void tearDown() { ... }\n}\n```\n\n> **5.7·5.9절에서 이미** 했다.\n> **`@MockBean` 을 부모에 모으는 게** 핵심이다.\n\n**② 슬라이스를 남발 안 한다**\n\n> **`@WebMvcTest(controllers = A.class)` 와 `= B.class` 는 다른** 키다.\n> **컨트롤러가 열이면 컨텍스트가** 열이다.\n>\n> **`ControllerTestSupport` 에 다 모은다**(5.7절).\n\n**③ `properties` 를 인라인으로 안 쓴다**\n\n```java\n@SpringBootTest(properties = \"spring.jpa.show-sql=true\")   // 새 키\n```\n\n> **프로파일로** 옮긴다. **8.2절**이다.\n\n**④ `@DirtiesContext` 를 피한다**\n\n```java\n@DirtiesContext\n@Test\nvoid test() { }\n```\n\n> **끝나면 컨텍스트를** 버린다. **다음이 새로** 뜬다.\n>\n> **\"상태가 오염된다\" 는 문제를 컨텍스트 재기동으로** 푸는 것이다.\n> **5.9절의 `tearDown` 이 훨씬** 싸다.\n\n**측정이 먼저**다.\n\n```yaml\nlogging.level.org.springframework.test.context.cache: debug\n```\n\n> **`size` 와 `missCount` 를** 본다.\n> **`missCount` 가 기동 횟수**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 지금 몇 개인지 ---\n\nlogging:\n  level:\n    org.springframework.test.context.cache: debug\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n  Spring test ApplicationContext cache statistics:\n    [size = 3, maxSize = 32, parentContextCount = 0,\n     hitCount = 9, missCount = 3]\n\n#   3개 떴고 9번 재사용했다\n\n#   @DataJpaTest, @SpringBootTest, @WebMvcTest 각각 하나\n\n# --- 공통 부모를 없애면 ---\n\n#   IntegrationTestSupport 상속을 풀고\n#   각 클래스에 @SpringBootTest 와 @MockBean 을 직접\n\n@SpringBootTest\nclass OrderServiceTest {\n    @MockBean MailSendClient mailSendClient;\n}\n\n@SpringBootTest\nclass ProductServiceTest { }\n\n@SpringBootTest\nclass OrderStatisticsServiceTest {\n    @MockBean MailSendClient mailSendClient;\n    @MockBean SlackClient slackClient;\n}\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 6, maxSize = 32, hitCount = 6, missCount = 6]\n\nBUILD SUCCESSFUL in 47s\n\n#   3개가 6개가 됐다\n\n#   31초가 47초다\n\n#   16초가 기동에 더 들었다\n\n# --- 어느 키가 다른지 ---\n\n$ ./gradlew test 2>&1 | grep \"Storing ApplicationContext\" | head -6\n\nStoring ApplicationContext [1234] in cache under key\n  [WebMergedContextConfiguration@... contextCustomizers = set[\n    MockitoContextCustomizer [mockedBeans = []], ...]]\n\nStoring ApplicationContext [5678] in cache under key\n  [WebMergedContextConfiguration@... contextCustomizers = set[\n    MockitoContextCustomizer [mockedBeans = [MailSendClient]], ...]]\n\nStoring ApplicationContext [9012] in cache under key\n  [WebMergedContextConfiguration@... contextCustomizers = set[\n    MockitoContextCustomizer [mockedBeans = [MailSendClient, SlackClient]], ...]]\n\n#   mockedBeans 가 키에 들어 있다\n\n#   [] 와 [MailSendClient] 와 [MailSendClient, SlackClient] 가 다 다르다\n\n# --- 부모로 되돌리면 ---\n\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n    @MockBean protected MailSendClient mailSendClient;\n    @MockBean protected SlackClient slackClient;\n}\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 3, maxSize = 32, hitCount = 9, missCount = 3]\n\nBUILD SUCCESSFUL in 31s\n\n#   다시 3개, 31초다\n\n#   ProductServiceTest 는 메일도 슬랙도 안 쓰는데 목이 떠 있다\n\n#   그게 5.7절에서 말한 대가다\n\n# --- 컨트롤러를 하나 더 만들면 ---\n\n@WebMvcTest(controllers = ProductController.class)\nclass ProductControllerTest {\n    @MockBean ProductService productService;\n}\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 4, maxSize = 32, hitCount = 9, missCount = 4]\n\nBUILD SUCCESSFUL in 34s\n\n#   4개가 됐다\n\n#   controllers 와 @MockBean 이 둘 다 다르다\n\n# --- ControllerTestSupport 로 모으면 ---\n\n@WebMvcTest(controllers = {OrderController.class, ProductController.class})\npublic abstract class ControllerTestSupport {\n    @Autowired protected MockMvc mockMvc;\n    @Autowired protected ObjectMapper objectMapper;\n    @MockBean protected OrderService orderService;\n    @MockBean protected ProductService productService;\n}\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 3, maxSize = 32, hitCount = 10, missCount = 3]\n\nBUILD SUCCESSFUL in 31s\n\n#   다시 3개다\n\n#   컨트롤러가 열이어도 3개다\n\n# --- properties 를 인라인으로 쓰면 ---\n\n@SpringBootTest(properties = \"spring.jpa.show-sql=true\")\nclass ShowSqlTest extends IntegrationTestSupport { }\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 4, maxSize = 32, hitCount = 10, missCount = 4]\n\n#   부모를 상속했는데도 하나 더 떴다\n\n#   properties 가 키에 들어간다\n\n# --- @DirtiesContext 를 붙이면 ---\n\n@DirtiesContext\n@Test\nvoid dirty() { }\n\n$ ./gradlew test 2>&1 | grep -E \"cache statistics|Removing\" | tail -4\n\n    [size = 3, maxSize = 32, hitCount = 8, missCount = 3]\nRemoving ApplicationContext [5678] from cache with key [...]\n    [size = 2, maxSize = 32, hitCount = 8, missCount = 3]\n    [size = 3, maxSize = 32, hitCount = 8, missCount = 4]\n\nBUILD SUCCESSFUL in 35s\n\n#   버렸다가 다시 띄웠다\n\n#   missCount 가 3에서 4가 됐다\n\n#   테스트 하나에 3초가 더 들었다\n\n# --- 100개 클래스면 어떻게 되나 (계산) ---\n\n#   컨텍스트 1개    3초\n#   컨텍스트 7개    21초\n#   컨텍스트 40개   32개까지만 캐시되고 나머지가 계속 돈다\n\n#   maxSize 를 넘기면\n\nspring.test.context.cache.maxSize=32\n\n#   LRU 로 버려진 게 다시 필요하면 또 띄운다\n\n#   최악은 클래스마다 다른 키일 때다\n\n# --- 지금 상태 ---\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 3, maxSize = 32, hitCount = 10, missCount = 3]\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 31s\n\n#   기동 3번, 9초\n#   나머지 22초가 테스트 본문과 DB 다\n\n# --- 다음 절에서 ---\n\n#   properties 를 프로파일로 옮긴다",
+   "note": "**지금 컨텍스트가 3개, `hitCount` 9** 다.\n\n**공통 부모를 없애면 6개, 31초가 47초**다. **`mockedBeans` 가 캐시 키에** 있다.\n\n**컨트롤러를 하나 더 만들면 4개**가 되고, **`ControllerTestSupport` 로 모으면 다시 3개**다.\n\n**`properties` 를 인라인으로 쓰면 부모를 상속해도 하나 더** 뜬다.\n\n**`@DirtiesContext` 는 버렸다가 다시** 띄운다. **`missCount` 가 4** 가 된다."
+  }
+ ],
+ "recap": [
+  "**캐시 키에 애노테이션·목·프로파일·프로퍼티가** 들어간다.",
+  "**기동이 3초, 테스트 본문은 밀리초**다.",
+  "**공통 부모를 없애면 3개가 6개, 31초가 47초**다.",
+  "**`mockedBeans` 가 키에** 있다.",
+  "**컨트롤러마다 슬라이스를 쓰면 그 수만큼** 뜬다.",
+  "**`properties` 인라인은 상속해도 새 키**다.",
+  "**`@DirtiesContext` 는 버렸다가 다시** 띄운다.",
+  "**`maxSize` 32 를 넘으면 LRU 로** 돈다.",
+  "**측정이 먼저** — `missCount` 가 기동 횟수다."
+ ],
+ "drills": [
+  {
+   "task": "캐시 로그를 켜고 개수를 센다.",
+   "done_when": "`size` 와 `missCount` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "공통 부모 상속을 풀어 본다.",
+   "done_when": "개수와 시간이 느는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`properties` 를 인라인으로 붙여 본다.",
+   "done_when": "컨텍스트가 하나 더 뜨는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@DirtiesContext` 를 붙여 본다.",
+   "done_when": "`Removing` 로그를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "캐시 키에 뭐가 들어가나?",
+   "a": "애노테이션 종류, `@MockBean` 조합, 프로파일, 프로퍼티, 커스터마이저다."
+  },
+  {
+   "q": "왜 기동이 비싼가?",
+   "a": "클래스 스캔·자동 설정·빈 생성·DataSource 로 3초쯤 걸린다."
+  },
+  {
+   "q": "컨텍스트를 줄이는 첫 방법은?",
+   "a": "공통 부모 클래스에 설정과 `@MockBean` 을 모은다."
+  },
+  {
+   "q": "`@DirtiesContext` 의 비용은?",
+   "a": "컨텍스트를 버려 다음에 다시 띄운다. 3초가 더 든다."
+  },
+  {
+   "q": "`maxSize` 를 넘으면?",
+   "a": "LRU 로 버려지고 다시 필요하면 또 띄운다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Context Caching",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}
