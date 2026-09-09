@@ -391,7 +391,7 @@
           "title": "JPQL 과 동적 쿼리",
           "summary": "객체를 대상으로 쓰는 쿼리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -399,7 +399,7 @@
           "title": "예외 변환",
           "summary": "1편 7.4절의 계층으로 온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -407,7 +407,7 @@
           "title": "트랜잭션과 영속성 컨텍스트",
           "summary": "왜 @Transactional 이 필수인가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

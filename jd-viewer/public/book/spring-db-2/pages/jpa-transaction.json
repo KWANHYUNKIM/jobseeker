@@ -1,0 +1,137 @@
+{
+ "book": "spring-db-2",
+ "id": "jpa-transaction",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "트랜잭션과 영속성 컨텍스트",
+ "summary": "왜 @Transactional 이 필수인가.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "영속성 컨텍스트의 생명주기를 안다.",
+  "SQL 이 언제 나가는지 안다.",
+  "`@Transactional` 을 어디에 붙일지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절에서 `update` SQL 이 메서드가 끝난 뒤에** 나갔다. **왜 그런지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "트랜잭션 하나의 일생",
+   "ascii": "   @Transactional\n   --------------\n   begin\n     persistence context created\n\n     em.find(1L)        -> select (miss)  -> cached + snapshot\n     setItemName(...)   -> nothing\n     em.find(1L)        -> cache hit, no sql\n\n   commit\n     flush   compare snapshot   -> update\n     commit  jdbc\n     persistence context closed\n\n   outside a transaction there is no context to keep anything in",
+   "note": "**맨 아랫줄이 `@Transactional` 이 필수인 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "트랜잭션이 없으면",
+   "md": "**`@Transactional` 을 떼고 `update` 를 부르면** 이렇게 된다.\n\n```java\npublic void update(Long itemId, ItemUpdateDto updateParam) {\n    Item findItem = em.find(Item.class, itemId);   // select\n    findItem.setItemName(...);\n}\n// update SQL 이 안 나간다\n```\n\n**변경 감지는 커밋 시점에** 한다. **커밋할 트랜잭션이 없으면 할 시점이 없다.**\n\n**더 나쁜 것**도 있다.\n\n```\nTransactionRequiredException: No EntityManager with actual transaction\n  available for current thread - cannot reliably process 'persist' call\n```\n\n**`persist`·`remove` 는 아예 예외**다. **`find` 는 된다** — 읽기는 트랜잭션 없이도 되니까.\n\n| 연산 | 트랜잭션 없이 |\n|---|---|\n| `find` | **된다** |\n| JPQL 조회 | **된다** |\n| **`persist`** | **예외** |\n| **`remove`** | **예외** |\n| **변경 감지** | **조용히 안 된다** ← 최악 |\n\n**마지막이 위험**하다. **예외도 안 나고 저장도 안 된다.**\n\n> **3장·5장에서는 `@Transactional` 이 선택**이었다. **없으면 각 SQL 이 그때그때 커밋**될 뿐 동작은 했다.\n>\n> **JPA 에서는 필수**다. **이것이 기술 교체의 대가 중 하나**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "그래서 리포지토리에 붙였다",
+   "code": "@Repository\n@Transactional\npublic class JpaItemRepository implements ItemRepository {\n    // ...\n}",
+   "note": "**보통은 서비스에 붙인다.** 여기서 붙인 이유는 **예제 구조** 때문이다.\n\n```java\n// ItemServiceV1 에는 @Transactional 이 없다\npublic class ItemServiceV1 implements ItemService {\n    private final ItemRepository itemRepository;\n}\n```\n\n**서비스가 2.1절의 \"안 바뀌는 것\" 목록**에 있다. **JPA 때문에 서비스를 고치면 규칙이 깨진다.**\n\n**그래서 리포지토리에 붙였다.** **정석은 아니다.**\n\n| 어디에 | 언제 |\n|---|---|\n| **서비스** | **정석** — 비즈니스 단위가 트랜잭션 단위 |\n| 리포지토리 | 예제·단순 CRUD |\n\n> **왜 서비스가 정석인가.** **여러 리포지토리를 함께 부를 때** 하나로 묶여야 한다. **1편 3장의 계좌이체**가 그것이었다 — 출금과 입금이 한 트랜잭션.\n>\n> **리포지토리마다 트랜잭션이면 각각 커밋**된다. **출금은 되고 입금은 안 되는** 그 상황이다.\n\n**6.7절의 지연 로딩과도 얽힌다.** **트랜잭션이 끝나면 컨텍스트가 닫혀** 지연 로딩을 못 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "flush 가 일어나는 때",
+   "ascii": "   flush happens on\n   ----------------\n   commit                        always\n   em.flush()                    manual\n   jpql / criteria query         before running it\n   native query                  before running it\n\n   flush does NOT happen on\n   ------------------------\n   em.find                       reads the cache first\n\n   so: persist then find  -> no sql\n       persist then query -> insert, then select",
+   "note": "**`find` 만 예외**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 쿼리 전에 flush 하나",
+   "md": "**JPQL 은 DB 로 간다.** **1차 캐시를 안 본다.**\n\n```java\nem.persist(new Item(\"itemA\", 10000, 10));\n// 아직 insert 가 안 나갔다 (전략에 따라)\n\nList<Item> items = em.createQuery(\"select i from Item i\", Item.class)\n        .getResultList();\n// 방금 저장한 것이 안 나오면 이상하다\n```\n\n**그래서 하이버네이트가 쿼리 전에 flush** 한다. **쓰기 지연에 쌓인 것을 먼저 보낸다.**\n\n**`em.find` 는 다르다.** **캐시를 먼저 보니 flush 가 필요 없다.**\n\n> **이 규칙 때문에 로그 순서가 헷갈릴 수** 있다. **`insert` 가 `select` 바로 앞에** 붙어 나온다 — 내가 쓴 순서가 아니라 **하이버네이트가 정한 순서**다.\n\n**`IDENTITY` 전략은 예외**다.\n\n```java\n@GeneratedValue(strategy = GenerationType.IDENTITY)\n```\n\n**id 를 DB 가 만드니 `persist` 즉시 `insert`** 를 날려야 한다. **id 없이는 영속성 컨텍스트에 넣을 수 없으니까.**\n\n| 전략 | `persist` 시점 |\n|---|---|\n| **`IDENTITY`** | **즉시 insert** |\n| `SEQUENCE` | 시퀀스만 조회, insert 는 나중 |\n\n**그래서 `IDENTITY` 는 배치 insert 를 못 쓴다** — 3.8절에서 예고한 그 이야기다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 트랜잭션 로그",
+   "sql": "# --- @Transactional 안에서 update ---\n\n#   Creating new transaction with name [JpaItemRepository.update]\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   begin\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.id=?\n#   binding parameter [1] as [BIGINT] - [1]\n\n#   (setter 세 번 — 로그 없음)\n\n#   (메서드 종료)\n\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n#   binding parameter [1] as [VARCHAR] - [itemA-updated]\n\n#   committing\n#   Closing JPA EntityManager\n\n# 커밋 직전에 update 가 나갔다\n\n# --- @Transactional 을 떼면 ---\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n\n#   (setter 세 번)\n#   (메서드 종료)\n\n#   (update 가 없다)\n\nselect item_name from item where id = 1;\n#   -> itemA        (안 바뀌었다)\n\n# 예외도 안 났다\n\n# --- persist 를 트랜잭션 없이 ---\n\n#   TransactionRequiredException:\n#     No EntityManager with actual transaction available for current thread\n\n# --- flush 순서 확인 ---\n\nem.persist(new Item(\"itemB\", 20000, 20));\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n#   (IDENTITY 라 즉시)\n\nem.find(Item.class, savedId);\n#   (SQL 없음 — 캐시)\n\nem.createQuery(\"select i from Item i\", Item.class).getResultList();\n#   Hibernate: select i1_0.id, ... from item i1_0\n#   (flush 할 것이 없었다. 이미 insert 됐다.)\n\n# --- 변경 후 쿼리를 날리면 ---\n\nfindItem.setPrice(99999);\nem.createQuery(\"select i from Item i\", Item.class).getResultList();\n\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n#   Hibernate: select i1_0.id, ... from item i1_0\n\n# 쿼리 전에 update 가 먼저 나갔다",
+   "note": "**두 번째 블록이 이 절의 경고**다. **`update` 가 없다.** **예외도 없다.** **DB 도 안 바뀌었다.** **가장 찾기 어려운 종류의 버그**다.\n\n**마지막 블록에서 `update` 가 `select` 앞에** 나왔다. **내가 쓴 순서와 다르다.** **flush 규칙이 정한 순서**다.\n\n> **이것이 6.1절에서 말한 \"SQL 이 나간 시점을 봐야 안다\"** 의 실물이다.\n\n**다음 절에서 개수를 본다.**"
+  }
+ ],
+ "recap": [
+  "**영속성 컨텍스트는 트랜잭션과 같이 태어나고 죽는다.**",
+  "**변경 감지는 커밋 시점**에 한다 — 커밋이 없으면 안 한다.",
+  "**`persist`·`remove` 는 트랜잭션 없이 예외**, `find` 는 된다.",
+  "**변경 감지는 조용히 안 된다** — 최악의 경우다.",
+  "**3장·5장에서는 선택, JPA 에서는 필수**다.",
+  "**정석은 서비스**에 붙이는 것이다 — 이 예제는 구조 때문에 리포지토리다.",
+  "**JPQL·네이티브 쿼리 전에 flush** 한다.",
+  "**`em.find` 는 캐시를 보니 flush 를 안 한다.**",
+  "**`IDENTITY` 는 `persist` 즉시 insert** — 배치를 못 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`@Transactional` 을 떼고 `update` 를 부른다.",
+   "done_when": "SQL 도 예외도 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "트랜잭션 없이 `persist` 를 부른다.",
+   "done_when": "`TransactionRequiredException` 을 봤다.",
+   "minutes": 5
+  },
+  {
+   "task": "변경 후 JPQL 을 날린다.",
+   "done_when": "`update` 가 `select` 앞에 나가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`SEQUENCE` 전략으로 바꿔 `persist` 로그를 본다.",
+   "done_when": "insert 시점이 달라지는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "변경 감지는 언제 하나?",
+   "a": "커밋 시점의 flush 에서 스냅숏과 비교한다."
+  },
+  {
+   "q": "트랜잭션 없이 수정하면?",
+   "a": "예외 없이 조용히 저장이 안 된다."
+  },
+  {
+   "q": "트랜잭션 없이 `persist` 하면?",
+   "a": "`TransactionRequiredException` 이 난다."
+  },
+  {
+   "q": "JPQL 실행 전에 왜 flush 하나?",
+   "a": "JPQL 은 DB 로 가므로, 아직 안 보낸 변경이 결과에서 빠지지 않게 하려고."
+  },
+  {
+   "q": "`IDENTITY` 전략의 대가는?",
+   "a": "`persist` 즉시 insert 를 날려야 해서 배치 insert 를 못 쓴다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

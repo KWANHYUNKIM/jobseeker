@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "jpa-exception",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "예외 변환",
+ "summary": "1편 7.4절의 계층으로 온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JPA 예외가 어떻게 변환되는지 안다.",
+  "`@Repository` 가 하는 일을 안다.",
+  "서비스가 안 바뀌는 이유를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 6장에서 만든 예외 추상화**가 **세 번째 기술에서도 성립하는지** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 겹의 예외",
+   "ascii": "   SQLIntegrityConstraintViolationException     jdbc\n        |\n   ConstraintViolationException                 hibernate\n        |\n   PersistenceException                         jpa standard\n        |\n   DataIntegrityViolationException              spring\n\n   who does the last arrow\n   -----------------------\n   @Repository  ->  PersistenceExceptionTranslationPostProcessor\n                    wraps the bean in an aop proxy\n                    that catches and translates",
+   "note": "**마지막 화살표를 `@Repository` 가 만든다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`@Repository` 가 진짜로 하는 일",
+   "md": "**컴포넌트 스캔 대상이 되는 것**이 다가 아니다.\n\n| `@Repository` 가 하는 일 |\n|---|\n| `@Component` — 빈 등록 |\n| **예외 변환 AOP 적용 대상 표시** |\n\n**두 번째가 이 절의 주제**다.\n\n**부트가 `PersistenceExceptionTranslationPostProcessor` 를 자동 등록**한다. 그것이 **`@Repository` 붙은 빈을 프록시로 감싼다.**\n\n```\nitemRepository.getClass()\n  ->  class hello...JpaItemRepository$$SpringCGLIB$$0\n```\n\n**메서드를 부르면 프록시가 `try-catch`** 를 한다.\n\n```java\n// 개념적으로\ntry {\n    return method.invoke(target, args);\n} catch (RuntimeException ex) {\n    throw translator.translateExceptionIfPossible(ex);\n}\n```\n\n> **2.4절에서 `@Repository` 를 떼고 `@Bean` 으로** 등록했었다. **그런데 6.3절의 `JpaItemRepository` 에는 `@Repository` 가 붙어 있다.**\n>\n> **`@Bean` 으로 등록해도 애너테이션은 남는다** — 후처리기는 **빈에 붙은 애너테이션**을 본다. **컴포넌트 스캔과 무관**하다."
+  },
+  {
+   "type": "figure",
+   "caption": "붙이지 않으면",
+   "ascii": "   with @Repository            without @Repository\n   ----------------            -------------------\n   service catches             service catches\n     DataIntegrityViolation      PersistenceException\n                                 (jakarta.persistence)\n\n   swap to mybatis: still      swap to mybatis: breaks\n   compiles, still catches     nothing catches it",
+   "note": "**아래 두 줄이 이 책의 관심사**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 무엇으로 바뀌나",
+   "md": "| JPA / 하이버네이트 | 스프링 |\n|---|---|\n| `EntityExistsException` | `DataIntegrityViolationException` |\n| `ConstraintViolationException` | **`DataIntegrityViolationException`** |\n| (중복 키) | **`DuplicateKeyException`** |\n| `NoResultException` | `EmptyResultDataAccessException` |\n| `NonUniqueResultException` | `IncorrectResultSizeDataAccessException` |\n| `OptimisticLockException` | **`OptimisticLockingFailureException`** |\n| `PessimisticLockException` | `PessimisticLockingFailureException` |\n\n**아래 두 줄이 JPA 에만 있는 것**이다. **낙관적 락**(`@Version`)은 JdbcTemplate 에 없는 개념이다.\n\n> **1편 6.4절에서 만든 표**에 **줄이 늘었다.** **추상 계층은 하위 기술이 늘면 넓어진다.**\n\n**`getResultList()` 는 예외를 안 던진다** — 빈 리스트다. **`getSingleResult()` 가 던진다.** **3.8절의 `queryForObject` 와 같은 구도**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "예외가 나면 롤백만 되는 것이 아니다",
+   "md": "**JPA 에는 한 가지가 더** 있다.\n\n> **`PersistenceException` 이 나면 영속성 컨텍스트를 못 믿는다.**\n\n**JPA 표준이 그렇게 정했다.** **예외가 난 뒤의 `EntityManager` 는 상태가 어긋났을 수 있어**, **트랜잭션을 롤백하고 새로 시작**해야 한다.\n\n```java\ntry {\n    itemRepository.save(중복된것);\n} catch (DataIntegrityViolationException e) {\n    // 여기서 다른 엔티티를 저장하면?\n    itemRepository.save(다른것);   // 하면 안 된다\n}\n```\n\n**잡고 계속 진행하면 안 된다.** **JdbcTemplate 이었다면 됐을 코드**다.\n\n| | 예외를 잡고 계속 |\n|---|---|\n| JdbcTemplate | **된다** — 커넥션이 멀쩡하다 |\n| **JPA** | **위험하다** — 컨텍스트가 어긋났다 |\n\n> **12.4절에서 이 이야기를 다시** 한다. **\"예외를 잡아서 복구한다\" 는 시도가 트랜잭션에서 왜 어려운지** — 전파와 함께 보면 더 분명해진다.\n>\n> **이것이 추상화가 새는 자리**다. **같은 `DataAccessException` 인데 잡은 뒤에 할 수 있는 일이 다르다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 중복 키로 저장 ---\n#   (id 를 직접 지정해서 이미 있는 것과 충돌시킨다)\n\nrepository.save(item);\n\n#   Hibernate: insert into item (item_name,price,quantity,id) values (?,?,?,?)\n#   binding parameter [4] as [BIGINT] - [1]\n\n#   SQL Error: 23505, SQLState: 23505\n#   Unique index or primary key violation: \"PRIMARY KEY ON PUBLIC.ITEM(ID)\"\n\n#   HHH000010: On release of batch it still contained JDBC statements\n\n#   org.springframework.dao.DataIntegrityViolationException:\n#     could not execute statement [Unique index or primary key violation...]\n#   Caused by: jakarta.persistence.PersistenceException\n#   Caused by: org.hibernate.exception.ConstraintViolationException\n#   Caused by: org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException\n\n# 네 겹이 그대로 보인다\n\n# --- @Repository 를 떼면 ---\n\n#   jakarta.persistence.PersistenceException:\n#     org.hibernate.exception.ConstraintViolationException\n\n#   (스프링 예외가 아니다)\n\n# --- 프록시 확인 ---\nlog.info(\"repo class={}\", itemRepository.getClass());\n\n#   repo class=class hello...JpaItemRepository$$SpringCGLIB$$0\n\n# --- getSingleResult - 결과가 없으면 ---\n\nem.createQuery(\"select i from Item i where i.id = :id\", Item.class)\n  .setParameter(\"id\", 999L)\n  .getSingleResult();\n\n#   Hibernate: select ... from item i1_0 where i1_0.id=?\n#   <== 0 rows\n\n#   EmptyResultDataAccessException\n\n# --- getResultList - 결과가 없으면 ---\n\n#   Hibernate: select ... from item i1_0 where i1_0.id=?\n#   <== 0 rows\n#   -> []      (예외 없음)\n\n# --- 서비스 코드 ---\n#   3장, 5장, 6장 모두 같다\n#   try { ... } catch (DataAccessException e) { ... }",
+   "note": "**첫 블록에 네 겹이 `Caused by` 로 그대로** 쌓여 있다. **JDBC → 하이버네이트 → JPA → 스프링.**\n\n**`@Repository` 를 떼면 스프링 예외가 안 온다.** **서비스의 `catch` 가 안 걸린다.**\n\n**`$$SpringCGLIB$$0`** 이 후처리기가 만든 프록시다. **5.7절의 `$Proxy67` 과 종류가 다르다** — 그쪽은 인터페이스 프록시, 이쪽은 CGLIB 프록시다.\n\n**맨 아랫줄이 이 절의 결론**이다. **세 기술을 오갔는데 서비스의 `catch` 가 한 글자도 안 바뀌었다.**"
+  }
+ ],
+ "recap": [
+  "**JDBC → 하이버네이트 → JPA → 스프링** 네 겹이다.",
+  "**`@Repository`** 가 예외 변환 AOP 의 표시다.",
+  "**`PersistenceExceptionTranslationPostProcessor`** 가 프록시로 감싼다.",
+  "**컴포넌트 스캔과 무관**하다 — `@Bean` 으로 등록해도 애너테이션을 본다.",
+  "**낙관적 락 예외**가 1편의 표에 새로 늘었다.",
+  "**`getResultList` 는 빈 리스트, `getSingleResult` 는 예외**.",
+  "**JPA 예외 뒤에는 영속성 컨텍스트를 못 믿는다.**",
+  "**잡고 계속 진행하면 안 된다** — JdbcTemplate 과 다른 점.",
+  "**서비스의 `catch` 가 세 기술 내내 안 바뀌었다.**"
+ ],
+ "drills": [
+  {
+   "task": "중복 키로 저장해 예외 체인을 본다.",
+   "done_when": "네 겹이 `Caused by` 로 쌓인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Repository` 를 떼고 같은 것을 해 본다.",
+   "done_when": "스프링 예외가 안 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리의 클래스 이름을 찍는다.",
+   "done_when": "CGLIB 프록시인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`getSingleResult` 와 `getResultList` 를 빈 결과로 부른다.",
+   "done_when": "한쪽만 예외인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Repository` 의 두 가지 역할은?",
+   "a": "빈 등록과 예외 변환 AOP 적용 대상 표시다."
+  },
+  {
+   "q": "누가 예외를 변환하나?",
+   "a": "`PersistenceExceptionTranslationPostProcessor` 가 만든 프록시다."
+  },
+  {
+   "q": "JPA 에만 있는 예외는?",
+   "a": "낙관적·비관적 락 실패 예외다."
+  },
+  {
+   "q": "JPA 예외를 잡고 계속하면 왜 위험한가?",
+   "a": "영속성 컨텍스트의 상태가 어긋났을 수 있어 표준이 롤백을 요구한다."
+  },
+  {
+   "q": "서비스 코드는 세 기술에서 어떻게 됐나?",
+   "a": "한 글자도 안 바뀌었다. 같은 `DataAccessException` 을 잡는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "jpa-jpql",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "JPQL 과 동적 쿼리",
+ "summary": "객체를 대상으로 쓰는 쿼리.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "JPQL 로 목록 조회를 만든다.",
+  "3.3절의 문제가 그대로인 것을 본다.",
+  "Criteria 와 네이티브 쿼리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`em.find` 는 id 하나로 찾을 때만** 쓴다. **조건으로 찾으려면 쿼리가 필요**하다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 대상으로 쓰나",
+   "ascii": "   sql   -> tables and columns\n           select item_name from item\n\n   jpql  -> entities and fields\n           select i from Item i\n                     ^^^^      class name, not table name\n\n   hibernate translates jpql into sql using the mapping\n\n           select i from Item i where i.itemName like :name\n                |\n           select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n             from item i1_0 where i1_0.item_name like ?",
+   "note": "**`Item` 은 클래스 이름**이다 — 테이블 이름이 아니다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적 쿼리 — JPQL",
+   "code": "@Override\npublic List<Item> findAll(ItemSearchCond cond) {\n    String itemName = cond.getItemName();\n    Integer maxPrice = cond.getMaxPrice();\n\n    String jpql = \"select i from Item i\";\n\n    boolean andFlag = false;\n    if (StringUtils.hasText(itemName)) {\n        jpql += \" where i.itemName like concat('%',:itemName,'%')\";\n        andFlag = true;\n    }\n    if (maxPrice != null) {\n        if (andFlag) {\n            jpql += \" and\";\n        } else {\n            jpql += \" where\";\n        }\n        jpql += \" i.price <= :maxPrice\";\n    }\n\n    TypedQuery<Item> query = em.createQuery(jpql, Item.class);\n    if (StringUtils.hasText(itemName)) {\n        query.setParameter(\"itemName\", itemName);\n    }\n    if (maxPrice != null) {\n        query.setParameter(\"maxPrice\", maxPrice);\n    }\n    return query.getResultList();\n}",
+   "note": "**3.3절의 코드를 다시 보는 것 같다.** 맞다. **거의 같다.**\n\n**오히려 나빠진 부분**도 있다 — **`setParameter` 를 위해 같은 `if` 를 한 번 더** 쓴다. 3.5절의 `BeanPropertySqlParameterSource` 는 객체를 통째로 넘겼는데, **여기는 하나씩** 넣는다.\n\n**`i.itemName`** 은 **필드 이름**이다. `item_name` 이 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "3.3절과 나란히",
+   "ascii": "   3.3  jdbctemplate                6.4  jpql\n   -----------------                ---------\n   String sql = \"select ...\"        String jpql = \"select i from Item i\"\n   if (name) sql += \" where\"        if (name) jpql += \" where\"\n   boolean andFlag                  boolean andFlag\n   if (andFlag) sql += \" and\"       if (andFlag) jpql += \" and\"\n\n   the same code. the same flag. the same risk.\n\n   jpa removed sql. it did not remove string building.",
+   "note": "**맨 아랫줄이 이 절의 결론**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JPA 가 안 푸는 문제",
+   "md": "**5.1절에서 미리 말했다.** **JPQL 도 문자열**이다.\n\n| 3.3절의 문제 | JPQL |\n|---|---|\n| 문자열을 붙인다 | **그대로** |\n| 공백·`and` 를 맞춘다 | **그대로** |\n| 컴파일러가 안 잡는다 | **그대로** |\n| 2ⁿ 경우의 수 | **그대로** |\n\n**MyBatis 는 `<where>` 로 셋을 풀었다.** **JPA 에는 그런 것이 없다.**\n\n**오타의 결과만 조금 다르다.**\n\n```java\njpql = \"select i from Item i where i.itemNmae like ...\";\n```\n\n```\nQuerySyntaxException: Could not resolve attribute 'itemNmae' of 'Item'\n```\n\n**SQL 오타보다 낫다.** **JPQL 은 엔티티 메타데이터를 아니까 필드 이름을 검증**한다. **다만 실행할 때** 안다.\n\n> **그래도 3장·5장보다는 낫다.** **컬럼 이름이 아니라 필드 이름**을 쓰니, **DB 스키마가 바뀌어도 매핑만 고치면** 된다.\n>\n> **문자열이라는 사실은 안 바뀐다.** **8장 Querydsl 이 이것을 노린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "표준이 준 답 — Criteria",
+   "md": "**JPA 표준도 이 문제를 알았다.** **자바로 쿼리를 만드는 API** 가 있다.\n\n```java\nCriteriaBuilder cb = em.getCriteriaBuilder();\nCriteriaQuery<Item> cq = cb.createQuery(Item.class);\nRoot<Item> item = cq.from(Item.class);\n\nList<Predicate> conditions = new ArrayList<>();\nif (StringUtils.hasText(itemName)) {\n    conditions.add(cb.like(item.get(\"itemName\"), \"%\" + itemName + \"%\"));\n}\nif (maxPrice != null) {\n    conditions.add(cb.lessThanOrEqualTo(item.get(\"price\"), maxPrice));\n}\ncq.where(cb.and(conditions.toArray(new Predicate[0])));\n\nreturn em.createQuery(cq).getResultList();\n```\n\n**`andFlag` 가 사라졌다.** **리스트에 담고 `cb.and` 가 이어 준다** — **`<where>` 와 같은 발상**이다.\n\n**그런데 아무도 안 쓴다.**\n\n| 왜 | |\n|---|---|\n| **읽기 어렵다** | 위 코드가 무슨 쿼리인지 한눈에 안 보인다 |\n| **`item.get(\"itemName\")` 이 문자열** | **결국 오타를 못 잡는다** |\n| 조인이 들어가면 급격히 복잡 | |\n\n> **두 번째가 결정적**이다. **그렇게 복잡해졌는데 오타는 여전히 못 잡는다.** 메타모델(`Item_.itemName`)을 생성하면 잡히지만, **그러면 더 복잡해진다.**\n>\n> **8장 Querydsl 이 같은 목표를 훨씬 읽기 쉽게** 이룬다. **Criteria 는 그 사이의 실패한 시도**로 기억하면 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "네이티브 쿼리",
+   "md": "**JPQL 로 안 되는 것**이 있다.\n\n```java\nString sql = \"select * from item where item_name like ? \" +\n             \"order by price desc limit 10\";\nList<Item> result = em.createNativeQuery(sql, Item.class)\n        .setParameter(1, \"%\" + itemName + \"%\")\n        .getResultList();\n```\n\n**DB 고유 기능**이 필요할 때 쓴다 — 윈도우 함수, 힌트, `MERGE`.\n\n**대가가 있다.**\n\n| 대가 | |\n|---|---|\n| **컬럼 이름을 쓴다** | 매핑의 이점이 사라진다 |\n| **DB 방언에 묶인다** | 4.7절의 그 위험 |\n| **영속성 컨텍스트를 안 거친다** | **flush 를 강제**한다 |\n\n**세 번째가 함정**이다. **네이티브 쿼리를 날리기 전에 하이버네이트가 쓰기 지연을 비운다** — 안 그러면 **아직 DB 에 없는 데이터를 조회**하게 되니까.\n\n> **그럴 바에는 JdbcTemplate 을 쓰는 편**이 낫다. **3.9절에서 \"JPA 프로젝트에서도 JdbcTemplate 을 쓴다\" 고 한 이유**다. **의존관계도 이미 있다**(6.2절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 조건 없음\nfindAll(new ItemSearchCond(null, null));\n\n#   jpql = select i from Item i\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n\n# 이름만\nfindAll(new ItemSearchCond(\"itemA\", null));\n\n#   jpql = select i from Item i where i.itemName like concat('%',:itemName,'%')\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n#              where i1_0.item_name like ? escape ''\n#   binding parameter [1] as [VARCHAR] - [%itemA%]\n\n#   escape '' 는 내가 안 썼다\n\n# 가격만\nfindAll(new ItemSearchCond(null, 10000));\n\n#   jpql = select i from Item i where i.price <= :maxPrice\n\n#   Hibernate: select ... from item i1_0 where i1_0.price<=?\n\n# 둘 다\nfindAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   jpql = select i from Item i where i.itemName like concat('%',:itemName,'%')\n#          and i.price <= :maxPrice\n\n#   Hibernate: select ... from item i1_0\n#              where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# --- andFlag 를 빠뜨리면 ---\n\n#   jpql = select i from Item i where i.itemName like ... i.price <= :maxPrice\n\n#   QuerySyntaxException: unexpected token: i near line 1\n\n#   (네 번째 경우에서만 터진다. 3.3절과 똑같다.)\n\n# --- 필드 이름을 틀리면 ---\n\n#   jpql = select i from Item i where i.itemNmae like ...\n\n#   SemanticException: Could not resolve attribute 'itemNmae' of 'Item'\n\n#   (SQL 이 아예 안 나갔다. 3장보다는 낫다.)\n\n# --- 3장·5장과 비교 ---\n#   3장  select id, item_name, price, quantity from item\n#        where item_name like concat('%',?,'%') and price <= ?\n#   6장  select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#        from item i1_0\n#        where i1_0.item_name like ? escape '' and i1_0.price<=?",
+   "note": "**`escape ''` 를 내가 안 썼다.** 하이버네이트가 붙였다 — **`like` 의 이스케이프 문자를 명시**한 것이다.\n\n**`%itemA%` 가 파라미터로** 갔다. **JPQL 의 `concat` 이 SQL 에 없다** — 하이버네이트가 미리 계산했다.\n\n**`andFlag` 를 빠뜨린 결과가 3.3절과 똑같다** — **네 번째 경우에서만** 터진다.\n\n**필드 이름 오타는 SQL 이 아예 안 나간다.** **3장보다 한 걸음 낫다.**\n\n**다음 절에서 예외를 본다.**"
+  }
+ ],
+ "recap": [
+  "**JPQL 은 엔티티와 필드**를 대상으로 쓴다.",
+  "**`Item` 은 클래스 이름**, `i.itemName` 은 필드 이름이다.",
+  "**3.3절의 문제 넷이 그대로**다 — JPA 는 SQL 을 없앴지 문자열 조립을 없애지 않았다.",
+  "**`setParameter` 때문에 `if` 를 한 번 더** 쓴다.",
+  "**필드 이름 오타는 SQL 이 안 나가고** 터진다 — 3장보다 낫다.",
+  "**Criteria** 가 표준의 답이었지만 아무도 안 쓴다.",
+  "**`item.get(\"itemName\")` 이 문자열**이라 결국 오타를 못 잡는다.",
+  "**네이티브 쿼리는 flush 를 강제**하고 방언에 묶인다.",
+  "**`escape ''` 는 하이버네이트가 붙인 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "JPQL 로 `findAll` 을 만들고 네 경우를 돌린다.",
+   "done_when": "JPQL 과 SQL 을 나란히 로그로 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "필드 이름에 오타를 낸다.",
+   "done_when": "SQL 이 안 나가고 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`andFlag` 를 빠뜨린다.",
+   "done_when": "3.3절과 같은 경우에서 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "Criteria 로 같은 것을 만들어 본다.",
+   "done_when": "왜 안 쓰이는지 말할 수 있다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JPQL 은 무엇을 대상으로 쓰나?",
+   "a": "엔티티 클래스와 필드다. 테이블·컬럼이 아니다."
+  },
+  {
+   "q": "3.3절의 문제 중 무엇이 풀렸나?",
+   "a": "하나도 안 풀렸다. 문자열 조립이 그대로다."
+  },
+  {
+   "q": "JPQL 오타가 SQL 오타보다 나은 점은?",
+   "a": "엔티티 메타데이터로 필드 이름을 검증해 SQL 이 아예 안 나간다."
+  },
+  {
+   "q": "Criteria 가 안 쓰이는 이유는?",
+   "a": "읽기 어렵고, `get(\"필드명\")` 이 문자열이라 결국 오타를 못 잡는다."
+  },
+  {
+   "q": "네이티브 쿼리의 대가 셋은?",
+   "a": "컬럼 이름을 쓰고, 방언에 묶이고, flush 를 강제한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
