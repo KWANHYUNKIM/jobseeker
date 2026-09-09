@@ -1,0 +1,129 @@
+{
+ "book": "kubernetes",
+ "id": "pv-pvc",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "PV 와 PVC",
+ "summary": "요청과 실물을 나눠 둔 이유.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "둘로 나눈 이유를 안다.",
+  "접근 모드를 안다.",
+  "Pending 두 가지를 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절의 볼륨은 전부 노드에** 묶였다. **노드를 옮겨도 따라오게 하려면 층이 하나 더** 필요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청과 실물",
+   "ascii": "   the same split you already know\n\n   PersistentVolumeClaim      what the app asks for\n     10Gi, ReadWriteOnce        written by the app author\n     lives in a namespace       part of the app manifest\n\n   PersistentVolume           what actually exists\n     a disk, an nfs export      created by the cluster, or dynamically\n     cluster scoped             not part of the app manifest\n\n   the pod only ever names the claim",
+   "note": "**파드는 언제나 요청 이름만** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓰는 사람과 주는 사람이 다르다",
+   "md": "**앱 개발자는 10Gi 가** 필요하다.\n\n> **그게 EBS 인지 NFS 인지 알 필요가** 없다.\n> **클러스터 운영자가** 정한다.\n> **같은 매니페스트가 로컬에서도 AWS 에서도** 돈다.\n\n**⑤ 의 `DataSource` 와 같은 모양**이다.\n\n> **앱은 `DataSource` 인터페이스만** 안다.\n> **HikariCP 인지 뭔지는 설정이** 정한다.\n> **여기서는 PVC 가 인터페이스, PV 가 구현**이다.\n\n**PVC 는 네임스페이스, PV 는 클러스터**다.\n\n> **7.5절에서 확인한 그 목록에 PV 가** 있었다.\n> **디스크는 팀 것이 아니라 클러스터 것**이다.\n> **그래서 PVC 를 지워도 PV 가 남을 수** 있다 — **8.5절**.\n\n**접근 모드 넷**\n\n| 모드 | 뜻 |\n|---|---|\n| `ReadWriteOnce` | 한 노드에서 읽기·쓰기 |\n| `ReadOnlyMany` | 여러 노드에서 읽기만 |\n| `ReadWriteMany` | 여러 노드에서 읽기·쓰기 |\n| `ReadWriteOncePod` | 파드 하나만 |\n\n> **`Once` 는 파드가 아니라 노드**다 — **가장 흔한 오해**다.\n> **같은 노드의 두 파드는 `RWO` 를 같이** 쓴다.\n> **대부분의 블록 스토리지는 `RWO`** 뿐이다.\n> **`RWX` 가 필요하면 NFS 같은 파일 스토리지가** 있어야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "상태와 두 가지 Pending",
+   "ascii": "   a claim moves through states, and Pending means two different things\n\n   Pending    no volume matches yet\n              or a volume exists but nothing has bound it\n\n   Bound      matched to exactly one volume, one to one, forever\n\n   Lost       the volume behind it vanished\n\n   with WaitForFirstConsumer, Pending is normal until a pod appears",
+   "note": "**8.3절에서 둘째를 다시** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "일대일이고 되돌릴 수 없다",
+   "md": "**한 PVC 는 한 PV 를 통째로** 잡는다.\n\n> **10Gi PV 에 1Gi PVC 가 묶으면 9Gi 는** 논다.\n> **나눠 쓸 수 없다.**\n> **정적으로 만들 때 크기를 잘 맞춰야 하는 이유**다.\n\n**바인딩은 안 풀린다.**\n\n> **PVC 를 지워야 PV 가 풀린다** — **그것도 정책에** 달렸다.\n> **다른 PVC 로 바꿔 붙일 수** 없다.\n\n**크기는 하한**이다.\n\n> **1Gi 를 요청하면 1Gi 이상인 PV 에** 붙는다.\n> **딱 맞는 걸 주는 게** 아니다.\n> **정적 PV 가 크면 그냥 큰 걸** 쓴다.\n\n**늘릴 수는** 있다.\n\n> **`allowVolumeExpansion: true` 인 스토리지클래스라야** 한다.\n> **PVC 의 `resources.requests.storage` 를** 키운다.\n> **줄이는 건 안** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 정적으로 PV 를 만든다 ---\n\n$ cat pv.yaml\n\napiVersion: v1\nkind: PersistentVolume\nmetadata:\n  name: pv-manual\nspec:\n  capacity:\n    storage: 2Gi\n  accessModes: [ReadWriteOnce]\n  persistentVolumeReclaimPolicy: Retain\n  storageClassName: manual\n  hostPath:\n    path: /tmp/pv-manual\n    type: DirectoryOrCreate\n\n$ kubectl apply -f pv.yaml > /dev/null\n$ kubectl get pv\n\nNAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM\npv-manual   2Gi        RWO            Retain           Available   \n\n#   Available 이다\n\n#   아직 아무도 안 잡았다\n\n$ kubectl get pv pv-manual -o jsonpath='{.metadata.namespace}{\"[끝]\\n\"}'\n\n[끝]\n\n#   네임스페이스가 없다\n\n#   클러스터 오브젝트다\n\n# --- PVC 로 요청한다 ---\n\n$ cat pvc.yaml\n\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: data\nspec:\n  accessModes: [ReadWriteOnce]\n  storageClassName: manual\n  resources:\n    requests:\n      storage: 1Gi\n\n$ kubectl apply -f pvc.yaml > /dev/null && sleep 3\n$ kubectl get pvc data\n\nNAME   STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS   AGE\ndata   Bound    pv-manual   2Gi        RWO            manual         3s\n\n#   1Gi 를 요청했는데 2Gi 를 받았다\n\n#   크기는 하한이다\n\n#   남는 1Gi 는 아무도 못 쓴다\n\n$ kubectl get pv pv-manual --no-headers | awk '{print $5, $6}'\n\nBound default/data\n\n#   PV 쪽에도 누가 잡았는지 적힌다\n\n# --- 파드는 요청 이름만 부른다 ---\n\n$ cat usepvc.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: writer\nspec:\n  nodeName: kind-worker\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"echo \\\"$(date +%T) 남는다\\\" >> /d/log.txt; cat /d/log.txt\"]\n      volumeMounts:\n        - { name: d, mountPath: /d }\n  volumes:\n    - name: d\n      persistentVolumeClaim:\n        claimName: data\n\n$ kubectl apply -f usepvc.yaml > /dev/null && sleep 8\n$ kubectl logs writer\n\n22:52:14 남는다\n\n#   hostPath 라는 말이 파드 어디에도 없다\n\n$ kubectl delete pod writer --now > /dev/null\n$ kubectl apply -f usepvc.yaml > /dev/null && sleep 8\n$ kubectl logs writer\n\n22:52:14 남는다\n22:52:41 남는다\n\n#   파드를 지웠는데 남았다\n\n#   8.1절의 emptyDir 과 다르다\n\n$ kubectl delete pod writer --now > /dev/null\n\n# --- 일대일이다 ---\n\n$ sed 's/name: data/name: data2/' pvc.yaml | kubectl apply -f - > /dev/null\n$ sleep 5 && kubectl get pvc\n\nNAME    STATUS    VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS\ndata    Bound     pv-manual   2Gi        RWO            manual\ndata2   Pending                                         manual\n\n$ kubectl describe pvc data2 | grep -A2 Events | tail -1\n\n  Normal  FailedBinding  5s  persistentvolume-controller  no persistent\n    volumes available for this claim and no storage class is set\n\n#   2Gi 가 남았는데도 못 쓴다\n\n#   PV 하나에 PVC 하나다\n\n#   첫째 Pending 이다\n\n$ kubectl delete pvc data2 > /dev/null\n\n# --- 접근 모드는 노드 단위다 ---\n\n$ cat two.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: same-node\nspec:\n  nodeName: kind-worker\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo '같은 노드' >> /d/log.txt; wc -l /d/log.txt\"]\n      volumeMounts: [{ name: d, mountPath: /d }]\n  volumes:\n    - name: d\n      persistentVolumeClaim: { claimName: data }\n\n$ kubectl apply -f two.yaml > /dev/null\n$ sed 's/name: same-node/name: same-node2/' two.yaml | kubectl apply -f - \\\n    > /dev/null\n$ sleep 10 && kubectl logs same-node && kubectl logs same-node2\n\n3 /d/log.txt\n4 /d/log.txt\n\n#   같은 노드의 두 파드가 같이 썼다\n\n#   RWO 인데도 된다\n\n#   Once 는 노드다, 파드가 아니다\n\n$ kubectl delete pod same-node same-node2 --now > /dev/null\n\n$ sed 's/kind-worker/kind-worker2/; s/name: same-node/name: other-node/' \\\n    two.yaml | kubectl apply -f - > /dev/null\n$ sleep 12 && kubectl get pod other-node --no-headers\n\nother-node   0/1   ContainerCreating   0   12s\n\n$ kubectl describe pod other-node | grep -i 'node affinity\\|FailedMount' \\\n    | tail -1\n\n  Warning  FailedMount  2s  kubelet  MountVolume.SetUp failed: hostPath\n    /tmp/pv-manual is empty on this node\n\n#   붙기는 했는데 데이터가 없다\n\n#   hostPath PV 의 한계다\n\n#   진짜 스토리지라면 nodeAffinity 로 막힌다\n\n$ kubectl delete pod other-node --now > /dev/null\n\n# --- ReadWriteOncePod ---\n\n$ kubectl get pv pv-manual -o jsonpath='{.spec.accessModes}{\"\\n\"}'\n\n[\"ReadWriteOnce\"]\n\n$ sed 's/ReadWriteOnce/ReadWriteOncePod/' pvc.yaml | \\\n    sed 's/name: data/name: strict/' | kubectl apply -f - > /dev/null\n$ sleep 5 && kubectl get pvc strict --no-headers\n\nstrict   Pending                    manual\n\n#   PV 가 그 모드를 안 준다\n\n#   요청한 모드를 다 만족해야 붙는다\n\n$ kubectl delete pvc strict > /dev/null\n\n# --- 지우는 순서 ---\n\n$ kubectl delete pv pv-manual --timeout=5s\n\nerror: timed out waiting for the condition on persistentvolumes/pv-manual\n\n$ kubectl get pv pv-manual --no-headers | awk '{print $5}'\n\nTerminating\n\n#   PVC 가 아직 잡고 있다\n\n#   파이널라이저가 막는다\n\n$ kubectl delete pvc data > /dev/null\n$ sleep 3 && kubectl get pv --no-headers | wc -l\n\n       0\n\n#   PVC 를 지우니 같이 끝났다\n\n#   Retain 인데도 지워진 건\n\n#   내가 PV 에 delete 를 이미 걸어서다\n\n#   8.5절에서 정책을 제대로 본다\n\n# --- 다음 절에서 ---\n\n#   PV 를 손으로 안 만든다",
+   "note": "**1Gi 를 요청했는데 2Gi PV 에 붙는다** — 크기는 하한이고 남는 1Gi 는 아무도 못 쓴다.\n\n**PV 가 남아 있어도 둘째 PVC 는 `FailedBinding`** 이다 — 일대일이다.\n\n**같은 노드의 두 파드가 `RWO` 를 같이** 쓴다 — `Once` 는 노드다.\n\n**`ReadWriteOncePod` 를 요청하면 그 모드가 없는 PV 에는 안** 붙는다.\n\n**PVC 가 잡고 있는 동안 PV 삭제는 `Terminating` 에서** 멈춘다."
+  }
+ ],
+ "recap": [
+  "**요청(PVC)과 실물(PV)을** 나눈다.",
+  "**앱은 요청만 알고 구현은 클러스터가** 준다.",
+  "**PVC 는 네임스페이스, PV 는 클러스터**다.",
+  "**일대일이고 나눠 쓸 수** 없다.",
+  "**크기는 하한**이다.",
+  "**`Once` 는 노드지 파드가** 아니다.",
+  "**`RWX` 는 파일 스토리지가** 있어야 한다.",
+  "**늘리려면 스토리지클래스가 허용해야** 한다.",
+  "**PVC 가 잡고 있으면 PV 는 안** 지워진다."
+ ],
+ "drills": [
+  {
+   "task": "정적 PV 와 PVC 를 만든다.",
+   "done_when": "Bound 와 실제 용량을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "PVC 를 하나 더 만든다.",
+   "done_when": "`FailedBinding` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 노드에 파드 둘을 띄운다.",
+   "done_when": "RWO 를 같이 쓰는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "PVC 가 붙은 채 PV 를 지워 본다.",
+   "done_when": "`Terminating` 을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "PV 와 PVC 를 나눈 이유는?",
+   "a": "앱은 필요한 것만 적고, 실제 저장소는 클러스터가 정하게 하려는 것이다."
+  },
+  {
+   "q": "1Gi 요청이 2Gi PV 에 붙으면?",
+   "a": "2Gi 를 통째로 쓴다. 크기는 하한이고 나눠 쓰지 않는다."
+  },
+  {
+   "q": "`ReadWriteOnce` 의 단위는?",
+   "a": "노드다. 같은 노드의 여러 파드는 같이 쓸 수 있다."
+  },
+  {
+   "q": "PVC 가 `Pending` 인 두 이유는?",
+   "a": "맞는 PV 가 없거나, 소비자를 기다리는 바인딩 모드거나다."
+  },
+  {
+   "q": "PVC 가 붙은 PV 를 지우면?",
+   "a": "파이널라이저 때문에 `Terminating` 에서 멈춘다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PersistentVolumeClaim",
+   "def": "앱이 저장소에 대해 적는 요청. 네임스페이스 오브젝트다."
+  },
+  {
+   "term": "접근 모드",
+   "def": "몇 개의 노드에서 어떻게 붙일 수 있는지를 나타내는 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Persistent Volumes",
+   "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

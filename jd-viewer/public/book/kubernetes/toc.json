@@ -427,7 +427,7 @@
           "title": "PV 와 PVC",
           "summary": "요청과 실물을 나눠 둔 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -435,7 +435,7 @@
           "title": "스토리지클래스",
           "summary": "동적 프로비저닝.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",

@@ -1,0 +1,139 @@
+{
+ "book": "kubernetes",
+ "id": "storageclass",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "스토리지클래스",
+ "summary": "동적 프로비저닝.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "동적 프로비저닝을 안다.",
+  "바인딩 모드 둘을 구분한다.",
+  "기본 클래스를 다룬다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 PV 를 손으로** 썼다. **실제로는 거의 안 그런다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "누가 일하나",
+   "ascii": "   static versus dynamic, in who does the work\n\n   static     an operator creates a PV up front\n              a claim finds it, or waits forever\n\n   dynamic    a claim names a StorageClass\n              the provisioner creates a PV to fit, on demand\n              nobody wrote a PV yaml at all\n\n   almost every managed cluster ships a default class",
+   "note": "**PV YAML 을 아무도 안** 썼다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클래스는 저장소의 등급표다",
+   "md": "**같은 클러스터에 여러 종류가 있을 수** 있다.\n\n| 클래스 | 무엇 |\n|---|---|\n| `fast` | SSD. 비싸고 빠르다 |\n| `standard` | 기본 디스크 |\n| `shared` | NFS. `RWX` 가 된다 |\n\n> **앱은 `fast` 라고만** 적는다.\n> **어떤 제품인지는 클래스가** 숨긴다.\n> **⑥ 에서 같은 SQL 을 다섯 기술이 만들던 것과 같은 층 나누기**다.\n\n**구성 요소 셋**\n\n```yaml\napiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: fast\nprovisioner: ebs.csi.aws.com\nparameters:\n  type: gp3\n  iops: \"5000\"\nreclaimPolicy: Delete\nallowVolumeExpansion: true\nvolumeBindingMode: WaitForFirstConsumer\n```\n\n> **`provisioner` 가 실제로 만드는** 쪽이다.\n> **`parameters` 는 그 프로비저너만 아는** 값이다.\n> **`reclaimPolicy` 는 8.5절**이다.\n\n**CSI 가 표준**이다.\n\n> **예전엔 쿠버네티스 안에 드라이버가 박혀** 있었다.\n> **지금은 밖에서 CSI 규약으로** 붙는다.\n> **`kubectl get csidrivers` 로 뭐가 붙었는지** 본다.\n\n**클래스 이름은 빈 문자열도** 있다.\n\n> **`storageClassName: \"\"` 은 정적 PV 만** 쓰겠다는 뜻이다.\n> **아예 안 적으면 기본 클래스가** 붙는다.\n> **이 둘이 다르다** — **자주 헷갈린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 파드를 기다리나",
+   "ascii": "   why binding waits for a pod\n\n   Immediate\n     a volume is created now, in some zone\n     later the pod cannot be scheduled there\n     it stays Pending forever, and the disk is wasted\n\n   WaitForFirstConsumer\n     the scheduler picks a node first\n     the volume is created in that nodes zone\n\n   so a claim sitting Pending with no pod is normal here",
+   "note": "**파드 없이 `Pending` 인 건 정상**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기본 클래스가 조용히 정한다",
+   "md": "**PVC 에 클래스를 안 적으면 기본이** 붙는다.\n\n> **애너테이션 하나로** 정해진다.\n> **`storageclass.kubernetes.io/is-default-class: \"true\"`**\n> **기본이 둘이면 최근 것이** 이긴다 — **경고가** 뜬다.\n> **기본이 없으면 PVC 가 영영 `Pending`** 이다.\n\n**한 번 붙은 클래스는 못 바꾼다.**\n\n> **PVC 의 `storageClassName` 은 불변**이다.\n> **바꾸려면 새로 만들고 데이터를 옮겨야** 한다.\n\n**`kind` 는 `local-path` 를** 준다.\n\n> **7.5절에서 본 `local-path-storage` 네임스페이스가 그것**이다.\n> **노드의 디렉터리를 자동으로** 만든다.\n> **그래서 `WaitForFirstConsumer`** 다 — **노드를 먼저 정해야** 한다.\n\n**확장은 온라인으로도** 된다.\n\n> **`allowVolumeExpansion: true` 이면 PVC 크기만** 키운다.\n> **파일시스템까지 넓히려면 파드 재시작이 필요할 수** 있다.\n> **줄이는 건 어느 경우에도 안** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 뭐가 있나 ---\n\n$ kubectl get storageclass\n\nNAME                 PROVISIONER             RECLAIMPOLICY  VOLUMEBINDINGMODE\nstandard (default)   rancher.io/local-path   Delete         WaitForFirstConsumer\n\n#   kind 가 하나 준다\n\n#   (default) 가 붙어 있다\n\n$ kubectl get csidrivers --no-headers 2>&1\n\nNo resources found\n\n#   local-path 는 CSI 가 아니라 외부 프로비저너다\n\n$ kubectl get storageclass standard -o jsonpath=\\\n'{.metadata.annotations}{\"\\n\"}'\n\n{\"storageclass.kubernetes.io/is-default-class\":\"true\"}\n\n#   애너테이션 하나가 기본을 정한다\n\n# --- PV 를 안 쓰고 요청만 한다 ---\n\n$ cat dyn.yaml\n\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: dyn\nspec:\n  accessModes: [ReadWriteOnce]\n  resources:\n    requests:\n      storage: 1Gi\n\n$ kubectl apply -f dyn.yaml > /dev/null && sleep 4\n$ kubectl get pvc dyn\n\nNAME  STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE\ndyn   Pending                                      standard       4s\n\n#   Pending 이다\n\n#   8.2절의 Pending 과 다르다\n\n$ kubectl describe pvc dyn | grep -A2 Events | tail -1\n\n  Normal  WaitForFirstConsumer  2s  persistentvolume-controller  waiting\n    for first consumer to be created before binding\n\n#   기다리는 중이라고 말해 준다\n\n#   에러가 아니다\n\n$ kubectl get pv --no-headers | wc -l\n\n       0\n\n#   PV 도 아직 없다\n\n# --- 파드를 만들면 그때 생긴다 ---\n\n$ kubectl run user --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"user\",\n      \"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"echo 동적 > /d/x; cat /d/x; sleep 600\"],\n      \"volumeMounts\":[{\"name\":\"d\",\"mountPath\":\"/d\"}]}],\n      \"volumes\":[{\"name\":\"d\",\"persistentVolumeClaim\":\n        {\"claimName\":\"dyn\"}}]}}' > /dev/null\n\n$ sleep 15 && kubectl get pvc dyn --no-headers\n\ndyn   Bound   pvc-3f9a2c81-6b04-4e7d-9a11-0c2e5d8f7b33   1Gi   RWO   standard\n\n$ kubectl get pv --no-headers\n\npvc-3f9a2c81-...   1Gi   RWO   Delete   Bound   default/dyn   standard\n\n#   PV 가 저절로 생겼다\n\n#   이름은 pvc- 에 UID 다\n\n#   1Gi 를 딱 맞게 줬다\n\n#   8.2절의 정적 PV 와 다른 점이다\n\n$ kubectl logs user\n\n동적\n\n$ kubectl get pv -o jsonpath=\\\n'{.items[0].spec.nodeAffinity.required.nodeSelectorTerms[0].matchExpressions[0]}{\"\\n\"}'\n\n{\"key\":\"kubernetes.io/hostname\",\"operator\":\"In\",\"values\":[\"kind-worker2\"]}\n\n#   파드가 간 노드에 만들어졌다\n\n#   순서가 반대였다면 못 맞췄다\n\n$ docker exec kind-worker2 sh -c \\\n    'find /var/local-path-provisioner -name x -exec cat {} \\;'\n\n동적\n\n#   노드의 실제 디렉터리다\n\n# --- 클래스를 안 쓰겠다고 말하기 ---\n\n$ cat none.yaml\n\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: nocls\nspec:\n  storageClassName: \"\"\n  accessModes: [ReadWriteOnce]\n  resources:\n    requests: { storage: 1Gi }\n\n$ kubectl apply -f none.yaml > /dev/null && sleep 4\n$ kubectl describe pvc nocls | grep -A2 Events | tail -1\n\n  Normal  FailedBinding  2s  persistentvolume-controller  no persistent\n    volumes available for this claim and no storage class is set\n\n#   기본 클래스를 안 쓴다\n\n#   정적 PV 만 찾는다\n\n#   안 적는 것과 빈 문자열은 다르다\n\n$ kubectl delete pvc nocls > /dev/null\n\n# --- 클래스는 못 바꾼다 ---\n\n$ kubectl patch pvc dyn -p '{\"spec\":{\"storageClassName\":\"fast\"}}'\n\nThe PersistentVolumeClaim \"dyn\" is invalid: spec: Forbidden: spec is\n  immutable after creation except resources.requests and\n  volumeAttributesClassName for bound claims\n\n#   크기 말고는 못 바꾼다\n\n# --- 늘려 본다 ---\n\n$ kubectl get storageclass standard -o jsonpath=\\\n'{.allowVolumeExpansion}{\"\\n\"}'\n\n#   비어 있다\n\n#   허용 안 한다는 뜻이다\n\n$ kubectl patch pvc dyn -p \\\n    '{\"spec\":{\"resources\":{\"requests\":{\"storage\":\"2Gi\"}}}}'\n\nThe PersistentVolumeClaim \"dyn\" is invalid: spec.resources.requests.storage:\n  Forbidden: field can not be less than status.real world value\n  ... only dynamically provisioned pvc with allowVolumeExpansion can be\n  resized\n\n#   클래스가 허용해야 한다\n\n$ kubectl patch pvc dyn -p \\\n    '{\"spec\":{\"resources\":{\"requests\":{\"storage\":\"512Mi\"}}}}' 2>&1 | tail -1\n\n... spec.resources.requests.storage: Forbidden: field can not be less than\n  previous value\n\n#   줄이는 건 언제나 안 된다\n\n# --- 두 번째 기본 클래스 ---\n\n$ kubectl get storageclass standard -o yaml \\\n  | sed 's/name: standard/name: standard2/' \\\n  | kubectl apply -f - > /dev/null 2>&1\n\n$ kubectl get storageclass --no-headers | awk '{print $1}'\n\nstandard (default)\nstandard2 (default)\n\n$ kubectl apply -f dyn.yaml --dry-run=server -o name 2>&1 | tail -1\n\npersistentvolumeclaim/dyn\n\n$ sed 's/name: dyn/name: ambiguous/' dyn.yaml | kubectl apply -f - 2>&1 \\\n  | tail -2\n\nWarning: 2 default StorageClasses were found, the newest one is used\npersistentvolumeclaim/ambiguous created\n\n#   경고가 뜬다\n\n#   최근 것이 이긴다\n\n#   기본이 둘이면 사고 난다\n\n$ kubectl delete pvc ambiguous > /dev/null\n$ kubectl delete storageclass standard2 > /dev/null\n\n# --- 치운다 ---\n\n$ kubectl delete pod user --now > /dev/null\n$ kubectl delete pvc dyn && sleep 5 && kubectl get pv --no-headers | wc -l\n\npersistentvolumeclaim \"dyn\" deleted\n       0\n\n#   PV 도 같이 사라졌다\n\n#   reclaimPolicy 가 Delete 라서다\n\n#   8.5절에서 이 한 줄이 무슨 뜻인지 본다\n\n# --- 다음 절에서 ---\n\n#   파드마다 자기 디스크를 준다",
+   "note": "**PVC 만 만들었는데 `WaitForFirstConsumer` 로 `Pending`** 이고, PV 는 아직 없다.\n\n**파드를 만들자 `pvc-<uid>` PV 가 저절로 생기고 `nodeAffinity` 가 `kind-worker2`** 로 박혔다.\n\n**`storageClassName: \"\"` 은 기본 클래스를 안 쓰겠다는 뜻**이라 `FailedBinding` 이다.\n\n**클래스는 `spec is immutable` 로 못 바꾸고, 크기는 늘리는 것만** 된다.\n\n**기본 클래스가 둘이면 `the newest one is used` 경고가** 뜬다."
+  }
+ ],
+ "recap": [
+  "**동적 프로비저닝은 PVC 가 PV 를 만들게** 한다.",
+  "**클래스가 저장소 등급을** 숨긴다.",
+  "**`provisioner` 가 실제로** 만든다.",
+  "**CSI 가 표준 붙임** 방식이다.",
+  "**`WaitForFirstConsumer` 는 노드를 먼저** 정한다.",
+  "**파드 없는 `Pending` 은** 정상이다.",
+  "**동적 PV 는 요청 크기에 딱** 맞는다.",
+  "**빈 문자열과 미지정은** 다르다.",
+  "**클래스는 못 바꾸고 크기는 늘리기만** 된다."
+ ],
+ "drills": [
+  {
+   "task": "PVC 만 만들어 둔다.",
+   "done_when": "`WaitForFirstConsumer` 이벤트를 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "파드를 붙인다.",
+   "done_when": "PV 가 생기고 nodeAffinity 가 박히는 걸 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`storageClassName: \"\"` 로 만든다.",
+   "done_when": "기본 클래스가 안 붙는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "크기를 줄여 본다.",
+   "done_when": "거부 메시지를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동적 프로비저닝이란?",
+   "a": "PVC 가 클래스를 지목하면 프로비저너가 PV 를 만들어 주는 것이다."
+  },
+  {
+   "q": "`WaitForFirstConsumer` 를 쓰는 이유는?",
+   "a": "스케줄러가 노드를 고른 뒤 그 위치에 볼륨을 만들기 위해서다."
+  },
+  {
+   "q": "`storageClassName: \"\"` 의 뜻은?",
+   "a": "기본 클래스를 쓰지 않고 정적 PV 만 찾겠다는 뜻이다."
+  },
+  {
+   "q": "동적 PV 의 크기는?",
+   "a": "요청한 크기에 맞춰 만들어진다. 정적처럼 남지 않는다."
+  },
+  {
+   "q": "기본 클래스가 둘이면?",
+   "a": "경고와 함께 가장 최근 것이 쓰인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프로비저너",
+   "def": "PVC 를 보고 실제 저장소를 만들어 PV 로 등록하는 구성 요소."
+  },
+  {
+   "term": "CSI",
+   "def": "쿠버네티스 밖에서 스토리지 드라이버를 붙이는 표준 규약."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Storage Classes",
+   "url": "https://kubernetes.io/docs/concepts/storage/storage-classes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Dynamic Volume Provisioning",
+   "url": "https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes CSI — Documentation",
+   "url": "https://kubernetes-csi.github.io/docs/",
+   "publisher": "Kubernetes CSI"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
