@@ -617,7 +617,7 @@
           "title": "서블릿 API 통합",
           "summary": "request.getUserPrincipal.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -625,7 +625,7 @@
           "title": "MVC 통합",
           "summary": "@AuthenticationPrincipal.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",

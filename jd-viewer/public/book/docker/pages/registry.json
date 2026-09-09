@@ -1,0 +1,148 @@
+{
+ "book": "docker",
+ "id": "registry",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "레지스트리 · 리포지터리 · 태그",
+ "summary": "이름 하나에 들어 있는 네 조각.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이미지 이름의 구조를 안다.",
+  "기본값이 무엇으로 채워지는지 안다.",
+  "레지스트리가 무엇을 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`nginx` 라고만 쳐도** 받아진다. **실제로는 이렇게 채워진** 것이다.\n\n```\nnginx\n  ->  docker.io/library/nginx:latest\n```\n\n**생략된 것이 셋**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이미지 이름의 구조",
+   "ascii": "   ghcr.io / acme / shop-api : 1.4.2\n   -------   ----   --------   -----\n   registry  ns     repository  tag\n\n   defaults when omitted:\n     registry    -> docker.io\n     namespace   -> library   (only for official images on docker.io)\n     tag         -> latest\n\n   nginx                    == docker.io/library/nginx:latest\n   acme/shop:1.4            == docker.io/acme/shop:1.4\n   ghcr.io/acme/shop:1.4    == (as written)\n   localhost:5000/shop:dev  == 로컬에 띄운 레지스트리",
+   "note": "**`localhost:5000` 처럼 점이나 콜론이 있으면 도커는 그걸 레지스트리 주소로** 읽는다."
+  },
+  {
+   "type": "table",
+   "caption": "네 조각이 각각 무엇인가",
+   "columns": [
+    "조각",
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "**레지스트리**",
+     "이미지를 보관·배포하는 서버",
+     "`docker.io`, `ghcr.io`, `<계정>.dkr.ecr.ap-northeast-2.amazonaws.com`"
+    ],
+    [
+     "**네임스페이스**",
+     "계정·조직",
+     "`library`(공식), `acme`"
+    ],
+    [
+     "**리포지터리**",
+     "한 이미지의 이름. 여러 태그를 담는다",
+     "`nginx`, `shop-api`"
+    ],
+    [
+     "**태그**",
+     "그 리포지터리 안의 한 버전을 가리키는 **움직이는 이름표**",
+     "`1.27`, `latest`, `sha-a1b2c3d`"
+    ]
+   ],
+   "note": "**태그가 '이름표' 라는 게 4.2·4.4절의 전부**다. **파일 이름이 아니라 포스트잇**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "레지스트리가 실제로 하는 일",
+   "md": "**레지스트리는 파일 서버가** 아니다. **레이어 단위로 주고받는 API** 다.\n\n| 갖고 있는 것 | 무엇 |\n|---|---|\n| **blob** | 레이어 tar 와 config. **다이제스트(sha256)로만 주소가 매겨진다** |\n| **manifest** | \"이 이미지는 이 config 와 이 레이어들\" 이라는 목록 |\n| **tag** | manifest 다이제스트를 가리키는 이름표 |\n\n**그래서 이런 일이 가능**하다.\n\n```\npush 할 때 -> 서버에 이미 있는 레이어는 안 올린다 (\"Layer already exists\")\npull 할 때 -> 로컬에 이미 있는 레이어는 안 받는다 (\"Already exists\")\n```\n\n> **3.2절의 레이어 공유가 네트워크에서도 그대로** 작동한다.\n> **300MB 이미지를 열 번 배포해도 실제로 오가는 건 바뀐 레이어뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "공식 이미지와 아닌 것",
+   "md": "**`library` 네임스페이스가 공식 이미지**다.\n\n```\nnginx           -> docker.io/library/nginx     공식\nbitnami/nginx   -> docker.io/bitnami/nginx     Bitnami 가 만든 것\nrandomguy/nginx -> docker.io/randomguy/nginx   아무나\n```\n\n**슬래시가 없으면 공식**이라고 기억한다. **다만 \"공식\" 이 \"도커가 만들었다\" 는 뜻은** 아니다 — **도커 공식 이미지 프로그램의 심사를 거친** 것이다.\n\n> **10.6절에서 남의 이미지를 쓸 때의 점검표**를 본다.\n> **`FROM` 한 줄이 남의 코드를 내 프로덕션에 들이는 줄**이라는 것을 잊지 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "Docker Hub 의 요청 제한",
+   "md": "**익명으로 pull 하면 IP 당 시간당 제한이** 있다. **CI 에서 자주 걸린다.**\n\n```\ntoomanyrequests: You have reached your unauthenticated pull rate limit.\n```\n\n| 대응 | 어떻게 |\n|---|---|\n| 로그인하고 받는다 | `docker login` (4.5절) |\n| 다른 레지스트리를 쓴다 | GHCR·ECR·GAR |\n| 캐시·미러를 둔다 | 사내 레지스트리 프록시 |\n\n**11.2절의 CI 에서 이 문제를 실제로** 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이름이 어떻게 채워지는지 확인한다",
+   "sql": "# --- 짧게 쓴 이름이 어떻게 저장되나 ---\n\n$ docker pull nginx:1.27\n1.27: Pulling from library/nginx        <- library 가 붙었다\nStatus: Downloaded newer image for nginx:1.27\ndocker.io/library/nginx:1.27            <- 전체 이름을 알려 준다\n\n$ docker images --format 'table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}'\nREPOSITORY   TAG    IMAGE ID\nnginx        1.27   3b25b682ea82\n\n\n# --- 같은 이미지에 이름을 하나 더 붙인다 ---\n\n$ docker tag nginx:1.27 localhost:5000/my-nginx:dev\n$ docker images --format 'table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}'\nREPOSITORY                TAG    IMAGE ID\nlocalhost:5000/my-nginx   dev    3b25b682ea82\nnginx                     1.27   3b25b682ea82\n\n#   IMAGE ID 가 같다. 이미지는 하나고 이름표가 둘이다\n\n$ docker system df --format 'table {{.Type}}\\t{{.TotalCount}}\\t{{.Size}}' | head -2\nTYPE     TOTAL     SIZE\nImages   2         192.4MB\n\n#   2개로 세지만 크기는 한 벌이다\n\n\n# --- 태그를 지워도 이미지는 남는다 ---\n\n$ docker rmi localhost:5000/my-nginx:dev\nUntagged: localhost:5000/my-nginx:dev\n\n#   Deleted 가 아니라 Untagged 다. 다른 이름표가 남아 있으므로\n\n$ docker images nginx --format '{{.Repository}}:{{.Tag}}'\nnginx:1.27\n\n\n# --- 사설 레지스트리를 하나 띄워서 실제로 주고받아 본다 ---\n\n$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n\n$ docker tag nginx:1.27 localhost:5000/my-nginx:1.27\n$ docker push localhost:5000/my-nginx:1.27\nThe push refers to repository [localhost:5000/my-nginx]\n2d429b9e73a6: Pushed\n5f8e5b0d2c3a: Pushed\nb1a4f6c8d9e0: Pushed\n1.27: digest: sha256:04ba374043ccd2fc... size: 1570\n\n\n# --- 레지스트리 API 를 직접 두드려 본다 ---\n\n$ curl -s localhost:5000/v2/_catalog\n{\"repositories\":[\"my-nginx\"]}\n\n$ curl -s localhost:5000/v2/my-nginx/tags/list\n{\"name\":\"my-nginx\",\"tags\":[\"1.27\"]}\n\n$ curl -s -H 'Accept: application/vnd.oci.image.manifest.v1+json' \\\n    localhost:5000/v2/my-nginx/manifests/1.27 | python3 -m json.tool | head -14\n{\n    \"schemaVersion\": 2,\n    \"config\": {\n        \"mediaType\": \"application/vnd.docker.container.image.v1+json\",\n        \"digest\": \"sha256:3b25b682ea82...\",\n        \"size\": 8619\n    },\n    \"layers\": [\n        {\n            \"digest\": \"sha256:2d429b9e73a6...\",\n            \"size\": 29150411\n        },\n\n#   3.1절에서 tar 로 풀어 본 manifest 와 같은 구조다\n\n\n# --- 같은 레이어를 다시 올리면 ---\n\n$ docker tag nginx:1.27 localhost:5000/my-nginx:copy\n$ docker push localhost:5000/my-nginx:copy\nThe push refers to repository [localhost:5000/my-nginx]\n2d429b9e73a6: Layer already exists\n5f8e5b0d2c3a: Layer already exists\nb1a4f6c8d9e0: Layer already exists\ncopy: digest: sha256:04ba374043ccd2fc... size: 1570\n\n#   아무것도 안 올라갔다. 다이제스트가 같으니 이미 있는 것이다\n\n$ docker rm -f reg >/dev/null"
+  }
+ ],
+ "recap": [
+  "이미지 이름은 레지스트리/네임스페이스/리포지터리:태그 넷으로 이루어진다.",
+  "생략하면 docker.io/library/...:latest 로 채워진다. 점이나 콜론이 있으면 레지스트리 주소로 읽는다.",
+  "레지스트리는 레이어(blob)를 다이제스트로 저장하고 태그는 manifest 를 가리키는 이름표다.",
+  "이미 있는 레이어는 안 올리고 안 받는다. 배포에서 실제로 오가는 것은 바뀐 레이어뿐이다.",
+  "Docker Hub 는 익명 pull 에 제한이 있다. CI 에서 자주 걸린다."
+ ],
+ "drills": [
+  {
+   "task": "`docker run -d -p 5000:5000 registry:2` 로 사설 레지스트리를 띄우고 이미지를 push 한다.",
+   "done_when": "`curl localhost:5000/v2/_catalog` 로 올린 리포지터리가 보인다.",
+   "minutes": 8
+  },
+  {
+   "task": "같은 이미지에 태그를 두 개 붙이고 `docker images` 와 `docker system df` 를 비교한다.",
+   "done_when": "2개로 세지만 디스크는 한 벌인 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "같은 내용을 다른 태그로 push 해서 'Layer already exists' 를 확인한다.",
+   "done_when": "실제로 아무 데이터도 안 올라가는 것을 본다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker pull redis` 는 실제로 무엇을 받나.",
+   "a": "docker.io/library/redis:latest."
+  },
+  {
+   "q": "태그가 '이름표' 라는 말의 뜻은.",
+   "a": "태그는 manifest 다이제스트를 가리키는 포인터일 뿐이라 다른 이미지로 옮겨 붙일 수 있다."
+  },
+  {
+   "q": "push 할 때 'Layer already exists' 가 나오는 이유는.",
+   "a": "레이어가 다이제스트로 주소가 매겨져 있어 서버에 같은 내용이 이미 있으면 안 올린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "레지스트리",
+   "en": "registry",
+   "what": "이미지를 보관하고 배포하는 서버. Docker Hub·GHCR·ECR 등."
+  },
+  {
+   "term": "blob",
+   "what": "레지스트리가 다이제스트로 저장하는 덩어리. 레이어와 config 가 blob 이다."
+  },
+  {
+   "term": "manifest",
+   "what": "이미지를 이루는 config 와 레이어 목록."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker Hub",
+   "url": "https://docs.docker.com/docker-hub/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "OCI — Distribution Specification",
+   "url": "https://github.com/opencontainers/distribution-spec/blob/main/spec.md",
+   "publisher": "Open Container Initiative"
+  }
+ ]
+}

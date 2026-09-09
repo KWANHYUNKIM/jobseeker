@@ -191,7 +191,7 @@
           "title": "레지스트리 · 리포지터리 · 태그",
           "summary": "이름 하나에 들어 있는 네 조각.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -199,7 +199,7 @@
           "title": "latest 는 최신이 아니다",
           "summary": "가장 흔한 배포 사고의 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -207,7 +207,7 @@
           "title": "pull 과 push",
           "summary": "레이어 단위로 오가는 것을 눈으로 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",

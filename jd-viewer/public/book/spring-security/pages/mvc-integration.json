@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "mvc-integration",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "MVC 통합",
+ "summary": "@AuthenticationPrincipal.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 가지 방법을 구별한다.",
+  "익명일 때 각각 무엇이 되는지 안다.",
+  "화면에서 권한을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**컨트롤러가 \"누가 부르나\" 를 묻는 방법이** 다섯이다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 가지 방법",
+   "ascii": "   five ways a controller can ask who is calling\n\n   Authentication parameter        the whole token\n   Principal parameter             the servlet contract, name only\n   AuthenticationPrincipal         the principal object itself\n   CurrentSecurityContext          the context, for the odd case\n   SecurityContextHolder           anywhere, but hides the dependency\n\n   the third one is what most code wants",
+   "note": "**대개 세 번째가** 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 언제",
+   "md": "```java\n@GetMapping(\"/me\")\npublic String me(\n        Authentication authentication,                 // 1\n        Principal principal,                           // 2\n        @AuthenticationPrincipal CustomUserDetails user,  // 3\n        @CurrentSecurityContext SecurityContext context)  // 4\n{ ... }\n```\n\n| 방법 | 쓰는 곳 |\n|---|---|\n| `Authentication` | 권한 목록이 필요할 때 |\n| `Principal` | 서블릿 규격만 쓰고 싶을 때 |\n| `@AuthenticationPrincipal` | 사용자 정보가 필요할 때 |\n| `@CurrentSecurityContext` | 컨텍스트 자체가 필요할 때 |\n| `SecurityContextHolder` | 컨트롤러 밖 |\n\n> **셋째가 가장 많이** 쓰인다.\n> **바로 내 `UserDetails` 타입으로** 받는다.\n\n**표현식도 쓸 수** 있다.\n\n```java\n@GetMapping(\"/me\")\npublic String me(@AuthenticationPrincipal(expression = \"member\") Member member)\n```\n\n> **`CustomUserDetails.getMember()` 를** 부른다.\n> **어댑터 안의 엔티티를 바로** 꺼낸다.\n\n**메타 애너테이션으로 줄인다.**\n\n```java\n@Target(ElementType.PARAMETER)\n@Retention(RetentionPolicy.RUNTIME)\n@AuthenticationPrincipal(expression = \"member\")\npublic @interface LoginMember { }\n\npublic String me(@LoginMember Member member) { ... }\n```\n\n> **8.5절에서 인가 규칙에 쓴 방법이 여기도** 통한다."
+  },
+  {
+   "type": "figure",
+   "caption": "익명일 때",
+   "ascii": "   when each of them is null for an anonymous request\n\n   Authentication parameter        an anonymous token, not null\n   Principal parameter             null\n   AuthenticationPrincipal T       null, if T is not String\n   CurrentSecurityContext          a context holding an anonymous token\n\n   three different answers to the same question\n   and only one of them throws nothing and reads clearly",
+   "note": "**같은 질문에 답이** 셋이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "널이 조용하다",
+   "md": "**타입이 안 맞으면 `null`** 이다.\n\n> **3.7절에서 봤다** — **익명의 `principal` 은 `\"anonymousUser\"` 문자열**이다.\n> **`CustomUserDetails` 로 받으면 `null`** 이다.\n> **예외가 안 나고 그냥 `null`** 이다.\n>\n> **`permitAll` 인 화면에서 이걸 그냥 쓰면 `NullPointerException`** 이 컨트롤러 안에서 난다.\n\n**`Optional` 로 받는 게** 낫다.\n\n```java\npublic String home(@AuthenticationPrincipal CustomUserDetails user) {\n    boolean loggedIn = user != null;\n    ...\n}\n```\n\n> **`Optional<CustomUserDetails>` 는 안** 된다 — **리졸버가 감싸 주지** 않는다.\n> **널 체크를 쓴다.**\n\n**화면에서 권한 쓰기**\n\n```html\n<div sec:authorize=\"hasRole('ADMIN')\">관리자 메뉴</div>\n<span sec:authentication=\"name\">이름</span>\n<div sec:authorize=\"isAuthenticated()\">로그아웃</div>\n```\n\n> **`thymeleaf-extras-springsecurity6`** 이 필요하다.\n> **7.8절의 역할 계층도 반영**된다 — **표현식 핸들러를 쓰기 때문**이다.\n>\n> **화면에서 숨기는 건 편의**다.\n> **서버 규칙이 없으면 URL 로 그냥** 들어간다 — **7.1절**.\n> **둘이 어긋나면 메뉴는 없는데 되는 일이** 생긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 다섯을 한 번에 찍는다 ---\n\n@GetMapping(\"/me\")\n@ResponseBody\npublic String me(Authentication authentication,\n        Principal principal,\n        @AuthenticationPrincipal CustomUserDetails user,\n        @AuthenticationPrincipal Object raw,\n        @CurrentSecurityContext SecurityContext context) {\n    System.out.println(\">>> Authentication = \" + authentication);\n    System.out.println(\">>> Principal      = \" + principal);\n    System.out.println(\">>> Principal(T)   = \" + user);\n    System.out.println(\">>> Principal(Obj) = \" + raw\n            + \" (\" + (raw == null ? \"-\" : raw.getClass().getSimpleName()) + \")\");\n    System.out.println(\">>> Context        = \" + context.getAuthentication());\n    System.out.println(\">>> Holder         = \"\n            + SecurityContextHolder.getContext().getAuthentication());\n    return \"ok\";\n}\n\n#   로그인한 채로\n$ curl -s -b user.txt localhost:8080/me\n\n>>> Authentication = UsernamePasswordAuthenticationToken [Principal=\n     CustomUserDetails [username=user@a.com], Granted Authorities=[ROLE_USER]]\n>>> Principal      = UsernamePasswordAuthenticationToken [...]\n>>> Principal(T)   = CustomUserDetails [username=user@a.com]\n>>> Principal(Obj) = CustomUserDetails [...] (CustomUserDetails)\n>>> Context        = UsernamePasswordAuthenticationToken [...]\n>>> Holder         = UsernamePasswordAuthenticationToken [...]\n\n#   Principal 파라미터는 토큰 자체다\n\n#   Authentication 이 Principal 을 상속해서다 (4.1절)\n\n#   로그인 안 한 채로 (permitAll 인 경로에서)\n$ curl -s localhost:8080/me-public\n\n>>> Authentication = AnonymousAuthenticationToken [Principal=anonymousUser]\n>>> Principal      = null\n>>> Principal(T)   = null\n>>> Principal(Obj) = anonymousUser (String)\n>>> Context        = AnonymousAuthenticationToken [...]\n>>> Holder         = AnonymousAuthenticationToken [...]\n\n#   Principal 만 null 이다\n\n#   9.4절의 그 규격 차이가 여기까지 온다\n\n#   Principal(T) 는 타입이 안 맞아 null 이다\n\n# --- 그냥 쓰면 터진다 ---\n\n@GetMapping(\"/me-public\")\n@ResponseBody\npublic String mePublic(@AuthenticationPrincipal CustomUserDetails user) {\n    return user.getUsername();\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/me-public\n500\n\njava.lang.NullPointerException: Cannot invoke\n  \"CustomUserDetails.getUsername()\" because \"user\" is null\n\n#   permitAll 인 화면에서 흔하다\n\n#   널 체크를 넣으면\n\npublic String mePublic(@AuthenticationPrincipal CustomUserDetails user) {\n    return user == null ? \"guest\" : user.getUsername();\n}\n\n$ curl -s localhost:8080/me-public\nguest\n\n$ curl -s -b user.txt localhost:8080/me-public\nuser@a.com\n\n# --- Optional 은 안 된다 ---\n\npublic String meOpt(@AuthenticationPrincipal Optional<CustomUserDetails> user)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/me-opt\n500\n\njava.lang.ClassCastException: class CustomUserDetails cannot be cast to\n  class java.util.Optional\n\n#   리졸버가 안 감싸 준다\n\n# --- 표현식으로 엔티티를 꺼낸다 ---\n\n@GetMapping(\"/me-entity\")\n@ResponseBody\npublic String meEntity(\n        @AuthenticationPrincipal(expression = \"member\") Member member) {\n    return member.getEmail() + \" / \" + member.getNickname();\n}\n\n$ curl -s -b user.txt localhost:8080/me-entity\n\nuser@a.com / 관훈\n\n#   어댑터 안의 엔티티를 바로 받았다\n\n#   그런데 이 엔티티는 세션에서 온 사본이다\n\n#   DB 와 다를 수 있다 (5.1절)\n\nupdate member set nickname = '바뀐이름' where email = 'user@a.com';\n\n$ curl -s -b user.txt localhost:8080/me-entity\n\nuser@a.com / 관훈\n\n#   안 바뀐다\n\n#   화면에 옛 이름이 계속 보인다\n\n#   닉네임처럼 자주 바뀌는 건 다시 조회한다\n\n@GetMapping(\"/me-fresh\")\npublic String meFresh(@AuthenticationPrincipal CustomUserDetails user) {\n    Member fresh = repository.findByEmail(user.getUsername()).orElseThrow();\n    return fresh.getNickname();\n}\n\nselect m.* from member m where m.email = ?\n\n$ curl -s -b user.txt localhost:8080/me-fresh\n바뀐이름\n\n# --- 메타 애너테이션 ---\n\n@Target(ElementType.PARAMETER)\n@Retention(RetentionPolicy.RUNTIME)\n@AuthenticationPrincipal(expression = \"member\")\npublic @interface LoginMember { }\n\npublic String me(@LoginMember Member member) { ... }\n\n$ curl -s -b user.txt localhost:8080/me-meta\nuser@a.com\n\n$ grep -rn \"@AuthenticationPrincipal\" src/main --include='*.java' | wc -l\n1\n\n$ grep -rn \"@LoginMember\" src/main --include='*.java' | wc -l\n12\n\n#   8.5절과 같은 정리다\n\n# --- 화면에서 ---\n\nimplementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'\n\n<div sec:authorize=\"hasRole('ADMIN')\">\n  <a href=\"/admin/panel\">관리자</a>\n</div>\n<span sec:authentication=\"name\"></span>\n\n$ curl -s -b user.txt localhost:8080/ | grep -c '관리자'\n0\n\n$ curl -s -b admin.txt localhost:8080/ | grep -c '관리자'\n1\n\n#   메뉴가 갈린다\n\n#   역할 계층도 반영된다\n\n$ curl -s -b admin.txt localhost:8080/ | grep -c '주문'\n1\n\n#   ADMIN 인데 hasRole('USER') 메뉴가 보인다 (7.8절)\n\n# --- 화면만 숨기면 ---\n\n#   서버 규칙에서 /admin/** 을 빼 본다\n\n$ curl -s -b user.txt localhost:8080/ | grep -c '관리자'\n0\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n200\n\n#   메뉴는 없는데 들어가진다\n\n#   화면 숨김은 편의일 뿐이다\n\n#   8.8절의 인가표가 이걸 잡는다\n\n$ ./gradlew test --tests AuthorizationMatrixTest 2>&1 | grep -c FAILED\n1\n\n# --- 테스트 ---\n\n@Test\n@WithMockUser(username = \"admin@a.com\", roles = \"ADMIN\")\nvoid 관리자에게만_메뉴가_보인다() throws Exception {\n    mockMvc.perform(get(\"/\"))\n            .andExpect(content().string(containsString(\"관리자\")));\n}\n\n@Test\n@WithMockUser(roles = \"USER\")\nvoid 사용자에게는_안_보인다() throws Exception {\n    mockMvc.perform(get(\"/\"))\n            .andExpect(content().string(not(containsString(\"관리자\"))));\n}\n\n$ ./gradlew test\n\n137 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   9장을 정리한다",
+   "note": "**로그인 상태에서는 다섯이 다 같은 것을** 가리키는데 **익명이면 `Principal` 만 `null`, `Principal(T)` 도 `null`, `Object` 로 받으면 `String`** 이다.\n\n**`permitAll` 화면에서 그냥 쓰면 `NullPointerException` 으로 500** 이다. `Optional` 로 받으면 `ClassCastException` 이다.\n\n**표현식으로 꺼낸 엔티티는 세션 사본이라 `update` 해도 안** 바뀐다.\n\n**`sec:authorize` 로 메뉴가 갈리고 역할 계층도** 반영된다.\n\n**서버 규칙을 빼면 메뉴는 없는데 200** 이고 인가표 테스트가 잡는다."
+  }
+ ],
+ "recap": [
+  "**컨트롤러가 인증을 받는 방법이** 다섯이다.",
+  "**`@AuthenticationPrincipal` 이 가장 많이** 쓰인다.",
+  "**익명일 때 `Principal` 은 `null`** 이다.",
+  "**타입이 안 맞으면 조용히 `null`** 이다.",
+  "**`Optional` 로는 못** 받는다.",
+  "**표현식으로 엔티티를 바로 꺼낼 수** 있다.",
+  "**그 엔티티는 세션 사본이라 낡을 수** 있다.",
+  "**메타 애너테이션으로** 줄인다.",
+  "**화면 숨김은 편의이지 인가가** 아니다."
+ ],
+ "drills": [
+  {
+   "task": "다섯 방법을 한 번에 찍는다.",
+   "done_when": "익명일 때 차이를 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "`permitAll` 화면에서 널 체크 없이 써 본다.",
+   "done_when": "500 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "엔티티를 바꾸고 화면을 본다.",
+   "done_when": "안 바뀌는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서버 규칙만 빼 본다.",
+   "done_when": "메뉴 없이 들어가지는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 흔히 쓰는 방법은?",
+   "a": "`@AuthenticationPrincipal` 로 내 `UserDetails` 타입을 받는 것이다."
+  },
+  {
+   "q": "익명일 때 `Principal` 파라미터는?",
+   "a": "`null` 이다. 서블릿 규격을 따른다."
+  },
+  {
+   "q": "타입이 안 맞으면?",
+   "a": "예외 없이 `null` 이 들어온다."
+  },
+  {
+   "q": "표현식으로 꺼낸 엔티티의 문제는?",
+   "a": "세션에 담긴 사본이라 DB 변경이 반영되지 않는다."
+  },
+  {
+   "q": "화면에서 메뉴를 숨기면 인가가 되나?",
+   "a": "안 된다. URL 로 그냥 들어갈 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@AuthenticationPrincipal",
+   "def": "인증 토큰의 `principal` 을 컨트롤러 파라미터로 주입하는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Spring MVC Integration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/integrations/mvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Thymeleaf — Spring Security Integration",
+   "url": "https://github.com/thymeleaf/thymeleaf-extras-springsecurity",
+   "publisher": "Thymeleaf"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

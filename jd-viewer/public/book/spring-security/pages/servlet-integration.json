@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "servlet-integration",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "서블릿 API 통합",
+ "summary": "request.getUserPrincipal.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "12번 필터가 무엇을 감싸는지 안다.",
+  "익명에서 null 이 되는 이유를 안다.",
+  "login 과 logout 메서드를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**필터 목록에 `SecurityContextHolderAwareRequestFilter` 가** 있었다. **한 번도 안 봤다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "12번 필터가 감싼다",
+   "ascii": "   filter 12 wraps the request\n\n   SecurityContextHolderAwareRequestFilter\n     replaces the request with a wrapper whose\n       getUserPrincipal()  reads the holder\n       isUserInRole(role)  reads the holder, adding ROLE_\n       authenticate()      calls the entry point\n       login(user, pass)   calls the AuthenticationManager\n       logout()            clears the context\n\n   so plain servlet code keeps working, with no spring imports",
+   "note": "**스프링을 모르는 코드도 그대로** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 메서드",
+   "md": "```java\n@GetMapping(\"/servlet-api\")\n@ResponseBody\npublic String servletApi(HttpServletRequest request) {\n    Principal principal = request.getUserPrincipal();\n    boolean admin = request.isUserInRole(\"ADMIN\");\n    return principal + \" admin=\" + admin;\n}\n```\n\n| 메서드 | 하는 일 |\n|---|---|\n| `getUserPrincipal()` | 인증 객체 (익명이면 `null`) |\n| `isUserInRole(\"ADMIN\")` | `ROLE_ADMIN` 을 찾는다 |\n| `authenticate(res)` | 진입점을 부른다 |\n| `login(user, pass)` | 매니저로 인증한다 |\n| `logout()` | 컨텍스트를 비운다 |\n\n> **`isUserInRole` 이 `ROLE_` 을 붙인다** — **7.7절과 같은** 규칙이다.\n> **접두어를 바꿨다면 여기도 따라간다**(8.2절).\n\n**`getUserPrincipal` 이 익명에 `null`** 인 이유\n\n> **서블릿 규격이 \"인증되지 않았으면 `null`\" 이라고 정해** 뒀다.\n> **래퍼가 `AnonymousAuthenticationToken` 을 걸러** 준다.\n>\n> **3.7절에서 `getAuthentication()` 은 `null` 이 아니라고** 했다.\n> **둘이 다르다** — **규격을 지킨 것**이다.\n>\n> **널 체크를 없애려고 익명을 만들어 놓고 여기서는 다시** 준다.\n> **일관성보다 규격이** 우선이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 굳이 서블릿 API 인가",
+   "ascii": "   why you would use the servlet api instead\n\n   a jsp tag, a legacy filter, a library you cannot change\n     they only know the servlet contract\n\n   the cost\n     isUserInRole silently adds ROLE_, getUserPrincipal returns null\n     for an anonymous user, unlike getAuthentication\n\n   two behaviours that differ from the spring api on purpose",
+   "note": "**두 가지가 일부러** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "login 과 logout",
+   "md": "**서블릿 3.0 이 넣은 메서드**다.\n\n```java\n@PostMapping(\"/api/login\")\npublic ResponseEntity<Void> login(HttpServletRequest request,\n        @RequestBody LoginRequest body) throws ServletException {\n    request.login(body.email(), body.password());\n    return ResponseEntity.ok().build();\n}\n```\n\n> **`AuthenticationManager` 를 주입 안 해도** 된다.\n> **실패하면 `ServletException`** 이다.\n\n**그런데 저장을 안 한다.**\n\n> **홀더에는 들어가는데 `SecurityContextRepository` 를 안** 부른다.\n> **5.1절의 그** 함정이다.\n> **다음 요청에 안** 남는다.\n>\n> **`request.login` 뒤에 직접 저장해야** 한다.\n> **10.5절에서 이 형태를 제대로** 만든다.\n\n**`logout()` 도 마찬가지**다.\n\n> **컨텍스트만 비우고 세션 무효화나 쿠키 삭제는 안** 한다.\n> **3.8절의 다섯 자리 중 하나만** 한다.\n\n**끌 수 있다.**\n\n```java\nhttp.servletApi(s -> s.disable());\n```\n\n> **필터가 빠진다.**\n> **`getUserPrincipal` 이 `null` 이** 된다.\n> **JSP 태그나 옛 라이브러리가 조용히** 깨진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 서블릿 API 로 읽는다 ---\n\n@GetMapping(\"/servlet-api\")\n@ResponseBody\npublic String servletApi(HttpServletRequest request, Authentication auth) {\n    System.out.println(\">>> class          = \" + request.getClass().getSimpleName());\n    System.out.println(\">>> getUserPrincipal = \" + request.getUserPrincipal());\n    System.out.println(\">>> getAuthentication= \" + auth);\n    System.out.println(\">>> isUserInRole(USER)  = \" + request.isUserInRole(\"USER\"));\n    System.out.println(\">>> isUserInRole(ROLE_USER) = \"\n            + request.isUserInRole(\"ROLE_USER\"));\n    return \"ok\";\n}\n\n#   로그인한 채로\n$ curl -s -b user.txt localhost:8080/servlet-api\n\n>>> class          = Servlet3SecurityContextHolderAwareRequestWrapper\n>>> getUserPrincipal = UsernamePasswordAuthenticationToken [Principal=...]\n>>> getAuthentication= UsernamePasswordAuthenticationToken [Principal=...]\n>>> isUserInRole(USER)  = true\n>>> isUserInRole(ROLE_USER) = false\n\n#   래퍼로 바뀌어 있다\n\n#   isUserInRole 이 ROLE_ 을 붙인다\n\n#   ROLE_USER 를 넘기면 ROLE_ROLE_USER 를 찾는다\n\n#   7.7절과 같은 함정이다\n\n#   로그인 안 한 채로\n$ curl -s localhost:8080/servlet-api\n\n>>> getUserPrincipal = null\n>>> getAuthentication= AnonymousAuthenticationToken [Principal=anonymousUser]\n\n#   하나는 null 이고 하나는 아니다\n\n#   3.7절에서 본 그 차이다\n\n#   서블릿 규격이 그렇게 정했다\n\n# --- 필터를 꺼 본다 ---\n\nhttp.servletApi(s -> s.disable());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' \\\n    | grep -c SecurityContextHolderAware\n0\n\n$ curl -s -b user.txt localhost:8080/servlet-api\n\n>>> class          = ApplicationHttpRequest\n>>> getUserPrincipal = null\n>>> getAuthentication= UsernamePasswordAuthenticationToken [Principal=...]\n>>> isUserInRole(USER)  = false\n\n#   로그인했는데 null 이다\n\n#   스프링 API 는 그대로 산다\n\n#   서블릿 API 만 죽는다\n\n#   JSP 의 <sec:authorize> 나 옛 필터가 여기서 깨진다\n\n#   에러도 없다\n\n# --- request.login 을 써 본다 ---\n\nhttp.servletApi(withDefaults());     // 다시 켠다\n\n@PostMapping(\"/api/login\")\n@ResponseBody\npublic String login(HttpServletRequest request,\n        @RequestParam String email, @RequestParam String password)\n        throws ServletException {\n    request.login(email, password);\n    System.out.println(\">>> after login = \"\n            + SecurityContextHolder.getContext().getAuthentication());\n    return \"ok\";\n}\n\n$ curl -is -c api.txt -X POST 'localhost:8080/api/login' \\\n    -d 'email=user@a.com&password=1234'\n\nHTTP/1.1 200\n\nok\n\n>>> after login = UsernamePasswordAuthenticationToken\n    [Principal=CustomUserDetails [username=user@a.com], Authenticated=true]\n\n#   홀더에는 들어갔다\n\n$ grep -c JSESSIONID api.txt\n0\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b api.txt localhost:8080/orders\n302\n\n#   다음 요청에 안 남았다\n\n#   5.1절의 그 함정이다\n\n#   저장까지 하면\n\n@PostMapping(\"/api/login2\")\n@ResponseBody\npublic String login2(HttpServletRequest request, HttpServletResponse response,\n        @RequestParam String email, @RequestParam String password)\n        throws ServletException {\n    request.login(email, password);\n    SecurityContext context = SecurityContextHolder.getContext();\n    repository.saveContext(context, request, response);\n    return \"ok\";\n}\n\n$ curl -is -c api2.txt -X POST 'localhost:8080/api/login2' \\\n    -d 'email=user@a.com&password=1234' | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=A7B8C9; Path=/; HttpOnly\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b api2.txt localhost:8080/orders\n200\n\n#   남았다\n\n#   실패하면\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST 'localhost:8080/api/login2' \\\n    -d 'email=user@a.com&password=틀림'\n500\n\njakarta.servlet.ServletException: Bad credentials\n\n#   ServletException 이다\n\n#   500 으로 나간다\n\n#   6.3절의 형식으로 잡아 줘야 한다\n\n@ExceptionHandler(ServletException.class)\nProblemDetail badLogin(ServletException e) {\n    return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, \"login failed\");\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST 'localhost:8080/api/login2' \\\n    -d 'email=user@a.com&password=틀림'\n401\n\n# --- 이벤트는 나오나 ---\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/api/login2' \\\n    -d 'email=user@a.com&password=1234'\n\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> INTERACTIVE\"\n0\n\n#   INTERACTIVE 는 안 나온다\n\n#   필터가 낸 게 아니라서다 (9.1절)\n\n#   9.3절의 실패 카운터 초기화가 안 돈다\n\n#   직접 이벤트를 내거나 Interactive 도 발행한다\n\npublisher.publishEvent(\n        new InteractiveAuthenticationSuccessEvent(\n                SecurityContextHolder.getContext().getAuthentication(),\n                this.getClass()));\n\n>>> INTERACTIVE user@a.com by LoginController\n\nupdate member set failed_count = 0 where email = ?\n\n#   이제 돈다\n\n# --- request.logout ---\n\n@PostMapping(\"/api/logout\")\n@ResponseBody\npublic String logout(HttpServletRequest request) throws ServletException {\n    request.logout();\n    System.out.println(\">>> session = \" + (request.getSession(false) != null));\n    return \"ok\";\n}\n\n$ curl -s -b api2.txt -X POST localhost:8080/api/logout\n\n>>> session = true\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b api2.txt localhost:8080/orders\n302\n\n#   막힌다\n\nselect count(*) from persistent_logins;\n1\n\n#   기억하기 쿠키는 안 지워졌다\n\n#   3.8절의 다섯 자리 중 둘만 했다\n\n#   LogoutFilter 를 쓰는 게 낫다\n\n# --- 테스트 ---\n\n@Test\n@WithMockUser(username = \"user@a.com\", roles = \"USER\")\nvoid 서블릿_api_와_스프링_api_가_같다() throws Exception {\n    mockMvc.perform(get(\"/servlet-api\"))\n            .andExpect(status().isOk());\n}\n\n@Test\nvoid 익명이면_getUserPrincipal_이_null() throws Exception {\n    mockMvc.perform(get(\"/servlet-api\").with(anonymous()))\n            .andExpect(status().isOk());\n}\n\n$ ./gradlew test\n\n135 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   컨트롤러가 인증을 받는 여러 방법을 정리한다",
+   "note": "**요청이 `Servlet3SecurityContextHolderAwareRequestWrapper` 로** 바뀌어 있고 `isUserInRole(\"ROLE_USER\")` 는 `false` 다.\n\n**익명일 때 `getUserPrincipal` 은 `null`, `getAuthentication` 은 익명 토큰**이다 — 규격을 지킨 결과다.\n\n**필터를 끄면 로그인해도 `null`** 이 되는데 스프링 API 는 그대로 산다.\n\n**`request.login` 은 홀더에만 넣어 다음 요청이 302** 이고, `saveContext` 를 부르면 200 이다.\n\n**`INTERACTIVE` 이벤트가 0회**라 9.3절 카운터 초기화가 안 돈다."
+  }
+ ],
+ "recap": [
+  "**12번 필터가 요청을 래퍼로** 바꾼다.",
+  "**서블릿 API 만 아는 코드도 그대로** 돈다.",
+  "**`isUserInRole` 이 `ROLE_` 을** 붙인다.",
+  "**익명이면 `getUserPrincipal` 이 `null`** 이다.",
+  "**`getAuthentication` 과 일부러** 다르다.",
+  "**필터를 끄면 조용히** 깨진다.",
+  "**`request.login` 은 저장을 안** 한다.",
+  "**`INTERACTIVE` 이벤트도 안** 나온다.",
+  "**`request.logout` 은 절반만** 한다."
+ ],
+ "drills": [
+  {
+   "task": "두 API 를 나란히 찍는다.",
+   "done_when": "익명일 때 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`servletApi` 를 꺼 본다.",
+   "done_when": "조용히 깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`request.login` 으로 로그인한다.",
+   "done_when": "다음 요청이 막히는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "저장과 이벤트를 채운다.",
+   "done_when": "카운터가 초기화되는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "12번 필터가 하는 일은?",
+   "a": "요청을 래퍼로 감싸 서블릿 API 가 인증을 읽게 한다."
+  },
+  {
+   "q": "`isUserInRole(\"ROLE_USER\")` 가 `false` 인 이유는?",
+   "a": "`ROLE_` 을 자동으로 붙여 `ROLE_ROLE_USER` 를 찾는다."
+  },
+  {
+   "q": "익명일 때 `getUserPrincipal` 은?",
+   "a": "`null` 이다. 서블릿 규격이 그렇게 정했다."
+  },
+  {
+   "q": "`request.login` 의 함정은?",
+   "a": "컨텍스트를 저장하지 않아 다음 요청에 안 남는다."
+  },
+  {
+   "q": "`request.logout` 이 안 하는 것은?",
+   "a": "세션 무효화와 기억하기 쿠키 삭제다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet API Integration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/integrations/servlet-api.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Servlet Specification",
+   "url": "https://jakarta.ee/specifications/servlet/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

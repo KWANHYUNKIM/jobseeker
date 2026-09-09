@@ -1,0 +1,153 @@
+{
+ "book": "docker",
+ "id": "latest-tag",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "latest 는 최신이 아니다",
+ "summary": "가장 흔한 배포 사고의 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "latest 가 그냥 기본 태그라는 것을 안다.",
+  "같은 태그가 다른 이미지일 수 있다는 것을 안다.",
+  "태그를 어떻게 정할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`latest` 는 도커가 특별하게 다루는 이름이** 아니다.\n\n> **태그를 안 쓰면 붙는 기본 문자열일** 뿐이다.\n> **`docker push myapp` 하면 `myapp:latest` 가 되고, 그게 최신인지 6개월 전 것인지는 아무도 보장 안 한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무슨 사고가 나나 — 시나리오 셋",
+   "md": "**① 서버마다 다른 것이 돈다**\n\n```\n서버 A: 3월에 pull -> myapp:latest = 이미지 X\n서버 B: 9월에 pull -> myapp:latest = 이미지 Y\n\n둘 다 \"latest 돌고 있습니다\" 라고 말한다\n```\n\n**② 롤백을 못 한다**\n\n```\nlatest 를 배포했는데 장애가 났다\n\"이전 걸로 되돌려\"\n-> 이전 게 뭐였지?\n```\n\n**③ 재빌드가 다른 결과를 낸다**\n\n```dockerfile\nFROM eclipse-temurin:21-jre    # 태그는 같은데\n```\n\n> **3개월 뒤 다시 빌드하면 베이스 이미지가 바뀌어** 있다. **패치가 들어왔을 수** 있고, **호환이 깨졌을 수도** 있다.\n> **CI 가 어제는 통과했는데 오늘 깨지는데 커밋은 하나도 안 바뀐** 상황이 이래서 생긴다."
+  },
+  {
+   "type": "compare",
+   "caption": "태그를 어떻게 붙일 것인가",
+   "left": {
+    "title": "이렇게 하면 되돌릴 수 없다",
+    "lang": "bash",
+    "bad": true,
+    "code": "docker build -t myapp:latest .\ndocker push myapp:latest\n\n# 배포\ndocker pull myapp:latest\ndocker run -d myapp:latest\n\n#   무엇이 돌고 있는지 알 방법이 없다\n#   롤백할 대상이 없다\n#   두 서버가 다른 걸 돌려도 모른다"
+   },
+   "right": {
+    "title": "불변 태그 + 움직이는 태그",
+    "lang": "bash",
+    "code": "GIT_SHA=$(git rev-parse --short HEAD)\n\ndocker build \\\n  -t myapp:1.4.2 \\\n  -t myapp:sha-$GIT_SHA \\\n  -t myapp:latest .\n\ndocker push myapp:1.4.2\ndocker push myapp:sha-$GIT_SHA\ndocker push myapp:latest\n\n# 배포는 불변 태그로\ndocker run -d myapp:1.4.2\n\n#   latest 는 사람이 훑어보기용\n#   실제 배포와 롤백은 1.4.2 / sha-a1b2c3d 로 한다"
+   }
+  },
+  {
+   "type": "table",
+   "caption": "태그 전략 — 무엇을 붙이나",
+   "columns": [
+    "태그",
+    "성질",
+    "쓰는 데"
+   ],
+   "rows": [
+    [
+     "`1.4.2`",
+     "**불변**. 한번 올리면 안 바꾼다",
+     "배포·롤백의 기준"
+    ],
+    [
+     "`sha-a1b2c3d`",
+     "**불변**. 커밋과 1:1",
+     "어느 코드인지 되찾기"
+    ],
+    [
+     "`1.4`, `1`",
+     "움직인다",
+     "패치를 자동으로 받고 싶을 때"
+    ],
+    [
+     "`latest`",
+     "움직인다",
+     "사람이 훑어보기. **배포에 쓰지 않는다**"
+    ],
+    [
+     "`@sha256:...`",
+     "**절대 불변**",
+     "4.4절. 가장 강한 고정"
+    ]
+   ],
+   "note": "**11.4절에서 이걸 CI 로 자동화**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "pull 을 안 하면 옛것이 돈다",
+   "md": "**`docker run myapp:latest` 는 로컬에 이미지가 있으면 안** 받는다.\n\n```bash\n$ docker run -d myapp:latest    # 로컬에 있으면 그걸 쓴다\n```\n\n**레지스트리의 latest 가 바뀌어도 모른다.**\n\n| 방법 | 명령 |\n|---|---|\n| 매번 받게 한다 | `docker pull myapp:latest` 를 먼저 |\n| 정책으로 | 컴포즈의 `pull_policy: always` (9.2절) |\n| 애초에 | **불변 태그를 쓰면 이 문제가 없다** |\n\n> **\"배포했는데 안 바뀌었어요\" 의 절반이 이것**이다.\n> **불변 태그를 쓰면 태그가 다르니 반드시 받는다.** **문제 자체가 사라진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "**\"운영에서 latest 태그를 쓰면 안 되는 이유는?\"**\n\n> **재현이 안 되고 롤백이 안 되기** 때문이다.\n> **태그는 이름표라 같은 태그가 언제든 다른 이미지를 가리킬 수** 있다.\n> **그래서 배포는 버전이나 커밋 SHA 같은 불변 태그로 하고, 더 강하게 하려면 다이제스트로 고정**한다.\n\n**꼬리 질문**: **\"그럼 latest 는 왜 있나요\"**\n\n> **태그를 생략했을 때의 기본값**이고, **사람이 \"대충 최신\" 을 받아 보는 용도**다. **자동화가 의존하면 안 되는 것**뿐이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "같은 태그가 다른 이미지가 되는 것을 만들어 본다",
+   "sql": "$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n\n# --- 첫 번째 빌드 ---\n\n$ mkdir -p /tmp/lab && cd /tmp/lab\n$ echo 'v1' > version.txt\n$ cat > Dockerfile <<'EOF'\nFROM alpine:3.20\nCOPY version.txt /version.txt\nCMD [\"cat\", \"/version.txt\"]\nEOF\n\n$ docker build -q -t localhost:5000/app:latest .\n$ docker push -q localhost:5000/app:latest\n\n$ docker inspect -f '{{index .RepoDigests 0}}' localhost:5000/app:latest\nlocalhost:5000/app@sha256:1a2b3c4d5e6f7890abcdef1234567890abcdef1234567890abcdef1234567890\n\n\n# --- 서버 A 가 지금 받았다고 하자 ---\n\n$ docker run --rm localhost:5000/app:latest\nv1\n\n\n# --- 두 번째 빌드. 태그는 그대로 ---\n\n$ echo 'v2' > version.txt\n$ docker build -q -t localhost:5000/app:latest .\n$ docker push -q localhost:5000/app:latest\n\n$ docker inspect -f '{{index .RepoDigests 0}}' localhost:5000/app:latest\nlocalhost:5000/app@sha256:9f8e7d6c5b4a32109876543210fedcba9876543210fedcba9876543210fedcba\n\n#   같은 태그인데 다이제스트가 다르다\n#   이름표가 다른 이미지로 옮겨 붙은 것이다\n\n\n# --- 서버 B 가 지금 받으면 ---\n\n$ docker rmi -f localhost:5000/app:latest >/dev/null\n$ docker run --rm localhost:5000/app:latest\nUnable to find image 'localhost:5000/app:latest' locally\nv2\n\n#   서버 A 는 v1, 서버 B 는 v2. 둘 다 \"latest 입니다\" 라고 말한다\n\n\n# --- 로컬에 있으면 아예 안 받는다 ---\n\n$ echo 'v3' > version.txt\n$ docker build -q -t localhost:5000/app:latest . >/dev/null\n$ docker push -q localhost:5000/app:latest >/dev/null\n\n$ docker rmi -f localhost:5000/app:latest >/dev/null\n$ docker pull -q localhost:5000/app:latest >/dev/null\n$ docker run --rm localhost:5000/app:latest\nv3\n\n#   pull 을 명시적으로 해야 새것이 온다\n\n\n# --- 불변 태그를 쓰면 이 문제가 없다 ---\n\n$ echo 'v4' > version.txt\n$ docker build -q -t localhost:5000/app:1.0.4 -t localhost:5000/app:latest .\n$ docker push -q localhost:5000/app:1.0.4 >/dev/null\n$ docker push -q localhost:5000/app:latest >/dev/null\n\n$ curl -s localhost:5000/v2/app/tags/list\n{\"name\":\"app\",\"tags\":[\"1.0.4\",\"latest\"]}\n\n$ docker run --rm localhost:5000/app:1.0.4\nv4\n\n#   1.0.4 는 앞으로도 v4 다. 롤백할 대상이 이름으로 남았다\n\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rm -f reg >/dev/null"
+  }
+ ],
+ "recap": [
+  "latest 는 특별한 뜻이 없다. 태그를 생략했을 때의 기본 문자열이다.",
+  "같은 태그가 다른 이미지를 가리킬 수 있다. 서버마다 다른 것이 돌아도 모른다.",
+  "배포와 롤백은 불변 태그(버전·커밋 SHA)로 한다. latest 는 사람이 훑어보기용이다.",
+  "로컬에 이미지가 있으면 run 은 pull 을 안 한다. '배포했는데 안 바뀌었어요' 의 절반이 이것이다.",
+  "불변 태그를 쓰면 태그가 매번 달라서 이 문제 자체가 사라진다."
+ ],
+ "drills": [
+  {
+   "task": "사설 레지스트리에 같은 태그로 내용이 다른 이미지를 두 번 push 하고 RepoDigests 를 비교한다.",
+   "done_when": "태그는 같은데 다이제스트가 다른 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "로컬에 이미지가 있는 상태에서 레지스트리의 latest 를 바꾼 뒤 `docker run` 을 쳐 본다.",
+   "done_when": "옛 이미지가 도는 것을 확인하고, pull 후에 바뀌는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "latest 태그는 무엇인가.",
+   "a": "태그를 생략했을 때 붙는 기본 문자열. 최신을 보장하지 않는다."
+  },
+  {
+   "q": "운영 배포에 불변 태그를 쓰면 무엇이 좋아지나.",
+   "a": "무엇이 돌고 있는지 알 수 있고, 롤백 대상이 이름으로 남고, run 이 반드시 새 이미지를 받는다."
+  },
+  {
+   "q": "CI 가 코드 변경 없이 갑자기 깨졌다면 이미지 쪽에서 의심할 것은.",
+   "a": "FROM 의 베이스 이미지 태그가 움직여서 다른 이미지를 받았을 수 있다. 다이제스트로 고정한다(4.4절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "불변 태그",
+   "en": "immutable tag",
+   "what": "한번 올리면 다시 안 바꾸는 태그. 버전이나 커밋 SHA."
+  },
+  {
+   "term": "pull policy",
+   "what": "실행 전에 이미지를 다시 받을지 정하는 정책. 컴포즈와 쿠버네티스에 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker tag",
+   "url": "https://docs.docker.com/reference/cli/docker/image/tag/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Best practices for building images",
+   "url": "https://docs.docker.com/build/building/best-practices/",
+   "publisher": "Docker"
+  }
+ ]
+}
