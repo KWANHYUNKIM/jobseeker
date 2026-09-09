@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "env-vs-file",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "환경변수로 넣을까 파일로 넣을까",
+ "summary": "바뀔 수 있느냐가 갈림길이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "한 질문으로 고른다.",
+  "환경변수가 어디로 새는지 안다.",
+  "스프링에서 어떻게 읽히는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절이 네 가지 방법을** 보여줬다. **고르는 기준은** 하나다."
+  },
+  {
+   "type": "figure",
+   "caption": "갈림길",
+   "ascii": "   one question decides it\n\n   does this value change while the pod is alive\n\n     no   -> environment variable\n            simple, works everywhere, frozen at start\n\n     yes  -> file from a volume\n            updates in place, the app must reread it\n\n   everything else is a detail",
+   "note": "**나머지는 곁가지**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "환경변수는 시작할 때 얼어붙는다",
+   "md": "**컨테이너를 만들 때 프로세스 환경에** 박힌다.\n\n> **그 뒤 컨피그맵을 바꿔도 안** 바뀐다.\n> **파드를 다시 만들어야** 한다.\n> **7.4절이 이 이야기**다.\n\n**그게 나쁜 건** 아니다.\n\n> **DB 주소나 프로파일은 사는 동안 안** 바뀐다.\n> **바뀌면 오히려 무섭다** — **커넥션 풀이 반은 옛 주소를** 물고 있다.\n> **명시적 재시작이 더** 안전하다.\n\n**파일은 반대**다.\n\n> **로그 레벨·기능 플래그·허용 목록처럼 켜고 끄는** 것들이다.\n> **재시작 없이 반영하고** 싶다.\n> **대신 앱이 다시 읽어야** 한다 — **저절로는 안** 된다.\n\n**크기와 모양도** 본다.\n\n| 상황 | 고르는 쪽 |\n|---|---|\n| 값 하나 | 환경변수 |\n| YAML·프로퍼티스 통째 | 파일 |\n| 인증서·키 | 파일 |\n| 개수가 수십 개 | 파일 |\n\n> **인증서는 여러 줄이라 환경변수에 안** 맞는다.\n> **개행이 들어간 값은 사고가** 난다."
+  },
+  {
+   "type": "figure",
+   "caption": "환경변수가 새는 자리",
+   "ascii": "   where an environment variable shows up\n\n   the process own environ\n   every child process it forks\n   a crash dump, if the runtime writes one\n   an error page that prints the environment\n   a diagnostics endpoint that dumps config\n\n   a file leaks in exactly one of these, and only if you print it",
+   "note": "**파일은 찍어야만** 샌다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "비밀은 파일이 낫다",
+   "md": "**7.2절의 tmpfs 이점이 환경변수에서는** 사라진다.\n\n> **자식 프로세스가 전부 상속**한다.\n> **셸 스크립트를 하나 부르면 거기도** 있다.\n> **덤프나 오류 페이지에 통째로 찍히는 일이** 잦다.\n>\n> **스프링 액추에이터의 `/env` 가 대표적**이다.\n> **⑩ 에서 액추에이터를 막은 이유가 이것**이다.\n\n**스프링에서 어떻게** 읽히나\n\n| 넣는 법 | 스프링이 보는 이름 |\n|---|---|\n| `SPRING_DATASOURCE_URL` | `spring.datasource.url` |\n| `/config/application.yaml` | 설정 파일 |\n| `SPRING_CONFIG_IMPORT` | 추가 위치 |\n\n> **완화된 바인딩이 밑줄을 점으로** 바꾼다.\n> **⑦·⑧ 에서 쓰던 `application.yml` 을 그대로 볼륨으로 넣어도** 된다.\n> **`spring.config.additional-location` 을 쓰면 기본 설정 위에** 얹힌다.\n\n**섞어 쓰는 게 보통**이다.\n\n> **프로파일과 DB 주소는 환경변수**로,\n> **나머지 설정은 파일**로,\n> **비밀번호는 시크릿 볼륨**으로.\n> **한 가지로 통일할 이유가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 환경변수는 얼어붙는다 ---\n\n$ kubectl create configmap lvl --from-literal=LEVEL=info > /dev/null\n\n$ kubectl run frozen --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"frozen\",\n      \"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"while true; do echo $LEVEL; sleep 20; done\"],\n      \"envFrom\":[{\"configMapRef\":{\"name\":\"lvl\"}}]}]}}' > /dev/null\n\n$ sleep 8 && kubectl logs frozen\n\ninfo\n\n$ kubectl patch configmap lvl -p '{\"data\":{\"LEVEL\":\"debug\"}}' > /dev/null\n$ kubectl get configmap lvl -o jsonpath='{.data.LEVEL}{\"\\n\"}'\n\ndebug\n\n#   컨피그맵은 바뀌었다\n\n$ sleep 70 && kubectl logs frozen --tail=3\n\ninfo\ninfo\ninfo\n\n#   파드 안은 그대로다\n\n#   영원히 그대로다\n\n$ kubectl exec frozen -- printenv LEVEL\n\ninfo\n\n$ kubectl delete pod frozen --now > /dev/null\n\n# --- 파일은 따라온다 ---\n\n$ cat filepod.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: livefile\nspec:\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"while true; do cat /c/LEVEL; echo; sleep 20; done\"]\n      volumeMounts:\n        - { name: c, mountPath: /c }\n  volumes:\n    - name: c\n      configMap: { name: lvl }\n\n$ kubectl apply -f filepod.yaml > /dev/null && sleep 8\n$ kubectl logs livefile\n\ndebug\n\n$ kubectl patch configmap lvl -p '{\"data\":{\"LEVEL\":\"trace\"}}' > /dev/null\n$ sleep 75 && kubectl logs livefile --tail=2\n\ndebug\ntrace\n\n#   파일은 따라왔다\n\n#   앱이 다시 읽었으니까다\n\n#   여기서는 cat 이 매번 읽는다\n\n#   진짜 앱은 한 번 읽고 만다\n\n#   얼마나 걸렸는지는 7.4절이다\n\n$ kubectl delete pod livefile --now > /dev/null\n\n# --- 자식 프로세스가 상속한다 ---\n\n$ kubectl create secret generic pw --from-literal=PASSWORD=hunter2 > /dev/null\n\n$ kubectl run leak --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"leak\",\n      \"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"sh -c \\\"sh -c env\\\" | grep PASSWORD\"],\n      \"env\":[{\"name\":\"PASSWORD\",\"valueFrom\":{\"secretKeyRef\":\n        {\"name\":\"pw\",\"key\":\"PASSWORD\"}}}]}]}}' > /dev/null\n\n$ sleep 6 && kubectl logs leak\n\nPASSWORD=hunter2\n\n#   손자 프로세스까지 갔다\n\n#   상속은 막을 수 없다\n\n$ kubectl delete pod leak > /dev/null\n\n# --- 파일은 찍어야만 샌다 ---\n\n$ kubectl run nofile --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"nofile\",\n      \"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"sh -c env | grep -c PASSWORD; \\\n        echo ---; ls /s\"],\n      \"volumeMounts\":[{\"name\":\"s\",\"mountPath\":\"/s\"}]}],\n      \"volumes\":[{\"name\":\"s\",\"secret\":{\"secretName\":\"pw\"}}]}}' > /dev/null\n\n$ sleep 6 && kubectl logs nofile\n\n0\n---\nPASSWORD\n\n#   환경에는 없다\n\n#   파일로만 있다\n\n$ kubectl delete pod nofile > /dev/null\n\n# --- 개행이 든 값 ---\n\n$ kubectl create secret generic cert --from-file=tls.crt=/dev/stdin <<'EOF'\n-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----\nEOF\n\nsecret/cert created\n\n$ kubectl run certenv --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"certenv\",\n      \"image\":\"busybox:1.36\",\"command\":[\"sh\",\"-c\",\n        \"echo \\\"[$CERT]\\\" | head -1\"],\n      \"env\":[{\"name\":\"CERT\",\"valueFrom\":{\"secretKeyRef\":\n        {\"name\":\"cert\",\"key\":\"tls.crt\"}}}]}]}}' > /dev/null\n\n$ sleep 6 && kubectl logs certenv\n\n[-----BEGIN CERTIFICATE-----\n\n#   한 줄만 보인다\n\n#   개행이 든 값은 다루기 나쁘다\n\n#   인증서는 언제나 파일이다\n\n$ kubectl delete pod certenv > /dev/null\n\n# --- 스프링이 읽는 법 ---\n\n$ cat spring.yaml\n\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: springcfg\ndata:\n  application.yaml: |\n    server:\n      port: 8080\n    logging:\n      level:\n        org.hibernate.SQL: DEBUG\n---\napiVersion: v1\nkind: Pod\nmetadata:\n  name: springish\nspec:\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"echo \\\"프로파일: $SPRING_PROFILES_ACTIVE\\\"; \\\n         echo \\\"URL: $SPRING_DATASOURCE_URL\\\"; \\\n         echo '--- 파일 ---'; cat /config/application.yaml\"]\n      env:\n        - { name: SPRING_PROFILES_ACTIVE, value: prod }\n        - { name: SPRING_DATASOURCE_URL,\n            value: \"jdbc:postgresql://db:5432/app\" }\n      volumeMounts:\n        - { name: c, mountPath: /config }\n  volumes:\n    - name: c\n      configMap: { name: springcfg }\n\n$ kubectl apply -f spring.yaml > /dev/null && sleep 6\n$ kubectl logs springish\n\n프로파일: prod\nURL: jdbc:postgresql://db:5432/app\n--- 파일 ---\nserver:\n  port: 8080\nlogging:\n  level:\n    org.hibernate.SQL: DEBUG\n\n#   밑줄이 점으로 완화 바인딩된다\n\n#   SPRING_DATASOURCE_URL 이 spring.datasource.url 이다\n\n#   ⑦ 에서 쓰던 파일을 그대로 넣었다\n\n#   섞어 쓰는 게 보통이다\n\n$ kubectl delete pod springish > /dev/null\n\n# --- 우선순위를 확인한다 ---\n\n$ kubectl run both --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"both\",\n      \"image\":\"busybox:1.36\",\"command\":[\"sh\",\"-c\",\"echo $LEVEL\"],\n      \"envFrom\":[{\"configMapRef\":{\"name\":\"lvl\"}}],\n      \"env\":[{\"name\":\"LEVEL\",\"value\":\"warn\"}]}]}}' > /dev/null\n\n$ sleep 6 && kubectl logs both\n\nwarn\n\n#   env 가 envFrom 을 이긴다\n\n#   나중에 쓴 게 아니라 정해진 규칙이다\n\n$ kubectl delete pod both > /dev/null\n\n# --- 치운다 ---\n\n$ kubectl delete configmap lvl springcfg && kubectl delete secret pw cert\n\nconfigmap \"lvl\" deleted\nconfigmap \"springcfg\" deleted\nsecret \"pw\" deleted\nsecret \"cert\" deleted\n\n# --- 다음 절에서 ---\n\n#   파일이 언제 바뀌는지, 앱이 왜 모르는지",
+   "note": "**환경변수는 컨피그맵을 바꿔도 `info` 그대로**고, 볼륨 파일은 `trace` 로 따라왔다.\n\n**손자 프로세스까지 `PASSWORD=hunter2` 를** 상속했다.\n\n**시크릿을 볼륨으로만 넣으면 `env` 에 `0`** 건이다.\n\n**개행이 든 인증서를 환경변수로 넣으면 한 줄만** 보인다.\n\n**`env` 가 `envFrom` 을** 이긴다."
+  }
+ ],
+ "recap": [
+  "**사는 동안 바뀌느냐가** 갈림길이다.",
+  "**환경변수는 시작할 때 얼어**붙는다.",
+  "**얼어붙는 게 나쁜 것만은** 아니다.",
+  "**파일은 따라오지만 앱이 다시 읽어야** 한다.",
+  "**환경변수는 자식 프로세스가 다** 상속한다.",
+  "**비밀은 파일이** 낫다.",
+  "**개행이 든 값은 언제나** 파일이다.",
+  "**스프링은 밑줄을 점으로 완화** 바인딩한다.",
+  "**`env` 가 `envFrom` 을** 이긴다."
+ ],
+ "drills": [
+  {
+   "task": "환경변수와 파일 파드를 나란히 띄운다.",
+   "done_when": "컨피그맵 수정 후 차이를 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "자식 프로세스에서 `env` 를 찍는다.",
+   "done_when": "상속을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인증서를 환경변수로 넣어 본다.",
+   "done_when": "개행 문제를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`env` 와 `envFrom` 을 겹친다.",
+   "done_when": "우선순위를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "고르는 기준 한 가지는?",
+   "a": "파드가 사는 동안 그 값이 바뀔 수 있느냐다."
+  },
+  {
+   "q": "환경변수가 새는 대표적 경로는?",
+   "a": "자식 프로세스 상속과 설정을 덤프하는 엔드포인트다."
+  },
+  {
+   "q": "인증서를 파일로 넣는 이유는?",
+   "a": "여러 줄이라 환경변수로는 다루기 나쁘다."
+  },
+  {
+   "q": "스프링에서 `SPRING_DATASOURCE_URL` 은?",
+   "a": "완화된 바인딩으로 `spring.datasource.url` 이 된다."
+  },
+  {
+   "q": "`env` 와 `envFrom` 이 겹치면?",
+   "a": "`env` 가 이긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "완화된 바인딩",
+   "def": "스프링이 대문자·밑줄 환경변수를 점 표기 프로퍼티로 맞춰 읽는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — ConfigMaps",
+   "url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Secrets",
+   "url": "https://kubernetes.io/docs/concepts/configuration/secret/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "The Twelve-Factor App — Config",
+   "url": "https://12factor.net/config",
+   "publisher": "Adam Wiggins"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

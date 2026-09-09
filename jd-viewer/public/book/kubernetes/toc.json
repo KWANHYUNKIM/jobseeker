@@ -380,7 +380,7 @@
           "title": "시크릿",
           "summary": "base64 는 암호화가 아니다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -388,7 +388,7 @@
           "title": "환경변수로 넣을까 파일로 넣을까",
           "summary": "바뀔 수 있느냐가 갈림길이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
