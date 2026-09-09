@@ -163,6 +163,32 @@
       "written": 53,
       "status": "writing",
       "updated_at": "2026-09-09"
+    },
+    {
+      "id": "docker",
+      "track": "infra",
+      "title": "개발자를 위한 도커",
+      "subtitle": "내 노트북에서 된 것을 남의 서버에서도 되게",
+      "blurb": "서가의 앞 열 권은 애플리케이션 안쪽을 다뤘다. 이 책은 그것을 어떻게 남에게 건네는지를 다룬다. \"내 컴퓨터에서는 됐는데\" 는 농담이 아니라 배포의 기본값이고, 그 문장이 나오는 이유는 환경을 안 옮겼기 때문이다. 매 절은 실제로 친 명령과 그 출력으로 끝난다.",
+      "emoji": "🐳",
+      "chapters": 11,
+      "sections": 69,
+      "written": 0,
+      "status": "writing",
+      "updated_at": "2026-09-09"
+    },
+    {
+      "id": "kubernetes",
+      "track": "infra",
+      "title": "쿠버네티스 입문",
+      "subtitle": "원하는 상태를 적어 두면 그것이 유지된다",
+      "blurb": "「도커」가 컨테이너 하나를 만들었다면 이 책은 그것이 여러 대에서 죽지 않고 도는 법을 다룬다. 명령이 아니라 상태를 적는 도구라, 모든 질문이 \"원하는 상태와 지금 상태가 왜 다른가\" 로 환원된다. 매 절은 kubectl 이 돌려준 것으로 끝난다 — Pending 과 CrashLoopBackOff 를 읽는 것이 절반이다.",
+      "emoji": "☸️",
+      "chapters": 11,
+      "sections": 67,
+      "written": 0,
+      "status": "planned",
+      "updated_at": "2026-09-09"
     }
   ]
 }
