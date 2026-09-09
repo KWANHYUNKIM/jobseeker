@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "long-names",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "이름이 길어질 때",
+ "summary": "조건 셋이면 벌써 읽기 어렵다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "한계를 안다.",
+  "동적 조건이 안 되는 걸 안다.",
+  "무엇으로 넘어갈지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절이 편했다.** **그 편함이 어디까지 가는지** 재 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "조건이 늘면",
+   "ascii": "   the same query, as conditions accumulate\n\n   1   findByUsername\n   2   findByUsernameAndAge\n   3   findByUsernameAndAgeGreaterThanAndTeamName\n   4   findByUsernameAndAgeGreaterThanAndTeamNameOrderByAgeDesc\n   5   ...AndCreatedAtBetweenOrderByAgeDescUsernameAsc\n\n   somewhere around three the name stops being readable,\n   and around five it stops fitting on a line",
+   "note": "**셋쯤에서 안 읽히고 다섯이면 한 줄에 안** 들어간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건 둘까지가 실용선이다",
+   "md": "**공식 문서도 그렇게** 말한다.\n\n> **\"쿼리 메서드는 간단한 조회에\"** 라고 적혀 있다.\n> **길어지면 `@Query` 를** 쓰라고 한다(5.4절).\n> **더 복잡하면 Querydsl 이** 있다.\n\n**읽기 어려운 게 첫째** 문제다.\n\n> **`AndAgeGreaterThanAnd` 를 눈으로** 파싱해야 한다.\n> **조건 순서를 바꾸면 다른 메서드가** 된다.\n> **오타를 눈으로 못** 잡는다.\n\n**파라미터가 위치로** 맞는다(5.1절).\n\n> **`String, int, String` 이 나란히 있으면 헷갈**린다.\n> **순서를 바꿔도 컴파일이** 된다.\n> **런타임에 엉뚱한 결과가** 나온다.\n\n**메서드가 폭증**한다.\n\n> **조건 조합마다 메서드 하나**다.\n> **셋이면 최대 여덟 개**다.\n> **화면이 늘면 리포지토리가 백 줄이** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름으로 못 하는 것",
+   "ascii": "   what a name cannot express at all\n\n   optional condition   apply the age filter only if age was provided\n   either or            username matches, or email matches, but not both paths\n   computed             where age > (select avg(age) from member)\n   projection           select only username and age, not the whole row\n\n   the first one is the common case, and it is the reason querydsl exists",
+   "note": "**첫째가 흔하고 Querydsl 이 있는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "동적 조건이 아예 안 된다",
+   "md": "**검색 화면이 그 모양**이다.\n\n> **이름은 비었고 나이만 넣었을 수** 있다.\n> **`null` 이면 조건을 빼야** 한다.\n> **이름으로는 표현할 방법이** 없다.\n\n**메서드를 나눠 보면**\n\n```java\nif (name != null && age != null) findByUsernameAndAge(name, age);\nelse if (name != null)           findByUsername(name);\nelse if (age != null)            findByAge(age);\nelse                             findAll();\n```\n\n> **조건 셋이면 여덟 갈래**다.\n> **넷이면 열여섯**이다.\n> **유지가 안 된다.**\n\n**넘어갈 곳이 셋**이다.\n\n| 방법 | 언제 |\n|---|---|\n| `@Query` | 고정된 복잡한 쿼리(5.4절) |\n| `Specifications` | 동적 조건. 쓰기 어렵다(8.1절) |\n| Querydsl | 동적 조건. 실무 표준 |\n\n> **8.8절에서 Querydsl 로** 넘긴다.\n> **이 책의 다음 권이** 그것이다.\n\n**그래도 쿼리 메서드를 버리진** 않는다.\n\n> **단순 조회는 여전히 가장** 빠르다.\n> **섞어 쓰는 게** 보통이다.\n> **6.1절의 사용자 정의 리포지토리가 그 접점**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 조건을 늘려 본다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    List<Member> findByUsername(String username);\n\n    List<Member> findByUsernameAndAge(String username, int age);\n\n    List<Member> findByUsernameAndAgeGreaterThanAndTeamName(\n            String username, int age, String teamName);\n\n    List<Member> findByUsernameAndAgeGreaterThanAndTeamNameOrderByAgeDesc(\n            String username, int age, String teamName);\n}\n\n$ awk '/List<Member> find/ {print length($0)}' MemberRepository.java\n\n45\n61\n77\n94\n\n--   94 자다\n--   한 줄에 안 들어간다\n\n\n-- 그래도 SQL 은 잘 나온다\n\n@Test\n@Transactional\nvoid 긴_이름() {\n    em.clear();\n    memberRepository\n        .findByUsernameAndAgeGreaterThanAndTeamNameOrderByAgeDesc(\n            \"m1\", 5, \"A팀\");\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and m1_0.age>?\n        and t1_0.name=?\n    order by\n        m1_0.age desc\n\n--   동작은 완벽하다\n--   문제는 이름이다\n\n\n-- 순서를 바꾸면 다른 메서드다\n\nList<Member> findByUsernameAndAge(String username, int age);\nList<Member> findByAgeAndUsername(int age, String username);\n\n@Test\n@Transactional\nvoid 순서() {\n    em.clear(); memberRepository.findByUsernameAndAge(\"m1\", 10);\n    em.clear(); memberRepository.findByAgeAndUsername(10, \"m1\");\n}\n\nHibernate: select ... where m1_0.username=? and m1_0.age=?\nHibernate: select ... where m1_0.age=? and m1_0.username=?\n\n--   같은 결과인데 메서드가 둘이다\n--   where 절 순서만 다르다\n\n\n-- 파라미터 순서를 틀리면\n\nList<Member> findByUsernameAndTeamName(String username, String teamName);\n\n@Test\n@Transactional\nvoid 순서를_틀리면() {\n    em.clear();\n    // 이름과 팀 이름을 바꿔 넣었다\n    List<Member> r = memberRepository\n            .findByUsernameAndTeamName(\"A팀\", \"m1\");\n    System.out.println(\"결과: \" + r.size() + \"건\");\n}\n\nHibernate:\n    select ... where m1_0.username=? and t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [A팀]\nTRACE binding parameter (2:VARCHAR) <- [m1]\n결과: 0건\n\n--   컴파일이 통과했다\n--   둘 다 String 이라서다\n--   0건이 나올 뿐 오류가 없다\n--   5.6절의 이름 바인딩이 이걸 조금 푼다\n\n\n-- 조합마다 메서드가 필요하다\n\nList<Member> findByUsername(String u);\nList<Member> findByAge(int a);\nList<Member> findByTeamName(String t);\nList<Member> findByUsernameAndAge(String u, int a);\nList<Member> findByUsernameAndTeamName(String u, String t);\nList<Member> findByAgeAndTeamName(int a, String t);\nList<Member> findByUsernameAndAgeAndTeamName(String u, int a, String t);\n\n$ grep -c 'List<Member> findBy' MemberRepository.java\n\n7\n\n--   조건 셋에 일곱 개다\n--   findAll 까지 여덟 갈래다\n--   넷이면 열여섯이다\n\n\n-- 서비스가 이렇게 된다\n\npublic List<Member> 검색(String username, Integer age, String teamName) {\n    boolean u = username != null;\n    boolean a = age != null;\n    boolean t = teamName != null;\n\n    if (u && a && t) return repo.findByUsernameAndAgeAndTeamName(\n            username, age, teamName);\n    if (u && a)      return repo.findByUsernameAndAge(username, age);\n    if (u && t)      return repo.findByUsernameAndTeamName(username, teamName);\n    if (a && t)      return repo.findByAgeAndTeamName(age, teamName);\n    if (u)           return repo.findByUsername(username);\n    if (a)           return repo.findByAge(age);\n    if (t)           return repo.findByTeamName(teamName);\n    return repo.findAll();\n}\n\n$ ./gradlew compileJava && echo \"컴파일은 된다\"\n\n컴파일은 된다\n\n--   유지가 안 된다\n--   조건 하나 늘면 갈래가 두 배다\n\n\n-- 실제로 돌려 본다\n\n@Test\n@Transactional\nvoid 동적_흉내() {\n    em.clear();\n    System.out.println(\"--- 이름만 ---\");\n    memberService.검색(\"m1\", null, null);\n    em.clear();\n    System.out.println(\"--- 나이만 ---\");\n    memberService.검색(null, 10, null);\n    em.clear();\n    System.out.println(\"--- 셋 다 ---\");\n    memberService.검색(\"m1\", 10, \"A팀\");\n}\n\n--- 이름만 ---\nHibernate: select ... where m1_0.username=?\n--- 나이만 ---\nHibernate: select ... where m1_0.age=?\n--- 셋 다 ---\nHibernate: select ... join team t1_0 on ...\n           where m1_0.username=? and m1_0.age=? and t1_0.name=?\n\n--   SQL 은 정확하다\n--   대가는 여덟 갈래의 분기다\n\n\n-- 이름으로 못 하는 것들\n\n// 1) 계산된 조건\n// findByAgeGreaterThanAverage()  <- 이런 건 없다\n\n@Query(\"select m from Member m\" +\n       \" where m.age > (select avg(m2.age) from Member m2)\")\nList<Member> findOlderThanAverage();\n\n@Test\n@Transactional\nvoid 계산된_조건() {\n    em.clear();\n    memberRepository.findOlderThanAverage();\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>(select\n            avg(m2_0.age)\n        from\n            member m2_0)\n\n--   5.4절의 @Query 다\n--   이름으로는 표현할 방법이 없다\n\n\n-- 2) 필요한 컬럼만\n\n@Query(\"select m.username, m.age from Member m\")\nList<Object[]> findNameAndAge();\n\n@Test\n@Transactional\nvoid 컬럼만() {\n    em.clear();\n    memberRepository.findNameAndAge();\n}\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n\n--   컬럼 둘만 읽었다\n--   5.5절과 8.3절에서 다시 본다\n\n\n-- 3) 동적 조건은 아예 안 된다\n\n// findByUsernameOptionalAndAgeOptional  <- 이런 문법이 없다\n\n--   Specifications 나 Querydsl 이 필요하다\n--   8.1절에서 앞의 것을 본다\n\n\n-- 길이의 한계\n\nList<Member> findByUsernameAndAgeGreaterThanAndTeamNameAndAgeLessThanOrderByAgeDescUsernameAsc(\n        String username, int minAge, String teamName, int maxAge);\n\n@Test\n@Transactional\nvoid 아주_긴_이름() {\n    em.clear();\n    memberRepository\n        .findByUsernameAndAgeGreaterThanAndTeamNameAndAgeLessThanOrderByAgeDescUsernameAsc(\n            \"m1\", 5, \"A팀\", 100);\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and m1_0.age>?\n        and t1_0.name=?\n        and m1_0.age<?\n    order by\n        m1_0.age desc, m1_0.username asc\n\n$ awk '/findByUsernameAndAgeGreaterThanAndTeamNameAndAge/ {print length($0); exit}' \\\n    MemberRepository.java\n\n112\n\n--   112 자다\n--   동작은 한다\n--   읽을 수 있는가는 다른 문제다\n\n\n-- @Query 로 바꾸면\n\n@Query(\"select m from Member m join m.team t\" +\n       \" where m.username = :username\" +\n       \"   and m.age between :minAge and :maxAge\" +\n       \"   and t.name = :teamName\" +\n       \" order by m.age desc, m.username asc\")\nList<Member> search(@Param(\"username\") String username,\n                    @Param(\"minAge\") int minAge,\n                    @Param(\"maxAge\") int maxAge,\n                    @Param(\"teamName\") String teamName);\n\n@Test\n@Transactional\nvoid 쿼리로() {\n    em.clear();\n    memberRepository.search(\"m1\", 5, 100, \"A팀\");\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and m1_0.age between ? and ?\n        and t1_0.name=?\n    order by\n        m1_0.age desc, m1_0.username asc\n\n--   SQL 이 거의 같다\n--   between 이 되어 조건이 하나 줄었다\n--   이름 바인딩이라 순서를 안 틀린다\n--   5.4절에서 본다\n\n\n-- 어디까지 쓸지\n\n$ printf '%-14s %s\\n' \\\n  '조건 1-2개' '메서드 이름' \\\n  '고정 복잡' '@Query (5.4절)' \\\n  '동적 조건' 'Querydsl (8.8절)' \\\n  '통계 집계' '@Query 또는 네이티브 (8.6절)'\n\n조건 1-2개     메서드 이름\n고정 복잡      @Query (5.4절)\n동적 조건      Querydsl (8.8절)\n통계 집계      @Query 또는 네이티브 (8.6절)\n\n--   버리는 게 아니라 섞어 쓴다\n--   6.1절이 그 접점이다",
+   "note": "**메서드 이름이 45→61→77→94자로** 자란다.\n\n**둘 다 `String` 이라 파라미터를 바꿔 넣어도 컴파일이 통과하고 결과가 `0건`** 이다.\n\n**조건 셋에 메서드가 일곱 개, 서비스 분기가 여덟** 갈래다.\n\n**계산된 조건과 컬럼 선택은 이름으로 표현할 방법이** 없다.\n\n**같은 조회를 `@Query` 로 쓰면 `between` 이 되어 조건이 하나** 준다."
+  }
+ ],
+ "recap": [
+  "**조건 둘까지가** 실용선이다.",
+  "**셋부터 안** 읽힌다.",
+  "**순서를 바꾸면 다른 메서드**다.",
+  "**파라미터는 위치로** 맞는다.",
+  "**같은 타입이면 안 잡힌다.**",
+  "**조합마다 메서드가** 필요하다.",
+  "**동적 조건이 아예 안** 된다.",
+  "**계산과 선택도 못** 한다.",
+  "**버리지 말고 섞어** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "조건을 넷까지 늘려 본다.",
+   "done_when": "이름 길이를 재 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 타입 파라미터를 바꿔 넣는다.",
+   "done_when": "조용히 틀리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "동적 검색을 분기로 짠다.",
+   "done_when": "갈래 수를 세었다.",
+   "minutes": 25
+  },
+  {
+   "task": "같은 조회를 `@Query` 로 쓴다.",
+   "done_when": "SQL 을 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿼리 메서드의 실용 한계는?",
+   "a": "조건 두 개쯤이다. 셋부터 읽기 어려워진다."
+  },
+  {
+   "q": "파라미터 순서 실수가 위험한 이유는?",
+   "a": "타입이 같으면 컴파일이 통과하고 결과만 틀린다."
+  },
+  {
+   "q": "조건 셋의 동적 검색은 몇 갈래인가?",
+   "a": "여덟 갈래다. 조건이 하나 늘면 두 배가 된다."
+  },
+  {
+   "q": "이름으로 못 하는 것은?",
+   "a": "동적 조건, 계산된 조건, 컬럼 선택이다."
+  },
+  {
+   "q": "동적 조건의 실무 해법은?",
+   "a": "Querydsl 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동적 쿼리",
+   "def": "입력에 따라 조건이 붙거나 빠지는 쿼리."
+  },
+  {
+   "term": "조합 폭증",
+   "def": "조건 수에 따라 메서드나 분기가 지수적으로 느는 현상."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl — Reference Documentation",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html/",
+   "publisher": "Querydsl"
+  }
+ ]
+}

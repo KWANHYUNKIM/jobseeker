@@ -227,7 +227,7 @@
           "title": "이름이 길어질 때",
           "summary": "조건 셋이면 벌써 읽기 어렵다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -235,7 +235,7 @@
           "title": "NamedQuery",
           "summary": "애플리케이션 로딩 시점에 검증된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
