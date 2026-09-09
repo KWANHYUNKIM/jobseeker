@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "architecture",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "계층 구조",
+ "summary": "컨트롤러 · 서비스 · 리포지토리 · 도메인.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 계층의 역할을 정한다.",
+  "트랜잭션 경계를 정한다.",
+  "그 경계가 8장에 무엇을 남기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「DB 2편」 2.3절과 12.3절에서 정한 것**을 이 프로젝트에 적용한다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 계층",
+   "ascii": "   controller     web, forms, view names\n        |\n   service        @Transactional, orchestration\n        |\n   repository     EntityManager\n        |\n   domain         entities, business logic\n\n   controller and service both reach into domain\n   nothing reaches back up",
+   "note": "**위로 향하는 화살표가 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "계층마다의 책임",
+   "md": "| 계층 | 하는 일 | 안 하는 일 |\n|---|---|---|\n| **컨트롤러** | 폼 받기, 뷰 이름 반환 | **비즈니스 로직**, 트랜잭션 |\n| **서비스** | **트랜잭션 경계**, 흐름 조립 | 계산, SQL |\n| **리포지토리** | `EntityManager` 호출, JPQL | **비즈니스 판단** |\n| **도메인** | **계산과 규칙** | 저장, 화면 |\n\n**세 번째 줄이 중요**하다.\n\n```java\n// 리포지토리가 이러면 안 된다\npublic void save(Order order) {\n    if (order.getStatus() == OrderStatus.CANCEL) {   // 판단\n        throw new IllegalStateException();\n    }\n    em.persist(order);\n}\n```\n\n**리포지토리는 저장만** 한다. **판단은 도메인이나 서비스**다.\n\n**네 번째 줄이 이 책의 특징**이다.\n\n> **6장에서 `item.removeStock(count)`** 를 만든다. **재고 계산이 엔티티 안**에 있다.\n>\n> **「DB 2편」에서는 엔티티가 데이터 그릇**이었다. **여기서는 로직을 가진다.** **9.5절에서 그 차이**를 다룬다.\n\n**컨트롤러가 도메인을 직접 만지는 것**은 허용한다.\n\n```java\n// 8장\nmodel.addAttribute(\"items\", itemService.findItems());\n// 화면에서 item.getName() 을 쓴다\n```\n\n> **엄격히 하면 DTO 로 바꿔야** 한다. **이 책은 8장에서 일부러 엔티티를 그대로** 넘기고, **9.1절에서 그 대가**를 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "트랜잭션 경계",
+   "ascii": "   where the transaction begins and ends\n\n   controller     outside\n   service        begin ... commit        <-- the boundary\n   repository     inside\n\n   so a lazy field loaded in the controller\n   is loaded after commit",
+   "note": "**마지막 두 줄이 9장의 씨앗**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 서비스에 두나",
+   "md": "**「DB 2편」 12.3절의 기준**이다.\n\n> **\"같이 성공하거나 같이 실패해야 하는 단위\"**\n\n**주문 하나가 세 엔티티**를 건드린다(3.1절).\n\n```java\n@Transactional\npublic Long order(Long memberId, Long itemId, int count) {\n    Member member = memberRepository.findOne(memberId);\n    Item item = itemRepository.findOne(itemId);\n\n    Delivery delivery = new Delivery();      // 배송 생성\n    OrderItem orderItem = OrderItem.createOrderItem(item, ...);  // 재고 감소\n    Order order = Order.createOrder(member, delivery, orderItem);\n\n    orderRepository.save(order);\n    return order.getId();\n}\n```\n\n**재고가 줄었는데 주문이 안 들어가면 안 된다.** **하나의 트랜잭션**이다.\n\n**컨트롤러에 두면** 「DB 2편」 12.3절의 문제가 온다 — **뷰 렌더링까지 트랜잭션**이다.\n\n**리포지토리에 두면** 각각 커밋된다.\n\n> **`@Transactional(readOnly = true)` 를 클래스에** 걸고 **쓰기 메서드에만 덮어쓴다**(「DB 2편」 10.2절).\n>\n> **5.5절에서 이 패턴**을 쓴다.\n\n**중요한 결과가 하나** 있다.\n\n> **서비스가 끝나면 영속성 컨텍스트가 닫힌다.**\n>\n> **컨트롤러에서 `order.getMember().getName()` 을 부르면** — **9.2절의 주제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "「핵심 원리」가 여기 온다",
+   "md": "**의존관계 주입**을 어떻게 하나.\n\n```java\n@Service\n@RequiredArgsConstructor\npublic class MemberService {\n    private final MemberRepository memberRepository;\n}\n```\n\n**생성자 주입**이다. **필드 주입을 안 쓴다.**\n\n| | 필드 주입 | 생성자 주입 |\n|---|---|---|\n| `final` | **못 쓴다** | **쓴다** |\n| 테스트에서 `new` | **못 한다** | **된다** |\n| 순환 참조 | **뜰 때 안 잡힌다** | **뜰 때 잡힌다** |\n| 주입 누락 | **NPE** | **컴파일 오류** |\n\n**`@RequiredArgsConstructor`** 가 `final` 필드로 생성자를 만든다.\n\n> **「핵심 원리」 6장의 결론**이다. **이 책은 그것을 그대로** 쓴다.\n\n**리포지토리에 인터페이스를 안 만든다.**\n\n```java\n@Repository\npublic class MemberRepository {      // 인터페이스 없음\n    @PersistenceContext\n    private EntityManager em;\n}\n```\n\n> **「DB 2편」에서는 구현이 여섯이라 인터페이스가 필요**했다. **여기는 하나**다.\n>\n> **인터페이스가 하나뿐인 구현을 위해 존재하면 이름만 늘어난다.** **필요해지면 그때 뽑는다.**\n>\n> **4.4절에서 이 판단을 더** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 아직 없다",
+   "sql": "# --- 계층은 코드가 아니라 규칙이다 ---\n\n#   패키지를 나눠도 DDL 은 안 바뀐다\n#   트랜잭션 경계도 DDL 에 안 나타난다\n\n#   (3.9절에서 본 그 목록과 같다)\n\n# --- 그런데 SQL 의 순서와 개수가 달라진다 ---\n\n# --- 트랜잭션이 서비스에 있을 때 ---\n\norderService.order(1L, 1L, 2);\n\n#   Creating new transaction with name [OrderService.order]\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [conn0] for JPA transaction\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0 where ...\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where ...\n\n#   (엔티티를 고친다 - SQL 없음)\n\n#   Initiating transaction commit\n#   Hibernate: insert into delivery ...\n#   Hibernate: insert into orders ...\n#   Hibernate: insert into order_item ...\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   Committing JPA transaction\n#   Releasing JDBC Connection [conn0]\n\n#   insert 셋과 update 하나가 커밋 시점에 몰려 나갔다\n#   (「DB 2편」 6.6절의 쓰기 지연)\n\n# --- 트랜잭션이 리포지토리에 있다면 ---\n\n#   Creating new transaction [MemberRepository.findOne]\n#   Hibernate: select ... from member ...\n#   Committing / Releasing\n\n#   Creating new transaction [ItemRepository.findOne]\n#   Hibernate: select ... from item ...\n#   Committing / Releasing\n\n#   Creating new transaction [OrderRepository.save]\n#   Hibernate: insert into orders ...\n#   Committing / Releasing\n\n#   (재고 감소가 어느 트랜잭션에도 안 속한다)\n#   update 가 아예 안 나간다\n\n#   「DB 2편」 6.6절의 조용한 실패다\n\n# --- 트랜잭션이 컨트롤러에 있다면 ---\n\n#   Creating new transaction [OrderController.order]\n#   Hibernate: select ... x2\n#   (화면 렌더링)\n#   Initiating transaction commit\n#   Hibernate: insert x3, update x1\n#   Releasing JDBC Connection [conn0]\n\n#   화면을 그리는 동안 커넥션을 쥐고 있었다\n\n# --- 이 책의 선택 ---\n\n#   서비스에 둔다\n\n#   대가: 컨트롤러에서 지연 로딩이 안 된다\n#         -> 9.2절, 9.3절\n\n# 다음 절에서 패키지를 나눈다",
+   "note": "**세 배치의 로그를 나란히** 뒀다. **같은 코드인데 SQL 개수와 시점이 다르다.**\n\n**리포지토리에 두면 `update` 가 아예 안 나간다.** **재고 감소가 어느 트랜잭션에도 안 속하기** 때문이다 — 「DB 2편」 6.6절의 그 조용한 실패다.\n\n**컨트롤러에 두면 화면 그리는 동안 커넥션**을 쥔다.\n\n**서비스에 두는 대가**는 하나다. **컨트롤러에서 지연 로딩이 안 된다.** **9.2절에서 그 문제를** 만난다.\n\n**다음 절에서 패키지를 나눈다.**"
+  }
+ ],
+ "recap": [
+  "**컨트롤러·서비스·리포지토리·도메인** 네 계층이다.",
+  "**리포지토리는 저장만** 하고 판단을 안 한다.",
+  "**도메인이 계산과 규칙을** 가진다 — 「DB 2편」과 다른 점.",
+  "**트랜잭션 경계는 서비스**다.",
+  "**컨트롤러에 두면 화면 그리는 동안 커넥션**을 쥔다.",
+  "**리포지토리에 두면 `update` 가 조용히 안 나간다.**",
+  "**생성자 주입**을 쓴다 — `@RequiredArgsConstructor`.",
+  "**리포지토리에 인터페이스를 안 만든다** — 구현이 하나다.",
+  "**서비스가 끝나면 컨텍스트가 닫힌다** — 9.2절의 씨앗."
+ ],
+ "drills": [
+  {
+   "task": "네 계층의 책임을 표로 만든다.",
+   "done_when": "각 계층이 안 하는 일도 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "트랜잭션을 리포지토리에 두면 무슨 SQL 이 빠지는지 예상한다.",
+   "done_when": "`update` 가 안 나가는 이유를 설명했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성자 주입과 필드 주입을 비교한다.",
+   "done_when": "네 항목을 채웠다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리 인터페이스가 필요한 경우를 생각해 본다.",
+   "done_when": "구현이 둘 이상일 때임을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "트랜잭션 경계를 왜 서비스에 두나?",
+   "a": "\"같이 성공하거나 실패해야 하는 단위\" 가 서비스 메서드이기 때문이다."
+  },
+  {
+   "q": "리포지토리에 두면 무엇이 안 되나?",
+   "a": "엔티티 변경(재고 감소)이 어느 트랜잭션에도 안 속해 `update` 가 안 나간다."
+  },
+  {
+   "q": "왜 생성자 주입인가?",
+   "a": "`final` 을 쓸 수 있고 테스트에서 `new` 로 만들 수 있으며 누락이 컴파일 오류가 된다."
+  },
+  {
+   "q": "리포지토리 인터페이스를 왜 안 만드나?",
+   "a": "구현이 하나뿐이라 이름만 늘어난다."
+  },
+  {
+   "q": "서비스에 경계를 둔 대가는?",
+   "a": "컨트롤러에서 지연 로딩을 못 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -232,7 +232,7 @@
           "title": "구현 요구사항",
           "summary": "무엇까지 만들고 무엇을 뺄까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -240,7 +240,7 @@
           "title": "계층 구조",
           "summary": "컨트롤러 · 서비스 · 리포지토리 · 도메인.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -248,7 +248,7 @@
           "title": "패키지 구조",
           "summary": "계층으로 나눌까 도메인으로 나눌까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",

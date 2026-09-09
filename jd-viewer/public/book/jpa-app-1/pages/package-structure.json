@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "package-structure",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "패키지 구조",
+ "summary": "계층으로 나눌까 도메인으로 나눌까.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "패키지를 정한다.",
+  "두 방식을 비교한다.",
+  "언제 바꿔야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「DB 2편」 2.3절에서 같은 선택**을 했다. **여기서는 엔티티가 열 개**라 판단이 달라질 수 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "계층으로 나누기",
+   "ascii": "   jpabook.jpashop\n   |\n   +-- domain\n   |     Member Order OrderItem Delivery Category Address\n   |     +-- item\n   |           Item Book Album Movie\n   |\n   +-- repository\n   |     MemberRepository ItemRepository OrderRepository\n   |     OrderSearch\n   |\n   +-- service\n   |     MemberService ItemService OrderService\n   |\n   +-- controller\n   |     HomeController MemberController ItemController OrderController\n   |     MemberForm BookForm\n   |\n   +-- exception\n         NotEnoughStockException",
+   "note": "**이 책이 고르는 쪽**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "도메인으로 나누기",
+   "ascii": "   the other way\n\n   jpabook.jpashop\n   +-- member\n   |     Member MemberRepository MemberService MemberController\n   +-- item\n   |     Item Book ItemRepository ItemService ItemController\n   +-- order\n         Order OrderItem OrderRepository OrderService OrderController\n\n   one folder per feature, all layers inside",
+   "note": "**기능 하나가 폴더 하나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "계층으로 나누는 이유",
+   "md": "| | 계층별 | 도메인별 |\n|---|---|---|\n| **찾기** | \"모든 서비스\" 가 한 곳 | \"주문 관련\" 이 한 곳 |\n| **규모가 작을 때** | ✅ | 폴더가 많아 보인다 |\n| **규모가 클 때** | 폴더마다 파일 수십 개 | ✅ |\n| **경계가 흐리다** | 서비스끼리 다 보인다 | **패키지 private 이 가능** |\n| **처음 보는 사람** | **구조가 한눈에** | 기능이 한눈에 |\n\n**이 책은 계층별**이다.\n\n**이유가 둘**이다.\n\n> **① 규모가 작다.** **서비스 셋, 리포지토리 셋**이다. **폴더마다 파일이 서넛**이면 도메인별로 나눌 이유가 적다.\n>\n> **② 이 책이 계층을 가르치는 책**이다. **`service` 폴더를 열면 서비스 셋이 나란히** 보이는 것이 낫다.\n\n**실무 프로젝트라면 도메인별**로 간다.\n\n**언제 바꾸나.**\n\n| 신호 | |\n|---|---|\n| **한 폴더에 파일 스무 개** | 넘어갈 때 |\n| **\"주문 고치려면 네 폴더를 연다\"** | |\n| **팀이 도메인별로 나뉜다** | |\n\n> **바꾸는 것은 쉽다.** **IDE 의 리팩터링으로 패키지를 옮기면** 된다. **처음부터 완벽하게 정할 필요가 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "몇 가지 세부",
+   "md": "**`domain.item` 하위 패키지**\n\n```\ndomain/\n  Member.java\n  Order.java\n  item/\n    Item.java\n    Book.java\n    Album.java\n    Movie.java\n```\n\n**상속 계층이 넷이라 따로** 묶는다. **`domain` 폴더가 덜 복잡해진다.**\n\n**`Address` 를 어디에 두나**\n\n**`domain` 에 둔다.** **값 타입도 도메인**이다.\n\n**enum 을 어디에**\n\n```\ndomain/\n  OrderStatus.java\n  DeliveryStatus.java\n```\n\n**`Order` 안에 중첩**시킬 수도 있는데, **분리하는 편**이 낫다. **화면에서도 쓴다.**\n\n**폼 객체를 어디에**\n\n```\ncontroller/\n  MemberForm.java\n  BookForm.java\n```\n\n**컨트롤러 옆**이다. **「MVC 2편」 6.7절의 그 판단**이다 — **화면의 것이지 도메인의 것이 아니다.**\n\n> **「DB 2편」 2.3절에서 `ItemUpdateDto` 를 `repository` 에 둔 것**과 다르다. **거기는 저장소 인터페이스의 파라미터**였다.\n\n**예외를 어디에**\n\n```\nexception/\n  NotEnoughStockException.java\n```\n\n**따로 둔다.** **6.2절에서 만든다.**\n\n> **도메인에 두는 쪽**도 있다. **`domain.item.NotEnoughStockException`** — 상품 도메인의 예외니까.\n>\n> **이 책은 예외가 하나뿐**이라 따로 뒀다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "패키지가 하는 일",
+   "md": "**폴더 정리가 아니다.** **접근 제어**다.\n\n```java\n// 같은 패키지면 접근할 수 있다\nclass OrderRepository { }        // public 이 아님\n```\n\n**도메인별로 나누면 이것이 가능**해진다.\n\n```\norder/\n  Order.java              public\n  OrderRepository.java    package-private   <- 밖에서 못 쓴다\n  OrderService.java       public\n```\n\n**\"주문 리포지토리는 주문 서비스만 쓴다\"** 를 컴파일러로 강제할 수 있다.\n\n**계층별로 나누면 못 한다.** **`repository` 패키지의 것을 `service` 패키지가 써야** 하니 전부 `public` 이다.\n\n> **그것이 도메인별의 진짜 이점**이다. **폴더 모양이 아니라 경계**다.\n>\n> **9.7절에서 \"무엇이 어색했나\" 를 물을 때** 이 이야기가 다시 나온다.\n\n**모듈로 더 강하게** 할 수도 있다 — 자바 모듈, 그레이들 멀티 모듈. **이 책의 범위 밖**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 아직 없다",
+   "sql": "# --- 패키지는 SQL 에 아무 영향이 없다 ---\n\n#   DDL 도 같다\n#   실행되는 SQL 도 같다\n\n#   3.9절의 DDL 스물일곱 줄 그대로\n\n# --- 그런데 확인할 것이 하나 있다 ---\n\n#   엔티티 스캔 범위\n\n@SpringBootApplication\npublic class JpashopApplication { }\n\n#   jpabook.jpashop 아래를 전부 스캔한다\n#   domain, domain.item 이 다 포함된다\n\n# --- 엔티티를 다른 루트에 두면 ---\n\n#   com.other.Member\n\n#   (스캔이 안 된다)\n\n#   create table member 가 안 나온다\n#   그리고 실행하면\n\nem.persist(member);\n\n#   java.lang.IllegalArgumentException:\n#     Unknown entity: com.other.Member\n\n#   패키지를 잘못 두면 여기서 터진다\n\n# --- 확인 ---\n\n#   애플리케이션을 띄우고 DDL 을 센다\n\n#   create table x7\n\n#   일곱 개가 다 나오면 스캔 범위가 맞다\n\n# --- 지금 상태 ---\n\n#   패키지 다섯 개를 만들었다\n#     domain, domain.item, repository, service, controller, exception\n\n#   그 안에 엔티티만 들어 있다\n#   repository, service, controller 는 비어 있다\n\n# --- 다음 절에서 ---\n\n#   리포지토리를 어떻게 쓸지 정한다\n#   그다음 5장에서 첫 코드를 쓴다\n\n#   그때부터 SQL 이 나가기 시작한다",
+   "note": "**패키지가 SQL 에 아무 영향이 없다.** **DDL 도 그대로**다.\n\n**딱 하나 확인할 것이 엔티티 스캔 범위**다. **메인 클래스의 패키지 아래**여야 한다.\n\n**다른 루트에 두면 DDL 이 안 나오고 `Unknown entity`** 로 터진다.\n\n> **`create table` 개수를 세는 것**이 가장 빠른 확인이다.\n\n**세 패키지가 아직 비어 있다.** **다음 절에서 리포지토리 방식을 정하고 5장에서 채운다.**"
+  }
+ ],
+ "recap": [
+  "**계층별로 나눈다** — 규모가 작고 계층을 가르치는 책이라서.",
+  "**실무 프로젝트라면 도메인별**이 낫다.",
+  "**한 폴더에 파일 스무 개**가 넘으면 바꿀 때다.",
+  "**바꾸는 것은 쉽다** — 처음부터 완벽할 필요가 없다.",
+  "**`domain.item`** 으로 상속 계층을 묶는다.",
+  "**폼 객체는 컨트롤러 옆**에 둔다.",
+  "**패키지의 진짜 일은 접근 제어**다.",
+  "**도메인별이면 리포지토리를 package-private** 으로 둘 수 있다.",
+  "**엔티티는 메인 클래스 패키지 아래**여야 스캔된다."
+ ],
+ "drills": [
+  {
+   "task": "패키지를 만들고 엔티티를 옮긴다.",
+   "done_when": "`create table` 이 일곱 개인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "엔티티를 다른 루트로 옮겨 본다.",
+   "done_when": "DDL 이 안 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "도메인별 구조로 다시 그려 본다.",
+   "done_when": "어느 쪽이 나을지 판단했다.",
+   "minutes": 20
+  },
+  {
+   "task": "리포지토리를 package-private 으로 만들 수 있는지 확인한다.",
+   "done_when": "계층별 구조에서는 안 되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책은 왜 계층별인가?",
+   "a": "규모가 작고 계층 자체를 가르치는 책이기 때문이다."
+  },
+  {
+   "q": "언제 도메인별로 바꾸나?",
+   "a": "한 폴더의 파일이 스무 개를 넘거나 한 기능을 고치려고 네 폴더를 열게 될 때다."
+  },
+  {
+   "q": "패키지의 진짜 일은?",
+   "a": "폴더 정리가 아니라 접근 제어다."
+  },
+  {
+   "q": "도메인별의 진짜 이점은?",
+   "a": "리포지토리를 package-private 으로 두어 경계를 컴파일러로 강제할 수 있다."
+  },
+  {
+   "q": "엔티티 패키지가 잘못되면?",
+   "a": "DDL 이 안 나오고 실행할 때 `Unknown entity` 로 터진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  },
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  }
+ ]
+}
