@@ -1,0 +1,150 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-summary",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "SQL 을 밖으로 뺀 대가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "5장에서 푼 것과 남은 것을 센다.",
+  "MyBatis 를 언제 쓸지 정한다.",
+  "다음 장이 무엇을 노리는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**두 번째 기술이 끝났다.** **3.9절의 목록**을 다시 꺼낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "3.3절의 문제 다섯",
+   "ascii": "   3.3 problems                    mybatis\n   ------------                    -------\n   string concatenation            gone   (<where> <if>)\n   spacing / and                   gone   (<where>)\n   compiler checks nothing         still\n   2^n cases                       handled by tags\n   object <-> row by hand          still  (resultMap)\n\n   two of five remain",
+   "note": "**셋이 풀렸다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "들어온 것",
+   "ascii": "   what moved out of java\n     the sql\n     the dynamic branches\n\n   what moved in\n     an xml file per mapper\n     a namespace that must match\n     an ognl expression language\n     a dependency i version myself\n\n   nothing is free",
+   "note": "**넷이 들어왔다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 진짜로 나아졌나",
+   "md": "**줄 수만 보면 크게 준다.**\n\n| | 3장 | 5장 |\n|---|---|---|\n| 리포지토리 | **96줄** | **20줄** |\n| `findAll` | **25줄** | **인터페이스 1줄** |\n| XML | 없다 | **35줄** |\n| **합계** | **96** | **약 56** |\n\n**그런데 줄 수가 요점이 아니다.**\n\n**진짜 이득은 `andFlag` 가 사라진 것**이다 — **분기끼리의 의존이 없어졌다.**\n\n```\n3.3절: 조건을 추가하려면 다른 조건의 코드를 본다\n5.4절: 조건을 추가하려면 <if> 를 하나 더 쓴다\n```\n\n**조건이 열 개인 검색 화면**에서 이 차이가 갈린다.\n\n**두 번째 이득은 SQL 이 SQL 처럼 보이는 것**이다.\n\n```sql\nselect id, item_name, price, quantity\n  from item\n WHERE item_name like concat('%', ?, '%')\n```\n\n**복사해서 DB 툴에 붙여 넣으면 바로 돈다.** **3장에서는 `+` 와 따옴표를 지워야** 했다."
+  },
+  {
+   "type": "compare",
+   "caption": "언제 MyBatis, 언제 JdbcTemplate",
+   "left": {
+    "title": "MyBatis 가 나은 때",
+    "points": [
+     "**동적 쿼리가 많다** — 검색 화면",
+     "**SQL 이 길다** — 조인과 서브쿼리",
+     "**SQL 을 DBA 와 공유**한다",
+     "**통계·리포트** 쿼리가 주다",
+     "팀이 SQL 중심으로 일한다"
+    ]
+   },
+   "right": {
+    "title": "JdbcTemplate 이 나은 때",
+    "points": [
+     "**쿼리가 몇 개 안 된다**",
+     "**의존관계를 안 늘리고** 싶다",
+     "**설정을 안 늘리고** 싶다",
+     "**JPA 와 섞어** 쓰는 보조 도구",
+     "배치·집계 한두 개"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "여전히 안 풀린 둘",
+   "md": "**① 컴파일러가 아무것도 안 잡는다.**\n\n```xml\n<if test=\"itemNmae != null\">      <!-- 조용히 false -->\n<result column=\"item_nmae\"/>       <!-- 실행 때 오류 -->\nselect item_nmae from item          <!-- 실행 때 오류 -->\n```\n\n**셋 다 빌드가 성공**한다. **테스트가 유일한 방어**다.\n\n**② 객체와 행을 내가 잇는다.**\n\n```xml\n<association property=\"category\" javaType=\"Category\">\n    <id property=\"id\" column=\"c_id\"/>\n    ...\n</association>\n```\n\n**조인을 쓸 때마다 이 매핑을 쓴다.** **테이블이 다섯 개 얽히면 `resultMap` 이 커진다.**\n\n> **6장 JPA 가 두 번째를 노린다.** **매핑을 한 번 해 두고 계속 쓴다.**\n>\n> **8장 Querydsl 이 첫 번째를 노린다.** **컬럼이 자바 객체가 된다.**\n\n**5장이 남긴 것이 정확히 6장과 8장의 존재 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 조합",
+   "md": "**MyBatis 와 JPA 를 같이 쓰는 곳**이 많다.\n\n| 무엇을 | 무엇으로 |\n|---|---|\n| CRUD·단순 조회 | **JPA / Data JPA** |\n| **복잡한 조회·통계** | **MyBatis 또는 Querydsl** |\n| 대량 배치 | JdbcTemplate |\n\n**한 프로젝트에 셋이 다 있는 것**이 이상하지 않다. **9장에서 이 조합을 정리**한다.\n\n> **다만 트랜잭션을 섞을 때 주의**한다. **JPA 의 쓰기 지연**(6장) 때문에, **같은 트랜잭션에서 JPA 로 저장하고 MyBatis 로 조회하면 안 보일 수 있다.** **`flush` 가 필요**하다.\n>\n> **6.7절에서 그 순간을 로그로** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 5장이 만든 SQL 전부\n\n# save\n#   insert into item (item_name, price, quantity) values (?, ?, ?)\n\n# update\n#   update item set item_name = ?, price = ?, quantity = ? where id = ?\n\n# findById\n#   select id, item_name, price, quantity from item where id = ?\n\n# findAll x4\n#   select id, item_name, price, quantity from item\n#   select ... WHERE item_name like concat('%', ?, '%')\n#   select ... WHERE price <= ?\n#   select ... WHERE item_name like concat('%', ?, '%') and price <= ?\n\n# 일곱 개다\n\n# --- 3장의 목록과 나란히 ---\n\n#   3장  where item_name like concat('%',?,'%') and price <= ?\n#   5장  WHERE item_name like concat('%', ?, '%') and price <= ?\n\n# 대소문자와 공백만 다르다\n\n# 자바 코드\n#   3장  96줄, findAll 이 25줄\n#   5장  20줄 + XML 35줄, findAll 이 인터페이스 한 줄\n\n# --- 6장 미리 보기 ---\n\nem.find(Item.class, 1L);\n\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#     from item i1_0\n#    where i1_0.id=?\n\n# 이 SQL 을 아무도 안 썼다",
+   "note": "**일곱 개가 3장과 같다.** **2.1절에서 세운 기준으로 두 기술이 같은 일을 했다.**\n\n**맨 아래가 다음 장의 예고**다. **`i1_0` 이라는 별칭을 내가 안 지었다.** **`select` 문 자체를 아무도 안 썼다.**\n\n> **3장과 5장은 \"SQL 을 어디에 쓰느냐\" 의 차이**였다. **6장부터는 \"SQL 을 쓰느냐 마느냐\"** 다.\n\n**세 번째 기술로 간다.**"
+  }
+ ],
+ "recap": [
+  "**3.3절의 문제 다섯 중 셋**이 풀렸다.",
+  "**남은 둘**: 컴파일 검사 없음, 손 매핑.",
+  "**대신 들어온 것 넷**: XML 파일, `namespace`, OGNL, 버전 관리.",
+  "**진짜 이득은 `andFlag` 가 사라진 것** — 분기끼리 독립이다.",
+  "**SQL 을 복사해 바로 실행**할 수 있다.",
+  "**동적 쿼리가 많으면 MyBatis**, 몇 개뿐이면 JdbcTemplate.",
+  "**남은 둘이 6장과 8장의 존재 이유**다.",
+  "**실무는 JPA 와 섞어** 쓴다.",
+  "**SQL 일곱 개가 3장과 같다** — 자바 코드만 달랐다."
+ ],
+ "drills": [
+  {
+   "task": "3장과 5장의 `findAll` 을 나란히 놓는다.",
+   "done_when": "`andFlag` 유무가 무슨 차이를 만드는지 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "5장의 SQL 일곱 개를 3장 목록과 비교한다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조건이 다섯 개인 검색을 두 방식으로 써 본다.",
+   "done_when": "어느 쪽이 유지보수하기 나은지 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "MyBatis 가 안 푸는 둘을 적는다.",
+   "done_when": "각각 어느 장이 푸는지 붙였다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "MyBatis 가 푼 문제 셋은?",
+   "a": "문자열 조립, 공백·`and` 처리, 2ⁿ 경우의 수 관리다."
+  },
+  {
+   "q": "남은 둘은?",
+   "a": "컴파일 시점 검사가 없다는 것과 객체·행 매핑을 손으로 한다는 것이다."
+  },
+  {
+   "q": "진짜 이득은 줄 수인가?",
+   "a": "아니다. `andFlag` 가 사라져 분기끼리 독립이 된 것이다."
+  },
+  {
+   "q": "MyBatis 가 나은 상황은?",
+   "a": "동적 쿼리가 많고 SQL 이 길고 DBA 와 공유할 때다."
+  },
+  {
+   "q": "6장이 노리는 것은?",
+   "a": "객체와 행의 매핑이다. 한 번 해 두고 계속 쓴다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "MyBatis 3 — Mapper XML Files",
+   "url": "https://mybatis.org/mybatis-3/sqlmap-xml.html",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

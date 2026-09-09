@@ -336,7 +336,7 @@
           "title": "기능 정리",
           "summary": "resultMap · 재사용 · 타입 별칭.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -344,7 +344,7 @@
           "title": "스프링 연동 원리",
           "summary": "인터페이스만 있는데 어떻게 도나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -352,7 +352,7 @@
           "title": "정리",
           "summary": "SQL 을 밖으로 뺀 대가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

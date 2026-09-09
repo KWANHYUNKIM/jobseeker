@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-internals",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "스프링 연동 원리",
+ "summary": "인터페이스만 있는데 어떻게 도나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "매퍼 구현체가 어떻게 만들어지는지 안다.",
+  "`SqlSessionTemplate` 의 역할을 안다.",
+  "트랜잭션이 어떻게 이어지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 인터페이스만 쓰고 구현을 안 썼다.** **누가 만들었나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "프록시가 만들어지고 불린다",
+   "ascii": "   startup\n   -------\n   @Mapper scan  ->  MapperFactoryBean per interface\n                       |\n                     JDK dynamic proxy implementing ItemMapper\n                       |\n                     registered as a bean\n\n   call\n   ----\n   itemMapper.findById(1L)\n        |\n   proxy.invoke(method, args)\n        |\n   MapperMethod  ->  statement id = interface name + method name\n        |\n   SqlSession.selectOne(\"...ItemMapper.findById\", 1L)\n        |\n   jdbc",
+   "note": "**「스프링 핵심 원리」에서 본 동적 프록시**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구현체가 없어도 되는 이유",
+   "md": "**인터페이스만으로 충분한 정보**가 있다.\n\n| 프록시가 아는 것 | 어디서 |\n|---|---|\n| **어느 SQL 인가** | 인터페이스 이름 + 메서드 이름 |\n| **파라미터** | 메서드 인자 |\n| **반환 타입** | 메서드 시그니처 |\n\n**5.2절에서 `namespace` 를 인터페이스 전체 이름으로 맞춘 이유**가 이것이다. **프록시가 그 문자열로 SQL 을 찾는다.**\n\n```java\n// 프록시 안에서 벌어지는 일 (개념)\nString statement = ItemMapper.class.getName() + \".\" + method.getName();\n// \"hello...ItemMapper.findById\"\n\nif (반환타입이 List) return sqlSession.selectList(statement, arg);\nif (반환타입이 Optional) return Optional.ofNullable(sqlSession.selectOne(statement, arg));\nreturn sqlSession.selectOne(statement, arg);\n```\n\n**`Invalid bound statement (not found)`** 가 **바로 이 문자열로 못 찾았다**는 뜻이다. 5.2절의 그 오류다.\n\n> **7장 스프링 데이터 JPA 가 같은 발상**을 더 밀고 간다. **거기는 XML 도 없다** — **메서드 이름 자체를 파싱해서 쿼리를 만든다**(`findByItemNameLike`).\n>\n> **MyBatis: 이름으로 SQL 을 찾는다 / Data JPA: 이름으로 SQL 을 만든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "`SqlSessionTemplate`",
+   "ascii": "   SqlSessionTemplate (the bean that is injected)\n        |\n        +-- proxy of SqlSession\n        |\n        +-- on each call:\n              is there a spring transaction on this thread?\n                 yes  ->  reuse its connection\n                 no   ->  open, run, commit, close\n        |\n        +-- translate exception -> DataAccessException\n\n   1편 5.4절의 동기화 매니저를 그대로 쓴다",
+   "note": "**두 번째 갈래가 이 절의 요점**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "트랜잭션이 어떻게 이어지나",
+   "md": "**MyBatis 는 원래 자기 트랜잭션 관리**가 있다.\n\n```java\n// 순수 MyBatis\nSqlSession session = sqlSessionFactory.openSession();\ntry {\n    session.insert(\"...\");\n    session.commit();\n} finally {\n    session.close();\n}\n```\n\n**스프링과 쓸 때는 이것을 안 쓴다.** **`SqlSessionTemplate` 이 스프링 트랜잭션을 따라간다.**\n\n| 상황 | 무엇을 하나 |\n|---|---|\n| **`@Transactional` 안** | **동기화된 커넥션을 재사용**, 커밋은 스프링이 |\n| **트랜잭션 밖** | 커넥션을 열고 실행하고 **바로 커밋**하고 닫는다 |\n\n**1편 5.4절의 `TransactionSynchronizationManager`** 에서 커넥션을 꺼낸다. **JdbcTemplate 과 똑같은 자리**다.\n\n> **그래서 서비스의 `@Transactional` 이 그대로 먹는다.** **1편에서 만든 계좌이체를 MyBatis 로 바꿔도 롤백이 된다.**\n>\n> **4.4절의 테스트 격리도 그대로** 된다 — 테스트의 트랜잭션에 참여하니까.\n\n**이것이 `mybatis-spring` 라이브러리가 하는 일의 전부**라고 해도 된다.\n\n| `mybatis-spring` 이 하는 것 |\n|---|\n| 매퍼 인터페이스를 빈으로 |\n| **스프링 트랜잭션에 참여** |\n| **예외를 `DataAccessException` 으로** |\n| `SqlSessionFactory` 자동 설정 |"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "예외 변환의 경계",
+   "md": "**MyBatis 의 예외는 `PersistenceException`** 이다. **스프링이 그것을 바꾼다.**\n\n```\nSQLIntegrityConstraintViolationException   (JDBC)\n   |\nPersistenceException                       (MyBatis)\n   |\nDuplicateKeyException                      (Spring)\n```\n\n**1편 6.6절의 `SQLExceptionTranslator`** 가 여기서도 쓰인다. **오류 코드를 보고 고른다.**\n\n**그런데 변환이 안 되는 것**도 있다.\n\n| 예외 | 변환되나 |\n|---|---|\n| SQL 실행 오류 | **된다** |\n| **`Invalid bound statement`** | **안 된다** — `BindingException` |\n| **XML 파싱 오류** | 안 된다 — 뜰 때 난다 |\n| **타입 핸들러 오류** | 대개 안 된다 |\n\n**두 번째가 실무에서 헷갈린다.** **`DataAccessException` 을 잡는 코드가 이것을 못 잡는다.**\n\n> **설정 오류와 실행 오류는 다른 것**이라는 뜻이기도 하다. **설정 오류는 잡아서 복구할 것이 아니다** — 고쳐야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 뜰 때 ---\n\n#   Creating a new SqlSession\n#   Registering transaction synchronization for SqlSession\n\n# 주입된 것이 무엇인지 찍어 보면\nlog.info(\"mapper class={}\", itemMapper.getClass());\n\n#   mapper class=class jdk.proxy2.$Proxy67\n\n# 인터페이스인데 프록시 객체가 들어와 있다\n\n# --- @Transactional 안에서 ---\n\nitemService.save(item);\n\n#   Creating new transaction with name [hello...ItemService.save]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection to manual commit\n\n#   Registering transaction synchronization for SqlSession\n#   JDBC Connection [conn0] will be managed by Spring\n#   ==>  Preparing: insert into item (item_name, price, quantity)\n#                   values (?, ?, ?)\n#   ==> Parameters: itemA(String), 10000(Integer), 10(Integer)\n#   <==    Updates: 1\n\n#   Releasing transactional SqlSession\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n\n# 'will be managed by Spring' 이 이 절의 증거다\n\n# --- 트랜잭션 밖에서 ---\n\nitemMapper.findById(1L);\n\n#   Creating a new SqlSession\n#   SqlSession was not registered for synchronization\n#   JDBC Connection will not be managed by Spring\n#   ==>  Preparing: select id, item_name, price, quantity\n#                   from item where id = ?\n#   Closing non transactional SqlSession\n\n# --- 예외가 나면 ---\n\nitemMapper.save(중복된키);\n\n#   ==>  Preparing: insert into item ...\n#   Translating MyBatisSystemException ...\n#   org.springframework.dao.DuplicateKeyException",
+   "note": "**`class jdk.proxy2.$Proxy67`** 이 첫 번째 증거다. **내가 안 만든 클래스**가 주입돼 있다.\n\n**`will be managed by Spring`** 과 **`will not be managed by Spring`** 이 두 갈래다. **같은 매퍼 호출인데 트랜잭션 유무로 갈린다.**\n\n**맨 아래에서 `DuplicateKeyException`** 이 나왔다. **1편 6장의 그 예외**다 — **MyBatis 를 쓰는데 스프링 예외가 온다.**\n\n**서비스 코드가 안 바뀌는 이유**가 이 세 가지에 다 있다."
+  }
+ ],
+ "recap": [
+  "**`@Mapper` 인터페이스마다 JDK 동적 프록시**가 만들어진다.",
+  "**인터페이스 이름 + 메서드 이름**이 스테이트먼트 id 다.",
+  "**`Invalid bound statement`** 는 그 문자열로 못 찾았다는 뜻이다.",
+  "**Data JPA 는 이름으로 SQL 을 만든다** — MyBatis 는 찾는다.",
+  "**`SqlSessionTemplate`** 이 스프링 트랜잭션을 따라간다.",
+  "**트랜잭션 안이면 커넥션을 재사용**, 밖이면 바로 커밋한다.",
+  "**1편 5.4절의 동기화 매니저**를 그대로 쓴다.",
+  "**예외가 `DataAccessException` 으로** 변환된다.",
+  "**설정 오류(`BindingException`)는 변환 대상이 아니다.**"
+ ],
+ "drills": [
+  {
+   "task": "`itemMapper.getClass()` 를 찍어 본다.",
+   "done_when": "프록시 클래스 이름을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`@Transactional` 안팎에서 같은 매퍼를 부른다.",
+   "done_when": "`managed by Spring` 유무가 갈리는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "중복 키로 저장해 본다.",
+   "done_when": "`DuplicateKeyException` 이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "XML 의 `id` 를 지우고 메서드를 부른다.",
+   "done_when": "`BindingException` 이 `DataAccessException` 이 아닌 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매퍼 구현체는 누가 만드나?",
+   "a": "`mybatis-spring` 이 인터페이스마다 JDK 동적 프록시를 만들어 빈으로 등록한다."
+  },
+  {
+   "q": "프록시는 어떤 SQL 을 실행할지 어떻게 아나?",
+   "a": "인터페이스 전체 이름과 메서드 이름을 합쳐 스테이트먼트 id 로 찾는다."
+  },
+  {
+   "q": "`SqlSessionTemplate` 이 하는 일은?",
+   "a": "스프링 트랜잭션이 있으면 그 커넥션을 재사용하고, 없으면 열고 바로 커밋한다."
+  },
+  {
+   "q": "왜 서비스 코드가 안 바뀌나?",
+   "a": "트랜잭션과 예외가 모두 스프링 것으로 이어지기 때문이다."
+  },
+  {
+   "q": "변환되지 않는 예외는?",
+   "a": "`BindingException` 같은 설정 오류다. 잡아서 복구할 것이 아니라 고쳐야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "mybatis-spring — Getting Started",
+   "url": "https://mybatis.org/spring/",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
