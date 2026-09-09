@@ -396,7 +396,7 @@
           "title": "3xx — 304",
           "summary": "캐시와 만나는 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -404,7 +404,7 @@
           "title": "4xx — 클라이언트 오류",
           "summary": "다시 보내도 실패한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",

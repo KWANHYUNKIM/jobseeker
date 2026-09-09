@@ -1,0 +1,144 @@
+{
+ "book": "http-basic",
+ "id": "status-4xx",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "4xx — 클라이언트 오류",
+ "summary": "다시 보내도 실패한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "주요 코드를 고른다.",
+  "401 과 403 을 구분한다.",
+  "404 를 언제 쓸지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절에서 4xx 는 고치기 전엔 같다고** 했다. **무엇을 고쳐야 하는지가 코드에** 담긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "아홉 코드",
+   "ascii": "   nine codes, and the question each one answers\n\n   400   i could not even parse this\n   401   i do not know who you are\n   403   i know who you are, and no\n   404   there is nothing here\n   405   there is something here, but not for that method\n   409   this conflicts with the current state\n   412   a precondition you gave me failed\n   422   i parsed it, and the values are wrong\n   429   too many, slow down\n\n   only the last one is worth retrying unchanged",
+   "note": "**마지막 하나만 그대로 다시 보낼** 만하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "401 은 인증, 403 은 인가다",
+   "md": "**이름이 반대로 붙었다.**\n\n> **`401 Unauthorized` 인데 뜻은 \"인증 안 됨\"** 이다.\n> **`403 Forbidden` 이 \"권한 없음\"** 이다.\n> **⑩ 에서 계속 나온** 구분이다.\n\n**`401` 에는 `WWW-Authenticate` 가** 필수다.\n\n> **어떤 방식으로 인증하라는지 말해야** 한다.\n> **없으면 클라이언트가 뭘 해야 할지** 모른다.\n> **실무에서 자주** 빠뜨린다.\n\n**`403` 에는 자격 증명을 다시 안** 묻는다.\n\n> **로그인해도 안 된다는** 말이다.\n> **로그인 화면으로 보내면** 안 된다.\n\n**존재를 숨기려면 `404`** 다.\n\n> **`403` 은 \"거기 뭔가 있다\" 를 알려주는** 셈이다.\n> **5.5절에서 이 판단을 이미** 했다.\n> **⑫ 10.1절의 RBAC 도 같은 고민을** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "401 과 403",
+   "ascii": "   the pair everyone gets backwards\n\n   401 unauthorized   really means unauthenticated\n                      and it must carry WWW-Authenticate\n                      a client may retry with credentials\n\n   403 forbidden      really means unauthorized\n                      credentials will not help, so do not ask for them\n\n   the names were fixed in 1996 and have confused people ever since",
+   "note": "**1996년에 굳어져 지금까지 헷갈린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "400 · 422 · 409 를 나눠 쓴다",
+   "md": "| 상황 | 코드 |\n|---|---|\n| JSON 문법 오류 | `400` |\n| 필드 검증 실패 | `422` 또는 `400` |\n| 상태 충돌 | `409` |\n\n> **`422` 는 원래 WebDAV 것인데 API 에서 널리** 쓴다.\n> **문법은 맞는데 값이 틀렸다는** 뜻이다.\n> **안 쓰고 `400` 으로 통일해도** 된다 — **정하면 된다.**\n\n**`409` 는 상태가 문제일 때**다.\n\n> **이미 취소된 주문을 또 취소**한다.\n> **중복 이메일로 가입**한다.\n> **요청 자체는 멀쩡한데 지금 상태에서 안 되는** 것이다.\n\n**`429` 만 다시 보낼** 만하다.\n\n> **`Retry-After` 를 같이** 준다(7.1절).\n> **지수 백오프로 간격을** 늘린다.\n> **그것도 안 지키면 계속 429** 다.\n\n**본문에 이유를 담는다.**\n\n> **코드만으로는 어느 필드가 문제인지** 모른다.\n> **6.5절의 `problem+json` 이 그 자리**다.\n> **`400` 만 던지고 끝내면 클라이언트가 추측**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 아홉 코드를 만든다 ---\n\n$ cat four.py\n\nimport http.server, json, time\nSTATE = {\"order\": \"cancelled\", \"emails\": {\"a@x.com\"}}\nHITS = []\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _s(self, code, obj=None, extra=None):\n        b = b\"\" if obj is None else json.dumps(\n            obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        if b: self.send_header(\"Content-Type\", \"application/problem+json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        for k, v in (extra or {}).items(): self.send_header(k, v)\n        self.end_headers(); self.wfile.write(b)\n\n    def do_GET(self):\n        p = self.path\n        auth = self.headers.get(\"Authorization\")\n        if p == \"/private\":\n            if not auth:\n                return self._s(401, {\"title\": \"인증이 필요합니다\"},\n                    {\"WWW-Authenticate\": 'Bearer realm=\"api\"'})\n            if auth != \"Bearer admin\":\n                return self._s(403, {\"title\": \"권한이 없습니다\"})\n            return self._s(200, {\"secret\": \"보물\"})\n        if p == \"/hidden\":\n            return self._s(200, {\"x\": 1}) if auth == \"Bearer admin\" \\\n                else self._s(404, {\"title\": \"없습니다\"})\n        if p == \"/limited\":\n            now = time.time()\n            HITS.append(now)\n            recent = [t for t in HITS if now - t < 5]\n            if len(recent) > 3:\n                return self._s(429, {\"title\": \"너무 잦습니다\"},\n                               {\"Retry-After\": \"5\"})\n            return self._s(200, {\"ok\": True})\n        return self._s(404, {\"title\": \"없습니다\"})\n\n    def do_POST(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        raw = self.rfile.read(n)\n        try:\n            d = json.loads(raw or b\"{}\")\n        except json.JSONDecodeError as e:\n            return self._s(400, {\"title\": \"본문을 읽을 수 없습니다\",\n                                 \"detail\": str(e)})\n        if self.path == \"/signup\":\n            if \"email\" not in d:\n                return self._s(422, {\"title\": \"검증 실패\", \"errors\":\n                    [{\"field\": \"email\", \"message\": \"필수입니다\"}]})\n            if d[\"email\"] in STATE[\"emails\"]:\n                return self._s(409, {\"title\": \"이미 가입된 이메일\"})\n            STATE[\"emails\"].add(d[\"email\"])\n            return self._s(201, {\"email\": d[\"email\"]})\n        if self.path == \"/orders/9/cancel\":\n            if STATE[\"order\"] == \"cancelled\":\n                return self._s(409, {\"title\": \"이미 취소된 주문\"})\n            STATE[\"order\"] = \"cancelled\"\n            return self._s(200, {\"status\": \"cancelled\"})\n        return self._s(404, {\"title\": \"없습니다\"})\n\n    def do_DELETE(self):\n        self._s(405, None, {\"Allow\": \"GET, POST\"})\n\nhttp.server.HTTPServer((\"\", 9046), H).serve_forever()\n\n$ python3 four.py & sleep 1\n\n# --- 401 과 403 ---\n\n$ curl -s -D - http://localhost:9046/private \\\n  | grep -E 'HTTP|WWW-Authenticate|title'\n\nHTTP/1.1 401 Unauthorized\nWWW-Authenticate: Bearer realm=\"api\"\n{\"title\": \"인증이 필요합니다\"}\n\n#   어떻게 인증하라는지 말한다\n\n#   이게 없으면 클라이언트가 모른다\n\n$ curl -s -D - -H 'Authorization: Bearer user' \\\n    http://localhost:9046/private | grep -E 'HTTP|WWW-Auth|title'\n\nHTTP/1.1 403 Forbidden\n{\"title\": \"권한이 없습니다\"}\n\n#   WWW-Authenticate 가 없다\n\n#   다시 로그인해도 안 된다는 뜻이다\n\n#   로그인 화면으로 보내면 안 된다\n\n$ curl -s -H 'Authorization: Bearer admin' http://localhost:9046/private\n\n{\"secret\": \"보물\"}\n\n# --- 존재를 숨긴다 ---\n\n$ curl -s -o /dev/null -w '권한 없음: %{http_code}\\n' \\\n    -H 'Authorization: Bearer user' http://localhost:9046/hidden\n$ curl -s -o /dev/null -w '권한 있음: %{http_code}\\n' \\\n    -H 'Authorization: Bearer admin' http://localhost:9046/hidden\n\n권한 없음: 404\n권한 있음: 200\n\n#   403 이었다면 뭔가 있다고 알려 주는 셈이다\n\n#   5.5절에서 한 판단이다\n\n# --- 400 과 422 ---\n\n$ curl -s -D - -X POST -d '{\"email\": }' http://localhost:9046/signup \\\n  | grep -E 'HTTP|title|detail'\n\nHTTP/1.1 400 Bad Request\n{\"title\": \"본문을 읽을 수 없습니다\", \"detail\": \"Expecting value: ...\"}\n\n$ curl -s -D - -X POST -d '{\"name\":\"김\"}' http://localhost:9046/signup \\\n  | grep -E 'HTTP|errors'\n\nHTTP/1.1 422 Unprocessable Content\n{\"title\": \"검증 실패\", \"errors\": [{\"field\": \"email\",\n \"message\": \"필수입니다\"}]}\n\n#   앞은 파싱이 안 됐고\n\n#   뒤는 파싱은 됐는데 값이 없다\n\n#   어느 필드인지 말해 준다\n\n#   6.5절의 problem+json 이다\n\n# --- 409 는 상태 충돌 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    -d '{\"email\":\"b@x.com\"}' http://localhost:9046/signup\n$ curl -s -X POST -d '{\"email\":\"b@x.com\"}' http://localhost:9046/signup\n\n201\n{\"title\": \"이미 가입된 이메일\"}\n\n$ curl -s -X POST http://localhost:9046/orders/9/cancel\n\n{\"title\": \"이미 취소된 주문\"}\n\n#   요청 자체는 멀쩡하다\n\n#   지금 상태에서 안 되는 것이다\n\n#   400 도 404 도 아니다\n\n# --- 405 에는 Allow 를 붙인다 ---\n\n$ curl -s -D - -o /dev/null -X DELETE http://localhost:9046/private \\\n  | grep -E 'HTTP|Allow'\n\nHTTP/1.1 405 Method Not Allowed\nAllow: GET, POST\n\n#   무엇이 되는지 말해 준다\n\n#   5.8절에서 405 와 501 을 갈랐다\n\n# --- 429 만 다시 보낼 만하다 ---\n\n$ for i in 1 2 3 4 5; do\n    curl -s -D - -o /dev/null http://localhost:9046/limited \\\n      | grep -E 'HTTP|Retry-After' | tr '\\n' ' '; echo\n  done\n\nHTTP/1.1 200 OK \nHTTP/1.1 200 OK \nHTTP/1.1 200 OK \nHTTP/1.1 429 Too Many Requests Retry-After: 5 \nHTTP/1.1 429 Too Many Requests Retry-After: 5 \n\n$ sleep 6 && curl -s -o /dev/null -w '기다린 뒤 %{http_code}\\n' \\\n    http://localhost:9046/limited\n\n기다린 뒤 200\n\n#   기다리면 된다\n\n#   다른 4xx 는 기다려도 소용없다\n\n# --- 다른 4xx 는 그대로다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{http_code} ' http://localhost:9046/nope\n  done; echo\n\n404 404 404 \n\n$ curl -s --retry 3 -o /dev/null -w '재시도해도 %{http_code}\\n' \\\n    http://localhost:9046/nope\n\n재시도해도 404\n\n#   curl 도 4xx 는 재시도 안 한다 (7.1절)\n\n# --- 코드만 던지면 ---\n\n$ cat bare.py\n\n    def do_POST(self):\n        self._s(400)\n\n$ python3 bare.py & sleep 1\n$ curl -s -D - -X POST -d '{\"x\":1}' http://localhost:9045/signup\n\nHTTP/1.1 400 Bad Request\nContent-Length: 0\n\n#   무엇이 잘못됐는지 모른다\n\n#   클라이언트가 추측해야 한다\n\n#   본문에 이유를 담아야 한다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   다시 보내면 될 수도 있는 실패",
+   "note": "**`401` 에는 `WWW-Authenticate` 가 있고 `403` 에는** 없다.\n\n**권한 없는 `/hidden` 이 `404`** 라 존재 여부가 안 샌다.\n\n**JSON 문법 오류는 `400`, 필드 누락은 `422` 에 어느 필드인지 담아** 준다.\n\n**같은 이메일 재가입과 이미 취소된 주문이 `409`** 다.\n\n**`429` 는 기다리면 `200` 이 되는데 `404` 는 세 번 다 `404`** 다."
+  }
+ ],
+ "recap": [
+  "**4xx 는 요청을 고쳐야** 한다.",
+  "**`401` 은 인증, `403` 은 인가**다.",
+  "**`401` 에는 `WWW-Authenticate`** 가 필수다.",
+  "**`403` 에 로그인 화면을 주면** 안 된다.",
+  "**존재를 숨기려면 `404`** 다.",
+  "**`400` 은 파싱, `422` 는** 검증이다.",
+  "**`409` 는 상태 충돌**이다.",
+  "**`405` 에는 `Allow` 를** 붙인다.",
+  "**`429` 만 그대로 다시 보낼** 만하다."
+ ],
+ "drills": [
+  {
+   "task": "`401` 과 `403` 을 구현한다.",
+   "done_when": "헤더 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "권한 없을 때 `404` 를 준다.",
+   "done_when": "존재가 안 새는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`400`·`422`·`409` 를 나눈다.",
+   "done_when": "세 상황을 다 만들었다.",
+   "minutes": 25
+  },
+  {
+   "task": "속도 제한을 만든다.",
+   "done_when": "`Retry-After` 뒤 성공을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`401` 과 `403` 의 차이는?",
+   "a": "전자는 인증이 안 된 것, 후자는 인증됐지만 권한이 없는 것이다."
+  },
+  {
+   "q": "`401` 에 필수인 헤더는?",
+   "a": "`WWW-Authenticate` 다."
+  },
+  {
+   "q": "존재를 숨기고 싶을 때는?",
+   "a": "`403` 대신 `404` 를 준다."
+  },
+  {
+   "q": "`409` 를 쓰는 상황은?",
+   "a": "요청은 정상인데 현재 상태와 충돌할 때다."
+  },
+  {
+   "q": "4xx 중 재시도할 만한 것은?",
+   "a": "`429` 다. `Retry-After` 만큼 기다린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WWW-Authenticate",
+   "def": "`401` 과 함께 어떤 인증 방식을 쓰라고 알리는 헤더."
+  },
+  {
+   "term": "지수 백오프",
+   "def": "재시도 간격을 점점 늘리는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 §11 — HTTP Authentication",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-http-authentication",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "IANA — HTTP Status Code Registry",
+   "url": "https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml",
+   "publisher": "IANA"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

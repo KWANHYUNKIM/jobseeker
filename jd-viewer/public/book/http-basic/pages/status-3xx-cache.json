@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "status-3xx-cache",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "3xx — 304",
+ "summary": "캐시와 만나는 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "304 가 무엇에 대한 답인지 안다.",
+  "두 검증자를 구분한다.",
+  "본문 규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절의 3xx 는 다 이동**이었다. **304 만 다르다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "질문에 대한 답",
+   "ascii": "   304 is an answer to a question, not a redirect\n\n   the client asks   i already have this, has it changed\n                     If-None-Match, or If-Modified-Since\n\n   the server says   no, use what you have\n                     304, with headers and no body at all\n\n   it is a 3xx because the client still has one more thing to do\n   read its own cache",
+   "note": "**할 일이 하나 남았다는 뜻에서 3xx** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "본문을 안 보내려고 있는 코드다",
+   "md": "**절약이 전부**다.\n\n> **헤더만 오간다.**\n> **큰 이미지·스크립트에서 이득이** 크다.\n> **5.2절에서 GET 이라야 이게 된다고** 했다.\n\n**요청은 여전히** 간다.\n\n> **왕복 하나는 그대로** 쓴다.\n> **아예 안 보내려면 `max-age` 가** 있어야 한다(3.4절).\n> **9장에서 그 둘을 나란히** 본다.\n\n**본문이 있으면 안** 된다.\n\n> **`204` 와 같다**(7.1절).\n> **`Content-Length` 도 보내면** 안 된다.\n> **보내면 클라이언트가 다음 응답으로** 읽는다.\n\n**헤더는 갱신에 쓰인다.**\n\n> **`Cache-Control`·`ETag`·`Date` 를 새로** 준다.\n> **클라이언트가 자기 캐시 항목의 헤더를** 고친다.\n> **`Content-Type` 같은 건 다시 안 보내도** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 검증자",
+   "ascii": "   two validators, and why one is weaker\n\n   ETag              an opaque token for this exact representation\n                     changes when the bytes change, whatever the reason\n\n   Last-Modified     a timestamp, with one second resolution\n                     two edits in the same second look identical\n\n   send both, and a client that has both will use the etag",
+   "note": "**둘 다 있으면 클라이언트가 ETag 를** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "1초 해상도가 문제를 만든다",
+   "md": "**`Last-Modified` 는 초 단위**다.\n\n> **같은 초에 두 번 고치면 구분을 못** 한다.\n> **캐시가 옛 것을 계속** 준다.\n> **빌드가 빠른 정적 파일에서 실제로** 난다.\n\n**`ETag` 는 뭘로 만들어도** 된다.\n\n> **해시·버전·수정 시각 아무거나** 된다.\n> **불투명하다는 게** 계약이다 — 클라이언트가 해석하면 안 된다.\n> **6.6절의 커서와 같은** 원칙이다.\n\n**약한 ETag 가 따로** 있다.\n\n> **`W/\"abc\"` 로 앞에 `W/` 를** 붙인다.\n> **바이트가 달라도 의미가 같으면 같다고** 본다.\n> **압축 여부만 다른 응답에** 쓴다.\n> **범위 요청에는 강한 것만 쓸 수** 있다(7.2절).\n\n**조건부 갱신과 헷갈리지** 않는다.\n\n| 헤더 | 쓰임 |\n|---|---|\n| `If-None-Match` | 조회. 같으면 `304` |\n| `If-Match` | 갱신. 다르면 `412` |\n\n> **뒤가 5.4절의 잃어버린 갱신을** 막았다.\n> **같은 `ETag` 를 방향만 바꿔** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 검증자를 받는다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n  | grep -iE 'etag|last-modified|content-length'\n\nETag: \"68c0a1b2-42090\"\nLast-Modified: Thu, 10 Sep 2026 00:12:41 GMT\nContent-Length: 270544\n\n#   둘 다 준다\n\n#   ETag 안에 크기가 보인다\n\n#   nginx 가 그렇게 만들 뿐이다\n\n#   불투명한 값으로 다뤄야 한다\n\n# --- 다시 물어본다 ---\n\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ curl -s -D - -o /dev/null -H \"If-None-Match: $E\" \\\n    http://localhost:8080/big.txt | head -4\n\nHTTP/1.1 304 Not Modified\nServer: nginx/1.27.2\nDate: Thu, 10 Sep 2026 00:44:02 GMT\nETag: \"68c0a1b2-42090\"\n\n$ curl -s -o /dev/null -w '304 로 받은 바이트 %{size_download}\\n' \\\n    -H \"If-None-Match: $E\" http://localhost:8080/big.txt\n$ curl -s -o /dev/null -w '200 으로 받은 바이트 %{size_download}\\n' \\\n    http://localhost:8080/big.txt\n\n304 로 받은 바이트 0\n200 으로 받은 바이트 270544\n\n#   270KB 를 아꼈다\n\n#   왕복 하나는 그대로 썼다\n\n# --- Content-Length 가 없다 ---\n\n$ curl -s -D - -o /dev/null -H \"If-None-Match: $E\" \\\n    http://localhost:8080/big.txt | grep -ci content-length\n\n0\n\n#   304 에는 없다\n\n#   본문이 없으니 보내면 안 된다\n\n#   7.1절의 204 와 같다\n\n# --- 시각으로 물어본다 ---\n\n$ M=$(curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n      | grep -i '^last-modified' | tr -d '\\r' | cut -d' ' -f2-)\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H \"If-Modified-Since: $M\" http://localhost:8080/big.txt\n\n304\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'If-Modified-Since: Mon, 01 Jan 2020 00:00:00 GMT' \\\n    http://localhost:8080/big.txt\n\n200\n\n#   그 뒤로 바뀌었냐고 묻는 것이다\n\n# --- 1초 해상도 ---\n\n$ docker exec lab sh -c 'echo v1 > /usr/share/nginx/html/fast.txt'\n$ M1=$(curl -s -D - -o /dev/null http://localhost:8080/fast.txt \\\n       | grep -i '^last-modified' | tr -d '\\r' | cut -d' ' -f2-)\n$ E1=$(curl -s -D - -o /dev/null http://localhost:8080/fast.txt \\\n       | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n\n$ docker exec lab sh -c \\\n    'echo v2-내용이-완전히-다르다 > /usr/share/nginx/html/fast.txt'\n\n$ M2=$(curl -s -D - -o /dev/null http://localhost:8080/fast.txt \\\n       | grep -i '^last-modified' | tr -d '\\r' | cut -d' ' -f2-)\n$ E2=$(curl -s -D - -o /dev/null http://localhost:8080/fast.txt \\\n       | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n\n$ [ \"$M1\" = \"$M2\" ] && echo \"Last-Modified 같다: $M1\" \\\n    || echo \"Last-Modified 다르다\"\n$ [ \"$E1\" = \"$E2\" ] && echo \"ETag 같다\" || echo \"ETag 다르다: $E1 -> $E2\"\n\nLast-Modified 같다: Thu, 10 Sep 2026 00:44:31 GMT\nETag 다르다: \"68c0a1cf-3\" -> \"68c0a1cf-19\"\n\n#   같은 초에 두 번 고쳤다\n\n#   시각으로는 구분이 안 된다\n\n#   ETag 는 크기가 달라 바뀌었다\n\n$ curl -s -o /dev/null -w 'If-Modified-Since 로 %{http_code}\\n' \\\n    -H \"If-Modified-Since: $M1\" http://localhost:8080/fast.txt\n$ curl -s -o /dev/null -w 'If-None-Match 로 %{http_code}\\n' \\\n    -H \"If-None-Match: $E1\" http://localhost:8080/fast.txt\n\nIf-Modified-Since 로 304\nIf-None-Match 로 200\n\n#   시각으로 물었더니 안 바뀌었단다\n\n#   실제로는 바뀌었다\n\n#   ETag 로 물어야 안다\n\n$ curl -s -H \"If-Modified-Since: $M1\" http://localhost:8080/fast.txt \\\n  | head -c 20\n\n(빈 줄)\n\n#   옛 내용을 계속 쓰게 된다\n\n#   빌드가 빠른 정적 파일에서 실제로 난다\n\n# --- 둘 다 보내면 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H \"If-None-Match: $E1\" -H \"If-Modified-Since: $M1\" \\\n    http://localhost:8080/fast.txt\n\n200\n\n#   ETag 가 이긴다\n\n#   규격이 그렇게 정했다\n\n# --- 약한 ETag ---\n\n$ docker exec lab sh -c \\\n    'printf \"gzip on;\\ngzip_types text/plain;\\n\" \\\n     > /etc/nginx/conf.d/gzip.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:8080/big.txt | grep -iE 'etag|content-encoding'\n\nETag: W/\"68c0a1b2-42090\"\nContent-Encoding: gzip\n\n$ curl -s -D - -o /dev/null http://localhost:8080/big.txt | grep -i etag\n\nETag: \"68c0a1b2-42090\"\n\n#   압축하면 W/ 가 붙는다\n\n#   바이트는 다른데 의미는 같다\n\n#   그래서 약한 검증자다\n\n$ curl -s -D - -o /dev/null -r 0-99 \\\n    -H 'If-Range: W/\"68c0a1b2-42090\"' http://localhost:8080/big.txt \\\n  | head -1\n\nHTTP/1.1 200 OK\n\n#   범위 요청에는 약한 걸 못 쓴다\n\n#   전체를 준다\n\n#   7.2절의 206 이 안 나왔다\n\n# --- 두 방향 ---\n\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/fast.txt \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n\n$ curl -s -o /dev/null -w 'If-None-Match 같으면 %{http_code}\\n' \\\n    -H \"If-None-Match: $E\" http://localhost:8080/fast.txt\n$ curl -s -o /dev/null -w 'If-Match 다르면 %{http_code}\\n' \\\n    -H 'If-Match: \"틀린값\"' http://localhost:8080/fast.txt\n\nIf-None-Match 같으면 304\nIf-Match 다르면 412\n\n#   같은 ETag 를 방향만 바꿔 쓴다\n\n#   앞은 조회, 뒤는 갱신이다\n\n#   5.4절의 잃어버린 갱신을 뒤가 막았다\n\n# --- 304 에 본문을 실으면 ---\n\n$ cat bad304.py\n\n    def do_GET(self):\n        self.send_response(304)\n        self.send_header(\"Content-Length\", \"5\")\n        self.end_headers()\n        self.wfile.write(b\"12345\")\n\n$ python3 bad304.py & sleep 1\n$ printf 'GET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\nGET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\n' \\\n    | nc -w 2 localhost 9047 | grep -c '^HTTP'\n\n1\n\n#   두 번 물었는데 하나만 왔다\n\n#   본문이 다음 응답 자리를 먹었다\n\n#   7.1절의 204 와 같은 사고다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   다시 보내도 소용없는 실패",
+   "note": "**`If-None-Match` 로 `304` 를 받으면 본문이 0바이트라 270KB 를** 아낀다.\n\n**`304` 에는 `Content-Length` 가 0개**다.\n\n**같은 초에 두 번 고치자 `Last-Modified` 는 같고 `ETag` 만** 달라졌다.\n\n**압축 응답에는 `W/` 가 붙고 그건 범위 요청에 못** 쓴다.\n\n**같은 `ETag` 가 `If-None-Match` 로는 `304`, `If-Match` 로는 `412`** 를 만든다."
+  }
+ ],
+ "recap": [
+  "**`304` 는 이동이 아니라 질문에 대한** 답이다.",
+  "**본문을 안 보내려고** 있다.",
+  "**요청은 여전히** 간다.",
+  "**본문과 `Content-Length` 가 없어야** 한다.",
+  "**`ETag` 와 `Last-Modified` 두 검증자가** 있다.",
+  "**시각은 1초 해상도라** 약하다.",
+  "**둘 다 있으면 `ETag` 가** 이긴다.",
+  "**`W/` 는 약한 검증자**다.",
+  "**같은 값을 조회와 갱신에 방향만 바꿔** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "`If-None-Match` 로 물어본다.",
+   "done_when": "`304` 와 0바이트를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 초에 두 번 수정한다.",
+   "done_when": "시각이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "압축 응답의 ETag 를 본다.",
+   "done_when": "`W/` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`If-Match` 로 갱신을 막는다.",
+   "done_when": "`412` 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`304` 가 3xx 인 이유는?",
+   "a": "클라이언트가 자기 캐시를 읽는 일을 한 번 더 해야 해서다."
+  },
+  {
+   "q": "`304` 로 아끼는 것과 못 아끼는 것은?",
+   "a": "본문은 아끼고 왕복은 그대로 쓴다."
+  },
+  {
+   "q": "`Last-Modified` 의 약점은?",
+   "a": "1초 해상도라 같은 초의 두 변경을 구분하지 못한다."
+  },
+  {
+   "q": "`W/` 가 붙은 ETag 는?",
+   "a": "약한 검증자로, 범위 요청에는 쓸 수 없다."
+  },
+  {
+   "q": "`If-None-Match` 와 `If-Match` 의 차이는?",
+   "a": "전자는 같으면 304, 후자는 다르면 412 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "검증자",
+   "def": "캐시된 표현이 최신인지 확인하는 데 쓰는 `ETag` 나 수정 시각."
+  },
+  {
+   "term": "약한 ETag",
+   "def": "바이트가 달라도 의미가 같으면 동일하다고 보는 검증자."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
