@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "deleteall-vs-deleteallinbatch",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "deleteAll 과 deleteAllInBatch",
+ "summary": "쿼리가 몇 개 나가나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 메서드의 쿼리를 센다.",
+  "왜 다른지 안다.",
+  "쿼리 개수를 단언하는 테스트를 짠다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.9절에서 4개 대 12개를** 봤다. **여기서 왜 그런지와 어떻게 재는지**를 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 정리, 다른 개수",
+   "ascii": "   the same cleanup, counted\n\n   deleteAllInBatch\n     delete from order_product\n     delete from orders\n     delete from product\n     delete from stock\n     4 queries, whatever the row count\n\n   deleteAll\n     select, then one delete per row, per table\n     4 + 2n queries",
+   "note": "**하나는 상수, 하나는 행 수에** 비례한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 다른가",
+   "md": "**`deleteAllInBatch()`**\n\n```java\n@Query(\"delete from #{#entityName} e\")\nvoid deleteAllInBatch();\n```\n\n> **JPQL `delete`** 다. **영속성 컨텍스트를 안** 거친다.\n> **한 방에 나간다.**\n>\n> **「JPA 기본편」의 벌크 연산**이다.\n\n**`deleteAll()`**\n\n```java\npublic void deleteAll() {\n    for (T element : findAll()) {\n        delete(element);\n    }\n}\n```\n\n> **전부 조회하고 하나씩** 지운다.\n> **`delete(entity)` 가 `em.remove`** 다.\n\n**왜 그렇게 만들었나**\n\n| | |\n|---|---|\n| **`cascade = REMOVE`** | 자식도 같이 지운다 |\n| **`@PreRemove` 콜백** | 엔티티마다 부른다 |\n| **영속성 컨텍스트 동기화** | 1차 캐시에서도 뺀다 |\n\n> **`deleteAllInBatch` 는 셋 다 안** 한다.\n> **DB 에 `delete` 만** 던진다.\n>\n> **5.9절에서 FK 순서를 손으로 챙긴 이유**가 이것이다.\n\n**「활용 2편」 4.4절의 N+1 과 같은 모양**이다.\n\n> **거기서는 조회, 여기서는 삭제**다.\n> **\"하나씩\" 이 문제**라는 건 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "`deleteAll` 이 해 주는 것",
+   "ascii": "   what deleteAll does that inbatch does not\n\n   orderRepository.deleteAll()\n     select all orders\n     for each, select its order_products   cascade = ALL\n     delete each order_product\n     delete the order\n\n   orderRepository.deleteAllInBatch()\n     delete from orders\n     and the fk on order_product blows up\n\n   convenience against control",
+   "note": "**편의와 통제의 맞바꿈**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿼리 개수를 단언한다",
+   "md": "**1.2절에서 예고**했다.\n\n> **「활용 2편」이 사람이 로그를 읽어서 한 일을 테스트로** 옮긴다.\n\n**하이버네이트 통계로**\n\n```java\n@Autowired\nprivate EntityManagerFactory entityManagerFactory;\n\nprivate Statistics statistics() {\n    Statistics stats = entityManagerFactory\n            .unwrap(SessionFactory.class).getStatistics();\n    stats.setStatisticsEnabled(true);\n    return stats;\n}\n\n@DisplayName(\"정리 쿼리는 테이블 수만큼만 나간다\")\n@Test\nvoid cleanupQueryCount() {\n    // given\n    상품_100건_저장();\n    Statistics stats = statistics();\n    stats.clear();\n\n    // when\n    productRepository.deleteAllInBatch();\n\n    // then\n    assertThat(stats.getPrepareStatementCount()).isEqualTo(1);\n}\n```\n\n> **`generate_statistics: true` 가** 필요하다(「활용 2편」 3.3절).\n>\n> **테스트 프로파일에만** 켠다. **운영에서는 끈다.**\n\n**이런 테스트를 언제 짜나**\n\n| | |\n|---|---|\n| **N+1 을 막아야 하는 API** | 회귀 방지 |\n| **배치 처리** | 건수에 안 비례해야 |\n| **성능이 계약인 곳** | |\n\n> **전부에 짜지는** 않는다. **7.11절의 깨지기 쉬운 테스트가** 될 수 있다.\n>\n> **쿼리 하나만 늘어도** 깨진다. **의도한 변경이면 고치면** 되는데 **자주 고치면 신뢰가** 떨어진다.\n\n**대안**\n\n```java\nassertThat(stats.getPrepareStatementCount()).isLessThanOrEqualTo(5);\n```\n\n> **상한만** 둔다. **\"N+1 이 아니다\" 만** 본다.\n>\n> **정확한 수보다 덜 깨진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 100건으로 재 본다 ---\n\n@DisplayName(\"deleteAllInBatch 는 테이블당 한 번만 나간다\")\n@Test\nvoid deleteAllInBatchQueryCount() {\n    // given\n    List<Product> products = IntStream.rangeClosed(1, 100)\n            .mapToObj(i -> createProduct(String.format(\"%03d\", i), 4000))\n            .toList();\n    productRepository.saveAll(products);\n\n    Statistics stats = statistics();\n    stats.clear();\n\n    // when\n    productRepository.deleteAllInBatch();\n\n    // then\n    assertThat(stats.getPrepareStatementCount()).isEqualTo(1);\n}\n\n$ ./gradlew test --tests CleanupQueryTest\n\nHibernate: delete from product\n\nCleanupQueryTest > deleteAllInBatch 는 테이블당 한 번만 나간다 PASSED\n\n#   1개다\n\n# --- deleteAll 로 바꾸면 ---\n\nproductRepository.deleteAll();\n\nassertThat(stats.getPrepareStatementCount()).isEqualTo(1);\n\n$ ./gradlew test --tests CleanupQueryTest\n\nHibernate: select p1_0.id, ... from product p1_0\nHibernate: delete from product where id=?\nHibernate: delete from product where id=?\n... (100번)\n\nCleanupQueryTest > deleteAllInBatch 는 테이블당 한 번만 나간다 FAILED\n    org.opentest4j.AssertionFailedError:\n    expected: 1L\n     but was: 101L\n\n#   101개다\n\n#   5.9절에서는 두 건이라 12개였다\n#   100건이면 101개다\n\n#   행 수에 비례한다\n\n# --- 시간도 재 보면 ---\n\n#   deleteAllInBatch\nINFO  TimerAspect : cleanup took 3ms\n\n#   deleteAll\nINFO  TimerAspect : cleanup took 87ms\n\n#   29배다\n\n#   테스트 40개면 정리에만 3.5초가 든다\n\n# --- cascade 가 있으면 ---\n\n@Entity\npublic class Order {\n    @OneToMany(mappedBy = \"order\", cascade = ALL, orphanRemoval = true)\n    private List<OrderProduct> orderProducts = new ArrayList<>();\n}\n\n#   deleteAll 로\n\norderRepository.deleteAll();\n\nHibernate: select o1_0.id, ... from orders o1_0\nHibernate: select op1_0.order_id, ... from order_product op1_0\n           where op1_0.order_id=?\nHibernate: delete from order_product where id=?\nHibernate: delete from order_product where id=?\nHibernate: delete from orders where id=?\n\nCleanupQueryTest > cascadeDelete() PASSED\n\n#   order_product 를 알아서 지웠다\n\n#   deleteAllInBatch 로\n\norderRepository.deleteAllInBatch();\n\nHibernate: delete from orders\n\nCleanupQueryTest > cascadeDelete() FAILED\n    org.springframework.dao.DataIntegrityViolationException:\n    Referential integrity constraint violation:\n    \"FK_ORDER_PRODUCT_ORDER: PUBLIC.ORDER_PRODUCT FOREIGN KEY(ORDER_ID)\n     REFERENCES PUBLIC.ORDERS(ID)\"\n\n#   cascade 를 무시하고 orders 만 지웠다\n\n#   그래서 5.9절에서 순서를 손으로 챙겼다\n\n# --- 정리 순서를 지키면 ---\n\norderProductRepository.deleteAllInBatch();\norderRepository.deleteAllInBatch();\n\nHibernate: delete from order_product\nHibernate: delete from orders\n\nCleanupQueryTest > cascadeDelete() PASSED\n\n#   2개다\n\n#   deleteAll 판은 주문 100건에 상품 2개씩이면\n#   1 + 100 + 200 + 100 = 401 개다\n\n# --- 쿼리 개수 단언이 깨지기 쉬운 것 ---\n\n@DisplayName(\"주문 목록 조회는 쿼리 3개로 끝난다\")\n@Test\nvoid orderQueryCount() {\n    주문_10건_저장();\n    Statistics stats = statistics();\n    stats.clear();\n\n    orderService.findOrders(0, 10);\n\n    assertThat(stats.getPrepareStatementCount()).isEqualTo(3);\n}\n\n$ ./gradlew test --tests OrderQueryCountTest\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 3개로 끝난다 PASSED\n\n#   그런데 응답에 상품 이미지를 추가하면\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 3개로 끝난다 FAILED\n    expected: 3L but was: 4L\n\n#   의도한 변경인데 깨진다\n\n#   상한으로 바꾸면\n\nassertThat(stats.getPrepareStatementCount()).isLessThanOrEqualTo(5);\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 PASSED\n\n#   N+1 이 생기면 잡힌다\n\n#   배치 사이즈를 꺼 보면\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 FAILED\n    Expecting actual: 21L\n    to be less than or equal to: 5L\n\n#   잡는다\n\n#   「활용 2편」 5.7절이 로그로 확인한 걸 테스트가 지킨다\n\n# --- 다음 절에서 ---\n\n#   같은 검증을 여러 값으로 돌린다",
+   "note": "**100건에 `deleteAllInBatch` 는 1개, `deleteAll` 은 101개**다. **시간은 3ms 대 87ms 로 29배**다.\n\n**`cascade` 가 있으면 `deleteAll` 은 자식을 알아서 지우고 `deleteAllInBatch` 는 FK 위반**이다. **5.9절에서 순서를 손으로 챙긴** 이유다.\n\n**쿼리 개수를 정확히 단언하면 의도한 변경에도** 깨진다.\n\n**상한으로 바꾸면 배치 사이즈를 껐을 때 21개가** 잡힌다. **「활용 2편」 5.7절이 로그로 확인한 걸 테스트가** 지킨다."
+  }
+ ],
+ "recap": [
+  "**`deleteAllInBatch` 는 테이블당 1개, `deleteAll` 은 `1 + n`** 이다.",
+  "**100건이면 1개 대 101개, 3ms 대 87ms** 다.",
+  "**`deleteAll` 은 `cascade`·콜백·컨텍스트 동기화를** 해 준다.",
+  "**`deleteAllInBatch` 는 셋 다 안 하고 FK 순서를 손으로** 챙기게 한다.",
+  "**「활용 2편」 4.4절의 N+1 과 같은 모양**이다.",
+  "**하이버네이트 통계로 쿼리 개수를 단언**할 수 있다.",
+  "**정확한 수를 단언하면 의도한 변경에도** 깨진다.",
+  "**상한으로 두면 N+1 만** 잡는다.",
+  "**배치 사이즈를 끄면 21개가** 잡힌다."
+ ],
+ "drills": [
+  {
+   "task": "100건으로 두 메서드의 쿼리를 센다.",
+   "done_when": "1개와 101개를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "시간도 재 본다.",
+   "done_when": "배수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`cascade` 가 있는 엔티티에 둘을 다 써 본다.",
+   "done_when": "FK 위반을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "쿼리 개수 상한 테스트를 짠다.",
+   "done_when": "배치 사이즈를 껐을 때 깨지는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 메서드의 쿼리 개수는?",
+   "a": "`deleteAllInBatch` 는 1개, `deleteAll` 은 조회 1 + 행 수만큼이다."
+  },
+  {
+   "q": "`deleteAll` 이 왜 그렇게 도나?",
+   "a": "`cascade`, `@PreRemove`, 영속성 컨텍스트 동기화를 챙기기 위해서다."
+  },
+  {
+   "q": "`deleteAllInBatch` 의 대가는?",
+   "a": "`cascade` 를 무시해 FK 순서를 손으로 챙겨야 한다."
+  },
+  {
+   "q": "쿼리 개수를 정확히 단언하면?",
+   "a": "의도한 변경에도 깨져 자주 고치게 된다."
+  },
+  {
+   "q": "대안은?",
+   "a": "상한을 둔다. N+1 만 잡고 덜 깨진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

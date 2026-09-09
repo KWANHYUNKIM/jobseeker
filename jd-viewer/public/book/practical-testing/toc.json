@@ -451,7 +451,7 @@
           "title": "테스트 환경 공유",
           "summary": "@BeforeEach 의 대가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -459,7 +459,7 @@
           "title": "deleteAll 과 deleteAllInBatch",
           "summary": "쿼리가 몇 개 나가나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",

@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "test-setup-share",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "테스트 환경 공유",
+ "summary": "@BeforeEach 의 대가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "공유의 비용을 안다.",
+  "언제 `@BeforeEach` 를 쓰는지 안다.",
+  "중복을 어디까지 참을지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 미뤘다** — **\"`@BeforeEach` 가 커지면 문제\"**. **여기서 갚는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "읽는 사람이 하는 일",
+   "ascii": "   what the reader has to do\n\n   everything inline\n     read the test top to bottom. done.\n\n   a @BeforeEach above\n     read the test, notice a variable with no origin,\n     scroll up, read the setup, scroll back\n\n   a @BeforeEach in a parent class\n     open another file\n\n   each hop costs the reader, and buys the writer a few lines",
+   "note": "**한 번 건너뛸 때마다 독자가** 낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트는 중복에 관대하다",
+   "md": "**프로덕션 코드의 규칙과** 다르다.\n\n| | 프로덕션 | 테스트 |\n|---|---|---|\n| **중복** | 제거한다 | **참는다** |\n| **최우선** | 변경 용이성 | **읽기** |\n| **한 곳만 고치기** | 중요하다 | 덜 중요하다 |\n\n**4.1절의 독자 넷** 때문이다.\n\n> **테스트는 위에서 아래로 읽고 끝나야** 한다.\n> **`@BeforeEach` 로 올라가면 흐름이** 끊긴다.\n>\n> **DRY 보다 읽기가** 먼저다.\n\n**그렇다고 전부 인라인은** 아니다.\n\n> **5.5절의 팩터리 메서드**가 절충이다.\n>\n> | | |\n> |---|---|\n> | **`@BeforeEach`** | 값이 정해져 온다 |\n> | **팩터리 메서드** | 값을 여기서 넘긴다 |\n>\n> **후자는 테스트 안에 값이** 남는다. **스크롤이 필요 없다.**\n\n**차이가 결정적**이다.\n\n```java\n// @BeforeEach 판\nvoid test() {\n    orderService.createOrder(request, 영업중);   // product 는 어디서 왔나\n}\n\n// 팩터리 판\nvoid test() {\n    productRepository.save(createProduct(\"001\", 4000));   // 여기 있다\n    orderService.createOrder(request, 영업중);\n}\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "공유가 만드는 결합",
+   "ascii": "   the coupling a shared setup creates\n\n   @BeforeEach makes product 001 with price 4000\n\n   test A  needs a 4000 product          fine\n   test B  needs a 9000 product          overrides it\n   test C  needs no product at all       gets one anyway\n   test D  needs 001 to not exist        broken\n\n   adding a field to the setup can break a test\n   that does not mention it",
+   "note": "**안 쓰는 테스트가 깨진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "`@BeforeEach` 가 커지면",
+   "md": "**시작은 두 줄**이다.\n\n```java\n@BeforeEach\nvoid setUp() {\n    productRepository.save(createProduct(\"001\", 4000));\n}\n```\n\n**테스트가 늘면 요구가** 는다.\n\n```java\n@BeforeEach\nvoid setUp() {\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", SELLING, 4000),\n            createProduct(\"002\", HOLD, 4500),\n            createProduct(\"003\", STOP_SELLING, 7000)));\n    stockRepository.saveAll(List.of(\n            Stock.create(\"001\", 10),\n            Stock.create(\"002\", 0)));\n    orderRepository.save(createOrder(...));\n}\n```\n\n**세 가지가 나빠진다.**\n\n**① 안 쓰는 데이터가 든다**\n\n> **재고만 보는 테스트도 주문 세 건을** 만든다.\n> **느려지고 로그가 길어**진다.\n\n**② 무엇이 조건인지 안 보인다**\n\n> **\"재고가 0이면 예외\" 테스트를 읽는데 `002` 가 0인 걸** 모른다.\n> **4.3절의 given 이 위로** 갔다.\n\n**③ 추가가 다른 테스트를 깬다**\n\n> **`004` 를 넣었더니 \"전체 조회하면 3개\" 테스트가** 깨진다.\n> **그 테스트는 `004` 를 모른다.**\n\n**신호**\n\n| | |\n|---|---|\n| **`@BeforeEach` 가 열 줄 넘는다** | |\n| **테스트마다 다른 것만 골라 쓴다** | |\n| **\"이건 안 쓰는데\" 가 있다** | |\n| **추가할 때 다른 게 깨진다** | |\n\n> **하나라도 있으면 인라인이나 팩터리로** 되돌린다.\n\n**쓸 만한 경우**\n\n```java\n@BeforeEach\nvoid setUp() {\n    cafeKiosk = new CafeKiosk();\n}\n```\n\n> **모든 테스트가 똑같이** 쓴다.\n> **값이** 없다. **초기화만** 한다.\n>\n> **이건 스크롤할 이유가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- @BeforeEach 가 커진 상태 ---\n\n@SpringBootTest\nclass ProductServiceTest extends IntegrationTestSupport {\n\n    @BeforeEach\n    void setUp() {\n        productRepository.saveAll(List.of(\n                createProduct(\"001\", SELLING, \"아메리카노\", 4000),\n                createProduct(\"002\", HOLD, \"카페라떼\", 4500),\n                createProduct(\"003\", STOP_SELLING, \"팥빙수\", 7000)));\n    }\n\n    @DisplayName(\"판매 중인 상품만 조회된다\")\n    @Test void findSelling() {\n        List<ProductResponse> products = productService.findSellingProducts();\n\n        assertThat(products).hasSize(2);\n    }\n\n    @DisplayName(\"신규 상품의 번호는 마지막 번호 + 1 이다\")\n    @Test void createProduct() {\n        ProductResponse response = productService.createProduct(request);\n\n        assertThat(response.getProductNumber()).isEqualTo(\"004\");\n    }\n}\n\n$ ./gradlew test --tests ProductServiceTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: select ... from product p1_0 where p1_0.selling_status in (?,?)\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: select p1_0.product_number from product p1_0\n           order by p1_0.id desc limit 1\nHibernate: insert into product (...) values (?,?,?,?,?)\n\nProductServiceTest > 판매 중인 상품만 조회된다 PASSED\nProductServiceTest > 신규 상품의 번호는 마지막 번호 + 1 이다 PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   두 테스트 다 상품 셋을 만든다\n\n#   첫 테스트를 읽으면 hasSize(2) 인데 왜 2 인지 모른다\n#   위로 올라가야 SELLING 과 HOLD 가 둘인 걸 안다\n\n# --- 데이터를 하나 더 넣으면 ---\n\n@BeforeEach\nvoid setUp() {\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", SELLING, \"아메리카노\", 4000),\n            createProduct(\"002\", HOLD, \"카페라떼\", 4500),\n            createProduct(\"003\", STOP_SELLING, \"팥빙수\", 7000),\n            createProduct(\"004\", SELLING, \"콜드브루\", 5000)));   // 추가\n}\n\n$ ./gradlew test --tests ProductServiceTest\n\nProductServiceTest > 판매 중인 상품만 조회된다 FAILED\n    Expected size: 2 but was: 3\nProductServiceTest > 신규 상품의 번호는 마지막 번호 + 1 이다 FAILED\n    expected: \"004\" but was: \"005\"\n\n2 tests completed, 2 failed\n\n#   둘 다 깨진다\n\n#   004 를 넣은 건 세 번째 테스트를 위해서였는데\n\n# --- 인라인으로 되돌리면 ---\n\n@DisplayName(\"판매 중인 상품만 조회된다\")\n@Test\nvoid findSelling() {\n    // given\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", SELLING, \"아메리카노\", 4000),\n            createProduct(\"002\", HOLD, \"카페라떼\", 4500),\n            createProduct(\"003\", STOP_SELLING, \"팥빙수\", 7000)));\n\n    // when\n    List<ProductResponse> products = productService.findSellingProducts();\n\n    // then\n    assertThat(products).hasSize(2)\n            .extracting(\"productNumber\", \"sellingStatus\")\n            .containsExactlyInAnyOrder(\n                    tuple(\"001\", SELLING),\n                    tuple(\"002\", HOLD));\n}\n\n@DisplayName(\"신규 상품의 번호는 마지막 번호 + 1 이다\")\n@Test\nvoid createProduct() {\n    // given\n    productRepository.save(createProduct(\"001\", SELLING, \"아메리카노\", 4000));\n\n    // when\n    ProductResponse response = productService.createProduct(request);\n\n    // then\n    assertThat(response.getProductNumber()).isEqualTo(\"002\");\n}\n\n$ ./gradlew test --tests ProductServiceTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)   x3\nHibernate: select ... where p1_0.selling_status in (?,?)\n\nHibernate: insert into product (...) values (?,?,?,?,?)   x1\nHibernate: select p1_0.product_number from product p1_0 order by ... limit 1\nHibernate: insert into product (...) values (?,?,?,?,?)\n\nProductServiceTest > 판매 중인 상품만 조회된다 PASSED\nProductServiceTest > 신규 상품의 번호는 마지막 번호 + 1 이다 PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   두 번째 테스트가 상품 하나만 만든다\n\n#   insert 가 6번에서 5번으로 줄었다\n\n#   그리고 각 테스트를 읽으면 조건이 다 보인다\n\n# --- 세 번째 테스트를 추가해도 ---\n\n@DisplayName(\"상품이 없으면 신규 번호는 001 이다\")\n@Test\nvoid createFirstProduct() {\n    // given (아무것도 없다)\n\n    // when\n    ProductResponse response = productService.createProduct(request);\n\n    // then\n    assertThat(response.getProductNumber()).isEqualTo(\"001\");\n}\n\n$ ./gradlew test --tests ProductServiceTest\n\nProductServiceTest > 판매 중인 상품만 조회된다 PASSED\nProductServiceTest > 신규 상품의 번호는 마지막 번호 + 1 이다 PASSED\nProductServiceTest > 상품이 없으면 신규 번호는 001 이다 PASSED\n\n3 tests completed\n\n#   앞 둘이 안 깨진다\n\n#   @BeforeEach 판이었으면 '상품이 없는' 상태를 만들 수가 없었다\n\n# --- 초기화만 하는 @BeforeEach 는 ---\n\nclass CafeKioskTest {\n    private CafeKiosk cafeKiosk;\n\n    @BeforeEach\n    void setUp() {\n        cafeKiosk = new CafeKiosk();\n    }\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n13 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   값이 없다. 스크롤할 이유가 없다\n\n#   열세 테스트가 다 똑같이 쓴다\n\n# --- 줄 수를 세면 ---\n\n#   @BeforeEach 판\n$ wc -l ProductServiceTest.java\n42\n\n#   인라인 판\n$ wc -l ProductServiceTest.java\n56\n\n#   14줄 늘었다\n\n#   그 14줄이 스크롤 세 번과 결합 하나를 없앴다\n\n# --- 다음 절에서 ---\n\n#   deleteAll 과 deleteAllInBatch 의 쿼리를 다시 센다",
+   "note": "**`@BeforeEach` 판은 두 테스트가 다 상품 셋을** 만든다. **`hasSize(2)` 인데 왜 2인지 위로 올라가야** 안다.\n\n**`004` 를 넣으니 둘 다** 깨진다. **세 번째 테스트를 위해 넣은 것**인데.\n\n**인라인으로 되돌리면 `insert` 가 6번에서 5번**으로 줄고 **각 테스트에 조건이 다** 보인다.\n\n**세 번째 테스트를 추가해도 앞 둘이 안** 깨진다. **`@BeforeEach` 판이었으면 \"상품이 없는\" 상태를 못** 만들었다.\n\n**14줄이 늘었고 그게 스크롤 셋과 결합 하나를** 없앴다."
+  }
+ ],
+ "recap": [
+  "**테스트는 중복에 관대**하다 — 읽기가 먼저다.",
+  "**`@BeforeEach` 로 올라가면 흐름이** 끊긴다.",
+  "**팩터리 메서드는 값이 테스트 안에** 남는다.",
+  "**공유가 커지면 안 쓰는 데이터가** 든다.",
+  "**무엇이 조건인지 안** 보인다.",
+  "**추가가 다른 테스트를** 깬다.",
+  "**\"상품이 없는\" 상태를 못** 만든다.",
+  "**초기화만 하는 `@BeforeEach` 는** 괜찮다 — 값이 없다.",
+  "**14줄로 스크롤 셋과 결합 하나를** 없앴다."
+ ],
+ "drills": [
+  {
+   "task": "`@BeforeEach` 가 가장 긴 테스트를 찾는다.",
+   "done_when": "몇 줄인지 셌다.",
+   "minutes": 10
+  },
+  {
+   "task": "거기에 데이터를 하나 더 넣어 본다.",
+   "done_when": "다른 테스트가 깨지는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인라인으로 되돌린다.",
+   "done_when": "각 테스트에 조건이 보이는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "\"데이터가 없는\" 케이스를 추가해 본다.",
+   "done_when": "공유 판에서 불가능한 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트에서 중복을 왜 참나?",
+   "a": "위에서 아래로 읽고 끝나야 하기 때문이다. 읽기가 DRY 보다 먼저다."
+  },
+  {
+   "q": "`@BeforeEach` 가 커지면?",
+   "a": "안 쓰는 데이터가 들고, 조건이 안 보이고, 추가가 다른 테스트를 깬다."
+  },
+  {
+   "q": "무엇을 못 만들게 되나?",
+   "a": "\"데이터가 없는\" 상태다. 항상 뭔가 만들어져 있다."
+  },
+  {
+   "q": "괜찮은 `@BeforeEach` 는?",
+   "a": "값 없이 초기화만 하고 모든 테스트가 똑같이 쓰는 것이다."
+  },
+  {
+   "q": "팩터리 메서드가 나은 이유는?",
+   "a": "값이 테스트 안에 남아 스크롤이 필요 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
