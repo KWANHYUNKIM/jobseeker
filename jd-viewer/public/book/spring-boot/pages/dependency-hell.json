@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "dependency-hell",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "버전 맞추기",
+ "summary": "손으로 하면 무엇이 생기나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "맞춰야 할 것을 안다.",
+  "깨지는 세 시점을 본다.",
+  "전이 의존성을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 다섯 줄을 손으로** 적었다. **그게 왜 아픈지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "맞아야 하는 짝들",
+   "ascii": "   what has to line up for one web application\n\n   the servlet api and the server that implements it\n   the spring version and the servlet api it compiles against\n   the json library and the spring version that adapts it\n   the logging bridge and every library that logs\n\n   four rows, and every pair has a compatible range",
+   "note": "**넷인데 짝마다 호환 구간이** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "직접 쓴 것보다 딸려 온 게 많다",
+   "md": "**전이 의존성이** 있다.\n\n> **내가 적은 게 다른 걸 끌고** 온다.\n> **1.2절에서 다섯 줄이 열둘이** 됐다.\n> **그 열둘도 서로** 맞아야 한다.\n\n**같은 것을 둘이 끌고** 온다.\n\n> **버전이 다르면 하나가** 이긴다.\n> **그레이들은 높은 걸 고른**다.\n> **아래에서 그걸** 본다.\n\n**호환 표를 봐야** 했다.\n\n> **스프링 문서의 그** 표다.\n> **라이브러리마다 따로** 있었다.\n> **올릴 때마다 다시** 봤다.\n\n**깨지는 시점이** 늦다.\n\n> **컴파일에서 안 잡히는 게** 많다.\n> **1.2절에서 `NoSuchMethodError`** 를 봤다.\n> **아래에서 셋 다** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "어긋남이 드러나는 세 시점",
+   "ascii": "   three ways a version mismatch shows up\n\n   at compile time   a missing class or method, which is easy\n   at startup        a linkage error, which is still findable\n   at the first call NoSuchMethodError, deep inside a library\n\n   the third row is the one that reaches production",
+   "note": "**셋째 줄이 운영까지** 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "잘 도는 조합을 찾아도 기록이 안 남는다",
+   "md": "**빌드 파일에 숫자만** 남는다.\n\n> **왜 그 버전인지는 안** 적힌다.\n> **올리려다 깨지고** 되돌린다.\n> **주석이 없으면 또** 반복한다.\n\n**하나를 올리면 다** 흔들린다.\n\n> **스프링을 올리면 잭슨도** 올려야 한다.\n> **어디까지 올릴지 모른**다.\n> **아래에서 그걸** 겪는다.\n\n**프로젝트마다 다르**다.\n\n> **같은 팀인데 조합이** 갈린다.\n> **⑪ 1장의 그** 이야기다.\n> **5.2절이 이걸** 없앤다.\n\n**BOM 은 그 표를 파일로 만든 것**이다.\n\n> **2.3절에서 942 줄을** 봤다.\n> **누군가 검증한 조합**이다.\n> **5.2절에서 다시** 연다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 손으로 적는다\n\n// build.gradle (부트 없이)\ndependencies {\n    implementation 'org.springframework:spring-webmvc:6.1.11'\n    implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'\n    implementation 'ch.qos.logback:logback-classic:1.5.6'\n    implementation 'org.slf4j:slf4j-api:2.0.13'\n}\n\n$ grep -c ':[0-9]' build.gradle\n5\n\n\n-- 그런데 실제로는 열둘이다\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E '^[+\\\\|]' | grep -c ':'\n      19\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z-]+:[0-9.]+' | sort -u | wc -l\n      12\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z-]+:[0-9.]+' | sort -u | tail -5\norg.springframework:spring-context:6.1.11\norg.springframework:spring-core:6.1.11\norg.springframework:spring-expression:6.1.11\norg.springframework:spring-jcl:6.1.11\norg.springframework:spring-web:6.1.11\n\n--   다섯이 열둘이 됐다\n--   1.2절에서 본 그것이다\n\n\n-- 하나만 낮춰 본다\n\nimplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   컴파일은 통과한다\n\n\n-- 기동은 되나\n\n$ ./gradlew run -q 2>&1 | grep -E 'ProtocolHandler|Exception' | head -2\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n--   뜬다\n\n\n-- 부를 때 터진다\n\n@RestController\nclass JsonController {\n    record Item(String name, int price) {}\n\n    @GetMapping(\"/json\")\n    Item json() { return new Item(\"연필\", 500); }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/json\n500\n\n$ ./gradlew run -q 2>&1 | grep -A2 NoSuchMethod | head -3\njava.lang.NoSuchMethodError: 'void com.fasterxml.jackson.databind\n  .ObjectMapper.<init>(com.fasterxml.jackson.core.JsonFactory)'\n\tat org.springframework.http.converter.json.Jackson2ObjectMapperBuilder\n\n--   1.2절에서 본 그 오류다\n--   그 엔드포인트를 불러야 드러난다\n\n\n-- 세 시점을 다 만들어 본다\n\n// ① 컴파일에서\nimplementation 'org.springframework:spring-webmvc:5.3.31'\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: package jakarta.servlet does not exist\n\n--   2.3절에서 본 그것이다\n--   제일 낫다\n\n\n// ② 기동에서\nimplementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.83'\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n$ ./gradlew run -q 2>&1 | head -3\nException in thread \"main\" java.lang.NoClassDefFoundError:\n  jakarta/servlet/ServletContext\n\n--   2.3절에서 본 그것이다\n--   그나마 바로 안다\n\n\n// ③ 호출에서\nimplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'\n\n$ ./gradlew run -q 2>&1 | grep -c ProtocolHandler\n1\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n200\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/json\n500\n\n--   /hello 는 되고 /json 만 죽는다\n--   테스트가 없는 경로면 못 잡는다\n\n\n-- 같은 것을 둘이 끌고 오면\n\ndependencies {\n    implementation 'org.springframework:spring-webmvc:6.1.11'\n    implementation 'org.springframework:spring-core:6.0.9'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep 'spring-core'\n|    +--- org.springframework:spring-core:6.1.11\n\\--- org.springframework:spring-core:6.0.9 -> 6.1.11\n\n--   화살표가 있다\n--   높은 쪽으로 올라갔다\n--   내가 적은 6.0.9 는 무시됐다\n\n\n-- 강제로 낮추면\n\nconfigurations.all {\n    resolutionStrategy {\n        force 'org.springframework:spring-core:6.0.9'\n    }\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep 'spring-core'\n|    +--- org.springframework:spring-core:6.1.11 -> 6.0.9\n\\--- org.springframework:spring-core:6.0.9 (*)\n\n$ ./gradlew run -q 2>&1 | head -2\nException in thread \"main\" java.lang.NoSuchMethodError:\n  'void org.springframework.core.io.support.SpringFactoriesLoader...'\n\n--   같은 프레임워크 안에서도 깨진다\n--   버전을 섞으면 안 된다\n\n\n-- 어디서 왔는지 본다\n\n$ ./gradlew dependencyInsight --configuration runtimeClasspath \\\n    --dependency jackson-databind\n\ncom.fasterxml.jackson.core:jackson-databind:2.17.2\n\\--- com.fasterxml.jackson.core:jackson-databind:2.17.2\n     \\--- runtimeClasspath (requested)\n\n$ ./gradlew dependencyInsight --configuration runtimeClasspath \\\n    --dependency slf4j-api\n\norg.slf4j:slf4j-api:2.0.13\n+--- org.slf4j:slf4j-api:2.0.13\n|    \\--- runtimeClasspath (requested)\n\\--- ch.qos.logback:logback-classic:1.5.6\n     \\--- runtimeClasspath\n\n--   두 곳에서 온다\n--   5.4절에서 이 도구를 더 쓴다\n\n\n-- 호환 표를 찾아야 했다\n\n$ curl -s https://github.com/spring-projects/spring-framework/wiki/\\\nSpring-Framework-Versions | grep -A3 -i 'jackson' | head -4\n\n| Spring Framework | JDK | Jakarta EE | Jackson |\n| 6.1.x            | 17+ | 9-10       | 2.14+   |\n| 6.0.x            | 17+ | 9-10       | 2.13+   |\n| 5.3.x            | 8+  | 7-8 (javax)| 2.11+   |\n\n--   이런 표를 보고 맞췄다\n--   라이브러리마다 따로 있었다\n\n\n-- 올리려면 같이 올려야 한다\n\n// 스프링만 6.0 에서 6.1 로 올리면\nimplementation 'org.springframework:spring-webmvc:6.1.11'\nimplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/json\n500\n\n// 잭슨도 올리면\nimplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'\n\n$ curl -s localhost:8080/json\n{\"name\":\"연필\",\"price\":500}\n\n--   하나를 올리면 딸려 올라간다\n--   어디까지인지 표를 봐야 안다\n\n\n-- 왜 그 버전인지는 안 남는다\n\n$ git log --oneline -3 -- build.gradle\na3f9c1b chore: 잭슨 올림\n8e2d4f0 chore: 스프링 6.1 로\n1c6b2d8 fix: 잭슨 되돌림\n\n$ git show 1c6b2d8 -- build.gradle | grep '^[+-].*jackson'\n-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'\n+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'\n\n--   왜 되돌렸는지 안 적혀 있다\n--   다음 사람이 또 올려 본다\n\n\n-- 부트로 바꾸면\n\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ grep -c ':[0-9]' build.gradle\n0\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'jackson-databind|spring-webmvc|tomcat-embed-core|logback-classic'\n|    |    +--- com.fasterxml.jackson.core:jackson-databind:2.17.2\n|    +--- org.springframework:spring-webmvc:6.1.11\n|    +--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n|    +--- ch.qos.logback:logback-classic:1.5.6\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n$ curl -s localhost:8080/json\n{\"name\":\"연필\",\"price\":500}\n\n--   내가 맞춘 그 조합이 그대로 나왔다\n--   버전을 한 줄도 안 적었다\n--   5.2절에서 누가 정했는지 본다\n\n\n-- 정리\n\n$ printf '%-24s %-14s %s\\n' \\\n  '내가 적은 것'  '5 줄'    '실제로는 12 개' \\\n  '컴파일에서'    '제일 나음' '패키지가 없음' \\\n  '기동에서'      '괜찮음'   'NoClassDefFound' \\\n  '호출에서'      '제일 나쁨' 'NoSuchMethod' \\\n  '같은 것 둘'    '높은 쪽'  '내 지정이 무시됨' \\\n  '기록'          '안 남음'  '왜 그 버전인지'\n\n내가 적은 것             5 줄          실제로는 12 개\n컴파일에서               제일 나음     패키지가 없음\n기동에서                 괜찮음        NoClassDefFound\n호출에서                 제일 나쁨     NoSuchMethod\n같은 것 둘               높은 쪽       내 지정이 무시됨\n기록                     안 남음       왜 그 버전인지\n\n--   5.2절에서 이걸 파일 하나로 옮긴다",
+   "note": "**직접 적은 다섯 줄이 실제로는 열두 개가** 된다.\n\n**잭슨만 낮추면 컴파일도 기동도 통과하고 `/hello` 는 200 인데 `/json` 만 500** 이다.\n\n**깨지는 시점 셋을 다 만들어 보니 `package jakarta.servlet does not exist`·`NoClassDefFoundError`·`NoSuchMethodError`** 였다.\n\n**같은 라이브러리 두 버전은 `6.0.9 -> 6.1.11` 로 높은 쪽이 이겨 내 지정이** 무시된다.\n\n**부트로 바꾸면 버전을 한 줄도 안 적었는데 내가 맞춘 그 조합이 그대로** 나온다."
+  }
+ ],
+ "recap": [
+  "**전이 의존성이** 많다.",
+  "**다섯이 열둘이** 된다.",
+  "**짝마다 구간이** 있다.",
+  "**컴파일이 제일** 낫다.",
+  "**호출에서가 제일** 나쁘다.",
+  "**높은 쪽이** 이긴다.",
+  "**섞으면** 깨진다.",
+  "**표를 봐야** 했다.",
+  "**기록이 안** 남는다."
+ ],
+ "drills": [
+  {
+   "task": "직접 적은 수와 실제 수를 센다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "잭슨만 낮춘다.",
+   "done_when": "특정 경로만 죽는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 것을 두 버전 넣는다.",
+   "done_when": "화살표를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부트로 바꿔 본다.",
+   "done_when": "같은 조합이 나오는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "직접 적은 의존성만 신경 쓰면 되나?",
+   "a": "안 된다. 전이로 딸려 오는 것이 더 많다."
+  },
+  {
+   "q": "가장 나쁜 어긋남은 언제 드러나나?",
+   "a": "특정 기능을 호출할 때다."
+  },
+  {
+   "q": "같은 라이브러리 두 버전이 있으면?",
+   "a": "그레이들은 높은 쪽을 고른다."
+  },
+  {
+   "q": "강제로 낮추면?",
+   "a": "같은 프레임워크 안에서도 링크 오류가 난다."
+  },
+  {
+   "q": "부트는 이 문제를 어떻게 없애나?",
+   "a": "검증된 조합을 담은 목록이 버전을 정해 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "전이 의존성",
+   "def": "내가 적은 라이브러리가 함께 끌고 오는 의존성."
+  },
+  {
+   "term": "버전 충돌 해소",
+   "def": "같은 라이브러리 여러 버전 중 하나를 고르는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Dependency Management",
+   "url": "https://docs.gradle.org/current/userguide/dependency_management.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Maven — Introduction to the Dependency Mechanism",
+   "url": "https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

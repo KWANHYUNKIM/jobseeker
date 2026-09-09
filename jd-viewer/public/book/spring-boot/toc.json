@@ -268,7 +268,7 @@
           "title": "실행 방식 비교",
           "summary": "세 가지로 같은 서버를 띄운다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -283,7 +283,7 @@
           "title": "버전 맞추기",
           "summary": "손으로 하면 무엇이 생기나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
