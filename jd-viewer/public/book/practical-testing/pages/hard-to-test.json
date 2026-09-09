@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "hard-to-test",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "테스트하기 어려운 영역",
+ "summary": "현재 시각과 랜덤.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 테스트를 어렵게 하는지 안다.",
+  "두 종류를 구분한다.",
+  "왜 밖으로 밀어내는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.5절에서 시각을 파라미터로** 받았다. **왜 그게 답인지 여기서** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트를 어렵게 만드는 것",
+   "ascii": "   what makes a method hard to test\n\n   it reads something that changes on its own\n     LocalDateTime.now()   Math.random()   UUID.randomUUID()\n     System.getenv()       new Random()\n\n   it writes somewhere real\n     a database, a file, an email, a queue, a http call\n\n   both are the same problem\n   the method decides its own input or output",
+   "note": "**둘 다 같은 문제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 종류",
+   "md": "**① 스스로 입력을 정한다**\n\n```java\nLocalDateTime.now()\nMath.random()\nUUID.randomUUID()\nnew Random().nextInt()\nSystem.getenv(\"API_KEY\")\n```\n\n> **호출하는 쪽이 값을 못** 정한다.\n> **테스트가 언제·어디서 도느냐에 따라 결과가** 바뀐다.\n>\n> **2.1절의 \"반복 가능\" 조건을** 깬다.\n\n**② 스스로 밖에 쓴다**\n\n```java\nmailSender.send(...)\nfileWriter.write(...)\nhttpClient.post(...)\nrepository.save(...)\n```\n\n> **테스트를 돌릴 때마다 진짜 메일이** 나간다.\n> **파일이 쌓이고 외부 API 를** 부른다.\n>\n> **6장의 주제**다.\n\n**둘이 같은 문제인 이유**\n\n> **메서드가 자기 입력이나 출력을 스스로** 정한다.\n> **밖에서 통제할 여지가** 없다.\n>\n> **통제할 수 없으면 검증할 수** 없다.\n\n**테스트하기 좋은 것**\n\n```java\npublic int calculateTotalPrice() {\n    return beverages.stream().mapToInt(Beverage::getPrice).sum();\n}\n```\n\n| | |\n|---|---|\n| **입력이 명확** | 필드에 있는 것 |\n| **출력이 반환값** | |\n| **부수 효과 없음** | 아무것도 안 바꾼다 |\n| **같은 입력 → 같은 출력** | 항상 |\n\n> **순수 함수**다. **2.7절**의 주제다."
+  },
+  {
+   "type": "figure",
+   "caption": "고치는 모양",
+   "ascii": "   the shape of the fix\n\n   before\n     createOrder()\n       now()            <- decided inside\n       validate\n       build the order\n\n   after\n     createOrder(currentDateTime)\n       validate\n       build the order\n\n   the uncontrollable part moved one level up, to the caller",
+   "note": "**통제 불가능한 부분을 호출자에게** 올린다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 없애지 않고 올리나",
+   "md": "**`LocalDateTime.now()` 는 어딘가에서 반드시** 불린다.\n\n> **없앨 수가** 없다. **주문에 시각이 필요**하다.\n\n**올릴 뿐**이다.\n\n```java\n// 서비스\npublic Order order(OrderRequest request) {\n    return cafeKiosk.createOrder(LocalDateTime.now());   // 여기로 올라왔다\n}\n```\n\n> **`CafeKiosk` 는 이제 테스트할 수** 있다.\n> **`OrderService` 는 여전히 어렵다.**\n\n**계속 올리면 컨트롤러까지** 간다.\n\n```java\n@PostMapping(\"/orders\")\npublic Order order(@RequestBody OrderRequest request) {\n    return orderService.order(request, LocalDateTime.now());\n}\n```\n\n> **컨트롤러는 얇아서 테스트 가치가** 낮다.\n> **5.4절에서 프레젠테이션 계층 테스트를 다룰 때 이 이야기가** 나온다.\n\n**어디까지 올리나**\n\n| | |\n|---|---|\n| **도메인** | 절대 안 부른다 |\n| **서비스** | 안 부르는 게 좋다 |\n| **컨트롤러·설정** | 여기서 부른다 |\n\n> **경계는 팀마다** 다르다. **원칙은 \"깊은 곳에서 안 부른다\"** 다.\n\n**`Clock` 을 쓰는 방법**도 있다.\n\n```java\nprivate final Clock clock;\n\npublic Order createOrder() {\n    LocalDateTime now = LocalDateTime.now(clock);\n    ...\n}\n\n// 테스트\nClock fixed = Clock.fixed(Instant.parse(\"2026-09-09T22:00:00Z\"), ZoneOffset.UTC);\n```\n\n| | |\n|---|---|\n| **파라미터** | 단순하다. 시그니처가 지저분해질 수 있다 |\n| **`Clock` 주입** | 시그니처가 깨끗하다. 의존성이 는다 |\n\n> **메서드 하나면 파라미터, 클래스 전체가 시각을 쓰면 `Clock`** 이다.\n>\n> **7.9절에서 다시** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 통제 불가능한 것을 테스트하면 ---\n\n@Test\nvoid randomTest() {\n    int value = new Random().nextInt(100);\n    assertThat(value).isLessThan(50);\n}\n\n$ ./gradlew test --tests HardToTest\n\nHardToTest > randomTest() PASSED\n\n$ ./gradlew test --tests HardToTest --rerun-tasks\n\nHardToTest > randomTest() FAILED\n    java.lang.AssertionError:\n    Expecting actual:\n      73\n    to be less than:\n      50\n\n$ ./gradlew test --tests HardToTest --rerun-tasks\n\nHardToTest > randomTest() PASSED\n\n#   코드를 안 고쳤는데 결과가 바뀐다\n\n#   7.11절의 '가끔 깨지는 테스트' 다\n#   가장 나쁜 상태다\n\n# --- 시각도 같다 ---\n\n@Test\nvoid nowTest() {\n    LocalDateTime now = LocalDateTime.now();\n    assertThat(now.getHour()).isBetween(10, 22);\n}\n\n#   (오후 3시에 CI 가 돌면)\nHardToTest > nowTest() PASSED\n\n#   (새벽 3시에 스케줄된 CI 가 돌면)\nHardToTest > nowTest() FAILED\n    java.lang.AssertionError:\n    Expecting actual:\n      3\n    to be between:\n      [10, 22]\n\n#   밤에만 깨지는 테스트가 된다\n\n#   아침에 출근해서 보면 초록이라 재현이 안 된다\n\n# --- UUID 도 ---\n\n@Test\nvoid orderNumberTest() {\n    Order order = cafeKiosk.createOrder(LocalDateTime.of(2026, 9, 9, 11, 0));\n\n    assertThat(order.getOrderNumber()).isEqualTo(\"ORD-...\");\n}\n\n#   무엇과 비교해야 하나\n\nHardToTest > orderNumberTest() FAILED\n    expected: \"ORD-...\"\n     but was: \"ORD-3f2a91c8-4b1e-4d2a-9c3f-8e7d6a5b4c3d\"\n\n#   검증할 방법이 없다\n\n#   그래서 이렇게 된다\n\nassertThat(order.getOrderNumber()).isNotNull();\n\n#   아무것도 안 보는 단언이다  (1.1절)\n\n# --- 밖으로 밀어낸 뒤 ---\n\npublic Order createOrder(LocalDateTime currentDateTime) { ... }\n\n@Test\nvoid createOrderAt22() {\n    cafeKiosk.add(new Americano());\n\n    assertThatThrownBy(() -> cafeKiosk.createOrder(\n            LocalDateTime.of(2026, 9, 9, 22, 0)))\n        .isInstanceOf(IllegalArgumentException.class);\n}\n\n$ ./gradlew test --tests CafeKioskTest --rerun-tasks\nCafeKioskTest > createOrderAt22() PASSED\n\n$ ./gradlew test --tests CafeKioskTest --rerun-tasks\nCafeKioskTest > createOrderAt22() PASSED\n\n$ ./gradlew test --tests CafeKioskTest --rerun-tasks\nCafeKioskTest > createOrderAt22() PASSED\n\n#   몇 번을 돌려도 같다\n\n#   새벽에 돌려도 같다\n\n# --- Clock 으로 하면 ---\n\npublic class CafeKiosk {\n    private final Clock clock;\n\n    public Order createOrder() {\n        LocalDateTime now = LocalDateTime.now(clock);\n        ...\n    }\n}\n\n@Test\nvoid createOrderWithClock() {\n    Clock fixed = Clock.fixed(\n            LocalDateTime.of(2026, 9, 9, 22, 0)\n                    .atZone(ZoneId.systemDefault()).toInstant(),\n            ZoneId.systemDefault());\n    CafeKiosk cafeKiosk = new CafeKiosk(fixed);\n    cafeKiosk.add(new Americano());\n\n    assertThatThrownBy(() -> cafeKiosk.createOrder())\n        .isInstanceOf(IllegalArgumentException.class);\n}\n\nCafeKioskTest > createOrderWithClock() PASSED\n\n#   시그니처는 깨끗하고 시각은 통제된다\n\n#   대신 생성자에 Clock 이 붙는다\n\n# --- 어느 쪽이든 공통점 ---\n\n#   통제 불가능한 것을 바깥으로 옮겼다\n\n#   테스트가 결정하고\n#   프로덕션은 진짜를 넣는다\n\n# --- 다음 절에서 ---\n\n#   이 원칙을 일반화한다",
+   "note": "**`Random` 테스트가 돌릴 때마다 결과가** 다르다. **7.11절의 \"가끔 깨지는 테스트\"** 다.\n\n**`now()` 테스트는 새벽 CI 에서만** 깨진다. **아침에 보면 초록이라 재현이 안** 된다.\n\n**UUID 는 비교할 대상이 없어 `isNotNull()` 로** 가게 된다 — **아무것도 안 보는 단언**이다.\n\n**시각을 밖으로 밀어내면 몇 번을 돌려도** 같다.\n\n**`Clock` 판은 시그니처가 깨끗한 대신 생성자에 의존성**이 붙는다."
+  }
+ ],
+ "recap": [
+  "**두 종류** — 스스로 입력을 정하는 것, 스스로 밖에 쓰는 것.",
+  "**둘 다 밖에서 통제할 여지가** 없다는 같은 문제다.",
+  "**통제할 수 없으면 검증할 수** 없다.",
+  "**`Random` 은 돌릴 때마다 결과가** 다르다.",
+  "**`now()` 는 새벽 CI 에서만 깨져 재현이 안** 된다.",
+  "**UUID 는 `isNotNull()` 로 가게 된다** — 아무것도 안 보는 단언이다.",
+  "**없애는 게 아니라 호출자에게** 올린다.",
+  "**깊은 곳에서 안 부른다** 가 원칙이다.",
+  "**메서드 하나면 파라미터, 클래스 전체면 `Clock`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`Random` 테스트를 여러 번 돌린다.",
+   "done_when": "결과가 갈리는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "시스템 시계를 새벽으로 바꿔 `now()` 테스트를 돌린다.",
+   "done_when": "깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Clock` 주입 판을 만들어 본다.",
+   "done_when": "`Clock.fixed` 로 통제되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "자기 코드에서 `now()`·`random()` 을 찾는다.",
+   "done_when": "어느 계층에서 불리는지 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트하기 어려운 두 종류는?",
+   "a": "스스로 입력을 정하는 것과 스스로 밖에 쓰는 것이다."
+  },
+  {
+   "q": "왜 같은 문제인가?",
+   "a": "메서드가 자기 입력이나 출력을 스스로 정해 밖에서 통제할 수 없다."
+  },
+  {
+   "q": "`now()` 테스트가 왜 고약한가?",
+   "a": "새벽 CI 에서만 깨지고 아침에 보면 초록이라 재현이 안 된다."
+  },
+  {
+   "q": "없애는 게 답인가?",
+   "a": "아니다. 호출자에게 올릴 뿐이다. 어딘가에서는 반드시 불린다."
+  },
+  {
+   "q": "파라미터와 `Clock` 중 무엇을 쓰나?",
+   "a": "메서드 하나면 파라미터, 클래스 전체가 시각을 쓰면 `Clock` 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Clock",
+   "def": "`java.time` 의 시각 공급자. `Clock.fixed` 로 고정된 시각을 만들어 테스트에서 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE — java.time.Clock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Clock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
