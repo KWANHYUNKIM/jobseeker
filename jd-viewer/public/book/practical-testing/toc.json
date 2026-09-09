@@ -206,7 +206,7 @@
           "title": "given when then",
           "summary": "세 칸으로 나눈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -214,7 +214,7 @@
           "title": "BDDMockito 와 문장",
           "summary": "행위로 읽히게.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",

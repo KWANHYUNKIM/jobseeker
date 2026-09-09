@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "given-when-then",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "given when then",
+ "summary": "세 칸으로 나눈다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 칸의 의미를 안다.",
+  "칸의 모양이 무엇을 알려 주는지 안다.",
+  "숫자에 이름을 붙인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 갖출 셋 중 둘째**다. **어디가 조건이고 어디가 결과인지**."
+  },
+  {
+   "type": "figure",
+   "caption": "독자의 세 질문",
+   "ascii": "   three questions a reader has\n\n   given    what has to be true before this happens\n   when     what single thing am i doing\n   then     what should be true after\n\n   without the split, all three are one blob and the\n   reader has to guess which line is the subject",
+   "note": "**안 나누면 어느 줄이 주어인지 추측**해야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세 칸의 규칙",
+   "md": "**given — 이 일이 일어나기 전에 참이어야 하는 것**\n\n```java\n// given\nOrder order = new Order(List.of(new Americano(), new Latte()));\n```\n\n> **준비**다. **검증 대상이** 아니다.\n> **여기서 예외가 나면 테스트가 잘못된** 것이다.\n\n**when — 지금 하는 일 하나**\n\n```java\n// when\nint totalPrice = order.calculateTotalPrice();\n```\n\n> **한 줄**이다. **여러 줄이면 뭘 검증하는지가** 흐려진다.\n>\n> **예외를 기대할 땐 `assertThatThrownBy` 가 when 과 then 을** 겸한다.\n\n**then — 그 뒤에 참이어야 하는 것**\n\n```java\n// then\nassertThat(totalPrice).isEqualTo(8500);\n```\n\n> **단언만** 둔다. **여기서 새 호출을 하면 그건 when** 이다.\n\n**주석으로 쓰는 게 과한가**\n\n> **`// given` 세 글자**다. **읽는 사람에게 주는 값이** 크다.\n>\n> **팀에서 빈 줄로만 나누기로 해도** 된다. **나누는 게 중요**하다.\n\n**때로는 given 이** 없다.\n\n```java\n// when\nint result = DiscountCalculator.calculate(10000, 1);\n\n// then\nassertThat(result).isEqualTo(9500);\n```\n\n> **`static` 메서드에 준비할 게** 없다.\n> **없으면 안 쓴다.** **억지로 만들지 않는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "칸의 모양이 알려 주는 것",
+   "ascii": "   what the sections tell you about the test\n\n   given is 20 lines\n     the unit under test needs too much setup\n\n   when has three calls\n     the test is checking a sequence, not a behaviour\n\n   then has eight assertions\n     probably several tests wearing one name\n\n   the shape of the sections is a design signal",
+   "note": "**모양이 설계 신호**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "칸이 이상하면 코드가 이상하다",
+   "md": "**given 이 스무 줄**\n\n```java\n// given\nMember member = new Member(...);\nCoupon coupon = new Coupon(...);\nStore store = new Store(...);\nEmployee employee = new Employee(...);\n// ... 열여섯 줄 더\n```\n\n> **테스트 대상이 너무 많은 걸 필요로** 한다.\n> **의존성이 많다는 뜻**이다.\n>\n> **5.5절의 테스트 픽스처와 7.5절의 공유가 이 문제**를 다룬다.\n> **다만 근본은 설계**다.\n\n**when 에 호출이 셋**\n\n```java\n// when\ncafeKiosk.add(americano);\ncafeKiosk.add(latte);\nOrder order = cafeKiosk.createOrder(now);\n```\n\n> **앞의 둘은 given** 이다. **검증 대상은 `createOrder`** 다.\n>\n> **진짜로 셋을 다 검증하고 싶으면 그건 시나리오 테스트**다. **7.8절의 동적 테스트**를 쓴다.\n\n**then 에 단언이 여덟**\n\n```java\n// then\nassertThat(order.getTotalPrice()).isEqualTo(8500);\nassertThat(order.getBeverages()).hasSize(2);\nassertThat(order.getOrderDateTime()).isEqualTo(now);\nassertThat(order.getStatus()).isEqualTo(INIT);\n// ...\n```\n\n> **이름 하나에 요구사항 여럿**이 들었다.\n> **하나가 깨지면 나머지는 안** 돌아간다.\n>\n> **7.1절**의 주제다.\n\n**셋 다 \"테스트를 고쳐라\" 가 아니라 \"코드를 보라\"** 는 신호다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "숫자에 이름을 붙인다",
+   "md": "**4.1절의 셋째**다.\n\n```java\n// when\nint result = DiscountCalculator.calculate(10000, 3);\n\n// then\nassertThat(result).isEqualTo(8500);\n```\n\n> **`3` 이 VIP 인 걸 어떻게 아나.** **`8500` 이 어디서 왔나.**\n\n**변수로** 뺀다.\n\n```java\n// given\nint orderPrice = 10000;\nint vipLevel = 3;\n\n// when\nint discountedPrice = DiscountCalculator.calculate(orderPrice, vipLevel);\n\n// then\nassertThat(discountedPrice).isEqualTo(8500);\n```\n\n> **`8500` 은 그대로** 둔다. **계산식으로 쓰면 안** 된다.\n>\n> ```java\n> assertThat(discountedPrice).isEqualTo((int) (orderPrice * 0.85));   // 나쁘다\n> ```\n>\n> **프로덕션 코드의 계산을 테스트에서 되풀이**하는 것이다.\n> **둘 다 틀리면 통과**한다.\n\n**기대값은 손으로 계산한 상수**다.\n\n> **`10000 × 0.85 = 8500`** 을 사람이 계산해서 적는다.\n> **그게 \"검증\" 이다.**\n\n**given 에 상수를 몰아 두면 읽기 편해**진다.\n\n```java\nprivate static final LocalDateTime 영업중 = LocalDateTime.of(2026, 9, 9, 11, 0);\nprivate static final LocalDateTime 마감정각 = LocalDateTime.of(2026, 9, 9, 22, 0);\n```\n\n> **2.5절의 경계 테스트가 읽기 쉬워**진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 안 나눈 테스트 ---\n\n@DisplayName(\"주문을 생성하면 총 금액이 계산된다\")\n@Test\nvoid createOrder() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n    cafeKiosk.add(new Latte());\n    Order order = cafeKiosk.createOrder(LocalDateTime.of(2026, 9, 9, 11, 0));\n    assertThat(order.calculateTotalPrice()).isEqualTo(8500);\n    assertThat(order.getBeverages()).hasSize(2);\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 주문을 생성하면 총 금액이 계산된다 PASSED\n\n#   통과한다\n\n#   그런데 어느 줄이 검증 대상인가\n#   add 인가 createOrder 인가 calculateTotalPrice 인가\n\n# --- 나눈 테스트 ---\n\n@DisplayName(\"주문을 생성하면 담긴 음료의 총 금액이 계산된다\")\n@Test\nvoid createOrder() {\n    // given\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n    cafeKiosk.add(new Latte());\n    LocalDateTime 영업중 = LocalDateTime.of(2026, 9, 9, 11, 0);\n\n    // when\n    Order order = cafeKiosk.createOrder(영업중);\n\n    // then\n    assertThat(order.calculateTotalPrice()).isEqualTo(8500);\n}\n\nCafeKioskTest > 주문을 생성하면 담긴 음료의 총 금액이 계산된다 PASSED\n\n#   검증 대상이 createOrder 인 게 보인다\n\n#   그리고 hasSize(2) 를 뺐다\n#   그건 다른 테스트다  (7.1절)\n\n# --- 숫자에 이름을 붙이기 전 ---\n\n@Test\nvoid vipDiscount() {\n    assertThat(DiscountCalculator.calculate(10000, 3)).isEqualTo(8500);\n}\n\nDiscountCalculatorTest > vipDiscount() PASSED\n\n#   3 이 뭔가\n\n# --- 붙인 뒤 ---\n\n@DisplayName(\"VIP 회원은 15퍼센트 할인을 받는다\")\n@Test\nvoid vipDiscount() {\n    // given\n    int orderPrice = 10000;\n    int vipLevel = 3;\n\n    // when\n    int discountedPrice = DiscountCalculator.calculate(orderPrice, vipLevel);\n\n    // then\n    assertThat(discountedPrice).isEqualTo(8500);\n}\n\nDiscountCalculatorTest > VIP 회원은 15퍼센트 할인을 받는다 PASSED\n\n# --- 기대값을 계산식으로 쓰면 ---\n\n// then\nassertThat(discountedPrice).isEqualTo((int) (orderPrice * 0.85));\n\nDiscountCalculatorTest > VIP 회원은 15퍼센트 할인을 받는다 PASSED\n\n#   통과한다\n\n#   그런데 프로덕션 코드의 할인율을 0.80 으로 바꾸고\n#   테스트의 0.85 도 0.80 으로 바꾸면\n\n// 프로덕션\nVIP(3, 0.20);\n// 테스트\nassertThat(discountedPrice).isEqualTo((int) (orderPrice * 0.80));\n\nDiscountCalculatorTest > VIP 회원은 15퍼센트 할인을 받는다 PASSED\n\n#   이름은 15퍼센트인데 통과한다\n\n#   테스트가 프로덕션 코드를 되풀이하면 아무것도 안 지킨다\n\n#   상수로 두면\n\nassertThat(discountedPrice).isEqualTo(8500);\n\nDiscountCalculatorTest > VIP 회원은 15퍼센트 할인을 받는다 FAILED\n    expected: 8500\n     but was: 8000\n\n#   잡힌다\n\n# --- when 에 호출이 여럿이면 ---\n\n// when\ncafeKiosk.add(americano);\ncafeKiosk.add(latte);\nOrder order = cafeKiosk.createOrder(영업중);\n\n#   테스트를 깨뜨려 어느 것이 검증되는지 본다\n\npublic void add(Beverage beverage) {\n    // beverages.add(beverage);\n}\n\nCafeKioskTest > 주문을 생성하면 ... FAILED\n    expected: 8500 but was: 0\n\npublic Order createOrder(LocalDateTime now) {\n    return null;\n}\n\nCafeKioskTest > 주문을 생성하면 ... FAILED\n    java.lang.NullPointerException\n\n#   둘 다 깨진다\n\n#   테스트 하나가 두 메서드를 지키고 있다\n\n#   이름은 '주문을 생성하면' 인데 add 도 검증한다\n#   add 가 깨졌을 때 이 테스트가 빨개지면 헷갈린다\n\n#   add 는 given 이어야 한다\n\n# --- given 이 길어지면 ---\n\n// given\nMember member = Member.builder().name(\"userA\").level(VIP).build();\nCoupon coupon = Coupon.builder().rate(0.1).member(member).build();\nStore store = Store.builder().name(\"강남점\").build();\nEmployee employee = Employee.builder().store(store).build();\nCafeKiosk cafeKiosk = new CafeKiosk(store, employee);\ncafeKiosk.add(new Americano());\n// ... 열네 줄 더\n\n// when\nOrder order = cafeKiosk.createOrder(영업중, member, coupon);\n\n#   테스트를 고칠 게 아니라 CafeKiosk 의 의존성을 봐야 한다\n\n#   5.5절과 7.5절에서 완화하는 법을 다루는데\n#   근본은 설계다\n\n# --- 다음 절에서 ---\n\n#   같은 구조를 문장으로 읽히게 만든다",
+   "note": "**안 나눈 테스트도 통과**한다. **어느 줄이 검증 대상인지** 모른다.\n\n**나누면 `createOrder` 가 대상인 게** 보인다.\n\n**기대값을 계산식으로 쓰면 프로덕션과 같이 고칠 때 통과**해 버린다. **이름은 15퍼센트인데** 통과한다. **상수로 두면** 잡힌다.\n\n**when 에 호출이 여럿이면 테스트 하나가 두 메서드를** 지킨다. **`add` 가 깨져도 이 테스트가 빨개져** 헷갈린다.\n\n**given 이 길면 테스트가 아니라 설계를 봐야** 한다."
+  }
+ ],
+ "recap": [
+  "**given 은 준비, when 은 하나, then 은 단언**이다.",
+  "**given 이 없으면 안 쓴다** — 억지로 만들지 않는다.",
+  "**칸의 모양이 설계 신호**다.",
+  "**given 이 길면 의존성이** 많다는 뜻이다.",
+  "**when 에 호출이 여럿이면 검증 대상이** 흐려진다.",
+  "**then 에 단언이 많으면 테스트 여럿이 한 이름을** 쓰고 있다.",
+  "**숫자에 이름을** 붙인다.",
+  "**기대값은 손으로 계산한 상수**다.",
+  "**계산식으로 쓰면 프로덕션을 되풀이해 아무것도 안** 지킨다."
+ ],
+ "drills": [
+  {
+   "task": "안 나눈 테스트를 하나 찾아 세 칸으로 나눈다.",
+   "done_when": "검증 대상이 보이는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "기대값을 계산식으로 바꿔 본다.",
+   "done_when": "프로덕션과 같이 고쳐도 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "when 이 여러 줄인 테스트를 찾는다.",
+   "done_when": "무엇이 given 인지 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "given 이 가장 긴 테스트를 찾는다.",
+   "done_when": "의존성 개수를 세어 봤다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 칸이 각각 답하는 질문은?",
+   "a": "무엇이 참이어야 하나, 지금 뭘 하나, 그 뒤에 뭐가 참이어야 하나다."
+  },
+  {
+   "q": "when 이 여러 줄이면?",
+   "a": "검증 대상이 흐려진다. 앞의 것들은 대개 given 이다."
+  },
+  {
+   "q": "given 이 스무 줄이면?",
+   "a": "테스트가 아니라 설계를 봐야 한다. 의존성이 많다는 뜻이다."
+  },
+  {
+   "q": "기대값을 계산식으로 쓰면?",
+   "a": "프로덕션 코드를 되풀이해 둘 다 틀려도 통과한다."
+  },
+  {
+   "q": "given 이 없으면?",
+   "a": "안 쓴다. `static` 메서드처럼 준비가 없으면 억지로 만들지 않는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Introducing BDD (개념 출처)",
+   "url": "https://dannorth.net/introducing-bdd/",
+   "publisher": "Dan North"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

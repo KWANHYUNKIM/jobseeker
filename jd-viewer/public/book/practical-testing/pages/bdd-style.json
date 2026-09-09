@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "bdd-style",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "BDDMockito 와 문장",
+ "summary": "행위로 읽히게.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "BDD 가 무엇을 바꾸는지 안다.",
+  "`when` 이 겹치는 문제를 안다.",
+  "테스트 이름을 문장으로 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절의 세 칸을 문장으로** 읽는다. **이름도 거기서** 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 칸을 문장으로",
+   "ascii": "   the same three sections, read as a sentence\n\n   given a cafe kiosk with an americano and a latte\n   when  an order is created at 11:00\n   then  the total price is 8500\n\n   the test name is the sentence with given and when\n   folded into it\n\n   \"음료 두 잔을 담고 주문을 생성하면 총 금액이 8500원이다\"",
+   "note": "**이름은 given 과 when 을 접은 문장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "BDD 가 바꾸는 것",
+   "md": "**TDD 에서 출발한 것**이다.\n\n> **\"테스트\" 라는 말이 개발자만의 것으로 들려** 이름을 바꿨다.\n> **\"이 시스템은 이렇게 행동한다\"** 로 읽히게 하는 게 목표였다.\n\n**바뀌는 건 이름과 표현**이다.\n\n| | |\n|---|---|\n| 하는 일 | **같다** |\n| 도구 | 같다 |\n| **읽는 방식** | **다르다** |\n\n**테스트 이름이 문장이 된다.**\n\n```\n[given] 음료 두 잔을 담고\n[when]  주문을 생성하면\n[then]  총 금액이 8500원이다\n```\n\n> **4.2절에서 `[조건] 하면 [결과] 한다` 라고** 했다.\n> **그게 given-when 을 접은 것**이다.\n>\n> **세 칸을 먼저 쓰면 이름이 저절로** 나온다.\n\n**\"시나리오\" 단위로 생각**하게 된다.\n\n> **\"이 메서드를 테스트한다\" 가** 아니라\n> **\"이 상황에서 이렇게 하면 이렇게 된다\"** 다.\n>\n> **4.2절에서 메서드 이름을 쓰지 말라고 한 것과 같은** 이야기다.\n\n**과하게 갈 필요는** 없다.\n\n> **Cucumber 같은 도구로 자연어 스펙을 쓰는 것까지가 BDD** 인데\n> **비개발자가 그걸 읽는 팀이 아니면 비용이** 크다.\n>\n> **이 책은 표현만 빌린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "Mockito 의 두 철자",
+   "ascii": "   why mockito has two spellings\n\n   when(repo.findById(1L)).thenReturn(order)\n     the word when clashes with the when section\n     and this line is really setup\n\n   given(repo.findById(1L)).willReturn(order)\n     reads as setup, sits in the given section\n\n   same behaviour. one of them lies about where it belongs.",
+   "note": "**하나는 자기가 어디 속하는지 거짓말**을 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`when` 이 두 번 나오는 문제",
+   "md": "**Mockito 의 기본 문법**\n\n```java\n// given\nOrder order = new Order(...);\nwhen(orderRepository.findById(1L)).thenReturn(Optional.of(order));\n\n// when\nOrderResponse response = orderService.getOrder(1L);\n```\n\n> **`// given` 아래에 `when(` 이** 있다.\n> **읽다 멈칫**한다.\n>\n> **의미상 저건 준비**다. **\"이걸 부르면 이게 나온다고 해 두자\"**.\n\n**`BDDMockito` 가 같은 걸 다르게** 쓴다.\n\n```java\n// given\ngiven(orderRepository.findById(1L)).willReturn(Optional.of(order));\n\n// when\nOrderResponse response = orderService.getOrder(1L);\n\n// then\nverify(orderRepository).findById(1L);\n```\n\n| Mockito | BDDMockito |\n|---|---|\n| `when(...).thenReturn(...)` | `given(...).willReturn(...)` |\n| `when(...).thenThrow(...)` | `given(...).willThrow(...)` |\n| `verify(...)` | `then(...).should()` |\n\n> **`BDDMockito` 는 `Mockito` 를 상속**한다. **동작이 똑같다.**\n> **정적 임포트만** 바꾸면 된다.\n\n**`verify` 쪽은 취향**이다.\n\n```java\nthen(orderRepository).should().findById(1L);\n```\n\n> **길어진다.** **`verify(orderRepository).findById(1L)` 이 더 짧고 익숙**하다.\n>\n> **이 책은 `given/willReturn` 만 쓰고 `verify` 는 그대로** 둔다.\n>\n> **6장에서 계속** 쓴다.\n\n**주의** — **가짜를 쓰기로 한 뒤의 이야기**다.\n\n> **6.7절에서 목을 언제 쓰지 말아야 하는지** 다룬다.\n> **표기법이 좋아도 안 쓰는 게 나은 경우가** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이름을 세 칸에서 뽑아내기",
+   "md": "**순서를 이렇게** 한다.\n\n```\n1. given / when / then 을 코드로 쓴다\n2. 그걸 읽어서 이름을 붙인다\n```\n\n**예시**\n\n```java\n// given\ncafeKiosk.add(new Americano());\n\n// when\ncafeKiosk.remove(new Latte());   // 담지 않은 음료\n\n// then\n// 예외가 나야 한다\n```\n\n> **읽으면** — **\"아메리카노를 담은 상태에서 라떼를 빼면 예외가 난다\"**\n>\n> **줄이면** — **\"담지 않은 음료를 빼면 예외가 난다\"**\n>\n> **`@DisplayName(\"담지 않은 음료를 빼면 예외가 난다\")`**\n\n**given 이 이름에 꼭 들어갈 필요는** 없다.\n\n| given | 이름에 |\n|---|---|\n| **결과를 바꾸는 조건** | **넣는다** |\n| 단순한 준비 | 뺀다 |\n\n> **\"아메리카노를 담은 상태\" 는 이 테스트에서 안 중요**하다.\n> **\"담지 않은\" 이 중요**하다.\n\n**2.5절의 경계 테스트를 다시** 보면\n\n```\n영업 시작 1분 전에는 주문할 수 없다\n```\n\n> **given(09:59)이 이름에** 있다. **그게 이 테스트의 전부**라서다.\n\n**4.5절에서 지금까지 짠 걸 전부 이 방식으로** 고친다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- Mockito 기본 문법 ---\n\n@DisplayName(\"주문을 조회하면 저장된 주문이 반환된다\")\n@Test\nvoid getOrder() {\n    // given\n    Order order = new Order(List.of(new Americano()));\n    when(orderRepository.findById(1L)).thenReturn(Optional.of(order));\n\n    // when\n    OrderResponse response = orderService.getOrder(1L);\n\n    // then\n    assertThat(response.getTotalPrice()).isEqualTo(4000);\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 주문을 조회하면 저장된 주문이 반환된다 PASSED\n\n#   통과한다\n\n#   그런데 // given 아래 첫 줄이 when( 이다\n\n# --- BDDMockito ---\n\nimport static org.mockito.BDDMockito.given;\n\n@DisplayName(\"주문을 조회하면 저장된 주문이 반환된다\")\n@Test\nvoid getOrder() {\n    // given\n    Order order = new Order(List.of(new Americano()));\n    given(orderRepository.findById(1L)).willReturn(Optional.of(order));\n\n    // when\n    OrderResponse response = orderService.getOrder(1L);\n\n    // then\n    assertThat(response.getTotalPrice()).isEqualTo(4000);\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 주문을 조회하면 저장된 주문이 반환된다 PASSED\n\n#   같은 결과다\n\n#   given 절에 given( 이 있다\n\n# --- 동작이 같은지 확인 ---\n\n#   스텁을 안 맞게 만들어 본다\n\ngiven(orderRepository.findById(2L)).willReturn(Optional.of(order));\n\nOrderServiceTest > 주문을 조회하면 저장된 주문이 반환된다 FAILED\n    java.util.NoSuchElementException: No value present\n\n#   1L 을 부르는데 2L 만 스텁했다\n\n#   when(...).thenReturn(...) 판도 같은 오류다\n\n#   BDDMockito 는 Mockito 를 상속한다\n\n$ javap -cp build/classes org.mockito.BDDMockito | head -3\npublic class org.mockito.BDDMockito extends org.mockito.Mockito {\n\n#   표기법만 다르다\n\n# --- verify 쪽 ---\n\n// then\nverify(orderRepository).findById(1L);\n\n#   또는\n\nthen(orderRepository).should().findById(1L);\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 주문을 조회하면 저장된 주문이 반환된다 PASSED\n\n#   둘 다 통과한다\n\n#   호출 안 됐을 때의 메시지도 같다\n\nOrderServiceTest > ... FAILED\n    Wanted but not invoked:\n    orderRepository.findById(1L);\n    Actually, there were zero interactions with this mock.\n\n# --- 세 칸에서 이름 뽑기 ---\n\n// given\ncafeKiosk.add(new Americano());\n\n// when\ncafeKiosk.remove(new Latte());\n\n// then  -> 예외\n\n#   읽으면\n#   \"아메리카노를 담은 상태에서 라떼를 빼면 예외가 난다\"\n\n#   줄이면\n#   \"담지 않은 음료를 빼면 예외가 난다\"\n\n@DisplayName(\"담지 않은 음료를 빼면 예외가 난다\")\n@Test\nvoid removeNotExists() {\n    // given\n    cafeKiosk.add(new Americano());\n\n    // when & then\n    assertThatThrownBy(() -> cafeKiosk.remove(new Latte()))\n            .isInstanceOf(IllegalArgumentException.class)\n            .hasMessage(\"주문 목록에 없는 음료입니다.\");\n}\n\nCafeKioskTest > 담지 않은 음료를 빼면 예외가 난다 PASSED\n\n#   예외 테스트는 when 과 then 이 붙는다\n#   // when & then 으로 표시한다\n\n# --- 2.2절의 이름과 비교 ---\n\n#   전\n#     \"주문 목록에 없는 음료를 빼면 예외가 난다\"\n\n#   후\n#     \"담지 않은 음료를 빼면 예외가 난다\"\n\n#   '주문 목록' 은 구현 용어에 가깝다\n#   '담지 않은' 이 사용자의 말이다\n\n#   4.2절의 도메인 용어 규칙이다\n\n# --- 다음 절에서 ---\n\n#   2·3장의 테스트를 전부 다시 쓴다",
+   "note": "**`when(...).thenReturn(...)` 판이 `// given` 아래 첫 줄에 `when(`** 을 둔다.\n\n**`given(...).willReturn(...)` 으로 바꾸면 절 이름과 맞는다.**\n\n**스텁을 안 맞게 하면 둘 다 같은 오류**다. **`BDDMockito extends Mockito`** 라 표기법만 다르다.\n\n**세 칸을 읽어서 이름을** 뽑는다. **\"아메리카노를 담은 상태에서 라떼를 빼면\" 을 \"담지 않은 음료를 빼면\" 으로** 줄인다.\n\n**\"주문 목록\" 보다 \"담지 않은\" 이 사용자의 말**이다."
+  }
+ ],
+ "recap": [
+  "**BDD 는 하는 일이 아니라 읽는 방식을** 바꾼다.",
+  "**세 칸을 먼저 쓰면 이름이 저절로** 나온다.",
+  "**`[조건] 하면 [결과] 한다` 가 given-when 을 접은** 것이다.",
+  "**Mockito 의 `when(` 이 `// when` 절과** 겹친다.",
+  "**`BDDMockito` 의 `given/willReturn` 이 절 이름과** 맞는다.",
+  "**`BDDMockito extends Mockito`** — 동작이 같다.",
+  "**`verify` 쪽은 취향**이다 — 이 책은 그대로 둔다.",
+  "**given 은 결과를 바꾸는 조건일 때만 이름에** 넣는다.",
+  "**예외 테스트는 `// when & then`** 으로 표시한다."
+ ],
+ "drills": [
+  {
+   "task": "세 칸을 먼저 쓰고 이름을 뽑아 본다.",
+   "done_when": "이름이 문장이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`when(...).thenReturn` 을 `given(...).willReturn` 으로 바꾼다.",
+   "done_when": "결과가 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트 이름에서 구현 용어를 찾는다.",
+   "done_when": "사용자의 말로 바꿨다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "BDD 가 바꾸는 것은?",
+   "a": "하는 일과 도구는 같고 읽는 방식이 다르다."
+  },
+  {
+   "q": "테스트 이름은 어디서 나오나?",
+   "a": "given 과 when 을 접은 문장이다."
+  },
+  {
+   "q": "`when(` 이 왜 문제인가?",
+   "a": "`// given` 절에 있는데 이름이 `when` 이라 어디 속하는지 헷갈린다."
+  },
+  {
+   "q": "`BDDMockito` 와 `Mockito` 의 관계는?",
+   "a": "상속이다. 동작이 같고 표기법만 다르다."
+  },
+  {
+   "q": "given 을 이름에 언제 넣나?",
+   "a": "결과를 바꾸는 조건일 때다. 단순한 준비는 뺀다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BDDMockito",
+   "def": "Mockito 를 상속해 `given/willReturn` 등 BDD 스타일 이름을 제공하는 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Introducing BDD (개념 출처)",
+   "url": "https://dannorth.net/introducing-bdd/",
+   "publisher": "Dan North"
+  },
+  {
+   "title": "Mockito — BDDMockito",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/BDDMockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}
