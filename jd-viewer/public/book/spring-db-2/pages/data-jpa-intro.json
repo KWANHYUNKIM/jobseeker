@@ -1,0 +1,126 @@
+{
+ "book": "spring-db-2",
+ "id": "data-jpa-intro",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "소개",
+ "summary": "무엇을 대신해 주나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "스프링 데이터 JPA 의 자리를 안다.",
+  "구현이 어떻게 만들어지는지 안다.",
+  "무엇을 안 해 주는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 번째 기술**이다. **JPA 를 대체하는 것이 아니라 그 위에** 얹힌다."
+  },
+  {
+   "type": "figure",
+   "caption": "층",
+   "ascii": "   ItemRepository (mine)\n        |\n   JpaRepository  <-  PagingAndSortingRepository  <-  CrudRepository\n        |                                              <- Repository\n        |\n   SimpleJpaRepository        <-- spring data writes this one\n        |\n   EntityManager              <-- 6장에서 직접 쓴 것\n        |\n   hibernate  ->  jdbc",
+   "note": "**6장에서 쓴 `EntityManager` 가 그대로 아래에** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "6장의 코드에서 무엇이 반복이었나",
+   "md": "**6.3절의 리포지토리를 다시 본다.**\n\n```java\npublic Item save(Item item) {\n    em.persist(item);\n    return item;\n}\n\npublic Optional<Item> findById(Long id) {\n    return Optional.ofNullable(em.find(Item.class, id));\n}\n```\n\n**엔티티가 열 개면 이 코드가 열 벌**이다. **`Item` 자리만 바뀐다.**\n\n**이런 것을 없애는 방법이 자바에 있다** — **제네릭**이다.\n\n```java\npublic interface CrudRepository<T, ID> {\n    <S extends T> S save(S entity);\n    Optional<T> findById(ID id);\n    void delete(T entity);\n    // ...\n}\n```\n\n**스프링 데이터가 이 인터페이스와 그 구현(`SimpleJpaRepository`)을 미리** 써 뒀다.\n\n> **내가 할 일은 상속뿐**이다.\n>\n> ```java\n> public interface ItemJpaRepository extends JpaRepository<Item, Long> { }\n> ```\n>\n> **메서드를 하나도 안 썼는데 열 개가 넘게 생긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "구현체는 어떻게 만들어지나",
+   "md": "**5.7절의 MyBatis 와 비슷한데, 다른 점**이 있다.\n\n| | MyBatis | Data JPA |\n|---|---|---|\n| 프록시를 만든다 | ✅ | ✅ |\n| **뒤에 실제 구현이 있나** | **없다** — SQL 만 | **있다** — `SimpleJpaRepository` |\n| 쿼리를 어디서 | XML 에서 **찾는다** | 이름을 보고 **만든다** |\n\n**`JpaRepositoryFactory` 가 뜰 때** 이렇게 한다.\n\n```\n1  ItemJpaRepository 인터페이스를 읽는다\n2  SimpleJpaRepository<Item, Long> 인스턴스를 만든다\n3  프록시를 만들어 빈으로 등록한다\n4  메서드 호출을 저 인스턴스나 생성된 쿼리로 보낸다\n```\n\n**기본 메서드는 `SimpleJpaRepository` 가 이미 구현**해 뒀다.\n\n```java\n// SimpleJpaRepository (스프링이 쓴 코드)\n@Transactional\npublic <S extends T> S save(S entity) {\n    if (entityInformation.isNew(entity)) {\n        em.persist(entity);\n        return entity;\n    } else {\n        return em.merge(entity);\n    }\n}\n```\n\n> **`@Transactional` 이 여기 붙어 있다.** **6.6절에서 리포지토리에 붙였던 그것**을 스프링이 대신 붙여 뒀다.\n>\n> **`isNew` 판단**이 중요하다 — **id 가 `null` 이면 `persist`, 아니면 `merge`** 다. **7.6절에서 `merge` 의 함정을 다룬다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리가 정해지는 순서",
+   "ascii": "   how a query is decided\n   ----------------------\n   1  is it one of the base methods?      save, findById, ...\n   2  is there @Query on it?              use that jpql\n   3  parse the method name               findByItemNameLike\n   4  none of the above                   fail at startup\n\n   step 4 is the good part: a typo in a method name\n   stops the application, not a request",
+   "note": "**4번이 이 기술의 가장 좋은 점**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "뜰 때 터진다는 것",
+   "md": "**메서드 이름을 잘못 쓰면** 이렇게 된다.\n\n```java\nList<Item> findByItemNmae(String itemName);   // 오타\n```\n\n```\nPropertyReferenceException:\n  No property 'itemNmae' found for type 'Item'; did you mean 'itemName'?\n```\n\n**애플리케이션이 안 뜬다.**\n\n**이 책에서 본 오류 시점들을 모아 보면** 이렇다.\n\n| 기술 | 이름을 틀리면 |\n|---|---|\n| JdbcTemplate | **실행할 때** — SQL 오류 |\n| MyBatis XML | **부를 때** — `Invalid bound statement` |\n| MyBatis `test` 속성 | **안 터진다** — 조용히 무시 |\n| JPQL | 실행할 때 — `SemanticException` |\n| **Data JPA 쿼리 메서드** | **뜰 때** |\n| **Querydsl** (8장) | **컴파일할 때** |\n\n**아래로 갈수록 일찍** 안다.\n\n> **`@Query` 의 JPQL 도 뜰 때 검증**된다. **문자열인데도 뜰 때 파싱**하기 때문이다.\n>\n> **네이티브 쿼리(`nativeQuery = true`)는 예외**다. **그것은 실행할 때** 안다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL (미리 보기)",
+   "sql": "# 인터페이스 하나\n\npublic interface ItemJpaRepository extends JpaRepository<Item, Long> {\n}\n\n# 구현 클래스를 안 썼는데\n\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\nrepository.findById(1L);\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.id=?\n\nrepository.findAll();\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n\nrepository.count();\n\n#   Hibernate: select count(i1_0.id) from item i1_0\n\nrepository.delete(item);\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n#   Hibernate: delete from item where id=?\n\n# 6장에서 손으로 쓴 것과 같은 SQL 이다\n\n# --- 주입된 것 ---\nlog.info(\"class={}\", repository.getClass());\n\n#   class=class jdk.proxy3.$Proxy110\n\n# --- 그 안의 타깃 ---\n#   org.springframework.data.jpa.repository.support.SimpleJpaRepository\n\n# --- 이름을 틀리면 ---\n\nList<Item> findByItemNmae(String itemName);\n\n#   PropertyReferenceException: No property 'itemNmae' found for type 'Item'\n#   (애플리케이션이 안 뜬다)",
+   "note": "**`delete` 에 `select` 가 먼저** 나갔다. **영속 상태로 만들어야 지울 수 있어서**다 — 6.6절의 그 이야기다.\n\n**`$Proxy110`** 이 5.7절의 `$Proxy67` 과 같은 종류다. **다만 안에 `SimpleJpaRepository` 라는 실제 구현**이 있다.\n\n**SQL 이 6장과 같다.** **당연하다 — 아래가 같은 `EntityManager`** 다.\n\n**맨 아래가 이 기술의 값어치**다. **오타로 애플리케이션이 안 뜬다.**\n\n**다음 절에서 기능을 본다.**"
+  }
+ ],
+ "recap": [
+  "**JPA 를 대체하지 않는다** — 그 위에 얹힌다.",
+  "**아래에 `EntityManager` 가 그대로** 있다.",
+  "**제네릭으로 반복되는 CRUD 를 없앤다.**",
+  "**`JpaRepository` 를 상속**하면 메서드가 생긴다.",
+  "**`SimpleJpaRepository` 가 실제 구현**이다 — MyBatis 와 다른 점.",
+  "**`save` 는 `isNew` 를 보고 `persist` 냐 `merge` 냐**를 고른다.",
+  "**쿼리는 기본 메서드 → `@Query` → 이름 파싱** 순으로 정해진다.",
+  "**메서드 이름 오타는 뜰 때** 터진다.",
+  "**네이티브 쿼리만 실행할 때** 안다."
+ ],
+ "drills": [
+  {
+   "task": "`JpaRepository` 를 상속한 인터페이스를 만든다.",
+   "done_when": "구현 없이 CRUD 가 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "주입된 객체의 클래스를 찍는다.",
+   "done_when": "프록시인 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "메서드 이름에 오타를 낸다.",
+   "done_when": "뜰 때 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`delete` 의 로그를 본다.",
+   "done_when": "`select` 가 먼저 나가는 이유를 설명했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스프링 데이터 JPA 는 JPA 를 대체하나?",
+   "a": "아니다. `EntityManager` 위에 얹힌 편의 계층이다."
+  },
+  {
+   "q": "MyBatis 프록시와 무엇이 다른가?",
+   "a": "뒤에 `SimpleJpaRepository` 라는 실제 구현이 있고, 쿼리를 찾는 것이 아니라 만든다."
+  },
+  {
+   "q": "`save` 는 무엇을 보고 동작을 고르나?",
+   "a": "`isNew` — id 가 `null` 이면 `persist`, 아니면 `merge` 다."
+  },
+  {
+   "q": "쿼리가 정해지는 순서는?",
+   "a": "기본 메서드 → `@Query` → 메서드 이름 파싱 → 실패."
+  },
+  {
+   "q": "메서드 이름 오타는 언제 드러나나?",
+   "a": "애플리케이션이 뜰 때다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

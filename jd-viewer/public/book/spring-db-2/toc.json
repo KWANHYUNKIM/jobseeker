@@ -415,7 +415,7 @@
           "title": "지연 로딩과 N+1",
           "summary": "나가는 SQL 을 봐야 하는 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -423,7 +423,7 @@
           "title": "정리",
           "summary": "편해진 만큼 봐야 할 것이 늘었다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -438,7 +438,7 @@
           "title": "소개",
           "summary": "무엇을 대신해 주나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",

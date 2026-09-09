@@ -1,0 +1,152 @@
+{
+ "book": "spring-db-2",
+ "id": "jpa-summary",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "정리",
+ "summary": "편해진 만큼 봐야 할 것이 늘었다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "6장에서 푼 것과 남은 것을 센다.",
+  "새로 생긴 부담을 센다.",
+  "JPA 를 언제 쓸지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**세 번째 기술이 끝났다.** **3.9절과 5.8절의 목록**을 다시 꺼낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "3.3절의 문제 다섯",
+   "ascii": "   3.3 problems                    jpa\n   ------------                    ---\n   string concatenation            still  (jpql)\n   spacing / and                   still\n   compiler checks nothing         better (field names checked at runtime)\n   2^n cases                       still\n   object <-> row by hand          GONE   (mapping written once)\n\n   one of five. the one mybatis could not do.",
+   "note": "**MyBatis 가 못 푼 하나를 풀었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "매핑을 한 번만 쓴다는 것",
+   "md": "**5.6절의 `resultMap` 과 비교**한다.\n\n```xml\n<!-- MyBatis: 조인할 때마다 -->\n<resultMap id=\"itemWithCategory\" type=\"Item\">\n    <id property=\"id\" column=\"id\"/>\n    <association property=\"category\" javaType=\"Category\">\n        <id property=\"id\" column=\"c_id\"/>\n        <result property=\"name\" column=\"c_name\"/>\n    </association>\n</resultMap>\n```\n\n```java\n// JPA: 한 번\n@ManyToOne(fetch = FetchType.LAZY)\n@JoinColumn(name = \"category_id\")\nprivate Category category;\n```\n\n**MyBatis 는 쿼리마다 매핑**을 쓴다. **JPA 는 엔티티에 한 번** 쓴다.\n\n**테이블이 다섯 개 얽히면 차이가 크다.**\n\n| | 조회 쿼리 10개 |\n|---|---|\n| MyBatis | **`resultMap` 10개** |\n| JPA | **매핑 1벌** |\n\n> **그리고 `item.getCategory().getName()`** 이 그냥 된다. **객체 그래프를 따라간다** — **5.8절에서 \"6장이 노리는 것\" 이라고 한 그것**이다.\n\n**대가는 6.7절에서 봤다.** **그 `.getCategory()` 하나가 쿼리를 100번** 날릴 수 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "새로 생긴 부담",
+   "ascii": "   what jpa added to the list of things to watch\n\n   when does the sql go out        6.6\n   how many queries went out       6.7\n   is there a transaction          6.6\n   is the context still open       6.7\n   did the domain change           6.2\n\n   3장 had none of these",
+   "note": "**3장에는 하나도 없던 것**이다."
+  },
+  {
+   "type": "compare",
+   "caption": "얻은 것과 낸 값",
+   "left": {
+    "title": "얻은 것",
+    "points": [
+     "**리포지토리에 SQL 이 없다**",
+     "**변경 감지** — `update` 를 안 쓴다",
+     "**매핑을 한 번** 해 둔다",
+     "**객체 그래프를 따라간다**",
+     "**방언이 SQL 을 만든다** — DB 이식성",
+     "1차 캐시 — 같은 것을 두 번 안 읽는다"
+    ]
+   },
+   "right": {
+    "title": "낸 값",
+    "points": [
+     "**도메인에 `@Entity`**",
+     "**`@Transactional` 이 필수**",
+     "**SQL 시점을 봐야** 안다",
+     "**N+1 을 늘 의식**해야 한다",
+     "**동적 쿼리는 그대로**",
+     "학습할 것이 많다 — 1권 열두 장"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "\"JPA 를 쓰면 SQL 을 몰라도 되나\"",
+   "md": "**반대다.** **더 알아야** 한다.\n\n**3장에서는 SQL 을 내가 썼다.** **틀리면 내 SQL 이 틀린 것**이다.\n\n**6장에서는 SQL 을 하이버네이트가 쓴다.** **내가 그것을 읽고 판단**해야 한다.\n\n| 질문 | 3장 | 6장 |\n|---|---|---|\n| 이 SQL 이 맞나 | 내가 썼으니 안다 | **읽어서 판단** |\n| 왜 이 SQL 이 나갔나 | 그 줄에 있다 | **매핑·설정·시점을 추적** |\n| 몇 개가 나갔나 | 센 대로 | **로그를 세어 본다** |\n\n> **그래서 이 책의 모든 절이 나간 SQL 로 끝난다.** **6장부터는 그 규칙이 선택이 아니라 필수**가 된다.\n\n**SQL 을 안 쓰는 것과 SQL 을 모르는 것은 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "언제 JPA 인가",
+   "md": "| 상황 | |\n|---|---|\n| **CRUD 가 대부분** | ✅ 코드가 급격히 준다 |\n| **도메인 모델이 중요** | ✅ 객체로 사고한다 |\n| **테이블이 많다** | ✅ 매핑 한 번 |\n| **여러 DB 를 지원** | ✅ 방언 |\n| **복잡한 통계·집계** | ❌ JdbcTemplate 이 낫다 |\n| **대량 배치** | ❌ 컨텍스트가 짐이다 |\n| **레거시 스키마** | ❌ 매핑이 안 맞는다 |\n| **팀이 SQL 중심** | ❌ 학습 비용 |\n\n**아래 넷이 3.9절·5.8절에서 \"JdbcTemplate·MyBatis 가 나은 때\"** 로 적은 것과 같다.\n\n> **9장에서 이 표들을 합친다.** **하나를 고르는 문제가 아니다.**\n\n**남은 문제 넷 중 셋이 동적 쿼리**다. **7장은 그것을 안 푼다** — **8장이 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 6장이 만든 SQL 전부\n\n# save\n#   insert into item (item_name,price,quantity) values (?,?,?)\n\n# update  (아무도 안 썼다)\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#     from item i1_0 where i1_0.id=?\n#   update item set item_name=?,price=?,quantity=? where id=?\n\n# findById\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#     from item i1_0 where i1_0.id=?\n#   (또는 SQL 없음 - 1차 캐시)\n\n# findAll x4\n#   select i1_0.id, ... from item i1_0\n#   select ... where i1_0.item_name like ? escape ''\n#   select ... where i1_0.price<=?\n#   select ... where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# --- 세 기술의 목록을 나란히 ---\n\n#   3장  7개\n#   5장  7개\n#   6장  8개  (update 앞의 select 가 늘었다)\n#             그리고 0개가 되기도 한다 (캐시)\n\n# --- 자바 코드 ---\n#   3장  96줄\n#   5장  20줄 + XML 35줄\n#   6장  50줄, SQL 문자열 4개(JPQL)\n\n# --- 7장 미리 보기 ---\n\npublic interface ItemRepository extends JpaRepository<Item, Long> {\n}\n\nrepository.save(item);\nrepository.findById(1L);\n\n#   insert into item (item_name,price,quantity) values (?,?,?)\n#   select i1_0.id, ... from item i1_0 where i1_0.id=?\n\n# 구현 클래스가 아예 없다",
+   "note": "**6장의 목록이 여덟**이다. **`update` 앞에 `select` 가 하나 늘었다** — 변경 감지가 원본을 읽어야 하니까.\n\n**그리고 0개가 되기도 한다.** **3장·5장에서는 있을 수 없던 일**이다.\n\n**맨 아래가 다음 장**이다. **인터페이스 하나에 메서드가 없는데 저장과 조회가 된다.**\n\n> **5.7절에서 본 MyBatis 프록시**가 \"이름으로 SQL 을 찾았다\" 면, **7장은 \"이름으로 SQL 을 만든다\".**"
+  }
+ ],
+ "recap": [
+  "**3.3절의 문제 다섯 중 하나**를 풀었다 — 손 매핑.",
+  "**MyBatis 가 못 푼 그 하나**다.",
+  "**매핑을 엔티티에 한 번** 쓴다 — 쿼리마다가 아니다.",
+  "**객체 그래프를 따라간다** — 대가는 N+1.",
+  "**봐야 할 것이 다섯 늘었다** — 시점·개수·트랜잭션·컨텍스트·도메인 변경.",
+  "**JPA 를 쓰면 SQL 을 더 알아야** 한다.",
+  "**CRUD·도메인 모델·다중 DB 에 맞고**, 통계·배치·레거시에는 안 맞는다.",
+  "**SQL 이 여덟 개, 0개가 되기도** 한다.",
+  "**남은 문제 셋이 동적 쿼리** — 7장이 아니라 8장이 푼다."
+ ],
+ "drills": [
+  {
+   "task": "세 기술의 SQL 목록을 나란히 적는다.",
+   "done_when": "6장만 여덟인 이유를 설명했다.",
+   "minutes": 15
+  },
+  {
+   "task": "6장이 새로 요구하는 것 다섯을 적는다.",
+   "done_when": "3장에는 없던 것임을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 프로젝트에 JPA 가 맞는지 표로 판단해 본다.",
+   "done_when": "맞는 항목과 안 맞는 항목을 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "6장의 리포지토리 줄 수를 3장·5장과 비교한다.",
+   "done_when": "무엇이 줄고 무엇이 안 줄었는지 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JPA 가 푼 문제는?",
+   "a": "객체와 행의 매핑이다. 엔티티에 한 번 쓰면 된다."
+  },
+  {
+   "q": "MyBatis 와 비교해 매핑이 어떻게 다른가?",
+   "a": "MyBatis 는 쿼리마다 `resultMap` 을 쓰고 JPA 는 한 벌만 쓴다."
+  },
+  {
+   "q": "새로 봐야 할 것 다섯은?",
+   "a": "SQL 시점, 쿼리 개수, 트랜잭션 유무, 컨텍스트 개폐, 도메인 변경이다."
+  },
+  {
+   "q": "\"JPA 를 쓰면 SQL 을 몰라도 되나\"?",
+   "a": "반대다. 내가 안 쓴 SQL 을 읽고 판단해야 한다."
+  },
+  {
+   "q": "6장의 SQL 이 왜 여덟인가?",
+   "a": "변경 감지가 원본을 읽어야 해서 `update` 앞에 `select` 가 하나 는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
