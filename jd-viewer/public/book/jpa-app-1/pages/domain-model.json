@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "domain-model",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "도메인 모델",
+ "summary": "회원 · 주문 · 상품의 관계.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "엔티티 사이의 관계를 정한다.",
+  "방향과 다중성을 구분한다.",
+  "양방향을 어디까지 열지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**명사를 클래스로 놓고 선을** 긋는다. **아직 애너테이션은 안 붙인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "도메인 모델",
+   "ascii": "   Member  1 ------- * Order  1 ------- * OrderItem * ------- 1 Item\n                       |                                        |\n                       | 1                                      | *\n                       |                                        |\n                    Delivery                              Category\n                       1                                        *\n\n   Item is abstract:  Book / Album / Movie\n   Category has a parent Category (self reference)",
+   "note": "**여덟 클래스**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "관계를 하나씩",
+   "md": "| 관계 | 다중성 | 왜 |\n|---|---|---|\n| **회원 — 주문** | **1 : N** | 한 회원이 여러 번 주문 |\n| **주문 — 주문상품** | **1 : N** | 한 주문에 상품 여럿 |\n| **주문상품 — 상품** | **N : 1** | 같은 상품이 여러 주문에 |\n| **주문 — 배송** | **1 : 1** | 주문마다 배송 하나 |\n| **상품 — 카테고리** | **N : M** | 3.7절 |\n| **카테고리 — 카테고리** | **1 : N** | 자기 참조 |\n\n**주문상품이 왜 있나.**\n\n**주문과 상품을 바로 잇지 않는다.**\n\n```\nOrder  *------* Item      (이러면 안 된다)\n```\n\n**중간에 담을 것이 있어서**다.\n\n| `OrderItem` 이 가진 것 | |\n|---|---|\n| **`orderPrice`** | **주문 시점의 가격** — 1.3절 |\n| **`count`** | 수량 |\n\n> **다대다에 값이 붙으면 엔티티로 풀어야** 한다. **연결 테이블에 컬럼이 필요하면 그것은 이미 엔티티**다.\n>\n> **3.7절의 카테고리가 반례**다 — 거기는 값이 없어서 다대다로 둘 수 있는데, **그래도 안 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "방향은 자바의 문제다",
+   "ascii": "   an association in java has a direction\n\n   order.getMember()        one way\n   member.getOrders()       the other way\n   both                     bidirectional\n\n   a foreign key has none\n     orders.member_id       that is all the db knows\n\n   so 'who owns it' is a java question, not a db one",
+   "note": "**DB 는 외래 키 하나만** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "양방향을 어디까지 여나",
+   "md": "**양방향은 공짜가 아니다.**\n\n| 대가 | |\n|---|---|\n| **연관 관계 편의 메서드** 가 필요하다 | 양쪽을 맞춰야 |\n| **`toString`·`equals` 가 위험** | 2.1절 |\n| **JSON 직렬화가 무한 재귀** | 다음 권 |\n| **어느 쪽이 주인인지** 기억해야 | 3.6절 |\n\n**필요할 때만** 연다.\n\n| 관계 | 방향 | 왜 |\n|---|---|---|\n| 주문 → 회원 | **단방향으로 충분** | 주문에서 회원을 본다 |\n| 회원 → 주문 | **양방향** | **9장에서 확인용** |\n| 주문 ↔ 주문상품 | **양방향** | **`cascade` 와 편의 메서드** |\n| 주문 ↔ 배송 | **양방향** | 배송에서 주문 상태를 본다 |\n| 주문상품 → 상품 | **단방향** | 상품이 주문을 알 이유가 없다 |\n\n**다섯 번째가 중요**하다.\n\n```java\n// Item 에 이런 것을 안 만든다\n@OneToMany(mappedBy = \"item\")\nprivate List<OrderItem> orderItems;\n```\n\n**상품 하나가 주문상품 백만 개**를 가질 수 있다. **`item.getOrderItems()` 를 부르면 백만 건이** 온다.\n\n> **컬렉션이 커질 수 있는 쪽은 양방향을 안 연다.** **필요하면 리포지토리에서 조회**한다.\n>\n> **9.7절에서 이 판단을 다시** 본다.\n\n**회원 → 주문도 사실 같은 문제**다. **이 책은 예제라 열어 두고, 9장에서 그 대가를 본다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "연관 관계 편의 메서드",
+   "md": "**양방향이면 양쪽을 맞춰야** 한다.\n\n```java\n// 이러면 한쪽만 채워진다\norder.setMember(member);\n// member.getOrders() 는 비어 있다\n```\n\n**한 곳에서 둘 다** 한다.\n\n```java\npublic class Order {\n    public void setMember(Member member) {\n        this.member = member;\n        member.getOrders().add(this);\n    }\n}\n```\n\n**어느 쪽에 두나.** **주로 쓰는 쪽**이다.\n\n| 관계 | 편의 메서드 위치 |\n|---|---|\n| 주문 — 회원 | **`Order`** |\n| 주문 — 주문상품 | **`Order`** |\n| 주문 — 배송 | **`Order`** |\n\n**전부 `Order` 다.** **주문을 만들 때 셋을 다 잇기** 때문이다 — 7.3절.\n\n> **DB 만 보면 필요 없는 코드**다. **외래 키 하나만 맞으면 되니까.**\n>\n> **그런데 트랜잭션 안에서는 1차 캐시의 객체를 그대로** 쓴다. **한쪽만 채우면 그 트랜잭션 안에서 반대쪽이 비어** 보인다.\n>\n> **커밋하고 다시 조회하면 맞다.** **그래서 더 헷갈린다** — **테스트에서만 실패하고 화면에서는 되는 것처럼** 보인다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 모델이 만들 DDL (예상)",
+   "sql": "# --- 아직 애너테이션을 안 붙였다 ---\n\n#   (DDL 없음)\n\n# --- 이 모델이 만들 테이블 ---\n\n#   member       회원\n#   orders       주문        (order 는 예약어라 orders)\n#   order_item   주문상품\n#   item         상품 (book/album/movie 가 여기 다 들어간다)\n#   delivery     배송\n#   category     카테고리\n#   category_item 카테고리-상품 연결\n\n#   테이블 일곱, 엔티티 여덟\n\n#   엔티티가 하나 더 많은 이유\n#     Book, Album, Movie 가 item 한 테이블에 들어간다  (3.5절)\n#     Address 는 테이블이 없다                        (3.4절)\n#     category_item 은 엔티티가 없다                  (3.7절)\n\n#   여덟 - 3 + 1 - 1 + 1 = 계산이 안 맞는다\n#   정확히는\n#     엔티티 클래스 9개 (Member Order OrderItem Item Book Album Movie\n#                       Delivery Category)\n#     값 타입 1개 (Address)\n#     테이블 7개\n\n# --- 외래 키가 어디에 생기나 ---\n\n#   orders.member_id      -> member\n#   orders.delivery_id    -> delivery   (unique)\n#   order_item.order_id   -> orders\n#   order_item.item_id    -> item\n#   category.parent_id    -> category   (자기 참조)\n#   category_item.category_id, item_id\n\n#   외래 키는 항상 N 쪽에 생긴다\n#   1:1 은 둘 중 하나를 고른다 (3.6절)\n\n# --- 자바의 방향은 DDL 에 안 나타난다 ---\n\n#   member.getOrders() 를 만들든 말든\n#   orders.member_id 는 똑같다\n\n#   방향은 자바에서만 보인다\n\n# --- 다음 절에서 ---\n\n#   이 모델을 테이블로 옮긴다\n#   그다음 3.4절부터 애너테이션을 붙인다",
+   "note": "**엔티티 클래스 아홉, 값 타입 하나, 테이블 일곱**이다. **숫자가 안 맞는 이유가 이 장의 내용** 전부다.\n\n**`order` 가 예약어**라 `orders` 다. **「DB 2편」 4.7절에서 예약어 이야기**를 했는데, **여기서 진짜로** 만난다.\n\n**외래 키는 항상 N 쪽**에 생긴다. **1:1 만 고를 수 있다** — 3.6절.\n\n**맨 아래가 이 절의 요점**이다. **`member.getOrders()` 를 만들든 말든 DDL 이 같다.** **양방향은 순전히 자바 편의**다.\n\n**다음 절에서 테이블로 옮긴다.**"
+  }
+ ],
+ "recap": [
+  "**엔티티 클래스 아홉, 값 타입 하나, 테이블 일곱**이다.",
+  "**주문과 상품 사이에 주문상품**을 둔다 — 값이 붙어서.",
+  "**연결 테이블에 컬럼이 필요하면 그것은 엔티티**다.",
+  "**방향은 자바의 문제**다 — DB 는 외래 키 하나만 안다.",
+  "**양방향은 공짜가 아니다** — 편의 메서드·`toString`·주인 기억.",
+  "**컬렉션이 커질 수 있는 쪽은 양방향을 안 연다.**",
+  "**편의 메서드는 주로 쓰는 쪽**에 둔다 — 여기서는 전부 `Order`.",
+  "**한쪽만 채우면 그 트랜잭션 안에서만** 틀리게 보인다.",
+  "**`order` 는 예약어**라 `orders` 다."
+ ],
+ "drills": [
+  {
+   "task": "도메인 모델을 종이에 그린다.",
+   "done_when": "다중성과 방향을 표시했다.",
+   "minutes": 25
+  },
+  {
+   "task": "양방향을 열 곳과 안 열 곳을 정한다.",
+   "done_when": "각각 이유를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Item` 에 `orderItems` 를 열면 무슨 일이 생길지 적어 본다.",
+   "done_when": "컬렉션 크기 문제를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "편의 메서드를 한쪽만 채우고 테스트해 본다.",
+   "done_when": "같은 트랜잭션에서만 틀리는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "주문과 상품을 왜 바로 안 잇나?",
+   "a": "주문 시점 가격과 수량을 담을 곳이 필요해서 `OrderItem` 을 둔다."
+  },
+  {
+   "q": "방향이 DB 에 나타나나?",
+   "a": "안 나타난다. DB 는 외래 키 하나만 안다."
+  },
+  {
+   "q": "양방향의 대가 넷은?",
+   "a": "편의 메서드, `toString`/`equals` 위험, JSON 무한 재귀, 주인을 기억해야 하는 것이다."
+  },
+  {
+   "q": "`Item` 에 `orderItems` 를 왜 안 만드나?",
+   "a": "상품 하나에 주문상품이 백만 개일 수 있어서다."
+  },
+  {
+   "q": "편의 메서드를 한쪽만 채우면?",
+   "a": "같은 트랜잭션 안에서만 반대쪽이 비어 보인다. 커밋 후 조회하면 맞다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

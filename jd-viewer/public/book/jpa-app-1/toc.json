@@ -153,7 +153,7 @@
           "title": "요구사항 분석",
           "summary": "화면에서 기능을 뽑는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -161,7 +161,7 @@
           "title": "도메인 모델",
           "summary": "회원 · 주문 · 상품의 관계.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -169,7 +169,7 @@
           "title": "테이블 설계",
           "summary": "객체 모델을 테이블로 옮긴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

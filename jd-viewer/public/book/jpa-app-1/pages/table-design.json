@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "table-design",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "테이블 설계",
+ "summary": "객체 모델을 테이블로 옮긴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "테이블 구조를 정한다.",
+  "객체와 테이블의 차이를 본다.",
+  "제약 조건을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절의 클래스를 테이블로** 옮긴다. **여기서 차이가 드러난다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "테이블 일곱",
+   "ascii": "   member          member_id  name  city  street  zipcode\n\n   delivery        delivery_id  city  street  zipcode  status\n\n   orders          order_id  member_id  delivery_id\n                   order_date  status\n\n   order_item      order_item_id  order_id  item_id\n                   order_price  count\n\n   item            item_id  dtype  name  price  stock_quantity\n                   author  isbn  artist  etc  director  actor\n\n   category        category_id  parent_id  name\n   category_item   category_id  item_id",
+   "note": "**`item` 한 테이블에 컬럼 열둘**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "객체와 테이블이 어긋나는 자리",
+   "ascii": "   object                    table\n   ------                    -----\n   Address (a class)         three columns, twice\n   Book / Album / Movie      one table with a dtype column\n   List<Order> orders        nothing at all\n   Order.member (a ref)      member_id, a number\n\n   these four gaps are what jpa spends its time on",
+   "note": "**이 넷이 JPA 가 하는 일**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "네 가지 어긋남",
+   "md": "**① 값 타입은 테이블이 없다**\n\n```java\nclass Address { String city, street, zipcode; }\n```\n\n**`member` 와 `delivery` 에 각각 세 컬럼**이 붙는다. **`address` 테이블은 없다.**\n\n> **주소는 식별자가 없다.** **\"서울시 강남구\" 라는 주소 자체를 찾을 일이 없다.** **누구의 주소인지가 중요**하다.\n>\n> **3.4절에서 `@Embedded`** 로 푼다.\n\n**② 상속은 테이블이 하나거나 셋이거나**\n\n**`Book`·`Album`·`Movie` 를 어떻게 저장하나.**\n\n| 전략 | 테이블 |\n|---|---|\n| **`SINGLE_TABLE`** | **하나** — `dtype` 으로 구분 |\n| `JOINED` | **넷** — `item` + 셋 |\n| `TABLE_PER_CLASS` | 셋 |\n\n**3.5절에서 고른다.**\n\n**③ 컬렉션은 테이블에 없다**\n\n```java\nclass Member { List<Order> orders; }\n```\n\n**`member` 테이블에 아무것도 안 생긴다.** **`orders.member_id` 가 그 역할**을 한다.\n\n> **3.2절 마지막에서 말한 것**이다. **자바의 방향은 DDL 에 안 나타난다.**\n\n**④ 참조가 외래 키가 된다**\n\n```java\nclass Order { Member member; }\n```\n\n**`orders.member_id bigint`** 다. **객체는 참조를 따라가고 DB 는 조인**한다.\n\n**이 넷을 메우는 것이 JPA 의 일**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "제약 조건",
+   "md": "**DDL 에 무엇을 넣을까.**\n\n| 제약 | 어디 | 왜 |\n|---|---|---|\n| **PK** | 전부 | 당연 |\n| **FK** | `orders`, `order_item`, `category` | 참조 무결성 |\n| **unique** | **`orders.delivery_id`** | **1:1** |\n| **unique** | `member.name` ? | **안 건다** |\n| **not null** | 거의 안 건다 | |\n| **check** | `status` | enum |\n\n**`member.name` 에 유니크를 안 거는 것**이 눈에 띈다.\n\n**요구사항은 \"같은 이름으로 두 번 가입할 수 없다\"** 였다.\n\n> **애플리케이션에서 검사**한다(5.3절). **그러면 동시 요청에 뚫린다.**\n>\n> **DB 유니크가 최후의 방어**인데 **이 책은 일부러 안 건다** — **5.3절에서 그 문제를 직접 보기** 위해서다.\n>\n> **실무에서는 건다.**\n\n**`not null` 도 거의 안 건다.** **`ddl-auto: create` 라 매번 새로 만드니 개발이 편한 쪽**으로 둔다.\n\n> **운영이면 다르다.** **9.8절에서 이 격차를 짚는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`SINGLE_TABLE` 의 대가를 미리",
+   "md": "**`item` 테이블을 다시** 본다.\n\n```\nitem_id  dtype  name  price  stock_quantity\n         author  isbn                       <- Book 만 쓴다\n         artist  etc                        <- Album 만\n         director  actor                    <- Movie 만\n```\n\n**책 한 권을 저장하면 `artist`·`etc`·`director`·`actor` 가 `null`** 이다.\n\n| 대가 | |\n|---|---|\n| **`null` 컬럼이 많다** | 공간과 가독성 |\n| **`not null` 을 못 건다** | **`author` 를 필수로 만들 수 없다** |\n| 테이블이 넓어진다 | 종류가 늘수록 |\n\n**두 번째가 진짜 대가**다. **책에는 저자가 반드시 있어야 하는데 DB 로 강제할 수 없다.**\n\n**대신 얻는 것**이 있다.\n\n| 이득 | |\n|---|---|\n| **조인이 없다** | 조회가 빠르다 |\n| **`dtype` 하나로 구분** | 단순하다 |\n| **다형성 조회가 쉽다** | `select from item` |\n\n> **3.5절에서 이 거래를 결정**하고, **6.5절에서 실제 SQL 을** 본다.\n>\n> **「JPA 기본편」 8장의 내용**인데, **거기서는 어느 것을 고를지 안 정했다.** **여기서는 정한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 테이블 설계가 만들 DDL (예상)",
+   "sql": "# --- 아직 애너테이션을 안 붙였다 ---\n\n#   (DDL 없음)\n\n# --- 3장이 끝나면 이렇게 나올 것이다 ---\n\ncreate table member (\n    member_id bigint not null,\n    city varchar(255),\n    street varchar(255),\n    zipcode varchar(255),\n    name varchar(255),\n    primary key (member_id)\n);\n\n#   Address 가 세 컬럼으로 풀렸다\n\ncreate table delivery (\n    delivery_id bigint not null,\n    city varchar(255),\n    street varchar(255),\n    zipcode varchar(255),\n    status varchar(255) check (status in ('READY','COMP')),\n    primary key (delivery_id)\n);\n\n#   같은 세 컬럼이 또 나왔다\n#   값 타입을 재사용한 결과다\n\ncreate table orders (\n    order_id bigint not null,\n    delivery_id bigint unique,\n    member_id bigint,\n    order_date timestamp(6),\n    status varchar(255) check (status in ('ORDER','CANCEL')),\n    primary key (order_id)\n);\n\n#   delivery_id 에 unique 가 붙었다  -> 1:1\n#   member_id 에는 안 붙었다        -> N:1\n\ncreate table order_item (\n    order_item_id bigint not null,\n    count integer not null,\n    order_price integer not null,\n    item_id bigint,\n    order_id bigint,\n    primary key (order_item_id)\n);\n\n#   order_price 가 item.price 와 별개다\n\ncreate table item (\n    dtype varchar(31) not null,\n    item_id bigint not null,\n    price integer not null,\n    stock_quantity integer not null,\n    artist varchar(255),\n    author varchar(255),\n    director varchar(255),\n    etc varchar(255),\n    isbn varchar(255),\n    actor varchar(255),\n    name varchar(255),\n    primary key (item_id)\n);\n\n#   컬럼 열하나. 세 종류가 다 들어갔다.\n#   author 에 not null 을 못 건다\n\ncreate table category (\n    category_id bigint not null,\n    name varchar(255),\n    parent_id bigint,\n    primary key (category_id)\n);\n\ncreate table category_item (\n    category_id bigint not null,\n    item_id bigint not null\n);\n\n#   category_item 에는 PK 가 없다\n#   @ManyToMany 가 만든 것이라 그렇다  (3.7절)\n\n# --- 외래 키 ---\n\nalter table orders add constraint FK_orders_member\n    foreign key (member_id) references member;\nalter table orders add constraint FK_orders_delivery\n    foreign key (delivery_id) references delivery;\n\n#   ...\n\n# --- 없는 제약 ---\n\n#   member.name 에 unique 가 없다   -> 5.3절에서 문제가 된다\n#   대부분의 컬럼에 not null 이 없다 -> 9.8절",
+   "note": "**`city`·`street`·`zipcode` 가 두 테이블에** 나온다. **값 타입을 재사용한 결과**다.\n\n**`orders.delivery_id` 에 `unique`, `member_id` 에는 없다.** **그 한 단어가 1:1 과 N:1 의 차이**다.\n\n**`item` 이 컬럼 열하나**다. **`SINGLE_TABLE` 의 모습**이다.\n\n**`category_item` 에 PK 가 없다.** **`@ManyToMany` 가 만든 테이블은 그렇다** — 3.7절에서 그것도 이유가 된다.\n\n**맨 아래 \"없는 제약\" 둘**이 나중에 문제가 된다.\n\n**다음 절부터 애너테이션을 붙인다.**"
+  }
+ ],
+ "recap": [
+  "**테이블 일곱**, `item` 이 컬럼 열하나다.",
+  "**객체와 테이블이 어긋나는 자리가 넷**이다.",
+  "**값 타입은 테이블이 없다** — 컬럼으로 풀린다.",
+  "**컬렉션은 테이블에 아무것도** 안 만든다.",
+  "**참조가 외래 키**가 된다.",
+  "**`orders.delivery_id` 에 `unique`** — 그것이 1:1 이다.",
+  "**`member.name` 에 유니크를 일부러 안 건다** — 5.3절에서 보려고.",
+  "**`SINGLE_TABLE` 은 `not null` 을 못 걸게** 한다.",
+  "**`category_item` 에 PK 가 없다.**"
+ ],
+ "drills": [
+  {
+   "task": "테이블 일곱 개를 종이에 그린다.",
+   "done_when": "컬럼과 외래 키를 표시했다.",
+   "minutes": 25
+  },
+  {
+   "task": "객체와 테이블이 어긋나는 자리 넷을 적는다.",
+   "done_when": "각각 JPA 가 어떻게 메우는지 붙였다.",
+   "minutes": 15
+  },
+  {
+   "task": "`SINGLE_TABLE` 의 이득과 대가를 표로 만든다.",
+   "done_when": "`not null` 문제를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`member.name` 에 유니크를 걸면 무엇이 달라질지 적어 본다.",
+   "done_when": "5.3절에서 확인할 것을 메모했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값 타입은 테이블이 생기나?",
+   "a": "안 생긴다. 쓰는 쪽 테이블에 컬럼으로 풀린다."
+  },
+  {
+   "q": "컬렉션은 테이블에 무엇을 만드나?",
+   "a": "아무것도 안 만든다. 반대쪽의 외래 키가 그 역할을 한다."
+  },
+  {
+   "q": "1:1 과 N:1 의 DDL 차이는?",
+   "a": "외래 키에 `unique` 가 붙느냐 아니냐다."
+  },
+  {
+   "q": "`SINGLE_TABLE` 의 가장 큰 대가는?",
+   "a": "하위 타입의 필수 필드에 `not null` 을 걸 수 없다."
+  },
+  {
+   "q": "`member.name` 에 유니크를 왜 안 거나?",
+   "a": "5.3절에서 애플리케이션 검증의 한계를 직접 보기 위해서다. 실무에서는 건다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
