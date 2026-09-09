@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-test",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "회원 기능 테스트",
+ "summary": "4장에서 배운 격리를 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "첫 서비스 테스트를 쓴다.",
+  "격리를 어떻게 얻는지 안다.",
+  "`flush` 를 언제 넣는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5~7장은 화면이 없다**(4.1절). **테스트가 확인 수단**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`MemberServiceTest`",
+   "code": "@SpringBootTest\n@Transactional\nclass MemberServiceTest {\n\n    @Autowired MemberService memberService;\n    @Autowired MemberRepository memberRepository;\n    @PersistenceContext EntityManager em;\n\n    @Test\n    void 회원가입() {\n        Member member = new Member();\n        member.setName(\"kim\");\n\n        Long saveId = memberService.join(member);\n\n        em.flush();\n        assertThat(memberRepository.findOne(saveId)).isEqualTo(member);\n    }\n\n    @Test\n    void 중복_회원_예외() {\n        Member member1 = new Member();\n        member1.setName(\"kim\");\n        Member member2 = new Member();\n        member2.setName(\"kim\");\n\n        memberService.join(member1);\n\n        assertThatThrownBy(() -> memberService.join(member2))\n                .isInstanceOf(IllegalStateException.class)\n                .hasMessage(\"이미 존재하는 회원입니다.\");\n    }\n}",
+   "note": "**`@Transactional` 이 클래스에** 있다. **「DB 2편」 4.4절의 격리**다.\n\n**`assertThat(...).isEqualTo(member)`** 가 통과한다. **1차 캐시라 같은 인스턴스**다(5.1절).\n\n> **`isEqualTo` 가 `equals` 를** 부른다. **`Member` 에 `equals` 가 없으니 `Object.equals`, 즉 `==`** 다.\n>\n> **3.8절에서 `@EqualsAndHashCode` 를 안 쓰기로** 했다. **그래서 동일성 비교**가 된다.\n\n**`assertThatThrownBy`** 로 예외를 검증한다. **`try-catch` 를 안 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "테스트의 모양",
+   "ascii": "   @SpringBootTest\n   @Transactional\n   class MemberServiceTest\n\n     회원가입           join then find, compare\n     중복회원예외        join twice, expect the exception\n\n   the class annotation gives isolation for free\n   rollback at the end, nothing to clean",
+   "note": "**격리가 공짜**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 `flush` 를 넣나",
+   "md": "**「DB 2편」 4.4절에서 배운 대로 롤백**된다. **`insert` 가 안 나간다.**\n\n**이 책은 매 절이 나간 SQL 로 끝난다**(1.1절). **`insert` 를 봐야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "`flush` 유무",
+   "ascii": "   without flush\n     select (validate)\n     select next value\n     assert\n     rollback\n     -> no insert in the log\n\n   with flush\n     select (validate)\n     select next value\n     insert                <- this is what we came to see\n     assert\n     rollback",
+   "note": "**`insert` 를 보려고 부른다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실무 테스트에는 안 넣는다",
+   "md": "**`flush` 는 로그를 보려는 목적**이다. **검증에는 필요 없다.**\n\n```java\n// 검증만 하면 이걸로 충분하다\nLong saveId = memberService.join(member);\nassertThat(memberRepository.findOne(saveId)).isEqualTo(member);\n```\n\n**1차 캐시에서 오니 `insert` 없이도 통과**한다.\n\n**그런데 그것이 문제이기도** 하다.\n\n> **\"DB 에 제대로 들어갔나\" 는 검증이 아니다**(「DB 2편」 6.3절).\n>\n> **컬럼 길이를 넘겼거나 `not null` 을 어겼으면** **커밋 시점에 터지는데**, **테스트는 통과**한다.\n\n**진짜 저장을 검증하려면**\n\n```java\nem.flush();\nem.clear();                                    // 캐시를 비운다\nMember found = memberRepository.findOne(saveId);\nassertThat(found.getName()).isEqualTo(\"kim\");  // DB 에서 읽었다\n```\n\n**`clear` 까지** 해야 한다. **그러면 `found != member`** 다.\n\n| | 검증하는 것 |\n|---|---|\n| 아무것도 안 함 | 값이 맞다 |\n| **`flush`** | **SQL 이 나간다** |\n| **`flush` + `clear`** | **DB 에서 읽어도 맞다** |\n\n> **이 책은 `flush` 까지**만 한다. **로그가 목적**이고, **`clear` 를 넣으면 `isEqualTo(member)` 가 깨진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "테스트 DB",
+   "md": "**2.4절에서 만들어 뒀다.**\n\n```yaml\n# src/test/resources/application.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:testdb\n```\n\n**메모리 DB** 라 **테스트가 끝나면 사라진다.**\n\n**사실 이 파일이 없어도** 된다. **`url` 을 지우면 부트가 임베디드를** 잡는다(「DB 2편」 4.6절).\n\n> **명시하는 편**이 낫다. **`main` 을 고쳤을 때 테스트가 조용히 따라가는 것**을 막는다.\n\n**`ddl-auto: create`** 라 **테스트 실행마다 테이블이 새로** 만들어진다.\n\n```\nHibernate: drop table if exists member cascade\nHibernate: create table member (...)\n```\n\n**테스트 로그 맨 위에 DDL 이 스물일곱 줄**이다. **처음에는 놀란다.**\n\n> **`show-sql` 을 끄고 필요할 때만 켜는 것**도 방법이다. **이 책은 켜 둔다** — DDL 도 보여 줄 것 중 하나다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 회원가입 테스트 ---\n\n#   (테스트 컨텍스트가 뜰 때)\n#   Hibernate: drop table if exists member cascade\n#   ... (DDL 27줄)\n#   Hibernate: create table member (...)\n\n#   Started MemberServiceTest in 2.412 seconds\n\n#   Begin transaction for test context\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n\n#   (memberService.join)\n#   Getting transaction for [MemberService.join]\n#   Participating in existing transaction\n\n#   테스트의 트랜잭션에 참여했다 (「DB 2편」 11.3절)\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.name=?\n#   binding parameter [1] as [VARCHAR] - [kim]\n#   -> 0 rows\n\n#   Hibernate: \n#       select next value for member_seq\n\n#   Completing transaction for [MemberService.join]\n\n#   (커밋 안 한다. 참여한 트랜잭션이라.)\n\n#   (em.flush)\n#   Hibernate: \n#       insert into member (city, street, zipcode, name, member_id)\n#       values (?, ?, ?, ?, ?)\n#   binding parameter [4] as [VARCHAR] - [kim]\n#   binding parameter [5] as [BIGINT] - [1]\n\n#   (memberRepository.findOne)\n#   (SQL 없음 - 1차 캐시)\n\n#   PASSED\n\n#   Rolled back transaction for test\n\n#   (delete 가 없다. 「DB 2편」 4.4절.)\n\n# --- flush 를 빼면 ---\n\n#   Hibernate: select ... where m1_0.name=?\n#   Hibernate: select next value for member_seq\n#   PASSED\n#   Rolled back transaction for test\n\n#   (insert 가 없다)\n\n#   테스트는 통과했는데 SQL 을 못 봤다\n\n# --- flush + clear 를 넣으면 ---\n\nem.flush();\nem.clear();\nMember found = memberRepository.findOne(saveId);\n\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: \n#       select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n\n#   이번엔 select 가 나갔다\n\nassertThat(found).isEqualTo(member);\n#   FAILED\n#   expected: Member@1a2b3c\n#   but was:  Member@4d5e6f\n\n#   캐시를 비웠으니 다른 인스턴스다\n\n# --- 중복 회원 예외 테스트 ---\n\n#   Hibernate: select ... where m1_0.name=?    -> 0 rows\n#   Hibernate: select next value for member_seq\n\n#   Hibernate: select ... where m1_0.name=?    -> 0 rows\n\n#   두 번째도 0건이다\n\n#   첫 번째 insert 가 아직 안 나갔기 때문이다\n\n#   IllegalStateException: 이미 존재하는 회원입니다.\n#   PASSED\n\n#   잠깐 - DB 에 없는데 어떻게 막았나?\n\n#   JPQL 실행 전에 flush 가 나갔어야 하는데\n#   0 rows 로 보인다\n\n# --- 실제로는 이렇다 ---\n\n#   Hibernate: select ... where m1_0.name=?    -> 0 rows\n#   Hibernate: select next value for member_seq\n\n#   (두 번째 join)\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#     <- JPQL 전 flush\n#   Hibernate: select ... where m1_0.name=?    -> 1 row\n\n#   IllegalStateException\n\n#   flush 가 자동으로 먼저 나갔다 (5.1절)\n#   그래서 막혔다",
+   "note": "**`Participating in existing transaction`** — **서비스가 테스트의 트랜잭션에 참여**했다(「DB 2편」 11.3절). **커밋을 안 한다.**\n\n**`flush` 를 빼면 `insert` 를 못 본다.** **테스트는 통과**한다.\n\n**`clear` 까지 넣으면 `isEqualTo` 가 깨진다.** **다른 인스턴스**니까.\n\n**맨 아래가 중복 검증이 도는 이유**다. **JPQL 실행 전 자동 flush** 덕에 두 번째 `select` 가 1건을 본다 — 5.1절에서 본 규칙이 여기서 값을 한다.\n\n**다음 절에서 `readOnly` 를 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**클래스에 `@Transactional`** — 격리가 공짜다.",
+  "**서비스가 테스트의 트랜잭션에 참여**한다.",
+  "**`isEqualTo` 가 통과하는 것은 1차 캐시** 덕이다.",
+  "**`flush` 는 로그를 보려고** 넣는다 — 검증에는 필요 없다.",
+  "**`flush` 없이는 `insert` 를 못 본다.**",
+  "**`clear` 까지 넣으면 다른 인스턴스**가 온다.",
+  "**\"DB 에 제대로 들어갔나\" 는 `flush` + `clear`** 로 검증한다.",
+  "**테스트 DB 는 메모리**다 — 매번 DDL 이 나온다.",
+  "**중복 검증은 JPQL 전 자동 flush** 덕에 동작한다."
+ ],
+ "drills": [
+  {
+   "task": "`MemberServiceTest` 를 만들고 돌린다.",
+   "done_when": "`Rolled back` 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`flush` 를 넣고 빼며 로그를 비교한다.",
+   "done_when": "`insert` 유무를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`clear` 를 추가한다.",
+   "done_when": "`isEqualTo` 가 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "중복 테스트의 로그에서 flush 위치를 찾는다.",
+   "done_when": "두 번째 `select` 앞에 `insert` 가 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트에 `@Transactional` 을 붙이면?",
+   "a": "끝날 때 롤백되어 격리가 공짜로 얻어진다."
+  },
+  {
+   "q": "서비스의 트랜잭션은 어떻게 되나?",
+   "a": "테스트의 것에 참여한다. 커밋하지 않는다."
+  },
+  {
+   "q": "`flush` 를 왜 넣나?",
+   "a": "롤백되는 테스트에서 `insert` SQL 을 로그로 보기 위해서다."
+  },
+  {
+   "q": "`clear` 까지 넣으면?",
+   "a": "캐시가 비워져 다른 인스턴스가 오고 동일성 비교가 깨진다."
+  },
+  {
+   "q": "중복 검증이 왜 동작하나?",
+   "a": "JPQL 실행 전에 자동 flush 가 일어나 앞의 `insert` 가 먼저 나가기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

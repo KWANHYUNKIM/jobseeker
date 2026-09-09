@@ -287,7 +287,7 @@
           "title": "중복 회원 검증",
           "summary": "동시에 가입하면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -295,7 +295,7 @@
           "title": "회원 기능 테스트",
           "summary": "4장에서 배운 격리를 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",

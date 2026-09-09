@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-duplicate",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "중복 회원 검증",
+ "summary": "동시에 가입하면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "애플리케이션 검증의 한계를 본다.",
+  "경합을 재현한다.",
+  "DB 제약이 왜 필요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절에서 중복 가입을 막았다.** **순서대로 부르면** 막힌다. **동시에 들어오면 어떻게 되나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "둘 다 통과한다",
+   "ascii": "   time    thread A                  thread B\n   ----    --------                  --------\n    1      select where name='kim'\n    2      -> 0 rows                 select where name='kim'\n    3                                -> 0 rows\n    4      insert kim\n    5      commit                    insert kim\n    6                                commit\n\n   both saw an empty result. both inserted.",
+   "note": "**둘 다 빈 결과를 봤다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 못 막나",
+   "md": "**`select` 와 `insert` 사이에 틈**이 있다.\n\n```java\nprivate void validateDuplicateMember(Member member) {\n    List<Member> found = memberRepository.findByName(member.getName());\n    if (!found.isEmpty()) {                    // <- 여기와\n        throw new IllegalStateException(\"...\");\n    }\n}\n// ...\nmemberRepository.save(member);                 // <- 여기 사이\n```\n\n**그 틈에 다른 트랜잭션이 커밋**하면 못 본다.\n\n**격리 수준 때문**이다.\n\n| 격리 수준 | A 가 B 의 미커밋 insert 를 |\n|---|---|\n| `READ_UNCOMMITTED` | 본다 |\n| **`READ_COMMITTED`** (기본) | **못 본다** |\n| `REPEATABLE_READ` | 못 본다 |\n| `SERIALIZABLE` | **막는다** |\n\n> **「DB 1편」 3.4절의 표**다. **여기서 그것이 실제 문제**가 된다.\n\n**`SERIALIZABLE` 로 올리면 막히는데** 대가가 크다(「DB 2편」 10.8절). **가입 하나 때문에 전체를 느리게** 할 수 없다.\n\n**3.3절에서 유니크 제약을 일부러 안 걸었다.** **이 문제를 보려고**였다."
+  },
+  {
+   "type": "figure",
+   "caption": "진짜로 막는 방법",
+   "ascii": "   ways to actually prevent it\n\n   1  unique constraint on member.name    the db refuses the second\n   2  SERIALIZABLE isolation              slow, deadlock prone\n   3  a lock table row                    manual, awkward\n   4  application only                    what we have; not enough\n\n   1 is the answer. the check stays for the message.",
+   "note": "**1번이 답**이고 검증은 메시지용으로 남는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "유니크 제약을 걸면",
+   "code": "@Entity\n@Table(name = \"member\",\n       uniqueConstraints = @UniqueConstraint(\n           name = \"UK_member_name\",\n           columnNames = {\"name\"}))\npublic class Member { ... }",
+   "note": "**DDL 에 유니크가 붙는다.**\n\n```sql\nalter table member add constraint UK_member_name unique (name)\n```\n\n**두 번째 `insert` 가 거부**된다.\n\n```\nUnique index or primary key violation:\n  \"PUBLIC.UK_MEMBER_NAME_INDEX_8 ON PUBLIC.MEMBER(NAME)\"\n```\n\n**스프링이 `DataIntegrityViolationException`** 으로 바꾼다(「DB 2편」 6.5절).\n\n**그러면 검증 코드를 지우나.** **안 지운다.**\n\n| | 애플리케이션 검증 | DB 제약 |\n|---|---|---|\n| **메시지** | **\"이미 존재하는 회원입니다\"** | 스택 트레이스 |\n| **막는가** | 대부분 | **항상** |\n| **비용** | `select` 하나 | 없음 |\n\n> **검증은 사용자에게 말하려고**, **제약은 실제로 막으려고** 둔다. **둘 다 있어야** 한다.\n>\n> **예외를 잡아서 메시지로 바꾸는 것**도 방법이다.\n>\n> ```java\n> try {\n>     memberRepository.save(member);\n> } catch (DataIntegrityViolationException e) {\n>     throw new IllegalStateException(\"이미 존재하는 회원입니다.\");\n> }\n> ```\n>\n> **JPA 에서는 조심**해야 한다 — **예외 뒤에 영속성 컨텍스트를 못 믿는다**(「DB 2편」 6.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 책은 안 건다",
+   "md": "**3.3절의 결정을 그대로** 둔다.\n\n**이유**\n\n> **문제를 보여 주는 것이 목적**이다. **제약을 걸면 이 절의 실험이 안 된다.**\n\n**대신 두 가지를 남긴다.**\n\n**① 9.7절의 \"무엇이 어색했나\" 목록**에 넣는다.\n\n**② 실무에서는 반드시 건다**고 적어 둔다.\n\n**이런 격차가 예제 코드의 특징**이다.\n\n| 이 책 | 실무 |\n|---|---|\n| 유니크 없음 | **건다** |\n| `not null` 거의 없음 | **건다** |\n| `Optional` 안 씀 | 쓴다 |\n| 인덱스 없음 | **건다** |\n\n> **9.8절에서 이 격차를 통째로** 다룬다.\n>\n> **\"예제라서 생략했다\" 를 명시하지 않으면 그대로 따라 하는 사람**이 생긴다.\n\n**인덱스도 마찬가지**다.\n\n```java\n@Table(indexes = @Index(name = \"idx_member_name\", columnList = \"name\"))\n```\n\n**`findByName` 이 `name` 으로 조회**하는데 **인덱스가 없다.** **회원이 백만이면 풀 스캔**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 순서대로 두 번 ---\n\nmemberService.join(member1);   // kim\nmemberService.join(member2);   // kim\n\n#   [tx1] Hibernate: select ... from member m1_0 where m1_0.name=?\n#         -> 0 rows\n#   [tx1] Hibernate: select next value for member_seq\n#   [tx1] Initiating transaction commit\n#   [tx1] Hibernate: insert into member (...) values (?,?,?,?,?)\n\n#   [tx2] Hibernate: select ... from member m1_0 where m1_0.name=?\n#         -> 1 row\n#   [tx2] IllegalStateException: 이미 존재하는 회원입니다.\n#   [tx2] Initiating transaction rollback\n\n#   막았다\n\n# --- 동시에 (스레드 둘) ---\n\n@Test\nvoid 동시가입() throws Exception {\n    ExecutorService es = Executors.newFixedThreadPool(2);\n    CountDownLatch latch = new CountDownLatch(2);\n\n    for (int i = 0; i < 2; i++) {\n        es.submit(() -> {\n            try {\n                Member m = new Member();\n                m.setName(\"kim\");\n                memberService.join(m);\n            } catch (Exception e) {\n                log.info(\"실패 = {}\", e.getMessage());\n            } finally {\n                latch.countDown();\n            }\n        });\n    }\n    latch.await();\n}\n\n#   [pool-1-thread-1] Creating new transaction [MemberService.join]\n#   [pool-1-thread-2] Creating new transaction [MemberService.join]\n\n#   [pool-1-thread-1] Hibernate: select ... where m1_0.name=?\n#   [pool-1-thread-2] Hibernate: select ... where m1_0.name=?\n\n#   (둘 다 0 rows)\n\n#   [pool-1-thread-1] Hibernate: select next value for member_seq\n#   [pool-1-thread-2] Hibernate: select next value for member_seq\n\n#   [pool-1-thread-1] Hibernate: insert into member (...) values\n#   [pool-1-thread-2] Hibernate: insert into member (...) values\n\n#   [pool-1-thread-1] Committing JPA transaction\n#   [pool-1-thread-2] Committing JPA transaction\n\n#   (실패 로그 없음)\n\nselect name, count(*) from member group by name;\n#   kim  2\n\n#   둘 다 들어갔다\n\n# --- 스레드 이름으로 갈렸다 ---\n\n#   2.6절에서 'show-sql 대신 로거' 라고 한 이유가 이것이다\n#   [pool-1-thread-1] 과 [pool-1-thread-2] 가 없으면\n#   이 로그를 읽을 수 없다\n\n# --- 유니크 제약을 걸면 ---\n\n@Table(name = \"member\",\n       uniqueConstraints = @UniqueConstraint(columnNames = {\"name\"}))\n\n#   (뜰 때)\n#   Hibernate: \n#       alter table if exists member \n#       add constraint UK_hh9kg6jti4n1eoiertn2ct15c unique (name)\n\n#   (동시 가입)\n#   [pool-1-thread-1] Hibernate: insert into member (...) values\n#   [pool-1-thread-2] Hibernate: insert into member (...) values\n\n#   [pool-1-thread-2] SQL Error: 23505, SQLState: 23505\n#     Unique index or primary key violation:\n#       \"PUBLIC.UK_HH9KG6JTI4N1EOIERTN2CT15C_INDEX_8 ON PUBLIC.MEMBER(NAME)\"\n\n#   [pool-1-thread-2] 실패 =\n#     could not execute statement [Unique index or primary key violation...]\n\n#   [pool-1-thread-2] Initiating transaction rollback\n\nselect name, count(*) from member group by name;\n#   kim  1\n\n#   막혔다\n\n# --- 이 책은 제약을 안 건다 ---\n\n#   9.7절 목록에 넣는다\n#   실무에서는 반드시 건다",
+   "note": "**순서대로면 막힌다.** **동시에 들어가면 둘 다 통과**한다.\n\n**두 스레드의 `select` 가 둘 다 0건**을 봤다. **`READ_COMMITTED` 라 서로의 미커밋 `insert` 를 못 본다.**\n\n**스레드 이름 `[pool-1-thread-1]`·`[-2]`** 가 없으면 이 로그를 못 읽는다. **2.6절에서 `show-sql` 을 안 쓴 이유**가 여기서 값을 한다.\n\n**유니크 제약을 걸면 두 번째가 `23505`** 로 막힌다.\n\n**이 책은 안 건다.** **문제를 보여 주는 것이 목적**이고, **9.7절 목록에 올려 둔다.**\n\n**다음 절에서 테스트를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`select` 와 `insert` 사이의 틈**이 문제다.",
+  "**`READ_COMMITTED` 라 서로의 미커밋 `insert` 를 못 본다.**",
+  "**순서대로면 막히고 동시에는 못 막는다.**",
+  "**`SERIALIZABLE` 로 올리면 막히는데 대가가 크다.**",
+  "**DB 유니크 제약이 답**이다.",
+  "**검증 코드는 지우지 않는다** — 메시지용이다.",
+  "**둘 다 있어야** 한다 — 검증은 말하려고, 제약은 막으려고.",
+  "**이 책은 일부러 안 건다** — 3.3절의 결정.",
+  "**스레드 이름 없이는 이 로그를 못 읽는다** — 2.6절."
+ ],
+ "drills": [
+  {
+   "task": "순서대로 두 번 가입시킨다.",
+   "done_when": "두 번째가 막히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "스레드 둘로 동시에 가입시킨다.",
+   "done_when": "둘 다 들어가는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "유니크 제약을 걸고 다시 해 본다.",
+   "done_when": "두 번째가 `23505` 로 막히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외를 잡아 메시지로 바꿔 본다.",
+   "done_when": "JPA 에서 주의할 점을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동시 가입을 왜 못 막나?",
+   "a": "`select` 와 `insert` 사이의 틈에 다른 트랜잭션이 커밋하는 것을 못 보기 때문이다."
+  },
+  {
+   "q": "무엇이 그것을 결정하나?",
+   "a": "격리 수준이다. `READ_COMMITTED` 는 미커밋 데이터를 안 보여 준다."
+  },
+  {
+   "q": "진짜 해결책은?",
+   "a": "DB 유니크 제약이다."
+  },
+  {
+   "q": "검증 코드를 지우나?",
+   "a": "안 지운다. 사용자에게 메시지를 주는 역할이 남는다."
+  },
+  {
+   "q": "이 로그를 읽으려면 무엇이 필요한가?",
+   "a": "스레드 이름이다. `show-sql` 로는 안 나온다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
