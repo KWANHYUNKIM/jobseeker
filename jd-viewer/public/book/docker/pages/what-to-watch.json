@@ -1,0 +1,167 @@
+{
+ "book": "docker",
+ "id": "what-to-watch",
+ "no": "1.5",
+ "chapter": 1,
+ "title": "무엇을 볼 것인가",
+ "summary": "ps · logs · inspect, 이 셋으로 거의 다 본다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "ps 의 각 열을 읽을 수 있다.",
+  "logs 로 죽은 컨테이너의 마지막 말을 본다.",
+  "inspect 에서 필요한 값만 꺼낸다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**도커에서 막히면 볼 곳은 정해져** 있다. **명령 다섯 개**다.\n\n> 이 절은 **참고용으로 다시 오게 되는 절**이다. 지금은 훑고, 막힐 때마다 돌아온다."
+  },
+  {
+   "type": "table",
+   "caption": "막혔을 때 치는 순서",
+   "columns": [
+    "순서",
+    "명령",
+    "무엇을 묻는가"
+   ],
+   "rows": [
+    [
+     "1",
+     "`docker ps -a`",
+     "**떠 있나, 죽었나, 언제 죽었나**"
+    ],
+    [
+     "2",
+     "`docker logs <이름>`",
+     "**죽기 전에 뭐라고 했나**"
+    ],
+    [
+     "3",
+     "`docker inspect <이름>`",
+     "**어떤 설정으로 떴나** — 포트·환경변수·마운트·종료 코드"
+    ],
+    [
+     "4",
+     "`docker exec -it <이름> sh`",
+     "**안에 들어가서 직접** 본다 (3.6절)"
+    ],
+    [
+     "5",
+     "`docker stats` / `docker events`",
+     "**자원이 모자란가 / 방금 무슨 일이 있었나**"
+    ]
+   ],
+   "note": "**1번과 2번에서 대부분 끝난다.** 그런데 사람들은 대개 1번을 건너뛰고 추측부터 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "docker ps 의 열 읽기",
+   "md": "```\nCONTAINER ID   IMAGE        COMMAND                  STATUS                      PORTS                    NAMES\n9f2b1c0a7e31   nginx:1.27   \"/docker-entrypoint.…\"   Up 3 minutes (healthy)      0.0.0.0:8080->80/tcp     web\na1b2c3d4e5f6   myapp:1.4    \"java -jar /app.jar\"     Restarting (1) 12 seconds   \n```\n\n| 열 | 읽는 법 |\n|---|---|\n| `COMMAND` | **PID 1 로 뭐가 뜨는가**. 내가 의도한 명령이 맞는지 여기서 확인한다(5.5절) |\n| `STATUS` | `Up` / `Exited (코드)` / **`Restarting (코드)`** / `Created` |\n| `(healthy)` | 헬스체크가 붙어 있을 때만 나온다(6.5절) |\n| `PORTS` | **비어 있으면 `-p` 를 안 준 것**이다. 밖에서 못 붙는다 |\n\n**`Restarting` 이 반복되면** — **뜨자마자 죽고 있는** 것이다. **재시작 정책 때문에 계속 되살아난다**(6.3절). **이때는 `logs` 가 답**이다.\n\n**유용한 형태 두 개**\n\n```bash\ndocker ps -a --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'\ndocker ps -a --filter status=exited\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "죽은 컨테이너도 로그가 남아 있다",
+   "md": "**가장 자주 하는 실수**는 죽은 컨테이너를 지우고 나서 왜 죽었는지 묻는 것이다.\n\n```bash\ndocker logs web            # 처음부터 전부\ndocker logs -f web         # 계속 따라간다\ndocker logs --tail 50 web  # 마지막 50줄만\ndocker logs -t web         # 시각을 붙여서\ndocker logs --since 5m web # 최근 5분\n```\n\n**`Exited` 상태에서도 전부 읽을 수** 있다. **`docker rm` 을 하는 순간 같이** 사라진다.\n\n> **그래서 죽은 컨테이너를 바로 지우지** 않는다. **읽고 나서 지운다.**\n\n**로그가 비어 있으면** — 애플리케이션이 **파일에 쓰고 있는** 것이다. **컨테이너의 로그는 PID 1 의 stdout/stderr 뿐**이다(6.4절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "inspect 는 통째로 읽지 않는다",
+   "md": "**`docker inspect web` 은 JSON 200줄을** 뱉는다. **필요한 것만 꺼낸다.**\n\n```bash\n# 왜 죽었나\ndocker inspect -f '{{.State.ExitCode}} {{.State.Error}}' myapp\n\n# 어떤 환경변수로 떴나\ndocker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' myapp\n\n# 실제로 무엇이 마운트됐나 (8장)\ndocker inspect -f '{{range .Mounts}}{{.Source}} -> {{.Destination}}{{println}}{{end}}' myapp\n\n# IP 는 뭔가 (7장)\ndocker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' myapp\n\n# 이미지가 정한 시작 명령은\ndocker inspect -f '{{.Config.Entrypoint}} {{.Config.Cmd}}' myapp\n```\n\n> **`-f` 는 Go 템플릿**이다. **외울 필요는 없고 이 절을 북마크해** 둔다.\n> **JSON 을 통째로 보고 싶으면** `docker inspect web | jq '.[0].State'` 처럼 `jq` 로 좁힌다."
+  },
+  {
+   "type": "figure",
+   "caption": "막혔을 때의 길",
+   "ascii": "   \"it does not work\"\n           |\n     docker ps -a\n           |\n   +-------+----------------+------------------+\n   |                        |                  |\n   no such container    Exited (code)      Up but ...\n   |                        |                  |\n   never started        docker logs       docker inspect (ports?)\n   check run command    read last lines   docker exec -> curl inside\n                            |                  |\n                        code 1  app error   ports empty -> no -p flag\n                        code 137 OOM/kill   curl works inside -> network\n                        code 126/127 CMD    curl fails inside -> app\n\n   대부분 왼쪽 두 갈래에서 끝난다",
+   "note": "**137 은 8장·6.6절, 126/127 은 5.5절**로 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "종료 코드로 원인이 좁혀진다",
+   "md": "| 코드 | 뜻 | 어디를 보나 |\n|---|---|---|\n| `0` | 정상 종료 | 애플리케이션이 할 일을 끝낸 것. 서버라면 왜 끝났는지 |\n| `1` | 애플리케이션 예외 | `docker logs` 의 스택 트레이스 |\n| `126` | 실행 권한 없음 | 엔트리포인트 스크립트에 `chmod +x` 를 안 했다 |\n| `127` | 명령을 못 찾음 | 이미지 안에 그 바이너리가 없다. 5.5절 |\n| `137` | SIGKILL (128+9) | **메모리 초과(OOMKilled)** 가 대부분. 6.6절·10.3절 |\n| `143` | SIGTERM (128+15) | `docker stop` 이 정상적으로 내린 것 |\n\n**137 을 만나면 먼저 확인할 한 줄**:\n\n```bash\ndocker inspect -f '{{.State.OOMKilled}}' myapp\n```\n\n> `true` 면 **자바 쪽 문제가 아니라 메모리 한도 문제**다. **10.3절이 이 이야기 전체**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "죽은 컨테이너 하나를 실제로 쫓아간 기록",
+   "sql": "# --- 1. 상태부터 ---\n\n$ docker ps -a --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'\nNAMES   STATUS                          PORTS\napi     Restarting (1) 3 seconds ago\nweb     Up 8 minutes                    0.0.0.0:8080->80/tcp\n\n#   api 가 계속 재시작하고 있다. 종료 코드는 1\n\n\n# --- 2. 마지막 말 ---\n\n$ docker logs --tail 20 api\n\n  .   ____          _            __ _ _\n :: Spring Boot ::                (v3.3.4)\n\nERROR o.s.boot.SpringApplication : Application run failed\norg.springframework.beans.factory.BeanCreationException: Error creating bean\n  with name 'dataSource': Failed to determine a suitable driver class\n\nCaused by: java.net.UnknownHostException: postgres\n\n#   postgres 라는 이름을 못 찾는다 -- 네트워크 문제다 (7장)\n\n\n# --- 3. 어떤 설정으로 떴나 ---\n\n$ docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' api\nPATH=/usr/local/openjdk-21/bin:/usr/local/sbin:/usr/local/bin\nSPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/shop\nSPRING_PROFILES_ACTIVE=prod\n\n$ docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{end}}' api\nbridge\n\n$ docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{end}}' db\nbridge\n\n#   둘 다 기본 bridge 다. 기본 bridge 는 이름으로 못 찾는다 (7.2절)\n\n\n# --- 4. 안에서 직접 확인 ---\n\n$ docker exec -it web sh -c 'getent hosts postgres || echo NOT FOUND'\nNOT FOUND\n\n\n# --- 원인이 좁혀졌다 ---\n#   애플리케이션 버그가 아니다\n#   사용자 정의 네트워크를 안 만들어서 DNS 가 안 되는 것이다 (7.3절)\n\n\n# --- 참고: 자원과 사건 ---\n\n$ docker stats --no-stream\nCONTAINER   NAME   CPU %   MEM USAGE / LIMIT     MEM %   NET I/O\n9f2b1c0a…   web    0.00%   4.211MiB / 7.654GiB   0.05%   1.1kB / 0B\n\n$ docker events --since 2m --filter container=api\n2026-09-09T19:41:02  container die   api (exitCode=1, image=myapp:1.4)\n2026-09-09T19:41:03  container start api\n2026-09-09T19:41:05  container die   api (exitCode=1, image=myapp:1.4)\n\n#   3초마다 죽고 되살아나고 있다"
+  }
+ ],
+ "recap": [
+  "막히면 ps -a → logs → inspect 순서로 친다. 1·2번에서 대부분 끝난다.",
+  "죽은 컨테이너도 로그는 남는다. rm 하면 같이 사라지니 읽고 나서 지운다.",
+  "inspect 는 -f 로 필요한 값만 꺼낸다. ExitCode·Env·Mounts·Networks 네 개면 거의 된다.",
+  "종료 코드가 원인을 좁혀 준다. 137 이면 먼저 OOMKilled 를 확인한다."
+ ],
+ "drills": [
+  {
+   "task": "일부러 죽는 컨테이너를 만들어 본다: `docker run --name boom alpine sh -c 'echo starting; exit 3'`. 그다음 ps -a 와 logs 와 ExitCode 를 확인한다.",
+   "done_when": "Exited (3) 을 보고, logs 에 starting 이 남아 있는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "`docker inspect -f '{{.Config.Cmd}}' nginx:1.27` 로 이미지가 정한 시작 명령을 본다.",
+   "done_when": "ps 의 COMMAND 열과 같은 값이 나오는 것을 확인한다.",
+   "hint": "이미지에도 inspect 가 된다.",
+   "minutes": 3
+  },
+  {
+   "task": "`docker run --rm -m 32m alpine sh -c 'yes | head -c 200m | tail'` 처럼 메모리를 넘겨 죽여 보고 종료 코드를 확인한다.",
+   "done_when": "137 이 나오는 것을 보고 `.State.OOMKilled` 가 true 인지 확인한다.",
+   "hint": "--rm 을 빼야 죽은 뒤 inspect 를 할 수 있다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker ps` 의 PORTS 열이 비어 있으면.",
+   "a": "-p 를 안 준 것. 컨테이너 안에서는 열려 있어도 호스트에서는 못 붙는다."
+  },
+  {
+   "q": "종료 코드 137 을 보면 먼저 무엇을 확인하나.",
+   "a": "`docker inspect -f '{{.State.OOMKilled}}'`. true 면 메모리 한도 문제다."
+  },
+  {
+   "q": "`docker logs` 가 비어 있는데 애플리케이션은 로그를 쓰고 있다면.",
+   "a": "파일에 쓰고 있는 것. 컨테이너 로그는 PID 1 의 stdout/stderr 만 모은다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "stdout/stderr",
+   "en": "standard output/error",
+   "what": "컨테이너 로그의 유일한 재료. 6.4절."
+  },
+  {
+   "term": "Go 템플릿",
+   "en": "Go template",
+   "what": "`docker inspect -f` 가 쓰는 출력 서식. `{{.State.ExitCode}}` 같은 꼴."
+  },
+  {
+   "term": "OOMKilled",
+   "en": "out of memory killed",
+   "what": "커널이 메모리 한도를 넘긴 프로세스를 죽인 것. 종료 코드 137."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker ps",
+   "url": "https://docs.docker.com/reference/cli/docker/container/ls/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — docker inspect",
+   "url": "https://docs.docker.com/reference/cli/docker/inspect/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — View container logs",
+   "url": "https://docs.docker.com/engine/containers/logs/",
+   "publisher": "Docker"
+  }
+ ]
+}

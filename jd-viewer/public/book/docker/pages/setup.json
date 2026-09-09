@@ -1,0 +1,123 @@
+{
+ "book": "docker",
+ "id": "setup",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "실습 환경 준비",
+ "summary": "도커 데스크톱과 확인용 한 줄.",
+ "minutes": 9,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "도커를 깔고 도는지 확인한다.",
+  "Client 와 Server 가 따로라는 것을 본다.",
+  "실습 뒤 치우는 법을 미리 정해 둔다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 깔 것인가",
+   "md": "**셋 중 하나면** 된다.\n\n| 환경 | 무엇을 깐다 | 비고 |\n|---|---|---|\n| **macOS** | Docker Desktop | 안에 리눅스 VM 이 같이 온다(2.6절) |\n| **Windows** | Docker Desktop + WSL2 | WSL2 안의 우분투에서 터미널을 연다 |\n| **Linux** | Docker Engine (`docker.io` / 공식 저장소) | Desktop 없이 데몬만 |\n\n**이 책의 명령은 셋 다 같다.** **다른 것은 설치까지**다.\n\n> **회사 정책상 Docker Desktop 을 못 쓰면** — Colima(macOS)나 Rancher Desktop 으로도 이 책의 실습이 전부 된다. **`docker` 명령이 같기** 때문이다."
+  },
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "설치 확인",
+   "caption": "세 줄만 확인하면 된다",
+   "code": "# 1) 클라이언트와 데몬이 다 보이나\ndocker version\n\n# 2) 데몬의 상태\ndocker info\n\n# 3) 실제로 컨테이너가 뜨나\ndocker run --rm hello-world"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Server 가 안 나오면 데몬이 안 떠 있는 것이다",
+   "md": "**가장 처음 걸리는 자리**다.\n\n```\n$ docker version\nClient: Docker Engine - Community\n Version:  27.3.1\n\nCannot connect to the Docker daemon at unix:///var/run/docker.sock.\nIs the docker daemon running?\n```\n\n**`docker` 명령은 깔렸는데 대화 상대가 없는** 상태다. **왜 둘로 나뉘는지는 2.5절**에서 본다.\n\n| 환경 | 할 일 |\n|---|---|\n| macOS · Windows | Docker Desktop 앱을 켠다(고래 아이콘이 멈춰 있으면 아직 뜨는 중) |\n| Linux | `sudo systemctl start docker` |\n\n**리눅스에서 `permission denied` 가 나오면**:\n\n```\n$ sudo usermod -aG docker $USER\n$ newgrp docker      # 또는 로그아웃 후 재로그인\n```\n\n> **`docker` 그룹은 사실상 root 권한**이다(호스트 파일 시스템을 마운트할 수 있다). **아무에게나 넣어 주지** 않는다 — 10.6절에서 다시 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "내가 치는 것과 실제로 일하는 것",
+   "ascii": "   my terminal              /var/run/docker.sock              daemon\n   -----------              --------------------              ------\n   docker run ...  ------>  REST over unix socket  ------>  dockerd\n                                                              |\n                                                              +-- pulls image\n                                                              +-- creates container\n                                                              +-- starts process\n\n   docker version 이 Client 와 Server 를 따로 찍는 이유가 이것이다",
+   "note": "**한 대에서 쓰면 둘이 같은 머신에 있어서 잘 안** 느껴진다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실습 폴더와 치우는 법을 미리 정해 둔다",
+   "md": "**이 책의 실습은 파일을 만든다.** **한 곳에** 모아 둔다.\n\n```\n~/docker-lab/\n  01-first/\n  05-build/\n  09-compose/\n```\n\n**그리고 매 절이 끝나면 치운다.** **안 치우면 디스크가 조용히** 찬다(3.7절).\n\n| 명령 | 무엇을 지우나 |\n|---|---|\n| `docker rm -f $(docker ps -aq)` | 컨테이너 전부 (실행 중인 것 포함) |\n| `docker system df` | 지금 무엇이 얼마나 먹고 있나 |\n| `docker system prune` | 안 쓰는 컨테이너·네트워크·dangling 이미지 |\n\n> **`prune` 계열은 되돌릴 수** 없다. **다른 프로젝트의 컨테이너까지 같이 지워지므로** 실습 머신에서만 쓴다. **3.7절에서 무엇이 지워지고 무엇이 남는지를 정확히** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "디스크와 메모리",
+   "md": "**Docker Desktop 은 VM 에 자원을 미리 떼어** 둔다(2.6절). **기본값이 노트북에 따라 빡빡할 수** 있다.\n\n| 설정 | 이 책의 실습 기준 |\n|---|---|\n| 메모리 | 4GB 면 충분. 9장 컴포즈 실습은 6GB 권장 |\n| 디스크 | 20GB 이상 여유 |\n\n**8GB 램 머신이면** — 컴포즈로 DB 를 띄운 채 IDE 를 같이 돌리면 스왑이 시작된다. **실습이 끝나면 `docker compose down` 을** 습관으로 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "여기까지 나오면 준비가 끝난 것이다",
+   "sql": "$ docker version\nClient: Docker Engine - Community\n Version:           27.3.1\n API version:       1.47\n Go version:        go1.22.7\n OS/Arch:           darwin/arm64\n Context:           desktop-linux\n\nServer: Docker Desktop 4.34.3\n Engine:\n  Version:          27.3.1\n  API version:      1.47 (minimum version 1.24)\n  OS/Arch:          linux/arm64        <- 서버는 리눅스다. 호스트는 darwin 인데\n containerd:\n  Version:          1.7.21\n runc:\n  Version:          1.1.13\n\n\n$ docker info | head -12\nClient:\n Version:    27.3.1\n Context:    desktop-linux\n\nServer:\n Containers: 0\n  Running: 0\n  Paused: 0\n  Stopped: 0\n Images: 0\n Server Version: 27.3.1\n Storage Driver: overlayfs        <- 3.2절에서 다시 본다\n\n\n$ docker run --rm hello-world\nUnable to find image 'hello-world:latest' locally\nlatest: Pulling from library/hello-world\nc1ec31eb5944: Pull complete\nDigest: sha256:305243c734571da2d100c8c8b3c3167a098cab6049c9a5b066b6021a60fcb966\nStatus: Downloaded newer image for hello-world:latest\n\nHello from Docker!\nThis message shows that your installation appears to be working correctly.\n\nTo generate this message, Docker took the following steps:\n 1. The Docker client contacted the Docker daemon.\n 2. The Docker daemon pulled the \"hello-world\" image from the Docker Hub.\n 3. The Docker daemon created a new container from that image which runs the\n    executable that produces the output you are currently reading.\n 4. The Docker daemon streamed that output to the Docker client, which sent it\n    to your terminal.\n\n\n#   hello-world 가 찍는 네 줄이 정확히 2.5절의 구조다\n#   --rm 을 줬으므로 컨테이너는 끝나자마자 지워졌다\n\n$ docker ps -a\nCONTAINER ID   IMAGE   COMMAND   CREATED   STATUS   PORTS   NAMES\n\n#   비어 있다"
+  }
+ ],
+ "recap": [
+  "macOS·Windows 는 Docker Desktop, 리눅스는 Engine 만 깔면 된다. 명령은 셋 다 같다.",
+  "`docker version` 이 Client 와 Server 를 따로 찍는다 — 둘은 소켓으로 대화하는 별개다.",
+  "Server 가 안 나오면 데몬이 안 떠 있는 것이다. 리눅스의 permission denied 는 docker 그룹 문제다.",
+  "실습이 끝나면 치운다. prune 계열은 되돌릴 수 없으니 실습 머신에서만."
+ ],
+ "drills": [
+  {
+   "task": "`docker version` 을 치고 Client 의 OS/Arch 와 Server 의 OS/Arch 를 비교한다.",
+   "done_when": "맥이라면 Client 는 darwin, Server 는 linux 로 다르다는 것을 확인한다.",
+   "hint": "왜 다른지는 2.6절이다.",
+   "minutes": 3
+  },
+  {
+   "task": "`docker run --rm hello-world` 를 돌리고, 출력의 네 단계가 각각 무엇을 말하는지 자기 말로 적어 본다.",
+   "done_when": "client → daemon → pull → create → run → stream 의 흐름을 적을 수 있다.",
+   "minutes": 6
+  },
+  {
+   "task": "`docker system df` 로 지금 이미지·컨테이너·볼륨이 각각 몇 바이트인지 본다.",
+   "done_when": "세 줄의 SIZE 와 RECLAIMABLE 을 읽을 수 있다.",
+   "minutes": 3
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker version` 의 Server 항목이 안 나오면 무슨 상태인가.",
+   "a": "CLI 는 깔렸지만 데몬이 안 떠 있는 것. Desktop 앱을 켜거나 systemctl start docker 를 한다."
+  },
+  {
+   "q": "리눅스에서 사용자를 docker 그룹에 넣을 때 주의할 점은.",
+   "a": "docker 그룹은 사실상 root 권한이다. 호스트 파일 시스템을 마운트해 무엇이든 읽고 쓸 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "도커 데몬",
+   "en": "dockerd",
+   "what": "실제로 이미지를 받고 컨테이너를 만드는 백그라운드 프로세스. 2.5절."
+  },
+  {
+   "term": "도커 소켓",
+   "en": "docker.sock",
+   "what": "CLI 가 데몬과 대화하는 유닉스 소켓. 이걸 컨테이너에 마운트하면 그 컨테이너가 호스트를 지배한다."
+  },
+  {
+   "term": "컨텍스트",
+   "en": "context",
+   "what": "어느 데몬에 명령을 보낼지 고르는 설정. `docker context ls`."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Install Docker Engine",
+   "url": "https://docs.docker.com/engine/install/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Post-installation steps for Linux",
+   "url": "https://docs.docker.com/engine/install/linux-postinstall/",
+   "publisher": "Docker"
+  }
+ ]
+}

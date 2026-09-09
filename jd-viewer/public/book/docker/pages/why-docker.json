@@ -1,0 +1,134 @@
+{
+ "book": "docker",
+ "id": "why-docker",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 도커인가",
+ "summary": "\"내 컴퓨터에서는 됐는데\" 가 어디서 나오나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "배포가 아픈 이유가 코드가 아니라 환경이라는 것을 안다.",
+  "도커 이전에 무엇을 했는지 안다.",
+  "도커가 해결하지 않는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「활용 1편」에서 만든 애플리케이션**을 서버에 올린다. **jar 하나를 scp 로 올리고 `java -jar` 를** 친다.\n\n```\nException in thread \"main\" java.lang.UnsupportedClassVersionError:\n  hello/HelloApplication has been compiled by a more recent version of the\n  Java Runtime (class file version 65.0), this version of the Java Runtime\n  only recognizes class file versions up to 61.0\n```\n\n**코드는 같다.** **자바가 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 다른가 — 목록으로 적어 보면",
+   "md": "**\"환경이 다르다\" 는 말은 너무 뭉뚱그린** 말이다. **실제로 다른 것들을 적어** 보면:\n\n| 무엇 | 어긋나면 |\n|---|---|\n| **JDK 버전** | 위의 `UnsupportedClassVersionError` |\n| **네이티브 라이브러리** | `UnsatisfiedLinkError`, 이미지 처리·암호화에서 흔하다 |\n| **로케일** | `String.toUpperCase()` 의 터키어 `i` 문제 |\n| **타임존** | 로그 시각이 9시간 밀린다. 배치가 하루 어긋난다 |\n| **파일 인코딩** | 한글이 `???` 로 저장된다 |\n| **DB 버전·설정** | 개발은 H2, 운영은 PostgreSQL 14 — SQL 이 하나 안 먹는다 |\n| **환경변수** | `SPRING_PROFILES_ACTIVE` 하나가 비어서 운영 DB 로 붙는다 |\n| **OS 패키지** | `curl` 이 없어서 헬스체크 스크립트가 죽는다 |\n\n**전부 코드 밖**이다. **그런데 코드가 안 도는 이유**다.\n\n> **컴파일한 결과물만 옮기는 한, 이 목록은 계속 사고를** 낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 옮겨 왔나",
+   "ascii": "   before                              with an image\n   ------                              -------------\n   scp app.jar server:/opt/            docker pull myapp:1.4.2\n\n   app.jar                             app.jar\n   -----------------------------       JDK 21.0.4\n   ??? JDK                             glibc 2.36\n   ??? libs                            locale C.UTF-8\n   ??? locale / TZ                     TZ UTC\n   ??? env                             ENV baked in\n   ??? OS packages                     curl, tzdata\n\n   왼쪽의 물음표가 사고의 목록이다",
+   "note": "**옮기는 단위가 jar 에서 파일 시스템 전체로** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "도커 이전에는 무엇을 했나",
+   "md": "**도커가 처음 낸 발상은** 아니다. **같은 문제를 계속 다르게 풀어** 왔다.\n\n| 방법 | 한 일 | 무너지는 자리 |\n|---|---|---|\n| **위키 문서** | \"설치 순서\" 를 사람이 따라 함 | 문서가 6개월 만에 낡는다. 사람마다 다르게 읽는다 |\n| **셸 스크립트** | 설치를 자동화 | 두 번 돌리면 깨진다(멱등하지 않다). OS 마다 분기 |\n| **Ansible · Chef** | 서버를 원하는 상태로 수렴 | 좋아졌지만 여전히 **기존 서버 위에** 얹는다 |\n| **VM 이미지(AMI)** | 환경째로 굳힘 — 발상이 도커와 같다 | 이미지가 GB 단위, 부팅 수십 초, 만들기 느리다 |\n| **도커 이미지** | 환경째로 굳히되 커널은 공유 | 다음 절부터 |\n\n**VM 이미지가 가장 가깝다.** **도커의 차이는 \"굳혔다\" 가 아니라 \"싸게 굳혔다\"** 는 것이다.\n\n> **초 단위로 뜨고, 레이어를 공유해서 디스크를 아끼고, `Dockerfile` 한 장으로 다시 만들 수** 있다.\n> **왜 그게 가능한지가 2장** 전체다."
+  },
+  {
+   "type": "compare",
+   "caption": "같은 애플리케이션을 서버에 올리는 두 가지",
+   "left": {
+    "title": "jar 만 옮긴다",
+    "lang": "text",
+    "bad": true,
+    "code": "$ scp app.jar deploy@server:/opt/app/\n$ ssh deploy@server\n\n$ java -jar /opt/app/app.jar\nUnsupportedClassVersionError: class file version 65.0\n\n$ sudo apt install openjdk-21-jdk\n  ... 200MB, 3분\n\n$ java -jar /opt/app/app.jar\nCaused by: java.net.UnknownHostException: postgres\n\n#   DB 도 없다. 계속 이어진다"
+   },
+   "right": {
+    "title": "이미지를 옮긴다",
+    "lang": "text",
+    "code": "$ docker run --rm \\\n    -e SPRING_PROFILES_ACTIVE=prod \\\n    -p 8080:8080 myapp:1.4.2\n\n  :: Spring Boot ::                (v3.3.4)\nStarted Application in 1.83 seconds\n\n#   JDK 도 로케일도 타임존도 이미지 안에 있다\n#   서버에는 도커만 있으면 된다"
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "도커가 해결하지 않는 것",
+   "md": "**과장하면 나중에 배신당한다.** **도커가 안 해 주는 것들**:\n\n| 안 되는 것 | 왜 |\n|---|---|\n| **CPU 아키텍처 차이** | M1(arm64)에서 만든 이미지는 amd64 서버에서 안 돈다. `exec format error`. 4.3절과 5.9절 |\n| **데이터** | 컨테이너를 지우면 데이터도 지워진다. 8장 전체가 이 이야기다 |\n| **커널에 기대는 것** | 커널은 공유한다. 호스트 커널이 낡으면 못 도는 기능이 있다 |\n| **잘못된 설계** | 느린 쿼리는 컨테이너에 넣어도 느리다 |\n| **여러 대로 늘리기** | 도커 혼자로는 한 대다. 11.5절에서 넘긴다 |\n\n**\"컨테이너에 넣으면 어디서나 돈다\" 는 문장은 절반만** 맞다.\n\n> **정확히는 \"같은 커널 계열, 같은 CPU 아키텍처라면 어디서나 같게\"** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "**\"도커를 왜 쓰나요\"** 에 **\"가상화가 가볍고 빨라서요\"** 라고 답하면 절반이다.\n\n> **가벼운 건 결과**고, **쓰는 이유는 \"실행 환경을 코드로 고정해서 어디서 돌려도 같게 만든다\"** 는 쪽이다.\n>\n> **한 문장 더 붙이면** — **그 환경이 `Dockerfile` 이라는 텍스트로 버전 관리된다.** 문서가 아니라 코드다.\n\n**꼬리 질문은 거의 정해져** 있다.\n\n| 질문 | 어디 |\n|---|---|\n| \"VM 과 뭐가 다른가요\" | 2.2~2.3절 |\n| \"이미지랑 컨테이너 차이가 뭔가요\" | 3.3절 |\n| \"이미지 크기를 어떻게 줄이나요\" | 5.7~5.8절 |\n| \"컨테이너 안의 데이터는 어떻게 되나요\" | 8.1절 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "같은 이미지가 두 머신에서 같은 답을 낸다",
+   "sql": "# --- 내 노트북 (macOS 15, Apple Silicon) ---\n\n$ java -version\nopenjdk version \"17.0.11\" 2024-04-16\n\n$ docker run --rm eclipse-temurin:21-jre java -version\nopenjdk version \"21.0.4\" 2024-07-16 LTS\nOpenJDK Runtime Environment Temurin-21.0.4+7 (build 21.0.4+7-LTS)\n\n$ docker run --rm eclipse-temurin:21-jre sh -c 'echo $LANG; date +%Z'\n\nUTC\n\n\n# --- 배포 서버 (Ubuntu 22.04, amd64) ---\n\n$ java -version\nopenjdk version \"11.0.24\" 2024-07-16\n\n$ docker run --rm eclipse-temurin:21-jre java -version\nopenjdk version \"21.0.4\" 2024-07-16 LTS\nOpenJDK Runtime Environment Temurin-21.0.4+7 (build 21.0.4+7-LTS)\n\n$ docker run --rm eclipse-temurin:21-jre sh -c 'echo $LANG; date +%Z'\n\nUTC\n\n\n#   호스트의 자바는 17 과 11 로 다르다\n#   컨테이너 안의 자바는 둘 다 21.0.4+7 이다\n#   타임존도 둘 다 UTC 다 -- 이미지가 정한 값이다\n\n\n# --- 다만 아키텍처는 따라오지 않는다 ---\n\n$ docker run --rm eclipse-temurin:21-jre uname -m\naarch64          # 노트북\nx86_64           # 서버\n\n#   같은 태그인데 다른 바이너리가 내려온 것이다 (4.3절)\n#   내가 만든 이미지는 이게 자동으로 안 된다 -- 5.9절"
+  }
+ ],
+ "recap": [
+  "배포가 아픈 이유는 코드가 아니라 코드 밖 — JDK·로케일·타임존·네이티브 라이브러리·환경변수다.",
+  "문서 → 스크립트 → Ansible → VM 이미지로 같은 문제를 계속 풀어 왔다. 도커는 '싸게 굳히기'다.",
+  "도커는 아키텍처 차이·데이터·설계 문제를 해결해 주지 않는다.",
+  "'어디서나 돈다' 는 정확히는 '같은 커널 계열·같은 아키텍처라면 같게 돈다' 이다."
+ ],
+ "drills": [
+  {
+   "task": "호스트의 `java -version` 과 `docker run --rm eclipse-temurin:21-jre java -version` 을 나란히 찍어 본다.",
+   "done_when": "두 버전이 다르게 나오고, 컨테이너 쪽이 이미지가 정한 버전임을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker run --rm eclipse-temurin:21-jre sh -c 'date; echo $LANG'` 로 컨테이너의 타임존과 로케일을 본다. 호스트의 `date` 와 비교한다.",
+   "done_when": "컨테이너가 UTC 인 것을 확인하고, 왜 로그 시각이 9시간 밀리는지 설명할 수 있다.",
+   "hint": "타임존을 바꾸는 법은 6.2절에서 환경변수로 한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "'내 컴퓨터에서는 됐는데' 의 원인을 세 개 이상 대 보라.",
+   "a": "JDK 버전, 네이티브 라이브러리, 로케일, 타임존, 파일 인코딩, 환경변수, OS 패키지, DB 버전 — 전부 코드 밖이다."
+  },
+  {
+   "q": "도커와 VM 이미지(AMI)의 발상은 같은데 무엇이 다른가.",
+   "a": "둘 다 환경째로 굳힌다. 도커는 커널을 공유해서 초 단위로 뜨고, 레이어를 공유해 디스크를 아끼고, Dockerfile 이라는 텍스트로 다시 만들 수 있다."
+  },
+  {
+   "q": "M1 맥에서 빌드한 이미지를 amd64 서버에서 돌리면.",
+   "a": "`exec format error`. 아키텍처는 컨테이너가 감춰 주지 않는다. 멀티 아키텍처 빌드가 필요하다(5.9절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이식성",
+   "en": "portability",
+   "what": "같은 결과물이 다른 환경에서 같게 도는 성질. 도커가 파는 것이 이것이다."
+  },
+  {
+   "term": "멱등성",
+   "en": "idempotency",
+   "what": "여러 번 실행해도 결과가 같은 성질. 설치 스크립트가 못 지켜서 Ansible 이 나왔다."
+  },
+  {
+   "term": "아키텍처",
+   "en": "architecture",
+   "what": "CPU 명령어 집합. arm64 와 amd64 는 다른 바이너리를 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker overview",
+   "url": "https://docs.docker.com/get-started/docker-overview/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Multi-platform builds",
+   "url": "https://docs.docker.com/build/building/multi-platform/",
+   "publisher": "Docker"
+  }
+ ]
+}
