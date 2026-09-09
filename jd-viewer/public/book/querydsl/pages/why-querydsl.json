@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "why-querydsl",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 Querydsl 인가",
+ "summary": "문자열은 컴파일이 안 지켜 준다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "문자열의 값을 안다.",
+  "언제 드러나는지 안다.",
+  "⑭의 세 시도를 되짚는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**⑭에서 동적 쿼리를 세 번** 풀었다. **세 번 다 무언가를** 포기했다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 드러나나",
+   "ascii": "   when a broken query is found\n\n   a string in @Query      at application startup, if you are lucky\n   a string built at runtime  when that one branch is taken\n   assembled java code     at compile time, before anything runs\n\n   the middle row is the one that reaches production",
+   "note": "**가운데 줄이 운영까지** 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "문자열은 실행하기 전엔 아무도 안 읽는다",
+   "md": "**컴파일러는 문자열 속을 안** 본다.\n\n> **`\"select m form Member m\"` 도 통과**한다.\n> **오타가 있는 채로 배포가** 된다.\n> **⑭ 5.4절에서 본 그것**이다.\n\n**`@Query` 는 기동에서 잡는다.**\n\n> **애플리케이션이 뜰 때 파싱**한다.\n> **그래서 그나마** 낫다.\n> **대신 동적으로 못** 만든다.\n\n**조립한 문자열은 그것도 안** 된다.\n\n> **분기마다 다른 문장**이다.\n> **⑭ 6.1절의 `StringBuilder`** 다.\n> **그 분기를 타야만** 드러난다.\n\n**리팩터링이 안** 따라온다.\n\n> **필드 이름을 바꾸면 문자열은 그대로**다.\n> **IDE 가 못** 찾는다.\n> **아래에서 그걸 만든**다."
+  },
+  {
+   "type": "figure",
+   "caption": "⑭의 세 시도",
+   "ascii": "   the three attempts book 14 made, and what each gave up\n\n   a string builder     everything works, nothing is checked\n   specifications       everything works, nothing is readable\n   query by example     readable and short, only equals works\n\n   none of them kept all three properties at once",
+   "note": "**셋을 한꺼번에 지킨 게** 없었다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "Querydsl 은 JPQL 을 대체하지 않는다",
+   "md": "**결국 JPQL 을 만든다.**\n\n> **문법도 JPQL 을 그대로** 따른다.\n> **JPQL 이 못 하는 건 여기서도 못** 한다.\n> **4.14절의 `from` 절 서브쿼리**다.\n\n**그래서 JPQL 을 알아야** 한다.\n\n> **①에서 배운 것이 그대로** 쓰인다.\n> **`fetch join`·`on` 절이 다** 나온다.\n> **몰라도 되는 게** 아니다.\n\n**컴파일 시점 검증이 핵심**이다.\n\n> **속성 이름이 필드가** 된다.\n> **타입이 안 맞으면 빌드가** 깨진다.\n> **아래에서 확인**한다.\n\n**Q 타입이 값**이다.\n\n> **컴파일 때 클래스를** 만든다.\n> **그게 없으면 아무것도 안** 된다.\n> **2.2절에서 그 생성을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 문자열 오타를 만든다\n\n@Query(\"select m form Member m where m.username = :username\")\nList<Member> typo(@Param(\"username\") String username);\n\n$ ./gradlew compileJava\n\nBUILD SUCCESSFUL in 1s\n\n--   컴파일이 통과했다\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nCaused by: org.hibernate.query.SyntaxException:\n  At 1:10 and token 'form', no viable alternative at input\n  'select m form'\n\n--   기동에서 잡혔다\n--   @Query 라서 그나마 여기서 걸렸다\n\n\n-- 조립한 문자열은 다르다\n\npublic List<Member> search(String username, Integer minAge) {\n    StringBuilder jpql = new StringBuilder(\"select m from Member m where 1=1\");\n    if (username != null) jpql.append(\" and m.username = :username\");\n    if (minAge != null)   jpql.append(\" and m.age >== :minAge\");   // 오타\n    ...\n}\n\n$ ./gradlew bootRun\n\nStarted Application in 2.104 seconds\n\n--   기동이 됐다\n--   그 분기를 안 타서다\n\n$ curl -s 'localhost:8080/members?username=m1'\n[{\"id\":1,\"username\":\"m1\"}]\n\nHibernate: select m1_0.member_id, ... where 1=1 and m1_0.username=?\n\n--   여기까지 잘 된다\n\n$ curl -s 'localhost:8080/members?username=m1&minAge=20'\n\n{\"status\":500,\"error\":\"Internal Server Error\"}\n\nERROR SyntaxException: At 1:52 and token '=', no viable alternative\n\n--   조건을 두 개 준 첫 요청에서 터졌다\n--   ⑭ 6.1절의 그 코드다\n\n\n-- Querydsl 로 쓰면\n\nqueryFactory.selectFrom(member)\n            .where(member.age.goe(minAge))\n            .fetch();\n\n// member.age.goe 를 goee 로 바꿔 본다\n\n$ ./gradlew compileJava\n\n> Task :compileJava FAILED\nMemberRepository.java:41: error: cannot find symbol\n            .where(member.age.goee(minAge))\n                             ^\n  symbol:   method goee(Integer)\n  location: variable age of type NumberPath<Integer>\n\n--   빌드가 깨졌다\n--   실행 전이다\n\n\n-- 타입도 지킨다\n\nqueryFactory.selectFrom(member)\n            .where(member.age.eq(\"스무살\"))\n            .fetch();\n\n$ ./gradlew compileJava\n\n> Task :compileJava FAILED\nerror: incompatible types: String cannot be converted to Integer\n\n--   age 가 숫자라는 걸 안다\n--   문자열 JPQL 은 이걸 못 잡는다\n\n\n-- 같은 실수를 JPQL 로 하면\n\n@Query(\"select m from Member m where m.age = '스무살'\")\nList<Member> wrongType();\n\n$ ./gradlew bootRun\nStarted Application\n\n$ curl -s 'localhost:8080/wrong'\n{\"status\":500}\n\nERROR SemanticException: Cannot compare left expression of type\n      'java.lang.Integer' with right expression of type 'java.lang.String'\n\n--   기동은 됐다\n--   부를 때 터졌다\n\n\n-- 필드 이름을 바꿔 본다\n\n// Member.username -> Member.name 으로 리팩터링\n\n$ ./gradlew compileJava\n\n> Task :compileJava FAILED\nMemberRepository.java:28: error: cannot find symbol\n            .where(member.username.eq(username))\n                         ^\n  symbol: variable username\n\n$ grep -rn 'm.username' --include='*.java' src/main | wc -l\n      7\n\n--   Querydsl 쪽은 7 곳이 다 빨갛다\n--   문자열 7 개는 그대로 남았다\n--   컴파일도 통과한다\n\n\n-- ⑭의 세 시도를 되짚는다\n\n// ⑭ 6.1 커스텀 — 다 되는데 문자열이다\nif (minAge != null) jpql.append(\" and m.age >= :minAge\");\n\n// ⑭ 8.1 명세 — 다 되는데 안 읽힌다\nreturn (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(\"age\"), minAge);\n\n// ⑭ 8.2 QBE — 짧은데 부등호가 없다\nprobe.setAge(20);              // age = 20 이다\n\n// 여기 — 셋 다 된다\nmember.age.goe(minAge)\n\n$ printf '%-14s %-8s %-10s %s\\n' \\\n  '문자열 조립' '가능'   '컴파일 X' '읽힌다' \\\n  '명세'       '가능'   '컴파일 X' '안 읽힌다' \\\n  'QBE'        '등호만' '컴파일 X' '읽힌다' \\\n  'Querydsl'   '가능'   '컴파일 O' '읽힌다'\n\n문자열 조립     가능     컴파일 X   읽힌다\n명세           가능     컴파일 X   안 읽힌다\nQBE            등호만   컴파일 X   읽힌다\nQuerydsl       가능     컴파일 O   읽힌다\n\n\n-- 그래도 JPQL 은 알아야 한다\n\n@Test\nvoid 결국_JPQL() {\n    List<Member> result = queryFactory\n            .selectFrom(member)\n            .join(member.team, team).fetchJoin()\n            .where(member.age.goe(20))\n            .fetch();\n    System.out.println(\"건수: \" + result.size());\n}\n\n/* select\n    member\nfrom\n    Member member\ninner join\n    fetch member.team as team\nwhere\n    member.age >= ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age,\n        t1_0.team_id, t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n건수: 2\n\n--   ① 10.4절의 fetch join 이다\n--   메서드 이름만 바뀌었다\n--   1.3절에서 둘을 나란히 둔다",
+   "note": "**`form` 오타는 컴파일을 통과하고 `@Query` 라 기동에서 잡혔다** — `no viable alternative at input 'select m form'`.\n\n**조립한 문자열은 기동도 통과해 조건 둘을 준 첫 요청에서 500** 이었다.\n\n**Querydsl 은 `goee` 도 `eq(\"스무살\")` 도 `compileJava FAILED`** 다.\n\n**필드 이름을 바꾸자 조립 쪽 7곳이 다 빨갛고 문자열 7개는 그대로** 남았다.\n\n**결국 나오는 건 `inner join fetch member.team` — ① 10.4절 그대로**다."
+  }
+ ],
+ "recap": [
+  "**컴파일러는 문자열 속을 안** 본다.",
+  "**`@Query` 는 기동에서** 잡는다.",
+  "**조립한 문자열은 그것도 안** 된다.",
+  "**분기를 타야** 드러난다.",
+  "**Querydsl 은 빌드에서** 깨진다.",
+  "**타입도** 지킨다.",
+  "**리팩터링이** 따라온다.",
+  "**결국 JPQL 을** 만든다.",
+  "**JPQL 을 알아야** 한다."
+ ],
+ "drills": [
+  {
+   "task": "`@Query` 에 오타를 낸다.",
+   "done_when": "기동 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조립 문자열에 오타를 낸다.",
+   "done_when": "그 분기에서만 터지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "Querydsl 메서드 이름을 틀린다.",
+   "done_when": "컴파일 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필드 이름을 바꿔 본다.",
+   "done_when": "어느 쪽이 빨간지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Query` 문자열 오타는 언제 드러나나?",
+   "a": "애플리케이션 기동 시점이다."
+  },
+  {
+   "q": "런타임에 조립한 문자열은?",
+   "a": "그 분기를 실제로 타야 드러난다."
+  },
+  {
+   "q": "Querydsl 은 언제 잡나?",
+   "a": "컴파일 시점이다."
+  },
+  {
+   "q": "타입 불일치도 잡나?",
+   "a": "잡는다. 필드가 타입을 가지고 있다."
+  },
+  {
+   "q": "Querydsl 이 JPQL 을 대체하나?",
+   "a": "아니다. JPQL 을 만들어 내며 그 한계도 그대로 따른다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "컴파일 시점 검증",
+   "def": "쿼리의 오타와 타입 오류를 빌드 단계에서 잡아내는 것."
+  },
+  {
+   "term": "Q 타입",
+   "def": "엔티티를 본떠 컴파일 때 생성되는, 조립에 쓰는 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,560 @@
+{
+  "book": "querydsl",
+  "title": "실전! Querydsl",
+  "subtitle": "자바로 조립했더니 문장이 나온다",
+  "rule": "매 절은 조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL, 두 겹으로 끝난다.",
+  "env": "Java 21, Spring Boot 3.3, Spring Data JPA 3.3, Querydsl 5.1(jakarta), Hibernate 6.5, H2 2.2, Gradle 8.8",
+  "source": {
+    "title": "실전! Querydsl (차례 출처)",
+    "url": "https://www.inflearn.com/course/Querydsl-실전",
+    "publisher": "인프런 · 김영한",
+    "note": "여덟 섹션의 뼈대를 빌렸고 각 섹션을 실습 단위로 늘렸다. 본문·예제·나간 JPQL 과 SQL 은 직접 쓰고 직접 확인한 것이다."
+  },
+  "updated_at": "2026-09-10",
+  "chapters": [
+    {
+      "no": 1,
+      "title": "Querydsl 소개",
+      "intro": "문자열로 쓰던 쿼리를 자바로 옮기면 무엇이 달라지는지부터 본다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 JPQL 과 SQL 두 겹으로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-querydsl",
+          "title": "왜 Querydsl 인가",
+          "summary": "문자열은 컴파일이 안 지켜 준다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "jpql-vs-querydsl",
+          "title": "JPQL 과 나란히",
+          "summary": "같은 문장을 두 방법으로 쓴다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.4",
+          "id": "first-query",
+          "title": "첫 쿼리",
+          "summary": "한 줄을 조립하고 두 문장을 받는다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "프로젝트 환경설정",
+      "intro": "Q 타입이 어디서 생기고 왜 안 생기는지를 본다.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "project",
+          "title": "프로젝트 생성",
+          "summary": "의존성과 플러그인.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "gradle-q",
+          "title": "Q 타입 생성",
+          "summary": "컴파일이 클래스를 만든다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "qtype-trouble",
+          "title": "Q 타입이 안 생길 때",
+          "summary": "가장 자주 막히는 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "database",
+          "title": "H2 와 접속",
+          "summary": "로그로 확인한다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "boot-settings",
+          "title": "스프링 부트 설정",
+          "summary": "JPA 와 SQL 로그.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "verify",
+          "title": "동작 확인",
+          "summary": "테스트 하나로 검증한다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "예제 도메인 모델",
+      "intro": "앞으로 모든 절이 쓸 표 두 개를 만든다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "domain",
+          "title": "도메인 설계",
+          "summary": "회원과 팀.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "mapping",
+          "title": "연관관계 매핑",
+          "summary": "외래키가 어디에 있나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "test-data",
+          "title": "테스트 데이터",
+          "summary": "매 절이 쓸 열 건.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "query-factory",
+          "title": "JPAQueryFactory",
+          "summary": "어디에 두고 어떻게 얻나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "first-run",
+          "title": "동작 확인",
+          "summary": "JPQL 과 SQL 을 같이 본다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "기본 문법",
+      "intro": "조립한 자바 코드가 어떤 JPQL 이 되는지 한 줄씩 확인한다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "start-querydsl",
+          "title": "시작하기",
+          "summary": "JPQL 과 Querydsl 을 한 화면에.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "q-type",
+          "title": "기본 Q 타입",
+          "summary": "별칭과 static import.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "search",
+          "title": "검색 조건",
+          "summary": "and 로 잇는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "and-comma",
+          "title": "쉼표가 and 다",
+          "summary": "null 이 빠지는 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "result-fetch",
+          "title": "결과 조회",
+          "summary": "fetch 다섯 가지.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "sort",
+          "title": "정렬",
+          "summary": "nulls last 까지.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "paging",
+          "title": "페이징",
+          "summary": "offset 과 limit.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.8",
+          "id": "aggregation",
+          "title": "집합",
+          "summary": "Tuple 이 오는 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.9",
+          "id": "group-by",
+          "title": "GroupBy",
+          "summary": "having 까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.10",
+          "id": "join-basic",
+          "title": "조인",
+          "summary": "기본 조인과 별칭.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.11",
+          "id": "theta-join",
+          "title": "세타 조인",
+          "summary": "연관 없는 두 표.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.12",
+          "id": "join-on",
+          "title": "조인 on 절",
+          "summary": "필터링과 외부 조인.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.13",
+          "id": "join-fetch",
+          "title": "페치 조인",
+          "summary": "N+1 을 여기서도 만난다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.14",
+          "id": "subquery",
+          "title": "서브 쿼리",
+          "summary": "from 절이 안 되는 이유.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.15",
+          "id": "case-constant",
+          "title": "case 와 상수",
+          "summary": "문자 더하기까지.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "중급 문법",
+      "intro": "엔티티 말고 다른 모양으로 받는 법과, 조건을 코드로 조립하는 법.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "projection-basic",
+          "title": "프로젝션 대상이 하나",
+          "summary": "엔티티가 아닌 값.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "tuple",
+          "title": "Tuple 로 받기",
+          "summary": "리포지토리 밖으로 못 나간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "dto-jpql",
+          "title": "JPQL 의 new",
+          "summary": "패키지 경로를 다 적는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "dto-three-ways",
+          "title": "DTO 세 가지 방법",
+          "summary": "프로퍼티·필드·생성자.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "query-projection",
+          "title": "@QueryProjection",
+          "summary": "컴파일이 지켜 준다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "alias-mismatch",
+          "title": "이름이 다를 때",
+          "summary": "별칭과 서브쿼리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "boolean-builder",
+          "title": "동적 쿼리 — BooleanBuilder",
+          "summary": "조건을 모아 붙인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "where-param",
+          "title": "동적 쿼리 — Where 다중 파라미터",
+          "summary": "null 이면 무시된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "bulk",
+          "title": "수정·삭제 벌크 연산",
+          "summary": "영속성 컨텍스트를 건너뛴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.10",
+          "id": "sql-function",
+          "title": "SQL function 호출",
+          "summary": "방언에 등록된 것만.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "실무 활용 — 순수 JPA와 Querydsl",
+      "intro": "리포지토리를 직접 만들어 보고 조건 조립을 정리한다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "pure-jpa-repo",
+          "title": "순수 JPA 리포지토리",
+          "summary": "EntityManager 를 들고 시작한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "factory-config",
+          "title": "JPAQueryFactory 스프링 빈",
+          "summary": "동시성은 괜찮은가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "search-builder",
+          "title": "동적 쿼리와 성능 최적화 — Builder",
+          "summary": "조건 넷을 모은다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "search-where",
+          "title": "동적 쿼리와 성능 최적화 — Where",
+          "summary": "메서드를 재사용한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "compose",
+          "title": "조건을 조합한다",
+          "summary": "BooleanExpression 을 합친다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "repo-test",
+          "title": "리포지토리 테스트",
+          "summary": "조합마다 SQL 을 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "pure-limits",
+          "title": "순수 JPA 의 한계",
+          "summary": "페이징을 손으로 쓴다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "실무 활용 — 스프링 데이터 JPA와 Querydsl",
+      "intro": "⑭에서 배운 자리에 Querydsl 을 끼운다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "spring-data-repo",
+          "title": "스프링 데이터 JPA 리포지토리",
+          "summary": "선언과 조립을 나눈다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "custom-repo",
+          "title": "사용자 정의 리포지토리",
+          "summary": "Impl 에 조립을 넣는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "simple-paging",
+          "title": "스프링 데이터 페이징 — 단순",
+          "summary": "fetchResults 는 왜 사라졌나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "complex-paging",
+          "title": "스프링 데이터 페이징 — 복잡",
+          "summary": "목록과 개수를 나눈다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "count-optimize",
+          "title": "CountQuery 최적화",
+          "summary": "셀 필요가 없을 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "controller-test",
+          "title": "컨트롤러 개발과 검증",
+          "summary": "주소가 조건이 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "sort-caution",
+          "title": "정렬의 함정",
+          "summary": "Sort 를 그대로 못 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "스프링 데이터 JPA가 제공하는 Querydsl 기능",
+      "intro": "제공되는 세 가지를 확인하고, 왜 안 쓰는지까지 본다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "predicate-executor",
+          "title": "인터페이스 지원 — QuerydslPredicateExecutor",
+          "summary": "조인이 안 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "repository-support",
+          "title": "Querydsl 지원 클래스 직접 만들기",
+          "summary": "제공 클래스의 한계.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "support-paging",
+          "title": "지원 클래스로 페이징",
+          "summary": "반복을 지운다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "web-support",
+          "title": "Querydsl Web 지원",
+          "summary": "주소가 조건이 되는 방식.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "wrap-up",
+          "title": "다시 보는 SQL",
+          "summary": "이 책이 만든 문장들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "with-data-jpa",
+          "title": "⑭와 나란히",
+          "summary": "선언과 조립이 만나는 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "여기서 어디로 가나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}
