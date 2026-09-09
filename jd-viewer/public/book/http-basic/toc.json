@@ -341,7 +341,7 @@
           "title": "HTTP API 로 데이터 전송",
           "summary": "JSON 을 실어 보낸다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -349,7 +349,7 @@
           "title": "컬렉션",
           "summary": "서버가 리소스 URI 를 정한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

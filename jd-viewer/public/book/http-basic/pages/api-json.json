@@ -1,0 +1,144 @@
+{
+ "book": "http-basic",
+ "id": "api-json",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "HTTP API 로 데이터 전송",
+ "summary": "JSON 을 실어 보낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "폼과 무엇이 달라지는지 안다.",
+  "두 헤더를 구분한다.",
+  "오류 형식을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2~6.4절은 브라우저가 폼을** 보냈다. **여기부터는 코드가** 보낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "달라지는 것",
+   "ascii": "   what changes when code sends instead of a form\n\n   any method        put, patch, delete, not just get and post\n   any body          json, and nested objects and arrays\n   any header        authorization, custom ones, content negotiation\n   no navigation     the page does not move, so no redirect follows\n   cors applies      because now a script is asking, not a form\n\n   the last two are where the surprises live",
+   "note": "**아래 둘이 놀라는** 자리다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "제약이 풀리면서 책임이 생긴다",
+   "md": "**메서드를 다 쓸 수** 있다.\n\n> **5.4절의 PUT·PATCH 가 그제서야 쓸모가** 생긴다.\n> **`_method` 우회가 필요** 없다(5.7절).\n\n**중첩을 담을 수** 있다.\n\n> **urlencoded 는 평평하다**(6.3절).\n> **멀티파트도 그렇다**(6.4절).\n> **JSON 은 객체와 배열이** 된다.\n\n**대신 페이지가 안 움직인다.**\n\n> **`303` 을 줘도 브라우저가 화면을 안** 바꾼다(5.3절).\n> **`fetch` 가 리다이렉트를 따라가서 최종 응답만** 준다.\n> **새로고침 중복 문제도 다르게** 다뤄야 한다.\n\n**CORS 가** 걸린다.\n\n> **폼은 다른 사이트로 그냥 보냈다**(6.3절).\n> **스크립트는 브라우저가** 막는다.\n> **`Content-Type: application/json` 하나로 프리플라이트가** 붙는다(5.8절).\n> **막는 건 브라우저지 서버가** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 헤더",
+   "ascii": "   two headers that look alike and point opposite ways\n\n   Content-Type    what i am sending you, right now, in this body\n   Accept          what i would like back, in order of preference\n\n   a request may carry both, and they may name different formats\n   a response carries only Content-Type, describing its own body",
+   "note": "**한 요청에 둘이 다를 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "오류도 형식을 정해 둔다",
+   "md": "**상태 코드만으로는 부족**하다.\n\n> **`400` 이 무엇 때문인지 말해야** 한다.\n> **필드별 오류를 담을 자리가** 필요하다.\n\n**RFC 9457 이 표준 형식을** 준다.\n\n```json\n{\n  \"type\": \"https://example.com/errors/out-of-stock\",\n  \"title\": \"재고 부족\",\n  \"status\": 409,\n  \"detail\": \"노트북 재고가 2개뿐입니다\",\n  \"instance\": \"/orders/5\"\n}\n```\n\n> **`Content-Type: application/problem+json`** 이다.\n> **안 써도 되지만 형식을 정해 두는 게** 중요하다.\n> **⑧ 에서 예외를 응답으로 옮기던 것과 같은** 이야기다.\n\n**본문이 깨졌을 때가** 애매하다.\n\n> **JSON 문법 오류면 `400`** 이다.\n> **타입이 안 맞으면 `422` 를 쓰기도** 한다.\n> **7장에서 다시** 본다.\n\n**널과 없음이** 다르다.\n\n> **`{\"memo\": null}` 과 `{}` 가** 다르다.\n> **5.4절의 Merge Patch 가 이걸** 쓴다.\n> **역직렬화가 둘을 같게 만들면 정보를** 잃는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 중첩을 보낸다 ---\n\n$ python3 echo.py > /tmp/echo.log 2>&1 & sleep 1\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d '{\"order\":{\"items\":[{\"sku\":\"A\",\"qty\":2},{\"sku\":\"B\",\"qty\":1}],\n         \"memo\":null}}' http://localhost:9065/orders \\\n  | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"본문\"])'\n\n{\"order\":{\"items\":[{\"sku\":\"A\",\"qty\":2},{\"sku\":\"B\",\"qty\":1}],\n         \"memo\":null}}\n\n#   배열 안에 객체가 있다\n\n#   urlencoded 로는 못 한다\n\n$ python3 - <<'EOF'\nfrom urllib.parse import urlencode\ntry:\n    print(urlencode({\"items\": [{\"sku\": \"A\"}]}))\nexcept Exception as e:\n    print(\"오류\", e)\nEOF\n\nitems=%5B%7B%27sku%27%3A+%27A%27%7D%5D\n\n#   문자열로 뭉개진다\n\n#   파이썬 repr 이 그대로 들어갔다\n\n#   구조가 사라졌다\n\n# --- 메서드가 다 열린다 ---\n\n$ for m in PUT PATCH DELETE; do\n    printf '%-7s' $m\n    curl -s -o /dev/null -w '%{http_code}\\n' -X $m \\\n      -H 'Content-Type: application/json' -d '{}' \\\n      http://localhost:9080/orders/5\n  done\n\nPUT    200\nPATCH  501\nDELETE 204\n\n#   폼으로는 GET POST 뿐이었다 (6.1절)\n\n#   _method 우회가 필요 없다 (5.7절)\n\n# --- Content-Type 과 Accept ---\n\n$ curl -s -o /dev/null -v -X POST \\\n    -H 'Content-Type: application/json' \\\n    -H 'Accept: application/xml, application/json;q=0.9' \\\n    -d '{}' http://localhost:9065/orders 2>&1 | grep -E '^> (Content-Type|Accept)'\n\n> Content-Type: application/json\n> Accept: application/xml, application/json;q=0.9\n\n#   보내는 건 JSON 이고\n\n#   받고 싶은 건 XML 이 먼저다\n\n#   q 가 선호도다\n\n$ curl -s -D - -o /dev/null http://localhost:9065/orders \\\n  | grep -i '^content-type'\n\nContent-Type: application/json\n\n#   응답에는 Content-Type 만 있다\n\n#   Accept 는 요청 쪽 헤더다\n\n$ cat negotiate.py\n\n    def do_GET(self):\n        acc = self.headers.get(\"Accept\", \"*/*\")\n        if \"application/xml\" in acc:\n            b, t = b\"<order><id>5</id></order>\", \"application/xml\"\n        elif \"text/csv\" in acc:\n            b, t = b\"id,item\\n5,laptop\\n\", \"text/csv\"\n        else:\n            b, t = b'{\"id\":5}', \"application/json\"\n        self.send_response(200)\n        self.send_header(\"Content-Type\", t)\n        self.send_header(\"Vary\", \"Accept\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\n\n$ python3 negotiate.py & sleep 1\n$ for a in 'application/json' 'application/xml' 'text/csv'; do\n    printf '%-18s' \"$a\"\n    curl -s -H \"Accept: $a\" http://localhost:9061/orders/5\n  done\n\napplication/json  {\"id\":5}\napplication/xml   <order><id>5</id></order>\ntext/csv          id,item\n                  5,laptop\n\n#   같은 주소에서 형식이 갈린다\n\n#   Vary: Accept 를 붙였다\n\n#   캐시가 헷갈리지 않게 하려는 것이다 (9장)\n\n$ kill %1 2>/dev/null\n\n# --- 브라우저에서 보내면 CORS 가 걸린다 ---\n\n$ cat fetch.html\n\n<script>\nfetch(\"http://localhost:9065/orders\", {\n  method: \"POST\",\n  headers: {\"Content-Type\": \"application/json\"},\n  body: JSON.stringify({item: \"책\"})\n}).then(r => console.log(\"성공\", r.status))\n  .catch(e => console.log(\"실패\", e.message))\n</script>\n\n$ open -a \"Google Chrome\" file://$PWD/fetch.html 2>/dev/null; sleep 3\n$ grep -o '\"[A-Z]* /orders' /tmp/echo.log | tail -2\n\n\"OPTIONS /orders\n\n#   OPTIONS 만 갔다\n\n#   POST 는 안 갔다\n\n#   서버가 CORS 헤더를 안 줘서다\n\n#   5.8절의 프리플라이트다\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"책\"}' http://localhost:9065/orders \\\n  | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"메서드\"])'\n\nPOST\n\n#   curl 로는 그냥 된다\n\n#   막는 건 브라우저지 서버가 아니다\n\n# --- 폼은 그냥 갔었다 ---\n\n$ grep -c 'POST /transfer' /tmp/echo.log\n\n1\n\n#   6.3절의 자동 제출 폼이다\n\n#   그건 갔다\n\n#   스크립트만 막힌다\n\n#   그래서 CSRF 토큰이 여전히 필요하다\n\n# --- 리다이렉트가 다르게 보인다 ---\n\n$ cat redir.py\n\n    def do_POST(self):\n        self.send_response(303)\n        self.send_header(\"Location\", \"/orders/9\")\n        self.send_header(\"Content-Length\", \"0\")\n        self.end_headers()\n\n$ python3 redir.py & sleep 1\n$ curl -s -o /dev/null -w '따라감 없이 %{http_code}\\n' -X POST \\\n    http://localhost:9060/checkout\n$ curl -s -L -o /dev/null -w '따라가면 %{http_code} %{url_effective}\\n' \\\n    -X POST http://localhost:9060/checkout\n\n따라감 없이 303\n따라가면 404 http://localhost:9060/orders/9\n\n#   fetch 는 기본이 따라가는 것이다\n\n#   최종 응답만 받는다\n\n#   303 을 봤는지 코드가 모른다\n\n#   화면도 안 바뀐다\n\n$ kill %1 2>/dev/null\n\n# --- 오류 형식 ---\n\n$ cat problem.py\n\n    def do_POST(self):\n        b = json.dumps({\n            \"type\": \"https://example.com/errors/out-of-stock\",\n            \"title\": \"재고 부족\",\n            \"status\": 409,\n            \"detail\": \"노트북 재고가 2개뿐입니다\",\n            \"instance\": \"/orders/5\",\n            \"errors\": [{\"field\": \"qty\", \"message\": \"2 이하여야 합니다\"}],\n        }, ensure_ascii=False).encode()\n        self.send_response(409)\n        self.send_header(\"Content-Type\", \"application/problem+json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\n\n$ python3 problem.py & sleep 1\n$ curl -s -D - -X POST -d '{}' http://localhost:9059/orders \\\n  | grep -E 'HTTP|content-type|title|errors'\n\nHTTP/1.1 409 Conflict\nContent-Type: application/problem+json\n\n$ curl -s -X POST -d '{}' http://localhost:9059/orders \\\n  | python3 -m json.tool --no-ensure-ascii\n\n{\n    \"type\": \"https://example.com/errors/out-of-stock\",\n    \"title\": \"재고 부족\",\n    \"status\": 409,\n    \"detail\": \"노트북 재고가 2개뿐입니다\",\n    \"instance\": \"/orders/5\",\n    \"errors\": [\n        {\n            \"field\": \"qty\",\n            \"message\": \"2 이하여야 합니다\"\n        }\n    ]\n}\n\n#   코드만으로는 부족하다\n\n#   무엇이 왜 안 됐는지 말한다\n\n#   ⑧ 에서 예외를 응답으로 옮기던 것이다\n\n$ kill %1 2>/dev/null\n\n# --- null 과 없음 ---\n\n$ python3 - <<'EOF'\nimport json\na = json.loads('{\"memo\": null}')\nb = json.loads('{}')\nprint(\"null 있음\", a, \"| memo 키 있나:\", \"memo\" in a)\nprint(\"없음    \", b, \"| memo 키 있나:\", \"memo\" in b)\nprint(\"get 으로 보면\", a.get(\"memo\"), b.get(\"memo\"), \"— 같아 보인다\")\nEOF\n\nnull 있음 {'memo': None} | memo 키 있나: True\n없음     {} | memo 키 있나: False\nget 으로 보면 None None — 같아 보인다\n\n#   지웠다와 안 건드렸다가 다르다\n\n#   6.2절의 빈 값 문제와 같은 계열이다\n\n#   Merge Patch 가 이걸 쓴다 (5.4절)\n\n# --- 잘못된 JSON ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    -H 'Content-Type: application/json' -d '{\"item\": }' \\\n    http://localhost:9080/orders\n\n500\n\n#   서버가 안 잡아서 500 이다\n\n#   400 이어야 한다\n\n#   파싱 실패는 클라이언트 잘못이다\n\n# --- 다음 절에서 ---\n\n#   서버가 위치를 정하는 컬렉션",
+   "note": "**중첩 JSON 이 그대로 가는데 `urlencode` 는 구조를 문자열로** 뭉갠다.\n\n**`Content-Type` 은 보내는 것, `Accept` 는 받고 싶은 것**이고 응답에는 앞의 것만 있다.\n\n**같은 주소가 `Accept` 에 따라 JSON·XML·CSV 로** 갈린다.\n\n**브라우저 `fetch` 는 `OPTIONS` 만 가고 POST 는 안 갔는데 `curl` 로는** 된다.\n\n**`{\"memo\": null}` 과 `{}` 가 `get` 으로 보면 둘 다 `None`** 이다."
+  }
+ ],
+ "recap": [
+  "**코드가 보내면 제약이** 풀린다.",
+  "**메서드를 다 쓸 수** 있다.",
+  "**중첩 구조를 담을 수** 있다.",
+  "**`Content-Type` 과 `Accept` 는 방향이** 반대다.",
+  "**`Accept` 로 형식을** 고른다.",
+  "**리다이렉트가 화면을 안** 바꾼다.",
+  "**CORS 는 브라우저가** 막는다.",
+  "**오류 형식을 정해** 둔다.",
+  "**`null` 과 없음이** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 JSON 을 보낸다.",
+   "done_when": "urlencoded 와 비교했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Accept` 로 형식을 바꾼다.",
+   "done_when": "세 형식을 다 받았다.",
+   "minutes": 25
+  },
+  {
+   "task": "브라우저에서 `fetch` 한다.",
+   "done_when": "프리플라이트만 가는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "오류 응답 형식을 만든다.",
+   "done_when": "필드별 오류를 담았다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "폼 대신 코드가 보내면 무엇이 열리나?",
+   "a": "모든 메서드, 중첩 본문, 임의 헤더다."
+  },
+  {
+   "q": "`Content-Type` 과 `Accept` 의 차이는?",
+   "a": "전자는 지금 보내는 본문, 후자는 받고 싶은 형식이다."
+  },
+  {
+   "q": "CORS 는 누가 막나?",
+   "a": "브라우저다. 서버는 그대로 처리한다."
+  },
+  {
+   "q": "API 에서 `303` 이 다르게 동작하는 이유는?",
+   "a": "페이지 이동이 아니라 코드가 최종 응답만 받기 때문이다."
+  },
+  {
+   "q": "`null` 과 키 없음을 구분해야 하는 이유는?",
+   "a": "'지웠다'와 '안 건드렸다'가 다른 뜻이라서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "콘텐츠 협상",
+   "def": "`Accept` 등으로 클라이언트가 원하는 표현을 고르는 것."
+  },
+  {
+   "term": "problem+json",
+   "def": "HTTP API 오류를 담는 표준 본문 형식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format",
+   "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Fetch Standard — CORS protocol",
+   "url": "https://fetch.spec.whatwg.org/#http-cors-protocol",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

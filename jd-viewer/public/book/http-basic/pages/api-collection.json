@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "api-collection",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "컬렉션",
+ "summary": "서버가 리소스 URI 를 정한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "컬렉션 흐름을 안다.",
+  "페이징 둘을 구분한다.",
+  "목록 응답을 설계한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 컬렉션과 단건을** 나눴다. **여기서 실제 흐름을** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 요청",
+   "ascii": "   the collection pattern, in four requests\n\n   POST   /orders          201, Location: /orders/9\n   GET    /orders/9        the thing that was just created\n   GET    /orders          a page of them, with a link to the next\n   DELETE /orders/9        204, and now the first get is a 404\n\n   the client never invents an identifier, it reads one back",
+   "note": "**클라이언트가 식별자를 지어내지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서버가 정하니 충돌이 없다",
+   "md": "**시퀀스든 UUID 든 서버가** 만든다.\n\n> **두 클라이언트가 동시에 만들어도 안** 부딪친다.\n> **5.3절에서 `Location` 으로 알려줬다.**\n> **6.7절의 스토어와 반대**다.\n\n**응답 본문에 만든 걸 담는** 게 보통이다.\n\n> **id 를 알려면 다시 GET 해야 하는 게** 싫어서다.\n> **`Location` 만 주고 끝내도** 된다.\n> **팀에서 정해** 둔다.\n\n**목록은 그냥 배열이 아니다.**\n\n```json\n{\n  \"items\": [...],\n  \"page\": {\"size\": 20, \"total\": 137},\n  \"links\": {\"next\": \"/orders?after=42\"}\n}\n```\n\n> **최상위가 배열이면 나중에 필드를 못** 붙인다.\n> **총 개수·다음 링크를 넣을 자리가** 없다.\n> **객체로 감싸는 게** 안전하다.\n\n**총 개수가 비쌀 수** 있다.\n\n> **`COUNT(*)` 가 큰 테이블에서** 느리다.\n> **\"다음이 있나\" 만 알려주는 것도** 방법이다.\n> **한 건 더 읽어 보면** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "페이징 두 가지",
+   "ascii": "   two ways to page, and only one survives inserts\n\n   offset      ?page=2&size=20\n               simple, jumps to any page, and shifts when rows appear\n               a row inserted at the top pushes one item onto page two\n\n   cursor      ?after=eyJpZCI6NDJ9\n               stable, only moves forward, and cannot jump to page 40\n\n   offset is fine for a table nobody is writing to",
+   "note": "**오프셋은 쓰는 사람이 없을 때** 괜찮다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "오프셋 페이징은 항목을 흘린다",
+   "md": "**1페이지를 보는 사이 새 글이** 올라온다.\n\n> **모든 항목이 한 칸씩** 밀린다.\n> **2페이지 첫 항목이 1페이지 마지막이던 것**이다.\n> **사용자는 그걸 두 번** 본다.\n> **삭제되면 반대로 하나를** 건너뛴다.\n\n**커서는 위치가 아니라 지점**이다.\n\n> **\"id 42 다음부터\" 라고** 말한다.\n> **앞에 뭐가 끼어들어도 안** 흔들린다.\n> **대신 40페이지로 점프를 못** 한다.\n\n**커서를 불투명하게** 만든다.\n\n> **Base64 로 감싸는 게** 관행이다.\n> **내부 구조를 클라이언트가 파싱하면 바꿀 수** 없게 된다.\n> **⑫ 에서 `continue` 토큰이 그** 모양이었다.\n\n**정렬이 안정적이어야** 한다.\n\n> **정렬 키가 중복되면 순서가 매번** 달라진다.\n> **`created_at` 만으로 정렬하면 같은 시각이** 문제다.\n> **id 를 보조 키로 같이** 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 컬렉션 서버 ---\n\n$ cat coll.py\n\nimport http.server, json, base64\nfrom urllib.parse import urlparse, parse_qs\nDB = {i: {\"id\": i, \"item\": f\"상품{i}\"} for i in range(1, 26)}\nNEXT = [26]\n\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, obj=None, extra=None):\n        b = b\"\" if obj is None else json.dumps(\n            obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        if b: self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        for k, v in (extra or {}).items(): self.send_header(k, v)\n        self.end_headers(); self.wfile.write(b)\n\n    def do_GET(self):\n        u = urlparse(self.path); q = parse_qs(u.query)\n        parts = u.path.strip(\"/\").split(\"/\")\n        if len(parts) > 1:\n            i = int(parts[1])\n            return self._send(200, DB[i]) if i in DB \\\n                else self._send(404, {\"error\": \"없음\"})\n        size = int(q.get(\"size\", [5])[0])\n        ids = sorted(DB)\n        if \"after\" in q:\n            cur = json.loads(base64.urlsafe_b64decode(\n                q[\"after\"][0] + \"==\"))\n            ids = [i for i in ids if i > cur[\"id\"]]\n        elif \"page\" in q:\n            ids = ids[(int(q[\"page\"][0]) - 1) * size:]\n        window = ids[:size]\n        out = {\"items\": [DB[i] for i in window],\n               \"page\": {\"size\": size, \"total\": len(DB)}}\n        if len(ids) > size:\n            tok = base64.urlsafe_b64encode(\n                json.dumps({\"id\": window[-1]}).encode()\n            ).decode().rstrip(\"=\")\n            out[\"links\"] = {\"next\": f\"/orders?after={tok}&size={size}\"}\n        self._send(200, out)\n\n    def do_POST(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = json.loads(self.rfile.read(n) or b\"{}\")\n        i = NEXT[0]; NEXT[0] += 1\n        d[\"id\"] = i; DB[i] = d\n        self._send(201, d, {\"Location\": f\"/orders/{i}\"})\n\n    def do_DELETE(self):\n        DB.pop(int(self.path.strip(\"/\").split(\"/\")[1]), None)\n        self._send(204)\n\nhttp.server.HTTPServer((\"\", 9058), H).serve_forever()\n\n$ python3 coll.py & sleep 1\n\n# --- 네 요청 ---\n\n$ L=$(curl -s -D - -o /dev/null -X POST -d '{\"item\":\"새 상품\"}' \\\n      http://localhost:9058/orders | grep -i '^location' \\\n      | tr -d '\\r' | cut -d' ' -f2)\n$ echo $L\n\n/orders/26\n\n$ curl -s \"http://localhost:9058$L\"\n\n{\"item\": \"새 상품\", \"id\": 26}\n\n#   클라이언트가 26 을 지어내지 않았다\n\n#   읽어 왔다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    \"http://localhost:9058$L\"\n$ curl -s -o /dev/null -w '%{http_code}\\n' \"http://localhost:9058$L\"\n\n204\n404\n\n# --- 목록은 객체로 감싼다 ---\n\n$ curl -s 'http://localhost:9058/orders?size=3' \\\n  | python3 -m json.tool --no-ensure-ascii\n\n{\n    \"items\": [\n        {\"id\": 1, \"item\": \"상품1\"},\n        {\"id\": 2, \"item\": \"상품2\"},\n        {\"id\": 3, \"item\": \"상품3\"}\n    ],\n    \"page\": {\"size\": 3, \"total\": 25},\n    \"links\": {\"next\": \"/orders?after=eyJpZCI6IDN9&size=3\"}\n}\n\n#   최상위가 배열이 아니다\n\n#   total 과 next 를 넣을 자리가 있다\n\n#   배열이었다면 못 붙인다\n\n# --- 커서를 따라간다 ---\n\n$ N=$(curl -s 'http://localhost:9058/orders?size=3' \\\n      | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"links\"][\"next\"])')\n$ curl -s \"http://localhost:9058$N\" \\\n  | python3 -c 'import sys,json; \\\n      print([i[\"id\"] for i in json.load(sys.stdin)[\"items\"]])'\n\n[4, 5, 6]\n\n$ echo 'eyJpZCI6IDN9==' | base64 -d 2>/dev/null; echo\n\n{\"id\": 3}\n\n#   커서 안이 id 다\n\n#   Base64 로 감쌌다\n\n#   클라이언트가 파싱하면 안 된다\n\n#   ⑫ 의 continue 토큰이 이 모양이었다\n\n# --- 오프셋은 흘린다 ---\n\n$ curl -s 'http://localhost:9058/orders?page=1&size=3' \\\n  | python3 -c 'import sys,json; \\\n      print(\"1페이지\", [i[\"id\"] for i in json.load(sys.stdin)[\"items\"]])'\n\n1페이지 [1, 2, 3]\n\n$ curl -s -o /dev/null -X POST -d '{\"item\":\"끼어듦\"}' \\\n    http://localhost:9058/orders\n$ curl -s -X DELETE http://localhost:9058/orders/1 > /dev/null\n\n#   1번이 지워졌다\n\n$ curl -s 'http://localhost:9058/orders?page=2&size=3' \\\n  | python3 -c 'import sys,json; \\\n      print(\"2페이지\", [i[\"id\"] for i in json.load(sys.stdin)[\"items\"]])'\n\n2페이지 [5, 6, 7]\n\n#   4가 사라졌다\n\n#   1페이지에도 2페이지에도 없다\n\n#   사용자는 4를 영영 못 본다\n\n$ curl -s 'http://localhost:9058/orders?size=3' \\\n  | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n      print(\"커서 1페이지\", [i[\"id\"] for i in d[\"items\"]]); \\\n      print(\"다음\", d[\"links\"][\"next\"])'\n\n커서 1페이지 [2, 3, 4]\n다음 /orders?after=eyJpZCI6IDR9&size=3\n\n$ curl -s 'http://localhost:9058/orders?after=eyJpZCI6IDR9&size=3' \\\n  | python3 -c 'import sys,json; \\\n      print(\"커서 2페이지\", [i[\"id\"] for i in json.load(sys.stdin)[\"items\"]])'\n\n커서 2페이지 [5, 6, 7]\n\n#   4 다음부터라고 말했다\n\n#   앞이 흔들려도 안 흘린다\n\n#   대신 40페이지로 점프를 못 한다\n\n# --- 총 개수가 비쌀 때 ---\n\n$ curl -s 'http://localhost:9058/orders?size=3' \\\n  | python3 -c 'import sys,json; \\\n      d=json.load(sys.stdin); print(\"total\", d[\"page\"][\"total\"], \\\n      \"| next 있나\", \"links\" in d)'\n\ntotal 25 | next 있나 True\n\n#   total 은 COUNT(*) 다\n\n#   큰 테이블에서 느리다\n\n#   next 유무만 줘도 화면은 만들어진다\n\n#   한 건 더 읽어 보면 안다\n\n# --- 마지막 페이지 ---\n\n$ curl -s 'http://localhost:9058/orders?after=eyJpZCI6IDIzfQ&size=5' \\\n  | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n      print([i[\"id\"] for i in d[\"items\"]], \"| next\", \"links\" in d)'\n\n[24, 25, 26, 27] | next False\n\n#   next 가 없으면 끝이다\n\n#   빈 배열을 받을 필요가 없다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   클라이언트가 위치를 정할 때",
+   "note": "**`POST` 가 `Location: /orders/26` 을 주고 클라이언트는 그걸 읽어** 쓴다.\n\n**목록 최상위가 배열이 아니라 객체라 `total` 과 `next` 를 담을 자리가** 있다.\n\n**커서 `eyJpZCI6IDN9` 를 디코딩하면 `{\"id\": 3}`** 이다.\n\n**오프셋 페이징에서 항목이 지워지자 `4` 가 1·2페이지 어디에도** 없다.\n\n**커서 페이징은 같은 상황에서 `[5, 6, 7]` 로 안** 흘린다."
+  }
+ ],
+ "recap": [
+  "**서버가 식별자를** 정한다.",
+  "**`Location` 으로 알려**준다.",
+  "**클라이언트는 그걸 읽어 쓴다.**",
+  "**목록은 객체로** 감싼다.",
+  "**최상위 배열은 확장이 안** 된다.",
+  "**오프셋은 항목을** 흘린다.",
+  "**커서는 지점을** 가리킨다.",
+  "**커서는 불투명하게** 만든다.",
+  "**총 개수가 비쌀 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "컬렉션 네 요청을 해 본다.",
+   "done_when": "`Location` 을 따라갔다.",
+   "minutes": 20
+  },
+  {
+   "task": "목록 응답을 설계한다.",
+   "done_when": "객체로 감싸 링크를 넣었다.",
+   "minutes": 20
+  },
+  {
+   "task": "오프셋 중간에 삭제한다.",
+   "done_when": "항목이 흘리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "커서로 같은 걸 한다.",
+   "done_when": "안 흘리는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컬렉션에서 식별자는 누가 정하나?",
+   "a": "서버다. `Location` 으로 알려 준다."
+  },
+  {
+   "q": "목록 응답을 객체로 감싸는 이유는?",
+   "a": "총 개수나 링크 같은 필드를 나중에 붙일 수 있어서다."
+  },
+  {
+   "q": "오프셋 페이징의 문제는?",
+   "a": "중간에 삽입·삭제가 일어나면 항목을 흘리거나 중복해 보여 준다."
+  },
+  {
+   "q": "커서 페이징의 한계는?",
+   "a": "임의 페이지로 점프할 수 없다."
+  },
+  {
+   "q": "커서를 Base64 로 감싸는 이유는?",
+   "a": "클라이언트가 내부 구조에 의존하지 못하게 하려는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "커서 페이징",
+   "def": "마지막으로 본 지점을 기준으로 다음을 요청하는 방식."
+  },
+  {
+   "term": "불투명 토큰",
+   "def": "클라이언트가 해석하면 안 되는 인코딩된 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
