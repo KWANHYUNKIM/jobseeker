@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "cors",
+ "no": "8.10",
+ "chapter": 8,
+ "title": "CORS",
+ "summary": "브라우저만 아는 규칙.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "출처를 정의한다.",
+  "무엇을 막는지 안다.",
+  "자격 증명 규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.8절과 6.5절에서 계속 나온 프리플라이트**다. **8장을 여기서** 닫는다."
+  },
+  {
+   "type": "figure",
+   "caption": "출처는 셋이다",
+   "ascii": "   an origin is three things, and all three must match\n\n   scheme    https\n   host      example.com\n   port      443\n\n   https://example.com and http://example.com are different origins\n   and so are example.com and www.example.com",
+   "note": "**하나만 달라도 다른 출처**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "동일 출처 정책이 먼저 있었다",
+   "md": "**스크립트는 자기 출처 것만 읽을 수** 있다.\n\n> **그게 없으면 아무 사이트나 내 은행 페이지를 읽는다.**\n> **CORS 는 그 벽에 문을 내는** 방법이다.\n> **막는 게 아니라 푸는** 쪽이다.\n\n**요청은 대개 나간다.**\n\n> **단순 요청이면 서버까지** 간다(6.3절).\n> **서버가 처리도** 한다.\n> **응답을 스크립트가 못 읽을** 뿐이다.\n> **그래서 CORS 는 서버 보호가** 아니다.\n\n**서버 보호는 다른 것이 한다.**\n\n> **인증·인가**다(8.7절).\n> **CSRF 토큰**이다(6.3절).\n> **`curl` 에는 CORS 가 아예** 없다.\n\n**프리플라이트가 붙는 조건**\n\n| 단순 요청 | 프리플라이트 |\n|---|---|\n| GET·HEAD·POST | 그 밖의 메서드 |\n| 몇 가지 안전한 헤더만 | 커스텀 헤더 |\n| 세 가지 `Content-Type` | `application/json` 등 |\n\n> **JSON 하나로 요청이 두 배가** 된다(5.8절).\n> **`Access-Control-Max-Age` 로 그걸** 줄인다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 하고 안 하나",
+   "ascii": "   what cors does and does not do\n\n   it does       tell a browser whether a script may read a response\n\n   it does not   stop the request from being sent\n                 protect a server from anything\n                 apply to curl, a server, or a mobile app\n\n   the request often arrives and runs, and only the reading is blocked",
+   "note": "**읽기만** 막힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자격 증명이 붙으면 규칙이 엄해진다",
+   "md": "**`credentials: 'include'` 면 쿠키가** 간다.\n\n> **그러면 `Access-Control-Allow-Origin: *` 이 안** 된다.\n> **정확한 출처를 적어야** 한다.\n> **`Access-Control-Allow-Credentials: true` 도** 필요하다.\n\n**출처를 그대로 되돌려 주면 위험**하다.\n\n> **`Origin` 헤더를 그대로 `Allow-Origin` 에** 넣는 코드가 흔하다.\n> **자격 증명까지 켜면 아무 사이트나 읽는다.**\n> **허용 목록으로 검사해야** 한다.\n\n**읽을 수 있는 응답 헤더가** 적다.\n\n> **기본은 여섯 개뿐**이다.\n> **`Location` 도 커스텀 헤더도 안** 보인다.\n> **`Access-Control-Expose-Headers` 로 열어**준다.\n\n**`Vary: Origin` 이** 필요하다.\n\n> **출처마다 다른 응답을** 준다(8.3절).\n> **없으면 캐시가 A 의 허용 헤더를 B 에게** 준다.\n> **8.3절에서 본 그 사고**다.\n\n**오류 메시지가 서버에 안** 남는다.\n\n> **브라우저 콘솔에만** 뜬다.\n> **서버 로그에는 정상 요청으로** 보인다.\n> **⑫ 10.6절처럼 양쪽을 같이 봐야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- CORS 서버 ---\n\n$ cat cors.py\n\nimport http.server, json\nALLOWED = {\"http://localhost:8080\", \"https://app.example.com\"}\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _cors(self, origin, creds=False):\n        if self.path.startswith(\"/open\"):\n            self.send_header(\"Access-Control-Allow-Origin\", \"*\")\n        elif self.path.startswith(\"/echo\"):\n            if origin:\n                self.send_header(\"Access-Control-Allow-Origin\", origin)\n                self.send_header(\"Access-Control-Allow-Credentials\", \"true\")\n        elif origin in ALLOWED:\n            self.send_header(\"Access-Control-Allow-Origin\", origin)\n            self.send_header(\"Access-Control-Allow-Credentials\", \"true\")\n        self.send_header(\"Vary\", \"Origin\")\n\n    def do_OPTIONS(self):\n        o = self.headers.get(\"Origin\")\n        self.send_response(204)\n        self._cors(o)\n        self.send_header(\"Access-Control-Allow-Methods\", \"GET, POST, DELETE\")\n        self.send_header(\"Access-Control-Allow-Headers\",\n                         \"Content-Type, X-Request-Id\")\n        self.send_header(\"Access-Control-Max-Age\", \"600\")\n        self.send_header(\"Content-Length\", \"0\")\n        self.end_headers()\n\n    def do_GET(self):\n        o = self.headers.get(\"Origin\")\n        b = json.dumps({\"ok\": True, \"origin\": o},\n                       ensure_ascii=False).encode()\n        self.send_response(200)\n        self._cors(o)\n        self.send_header(\"X-Trace-Id\", \"abc123\")\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\n    do_POST = do_DELETE = do_GET\nhttp.server.HTTPServer((\"\", 9013), H).serve_forever()\n\n$ python3 cors.py > /tmp/cors.log 2>&1 & sleep 1\n\n# --- 출처가 셋이다 ---\n\n$ for o in 'http://localhost:8080' 'https://localhost:8080' \\\n           'http://localhost:9090' 'http://127.0.0.1:8080'; do\n    printf '%-26s' \"$o\"\n    curl -s -D - -o /dev/null -H \"Origin: $o\" \\\n      http://localhost:9013/api | grep -i '^access-control-allow-origin' \\\n      | tr -d '\\r' || echo '(허용 안 됨)'\n  done\n\nhttp://localhost:8080     Access-Control-Allow-Origin: http://localhost:8080\nhttps://localhost:8080    (허용 안 됨)\nhttp://localhost:9090     (허용 안 됨)\nhttp://127.0.0.1:8080     (허용 안 됨)\n\n#   스킴만 달라도 다른 출처다\n\n#   포트도 호스트 표기도 그렇다\n\n#   localhost 와 127.0.0.1 이 다르다\n\n# --- 요청은 나간다 ---\n\n$ cat blocked.html\n\n<script>\nfetch(\"http://localhost:9013/api\")\n  .then(r => r.json())\n  .then(d => console.log(\"읽음\", d))\n  .catch(e => console.log(\"막힘\", e.message))\n</script>\n\n$ open -a \"Google Chrome\" file://$PWD/blocked.html 2>/dev/null; sleep 3\n$ grep -c 'GET /api' /tmp/cors.log\n\n1\n\n#   서버에는 요청이 왔다\n\n#   콘솔에는 막힘 이라고 찍힌다\n\n#   응답을 못 읽었을 뿐이다\n\n#   CORS 는 서버 보호가 아니다\n\n$ curl -s http://localhost:9013/api\n\n{\"ok\": true, \"origin\": null}\n\n#   curl 에는 CORS 가 없다\n\n#   Origin 도 안 보낸다\n\n# --- 프리플라이트 ---\n\n$ curl -s -D - -o /dev/null -X OPTIONS \\\n    -H 'Origin: http://localhost:8080' \\\n    -H 'Access-Control-Request-Method: DELETE' \\\n    -H 'Access-Control-Request-Headers: X-Request-Id' \\\n    http://localhost:9013/api | grep -i '^access-control'\n\nAccess-Control-Allow-Origin: http://localhost:8080\nAccess-Control-Allow-Credentials: true\nAccess-Control-Allow-Methods: GET, POST, DELETE\nAccess-Control-Allow-Headers: Content-Type, X-Request-Id\nAccess-Control-Max-Age: 600\n\n#   무엇이 되는지 미리 답한다\n\n#   600초 동안 다시 안 묻는다\n\n$ cat pre.html\n\n<script>\nfetch(\"http://localhost:9013/api\", {\n  method: \"DELETE\",\n  headers: {\"X-Request-Id\": \"r1\"}\n})\n</script>\n\n$ open -a \"Google Chrome\" file://$PWD/pre.html 2>/dev/null; sleep 3\n$ grep -oE '\"(OPTIONS|DELETE) /api' /tmp/cors.log | tail -2\n\n\"OPTIONS /api\n\"DELETE /api\n\n#   두 번 갔다\n\n#   5.8절에서 본 그것이다\n\n# --- 자격 증명 ---\n\n$ curl -s -D - -o /dev/null -H 'Origin: http://localhost:8080' \\\n    http://localhost:9013/open | grep -i '^access-control'\n\nAccess-Control-Allow-Origin: *\n\n$ python3 - <<'EOF'\nprint(\"credentials: 'include' 인데 Allow-Origin: * 이면\")\nprint(\"  브라우저가 거부한다\")\nprint()\nprint(\"정확한 출처 + Allow-Credentials: true 여야 한다\")\nEOF\n\ncredentials: 'include' 인데 Allow-Origin: * 이면\n  브라우저가 거부한다\n\n정확한 출처 + Allow-Credentials: true 여야 한다\n\n$ curl -s -D - -o /dev/null -H 'Origin: http://localhost:8080' \\\n    http://localhost:9013/api | grep -i 'allow-credentials'\n\nAccess-Control-Allow-Credentials: true\n\n# --- 출처를 그대로 되돌리면 ---\n\n$ curl -s -D - -o /dev/null -H 'Origin: https://evil.example' \\\n    http://localhost:9013/echo | grep -i '^access-control'\n\nAccess-Control-Allow-Origin: https://evil.example\nAccess-Control-Allow-Credentials: true\n\n#   아무 출처나 허용됐다\n\n#   자격 증명까지 켜져 있다\n\n#   evil.example 이 로그인된 데이터를 읽는다\n\n$ curl -s -D - -o /dev/null -H 'Origin: https://evil.example' \\\n    http://localhost:9013/api | grep -ci '^access-control-allow-origin'\n\n0\n\n#   허용 목록으로 검사하면 안 나간다\n\n#   Origin 을 그대로 쓰면 안 된다\n\n# --- 읽을 수 있는 헤더가 적다 ---\n\n$ curl -s -D - -o /dev/null -H 'Origin: http://localhost:8080' \\\n    http://localhost:9013/api | grep -i 'x-trace-id'\n\nX-Trace-Id: abc123\n\n$ cat expose.html\n\n<script>\nfetch(\"http://localhost:9013/api\")\n  .then(r => console.log(\"X-Trace-Id:\", r.headers.get(\"X-Trace-Id\")))\n</script>\n\n$ open -a \"Google Chrome\" file://$PWD/expose.html 2>/dev/null; sleep 3\n\n#   콘솔: X-Trace-Id: null\n\n#   응답에는 있는데 못 읽는다\n\n$ python3 - <<'EOF'\nsafe = [\"Cache-Control\", \"Content-Language\", \"Content-Length\",\n        \"Content-Type\", \"Expires\", \"Last-Modified\", \"Pragma\"]\nprint(\"기본으로 읽히는 헤더\")\nfor s in safe: print(\" \", s)\nprint()\nprint(\"나머지는 Access-Control-Expose-Headers 로 열어 준다\")\nEOF\n\n기본으로 읽히는 헤더\n  Cache-Control\n  Content-Language\n  Content-Length\n  Content-Type\n  Expires\n  Last-Modified\n  Pragma\n\n나머지는 Access-Control-Expose-Headers 로 열어 준다\n\n#   Location 도 안 보인다\n\n#   7.2절의 201 위치를 못 읽는다\n\n# --- Vary: Origin ---\n\n$ curl -s -D - -o /dev/null -H 'Origin: http://localhost:8080' \\\n    http://localhost:9013/api | grep -i '^vary'\n\nVary: Origin\n\n$ python3 - <<'EOF'\nprint(\"Vary: Origin 이 없으면\")\nprint(\"  A 출처의 응답이 캐시된다\")\nprint(\"  B 출처가 그 응답을 받는다\")\nprint(\"  Allow-Origin 이 A 로 적혀 있어 B 는 막힌다\")\nprint()\nprint(\"8.3절에서 언어로 겪은 그 사고다\")\nEOF\n\nVary: Origin 이 없으면\n  A 출처의 응답이 캐시된다\n  B 출처가 그 응답을 받는다\n  Allow-Origin 이 A 로 적혀 있어 B 는 막힌다\n\n8.3절에서 언어로 겪은 그 사고다\n\n# --- 오류가 서버에 안 남는다 ---\n\n$ grep -c 'GET /api' /tmp/cors.log\n\n4\n\n$ python3 -c \"\nprint('서버 로그: 전부 200 이다')\nprint('브라우저 콘솔에만 CORS 오류가 뜬다')\nprint('양쪽을 같이 봐야 한다 (⑫ 10.6절)')\"\n\n서버 로그: 전부 200 이다\n브라우저 콘솔에만 CORS 오류가 뜬다\n양쪽을 같이 봐야 한다 (⑫ 10.6절)\n\n$ kill %1 2>/dev/null\n\n# --- 다음 장에서 ---\n\n#   요청을 아예 안 보내는 법",
+   "note": "**스킴만 달라도, `localhost` 와 `127.0.0.1` 도 다른 출처**다.\n\n**브라우저가 막았는데 서버 로그에는 요청이 남아** 있다 — 읽기만 막힌 것이다.\n\n**`Origin` 을 그대로 되돌리는 `/echo` 는 `evil.example` 까지** 허용한다.\n\n**응답에 `X-Trace-Id` 가 있는데 스크립트는 `null` 로** 읽는다.\n\n**`curl` 은 `Origin` 도 안 보내고 그냥** 받는다."
+  }
+ ],
+ "recap": [
+  "**출처는 스킴·호스트·포트** 셋이다.",
+  "**하나만 달라도 다른** 출처다.",
+  "**CORS 는 막는 게 아니라 푸는** 것이다.",
+  "**요청은 대개 나가고 처리도** 된다.",
+  "**읽기만** 막힌다.",
+  "**서버 보호는 인증과 CSRF 토큰이** 한다.",
+  "**자격 증명이면 `*` 를 못** 쓴다.",
+  "**`Origin` 을 그대로 되돌리면** 위험하다.",
+  "**`Vary: Origin` 이** 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "출처 넷으로 요청한다.",
+   "done_when": "무엇이 다른 출처인지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "브라우저에서 막아 본다.",
+   "done_when": "서버 로그에는 남는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Origin` 을 그대로 되돌린다.",
+   "done_when": "임의 출처가 허용되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "커스텀 헤더를 읽어 본다.",
+   "done_when": "`Expose-Headers` 가 필요한 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "출처를 이루는 셋은?",
+   "a": "스킴, 호스트, 포트다."
+  },
+  {
+   "q": "CORS 가 막는 것은?",
+   "a": "스크립트가 응답을 읽는 것이다. 요청 전송이 아니다."
+  },
+  {
+   "q": "CORS 로 서버를 보호할 수 있나?",
+   "a": "없다. 인증과 CSRF 방어가 그 일을 한다."
+  },
+  {
+   "q": "자격 증명을 포함하면?",
+   "a": "`Allow-Origin: *` 을 쓸 수 없고 정확한 출처를 적어야 한다."
+  },
+  {
+   "q": "`Vary: Origin` 이 필요한 이유는?",
+   "a": "출처마다 응답이 달라 캐시가 섞으면 안 되기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "출처",
+   "def": "스킴·호스트·포트의 조합. 브라우저 보안 경계다."
+  },
+  {
+   "term": "Expose-Headers",
+   "def": "스크립트가 읽을 수 있는 응답 헤더를 늘려 주는 CORS 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Fetch Standard — CORS protocol",
+   "url": "https://fetch.spec.whatwg.org/#http-cors-protocol",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "RFC 6454 — The Web Origin Concept",
+   "url": "https://www.rfc-editor.org/rfc/rfc6454.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "OWASP — Cross-Site Request Forgery Prevention Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

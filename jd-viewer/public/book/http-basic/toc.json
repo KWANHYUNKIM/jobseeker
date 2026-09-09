@@ -499,7 +499,7 @@
           "title": "쿠키의 속성",
           "summary": "Domain · Path · Secure · HttpOnly · SameSite.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.10",
@@ -507,7 +507,7 @@
           "title": "CORS",
           "summary": "브라우저만 아는 규칙.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
