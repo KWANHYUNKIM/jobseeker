@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "verify",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "동작 확인",
+ "summary": "저장 하나로 전 구간을 확인한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "전 구간을 한 번에 확인한다.",
+  "고장 지점을 로그로 읽는다.",
+  "테스트 기본형을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1~2.4절의 설정이 다 맞았는지 한 번에** 본다. **저장 하나면** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "저장 하나가 지나는 길",
+   "ascii": "   one save, and everything it touches on the way down\n\n   your test           calls a method you never wrote\n   the proxy           routes it to SimpleJpaRepository\n   the entity manager  queues a persist\n   the flush           turns the queue into sql\n   hikari              hands over a pooled connection\n   h2                  executes it, in this same jvm\n\n   if any one of those is misconfigured, the log stops at that line",
+   "note": "**어디가 틀리면 로그가 거기서** 멈춘다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "마지막 로그 줄이 고장 지점을 말한다",
+   "md": "**⑫ 10.6절의 사다리와 같은** 방식이다.\n\n> **거기는 클러스터, 여기는 한 번의** 저장이다.\n> **어디까지 갔는지가 곧** 단서다.\n\n**빈이 없으면 기동부터** 실패한다.\n\n> **2.1절에서 본 그 메시지**다.\n> **패키지 위치를 먼저** 본다.\n\n**테이블이 없으면 SQL 은** 나간다.\n\n> **`insert` 를 시도하고 거기서** 터진다.\n> **`Table not found` 가** 나온다(2.3절).\n> **SQL 이 보였다는 건 그 위층은 다 맞았다는** 뜻이다.\n\n**트랜잭션이 없으면 아무것도 안** 보인다.\n\n> **정확히는 `save` 안에 트랜잭션이** 있다(7.2절).\n> **`insert` 는 나간다.**\n> **그런데 조회 테스트에서 지연 로딩이** 터진다.\n\n**값이 안 보이면 로거 이름**이다.\n\n> **2.2절에서 하이버네이트 6 이 이름을 바꿨다고** 했다.\n> **문장은 보이는데 값만 없으면 그것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "고장 지점별 마지막 줄",
+   "ascii": "   where a broken setup usually stops\n\n   no bean            the repository was outside the scanned package\n   no table           ddl-auto was none, or the entity was not scanned\n   no sql at all      no transaction, so nothing was ever flushed\n   no bound values    the bind logger name is the hibernate 5 one\n\n   each of these has a different last line, which is the useful part",
+   "note": "**마지막 줄이 다른 게** 요점이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "테스트 기본형을 정해 둔다",
+   "md": "**이 책의 테스트는 다 이 모양**이다.\n\n```java\n@SpringBootTest\n@Transactional\nclass XxxTest {\n    @Autowired MemberRepository memberRepository;\n    @PersistenceContext EntityManager em;\n}\n```\n\n> **`@Transactional` 로 롤백**된다(2.4절).\n> **`em` 은 `flush`·`clear` 를 부르려고 둔다.**\n> **⑨ 에서 배운 대로 슬라이스를 쓸 수도** 있다.\n\n**`@DataJpaTest` 는 더** 가볍다.\n\n> **JPA 관련 빈만** 띄운다.\n> **`@Transactional` 이 이미** 붙어 있다.\n> **다만 다른 빈이 필요하면 못** 쓴다.\n\n**컨텍스트를 재사용**한다.\n\n> **설정이 같으면 테스트 클래스끼리 공유**한다.\n> **`@MockBean` 이 하나 다르면 새로** 뜬다.\n> **⑨ 에서 이게 느려지는 원인이라고** 했다.\n\n**커밋을 보고 싶으면**\n\n> **`@Rollback(false)`** 다(2.4절).\n> **다음 테스트에 데이터가** 남는다.\n> **확인용으로만 잠깐** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 전 구간 확인 테스트\n\n@SpringBootTest\n@Transactional\nclass SetupVerifyTest {\n\n    @Autowired MemberRepository memberRepository;\n    @PersistenceContext EntityManager em;\n\n    @Test\n    void 전_구간() {\n        System.out.println(\"1) 빈    : \" +\n                memberRepository.getClass().getSimpleName());\n        Member saved = memberRepository.save(new Member(\"확인\"));\n        System.out.println(\"2) id    : \" + saved.getId());\n        em.flush();\n        em.clear();\n        Member found = memberRepository.findById(saved.getId())\n                                       .orElseThrow();\n        System.out.println(\"3) 조회  : \" + found.getUsername());\n        System.out.println(\"4) 개수  : \" + memberRepository.count());\n    }\n}\n\n1) 빈    : $Proxy127\nHibernate:\n    insert\n    into\n        member (username, id)\n    values\n        (?, ?)\nTRACE o.h.orm.jdbc.bind : binding parameter (1:VARCHAR) <- [확인]\n2) id    : 1\nHibernate:\n    select\n        m1_0.id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.id=?\n3) 조회  : 확인\nHibernate:\n    select\n        count(m1_0.id)\n    from\n        member m1_0\n4) 개수  : 1\n\n--   프록시, insert, 바인딩, select, count 가 다 나왔다\n--   2장의 설정이 전부 맞았다\n\n\n-- 고장 1: 리포지토리가 밖에 있으면\n\n// study.other.MemberRepository 로 옮긴다\n\n$ ./gradlew test --tests '*SetupVerifyTest*'\n\nUnsatisfiedDependencyException: Error creating bean with name\n'SetupVerifyTest': Unsatisfied dependency expressed through field\n'memberRepository'\n\nNoSuchBeanDefinitionException: No qualifying bean of type\n'study.other.MemberRepository' available\n\n--   1) 도 못 찍었다\n--   기동에서 멈췄다\n\n\n-- 고장 2: 테이블이 없으면\n\nspring.jpa.hibernate.ddl-auto: none\n\n$ ./gradlew test --tests '*SetupVerifyTest*'\n\n1) 빈    : $Proxy127\nHibernate:\n    insert into member (username, id) values (?, ?)\n\norg.h2.jdbc.JdbcSQLSyntaxErrorException:\n    Table \"MEMBER\" not found (this database is empty); SQL statement:\n    insert into member (username, id) values (?, ?)\n\n--   1) 은 찍혔다\n--   SQL 도 나갔다\n--   그 위층은 다 맞았다는 뜻이다\n\n\n-- 고장 3: 엔티티가 밖에 있으면\n\n// study.other.Member 로 옮긴다\n\nHibernate:\n    (create table 이 없다)\n\nIllegalArgumentException: Not a managed type: class study.other.Member\n\n--   테이블 생성 로그부터 없다\n--   @EntityScan 범위 밖이다\n\n\n-- 고장 4: 값이 안 보이면\n\nlogging.level:\n  org.hibernate.SQL: debug\n  org.hibernate.type.descriptor.sql: trace     # 하이버네이트 5 이름\n\nHibernate:\n    insert\n    into\n        member (username, id)\n    values\n        (?, ?)\n\n--   문장은 보이는데 값이 없다\n--   2.2절에서 말한 그것이다\n\nlogging.level.org.hibernate.orm.jdbc.bind: trace\n\nHibernate:\n    insert into member (username, id) values (?, ?)\nTRACE o.h.orm.jdbc.bind : binding parameter (1:VARCHAR) <- [확인]\n\n--   이제 나온다\n\n\n-- 고장 5: 트랜잭션이 없으면\n\n@SpringBootTest\n// @Transactional 을 뺐다\nclass NoTxTest {\n    @Autowired MemberRepository memberRepository;\n\n    @Test\n    void 저장은_된다() {\n        Member m = memberRepository.save(new Member(\"김\"));\n        System.out.println(\"id: \" + m.getId());\n    }\n}\n\nHibernate: insert into member (username, id) values (?, ?)\nid: 1\n\n--   저장은 된다\n--   save 안에 트랜잭션이 있어서다 (7.2절)\n\n@Test\nvoid 조회는_다르다() {\n    Member m = memberRepository.save(new Member(\"김\"));\n    Member found = memberRepository.findById(m.getId()).orElseThrow();\n    found.getTeam().getName();\n}\n\nHibernate: insert into member (username, id) values (?, ?)\nHibernate: select m1_0.id, m1_0.team_id, m1_0.username from member m1_0\n           where m1_0.id=?\n\nLazyInitializationException: could not initialize proxy\n    [study.datajpa.entity.Team#1] - no Session\n\n--   select 가 두 번 나갔다\n--   1차 캐시가 안 걸렸다\n--   트랜잭션이 메서드마다 끝나서다\n--   3.3절에서 다시 본다\n\n\n-- 테스트 기본형\n\n@SpringBootTest\n@Transactional\nclass BaseShape {\n    @Autowired MemberRepository memberRepository;\n    @PersistenceContext EntityManager em;\n}\n\n--   이 책의 테스트는 다 이 모양이다\n\n\n-- @DataJpaTest 로 하면\n\n@DataJpaTest\nclass SliceTest {\n    @Autowired MemberRepository memberRepository;\n\n    @Test\n    void 가볍다() {\n        memberRepository.save(new Member(\"김\"));\n    }\n}\n\nINFO  Starting SliceTest\nINFO  HikariPool-1 - Start completed.\nINFO  Initialized JPA EntityManagerFactory for persistence unit 'default'\nHibernate: insert into member (username, id) values (?, ?)\nINFO  Started SliceTest in 1.204 seconds\n\n--   Tomcat 줄이 없다\n--   @Transactional 이 이미 붙어 있다\n\n$ ./gradlew test --tests '*SetupVerifyTest*' | grep 'Started'\n\nINFO  Started SetupVerifyTest in 1.912 seconds\n\n--   1.9초와 1.2초다\n--   다른 빈이 필요하면 @SpringBootTest 를 쓴다\n\n\n-- 컨텍스트 재사용\n\n$ ./gradlew test | grep -c 'Root WebApplicationContext: initialization'\n\n1\n\n--   테스트 클래스가 여럿인데 한 번만 떴다\n--   설정이 같으면 공유한다\n--   ⑨ 에서 본 그 이야기다\n\n\n-- 커밋까지 보고 싶으면\n\n@Test\n@Rollback(false)\nvoid 남긴다() {\n    memberRepository.save(new Member(\"남는다\"));\n}\n\nHibernate: insert into member (username, id) values (?, ?)\nINFO  Committed transaction for test context\n\n$ H2 콘솔에서\nSELECT * FROM MEMBER;\n\nID | USERNAME\n1  | 남는다\n\n--   다음 테스트에 남는다\n--   확인용으로만 잠깐 쓴다\n--   3장부터는 다시 롤백이다",
+   "note": "**프록시·`insert`·바인딩·`select`·`count` 가 한 테스트에 다** 나온다.\n\n**리포지토리가 밖이면 1)도 못 찍고, 테이블이 없으면 SQL 은 나간 뒤** 터진다.\n\n**엔티티가 밖이면 `create table` 로그부터** 없다.\n\n**트랜잭션 없이 조회하면 `select` 가 두 번 나가고 `LazyInitializationException`** 이다.\n\n**`@DataJpaTest` 가 1.9초를 1.2초로** 줄인다."
+  }
+ ],
+ "recap": [
+  "**저장 하나로 전 구간을** 본다.",
+  "**마지막 로그 줄이 고장 지점**이다.",
+  "**빈이 없으면 기동에서** 멈춘다.",
+  "**테이블이 없으면 SQL 뒤에** 터진다.",
+  "**엔티티가 밖이면 DDL 부터** 없다.",
+  "**값이 없으면 로거 이름**이다.",
+  "**트랜잭션이 없으면 캐시가 안** 걸린다.",
+  "**테스트 기본형을 정해** 둔다.",
+  "**`@DataJpaTest` 가 더** 가볍다."
+ ],
+ "drills": [
+  {
+   "task": "전 구간 테스트를 만든다.",
+   "done_when": "다섯 줄이 다 나왔다.",
+   "minutes": 20
+  },
+  {
+   "task": "고장을 하나씩 만든다.",
+   "done_when": "마지막 줄이 다른 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`@Transactional` 을 뺀다.",
+   "done_when": "지연 로딩 예외를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@DataJpaTest` 로 바꾼다.",
+   "done_when": "기동 시간을 비교했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정이 맞는지 어떻게 한 번에 보나?",
+   "a": "저장 후 flush·clear·조회를 한 테스트에서 돌려 로그를 본다."
+  },
+  {
+   "q": "SQL 이 보인 뒤 실패했다면?",
+   "a": "그 위 계층은 다 맞았고 스키마 쪽 문제다."
+  },
+  {
+   "q": "문장은 보이는데 값이 안 보이면?",
+   "a": "바인딩 로거 이름이 하이버네이트 5 것이다."
+  },
+  {
+   "q": "`@Transactional` 없이 조회하면?",
+   "a": "1차 캐시가 안 걸리고 지연 로딩이 실패한다."
+  },
+  {
+   "q": "`@DataJpaTest` 의 특징은?",
+   "a": "JPA 관련 빈만 띄우고 트랜잭션이 이미 걸려 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@DataJpaTest",
+   "def": "JPA 관련 빈만 띄우는 테스트 슬라이스."
+  },
+  {
+   "term": "컨텍스트 재사용",
+   "def": "설정이 같은 테스트끼리 스프링 컨텍스트를 공유하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

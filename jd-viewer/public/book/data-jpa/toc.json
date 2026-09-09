@@ -94,7 +94,7 @@
           "title": "동작 확인",
           "summary": "저장 하나로 전 구간을 확인한다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -109,7 +109,7 @@
           "title": "도메인 설계",
           "summary": "회원과 팀, 그리고 그 사이.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",

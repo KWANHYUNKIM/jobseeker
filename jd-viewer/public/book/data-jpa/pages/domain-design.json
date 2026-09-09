@@ -1,0 +1,139 @@
+{
+ "book": "data-jpa",
+ "id": "domain-design",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "도메인 설계",
+ "summary": "회원과 팀, 그리고 그 사이.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 엔티티를 정한다.",
+  "주인을 정한다.",
+  "왜 이 조합인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장으로 환경이** 끝났다. **이 책 내내 쓸 두 테이블을** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 엔티티",
+   "ascii": "   two entities, one direction that matters\n\n   Member    id, username, age, and a team\n   Team      id, name, and a list of members\n\n   the foreign key lives on member, because many members share one team\n   so member owns the relationship, and team is only a mirror of it\n\n   getting this backwards is the single most common mapping mistake",
+   "note": "**주인을 반대로 잡는 게 가장 흔한 실수**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "외래 키가 있는 쪽이 주인이다",
+   "md": "**`member` 테이블에 `team_id` 가** 있다.\n\n> **회원 여럿이 팀 하나를** 본다.\n> **다대일에서 다 쪽이** 주인이다.\n> **①에서 본 규칙 그대로**다.\n\n**`mappedBy` 는 거울**이다.\n\n```java\n@OneToMany(mappedBy = \"team\")\nprivate List<Member> members = new ArrayList<>();\n```\n\n> **여기에 뭘 넣어도 SQL 이 안** 나간다.\n> **읽기 전용이라고 생각하면** 편하다.\n> **3.2절에서 눈으로** 본다.\n\n**연관관계 편의 메서드를** 둔다.\n\n```java\npublic void changeTeam(Team team) {\n    this.team = team;\n    team.getMembers().add(this);\n}\n```\n\n> **한쪽만 세팅하면 객체 상태가** 어긋난다.\n> **DB 는 맞는데 메모리가** 틀린다.\n> **⑦ 에서 계속 나온 그것**이다.\n\n**롬복은 조심해서** 쓴다.\n\n> **`@Setter` 는 되도록 안** 연다.\n> **`@ToString` 이 연관을 타면 무한 순환**이다.\n> **`@EqualsAndHashCode` 도 위험**하다 — id 만 쓰거나 안 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 이 조합인가",
+   "ascii": "   why this pair, for a whole book\n\n   it has a many to one       so lazy loading and n plus one appear\n   it has a collection        so fetch join and batch size appear\n   it has two fields to search so method names get long enough to hurt\n   it is small enough         that the sql fits on one screen\n\n   every chapter after this one uses exactly these two tables",
+   "note": "**뒤의 모든 장이 이 두 테이블을** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기본 생성자가 필요하다",
+   "md": "**JPA 가 리플렉션으로** 만든다.\n\n> **`protected` 면 충분**하다.\n> **`private` 이면 프록시를 못** 만든다(1.4절).\n> **`@NoArgsConstructor(access = PROTECTED)` 가** 관행이다.\n\n**`@GeneratedValue` 전략을** 고른다.\n\n| 전략 | 언제 |\n|---|---|\n| `IDENTITY` | MySQL. 배치가 안 된다(2.4절) |\n| `SEQUENCE` | 오라클·PostgreSQL·H2 |\n| `AUTO` | 방언이 고른다 |\n\n> **이 책은 `AUTO`** 다 — H2 라 시퀀스가 된다.\n> **2.4절에서 배치가 되던 이유**다.\n\n**`age` 를 넣는 이유가** 있다.\n\n> **5장에서 조건이 둘 필요**하다.\n> **`findByUsernameAndAgeGreaterThan` 같은 이름**을 만들 것이다.\n> **숫자라 비교 연산도** 쓴다.\n\n**필드가 적은 게** 낫다.\n\n> **`select` 가 한 화면에 들어와야** 한다.\n> **⑦ 처럼 큰 도메인은 SQL 이 안** 읽힌다.\n> **이 책은 SQL 을 읽는 게** 목적이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- Member\n\n@Entity\n@Getter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@ToString(of = {\"id\", \"username\", \"age\"})\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"member_id\")\n    private Long id;\n\n    private String username;\n    private int age;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"team_id\")\n    private Team team;\n\n    public Member(String username) {\n        this(username, 0, null);\n    }\n\n    public Member(String username, int age) {\n        this(username, age, null);\n    }\n\n    public Member(String username, int age, Team team) {\n        this.username = username;\n        this.age = age;\n        if (team != null) changeTeam(team);\n    }\n\n    public void changeTeam(Team team) {\n        this.team = team;\n        team.getMembers().add(this);\n    }\n}\n\n--   @ToString 에 team 이 없다\n--   넣으면 무한 순환이다\n\n\n-- Team\n\n@Entity\n@Getter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@ToString(of = {\"id\", \"name\"})\npublic class Team {\n\n    @Id @GeneratedValue\n    @Column(name = \"team_id\")\n    private Long id;\n\n    private String name;\n\n    @OneToMany(mappedBy = \"team\")\n    private List<Member> members = new ArrayList<>();\n\n    public Team(String name) {\n        this.name = name;\n    }\n}\n\n\n-- 생성된 DDL\n\n$ ./gradlew test --tests '*DomainTest*'\n\nHibernate:\n    create sequence member_seq start with 1 increment by 50\nHibernate:\n    create sequence team_seq start with 1 increment by 50\nHibernate:\n    create table member (\n        age integer not null,\n        member_id bigint not null,\n        team_id bigint,\n        username varchar(255),\n        primary key (member_id)\n    )\nHibernate:\n    create table team (\n        team_id bigint not null,\n        name varchar(255),\n        primary key (team_id)\n    )\nHibernate:\n    alter table if exists member\n       add constraint FKl7wsny760hjy6x19kqnduasbm\n       foreign key (team_id)\n       references team\n\n--   외래 키가 member 에 있다\n--   team 에는 없다\n--   mappedBy 가 컬럼을 안 만든다\n\n\n-- 시퀀스가 50씩 올라간다\n\n@Test\nvoid 시퀀스_할당() {\n    for (int i = 0; i < 3; i++) {\n        Member m = memberRepository.save(new Member(\"m\" + i));\n        System.out.println(\"id: \" + m.getId());\n    }\n}\n\nHibernate:\n    select next value for member_seq\nid: 1\nid: 2\nid: 3\n\n--   시퀀스 호출이 한 번이다\n--   allocationSize 가 50 이라 미리 받아 둔다\n--   2.4절에서 배치가 되던 이유다\n\n\n-- IDENTITY 로 바꾸면\n\n@Id @GeneratedValue(strategy = GenerationType.IDENTITY)\n\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\nid: 1\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\nid: 2\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\nid: 3\n\n--   save 마다 즉시 insert 다\n--   id 를 알아야 해서다\n--   쓰기 지연이 안 걸린다 (2.4절)\n\n\n-- 주인만 세팅하면\n\n@Test\nvoid 주인만() {\n    Team team = new Team(\"A팀\");\n    em.persist(team);\n\n    Member m = new Member(\"김\");\n    setField(m, \"team\", team);      // changeTeam 을 안 쓴다\n    memberRepository.save(m);\n    em.flush();\n\n    System.out.println(\"팀의 회원 수: \" + team.getMembers().size());\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\n팀의 회원 수: 0\n\n--   DB 에는 들어갔다\n--   메모리의 팀은 모른다\n--   같은 트랜잭션에서 읽으면 0이다\n\n\n-- 편의 메서드를 쓰면\n\n@Test\nvoid 편의_메서드() {\n    Team team = new Team(\"A팀\");\n    em.persist(team);\n\n    Member m = new Member(\"김\", 20, team);   // changeTeam 이 불린다\n    memberRepository.save(m);\n    em.flush();\n\n    System.out.println(\"팀의 회원 수: \" + team.getMembers().size());\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\n팀의 회원 수: 1\n\n--   양쪽이 맞는다\n--   SQL 은 똑같다\n--   차이는 메모리에만 있다\n\n\n-- mappedBy 쪽에 넣으면\n\n@Test\nvoid 거울에_넣기() {\n    Team team = new Team(\"A팀\");\n    Member m = new Member(\"김\");\n    em.persist(team);\n    em.persist(m);\n\n    team.getMembers().add(m);       // 거울에만 넣는다\n    em.flush();\n    em.clear();\n\n    Member found = memberRepository.findById(m.getId()).orElseThrow();\n    System.out.println(\"team_id: \" + found.getTeam());\n}\n\nHibernate: insert into team (name, team_id) values (?, ?)\nHibernate: insert into member (age, team_id, username) values (?, ?, ?)\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\nteam_id: null\n\n--   update 가 안 나갔다\n--   mappedBy 는 읽기 전용이다\n--   3.2절에서 다시 본다\n\n\n-- ToString 에 연관을 넣으면\n\n@ToString(of = {\"id\", \"username\", \"team\"})   // team 을 넣었다\n\n@Test\nvoid 무한_순환() {\n    Team team = new Team(\"A팀\");\n    em.persist(team);\n    Member m = new Member(\"김\", 20, team);\n    memberRepository.save(m);\n    System.out.println(m);\n}\n\njava.lang.StackOverflowError\n    at Member.toString(Member.java:1)\n    at Team.toString(Team.java:1)\n    at Member.toString(Member.java:1)\n    ...\n\n--   서로를 부른다\n--   @ToString 에 연관을 넣지 않는다\n\n\n-- 기본 생성자가 없으면\n\n// @NoArgsConstructor 를 지운다\n\nInvalidPersistentPropertyPath / \nPersistenceException: No default constructor for entity:\n    study.datajpa.entity.Member\n\n--   JPA 가 리플렉션으로 만든다\n--   protected 면 충분하다\n\n\n-- private 으로 하면\n\n@NoArgsConstructor(access = AccessLevel.PRIVATE)\n\nHibernateException: Bytecode enhancement failed because no\n    no-arg constructor is accessible for study.datajpa.entity.Member\n\n--   프록시를 못 만든다\n--   1.4절의 getReferenceById 가 안 된다",
+   "note": "**외래 키가 `member` 에만 생기고 `mappedBy` 쪽은 컬럼을 안** 만든다.\n\n**시퀀스가 `allocationSize 50` 이라 호출이 한 번이고 IDENTITY 면 `save` 마다** insert 다.\n\n**주인만 세팅하면 DB 는 맞는데 메모리의 팀은 `0`** 이다.\n\n**거울에만 넣으면 `update` 가 안 나가고 `team_id` 가 `null`** 이다.\n\n**`@ToString` 에 연관을 넣으면 `StackOverflowError`** 다."
+  }
+ ],
+ "recap": [
+  "**회원과 팀 둘만** 쓴다.",
+  "**외래 키가 있는 쪽이** 주인이다.",
+  "**`mappedBy` 는 거울**이다.",
+  "**거울에 넣어도 SQL 이 안** 나간다.",
+  "**편의 메서드로 양쪽을** 맞춘다.",
+  "**`@ToString` 에 연관을 넣지** 않는다.",
+  "**기본 생성자가** 필요하다.",
+  "**`private` 이면 프록시를 못** 만든다.",
+  "**필드가 적어야 SQL 이** 읽힌다."
+ ],
+ "drills": [
+  {
+   "task": "두 엔티티를 만든다.",
+   "done_when": "생성된 DDL 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "주인만 세팅해 본다.",
+   "done_when": "메모리가 어긋나는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "거울에만 넣어 본다.",
+   "done_when": "`update` 가 없는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@ToString` 에 연관을 넣는다.",
+   "done_when": "순환을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "다대일에서 주인은 누구인가?",
+   "a": "외래 키를 가진 쪽, 즉 다 쪽이다."
+  },
+  {
+   "q": "`mappedBy` 쪽에 값을 넣으면?",
+   "a": "SQL 이 나가지 않는다. 읽기 전용이다."
+  },
+  {
+   "q": "연관관계 편의 메서드가 필요한 이유는?",
+   "a": "한쪽만 세팅하면 메모리 상태가 DB 와 어긋난다."
+  },
+  {
+   "q": "`@ToString` 에 연관을 넣으면?",
+   "a": "양방향이면 무한 순환으로 스택 오버플로가 난다."
+  },
+  {
+   "q": "기본 생성자를 `private` 으로 하면?",
+   "a": "프록시를 만들 수 없어 지연 로딩이 안 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "연관관계 주인",
+   "def": "외래 키를 관리하는 쪽. 여기에 넣어야 SQL 이 나간다."
+  },
+  {
+   "term": "편의 메서드",
+   "def": "양방향 연관의 두 쪽을 한 번에 맞춰 주는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Project Lombok — Documentation",
+   "url": "https://projectlombok.org/features/",
+   "publisher": "Project Lombok"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
