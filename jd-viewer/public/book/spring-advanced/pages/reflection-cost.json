@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "reflection-cost",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "리플렉션의 값",
+ "summary": "컴파일이 안 지켜 준다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "잃는 넷을 안다.",
+  "언제 쓰는지 안다.",
+  "안전하게 감싼다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 편해**졌다. **무엇을 잃었는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "컴파일러가 안 하는 넷",
+   "ascii": "   what the compiler stops doing\n\n   it no longer checks that the method exists\n   it no longer checks the argument types\n   it no longer knows the return type\n   rename refactoring no longer reaches the call\n\n   all four failures move from build time to run time",
+   "note": "**넷 다 빌드 때가 아니라 실행 때** 실패한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "실패 시점이 뒤로 밀린다",
+   "md": "**빌드에서 안** 잡는다.\n\n> **6.1절에서 그걸** 봤다.\n> **아래에서 넷을 다** 만든다.\n> **배포하고 나서** 터진다.\n\n**이름 바꾸기가 안** 닿는다.\n\n> **문자열이라** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **찾기로도 안** 나온다.\n\n**반환 타입을** 잃는다.\n\n> **`Object` 로** 온다.\n> **아래에서 형변환이** 는다.\n> **거기서 또** 터진다.\n\n**그래도 틀에는** 필요하다.\n\n> **모르는 메서드를 불러야** 한다.\n> **아래에서 그 자리를** 가른다.\n> **6.3절이 그** 자리다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓸 자리와 안 쓸 자리",
+   "ascii": "   where reflection belongs and where it does not\n\n   in a framework, called for every method it does not know\n   in business code, called for one method the author knew\n\n   the second one trades a safety net for nothing",
+   "note": "**둘째는 안전망을 내주고 아무것도 안** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "검사를 언제 하느냐가 유일한 방어다",
+   "md": "**기동 때 확인할 수** 있다.\n\n> **미리 찾아** 둔다.\n> **아래에서 그렇게** 한다.\n> **⑯ 7.9절과 같은 결**이다.\n\n**테스트로도** 막는다.\n\n> **그 경로를 한 번은** 지난다.\n> **아래에서 그걸** 쓴다.\n> **⑨의 그** 이야기다.\n\n**보안 쪽도** 있다.\n\n> **`setAccessible` 이** 그렇다.\n> **막을 수** 있다.\n> **아래에서 막아** 본다.\n\n**직렬화가** 깨진다.\n\n> **필드 이름에 기대는 것들**이다.\n> **아래에서 그걸** 본다.\n> **네이티브에서 더** 그렇다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 잃는 것 ① 존재 확인\n\n// 직접 부르면\ntarget.orderItm(\"연필\");\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: cannot find symbol: method orderItm(String)\n\n// 리플렉션이면\nMethod m = target.getClass().getMethod(\"orderItm\", String.class);\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/call?method=orderItm'\n500\n\n--   6.1 절에서 본 그것이다\n--   앞은 빌드에서, 뒤는 실행에서 안다\n\n\n-- 잃는 것 ② 인자 타입\n\n// 직접 부르면\ntarget.orderItem(42);\n\n$ ./gradlew compileJava 2>&1 | head -2\nerror: incompatible types: int cannot be converted to String\n\n// 리플렉션이면\nm.invoke(target, 42);\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/wrongarg'\n500\n\n$ grep -A1 'IllegalArgument' logs/app.log | head -1\njava.lang.IllegalArgumentException: argument type mismatch\n\n--   메시지도 불친절하다\n--   어느 인자인지 안 알려 준다\n\n\n-- 잃는 것 ③ 반환 타입\n\n// 직접 부르면\nString name = target.find(\"연필\");\nint len = name.length();\n\n// 리플렉션이면\nObject result = m.invoke(target, \"연필\");\nint len = ((String) result).length();     // 형변환이 필요하다\n\n$ grep -c '(String)' src/main/java/study/adv/reflect/ReflectHelper.java\n3\n\n// 타입을 잘못 알면\nInteger n = (Integer) m.invoke(target, \"연필\");\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/wrongcast'\n500\n\n$ grep -A1 'ClassCast' logs/app.log | head -1\njava.lang.ClassCastException: class java.lang.String cannot be cast to\n  class java.lang.Integer\n\n--   형변환이 늘고 거기서 또 터진다\n\n\n-- 잃는 것 ④ 이름 바꾸기\n\n$ grep -rn 'orderItem' src/main/java --include='*.java' | wc -l\n      14\n\n$ grep -rn '\"orderItem\"' src/main/java --include='*.java' | wc -l\n       3\n\n// 도구로 이름을 바꾸면\n$ sed -i '' 's/void orderItem(/void placeOrder(/' \\\n    src/main/java/study/adv/app/OrderServiceV1.java\n$ sed -i '' 's/void orderItem(/void placeOrder(/' \\\n    src/main/java/study/adv/app/OrderServiceV1Impl.java\n$ sed -i '' 's/orderService.orderItem(/orderService.placeOrder(/' \\\n    src/main/java/study/adv/app/OrderControllerV1Impl.java\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ grep -rn '\"orderItem\"' src/main/java --include='*.java' | wc -l\n       3\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/call?method=orderItem'\n500\n\n--   문자열 셋이 안 바뀌었다\n--   컴파일은 통과했다\n\n\n-- 찾기로도 안 나온다\n\n$ grep -rn 'placeOrder' src/main/java | wc -l\n       4\n\n$ grep -rn 'handleOrder' src/main/java | wc -l\n0\n\n$ curl -s -o /dev/null 'localhost:8080/reflect/dispatch?type=Order'\n$ grep '핸들' logs/app.log | tail -1 | cut -c56-\n핸들 Order 처리\n\n--   부르는 곳이 없는데 불린다\n--   6.1 절에서 본 그것이다\n\n\n-- 그래서 어디에 쓰나\n\n$ printf '%-24s %-16s %s\\n' \\\n  '틀'        '모르는 메서드'  '쓸 수밖에 없음' \\\n  '업무 코드' '아는 메서드'    '잃기만 함'\n\n틀           모르는 메서드     쓸 수밖에 없음\n업무 코드    아는 메서드       잃기만 함\n\n$ grep -c 'Method\\|invoke' src/main/java/study/adv/app/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n$ grep -c 'Method\\|invoke' src/main/java/study/adv/reflect/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n14\n\n--   앱에는 하나도 없다\n--   틀에만 있다\n\n\n-- 기동 때 확인한다\n\n@Component\nclass MethodChecker implements InitializingBean {\n    private static final String[] NAMES = {\"orderItem\", \"find\", \"cancel\"};\n\n    @Override\n    public void afterPropertiesSet() throws Exception {\n        for (String n : NAMES) {\n            boolean found = Arrays.stream(OrderServiceV1.class.getMethods())\n                .anyMatch(m -> m.getName().equals(n));\n            if (!found) throw new IllegalStateException(\"없는 메서드: \" + n);\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 없는 메서드: orderItem\n\n--   ⑯ 7.9절에서 설정을 검증하던 것과 같다\n--   실행 중이 아니라 기동에서 막는다\n\n\n-- 미리 찾아 둔다\n\n@Component\nclass MethodCache {\n    private final Map<String, Method> cache = new HashMap<>();\n\n    @PostConstruct\n    void init() throws Exception {\n        for (Method m : OrderServiceV1.class.getMethods())\n            cache.put(m.getName(), m);\n        log.info(\"메서드 {} 개를 미리 찾았다\", cache.size());\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '미리 찾았다'\nINFO ... : 메서드 3 개를 미리 찾았다\n\n$ curl -s 'localhost:8080/bench/reflect?n=10000000&mode=cached'\n메서드 캐시:     186 ms\n\n--   6.1 절에서 잰 그 값이다\n--   기동 때 확인도 같이 된다\n\n\n-- 테스트로 막는다\n\n@Test\nvoid 모든_메서드가_불릴_수_있다() throws Exception {\n    for (String name : List.of(\"orderItem\", \"find\", \"cancel\")) {\n        Method m = OrderServiceV1.class.getMethod(name, ...);\n        assertThat(m).isNotNull();\n    }\n}\n\n$ ./gradlew test --tests '*메서드가_불릴*' 2>&1 | tail -3\nMethodNameTest > 모든_메서드가_불릴_수_있다 FAILED\n    java.lang.NoSuchMethodException: orderItem\nBUILD FAILED\n\n--   빌드에서 잡았다\n--   ⑨ 에서 쓰던 그 방법이다\n\n\n-- setAccessible 을 막는다\n\n$ java -jar build/libs/app.jar --illegal-access=deny 2>&1 | head -1\n\n// 모듈로 막으면\nmodule study.adv {\n    exports study.adv.app;\n    // opens 를 안 적었다\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/private'\n500\n\n$ grep -A1 'InaccessibleObject' logs/app.log | head -1\njava.lang.reflect.InaccessibleObjectException: Unable to make private void\n  study.adv.app.OrderServiceV1Impl.validate(String) accessible\n\n--   6.1 절에서 뚫던 것이 막혔다\n--   라이브러리가 이걸로 자주 깨진다\n\n\n-- 네이티브에서는 더 어렵다\n\n$ ./gradlew nativeCompile -q\n$ ./build/native/nativeCompile/app > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/call?method=orderItem'\n500\n\n$ grep -A1 'ClassNotFound\\|NoSuchMethod' logs/app.log | head -1\njava.lang.NoSuchMethodException: study.adv.app.OrderServiceV1Impl.orderItem\n\n// 힌트를 주면\n$ cat src/main/resources/META-INF/native-image/reflect-config.json\n[{\n  \"name\": \"study.adv.app.OrderServiceV1Impl\",\n  \"allDeclaredMethods\": true\n}]\n\n$ ./gradlew nativeCompile -q && ./build/native/nativeCompile/app > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/reflect/call?method=orderItem'\n200\n\n--   ⑯ 10.3절에서 본 그 이야기다\n--   빌드 때 정해지니 리플렉션이 안 보인다\n\n\n-- 값을 정리한다\n\n$ printf '%-22s %-16s %s\\n' \\\n  '존재'      '실행에서'  'NoSuchMethod' \\\n  '인자 타입' '실행에서'  'argument type mismatch' \\\n  '반환 타입' '실행에서'  'ClassCast' \\\n  '이름 바꾸기' '안 닿음'  '문자열이 남음' \\\n  '찾기'      '안 나옴'   '부르는 곳이 없음' \\\n  '속도'      '17 배'     '캐시하면 8 배' \\\n  '접근'      '막힐 수'   'InaccessibleObject' \\\n  '네이티브'  '힌트 필요' 'reflect-config'\n\n존재                 실행에서         NoSuchMethod\n인자 타입            실행에서         argument type mismatch\n반환 타입            실행에서         ClassCast\n이름 바꾸기          안 닿음          문자열이 남음\n찾기                 안 나옴          부르는 곳이 없음\n속도                 17 배            캐시하면 8 배\n접근                 막힐 수          InaccessibleObject\n네이티브             힌트 필요        reflect-config\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/reflect/both'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderServiceV1Impl.orderItem()\n[796bccd9] OrderServiceV1Impl.orderItem() time=1004ms\n[796bccd9] OrderServiceV1Impl.find()\n[796bccd9] OrderServiceV1Impl.find() time=1004ms\n\n$ grep -c 'Method\\|invoke' src/main/java/study/adv/app/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: study.adv.proxy.OrderServiceInterfaceProxy\n\n--   6.3 절에서 이 클래스를 없앤다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '잃는 것'    '넷' \\\n  '시점'       '빌드에서 실행으로' \\\n  '이름 바꾸기' '안 닿음' \\\n  '형변환'     '늘어남' \\\n  '틀'         '쓸 수밖에' \\\n  '업무'       '잃기만 함' \\\n  '기동 검사'  '앞당김' \\\n  '테스트'     '빌드에서 잡음' \\\n  '접근 제한'  '막힐 수 있음'\n\n잃는 것                    넷\n시점                       빌드에서 실행으로\n이름 바꾸기                안 닿음\n형변환                     늘어남\n틀                         쓸 수밖에\n업무                       잃기만 함\n기동 검사                  앞당김\n테스트                     빌드에서 잡음\n접근 제한                  막힐 수 있음",
+   "note": "**존재·인자 타입·반환 타입·이름 바꾸기 넷이 다 빌드에서 실행으로** 밀린다.\n\n**메서드 이름을 바꿔도 문자열 셋이 그대로 남고 컴파일은** 통과한다.\n\n**앱 패키지에 `invoke` 가 0 개, 틀에만 14 개로 자리를** 갈랐다.\n\n**기동 때 미리 찾아 두면 `없는 메서드: orderItem` 으로 앞당겨 막고 속도도 8 배로** 나아진다.\n\n**모듈로 막으면 `InaccessibleObjectException`, 네이티브에서는 힌트를 줘야** 돈다."
+  }
+ ],
+ "recap": [
+  "**넷을** 잃는다.",
+  "**실행으로** 밀린다.",
+  "**이름 바꾸기가 안** 닿는다.",
+  "**형변환이** 는다.",
+  "**틀에는** 필요하다.",
+  "**업무엔 쓰면 안** 된다.",
+  "**기동에서** 막는다.",
+  "**테스트로도** 막는다.",
+  "**접근이** 막힐 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "넷을 다 만들어 본다.",
+   "done_when": "실행에서 터지는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "이름을 바꿔 본다.",
+   "done_when": "문자열이 남는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "기동 검사를 넣는다.",
+   "done_when": "앞당겨 막히는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자리를 세어 본다.",
+   "done_when": "앱에 0 개인 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컴파일러가 안 하게 되는 넷은?",
+   "a": "존재 확인, 인자 타입, 반환 타입, 이름 바꾸기 추적이다."
+  },
+  {
+   "q": "이름 바꾸기가 왜 위험한가?",
+   "a": "문자열은 안 바뀌는데 컴파일이 통과해서다."
+  },
+  {
+   "q": "어디에 써야 하나?",
+   "a": "모르는 메서드를 불러야 하는 틀에만 쓴다."
+  },
+  {
+   "q": "실패를 앞당기려면?",
+   "a": "기동 때 미리 찾아 확인하거나 테스트로 그 경로를 지나게 한다."
+  },
+  {
+   "q": "네이티브에서는?",
+   "a": "빌드 때 힌트를 줘야 리플렉션이 동작한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "실패 시점",
+   "def": "잘못이 드러나는 때. 빌드일수록 싸고 실행일수록 비싸다."
+  },
+  {
+   "term": "리플렉션 힌트",
+   "def": "빌드 때 어떤 클래스를 리플렉션으로 쓸지 미리 적어 두는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "The Java Tutorials — Reflection API",
+   "url": "https://docs.oracle.com/javase/tutorial/reflect/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "java.lang.reflect — Method",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Method.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -330,7 +330,7 @@
           "title": "리플렉션",
           "summary": "메서드를 값으로 다룬다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -338,7 +338,7 @@
           "title": "리플렉션의 값",
           "summary": "컴파일이 안 지켜 준다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
