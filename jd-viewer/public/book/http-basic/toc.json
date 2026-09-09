@@ -286,7 +286,7 @@
           "title": "POST 로 다 하는 API",
           "summary": "되기는 되는데 잃는 것들.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -294,7 +294,7 @@
           "title": "OPTIONS · HEAD · TRACE",
           "summary": "덜 쓰이지만 필요한 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

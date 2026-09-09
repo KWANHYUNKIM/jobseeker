@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "options-head",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "OPTIONS · HEAD · TRACE",
+ "summary": "덜 쓰이지만 필요한 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "HEAD 의 쓰임을 안다.",
+  "프리플라이트를 안다.",
+  "TRACE 가 꺼진 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장의 나머지 셋**이다. **직접 칠 일은 적은데 브라우저가 늘 보내고** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "셋의 자리",
+   "ascii": "   three methods you rarely type and often send\n\n   HEAD      the same as GET, headers only, no body\n             used for size checks, link checks, and cache validation\n\n   OPTIONS   what may be done here\n             mostly sent by browsers, as a cors preflight\n\n   TRACE     echo the request back\n             disabled almost everywhere, because it echoes cookies too",
+   "note": "**TRACE 는 거의 다 꺼져** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "HEAD 는 GET 에서 본문만 뺀 것이다",
+   "md": "**헤더는 똑같아야** 한다.\n\n> **`Content-Length` 도 GET 이었을 때 값으로** 준다.\n> **실제로는 안 보내면서** 그렇다.\n> **안 맞으면 캐시가** 틀어진다.\n\n**쓰는 자리**\n\n| 쓰임 | 왜 |\n|---|---|\n| 파일 크기 확인 | 받기 전에 알고 싶다 |\n| 링크 검사 | 살아 있는지만 보면 된다 |\n| 캐시 검증 | 바뀌었는지만 보면 된다 |\n\n> **큰 파일일수록 이득이** 크다.\n> **9장의 조건부 요청과 자주 같이** 쓴다.\n\n**OPTIONS 는 두 가지 형태**다.\n\n> **`OPTIONS *` 는 서버 전체**다(4.6절).\n> **`OPTIONS /path` 는 그 자원**이다.\n> **`Allow` 헤더로 가능한 메서드를** 알린다.\n> **그런데 실무에서 이 용도로는 거의 안** 쓴다.\n\n**실제 용도는 CORS** 다.\n\n> **브라우저가 자동으로** 보낸다.\n> **개발자가 코드에 안 적은 요청이 하나 더** 간다.\n> **네트워크 패널에 왜 요청이 둘인지 모를 때가 그것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "프리플라이트",
+   "ascii": "   why a browser sends options before your request\n\n   simple request     get, head, or a plain form post, no odd headers\n                      goes straight out, and cors is checked afterwards\n\n   anything else      a preflight options goes first\n                      asking may i send this method with these headers\n                      only if the answer allows it does the real one go\n\n   so a json content type alone is enough to double your request count",
+   "note": "**JSON 타입 하나로 요청이 두 배가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "TRACE 는 껐어야 했다",
+   "md": "**요청을 그대로 돌려**준다.\n\n> **디버깅용으로** 만들었다.\n> **그런데 쿠키와 인증 헤더까지 본문에 담아** 돌려준다.\n> **스크립트가 그 본문을 읽으면 `HttpOnly` 쿠키가** 샌다.\n\n**그게 XST 공격**이다.\n\n> **지금은 브라우저가 TRACE 를 아예 막는다.**\n> **서버도 대부분 꺼** 뒀다.\n> **켜져 있으면 취약점 스캐너가 지적**한다.\n\n**`405` 와 `501` 이 다르다.**\n\n| 코드 | 뜻 |\n|---|---|\n| `405` | 아는 메서드인데 이 자원에는 안 된다 |\n| `501` | 서버가 그 메서드를 모른다 |\n\n> **`405` 에는 `Allow` 를 붙여야** 한다.\n> **4.6절에서 `BREW` 가 405 였다.**\n\n**CONNECT 도** 있다.\n\n> **프록시에 터널을 뚫어** 달라는 것이다.\n> **https 를 프록시로 지날 때 이걸** 쓴다(4.6절의 authority 형식).\n> **일반 서버는 안** 받는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- HEAD 는 본문이 없다 ---\n\n$ curl -s -D - -o /dev/null -X GET http://localhost:8080/big.txt \\\n    | grep -i content-length\n\nContent-Length: 270544\n\n$ curl -s -I http://localhost:8080/big.txt | grep -i content-length\n\nContent-Length: 270544\n\n$ curl -s -o /dev/null -w 'GET  받은 바이트 %{size_download}\\n' \\\n    http://localhost:8080/big.txt\n$ curl -s -I -o /dev/null -w 'HEAD 받은 바이트 %{size_download}\\n' \\\n    http://localhost:8080/big.txt\n\nGET  받은 바이트 270544\nHEAD 받은 바이트 0\n\n#   길이는 같다고 말하고\n\n#   실제로는 안 보낸다\n\n#   270KB 를 아꼈다\n\n# --- 링크가 살아 있는지만 ---\n\n$ for p in /api.json /없는파일 /big.txt; do\n    printf '%-12s' $p\n    curl -s -I -o /dev/null -w '%{http_code}\\n' \"http://localhost:8080$p\"\n  done\n\n/api.json   200\n/없는파일   404\n/big.txt    200\n\n#   본문을 하나도 안 받았다\n\n#   링크 검사기가 이렇게 한다\n\n# --- 헤더가 GET 과 같아야 한다 ---\n\n$ diff <(curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n         | grep -viE 'date') \\\n       <(curl -s -I http://localhost:8080/api.json | grep -viE 'date')\n\n#   차이가 없다\n\n#   Date 만 뺐다\n\n#   안 맞으면 캐시가 틀어진다\n\n# --- OPTIONS 로 물어본다 ---\n\n$ curl -s -D - -o /dev/null -X OPTIONS http://localhost:9080/orders/5 \\\n    2>/dev/null | head -1\n\nHTTP/1.1 501 Unsupported method ('OPTIONS')\n\n#   이 서버는 OPTIONS 를 모른다\n\n#   501 이다\n\n$ curl -s -D - -o /dev/null -X BREW http://localhost:8080/ | head -1\n\nHTTP/1.1 405 Not Allowed\n\n#   nginx 는 아는 메서드지만 안 받는다\n\n#   405 다\n\n#   4.6절에서 본 그것이다\n\n$ cat opts.py\n\n    def do_OPTIONS(self):\n        self.send_response(204)\n        self.send_header(\"Allow\", \"GET, PUT, DELETE, OPTIONS\")\n        self.send_header(\"Access-Control-Allow-Origin\", \"*\")\n        self.send_header(\"Access-Control-Allow-Methods\", \"GET, PUT, DELETE\")\n        self.send_header(\"Access-Control-Allow-Headers\", \"Content-Type\")\n        self.send_header(\"Access-Control-Max-Age\", \"600\")\n        self.send_header(\"Content-Length\", \"0\")\n        self.end_headers()\n\n$ python3 opts.py & sleep 1\n$ curl -s -D - -o /dev/null -X OPTIONS http://localhost:9067/orders/5 \\\n  | grep -E 'HTTP|Allow'\n\nHTTP/1.1 204 No Content\nAllow: GET, PUT, DELETE, OPTIONS\n\n#   무엇이 되는지 말해 준다\n\n#   실무에서 이 용도로는 거의 안 쓴다\n\n# --- 진짜 용도는 프리플라이트다 ---\n\n$ curl -s -D - -o /dev/null -X OPTIONS \\\n    -H 'Origin: https://other.example' \\\n    -H 'Access-Control-Request-Method: DELETE' \\\n    -H 'Access-Control-Request-Headers: Content-Type' \\\n    http://localhost:9067/orders/5 | grep -i 'access-control'\n\nAccess-Control-Allow-Origin: *\nAccess-Control-Allow-Methods: GET, PUT, DELETE\nAccess-Control-Allow-Headers: Content-Type\nAccess-Control-Max-Age: 600\n\n#   브라우저가 이걸 먼저 보낸다\n\n#   개발자가 안 적은 요청이다\n\n#   Max-Age 만큼 다시 안 묻는다\n\n$ kill %1 2>/dev/null\n\n# --- 무엇이 프리플라이트를 부르나 ---\n\n$ cat cors.html\n\n<script>\nfetch(\"http://localhost:9067/orders\")                 // 단순\nfetch(\"http://localhost:9067/orders\", {\n  method: \"POST\",\n  headers: {\"Content-Type\": \"application/json\"},       // 프리플라이트\n  body: \"{}\"\n})\nfetch(\"http://localhost:9067/orders\", {\n  method: \"POST\",\n  headers: {\"Content-Type\": \"text/plain\"},             // 단순\n  body: \"{}\"\n})\n</script>\n\n$ python3 opts.py > /tmp/opts.log 2>&1 & sleep 1\n$ open -a \"Google Chrome\" file://$PWD/cors.html 2>/dev/null; sleep 3\n$ grep -o '\"[A-Z]* /orders' /tmp/opts.log\n\n\"GET /orders\n\"OPTIONS /orders\n\"POST /orders\n\"POST /orders\n\n#   네 줄인데 fetch 는 셋이다\n\n#   JSON 짜리만 OPTIONS 가 앞에 붙었다\n\n#   text/plain 은 안 붙었다\n\n#   Content-Type 하나가 요청을 두 배로 만든다\n\n$ kill %1 2>/dev/null\n\n# --- TRACE ---\n\n$ curl -s -D - -X TRACE http://localhost:8080/ 2>/dev/null | head -1\n\nHTTP/1.1 405 Not Allowed\n\n#   nginx 는 막아 뒀다\n\n$ cat trace.py\n\n    def do_TRACE(self):\n        raw = f\"TRACE {self.path} HTTP/1.1\\r\\n\"\n        for k, v in self.headers.items():\n            raw += f\"{k}: {v}\\r\\n\"\n        b = raw.encode()\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"message/http\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\n\n$ python3 trace.py & sleep 1\n$ curl -s -X TRACE -H 'Cookie: sid=SECRET' \\\n    -H 'Authorization: Bearer TOKEN' http://localhost:9066/\n\nTRACE / HTTP/1.1\nHost: localhost:9066\nUser-Agent: curl/8.9.1\nAccept: */*\nCookie: sid=SECRET\nAuthorization: Bearer TOKEN\n\n#   쿠키와 토큰이 본문으로 돌아왔다\n\n#   스크립트가 이 본문을 읽으면\n\n#   HttpOnly 쿠키가 샌다\n\n#   그게 XST 다\n\n#   그래서 다 꺼 놨다\n\n$ kill %1 2>/dev/null\n\n# --- CONNECT ---\n\n$ curl -s -o /dev/null -v -x http://localhost:8080 \\\n    https://example.com/ 2>&1 | grep -E '^> CONNECT|^\\* Connect'\n\n> CONNECT example.com:443 HTTP/1.1\n\n#   4.6절의 authority 형식이다\n\n#   프록시에 터널을 뚫어 달라는 것이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -x http://localhost:8080 \\\n    https://example.com/ 2>&1 | tail -1\n\n000\n\n#   nginx 는 프록시가 아니라 실패한다\n\n#   일반 서버는 CONNECT 를 안 받는다\n\n# --- 다음 장에서 ---\n\n#   클라이언트에서 서버로 데이터를 보내는 네 경우",
+   "note": "**HEAD 가 `Content-Length: 270544` 라고 말하면서 실제로는 0바이트를** 보낸다.\n\n**GET 과 HEAD 의 헤더가 `Date` 말고는 완전히** 같다.\n\n**`OPTIONS` 를 모르면 `501`, 아는데 안 받으면 `405`** 다.\n\n**`Content-Type: application/json` 짜리 `fetch` 앞에만 `OPTIONS` 가** 붙는다.\n\n**TRACE 응답 본문에 `Cookie: sid=SECRET` 과 `Authorization` 이 그대로** 돌아온다."
+  }
+ ],
+ "recap": [
+  "**HEAD 는 GET 에서 본문만** 뺀다.",
+  "**헤더는 GET 과 같아야** 한다.",
+  "**크기 확인·링크 검사에** 쓴다.",
+  "**OPTIONS 는 무엇이 되는지** 묻는다.",
+  "**실제 용도는 CORS 프리플라이트**다.",
+  "**단순 요청이 아니면 요청이 두 번** 간다.",
+  "**TRACE 는 쿠키까지 돌려**준다.",
+  "**`405` 와 `501` 이** 다르다.",
+  "**CONNECT 는 프록시 터널**이다."
+ ],
+ "drills": [
+  {
+   "task": "큰 파일에 HEAD 를 쓴다.",
+   "done_when": "길이는 오고 본문은 안 오는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "GET 과 HEAD 헤더를 비교한다.",
+   "done_when": "차이가 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "프리플라이트를 일으킨다.",
+   "done_when": "OPTIONS 가 앞에 붙는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "TRACE 서버를 만든다.",
+   "done_when": "헤더가 본문으로 오는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "HEAD 의 헤더 규칙은?",
+   "a": "GET 이었을 때와 같은 헤더를 보내야 한다."
+  },
+  {
+   "q": "OPTIONS 의 실제 주된 용도는?",
+   "a": "브라우저의 CORS 프리플라이트다."
+  },
+  {
+   "q": "무엇이 프리플라이트를 일으키나?",
+   "a": "단순 요청이 아닌 메서드나 헤더, 예컨대 JSON `Content-Type` 이다."
+  },
+  {
+   "q": "TRACE 가 꺼진 이유는?",
+   "a": "쿠키와 인증 헤더를 본문으로 돌려줘 유출 경로가 되기 때문이다."
+  },
+  {
+   "q": "`405` 와 `501` 의 차이는?",
+   "a": "아는 메서드지만 이 자원에 안 되는 것과, 서버가 아예 모르는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프리플라이트",
+   "def": "브라우저가 본 요청 전에 보내는 OPTIONS 확인 요청."
+  },
+  {
+   "term": "XST",
+   "def": "TRACE 응답에 담긴 헤더로 쿠키를 빼내는 공격."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Fetch Standard — CORS protocol",
+   "url": "https://fetch.spec.whatwg.org/#http-cors-protocol",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "IANA — HTTP Method Registry",
+   "url": "https://www.iana.org/assignments/http-methods/http-methods.xhtml",
+   "publisher": "IANA"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
