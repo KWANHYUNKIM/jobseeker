@@ -1,0 +1,139 @@
+{
+ "book": "spring-security",
+ "id": "headers",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "보안 헤더",
+ "summary": "기본으로 붙는 다섯.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "기본 다섯을 읽는다.",
+  "X-XSS-Protection 이 0인 이유를 안다.",
+  "CSP 를 직접 켠다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절에서 `permitAll` 응답에 헤더 여섯 줄이** 붙었다. **하나씩** 읽는다."
+  },
+  {
+   "type": "figure",
+   "caption": "공짜로 붙는 다섯",
+   "ascii": "   the five that come for free\n\n   X-Content-Type-Options: nosniff\n     do not guess the type, trust the header\n   X-Frame-Options: DENY\n     nobody may put this page in a frame\n   Cache-Control: no-cache, no-store, max-age=0, must-revalidate\n   Pragma: no-cache\n   Expires: 0\n     three headers, one intent, for old caches too\n   X-XSS-Protection: 0\n     turn the legacy browser filter off, on purpose",
+   "note": "**`HeaderWriterFilter` 하나가 다** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "각각이 막는 것",
+   "md": "| 헤더 | 막는 것 |\n|---|---|\n| **`nosniff`** | `.txt` 를 자바스크립트로 실행하는 것 |\n| **`X-Frame-Options: DENY`** | 클릭재킹 |\n| **`Cache-Control: no-store`** | 뒤로 가기·공용 PC 에 남는 화면 |\n| **`X-XSS-Protection: 0`** | 브라우저 옛 필터 자체 |\n\n**셋째가 3.8절에서 본** 그것이다.\n\n**클릭재킹**\n\n> **투명한 `iframe` 으로 내 사이트를 덮고 그 위에 버튼을** 놓는다.\n> **사용자는 광고를 누른 줄 아는데 실제로는 내 사이트의 \"삭제\" 를** 누른다.\n> **`DENY` 면 브라우저가 프레임 자체를 거부**한다.\n>\n> **같은 출처끼리는 허용하려면 `SAMEORIGIN`** 이다.\n> **H2 콘솔이 프레임을 써서 개발할 때 자주** 만난다.\n\n**`X-XSS-Protection: 0` 이 의외**다.\n\n> **`1; mode=block` 이 켜는 것 같아 보이는데 스프링은 `0` 을** 준다.\n> **그 필터 자체가 취약점을 만들었기 때문**이다.\n> **정상 스크립트를 잘못 차단하거나 오히려 정보 노출을** 만들었다.\n>\n> **크롬·엣지는 이미 기능을** 제거했다.\n> **끄는 게 현재 권고**다 — **대신 CSP 를 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "직접 켜야 하는 하나",
+   "ascii": "   the one you have to write yourself\n\n   Content-Security-Policy\n     default-src 'self';\n     script-src 'self';\n     style-src 'self';\n     frame-ancestors 'none'\n\n   an inline script now needs a nonce or a hash\n   which is exactly why it stops an injected one",
+   "note": "**인라인 스크립트를 막는 게 곧 주입을** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "CSP 는 기본이 아니다",
+   "md": "**깨질 수 있어서** 안 켠다.\n\n> **인라인 `<script>` 와 `onclick` 이 다** 죽는다.\n> **CDN 이나 애널리틱스도** 막힌다.\n> **기본으로 켜면 대부분의 앱이** 깨진다.\n\n```java\nhttp.headers(h -> h\n        .contentSecurityPolicy(csp -> csp.policyDirectives(\n                \"default-src 'self'; script-src 'self'; \"\n                + \"style-src 'self' 'unsafe-inline'; frame-ancestors 'none'\")));\n```\n\n**먼저 보고만 하게 할 수도** 있다.\n\n```java\n.contentSecurityPolicy(csp -> csp\n        .policyDirectives(\"default-src 'self'\")\n        .reportOnly());\n```\n\n> **헤더 이름이 `Content-Security-Policy-Report-Only` 로** 바뀐다.\n> **막지는 않고 콘솔에만** 알린다.\n> **켜기 전에 무엇이 깨질지 세는 방법**이다.\n\n**`frame-ancestors` 가 `X-Frame-Options` 를 대체**한다.\n\n> **둘 다 있으면 최신 브라우저는 `frame-ancestors` 를** 본다.\n> **옛 브라우저를 위해 둘 다 두는 게** 보통이다.\n\n**나머지 켤 만한 것들**\n\n```java\nhttp.headers(h -> h\n        .httpStrictTransportSecurity(hsts -> hsts\n                .includeSubDomains(true).maxAgeInSeconds(31536000))\n        .referrerPolicy(r -> r.policy(SAME_ORIGIN))\n        .permissionsPolicyHeader(p -> p.policy(\"geolocation=(), camera=()\")));\n```\n\n> **HSTS 는 `https` 응답에만** 붙는다 — **6.8절**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 기본 헤더를 본다 ---\n\n$ curl -is -b user.txt localhost:8080/orders | sed -n '2,12p'\n\nVary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers\nX-Content-Type-Options: nosniff\nX-XSS-Protection: 0\nCache-Control: no-cache, no-store, max-age=0, must-revalidate\nPragma: no-cache\nExpires: 0\nX-Frame-Options: DENY\nContent-Type: text/html;charset=UTF-8\n\n#   여섯 줄이다\n\n#   설정한 적이 없다\n\nTRACE FilterChainProxy : Invoking HeaderWriterFilter (4/14)\n\n#   4번이 썼다\n\n# --- 하나씩 꺼 본다 ---\n\nhttp.headers(h -> h.frameOptions(f -> f.disable()));\n\n$ curl -is -b user.txt localhost:8080/orders | grep -ci x-frame-options\n0\n\nhttp.headers(h -> h.cacheControl(c -> c.disable()));\n\n$ curl -is -b user.txt localhost:8080/orders | grep -ci cache-control\n0\n\n#   3.8절의 뒤로 가기 방어가 사라졌다\n\nhttp.headers(h -> h.disable());\n\n$ curl -is -b user.txt localhost:8080/orders | sed -n '2,8p'\n\nContent-Type: text/html;charset=UTF-8\nContent-Language: ko\nTransfer-Encoding: chunked\n\n#   전부 사라졌다\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -c HeaderWriter\n0\n\n#   필터 자체가 빠졌다\n\n# --- 클릭재킹을 재현한다 ---\n\n$ cat > /tmp/frame.html <<'HTML'\n<html><body>\n  <h1>경품 당첨</h1>\n  <iframe src=\"http://localhost:8080/orders\" width=\"800\" height=\"600\"></iframe>\n</body></html>\nHTML\n\n#   (DENY 인 상태로 브라우저에서 연다)\n\n#   콘솔:\n#   Refused to display 'http://localhost:8080/' in a frame because it\n#   set 'X-Frame-Options' to 'deny'.\n\n#   빈 프레임이 보인다\n\n#   (frameOptions().disable() 로 끄고 다시 열면)\n\n#   내 주문 화면이 그대로 보인다\n\n#   그 위에 투명 버튼을 놓으면 클릭재킹이다\n\n# --- H2 콘솔이 안 보이는 이유 ---\n\nspring.h2.console.enabled=true\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/h2-console\n200\n\n#   (브라우저에서는 빈 화면)\n\n#   콘솔:\n#   Refused to display in a frame because it set 'X-Frame-Options' to 'deny'\n\n#   H2 콘솔이 프레임을 쓴다\n\nhttp.headers(h -> h.frameOptions(f -> f.sameOrigin()));\n\n$ curl -is localhost:8080/h2-console | grep -i x-frame\n\nX-Frame-Options: SAMEORIGIN\n\n#   보인다\n\n#   개발에서만 이렇게 한다\n\n# --- CSP 를 보고만 하게 켠다 ---\n\nhttp.headers(h -> h.contentSecurityPolicy(csp -> csp\n        .policyDirectives(\"default-src 'self'\")\n        .reportOnly()));\n\n$ curl -is -b user.txt localhost:8080/orders | grep -i content-security\n\nContent-Security-Policy-Report-Only: default-src 'self'\n\n#   (브라우저 콘솔)\n#   [Report Only] Refused to execute inline script because it violates\n#   the following Content Security Policy directive: \"default-src 'self'\"\n\n#   막지는 않는다\n\n#   무엇이 깨질지 먼저 센다\n\n# --- 진짜로 켠다 ---\n\n.contentSecurityPolicy(csp -> csp.policyDirectives(\n        \"default-src 'self'; script-src 'self'; frame-ancestors 'none'\"))\n\n$ curl -is -b user.txt localhost:8080/orders | grep -i content-security\n\nContent-Security-Policy: default-src 'self'; script-src 'self';\n  frame-ancestors 'none'\n\n#   (브라우저 콘솔)\n#   Refused to execute inline script\n\n#   인라인 스크립트가 안 돈다\n\n#   내가 쓴 것도 안 돈다\n\n#   그래서 주입된 것도 안 돈다\n\n# --- nonce 로 내 것만 허용 ---\n\n#   (스프링 시큐리티에 자동 nonce 는 없어서 직접 만든다)\n\n@Component\npublic class CspNonceFilter extends OncePerRequestFilter {\n    protected void doFilterInternal(HttpServletRequest req,\n            HttpServletResponse res, FilterChain chain)\n            throws ServletException, IOException {\n        String nonce = UUID.randomUUID().toString().replace(\"-\", \"\");\n        req.setAttribute(\"cspNonce\", nonce);\n        res.setHeader(\"Content-Security-Policy\",\n                \"default-src 'self'; script-src 'self' 'nonce-\" + nonce + \"'\");\n        chain.doFilter(req, res);\n    }\n}\n\n<script th:attr=\"nonce=${cspNonce}\">console.log('ok')</script>\n\n$ curl -s -b user.txt localhost:8080/orders | grep nonce\n\n<script nonce=\"a3f21b84c7e4f11b2d60e8a75c31d94e\">console.log('ok')</script>\n\n$ curl -is -b user.txt localhost:8080/orders | grep -i content-security\n\nContent-Security-Policy: default-src 'self'; script-src 'self'\n  'nonce-a3f21b84c7e4f11b2d60e8a75c31d94e'\n\n#   요청마다 값이 다르다\n\n#   주입하는 쪽은 이 값을 모른다\n\n#   6.4절 토큰과 같은 원리다\n\n# --- 헤더를 테스트로 고정한다 ---\n\n@Test\nvoid 보안_헤더가_붙는다() throws Exception {\n    mockMvc.perform(get(\"/orders\").with(user(\"user@a.com\")))\n            .andExpect(header().string(\"X-Content-Type-Options\", \"nosniff\"))\n            .andExpect(header().string(\"X-Frame-Options\", \"DENY\"))\n            .andExpect(header().string(\"Cache-Control\",\n                    \"no-cache, no-store, max-age=0, must-revalidate\"));\n}\n\n$ ./gradlew test\n\n84 tests completed\n\nBUILD SUCCESSFUL\n\n#   84 다\n\n#   2.6절의 ignoring 을 잘못 넣으면 이 테스트가 깨진다\n\n# --- 다음 절에서 ---\n\n#   저 헤더들이 https 에서 어떻게 달라지는지 본다",
+   "note": "**설정 없이 여섯 줄이 붙고 `HeaderWriterFilter` 가 4번**이다.\n\n**`headers().disable()` 하면 필터 자체가 빠져 전부** 사라진다.\n\n**`X-Frame-Options` 를 끄면 `iframe` 에 내 화면이 그대로** 보인다. **H2 콘솔이 안 보이는 것도 같은 헤더** 때문이다.\n\n**`reportOnly` 는 막지 않고 콘솔에만** 알린다.\n\n**nonce 를 붙이면 요청마다 값이 달라 주입하는 쪽이 못** 맞춘다."
+  }
+ ],
+ "recap": [
+  "**기본 여섯 줄을 `HeaderWriterFilter` 가** 쓴다.",
+  "**`nosniff` 는 타입 추측을** 막는다.",
+  "**`X-Frame-Options: DENY` 는 클릭재킹을** 막는다.",
+  "**`Cache-Control: no-store` 가 뒤로 가기를** 막는다.",
+  "**`X-XSS-Protection: 0` 은 옛 필터를 끄는 게 권고라서**다.",
+  "**CSP 는 깨질 수 있어 기본이** 아니다.",
+  "**`reportOnly` 로 먼저 무엇이 깨질지** 센다.",
+  "**`frame-ancestors` 가 `X-Frame-Options` 를** 대체한다.",
+  "**nonce 는 요청마다 달라 주입을** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "기본 헤더 여섯 줄을 확인한다.",
+   "done_when": "각각의 뜻을 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`iframe` 페이지로 클릭재킹을 재현한다.",
+   "done_when": "끄고 켠 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "CSP 를 `reportOnly` 로 켠다.",
+   "done_when": "깨지는 것을 목록으로 만들었다.",
+   "minutes": 25
+  },
+  {
+   "task": "헤더를 테스트로 고정한다.",
+   "done_when": "세 헤더를 단언했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본으로 붙는 헤더는 몇 줄인가?",
+   "a": "여섯 줄이다. `nosniff`, `X-XSS-Protection`, 캐시 셋, `X-Frame-Options` 다."
+  },
+  {
+   "q": "`X-XSS-Protection` 이 `0` 인 이유는?",
+   "a": "브라우저의 옛 필터가 오히려 문제를 만들어 끄는 것이 권고다."
+  },
+  {
+   "q": "H2 콘솔이 안 보이는 이유는?",
+   "a": "`X-Frame-Options: DENY` 가 프레임을 막아서다."
+  },
+  {
+   "q": "CSP 가 기본이 아닌 이유는?",
+   "a": "인라인 스크립트가 다 죽어 대부분의 앱이 깨진다."
+  },
+  {
+   "q": "nonce 가 왜 방어가 되나?",
+   "a": "요청마다 값이 달라 주입하는 쪽이 맞출 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "클릭재킹",
+   "def": "투명한 프레임으로 다른 사이트를 덮어 사용자가 의도하지 않은 버튼을 누르게 하는 공격."
+  },
+  {
+   "term": "CSP",
+   "def": "브라우저에게 어떤 출처의 리소스만 실행하라고 지시하는 응답 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Security HTTP Response Headers",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/exploits/headers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "MDN — Content Security Policy",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+   "publisher": "MDN"
+  },
+  {
+   "title": "OWASP — HTTP Security Response Headers Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

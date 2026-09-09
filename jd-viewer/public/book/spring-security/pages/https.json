@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "https",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "HTTPS 와 리다이렉트",
+ "summary": "프록시 뒤에서.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "requiresChannel 이 하는 일을 안다.",
+  "리다이렉트 무한 루프의 원인을 안다.",
+  "HSTS 가 언제 붙는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 `requiresChannel` 을 한 줄** 썼다. **운영에 올리면 이게 사고를** 낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "프록시 뒤에서 앱이 보는 것",
+   "ascii": "   what the app sees behind a proxy\n\n   browser  --https-->  nginx  --http-->  app :8080\n\n   without forwarded headers\n     request.isSecure()   false\n     request.getScheme()  http\n     so requiresSecure redirects to https, forever\n\n   with them\n     X-Forwarded-Proto: https  ->  the app believes it",
+   "note": "**앱은 자기가 `http` 라고** 믿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "채널 보안",
+   "md": "```java\nhttp.requiresChannel(c -> c.anyRequest().requiresSecure());\n```\n\n> **`ChannelProcessingFilter` 가 필터 맨 앞에** 선다.\n> **`request.isSecure()` 가 `false` 면 `https` 로 302**다.\n\n**부분만 강제할 수도** 있다.\n\n```java\nhttp.requiresChannel(c -> c\n        .requestMatchers(\"/login\", \"/mypage/**\").requiresSecure()\n        .anyRequest().requiresInsecure());\n```\n\n> **요즘은 전부 `https` 라 잘 안** 쓴다.\n> **`requiresInsecure` 는 `https` 를 `http` 로 내리는데 쓸 일이** 거의 없다.\n\n**HSTS 는 따로**다.\n\n```java\nhttp.headers(h -> h.httpStrictTransportSecurity(hsts -> hsts\n        .includeSubDomains(true)\n        .maxAgeInSeconds(31536000)));\n```\n\n> **기본으로 켜져 있는데 `https` 응답에만** 붙는다.\n> **로컬 `http` 에서 확인하면 안 보이는 게** 정상이다.\n>\n> **브라우저가 이걸 받으면 그 기간 동안 `http` 로 아예 요청을 안** 한다.\n> **첫 요청의 302 조차 없어진다** — **그 302 가 가로채이는 지점이라서**다.\n>\n> **되돌리기 어렵다** — **`max-age` 를 0으로 내리고 사람들이 한 번씩 방문할 때까지** 기다려야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무한 리다이렉트",
+   "ascii": "   the redirect loop, step by step\n\n   1  browser asks nginx for https://site/orders\n   2  nginx asks the app for http://app:8080/orders\n   3  the app sees http, sends 302 to https://site/orders\n   4  go to step 1\n\n   ERR_TOO_MANY_REDIRECTS, and the app log looks fine",
+   "note": "**앱 로그만 보면 정상**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "프록시를 믿게 만든다",
+   "md": "**부트 설정 한 줄**이다.\n\n```properties\nserver.forward-headers-strategy=native\n```\n\n> **`native` 는 톰캣의 `RemoteIpValve` 를** 쓴다.\n> **`framework` 는 `ForwardedHeaderFilter` 를** 쓴다.\n> **둘 다 `X-Forwarded-Proto`·`X-Forwarded-For` 를** 읽는다.\n\n**프록시도 보내 줘야** 한다.\n\n```\nproxy_set_header X-Forwarded-Proto $scheme;\nproxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;\nproxy_set_header X-Forwarded-Host  $host;\n```\n\n**아무나 못 보내게 해야** 한다.\n\n> **이 헤더는 클라이언트도 보낼 수** 있다.\n> **`X-Forwarded-For` 를 조작하면 IP 기반 규칙이** 속는다.\n> **프록시가 덮어써야** 한다 — **`$proxy_add_x_forwarded_for` 가 그 일**이다.\n>\n> **`server.tomcat.remoteip.internal-proxies` 로 믿을 대역을** 좁힌다.\n\n**증상이 헷갈린다.**\n\n| 증상 | 실제 원인 |\n|---|---|\n| 무한 리다이렉트 | 프록시 헤더 미설정 |\n| 로그인 후 `http` 로 튐 | 리다이렉트 URL 생성이 `http` |\n| `Secure` 쿠키가 안 붙음 | 앱이 `http` 라고 믿음 |\n| HSTS 가 안 붙음 | 같은 이유 |\n\n> **넷 다 같은 원인**이다.\n> **앱이 자기가 어디 있는지 모르는 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- https 를 켠다 ---\n\n$ keytool -genkeypair -alias local -keyalg RSA -keysize 2048 \\\n    -storetype PKCS12 -keystore local.p12 -validity 365 \\\n    -dname \"CN=localhost\" -storepass changeit\n\nserver.port=8443\nserver.ssl.key-store=classpath:local.p12\nserver.ssl.key-store-password=changeit\nserver.ssl.key-store-type=PKCS12\n\n$ curl -k -is https://localhost:8443/login | sed -n '2,10p'\n\nStrict-Transport-Security: max-age=31536000 ; includeSubDomains\nX-Content-Type-Options: nosniff\nX-XSS-Protection: 0\nCache-Control: no-cache, no-store, max-age=0, must-revalidate\nX-Frame-Options: DENY\n\n#   HSTS 가 붙었다\n\n#   6.7절에서 http 로는 안 보이던 것이다\n\n$ curl -k -is https://localhost:8443/login -c s.txt | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=A1B2C3; Path=/; Secure; HttpOnly\n\n#   Secure 도 붙었다\n\n#   3.5절과 5.8절에서 안 붙던 그것이다\n\n# --- requiresChannel 을 켠다 ---\n\nhttp.requiresChannel(c -> c.anyRequest().requiresSecure());\n\n#   (8080 http 도 같이 띄운 상태)\n\n$ curl -i http://localhost:8080/orders\n\nHTTP/1.1 302\nLocation: https://localhost:8443/orders\n\nTRACE FilterChainProxy : Invoking ChannelProcessingFilter (1/15)\nDEBUG ChannelProcessingFilter : Redirecting to https\n\n#   1번 필터다\n\n#   Authorization 헤더를 읽기도 전이다\n\n# --- 프록시 뒤를 흉내 낸다 ---\n\n#   (nginx 가 https 를 받아 http 로 8080 에 넘긴다고 치고)\n\n$ curl -i http://localhost:8080/orders -H 'X-Forwarded-Proto: https'\n\nHTTP/1.1 302\nLocation: https://localhost:8443/orders\n\n#   헤더를 보냈는데도 리다이렉트다\n\n@GetMapping(\"/scheme\")\n@ResponseBody\npublic String scheme(HttpServletRequest req) {\n    return req.getScheme() + \" secure=\" + req.isSecure()\n            + \" url=\" + req.getRequestURL();\n}\n\n$ curl -s localhost:8080/scheme -H 'X-Forwarded-Proto: https'\n\nhttp secure=false url=http://localhost:8080/scheme\n\n#   앱이 헤더를 무시하고 있다\n\n#   이 상태에서 진짜 nginx 를 붙이면\n\n#   1) 브라우저 -> nginx : https\n#   2) nginx -> 앱 : http\n#   3) 앱 -> 302 https\n#   4) 1번으로\n\n#   ERR_TOO_MANY_REDIRECTS\n\n# --- 헤더를 믿게 한다 ---\n\nserver.forward-headers-strategy=native\n\n$ curl -s localhost:8080/scheme -H 'X-Forwarded-Proto: https'\n\nhttps secure=true url=https://localhost/scheme\n\n#   믿는다\n\n$ curl -i http://localhost:8080/orders -H 'X-Forwarded-Proto: https' \\\n    | head -1\n\nHTTP/1.1 302\n\n$ curl -is http://localhost:8080/orders -H 'X-Forwarded-Proto: https' \\\n    | grep -i location\n\nLocation: https://localhost/login\n\n#   이번 302 는 채널이 아니라 로그인 리다이렉트다\n\n#   그리고 https 로 만들어졌다\n\nTRACE FilterChainProxy : Invoking ChannelProcessingFilter (1/15)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\n\n#   1번을 통과했다\n\n# --- 헤더가 붙는지 확인 ---\n\n$ curl -is localhost:8080/login -H 'X-Forwarded-Proto: https' \\\n    | grep -iE 'strict-transport|set-cookie'\n\nStrict-Transport-Security: max-age=31536000 ; includeSubDomains\nSet-Cookie: JSESSIONID=D4E5F6; Path=/; Secure; HttpOnly\n\n#   HSTS 와 Secure 가 붙었다\n\n#   http 연결인데도 붙는다\n\n#   앱이 https 라고 믿어서다\n\n# --- 클라이언트가 헤더를 지어내면 ---\n\n$ curl -s localhost:8080/whoami-ip -H 'X-Forwarded-For: 10.0.0.1'\n\n10.0.0.1\n\n#   앱이 그대로 믿는다\n\n#   IP 기반 규칙이 있으면 속는다\n\nserver.tomcat.remoteip.internal-proxies=127\\\\.0\\\\.0\\\\.1\n\n#   (프록시가 아닌 곳에서 온 헤더는 무시)\n\n#   그리고 nginx 쪽에서 덮어쓴다\n\n#   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\n# --- HSTS 를 켠 뒤 되돌리기 ---\n\n$ curl -k -is https://localhost:8443/login | grep -i strict\n\nStrict-Transport-Security: max-age=31536000 ; includeSubDomains\n\n#   (브라우저가 이걸 받으면 1년간 http 로 요청조차 안 한다)\n\nhttp.headers(h -> h.httpStrictTransportSecurity(hsts -> hsts.disable()));\n\n$ curl -k -is https://localhost:8443/login | grep -ci strict\n0\n\n#   헤더는 사라졌다\n\n#   이미 받은 브라우저는 여전히 기억한다\n\n#   max-age=0 을 한동안 내보내야 지워진다\n\n#   켤 때 신중해야 하는 이유다\n\n# --- 다음 절에서 ---\n\n#   6장에서 켠 것들을 정리한다",
+   "note": "**`https` 응답에는 `Strict-Transport-Security` 와 `Secure` 쿠키가** 붙는다 — 3.5절·5.8절에서 안 보이던 것들이다.\n\n**`X-Forwarded-Proto` 를 보내도 앱이 `http secure=false`** 라고 답한다 — **여기서 무한 리다이렉트가** 난다.\n\n**`server.forward-headers-strategy=native` 를 주면 `https secure=true`** 가 되고 302 목적지가 `https` 로 만들어진다.\n\n**클라이언트가 `X-Forwarded-For` 를 지어내면 앱이 그대로** 믿는다.\n\n**HSTS 는 끄더라도 이미 받은 브라우저는** 기억한다."
+  }
+ ],
+ "recap": [
+  "**`requiresChannel` 은 `ChannelProcessingFilter` 를 맨 앞에** 세운다.",
+  "**`request.isSecure()` 로** 판단한다.",
+  "**프록시 뒤에서는 그게 늘 `false`** 다.",
+  "**그래서 무한 리다이렉트가** 난다.",
+  "**`forward-headers-strategy` 로 헤더를 믿게** 한다.",
+  "**프록시도 헤더를 보내 줘야** 한다.",
+  "**클라이언트가 지어낸 헤더를 믿으면** 안 된다.",
+  "**HSTS 와 `Secure` 는 `https` 일 때만** 붙는다.",
+  "**HSTS 는 되돌리기가** 어렵다."
+ ],
+ "drills": [
+  {
+   "task": "자체 서명 인증서로 `https` 를 켠다.",
+   "done_when": "HSTS 와 `Secure` 를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`X-Forwarded-Proto` 만 보내 본다.",
+   "done_when": "앱이 무시하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`forward-headers-strategy` 를 켠다.",
+   "done_when": "`secure=true` 가 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`X-Forwarded-For` 를 지어내 본다.",
+   "done_when": "앱이 믿는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무한 리다이렉트의 원인은?",
+   "a": "프록시 뒤 앱이 자기를 `http` 로 알아 계속 `https` 로 보낸다."
+  },
+  {
+   "q": "해결 설정은?",
+   "a": "`server.forward-headers-strategy` 와 프록시 쪽 헤더 전달이다."
+  },
+  {
+   "q": "`X-Forwarded-For` 를 그대로 믿으면?",
+   "a": "클라이언트가 지어낸 IP 를 믿게 된다. 프록시가 덮어써야 한다."
+  },
+  {
+   "q": "HSTS 는 언제 붙나?",
+   "a": "`https` 응답에만 붙는다."
+  },
+  {
+   "q": "HSTS 를 끄면 바로 풀리나?",
+   "a": "안 풀린다. 이미 받은 브라우저는 기간 동안 기억한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HSTS",
+   "def": "이 사이트는 `https` 로만 접속하라고 브라우저에 기억시키는 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Enable HTTPS",
+   "url": "https://docs.spring.io/spring-boot/how-to/webserver.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Security HTTP Response Headers",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/exploits/headers.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 7239 — Forwarded HTTP Extension",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7239",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

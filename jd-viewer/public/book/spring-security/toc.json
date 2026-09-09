@@ -404,7 +404,7 @@
           "title": "보안 헤더",
           "summary": "기본으로 붙는 다섯.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -412,7 +412,7 @@
           "title": "HTTPS 와 리다이렉트",
           "summary": "프록시 뒤에서.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.9",
