@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "data-to-server",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "클라이언트에서 서버로",
+ "summary": "네 가지 경우로 나뉜다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 경로를 구분한다.",
+  "고르는 기준을 안다.",
+  "어디에 남는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장이 메서드였다면 6장은 그걸 실제로 쓰는 자리**다. **먼저 데이터가 나가는 길을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 길",
+   "ascii": "   four ways data leaves the client, and where it ends up\n\n   query string     GET /search?q=book        in the url, and in logs\n   form urlencoded  POST, key=value pairs     in the body\n   multipart        POST, boundary separated  in the body, files too\n   api body         POST, json or anything    in the body\n\n   the first is the only one that survives a bookmark or a share",
+   "note": "**첫째만 북마크와 공유가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어디에 실리느냐가 성질을 정한다",
+   "md": "**URL 에 실리면 주소의 일부**다.\n\n> **북마크되고 공유되고 캐시 키가** 된다(5.2절).\n> **동시에 로그와 `Referer` 에 남는다**(3.2절).\n> **비밀은 절대 여기** 안 넣는다.\n\n**본문에 실리면 안 남는** 대신,\n\n> **주소로 그 상태를 못** 가리킨다.\n> **새로고침이 재전송을** 부른다(5.3절).\n> **캐시도 안** 된다(5.6절).\n\n**폼은 셋만 할 수** 있다.\n\n| 폼 설정 | 결과 |\n|---|---|\n| `method=get` | 쿼리 문자열 |\n| `method=post` | urlencoded 본문 |\n| `method=post enctype=multipart` | 멀티파트 |\n\n> **`enctype` 을 GET 에 주면** 무시된다.\n> **JSON 은 폼으로 못 보낸다** — **스크립트가** 필요하다.\n\n**크기 한계가 다르다.**\n\n> **쿼리는 8KB 쯤에서 414** 다(5.2절).\n> **본문은 사실상 제한이** 없다(5.3절).\n> **한글이면 세 배로 빨리 찬다**(3.3절)."
+  },
+  {
+   "type": "figure",
+   "caption": "고르는 기준",
+   "ascii": "   what decides which one you use\n\n   is it a query          then the url, so it can be linked and cached\n   does it change things  then a body, so it cannot be prefetched\n   are there files        then multipart, there is no other choice\n   is the client code     then json, because nothing else is simpler\n\n   html forms only offer the first three, scripts offer all four",
+   "note": "**폼은 셋, 스크립트는** 넷이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "GET 인데 바꾸거나, POST 인데 조회하거나",
+   "md": "**둘 다 흔한 실수**다.\n\n> **검색을 POST 로 하면 결과를 공유 못** 한다.\n> **삭제를 GET 으로 하면 크롤러가** 부른다(5.1절).\n> **5.6절의 세 성질이 여기서 실무로** 온다.\n\n**검색은 GET 이 기본**이다.\n\n> **주소가 결과를** 가리킨다.\n> **뒤로 가기가** 동작한다.\n> **길어지면 그때 POST 를 고민**한다.\n\n**로그인은 POST** 다.\n\n> **비밀번호가 쿼리에 들어가면 로그에** 남는다.\n> **`GET /login?pw=1234` 는 사고**다.\n> **⑩ 에서 계속 나온 이야기**다.\n\n**폼의 기본이 GET** 이다.\n\n> **`method` 를 안 적으면 GET** 이다.\n> **입력한 값이 주소창에 그대로** 뜬다.\n> **놓치기 쉬운 기본값**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 네 길을 나란히 ---\n\n$ cat echo.py\n\nimport http.server, json\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _echo(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        body = self.rfile.read(n).decode(\"utf-8\", \"replace\") if n else \"\"\n        out = {\n            \"메서드\": self.command,\n            \"경로\": self.path,\n            \"타입\": self.headers.get(\"Content-Type\", \"(없음)\"),\n            \"본문\": body[:120],\n        }\n        b = json.dumps(out, ensure_ascii=False, indent=1).encode()\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\n    do_GET = do_POST = _echo\nhttp.server.HTTPServer((\"\", 9065), H).serve_forever()\n\n$ python3 echo.py > /tmp/echo.log 2>&1 & sleep 1\n\n$ curl -s 'http://localhost:9065/search?q=책&page=2'\n\n{\n \"메서드\": \"GET\",\n \"경로\": \"/search?q=%EC%B1%85&page=2\",\n \"타입\": \"(없음)\",\n \"본문\": \"\"\n}\n\n#   데이터가 경로에 있다\n\n#   3.3절대로 인코딩됐다\n\n$ curl -s -X POST --data-urlencode 'q=책' -d 'page=2' \\\n    http://localhost:9065/search\n\n{\n \"메서드\": \"POST\",\n \"경로\": \"/search\",\n \"타입\": \"application/x-www-form-urlencoded\",\n \"본문\": \"q=%EC%B1%85&page=2\"\n}\n\n#   같은 데이터가 본문으로 갔다\n\n#   경로는 깨끗하다\n\n$ curl -s -X POST -F 'q=책' -F 'page=2' http://localhost:9065/search \\\n    | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n        print(d[\"타입\"][:40]); print(d[\"본문\"][:80])'\n\nmultipart/form-data; boundary=--------\n----------------------------abc\nContent-Disposition: form-data; name=\"q\"\n\n책\n\n#   조각마다 헤더가 있다\n\n#   5.3절에서 본 그것이다\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d '{\"q\":\"책\",\"page\":2}' http://localhost:9065/search\n\n{\n \"메서드\": \"POST\",\n \"경로\": \"/search\",\n \"타입\": \"application/json\",\n \"본문\": \"{\\\"q\\\":\\\"책\\\",\\\"page\\\":2}\"\n}\n\n#   인코딩이 없다\n\n#   JSON 그대로다\n\n# --- 어디에 남나 ---\n\n$ grep -o '\"GET /search[^\"]*\"' /tmp/echo.log\n\n\"GET /search?q=%EC%B1%85&page=2 HTTP/1.1\"\n\n$ grep -c '책' /tmp/echo.log\n\n0\n\n$ grep -o '\"POST /search[^\"]*\"' /tmp/echo.log | head -1\n\n\"POST /search HTTP/1.1\"\n\n#   GET 은 검색어가 로그에 있다\n\n#   POST 는 경로만 있다\n\n#   본문은 액세스 로그에 안 남는다\n\n# --- 주소로 가리킬 수 있나 ---\n\n$ curl -s -o /dev/null -w '%{url_effective}\\n' \\\n    'http://localhost:9065/search?q=책&page=2'\n\nhttp://localhost:9065/search?q=%EC%B1%85&page=2\n\n#   이 주소를 보내면 같은 결과가 나온다\n\n$ curl -s -o /dev/null -w '%{url_effective}\\n' -X POST \\\n    -d 'q=책' http://localhost:9065/search\n\nhttp://localhost:9065/search\n\n#   주소만으로는 아무것도 못 가리킨다\n\n#   북마크도 공유도 안 된다\n\n# --- 폼의 기본은 GET 이다 ---\n\n$ cat form.html\n\n<form action=\"http://localhost:9065/search\">\n  <input name=\"q\" value=\"비밀번호처럼 보이는 값\">\n  <button>보내기</button>\n</form>\n\n$ python3 - <<'EOF'\nimport re\nhtml = open(\"form.html\").read()\nm = re.search(r'<form([^>]*)>', html)\nprint(\"form 속성:\", m.group(1).strip())\nprint(\"method 있나:\", \"method\" in m.group(1))\nEOF\n\nform 속성: action=\"http://localhost:9065/search\"\nmethod 있나: False\n\n#   안 적으면 GET 이다\n\n#   입력값이 주소창에 뜬다\n\n#   놓치기 쉬운 기본값이다\n\n# --- 크기 한계가 다르다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    \"http://localhost:8080/api.json?q=$(head -c 10000 /dev/zero | tr '\\0' 'a')\"\n\n414\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_upload}\\n' -X POST \\\n    --data-binary \"$(head -c 200000 /dev/zero | tr '\\0' 'a')\" \\\n    http://localhost:9065/search\n\n200 200000\n\n#   쿼리는 10KB 에 막히고\n\n#   본문은 200KB 가 그냥 간다\n\n#   5.2절과 5.3절의 차이다\n\n# --- 폼은 JSON 을 못 보낸다 ---\n\n$ cat form2.html\n\n<form method=\"post\" enctype=\"application/json\"\n      action=\"http://localhost:9065/search\">\n  <input name=\"q\" value=\"책\">\n</form>\n\n$ open -a \"Google Chrome\" file://$PWD/form2.html 2>/dev/null; sleep 2\n$ grep -o '\"POST /search[^\"]*\"' /tmp/echo.log | tail -1\n\n\"POST /search HTTP/1.1\"\n\n$ tail -3 /tmp/echo.log | grep -o 'x-www-form-urlencoded' | head -1\n\n(직접 확인)\n\n$ curl -s -X POST -H 'Content-Type: application/json' \\\n    -d 'q=책' http://localhost:9065/search | python3 -c \\\n    'import sys,json; print(json.load(sys.stdin)[\"타입\"])'\n\napplication/json\n\n#   폼은 enctype 을 무시하고 urlencoded 로 보낸다\n\n#   JSON 은 스크립트로만 보낸다\n\n#   그래서 5.8절의 프리플라이트가 붙는다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   폼이 GET 으로 보낼 때",
+   "note": "**같은 `q=책` 이 경로·urlencoded 본문·멀티파트·JSON 네 형태로** 나간다.\n\n**GET 은 검색어가 액세스 로그에 남고 POST 는 경로만** 남는다.\n\n**GET 은 주소가 결과를 가리키는데 POST 는 `\\/search` 뿐**이다.\n\n**폼에 `method` 를 안 적으면 GET** 이다.\n\n**쿼리는 10KB 에 414 인데 본문은 200KB 가 그냥** 간다."
+  }
+ ],
+ "recap": [
+  "**데이터가 나가는 길이** 넷이다.",
+  "**URL 에 실리면 공유되고 로그에** 남는다.",
+  "**본문에 실리면 안 남고 못** 가리킨다.",
+  "**폼은 셋만 할 수** 있다.",
+  "**JSON 은 스크립트가** 보낸다.",
+  "**쿼리와 본문의 크기 한계가** 다르다.",
+  "**검색은 GET 이** 기본이다.",
+  "**로그인은 POST** 다.",
+  "**폼의 기본 메서드가 GET** 이다."
+ ],
+ "drills": [
+  {
+   "task": "같은 값을 네 형태로 보낸다.",
+   "done_when": "네 요청 원문을 다 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "액세스 로그를 비교한다.",
+   "done_when": "GET 만 값이 남는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "크기 한계를 시험한다.",
+   "done_when": "414 와 200KB 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`method` 없는 폼을 만든다.",
+   "done_when": "GET 으로 나가는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "데이터가 나가는 네 길은?",
+   "a": "쿼리 문자열, urlencoded 본문, 멀티파트, API 본문이다."
+  },
+  {
+   "q": "쿼리에 실으면 생기는 이점과 대가는?",
+   "a": "공유·캐시가 되지만 로그와 Referer 에 남는다."
+  },
+  {
+   "q": "폼으로 못 하는 것은?",
+   "a": "JSON 본문 전송이다. 스크립트가 필요하다."
+  },
+  {
+   "q": "검색을 GET 으로 하는 이유는?",
+   "a": "주소가 결과를 가리켜 공유와 뒤로 가기가 된다."
+  },
+  {
+   "q": "폼에 `method` 를 안 적으면?",
+   "a": "GET 으로 전송된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "enctype",
+   "def": "폼 본문의 인코딩 방식을 정하는 속성."
+  },
+  {
+   "term": "쿼리 문자열",
+   "def": "URL 의 `?` 뒤에 붙는 데이터."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "WHATWG HTML — Form submission",
+   "url": "https://html.spec.whatwg.org/multipage/form-control-infrastructure.html",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
