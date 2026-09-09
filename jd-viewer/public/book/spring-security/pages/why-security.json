@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "why-security",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 시큐리티인가",
+ "summary": "직접 만들면 안 되는 이유.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "직접 만들 때 놓치는 것을 안다.",
+  "왜 필터인지 안다.",
+  "무엇을 얻고 무엇을 감수하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**로그인은 쉬워 보인다.** **아이디로 찾고 비밀번호를 비교**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "직접 만들면 맞춰야 하는 것들",
+   "ascii": "   what a hand rolled login has to get right\n\n   hashing            not md5, not sha256, with a salt\n   session fixation   rotate the id on login\n   csrf               every state changing request\n   timing             comparing passwords in constant time\n   enumeration        same answer for wrong id and wrong password\n   fixation of role   authority read fresh, not from the cookie\n   logout             invalidate, clear, remove the cookie\n\n   seven, and none of them are the feature you were building",
+   "note": "**일곱 다 만들려던 기능이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "직접 만든 로그인이 틀리는 자리",
+   "md": "**① 해시**\n\n```java\nString hashed = DigestUtils.sha256Hex(password);\n```\n\n> **솔트가 없다.** **같은 비밀번호가 같은 해시**다.\n> **레인보우 테이블에** 뚫린다.\n>\n> **SHA-256 은 빠르다.** **그게 문제**다 — **초당 수십억 번 시도**할 수 있다.\n> **비밀번호 해시는 느려야** 한다. **4.7절**이다.\n\n**② 세션 고정**\n\n> **로그인 전 세션 ID 를 그대로** 쓰면\n> **공격자가 미리 심어 둔 ID 로 로그인 상태를** 가져간다.\n>\n> **로그인 때 세션을 새로 만들어야** 한다. **5.6절**이다.\n\n**③ CSRF**\n\n> **다른 사이트의 폼이 내 API 를** 부른다.\n> **쿠키가 자동으로 붙는다.**\n>\n> **6.4절**이다.\n\n**④ 타이밍 공격**\n\n```java\nif (stored.equals(input)) { }\n```\n\n> **`String.equals` 는 첫 글자가 다르면 바로** 끝난다.\n> **응답 시간으로 몇 글자가 맞는지 추측**할 수 있다.\n>\n> **`MessageDigest.isEqual` 을** 쓴다.\n\n**⑤ 계정 열거**\n\n```java\nif (user == null) throw new Exception(\"없는 아이디입니다\");\nif (!matches) throw new Exception(\"비밀번호가 틀렸습니다\");\n```\n\n> **어느 아이디가 존재하는지** 알려 준다.\n> **같은 메시지를 줘야** 한다.\n\n**⑥ 권한을 쿠키에서 읽기**\n\n```\nCookie: role=ADMIN\n```\n\n> **바꾸면** 된다.\n> **「활용 1편」 8.7절의 `hidden` 조작과 같은 종류**다.\n\n**⑦ 로그아웃**\n\n> **세션 무효화, 컨텍스트 삭제, 쿠키 제거** 셋이다.\n> **하나만 빠뜨려도 남는다** — **3.9절**."
+  },
+  {
+   "type": "figure",
+   "caption": "검사를 빠뜨릴 수 있는 자리",
+   "ascii": "   where a check can be skipped\n\n   controller checks the role\n     another controller forgets\n\n   service checks the role\n     a batch job calls it directly\n\n   a filter checks every request\n     nothing gets past without passing through\n\n   the filter is the only place you cannot forget",
+   "note": "**필터만 빠뜨릴 수가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 필터인가",
+   "md": "**컨트롤러에서 검사하면**\n\n```java\n@GetMapping(\"/admin/users\")\npublic String users(HttpSession session) {\n    if (!isAdmin(session)) return \"redirect:/login\";\n    ...\n}\n```\n\n> **컨트롤러가 쉰 개면 쉰 번** 쓴다.\n> **하나를 빠뜨리면 거기가** 뚫린다.\n>\n> **새로 만드는 사람이 그 규칙을** 모른다.\n\n**서비스에서 검사하면**\n\n> **조금 낫다.** **그런데 배치나 스케줄러가 직접 부르면** 걸린다.\n> **7.6절에서 다룬다.**\n\n**필터는 빠뜨릴 수가** 없다.\n\n> **모든 요청이 지나간다.** **`DispatcherServlet` 전**이다.\n> **컨트롤러를 새로 만들어도 자동으로** 걸린다.\n\n**\"기본이 거부\"** 가 된다.\n\n```java\n.anyRequest().authenticated()\n```\n\n> **명시적으로 열지 않은 건 다** 막힌다.\n> **빠뜨리면 안 열리는 것**이지 **뚫리는 게** 아니다.\n>\n> **방향이 반대**다. **그게 핵심**이다.\n\n**감수하는 것**\n\n| | |\n|---|---|\n| **학습 곡선** | 필터 열다섯, 클래스 수십 |\n| **디버깅이 어렵다** | 1.1절의 로그가 필요한 이유 |\n| **기본값이 많다** | 안 켠 것도 켜져 있다 |\n| **설정이 프레임워크 안에** | 2장이 그걸 푼다 |\n\n> **마지막이 이 책의 절반**이다.\n> **\"왜 이게 켜져 있지\" 를 답할 수 있어야** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 직접 만든 로그인 ---\n\n@PostMapping(\"/login\")\npublic String login(String username, String password, HttpSession session) {\n    Member member = memberRepository.findByUsername(username);\n    if (member == null) {\n        return \"redirect:/login?error=nouser\";\n    }\n    if (!member.getPassword().equals(sha256(password))) {\n        return \"redirect:/login?error=badpassword\";\n    }\n    session.setAttribute(\"loginMember\", member);\n    return \"redirect:/\";\n}\n\n#   ① 계정 열거\n\n$ curl -i -X POST localhost:8080/login \\\n>   -d 'username=nobody&password=x'\n\nHTTP/1.1 302\nLocation: /login?error=nouser\n\n$ curl -i -X POST localhost:8080/login \\\n>   -d 'username=userA&password=x'\n\nHTTP/1.1 302\nLocation: /login?error=badpassword\n\n#   userA 가 존재한다는 걸 알려 준다\n\n#   아이디 목록을 만들 수 있다\n\n#   ② 세션 고정\n\n$ curl -i localhost:8080/login | grep Set-Cookie\n\nSet-Cookie: JSESSIONID=OLD123; Path=/; HttpOnly\n\n$ curl -i -X POST localhost:8080/login \\\n>   -b 'JSESSIONID=OLD123' \\\n>   -d 'username=userA&password=1234' | grep -E \"Set-Cookie|Location\"\n\nLocation: /\n\n#   Set-Cookie 가 없다\n\n#   로그인 전 세션 ID 가 그대로다\n\n#   공격자가 OLD123 을 미리 알고 있으면\n#   그 세션으로 로그인 상태를 쓴다\n\n#   ③ CSRF\n\n#   공격자 사이트에 이런 폼을 둔다\n\n<form action=\"http://localhost:8080/api/v1/orders/new\" method=\"post\">\n  <input name=\"productNumbers\" value=\"001\">\n</form>\n<script>document.forms[0].submit()</script>\n\n#   로그인된 사용자가 그 페이지를 열면\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -b 'JSESSIONID=OLD123' \\\n>   -d 'productNumbers=001'\n\nHTTP/1.1 200\n{\"code\":200,\"status\":\"OK\",\"data\":{\"id\":1}}\n\n#   주문이 됐다\n\n#   쿠키가 자동으로 붙는다\n\n#   ④ 로그아웃\n\n@PostMapping(\"/logout\")\npublic String logout(HttpSession session) {\n    session.removeAttribute(\"loginMember\");\n    return \"redirect:/\";\n}\n\n$ curl -i -X POST localhost:8080/logout -b 'JSESSIONID=OLD123' \\\n>   | grep Set-Cookie\n\n(없음)\n\n$ curl -s localhost:8080/api/v1/orders -b 'JSESSIONID=OLD123' | jq .status\n\n\"OK\"\n\n#   세션은 살아 있다\n\n#   attribute 만 지웠다\n\n#   다른 곳에 남은 정보가 있으면 여전히 인증 상태다\n\n# --- 시큐리티를 켜면 ---\n\nimplementation 'org.springframework.boot:spring-boot-starter-security'\n\n#   ① 계정 열거\n\n$ curl -i -X POST localhost:8080/login \\\n>   -d 'username=nobody&password=x' | grep Location\n\nLocation: http://localhost:8080/login?error\n\n$ curl -i -X POST localhost:8080/login \\\n>   -d 'username=user&password=x' | grep Location\n\nLocation: http://localhost:8080/login?error\n\n#   같다\n\nDEBUG DaoAuthenticationProvider : Failed to find user 'nobody'\nDEBUG ProviderManager : Authentication failed:\n  Bad credentials\n\n#   로그에는 구분이 있고 응답에는 없다\n\n#   ② 세션 고정\n\n$ curl -i localhost:8080/login | grep Set-Cookie\nSet-Cookie: JSESSIONID=OLD123; Path=/; HttpOnly\n\n$ curl -i -X POST localhost:8080/login -b 'JSESSIONID=OLD123' \\\n>   -d 'username=user&password=$PW&_csrf=$TOKEN' | grep Set-Cookie\n\nSet-Cookie: JSESSIONID=NEW456; Path=/; HttpOnly\n\nDEBUG ChangeSessionIdAuthenticationStrategy :\n  Changed session id from OLD123\n\n#   로그인하면서 세션 ID 가 바뀌었다\n\n#   ③ CSRF\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -b 'JSESSIONID=NEW456' -d 'productNumbers=001'\n\nHTTP/1.1 403\n\nDEBUG CsrfFilter : Invalid CSRF token found for\n  http://localhost:8080/api/v1/orders/new\n\n#   토큰이 없어 막혔다\n\n#   ④ 로그아웃\n\n$ curl -i -X POST localhost:8080/logout -b 'JSESSIONID=NEW456' \\\n>   -d \"_csrf=$TOKEN\" | grep Set-Cookie\n\nSet-Cookie: JSESSIONID=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT\n\nDEBUG SecurityContextLogoutHandler : Invalidated session\nDEBUG SecurityContextHolder : Cleared SecurityContextHolder\n\n#   세션 무효화, 컨텍스트 삭제, 쿠키 제거 셋 다 했다\n\n# --- 컨트롤러를 새로 만들면 ---\n\n@GetMapping(\"/admin/secret\")\npublic String secret() { return \"secret\"; }\n\n#   authorizeHttpRequests 에 안 적었다\n\n$ curl -i localhost:8080/admin/secret\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  [GET /admin/secret] with attribute[authenticated]\n\n#   자동으로 막혔다\n\n#   anyRequest().authenticated() 가 기본이라\n\n#   빠뜨리면 안 열리는 것이지 뚫리는 게 아니다\n\n# --- 방향이 반대다 ---\n\n#   직접 만든 판    검사를 빠뜨리면 뚫린다\n#   시큐리티        규칙을 빠뜨리면 안 열린다\n\n# --- 다음 절에서 ---\n\n#   샘플 프로젝트를 정한다",
+   "note": "**직접 만든 판은 계정 열거·세션 고정·CSRF·로그아웃 넷이 다** 뚫린다.\n\n**시큐리티를 켜면 응답이 같아지고, 세션 ID 가 바뀌고, CSRF 가 `403`** 이고, **로그아웃이 셋을 다** 한다.\n\n**컨트롤러를 새로 만들어도 자동으로** 막힌다. **`anyRequest().authenticated()` 가 기본**이라서다.\n\n**방향이 반대**다 — **빠뜨리면 안 열리는 것**이지 뚫리는 게 아니다."
+  }
+ ],
+ "recap": [
+  "**직접 만들면 일곱을 다 맞춰야** 한다.",
+  "**일곱 다 만들려던 기능이** 아니다.",
+  "**SHA-256 은 빠르다** — 그게 문제다.",
+  "**계정 열거는 메시지를 다르게 준 결과**다.",
+  "**로그아웃은 셋을 다** 해야 한다.",
+  "**컨트롤러 검사는 빠뜨릴 수** 있다.",
+  "**필터는 모든 요청이** 지난다.",
+  "**\"기본이 거부\" 라 빠뜨리면 안 열린다**.",
+  "**감수하는 건 학습 곡선과 많은 기본값**이다."
+ ],
+ "drills": [
+  {
+   "task": "직접 만든 로그인의 오류 메시지를 확인한다.",
+   "done_when": "계정 열거가 되는지 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그인 전후 세션 ID 를 비교한다.",
+   "done_when": "바뀌는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그아웃 뒤 세션으로 요청해 본다.",
+   "done_when": "여전히 통하는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "시큐리티를 켜고 같은 넷을 다시 해 본다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "직접 만들 때 놓치는 일곱은?",
+   "a": "해시, 세션 고정, CSRF, 타이밍, 계정 열거, 권한 위조, 로그아웃이다."
+  },
+  {
+   "q": "SHA-256 이 왜 부적절한가?",
+   "a": "빠르기 때문이다. 비밀번호 해시는 느려야 한다."
+  },
+  {
+   "q": "왜 필터인가?",
+   "a": "모든 요청이 지나가 빠뜨릴 수가 없다."
+  },
+  {
+   "q": "\"기본이 거부\" 의 뜻은?",
+   "a": "규칙을 빠뜨리면 뚫리는 게 아니라 안 열린다."
+  },
+  {
+   "q": "감수하는 것은?",
+   "a": "학습 곡선, 어려운 디버깅, 많은 기본값이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP Top Ten",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Boot — Security",
+   "url": "https://docs.spring.io/spring-boot/reference/web/spring-security.html",
+   "publisher": "Spring"
+  }
+ ]
+}

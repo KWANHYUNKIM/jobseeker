@@ -1,0 +1,120 @@
+{
+ "book": "spring-security",
+ "id": "sample-project",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "샘플 프로젝트",
+ "summary": "아홉 번째 책의 그 curl 한 줄.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇을 이어받는지 안다.",
+  "닫아야 할 구멍을 확인한다.",
+  "요구사항을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「Practical Testing」의 카페 키오스크를 그대로** 쓴다. **거기서 열린 채 끝난 게** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "이어받는 것",
+   "ascii": "   what carries over from book 9\n\n   Product, Order, Stock          the domain\n   OrderService, OrderController  the api\n   78 tests                       the safety net\n\n   what is added here\n\n   Member, Role                   who is asking\n   SecurityConfig                 the filter chain\n   a login page                   generated, at first",
+   "note": "**도메인과 테스트가 그대로** 온다."
+  },
+  {
+   "type": "figure",
+   "caption": "닫아야 할 한 줄",
+   "ascii": "   the one curl line this book has to close\n\n   curl -X POST localhost:8080/api/v1/orders/new \\\n        -d '{\"productNumbers\":[\"001\"]}'\n\n   200 OK\n\n   no cookie, no header, no token\n   book 9 section 10.1 ran this and 78 tests stayed green",
+   "note": "**9권 10.1절이 이걸 돌리고 78개가 다** 초록이었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그 책이 남긴 문장",
+   "md": "**「Practical Testing」 10.1절**\n\n> **인증을 빼도 아무도 안 깨진다.**\n> **인증 테스트가 없어서다.**\n\n**10.4절**\n\n> **넷 중 ③이 가장 급하다.**\n> **인증 없이 남의 주문이 나간다.**\n\n**그 책의 마지막 절이 이렇게** 끝났다.\n\n```\n$ curl -s -X POST localhost:8080/api/v1/orders/new ... | jq .status\n\"OK\"\n\n$ ./gradlew test\n78 tests completed\nBUILD SUCCESSFUL\n```\n\n> **아무도 안 깨진다.**\n\n**이 책이 그걸** 닫는다.\n\n> **끝나면 같은 `curl` 이 `401`** 이어야 한다.\n> **그리고 테스트가 그걸** 지켜야 한다.\n>\n> **8.8절에서 인가 테스트를 짠다.**\n\n**「활용 1편」 9.7절의 목록에서도** 남아 있었다.\n\n| | |\n|---|---|\n| `hidden` id 조작 | 8.6절 |\n| 인증·인가 없음 | **이 책 전체** |\n\n> **1편에서 지적하고, 2편에서 \"보안은 다른 책\" 이라 넘기고, 9권에서 \"가장 급하다\" 고** 꼽았다.\n>\n> **세 권을 건너온 숙제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "새로 오는 것",
+   "md": "**`Member` 와 `Role`**\n\n```java\n@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n\n    @Column(unique = true)\n    private String username;\n\n    private String password;\n    private String name;\n\n    @ElementCollection(fetch = EAGER)\n    @Enumerated(STRING)\n    private Set<Role> roles = new HashSet<>();\n}\n\npublic enum Role {\n    USER, MANAGER, ADMIN\n}\n```\n\n> **`@Column(unique = true)` 가** 있다.\n> **「활용 1편」 9.7절과 9권 10.1절에서 계속 열려 있던 것**이다.\n>\n> **여기서는 필수**다 — **아이디가 중복되면 로그인이 성립을** 안 한다.\n\n**요구사항**\n\n```\n로그인해야 주문할 수 있다\n자기 주문만 볼 수 있다\n관리자는 모든 주문을 볼 수 있다\n관리자만 상품을 등록할 수 있다\n로그인 실패가 다섯 번이면 잠근다\n```\n\n> **다섯 줄**이다. **10장에서 이걸 다** 만든다.\n>\n> **1~9장은 그걸 만들기 위한 재료**다.\n\n**두 번째 줄이 특히** 어렵다.\n\n> **\"자기 주문만\" 은 URL 로 판단이 안** 된다.\n> **`/api/v1/orders/5` 가 내 것인지 남의 것인지 DB 를 봐야** 안다.\n>\n> **8.6절의 객체 단위 인가**다.\n\n**안 만드는 것**\n\n| | |\n|---|---|\n| **소셜 로그인** | OAuth2. 12.2절에서 왜 뺐는지 |\n| **JWT** | 11.4절에서 논의만 |\n| **2단계 인증** | |\n| **비밀번호 재설정** | 메일이 필요하다 |\n\n> **12.2절에서 목록으로** 남긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 시작 상태 ---\n\n#   9권이 끝난 그대로다\n\n$ ./gradlew bootRun\n\n2026-09-09T18:11:02.331  INFO --- Started CafekioskApplication in 2.918 seconds\n\n#   시큐리티 로그가 없다\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep security\n\n(결과 없음)\n\n#   의존성이 없다\n\n# --- 그 curl 한 줄 ---\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}'\n\nHTTP/1.1 200\nContent-Type: application/json\n\n{\"code\":200,\"status\":\"OK\",\"message\":\"OK\",\n \"data\":{\"id\":1,\"totalPrice\":4000}}\n\n#   쿠키도 헤더도 토큰도 없다\n\n#   9권 10.4절의 마지막 로그 그대로다\n\n# --- 조회도 ---\n\n$ curl -s localhost:8080/api/v1/orders | jq '.data[0]'\n\n{\n  \"id\": 1,\n  \"totalPrice\": 4000,\n  \"registeredDateTime\": \"2026-09-09T18:11:41.882\"\n}\n\n#   남의 주문이 나온다\n\n#   누구 것인지 개념 자체가 없다\n\n# --- 테스트는 ---\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL in 35s\n\n#   다 통과한다\n\n#   인증을 검증하는 테스트가 하나도 없다\n\n$ grep -rn \"401\\|403\\|Unauthorized\\|Forbidden\" src/test/java/ | wc -l\n\n0\n\n#   0개다\n\n# --- 필터가 몇 개인지 ---\n\n@SpringBootTest\nclass FilterCountTest {\n    @Autowired ApplicationContext context;\n\n    @Test\n    void filters() {\n        String[] names = context.getBeanNamesForType(jakarta.servlet.Filter.class);\n        System.out.println(\">>> filters: \" + names.length);\n        Arrays.stream(names).forEach(n -> System.out.println(\"    \" + n));\n    }\n}\n\n$ ./gradlew test --tests FilterCountTest\n\n>>> filters: 5\n    characterEncodingFilter\n    formContentFilter\n    requestContextFilter\n    hiddenHttpMethodFilter\n    ...\n\n#   부트 기본 필터 다섯이다\n\n#   시큐리티 필터가 없다\n\n# --- 도메인에 회원이 없다 ---\n\n$ ls src/main/java/sample/cafekiosk/domain/\n\norder/\nproduct/\nstock/\n\n#   member 가 없다\n\n#   주문에 주문자가 없다\n\n@Entity\npublic class Order {\n    private Long id;\n    private OrderStatus orderStatus;\n    private int totalPrice;\n    private LocalDateTime registeredDateTime;\n    private List<OrderProduct> orderProducts;\n}\n\n#   member 필드가 없다\n\n#   \"자기 주문만\" 을 판단할 근거가 없다\n\n#   10.2절에서 붙인다\n\n# --- 이 책이 끝나면 ---\n\n#   같은 curl 이\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}'\n\nHTTP/1.1 401\n{\"code\":401,\"status\":\"UNAUTHORIZED\",\"message\":\"인증이 필요합니다\"}\n\n#   이래야 한다\n\n#   그리고 테스트가 그걸 지킨다  (8.8절)\n\n# --- 요구사항 다섯 ---\n\n#   [ ] 로그인해야 주문할 수 있다\n#   [ ] 자기 주문만 볼 수 있다\n#   [ ] 관리자는 모든 주문을 볼 수 있다\n#   [ ] 관리자만 상품을 등록할 수 있다\n#   [ ] 로그인 실패가 다섯 번이면 잠근다\n\n#   10장에서 다 만든다\n\n# --- 다음 절에서 ---\n\n#   의존성 하나를 넣는다",
+   "note": "**시큐리티 의존성이** 없다. **부트 기본 필터가 다섯**이다.\n\n**`curl` 한 줄이 `200`** 이다. **9권 10.4절의 마지막 로그** 그대로다.\n\n**남의 주문이 나오는데 \"누구 것인지\" 개념 자체가** 없다.\n\n**테스트 78개가 다 통과**하고 **`401`·`403` 을 찾으면 0개**다.\n\n**`Order` 에 `member` 필드가** 없다. **\"자기 주문만\" 을 판단할 근거가** 없다.\n\n**끝나면 같은 `curl` 이 `401`** 이어야 한다."
+  }
+ ],
+ "recap": [
+  "**「Practical Testing」의 프로젝트를 그대로** 쓴다.",
+  "**그 책 10.4절이 남긴 `curl` 한 줄을** 닫는다.",
+  "**「활용 1편」 9.7절부터 세 권을 건너온 숙제**다.",
+  "**`Member` 와 `Role` 이 새로** 온다.",
+  "**`@Column(unique = true)` 가 여기서는** 필수다.",
+  "**요구사항 다섯 줄**이다.",
+  "**\"자기 주문만\" 은 URL 로 판단이 안** 된다.",
+  "**`Order` 에 `member` 필드가** 없다.",
+  "**소셜 로그인·JWT·2FA 는 안** 만든다."
+ ],
+ "drills": [
+  {
+   "task": "9권의 프로젝트를 실행한다.",
+   "done_when": "`curl` 이 200 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트에서 401·403 을 찾는다.",
+   "done_when": "0개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "등록된 필터 개수를 센다.",
+   "done_when": "다섯인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요구사항 다섯 줄을 적어 둔다.",
+   "done_when": "10장에서 확인할 목록이 생겼다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 닫으려는 것은?",
+   "a": "인증 없이 주문이 되는 `curl` 한 줄이다."
+  },
+  {
+   "q": "그게 몇 권을 건너왔나?",
+   "a": "「활용 1편」 9.7절부터 세 권이다."
+  },
+  {
+   "q": "왜 `@Column(unique = true)` 가 여기서 필수인가?",
+   "a": "아이디가 중복되면 로그인이 성립하지 않는다."
+  },
+  {
+   "q": "가장 어려운 요구사항은?",
+   "a": "\"자기 주문만 볼 수 있다\" 다. URL 로 판단이 안 된다."
+  },
+  {
+   "q": "지금 `Order` 에 없는 것은?",
+   "a": "`member` 필드다. 주문자가 누구인지 개념이 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "스프링 시큐리티 완전 정복 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-시큐리티-완전정복",
+   "publisher": "인프런 · 정수원"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "요청이 지나간 필터 목록.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 방법을 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "왜 필터 목록을 보는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 열 번째 책**이다. **아홉 번째 책이 \"가장 급하다\" 고 꼽고** 끝냈다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 것",
+   "ascii": "   every section ends with two things\n\n   GET /api/v1/orders  ->  302 Location: /login\n\n   Securing GET /api/v1/orders\n     DisableEncodeUrlFilter\n     WebAsyncManagerIntegrationFilter\n     ...\n     ExceptionTranslationFilter        <- ended here\n     AuthorizationFilter\n\n   the status alone does not say who decided",
+   "note": "**상태 코드만으로는 누가 정했는지** 모른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 필터 목록인가",
+   "md": "**`403` 이 났다.** **어디를 보나.**\n\n> **컨트롤러에 브레이크포인트를** 건다. **안 멈춘다.**\n> **`@PreAuthorize` 를** 본다. **없다.**\n> **`authorizeHttpRequests` 를** 본다. **맞게 쓴 것 같다.**\n\n**답은 대개 필터 사슬**에 있다.\n\n| `403` 의 원인 | 어느 필터 |\n|---|---|\n| CSRF 토큰 없음 | `CsrfFilter` |\n| 권한 부족 | `AuthorizationFilter` |\n| 인증됐는데 익명 | `AnonymousAuthenticationFilter` |\n| CORS 프리플라이트 | `CorsFilter` |\n\n> **넷 다 `403`** 이다. **고치는 법이 넷 다** 다르다.\n>\n> **어느 필터가 막았는지를 알면 고칠 데가** 정해진다.\n\n**로그가 그걸 말해** 준다.\n\n```\nSecuring POST /api/v1/orders/new\nInvoking CsrfFilter (7/15)\nInvalid CSRF token found for http://localhost:8080/api/v1/orders/new\nResponding with 403\n```\n\n> **`(7/15)` 가 몇 번째 필터인지**다.\n> **거기서 끝났다.**\n\n**이 책의 방법**\n\n> **매 절이 요청 하나와 그것이 지나간 필터 목록으로** 끝난다.\n>\n> **통과한 것만이 아니라 막힌 것도 같이** 본다.\n> **막힌 자리가 곧 고칠 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "결정이 일어나는 곳",
+   "ascii": "   where the decision happens\n\n   request\n     |\n   [ 15 security filters ]      <- most answers are in here\n     |\n   DispatcherServlet\n     |\n   your controller              <- often never reached\n\n   a breakpoint in the controller does not stop on a 403",
+   "note": "**컨트롤러에 못 닿는 경우가** 많다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "책의 뼈대",
+   "md": "| 장 | 무엇 |\n|---|---|\n| **1** | 시작하기 전에 |\n| **2** | **초기화** — 그 필터들은 누가 만들었나 |\n| **3** | 인증 프로세스 — 누구인지 정하는 필터들 |\n| **4** | **인증 아키텍처** — `Authentication` 이 오는 길 |\n| **5** | 영속성과 세션 — 다음 요청에서 기억하기 |\n| **6** | 예외 처리와 악용 보호 |\n| **7** | 인가 프로세스 — 무엇을 할 수 있나 |\n| **8** | **인가 아키텍처** |\n| **9** | 이벤트와 통합 |\n| **10~11** | 실전 |\n| **12** | 다음으로 |\n\n**2장을 건너뛰지 않는다.**\n\n> **`DelegatingFilterProxy` 와 `FilterChainProxy` 를 모르면 3장부터 무슨 말인지** 모른다.\n>\n> **\"필터 하나가 필터 열다섯을 들고 있다\" 는 구조**가 전부의 기초다.\n\n**4장과 8장이 아키텍처**다.\n\n> **3장이 \"뭐가 되는지\"** 라면 **4장은 \"어떻게 되는지\"** 다.\n> **7·8장도 같은 관계**다.\n>\n> **실무에서 커스터마이징이 필요해지면 4장과 8장을** 다시 본다.\n\n**10~11장이 실전**이다.\n\n> **앞의 아홉 장을 조립**한다.\n> **필터를 직접 만들고 체인에 끼운다.**\n\n**앞의 책들과 이어지는 자리**\n\n| | |\n|---|---|\n| 「MVC 1편」 서블릿 필터 | 2장 |\n| 「스프링 핵심 원리」 AOP | 8.4절 |\n| 「Practical Testing」 5.4절 | 8.8절 |\n| 「활용 2편」 6.2절 OSIV | 5.1절 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 이 책이 다룰 것 (미리 보기) ---\n\n# 아무 설정도 안 한 상태\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\nSet-Cookie: JSESSIONID=A1B2C3; Path=/; HttpOnly\n\n#   302 다. 로그인하라는 뜻이다\n\n#   로그를 켜면\n\nlogging.level.org.springframework.security=TRACE\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking DisableEncodeUrlFilter (1/15)\nTRACE FilterChainProxy : Invoking WebAsyncManagerIntegrationFilter (2/15)\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/15)\nTRACE FilterChainProxy : Invoking HeaderWriterFilter (4/15)\nTRACE FilterChainProxy : Invoking CsrfFilter (5/15)\nTRACE FilterChainProxy : Invoking LogoutFilter (6/15)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (7/15)\nTRACE FilterChainProxy : Invoking DefaultLoginPageGeneratingFilter (8/15)\nTRACE FilterChainProxy : Invoking DefaultLogoutPageGeneratingFilter (9/15)\nTRACE FilterChainProxy : Invoking BasicAuthenticationFilter (10/15)\nTRACE FilterChainProxy : Invoking RequestCacheAwareFilter (11/15)\nTRACE FilterChainProxy : Invoking SecurityContextHolderAwareRequestFilter (12/15)\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (13/15)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (14/15)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  [GET /api/v1/orders] with attribute[authenticated]\nDEBUG ExceptionTranslationFilter : Sending AnonymousAuthenticationToken to\n  authentication entry point since access is denied\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to http://localhost:8080/login\n\n#   열다섯 개를 다 지나고 마지막에서 걸렸다\n\n#   AuthorizationFilter 가 거부했고\n#   ExceptionTranslationFilter 가 로그인 페이지로 보냈다\n\n#   둘 다 컨트롤러 전이다\n\n# --- 컨트롤러에 브레이크포인트를 걸면 ---\n\n@GetMapping(\"/api/v1/orders\")\npublic ApiResponse<List<OrderResponse>> getOrders() {   // <- breakpoint\n    ...\n}\n\n#   안 멈춘다\n\n#   OrderController 가 아예 안 불렸다\n\n$ ./gradlew bootRun 2>&1 | grep \"OrderController\"\n\n(결과 없음)\n\n# --- 403 이 나는 다른 경우 ---\n\n#   ① CSRF\n\n$ curl -i -X POST localhost:8080/api/v1/orders/new \\\n>   -H 'Content-Type: application/json' \\\n>   -d '{\"productNumbers\":[\"001\"]}'\n\nHTTP/1.1 403\n\nDEBUG FilterChainProxy : Securing POST /api/v1/orders/new\nTRACE FilterChainProxy : Invoking CsrfFilter (5/15)\nDEBUG CsrfFilter : Invalid CSRF token found for\n  http://localhost:8080/api/v1/orders/new\nDEBUG AccessDeniedHandlerImpl : Responding with 403 status code\n\n#   5번째에서 끝났다\n\n#   ② 권한 부족\n\n$ curl -i -u user:password localhost:8080/admin\n\nHTTP/1.1 403\n\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  [GET /admin] with attribute[hasRole('ADMIN')]\n\n#   15번째에서 끝났다\n\n# --- 같은 403 인데 ---\n\n#   ①은 CsrfFilter (5/15)\n#   ②는 AuthorizationFilter (15/15)\n\n#   고치는 법이 다르다\n\n#   ①은 토큰을 보내거나 csrf().disable()\n#   ②는 권한을 주거나 규칙을 고친다\n\n#   상태 코드만 보면 구분이 안 된다\n\n# --- 이 책이 하는 일 ---\n\n#   요청을 보내고\n#   지나간 필터 목록을 보고\n#   어디서 끝났는지 확인한다\n\n#   통과한 것과 막힌 것을 같이 본다\n\n# --- 다음 절에서 ---\n\n#   직접 만들면 왜 안 되는지 본다",
+   "note": "**필터 열다섯을 다 지나 마지막에서** 걸렸다. **`AuthorizationFilter` 가 거부하고 `ExceptionTranslationFilter` 가 로그인으로** 보냈다.\n\n**컨트롤러에 브레이크포인트를 걸어도 안** 멈춘다. **`OrderController` 가 아예 안** 불렸다.\n\n**CSRF 는 5번째, 권한 부족은 15번째**에서 끝난다. **같은 `403` 인데 고치는 법이** 다르다.\n\n**상태 코드만 보면 구분이 안** 된다."
+  }
+ ],
+ "recap": [
+  "**매 절이 요청 하나와 지나간 필터 목록으로** 끝난다.",
+  "**막힌 자리가 곧 고칠 자리**다.",
+  "**같은 `403` 이 네 가지 원인**을 가진다.",
+  "**로그의 `(7/15)` 가 몇 번째 필터인지** 말한다.",
+  "**컨트롤러에 브레이크포인트를 걸어도 안** 멈춘다.",
+  "**결정이 `DispatcherServlet` 전에** 끝난다.",
+  "**2장을 건너뛰면 3장부터 무슨 말인지** 모른다.",
+  "**4장과 8장이 커스터마이징의** 근거다.",
+  "**앞의 책 넷과 이어지는 자리가** 있다."
+ ],
+ "drills": [
+  {
+   "task": "시큐리티 로그를 TRACE 로 켠다.",
+   "done_when": "필터 목록이 찍히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인증 없이 API 를 부른다.",
+   "done_when": "어느 필터에서 끝나는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨트롤러에 브레이크포인트를 건다.",
+   "done_when": "안 멈추는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매 절이 무엇으로 끝나나?",
+   "a": "오간 HTTP 와 그 요청이 지나간 필터 목록이다."
+  },
+  {
+   "q": "왜 필터 목록을 보나?",
+   "a": "같은 상태 코드라도 어느 필터가 막았느냐에 따라 고치는 법이 다르다."
+  },
+  {
+   "q": "`403` 의 원인 넷은?",
+   "a": "CSRF, 권한 부족, 익명 인증, CORS 다."
+  },
+  {
+   "q": "컨트롤러 브레이크포인트가 왜 안 멈추나?",
+   "a": "필터에서 이미 끝나 `DispatcherServlet` 에 못 닿아서다."
+  },
+  {
+   "q": "2장을 왜 건너뛰면 안 되나?",
+   "a": "필터 사슬 구조가 나머지 전부의 기초여서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "FilterChainProxy",
+   "def": "서블릿 필터 하나로 등록되어 내부에 시큐리티 필터 여럿을 들고 순서대로 부르는 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 시큐리티 완전 정복 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-시큐리티-완전정복",
+   "publisher": "인프런 · 정수원"
+  }
+ ]
+}

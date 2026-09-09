@@ -1,0 +1,822 @@
+{
+  "id": "spring-security",
+  "title": "스프링 시큐리티 완전 정복",
+  "subtitle": "요청 하나가 지나간 필터들",
+  "blurb": "「Practical Testing」 10.4절이 \"가장 급하다\" 고 꼽고 끝냈다 — 인증 없이 남의 주문이 나가는 curl 한 줄이 아직 통과한다. 이 책이 그걸 닫는다. 스프링 시큐리티는 필터 열다섯 개의 사슬이라, 모든 질문이 \"이 요청이 어느 필터에서 끝났나\" 로 환원된다. 매 절은 실제로 오간 HTTP 와 그 요청이 지나간 필터 목록으로 끝난다.",
+  "updated_at": "2026-09-09",
+  "preface": "서가의 앞 아홉 권은 애플리케이션이 무엇을 하는지를 다뤘다. SQL 이 나가고 HTTP 가 오가고 테스트가 그걸 지킨다.\n\n이 책은 무엇을 못 하게 하는지를 다룬다. 그리고 그 판단은 컨트롤러에 닿기 전에, 필터 사슬 안에서 이미 끝나 있다. 「MVC 1편」이 다룬 DispatcherServlet 은 시큐리티 필터를 다 통과한 뒤에야 불린다.\n\n그래서 시큐리티를 디버깅하는 일은 대개 \"내 코드가 왜 안 불렸나\" 를 찾는 일이 된다. 403 이 났는데 컨트롤러에 브레이크포인트를 걸면 안 멈춘다. 필터 목록을 볼 줄 알아야 한다.\n\n매 절은 요청 하나와 그것이 지나간 필터 목록으로 끝난다. 통과한 요청만이 아니라 막힌 요청도 같이 본다 — 어느 필터가 막았는지가 고치는 법을 결정한다.",
+  "how_to_read": "차례 순서대로 읽는다. 2장의 필터 사슬이 나머지 전부의 기초라 건너뛰면 3장부터 무슨 말인지 모른다. 로그 설정(1.4절)을 반드시 켜고 시작한다 — 이 책의 절반이 그 로그다. 「MVC 1편」의 서블릿 필터와 「스프링 핵심 원리」의 AOP 를 알면 2장과 8.4절이 편하다.",
+  "prereq": "스프링 부트, 서블릿 필터, 세션과 쿠키. 「MVC 1편」·「스프링 핵심 원리」 정도. 「Practical Testing」을 읽었으면 8.8절이 편하다.",
+  "env": "Java 21, Spring Boot 3.x, Spring Security 6.x, Thymeleaf, JPA, H2",
+  "source": {
+    "title": "스프링 시큐리티 완전 정복 [6.x 개정판] (차례 출처)",
+    "url": "https://www.inflearn.com/course/스프링-시큐리티-완전정복",
+    "publisher": "인프런 · 정수원"
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "요청 하나가 어디를 지나가나.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "요청이 지나간 필터 목록.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-security",
+          "title": "왜 시큐리티인가",
+          "summary": "직접 만들면 안 되는 이유.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "sample-project",
+          "title": "샘플 프로젝트",
+          "summary": "아홉 번째 책의 그 curl 한 줄.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.4",
+          "id": "project-setup",
+          "title": "프로젝트 세팅",
+          "summary": "의존성 하나와 첫 로그인 화면.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "초기화 과정",
+      "goal": "그 화면은 누가 만들었나.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "autoconfig",
+          "title": "의존성 하나가 한 일",
+          "summary": "자동 설정이 켠 것들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "delegating-filter-proxy",
+          "title": "DelegatingFilterProxy",
+          "summary": "서블릿과 스프링 사이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "filter-chain-proxy",
+          "title": "FilterChainProxy",
+          "summary": "필터 하나가 필터 열다섯을.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "security-builder",
+          "title": "SecurityBuilder 와 Configurer",
+          "summary": "설정이 필터가 되는 과정.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "http-security",
+          "title": "HttpSecurity",
+          "summary": "체인 하나를 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "web-security",
+          "title": "WebSecurity 와 ignoring",
+          "summary": "체인을 아예 안 타는 길.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.7",
+          "id": "custom-config",
+          "title": "사용자 정의 설정",
+          "summary": "기본값을 걷어낸다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "인증 프로세스",
+      "goal": "누구인지 어떻게 정하나.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "form-login",
+          "title": "폼 인증",
+          "summary": "formLogin() 이 켜는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "username-password-filter",
+          "title": "UsernamePasswordAuthenticationFilter",
+          "summary": "그 POST 를 받는 자리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "http-basic",
+          "title": "기본 인증",
+          "summary": "헤더 한 줄로.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "basic-filter",
+          "title": "BasicAuthenticationFilter",
+          "summary": "Base64 는 암호가 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "remember-me",
+          "title": "기억하기 인증",
+          "summary": "쿠키에 뭐가 담기나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "remember-me-filter",
+          "title": "RememberMeAuthenticationFilter",
+          "summary": "토큰 두 방식.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "anonymous",
+          "title": "익명 인증",
+          "summary": "인증 안 된 것과 익명은 다르다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "logout",
+          "title": "로그아웃",
+          "summary": "무엇을 지우나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.9",
+          "id": "logout-handler",
+          "title": "LogoutHandler 와 SuccessHandler",
+          "summary": "지우는 순서.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.10",
+          "id": "request-cache",
+          "title": "RequestCache 와 SavedRequest",
+          "summary": "로그인 뒤 원래 가려던 곳.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "인증 아키텍처",
+      "goal": "Authentication 은 어디서 오나.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "authentication",
+          "title": "Authentication",
+          "summary": "인증 전과 후가 같은 타입이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "security-context",
+          "title": "SecurityContext 와 Holder",
+          "summary": "ThreadLocal 이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "authentication-manager",
+          "title": "AuthenticationManager",
+          "summary": "누구에게 물어보나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "authentication-provider",
+          "title": "AuthenticationProvider",
+          "summary": "실제로 검증하는 자리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "provider-manager",
+          "title": "ProviderManager",
+          "summary": "여럿 중 하나가 답한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "user-details-service",
+          "title": "UserDetailsService",
+          "summary": "사용자를 어디서 읽나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "password-encoder",
+          "title": "PasswordEncoder",
+          "summary": "{bcrypt} 접두어의 뜻.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.8",
+          "id": "auth-architecture-review",
+          "title": "정리",
+          "summary": "한 번의 로그인이 지난 길.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "인증 상태 영속성과 세션",
+      "goal": "다음 요청에서 어떻게 기억하나.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "context-persistence",
+          "title": "SecurityContext 영속성",
+          "summary": "요청마다 새로 만든다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "context-repository",
+          "title": "SecurityContextRepository",
+          "summary": "세션에 저장되는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "stateless",
+          "title": "세션을 안 쓰면",
+          "summary": "STATELESS 가 바꾸는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "session-creation-policy",
+          "title": "세션 생성 정책",
+          "summary": "네 가지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "concurrent-session",
+          "title": "동시 세션 제어",
+          "summary": "두 번째 로그인이 오면.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "session-fixation",
+          "title": "세션 고정 보호",
+          "summary": "로그인 때 세션이 바뀐다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "session-in-cluster",
+          "title": "여러 대에서",
+          "summary": "Spring Session.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "session-review",
+          "title": "정리",
+          "summary": "세션 기본값.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "예외 처리와 악용 보호",
+      "goal": "막힌 뒤에 무슨 일이.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "exception-translation",
+          "title": "ExceptionTranslationFilter",
+          "summary": "401 과 403 을 가르는 자리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "entry-point-vs-handler",
+          "title": "EntryPoint 와 AccessDeniedHandler",
+          "summary": "누구를 어디로 보내나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "api-exception",
+          "title": "API 의 인증 예외",
+          "summary": "리다이렉트가 아니라 JSON.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "csrf",
+          "title": "CSRF",
+          "summary": "왜 POST 가 403 인가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "csrf-token",
+          "title": "CSRF 토큰",
+          "summary": "어디에 담고 어떻게 보내나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "cors",
+          "title": "CORS",
+          "summary": "시큐리티와 MVC 중 누가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "headers",
+          "title": "보안 헤더",
+          "summary": "기본으로 붙는 다섯.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "https",
+          "title": "HTTPS 와 리다이렉트",
+          "summary": "프록시 뒤에서.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.9",
+          "id": "protection-review",
+          "title": "정리",
+          "summary": "끄기 전에 아는 것.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "인가 프로세스",
+      "goal": "무엇을 할 수 있나.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "authorize-requests",
+          "title": "요청 인가",
+          "summary": "authorizeHttpRequests().",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "matcher-order",
+          "title": "매처 순서",
+          "summary": "먼저 맞는 것이 이긴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "matcher-kinds",
+          "title": "매처의 종류",
+          "summary": "경로와 메서드와 정규식.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "permit-all-trap",
+          "title": "permitAll 의 함정",
+          "summary": "허용했는데 막힌다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "method-security",
+          "title": "메서드 보안",
+          "summary": "@PreAuthorize.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "method-security-where",
+          "title": "메서드 보안을 어디에",
+          "summary": "컨트롤러냐 서비스냐.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "expression",
+          "title": "표현식",
+          "summary": "hasRole 과 hasAuthority.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "role-hierarchy",
+          "title": "역할 계층",
+          "summary": "ADMIN 은 USER 인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "authorization-review",
+          "title": "정리",
+          "summary": "인가 기본값.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "인가 아키텍처",
+      "goal": "그 판단은 누가 하나.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "authorization-manager",
+          "title": "AuthorizationManager",
+          "summary": "인가의 단일 진입점.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "granted-authority",
+          "title": "GrantedAuthority",
+          "summary": "ROLE_ 접두어의 정체.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "authorization-filter",
+          "title": "AuthorizationFilter",
+          "summary": "체인의 마지막.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "method-interceptor",
+          "title": "메서드 보안의 내부",
+          "summary": "AOP 프록시.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "custom-manager",
+          "title": "직접 만드는 인가 규칙",
+          "summary": "AuthorizationManager 구현.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "acl-thinking",
+          "title": "객체 단위 인가",
+          "summary": "내 주문만 볼 수 있다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "dynamic-authorization",
+          "title": "동적 인가",
+          "summary": "DB 로 관리하는 권한.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "authorization-test",
+          "title": "인가를 테스트한다",
+          "summary": "아홉 번째 책의 방법으로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.9",
+          "id": "arch-review",
+          "title": "정리",
+          "summary": "인가가 실패하는 다섯 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "이벤트와 통합",
+      "goal": "성공과 실패를 어떻게 아나.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "auth-events",
+          "title": "인증 이벤트",
+          "summary": "성공과 실패가 이벤트다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "authz-events",
+          "title": "인가 이벤트",
+          "summary": "거부를 기록한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "event-use",
+          "title": "이벤트로 하는 것",
+          "summary": "잠금과 감사 로그.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "servlet-integration",
+          "title": "서블릿 API 통합",
+          "summary": "request.getUserPrincipal.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "mvc-integration",
+          "title": "MVC 통합",
+          "summary": "@AuthenticationPrincipal.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "integration-review",
+          "title": "정리",
+          "summary": "경계에서 꺼내 쓰기.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "실전 — 회원 인증 시스템",
+      "goal": "처음부터 끝까지 한 번.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "requirements",
+          "title": "요구사항",
+          "summary": "무엇을 만드나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "user-entity",
+          "title": "회원 도메인",
+          "summary": "권한을 어떻게 담나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "custom-user-details",
+          "title": "커스텀 UserDetails",
+          "summary": "도메인을 감싼다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "signup",
+          "title": "회원 가입",
+          "summary": "비밀번호를 어떻게 저장하나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "login-flow",
+          "title": "로그인 흐름",
+          "summary": "전체 필터를 다시 본다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "custom-handlers",
+          "title": "성공과 실패 핸들러",
+          "summary": "리다이렉트를 내가 정한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.7",
+          "id": "custom-filter",
+          "title": "필터 추가하기",
+          "summary": "체인의 어디에 끼우나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.8",
+          "id": "account-lock",
+          "title": "계정 잠금",
+          "summary": "다섯 번 틀리면.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.9",
+          "id": "auth-system-review",
+          "title": "정리",
+          "summary": "만든 것과 안 만든 것.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "실전 — 비동기 인증과 회원 관리",
+      "goal": "Ajax 와 관리 화면.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "ajax-login",
+          "title": "비동기 로그인",
+          "summary": "폼이 아니라 JSON 으로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "ajax-filter",
+          "title": "비동기 인증 필터",
+          "summary": "직접 만든다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "ajax-exception",
+          "title": "비동기 예외 처리",
+          "summary": "리다이렉트를 없앤다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "jwt-thinking",
+          "title": "토큰 인증은 어떤가",
+          "summary": "세션과 무엇이 다른가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "admin-authorization",
+          "title": "관리 화면 인가",
+          "summary": "권한을 DB 에서.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "resource-management",
+          "title": "자원 관리",
+          "summary": "URL 권한을 화면에서 바꾼다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.7",
+          "id": "async-review",
+          "title": "정리",
+          "summary": "직접 만든 것들.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 12,
+      "title": "다음으로",
+      "goal": "열 권째.",
+      "sections": [
+        {
+          "no": "12.1",
+          "id": "what-was-open",
+          "title": "열려 있던 curl 한 줄",
+          "summary": "아홉 번째 책의 숙제.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.2",
+          "id": "what-not-covered",
+          "title": "이 책이 안 다룬 것",
+          "summary": "OAuth2 와 그 너머.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.3",
+          "id": "ten-books",
+          "title": "열 권",
+          "summary": "서가를 돌아본다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "12.4",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "그다음.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}
