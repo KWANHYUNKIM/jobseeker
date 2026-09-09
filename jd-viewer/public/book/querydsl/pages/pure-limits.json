@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "pure-limits",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "순수 JPA 의 한계",
+ "summary": "페이징을 손으로 쓴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "페이징을 손으로 쓴다.",
+  "무엇이 남는지 안다.",
+  "7장의 동기를 얻는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6장에서 조건은 다** 풀었다. **그런데 페이징은 아직 손으로** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "손으로 쓰는 세 가지",
+   "ascii": "   what a page needs, written by hand\n\n   the offset and the limit, computed from a page number\n   the count query, with the same conditions\n   the arithmetic, four lines that every project rewrites\n\n   book 14 removed all three in one section",
+   "note": "**⑭는 이 셋을 한 절에서 다** 지웠다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건은 풀렸고 껍데기는 안 풀렸다",
+   "md": "**동적 조건은 6.4절에서** 끝났다.\n\n> **조건 메서드가 재사용**된다.\n> **⑭ 8.1절보다** 읽힌다.\n> **여기까지가 Querydsl 의 몫**이다.\n\n**페이징은 여전히 내** 일이다.\n\n> **4.7절에서 `offset`·`limit` 을** 봤다.\n> **개수 쿼리도 직접** 쓴다.\n> **⑭ 5.9절과 같은 상태**다.\n\n**계산도** 남는다.\n\n> **총 쪽수·다음 여부**다.\n> **⑭ 5.9절의 네 줄**이다.\n> **아래에서 다시** 쓴다.\n\n**저장 쪽도 그대로**다.\n\n> **`save`·`findById` 를 내가** 만들었다.\n> **⑭ 4.2절이 지운 그것**이다.\n> **7.1절에서 되돌려** 받는다."
+  },
+  {
+   "type": "figure",
+   "caption": "6장이 남긴 것",
+   "ascii": "   what is still hand written after chapter 6\n\n   save, findById, findAll   plain jpa, no conditions to assemble\n   the page object           built by hand from rows and a count\n   the sort                  passed as OrderSpecifier, not as Sort\n\n   chapter 7 hands the first and second back to spring data",
+   "note": "**7장이 앞 둘을 스프링 데이터에** 넘긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "정렬을 문자열로 받으면 다시 처음이다",
+   "md": "**화면은 문자열을** 보낸다.\n\n> **`sort=age,desc`** 다.\n> **`OrderSpecifier` 로 바꿔야** 한다.\n> **5.8절에서 `null` 이 안 통했다.**\n\n**직접 매핑하면 위험**하다.\n\n> **문자열을 그대로 경로로 쓰면 안** 된다.\n> **⑭ 5.6절의 그** 문제다.\n> **화이트리스트가** 필요하다.\n\n**⑭ 6.6절이 그걸 해** 줬다.\n\n> **`Pageable` 이 `Sort` 를 들고** 왔다.\n> **검증까지 같이** 왔다.\n> **7.7절에서 그 연결을** 본다.\n\n**여기서는 일단 손으로** 쓴다.\n\n> **한계를 보는 게 이 절의 목적**이다.\n> **아래에서 다 써 놓고** 센다.\n> **7장에서 지운다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 페이지 객체를 만든다\n\npublic record PageResult<T>(\n        List<T> content, int page, int size,\n        long totalElements, int totalPages, boolean hasNext) {\n}\n\n\n-- 리포지토리에 페이징을 넣는다\n\npublic PageResult<MemberTeamDto> searchPage(MemberSearchCondition cond,\n                                            int page, int size) {\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   teamNameEq(cond.getTeamName()),\n                   ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n            .orderBy(member.id.asc())\n            .offset((long) page * size)\n            .limit(size)\n            .fetch();\n\n    Long total = queryFactory\n            .select(member.count())\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   teamNameEq(cond.getTeamName()),\n                   ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n            .fetchOne();\n\n    int totalPages = (int) Math.ceil((double) total / size);\n    boolean hasNext = page + 1 < totalPages;\n\n    return new PageResult<>(content, page, size, total, totalPages, hasNext);\n}\n\n--   조건 세 줄이 두 번 나온다\n--   계산 두 줄이 있다\n\n\n-- 첫 페이지\n\n@Test\nvoid 첫_페이지() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    PageResult<MemberTeamDto> p = repository.searchPage(cond, 0, 3);\n    System.out.println(\"내용: \" + p.content().size());\n    System.out.println(\"전체: \" + p.totalElements());\n    System.out.println(\"쪽수: \" + p.totalPages());\n    System.out.println(\"다음: \" + p.hasNext());\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n내용: 3\n전체: 6\n쪽수: 2\n다음: true\n\n--   ⑭ 5.9절과 같은 문장 둘이다\n\n\n-- 조건을 복사한 자리를 센다\n\n$ awk '/searchPage/,/^    }/' MemberJpaRepository.java \\\n    | grep -c 'usernameEq\\|teamNameEq\\|ageBetween'\n6\n\n--   세 조건이 두 번씩이다\n--   메서드라 값은 같다\n--   6.3절의 빌더보다는 낫다\n\n\n-- 조건을 변수로 뺀다\n\npublic PageResult<MemberTeamDto> searchPageV2(MemberSearchCondition cond,\n                                              int page, int size) {\n    BooleanExpression predicate = Expressions.allOf(\n            usernameEq(cond.getUsername()),\n            teamNameEq(cond.getTeamName()),\n            ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member).leftJoin(member.team, team)\n            .where(predicate)\n            .orderBy(member.id.asc())\n            .offset((long) page * size).limit(size)\n            .fetch();\n\n    Long total = queryFactory.select(member.count())\n            .from(member).leftJoin(member.team, team)\n            .where(predicate)\n            .fetchOne();\n    ...\n}\n\n@Test\nvoid 변수로() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    repository.searchPageV2(cond, 0, 3);\n}\n\nHibernate: select ... where m1_0.age>=?\n           order by m1_0.member_id offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\n           left join team t1_0 on ... where m1_0.age>=?\n\n--   6.5절의 allOf 를 여기 썼다\n--   조건이 한 번만 나온다\n\n\n-- 계산은 여전히 남는다\n\n$ awk '/int totalPages|boolean hasNext/' MemberJpaRepository.java\n    int totalPages = (int) Math.ceil((double) total / size);\n    boolean hasNext = page + 1 < totalPages;\n\n--   ⑭ 5.9절의 그 줄이다\n\n\n-- 마지막 페이지\n\n@Test\nvoid 마지막() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    PageResult<MemberTeamDto> p = repository.searchPageV2(cond, 1, 3);\n    System.out.println(\"내용: \" + p.content().size());\n    System.out.println(\"다음: \" + p.hasNext());\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [3]\nHibernate: select count(m1_0.member_id) from member m1_0 ...\n내용: 3\n다음: false\n\n--   곱셈을 내가 했다\n--   ⑭ 5.10절에서는 Pageable 이 했다\n\n\n-- 정렬을 문자열로 받으면\n\npublic PageResult<MemberTeamDto> searchSorted(MemberSearchCondition cond,\n                                              int page, int size,\n                                              String sort) {\n    OrderSpecifier<?> order = switch (sort) {\n        case \"age\"      -> member.age.desc();\n        case \"username\" -> member.username.asc();\n        default         -> member.id.asc();\n    };\n    ...\n}\n\n@Test\nvoid 정렬() {\n    em.clear();\n    repository.searchSorted(new MemberSearchCondition(), 0, 3, \"age\");\n}\n\n/* select\n    ...\norder by\n    member1.age desc */\n\nHibernate:\n    select ... order by m1_0.age desc\n    offset ? rows fetch first ? rows only\n\n--   switch 를 내가 썼다\n--   허용 목록이 곧 화이트리스트다\n--   7.7절에서 Sort 로 받는다\n\n\n-- 모르는 값이 오면\n\n@Test\nvoid 모르는_정렬() {\n    em.clear();\n    repository.searchSorted(new MemberSearchCondition(), 0, 3, \"없는컬럼\");\n}\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   기본값으로 갔다\n--   ⑭ 6.6절은 500 이었다\n--   여기가 더 안전하다\n\n\n-- 저장 쪽은 그대로다\n\n$ grep -n 'public ' MemberJpaRepository.java\n\n 22:    public void save(Member member)\n 26:    public Optional<Member> findById(Long id)\n 30:    public List<Member> findAll()\n 34:    public List<Member> findByUsername(String username)\n 40:    public List<MemberTeamDto> search(MemberSearchCondition cond)\n 52:    public Long count(MemberSearchCondition cond)\n 62:    public PageResult<MemberTeamDto> searchPageV2(...)\n\n--   앞 넷은 ⑭ 4.2절이 지웠던 것이다\n--   내가 다시 썼다\n\n\n-- 6장이 남긴 것을 센다\n\n$ wc -l MemberJpaRepository.java MemberExpressions.java PageResult.java\n      94 MemberJpaRepository.java\n      26 MemberExpressions.java\n       6 PageResult.java\n     126 total\n\n$ printf '%-24s %s\\n' \\\n  '동적 조건'   '풀렸다 (6.4절)' \\\n  '조건 조합'   '풀렸다 (6.5절)' \\\n  '조건 재사용' '풀렸다 (6.4절)' \\\n  'save/findById' '내가 썼다' \\\n  '페이징 계산' '내가 썼다' \\\n  '정렬 매핑'   '내가 썼다'\n\n동적 조건                풀렸다 (6.4절)\n조건 조합                풀렸다 (6.5절)\n조건 재사용              풀렸다 (6.4절)\nsave/findById            내가 썼다\n페이징 계산              내가 썼다\n정렬 매핑                내가 썼다\n\n--   아래 셋은 ⑭가 이미 푼 것이다\n--   7.1절에서 둘을 합친다\n\n\n-- 두 권을 합치면\n\n// 7장에서 이렇게 된다\npublic interface MemberRepository\n        extends JpaRepository<Member, Long>, MemberRepositoryCustom {\n}\n\npublic interface MemberRepositoryCustom {\n    Page<MemberTeamDto> search(MemberSearchCondition cond, Pageable pageable);\n}\n\n--   위는 ⑭ 4.2절이 준 것이다\n--   아래는 6장이 만든 것이다\n--   7.1절에서 시작한다",
+   "note": "**목록과 개수 쿼리에 조건 세 개가 두 번씩, 총 6번** 나온다.\n\n**`Expressions.allOf` 로 변수를 빼면 조건이 한 번만** 나온다.\n\n**`totalPages`·`hasNext` 두 줄은 여전히 내가 쓰고 `offset` 곱셈도** 내가 한다.\n\n**정렬을 `switch` 로 받으니 모르는 값은 기본값으로 가 ⑭ 6.6절의 500 보다** 안전하다.\n\n**`save`·`findById`·`findAll` 셋은 ⑭ 4.2절이 지웠던 것을 다시** 쓴 것이다."
+  }
+ ],
+ "recap": [
+  "**조건은** 풀렸다.",
+  "**페이징은 손으로** 쓴다.",
+  "**개수 쿼리도** 직접이다.",
+  "**계산 두 줄이** 남는다.",
+  "**곱셈도** 내가 한다.",
+  "**조건은 변수로** 뺀다.",
+  "**정렬을 `switch` 로** 받는다.",
+  "**저장 쪽도 다시** 썼다.",
+  "**7장에서** 합친다."
+ ],
+ "drills": [
+  {
+   "task": "페이징을 손으로 쓴다.",
+   "done_when": "두 쿼리를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "조건을 변수로 뺀다.",
+   "done_when": "한 번만 나오는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "정렬을 문자열로 받는다.",
+   "done_when": "허용 목록을 만들었다.",
+   "minutes": 20
+  },
+  {
+   "task": "남은 것을 표로 센다.",
+   "done_when": "7장에서 지울 것을 골랐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "6장에서 풀린 것은?",
+   "a": "동적 조건의 조립·재사용·조합이다."
+  },
+  {
+   "q": "여전히 손으로 쓰는 것은?",
+   "a": "페이징 계산과 저장 계열 메서드다."
+  },
+  {
+   "q": "조건 중복을 어떻게 줄이나?",
+   "a": "`Expressions.allOf` 로 변수에 담아 둘에 쓴다."
+  },
+  {
+   "q": "정렬을 문자열로 받을 때 주의점은?",
+   "a": "허용 목록을 두고 모르는 값은 기본값으로 보낸다."
+  },
+  {
+   "q": "7장이 넘겨받는 것은?",
+   "a": "기본 CRUD 와 페이지 객체다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "페이지 객체",
+   "def": "내용과 총 개수, 쪽수 계산을 담은 반환 타입."
+  },
+  {
+   "term": "정렬 허용 목록",
+   "def": "정렬에 쓸 수 있는 속성만 미리 정해 둔 목록."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

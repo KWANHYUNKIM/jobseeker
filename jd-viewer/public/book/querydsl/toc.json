@@ -418,7 +418,7 @@
           "title": "리포지토리 테스트",
           "summary": "조합마다 SQL 을 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -426,7 +426,7 @@
           "title": "순수 JPA 의 한계",
           "summary": "페이징을 손으로 쓴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
