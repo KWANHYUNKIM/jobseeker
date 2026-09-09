@@ -367,7 +367,7 @@
           "title": "소개",
           "summary": "서가 첫 책과 이 책의 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -375,7 +375,7 @@
           "title": "설정",
           "summary": "의존성과 매핑.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -383,7 +383,7 @@
           "title": "적용",
           "summary": "저장과 조회에 SQL 이 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",

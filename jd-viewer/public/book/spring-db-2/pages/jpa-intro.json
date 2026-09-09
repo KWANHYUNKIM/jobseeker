@@ -1,0 +1,145 @@
+{
+ "book": "spring-db-2",
+ "id": "jpa-intro",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "소개",
+ "summary": "서가 첫 책과 이 책의 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 장이 「JPA 기본편」과 무엇이 다른지 안다.",
+  "JPA 가 무엇을 대신하는지 안다.",
+  "무엇을 보게 될지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 첫 책이 JPA 였다.** **여기서 다시 다루는 이유**가 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 기술, 다른 질문",
+   "ascii": "   the shelf\n   ---------\n   book 1   JPA basic        12 chapters   what jpa is\n   book 6   this one          ch 6         jpa as one of six\n\n   book 1 asks   how does the persistence context work\n   ch 6   asks   what changes when i swap the implementation\n\n   same technology. different question.",
+   "note": "**맨 아랫줄이 이 장의 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 장에서 안 다루는 것",
+   "md": "**「JPA 기본편」에서 다 했다.**\n\n| 무엇 | 어디 |\n|---|---|\n| 영속성 컨텍스트·1차 캐시 | **1권 3장** |\n| 엔티티 매핑 (`@Entity`, `@Column`) | **1권 4~5장** |\n| 연관 관계 매핑 | **1권 6~7장** |\n| 상속·`@MappedSuperclass` | **1권 8장** |\n| 프록시와 지연 로딩 | **1권 9장** |\n| 값 타입 | **1권 10장** |\n| JPQL 문법 전체 | **1권 11~12장** |\n\n**여기서는 그것을 안다고 치고**, **이 책의 질문**만 한다.\n\n> **\"구현을 갈아 끼웠더니 무엇이 달라지나\"**\n\n**세 가지를 본다.**\n\n| 볼 것 | 절 |\n|---|---|\n| **리포지토리 코드가 얼마나 줄었나** | 6.3 |\n| **동적 쿼리가 나아졌나** | 6.4 |\n| **내가 안 쓴 SQL 이 언제 나가나** | **6.6, 6.7** |\n\n**세 번째가 이 장의 무게중심**이다. **3장과 5장에서는 이 질문이 없었다** — 내가 쓴 SQL 만 나갔으니까."
+  },
+  {
+   "type": "figure",
+   "caption": "두 줄 사이의 거리",
+   "ascii": "   3장  i write:  select id, item_name ... where id = ?\n        db gets:  select id, item_name ... where id = ?\n\n   6장  i write:  em.find(Item.class, 1L)\n        db gets:  select i1_0.id, i1_0.item_name, i1_0.price,\n                         i1_0.quantity from item i1_0 where i1_0.id=?\n\n   the gap between those two lines is this chapter",
+   "note": "**그 거리가 편함이자 위험**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "JPA · 하이버네이트 · 스프링 데이터 JPA",
+   "md": "**셋이 자주 섞여 쓰인다.**\n\n| 이름 | 무엇 |\n|---|---|\n| **JPA** | **표준 인터페이스** — `EntityManager`, `@Entity` |\n| **하이버네이트** | **구현체** — 실제로 SQL 을 만든다 |\n| **스프링 데이터 JPA** | **그 위의 편의 계층** — 7장 |\n\n**이 장에서는 `EntityManager` 를 직접** 쓴다. **7장에서 그것마저 없앤다.**\n\n```java\n// 6장\nprivate final EntityManager em;\nem.persist(item);\n\n// 7장\nprivate final ItemJpaRepository repository;   // 인터페이스만\nrepository.save(item);\n```\n\n> **순서에 이유가 있다.** **7장부터 시작하면 무엇이 자동인지 모른다.** **6장에서 손으로 해 보고 7장에서 걷어낸다.**\n>\n> **5.7절에서 MyBatis 프록시를 본 것**과 같은 이유다."
+  },
+  {
+   "type": "compare",
+   "caption": "SQL 을 쓰는 기술 vs JPA",
+   "left": {
+    "title": "3장 · 5장",
+    "points": [
+     "**내가 쓴 SQL 이 나간다**",
+     "**언제 나가는지 안다** — 그 줄에서",
+     "튜닝이 직접적이다",
+     "**테이블 중심**으로 생각한다",
+     "매핑을 매번 쓴다"
+    ]
+   },
+   "right": {
+    "title": "6장 JPA",
+    "points": [
+     "**하이버네이트가 만든 SQL**",
+     "**언제 나가는지 봐야 안다**",
+     "튜닝에 한 겹이 낀다",
+     "**객체 중심**으로 생각한다",
+     "**매핑을 한 번** 해 둔다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 장을 읽는 법",
+   "md": "**3.1절에서 \"3장의 로그는 지루하다\" 고 했다.** **여기부터 안 지루하다.**\n\n**로그에서 볼 것이 셋**이다.\n\n| 무엇 | 왜 |\n|---|---|\n| **SQL 의 개수** | 내가 부른 메서드 수와 다르다 |\n| **SQL 이 나간 시점** | 메서드 호출 시점이 아니다 |\n| **SQL 의 모양** | 내가 안 쓴 별칭과 순서 |\n\n**두 번째가 특히** 그렇다.\n\n```java\nitemRepository.update(1L, updateParam);\n// 이 줄에서 update SQL 이 안 나간다\n```\n\n**6.6절에서 이 순간을 로그로** 본다.\n\n> **설정을 하나 켜 두고 시작**한다.\n>\n> ```properties\n> logging.level.org.hibernate.SQL=DEBUG\n> logging.level.org.hibernate.orm.jdbc.bind=TRACE\n> ```\n>\n> **첫 줄이 SQL, 둘째 줄이 파라미터**다. **2.6절에서 \"이 책에서 제일 중요한 한 줄\" 이라고 한 것**의 JPA 판이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL (미리 보기)",
+   "sql": "# 6장이 끝나면 이런 로그를 읽게 된다\n\nitemService.save(new Item(\"itemA\", 10000, 10));\n\n#   Hibernate: insert into item (item_name,price,quantity)\n#              values (?,?,?)\n#   binding parameter [1] as [VARCHAR] - [itemA]\n#   binding parameter [2] as [INTEGER] - [10000]\n#   binding parameter [3] as [INTEGER] - [10]\n\n# 3장·5장과 같은 SQL 이다\n\n# --- 그런데 이런 것도 나온다 ---\n\nitemService.update(1L, new ItemUpdateDto(\"수정\", 20000, 30));\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price,\n#                     i1_0.quantity from item i1_0 where i1_0.id=?\n#   (여기서 메서드가 끝났다)\n#   Hibernate: update item set item_name=?, price=?, quantity=?\n#              where id=?\n\n# update 를 아무도 안 불렀는데 나갔다\n# 그것도 메서드가 끝난 뒤에\n\n# --- 그리고 이런 것도 ---\n\nList<Order> orders = repository.findAll();\nfor (Order o : orders) { o.getMember().getName(); }\n\n#   Hibernate: select ... from orders\n#   Hibernate: select ... from member where id=?\n#   Hibernate: select ... from member where id=?\n#   Hibernate: select ... from member where id=?\n#   ...\n\n# 메서드 하나에 쿼리 101개\n\n# 이 셋이 6.6절과 6.7절의 주제다",
+   "note": "**첫 블록은 3장·5장과 같다.** **거기까지는 놀랄 것이 없다.**\n\n**두 번째 블록에서 `update` 를 아무도 안 불렀다.** **메서드가 끝난 뒤에 나갔다.**\n\n**세 번째 블록에서 쿼리가 101개**다. **자바 코드에는 반복문 하나뿐**이다.\n\n> **이 셋을 읽을 줄 아는 것**이 6장의 목표다. **편해진 만큼 봐야 할 것이 늘었다** — 6.8절의 제목이다.\n\n**다음 절에서 설정부터 한다.**"
+  }
+ ],
+ "recap": [
+  "**「JPA 기본편」은 \"어떻게 도나\"**, 이 장은 **\"바꾸면 뭐가 달라지나\"**.",
+  "**영속성 컨텍스트·매핑·JPQL 문법은 1권**에 있다.",
+  "**세 가지를 본다**: 코드 부피, 동적 쿼리, 안 쓴 SQL 이 나가는 시점.",
+  "**JPA(표준) · 하이버네이트(구현) · Data JPA(편의)** 는 다른 것이다.",
+  "**6장은 `EntityManager` 를 직접** 쓴다 — 7장에서 걷어낸다.",
+  "**내가 쓴 SQL 이 나가는 시대가 끝난다.**",
+  "**로그에서 개수·시점·모양** 셋을 본다.",
+  "**`org.hibernate.SQL=DEBUG`** 가 이 장의 필수 설정이다.",
+  "**메서드 하나에 쿼리 101개**가 나올 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "「JPA 기본편」의 차례를 훑는다.",
+   "done_when": "이 장에서 안 다룰 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "JPA·하이버네이트·Data JPA 를 한 줄씩 정의한다.",
+   "done_when": "셋의 관계를 그림으로 그렸다.",
+   "minutes": 10
+  },
+  {
+   "task": "하이버네이트 SQL 로그 설정을 켠다.",
+   "done_when": "파라미터까지 찍히는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 장이 「JPA 기본편」과 다른 점은?",
+   "a": "구현을 갈아 끼웠을 때 무엇이 달라지는지를 묻는다."
+  },
+  {
+   "q": "JPA·하이버네이트·Data JPA 의 관계는?",
+   "a": "JPA 는 표준, 하이버네이트는 구현체, Data JPA 는 그 위의 편의 계층이다."
+  },
+  {
+   "q": "왜 7장이 아니라 6장부터 하나?",
+   "a": "손으로 해 봐야 7장에서 무엇이 자동인지 안다."
+  },
+  {
+   "q": "로그에서 볼 세 가지는?",
+   "a": "SQL 의 개수, 나간 시점, 모양이다."
+  },
+  {
+   "q": "이 장의 필수 설정은?",
+   "a": "`org.hibernate.SQL=DEBUG` 와 바인딩 파라미터 로그다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
