@@ -1,0 +1,155 @@
+{
+ "book": "jpa-app-2",
+ "id": "v3-vs-v4",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "V3 와 V4 를 저울에",
+ "summary": "재사용과 성능.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 버전을 항목별로 비교한다.",
+  "컬럼 감소가 얼마나 가치 있는지 잰다.",
+  "시도 순서를 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**둘 다 쿼리 1개**다. **그럼 무엇으로 고르나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "저울",
+   "ascii": "   v3 and v4 on this sample\n\n   queries        1        1        tie\n   columns       15        7        v4\n   entities       6        0        depends\n   response     281      281        tie\n   reusable     yes       no        v3\n   layering    clean    mixed       v3\n   dirty check  yes       no        depends\n\n   v4 wins one row. v3 wins two.",
+   "note": "**V4 가 한 줄, V3 가 두 줄** 이긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컬럼 8개가 얼마나 값어치인가",
+   "md": "**정직하게 따져** 본다.\n\n**줄어든 컬럼**\n\n```\nmember_id (중복), delivery_id (중복), member_id (다시),\nm.city, m.street, m.zipcode, d.delivery_id, d.status\n```\n\n> **주소 세 컬럼과 식별자들**이다.\n\n**행 하나에 몇 바이트인가**\n\n| | |\n|---|---|\n| `varchar(255)` 주소 3개 | 실제 데이터는 짧다. **~30 바이트** |\n| `bigint` 3개 | **24 바이트** |\n| `varchar` 상태 | **~10 바이트** |\n\n> **행당 60~70 바이트** 정도다.\n>\n> **주문 1000건이면 60KB**. **LAN 에서 1ms 도 안 된다.**\n\n**그럼 언제 값어치가 있나**\n\n| 상황 | |\n|---|---|\n| **컬럼이 아주 많다** | 엔티티에 필드 50개 |\n| **큰 컬럼이 있다** | `TEXT`, `BLOB`, JSON |\n| **행이 아주 많다** | 수만 건 |\n| **네트워크가 비싸다** | 다른 리전의 DB |\n\n> **`Item` 에 상품 설명이 `TEXT` 로** 있다면 다르다. **한 행에 수 KB** 다.\n>\n> **그런 컬럼 하나가 빠지는 것이 주소 세 개보다** 크다.\n\n**이 샘플에서는 값어치가 거의 없다.**\n\n> **그런데도 V4 를 만든 이유는 방법을 알아 두려고**다.\n>\n> **5장에서는 사정이 다르다** — **컬렉션이 붙으면 행 자체가 는다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "무엇이 바뀔 때 무엇을 고치나",
+   "left": {
+    "title": "V3 — 엔티티 조회 후 변환",
+    "points": [
+     "**응답 필드 추가** → DTO 만",
+     "**엔티티 필드 이름 변경** → 컴파일러가 잡는다",
+     "**다른 API 가 같은 데이터** → 그대로 재사용",
+     "**컬럼을 더 줄이고 싶다** → 못 한다",
+     "**변경 감지가 필요** → 된다"
+    ]
+   },
+   "right": {
+    "title": "V4 — DTO 직접 조회",
+    "points": [
+     "**응답 필드 추가** → JPQL 과 DTO 생성자 둘 다",
+     "**엔티티 필드 이름 변경** → **JPQL 문자열은 런타임에 터진다**",
+     "**다른 API 가 같은 데이터** → 메서드를 또 만든다",
+     "**컬럼을 더 줄이고 싶다** → 자유롭다",
+     "**변경 감지가 필요** → 안 된다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "V4 의 숨은 비용",
+   "md": "**JPQL 문자열이 컴파일에 안 잡힌다.**\n\n```java\n\"select new ...OrderSimpleQueryDto(o.id, m.name, o.orderDate, ...)\"\n```\n\n> **`Member.name` 을 `username` 으로** 바꾸면\n>\n> **V3** — `SimpleOrderDto` 생성자의 `getName()` 이 **컴파일 오류**\n> **V4** — **애플리케이션은 뜨고 API 를 부르면 터진다**\n>\n> **2.3절에서 얻은 \"컴파일러가 잡아 준다\" 를 여기서 반납**한다.\n\n**부팅 때 잡히기는** 한다.\n\n> **하이버네이트가 시작할 때 `@NamedQuery` 는 검증**한다. **인라인 JPQL 은 안 한다.**\n>\n> **`@NamedQuery` 로 빼면 부팅에서 잡힌다.** **대신 쿼리가 엔티티 위로** 올라간다.\n\n**Querydsl 이 이 비용을 없앤다.**\n\n```java\nqueryFactory\n    .select(Projections.constructor(OrderSimpleQueryDto.class,\n            order.id, member.name, order.orderDate,\n            order.status, delivery.address))\n    .from(order)\n    .join(order.member, member)\n    .join(order.delivery, delivery)\n    .fetch();\n```\n\n> **`member.name` 이 코드**다. **이름을 바꾸면 컴파일 오류**다.\n>\n> **7.2절**에서 다룬다. **이 책에서 Querydsl 이 필요해지는 자리가 여기**다."
+  },
+  {
+   "type": "figure",
+   "caption": "시도 순서",
+   "ascii": "   the order to try things in\n\n   1  entity query, lazy everywhere\n   2  fetch join                     -> most cases end here\n   3  batch size                     -> collections, paging\n   4  dto direct query               -> only when 2 and 3 are not enough\n   5  native sql or jdbc template    -> last\n\n   going down the list costs reuse and gains control",
+   "note": "**내려갈수록 재사용을 잃고 통제를 얻는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "결론",
+   "md": "**V3 를 기본으로** 쓴다.\n\n> **엔티티를 조회하고 애플리케이션에서 DTO 로** 바꾼다.\n>\n> **재사용이 되고 계층이 안 섞이고 변경 감지가 산다.**\n\n**V4 는 언제 쓰나**\n\n| | |\n|---|---|\n| **컬럼이 정말 많다** | 50개 중 5개만 필요 |\n| **큰 컬럼을 빼야 한다** | `TEXT`·`BLOB` |\n| **트래픽이 아주 많다** | 그 API 만 초당 수천 |\n| **집계가 필요하다** | `count`, `sum`, `group by` |\n\n> **마지막이 실무에서 가장 흔한 이유**다. **집계는 엔티티로 못 한다.**\n\n**두 리포지토리를 같이 두는 것도** 답이다.\n\n```\nOrderRepository                 엔티티 조회 (V3)\nOrderSimpleQueryRepository      DTO 조회 (V4)\n```\n\n> **하나를 고르는 게 아니라 성격에 따라** 나눈다.\n>\n> **4.8절**에서 이 구조를 정리한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 두 버전을 나란히",
+   "sql": "# --- V3 ---\n\nGET /api/v3/simple-orders\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#            d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#            m1_0.name, m1_0.street, m1_0.zipcode, o1_0.order_date,\n#            o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   Session Metrics { 1 JDBC statements; 6 entities were loaded }\n\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\", ...}]}\n\n# --- V4 ---\n\nGET /api/v4/simple-orders\n\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Session Metrics { 1 JDBC statements; 0 entities were loaded }\n\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\", ...}]}\n\n#   JSON 이 바이트 단위로 같다\n\n# --- 필드를 하나 추가한다면 ---\n\n#   응답에 배송 상태(deliveryStatus)를 넣는다\n\n#   V3 에서 고칠 것\n\nstatic class SimpleOrderDto {\n    private DeliveryStatus deliveryStatus;   // 추가\n    public SimpleOrderDto(Order order) {\n        deliveryStatus = order.getDelivery().getStatus();   // 추가\n    }\n}\n\n#   리포지토리는 안 고친다\n#   d1_0.status 가 이미 select 에 있다\n\nGET /api/v3/simple-orders\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   쿼리가 안 늘었다\n\n#   V4 에서 고칠 것\n\n#   1. JPQL 의 new 절에 d.status 추가\n#   2. OrderSimpleQueryDto 생성자 파라미터 추가\n#   3. 필드 추가\n\n#   세 군데다\n\n# --- 엔티티 필드 이름을 바꾼다면 ---\n\n#   Member.name -> Member.username\n\n#   V3\n#     SimpleOrderDto.java:41: error: cannot find symbol\n#         name = order.getMember().getName();\n#                                 ^\n#   컴파일이 안 된다\n\n#   V4\n#     (컴파일 통과, 애플리케이션 시작 성공)\n\nGET /api/v4/simple-orders\n\n#   500 Internal Server Error\n#   org.hibernate.query.SemanticException:\n#     Could not interpret path expression 'm.name'\n\n#   부르기 전까지 모른다\n\n# --- 집계는 V4 만 된다 ---\n\nselect new ...OrderCountDto(m.name, count(o))\n  from Order o join o.member m group by m.name\n\n#   Hibernate:\n#     select m1_0.name, count(o1_0.order_id)\n#     from orders o1_0 join member m1_0 on ...\n#     group by m1_0.name\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   [{\"name\":\"userA\",\"count\":1},{\"name\":\"userB\",\"count\":1}]\n\n#   엔티티로는 이 모양을 못 만든다\n\n# --- 저울 ---\n\n#          쿼리  컬럼  변경감지  재사용  컴파일검증  집계\n#   V3      1    15     O       O       O        X\n#   V4      1     7     X       X       X        O\n\n#   V3 를 기본으로 쓰고 필요할 때 V4 를 더한다\n\n# --- 다음 절에서 ---\n\n#   그럼 둘을 어디에 두나",
+   "note": "**두 JSON 이 바이트 단위로** 같다.\n\n**필드를 하나 추가하면 V3 는 한 군데, V4 는 세 군데**를 고친다. **V3 는 쿼리도 안** 는다 — **`d1_0.status` 가 이미 `select` 에** 있다.\n\n**엔티티 필드 이름을 바꾸면 V3 는 컴파일 오류, V4 는 부를 때까지** 모른다.\n\n**집계는 V4 만** 된다. **엔티티로는 그 모양을 못 만든다.**\n\n**V3 를 기본으로 쓰고 필요할 때 V4 를 더한다.**"
+  }
+ ],
+ "recap": [
+  "**둘 다 쿼리 1개** — 컬럼과 성격으로 가른다.",
+  "**줄어든 컬럼 8개는 행당 60~70 바이트** — 이 샘플에서는 값어치가 거의 없다.",
+  "**`TEXT`·`BLOB` 이나 컬럼 50개면 사정이** 다르다.",
+  "**V3 는 응답 필드 추가에 DTO 한 군데, V4 는 세 군데**다.",
+  "**V4 의 JPQL 문자열은 컴파일에 안** 잡힌다.",
+  "**2.3절에서 얻은 \"컴파일러가 잡아 준다\" 를 반납**한다.",
+  "**Querydsl 이 그 비용을 없앤다** — 7.2절.",
+  "**집계는 V4 만** 된다 — 실무에서 가장 흔한 이유다.",
+  "**V3 를 기본으로 쓰고 성격에 따라 리포지토리를** 나눈다."
+ ],
+ "drills": [
+  {
+   "task": "응답에 배송 상태를 추가한다.",
+   "done_when": "V3 는 한 군데, V4 는 세 군데 고친 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Member.name` 을 바꿔 본다.",
+   "done_when": "V3 는 컴파일 오류, V4 는 런타임 오류인 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "회원별 주문 수를 세는 쿼리를 만든다.",
+   "done_when": "`group by` 가 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "줄어든 컬럼의 바이트를 어림한다.",
+   "done_when": "이 샘플에서 무시할 만한 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컬럼 감소가 언제 값어치가 있나?",
+   "a": "컬럼이 아주 많거나 `TEXT`·`BLOB` 같은 큰 컬럼이 있거나 행이 아주 많을 때다."
+  },
+  {
+   "q": "응답 필드를 추가하면 어디를 고치나?",
+   "a": "V3 는 DTO 한 군데, V4 는 JPQL·생성자·필드 세 군데다."
+  },
+  {
+   "q": "V4 의 숨은 비용은?",
+   "a": "JPQL 문자열이 컴파일에 안 잡혀 런타임에 터진다."
+  },
+  {
+   "q": "V4 를 꼭 써야 하는 경우는?",
+   "a": "집계다. `count`·`sum`·`group by` 는 엔티티로 못 만든다."
+  },
+  {
+   "q": "둘 중 하나를 골라야 하나?",
+   "a": "아니다. 성격에 따라 리포지토리를 나눠 둘 다 둔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Querydsl Reference",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

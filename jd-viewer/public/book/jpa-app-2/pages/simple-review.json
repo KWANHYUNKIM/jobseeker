@@ -1,0 +1,177 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-review",
+ "no": "4.9",
+ "chapter": 4,
+ "title": "정리",
+ "summary": "네 버전의 숫자.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 버전을 한 표에 놓는다.",
+  "4장의 결론을 정리한다.",
+  "5장에서 무엇이 깨지는지 예고한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 JSON 을 네 번 만들었다.** **숫자를 나란히** 놓는다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 버전",
+   "ascii": "   chapter 4, four versions\n\n   v1   5 queries   entity    500 by default\n   v2   5 queries   dto       the contract, finally\n   v3   1 query     dto       15 columns\n   v4   1 query     dto        7 columns\n\n   the json is identical from v2 down",
+   "note": "**V2 부터는 JSON 이 완전히 같다.**"
+  },
+  {
+   "type": "table",
+   "caption": "4장 전체",
+   "columns": [
+    "",
+    "쿼리",
+    "컬럼",
+    "엔티티",
+    "응답",
+    "재사용",
+    "쓸까"
+   ],
+   "rows": [
+    [
+     "V1",
+     "5",
+     "15+",
+     "6",
+     "**엔티티. 500 이 기본**",
+     "—",
+     "**아니다**"
+    ],
+    [
+     "V2",
+     "5",
+     "15+",
+     "6",
+     "3.4절의 계약",
+     "높다",
+     "**중간 단계**"
+    ],
+    [
+     "V3",
+     "**1**",
+     "15",
+     "6",
+     "같다",
+     "**높다**",
+     "**기본**"
+    ],
+    [
+     "V4",
+     "**1**",
+     "**7**",
+     "**0**",
+     "같다",
+     "낮다",
+     "필요할 때"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 표에서 읽을 것",
+   "md": "**① V1 → V2 는 쿼리가 안 줄었다**\n\n> **DTO 의 값은 성능이 아니다.** **2.8절에서 회원으로 본 것과 같다.**\n>\n> **여기서는 그 위에 하나 더** 있다 — **V1 은 애초에 `200` 이 안 나온다.** **셋 중 무엇을 해도 응답이 틀렸다**(4.2절).\n\n**② V2 → V3 가 이 장의 본론**\n\n> **5 → 1** 이다. **리포지토리 한 줄**이었다.\n>\n> **DTO 도 컨트롤러도 안 고쳤다.** **바꿀 곳이 정확히 한 군데**였다.\n\n**③ V3 → V4 는 얻는 게 적다**\n\n> **컬럼 8개**다. **이 샘플에서 행당 60~70 바이트**.\n>\n> **주는 것이 더** 크다 — 재사용·계층·컴파일 검증.\n\n**④ V4 의 `entities were loaded` 가 0**\n\n> **이게 장단점을 한 줄로** 말한다.\n> **가볍고, 변경 감지가 없다.**\n\n**결론 한 줄**\n\n> **엔티티를 조회하고 페치 조인으로 N 을 없애고 애플리케이션에서 DTO 로** 바꾼다.\n>\n> **그게 V3** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4장이 쉬웠던 이유",
+   "md": "**컬렉션이 없었다.**\n\n| | |\n|---|---|\n| **`ManyToOne`** | 주문 하나에 회원 하나 |\n| **`OneToOne`** | 주문 하나에 배송 하나 |\n\n**그래서 전부 성립했다.**\n\n| | 4장 |\n|---|---|\n| 조인해도 행이 안 는다 | ✅ |\n| `distinct` 가 필요 없다 | ✅ |\n| 페이징이 SQL 로 간다 | ✅ |\n| 페치 조인을 둘 걸어도 된다 | ✅ |\n| 페치 조인 하나면 끝난다 | ✅ |\n\n> **`join fetch` 를 두 번 걸었다.** **`member` 와 `delivery` 둘 다.**\n>\n> **아무 문제 없었다.** **둘 다 `ToOne`** 이라서다.\n\n**5장에서 `orderItems` 하나가 붙는다.**\n\n> **다섯 줄이 전부 뒤집힌다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "5장에서 깨지는 것",
+   "ascii": "   what chapter 5 breaks\n\n   v3 in chapter 4       v3 in chapter 5\n     1 query               1 query\n     2 rows for 2 orders   4 rows for 2 orders\n     paging in sql         paging in memory\n     no distinct needed    distinct needed\n     one fetch join        two is an exception\n\n   same technique, different outcome",
+   "note": "**같은 기술, 다른 결과**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "5장을 미리 그려 두면",
+   "md": "**여섯 버전이** 온다.\n\n| | |\n|---|---|\n| **V1** | 엔티티 노출. 4.1절과 같다 |\n| **V2** | DTO. **그런데 안에 엔티티가 남는다** |\n| **V3** | 페치 조인. **`distinct` 가 필요하다** |\n| **V3.1** | **배치 사이즈.** 쿼리 3인데 페이징이 된다 |\n| **V4** | DTO 직접. **1+N 으로 는다** |\n| **V5** | **`in` 절.** 쿼리 2 |\n| **V6** | **플랫.** 쿼리 1인데 응답이 틀린다 |\n\n> **일곱 개**다. **4장의 네 개보다 많다.**\n\n**미리 답을 말하면** — **V3.1 이 실무의 기본**이다.\n\n> **4장에서는 V3(페치 조인)가** 답이었다.\n> **5장에서는 페치 조인이 페이징을** 못 한다.\n>\n> **그래서 `ToOne` 은 페치 조인, 컬렉션은 배치 사이즈**로 간다. **그게 V3.1**이다.\n\n**그리고 5.12절에서 여섯을 표에** 놓는다.\n\n> **4.7절에서 둘을 저울에 놓은 것과 같은 방식**이다. **대상이 여섯으로** 는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 네 버전을 한 번에",
+   "sql": "# --- 네 API 를 순서대로 ---\n\nGET /api/v1/simple-orders\n#   Session Metrics { 5 JDBC statements were executed }\n#   200 OK  (강제 초기화 버전)\n#   [{\"id\":4,\"member\":{...},\"delivery\":{...},\"totalPrice\":0}, ...]\n#   612 bytes\n\nGET /api/v2/simple-orders\n#   Session Metrics { 5 JDBC statements were executed }\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...}]}\n#   281 bytes\n\nGET /api/v3/simple-orders\n#   Session Metrics { 1 JDBC statements were executed }\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...}]}\n#   281 bytes\n\nGET /api/v4/simple-orders\n#   Session Metrics { 1 JDBC statements were executed }\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...}]}\n#   281 bytes\n\n#   V2 부터 세 응답이 바이트 단위로 같다\n\n# --- 주문을 100건으로 늘리면 (계산) ---\n\n#   V1   1 + 200 = 201\n#   V2   1 + 200 = 201\n#   V3   1\n#   V4   1\n\n#   V3 부터 데이터가 늘어도 쿼리가 안 는다\n\n# --- 페이징 ---\n\nGET /api/v3/simple-orders?offset=0&limit=50\n\n#   Hibernate: select ... from orders o1_0\n#              join delivery ... join member ...\n#              offset ? rows fetch first ? rows only\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   경고 없음\n\n# --- 1편의 화면은 어떻게 됐나 ---\n\nGET /orders\n\n#   Session Metrics { 31 JDBC statements were executed }\n\n#   아직 31 이다\n\n#   4장은 API 만 고쳤다\n#   화면은 findAllByString 을 그대로 쓴다\n\n#   화면도 findAllWithMemberDelivery 를 쓰면\n\nGET /orders\n\n#   Hibernate: select ... join fetch member join fetch delivery\n#   Hibernate: select ... from order_item where order_id=?\n#   Hibernate: select ... from item where item_id=?\n#   Hibernate: select ... from item where item_id=?\n#   Hibernate: select ... from order_item where order_id=?\n#   Hibernate: select ... from item where item_id=?\n#   Hibernate: select ... from item where item_id=?\n\n#   Session Metrics { 7 JDBC statements were executed }\n\n#   31 -> 7\n\n#   남은 6개가 orderItems 와 item 이다\n#   ToOne 은 다 잡았는데 컬렉션이 남았다\n\n#   이것이 5장이다\n\n# --- 4장이 남긴 숫자 ---\n\n#   V3  쿼리 1   기본으로 쓴다\n#   V4  쿼리 1   집계와 큰 컬럼에\n\n#   컬렉션 없는 조회는 여기서 끝났다\n\n# --- 다음 장에서 ---\n\n#   orderItems 를 붙인다\n#   위 다섯 줄이 전부 뒤집힌다",
+   "note": "**V2·V3·V4 의 응답이 바이트 단위로** 같다. **281 바이트**다.\n\n**주문 100건이면 V1·V2 는 201개, V3·V4 는 1개**다.\n\n**1편의 화면이 아직 31개**다. **화면에도 페치 조인을 쓰면 7개**가 된다.\n\n**남은 6개가 `orderItems` 와 `item`** 이다. **`ToOne` 은 다 잡았는데 컬렉션이** 남았다.\n\n**이것이 5장이다.**"
+  }
+ ],
+ "recap": [
+  "**V1→V2 는 쿼리가 안 줄었다** — DTO 의 값은 성능이 아니다.",
+  "**V1 은 애초에 `200` 이 안 나온다.**",
+  "**V2→V3 가 본론** — 5 가 1 이 됐고 리포지토리 한 줄이었다.",
+  "**V3→V4 는 컬럼 8개** — 주는 것이 더 크다.",
+  "**V4 의 `entities were loaded` 가 0** — 가볍고 변경 감지가 없다.",
+  "**결론은 V3** — 엔티티 조회 + 페치 조인 + 애플리케이션에서 변환.",
+  "**4장이 쉬웠던 건 컬렉션이 없어서**다.",
+  "**화면에 페치 조인을 쓰면 31 이 7** 이 된다 — 남은 6개가 컬렉션이다.",
+  "**5장에서는 V3.1(`ToOne` 페치 조인 + 배치 사이즈)이 답**이 된다."
+ ],
+ "drills": [
+  {
+   "task": "네 API 를 순서대로 부르고 표를 채운다.",
+   "done_when": "쿼리·바이트를 다 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "1편의 화면 리포지토리를 페치 조인으로 바꾼다.",
+   "done_when": "31 이 7 이 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "남은 6개가 무엇인지 로그에서 찾는다.",
+   "done_when": "`order_item` 과 `item` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "5장의 일곱 버전을 미리 적어 둔다.",
+   "done_when": "V1~V6 의 예상 쿼리 수를 적었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 장의 결론은?",
+   "a": "V3 다. 엔티티를 페치 조인으로 조회하고 애플리케이션에서 DTO 로 바꾼다."
+  },
+  {
+   "q": "V3→V4 의 이득이 왜 작나?",
+   "a": "컬럼 8개, 행당 60~70 바이트라 이 샘플에서는 무시할 만하다."
+  },
+  {
+   "q": "4장이 쉬웠던 이유는?",
+   "a": "연관관계가 전부 `ToOne` 이라 조인해도 행이 안 늘었다."
+  },
+  {
+   "q": "화면에 페치 조인을 쓰면 몇 개가 되나?",
+   "a": "31 에서 7 이 된다. 남은 6개가 컬렉션이다."
+  },
+  {
+   "q": "5장의 답은 무엇이 될까?",
+   "a": "V3.1 이다. `ToOne` 은 페치 조인, 컬렉션은 배치 사이즈다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

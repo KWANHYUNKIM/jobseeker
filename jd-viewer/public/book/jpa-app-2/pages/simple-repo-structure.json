@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-repo-structure",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "조회 전용 리포지토리",
+ "summary": "어디에 둘까.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 성격의 리포지토리를 나눈다.",
+  "패키지 구조를 정한다.",
+  "이 구조가 무엇을 보장하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**V3 와 V4 를 같이 쓰기로** 했다(4.7절). **그럼 어디에 두나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "4장이 끝난 뒤의 패키지",
+   "ascii": "   the package layout after chapter 4\n\n   repository/\n     OrderRepository            entity queries. core.\n     order/\n       simplequery/\n         OrderSimpleQueryRepository   this api only\n         OrderSimpleQueryDto\n\n   the nesting says which one is disposable",
+   "note": "**중첩 깊이가 \"버릴 수 있는 것\" 을** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 한 클래스에 두면 안 되나",
+   "md": "**변경 이유가 다르다.**\n\n| 메서드 | 언제 바뀌나 |\n|---|---|\n| `findAll()` | **거의 안 바뀐다** |\n| `findAllWithMemberDelivery()` | **거의 안 바뀐다** |\n| `findOrderDtos()` | **화면이 바뀔 때마다** |\n\n> **한 클래스에 넣으면 화면 때문에 핵심 리포지토리를 계속** 연다.\n>\n> **커밋 로그가 섞이고 코드 리뷰가 어려워**진다.\n\n**개수도 다르게** 자란다.\n\n> **엔티티 조회는 몇 개면** 끝난다. **`Order` 를 가져오는 방법이 그리 많지** 않다.\n>\n> **DTO 조회는 화면 수만큼** 는다. **관리자 목록, 대시보드 요약, 엑셀 내보내기…**\n\n**성격도 다르다.**\n\n| | 엔티티 리포지토리 | 조회 전용 |\n|---|---|---|\n| 반환 | 엔티티 | DTO |\n| 영속성 컨텍스트 | **관리한다** | 밖이다 |\n| 트랜잭션 | 쓰기에도 쓰인다 | **읽기 전용** |\n| 재사용 | **높다** | 낮다 |\n| 수명 | **길다** | 화면과 같다 |\n\n> **마지막 줄이 핵심**이다. **화면이 없어지면 그 조회 메서드도 없어진다.**\n>\n> **핵심 리포지토리는 화면이 다 바뀌어도** 남는다."
+  },
+  {
+   "type": "figure",
+   "caption": "섞으면 생기는 일",
+   "ascii": "   why they must not live in one class\n\n   one OrderRepository holding both\n     findAll                        changes rarely\n     findAllWithMemberDelivery      changes rarely\n     findOrderDtos                  changes with the screen\n     findOrderDtosForAdmin          changes with the screen\n     findOrderSummaryForDashboard   changes with the screen\n\n   the core methods drown in api specific ones",
+   "note": "**핵심 메서드가 묻힌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "패키지를 중첩한 이유",
+   "md": "```\nrepository/\n  OrderRepository.java\n  order/\n    simplequery/\n      OrderSimpleQueryRepository.java\n      OrderSimpleQueryDto.java\n```\n\n**평평하게 둘 수도** 있다.\n\n```\nrepository/\n  OrderRepository.java\n  OrderSimpleQueryRepository.java\n  OrderSimpleQueryDto.java\n```\n\n**중첩을 고른 이유 셋**\n\n**① 눈에 보이는 위계**\n\n> **`repository/` 바로 아래 있는 것이 핵심**이다.\n> **깊이 들어갈수록 특정 화면에 묶인 것**이다.\n\n**② 통째로 지울 수 있다**\n\n> **그 API 가 없어지면 `simplequery/` 디렉터리를 지운다.**\n> **평평하면 어느 파일이 그 API 것인지 골라야** 한다.\n\n**③ DTO 가 같이 산다**\n\n> **`OrderSimpleQueryDto` 가 리포지토리 옆에** 있다.\n> **4.6절에서 본 대로 `new` 절이 이 클래스를 직접 부른다.**\n>\n> **둘이 한 몸이라 같이 옮기고 같이 지운다.**\n\n**5장에서 하나 더** 생긴다.\n\n```\n  order/\n    simplequery/     4장\n    query/           5장\n```\n\n> **`OrderQueryRepository`·`OrderQueryDto`·`OrderItemQueryDto`** 가 들어간다.\n>\n> **5장의 DTO 가 셋인 이유는 컬렉션 때문**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "다른 방법들",
+   "md": "**CQRS 로 완전히 나누기**\n\n```\ncommand/\n  OrderRepository\nquery/\n  OrderQueryRepository\n```\n\n> **쓰기와 읽기를 최상위에서** 가른다. **큰 시스템에서 쓴다.**\n>\n> **6.3절에서 이 이야기를 다시** 한다 — **OSIV 를 끄면 쿼리 서비스가 필요**해진다.\n\n**도메인별로 나누기**\n\n```\norder/\n  OrderRepository\n  OrderQueryRepository\nmember/\n  MemberRepository\n```\n\n> **1편 4.3절에서 다룬** 것이다. **프로젝트가 커지면 이쪽**이다.\n>\n> **이 책은 1편의 계층형을 유지**한다. **바꾸면 비교가 어려워진다.**\n\n**스프링 데이터 JPA 를 쓰면**\n\n```java\npublic interface OrderRepository extends JpaRepository<Order, Long> { }\n\n// 커스텀은 별도 인터페이스로\npublic interface OrderRepositoryCustom { ... }\n```\n\n> **인터페이스가 강제로 나뉜다.** **7.1절**에서 다룬다.\n\n**공통점 하나**\n\n> **어떤 방법이든 \"핵심\" 과 \"화면용\" 을 물리적으로** 나눈다.\n>\n> **이름만 나누고 한 파일에 두면 안 나눈 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 두 리포지토리가 나란히",
+   "sql": "# --- 핵심 리포지토리 ---\n\norderRepository.findAllWithMemberDelivery()\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.*, m1_0.*, o1_0.order_date, o1_0.status\n#     from orders o1_0 join delivery d1_0 ... join member m1_0 ...\n\n#   반환: List<Order>\n#   Session Metrics { 1 JDBC statements; 6 entities were loaded }\n\n# --- 조회 전용 리포지토리 ---\n\norderSimpleQueryRepository.findOrderDtos()\n\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode\n#     from orders o1_0 join member m1_0 ... join delivery d1_0 ...\n\n#   반환: List<OrderSimpleQueryDto>\n#   Session Metrics { 1 JDBC statements; 0 entities were loaded }\n\n# --- 같은 트랜잭션에서 둘 다 부르면 ---\n\n@Transactional(readOnly = true)\npublic void both() {\n    List<Order> orders = orderRepository.findAllWithMemberDelivery();\n    List<OrderSimpleQueryDto> dtos = simpleQueryRepository.findOrderDtos();\n\n    System.out.println(orders.size());   // 2\n    System.out.println(dtos.size());     // 2\n}\n\n#   Hibernate: select ... (엔티티 조회)\n#   Hibernate: select ... (DTO 조회)\n\n#   Session Metrics {\n#       2 JDBC statements were executed\n#       6 entities were loaded\n#   }\n\n#   DTO 조회는 엔티티를 안 만들어 6 그대로다\n\n# --- 엔티티 조회가 캐시에 걸리는지 ---\n\n@Transactional(readOnly = true)\npublic void twice() {\n    orderRepository.findAllWithMemberDelivery();\n    orderRepository.findAllWithMemberDelivery();\n}\n\n#   Hibernate: select ...\n#   Hibernate: select ...\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   JPQL 은 1차 캐시를 안 거친다\n#   쿼리는 두 번 나가고 결과 객체만 같은 것이 온다\n#   (「JPA 기본편」 10.2절)\n\n# --- 핵심 리포지토리를 쓰기에도 쓴다 ---\n\n@Transactional\npublic void changeName(Long orderId, String name) {\n    Order order = orderRepository.findOne(orderId);\n    order.getMember().setName(name);\n}\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: update member set city=?, name=?, street=?, zipcode=?\n#              where member_id=?\n\n#   변경 감지가 돈다\n\n#   조회 전용 리포지토리로는 이게 안 된다\n\n# --- 디렉터리를 확인 ---\n\n$ tree src/main/java/jpabook/jpashop/repository\nrepository\n├── ItemRepository.java\n├── MemberRepository.java\n├── OrderRepository.java\n├── OrderSearch.java\n└── order\n    └── simplequery\n        ├── OrderSimpleQueryDto.java\n        └── OrderSimpleQueryRepository.java\n\n#   깊이가 성격을 말한다\n\n# --- 다음 절에서 ---\n\n#   4장의 네 버전을 한 표에 놓는다",
+   "note": "**두 리포지토리가 각각 쿼리 1개**를 낸다. **`entities were loaded` 가 6 과 0** 이다.\n\n**같은 트랜잭션에서 둘 다 불러도 DTO 조회는 엔티티를 안** 만든다.\n\n**같은 JPQL 을 두 번 부르면 쿼리도 두 번** 나간다 — **JPQL 은 1차 캐시를 안 거친다**(「JPA 기본편」 10.2절).\n\n**핵심 리포지토리는 쓰기에도** 쓰인다. **변경 감지가 돈다.** **조회 전용으로는 안 된다.**\n\n**디렉터리 깊이가 성격을 말한다.**"
+  }
+ ],
+ "recap": [
+  "**변경 이유가 다르면 클래스를** 나눈다.",
+  "**엔티티 조회는 몇 개면 끝나고 DTO 조회는 화면 수만큼** 는다.",
+  "**핵심 리포지토리는 화면이 다 바뀌어도** 남는다.",
+  "**패키지 중첩 깊이가 \"버릴 수 있는 것\" 을** 말한다.",
+  "**API 가 없어지면 디렉터리를 통째로** 지운다.",
+  "**DTO 가 리포지토리 옆에 산다** — `new` 절이 직접 부른다.",
+  "**5장에서 `order/query/` 가 하나 더** 생긴다.",
+  "**JPQL 은 1차 캐시를 안 거친다** — 같은 쿼리를 두 번 부르면 두 번 나간다.",
+  "**이름만 나누고 한 파일에 두면 안 나눈 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "패키지 구조를 만든다.",
+   "done_when": "`order/simplequery/` 에 두 파일이 들어갔다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 트랜잭션에서 두 리포지토리를 부른다.",
+   "done_when": "`entities were loaded` 가 6 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 JPQL 을 두 번 부른다.",
+   "done_when": "쿼리가 두 번 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조회 전용 DTO 를 고쳐 커밋해 본다.",
+   "done_when": "핵심 리포지토리 파일이 안 열린 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 리포지토리를 나누나?",
+   "a": "변경 이유가 다르고 개수가 다르게 자라며 수명이 다르기 때문이다."
+  },
+  {
+   "q": "패키지 중첩이 무엇을 말하나?",
+   "a": "깊을수록 특정 화면에 묶인 것이고 통째로 지울 수 있는 것이다."
+  },
+  {
+   "q": "DTO 를 왜 리포지토리 옆에 두나?",
+   "a": "`new` 절이 그 클래스를 직접 부르고 둘이 한 몸이기 때문이다."
+  },
+  {
+   "q": "같은 JPQL 을 두 번 부르면?",
+   "a": "쿼리가 두 번 나간다. JPQL 은 1차 캐시를 안 거친다."
+  },
+  {
+   "q": "이름만 나누면 되나?",
+   "a": "안 된다. 한 파일에 두면 나눈 게 아니다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

@@ -256,7 +256,7 @@
           "title": "V3 와 V4 를 저울에",
           "summary": "재사용과 성능.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -264,7 +264,7 @@
           "title": "조회 전용 리포지토리",
           "summary": "어디에 둘까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.9",
@@ -272,7 +272,7 @@
           "title": "정리",
           "summary": "네 버전의 숫자.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
