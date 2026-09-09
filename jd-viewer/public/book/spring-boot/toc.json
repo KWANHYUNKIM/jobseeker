@@ -236,7 +236,7 @@
           "title": "부트가 만든 JAR",
           "summary": "무엇이 다른가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -244,7 +244,7 @@
           "title": "JAR 를 열어 본다",
           "summary": "안의 구조를 센다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.9",

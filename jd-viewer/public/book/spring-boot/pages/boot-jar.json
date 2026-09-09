@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "boot-jar",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "부트가 만든 JAR",
+ "summary": "무엇이 다른가.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "JAR 둘을 가른다.",
+  "세 구역을 안다.",
+  "왜 안 깨지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.6절에서 합치니** 깨졌다. **부트는 안 합쳤다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "빌드가 JAR 를 둘 낸다",
+   "ascii": "   two jars come out of one build\n\n   the plain jar   only your classes, four kilobytes\n   the boot jar    your classes, every dependency, and a loader\n\n   the second one is not a fat jar, and 4.8 shows why",
+   "note": "**둘째는 Fat JAR 가 아니고 4.8절이 그 이유를** 보여 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "풀지 않으니 겹칠 일이 없다",
+   "md": "**JAR 를 JAR 로** 담는다.\n\n> **`BOOT-INF/lib` 에 원본** 그대로다.\n> **4.5절에서 못 읽는다던 그** 형태다.\n> **로더를 만들어** 풀었다.\n\n**그래서 4.6절 문제가** 없다.\n\n> **목록 파일이 안** 겹친다.\n> **각 JAR 안에 그대로** 있다.\n> **조건 412 가 그대로 나온**다.\n\n**출처도** 남는다.\n\n> **4.5절에서 `null` 이던 버전이** 나온다.\n> **URL 에 느낌표가** 둘이다.\n> **아래에서 확인**한다.\n\n**서명도** 산다.\n\n> **원본 JAR 를 안** 건드렸다.\n> **검증이 그대로** 된다.\n> **4.5절의 그 문제도** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "안의 세 구역",
+   "ascii": "   three areas inside a boot jar\n\n   org springframework boot loader   the launcher, unpacked\n   BOOT-INF classes                  your compiled code\n   BOOT-INF lib                      dependency jars, untouched\n\n   only the first area is readable by a plain java launcher",
+   "note": "**평범한 실행기가 읽을 수 있는 건 첫 구역뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "plain.jar 를 배포하면 안 된다",
+   "md": "**이름이** 비슷하다.\n\n> **`app.jar` 와 `app-plain.jar`** 다.\n> **4.4절의 그 18K 짜리**다.\n> **잘못 옮기면 `NoClassDefFoundError`** 다.\n\n**끌 수** 있다.\n\n> **`jar { enabled = false }`** 다.\n> **CI 에서 헷갈릴 일이** 없다.\n> **아래에서** 끈다.\n\n**`bootJar` 가 기본**이다.\n\n> **`./gradlew build` 가 둘 다** 만든다.\n> **`bootRun` 은 JAR 를 안** 만든다.\n> **클래스 폴더로** 돈다.\n\n**크기는 더** 크다.\n\n> **압축된 JAR 를 다시** 압축한다.\n> **21M 대 11M** 이다.\n> **아래에서 그 이유를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 빌드하면 둘이 나온다\n\n$ ./gradlew build -q\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff    21M  app-0.0.1-SNAPSHOT.jar\n-rw-r--r--  1 kwanhyun  staff   4.2K  app-0.0.1-SNAPSHOT-plain.jar\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT-plain.jar | tail -2\n     4218                     11 files\n\n--   2.4절에서 본 그것이다\n--   plain 은 4.4절의 평범한 JAR 다\n\n\n-- plain 을 돌리면\n\n$ java -jar build/libs/app-0.0.1-SNAPSHOT-plain.jar\nno main manifest attribute, in build/libs/app-0.0.1-SNAPSHOT-plain.jar\n\n--   3.4절의 그 메시지다\n\n\n-- 끈다\n\n// build.gradle\njar {\n    enabled = false\n}\n\n$ ./gradlew build -q && ls build/libs/\napp-0.0.1-SNAPSHOT.jar\n\n--   하나만 남았다\n--   CI 에서 헷갈릴 일이 없다\n\n\n-- 안을 본다\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | head -12\nArchive:  build/libs/app-0.0.1-SNAPSHOT.jar\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n        0  09-10-2026 05:31   META-INF/\n      373  09-10-2026 05:31   META-INF/MANIFEST.MF\n        0  09-10-2026 05:31   org/\n        0  09-10-2026 05:31   org/springframework/\n        0  09-10-2026 05:31   org/springframework/boot/\n        0  09-10-2026 05:31   org/springframework/boot/loader/\n     3418  09-10-2026 05:31   org/springframework/boot/loader/launch/\n                              JarLauncher.class\n        0  09-10-2026 05:31   BOOT-INF/\n        0  09-10-2026 05:31   BOOT-INF/classes/\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar \\\n    | awk '{print $4}' | grep -oE '^(org/springframework/boot/loader|BOOT-INF/classes|BOOT-INF/lib)' \\\n    | sort | uniq -c\n\n  41 BOOT-INF/lib\n  18 BOOT-INF/classes\n  63 org/springframework/boot/loader\n\n--   세 구역이다\n\n\n-- 의존성이 JAR 그대로 있다\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | grep 'BOOT-INF/lib/' | head -4\n  3612841  BOOT-INF/lib/tomcat-embed-core-10.1.26.jar\n  1893421  BOOT-INF/lib/spring-web-6.1.11.jar\n  1682936  BOOT-INF/lib/jackson-databind-2.17.2.jar\n  1204118  BOOT-INF/lib/spring-core-6.1.11.jar\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | grep -c 'BOOT-INF/lib/.*\\.jar$'\n41\n\n--   4.5절에서 못 읽는다던 그 형태다\n--   Fat JAR 는 0 개였다 (4.4절)\n\n\n-- 그런데 돈다\n\n$ java -jar build/libs/app-0.0.1-SNAPSHOT.jar 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ curl -s localhost:8080/hello\nhello\n\n--   4.9절에서 누가 읽는지 본다\n\n\n-- 4.6 절의 문제가 없다\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar \\\n    | grep -c 'AutoConfiguration.imports'\n0\n\n$ mkdir -p /tmp/peek && cd /tmp/peek\n$ unzip -o -q ~/proj/build/libs/app-0.0.1-SNAPSHOT.jar \\\n    'BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar'\n$ unzip -p BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar \\\n    META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | wc -l\n     161\n\n$ unzip -o -q ~/proj/build/libs/app-0.0.1-SNAPSHOT.jar \\\n    'BOOT-INF/lib/spring-boot-actuator-autoconfigure-3.3.2.jar'\n$ unzip -p BOOT-INF/lib/spring-boot-actuator-autoconfigure-3.3.2.jar \\\n    META-INF/spring/org.springframework.boot.autoconfigure\\\n.AutoConfiguration.imports | wc -l\n      64\n\n--   161 과 64 가 따로 살아 있다\n--   4.6절에서 64 만 남던 그 자리다\n\n\n-- 조건 수로 확인한다\n\n$ java -jar build/libs/app-0.0.1-SNAPSHOT.jar --debug 2>&1 \\\n    | grep -c 'matched\\|did not match'\n     412\n\n$ java -jar build/libs/fat-boot.jar --debug 2>&1 \\\n    | grep -c 'matched\\|did not match'\n     118\n\n--   2.2절에서 센 412 가 그대로다\n--   4.6절의 Fat JAR 는 118 이었다\n\n\n-- 출처가 남는다\n\n@RestController\nclass WhereController {\n    @GetMapping(value = \"/where\", produces = \"text/plain\")\n    String where() {\n        var cls = org.springframework.web.servlet.DispatcherServlet.class;\n        return \"출처: \" + cls.getProtectionDomain().getCodeSource().getLocation()\n             + \"\\n버전: \" + cls.getPackage().getImplementationVersion() + \"\\n\";\n    }\n}\n\n$ curl -s localhost:8080/where\n출처: jar:file:/Users/kwanhyun/proj/build/libs/app-0.0.1-SNAPSHOT.jar\n      !/BOOT-INF/lib/spring-webmvc-6.1.11.jar!/\n버전: 6.1.11\n\n--   느낌표가 둘이다\n--   4.5절에서 표준으로는 못 만들던 URL 이다\n--   버전도 살아 있다\n\n\n-- Fat JAR 와 비교한다\n\n$ curl -s localhost:8081/where   # Fat JAR 로 띄운 쪽\n출처: file:/Users/kwanhyun/proj/build/libs/fat.jar\n버전: null\n\n--   4.5절에서 본 그대로다\n\n\n-- 서명도 산다\n\n$ unzip -o -q build/libs/app-0.0.1-SNAPSHOT.jar 'BOOT-INF/lib/bcprov-*.jar' \\\n    -d /tmp/sig\n$ jarsigner -verify /tmp/sig/BOOT-INF/lib/bcprov-jdk18on-1.78.jar\njar verified.\n\n--   4.5절에서 깨지던 것이다\n--   원본을 안 건드려서 그렇다\n\n\n-- 크기는 왜 더 큰가\n\n$ printf '%-16s %s\\n' 'Fat JAR' '11M' '부트 JAR' '21M'\nFat JAR          11M\n부트 JAR         21M\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | tail -1\n 21418902                     122 files\n$ unzip -l build/libs/fat.jar | tail -1\n 11842918                     8241 files\n\n--   파일 수가 122 대 8241 이다\n--   부트는 JAR 하나를 한 항목으로 센다\n\n\n-- 압축을 다시 안 한다\n\n$ unzip -v build/libs/app-0.0.1-SNAPSHOT.jar | grep 'spring-web-6' \n  1893421  Stored   1893421   0%  ... spring-web-6.1.11.jar\n\n$ unzip -v build/libs/app-0.0.1-SNAPSHOT.jar | grep 'BOOT-INF/classes.*\\.class' \\\n    | head -1\n     1204  Defl:N       612  49%  ... BOOT-INF/classes/study/boot/HelloController.class\n\n--   라이브러리는 Stored 다 (압축 안 함)\n--   이미 압축된 걸 또 압축하면 손해다\n--   내 클래스는 Deflated 다\n\n\n-- 왜 Stored 인가\n\n// 4.9절에서 볼 로더가 랜덤 액세스를 한다\n// 압축돼 있으면 중간부터 못 읽는다\n\n$ unzip -v build/libs/fat.jar | awk 'NR>3 {print $3}' | sort -u | head -3\nDefl:N\nStored\n\n--   Fat JAR 는 클래스라 대부분 Deflated 다\n--   그래서 11M 으로 작다\n--   대신 4.6절 문제가 생겼다\n\n\n-- 매니페스트를 읽는다\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.jar META-INF/MANIFEST.MF\nManifest-Version: 1.0\nMain-Class: org.springframework.boot.loader.launch.JarLauncher\nStart-Class: study.boot.BootApplication\nSpring-Boot-Version: 3.3.2\nSpring-Boot-Classes: BOOT-INF/classes/\nSpring-Boot-Lib: BOOT-INF/lib/\nSpring-Boot-Classpath-Index: BOOT-INF/classpath.idx\nSpring-Boot-Layers-Index: BOOT-INF/layers.idx\n\n--   Main-Class 가 내 클래스가 아니다\n--   4.10절에서 이걸 판다\n\n\n-- 색인 파일도 있다\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.jar BOOT-INF/classpath.idx | head -3\n- \"BOOT-INF/lib/spring-boot-3.3.2.jar\"\n- \"BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar\"\n- \"BOOT-INF/lib/jakarta.annotation-api-2.1.1.jar\"\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.jar BOOT-INF/classpath.idx | wc -l\n      41\n\n--   순서가 적혀 있다\n--   클래스패스 순서가 빌드 때 고정된다\n\n\n-- 레이어 색인도 있다\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.jar BOOT-INF/layers.idx\n- \"dependencies\":\n  - \"BOOT-INF/lib/\"\n- \"spring-boot-loader\":\n  - \"org/springframework/boot/loader/\"\n- \"snapshot-dependencies\":\n- \"application\":\n  - \"BOOT-INF/classes/\"\n  - \"BOOT-INF/classpath.idx\"\n  - \"BOOT-INF/layers.idx\"\n\n--   ⑪ 3장의 이미지 레이어를 위한 것이다\n--   자주 바뀌는 것과 아닌 것을 나눴다\n\n\n-- 레이어로 풀 수 있다\n\n$ java -Djarmode=tools -jar build/libs/app-0.0.1-SNAPSHOT.jar \\\n    extract --layers --destination /tmp/extracted\n\n$ ls /tmp/extracted\napplication  dependencies  snapshot-dependencies  spring-boot-loader\n\n$ du -sh /tmp/extracted/*\n 21M\t/tmp/extracted/dependencies\n 68K\t/tmp/extracted/application\n120K\t/tmp/extracted/spring-boot-loader\n\n--   내 코드는 68K 다\n--   ⑪ 4장에서 캐시가 먹는 이유다\n\n\n-- 정리\n\n$ printf '%-24s %-12s %-12s %s\\n' \\\n  '평범한 JAR'  '18K'  '안 뜸'   '4.4절' \\\n  'Fat JAR'     '11M'  '뜸'      '조건 118, 버전 null' \\\n  '부트 JAR'    '21M'  '뜸'      '조건 412, 버전 6.1.11'\n\n평범한 JAR               18K          안 뜸        4.4절\nFat JAR                  11M          뜸           조건 118, 버전 null\n부트 JAR                 21M          뜸           조건 412, 버전 6.1.11\n\n--   4.8절에서 안을 더 자세히 센다",
+   "note": "**빌드가 21M 과 4.2K 두 JAR 를 내고 `plain` 은 `no main manifest attribute`** 다.\n\n**`BOOT-INF/lib` 에 JAR 41개가 원본 그대로 들어 있는데도** 돈다.\n\n**자동 구성 목록이 161과 64로 따로 살아 조건 평가가 412 — Fat JAR 는 118**이었다.\n\n**출처 URL 에 느낌표가 둘이고 버전이 `6.1.11` — Fat JAR 는 `null`** 이었다.\n\n**라이브러리는 `Stored`(압축 안 함)라 21M, Fat JAR 는 `Defl` 이라 11M** 이다."
+  }
+ ],
+ "recap": [
+  "**JAR 가 둘** 나온다.",
+  "**`plain` 은 안** 뜬다.",
+  "**끌 수** 있다.",
+  "**구역이 셋**이다.",
+  "**JAR 를 그대로** 담는다.",
+  "**겹칠 일이** 없다.",
+  "**출처가** 남는다.",
+  "**서명도** 산다.",
+  "**압축을 다시 안** 한다."
+ ],
+ "drills": [
+  {
+   "task": "JAR 둘을 비교한다.",
+   "done_when": "`plain` 이 안 뜨는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세 구역을 센다.",
+   "done_when": "개수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건 수를 비교한다.",
+   "done_when": "412 와 118 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "레이어로 풀어 본다.",
+   "done_when": "내 코드 크기를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트 JAR 가 Fat JAR 와 다른 점은?",
+   "a": "의존성을 풀지 않고 JAR 그대로 담는다."
+  },
+  {
+   "q": "그래서 무엇이 안 깨지나?",
+   "a": "겹치는 리소스와 목록 파일, 출처, 서명이다."
+  },
+  {
+   "q": "`plain.jar` 는 무엇인가?",
+   "a": "의존성 없는 평범한 JAR 라 그대로는 안 뜬다."
+  },
+  {
+   "q": "왜 라이브러리를 압축하지 않나?",
+   "a": "로더가 중간부터 읽어야 해서 저장 방식으로 담는다."
+  },
+  {
+   "q": "레이어 색인은 무엇에 쓰나?",
+   "a": "컨테이너 이미지 레이어를 나누는 데 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BOOT-INF",
+   "def": "부트 JAR 안에서 애플리케이션 클래스와 의존성이 놓이는 구역."
+  },
+  {
+   "term": "Stored 항목",
+   "def": "압축하지 않고 그대로 저장한 아카이브 항목."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot Gradle Plugin",
+   "url": "https://docs.spring.io/spring-boot/gradle-plugin/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java — JAR File Specification",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "jar-inside",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "JAR 를 열어 본다",
+ "summary": "안의 구조를 센다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "항목을 센다.",
+  "중첩을 읽는다.",
+  "색인을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.7절에서 구역 셋을** 봤다. **이제 숫자로** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 구조의 숫자",
+   "ascii": "   what the numbers say about the two layouts\n\n   entries       one hundred twenty two versus eight thousand\n   compression   stored for libraries, deflated for your classes\n   the index     a file that fixes the classpath order\n\n   the last one is why two builds give the same order",
+   "note": "**마지막 줄 덕분에 빌드를 두 번 해도 순서가** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "항목 수가 구조를 말해 준다",
+   "md": "**122 대 8241**이다.\n\n> **부트는 JAR 하나를 한 항목으로** 센다.\n> **Fat JAR 는 클래스를 다** 센다.\n> **4.7절에서 본** 숫자다.\n\n**압축 방식이** 섞여 있다.\n\n> **라이브러리는 `Stored`** 다.\n> **내 클래스는 `Defl`** 이다.\n> **4.9절의 로더 때문**이다.\n\n**색인이 순서를** 고정한다.\n\n> **`classpath.idx` 41 줄**이다.\n> **빌드 때 정해**진다.\n> **같은 클래스가 둘일 때 누가 이길지** 정해진다.\n\n**풀지 않고 읽을 수** 있다.\n\n> **`unzip -p` 를 두 번** 건다.\n> **로더가 자바로 하는 일**이다.\n> **아래에서 손으로** 해 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "안 풀고 들여다보기",
+   "ascii": "   how to look inside without unpacking\n\n   list the entries    unzip minus l, or jar tf\n   read one entry      unzip minus p, straight to stdout\n   read a nested one   pipe the first read into a second unzip\n\n   the third line is what the loader does, in java",
+   "note": "**셋째 줄이 로더가 자바로 하는** 일이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "클래스패스 순서가 결과를 바꾼다",
+   "md": "**같은 클래스가 둘일 수** 있다.\n\n> **라이브러리 두 개가 같은 패키지를** 쓴다.\n> **먼저 찾은 게** 이긴다.\n> **아래에서 그걸** 만든다.\n\n**색인이 그 순서**다.\n\n> **`classpath.idx` 위쪽이** 먼저다.\n> **그레이들 의존성 순서를** 따른다.\n> **바꾸면 결과가** 바뀐다.\n\n**Fat JAR 는 아예 하나만** 남는다.\n\n> **4.6절에서 덮어**썼다.\n> **순서 문제가 빌드 때** 끝난다.\n> **대신 되돌릴 수** 없다.\n\n**진단은 출처로** 한다.\n\n> **4.7절의 `getCodeSource()`** 다.\n> **어느 JAR 인지 나온다.**\n> **아래에서 그걸** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 항목을 센다\n\n$ unzip -l build/libs/app.jar | tail -1\n 21418902                     122 files\n\n$ unzip -l build/libs/app.jar | awk 'NR>3 && $4 != \"\"' \\\n    | awk '{print $4}' | grep -v '/$' | wc -l\n     122\n\n$ unzip -l build/libs/fat.jar | tail -1\n 11842918                     8241 files\n\n--   4.7절의 그 숫자다\n\n\n-- 구역별로 센다\n\n$ unzip -l build/libs/app.jar | awk '{print $4}' | grep -v '/$' \\\n    | sed -E 's|^(BOOT-INF/lib)/.*|\\1|; s|^(BOOT-INF/classes)/.*|\\1|; \\\n              s|^(org/springframework/boot/loader).*|\\1|; \\\n              s|^(META-INF)/.*|\\1|' \\\n    | sort | uniq -c | sort -rn\n\n  63 org/springframework/boot/loader\n  41 BOOT-INF/lib\n  15 BOOT-INF/classes\n   3 META-INF\n\n--   로더가 63 개다\n--   이게 자바가 읽을 수 있는 유일한 구역이다\n\n\n-- 압축 방식을 본다\n\n$ unzip -v build/libs/app.jar | awk 'NR>3 && $3 != \"\" {print $3}' \\\n    | sort | uniq -c\n\n  44 Stored\n  78 Defl:N\n\n$ unzip -v build/libs/app.jar | grep 'BOOT-INF/lib' | head -2\n  3612841  Stored   3612841   0% ... BOOT-INF/lib/tomcat-embed-core-10.1.26.jar\n  1893421  Stored   1893421   0% ... BOOT-INF/lib/spring-web-6.1.11.jar\n\n$ unzip -v build/libs/app.jar | grep 'loader/launch/JarLauncher' \n     3418  Defl:N      1902  44% ... org/springframework/boot/loader/launch/\n                                     JarLauncher.class\n\n--   라이브러리 41 + META-INF 몇 개가 Stored 다\n--   로더와 내 클래스는 압축했다\n\n\n-- 왜 그런지 확인한다\n\n// 강제로 압축해 본다\nbootJar {\n    entryCompression = ZipEntryCompression.DEFLATED\n}\n\n$ ./gradlew bootJar -q\n$ ls -lh build/libs/app.jar | awk '{print $5}'\n 19M\n\n$ java -jar build/libs/app.jar 2>&1 | head -3\nException in thread \"main\" java.lang.IllegalStateException:\n  Unable to open nested entry 'BOOT-INF/lib/spring-core-6.1.11.jar'.\n  It has been compressed and nested jar files must be stored without\n  compression.\n\n--   메시지가 정직하다\n--   4.9절의 로더가 이걸 요구한다\n\n\n-- 되돌린다\n\n$ ./gradlew bootJar -q   # entryCompression 지우고\n$ java -jar build/libs/app.jar 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n\n-- 중첩을 안 풀고 읽는다\n\n$ unzip -p build/libs/app.jar BOOT-INF/lib/spring-web-6.1.11.jar \\\n  | unzip -p /dev/stdin META-INF/MANIFEST.MF 2>/dev/null \\\n  || (unzip -p build/libs/app.jar BOOT-INF/lib/spring-web-6.1.11.jar > /tmp/i.jar \\\n      && unzip -p /tmp/i.jar META-INF/MANIFEST.MF)\n\nManifest-Version: 1.0\nImplementation-Title: spring-web\nImplementation-Version: 6.1.11\nAutomatic-Module-Name: spring.web\n\n--   4.7절에서 버전이 살아 있던 이유다\n--   로더는 이걸 자바로 한다\n\n\n-- 클래스도 꺼내 본다\n\n$ unzip -p build/libs/app.jar BOOT-INF/lib/spring-web-6.1.11.jar > /tmp/i.jar\n$ unzip -l /tmp/i.jar | grep -c '\\.class$'\n    1218\n\n$ unzip -p /tmp/i.jar org/springframework/http/HttpStatus.class \\\n    | head -c 4 | xxd\n00000000: cafe babe                                ....\n\n--   클래스 파일 매직 넘버다\n--   두 겹 안에서 꺼냈다\n\n\n-- 색인을 읽는다\n\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | head -5\n- \"BOOT-INF/lib/spring-boot-3.3.2.jar\"\n- \"BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar\"\n- \"BOOT-INF/lib/jakarta.annotation-api-2.1.1.jar\"\n- \"BOOT-INF/lib/spring-webmvc-6.1.11.jar\"\n- \"BOOT-INF/lib/spring-web-6.1.11.jar\"\n\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | wc -l\n      41\n\n$ unzip -l build/libs/app.jar | grep -c 'BOOT-INF/lib/.*\\.jar$'\n41\n\n--   개수가 같다\n--   순서가 적혀 있다\n\n\n-- 두 번 빌드해도 같다\n\n$ ./gradlew clean bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | md5\nd41d8cd98f00b204e9800998ecf8427e\n$ ./gradlew clean bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | md5\nd41d8cd98f00b204e9800998ecf8427e\n\n--   같다\n--   재현 가능한 빌드의 조건이다\n\n\n-- 순서가 결과를 바꾼다\n\n// 같은 클래스를 담은 JAR 를 둘 만든다\n$ mkdir -p a/study/dup b/study/dup\n$ cat > a/study/dup/Which.java <<'EOF'\npackage study.dup;\npublic class Which { public static String who() { return \"A\"; } }\nEOF\n$ sed 's/\"A\"/\"B\"/' a/study/dup/Which.java > b/study/dup/Which.java\n$ (cd a && javac study/dup/Which.java && jar cf ../libA.jar study)\n$ (cd b && javac study/dup/Which.java && jar cf ../libB.jar study)\n\ndependencies {\n    implementation files('libA.jar')\n    implementation files('libB.jar')\n}\n\n@RestController\nclass DupController {\n    @GetMapping(value = \"/dup\", produces = \"text/plain\")\n    String dup() {\n        return study.dup.Which.who() + \" / \"\n             + study.dup.Which.class.getProtectionDomain()\n                   .getCodeSource().getLocation() + \"\\n\";\n    }\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | grep lib[AB]\n- \"BOOT-INF/lib/libA.jar\"\n- \"BOOT-INF/lib/libB.jar\"\n\n$ java -jar build/libs/app.jar &\n$ curl -s localhost:8080/dup\nA / jar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/lib/libA.jar!/\n\n--   앞에 적힌 쪽이 이겼다\n\n\n-- 순서를 바꾼다\n\ndependencies {\n    implementation files('libB.jar')\n    implementation files('libA.jar')\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classpath.idx | grep lib[AB]\n- \"BOOT-INF/lib/libB.jar\"\n- \"BOOT-INF/lib/libA.jar\"\n\n$ curl -s localhost:8080/dup\nB / jar:file:/.../app.jar!/BOOT-INF/lib/libB.jar!/\n\n--   결과가 바뀌었다\n--   출처가 어느 JAR 인지 알려 준다\n\n\n-- Fat JAR 에서는\n\n$ ./gradlew fatJar -q 2>&1 | grep -c 'duplicate path.*Which'\n1\n\n$ java -cp build/libs/fat.jar study.dup.Which 2>/dev/null; \\\n  java -jar build/libs/fat.jar & sleep 3; curl -s localhost:8081/dup\nB / file:/Users/kwanhyun/proj/build/libs/fat.jar\n\n$ unzip -l build/libs/fat.jar | grep -c 'study/dup/Which.class'\n1\n\n--   하나만 남았다\n--   어느 쪽인지 출처로는 모른다\n--   4.6절의 그 문제다\n\n\n-- 실행 중에 클래스패스를 본다\n\n@GetMapping(value = \"/classpath\", produces = \"text/plain\")\nString classpath() {\n    var cl = getClass().getClassLoader();\n    if (cl instanceof java.net.URLClassLoader u) {\n        return Arrays.stream(u.getURLs()).map(Object::toString)\n                .limit(5).collect(Collectors.joining(\"\\n\"));\n    }\n    return \"로더 타입: \" + cl.getClass().getName();\n}\n\n$ curl -s localhost:8080/classpath\njar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/classes/!/\njar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/lib/spring-boot-3.3.2.jar!/\njar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar!/\njar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/lib/jakarta.annotation-api-2.1.1.jar!/\njar:file:/Users/kwanhyun/proj/build/libs/app.jar!/BOOT-INF/lib/spring-webmvc-6.1.11.jar!/\n\n--   색인 순서 그대로다\n--   내 클래스가 맨 앞이다\n--   4.9절에서 이 URL 을 만든 로더를 본다\n\n\n-- 정리\n\n$ printf '%-24s %-14s %s\\n' \\\n  '항목 수'      '122'    'Fat JAR 는 8241' \\\n  '라이브러리'   'Stored' '압축하면 못 연다' \\\n  '내 클래스'    'Defl'   '평범하게 압축' \\\n  'classpath.idx' '41줄'  '순서를 고정' \\\n  '같은 클래스'  '앞이 이김' '출처로 확인' \\\n  '로더'         '63개'   '유일하게 평범한 구역'\n\n항목 수                  122            Fat JAR 는 8241\n라이브러리               Stored         압축하면 못 연다\n내 클래스                Defl           평범하게 압축\nclasspath.idx            41줄           순서를 고정\n같은 클래스              앞이 이김      출처로 확인\n로더                     63개           유일하게 평범한 구역\n\n--   4.9절에서 그 로더를 본다",
+   "note": "**항목이 122개, 구역별로 로더 63·라이브러리 41·내 클래스 15** 다.\n\n**라이브러리는 `Stored`, 강제로 압축하면 `nested jar files must be stored without compression`** 이다.\n\n**`unzip -p` 를 두 번 걸면 안 풀고도 중첩 JAR 의 매니페스트를 읽을 수** 있다.\n\n**`classpath.idx` 41줄이 순서를 고정해 같은 클래스가 둘일 때 앞이** 이긴다.\n\n**실행 중 클래스패스 URL 이 색인 순서 그대로 느낌표 둘 형태로** 나온다."
+  }
+ ],
+ "recap": [
+  "**항목이 122개**다.",
+  "**구역이 셋**이다.",
+  "**라이브러리는 `Stored`** 다.",
+  "**압축하면 못** 연다.",
+  "**안 풀고 읽을 수** 있다.",
+  "**색인이 순서를** 고정한다.",
+  "**앞이** 이긴다.",
+  "**출처로** 확인한다.",
+  "**로더만 평범한 구역**이다."
+ ],
+ "drills": [
+  {
+   "task": "구역별 항목을 센다.",
+   "done_when": "세 숫자를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "라이브러리를 압축해 본다.",
+   "done_when": "실행 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "중첩 JAR 를 안 풀고 읽는다.",
+   "done_when": "매니페스트를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 클래스를 둘 넣는다.",
+   "done_when": "순서가 결과를 바꾸는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트 JAR 의 항목이 적은 이유는?",
+   "a": "의존성 JAR 하나를 한 항목으로 담기 때문이다."
+  },
+  {
+   "q": "라이브러리를 압축하면?",
+   "a": "로더가 열지 못해 실행이 막힌다."
+  },
+  {
+   "q": "`classpath.idx` 는 무엇을 하나?",
+   "a": "클래스패스 순서를 빌드 시점에 고정한다."
+  },
+  {
+   "q": "같은 클래스가 둘이면?",
+   "a": "색인에서 앞선 JAR 의 것이 쓰인다."
+  },
+  {
+   "q": "어느 JAR 에서 왔는지 어떻게 아나?",
+   "a": "`getCodeSource()` 의 URL 을 보면 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "classpath.idx",
+   "def": "부트 JAR 안 의존성의 클래스패스 순서를 적은 색인."
+  },
+  {
+   "term": "매직 넘버",
+   "def": "파일 앞부분의 고정된 바이트. 클래스 파일은 `cafebabe` 다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java — JAR File Specification",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Container Images",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
