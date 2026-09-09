@@ -199,7 +199,7 @@
           "title": "비연결성과 연결 유지",
           "summary": "TCP 연결을 매번 맺으면.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -207,7 +207,7 @@
           "title": "HTTP 메시지 구조",
           "summary": "시작 줄 · 헤더 · 공백 줄 · 본문.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",

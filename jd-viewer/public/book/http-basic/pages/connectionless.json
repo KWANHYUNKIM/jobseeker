@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "connectionless",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "비연결성과 연결 유지",
+ "summary": "TCP 연결을 매번 맺으면.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "비연결성의 뜻을 안다.",
+  "지속 연결의 이득을 잰다.",
+  "경계를 어떻게 아는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절이 기억을** 버렸다면 **여기서는 연결을** 버린다. **그런데 완전히 버리지는 못했다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "매번 끊으면",
+   "ascii": "   what closing after every response costs\n\n   without reuse    dns, tcp, tls, request, response, close\n                    and then all of it again for the next file\n\n   with reuse       dns, tcp, tls once\n                    then request, response, request, response\n\n   a page with fifty files pays the setup once instead of fifty times",
+   "note": "**파일 쉰 개면 설정도 쉰 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "비연결성은 응답 뒤에 잊는다는 뜻이다",
+   "md": "**4.3절과 짝**이다.\n\n> **무상태는 기억을 안** 하고,\n> **비연결성은 붙들고 있지도** 않는다.\n> **덕분에 서버 하나가 수만 명을 상대**한다 — **동시에 붙어 있는 건 소수**다.\n\n**그런데 연결을 진짜 매번 끊으면**\n\n> **2.3절의 세 번 악수를 매번** 한다.\n> **3.5절의 TLS 악수까지 매번** 한다.\n> **먼 서버면 왕복 셋을 파일마다** 낸다.\n\n**그래서 1.1 이 지속 연결을 기본으로** 했다.\n\n> **의미는 여전히 비연결성**이다 — **요청 사이에 상태가** 없다.\n> **TCP 연결만 재활용**한다.\n> **성능을 위한 최적화지 구조 변경이** 아니다.\n\n**연결은 결국 닫힌다.**\n\n> **서버가 `keepalive_timeout` 을 둔다** — nginx 기본이 75초쯤이다.\n> **요청 개수 제한도** 있다.\n> **2.2절의 NAT 표도 조용하면** 지운다."
+  },
+  {
+   "type": "figure",
+   "caption": "응답의 끝을 어떻게 아나",
+   "ascii": "   if the connection stays open, where does a response end\n\n   content length    the exact byte count, known before sending\n   chunked           a size line before each piece, then a zero\n   close             the old answer, and it kills reuse\n\n   a persistent connection needs one of the first two\n   which is why 1.1 had to add chunked encoding",
+   "note": "**지속 연결이 청크 인코딩을 낳았다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경계를 못 정하면 연결을 못 유지한다",
+   "md": "**0.9·1.0 은 끊어서** 알렸다.\n\n> **\"연결이 닫히면 끝\"** 이었다.\n> **연결을 유지하려면 다른 방법이** 필요하다.\n\n**`Content-Length` 는 미리 알아야** 한다.\n\n> **동적 생성이면 다 만들어 놓고 세야** 한다.\n> **큰 응답을 메모리에 들고 있게** 된다.\n\n**청크가 그걸 푼다.**\n\n> **조각마다 크기를 앞에** 적는다.\n> **마지막에 `0`** 을 보낸다.\n> **스트리밍이 이걸로** 된다.\n\n**둘이 안 맞으면 요청 밀수**가 된다.\n\n> **`Content-Length` 와 `Transfer-Encoding` 을 둘 다** 보낸다.\n> **프록시는 앞을, 서버는 뒤를 보면 경계가** 갈린다.\n> **남은 바이트가 다음 요청 앞에** 붙는다.\n> **3.2절·3.3절의 파서 불일치와 같은** 계열이다.\n\n**HTTP/2 는 프레임이 길이를 들고** 있다.\n\n> **`END_STREAM` 플래그로** 끝난다.\n> **밀수 문제가 구조적으로** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 매번 끊으면 ---\n\n$ time (for i in $(seq 1 20); do\n    curl -s --no-keepalive -o /dev/null https://example.com/\n  done) 2>&1 | tail -3\n\nreal    0m6.412s\n\n$ time (curl -s -o /dev/null $(for i in $(seq 1 20); do \\\n    printf 'https://example.com/ '; done)) 2>&1 | tail -3\n\nreal    0m0.914s\n\n#   일곱 배다\n\n#   같은 파일을 스무 번 받았다\n\n#   차이는 전부 악수 비용이다\n\n$ curl -s -o /dev/null -w '연결 %{num_connects}\\n' \\\n    $(for i in $(seq 1 20); do printf 'https://example.com/ '; done)\n\n연결 1\n\n#   스무 요청에 연결 하나다\n\n# --- 연결이 열려 있는지 본다 ---\n\n$ printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc -w 3 localhost 8080 | grep -i '^connection'\n\nConnection: keep-alive\n\n$ printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' \\\n    | nc localhost 8080 | grep -i '^connection'\n\nConnection: close\n\n#   클라이언트가 요구할 수 있다\n\n# --- 한 연결에 요청 둘 ---\n\n$ printf 'GET /who.json HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n\\\nGET /api.json HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' \\\n  | nc localhost 8080 | grep -E '^(HTTP|\\{)'\n\nHTTP/1.1 404 Not Found\nHTTP/1.1 200 OK\n{\"id\": 1, \"name\": \"주문\"}\n\n#   응답 둘이 한 연결로 왔다\n\n#   순서대로다\n\n#   앞 응답의 끝을 알아야 뒤를 읽는다\n\n# --- 그래서 길이가 필요하다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n    | grep -iE 'content-length|transfer-encoding'\n\nContent-Length: 25\n\n$ cat chunked.py\n\nimport http.server, time\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        self.send_response(200)\n        self.send_header(\"Transfer-Encoding\", \"chunked\")\n        self.end_headers()\n        for part in [\"첫\", \"번째\", \"조각\"]:\n            b = part.encode()\n            self.wfile.write(f\"{len(b):X}\\r\\n\".encode() + b + b\"\\r\\n\")\n            self.wfile.flush()\n            time.sleep(0.5)\n        self.wfile.write(b\"0\\r\\n\\r\\n\")\nhttp.server.HTTPServer((\"\", 9994), H).serve_forever()\n\n$ python3 chunked.py & sleep 1\n$ printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc -w 3 localhost 9994 | cat -A | head -12\n\nHTTP/1.1 200 OK$\nServer: BaseHTTP/0.6 Python/3.12.4$\nTransfer-Encoding: chunked$\n$\n3$\n\\355\\212\\271$\n6$\n\\353\\262\\210\\354\\247\\270$\n6$\n\\354\\241\\260\\352\\260\\201$\n0$\n$\n\n#   조각마다 크기가 앞에 있다\n\n#   16진수다\n\n#   마지막이 0 이다\n\n#   Content-Length 가 없다\n\n#   미리 안 세도 된다\n\n$ curl -s -D - http://localhost:9994/ | grep -iE 'transfer|content-length'\n\nTransfer-Encoding: chunked\n\n$ kill %1 2>/dev/null\n\n# --- 길이를 틀리게 적으면 ---\n\n$ cat wrong.py\n\nimport http.server\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        body = b\"0123456789\"\n        self.send_response(200)\n        self.send_header(\"Content-Length\", \"5\")\n        self.end_headers()\n        self.wfile.write(body)\nhttp.server.HTTPServer((\"\", 9993), H).serve_forever()\n\n$ python3 wrong.py & sleep 1\n$ curl -s http://localhost:9993/; echo\n\n01234\n\n#   다섯 글자만 읽었다\n\n#   나머지 다섯은 연결에 남았다\n\n$ printf 'GET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\nGET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\n' \\\n    | nc -w 2 localhost 9993 | head -8\n\nHTTP/1.1 200 OK\nServer: BaseHTTP/0.6 Python/3.12.4\nContent-Length: 5\n\n0123456789HTTP/1.1 200 OK\n\n#   56789 가 다음 응답 앞에 붙었다\n\n#   경계가 어긋났다\n\n#   요청 밀수가 이 원리다\n\n$ kill %1 2>/dev/null\n\n# --- 둘 다 보내면 ---\n\n$ cat both.py\n\n        self.send_header(\"Content-Length\", \"5\")\n        self.send_header(\"Transfer-Encoding\", \"chunked\")\n\n$ python3 both.py & sleep 1\n$ curl -s -D - -o /dev/null http://localhost:9992/ 2>&1 | head -4\n\nHTTP/1.1 200 OK\nContent-Length: 5\nTransfer-Encoding: chunked\n\n$ curl -s http://localhost:9992/ 2>&1 | tail -1\n\ncurl: (1) Received HTTP/0.9 when not allowed\n\n#   curl 이 청크를 우선한다\n\n#   프록시가 Content-Length 를 보면 다르게 읽는다\n\n#   RFC 는 이 조합을 금지한다\n\n#   그래도 보내는 서버가 있다\n\n$ kill %1 2>/dev/null\n\n# --- 서버가 결국 닫는다 ---\n\n$ docker exec lab grep -r keepalive_timeout /etc/nginx/ 2>/dev/null | head -1\n\n/etc/nginx/nginx.conf:    keepalive_timeout  65;\n\n$ (printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n'; sleep 70; \\\n   printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n') \\\n  | nc localhost 8080 | grep -c '^HTTP'\n\n1\n\n#   두 번째 요청은 답을 못 받았다\n\n#   65초에 닫혔다\n\n#   클라이언트가 이걸 모르고 보내면 실패한다\n\n#   커넥션 풀의 유휴 시간을 더 짧게 잡는 이유다\n\n# --- HTTP/2 는 프레임이 길이를 든다 ---\n\n$ curl -s -o /dev/null -v --http2 https://example.com/ 2>&1 \\\n    | grep -iE 'content-length|END_STREAM' | head -2\n\n< content-length: 1256\n\n#   헤더로도 오지만\n\n#   실제 경계는 프레임이 정한다\n\n#   밀수가 구조적으로 없다\n\n# --- 다음 절에서 ---\n\n#   그 메시지가 어떻게 생겼는지",
+   "note": "**스무 요청이 재사용 없이 6.4초, 재사용하면 0.9초** — 일곱 배다.\n\n**한 연결에 요청 둘을 붙여 보내면 응답 둘이 순서대로** 온다.\n\n**청크는 조각마다 16진수 크기가 앞에 붙고 마지막이 `0`** 이다.\n\n**`Content-Length: 5` 인데 10바이트를 쓰자 `56789` 가 다음 응답 앞에** 붙었다.\n\n**70초 뒤 두 번째 요청은 답을 못 받는다** — `keepalive_timeout 65` 다."
+  }
+ ],
+ "recap": [
+  "**비연결성은 응답 뒤에 붙들지 않는다는** 뜻이다.",
+  "**그래서 서버 하나가 수만 명을** 상대한다.",
+  "**진짜 매번 끊으면 악수를 매번** 한다.",
+  "**1.1 이 지속 연결을 기본으로** 했다.",
+  "**의미는 여전히 비연결성**이다.",
+  "**연결을 유지하려면 경계를 알려야** 한다.",
+  "**`Content-Length` 아니면 청크**다.",
+  "**경계가 어긋나면 밀수가** 된다.",
+  "**연결은 시간이 지나면** 닫힌다."
+ ],
+ "drills": [
+  {
+   "task": "재사용 유무로 스무 번 받는다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한 연결에 요청 둘을 붙인다.",
+   "done_when": "응답 둘이 순서대로 오는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "청크 서버를 만든다.",
+   "done_when": "크기 줄과 `0` 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "길이를 틀리게 적는다.",
+   "done_when": "다음 응답에 붙는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "비연결성이란?",
+   "a": "응답을 보내고 나면 연결을 붙들고 있지 않는 성질이다."
+  },
+  {
+   "q": "지속 연결이 바꾼 것은?",
+   "a": "구조가 아니라 TCP 연결 재사용이라는 최적화다."
+  },
+  {
+   "q": "응답의 끝을 알리는 방법은?",
+   "a": "`Content-Length`, 청크 인코딩, 또는 연결 종료다."
+  },
+  {
+   "q": "청크 인코딩이 필요한 이유는?",
+   "a": "길이를 미리 모르면서도 연결을 유지하려면 필요하다."
+  },
+  {
+   "q": "요청 밀수의 원리는?",
+   "a": "프록시와 서버가 메시지 경계를 다르게 읽어 남은 바이트가 다음 요청에 붙는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "지속 연결",
+   "def": "응답 뒤에도 TCP 연결을 열어 두고 재사용하는 것."
+  },
+  {
+   "term": "청크 인코딩",
+   "def": "조각마다 크기를 앞에 적어 길이를 미리 모르고도 보내는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9112 — HTTP/1.1",
+   "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
