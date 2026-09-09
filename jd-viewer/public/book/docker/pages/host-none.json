@@ -1,0 +1,146 @@
+{
+ "book": "docker",
+ "id": "host-none",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "host 와 none",
+ "summary": "격리를 포기하는 대신 얻는 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "host 네트워크가 무엇을 바꾸는지 안다.",
+  "맥에서 host 가 다르게 도는 것을 안다.",
+  "none 을 언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "```bash\ndocker run -d --network host nginx:1.27\n```\n\n**컨테이너가 자기 네트워크 네임스페이스를 안 갖고 호스트 것을 그대로** 쓴다(2.4절)."
+  },
+  {
+   "type": "table",
+   "caption": "host 네트워크로 바뀌는 것",
+   "columns": [
+    "",
+    "기본 bridge",
+    "`--network host`"
+   ],
+   "rows": [
+    [
+     "IP",
+     "컨테이너 전용 172.x",
+     "**호스트와 같다**"
+    ],
+    [
+     "**포트**",
+     "`-p` 로 매핑",
+     "**`-p` 가 무시된다.** 바로 호스트 포트를 쓴다"
+    ],
+    [
+     "포트 충돌",
+     "컨테이너끼리 안 겹친다",
+     "**호스트 프로세스와 겹친다**"
+    ],
+    [
+     "NAT 오버헤드",
+     "있다",
+     "**없다**"
+    ],
+    [
+     "이름 해석",
+     "내장 DNS",
+     "호스트의 DNS"
+    ],
+    [
+     "격리",
+     "있다",
+     "**없다**"
+    ]
+   ],
+   "note": "**`-p 8080:80` 을 줘도 무시되고 경고만** 나온다 — **컨테이너의 80 이 곧 호스트의 80** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "언제 쓰나",
+   "md": "| 상황 | 왜 host 인가 |\n|---|---|\n| **아주 높은 패킷 처리량** | NAT 를 안 거친다. 수십만 pps 급에서 차이가 난다 |\n| **포트를 대량으로 여는 것** | `-p 10000-20000:10000-20000` 은 매핑 규칙이 폭발한다 |\n| **네트워크 진단 도구** | 호스트의 인터페이스를 봐야 한다 |\n| 호스트의 서비스에 붙기 | 그냥 `localhost` 로 붙는다 |\n\n**그런데 대부분은 쓸 이유가** 없다.\n\n> **얻는 게 성능 몇 %인데 잃는 게 격리와 이식성**이다.\n> **쿠버네티스에서 `hostNetwork: true` 도 같은 이유로 특별한 경우에만** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "맥·윈도우에서는 host 가 기대대로 안 된다",
+   "md": "**2.6절 때문**이다. **컨테이너가 도는 곳은 VM 안**이라, **`--network host` 의 \"호스트\" 는 맥이 아니라 VM** 이다.\n\n```\nLinux:  --network host  ->  컨테이너 포트가 곧 내 머신의 포트\nmacOS:  --network host  ->  VM 의 포트. 맥에서는 안 보인다\n```\n\n> **Docker Desktop 4.34+ 에서 실험적으로 지원**하지만 **설정을 켜야** 한다.\n> **실습 코드가 맥에서만 안 되면 이걸 의심**한다.\n\n**대신 맥에서 호스트로 붙을 때는**:\n\n```\nhost.docker.internal      -> 맥 자신 (7.5절)\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "none 은 언제 쓰나",
+   "md": "```bash\ndocker run --network none alpine ip -br addr\nlo   UNKNOWN  127.0.0.1/8\n```\n\n**루프백만 있다.** **밖으로 아예 못 나간다.**\n\n| 쓰는 데 | 왜 |\n|---|---|\n| **신뢰할 수 없는 코드 실행** | 데이터 유출 경로를 끊는다 |\n| 순수 계산 배치 | 네트워크가 필요 없다 |\n| 파일 변환·이미지 처리 | 입력·출력은 볼륨으로 |\n\n> **10.6절의 최소 권한 원칙과 같은 맥락**이다 — **필요 없는 능력은 안 준다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "host 와 none 을 직접 본다",
+   "sql": "# --- (리눅스 호스트에서) host 네트워크 ---\n\n$ docker run -d --name h --network host nginx:1.27 >/dev/null\n\n$ docker ps --format 'table {{.Names}}\\t{{.Ports}}'\nNAMES   PORTS\nh       \n\n#   PORTS 가 비어 있다. 매핑이라는 개념이 없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:80\n200\n\n#   -p 를 안 줬는데 호스트의 80 으로 붙는다\n\n$ docker exec h ip -br addr\nlo      UNKNOWN  127.0.0.1/8\neth0    UP       192.168.0.10/24\ndocker0 UP       172.17.0.1/16\n\n#   호스트의 인터페이스가 그대로 보인다. docker0 까지\n\n$ docker exec h hostname -i\n192.168.0.10\n\n\n# --- -p 는 무시된다 ---\n\n$ docker run -d --name h2 --network host -p 8080:80 nginx:1.27\nWARNING: Published ports are discarded when using host network mode\n\n$ docker port h2\n\n#   경고만 나오고 매핑이 없다\n\n\n# --- 호스트 프로세스와 포트가 부딪힌다 ---\n\n$ docker run -d --name h3 --network host nginx:1.27 >/dev/null\n$ sleep 2 && docker logs h3 | tail -2\nnginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)\n\n#   앞의 컨테이너가 이미 호스트의 80 을 쓰고 있다\n#   bridge 였다면 각자 자기 80 을 썼을 것이다\n\n\n# --- 맥에서는 다르다 ---\n\n#   $ docker version --format '{{.Server.Os}}'\n#   linux              <- 맥인데 서버는 리눅스 VM 이다 (2.6절)\n#\n#   $ docker run -d --network host nginx:1.27\n#   $ curl localhost:80\n#   curl: (7) Failed to connect\n#\n#   VM 의 80 에 떴을 뿐 맥의 80 이 아니다\n\n\n# --- none ---\n\n$ docker run --rm --network none alpine ip -br addr\nlo   UNKNOWN  127.0.0.1/8\n\n$ docker run --rm --network none alpine sh -c 'wget -q -T3 -O- http://example.com 2>&1 | head -1; echo exit=$?'\nwget: bad address 'example.com'\nexit=0\n\n$ docker run --rm --network none alpine ip route\n\n#   라우트가 하나도 없다\n\n$ docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}' \\\n    $(docker run -d --network none alpine sleep 5)\nnone\n\n\n# --- 성능 차이 (참고) ---\n\n#   같은 nginx 에 부하를 준 결과 (호스트에서 wrk, 30초)\n#\n#   bridge + -p 8080:80   ->  62,140 req/s\n#   host                  ->  71,905 req/s\n#\n#   약 15% 차이. 대부분의 애플리케이션에서는\n#   이 차이보다 애플리케이션 처리 시간이 훨씬 크다\n\n$ docker rm -f h h2 h3 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "--network host 는 호스트의 네트워크 네임스페이스를 그대로 쓴다. -p 가 무시된다.",
+  "포트가 호스트 프로세스와 부딪히고 격리가 사라진다. 얻는 것은 NAT 오버헤드 제거뿐이다.",
+  "맥·윈도우에서 '호스트' 는 VM 이다. 기대대로 안 되는 게 정상이다.",
+  "none 은 네트워크를 아예 안 준다. 신뢰할 수 없는 코드나 순수 계산 작업에 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "(리눅스에서) --network host 로 nginx 를 띄우고 -p 없이 호스트 포트로 붙어 본다.",
+   "done_when": "PORTS 가 비어 있는데도 접속되는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "host 네트워크 컨테이너를 두 개 띄워 포트 충돌 로그를 본다.",
+   "done_when": "Address already in use 를 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "`--network none` 컨테이너에서 외부 접속과 `ip route` 를 확인한다.",
+   "done_when": "라우트가 없고 밖으로 못 나가는 것을 본다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "--network host 를 쓰면 -p 는 어떻게 되나.",
+   "a": "무시된다. 경고가 나오고 컨테이너 포트가 곧 호스트 포트가 된다."
+  },
+  {
+   "q": "맥에서 --network host 가 기대대로 안 되는 이유는.",
+   "a": "컨테이너가 도는 곳이 맥이 아니라 리눅스 VM 이라 '호스트' 가 VM 을 뜻한다."
+  },
+  {
+   "q": "--network none 은 어떤 경우에 쓰나.",
+   "a": "네트워크가 필요 없거나 줘서는 안 되는 작업 — 신뢰할 수 없는 코드, 순수 계산 배치."
+  }
+ ],
+ "terms": [
+  {
+   "term": "host 네트워크 모드",
+   "what": "컨테이너가 호스트의 네트워크 네임스페이스를 공유하는 모드."
+  },
+  {
+   "term": "NAT",
+   "what": "주소 변환. bridge 모드에서 컨테이너 IP 와 호스트 IP 사이를 잇는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Host network driver",
+   "url": "https://docs.docker.com/engine/network/drivers/host/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — None network driver",
+   "url": "https://docs.docker.com/engine/network/drivers/none/",
+   "publisher": "Docker"
+  }
+ ]
+}

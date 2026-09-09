@@ -396,7 +396,7 @@
           "title": "host 와 none",
           "summary": "격리를 포기하는 대신 얻는 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -404,7 +404,7 @@
           "title": "localhost 는 누구의 localhost 인가",
           "summary": "가장 자주 걸리는 함정.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -412,7 +412,7 @@
           "title": "포트 충돌과 방화벽",
           "summary": "bind: address already in use.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

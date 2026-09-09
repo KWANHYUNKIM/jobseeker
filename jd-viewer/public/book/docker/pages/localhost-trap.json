@@ -1,0 +1,132 @@
+{
+ "book": "docker",
+ "id": "localhost-trap",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "localhost 는 누구의 localhost 인가",
+ "summary": "가장 자주 걸리는 함정.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨테이너의 localhost 가 무엇인지 안다.",
+  "호스트로 붙는 방법을 안다.",
+  "세 방향의 통신을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`localhost` 는 항상 \"이 프로세스가 있는 네트워크 네임스페이스의 루프백\"** 이다. **컨테이너 안에서는 그 컨테이너**다.\n\n> **이 한 줄을 모르면 하루를 날린다.**"
+  },
+  {
+   "type": "table",
+   "caption": "세 방향, 각각 다른 주소",
+   "columns": [
+    "누가 → 누구를",
+    "무엇을 쓰나"
+   ],
+   "rows": [
+    [
+     "**호스트 → 컨테이너**",
+     "`localhost:<호스트포트>` (`-p` 필요, 6.1절)"
+    ],
+    [
+     "**컨테이너 → 컨테이너**",
+     "**상대 컨테이너 이름** (같은 사용자 정의 네트워크, 7.3절)"
+    ],
+    [
+     "**컨테이너 → 호스트**",
+     "**`host.docker.internal`** (맥·윈도우), 리눅스는 `--add-host=host.docker.internal:host-gateway`"
+    ],
+    [
+     "컨테이너 → 자기 자신",
+     "`localhost`"
+    ]
+   ],
+   "note": "**두 번째 줄에서 `localhost` 를 쓰는 게 가장 흔한 실수**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "흔한 실수 셋",
+   "md": "**① 애플리케이션 설정에 `localhost:5432`**\n\n```\nspring.datasource.url=jdbc:postgresql://localhost:5432/shop\n```\n\n> **로컬에서 개발할 때는 맞다.** **컨테이너 안에서는 자기 자신을** 가리킨다.\n> **`Connection refused` 가 뜬다.** **`db:5432` 로 바꾼다.**\n\n**② 컨테이너에서 호스트의 DB 에 붙기**\n\n```\n# 맥/윈도우\njdbc:postgresql://host.docker.internal:5432/shop\n\n# 리눅스 -- 옵션을 줘야 이름이 생긴다\ndocker run --add-host=host.docker.internal:host-gateway myapp\n```\n\n**③ 헬스체크의 localhost 는 맞다**\n\n```dockerfile\nHEALTHCHECK CMD curl -fsS http://localhost:8080/health\n```\n\n> **이건 컨테이너가 자기 자신을 부르는 것이라 `localhost` 가** 맞다(6.5절)."
+  },
+  {
+   "type": "figure",
+   "caption": "어디서 부르느냐에 따라 이름이 다르다",
+   "ascii": "   host machine\n   +--------------------------------------------------+\n   |  postgres on host :5432                          |\n   |                                                  |\n   |  localhost:8080 -> [ api container ]             |\n   |                       |                          |\n   |                       | \"db:5432\"        [ db container ]\n   |                       | \"localhost:5432\" -> itself (X)\n   |                       | \"host.docker.internal:5432\" -> host postgres\n   |                                                  |\n   +--------------------------------------------------+\n\n   same word, three different machines",
+   "note": "**한 프로젝트 안에서 셋을 동시에 쓰는 일도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "설정을 환경변수로 빼 두면 이 문제가 사라진다",
+   "md": "**6.2절과 이어진다.**\n\n```yaml\n# application.yml -- 기본값은 로컬 개발용\nspring:\n  datasource:\n    url: jdbc:postgresql://localhost:5432/shop\n```\n\n```bash\n# 컨테이너로 띄울 때만 덮는다\ndocker run -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shop myapp\n```\n\n> **IDE 에서 돌릴 때와 컨테이너에서 돌릴 때가 자연스럽게** 갈린다.\n> **컴포즈에서는 이걸 파일에 적어 둔다**(9.6절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "세 방향을 다 확인한다",
+   "sql": "$ docker network create shop >/dev/null\n$ docker run -d --network shop --name db -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ docker run -d --network shop --name api -p 8080:8000 python:3.12-slim \\\n    sh -c 'apt-get update -qq && apt-get install -y -qq curl netcat-openbsd >/dev/null 2>&1; python -m http.server 8000' >/dev/null\n$ sleep 12\n\n\n# --- 1) 호스트 -> 컨테이너 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080\n200\n\n#   -p 8080:8000 덕분이다\n\n\n# --- 2) 컨테이너 -> 컨테이너: localhost 는 자기 자신이다 ---\n\n$ docker exec api sh -c 'nc -z -w2 localhost 5432 && echo ok || echo \"localhost:5432 FAILED\"'\nlocalhost:5432 FAILED\n\n$ docker exec api sh -c 'nc -z -w2 db 5432 && echo \"db:5432 OK\"'\ndb:5432 OK\n\n#   이름으로는 된다\n\n$ docker exec api sh -c 'nc -z -w2 localhost 8000 && echo \"its own port OK\"'\nits own port OK\n\n#   자기 자신의 포트는 localhost 로 맞다\n\n\n# --- 3) 컨테이너 -> 호스트 ---\n\n#   호스트에서 8999 로 서버를 하나 띄워 둔다\n$ (python3 -m http.server 8999 >/dev/null 2>&1 &) ; sleep 1\n\n$ docker exec api sh -c 'curl -s -m 2 -o /dev/null -w \"%{http_code}\\n\" http://localhost:8999'\n000\n\n#   컨테이너의 localhost 에는 그런 서버가 없다\n\n$ docker exec api sh -c 'curl -s -m 2 -o /dev/null -w \"%{http_code}\\n\" http://host.docker.internal:8999'\n200\n\n#   맥/윈도우에서는 이 이름이 기본으로 있다\n\n\n# --- 리눅스에서는 이름을 만들어 줘야 한다 ---\n\n$ docker run --rm alpine getent hosts host.docker.internal || echo \"not resolved on linux\"\nnot resolved on linux\n\n$ docker run --rm --add-host=host.docker.internal:host-gateway alpine \\\n    getent hosts host.docker.internal\n172.17.0.1  host.docker.internal\n\n#   host-gateway 가 docker0 의 주소로 치환된다\n\n\n# --- 게이트웨이 주소로 직접 붙어도 된다 (리눅스) ---\n\n$ docker exec api sh -c 'ip route | awk \"/default/ {print \\$3}\"'\n172.18.0.1\n\n$ docker exec api sh -c 'curl -s -m 2 -o /dev/null -w \"%{http_code}\\n\" http://172.18.0.1:8999'\n200\n\n#   다만 이 주소는 네트워크마다 다르다. 이름을 쓰는 게 낫다\n\n\n# --- 흔한 실수를 재현한다 ---\n\n$ docker run --rm --network shop -e DB_URL=jdbc:postgresql://localhost:5432/shop alpine \\\n    sh -c 'echo \"$DB_URL\"; echo \"-> localhost 는 이 컨테이너다. Connection refused 가 난다\"'\njdbc:postgresql://localhost:5432/shop\n-> localhost 는 이 컨테이너다. Connection refused 가 난다\n\n$ docker run --rm --network shop -e DB_URL=jdbc:postgresql://db:5432/shop alpine \\\n    sh -c 'nc -z -w2 db 5432 && echo \"$DB_URL -> 연결됨\"'\njdbc:postgresql://db:5432/shop -> 연결됨\n\n$ pkill -f 'http.server 8999'\n$ docker rm -f api db >/dev/null && docker network rm shop >/dev/null"
+  }
+ ],
+ "recap": [
+  "localhost 는 언제나 그 프로세스가 있는 네임스페이스의 루프백이다. 컨테이너 안에서는 자기 자신이다.",
+  "컨테이너끼리는 상대 컨테이너 이름으로 부른다.",
+  "컨테이너에서 호스트로 붙을 때는 host.docker.internal. 리눅스는 --add-host=...:host-gateway 가 필요하다.",
+  "헬스체크의 localhost 는 자기 자신을 부르는 것이라 맞다.",
+  "접속 주소를 환경변수로 빼 두면 IDE 실행과 컨테이너 실행이 자연스럽게 갈린다."
+ ],
+ "drills": [
+  {
+   "task": "컨테이너에서 `localhost:5432` 와 `db:5432` 로 각각 붙어 본다.",
+   "done_when": "앞은 실패하고 뒤는 성공하는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "호스트에서 임시 서버를 띄우고 컨테이너에서 `host.docker.internal` 로 붙어 본다.",
+   "done_when": "200 을 받는다. 리눅스면 --add-host 를 붙인다.",
+   "minutes": 6
+  },
+  {
+   "task": "컨테이너 안에서 `ip route` 의 default 게이트웨이 주소로도 호스트에 붙어 본다.",
+   "done_when": "같은 결과가 나오는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨테이너 설정에 `localhost:5432` 를 적으면 무슨 일이 생기나.",
+   "a": "자기 자신의 5432 를 찾아 Connection refused 가 난다. 상대 컨테이너 이름을 써야 한다."
+  },
+  {
+   "q": "컨테이너에서 호스트의 서비스에 붙는 방법은.",
+   "a": "host.docker.internal. 리눅스에서는 --add-host=host.docker.internal:host-gateway 를 줘야 이름이 생긴다."
+  },
+  {
+   "q": "HEALTHCHECK 에서 localhost 를 쓰는 것은 맞나.",
+   "a": "맞다. 컨테이너가 자기 자신을 부르는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "host.docker.internal",
+   "what": "컨테이너에서 호스트를 가리키는 특수 이름."
+  },
+  {
+   "term": "host-gateway",
+   "what": "--add-host 에서 호스트의 게이트웨이 주소로 치환되는 특수 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Explore networking features",
+   "url": "https://docs.docker.com/desktop/features/networking/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — docker run --add-host",
+   "url": "https://docs.docker.com/reference/cli/docker/container/run/#add-host",
+   "publisher": "Docker"
+  }
+ ]
+}
