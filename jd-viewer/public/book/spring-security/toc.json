@@ -127,7 +127,7 @@
           "title": "폼 인증",
           "summary": "formLogin() 이 켜는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -135,7 +135,7 @@
           "title": "UsernamePasswordAuthenticationFilter",
           "summary": "그 POST 를 받는 자리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -143,7 +143,7 @@
           "title": "기본 인증",
           "summary": "헤더 한 줄로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -151,7 +151,7 @@
           "title": "BasicAuthenticationFilter",
           "summary": "Base64 는 암호가 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

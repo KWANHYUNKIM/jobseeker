@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "form-login",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "폼 인증",
+ "summary": "formLogin() 이 켜는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요청 네 번의 왕복을 본다.",
+  "formLogin 이 켜는 것을 안다.",
+  "세션이 언제 생기는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.7절에서 로그인이** 됐다. **그 사이에 요청이 네 번** 오갔다."
+  },
+  {
+   "type": "figure",
+   "caption": "폼 로그인의 왕복",
+   "ascii": "   the round trip of a form login\n\n   1  GET  /orders          302 -> /login       (entry point)\n   2  GET  /login           200, a form + csrf token\n   3  POST /login           302 -> /orders      (Set-Cookie)\n   4  GET  /orders          200\n\n   four requests, and only step 3 asks who you are",
+   "note": "**누구냐고 묻는 건 3번** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "한 줄이 켜는 것",
+   "md": "**`formLogin(withDefaults())` 하나에 필터** 셋이다.\n\n> **거기에 공유 객체로 `EntryPoint` 하나** 더다 — **2.5절에서 본** 그것.\n\n**세 필터가 하는 일이** 다르다.\n\n| 필터 | 담당 | 없으면 |\n|---|---|---|\n| `UsernamePassword…Filter` | `POST /login` 처리 | 로그인 자체가 안 된다 |\n| `DefaultLoginPageGeneratingFilter` | `GET /login` 화면 | 404 (내 화면이 없으면) |\n| `DefaultLogoutPageGeneratingFilter` | `GET /logout` 화면 | 404 |\n\n> **2.7절에서 내 화면을 넣자 아래 둘이** 사라졌다.\n> **첫 번째는 안** 사라진다 — **그게 인증** 자체다.\n\n**`formLogin` 없이 `authorizeHttpRequests` 만** 두면\n\n```java\nhttp.authorizeHttpRequests(a -> a.anyRequest().authenticated());\n```\n\n> **`EntryPoint` 기본값이 `Http403ForbiddenEntryPoint`** 다.\n> **로그인 화면이 없으니 보낼 데가 없어 그냥 403** 이다.\n>\n> **인증할 방법을 안 켜면 인증할 수가** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "필터 셋과 진입점",
+   "ascii": "   what formLogin turns on\n\n   UsernamePasswordAuthenticationFilter   handles POST /login\n   DefaultLoginPageGeneratingFilter       draws GET /login\n   DefaultLogoutPageGeneratingFilter      draws GET /logout\n\n   plus, through the shared object map\n     LoginUrlAuthenticationEntryPoint     the 302 in step 1",
+   "note": "**1번의 302 는 필터가 아니라 진입점이** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세션은 로그인할 때 생긴다",
+   "md": "**1번과 2번에는 `Set-Cookie` 가** 없다.\n\n> **아직 아무도 아니니 담을 게** 없다.\n> **정확히는 `SavedRequest` 를 담느라 생길 수도** 있다 — **3.10절**.\n\n**3번에 `JSESSIONID` 가** 내려온다.\n\n> **정확히는 로그인 성공 후 세션이 새로** 만들어진다.\n> **로그인 전 세션이 있었다면 ID 가** 바뀐다 — **세션 고정 보호**, **5.6절**.\n\n**4번부터는 쿠키만 보낸다.**\n\n```\nCookie: JSESSIONID=B3F1...\n```\n\n> **비밀번호는 딱 한 번만** 갔다.\n> **그 뒤로는 세션 ID 가 곧 신분증**이다.\n>\n> **그래서 세션 ID 를 훔치면 비밀번호 없이도** 된다 — **6.7절의 `HttpOnly`·`Secure`** 가 그 얘기다.\n\n**폼의 필드 이름은 바꿀 수** 있다.\n\n```java\nhttp.formLogin(f -> f\n        .usernameParameter(\"loginId\")\n        .passwordParameter(\"pw\"));\n```\n\n> **바꿨는데 템플릿을 안 바꾸면 아이디가 `null` 로** 들어간다.\n> **아래에서 그 로그를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 1) 보호된 자원을 그냥 부른다 ---\n\n$ curl -i -c cookies.txt localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG FilterChainProxy : Securing GET /orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/13)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (11/13)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nDEBUG ExceptionTranslationFilter : Sending to authentication entry point\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to /login\n\n#   맨 끝 필터가 거절하고 그 앞 필터가 보냈다\n\n#   Secured 가 없다\n\n# --- 2) 로그인 화면 ---\n\n$ curl -i -s -b cookies.txt -c cookies.txt localhost:8080/login | head -3\n\nHTTP/1.1 200\nSet-Cookie: JSESSIONID=4A1C...; Path=/; HttpOnly\n\n#   여기서 세션이 하나 생겼다\n\n#   SavedRequest 를 담느라 생긴 것이다 (3.10절)\n\nDEBUG FilterChainProxy : Securing GET /login\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured GET /login\nDEBUG DispatcherServlet : Mapped to LoginController#login()\n\n$ curl -s -b cookies.txt localhost:8080/login | grep -E 'name=\"(username|password|_csrf)\"'\n\n<input type=\"text\" name=\"username\">\n<input type=\"password\" name=\"password\">\n<input type=\"hidden\" name=\"_csrf\" value=\"tKmM-9Fx...\">\n\n# --- 3) 로그인 ---\n\n$ TOKEN=$(curl -s -b cookies.txt localhost:8080/login \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n\n$ curl -i -b cookies.txt -c cookies.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/orders\nSet-Cookie: JSESSIONID=9D77...; Path=/; HttpOnly\n\n#   세션 ID 가 4A1C 에서 9D77 로 바뀌었다\n\n#   세션 고정 보호다 (5.6절)\n\n#   Location 이 / 가 아니라 /orders 다\n\n#   1번에서 가려던 곳을 기억하고 있었다\n\nDEBUG FilterChainProxy : Securing POST /login\nTRACE FilterChainProxy : Invoking CsrfFilter (5/13)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (6/13)\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=User [Username=user,\n  Password=[PROTECTED], Granted Authorities=[ROLE_USER]], Authenticated=true]\nDEBUG SavedRequestAwareAuthenticationSuccessHandler :\n  Redirecting to http://localhost:8080/orders\n\n#   (7/13) 이 없다\n\n#   6번이 끝냈다\n\n# --- 4) 다시 부른다 ---\n\n$ curl -i -b cookies.txt localhost:8080/orders\n\nHTTP/1.1 200\n\nDEBUG FilterChainProxy : Securing GET /orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/13)\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl\n  [Authentication=UsernamePasswordAuthenticationToken [Principal=User\n  [Username=user], Authenticated=true]]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   비밀번호를 안 보냈는데 통과다\n\n#   3번 필터가 세션에서 꺼내 왔다\n\n$ grep -o 'JSESSIONID=[^;]*' cookies.txt\n\nJSESSIONID=9D77...\n\n#   이제 이게 신분증이다\n\n# --- formLogin 을 아예 빼면 ---\n\nhttp.authorizeHttpRequests(a -> a.anyRequest().authenticated());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n\n11\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 403\n\nDEBUG ExceptionTranslationFilter : Sending to authentication entry point\nDEBUG Http403ForbiddenEntryPoint : Pre-authenticated entry point called.\n  Rejecting access\n\n#   보낼 로그인 화면이 없어 403 이다\n\n#   인증할 방법을 안 켜면 인증할 수가 없다\n\n# --- 필드 이름을 바꾸고 템플릿을 안 바꾸면 ---\n\nhttp.formLogin(f -> f.usernameParameter(\"loginId\"))\n\n$ curl -i -b cookies.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error\n\nDEBUG UsernamePasswordAuthenticationFilter : Failed to process\n  authentication request\nDEBUG DaoAuthenticationProvider : Failed to find user ''\norg.springframework.security.authentication.BadCredentialsException:\n  Bad credentials\n\n#   Failed to find user '' 다\n\n#   빈 문자열로 찾았다\n\n#   파라미터 이름이 안 맞으면 빈 값이 들어간다\n\n#   비밀번호가 틀린 게 아닌데 Bad credentials 다\n\n#   4.7절에서 왜 굳이 뭉뚱그리는지 본다\n\n# --- 다음 절에서 ---\n\n#   그 POST 를 받는 필터 안으로 들어간다",
+   "note": "**네 번의 왕복이 로그에** 다 있다.\n\n**2번에서 세션이 생기고(`4A1C`) 3번에서 ID 가 바뀐다(`9D77`)** — **세션 고정 보호**다.\n\n**3번의 `Location` 이 `/` 가 아니라 `/orders`** 다. **1번에서 가려던 곳을 기억**했다.\n\n**4번은 비밀번호 없이 통과**한다 — **3번 필터가 세션에서 꺼내** 왔다.\n\n**`formLogin` 을 빼면 `Http403ForbiddenEntryPoint` 로 그냥 403** 이다.\n\n**파라미터 이름이 안 맞으면 `Failed to find user ''`** 다."
+  }
+ ],
+ "recap": [
+  "**폼 로그인은 요청 네 번의** 왕복이다.",
+  "**누구냐고 묻는 건 `POST /login`** 하나다.",
+  "**`formLogin` 하나가 필터 셋과 진입점** 하나를 켠다.",
+  "**첫 302 는 필터가 아니라 `EntryPoint` 가** 만든다.",
+  "**`formLogin` 을 빼면 기본 진입점이 403 을** 던진다.",
+  "**로그인 성공 때 세션 ID 가** 바뀐다.",
+  "**그 뒤로는 세션 ID 가 신분증**이다.",
+  "**비밀번호는 딱 한 번만** 간다.",
+  "**파라미터 이름이 어긋나면 빈 값으로** 조회된다."
+ ],
+ "drills": [
+  {
+   "task": "`curl` 로 네 번의 왕복을 재현한다.",
+   "done_when": "각 단계의 상태 코드를 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "쿠키 파일에서 세션 ID 변화를 본다.",
+   "done_when": "로그인 전후가 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`formLogin` 을 빼고 요청한다.",
+   "done_when": "403 과 진입점 이름을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`usernameParameter` 만 바꾼다.",
+   "done_when": "빈 사용자 이름 로그를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "첫 302 는 누가 만드나?",
+   "a": "필터가 아니라 `LoginUrlAuthenticationEntryPoint` 다."
+  },
+  {
+   "q": "`formLogin` 이 켜는 필터는 몇 개인가?",
+   "a": "셋이다. 로그인 처리, 로그인 화면, 로그아웃 화면."
+  },
+  {
+   "q": "`formLogin` 을 빼면 어떻게 되나?",
+   "a": "기본 진입점이 `Http403ForbiddenEntryPoint` 라 그냥 403 이다."
+  },
+  {
+   "q": "로그인 후 세션 ID 가 바뀌는 이유는?",
+   "a": "세션 고정 공격을 막기 위해서다."
+  },
+  {
+   "q": "네 번째 요청은 무엇으로 통과하나?",
+   "a": "세션 쿠키다. 비밀번호는 보내지 않는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

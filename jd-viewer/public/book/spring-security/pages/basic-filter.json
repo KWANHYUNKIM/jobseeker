@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "basic-filter",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "BasicAuthenticationFilter",
+ "summary": "Base64 는 암호가 아니다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "헤더가 어떻게 풀리는지 본다.",
+  "Base64 가 암호가 아닌 것을 확인한다.",
+  "헤더가 잘못됐을 때 조용한 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`dXNlcjoxMjM0` 가 암호처럼** 생겼다. **한 줄이면** 풀린다."
+  },
+  {
+   "type": "figure",
+   "caption": "인코딩이지 암호가 아니다",
+   "ascii": "   Base64 is an encoding, not a cipher\n\n   user:1234\n     -> base64  -> dXNlcjoxMjM0\n     -> base64 -d -> user:1234\n\n   no key anywhere in that round trip\n   anyone who sees the header sees the password",
+   "note": "**왕복 어디에도 열쇠가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "평문과 다를 바 없다",
+   "md": "**Base64 는 이진 데이터를 글자로 옮기는 규칙**이다.\n\n> **읽기 어렵게 만들 뿐 못 읽게 만들지** 않는다.\n> **`base64 -d` 한 번이면** 끝이다.\n\n**그래서 HTTPS 가 아니면 쓸 수** 없다.\n\n> **같은 와이파이의 누구든 비밀번호를 그대로** 본다.\n> **폼 로그인도 같다** — **body 에 담길 뿐 역시 평문**이다.\n>\n> **다만 폼은 한 번, 기본 인증은 매 요청**이다.\n> **노출 기회가** 다르다.\n\n**최소한 이건 걸어 둔다.**\n\n```java\nhttp.requiresChannel(c -> c.anyRequest().requiresSecure());\n```\n\n> **`http` 로 오면 `https` 로 리다이렉트**한다.\n> **6.8절에서 제대로** 다룬다.\n\n**문자 인코딩도 함정**이다.\n\n```java\nhttp.httpBasic(b -> b.authenticationDetailsSource(...));\n\n// 컨버터를 직접 만들면\nBasicAuthenticationConverter converter = new BasicAuthenticationConverter();\nconverter.setCredentialsCharset(StandardCharsets.UTF_8);\n```\n\n> **기본값이 `UTF-8`** 이다.\n> **한글 비밀번호를 `ISO-8859-1` 로 보내는 클라이언트가 있으면** 깨진다.\n> **`RFC 7617` 이 이걸 겪고 `charset` 파라미터를** 만들었다."
+  },
+  {
+   "type": "figure",
+   "caption": "필터 한 번의 흐름",
+   "ascii": "   BasicAuthenticationFilter, one request\n\n   doFilterInternal\n     converter.convert(request)\n       header missing or not Basic -> null\n         chain.doFilter, done, quietly\n       otherwise -> a token with username and password\n     already the same user in the holder? -> skip\n     manager.authenticate\n       ok    -> holder, repository, chain.doFilter\n       throw -> holder cleared, entryPoint.commence\n\n   the quiet branch is why a wrong header looks like no header",
+   "note": "**잘못된 헤더가 없는 헤더처럼 보이는 갈래**가 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "조용한 갈래",
+   "md": "**헤더가 `Basic` 이 아니면 컨버터가 `null` 을** 준다.\n\n```java\nString header = request.getHeader(\"Authorization\");\nif (header == null || !header.toLowerCase().startsWith(\"basic \")) {\n    return null;                       // 예외가 아니다\n}\n```\n\n> **`Bearer eyJ...` 를 보내면 그냥 무시**된다.\n> **로그도 안** 남는다.\n> **결국 `AuthorizationFilter` 에서 401 이 나는데 이유가 안** 보인다.\n\n**형식이 깨졌을 때는 예외**다.\n\n```\nBadCredentialsException: Failed to decode basic authentication token\n```\n\n> **Base64 가 아니거나 `:` 가 없을 때**다.\n> **이건 로그에** 남는다.\n\n**같은 사용자면 건너뛴다.**\n\n```java\nif (authenticationIsRequired(username)) { ... }\n```\n\n> **이미 홀더에 같은 이름이 인증돼 있으면 다시 인증 안** 한다.\n> **저장소를 세션으로 바꿔 둔 경우에 의미가** 있다.\n\n**성공해도 응답을 안 만든다.**\n\n> **3.2절의 필터는 302 를 만들고** 끝냈다.\n> **이 필터는 `chain.doFilter` 로 계속** 간다.\n>\n> **인증을 처리하는 필터가 다 응답을 만드는 건** 아니다.\n> **묻는 방식이 왕복이면 만들고, 헤더 한 줄이면 그냥** 지나간다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 헤더를 되돌린다 ---\n\n$ curl -su user:1234 -o /dev/null -D - localhost:8080/api/v1/orders \\\n    -w '%{http_code}\\n' | tail -1\n\n200\n\n$ printf 'user:1234' | base64\n\ndXNlcjoxMjM0\n\n$ echo 'dXNlcjoxMjM0' | base64 -d\n\nuser:1234\n\n#   비밀번호가 그대로 나온다\n\n#   열쇠도 없고 시간도 안 걸린다\n\n# --- 네트워크에서 보면 ---\n\n$ curl -v -u user:1234 http://localhost:8080/api/v1/orders 2>&1 \\\n    | grep -i authorization\n\n> Authorization: Basic dXNlcjoxMjM0\n\n#   평문 http 로 이 한 줄이 흘러간다\n\n#   같은 망의 누구든 base64 -d 를 안다\n\n# --- 필터가 어떻게 읽나 ---\n\npublic class LoudBasicFilter extends BasicAuthenticationFilter {\n    public LoudBasicFilter(AuthenticationManager m) { super(m); }\n\n    @Override\n    protected void doFilterInternal(HttpServletRequest req,\n            HttpServletResponse res, FilterChain chain)\n            throws IOException, ServletException {\n        System.out.println(\">>> header = \" + req.getHeader(\"Authorization\"));\n        super.doFilterInternal(req, res, chain);\n        System.out.println(\">>> after  = \"\n                + SecurityContextHolder.getContext().getAuthentication());\n    }\n}\n\n$ curl -s -u user:1234 localhost:8080/api/v1/orders > /dev/null\n\n>>> header = Basic dXNlcjoxMjM0\n>>> after  = UsernamePasswordAuthenticationToken [Principal=User\n  [Username=user], Authenticated=true]\n\n#   필터를 지나며 채워졌다\n\n#   그리고 응답을 안 만들고 다음으로 갔다\n\nTRACE FilterChainProxy : Invoking LoudBasicFilter (6/11)\nTRACE FilterChainProxy : Invoking RequestCacheAwareFilter (7/11)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   (7/11) 이 있다\n\n#   3.2절에는 없었다\n\n# --- 헤더가 Basic 이 아니면 ---\n\n$ curl -i -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.abc.def' \\\n    localhost:8080/api/v1/orders\n\nHTTP/1.1 401\nWWW-Authenticate: Basic realm=\"Realm\"\n\n>>> header = Bearer eyJhbGciOiJIUzI1NiJ9.abc.def\n>>> after  = null\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n#   필터가 아무 말도 안 했다\n\n#   헤더를 보냈는데 안 보낸 것과 로그가 같다\n\n#   토큰이 틀렸는지 형식이 다른지 알 수가 없다\n\n#   11.4절에서 JWT 를 얘기할 때 이 조용함이 문제가 된다\n\n# --- 형식이 깨지면 ---\n\n$ curl -i -H 'Authorization: Basic !!!not-base64!!!' \\\n    localhost:8080/api/v1/orders\n\nHTTP/1.1 401\n\nDEBUG BasicAuthenticationFilter : Failed to process authentication request\norg.springframework.security.authentication.BadCredentialsException:\n  Failed to decode basic authentication token\n\n#   이번엔 로그에 이유가 있다\n\n$ printf 'nocolon' | base64\n\nbm9jb2xvbg==\n\n$ curl -i -H 'Authorization: Basic bm9jb2xvbg==' \\\n    localhost:8080/api/v1/orders\n\nHTTP/1.1 401\n\nBadCredentialsException: Invalid basic authentication token\n\n#   콜론이 없어도 거절이다\n\n# --- 비밀번호에 콜론이 들어가면 ---\n\n$ printf 'user:12:34' | base64\n\ndXNlcjoxMjozNA==\n\n#   첫 콜론까지가 아이디다\n\n#   비밀번호는 12:34 로 읽힌다\n\n#   아이디에는 콜론을 못 쓴다 (RFC 7617)\n\n# --- https 를 강제한다 ---\n\nhttp.requiresChannel(c -> c.anyRequest().requiresSecure());\n\n$ curl -i http://localhost:8080/api/v1/orders\n\nHTTP/1.1 302\nLocation: https://localhost:8443/api/v1/orders\n\nTRACE FilterChainProxy : Invoking ChannelProcessingFilter (1/12)\n\n#   필터가 하나 늘었고 맨 앞이다\n\n#   Authorization 헤더를 읽기도 전에 돌려보낸다\n\n#   6.8절에서 다시 본다\n\n# --- 다음 절에서 ---\n\n#   브라우저를 닫아도 남는 쿠키를 본다",
+   "note": "**`base64 -d` 한 줄에 `user:1234`** 가 나온다. **평문 `http` 로 그 한 줄이** 흘러간다.\n\n**필터를 지난 뒤 홀더가 채워지고 `(7/11)` 로 계속** 간다 — **3.2절과 달리 응답을 안** 만든다.\n\n**`Bearer` 헤더는 로그도 없이 무시**된다. **안 보낸 것과 구별이 안** 된다.\n\n**Base64 가 깨지거나 `:` 가 없으면 그때는 예외가** 남는다.\n\n**`requiresChannel` 을 걸면 `ChannelProcessingFilter` 가 맨 앞에서 302 를** 낸다."
+  }
+ ],
+ "recap": [
+  "**Base64 는 인코딩이지 암호가** 아니다.",
+  "**`base64 -d` 한 줄에 비밀번호가** 나온다.",
+  "**HTTPS 없이 기본 인증은 평문 전송**이다.",
+  "**폼도 평문이지만 노출 횟수가** 다르다.",
+  "**헤더가 `Basic` 이 아니면 조용히** 무시된다.",
+  "**형식이 깨졌을 때만 로그에 이유가** 남는다.",
+  "**같은 사용자면 다시 인증 안** 한다.",
+  "**성공해도 응답을 안 만들고 체인을 계속** 간다.",
+  "**아이디에는 콜론을 못** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "헤더를 `base64 -d` 로 되돌린다.",
+   "done_when": "비밀번호를 눈으로 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "필터를 상속해 헤더와 결과를 찍는다.",
+   "done_when": "홀더가 채워지는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`Bearer` 헤더를 보낸다.",
+   "done_when": "로그가 조용한 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "깨진 Base64 를 보낸다.",
+   "done_when": "디코드 실패 로그를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Base64 는 암호인가?",
+   "a": "아니다. 열쇠 없이 되돌아가는 인코딩이다."
+  },
+  {
+   "q": "`Bearer` 헤더를 보내면?",
+   "a": "컨버터가 `null` 을 돌려줘 조용히 무시된다."
+  },
+  {
+   "q": "언제 로그에 이유가 남나?",
+   "a": "Base64 디코드가 실패하거나 콜론이 없을 때다."
+  },
+  {
+   "q": "이 필터가 3.2절 필터와 다른 점은?",
+   "a": "성공해도 응답을 안 만들고 체인을 계속 간다."
+  },
+  {
+   "q": "아이디에 콜론을 쓰면?",
+   "a": "첫 콜론이 구분자라 뒤가 비밀번호로 읽힌다. 쓸 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BasicAuthenticationConverter",
+   "def": "`Authorization` 헤더를 인증 토큰으로 바꾸는 객체. `Basic` 이 아니면 `null` 을 돌려준다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Basic Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 7617 — The 'Basic' HTTP Authentication Scheme",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7617",
+   "publisher": "IETF"
+  },
+  {
+   "title": "OWASP — Transport Layer Security Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

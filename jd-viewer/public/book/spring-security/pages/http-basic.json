@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "http-basic",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "기본 인증",
+ "summary": "헤더 한 줄로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "401 과 challenge 의 왕복을 본다.",
+  "폼 인증과 무엇이 다른지 안다.",
+  "매 요청마다 보내는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 `curl -u user:1234` 가** 통했다. **화면도 폼도 없었다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "묻고 답하기",
+   "ascii": "   the challenge and the answer\n\n   1  GET /api/v1/orders\n        401 Unauthorized\n        WWW-Authenticate: Basic realm=\"Realm\"\n\n   2  GET /api/v1/orders\n        Authorization: Basic dXNlcjoxMjM0\n        200 OK\n\n   two requests, no form, no page, no redirect",
+   "note": "**리다이렉트가 없다** — **같은 주소로 두 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "표준이 정한 두 헤더",
+   "md": "**서버가 묻는 헤더**\n\n```\nWWW-Authenticate: Basic realm=\"Realm\"\n```\n\n> **`realm` 은 보호 구역 이름**이다.\n> **브라우저가 이걸 받으면 팝업을** 띄운다.\n\n**클라이언트가 답하는 헤더**\n\n```\nAuthorization: Basic dXNlcjoxMjM0\n```\n\n> **`dXNlcjoxMjM0` 는 `user:1234` 의 Base64** 다.\n> **`:` 로 붙여 인코딩**한다.\n\n**설정은 한 줄**이다.\n\n```java\nhttp.httpBasic(withDefaults());\n\n// realm 이름을 바꾼다\nhttp.httpBasic(b -> b.realmName(\"my-api\"));\n\n// 팝업 대신 조용히 401 만\nhttp.httpBasic(b -> b.authenticationEntryPoint(\n        (req, res, ex) -> res.setStatus(401)));\n```\n\n> **세 번째는 브라우저 팝업이 싫을 때**다.\n> **`WWW-Authenticate` 가 있어야 팝업이** 뜬다.\n\n**폼과 같이 켤 수도** 있다.\n\n> **둘 다 켜면 `EntryPoint` 가** 겹친다.\n> **`ExceptionHandlingConfigurer` 가 하나를 고르는데 폼이** 이긴다.\n> **API 는 `curl` 로 되는데 브라우저는 로그인 화면으로** 간다.\n>\n> **그래서 2.3절처럼 체인을 나누는 게** 낫다."
+  },
+  {
+   "type": "figure",
+   "caption": "폼과 기본 인증",
+   "ascii": "   form login vs basic\n\n                   form              basic\n   who asks        a html page       a response header\n   how it answers  POST body         a request header\n   how often       once              every request\n   entry point     302 to /login     401 with a challenge\n   csrf            needed            not for a header-only client\n   fits            a browser         a script, a server, a probe",
+   "note": "**하나는 사람에게, 하나는 프로그램에게** 묻는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "매 요청마다 보낸다",
+   "md": "**폼 인증은 한 번 묻고 세션에** 담았다.\n\n**기본 인증은 요청마다 헤더를** 보낸다.\n\n> **6.x 기본값은 컨텍스트를 세션에 저장하지** 않는다.\n> **`BasicAuthenticationFilter` 의 저장소가 `RequestAttributeSecurityContextRepository`** 라서다.\n> **요청이 끝나면** 사라진다.\n\n**그래서 이렇게 갈린다.**\n\n| | 두 번째 요청 |\n|---|---|\n| **폼** | 쿠키만 보내면 200 |\n| **기본** | 헤더를 또 보내야 200 |\n\n**세션에 담게 할 수도** 있다.\n\n```java\nhttp.httpBasic(b -> b.securityContextRepository(\n        new HttpSessionSecurityContextRepository()));\n```\n\n> **그러면 첫 요청 뒤에 쿠키만으로도** 된다.\n> **편한 만큼 세션이** 쌓인다 — **5.3절에서 무상태를** 얘기한다.\n\n**CSRF 는 어떻게 되나.**\n\n> **헤더로만 인증하는 클라이언트에는 CSRF 가 성립하지** 않는다.\n> **브라우저가 자동으로 붙여 주는 게 쿠키뿐이라 그렇다** — **6.4절**.\n> **그래서 API 체인에서 `csrf().disable()` 이** 흔하다.\n>\n> **단, 세션에 담게 바꿨다면 얘기가** 달라진다.\n> **쿠키로도 인증되니 CSRF 가 다시** 성립한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 헤더 없이 부른다 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(c -> c.disable());\n    return http.build();\n}\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 401\nWWW-Authenticate: Basic realm=\"Realm\"\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking BasicAuthenticationFilter (6/11)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (10/11)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nDEBUG ExceptionTranslationFilter : Sending to authentication entry point\nDEBUG BasicAuthenticationEntryPoint : (401 with challenge)\n\n#   302 가 아니라 401 이다\n\n#   6번 필터는 헤더가 없어 아무것도 안 했다\n\n#   2.7절에서 API 가 302 였던 게 여기서 401 이 됐다\n\n# --- 헤더를 붙여 부른다 ---\n\n$ curl -i -u user:1234 localhost:8080/api/v1/orders\n\nHTTP/1.1 200\nContent-Type: application/json\n\n{\"code\":200,\"status\":\"OK\",\"data\":[...]}\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking BasicAuthenticationFilter (6/11)\nDEBUG BasicAuthenticationFilter : Found username 'user' in\n  Basic Authorization header\nDEBUG ProviderManager : Authenticating request with DaoAuthenticationProvider\nDEBUG BasicAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=User [Username=user]]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   같은 필터가 이번엔 일했다\n\n#   그리고 chain.doFilter 로 계속 갔다\n\n#   3.2절의 필터와 다른 점이다 (그건 응답을 만들고 끝냈다)\n\n# --- 손으로 헤더를 만들어 본다 ---\n\n$ printf 'user:1234' | base64\n\ndXNlcjoxMjM0\n\n$ curl -i -H 'Authorization: Basic dXNlcjoxMjM0' \\\n    localhost:8080/api/v1/orders\n\nHTTP/1.1 200\n\n#   curl -u 가 하던 게 이거였다\n\n# --- 쿠키가 남나 ---\n\n$ curl -i -u user:1234 -c basic.txt localhost:8080/api/v1/orders | grep -i set-cookie\n\n#   (아무것도 안 나온다)\n\n$ cat basic.txt\n\n# Netscape HTTP Cookie File\n\n#   비어 있다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b basic.txt \\\n    localhost:8080/api/v1/orders\n\n401\n\n#   두 번째 요청은 다시 401 이다\n\n#   저장된 게 없다\n\n#   폼 인증이라면 200 이었다\n\n# --- 세션에 담게 바꾼다 ---\n\nhttp.httpBasic(b -> b.securityContextRepository(\n        new HttpSessionSecurityContextRepository()));\n\n$ curl -i -u user:1234 -c basic.txt localhost:8080/api/v1/orders \\\n    | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=1E88...; Path=/; HttpOnly\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b basic.txt \\\n    localhost:8080/api/v1/orders\n\n200\n\n#   이번엔 쿠키만으로 통과다\n\n#   편해진 만큼 세션이 쌓인다\n\n# --- 팝업을 끈다 ---\n\nhttp.httpBasic(b -> b.authenticationEntryPoint(\n        (req, res, ex) -> res.setStatus(401)));\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 401\n\n$ curl -is localhost:8080/api/v1/orders | grep -ci www-authenticate\n\n0\n\n#   challenge 헤더가 없다\n\n#   브라우저가 팝업을 안 띄운다\n\n#   기계는 여전히 401 을 읽는다\n\n# --- 폼과 같이 켜면 ---\n\nhttp.authorizeHttpRequests(a -> a.anyRequest().authenticated())\n    .httpBasic(withDefaults())\n    .formLogin(withDefaults());\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to /login\n\n#   401 이 아니라 302 다\n\n#   폼의 진입점이 이겼다\n\n$ curl -i -u user:1234 localhost:8080/orders\n\nHTTP/1.1 200\n\n#   헤더를 주면 그건 또 통한다\n\n#   묻는 방식만 하나로 정해진 것이다\n\n#   섞지 말고 체인을 나누는 게 낫다 (2.3절)\n\n# --- 다음 절에서 ---\n\n#   저 Base64 를 되돌려 본다",
+   "note": "**헤더가 없으면 302 가 아니라 `401` 과 `WWW-Authenticate`** 다. **2.7절의 빚이 API 체인에서** 갚였다.\n\n**같은 필터가 헤더가 있을 때만 일하고, 일한 뒤에도 체인을 계속** 간다.\n\n**`printf 'user:1234' | base64` 가 `curl -u` 와 같은 헤더**를 만든다.\n\n**쿠키가 안 남아 두 번째 요청이 다시 401** 이다. **저장소를 세션으로 바꾸면 200** 이 된다.\n\n**폼과 같이 켜면 진입점은 폼이 이긴다** — **302** 다."
+  }
+ ],
+ "recap": [
+  "**기본 인증은 `401` + `WWW-Authenticate` 로** 묻는다.",
+  "**클라이언트는 `Authorization: Basic <base64>` 로** 답한다.",
+  "**리다이렉트도 화면도** 없다.",
+  "**6.x 기본값은 컨텍스트를 저장하지** 않는다.",
+  "**그래서 요청마다 헤더를 보내야** 한다.",
+  "**저장소를 세션으로 바꾸면 쿠키만으로도** 된다.",
+  "**진입점을 바꾸면 브라우저 팝업을 끌 수** 있다.",
+  "**폼과 같이 켜면 진입점은 폼이** 이긴다.",
+  "**섞지 말고 체인을 나누는 게** 낫다."
+ ],
+ "drills": [
+  {
+   "task": "헤더 없이 API 를 부른다.",
+   "done_when": "401 과 challenge 헤더를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`base64` 로 헤더를 직접 만든다.",
+   "done_when": "`curl -u` 와 같은 결과를 얻었다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿠키 파일이 비는지 확인한다.",
+   "done_when": "두 번째 요청이 401 인 것을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "저장소를 세션으로 바꾼다.",
+   "done_when": "두 번째 요청이 200 이 됐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서버는 무엇으로 묻나?",
+   "a": "`401` 과 `WWW-Authenticate: Basic realm=...` 이다."
+  },
+  {
+   "q": "왜 요청마다 헤더를 보내야 하나?",
+   "a": "6.x 기본값이 컨텍스트를 저장하지 않아서다."
+  },
+  {
+   "q": "브라우저 팝업을 끄려면?",
+   "a": "`WWW-Authenticate` 를 안 보내는 진입점으로 바꾼다."
+  },
+  {
+   "q": "폼과 기본 인증을 같이 켜면?",
+   "a": "진입점이 하나만 골라지고 폼이 이겨 302 가 된다."
+  },
+  {
+   "q": "기본 인증에 CSRF 가 필요한가?",
+   "a": "헤더로만 인증하면 성립하지 않는다. 세션에 담게 바꾸면 다시 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "realm",
+   "def": "`WWW-Authenticate` 가 알리는 보호 구역 이름. 브라우저 팝업에 그대로 표시된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Basic Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 7617 — The 'Basic' HTTP Authentication Scheme",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7617",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
