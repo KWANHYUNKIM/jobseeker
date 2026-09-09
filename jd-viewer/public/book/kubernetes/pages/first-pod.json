@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "first-pod",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "첫 파드",
+ "summary": "한 줄로 띄우고 안에 들어가 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "파드를 손으로 만든다.",
+  "안에 들어가 본다.",
+  "셸이 없는 이미지를 다룬다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절에서 직접 만든 파드는 안 살아난다고** 했다. **그래도 한 번은 만들어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "돌고 있는 파드에 할 수 있는 것",
+   "ascii": "   what you can do to a running pod\n\n   exec        run a command inside the container\n   logs        read what it printed on stdout\n   port-forward  open a tunnel from your laptop to it\n   cp          copy a file in or out\n   debug       attach a second container with tools\n\n   the first four need the image to have that thing installed",
+   "note": "**앞의 넷은 이미지에 그게 들어 있어야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 가지",
+   "md": "```bash\nkubectl run web --image=nginx:1.27\nkubectl exec -it web -- sh\nkubectl logs web -f\nkubectl port-forward pod/web 8080:80\nkubectl cp web:/etc/nginx/nginx.conf ./nginx.conf\nkubectl debug -it web --image=busybox --target=web\n```\n\n> **`run` 은 파드 하나**다.\n> **1.5절에서 봤듯 지우면** 끝이다.\n> **디버깅용 임시 파드에 쓴다** — **`--rm -it --restart=Never`** 를 붙여서.\n\n**`port-forward` 가 가장 자주** 쓴다.\n\n> **서비스 없이도 내 노트북에서 바로** 붙는다.\n> **6장 전까지 이걸로** 버틴다.\n> **`kubectl port-forward svc/web 8080:80` 처럼 서비스에도** 된다.\n\n**`logs` 의 옵션**\n\n| 옵션 | 무엇 |\n|---|---|\n| `-f` | 계속 따라간다 |\n| `--previous` | 죽기 전 컨테이너의 로그 |\n| `--tail=50` | 마지막 50줄 |\n| `--since=10m` | 최근 10분 |\n| `-c nginx` | 컨테이너가 여럿일 때 |\n\n> **`--previous` 가 `CrashLoopBackOff` 를 볼 때 유일한 길**이다.\n> **지금 컨테이너는 방금 떠서 아무것도 안** 찍었다."
+  },
+  {
+   "type": "figure",
+   "caption": "셸이 없는 이미지",
+   "ascii": "   why exec fails on a good image\n\n   a distroless or scratch image has\n     no shell, no ls, no curl, nothing but the binary\n\n   kubectl exec -it pod -- sh\n     exec failed: unable to start container process:\n     exec: sh: executable file not found in $PATH\n\n   this is a sign the image is small, not that something is broken",
+   "note": "**이미지가 작다는 신호이지 고장이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "임시 컨테이너를 붙인다",
+   "md": "**「도커」에서 이미지를 작게** 만들었다.\n\n> **distroless 나 `scratch` 면 셸이** 없다.\n> **`kubectl exec` 이 안** 된다.\n> **좋은 일**이다 — **공격자도 셸이** 없다.\n\n**그래도 들여다봐야 할 때가** 있다.\n\n```bash\nkubectl debug -it web --image=busybox:1.36 --target=web\n```\n\n> **같은 파드에 컨테이너를 하나 더** 붙인다.\n> **`--target` 으로 프로세스 네임스페이스를 공유**한다.\n> **그러면 그쪽 프로세스가 `ps` 에** 보인다.\n>\n> **원래 컨테이너를 안** 바꾼다.\n> **파드를 다시 안** 띄운다.\n\n**노드에 들어갈 수도** 있다.\n\n```bash\nkubectl debug node/lab-worker -it --image=busybox\n```\n\n> **호스트 파일 시스템이 `/host` 에** 붙는다.\n> **노드 자체를 봐야 할 때** 쓴다.\n> **10장에서** 다시 본다.\n\n**`exec` 이 되는 이미지도 조심**한다.\n\n> **운영 파드에 들어가서 파일을 고치면 그 파드가 죽는 순간** 사라진다.\n> **1.4절에서 확인**했다.\n> **디버깅은 되고 고치는 건 안** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 파드 하나 ---\n\n$ kubectl run web --image=nginx:1.27\n\npod/web created\n\n$ kubectl get pod web -o wide --no-headers\n\nweb   1/1   Running   0   8s   10.244.1.7   lab-worker   <none>   <none>\n\n#   IP 와 노드가 나온다\n\n$ kubectl get pod web -o jsonpath=\\\n'{.metadata.ownerReferences}{\"\\n\"}'\n\n#   (비어 있다)\n\n#   주인이 없다\n\n#   1.5절의 그 파드다\n\n# --- 안에 들어간다 ---\n\n$ kubectl exec -it web -- sh\n\n# hostname\nweb\n\n# ls /etc/nginx\nconf.d  fastcgi_params  mime.types  modules  nginx.conf  scgi_params\n\n# cat /etc/hosts\n10.244.1.7      web\n\n# env | grep KUBERNETES\nKUBERNETES_SERVICE_HOST=10.96.0.1\nKUBERNETES_SERVICE_PORT=443\n\n#   서비스 환경 변수가 들어 있다\n\n#   6장에서 이게 뭔지 본다\n\n# exit\n\n$ kubectl exec web -- nginx -v\n\nnginx version: nginx/1.27.1\n\n#   -it 없이 한 줄만 실행할 수도 있다\n\n# --- 로그 ---\n\n$ kubectl logs web --tail=3\n\n/docker-entrypoint.sh: Configuration complete; ready for start up\n2026/09/09 12:31:02 [notice] 1#1: using the \"epoll\" event method\n2026/09/09 12:31:02 [notice] 1#1: start worker processes\n\n$ kubectl port-forward pod/web 8080:80 > /dev/null &\n$ sleep 1 && curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080\n\n200\n\n$ kubectl logs web --tail=1\n\n127.0.0.1 - - [09/Sep/2026:12:31:44 +0000] \"GET / HTTP/1.1\" 200 615 \"-\"\n  \"curl/8.7.1\" \"-\"\n\n#   내 요청이 찍혔다\n\n#   서비스 없이 붙었다\n\n$ kill %1\n\n# --- 파일을 꺼낸다 ---\n\n$ kubectl cp web:/etc/nginx/nginx.conf ./nginx.conf\n\ntar: Removing leading '/' from member names\n\n$ head -3 nginx.conf\n\nuser  nginx;\nworker_processes  auto;\nerror_log  /var/log/nginx/error.log notice;\n\n#   tar 를 쓴다\n\n#   그래서 이미지에 tar 가 없으면 안 된다\n\n# --- 고쳐도 사라진다 ---\n\n$ kubectl exec web -- sh -c 'echo \"수정됨\" > /usr/share/nginx/html/index.html'\n$ kubectl exec web -- cat /usr/share/nginx/html/index.html\n\n수정됨\n\n$ kubectl delete pod web\n\npod \"web\" deleted\n\n$ kubectl run web --image=nginx:1.27 > /dev/null\n$ sleep 5 && kubectl exec web -- head -c 30 /usr/share/nginx/html/index.html\n\n<!DOCTYPE html>\n<html>\n<head>\n\n#   원래대로다\n\n#   1.4절에서 본 것이다\n\n# --- 셸이 없는 이미지 ---\n\n$ kubectl run tiny --image=gcr.io/distroless/static-debian12 \\\n    --command -- /bin/sleep 3600\n\npod/tiny created\n\n$ sleep 5 && kubectl get pod tiny --no-headers\n\ntiny   0/1   Error   1   7s\n\n$ kubectl logs tiny --previous\n\n#   (비어 있다)\n\n$ kubectl describe pod tiny | grep -A3 'Last State'\n\n    Last State:     Terminated\n      Reason:       StartError\n      Message:      failed to create containerd task: exec: \"/bin/sleep\":\n        stat /bin/sleep: no such file or directory\n\n#   sleep 도 없다\n\n#   진짜 아무것도 없다\n\n$ kubectl delete pod tiny\n\n#   조금 더 있는 것으로 바꾼다\n\n$ kubectl run app --image=gcr.io/distroless/java21-debian12 \\\n    --command -- /usr/bin/java -version\n\n$ sleep 8 && kubectl logs app\n\nopenjdk version \"21.0.4\" 2024-07-16\nOpenJDK Runtime Environment (build 21.0.4+7)\n\n$ kubectl exec -it app -- sh\n\nerror: Internal error occurred: error executing command in container:\n  failed to exec in container: failed to start exec: OCI runtime exec\n  failed: exec failed: unable to start container process: exec: \"sh\":\n  executable file not found in $PATH: unknown\n\n#   셸이 없다\n\n#   고장이 아니다\n\n#   「도커」 5장에서 일부러 작게 만든 결과다\n\n# --- 임시 컨테이너를 붙인다 ---\n\n$ kubectl run app --image=gcr.io/distroless/java21-debian12 \\\n    --command -- /usr/bin/java -Xshare:off -version\n\n#   (계속 도는 것으로 바꿔 띄운다)\n\n$ kubectl debug -it app --image=busybox:1.36 --target=app\n\nDefaulting debug container name to debugger-x9k2m.\nIf you don't see a command prompt, try pressing enter.\n\n/ # ps aux\nPID   USER     TIME  COMMAND\n    1 root      0:00 /usr/bin/java -jar /app.jar\n   14 root      0:00 sh\n\n#   원래 컨테이너의 프로세스가 보인다\n\n#   --target 으로 네임스페이스를 공유해서다\n\n/ # ls /proc/1/root/app.jar\n/proc/1/root/app.jar\n\n#   그쪽 파일 시스템도 볼 수 있다\n\n/ # wget -qO- localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n#   같은 네트워크다\n\n/ # exit\n\n$ kubectl get pod app -o jsonpath=\\\n'{range .spec.ephemeralContainers[*]}{.name}{\" \"}{.image}{\"\\n\"}{end}'\n\ndebugger-x9k2m busybox:1.36\n\n#   파드에 임시 컨테이너가 붙어 있다\n\n$ kubectl get pod app --no-headers\n\napp   1/1   Running   0   3m\n\n#   원래 컨테이너는 그대로다\n\n#   재시작이 없었다\n\n# --- 노드에 들어간다 ---\n\n$ kubectl debug node/lab-worker -it --image=busybox:1.36\n\nCreating debugging pod node-debugger-lab-worker-p4m2k with container\n  debugger on node lab-worker.\n\n/ # ls /host\nbin  boot  dev  etc  home  kind  lib  media  mnt  opt  proc  root  run\n\n/ # cat /host/etc/os-release | head -2\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\n\n/ # ls /host/var/lib/kubelet | head -3\ncpu_manager_state\ndevice-plugins\nmemory_manager_state\n\n#   노드의 파일 시스템이 /host 다\n\n#   3.2절에서 kindest/node 라고 했던 그것이다\n\n/ # exit\n\n$ kubectl delete pod node-debugger-lab-worker-p4m2k\n\n#   디버그 파드는 직접 지운다\n\n# --- 임시 파드 관용구 ---\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    curl -s -o /dev/null -w '%{http_code}\\n' https://kubernetes.default/version\n\n000\npod \"tmp\" deleted\n\n#   인증서 때문에 000 이다\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    curl -sk -o /dev/null -w '%{http_code}\\n' https://kubernetes.default/version\n\n403\npod \"tmp\" deleted\n\n#   403 이다\n\n#   2.5절의 RBAC 이다\n\n#   --rm 이라 끝나면 지워진다\n\n#   이 관용구를 이 책에서 계속 쓴다\n\n# --- 치운다 ---\n\n$ kubectl delete pod web app\n\npod \"web\" deleted\npod \"app\" deleted\n\n# --- 다음 절에서 ---\n\n#   무엇을 볼 것인지 넷으로 줄인다",
+   "note": "**`kubectl run` 으로 만든 파드는 `ownerReferences` 가 비어** 있다.\n\n**`port-forward` 로 서비스 없이 200** 을 받고 로그에 내 요청이 찍힌다.\n\n**파드 안에서 고친 파일이 재생성 뒤** 사라진다.\n\n**distroless 이미지는 `sh` 도 `sleep` 도 없어 `executable file not found`** 다 — 고장이 아니다.\n\n**`kubectl debug --target` 으로 붙이면 원래 프로세스가 `ps` 에 보이고 재시작이** 없다."
+  }
+ ],
+ "recap": [
+  "**`kubectl run` 은 주인 없는 파드** 하나다.",
+  "**`exec`·`logs`·`port-forward`·`cp`·`debug`** 다섯이다.",
+  "**`port-forward` 로 서비스 없이** 붙는다.",
+  "**`--previous` 가 죽은 컨테이너의 로그**다.",
+  "**파드 안에서 고친 것은** 사라진다.",
+  "**distroless 는 셸이 없어 `exec` 이 안** 된다.",
+  "**그게 좋은 신호**다.",
+  "**`kubectl debug --target` 이 재시작 없이** 붙는다.",
+  "**`--rm -it --restart=Never` 가 임시 파드 관용구**다."
+ ],
+ "drills": [
+  {
+   "task": "파드를 만들고 안에 들어가 본다.",
+   "done_when": "환경 변수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`port-forward` 로 붙어 본다.",
+   "done_when": "로그에 요청이 찍히는 것을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "distroless 이미지에 `exec` 을 해 본다.",
+   "done_when": "오류 메시지를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`kubectl debug` 로 붙어 본다.",
+   "done_when": "원래 프로세스가 보이는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`kubectl run` 으로 만든 파드의 특징은?",
+   "a": "소유자가 없어 지우면 되살아나지 않는다."
+  },
+  {
+   "q": "서비스 없이 파드에 붙으려면?",
+   "a": "`kubectl port-forward` 를 쓴다."
+  },
+  {
+   "q": "죽은 컨테이너의 로그는?",
+   "a": "`kubectl logs --previous` 다."
+  },
+  {
+   "q": "distroless 에서 `exec` 이 실패하는 이유는?",
+   "a": "이미지에 셸이 없어서다. 고장이 아니다."
+  },
+  {
+   "q": "`kubectl debug --target` 이 하는 일은?",
+   "a": "같은 파드에 컨테이너를 붙여 프로세스 네임스페이스를 공유한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임시 컨테이너",
+   "def": "돌고 있는 파드에 나중에 붙이는 디버깅용 컨테이너. 재시작 없이 추가된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Pods",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Debug Running Pods",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

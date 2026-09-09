@@ -144,7 +144,7 @@
           "title": "kubectl 과 컨텍스트",
           "summary": "지금 어느 클러스터에 치고 있는가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -152,7 +152,7 @@
           "title": "첫 파드",
           "summary": "한 줄로 띄우고 안에 들어가 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

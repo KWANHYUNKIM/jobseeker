@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "kubectl",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "kubectl 과 컨텍스트",
+ "summary": "지금 어느 클러스터에 치고 있는가.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨텍스트 셋을 안다.",
+  "네임스페이스 기본값을 바꾼다.",
+  "지금 어디인지 늘 보이게 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절에서 클러스터를 둘** 만들었다. **어느 쪽에 치는지 명령줄에 안** 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨텍스트가 묶는 셋",
+   "ascii": "   three things a context binds together\n\n   cluster    which api server, and which ca to trust\n   user       which certificate or token proves who I am\n   namespace  which one is default when I do not say\n\n   kubectl always uses exactly one context, the current one\n   nothing on the command line reminds you which",
+   "note": "**어느 쪽인지 명령줄이 안 알려** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정 파일 구조",
+   "md": "```yaml\napiVersion: v1\nkind: Config\ncurrent-context: kind-lab\nclusters:\n  - name: kind-lab\n    cluster: { server: https://127.0.0.1:52791, certificate-authority-data: ... }\nusers:\n  - name: kind-lab\n    user: { client-certificate-data: ..., client-key-data: ... }\ncontexts:\n  - name: kind-lab\n    context: { cluster: kind-lab, user: kind-lab, namespace: default }\n```\n\n> **2.5절에서 본 그 파일**이다.\n> **`contexts` 가 셋을 묶고 `current-context` 가 지금**이다.\n\n**자주 쓰는 명령**\n\n```bash\nkubectl config get-contexts          # 목록, 현재에 * 표시\nkubectl config current-context       # 지금 하나\nkubectl config use-context kind-lab  # 바꾼다\nkubectl config set-context --current --namespace=dev\n```\n\n> **마지막 줄이 가장 자주** 쓴다.\n> **매번 `-n dev` 를 안 붙여도** 된다.\n\n**여러 파일을 합칠 수** 있다.\n\n```bash\nexport KUBECONFIG=~/.kube/config:~/.kube/prod.yaml\nkubectl config view --flatten > ~/.kube/merged.yaml\n```\n\n> **회사 클러스터 설정을 따로 받아 왔을 때** 쓴다.\n> **합치기 전에 `current-context` 가 무엇이 되는지** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 절이 다루는 사고",
+   "ascii": "   the accident this section is about\n\n   a terminal from this morning, still on prod\n   a command meant for dev\n     kubectl delete deployment web\n\n   it worked, and it printed the same thing it would have on dev\n\n   the fix is not being careful, it is making the context visible",
+   "note": "**조심하는 게 답이 아니라 보이게 하는 게** 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "보이게 만든다",
+   "md": "**프롬프트에 넣는 게 가장** 확실하다.\n\n```bash\n# ~/.zshrc\nkube_ps1() {\n  local ctx=$(kubectl config current-context 2>/dev/null) || return\n  local ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)\n  echo \"(${ctx}:${ns:-default})\"\n}\nsetopt PROMPT_SUBST\nPROMPT='$(kube_ps1) %~ %# '\n```\n\n> **`kube-ps1` 이라는 기성 도구도** 있다.\n> **`kubectx`·`kubens` 로 전환도 쉬워진다.**\n\n**운영에는 다른 장치를 더** 둔다.\n\n| 장치 | 무엇 |\n|---|---|\n| 별도 파일 | `KUBECONFIG=~/.kube/prod` 를 그때만 |\n| 읽기 전용 사용자 | 평소에는 삭제 권한이 없다 |\n| `--context` 명시 | 스크립트에 반드시 |\n\n> **둘째가 진짜** 답이다.\n> **2.5절에서 `--as` 로 403 을** 봤다.\n> **평소 계정에 `delete` 가 없으면 실수해도 안** 지워진다.\n\n**스크립트에는 항상 명시**한다.\n\n```bash\nkubectl --context=kind-lab -n dev delete deployment web\n```\n\n> **CI 에서 `current-context` 에 의존하면 언젠가** 사고다.\n> **⑩ 7.1절에서 \"규칙에 없으면 조용히 열린다\" 고** 했다.\n> **여기서는 \"명시 안 하면 조용히 다른 데로 간다\"** 다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 지금 어디인가 ---\n\n$ kubectl config get-contexts\n\nCURRENT   NAME           CLUSTER        AUTHINFO       NAMESPACE\n*         kind-lab       kind-lab       kind-lab\n          kind-scratch   kind-scratch   kind-scratch\n\n#   별표가 현재다\n\n#   NAMESPACE 가 비어 있으면 default 다\n\n$ kubectl config current-context\n\nkind-lab\n\n$ kubectl config view --minify -o jsonpath=\\\n'{.contexts[0].context.cluster} {.clusters[0].cluster.server}{\"\\n\"}'\n\nkind-lab https://127.0.0.1:52791\n\n#   --minify 는 현재 컨텍스트만 보여 준다\n\n# --- 바꿔 본다 ---\n\n$ kind create cluster --name scratch > /dev/null 2>&1\n$ kubectl config use-context kind-scratch\n\nSwitched to context \"kind-scratch\".\n\n$ kubectl get nodes --no-headers\n\nscratch-control-plane   Ready   control-plane   32s   v1.31.0\n\n#   한 대짜리다\n\n$ kubectl get deployment --no-headers\n\nNo resources found in default namespace.\n\n#   비어 있다\n\n#   lab 에는 있었다\n\n$ kubectl config use-context kind-lab\n\nSwitched to context \"kind-lab\".\n\n$ kubectl get nodes --no-headers | wc -l\n\n3\n\n#   명령은 똑같았다\n\n#   가리키는 곳만 달랐다\n\n# --- 사고를 재현한다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3\n\ndeployment.apps/web created\n\n$ kubectl config use-context kind-scratch\n\nSwitched to context \"kind-scratch\".\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=1\n\ndeployment.apps/web created\n\n#   (한참 뒤, 다른 터미널에서 돌아왔다고 치자)\n\n$ kubectl delete deployment web\n\ndeployment.apps \"web\" deleted\n\n#   어느 쪽이 지워졌을까\n\n$ kubectl config current-context\n\nkind-scratch\n\n#   scratch 였다\n\n#   출력은 lab 에서 지웠을 때와 한 글자도 다르지 않다\n\n$ kubectl --context=kind-lab get deployment --no-headers\n\nweb   3/3   3   3   2m\n\n#   lab 은 무사하다\n\n#   이번엔 운이 좋았다\n\n# --- 네임스페이스 기본값 ---\n\n$ kubectl config use-context kind-lab\n$ kubectl create namespace dev\n\nnamespace/dev created\n\n$ kubectl get pods\n\nNAME                  READY   STATUS    RESTARTS   AGE\nweb-6d8f4b9c7-h4n8q   1/1     Running   0          3m\n...\n\n$ kubectl get pods -n dev\n\nNo resources found in dev namespace.\n\n$ kubectl config set-context --current --namespace=dev\n\nContext \"kind-lab\" modified.\n\n$ kubectl get pods\n\nNo resources found in dev namespace.\n\n#   같은 명령이 다른 곳을 본다\n\n$ kubectl config get-contexts kind-lab\n\nCURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE\n*         kind-lab   kind-lab   kind-lab   dev\n\n#   NAMESPACE 열에 dev 가 찍혔다\n\n$ kubectl get pods -A --no-headers | wc -l\n\n14\n\n#   -A 는 전부 본다\n\n#   kube-system 것까지 나온다\n\n# --- 프롬프트에 넣는다 ---\n\n$ cat >> ~/.zshrc <<'EOF'\nkube_ps1() {\n  local ctx ns\n  ctx=$(kubectl config current-context 2>/dev/null) || return\n  ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)\n  echo \"(${ctx}:${ns:-default})\"\n}\nsetopt PROMPT_SUBST\nPROMPT='$(kube_ps1) %~ %# '\nEOF\n\n$ source ~/.zshrc\n\n(kind-lab:dev) ~/lab %\n\n#   이제 보인다\n\n$ kubectl config use-context kind-scratch > /dev/null\n\n(kind-scratch:default) ~/lab %\n\n#   바뀐 것이 보인다\n\n#   조심하는 것보다 낫다\n\n$ kubectl config use-context kind-lab > /dev/null\n\n# --- 명시하는 습관 ---\n\n$ kubectl --context=kind-lab -n default get deployment --no-headers\n\nweb   3/3   3   3   6m\n\n$ kubectl --context=kind-scratch -n default get deployment --no-headers\n\nNo resources found in default namespace.\n\n#   프롬프트를 안 보고도 확실하다\n\n#   스크립트에는 이렇게 쓴다\n\n$ cat deploy.sh\n\n#!/bin/bash\nset -euo pipefail\nCONTEXT=\"${1:?context required}\"\nNAMESPACE=\"${2:?namespace required}\"\nkubectl --context=\"$CONTEXT\" -n \"$NAMESPACE\" apply -f k8s/\n\n$ ./deploy.sh\n\n./deploy.sh: line 3: 1: context required\n\n#   안 주면 멈춘다\n\n#   current-context 로 흘러가지 않는다\n\n# --- 읽기 전용 사용자 ---\n\n$ kubectl create serviceaccount viewer\n$ kubectl create clusterrolebinding viewer-binding \\\n    --clusterrole=view --serviceaccount=default:viewer\n\nclusterrolebinding.rbac.authorization.k8s.io/viewer-binding created\n\n$ kubectl auth can-i get pods --as=system:serviceaccount:default:viewer\n\nyes\n\n$ kubectl auth can-i delete deployments --as=system:serviceaccount:default:viewer\n\nno\n\n#   보기만 된다\n\n$ kubectl delete deployment web --as=system:serviceaccount:default:viewer\n\nError from server (Forbidden): deployments.apps \"web\" is forbidden:\n  User \"system:serviceaccount:default:viewer\" cannot delete resource\n  \"deployments\" in API group \"apps\" in the namespace \"default\"\n\n#   실수해도 안 지워진다\n\n#   ⑩ 7장의 인가와 같은 생각이다\n\n#   조심 대신 구조로 막는다\n\n# --- 여러 설정 파일 ---\n\n$ kind get kubeconfig --name scratch > ~/.kube/scratch.yaml\n$ KUBECONFIG=~/.kube/config:~/.kube/scratch.yaml kubectl config get-contexts -o name\n\nkind-lab\nkind-scratch\n\n$ KUBECONFIG=~/.kube/config:~/.kube/scratch.yaml \\\n    kubectl config view --flatten | grep -c 'name: kind-'\n\n4\n\n#   클러스터 둘 + 사용자 둘이다\n\n#   --flatten 이 인증서를 파일에 박아 넣는다\n\n# --- 치운다 ---\n\n$ kubectl config set-context --current --namespace=default\n\nContext \"kind-lab\" modified.\n\n$ kind delete cluster --name scratch\n\nDeleting cluster \"scratch\" ...\n\n$ kubectl config get-contexts -o name\n\nkind-lab\n\n#   컨텍스트도 같이 지워졌다\n\n$ kubectl delete deployment web && kubectl delete namespace dev\n\ndeployment.apps \"web\" deleted\nnamespace \"dev\" deleted\n\n# --- 다음 절에서 ---\n\n#   파드를 하나 띄우고 안에 들어가 본다",
+   "note": "**같은 `kubectl delete deployment web` 이 어느 클러스터에서 돌았는지 출력이 한 글자도 안** 다르다.\n\n**`set-context --current --namespace=dev` 뒤에 같은 명령이 다른 곳을** 본다.\n\n**프롬프트에 `(kind-lab:dev)` 를 넣으니 전환이** 보인다.\n\n**`view` 권한 계정으로는 `delete` 가 `Forbidden`** 이다 — 조심 대신 구조로 막는다.\n\n**`kind delete cluster` 가 컨텍스트도 같이** 지운다."
+  }
+ ],
+ "recap": [
+  "**컨텍스트가 클러스터·사용자·네임스페이스를** 묶는다.",
+  "**명령줄에 어디인지 안** 나온다.",
+  "**같은 명령의 출력이 클러스터마다** 같다.",
+  "**`set-context --current --namespace` 로 기본값을** 바꾼다.",
+  "**프롬프트에 넣는 게 가장** 확실하다.",
+  "**스크립트에는 `--context` 를 명시**한다.",
+  "**읽기 전용 계정이 진짜** 방어다.",
+  "**`KUBECONFIG` 로 파일을 합칠 수** 있다.",
+  "**클러스터를 지우면 컨텍스트도** 지워진다."
+ ],
+ "drills": [
+  {
+   "task": "클러스터를 둘 만들고 오간다.",
+   "done_when": "같은 명령이 다른 결과를 내는 것을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "네임스페이스 기본값을 바꾼다.",
+   "done_when": "`get-contexts` 에 찍히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "프롬프트에 컨텍스트를 넣는다.",
+   "done_when": "전환이 보이는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`view` 계정으로 삭제를 시도한다.",
+   "done_when": "`Forbidden` 을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨텍스트는 무엇을 묶나?",
+   "a": "클러스터, 사용자, 기본 네임스페이스다."
+  },
+  {
+   "q": "잘못된 클러스터에 명령이 갔는지 어떻게 아나?",
+   "a": "출력만으로는 모른다. 그래서 프롬프트에 표시한다."
+  },
+  {
+   "q": "매번 `-n` 을 안 붙이려면?",
+   "a": "`kubectl config set-context --current --namespace=` 를 쓴다."
+  },
+  {
+   "q": "스크립트에서 지켜야 할 것은?",
+   "a": "`--context` 와 `-n` 을 명시하는 것이다."
+  },
+  {
+   "q": "가장 확실한 방어는?",
+   "a": "평소 계정에 삭제 권한을 주지 않는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "컨텍스트",
+   "def": "클러스터·사용자·네임스페이스를 묶은 이름. `kubectl` 은 항상 그중 하나를 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Configure Access to Multiple Clusters",
+   "url": "https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
