@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "authz-events",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "인가 이벤트",
+ "summary": "거부를 기록한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "거부 이벤트를 받는다.",
+  "허용 이벤트가 왜 기본이 아닌지 안다.",
+  "이벤트로 못 보는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.9절에서 아무도 안 듣고** 있었다. **듣기 시작한다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 이벤트",
+   "ascii": "   two events, one of them very loud\n\n   AuthorizationDeniedEvent   published always\n   AuthorizationGrantedEvent  published only if you ask\n\n   why the asymmetry\n     every allowed request would fire one\n     a static file, a health check, a poll every second\n\n   granted needs an explicit AuthorizationEventPublisher bean",
+   "note": "**허용은 물어야** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "거부는 그냥 나온다",
+   "md": "```java\n@Component\npublic class AuthorizationEventListener {\n\n    @EventListener\n    public void onDenied(AuthorizationDeniedEvent<?> event) {\n        Authentication auth = event.getAuthentication().get();\n        Object object = event.getObject();\n        log.warn(\"denied user={} object={}\", auth.getName(), object);\n    }\n}\n```\n\n> **제네릭이라 `<?>` 를** 쓴다.\n> **`getObject()` 가 웹이면 `HttpServletRequest`, 메서드면 `MethodInvocation`** 이다.\n\n**허용은 켜야 한다.**\n\n```java\n@Bean\nAuthorizationEventPublisher authorizationEventPublisher(\n        ApplicationEventPublisher publisher) {\n    return new SpringAuthorizationEventPublisher(publisher);\n}\n```\n\n> **이 빈이 있어야 `AuthorizationGrantedEvent` 도** 나간다.\n> **기본 발행기는 거부만** 낸다.\n\n**왜 그런가**\n\n> **허용이 압도적으로** 많다.\n> **정적 파일 하나에도 한 번**이다.\n> **로그가 초당 수백 줄이** 된다.\n>\n> **`@PreAuthorize` 만 골라 듣는 방법도** 있다.\n>\n> ```java\n> @EventListener\n> public void onGranted(AuthorizationGrantedEvent<MethodInvocation> event) {\n>     // 메서드 호출만 온다\n> }\n> ```\n>\n> **제네릭으로 걸러진다** — **스프링이 타입을 보고** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "이벤트가 안 나오는 자리",
+   "ascii": "   where a denial is born, and which event you get\n\n   the filter chain      AuthorizationDeniedEvent, with the request\n   method security       AuthorizationDeniedEvent, with the invocation\n   csrf                  no event at all, it never reaches the filter\n   a business rule       no event, it is your own exception\n\n   so an audit log built only on events has two blind spots",
+   "note": "**CSRF 와 내 예외는 이벤트가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "감사 로그의 사각지대",
+   "md": "**이벤트만 보면 두 가지를** 놓친다.\n\n| 놓치는 것 | 이유 | 절 |\n|---|---|---|\n| CSRF 실패 403 | 5번 필터에서 끝난다 | 2.3·6.1 |\n| 내가 던진 예외 | 시큐리티가 모른다 | 7.6 |\n\n> **7.6절에서 소유권 검사를 조회 조건에** 넣었다.\n> **404 를 주고 끝**이라 이벤트가 없다.\n> **\"남의 주문을 열려 한 시도\" 가 기록에 안** 남는다.\n>\n> **그게 중요하면 직접 이벤트를 내거나 로그를** 남긴다.\n\n**MDC 와 같이 쓴다.**\n\n```java\n@EventListener\npublic void onDenied(AuthorizationDeniedEvent<?> event) {\n    MDC.put(\"user\", event.getAuthentication().get().getName());\n    try {\n        log.warn(\"denied {}\", describe(event.getObject()));\n    } finally {\n        MDC.remove(\"user\");\n    }\n}\n```\n\n> **리스너가 같은 스레드라 MDC 가** 통한다(4.2절).\n> **`@Async` 면 안** 통한다.\n\n**남기지 말아야 할 것**\n\n> **요청 본문 · 쿠키 · `Authorization` 헤더**다.\n> **거부된 요청이라 더 위험**하다 — **공격 시도의 페이로드가 로그에** 쌓인다.\n> **경로 · 메서드 · 사용자 · 시각이면** 충분하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 거부 이벤트를 받는다 ---\n\n@Component\npublic class AuthorizationEventListener {\n    @EventListener\n    public void onDenied(AuthorizationDeniedEvent<?> event) {\n        System.out.println(\">>> DENIED user=\"\n                + event.getAuthentication().get().getName()\n                + \" object=\" + describe(event.getObject()));\n    }\n\n    private String describe(Object o) {\n        if (o instanceof HttpServletRequest r) {\n            return r.getMethod() + \" \" + r.getRequestURI();\n        }\n        if (o instanceof MethodInvocation m) {\n            return m.getMethod().getDeclaringClass().getSimpleName()\n                    + \".\" + m.getMethod().getName();\n        }\n        return String.valueOf(o);\n    }\n}\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\n>>> DENIED user=user@a.com object=GET /admin/panel\n\n$ curl -s -o /dev/null -b user.txt \\\n    -X POST localhost:8080/api/orders/1/cancel\n\n>>> DENIED user=user@a.com object=OrderService.cancel\n\n#   두 층이 같은 이벤트로 온다\n\n#   객체 타입만 다르다\n\n# --- 허용은 안 나온다 ---\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders\n\n$ ./gradlew bootRun 2>&1 | grep -c \"GRANTED\"\n0\n\n#   리스너를 붙여 놔도 안 온다\n\n@EventListener\npublic void onGranted(AuthorizationGrantedEvent<?> event) {\n    System.out.println(\">>> GRANTED \"\n            + event.getAuthentication().get().getName());\n}\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders\n$ ./gradlew bootRun 2>&1 | grep -c \">>> GRANTED\"\n0\n\n#   발행기가 안 낸다\n\n# --- 켠다 ---\n\n@Bean\nAuthorizationEventPublisher authorizationEventPublisher(\n        ApplicationEventPublisher publisher) {\n    return new SpringAuthorizationEventPublisher(publisher);\n}\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders\n\n>>> GRANTED user@a.com\n\n#   나온다\n\n#   그런데 화면 하나에\n\n$ curl -s -b user.txt localhost:8080/orders > /dev/null\n$ ./gradlew bootRun 2>&1 | grep -c \">>> GRANTED\"\n\n7\n\n#   일곱 번이다\n\n#   CSS 와 JS 도 인가를 지난다 (permitAll)\n\n$ ./gradlew bootRun 2>&1 | grep \">>> GRANTED\" | head -3\n\n>>> GRANTED user@a.com\n>>> GRANTED user@a.com\n>>> GRANTED user@a.com\n\n#   무엇이 허용됐는지 안 찍으면 쓸모도 없다\n\n#   찍으면 로그가 폭발한다\n\n# --- 메서드 호출만 듣는다 ---\n\n@EventListener\npublic void onMethodGranted(AuthorizationGrantedEvent<MethodInvocation> event) {\n    System.out.println(\">>> METHOD GRANTED \"\n            + event.getObject().getMethod().getName());\n}\n\n$ curl -s -b admin.txt -X POST localhost:8080/api/orders/1/cancel -o /dev/null\n\n>>> METHOD GRANTED cancel\n\n$ curl -s -b user.txt localhost:8080/orders > /dev/null\n$ ./gradlew bootRun 2>&1 | grep -c \">>> METHOD GRANTED\"\n0\n\n#   웹 요청은 안 온다\n\n#   제네릭 타입으로 걸러진다\n\n#   중요한 행위만 남기는 방법이다\n\n# --- CSRF 실패는 이벤트가 없다 ---\n\n$ curl -s -o /dev/null -b user.txt -X POST localhost:8080/orders/new \\\n    -d 'productNumbers=001'\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> DENIED\"\n0\n\nDEBUG CsrfFilter : Invalid CSRF token found\nDEBUG AccessDeniedHandlerImpl : Responding with 403 status code\n\n#   403 인데 이벤트가 없다\n\n#   5번 필터에서 끝났다 (2.3절)\n\n#   감사 로그에 안 남는다\n\n#   필요하면 CSRF 쪽에 핸들러를 준다\n\nhttp.csrf(c -> c.accessDeniedHandler((req, res, ex) -> {\n    System.out.println(\">>> CSRF DENIED \" + req.getMethod()\n            + \" \" + req.getRequestURI());\n    res.sendError(403);\n}));\n\n>>> CSRF DENIED POST /orders/new\n\n# --- 내 예외도 이벤트가 없다 ---\n\npublic OrderDto find(Long id, String email) {\n    return repository.findByIdAndOwnerEmail(id, email)\n            .map(OrderDto::from)\n            .orElseThrow(NoSuchElementException::new);\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    localhost:8080/api/orders/17\n404\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> DENIED\"\n0\n\n#   남의 주문을 열려 한 시도인데 기록이 없다\n\n#   7.6절에서 404 로 통일한 대가다\n\n#   직접 남긴다\n\npublic OrderDto find(Long id, String email) {\n    return repository.findByIdAndOwnerEmail(id, email)\n            .map(OrderDto::from)\n            .orElseThrow(() -> {\n                publisher.publishEvent(new AccessAttemptEvent(id, email));\n                return new NoSuchElementException();\n            });\n}\n\n>>> ATTEMPT order=17 by=user@a.com\n\n#   이제 남는다\n\n# --- 로그에 무엇을 남길까 ---\n\n@EventListener\npublic void onDenied(AuthorizationDeniedEvent<?> event) {\n    if (event.getObject() instanceof HttpServletRequest r) {\n        System.out.println(\">>> \" + Instant.now()\n                + \" \" + event.getAuthentication().get().getName()\n                + \" \" + r.getMethod() + \" \" + r.getRequestURI()\n                + \" from \" + r.getRemoteAddr());\n    }\n}\n\n$ curl -s -o /dev/null -b user.txt 'localhost:8080/admin/panel?token=secret'\n\n>>> 2026-09-09T11:21:44.512Z user@a.com GET /admin/panel from 127.0.0.1\n\n#   쿼리스트링을 안 찍었다\n\n#   getRequestURI 는 쿼리를 뺀 경로다\n\n#   getRequestURL 이나 getQueryString 을 쓰면\n\n>>> ... /admin/panel?token=secret\n\n#   거부된 요청의 페이로드가 로그에 쌓인다\n\n#   경로 · 메서드 · 사용자 · 시각이면 충분하다\n\n# --- 테스트로 고정 ---\n\n@Test\n@WithMockUser(roles = \"USER\")\nvoid 거부는_기록된다() throws Exception {\n    mockMvc.perform(get(\"/admin/panel\"))\n            .andExpect(status().isForbidden());\n\n    assertThat(recorder.getDenials()).hasSize(1);\n    assertThat(recorder.getDenials().get(0)).contains(\"/admin/panel\");\n}\n\n$ ./gradlew test\n\n130 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   이 이벤트로 실제로 무언가를 만든다",
+   "note": "**거부는 웹과 메서드가 같은 이벤트로** 오고 객체 타입만 다르다.\n\n**허용은 발행기 빈을 만들어야 나오고, 화면 하나에 일곱 번**이다.\n\n**제네릭 타입으로 메서드 호출만 골라** 들을 수 있다.\n\n**CSRF 실패 403 과 내가 던진 404 는 이벤트가 0회**다 — 감사 로그의 사각지대다.\n\n**`getRequestURI` 는 쿼리를 빼고 `getRequestURL`·`getQueryString` 은** 넣는다."
+  }
+ ],
+ "recap": [
+  "**거부 이벤트는 기본으로** 나온다.",
+  "**허용 이벤트는 발행기 빈을 만들어야** 나온다.",
+  "**허용이 너무 많아 기본이** 아니다.",
+  "**웹과 메서드가 같은 이벤트, 다른 객체**다.",
+  "**제네릭으로 골라 들을 수** 있다.",
+  "**CSRF 실패는 이벤트가** 없다.",
+  "**내가 던진 예외도** 없다.",
+  "**필요하면 직접 이벤트를** 낸다.",
+  "**거부 로그에 페이로드를 남기지** 않는다."
+ ],
+ "drills": [
+  {
+   "task": "거부 리스너를 만든다.",
+   "done_when": "두 층의 객체 타입을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "허용 이벤트를 켠다.",
+   "done_when": "화면 하나에 몇 번인지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "메서드 호출만 골라 듣는다.",
+   "done_when": "웹 요청이 안 오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "CSRF 실패에 로그를 붙인다.",
+   "done_when": "이벤트 없이도 남기는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "허용 이벤트가 기본이 아닌 이유는?",
+   "a": "허용이 압도적으로 많아 로그가 폭발한다."
+  },
+  {
+   "q": "허용 이벤트를 켜려면?",
+   "a": "`SpringAuthorizationEventPublisher` 빈을 만든다."
+  },
+  {
+   "q": "웹과 메서드 거부를 어떻게 구별하나?",
+   "a": "`getObject()` 의 타입이나 리스너 제네릭으로 구별한다."
+  },
+  {
+   "q": "이벤트로 못 보는 거부는?",
+   "a": "CSRF 실패와 내가 직접 던진 예외다."
+  },
+  {
+   "q": "거부 로그에 남기면 안 되는 것은?",
+   "a": "쿼리스트링·본문·쿠키 같은 페이로드다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "AuthorizationDeniedEvent",
+   "def": "인가가 거부될 때 나오는 이벤트. 웹과 메서드 양쪽에서 같은 타입으로 온다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Authorization Events",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/events.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Logging Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
