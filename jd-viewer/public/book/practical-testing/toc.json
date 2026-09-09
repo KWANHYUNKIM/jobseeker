@@ -293,7 +293,7 @@
           "title": "@DataJpaTest 와 @SpringBootTest",
           "summary": "무엇이 뜨나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -301,7 +301,7 @@
           "title": "통합 테스트와 슬라이스 테스트",
           "summary": "어느 쪽을 기본으로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",

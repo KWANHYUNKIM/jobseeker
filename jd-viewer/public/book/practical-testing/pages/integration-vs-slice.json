@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "integration-vs-slice",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "통합 테스트와 슬라이스 테스트",
+ "summary": "어느 쪽을 기본으로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 형태의 대가를 안다.",
+  "무엇을 기본으로 할지 정한다.",
+  "통합 테스트를 몇 개 둘지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 계층을 나눴고 5.7절에서 애노테이션을** 봤다. **그럼 뭘 기본으로 하나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 모양",
+   "ascii": "   two shapes a test suite takes\n\n   pyramid                     ice cream cone\n\n        /\\   e2e                  ______\n       /  \\  integration          \\    /  e2e\n      /____\\ unit                  \\  /   integration\n                                    \\/    unit\n\n   fast at the bottom            slow at the top\n   most tests are unit           most tests are integration",
+   "note": "**2.7절에서 예고한 피라미드**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 피라미드인가",
+   "md": "**아래로 갈수록 셋이** 좋아진다.\n\n| | 단위 | 통합 |\n|---|---|---|\n| **속도** | **1초에 수백 개** | 하나에 수백 ms |\n| **원인 특정** | **클래스·메서드·입력** | 요청 하나 |\n| **작성 난이도** | **낮다** | 준비가 많다 |\n\n**위로 갈수록 하나가** 좋아진다.\n\n| | |\n|---|---|\n| **현실성** | 진짜로 도는지 |\n\n> **단위 테스트가 다 통과해도 조립이 틀리면** 안 돈다.\n> **그게 통합 테스트의 몫**이다.\n\n**아이스크림콘이 되는 이유**\n\n> **단위 테스트를 짜기 어려운 설계**라서다.\n> **모든 게 스프링 빈이고 DB 에 의존**하면 **`@SpringBootTest` 밖에 방법이** 없다.\n>\n> **2.7절에서 \"밀어내기를 안 하면 피라미드가 뒤집힌다\" 고** 했다.\n\n**증상**\n\n| | |\n|---|---|\n| **CI 가 20분** | 8장의 주제 |\n| **실패 원인을 못 찾는다** | 여덟 클래스를 뒤진다 |\n| **하나 고치면 열이 깨진다** | 5.1절의 중복 검증 |\n\n**이 책의 도메인으로 보면**\n\n> **2~4장의 25개가 1초**다. **`CafeKiosk`·`Order`·`DiscountCalculator`** 는 스프링이 없다.\n> **5장의 여섯 개가 20초**다.\n>\n> **비율이 25:6 인데 시간은 1:20** 이다."
+  },
+  {
+   "type": "figure",
+   "caption": "깨졌을 때의 비용",
+   "ascii": "   what each shape costs when something breaks\n\n   a unit test fails\n     you know the class, the method, the input\n\n   an integration test fails\n     you know a request produced the wrong number\n     and there are eight classes between them\n\n   integration tests find more. they explain less.",
+   "note": "**통합은 더 찾고 덜 설명**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 통합 테스트가 필요한 자리",
+   "md": "**단위 테스트가 못 잡는 것**\n\n| | |\n|---|---|\n| **빈 주입이 안 됨** | 생성자 파라미터가 안 맞다 |\n| **트랜잭션 경계** | 5.3절 |\n| **쿼리 문법** | 5.2절 |\n| **직렬화** | 응답 JSON 필드명 |\n| **설정 오류** | `application.yml` 오타 |\n\n> **전부 \"조립\" 문제**다. **부품은 다 맞는데 안 끼워지는** 것.\n\n**몇 개나 두나**\n\n> **\"행복 경로 하나씩\"** 이 흔한 기준이다.\n>\n> **주문 생성 하나, 상품 조회 하나**.\n> **예외 케이스는 서비스 테스트가** 본다.\n\n**계층별 테스트도 통합**이다.\n\n> **5.3절의 `OrderServiceTest` 는 서비스+리포지토리+DB** 다.\n> **엄밀히는 통합 테스트**다.\n>\n> **\"단위\" 와 \"통합\" 의 경계가 팀마다** 다르다.\n> **이 책은 \"스프링이 뜨면 통합\"** 으로 본다.\n\n**전 계층 관통 테스트는 따로**다.\n\n```java\n@SpringBootTest(webEnvironment = RANDOM_PORT)\nclass OrderE2ETest {\n    @Autowired TestRestTemplate restTemplate;\n}\n```\n\n> **진짜 서버를 띄운다.** **`MockMvc` 가 아니다.**\n> **가장 느리고 가장 현실적**이다.\n>\n> **한두 개면** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 책의 기본값",
+   "md": "```\n도메인 로직     단위 테스트          스프링 없음\n리포지토리      @DataJpaTest        슬라이스\n서비스          @SpringBootTest     통합. DB 진짜\n컨트롤러        @WebMvcTest         슬라이스. 목\n전 계층         @SpringBootTest     한두 개\n```\n\n**기본은 아래쪽을 두껍게**\n\n> **비즈니스 규칙을 도메인 객체로** 뺀다.\n> **그러면 단위 테스트로** 커버된다.\n>\n> **`Order.calculateTotalPrice()` 가 서비스에 있었으면 `@SpringBootTest` 로만 테스트** 했을 것이다.\n\n**3장의 예를 다시** 보면\n\n```java\npublic int calculateTotalPrice() {\n    return products.stream().mapToInt(Product::getPrice).sum();\n}\n```\n\n> **엔티티 안에** 있다. **스프링 없이 테스트**된다.\n>\n> **서비스에 있었다면**\n>\n> ```java\n> @Service\n> public class OrderService {\n>     public int calculateTotalPrice(List<Product> products) { ... }\n> }\n> ```\n>\n> **`@SpringBootTest` 를 띄우거나 `new OrderService(null, null, null)` 을** 해야 한다.\n\n**설계가 테스트 형태를** 정한다.\n\n> **1.2절의 \"설계 압력\" 이 반대로도** 작동한다.\n> **테스트가 느리면 설계를 의심**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 현재 비율 ---\n\n$ ./gradlew test\n\n# 단위 (스프링 없음)\nCafeKioskTest              13 tests\nOrderTest                   5 tests\nDiscountCalculatorTest      7 tests\n\n# 슬라이스\nProductRepositoryTest       3 tests\nOrderControllerTest         3 tests\n\n# 통합\nOrderServiceTest            3 tests\n\n34 tests completed\n\nBUILD SUCCESSFUL in 23s\n\n#   25 : 9 다\n\n# --- 각각 따로 재면 ---\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n    --tests DiscountCalculatorTest\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n$ ./gradlew test --tests ProductRepositoryTest --tests OrderControllerTest \\\n    --tests OrderServiceTest\n\n9 tests completed\n\nBUILD SUCCESSFUL in 22s\n\n#   25개가 1초, 9개가 22초\n\n#   테스트 하나당 0.04초 대 2.4초\n\n#   60배다\n\n# --- 아이스크림콘을 만들어 보면 ---\n\n#   모든 로직을 서비스에 넣고 전부 @SpringBootTest 로\n\n@SpringBootTest\nclass EverythingTest {\n    // 34개를 전부 통합 테스트로\n}\n\n$ ./gradlew test --tests EverythingTest\n\n34 tests completed\n\nBUILD SUCCESSFUL in 51s\n\n#   23초가 51초가 됐다\n\n#   테스트 개수는 같다\n\n# --- 실패했을 때의 차이 ---\n\n#   피라미드 판에서 할인율을 잘못 고치면\n\nDiscountCalculatorTest > VIP 회원은 15퍼센트 할인을 받는다 FAILED\n    expected: 8500 but was: 8000\n\n#   클래스와 메서드와 입력이 다 나온다\n\n#   아이스크림콘 판에서는\n\nEverythingTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n    JSON path \"$.data.totalPrice\"\n    expected: 8500 but was: 8000\n\n#   요청 하나가 틀렸다는 것만 안다\n\n#   컨트롤러 -> 서비스 -> 도메인 -> 할인 계산\n#   네 곳을 뒤져야 한다\n\n# --- 조립 오류는 반대다 ---\n\n#   생성자 파라미터 순서를 바꿔 본다\n\npublic OrderService(StockRepository stockRepository,\n                    ProductRepository productRepository,   // 순서 바꿈\n                    OrderRepository orderRepository) { ... }\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   단위 테스트는 다 통과한다\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... FAILED\n    org.springframework.beans.factory.UnsatisfiedDependencyException:\n    Error creating bean with name 'orderService'\n\n#   통합 테스트만 잡는다\n\n#   (실제로는 타입이 다 달라 스프링이 잡아 주는데,\n#    같은 타입 두 개면 조용히 잘못 주입된다)\n\n# --- 전 계층 테스트 ---\n\n@SpringBootTest(webEnvironment = RANDOM_PORT)\nclass OrderE2ETest {\n\n    @Autowired TestRestTemplate restTemplate;\n    @Autowired ProductRepository productRepository;\n\n    @DisplayName(\"주문 API 를 호출하면 주문이 저장된다\")\n    @Test\n    void createOrder() {\n        // given\n        productRepository.save(createProduct(\"001\", 4000));\n\n        // when\n        ResponseEntity<String> response = restTemplate.postForEntity(\n                \"/api/v1/orders/new\",\n                new OrderCreateRequest(List.of(\"001\")),\n                String.class);\n\n        // then\n        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);\n        assertThat(orderRepository.findAll()).hasSize(1);\n    }\n}\n\n$ ./gradlew test --tests OrderE2ETest\n\n2026-09-09T17:02:41.229  INFO --- Tomcat started on port 54123 (http)\n2026-09-09T17:02:41.881  INFO --- Started OrderE2ETest in 4.812 seconds\n\nOrderE2ETest > 주문 API 를 호출하면 주문이 저장된다 PASSED\n\nBUILD SUCCESSFUL in 11s\n\n#   톰캣이 실제로 뜬다\n\n#   MockMvc 는 안 띄웠다\n\n#   가장 느리고 가장 현실적이다\n\n#   한두 개면 된다\n\n# --- 다음 절에서 ---\n\n#   테스트끼리 간섭하는 문제를 다룬다",
+   "note": "**단위 25개가 1초, 스프링 9개가 22초**다. **하나당 0.04초 대 2.4초로 60배**다.\n\n**전부 통합으로 바꾸면 23초가 51초**다. **테스트 개수는** 같다.\n\n**할인율이 틀렸을 때 피라미드는 클래스·메서드·입력을** 주고 **아이스크림콘은 요청 하나가 틀렸다는 것만** 준다.\n\n**조립 오류는 반대**다 — **단위 테스트는 다 통과하고 통합만** 잡는다.\n\n**E2E 는 톰캣을 실제로** 띄운다. **`Tomcat started on port 54123`** 이다."
+  }
+ ],
+ "recap": [
+  "**아래로 갈수록 빠르고 원인이** 분명하다.",
+  "**위로 갈수록 현실적**이다.",
+  "**단위 25개가 1초, 스프링 9개가 22초** — 60배다.",
+  "**전부 통합으로 바꾸면 23초가 51초**다.",
+  "**통합은 더 찾고 덜 설명**한다.",
+  "**통합이 잡는 건 조립 문제**다 — 주입·트랜잭션·쿼리·직렬화·설정.",
+  "**행복 경로 하나씩**이 흔한 기준이다.",
+  "**\"스프링이 뜨면 통합\"** 으로 본다.",
+  "**설계가 테스트 형태를 정한다** — 느리면 설계를 의심한다."
+ ],
+ "drills": [
+  {
+   "task": "단위와 스프링 테스트 시간을 따로 잰다.",
+   "done_when": "배수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "도메인 로직 하나를 서비스로 옮겨 본다.",
+   "done_when": "테스트가 느려지는 것을 확인하고 되돌렸다.",
+   "minutes": 25
+  },
+  {
+   "task": "E2E 테스트를 하나 짠다.",
+   "done_when": "톰캣이 뜨는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "자기 프로젝트의 테스트 비율을 센다.",
+   "done_when": "피라미드인지 콘인지 판단했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "피라미드가 왜 맞나?",
+   "a": "아래로 갈수록 빠르고 원인이 분명하며 짜기 쉽다."
+  },
+  {
+   "q": "아이스크림콘이 되는 이유는?",
+   "a": "단위 테스트를 짜기 어려운 설계라서다. 전부 스프링 빈이고 DB 에 의존한다."
+  },
+  {
+   "q": "통합 테스트가 잡는 것은?",
+   "a": "조립 문제다. 빈 주입, 트랜잭션, 쿼리 문법, 직렬화, 설정이다."
+  },
+  {
+   "q": "통합 테스트를 몇 개 두나?",
+   "a": "행복 경로 하나씩이 흔한 기준이다. 예외는 서비스 테스트가 본다."
+  },
+  {
+   "q": "테스트가 느리면?",
+   "a": "설계를 의심한다. 로직이 스프링 빈 안에 갇혀 있을 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테스트 피라미드",
+   "def": "단위 테스트가 가장 많고 통합·E2E 로 갈수록 적어지는 테스트 구성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Test Slices",
+   "url": "https://docs.spring.io/spring-boot/appendix/test-auto-configuration/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "jpa-test-slice",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "@DataJpaTest 와 @SpringBootTest",
+ "summary": "무엇이 뜨나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "각 애노테이션이 띄우는 것을 안다.",
+  "슬라이스의 이점과 대가를 안다.",
+  "컨텍스트 개수를 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**세 가지를 이미** 썼다. **각각이 뭘 띄우는지 여기서** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 컨텍스트에 들어가나",
+   "ascii": "   what each annotation puts in the context\n\n   @SpringBootTest\n     everything the application has\n     controllers, services, repositories, config, datasource\n     3.4s\n\n   @DataJpaTest\n     entities, repositories, entity manager, an embedded db\n     no services, no controllers\n     1.9s   and @Transactional\n\n   @WebMvcTest\n     controllers, advice, converters, jackson, mockmvc\n     no datasource at all\n     1.8s",
+   "note": "**슬라이스는 필요한 것만** 띄운다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 애노테이션",
+   "md": "**`@SpringBootTest`**\n\n```java\n@SpringBootTest\nclass OrderServiceTest { }\n```\n\n| | |\n|---|---|\n| 띄운다 | **전부** |\n| 속도 | **가장 느리다** |\n| 트랜잭션 | **없다** |\n| 쓸 곳 | **서비스, 통합** |\n\n> **`@SpringBootApplication` 을 찾아 거기서** 시작한다.\n> **`webEnvironment` 로 서버를 띄울 수도** 있다.\n\n**`@DataJpaTest`**\n\n```java\n@DataJpaTest\nclass ProductRepositoryTest { }\n```\n\n| | |\n|---|---|\n| 띄운다 | **JPA 관련만** |\n| 속도 | 중간 |\n| 트랜잭션 | **있다.** 롤백한다 |\n| DB | **임베디드로 교체**한다 |\n\n> **마지막이 중요**하다. **`@AutoConfigureTestDatabase`** 가 붙어 있다.\n> **운영 DB 설정을 무시하고 H2 를** 쓴다.\n>\n> **MySQL 문법을 쓰는 네이티브 쿼리는 H2 에서** 깨진다.\n> **8.3절의 Testcontainers 가 그 답**이다.\n\n**`@WebMvcTest`**\n\n```java\n@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerTest { }\n```\n\n| | |\n|---|---|\n| 띄운다 | **웹 계층만** |\n| DataSource | **없다** |\n| 속도 | 가장 빠르다 |\n\n> **`@Service` 를 안 띄워 `@MockBean` 이** 필요하다(5.4절).\n\n**다른 슬라이스도** 있다.\n\n> **`@JsonTest`, `@RestClientTest`, `@JdbcTest`, `@DataRedisTest`**.\n> **원리는 같다** — **필요한 자동 설정만** 켠다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨텍스트 개수",
+   "ascii": "   why the count of distinct contexts matters\n\n   three test classes, all @SpringBootTest, same config\n     context started once, reused three times\n\n   three test classes, three different annotations\n     three contexts, three startups\n\n   mixing slices can be slower than not slicing at all",
+   "note": "**슬라이스를 섞으면 오히려 느려질 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨텍스트는 캐시된다",
+   "md": "**스프링이 테스트 컨텍스트를 재사용**한다.\n\n> **설정이 같으면 한 번만** 띄운다.\n> **테스트 클래스가 100개여도 컨텍스트가 1개면 한 번**이다.\n\n**설정이 다르면 새로** 뜬다.\n\n| 다르게 만드는 것 | |\n|---|---|\n| 애노테이션 종류 | `@SpringBootTest` vs `@DataJpaTest` |\n| **`@MockBean` 조합** | 목이 다르면 다른 컨텍스트 |\n| `@ActiveProfiles` | |\n| `@TestPropertySource` | |\n| `properties = {...}` | |\n\n> **`@MockBean` 이 특히 자주** 걸린다.\n> **컨트롤러마다 다른 서비스를 목으로 만들면 컨텍스트가 그만큼** 는다.\n\n**계산해 보면**\n\n```\n@SpringBootTest 클래스 10개, 설정 같음      컨텍스트 1개\n@WebMvcTest 클래스 5개, 목이 다 다름        컨텍스트 5개\n@DataJpaTest 클래스 3개                     컨텍스트 1개\n\n총 7개 x 2~3초 = 15~20초\n```\n\n> **슬라이스를 쓰면 각 테스트는 빠른데 기동이** 는다.\n>\n> **테스트가 적을 때는 `@SpringBootTest` 하나로 통일하는 게 더** 빠르다.\n\n**8.1절에서 이걸 실제로** 센다.\n\n> **`spring.test.context.cache.maxSize` 도** 있다. **기본 32**다.\n> **넘으면 오래된 걸 버리고 다시** 띄운다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 책의 배치",
+   "md": "```java\n// 리포지토리\n@DataJpaTest\n@ActiveProfiles(\"test\")\nclass ProductRepositoryTest { }\n\n// 서비스\n@SpringBootTest\n@ActiveProfiles(\"test\")\nclass OrderServiceTest {\n    @AfterEach void tearDown() { ... }\n}\n\n// 컨트롤러\n@WebMvcTest(controllers = OrderController.class)\n@ActiveProfiles(\"test\")\nclass OrderControllerTest {\n    @MockBean OrderService orderService;\n}\n```\n\n> **`@ActiveProfiles(\"test\")` 를 전부에** 붙인다. **8.2절**에서 다룬다.\n\n**공통 부모로 빼는 방법**\n\n```java\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n    @MockBean protected MailSendClient mailSendClient;\n}\n\nclass OrderServiceTest extends IntegrationTestSupport { }\n```\n\n> **컨텍스트를 하나로** 묶는다.\n> **`@MockBean` 도 부모에 두면 컨텍스트가 안** 갈린다.\n>\n> **8.1절의 핵심 기법**이다.\n\n**대가**\n\n| | |\n|---|---|\n| **안 쓰는 목이 뜬다** | 메일을 안 보내는 테스트에도 |\n| **상속이 강제된다** | 클래스 계층이 생긴다 |\n\n> **기동 시간과 맞바꾼다.** **테스트가 많아지면 이쪽이** 이긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 무엇이 뜨는지 세어 본다 ---\n\n@DataJpaTest\nclass ContextTest {\n    @Autowired ApplicationContext context;\n\n    @Test void beans() {\n        System.out.println(\">>> beans: \" + context.getBeanDefinitionCount());\n        System.out.println(\">>> orderService: \"\n                + context.containsBean(\"orderService\"));\n        System.out.println(\">>> orderController: \"\n                + context.containsBean(\"orderController\"));\n    }\n}\n\n$ ./gradlew test --tests ContextTest\n\n>>> beans: 168\n>>> orderService: false\n>>> orderController: false\n\nContextTest > beans() PASSED\n\n# --- @SpringBootTest 로 바꾸면 ---\n\n@SpringBootTest\nclass ContextTest { ... }\n\n>>> beans: 312\n>>> orderService: true\n>>> orderController: true\n\n#   168 -> 312\n\n# --- @WebMvcTest 로 바꾸면 ---\n\n@WebMvcTest(controllers = OrderController.class)\nclass ContextTest {\n    @MockBean OrderService orderService;\n    ...\n}\n\n>>> beans: 141\n>>> orderService: true      (목이다)\n>>> orderController: true\n\n#   dataSource 는\n\nSystem.out.println(\">>> dataSource: \" + context.containsBean(\"dataSource\"));\n\n>>> dataSource: false\n\n#   DB 가 아예 없다\n\n# --- @DataJpaTest 가 DB 를 바꾸는 것 ---\n\n# application.yml (운영)\nspring:\n  datasource:\n    url: jdbc:mysql://localhost:3306/cafekiosk\n\n@DataJpaTest\nclass ProductRepositoryTest {\n    @Autowired DataSource dataSource;\n\n    @Test void whichDb() throws Exception {\n        System.out.println(\">>> \" + dataSource.getConnection().getMetaData().getURL());\n    }\n}\n\n$ ./gradlew test --tests ProductRepositoryTest\n\n>>> jdbc:h2:mem:2c5f8a91-3d4e-4b1a-9c8f-7e6d5a4b3c2d\n\n#   MySQL 설정을 무시하고 H2 를 띄웠다\n\n#   @AutoConfigureTestDatabase 가 기본으로 붙어 있다\n\n# --- 끄려면 ---\n\n@DataJpaTest\n@AutoConfigureTestDatabase(replace = NONE)\nclass ProductRepositoryTest { ... }\n\n>>> jdbc:mysql://localhost:3306/cafekiosk\n\n#   설정한 DB 를 쓴다\n\n#   MySQL 전용 문법을 쓰면 이게 필요하다\n#   8.3절에서 Testcontainers 로 간다\n\n# --- 컨텍스트가 몇 개 뜨는지 ---\n\nlogging:\n  level:\n    org.springframework.test.context.cache: debug\n\n$ ./gradlew test\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  Storing ApplicationContext [1234] in cache under key [...@DataJpaTest...]\n  Spring test ApplicationContext cache statistics:\n    [size = 1, maxSize = 32, hitCount = 0, missCount = 1]\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  Storing ApplicationContext [5678] in cache under key [...@SpringBootTest...]\n  Spring test ApplicationContext cache statistics:\n    [size = 2, maxSize = 32, hitCount = 0, missCount = 2]\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  Storing ApplicationContext [9012] in cache under key [...@WebMvcTest...OrderController...]\n  Spring test ApplicationContext cache statistics:\n    [size = 3, maxSize = 32, hitCount = 0, missCount = 3]\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  Retrieved ApplicationContext from cache with key [...@SpringBootTest...]\n  Spring test ApplicationContext cache statistics:\n    [size = 3, maxSize = 32, hitCount = 1, missCount = 3]\n\n30 tests completed\n\nBUILD SUCCESSFUL in 21s\n\n#   컨텍스트가 3개 떴다\n#   hitCount 1 은 두 번째 @SpringBootTest 클래스가 재사용한 것이다\n\n# --- @MockBean 이 컨텍스트를 가르는 것 ---\n\n@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerTest {\n    @MockBean OrderService orderService;\n}\n\n@WebMvcTest(controllers = ProductController.class)\nclass ProductControllerTest {\n    @MockBean ProductService productService;\n}\n\n$ ./gradlew test\n\n  [size = 4, maxSize = 32, hitCount = 1, missCount = 4]\n\n#   컨트롤러 테스트가 각각 컨텍스트를 만들었다\n\n#   목이 달라서다\n\n# --- 공통 부모로 묶으면 ---\n\n@WebMvcTest(controllers = {OrderController.class, ProductController.class})\npublic abstract class ControllerTestSupport {\n    @Autowired protected MockMvc mockMvc;\n    @Autowired protected ObjectMapper objectMapper;\n    @MockBean protected OrderService orderService;\n    @MockBean protected ProductService productService;\n}\n\nclass OrderControllerTest extends ControllerTestSupport { }\nclass ProductControllerTest extends ControllerTestSupport { }\n\n$ ./gradlew test\n\n  [size = 3, maxSize = 32, hitCount = 2, missCount = 3]\n\nBUILD SUCCESSFUL in 17s\n\n#   4개가 3개로 줄고 21초가 17초가 됐다\n\n#   대신 ProductControllerTest 도 OrderService 목을 들고 있다\n\n# --- 다음 절에서 ---\n\n#   통합과 슬라이스 중 무엇을 기본으로 할지 정한다",
+   "note": "**빈 개수가 `@DataJpaTest` 168, `@SpringBootTest` 312, `@WebMvcTest` 141** 이다.\n\n**`@WebMvcTest` 에는 `dataSource` 가 아예** 없다.\n\n**`@DataJpaTest` 가 MySQL 설정을 무시하고 H2 를** 띄운다. **`@AutoConfigureTestDatabase(replace = NONE)` 으로** 끈다.\n\n**컨텍스트 캐시 로그에 `size = 3`** 이 찍힌다. **`@MockBean` 이 다르면 하나 더** 뜬다.\n\n**공통 부모로 묶으면 4개가 3개, 21초가 17초**가 된다."
+  }
+ ],
+ "recap": [
+  "**`@SpringBootTest` 는 전부, `@DataJpaTest` 는 JPA 만, `@WebMvcTest` 는 웹만** 띄운다.",
+  "**빈 개수가 312 / 168 / 141** 이다.",
+  "**`@DataJpaTest` 는 DB 를 임베디드로** 바꾼다.",
+  "**MySQL 전용 문법이면 `replace = NONE`** 이 필요하다.",
+  "**컨텍스트는 설정이 같으면** 캐시된다.",
+  "**`@MockBean` 조합이 다르면 컨텍스트가** 갈린다.",
+  "**슬라이스를 섞으면 오히려 느려질 수** 있다.",
+  "**공통 부모로 묶어 컨텍스트를** 줄인다.",
+  "**대가는 안 쓰는 목이 뜨는** 것이다."
+ ],
+ "drills": [
+  {
+   "task": "세 애노테이션의 빈 개수를 센다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@DataJpaTest` 의 DB URL 을 찍는다.",
+   "done_when": "H2 로 바뀐 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨텍스트 캐시 로그를 켠다.",
+   "done_when": "몇 개가 뜨는지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨트롤러 테스트를 공통 부모로 묶는다.",
+   "done_when": "컨텍스트가 준 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@DataJpaTest` 가 DB 를 어떻게 하나?",
+   "a": "`@AutoConfigureTestDatabase` 로 임베디드 H2 로 교체한다."
+  },
+  {
+   "q": "`@WebMvcTest` 에 없는 것은?",
+   "a": "DataSource 다. DB 가 아예 없다."
+  },
+  {
+   "q": "컨텍스트가 언제 새로 뜨나?",
+   "a": "애노테이션, `@MockBean` 조합, 프로파일, 프로퍼티가 다를 때다."
+  },
+  {
+   "q": "슬라이스가 왜 느려질 수 있나?",
+   "a": "각 테스트는 빨라도 컨텍스트 개수가 늘어 기동이 는다."
+  },
+  {
+   "q": "컨텍스트를 어떻게 줄이나?",
+   "a": "공통 부모 클래스로 설정과 `@MockBean` 을 묶는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테스트 슬라이스",
+   "def": "필요한 자동 설정만 켜서 컨텍스트를 작게 띄우는 스프링 부트의 테스트 애노테이션들."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Test Slices",
+   "url": "https://docs.spring.io/spring-boot/appendix/test-auto-configuration/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
