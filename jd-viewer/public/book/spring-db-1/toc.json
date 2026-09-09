@@ -510,7 +510,7 @@
           "title": "런타임 예외 적용",
           "summary": "던지고 잡지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -518,7 +518,7 @@
           "title": "데이터 접근 예외 직접 만들기",
           "summary": "중복 키를 서비스가 알아야 할 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -526,7 +526,7 @@
           "title": "스프링 예외 추상화",
           "summary": "DataAccessException 계층.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -534,7 +534,7 @@
           "title": "예외 추상화 적용",
           "summary": "SQLExceptionTranslator 가 코드를 읽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",

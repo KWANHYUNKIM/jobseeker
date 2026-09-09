@@ -1,0 +1,137 @@
+{
+ "book": "spring-db-1",
+ "id": "runtime-exception-apply",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "런타임 예외 적용",
+ "summary": "던지고 잡지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "인터페이스를 깨끗하게 만들 수 있다.",
+  "구현체가 예외를 변환한다는 것을 안다.",
+  "서비스가 무엇을 모르게 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "인터페이스가 깨끗해진다",
+   "ascii": "   interface MemberRepository {\n       Member save(Member member);\n       Member findById(String memberId);\n       void update(String memberId, int money);\n       void delete(String memberId);\n   }\n        |\n        +--> no throws. no technology.\n\n   MemberRepositoryV4_1   jdbc\n   MemberRepositoryV5     jdbc template     7.6\n   MemoryMemberRepository test\n        |\n        +--> 셋 다 이 인터페이스를 구현할 수 있다",
+   "note": "**7.1절의 매듭이 풀린다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "인터페이스",
+   "code": "public interface MemberRepository {\n    Member save(Member member);\n    Member findById(String memberId);\n    void update(String memberId, int money);\n    void delete(String memberId);\n}",
+   "note": "**`throws` 가 없다.** 7.1절에서 **어느 쪽으로도 못 가던** 상태에서 벗어났다.\n\n**JDBC 도 JPA 도 메모리도** 이것을 구현할 수 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "구현체가 변환한다",
+   "code": "@Slf4j\npublic class MemberRepositoryV4_1 implements MemberRepository {\n\n    private final DataSource dataSource;\n\n    @Override\n    public Member save(Member member) {\n        String sql = \"insert into member(member_id, money) values(?, ?)\";\n        Connection con = null;\n        PreparedStatement pstmt = null;\n\n        try {\n            con = getConnection();\n            pstmt = con.prepareStatement(sql);\n            pstmt.setString(1, member.getMemberId());\n            pstmt.setInt(2, member.getMoney());\n            pstmt.executeUpdate();\n            return member;\n        } catch (SQLException e) {\n            throw new MyDbException(e);      // 여기서 끝난다\n        } finally {\n            close(con, pstmt, null);\n        }\n    }\n}",
+   "note": "**`catch` 가 `throw` 로 바뀌었다.** 6.6절에서 만든 그 코드다.\n\n**`SQLException` 이 이 클래스 밖으로 안 나간다.** **경계가 명확해졌다.**\n\n**`implements MemberRepository`** 가 붙었다 — 이제 갈아 끼울 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서비스가 무엇을 모르게 됐나",
+   "md": "```java\n@Slf4j\n@RequiredArgsConstructor\npublic class MemberServiceV4 {\n\n    private final MemberRepository memberRepository;   // 인터페이스\n\n    @Transactional\n    public void accountTransfer(String fromId, String toId, int money) {\n        bizLogic(fromId, toId, money);\n    }\n}\n```\n\n**서비스가 모르는 것**\n\n| | |\n|---|---|\n| **어느 기술** | JDBC 인지 JPA 인지 |\n| **`SQLException`** | 6.6절에서 없앴다 |\n| **커넥션** | 5.5절에서 없앴다 |\n| **트랜잭션 코드** | 5.8절에서 없앴다 |\n\n**서비스에 남은 것**\n\n```java\nimport lombok.RequiredArgsConstructor;\nimport org.springframework.transaction.annotation.Transactional;\n```\n\n**롬복과 애너테이션 하나**뿐이다.\n\n**4.11절에서 말한 그것**이 이루어졌다.\n\n> **서비스가 제일 오래 산다.** 저장 기술이 바뀐다고 업무 규칙이 바뀌지 않는다.\n\n**이제 정말 그렇다.** JPA 로 바꿔도 **이 파일은 안 바뀐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외를 안 감싸면 인터페이스가 무너진다",
+   "md": "**구현체가 `SQLException` 을 그냥 던지면** 컴파일이 안 된다(7.1절).\n\n**그래서 감싸는 것을 빠뜨릴 수 없다.** 컴파일러가 강제한다.\n\n**그런데 이렇게 하면 통과한다.**\n\n```java\ncatch (SQLException e) {\n    throw new RuntimeException(e);   // 아무 언체크나\n}\n```\n\n**컴파일은 되는데** 잡는 쪽에서 **구분할 수 없다.**\n\n```java\ncatch (RuntimeException e) {\n    // NPE 인지 DB 오류인지 모른다\n}\n```\n\n**6.6절에서 계층을 만들라고 한 이유**다.\n\n```java\nMyDbException extends RuntimeException\n  +-- MyDuplicateKeyException\n```\n\n**전용 타입을 만든다.** `RuntimeException` 을 직접 던지지 않는다.\n\n> **`throw new RuntimeException(e)` 는 `catch (Exception e) {}` 와 같은 종류의 게으름**이다. 컴파일러를 만족시킬 뿐 정보를 다 버린다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "메모리 구현을 만들 수 있게 됐다",
+   "md": "```java\npublic class MemoryMemberRepository implements MemberRepository {\n    private final Map<String, Member> store = new ConcurrentHashMap<>();\n\n    @Override\n    public Member save(Member member) {\n        store.put(member.getMemberId(), member);\n        return member;\n    }\n\n    @Override\n    public Member findById(String memberId) {\n        Member member = store.get(memberId);\n        if (member == null) {\n            throw new NoSuchElementException(\"member not found=\" + memberId);\n        }\n        return member;\n    }\n}\n```\n\n**7.1절에서 못 만들던 것**이다. 거짓 `throws` 가 없다.\n\n**`ConcurrentHashMap`** 인 것에 주의한다 — 1.2절에서 「MVC 2편」의 `HashMap` 을 문제로 꼽았다.\n\n**테스트가 빨라진다.**\n\n```java\nMemberService service = new MemberService(new MemoryMemberRepository());\n```\n\n**DB 도 스프링도 없이** 업무 로직만 검증한다.\n\n**다만 트랜잭션이 없다.** `@Transactional` 이 프록시를 거쳐야 하고(5.7절), **메모리 구현은 롤백을 못 한다.**\n\n> **업무 로직 검증에는 충분**하고, **트랜잭션은 통합 테스트**에서 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# JDBC 구현\nMemberRepository repository = new MemberRepositoryV4_1(dataSource);\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV4.accountTransfer]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select * from member where member_id = ?\n#     select * from member where member_id = ?\n#     update member set money=? where member_id=?\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n\n# 메모리 구현 - 같은 서비스 코드\nMemberRepository repository = new MemoryMemberRepository();\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   (SQL 로그 없음)\n#   (커넥션 로그 없음)\n#   테스트가 밀리초 단위로 끝난다\n\n# 서비스 코드는 한 글자도 안 바뀌었다\n\n# 예외는 여전히 뭉쳐 있다\nrepository.save(new Member(\"hi5\", 10000));\nrepository.save(new Member(\"hi5\", 20000));\n\n# hello.jdbc.repository.ex.MyDbException\n# Caused by: JdbcSQLIntegrityConstraintViolationException [23505-232]\n\n# 중복 키인 것을 잡는 쪽에서 알 수 없다\n# 7.3 절이 이것을 다룬다",
+   "note": "**같은 서비스 코드가 두 구현에서 돈다.** 하나는 SQL 이 나가고 하나는 안 나간다.\n\n**3.3절에서 `DataSource` 로 한 것**이 리포지토리 수준에서 반복됐다.\n\n**메모리 구현은 로그가 없다.** DB 를 안 쓰니 당연하고, **테스트가 빠르다.**\n\n**맨 아래가 남은 문제**다. 6.8절에서 꼽은 그것 — **중복 키가 `MyDbException` 으로 뭉개져** 있다. **`Caused by` 를 봐야 알 수 있고 코드로는 분기할 수 없다.**"
+  }
+ ],
+ "recap": [
+  "**인터페이스에서 `throws` 가 사라졌다** — 7.1절의 매듭이 풀렸다.",
+  "**구현체가 `SQLException` 을 언체크로 감싼다.**",
+  "**예외가 클래스 밖으로 안 나간다** — 경계가 명확하다.",
+  "**서비스에 롬복과 `@Transactional` 만** 남았다.",
+  "**JPA 로 바꿔도 서비스는 안 바뀐다** — 4.11절의 목표.",
+  "**`throw new RuntimeException(e)` 는 게으름**이다 — 전용 타입을 만든다.",
+  "**메모리 구현을 만들 수 있게 됐다** — 7.1절에서 못 하던 것.",
+  "**`ConcurrentHashMap`** 을 쓴다 — 1.2절의 그 문제.",
+  "**테스트가 빨라진다** — DB 도 스프링도 없이.",
+  "**다만 트랜잭션은 못 본다** — 통합 테스트에서.",
+  "**예외는 여전히 뭉쳐 있다** — 7.3절."
+ ],
+ "drills": [
+  {
+   "task": "`MemberRepository` 인터페이스를 만들고 JDBC 구현을 붙인다.",
+   "done_when": "`throws` 없이 컴파일되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "서비스의 `import` 를 센다.",
+   "done_when": "롬복과 `@Transactional` 만 남은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메모리 구현을 만들고 같은 서비스를 테스트한다.",
+   "done_when": "SQL 로그가 없고 빠른 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`throw new RuntimeException(e)` 로 바꿔 본다.",
+   "done_when": "잡는 쪽에서 구분이 안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "중복 키를 내고 예외 타입을 본다.",
+   "done_when": "`MyDbException` 으로 뭉쳐 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스가 어떻게 깨끗해졌나?",
+   "a": "구현체가 체크 예외를 언체크로 감싸 던지므로 `throws` 를 선언할 필요가 없다."
+  },
+  {
+   "q": "서비스에 무엇이 남았나?",
+   "a": "롬복 애너테이션과 `@Transactional` 뿐이다. 기술이 전혀 안 보인다."
+  },
+  {
+   "q": "`throw new RuntimeException(e)` 가 왜 나쁜가?",
+   "a": "컴파일은 되지만 잡는 쪽에서 무엇이 났는지 구분할 수 없다. 전용 타입을 만들어야 한다."
+  },
+  {
+   "q": "메모리 구현의 이득과 한계는?",
+   "a": "DB 없이 빠르게 업무 로직을 검증한다. 다만 트랜잭션과 롤백은 확인할 수 없다."
+  },
+  {
+   "q": "무엇이 남았나?",
+   "a": "모든 데이터 접근 오류가 `MyDbException` 하나라 중복 키 같은 것을 구분할 수 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — DataAccessException",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/dao.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

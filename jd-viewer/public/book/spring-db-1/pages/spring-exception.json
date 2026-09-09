@@ -1,0 +1,177 @@
+{
+ "book": "spring-db-1",
+ "id": "spring-exception",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "스프링 예외 추상화",
+ "summary": "DataAccessException 계층.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`DataAccessException` 계층을 안다.",
+  "Transient 와 NonTransient 의 갈림을 안다.",
+  "기술이 달라도 같은 예외가 온다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절의 한계 셋을 스프링이 푼다.**\n\n> **DB 마다 다름 · 경우가 수백 · 메서드마다 반복**\n\n**이미 만들어 뒀다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "계층",
+   "ascii": "   DataAccessException            (RuntimeException)\n     |\n     +-- NonTransientDataAccessException    retrying will not help\n     |     BadSqlGrammarException\n     |     DataIntegrityViolationException\n     |       +-- DuplicateKeyException\n     |     EmptyResultDataAccessException\n     |\n     +-- TransientDataAccessException       retrying may work\n           QueryTimeoutException\n           ConcurrencyFailureException\n             +-- DeadlockLoserDataAccessException\n             +-- OptimisticLockingFailureException\n\n   큰 갈래가 재시도 가능 여부다",
+   "note": "**큰 갈래가 \"다시 해 보면 될까\"** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Transient 가 갈림점이다",
+   "md": "**이름이 어렵지만 뜻은 단순**하다.\n\n| | 뜻 | 재시도 |\n|---|---|---|\n| **`Transient`** | 일시적 | **해 볼 만하다** |\n| **`NonTransient`** | 지속적 | **소용없다** |\n\n**예를 보면 명확하다.**\n\n```\nTransient\n  락 타임아웃      상대가 끝나면 된다\n  데드락           다시 하면 될 수 있다\n  낙관적 락 실패    다시 읽고 하면 된다\n\nNonTransient\n  SQL 문법 오류     몇 번을 해도 틀렸다\n  중복 키          같은 값이면 계속 실패\n  제약 위반\n```\n\n**이 구분이 실무에서 값어치**를 한다.\n\n```java\ncatch (TransientDataAccessException e) {\n    retry();          // 재시도\n} catch (DataAccessException e) {\n    throw e;          // 포기\n}\n```\n\n**4.9절에서 말한 그것**이다.\n\n> **데드락은 다시 하면 되는 경우가 많다** — 상대가 이미 끝났으니까.\n\n**타입만 보고 판단**할 수 있다."
+  },
+  {
+   "type": "table",
+   "caption": "자주 만나는 것들",
+   "note": "**앞의 셋이 대부분**이다.",
+   "columns": [
+    "",
+    "언제"
+   ],
+   "rows": [
+    [
+     "`DuplicateKeyException`",
+     "**중복 키** — 7.3절의 그것"
+    ],
+    [
+     "`BadSqlGrammarException`",
+     "SQL 문법 오류. 대개 코드 버그"
+    ],
+    [
+     "`EmptyResultDataAccessException`",
+     "**결과가 없다** — `queryForObject` 에서"
+    ],
+    [
+     "`DataIntegrityViolationException`",
+     "제약 위반 전반"
+    ],
+    [
+     "`QueryTimeoutException`",
+     "쿼리 타임아웃"
+    ],
+    [
+     "`DeadlockLoserDataAccessException`",
+     "데드락에서 진 쪽"
+    ],
+    [
+     "`CannotAcquireLockException`",
+     "**락 타임아웃** — 4.9절"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "기술이 달라도 같은 예외가 온다",
+   "md": "**이것이 추상화의 값어치**다.\n\n```\nJDBC   중복 키  ->  DuplicateKeyException\nJPA    중복 키  ->  DuplicateKeyException\nMyBatis 중복 키 ->  DuplicateKeyException\n```\n\n**서비스가 잡는 타입이 같다.**\n\n```java\ncatch (DuplicateKeyException e) {\n    // 무엇을 쓰든 여기로 온다\n}\n```\n\n**7.2절에서 인터페이스를 깨끗하게** 만들었는데, **예외까지 같아야** 진짜로 갈아 끼울 수 있다.\n\n**JDBC 구현을 JPA 로 바꿨더니 서비스의 `catch` 가 안 걸리면** 소용이 없다.\n\n**DB 도 마찬가지**다.\n\n```\nH2 (23505)      ->  DuplicateKeyException\nMySQL (1062)    ->  DuplicateKeyException\nOracle (1)      ->  DuplicateKeyException\n```\n\n**7.3절의 한계 첫째가 풀렸다.**\n\n> **DB 를 바꾸면 이 `if` 를 다 고친다.**\n\n**이제 안 고친다.** 스프링이 **DB 별 코드 표**를 들고 있다 — 7.5절에서 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "언체크라서 안 잡아도 된다",
+   "md": "**`DataAccessException` 은 `RuntimeException` 의 자식**이다(6.1절).\n\n```java\npublic Member findById(String id) {\n    return template.queryForObject(sql, mapper, id);   // throws 가 없다\n}\n```\n\n**7.2절에서 만든 인터페이스가 그대로** 쓰인다.\n\n**그런데 안 잡으면 올라간다.** 6.4절의 그 문제다.\n\n> **빠뜨리면 조용히 터진다** — 배치가 특히 위험하다.\n\n**`EmptyResultDataAccessException` 이 특히 자주** 놓친다.\n\n```java\ntemplate.queryForObject(\"select * from member where member_id = ?\", mapper, id);\n// 결과가 없으면 예외다. null 이 아니다\n```\n\n**\"없으면 null 이겠지\" 하고 쓰면 500** 이 난다.\n\n**2.6절에서 정한 그 판단**이 여기서도 필요하다.\n\n```java\ntry {\n    return template.queryForObject(...);\n} catch (EmptyResultDataAccessException e) {\n    return null;   // 또는 Optional.empty()\n}\n```\n\n**`query` 로 리스트를 받아 비었는지 보는 편**이 낫기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "스프링을 쓰지 않는 것도 선택이다",
+   "md": "**`DataAccessException` 을 서비스가 잡으면** 스프링에 의존한다.\n\n```java\nimport org.springframework.dao.DuplicateKeyException;\n```\n\n**JDBC 를 안 보는 대신 스프링을 본다.** 기술 종속이 완전히 사라진 것은 아니다.\n\n**그것이 문제인가** — 대개 아니다.\n\n| | |\n|---|---|\n| **JDBC 의존** | 데이터 접근 기술. 바뀔 수 있다 |\n| **스프링 의존** | 프레임워크. **바꿀 일이 거의 없다** |\n\n**스프링을 버리는 것보다 DB 를 바꾸는 것이 훨씬 흔하다.**\n\n**정말 순수하게 하려면** 리포지토리에서 **한 번 더 우리 예외로** 바꾼다.\n\n```java\ncatch (DuplicateKeyException e) {\n    throw new DuplicateMemberException(e);   // 우리 것\n}\n```\n\n**7.3절로 돌아간 셈**인데, **DB 별 코드는 스프링이 이미 해석**해 줬으니 훨씬 낫다.\n\n> **헥사고날 아키텍처** 같은 것을 할 때 이렇게 한다. **대부분의 프로젝트에는 과하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 아직 적용 전이라 테스트로 계층을 확인한다\n@Test\nvoid hierarchy() {\n    assertThat(DataAccessException.class.getSuperclass())\n            .isEqualTo(NestedRuntimeException.class);\n    // NestedRuntimeException extends RuntimeException  -> 언체크\n\n    assertThat(DuplicateKeyException.class.getSuperclass())\n            .isEqualTo(DataIntegrityViolationException.class);\n\n    assertThat(CannotAcquireLockException.class.getSuperclass())\n            .isEqualTo(PessimisticLockingFailureException.class);\n    // PessimisticLockingFailureException extends ConcurrencyFailureException\n    // ConcurrencyFailureException extends TransientDataAccessException\n}\n\n# 7.5 절에서 적용하면\nrepository.save(new Member(\"hi5\", 10000));\nrepository.save(new Member(\"hi5\", 20000));\n\n#     insert into member(member_id, money) values(?, ?)   {1: 'hi5', 2: 20000}\n#\n# org.springframework.dao.DuplicateKeyException:\n#   PreparedStatementCallback; SQL [insert into member(member_id, money) values(?, ?)];\n#   Unique index or primary key violation:\n#   \"PRIMARY KEY ON PUBLIC.MEMBER(MEMBER_ID)\"; SQL statement: ... [23505-232]\n# Caused by: org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: ...\n\n# 락 타임아웃이면\n# org.springframework.dao.CannotAcquireLockException:\n#   ... Timeout trying to lock table \"MEMBER\" [50200-232]\n# Caused by: org.h2.jdbc.JdbcSQLTimeoutException: ...\n\n# 4.9 절의 50200 이 CannotAcquireLockException 이 됐다",
+   "note": "**계층을 테스트로 확인**한다. `DataAccessException` 이 결국 `RuntimeException` 의 자손이라 **언체크**다.\n\n**`CannotAcquireLockException` 이 `TransientDataAccessException` 의 자손**인 것에 주의한다 — **재시도해 볼 만하다**는 분류다.\n\n**아래가 7.5절의 결과 미리보기**다. **`23505` 가 `DuplicateKeyException`**, **`50200` 이 `CannotAcquireLockException`** 이 됐다.\n\n**2.5절 · 4.9절 · 6.7절에서 봐 둔 숫자들**이 여기서 타입이 된다.\n\n**`Caused by` 에 원래 예외가 남아 있다** — 6.7절의 그 규칙을 스프링도 지킨다."
+  }
+ ],
+ "recap": [
+  "**`DataAccessException` 이 최상위**이고 언체크다.",
+  "**큰 갈래가 `Transient` 와 `NonTransient`** — 재시도 가능 여부.",
+  "**락 타임아웃·데드락은 Transient**, **문법 오류·중복 키는 NonTransient**.",
+  "**타입만 보고 재시도를 판단**할 수 있다.",
+  "**기술이 달라도 같은 예외**가 온다 — JDBC·JPA·MyBatis.",
+  "**DB 가 달라도 같다** — 7.3절의 한계 첫째가 풀렸다.",
+  "**`EmptyResultDataAccessException` 을 자주 놓친다** — `null` 이 아니라 예외다.",
+  "**서비스가 스프링에 의존**하게 되는데 대개 문제가 아니다.",
+  "**정말 순수하게 하려면 한 번 더 감싼다** — 대부분 과하다.",
+  "**2.5·4.9·6.7절의 숫자들**이 여기서 타입이 된다."
+ ],
+ "drills": [
+  {
+   "task": "`DataAccessException` 의 부모를 확인한다.",
+   "done_when": "언체크인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`DuplicateKeyException` 과 `CannotAcquireLockException` 의 계층을 따라간다.",
+   "done_when": "Transient 갈림을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`queryForObject` 로 없는 것을 조회한다.",
+   "done_when": "`EmptyResultDataAccessException` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Transient` 만 잡아 재시도하는 코드를 써 본다.",
+   "done_when": "타입으로 판단되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`DataAccessException` 의 큰 갈래는?",
+   "a": "`Transient`(재시도 가능)와 `NonTransient`(소용없음)다."
+  },
+  {
+   "q": "락 타임아웃은 어느 쪽인가?",
+   "a": "`Transient` 다. 상대 트랜잭션이 끝나면 성공할 수 있다."
+  },
+  {
+   "q": "기술이 달라도 같은 예외가 오는 것이 왜 중요한가?",
+   "a": "인터페이스를 깨끗하게 만들어도 예외가 다르면 구현을 갈아 끼울 때 서비스가 깨진다."
+  },
+  {
+   "q": "`EmptyResultDataAccessException` 의 함정은?",
+   "a": "`queryForObject` 에서 결과가 없으면 `null` 이 아니라 예외가 난다."
+  },
+  {
+   "q": "서비스가 스프링 예외에 의존해도 되나?",
+   "a": "대개 괜찮다. 스프링을 버리는 것보다 DB 를 바꾸는 일이 훨씬 흔하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DataAccessException",
+   "en": "",
+   "what": "스프링의 데이터 접근 예외 최상위. 기술과 DB 에 무관하게 같은 타입을 준다."
+  },
+  {
+   "term": "Transient",
+   "en": "",
+   "what": "일시적이라는 뜻. 다시 시도하면 성공할 수 있는 오류다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — DataAccessException",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/dao.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

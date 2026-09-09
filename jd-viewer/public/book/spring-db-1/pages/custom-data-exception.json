@@ -1,0 +1,151 @@
+{
+ "book": "spring-db-1",
+ "id": "custom-data-exception",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "데이터 접근 예외 직접 만들기",
+ "summary": "중복 키를 서비스가 알아야 할 때.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "오류 코드로 예외를 구분할 수 있다.",
+  "복구 가능한 예외를 골라내는 이유를 안다.",
+  "직접 만드는 것의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절에서 꼽은 것**을 만든다.\n\n> **중복 회원 등록**이면 \"이미 사용 중인 아이디입니다\" 를 보여 줄 수 있다 — **복구 가능**하다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "요구사항",
+   "code": "// 회원 가입할 때 아이디가 중복이면\n// 뒤에 숫자를 붙여 다시 시도한다\n// hello -> hello1 -> hello2 ...\n\npublic void create(String memberId) {\n    try {\n        repository.save(new Member(memberId, 0));\n    } catch (MyDuplicateKeyException e) {\n        String retryId = generateNewId(memberId);\n        repository.save(new Member(retryId, 0));\n    } catch (MyDbException e) {\n        throw e;      // 나머지는 못 고친다\n    }\n}",
+   "note": "**중복 키만 잡아서 복구**한다. 나머지는 던진다.\n\n**6.6절의 그 계층**이 여기 쓰인다 — 부모로 잡고 자식으로 구분.\n\n**`catch` 순서가 중요**하다. 자식이 먼저다(6.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "숫자가 DB 마다 다르다",
+   "ascii": "   duplicate key error codes\n   -------------------------\n   H2          23505\n   MySQL        1062\n   PostgreSQL  23505   (SQLState, not vendor code)\n   Oracle          1\n\n   catch (SQLException e) {\n       if (e.getErrorCode() == 23505) { ... }\n   }\n        |\n        +--> works, but only for h2\n        +--> hundreds of codes exist\n\n   DB 를 바꾸면 이 숫자를 다 고쳐야 한다",
+   "note": "**2.5절과 6.7절에서 본 `23505`** 가 그것이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "구분해서 던지기",
+   "code": "@Override\npublic Member save(Member member) {\n    String sql = \"insert into member(member_id, money) values(?, ?)\";\n    ...\n    try {\n        ...\n        pstmt.executeUpdate();\n        return member;\n    } catch (SQLException e) {\n        if (e.getErrorCode() == 23505) {          // H2 의 중복 키\n            throw new MyDuplicateKeyException(e);\n        }\n        throw new MyDbException(e);\n    } finally {\n        close(con, pstmt, null);\n    }\n}",
+   "note": "**`getErrorCode()`** 가 DB 벤더의 코드다.\n\n**`getSQLState()`** 라는 것도 있다 — **표준에 가깝다.** `23505` 는 사실 SQLState 이고, H2 가 그것을 에러 코드로도 쓴다.\n\n**`23` 으로 시작하면 제약 위반**이라는 것이 표준이다. 그런데 **모든 DB 가 잘 지키지는 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 복구 가능한 것만 골라내나",
+   "md": "**전부 구분할 필요가 없다.**\n\n```\n연결 실패     -> 못 고친다. 500\n문법 오류     -> 코드 버그. 500\n제약 위반     -> 경우에 따라 복구 가능\n락 타임아웃   -> 재시도 가능\n```\n\n**서비스가 알아야 하는 것만** 타입으로 만든다.\n\n**6.6절의 기준**이다.\n\n> **호출자가 잡아서 의미 있는 일을 할 수 있나.**\n\n**나머지는 `MyDbException` 하나로 충분**하다. 어차피 **로그를 남기고 500** 이다.\n\n**서비스 코드가 그것을 보여 준다.**\n\n```java\ncatch (MyDuplicateKeyException e) { 복구 }\ncatch (MyDbException e) { throw e; }\n```\n\n**둘째 `catch` 는 사실 없어도 된다** — 안 잡으면 어차피 올라간다. **의도를 드러내려고** 쓴 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "직접 만드는 것의 한계",
+   "md": "**세 가지**다.\n\n**1. DB 마다 숫자가 다르다**\n\n```\nH2      23505\nMySQL    1062\nOracle      1\n```\n\n**DB 를 바꾸면 이 `if` 를 다 고친다.** 2.1절에서 JDBC 가 못 한 것 — **SQL 방언** — 과 같은 종류의 문제다.\n\n**2. 경우가 수백 가지다**\n\n```\n23505  중복 키\n23502  NOT NULL 위반\n23503  외래 키 위반\n50200  락 타임아웃\n90067  연결 실패\n...\n```\n\n**전부 `if` 로 쓸 수 없다.**\n\n**3. 모든 리포지토리 메서드에 반복된다**\n\n`save` 에 썼으면 `update` 에도 써야 한다. **2.9절에서 본 그 반복**이 예외 처리에서 되풀이된다.\n\n**7.4절이 이 셋을 다 푼다.** **스프링이 이미 만들어 뒀다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래도 이 절을 하는 이유",
+   "md": "**7.4절의 스프링 예외가 무엇을 하는지 알려면** 손으로 해 봐야 한다.\n\n**서가에서 반복한 방식**이다.\n\n> 4장에서 트랜잭션을 손으로 걸고 5장에서 걷어냈다.\n> 2장에서 JDBC 를 손으로 쓰고 7.6절에서 걷어낸다.\n\n**그리고 직접 만들어야 하는 경우도** 있다.\n\n**업무 예외**는 스프링이 모른다.\n\n```java\npublic class NotEnoughMoneyException extends RuntimeException { }\n```\n\n**\"잔고 부족\" 은 DB 오류가 아니다.** 서비스가 판단해서 던지는 것이고, **그 계층은 우리가 만든다.**\n\n**「MVC 2편」 10.4절에서 만든 것**과 같다.\n\n```\nBusinessException\n  +-- ItemNotFoundException\n  +-- NoPermissionException\n```\n\n**데이터 접근 예외는 스프링 것을 쓰고**(7.4절) **업무 예외는 우리가 만든다.** 둘 다 필요하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 중복 키 복구\nservice.create(\"myId\");\nservice.create(\"myId\");   // 두 번째\n\n# 로그\n#   saveId=myId\n#     insert into member(member_id, money) values(?, ?)   {1: 'myId', 2: 0}\n#\n#   saveId=myId\n#     insert into member(member_id, money) values(?, ?)   {1: 'myId', 2: 0}\n#   키 중복, 복구 시도\n#     insert into member(member_id, money) values(?, ?)   {1: 'myId4821', 2: 0}\n#   retryId=myId4821\n\nselect * from member;\n# MEMBER_ID  | MONEY\n# myId       | 0\n# myId4821   | 0\n\n# 예외가 구분됐다\n# hello.jdbc.repository.ex.MyDuplicateKeyException\n# Caused by: JdbcSQLIntegrityConstraintViolationException [23505-232]\n\n# 연결 실패는 여전히 MyDbException\n# hello.jdbc.repository.ex.MyDbException\n# Caused by: JdbcSQLNonTransientConnectionException [90067-232]\n\n# MySQL 로 바꾸면\n#   if (e.getErrorCode() == 23505)   <- 안 걸린다. MySQL 은 1062\n#   중복 키가 MyDbException 으로 온다\n#   복구 로직이 조용히 안 돈다",
+   "note": "**`insert` 가 세 번** 나갔다. 두 번째가 실패하고 **세 번째가 복구 시도**다.\n\n**`myId4821`** 이라는 새 아이디로 저장됐다 — **서비스가 예외를 보고 판단**했다.\n\n**두 예외 타입이 갈렸다.** `MyDuplicateKeyException` 과 `MyDbException`.\n\n**맨 아래가 이 방식의 한계**다. MySQL 로 바꾸면 **`23505` 가 안 걸리고 복구 로직이 조용히 안 돈다.** 예외도 안 나고 **가입이 실패**할 뿐이다."
+  }
+ ],
+ "recap": [
+  "**복구 가능한 것만 타입으로** 만든다.",
+  "**`getErrorCode()`** 로 구분한다.",
+  "**`getSQLState()`** 는 표준에 가깝다 — `23` 은 제약 위반.",
+  "**나머지는 `MyDbException` 하나로 충분**하다.",
+  "한계 셋 — **DB 마다 다름 · 경우가 수백 · 메서드마다 반복**.",
+  "**DB 를 바꾸면 `if` 를 다 고친다.**",
+  "**조용히 안 돈다** — 예외도 안 나고 복구만 안 된다.",
+  "**7.4절이 셋을 다 푼다.**",
+  "**손으로 해 봐야 스프링이 무엇을 하는지** 안다.",
+  "**업무 예외는 우리가 만든다** — 스프링이 모른다."
+ ],
+ "drills": [
+  {
+   "task": "`MyDuplicateKeyException` 을 만들고 오류 코드로 구분한다.",
+   "done_when": "복구 로직이 도는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "연결 실패를 내고 예외 타입을 비교한다.",
+   "done_when": "다른 타입인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getSQLState()` 도 찍어 본다.",
+   "done_when": "`23505` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "오류 코드를 1062 로 바꿔 본다.",
+   "done_when": "복구가 조용히 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`update` 에도 같은 `if` 를 넣어 본다.",
+   "done_when": "반복이 생기는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 복구 가능한 것만 구분하나?",
+   "a": "나머지는 어차피 로그를 남기고 500 이라 타입을 나눌 이유가 없다."
+  },
+  {
+   "q": "직접 만드는 것의 한계 셋은?",
+   "a": "오류 코드가 DB 마다 다르고, 경우가 수백 가지이고, 모든 리포지토리 메서드에 반복된다."
+  },
+  {
+   "q": "DB 를 바꾸면 무엇이 일어나나?",
+   "a": "코드가 안 걸려 복구 로직이 조용히 안 돈다. 예외도 안 난다."
+  },
+  {
+   "q": "그런데 왜 손으로 해 보나?",
+   "a": "7.4절의 스프링 예외가 무엇을 대신하는지 알기 위해서다."
+  },
+  {
+   "q": "스프링이 안 만들어 주는 것은?",
+   "a": "업무 예외다. \"잔고 부족\" 같은 것은 우리가 계층을 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "getErrorCode",
+   "en": "",
+   "what": "DB 벤더별 오류 번호. DB 마다 값이 다르다."
+  },
+  {
+   "term": "SQLState",
+   "en": "",
+   "what": "표준에 가까운 오류 분류 코드. `23` 으로 시작하면 제약 위반이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — DataAccessException",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/dao.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
