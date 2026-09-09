@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "repository-support",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "Querydsl 지원 클래스 직접 만들기",
+ "summary": "제공 클래스의 한계.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "제공 클래스를 써 본다.",
+  "무엇이 불편한지 안다.",
+  "직접 만들 준비를 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절의 인터페이스는 조인이 안** 됐다. **클래스를 상속하는 길도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "제공 클래스가 주는 것",
+   "ascii": "   what the provided support class hands you\n\n   getQuerydsl()      a helper that can apply a Pageable\n   getEntityManager() the manager, so you can build your own factory\n   from(...)          a query start, but only from, never select\n\n   the third line is the one that dates the class",
+   "note": "**셋째 줄이 이 클래스의 나이를** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이건 조립을 막지 않는다",
+   "md": "**8.1절과 다른** 방식이다.\n\n> **거기는 메서드를 받는** 것이었다.\n> **여기는 클래스를 상속**한다.\n> **커스텀 구현이 그걸 상속**한다.\n\n**`getQuerydsl()` 이 페이징을 해** 준다.\n\n> **`applyPagination` 하나**다.\n> **`offset`·`limit`·정렬을 다** 건다.\n> **7.3·7.7절을 대신**한다.\n\n**정렬 변환도 해** 준다.\n\n> **`Sort` 를 `OrderSpecifier` 로** 바꾼다.\n> **7.7절의 일반 변환기 방식**이다.\n> **허용 목록은 여전히 내** 몫이다.\n\n**그런데 시작이 `from`** 이다.\n\n> **`select` 를 먼저 못** 쓴다.\n> **팩토리가 없던 시절 API** 다.\n> **아래에서 그 불편을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 낡았나",
+   "ascii": "   why the provided class feels old\n\n   it starts from from(), so the select list comes last\n   it exposes no JPAQueryFactory, only an EntityManager\n   its paging helper wants a JPQLQuery, not a fetch result\n\n   every one of those is a habit from before the factory existed",
+   "note": "**전부 팩토리 이전의 습관**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "select 를 마지막에 쓰면 읽는 순서가 뒤집힌다",
+   "md": "**`from(...).where(...).select(...)`** 다.\n\n> **JPQL 과 순서가** 다르다.\n> **1.3절의 대응이** 깨진다.\n> **읽는 사람이 멈칫**한다.\n\n**`Sort` 검증이** 없다.\n\n> **7.7절의 일반 변환기와 같**다.\n> **없는 속성이면 실행에서** 터진다.\n> **허용 목록을 내가** 건다.\n\n**개수 쿼리 최적화가 안** 된다.\n\n> **`fetchResults` 시절 API** 다.\n> **7.4절의 도우미를 쓰려면 직접** 짠다.\n> **아래에서 확인**한다.\n\n**그래서 직접 만드는 게** 낫다.\n\n> **필요한 것만 담는**다.\n> **8.3절에서** 만든다.\n> **⑭ 7.1절의 기반 클래스와 같은 발상**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 제공 클래스를 상속한다\n\npublic class MemberRepositoryCustomImpl\n        extends QuerydslRepositorySupport\n        implements MemberRepositoryCustom {\n\n    public MemberRepositoryCustomImpl() {\n        super(Member.class);\n    }\n    ...\n}\n\n$ javap -cp \"$SPRING_JAR\" \\\n    org.springframework.data.jpa.repository.support\\\n.QuerydslRepositorySupport | grep protected\n\n  protected EntityManager getEntityManager();\n  protected <T> JPQLQuery<T> from(EntityPath<T>);\n  protected Querydsl getQuerydsl();\n  protected JPQLQueryFactory getQueryFactory();\n\n--   getQueryFactory 가 있긴 하다\n--   JPQLQueryFactory 라 JPAQueryFactory 가 아니다\n\n\n-- from 으로 시작한다\n\n@Override\npublic List<MemberTeamDto> search(MemberSearchCondition cond) {\n    return from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   teamNameEq(cond.getTeamName()),\n                   ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .fetch();\n}\n\n@Test\n@Transactional\nvoid 조회() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    memberRepository.search(cond);\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n\n--   7.2절과 SQL 이 같다\n--   select 가 맨 뒤다\n\n\n-- 7.2 와 코드를 비교한다\n\n$ diff <(awk '/List<MemberTeamDto> search/,/^    }/' factory-version.java) \\\n       <(awk '/List<MemberTeamDto> search/,/^    }/' support-version.java)\n\n<     return queryFactory\n<             .select(new QMemberTeamDto(...))\n<             .from(member)\n---\n>     return from(member)\n\n<             .where(...)\n<             .fetch();\n---\n>             .where(...)\n>             .select(new QMemberTeamDto(...))\n>             .fetch();\n\n--   select 의 자리만 다르다\n--   JPQL 은 같다\n\n\n-- 페이징을 해 준다\n\n@Override\npublic Page<MemberTeamDto> searchPage(MemberSearchCondition cond,\n                                      Pageable pageable) {\n    JPQLQuery<MemberTeamDto> query = from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name));\n\n    JPQLQuery<MemberTeamDto> paged =\n            getQuerydsl().applyPagination(pageable, query);\n\n    List<MemberTeamDto> content = paged.fetch();\n    long total = query.fetchCount();\n\n    return new PageImpl<>(content, pageable, total);\n}\n\n@Test\n@Transactional\nvoid 페이징() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page = memberRepository.searchPage(\n            cond, PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n내용: 3\n전체: 6\n\n--   offset·limit·정렬이 다 붙었다\n--   7.3·7.7절을 안 써도 됐다\n\n\n-- 정렬 변환이 어디서 되나\n\n@Test\n@Transactional\nvoid 정렬_변환() {\n    em.clear();\n    memberRepository.searchPage(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\"username\")));\n}\n\n/* select\n    ...\norder by\n    member1.username asc */\n\nHibernate:\n    select ... order by m1_0.username\n    offset ? rows fetch first ? rows only\n\n--   Sort 가 그대로 걸렸다\n--   7.7절에서 손으로 짠 그것이다\n\n\n-- 그런데 검증이 없다\n\n@Test\n@Transactional\nvoid 없는_속성() {\n    try {\n        memberRepository.searchPage(new MemberSearchCondition(),\n                PageRequest.of(0, 3, Sort.by(\"없는것\")));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: IllegalArgumentException\n말:   Could not resolve attribute '없는것' of 'Member'\n\n--   7.7절의 일반 변환기와 같다\n--   허용 목록은 내가 걸어야 한다\n\n\n-- 연관 속성으로 정렬하면\n\n@Test\n@Transactional\nvoid 연관_정렬() {\n    try {\n        memberRepository.searchPage(new MemberSearchCondition(),\n                PageRequest.of(0, 3, Sort.by(\"team.name\")));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n/* select\n    ...\norder by\n    member1.team.name asc */\n\nHibernate:\n    select ... left join team t1_0 on t1_0.team_id=m1_0.team_id\n    join team t2_0 on t2_0.team_id=m1_0.team_id\n    order by t2_0.name\n    offset ? rows fetch first ? rows only\n\n--   조인이 하나 더 생겼다\n--   내가 건 leftJoin 을 안 쓴다\n--   4.10절에서 본 그 현상이다\n\n\n-- fetchCount 가 사라졌다\n\n$ ./gradlew compileJava\n\nwarning: [deprecation] fetchCount() in FetchableQuery has been deprecated\n\n--   4.5절에서 본 그것이다\n--   제공 클래스의 예제가 이걸 쓴다\n\n\n-- group by 를 넣으면 틀린다\n\n@Override\npublic Page<TeamStat> statsPage(Pageable pageable) {\n    JPQLQuery<TeamStat> query = from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .select(new QTeamStat(team.name, member.count(),\n                    member.age.avg()));\n\n    List<TeamStat> content =\n            getQuerydsl().applyPagination(pageable, query).fetch();\n    long total = query.fetchCount();\n\n    return new PageImpl<>(content, pageable, total);\n}\n\n@Test\n@Transactional\nvoid 그룹() {\n    em.clear();\n    Page<TeamStat> page = memberRepository.statsPage(PageRequest.of(0, 10));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\nHibernate:\n    select t1_0.name, count(m1_0.member_id), avg(m1_0.age)\n    from member m1_0 join team t1_0 on t1_0.team_id=m1_0.team_id\n    group by t1_0.name\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(t1_0.name) from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    group by t1_0.name\n내용: 2\n전체: 4\n\n--   4.5·7.3절에서 본 그 오류다\n--   제공 API 를 따라가면 이렇게 된다\n\n\n-- 도우미를 쓰려면 직접 짠다\n\n@Override\npublic Page<MemberTeamDto> searchPageV2(MemberSearchCondition cond,\n                                        Pageable pageable) {\n    JPQLQuery<MemberTeamDto> query = from(member)\n            .leftJoin(member.team, team)\n            .where(ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n            .select(new QMemberTeamDto(...));\n\n    List<MemberTeamDto> content =\n            getQuerydsl().applyPagination(pageable, query).fetch();\n\n    JPAQuery<Long> countQuery = new JPAQuery<>(getEntityManager())\n            .select(member.count())\n            .from(member)\n            .where(ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    return PageableExecutionUtils.getPage(content, pageable,\n            countQuery::fetchOne);\n}\n\n@Test\n@Transactional\nvoid 도우미() {\n    em.clear();\n    sqlCounter.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(35);\n\n    memberRepository.searchPageV2(cond, PageRequest.of(0, 100));\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate:\n    select ... left join team t1_0 on ...\n    where m1_0.age>=?\n    offset ? rows fetch first ? rows only\n쿼리: 1개\n\n--   7.4절과 같아졌다\n--   그런데 팩토리를 직접 만들었다\n--   제공 클래스를 쓸 이유가 줄었다\n\n\n-- 팩토리를 못 받는다\n\n@Test\nvoid 팩토리() {\n    System.out.println(\"제공: \" + getQueryFactory().getClass().getName());\n}\n\n제공: com.querydsl.jpa.impl.JPAQueryFactory\n\n--   실제로는 JPAQueryFactory 다\n--   선언 타입이 JPQLQueryFactory 라 select 부터 못 쓴다\n\n\n-- 캐스팅하면 되긴 한다\n\n@Test\n@Transactional\nvoid 캐스팅() {\n    em.clear();\n    JPAQueryFactory f = (JPAQueryFactory) getQueryFactory();\n    f.select(member.username).from(member).limit(2).fetch()\n            .forEach(System.out::println);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username from member m1_0\n    fetch first ? rows only\nm1\nm2\n\n--   된다\n--   캐스팅을 해야 한다는 게 답이다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  'from 으로 시작'      'select 가 맨 뒤' \\\n  'applyPagination'     'offset·limit·정렬을 건다' \\\n  '정렬 검증'           '없다, 실행에서 터짐' \\\n  '연관 정렬'           '조인을 또 만든다' \\\n  'fetchCount'          'deprecated, group by 에서 틀림' \\\n  'getQueryFactory'     '타입이 좁아 캐스팅이 필요'\n\nfrom 으로 시작            select 가 맨 뒤\napplyPagination           offset·limit·정렬을 건다\n정렬 검증                 없다, 실행에서 터짐\n연관 정렬                 조인을 또 만든다\nfetchCount                deprecated, group by 에서 틀림\ngetQueryFactory           타입이 좁아 캐스팅이 필요\n\n--   8.3절에서 필요한 것만 담아 직접 만든다",
+   "note": "**`from(...)` 으로 시작해 `select` 가 맨 뒤로 가지만 JPQL 은 7.2절과** 같다.\n\n**`applyPagination` 이 `offset`·`limit`·`order by age desc` 를 한 번에** 붙인다.\n\n**정렬 검증이 없어 없는 속성은 `Could not resolve attribute` 로 터지고, `team.name` 은 조인을 하나 더** 만든다.\n\n**`fetchCount` 는 deprecated 이고 `group by` 에서 내용 2에 전체 4를** 준다.\n\n**`getQueryFactory()` 는 실제로 `JPAQueryFactory` 인데 선언 타입이 좁아 캐스팅이** 필요하다."
+  }
+ ],
+ "recap": [
+  "**클래스를 상속**한다.",
+  "**`from` 으로** 시작한다.",
+  "**`select` 가 맨 뒤**다.",
+  "**JPQL 은** 같다.",
+  "**페이징을 해** 준다.",
+  "**정렬 검증이** 없다.",
+  "**연관 정렬은 조인을** 더 만든다.",
+  "**`fetchCount` 는** 낡았다.",
+  "**팩토리는 캐스팅이** 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "제공 클래스를 상속한다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`applyPagination` 을 쓴다.",
+   "done_when": "정렬까지 붙는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 속성으로 정렬한다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`group by` 에 `fetchCount` 를 쓴다.",
+   "done_when": "틀린 총계를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "제공 클래스가 대신해 주는 것은?",
+   "a": "`Pageable` 적용과 `Sort` 변환이다."
+  },
+  {
+   "q": "쓰기 불편한 점은?",
+   "a": "`from` 으로 시작해 `select` 가 맨 뒤로 간다."
+  },
+  {
+   "q": "정렬 검증은 있나?",
+   "a": "없다. 없는 속성은 실행에서 터진다."
+  },
+  {
+   "q": "`fetchCount` 의 문제는?",
+   "a": "삭제 예정이고 `group by` 에서 틀린 값을 준다."
+  },
+  {
+   "q": "`getQueryFactory()` 를 그대로 쓸 수 있나?",
+   "a": "선언 타입이 좁아 `select` 부터 쓰려면 캐스팅이 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "QuerydslRepositorySupport",
+   "def": "스프링 데이터가 제공하는 Querydsl 지원 상위 클래스."
+  },
+  {
+   "term": "applyPagination",
+   "def": "`Pageable` 을 쿼리에 적용해 주는 도우미 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Querydsl Extension",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data Commons — Repositories",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

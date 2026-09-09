@@ -512,7 +512,7 @@
           "title": "Querydsl 지원 클래스 직접 만들기",
           "summary": "제공 클래스의 한계.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -520,7 +520,7 @@
           "title": "지원 클래스로 페이징",
           "summary": "반복을 지운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",

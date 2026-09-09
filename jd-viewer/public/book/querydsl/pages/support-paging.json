@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "support-paging",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "지원 클래스로 페이징",
+ "summary": "반복을 지운다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "직접 만든다.",
+  "반복을 지운다.",
+  "허용 목록을 넣는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절의 제공 클래스는 낡았다.** **필요한 것만 담아 직접** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "직접 만들면 담을 것",
+   "ascii": "   what a hand written support class should hold\n\n   the factory      exposed as it is, so select comes first\n   applyPagination  offset, limit, and a checked sort\n   applyPage        content plus a lazy count, in one call\n\n   nothing else, because everything else was already fine",
+   "note": "**나머지는 이미 괜찮아서 안** 담는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "고칠 것은 셋뿐이다",
+   "md": "**팩토리를 그대로 노출**한다.\n\n> **8.2절이 타입을 좁혀 놨다.**\n> **`select` 부터 쓸 수 있어야** 한다.\n> **1.3절의 읽는 순서를** 지킨다.\n\n**페이징을 한 줄로** 만든다.\n\n> **7.3절의 `offset`·`limit`** 이다.\n> **7.7절의 정렬 변환도 같이** 넣는다.\n> **허용 목록까지 여기서** 건다.\n\n**개수 쿼리를 감**싼다.\n\n> **7.4절의 도우미를 안에** 둔다.\n> **부르는 쪽은 목록과 개수 쿼리만** 준다.\n> **생략 판단은 안에서** 한다.\n\n**⑭ 7.1절의 기반 클래스와 같은 발상**이다.\n\n> **거기는 `repositoryBaseClass`** 였다.\n> **여기는 그냥 상속**이다.\n> **모든 커스텀 구현이 쓴**다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드마다 사라지는 줄",
+   "ascii": "   the lines that disappear from every repository method\n\n   the offset and limit pair\n   the count query duplicate and its lambda\n   the sort conversion switch\n\n   three repetitions, one place",
+   "note": "**세 반복이 한자리로** 모인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지원 클래스에 상태를 두면 안 된다",
+   "md": "**빈으로** 산다.\n\n> **커스텀 구현이 상속**한다.\n> **6.2절의 팩토리와 같은 이유**다.\n> **필드에 조건 같은 걸 두면** 깨진다.\n\n**허용 목록은 엔티티마다** 다르다.\n\n> **`Member` 와 `Team` 이** 다르다.\n> **추상 메서드로** 받는다.\n> **아래에서 그렇게** 만든다.\n\n**너무 많이 넣지** 않는다.\n\n> **조회 메서드를 여기 두면 안** 된다.\n> **그건 리포지토리 몫**이다.\n> **⑭ 6.2절의 나누기와 같은 기준**이다.\n\n**테스트가** 쉬워진다.\n\n> **페이징 규칙을 한 번만** 검증한다.\n> **6.6절의 층 나누기**다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 직접 만든다\n\npublic abstract class QuerydslSupport {\n\n    private final JPAQueryFactory queryFactory;\n\n    protected QuerydslSupport(JPAQueryFactory queryFactory) {\n        this.queryFactory = queryFactory;\n    }\n\n    protected JPAQueryFactory query() {\n        return queryFactory;\n    }\n\n    /** 정렬 허용 목록. 엔티티마다 다르다. */\n    protected abstract Map<String, ComparableExpressionBase<?>> sortable();\n\n    protected abstract OrderSpecifier<?> defaultOrder();\n\n    protected OrderSpecifier<?>[] toOrders(Sort sort) {\n        if (sort.isUnsorted()) {\n            return new OrderSpecifier[]{ defaultOrder() };\n        }\n        Map<String, ComparableExpressionBase<?>> allowed = sortable();\n        List<OrderSpecifier<?>> orders = sort.stream()\n                .map(o -> {\n                    var path = allowed.get(o.getProperty());\n                    if (path == null) return defaultOrder();\n                    return o.isAscending() ? path.asc() : path.desc();\n                })\n                .toList();\n        return orders.toArray(OrderSpecifier[]::new);\n    }\n\n    protected <T> JPAQuery<T> applyPagination(JPAQuery<T> query,\n                                              Pageable pageable) {\n        return query\n                .orderBy(toOrders(pageable.getSort()))\n                .offset(pageable.getOffset())\n                .limit(pageable.getPageSize());\n    }\n\n    protected <T> Page<T> applyPage(JPAQuery<T> contentQuery,\n                                    JPAQuery<Long> countQuery,\n                                    Pageable pageable) {\n        List<T> content = applyPagination(contentQuery, pageable).fetch();\n        return PageableExecutionUtils.getPage(content, pageable,\n                countQuery::fetchOne);\n    }\n}\n\n--   메서드 넷이다\n--   상태가 없다\n\n\n-- 커스텀 구현이 상속한다\n\npublic class MemberRepositoryCustomImpl extends QuerydslSupport\n        implements MemberRepositoryCustom {\n\n    public MemberRepositoryCustomImpl(JPAQueryFactory queryFactory) {\n        super(queryFactory);\n    }\n\n    @Override\n    protected Map<String, ComparableExpressionBase<?>> sortable() {\n        return Map.of(\n                \"age\", member.age,\n                \"username\", member.username,\n                \"teamName\", team.name);\n    }\n\n    @Override\n    protected OrderSpecifier<?> defaultOrder() {\n        return member.id.asc();\n    }\n\n    @Override\n    public Page<MemberTeamDto> searchPage(MemberSearchCondition cond,\n                                          Pageable pageable) {\n        BooleanExpression predicate = Expressions.allOf(\n                usernameEq(cond.getUsername()),\n                teamNameEq(cond.getTeamName()),\n                ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n        JPAQuery<MemberTeamDto> content = query()\n                .select(new QMemberTeamDto(\n                        member.id, member.username, member.age,\n                        team.id, team.name))\n                .from(member)\n                .leftJoin(member.team, team)\n                .where(predicate);\n\n        JPAQuery<Long> count = query()\n                .select(member.count())\n                .from(member)\n                .leftJoin(member.team, team)\n                .where(predicate);\n\n        return applyPage(content, count, pageable);\n    }\n}\n\n--   select 부터 쓴다 (8.2절과 다르다)\n--   offset·limit·정렬·개수 판단이 사라졌다\n\n\n-- 부른다\n\n@Test\n@Transactional\nvoid 페이징() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page = memberRepository.searchPage(\n            cond, PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n내용: 3\n전체: 6\n\n--   7.4·7.7절과 SQL 이 같다\n\n\n-- 7.4 와 비교한다\n\n$ diff manual.sql support.sql && echo SAME\nSAME\n\n$ diff <(awk '/searchPageComplex/,/^    }/' manual.java | wc -l) \\\n       <(awk '/searchPage\\(/,/^    }/' support.java | wc -l)\n1c1\n<       28\n---\n>       21\n\n--   메서드가 7 줄 짧아졌다\n--   SQL 은 같다\n\n\n-- 개수 쿼리가 생략된다\n\n@Test\n@Transactional\nvoid 생략() {\n    em.clear();\n    sqlCounter.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(35);\n\n    memberRepository.searchPage(cond, PageRequest.of(0, 100));\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate:\n    select ... left join team t1_0 on ...\n    where m1_0.age>=?\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n쿼리: 1개\n\n--   7.4절의 도우미가 안에서 돌았다\n--   부르는 쪽은 모른다\n\n\n-- 정렬 허용 목록이 걸린다\n\n@Test\n@Transactional\nvoid 허용_목록() {\n    em.clear();\n    memberRepository.searchPage(new MemberSearchCondition(),\n            PageRequest.of(0, 3, Sort.by(\"비밀번호\")));\n}\n\n/* select\n    ...\norder by\n    member1.id asc */\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   기본 정렬로 갔다\n--   8.2절은 예외였다\n\n\n-- 8.2 와 나란히 본다\n\n@Test\nvoid 세_방식() {\n    // 제공 클래스\n    // → 없는 속성: IllegalArgumentException\n    // 직접 만든 것\n    // → 없는 속성: 기본 정렬\n    // 7.7절 switch\n    // → 없는 속성: 기본 정렬, 그런데 메서드마다 씀\n}\n\n$ curl -s -w '\\n%{http_code}\\n' \\\n    'localhost:8080/v7/members?sort=없는것,desc' | tail -1\n200\n\n--   컨트롤러까지 안전하다\n\n\n-- 다른 리포지토리도 상속한다\n\npublic class TeamRepositoryCustomImpl extends QuerydslSupport\n        implements TeamRepositoryCustom {\n\n    public TeamRepositoryCustomImpl(JPAQueryFactory queryFactory) {\n        super(queryFactory);\n    }\n\n    @Override\n    protected Map<String, ComparableExpressionBase<?>> sortable() {\n        return Map.of(\"name\", team.name);\n    }\n\n    @Override\n    protected OrderSpecifier<?> defaultOrder() {\n        return team.id.asc();\n    }\n\n    @Override\n    public Page<TeamStat> statsPage(Pageable pageable) {\n        JPAQuery<TeamStat> content = query()\n                .select(new QTeamStat(team.name, member.count(),\n                        member.age.avg()))\n                .from(member)\n                .join(member.team, team)\n                .groupBy(team.name);\n\n        JPAQuery<Long> count = query()\n                .select(team.countDistinct())\n                .from(member)\n                .join(member.team, team);\n\n        return applyPage(content, count, pageable);\n    }\n}\n\n@Test\n@Transactional\nvoid 통계_페이징() {\n    em.clear();\n    Page<TeamStat> page = teamRepository.statsPage(PageRequest.of(0, 1));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\n/* select\n    team.name,\n    count(member1),\n    avg(member1.age)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name\norder by\n    team.id asc */\n\nHibernate:\n    select\n        t1_0.name, count(m1_0.member_id), avg(m1_0.age)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    order by\n        t1_0.team_id\n    offset ? rows fetch first ? rows only\n/* select\n    count(distinct team)\nfrom\n    Member member1\n  inner join\n    member1.team as team */\nHibernate:\n    select\n        count(distinct t1_0.team_id)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n내용: 1\n전체: 2\n\n--   개수 쿼리를 내가 줬다\n--   8.2절의 fetchCount 는 4 였다\n--   4.5·7.3절의 그 오류를 피했다\n\n\n-- 지원 클래스만 테스트한다\n\nclass QuerydslSupportTest {\n\n    static class TestSupport extends QuerydslSupport {\n        TestSupport() { super(null); }\n        @Override protected Map<String, ComparableExpressionBase<?>> sortable() {\n            return Map.of(\"age\", member.age);\n        }\n        @Override protected OrderSpecifier<?> defaultOrder() {\n            return member.id.asc();\n        }\n        OrderSpecifier<?>[] orders(Sort sort) { return toOrders(sort); }\n    }\n\n    @Test\n    void 허용된_속성() {\n        assertThat(new TestSupport().orders(Sort.by(\"age\"))[0])\n                .hasToString(\"member1.age ASC\");\n    }\n\n    @Test\n    void 허용_안_된_속성() {\n        assertThat(new TestSupport().orders(Sort.by(\"없는것\"))[0])\n                .hasToString(\"member1.id ASC\");\n    }\n\n    @Test\n    void 정렬이_없으면() {\n        assertThat(new TestSupport().orders(Sort.unsorted())[0])\n                .hasToString(\"member1.id ASC\");\n    }\n}\n\n$ ./gradlew test --tests '*QuerydslSupportTest*'\n\nBUILD SUCCESSFUL in 1s\n3 tests completed\n\n--   SQL 이 한 줄도 안 나갔다\n--   6.6절의 그 방식이다\n\n\n-- 무엇이 사라졌나\n\n$ printf '%-26s %-10s %s\\n' \\\n  'offset/limit'   '사라짐' '지원 클래스로' \\\n  '정렬 변환'      '사라짐' '지원 클래스로' \\\n  '허용 목록'      '사라짐' 'sortable() 로' \\\n  '개수 생략 판단' '사라짐' 'applyPage 로' \\\n  '조건'           '남음'   '리포지토리 몫' \\\n  'select 절'      '남음'   '리포지토리 몫'\n\noffset/limit           사라짐     지원 클래스로\n정렬 변환              사라짐     지원 클래스로\n허용 목록              사라짐     sortable() 로\n개수 생략 판단         사라짐     applyPage 로\n조건                   남음       리포지토리 몫\nselect 절              남음       리포지토리 몫\n\n--   8.4절에서 Web 지원을 본다",
+   "note": "**메서드가 28줄에서 21줄로 줄고 SQL 은 7.4절과 `diff` 결과 `SAME`** 이다.\n\n**`applyPage` 안에서 도우미가 돌아 첫 쪽이 안 차면 쿼리가 1개**다.\n\n**허용 목록에 없는 속성은 기본 정렬로 가 컨트롤러까지 200 — 8.2절은 예외였다.**\n\n**`Team` 쪽도 같은 클래스를 상속해 `count(distinct t1_0.team_id)` 로 총계가 `2`** 다.\n\n**지원 클래스만 따로 테스트하면 SQL 이 한 줄도 안** 나간다."
+  }
+ ],
+ "recap": [
+  "**필요한 것만** 담는다.",
+  "**팩토리를 그대로** 노출한다.",
+  "**`select` 부터** 쓴다.",
+  "**페이징이 한 줄**이다.",
+  "**허용 목록을 안에** 둔다.",
+  "**개수 판단도 안에서** 한다.",
+  "**SQL 은** 같다.",
+  "**다른 리포지토리도** 상속한다.",
+  "**따로 테스트가** 된다."
+ ],
+ "drills": [
+  {
+   "task": "지원 클래스를 만든다.",
+   "done_when": "메서드가 짧아진 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "허용 목록을 넣는다.",
+   "done_when": "기본 정렬로 가는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다른 리포지토리에 상속한다.",
+   "done_when": "총계가 맞는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "지원 클래스만 테스트한다.",
+   "done_when": "SQL 없이 도는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "직접 만든 지원 클래스에 담을 것은?",
+   "a": "팩토리 노출, 페이징 적용, 개수 생략 판단이다."
+  },
+  {
+   "q": "허용 목록을 어떻게 받나?",
+   "a": "엔티티마다 다르므로 추상 메서드로 받는다."
+  },
+  {
+   "q": "제공 클래스와 무엇이 다른가?",
+   "a": "`select` 부터 쓸 수 있고 정렬이 검증된다."
+  },
+  {
+   "q": "지원 클래스에 상태를 둬도 되나?",
+   "a": "안 된다. 빈으로 공유되므로 상태가 없어야 한다."
+  },
+  {
+   "q": "테스트는 어떻게 하나?",
+   "a": "정렬 변환만 따로 검증하면 DB 가 필요 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "지원 클래스",
+   "def": "여러 커스텀 구현이 공유하는 페이징·정렬 도우미 상위 클래스."
+  },
+  {
+   "term": "sortable",
+   "def": "정렬에 허용할 속성 이름과 경로의 매핑."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data Commons — Repositories",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Querydsl Extension",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
