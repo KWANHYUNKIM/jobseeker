@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-repository",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "주문 리포지토리",
+ "summary": "저장과 단건 조회.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`OrderRepository` 를 만든다.",
+  "`merge` 가 없는 이유를 안다.",
+  "동적 쿼리를 뒤로 미룬다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**상품과 다르다.** **주문에는 수정 화면이 없다**(1.3절)."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderRepository`",
+   "code": "@Repository\npublic class OrderRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public void save(Order order) {\n        em.persist(order);\n    }\n\n    public Order findOne(Long id) {\n        return em.find(Order.class, id);\n    }\n\n    // findAll(OrderSearch) 는 7.9절\n}",
+   "note": "**`save` 에 `if` 가 없다**(6.3절과 다르다).\n\n**주문은 항상 새로** 만든다. **화면에서 준영속 주문이 오는 일이 없다.**\n\n> **취소는 `merge` 가 아니라 변경 감지**다(7.4절).\n>\n> ```java\n> Order order = orderRepository.findOne(orderId);   // 영속\n> order.cancel();                                    // 변경 감지\n> ```\n\n**`findAll` 이 아직 없다.** **7.9절에서 동적 쿼리로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 메서드",
+   "ascii": "   OrderRepository\n\n   save(Order)        em.persist          cascade does the rest\n   findOne(Long)      em.find\n   findAll(cond)      dynamic query       7.9\n\n   no merge here\n   an order is never rebuilt from a form",
+   "note": "**`merge` 가 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 `merge` 가 필요 없나",
+   "md": "**6.3절의 `ItemRepository` 와 비교**한다.\n\n| | 상품 | 주문 |\n|---|---|---|\n| 등록 화면 | 있다 | 있다 |\n| **수정 화면** | **있다** | **없다** |\n| 폼에서 엔티티를 만드나 | **만든다** | 안 만든다 |\n| `merge` | **필요** | 불필요 |\n\n**상품 수정 화면**이 준영속 엔티티를 만든다(8.7절).\n\n```java\nBook book = new Book();\nbook.setId(form.getId());     // 화면에서 온 id\nitemService.saveItem(book);   // merge 로 간다\n```\n\n**주문에는 그런 화면이 없다.**\n\n| 주문 화면 | 하는 일 |\n|---|---|\n| 주문 등록 | **새로 만든다** — `persist` |\n| 주문 목록 | 조회만 |\n| 주문 취소 | **id 로 찾아 상태 변경** — 변경 감지 |\n\n**전부 `merge` 를 안 쓴다.**\n\n> **8.8절에서 상품도 변경 감지로** 바꾼다. **그러면 `merge` 가 이 프로젝트에서 사라진다.**\n>\n> **9.7절에서 \"처음부터 그렇게 했어야 했나\" 를** 묻는다.\n\n**`save` 에 `cascade` 가 다 한다.**\n\n```java\nem.persist(order);\n// delivery, orderItem 이 같이 저장된다\n```\n\n**리포지토리가 하나만 있으면** 된다. **`DeliveryRepository`·`OrderItemRepository` 가 없다.**\n\n> **7.1절에서 `cascade` 를 건 이유**가 이것이다. **생명주기가 주문에 종속**되니 저장 경로도 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`findOne` 이 무엇을 로딩하나",
+   "md": "```java\nOrder order = em.find(Order.class, 1L);\n```\n\n**`orders` 한 행만** 읽는다.\n\n```sql\nselect o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n       o1_0.order_date, o1_0.status\nfrom orders o1_0 where o1_0.order_id=?\n```\n\n**`member`·`delivery`·`orderItems` 가 전부 `LAZY`** 다(3.6절, 3.8절).\n\n**프록시로 들어 있다.**\n\n```java\nlog.info(\"{}\", order.getMember().getClass());\n// class ...Member$HibernateProxy$aB3xY9\n```\n\n**`getName()` 을 부르면 그때 쿼리**가 나간다.\n\n> **3.8절에서 `EAGER` 로 뒀다면** **`em.find` 는 조인 한 번**이었을 것이다.\n>\n> **`LAZY` 라 필요할 때만** 간다. **안 쓰면 안 나간다.**\n\n**한 가지 예외**가 있다.\n\n```java\nlog.info(\"{}\", order.getDelivery().getClass());\n// class ...Delivery$HibernateProxy$...\n```\n\n**`Order.delivery` 는 주인 쪽**이라 프록시가 된다.\n\n**반대는 안 된다.**\n\n```java\nDelivery d = em.find(Delivery.class, 1L);\n// Delivery.order 는 mappedBy 쪽\n```\n\n**즉시 로딩**이다(3.6절). **`delivery` 를 조회하면 `orders` 도 같이** 나간다.\n\n> **9.4절에서 이 쿼리도** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문 저장 ---\n\norderRepository.save(order);\nem.flush();\n\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n#   Hibernate: select next value for order_item_seq\n\n#   Hibernate: insert into delivery (city, street, zipcode, status,\n#                                    delivery_id) values (?, ?, ?, ?, ?)\n#   Hibernate: insert into orders (delivery_id, member_id, order_date,\n#                                  status, order_id) values (?, ?, ?, ?, ?)\n#   Hibernate: insert into order_item (count, item_id, order_id,\n#                                      order_price, order_item_id)\n#              values (?, ?, ?, ?, ?)\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n\n#   persist 하나에 insert 셋\n\n#   DeliveryRepository 도 OrderItemRepository 도 없다\n\n# --- 주문 조회 ---\n\nem.clear();\nOrder order = orderRepository.findOne(orderId);\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0 where o1_0.order_id=?\n\n#   한 테이블만 읽었다\n\nlog.info(\"member class = {}\", order.getMember().getClass());\n#   member class = class ...Member$HibernateProxy$1aB3xY\n\n#   (아직 SQL 없음)\n\nlog.info(\"member name = {}\", order.getMember().getName());\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n\n#   여기서 나갔다\n\n# --- 컬렉션도 마찬가지 ---\n\nlog.info(\"orderItems class = {}\", order.getOrderItems().getClass());\n#   class org.hibernate.collection.spi.PersistentBag\n\n#   (아직 SQL 없음)\n\norder.getOrderItems().size();\n\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n# --- Delivery 를 직접 조회하면 ---\n\nem.clear();\nDelivery delivery = em.find(Delivery.class, deliveryId);\n\n#   Hibernate: \n#       select d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#              d1_0.status\n#       from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0 where o1_0.delivery_id=?\n\n#   order 를 안 썼는데 쿼리가 나갔다\n\n#   mappedBy 쪽 1:1 은 지연 로딩이 안 된다 (3.6절)\n\n# --- merge 가 없다 ---\n\n#   주문은 화면에서 준영속으로 오지 않는다\n#   취소는 변경 감지다\n\n# --- findAll 은 아직 없다 ---\n\n#   7.9절에서 동적 쿼리로 만든다",
+   "note": "**`persist` 하나에 `insert` 셋**이다. **리포지토리가 하나뿐**인 이유다.\n\n**`findOne` 이 한 테이블만** 읽는다. **연관은 전부 프록시**다.\n\n**`getMember()` 는 SQL 이 없고 `getName()` 에서 나간다.** **프록시의 동작**이다.\n\n**`Delivery` 를 직접 조회하면 `orders` 도 나간다.** **3.6절에서 예고한 `mappedBy` 쪽 1:1 의 문제**다.\n\n**`merge` 가 없다.** **주문은 항상 새로 만들거나 변경 감지**다.\n\n**다음 절에서 서비스를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`save` 에 `if` 가 없다** — 주문은 항상 새로 만든다.",
+  "**`merge` 가 필요 없다** — 준영속 주문이 화면에서 안 온다.",
+  "**취소는 변경 감지**다.",
+  "**`cascade` 가 배송·주문상품을 같이** 저장한다.",
+  "**리포지토리가 하나면 된다** — `DeliveryRepository` 가 없다.",
+  "**`findOne` 이 한 테이블만** 읽는다.",
+  "**연관은 전부 프록시**로 들어온다.",
+  "**`getName()` 을 불러야 SQL 이** 나간다.",
+  "**`Delivery` 직접 조회는 `orders` 도 읽는다** — 3.6절의 함정."
+ ],
+ "drills": [
+  {
+   "task": "`OrderRepository` 를 만들고 저장한다.",
+   "done_when": "`insert` 셋을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`findOne` 후 연관 클래스를 찍는다.",
+   "done_when": "프록시인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getName()` 전후로 SQL 이 언제 나가는지 본다.",
+   "done_when": "프록시 초기화 시점을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Delivery` 를 직접 조회한다.",
+   "done_when": "`orders` 쿼리가 같이 나가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`save` 에 왜 `if` 가 없나?",
+   "a": "주문은 항상 새로 만들고 화면에서 준영속으로 오지 않기 때문이다."
+  },
+  {
+   "q": "취소는 어떻게 저장되나?",
+   "a": "`merge` 가 아니라 변경 감지다."
+  },
+  {
+   "q": "왜 `DeliveryRepository` 가 없나?",
+   "a": "`cascade` 가 주문 저장 시 같이 저장하기 때문이다."
+  },
+  {
+   "q": "`findOne` 이 몇 테이블을 읽나?",
+   "a": "`orders` 하나다. 연관은 전부 프록시다."
+  },
+  {
+   "q": "`Delivery` 를 직접 조회하면?",
+   "a": "`mappedBy` 쪽 1:1 은 지연 로딩이 안 되어 `orders` 도 읽는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

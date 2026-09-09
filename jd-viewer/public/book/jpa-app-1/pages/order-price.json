@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-price",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "전체 주문 가격 조회",
+ "summary": "합계를 누가 계산하나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "합계 로직을 만든다.",
+  "자바 루프의 대가를 안다.",
+  "다른 방법을 비교한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**주문 목록 화면에 주문 금액**이 나온다(3.1절). **그것을 누가 계산하나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "자바로 더한다",
+   "ascii": "   getTotalPrice()\n\n   Order      sum of orderItems\n     OrderItem   orderPrice * count\n\n   the loop runs in java, over entities already in memory\n   or entities that get loaded right now",
+   "note": "**엔티티가 메모리에 있어야** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "합계 메서드",
+   "code": "// Order\npublic int getTotalPrice() {\n    return orderItems.stream()\n            .mapToInt(OrderItem::getTotalPrice)\n            .sum();\n}\n\n// OrderItem\npublic int getTotalPrice() {\n    return getOrderPrice() * getCount();\n}",
+   "note": "**`OrderItem` 이 자기 금액을** 알고 **`Order` 가 더한다.**\n\n**6.1절의 원칙**이다 — **데이터를 가진 쪽이 계산**한다.\n\n**`getTotalPrice()` 라는 이름이 게터처럼** 보인다. **필드가 아니다.**\n\n> **`calculateTotalPrice()` 가 정직**하다. **계산이 일어난다는 것이 이름에** 있다.\n>\n> **타임리프에서 `${order.totalPrice}` 로 쓰려면 `get` 으로 시작**해야 한다. **화면 편의가 이름을 정했다.**\n>\n> **9.7절 목록**에 넣는다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "루프의 대가",
+   "md": "**`orderItems` 가 지연 로딩**이다(3.6절).\n\n```java\norder.getTotalPrice();\n// orderItems 를 순회하려면 로딩해야 한다\n```\n\n**주문 목록 화면에서 주문이 100건이면**\n\n```\n1  주문 조회\n100  주문상품 조회      <- getTotalPrice() 때문에\n```\n\n**N+1** 이다.\n\n> **「DB 2편」 6.7절의 그것**이다. **여기서는 합계 계산이 원인**이다.\n>\n> **9.4절에서 이 화면의 쿼리를** 센다.\n\n**해결책 넷**(「DB 2편」 6.7절)이 그대로 적용된다.\n\n| 방법 | |\n|---|---|\n| **페치 조인** | `join fetch o.orderItems` |\n| **배치 사이즈** | `in (?,?,...)` |\n| **DTO 조회** | 합계를 SQL 로 |\n| `@EntityGraph` | 선언형 |\n\n**컬렉션 페치 조인에는 함정**이 있다.\n\n```java\nselect o from Order o join fetch o.orderItems\n```\n\n**주문상품이 둘이면 주문이 두 번** 나온다. **`distinct` 가 필요**하다.\n\n> **페이징도 안 된다** — 메모리에서 한다(「DB 2편」 6.7절).\n>\n> **이 책은 페이징이 없어서**(4.1절) **그 문제는 안 만난다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 방법",
+   "ascii": "   three ways to get a total\n\n   java loop            order.getTotalPrice()\n                        needs every order item loaded\n\n   jpql aggregate       select sum(oi.orderPrice * oi.count)\n                        one query, no entities\n\n   a stored column      orders.total_price\n                        fast, and can go stale",
+   "note": "**세 번째가 실무에 흔하다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "합계 컬럼을 두면",
+   "md": "```java\n@Entity\npublic class Order {\n    private int totalPrice;      // 저장한다\n}\n```\n\n**조회가 빨라진다.** **주문상품을 로딩할 필요가 없다.**\n\n**대가**가 있다.\n\n| 대가 | |\n|---|---|\n| **갱신을 빠뜨릴 수** 있다 | 주문상품이 바뀌면 |\n| **일관성이 깨진다** | 합계와 실제가 다름 |\n| **계산 규칙이 바뀌면** | 과거 데이터를 다시 계산 |\n\n**첫 번째가 실제 사고**다.\n\n```java\norder.addOrderItem(newItem);\n// totalPrice 를 안 고쳤다\n```\n\n> **엔티티 안에서 자동으로 고치게** 만들 수 있다.\n>\n> ```java\n> public void addOrderItem(OrderItem oi) {\n>     orderItems.add(oi);\n>     oi.setOrder(this);\n>     this.totalPrice += oi.getTotalPrice();   // 같이 고친다\n> }\n> ```\n>\n> **그러면 빠뜨릴 수 없다.** **7.1절의 편의 메서드에 책임이 하나 더** 붙는다.\n\n**언제 두나.**\n\n> **주문이 많고 목록 조회가 잦으면** 둔다. **정합성보다 성능이 급할 때**다.\n>\n> **이 책은 안 둔다.** **주문상품이 하나뿐이고**(1.3절) **규모가 작다.**\n>\n> **9.7절 목록**에 넣는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문 하나의 금액 ---\n\n@Test\n@Transactional\nvoid 주문금액() {\n    Long orderId = 주문하기(member, book, 2);   // 10000 x 2\n    em.flush();\n    em.clear();\n\n    Order order = orderRepository.findOne(orderId);\n    int total = order.getTotalPrice();\n\n    assertThat(total).isEqualTo(20000);\n}\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0 where o1_0.order_id=?\n\n#   (getTotalPrice - orderItems 를 순회한다)\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   지연 로딩이 일어났다\n\n#   (orderPrice x count 는 자바 계산 - SQL 없음)\n\n#   PASSED\n\n#   select 둘\n\n# --- 주문 목록에서 합계를 부르면 ---\n\nList<Order> orders = orderRepository.findAll(new OrderSearch());\nfor (Order order : orders) {\n    log.info(\"{}\", order.getTotalPrice());\n}\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n\n#   Hibernate: select oi1_0.order_id, ... from order_item oi1_0\n#              where oi1_0.order_id=?\n#   Hibernate: select oi1_0.order_id, ... from order_item oi1_0\n#              where oi1_0.order_id=?\n#   ... (주문 건수만큼)\n\n#   주문 2건에 쿼리 3개\n#   주문 100건이면 101개\n\n#   N+1 이다\n\n# --- 페치 조인으로 ---\n\nem.createQuery(\n    \"select distinct o from Order o join fetch o.orderItems\", Order.class)\n    .getResultList();\n\n#   Hibernate: \n#       select o1_0.order_id, oi1_0.order_id, oi1_0.order_item_id,\n#              oi1_0.count, oi1_0.item_id, oi1_0.order_price,\n#              o1_0.delivery_id, o1_0.member_id, o1_0.order_date,\n#              o1_0.status\n#       from orders o1_0\n#       join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n\n#   쿼리 하나\n\n#   distinct 를 빼면\n#   주문상품이 둘인 주문이 두 번 나온다\n\n# --- 배치 사이즈로 ---\n\n#   spring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id in (?,?)\n\n#   쿼리 둘\n\n#   in 절로 묶었다\n\n# --- JPQL 집계로 ---\n\nem.createQuery(\n    \"select sum(oi.orderPrice * oi.count) from OrderItem oi \" +\n    \"where oi.order.id = :orderId\", Long.class)\n    .setParameter(\"orderId\", orderId)\n    .getSingleResult();\n\n#   Hibernate: \n#       select sum(oi1_0.order_price*oi1_0.count)\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   쿼리 하나, 엔티티 0개\n\n#   화면에 금액만 필요하면 이쪽이 낫다\n\n# --- 이 책은 자바 루프를 쓴다 ---\n\n#   9.4절에서 그 대가를 센다",
+   "note": "**주문 하나면 `select` 둘**이다. **목록에서는 N+1** 이다.\n\n**페치 조인이면 쿼리 하나**인데 **`distinct` 가 필요**하다.\n\n**배치 사이즈면 둘**이고 **`in` 절로 묶는다.**\n\n**JPQL 집계면 하나이고 엔티티가 0개**다. **금액만 필요하면 이쪽이 낫다.**\n\n**이 책은 자바 루프**를 쓴다. **9.4절에서 그 대가**를 센다.\n\n**다음 절에서 리포지토리를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`OrderItem` 이 자기 금액을 알고 `Order` 가 더한다.**",
+  "**`getTotalPrice()` 는 게터가 아니라 계산**이다 — 이름이 화면 편의를 따랐다.",
+  "**루프가 지연 로딩을 일으킨다** — 목록에서 N+1.",
+  "**해결책 넷**이 「DB 2편」 6.7절 그대로 적용된다.",
+  "**컬렉션 페치 조인에는 `distinct`** 가 필요하다.",
+  "**JPQL 집계면 쿼리 하나에 엔티티 0개**다.",
+  "**합계 컬럼을 두면 빨라지고 일관성이 위험**해진다.",
+  "**편의 메서드에서 같이 고치면** 빠뜨릴 수 없다.",
+  "**이 책은 자바 루프** — 9.4절에서 대가를 센다."
+ ],
+ "drills": [
+  {
+   "task": "`getTotalPrice()` 를 만들고 로그를 본다.",
+   "done_when": "지연 로딩이 일어나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "주문 목록에서 합계를 부른다.",
+   "done_when": "N+1 이 생기는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "페치 조인으로 바꾸고 `distinct` 를 빼 본다.",
+   "done_when": "중복 행이 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "JPQL 집계로 합계를 구해 본다.",
+   "done_when": "엔티티 없이 되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "합계를 누가 계산하나?",
+   "a": "`OrderItem` 이 자기 금액을, `Order` 가 합을 계산한다."
+  },
+  {
+   "q": "루프의 대가는?",
+   "a": "`orderItems` 지연 로딩이 일어나 목록에서 N+1 이 된다."
+  },
+  {
+   "q": "컬렉션 페치 조인의 주의점은?",
+   "a": "`distinct` 가 없으면 주문이 주문상품 수만큼 중복된다."
+  },
+  {
+   "q": "금액만 필요하면?",
+   "a": "JPQL 집계가 낫다. 쿼리 하나에 엔티티를 안 만든다."
+  },
+  {
+   "q": "합계 컬럼의 위험은?",
+   "a": "주문상품이 바뀔 때 갱신을 빠뜨리면 실제와 달라진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

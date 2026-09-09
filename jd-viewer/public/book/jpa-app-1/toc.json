@@ -405,7 +405,7 @@
           "title": "주문 취소",
           "summary": "재고를 되돌린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -413,7 +413,7 @@
           "title": "전체 주문 가격 조회",
           "summary": "합계를 누가 계산하나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -421,7 +421,7 @@
           "title": "주문 리포지토리",
           "summary": "저장과 단건 조회.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",

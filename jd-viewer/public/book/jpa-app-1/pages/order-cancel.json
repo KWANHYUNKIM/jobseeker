@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-cancel",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "주문 취소",
+ "summary": "재고를 되돌린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "취소 로직을 만든다.",
+  "한 호출이 여러 엔티티를 바꾸는 것을 본다.",
+  "`readOnly` 의 침묵을 만난다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절의 요구사항**이다. **\"취소하면 재고가 돌아온다. 이미 배송된 것은 취소할 수 없다.\"**"
+  },
+  {
+   "type": "figure",
+   "caption": "한 호출이 셋을 바꾼다",
+   "ascii": "   order.cancel()\n\n     delivery.status == COMP ?   throw\n     this.status = CANCEL\n     for each orderItem\n         orderItem.cancel()\n             item.addStock(count)\n\n   one call, three kinds of entity changed",
+   "note": "**주문·주문상품·상품**이 얽힌다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Order.cancel`",
+   "code": "public class Order {\n\n    // ... 생략 ...\n\n    public void cancel() {\n        if (delivery.getStatus() == DeliveryStatus.COMP) {\n            throw new IllegalStateException(\"이미 배송완료된 상품은 취소가 불가능합니다.\");\n        }\n\n        this.status = OrderStatus.CANCEL;\n        for (OrderItem orderItem : orderItems) {\n            orderItem.cancel();\n        }\n    }\n\n    public int getTotalPrice() {\n        return orderItems.stream()\n                .mapToInt(OrderItem::getTotalPrice)\n                .sum();\n    }\n}",
+   "note": "**검사가 먼저**다. **배송 상태를 본다.**\n\n**`delivery.getStatus()`** 를 부르는 순간 **지연 로딩**이 일어난다. **3.6절에서 `LAZY` 로 뒀다.**\n\n**`orderItem.cancel()`** 이 각각 재고를 되돌린다(7.2절).\n\n**`IllegalStateException`** 이다. **`NotEnoughStockException` 같은 전용 예외를 안 만들었다.**\n\n> **6.2절에서 재고 예외는 만들었는데** 여기는 안 만든다. **일관성이 없다.**\n>\n> **강의 예제를 따랐다.** **9.7절 목록**에 넣는다."
+  },
+  {
+   "type": "figure",
+   "caption": "커밋이 보내는 것",
+   "ascii": "   what the commit sends\n\n   update orders     set status = 'CANCEL'   1\n   update item       set stock_quantity      1 per order item\n\n   order_item itself does not change\n   delivery does not change\n\n   two entities changed, two kinds of update",
+   "note": "**주문상품 자신은 안 바뀐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 `order_item` 은 안 바뀌나",
+   "md": "**`orderItem.cancel()`** 을 본다.\n\n```java\npublic void cancel() {\n    getItem().addStock(count);\n}\n```\n\n**자기 필드를 안 고친다.** **`item` 의 것을 고친다.**\n\n**변경 감지는 필드가 바뀐 엔티티만** 본다.\n\n| 엔티티 | 바뀐 필드 | `update` |\n|---|---|---|\n| `Order` | **`status`** | **나간다** |\n| `OrderItem` | 없다 | **안 나간다** |\n| `Item` | **`stockQuantity`** | **나간다** |\n| `Delivery` | 없다 | 안 나간다 |\n\n**주문상품이 셋이면 `Item` 의 `update` 가 셋**이다.\n\n> **같은 상품을 두 번 담았으면?** **`Item` 이 같은 인스턴스**라 **`update` 는 하나**다. **1차 캐시 덕**이다.\n\n**취소 상태를 `OrderItem` 에도 둘 수** 있다.\n\n```java\n// 이렇게 하지 않았다\nprivate boolean canceled;\n```\n\n**부분 취소가 없으니**(1.3절) **주문 상태 하나로 충분**하다.\n\n> **부분 취소가 생기면 필요해진다.** **9.7절 목록**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`readOnly` 의 침묵",
+   "md": "**5.5절에서 예고한 것**이다.\n\n```java\n@Service\n@Transactional(readOnly = true)\npublic class OrderService {\n\n    // @Transactional 을 빠뜨리면\n    public void cancelOrder(Long orderId) {\n        Order order = orderRepository.findOne(orderId);\n        order.cancel();\n    }\n}\n```\n\n**아무 일도 안 일어난다.**\n\n| | 빠뜨렸을 때 |\n|---|---|\n| 주문 등록 (`persist`) | **예외** — `The database is read only` |\n| **주문 취소 (변경 감지)** | **침묵** |\n\n**저장은 시끄럽고 수정은 조용**하다.\n\n**로그를 보면**\n\n```\nCreating new transaction with name [OrderService.cancelOrder]:\n  PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\nSetting JDBC Connection [conn0] read-only\nHibernate: select ... from orders o1_0 where o1_0.order_id=?\nHibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\nHibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\nHibernate: select ... from item i1_0 where i1_0.item_id=?\nInitiating transaction commit\nResetting read-only flag of JDBC Connection [conn0]\n```\n\n**`select` 만 넷이고 `update` 가 없다.**\n\n> **`select` 가 나가니 뭔가 동작하는 것처럼** 보인다. **화면도 정상**이다.\n>\n> **재고만 안 돌아온다.**\n\n**로그를 세는 습관**이 없으면 못 찾는다.\n\n> **9.4절에서 쿼리를 셀 때 이 종류의 문제**도 같이 잡힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문 취소 ---\n\n@Test\n@Transactional\nvoid 주문취소() {\n    Long orderId = 주문하기(member, book, 2);\n    em.flush();\n    em.clear();\n\n    Order order = orderRepository.findOne(orderId);\n    order.cancel();\n    em.flush();\n}\n\n#   (findOne)\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0 where o1_0.order_id=?\n\n#   (order.cancel - delivery.getStatus 를 부른다)\n#   Hibernate: \n#       select d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#              d1_0.status\n#       from delivery d1_0 where d1_0.delivery_id=?\n\n#   지연 로딩이 여기서 터졌다\n\n#   (orderItems 를 순회한다)\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   컬렉션 지연 로딩\n\n#   (orderItem.cancel -> item.addStock)\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   상품 지연 로딩\n\n#   (flush)\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [10]\n\n#   Hibernate: \n#       update orders set delivery_id=?, member_id=?, order_date=?, status=?\n#       where order_id=?\n#   binding parameter [4] as [VARCHAR] - [CANCEL]\n\n#   select 넷, update 둘\n\n#   내가 부른 것은 cancel() 하나다\n\n# --- order_item 은 안 바뀌었다 ---\n\n#   update order_item 이 없다\n#   자기 필드를 안 고쳤으니까\n\n# --- 배송이 완료됐으면 ---\n\ndelivery.setStatus(DeliveryStatus.COMP);\nem.flush();\n\norder.cancel();\n\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n\n#   IllegalStateException: 이미 배송완료된 상품은 취소가 불가능합니다.\n\n#   (update 가 없다)\n#   Initiating transaction rollback\n\n# --- 주문상품이 둘이면 ---\n\nOrder order = Order.createOrder(member, delivery, orderItem1, orderItem2);\norder.cancel();\n\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?   (첫째)\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?   (둘째)\n#   Hibernate: update item set ... where item_id=?              (첫째)\n#   Hibernate: update item set ... where item_id=?              (둘째)\n#   Hibernate: update orders set ... status=? where order_id=?\n\n#   update 가 셋이다\n\n# --- 같은 상품을 두 번 담았으면 ---\n\nOrderItem oi1 = OrderItem.createOrderItem(book, 10000, 1);\nOrderItem oi2 = OrderItem.createOrderItem(book, 10000, 1);\n\norder.cancel();\n\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   (두 번째는 SQL 이 없다 - 1차 캐시)\n\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   binding parameter [3] as [INTEGER] - [10]\n\n#   update 가 하나다\n#   같은 인스턴스라 변경 감지도 한 번\n\n# --- @Transactional 을 빠뜨리면 ---\n\n@Service\n@Transactional(readOnly = true)\npublic class OrderService {\n    public void cancelOrder(Long orderId) {      // 애너테이션 없음\n        orderRepository.findOne(orderId).cancel();\n    }\n}\n\n#   Creating new transaction with name [OrderService.cancelOrder]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   Initiating transaction commit\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n#   select 넷. update 가 없다.\n#   예외도 없다.\n\nselect status from orders where order_id = 1;\n#   ORDER\n\nselect stock_quantity from item where item_id = 1;\n#   8\n\n#   아무것도 안 바뀌었다\n\n#   5.5절에서 예고한 침묵이다",
+   "note": "**`cancel()` 하나에 `select` 넷과 `update` 둘**이다. **지연 로딩이 셋** 일어났다.\n\n**`order_item` 의 `update` 가 없다.** **자기 필드를 안 고쳤으니까.**\n\n**같은 상품을 두 번 담으면 `update` 가 하나**다. **1차 캐시라 같은 인스턴스**다.\n\n**맨 아래가 5.5절에서 예고한 침묵**이다. **`select` 넷이 나가서 뭔가 도는 것처럼 보이는데 아무것도 안 바뀌었다.**\n\n**다음 절에서 전체 주문 가격을 본다.**"
+  }
+ ],
+ "recap": [
+  "**`cancel()` 하나가 세 종류 엔티티**를 건드린다.",
+  "**배송 상태 검사가 먼저** — 지연 로딩이 여기서 터진다.",
+  "**`order_item` 은 안 바뀐다** — 자기 필드를 안 고친다.",
+  "**주문상품 수만큼 `Item` 의 `update`** 가 나간다.",
+  "**같은 상품이면 `update` 가 하나** — 1차 캐시.",
+  "**`select` 넷, `update` 둘**이 기본 모양이다.",
+  "**`@Transactional` 을 빠뜨리면 침묵**한다 — 5.5절의 예고.",
+  "**`select` 가 나가서 도는 것처럼** 보인다.",
+  "**전용 예외를 안 만들었다** — 9.7절 목록."
+ ],
+ "drills": [
+  {
+   "task": "`cancel()` 을 만들고 로그를 센다.",
+   "done_when": "`select` 넷과 `update` 둘을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배송을 완료 상태로 두고 취소해 본다.",
+   "done_when": "예외가 나고 `update` 가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 상품을 두 번 담고 취소한다.",
+   "done_when": "`update` 가 하나인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Transactional` 을 빼고 취소해 본다.",
+   "done_when": "아무 일도 안 일어나는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`cancel()` 이 바꾸는 엔티티는?",
+   "a": "`Order` 의 상태와 각 `Item` 의 재고다. `OrderItem` 자신은 안 바뀐다."
+  },
+  {
+   "q": "`order_item` 의 `update` 가 왜 없나?",
+   "a": "자기 필드를 안 고치고 `item` 의 것을 고치기 때문이다."
+  },
+  {
+   "q": "같은 상품을 두 번 담으면?",
+   "a": "1차 캐시라 같은 인스턴스이고 `update` 도 한 번이다."
+  },
+  {
+   "q": "`@Transactional` 을 빠뜨리면?",
+   "a": "`select` 는 나가는데 `update` 가 없고 예외도 없다. 조용히 안 된다."
+  },
+  {
+   "q": "저장과 수정의 실패 방식 차이는?",
+   "a": "`persist` 는 드라이버가 막아 예외, 변경 감지는 SQL 이 안 생겨 침묵이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
