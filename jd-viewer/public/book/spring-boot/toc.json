@@ -497,7 +497,7 @@
           "title": "설정 검증",
           "summary": "틀린 값으로 안 뜬다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.10",
@@ -505,7 +505,7 @@
           "title": "프로필",
           "summary": "환경마다 다른 값.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.11",

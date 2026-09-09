@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "validation",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "설정 검증",
+ "summary": "틀린 값으로 안 뜬다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "기동에서 막는다.",
+  "메시지를 읽는다.",
+  "오타를 잡는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.8절에서 오타가 조용히** 지나갔다. **여기서** 막는다."
+  },
+  {
+   "type": "figure",
+   "caption": "잡히는 시점 셋",
+   "ascii": "   three moments a wrong value can be caught\n\n   at startup, before anything is served\n   at the first request that touches it\n   never, because a default quietly took over\n\n   the third one is what chapter seven has produced so far",
+   "note": "**셋째가 지금까지 7장이 만들어 온** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "값이 틀린 채로 뜨는 것이 제일 나쁘다",
+   "md": "**늦게 터진**다.\n\n> **7.6절은 읽을 때** 500 이었다.\n> **밤중에 그 경로가** 불린다.\n> **아래에서 그 차이를** 본다.\n\n**안 터지고 기본값으로** 돈다.\n\n> **7.7·7.8절에서** 그랬다.\n> **제일** 나쁘다.\n> **아래에서 그걸** 겪는다.\n\n**모양과 범위가 다르**다.\n\n> **숫자냐와 0 이어도 되냐**다.\n> **변환은 앞만** 본다.\n> **아래에서 뒤를** 막는다.\n\n**기동에서 막으면 명확**하다.\n\n> **어느 키가 왜 틀렸는지** 적힌다.\n> **아래에서 그 문장을** 본다.\n> **배포가 그 자리에서** 멈춘다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 검사하나",
+   "ascii": "   two different things being checked\n\n   the shape   is it a number, a duration, a url\n   the range   is that number allowed to be zero\n\n   conversion covers the first; only annotations cover the second",
+   "note": "**변환은 앞만 보고 뒤는 애너테이션이** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "검증기가 없으면 애너테이션이 그냥 무시된다",
+   "md": "**의존성이** 필요하다.\n\n> **스타터를 넣어야** 한다.\n> **없으면 조용히** 지나간다.\n> **아래에서 그걸** 본다.\n\n**표시를 빼먹으면 안** 돈다.\n\n> **클래스에 하나 더** 붙인다.\n> **⑨ 5장에서 본** 그것과 같다.\n> **아래에서 빼** 본다.\n\n**중첩은 따로 표시**한다.\n\n> **안쪽까지 안 내려**간다.\n> **아래에서 그걸** 겪는다.\n> **필드에 한 줄 더** 적는다.\n\n**오타는 검증으로 못** 잡는다.\n\n> **없는 키는 검사 대상이** 아니다.\n> **다른 장치가** 있다.\n> **아래에서 그걸** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 지금까지의 상태\n\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    private int poolSize = 10;\n    private String url = \"jdbc:h2:mem:test\";\n    private Duration timeout = Duration.ofSeconds(30);\n}\n\n$ java -jar build/libs/app.jar --study.pool-size=0 --study.url=아무거나 \\\n    > /dev/null 2>&1 &\n\n$ ./gradlew bootRun --args='--study.pool-size=0' 2>&1 | grep -c 'Started'\n1\n$ curl -s localhost:8080/props | head -2\npoolSize: 0\nurl:      아무거나\n\n--   0 인 풀로 떴다\n--   주소도 주소가 아니다\n\n\n-- 검증을 켠다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-validation'\n}\n\n@ConfigurationProperties(prefix = \"study\")\n@Validated\npublic class StudyProperties {\n    @Min(1) @Max(100)\n    private int poolSize = 10;\n\n    @NotBlank @Pattern(regexp = \"jdbc:.*\")\n    private String url = \"jdbc:h2:mem:test\";\n\n    @DurationMin(seconds = 1)\n    private Duration timeout = Duration.ofSeconds(30);\n}\n\n$ java -jar build/libs/app.jar --study.pool-size=0 2>&1 | head -12\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nBinding to target study.boot.StudyProperties failed:\n\n    Property: study.pool-size\n    Value: \"0\"\n    Origin: \"study.pool-size\" from command line property source\n    Reason: 1 이상이어야 합니다\n\n--   어느 키가 어디서 왔고 왜 틀렸는지 다 적혀 있다\n\n\n-- 여럿이면 다 적는다\n\n$ java -jar build/libs/app.jar --study.pool-size=0 --study.url=아무거나 \\\n    --study.timeout=0s 2>&1 | grep -A3 'Property:' | head -14\n    Property: study.pool-size\n    Value: \"0\"\n    Reason: 1 이상이어야 합니다\n--\n    Property: study.timeout\n    Value: \"0s\"\n    Reason: 1초 이상이어야 합니다\n--\n    Property: study.url\n    Value: \"아무거나\"\n    Reason: \"jdbc:.*\"와 일치해야 합니다\n\n$ java -jar build/libs/app.jar --study.pool-size=0 --study.url=아무거나 2>&1 \\\n    | grep -c 'Property:'\n2\n\n--   한 번에 다 알려 준다\n--   고치고 다시 뜨는 일을 반복 안 한다\n\n\n-- 표시를 빼먹으면\n\n// @Validated 를 지우면\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    @Min(1) private int poolSize = 10;\n}\n\n$ java -jar build/libs/app.jar --study.pool-size=0 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\npoolSize: 0\n\n$ java -jar build/libs/app.jar --study.pool-size=0 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   애너테이션은 있는데 아무도 안 봤다\n\n\n-- 검증기가 없으면\n\n// starter-validation 을 빼면\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c hibernate-validator\n0\n\n$ java -jar build/libs/app.jar --study.pool-size=0 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\npoolSize: 0\n\n$ java -jar build/libs/app.jar --debug 2>&1 \\\n    | grep -A2 'ValidationAutoConfiguration' | head -3\n   ValidationAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'jakarta.validation.executable.ExecutableValidator'\n\n--   6.4절의 그 조건이다\n--   JAR 하나에 검증이 통째로 꺼진다\n\n\n-- 중첩은 따로 표시한다\n\n@Validated\npublic class StudyProperties {\n    private final Db db = new Db();\n\n    public static class Db {\n        @Min(1) private int poolSize = 10;\n    }\n}\n\n$ java -jar build/libs/app.jar --study.db.pool-size=0 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | grep 'db.pool'\ndb.pool:  0\n\n--   안쪽까지 안 내려갔다\n\n@Valid\nprivate final Db db = new Db();\n\n$ java -jar build/libs/app.jar --study.db.pool-size=0 2>&1 | grep -A3 'Property:'\n    Property: study.db.pool-size\n    Value: \"0\"\n    Reason: 1 이상이어야 합니다\n\n--   한 줄 더 적어야 한다\n\n\n-- 목록과 맵도 같다\n\nprivate List<@NotBlank String> hosts = new ArrayList<>();\n\n$ java -jar build/libs/app.jar '--study.hosts[0]=' 2>&1 | grep -A3 'Property:'\n    Property: study.hosts[0]\n    Value: \"\"\n    Reason: 공백일 수 없습니다\n\n--   몇 번째 항목인지까지 나온다\n\n\n-- 레코드에도 붙는다\n\n@ConfigurationProperties(prefix = \"study\")\n@Validated\npublic record StudyProperties(\n        @NotBlank String mode,\n        @Min(1) @Max(100) @DefaultValue(\"10\") int poolSize) {}\n\n$ java -jar build/libs/app.jar --study.pool-size=200 2>&1 | grep -A3 'Property:'\n    Property: study.pool-size\n    Value: \"200\"\n    Reason: 100 이하여야 합니다\n\n$ java -jar build/libs/app.jar --study.mode=dev --study.pool-size=20 2>&1 \\\n    | grep -c 'Started BootApplication'\n1\n\n--   7.8절의 그 레코드다\n\n\n-- 직접 검사할 수도 있다\n\n@ConfigurationProperties(prefix = \"study\")\n@Validated\npublic class StudyProperties implements InitializingBean {\n    private Duration timeout = Duration.ofSeconds(30);\n    private Duration readTimeout = Duration.ofSeconds(60);\n\n    @Override\n    public void afterPropertiesSet() {\n        if (readTimeout.compareTo(timeout) < 0)\n            throw new IllegalStateException(\n                \"read-timeout(\" + readTimeout + \")이 timeout(\" + timeout + \")보다 짧다\");\n    }\n}\n\n$ java -jar build/libs/app.jar --study.timeout=90s --study.read-timeout=30s 2>&1 \\\n    | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException:\n  read-timeout(PT30S)이 timeout(PT1M30S)보다 짧다\n\n--   두 값 사이의 관계는 애너테이션으로 못 적는다\n\n\n-- 모양 검사는 이미 있었다\n\n$ java -jar build/libs/app.jar --study.pool-size=스물 2>&1 | grep -A3 'Property:'\n    Property: study.pool-size\n    Value: \"스물\"\n    Reason: failed to convert java.lang.String to int\n\n--   7.6절에서는 읽을 때 500 이었다\n--   묶어 받으면 기동에서 잡힌다\n\n\n-- 오타는 검증으로 못 잡는다\n\n$ java -jar build/libs/app.jar --study.pool-siz=0 > /dev/null 2>&1 &\n$ curl -s localhost:8080/props | head -1\npoolSize: 10\n\n$ java -jar build/libs/app.jar --study.pool-siz=0 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   없는 키는 검사할 대상 자체가 아니다\n\n\n-- 오타는 이렇게 잡는다\n\n@Component\nclass UnknownKeyChecker implements InitializingBean {\n    private final ConfigurableEnvironment env;\n    UnknownKeyChecker(ConfigurableEnvironment env) { this.env = env; }\n\n    @Override\n    public void afterPropertiesSet() throws Exception {\n        var known = readMetadataKeys();          // 7.8절의 도움말 JSON\n        var bad = new ArrayList<String>();\n        for (PropertySource<?> ps : env.getPropertySources()) {\n            if (!(ps instanceof EnumerablePropertySource<?> e)) continue;\n            for (String k : e.getPropertyNames())\n                if (k.startsWith(\"study.\") && !known.contains(canonical(k)))\n                    bad.add(k + \"  (\" + ps.getName() + \")\");\n        }\n        if (!bad.isEmpty())\n            throw new IllegalStateException(\"모르는 설정 키: \" + bad);\n    }\n}\n\n$ java -jar build/libs/app.jar --study.pool-siz=0 2>&1 | grep -i 'IllegalState' | head -2\nCaused by: java.lang.IllegalStateException: 모르는 설정 키:\n  [study.pool-siz  (commandLineArgs)]\n\n$ java -jar build/libs/app.jar --study.pool-size=20 2>&1 | grep -c 'Started'\n1\n\n--   7.8절에서 생긴 도움말 JSON 을 재료로 썼다\n--   6.11절의 그 프로세서 덕이다\n\n\n-- 웹 요청 검증과 같은 장치다\n\n@RestController\nclass OrderController {\n    record Req(@Min(1) int qty) {}\n\n    @PostMapping(\"/orders\")\n    String create(@Valid @RequestBody Req req) { return \"ok\"; }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"qty\":0}'\n400\n\n$ curl -s -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"qty\":0}' \\\n  | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d['status'], d['error'])\"\n400 Bad Request\n\n--   ④ 10장에서 쓰던 그것이다\n--   같은 애너테이션이 여기선 400, 설정에선 기동 실패다\n\n\n-- 잡히는 시점을 비교한다\n\n$ printf '%-22s %-16s %s\\n' \\\n  '7.6 꺼내 쓰기'  '읽을 때'   '500' \\\n  '7.7 한 값씩'    '기동'      '멈춤' \\\n  '7.8 묶어 받기'  '안 잡힘'   '기본값' \\\n  '7.9 검증'       '기동'      '이유까지'\n\n7.6 꺼내 쓰기          읽을 때          500\n7.7 한 값씩            기동             멈춤\n7.8 묶어 받기          안 잡힘          기본값\n7.9 검증               기동             이유까지\n\n\n-- 마지막 확인\n\n$ java -jar build/libs/app.jar --study.mode=dev --study.pool-size=20 \\\n    --study.url=jdbc:postgresql://db:5432/app --study.timeout=90s \\\n    > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/props\nmode:     dev\npoolSize: 20\nurl:      jdbc:postgresql://db:5432/app\ntimeout:  PT1M30S\n\n$ java -jar build/libs/app.jar --study.mode=dev --study.pool-size=20 2>&1 \\\n    | grep 'Started BootApplication'\nINFO ... : Started BootApplication in 1.284 seconds\n\n--   7.10절에서 환경마다 다른 값을 본다",
+   "note": "**검증 없이는 `poolSize: 0` 인 채로 뜨고 켜면 `Property`·`Value`·`Origin`·`Reason` 네 줄로** 멈춘다.\n\n**틀린 값 셋을 한 번에 다 적어 주고 `@Validated` 를 빼면 애너테이션을 아무도 안** 본다.\n\n**검증 스타터가 없으면 `ValidationAutoConfiguration` 이 `did not find required class` 로** 꺼진다.\n\n**중첩은 `@Valid` 를 한 줄 더 적어야 안쪽까지** 내려간다.\n\n**오타는 검증으로 못 잡아 7.8절의 도움말 JSON 을 재료로 `모르는 설정 키` 를 직접** 던졌다."
+  }
+ ],
+ "recap": [
+  "**기동에서** 막는다.",
+  "**이유가** 적힌다.",
+  "**여럿을 한 번에** 준다.",
+  "**표시가** 필요하다.",
+  "**검증기도** 필요하다.",
+  "**중첩은** 따로다.",
+  "**관계는 손으로** 본다.",
+  "**오타는 못** 잡는다.",
+  "**도움말로** 잡는다."
+ ],
+ "drills": [
+  {
+   "task": "범위 검증을 켠다.",
+   "done_when": "기동이 멈추는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "표시를 빼 본다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "중첩을 검증한다.",
+   "done_when": "한 줄을 더 적어야 하는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "모르는 키를 잡는다.",
+   "done_when": "오타에 기동이 멈추는 걸 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "검증이 잡는 것과 변환이 잡는 것의 차이는?",
+   "a": "변환은 모양, 검증은 범위나 형식이다."
+  },
+  {
+   "q": "애너테이션을 붙였는데 안 도는 이유 둘은?",
+   "a": "클래스에 검증 표시가 없거나 검증기 의존성이 없어서다."
+  },
+  {
+   "q": "중첩 객체를 검사하려면?",
+   "a": "그 필드에 검사 표시를 한 줄 더 붙인다."
+  },
+  {
+   "q": "두 값 사이의 관계는 어떻게 검사하나?",
+   "a": "초기화 시점에 직접 확인해 예외를 던진다."
+  },
+  {
+   "q": "오타 난 키는 어떻게 잡나?",
+   "a": "빌드 때 만들어진 도움말과 환경의 키를 맞춰 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "설정 검증",
+   "def": "바인딩한 값이 허용 범위인지 기동 때 확인하는 것."
+  },
+  {
+   "term": "바인딩 실패 보고",
+   "def": "어느 키가 어디서 온 무슨 값이라 왜 틀렸는지 적어 주는 출력."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Bean Validation 3.0",
+   "url": "https://jakarta.ee/specifications/bean-validation/3.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
