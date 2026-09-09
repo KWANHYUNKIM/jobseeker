@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "at-query",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "@Query",
+ "summary": "이름 없는 NamedQuery.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "선언 위치의 이점을 안다.",
+  "기동 검증을 확인한다.",
+  "한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 같은 이점을 더 가까이 준다고** 했다. **그게 이것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름으로 못 하던 것",
+   "ascii": "   what @Query gives that a method name cannot\n\n   readable      the jpql is right there, so nobody parses camel case\n   expressive    joins, subqueries, aggregates, case expressions\n   selective     choose columns, not the whole row\n   validated     parsed at startup, exactly like a named query\n\n   the method name is now free, so it can say what the query is for",
+   "note": "**메서드 이름이 자유로워져 용도를 적을 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메서드 이름이 자유로워진다",
+   "md": "**이름이 조건을 안 담아도** 된다.\n\n> **`findByUsernameAndAgeGreaterThan` 이 `searchActive` 가** 된다.\n> **무엇을 하는지가 이름에** 남는다.\n> **5.2절의 94자가 사라진다.**\n\n**기동 검증은 그대로**다.\n\n> **5.3절과 같은 시점에** 파싱한다.\n> **오타면 애플리케이션이 안** 뜬다.\n> **4.1절의 문자열과 결정적으로 다른** 점이다.\n\n**정렬을 섞을 수** 있다.\n\n> **`@Query` 에 `order by` 를 넣어도** 되고,\n> **`Sort` 파라미터로 받아도** 된다.\n> **둘 다 쓰면 `Sort` 가 뒤에** 붙는다.\n\n**이름 바인딩을** 쓴다.\n\n> **`:username` 과 `@Param(\"username\")`** 이다.\n> **5.2절의 순서 실수가 안** 난다.\n> **5.6절에서 자세히** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "대가",
+   "ascii": "   what it costs\n\n   a string        no compiler, no refactoring, no autocomplete\n   still static    the text is fixed, so conditions cannot be optional\n   split logic     half the query language, half the method signature\n\n   the second one is the same wall as the previous section,\n   and it is the reason a query dsl exists at all",
+   "note": "**둘째가 앞 절과 같은 벽**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "문자열이라 리팩터링이 안 따라온다",
+   "md": "**필드 이름을 바꾸면**\n\n> **5.1절은 기동에서** 잡혔다.\n> **여기도 기동에서** 잡힌다.\n> **다만 IDE 가 미리 못** 알려준다.\n\n**IDE 지원이 있기는** 하다.\n\n> **인텔리제이가 JPQL 을 인식**한다.\n> **필드 자동완성도** 된다.\n> **완벽하진 않다.**\n\n**`nativeQuery = true` 는 더** 나쁘다.\n\n> **JPQL 이 아니라 SQL** 이다.\n> **기동 검증이 안** 된다.\n> **8.6절에서** 본다.\n\n**동적 조건은 여전히 안** 된다.\n\n> **문자열이 고정**이다.\n> **`:age` 가 `null` 이면 조건이 빠지는 게** 아니다.\n> **`or :age is null` 같은 꼼수가** 있는데 인덱스를 못 탄다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 기본형\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    @Query(\"select m from Member m\" +\n           \" where m.username = :username and m.age > :age\")\n    List<Member> search(@Param(\"username\") String username,\n                        @Param(\"age\") int age);\n}\n\n@Test\n@Transactional\nvoid 기본형() {\n    em.clear();\n    memberRepository.search(\"m1\", 5);\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n        and m1_0.age>?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:INTEGER) <- [5]\n\n--   5.1절의 findByUsernameAndAgeGreaterThan 과 같다\n--   메서드 이름은 search 다\n\n\n-- 이름이 짧아진다\n\n// 5.2절\nList<Member> findByUsernameAndAgeGreaterThanAndTeamNameOrderByAgeDesc(\n        String username, int age, String teamName);\n\n// 여기\n@Query(\"select m from Member m join m.team t\" +\n       \" where m.username = :username and m.age > :age and t.name = :team\" +\n       \" order by m.age desc\")\nList<Member> searchActive(@Param(\"username\") String username,\n                          @Param(\"age\") int age,\n                          @Param(\"team\") String team);\n\n$ awk '/searchActive\\(@Param/ {print length($0); exit}' MemberRepository.java\n\n52\n\n--   94자가 52자가 됐다\n--   무엇을 하는지가 이름에 있다\n\n@Test\n@Transactional\nvoid 짧은_이름() {\n    em.clear();\n    memberRepository.searchActive(\"m1\", 5, \"A팀\");\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and m1_0.age>?\n        and t1_0.name=?\n    order by\n        m1_0.age desc\n\n--   5.2절과 같은 SQL 이다\n\n\n-- 기동에서 잡는다\n\n@Query(\"select m from Member m where m.usernamee = :username\")\nList<Member> broken(@Param(\"username\") String username);\n\n$ ./gradlew bootRun\n\nAPPLICATION FAILED TO START\n\nCaused by: org.hibernate.query.SemanticException:\n    Could not interpret path expression 'm.usernamee'\n\n--   5.3절과 같은 시점이다\n--   4.1절은 실행해야 알았다\n\n\n-- 서브쿼리\n\n@Query(\"select m from Member m\" +\n       \" where m.age > (select avg(m2.age) from Member m2)\")\nList<Member> findOlderThanAverage();\n\n@Test\n@Transactional\nvoid 서브쿼리() {\n    em.clear();\n    memberRepository.findOlderThanAverage();\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>(select\n            avg(m2_0.age)\n        from\n            member m2_0)\n\n--   5.2절에서 이름으로 못 한다고 했다\n\n\n-- 집계\n\n@Query(\"select t.name, count(m), avg(m.age)\" +\n       \" from Member m join m.team t group by t.name having count(m) > :min\")\nList<Object[]> teamStats(@Param(\"min\") long min);\n\n@Test\n@Transactional\nvoid 집계() {\n    em.clear();\n    for (Object[] row : memberRepository.teamStats(1)) {\n        System.out.printf(\"%s %s명 평균 %s%n\", row[0], row[1], row[2]);\n    }\n}\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id),\n        avg(m1_0.age)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    having\n        count(m1_0.member_id)>?\nA팀 2명 평균 15.0\n\n--   group by 와 having 이 나왔다\n--   Object[] 는 5.5절에서 DTO 로 바꾼다\n\n\n-- case 식\n\n@Query(\"select m.username,\" +\n       \" case when m.age < 20 then '미성년'\" +\n       \"      when m.age < 60 then '성인'\" +\n       \"      else '노년' end\" +\n       \" from Member m\")\nList<Object[]> withCategory();\n\n@Test\n@Transactional\nvoid case_식() {\n    em.clear();\n    memberRepository.withCategory()\n        .forEach(r -> System.out.println(r[0] + \" \" + r[1]));\n}\n\nHibernate:\n    select\n        m1_0.username,\n        case\n            when m1_0.age<20 then '미성년'\n            when m1_0.age<60 then '성인'\n            else '노년'\n        end\n    from\n        member m1_0\nm1 미성년\nm2 성인\nm3 성인\n\n--   그대로 번역됐다\n\n\n-- 컬럼만 고른다\n\n@Query(\"select m.username from Member m\")\nList<String> findUsernames();\n\n@Test\n@Transactional\nvoid 컬럼만() {\n    em.clear();\n    memberRepository.findUsernames();\n}\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n\n--   컬럼 하나만 읽었다\n--   5.2절에서 이름으로 못 한다고 했다\n\n\n-- Sort 를 같이 쓰면\n\n@Query(\"select m from Member m where m.age > :age\")\nList<Member> olderThan(@Param(\"age\") int age, Sort sort);\n\n@Test\n@Transactional\nvoid 정렬_파라미터() {\n    em.clear();\n    memberRepository.olderThan(5,\n            Sort.by(Sort.Direction.DESC, \"username\"));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>?\n    order by\n        m1_0.username desc\n\n--   order by 를 붙여 줬다\n--   쿼리에는 없다\n\n\n-- 쿼리에도 있고 Sort 도 주면\n\n@Query(\"select m from Member m where m.age > :age order by m.age asc\")\nList<Member> olderThanOrdered(@Param(\"age\") int age, Sort sort);\n\n@Test\n@Transactional\nvoid 둘_다() {\n    em.clear();\n    memberRepository.olderThanOrdered(5, Sort.by(\"username\"));\n}\n\nHibernate:\n    select ... where m1_0.age>?\n    order by\n        m1_0.age asc,\n        m1_0.username asc\n\n--   Sort 가 뒤에 붙었다\n--   덮어쓰는 게 아니다\n\n\n-- 별칭이 있으면 Sort 가 그걸 봐야 한다\n\n@Query(\"select m from Member m join m.team t where t.name = :name\")\nList<Member> byTeam(@Param(\"name\") String name, Sort sort);\n\n@Test\n@Transactional\nvoid 별칭_정렬() {\n    em.clear();\n    memberRepository.byTeam(\"A팀\", Sort.by(\"age\"));\n}\n\nHibernate:\n    select ... from member m1_0 join team t1_0 on ...\n    where t1_0.name=? order by m1_0.age asc\n\n@Test\n@Transactional\nvoid 연관_정렬() {\n    em.clear();\n    memberRepository.byTeam(\"A팀\",\n        JpaSort.unsafe(\"t.name\"));\n}\n\nHibernate:\n    select ... order by t1_0.name asc\n\n--   Sort.by(\"t.name\") 은 실패한다\n--   엔티티 속성이 아니라 별칭이라서다\n--   JpaSort.unsafe 를 쓴다\n\n\n-- Sort.by 로 별칭을 주면\n\n@Test\n@Transactional\nvoid 별칭_실패() {\n    memberRepository.byTeam(\"A팀\", Sort.by(\"t.name\"));\n}\n\nPropertyReferenceException: No property 't' found for type 'Member'\n\n--   검증이 막았다\n\n\n-- 동적 조건은 여전히 안 된다\n\n@Query(\"select m from Member m\" +\n       \" where (:username is null or m.username = :username)\" +\n       \"   and (:age is null or m.age = :age)\")\nList<Member> dynamicish(@Param(\"username\") String username,\n                        @Param(\"age\") Integer age);\n\n@Test\n@Transactional\nvoid 꼼수() {\n    em.clear();\n    memberRepository.dynamicish(\"m1\", null);\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        (? is null\n        or m1_0.username=?)\n        and (? is null\n        or m1_0.age=?)\n\n--   동작은 한다\n--   조건이 안 빠졌다\n--   인덱스를 못 탄다\n--   8.8절에서 Querydsl 로 넘긴다\n\n\n-- 문자열이라 IDE 가 반쯤만 돕는다\n\n@Query(\"select m from Member m where m.username = :username\")\nList<Member> byName(@Param(\"username\") String username);\n\n// 엔티티에서 username 을 name 으로 바꾸고 IDE 리팩터링을 돌리면\n\n@Entity\npublic class Member {\n    private String name;\n}\n\n$ grep -c 'm.username' MemberRepository.java\n\n1\n\n--   문자열은 안 바뀌었다\n\n$ ./gradlew bootRun\n\nPropertyReferenceException / SemanticException:\n    Could not resolve attribute 'username' of 'Member'\n\n--   기동에서는 잡았다\n--   5.1절과 같은 결말이다\n\n\n-- 네이티브는 검증이 안 된다\n\n@Query(value = \"select * from member where usernamee = :name\",\n       nativeQuery = true)\nList<Member> nativeBroken(@Param(\"name\") String name);\n\n$ ./gradlew bootRun\n\nINFO  Started DataJpaApplication\n\n--   기동이 된다\n\n@Test\n@Transactional\nvoid 네이티브_오타() {\n    memberRepository.nativeBroken(\"m1\");\n}\n\nJdbcSQLSyntaxErrorException: Column \"USERNAMEE\" not found\n\n--   실행해야 안다\n--   4.1절로 돌아간 셈이다\n--   8.6절에서 다시 본다\n\n\n-- 무엇을 언제 쓰나\n\n$ printf '%-16s %-22s %s\\n' \\\n  '메서드 이름' '조건 1-2개' '기동 검증 O' \\\n  '@NamedQuery' '엔티티에 모음' '기동 검증 O' \\\n  '@Query' '복잡·고정 쿼리' '기동 검증 O' \\\n  '@Query native' 'DB 전용 문법' '기동 검증 X'\n\n메서드 이름       조건 1-2개             기동 검증 O\n@NamedQuery      엔티티에 모음           기동 검증 O\n@Query           복잡·고정 쿼리          기동 검증 O\n@Query native    DB 전용 문법           기동 검증 X\n\n--   5.5절에서 결과를 DTO 로 받는다",
+   "note": "**94자 메서드가 `searchActive` 52자로 줄고 SQL 은** 같다.\n\n**JPQL 오타는 기동에서 `SemanticException`, 네이티브 오타는 실행에서** 난다.\n\n**서브쿼리·`group by having`·`case` 가 그대로** 번역된다.\n\n**쿼리에 `order by` 가 있어도 `Sort` 가 덮지 않고 뒤에** 붙는다.\n\n**별칭 정렬은 `Sort.by` 가 막고 `JpaSort.unsafe`** 라야 된다."
+  }
+ ],
+ "recap": [
+  "**JPQL 을 쓰는 자리에** 둔다.",
+  "**메서드 이름이 자유로워**진다.",
+  "**기동 검증은** 그대로다.",
+  "**서브쿼리와 집계가** 된다.",
+  "**컬럼을 골라 읽을 수** 있다.",
+  "**`Sort` 는 뒤에** 붙는다.",
+  "**별칭은 `JpaSort.unsafe`** 다.",
+  "**동적 조건은 여전히 안** 된다.",
+  "**네이티브는 검증이** 없다."
+ ],
+ "drills": [
+  {
+   "task": "긴 메서드 이름을 `@Query` 로 옮긴다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "JPQL 에 오타를 낸다.",
+   "done_when": "기동에서 잡히는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿼리와 `Sort` 를 같이 쓴다.",
+   "done_when": "정렬이 두 개 붙는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "네이티브 쿼리에 오타를 낸다.",
+   "done_when": "실행에서 나는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Query` 가 `@NamedQuery` 보다 나은 점은?",
+   "a": "쿼리가 쓰는 메서드 바로 옆에 있다."
+  },
+  {
+   "q": "메서드 이름이 자유로워지면 무엇이 좋나?",
+   "a": "조건이 아니라 용도를 이름에 담을 수 있다."
+  },
+  {
+   "q": "쿼리에 `order by` 가 있고 `Sort` 도 주면?",
+   "a": "`Sort` 가 뒤에 덧붙는다."
+  },
+  {
+   "q": "별칭으로 정렬하려면?",
+   "a": "`JpaSort.unsafe` 를 쓴다."
+  },
+  {
+   "q": "네이티브 쿼리의 약점은?",
+   "a": "기동 시점 검증이 되지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@Query",
+   "def": "리포지토리 메서드에 직접 JPQL 을 다는 애너테이션."
+  },
+  {
+   "term": "JpaSort.unsafe",
+   "def": "엔티티 속성이 아닌 별칭이나 함수로 정렬할 때 쓰는 Sort."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

@@ -243,7 +243,7 @@
           "title": "@Query",
           "summary": "이름 없는 NamedQuery.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -251,7 +251,7 @@
           "title": "값과 DTO 조회",
           "summary": "new 연산자와 생성자.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",

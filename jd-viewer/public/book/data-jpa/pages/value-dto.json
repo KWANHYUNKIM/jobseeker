@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "value-dto",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "값과 DTO 조회",
+ "summary": "new 연산자와 생성자.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 반환 모양을 안다.",
+  "new 연산자를 쓴다.",
+  "엔티티 반환의 비용을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.4절에서 `Object[]` 를** 받았다. **읽기 어려우니 타입을 붙인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 반환",
+   "ascii": "   three shapes a select can return\n\n   entity        select m from Member m\n                 managed, tracked, and it will be flushed if you change it\n\n   value         select m.username from Member m\n                 a plain String, or an Object array for several columns\n\n   dto           select new pkg.MemberDto(m.id, m.username) from Member m\n                 typed, immutable, and not managed by anything",
+   "note": "**셋째는 아무도 관리하지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필요한 컬럼만 읽는다",
+   "md": "**엔티티는 전부 읽는다.**\n\n> **컬럼이 스무 개면 스무 개 다** 읽는다.\n> **화면에 둘만 쓰는데** 그렇다.\n> **⑧ 에서 DTO 로 바꾼 이유**다.\n\n**영속성 컨텍스트에 안** 올린다.\n\n> **변경 감지가 안** 걸린다(3.4절).\n> **1차 캐시도 안** 쓴다.\n> **메모리도 덜** 쓴다 — 스냅샷이 없다.\n\n**`new` 연산자를** 쓴다.\n\n> **JPQL 에 `import` 가 없어 패키지를 다** 적는다.\n> **생성자가 위치와 타입으로** 맞아야 한다.\n> **레코드도 그대로** 된다.\n\n**엔티티를 인자로 넘기면 조인**이다.\n\n> **`new Dto(m.username, m.team)` 은 팀을 다** 읽는다.\n> **`m.team.name` 으로 써야 컬럼 하나**다.\n> **자기도 모르게 조인이 생기는** 자리다."
+  },
+  {
+   "type": "figure",
+   "caption": "new 가 요구하는 것",
+   "ascii": "   what the new operator needs\n\n   the full package name    because jpql has no imports\n   a matching constructor   by position and by type, exactly\n   scalar arguments         an entity may be passed, but then it is fetched\n\n   the first requirement is the one that makes the query line long,\n   and the third is where an accidental join appears",
+   "note": "**셋째가 조인이 몰래 생기는** 자리다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "대안이 둘 더 있다",
+   "md": "**인터페이스 프로젝션**이다(8.3절).\n\n```java\npublic interface UsernameOnly {\n    String getUsername();\n}\nList<UsernameOnly> findProjectedByAge(int age);\n```\n\n> **`@Query` 없이 컬럼을** 고른다.\n> **구현도 없다** — 프록시가 만들어진다.\n> **8.3절에서** 본다.\n\n**Querydsl 의 `Projections`** 도 있다.\n\n> **타입 안전하게 DTO 를** 만든다.\n> **`new` 문자열이 아니라 코드**다.\n> **8.8절에서** 넘긴다.\n\n**`Tuple` 도 쓸 수** 있다.\n\n> **`Object[]` 보다 이름으로 꺼낼 수** 있다.\n> **여전히 타입은** 없다.\n> **DTO 가 대개 더** 낫다.\n\n**언제 엔티티를 그대로 쓰나**\n\n> **변경이 필요하면 엔티티**다(4.6절).\n> **읽기만 하면 DTO** 다.\n> **⑧ 의 규칙 그대로**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 엔티티를 그대로 받으면\n\n@Test\n@Transactional\nvoid 엔티티() {\n    em.clear();\n    List<Member> list = memberRepository.findAll();\n    System.out.println(\"영속 상태: \" + em.contains(list.get(0)));\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n영속 상태: true\n\n--   컬럼을 다 읽었다\n--   영속성 컨텍스트에 올라갔다\n\n\n-- 값 하나\n\n@Query(\"select m.username from Member m\")\nList<String> findUsernames();\n\n@Test\n@Transactional\nvoid 값_하나() {\n    em.clear();\n    List<String> names = memberRepository.findUsernames();\n    System.out.println(names);\n}\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n[m1, m2, m3]\n\n--   컬럼 하나만 읽었다\n\n\n-- 값 여럿은 Object[]\n\n@Query(\"select m.username, m.age from Member m\")\nList<Object[]> findNameAndAge();\n\n@Test\n@Transactional\nvoid 값_여럿() {\n    em.clear();\n    for (Object[] r : memberRepository.findNameAndAge()) {\n        System.out.println(r[0] + \" \" + r[1]);\n    }\n}\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\nm1 10\nm2 20\nm3 30\n\n--   인덱스로 꺼낸다\n--   r[0] 이 무엇인지 코드만 봐서는 모른다\n--   타입 캐스팅도 해야 한다\n\n\n-- DTO 를 만든다\n\npackage study.datajpa.dto;\n\npublic record MemberDto(Long id, String username, String teamName) {}\n\n\n-- new 로 받는다\n\n@Query(\"select new study.datajpa.dto.MemberDto(m.id, m.username, t.name)\" +\n       \" from Member m join m.team t\")\nList<MemberDto> findMemberDto();\n\n@Test\n@Transactional\nvoid dto() {\n    em.clear();\n    memberRepository.findMemberDto()\n        .forEach(d -> System.out.println(d.username() + \" \" + d.teamName()));\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\nm1 A팀\nm2 A팀\nm3 B팀\n\n--   컬럼 셋만 읽었다\n--   레코드가 그대로 된다\n\n\n-- 영속 상태가 아니다\n\n@Test\n@Transactional\nvoid dto_는_준영속() {\n    em.clear();\n    MemberDto d = memberRepository.findMemberDto().get(0);\n    System.out.println(\"영속 상태: \" + em.contains(d));\n}\n\nHibernate: select m1_0.member_id, m1_0.username, t1_0.name\n           from member m1_0 join team t1_0 on ...\n영속 상태: false\n\n--   관리 대상이 아니다\n--   고쳐도 update 가 안 나간다\n--   3.4절의 준영속과 또 다르다\n--   애초에 엔티티가 아니다\n\n\n-- 패키지를 빼면\n\n@Query(\"select new MemberDto(m.id, m.username, t.name)\" +\n       \" from Member m join m.team t\")\nList<MemberDto> broken();\n\n$ ./gradlew bootRun\n\nAPPLICATION FAILED TO START\n\nCaused by: org.hibernate.query.SemanticException:\n    Could not interpret dynamic instantiation target 'MemberDto'\n\n--   JPQL 에는 import 가 없다\n--   전체 이름을 적어야 한다\n\n\n-- 생성자가 안 맞으면\n\npublic record MemberDto(Long id, String username, String teamName) {}\n\n@Query(\"select new study.datajpa.dto.MemberDto(m.username, m.id, t.name)\" +\n       \" from Member m join m.team t\")\nList<MemberDto> wrongOrder();\n\n$ ./gradlew bootRun\n\nSemanticException: Cannot instantiate class\n    'study.datajpa.dto.MemberDto' (it has no constructor with\n    signature (java.lang.String, java.lang.Long, java.lang.String))\n\n--   순서와 타입이 다 맞아야 한다\n--   기동에서 잡는다\n--   5.2절의 파라미터 순서 실수와 다르다\n\n\n-- 엔티티를 인자로 넘기면\n\npublic record MemberTeamDto(String username, Team team) {}\n\n@Query(\"select new study.datajpa.dto.MemberTeamDto(m.username, m.team)\" +\n       \" from Member m\")\nList<MemberTeamDto> withEntity();\n\n@Test\n@Transactional\nvoid 엔티티_인자() {\n    em.clear();\n    long n = counter.count(() -> memberRepository.withEntity());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n쿼리 1개\n\n--   조인이 생겼다\n--   팀 컬럼을 다 읽었다\n\n\n-- 이름만 필요하면\n\n@Query(\"select new study.datajpa.dto.MemberDto(m.id, m.username, m.team.name)\" +\n       \" from Member m\")\nList<MemberDto> withName();\n\n@Test\n@Transactional\nvoid 이름만() {\n    em.clear();\n    memberRepository.withName();\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n\n--   컬럼 하나만 읽었다\n--   조인은 여전히 있다\n--   연관을 타면 조인이 생긴다\n\n\n-- 컬럼 수를 비교한다\n\n@Test\n@Transactional\nvoid 읽는_양() {\n    em.clear();\n    System.out.println(\"--- 엔티티 ---\");\n    memberRepository.findAll();\n    em.clear();\n    System.out.println(\"--- DTO ---\");\n    memberRepository.findMemberDto();\n}\n\n--- 엔티티 ---\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n--- DTO ---\nHibernate: select m1_0.member_id, m1_0.username, t1_0.name\n           from member m1_0 join team t1_0 on ...\n\n--   앞은 회원 컬럼 넷\n--   뒤는 셋인데 팀 이름이 들어 있다\n--   컬럼이 스무 개면 차이가 커진다\n\n\n-- 큰 엔티티로 재 본다\n\n@Entity\npublic class BigMember {\n    @Id @GeneratedValue private Long id;\n    private String username;\n    private String c01, c02, c03, c04, c05,\n                   c06, c07, c08, c09, c10;\n}\n\n@Test\n@Transactional\nvoid 큰_엔티티() {\n    em.clear();\n    System.out.println(\"--- 엔티티 ---\");\n    bigRepository.findAll();\n    em.clear();\n    System.out.println(\"--- DTO ---\");\n    bigRepository.findNamesOnly();\n}\n\n--- 엔티티 ---\nHibernate:\n    select\n        b1_0.id, b1_0.c01, b1_0.c02, b1_0.c03, b1_0.c04, b1_0.c05,\n        b1_0.c06, b1_0.c07, b1_0.c08, b1_0.c09, b1_0.c10,\n        b1_0.username\n    from\n        big_member b1_0\n--- DTO ---\nHibernate:\n    select\n        b1_0.id,\n        b1_0.username\n    from\n        big_member b1_0\n\n--   12개와 2개다\n\n\n-- 클래스 DTO 도 된다\n\npublic class MemberDtoClass {\n    private final Long id;\n    private final String username;\n\n    public MemberDtoClass(Long id, String username) {\n        this.id = id;\n        this.username = username;\n    }\n    public Long getId() { return id; }\n    public String getUsername() { return username; }\n}\n\n@Query(\"select new study.datajpa.dto.MemberDtoClass(m.id, m.username)\" +\n       \" from Member m\")\nList<MemberDtoClass> findClassDto();\n\n@Test\n@Transactional\nvoid 클래스_dto() {\n    em.clear();\n    memberRepository.findClassDto();\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username\n    from\n        member m1_0\n\n--   레코드와 같다\n--   생성자만 맞으면 된다\n\n\n-- 인터페이스 프로젝션도 있다\n\npublic interface UsernameOnly {\n    String getUsername();\n}\n\nList<UsernameOnly> findProjectedByAgeGreaterThan(int age);\n\n@Test\n@Transactional\nvoid 프로젝션() {\n    em.clear();\n    memberRepository.findProjectedByAgeGreaterThan(5)\n        .forEach(u -> System.out.println(u.getUsername()));\n}\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>?\nm1\nm2\nm3\n\n--   @Query 가 없다\n--   인터페이스만 선언했다\n--   8.3절에서 자세히 본다\n\n\n-- 언제 무엇을 쓰나\n\n$ printf '%-18s %s\\n' \\\n  '변경이 필요하다' '엔티티' \\\n  '읽기만 한다' 'DTO 또는 프로젝션' \\\n  '컬럼 하나' '값 타입' \\\n  '동적으로 고른다' 'Querydsl (8.8절)'\n\n변경이 필요하다     엔티티\n읽기만 한다        DTO 또는 프로젝션\n컬럼 하나          값 타입\n동적으로 고른다     Querydsl (8.8절)\n\n--   ⑧ 의 규칙과 같다\n--   5.6절에서 파라미터 바인딩을 본다",
+   "note": "**엔티티는 컬럼 넷을 다 읽고 DTO 는 셋만** 읽는다.\n\n**DTO 는 `em.contains` 가 `false`** 라 관리 대상이 아니다.\n\n**패키지를 빼면 `Could not interpret dynamic instantiation target`** 이다.\n\n**생성자 순서를 바꾸면 `no constructor with signature` 로 기동이** 막힌다.\n\n**컬럼 열두 개짜리 엔티티가 DTO 로는 둘만** 읽는다."
+  }
+ ],
+ "recap": [
+  "**엔티티·값·DTO 세 모양**이다.",
+  "**엔티티는 컬럼을 다** 읽는다.",
+  "**DTO 는 관리 대상이** 아니다.",
+  "**`new` 에 전체 패키지를** 적는다.",
+  "**생성자가 위치와 타입으로** 맞아야 한다.",
+  "**틀리면 기동에서** 잡는다.",
+  "**엔티티를 인자로 넘기면** 조인이다.",
+  "**레코드도 클래스도** 된다.",
+  "**읽기만 하면 DTO** 다."
+ ],
+ "drills": [
+  {
+   "task": "`Object[]` 로 받아 본다.",
+   "done_when": "인덱스 접근의 불편을 겪었다.",
+   "minutes": 15
+  },
+  {
+   "task": "레코드 DTO 로 바꾼다.",
+   "done_when": "SQL 의 컬럼 수를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "생성자 순서를 틀린다.",
+   "done_when": "기동 오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "엔티티를 인자로 넘긴다.",
+   "done_when": "조인이 생기는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DTO 조회의 이점은?",
+   "a": "필요한 컬럼만 읽고 영속성 컨텍스트에 올리지 않는다."
+  },
+  {
+   "q": "`new` 에 전체 패키지를 쓰는 이유는?",
+   "a": "JPQL 에는 import 개념이 없어서다."
+  },
+  {
+   "q": "생성자가 안 맞으면?",
+   "a": "기동 시점에 시그니처 오류로 실패한다."
+  },
+  {
+   "q": "DTO 생성자에 엔티티를 넘기면?",
+   "a": "그 엔티티를 위한 조인과 컬럼 읽기가 생긴다."
+  },
+  {
+   "q": "언제 엔티티를 그대로 쓰나?",
+   "a": "변경이 필요할 때다. 읽기만 하면 DTO 를 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "new 연산자",
+   "def": "JPQL 결과를 생성자로 DTO 에 담는 문법."
+  },
+  {
+   "term": "값 타입 조회",
+   "def": "엔티티가 아니라 컬럼 값만 선택해 받는 조회."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
