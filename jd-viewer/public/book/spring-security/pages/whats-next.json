@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "whats-next",
+ "no": "12.4",
+ "chapter": 12,
+ "title": "다음 단계",
+ "summary": "그다음.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다음 층이 어디인지 안다.",
+  "월요일에 돌릴 점검표를 갖는다.",
+  "이 책을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아흔 절이 끝났다.** **여기서 어디로 가나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "다음 층",
+   "ascii": "   where the next layer of problems lives\n\n   this book        which filter did the request stop at\n   the next books   which container did the process run in\n                    which node did the container land on\n\n   a secret in a properties file is a spring problem\n   a secret in an image layer is a docker problem\n   a secret in a manifest is a kubernetes problem\n\n   the same secret, three places to leak it",
+   "note": "**같은 비밀, 새는 자리가** 셋이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 방향",
+   "md": "**① 이 책을 더 파는 쪽**\n\n> **12.2절의 \"한 장 거리\" 다섯**이다.\n> **OAuth2 로그인이 가장 실용적**이고, **구조는 이미** 안다.\n> **읽을 것은 레퍼런스의 `oauth2/login`** 한 장이다.\n\n**② 검증 기준을 갖는 쪽**\n\n> **OWASP ASVS 가 항목별 점검표**다.\n> **\"인증 4.1.1: 비밀번호는 12자 이상\" 같은 식**이다.\n> **이 책이 다룬 게 대부분 레벨 1**이고, **레벨 2부터가 실무 기준**이다.\n>\n> **읽고 우리 것과 대조하는 데 하루면** 된다.\n\n**③ 아래 층으로 내려가는 쪽**\n\n> **서가에 인프라 두 권이 준비돼** 있다.\n> **이 책이 \"어느 필터에서 멈췄나\" 를 물었다면**, **거기서는 \"어느 컨테이너에서 돌았나\"** 다.\n>\n> **6.8절의 프록시 문제가 거기서 다시** 나온다.\n> **5.7절의 세션 공유도** 그렇다.\n> **이미 만난 문제들이 다른 층에서 다시 나온다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "월요일 점검표",
+   "ascii": "   a checklist you can run on monday\n\n   1  send the unauthenticated request your api fears most\n   2  delete one security rule and count the red bars\n   3  grep the config for a password that is not a variable\n   4  open the audit table and ask when it was last read\n   5  list the filters and find one you cannot explain\n\n   five commands, and each one has a number as its answer",
+   "note": "**다섯 다 답이 숫자**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책이 남기려 한 것",
+   "md": "**질문 하나**다.\n\n> **\"이 요청이 어느 필터에서 끝났나\"**\n>\n> **403 이 나오면 CSRF 인지 인가인지**, **302 가 나오면 진입점인지 성공 핸들러인지**.\n> **로그 두 줄로** 갈린다 — **`Securing` 과 `Secured`**(2.3절).\n\n**습관 셋**\n\n| 습관 | 어디서 |\n|---|---|\n| 막히는 것을 테스트한다 | 8.8절 |\n| 안 만든 것을 적어 둔다 | 10.1절 |\n| 끄기 전에 이유를 댄다 | 6.9절 |\n\n> **셋 다 코드가 아니라 태도**다.\n> **프레임워크는 바뀌어도 이건** 남는다.\n\n**마지막으로**\n\n> **1.1절에서 책 ⑨ 의 문장을** 인용했다.\n> **\"하나도 테스트를 안 깼다\"**\n>\n> **12.1절에서 마흔한 개가** 깨졌다.\n> **그게 이 책이 한 일** 전부다.\n>\n> **막는 코드를 썼다는 게 아니라 막고 있다는 걸 확인할 수 있게** 됐다는 것."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 점검표 다섯 ---\n\n#   1) 가장 두려운 요청을 보낸다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    localhost:8080/api/v1/orders/1\n\n401\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:hunter2secret \\\n    -X DELETE localhost:8080/api/v1/orders/1\n\n403\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u admin@a.com:1234 \\\n    -X DELETE localhost:8080/api/v1/orders/1\n\n200\n\n#   401 · 403 · 200 이면 답이다\n\n#   1.3절에는 200 하나뿐이었다\n\n#   2) 규칙 하나를 지우고 빨간 막대를 센다\n\n$ git stash list\n$ sed -i '' '/hasRole(\"ADMIN\")/d' src/main/java/com/example/SecurityConfig.java\n$ ./gradlew test 2>&1 | grep -c FAILED\n\n7\n\n$ git checkout src/main/java/com/example/SecurityConfig.java\n$ ./gradlew test 2>&1 | grep -c FAILED\n\n0\n\n#   일곱이면 그 규칙이 일곱 곳에서 지켜지고 있다\n\n#   0이면 아무도 안 지킨다\n\n#   3) 설정에서 변수가 아닌 비밀을 찾는다\n\n$ grep -rnE '(password|secret|key)\\s*:\\s*[^$]' \\\n    src/main/resources/*.yml src/main/resources/*.properties 2>/dev/null\n\n#   (아무것도 안 나온다)\n\n$ git log -p --all -SGOCSPX -- '*.yml' | grep -c 'client-secret'\n\n2\n\n#   히스토리에는 있다\n\n#   12.2절에서 본 것이다\n\n#   4) 감사 표를 마지막으로 언제 봤나\n\nselect count(*), min(at), max(at) from security_audit;\n\nCOUNT(*) | MIN                     | MAX\n---------+-------------------------+-------------------------\n     318 | 2026-09-09 20:23:41.102 | 2026-09-09 21:02:17.884\n\nselect kind, count(*) from security_audit\n where at > now() - interval '1 day' group by kind order by 2 desc;\n\nKIND                                     | COUNT\n-----------------------------------------+-------\nAuthenticationFailureBadCredentialsEvent |   187\nAuthorizationDeniedEvent                 |    64\nInteractiveAuthenticationSuccessEvent    |    41\nAuthenticationSuccessEvent               |    41\nCsrfDenied                               |    12\nRoleGrant                                |     3\n\n#   187건이 실패다\n\n#   대부분 내가 시험하며 만든 것이다\n\n#   운영이라면 경보가 울렸어야 한다 (12.2절)\n\n#   5) 필터 목록에서 설명 못 할 것을 찾는다\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure any\" | tr ',' '\\n' \\\n    | sed 's/^ *//' | nl\n\n     1  DisableEncodeUrlFilter\n     2  WebAsyncManagerIntegrationFilter\n     3  SecurityContextHolderFilter\n     4  HeaderWriterFilter\n     5  CorsFilter\n     6  CsrfFilter\n     7  LogoutFilter\n     8  UsernamePasswordAuthenticationFilter\n     9  DefaultLogoutPageGeneratingFilter\n    10  ConcurrentSessionFilter\n    11  RequestCacheAwareFilter\n    12  SecurityContextHolderAwareRequestFilter\n    13  RememberMeAuthenticationFilter\n    14  AnonymousAuthenticationFilter\n    15  SessionManagementFilter\n    16  RequestTraceFilter\n    17  ExceptionTranslationFilter\n    18  AuthorizationFilter\n\n#   열여덟 개다\n\n#   각각 어느 절에서 봤는지\n\n#   1  5.6절   2  4.2절   3  5.1절   4  6.7절   5  6.6절\n#   6  6.4절   7  3.8절   8  3.2절   9  2.7절   10 5.5절\n#   11 3.10절  12 9.4절   13 3.6절   14 3.7절   15 5.4절\n#   16 10.7절  17 6.1절   18 8.3절\n\n#   열여덟 개가 다 어느 절에 있다\n\n#   설명 못 할 게 없으면 통과다\n\n# --- 1.4절과 비교 ---\n\n#   1.4절: 열다섯 개, 하나도 설명 못 했다\n\n#   지금: 열여덟 개, 다 설명한다\n\n#   그게 아흔 절의 차이다\n\n# --- 마지막으로 그 요청 ---\n\n$ curl -i -X POST localhost:8080/api/v1/orders \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"productNumbers\":[\"001\",\"002\"]}'\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\n \"detail\":\"authentication required\",\"instance\":\"/api/v1/orders\"}\n\nDEBUG FilterChainProxy : Securing POST /api/v1/orders\nTRACE FilterChainProxy : Invoking AuthorizationFilter (12/12)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nINFO RequestTraceFilter : POST /api/v1/orders 401 user=anonymousUser\n\n#   Secured 가 없다\n\n#   12번에서 끝났다\n\n#   1.3절에서는 필터가 없어서 컨트롤러까지 갔다\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n4\n\n#   안 늘었다\n\n# --- 열 권의 마지막 명령 ---\n\n$ ./gradlew test\n\n160 tests completed\n\nBUILD SUCCESSFUL\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Using generated security password\"\n\n0\n\n#   1.2절에서는 1이었다\n\n#   그때는 부트가 만들어 준 사용자였다\n\n#   지금은 우리 회원이다\n\n# --- 다음 책에서 ---\n\n$ docker --version\n\nDocker version 27.3.1, build ce12230\n\n$ docker ps\n\nCONTAINER ID   IMAGE   COMMAND   STATUS   PORTS   NAMES\n\n#   비어 있다\n\n#   여기서 시작한다",
+   "note": "**점검표 다섯의 답이 401·403·200 / 7 / 0건 / 187건 / 열여덟 개**다.\n\n**규칙 하나를 지우면 일곱이 빨개진다** — 그 규칙이 일곱 곳에서 지켜지고 있다는 뜻이다.\n\n**필터 열여덟 개가 다 어느 절에** 있다. **1.4절에는 열다섯 개였고 하나도 설명 못** 했다.\n\n**1.3절의 요청이 `(12/12)` 에서 끝나고 `Secured` 가** 없다.\n\n**`Using generated security password` 가 0회**다 — 1.2절에는 1이었다."
+  }
+ ],
+ "recap": [
+  "**다음 층은 컨테이너와** 노드다.",
+  "**같은 비밀이 새는 자리가** 셋이다.",
+  "**세 방향은 더 파기 · 기준 갖기 · 아래로 내려가기**다.",
+  "**점검표 다섯의 답이 다** 숫자다.",
+  "**규칙을 지우고 세어 보면 지켜지는지** 안다.",
+  "**남은 질문은 \"어느 필터에서 끝났나\"** 다.",
+  "**습관 셋은 코드가 아니라** 태도다.",
+  "**필터 열여덟 개를 다 설명할 수** 있다.",
+  "**1.4절에는 하나도 설명 못** 했다."
+ ],
+ "drills": [
+  {
+   "task": "점검표 다섯을 내 프로젝트에 돌린다.",
+   "done_when": "다섯 숫자를 적었다.",
+   "minutes": 40
+  },
+  {
+   "task": "규칙 하나를 지워 본다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터 목록에 절 번호를 붙인다.",
+   "done_when": "설명 못 할 것이 있는지 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "ASVS 레벨 1 과 대조한다.",
+   "done_when": "빠진 항목을 적었다.",
+   "minutes": 60
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 남기려 한 질문은?",
+   "a": "이 요청이 어느 필터에서 끝났나다."
+  },
+  {
+   "q": "규칙이 지켜지는지 어떻게 아나?",
+   "a": "지우고 몇 개가 빨개지는지 센다."
+  },
+  {
+   "q": "습관 셋은?",
+   "a": "막히는 것을 테스트하고, 안 만든 것을 적고, 끄기 전에 이유를 댄다."
+  },
+  {
+   "q": "다음 층에서 다시 나올 문제는?",
+   "a": "프록시 뒤의 주소와 세션 공유다."
+  },
+  {
+   "q": "1.4절과 지금의 차이는?",
+   "a": "필터 목록을 하나도 설명 못 했던 것에서 전부 설명하게 된 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "OWASP Application Security Verification Standard",
+   "url": "https://owasp.org/www-project-application-security-verification-standard/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "OWASP Top Ten",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Docker — Documentation",
+   "url": "https://docs.docker.com/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

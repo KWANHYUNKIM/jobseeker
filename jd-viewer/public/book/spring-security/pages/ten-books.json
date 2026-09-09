@@ -1,0 +1,120 @@
+{
+ "book": "spring-security",
+ "id": "ten-books",
+ "no": "12.3",
+ "chapter": 12,
+ "title": "열 권",
+ "summary": "서가를 돌아본다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "열 권이 각각 무엇으로 끝났는지 안다.",
+  "한 요청에 열 권이 다 있는 것을 본다.",
+  "이어진 실을 짚는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**열 권째**다. **서가를 한 번** 돌아본다."
+  },
+  {
+   "type": "figure",
+   "caption": "열 권",
+   "ascii": "   ten books, and what each one ends with\n\n   1  jpa basic        the sql that actually went out\n   2  spring core      container logs\n   3  mvc 1            the http that was exchanged\n   4  mvc 2            the same, half of it error responses\n   5  db 1             sql plus connection and transaction logs\n   6  db 2             the same sql, made by five technologies\n   7  jpa app 1        ddl, sql, http, query counts\n   8  jpa app 2        json, and the query count behind it\n   9  practical testing  a test run, half of it red\n  10  spring security  http, and the filters it passed",
+   "note": "**책마다 끝내는 것이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "책 사이를 잇는 실",
+   "md": "| 실 | 어디서 어디로 |\n|---|---|\n| **N+1** | ⑦ 6장 → ⑧ 4장 → 8.6절의 `@PostFilter` |\n| **프록시와 자기 호출** | ⑥ `@Transactional` → 7.5절 `@PreAuthorize` |\n| **직렬화** | ⑦ 8.4절 지연 로딩 → 5.7절 세션 |\n| **`readOnly` 와 플러시** | ⑤ 5.5절 → 10.3절 자동 해제 |\n| **테스트가 무엇을 지키나** | ⑨ 전부 → 8.8절 인가표 |\n| **컨트롤러 앞의 세계** | ③ `DispatcherServlet` → 2장 필터 |\n\n> **여섯 실이 열 권을** 관통한다.\n> **같은 함정이 다른 옷을 입고 다시** 나온다.\n\n**⑨ 가 준 것**\n\n> **방법**이다.\n> **지켜야 할 것을 부수고 빨간 막대가 나는지** 본다.\n> **이 책에서 여덟 번 넘게** 썼다.\n>\n> **1.1절에서 \"하나도 테스트를 안 깼다\" 로** 시작해\n> **12.1절에서 \"마흔한 개가 깨진다\" 로** 끝났다.\n\n**⑩ 이 준 것**\n\n> **판단이 컨트롤러 앞에서 끝난다는 것**이다.\n> **앞의 아홉 권은 다 `DispatcherServlet` 안쪽 얘기**였다.\n> **③ 이 그 문을 열었고 ⑩ 이 그 문 앞의 복도를** 보여 줬다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 요청, 열 권",
+   "ascii": "   one request, seen by all ten\n\n   POST /api/v1/orders\n     10  seventeen filters decide whether it may continue\n      3  DispatcherServlet finds the handler\n      4  an argument resolver reads the json\n      8  a dto is assembled without touching lazy fields\n      7  a decision made in chapter 6 costs three queries\n      5  a transaction opens, borrows a connection\n      1  the persistence context flushes\n      2  every bean above was wired by the container\n      9  and a test asserts all of it",
+   "note": "**요청 하나에 열 권이 다** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 눈에 보이는 것으로 끝냈나",
+   "md": "**책마다 \"매 절이 무엇으로 끝나는가\" 를** 정했다.\n\n> **①은 SQL, ③은 HTTP, ⑨는 테스트 결과, ⑩은 필터 목록**이다.\n>\n> **설명은 틀릴 수 있는데 출력은 안** 틀린다.\n> **\"이렇게 동작합니다\" 대신 \"이렇게 나왔습니다\"** 다.\n\n**그래서 확인이 가능하다.**\n\n> **읽는 사람이 같은 명령을 쳐서 같은 출력을 볼 수** 있다.\n> **안 나오면 책이 틀렸거나 환경이 다른 것**이고, **둘 다 알 만한** 일이다.\n\n**⑩ 이 가장 어려웠던 이유**\n\n> **필터 목록은 요청을 보내야** 나온다.\n> **①의 SQL 은 코드만 봐도 짐작이** 되는데, **필터는 설정 한 줄에 목록이** 바뀐다.\n> **2.1절에서 `SecurityFilterChain` 빈 하나에 15가 11이** 됐다.\n>\n> **그래서 이 책은 유독 `curl` 이** 많다.\n\n**다음 권으로**\n\n> **서가에 인프라 두 권이 준비돼** 있다(도커·쿠버네티스).\n> **거기서는 \"실제로 친 명령과 그 출력\" 이 재료**다.\n> **같은 원칙, 다른 층**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 한 요청에 열 권 ---\n\nlogging.level.org.springframework.security=DEBUG\nlogging.level.org.springframework.web=DEBUG\nlogging.level.org.hibernate.SQL=DEBUG\nlogging.level.org.springframework.orm.jpa=DEBUG\n\n$ curl -s -o /dev/null -b f.txt -X POST localhost:8080/api/v1/orders \\\n    -H 'Content-Type: application/json' -H \"X-XSRF-TOKEN: $XSRF\" \\\n    -d '{\"productNumbers\":[\"001\",\"002\"]}'\n\n#   ⑩ 시큐리티\nDEBUG FilterChainProxy : Securing POST /api/v1/orders\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl [...]\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured POST /api/v1/orders\n\n#   ③ MVC\nDEBUG DispatcherServlet : POST \"/api/v1/orders\", parameters={}\nDEBUG RequestMappingHandlerMapping : Mapped to\n  OrderController#createOrder(OrderCreateRequest, LocalDateTime)\n\n#   ④ MVC 2\nDEBUG RequestResponseBodyMethodProcessor : Read \"application/json\" to\n  [OrderCreateRequest[productNumbers=[001, 002]]]\n\n#   ⑤ DB 1\nDEBUG JpaTransactionManager : Creating new transaction with name\n  [OrderService.createOrder]\nDEBUG DataSourceUtils : Fetching JDBC Connection from DataSource\n\n#   ⑦ 활용 1\nselect p1_0.id, p1_0.product_number, p1_0.name, p1_0.price\n  from product p1_0 where p1_0.product_number in (?, ?)\n\nselect s1_0.id, s1_0.product_number, s1_0.quantity\n  from stock s1_0 where s1_0.product_number in (?, ?)\n\n#   ① JPA 기본\nDEBUG AbstractFlushingEventListener : Flushed: 1 insertions, 2 updates\n\ninsert into orders (order_status, ordered_date_time, registered_date_time,\n                    total_price) values (?, ?, ?, ?)\ninsert into order_product (order_id, product_id) values (?, ?)\nupdate stock set quantity = ? where id = ?\n\n#   ⑧ 활용 2\nDEBUG RequestResponseBodyMethodProcessor : Writing\n  [ApiResponse[code=200, status=OK, data=OrderResponse[...]]]\n\n#   ⑤ 다시\nDEBUG JpaTransactionManager : Initiating transaction commit\nDEBUG DataSourceUtils : Returning JDBC Connection to DataSource\n\n#   ⑩ 다시\nINFO RequestTraceFilter : POST /api/v1/orders 200 user=user@a.com\n\n#   여덟 권이 한 로그에 있다\n\n# --- 쿼리 개수 ---\n\n$ ./gradlew bootRun 2>&1 | grep -cE '^(select|insert|update)'\n\n5\n\n#   ⑧ 4장에서 세던 그 숫자다\n\n#   31 을 3 으로 줄인 그 방법이다\n\n# --- ② 컨테이너 ---\n\n$ curl -s localhost:8080/actuator/beans 2>/dev/null \\\n    | python3 -c 'import sys,json;print(len(json.load(sys.stdin)[\"contexts\"][\"application\"][\"beans\"]))'\n\n412\n\n$ curl -s localhost:8080/actuator/beans \\\n    | python3 -c \"\nimport sys, json\nb = json.load(sys.stdin)['contexts']['application']['beans']\nfor n in ['orderService','memberUserDetailsService','jsonLoginFilter',\n          'springSecurityFilterChain']:\n    print(n, '->', b.get(n, {}).get('type', '없음'))\"\n\norderService -> com.example.OrderService\nmemberUserDetailsService -> com.example.security.MemberUserDetailsService\njsonLoginFilter -> 없음\nspringSecurityFilterChain -> org.springframework.web.filter.DelegatingFilterProxy\n\n#   jsonLoginFilter 는 빈이 아니다\n\n#   10.7절대로 new 로 만들었다\n\n#   springSecurityFilterChain 이 2.2절의 그것이다\n\n# --- ⑨ 테스트 ---\n\n$ ./gradlew test\n\n160 tests completed\n\nBUILD SUCCESSFUL\n\n$ ./gradlew test 2>&1 | grep -oE '[0-9]+ tests completed'\n\n160 tests completed\n\n#   책 ⑨ 이 78 을 남겼다\n\n#   여든둘이 늘었다\n\n#   그중 스물다섯이 막히는 것을 지킨다\n\n# --- 여섯 실을 확인 ---\n\n#   1) N+1\n$ grep -rn \"@PostFilter\" src/main --include='*.java' | wc -l\n0\n\n#   8.6절에서 안 쓰기로 했다\n\n#   2) 프록시 자기 호출\n$ grep -rn \"this\\.\" src/main/java/com/example/OrderService.java | grep -c cancel\n0\n\n#   7.5절에서 빼냈다\n\n#   3) 직렬화\n$ grep -n \"implements UserDetails\" src/main/java/com/example/domain/Member.java\n\n#   (없다)\n\n#   10.3절에서 어댑터를 썼다\n\n#   4) readOnly\n$ grep -n \"readOnly\" src/main/java/com/example/security/MemberUserDetailsService.java\n\n#   (없다)\n\n#   10.3절에서 뺐다\n\n#   5) 테스트가 지키는 것\n$ grep -rn \"isForbidden\\|isUnauthorized\" src/test | wc -l\n25\n\n#   6) 컨트롤러 앞\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n30\n\n#   여섯 실이 다 코드에 흔적을 남겼다\n\n# --- 열 권의 절 수 ---\n\n$ python3 - <<'PY'\nimport json\nidx = json.load(open('jd-viewer/public/book/index.json'))\ntotal = 0\nfor b in idx['books']:\n    if b['status'] == 'done' or b['id'] == 'spring-security':\n        print(f\"{b['title'][:24]:26} {b['chapters']:3}장 {b['sections']:3}절\")\n        total += b['sections']\nprint(f\"{'합계':26} {total:7}절\")\nPY\n\n자바 ORM 표준 JPA 프로그래밍     12장  56절\n스프링 핵심 원리                 9장  61절\n스프링 MVC 1편                  9장  71절\n스프링 MVC 2편                 13장  99절\n스프링 DB 1편                   8장  57절\n스프링 DB 2편                  13장  83절\n스프링 부트와 JPA 활용 1편       10장  64절\n스프링 부트와 JPA 활용 2편        7장  48절\nPractical Testing              10장  72절\n스프링 시큐리티 완전 정복        12장  90절\n합계                                701절\n\n#   칠백한 절이다\n\n# --- 다음 절에서 ---\n\n#   그다음을 정한다",
+   "note": "**한 요청 로그에 여덟 권이** 있다 — 필터·핸들러 매핑·본문 읽기·트랜잭션·쿼리·플러시·응답 쓰기·커밋.\n\n**쿼리가 다섯 개**다 — 책 ⑧ 4장에서 세던 그 숫자다.\n\n**`jsonLoginFilter` 가 빈 목록에 없다** — 10.7절대로 `new` 로 만들었다.\n\n**여섯 실이 다 코드에 흔적을** 남겼다 — `@PostFilter` 0개, 자기 호출 0개, `readOnly` 없음.\n\n**열 권 합계가 701절**이다."
+  }
+ ],
+ "recap": [
+  "**열 권이 각각 다른 것으로** 끝난다.",
+  "**여섯 실이 열 권을** 관통한다.",
+  "**같은 함정이 다른 옷을 입고** 나온다.",
+  "**⑨ 가 방법을, ⑩ 이 컨트롤러 앞의 세계를** 줬다.",
+  "**한 요청 로그에 여덟 권이** 있다.",
+  "**설명은 틀려도 출력은 안** 틀린다.",
+  "**그래서 읽는 사람이 확인할 수** 있다.",
+  "**필터 목록은 요청을 보내야** 나온다.",
+  "**합계 701절**이다."
+ ],
+ "drills": [
+  {
+   "task": "한 요청의 전체 로그를 뽑는다.",
+   "done_when": "몇 권이 보이는지 세었다.",
+   "minutes": 25
+  },
+  {
+   "task": "여섯 실을 내 코드에서 찾는다.",
+   "done_when": "각각의 흔적을 적었다.",
+   "minutes": 30
+  },
+  {
+   "task": "쿼리 개수를 센다.",
+   "done_when": "책 ⑧ 의 방법과 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "열 권 중 다시 볼 절을 고른다.",
+   "done_when": "세 절을 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "열 권을 관통하는 실은 몇 개인가?",
+   "a": "여섯이다. N+1, 프록시, 직렬화, `readOnly`, 테스트, 컨트롤러 앞이다."
+  },
+  {
+   "q": "책 ⑨ 가 준 것은?",
+   "a": "지켜야 할 것을 부숴 빨간 막대를 확인하는 방법이다."
+  },
+  {
+   "q": "이 책이 준 것은?",
+   "a": "판단이 컨트롤러에 닿기 전에 끝난다는 것이다."
+  },
+  {
+   "q": "왜 매 절을 출력으로 끝냈나?",
+   "a": "설명은 틀릴 수 있어도 출력은 틀리지 않고 확인이 가능해서다."
+  },
+  {
+   "q": "이 책에 `curl` 이 유독 많은 이유는?",
+   "a": "필터 목록은 요청을 보내야 나오고 설정 한 줄에 바뀌기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  }
+ ]
+}

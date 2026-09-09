@@ -798,7 +798,7 @@
           "title": "이 책이 안 다룬 것",
           "summary": "OAuth2 와 그 너머.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -806,7 +806,7 @@
           "title": "열 권",
           "summary": "서가를 돌아본다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",
@@ -814,7 +814,7 @@
           "title": "다음 단계",
           "summary": "그다음.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }
