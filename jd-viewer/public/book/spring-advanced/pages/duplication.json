@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "duplication",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "무엇이 중복인가",
+ "summary": "앞뒤는 같고 가운데만 다르다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 종류를 가른다.",
+  "왜 못 빼내는지 본다.",
+  "빼낼 방법 둘을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장이 인자를** 없앴다. **여덟 줄은 그대로** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 메서드에 두 종류",
+   "ascii": "   one method, two kinds of line\n\n   the same in every method   the try, the catch, the rethrow\n   different in every method  one line in the middle, and a name\n\n   the first kind is nine lines; the second is one line and a string",
+   "note": "**같은 쪽이 아홉 줄, 다른 쪽이 한 줄과 문자열** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다른 곳이 한 줄뿐인데 아홉 줄을 매번 쓴다",
+   "md": "**세 곳이 거의** 같다.\n\n> **2.6절에서 diff 로** 봤다.\n> **아래에서 다시** 센다.\n> **두 줄만** 다르다.\n\n**빼내려면 감싸야** 한다.\n\n> **위도 아래도** 아니다.\n> **양쪽**이다.\n> **아래에서 그 모양을** 본다.\n\n**메서드 호출로는 못** 감싼다.\n\n> **위나 아래에만** 놓인다.\n> **아래에서 그걸** 해 본다.\n> **가운데를 뚫어야** 한다.\n\n**뚫는 길이** 둘이다.\n\n> **상속과 위임**이다.\n> **4.2절과 4.6절**이다.\n> **여기선 그 갈림만** 짚는다."
+  },
+  {
+   "type": "figure",
+   "caption": "빼내기 어려운 모양",
+   "ascii": "   the shape that makes extraction hard\n\n   the fixed part is not above the variable part\n   it is not below it either\n   it is on both sides of it\n\n   a plain method call can only be above or below, never around",
+   "note": "**평범한 호출은 위나 아래에만 놓이고 둘레를 감쌀 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "복사해서 쓰면 조금씩 어긋난다",
+   "md": "**손으로 옮긴**다.\n\n> **여덟 줄을** 복사한다.\n> **이름만** 고친다.\n> **아래에서 그 실수를** 본다.\n\n**하나를 고치면 나머지가** 남는다.\n\n> **정책이 바뀔** 때다.\n> **아래에서 그걸** 겪는다.\n> **세 곳을 다 고쳐야** 한다.\n\n**어긋난 걸 알 수** 없다.\n\n> **컴파일이 안** 잡는다.\n> **2.5절에서 본 그** 자리다.\n> **아래에서 확인**한다.\n\n**늘어날수록** 커진다.\n\n> **2.7절에서 세** 봤다.\n> **여덟 클래스면 256 줄**이다.\n> **아래에서 다시** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 세 곳을 나란히 놓는다\n\n$ for f in Controller Service Repository; do\n    echo \"--- Order$f\"\n    sed -n '/TraceStatus status = null/,/^    }/p' src/main/java/study/adv/Order$f.java\n  done\n\n--- OrderController\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderController.request()\");\n            orderService.orderItem(itemId);\n            trace.end(status);\n            return \"ok\";\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n--- OrderService\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            orderRepository.save(itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n--- OrderRepository\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderRepository.save()\");\n            if (itemId.equals(\"ex\")) throw new IllegalStateException(\"예외 발생!\");\n            sleep(1000);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n\n-- 무엇이 같고 무엇이 다른가\n\n$ diff <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderService.java) \\\n       <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderRepository.java)\n3,5c3,6\n<             status = trace.begin(\"OrderService.orderItem()\");\n<             orderRepository.save(itemId);\n---\n>             status = trace.begin(\"OrderRepository.save()\");\n>             if (itemId.equals(\"ex\")) throw new IllegalStateException(\"예외 발생!\");\n>             sleep(1000);\n\n$ diff <(...) <(...) | grep -c '^[<>]'\n5\n\n$ sed -n '/TraceStatus status = null/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | wc -l\n11\n\n--   열한 줄 중 아홉 줄이 글자까지 같다\n--   다른 건 이름 문자열과 본문 한 줄이다\n\n\n-- 위아래로 빼내 본다\n\n// 앞을 빼면\nprivate TraceStatus before(String message) {\n    return trace.begin(message);\n}\n\n// 뒤를 빼면\nprivate void after(TraceStatus status) {\n    trace.end(status);\n}\n\npublic void orderItem(String itemId) {\n    TraceStatus status = null;\n    try {\n        status = before(\"OrderService.orderItem()\");\n        orderRepository.save(itemId);\n        after(status);\n    } catch (Exception e) {\n        trace.exception(status, e);\n        throw e;\n    }\n}\n\n$ sed -n '/TraceStatus status = null/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | wc -l\n11\n\n--   여전히 열한 줄이다\n--   try 와 catch 가 안 빠졌다\n\n\n-- try 를 빼낼 수 있나\n\n// 이렇게는 못 쓴다\nprivate void wrapStart() {\n    try {                      // 여는 괄호만 있는 메서드는 없다\n}\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: 'try' without 'catch', 'finally' or resource declarations\n\n--   문법이 안 된다\n--   감싸는 건 위아래로 못 나눈다\n\n\n-- 정책이 바뀌면\n\n// 요구사항 ⑧ 예외는 WARN 으로 남긴다\n} catch (Exception e) {\n    log.warn(\"[{}] 실패\", status.getTraceId().getId());   // 한 줄 추가\n    trace.exception(status, e);\n    throw e;\n}\n\n$ grep -c 'log.warn' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n1\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep -c '실패' logs/app.log\n1\n\n--   한 곳만 고쳤다\n--   세 층 중 하나만 찍힌다\n\n\n-- 세 곳을 다 고쳐야 한다\n\n$ for f in Controller Service Repository; do\n    printf '%-12s %s\\n' \"Order$f\" \\\n      \"$(grep -c 'log.warn' src/main/java/study/adv/Order$f.java)\"\n  done\nOrderController   1\nOrderService      1\nOrderRepository   1\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep -c '실패' logs/app.log\n3\n\n$ git diff --stat\n 3 files changed, 3 insertions(+)\n\n--   한 줄짜리 요구사항에 세 파일을 열었다\n\n\n-- 복사하면 어긋난다\n\n// 저장소에 새 메서드를 만들며 복사했다\npublic void delete(Long id) {\n    TraceStatus status = null;\n    try {\n        status = trace.begin(\"OrderRepository.save()\");    // 이름을 안 고쳤다\n        ...\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -X DELETE 'localhost:8080/order/1'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] |   |-->OrderRepository.save()\n[c14e0b93] |   |<--OrderRepository.save() time=2ms\n\n--   delete 인데 save 라고 찍힌다\n--   2.5 절에서 본 그 실수다\n\n\n-- 흔한 실수 셋\n\n// ① 다시 안 던짐\n} catch (Exception e) {\n    trace.exception(status, e);\n}\n\n// ② end 를 빼먹음\nstatus = trace.begin(\"...\");\norderRepository.save(itemId);\n// trace.end(status);\n\n// ③ 예외 처리를 안 붙임\nstatus = trace.begin(\"...\");\norderRepository.save(itemId);\ntrace.end(status);\n\n$ curl -s -o /dev/null -w '① %{http_code}\\n' 'localhost:8080/request/mistake1?itemId=ex'\n① 200\n\n$ curl -s -o /dev/null 'localhost:8080/request/mistake2?itemId=연필'\n$ curl -s localhost:8080/trace/leak | tail -1\n남은 값:  TraceId(id=e82f14b0, level=1)\n\n$ curl -s -o /dev/null 'localhost:8080/request/mistake3?itemId=ex'\n$ grep 'study.adv.trace' logs/app.log | tail -1 | cut -c56-\n[a3f9c1b2] |-->OrderService.orderItem()\n\n--   ① 은 2.2 절의 그것이다\n--   ② 는 3.5 절의 그것이다\n--   ③ 은 짝이 안 맞는다\n--   셋 다 컴파일은 통과한다\n\n\n-- 얼마나 되나\n\n$ grep -c 'try {' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'catch (Exception e)' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'throw e;' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'TraceStatus status = null' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n$ python3 -c \"print('메서드 3 개 x 감싸는 9 줄 =', 3*9)\"\n메서드 3 개 x 감싸는 9 줄 = 27\n\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n     100 total\n\n--   100 줄 중 27 줄이 감싸는 코드다\n\n\n-- 실무 크기라면\n\n$ python3 -c \"\ncls, per = 8, 4\nprint('메서드', cls*per)\nprint('감싸는 줄', cls*per*9)\nprint('이름 문자열', cls*per, '개를 손으로')\"\n메서드 32\n감싸는 줄 288\n이름 문자열 32 개를 손으로\n\n--   2.6 절에서 센 것과 같은 크기다\n\n\n-- 무엇을 뚫어야 하나\n\n$ sed -n '/TraceStatus status = null/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | cat -n\n     1\t        TraceStatus status = null;\n     2\t        try {\n     3\t            status = trace.begin(\"OrderService.orderItem()\");\n     4\t            orderRepository.save(itemId);\n     5\t            trace.end(status);\n     6\t        } catch (Exception e) {\n     7\t            trace.exception(status, e);\n     8\t            throw e;\n     9\t        }\n    10\t    }\n\n--   4 번 줄만 바꿀 수 있으면 된다\n--   3 번 줄의 문자열도 같이\n\n\n-- 뚫는 길 둘\n\n// ① 상속 — 자식이 4 번 줄을 채운다\nabstract class AbstractTemplate {\n    void execute() {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(getMessage());\n            call();                              // 여기를 자식이 채운다\n            trace.end(status);\n        } catch (Exception e) { ... }\n    }\n    protected abstract void call();\n}\n\n// ② 위임 — 부르는 쪽이 4 번 줄을 넘긴다\nclass TraceTemplate {\n    void execute(String message, Runnable body) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(message);\n            body.run();                          // 여기를 인자가 채운다\n            trace.end(status);\n        } catch (Exception e) { ... }\n    }\n}\n\n$ printf '%-12s %-20s %s\\n' \\\n  '상속'  '자식이 채움'   '4.2 절' \\\n  '위임'  '인자로 넘김'   '4.6 절'\n\n상속         자식이 채움           4.2 절\n위임         인자로 넘김           4.6 절\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n--   4.2 절에서 첫째 길로 간다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '한 메서드'   '11 줄' \\\n  '같은 것'     '9 줄' \\\n  '다른 것'     '본문 1 줄과 이름' \\\n  '위아래'      '못 뺌' \\\n  'try'         '문법이 안 됨' \\\n  '정책 하나'   '세 파일' \\\n  '복사'        '이름이 어긋남' \\\n  '실수'        '셋 다 컴파일 통과' \\\n  '비율'        '100 중 27' \\\n  '길'          '상속과 위임'\n\n한 메서드                  11 줄\n같은 것                    9 줄\n다른 것                    본문 1 줄과 이름\n위아래                     못 뺌\ntry                        문법이 안 됨\n정책 하나                  세 파일\n복사                       이름이 어긋남\n실수                       셋 다 컴파일 통과\n비율                       100 중 27\n길                         상속과 위임",
+   "note": "**세 메서드가 각각 열한 줄인데 아홉 줄이 글자까지 같고 다른 건 본문 한 줄과 이름 문자열**뿐이다.\n\n**앞뒤로 메서드를 빼내도 여전히 열한 줄이고 `try` 만 따로 빼는 건 문법이 안** 된다.\n\n**한 줄짜리 요구사항에 세 파일을 열어야 하고 복사하면 `delete` 인데 `save` 라고** 찍힌다.\n\n**흔한 실수 셋(다시 안 던짐·`end` 누락·예외 처리 없음)이 다 컴파일을** 통과한다.\n\n**100 줄 중 27 줄이 감싸는 코드이고 뚫는 길은 상속과 위임** 둘이다."
+  }
+ ],
+ "recap": [
+  "**두 종류**다.",
+  "**아홉 줄이** 같다.",
+  "**한 줄이** 다르다.",
+  "**위아래로는 못** 뺀다.",
+  "**둘레를 감싸야** 한다.",
+  "**정책 하나에 세** 파일이다.",
+  "**복사는** 어긋난다.",
+  "**컴파일이 안** 잡는다.",
+  "**길이** 둘이다."
+ ],
+ "drills": [
+  {
+   "task": "세 메서드를 diff 한다.",
+   "done_when": "몇 줄이 같은지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "앞뒤로 빼내 본다.",
+   "done_when": "줄이 안 주는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "정책을 하나 바꾼다.",
+   "done_when": "세 파일을 열게 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "흔한 실수 셋을 만든다.",
+   "done_when": "다 컴파일되는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇이 같고 무엇이 다른가?",
+   "a": "감싸는 아홉 줄이 같고 본문 한 줄과 이름 문자열만 다르다."
+  },
+  {
+   "q": "왜 메서드로 못 빼내나?",
+   "a": "고정 부분이 위아래가 아니라 양옆을 감싸고 있어서다."
+  },
+  {
+   "q": "정책이 바뀌면?",
+   "a": "같은 한 줄을 모든 파일에 넣어야 한다."
+  },
+  {
+   "q": "복사의 위험은?",
+   "a": "이름 문자열이 어긋나도 컴파일이 안 잡는다."
+  },
+  {
+   "q": "뚫는 길 둘은?",
+   "a": "상속으로 자식이 채우거나 위임으로 인자를 받는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "감싸는 코드",
+   "def": "본문 양옆을 둘러싼, 모든 메서드에서 같은 줄들."
+  },
+  {
+   "term": "가운데 뚫기",
+   "def": "고정된 틀 안의 한 자리만 바꿀 수 있게 만드는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Template Method",
+   "url": "https://refactoring.guru/design-patterns/template-method",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

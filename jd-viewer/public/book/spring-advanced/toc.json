@@ -188,7 +188,7 @@
           "title": "무엇이 중복인가",
           "summary": "앞뒤는 같고 가운데만 다르다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -196,7 +196,7 @@
           "title": "템플릿 메서드",
           "summary": "상속으로 가운데를 뚫는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",

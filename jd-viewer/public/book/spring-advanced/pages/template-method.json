@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "template-method",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "템플릿 메서드",
+ "summary": "상속으로 가운데를 뚫는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "틀을 만든다.",
+  "구멍을 채운다.",
+  "뒤집힌 호출을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 4 번 줄만 바꾸면** 됐다. **상속으로 그 자리를** 뚫는다."
+  },
+  {
+   "type": "figure",
+   "caption": "부모가 순서를, 자식이 한 걸음을",
+   "ascii": "   the parent owns the order, the child owns one step\n\n   the parent method is final, so the order cannot change\n   one abstract method is the hole\n   the child fills the hole and nothing else\n\n   calling the parent runs the whole thing, child step included",
+   "note": "**부모를 부르면 자식 걸음까지 통째로** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "순서를 부모가 쥐면 어길 수가 없다",
+   "md": "**실수를 막는**다.\n\n> **4.1절의 세 실수**다.\n> **부모가 다** 적었다.\n> **아래에서 그걸** 확인한다.\n\n**구멍이** 하나다.\n\n> **추상 메서드 하나**다.\n> **자식은 그것만** 적는다.\n> **아래에서 세어** 본다.\n\n**정책이 한 곳**이다.\n\n> **부모만** 고친다.\n> **4.1절에서 세 파일**이었다.\n> **아래에서 견줘** 본다.\n\n**호출이** 뒤집힌다.\n\n> **내가 부르던 걸 부모가** 부른다.\n> **아래에서 그 순서를** 찍는다.\n> **그게 값이자** 대가다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 누구를 부르나",
+   "ascii": "   who calls whom, before and after\n\n   before   my code calls the trace, then the body, then the trace\n   after    the framework calls my code, from inside its own flow\n\n   this reversal is the whole point, and also the whole cost",
+   "note": "**이 뒤집힘이 요점이자 그대로** 대가다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "클래스가 메서드 수만큼 늘어난다",
+   "md": "**메서드마다 하나**다.\n\n> **자식 클래스가** 는다.\n> **아래에서 세어** 본다.\n> **4.3절이 그걸** 줄인다.\n\n**부모를 안 부르면 안** 돈다.\n\n> **덮어쓰면** 끝이다.\n> **아래에서 그걸** 겪는다.\n> **`final` 로** 막는다.\n\n**이름을 어디서** 얻나.\n\n> **자식이 알려** 준다.\n> **또 문자열**이다.\n> **아래에서 그걸** 본다.\n\n**반환값이** 걸린다.\n\n> **`void` 만으로는 안** 된다.\n> **아래에서 제네릭으로** 편다.\n> **4.4절에서 다시** 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 틀을 만든다\n\npublic abstract class AbstractTemplate<T> {\n\n    private final LogTrace trace;\n\n    protected AbstractTemplate(LogTrace trace) { this.trace = trace; }\n\n    public final T execute(String message) {      // final 이다\n        TraceStatus status = null;\n        try {\n            status = trace.begin(message);\n            T result = call();                    // 구멍\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n    protected abstract T call();\n}\n\n$ wc -l < src/main/java/study/adv/template/AbstractTemplate.java\n      24\n\n$ grep -c 'abstract' src/main/java/study/adv/template/AbstractTemplate.java\n2\n\n--   구멍이 하나다\n--   4.1 절의 아홉 줄이 여기 다 있다\n\n\n-- 자식이 채운다\n\npublic void orderItem(String itemId) {\n    AbstractTemplate<Void> template = new AbstractTemplate<>(trace) {\n        @Override\n        protected Void call() {\n            orderRepository.save(itemId);        // 4.1 절의 4 번 줄\n            return null;\n        }\n    };\n    template.execute(\"OrderService.orderItem()\");\n}\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | wc -l\n9\n\n// 전에는\n11\n\n--   두 줄 줄었다\n--   그런데 try 와 catch 가 사라졌다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n--   똑같은 여섯 줄이다\n--   예외도 그대로다\n\n\n-- 호출 순서를 찍어 본다\n\npublic final T execute(String message) {\n    System.out.println(\"[틀] 시작\");\n    ...\n    T result = call();\n    System.out.println(\"[틀] 끝\");\n}\n\nprotected Void call() {\n    System.out.println(\"[내 코드] 본문\");\n    orderRepository.save(itemId);\n    return null;\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -E '\\[틀\\]|\\[내 코드\\]' logs/app.log | tail -6\n[틀] 시작\n[내 코드] 본문\n[틀] 시작\n[내 코드] 본문\n[틀] 끝\n[틀] 끝\n\n--   틀이 내 코드를 불렀다\n--   전에는 내 코드가 추적기를 불렀다\n\n\n-- 실수를 못 한다\n\n// 4.1 절의 실수 ① 다시 안 던지기\nprotected Void call() {\n    orderRepository.save(itemId);\n    return null;\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n$ grep -c 'throw e;' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n0\n$ grep -c 'throw e;' src/main/java/study/adv/template/AbstractTemplate.java\n1\n\n--   업무 코드에 throw 가 없는데 500 이 난다\n--   부모가 대신 던진다\n\n\n-- end 도 빼먹을 수 없다\n\n$ grep -c 'trace.end' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ curl -s localhost:8080/trace/leak | tail -1\n남은 값:  null\n\n--   3.5 절의 그 문제가 구조적으로 막혔다\n\n\n-- 정책을 바꿔 본다\n\n// 요구사항 ⑧ 예외는 WARN 으로\n} catch (Exception e) {\n    log.warn(\"[{}] 실패\", status.getTraceId().getId());\n    trace.exception(status, e);\n    throw e;\n}\n\n$ git diff --stat\n AbstractTemplate.java | 1 +\n 1 file changed, 1 insertion(+)\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ grep -c '실패' logs/app.log\n3\n\n--   한 파일에 한 줄이다\n--   4.1 절에서는 세 파일이었다\n\n\n-- final 을 빼면\n\npublic T execute(String message) { ... }     // final 을 지웠다\n\nclass BadService extends AbstractTemplate<Void> {\n    @Override\n    public Void execute(String message) {\n        return call();                        // 틀을 건너뛰었다\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request/bad?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] OrderController.request()\n[c14e0b93] OrderController.request() time=1004ms\n\n--   서비스 줄이 사라졌다\n--   final 이 그래서 필요하다\n\n\n-- 이름은 여전히 문자열이다\n\n$ grep -o 'execute(\"[A-Za-z.()]*\"' src/main/java/study/adv/Order*.java \\\n    | awk -F'\"' '{print $2}'\nOrderController.request()\nOrderService.orderItem()\nOrderRepository.save()\n\n--   2.6 절의 그 문제다\n--   6 장까지 안 없어진다\n\n\n-- 반환값이 있으면\n\n// 처음에 Void 로만 만들면\npublic abstract class AbstractTemplate {\n    public final void execute(String message) { ... }\n    protected abstract void call();\n}\n\npublic String request(String itemId) {\n    template.execute(\"...\");\n    return \"ok\";                 // 틀 밖에서 돌려준다\n}\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n// 그런데 본문이 값을 만들면\npublic Order find(Long id) {\n    Order[] box = new Order[1];\n    template.execute(...);       // box[0] 에 담는다\n    return box[0];               // 이런 코드가 나온다\n}\n\n--   제네릭으로 펴야 한다\n--   그래서 처음부터 T 로 만들었다\n\n\n-- 제네릭이면 자연스럽다\n\npublic Order find(Long id) {\n    return new AbstractTemplate<Order>(trace) {\n        @Override protected Order call() { return orderRepository.findById(id); }\n    }.execute(\"OrderService.find()\");\n}\n\n$ curl -s 'localhost:8080/order/1'\n{\"id\":1,\"item\":\"연필\"}\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] |-->OrderService.find()\n[3d81f0a2] |<--OrderService.find() time=3ms\n\n\n-- 클래스가 는다\n\n// 익명 클래스 대신 이름 있는 클래스로 쓰면\nclass OrderItemTemplate extends AbstractTemplate<Void> { ... }\nclass OrderFindTemplate extends AbstractTemplate<Order> { ... }\nclass OrderSaveTemplate extends AbstractTemplate<Void> { ... }\n\n$ find src/main/java -name '*Template.java' | wc -l\n       4\n\n$ ls build/classes/java/main/study/adv/ | grep -c 'Template'\n4\n\n--   메서드마다 파일이 하나씩이다\n--   4.3 절에서 이걸 줄인다\n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n      88 total\n\n// 3.7 절에서는\n     100 total\n\n$ wc -l src/main/java/study/adv/template/AbstractTemplate.java\n      24\n\n$ python3 -c \"print('업무 100 에서 88, 틀 24 줄이 새로 생김')\"\n업무 100 에서 88, 틀 24 줄이 새로 생김\n\n--   업무 코드가 열두 줄 줄었다\n\n\n-- 비율을 잰다\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | cat -n\n     1\t    public void orderItem(String itemId) {\n     2\t        AbstractTemplate<Void> template = new AbstractTemplate<>(trace) {\n     3\t            @Override\n     4\t            protected Void call() {\n     5\t                orderRepository.save(itemId);\n     6\t                return null;\n     7\t            }\n     8\t        };\n     9\t        template.execute(\"OrderService.orderItem()\");\n    10\t    }\n\n$ python3 -c \"print('업무 1 줄에 감싸는 코드 8 줄')\"\n업무 1 줄에 감싸는 코드 8 줄\n\n// 3.7 절에서는\n업무 1 줄에 감싸는 코드 9 줄\n\n--   한 줄 줄었다\n--   껍데기가 아직 두껍다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ git add -A && git commit -q -m 'feat: v4 템플릿 메서드' && git tag v4\n\n--   여전히 안 감싸졌다\n--   4.3 절에서 클래스 수를 줄인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '틀'         '24 줄, 구멍 하나' \\\n  '자식'       '한 걸음만' \\\n  '로그'       '똑같음' \\\n  '호출'       '뒤집힘' \\\n  'throw'      '업무에 0 개' \\\n  '정책'       '한 파일 한 줄' \\\n  'final'      '건너뛰기 막음' \\\n  '이름'       '여전히 문자열' \\\n  '클래스'     '메서드마다' \\\n  '비율'       '일 대 팔'\n\n틀                         24 줄, 구멍 하나\n자식                       한 걸음만\n로그                       똑같음\n호출                       뒤집힘\nthrow                      업무에 0 개\n정책                       한 파일 한 줄\nfinal                      건너뛰기 막음\n이름                       여전히 문자열\n클래스                     메서드마다\n비율                       일 대 팔",
+   "note": "**틀 24 줄에 구멍 하나를 두니 업무 코드에 `try`·`catch`·`throw` 가 0 개인데 예외에서 500 이** 난다.\n\n**호출을 찍어 보니 `[틀] 시작` → `[내 코드] 본문` → `[틀] 끝` 으로 틀이 내 코드를** 부른다.\n\n**정책 한 줄이 한 파일 한 줄로 끝나 4.1절의 세 파일과** 다르다.\n\n**`final` 을 빼면 자식이 틀을 건너뛰어 서비스 줄이 로그에서** 사라진다.\n\n**업무 코드가 100 줄에서 88 줄, 비율이 일 대 구에서 일 대 팔이 됐지만 클래스가 메서드마다** 는다."
+  }
+ ],
+ "recap": [
+  "**부모가 순서를** 쥔다.",
+  "**구멍이** 하나다.",
+  "**로그는** 같다.",
+  "**호출이** 뒤집힌다.",
+  "**실수를 못** 한다.",
+  "**정책이 한** 곳이다.",
+  "**final 이** 필요하다.",
+  "**이름은** 남았다.",
+  "**클래스가** 는다."
+ ],
+ "drills": [
+  {
+   "task": "틀을 만든다.",
+   "done_when": "같은 로그가 나온 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "호출 순서를 찍는다.",
+   "done_when": "뒤집힌 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "정책을 바꿔 본다.",
+   "done_when": "한 파일만 고친 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`final` 을 빼 본다.",
+   "done_when": "건너뛰는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부모가 무엇을 쥐나?",
+   "a": "실행 순서와 예외 처리 전체다."
+  },
+  {
+   "q": "자식은 무엇을 적나?",
+   "a": "구멍 하나, 즉 본문 한 걸음뿐이다."
+  },
+  {
+   "q": "호출이 어떻게 뒤집히나?",
+   "a": "내 코드가 틀을 부르는 게 아니라 틀이 내 코드를 부른다."
+  },
+  {
+   "q": "`final` 은 왜 붙이나?",
+   "a": "자식이 덮어써서 틀을 건너뛰는 걸 막으려고다."
+  },
+  {
+   "q": "이 방식의 대가는?",
+   "a": "메서드마다 자식 클래스가 하나씩 늘어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "템플릿 메서드",
+   "def": "순서를 고정하고 한 걸음만 자식이 채우게 하는 틀."
+  },
+  {
+   "term": "제어의 역전",
+   "def": "내 코드가 틀을 부르는 대신 틀이 내 코드를 부르는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Template Method",
+   "url": "https://refactoring.guru/design-patterns/template-method",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "JLS — Anonymous Class Declarations",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.9.5",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — JdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
