@@ -359,7 +359,7 @@
           "title": "V5 — in 절 최적화",
           "summary": "1 + 1.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.11",
@@ -367,7 +367,7 @@
           "title": "V6 — 플랫 데이터",
           "summary": "쿼리 하나, 중복 행.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.12",

@@ -1,0 +1,143 @@
+{
+ "book": "jpa-app-2",
+ "id": "collection-v6",
+ "no": "5.11",
+ "chapter": 5,
+ "title": "V6 — 플랫 데이터",
+ "summary": "쿼리 하나, 중복 행.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리를 하나로 만든다.",
+  "무엇을 대가로 치르는지 안다.",
+  "페이징이 왜 다시 깨지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**쿼리 1개**다. **5.4절의 문제가 그대로** 돌아온다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderQueryRepository — 플랫 조회",
+   "code": "public List<OrderFlatDto> findAllByDtoFlat() {\n    return em.createQuery(\n            \"select new jpabook.jpashop.repository.order.query\" +\n            \".OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address,\" +\n            \" i.name, oi.orderPrice, oi.count)\" +\n            \" from Order o\" +\n            \" join o.member m\" +\n            \" join o.delivery d\" +\n            \" join o.orderItems oi\" +\n            \" join oi.item i\", OrderFlatDto.class)\n        .getResultList();\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "한 쿼리가 돌려주는 것",
+   "ascii": "   what one query returns\n\n   order_id | name  | city | item_name    | price | count\n   ---------+-------+------+--------------+-------+------\n   4        | userA | 서울  | JPA1 BOOK    | 10000 | 1\n   4        | userA | 서울  | JPA2 BOOK    | 20000 | 2\n   11       | userB | 진주  | SPRING1 BOOK | 20000 | 3\n   11       | userB | 진주  | SPRING2 BOOK | 40000 | 4\n\n   order and member columns repeat once per item",
+   "note": "**주문·회원 컬럼이 상품마다 반복**된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그대로 내보내면",
+   "md": "```json\n{\"data\": [\n  {\"orderId\":4, \"name\":\"userA\", \"itemName\":\"JPA1 BOOK\", ...},\n  {\"orderId\":4, \"name\":\"userA\", \"itemName\":\"JPA2 BOOK\", ...},\n  {\"orderId\":11, ...},\n  {\"orderId\":11, ...}\n]}\n```\n\n> **3.4절의 계약이 아니다.** **모양 자체가 다르다.**\n>\n> **5.4절은 주문이 중복됐고**, **여기는 구조가 평평**하다.\n>\n> **더 나쁘다.** **클라이언트가 `orderItems` 를 못 찾는다.**\n\n**API 스펙이 바뀌었다.**\n\n> **1.1절에서 \"최적화가 응답을 바꾸면 최적화가 아니다\" 라고** 했다.\n>\n> **이건 응답이 바뀐 정도가 아니라 다른 API** 다.\n\n**그래서 접어야** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "접어서 계약 맞추기",
+   "code": "public List<OrderQueryDto> findAllByDtoFlatFolded() {\n    List<OrderFlatDto> flats = findAllByDtoFlat();\n\n    return flats.stream()\n        .collect(groupingBy(\n            o -> new OrderQueryDto(o.getOrderId(), o.getName(),\n                    o.getOrderDate(), o.getOrderStatus(), o.getAddress()),\n            mapping(o -> new OrderItemQueryDto(o.getOrderId(),\n                    o.getItemName(), o.getOrderPrice(), o.getCount()),\n                toList())\n        )).entrySet().stream()\n        .map(e -> new OrderQueryDto(e.getKey().getOrderId(),\n                e.getKey().getName(), e.getKey().getOrderDate(),\n                e.getKey().getOrderStatus(), e.getKey().getAddress(),\n                e.getValue()))\n        .toList();\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "접는 과정",
+   "ascii": "   folding it back\n\n   groupingBy(orderId, name, orderDate, status, address)\n     the whole order becomes a map key\n     so OrderQueryDto needs equals and hashCode\n\n   then mapping(item fields) -> list\n\n   the code is doing what jpa did for free in v3",
+   "note": "**V3 에서 JPA 가 공짜로 해 주던 일**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "접는 대가",
+   "md": "**① `OrderQueryDto` 에 `equals`·`hashCode` 가 필요**하다\n\n```java\n@EqualsAndHashCode(of = \"orderId\")\npublic class OrderQueryDto { ... }\n```\n\n> **주문 전체가 맵의 키**가 된다. **동등성이** 필요하다.\n>\n> **`of = \"orderId\"` 로 식별자만** 쓴다. **전 필드를 비교하면 느리고 위험**하다.\n>\n> **엔티티였으면 영속성 컨텍스트가 `@Id` 로 알아서** 했다.\n\n**② 코드가 읽기 어렵다**\n\n> **`groupingBy` 안에 `mapping` 이 중첩**되고 **`entrySet().stream()` 이 또** 온다.\n>\n> **5.10절의 V5 보다 길고 복잡**하다.\n\n**③ 순서가 안 보장된다**\n\n> **`groupingBy` 가 `HashMap` 을** 쓴다. **주문 순서가 뒤섞인다.**\n>\n> **`LinkedHashMap::new` 를 넘겨야** 한다.\n>\n> ```java\n> groupingBy(keyFn, LinkedHashMap::new, mapping(...))\n> ```\n>\n> **빼먹으면 정렬이 조용히 사라진다.**\n\n**④ 페이징이 안 된다**\n\n> **5.6절과 똑같은 이유**다. **행이 늘어난 상태에서 `limit`** 를 건다.\n>\n> **하이버네이트가 경고도 안 해 준다** — **엔티티가 아니라 DTO 라 컬렉션 페치로 인식을 안** 한다.\n>\n> **5.6절보다 나쁘다.** **거긴 `WARN` 이라도 나왔다.**\n\n**⑤ 전송량이 는다**\n\n> **주문·회원·배송 컬럼이 상품 수만큼** 반복된다.\n> **주문 100건에 상품 5개면 주소가 500번** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그럼 언제 쓰나",
+   "md": "**거의 안 쓴다.**\n\n| 조건 | |\n|---|---|\n| **페이징이 필요 없다** | 전체 내보내기 |\n| **컬렉션이 작다** | 주문당 상품 1~2개 |\n| **왕복이 아주 비싸다** | 다른 리전 |\n| **한 번만 부른다** | 배치 작업, 엑셀 |\n\n> **정기 리포트 같은 것**이다. **API 응답에는 잘 안 맞는다.**\n\n**접지 않고 내보내는 게 나을 수도** 있다.\n\n> **클라이언트가 CSV 로 받거나 자기가 접는다면**, **평평한 게 오히려** 낫다.\n>\n> **그건 다른 API 스펙**이다. **이 책의 계약과는 다르다.**\n\n**정리하면**\n\n> **쿼리 1개는 얻었는데 그것 말고 나은 게 하나도** 없다.\n>\n> **V5 가 쿼리 2개에 전부** 낫다.\n> **쿼리 하나 차이로 이걸 살 이유가** 없다.\n\n**그래도 만든 이유**\n\n> **\"쿼리를 1개로\" 가 목표가 아니라는 걸 보여 주려고**다.\n>\n> **1.1절에서 \"단조 감소가 아니다\" 라고** 했다. **끝이 이렇다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V6, 접지 않고 ---\n\nGET /api/v6/orders\n\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode,\n#            i1_0.name, oi1_0.order_price, oi1_0.count\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n#     join item i1_0 on i1_0.item_id=oi1_0.item_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       0 entities were loaded\n#   }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\"orderDate\":\"...\",\n#      \"orderStatus\":\"ORDER\",\"address\":{\"city\":\"서울\",...},\n#      \"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#     {\"orderId\":4,\"name\":\"userA\",\"orderDate\":\"...\",\n#      \"orderStatus\":\"ORDER\",\"address\":{\"city\":\"서울\",...},\n#      \"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2},\n#     {\"orderId\":11,...},\n#     {\"orderId\":11,...}\n#   ]}\n\n#   704 bytes\n\n#   orderItems 가 없다. 구조가 다르다\n#   3.4절의 계약이 아니다\n\n# --- 접으면 ---\n\nGET /api/v6/orders\n\n#   Hibernate: (같은 쿼리 1개)\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     {\"orderId\":11,\"name\":\"userB\",...}\n#   ]}\n\n#   429 bytes. 계약과 같다\n\n#   쿼리 1개로 계약을 맞췄다\n\n# --- equals/hashCode 를 안 붙이면 ---\n\n@Data\npublic class OrderQueryDto { ... }   // @EqualsAndHashCode 없음\n\n#   (@Data 가 만들어 주긴 한다. 전 필드 기준으로)\n\n#   전 필드 기준이면 orderItems 가 null 인 상태로 비교된다\n#   Address 에도 equals 가 있어야 한다\n\n#   of = \"orderId\" 로 좁히는 게 안전하다\n\n# --- LinkedHashMap 을 안 쓰면 ---\n\n#   주문 5건을 넣고\n\nGET /api/v6/orders\n\n#   {\"data\":[{\"orderId\":20,...},{\"orderId\":4,...},\n#            {\"orderId\":11,...},{\"orderId\":33,...},{\"orderId\":27,...}]}\n\n#   순서가 뒤섞였다\n\n#   HashMap 의 해시 순서다\n\n#   V5 는 findOrders() 의 순서가 그대로 유지된다\n\n# --- 페이징을 걸면 ---\n\nGET /api/v6/orders?offset=0&limit=2\n\n#   Hibernate: select ... from orders o1_0 join ... join order_item ...\n#              offset ? rows fetch first ? rows only\n#   binding parameter (1:INTEGER) <- [0]\n#   binding parameter (2:INTEGER) <- [2]\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",...,\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]}\n#   ]}\n\n#   주문 2건을 원했는데 1건이 왔다\n\n#   경고가 없다\n\n#   5.6절은 WARN 이라도 나왔다\n#   여기는 DTO 라 하이버네이트가 컬렉션 페치로 인식을 안 한다\n\n#   조용히 틀린다\n\n# --- 상품 수가 다르면 ---\n\n#   주문 4에 상품 2개, 주문 11에 상품 5개\n\nGET /api/v6/orders?offset=0&limit=3\n\n#   {\"data\":[\n#     {\"orderId\":4,\"orderItems\":[2개]},\n#     {\"orderId\":11,\"orderItems\":[1개]}\n#   ]}\n\n#   주문 11의 상품이 5개인데 1개만 왔다\n\n#   데이터가 틀렸다. 응답은 200 이다\n\n# --- 전송량 ---\n\n#   V5 쿼리 2번의 총 행\n#     주문 100행 + 주문상품 500행 = 600행\n\n#   V6 쿼리 1번의 행\n#     500행\n#     그런데 주소가 500번, 주문일시가 500번 반복\n\n#   행 수는 적은데 바이트는 V6 가 많을 수 있다\n\n# --- 여섯 버전이 다 나왔다 ---\n\n#   다음 절에서 한 표에 놓는다",
+   "note": "**접지 않으면 구조가 다르다.** **`orderItems` 가 없다.** **3.4절의 계약이 아니다.**\n\n**접으면 쿼리 1개로 계약을 맞춘다.** **429 바이트**다.\n\n**`LinkedHashMap` 을 안 쓰면 순서가 뒤섞인다.**\n\n**페이징을 걸면 주문 2건을 원했는데 1건**이 온다. **경고가 없다** — **DTO 라 컬렉션 페치로 인식을 안** 한다. **5.6절은 `WARN` 이라도** 나왔다.\n\n**상품 수가 다르면 주문 11의 상품이 5개인데 1개만** 온다. **데이터가 틀렸는데 `200`** 이다."
+  }
+ ],
+ "recap": [
+  "**쿼리 1개인데 응답 구조가** 달라진다 — `orderItems` 가 없다.",
+  "**접으면 계약을 맞출 수** 있다.",
+  "**`equals`·`hashCode` 가 필요**하다 — 식별자만 쓴다.",
+  "**엔티티였으면 영속성 컨텍스트가 `@Id` 로 알아서** 했다.",
+  "**`LinkedHashMap` 을 안 쓰면 순서가 뒤섞인다.**",
+  "**페이징이 조용히 틀린다** — 경고조차 없다.",
+  "**5.6절보다 나쁘다** — 거긴 `WARN` 이라도 나왔다.",
+  "**주소·주문일시가 상품 수만큼 반복**돼 온다.",
+  "**쿼리 1개 말고 나은 게 하나도 없다** — V5 가 전부 낫다."
+ ],
+ "drills": [
+  {
+   "task": "V6 를 접지 않고 만들어 본다.",
+   "done_when": "구조가 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "접어서 계약을 맞춘다.",
+   "done_when": "429 바이트가 되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`LinkedHashMap` 없이 주문 5건을 조회한다.",
+   "done_when": "순서가 뒤섞이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "V6 에 페이징을 건다.",
+   "done_when": "경고 없이 틀린 결과가 오는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "접지 않으면 무엇이 문제인가?",
+   "a": "응답 구조가 평평해져 `orderItems` 가 없다. 다른 API 가 된다."
+  },
+  {
+   "q": "왜 `equals`·`hashCode` 가 필요한가?",
+   "a": "주문 전체가 `groupingBy` 의 키가 되기 때문이다."
+  },
+  {
+   "q": "`LinkedHashMap` 을 왜 쓰나?",
+   "a": "`HashMap` 이면 주문 순서가 뒤섞인다."
+  },
+  {
+   "q": "페이징이 5.6절보다 왜 나쁜가?",
+   "a": "DTO 라 컬렉션 페치로 인식을 안 해 경고조차 없이 조용히 틀린다."
+  },
+  {
+   "q": "V6 를 쓸 만한 경우는?",
+   "a": "페이징이 필요 없고 컬렉션이 작으며 한 번만 부르는 배치성 작업이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — Collectors",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
