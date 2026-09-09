@@ -270,7 +270,7 @@
           "title": "DELETE",
           "summary": "지운 뒤에 무엇을 돌려주나.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -278,7 +278,7 @@
           "title": "안전 · 멱등 · 캐시 가능",
           "summary": "세 성질이 재시도를 결정한다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",

@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "safe-idempotent",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "안전 · 멱등 · 캐시 가능",
+ "summary": "세 성질이 재시도를 결정한다.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 성질을 정확히 구분한다.",
+  "멱등이 무엇에 대한 말인지 안다.",
+  "재시도 규칙을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절부터 계속 미룬 정의**다. **이 셋이 메서드 선택의 진짜 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드별 세 성질",
+   "ascii": "   three independent properties, per method\n\n                safe   idempotent   cacheable\n   GET          yes    yes          yes\n   HEAD         yes    yes          yes\n   OPTIONS      yes    yes          no\n   PUT          no     yes          no\n   DELETE       no     yes          no\n   POST         no     no           rarely, and only if told\n   PATCH        no     no           no\n\n   safe implies idempotent, and the reverse is not true",
+   "note": "**안전하면 멱등이지만 그 반대는** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세 성질은 서로 다른 약속이다",
+   "md": "**안전** — **서버 상태를 안** 바꾼다.\n\n> **읽기 전용이라는** 뜻이다.\n> **로그가 쌓이는 건** 상관없다 — **클라이언트가 관찰하는 상태가** 기준이다.\n> **5.2절에서 크롤러가 믿던 그것**이다.\n\n**멱등** — **여러 번 해도 최종 상태가** 같다.\n\n> **한 번과 열 번의 결과가** 같다.\n> **응답 코드가 같다는 말이 아니다** — **5.5절에서 봤다.**\n> **`DELETE` 는 안전하지 않지만** 멱등이다.\n\n**캐시 가능** — **응답을 저장해 재사용할 수** 있다.\n\n> **메서드와 상태 코드와 헤더가 다** 맞아야 한다.\n> **`POST` 도 명시하면 되는데 거의 안** 쓴다.\n> **9장에서 자세히 본다.**\n\n**셋이 독립**이다.\n\n> **`PUT` 은 멱등인데 안전하지도 캐시 가능하지도** 않다.\n> **표를 외우기보다 왜 그런지를** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 무엇을 해도 되나",
+   "ascii": "   what each property lets someone else do for you\n\n   safe         a crawler may fetch it, a browser may prefetch it\n   idempotent   a client may retry after a timeout, a proxy too\n   cacheable    an intermediary may answer without asking you\n\n   the timeout case is the one that matters most\n   you cannot tell a lost request from a lost response, ever",
+   "note": "**요청이 사라진 건지 응답이 사라진 건지 알 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타임아웃이 모든 걸 결정한다",
+   "md": "**응답을 못 받았을 때 무슨 일이 있었는지 모른다.**\n\n| 가능성 | 재시도하면 |\n|---|---|\n| 요청이 안 갔다 | 다시 보내야 한다 |\n| 처리했는데 응답이 유실 | 두 번 처리된다 |\n\n> **구분할 방법이** 없다.\n> **멱등이면 이 고민이 사라진다** — **어느 쪽이든 결과가** 같다.\n> **그래서 재시도 정책이 메서드로** 갈린다.\n\n**POST 만 특별히** 어렵다.\n\n> **5.3절의 멱등 키가 그** 답이다.\n> **없으면 재시도를 아예 안 하는 게** 낫다.\n> **HTTP 클라이언트 라이브러리 기본값이 대개 그렇다.**\n\n**멱등을 깨는 흔한 구현**\n\n> **`PUT` 이 카운터를 올리면 멱등이** 깨진다.\n> **`updated_at` 만 바뀌는 건 대개 괜찮다고** 본다 — 관찰 가능한 상태냐가 기준이다.\n> **`DELETE` 가 삭제 이력을 매번 남기면** 애매해진다.\n\n**안전을 깨는 건 더** 위험하다.\n\n> **GET 이 무언가를 바꾸면 크롤러가 그걸 실행**한다(5.1절).\n> **프리페치·미리보기·캐시 검증까지 다** 부른다.\n> **⑫ 에서 헬스체크가 매 초 부르던 것도** 그렇다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 안전: 몇 번을 불러도 안 바뀐다 ---\n\n$ B=$(curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)))')\n$ for i in $(seq 1 10); do curl -s -o /dev/null \\\n    http://localhost:9080/orders/5; done\n$ A=$(curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)))')\n$ echo \"$B -> $A\"\n\n8 -> 8\n\n#   열 번 GET 해도 그대로다\n\n# --- 멱등: PUT ---\n\n$ for i in $(seq 1 5); do\n    curl -s -o /dev/null -X PUT -d '{\"item\":\"고정\",\"qty\":1}' \\\n      http://localhost:9080/orders/5\n  done\n$ curl -s http://localhost:9080/orders/5\n\n{\"item\": \"고정\", \"qty\": 1, \"id\": 5}\n\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n8 건\n\n#   다섯 번 해도 8건이다\n\n#   안전하지는 않다, 값이 바뀌었으니\n\n#   그런데 멱등이다\n\n# --- 멱등이 아닌 POST ---\n\n$ for i in $(seq 1 5); do\n    curl -s -o /dev/null -X POST -d '{\"item\":\"늘어남\"}' \\\n      http://localhost:9080/orders\n  done\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n13 건\n\n#   다섯이 늘었다\n\n#   같은 요청인데 결과가 다르다\n\n# --- 코드는 달라도 멱등이다 ---\n\n$ cat idem_test.py\n\nCOUNT = [0]\n    def do_PUT(self):\n        COUNT[0] += 1\n        DB[5] = {\"id\": 5, \"value\": \"고정\"}\n        self._send(200 if COUNT[0] == 1 else 204, \n                   DB[5] if COUNT[0] == 1 else None)\n\n$ python3 idem_test.py & sleep 1\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{http_code} ' -X PUT -d '{}' \\\n      http://localhost:9072/orders/5\n  done; echo\n$ curl -s http://localhost:9072/orders/5\n\n200 204 204 \n{\"id\": 5, \"value\": \"고정\"}\n\n#   코드는 200, 204, 204 다\n\n#   상태는 세 번 다 같다\n\n#   멱등은 상태에 대한 말이다\n\n$ kill %1 2>/dev/null\n\n# --- 멱등을 깨는 PUT ---\n\n$ cat broken.py\n\n    def do_PUT(self):\n        cur = DB.setdefault(5, {\"id\": 5, \"hits\": 0})\n        cur[\"hits\"] += 1\n        self._send(200, cur)\n\n$ python3 broken.py & sleep 1\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -X PUT -d '{}' http://localhost:9071/orders/5\n  done\n$ curl -s http://localhost:9071/orders/5\n\n{\"id\": 5, \"hits\": 3}\n\n#   PUT 인데 멱등이 아니다\n\n#   메서드가 성질을 보장하지 않는다\n\n#   구현이 지켜야 한다\n\n$ kill %1 2>/dev/null\n\n# --- 타임아웃은 구분이 안 된다 ---\n\n$ cat slow.py\n\nimport http.server, time, json\nDONE = []\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_POST(self):\n        DONE.append(1)\n        time.sleep(3)\n        b = json.dumps({\"처리됨\": len(DONE)}).encode()\n        self.send_response(201)\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\n    def do_GET(self):\n        b = json.dumps({\"총\": len(DONE)}).encode()\n        self.send_response(200)\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers()\n        self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9070), H).serve_forever()\n\n$ python3 slow.py & sleep 1\n$ curl -s -m 1 -o /dev/null -w '%{http_code}\\n' -X POST \\\n    http://localhost:9070/orders\n\n000\n\n#   타임아웃이다\n\n#   실패한 것처럼 보인다\n\n$ sleep 3 && curl -s http://localhost:9070/orders\n\n{\"총\": 1}\n\n#   서버는 처리했다\n\n#   응답만 못 받은 것이다\n\n$ curl -s -m 1 -o /dev/null -X POST http://localhost:9070/orders\n$ sleep 3 && curl -s http://localhost:9070/orders\n\n{\"총\": 2}\n\n#   재시도했더니 둘이 됐다\n\n#   요청이 안 간 건지 응답이 사라진 건지 알 수 없다\n\n#   그래서 POST 는 함부로 재시도 못 한다\n\n$ kill %1 2>/dev/null\n\n# --- 멱등이면 고민이 없다 ---\n\n$ curl -s -m 1 -o /dev/null -X PUT -d '{\"item\":\"안전\"}' \\\n    http://localhost:9080/orders/88 2>/dev/null\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -X PUT -d '{\"item\":\"안전\"}' \\\n      http://localhost:9080/orders/88\n  done\n$ curl -s http://localhost:9080/orders/88\n\n{\"item\": \"안전\", \"id\": 88}\n\n#   몇 번을 재시도해도 같다\n\n#   어느 쪽이든 결과가 같으니 고민이 없다\n\n# --- 클라이언트가 실제로 이렇게 한다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' --retry 3 --retry-all-errors \\\n    -m 2 http://localhost:9080/orders/5\n\n200\n\n$ curl --help all 2>/dev/null | grep -A1 'retry-all-errors' | head -2\n\n     --retry-all-errors  Retry all errors (use with --retry)\n\n#   기본은 안전한 것만 재시도한다\n\n#   전부 재시도하려면 명시해야 한다\n\n#   POST 에 이걸 쓰면 중복이 난다\n\n# --- 캐시 가능은 또 다른 축이다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/img1.png \\\n    | grep -i cache-control\n\nCache-Control: max-age=3600\n\n$ curl -s -D - -o /dev/null -X POST -d 'x' http://localhost:9080/orders \\\n    | grep -ci cache-control\n\n0\n\n#   POST 응답에는 캐시 헤더가 없다\n\n#   있어도 대부분 캐시가 안 한다\n\n#   9장에서 본다\n\n# --- 정리 ---\n\n$ for m in GET PUT DELETE POST; do\n    printf '%-7s' $m\n    curl -s -o /dev/null -w '%{http_code}\\n' -X $m \\\n      http://localhost:9080/orders/5\n  done\n\nGET    200\nPUT    200\nDELETE 204\nPOST   201\n\n#   같은 주소에 네 메서드다 (5.1절)\n\n#   성질은 넷 다 다르다\n\n# --- 다음 절에서 ---\n\n#   전부 POST 로 하면 무엇을 잃나",
+   "note": "**GET 열 번에 8건 그대로, PUT 다섯 번에도 8건, POST 다섯 번에 13건**이다.\n\n**응답 코드가 `200 204 204` 로 달라도 상태는 세 번 다** 같다 — 멱등이다.\n\n**`hits` 를 올리는 PUT 은 메서드가 PUT 이어도 멱등이** 아니다.\n\n**타임아웃 뒤 서버는 `{\"총\": 1}` 로 이미 처리했고 재시도하니 `2`** 가 됐다.\n\n**`curl --retry` 는 기본이 안전한 것만이고 전부 재시도하려면 명시해야** 한다."
+  }
+ ],
+ "recap": [
+  "**안전은 상태를 안 바꾸는** 것이다.",
+  "**멱등은 최종 상태가 같은** 것이다.",
+  "**캐시 가능은 저장해 재사용할 수 있는** 것이다.",
+  "**셋은 서로 독립**이다.",
+  "**안전하면 멱등이고 반대는** 아니다.",
+  "**멱등은 코드가 아니라 상태** 이야기다.",
+  "**메서드가 성질을 보장하지** 않는다.",
+  "**타임아웃은 구분이 안** 된다.",
+  "**멱등이면 재시도 고민이** 없다."
+ ],
+ "drills": [
+  {
+   "task": "GET·PUT·POST 를 다섯 번씩 한다.",
+   "done_when": "건수 변화를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "코드가 다른 멱등 서버를 만든다.",
+   "done_when": "상태가 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "멱등을 깨는 PUT 을 만든다.",
+   "done_when": "값이 누적되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "타임아웃 뒤 재시도한다.",
+   "done_when": "두 번 처리되는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "안전과 멱등의 차이는?",
+   "a": "안전은 아예 안 바꾸는 것, 멱등은 바꾸되 여러 번 해도 결과가 같은 것이다."
+  },
+  {
+   "q": "멱등은 무엇에 대한 성질인가?",
+   "a": "응답 코드가 아니라 최종 서버 상태다."
+  },
+  {
+   "q": "타임아웃이 어려운 이유는?",
+   "a": "요청이 안 간 건지 응답만 유실된 건지 구분할 수 없어서다."
+  },
+  {
+   "q": "POST 를 재시도하려면?",
+   "a": "멱등 키 같은 장치가 필요하다."
+  },
+  {
+   "q": "메서드가 성질을 보장하나?",
+   "a": "아니다. 구현이 지켜야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "안전",
+   "def": "서버의 관찰 가능한 상태를 바꾸지 않는 성질."
+  },
+  {
+   "term": "멱등",
+   "def": "같은 요청을 여러 번 보내도 최종 상태가 한 번 보낸 것과 같은 성질."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "delete",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "DELETE",
+ "summary": "지운 뒤에 무엇을 돌려주나.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "응답 코드를 고른다.",
+  "두 번째 호출을 정한다.",
+  "본문 규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.4절이 덮어쓰기**였다면 **여기는 없애는** 쪽이다. **정작 어려운 건 그다음**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "지운 뒤에",
+   "ascii": "   what to return once it is gone\n\n   204 no content   nothing to say, and this is the usual answer\n   200 ok           here is what was deleted, or a summary\n   202 accepted     it will be deleted, not yet\n\n   and for the second call, when it is already gone\n     204 again      idempotent, the end state is what was asked for\n     404            honest about this call, and it breaks naive retries\n\n   both are defensible, so pick one and write it down",
+   "note": "**둘 다 말이 되니 정해서 적어** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 번째 호출이 설계다",
+   "md": "**DELETE 는 멱등**이다.\n\n> **한 번 하든 열 번 하든 최종 상태가** 같다.\n> **\"없음\" 이라는 상태에** 도달한다.\n> **5.6절에서 정확히 본다.**\n\n**그런데 코드는 다를 수** 있다.\n\n| 선택 | 근거 |\n|---|---|\n| 두 번째도 `204` | 요청한 상태가 이미 달성됐다 |\n| 두 번째는 `404` | 이 호출에서는 지울 게 없었다 |\n\n> **멱등은 상태에 대한 말이지 응답 코드에 대한 말이** 아니다.\n> **둘 다 규격에** 맞다.\n> **재시도하는 클라이언트를 생각하면 `204` 가** 편하다.\n\n**본문은 안 보내는 게** 낫다.\n\n> **DELETE 요청 본문은 뜻이 정의돼 있지** 않다(5.2절의 GET 과 같다).\n> **필터를 담아 여러 개를 지우고 싶은 유혹이** 있는데,\n> **프록시가 버릴 수 있어 위험**하다.\n\n**컬렉션 삭제는 조심**한다.\n\n> **`DELETE /orders` 가 전부 지우는 건 위험**하다.\n> **쿠버네티스는 `deletecollection` 이라는 별도 동사를** 뒀다 — **⑫ 5.1절**.\n> **경로 오타 하나에 다 날아간다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 지우나",
+   "ascii": "   three things people mean by delete\n\n   hard      the row is gone, and so is the audit trail\n   soft      a flag is set, and every query must now remember it\n   archive   moved somewhere else, and the url should say so\n\n   http only sees the first one, the other two are your own design\n   a soft delete answering 404 afterwards is still a valid api",
+   "note": "**HTTP 는 첫째만** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "소프트 삭제는 HTTP 문제가 아니다",
+   "md": "**플래그를 세우는 건 내부 사정**이다.\n\n> **클라이언트에게는 사라진 것처럼 보여야** 한다.\n> **그다음 GET 이 `404` 면 일관**된다.\n> **`200` 에 `deleted: true` 를 주면 클라이언트가 그걸 처리해야** 한다.\n\n**되살리기가 있으면 자원을** 만든다.\n\n> **`POST /orders/5/restoration`** 처럼 한다(5.1절).\n> **`DELETE` 의 반대가 `PUT` 은** 아니다.\n\n**지연 삭제는 `202`** 다.\n\n> **큐에 넣고 나중에** 지운다.\n> **그 사이 GET 이 뭘 돌려줄지 정해야** 한다.\n> **⑫ 에서 파드가 `Terminating` 이던 게 이 모양**이다.\n\n**권한 검사가 특히** 중요하다.\n\n> **없는 자원을 지우려 할 때 `404` 와 `403` 중 무엇을** 줄까.\n> **`404` 를 주면 존재 여부가 안** 샌다.\n> **⑩ 에서 본 그 판단**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 지운다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -d '{\"item\":\"지울 것\"}' http://localhost:9080/orders/50\n\n201\n\n$ curl -s -D - -X DELETE http://localhost:9080/orders/50 | head -3\n\nHTTP/1.1 204 No Content\nServer: BaseHTTP/0.6 Python/3.12.4\nContent-Length: 0\n\n#   본문이 없다\n\n#   204 는 본문을 보내면 안 된다\n\n$ curl -s -X DELETE http://localhost:9080/orders/50 | wc -c\n\n       0\n\n# --- 두 번째 호출 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{http_code} ' -X DELETE \\\n      http://localhost:9080/orders/50\n  done; echo\n\n204 204 204 \n\n#   몇 번을 해도 204 다\n\n#   최종 상태가 같다\n\n#   재시도가 안전하다\n\n$ cat delete404.py\n\n    def do_DELETE(self):\n        i = self._id()\n        if i in DB:\n            del DB[i]\n            self._send(204)\n        else:\n            self._send(404, {\"error\": \"없음\"})\n\n$ python3 delete404.py & sleep 1\n$ curl -s -o /dev/null -w '%{http_code} ' -X PUT -d '{}' \\\n    http://localhost:9076/orders/60\n$ for i in 1 2; do\n    curl -s -o /dev/null -w '%{http_code} ' -X DELETE \\\n      http://localhost:9076/orders/60\n  done; echo\n\n201 204 404 \n\n#   두 번째가 404 다\n\n#   이것도 멱등이다\n\n#   상태는 같고 코드만 다르다\n\n#   순진한 재시도 로직이 실패로 볼 뿐이다\n\n$ kill %1 2>/dev/null\n\n# --- 지운 뒤 GET ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9080/orders/50\n\n404\n\n#   일관된다\n\n#   소프트 삭제라도 이래야 한다\n\n# --- 무엇이 있었는지 돌려주기 ---\n\n$ cat delete200.py\n\n    def do_DELETE(self):\n        i = self._id()\n        gone = DB.pop(i, None)\n        if gone:\n            self._send(200, {\"deleted\": gone})\n        else:\n            self._send(204)\n\n$ python3 delete200.py & sleep 1\n$ curl -s -X PUT -d '{\"item\":\"기록용\"}' \\\n    http://localhost:9075/orders/70 > /dev/null\n$ curl -s -D - -X DELETE http://localhost:9075/orders/70 \\\n  | grep -E 'HTTP|deleted'\n\nHTTP/1.1 200 OK\n{\"deleted\": {\"item\": \"기록용\", \"id\": 70}}\n\n#   지운 걸 돌려줬다\n\n#   되돌리기 UI 를 만들 수 있다\n\n#   204 보다 쓸모 있을 때가 있다\n\n$ kill %1 2>/dev/null\n\n# --- 본문을 담으면 ---\n\n$ curl -s -o /dev/null -v -X DELETE -d '{\"ids\":[1,2,3]}' \\\n    http://localhost:9080/orders 2>&1 | grep -E '^> (DELETE|Content-Length)'\n\n> DELETE /orders HTTP/1.1\n> Content-Length: 15\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    -d '{\"ids\":[1,2,3]}' http://localhost:9080/orders\n\n204\n\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n8 건\n\n#   보내지기는 했는데 서버가 안 읽었다\n\n#   뜻이 정의돼 있지 않다\n\n#   5.2절의 GET 본문과 같다\n\n#   프록시가 버릴 수도 있다\n\n# --- 컬렉션 삭제는 위험하다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    http://localhost:9080/orders\n\n204\n\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n8 건\n\n#   이 서버는 id 가 없으면 아무것도 안 한다\n\n#   전부 지우게 만들었다면 오타 하나에 날아간다\n\n$ kubectl api-resources -o wide --no-headers 2>/dev/null \\\n    | grep '^pods ' | grep -o 'deletecollection' | head -1\n\ndeletecollection\n\n#   쿠버네티스는 동사를 따로 뒀다\n\n#   delete 권한만으로는 전체 삭제가 안 된다\n\n#   ⑫ 10.1절의 그 목록이다\n\n# --- 지연 삭제 ---\n\n$ cat async_del.py\n\n    def do_DELETE(self):\n        DB[self._id()][\"status\"] = \"삭제 중\"\n        self._send(202, {\"status\": \"삭제 예약됨\"},\n                   {\"Location\": f\"/jobs/{self._id()}\"})\n\n$ python3 async_del.py & sleep 1\n$ curl -s -D - -X DELETE http://localhost:9074/orders/5 \\\n  | grep -E 'HTTP|Location'\n\nHTTP/1.1 202 Accepted\nLocation: /jobs/5\n\n$ curl -s http://localhost:9074/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"status\": \"삭제 중\"}\n\n#   아직 있다\n\n#   그 사이 GET 이 뭘 줄지 정해야 한다\n\n#   ⑫ 의 Terminating 이 이 모양이다\n\n$ kill %1 2>/dev/null\n\n# --- 없는 걸 지울 때 403 이냐 404 냐 ---\n\n$ cat perm.py\n\n    def do_DELETE(self):\n        if not self.headers.get(\"Authorization\"):\n            self._send(404, {\"error\": \"없음\"})\n            return\n        self._send(204)\n\n$ python3 perm.py & sleep 1\n$ curl -s -o /dev/null -w '권한 없음: %{http_code}\\n' -X DELETE \\\n    http://localhost:9073/orders/99\n$ curl -s -o /dev/null -w '권한 있음: %{http_code}\\n' -X DELETE \\\n    -H 'Authorization: Bearer t' http://localhost:9073/orders/99\n\n권한 없음: 404\n권한 있음: 204\n\n#   404 를 주면 존재 여부가 안 샌다\n\n#   403 을 주면 있다는 걸 알려 주는 셈이다\n\n#   ⑩ 에서 본 그 판단이다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   이 세 성질이 재시도를 결정한다",
+   "note": "**`204` 응답은 본문이 0바이트**다.\n\n**세 번 지워도 `204 204 204`, 다른 서버는 `204` 뒤에 `404`** 다 — 둘 다 멱등이다.\n\n**DELETE 본문은 보내지지만 서버가 안 읽어 8건이** 그대로다.\n\n**`202 Accepted` 뒤에도 자원이 `삭제 중` 으로 남아** 있다.\n\n**권한이 없을 때 `404` 를 주면 존재 여부가 안** 샌다."
+  }
+ ],
+ "recap": [
+  "**보통 `204` 로** 답한다.",
+  "**`204` 는 본문이** 없다.",
+  "**두 번째 호출을 정해** 둬야 한다.",
+  "**`204` 든 `404` 든 멱등**이다.",
+  "**멱등은 상태 이야기지 코드 이야기가** 아니다.",
+  "**지운 걸 돌려주면 되돌리기가** 된다.",
+  "**본문은 뜻이 정의돼 있지** 않다.",
+  "**컬렉션 삭제는** 위험하다.",
+  "**권한 실패에 `404` 를 주면 정보가 안** 샌다."
+ ],
+ "drills": [
+  {
+   "task": "같은 자원을 세 번 지운다.",
+   "done_when": "코드가 어떻게 나오는지 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`404` 를 주는 서버를 만든다.",
+   "done_when": "둘 다 멱등인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "DELETE 에 본문을 담는다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "지연 삭제를 만든다.",
+   "done_when": "`202` 뒤의 GET 을 정했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DELETE 의 일반적인 응답은?",
+   "a": "`204 No Content` 다."
+  },
+  {
+   "q": "두 번째 삭제에 `404` 를 줘도 멱등인가?",
+   "a": "그렇다. 멱등은 최종 상태에 대한 성질이다."
+  },
+  {
+   "q": "DELETE 본문의 문제는?",
+   "a": "의미가 정의돼 있지 않고 중간 장비가 버릴 수 있다."
+  },
+  {
+   "q": "컬렉션 삭제가 위험한 이유는?",
+   "a": "경로 실수 하나로 전부 지워질 수 있다."
+  },
+  {
+   "q": "권한 없는 삭제에 `404` 를 주는 이유는?",
+   "a": "자원의 존재 여부를 노출하지 않기 위해서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "소프트 삭제",
+   "def": "실제로 지우지 않고 삭제 표시만 하는 내부 구현."
+  },
+  {
+   "term": "지연 삭제",
+   "def": "요청을 접수하고 나중에 실제로 지우는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "IANA — HTTP Method Registry",
+   "url": "https://www.iana.org/assignments/http-methods/http-methods.xhtml",
+   "publisher": "IANA"
+  }
+ ]
+}
