@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "dto-three-ways",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "DTO 세 가지 방법",
+ "summary": "프로퍼티·필드·생성자.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "셋을 다 쓴다.",
+  "실패 방식을 가른다.",
+  "SQL 이 같은 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 문자열을** 썼다. **`Projections` 로 문자열 없이 같은 일을** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "채우는 세 방법",
+   "ascii": "   three ways to fill the object, and what each one requires\n\n   bean         a no-args constructor and setters, matched by name\n   fields       no constructor call at all, written straight to fields\n   constructor  a constructor whose parameter types line up, by order\n\n   the first two match by name; the third matches by position",
+   "note": "**앞 둘은 이름으로, 셋째는 순서로** 맞춘다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 요구하느냐가 다르다",
+   "md": "**`bean` 은 세터를** 부른다.\n\n> **기본 생성자로 만들고 세터로** 채운다.\n> **세터가 없으면 못** 채운다.\n> **불변 객체에 못** 쓴다.\n\n**`fields` 는 세터도 안** 쓴다.\n\n> **리플렉션으로 필드에 직접** 넣는다.\n> **`private` 이어도** 된다.\n> **기본 생성자는 여전히** 필요하다.\n\n**`constructor` 는 생성자를** 부른다.\n\n> **순서와 타입이 맞아야** 한다.\n> **5.3절의 `new` 와 같은 규칙**이다.\n> **불변 객체에 쓸 수** 있다.\n\n**SQL 은 셋 다** 같다.\n\n> **`select` 절이 똑같**다.\n> **객체를 만드는 방식만** 다르다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "틀렸을 때",
+   "ascii": "   how each one fails when a name or a type is wrong\n\n   bean         the field stays at its default, silently\n   fields       the field stays at its default, silently\n   constructor  no matching constructor, and it throws\n\n   only the last row tells you something is wrong",
+   "note": "**셋째만 뭔가 잘못됐다고 말해** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름이 다르면 조용히 비어 있다",
+   "md": "**엔티티와 DTO 의 이름이** 다를 수 있다.\n\n> **`username` 과 `name`** 이다.\n> **`bean`·`fields` 는 그냥 안** 채운다.\n> **`null` 이나 `0` 이** 남는다.\n\n**`as` 로 별칭을** 준다.\n\n> **`member.username.as(\"name\")`** 이다.\n> **JPQL 에 `as` 가** 나간다.\n> **5.6절에서 더** 본다.\n\n**`record` 는 `bean` 으로 못** 채운다.\n\n> **세터가** 없다.\n> **`fields` 도 `final` 이라** 위험하다.\n> **`constructor` 를** 쓴다.\n\n**셋 다 컴파일이 안 지켜** 준다.\n\n> **`Projections` 는 런타임 매칭**이다.\n> **1.2절의 목표에 못** 미친다.\n> **5.5절이 그** 답이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- DTO\n\n@Getter @Setter @NoArgsConstructor\npublic class MemberDto {\n    private String username;\n    private int age;\n\n    public MemberDto(String username, int age) {\n        this.username = username;\n        this.age = age;\n    }\n}\n\n\n-- ① bean\n\n@Test\nvoid bean() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(Projections.bean(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .limit(3)\n            .fetch();\n    r.forEach(d -> System.out.println(d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n    fetch first ? rows only\nm1 10\nm2 20\nm3 30\n\n\n-- ② fields\n\n@Test\nvoid fields() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(Projections.fields(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .limit(3)\n            .fetch();\n    r.forEach(d -> System.out.println(d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n    fetch first ? rows only\nm1 10\nm2 20\nm3 30\n\n\n-- ③ constructor\n\n@Test\nvoid constructor() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(Projections.constructor(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .limit(3)\n            .fetch();\n    r.forEach(d -> System.out.println(d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n    fetch first ? rows only\nm1 10\nm2 20\nm3 30\n\n\n-- 셋의 SQL 을 비교한다\n\n$ diff bean.sql fields.sql && diff fields.sql ctor.sql && echo SAME\nSAME\n\n$ diff bean.jpql ctor.jpql && echo SAME\nSAME\n\n--   JPQL 도 SQL 도 같다\n--   객체를 만드는 방식만 다르다\n\n\n-- 세터를 지우면\n\n// @Setter 제거\n\n@Test\nvoid 세터_없이() {\n    em.clear();\n    MemberDto d = queryFactory\n            .select(Projections.bean(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(\"이름: \" + d.getUsername());\n    System.out.println(\"나이: \" + d.getAge());\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\n이름: null\n나이: 0\n\n--   예외가 없다\n--   기본값이 그대로 남았다\n\n\n-- fields 는 세터 없이도 된다\n\n@Test\nvoid fields_세터_없이() {\n    em.clear();\n    MemberDto d = queryFactory\n            .select(Projections.fields(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(\"이름: \" + d.getUsername() + \", 나이: \" + d.getAge());\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\n이름: m1, 나이: 10\n\n--   필드에 직접 넣는다\n\n\n-- 기본 생성자를 지우면\n\n// @NoArgsConstructor 제거\n\n@Test\nvoid 기본_생성자_없이() {\n    try {\n        queryFactory\n                .select(Projections.fields(MemberDto.class,\n                        member.username, member.age))\n                .from(member).fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n예외: ExpressionException\n\n--   SQL 은 나갔다\n--   객체를 못 만들었다\n\n\n-- 이름이 다르면\n\n@Getter @Setter @NoArgsConstructor\npublic class UserDto {\n    private String name;         // username 이 아니다\n    private int age;\n\n    public UserDto(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n}\n\n@Test\nvoid 이름_불일치() {\n    em.clear();\n    System.out.println(\"--- fields ---\");\n    UserDto a = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(a.getName() + \" \" + a.getAge());\n\n    em.clear();\n    System.out.println(\"--- constructor ---\");\n    UserDto b = queryFactory\n            .select(Projections.constructor(UserDto.class,\n                    member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(b.getName() + \" \" + b.getAge());\n}\n\n--- fields ---\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nnull 10\n--- constructor ---\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nm1 10\n\n--   fields 는 이름으로 찾다 실패했다\n--   constructor 는 순서라 맞았다\n\n\n-- as 로 별칭을 준다\n\n@Test\nvoid 별칭() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"), member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\n/* select\n    member1.username as name,\n    member1.age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n    where\n        m1_0.username=?\nm1 10\n\n--   JPQL 에 as 가 있다\n--   SQL 에는 별칭이 없다\n--   Querydsl 이 매칭에 쓴다\n\n\n-- 생성자는 개수가 다르면 터진다\n\n@Test\nvoid 인자_개수() {\n    try {\n        queryFactory\n                .select(Projections.constructor(MemberDto.class,\n                        member.username, member.age, member.id))\n                .from(member).fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: ExpressionException\n말:   No constructor found for class study.querydsl.dto.MemberDto\n      with parameters: [class java.lang.String, int, class java.lang.Long]\n\n--   SQL 이 안 나갔다\n--   셋 중 유일하게 알려 준다\n\n\n-- 같은 타입 둘은 여전히 못 지킨다\n\npublic record NameDto(String username, String teamName) {}\n\n@Test\nvoid 순서_뒤바뀜() {\n    em.clear();\n    NameDto d = queryFactory\n            .select(Projections.constructor(NameDto.class,\n                    team.name, member.username))\n            .from(member).join(member.team, team)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d);\n}\n\nHibernate: select t1_0.name, m1_0.username from member m1_0\n           join team t1_0 on t1_0.team_id=m1_0.team_id\n           where m1_0.username=?\nNameDto[username=teamA, teamName=m1]\n\n--   5.3절과 같다\n--   예외가 없다\n\n\n-- record 는 constructor 로만 된다\n\n@Test\nvoid record_로() {\n    em.clear();\n    System.out.println(\"--- constructor ---\");\n    MemberRecord a = queryFactory\n            .select(Projections.constructor(MemberRecord.class,\n                    member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(a);\n\n    em.clear();\n    System.out.println(\"--- bean ---\");\n    try {\n        queryFactory\n                .select(Projections.bean(MemberRecord.class,\n                        member.username, member.age))\n                .from(member).fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n--- constructor ---\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nMemberRecord[username=m1, age=10]\n--- bean ---\nHibernate: select m1_0.username, m1_0.age from member m1_0\n예외: ExpressionException\n\n--   record 에는 세터도 기본 생성자도 없다\n\n\n-- 서브쿼리도 넣을 수 있다\n\n@Test\nvoid 서브쿼리_필드() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    UserDto d = queryFactory\n            .select(Projections.fields(UserDto.class,\n                    member.username.as(\"name\"),\n                    ExpressionUtils.as(\n                            JPAExpressions.select(sub.age.max()).from(sub),\n                            \"age\")))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\n/* select\n    member1.username as name,\n    (\n        select\n            max(memberSub.age)\n        from\n            Member memberSub\n    ) as age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.username,\n        (select max(m2_0.age) from member m2_0)\n    from\n        member m1_0\n    where\n        m1_0.username=?\nm1 40\n\n--   4.14절의 select 절 서브쿼리다\n--   ExpressionUtils.as 로 이름을 붙였다\n\n\n-- 정리\n\n$ printf '%-16s %-24s %s\\n' \\\n  'bean'        '기본 생성자 + 세터' '이름 매칭, 조용히 빔' \\\n  'fields'      '기본 생성자'        '이름 매칭, 조용히 빔' \\\n  'constructor' '맞는 생성자'        '순서 매칭, 없으면 예외' \\\n  'as()'        '이름을 맞춘다'      'JPQL 에만 나감' \\\n  'record'      'constructor 만'     '세터가 없다'\n\nbean             기본 생성자 + 세터        이름 매칭, 조용히 빔\nfields           기본 생성자               이름 매칭, 조용히 빔\nconstructor      맞는 생성자               순서 매칭, 없으면 예외\nas()             이름을 맞춘다             JPQL 에만 나감\nrecord           constructor 만            세터가 없다\n\n--   셋 다 컴파일이 안 지켜 준다\n--   5.5절에서 그걸 고친다",
+   "note": "**셋의 JPQL 과 SQL 이 `diff` 결과 `SAME` — 객체를 만드는 방식만** 다르다.\n\n**세터를 지우면 `bean` 은 예외 없이 `이름: null, 나이: 0`** 이다.\n\n**이름이 다르면 `fields` 는 `null 10`, `constructor` 는 순서라 `m1 10`** 이다.\n\n**`as(\"name\")` 은 JPQL 에만 나가고 SQL 에는 별칭이** 없다.\n\n**생성자 인자 개수가 틀리면 `No constructor found ... with parameters` 로 SQL 전에** 터진다."
+  }
+ ],
+ "recap": [
+  "**세 방법이** 있다.",
+  "**SQL 은 셋 다** 같다.",
+  "**`bean` 은 세터가** 필요하다.",
+  "**`fields` 는 필드에 직접** 넣는다.",
+  "**둘 다 이름으로** 맞춘다.",
+  "**틀리면 조용히** 빈다.",
+  "**`constructor` 는 순서**다.",
+  "**없으면** 터진다.",
+  "**`record` 는 생성자만** 된다."
+ ],
+ "drills": [
+  {
+   "task": "세 방법을 다 써 본다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세터를 지운다.",
+   "done_when": "조용히 비는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이름이 다른 DTO 로 받는다.",
+   "done_when": "`as` 로 고쳤다.",
+   "minutes": 20
+  },
+  {
+   "task": "생성자 인자를 하나 더 준다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 방법의 SQL 은?",
+   "a": "완전히 같다. 객체를 만드는 방식만 다르다."
+  },
+  {
+   "q": "`bean` 이 요구하는 것은?",
+   "a": "기본 생성자와 세터다."
+  },
+  {
+   "q": "이름이 안 맞으면 `fields` 는?",
+   "a": "예외 없이 기본값이 남는다."
+  },
+  {
+   "q": "`as()` 는 어디에 나가나?",
+   "a": "JPQL 에만 나가고 SQL 에는 별칭이 없다."
+  },
+  {
+   "q": "`record` 는 어떤 방법을 쓰나?",
+   "a": "세터가 없어 `constructor` 만 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Projections",
+   "def": "조회 결과를 DTO 로 만들어 주는 Querydsl 팩토리."
+  },
+  {
+   "term": "as",
+   "def": "표현식에 이름을 붙여 이름 기반 매칭을 맞추는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

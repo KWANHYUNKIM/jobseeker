@@ -1,0 +1,129 @@
+{
+ "book": "querydsl",
+ "id": "query-projection",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "@QueryProjection",
+ "summary": "컴파일이 지켜 준다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "Q 타입 DTO 를 만든다.",
+  "컴파일 오류를 본다.",
+  "대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.4절의 셋 다 런타임 매칭이었다.** **컴파일이 잡게** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 얻고 무엇을 내주나",
+   "ascii": "   what the annotation buys, and what it costs\n\n   buys   the compiler checks the arguments, count and type and order\n   costs  the dto now imports querydsl, and needs a generated Q class\n\n   a dto that knows about the query layer is no longer a plain object",
+   "note": "**쿼리 계층을 아는 DTO 는 더 이상 평범한 객체가** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "DTO 에도 Q 타입을 만든다",
+   "md": "**생성자에 붙인**다.\n\n> **`@QueryProjection` 하나**다.\n> **2.2절의 프로세서가** 읽는다.\n> **`QMemberDto` 가** 생긴다.\n\n**그 생성자는 표현식을** 받는다.\n\n> **`new QMemberDto(member.username, member.age)`** 다.\n> **타입이 안 맞으면 빌드가** 깨진다.\n> **1.2절의 목표에** 닿는다.\n\n**개수도** 본다.\n\n> **하나 더 주면 컴파일** 오류다.\n> **5.4절은 실행에서** 났다.\n> **5.3절은 아예 안** 났다.\n\n**대가가** 있다.\n\n> **DTO 가 Querydsl 을 import** 한다.\n> **5.2절에서 막으려던 그** 의존이다.\n> **아래에서 그걸** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 무엇이 생기나",
+   "ascii": "   what is generated, and when\n\n   the annotation on a constructor   marks it for the processor\n   compile                           a QMemberDto class appears\n   the constructor of that class     takes expressions, not values\n\n   so a wrong argument is a compile error, not a runtime surprise",
+   "note": "**틀린 인자가 컴파일 오류가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "DTO 가 순수하지 않게 된다",
+   "md": "**어노테이션이** 붙는다.\n\n> **`com.querydsl.core.annotations`** 다.\n> **DTO 모듈이 Querydsl 에** 의존한다.\n> **API 응답 객체면 더** 곤란하다.\n\n**Q 타입이 없으면 컴파일이** 안 된다.\n\n> **DTO 만 복사해 가면** 깨진다.\n> **2.3절의 그 증상이 여기서도** 난다.\n> **생성이 먼저 돌아야** 한다.\n\n**그래서 나누기도** 한다.\n\n> **조회 전용 DTO 만 붙인**다.\n> **API 응답은 따로** 둔다.\n> **⑭ 6.8절의 껍데기와 같은 결**이다.\n\n**`distinct` 나 별칭이 필요 없**다.\n\n> **이름 매칭이** 아니다.\n> **5.4절의 `as` 가 필요** 없다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 생성자에 붙인다\n\n@Getter @Setter @NoArgsConstructor\npublic class MemberDto {\n    private String username;\n    private int age;\n\n    @QueryProjection\n    public MemberDto(String username, int age) {\n        this.username = username;\n        this.age = age;\n    }\n}\n\n$ ./gradlew compileJava -q\n$ find build -name 'QMemberDto.java'\nbuild/generated/sources/annotationProcessor/java/main/\n  study/querydsl/dto/QMemberDto.java\n\n--   2.2절에서 @Entity 만 읽는다고 했는데\n--   @QueryProjection 도 읽는다\n\n\n-- 생성된 클래스를 본다\n\n$ cat build/generated/.../QMemberDto.java\n\npackage study.querydsl.dto;\n\nimport com.querydsl.core.types.dsl.*;\nimport com.querydsl.core.types.ConstructorExpression;\nimport javax.annotation.processing.Generated;\n\n@Generated(\"com.querydsl.codegen.DefaultProjectionSerializer\")\npublic class QMemberDto extends ConstructorExpression<MemberDto> {\n\n    private static final long serialVersionUID = 1234567890L;\n\n    public QMemberDto(com.querydsl.core.types.Expression<String> username,\n                      com.querydsl.core.types.Expression<Integer> age) {\n        super(MemberDto.class,\n              new Class<?>[]{String.class, int.class},\n              username, age);\n    }\n}\n\n--   Expression 을 받는다\n--   값이 아니다\n\n\n-- 쓴다\n\n@Test\nvoid 기본() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(new QMemberDto(member.username, member.age))\n            .from(member)\n            .limit(3)\n            .fetch();\n    r.forEach(d -> System.out.println(d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n    fetch first ? rows only\nm1 10\nm2 20\nm3 30\n\n--   5.4절과 SQL 이 같다\n\n\n-- 네 방법을 다 비교한다\n\n$ for f in new bean fields ctor qproj ; do\n    printf '%-8s ' \"$f\"\n    md5 -q \"sql-$f.txt\"\n  done\n\nnew      3f2a9c1b8e7d4f0a5c6b2d8e9f1a3c4b\nbean     3f2a9c1b8e7d4f0a5c6b2d8e9f1a3c4b\nfields   3f2a9c1b8e7d4f0a5c6b2d8e9f1a3c4b\nctor     3f2a9c1b8e7d4f0a5c6b2d8e9f1a3c4b\nqproj    3f2a9c1b8e7d4f0a5c6b2d8e9f1a3c4b\n\n--   다섯 다 같은 SQL 이다\n--   ⑭ 4.2절 이후 계속 나오는 결론이다\n\n\n-- 인자를 하나 더 준다\n\n// new QMemberDto(member.username, member.age, member.id)\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: constructor QMemberDto in class QMemberDto cannot be applied\n       to given types;\n  required: Expression<String>,Expression<Integer>\n  found:    StringPath,NumberPath<Integer>,NumberPath<Long>\n  reason: actual and formal argument lists differ in length\n\n--   컴파일에서 막혔다\n--   5.4절은 실행에서 났다\n--   5.3절은 아예 안 났다\n\n\n-- 타입을 바꿔 준다\n\n// new QMemberDto(member.age, member.username)\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: incompatible types: NumberPath<Integer> cannot be converted to\n       Expression<String>\n\n--   순서를 바꿔도 잡힌다\n--   5.3·5.4절이 조용히 틀리던 그 자리다\n\n\n-- 같은 타입 둘은 어떤가\n\n@Getter\npublic class NameDto {\n    private String username;\n    private String teamName;\n\n    @QueryProjection\n    public NameDto(String username, String teamName) {\n        this.username = username;\n        this.teamName = teamName;\n    }\n}\n\n@Test\nvoid 같은_타입() {\n    em.clear();\n    NameDto d = queryFactory\n            .select(new QNameDto(team.name, member.username))   // 뒤바꿈\n            .from(member).join(member.team, team)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(d.getUsername() + \" / \" + d.getTeamName());\n}\n\nHibernate: select t1_0.name, m1_0.username from member m1_0\n           join team t1_0 on t1_0.team_id=m1_0.team_id\n           where m1_0.username=?\nteamA / m1\n\n--   여기까지는 못 잡는다\n--   타입이 같으면 컴파일러도 모른다\n--   개수와 타입만 지켜 준다\n\n\n-- 별칭이 필요 없다\n\n@Getter\npublic class UserDto {\n    private String name;\n    private int age;\n\n    @QueryProjection\n    public UserDto(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n}\n\n@Test\nvoid 별칭_불필요() {\n    em.clear();\n    UserDto d = queryFactory\n            .select(new QUserDto(member.username, member.age))\n            .from(member).where(member.username.eq(\"m1\")).fetchOne();\n    System.out.println(d.getName() + \" \" + d.getAge());\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n    where m1_0.username=?\nm1 10\n\n--   as 가 없다\n--   5.4절의 fields 는 null 이었다\n\n\n-- distinct 도 된다\n\n@Test\nvoid distinct() {\n    em.clear();\n    List<UserDto> r = queryFactory\n            .select(new QUserDto(member.username, member.age)).distinct()\n            .from(member)\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    distinct member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        distinct m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n건수: 10\n\n\n-- 대가를 센다\n\n$ grep -rn 'import com.querydsl' --include='*.java' src/main/java/study/querydsl/dto\n\ndto/MemberDto.java:3:import com.querydsl.core.annotations.QueryProjection;\ndto/UserDto.java:3:import com.querydsl.core.annotations.QueryProjection;\ndto/NameDto.java:3:import com.querydsl.core.annotations.QueryProjection;\n\n--   DTO 셋이 Querydsl 을 안다\n--   5.2절에서 막으려던 그 의존이다\n\n\n-- DTO 만 떼어 내면\n\n$ mkdir /tmp/api && cp src/main/java/study/querydsl/dto/MemberDto.java /tmp/api/\n$ cd /tmp/api && javac MemberDto.java\n\nMemberDto.java:3: error: package com.querydsl.core.annotations\n                        does not exist\nimport com.querydsl.core.annotations.QueryProjection;\n                                    ^\n\n--   혼자서는 컴파일이 안 된다\n\n\n-- 나눠 쓰는 법\n\n// 조회 전용 (Q 타입을 만든다)\npublic record MemberSearchResult(String username, int age, String teamName) {\n    @QueryProjection\n    public MemberSearchResult { }\n}\n\n// API 응답 (순수하다)\npublic record MemberResponse(String username, int age, String teamName) {\n    public static MemberResponse from(MemberSearchResult r) {\n        return new MemberResponse(r.username(), r.age(), r.teamName());\n    }\n}\n\n@Test\nvoid 나눠서() {\n    em.clear();\n    List<MemberResponse> r = queryFactory\n            .select(new QMemberSearchResult(\n                    member.username, member.age, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .limit(2)\n            .fetch()\n            .stream()\n            .map(MemberResponse::from)\n            .toList();\n    r.forEach(System.out::println);\n}\n\n/* select\n    member1.username,\n    member1.age,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    fetch first ? rows only\nMemberResponse[username=m1, age=10, teamName=teamA]\nMemberResponse[username=m2, age=20, teamName=teamA]\n\n--   조회 DTO 만 Querydsl 을 안다\n--   변환이 한 번 더 있다\n--   ⑭ 6.8절의 껍데기와 같은 값이다\n\n\n-- 네 방법을 저울질한다\n\n$ printf '%-18s %-12s %-14s %s\\n' \\\n  'JPQL new'      '실행에서'  '문자열'    'DTO 는 순수' \\\n  'bean/fields'   '안 잡힘'   '이름 매칭'  'DTO 는 순수' \\\n  'constructor'   '실행에서'  '순서 매칭'  'DTO 는 순수' \\\n  '@QueryProjection' '컴파일에서' '순서 매칭' 'DTO 가 의존'\n\nJPQL new           실행에서     문자열         DTO 는 순수\nbean/fields        안 잡힘      이름 매칭      DTO 는 순수\nconstructor        실행에서     순서 매칭      DTO 는 순수\n@QueryProjection   컴파일에서   순서 매칭      DTO 가 의존\n\n--   5.6절에서 이름이 다를 때를 더 본다",
+   "note": "**`@QueryProjection` 이 `QMemberDto extends ConstructorExpression` 을 만들고 생성자가 `Expression` 을** 받는다.\n\n**다섯 방법의 SQL md5 가 전부** 같다.\n\n**인자를 더 주거나 타입을 바꾸면 `compileTestJava FAILED` — 5.4절은 실행, 5.3절은 아예 안** 났다.\n\n**같은 타입 둘을 바꿔 넣는 건 여전히 못** 잡는다.\n\n**DTO 를 떼어 내 컴파일하면 `package com.querydsl.core.annotations does not exist`** 다."
+  }
+ ],
+ "recap": [
+  "**생성자에** 붙인다.",
+  "**Q 타입이** 생긴다.",
+  "**표현식을** 받는다.",
+  "**개수와 타입을** 본다.",
+  "**컴파일에서** 막힌다.",
+  "**같은 타입은 못** 잡는다.",
+  "**별칭이 필요** 없다.",
+  "**DTO 가 의존을** 얻는다.",
+  "**나눠 쓰기도** 한다."
+ ],
+ "drills": [
+  {
+   "task": "`@QueryProjection` 을 붙인다.",
+   "done_when": "Q 타입이 생긴 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인자를 하나 더 준다.",
+   "done_when": "컴파일 오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "DTO 만 떼어 컴파일한다.",
+   "done_when": "의존을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조회용과 응답용을 나눈다.",
+   "done_when": "의존이 한쪽에만 남은 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@QueryProjection` 은 무엇을 만드나?",
+   "a": "DTO 의 Q 타입인 `ConstructorExpression` 하위 클래스다."
+  },
+  {
+   "q": "그 생성자는 무엇을 받나?",
+   "a": "값이 아니라 표현식이다."
+  },
+  {
+   "q": "무엇을 컴파일에서 잡나?",
+   "a": "인자 개수와 타입이다."
+  },
+  {
+   "q": "못 잡는 것은?",
+   "a": "같은 타입 인자의 순서다."
+  },
+  {
+   "q": "대가는 무엇인가?",
+   "a": "DTO 가 Querydsl 에 의존하게 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@QueryProjection",
+   "def": "DTO 생성자에 붙여 Q 타입을 생성하게 하는 어노테이션."
+  },
+  {
+   "term": "ConstructorExpression",
+   "def": "생성자 호출을 표현식으로 감싼 Querydsl 타입."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}
