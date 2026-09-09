@@ -1,0 +1,120 @@
+{
+ "book": "data-jpa",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 안 쓴 구현이 낸 SQL 로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이 책의 규칙을 안다.",
+  "절의 구성을 안다.",
+  "앞 책들과 어디서 이어지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**① 「자바 ORM 표준 JPA 프로그래밍」 은 실제로 나가는 SQL 로 매 절을** 끝냈다. **이 책도 SQL 로 끝나는데 조건이 하나 더** 붙는다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절의 끝",
+   "ascii": "   every section ends the same way\n\n   what you wrote     an interface, and nothing else\n   what ran           a proxy nobody in this repository authored\n   what you read      the sql that came out of it\n\n   the third one is the point, because the first one keeps shrinking\n   and something still has to produce a statement",
+   "note": "**첫 줄이 계속 줄어드는데 문장은 계속** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 쓴 코드가 낸 SQL 을 읽는다",
+   "md": "**구현 클래스를 안** 만든다.\n\n> **인터페이스만 선언**한다.\n> **`@Repository` 도 안** 붙인다.\n> **그런데 `select` 가** 나온다.\n\n**그게 편한 만큼 안 보인다.**\n\n> **메서드 이름 하나가 조인 셋을 만들 수도** 있다.\n> **`Page` 하나가 쿼리 둘을** 낸다(5.10절).\n> **안 보이면 못 고친다** — **그래서 매번 SQL 을** 본다.\n\n**앞 책들과 이어**진다.\n\n| 책 | 여기서 |\n|---|---|\n| ① JPA 기본편 | 손으로 쓰던 것을 지운다 |\n| ⑤ 스프링 DB 1편 | 트랜잭션이 어디 걸려 있나(7.2절) |\n| ⑦⑧ JPA 활용 | 이 리포지토리로 그 화면을 만든다 |\n\n> **①을 안 봤어도 따라올 수** 있게 썼다.\n> **다만 영속성 컨텍스트가 무엇인지는 알고 있다고** 친다."
+  },
+  {
+   "type": "figure",
+   "caption": "절의 구성",
+   "ascii": "   the shape of most sections\n\n   1  write it by hand first, with an EntityManager\n   2  delete that code, and declare it instead\n   3  run both, and compare the statements\n\n   when the two differ, the difference is the lesson\n   when they are identical, the lesson is what it cost to get there",
+   "note": "**같으면 그 값을 치른 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "손으로 먼저 쓰는 이유",
+   "md": "**비교할 대상이 있어야** 한다.\n\n> **바로 인터페이스부터 보면 마법처럼** 보인다.\n> **손으로 쓴 스무 줄이 한 줄이 되는 걸 봐야 무엇이 사라졌는지** 안다.\n> **4.1절과 4.2절이 그 짝**이다.\n\n**환경**\n\n> **Java 21, 스프링 부트 3.3, 스프링 데이터 JPA 3.3, 하이버네이트 6.5** 다.\n> **H2 를 메모리로** 쓴다.\n> **버전이 다르면 SQL 형식이 조금 다를 수** 있다.\n\n**읽는 순서**\n\n> **1~3장은 준비**다 — 이미 아는 것이면 4장부터 봐도 된다.\n> **4·5장이 이 책의 절반**이다.\n> **7장이 왜 그렇게 되는지 설명**한다.\n\n**드릴은 실제로** 해 본다.\n\n> **SQL 을 눈으로 보는 게 이 책의 전부**다.\n> **읽기만 하면 남는 게** 적다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 이 책에서 쓸 코드의 전부다\n\n// MemberRepository.java\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\n// 구현 클래스는 없다\n// @Repository 도 없다\n\n\n-- 그런데 이게 동작한다\n\n@Test\nvoid 첫_확인() {\n    Member m = memberRepository.save(new Member(\"김\"));\n    Member found = memberRepository.findById(m.getId()).orElseThrow();\n    assertThat(found.getUsername()).isEqualTo(\"김\");\n}\n\n\n-- 나간 SQL\n\nHibernate:\n    insert\n    into\n        member (username, team_id, id)\n    values\n        (?, ?, default)\n\n--   findById 는 SQL 이 없다\n--   방금 저장해서 1차 캐시에 있다\n--   ① 에서 본 그것이다\n\n\n-- 다른 트랜잭션에서 조회하면\n\n@Test\nvoid 다른_트랜잭션() {\n    Long id = tx(() -> memberRepository.save(new Member(\"김\")).getId());\n    tx(() -> memberRepository.findById(id));\n}\n\nHibernate:\n    insert\n    into\n        member (username, team_id, id)\n    values\n        (?, ?, default)\nHibernate:\n    select\n        m1_0.id,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.id=?\n\n--   내가 쓴 코드는 인터페이스 한 줄이다\n--   select 문은 아무도 안 썼다\n\n\n-- 무엇이 생겼는지 세어 본다\n\n@Test\nvoid 메서드_개수() {\n    long n = Arrays.stream(MemberRepository.class.getMethods())\n                   .map(Method::getName).distinct().count();\n    System.out.println(\"쓸 수 있는 메서드 \" + n + \"개\");\n}\n\n쓸 수 있는 메서드 30개\n\n--   내가 선언한 건 0개다\n--   1.4절에서 하나씩 본다\n\n\n-- 누가 실행하고 있나\n\n@Test\nvoid 구현체() {\n    System.out.println(memberRepository.getClass());\n}\n\nclass jdk.proxy3.$Proxy127\n\n--   내가 만든 클래스가 아니다\n--   4.3절에서 이걸 뜯는다\n\n\n-- 이 책이 계속 물을 것\n\n--   내가 안 쓴 SQL 은 누가 만들었나\n--   그 편함은 어디서 값을 청구하나\n--   다음 절부터 하나씩 본다",
+   "note": "**인터페이스 한 줄만 쓰고 `insert` 와 `select` 를** 받았다.\n\n**`findById` 가 방금 저장한 것이면 SQL 이 안** 나간다 — 1차 캐시다.\n\n**선언한 메서드가 0개인데 30개를 쓸 수** 있다.\n\n**`getClass()` 가 `jdk.proxy3.$Proxy127`** 이다.\n\n**이 책은 이 셋을 계속** 묻는다."
+  }
+ ],
+ "recap": [
+  "**매 절은 안 쓴 구현이 낸 SQL 로** 끝난다.",
+  "**손으로 먼저 쓰고 지우는 순서**다.",
+  "**차이가 곧** 배울 것이다.",
+  "**같으면 그 값을 치른** 것이다.",
+  "**편한 만큼 안 보인다.**",
+  "**안 보이면 못** 고친다.",
+  "**①·⑤·⑦⑧ 과** 이어진다.",
+  "**4·5장이** 절반이다.",
+  "**드릴은 실제로 해** 본다."
+ ],
+ "drills": [
+  {
+   "task": "빈 인터페이스 하나로 저장과 조회를 한다.",
+   "done_when": "SQL 두 줄을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 트랜잭션에서 조회한다.",
+   "done_when": "select 가 안 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getClass()` 를 찍는다.",
+   "done_when": "프록시 이름을 봤다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책의 규칙은?",
+   "a": "매 절이 구현을 안 쓰고 받아 낸 SQL 로 끝난다."
+  },
+  {
+   "q": "손으로 먼저 쓰는 이유는?",
+   "a": "무엇이 사라졌는지 비교할 대상이 필요해서다."
+  },
+  {
+   "q": "같은 트랜잭션에서 `findById` 가 SQL 을 안 내는 이유는?",
+   "a": "1차 캐시에 이미 있어서다."
+  },
+  {
+   "q": "리포지토리의 실제 클래스는?",
+   "a": "런타임에 만들어진 JDK 동적 프록시다."
+  },
+  {
+   "q": "이 책이 계속 묻는 것은?",
+   "a": "안 쓴 SQL 을 누가 만들었고 그 편함이 무엇을 청구하는가다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프록시 리포지토리",
+   "def": "인터페이스만 보고 런타임에 만들어지는 구현 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "실전! 스프링 데이터 JPA (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-데이터-JPA-실전",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

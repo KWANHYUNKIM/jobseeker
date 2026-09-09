@@ -1,0 +1,520 @@
+{
+  "book": "data-jpa",
+  "title": "실전! 스프링 데이터 JPA",
+  "subtitle": "구현을 안 썼는데 SQL 이 나온다",
+  "rule": "매 절은 구현을 한 줄도 안 쓰고 받아 낸 SQL 로 끝난다.",
+  "env": "Java 21, Spring Boot 3.3, Spring Data JPA 3.3, Hibernate 6.5, H2 2.2, Gradle 8.8",
+  "source": {
+    "title": "실전! 스프링 데이터 JPA (차례 출처)",
+    "url": "https://www.inflearn.com/course/스프링-데이터-JPA-실전",
+    "publisher": "인프런 · 김영한",
+    "note": "여덟 섹션의 뼈대를 빌렸고 각 섹션을 실습 단위로 늘렸다. 본문·예제·나간 SQL 은 직접 쓰고 직접 확인한 것이다."
+  },
+  "updated_at": "2026-09-10",
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "intro": "인터페이스만 적고 SQL 을 받는다는 게 무슨 말인지부터 본다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 안 쓴 구현이 낸 SQL 로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-data-jpa",
+          "title": "왜 데이터 JPA 인가",
+          "summary": "①에서 손으로 쓰던 것이 사라진다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "tools",
+          "title": "무엇으로 확인할 것인가",
+          "summary": "SQL 로그 · 쿼리 카운터 · 프록시 확인.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.4",
+          "id": "first-interface",
+          "title": "첫 인터페이스",
+          "summary": "메서드 하나 없이 열한 개가 생긴다.",
+          "minutes": 12,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "프로젝트 환경설정",
+      "intro": "SQL 이 보이게 만드는 것까지가 설정이다.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "project",
+          "title": "프로젝트 생성",
+          "summary": "의존성 넷과 시작 코드.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "libraries",
+          "title": "라이브러리와 의존 관계",
+          "summary": "무엇이 딸려 오는가.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "database",
+          "title": "데이터베이스와 설정",
+          "summary": "H2 와 ddl-auto 가 만든 DDL.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "show-sql",
+          "title": "SQL 을 보이게 만들기",
+          "summary": "show-sql 과 로거는 다른 것이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "verify",
+          "title": "동작 확인",
+          "summary": "저장 하나로 전 구간을 확인한다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "예제 도메인 모델",
+      "intro": "이 책 내내 쓸 두 엔티티를 만든다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "domain-design",
+          "title": "도메인 설계",
+          "summary": "회원과 팀, 그리고 그 사이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "mapping",
+          "title": "연관관계 매핑",
+          "summary": "외래 키가 어디에 생기나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "lazy",
+          "title": "지연 로딩 기본",
+          "summary": "@ManyToOne 의 기본값이 함정이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "test-setup",
+          "title": "테스트 준비",
+          "summary": "롤백과 영속성 컨텍스트.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "first-save",
+          "title": "첫 저장과 조회",
+          "summary": "insert 두 번과 select 한 번.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "공통 인터페이스 기능",
+      "intro": "구현체가 없는데 동작하는 이유를 본다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "pure-jpa-repo",
+          "title": "순수 JPA 리포지토리",
+          "summary": "먼저 손으로 다 쓴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "common-interface",
+          "title": "공통 인터페이스로 바꾸기",
+          "summary": "구현 클래스를 지운다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "proxy",
+          "title": "프록시가 만들어지는 순간",
+          "summary": "getClass() 가 무엇을 돌려주나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "basic-sql",
+          "title": "기본 메서드가 내는 SQL",
+          "summary": "findById 와 findAll 의 차이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "hierarchy",
+          "title": "계층 구조",
+          "summary": "Repository 부터 JpaRepository 까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "save",
+          "title": "save 가 하는 두 가지",
+          "summary": "persist 냐 merge 냐.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "delete",
+          "title": "삭제 메서드들",
+          "summary": "deleteAll 과 deleteAllInBatch.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "쿼리 메소드 기능",
+      "intro": "메서드 이름이 곧 쿼리다. 그리고 그 한계가 있다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "method-name",
+          "title": "메서드 이름으로 쿼리",
+          "summary": "이름을 파싱해 JPQL 을 만든다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "long-names",
+          "title": "이름이 길어질 때",
+          "summary": "조건 셋이면 벌써 읽기 어렵다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "named-query",
+          "title": "NamedQuery",
+          "summary": "애플리케이션 로딩 시점에 검증된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "at-query",
+          "title": "@Query",
+          "summary": "이름 없는 NamedQuery.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "value-dto",
+          "title": "값과 DTO 조회",
+          "summary": "new 연산자와 생성자.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "binding",
+          "title": "파라미터 바인딩",
+          "summary": "위치 기반은 쓰지 않는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "collection-param",
+          "title": "컬렉션 파라미터",
+          "summary": "in 절이 만들어지는 모습.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "return-type",
+          "title": "반환 타입",
+          "summary": "없을 때 무엇이 오나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "pure-paging",
+          "title": "순수 JPA 페이징",
+          "summary": "먼저 손으로 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.10",
+          "id": "data-paging",
+          "title": "스프링 데이터 페이징",
+          "summary": "Page 하나에 쿼리 둘.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.11",
+          "id": "slice-count",
+          "title": "Slice 와 count 쿼리",
+          "summary": "총 개수가 비쌀 때.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.12",
+          "id": "bulk-update",
+          "title": "벌크성 수정 쿼리",
+          "summary": "영속성 컨텍스트를 건너뛴다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.13",
+          "id": "entity-graph",
+          "title": "@EntityGraph",
+          "summary": "N+1 을 fetch join 없이 푼다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "확장 기능",
+      "intro": "인터페이스로 안 되는 것과, 웹 계층까지 닿는 것.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "custom-repo",
+          "title": "사용자 정의 리포지토리",
+          "summary": "이름 규칙 하나로 붙는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "split-interface",
+          "title": "인터페이스를 나누는 법",
+          "summary": "핵심 비즈니스와 화면용을 가른다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "auditing",
+          "title": "Auditing",
+          "summary": "등록일과 수정일을 안 적는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "auditing-who",
+          "title": "누가 바꿨나",
+          "summary": "등록자와 수정자.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "domain-converter",
+          "title": "도메인 클래스 컨버터",
+          "summary": "id 를 받는데 엔티티가 온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "web-paging",
+          "title": "Web 확장 — 페이징",
+          "summary": "쿼리 파라미터가 Pageable 이 된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "paging-default",
+          "title": "페이징 기본값",
+          "summary": "크기 제한을 안 걸면.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "page-dto",
+          "title": "DTO 로 변환하기",
+          "summary": "엔티티를 그대로 반환하지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "스프링 데이터 JPA 분석",
+      "intro": "프록시 안에서 무슨 일이 일어나는가.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "simple-jpa-repo",
+          "title": "구현체 SimpleJpaRepository",
+          "summary": "결국 EntityManager 다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "transactional",
+          "title": "@Transactional 의 위치",
+          "summary": "리포지토리에 이미 걸려 있다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "new-entity",
+          "title": "새로운 엔티티 판단",
+          "summary": "식별자가 null 이냐 아니냐.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "persistable",
+          "title": "Persistable",
+          "summary": "직접 만든 id 를 쓸 때.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "hint",
+          "title": "JPA Hint",
+          "summary": "읽기 전용 스냅샷을 안 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "lock",
+          "title": "Lock",
+          "summary": "for update 가 붙는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "나머지 기능들과 다음으로",
+      "intro": "덜 쓰이는 넷과, 이 책이 남긴 것.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "specifications",
+          "title": "Specifications(명세)",
+          "summary": "동적 쿼리를 조립한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "query-by-example",
+          "title": "Query By Example",
+          "summary": "엔티티 하나가 조건이 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "projections",
+          "title": "Projections — 인터페이스",
+          "summary": "필요한 컬럼만 select 한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "class-projections",
+          "title": "Projections — 클래스와 동적",
+          "summary": "생성자와 제네릭.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "nested-projections",
+          "title": "중첩 구조",
+          "summary": "연관까지 내려가면 최적화가 깨진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "native-query",
+          "title": "네이티브 쿼리",
+          "summary": "마지막 수단.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "native-projection",
+          "title": "동적 네이티브 프로젝션",
+          "summary": "그나마 쓸 만한 조합.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "이 책이 남긴 것과 Querydsl.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

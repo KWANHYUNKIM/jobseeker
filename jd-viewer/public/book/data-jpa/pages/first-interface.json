@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "first-interface",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "첫 인터페이스",
+ "summary": "메서드 하나 없이 열한 개가 생긴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 생기는지 안다.",
+  "각각이 내는 SQL 을 안다.",
+  "두 조회의 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 30개가 생긴다고** 했다. **자주 쓰는 것부터 하나씩** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "상속 한 줄이 주는 것",
+   "ascii": "   what one line of inheritance hands you\n\n   save, saveAll, saveAndFlush          writing\n   findById, findAll, findAllById       reading\n   existsById, count                    asking\n   delete, deleteById, deleteAll        removing\n   findAll(Sort), findAll(Pageable)     ordering and paging\n   flush, getReferenceById              lower level\n\n   none of them were declared here, and each one produces sql",
+   "note": "**여기서 선언한 건 하나도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이름만 봐서는 SQL 을 모른다",
+   "md": "**`existsById` 가 무엇을 낼까.**\n\n> **`select 1` 로 끝날 수도, 엔티티를 다 읽을 수도** 있다.\n> **실제로는 `select count(*)` 계열**이다.\n> **버전마다 다르니 봐야** 안다.\n\n**`findAllById` 는 `in` 절**이다.\n\n> **id 목록을 넘기면 한 번에** 조회한다.\n> **반복문으로 `findById` 를 부르면 N번**이다.\n> **5.7절에서 컬렉션 파라미터를 다시** 본다.\n\n**`saveAll` 이 배치는** 아니다.\n\n> **`save` 를 반복해서 부른다.**\n> **진짜 배치는 `batch_size` 설정이** 필요하다.\n> **insert 가 개수만큼** 나간다.\n\n**`deleteAll` 과 `deleteAllInBatch` 가** 다르다.\n\n> **앞은 하나씩 조회하고 하나씩** 지운다.\n> **뒤는 `delete from member` 한 방**이다.\n> **4.7절에서 자세히** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "닮았는데 다른 둘",
+   "ascii": "   two calls that look alike and are not\n\n   findById       returns an Optional, and hits the database now\n   getReferenceById  returns a proxy, and hits nothing until you touch it\n\n   so one of them can hand you an object for a row that does not exist,\n   and the failure arrives later, somewhere else",
+   "note": "**실패가 나중에 딴 데서** 터진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "getReferenceById 는 없는 행도 준다",
+   "md": "**조회를 안 하고 프록시를** 준다.\n\n> **`getId()` 만 쓰면 SQL 이 아예 안** 나간다.\n> **연관을 걸 때만 필요하면 이게** 효율적이다.\n> **`em.getReference()` 와 같은** 것이다.\n\n**없는 id 를 주면**\n\n> **그 순간엔 아무 일도 안** 일어난다.\n> **필드를 건드릴 때 `EntityNotFoundException`** 이다.\n> **트랜잭션 밖이면 `LazyInitializationException` 이 먼저** 날 수도 있다.\n\n**`getOne`·`getById` 는 폐기**됐다.\n\n> **이름이 헷갈려서** 바뀌었다.\n> **지금은 `getReferenceById`** 다.\n> **옛 코드에서 자주** 보인다.\n\n**`findById` 는 `Optional`** 이다.\n\n> **없으면 빈 `Optional`** 이다.\n> **`orElseThrow()` 를 붙이는 게** 관행이다.\n> **5.8절에서 반환 타입을 다** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 선언한 것은 이게 전부다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\n\n-- save\n\n@Test\nvoid save_확인() {\n    memberRepository.save(new Member(\"김\"));\n}\n\nHibernate:\n    insert\n    into\n        member (username, team_id, id)\n    values\n        (?, ?, default)\n\n\n-- saveAll 은 배치가 아니다\n\n@Test\nvoid saveAll_확인() {\n    memberRepository.saveAll(List.of(\n        new Member(\"a\"), new Member(\"b\"), new Member(\"c\")));\n}\n\nHibernate: insert into member (username, team_id, id) values (?, ?, default)\nHibernate: insert into member (username, team_id, id) values (?, ?, default)\nHibernate: insert into member (username, team_id, id) values (?, ?, default)\n\n--   세 번 나간다\n--   save 를 반복한 것이다\n--   진짜 배치는 batch_size 설정이 필요하다\n\n\n-- findById\n\n@Test\nvoid findById_확인() {\n    em.clear();\n    memberRepository.findById(1L);\n}\n\nHibernate:\n    select\n        m1_0.id,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.id=?\n\n\n-- findAllById 는 in 절이다\n\n@Test\nvoid findAllById_확인() {\n    em.clear();\n    memberRepository.findAllById(List.of(1L, 2L, 3L));\n}\n\nHibernate:\n    select\n        m1_0.id,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.id in (?, ?, ?)\n\n--   한 번이다\n--   반복문으로 findById 를 부르면 세 번이다\n\n\n-- existsById\n\n@Test\nvoid existsById_확인() {\n    em.clear();\n    memberRepository.existsById(1L);\n}\n\nHibernate:\n    select\n        count(m1_0.id)\n    from\n        member m1_0\n    where\n        m1_0.id=?\n\n--   엔티티를 다 안 읽는다\n--   count 만 센다\n\n\n-- count\n\n@Test\nvoid count_확인() {\n    memberRepository.count();\n}\n\nHibernate:\n    select\n        count(m1_0.id)\n    from\n        member m1_0\n\n\n-- findAll(Sort)\n\n@Test\nvoid sort_확인() {\n    em.clear();\n    memberRepository.findAll(Sort.by(Sort.Direction.DESC, \"username\"));\n}\n\nHibernate:\n    select\n        m1_0.id,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.username desc\n\n--   order by 가 붙었다\n--   필드 이름이지 컬럼 이름이 아니다\n\n\n-- 없는 필드로 정렬하면\n\n@Test\nvoid 잘못된_정렬() {\n    memberRepository.findAll(Sort.by(\"없는필드\"));\n}\n\nPropertyReferenceException: No property '없는필드' found for type 'Member'\n\n--   실행 시점에 터진다\n--   컴파일이 못 잡는다\n--   5.2절의 메서드 이름과 같은 약점이다\n\n\n-- findById 와 getReferenceById\n\n@Test\nvoid 두_조회() {\n    em.clear();\n    System.out.println(\"--- findById ---\");\n    Member a = memberRepository.findById(1L).orElseThrow();\n    System.out.println(\"클래스: \" + a.getClass().getSimpleName());\n\n    em.clear();\n    System.out.println(\"--- getReferenceById ---\");\n    Member b = memberRepository.getReferenceById(1L);\n    System.out.println(\"클래스: \" + b.getClass().getSimpleName());\n    System.out.println(\"id 만 읽기: \" + b.getId());\n    System.out.println(\"--- 이제 필드를 읽는다 ---\");\n    System.out.println(\"이름: \" + b.getUsername());\n}\n\n--- findById ---\nHibernate: select m1_0.id, m1_0.team_id, m1_0.username from member m1_0\n           where m1_0.id=?\n클래스: Member\n--- getReferenceById ---\n클래스: Member$HibernateProxy$k3Jd9\nid 만 읽기: 1\n--- 이제 필드를 읽는다 ---\nHibernate: select m1_0.id, m1_0.team_id, m1_0.username from member m1_0\n           where m1_0.id=?\n이름: 김\n\n--   프록시는 조회를 미룬다\n--   id 만 쓰면 SQL 이 없다\n\n\n-- 없는 id 를 주면\n\n@Test\nvoid 없는_id() {\n    Optional<Member> a = memberRepository.findById(999L);\n    System.out.println(\"findById: \" + a.isPresent());\n\n    Member b = memberRepository.getReferenceById(999L);\n    System.out.println(\"getReferenceById: 객체를 받았다\");\n    System.out.println(\"id: \" + b.getId());\n    b.getUsername();\n}\n\nHibernate: select m1_0.id, m1_0.team_id, m1_0.username from member m1_0\n           where m1_0.id=?\nfindById: false\ngetReferenceById: 객체를 받았다\nid: 999\nHibernate: select m1_0.id, m1_0.team_id, m1_0.username from member m1_0\n           where m1_0.id=?\n\njakarta.persistence.EntityNotFoundException:\n    Unable to find study.datajpa.entity.Member with id 999\n\n--   앞은 바로 없다고 답한다\n--   뒤는 객체를 주고 나중에 터진다\n--   실패가 딴 데서 난다\n\n\n-- 선언은 여전히 0줄이다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\n--   여기까지 전부 이 한 줄이 낸 것이다\n--   2장에서 이 환경을 처음부터 만든다",
+   "note": "**`saveAll` 이 `insert` 를 세 번** 낸다 — 배치가 아니다.\n\n**`findAllById` 는 `in (?, ?, ?)` 한 번**이다.\n\n**`existsById` 가 엔티티 대신 `count` 를** 센다.\n\n**없는 필드로 정렬하면 실행 시점에 `PropertyReferenceException`** 이다.\n\n**`getReferenceById` 는 없는 id 에도 객체를 주고 필드를 읽을 때** 터진다."
+  }
+ ],
+ "recap": [
+  "**상속 한 줄에 서른 개가** 생긴다.",
+  "**이름만 봐서는 SQL 을** 모른다.",
+  "**`findAllById` 는 `in` 절**이다.",
+  "**`saveAll` 은 배치가** 아니다.",
+  "**`existsById` 는 `count` 를** 센다.",
+  "**정렬은 필드 이름**이다.",
+  "**틀리면 실행 시점에** 터진다.",
+  "**`getReferenceById` 는 프록시를** 준다.",
+  "**없는 id 도 객체를** 준다."
+ ],
+ "drills": [
+  {
+   "task": "기본 메서드를 하나씩 부른다.",
+   "done_when": "각각의 SQL 을 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`findAllById` 와 반복 `findById` 를 비교한다.",
+   "done_when": "쿼리 수를 세었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`getReferenceById` 로 id 만 읽는다.",
+   "done_when": "SQL 이 안 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 id 로 둘을 부른다.",
+   "done_when": "실패 시점이 다른 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`saveAll` 이 배치인가?",
+   "a": "아니다. `save` 를 반복해 개수만큼 insert 가 나간다."
+  },
+  {
+   "q": "`findAllById` 의 SQL 은?",
+   "a": "`in` 절로 한 번에 조회한다."
+  },
+  {
+   "q": "`Sort` 에 넘기는 이름은?",
+   "a": "컬럼 이름이 아니라 엔티티 필드 이름이다."
+  },
+  {
+   "q": "`getReferenceById` 가 SQL 을 내는 시점은?",
+   "a": "식별자 외의 필드를 처음 읽을 때다."
+  },
+  {
+   "q": "없는 id 로 `getReferenceById` 를 하면?",
+   "a": "객체를 받고 나중에 `EntityNotFoundException` 이 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "getReferenceById",
+   "def": "실제 조회를 미루고 프록시를 돌려주는 조회."
+  },
+  {
+   "term": "프록시 초기화",
+   "def": "미뤄 둔 조회가 실제로 실행되는 순간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
