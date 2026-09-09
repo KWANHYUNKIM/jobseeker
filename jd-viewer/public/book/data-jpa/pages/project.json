@@ -1,0 +1,125 @@
+{
+ "book": "data-jpa",
+ "id": "project",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "프로젝트 생성",
+ "summary": "의존성 넷과 시작 코드.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "필요한 의존성을 안다.",
+  "시작 코드를 만든다.",
+  "무엇이 자동으로 뜨는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1장은 결과부터** 봤다. **여기서 그 환경을 처음부터** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "의존성 넷",
+   "ascii": "   four dependencies, and what each one is actually for\n\n   spring-boot-starter-data-jpa   the interface machinery, and hibernate\n   spring-boot-starter-web        only because we will call it over http\n   h2                             a database that lives in the jvm\n   spring-boot-starter-test       junit 5, assertj, and the test slices\n\n   the first one is the only one this book is about, and it drags in a lot",
+   "note": "**첫 줄이 많은 걸 끌고** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "스타터 하나가 마흔 개를 끌고 온다",
+   "md": "**직접 적은 건 한 줄**이다.\n\n```groovy\nimplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n```\n\n> **하이버네이트가 딸려**온다.\n> **`spring-tx`·`spring-jdbc` 도** 온다.\n> **HikariCP 도** 온다 — **⑤ 에서 본 그** 풀이다.\n\n**웹 스타터는 이 책에 꼭 필요하진** 않다.\n\n> **6장에서 웹 확장을 볼 때** 쓴다.\n> **그전까지는 테스트만으로도** 된다.\n> **다만 넣어 두면 6장에서 안 고쳐도** 된다.\n\n**H2 는 `runtimeOnly`** 다.\n\n> **컴파일에는 필요** 없다.\n> **드라이버는 실행할 때만** 있으면 된다.\n> **잘못 `implementation` 으로 넣어도 동작은** 한다.\n\n**자바 21 을** 쓴다.\n\n> **레코드를 DTO 에** 쓴다(5.5절).\n> **`var` 는 안 쓴다** — **타입이 보여야 읽기가** 낫다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄에 마흔 개",
+   "ascii": "   one starter, many jars\n\n   you declare        1 line\n   you receive        about 40 jars\n   of which           hibernate core, jakarta persistence api,\n                      spring-data-jpa, spring-data-commons,\n                      spring-orm, spring-tx, spring-jdbc, hikaricp\n\n   the last two are why a connection pool appears without being asked for",
+   "note": "**커넥션 풀이 안 시켰는데** 뜬다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "@EnableJpaRepositories 를 안 쓴다",
+   "md": "**부트가 대신** 한다.\n\n> **`@SpringBootApplication` 이 있는 패키지 아래를** 스캔한다.\n> **`JpaRepositoriesAutoConfiguration` 이 그** 일을 한다.\n> **부트를 안 쓰면 직접 적어야** 한다.\n\n**리포지토리가 다른 패키지에 있으면**\n\n> **못 찾는다.**\n> **그때만 `@EnableJpaRepositories(basePackages=...)` 를** 쓴다.\n> **실무에서 이 오류를 자주** 만난다.\n\n**엔티티도** 마찬가지다.\n\n> **`@EntityScan` 이 같은 규칙**이다.\n> **둘 다 메인 클래스 위치가** 기준이다.\n\n**부트가 만들어 주는 빈들**\n\n| 빈 | 무엇 |\n|---|---|\n| `DataSource` | HikariCP |\n| `EntityManagerFactory` | 하이버네이트 |\n| `JpaTransactionManager` | 트랜잭션 |\n| 리포지토리 프록시 | 인터페이스마다 하나씩 |\n\n> **넷 다 내가 안** 만들었다.\n> **7.1절에서 마지막 것을** 뜯는다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- build.gradle\n\nplugins {\n    id 'java'\n    id 'org.springframework.boot' version '3.3.3'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(21) }\n}\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    runtimeOnly 'com.h2database:h2'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\n\n-- 무엇이 딸려 오나\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'hibernate|spring-data|jakarta.persistence|HikariCP'\n\n+--- org.hibernate.orm:hibernate-core:6.5.2.Final\n+--- jakarta.persistence:jakarta.persistence-api:3.1.0\n+--- org.springframework.data:spring-data-jpa:3.3.3\n|    \\--- org.springframework.data:spring-data-commons:3.3.3\n+--- com.zaxxer:HikariCP:5.1.0\n+--- org.springframework:spring-orm:6.1.12\n+--- org.springframework:spring-tx:6.1.12\n\\--- org.springframework:spring-jdbc:6.1.12\n\n--   커넥션 풀을 적은 적이 없다\n--   ⑤ 에서 본 그 풀이다\n\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -c '\\-\\-\\-'\n\n41\n\n--   한 줄에 마흔한 개다\n\n\n-- 메인 클래스\n\n@SpringBootApplication\npublic class DataJpaApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(DataJpaApplication.class, args);\n    }\n}\n\n--   @EnableJpaRepositories 가 없다\n--   부트가 대신 한다\n\n\n-- 띄워 본다\n\n$ ./gradlew bootRun\n\n  .   ____          _            __ _ _\n :: Spring Boot ::                (v3.3.3)\n\nINFO  HHH000412: Hibernate ORM core version 6.5.2.Final\nINFO  HikariPool-1 - Starting...\nINFO  HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:test\nINFO  HikariPool-1 - Start completed.\nINFO  Initialized JPA EntityManagerFactory for persistence unit 'default'\nINFO  Tomcat started on port 8080\nINFO  Started DataJpaApplication in 1.842 seconds\n\n--   내가 만든 빈은 하나도 없다\n\n\n-- 무슨 빈이 떴는지 센다\n\n@Test\nvoid 자동으로_뜬_빈() {\n    for (String n : List.of(\"dataSource\", \"entityManagerFactory\",\n                            \"transactionManager\")) {\n        System.out.printf(\"%-22s %s%n\", n,\n                ctx.getBean(n).getClass().getSimpleName());\n    }\n}\n\ndataSource             HikariDataSource\nentityManagerFactory   SessionFactoryImpl\ntransactionManager     JpaTransactionManager\n\n--   셋 다 자동이다\n\n\n-- 리포지토리는 몇 개인가\n\n@Test\nvoid 리포지토리_빈() {\n    ctx.getBeansOfType(Repository.class)\n       .forEach((k, v) -> System.out.printf(\"%-20s %s%n\",\n               k, v.getClass().getSimpleName()));\n}\n\nmemberRepository     $Proxy127\n\n--   인터페이스 하나에 프록시 하나다\n\n\n-- 다른 패키지에 두면\n\n// study.other.MemberRepository 로 옮기면\n\nParameter 0 of constructor in study.datajpa.MemberService required\na bean of type 'study.other.MemberRepository' that could not be found.\n\nAction:\nConsider defining a bean of type 'study.other.MemberRepository'\nin your configuration.\n\n--   메인 클래스 아래가 아니면 못 찾는다\n--   그때만 @EnableJpaRepositories 를 쓴다\n\n\n-- 최소 엔티티 하나\n\n@Entity\n@Getter @Setter\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n    private String username;\n\n    protected Member() {}\n    public Member(String username) { this.username = username; }\n}\n\n\n-- 인터페이스 하나\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\n\n-- 여기까지로 SQL 이 나오나\n\n@SpringBootTest\n@Transactional\nclass FirstTest {\n    @Autowired MemberRepository memberRepository;\n\n    @Test\n    void 저장() {\n        memberRepository.save(new Member(\"김\"));\n    }\n}\n\nHibernate:\n    insert\n    into\n        member (username, id)\n    values\n        (?, ?)\n\n--   나온다\n--   설정 파일도 아직 안 만들었다\n--   2.3절에서 그걸 채운다",
+   "note": "**스타터 한 줄에 의존이 마흔한 개**고 그중에 HikariCP 가 있다.\n\n**`@EnableJpaRepositories` 없이 리포지토리 프록시가** 뜬다.\n\n**`dataSource`·`entityManagerFactory`·`transactionManager` 셋 다** 자동이다.\n\n**메인 클래스 아래가 아니면 빈을 못** 찾는다.\n\n**설정 파일도 없이 `insert` 가** 나간다."
+  }
+ ],
+ "recap": [
+  "**의존성은 넷이면** 된다.",
+  "**스타터 한 줄이 마흔 개를** 끌고 온다.",
+  "**커넥션 풀도 딸려**온다.",
+  "**H2 는 `runtimeOnly`** 다.",
+  "**`@EnableJpaRepositories` 가 필요** 없다.",
+  "**메인 클래스 위치가** 기준이다.",
+  "**다른 패키지면 못** 찾는다.",
+  "**빈 넷이 자동으로** 뜬다.",
+  "**설정 없이도 SQL 이** 나온다."
+ ],
+ "drills": [
+  {
+   "task": "의존 트리를 찍는다.",
+   "done_when": "무엇이 딸려 오는지 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "자동으로 뜬 빈을 확인한다.",
+   "done_when": "세 클래스 이름을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "리포지토리를 다른 패키지로 옮긴다.",
+   "done_when": "오류 메시지를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "최소 코드로 저장한다.",
+   "done_when": "`insert` 를 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`spring-boot-starter-data-jpa` 가 끌고 오는 것은?",
+   "a": "하이버네이트, 스프링 데이터 JPA, 트랜잭션·JDBC 모듈, 커넥션 풀이다."
+  },
+  {
+   "q": "`@EnableJpaRepositories` 를 왜 안 쓰나?",
+   "a": "부트가 메인 클래스 아래를 자동으로 스캔한다."
+  },
+  {
+   "q": "그걸 써야 하는 때는?",
+   "a": "리포지토리가 메인 클래스 패키지 밖에 있을 때다."
+  },
+  {
+   "q": "H2 를 `runtimeOnly` 로 두는 이유는?",
+   "a": "컴파일에는 필요 없고 실행할 때만 있으면 된다."
+  },
+  {
+   "q": "자동으로 뜨는 핵심 빈 셋은?",
+   "a": "`DataSource`, `EntityManagerFactory`, `TransactionManager` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스타터",
+   "def": "관련 의존성을 묶어 한 줄로 가져오게 하는 부트 모듈."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

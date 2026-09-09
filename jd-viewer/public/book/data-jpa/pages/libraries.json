@@ -1,0 +1,139 @@
+{
+ "book": "data-jpa",
+ "id": "libraries",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "라이브러리와 의존 관계",
+ "summary": "무엇이 딸려 오는가.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "계층을 안다.",
+  "타입의 소유자를 안다.",
+  "표준과 구현을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 마흔한 개가** 왔다. **그중 무엇이 무엇인지** 나눈다."
+  },
+  {
+   "type": "figure",
+   "caption": "계층",
+   "ascii": "   the stack, from your interface down to the wire\n\n   your interface        MemberRepository\n   spring data jpa       the proxy, and the query derivation\n   spring data commons   the shared parts, and the Page and Sort types\n   jakarta persistence   the api you are actually calling\n   hibernate             the implementation that writes sql\n   spring jdbc and tx    connections and boundaries\n   the driver            h2, in the same jvm\n\n   only two of these lines are specific to this book",
+   "note": "**이 책 것은 두 줄** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "표준과 구현이 나뉘어 있다",
+   "md": "**`jakarta.persistence` 가 표준**이다.\n\n> **`EntityManager`·`@Entity`·`@Id` 가 거기** 있다.\n> **①에서 쓴 게 대부분 이쪽**이다.\n> **인터페이스와 애너테이션만** 있다.\n\n**하이버네이트가 구현**이다.\n\n> **실제로 SQL 을 만드는** 쪽이다.\n> **표준에 없는 기능도** 준다 — **`@BatchSize`·`@DynamicUpdate`** 같은 것.\n> **⑥ 에서 같은 SQL 을 다섯 기술이 만들던 것과 같은 구조**다.\n\n**스프링 데이터는 그 위**다.\n\n> **`EntityManager` 를 대신 호출해** 준다.\n> **7.1절의 `SimpleJpaRepository` 가 그** 코드다.\n> **표준을 대체하는 게 아니라 감싸는** 것이다.\n\n**`commons` 가 공통 부분**이다.\n\n> **`Page`·`Pageable`·`Sort` 가 거기** 있다.\n> **몽고 DB 를 써도 같은 타입**이다.\n> **그래서 패키지가 `data.domain`** 이다 — jpa 가 안 붙는다."
+  },
+  {
+   "type": "figure",
+   "caption": "타입의 주인",
+   "ascii": "   which library owns which type\n\n   JpaRepository          spring data jpa\n   PagingAndSorting       spring data commons\n   Page, Pageable, Sort   spring data commons\n   EntityManager          jakarta persistence\n   Session, SessionFactory  hibernate\n\n   knowing this decides which javadoc to open when something is unclear",
+   "note": "**어느 문서를 열지가** 정해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "버전이 서로 묶여 있다",
+   "md": "**부트가 다 정해**준다.\n\n> **버전을 하나도 안** 적었다(2.1절).\n> **`dependency-management` 플러그인이** 맞춘다.\n> **하이버네이트만 올리면 깨질 수** 있다.\n\n**부트 3 부터 `javax` 가 `jakarta`** 다.\n\n> **`javax.persistence.Entity` 가 `jakarta.persistence.Entity`** 로 바뀌었다.\n> **옛 코드를 옮길 때 가장 많이 걸리는** 것이다.\n> **import 만 바꾸면 되는 경우가** 대부분이다.\n\n**하이버네이트 6 에서 로거 이름이** 바뀌었다.\n\n> **1.3절에서 본 그것**이다.\n> **`org.hibernate.type.descriptor.sql` → `org.hibernate.orm.jdbc.bind`** 다.\n> **인터넷의 옛 글이 안 통하는 이유**다.\n\n**웹 스타터는 빼도** 된다.\n\n> **6장 전까지는 필요** 없다.\n> **빼면 톰캣이 안 뜬다.**\n> **테스트 실행이 조금** 빨라진다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 타입이 어느 jar 에서 왔나\n\n@Test\nvoid 타입의_주인() {\n    Class<?>[] types = {\n        JpaRepository.class, PagingAndSortingRepository.class,\n        Page.class, Pageable.class, Sort.class,\n        EntityManager.class, Entity.class,\n        Session.class, SessionFactory.class\n    };\n    for (Class<?> c : types) {\n        String jar = c.getProtectionDomain().getCodeSource()\n                      .getLocation().getPath();\n        System.out.printf(\"%-28s %s%n\", c.getSimpleName(),\n                jar.substring(jar.lastIndexOf('/') + 1));\n    }\n}\n\nJpaRepository                spring-data-jpa-3.3.3.jar\nPagingAndSortingRepository   spring-data-commons-3.3.3.jar\nPage                         spring-data-commons-3.3.3.jar\nPageable                     spring-data-commons-3.3.3.jar\nSort                         spring-data-commons-3.3.3.jar\nEntityManager                jakarta.persistence-api-3.1.0.jar\nEntity                       jakarta.persistence-api-3.1.0.jar\nSession                      hibernate-core-6.5.2.Final.jar\nSessionFactory               hibernate-core-6.5.2.Final.jar\n\n--   Page 는 jpa 것이 아니다\n--   몽고를 써도 같은 타입이다\n\n\n-- 패키지 이름이 말해 준다\n\n@Test\nvoid 패키지() {\n    System.out.println(Page.class.getName());\n    System.out.println(JpaRepository.class.getName());\n}\n\norg.springframework.data.domain.Page\norg.springframework.data.jpa.repository.JpaRepository\n\n--   앞에는 jpa 가 없다\n--   뒤에는 있다\n\n\n-- 표준과 구현\n\n@Test\nvoid 표준_구현() {\n    EntityManager em = emf.createEntityManager();\n    System.out.println(\"선언 타입: \" + EntityManager.class.getName());\n    System.out.println(\"실제 타입: \" + em.getClass().getName());\n}\n\n선언 타입: jakarta.persistence.EntityManager\n실제 타입: org.hibernate.internal.SessionImpl\n\n--   표준을 부르고 구현이 답한다\n--   ⑥ 에서 본 구조와 같다\n\n\n-- 구현으로 내려가면\n\n@Test\nvoid 구현_기능() {\n    Session session = em.unwrap(Session.class);\n    Statistics s = session.getSessionFactory().getStatistics();\n    System.out.println(\"통계 켜짐: \" + s.isStatisticsEnabled());\n}\n\n통계 켜짐: false\n\n--   1.3절의 카운터가 이걸 쓴다\n--   표준에는 없는 기능이다\n\n\n-- 스프링 데이터가 표준을 부른다\n\n@Test\nvoid 누가_누구를() {\n    memberRepository.findById(1L);\n}\n\nHibernate:\n    select\n        m1_0.id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.id=?\n\n// SimpleJpaRepository.findById 안\npublic Optional<T> findById(ID id) {\n    Class<T> domainType = getDomainClass();\n    ...\n    return Optional.ofNullable(em.find(domainType, id));\n}\n\n--   결국 em.find 다\n--   7.1절에서 이 파일을 연다\n\n\n-- 버전을 안 적었다\n\n$ grep -c 'version' build.gradle\n\n2\n\n$ grep 'version' build.gradle\n\n    id 'org.springframework.boot' version '3.3.3'\n    id 'io.spring.dependency-management' version '1.1.6'\n\n--   의존성에는 하나도 없다\n--   부트가 다 맞춘다\n\n\n-- jakarta 로 바뀐 것\n\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.GeneratedValue;\n\n--   부트 2 였다면 javax 였다\n--   옮길 때 가장 많이 걸리는 것이다\n\n$ grep -rc 'javax.persistence' src/ 2>/dev/null | head -1\n\n0\n\n\n-- 로거 이름도 바뀌었다\n\nlogging.level:\n  org.hibernate.orm.jdbc.bind: trace     # 하이버네이트 6\n# org.hibernate.type.descriptor.sql: trace   # 5 까지\n\n@Test\nvoid 로거_확인() {\n    memberRepository.findByUsername(\"김\");\n}\n\nHibernate:\n    select ... where m1_0.username=?\nTRACE o.h.orm.jdbc.bind : binding parameter (1:VARCHAR) <- [김]\n\n--   옛 이름으로는 값이 안 나온다\n--   인터넷의 옛 글이 안 통하는 이유다\n\n\n-- 웹 스타터를 빼면\n\n// implementation 'spring-boot-starter-web'  <- 주석\n\n$ ./gradlew bootRun\n\nINFO  Started DataJpaApplication in 1.104 seconds\n\n--   Tomcat started 줄이 없다\n--   1.8초가 1.1초가 됐다\n--   6장 전까지는 필요 없다\n\n$ ./gradlew test --tests '*FirstTest*'\n\nHibernate:\n    insert\n    into\n        member (username, id)\n    values\n        (?, ?)\n\nBUILD SUCCESSFUL\n\n--   SQL 은 그대로 나온다\n--   이 책의 본론에는 웹이 없다",
+   "note": "**`Page` 가 `spring-data-commons` 것이고 패키지에 `jpa` 가** 없다.\n\n**`EntityManager` 를 선언하고 `SessionImpl` 이** 답한다.\n\n**`SimpleJpaRepository.findById` 가 결국 `em.find`** 다.\n\n**의존성에 버전이 하나도** 없다.\n\n**웹 스타터를 빼자 톰캣 줄이 사라지고 SQL 은 그대로** 나온다."
+  }
+ ],
+ "recap": [
+  "**계층이 일곱 겹**이다.",
+  "**이 책 것은 두 줄** 뿐이다.",
+  "**표준은 `jakarta.persistence`** 다.",
+  "**구현은 하이버네이트**다.",
+  "**스프링 데이터가 그 위에서** 감싼다.",
+  "**`Page` 는 `commons`** 것이다.",
+  "**버전은 부트가** 맞춘다.",
+  "**`javax` 가 `jakarta` 로** 바뀌었다.",
+  "**로거 이름도** 바뀌었다."
+ ],
+ "drills": [
+  {
+   "task": "타입별 jar 를 찍는다.",
+   "done_when": "소유자를 다 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`EntityManager` 의 실제 타입을 본다.",
+   "done_when": "`SessionImpl` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`unwrap` 으로 내려간다.",
+   "done_when": "표준에 없는 기능을 썼다.",
+   "minutes": 15
+  },
+  {
+   "task": "웹 스타터를 빼 본다.",
+   "done_when": "SQL 이 그대로인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Page` 는 어느 라이브러리 것인가?",
+   "a": "`spring-data-commons` 다. JPA 전용이 아니다."
+  },
+  {
+   "q": "표준과 구현은?",
+   "a": "`jakarta.persistence` 가 표준, 하이버네이트가 구현이다."
+  },
+  {
+   "q": "스프링 데이터는 무엇을 하나?",
+   "a": "표준 API 호출을 대신해 주는 층이다."
+  },
+  {
+   "q": "부트 3 에서 바뀐 패키지는?",
+   "a": "`javax.persistence` 가 `jakarta.persistence` 가 됐다."
+  },
+  {
+   "q": "하이버네이트 6 의 바인딩 로거 이름은?",
+   "a": "`org.hibernate.orm.jdbc.bind` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "spring-data-commons",
+   "def": "저장소 종류와 무관한 공통 타입과 기능을 담은 모듈."
+  },
+  {
+   "term": "unwrap",
+   "def": "표준 인터페이스에서 구현체로 내려가는 호출."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

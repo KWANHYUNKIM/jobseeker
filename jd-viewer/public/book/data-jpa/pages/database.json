@@ -1,0 +1,139 @@
+{
+ "book": "data-jpa",
+ "id": "database",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "데이터베이스와 설정",
+ "summary": "H2 와 ddl-auto 가 만든 DDL.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "ddl-auto 값을 안다.",
+  "생성된 DDL 을 읽는다.",
+  "운영 설정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 설정 파일 없이도 SQL 이** 나왔다. **그때 테이블은 누가 만들었나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "ddl-auto 다섯 값",
+   "ascii": "   what ddl-auto does, by value\n\n   none          nothing, and the schema had better already exist\n   validate      compare and fail on a mismatch, change nothing\n   update        add what is missing, never drop anything\n   create        drop and create at startup\n   create-drop   the same, and drop again at shutdown\n\n   update is the one that looks safe and quietly leaves dead columns behind",
+   "note": "**`update` 가 죽은 컬럼을 조용히** 남긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부트가 기본값을 알아서 정한다",
+   "md": "**내장 DB 면 `create-drop`** 이다.\n\n> **H2·HSQLDB·Derby 를 쓰면** 그렇다.\n> **그래서 2.1절에서 아무것도 안 적었는데** 됐다.\n> **외부 DB 면 기본이 `none`** 이다.\n\n**운영에서 `update` 는 위험**하다.\n\n> **컬럼을 추가하지만 절대 안** 지운다.\n> **이름을 바꾸면 옛 컬럼이 그대로** 남는다.\n> **타입 변경도 대부분 못** 한다.\n> **테이블이 조용히 넓어**진다.\n\n**운영은 `validate` 나 `none`** 이다.\n\n> **스키마는 Flyway 나 Liquibase 로** 관리한다.\n> **`validate` 로 엔티티와 안 맞으면 기동을** 막는다.\n> **⑦ 에서 본 그 관행**이다.\n\n**로컬은 `create` 가 편하다.**\n\n> **매번 새로 시작**한다.\n> **테스트는 그게 더** 낫다.\n> **다만 데이터가 매번 사라지는 걸 알고** 써야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "H2 두 가지",
+   "ascii": "   two ways to run h2, and they behave differently\n\n   in memory    jdbc:h2:mem:test\n                gone when the jvm exits, and fast\n                every test class may get a fresh one\n\n   file         jdbc:h2:~/test\n                survives restarts, and you can open it in a console\n                and it will disagree with your entities eventually",
+   "note": "**파일 모드는 결국 엔티티와** 어긋난다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "생성된 DDL 을 눈으로 본다",
+   "md": "**로그로 볼 수** 있다.\n\n```yaml\nlogging.level.org.hibernate.SQL: debug\n```\n\n> **`create table` 이 그대로** 찍힌다.\n> **컬럼 타입과 제약을 다** 본다.\n> **매핑이 뜻대로 됐는지 확인하는 가장 빠른** 방법이다.\n\n**파일로 뽑을 수도** 있다.\n\n```yaml\nspring.jpa.properties.jakarta.persistence.schema-generation:\n  scripts.action: create\n  scripts.create-target: build/schema.sql\n```\n\n> **Flyway 초기 스크립트의 출발점으로** 쓴다.\n> **손으로 다듬어서 넣는다.**\n\n**이름 전략이 컬럼 이름을** 정한다.\n\n> **`memberName` 이 `member_name`** 이 된다.\n> **부트의 기본이 스네이크 케이스**다.\n> **JPA 표준 기본은 그대로 두는** 것이다 — 부트가 바꿔 놓았다.\n\n**`data.sql` 과 순서가** 엮인다.\n\n> **부트 2.5 부터 기본 순서가** 바뀌었다.\n> **`defer-datasource-initialization: true` 가 없으면 테이블 전에** 실행된다.\n> **초기 데이터가 안 들어가는 흔한** 이유다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 설정 파일이 없을 때\n\n$ ls src/main/resources/\n\n(비어 있다)\n\n$ ./gradlew test --tests '*FirstTest*'\n\nINFO  H2 database version 2.2.224\nHibernate:\n    drop table if exists member cascade\nHibernate:\n    create table member (\n        id bigint not null,\n        username varchar(255),\n        primary key (id)\n    )\n\n--   아무것도 안 적었는데 테이블이 생겼다\n--   내장 DB 면 기본이 create-drop 이다\n\n\n-- 값을 바꿔 본다\n\n# application.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:test\n  jpa:\n    hibernate:\n      ddl-auto: create\n    properties:\n      hibernate:\n        format_sql: true\nlogging.level:\n  org.hibernate.SQL: debug\n\n$ ./gradlew test\n\nHibernate:\n    drop table if exists member cascade\nHibernate:\n    create table member (\n        id bigint not null,\n        username varchar(255),\n        primary key (id)\n    )\n\n--   create 는 드롭하고 만든다\n\n\n-- none 으로 두면\n\nddl-auto: none\n\n$ ./gradlew test\n\norg.h2.jdbc.JdbcSQLSyntaxErrorException:\n    Table \"MEMBER\" not found\n\n--   테이블이 없다\n--   외부 DB 의 기본값이 이것이다\n\n\n-- validate 는 검사만 한다\n\nddl-auto: validate\n\n$ ./gradlew test\n\nSchema-validation: missing table [member]\n\n--   기동을 막는다\n--   운영에서 쓰는 값이다\n\n\n-- update 가 남기는 것\n\nddl-auto: create\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue private Long id;\n    private String username;\n    private String oldColumn;\n}\n\nHibernate:\n    create table member (\n        id bigint not null,\n        old_column varchar(255),\n        username varchar(255),\n        primary key (id)\n    )\n\n--   이제 oldColumn 을 지우고 ddl-auto 를 update 로 바꾼다\n\nddl-auto: update\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue private Long id;\n    private String username;\n    private String newColumn;      // 이름을 바꿨다\n}\n\nHibernate:\n    alter table member\n       add column new_column varchar(255)\n\n$ 테이블을 확인한다\n\nSELECT column_name FROM information_schema.columns\nWHERE table_name = 'MEMBER';\n\nID\nOLD_COLUMN\nUSERNAME\nNEW_COLUMN\n\n--   OLD_COLUMN 이 그대로 있다\n--   엔티티에는 없는 컬럼이다\n--   update 는 절대 안 지운다\n--   운영에서 이게 몇 년 쌓인다\n\n\n-- 이름 전략\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue private Long id;\n    private String memberName;\n    private String createdAt;\n}\n\nHibernate:\n    create table member (\n        id bigint not null,\n        created_at varchar(255),\n        member_name varchar(255),\n        primary key (id)\n    )\n\n--   카멜이 스네이크가 됐다\n--   부트가 정한 것이다\n--   JPA 표준 기본은 그대로 두는 것이다\n\n\n-- 전략을 끄면\n\nspring.jpa.hibernate.naming.physical-strategy: \\\n  org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\n\nHibernate:\n    create table Member (\n        id bigint not null,\n        createdAt varchar(255),\n        memberName varchar(255),\n        primary key (id)\n    )\n\n--   테이블 이름도 대문자로 남았다\n--   기존 DB 에 맞출 때 쓴다\n\n\n-- DDL 을 파일로 뽑는다\n\nspring.jpa.properties.jakarta.persistence.schema-generation:\n  scripts.action: create\n  scripts.create-target: build/schema.sql\n\n$ ./gradlew test && cat build/schema.sql\n\ncreate table member (\n    id bigint not null,\n    username varchar(255),\n    primary key (id)\n);\n\n--   Flyway 초기 스크립트의 출발점이다\n\n\n-- data.sql 순서 문제\n\n# src/main/resources/data.sql\ninsert into member (id, username) values (1, '초기데이터');\n\n$ ./gradlew bootRun\n\norg.h2.jdbc.JdbcSQLSyntaxErrorException:\n    Table \"MEMBER\" not found; SQL statement:\n    insert into member (id, username) values (1, '초기데이터')\n\n--   테이블보다 먼저 실행됐다\n--   부트 2.5 부터 기본 순서가 이렇다\n\nspring.jpa.defer-datasource-initialization: true\n\n$ ./gradlew bootRun\n\nHibernate: create table member (...)\nINFO  Executed SQL script from class path resource [data.sql]\n\n--   이제 순서가 맞는다\n--   초기 데이터가 안 들어가는 흔한 이유다\n\n\n-- 메모리와 파일\n\nspring.datasource.url: jdbc:h2:mem:test\n\n$ ./gradlew bootRun     # 첫 번째\nHibernate: create table member (...)\n$ ./gradlew bootRun     # 두 번째\nHibernate: create table member (...)\n\n--   매번 새로 만든다\n\nspring.datasource.url: jdbc:h2:~/datajpa\nspring.jpa.hibernate.ddl-auto: update\n\n$ ./gradlew bootRun     # 첫 번째\nHibernate: create table member (...)\n$ ./gradlew bootRun     # 두 번째\n(create table 이 없다)\n\n--   파일에 남아 있다\n--   그래서 update 로 둔 것이다\n--   그러다 엔티티와 어긋난다\n\n\n-- 운영 설정\n\n# application-prod.yml\nspring:\n  jpa:\n    hibernate:\n      ddl-auto: validate\n    properties:\n      hibernate:\n        format_sql: false\nlogging.level:\n  org.hibernate.SQL: warn\n\n--   validate 로 어긋나면 못 뜨게 한다\n--   SQL 로그는 끈다\n--   스키마는 Flyway 가 관리한다\n--   ⑦ 에서 본 관행이다",
+   "note": "**설정 파일이 없어도 내장 DB 면 `create-drop` 이라 `create table` 이** 나온다.\n\n**`none` 이면 `Table \"MEMBER\" not found`, `validate` 면 `Schema-validation: missing table`** 이다.\n\n**`update` 로 컬럼 이름을 바꾸자 `OLD_COLUMN` 이 그대로** 남는다.\n\n**`memberName` 이 `member_name` 으로** 바뀐다 — 부트의 이름 전략이다.\n\n**`defer-datasource-initialization` 없이는 `data.sql` 이 테이블보다 먼저** 실행된다."
+  }
+ ],
+ "recap": [
+  "**내장 DB 면 기본이 `create-drop`** 이다.",
+  "**외부 DB 면 `none`** 이다.",
+  "**`update` 는 절대 안** 지운다.",
+  "**옛 컬럼이 조용히** 쌓인다.",
+  "**운영은 `validate` 나 `none`** 이다.",
+  "**스키마는 Flyway 가** 관리한다.",
+  "**카멜이 스네이크가** 된다.",
+  "**DDL 을 파일로 뽑을 수** 있다.",
+  "**`data.sql` 은 순서를 지정해야** 한다."
+ ],
+ "drills": [
+  {
+   "task": "`ddl-auto` 다섯 값을 다 써 본다.",
+   "done_when": "각각의 결과를 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`update` 로 컬럼 이름을 바꾼다.",
+   "done_when": "옛 컬럼이 남는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "이름 전략을 끈다.",
+   "done_when": "컬럼 이름이 달라지는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`data.sql` 을 넣는다.",
+   "done_when": "순서 문제를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정 없이도 테이블이 생긴 이유는?",
+   "a": "내장 DB 면 부트가 `ddl-auto` 를 `create-drop` 으로 정한다."
+  },
+  {
+   "q": "`update` 의 위험은?",
+   "a": "추가만 하고 삭제·변경을 안 해 죽은 컬럼이 쌓인다."
+  },
+  {
+   "q": "운영에서 쓰는 값은?",
+   "a": "`validate` 나 `none` 이고 스키마는 마이그레이션 도구가 관리한다."
+  },
+  {
+   "q": "`memberName` 이 어떤 컬럼이 되나?",
+   "a": "부트 기본 전략으로 `member_name` 이 된다."
+  },
+  {
+   "q": "`data.sql` 이 실패하는 이유는?",
+   "a": "기본적으로 스키마 생성보다 먼저 실행되기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ddl-auto",
+   "def": "기동 시 스키마를 어떻게 다룰지 정하는 하이버네이트 설정."
+  },
+  {
+   "term": "이름 전략",
+   "def": "자바 이름을 테이블·컬럼 이름으로 바꾸는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "H2 Database Engine — Documentation",
+   "url": "https://www.h2database.com/html/main.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "Flyway — Documentation",
+   "url": "https://documentation.red-gate.com/flyway",
+   "publisher": "Redgate"
+  }
+ ]
+}

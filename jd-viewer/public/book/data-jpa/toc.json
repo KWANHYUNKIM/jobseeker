@@ -62,7 +62,7 @@
           "title": "프로젝트 생성",
           "summary": "의존성 넷과 시작 코드.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -70,7 +70,7 @@
           "title": "라이브러리와 의존 관계",
           "summary": "무엇이 딸려 오는가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -78,7 +78,7 @@
           "title": "데이터베이스와 설정",
           "summary": "H2 와 ddl-auto 가 만든 DDL.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -86,7 +86,7 @@
           "title": "SQL 을 보이게 만들기",
           "summary": "show-sql 과 로거는 다른 것이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
