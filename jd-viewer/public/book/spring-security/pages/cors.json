@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "cors",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "CORS",
+ "summary": "시큐리티와 MVC 중 누가.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "사전 요청이 왜 익명인지 안다.",
+  "시큐리티 설정이 왜 따로 필요한지 안다.",
+  "CORS 와 CSRF 를 구별한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절은 남의 페이지가 보내는 걸** 막았다. **이번엔 허락하는** 얘기다."
+  },
+  {
+   "type": "figure",
+   "caption": "사전 요청",
+   "ascii": "   a preflight, and why it has no cookie\n\n   OPTIONS /api/v1/orders\n     Origin: http://localhost:3000\n     Access-Control-Request-Method: POST\n     Access-Control-Request-Headers: content-type\n     (no cookie, no authorization, by specification)\n\n   204 No Content\n     Access-Control-Allow-Origin: http://localhost:3000\n     Access-Control-Allow-Methods: POST\n\n   an authenticated preflight would always fail, so it is anonymous",
+   "note": "**규격상 인증 정보가 안** 실린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "CORS 와 CSRF 는 반대다",
+   "md": "| | CSRF | CORS |\n|---|---|---|\n| **목적** | 남의 요청을 막는다 | 남의 요청을 허락한다 |\n| **누가 검사** | 서버 | 브라우저 |\n| **막는 것** | 요청 자체 | 응답 읽기 |\n\n> **CORS 는 서버 보호가** 아니다.\n> **브라우저가 스크립트에게 응답을 안 넘겨 주는 규칙**이다.\n>\n> **요청은 이미 서버에 도착해 처리**됐다.\n> **그래서 CORS 를 열어도 CSRF 는 여전히** 필요하다.\n\n**사전 요청은 익명**이다.\n\n> **규격이 자격 증명을 안 실도록 정해** 뒀다.\n> **인증을 요구하면 항상** 실패한다.\n> **그래서 인가 규칙에서 빼 줘야** 한다.\n\n**콘솔 메시지가 원인을 가린다.**\n\n> **브라우저는 401 이든 500 이든 \"CORS 정책에 막혔다\" 고만** 말한다.\n> **실제 원인은 인증인데 CORS 설정을** 뒤진다.\n> **`curl` 로 사전 요청을 직접 보내 보면** 보인다."
+  },
+  {
+   "type": "figure",
+   "caption": "순서가 전부다",
+   "ascii": "   why CorsFilter must run before the security chain decides\n\n   without http.cors()\n     OPTIONS -> AuthorizationFilter -> 401\n     the browser never sends the real request\n     the console says CORS, the cause is auth\n\n   with http.cors()\n     CorsFilter is filter 5, it answers the preflight itself\n     nothing after it runs",
+   "note": "**`http.cors()` 가 필터를 앞으로** 옮긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정은 두 군데",
+   "md": "**`@CrossOrigin` 이나 MVC 설정만으로는 부족**하다.\n\n> **그건 `DispatcherServlet` 안**이다.\n> **시큐리티 필터가 그 앞에서** 막는다.\n\n**시큐리티에 알려 준다.**\n\n```java\n@Bean\nCorsConfigurationSource corsConfigurationSource() {\n    CorsConfiguration config = new CorsConfiguration();\n    config.setAllowedOrigins(List.of(\"http://localhost:3000\"));\n    config.setAllowedMethods(List.of(\"GET\", \"POST\", \"PUT\", \"DELETE\"));\n    config.setAllowedHeaders(List.of(\"*\"));\n    config.setAllowCredentials(true);\n    config.setMaxAge(3600L);\n\n    UrlBasedCorsConfigurationSource source =\n            new UrlBasedCorsConfigurationSource();\n    source.registerCorsConfiguration(\"/api/**\", config);\n    return source;\n}\n\nhttp.cors(withDefaults());\n```\n\n> **`cors(withDefaults())` 가 `CorsConfigurationSource` 빈을 찾아** 쓴다.\n> **그러면 `CorsFilter` 가 체인 앞쪽에** 들어간다.\n\n**`allowCredentials(true)` 의 제약**\n\n> **`allowedOrigins` 에 `*` 를 쓸 수** 없다.\n> **쿠키를 보내는데 아무나 허용하면 의미가** 없어서다.\n>\n> ```\n> When allowCredentials is true, allowedOrigins cannot contain\n> the special value \"*\"\n> ```\n>\n> **`allowedOriginPatterns` 를 쓰면 패턴은** 된다.\n\n**`maxAge` 로 사전 요청을** 줄인다.\n\n> **안 주면 요청마다 `OPTIONS` 가 한 번씩 더** 간다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 설정 없이 사전 요청을 보낸다 ---\n\n$ curl -i -X OPTIONS localhost:8080/api/v1/orders \\\n    -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"status\":401,\"detail\":\"authentication required\",...}\n\nDEBUG FilterChainProxy : Securing OPTIONS /api/v1/orders\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n#   인증이 없어서 401 이다\n\n#   브라우저 콘솔에는 이렇게 나온다\n\n#   Access to fetch at 'http://localhost:8080/api/v1/orders'\n#   from origin 'http://localhost:3000' has been blocked by CORS policy\n\n#   원인은 CORS 가 아니라 인증이다\n\n# --- MVC 설정만 넣어 본다 ---\n\n@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n    @Override\n    public void addCorsMappings(CorsRegistry registry) {\n        registry.addMapping(\"/api/**\")\n                .allowedOrigins(\"http://localhost:3000\")\n                .allowCredentials(true);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X OPTIONS \\\n    localhost:8080/api/v1/orders -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n\n401\n\n#   그대로다\n\n#   시큐리티 필터가 먼저 막는다\n\n#   DispatcherServlet 까지 안 갔다\n\n# --- 시큐리티에 알려 준다 ---\n\n@Bean\nCorsConfigurationSource corsConfigurationSource() {\n    CorsConfiguration config = new CorsConfiguration();\n    config.setAllowedOrigins(List.of(\"http://localhost:3000\"));\n    config.setAllowedMethods(List.of(\"GET\", \"POST\", \"PUT\", \"DELETE\"));\n    config.setAllowedHeaders(List.of(\"*\"));\n    config.setAllowCredentials(true);\n    config.setMaxAge(3600L);\n    UrlBasedCorsConfigurationSource source =\n            new UrlBasedCorsConfigurationSource();\n    source.registerCorsConfiguration(\"/api/**\", config);\n    return source;\n}\n\nhttp.cors(withDefaults());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -n Cors\n\n5:   CorsFilter\n\n#   필터가 하나 늘었고 앞쪽이다\n\n$ curl -i -X OPTIONS localhost:8080/api/v1/orders \\\n    -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n\nHTTP/1.1 200\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: GET,POST,PUT,DELETE\nAccess-Control-Allow-Credentials: true\nAccess-Control-Max-Age: 3600\nVary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers\n\nDEBUG FilterChainProxy : Securing OPTIONS /api/v1/orders\nTRACE FilterChainProxy : Invoking CorsFilter (5/12)\n\n#   (6/12) 가 없다\n\n#   CorsFilter 가 답하고 끝냈다\n\n#   인증 없이 통과했다\n\n# --- 실제 요청 ---\n\n$ curl -i -u user@a.com:1234 localhost:8080/api/v1/orders \\\n    -H 'Origin: http://localhost:3000'\n\nHTTP/1.1 200\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Credentials: true\n\n{\"code\":200,\"status\":\"OK\",\"data\":[...]}\n\n#   응답 헤더가 붙었다\n\n#   브라우저가 이걸 보고 스크립트에 넘겨 준다\n\n# --- 허용 안 된 출처 ---\n\n$ curl -i -u user@a.com:1234 localhost:8080/api/v1/orders \\\n    -H 'Origin: http://evil.example'\n\nHTTP/1.1 200\n\n{\"code\":200,\"status\":\"OK\",\"data\":[...]}\n\n$ curl -is -u user@a.com:1234 localhost:8080/api/v1/orders \\\n    -H 'Origin: http://evil.example' | grep -ci access-control-allow-origin\n\n0\n\n#   데이터는 나갔다\n\n#   허용 헤더만 없다\n\n#   브라우저가 스크립트에게 안 넘긴다\n\n#   서버는 이미 처리했다\n\n#   CORS 가 서버 보호가 아니라는 게 이 뜻이다\n\n#   curl 은 브라우저가 아니라 그냥 읽는다\n\n# --- allowCredentials 와 * ---\n\nconfig.setAllowedOrigins(List.of(\"*\"));\nconfig.setAllowCredentials(true);\n\n$ curl -i -X OPTIONS localhost:8080/api/v1/orders \\\n    -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n\nHTTP/1.1 500\n\njava.lang.IllegalArgumentException: When allowCredentials is true,\nallowedOrigins cannot contain the special value \"*\" since that cannot\nbe set on the \"Access-Control-Allow-Origin\" response header.\nTo allow credentials to a set of origins, list them explicitly\nor consider using \"allowedOriginPatterns\" instead.\n\n#   메시지가 해법까지 알려 준다\n\nconfig.setAllowedOriginPatterns(List.of(\"http://localhost:*\"));\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X OPTIONS \\\n    localhost:8080/api/v1/orders -H 'Origin: http://localhost:3000' \\\n    -H 'Access-Control-Request-Method: POST'\n\n200\n\n# --- CORS 를 열어도 CSRF 는 필요하다 ---\n\n#   (웹 체인에 CORS 를 열고 CSRF 를 끈 상태로 evil.html 을 연다)\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n5\n\n#   또 늘었다\n\n#   CORS 는 응답 읽기만 막는다\n\n#   요청은 그대로 처리된다\n\n#   6.4절의 방어가 따로 필요한 이유다\n\n# --- 다음 절에서 ---\n\n#   응답에 기본으로 붙는 헤더들을 본다",
+   "note": "**MVC 의 `addCorsMappings` 만으로는 사전 요청이 401** 이다 — **시큐리티 필터가 앞에서** 막는다.\n\n**`http.cors()` 를 주면 `CorsFilter` 가 5번에 들어가 `(6/12)` 없이 사전 요청을 200 으로** 끝낸다.\n\n**허용 안 된 출처에도 데이터는 나가고 `Access-Control-Allow-Origin` 헤더만** 없다 — **막는 건** 브라우저다.\n\n**`allowCredentials(true)` + `*` 는 500 이고 예외 메시지가 `allowedOriginPatterns` 를** 알려 준다.\n\n**CORS 를 열어도 CSRF 를 끄면 주문이 또** 늘어난다."
+  }
+ ],
+ "recap": [
+  "**CSRF 는 막고 CORS 는** 허락한다.",
+  "**CORS 를 검사하는 건 서버가 아니라** 브라우저다.",
+  "**막는 것은 응답 읽기이지 요청이** 아니다.",
+  "**사전 요청은 규격상 익명**이다.",
+  "**MVC 설정만으로는 시큐리티 필터를 못** 지난다.",
+  "**`http.cors()` 가 `CorsFilter` 를 앞에** 세운다.",
+  "**그 필터가 사전 요청에 직접** 답한다.",
+  "**`allowCredentials` 와 `*` 는 같이 못** 쓴다.",
+  "**CORS 를 열어도 CSRF 는 여전히** 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "`curl` 로 사전 요청을 보낸다.",
+   "done_when": "설정 전 401 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "MVC 설정만 넣어 본다.",
+   "done_when": "여전히 401 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`http.cors()` 를 준다.",
+   "done_when": "`CorsFilter` 위치와 200 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "허용 안 된 출처로 요청한다.",
+   "done_when": "데이터는 나가고 헤더만 없는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CORS 는 무엇을 막나?",
+   "a": "브라우저가 스크립트에 응답을 넘기는 것을 막는다. 요청은 처리된다."
+  },
+  {
+   "q": "사전 요청에 쿠키가 안 실리는 이유는?",
+   "a": "규격이 그렇게 정했다. 그래서 익명으로 통과시켜야 한다."
+  },
+  {
+   "q": "MVC CORS 설정만으로 부족한 이유는?",
+   "a": "시큐리티 필터가 `DispatcherServlet` 보다 앞에서 막는다."
+  },
+  {
+   "q": "`allowCredentials(true)` 에 `*` 를 쓰면?",
+   "a": "예외가 난다. `allowedOriginPatterns` 를 쓴다."
+  },
+  {
+   "q": "CORS 를 열면 CSRF 를 꺼도 되나?",
+   "a": "안 된다. CORS 는 요청 자체를 막지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "사전 요청(preflight)",
+   "def": "브라우저가 실제 요청 전에 보내는 `OPTIONS` 요청. 자격 증명이 실리지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — CORS",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "MDN — Cross-Origin Resource Sharing (CORS)",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS",
+   "publisher": "MDN"
+  },
+  {
+   "title": "Spring Web MVC — CORS",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

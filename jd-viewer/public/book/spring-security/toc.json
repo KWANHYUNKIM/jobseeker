@@ -388,7 +388,7 @@
           "title": "CSRF 토큰",
           "summary": "어디에 담고 어떻게 보내나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -396,7 +396,7 @@
           "title": "CORS",
           "summary": "시큐리티와 MVC 중 누가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
