@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "http-security",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "HttpSecurity",
+ "summary": "체인 하나를 만든다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "HttpSecurity 가 무엇을 들고 있는지 안다.",
+  "공유 객체가 왜 있는지 안다.",
+  "disable 이 필터를 지우는 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 빌더가 만든다고** 했다. **그 빌더가 `HttpSecurity`** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "HttpSecurity 가 만드는 것",
+   "ascii": "   HttpSecurity makes exactly one chain\n\n   HttpSecurity\n     securityMatcher   which requests this chain owns\n     configurers       a map, one per DSL group\n     sharedObjects     a map, Class -> instance\n     filters           filled during configure\n\n   build()  ->  DefaultSecurityFilterChain\n                  matcher + sorted filter list",
+   "note": "**하나의 매처와 정렬된 필터 목록**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "DSL 은 그룹이다",
+   "md": "**메서드 하나가 관심사 하나**다.\n\n| 메서드 | 컨피규어러 | 만드는 필터 |\n|---|---|---|\n| `csrf` | `CsrfConfigurer` | `CsrfFilter` |\n| `formLogin` | `FormLoginConfigurer` | `UsernamePassword…Filter` 외 2 |\n| `httpBasic` | `HttpBasicConfigurer` | `BasicAuthenticationFilter` |\n| `logout` | `LogoutConfigurer` | `LogoutFilter` |\n| `sessionManagement` | `SessionManagementConfigurer` | `SessionManagementFilter` 등 |\n| `exceptionHandling` | `ExceptionHandlingConfigurer` | `ExceptionTranslationFilter` |\n| `authorizeHttpRequests` | `AuthorizeHttpRequestsConfigurer` | `AuthorizationFilter` |\n| `headers` | `HeadersConfigurer` | `HeaderWriterFilter` |\n| `cors` | `CorsConfigurer` | `CorsFilter` |\n\n> **`formLogin` 하나가 필터 셋**이다 — **로그인 처리 · 로그인 화면 · 로그아웃 화면**.\n\n**6.x 에서 `and()` 가 사라졌다.**\n\n```java\n// 5.x 스타일 — 지금은 deprecated\nhttp.formLogin().loginPage(\"/login\")\n    .and()\n    .csrf().disable();\n\n// 6.x — 람다만 쓴다\nhttp.formLogin(f -> f.loginPage(\"/login\"))\n    .csrf(c -> c.disable());\n```\n\n> **람다 안이 그 그룹의 범위**다.\n> **`and()` 로 어디까지가 무엇인지 헷갈리던 게** 없어졌다.\n\n**`build()` 는 한 번만** 된다.\n\n```\nIllegalStateException: This object has already been built\n```\n\n> **`@Bean` 메서드에서 `http.build()` 를 두 번 부르면** 이거다."
+  },
+  {
+   "type": "figure",
+   "caption": "공유 객체 지도",
+   "ascii": "   the shared object map\n\n   put by                      read by\n   ------------------------    --------------------------\n   HttpSecurity ctor           every configurer\n     AuthenticationManagerBuilder\n     ApplicationContext\n   FormLoginConfigurer.init\n     login page url            ExceptionHandlingConfigurer\n   CsrfConfigurer.init\n     CsrfTokenRepository       LogoutConfigurer\n\n   this map is why init runs before configure",
+   "note": "**컨피규어러끼리 말을 섞는 유일한** 통로다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "disable 은 필터를 지운다",
+   "md": "**`disable()` 은 컨피규어러를 맵에서 지운다.**\n\n```java\npublic B disable() {\n    getBuilder().removeConfigurer(getClass());\n    return getBuilder();\n}\n```\n\n> **등록 자체를 빼니 `configure` 가 안 돌고 필터도 안** 생긴다.\n> **필터 개수로 확인**된다.\n\n**설정으로 개수가 움직인다.**\n\n| 설정 | 필터 개수 |\n|---|---|\n| 기본 | 15 |\n| `csrf().disable()` | 14 |\n| `+ logout().disable()` | 13 |\n| `+ formLogin` 대신 `httpBasic` | 11 |\n| `+ sessionCreationPolicy(STATELESS)` | 11 |\n\n> **2.3절 API 체인이 11이던 이유**다.\n\n**`securityMatcher` 도 여기** 있다.\n\n```java\nhttp.securityMatcher(\"/api/**\")          // 문자열\nhttp.securityMatcher(new AntPathRequestMatcher(\"/api/**\", \"POST\"))\nhttp.securityMatcher(request -> request.getHeader(\"X-API\") != null)\n```\n\n> **세 번째는 헤더로도** 가른다.\n> **11.1절의 ajax 판별에** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 기본 15개에서 하나씩 지운다 ---\n\n@Bean\nSecurityFilterChain chain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .formLogin(withDefaults());\n    return http.build();\n}\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n\n15\n\n#   csrf 를 끈다\n\nhttp.csrf(c -> c.disable())\n\n14\n\n#   logout 도 끈다\n\nhttp.csrf(c -> c.disable()).logout(l -> l.disable())\n\n12\n\n#   둘이 줄었다\n\n#   LogoutFilter 와 DefaultLogoutPageGeneratingFilter 다\n\n#   logout 하나가 필터 둘이었다\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -i logout\n\n#   (아무것도 안 나온다)\n\n$ curl -i -X POST localhost:8080/logout\n\nHTTP/1.1 404\n\nDEBUG FilterChainProxy : Securing POST /logout\nTRACE FilterChainProxy : Invoking AuthorizationFilter (12/12)\nDEBUG FilterChainProxy : Secured POST /logout\nDEBUG DispatcherServlet : No mapping for POST /logout\n\n#   필터가 안 잡으니 컨트롤러까지 갔다\n\n#   거기 매핑이 없어 404 다\n\n#   logout 이 필터의 일이었다는 증거다\n\n# --- 공유 객체를 찍어 본다 ---\n\npublic class PeekConfigurer\n        extends AbstractHttpConfigurer<PeekConfigurer, HttpSecurity> {\n    @Override\n    public void configure(HttpSecurity http) {\n        System.out.println(\">>> AuthenticationManager: \"\n                + http.getSharedObject(AuthenticationManager.class));\n        System.out.println(\">>> ApplicationContext: \"\n                + (http.getSharedObject(ApplicationContext.class) != null));\n        System.out.println(\">>> LoginPage: \"\n                + http.getConfigurer(FormLoginConfigurer.class)\n                      .getLoginPage());\n    }\n}\n\nhttp.with(new PeekConfigurer(), withDefaults());\n\n$ ./gradlew bootRun 2>&1 | grep \">>>\"\n\n>>> AuthenticationManager: ProviderManager (providers=[DaoAuthenticationProvider])\n>>> ApplicationContext: true\n>>> LoginPage: /login\n\n#   FormLoginConfigurer.init 이 /login 을 넣어 뒀다\n\n#   그래서 인증 안 된 요청이 /login 으로 간다\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG FilterChainProxy : Invoking ExceptionTranslationFilter (13/15)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nDEBUG ExceptionTranslationFilter : Sending to authentication entry point\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to /login\n\n#   /login 이라는 문자열이 저 공유 상태에서 왔다\n\n# --- 로그인 페이지를 바꾸면 ---\n\nhttp.formLogin(f -> f.loginPage(\"/my-login\").permitAll())\n\n$ ./gradlew bootRun 2>&1 | grep \">>>\"\n\n>>> LoginPage: /my-login\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/my-login\n\n#   설정 한 줄이 EntryPoint 를 바꿨다\n\n#   내가 EntryPoint 를 직접 만든 적은 없다\n\n# --- build 를 두 번 부르면 ---\n\n@Bean\nSecurityFilterChain chain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().authenticated());\n    http.build();\n    return http.build();\n}\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\njava.lang.IllegalStateException: This object has already been built\n\n#   빌더는 일회용이다\n\n# --- 헤더로 체인을 가른다 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(request -> request.getHeader(\"X-API\") != null)\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(c -> c.disable());\n    return http.build();\n}\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG FilterChainProxy : Invoking AuthorizationFilter (15/15)\n\n#   웹 체인이다\n\n$ curl -i -H 'X-API: 1' -u user:1234 localhost:8080/orders\n\nHTTP/1.1 200\n\nDEBUG FilterChainProxy : Invoking BasicAuthenticationFilter (6/11)\nDEBUG FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   같은 URL 인데 헤더 하나로 체인이 갈렸다\n\n#   (n/15) 와 (n/11) 이다\n\n# --- 다음 절에서 ---\n\n#   체인을 아예 안 타는 길을 본다",
+   "note": "**`csrf` 와 `logout` 을 끄니 15에서 12로** 줄었다. **`logout` 하나가 필터** 둘이었다.\n\n**`POST /logout` 이 404** 다 — **필터가 안 잡으니 컨트롤러까지 갔고 거기엔 매핑이** 없다.\n\n**`FormLoginConfigurer.init` 이 넣은 `/login` 이 `LoginUrlAuthenticationEntryPoint` 로** 흘렀다. **`loginPage` 를 바꾸니 리다이렉트 목적지가** 바뀐다.\n\n**`build()` 를 두 번 부르면 기동이** 실패한다.\n\n**헤더 하나로 `(n/15)` 와 `(n/11)`** 이 갈렸다."
+  }
+ ],
+ "recap": [
+  "**`HttpSecurity` 는 체인 하나를 만드는** 빌더다.",
+  "**매처 · 컨피규어러 맵 · 공유 객체 맵 · 필터 목록**을 들고 있다.",
+  "**DSL 메서드 하나가 관심사** 하나다.",
+  "**`formLogin` 하나가 필터 셋, `logout` 하나가** 둘이다.",
+  "**6.x 는 `and()` 없이 람다만** 쓴다.",
+  "**`disable()` 은 컨피규어러를 지워 필터를 안** 만든다.",
+  "**공유 객체 맵이 컨피규어러끼리 말을 섞는** 통로다.",
+  "**`build()` 는 한 번만** 된다.",
+  "**`securityMatcher` 에 람다를 주면 헤더로도** 가른다."
+ ],
+ "drills": [
+  {
+   "task": "설정을 하나씩 끄며 필터 개수를 센다.",
+   "done_when": "어느 설정이 몇 개를 만드는지 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "`logout().disable()` 후 `POST /logout` 을 부른다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "공유 객체를 찍는 컨피규어러를 만든다.",
+   "done_when": "로그인 페이지 URL 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`securityMatcher` 에 람다를 준다.",
+   "done_when": "헤더로 체인이 갈리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`HttpSecurity.build()` 가 돌려주는 것은?",
+   "a": "`DefaultSecurityFilterChain` — 매처 하나와 정렬된 필터 목록이다."
+  },
+  {
+   "q": "`disable()` 이 하는 일은?",
+   "a": "컨피규어러를 맵에서 지워 필터가 아예 안 만들어진다."
+  },
+  {
+   "q": "공유 객체 맵은 왜 있나?",
+   "a": "컨피규어러가 서로의 상태를 읽어야 해서다. 그래서 `init` 이 먼저 돈다."
+  },
+  {
+   "q": "`logout()` 을 끄면 `POST /logout` 은?",
+   "a": "필터가 안 잡아 컨트롤러로 가고 매핑이 없어 404 다."
+  },
+  {
+   "q": "`build()` 를 두 번 부르면?",
+   "a": "`This object has already been built` 로 기동이 실패한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "공유 객체(shared object)",
+   "def": "`HttpSecurity` 가 들고 있는 `Class → instance` 맵. 컨피규어러끼리 상태를 주고받는 통로다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Java Configuration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/configuration/java.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

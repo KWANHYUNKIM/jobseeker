@@ -96,7 +96,7 @@
           "title": "HttpSecurity",
           "summary": "체인 하나를 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -104,7 +104,7 @@
           "title": "WebSecurity 와 ignoring",
           "summary": "체인을 아예 안 타는 길.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",
@@ -112,7 +112,7 @@
           "title": "사용자 정의 설정",
           "summary": "기본값을 걷어낸다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

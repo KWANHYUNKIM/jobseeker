@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "custom-config",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "사용자 정의 설정",
+ "summary": "기본값을 걷어낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "기본 로그인 화면을 걷어낸다.",
+  "무엇이 같이 사라지는지 본다.",
+  "빨간 테스트 넷을 되돌린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 테스트 넷이** 빨개졌다. **2장을 닫기 전에 그걸** 되돌린다."
+  },
+  {
+   "type": "figure",
+   "caption": "내 로그인 화면이 지우는 것",
+   "ascii": "   what a custom login page removes\n\n   default                          custom\n   -----------------------------    -----------------------------\n   DefaultLoginPageGeneratingFilter  gone\n   DefaultLogoutPageGeneratingFilter gone\n   15 filters                        13 filters\n\n   the generator only exists while you have no page of your own",
+   "note": "**생성기는 내 페이지가 없는 동안만** 산다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "내 화면을 넣는다",
+   "md": "**컨트롤러와 템플릿과 설정 셋**이다.\n\n```java\n@Controller\npublic class LoginController {\n    @GetMapping(\"/login\")\n    public String login() {\n        return \"login\";\n    }\n}\n```\n\n```html\n<form th:action=\"@{/login}\" method=\"post\">\n  <input type=\"text\" name=\"username\">\n  <input type=\"password\" name=\"password\">\n  <button type=\"submit\">로그인</button>\n</form>\n```\n\n> **`th:action` 이 CSRF 히든 필드를 자동으로** 넣는다.\n> **6.4절에서 그게 없으면 어떻게 되는지** 본다.\n\n```java\nhttp.formLogin(f -> f\n        .loginPage(\"/login\")\n        .loginProcessingUrl(\"/login\")\n        .defaultSuccessUrl(\"/\", false)\n        .failureUrl(\"/login?error\")\n        .permitAll());\n```\n\n> **`loginPage` 를 주면 `permitAll` 을 같이 줘야** 한다.\n> **안 주면 로그인 화면이 인증을 요구해 무한** 리다이렉트다 — **2.1절에서 본 그것**이다.\n\n| 옵션 | 뜻 | 기본값 |\n|---|---|---|\n| `loginPage` | 화면 주소 | `/login` (생성기) |\n| `loginProcessingUrl` | 폼이 POST 하는 곳 | `/login` |\n| `usernameParameter` | 아이디 필드 이름 | `username` |\n| `passwordParameter` | 비밀번호 필드 이름 | `password` |\n| `defaultSuccessUrl` | 성공 후 | `/` |\n| `failureUrl` | 실패 후 | `/login?error` |\n\n> **`defaultSuccessUrl(url, true)` 는 늘 거기로** 간다.\n> **`false` 면 원래 가려던 곳으로** 간다 — **3.10절의 `RequestCache`** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "책 아홉 권의 빚",
+   "ascii": "   the debt from book nine, one line at a time\n\n   book 9 section 10.4\n     a curl with no auth ordered something and got 200\n   book 10 section 1.4\n     the same curl got 403, and four tests turned red\n   book 10 section 2.7\n     the four tests are green again\n\n   the wall is up, and the tests know the door",
+   "note": "**벽이 섰고 테스트가 문을** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트 넷을 되돌린다",
+   "md": "**1.4절에서 빨개진 것은 `@WebMvcTest` 셋과 `@SpringBootTest`** 하나였다.\n\n> **컨트롤러 테스트가 302 를** 받았다.\n> **막힌 게 맞다** — **테스트가 인증을 안 하니까**.\n\n**두 가지 길**이 있다.\n\n```java\n// 1) 인증된 사용자인 척한다\n@Test\n@WithMockUser(username = \"user\", roles = \"USER\")\nvoid 주문_목록() throws Exception {\n    mockMvc.perform(get(\"/api/v1/orders\"))\n            .andExpect(status().isOk());\n}\n\n// 2) 막히는 것 자체를 검증한다\n@Test\nvoid 인증_없이_주문하면_막힌다() throws Exception {\n    mockMvc.perform(post(\"/api/v1/orders\").with(csrf()))\n            .andExpect(status().isUnauthorized());\n}\n```\n\n> **둘 다 필요**하다.\n> **하나는 되는 길, 하나는 막히는 길**이다.\n\n**의존성이** 하나 더 든다.\n\n```groovy\ntestImplementation 'org.springframework.security:spring-security-test'\n```\n\n> **`@WithMockUser` · `with(csrf())` · `with(user(...))` 가 여기서** 온다.\n> **8.8절에서 인가 테스트를 제대로** 다룬다.\n\n**`@WebMvcTest` 에는 필터 체인이 안 붙을 수도** 있다.\n\n> **`spring-security-test` 를 넣으면 `SecurityAutoConfiguration` 이 슬라이스에 딸려** 온다.\n> **책 ⑨ 5.11절에서 슬라이스가 무엇을 안 올리는지** 봤다.\n> **여기서는 반대로 뭐가 딸려 오는지가** 문제다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 내 로그인 화면을 넣기 전 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep Default\n\n   DefaultLoginPageGeneratingFilter\n   DefaultLogoutPageGeneratingFilter\n\n$ curl -s localhost:8080/login | head -4\n\n<!DOCTYPE html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n<title>Please sign in</title>\n\n#   내가 만든 적 없는 화면이다\n\n# --- 내 화면을 넣는다 ---\n\nhttp.formLogin(f -> f\n        .loginPage(\"/login\")\n        .loginProcessingUrl(\"/login\")\n        .defaultSuccessUrl(\"/\", false)\n        .failureUrl(\"/login?error\")\n        .permitAll());\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n\n13\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -c Default\n\n0\n\n#   생성기 둘이 사라졌다\n\n#   15에서 13이 됐다\n\n$ curl -s localhost:8080/login | grep -c \"Please sign in\"\n\n0\n\n$ curl -s localhost:8080/login | grep _csrf\n\n<input type=\"hidden\" name=\"_csrf\"\n  value=\"AJnRAdOr-3Yk1LPPGb0hcTn1oqKmXvY...\">\n\n#   내 템플릿이다\n\n#   th:action 이 히든 필드를 넣어 줬다\n\nDEBUG FilterChainProxy : Securing GET /login\nTRACE FilterChainProxy : Invoking CsrfFilter (5/13)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (6/13)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured GET /login\nDEBUG DispatcherServlet : Mapped to LoginController#login()\n\n#   Secured 가 찍히고 컨트롤러까지 갔다\n\n#   2.3절에서 생성기가 응답을 만들 때는 여기까지 안 왔다\n\n# --- permitAll 을 빼면 ---\n\nhttp.formLogin(f -> f.loginPage(\"/login\"))\n\n$ curl -i -s localhost:8080/login | head -3\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\n$ curl -s -o /dev/null -w '%{num_redirects} %{http_code}\\n' -L \\\n    --max-redirs 50 localhost:8080/login\n\n50 302\n\n#   자기 자신으로 무한 리다이렉트다\n\n#   2.1절에서 본 것과 같다\n\n# --- 로그인해 본다 ---\n\n$ TOKEN=$(curl -s -c cookies.txt localhost:8080/login \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n\n$ curl -i -b cookies.txt -c cookies.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\nSet-Cookie: JSESSIONID=B3F1...; Path=/; HttpOnly\n\nDEBUG FilterChainProxy : Securing POST /login\nTRACE FilterChainProxy : Invoking CsrfFilter (5/13)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (6/13)\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=User [Username=user], ...]\nDEBUG SavedRequestAwareAuthenticationSuccessHandler : Redirecting to /\n\n#   (7/13) 이 없다\n\n#   6번이 응답을 만들고 끝냈다\n\n#   컨트롤러의 POST /login 매핑은 필요 없다\n\n$ curl -i -b cookies.txt localhost:8080/orders\n\nHTTP/1.1 200\n\nDEBUG FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   1.3절 이후 처음으로 화면이 열렸다\n\n# --- 빨간 테스트 넷 ---\n\n$ ./gradlew test\n\nOrderControllerTest > 주문_목록 FAILED\n    Status expected:<200> but was:<302>\nOrderControllerTest > 주문_생성 FAILED\n    Status expected:<200> but was:<403>\nProductControllerTest > 상품_조회 FAILED\n    Status expected:<200> but was:<302>\nOrderIntegrationTest > 주문_전체_흐름 FAILED\n    Status expected:<200> but was:<302>\n\n78 tests completed, 4 failed\n\n#   1.4절 그대로다\n\n# --- 고친다 ---\n\ntestImplementation 'org.springframework.security:spring-security-test'\n\n@Test\n@WithMockUser(username = \"user\", roles = \"USER\")\nvoid 주문_목록() throws Exception { ... }\n\n@Test\n@WithMockUser(username = \"user\", roles = \"USER\")\nvoid 주문_생성() throws Exception {\n    mockMvc.perform(post(\"/api/v1/orders\").with(csrf())\n            .content(json).contentType(APPLICATION_JSON))\n            .andExpect(status().isOk());\n}\n\n$ ./gradlew test\n\n78 tests completed\n\nBUILD SUCCESSFUL\n\n#   넷이 초록으로 돌아왔다\n\n# --- 막히는 것도 검증한다 ---\n\n@Test\nvoid 인증_없이_주문하면_401() throws Exception {\n    mockMvc.perform(post(\"/api/v1/orders\").with(csrf())\n            .content(json).contentType(APPLICATION_JSON))\n            .andExpect(status().isUnauthorized());\n}\n\n$ ./gradlew test --tests OrderControllerTest\n\n인증_없이_주문하면_401 FAILED\n    Status expected:<401> but was:<302>\n\n#   401 이 아니라 302 다\n\n#   폼 로그인이라 로그인 화면으로 보낸다\n\n#   API 에 302 는 쓸모가 없다\n\n#   6.3절에서 API 를 401 로 바꾼다\n\n#   일단은 302 로 적어 둔다\n\n@Test\nvoid 인증_없이_주문하면_막힌다() throws Exception {\n    mockMvc.perform(post(\"/api/v1/orders\").with(csrf())\n            .content(json).contentType(APPLICATION_JSON))\n            .andExpect(status().is3xxRedirection())\n            .andExpect(redirectedUrlPattern(\"**/login\"));\n}\n\n$ ./gradlew test\n\n79 tests completed\n\nBUILD SUCCESSFUL\n\n#   일흔아홉이다\n\n#   책 ⑨ 10.4절에서 적어 둔 빚이 하나 갚였다\n\n# --- 다음 장에서 ---\n\n#   저 302 와 로그인 폼이 어떻게 인증이 되는지 본다",
+   "note": "**내 로그인 화면을 넣으니 생성기 둘이 사라져 15에서 13으로** 줄었다.\n\n**`permitAll` 을 빼면 `/login` 이 `/login` 으로 50번** 튄다.\n\n**로그인 `POST` 는 `(7/13)` 이 없다** — **6번 필터가 응답을 만들고** 끝냈다.\n\n**`@WithMockUser` 와 `with(csrf())` 로 빨간 넷이 초록으로** 돌아왔다.\n\n**인증 없는 API 요청은 `401` 이 아니라 `302`** 다. **폼 로그인이라** 그렇다 — **6.3절에서 고친다.**"
+  }
+ ],
+ "recap": [
+  "**`loginPage` 를 주면 생성기 필터 둘이** 사라진다.",
+  "**`permitAll` 을 안 주면 무한** 리다이렉트다.",
+  "**`loginProcessingUrl` 은 필터가 잡으니 컨트롤러 매핑이** 필요 없다.",
+  "**`th:action` 이 CSRF 히든 필드를** 넣는다.",
+  "**`defaultSuccessUrl(url, false)` 는 원래 가려던 곳으로** 간다.",
+  "**`spring-security-test` 가 `@WithMockUser` 와 `with(csrf())` 를** 준다.",
+  "**되는 길과 막히는 길을 둘 다** 검증한다.",
+  "**빨간 넷이 초록이 되고 하나가 더 생겨 일흔아홉**이다.",
+  "**API 가 401 이 아니라 302 인 것은 아직 빚**이다."
+ ],
+ "drills": [
+  {
+   "task": "로그인 화면을 직접 만든다.",
+   "done_when": "필터가 13개인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`permitAll` 을 빼 본다.",
+   "done_when": "무한 리다이렉트를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@WithMockUser` 로 빨간 테스트를 고친다.",
+   "done_when": "전부 초록이 됐다.",
+   "minutes": 25
+  },
+  {
+   "task": "막히는 것을 검증하는 테스트를 하나 더 쓴다.",
+   "done_when": "302 와 목적지를 단언했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`loginPage` 를 주면 무엇이 사라지나?",
+   "a": "`DefaultLoginPageGeneratingFilter` 와 `DefaultLogoutPageGeneratingFilter` 다."
+  },
+  {
+   "q": "`permitAll` 을 빼면?",
+   "a": "로그인 화면이 인증을 요구해 자기 자신으로 무한 리다이렉트한다."
+  },
+  {
+   "q": "`loginProcessingUrl` 에 컨트롤러가 필요한가?",
+   "a": "필요 없다. 필터가 잡아 응답을 만든다."
+  },
+  {
+   "q": "`@WithMockUser` 는 어디서 오나?",
+   "a": "`spring-security-test` 의존성이다."
+  },
+  {
+   "q": "인증 없는 API 요청이 302 인 이유는?",
+   "a": "폼 로그인의 `EntryPoint` 가 로그인 화면으로 보내서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@WithMockUser",
+   "def": "테스트에서 인증된 사용자인 척하게 하는 애너테이션. `spring-security-test` 에 들어 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Java Configuration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/configuration/java.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
