@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "rbac",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "RBAC",
+ "summary": "누가 무엇을 할 수 있나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 관문을 구분한다.",
+  "네 오브젝트를 안다.",
+  "can-i 로 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.2절에서 시크릿의 첫 겹이 RBAC 이라고** 했다. **그 겹을 여기서** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 관문",
+   "ascii": "   every request passes three gates, in order\n\n   authentication    who are you\n                     a certificate, a token, an oidc claim\n                     kubernetes has no user objects at all\n\n   authorization     may you do this\n                     rbac answers by looking for one allowing rule\n\n   admission         should this specific object be allowed\n                     quotas, defaults, policies, webhooks",
+   "note": "**쿠버네티스에 사용자 오브젝트가 아예** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "사용자는 만들 수 없다",
+   "md": "**`kubectl create user` 가** 없다.\n\n> **인증은 밖에서** 온다.\n> **인증서의 `CN` 이 이름, `O` 가** 그룹이다.\n> **OIDC·클라우드 IAM 도** 있다.\n> **서비스 계정만이 클러스터 안 오브젝트**다 — **10.2절**.\n\n**⑩ 과 같은 구조**다.\n\n> **인증이 누구냐, 인가가 되느냐**다.\n> **필터 체인 대신 관문 셋**이다.\n> **셋째 어드미션은 스프링에 대응이 없는** 층이다 — **7.5절의 쿼터와 `LimitRange` 가 여기서** 돈다.\n\n**허용만 있고 거부가** 없다.\n\n> **규칙 하나라도 맞으면** 통과다.\n> **막으려면 권한을 안 주는 수밖에** 없다.\n> **⑩ 7.2절의 순서 규칙과 정반대**다 — **순서가 아예** 없다.\n\n**동사와 자원으로** 적는다.\n\n```yaml\nrules:\n  - apiGroups: [\"\"]\n    resources: [pods, pods/log]\n    verbs: [get, list, watch]\n```\n\n> **`apiGroups: [\"\"]` 가 핵심 그룹**이다(2.3절).\n> **`pods/log` 처럼 하위 자원을 따로** 적는다.\n> **`kubectl logs` 가 그것을 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 오브젝트",
+   "ascii": "   four objects, two axes\n\n                  namespaced          cluster wide\n   what may       Role                ClusterRole\n   who gets it    RoleBinding         ClusterRoleBinding\n\n   the useful diagonal is a RoleBinding pointing at a ClusterRole\n   write the permission set once, grant it inside one namespace",
+   "note": "**대각선이 제일 쓸모** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "바인딩의 종류가 범위를 정한다",
+   "md": "**`ClusterRole` 을 `RoleBinding` 으로 주면 그 네임스페이스**뿐이다.\n\n> **권한 묶음은 한 번만** 쓴다.\n> **팀마다 네임스페이스에서** 준다.\n> **`view`·`edit`·`admin` 이 이미 있는 `ClusterRole`** 이다.\n\n**`ClusterRoleBinding` 으로 주면 전 클러스터**다.\n\n> **실수하기 쉬운** 자리다.\n> **`edit` 을 클러스터로 주면 모든 네임스페이스에서 쓰기**가 된다.\n\n**바인딩은 역할을 못 바꾼다.**\n\n> **`roleRef` 는 불변**이다.\n> **지우고 다시** 만든다.\n\n**클러스터 범위 자원은 `Role` 로 못** 준다.\n\n> **노드·PV·네임스페이스**다 — **7.5절에서 본 목록**이다.\n> **`ClusterRole` 이라야 한다.**\n\n**확인이 쉽다**\n\n```bash\nkubectl auth can-i delete pods --as=alice -n prod\nkubectl auth can-i --list --as=system:serviceaccount:default:app\nkubectl auth whoami\n```\n\n> **주기 전에 확인하고 준 뒤에도** 확인한다.\n> **7.2절에서 이미 한 번** 썼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 나는 누구인가 ---\n\n$ kubectl auth whoami\n\nATTRIBUTE   VALUE\nUsername    kubernetes-admin\nGroups      [kubeadm:cluster-admins system:authenticated]\n\n$ kubectl config view --raw -o jsonpath=\\\n'{.users[0].user.client-certificate-data}' | base64 -d \\\n  | openssl x509 -noout -subject\n\nsubject=O=kubeadm:cluster-admins, CN=kubernetes-admin\n\n#   CN 이 이름, O 가 그룹이다\n\n#   사용자 오브젝트가 아니라 인증서다\n\n$ kubectl get users 2>&1 | tail -1\n\nerror: the server doesn't have a resource type \"users\"\n\n#   그런 타입이 없다\n\n$ kubectl get clusterrolebinding kubeadm:cluster-admins \\\n    -o jsonpath='{.roleRef.name} <- {.subjects[0].kind}/{.subjects[0].name}{\"\\n\"}'\n\ncluster-admin <- Group/kubeadm:cluster-admins\n\n#   그룹에 cluster-admin 을 묶어 놨다\n\n#   그래서 내가 다 된다\n\n# --- 사용자를 하나 만든다 ---\n\n$ openssl genrsa -out alice.key 2048 2>/dev/null\n$ openssl req -new -key alice.key -out alice.csr -subj \"/CN=alice/O=dev\"\n$ cat csr.yaml\n\napiVersion: certificates.k8s.io/v1\nkind: CertificateSigningRequest\nmetadata: { name: alice }\nspec:\n  request: <base64 of alice.csr>\n  signerName: kubernetes.io/kube-apiserver-client\n  usages: [client auth]\n\n$ kubectl apply -f csr.yaml > /dev/null\n$ kubectl certificate approve alice\n\ncertificatesigningrequest.certificates.k8s.io/alice approved\n\n$ kubectl get csr alice --no-headers | awk '{print $6}'\n\nApproved,Issued\n\n$ kubectl get csr alice -o jsonpath='{.status.certificate}' \\\n    | base64 -d > alice.crt\n$ kubectl config set-credentials alice \\\n    --client-certificate=alice.crt --client-key=alice.key --embed-certs \\\n    > /dev/null\n$ kubectl config set-context alice --cluster=kind-kind --user=alice > /dev/null\n\n#   승인만으로 권한은 0이다\n\n$ kubectl --context=alice get pods\n\nError from server (Forbidden): pods is forbidden: User \"alice\" cannot list\n  resource \"pods\" in API group \"\" in the namespace \"default\"\n\n#   인증은 됐고 인가가 안 됐다\n\n#   첫 관문은 통과했다\n\n#   이름이 alice 로 나온다\n\n# --- 역할을 준다 ---\n\n$ kubectl create role reader \\\n    --verb=get --verb=list --verb=watch \\\n    --resource=pods --resource=pods/log\n\nrole.rbac.authorization.k8s.io/reader created\n\n$ kubectl create rolebinding alice-reader \\\n    --role=reader --user=alice\n\nrolebinding.rbac.authorization.k8s.io/alice-reader created\n\n$ kubectl --context=alice get pods --no-headers | wc -l\n\n       0\n\n#   에러가 아니다\n\n#   비어 있을 뿐이다\n\n$ kubectl run demo --image=nginx:1.27 > /dev/null && sleep 8\n$ kubectl --context=alice get pods --no-headers | awk '{print $1, $3}'\n\ndemo Running\n\n$ kubectl --context=alice logs demo 2>&1 | head -1\n\n/docker-entrypoint.sh: Configuration complete; ready for start up\n\n#   pods/log 를 따로 적었으니 된다\n\n$ kubectl --context=alice delete pod demo 2>&1 | tail -1\n\nError from server (Forbidden): pods \"demo\" is forbidden: User \"alice\"\n  cannot delete resource \"pods\" in API group \"\" in the namespace \"default\"\n\n#   동사에 없다\n\n# --- 확인 명령 ---\n\n$ kubectl auth can-i list pods --as=alice\n\nyes\n\n$ kubectl auth can-i delete pods --as=alice\n\nno\n\n$ kubectl auth can-i list pods --as=alice -n kube-system\n\nno\n\n#   RoleBinding 은 그 네임스페이스뿐이다\n\n$ kubectl auth can-i --list --as=alice 2>/dev/null | grep pods\n\npods                     []   []   [get list watch]\npods/log                 []   []   [get list watch]\n\n#   준 것만 나온다\n\n# --- 거부 규칙은 없다 ---\n\n$ kubectl create role deny --verb=delete --resource=pods \\\n    --dry-run=client -o yaml | grep -A3 rules\n\nrules:\n- apiGroups:\n  - \"\"\n  resources:\n  - pods\n\n#   verbs 는 언제나 허용이다\n\n#   deny 라는 개념이 없다\n\n$ kubectl create clusterrole all --verb=* --resource=pods \\\n    --dry-run=client -o jsonpath='{.rules[0].verbs}{\"\\n\"}'\n\n[\"*\"]\n\n#   막으려면 안 주는 수밖에 없다\n\n# --- 대각선을 쓴다 ---\n\n$ kubectl get clusterrole view edit admin --no-headers | awk '{print $1}'\n\nadmin\nedit\nview\n\n$ kubectl create namespace team > /dev/null\n$ kubectl create rolebinding alice-team \\\n    --clusterrole=edit --user=alice -n team\n\nrolebinding.rbac.authorization.k8s.io/alice-team created\n\n$ kubectl auth can-i create deployments --as=alice -n team\n\nyes\n\n$ kubectl auth can-i create deployments --as=alice -n default\n\nno\n\n#   ClusterRole 인데 team 에서만이다\n\n#   바인딩 종류가 범위를 정한다\n\n$ kubectl auth can-i get secrets --as=alice -n team\n\nyes\n\n#   edit 은 시크릿을 읽는다\n\n#   7.2절의 1겹이 여기서 뚫린다\n\n#   view 는 안 읽는다\n\n$ kubectl auth can-i get secrets --as=alice -n team \\\n    --subresource='' 2>/dev/null; kubectl get clusterrole view \\\n    -o jsonpath='{range .rules[*]}{.resources}{\"\\n\"}{end}' | grep -c secrets\n\nyes\n0\n\n# --- 클러스터 자원은 Role 로 못 준다 ---\n\n$ kubectl create role nodes --verb=list --resource=nodes -n team > /dev/null\n$ kubectl create rolebinding alice-nodes --role=nodes --user=alice -n team \\\n    > /dev/null\n$ kubectl auth can-i list nodes --as=alice -n team\n\nno\n\n#   만들어지긴 했는데 안 먹는다\n\n#   노드는 네임스페이스가 없다 (7.5절)\n\n$ kubectl create clusterrolebinding alice-nodes \\\n    --clusterrole=view --user=alice > /dev/null\n$ kubectl auth can-i list nodes --as=alice\n\nyes\n\n#   ClusterRoleBinding 이라야 한다\n\n#   대신 모든 네임스페이스에서 view 가 됐다\n\n$ kubectl auth can-i list pods --as=alice -n kube-system\n\nyes\n\n#   아까는 no 였다\n\n#   이게 실수하는 자리다\n\n# --- 치운다 ---\n\n$ kubectl delete clusterrolebinding alice-nodes > /dev/null\n$ kubectl delete namespace team > /dev/null\n$ kubectl delete rolebinding alice-reader && kubectl delete role reader\n$ kubectl delete pod demo --now > /dev/null\n$ kubectl config delete-context alice > /dev/null\n$ rm -f alice.key alice.csr alice.crt\n\nrolebinding.rbac.authorization.k8s.io \"alice-reader\" deleted\nrole.rbac.authorization.k8s.io \"reader\" deleted\n\n# --- 다음 절에서 ---\n\n#   사람이 아니라 파드의 신분",
+   "note": "**`kubectl get users` 자체가** 없다 — 인증서의 `CN`/`O` 가 이름과 그룹이다.\n\n**승인만으로는 `pods is forbidden` 이고, 인증은 통과해 이름이 `alice` 로** 찍힌다.\n\n**`pods/log` 를 따로 적었기에 `kubectl logs` 가** 된다.\n\n**같은 `edit` 을 `RoleBinding` 으로 주면 `team` 에서만, `ClusterRoleBinding` 이면 `kube-system` 까지** 열린다.\n\n**노드를 `Role` 로 주면 만들어지긴 하는데 `can-i` 가 `no`** 다."
+  }
+ ],
+ "recap": [
+  "**인증·인가·어드미션 셋을** 지난다.",
+  "**사용자 오브젝트가** 없다.",
+  "**허용만 있고 거부가** 없다.",
+  "**`Role`·`ClusterRole`·두 바인딩** 넷이다.",
+  "**바인딩 종류가 범위를** 정한다.",
+  "**`ClusterRole` 을 `RoleBinding` 으로 주는 게 제일 쓸모** 있다.",
+  "**클러스터 자원은 `ClusterRoleBinding` 이라야** 한다.",
+  "**하위 자원은 따로 적어야** 한다.",
+  "**`auth can-i` 로 늘** 확인한다."
+ ],
+ "drills": [
+  {
+   "task": "인증서로 사용자를 만든다.",
+   "done_when": "권한 없는 상태의 오류를 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "`Role` 과 바인딩을 준다.",
+   "done_when": "목록은 되고 삭제는 안 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ClusterRole` 을 `RoleBinding` 으로 준다.",
+   "done_when": "한 네임스페이스에서만 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`can-i --list` 를 찍는다.",
+   "done_when": "준 것만 나오는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 관문은?",
+   "a": "인증, 인가, 어드미션이다."
+  },
+  {
+   "q": "사용자를 어떻게 만드나?",
+   "a": "만들 수 없다. 인증서나 OIDC 등 외부 수단이 신원을 준다."
+  },
+  {
+   "q": "RBAC 에 거부 규칙이 없는 이유는?",
+   "a": "허용 규칙 하나라도 맞으면 통과하는 설계라서다. 막으려면 안 주면 된다."
+  },
+  {
+   "q": "`ClusterRole` 을 `RoleBinding` 으로 주면?",
+   "a": "그 네임스페이스 안에서만 권한이 생긴다."
+  },
+  {
+   "q": "노드 목록 권한은 어떻게 주나?",
+   "a": "`ClusterRole` 과 `ClusterRoleBinding` 으로만 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "어드미션",
+   "def": "인가 뒤 오브젝트 내용을 검사하거나 고치는 마지막 관문."
+  },
+  {
+   "term": "하위 자원",
+   "def": "`pods/log` 처럼 자원에 딸린 별도 권한 대상."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — RBAC Authorization",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Authenticating",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/authentication/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
