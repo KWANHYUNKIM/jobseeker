@@ -307,7 +307,7 @@
           "title": "벌크성 수정 쿼리",
           "summary": "영속성 컨텍스트를 건너뛴다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.13",
@@ -315,7 +315,7 @@
           "title": "@EntityGraph",
           "summary": "N+1 을 fetch join 없이 푼다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
