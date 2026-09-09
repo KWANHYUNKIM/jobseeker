@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "binding",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "파라미터 바인딩",
+ "summary": "위치 기반은 쓰지 않는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 방식을 구분한다.",
+  "무엇을 바인딩할 수 있는지 안다.",
+  "왜 문자열 연결을 안 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절에서 파라미터 순서를 틀려도 조용히** 지나갔다. **여기서 그걸 막는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 방식",
+   "ascii": "   two ways to bind, and only one of them survives an edit\n\n   positional   ?1 ?2, matched to the parameter list by index\n                add a condition in the middle and every number shifts\n\n   named        :username :age, matched to @Param by name\n                order is free, and the same name may appear twice\n\n   the second costs one annotation and removes a whole class of bug",
+   "note": "**애너테이션 하나로 버그 한 부류가** 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "위치 기반은 수정에 약하다",
+   "md": "**중간에 조건을 하나 넣으면**\n\n> **뒤 번호가 다** 밀린다.\n> **`?2` 가 `?3` 이 되어야** 한다.\n> **안 고치면 값이 엉뚱한 자리에** 간다.\n\n**타입이 같으면 안** 잡힌다.\n\n> **5.2절에서 본 그것**이다.\n> **`String, String` 이면 바꿔 넣어도** 통과한다.\n> **결과만 틀린다.**\n\n**이름 기반은 순서가** 자유롭다.\n\n> **`@Param(\"username\")` 이 이름을 정한다.**\n> **쿼리에서 순서를 바꿔도** 된다.\n> **같은 이름을 두 번 쓸 수도** 있다.\n\n**`-parameters` 를 켜면 생략 가능**하다.\n\n> **컴파일 옵션이다.**\n> **부트 플러그인이 기본으로 켜** 준다.\n> **그래도 명시하는 게** 낫다 — 리팩터링에 안전하다."
+  },
+  {
+   "type": "figure",
+   "caption": "바인딩할 수 있는 자리",
+   "ascii": "   where a bound value can and cannot go\n\n   a value        where age > :age            fine\n   a list         where id in :ids            fine, expanded at runtime\n   an entity      where team = :team          fine, becomes the identifier\n\n   a column name  order by :column            not possible\n   a table name   from :table                 not possible\n\n   the last two are why sorting is a Sort object and not a string",
+   "note": "**정렬이 문자열이 아니라 `Sort` 인** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "문자열을 이어 붙이면 안 된다",
+   "md": "**컬럼 이름은 바인딩이 안** 된다.\n\n> **`order by :column` 이 안** 통한다.\n> **그래서 문자열로 붙이고 싶어**진다.\n> **거기서 SQL 인젝션이** 난다.\n\n**JPQL 이라 안전하다고 생각하면** 틀린다.\n\n> **JPQL 도 문자열 연결이면 위험**하다.\n> **하이버네이트가 파싱하니 조금 낫지만 여전히 우회가** 있다.\n> **네이티브면 그냥 뚫린다**(8.6절).\n\n**정렬은 `Sort` 로** 받는다(5.4절).\n\n> **필드 이름을 검증**한다.\n> **없는 필드면 `PropertyReferenceException`** 이다.\n> **화이트리스트가 공짜로** 생긴다.\n\n**엔티티도 바인딩**된다.\n\n> **`where m.team = :team`** 이다.\n> **식별자로** 바뀐다.\n> **`team.getId()` 를 안 꺼내도** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 위치 기반\n\n@Query(\"select m from Member m where m.username = ?1 and m.age > ?2\")\nList<Member> positional(String username, int age);\n\n@Test\n@Transactional\nvoid 위치_기반() {\n    em.clear();\n    memberRepository.positional(\"m1\", 5);\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n        and m1_0.age>?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:INTEGER) <- [5]\n\n--   동작은 한다\n\n\n-- 중간에 조건을 넣으면\n\n@Query(\"select m from Member m\" +\n       \" where m.username = ?1 and m.team.name = ?2 and m.age > ?3\")\nList<Member> positionalV2(String username, int age, String teamName);\n\n--   파라미터 순서는 안 바꿨다\n--   쿼리에만 조건을 끼워 넣었다\n\n@Test\n@Transactional\nvoid 밀린다() {\n    em.clear();\n    memberRepository.positionalV2(\"m1\", 5, \"A팀\");\n}\n\nHibernate:\n    select ... where m1_0.username=? and t1_0.name=? and m1_0.age>?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:INTEGER) <- [5]\n\norg.hibernate.type.descriptor.java.CoercionException:\n    Cannot coerce value '5' [java.lang.Integer] to String\n\n--   ?2 자리에 나이가 갔다\n--   타입이 달라 잡혔다\n\n\n-- 타입이 같으면 안 잡힌다\n\n@Query(\"select m from Member m\" +\n       \" where m.username = ?1 and m.team.name = ?2\")\nList<Member> twoStrings(String username, String teamName);\n\n@Test\n@Transactional\nvoid 조용히_틀린다() {\n    em.clear();\n    List<Member> r = memberRepository.twoStrings(\"A팀\", \"m1\");\n    System.out.println(\"결과: \" + r.size() + \"건\");\n}\n\nHibernate:\n    select ... where m1_0.username=? and t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [A팀]\nTRACE binding parameter (2:VARCHAR) <- [m1]\n결과: 0건\n\n--   5.2절과 같은 결말이다\n--   0건이 나올 뿐 오류가 없다\n\n\n-- 이름 기반으로 바꾼다\n\n@Query(\"select m from Member m\" +\n       \" where m.username = :username and m.team.name = :teamName\")\nList<Member> named(@Param(\"username\") String username,\n                   @Param(\"teamName\") String teamName);\n\n@Test\n@Transactional\nvoid 이름_기반() {\n    em.clear();\n    memberRepository.named(\"m1\", \"A팀\");\n}\n\nHibernate:\n    select ... where m1_0.username=? and t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:VARCHAR) <- [A팀]\n결과: 1건\n\n--   이름으로 맞았다\n\n\n-- 쿼리 순서를 바꿔도 된다\n\n@Query(\"select m from Member m\" +\n       \" where m.team.name = :teamName and m.username = :username\")\nList<Member> reordered(@Param(\"username\") String username,\n                       @Param(\"teamName\") String teamName);\n\n@Test\n@Transactional\nvoid 순서_무관() {\n    em.clear();\n    memberRepository.reordered(\"m1\", \"A팀\");\n}\n\nHibernate:\n    select ... where t1_0.name=? and m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [A팀]\nTRACE binding parameter (2:VARCHAR) <- [m1]\n\n--   자바 파라미터 순서는 그대로다\n--   쿼리 순서만 바뀌었다\n--   각자 제자리에 갔다\n\n\n-- 같은 이름을 두 번\n\n@Query(\"select m from Member m\" +\n       \" where m.username = :keyword or m.team.name = :keyword\")\nList<Member> byKeyword(@Param(\"keyword\") String keyword);\n\n@Test\n@Transactional\nvoid 같은_이름() {\n    em.clear();\n    memberRepository.byKeyword(\"A팀\");\n}\n\nHibernate:\n    select ... where m1_0.username=? or t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [A팀]\nTRACE binding parameter (2:VARCHAR) <- [A팀]\n\n--   한 번 넘겼는데 두 자리에 들어갔다\n--   위치 기반이면 두 번 넘겨야 한다\n\n\n-- @Param 을 빼면\n\n@Query(\"select m from Member m where m.username = :username\")\nList<Member> noParam(String username);\n\n$ ./gradlew bootRun\n\nINFO  Started DataJpaApplication\n\n@Test\n@Transactional\nvoid param_없이() {\n    em.clear();\n    memberRepository.noParam(\"m1\");\n}\n\nHibernate: select ... where m1_0.username=?\n\n--   동작한다\n--   -parameters 옵션 덕이다\n\n$ javap -l -p build/classes/java/main/study/datajpa/repository/MemberRepository.class \\\n    | grep -A2 'noParam'\n\n  public abstract java.util.List<Member> noParam(java.lang.String);\n    MethodParameters:\n      Name                           Flags\n      username\n\n--   이름이 클래스 파일에 남아 있다\n--   부트 플러그인이 켜 준다\n\n\n-- 옵션을 끄면\n\n// build.gradle\ntasks.withType(JavaCompile) {\n    options.compilerArgs.remove('-parameters')\n}\n\n$ ./gradlew bootRun\n\nAPPLICATION FAILED TO START\n\nCaused by: IllegalStateException:\n    Using named parameters for method\n    public abstract java.util.List MemberRepository.noParam(String)\n    but parameter 'Optional[arg0]' not found in annotated query\n\n--   arg0 이 됐다\n--   그래서 @Param 을 명시하는 게 낫다\n\n\n-- 엔티티를 바인딩한다\n\n@Query(\"select m from Member m where m.team = :team\")\nList<Member> byTeamEntity(@Param(\"team\") Team team);\n\n@Test\n@Transactional\nvoid 엔티티_바인딩() {\n    em.clear();\n    Team t = teamRepository.findAll().get(0);\n    memberRepository.byTeamEntity(t);\n}\n\nHibernate: select t1_0.team_id, t1_0.name from team t1_0\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.team_id=?\nTRACE binding parameter (1:BIGINT) <- [1]\n\n--   식별자로 바뀌었다\n--   getId() 를 안 꺼냈다\n--   조인도 안 생겼다\n\n\n-- id 로 하면 조인이 생긴다\n\n@Query(\"select m from Member m where m.team.id = :teamId\")\nList<Member> byTeamId(@Param(\"teamId\") Long teamId);\n\n@Test\n@Transactional\nvoid id_로() {\n    em.clear();\n    memberRepository.byTeamId(1L);\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.team_id=?\n\n--   여기도 조인이 없다\n--   외래 키에 있는 값이라서다\n--   m.team.name 이었으면 조인이 생긴다 (5.5절)\n\n\n-- 컬럼 이름은 바인딩이 안 된다\n\n@Query(\"select m from Member m order by :column\")\nList<Member> orderByColumn(@Param(\"column\") String column);\n\n@Test\n@Transactional\nvoid 컬럼_바인딩() {\n    em.clear();\n    memberRepository.orderByColumn(\"age\");\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        ?\nTRACE binding parameter (1:VARCHAR) <- [age]\n\n--   정렬이 안 됐다\n--   상수 'age' 로 정렬한 셈이다\n--   결과 순서가 안 바뀐다\n\n@Test\n@Transactional\nvoid 결과_확인() {\n    em.clear();\n    List<Member> a = memberRepository.orderByColumn(\"age\");\n    em.clear();\n    List<Member> b = memberRepository.orderByColumn(\"username\");\n    System.out.println(\"age 기준   : \" + a.stream()\n            .map(Member::getUsername).toList());\n    System.out.println(\"이름 기준  : \" + b.stream()\n            .map(Member::getUsername).toList());\n}\n\nage 기준   : [m1, m2, m3]\n이름 기준  : [m1, m2, m3]\n\n--   같다\n--   정렬이 아예 안 걸렸다\n\n\n-- 문자열로 붙이면\n\n// 이렇게 하고 싶어진다\n// String jpql = \"select m from Member m order by \" + column;\n\n@Test\n@Transactional\nvoid 문자열_연결() {\n    String column = \"age desc\";\n    List<Member> r = em.createQuery(\n            \"select m from Member m order by \" + column, Member.class)\n        .getResultList();\n    System.out.println(r.stream().map(Member::getAge).toList());\n}\n\nHibernate:\n    select ... from member m1_0 order by m1_0.age desc\n[30, 20, 10]\n\n--   동작한다\n--   그래서 유혹이 된다\n\n@Test\n@Transactional\nvoid 주입_시도() {\n    String column = \"age) or (1=1\";\n    try {\n        em.createQuery(\n            \"select m from Member m where m.age > 100 order by \" + column,\n            Member.class).getResultList();\n    } catch (Exception e) {\n        System.out.println(\"막힘: \" + e.getClass().getSimpleName());\n    }\n}\n\n막힘: SemanticException\n\n--   JPQL 파서가 막았다\n--   네이티브면 그냥 뚫린다 (8.6절)\n\n\n-- Sort 를 쓰면 검증된다\n\n@Query(\"select m from Member m\")\nList<Member> all(Sort sort);\n\n@Test\n@Transactional\nvoid sort_검증() {\n    em.clear();\n    memberRepository.all(Sort.by(Sort.Direction.DESC, \"age\"));\n\n    try {\n        memberRepository.all(Sort.by(\"age) or (1=1\"));\n    } catch (Exception e) {\n        System.out.println(\"막힘: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select ... from member m1_0 order by m1_0.age desc\n막힘: PropertyReferenceException\n\n--   필드 이름을 검증한다\n--   화이트리스트가 공짜로 생긴다\n--   5.4절에서 Sort 를 쓴 이유다\n\n\n-- 값은 언제나 바인딩된다\n\n@Test\n@Transactional\nvoid 값_주입() {\n    em.clear();\n    memberRepository.named(\"m1' or '1'='1\", \"A팀\");\n}\n\nHibernate:\n    select ... where m1_0.username=? and t1_0.name=?\nTRACE binding parameter (1:VARCHAR) <- [m1' or '1'='1]\n결과: 0건\n\n--   따옴표가 값의 일부다\n--   ? 로 나가서 안전하다\n--   ⑤ 에서 본 그것이다\n\n\n-- 정리\n\n$ printf '%-20s %s\\n' \\\n  '값' '바인딩된다' \\\n  '컬렉션' '바인딩된다 (5.7절)' \\\n  '엔티티' '식별자로 바인딩된다' \\\n  '컬럼 이름' '안 된다, Sort 를 쓴다' \\\n  '테이블 이름' '안 된다'\n\n값                   바인딩된다\n컬렉션               바인딩된다 (5.7절)\n엔티티               식별자로 바인딩된다\n컬럼 이름            안 된다, Sort 를 쓴다\n테이블 이름          안 된다\n\n--   5.7절에서 컬렉션을 본다",
+   "note": "**중간에 조건을 넣자 `?2` 자리에 나이가 가서 `CoercionException`** 이 났다.\n\n**타입이 같으면 안 잡혀 `0건` 만 나온다** — 5.2절과 같은 결말이다.\n\n**같은 `:keyword` 를 두 자리에 쓰면 한 번 넘겨도 둘 다** 채운다.\n\n**엔티티를 바인딩하면 `BIGINT` 식별자로 바뀌고 조인이 안** 생긴다.\n\n**`order by :column` 은 정렬이 아예 안 걸려 두 결과가** 같다."
+  }
+ ],
+ "recap": [
+  "**위치 기반은 수정에** 약하다.",
+  "**중간 삽입에 번호가** 밀린다.",
+  "**타입이 같으면 안** 잡힌다.",
+  "**이름 기반은 순서가** 자유롭다.",
+  "**같은 이름을 두 번 쓸 수** 있다.",
+  "**`@Param` 을 명시하는 게** 낫다.",
+  "**엔티티는 식별자로** 바뀐다.",
+  "**컬럼 이름은 바인딩이 안** 된다.",
+  "**정렬은 `Sort` 로** 받는다."
+ ],
+ "drills": [
+  {
+   "task": "위치 기반 쿼리에 조건을 끼운다.",
+   "done_when": "값이 밀리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 타입 둘을 바꿔 넣는다.",
+   "done_when": "조용히 틀리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 이름을 두 자리에 쓴다.",
+   "done_when": "한 번 넘겨 둘 다 채우는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`order by :column` 을 써 본다.",
+   "done_when": "정렬이 안 되는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "위치 기반 바인딩의 문제는?",
+   "a": "쿼리 중간에 조건을 넣으면 번호가 밀린다."
+  },
+  {
+   "q": "이름 기반의 이점은?",
+   "a": "순서가 자유롭고 같은 이름을 여러 자리에 쓸 수 있다."
+  },
+  {
+   "q": "`@Param` 없이도 되는 이유는?",
+   "a": "`-parameters` 컴파일 옵션으로 이름이 남아 있어서다."
+  },
+  {
+   "q": "엔티티를 바인딩하면?",
+   "a": "식별자 값으로 바뀌어 나간다."
+  },
+  {
+   "q": "컬럼 이름을 동적으로 주려면?",
+   "a": "바인딩이 안 되므로 `Sort` 를 써서 검증받는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이름 기반 바인딩",
+   "def": "`:name` 과 `@Param` 으로 이름을 맞추는 방식."
+  },
+  {
+   "term": "-parameters",
+   "def": "파라미터 이름을 클래스 파일에 남기는 컴파일 옵션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "OWASP — SQL Injection Prevention Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  }
+ ]
+}

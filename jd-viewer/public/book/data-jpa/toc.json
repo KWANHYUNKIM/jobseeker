@@ -259,7 +259,7 @@
           "title": "파라미터 바인딩",
           "summary": "위치 기반은 쓰지 않는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -267,7 +267,7 @@
           "title": "컬렉션 파라미터",
           "summary": "in 절이 만들어지는 모습.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
