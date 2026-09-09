@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "search",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "검색 조건",
+ "summary": "and 로 잇는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "연산자 대응을 안다.",
+  "like 넷을 가른다.",
+  "escape 를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 경로를** 얻었다. **그 경로에 붙는 메서드들을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "연산자와 메서드",
+   "ascii": "   the operator, and the method that writes it\n\n   =  !=      eq  ne\n   >  >=      gt  goe\n   <  <=      lt  loe\n   between    between\n   in         in\n   like       like  contains  startsWith  endsWith\n   is null    isNull  isNotNull",
+   "note": "**이름이 짧아 처음엔 낯**설다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름이 부등호를 대신한다",
+   "md": "**`goe` 는 greater or equal** 이다.\n\n> **`loe`·`gt`·`lt` 도 같은** 식이다.\n> **처음엔 헷갈**린다.\n> **자바에 `>=` 를 오버로딩할 수 없어서**다.\n\n**타입이 메서드를** 고른다.\n\n> **2.2절에서 본 그것**이다.\n> **`StringPath` 에는 `goe` 가** 없다.\n> **잘못 쓰면 컴파일이** 깨진다.\n\n**`not` 을 붙일 수** 있다.\n\n> **`eq(...).not()` 이 `ne`** 다.\n> **`isNull().not()` 도** 된다.\n> **읽기는 `ne` 가** 낫다.\n\n**`in` 은 컬렉션을 받는**다.\n\n> **⑭ 5.7절의 그 문제가 여기도** 있다.\n> **크기마다 문장이** 달라진다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "like 넷",
+   "ascii": "   four ways to write a like, and the value each one binds\n\n   like(\"m%\")        the percent sign is yours to write\n   startsWith(\"m\")   binds m%, and escapes what you passed\n   contains(\"m\")     binds %m%\n   endsWith(\"1\")     binds %1\n\n   only the first one lets a wildcard sneak in from user input",
+   "note": "**첫째만 사용자 입력이 와일드카드를 넣을 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "like 는 값을 이스케이프하지 않는다",
+   "md": "**`%` 가 그대로** 간다.\n\n> **사용자가 `%` 를 치면 전부가** 걸린다.\n> **`like` 는 내가 준 문자열을 그대로** 쓴다.\n> **주입은 아니지만 의도와** 다르다.\n\n**`contains` 는 이스케이프한다.**\n\n> **`escape '!'` 가 JPQL 에** 붙는다.\n> **값 안의 `%` 가 `!%` 가** 된다.\n> **아래에서 바인딩 값을** 본다.\n\n**그래서 검색창에는 `contains`** 다.\n\n> **패턴을 내가 만들면 `like`** 다.\n> **입력을 그대로 넣으면 `contains`** 다.\n> **⑩ 4.5절의 입력 검증과 같은 결**이다.\n\n**`null` 비교는 `eq(null)` 이 아니다.**\n\n> **`isNull()` 을 써야** 한다.\n> **`eq(null)` 은 예외**다.\n> **아래에서 그것도** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 등호와 부등호\n\n@Test\nvoid 기본_연산자() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.eq(\"m1\")\n                    .or(member.username.ne(\"m2\"))\n                    .and(member.age.goe(10))\n                    .and(member.age.lt(40)))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    (\n        member1.username = ?1\n        or member1.username != ?2\n    )\n    and member1.age >= ?3\n    and member1.age < ?4 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        (\n            m1_0.username=?\n            or m1_0.username!=?\n        )\n        and m1_0.age>=?\n        and m1_0.age<?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:VARCHAR) <- [m2]\nTRACE binding parameter (3:INTEGER) <- [10]\nTRACE binding parameter (4:INTEGER) <- [40]\n\n--   or 를 먼저 이었더니 괄호가 생겼다\n--   조립 순서가 괄호를 만든다\n\n\n-- not 으로도 쓴다\n\n@Test\nvoid not() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.eq(\"m1\").not())\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username != ?1 */\n\nHibernate:\n    select ... from member m1_0 where m1_0.username!=?\n\n--   ne 와 같은 문장이 됐다\n\n\n-- between\n\n@Test\nvoid between() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.age.between(20, 30))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age between ?1 and ?2 */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.age between ? and ?\nTRACE binding parameter (1:INTEGER) <- [20]\nTRACE binding parameter (2:INTEGER) <- [30]\n\n--   그대로 between 이다\n\n\n-- in\n\n@Test\nvoid in() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.in(\"m1\", \"m2\", \"m3\"))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username in (?1, ?2, ?3) */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username in (?, ?, ?)\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:VARCHAR) <- [m2]\nTRACE binding parameter (3:VARCHAR) <- [m3]\n\n--   자리가 셋 펼쳐졌다\n--   ⑭ 5.7절과 같다\n\n\n-- 크기마다 문장이 다르다\n\n@Test\nvoid in_크기() {\n    Set<String> shapes = new LinkedHashSet<>();\n    for (int n = 1; n <= 4; n++) {\n        em.clear();\n        List<String> names = IntStream.rangeClosed(1, n)\n                .mapToObj(i -> \"m\" + i).toList();\n        shapes.add(sqlCapture.capture(() ->\n                queryFactory.selectFrom(member)\n                        .where(member.username.in(names)).fetch()));\n    }\n    System.out.println(\"서로 다른 문장: \" + shapes.size());\n}\n\nHibernate: select ... where m1_0.username in (?)\nHibernate: select ... where m1_0.username in (?, ?)\nHibernate: select ... where m1_0.username in (?, ?, ?)\nHibernate: select ... where m1_0.username in (?, ?, ?, ?)\n서로 다른 문장: 4\n\n--   ⑭ 5.7절의 in_clause_parameter_padding 이 여기도 듣는다\n\n\n-- 빈 컬렉션이면\n\n@Test\nvoid in_빈_컬렉션() {\n    em.clear();\n    List<Member> r = queryFactory.selectFrom(member)\n            .where(member.username.in(List.of()))\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    1 = 0 */\n\nHibernate:\n    select ... from member m1_0 where 1=0\n건수: 0\n\n--   쿼리는 나갔다\n--   ⑭ 5.7절에서 본 그 문장이다\n\n\n-- like 넷\n\n@Test\nvoid like_넷() {\n    for (String kind : List.of(\"like\", \"startsWith\", \"contains\", \"endsWith\")) {\n        em.clear();\n        System.out.println(\"--- \" + kind + \" ---\");\n        BooleanExpression cond = switch (kind) {\n            case \"like\"       -> member.username.like(\"m%\");\n            case \"startsWith\" -> member.username.startsWith(\"m\");\n            case \"contains\"   -> member.username.contains(\"m\");\n            default           -> member.username.endsWith(\"1\");\n        };\n        queryFactory.selectFrom(member).where(cond).fetch();\n    }\n}\n\n--- like ---\n/* select member1 from Member member1\n   where member1.username like ?1 */\nHibernate: select ... where m1_0.username like ?\nTRACE binding parameter (1:VARCHAR) <- [m%]\n--- startsWith ---\n/* select member1 from Member member1\n   where member1.username like ?1 escape '!' */\nHibernate: select ... where m1_0.username like ? escape '!'\nTRACE binding parameter (1:VARCHAR) <- [m%]\n--- contains ---\n/* select member1 from Member member1\n   where member1.username like ?1 escape '!' */\nHibernate: select ... where m1_0.username like ? escape '!'\nTRACE binding parameter (1:VARCHAR) <- [%m%]\n--- endsWith ---\n/* select member1 from Member member1\n   where member1.username like ?1 escape '!' */\nHibernate: select ... where m1_0.username like ? escape '!'\nTRACE binding parameter (1:VARCHAR) <- [%1]\n\n--   like 만 escape 가 없다\n--   나머지 셋은 %를 내가 안 썼다\n\n\n-- 사용자가 % 를 치면\n\n@Test\nvoid 와일드카드_입력() {\n    String input = \"%\";\n\n    em.clear();\n    System.out.println(\"like:     \" + queryFactory.selectFrom(member)\n            .where(member.username.like(input)).fetch().size());\n\n    em.clear();\n    System.out.println(\"contains: \" + queryFactory.selectFrom(member)\n            .where(member.username.contains(input)).fetch().size());\n}\n\nHibernate: select ... where m1_0.username like ?\nTRACE binding parameter (1:VARCHAR) <- [%]\nlike:     10\nHibernate: select ... where m1_0.username like ? escape '!'\nTRACE binding parameter (1:VARCHAR) <- [%!%%]\ncontains: 0\n\n--   like 는 전부 걸렸다\n--   contains 는 값 안의 %를 !% 로 감쌌다\n--   검색창에는 contains 다\n\n\n-- null 비교\n\n@Test\nvoid null_비교() {\n    em.clear();\n    System.out.println(\"팀 없는 회원: \" + queryFactory.selectFrom(member)\n            .where(member.team.isNull()).fetch().size());\n\n    em.clear();\n    System.out.println(\"팀 있는 회원: \" + queryFactory.selectFrom(member)\n            .where(member.team.isNotNull()).fetch().size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.team is null */\nHibernate:\n    select ... from member m1_0 where m1_0.team_id is null\n팀 없는 회원: 3\n/* select member1 from Member member1\n   where member1.team is not null */\nHibernate:\n    select ... from member m1_0 where m1_0.team_id is not null\n팀 있는 회원: 7\n\n--   3.3절의 열 건이 3과 7로 갈린다\n--   조인이 안 생겼다\n\n\n-- eq(null) 을 쓰면\n\n@Test\nvoid eq_null() {\n    try {\n        queryFactory.selectFrom(member)\n                .where(member.username.eq(null))\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage());\n    }\n}\n\n예외: IllegalArgumentException\n말:   Null arguments not allowed for eq\n\n--   SQL 이 안 나갔다\n--   isNull 을 써야 한다\n--   4.4절에서 null 이 다르게 쓰이는 걸 본다\n\n\n-- 문자열 비교\n\n@Test\nvoid 문자열_비교() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.gt(\"m2\"))\n            .fetch();\n}\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol:   method gt(String)\n  location: variable username of type StringPath\n\n--   문자열에는 gt 가 없다\n\n\n-- 사전순 비교는 이렇게 한다\n\n@Test\nvoid 사전순() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.goe(\"m2\"))\n            .fetch();\n}\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\n  symbol: method goe(String)\n\n// StringExpression 으로 올려서 쓴다\nqueryFactory.selectFrom(member)\n        .where(Expressions.stringPath(\"username\").goe(\"m2\"))\n        .fetch();\n\n--   기본 경로에는 없다\n--   5.10절의 Expressions 로 간다\n\n\n-- 조건을 다 모아 본다\n\n@Test\nvoid 전부() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.contains(\"m\")\n                    .and(member.age.between(10, 30))\n                    .and(member.username.in(\"m1\", \"m2\", \"m8\"))\n                    .and(member.team.isNotNull()))\n            .fetch()\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age between ?2 and ?3\n    and member1.username in (?4, ?5, ?6)\n    and member1.team is not null */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age between ? and ?\n        and m1_0.username in (?, ?, ?)\n        and m1_0.team_id is not null\nTRACE binding parameter (1:VARCHAR) <- [%m%]\nm1\nm2\n\n--   m8 은 팀이 없어 빠졌다\n--   조건 넷이 다 걸렸다\n--   4.4절에서 and 를 쉼표로 바꾼다",
+   "note": "**`or` 를 먼저 이으면 JPQL 에 괄호가 생겨 조립 순서가 우선순위를** 만든다.\n\n**`in` 은 크기마다 문장이 달라 1~4에서 서로 다른 문장 4개, 빈 컬렉션은 `where 1=0`** 이다.\n\n**`like` 만 `escape` 가 없고 `startsWith`·`contains`·`endsWith` 는 `%` 를 값에서** 만든다.\n\n**사용자가 `%` 를 치면 `like` 는 10건, `contains` 는 `[%!%%]` 로 묶어 `0건`** 이다.\n\n**`eq(null)` 은 `Null arguments not allowed for eq` 로 SQL 전에** 터진다."
+  }
+ ],
+ "recap": [
+  "**이름이 부등호를** 대신한다.",
+  "**타입이 메서드를** 고른다.",
+  "**조립 순서가 괄호를** 만든다.",
+  "**`in` 은 크기마다** 다르다.",
+  "**빈 컬렉션은 `1=0`** 이다.",
+  "**`like` 만 이스케이프가** 없다.",
+  "**검색창에는 `contains`** 다.",
+  "**`null` 은 `isNull`** 이다.",
+  "**`eq(null)` 은** 예외다."
+ ],
+ "drills": [
+  {
+   "task": "연산자 여덟을 다 써 본다.",
+   "done_when": "JPQL 대응을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`in` 의 크기를 바꾼다.",
+   "done_when": "문장이 달라지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`%` 를 입력값으로 넣는다.",
+   "done_when": "`like` 와 `contains` 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`eq(null)` 을 써 본다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`goe` 는 어떤 연산자인가?",
+   "a": "`>=` 다."
+  },
+  {
+   "q": "`in` 에 빈 컬렉션을 주면?",
+   "a": "`where 1=0` 이 나가고 0건이 온다."
+  },
+  {
+   "q": "`like` 와 `contains` 의 차이는?",
+   "a": "`contains` 는 값을 이스케이프하고 `%` 를 대신 붙여 준다."
+  },
+  {
+   "q": "검색창 입력에는 무엇을 쓰나?",
+   "a": "`contains` 다. 사용자의 `%` 가 와일드카드가 되지 않는다."
+  },
+  {
+   "q": "`null` 인지 비교하려면?",
+   "a": "`isNull()` 을 쓴다. `eq(null)` 은 예외다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BooleanExpression",
+   "def": "참·거짓을 내는 조건 한 조각을 나타내는 타입."
+  },
+  {
+   "term": "escape 절",
+   "def": "`like` 패턴에서 와일드카드를 문자 그대로 다루게 하는 지정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

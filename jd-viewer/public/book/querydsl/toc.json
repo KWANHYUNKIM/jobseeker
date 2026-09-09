@@ -180,7 +180,7 @@
           "title": "검색 조건",
           "summary": "and 로 잇는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -188,7 +188,7 @@
           "title": "쉼표가 and 다",
           "summary": "null 이 빠지는 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
