@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "stub-vs-mock",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "스텁과 목",
+ "summary": "무엇을 검증하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "둘의 차이를 안다.",
+  "언제 `verify` 를 쓰는지 안다.",
+  "상태 검증을 먼저 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 가짜 객체**다. **묻는 게** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 쓰임",
+   "ascii": "   two things a fake object can be used for\n\n   stubbing\n     the fake supplies an input\n     the assertion is about the result\n     given(client.send()).willReturn(true)\n     assertThat(result).isTrue()\n\n   mocking\n     the fake records an interaction\n     the assertion is about the call\n     verify(repo).save(any())\n\n   same object. different question.",
+   "note": "**같은 객체, 다른 질문**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스텁 — 입력을 준다",
+   "md": "```java\n// given\ngiven(mailSendClient.sendEmail(any(), any(), any(), any()))\n        .willReturn(true);\n\n// when\nboolean result = mailService.sendMail(\"\", \"\", \"\", \"\");\n\n// then\nassertThat(result).isTrue();\n```\n\n> **가짜가 `true` 를** 준다. **그게 입력**이다.\n> **검증은 결과에** 대해 한다.\n>\n> **`sendEmail` 이 몇 번 불렸는지는 안** 본다.\n\n**목 — 상호작용을 검증한다**\n\n```java\n// then\nverify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));\n```\n\n> **\"저장이 불렸나\"** 를 본다.\n> **결과값이 아니라 호출**이다.\n\n**둘은 배타적이지 않다.**\n\n> **6.2절의 테스트가 둘 다** 했다.\n> **`sendEmail` 은 스텁이고 `save` 는 목**이다.\n\n**용어가 헷갈리는 이유**\n\n> **Mockito 는 둘 다 `mock()` 으로** 만든다.\n> **쓰는 방식이 스텁인지 목인지를** 가른다.\n>\n> **6.4절에서 다섯 가지 대역을 정리**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "어느 쪽을 고르나",
+   "ascii": "   which question to ask\n\n   can i see the effect from the outside\n     yes -> assert on the state, not the call\n\n   is the call itself the requirement\n     \"an email must be sent\"  -> verify\n     \"the total must be 8500\" -> assert\n\n   verifying a call that has a visible effect is\n   testing how, not what",
+   "note": "**보이는 효과가 있으면 상태를** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "`verify` 를 남용하면",
+   "md": "**나쁜 예**\n\n```java\n// when\norderService.createOrder(request, 영업중);\n\n// then\nverify(productRepository).findAllByProductNumberIn(any());\nverify(stockRepository).findAllByProductNumberIn(any());\nverify(orderRepository).save(any());\n```\n\n> **뭘 검증했나** — **\"이 순서로 이 메서드들을 불렀다\"**.\n>\n> **구현을 검증**한 것이다. **결과는 안** 봤다.\n\n**리팩터링이 못 하게** 된다.\n\n> **`findAllByProductNumberIn` 을 `findAllByProductNumbers` 로** 바꾸면\n> **동작이 같은데 테스트가** 깨진다.\n>\n> **3.2절에서 \"테스트를 고쳐야 하면 리팩터링이 아니다\" 라고** 했다.\n> **여기서는 리팩터링인데 테스트를 고쳐야** 한다.\n\n**상태로 검증할 수 있으면 그쪽**이다.\n\n```java\n// then\nassertThat(orderRepository.findAll()).hasSize(1);\nassertThat(stockRepository.findAll())\n        .extracting(\"quantity\").containsExactly(0);\n```\n\n> **5.3절에서 이렇게** 했다.\n> **어떻게 했든 결과가 이거면** 된다.\n\n**`verify` 가 필요한 자리**\n\n| | |\n|---|---|\n| **밖으로 나가는 호출** | 메일, 결제 API, 큐 |\n| **효과가 안 보이는 것** | 로그, 메트릭 |\n| **안 불려야 하는 것** | `never()` — 5.4절 |\n\n> **공통점은 \"상태로 확인할 방법이 없다\"** 는 것이다.\n>\n> **메일이 갔는지는 DB 를 봐도** 모른다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 스텁만 쓰는 테스트 ---\n\n@DisplayName(\"메일 전송에 성공하면 true 를 반환한다\")\n@Test\nvoid sendMailSuccess() {\n    // given\n    given(mailSendClient.sendEmail(any(), any(), any(), any()))\n            .willReturn(true);\n\n    // when\n    boolean result = mailService.sendMail(\"\", \"\", \"\", \"\");\n\n    // then\n    assertThat(result).isTrue();\n}\n\n$ ./gradlew test --tests MailServiceTest\n\nMailServiceTest > 메일 전송에 성공하면 true 를 반환한다 PASSED\n\n#   verify 가 없다\n\n#   가짜는 입력만 줬다\n\n# --- 목으로 쓰는 테스트 ---\n\n@DisplayName(\"메일 전송에 성공하면 전송 이력을 저장한다\")\n@Test\nvoid sendMailSavesHistory() {\n    // given\n    given(mailSendClient.sendEmail(any(), any(), any(), any()))\n            .willReturn(true);\n\n    // when\n    mailService.sendMail(\"\", \"\", \"\", \"\");\n\n    // then\n    verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));\n}\n\nMailServiceTest > 메일 전송에 성공하면 전송 이력을 저장한다 PASSED\n\n#   같은 객체를 둘 다 썼다\n\n#   sendEmail 은 스텁, save 는 목이다\n\n# --- verify 를 남용하면 ---\n\n@ExtendWith(MockitoExtension.class)\nclass OrderServiceMockTest {\n\n    @Mock ProductRepository productRepository;\n    @Mock StockRepository stockRepository;\n    @Mock OrderRepository orderRepository;\n    @InjectMocks OrderService orderService;\n\n    @Test\n    void createOrder() {\n        // given\n        given(productRepository.findAllByProductNumberIn(any()))\n                .willReturn(List.of(createProduct(\"001\", 4000)));\n        given(stockRepository.findAllByProductNumberIn(any()))\n                .willReturn(List.of());\n        given(orderRepository.save(any())).willReturn(mock(Order.class));\n\n        // when\n        orderService.createOrder(request, 영업중);\n\n        // then\n        verify(productRepository).findAllByProductNumberIn(any());\n        verify(stockRepository).findAllByProductNumberIn(any());\n        verify(orderRepository).save(any());\n    }\n}\n\n$ ./gradlew test --tests OrderServiceMockTest\n\nOrderServiceMockTest > createOrder() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n#   1초다. 빠르다\n\n#   그런데 뭘 검증했나\n\n#   총 금액이 맞는지 안 본다\n#   재고가 줄었는지 안 본다\n#   주문이 저장됐는지 안 본다 (save 가 불렸다는 것만 안다)\n\n# --- 계산을 틀리게 해도 ---\n\npublic static Order create(List<Product> products, LocalDateTime now) {\n    return Order.builder()\n            .totalPrice(0)          // 계산을 안 한다\n            ...\n}\n\n$ ./gradlew test --tests OrderServiceMockTest\n\nOrderServiceMockTest > createOrder() PASSED\n\n#   통과한다\n\n#   1.1절의 기준으로 아무것도 안 지킨다\n\n# --- 5.3절의 통합 테스트는 ---\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n    expected: 4000 but was: 0\n\n#   잡는다\n\n#   9초를 내고 이걸 얻는다\n\n# --- 메서드 이름을 바꾸면 ---\n\nList<Product> findAllByProductNumbers(List<String> productNumbers);\n\n$ ./gradlew test\n\nOrderServiceMockTest > createOrder() FAILED\n    (컴파일 오류 후 수정하면)\n    org.mockito.exceptions.verification.WantedButNotInvoked:\n    Wanted but not invoked:\n    productRepository.findAllByProductNumberIn(<any>);\n\n#   동작이 같은데 테스트를 고쳐야 한다\n\nOrderServiceTest > 주문을 생성하면 총 금액이 계산된다 PASSED\n\n#   통합 테스트는 안 깨진다\n\n#   3.2절의 리팩터링 규칙이 목 테스트에서는 안 지켜진다\n\n# --- verify 가 맞는 자리 ---\n\n@DisplayName(\"매출 통계 메일을 보낸다\")\n@Test\nvoid sendStatisticsMail() {\n    // given\n    given(mailSendClient.sendEmail(any(), any(), any(), any()))\n            .willReturn(true);\n    주문_3건_저장();\n\n    // when\n    orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n    // then\n    verify(mailSendClient).sendEmail(\n            eq(\"no-reply@cafekiosk.com\"),\n            eq(\"admin@cafekiosk.com\"),\n            contains(\"매출 통계\"),\n            contains(\"12000\"));\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > 매출 통계 메일을 보낸다 PASSED\n\n#   메일이 갔는지는 DB 를 봐도 모른다\n\n#   그래서 verify 가 유일한 방법이다\n\n#   그리고 내용까지 검증했다 (12000)\n\n# --- 인자를 틀리게 하면 ---\n\nString content = \"총 매출: \" + 0;      // 계산을 안 한다\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > 매출 통계 메일을 보낸다 FAILED\n    org.mockito.exceptions.verification.ArgumentsAreDifferent:\n    Argument(s) are different! Wanted:\n    mailSendClient.sendEmail(\n        \"no-reply@cafekiosk.com\",\n        \"admin@cafekiosk.com\",\n        contains(\"매출 통계\"),\n        contains(\"12000\")\n    );\n    Actual invocations have different arguments:\n    mailSendClient.sendEmail(\n        \"no-reply@cafekiosk.com\",\n        \"admin@cafekiosk.com\",\n        \"2026-09-09 매출 통계\",\n        \"총 매출: 0\"\n    );\n\n#   잡는다\n\n#   verify 를 쓰되 인자를 검증하면 계산도 지킨다\n\n# --- 다음 절에서 ---\n\n#   대역 다섯을 정리한다",
+   "note": "**같은 객체를 스텁으로도 목으로도** 쓴다. **`sendEmail` 은 스텁, `save` 는 목**이다.\n\n**`verify` 만 쓰는 테스트는 계산을 틀리게 해도** 통과한다. **1.1절의 기준으로 아무것도 안** 지킨다.\n\n**메서드 이름을 바꾸면 목 테스트만** 깨진다. **동작이 같은데 고쳐야** 한다.\n\n**메일은 DB 를 봐도 모른다** — **`verify` 가 유일한 방법**이다.\n\n**인자까지 검증하면 계산도** 지킨다. **`총 매출: 0`** 이 잡힌다."
+  }
+ ],
+ "recap": [
+  "**같은 가짜 객체, 다른 질문**이다.",
+  "**스텁은 입력을 주고 목은 상호작용을** 검증한다.",
+  "**한 테스트가 둘 다 할 수** 있다.",
+  "**상태로 검증할 수 있으면 그쪽**이다.",
+  "**`verify` 만 쓰면 구현을** 검증한다.",
+  "**계산을 틀리게 해도** 통과한다.",
+  "**메서드 이름을 바꾸면 목 테스트가** 깨진다 — 리팩터링을 막는다.",
+  "**`verify` 가 맞는 자리는 상태로 확인할 방법이 없을** 때다.",
+  "**인자까지 검증하면 계산도** 지킨다."
+ ],
+ "drills": [
+  {
+   "task": "`verify` 만 쓰는 테스트를 짠다.",
+   "done_when": "계산을 틀리게 해도 통과하는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "리포지토리 메서드 이름을 바꾼다.",
+   "done_when": "목 테스트만 깨지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메일 인자를 검증하는 테스트를 짠다.",
+   "done_when": "`ArgumentsAreDifferent` 를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "자기 테스트에서 `verify` 를 센다.",
+   "done_when": "상태로 바꿀 수 있는 것을 찾았다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스텁과 목의 차이는?",
+   "a": "스텁은 입력을 주고 목은 호출이 일어났는지를 검증한다."
+  },
+  {
+   "q": "`verify` 남용의 문제는?",
+   "a": "구현을 검증해 리팩터링만 해도 테스트가 깨진다."
+  },
+  {
+   "q": "어느 쪽을 먼저 고르나?",
+   "a": "상태로 검증할 수 있으면 상태다."
+  },
+  {
+   "q": "`verify` 가 필요한 자리는?",
+   "a": "메일·결제 API 처럼 상태로 확인할 방법이 없을 때다."
+  },
+  {
+   "q": "`verify` 를 쓸 때 뭘 더 하나?",
+   "a": "인자까지 검증한다. 그러면 계산도 지켜진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "Test Double (개념 출처)",
+   "url": "https://martinfowler.com/bliki/TestDouble.html",
+   "publisher": "Martin Fowler"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
