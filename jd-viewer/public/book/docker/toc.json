@@ -1,0 +1,648 @@
+{
+  "id": "docker",
+  "title": "개발자를 위한 도커",
+  "subtitle": "내 노트북에서 된 것을 남의 서버에서도 되게",
+  "blurb": "서가의 앞 열 권은 애플리케이션 안쪽을 다뤘다. 이 책은 그것을 어떻게 남에게 건네는지를 다룬다. 매 절은 실제로 친 명령과 그 출력으로 끝난다 — 성공한 출력만이 아니라 막힌 출력도 같이 본다.",
+  "updated_at": "2026-09-09",
+  "preface": "「스프링 부트와 JPA 활용 1편」까지 오면 애플리케이션은 다 만든다. 그런데 그것은 내 노트북에서만 돈다.\n\n남의 서버에 올려 보면 자바 버전이 다르고, 포스트그레스가 안 깔려 있고, 환경변수 이름이 하나 다르다. \"내 컴퓨터에서는 됐는데\" 라는 문장은 농담이 아니라 배포의 기본값이다. 그 문장이 나오는 이유는 우리가 지금까지 **애플리케이션만 옮겼고 환경은 안 옮겼기** 때문이다.\n\n도커는 환경째로 옮긴다. 그게 전부다. 나머지는 그걸 어떻게 작게, 빠르게, 안전하게 하느냐의 이야기다.\n\n그래서 이 책의 매 절은 명령 한 줄과 그 출력으로 끝난다. 도커는 실행해 보면 즉시 답이 나오는 도구다. 개념을 외우는 대신 `docker ps` 를 치는 습관이 훨씬 멀리 간다.",
+  "how_to_read": "차례 순서대로 읽는다. 2장(가상화)과 3장(이미지·레이어)이 나머지 전부의 기초다 — 레이어를 모르면 5장의 캐시 이야기가 통째로 안 읽힌다. 실습은 반드시 손으로 친다. 도커는 읽어서 아는 도구가 아니라 쳐 보면 아는 도구다. 「Practical Testing」을 읽었으면 10.5절(Testcontainers)이 편하고, 이 책을 덮으면 「쿠버네티스 입문」으로 이어진다.",
+  "prereq": "리눅스 셸 기본기(cd·ls·cat), 자바 애플리케이션을 jar 로 빌드해 본 경험, HTTP 와 포트 개념. 「스프링 MVC 1편」 정도면 충분하다.",
+  "env": "Docker Engine 27.x / Docker Desktop 4.x, macOS(Apple Silicon)·Linux·Windows(WSL2), Java 21, PostgreSQL 16 이미지",
+  "source": {
+    "title": "개발자를 위한 쉬운 도커 (차례 출처)",
+    "url": "https://www.inflearn.com/course/개발자를-위한-쉬운-도커",
+    "publisher": "인프런 · 황현우",
+    "note": "차례의 뼈대만 빌렸다. 본문·예제·출력은 직접 쓰고 직접 돌린 것이다. 「초보를 위한 도커 안내서」(subicura)의 장 구성도 함께 참고했다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "친 명령과 그 출력을 어떻게 볼 것인가.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 실제로 친 명령과 그 출력으로 끝난다.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "1.2",
+          "id": "why-docker",
+          "title": "왜 도커인가",
+          "summary": "\"내 컴퓨터에서는 됐는데\" 가 어디서 나오나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "1.3",
+          "id": "setup",
+          "title": "실습 환경 준비",
+          "summary": "도커 데스크톱과 확인용 한 줄.",
+          "minutes": 9,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-run",
+          "title": "첫 컨테이너",
+          "summary": "docker run 한 줄이 실제로 한 일.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.5",
+          "id": "what-to-watch",
+          "title": "무엇을 볼 것인가",
+          "summary": "ps · logs · inspect, 이 셋으로 거의 다 본다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "가상화 기술",
+      "goal": "컨테이너는 가벼운 가상 머신이 아니다.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "app-server",
+          "title": "애플리케이션 서버",
+          "summary": "배포가 아픈 이유는 프로세스가 아니라 환경이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "hypervisor",
+          "title": "하이퍼바이저 가상화",
+          "summary": "OS 를 통째로 하나 더 켠다는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "container-virt",
+          "title": "컨테이너 가상화",
+          "summary": "커널은 하나, 격리는 프로세스 단위.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "namespace-cgroup",
+          "title": "namespace 와 cgroup",
+          "summary": "도커가 발명하지 않은 두 가지.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "docker-arch",
+          "title": "도커 아키텍처",
+          "summary": "클라이언트가 치고 데몬이 한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "desktop-vm",
+          "title": "맥과 윈도우에는 리눅스가 없다",
+          "summary": "내 노트북에서 도는 것의 정체.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "이미지와 컨테이너",
+      "goal": "이미지는 무엇이고 컨테이너는 그것의 무엇인가.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "image",
+          "title": "이미지란 무엇인가",
+          "summary": "실행 파일이 아니라 파일 시스템의 스냅숏.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "layers",
+          "title": "레이어와 유니온 파일 시스템",
+          "summary": "이미지가 겹으로 쌓여 있는 이유.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "container-layer",
+          "title": "컨테이너는 이미지 + 쓰기 레이어",
+          "summary": "같은 이미지로 열 개를 띄워도 디스크는 한 벌.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "image-metadata",
+          "title": "이미지 메타데이터",
+          "summary": "inspect 가 알려 주는 것들.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "lifecycle",
+          "title": "컨테이너 라이프사이클",
+          "summary": "created · running · exited 사이의 이동.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "exec-attach",
+          "title": "컨테이너 안으로 들어가기",
+          "summary": "exec 와 attach 는 다른 일을 한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "prune",
+          "title": "남은 것들을 치운다",
+          "summary": "디스크를 먹는 것은 대개 이미지가 아니다.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "이미지 레지스트리",
+      "goal": "이미지는 어디에 있고 어떻게 오는가.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "registry",
+          "title": "레지스트리 · 리포지터리 · 태그",
+          "summary": "이름 하나에 들어 있는 네 조각.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "latest-tag",
+          "title": "latest 는 최신이 아니다",
+          "summary": "가장 흔한 배포 사고의 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "pull-push",
+          "title": "pull 과 push",
+          "summary": "레이어 단위로 오가는 것을 눈으로 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "digest",
+          "title": "다이제스트",
+          "summary": "태그는 움직이고 다이제스트는 안 움직인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "private-registry",
+          "title": "사설 레지스트리와 인증",
+          "summary": "회사 이미지는 어디에 두는가.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "이미지 빌드",
+      "goal": "Dockerfile 한 줄이 레이어 하나다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "dockerfile-first",
+          "title": "첫 Dockerfile",
+          "summary": "세 줄로 시작해서 빌드해 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "from",
+          "title": "FROM — 무엇 위에 쌓을 것인가",
+          "summary": "베이스 이미지 고르기가 절반이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "run-cache",
+          "title": "RUN 과 레이어 캐시",
+          "summary": "명령 하나가 레이어 하나가 된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "copy-add",
+          "title": "COPY · ADD · .dockerignore",
+          "summary": "무엇을 이미지에 넣고 무엇을 뺄 것인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "cmd-entrypoint",
+          "title": "CMD 와 ENTRYPOINT",
+          "summary": "누가 PID 1 이 되는가.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "cache-order",
+          "title": "캐시가 깨지는 자리",
+          "summary": "줄 순서가 빌드 시간을 정한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "multi-stage",
+          "title": "멀티 스테이지 빌드",
+          "summary": "빌드에 쓴 것을 결과에 남기지 않는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "slim-image",
+          "title": "이미지가 작아야 하는 이유",
+          "summary": "1.2GB 를 180MB 로.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "buildkit",
+          "title": "빌드 컨텍스트와 BuildKit",
+          "summary": "빌드가 느린 이유가 빌드가 아닐 때.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "컨테이너 애플리케이션 구성",
+      "goal": "밖에서 넣어 주는 것들.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "ports",
+          "title": "포트",
+          "summary": "안의 8080 은 밖의 8080 이 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "env",
+          "title": "환경변수로 설정을 밖에 둔다",
+          "summary": "같은 이미지가 개발과 운영에서 다르게 도는 법.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "restart-policy",
+          "title": "컨테이너는 언제 죽는가",
+          "summary": "종료 코드와 재시작 정책.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "logs",
+          "title": "로그는 stdout 으로",
+          "summary": "파일에 쓰면 안 되는 이유.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "healthcheck",
+          "title": "헬스체크",
+          "summary": "떠 있는 것과 받을 수 있는 것은 다르다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "resources",
+          "title": "자원 제한",
+          "summary": "메모리와 CPU 를 묶어 둔다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "도커 네트워크",
+      "goal": "컨테이너는 어떻게 서로를 찾는가.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "network-intro",
+          "title": "컨테이너끼리 부르기",
+          "summary": "IP 를 적어 두면 다음 배포에서 깨진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "bridge",
+          "title": "기본 bridge 네트워크",
+          "summary": "아무것도 안 정했을 때 벌어지는 일.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "user-network",
+          "title": "사용자 정의 네트워크와 DNS",
+          "summary": "컨테이너 이름이 호스트 이름이 된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "host-none",
+          "title": "host 와 none",
+          "summary": "격리를 포기하는 대신 얻는 것.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "localhost-trap",
+          "title": "localhost 는 누구의 localhost 인가",
+          "summary": "가장 자주 걸리는 함정.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "port-conflict",
+          "title": "포트 충돌과 방화벽",
+          "summary": "bind: address already in use.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "스토리지와 볼륨",
+      "goal": "지워도 남아야 하는 것들.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "ephemeral",
+          "title": "컨테이너를 지우면 데이터도 지워진다",
+          "summary": "쓰기 레이어의 수명.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "volume",
+          "title": "볼륨",
+          "summary": "도커가 관리하는 저장소.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "bind-mount",
+          "title": "바인드 마운트",
+          "summary": "내 폴더를 컨테이너 안에 꽂는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "permissions",
+          "title": "권한과 tmpfs",
+          "summary": "root 로 만든 파일이 내 것이 아니게 될 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "db-volume",
+          "title": "DB 컨테이너를 다시 만들어도",
+          "summary": "데이터를 남기고 컨테이너만 바꾼다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "도커 컴포즈",
+      "goal": "컨테이너가 둘 이상이면 손으로 못 한다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "compose-why",
+          "title": "docker run 이 길어질 때",
+          "summary": "명령 한 줄이 열두 줄이 되는 지점.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "compose-file",
+          "title": "compose.yaml 읽기",
+          "summary": "services · networks · volumes.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "depends-on",
+          "title": "depends_on 은 기다려 주지 않는다",
+          "summary": "떠 있는 것과 준비된 것.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "compose-volume-network",
+          "title": "컴포즈의 볼륨과 네트워크",
+          "summary": "이름이 프로젝트 이름으로 붙는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "compose-override",
+          "title": "개발과 운영을 한 파일로",
+          "summary": "override 와 profile.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "compose-spring",
+          "title": "스프링 부트 + 포스트그레스",
+          "summary": "한 줄로 띄우고 한 줄로 내린다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "compose-lifecycle",
+          "title": "up 과 down 사이",
+          "summary": "down 뒤에 무엇이 남는가.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "도커를 실무에 적용하기",
+      "goal": "서가의 앞 열 권이 만든 것을 담는다.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "java-image",
+          "title": "자바 애플리케이션 이미지 만들기",
+          "summary": "jar 하나를 담는 가장 단순한 판.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "layered-jar",
+          "title": "레이어를 쪼개면 배포가 빨라진다",
+          "summary": "의존성과 내 코드를 나눠 담는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "jvm-memory",
+          "title": "JVM 은 컨테이너 메모리를 어떻게 보는가",
+          "summary": "OOMKilled 가 나는 진짜 이유.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "dev-env",
+          "title": "개발 환경을 컨테이너로",
+          "summary": "새 노트북에서 한 줄로 시작하기.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "testcontainers",
+          "title": "테스트를 컨테이너로",
+          "summary": "「Practical Testing」 8.5절이 쓴 것의 안쪽.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "image-security",
+          "title": "이미지 취약점과 최소 권한",
+          "summary": "root 로 도는 컨테이너를 내린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.7",
+          "id": "secrets",
+          "title": "시크릿을 이미지에 넣지 않는다",
+          "summary": "지운 줄 알았던 것이 레이어에 남는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.8",
+          "id": "ops-logs",
+          "title": "운영에서 보는 것",
+          "summary": "로그 드라이버와 자원 지표.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "빌드 파이프라인 자동화",
+      "goal": "손으로 빌드하고 손으로 올리는 것을 그만둔다.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "manual-pain",
+          "title": "손으로 하면 무엇이 어긋나나",
+          "summary": "빌드한 사람마다 다른 이미지.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "gh-actions",
+          "title": "GitHub Actions 로 빌드·푸시",
+          "summary": "커밋 하나가 이미지 하나가 된다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "ci-cache",
+          "title": "CI 에서 캐시 재우기",
+          "summary": "매번 처음부터 빌드하지 않게.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "tag-strategy",
+          "title": "태그 전략",
+          "summary": "무엇을 배포했는지 되찾을 수 있게.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "to-kubernetes",
+          "title": "컨테이너가 여러 대가 되면",
+          "summary": "이 책이 못 하는 것과 다음 권.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

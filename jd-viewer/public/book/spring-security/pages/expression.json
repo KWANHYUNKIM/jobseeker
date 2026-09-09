@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "expression",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "표현식",
+ "summary": "hasRole 과 hasAuthority.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "ROLE_ 접두어 규칙을 안다.",
+  "표현식이 볼 수 있는 것을 안다.",
+  "오타가 어떻게 드러나는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절 로그에서 `hasRole('ADMIN')` 이 `ROLE_ADMIN`** 이 됐다. **그 규칙**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 글자 차이",
+   "ascii": "   hasRole and hasAuthority differ by five characters\n\n   hasRole(\"ADMIN\")        checks for ROLE_ADMIN\n   hasAuthority(\"ADMIN\")   checks for ADMIN\n\n   User.withUsername(...).roles(\"ADMIN\")       stores ROLE_ADMIN\n   User.withUsername(...).authorities(\"ADMIN\") stores ADMIN\n\n   mix the two and the check silently fails",
+   "note": "**섞으면 조용히** 실패한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "접두어를 두 번 붙이면",
+   "md": "```java\n.requestMatchers(\"/admin/**\").hasRole(\"ROLE_ADMIN\")\n```\n\n> **`ROLE_ROLE_ADMIN` 을** 찾는다.\n> **아무도 그런 권한이 없어 늘 403** 이다.\n>\n> **6.x 는 이걸 기동 때 잡아** 준다.\n>\n> ```\n> IllegalArgumentException: ROLE_ADMIN should not start with ROLE_\n> since ROLE_ is automatically prepended when using hasAnyRole.\n> Consider using hasAnyAuthority instead.\n> ```\n>\n> **`hasAuthority` 쪽은 안 잡아** 준다 — **아무 문자열이나 권한이 될 수 있어서**다.\n\n**어디에 쓰느냐로 나뉜다.**\n\n| 상황 | 쓰는 것 |\n|---|---|\n| 역할 기반 | `hasRole` |\n| 권한/스코프 기반 | `hasAuthority` |\n| OAuth2 스코프 | `hasAuthority(\"SCOPE_read\")` |\n| 둘 중 하나 | `hasAnyRole` / `hasAnyAuthority` |\n\n> **`ROLE_` 은 관례일 뿐 강제가** 아니다.\n> **접두어를 바꿀 수도** 있다 — **8.2절**.\n\n**저장하는 쪽도 맞춰야 한다.**\n\n> **`User.roles(\"ADMIN\")` 은 `ROLE_ADMIN` 으로** 저장한다.\n> **`User.authorities(\"ADMIN\")` 은 `ADMIN` 으로** 저장한다.\n> **DB 에서 읽을 때는 내가 붙여** 줘야 한다.\n>\n> **4.6절의 `member_role` 표에 `ROLE_USER` 로 넣은 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "표현식이 보는 것",
+   "ascii": "   what an expression can see\n\n   authentication        the whole token\n   principal             the principal object\n   #paramName            a method argument, by name\n   returnObject          only in PostAuthorize\n   @beanName.method()    any bean in the context\n\n   in a web rule you also get\n     hasIpAddress, request, and the path variables",
+   "note": "**빈을 부를 수 있는 게 가장** 강하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쓸 수 있는 것들",
+   "md": "```java\n// 기본\nhasRole('ADMIN')\nhasAnyRole('ADMIN', 'MANAGER')\nhasAuthority('SCOPE_write')\nauthenticated()\nfullyAuthenticated()          // 3.6절 — 기억하기를 거른다\nanonymous()\npermitAll()\ndenyAll()\n\n// 조합\nhasRole('ADMIN') or hasRole('MANAGER')\nhasRole('ADMIN') and hasIpAddress('10.0.0.0/8')\n!hasRole('BANNED')\n\n// 값 비교\n#email == authentication.name\nprincipal.username == #username\nauthentication.principal.enabled\n\n// 빈 호출\n@orderGuard.isOwner(#id, authentication.name)\n```\n\n**웹 규칙에도 표현식을 쓸 수** 있다.\n\n```java\n.requestMatchers(\"/user/{id}/**\")\n    .access(new WebExpressionAuthorizationManager(\n            \"#id == authentication.name\"))\n```\n\n> **6.x 는 `access(String)` 대신 `AuthorizationManager` 를** 받는다.\n> **`WebExpressionAuthorizationManager` 로 감싼다.**\n\n**오타가 늦게 드러난다.**\n\n> **표현식은 문자열이라 컴파일이 안** 잡는다.\n> **`hasRoll('ADMIN')` 은 요청이 올 때 예외**다.\n> **`#emial` 도 마찬가지**다 — **`null` 로 평가돼 조용히** 거부된다.\n>\n> **그래서 표현식이 있는 자리마다 테스트가** 필요하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 접두어를 두 번 붙인다 ---\n\n.requestMatchers(\"/admin/**\").hasRole(\"ROLE_ADMIN\")\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\njava.lang.IllegalArgumentException: ROLE_ADMIN should not start with ROLE_\nsince ROLE_ is automatically prepended when using hasAnyRole. Consider\nusing hasAnyAuthority instead.\n\n#   기동 때 잡힌다\n\n# --- hasAuthority 는 안 잡아 준다 ---\n\n.requestMatchers(\"/admin/**\").hasAuthority(\"ADMIN\")\n\n#   그런데 저장은 roles(\"ADMIN\") 으로 했다\n\n@Bean\nUserDetailsService users(PasswordEncoder encoder) {\n    return new InMemoryUserDetailsManager(\n            User.withUsername(\"admin\").password(encoder.encode(\"1234\"))\n                .roles(\"ADMIN\").build());\n}\n\n$ ./gradlew bootRun\n\nStarted Application\n\n#   기동된다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n403\n\n#   관리자가 막힌다\n\n$ curl -s -b admin.txt localhost:8080/whoami-roles\n\n[ROLE_ADMIN]\n\n#   저장된 건 ROLE_ADMIN 이다\n\n#   규칙은 ADMIN 을 찾았다\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation with\n  attributes AuthorizationDecision [granted=false]\n\n#   로그가 이유를 안 알려 준다\n\n#   \"권한이 없다\" 만 말한다\n\n# --- 맞춘다 ---\n\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n200\n\n#   또는 반대로\n\n.authorities(\"ADMIN\")           // 저장을 바꾼다\n.requestMatchers(\"/admin/**\").hasAuthority(\"ADMIN\")\n\n$ curl -s -b admin.txt localhost:8080/whoami-roles\n[ADMIN]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n200\n\n#   양쪽을 맞추면 된다\n\n#   섞지만 않으면 된다\n\n# --- DB 에서 읽을 때 ---\n\nselect role from member_role where member_id = 1;\n\nROLE\n-----------\nROLE_USER\nROLE_ADMIN\n\npublic Collection<? extends GrantedAuthority> getAuthorities() {\n    return member.getRoles().stream()\n            .map(SimpleGrantedAuthority::new)\n            .toList();\n}\n\n#   표에 ROLE_ 을 넣어 뒀다\n\n#   안 넣었다면 여기서 붙인다\n\n.map(r -> new SimpleGrantedAuthority(\"ROLE_\" + r))\n\n#   둘 중 하나만 한다\n\n#   양쪽 다 하면 ROLE_ROLE_USER 가 된다\n\n$ curl -s -b user.txt localhost:8080/whoami-roles\n[ROLE_ROLE_USER]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/orders\n403\n\n#   실제로 겪는 실수다\n\n# --- 표현식 오타 ---\n\n@PreAuthorize(\"hasRoll('ADMIN')\")\npublic void cancel(Long id) { ... }\n\n$ ./gradlew build\n\nBUILD SUCCESSFUL\n\n#   컴파일이 통과한다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    -X POST localhost:8080/orders/1/cancel -d \"_csrf=$TOKEN\"\n500\n\norg.springframework.expression.spel.SpelEvaluationException:\n  EL1004E: Method call: Method hasRoll(java.lang.String) cannot be found\n  on type org.springframework.security.access.expression.SecurityExpressionRoot\n\n#   요청이 올 때 터진다\n\n#   500 이다. 403 이 아니다\n\n# --- 파라미터 이름 오타 ---\n\n@PreAuthorize(\"#emial == authentication.name\")\npublic Member find(String email) { ... }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/members?email=user@a.com'\n403\n\n#   500 이 아니라 403 이다\n\n#   #emial 이 null 로 평가됐다\n\n#   null == \"user@a.com\" 은 false 다\n\n#   조용히 거부된다\n\n#   이게 더 위험한 종류다\n\n#   반대 방향 오타라면\n\n@PreAuthorize(\"#email == authentication.nome\")\n\nSpelEvaluationException: Property or field 'nome' cannot be found\n\n#   이건 500 으로 드러난다\n\n#   방향에 따라 드러나기도 하고 숨기도 한다\n\n# --- 파라미터 이름이 살아 있어야 한다 ---\n\n#   (-parameters 컴파일 옵션이 없으면)\n\nSpelEvaluationException: EL1008E: Property or field 'email' cannot be\n  found on object of type 'MethodSecurityExpressionRootObject'\n\n#   부트 플러그인이 기본으로 켜 준다\n\n#   순수 gradle 이면 직접 켠다\n\ntasks.withType(JavaCompile) {\n    options.compilerArgs << '-parameters'\n}\n\n#   또는 이름을 명시한다\n\n@PreAuthorize(\"#e == authentication.name\")\npublic Member find(@P(\"e\") String email) { ... }\n\n# --- 웹 규칙에 표현식 ---\n\n.requestMatchers(\"/user/{email}/**\")\n    .access(new WebExpressionAuthorizationManager(\n            \"#email == authentication.name\"))\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/user/user@a.com/settings'\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    'localhost:8080/user/other@a.com/settings'\n403\n\n#   경로 변수를 읽는다\n\n#   URL 만으로 소유권을 가른 경우다\n\n#   7.6절의 방법보다 얕지만 쿼리가 없다\n\n# --- 표현식마다 테스트 ---\n\n@Test\n@WithMockUser(username = \"user@a.com\", roles = \"USER\")\nvoid 내_설정만_본다() throws Exception {\n    mockMvc.perform(get(\"/user/user@a.com/settings\"))\n            .andExpect(status().isOk());\n    mockMvc.perform(get(\"/user/other@a.com/settings\"))\n            .andExpect(status().isForbidden());\n}\n\n$ ./gradlew test\n\n98 tests completed\n\nBUILD SUCCESSFUL\n\n#   문자열 규칙에는 테스트가 유일한 안전망이다\n\n# --- 다음 절에서 ---\n\n#   ADMIN 이 USER 를 겸하게 만든다",
+   "note": "**`hasRole(\"ROLE_ADMIN\")` 은 기동 때** 잡히지만 **`hasAuthority` 와 `roles()` 를 섞으면 기동은 되고 관리자가 403** 이다.\n\n**표에 `ROLE_` 을 넣고 코드에서도 붙이면 `[ROLE_ROLE_USER]`** 가 된다.\n\n**`hasRoll` 오타는 500, `#emial` 오타는 조용히 403** 이다 — **후자가 더** 위험하다.\n\n**`WebExpressionAuthorizationManager` 로 경로 변수를 읽어 쿼리 없이 소유권을** 가를 수 있다."
+  }
+ ],
+ "recap": [
+  "**`hasRole` 은 `ROLE_` 을 붙이고 `hasAuthority` 는 안** 붙인다.",
+  "**저장하는 쪽과 검사하는 쪽을 맞춰야** 한다.",
+  "**접두어를 두 번 붙이면 기동이** 실패한다.",
+  "**`hasAuthority` 쪽 불일치는 안 잡아** 준다.",
+  "**표현식은 인증·인자·반환값·빈을 볼 수** 있다.",
+  "**메서드 오타는 500 으로** 드러난다.",
+  "**파라미터 이름 오타는 조용히 403** 이다.",
+  "**`-parameters` 가 없으면 이름을 못** 읽는다.",
+  "**문자열 규칙의 안전망은 테스트** 뿐이다."
+ ],
+ "drills": [
+  {
+   "task": "`hasRole(\"ROLE_ADMIN\")` 을 써 본다.",
+   "done_when": "기동 실패 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`hasAuthority` 와 `roles()` 를 섞는다.",
+   "done_when": "관리자가 403 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "파라미터 이름에 오타를 낸다.",
+   "done_when": "403 으로 조용히 막히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "웹 규칙에 표현식을 쓴다.",
+   "done_when": "경로 변수로 갈리는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`hasRole('ADMIN')` 이 실제로 찾는 것은?",
+   "a": "`ROLE_ADMIN` 이다."
+  },
+  {
+   "q": "`hasAuthority` 와 `roles()` 를 섞으면?",
+   "a": "기동은 되고 검사만 조용히 실패한다."
+  },
+  {
+   "q": "표현식 메서드 오타의 결과는?",
+   "a": "요청 시 `SpelEvaluationException` 으로 500 이다."
+  },
+  {
+   "q": "파라미터 이름 오타의 결과는?",
+   "a": "`null` 로 평가돼 조용히 403 이 된다."
+  },
+  {
+   "q": "웹 규칙에서 표현식을 쓰려면?",
+   "a": "`WebExpressionAuthorizationManager` 로 감싸 `access` 에 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SpEL",
+   "def": "스프링 표현식 언어. 인가 규칙을 문자열로 쓰게 해 주지만 컴파일 검사가 없다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Expression-Based Access Control",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Spring Expression Language",
+   "url": "https://docs.spring.io/spring-framework/reference/core/expressions.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

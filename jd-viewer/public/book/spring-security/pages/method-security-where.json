@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "method-security-where",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "메서드 보안을 어디에",
+ "summary": "컨트롤러냐 서비스냐.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 층의 차이를 안다.",
+  "소유권 검사를 어디에 둘지 정한다.",
+  "배치가 왜 기준이 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`@PreAuthorize` 를 컨트롤러에 붙일까 서비스에** 붙일까."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 규칙, 세 깊이",
+   "ascii": "   the same rule, at three depths\n\n   controller   knows the http request, not the data\n                  good for role checks, bad for ownership\n   service      knows the data and the transaction\n                  the only place that sees every caller\n   repository   knows rows, not intent\n                  a check here fires on every internal read too\n\n   the batch job that has no http request decides it for you",
+   "note": "**HTTP 없는 호출이 기준을** 정해 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서비스가 기본이다",
+   "md": "**호출자가 하나가 아니다.**\n\n> **컨트롤러 · 배치 · 이벤트 리스너 · 다른 서비스**.\n> **컨트롤러에만 붙이면 나머지 셋은 검사 없이** 지나간다.\n\n**책 ⑦ 에서 만든 배치가 그** 예다.\n\n> **HTTP 요청이 없으니 필터 인가도 안** 걸린다.\n> **서비스에 있으면** 걸린다 — **대신 배치용 인증을 만들어 줘야** 한다.\n\n**컨트롤러에 두는 게 나은 경우도** 있다.\n\n| 규칙 | 자리 |\n|---|---|\n| 역할만 보는 규칙 | 필터 인가로 충분 |\n| URL 별 역할 | 필터 인가 |\n| 인자를 보는 규칙 | 서비스 |\n| 반환값을 보는 규칙 | 서비스 |\n| 화면 조각 숨기기 | 템플릿 (9.5절) |\n\n> **역할만 보는 건 굳이 애너테이션을 안** 쓴다.\n> **필터 인가가 더 빠르고 한눈에** 보인다.\n\n**리포지토리는 피한다.**\n\n> **내부 조회에도 다** 걸린다.\n> **다른 사용자의 데이터를 정당하게 읽어야 하는 로직이** 막힌다.\n> **관리자 통계 같은 게 갑자기** 안 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "벽과 자물쇠",
+   "ascii": "   why the filter chain is not enough on its own\n\n   GET /api/orders/17\n     the url says orders, it does not say whose\n     the filter can only ask, are you logged in\n\n   the service holds order 17 and knows its owner\n     so it can ask, is this yours\n\n   one is a wall, the other is a lock on one door",
+   "note": "**URL 은 누구 것인지 말하지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "소유권 검사를 빠뜨리면",
+   "md": "**가장 흔한 취약점**이다.\n\n> **로그인은 했으니 필터는 통과**한다.\n> **주문 번호만 바꾸면 남의 주문이** 보인다.\n> **OWASP 는 이걸 `IDOR` 라고 부른다.**\n\n**세 가지 방법**\n\n```java\n// 1) 표현식에서 빈을 부른다\n@PreAuthorize(\"@orderGuard.isOwner(#orderId, authentication.name)\")\npublic OrderDto find(Long orderId) { ... }\n\n// 2) 조회 조건에 넣는다\npublic OrderDto find(Long orderId, String email) {\n    return repository.findByIdAndOwnerEmail(orderId, email)\n            .orElseThrow(() -> new AccessDeniedException(\"not yours\"));\n}\n\n// 3) 반환값을 본다\n@PostAuthorize(\"returnObject.ownerEmail == authentication.name\")\npublic OrderDto find(Long orderId) { ... }\n```\n\n> **둘째가 가장** 낫다.\n> **쿼리 한 번에 끝나고 인가가 데이터 조회와 한 몸**이다.\n>\n> **첫째는 쿼리가 두 번**이다 — **검사용 한 번, 조회 한 번**.\n> **셋째도 두 번은 아닌데 이미 읽은** 뒤다.\n\n**없는 것과 남의 것을 구별하지** 않는다.\n\n> **`404` 로 통일하는 편이** 안전하다.\n> **`403` 이면 \"그 번호는 존재한다\" 를 알려** 준다.\n> **4.4절에서 아이디 존재를 감춘 것과 같은 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 컨트롤러에만 두면 ---\n\n@RestController\npublic class OrderController {\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    @PostMapping(\"/api/orders/{id}/cancel\")\n    public void cancel(@PathVariable Long id) {\n        orderService.cancel(id);\n    }\n}\n\n@Service\npublic class OrderService {\n    public void cancel(Long id) {         // 애너테이션 없음\n        System.out.println(\">>> cancel \" + id);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    -X POST localhost:8080/api/orders/1/cancel\n403\n\n#   막힌다\n\n#   그런데 배치가 있다\n\n@Component\npublic class OrderBatch {\n    @Scheduled(fixedDelay = 60000)\n    public void expireOld() {\n        for (Long id : repository.findExpiredIds()) {\n            orderService.cancel(id);\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep \">>> cancel\"\n\n>>> cancel 8\n>>> cancel 9\n\n#   HTTP 요청이 없다\n\n#   필터도 컨트롤러도 안 거쳤다\n\n#   여기까지는 의도한 것일 수도 있다\n\n#   문제는 새 컨트롤러가 하나 더 생겼을 때다\n\n@RestController\npublic class AdminOrderController {\n    @PostMapping(\"/admin/orders/{id}/cancel\")   // 애너테이션을 빠뜨렸다\n    public void cancel(@PathVariable Long id) {\n        orderService.cancel(id);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/admin/orders/2/cancel -d \"_csrf=$TOKEN\"\n\n403\n\n#   /admin/** 규칙이 잡았다\n\n#   운이 좋았다\n\n@RestController\npublic class MobileOrderController {\n    @PostMapping(\"/m/orders/{id}/cancel\")\n    public void cancel(@PathVariable Long id) {\n        orderService.cancel(id);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/m/orders/3/cancel -d \"_csrf=$TOKEN\"\n\n200\n\n>>> cancel 3\n\nselect status from orders where id = 3;\n\nSTATUS\n---------\nCANCELED\n\n#   뚫렸다\n\n#   /m/** 은 authenticated 였다\n\n# --- 서비스로 옮긴다 ---\n\n@Service\npublic class OrderService {\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void cancel(Long id) { ... }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/m/orders/4/cancel -d \"_csrf=$TOKEN\"\n403\n\n#   새 컨트롤러도 막힌다\n\n#   배치는\n\n$ ./gradlew bootRun 2>&1 | grep -A2 \"expireOld\"\n\nAuthenticationCredentialsNotFoundException:\n  An Authentication object was not found in the SecurityContext\n\n#   배치가 깨졌다\n\n#   이게 좋은 신호다\n\n#   검사가 실제로 돌고 있다는 증거다\n\n# --- 배치에 신분을 준다 ---\n\n@Scheduled(fixedDelay = 60000)\npublic void expireOld() {\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(\n            \"system\", null, List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\"))));\n    SecurityContextHolder.setContext(context);\n    try {\n        for (Long id : repository.findExpiredIds()) {\n            orderService.cancel(id);\n        }\n    } finally {\n        SecurityContextHolder.clearContext();\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep \">>> cancel\"\n\n>>> cancel 10\n\n#   돈다\n\n#   그리고 4.2절대로 finally 에서 비운다\n\n#   9.1절의 이벤트 로그에 system 으로 남는다\n\n# --- 소유권 검사 ---\n\n@GetMapping(\"/api/orders/{id}\")\npublic OrderDto find(@PathVariable Long id) {\n    return orderService.find(id);\n}\n\n@Service\npublic class OrderService {\n    public OrderDto find(Long id) {\n        return OrderDto.from(repository.findById(id).orElseThrow());\n    }\n}\n\n$ curl -s -u user@a.com:1234 localhost:8080/api/orders/1 | head -c 80\n\n{\"id\":1,\"ownerEmail\":\"user@a.com\",\"total\":12000,...\n\n$ curl -s -u user@a.com:1234 localhost:8080/api/orders/17 | head -c 80\n\n{\"id\":17,\"ownerEmail\":\"other@a.com\",\"total\":980000,...\n\n#   남의 주문이 보인다\n\n#   로그인은 했으니 필터는 통과했다\n\nDEBUG FilterChainProxy : Secured GET /api/orders/17\n\n#   IDOR 이다\n\n# --- 조회 조건에 넣는다 ---\n\npublic OrderDto find(Long id, String email) {\n    return repository.findByIdAndOwnerEmail(id, email)\n            .map(OrderDto::from)\n            .orElseThrow(() -> new NoSuchElementException());\n}\n\nselect o.* from orders o where o.id = ? and o.owner_email = ?\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    localhost:8080/api/orders/1\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    localhost:8080/api/orders/17\n404\n\n#   404 다\n\n#   있는지 없는지도 안 알려 준다\n\n#   쿼리는 한 번이다\n\n# --- 표현식으로 하면 ---\n\n@PreAuthorize(\"@orderGuard.isOwner(#id, authentication.name)\")\npublic OrderDto find(Long id) { ... }\n\n@Component(\"orderGuard\")\npublic class OrderGuard {\n    public boolean isOwner(Long id, String email) {\n        return repository.existsByIdAndOwnerEmail(id, email);\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    localhost:8080/api/orders/17\n403\n\nselect count(*) from orders o where o.id = ? and o.owner_email = ?\n\n#   403 이다\n\n#   그 번호가 존재한다는 걸 알려 준다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    localhost:8080/api/orders/99999\n403\n\n#   없는 번호도 403 이다\n\n#   이 경우는 구별이 안 되니 괜찮다\n\n#   다만 통과할 때는 쿼리가 둘이다\n\n$ curl -s -o /dev/null -u user@a.com:1234 localhost:8080/api/orders/1\n\nselect count(*) from orders o where o.id = ? and o.owner_email = ?\nselect o.* from orders o where o.id = ?\n\n#   검사 한 번, 조회 한 번\n\n#   책 ⑧ 이 줄이려던 그 쿼리 개수다\n\n# --- 테스트로 고정 ---\n\n@Test\n@WithMockUser(username = \"user@a.com\")\nvoid 남의_주문은_안_보인다() throws Exception {\n    mockMvc.perform(get(\"/api/orders/17\"))\n            .andExpect(status().isNotFound());\n}\n\n@Test\n@WithMockUser(username = \"user@a.com\")\nvoid 내_주문은_보인다() throws Exception {\n    mockMvc.perform(get(\"/api/orders/1\"))\n            .andExpect(status().isOk())\n            .andExpect(jsonPath(\"$.ownerEmail\").value(\"user@a.com\"));\n}\n\n$ ./gradlew test\n\n96 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   표현식 안을 자세히 본다",
+   "note": "**컨트롤러에만 애너테이션을 두면 새로 만든 `/m/orders/…` 가 200 으로** 뚫린다.\n\n**서비스로 옮기면 새 컨트롤러도 막히고 배치가 `AuthenticationCredentialsNotFoundException` 으로** 깨진다 — **검사가 실제로 돈다는 증거**다.\n\n**소유권 검사가 없으면 `/api/orders/17` 에 남의 `ownerEmail` 이** 나온다.\n\n**조회 조건에 넣으면 쿼리 한 번에 404, 표현식이면 쿼리 두 번에 403** 이다."
+  }
+ ],
+ "recap": [
+  "**규칙은 서비스에 두는 게** 기본이다.",
+  "**컨트롤러에만 두면 다른 호출자가 지나간다.**",
+  "**배치가 깨지는 건 검사가 돈다는** 증거다.",
+  "**배치에는 신분을 만들어** 준다.",
+  "**역할만 보는 규칙은 필터 인가가** 낫다.",
+  "**리포지토리는 내부 조회까지** 막는다.",
+  "**소유권 검사가 없으면 번호만 바꿔 남의 것을** 본다.",
+  "**조회 조건에 넣는 게 쿼리도 하나고 안전**하다.",
+  "**404 로 통일하면 존재 여부도 안** 샌다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러에만 규칙을 두고 새 컨트롤러를 만든다.",
+   "done_when": "뚫리는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "서비스로 옮기고 배치를 돌린다.",
+   "done_when": "배치가 깨지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배치에 인증을 주입한다.",
+   "done_when": "다시 도는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "소유권 검사를 조회 조건으로 넣는다.",
+   "done_when": "쿼리 한 번에 404 인 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙을 어디에 두는 게 기본인가?",
+   "a": "서비스다. 모든 호출자가 지나가는 자리다."
+  },
+  {
+   "q": "배치가 깨지면 어떻게 하나?",
+   "a": "배치용 인증을 만들어 주입하고 끝나면 비운다."
+  },
+  {
+   "q": "리포지토리에 두면 왜 곤란한가?",
+   "a": "정당한 내부 조회까지 막힌다."
+  },
+  {
+   "q": "IDOR 은 무엇인가?",
+   "a": "번호만 바꿔 남의 자원에 접근하는 것이다."
+  },
+  {
+   "q": "소유권 검사의 가장 나은 방법은?",
+   "a": "조회 조건에 넣어 쿼리 한 번으로 끝내고 404 를 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "IDOR",
+   "def": "식별자만 바꿔 남의 자원에 접근하는 취약점. 소유권 검사가 없을 때 생긴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
