@@ -133,7 +133,7 @@
           "title": "동시에 부르면",
           "summary": "값이 섞인다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -141,7 +141,7 @@
           "title": "쓰레드 로컬",
           "summary": "쓰레드마다 다른 저장소.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",

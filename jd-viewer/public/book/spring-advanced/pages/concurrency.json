@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "concurrency",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "동시에 부르면",
+ "summary": "값이 섞인다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "깨지는 걸 재현한다.",
+  "왜 깨지는지 안다.",
+  "고치는 길 셋을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 혼자 쓰면 완벽**했다. **둘이 동시에** 부른다."
+  },
+  {
+   "type": "figure",
+   "caption": "객체 하나, 쓰레드 여럿",
+   "ascii": "   one object, many threads\n\n   the container makes one instance\n   every request runs on a different thread\n   all of them write to the same field\n\n   the last writer wins, and nobody is told",
+   "note": "**마지막에 쓴 쪽이 이기고 아무도 안** 알려 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "싱글턴이라 필드도 하나다",
+   "md": "**②에서 배운 그것**이다.\n\n> **빈은 하나만** 만든다.\n> **3.1절에서** 확인했다.\n> **그래서 필드를 공유**했다.\n\n**쓰레드는** 여럿이다.\n\n> **요청마다 하나씩**이다.\n> **1.3절에서** 봤다.\n> **같은 필드를 함께** 쓴다.\n\n**덮어쓰면 알 수** 없다.\n\n> **오류가 안** 난다.\n> **로그가 조용히** 틀린다.\n> **아래에서 그걸** 만든다.\n\n**틈이 넓을수록 자주** 난다.\n\n> **저장소가 1 초를** 잔다.\n> **그 사이에 다** 들어온다.\n> **아래에서 그 틈을** 조절한다."
+  },
+  {
+   "type": "figure",
+   "caption": "깨지는 틈",
+   "ascii": "   the window where it breaks\n\n   thread A writes the field and starts working\n   thread B overwrites it while A is still inside\n   A finishes and reads the field, getting B's value\n\n   the wider the work, the wider the window",
+   "note": "**하는 일이 길수록 틈도** 넓어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "테스트로는 거의 안 잡힌다",
+   "md": "**혼자 돌리면 안** 난다.\n\n> **3.1절에서 다** 통과했다.\n> **아래에서 다시** 확인한다.\n> **운영에서만** 난다.\n\n**가끔** 난다.\n\n> **매번은** 아니다.\n> **아래에서 백 번 중 몇 번인지** 센다.\n> **재현이** 어렵다.\n\n**잠그면** 느려진다.\n\n> **한 번에 하나만** 돈다.\n> **아래에서 재** 본다.\n> **해법이** 아니다.\n\n**빈을 여럿 만들면 안** 된다.\n\n> **요청마다 만들면 느리**다.\n> **주입도** 꼬인다.\n> **아래에서 견줘** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 혼자 쓰면 멀쩡하다\n\n$ ./gradlew test 2>&1 | tail -2\nBUILD SUCCESSFUL in 3s\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n1\n\n--   ID 가 하나다\n--   3.1 절과 같다\n\n\n-- 둘을 거의 동시에 부른다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |   |-->OrderController.request()\n[796bccd9] |   |   |   |-->OrderService.orderItem()\n[796bccd9] |   |   |   |   |-->OrderRepository.save()\n[796bccd9] |   |   |   |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |   |   |   |<--OrderService.orderItem() time=1005ms\n[796bccd9] |   |   |<--OrderController.request() time=1006ms\n[796bccd9] |   |<--OrderRepository.save() time=1104ms\n[796bccd9] |<--OrderService.orderItem() time=1106ms\n[796bccd9] OrderController.request() time=1107ms\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n1\n\n--   두 요청이 하나로 보인다\n--   둘째가 첫째 안에 들어간 것처럼 그려졌다\n--   ID 도 하나다\n\n\n-- 왜 그런가\n\n$ curl -s localhost:8080/trace/holder\n추적기 객체:  study.adv.trace.FieldLogTrace@4f21a1c9\n지금 traceIdHolder: TraceId(id=796bccd9, level=2)\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.3 && curl -s localhost:8080/trace/holder\n추적기 객체:  study.adv.trace.FieldLogTrace@4f21a1c9\n지금 traceIdHolder: TraceId(id=3d81f0a2, level=3)\n\n--   객체가 하나다\n--   둘째 요청이 그 필드를 이어받았다\n\n\n-- 쓰레드는 다르다\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE 'exec-[0-9]+' | sort | uniq -c\n   6 exec-1\n   6 exec-2\n\n--   쓰레드는 둘인데 필드는 하나다\n\n\n-- 틈을 좁히면 덜 난다\n\n// 저장소가 안 자게 하면\npublic void save(String itemId) {\n    // sleep(1000);\n}\n\n$ for i in $(seq 1 100); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      94\n\n$ python3 -c \"print('100 번 중', 100-94, '번 섞였다')\"\n100 번 중 6 번 섞였다\n\n\n-- 틈을 넓히면 다 난다\n\n// 1 초를 다시 재우고\n$ for i in $(seq 1 100); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n       9\n\n$ python3 -c \"print('100 요청이 ID 9 개로 뭉쳤다')\"\n100 요청이 ID 9 개로 뭉쳤다\n\n--   1 초짜리 틈에 열 개 넘게 들어왔다\n\n\n-- 깊이도 망가진다\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '^.*\\|' | awk '{print gsub(/\\|/,\"\")}' | sort -rn | head -1\n41\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 | cut -c56- | cut -c1-72 | tail -1\n[c14e0b93] |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |<-\n\n--   41 층까지 갔다\n--   2.4 절에서 세 겹이었다\n\n\n-- 값이 아예 사라지기도 한다\n\n$ for i in $(seq 1 200); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep -c 'NullPointerException' logs/app.log\n3\n\n$ grep -A1 'NullPointer' logs/app.log | tail -1 | cut -c1-88\n  Cannot invoke \"study.adv.trace.TraceId.createPreviousId()\" because \"this.traceIdHolder\" is null\n\n$ grep -c ' 500 ' logs/access.log\n3\n\n--   A 가 0 층에서 지운 뒤 B 가 그걸 읽었다\n--   500 이 났다, 요구사항 ② 위반이다\n\n\n-- 최소 재현\n\n@Test\nvoid 필드_동시성() throws Exception {\n    FieldService service = new FieldService();\n    var t1 = new Thread(() -> service.logic(\"userA\"));\n    var t2 = new Thread(() -> service.logic(\"userB\"));\n    t1.setName(\"thread-A\"); t2.setName(\"thread-B\");\n    t1.start();\n    Thread.sleep(100);        // 여기를 바꿔 본다\n    t2.start();\n    t1.join(); t2.join();\n}\n\nclass FieldService {\n    private String nameStore;\n    String logic(String name) {\n        log.info(\"저장 name={} -> nameStore={}\", name, nameStore);\n        nameStore = name;\n        sleep(1000);\n        log.info(\"조회 nameStore={}\", nameStore);\n        return nameStore;\n    }\n}\n\n$ ./gradlew test --tests '*필드_동시성*' -i 2>&1 | grep -E '저장|조회'\n[thread-A] 저장 name=userA -> nameStore=null\n[thread-B] 저장 name=userB -> nameStore=userA\n[thread-A] 조회 nameStore=userB\n[thread-B] 조회 nameStore=userB\n\n--   A 가 userB 를 받았다\n--   자기가 저장한 게 아니다\n\n\n-- 간격을 벌리면 안 난다\n\n    Thread.sleep(2000);      // 1 초짜리 일보다 길게\n\n$ ./gradlew test --tests '*필드_동시성*' -i 2>&1 | grep -E '저장|조회'\n[thread-A] 저장 name=userA -> nameStore=null\n[thread-A] 조회 nameStore=userA\n[thread-B] 저장 name=userB -> nameStore=userA\n[thread-B] 조회 nameStore=userB\n\n--   겹치지 않으면 멀쩡하다\n--   그래서 테스트로 안 잡힌다\n\n\n-- 고치는 길 ① 잠근다\n\npublic synchronized TraceStatus begin(String message) { ... }\npublic synchronized void end(TraceStatus status) { ... }\n\n$ for i in $(seq 1 100); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n       9\n\n--   여전히 섞인다\n--   begin 과 end 사이가 안 잠겼다\n\n\n-- 메서드 전체를 잠그면\n\n@Service\npublic class OrderService {\n    public synchronized void orderItem(String itemId) { ... }\n}\n\n$ time (for i in $(seq 1 10); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait)\nreal\t0m10.412s\n\n// 잠그기 전에는\nreal\t0m1.214s\n\n--   섞이지는 않는다\n--   그런데 열 배 느리다\n--   한 번에 하나만 돈다\n\n\n-- 고치는 길 ② 빈을 여럿 만든다\n\n@Bean\n@Scope(\"prototype\")\nFieldLogTrace fieldLogTrace() { return new FieldLogTrace(); }\n\n$ curl -s localhost:8080/trace/same\n컨트롤러가 가진 것: study.adv.trace.FieldLogTrace@4f21a1c9\n서비스가 가진 것:   study.adv.trace.FieldLogTrace@8b23e04f\n저장소가 가진 것:   study.adv.trace.FieldLogTrace@1c9d2a70\n같은 객체인가:     false\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n3\n\n--   섞이지는 않는다\n--   그런데 셋이 서로를 모른다\n--   2.3 절로 돌아갔다\n\n\n-- 요청마다 하나로 해도\n\n@Bean\n@Scope(value = \"request\", proxyMode = ScopedProxyMode.TARGET_CLASS)\nFieldLogTrace fieldLogTrace() { return new FieldLogTrace(); }\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n2\n\n$ curl -s 'localhost:8080/who?name=scopedTarget.fieldLogTrace' | head -2\n빈 이름:   scopedTarget.fieldLogTrace\n주입된 것: study.adv.trace.FieldLogTrace\n\n$ curl -s 'localhost:8080/who?name=fieldLogTrace' | head -3\n빈 이름:   fieldLogTrace\n주입된 것: study.adv.trace.FieldLogTrace$$SpringCGLIB$$0\n원본:     study.adv.trace.FieldLogTrace\n\n--   섞이지 않는다\n--   그런데 1.4 절의 그 이름이 나왔다\n--   HTTP 요청이 없는 곳에서는 못 쓴다\n\n\n-- 요청 밖에서 부르면\n\n@Scheduled(fixedRate = 60000)\nvoid reorder() { orderService.orderItem(\"자동주문\"); }\n\n$ ./gradlew bootRun 2>&1 | grep -i 'ScopeNotActive' | head -2\njava.lang.IllegalStateException: No thread-bound request found:\n  Are you referring to request attributes outside of an actual web request?\n\n--   스케줄러에서는 못 쓴다\n--   3.3 절이 이 셋을 다 피한다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ for i in 1 2; do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n    sleep 0.1\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | cut -c56- | head -4\n[3d81f0a2] OrderController.request()\n[3d81f0a2] |-->OrderService.orderItem()\n[3d81f0a2] |   |-->OrderRepository.save()\n[3d81f0a2] |   |   |-->OrderController.request()\n\n$ curl -s 'localhost:8080/who?name=fieldLogTrace' | head -3\n빈 이름:   fieldLogTrace\n주입된 것: study.adv.trace.FieldLogTrace\n원본:     study.adv.trace.FieldLogTrace\n\n--   여전히 깨져 있다\n--   3.3 절에서 제대로 고친다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '객체'        '하나' \\\n  '쓰레드'      '여럿' \\\n  '증상'        'ID 가 뭉침' \\\n  '틈 좁으면'   '100 중 6 번' \\\n  '틈 넓으면'   '100 이 9 개로' \\\n  '깊이'        '41 층' \\\n  '지운 뒤'     'NPE 와 500' \\\n  '잠그면'      '열 배 느림' \\\n  '프로토타입'  '서로를 모름' \\\n  '요청 범위'   '요청 밖에서 못 씀'\n\n객체                       하나\n쓰레드                     여럿\n증상                       ID 가 뭉침\n틈 좁으면                  100 중 6 번\n틈 넓으면                  100 이 9 개로\n깊이                       41 층\n지운 뒤                    NPE 와 500\n잠그면                     열 배 느림\n프로토타입                 서로를 모름\n요청 범위                  요청 밖에서 못 씀",
+   "note": "**둘을 0.1 초 간격으로 부르니 열두 줄이 같은 ID 로 뭉쳐 둘째가 첫째 안에 들어간 것처럼** 그려진다.\n\n**틈이 좁으면 100 번 중 6 번, 1 초짜리 틈에서는 100 요청이 ID 9 개로 뭉치고 깊이가 41 층까지** 간다.\n\n**A 가 0 층에서 비운 뒤 B 가 읽어 `NullPointerException` 과 500 이** 났다.\n\n**최소 재현에서 `thread-A` 가 자기가 저장하지 않은 `userB` 를** 읽는다.\n\n**메서드를 잠그면 열 배 느리고 프로토타입은 셋이 서로를 모르고 요청 범위는 스케줄러에서 못** 쓴다."
+  }
+ ],
+ "recap": [
+  "**객체는** 하나다.",
+  "**쓰레드는** 여럿이다.",
+  "**조용히** 섞인다.",
+  "**틈이 넓을수록** 잦다.",
+  "**깊이도** 망가진다.",
+  "**500 도** 난다.",
+  "**잠그면** 느리다.",
+  "**여럿 만들면 서로를** 모른다.",
+  "**요청 범위는** 좁다."
+ ],
+ "drills": [
+  {
+   "task": "둘을 겹쳐 부른다.",
+   "done_when": "ID 가 뭉치는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "틈을 조절해 본다.",
+   "done_when": "빈도가 달라지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "최소 재현을 만든다.",
+   "done_when": "남의 값을 읽는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "세 가지 해법을 시도한다.",
+   "done_when": "각각의 문제를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 값이 섞이나?",
+   "a": "빈은 하나인데 요청마다 쓰레드가 달라 같은 필드를 함께 쓴다."
+  },
+  {
+   "q": "언제 더 자주 나나?",
+   "a": "메서드가 오래 걸릴수록 겹치는 틈이 넓어진다."
+  },
+  {
+   "q": "테스트로 왜 안 잡히나?",
+   "a": "겹쳐 부르지 않으면 재현되지 않아서다."
+  },
+  {
+   "q": "잠그면 되나?",
+   "a": "섞이지는 않지만 한 번에 하나만 돌아 크게 느려진다."
+  },
+  {
+   "q": "요청 범위 빈의 한계는?",
+   "a": "HTTP 요청 밖에서는 쓸 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동시성 문제",
+   "def": "여러 쓰레드가 같은 상태를 동시에 고쳐 값이 어긋나는 일."
+  },
+  {
+   "term": "임계 구간",
+   "def": "한 번에 한 쓰레드만 들어가야 하는 코드 구간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "JLS — Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Apache Tomcat — The Executor Component",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/config/executor.html",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

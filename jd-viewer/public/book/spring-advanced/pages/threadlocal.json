@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "threadlocal",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "쓰레드 로컬",
+ "summary": "쓰레드마다 다른 저장소.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "동작을 안다.",
+  "어디에 사는지 안다.",
+  "세 메서드를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절에서 필드 하나를 여럿이** 썼다. **쓰레드마다 따로 두는 장치가** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓰레드마다 상자 하나",
+   "ascii": "   one variable, one box per thread\n\n   the object is still shared, and there is still one field\n   but the value is looked up by the current thread\n\n   so writing from one thread cannot be seen by another",
+   "note": "**한 쓰레드에서 쓴 값을 다른 쓰레드가 볼 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필드는 하나인데 값은 여럿이 된다",
+   "md": "**객체는 여전히** 공유된다.\n\n> **싱글턴 그대로**다.\n> **3.1절의 이점을** 지킨다.\n> **아래에서 확인**한다.\n\n**값만 쓰레드별**이다.\n\n> **꺼낼 때 지금 쓰레드로** 찾는다.\n> **아래에서 그걸** 본다.\n> **섞일 수가** 없다.\n\n**변수는 열쇠**다.\n\n> **값을 안 들고** 있다.\n> **아래에서 어디 있는지** 찾는다.\n> **쓰레드가 들고** 있다.\n\n**메서드가** 셋이다.\n\n> **넣고 꺼내고 지운다**.\n> **셋째가 3.5절**이다.\n> **아래에서 다** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "값이 어디 사나",
+   "ascii": "   where the value actually lives\n\n   not in the variable, which only acts as a key\n   in a map hanging off the thread object itself\n\n   this is why the value disappears when the thread does",
+   "note": "**그래서 쓰레드가 사라지면 값도** 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "쓰레드가 바뀌면 값이 없다",
+   "md": "**새 쓰레드는 못** 본다.\n\n> **비동기로 넘기면** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **`@Async` 가 그** 자리다.\n\n**상속형도** 있다.\n\n> **자식 쓰레드에 넘겨** 준다.\n> **풀에서는 소용** 없다.\n> **아래에서 그 이유를** 본다.\n\n**초기값을 주면 편**하다.\n\n> **없을 때 만들어** 준다.\n> **그런데 지우기가** 헷갈린다.\n> **아래에서 견줘** 본다.\n\n**지우는 건 다음 절**이다.\n\n> **제일 중요한 일**이다.\n> **3.5절에서** 판다.\n> **여기선 동작만** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 필드를 바꿔 본다\n\n// 전\nprivate String nameStore;\n\n// 후\nprivate ThreadLocal<String> nameStore = new ThreadLocal<>();\n\nString logic(String name) {\n    log.info(\"저장 name={} -> nameStore={}\", name, nameStore.get());\n    nameStore.set(name);\n    sleep(1000);\n    log.info(\"조회 nameStore={}\", nameStore.get());\n    return nameStore.get();\n}\n\n$ ./gradlew test --tests '*쓰레드로컬_동시성*' -i 2>&1 | grep -E '저장|조회'\n[thread-A] 저장 name=userA -> nameStore=null\n[thread-B] 저장 name=userB -> nameStore=null\n[thread-A] 조회 nameStore=userA\n[thread-B] 조회 nameStore=userB\n\n--   3.2 절에서는 A 가 userB 를 받았다\n--   이번엔 각자 자기 것을 받았다\n\n\n-- 객체는 여전히 하나다\n\n$ curl -s localhost:8080/trace/same\n컨트롤러가 가진 것: study.adv.trace.ThreadLocalLogTrace@4f21a1c9\n서비스가 가진 것:   study.adv.trace.ThreadLocalLogTrace@4f21a1c9\n저장소가 가진 것:   study.adv.trace.ThreadLocalLogTrace@4f21a1c9\n같은 객체인가:     true\n\n$ curl -s localhost:8080/trace/holder\n추적기 객체:      study.adv.trace.ThreadLocalLogTrace@4f21a1c9\nThreadLocal 객체: java.lang.ThreadLocal@8b23e04f\n지금 쓰레드:      http-nio-8080-exec-3\n지금 값:          null\n\n--   3.1 절의 이점을 그대로 지킨다\n--   ThreadLocal 도 하나다\n\n\n-- 값은 어디 사나\n\n@GetMapping(value = \"/trace/where\", produces = \"text/plain\")\nString where() throws Exception {\n    Thread t = Thread.currentThread();\n    Field f = Thread.class.getDeclaredField(\"threadLocals\");\n    f.setAccessible(true);\n    Object map = f.get(t);\n    return \"쓰레드:        \" + t.getName() + \"\\n\"\n         + \"threadLocals: \" + (map == null ? \"null\" : map.getClass().getName()) + \"\\n\"\n         + \"항목 수:      \" + sizeOf(map) + \"\\n\";\n}\n\n$ curl -s localhost:8080/trace/where\n쓰레드:        http-nio-8080-exec-4\nthreadLocals: java.lang.ThreadLocal$ThreadLocalMap\n항목 수:      3\n\n--   값은 쓰레드 객체가 들고 있다\n--   ThreadLocal 변수는 그 지도의 열쇠일 뿐이다\n\n\n-- 열쇠가 여럿이면\n\nprivate ThreadLocal<String> a = new ThreadLocal<>();\nprivate ThreadLocal<String> b = new ThreadLocal<>();\n\na.set(\"가\"); b.set(\"나\");\n\n$ curl -s localhost:8080/trace/where\n쓰레드:        http-nio-8080-exec-5\nthreadLocals: java.lang.ThreadLocal$ThreadLocalMap\n항목 수:      5\n\n--   열쇠마다 한 칸이다\n--   한 쓰레드 지도에 다 들어 있다\n\n\n-- 추적기에 적용한다\n\n@Slf4j\npublic class ThreadLocalLogTrace implements LogTrace {\n\n    private final ThreadLocal<TraceId> traceIdHolder = new ThreadLocal<>();\n\n    private void syncTraceId() {\n        TraceId traceId = traceIdHolder.get();\n        if (traceId == null) traceIdHolder.set(new TraceId());\n        else traceIdHolder.set(traceId.createNextId());\n    }\n\n    private void releaseTraceId() {\n        TraceId traceId = traceIdHolder.get();\n        if (traceId.isFirstLevel()) traceIdHolder.remove();      // 지운다\n        else traceIdHolder.set(traceId.createPreviousId());\n    }\n}\n\n$ diff <(grep -c 'traceIdHolder' src/main/java/study/adv/trace/FieldLogTrace.java) \\\n       <(grep -c 'traceIdHolder' src/main/java/study/adv/trace/ThreadLocalLogTrace.java)\n1c1\n< 6\n---\n> 8\n\n$ git diff --stat FieldLogTrace.java ThreadLocalLogTrace.java\n 1 file changed, 9 insertions(+), 6 deletions(-)\n\n--   세 줄 늘었다\n--   업무 코드는 한 줄도 안 바뀐다\n\n\n-- 업무 코드는 그대로다\n\n$ git diff --stat v3 HEAD -- src/main/java/study/adv/Order*.java\n\n$ grep 'public void orderItem' src/main/java/study/adv/OrderService.java\n    public void orderItem(String itemId) {\n\n--   3.1 절에서 깨끗해진 시그니처 그대로다\n--   구현만 갈아 끼웠다\n\n\n-- 동시에 불러 본다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | cut -c56-\n[796bccd9] OrderController.request()\n[3d81f0a2] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[3d81f0a2] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[3d81f0a2] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n[3d81f0a2] |   |<--OrderRepository.save() time=1004ms\n[3d81f0a2] |<--OrderService.orderItem() time=1005ms\n[3d81f0a2] OrderController.request() time=1006ms\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n2\n\n--   ID 가 둘이다\n--   깊이도 각각 3 층까지다\n--   섞여 찍혔지만 골라 읽을 수 있다\n\n\n-- 백 번 불러 본다\n\n$ for i in $(seq 1 100); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n     100\n\n$ grep 'study.adv.trace' logs/app.log | tail -600 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort | uniq -c | awk '{print $1}' | sort -u\n6\n\n$ grep -c 'NullPointerException' logs/app.log\n0\n\n--   100 요청이 100 개 ID 다\n--   전부 정확히 여섯 줄씩이다\n--   3.2 절에서 9 개로 뭉쳤었다\n\n\n-- 잠그지 않았는데 안 느리다\n\n$ time (for i in $(seq 1 10); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait)\nreal\t0m1.214s\n\n// 3.2 절에서 잠갔을 때\nreal\t0m10.412s\n\n--   열 배 차이다\n--   쓰레드마다 자기 값을 봐서 잠글 필요가 없다\n\n\n-- 새 쓰레드는 못 본다\n\n@GetMapping(\"/async\")\nString async() throws Exception {\n    TraceStatus status = trace.begin(\"async()\");\n    var t = new Thread(() -> {\n        TraceStatus s2 = trace.begin(\"다른쓰레드()\");   // 여기\n        trace.end(s2);\n    });\n    t.start(); t.join();\n    trace.end(status);\n    return \"ok\";\n}\n\n$ curl -s -o /dev/null localhost:8080/async\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[c14e0b93] async()\n[d4a91c02] 다른쓰레드()\n[d4a91c02] 다른쓰레드() time=0ms\n[c14e0b93] async() time=2ms\n\n--   새 쓰레드는 자기 값이 없어서 새 ID 를 만들었다\n--   이어지지 않는다\n\n\n-- 상속형도 있다\n\nprivate final ThreadLocal<TraceId> traceIdHolder = new InheritableThreadLocal<>();\n\n$ curl -s -o /dev/null localhost:8080/async\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[e82f14b0] async()\n[e82f14b0] |-->다른쓰레드()\n[e82f14b0] |<--다른쓰레드() time=0ms\n[e82f14b0] async() time=2ms\n\n--   자식 쓰레드가 이어받았다\n\n\n-- 그런데 풀에서는\n\n@Async\nvoid inPool() { trace.begin(\"풀에서()\"); }\n\n$ curl -s -o /dev/null localhost:8080/async-pool\n$ curl -s -o /dev/null localhost:8080/async-pool\n$ grep '풀에서' logs/app.log | cut -c56-\n[e82f14b0] |-->풀에서()\n[e82f14b0] |-->풀에서()\n\n--   풀 쓰레드는 처음 만들 때 한 번만 물려받는다\n--   그 뒤로는 낡은 값을 계속 들고 있다\n--   3.6 절에서 이걸 본다\n\n\n-- 초기값을 줄 수도 있다\n\nprivate final ThreadLocal<TraceId> holder =\n        ThreadLocal.withInitial(TraceId::new);\n\n$ curl -s localhost:8080/trace/holder\n지금 값: TraceId(id=a3f9c1b2, level=0)\n\n$ curl -s localhost:8080/trace/holder\n지금 값: TraceId(id=a3f9c1b2, level=0)\n\n--   없으면 만들어 준다\n--   그런데 remove 해도 다음에 또 생긴다\n--   첫 호출인지 판단이 안 돼서 여기선 안 쓴다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1 && curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep '796bccd9' logs/app.log | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=logTrace' | head -3\n빈 이름:   logTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n원본:     study.adv.trace.ThreadLocalLogTrace\n\n$ git add -A && git commit -q -m 'feat: v3 쓰레드 로컬' && git tag v3-threadlocal\n\n--   3.4 절에서 제대로 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '객체'      '여전히 하나' \\\n  '값'        '쓰레드마다' \\\n  '사는 곳'   '쓰레드 객체' \\\n  '변수'      '열쇠' \\\n  '업무 코드' '0 줄 바뀜' \\\n  '100 요청'  'ID 100 개' \\\n  '속도'      '잠근 것의 1/10' \\\n  '새 쓰레드' '못 봄' \\\n  '상속형'    '자식은 봄' \\\n  '풀'        '낡은 값이 남음'\n\n객체                       여전히 하나\n값                         쓰레드마다\n사는 곳                    쓰레드 객체\n변수                       열쇠\n업무 코드                  0 줄 바뀜\n100 요청                   ID 100 개\n속도                       잠근 것의 1/10\n새 쓰레드                  못 봄\n상속형                     자식은 봄\n풀                         낡은 값이 남음",
+   "note": "**최소 재현에서 `thread-A` 가 `userA` 를, `thread-B` 가 `userB` 를 각자 받아 3.2절의 뒤바뀜이** 사라진다.\n\n**추적기 객체와 `ThreadLocal` 은 여전히 하나이고 값은 쓰레드 객체의 `ThreadLocalMap` 에** 산다.\n\n**업무 코드가 0 줄 바뀌었는데 100 요청이 ID 100 개로 각각 정확히 여섯 줄씩** 나온다.\n\n**잠그지 않았는데 10 요청이 1.214 초로 3.2절의 10.412 초보다 열 배** 빠르다.\n\n**새 쓰레드는 값을 못 보고 상속형은 자식이 받지만 풀에서는 낡은 값이** 남는다."
+  }
+ ],
+ "recap": [
+  "**객체는** 하나다.",
+  "**값은 쓰레드마다**다.",
+  "**쓰레드가 들고** 있다.",
+  "**변수는** 열쇠다.",
+  "**업무는 안** 바뀐다.",
+  "**안** 섞인다.",
+  "**안** 느리다.",
+  "**새 쓰레드는 못** 본다.",
+  "**풀은** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "최소 재현을 고친다.",
+   "done_when": "각자 자기 값을 받는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "값이 어디 사는지 들여다본다.",
+   "done_when": "쓰레드의 지도를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "백 번 동시에 부른다.",
+   "done_when": "ID 100 개인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "새 쓰레드에서 불러 본다.",
+   "done_when": "안 이어지는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값은 실제로 어디 있나?",
+   "a": "쓰레드 객체가 들고 있는 지도 안이다."
+  },
+  {
+   "q": "변수 자체는 무엇인가?",
+   "a": "그 지도에서 값을 찾는 열쇠다."
+  },
+  {
+   "q": "잠그지 않아도 되는 이유는?",
+   "a": "쓰레드마다 자기 값만 보므로 겹치지 않는다."
+  },
+  {
+   "q": "새 쓰레드에서는?",
+   "a": "자기 값이 없어 이어지지 않는다."
+  },
+  {
+   "q": "상속형이 풀에서 안 통하는 이유는?",
+   "a": "쓰레드를 만들 때 한 번만 물려받고 계속 재사용돼서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "쓰레드 로컬",
+   "def": "같은 변수로 쓰레드마다 다른 값을 보게 하는 저장소."
+  },
+  {
+   "term": "쓰레드 지도",
+   "def": "값이 실제로 담기는, 쓰레드 객체에 달린 표."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JLS — Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
