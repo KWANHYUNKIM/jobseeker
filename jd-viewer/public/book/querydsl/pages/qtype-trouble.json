@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "qtype-trouble",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "Q 타입이 안 생길 때",
+ "summary": "가장 자주 막히는 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "원인 다섯을 안다.",
+  "순서대로 확인한다.",
+  "IDE 문제를 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서는 잘** 생겼다. **여기서는 안 생기는 다섯 가지를 다** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 메시지, 다섯 원인",
+   "ascii": "   the same symptom, five different causes\n\n   the classifier is missing        no entities are seen at all\n   the wrong gradle configuration   the processor is on no path\n   the ide compiles with its own    output lands somewhere else\n   the generated dir is not a source root  the ide cannot see it\n   a stale build directory          old Q types shadow the new ones\n\n   the message says cannot find symbol in every one of these",
+   "note": "**전부 `cannot find symbol` 로** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "증상이 하나라 원인을 못 좁힌다",
+   "md": "**메시지가 결과만** 말한다.\n\n> **\"`QMember` 가 없다\" 고만** 한다.\n> **왜 없는지는 안** 말한다.\n> **2.1절의 조용한 실패 때문**이다.\n\n**순서가 있**다.\n\n> **파일이 있는지부터** 본다.\n> **없으면 빌드 설정**이다.\n> **있는데 안 보이면 IDE** 다.\n\n**그 둘을 먼저** 가른다.\n\n> **`find` 한 줄이면** 된다.\n> **여기서 절반이** 갈린다.\n> **아래에서 그 명령부터** 쓴다.\n\n**IDE 문제가 제일** 헷갈린다.\n\n> **터미널 빌드는 되는데 편집기가** 빨갛다.\n> **반대인 경우도** 있다.\n> **빌드 주체를 맞춘**다."
+  },
+  {
+   "type": "figure",
+   "caption": "생성물이 갈 수 있는 두 곳",
+   "ascii": "   two places the generated files can land\n\n   a gradle build   build/generated/sources/annotationProcessor\n   an ide build     out/production/generated or build/classes, per settings\n\n   when both exist, the one you are reading is not the one being used",
+   "note": "**둘 다 있으면 읽는 것과 쓰이는 것이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "확인 순서를 정해 두면 오 분이면 끝난다",
+   "md": "**① 파일이 있나**\n\n> **`find build -name 'Q*.java'`** 다.\n> **0이면 생성 자체가 안 된** 것이다.\n> **②로** 간다.\n\n**② 프로세서가 경로에 있나**\n\n> **`dependencies --configuration annotationProcessor`** 다.\n> **`jakarta` 분류자를 눈으로** 본다.\n> **2.1절의 그것**이다.\n\n**③ 빌드 주체가 누구인가**\n\n> **인텔리제이 설정의 `Build and run using`** 이다.\n> **그래들로 맞추면 위치가** 같아진다.\n> **아래에서 둘 다** 본다.\n\n**④ 캐시가 남았나**\n\n> **`clean` 뒤 다시** 돌린다.\n> **엔티티를 지웠는데 Q 타입이 남아 있을 수** 있다.\n> **그게 제일 늦게** 드러난다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 증상\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nMemberQueryTest.java:9: error: cannot find symbol\nimport static study.querydsl.entity.QMember.member;\n                                   ^\n  symbol:   class QMember\n  location: package study.querydsl.entity\n\n--   여기서 시작한다\n\n\n-- ① 파일이 있는지 본다\n\n$ find build -name 'Q*.java' | wc -l\n0\n\n--   생성 자체가 안 됐다\n--   IDE 문제가 아니다\n\n\n-- ② 경로를 본다\n\n$ ./gradlew dependencies --configuration annotationProcessor \\\n    | grep querydsl\n\n\\--- com.querydsl:querydsl-apt:5.1.0\n\n--   jakarta 가 없다\n--   2.1절의 그 실수다\n\n$ sed -i '' 's/querydsl-apt:5.1.0\"/querydsl-apt:5.1.0:jakarta\"/' build.gradle\n$ ./gradlew clean compileJava -q\n$ find build -name 'Q*.java' | wc -l\n2\n\n--   고쳤다\n\n\n-- 설정 이름이 틀린 경우\n\n// implementation \"com.querydsl:querydsl-apt:5.1.0:jakarta\"\n\n$ ./gradlew dependencies --configuration annotationProcessor \\\n    | grep -c querydsl-apt\n0\n$ ./gradlew dependencies --configuration compileClasspath \\\n    | grep -c querydsl-apt\n1\n\n--   경로가 다르다\n--   컴파일 경로에는 있는데 프로세서 경로엔 없다\n\n\n-- 엔티티가 안 읽히는 경우\n\n// @Entity 를 빼먹었다\npublic class Member { ... }\n\n$ ./gradlew clean compileJava --info | grep -i 'root elements'\nRound 1: Processing 1 root elements\n\n$ find build -name 'QMember.java' | wc -l\n0\n$ find build -name 'QTeam.java' | wc -l\n1\n\n--   Team 만 생겼다\n--   프로세서는 정상이다\n--   내 엔티티가 엔티티가 아니었다\n\n\n-- ③ IDE 가 따로 도는 경우\n\n// IntelliJ: Build and run using = IntelliJ IDEA\n\n$ find . -path ./build -prune -o -name 'QMember.java' -print\n./out/production/generated/study/querydsl/entity/QMember.java\n./build/generated/sources/annotationProcessor/java/main/\n  study/querydsl/entity/QMember.java\n\n--   두 군데 있다\n--   편집기는 out 을 본다\n--   터미널은 build 를 본다\n\n\n-- 그래서 이런 일이 생긴다\n\n// Member 에 email 필드를 추가하고 IDE 에서만 빌드\n\n$ grep -c email out/production/generated/.../QMember.java\n1\n$ grep -c email build/generated/.../QMember.java\n0\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n            .where(member.email.eq(\"a@b.c\"))\n                         ^\n  symbol: variable email\n\n--   편집기는 초록색인데 터미널이 빨갛다\n--   Build and run using 을 Gradle 로 맞춘다\n\n\n-- 맞추고 다시 본다\n\n// Build and run using = Gradle\n\n$ rm -rf out\n$ ./gradlew clean build -q\n$ find . -name 'QMember.java'\n./build/generated/sources/annotationProcessor/java/main/\n  study/querydsl/entity/QMember.java\n\n--   한 군데만 남았다\n\n\n-- ④ 생성 디렉터리가 소스 루트가 아닌 경우\n\n// 파일은 있는데 편집기가 빨갛다\n\n$ ls build/generated/sources/annotationProcessor/java/main/study/querydsl/entity/\nQMember.java\nQTeam.java\n\n$ ./gradlew compileTestJava -q && echo 'gradle OK'\ngradle OK\n\n--   그래들은 된다\n--   편집기만 못 찾는다\n--   Gradle 새로고침으로 소스 루트를 잡아 준다\n\n\n-- ⑤ 캐시가 남은 경우\n\n// Member 를 지우고 MemberV2 를 만들었다\n\n$ ls build/generated/.../entity/\nQMember.java        <- 지운 엔티티의 Q 타입\nQMemberV2.java\nQTeam.java\n\n$ ./gradlew compileTestJava -q && echo OK\nOK\n\n--   지운 엔티티로도 컴파일이 된다\n--   테스트가 옛 필드를 쓰고 있어도 모른다\n\n$ ./gradlew clean compileJava -q\n$ ls build/generated/.../entity/\nQMemberV2.java\nQTeam.java\n\n--   clean 하면 사라진다\n\n\n-- 확인 순서를 스크립트로 둔다\n\n$ cat > check-q.sh <<'EOF'\n#!/bin/sh\necho \"생성된 Q 타입:\"\nfind build -name 'Q*.java' -exec basename {} \\; | sort | sed 's/^/  /'\necho\necho \"프로세서 경로:\"\n./gradlew -q dependencies --configuration annotationProcessor \\\n  | grep -i querydsl | sed 's/^/  /'\necho\necho \"IDE 출력이 따로 있나:\"\nfind . -path ./build -prune -o -name 'Q*.java' -print | sed 's/^/  /'\nEOF\n$ chmod +x check-q.sh && ./check-q.sh\n\n생성된 Q 타입:\n  QMember.java\n  QTeam.java\n\n프로세서 경로:\n  \\--- com.querydsl:querydsl-apt:5.1.0\n\nIDE 출력이 따로 있나:\n\n--   분류자가 안 보인다\n--   위 한 줄로 원인이 나온다\n\n\n-- 고친 뒤 확인한다\n\n$ ./check-q.sh\n\n생성된 Q 타입:\n  QMember.java\n  QTeam.java\n\n프로세서 경로:\n  +--- com.querydsl:querydsl-apt:5.1.0\n  \\--- (jakarta)\n\nIDE 출력이 따로 있나:\n\n\n-- 실제로 도는지 본다\n\n@Test\nvoid 확인() {\n    em.clear();\n    Long count = queryFactory\n            .select(member.count())\n            .from(member)\n            .where(member.age.goe(10))\n            .fetchOne();\n    System.out.println(\"건수: \" + count);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\nTRACE binding parameter (1:INTEGER) <- [10]\n건수: 2\n\n--   2.4절에서 DB 쪽을 본다",
+   "note": "**`find build -name 'Q*.java'` 가 `0` 이면 IDE 가 아니라 생성 자체의** 문제다.\n\n**`@Entity` 를 빼먹으면 `Processing 1 root elements` 로 `QTeam` 만** 생긴다.\n\n**IDE 빌드를 쓰면 `out/production/generated` 와 `build/generated` 에 파일이 둘 — 편집기는 초록, 터미널은** 빨강.\n\n**지운 엔티티의 Q 타입이 남아 컴파일이 통과하고 `clean` 에서야** 사라진다.\n\n**확인 스크립트 한 번이면 분류자 누락이 그대로** 드러난다."
+  }
+ ],
+ "recap": [
+  "**증상이 하나라 원인을 못** 좁힌다.",
+  "**파일 유무부터** 본다.",
+  "**0이면 빌드 설정**이다.",
+  "**분류자를** 확인한다.",
+  "**설정 이름도** 본다.",
+  "**`@Entity` 가 없으면 안** 만든다.",
+  "**IDE 가 따로 돌 수** 있다.",
+  "**빌드 주체를** 맞춘다.",
+  "**캐시는 `clean` 으로** 지운다."
+ ],
+ "drills": [
+  {
+   "task": "분류자를 빼고 증상을 만든다.",
+   "done_when": "확인 순서로 원인을 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Entity` 를 빼 본다.",
+   "done_when": "일부만 생기는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "IDE 빌드로 바꿔 본다.",
+   "done_when": "출력이 둘로 갈리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "확인 스크립트를 만든다.",
+   "done_when": "한 번에 진단이 되는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`cannot find symbol: QMember` 를 보면 먼저 무엇을 하나?",
+   "a": "생성된 파일이 실제로 있는지부터 확인한다."
+  },
+  {
+   "q": "파일이 0개면 원인은 어디인가?",
+   "a": "빌드 설정이다. IDE 문제가 아니다."
+  },
+  {
+   "q": "`@Entity` 를 빼먹으면?",
+   "a": "그 클래스의 Q 타입만 안 생긴다."
+  },
+  {
+   "q": "편집기는 초록인데 터미널이 빨간 이유는?",
+   "a": "IDE 와 그래들이 각각 다른 위치에 생성물을 두기 때문이다."
+  },
+  {
+   "q": "지운 엔티티의 Q 타입이 남으면?",
+   "a": "컴파일이 통과해 문제가 늦게 드러난다. `clean` 이 답이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "소스 루트",
+   "def": "IDE 가 컴파일 대상으로 인식하는 디렉터리."
+  },
+  {
+   "term": "빌드 주체",
+   "def": "실제로 컴파일을 수행하는 쪽. 그래들이거나 IDE 자체다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

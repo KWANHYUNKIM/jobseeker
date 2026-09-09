@@ -70,7 +70,7 @@
           "title": "Q 타입 생성",
           "summary": "컴파일이 클래스를 만든다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -78,7 +78,7 @@
           "title": "Q 타입이 안 생길 때",
           "summary": "가장 자주 막히는 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

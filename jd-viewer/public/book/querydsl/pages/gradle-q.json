@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "gradle-q",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "Q 타입 생성",
+ "summary": "컴파일이 클래스를 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "생성 시점을 안다.",
+  "생성물을 읽는다.",
+  "타입별 경로를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 설정을** 걸었다. **그 설정이 컴파일 중에 무엇을 하는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "컴파일이 여러 바퀴 돈다",
+   "ascii": "   what javac does when a processor is on the path\n\n   round 1   read the sources, find the annotated types\n   round 1   the processor writes new source files\n   round 2   compile those new files too\n   round 3   nothing new was written, so stop\n\n   the generated file is compiled in the same build, not the next one",
+   "note": "**생성된 파일도 같은 빌드에서** 컴파일된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빌드가 아니라 컴파일이 만든다",
+   "md": "**그래들이 만드는 게** 아니다.\n\n> **`javac` 가 프로세서를** 부른다.\n> **그래들은 경로만** 준다.\n> **메이븐이든 IDE 든 같은 일**이다.\n\n**바퀴가 여러** 번이다.\n\n> **첫 바퀴에서 엔티티를** 읽는다.\n> **거기서 새 소스를 쓴**다.\n> **둘째 바퀴가 그걸 컴파일**한다.\n\n**그래서 순환이 안** 생긴다.\n\n> **Q 타입은 엔티티를 참조**한다.\n> **엔티티는 Q 타입을 안** 본다.\n> **한 방향이라 바퀴가** 끝난다.\n\n**IDE 가 따로** 돈다.\n\n> **인텔리제이가 자체 컴파일을 쓸 수** 있다.\n> **그러면 출력 위치가** 달라진다.\n> **2.3절에서 그 혼란을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "필드 타입이 경로 타입을 정한다",
+   "ascii": "   where each kind of path comes from\n\n   a String field    StringPath, with like, contains, startsWith\n   an int field      NumberPath, with goe, loe, between\n   a LocalDateTime   DateTimePath, with before, after\n   an association    another Q type, reached with a dot\n\n   the java type of the field decides which methods you can call",
+   "note": "**부를 수 있는 메서드가** 달라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "생성물은 읽어 볼 가치가 있다",
+   "md": "**긴 파일이** 아니다.\n\n> **필드 수만큼 줄이** 있다.\n> **전부 `public final`** 이다.\n> **상태가 없어 공유해도** 된다.\n\n**정적 인스턴스가 하나** 있다.\n\n> **`public static final QMember member`** 다.\n> **그래서 `static import` 가** 된다.\n> **별칭이 `member1` 인 것도 거기** 적혀 있다.\n\n**생성자로 별칭을 바꿀 수** 있다.\n\n> **`new QMember(\"m2\")`** 다.\n> **같은 표를 두 번 조인할 때** 쓴다.\n> **4.11절에서 실제로** 쓴다.\n\n**연관은 지연 생성**이다.\n\n> **`QTeam team` 이 필드로** 있다.\n> **초기화 코드가 안쪽에** 있다.\n> **아래에서 그 줄을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 컴파일 과정을 자세히 본다\n\n$ ./gradlew clean compileJava -Pargs=\"-Xlint:processing\" --info \\\n    | grep -i 'processor\\|generat' | head -6\n\nAnnotationProcessor: com.querydsl.apt.jpa.JPAAnnotationProcessor\nRound 1: Processing 2 root elements\nRound 1: Generated 2 source files\nRound 2: Processing 2 root elements\nRound 2: Generated 0 source files\nRound 3: no further processing\n\n--   바퀴가 셋이다\n--   둘째 바퀴가 생성물을 컴파일했다\n\n\n-- 클래스도 같이 나왔는지 본다\n\n$ find build/classes -name 'Q*.class' | sort\nbuild/classes/java/main/study/querydsl/entity/QMember.class\nbuild/classes/java/main/study/querydsl/entity/QTeam.class\n\n--   소스뿐 아니라 클래스도 있다\n--   같은 빌드에서 다 끝났다\n\n\n-- 생성된 소스를 통째로 읽는다\n\n$ cat build/generated/sources/annotationProcessor/java/main/\\\nstudy/querydsl/entity/QMember.java\n\npackage study.querydsl.entity;\n\nimport static com.querydsl.core.types.PathMetadataFactory.*;\n\nimport com.querydsl.core.types.dsl.*;\nimport com.querydsl.core.types.PathMetadata;\nimport jakarta.annotation.Generated;\nimport com.querydsl.core.types.Path;\nimport com.querydsl.core.types.dsl.PathInits;\n\n@Generated(\"com.querydsl.codegen.DefaultEntitySerializer\")\npublic class QMember extends EntityPathBase<Member> {\n\n    private static final long serialVersionUID = 1234567890L;\n\n    private static final PathInits INITS = PathInits.DIRECT2;\n\n    public static final QMember member = new QMember(\"member1\");\n\n    public final NumberPath<Integer> age = createNumber(\"age\", Integer.class);\n\n    public final NumberPath<Long> id = createNumber(\"id\", Long.class);\n\n    public final QTeam team;\n\n    public final StringPath username = createString(\"username\", String.class);\n\n    public QMember(String variable) {\n        this(Member.class, forVariable(variable), INITS);\n    }\n\n    public QMember(Path<? extends Member> path) {\n        this(path.getType(), path.getMetadata(), PathInits.getFor(\n                path.getMetadata(), INITS));\n    }\n\n    public QMember(PathMetadata metadata, PathInits inits) {\n        this(Member.class, metadata, inits);\n    }\n\n    public QMember(Class<? extends Member> type, PathMetadata metadata,\n                   PathInits inits) {\n        super(type, metadata, inits);\n        this.team = inits.isInitialized(\"team\")\n                ? new QTeam(forProperty(\"team\")) : null;\n    }\n}\n\n--   jakarta.annotation.Generated 가 보인다\n--   2.1절에서 이걸 넣은 이유다\n--   team 은 조건부로 만들어진다\n\n\n-- 필드 타입이 메서드를 정한다\n\n@Test\nvoid 경로_타입() {\n    System.out.println(\"username: \" + member.username.getClass().getSimpleName());\n    System.out.println(\"age:      \" + member.age.getClass().getSimpleName());\n    System.out.println(\"team:     \" + member.team.getClass().getSimpleName());\n}\n\nusername: StringPath\nage:      NumberPath\nteam:     QTeam\n\n--   1.2절의 타입 검사 근거다\n\n\n-- 숫자에는 문자열 메서드가 없다\n\n// member.age.contains(\"2\")\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n            .where(member.age.contains(\"2\"))\n                            ^\n  symbol:   method contains(String)\n  location: variable age of type NumberPath<Integer>\n\n--   문자열 JPQL 이면 실행에서 났다\n\n\n-- 문자열에는 부등호가 없다\n\n// member.username.goe(\"m\")\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol:   method goe(String)\n  location: variable username of type StringPath\n\n--   문자열 비교는 다른 메서드를 쓴다\n\n\n-- 날짜 타입도 본다\n\n@Entity\npublic class Member {\n    ...\n    private LocalDateTime createdDate;\n}\n\n$ ./gradlew compileJava -q\n$ grep 'createdDate' build/generated/.../QMember.java\n\n    public final DateTimePath<java.time.LocalDateTime> createdDate =\n            createDateTime(\"createdDate\", java.time.LocalDateTime.class);\n\n@Test\nvoid 날짜() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.createdDate.before(LocalDateTime.now()))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.createdDate < ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.created_date<?\n\n--   before 가 부등호가 됐다\n\n\n-- 별칭을 바꿔 만든다\n\n@Test\nvoid 별칭() {\n    QMember m2 = new QMember(\"m2\");\n    em.clear();\n    queryFactory.selectFrom(m2)\n            .where(m2.username.eq(\"m1\"))\n            .fetch();\n}\n\n/* select\n    m2\nfrom\n    Member m2\nwhere\n    m2.username = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n\n--   JPQL 별칭이 m2 다\n--   SQL 별칭은 여전히 m1_0 이다\n--   하이버네이트가 다시 붙였다\n\n\n-- 필드를 더하면 Q 타입도 는다\n\n// Member 에 private String email; 추가\n\n$ ./gradlew compileJava -q\n$ grep -c 'createString\\|createNumber\\|createDateTime' \\\n    build/generated/.../QMember.java\n5\n\n$ grep 'email' build/generated/.../QMember.java\n    public final StringPath email = createString(\"email\", String.class);\n\n--   컴파일이 알아서 따라왔다\n\n\n-- 엔티티가 아니면 안 만든다\n\npublic class MemberDto {          // @Entity 가 아니다\n    private String username;\n    private int age;\n}\n\n$ ./gradlew compileJava -q\n$ find build -name 'QMemberDto.java' | wc -l\n0\n\n--   프로세서가 @Entity 만 읽는다\n--   5.5절에서 이 클래스에도 Q 를 만들 것이다\n\n\n-- @Embeddable 도 만든다\n\n@Embeddable\npublic class Address {\n    private String city;\n    private String street;\n}\n\n$ ./gradlew compileJava -q\n$ find build -name 'QAddress.java'\nbuild/generated/.../study/querydsl/entity/QAddress.java\n\n$ grep 'extends' build/generated/.../QAddress.java\npublic class QAddress extends BeanPath<Address> {\n\n--   EntityPathBase 가 아니라 BeanPath 다\n--   식별자가 없어서다\n\n\n-- MappedSuperclass 도 만든다\n\n@MappedSuperclass\npublic abstract class BaseEntity {\n    private LocalDateTime createdDate;\n}\n\n$ find build -name 'QBaseEntity.java' | wc -l\n1\n\n--   ⑭ 6.3절의 공통 클래스다\n--   상속받은 필드도 쓸 수 있다\n\n\n-- 상속받은 필드를 조건에 쓴다\n\n@Test\nvoid 상속_필드() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.createdDate.isNotNull())\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.createdDate is not null */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.created_date is not null\n\n--   Q 타입에 부모 필드가 들어와 있다\n\n\n-- 지금 있는 Q 타입을 다 센다\n\n$ find build -name 'Q*.java' -exec basename {} \\; | sort\nQAddress.java\nQBaseEntity.java\nQMember.java\nQTeam.java\n\n$ wc -l build/generated/.../Q*.java | tail -1\n     168 total\n\n--   내가 쓴 줄은 0 이다\n--   2.3절에서 이게 안 생길 때를 본다",
+   "note": "**`javac` 가 세 바퀴를 돌며 1바퀴에 소스 2개를 쓰고 2바퀴에 그걸** 컴파일한다.\n\n**생성물에 `@Generated` 와 `public static final QMember member = new QMember(\"member1\")` 가** 있다.\n\n**`age.contains(\"2\")` 와 `username.goe(\"m\")` 둘 다 `compileTestJava FAILED`** 다.\n\n**`new QMember(\"m2\")` 는 JPQL 별칭만 바꾸고 SQL 은 여전히 `m1_0`** 이다.\n\n**`@Embeddable` 은 `BeanPath`, `@MappedSuperclass` 는 부모 필드까지 Q 타입에** 들어온다."
+  }
+ ],
+ "recap": [
+  "**컴파일이** 만든다.",
+  "**바퀴가 여러 번**이다.",
+  "**같은 빌드에서** 끝난다.",
+  "**필드 타입이 메서드를** 정한다.",
+  "**정적 인스턴스가** 있다.",
+  "**별칭을 바꿀 수** 있다.",
+  "**SQL 별칭은 따로**다.",
+  "**`@Entity` 만** 읽는다.",
+  "**`@Embeddable` 은 `BeanPath`** 다."
+ ],
+ "drills": [
+  {
+   "task": "생성 로그를 자세히 본다.",
+   "done_when": "바퀴 수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성된 소스를 통째로 읽는다.",
+   "done_when": "정적 인스턴스를 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "타입에 없는 메서드를 부른다.",
+   "done_when": "컴파일 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필드를 추가해 다시 컴파일한다.",
+   "done_when": "Q 타입이 따라오는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Q 타입을 만드는 것은 무엇인가?",
+   "a": "그래들이 아니라 `javac` 의 애노테이션 처리다."
+  },
+  {
+   "q": "생성된 소스는 언제 컴파일되나?",
+   "a": "같은 빌드의 다음 바퀴에서 컴파일된다."
+  },
+  {
+   "q": "`age.contains(\"2\")` 는 왜 안 되나?",
+   "a": "`NumberPath` 에는 문자열 메서드가 없기 때문이다."
+  },
+  {
+   "q": "`new QMember(\"m2\")` 가 바꾸는 것은?",
+   "a": "JPQL 별칭이다. SQL 별칭은 하이버네이트가 따로 붙인다."
+  },
+  {
+   "q": "`@Embeddable` 의 Q 타입은 무엇을 상속하나?",
+   "a": "식별자가 없어 `BeanPath` 를 상속한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "애노테이션 처리 바퀴",
+   "def": "새 소스가 더 안 나올 때까지 반복되는 컴파일 라운드."
+  },
+  {
+   "term": "Path",
+   "def": "필드 하나를 가리키는 타입 있는 표현식 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "javac — Annotation Processing",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/javac.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  }
+ ]
+}
