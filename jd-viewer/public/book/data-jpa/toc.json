@@ -456,7 +456,7 @@
           "title": "Specifications(명세)",
           "summary": "동적 쿼리를 조립한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -464,7 +464,7 @@
           "title": "Query By Example",
           "summary": "엔티티 하나가 조건이 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "specifications",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "Specifications(명세)",
+ "summary": "동적 쿼리를 조립한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조각으로 나눈다.",
+  "and 로 합친다.",
+  "왜 안 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 문자열로** 이었다. **여기서는 객체로** 잇는다."
+  },
+  {
+   "type": "figure",
+   "caption": "조건 하나에 메서드 하나",
+   "ascii": "   one condition per method, combined at call time\n\n   usernameEq(name)   a piece that knows one column\n   ageGoe(min)        another piece, unaware of the first\n   teamNameEq(team)   a third, which brings its own join\n\n   the caller picks which pieces exist, and null means skip",
+   "note": "**`null` 이면 건너뛴**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건을 값처럼 다룬다",
+   "md": "**`Specification` 은 조건 한 조각**이다.\n\n> **`toPredicate` 하나만 구현**한다.\n> **`where` 절의 한 마디를** 만든다.\n> **이름을 붙여 재사용**한다.\n\n**`and`·`or` 로** 합친다.\n\n> **조각을 값처럼 이어 붙**인다.\n> **6.1절의 `StringBuilder` 와 같은 일**이다.\n> **문자열이 아니라 객체라 오타가** 없다.\n\n**`null` 이 건너뛰기** 된다.\n\n> **`Specification.where(null)` 이 안전**하다.\n> **조건이 없으면 아무것도 안** 붙는다.\n> **화면 조건에 딱** 맞는다.\n\n**리포지토리를 하나 더** 상속한다.\n\n> **`JpaSpecificationExecutor`** 다.\n> **`findAll(spec, pageable)` 이 생**긴다.\n> **페이징과 정렬이 그대로** 붙는다."
+  },
+  {
+   "type": "figure",
+   "caption": "읽는 값",
+   "ascii": "   what the criteria api costs to read\n\n   the jpql version    one line of text, and you can see the query\n   the criteria version root, builder, path, predicate, four calls per condition\n\n   both produce the same statement,\n   and only one of them can be read out loud",
+   "note": "**둘 중 하나만 소리 내 읽을 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Criteria API 가 읽히지 않는다",
+   "md": "**한 조건에 네 줄**이다.\n\n> **`root`·`builder`·`join`·`equal`** 이다.\n> **JPQL 한 줄이면 될 것**이다.\n> **읽는 사람이 SQL 을 못** 그린다.\n\n**조인이 조각에 숨는**다.\n\n> **`root.join(\"team\")` 이 안에** 있다.\n> **조각을 두 개 쓰면 조인이 두 번 붙을 수** 있다.\n> **아래에서 그걸** 본다.\n\n**컴파일이 안 지켜** 준다.\n\n> **`get(\"username\")` 이 문자열**이다.\n> **오타는 실행에서** 난다.\n> **메타모델을 쓰면 되지만 생성이** 필요하다.\n\n**그래서 Querydsl 로** 간다.\n\n> **같은 조립을 JPQL 처럼** 쓴다.\n> **8.8절에서 그** 이야기다.\n> **명세는 개념을 배우는 데** 좋다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 리포지토리에 붙인다\n\npublic interface MemberRepository extends\n        JpaRepository<Member, Long>,\n        JpaSpecificationExecutor<Member> {\n}\n\n$ javap -cp build/classes JpaSpecificationExecutor | head -8\npublic interface org.springframework.data.jpa.repository\n        .JpaSpecificationExecutor<T> {\n  java.util.Optional<T> findOne(Specification<T>);\n  java.util.List<T> findAll(Specification<T>);\n  org.springframework.data.domain.Page<T> findAll(Specification<T>,\n          org.springframework.data.domain.Pageable);\n  long count(Specification<T>);\n  boolean exists(Specification<T>);\n}\n\n--   메서드 다섯이 생겼다\n\n\n-- 조각을 만든다\n\npublic class MemberSpec {\n\n    public static Specification<Member> usernameEq(String username) {\n        if (username == null) return null;\n        return (root, query, cb) -> cb.equal(root.get(\"username\"), username);\n    }\n\n    public static Specification<Member> ageGoe(Integer age) {\n        if (age == null) return null;\n        return (root, query, cb) -> cb.greaterThanOrEqualTo(\n                root.get(\"age\"), age);\n    }\n\n    public static Specification<Member> teamNameEq(String teamName) {\n        if (teamName == null) return null;\n        return (root, query, cb) -> {\n            Join<Member, Team> team = root.join(\"team\", JoinType.INNER);\n            return cb.equal(team.get(\"name\"), teamName);\n        };\n    }\n}\n\n--   조건 하나에 메서드 하나다\n--   null 이면 조각이 없다\n\n\n-- 조건 없이 부른다\n\n@Test\n@Transactional\nvoid 조건_없음() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.usernameEq(null))\n                    .and(MemberSpec.ageGoe(null)));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n        m1_0.last_modified_by, m1_0.last_modified_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n\n--   where 가 아예 없다\n--   6.1절의 where 1=1 보다 깔끔하다\n\n\n-- 하나만 준다\n\n@Test\n@Transactional\nvoid 하나() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.usernameEq(\"m1\")));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\n\n\n-- 둘을 합친다\n\n@Test\n@Transactional\nvoid 둘() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.usernameEq(\"m1\"))\n                    .and(MemberSpec.ageGoe(20)));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.username=?\n        and m1_0.age>=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\nTRACE binding parameter (2:INTEGER) <- [20]\n\n\n-- 조인이 있는 조각을 더한다\n\n@Test\n@Transactional\nvoid 조인() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.usernameEq(\"m1\"))\n                    .and(MemberSpec.teamNameEq(\"teamA\")));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, ...\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and t1_0.name=?\n\n--   조각이 조인을 데려왔다\n\n\n-- 조인이 두 번 붙을 수 있다\n\npublic static Specification<Member> teamNameLike(String keyword) {\n    return (root, query, cb) -> {\n        Join<Member, Team> team = root.join(\"team\");   // 또 join 한다\n        return cb.like(team.get(\"name\"), keyword + \"%\");\n    };\n}\n\n@Test\n@Transactional\nvoid 조인_두_번() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.teamNameEq(\"teamA\"))\n                    .and(MemberSpec.teamNameLike(\"team\")));\n}\n\nHibernate:\n    select ...\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    join\n        team t2_0 on t2_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and t2_0.name like ? escape '\\'\n\n--   같은 표를 두 번 조인했다\n--   조각마다 join 을 불러서다\n--   조각이 서로를 모른다\n\n\n-- or 로 합친다\n\n@Test\n@Transactional\nvoid or() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.usernameEq(\"m1\"))\n                    .or(MemberSpec.usernameEq(\"m2\")));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.username=?\n        or m1_0.username=?\n\n--   괄호가 없다\n--   and 와 섞으면 우선순위를 봐야 한다\n\n\n-- and 와 or 를 섞으면\n\n@Test\n@Transactional\nvoid 섞기() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.ageGoe(20))\n                    .and(Specification.where(MemberSpec.usernameEq(\"m1\"))\n                            .or(MemberSpec.usernameEq(\"m2\"))));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.age>=?\n        and (\n            m1_0.username=?\n            or m1_0.username=?\n        )\n\n--   중첩하면 괄호가 생긴다\n\n\n-- 페이징이 그대로 붙는다\n\n@Test\n@Transactional\nvoid 페이징() {\n    em.clear();\n    Page<Member> p = memberRepository.findAll(\n            Specification.where(MemberSpec.ageGoe(10)),\n            PageRequest.of(0, 3, Sort.by(\"username\")));\n    System.out.println(\"전체: \" + p.getTotalElements());\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where m1_0.age>=?\n    order by m1_0.username\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n전체: 12\n\n--   개수 쿼리에도 조건이 들어갔다\n--   6.1절에서 손으로 복사하던 것이다\n\n\n-- 개수 쿼리에서 조인을 뗀다\n\npublic static Specification<Member> teamNameEqSmart(String teamName) {\n    return (root, query, cb) -> {\n        if (Long.class != query.getResultType()) {   // 개수 쿼리가 아니면\n            root.fetch(\"team\", JoinType.LEFT);\n        }\n        Join<Member, Team> team = root.join(\"team\");\n        return cb.equal(team.get(\"name\"), teamName);\n    };\n}\n\n@Test\n@Transactional\nvoid 개수_최적화() {\n    em.clear();\n    memberRepository.findAll(\n            Specification.where(MemberSpec.teamNameEqSmart(\"teamA\")),\n            PageRequest.of(0, 3));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    join team t2_0 on t2_0.team_id=m1_0.team_id\n    where t2_0.name=?\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id)\n    from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n\n--   fetch 가 목록에만 붙었다\n--   조건은 여전히 필요해서 join 이 남았다\n--   5.11절의 countQuery 보다 복잡하다\n\n\n-- 오타는 실행에서 난다\n\npublic static Specification<Member> typoSpec() {\n    return (root, query, cb) -> cb.equal(root.get(\"usrname\"), \"m1\");\n}\n\n@Test\n@Transactional\nvoid 오타() {\n    try {\n        memberRepository.findAll(Specification.where(MemberSpec.typoSpec()));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage());\n    }\n}\n\n예외: IllegalArgumentException\n말:   Unable to locate Attribute with the given name [usrname]\n       on this ManagedType [study.datajpa.entity.Member]\n\n--   컴파일은 통과했다\n--   호출에서 터진다\n\n\n-- 같은 쿼리를 JPQL 로 쓰면\n\n@Query(\"select m from Member m join m.team t\"\n     + \" where m.username = :username and t.name = :teamName\")\nList<Member> plain(@Param(\"username\") String username,\n                   @Param(\"teamName\") String teamName);\n\n--   한 줄이다\n--   대신 동적이 아니다\n\n\n-- 줄 수를 센다\n\n$ awk '/usernameEq|ageGoe|teamNameEq/,/^    }/' MemberSpec.java | wc -l\n      18\n$ echo 'select m from Member m join m.team t where ...' | wc -l\n       1\n\n--   조건 셋에 18 줄이다\n--   대신 여덟 가지 조합을 낸다\n--   8.2절에서 더 짧은 방법을 본다",
+   "note": "**조건이 없으면 `where` 자체가 안 붙어 6.1절의 `where 1=1` 보다** 깔끔하다.\n\n**조각 둘이 각자 `join` 을 불러 같은 `team` 표가 `t1_0`·`t2_0` 로 두 번** 붙었다.\n\n**중첩하면 `and (... or ...)` 로 괄호가** 생긴다.\n\n**페이징을 주면 개수 쿼리에도 조건이 자동으로** 들어간다.\n\n**속성 오타는 컴파일을 통과하고 `Unable to locate Attribute` 로 호출에서** 터진다."
+  }
+ ],
+ "recap": [
+  "**조건을 값처럼** 다룬다.",
+  "**`null` 이 건너뛰기**다.",
+  "**`and`·`or` 로** 합친다.",
+  "**중첩하면 괄호가** 생긴다.",
+  "**조각이 조인을** 데려온다.",
+  "**조각끼리 서로를** 모른다.",
+  "**개수 쿼리에도** 붙는다.",
+  "**오타는 실행에서** 난다.",
+  "**한 조건에 네 줄**이다."
+ ],
+ "drills": [
+  {
+   "task": "조각 셋을 만든다.",
+   "done_when": "조합마다 SQL 이 바뀌는 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "조인 조각을 둘 쓴다.",
+   "done_when": "조인이 두 번 붙는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`and` 와 `or` 를 중첩한다.",
+   "done_when": "괄호를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "속성 이름을 틀린다.",
+   "done_when": "실행 시점 예외를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Specification` 이 만드는 것은?",
+   "a": "`where` 절의 한 조각인 `Predicate` 다."
+  },
+  {
+   "q": "조건이 하나도 없으면?",
+   "a": "`where` 절 자체가 붙지 않는다."
+  },
+  {
+   "q": "조인 조각을 둘 쓰면?",
+   "a": "조각끼리 몰라서 같은 표가 두 번 조인될 수 있다."
+  },
+  {
+   "q": "속성 이름 오타는 언제 드러나나?",
+   "a": "문자열이라 컴파일이 아니라 실행에서 난다."
+  },
+  {
+   "q": "명세를 실무에서 잘 안 쓰는 이유는?",
+   "a": "Criteria API 가 읽기 어렵고 조각 간 조인 관리가 힘들어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Specification",
+   "def": "조건 한 조각을 객체로 표현해 조합할 수 있게 한 인터페이스."
+  },
+  {
+   "term": "Criteria API",
+   "def": "쿼리를 문자열이 아닌 객체 조립으로 만드는 JPA 표준 API."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Specifications",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/specifications.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 — Criteria API",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

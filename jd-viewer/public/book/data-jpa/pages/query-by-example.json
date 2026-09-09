@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "query-by-example",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "Query By Example",
+ "summary": "엔티티 하나가 조건이 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "Example 을 만든다.",
+  "매처를 안다.",
+  "한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절이 18줄이었다.** **여기는 두 줄**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "엔티티가 조건이 된다",
+   "ascii": "   the entity itself becomes the condition\n\n   a field with a value   turns into an equals in the where clause\n   a field left null      is ignored entirely\n   a primitive int zero   is not null, so it is not ignored\n\n   the third row is the whole problem in one line",
+   "note": "**셋째 줄이 문제의 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "채운 필드만 조건이 된다",
+   "md": "**엔티티를 하나 만들어 넘긴**다.\n\n> **찾고 싶은 값만** 채운다.\n> **`Example.of(probe)` 로** 감싼다.\n> **`findAll(example)` 이 조건을** 만든다.\n\n**`null` 은 무시**된다.\n\n> **안 채운 필드는 `where` 에 안** 온다.\n> **6.1절의 `if` 가** 사라진다.\n> **코드가 제일** 짧다.\n\n**매처로 조금 바꿀 수** 있다.\n\n> **`contains`·`startsWith` 로** 바꾼다.\n> **대소문자 무시도** 된다.\n> **필드마다 다르게 줄 수** 있다.\n\n**연관도 조건이** 된다.\n\n> **`member.setTeam(team)` 이면 조인이** 붙는다.\n> **내부 조인만** 된다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "되는 것과 안 되는 것",
+   "ascii": "   what it can and cannot express\n\n   equals, and starts with, and ignore case   yes\n   greater than, between, in, or              no\n   a condition on the other side of a join    no, outer joins are out\n\n   a search screen usually needs the second row",
+   "note": "**검색 화면은 보통 둘째 줄이** 필요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "원시 타입이 조건에 끼어든다",
+   "md": "**`int age` 는 `null` 이 될 수** 없다.\n\n> **안 채우면 0**이다.\n> **`where age = 0` 이 붙는다.**\n> **아무것도 안 나온다.**\n\n**`withIgnorePaths` 로** 뺀다.\n\n> **무시할 필드를 이름으로** 적는다.\n> **결국 필드 이름을 손으로** 쓴다.\n> **짧다는 장점이 줄어든**다.\n\n**범위 조건이 아예 안** 된다.\n\n> **\"20살 이상\" 을 표현할 수** 없다.\n> **`or` 도** 안 된다.\n> **8.1절이나 Querydsl 로** 간다.\n\n**외부 조인이 안** 된다.\n\n> **팀 없는 회원은 못** 찾는다.\n> **5.13절의 `left join` 이** 아니다.\n> **실무에서 못 쓰는 결정적 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 아무것도 안 붙인다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\n$ javap -cp build/classes QueryByExampleExecutor | head -6\npublic interface org.springframework.data.repository.query\n        .QueryByExampleExecutor<T> {\n  <S extends T> java.util.Optional<S> findOne(Example<S>);\n  <S extends T> java.lang.Iterable<S> findAll(Example<S>);\n  <S extends T> long count(Example<S>);\n}\n\n--   JpaRepository 가 이미 상속하고 있다\n--   8.1절처럼 따로 붙일 필요가 없다\n\n\n-- 조건을 만든다\n\n@Test\n@Transactional\nvoid 기본() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m1\");\n\n    memberRepository.findAll(Example.of(probe));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n        m1_0.last_modified_by, m1_0.last_modified_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age=?\n        and m1_0.username=?\nTRACE binding parameter (1:INTEGER) <- [0]\nTRACE binding parameter (2:VARCHAR) <- [m1]\n\n--   age 를 안 넣었는데 조건에 있다\n--   int 라 0 이다\n--   결과가 0건이다\n\n\n-- 원시 타입을 뺀다\n\n@Test\n@Transactional\nvoid 무시() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m1\");\n\n    ExampleMatcher matcher = ExampleMatcher.matching()\n            .withIgnorePaths(\"age\");\n\n    memberRepository.findAll(Example.of(probe, matcher));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\n\n--   age 가 빠졌다\n--   필드 이름을 손으로 적었다\n\n\n-- 감사 필드도 걸린다\n\n@Test\n@Transactional\nvoid 감사_필드() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m1\");\n    probe.setCreatedBy(\"kwanhyun\");     // 실수로 채워졌다면\n\n    memberRepository.findAll(Example.of(probe,\n            ExampleMatcher.matching().withIgnorePaths(\"age\")));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.created_by=?\n        and m1_0.username=?\n\n--   6.4절의 감사 컬럼이 조건이 됐다\n--   엔티티의 모든 필드가 후보다\n\n\n-- 앞글자 일치로 바꾼다\n\n@Test\n@Transactional\nvoid 앞글자() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m\");\n\n    ExampleMatcher matcher = ExampleMatcher.matching()\n            .withIgnorePaths(\"age\")\n            .withMatcher(\"username\",\n                    ExampleMatcher.GenericPropertyMatchers.startsWith());\n\n    System.out.println(\"건수: \" +\n            memberRepository.findAll(Example.of(probe, matcher)).size());\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.username like ? escape '\\'\nTRACE binding parameter (1:VARCHAR) <- [m%]\n건수: 12\n\n--   like 가 됐다\n--   m% 로 바인딩됐다\n\n\n-- 포함으로 바꾼다\n\n.withMatcher(\"username\",\n        ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())\n\nHibernate:\n    select ...\n    where\n        lower(m1_0.username) like ? escape '\\'\nTRACE binding parameter (1:VARCHAR) <- [%m%]\n\n--   lower 가 붙었다\n--   %m% 다\n\n\n-- 조건을 or 로 바꾼다\n\n@Test\n@Transactional\nvoid or() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m1\");\n    probe.setAge(20);\n\n    memberRepository.findAll(Example.of(probe,\n            ExampleMatcher.matchingAny()));\n}\n\nHibernate:\n    select ...\n    from member m1_0\n    where\n        m1_0.age=?\n        or m1_0.username=?\n\n--   전부 or 가 된다\n--   섞을 수는 없다\n\n\n-- 연관을 조건에 넣는다\n\n@Test\n@Transactional\nvoid 연관() {\n    em.clear();\n    Team team = new Team(\"teamA\");\n    Member probe = new Member();\n    probe.setUsername(\"m1\");\n    probe.setTeam(team);\n\n    memberRepository.findAll(Example.of(probe,\n            ExampleMatcher.matching().withIgnorePaths(\"age\")));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, ...\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.username=?\n\n--   내부 조인이 붙었다\n--   조인 조건을 내가 안 적었다\n\n\n-- 팀이 없는 회원은 못 찾는다\n\n@Test\n@Transactional\nvoid 외부_조인() {\n    em.persist(new Member(\"팀없음\", 10));\n    em.flush(); em.clear();\n\n    Member probe = new Member();\n    probe.setUsername(\"팀없음\");\n\n    System.out.println(\"건수: \" + memberRepository.findAll(\n            Example.of(probe,\n                    ExampleMatcher.matching().withIgnorePaths(\"age\")))\n            .size());\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?, ?, ?, ?, ?)\nHibernate:\n    select ... from member m1_0\n    where m1_0.username=?\n건수: 1\n\n--   연관을 안 넣으면 조인이 없어 찾힌다\n--   그런데 팀 조건을 같이 걸면\n\n@Test\n@Transactional\nvoid 외부_조인_불가() {\n    Member probe = new Member();\n    probe.setTeam(new Team(\"teamA\"));\n\n    // \"teamA 이거나 팀이 없는 회원\" 을 표현할 방법이 없다\n    System.out.println(\"건수: \" + memberRepository.findAll(\n            Example.of(probe,\n                    ExampleMatcher.matching().withIgnorePaths(\"age\")))\n            .size());\n}\n\nHibernate:\n    select ... from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n건수: 3\n\n--   join 이다 left join 이 아니다\n--   팀 없는 회원은 영영 안 나온다\n\n\n-- 범위 조건은 아예 안 된다\n\n// probe.setAge(20) 은 age = 20 이다\n// \"20 이상\" 을 표현할 방법이 없다\n\n$ grep -o 'GenericPropertyMatchers\\.[a-zA-Z]*' \\\n    <(javap -cp \"$SPRING_JAR\" \\\n      org.springframework.data.domain.ExampleMatcher\\$GenericPropertyMatchers) \\\n    | sort -u\n\ncontains\nendsWith\nexact\nregex\nstartsWith\nstoring\n\n--   전부 문자열 매칭이다\n--   부등호가 없다\n\n\n-- 페이징은 된다\n\n@Test\n@Transactional\nvoid 페이징() {\n    em.clear();\n    Member probe = new Member();\n    probe.setUsername(\"m\");\n\n    Page<Member> p = memberRepository.findAll(\n            Example.of(probe, ExampleMatcher.matching()\n                    .withIgnorePaths(\"age\")\n                    .withStringMatcher(ExampleMatcher.StringMatcher.STARTING)),\n            PageRequest.of(0, 3, Sort.by(\"id\")));\n    System.out.println(\"전체: \" + p.getTotalElements());\n}\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '\\'\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    where m1_0.username like ? escape '\\'\n전체: 12\n\n--   개수 쿼리에도 조건이 들어갔다\n\n\n-- 세 방법의 줄 수를 센다\n\n$ printf '%-16s %-8s %s\\n' \\\n  '6.1 커스텀' '18줄'  '다 되고 문자열이다' \\\n  '8.1 명세'  '18줄'  '다 되고 안 읽힌다' \\\n  '8.2 QBE'   '4줄'   '등호와 like 만 된다'\n\n6.1 커스텀        18줄     다 되고 문자열이다\n8.1 명세          18줄     다 되고 안 읽힌다\n8.2 QBE           4줄      등호와 like 만 된다\n\n--   8.3절에서 컬럼을 줄이는 쪽으로 간다",
+   "note": "**`int age` 를 안 채웠는데 `where m1_0.age=?` 에 `[0]` 이** 들어간다.\n\n**`withIgnorePaths(\"age\")` 로 빼면 결국 필드 이름을 손으로 적는** 셈이다.\n\n**`startsWith` 는 `like` 에 `[m%]`, `contains().ignoreCase()` 는 `lower(...) like [%m%]`** 다.\n\n**연관을 채우면 `join team` 이 붙고 — `left join` 이 아니라 팀 없는 회원은 영영 안** 나온다.\n\n**매처 목록이 전부 문자열 매칭이라 부등호가** 없다."
+  }
+ ],
+ "recap": [
+  "**엔티티가 조건이** 된다.",
+  "**`null` 은 무시**된다.",
+  "**원시 타입은 0이** 조건이다.",
+  "**무시 경로를 손으로** 적는다.",
+  "**감사 필드도** 후보다.",
+  "**`like` 로 바꿀 수** 있다.",
+  "**전부 `and` 거나 전부 `or`** 다.",
+  "**내부 조인만** 된다.",
+  "**범위 조건이 안** 된다."
+ ],
+ "drills": [
+  {
+   "task": "`Example` 로 조회한다.",
+   "done_when": "원시 타입이 조건에 낀 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`withIgnorePaths` 를 준다.",
+   "done_when": "조건이 빠진 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "매처로 `like` 를 만든다.",
+   "done_when": "바인딩 값을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "연관을 조건에 넣는다.",
+   "done_when": "내부 조인을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Example` 에서 조건이 되는 필드는?",
+   "a": "`null` 이 아닌 필드다."
+  },
+  {
+   "q": "`int` 필드가 문제인 이유는?",
+   "a": "`null` 이 못 되어 0이 그대로 조건이 된다."
+  },
+  {
+   "q": "`and` 와 `or` 를 섞을 수 있나?",
+   "a": "없다. 전부 하나로만 정해진다."
+  },
+  {
+   "q": "연관 조건은 어떤 조인이 되나?",
+   "a": "내부 조인만 된다."
+  },
+  {
+   "q": "범위 조건을 표현할 수 있나?",
+   "a": "없다. 등호와 문자열 매칭만 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프로브",
+   "def": "조건 값을 채워 넣은 엔티티 인스턴스."
+  },
+  {
+   "term": "ExampleMatcher",
+   "def": "필드별 매칭 방식과 무시 경로를 정하는 설정 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Query by Example",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-by-example.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Specifications",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/specifications.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
