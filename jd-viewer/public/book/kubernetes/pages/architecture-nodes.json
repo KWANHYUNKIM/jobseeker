@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "architecture-nodes",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "컨트롤 플레인과 노드",
+ "summary": "클러스터를 이루는 것들.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "구성 요소 일곱을 안다.",
+  "apply 뒤 다섯 단계를 짚는다.",
+  "서로 안 부르는 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 파드 여덟 개가 이미 돌고** 있었다. **그게 무엇인지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "구성 요소",
+   "ascii": "   who is where, and who talks to whom\n\n   control plane\n     kube-apiserver          the only door, everything goes through it\n     etcd                    the only memory, key value, watched\n     kube-scheduler          picks a node for a pod with none\n     kube-controller-manager runs the loops from 2.4\n\n   every node\n     kubelet                 makes the containers on this machine\n     kube-proxy              makes service addresses work here\n     a container runtime     containerd, usually\n\n   nothing talks to etcd except the apiserver",
+   "note": "**etcd 에 말을 거는 건 apiserver** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "일곱 가지",
+   "md": "| 요소 | 하는 일 | 없으면 |\n|---|---|---|\n| **`kube-apiserver`** | 유일한 문 | 아무것도 못 한다 |\n| **`etcd`** | 유일한 기억 | 클러스터가 사라진다 |\n| **`kube-scheduler`** | 파드에 노드를 정한다 | 새 파드가 `Pending` |\n| **`kube-controller-manager`** | 루프들 | 죽어도 안 되살아난다 |\n| **`kubelet`** | 이 노드의 컨테이너 | 그 노드가 `NotReady` |\n| **`kube-proxy`** | 서비스 주소 | 이름으로 못 부른다 |\n| **런타임** | 실제 실행 | 컨테이너가 안 뜬다 |\n\n> **앞의 넷이 컨트롤 플레인, 뒤의 셋이 모든 노드**에 있다.\n> **컨트롤 플레인 노드에도 `kubelet` 은** 있다 — **자기도 파드를 돌려야** 해서다.\n\n**`etcd` 가 유일한 상태**다.\n\n> **키·값 저장소**다.\n> **`etcd` 를 백업하면 클러스터 전체를 백업한** 것이다.\n> **10장에서 그** 얘기를 한다.\n>\n> **아무도 직접 안 읽는다** — **전부 `apiserver` 를** 거친다.\n> **인증·인가·검증이 한 군데** 있게 하려고다.\n\n**서로를 안 부른다.**\n\n> **스케줄러가 `kubelet` 을 호출하지** 않는다.\n> **각자 `apiserver` 를 보고 있다가 자기 일이 생기면** 한다.\n> **이걸 `watch` 라고** 한다.\n>\n> **⑩ 8.1절의 인가 매니저처럼 인터페이스로 묶인 게** 아니라, **공유 저장소를 보는 독립 프로세스들**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "apply 뒤 다섯 단계",
+   "ascii": "   what happens after kubectl apply\n\n   kubectl      -> apiserver   validate, write to etcd, answer created\n   controller   watches        a Deployment with no ReplicaSet, make one\n   controller   watches        a ReplicaSet with no Pods, make them\n   scheduler    watches        a Pod with no node, pick one, write it back\n   kubelet      watches        a Pod on my node, pull and run it\n\n   five steps, and none of them called the next one",
+   "note": "**다섯 중 아무도 다음을 안** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이렇게 나눴나",
+   "md": "**한 부분이 죽어도 나머지가** 돈다.\n\n| 죽은 것 | 그래도 되는 것 | 안 되는 것 |\n|---|---|---|\n| 스케줄러 | 이미 뜬 파드 | 새 파드 배치 |\n| 컨트롤러 매니저 | 이미 뜬 파드 | 죽은 파드 복구 |\n| `apiserver` | 이미 뜬 파드 | 전부 |\n| 한 노드의 `kubelet` | 다른 노드 | 그 노드 |\n\n> **\"이미 뜬 파드는 계속 돈다\" 가 셋에** 걸려 있다.\n> **컨트롤 플레인이 다 죽어도 서비스는 잠시** 산다.\n> **아래에서 실제로 죽여** 본다.\n\n**확장 지점이기도** 하다.\n\n> **스케줄러를 내 것으로 바꿀 수** 있다.\n> **컨트롤러를 추가할 수** 있다 — **그게 오퍼레이터**다.\n> **`apiserver` 에 새 오브젝트 종류를 더할 수** 있다 — **CRD**다.\n>\n> **1.5절에서 이 책 밖이라고 한** 것들이다.\n> **다만 구조가 왜 그런지는 여기서** 안다.\n\n**노드는 그냥 리눅스 머신**이다.\n\n> **`kubelet` 과 런타임이 깔려 있을** 뿐이다.\n> **`docker ps` 로 컨테이너가** 보인다 — **정확히는 `crictl ps`** 다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 세 대짜리로 만든다 ---\n\n$ cat kind-config.yaml\n\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnodes:\n  - role: control-plane\n  - role: worker\n  - role: worker\n\n$ kind create cluster --name lab --config kind-config.yaml\n\nCreating cluster \"lab\" ...\n ✓ Ensuring node image (kindest/node:v1.31.0)\n ✓ Preparing nodes\n ✓ Writing configuration\n ✓ Starting control-plane\n ✓ Installing CNI\n ✓ Installing StorageClass\n ✓ Joining worker nodes\n\n$ kubectl get nodes -o wide\n\nNAME                STATUS   ROLES           AGE   VERSION   INTERNAL-IP\nlab-control-plane   Ready    control-plane   72s   v1.31.0   172.18.0.4\nlab-worker          Ready    <none>          58s   v1.31.0   172.18.0.2\nlab-worker2         Ready    <none>          58s   v1.31.0   172.18.0.3\n\n#   세 대다\n\n# --- 컨트롤 플레인 요소들 ---\n\n$ kubectl get pods -n kube-system -o wide --no-headers \\\n    | awk '{printf \"%-45s %s\\n\", $1, $7}'\n\ncoredns-7db6d8ff4d-4k2mv                      lab-control-plane\ncoredns-7db6d8ff4d-9x7bn                      lab-control-plane\netcd-lab-control-plane                        lab-control-plane\nkindnet-p8w4t                                 lab-control-plane\nkindnet-r2m9x                                 lab-worker\nkindnet-t7k4n                                 lab-worker2\nkube-apiserver-lab-control-plane              lab-control-plane\nkube-controller-manager-lab-control-plane     lab-control-plane\nkube-proxy-2m9kx                              lab-control-plane\nkube-proxy-8n4wq                              lab-worker\nkube-proxy-x3f7v                              lab-worker2\nkube-scheduler-lab-control-plane              lab-control-plane\n\n#   apiserver · etcd · scheduler · controller-manager 는 하나씩이다\n\n#   kube-proxy 와 kindnet 은 노드마다 하나다\n\n#   9장의 데몬셋이 그렇게 만든다\n\n$ kubectl get pods -n kube-system -l component=kube-apiserver \\\n    -o jsonpath='{.items[0].spec.containers[0].command[0]}{\"\\n\"}'\n\nkube-apiserver\n\n# --- kubelet 은 파드가 아니다 ---\n\n$ kubectl get pods -A --no-headers | grep -c kubelet\n\n0\n\n$ docker exec lab-worker systemctl is-active kubelet\n\nactive\n\n$ docker exec lab-worker ps -eo comm --no-headers | grep -E 'kubelet|containerd' | sort -u\n\ncontainerd\nkubelet\n\n#   kubelet 은 노드의 프로세스다\n\n#   파드로 안 뜬다\n\n#   자기가 파드를 만드는 쪽이라 그렇다\n\n# --- 노드는 그냥 리눅스다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3\n$ kubectl get pods -o wide --no-headers | awk '{print $1, $7}'\n\nweb-6d8f4b9c7-2k9mv lab-worker\nweb-6d8f4b9c7-7x4bn lab-worker2\nweb-6d8f4b9c7-p3w8t lab-worker\n\n#   두 워커에 나뉘었다\n\n$ docker exec lab-worker crictl ps --name nginx -o table\n\nCONTAINER      IMAGE          CREATED         STATE     NAME\n8f3a2b1c9d4e   a72860cb95fd   24 seconds ago  Running   nginx\n2e9d7f4a1b8c   a72860cb95fd   24 seconds ago  Running   nginx\n\n#   그 노드에 두 개가 있다\n\n#   kubectl 이 본 것과 같다\n\n# --- apply 뒤 다섯 단계 ---\n\n$ kubectl delete deployment web\n$ kubectl get events -w --no-headers &\n$ kubectl create deployment web --image=nginx:1.27 --replicas=2\n\ndeployment.apps/web created\n\n0s  Normal  ScalingReplicaSet  deployment/web        Scaled up replica set\n  web-6d8f4b9c7 to 2\n0s  Normal  SuccessfulCreate   replicaset/web-6d8f4b9c7  Created pod:\n  web-6d8f4b9c7-h4n8q\n0s  Normal  SuccessfulCreate   replicaset/web-6d8f4b9c7  Created pod:\n  web-6d8f4b9c7-r5t2w\n0s  Normal  Scheduled          pod/web-6d8f4b9c7-h4n8q   Successfully assigned\n  default/web-6d8f4b9c7-h4n8q to lab-worker\n0s  Normal  Scheduled          pod/web-6d8f4b9c7-r5t2w   Successfully assigned\n  default/web-6d8f4b9c7-r5t2w to lab-worker2\n0s  Normal  Pulled             pod/web-6d8f4b9c7-h4n8q   Container image\n  \"nginx:1.27\" already present on machine\n0s  Normal  Created            pod/web-6d8f4b9c7-h4n8q   Created container nginx\n0s  Normal  Started            pod/web-6d8f4b9c7-h4n8q   Started container nginx\n\n#   deployment -> replicaset -> pod -> scheduled -> kubelet\n\n#   각 줄의 주체가 다르다\n\n#   deployment 컨트롤러가 replicaset 을 만들고\n\n#   replicaset 컨트롤러가 pod 를 만들고\n\n#   scheduler 가 노드를 정하고\n\n#   kubelet 이 컨테이너를 만들었다\n\n# --- 스케줄러를 죽여 본다 ---\n\n$ docker exec lab-control-plane mv \\\n    /etc/kubernetes/manifests/kube-scheduler.yaml /tmp/\n\n$ sleep 10 && kubectl get pods -n kube-system | grep -c scheduler\n\n0\n\n#   없어졌다\n\n$ kubectl scale deployment web --replicas=4\n\ndeployment.apps/web scaled\n\n$ kubectl get pods --no-headers\n\nweb-6d8f4b9c7-h4n8q   1/1     Running   0     3m\nweb-6d8f4b9c7-r5t2w   1/1     Running   0     3m\nweb-6d8f4b9c7-k2m9v   0/1     Pending   0     8s\nweb-6d8f4b9c7-w7t4x   0/1     Pending   0     8s\n\n#   새것이 Pending 이다\n\n$ kubectl get pod web-6d8f4b9c7-k2m9v -o jsonpath='{.spec.nodeName}'\n\n#   (비어 있다)\n\n#   노드가 안 정해졌다\n\n#   기존 둘은 잘 돈다\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    curl -s -o /dev/null -w '%{http_code}\\n' http://web-6d8f4b9c7-h4n8q.default.pod\n\n#   (이것도 Pending 이다. 새 파드니까)\n\n#   되살린다\n\n$ docker exec lab-control-plane mv \\\n    /tmp/kube-scheduler.yaml /etc/kubernetes/manifests/\n\n$ sleep 15 && kubectl get pods --no-headers | awk '{print $3}' | sort | uniq -c\n\n   4 Running\n\n#   Pending 이던 둘이 떴다\n\n#   스케줄러가 돌아오자 밀린 일을 했다\n\n# --- 컨트롤러 매니저를 죽여 본다 ---\n\n$ docker exec lab-control-plane mv \\\n    /etc/kubernetes/manifests/kube-controller-manager.yaml /tmp/\n\n$ sleep 10 && kubectl delete pod $(kubectl get pod -o name | head -1)\n\npod \"web-6d8f4b9c7-h4n8q\" deleted\n\n$ sleep 10 && kubectl get pods --no-headers | wc -l\n\n3\n\n#   셋이다\n\n#   안 살아난다\n\n#   replicaset 컨트롤러가 없어서다\n\n#   2.4절의 루프가 이 안에 있다\n\n$ docker exec lab-control-plane mv \\\n    /tmp/kube-controller-manager.yaml /etc/kubernetes/manifests/\n\n$ sleep 20 && kubectl get pods --no-headers | wc -l\n\n4\n\n#   돌아왔다\n\n# --- apiserver 를 죽이면 ---\n\n$ docker exec lab-control-plane mv \\\n    /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/\n\n$ sleep 10 && kubectl get pods\n\nThe connection to the server 127.0.0.1:52791 was refused - did you specify\nthe right host or port?\n\n#   아무것도 못 한다\n\n#   그런데 서비스는?\n\n$ docker exec lab-worker crictl ps --name nginx -o table | tail -n +2 | wc -l\n\n2\n\n#   컨테이너는 돌고 있다\n\n$ docker exec lab-worker curl -s -o /dev/null -w '%{http_code}\\n' \\\n    http://10.244.1.5\n\n200\n\n#   응답한다\n\n#   컨트롤 플레인이 죽어도 이미 뜬 것은 산다\n\n#   바뀌는 것만 못 한다\n\n$ docker exec lab-control-plane mv \\\n    /tmp/kube-apiserver.yaml /etc/kubernetes/manifests/\n\n$ sleep 30 && kubectl get nodes --no-headers | wc -l\n\n3\n\n#   돌아왔다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web\n\ndeployment.apps \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   etcd 에 저장되는 것의 모양을 본다",
+   "note": "**`apiserver`·`etcd`·`scheduler`·`controller-manager` 는 하나씩, `kube-proxy` 는 노드마다** 하나다.\n\n**`kubelet` 은 파드가 아니라 노드의 프로세스**다 — `systemctl is-active` 로 확인된다.\n\n**이벤트 다섯 줄의 주체가 다** 다르다 — 디플로이먼트 → 레플리카셋 → 파드 → 스케줄 → kubelet.\n\n**스케줄러를 죽이면 새 파드가 `Pending` 이고 기존은 잘** 돈다. **컨트롤러 매니저를 죽이면 지운 파드가 안** 살아난다.\n\n**`apiserver` 가 죽어도 컨테이너는 200 으로** 응답한다."
+  }
+ ],
+ "recap": [
+  "**컨트롤 플레인 넷, 노드마다 셋**이다.",
+  "**`etcd` 가 유일한 상태**다.",
+  "**아무도 `etcd` 를 직접 안** 읽는다.",
+  "**`kubelet` 은 파드가 아니라 노드 프로세스**다.",
+  "**요소들이 서로를 안 부르고 `apiserver` 를** 본다.",
+  "**`apply` 뒤 다섯 단계의 주체가 다** 다르다.",
+  "**스케줄러가 없으면 새 파드가 `Pending`** 이다.",
+  "**컨트롤러 매니저가 없으면 복구가 안** 된다.",
+  "**컨트롤 플레인이 죽어도 이미 뜬 것은** 산다."
+ ],
+ "drills": [
+  {
+   "task": "세 대짜리 클러스터를 만든다.",
+   "done_when": "`get nodes` 가 셋을 보였다.",
+   "minutes": 20
+  },
+  {
+   "task": "`kube-system` 파드가 어느 노드에 있는지 본다.",
+   "done_when": "하나씩인 것과 노드마다인 것을 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "이벤트를 지켜보며 디플로이먼트를 만든다.",
+   "done_when": "다섯 단계의 주체를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "스케줄러를 잠시 멈춘다.",
+   "done_when": "`Pending` 과 복구를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`etcd` 에 누가 접근하나?",
+   "a": "`apiserver` 뿐이다."
+  },
+  {
+   "q": "`kubelet` 은 파드인가?",
+   "a": "아니다. 각 노드의 시스템 프로세스다."
+  },
+  {
+   "q": "구성 요소들은 서로를 호출하나?",
+   "a": "안 한다. 각자 `apiserver` 를 감시하다 자기 일을 한다."
+  },
+  {
+   "q": "스케줄러가 죽으면?",
+   "a": "새 파드가 `Pending` 에 머물고 기존 파드는 계속 돈다."
+  },
+  {
+   "q": "`apiserver` 가 죽으면 서비스도 죽나?",
+   "a": "이미 뜬 컨테이너는 계속 응답한다. 변경만 못 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "컨트롤 플레인",
+   "def": "클러스터의 상태를 저장하고 결정을 내리는 요소들의 묶음."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Cluster Architecture",
+   "url": "https://kubernetes.io/docs/concepts/architecture/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Controllers",
+   "url": "https://kubernetes.io/docs/concepts/architecture/controller/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

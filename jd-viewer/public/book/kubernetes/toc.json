@@ -73,7 +73,7 @@
           "title": "선언형이라는 것",
           "summary": "\"띄워라\" 가 아니라 \"두 개여야 한다\".",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -81,7 +81,7 @@
           "title": "컨트롤 플레인과 노드",
           "summary": "클러스터를 이루는 것들.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
