@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "hierarchy",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "계층 구조",
+ "summary": "Repository 부터 JpaRepository 까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "상속 체인을 안다.",
+  "무엇을 고를지 안다.",
+  "Iterable 과 List 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 `JpaRepository` 를** 상속했다. **그 위에 무엇이 있는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "상속 체인",
+   "ascii": "   the chain you inherit, from the top down\n\n   Repository                  a marker, no methods at all\n   CrudRepository              save, findById, delete, count\n   ListCrudRepository          the same, returning List instead of Iterable\n   PagingAndSortingRepository  findAll with Sort and Pageable\n   JpaRepository               flush, saveAndFlush, deleteAllInBatch\n\n   the last one is the only jpa specific line in that list",
+   "note": "**마지막 줄만 JPA 전용**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "위쪽은 저장소 종류와 무관하다",
+   "md": "**2.2절에서 `commons` 를** 봤다.\n\n> **`CrudRepository` 도 거기** 있다.\n> **몽고 DB·레디스도 같은 인터페이스를** 쓴다.\n> **바꿔 끼울 수 있게 만든 층**이다.\n\n**`Repository` 는 표식일 뿐**이다.\n\n> **메서드가 하나도** 없다.\n> **이걸 상속하면 선언한 것만** 생긴다.\n> **4.3절에서 스캔 대상을 찾는 기준이 이것**이다.\n\n**`List` 판이 나중에 생겼다.**\n\n> **`CrudRepository` 는 `Iterable` 을** 준다.\n> **스트림으로 바로 못** 쓴다.\n> **스프링 데이터 3 부터 `ListCrudRepository` 가** 생겼다.\n\n**`JpaRepository` 가 JPA 것을** 더한다.\n\n| 메서드 | 무엇 |\n|---|---|\n| `flush` | 즉시 반영 |\n| `saveAndFlush` | 저장하고 바로 |\n| `deleteAllInBatch` | 한 방에 삭제(4.7절) |\n| `getReferenceById` | 프록시(1.4절) |\n\n> **넷 다 JPA 개념**이다.\n> **몽고에는 없는 것들**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "덜 상속하면 잃는 것",
+   "ascii": "   what you give up by extending less\n\n   Repository        everything, and you declare each method yourself\n   CrudRepository    paging, sorting, and the batch deletes\n   JpaRepository     nothing, and you expose flush to your callers\n\n   exposing flush and deleteAllInBatch to a service layer is the real cost",
+   "note": "**서비스에 `flush` 를 노출하는 게 진짜** 비용이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 상속할지는 노출 문제다",
+   "md": "**실무에서는 대개 `JpaRepository`** 다.\n\n> **편의 메서드가 필요할 때가** 많다.\n> **다 쓰지 않아도 손해가 크지** 않다.\n\n**그런데 다 열린다.**\n\n> **서비스가 `deleteAll()` 을 부를 수** 있다.\n> **`flush()` 를 부를 수도** 있다.\n> **팀에 따라 그걸 막고 싶을 수** 있다.\n\n**`Repository` 만 상속하면**\n\n> **선언한 것만** 있다.\n> **`save` 도 직접 선언해야** 한다.\n> **인터페이스가 계약서가** 된다.\n\n**중간 인터페이스를 만들기도** 한다.\n\n> **`@NoRepositoryBean` 을 붙여야** 한다.\n> **안 붙이면 그것도 빈으로 만들려고** 한다.\n> **6.2절에서 인터페이스를 나누는 이야기를 다시** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 상속 체인을 찍는다\n\n@Test\nvoid 체인() {\n    Class<?> c = JpaRepository.class;\n    print(c, 0);\n}\n\nvoid print(Class<?> c, int depth) {\n    System.out.println(\"  \".repeat(depth) + c.getSimpleName());\n    for (Class<?> p : c.getInterfaces()) print(p, depth + 1);\n}\n\nJpaRepository\n  ListCrudRepository\n    CrudRepository\n      Repository\n  ListPagingAndSortingRepository\n    PagingAndSortingRepository\n      Repository\n  QueryByExampleExecutor\n\n--   QueryByExampleExecutor 도 있다\n--   8.2절에서 본다\n\n\n-- 단계마다 몇 개인가\n\n@Test\nvoid 메서드_수() {\n    Class<?>[] cs = {Repository.class, CrudRepository.class,\n                     ListCrudRepository.class,\n                     PagingAndSortingRepository.class,\n                     JpaRepository.class};\n    for (Class<?> c : cs) {\n        long n = Arrays.stream(c.getMethods())\n                       .map(Method::getName).distinct().count();\n        System.out.printf(\"%-30s %d개%n\", c.getSimpleName(), n);\n    }\n}\n\nRepository                     0개\nCrudRepository                 11개\nListCrudRepository             11개\nPagingAndSortingRepository     1개\nJpaRepository                  19개\n\n--   Repository 는 0개다\n--   표식일 뿐이다\n\n\n-- Repository 만 상속하면\n\npublic interface BareRepository extends Repository<Member, Long> {\n    Member save(Member member);\n    Optional<Member> findById(Long id);\n}\n\n@Test\n@Transactional\nvoid 최소_상속() {\n    Member m = bareRepository.save(new Member(\"김\", 20));\n    em.flush(); em.clear();\n    System.out.println(bareRepository.findById(m.getId()).isPresent());\n}\n\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\ntrue\n\n--   선언한 둘만 있다\n--   SQL 은 똑같다\n\n@Test\nvoid 없는_메서드() {\n    // bareRepository.count();\n    // 컴파일 오류: cannot find symbol\n    System.out.println(\"쓸 수 있는 메서드: \" +\n        Arrays.stream(BareRepository.class.getMethods())\n              .map(Method::getName).sorted()\n              .collect(Collectors.joining(\", \")));\n}\n\n쓸 수 있는 메서드: findById, save\n\n--   딱 둘이다\n--   인터페이스가 계약서가 된다\n\n\n-- CrudRepository 는 Iterable 이다\n\npublic interface OldStyleRepository extends CrudRepository<Member, Long> {\n}\n\n@Test\n@Transactional\nvoid iterable() {\n    Iterable<Member> all = oldStyleRepository.findAll();\n    System.out.println(\"타입: \" + all.getClass().getSimpleName());\n    // all.stream() 이 안 된다\n    long n = StreamSupport.stream(all.spliterator(), false).count();\n    System.out.println(\"개수: \" + n);\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n타입: ArrayList\n개수: 3\n\n--   실제로는 ArrayList 다\n--   선언 타입이 Iterable 이라 stream 을 못 쓴다\n\n\n-- ListCrudRepository 면\n\npublic interface NewStyleRepository\n        extends ListCrudRepository<Member, Long> {\n}\n\n@Test\n@Transactional\nvoid list() {\n    List<Member> all = newStyleRepository.findAll();\n    long n = all.stream().filter(m -> m.getAge() > 15).count();\n    System.out.println(\"15살 초과: \" + n);\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n15살 초과: 2\n\n--   바로 stream 을 쓴다\n--   SQL 은 같다\n\n\n-- PagingAndSorting 만 상속하면\n\npublic interface PagingOnlyRepository\n        extends PagingAndSortingRepository<Member, Long> {\n}\n\n@Test\nvoid 페이징만() {\n    System.out.println(\n        Arrays.stream(PagingOnlyRepository.class.getMethods())\n              .map(Method::getName).distinct().sorted()\n              .collect(Collectors.joining(\", \")));\n}\n\nfindAll\n\n--   save 도 없다\n--   보통 CrudRepository 와 같이 상속한다\n\n\n-- JpaRepository 가 더하는 것\n\n@Test\nvoid jpa_전용() {\n    Set<String> crud = Arrays.stream(ListCrudRepository.class.getMethods())\n            .map(Method::getName).collect(Collectors.toSet());\n    Arrays.stream(JpaRepository.class.getMethods())\n            .map(Method::getName).distinct().sorted()\n            .filter(n -> !crud.contains(n))\n            .forEach(n -> System.out.println(\"  \" + n));\n}\n\n  deleteAllByIdInBatch\n  deleteAllInBatch\n  findAll\n  findBy\n  flush\n  getById\n  getOne\n  getReferenceById\n  saveAllAndFlush\n  saveAndFlush\n\n--   전부 JPA 개념이다\n--   getOne 과 getById 는 폐기됐다 (1.4절)\n\n\n-- saveAndFlush 를 보면\n\n@Test\n@Transactional\nvoid save_와_saveAndFlush() {\n    System.out.println(\"--- save ---\");\n    memberRepository.save(new Member(\"a\", 20));\n    System.out.println(\"--- saveAndFlush ---\");\n    memberRepository.saveAndFlush(new Member(\"b\", 21));\n    System.out.println(\"--- 끝 ---\");\n}\n\n--- save ---\n--- saveAndFlush ---\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\n--- 끝 ---\n\n--   saveAndFlush 에서 둘 다 나갔다\n--   앞의 것도 큐에 있었으니 같이 간다\n--   즉시 반영이 필요할 때만 쓴다\n\n\n-- 서비스에 다 열린다\n\n@Service\n@RequiredArgsConstructor\npublic class MemberService {\n    private final MemberRepository memberRepository;\n\n    public void 위험한_호출() {\n        memberRepository.deleteAll();     // 다 지운다\n        memberRepository.flush();         // 인프라 관심사가 샌다\n    }\n}\n\n$ ./gradlew compileJava\n\nBUILD SUCCESSFUL\n\n--   컴파일이 통과한다\n--   막고 싶으면 상속을 줄인다\n\n\n-- 중간 인터페이스를 만들면\n\npublic interface ReadOnlyRepository<T, ID> extends Repository<T, ID> {\n    Optional<T> findById(ID id);\n    List<T> findAll();\n    long count();\n}\n\npublic interface MemberReadRepository\n        extends ReadOnlyRepository<Member, Long> {\n}\n\n$ ./gradlew bootRun\n\nAPPLICATION FAILED TO START\n\nCould not create query for public abstract java.util.Optional\n    ReadOnlyRepository.findById(Object); Reason: Failed to create query\n\n--   중간 인터페이스도 빈으로 만들려고 했다\n\n\n-- @NoRepositoryBean 을 붙이면\n\n@NoRepositoryBean\npublic interface ReadOnlyRepository<T, ID> extends Repository<T, ID> {\n    Optional<T> findById(ID id);\n    List<T> findAll();\n    long count();\n}\n\n@Test\n@Transactional\nvoid 읽기_전용() {\n    em.clear();\n    System.out.println(\"개수: \" + memberReadRepository.count());\n    System.out.println(\"전체: \" + memberReadRepository.findAll().size());\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0\n개수: 3\nHibernate: select m1_0.member_id, ... from member m1_0\n전체: 3\n\n$ grep -c 'save\\|delete' MemberReadRepository.java\n\n0\n\n--   save 도 delete 도 없다\n--   서비스가 못 부른다\n--   6.2절에서 이 이야기를 다시 한다\n\n\n-- 실제로 뜬 빈\n\n@Test\nvoid 빈_목록() {\n    ctx.getBeansOfType(Repository.class).keySet()\n       .stream().sorted().forEach(k -> System.out.println(\"  \" + k));\n}\n\n  bareRepository\n  memberReadRepository\n  memberRepository\n  newStyleRepository\n  oldStyleRepository\n  pagingOnlyRepository\n  teamRepository\n\n--   ReadOnlyRepository 는 없다\n--   @NoRepositoryBean 이 막았다\n\n\n-- 어느 것을 상속해도 SQL 은 같다\n\n@Test\n@Transactional\nvoid 같은_SQL() {\n    em.clear(); bareRepository.findById(1L);\n    em.clear(); oldStyleRepository.findById(1L);\n    em.clear(); memberRepository.findById(1L);\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\n\n--   셋이 같다\n--   차이는 무엇을 노출하느냐뿐이다",
+   "note": "**`Repository` 의 메서드가 `0개` 이고 `JpaRepository` 가 `19개`** 다.\n\n**`CrudRepository` 는 실제로 `ArrayList` 를 주는데 선언이 `Iterable` 이라 `stream` 을 못** 쓴다.\n\n**`saveAndFlush` 에서 앞서 큐에 있던 `insert` 까지 같이** 나간다.\n\n**중간 인터페이스에 `@NoRepositoryBean` 이 없으면 기동이** 실패한다.\n\n**무엇을 상속하든 `findById` 의 SQL 은** 같다."
+  }
+ ],
+ "recap": [
+  "**`Repository` 는 메서드가** 없다.",
+  "**위쪽은 저장소 종류와** 무관하다.",
+  "**`List` 판이 나중에** 생겼다.",
+  "**`JpaRepository` 만 JPA 전용**이다.",
+  "**`flush`·`deleteAllInBatch` 가 거기** 있다.",
+  "**다 상속하면 다** 열린다.",
+  "**덜 상속하면 계약서가** 된다.",
+  "**중간 인터페이스에는 `@NoRepositoryBean`** 이다.",
+  "**무엇을 상속해도 SQL 은** 같다."
+ ],
+ "drills": [
+  {
+   "task": "상속 체인을 찍는다.",
+   "done_when": "다섯 단계를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Repository` 만 상속한다.",
+   "done_when": "선언한 것만 있는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`CrudRepository` 로 `stream` 을 써 본다.",
+   "done_when": "안 되는 이유를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "중간 인터페이스를 만든다.",
+   "done_when": "`@NoRepositoryBean` 유무를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Repository` 인터페이스의 역할은?",
+   "a": "메서드 없는 표식이다. 스캔 대상을 표시한다."
+  },
+  {
+   "q": "`ListCrudRepository` 가 생긴 이유는?",
+   "a": "`CrudRepository` 가 `Iterable` 을 반환해 불편했기 때문이다."
+  },
+  {
+   "q": "`JpaRepository` 만 가진 것은?",
+   "a": "`flush`, `saveAndFlush`, 배치 삭제, `getReferenceById` 다."
+  },
+  {
+   "q": "덜 상속하면 얻는 것은?",
+   "a": "서비스에 노출되는 메서드를 제한할 수 있다."
+  },
+  {
+   "q": "중간 인터페이스에 필요한 것은?",
+   "a": "`@NoRepositoryBean` 이다. 없으면 빈으로 만들려다 실패한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@NoRepositoryBean",
+   "def": "이 인터페이스는 빈으로 만들지 말라는 표시."
+  },
+  {
+   "term": "마커 인터페이스",
+   "def": "메서드 없이 분류만 하는 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

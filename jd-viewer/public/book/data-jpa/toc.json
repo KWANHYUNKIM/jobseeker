@@ -188,7 +188,7 @@
           "title": "계층 구조",
           "summary": "Repository 부터 JpaRepository 까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -196,7 +196,7 @@
           "title": "save 가 하는 두 가지",
           "summary": "persist 냐 merge 냐.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
