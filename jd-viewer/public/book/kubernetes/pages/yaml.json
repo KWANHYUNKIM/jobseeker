@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "yaml",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "YAML 문법",
+ "summary": "들여쓰기 하나로 종일 헤매지 않으려면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 모양을 안다.",
+  "네 가지 함정을 안다.",
+  "검증하는 방법을 갖는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장 내내 YAML 을** 적었다. **문법이 작아서 규칙 몇 개면** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 모양",
+   "ascii": "   three shapes, and that is all yaml is\n\n   a map        key: value\n   a list       - item\n   a scalar     a string, a number, a boolean, or null\n\n   everything else is those three, nested\n   the nesting is indentation, and only spaces count",
+   "note": "**중첩은 들여쓰기고 공백만** 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿠버네티스에서 쓰는 만큼만",
+   "md": "```yaml\n# 맵\nmetadata:\n  name: web\n  labels:\n    app: web\n\n# 리스트\ncontainers:\n  - name: nginx\n    image: nginx:1.27\n  - name: sidecar\n    image: busybox\n\n# 리스트 안의 맵 안의 리스트\ncontainers:\n  - name: nginx\n    ports:\n      - containerPort: 80\n    env:\n      - name: MODE\n        value: prod\n```\n\n> **`- ` 다음 칸부터가 그 항목의 시작**이다.\n> **`name` 과 `image` 가 같은 열이면 같은 항목**이다.\n\n**문서 구분자**\n\n```yaml\napiVersion: apps/v1\nkind: Deployment\n...\n---\napiVersion: v1\nkind: Service\n...\n```\n\n> **`---` 로 한 파일에 여러 오브젝트를** 넣는다.\n> **`kubectl apply -f` 가 위에서부터 차례로** 보낸다.\n> **순서는 대개 상관없다** — **2.4절대로 나중에 수렴**한다.\n\n**여러 줄 문자열**\n\n```yaml\n    command:\n      - sh\n      - -c\n      - |\n        echo start\n        exec nginx -g 'daemon off;'\n```\n\n> **`|` 는 줄바꿈을 살리고 `>` 는 한 줄로** 접는다.\n> **설정 파일을 컨피그맵에 넣을 때 `|` 를** 쓴다(7장)."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 함정",
+   "ascii": "   the four that cost an hour\n\n   a tab                 not allowed, and the error says nothing useful\n   a version as a number  1.27 is a float, 1.27.0 is a string\n   norway                 no becomes false in yaml 1.1 parsers\n   a list under a key     the dash column decides who owns it\n\n   three of the four look correct to a human",
+   "note": "**셋은 사람 눈에 멀쩡해** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "따옴표를 언제 쓰나",
+   "md": "**버전이 숫자로 읽힌다.**\n\n```yaml\nimage: nginx:1.27      # 이건 괜찮다 (콜론 뒤 전체가 문자열)\nversion: 1.27          # 이건 float 1.27 이다\nversion: \"1.27\"        # 이게 맞다\nversion: 1.27.0        # 점이 둘이면 문자열이 된다\n```\n\n> **`1.10` 을 쓰면 `1.1` 이 될 수도** 있다.\n> **버전·포트·전화번호는 따옴표를** 친다.\n\n**노르웨이 문제**\n\n```yaml\ncountry: NO            # YAML 1.1 에서 false\nenabled: yes           # true\nenabled: \"yes\"         # 문자열\n```\n\n> **쿠버네티스는 YAML 1.1 계열 파서를** 쓴다.\n> **`y`·`n`·`on`·`off` 도** 그렇다.\n> **불리언이 아니면 따옴표**다.\n\n**탭은 안 된다.**\n\n```\nerror converting YAML to JSON: yaml: line 7: found character that\ncannot start any token\n```\n\n> **줄 번호만 알려 주고 이유를 안** 말한다.\n> **에디터에서 탭을 공백으로** 바꿔 둔다.\n\n**숫자 컨텍스트**\n\n```yaml\n  ports:\n    - containerPort: 8080     # 숫자여야 한다\n  env:\n    - name: PORT\n      value: 8080             # 오류. 문자열이어야 한다\n      value: \"8080\"           # 맞다\n```\n\n> **`env.value` 는 문자열만** 받는다.\n> **스키마가 강제하니 `apply` 때 잡힌다** — **아래에서** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 탭을 넣어 본다 ---\n\n$ printf 'apiVersion: v1\\nkind: Pod\\nmetadata:\\n\\tname: web\\n' > tab.yaml\n$ cat -A tab.yaml | sed -n '4p'\n\n^Iname: web$\n\n#   ^I 가 탭이다\n\n$ kubectl apply -f tab.yaml\n\nerror: error parsing tab.yaml: error converting YAML to JSON: yaml: line 4:\n  found character that cannot start any token\n\n#   줄 번호만 준다\n\n#   무엇이 문제인지는 안 말한다\n\n$ expand -t2 tab.yaml > fixed.yaml && kubectl apply -f fixed.yaml --dry-run=client\n\npod/web created (dry run)\n\n# --- 버전이 숫자가 된다 ---\n\n$ cat version.yaml\n\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: cfg\ndata:\n  appVersion: 1.10\n  javaVersion: 21\n\n$ kubectl apply -f version.yaml\n\nError from server (BadRequest): error when creating \"version.yaml\":\n  ConfigMap in version \"v1\" cannot be handled as a ConfigMap:\n  json: cannot unmarshal number into Go struct field ConfigMap.data\n  of type string\n\n#   숫자로 읽혔다\n\n$ python3 -c \"import yaml,sys; print(repr(yaml.safe_load(open('version.yaml'))['data']))\"\n\n{'appVersion': 1.1, 'javaVersion': 21}\n\n#   1.10 이 1.1 이 됐다\n\n#   뒤의 0 이 사라졌다\n\n$ sed -i '' 's/appVersion: 1.10/appVersion: \"1.10\"/; s/javaVersion: 21/javaVersion: \"21\"/' \\\n    version.yaml\n$ kubectl apply -f version.yaml\n\nconfigmap/cfg created\n\n$ kubectl get cm cfg -o jsonpath='{.data.appVersion}{\"\\n\"}'\n\n1.10\n\n#   살아났다\n\n# --- 노르웨이 ---\n\n$ printf 'a: NO\\nb: yes\\nc: on\\nd: \"NO\"\\n' > bool.yaml\n$ python3 -c \"import yaml; print(yaml.safe_load(open('bool.yaml')))\"\n\n{'a': False, 'b': True, 'c': True, 'd': 'NO'}\n\n#   NO 가 False 다\n\n#   국가 코드를 그대로 쓰면 이렇게 된다\n\n$ cat country.yaml\n\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: country\ndata:\n  code: NO\n\n$ kubectl apply -f country.yaml\n\nError from server (BadRequest): ... cannot unmarshal bool into Go struct\n  field ConfigMap.data of type string\n\n#   불리언으로 읽혔다\n\n#   여기서는 스키마가 잡아 준다\n\n#   문자열을 받는 자리라 다행이다\n\n# --- 리스트 들여쓰기 ---\n\n$ cat list.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: web\nspec:\n  containers:\n  - name: nginx\n    image: nginx:1.27\n    ports:\n    - containerPort: 80\n\n$ kubectl apply -f list.yaml --dry-run=client -o jsonpath=\\\n'{.spec.containers[0].ports[0].containerPort}{\"\\n\"}'\n\n80\n\n#   대시가 키와 같은 열이어도 된다\n\n$ cat wrong.yaml\n\nspec:\n  containers:\n  - name: nginx\n    image: nginx:1.27\n  - ports:\n    - containerPort: 80\n\n$ kubectl apply -f wrong.yaml --dry-run=client\n\nThe Pod \"web\" is invalid: spec.containers[1].name: Required value\n\n#   컨테이너가 둘이 됐다\n\n#   대시 하나로 소속이 바뀌었다\n\n#   사람 눈에는 비슷해 보인다\n\n# --- env 는 문자열이다 ---\n\n$ cat env.yaml\n\nspec:\n  containers:\n    - name: app\n      image: myapp:1.0\n      env:\n        - name: PORT\n          value: 8080\n\n$ kubectl apply -f env.yaml --dry-run=client\n\nError from server (BadRequest): ... cannot unmarshal number into Go struct\n  field EnvVar.spec.containers.env.value of type string\n\n$ sed -i '' 's/value: 8080/value: \"8080\"/' env.yaml\n$ kubectl apply -f env.yaml --dry-run=client\n\npod/app created (dry run)\n\n#   containerPort 는 숫자고 env.value 는 문자열이다\n\n#   스키마가 각각 정해 놓았다\n\n# --- 검증하는 방법 ---\n\n$ kubectl apply -f web.yaml --dry-run=server\n\ndeployment.apps/web created (server dry run)\n\n#   서버가 스키마까지 검사한다\n\n#   client 는 형식만 본다\n\n$ kubectl apply -f typo.yaml --dry-run=client\n\ndeployment.apps/web configured (dry run)\n\n$ kubectl apply -f typo.yaml --dry-run=server\n\nerror: error validating \"typo.yaml\": error validating data:\n  ValidationError(Deployment.spec): unknown field \"replica\" in\n  io.k8s.api.apps.v1.DeploymentSpec\n\n#   replicas 를 replica 로 썼다\n\n#   client 는 통과시키고 server 가 잡았다\n\n#   dry-run 은 server 를 쓴다\n\n# --- 여러 문서 ---\n\n$ cat all.yaml | grep -c '^---'\n\n2\n\n$ kubectl apply -f all.yaml\n\ndeployment.apps/web created\nservice/web created\nconfigmap/cfg2 created\n\n#   한 파일에서 셋이 만들어졌다\n\n$ kubectl apply -f all.yaml -v=6 2>&1 | grep -cE 'POST|PATCH'\n\n3\n\n#   요청도 셋이다 (2.5절)\n\n# --- explain 으로 필드를 찾는다 ---\n\n$ kubectl explain pod.spec.containers.env --recursive | head -6\n\nGROUP:      \nKIND:       Pod\nVERSION:    v1\n\nFIELD: env <[]EnvVar>\n\n$ kubectl explain pod.spec.containers.env.value\n\nFIELD: value <string>\n\nDESCRIPTION:\n    Variable references $(VAR_NAME) are expanded using the previously defined\n    environment variables in the container and any service environment\n    variables.\n\n#   <string> 이라고 적혀 있다\n\n#   추측 대신 이걸 본다\n\n# --- 치운다 ---\n\n$ kubectl delete -f all.yaml && kubectl delete cm cfg country 2>/dev/null\n\ndeployment.apps \"web\" deleted\nservice \"web\" deleted\nconfigmap \"cfg2\" deleted\nconfigmap \"cfg\" deleted\n\n# --- 다음 절에서 ---\n\n#   클러스터를 셋 중 하나로 세운다",
+   "note": "**탭은 `found character that cannot start any token` 으로 줄 번호만** 알려 준다.\n\n**`1.10` 이 파서에서 `1.1` 이 되고**, 쿠버네티스는 `cannot unmarshal number into ... string` 으로 거부한다.\n\n**`NO` 가 `False` 로 읽힌다** — 스키마가 문자열을 요구해 다행히 잡힌다.\n\n**대시 하나를 옮기면 컨테이너가 둘이 되고** `spec.containers[1].name: Required value` 가 난다.\n\n**`replica` 오타는 `--dry-run=client` 가 통과시키고 `server` 가** 잡는다."
+  }
+ ],
+ "recap": [
+  "**YAML 은 맵·리스트·스칼라** 셋이다.",
+  "**들여쓰기는 공백만** 센다.",
+  "**탭은 줄 번호만 알려 주고** 끝이다.",
+  "**버전은 따옴표를** 친다.",
+  "**`NO`·`yes`·`on` 은 불리언이** 된다.",
+  "**대시의 열이 소속을** 정한다.",
+  "**`containerPort` 는 숫자, `env.value` 는 문자열**이다.",
+  "**`--dry-run=server` 가 스키마를** 검사한다.",
+  "**`kubectl explain` 이 타입을 말해** 준다."
+ ],
+ "drills": [
+  {
+   "task": "탭을 넣고 오류를 본다.",
+   "done_when": "메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "버전을 따옴표 없이 써 본다.",
+   "done_when": "값이 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "대시를 한 칸 옮겨 본다.",
+   "done_when": "컨테이너가 둘이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필드 이름에 오타를 낸다.",
+   "done_when": "client 와 server 차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "YAML 의 세 가지 모양은?",
+   "a": "맵, 리스트, 스칼라다."
+  },
+  {
+   "q": "버전에 따옴표를 치는 이유는?",
+   "a": "`1.10` 이 부동소수점 `1.1` 로 읽힌다."
+  },
+  {
+   "q": "`NO` 가 문제인 이유는?",
+   "a": "YAML 1.1 파서가 불리언 `false` 로 읽는다."
+  },
+  {
+   "q": "`--dry-run=client` 와 `server` 의 차이는?",
+   "a": "client 는 형식만, server 는 스키마까지 검사한다."
+  },
+  {
+   "q": "필드 타입을 어디서 확인하나?",
+   "a": "`kubectl explain` 이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "YAML 1.2 Specification",
+   "url": "https://yaml.org/spec/1.2.2/",
+   "publisher": "YAML"
+  },
+  {
+   "title": "Kubernetes — Understanding Kubernetes Objects",
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

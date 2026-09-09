@@ -128,7 +128,7 @@
           "title": "YAML 문법",
           "summary": "들여쓰기 하나로 종일 헤매지 않으려면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -136,7 +136,7 @@
           "title": "클러스터 설치",
           "summary": "Docker Desktop · kind · k3s 중 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",

@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "install",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "클러스터 설치",
+ "summary": "Docker Desktop · kind · k3s 중 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "셋 중 하나를 고른다.",
+  "kind 로 여러 노드를 만든다.",
+  "노드가 컨테이너인 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장의 출력이 다 `kind` 에서** 나왔다. **이제 제대로** 세운다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 길",
+   "ascii": "   three ways to get a cluster on a laptop\n\n   Docker Desktop   a checkbox, one node, no config\n   kind             clusters as containers, several nodes, a config file\n   k3s              a real single binary, closest to a small server\n\n   this book uses kind, because chapter 9 needs more than one node",
+   "note": "**9장이 노드 여럿을 필요로 해서 `kind` 를** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 고르나",
+   "md": "| | Docker Desktop | kind | k3s |\n|---|---|---|---|\n| **설치** | 체크박스 | `brew install kind` | 셸 한 줄 |\n| **노드 수** | 1 | 여러 개 |여러 대 |\n| **삭제** | 리셋 | `kind delete cluster` | 스크립트 |\n| **실제 서버** | 안 됨 | 안 됨 | 됨 |\n| **자원** | 많이 | 중간 | 적게 |\n\n> **`kind` 는 도커 컨테이너를 노드로** 쓴다.\n> **여러 클러스터를 동시에 만들 수** 있다.\n> **지우기가 쉬워 실습에** 좋다.\n\n**`k3s` 는 진짜 작은 서버용**이다.\n\n> **바이너리 하나에 etcd 대신 SQLite 를 쓸 수** 있다.\n> **라즈베리파이나 작은 VM 에** 올린다.\n> **11장에서 배포를 얘기할 때 다시** 나온다.\n\n**설정 파일**\n\n```yaml\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nname: lab\nnodes:\n  - role: control-plane\n    extraPortMappings:\n      - containerPort: 30080\n        hostPort: 8080\n  - role: worker\n  - role: worker\n```\n\n> **`extraPortMappings` 가 노트북 포트를 노드로** 연결한다.\n> **6장의 노드포트를 브라우저로 열려면** 필요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "kind 가 만든 것",
+   "ascii": "   what kind actually made\n\n   docker ps\n     lab-control-plane   a container running kubelet and containerd\n     lab-worker          the same\n     lab-worker2         the same\n\n   so a node is a container, and a pod runs inside that container\n   containers inside containers, and it works because of namespaces",
+   "note": "**노드가 컨테이너고 그 안에서 파드가** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "노드가 컨테이너라서 생기는 것",
+   "md": "**이미지를 못 받아 온다.**\n\n> **로컬에서 만든 이미지를 노드가** 모른다.\n> **`docker build` 한 게 노트북 도커에** 있고, **노드는 별도 컨테이너**다.\n>\n> ```bash\n> kind load docker-image myapp:1.0 --name lab\n> ```\n>\n> **이걸 안 하면 `ErrImagePull`** 이다.\n> **가장 자주 겪는 실습 오류**다.\n\n**`imagePullPolicy` 도 같이** 본다.\n\n> **태그가 `latest` 면 기본이 `Always`** 다.\n> **레지스트리에 없으면** 실패한다.\n> **로컬 이미지를 쓰려면 태그를 `latest` 가 아니게 하거나 `IfNotPresent` 로** 준다.\n\n**노드를 재시작하면**\n\n```bash\ndocker stop lab-worker && docker start lab-worker\n```\n\n> **2.6절에서 이걸** 했다.\n> **실제 노드 장애를 흉내 내기에** 좋다.\n> **진짜 서버에서는 이렇게 쉽게 못** 한다.\n\n**자원 한계**\n\n> **노트북 도커에 준 메모리가 전부**다.\n> **9장에서 `requests` 를 크게 주면 `Pending`** 이 되는데, **1.4절에서 본** 그것이다.\n> **Docker Desktop 설정에서 늘릴 수** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 설치 ---\n\n$ brew install kind kubectl\n\n$ kind version\n\nkind v0.24.0 go1.22.6 darwin/arm64\n\n$ cat kind-config.yaml\n\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nname: lab\nnodes:\n  - role: control-plane\n    extraPortMappings:\n      - containerPort: 30080\n        hostPort: 8080\n        protocol: TCP\n  - role: worker\n  - role: worker\n\n$ kind create cluster --config kind-config.yaml\n\nCreating cluster \"lab\" ...\n ✓ Ensuring node image (kindest/node:v1.31.0)\n ✓ Preparing nodes\n ✓ Writing configuration\n ✓ Starting control-plane\n ✓ Installing CNI\n ✓ Installing StorageClass\n ✓ Joining worker nodes\nSet kubectl context to \"kind-lab\"\n\n$ kubectl get nodes\n\nNAME                STATUS   ROLES           AGE   VERSION\nlab-control-plane   Ready    control-plane   58s   v1.31.0\nlab-worker          Ready    <none>          44s   v1.31.0\nlab-worker2         Ready    <none>          44s   v1.31.0\n\n#   1분이 안 걸린다\n\n# --- 노드가 컨테이너다 ---\n\n$ docker ps --format '{{.Names}}\\t{{.Image}}\\t{{.Status}}'\n\nlab-worker2          kindest/node:v1.31.0   Up 1 minute\nlab-worker           kindest/node:v1.31.0   Up 1 minute\nlab-control-plane    kindest/node:v1.31.0   Up 1 minute\n\n#   셋 다 컨테이너다\n\n$ docker exec lab-worker ps -eo comm --no-headers | sort -u | head -5\n\ncontainerd\ncontainerd-shim\nkubelet\nnginx\nsystemd\n\n#   그 안에 kubelet 과 containerd 가 있다\n\n#   nginx 는 내 파드다\n\n$ docker exec lab-worker crictl ps -o table | head -3\n\nCONTAINER      IMAGE          CREATED         STATE     NAME\n8f3a2b1c9d4e   a72860cb95fd   2 minutes ago   Running   nginx\n\n#   컨테이너 안의 컨테이너다\n\n$ docker exec lab-worker cat /proc/self/cgroup | head -1\n\n0::/\n\n#   네임스페이스로 나뉘어 있다\n\n#   「도커」 2장의 그 얘기다\n\n# --- 로컬 이미지를 못 본다 ---\n\n$ docker build -t myapp:1.0 . > /dev/null\n$ docker images myapp --format '{{.Repository}}:{{.Tag}}'\n\nmyapp:1.0\n\n$ kubectl create deployment app --image=myapp:1.0\n\ndeployment.apps/app created\n\n$ sleep 15 && kubectl get pods -l app=app --no-headers\n\napp-5f7c9d8b4-m2x7k   0/1   ErrImagePull   0   15s\n\n$ kubectl describe pod -l app=app | grep -A2 Failed | head -3\n\n  Warning  Failed  10s  kubelet  Failed to pull image \"myapp:1.0\":\n    failed to resolve reference \"docker.io/library/myapp:1.0\":\n    pull access denied, repository does not exist\n\n#   도커 허브에서 찾는다\n\n#   내 노트북에 있는데 노드가 모른다\n\n$ docker exec lab-worker crictl images | grep -c myapp\n\n0\n\n#   노드 안에 없다\n\n# --- 넣어 준다 ---\n\n$ kind load docker-image myapp:1.0 --name lab\n\nImage: \"myapp:1.0\" with ID \"sha256:3f2a1b8c...\" not yet present on node\n  \"lab-worker\", loading...\nImage: \"myapp:1.0\" with ID \"sha256:3f2a1b8c...\" not yet present on node\n  \"lab-worker2\", loading...\nImage: \"myapp:1.0\" with ID \"sha256:3f2a1b8c...\" not yet present on node\n  \"lab-control-plane\", loading...\n\n$ docker exec lab-worker crictl images | grep myapp\n\ndocker.io/library/myapp   1.0   3f2a1b8c9d4e   187MB\n\n$ kubectl delete pod -l app=app\n$ sleep 10 && kubectl get pods -l app=app --no-headers\n\napp-5f7c9d8b4-w4n8t   1/1   Running   0   9s\n\n#   떴다\n\n#   실습에서 가장 자주 막히는 자리다\n\n# --- latest 태그 ---\n\n$ docker tag myapp:1.0 myapp:latest\n$ kind load docker-image myapp:latest --name lab > /dev/null\n$ kubectl create deployment app2 --image=myapp:latest\n\n$ sleep 15 && kubectl get pods -l app=app2 --no-headers\n\napp2-8d3f7a1c9-q4m2p   0/1   ErrImagePull   0   15s\n\n#   넣어 줬는데도 실패다\n\n$ kubectl get pod -l app=app2 \\\n    -o jsonpath='{.items[0].spec.containers[0].imagePullPolicy}{\"\\n\"}'\n\nAlways\n\n#   latest 라 항상 받아 오려 한다\n\n$ kubectl patch deployment app2 --type=json -p=\\\n'[{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/imagePullPolicy\",\n   \"value\":\"IfNotPresent\"}]'\n\ndeployment.apps/app2 patched\n\n$ sleep 10 && kubectl get pods -l app=app2 --no-headers\n\napp2-6b9d4f2a8-k7m3x   1/1   Running   0   8s\n\n#   태그를 latest 로 안 쓰는 게 낫다\n\n#   「도커」 4장에서 한 얘기다\n\n# --- 포트를 노트북으로 ---\n\n$ kubectl expose deployment app --type=NodePort --port=8080 \\\n    --overrides='{\"spec\":{\"ports\":[{\"port\":8080,\"nodePort\":30080}]}}'\n\nservice/app exposed\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n\n200\n\n#   extraPortMappings 덕이다\n\n#   설정 파일에 안 넣었으면 안 됐다\n\n$ kind get clusters\n\nlab\n\n# --- 여러 클러스터 ---\n\n$ kind create cluster --name scratch > /dev/null 2>&1\n$ kind get clusters\n\nlab\nscratch\n\n$ kubectl config get-contexts -o name\n\nkind-lab\nkind-scratch\n\n#   둘이다\n\n#   3.3절에서 이걸 오간다\n\n$ kind delete cluster --name scratch\n\nDeleting cluster \"scratch\" ...\n\n#   지우기가 쉽다\n\n# --- 자원 한계 ---\n\n$ docker info --format '{{.MemTotal}}' | numfmt --to=iec\n\n7.8G\n\n$ kubectl describe node lab-worker | grep -A3 'Allocatable'\n\nAllocatable:\n  cpu:                8\n  ephemeral-storage:  61202244Ki\n  memory:             8039068Ki\n\n#   노트북 도커의 메모리를 노드가 다 본다\n\n#   세 노드가 같은 8GB 를 본다\n\n#   합치면 24GB 인 척한다\n\n#   실제로는 8GB 다\n\n#   9장에서 이게 문제가 된다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment app app2 && kubectl delete service app\n\ndeployment.apps \"app\" deleted\ndeployment.apps \"app2\" deleted\nservice \"app\" deleted\n\n# --- 다음 절에서 ---\n\n#   지금 어느 클러스터에 치고 있는지 확인한다",
+   "note": "**노드가 `kindest/node` 컨테이너**이고 그 안에서 `kubelet`·`containerd`·내 `nginx` 가 돈다.\n\n**로컬 이미지를 노드가 몰라 `pull access denied`** 다 — `kind load docker-image` 로 넣어 준다.\n\n**`latest` 태그는 `imagePullPolicy: Always` 라 넣어 줘도** 실패한다.\n\n**`extraPortMappings` 덕에 `localhost:8080` 이 200** 이다.\n\n**세 노드가 같은 8GB 를 각자 본다** — 합쳐서 24GB 인 척한다."
+  }
+ ],
+ "recap": [
+  "**Docker Desktop·kind·k3s 셋 중** 고른다.",
+  "**이 책은 노드 여럿이 필요해 `kind` 를** 쓴다.",
+  "**노드가 도커 컨테이너**다.",
+  "**로컬 이미지를 노드가** 모른다.",
+  "**`kind load` 로 넣어** 준다.",
+  "**`latest` 태그는 `Always` 라 또** 실패한다.",
+  "**`extraPortMappings` 로 노트북 포트를** 연결한다.",
+  "**클러스터를 여럿 만들고 쉽게** 지운다.",
+  "**세 노드가 같은 메모리를 각자** 본다."
+ ],
+ "drills": [
+  {
+   "task": "세 노드짜리 클러스터를 만든다.",
+   "done_when": "`get nodes` 가 셋을 보였다.",
+   "minutes": 20
+  },
+  {
+   "task": "노드 안에서 `crictl ps` 를 친다.",
+   "done_when": "파드의 컨테이너를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로컬 이미지로 배포해 본다.",
+   "done_when": "실패와 `kind load` 후 성공을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`extraPortMappings` 로 포트를 연다.",
+   "done_when": "노트북에서 접속했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`kind` 의 노드는 무엇인가?",
+   "a": "도커 컨테이너다. 그 안에서 파드가 돈다."
+  },
+  {
+   "q": "로컬 이미지가 안 되는 이유는?",
+   "a": "노드가 별도 컨테이너라 노트북 도커의 이미지를 모른다."
+  },
+  {
+   "q": "`kind load` 후에도 실패하면?",
+   "a": "태그가 `latest` 여서 `imagePullPolicy` 가 `Always` 인 경우다."
+  },
+  {
+   "q": "노트북 포트를 어떻게 연결하나?",
+   "a": "클러스터 설정의 `extraPortMappings` 다."
+  },
+  {
+   "q": "노드 메모리 표시의 함정은?",
+   "a": "세 노드가 같은 호스트 메모리를 각각 전부로 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "kind",
+   "def": "도커 컨테이너를 노드로 삼아 쿠버네티스 클러스터를 만드는 도구."
+  }
+ ],
+ "sources": [
+  {
+   "title": "kind — Quick Start",
+   "url": "https://kind.sigs.k8s.io/docs/user/quick-start/",
+   "publisher": "kind"
+  },
+  {
+   "title": "k3s — Documentation",
+   "url": "https://docs.k3s.io/",
+   "publisher": "SUSE"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
