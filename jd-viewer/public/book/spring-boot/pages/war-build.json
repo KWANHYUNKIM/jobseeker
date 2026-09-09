@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "war-build",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "WAR 만들기",
+ "summary": "안에 무엇이 들어가나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "구조를 안다.",
+  "provided 를 안다.",
+  "안을 연다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 컨테이너가 클래스를** 찾았다. **그 클래스가 어디 놓이는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "WAR 안의 규칙",
+   "ascii": "   what a war has to look like inside\n\n   WEB-INF classes   your compiled code\n   WEB-INF lib       the jars you depend on\n   WEB-INF web xml   the deployment description, if you use one\n   everything else   served as static files\n\n   the servlet api is not in lib, because the server already has it",
+   "note": "**서블릿 API 는 `lib` 에 없다 — 서버가 이미 들고** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자리가 정해져 있어야 서버가 읽는다",
+   "md": "**`WEB-INF` 아래가 숨은 자리**다.\n\n> **브라우저가 직접 못** 읽는다.\n> **클래스와 라이브러리를 거기** 둔다.\n> **규약이라 안 지키면 못** 찾는다.\n\n**밖은 그냥 정적 파일**이다.\n\n> **HTML·CSS 가 그대로** 나간다.\n> **2.4절의 `static` 과 같은 역할**이다.\n> **컨트롤러가 필요** 없다.\n\n**서블릿 API 를 넣으면 안** 된다.\n\n> **서버에 이미 있다(3.2절).**\n> **넣으면 클래스가** 겹친다.\n> **아래에서 그** 오류를 본다.\n\n**그래서 `provided` 가** 있다.\n\n> **컴파일에는 쓰고 패키징에서** 뺀다.\n> **⑮ 2.1절의 `annotationProcessor` 와 같은 발상**이다.\n> **경로가 다른** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "의존성 세 자리",
+   "ascii": "   three dependency scopes, and where each one ends up\n\n   implementation      compiled against, and packed into lib\n   providedCompile     compiled against, and left out\n   runtimeOnly         not compiled against, but packed in\n\n   the middle one exists exactly because of the server's lib",
+   "note": "**가운데가 서버 `lib` 때문에** 생겼다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "같은 클래스가 둘이면 무엇이 뜰지 모른다",
+   "md": "**로더가 둘을** 본다.\n\n> **서버 `lib` 과 WAR `lib`** 이다.\n> **어느 쪽이 이길지 규칙이** 있다.\n> **버전이 다르면 사고**다.\n\n**증상이 이상**하다.\n\n> **`NoSuchMethodError` 나 `LinkageError`** 다.\n> **1.2절에서 본 그 종류**다.\n> **원인을 찾기** 어렵다.\n\n**WAR 가 커진**다.\n\n> **의존성이 다 들어간**다.\n> **아래에서 크기를** 잰다.\n> **3.8절의 배포 시간과 이어**진다.\n\n**부트 JAR 는 이 규칙이** 없다.\n\n> **자기 구조를 자기가** 정한다.\n> **4.7절에서** 본다.\n> **서버가 읽을 필요가 없어서**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- WAR 로 빌드한다\n\n// build.gradle\nplugins {\n    id 'java'\n    id 'war'\n}\n\ndependencies {\n    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'\n}\n\n$ ./gradlew war -q\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff   1.8M  app.war\n\n\n-- 안을 본다\n\n$ unzip -l build/libs/app.war | head -12\nArchive:  build/libs/app.war\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n        0  09-10-2026 05:09   META-INF/\n      25  09-10-2026 05:09   META-INF/MANIFEST.MF\n        0  09-10-2026 05:09   WEB-INF/\n        0  09-10-2026 05:09   WEB-INF/classes/\n        0  09-10-2026 05:09   WEB-INF/classes/study/\n        0  09-10-2026 05:09   WEB-INF/classes/study/war/\n     1204  09-10-2026 05:09   WEB-INF/classes/study/war/HelloServlet.class\n     1918  09-10-2026 05:09   WEB-INF/classes/study/war/LifeServlet.class\n        0  09-10-2026 05:09   WEB-INF/lib/\n\n$ unzip -l build/libs/app.war | grep -c 'WEB-INF/lib/'\n4\n\n$ unzip -l build/libs/app.war | grep 'WEB-INF/lib/'\n  1682936  jackson-databind-2.17.2.jar\n   400115  jackson-core-2.17.2.jar\n    78029  jackson-annotations-2.17.2.jar\n\n--   내 클래스는 classes 에\n--   의존성은 lib 에\n\n\n-- 서블릿 API 는 없다\n\n$ unzip -l build/libs/app.war | grep -c 'servlet-api'\n0\n\n$ ls ~/apache-tomcat-10.1.26/lib/jakarta.servlet-api.jar\n/Users/kwanhyun/apache-tomcat-10.1.26/lib/jakarta.servlet-api.jar\n\n--   서버 쪽에만 있다\n--   providedCompile 이 뺐다\n\n\n-- implementation 으로 바꾸면\n\ndependencies {\n    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'\n}\n\n$ ./gradlew war -q\n$ unzip -l build/libs/app.war | grep servlet-api\n   359533  WEB-INF/lib/jakarta.servlet-api-6.0.0.jar\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n$ tail -5 ~/apache-tomcat-10.1.26/logs/catalina.out\n\n10-Sep-2026 05:09:41.204 WARNING [main] o.a.c.loader.WebappClassLoaderBase\n  .validateJarFile  Validation failed for JAR [WEB-INF/lib/\n  jakarta.servlet-api-6.0.0.jar] due to a specification violation:\n  it contains a class [jakarta/servlet/Servlet.class] that is offered\n  by the container\n\n--   경고가 뜬다\n--   톰캣이 무시해 줬다\n--   버전이 다르면 이렇게 안 넘어간다\n\n\n-- 정적 파일은 밖에 둔다\n\n$ echo '<h1>WAR 정적</h1>' > src/main/webapp/index.html\n$ ./gradlew war -q\n$ unzip -l build/libs/app.war | grep index.html\n       21  index.html\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ curl -s localhost:8080/app/index.html\n<h1>WAR 정적</h1>\n\n--   WEB-INF 밖이라 그냥 나간다\n\n\n-- WEB-INF 안은 못 읽는다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    localhost:8080/app/WEB-INF/classes/study/war/HelloServlet.class\n404\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/app/WEB-INF/web.xml\n404\n\n--   규약이 막아 준다\n--   설정 파일이 안 새어 나간다\n\n\n-- 크기를 재 본다\n\n// 스프링 MVC 를 넣으면\ndependencies {\n    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'\n    implementation 'org.springframework:spring-webmvc:6.1.11'\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'\n}\n\n$ ./gradlew war -q\n$ ls -lh build/libs/app.war | awk '{print $5}'\n 12M\n\n$ unzip -l build/libs/app.war | grep -c 'WEB-INF/lib/.*\\.jar'\n14\n\n--   JAR 열넷이 들어갔다\n--   3.8절에서 이 크기가 문제가 된다\n\n\n-- 부트 JAR 와 비교한다\n\n$ ls -lh build/libs/*.jar | awk '{print $5, $9}'\n 21M build/libs/app-0.0.1-SNAPSHOT.jar\n4.2K build/libs/app-0.0.1-SNAPSHOT-plain.jar\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | head -8\nArchive:  build/libs/app-0.0.1-SNAPSHOT.jar\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n        0  09-10-2026 05:00   META-INF/\n      373  09-10-2026 05:00   META-INF/MANIFEST.MF\n        0  09-10-2026 05:00   org/\n        0  09-10-2026 05:00   org/springframework/\n        0  09-10-2026 05:00   org/springframework/boot/\n\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.jar | grep -c 'BOOT-INF/lib/'\n41\n\n--   구조가 다르다\n--   WEB-INF 가 아니라 BOOT-INF 다\n--   4.7·4.8절에서 판다\n\n\n-- 매니페스트를 비교한다\n\n$ unzip -p build/libs/app.war META-INF/MANIFEST.MF\nManifest-Version: 1.0\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.jar META-INF/MANIFEST.MF\nManifest-Version: 1.0\nMain-Class: org.springframework.boot.loader.launch.JarLauncher\nStart-Class: study.boot.BootApplication\nSpring-Boot-Version: 3.3.2\nSpring-Boot-Classes: BOOT-INF/classes/\nSpring-Boot-Lib: BOOT-INF/lib/\n\n--   WAR 는 한 줄이다\n--   JAR 에는 시작점이 적혀 있다\n--   4.10절에서 이걸 읽는다\n\n\n-- WAR 는 스스로 못 뜬다\n\n$ java -jar build/libs/app.war\n\nno main manifest attribute, in build/libs/app.war\n\n--   3.1절의 그 이야기다\n--   서버에 넣어야 한다\n\n\n-- 부트로 WAR 를 만들 수도 있다\n\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'war'\n}\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'\n}\n\n$ ./gradlew bootWar -q\n$ unzip -l build/libs/app-0.0.1-SNAPSHOT.war | grep -E 'WEB-INF/(classes|lib)/$'\n        0  WEB-INF/classes/\n        0  WEB-INF/lib/\n\n$ unzip -p build/libs/app-0.0.1-SNAPSHOT.war META-INF/MANIFEST.MF | head -3\nManifest-Version: 1.0\nMain-Class: org.springframework.boot.loader.launch.WarLauncher\nStart-Class: study.boot.BootApplication\n\n--   둘 다 되는 WAR 다\n--   서버에 넣어도 되고 java -jar 도 된다\n--   3.6절에서 이걸 쓴다\n\n\n-- 정리\n\n$ printf '%-24s %-14s %s\\n' \\\n  'WEB-INF/classes'  '내 코드'      '브라우저가 못 읽음' \\\n  'WEB-INF/lib'      '의존성 JAR'   '서블릿 API 는 제외' \\\n  'WEB-INF/web.xml'  '배포 서술자'  '3.6절' \\\n  '그 밖'            '정적 파일'    '그대로 나감' \\\n  'providedCompile'  '컴파일만'     '서버가 이미 가짐' \\\n  'java -jar'        '안 됨'        '시작점이 없음'\n\nWEB-INF/classes          내 코드          브라우저가 못 읽음\nWEB-INF/lib              의존성 JAR       서블릿 API 는 제외\nWEB-INF/web.xml          배포 서술자      3.6절\n그 밖                    정적 파일        그대로 나감\nprovidedCompile          컴파일만         서버가 이미 가짐\njava -jar                안 됨            시작점이 없음\n\n--   3.5절에서 이 WAR 를 배포한다",
+   "note": "**내 클래스는 `WEB-INF/classes`, 의존성은 `WEB-INF/lib` 에 들어가고 서블릿 API 는 `0`** 개다.\n\n**`implementation` 으로 바꿔 넣으면 톰캣이 `specification violation ... offered by the container` 경고를** 낸다.\n\n**`WEB-INF` 아래는 404 라 설정 파일이 안 새어** 나간다.\n\n**스프링 MVC 를 넣으면 12MB 에 JAR 14개, 부트 JAR 는 `BOOT-INF/lib` 에 41개**다.\n\n**WAR 매니페스트는 한 줄이라 `java -jar` 하면 `no main manifest attribute`** 다."
+  }
+ ],
+ "recap": [
+  "**자리가 정해져** 있다.",
+  "**`WEB-INF` 는 숨은 자리**다.",
+  "**밖은 정적 파일**이다.",
+  "**서블릿 API 는 안** 넣는다.",
+  "**넣으면 경고가** 뜬다.",
+  "**`provided` 가 그** 자리다.",
+  "**의존성이 다** 들어간다.",
+  "**부트는 구조가** 다르다.",
+  "**WAR 는 스스로 못** 뜬다."
+ ],
+ "drills": [
+  {
+   "task": "WAR 를 빌드해 연다.",
+   "done_when": "네 자리를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서블릿 API 를 넣어 본다.",
+   "done_when": "경고를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`WEB-INF` 안을 요청한다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "부트 JAR 와 구조를 비교한다.",
+   "done_when": "매니페스트 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "내 클래스는 WAR 어디에 들어가나?",
+   "a": "`WEB-INF/classes` 다."
+  },
+  {
+   "q": "서블릿 API 를 넣으면?",
+   "a": "서버가 이미 가지고 있어 경고가 나고 충돌할 수 있다."
+  },
+  {
+   "q": "`WEB-INF` 아래를 브라우저가 읽을 수 있나?",
+   "a": "없다. 규약이 막는다."
+  },
+  {
+   "q": "`providedCompile` 은 무엇인가?",
+   "a": "컴파일에는 쓰고 패키징에서는 빼는 자리다."
+  },
+  {
+   "q": "WAR 를 `java -jar` 로 돌리면?",
+   "a": "시작점이 없어 실행되지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WEB-INF",
+   "def": "브라우저가 직접 읽을 수 없는 WAR 내부 디렉터리."
+  },
+  {
+   "term": "provided 의존성",
+   "def": "실행 환경이 제공하므로 패키징에서 제외하는 의존성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — War Plugin",
+   "url": "https://docs.gradle.org/current/userguide/war_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

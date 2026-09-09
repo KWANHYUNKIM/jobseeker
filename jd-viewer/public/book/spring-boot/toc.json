@@ -117,7 +117,7 @@
           "title": "서블릿 컨테이너",
           "summary": "누가 서블릿을 만들어 주나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -125,7 +125,7 @@
           "title": "WAR 만들기",
           "summary": "안에 무엇이 들어가나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

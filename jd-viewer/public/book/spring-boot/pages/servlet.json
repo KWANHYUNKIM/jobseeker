@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "servlet",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "서블릿 컨테이너",
+ "summary": "누가 서블릿을 만들어 주나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "생명주기를 본다.",
+  "하나만 만드는 걸 확인한다.",
+  "공유 필드의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `main` 이 없다고** 했다. **그럼 누가 객체를 만드는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨테이너가 하는 다섯",
+   "ascii": "   what the container does with one servlet class\n\n   find it     by scanning annotations or reading web xml\n   make it     once, with the no argument constructor\n   init it     once, before the first request\n   serve it    on many threads, at the same time\n   destroy it  once, when the application stops\n\n   the middle three happen exactly once, and that is the whole trap",
+   "note": "**가운데 셋은 딱 한 번이고 그게 함정의** 전부다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "객체를 하나만 만들어 돌려 쓴다",
+   "md": "**요청마다 안** 만든다.\n\n> **하나를 만들어** 둔다.\n> **여러 스레드가 같이** 부른다.\n> **아래에서 해시로** 확인한다.\n\n**`init` 은 한 번**이다.\n\n> **첫 요청 전이나 기동 때** 돈다.\n> **무거운 준비를 여기서** 한다.\n> **② 4장의 싱글턴과 같은 이야기**다.\n\n**필드는 공유**된다.\n\n> **요청마다 다른 값을 필드에 두면** 안 된다.\n> **아래에서 그걸** 깨뜨린다.\n> **스프링 빈도 같은 규칙**이다.\n\n**컨테이너가 스레드를 준**다.\n\n> **내가 스레드를 안** 만든다.\n> **1.4절의 `nio-8080-exec-1`** 이다.\n> **풀에서 꺼내 쓴**다."
+  },
+  {
+   "type": "figure",
+   "caption": "인스턴스 하나, 스레드 여럿",
+   "ascii": "   one instance, many threads\n\n   a field on the servlet     shared by every request at once\n   a local variable in doGet  private to that one call\n\n   the first line is why a counter field gives the wrong number",
+   "note": "**첫 줄 때문에 카운터 필드가 틀린 수를** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "언제 만들지도 컨테이너가 정한다",
+   "md": "**기본은 늦게** 만든다.\n\n> **첫 요청이 와야** 만든다.\n> **`loadOnStartup` 으로 당길 수** 있다.\n> **아래에서 로그로** 본다.\n\n**그래서 첫 요청이** 느리다.\n\n> **초기화가 그때** 돈다.\n> **④ 8장의 웜업 이야기**다.\n> **부트도 같은 문제가** 있다.\n\n**어노테이션 스캔이 기동을** 늦춘다.\n\n> **클래스를 다 뒤진다.**\n> **큰 WAR 일수록** 오래다.\n> **3.8절에서 그걸** 잰다.\n\n**`web.xml` 로 끌 수도** 있었다.\n\n> **`metadata-complete` 다.**\n> **대신 전부 손으로** 적는다.\n> **3.6절에서 그 XML 을** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 생명주기를 찍는다\n\n@WebServlet(urlPatterns = \"/life\")\npublic class LifeServlet extends HttpServlet {\n\n    public LifeServlet() {\n        System.out.println(\"1. 생성자 \" + System.identityHashCode(this));\n    }\n\n    @Override\n    public void init() {\n        System.out.println(\"2. init  \" + System.identityHashCode(this));\n    }\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        System.out.println(\"3. doGet \" + System.identityHashCode(this)\n                + \" / \" + Thread.currentThread().getName());\n        resp.getWriter().write(\"ok\");\n    }\n\n    @Override\n    public void destroy() {\n        System.out.println(\"4. destroy \" + System.identityHashCode(this));\n    }\n}\n\n\n-- 배포하고 기동한다\n\n$ ./gradlew war -q && cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n\n$ grep -c '1. 생성자' ~/apache-tomcat-10.1.26/logs/catalina.out\n0\n\n--   아직 안 만들었다\n--   기동만으로는 생성자도 안 돈다\n\n\n-- 첫 요청을 보낸다\n\n$ curl -s localhost:8080/app/life\nok\n\n$ grep -E '^[0-9]\\.' ~/apache-tomcat-10.1.26/logs/catalina.out\n1. 생성자 1839472301\n2. init  1839472301\n3. doGet 1839472301 / http-nio-8080-exec-1\n\n--   요청이 와서야 만들었다\n--   생성자와 init 이 한 번씩이다\n\n\n-- 두 번째 요청\n\n$ curl -s localhost:8080/app/life > /dev/null\n$ grep -E '^[0-9]\\.' ~/apache-tomcat-10.1.26/logs/catalina.out | tail -1\n3. doGet 1839472301 / http-nio-8080-exec-2\n\n--   같은 객체다\n--   스레드만 바뀌었다\n\n\n-- 백 번 보내 본다\n\n$ for i in $(seq 1 100); do curl -s localhost:8080/app/life > /dev/null; done\n\n$ grep -c '1. 생성자' ~/apache-tomcat-10.1.26/logs/catalina.out\n1\n$ grep '3. doGet' ~/apache-tomcat-10.1.26/logs/catalina.out \\\n    | awk '{print $3}' | sort -u | wc -l\n1\n$ grep '3. doGet' ~/apache-tomcat-10.1.26/logs/catalina.out \\\n    | awk '{print $5}' | sort -u | wc -l\n10\n\n--   객체는 하나, 스레드는 열이다\n\n\n-- 기동 때 만들게 한다\n\n@WebServlet(urlPatterns = \"/life\", loadOnStartup = 1)\npublic class LifeServlet extends HttpServlet { ... }\n\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ ./gradlew war -q && cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n\n$ grep -E '^[0-9]\\.' ~/apache-tomcat-10.1.26/logs/catalina.out\n1. 생성자 924871055\n2. init  924871055\n\n--   요청 없이 만들어졌다\n--   ④ 8장의 웜업과 같은 이야기다\n\n\n-- 첫 요청 시간을 잰다\n\n// loadOnStartup 없이\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/life\n0.184\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/life\n0.004\n\n// loadOnStartup 있이\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/life\n0.006\n\n--   첫 요청이 0.184 초였다\n--   미리 만들면 0.006 이다\n\n\n-- 필드를 두면 공유된다\n\n@WebServlet(urlPatterns = \"/count\", loadOnStartup = 1)\npublic class CountServlet extends HttpServlet {\n\n    private int count = 0;                 // 위험하다\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        count++;\n        resp.getWriter().write(String.valueOf(count));\n    }\n}\n\n$ for i in $(seq 1 1000); do curl -s localhost:8080/app/count > /dev/null & done\n$ wait\n$ curl -s localhost:8080/app/count\n987\n\n--   천한 번을 불렀는데 987 이다\n--   증가가 원자적이지 않다\n\n\n-- 지역 변수는 안전하다\n\n@WebServlet(urlPatterns = \"/safe\", loadOnStartup = 1)\npublic class SafeServlet extends HttpServlet {\n\n    private final AtomicInteger count = new AtomicInteger();\n\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp)\n            throws IOException {\n        int mine = count.incrementAndGet();   // 지역 변수\n        resp.getWriter().write(String.valueOf(mine));\n    }\n}\n\n$ for i in $(seq 1 1000); do curl -s localhost:8080/app/safe > /dev/null & done\n$ wait\n$ curl -s localhost:8080/app/safe\n1001\n\n--   1001 이다\n--   ② 4장의 무상태 규칙이 여기서 나왔다\n\n\n-- 부트도 같다\n\n@RestController\nclass CountController {\n    private int count = 0;\n\n    @GetMapping(\"/count\")\n    String count() { return String.valueOf(++count); }\n}\n\n$ for i in $(seq 1 1000); do curl -s localhost:8080/count > /dev/null & done\n$ wait\n$ curl -s localhost:8080/count\n993\n\n@Test\nvoid 빈이_하나인가() {\n    System.out.println(\"개수: \"\n            + ctx.getBeanNamesForType(CountController.class).length);\n    System.out.println(\"해시: \"\n            + System.identityHashCode(ctx.getBean(CountController.class)));\n}\n\n개수: 1\n해시: 1183947220\n\n--   컨트롤러도 하나를 돌려 쓴다\n--   같은 함정이다\n\n\n-- 종료할 때 destroy 가 돈다\n\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ grep '4. destroy' ~/apache-tomcat-10.1.26/logs/catalina.out\n4. destroy 924871055\n\n--   만든 그 객체다\n--   ② 5장의 소멸 콜백과 같은 자리다\n\n\n-- 컨테이너가 어떻게 찾았나\n\n$ unzip -l build/libs/app.war | grep -c 'WEB-INF/classes.*Servlet.class'\n4\n\n$ grep 'annotation' ~/apache-tomcat-10.1.26/logs/catalina.out | head -2\n10-Sep-2026 05:08:11.204 INFO [main] o.a.c.startup.ContextConfig.processAnnotations\n  Scanning WEB-INF/classes for annotations\n\n--   클래스를 뒤져서 찾았다\n--   3.8절에서 이 비용을 잰다\n\n\n-- 부트에서 서블릿을 쓰려면\n\n@ServletComponentScan\n@SpringBootApplication\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun &\n$ curl -s localhost:8080/life\nok\n\n$ ./gradlew bootRun 2>&1 | grep -E '^[0-9]\\.'\n1. 생성자 1204718332\n2. init  1204718332\n\n--   부트도 서블릿을 등록할 수 있다\n--   4.2절에서 코드로 등록한다\n\n\n-- 정리\n\n$ printf '%-20s %-12s %s\\n' \\\n  '생성자'   '한 번'   '컨테이너가 만든다' \\\n  'init'     '한 번'   '첫 요청 전' \\\n  'doGet'    '요청마다' '여러 스레드' \\\n  'destroy'  '한 번'   '종료 때' \\\n  '필드'     '공유'    '카운터가 틀린다' \\\n  'loadOnStartup' '기동 때' '첫 요청이 빨라진다'\n\n생성자               한 번         컨테이너가 만든다\ninit                 한 번         첫 요청 전\ndoGet                요청마다      여러 스레드\ndestroy              한 번         종료 때\n필드                 공유          카운터가 틀린다\nloadOnStartup        기동 때       첫 요청이 빨라진다\n\n--   3.4절에서 WAR 안을 본다",
+   "note": "**기동만으로는 생성자도 안 돌고 첫 요청이 와서야 `1. 생성자` 가** 찍힌다.\n\n**백 번을 불러도 객체 해시는 하나, 스레드는 열**이다.\n\n**`loadOnStartup` 을 주면 요청 전에 만들어져 첫 응답이 0.184초에서 0.006초**가 된다.\n\n**필드 카운터는 천한 번 호출에 987, `AtomicInteger` 는 1001** 이다.\n\n**부트 컨트롤러도 빈이 하나라 같은 함정으로 993** 이 나온다."
+  }
+ ],
+ "recap": [
+  "**컨테이너가** 만든다.",
+  "**객체는 하나**다.",
+  "**스레드는** 여럿이다.",
+  "**`init` 은 한 번**이다.",
+  "**필드는 공유**된다.",
+  "**카운터가** 틀린다.",
+  "**기본은 늦게** 만든다.",
+  "**첫 요청이** 느리다.",
+  "**부트도** 같다."
+ ],
+ "drills": [
+  {
+   "task": "생명주기를 찍는다.",
+   "done_when": "네 단계 순서를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "동시에 백 번 부른다.",
+   "done_when": "객체가 하나인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`loadOnStartup` 을 준다.",
+   "done_when": "첫 응답이 빨라진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필드 카운터를 깨뜨린다.",
+   "done_when": "숫자가 안 맞는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서블릿 객체는 몇 개인가?",
+   "a": "하나다. 여러 스레드가 함께 쓴다."
+  },
+  {
+   "q": "`init` 은 몇 번 도나?",
+   "a": "한 번이다."
+  },
+  {
+   "q": "필드에 상태를 두면?",
+   "a": "요청끼리 공유되어 값이 어긋난다."
+  },
+  {
+   "q": "기본으로 언제 만들어지나?",
+   "a": "첫 요청이 올 때다."
+  },
+  {
+   "q": "부트 컨트롤러는 다른가?",
+   "a": "같다. 빈 하나를 여러 스레드가 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "서블릿 생명주기",
+   "def": "생성·초기화·서비스·소멸의 네 단계."
+  },
+  {
+   "term": "loadOnStartup",
+   "def": "요청 전 기동 시점에 서블릿을 만들게 하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
