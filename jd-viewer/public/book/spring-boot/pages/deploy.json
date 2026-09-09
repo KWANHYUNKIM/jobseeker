@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "deploy",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "배포하고 확인",
+ "summary": "넣고 다시 띄운다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "복사 배포를 한다.",
+  "이름이 주소인 걸 안다.",
+  "재배포를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 WAR 를** 만들었다. **그걸 서버에 넣어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "배포의 네 단계",
+   "ascii": "   what a deployment used to be, step by step\n\n   build the war        on the machine that has the source\n   copy it over         to the server that is already running\n   the server notices   unpacks it into a directory\n   the old one stops    and the new one initializes\n\n   the third step is automatic, and that is where surprises come from",
+   "note": "**셋째가 자동이라 놀랄 일이 거기서** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "복사가 곧 배포였다",
+   "md": "**파일을 옮기면** 끝이었다.\n\n> **서버가 폴더를 지켜보고** 있다.\n> **새 WAR 를 보면 풀어서** 띄운다.\n> **아래에서 로그로** 본다.\n\n**이름이 주소가** 된다.\n\n> **`app.war` 면 `/app`** 이다.\n> **`ROOT.war` 면 `/`** 다.\n> **코드를 안 고치고 주소가** 바뀐다.\n\n**서버는 계속 떠** 있다.\n\n> **다른 애플리케이션은 안** 죽는다.\n> **3.1절에서 다섯이 같이** 있었다.\n> **그게 장점이었다.**\n\n**대신 격리가** 없다.\n\n> **하나가 메모리를 다 쓰면 같이** 죽는다.\n> **버전도 서버 하나에** 묶인다.\n> **3.8절에서 그 값을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "파일 이름이 URL 이다",
+   "ascii": "   the file name decides the url\n\n   app war        served under slash app\n   ROOT war       served under slash, the default application\n   app#v2 war     served under slash app slash v2\n\n   renaming the file changes the address, with no code change",
+   "note": "**이름만 바꿔도 주소가** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지운 자리가 안 지워질 때가 있다",
+   "md": "**푼 폴더가 남는**다.\n\n> **WAR 만 지우면 폴더가** 남을 수 있다.\n> **옛 클래스가 계속** 돈다.\n> **아래에서 그걸** 만든다.\n\n**핫 배포가 완전하지** 않다.\n\n> **클래스가 안 풀릴 때가** 있다.\n> **메모리가 새기도** 한다.\n> **결국 재기동을** 했다.\n\n**로그가 서버 쪽에** 쌓인다.\n\n> **내 애플리케이션 로그가 남의 것과** 섞인다.\n> **3.2절에서 본 `catalina.out`** 이다.\n> **누구 로그인지 표시가** 없다.\n\n**되돌리기가 수동**이다.\n\n> **옛 WAR 를 보관해 둬야** 한다.\n> **⑪ 4장의 이미지 태그와** 대비된다.\n> **아래에서 해** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 넣는다\n\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n$ ls ~/apache-tomcat-10.1.26/webapps/\nROOT  docs  examples  host-manager  manager\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ sleep 3 && ls ~/apache-tomcat-10.1.26/webapps/\nROOT  app  app.war  docs  examples  host-manager  manager\n\n--   폴더가 저절로 생겼다\n--   서버가 풀었다\n\n\n-- 로그를 본다\n\n$ tail -6 ~/apache-tomcat-10.1.26/logs/catalina.out\n\n10-Sep-2026 05:10:41.204 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n  .deployWAR  Deploying web application archive\n  [/Users/kwanhyun/apache-tomcat-10.1.26/webapps/app.war]\n10-Sep-2026 05:10:41.902 INFO [Catalina-utility-1] o.a.c.startup.ContextConfig\n  .processAnnotations  Scanning WEB-INF/classes for annotations\n1. 생성자 1839472301\n2. init  1839472301\n10-Sep-2026 05:10:43.418 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n  .deployWAR  Deployment of web application archive\n  [.../webapps/app.war] has finished in [2,214] ms\n\n--   3.3절의 생명주기가 여기서 돌았다\n--   스레드가 Catalina-utility-1 이다\n--   기동 스레드가 아니라 감시 스레드다\n\n\n-- 부른다\n\n$ curl -s localhost:8080/app/life\nok\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/life\n404\n\n--   /app 아래에만 있다\n--   컨텍스트 경로다 (3.1절)\n\n\n-- 이름을 바꾼다\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/ROOT.war\n\n10-Sep-2026 05:11:02.118 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n  .deployWAR  Deploying web application archive [.../webapps/ROOT.war]\n\n$ curl -s localhost:8080/life\nok\n\n$ curl -s localhost:8080/app/life\nok\n\n--   같은 코드가 두 주소에서 돈다\n--   코드는 한 글자도 안 바꿨다\n\n\n-- 버전을 이름에 넣는다\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/app#v2.war\n$ sleep 3\n$ curl -s localhost:8080/app/v2/life\nok\n\n$ curl -s -u admin:admin localhost:8080/manager/text/list | grep app\n/app:running:0:app\n/app/v2:running:0:app#v2\n\n--   샵 하나가 슬래시가 된다\n\n\n-- 다시 배포한다\n\n// 코드를 고치고\n@Override\nprotected void doGet(HttpServletRequest req, HttpServletResponse resp)\n        throws IOException {\n    resp.getWriter().write(\"ok v2\");\n}\n\n$ ./gradlew war -q\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ sleep 3\n\n$ tail -4 ~/apache-tomcat-10.1.26/logs/catalina.out\n10-Sep-2026 05:11:31.204 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n  .deployWAR  Undeploying context [/app]\n4. destroy 1839472301\n1. 생성자 927104553\n2. init  927104553\n\n$ curl -s localhost:8080/app/life\nok v2\n\n--   destroy 가 돌고 새로 만들었다\n--   서버는 안 껐다\n\n\n-- 얼마나 걸리나\n\n$ ./gradlew war -q\n$ time (cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/ && \\\n        until curl -s -f localhost:8080/app/life > /dev/null 2>&1; \\\n        do sleep 0.2; done)\n\nreal\t0m3.412s\n\n--   3.4 초다\n--   WAR 가 12M 일 때다\n\n\n-- 부트는 다르다\n\n$ time (./gradlew bootRun > /tmp/boot.log 2>&1 & \\\n        until curl -s -f localhost:8080/hello > /dev/null 2>&1; \\\n        do sleep 0.2; done)\n\nreal\t0m4.108s\n\n--   비슷하다\n--   대신 서버를 먼저 안 띄워도 된다\n\n\n-- 지워 본다\n\n$ rm ~/apache-tomcat-10.1.26/webapps/app.war\n$ sleep 3\n\n$ ls ~/apache-tomcat-10.1.26/webapps/ | grep app\napp#v2\napp#v2.war\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/app/life\n404\n\n10-Sep-2026 05:12:02.418 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n  .checkResources  Undeploying context [/app]\n\n--   폴더까지 같이 지웠다\n\n\n-- 그런데 남을 때가 있다\n\n// autoDeploy 를 끄면\n$ sed -i '' 's/autoDeploy=\"true\"/autoDeploy=\"false\"/' \\\n    ~/apache-tomcat-10.1.26/conf/server.xml\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n\n$ rm ~/apache-tomcat-10.1.26/webapps/app#v2.war\n$ sleep 3\n$ ls -d ~/apache-tomcat-10.1.26/webapps/app#v2\n/Users/kwanhyun/apache-tomcat-10.1.26/webapps/app#v2\n\n$ curl -s localhost:8080/app/v2/life\nok\n\n--   WAR 는 지웠는데 폴더가 남았다\n--   옛 코드가 계속 돈다\n--   \"지웠는데 왜 되지\" 가 여기서 나온다\n\n\n-- 폴더도 지워야 끝난다\n\n$ rm -rf ~/apache-tomcat-10.1.26/webapps/app#v2\n$ ~/apache-tomcat-10.1.26/bin/shutdown.sh\n$ ~/apache-tomcat-10.1.26/bin/startup.sh\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/app/v2/life\n404\n\n--   재기동까지 했다\n\n\n-- 로그가 섞인다\n\n$ grep -c '^[0-9]\\.' ~/apache-tomcat-10.1.26/logs/catalina.out\n8\n$ grep -c 'INFO \\[' ~/apache-tomcat-10.1.26/logs/catalina.out\n142\n\n$ grep -B1 '^3. doGet' ~/apache-tomcat-10.1.26/logs/catalina.out | head -2\n10-Sep-2026 05:11:02.118 INFO [Catalina-utility-1] o.a.c.startup.HostConfig\n3. doGet 927104553 / http-nio-8080-exec-4\n\n--   내 로그에 시각도 이름도 없다\n--   System.out 이 그대로 섞였다\n--   부트는 형식이 붙는다 (1.4절)\n\n\n-- 되돌리려면 옛 파일이 있어야 한다\n\n$ ls ~/war-archive/\napp-2026-09-09.war  app-2026-09-10.war\n\n$ cp ~/war-archive/app-2026-09-09.war \\\n     ~/apache-tomcat-10.1.26/webapps/app.war\n$ sleep 3 && curl -s localhost:8080/app/life\nok\n\n--   내가 보관해 둔 것이다\n--   ⑪ 4장의 이미지 태그와 대비된다\n\n\n-- 정리\n\n$ printf '%-24s %-16s %s\\n' \\\n  '배포'       '파일 복사'      '3.4 초' \\\n  '주소'       '파일 이름'      'ROOT 는 /' \\\n  '재배포'     'destroy 후 재생성' '서버는 유지' \\\n  '삭제'       'WAR 를 지움'    '폴더가 남을 수 있음' \\\n  '로그'       'catalina.out'   '남의 것과 섞임' \\\n  '되돌리기'   '옛 WAR 보관'    '수동'\n\n배포                     파일 복사          3.4 초\n주소                     파일 이름          ROOT 는 /\n재배포                   destroy 후 재생성  서버는 유지\n삭제                     WAR 를 지움        폴더가 남을 수 있음\n로그                     catalina.out       남의 것과 섞임\n되돌리기                 옛 WAR 보관        수동\n\n--   3.6절에서 스프링을 WAR 로 올린다",
+   "note": "**WAR 를 복사하니 폴더가 저절로 생기고 `Deployment ... has finished in [2,214] ms` 가** 찍힌다.\n\n**`ROOT.war` 로 이름만 바꾸면 같은 코드가 `/` 와 `/app` 두 주소에서** 돈다.\n\n**재배포하면 `Undeploying context` 뒤에 `4. destroy` 와 새 생성자가** 돈다.\n\n**`autoDeploy` 를 끄고 WAR 만 지우면 폴더가 남아 옛 코드가 계속** 응답한다.\n\n**내 `System.out` 로그가 시각도 이름도 없이 서버 로그에** 섞인다."
+  }
+ ],
+ "recap": [
+  "**복사가 배포**였다.",
+  "**서버가 풀어** 준다.",
+  "**이름이 주소**다.",
+  "**`ROOT` 는 `/`** 다.",
+  "**재배포는 `destroy` 부터**다.",
+  "**서버는 안** 죽는다.",
+  "**폴더가 남을 수** 있다.",
+  "**로그가** 섞인다.",
+  "**되돌리기가 수동**이다."
+ ],
+ "drills": [
+  {
+   "task": "WAR 를 복사해 배포한다.",
+   "done_when": "배포 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이름을 `ROOT.war` 로 바꾼다.",
+   "done_when": "주소가 바뀌는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "코드를 고쳐 재배포한다.",
+   "done_when": "`destroy` 가 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "WAR 만 지워 본다.",
+   "done_when": "폴더가 남는 경우를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "배포는 무엇이었나?",
+   "a": "WAR 파일을 서버 디렉터리에 복사하는 일이었다."
+  },
+  {
+   "q": "주소는 무엇이 정하나?",
+   "a": "WAR 파일 이름이다. `ROOT.war` 는 루트가 된다."
+  },
+  {
+   "q": "재배포 때 무엇이 먼저 도나?",
+   "a": "옛 서블릿의 `destroy` 가 돈다."
+  },
+  {
+   "q": "WAR 를 지웠는데 계속 응답하면?",
+   "a": "풀린 폴더가 남아 있는 것이다."
+  },
+  {
+   "q": "되돌리려면?",
+   "a": "옛 WAR 파일을 보관해 두었다가 다시 복사한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "핫 배포",
+   "def": "서버를 끄지 않고 애플리케이션만 교체하는 방식."
+  },
+  {
+   "term": "컨텍스트 언디플로이",
+   "def": "실행 중인 애플리케이션을 서버에서 내리는 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -133,7 +133,7 @@
           "title": "배포하고 확인",
           "summary": "넣고 다시 띄운다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -141,7 +141,7 @@
           "title": "스프링 MVC 를 WAR 로",
           "summary": "컨테이너가 스프링을 시작한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
