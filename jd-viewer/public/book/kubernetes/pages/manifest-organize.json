@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "manifest-organize",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "매니페스트가 늘어날 때",
+ "summary": "환경마다 복사해 두면 갈라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "복사의 대가를 안다.",
+  "apply 의 성질을 안다.",
+  "라벨 규약을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 YAML 한 장으로** 시작했다. **이제 수십 장**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "복사의 대가",
+   "ascii": "   what copying a directory per environment costs\n\n   dev/deployment.yaml     replicas 1, image tag dev\n   stg/deployment.yaml     replicas 2, image tag rc\n   prod/deployment.yaml    replicas 6, image tag 1.4.0\n\n   a probe fix lands in dev and stg, and someone forgets prod\n   six months later nobody can say which differences are on purpose",
+   "note": "**어느 차이가 의도인지 아무도 모르게** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "차이만 적고 싶다",
+   "md": "**환경 사이에 진짜 다른 건 서너 줄**이다.\n\n> **레플리카 수, 이미지 태그, 자원, 호스트 이름** 정도다.\n> **나머지 백 줄은** 같다.\n> **그런데 파일은 통째로** 복사돼 있다.\n\n**두 갈래가** 있다.\n\n| 방식 | 생각 |\n|---|---|\n| 겹쳐 쓰기 | 완전한 YAML 위에 차이를 얹는다 |\n| 틀 채우기 | 구멍 뚫린 틀에 값을 넣는다 |\n\n> **11.2절이 앞, 11.3절이 뒤**다.\n> **⑦ 에서 상속과 조합 중 무엇을 고를지 하던 것과 비슷한** 갈림이다.\n\n**그전에 매니페스트부터 정리**한다.\n\n> **도구가 어질러진 걸 고쳐 주지는** 않는다.\n> **이름·라벨·구조가 일정해야 겹쳐 쓰기가** 된다.\n\n**`apply` 는 디렉터리를** 받는다.\n\n```bash\nkubectl apply -f k8s/\nkubectl apply -f k8s/ -R\nkubectl apply -k overlays/prod\n```\n\n> **순서는 보장 안** 된다.\n> **네임스페이스와 CRD 는 먼저 만들어져야** 한다.\n> **그래서 도구들이 단계를 따로** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "디렉터리 모양",
+   "ascii": "   what a manifest directory grows into\n\n   one file per kind        readable, and it is what most repos do\n   one file, many docs      fine while it is small, then it is not\n   grouped by component     api/, worker/, db/, once there are several\n\n   apply takes a directory, and -R walks into subdirectories\n   the order inside is not guaranteed, so never depend on it",
+   "note": "**순서에 기대면 언젠가** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "권장 라벨이 있다",
+   "md": "```yaml\nlabels:\n  app.kubernetes.io/name: shop\n  app.kubernetes.io/instance: shop-prod\n  app.kubernetes.io/version: \"1.4.0\"\n  app.kubernetes.io/component: api\n  app.kubernetes.io/part-of: storefront\n  app.kubernetes.io/managed-by: kustomize\n```\n\n> **도구들이 이걸 보고** 그린다.\n> **`-l app.kubernetes.io/part-of=storefront` 로 한 시스템을 통째로** 본다.\n\n**셀렉터에는 넣지** 않는다.\n\n> **`spec.selector` 는 불변**이다(5.2절).\n> **버전 라벨을 셀렉터에 넣으면 다음 배포에서** 막힌다.\n> **셀렉터는 최소한으로, 라벨은 넉넉하게**.\n\n**애너테이션은 다른 용도**다.\n\n> **라벨은 고르는** 것,\n> **애너테이션은 붙이는** 것이다.\n> **7.4절의 해시, 6.6절의 인그레스 설정이 애너테이션**이었다.\n\n**`apply` 는 무엇을 지웠는지 모른다.**\n\n> **파일에서 뺀다고 클러스터에서 사라지지** 않는다.\n> **`--prune` 이 있지만** 위험하다.\n> **11.4절의 깃옵스가 이 문제를 제대로** 푼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 디렉터리를 만든다 ---\n\n$ find k8s -type f | sort\n\nk8s/api/deployment.yaml\nk8s/api/service.yaml\nk8s/db/statefulset.yaml\nk8s/namespace.yaml\n\n$ kubectl apply -f k8s/\n\nnamespace/shop created\nerror: unable to recognize \"k8s/api\": no matches for kind ...\n\n#   하위 디렉터리를 안 본다\n\n$ kubectl apply -f k8s/ -R\n\ndeployment.apps/api created\nservice/api created\nstatefulset.apps/db created\nnamespace/shop unchanged\n\n#   -R 이 있어야 들어간다\n\n#   namespace 가 마지막에 나왔다\n\n#   순서가 보장되지 않는다\n\n$ kubectl apply -f k8s/ -R --dry-run=server -o name\n\ndeployment.apps/api\nservice/api\nstatefulset.apps/db\nnamespace/shop\n\n#   이번에도 알파벳 순이 아니다\n\n#   여기 기대면 언젠가 깨진다\n\n# --- 한 파일에 여러 문서 ---\n\n$ cat all.yaml | grep -c '^---'\n\n3\n\n$ kubectl apply -f all.yaml\n\nconfigmap/shop-config created\ndeployment.apps/web created\nservice/web created\n\n#   위에서 아래로 간다\n\n#   한 파일 안에서는 순서가 있다\n\n$ kubectl delete -f all.yaml > /dev/null\n\n# --- 복사가 어떻게 갈라지는가 ---\n\n$ diff envs/dev/deployment.yaml envs/prod/deployment.yaml\n\n8c8\n<   replicas: 1\n---\n>   replicas: 6\n17c17\n<           image: shop:dev\n---\n>           image: shop:1.4.0\n24,27c24,29\n<           readinessProbe:\n<             httpGet: { path: /health, port: 8080 }\n<             periodSeconds: 3\n---\n>           readinessProbe:\n>             httpGet: { path: /healthz, port: 8080 }\n>             periodSeconds: 10\n>             failureThreshold: 3\n\n#   앞 둘은 의도한 차이다\n\n#   셋째는 누가 왜 다르게 했는지 모른다\n\n#   /health 와 /healthz 중 뭐가 맞나\n\n$ diff <(grep -c '' envs/dev/deployment.yaml) \\\n       <(grep -c '' envs/prod/deployment.yaml)\n\n1c1\n< 31\n---\n> 34\n\n#   31줄 중 3줄이 다르다\n\n#   나머지 28줄은 두 번 관리된다\n\n# --- 라벨을 붙인다 ---\n\n$ kubectl apply -f labeled.yaml > /dev/null\n$ kubectl get all -n shop \\\n    -l app.kubernetes.io/part-of=storefront --no-headers 2>/dev/null \\\n  | awk '{print $1}'\n\npod/api-6d8f4b9c7-k2n8x\npod/db-0\nservice/api\ndeployment.apps/api\nstatefulset.apps/db\n\n#   한 시스템을 통째로 본다\n\n$ kubectl get deployment api -n shop -o jsonpath=\\\n'{.spec.selector.matchLabels}{\"\\n\"}'\n\n{\"app.kubernetes.io/instance\":\"shop\",\"app.kubernetes.io/name\":\"api\"}\n\n#   셀렉터에는 둘만 넣었다\n\n#   version 은 뺐다\n\n# --- 셀렉터에 버전을 넣으면 ---\n\n$ kubectl patch deployment api -n shop --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/selector/matchLabels/app.kubernetes.io~1version\",\n  \"value\":\"1.4.0\"}]'\n\nThe Deployment \"api\" is invalid: spec.selector: Invalid value: ...\n  field is immutable\n\n#   5.2절에서 본 것이다\n\n#   처음부터 안 넣는 게 답이다\n\n# --- apply 는 지운 걸 모른다 ---\n\n$ kubectl get svc -n shop --no-headers | awk '{print $1}'\n\napi\n\n$ rm k8s/api/service.yaml\n$ kubectl apply -f k8s/ -R > /dev/null\n$ kubectl get svc -n shop --no-headers | awk '{print $1}'\n\napi\n\n#   파일에서 지웠는데 살아 있다\n\n#   apply 는 있는 것만 본다\n\n#   이게 계속 쌓이면 유령 오브젝트가 된다\n\n$ kubectl get svc api -n shop -o jsonpath=\\\n'{.metadata.annotations.kubectl\\.kubernetes\\.io/last-applied-configuration}' \\\n  | head -c 60\n\n{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotation\n\n#   apply 가 직전 형태를 여기 적어 둔다\n\n#   세 방향 병합에 쓰인다\n\n#   11.4절의 깃옵스가 이 문제를 제대로 푼다\n\n# --- diff 로 미리 본다 ---\n\n$ kubectl diff -f k8s/ -R | head -8\n\ndiff -u -N /tmp/LIVE-.../apps.v1.Deployment.shop.api \\\n           /tmp/MERGED-.../apps.v1.Deployment.shop.api\n--- LIVE\n+++ MERGED\n@@ -12,7 +12,7 @@\n     spec:\n       containers:\n-        image: shop:1.3.0\n+        image: shop:1.4.0\n\n#   적용 전에 무엇이 바뀌는지 본다\n\n#   PR 에 붙이면 좋다\n\n$ kubectl diff -f k8s/ -R > /dev/null; echo $?\n\n1\n\n#   차이가 있으면 1이다\n\n#   CI 에서 이걸 쓴다\n\n# --- 치운다 ---\n\n$ kubectl delete namespace shop\n\nnamespace \"shop\" deleted\n\n# --- 다음 절에서 ---\n\n#   차이만 얹는 법",
+   "note": "**`kubectl apply -f k8s/` 는 하위 디렉터리를 안 보고 `-R` 이** 필요하다.\n\n**적용 순서가 알파벳순도 아니라 `namespace` 가 마지막에** 나온다.\n\n**dev 와 prod 가 31줄 중 3줄 다른데 그중 하나는 의도인지 아닌지** 모른다.\n\n**셀렉터에 버전을 넣으려 하자 `field is immutable`** 이다.\n\n**파일을 지워도 서비스는 살아 있고 `last-applied-configuration` 만** 남는다."
+  }
+ ],
+ "recap": [
+  "**환경마다 복사하면 갈라**진다.",
+  "**진짜 차이는 서너 줄**이다.",
+  "**겹쳐 쓰기와 틀 채우기 두** 갈래다.",
+  "**도구 전에 매니페스트를** 정리한다.",
+  "**`apply -f` 는 `-R` 이 있어야 하위 디렉터리를** 본다.",
+  "**적용 순서는 보장 안** 된다.",
+  "**권장 라벨을** 쓴다.",
+  "**셀렉터에 버전을 넣지** 않는다.",
+  "**`apply` 는 지운 걸** 모른다."
+ ],
+ "drills": [
+  {
+   "task": "디렉터리로 `apply` 한다.",
+   "done_when": "`-R` 유무 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 환경 파일을 `diff` 한다.",
+   "done_when": "의도한 차이와 아닌 것을 갈랐다.",
+   "minutes": 20
+  },
+  {
+   "task": "권장 라벨을 붙인다.",
+   "done_when": "`part-of` 로 한꺼번에 조회했다.",
+   "minutes": 20
+  },
+  {
+   "task": "파일을 지우고 `apply` 한다.",
+   "done_when": "오브젝트가 남는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "환경마다 복사할 때의 문제는?",
+   "a": "같은 부분이 여러 번 관리돼 의도치 않은 차이가 쌓인다."
+  },
+  {
+   "q": "`apply -f` 에 `-R` 이 필요한 때는?",
+   "a": "하위 디렉터리까지 읽어야 할 때다."
+  },
+  {
+   "q": "적용 순서에 기대면 안 되는 이유는?",
+   "a": "디렉터리 안 파일들의 적용 순서가 보장되지 않아서다."
+  },
+  {
+   "q": "셀렉터에 버전 라벨을 넣으면?",
+   "a": "셀렉터가 불변이라 다음 변경이 막힌다."
+  },
+  {
+   "q": "파일에서 지운 오브젝트는?",
+   "a": "클러스터에 그대로 남는다. `apply` 는 삭제를 모른다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "권장 라벨",
+   "def": "`app.kubernetes.io/` 접두어의 공통 라벨 규약."
+  },
+  {
+   "term": "last-applied-configuration",
+   "def": "`apply` 가 직전 적용 형태를 적어 두는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Declarative Management of Objects",
+   "url": "https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kustomize — Documentation",
+   "url": "https://kubectl.docs.kubernetes.io/",
+   "publisher": "Kubernetes SIG CLI"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -569,7 +569,7 @@
           "title": "버전 올리기",
           "summary": "API 가 사라지기 전에.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -584,7 +584,7 @@
           "title": "매니페스트가 늘어날 때",
           "summary": "환경마다 복사해 두면 갈라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
