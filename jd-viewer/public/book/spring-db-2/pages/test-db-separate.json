@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "test-db-separate",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "테스트 전용 데이터베이스",
+ "summary": "운영 DB 로 테스트하지 않는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "테스트용 DB 를 따로 만든다.",
+  "설정이 어떻게 덮이는지 안다.",
+  "그래도 안 풀리는 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**가장 먼저 할 일**은 **테스트가 만질 DB 를 따로** 두는 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 나누나",
+   "ascii": "   running the tests against the dev database\n\n   1  a test deletes rows\n   2  the screen you were looking at goes empty\n   3  you blame the code\n\n   worse, with the production url in a config file:\n\n   1  a test runs on ci\n   2  production rows are gone",
+   "note": "**아래쪽은 농담이 아니다.**"
+  },
+  {
+   "type": "code",
+   "lang": "properties",
+   "caption": "`src/test/resources/application.properties`",
+   "code": "spring.profiles.active=test\n\nspring.datasource.url=jdbc:h2:tcp://localhost/~/test\nspring.datasource.username=sa\nspring.datasource.password=\n\nlogging.level.org.springframework.jdbc=debug",
+   "note": "**`~/itemservice` 가 `~/test` 로** 바뀐 것이 전부다.\n\n**H2 콘솔에서 `~/test` DB 를 만들고** 같은 `schema.sql` 로 테이블을 만들어 둔다.\n\n> **2.6절에서 `src/test/resources/application.properties` 에 프로파일 한 줄만** 뒀었다. **나머지는 `main` 것이 쓰였다** — 그래서 같은 DB 를 봤다."
+  },
+  {
+   "type": "figure",
+   "caption": "설정이 덮이는 순서",
+   "ascii": "   main                                test\n   ----                                ----\n   application.properties              application.properties\n   url=jdbc:h2:tcp://localhost/        url=jdbc:h2:tcp://localhost/\n             ~/itemservice                       ~/test\n\n   both files are read; test overrides main\n\n   classpath at test time\n     src/test/resources   first\n     src/main/resources   then",
+   "note": "**테스트 것이 이긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "덮어쓰기의 규칙",
+   "md": "**테스트를 돌리면 클래스패스에 두 폴더가 다 들어간다.**\n\n| 순서 | 무엇 |\n|---|---|\n| 1 | `src/test/resources` |\n| 2 | `src/main/resources` |\n\n**같은 키가 있으면 앞의 것**이 이긴다. **없는 키는 뒤의 것**이 쓰인다.\n\n**그래서 테스트 설정에 다 쓸 필요가 없다.**\n\n```properties\n# 이것만 있어도 된다\nspring.datasource.url=jdbc:h2:tcp://localhost/~/test\n```\n\n> **다 쓰는 쪽을 권한다.** **`main` 을 고쳤을 때 테스트가 조용히 따라가는 것**이 더 위험하다. 특히 **URL 은 명시**한다.\n\n**`@TestPropertySource` 로 클래스마다** 다르게 줄 수도 있다.\n\n```java\n@TestPropertySource(properties = \"spring.datasource.url=jdbc:h2:mem:test\")\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "DB 를 나눠도 안 풀리는 것",
+   "md": "**이제 개발 화면이 안 망가진다.** 그런데 **4.1절의 실패는 그대로**다.\n\n```\nfindItems()\n  -> 3 rows   PASSED\n  -> 6 rows   FAILED\n  -> 9 rows   FAILED\n```\n\n**테스트용 DB 안에서 테스트끼리 부딪힌다.**\n\n| 문제 | 나눠서 풀렸나 |\n|---|---|\n| 개발 데이터가 망가진다 | **풀렸다** |\n| 운영 DB 를 건드릴 위험 | **풀렸다** |\n| **테스트끼리 오염** | **그대로** |\n| **실행 순서 의존** | **그대로** |\n\n> **DB 를 나누는 것은 최소 조건**이지 해결이 아니다. **누가 만지느냐를 나눴을 뿐, 언제 지우느냐를 안 정했다.**\n\n**4.3절에서 그것을 정한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 모양",
+   "md": "**보통 DB 가 넷**이다.\n\n| 이름 | 누가 쓰나 |\n|---|---|\n| **local** | 내 노트북 |\n| **test** | 테스트 코드 — 자동으로 지워진다 |\n| **staging** | 배포 전 확인, 운영과 같은 스키마 |\n| **prod** | 운영 |\n\n**설정 파일을 프로파일로** 나눈다.\n\n```\napplication.properties\napplication-local.properties\napplication-test.properties\napplication-prod.properties\n```\n\n> **운영 접속 정보를 파일에 안 넣는 것**이 더 중요하다. **환경 변수나 시크릿 매니저**로 주입한다. 파일에 있으면 **누군가의 테스트가 그것을 읽는 날**이 온다.\n\n**부트는 `SPRING_DATASOURCE_URL` 같은 환경 변수를 자동으로** 읽는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 애플리케이션 실행 ---\n#   HikariConfig - jdbcUrl........jdbc:h2:tcp://localhost/~/itemservice\n\nGET /\n#   select id, item_name, price, quantity from item\n#   -> itemA, itemB\n\n# --- 테스트 실행 ---\n#   HikariConfig - jdbcUrl........jdbc:h2:tcp://localhost/~/test\n\nfindItems()\n#   insert into item (item_name, price, quantity) values (?, ?, ?)   x3\n#   select id, item_name, price, quantity from item\n#   -> 3 rows\n#   PASSED\n\n# --- 다시 애플리케이션 화면 ---\nGET /\n#   select id, item_name, price, quantity from item\n#   -> itemA, itemB\n\n# 테스트가 넣은 세 건이 안 보인다. DB 가 다르다.\n\n# --- 테스트를 다시 실행 ---\nfindItems()\n#   insert ... x3\n#   select ... from item\n#   -> 6 rows\n#   FAILED\n\n# ~/test 안에서 여전히 쌓인다",
+   "note": "**두 `jdbcUrl` 이 다르다.** 이 두 줄이 이 절의 결과다.\n\n**세 번째 블록**에서 화면이 안 망가진 것을 확인한다. **테스트가 넣은 세 건이 안 보인다.**\n\n**맨 아래가 남은 문제**다. **DB 를 나눴어도 6행**이다.\n\n**다음 절에서 지운다.**"
+  }
+ ],
+ "recap": [
+  "**테스트용 DB 를 따로** 둔다 — `~/test`.",
+  "**`src/test/resources` 가 `src/main/resources` 를 덮는다.**",
+  "**없는 키는 `main` 것이 쓰인다** — URL 은 명시하는 편이 낫다.",
+  "**`@TestPropertySource`** 로 클래스마다 다르게 줄 수 있다.",
+  "**개발 화면이 안 망가진다.**",
+  "**테스트끼리의 오염은 그대로**다.",
+  "**나누는 것은 최소 조건**이지 해결이 아니다.",
+  "**실무는 local/test/staging/prod** 넷이다.",
+  "**운영 접속 정보는 파일에 안 넣는다** — 환경 변수로."
+ ],
+ "drills": [
+  {
+   "task": "`~/test` DB 를 만들고 `schema.sql` 을 실행한다.",
+   "done_when": "테이블이 생긴 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트 설정에 URL 을 넣고 로그의 `jdbcUrl` 을 확인한다.",
+   "done_when": "두 URL 이 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트를 돌린 뒤 화면을 본다.",
+   "done_when": "테스트 데이터가 안 보이는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "테스트를 두 번 돌린다.",
+   "done_when": "여전히 깨지는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정 파일 두 개 중 어느 것이 이기나?",
+   "a": "`src/test/resources` 가 이긴다. 없는 키만 `main` 것이 쓰인다."
+  },
+  {
+   "q": "DB 를 나누면 무엇이 풀리나?",
+   "a": "개발·운영 데이터가 안 망가진다."
+  },
+  {
+   "q": "무엇이 안 풀리나?",
+   "a": "테스트끼리의 오염과 실행 순서 의존이다."
+  },
+  {
+   "q": "왜 URL 을 테스트 설정에 명시하는 편이 나은가?",
+   "a": "`main` 을 고쳤을 때 테스트가 조용히 따라가는 것을 막기 위해서다."
+  },
+  {
+   "q": "운영 접속 정보는 어디에 두나?",
+   "a": "파일이 아니라 환경 변수나 시크릿 매니저에 둔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "H2 Database — Features",
+   "url": "https://www.h2database.com/html/features.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

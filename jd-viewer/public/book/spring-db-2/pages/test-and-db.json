@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "test-and-db",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "테스트와 데이터베이스",
+ "summary": "테스트가 서로를 망가뜨린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "좋은 테스트의 조건을 안다.",
+  "DB 가 그 조건을 왜 깨는지 안다.",
+  "3장이 남긴 실패를 재현한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 테스트가 깨졌다.** 왜 깨졌는지부터 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "좋은 테스트의 조건",
+   "ascii": "   a good test\n   -----------\n   repeatable       run it twice, same result\n   independent      run it alone, same result\n   order-free       run in any order, same result\n\n   with a database\n   ---------------\n   the database remembers what the last test did\n\n   test A inserts 3 rows\n   test B counts   -> 3?  6?  depends on when you ran A",
+   "note": "**DB 가 셋 다 깬다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 다른가",
+   "ascii": "   pure unit test\n   --------------\n   input  ->  method  ->  output\n   nothing survives the call\n\n   test with a database\n   --------------------\n   input  ->  method  ->  output\n                |\n                +-->  state that outlives the test\n\n   that arrow is the whole chapter",
+   "note": "**저 화살표 하나가 4장 전체**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "단위 테스트에는 없던 문제",
+   "md": "**「스프링 MVC 1편」에서 컨트롤러를 테스트할 때**는 이런 걱정이 없었다.\n\n```java\n@Test\nvoid addItem() {\n    // 넣고, 부르고, 확인하고 끝\n}\n```\n\n**메서드가 끝나면 아무것도 안 남는다.** 지역 변수는 사라지고 목 객체는 버려진다.\n\n**DB 는 남는다.** 그것이 DB 의 존재 이유다.\n\n| | 테스트가 끝나면 |\n|---|---|\n| 지역 변수 | 사라진다 |\n| 목 객체 | 버려진다 |\n| 메모리 저장소 | **`static` 이라 안 사라진다** |\n| **DB** | **디스크에 남는다** |\n\n**세 번째가 2.2절의 그 `static`** 이다. **그래서 `clearStore()` 를 만들었다.** 메모리 구현에서도 이미 같은 문제가 있었던 것이다.\n\n> **다만 그때는 `if` 한 줄로 막았다.** **DB 는 `clear()` 가 없다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "3장이 남긴 그 테스트",
+   "code": "@SpringBootTest\nclass ItemRepositoryTest {\n\n    @Autowired\n    ItemRepository itemRepository;\n\n    @AfterEach\n    void afterEach() {\n        if (itemRepository instanceof MemoryItemRepository) {\n            ((MemoryItemRepository) itemRepository).clearStore();\n        }\n    }\n\n    @Test\n    void findItems() {\n        // 세 건을 넣고\n        // test(null, null, item1, item2, item3);\n    }\n}",
+   "note": "**`if` 가 이 장의 시작점**이다.\n\n**문제가 셋** 겹쳐 있다.\n\n| 문제 | 절 |\n|---|---|\n| **실행 중인 DB 를 그대로** 쓴다 | 4.2 |\n| **테스트끼리 데이터가 섞인다** | 4.3 |\n| **`instanceof` 로 정리한다** | 4.4 |\n\n**셋째가 앞의 둘을 가린다.** 메모리 구현으로만 돌렸다면 **초록이라 문제를 못 봤다.** **구현을 바꾸는 순간 드러났다.**\n\n> **2.1절에서 구현을 여섯 개 만든 부수 효과**다. **테스트가 기술에 기대고 있었다는 것**을 교체가 폭로했다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`containsExactly` 가 잡아 주는 것",
+   "md": "**2.5절의 검증**을 다시 본다.\n\n```java\nassertThat(result).containsExactly(items);\n```\n\n**`contains` 가 아니라 `containsExactly`** 다.\n\n| | 3건 기대, 6건 실제 |\n|---|---|\n| `contains(item1)` | **통과한다** |\n| `containsExactly(item1, item2, item3)` | **실패한다** |\n\n**`contains` 로 썼으면 데이터가 쌓여도 초록**이었을 것이다. **문제를 몇 달 뒤에** 알게 된다.\n\n> **테스트를 느슨하게 쓰면 오염을 못 본다.** **엄격한 검증이 오염 탐지기**다.\n\n**`size()` 를 세는 것도 같은 값**을 한다.\n\n```java\nassertThat(result).hasSize(3);\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그럼 DB 를 안 쓰면 되나",
+   "md": "**\"리포지토리를 목으로 만들면 되잖아\"** — 안 된다.\n\n```java\n// 이 테스트는 무엇을 검증하나\nItemRepository mock = Mockito.mock(ItemRepository.class);\nwhen(mock.findAll(any())).thenReturn(List.of(item1));\n```\n\n**내가 정한 답이 내가 정한 대로 나온다.** **SQL 이 맞는지는 아무것도 안 알려 준다.**\n\n**3.3절의 `andFlag` 실수**를 떠올린다. **목으로는 절대 못 잡는다.**\n\n| 무엇을 검증하나 | 목 | 진짜 DB |\n|---|---|---|\n| 서비스의 분기 로직 | ✅ | ✅ |\n| **SQL 문법** | ❌ | ✅ |\n| **컬럼 이름** | ❌ | ✅ |\n| **동적 쿼리 조합** | ❌ | ✅ |\n| 트랜잭션 | ❌ | ✅ |\n\n> **리포지토리 테스트는 진짜 DB 로 해야** 한다. **목은 서비스 테스트의 도구**다.\n>\n> **그래서 이 장이 있다.** DB 를 피하는 것이 아니라 **DB 를 쓰면서 격리하는 법**을 배운다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 첫 번째 실행 ---\n\nfindItems()\n#   insert into item (item_name, price, quantity) values (?, ?, ?)   x3\n#   select id, item_name, price, quantity from item\n#   -> [itemA-1, itemA-2, itemB-1]\n#   PASSED\n\n# --- 두 번째 실행 (DB 를 안 비우고) ---\n\nfindItems()\n#   insert into item (item_name, price, quantity) values (?, ?, ?)   x3\n#   select id, item_name, price, quantity from item\n#   -> [itemA-1, itemA-2, itemB-1, itemA-1, itemA-2, itemB-1]\n\n#   Expecting actual:\n#     [Item(id=1..), Item(id=2..), Item(id=3..),\n#      Item(id=4..), Item(id=5..), Item(id=6..)]\n#   to contain exactly (and in same order):\n#     [Item(id=4..), Item(id=5..), Item(id=6..)]\n#   FAILED\n\n# --- 세 번째 실행 ---\n#   -> 9 rows\n#   FAILED\n\n# SQL 은 세 번 다 똑같았다\n# 달라진 것은 테이블에 남아 있던 것이다",
+   "note": "**세 번 다 같은 SQL 이 나갔다.** **코드는 멀쩡하다.**\n\n**실패 메시지에 id 가 찍혀 있다** — `1..3` 은 첫 실행이 남긴 것, `4..6` 이 이번 것이다. **테이블이 지난 실행을 기억한다.**\n\n**세 번째는 9행**이다. **돌릴수록 나빠진다.**\n\n> **DB 를 껐다 켜면 낫는다.** 그런데 **`schema.sql` 의 `drop table` 때문에** 낫는 것이지, **테스트가 고쳐진 것이 아니다.**\n\n**다음 절에서 DB 부터 나눈다.**"
+  }
+ ],
+ "recap": [
+  "**좋은 테스트는 반복·독립·순서 무관**이다.",
+  "**DB 가 셋 다 깬다** — 지난 테스트를 기억하니까.",
+  "**단위 테스트는 끝나면 아무것도 안 남는다.**",
+  "**메모리 구현도 `static` 이라 같은 문제**가 있었다.",
+  "**`instanceof` 가 앞의 두 문제를 가리고** 있었다.",
+  "**구현 교체가 그것을 폭로**했다.",
+  "**`containsExactly` 가 오염 탐지기**다 — `contains` 였다면 못 봤다.",
+  "**목으로는 SQL 을 검증 못 한다** — 리포지토리는 진짜 DB 로.",
+  "**세 번 다 같은 SQL 이 나갔다** — 코드가 아니라 상태의 문제다."
+ ],
+ "drills": [
+  {
+   "task": "테스트를 세 번 연달아 돌린다.",
+   "done_when": "3·6·9 행으로 느는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`containsExactly` 를 `contains` 로 바꿔 본다.",
+   "done_when": "오염이 있는데도 초록인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리를 목으로 만든 테스트를 써 본다.",
+   "done_when": "`andFlag` 실수를 못 잡는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "좋은 테스트의 조건 셋을 적고 DB 가 어떻게 깨는지 붙인다.",
+   "done_when": "각각 한 줄로 설명했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "좋은 테스트의 세 조건은?",
+   "a": "반복 가능, 독립적, 실행 순서와 무관이다."
+  },
+  {
+   "q": "DB 가 왜 그것을 깨나?",
+   "a": "테스트가 끝나도 상태가 남아 다음 테스트에 영향을 주기 때문이다."
+  },
+  {
+   "q": "`instanceof` 가 무엇을 가렸나?",
+   "a": "메모리 구현에서만 초록이라 DB 오염 문제를 못 보게 했다."
+  },
+  {
+   "q": "`containsExactly` 의 값은?",
+   "a": "개수까지 보므로 데이터 오염을 잡아낸다."
+  },
+  {
+   "q": "리포지토리를 목으로 테스트하면 안 되는 이유는?",
+   "a": "SQL 문법·컬럼명·동적 쿼리 조합을 아무것도 검증 못 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "test-isolation",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "테스트 격리",
+ "summary": "실행 순서에 따라 결과가 달라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "실행 순서 의존을 재현한다.",
+  "직접 지워서 격리해 본다.",
+  "그 방법의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**DB 를 나눴는데도 깨진다.** **테이블을 비우는 일**을 누군가 해야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "순서가 결과를 바꾼다",
+   "ascii": "   junit does not promise an order\n\n   run 1     save  updateItem  findItems      green\n   run 2     findItems  save  updateItem      red\n\n   same code. same data. different order.\n\n\n   three ways to clean\n   -------------------\n   before each   delete from item      you must remember\n   after each    delete from item      fails if the test throws first?  no, still runs\n   rollback      no delete at all      4.4",
+   "note": "**JUnit 은 순서를 약속하지 않는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "순서에 기대면 안 되는 이유",
+   "md": "**JUnit 5 의 기본 순서는 결정적이지만 임의**다 — 메서드 이름의 해시로 정한다. **약속된 것이 아니다.**\n\n| 언제 순서가 바뀌나 |\n|---|\n| **메서드 이름을 바꿨을 때** |\n| **테스트를 하나 추가했을 때** |\n| **JUnit 버전이 올라갔을 때** |\n| **IDE 에서 하나만 돌릴 때** |\n| **`@Execution(CONCURRENT)` 을 켤 때** |\n\n**마지막이 특히 무섭다.** **병렬로 돌리면 순서가 아니라 동시**다.\n\n> **`@TestMethodOrder` 로 순서를 고정할 수는** 있다. **그러면 테스트가 서로 의존해도 초록**이 된다 — **문제를 감춘 것**이지 푼 것이 아니다.\n>\n> **하나만 돌려도 초록이어야** 한다. 그것이 독립이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "직접 지우기",
+   "code": "@SpringBootTest\nclass ItemRepositoryTest {\n\n    @Autowired ItemRepository itemRepository;\n    @Autowired JdbcTemplate template;   // 정리용\n\n    @AfterEach\n    void afterEach() {\n        if (itemRepository instanceof MemoryItemRepository) {\n            ((MemoryItemRepository) itemRepository).clearStore();\n        }\n        template.update(\"delete from item\");\n    }\n}",
+   "note": "**한 줄로 풀린다.** 테스트가 다시 초록이다.\n\n**그런데 이 코드에 문제가 넷** 있다. 아래 경고에서 센다.\n\n> **`instanceof` 줄이 아직 있다.** **메모리 구현에는 `delete from item` 이 안 통한다** — `JdbcTemplate` 빈이 없으면 주입도 안 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "앞에서 지우기 vs 뒤에서 지우기",
+   "ascii": "   @BeforeEach                 @AfterEach\n   -----------                 ----------\n   clean, then run             run, then clean\n\n   a crashed run leaves         a crashed run leaves\n   nothing behind for me        rows behind for the next one\n   (i clean at the start)       (unless the runner completes)\n\n   debugging: rows are still     debugging: rows are gone\n   there after a failure         before you can look",
+   "note": "**디버깅할 때는 앞에서 지우는 쪽**이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "직접 지우기의 문제 넷",
+   "md": "| 문제 | 무슨 일 |\n|---|---|\n| **테이블마다 써야** 한다 | 열 개면 열 줄, **순서도 맞춰야** 한다 |\n| **외래 키** | `delete from item` 이 **참조 때문에 막힌다** |\n| **시퀀스가 안 돌아간다** | id 가 계속 커진다 |\n| **테스트에 SQL 이 들어온다** | 2.5절의 규칙 위반 |\n\n**두 번째가 실무에서 제일 아프다.**\n\n```sql\ndelete from order_item;   -- 자식 먼저\ndelete from orders;\ndelete from item;         -- 부모 나중\ndelete from member;\n```\n\n**순서를 틀리면** `Referential integrity constraint violation` 이다. **테이블을 추가할 때마다 이 목록을 고쳐야** 한다.\n\n**네 번째가 이 책 기준으로 제일 나쁘다.** **테스트가 `JdbcTemplate` 을 주입받는 순간, 그 테스트는 JDBC 를 아는 테스트**가 된다. **6장 JPA 구현을 검증할 때도 JdbcTemplate 으로 지우게** 된다 — **어색하다.**\n\n> **한 줄로 풀린 것 같지만 빚을 진 것**이다. **4.4절이 그 빚을 갚는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`truncate` 는 어떤가",
+   "md": "```sql\ntruncate table item restart identity;\n```\n\n**`delete` 보다 빠르고 시퀀스도 돌린다.** 그런데 **DDL 이라 롤백이 안 된다**(대부분의 DB 에서). **외래 키가 있으면 `cascade` 가 필요**하다.\n\n| | `delete` | `truncate` |\n|---|---|---|\n| 속도 | 행마다 | **한 번에** |\n| 롤백 | **된다** | 안 된다 |\n| 시퀀스 | 그대로 | **초기화 가능** |\n| 외래 키 | 순서대로 | `cascade` 필요 |\n\n**H2 는 `SET REFERENTIAL_INTEGRITY FALSE`** 로 잠시 끌 수 있다. **테스트 유틸리티를 만들어** 이것을 감싸는 곳이 많다.\n\n> **그런 유틸리티를 만들기 시작했다면, 4.4절을 먼저** 읽어 본다. **안 지우는 방법**이 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 지우기 전: 순서를 바꾸면 ---\n\n# 순서 1: save -> updateItem -> findItems\n#   insert x1  update x1  insert x3  select\n#   -> 4 rows,  containsExactly 3  FAILED\n\n# 순서 2: findItems -> save -> updateItem\n#   insert x3  select  -> 3 rows  PASSED\n#   insert x1\n#   update x1\n\n# 같은 코드가 순서에 따라 갈렸다\n\n# --- @AfterEach 에 delete 를 넣고 ---\n\nsave()\n#   insert into item (item_name, price, quantity) values (?, ?, ?)\n#   select id, item_name, price, quantity from item where id = ?\n#   delete from item\n#   -> 1 row deleted\n\nupdateItem()\n#   insert into item ...\n#   update item set item_name=?, price=?, quantity=? where id=?\n#   select ... where id = ?\n#   delete from item\n#   -> 1 row deleted\n\nfindItems()\n#   insert into item ... x3\n#   select ... from item                      -> 3 rows\n#   select ... where item_name like ...       -> 2 rows\n#   select ... where price <= ?               -> 1 row\n#   select ... where item_name like ... and price <= ?   -> 1 row\n#   delete from item\n#   -> 3 rows deleted\n\n#   PASSED (몇 번을 돌려도)\n\n# --- 그런데 id 를 보면 ---\n#   1회차: id 1,2,3\n#   2회차: id 4,5,6\n#   3회차: id 7,8,9\n\n# delete 는 시퀀스를 안 되돌린다",
+   "note": "**`delete from item` 이 매 테스트 끝에** 찍힌다. **테스트마다 SQL 이 하나씩 늘었다.**\n\n**맨 아래가 남은 흔적**이다. **행은 지웠는데 시퀀스는 계속 큰다.** **id 를 기대값에 쓰는 테스트가 있으면 여전히 깨진다.**\n\n> **완전히 없던 일로 만든 것이 아니다.** **다음 절이 진짜로 없던 일**로 만든다."
+  }
+ ],
+ "recap": [
+  "**JUnit 은 실행 순서를 약속하지 않는다.**",
+  "**이름을 바꾸거나 테스트를 추가하면** 순서가 바뀐다.",
+  "**`@TestMethodOrder` 로 고정하면 문제를 감추는** 것이다.",
+  "**`@AfterEach` 에 `delete from item`** 한 줄이면 초록이 된다.",
+  "**테이블마다·순서대로** 써야 한다 — 외래 키가 있으면 더.",
+  "**시퀀스는 안 돌아간다** — id 가 계속 큰다.",
+  "**테스트에 SQL 이 들어온다** — 2.5절의 규칙 위반.",
+  "**`truncate` 는 빠르지만 롤백이 안 된다.**",
+  "**한 줄로 풀린 것 같지만 빚을 진 것**이다."
+ ],
+ "drills": [
+  {
+   "task": "테스트 메서드 이름을 바꿔 순서를 흔든다.",
+   "done_when": "결과가 달라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@AfterEach` 에 `delete` 를 넣는다.",
+   "done_when": "여러 번 돌려도 초록인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "id 를 로그로 찍어 본다.",
+   "done_when": "회차마다 커지는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "테이블을 두 개로 늘리고 외래 키를 건다.",
+   "done_when": "`delete` 순서를 틀렸을 때 나는 오류를 봤다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JUnit 의 실행 순서는 무엇인가?",
+   "a": "결정적이지만 임의다. 약속된 것이 아니라 기대면 안 된다."
+  },
+  {
+   "q": "`@TestMethodOrder` 로 고정하면 안 되는 이유는?",
+   "a": "테스트끼리의 의존을 감출 뿐 없애지 않는다."
+  },
+  {
+   "q": "직접 지우기의 문제 넷은?",
+   "a": "테이블마다 써야 함, 외래 키 순서, 시퀀스가 안 돌아감, 테스트에 SQL 이 들어옴이다."
+  },
+  {
+   "q": "`truncate` 의 대가는?",
+   "a": "DDL 이라 롤백이 안 되고 외래 키에 `cascade` 가 필요하다."
+  },
+  {
+   "q": "`delete` 로 지워도 남는 흔적은?",
+   "a": "시퀀스다. id 가 회차마다 커진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management in Tests",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

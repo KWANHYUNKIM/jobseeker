@@ -233,7 +233,7 @@
           "title": "테스트와 데이터베이스",
           "summary": "테스트가 서로를 망가뜨린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -241,7 +241,7 @@
           "title": "테스트 전용 데이터베이스",
           "summary": "운영 DB 로 테스트하지 않는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -249,7 +249,7 @@
           "title": "테스트 격리",
           "summary": "실행 순서에 따라 결과가 달라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
