@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "pod",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "파드란 무엇인가",
+ "summary": "컨테이너가 아니라 파드인 이유.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇을 공유하는지 안다.",
+  "pause 컨테이너를 확인한다.",
+  "IP 가 파드 단위인 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**도커는 컨테이너가 단위**였다. **여기는 파드**다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 파드인가",
+   "ascii": "   why the unit is a pod and not a container\n\n   containers in one pod share\n     the network namespace   same ip, same ports, localhost\n     the ipc namespace       shared memory if they want\n     volumes                 the same mounted directories\n\n   they do not share\n     the filesystem root     each has its own image\n     the process namespace   unless you ask for it\n\n   sharing an ip is the reason the abstraction exists",
+   "note": "**IP 를 공유하는 게 이 추상의** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "IP 하나를 나눠 쓴다",
+   "md": "**같은 파드 안에서는 `localhost`** 다.\n\n```yaml\nspec:\n  containers:\n    - name: app\n      image: myapp:1.0        # 8080 을 연다\n    - name: proxy\n      image: nginx:1.27       # localhost:8080 으로 보낸다\n```\n\n> **네트워크 네임스페이스가 하나**라서다.\n> **「도커」에서 `--network container:xxx` 로 하던 걸 기본으로** 한다.\n\n**포트가 겹치면 안 된다.**\n\n> **둘 다 8080 을 열면 하나가** 실패한다.\n> **같은 네임스페이스라 그렇다.**\n> **`Address already in use` 가** 뜬다.\n\n**`containerPort` 는 문서일 뿐**이다.\n\n> **적어도 안 적어도 열린다.**\n> **읽는 사람과 도구를 위한 것**이다.\n> **6장의 서비스는 이걸 안 보고 `targetPort` 를** 본다.\n\n**파드 IP 는 클러스터 안에서만**이다.\n\n> **10.244.x.x 같은 것**이다.\n> **노드 밖에서는 안** 닿는다.\n> **그래서 6장의 서비스가** 필요하다.\n\n**그리고 파드마다** 다르다.\n\n> **재생성되면 IP 가** 바뀐다.\n> **1.4절에서 이름이 바뀐 것과 같은** 이유다.\n> **IP 를 어디 적어 두면 안** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "pause 컨테이너",
+   "ascii": "   the container nobody talks about\n\n   every pod has one extra container, called pause\n     it does nothing, it just holds the namespaces open\n\n   your container starts and joins those namespaces\n   your container dies and restarts, the namespaces survive\n\n   that is why a restart keeps the same pod ip",
+   "note": "**재시작해도 IP 가 유지되는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "파드는 스케줄 단위이기도 하다",
+   "md": "**한 파드의 컨테이너는 반드시 같은 노드**다.\n\n> **나눠서 못** 띄운다.\n> **자원을 합쳐서** 계산한다 — **9장**.\n>\n> **그래서 사이드카가 무거우면 스케줄이** 어려워진다.\n\n**같이 살고 같이 죽는다.**\n\n> **파드를 지우면 안의 컨테이너가 다** 죽는다.\n> **컨테이너 하나만 재시작할 수는** 있다(2.6절).\n>\n> **`restartPolicy` 는 파드 단위**다.\n>\n> | 값 | 뜻 |\n> |---|---|\n> | `Always` | 기본. 끝나도 다시 |\n> | `OnFailure` | 실패했을 때만 |\n> | `Never` | 안 한다 |\n>\n> **`Always` 라 `kubectl run` 한 파드도 컨테이너는** 되살아난다.\n> **파드 자체가 사라지는 것과** 다르다.\n\n**언제 컨테이너를 나누나**\n\n| 나눈다 | 안 나눈다 |\n|---|---|\n| 다른 수명 주기 | 같은 프로세스 트리 |\n| 다른 이미지가 필요 | 그냥 파일 두 개 |\n| 로그 수집·프록시 | 단순 초기화 (4.4절이 낫다) |\n\n> **4.3절에서 조건을** 따진다.\n> **기본은 파드 하나에 컨테이너 하나**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 컨테이너 둘을 한 파드에 ---\n\n$ cat two.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: two\nspec:\n  containers:\n    - name: app\n      image: hashicorp/http-echo:1.0\n      args: [\"-listen=:8080\", \"-text=hello from app\"]\n    - name: shell\n      image: busybox:1.36\n      command: [\"sleep\", \"3600\"]\n\n$ kubectl apply -f two.yaml\n\npod/two created\n\n$ kubectl get pod two --no-headers\n\ntwo   2/2   Running   0   9s\n\n#   2/2 다\n\n#   컨테이너 둘이 준비됐다는 뜻이다\n\n# --- localhost 로 통한다 ---\n\n$ kubectl exec two -c shell -- wget -qO- localhost:8080\n\nhello from app\n\n#   다른 컨테이너인데 localhost 다\n\n$ kubectl exec two -c shell -- ip addr show eth0 | grep inet\n\n    inet 10.244.1.11/24 brd 10.244.1.255 scope global eth0\n\n$ kubectl get pod two -o jsonpath='{.status.podIP}{\"\\n\"}'\n\n10.244.1.11\n\n#   같은 IP 다\n\n$ kubectl exec two -c app -- hostname 2>/dev/null || echo '(셸이 없다)'\n\n(셸이 없다)\n\n#   http-echo 에는 셸이 없다\n\n#   3.4절의 그 얘기다\n\n# --- 파일 시스템은 다르다 ---\n\n$ kubectl exec two -c shell -- ls /\n\nbin\ndev\netc\nhome\nproc\nroot\nsys\ntmp\nusr\nvar\n\n$ kubectl exec two -c shell -- ls /http-echo 2>&1 | head -1\n\nls: /http-echo: No such file or directory\n\n#   app 의 바이너리가 안 보인다\n\n#   각자 자기 이미지다\n\n# --- 프로세스도 안 보인다 ---\n\n$ kubectl exec two -c shell -- ps aux\n\nPID   USER     TIME  COMMAND\n    1 root      0:00 sleep 3600\n   14 root      0:00 ps aux\n\n#   app 프로세스가 없다\n\n#   PID 네임스페이스가 따로다\n\n#   공유하려면\n\n$ kubectl delete pod two\n$ sed -i '' 's/spec:/spec:\\n  shareProcessNamespace: true/' two.yaml\n$ kubectl apply -f two.yaml > /dev/null\n$ sleep 5 && kubectl exec two -c shell -- ps aux\n\nPID   USER     TIME  COMMAND\n    1 65535     0:00 /pause\n    7 root      0:00 /http-echo -listen=:8080 -text=hello from app\n   13 root      0:00 sleep 3600\n   20 root      0:00 ps aux\n\n#   둘 다 보인다\n\n#   그리고 1번이 /pause 다\n\n# --- pause 컨테이너 ---\n\n$ NODE=$(kubectl get pod two -o jsonpath='{.spec.nodeName}')\n$ docker exec $NODE crictl ps -a --name pause -o table | head -3\n\nCONTAINER      IMAGE          CREATED         STATE     NAME\n(비어 있다)\n\n#   crictl ps 에는 안 보인다\n\n$ docker exec $NODE crictl pods --name two -o table\n\nPOD ID         CREATED         STATE    NAME   NAMESPACE   ATTEMPT\n7f3a2b1c9d4e   2 minutes ago   Ready    two    default     0\n\n$ docker exec $NODE ctr -n k8s.io containers ls 2>/dev/null \\\n    | grep -c pause\n\n1\n\n#   샌드박스로 하나 있다\n\n#   포즈가 네임스페이스를 붙잡고 있다\n\n# --- 재시작해도 IP 가 같다 ---\n\n$ kubectl get pod two -o jsonpath='{.status.podIP}{\"\\n\"}'\n\n10.244.1.11\n\n$ kubectl exec two -c shell -- kill 13\n\ncommand terminated with exit code 137\n\n$ sleep 5 && kubectl get pod two --no-headers\n\ntwo   2/2   Running   1   3m\n\n$ kubectl get pod two -o jsonpath='{.status.podIP}{\"\\n\"}'\n\n10.244.1.11\n\n#   같다\n\n#   pause 가 살아 있어서다\n\n# --- 파드를 지우면 IP 가 바뀐다 ---\n\n$ kubectl delete pod two && kubectl apply -f two.yaml > /dev/null\n$ sleep 6 && kubectl get pod two -o jsonpath='{.status.podIP}{\"\\n\"}'\n\n10.244.2.9\n\n#   바뀌었다\n\n#   노드도 바뀔 수 있다\n\n#   IP 를 적어 두면 안 된다\n\n# --- 포트가 겹치면 ---\n\n$ cat clash.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: clash\nspec:\n  containers:\n    - name: a\n      image: hashicorp/http-echo:1.0\n      args: [\"-listen=:8080\", \"-text=a\"]\n    - name: b\n      image: hashicorp/http-echo:1.0\n      args: [\"-listen=:8080\", \"-text=b\"]\n\n$ kubectl apply -f clash.yaml\n\npod/clash created\n\n$ sleep 8 && kubectl get pod clash --no-headers\n\nclash   1/2   CrashLoopBackOff   2   18s\n\n#   1/2 다\n\n$ kubectl logs clash -c b\n\nlisten tcp :8080: bind: address already in use\n\n#   같은 네임스페이스라 충돌이다\n\n#   다른 파드였다면 둘 다 됐다\n\n$ kubectl delete pod clash\n\n# --- containerPort 는 문서다 ---\n\n$ kubectl get pod two -o jsonpath=\\\n'{.spec.containers[0].ports}{\"\\n\"}'\n\n#   (비어 있다)\n\n$ kubectl exec two -c shell -- wget -qO- localhost:8080\n\nhello from app\n\n#   적지 않았는데 열려 있다\n\n#   containerPort 는 선언일 뿐이다\n\n# --- 파드 밖에서는 안 닿는다 ---\n\n$ IP=$(kubectl get pod two -o jsonpath='{.status.podIP}')\n$ curl -s --max-time 3 -o /dev/null -w '%{http_code}\\n' http://$IP:8080\n\n000\n\n#   노트북에서는 안 닿는다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- $IP:8080\n\nhello from app\npod \"tmp\" deleted\n\n#   클러스터 안에서는 닿는다\n\n#   6장에서 이걸 안정된 이름으로 바꾼다\n\n# --- restartPolicy ---\n\n$ kubectl get pod two -o jsonpath='{.spec.restartPolicy}{\"\\n\"}'\n\nAlways\n\n$ kubectl run once --image=busybox:1.36 --restart=Never -- echo done\n\npod/once created\n\n$ sleep 4 && kubectl get pod once --no-headers\n\nonce   0/1   Completed   0   4s\n\n#   Completed 다\n\n#   Always 였다면 계속 다시 떴을 것이다\n\n$ kubectl run loop --image=busybox:1.36 -- echo done\n\n$ sleep 20 && kubectl get pod loop --no-headers\n\nloop   0/1   CrashLoopBackOff   3   20s\n\n#   정상 종료인데 CrashLoopBackOff 다\n\n$ kubectl get pod loop -o jsonpath=\\\n'{.status.containerStatuses[0].lastState.terminated.exitCode}{\"\\n\"}'\n\n0\n\n#   종료 코드는 0 이다\n\n#   실패가 아니라 계속 다시 띄우는 것이다\n\n#   Job 을 써야 할 자리다 (1.5절)\n\n# --- 치운다 ---\n\n$ kubectl delete pod two once loop\n\npod \"two\" deleted\npod \"once\" deleted\npod \"loop\" deleted\n\n# --- 다음 절에서 ---\n\n#   파드 YAML 을 필드 하나씩 읽는다",
+   "note": "**컨테이너 둘이 `localhost:8080` 으로 통하고 IP 가 같다** — 파일 시스템과 PID 는 따로다.\n\n**`shareProcessNamespace: true` 로 `ps` 를 보면 1번이 `/pause`** 다.\n\n**컨테이너를 죽여도 IP 가 `10.244.1.11` 로 유지**되고, 파드를 지우면 `10.244.2.9` 로 바뀐다.\n\n**같은 포트를 둘이 열면 `address already in use` 로 1/2** 다.\n\n**정상 종료(`exitCode: 0`)인데 `restartPolicy: Always` 라 `CrashLoopBackOff`** 다."
+  }
+ ],
+ "recap": [
+  "**파드 안 컨테이너는 네트워크·IPC·볼륨을** 공유한다.",
+  "**파일 시스템과 PID 는** 따로다.",
+  "**`localhost` 로 서로** 부른다.",
+  "**같은 포트는 못** 연다.",
+  "**`pause` 가 네임스페이스를 붙잡고** 있다.",
+  "**그래서 재시작해도 IP 가** 같다.",
+  "**파드를 지우면 IP 가** 바뀐다.",
+  "**파드 IP 는 클러스터 안에서만** 닿는다.",
+  "**`restartPolicy` 는 파드 단위**다."
+ ],
+ "drills": [
+  {
+   "task": "컨테이너 둘짜리 파드를 만든다.",
+   "done_when": "`localhost` 로 통하는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`shareProcessNamespace` 를 켜 본다.",
+   "done_when": "`pause` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨테이너를 죽이고 IP 를 본다.",
+   "done_when": "안 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 포트를 둘이 연다.",
+   "done_when": "충돌 메시지를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "파드 안에서 무엇을 공유하나?",
+   "a": "네트워크·IPC 네임스페이스와 볼륨이다."
+  },
+  {
+   "q": "왜 컨테이너가 아니라 파드가 단위인가?",
+   "a": "IP 를 나눠 쓰는 묶음이 필요해서다."
+  },
+  {
+   "q": "`pause` 컨테이너의 역할은?",
+   "a": "네임스페이스를 붙잡아 재시작해도 IP 가 유지되게 한다."
+  },
+  {
+   "q": "`containerPort` 를 안 적으면?",
+   "a": "그래도 열린다. 문서 역할일 뿐이다."
+  },
+  {
+   "q": "정상 종료인데 `CrashLoopBackOff` 인 이유는?",
+   "a": "`restartPolicy` 가 `Always` 라 계속 다시 띄운다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "pause 컨테이너",
+   "def": "파드마다 하나씩 있는 빈 컨테이너. 네임스페이스를 유지하는 역할만 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Pods",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Cluster Networking",
+   "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

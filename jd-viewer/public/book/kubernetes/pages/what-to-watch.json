@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "what-to-watch",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "무엇을 볼 것인가",
+ "summary": "get · describe · logs · events, 이 넷.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 명령의 역할을 가른다.",
+  "증상별로 무엇을 볼지 안다.",
+  "출력을 좁히는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 `describe` 아래쪽 이벤트가 답이라고** 했다. **넷으로** 줄인다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 명령",
+   "ascii": "   four commands, and the question each one answers\n\n   get        is it there, how many, since when\n   describe   what did the cluster decide about it\n   logs       what does the program itself say\n   events     what happened, in what order, cluster wide\n\n   almost every debugging session is get, describe, logs",
+   "note": "**대부분 `get`·`describe`·`logs`** 순서다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "출력을 좁힌다",
+   "md": "**`get` 의 형식들**\n\n```bash\nkubectl get pods -o wide              # IP 와 노드\nkubectl get pods -o yaml              # 전부\nkubectl get pods -o jsonpath='{.items[*].status.podIP}'\nkubectl get pods -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName\nkubectl get pods --sort-by=.status.startTime\nkubectl get pods -l app=web,tier!=cache\nkubectl get pods --field-selector=status.phase=Running\n```\n\n> **`-o wide` 가 일상**이고 **`jsonpath` 가 스크립트**다.\n> **`-l` 은 라벨, `--field-selector` 는 필드**다 — **2.3절의 그** 구별이다.\n\n**`describe` 는 사람용**이다.\n\n> **여러 오브젝트를 합쳐서 보여** 준다.\n> **파드 하나에 이벤트·볼륨·컨테이너 상태가 다** 나온다.\n> **스크립트에는 안 쓴다** — **형식이 안** 정해져 있다.\n\n**`events` 는 시간순**이다.\n\n```bash\nkubectl get events --sort-by=.lastTimestamp\nkubectl get events --field-selector type=Warning\nkubectl get events -A --watch\n```\n\n> **기본 정렬이 시간순이 아니다** — **`--sort-by` 를 꼭** 붙인다.\n> **기본 보관이 1시간**이라 어제 일은 없다.\n> **오래 보려면 로깅 시스템으로 내보내야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "증상별로",
+   "ascii": "   which one to reach for, by symptom\n\n   nothing is there        get, then events\n   it is Pending           describe, look at Events at the bottom\n   it restarts             logs --previous\n   it is Running but 0/1   describe, look at Readiness\n   it is slow              logs, then top\n\n   describe answers why, logs answers what the app thinks",
+   "note": "**`describe` 는 왜, `logs` 는 앱이 뭐라고** 하는지다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "describe 는 아래부터 읽는다",
+   "md": "**출력이 길다.**\n\n> **위쪽은 내가 적은 것이** 대부분이다.\n> **아래쪽 `Events` 가 클러스터가 한 말**이다.\n>\n> ```bash\n> kubectl describe pod web | tail -15\n> ```\n>\n> **이게 실전에서 가장 자주 치는 형태**다.\n\n**중간에 볼 것 둘**\n\n| 항목 | 무엇 |\n|---|---|\n| `State` / `Last State` | 지금과 직전 |\n| `Conditions` | `Ready` 가 `False` 면 이유 |\n\n> **`Last State` 에 `Exit Code` 가** 있다.\n> **`137` 은 SIGKILL, `1` 은 앱 오류, `0` 인데 재시작이면 정상 종료를 반복**하는 것이다.\n\n**`logs` 는 표준 출력만**이다.\n\n> **파일에 쓰는 로그는 안** 보인다.\n> **⑩ 이 남긴 감사 로그를 파일에 썼다면 여기 안** 나온다.\n> **컨테이너에서는 표준 출력으로 내보내는 게** 규칙이다 — **12요소**다.\n\n**`top` 은 별도**다.\n\n```bash\nkubectl top nodes\nkubectl top pods --containers\n```\n\n> **메트릭 서버가 있어야** 한다.\n> **`kind` 에는 기본으로** 없다.\n> **9장에서 깔고 자원 얘기를** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- get 을 좁힌다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3\n$ kubectl get pods -o wide --no-headers\n\nweb-6d8f4b9c7-h4n8q  1/1  Running  0  22s  10.244.1.8  lab-worker   <none> <none>\nweb-6d8f4b9c7-r5t2w  1/1  Running  0  22s  10.244.2.6  lab-worker2  <none> <none>\nweb-6d8f4b9c7-x9m2k  1/1  Running  0  22s  10.244.1.9  lab-worker   <none> <none>\n\n$ kubectl get pods -o custom-columns=\\\nNAME:.metadata.name,NODE:.spec.nodeName,IP:.status.podIP --no-headers\n\nweb-6d8f4b9c7-h4n8q   lab-worker    10.244.1.8\nweb-6d8f4b9c7-r5t2w   lab-worker2   10.244.2.6\nweb-6d8f4b9c7-x9m2k   lab-worker    10.244.1.9\n\n$ kubectl get pods -o jsonpath='{range .items[*]}{.status.podIP}{\"\\n\"}{end}'\n\n10.244.1.8\n10.244.2.6\n10.244.1.9\n\n#   스크립트에는 이 형태다\n\n$ kubectl get pods --field-selector=status.phase=Running --no-headers | wc -l\n\n3\n\n$ kubectl get pods -l app=web --no-headers | wc -l\n\n3\n\n#   라벨과 필드는 다른 축이다\n\n$ kubectl get pods --sort-by=.status.startTime --no-headers | tail -1\n\nweb-6d8f4b9c7-x9m2k   1/1   Running   0   1m\n\n#   가장 최근에 뜬 것이다\n\n# --- describe 는 아래부터 ---\n\n$ kubectl describe pod -l app=web | wc -l\n\n201\n\n#   201 줄이다\n\n$ POD=$(kubectl get pod -l app=web -o name | head -1)\n$ kubectl describe $POD | tail -8\n\nEvents:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  2m    default-scheduler  Successfully assigned\n    default/web-6d8f4b9c7-h4n8q to lab-worker\n  Normal  Pulled     2m    kubelet            Container image \"nginx:1.27\"\n    already present on machine\n  Normal  Created    2m    kubelet            Created container nginx\n  Normal  Started    2m    kubelet            Started container nginx\n\n#   여덟 줄이면 충분하다\n\n$ kubectl describe $POD | grep -A6 'State:'\n\n    State:          Running\n      Started:      Tue, 09 Sep 2026 21:33:02 +0900\n    Ready:          True\n    Restart Count:  0\n\n# --- 죽여서 Last State 를 만든다 ---\n\n$ kubectl exec $POD -- kill 1\n\ncommand terminated with exit code 137\n\n$ sleep 3 && kubectl describe $POD | grep -A8 'Last State'\n\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    137\n      Started:      Tue, 09 Sep 2026 21:33:02 +0900\n      Finished:     Tue, 09 Sep 2026 21:35:41 +0900\n    Ready:          True\n    Restart Count:  1\n\n#   137 이다\n\n#   2.6절에서 본 코드다\n\n$ kubectl logs $POD --previous --tail=2\n\n2026/09/09 12:33:02 [notice] 1#1: start worker processes\n2026/09/09 12:33:02 [notice] 1#1: start worker process 30\n\n#   죽기 전 로그다\n\n$ kubectl logs $POD --tail=2\n\n2026/09/09 12:35:44 [notice] 1#1: start worker processes\n2026/09/09 12:35:44 [notice] 1#1: start worker process 29\n\n#   지금 로그다\n\n#   --previous 없이는 방금 뜬 것만 보인다\n\n# --- events 정렬 ---\n\n$ kubectl get events --no-headers | head -3\n\n2m     Normal  Started    pod/web-6d8f4b9c7-x9m2k  Started container nginx\n10m    Normal  Scheduled  pod/web-6d8f4b9c7-h4n8q  Successfully assigned ...\n5s     Normal  Pulled     pod/web-6d8f4b9c7-h4n8q  Container image ...\n\n#   순서가 뒤죽박죽이다\n\n$ kubectl get events --sort-by=.lastTimestamp --no-headers | tail -3\n\n2m    Normal  Killing  pod/web-6d8f4b9c7-h4n8q  Stopping container nginx\n2m    Normal  Pulled   pod/web-6d8f4b9c7-h4n8q  Container image already present\n2m    Normal  Created  pod/web-6d8f4b9c7-h4n8q  Created container nginx\n\n#   이제 시간순이다\n\n#   --sort-by 를 안 붙이면 못 읽는다\n\n$ kubectl get events --field-selector type=Warning --no-headers | wc -l\n\n0\n\n#   지금은 경고가 없다\n\n# --- 경고를 만든다 ---\n\n$ kubectl set image deployment/web nginx=nginx:없는태그\n$ sleep 20 && kubectl get events --field-selector type=Warning \\\n    --sort-by=.lastTimestamp --no-headers | tail -2\n\n11s   Warning   Failed   pod/web-5c8f2a9d1-k4m7p   Failed to pull image\n  \"nginx:없는태그\": failed to resolve reference\n5s    Warning   Failed   pod/web-5c8f2a9d1-k4m7p   Error: ImagePullBackOff\n\n#   경고만 골라 볼 수 있다\n\n#   운영에서는 이걸 감시한다\n\n$ kubectl rollout undo deployment/web\n\ndeployment.apps/web rolled back\n\n# --- 이벤트는 한 시간이면 사라진다 ---\n\n$ kubectl get events --sort-by=.lastTimestamp --no-headers | head -1 \\\n    | awk '{print $1}'\n\n52m\n\n$ kubectl get events --no-headers | awk '{print $1}' | sort -r | head -1\n\n58m\n\n#   가장 오래된 것이 58분이다\n\n$ kubectl get events -o jsonpath='{.items[0].metadata.creationTimestamp}{\"\\n\"}'\n\n2026-09-09T12:35:41Z\n\n#   기본 보관이 1시간이다\n\n#   어제 무슨 일이 있었는지는 못 본다\n\n#   ⑩ 9.3절에서 감사를 원장에 남긴 것과 같은 이유다\n\n# --- logs 는 표준 출력만 ---\n\n$ kubectl exec $POD -- sh -c 'echo \"파일에 씀\" > /var/log/app.log'\n$ kubectl logs $POD --tail=1\n\n2026/09/09 12:35:44 [notice] 1#1: start worker process 29\n\n#   파일 로그는 안 보인다\n\n$ kubectl exec $POD -- cat /var/log/app.log\n\n파일에 씀\n\n#   들어가야 보인다\n\n#   12요소가 표준 출력을 말하는 이유다\n\n$ kubectl exec $POD -- sh -c 'echo \"표준 출력\" > /proc/1/fd/1'\n$ kubectl logs $POD --tail=1\n\n표준 출력\n\n#   1번 프로세스의 stdout 으로 쓰면 보인다\n\n# --- 여러 파드의 로그 ---\n\n$ kubectl logs -l app=web --tail=1 --prefix\n\n[pod/web-6d8f4b9c7-h4n8q/nginx] 표준 출력\n[pod/web-6d8f4b9c7-r5t2w/nginx] 2026/09/09 12:33:02 [notice] 1#1: start ...\n[pod/web-6d8f4b9c7-x9m2k/nginx] 2026/09/09 12:33:02 [notice] 1#1: start ...\n\n#   라벨로 여러 개를 한 번에 본다\n\n#   --prefix 로 어느 파드인지 구별한다\n\n$ kubectl logs -l app=web -f --prefix --max-log-requests=6 &\n\n#   실시간으로 여러 개를 따라간다\n\n$ kill %1\n\n# --- top 은 아직 안 된다 ---\n\n$ kubectl top pods\n\nerror: Metrics API not available\n\n#   메트릭 서버가 없다\n\n#   kind 기본에는 안 들어 있다\n\n#   9장에서 깐다\n\n# --- 넷을 한 줄로 ---\n\n$ cat kdebug.sh\n\n#!/bin/bash\nPOD=\"${1:?pod name required}\"\necho \"=== get\"     && kubectl get pod \"$POD\" -o wide\necho \"=== describe\" && kubectl describe pod \"$POD\" | tail -12\necho \"=== logs\"    && kubectl logs \"$POD\" --tail=20 2>&1\necho \"=== previous\" && kubectl logs \"$POD\" --previous --tail=20 2>&1 | head -5\n\n$ ./kdebug.sh web-6d8f4b9c7-h4n8q | head -6\n\n=== get\nNAME                  READY   STATUS    RESTARTS   AGE   IP           NODE\nweb-6d8f4b9c7-h4n8q   1/1     Running   1          14m   10.244.1.8   lab-worker\n=== describe\nEvents:\n  Type    Reason   Age   From     Message\n\n#   대부분의 세션이 이 넷이다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web\n\ndeployment.apps \"web\" deleted\n\n# --- 다음 장에서 ---\n\n#   파드가 무엇인지 제대로 본다",
+   "note": "**`describe` 가 201줄이라 `tail -8` 이 실전 형태**다.\n\n**`kill 1` 뒤 `Last State` 에 `Exit Code: 137`** 이 남고 `logs --previous` 로 죽기 전 로그를 본다.\n\n**`get events` 는 기본 정렬이 시간순이 아니라 `--sort-by` 가** 필요하다.\n\n**이벤트 보관이 1시간**이라 어제 일은 없다 — ⑩ 9.3절에서 원장을 남긴 이유와 같다.\n\n**파일에 쓴 로그는 `kubectl logs` 에 안 나오고 `/proc/1/fd/1` 로 쓰면** 나온다."
+  }
+ ],
+ "recap": [
+  "**`get`·`describe`·`logs`·`events`** 넷이다.",
+  "**`get` 은 형식을 좁혀** 쓴다.",
+  "**라벨과 필드 셀렉터는 다른** 축이다.",
+  "**`describe` 는 아래 `Events` 부터** 읽는다.",
+  "**`Last State` 의 종료 코드가 단서**다.",
+  "**`logs --previous` 가 죽은 컨테이너**다.",
+  "**`events` 는 `--sort-by` 를 꼭** 붙인다.",
+  "**이벤트는 한 시간이면** 사라진다.",
+  "**파일 로그는 `kubectl logs` 에 안** 나온다."
+ ],
+ "drills": [
+  {
+   "task": "`get` 을 네 가지 형식으로 뽑는다.",
+   "done_when": "각각의 쓸모를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "파드를 죽이고 `Last State` 를 본다.",
+   "done_when": "종료 코드를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "경고 이벤트만 골라 본다.",
+   "done_when": "필터를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "디버깅 스크립트를 만든다.",
+   "done_when": "넷을 한 번에 뽑았다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`describe` 에서 먼저 볼 곳은?",
+   "a": "맨 아래 `Events` 다."
+  },
+  {
+   "q": "재시작한 컨테이너의 원인은 어디서?",
+   "a": "`Last State` 의 종료 코드와 `logs --previous` 다."
+  },
+  {
+   "q": "`get events` 에 꼭 붙일 옵션은?",
+   "a": "`--sort-by=.lastTimestamp` 다."
+  },
+  {
+   "q": "이벤트가 안 보이면?",
+   "a": "기본 보관이 1시간이라 지났을 수 있다."
+  },
+  {
+   "q": "파일에 쓴 로그가 안 보이는 이유는?",
+   "a": "`kubectl logs` 는 컨테이너의 표준 출력만 읽는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Debug Running Pods",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Events",
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

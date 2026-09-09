@@ -160,7 +160,7 @@
           "title": "무엇을 볼 것인가",
           "summary": "get · describe · logs · events, 이 넷.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -175,7 +175,7 @@
           "title": "파드란 무엇인가",
           "summary": "컨테이너가 아니라 파드인 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
