@@ -167,7 +167,7 @@
           "title": "TDD 가 안 맞는 곳",
           "summary": "모르는 것을 먼저 못 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -175,7 +175,7 @@
           "title": "정리",
           "summary": "TDD 를 안 해도 남는 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

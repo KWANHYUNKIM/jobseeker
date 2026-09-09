@@ -1,0 +1,167 @@
+{
+ "book": "practical-testing",
+ "id": "tdd-review",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "정리",
+ "summary": "TDD 를 안 해도 남는 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "3장이 얻은 것을 센다.",
+  "의식이 아니라 장치를 남긴다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**순서 하나를 바꿔서 얻은 것을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장에서 순서가 산 것",
+   "ascii": "   what the order actually bought, in this chapter\n\n   3.1  the vip discount case                found by order\n   3.1  the invalid level case               found by order\n   3.2  the signature was decided first      api design\n   3.2  (int) cast appeared in cycle 3       one concern at a time\n   3.4  three cycles needed no code          confirmation, regression\n   3.4  empty order split into two todos     responsibility boundary\n\n   none of these needed a bug report",
+   "note": "**버그 리포트가 필요한 게 하나도** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "3장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "3.1",
+     "순서를 뒤집는다",
+     "**커버리지 100% 가 요구사항 절반을 놓쳤다**"
+    ],
+    [
+     "3.2",
+     "빨강 초록 리팩터링",
+     "**각 걸음의 금지가 걸음을 작게 만든다**"
+    ],
+    [
+     "3.3",
+     "순서가 바꾸는 것",
+     "**테스트가 API 설계다**"
+    ],
+    [
+     "3.4",
+     "직접 해 보기",
+     "**다섯 중 셋은 코드를 안 바꿨다**"
+    ],
+    [
+     "3.5",
+     "안 맞는 곳",
+     "**기대 결과를 미리 알아야 한다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "2장과 3장의 차이",
+   "md": "**같은 도구, 다른 순서**다.\n\n| | 2장 | 3장 |\n|---|---|---|\n| 순서 | 구현 → 테스트 | **테스트 → 구현** |\n| 찾은 것 | **결함 5개** | **누락 2개, 설계 결정 3개** |\n| 시그니처 | 구현이 정했다 | **테스트가 정했다** |\n| 범위 | 감으로 | **목록으로** |\n\n**둘 다 결함을** 찾았다.\n\n> **2장은 이미 있는 코드의 결함**이었다.\n> **3장은 아직 안 쓴 코드의 누락**이었다.\n>\n> **찾는 시점이 다르다.**\n\n**2장이 더 쓸모없는 건** 아니다.\n\n> **레거시 코드에는 2장 방식밖에** 없다.\n> **이미 있는 코드에 TDD 를 할 수** 없다.\n>\n> **3.5절의 \"레거시 리팩터링\" 이** 그것이다 — **테스트를 먼저 씌우고 고친다.**\n\n**둘 다 같은 것을 지킨다.**\n\n> **2.8절의 조건 여섯**이다.\n> **TDD 로 짜든 나중에 짜든 그 여섯은** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "TDD 를 안 해도 남길 것",
+   "ascii": "   what to keep even without tdd\n\n   write the requirement list first\n   write the test signature before the method body\n   see red once, on purpose\n   refactor as a separate step, with green kept\n\n   these four are the mechanism, not the ceremony",
+   "note": "**의식이 아니라 장치**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "네 가지 장치",
+   "md": "**① 요구사항 목록을 먼저 적는다**\n\n> **3.4절의 할 일 목록**이다.\n> **구현 뒤에 적어도 빠진 게** 보인다.\n>\n> **2.4절이 그렇게 했다.** **케이스 세분화가 사실 이것**이다.\n\n**② 메서드 몸통 전에 테스트 시그니처를 쓴다**\n\n> **TDD 를 다 안 해도 이 한 줄은 쓸 수** 있다.\n>\n> ```java\n> @Test void 실버_회원은_5퍼센트_할인을_받는다() {\n>     // 여기까지만 쓰고 구현하러 간다\n> }\n> ```\n>\n> **테스트 이름을 먼저 정하면 요구사항을 말하게** 된다.\n\n**③ 한 번은 일부러 빨강을 본다**\n\n> **1.1절의 방법**이다.\n> **나중에 짠 테스트도 프로덕션 코드를 깨뜨려** 본다.\n>\n> **3.4절에서 첫 실행에 초록인 셋을 그렇게** 확인했다.\n\n**④ 리팩터링을 별도 단계로 한다**\n\n> **초록을 유지한 채로만** 고친다.\n> **테스트를 같이 고치면 리팩터링이** 아니다.\n>\n> **3.2절에서 `enum` 으로 바꿀 때 테스트를 한 줄도 안** 고쳤다.\n\n**이 넷이 TDD 의 장치**다.\n\n> **\"테스트를 먼저 쓴다\" 는 의식이고 이 넷이 그 의식이 만드는** 것이다.\n> **의식을 못 해도 장치는 쓸 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "4장이 이어받는 것",
+   "md": "**3장 내내 테스트 이름이 늘었다.**\n\n```\n실버 회원은 5퍼센트 할인을 받는다\n음료 한 잔의 금액은 그 음료의 가격이다\n서로 다른 음료의 금액은 합이다\n빈 주문의 금액은 0원이다\n```\n\n> **이게 요구사항 문서**다.\n> **3.4절 마지막의 `5 tests completed` 목록을 읽으면 뭘 만들었는지** 안다.\n\n**그런데 아직 부족**하다.\n\n| 지금 | 문제 |\n|---|---|\n| 메서드 이름이 `calculateTotalPriceWithOneBeverage` | **영어라 길다** |\n| `@DisplayName` 이 있는 것과 없는 것이 섞임 | |\n| given·when·then 구분이 없음 | **어디가 준비고 어디가 검증인지** |\n| 어떤 건 \"~한다\", 어떤 건 \"~된다\" | 일관성 |\n\n**4장이 그걸 고친다.**\n\n| | |\n|---|---|\n| 4.1 | 테스트는 문서다 |\n| 4.2 | `@DisplayName` 을 섬세하게 |\n| 4.3 | given when then |\n| 4.4 | BDD 스타일 |\n| 4.5 | **2·3장의 테스트를 다시 쓴다** |\n\n> **4.5절에서 지금까지 짠 걸 전부 고친다.**\n> **동작은 그대로고 읽히는 방식만** 바꾼다.\n>\n> **그것도 리팩터링**이다 — **테스트 코드의 리팩터링**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 3장 전체",
+   "sql": "# --- 3장이 만든 테스트 ---\n\n$ ./gradlew test --tests DiscountCalculatorTest --tests OrderTest\n\nDiscountCalculatorTest\n  일반 회원은 할인이 없다 PASSED\n  실버 회원은 5퍼센트 할인을 받는다 PASSED\n  골드 회원은 10퍼센트 할인을 받는다 PASSED\n  VIP 회원은 15퍼센트 할인을 받는다 PASSED\n  할인은 주문 금액에 비례한다 PASSED\n  할인 금액에 소수점이 생기면 버린다 PASSED\n  없는 등급이면 예외가 난다 PASSED\n\nOrderTest\n  음료 한 잔의 금액은 그 음료의 가격이다 PASSED\n  같은 음료 두 잔의 금액은 가격의 두 배다 PASSED\n  서로 다른 음료의 금액은 합이다 PASSED\n  빈 주문의 금액은 0원이다 PASSED\n  음료 백 잔의 금액도 계산한다 PASSED\n\n12 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n# --- 프로덕션 코드는 얼마나 되나 ---\n\n$ wc -l src/main/java/sample/cafekiosk/order/*.java \\\n       src/main/java/sample/cafekiosk/discount/*.java\n\n  18 Order.java\n  10 DiscountCalculator.java\n  22 MemberLevel.java\n  50 total\n\n$ wc -l src/test/java/sample/cafekiosk/order/*.java \\\n       src/test/java/sample/cafekiosk/discount/*.java\n\n  62 OrderTest.java\n  71 DiscountCalculatorTest.java\n 133 total\n\n#   테스트가 프로덕션의 2.7배다\n\n#   흔한 비율이다. 이상하지 않다\n\n# --- 순서를 바꿨을 때와 안 바꿨을 때 ---\n\n#   3.1절에서 코드를 먼저 짜고 테스트를 짰던 판\n\nDiscountCalculatorTest > level1() PASSED\nDiscountCalculatorTest > level2() PASSED\nDiscountCalculatorTest > level0() PASSED\n\n3 tests completed\n\n$ ./gradlew jacocoTestReport\n\n#   DiscountCalculator  line coverage 100%\n\n#   3개, 100%\n\n#   TDD 판\n\n7 tests completed\n\n#   7개\n\n#   같은 클래스인데 테스트가 두 배 이상이다\n\n#   차이는 VIP, 소수점, 예외, 금액 비례\n#   전부 요구사항에 있고 코드에는 없던 것들이다\n\n# --- 장치 넷을 확인 ---\n\n#   ① 요구사항 목록\n\n#   [x] 음료 한 잔이면 그 가격\n#   [x] 같은 음료 여러 잔이면 곱\n#   [x] 다른 음료 여러 개면 합\n#   [x] 빈 주문이면 0\n#   [x] 큰 주문도 int 로 충분\n#   [ ] 빈 주문은 생성할 수 없다        <- 남아 있다\n\n#   ② 테스트 시그니처 먼저\n\n#   3.2절 첫 빨강이 컴파일 오류였다\n#   시그니처가 거기서 정해졌다\n\n#   ③ 일부러 빨강\n\npublic int calculateTotalPrice() {\n    return 0;\n}\n\n$ ./gradlew test --tests OrderTest\n\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 FAILED\nOrderTest > 같은 음료 두 잔의 금액은 가격의 두 배다 FAILED\nOrderTest > 서로 다른 음료의 금액은 합이다 FAILED\nOrderTest > 음료 백 잔의 금액도 계산한다 FAILED\nOrderTest > 빈 주문의 금액은 0원이다 PASSED\n\n5 tests completed, 4 failed\n\n#   넷이 지키고 있다\n#   '빈 주문은 0' 은 return 0 과 우연히 같아서 통과한다\n\n#   되돌린다\n\n#   ④ 리팩터링 별도 단계\n\n#   3.2절에서 if 넷 -> enum 하나\n#   테스트 수정: 0줄\n\n# --- 3장이 남긴 것 ---\n\n#   테스트 12개\n#   프로덕션 코드 50줄\n#   할 일 목록에 남은 것 1개\n\n#   그리고 테스트 이름 12개가 요구사항 문서다\n\n# --- 다음 장에서 ---\n\n#   그 이름들을 다시 쓴다",
+   "note": "**3장이 테스트 12개**를 만들었다. **프로덕션 50줄에 테스트 133줄** — **2.7배**다.\n\n**같은 클래스인데 순서를 바꾸니 테스트가 3개에서 7개**가 됐다. **차이는 VIP·소수점·예외·금액 비례** — 전부 요구사항에 있고 코드에 없던 것들이다.\n\n**`return 0;` 으로 바꾸니 다섯 중 넷이** 빨개진다. **\"빈 주문은 0\" 만 우연히** 통과한다.\n\n**할 일 목록에 하나가 남아** 있다.\n\n**테스트 이름 12개가 요구사항 문서**다."
+  }
+ ],
+ "recap": [
+  "**커버리지 100% 가 요구사항 절반을** 놓쳤다.",
+  "**각 걸음의 금지가 걸음을 작게** 만든다.",
+  "**테스트가 API 설계**다.",
+  "**다섯 중 셋은 코드를 안** 바꿨다 — 그래도 짠다.",
+  "**기대 결과를 미리 알아야** TDD 가 된다.",
+  "**2장은 이미 있는 코드의 결함, 3장은 안 쓴 코드의 누락**을 찾았다.",
+  "**레거시에는 2장 방식밖에** 없다.",
+  "**장치 넷** — 목록 먼저, 시그니처 먼저, 일부러 빨강, 별도 리팩터링.",
+  "**의식을 못 해도 장치는 쓸 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "3장의 테스트를 전부 돌린다.",
+   "done_when": "12개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "프로덕션과 테스트 줄 수를 센다.",
+   "done_when": "비율을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`calculateTotalPrice` 를 `return 0;` 으로 바꾼다.",
+   "done_when": "넷이 빨개지고 하나가 통과하는 이유를 설명했다.",
+   "minutes": 15
+  },
+  {
+   "task": "장치 넷을 자기 팀에서 뭘 쓸 수 있을지 정한다.",
+   "done_when": "하나를 골랐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "2장과 3장이 찾은 것의 차이는?",
+   "a": "2장은 이미 있는 코드의 결함, 3장은 아직 안 쓴 코드의 누락이다."
+  },
+  {
+   "q": "레거시에는 왜 TDD 를 못 하나?",
+   "a": "이미 코드가 있어 순서를 뒤집을 수 없다. 테스트를 먼저 씌우고 고친다."
+  },
+  {
+   "q": "TDD 의 장치 넷은?",
+   "a": "요구사항 목록 먼저, 테스트 시그니처 먼저, 일부러 빨강, 리팩터링 별도 단계다."
+  },
+  {
+   "q": "테스트가 프로덕션보다 많은 게 이상한가?",
+   "a": "아니다. 2~3배는 흔한 비율이다."
+  },
+  {
+   "q": "4장이 고칠 것은?",
+   "a": "테스트 이름과 구조다. 동작은 그대로 두고 읽히는 방식만 바꾼다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Test-Driven Development by Example (개념 출처)",
+   "url": "https://www.oreilly.com/library/view/test-driven-development/0321146530/",
+   "publisher": "Kent Beck"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

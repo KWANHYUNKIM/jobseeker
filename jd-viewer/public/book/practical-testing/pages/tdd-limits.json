@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "tdd-limits",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "TDD 가 안 맞는 곳",
+ "summary": "모르는 것을 먼저 못 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "TDD 가 전제하는 것을 안다.",
+  "안 맞는 영역을 구분한다.",
+  "모를 때 어떻게 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절 마지막에 적었다** — **요구사항이 부실하면 TDD 도 부실**하다. **여기서 그 경계**를 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "TDD 가 전제하는 것",
+   "ascii": "   tdd needs you to know the answer before the code\n\n   works\n     calculate a discount        the answer is 9500\n     validate an input           the answer is an exception\n     format a string             the answer is a string\n\n   does not work\n     which library should i use\n     what does this api actually return\n     does this css look right\n     is this algorithm fast enough\n\n   you cannot write assertThat for something you have not seen",
+   "note": "**본 적 없는 것에 `assertThat` 을 못 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "전제는 하나다",
+   "md": "**기대 결과를 미리 알아야** 한다.\n\n```java\nassertThat(result).isEqualTo(???);\n```\n\n> **`???` 를 못 쓰면 테스트를 못** 짠다.\n>\n> **3.4절의 사이클마다 그 값을 알고** 있었다. **`4000`, `8000`, `8500`, `0`, `400000`**.\n\n**안 맞는 네 가지**\n\n**① 탐색**\n\n> **\"이 라이브러리로 되나\"** 를 알아보는 중이다.\n> **뭐가 나올지 모르는데 기대값을 쓸 수** 없다.\n\n**② 외부 시스템의 실제 응답**\n\n```java\nassertThat(response.getBody()).isEqualTo(\"???\");\n```\n\n> **문서에 적힌 것과 실제가 다른 경우가** 많다.\n> **한 번 불러 봐야** 안다.\n\n**③ 시각적인 것**\n\n> **CSS, 레이아웃, 그래프 모양**이다.\n> **사람이 봐야** 한다.\n>\n> **스냅샷 테스트가 있는데 그건 \"전과 같은가\" 지 \"맞는가\" 가** 아니다.\n\n**④ 성능·알고리즘 탐색**\n\n> **\"이게 충분히 빠른가\" 는 재 봐야** 안다.\n> **기준값을 미리 못** 정한다.\n>\n> **\"1초 안\" 같은 요구가 있으면 그건 테스트할 수** 있다. **다만 8장의 문제**가 붙는다.\n\n**⑤ 쓰레기 코드를 급히 만들 때**\n\n> **하루 쓰고 버릴 스크립트**다.\n> **TDD 비용이 이득보다** 크다."
+  },
+  {
+   "type": "figure",
+   "caption": "모를 때 하는 것",
+   "ascii": "   what to do when you do not know yet\n\n   spike\n     write throwaway code, learn the answer\n     delete it\n     now do tdd, with the answer in hand\n\n   learning test\n     write a test against the library itself\n     it documents what you learned\n     appendix 9.1",
+   "note": "**스파이크로 답을 얻고 나서 TDD** 를 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "스파이크와 학습 테스트",
+   "md": "**스파이크**\n\n> **버릴 코드를 짜서 답을 알아낸다.**\n>\n> ```java\n> public static void main(String[] args) {\n>     var res = restClient.get().uri(\"/v1/rates\").retrieve().body(String.class);\n>     System.out.println(res);\n> }\n> ```\n>\n> **응답이 뭔지 본다.** **그리고 지운다.**\n> **이제 기대값을 아니 TDD 를** 할 수 있다.\n\n**중요한 건 지우는** 것이다.\n\n> **스파이크 코드를 그대로 프로덕션에 넣으면 TDD 를 건너뛴** 것이다.\n> **답만 가지고 다시** 쓴다.\n\n**학습 테스트**\n\n> **라이브러리를 테스트로** 익힌다.\n>\n> ```java\n> @Test\n> void guava_는_리스트를_나눈다() {\n>     List<Integer> list = List.of(1, 2, 3, 4, 5, 6);\n>\n>     List<List<Integer>> partition = Lists.partition(list, 3);\n>\n>     assertThat(partition).hasSize(2)\n>             .containsExactly(List.of(1, 2, 3), List.of(4, 5, 6));\n> }\n> ```\n>\n> **`main` 으로 찍어 보는 것과 차이**는\n> **남는다는 것**과 **버전을 올릴 때 깨진다는 것**이다.\n>\n> **9.1절**에서 다룬다.\n\n**둘의 차이**\n\n| | |\n|---|---|\n| **스파이크** | 버린다 |\n| **학습 테스트** | 남긴다 |\n\n> **내 코드에 계속 쓸 라이브러리면 학습 테스트**로 남긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "TDD 를 안 해도 남는 것",
+   "md": "**TDD 를 못 하는 상황에서도 남는 게** 있다.\n\n**① 테스트를 짠다**\n\n> **순서가 뒤여도 짜는 게 안 짜는 것보다** 낫다.\n> **2장이 그렇게 했고 결함 다섯을** 찾았다.\n\n**② 실패를 확인한다**\n\n> **1.1절의 방법**이다. **나중에 짠 테스트도 한 번 깨뜨려** 본다.\n> **TDD 의 빨강 단계를 사후에 흉내 내는** 것이다.\n\n**③ 요구사항 목록을 만든다**\n\n> **3.4절의 할 일 목록**이다.\n> **구현 뒤에 만들어도 빠진 케이스가** 보인다.\n>\n> **2.4절이 그렇게 했다.**\n\n**④ 작게 나눈다**\n\n> **TDD 가 강제하던 걸 의식적으로** 한다.\n\n**이 넷이 TDD 의 이득 대부분**이다.\n\n> **\"TDD 를 못 하니 테스트도 안 짠다\" 가 가장 나쁜** 결론이다.\n>\n> **이 책의 나머지 일곱 장은 TDD 를 안 해도 전부** 쓴다.\n\n**팀에서 시작하는 법**\n\n| | |\n|---|---|\n| **버그 수정** | 재현 테스트를 먼저 짠다. 가장 자연스럽다 |\n| **새 도메인 로직** | 여기서 TDD 를 해 본다 |\n| **레거시 리팩터링** | 테스트를 먼저 씌우고 고친다 |\n\n> **버그 수정이 가장 쉽다.** **기대값이 명확**하다 — **\"이렇게 나와야 하는데 저렇게 나온다\"**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 모르는 것에 TDD 를 해 보면 ---\n\n#   요구사항: \"환율 API 로 원화 금액을 달러로 바꾼다\"\n\n@Test\nvoid convertToUsd() {\n    int krw = 10000;\n\n    double usd = exchangeService.toUsd(krw);\n\n    assertThat(usd).isEqualTo(???);\n}\n\n#   ??? 를 못 쓴다\n\n#   환율이 얼마인지 모른다\n#   API 가 뭘 돌려주는지도 모른다\n\n#   TDD 가 여기서 멈춘다\n\n# --- 스파이크 ---\n\npublic static void main(String[] args) {\n    String body = RestClient.create()\n            .get().uri(\"https://api.example.com/v1/rates?base=KRW\")\n            .retrieve().body(String.class);\n    System.out.println(body);\n}\n\n$ ./gradlew run\n\n{\"base\":\"KRW\",\"date\":\"2026-09-09\",\"rates\":{\"USD\":0.00072,\"EUR\":0.00066}}\n\n#   알았다\n\n#   rates.USD 가 0.00072 다\n#   date 필드가 있다\n#   base 를 에코해 준다\n\n#   이 코드는 지운다\n\n# --- 이제 TDD 가 된다 ---\n\n@DisplayName(\"환율이 주어지면 원화를 달러로 바꾼다\")\n@Test\nvoid convertToUsd() {\n    ExchangeRate rate = new ExchangeRate(\"KRW\", \"USD\", 0.00072);\n\n    double usd = ExchangeCalculator.convert(10000, rate);\n\n    assertThat(usd).isEqualTo(7.2, within(0.001));\n}\n\n$ ./gradlew test --tests ExchangeCalculatorTest\n\n> Task :compileTestJava FAILED\nExchangeCalculatorTest.java:12: error: cannot find symbol\n        double usd = ExchangeCalculator.convert(10000, rate);\n\n#   빨강이다. 정상적인 TDD 사이클이다\n\n#   API 호출은 분리했다\n#   계산은 순수 함수다  (2.7절)\n\n# --- 학습 테스트로 남기면 ---\n\n@DisplayName(\"환율 API 응답에는 rates 맵이 들어 있다\")\n@Test\nvoid exchangeApiResponse() {\n    String body = \"{\\\"base\\\":\\\"KRW\\\",\\\"date\\\":\\\"2026-09-09\\\",\"\n            + \"\\\"rates\\\":{\\\"USD\\\":0.00072}}\";\n\n    ExchangeResponse response = objectMapper.readValue(body, ExchangeResponse.class);\n\n    assertThat(response.getBase()).isEqualTo(\"KRW\");\n    assertThat(response.getRates()).containsKey(\"USD\");\n}\n\n$ ./gradlew test --tests ExchangeApiLearningTest\n\nExchangeApiLearningTest > 환율 API 응답에는 rates 맵이 들어 있다 PASSED\n\n#   응답 형식이 문서로 남았다\n\n#   API 가 바뀌면 이 테스트가 안 깨진다 (하드코딩된 문자열이라)\n#   그래서 계약 테스트는 따로 필요하다\n\n#   9.1절에서 다룬다\n\n# --- 성능은 어떤가 ---\n\n@Test\nvoid 백만_건_계산이_1초_안에_끝난다() {\n    List<Beverage> beverages = IntStream.range(0, 1_000_000)\n            .mapToObj(i -> new Americano())\n            .collect(toList());\n    Order order = new Order(beverages);\n\n    long start = System.nanoTime();\n    order.calculateTotalPrice();\n    long elapsed = (System.nanoTime() - start) / 1_000_000;\n\n    assertThat(elapsed).isLessThan(1000);\n}\n\n$ ./gradlew test --tests OrderPerformanceTest\n\nOrderPerformanceTest > 백만_건_계산이_1초_안에_끝난다 PASSED\n\n#   내 노트북에서는 통과한다\n\n$ ./gradlew test --tests OrderPerformanceTest --rerun-tasks\n\nOrderPerformanceTest > 백만_건_계산이_1초_안에_끝난다 PASSED\n\n#   여러 번 돌려도 통과한다\n\n#   그런데 CI 서버가 느리면?\n#   다른 테스트와 병렬로 돌면?  (8.5절)\n\n#   7.11절의 '가끔 깨지는 테스트' 가 될 수 있다\n\n#   성능 검증은 별도 태스크로 빼는 게 낫다\n\n# --- TDD 를 안 해도 남는 것 ---\n\n#   2장에서 한 것\n\n#   ① 테스트를 짰다              13개\n#   ② 실패를 확인했다            프로덕션 코드를 지워 봤다\n#   ③ 요구사항 목록을 만들었다     2.4절\n#   ④ 결함을 찾았다              5개\n\n#   TDD 를 안 했는데 다 나왔다\n\n#   순서보다 '짜느냐' 가 먼저다\n\n# --- 다음 절에서 ---\n\n#   3장을 정리한다",
+   "note": "**환율 예제에서 `???` 를 못 쓴다.** **TDD 가 거기서** 멈춘다.\n\n**스파이크로 응답을 보고** 나면 **기대값이 생겨 TDD 가** 된다. **그 코드는** 지운다.\n\n**학습 테스트로 남기면 응답 형식이 문서**가 된다.\n\n**성능 테스트는 내 노트북에서 통과**하는데 **CI 나 병렬 실행에서 깨질 수** 있다 — 7.11절.\n\n**2장은 TDD 를 안 했는데 결함 다섯을** 찾았다. **순서보다 \"짜느냐\" 가** 먼저다."
+  }
+ ],
+ "recap": [
+  "**TDD 의 전제는 하나** — 기대 결과를 미리 알아야 한다.",
+  "**탐색·외부 응답·시각적인 것·성능 탐색**에는 안 맞는다.",
+  "**버리고 말 코드에도 안** 맞는다.",
+  "**스파이크로 답을 얻고 나서 TDD** 를 한다.",
+  "**스파이크 코드는 지운다** — 안 지우면 TDD 를 건너뛴 것이다.",
+  "**계속 쓸 라이브러리면 학습 테스트로** 남긴다.",
+  "**TDD 를 안 해도 넷이 남는다** — 짜기, 실패 확인, 목록, 작게 나누기.",
+  "**\"TDD 를 못 하니 테스트도 안 짠다\" 가 가장 나쁜** 결론이다.",
+  "**버그 수정이 TDD 를 시작하기 가장 쉬운** 자리다."
+ ],
+ "drills": [
+  {
+   "task": "기대값을 못 쓰는 상황을 하나 찾는다.",
+   "done_when": "왜 못 쓰는지 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "스파이크를 짜고 지운다.",
+   "done_when": "답만 남기고 코드를 지웠다.",
+   "minutes": 25
+  },
+  {
+   "task": "라이브러리 하나로 학습 테스트를 짠다.",
+   "done_when": "통과하는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "최근 버그를 재현 테스트로 짠다.",
+   "done_when": "빨간 막대를 보고 고쳤다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "TDD 의 전제는?",
+   "a": "기대 결과를 미리 알아야 한다. `assertThat(...).isEqualTo(???)` 를 채울 수 있어야 한다."
+  },
+  {
+   "q": "안 맞는 영역 넷은?",
+   "a": "탐색, 외부 시스템 응답, 시각적인 것, 성능·알고리즘 탐색이다."
+  },
+  {
+   "q": "스파이크의 규칙은?",
+   "a": "답만 얻고 코드는 지운다. 안 지우면 TDD 를 건너뛴 것이다."
+  },
+  {
+   "q": "학습 테스트와 스파이크의 차이는?",
+   "a": "학습 테스트는 남기고 스파이크는 버린다."
+  },
+  {
+   "q": "TDD 를 못 해도 남는 것은?",
+   "a": "테스트를 짜고, 실패를 확인하고, 요구사항 목록을 만들고, 작게 나누는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스파이크",
+   "def": "답을 알아내기 위해 짜고 버리는 임시 코드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Test-Driven Development by Example (개념 출처)",
+   "url": "https://www.oreilly.com/library/view/test-driven-development/0321146530/",
+   "publisher": "Kent Beck"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
