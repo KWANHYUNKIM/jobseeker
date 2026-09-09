@@ -639,7 +639,7 @@
           "title": "프로메테우스",
           "summary": "형식이 달라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -647,7 +647,7 @@
           "title": "수집 설정",
           "summary": "누가 누구를 긁나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",

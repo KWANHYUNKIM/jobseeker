@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "prometheus",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "프로메테우스",
+ "summary": "형식이 달라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "형식을 읽는다.",
+  "이름 규칙을 안다.",
+  "히스토그램을 켠다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절에서 74 번을** 불렀다. **한 번에 다 주는 형식이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "계기 하나가 여러 줄이 된다",
+   "ascii": "   one meter becomes several lines of text\n\n   a help line saying what it is\n   a type line saying how to read it\n   one line per tag combination, with a value\n\n   a timer alone produces count, sum and max, so three families",
+   "note": "**시간 계기 하나만도 세 갈래가** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "긁어 가는 쪽이 읽기 좋은 모양이다",
+   "md": "**한 번에 다** 준다.\n\n> **9.3절은 계기마다** 불렀다.\n> **여기는 한 번**이다.\n> **아래에서 재** 본다.\n\n**글자**다.\n\n> **JSON 이** 아니다.\n> **`grep` 으로** 읽힌다.\n> **아래에서 그렇게** 본다.\n\n**설명과 종류가 같이** 온다.\n\n> **두 줄이 먼저** 붙는다.\n> **9.2절에서 적은 설명**이다.\n> **아래에서 확인**한다.\n\n**이름이** 바뀐다.\n\n> **점이 밑줄이** 된다.\n> **접미사도** 붙는다.\n> **9.6절에서 이 이름으로** 묻는다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 다시 쓰인다",
+   "ascii": "   names get rewritten on the way out\n\n   dots become underscores\n   a counter gains a total suffix\n   a base unit is appended, seconds or bytes\n\n   so the name I typed is not the name I query",
+   "note": "**내가 적은 이름과 물을 이름이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "히스토그램을 켜면 줄이 크게 는다",
+   "md": "**칸마다 한 줄**이다.\n\n> **기본 칸이 예순 몇 개**다.\n> **아래에서 세어** 본다.\n> **꼬리표까지 곱해**진다.\n\n**분위와 히스토그램은 다르**다.\n\n> **하나는 이 서버 안에서** 계산한다.\n> **하나는 모아서** 계산한다.\n> **아래에서 그 차이를** 본다.\n\n**여러 대를 합칠 때 갈린**다.\n\n> **분위는 못** 합친다.\n> **9.6절에서 그걸** 쓴다.\n> **히스토그램이** 필요하다.\n\n**응답이** 커진다.\n\n> **9.5절의 주기마다 그만큼**이다.\n> **아래에서 재** 본다.\n> **칸을 줄인**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 켠다\n\ndependencies {\n    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'\n}\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info,metrics,prometheus\n\n$ curl -s localhost:9090/actuator | python3 -c \"\nimport json,sys; print('prometheus' in json.load(sys.stdin)['_links'])\"\nTrue\n\n$ curl -s -D - -o /dev/null localhost:9090/actuator/prometheus | grep -i '^content-type'\nContent-Type: text/plain;version=0.0.4;charset=utf-8\n\n--   8.1절의 그 특별한 타입이 아니다\n--   평범한 글자다\n\n\n-- 한 번에 다 준다\n\n$ curl -s localhost:9090/actuator/prometheus | wc -l\n     412\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^# HELP'\n      74\n\n$ curl -s localhost:9090/actuator/prometheus | wc -c\n   38412\n\n$ time curl -s -o /dev/null localhost:9090/actuator/prometheus\nreal\t0m0.041s\n\n--   9.3절의 74 개가 여기 다 있다\n--   1.842 초가 0.041 초가 됐다\n\n\n-- 한 계기를 본다\n\n$ curl -s localhost:9090/actuator/prometheus | grep -A4 'order_placed'\n# HELP order_placed_total 접수된 주문 수\n# TYPE order_placed_total counter\norder_placed_total{application=\"orders\",channel=\"web\",env=\"prod\",paid=\"true\"} 62.0\norder_placed_total{application=\"orders\",channel=\"web\",env=\"prod\",paid=\"false\"} 12.0\norder_placed_total{application=\"orders\",channel=\"app\",env=\"prod\",paid=\"true\"} 26.0\n\n--   9.2절에서 적은 설명이 첫 줄이다\n--   전역 꼬리표도 다 붙어 있다\n--   꼬리표 조합마다 한 줄이다\n\n\n-- 이름이 바뀐다\n\n$ curl -s localhost:9090/actuator/metrics | python3 -c \"\nimport json,sys\nprint([n for n in json.load(sys.stdin)['names'] if n.startswith('order')])\"\n['order.placed', 'order.failed', 'order.place', 'order.amount', 'order.queue.size']\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^# TYPE order'\n# TYPE order_placed_total counter\n# TYPE order_failed_total counter\n# TYPE order_place_seconds summary\n# TYPE order_amount summary\n# TYPE order_queue_size gauge\n\n--   점이 밑줄이 됐다\n--   세기에는 _total 이 붙었다\n--   시간에는 _seconds 가 붙었다\n\n\n-- 단위도 붙는다\n\nCounter.builder(\"order.bytes\").baseUnit(\"bytes\").register(registry);\nDistributionSummary.builder(\"order.amount\").baseUnit(\"won\").register(registry);\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^# TYPE order_bytes\\|^# TYPE order_amount'\n# TYPE order_bytes_bytes_total counter\n# TYPE order_amount_won summary\n\n--   단위가 이름에 들어간다\n--   9.6절에서 이 이름으로 물어야 한다\n\n\n-- 시간 계기는 세 갈래다\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^order_place_seconds'\norder_place_seconds_count{application=\"orders\",env=\"prod\"} 1000.0\norder_place_seconds_sum{application=\"orders\",env=\"prod\"} 11.482\norder_place_seconds_max{application=\"orders\",env=\"prod\"} 0.204\n\n$ curl -s localhost:9090/actuator/metrics/order.place | python3 -c \"\nimport json,sys\nfor m in json.load(sys.stdin)['measurements']: print(m['statistic'], m['value'])\"\nCOUNT 1000.0\nTOTAL_TIME 11.482\nMAX 0.204\n\n--   같은 셋인데 이름이 다르다\n\n\n-- 최댓값은 흘러간다\n\n$ curl -s localhost:9090/actuator/prometheus | grep 'order_place_seconds_max'\norder_place_seconds_max{...} 0.204\n\n$ sleep 130\n$ curl -s localhost:9090/actuator/prometheus | grep 'order_place_seconds_max'\norder_place_seconds_max{...} 0.0\n\n--   최근 몇 분치만 본다\n--   합계와 건수는 안 사라진다\n\n\n-- 분위를 켠다\n\nTimer.builder(\"order.place\")\n     .publishPercentiles(0.5, 0.95, 0.99)\n     .register(registry);\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^order_place_seconds{'\norder_place_seconds{application=\"orders\",env=\"prod\",quantile=\"0.5\"} 0.008\norder_place_seconds{application=\"orders\",env=\"prod\",quantile=\"0.95\"} 0.041\norder_place_seconds{application=\"orders\",env=\"prod\",quantile=\"0.99\"} 0.118\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^order_place'\n6\n\n--   세 줄이 늘었다\n--   이 서버가 자기 안에서 계산한 값이다\n\n\n-- 여러 대면 못 합친다\n\n$ for h in app-1 app-2; do\n    printf '%-8s ' \"$h\"\n    curl -s \"http://$h:9090/actuator/prometheus\" \\\n      | grep 'quantile=\"0.95\"' | grep order_place | awk '{print $2}'\n  done\napp-1    0.041\napp-2    0.612\n\n$ python3 -c \"print('평균 내면', (0.041 + 0.612) / 2)\"\n평균 내면 0.3265\n\n--   두 95 분위의 평균은 95 분위가 아니다\n--   아무 뜻이 없는 숫자다\n\n\n-- 히스토그램을 켠다\n\nmanagement:\n  metrics:\n    distribution:\n      percentiles-histogram:\n        order.place: true\n        http.server.requests: true\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^order_place_seconds_bucket'\n      69\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^order_place_seconds_bucket' | head -4\norder_place_seconds_bucket{application=\"orders\",env=\"prod\",le=\"0.001\"} 0.0\norder_place_seconds_bucket{application=\"orders\",env=\"prod\",le=\"0.001048576\"} 0.0\norder_place_seconds_bucket{application=\"orders\",env=\"prod\",le=\"0.001398101\"} 0.0\norder_place_seconds_bucket{application=\"orders\",env=\"prod\",le=\"0.001747626\"} 2.0\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^order_place_seconds_bucket' | tail -1\norder_place_seconds_bucket{application=\"orders\",env=\"prod\",le=\"+Inf\"} 1000.0\n\n$ curl -s localhost:9090/actuator/prometheus | grep '^# TYPE order_place'\n# TYPE order_place_seconds histogram\n\n--   종류가 summary 에서 histogram 으로 바뀌었다\n--   칸이 69 개다\n--   9.6절에서 이걸로 분위를 계산한다\n\n\n-- 커진다\n\n$ curl -s localhost:9090/actuator/prometheus | wc -l\n    1204\n$ curl -s localhost:9090/actuator/prometheus | wc -c\n  118420\n\n// 히스토그램 끄기 전에는\n     412\n   38412\n\n--   줄이 세 배, 크기가 세 배다\n--   9.5절에서 이걸 15 초마다 긁는다\n\n\n-- 칸을 줄인다\n\nmanagement:\n  metrics:\n    distribution:\n      percentiles-histogram:\n        http.server.requests: true\n      slo:\n        http.server.requests: 10ms,50ms,100ms,500ms,1s,2s\n      minimum-expected-value:\n        http.server.requests: 5ms\n      maximum-expected-value:\n        http.server.requests: 5s\n\n$ curl -s localhost:9090/actuator/prometheus \\\n    | grep '^http_server_requests_seconds_bucket' | grep 'uri=\"/orders\"' | wc -l\n      27\n\n$ curl -s localhost:9090/actuator/prometheus \\\n    | grep '^http_server_requests_seconds_bucket' | grep 'uri=\"/orders\"' \\\n    | grep -oE 'le=\"[0-9.]+\"' | head -6\nle=\"0.005\"\nle=\"0.01\"\nle=\"0.05\"\nle=\"0.1\"\nle=\"0.5\"\nle=\"1.0\"\n\n$ curl -s localhost:9090/actuator/prometheus | wc -l\n     642\n\n--   내가 정한 경계가 들어갔다\n--   1204 줄이 642 줄이 됐다\n\n\n-- 꼬리표까지 곱해진다\n\n$ curl -s localhost:9090/actuator/prometheus \\\n    | grep -c '^http_server_requests_seconds_bucket'\n     135\n\n$ curl -s localhost:9090/actuator/prometheus \\\n    | grep '^http_server_requests_seconds_bucket' \\\n    | grep -oE 'uri=\"[^\"]*\"' | sort -u | wc -l\n       5\n\n$ python3 -c \"print(5 * 27, '개가 나온다')\"\n135 개가 나온다\n\n--   주소 다섯에 칸 27 개다\n--   9.1절의 꼬리표 폭발이 여기서 곱절이 된다\n\n\n-- 안 쓰는 것은 끈다\n\nmanagement:\n  metrics:\n    enable:\n      jvm.buffer: false\n      tomcat: false\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^jvm_buffer\\|^tomcat'\n0\n$ curl -s localhost:9090/actuator/prometheus | wc -l\n     584\n\n--   9.2절의 필터와 같은 일을 설정으로 한다\n\n\n-- 형식을 확인한다\n\n$ curl -s localhost:9090/actuator/prometheus | head -8\n# HELP application_ready_time_seconds Time taken for the application to be ready\n# TYPE application_ready_time_seconds gauge\napplication_ready_time_seconds{application=\"orders\",env=\"prod\",\n  main_application_class=\"study.boot.BootApplication\"} 1.204\n# HELP hikaricp_connections_active Active connections\n# TYPE hikaricp_connections_active gauge\nhikaricp_connections_active{application=\"orders\",env=\"prod\",pool=\"HikariPool-1\"} 8.0\n# HELP http_server_requests_seconds\n\n$ curl -s localhost:9090/actuator/prometheus | grep -cE '^#'\n     148\n$ curl -s localhost:9090/actuator/prometheus | grep -cE '^[a-z]'\n     436\n\n--   설명 두 줄에 값 줄들이다\n--   9.5절에서 이걸 긁어 간다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '한 번에'   '412 줄, 0.041 초' \\\n  '형식'      '글자, HELP 와 TYPE' \\\n  '점'        '밑줄' \\\n  '세기'      '_total' \\\n  '시간'      '_seconds, 세 갈래' \\\n  '최댓값'    '몇 분 뒤 0' \\\n  '분위'      '서버 안에서 계산' \\\n  '여러 대'   '분위는 못 합침' \\\n  '히스토그램' '칸 69 개, 세 배' \\\n  '경계 지정' '27 개로 줄임'\n\n한 번에                    412 줄, 0.041 초\n형식                       글자, HELP 와 TYPE\n점                         밑줄\n세기                       _total\n시간                       _seconds, 세 갈래\n최댓값                     몇 분 뒤 0\n분위                       서버 안에서 계산\n여러 대                    분위는 못 합침\n히스토그램                 칸 69 개, 세 배\n경계 지정                  27 개로 줄임\n\n--   9.5절에서 누가 이걸 긁는지 본다",
+   "note": "**9.3절의 74 개가 412 줄 한 번에 나오고 1.842 초가 0.041 초가** 된다.\n\n**점이 밑줄이 되고 세기에 `_total`, 시간에 `_seconds`, 단위가 `order_amount_won` 처럼 이름에** 들어간다.\n\n**두 대의 95 분위가 0.041 과 0.612 인데 평균 0.3265 는 아무 뜻도** 없다.\n\n**히스토그램을 켜니 칸이 69 개로 줄이 412 에서 1204 로** 늘었다.\n\n**경계를 직접 정하니 칸이 27 개, 줄이 642 로 줄고 주소 다섯을 곱해 135 줄이** 된다."
+  }
+ ],
+ "recap": [
+  "**한 번에** 준다.",
+  "**글자**다.",
+  "**설명이 같이** 온다.",
+  "**이름이** 바뀐다.",
+  "**세기에 접미사가** 붙는다.",
+  "**시간은 세** 갈래다.",
+  "**분위는 못** 합친다.",
+  "**히스토그램은** 크다.",
+  "**경계를** 정한다."
+ ],
+ "drills": [
+  {
+   "task": "두 형식을 견준다.",
+   "done_when": "시간과 크기를 비교했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이름 변환을 확인한다.",
+   "done_when": "접미사 규칙을 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "히스토그램을 켠다.",
+   "done_when": "칸 수와 줄 수를 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "경계를 직접 정한다.",
+   "done_when": "줄이 줄어든 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 형식이 왜 더 빠른가?",
+   "a": "모든 계기를 한 번에 글자로 주기 때문이다."
+  },
+  {
+   "q": "이름이 어떻게 바뀌나?",
+   "a": "점이 밑줄이 되고 종류와 단위가 접미사로 붙는다."
+  },
+  {
+   "q": "분위를 여러 대에서 합칠 수 있나?",
+   "a": "없다. 평균 내면 아무 뜻이 없다."
+  },
+  {
+   "q": "히스토그램의 대가는?",
+   "a": "칸마다 한 줄이라 응답이 몇 배로 커진다."
+  },
+  {
+   "q": "칸을 줄이려면?",
+   "a": "기대 범위와 경계를 직접 정한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "노출 형식",
+   "def": "긁어 가는 쪽이 읽는 글자 형식. 설명과 종류 줄이 값 앞에 붙는다."
+  },
+  {
+   "term": "히스토그램 칸",
+   "def": "값이 어느 경계 아래였는지 세어 둔 누적 칸."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Prometheus — Exposition Formats",
+   "url": "https://prometheus.io/docs/instrumenting/exposition_formats/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Micrometer — Prometheus",
+   "url": "https://docs.micrometer.io/micrometer/reference/implementations/prometheus.html",
+   "publisher": "Micrometer"
+  },
+  {
+   "title": "Spring Boot — Metrics",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/metrics.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

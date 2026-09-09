@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "scrape",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "수집 설정",
+ "summary": "누가 누구를 긁나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "당기는 방식을 안다.",
+  "설정을 적는다.",
+  "주기와 보관을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.4절에서 412 줄을** 만들었다. **누가 그걸 가져가는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "수집기가 부른다",
+   "ascii": "   who calls whom\n\n   the collector calls the application, on a schedule\n   the application never calls the collector\n\n   so a dead application simply stops answering, and that is data",
+   "note": "**죽으면 그냥 답을 안 하고 그것도** 정보다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "앱이 아무 데도 연결하지 않아도 된다",
+   "md": "**앱은 그냥 답만** 한다.\n\n> **주소를 몰라도** 된다.\n> **9.4절의 그 한 줄**이다.\n> **아래에서 확인**한다.\n\n**살았는지도 같이** 안다.\n\n> **못 긁으면 그것도 한 계열**이다.\n> **아래에서 그걸** 본다.\n> **8.3절과 다른 각도**다.\n\n**수집기가 꼬리표를 더** 붙인다.\n\n> **어느 대인지 그쪽이** 안다.\n> **9.2절의 전역 꼬리표와** 다르다.\n> **아래에서 갈라** 본다.\n\n**주기가** 중요하다.\n\n> **자주 긁으면** 무겁다.\n> **드물면 놓친**다.\n> **아래에서 재** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "꼬리표가 두 곳에서 온다",
+   "ascii": "   two places a label can come from\n\n   the application itself, written into the exposed text\n   the collector, added while scraping\n\n   the second kind is how one job covers many hosts",
+   "note": "**둘째가 한 작업으로 여러 대를 덮는** 방법이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "주기보다 짧은 일은 안 보인다",
+   "md": "**긁는 사이의 일은** 접힌다.\n\n> **15 초마다면 그 사이는 하나**다.\n> **아래에서 그걸** 겪는다.\n> **9.4절의 최댓값이 그** 대비다.\n\n**시간이 밀리면 못** 긁는다.\n\n> **응답이 주기보다 느리면** 그렇다.\n> **아래에서 그걸** 만든다.\n> **8.9절의 덤프가 그런** 짓을 한다.\n\n**보관 기간이** 있다.\n\n> **기본이 보름**이다.\n> **아래에서 확인**한다.\n> **길게 두려면 다른** 저장소다.\n\n**계열이 많으면 디스크가** 찬다.\n\n> **9.4절에서 세 배가** 됐다.\n> **아래에서 재** 본다.\n> **그래서 칸을** 줄였다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 앱은 아무 데도 연결 안 한다\n\n$ lsof -nP -p $(pgrep -f app.jar) -iTCP -sTCP:ESTABLISHED \\\n    | awk '{print $9}' | grep -v '^NAME'\n127.0.0.1:54812->127.0.0.1:5432\n\n$ grep -rn 'prometheus' src/main/resources/application.yml\n8:        include: health,info,metrics,prometheus\n\n$ grep -rc '9090\\|prometheus' src/main/java/study/boot/*.java | grep -v ':0'\n\n--   DB 말고는 안 붙는다\n--   수집기 주소를 코드에도 설정에도 안 적었다\n\n\n-- 수집기를 띄운다\n\n$ cat prometheus.yml\nglobal:\n  scrape_interval: 15s\n  scrape_timeout: 10s\n  external_labels:\n    cluster: seoul-1\n\nscrape_configs:\n  - job_name: orders\n    metrics_path: /actuator/prometheus\n    static_configs:\n      - targets: ['app-1:9090', 'app-2:9090', 'app-3:9090']\n        labels:\n          team: backend\n\n$ docker run -d -p 9091:9090 \\\n    -v $PWD/prometheus.yml:/etc/prometheus/prometheus.yml \\\n    prom/prometheus:v2.53.0\n\n$ curl -s localhost:9091/-/ready\nPrometheus Server is Ready.\n\n\n-- 긁고 있는지 본다\n\n$ curl -s 'localhost:9091/api/v1/targets?state=active' | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['data']['activeTargets']:\n    print('%-18s %-8s %6s  %s' % (\n        t['labels']['instance'], t['health'],\n        round(t['lastScrapeDuration']*1000), t['lastScrape'][11:19]))\n\"\napp-1:9090         up          41  06:56:15\napp-2:9090         up          38  06:56:15\napp-3:9090         up          44  06:56:15\n\n--   9.4절에서 잰 0.041 초가 여기 있다\n\n\n-- 앱 쪽에서도 보인다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/prometheus\n200\n\n$ sleep 45 && curl -s localhost:9090/actuator/metrics/http.server.requests \\\n    --get --data-urlencode 'tag=uri:/actuator/prometheus' | python3 -c \"\nimport json,sys; print(int(json.load(sys.stdin)['measurements'][0]['value']), '번')\"\n4 번\n\n--   15 초마다 한 번씩 왔다\n\n\n-- 꼬리표가 합쳐진다\n\n$ curl -s 'localhost:9091/api/v1/query?query=order_placed_total' | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result'][0]\nprint(json.dumps(r['metric'], ensure_ascii=False, indent=1))\"\n{\n \"__name__\": \"order_placed_total\",\n \"application\": \"orders\",\n \"channel\": \"web\",\n \"cluster\": \"seoul-1\",\n \"env\": \"prod\",\n \"instance\": \"app-1:9090\",\n \"job\": \"orders\",\n \"paid\": \"true\",\n \"team\": \"backend\"\n}\n\n$ curl -s localhost:9090/actuator/prometheus | grep -o 'order_placed_total{[^}]*}' | head -1\norder_placed_total{application=\"orders\",channel=\"web\",env=\"prod\",paid=\"true\"}\n\n--   앱이 넷을 붙였고 수집기가 넷을 더 붙였다\n--   9.2절의 전역 꼬리표는 앞의 넷이다\n\n\n-- 어느 대인지는 수집기가 안다\n\n$ curl -s 'localhost:9091/api/v1/query?query=count(up)%20by%20(instance)' \\\n    | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    print(r['metric']['instance'], r['value'][1])\"\napp-1:9090 1\napp-2:9090 1\napp-3:9090 1\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c 'instance='\n0\n\n--   앱은 자기가 몇 번째인지 모른다\n--   그래서 이미지가 하나여도 된다\n--   7.1절의 그 이야기다\n\n\n-- 죽으면 그것도 정보다\n\n$ docker stop app-3\n\n$ sleep 20 && curl -s 'localhost:9091/api/v1/query?query=up' | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    print('%-14s %s' % (r['metric']['instance'], r['value'][1]))\"\napp-1:9090     1\napp-2:9090     1\napp-3:9090     0\n\n$ curl -s 'localhost:9091/api/v1/targets?state=active' | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['data']['activeTargets']:\n    if t['health'] != 'up': print(t['labels']['instance'], t['lastError'])\"\napp-3:9090 Get \"http://app-3:9090/actuator/prometheus\":\n  dial tcp: connect: connection refused\n\n--   8.3절은 앱이 스스로 답했다\n--   여기는 답을 못 하는 것 자체가 값이다\n\n\n-- 주기보다 짧은 일은 접힌다\n\n$ curl -s -o /dev/null 'localhost:8080/report?heavy=true'\n$ curl -s localhost:9090/actuator/prometheus | grep 'requests_seconds_max' \\\n    | grep '/report'\nhttp_server_requests_seconds_max{...,uri=\"/report\"} 2.104\n\n$ sleep 20\n$ curl -s 'localhost:9091/api/v1/query?query=http_server_requests_seconds_max{uri=\"/report\"}' \\\n    | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result']\nprint(r[0]['value'][1] if r else '(없음)')\"\n2.104\n\n// 긁는 사이에 나고 사라지면\n$ curl -s -o /dev/null 'localhost:8080/report?heavy=true'\n$ sleep 150\n$ curl -s 'localhost:9091/api/v1/query?query=max_over_time(http_server_requests_seconds_max{uri=\"/report\"}[5m])' \\\n    | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result']\nprint(r[0]['value'][1] if r else '(없음)')\"\n0\n\n--   9.4절에서 최댓값이 몇 분 뒤 0 이 됐다\n--   그 사이에 안 긁혔으면 못 본다\n--   그래서 건수와 합계가 더 믿을 만하다\n\n\n-- 응답이 느리면 못 긁는다\n\n// 8.9절처럼 무거운 것을 엔드포인트에 두면\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:9090/actuator/prometheus\n11.412\n\n$ sleep 30 && curl -s 'localhost:9091/api/v1/targets?state=active' | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['data']['activeTargets']:\n    if t['health'] != 'up': print(t['labels']['instance'], t['lastError'])\"\napp-1:9090 context deadline exceeded\n\n$ curl -s 'localhost:9091/api/v1/query?query=up{instance=\"app-1:9090\"}' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['data']['result'][0]['value'][1])\"\n0\n\n--   10 초를 넘겨서 죽은 걸로 보인다\n--   멀쩡한데 안 보인다\n\n\n-- 주기를 정한다\n\nscrape_configs:\n  - job_name: orders\n    scrape_interval: 15s\n    metrics_path: /actuator/prometheus\n    static_configs:\n      - targets: ['app-1:9090']\n  - job_name: orders-slow\n    scrape_interval: 60s\n    metrics_path: /actuator/prometheus\n    params:\n      'includedNames': ['jvm_gc_pause_seconds_count']\n    static_configs:\n      - targets: ['app-1:9090']\n\n$ curl -s 'localhost:9090/actuator/prometheus?includedNames=jvm_gc_pause_seconds_count' \\\n    | grep -c '^[a-z]'\n2\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^[a-z]'\n436\n\n--   이름을 골라 긁을 수도 있다\n\n\n-- 얼마나 쌓이나\n\n$ curl -s 'localhost:9091/api/v1/query?query=prometheus_tsdb_head_series' \\\n    | python3 -c \"import json,sys; \\\nprint(int(float(json.load(sys.stdin)['data']['result'][0]['value'][1])), '계열')\"\n1308 계열\n\n$ python3 -c \"\ns = 1308; per = 2          # 표본당 약 2 바이트\nday = s * (86400/15) * per / 1e6\nprint('하루 %.1f MB' % day)\nprint('보름 %.1f MB' % (day * 15))\n\"\n하루 15.1 MB\n보름 226.0 MB\n\n$ docker exec $(docker ps -qf ancestor=prom/prometheus:v2.53.0) \\\n    du -sh /prometheus\n188M\t/prometheus\n\n--   9.1절에서 로그가 한 달 308GB 였다\n--   같은 트래픽에 226MB 다\n\n\n-- 히스토그램을 켜면\n\n$ curl -s 'localhost:9091/api/v1/query?query=prometheus_tsdb_head_series' \\\n    | python3 -c \"import json,sys; \\\nprint(int(float(json.load(sys.stdin)['data']['result'][0]['value'][1])), '계열')\"\n4102 계열\n\n$ python3 -c \"print('보름 %.0f MB' % (4102 * (86400/15) * 2 * 15 / 1e6))\"\n보름 709 MB\n\n--   9.4절에서 줄이 세 배가 됐던 그 값이다\n--   그래서 경계를 줄였다\n\n\n-- 보관 기간\n\n$ docker inspect $(docker ps -qf ancestor=prom/prometheus:v2.53.0) \\\n    | python3 -c \"\nimport json,sys\nfor a in json.load(sys.stdin)[0]['Args']: print(a)\" | grep -i retention\n(없음)\n\n$ curl -s localhost:9091/api/v1/status/flags | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['data']\nfor k in ('storage.tsdb.retention.time', 'storage.tsdb.retention.size'):\n    print('%-32s %s' % (k, d.get(k)))\"\nstorage.tsdb.retention.time      15d\nstorage.tsdb.retention.size      0B\n\n--   기본이 보름이다\n--   더 오래 두려면 다른 저장소로 넘긴다\n\n\n-- 컨테이너에서는 찾아 준다\n\nscrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n      - role: pod\n    relabel_configs:\n      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]\n        action: keep\n        regex: true\n      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]\n        target_label: __metrics_path__\n\n$ kubectl get pods -l app=orders -o jsonpath='{range .items[*]}{.metadata.name}{\"\\n\"}{end}'\norders-7d9c4f-2x8kq\norders-7d9c4f-5m1pv\norders-7d9c4f-9tzrw\n\n$ curl -s 'localhost:9091/api/v1/query?query=count(up{job=\"kubernetes-pods\"})' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['data']['result'][0]['value'][1])\"\n3\n\n--   ⑫ 4장에서 만든 그 파드들이다\n--   목록을 손으로 안 적는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '방향'      '수집기가 부름' \\\n  '앱'        '주소를 모름' \\\n  '살았나'    'up 이 0 이나 1' \\\n  '꼬리표'    '앱 넷, 수집기 넷' \\\n  '주기'      '15 초' \\\n  '사이의 일' '접힘' \\\n  '느리면'    '죽은 걸로 보임' \\\n  '계열'      '1308' \\\n  '보름'      '226MB' \\\n  '히스토그램' '4102 계열, 709MB'\n\n방향                       수집기가 부름\n앱                         주소를 모름\n살았나                     up 이 0 이나 1\n꼬리표                     앱 넷, 수집기 넷\n주기                       15 초\n사이의 일                  접힘\n느리면                     죽은 걸로 보임\n계열                       1308\n보름                       226MB\n히스토그램                 4102 계열, 709MB\n\n--   9.6절에서 이 값들에 질문을 던진다",
+   "note": "**앱은 DB 말고 아무 데도 안 붙고 수집기 주소를 코드에도 설정에도 안** 적었다.\n\n**꼬리표가 앱에서 넷·수집기에서 `instance`·`job`·`cluster`·`team` 넷으로** 합쳐진다.\n\n**한 대를 멈추니 `up` 이 0 이 되고 `connection refused` 가 그대로** 남는다.\n\n**응답이 11.4 초가 되니 `context deadline exceeded` 로 멀쩡한 앱이 죽은 걸로** 보인다.\n\n**계열 1308 개가 보름에 226MB 인데 히스토그램을 켜니 4102 계열·709MB** 가 된다."
+  }
+ ],
+ "recap": [
+  "**수집기가** 부른다.",
+  "**앱은 주소를** 모른다.",
+  "**죽으면 0** 이다.",
+  "**꼬리표가** 합쳐진다.",
+  "**어느 대인지 수집기가** 안다.",
+  "**사이의 일은** 접힌다.",
+  "**느리면 죽은 걸로** 본다.",
+  "**보름** 둔다.",
+  "**칸을 줄이면 계열도** 준다."
+ ],
+ "drills": [
+  {
+   "task": "수집 설정을 적는다.",
+   "done_when": "세 대가 up 인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "꼬리표 출처를 가른다.",
+   "done_when": "앱 것과 수집기 것을 나눴다.",
+   "minutes": 15
+  },
+  {
+   "task": "한 대를 멈춘다.",
+   "done_when": "up 이 0 이 된 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "계열 수와 디스크를 잰다.",
+   "done_when": "히스토그램 전후를 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "누가 누구를 부르나?",
+   "a": "수집기가 앱을 주기적으로 부른다."
+  },
+  {
+   "q": "앱이 죽으면 어떻게 아나?",
+   "a": "긁기 실패 자체가 0 이라는 값으로 남는다."
+  },
+  {
+   "q": "어느 대인지는 누가 붙이나?",
+   "a": "수집기가 붙인다. 앱은 자기 번호를 모른다."
+  },
+  {
+   "q": "응답이 느리면?",
+   "a": "시간이 밀려 멀쩡한 앱이 죽은 걸로 보인다."
+  },
+  {
+   "q": "히스토그램의 비용은?",
+   "a": "계열이 몇 배로 늘어 저장 공간이 그만큼 는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "긁기",
+   "def": "수집기가 노출 주소를 주기적으로 불러 값을 가져가는 것."
+  },
+  {
+   "term": "인스턴스 꼬리표",
+   "def": "긁을 때 수집기가 붙이는, 어느 대인지 가리키는 이름."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Prometheus — Configuration",
+   "url": "https://prometheus.io/docs/prometheus/latest/configuration/configuration/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Prometheus — Documentation",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Micrometer — Prometheus",
+   "url": "https://docs.micrometer.io/micrometer/reference/implementations/prometheus.html",
+   "publisher": "Micrometer"
+  }
+ ]
+}
