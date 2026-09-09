@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "method-name",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "메서드 이름으로 쿼리",
+ "summary": "이름을 파싱해 JPQL 을 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "파싱 순서를 안다.",
+  "쓸 수 있는 낱말을 안다.",
+  "기동 검증을 활용한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 JPQL 을 문자열로** 썼다. **이제 이름만 적는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 쿼리가 되는 과정",
+   "ascii": "   how the name becomes a query, at startup\n\n   findByUsernameAndAgeGreaterThan\n\n   subject     find, and everything up to By\n   predicate   UsernameAndAgeGreaterThan\n   split       Username, then AgeGreaterThan\n   resolve     each part against the entity, longest match first\n   build       select m from Member m where m.username = ?1 and m.age > ?2\n\n   the resolve step is why a field rename breaks the application at startup",
+   "note": "**필드 이름을 바꾸면 기동이** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "주어는 무시된다",
+   "md": "**`By` 앞은 아무거나 써도** 된다.\n\n> **`findBy`·`readBy`·`getBy`·`searchBy` 가 다** 같다.\n> **`findMemberBy` 도** 된다 — 중간 낱말은 무시한다.\n> **읽기 좋게 쓰는 용도**다.\n\n**`By` 뒤가 진짜** 조건이다.\n\n> **낙타 표기로** 자른다.\n> **긴 것부터 맞춰** 본다.\n> **`AgeGreaterThan` 이 `Age` + `GreaterThan` 으로** 갈린다.\n\n**필드 이름이 곧 규칙**이다.\n\n> **엔티티 필드를 바꾸면 메서드 이름도 바꿔야** 한다.\n> **안 바꾸면 기동이** 실패한다(4.3절).\n> **컴파일은 통과하니 IDE 가 못** 잡는다.\n\n**그게 장점이자 단점**이다.\n\n> **⑨ 의 \"빨리 실패하라\" 는** 만족한다.\n> **리팩터링 도구가 못 따라오는 건 문제**다.\n> **`@Query` 는 더** 나쁘다 — 문자열이니까(5.4절)."
+  },
+  {
+   "type": "figure",
+   "caption": "쓸 수 있는 낱말",
+   "ascii": "   the vocabulary, roughly\n\n   subject      find, read, get, query, search, stream, count, exists, delete\n   operators    Is, Equals, Between, LessThan, GreaterThan, After, Before\n                IsNull, NotNull, Like, StartingWith, Containing, In, NotIn\n                True, False, IgnoreCase\n   glue         And, Or\n   suffix       OrderBy, First, Top, Distinct\n\n   the subject word is ignored, so findBy and searchBy are the same query",
+   "note": "**주어가 무시되니 `findBy` 와 `searchBy` 가** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름이 금세 길어진다",
+   "md": "**조건 둘이면 아직** 읽힌다.\n\n> **`findByUsernameAndAge`** 다.\n> **셋부터 슬슬** 어렵다.\n> **넷이면 못 읽는다** — **5.2절에서 그 선을** 본다.\n\n**애매한 이름이 잘못 잘린다.**\n\n> **필드가 `addressZip` 인데 `Address` 도 있으면**,\n> **`findByAddressZip` 이 어느 쪽인지** 모호하다.\n> **`_` 로 경계를 찍을 수** 있다 — `findByAddress_Zip`.\n\n**중첩 속성도** 된다.\n\n> **`findByTeamName` 이 조인을** 만든다.\n> **4.4절의 `Sort.by(\"team.name\")` 과 같은** 것이다.\n> **깊어지면 `_` 를** 쓴다.\n\n**`Top`·`First` 로 개수를 제한**한다.\n\n> **`findTop3ByOrderByAgeDesc`** 다.\n> **`limit` 이** 붙는다.\n> **`Distinct` 도 쓸 수** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 가장 단순한 것\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    List<Member> findByUsername(String username);\n}\n\n@Test\n@Transactional\nvoid 이름으로() {\n    memberRepository.findByUsername(\"m1\");\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n\n--   4.1절에서 손으로 쓴 JPQL 과 같다\n--   이번엔 이름만 적었다\n\n\n-- 주어는 무시된다\n\nList<Member> findByUsername(String username);\nList<Member> readByUsername(String username);\nList<Member> getByUsername(String username);\nList<Member> searchByUsername(String username);\nList<Member> queryByUsername(String username);\nList<Member> findMemberByUsername(String username);\n\n@Test\n@Transactional\nvoid 주어_비교() {\n    em.clear(); memberRepository.findByUsername(\"m1\");\n    em.clear(); memberRepository.searchByUsername(\"m1\");\n    em.clear(); memberRepository.findMemberByUsername(\"m1\");\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.username=?\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.username=?\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.username=?\n\n--   셋이 같다\n--   By 앞은 읽기 좋으라고 쓰는 것이다\n\n\n-- 조건 둘\n\nList<Member> findByUsernameAndAgeGreaterThan(String username, int age);\n\n@Test\n@Transactional\nvoid 조건_둘() {\n    memberRepository.findByUsernameAndAgeGreaterThan(\"m1\", 5);\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\n        and m1_0.age>?\nTRACE o.h.orm.jdbc.bind : binding parameter (1:VARCHAR) <- [m1]\nTRACE o.h.orm.jdbc.bind : binding parameter (2:INTEGER) <- [5]\n\n--   순서대로 바인딩된다\n--   파라미터 이름은 아무거나 써도 된다\n--   위치가 규칙이다\n\n\n-- 연산자들\n\nList<Member> findByAgeBetween(int from, int to);\nList<Member> findByAgeLessThanEqual(int age);\nList<Member> findByUsernameLike(String pattern);\nList<Member> findByUsernameStartingWith(String prefix);\nList<Member> findByUsernameContaining(String part);\nList<Member> findByTeamIsNull();\nList<Member> findByUsernameIn(Collection<String> names);\nList<Member> findByUsernameIgnoreCase(String username);\n\n@Test\n@Transactional\nvoid 연산자들() {\n    em.clear(); memberRepository.findByAgeBetween(10, 20);\n    em.clear(); memberRepository.findByUsernameStartingWith(\"m\");\n    em.clear(); memberRepository.findByUsernameContaining(\"1\");\n    em.clear(); memberRepository.findByTeamIsNull();\n    em.clear(); memberRepository.findByUsernameIgnoreCase(\"M1\");\n}\n\nHibernate: select ... where m1_0.age between ? and ?\nHibernate: select ... where m1_0.username like ? escape '\\'\nHibernate: select ... where m1_0.username like ? escape '\\'\nHibernate: select ... where m1_0.team_id is null\nHibernate: select ... where upper(m1_0.username)=upper(?)\n\nTRACE binding parameter (1:VARCHAR) <- [m%]\nTRACE binding parameter (1:VARCHAR) <- [%1%]\n\n--   StartingWith 는 m% 다\n--   Containing 은 %1% 다\n--   패턴을 붙여 준다\n--   IgnoreCase 는 upper 로 감쌌다\n\n\n-- Like 는 직접 붙여야 한다\n\n@Test\n@Transactional\nvoid like_직접() {\n    em.clear();\n    memberRepository.findByUsernameLike(\"m%\");\n}\n\nHibernate: select ... where m1_0.username like ? escape '\\'\nTRACE binding parameter (1:VARCHAR) <- [m%]\n\n--   내가 % 를 넣었다\n--   StartingWith 와 SQL 은 같다\n\n\n-- 개수 제한\n\nList<Member> findTop3ByOrderByAgeDesc();\nMember findFirstByOrderByAgeAsc();\nList<Member> findDistinctByAgeGreaterThan(int age);\n\n@Test\n@Transactional\nvoid 개수_제한() {\n    em.clear(); memberRepository.findTop3ByOrderByAgeDesc();\n    em.clear(); memberRepository.findFirstByOrderByAgeAsc();\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age desc\n    fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [3]\n\nHibernate:\n    select ... order by m1_0.age asc fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [1]\n\n--   fetch first 가 붙었다\n--   Top3 이 3 으로 바인딩됐다\n\n\n-- 중첩 속성은 조인이다\n\nList<Member> findByTeamName(String name);\n\n@Test\n@Transactional\nvoid 중첩() {\n    em.clear();\n    memberRepository.findByTeamName(\"A팀\");\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n\n--   inner join 이다\n--   4.4절의 정렬은 left join 이었다\n--   조건이면 inner 다\n\n\n-- 모호하면 _ 로 찍는다\n\n@Entity\npublic class Member {\n    private String teamName;             // 필드가 있다\n    @ManyToOne private Team team;        // 연관도 있다\n}\n\nList<Member> findByTeamName(String name);\n\n@Test\n@Transactional\nvoid 모호() {\n    em.clear();\n    memberRepository.findByTeamName(\"A팀\");\n}\n\nHibernate:\n    select ... from member m1_0 where m1_0.team_name=?\n\n--   필드를 골랐다\n--   긴 것부터 맞춰서다\n\nList<Member> findByTeam_Name(String name);\n\nHibernate:\n    select ... from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n\n--   _ 로 경계를 찍으면 연관이다\n\n\n-- 없는 필드면 기동이 죽는다\n\nList<Member> findByUsernam(String username);   // e 가 빠졌다\n\n$ ./gradlew bootRun\n\nAPPLICATION FAILED TO START\n\nCaused by: PropertyReferenceException:\n    No property 'usernam' found for type 'Member';\n    Did you mean 'username'?\n\n--   추천까지 해 준다\n--   4.3절에서 본 그 검증이다\n\n\n-- 필드 이름을 바꾸면\n\n@Entity\npublic class Member {\n    private String name;      // username 에서 바꿨다\n}\n\n$ ./gradlew compileJava\n\nBUILD SUCCESSFUL\n\n--   컴파일은 통과한다\n--   findByUsername 이 그대로 남아 있다\n\n$ ./gradlew bootRun\n\nPropertyReferenceException: No property 'username' found for type 'Member'\n\n--   기동에서 잡았다\n--   IDE 리팩터링이 메서드 이름은 못 바꾼다\n\n\n-- 개수와 존재도 된다\n\nlong countByAgeGreaterThan(int age);\nboolean existsByUsername(String username);\n\n@Test\n@Transactional\nvoid 개수와_존재() {\n    em.clear();\n    System.out.println(\"수: \" + memberRepository.countByAgeGreaterThan(15));\n    System.out.println(\"존재: \" + memberRepository.existsByUsername(\"m1\"));\n}\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>?\n수: 2\nHibernate:\n    select\n        m1_0.member_id\n    from\n        member m1_0\n    where\n        m1_0.username=?\n    fetch first ? rows only\n존재: true\n\n--   exists 는 한 건만 읽는다\n--   4.4절의 existsById 와 다르다\n\n\n-- 어떤 JPQL 이 만들어졌나\n\nlogging.level.org.springframework.data.jpa.repository.query: debug\n\n$ ./gradlew bootRun\n\nDEBUG PartTreeJpaQuery : Created query for method\n    public abstract java.util.List MemberRepository.findByUsernameAndAgeGreaterThan(String,int):\n    select m from Member m where m.username = ?1 and m.age > ?2\n\n--   기동 로그에 JPQL 이 찍힌다\n--   4.3절에서 본 그것이다\n--   내가 안 쓴 문자열이다",
+   "note": "**`findBy`·`searchBy`·`findMemberBy` 가 같은 SQL 을** 낸다 — 주어는 무시된다.\n\n**`StartingWith` 가 `m%`, `Containing` 이 `%1%` 로 패턴을 붙여** 준다.\n\n**`findTop3ByOrderByAgeDesc` 가 `fetch first ? rows only` 에 `3` 을** 바인딩한다.\n\n**중첩 속성은 `inner join`, 모호하면 필드가 이기고 `_` 로 경계를** 찍는다.\n\n**필드 이름만 바꾸면 컴파일은 통과하고 기동에서** 터진다."
+  }
+ ],
+ "recap": [
+  "**이름을 파싱해 JPQL 을** 만든다.",
+  "**주어는** 무시된다.",
+  "**`By` 뒤가 조건**이다.",
+  "**긴 것부터 맞춰** 본다.",
+  "**파라미터는 위치로** 맞춘다.",
+  "**패턴을 붙여** 준다.",
+  "**중첩 속성은 조인**이다.",
+  "**모호하면 `_` 로** 찍는다.",
+  "**필드를 바꾸면 기동이** 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "주어를 바꿔 가며 선언한다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "여러 연산자를 써 본다.",
+   "done_when": "패턴 바인딩을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "중첩 속성으로 조회한다.",
+   "done_when": "조인이 생기는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필드 이름을 바꿔 본다.",
+   "done_when": "기동에서 잡히는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`By` 앞의 낱말은?",
+   "a": "무시된다. 읽기 좋게 쓰는 용도다."
+  },
+  {
+   "q": "`StartingWith` 와 `Like` 의 차이는?",
+   "a": "전자는 패턴을 붙여 주고 후자는 직접 넣어야 한다."
+  },
+  {
+   "q": "중첩 속성 조회의 SQL 은?",
+   "a": "조건이면 inner join 이 붙는다."
+  },
+  {
+   "q": "이름이 모호할 때는?",
+   "a": "`_` 로 속성 경계를 명시한다."
+  },
+  {
+   "q": "필드 이름을 바꾸면?",
+   "a": "컴파일은 통과하고 기동 시점에 실패한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "쿼리 메서드",
+   "def": "메서드 이름을 파싱해 쿼리를 만드는 방식."
+  },
+  {
+   "term": "속성 경계",
+   "def": "`_` 로 표시하는 중첩 속성의 구분 지점."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

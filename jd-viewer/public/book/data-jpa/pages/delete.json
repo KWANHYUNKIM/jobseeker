@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "delete",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "삭제 메서드들",
+ "summary": "deleteAll 과 deleteAllInBatch.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 계열을 구분한다.",
+  "쿼리 수를 안다.",
+  "배치의 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 `deleteById` 가 조회를 먼저** 했다. **왜 그런지 여기서** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 계열",
+   "ascii": "   two families of delete, and they behave nothing alike\n\n   entity level    load it, then remove it, one statement per row\n                   lifecycle callbacks run, cascade applies, cache updates\n\n   batch           one delete statement, no loading at all\n                   nothing runs, nothing cascades, the cache is now stale\n\n   the second is faster and it lies to the persistence context",
+   "note": "**뒤가 빠르고 영속성 컨텍스트에게 거짓말을** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "엔티티를 지우려면 엔티티가 있어야 한다",
+   "md": "**`em.remove` 는 객체를** 받는다.\n\n> **식별자만으로는 못** 부른다.\n> **그래서 `deleteById` 가 먼저** 조회한다.\n> **1.2절에서 본 그** SQL 이다.\n\n**콜백이 돌아야** 한다.\n\n> **`@PreRemove` 같은 것**이다.\n> **cascade 도 엔티티를 봐야 따라간다.**\n> **1차 캐시에서도 빼야** 한다.\n\n**배치는 그걸 다** 건너뛴다.\n\n> **JPQL `delete` 한 방**이다.\n> **콜백도 cascade 도 안** 돈다.\n> **캐시는 지워진 걸** 모른다.\n\n**그래서 `clear` 가** 필요하다.\n\n> **5.12절의 벌크 수정과 같은** 문제다.\n> **안 하면 지운 행을 다시 읽어**온다.\n> **거기서 자세히** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "백 건을 지울 때",
+   "ascii": "   statements for deleting one hundred rows\n\n   deleteAll()             one select, then one hundred deletes\n   deleteAllInBatch()      one delete\n   deleteById(id) x100     one hundred selects, one hundred deletes\n   deleteAllByIdInBatch    one delete, with an in clause\n\n   the third one is what a loop in a service layer usually produces",
+   "note": "**셋째가 서비스 반복문이 만드는 모양**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "외래 키가 배치를 막는다",
+   "md": "**자식이 있으면 부모를 못** 지운다.\n\n> **3.2절에서 이미** 봤다.\n> **배치는 cascade 를 안 따라가서 더** 자주 만난다.\n> **자식을 먼저 지워야** 한다.\n\n**`deleteAllInBatch` 는 조건이** 없다.\n\n> **`delete from member` 다.**\n> **테이블을 통째로** 비운다.\n> **테스트 정리에 쓰기** 좋다.\n\n**조건이 필요하면 파생 삭제**다.\n\n> **`deleteByUsername(String)`** 처럼 쓴다(5.1절).\n> **그건 배치가 아니다** — 조회하고 하나씩 지운다.\n> **`@Modifying @Query` 로 진짜 배치를 만든다**(5.12절).\n\n**`orphanRemoval` 과 헷갈리지** 않는다.\n\n> **컬렉션에서 빼면 지우는** 옵션이다.\n> **엔티티 단위 삭제에만** 동작한다.\n> **배치로는 안** 걸린다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- deleteById 는 조회부터 한다\n\n@Test\n@Transactional\nvoid deleteById() {\n    Member m = memberRepository.save(new Member(\"김\", 20));\n    em.flush(); em.clear();\n\n    System.out.println(\"--- deleteById ---\");\n    memberRepository.deleteById(m.getId());\n    em.flush();\n}\n\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\n--- deleteById ---\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\nHibernate:\n    delete\n    from\n        member\n    where\n        member_id=?\n\n--   조회하고 지운다\n--   1.2절에서 본 그것이다\n\n\n-- SimpleJpaRepository 의 코드\n\n@Transactional\npublic void deleteById(ID id) {\n    Assert.notNull(id, \"The given id must not be null\");\n    findById(id).ifPresent(this::delete);\n}\n\n@Transactional\npublic void delete(T entity) {\n    ...\n    entityManager.remove(entityManager.contains(entity)\n            ? entity : entityManager.merge(entity));\n}\n\n--   delete 도 준영속이면 merge 를 한다\n--   4.6절과 같은 분기다\n\n\n-- 없는 id 를 지우면\n\n@Test\n@Transactional\nvoid 없는_id() {\n    em.clear();\n    memberRepository.deleteById(999L);\n    System.out.println(\"--- 예외가 안 났다 ---\");\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n--- 예외가 안 났다 ---\n\n--   delete 가 안 나갔다\n--   ifPresent 라 조용히 넘어간다\n--   버전에 따라 예외를 내기도 한다\n\n\n-- deleteAll 은 하나씩 지운다\n\n@Test\n@Transactional\nvoid deleteAll() {\n    for (int i = 0; i < 5; i++) em.persist(new Member(\"m\" + i, i));\n    em.flush(); em.clear();\n\n    long n = counter.count(() -> {\n        memberRepository.deleteAll();\n        em.flush();\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\n쿼리 6개\n\n--   조회 하나에 삭제 다섯이다\n--   백 건이면 101 개다\n\n\n-- deleteAllInBatch 는 한 방이다\n\n@Test\n@Transactional\nvoid deleteAllInBatch() {\n    for (int i = 0; i < 5; i++) em.persist(new Member(\"m\" + i, i));\n    em.flush(); em.clear();\n\n    long n = counter.count(() -> memberRepository.deleteAllInBatch());\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    delete\n    from\n        member\n쿼리 1개\n\n--   조건이 없다\n--   테이블을 비운다\n\n\n-- 반복문이 만드는 모양\n\n@Test\n@Transactional\nvoid 반복문() {\n    List<Long> ids = new ArrayList<>();\n    for (int i = 0; i < 5; i++) {\n        Member m = new Member(\"m\" + i, i);\n        em.persist(m);\n        ids.add(m.getId());\n    }\n    em.flush(); em.clear();\n\n    long n = counter.count(() -> {\n        ids.forEach(memberRepository::deleteById);\n        em.flush();\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate: delete from member where member_id=?\n... (다섯 번)\n쿼리 10개\n\n--   조회 다섯에 삭제 다섯이다\n--   서비스 반복문이 이 모양이다\n\n\n-- deleteAllByIdInBatch 면\n\n@Test\n@Transactional\nvoid id_배치() {\n    List<Long> ids = new ArrayList<>();\n    for (int i = 0; i < 5; i++) {\n        Member m = new Member(\"m\" + i, i);\n        em.persist(m);\n        ids.add(m.getId());\n    }\n    em.flush(); em.clear();\n\n    long n = counter.count(() ->\n            memberRepository.deleteAllByIdInBatch(ids));\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    delete\n    from\n        member\n    where\n        member_id in (?, ?, ?, ?, ?)\n쿼리 1개\n\n--   10개가 1개가 됐다\n\n\n-- 배치는 캐시를 모른다\n\n@Test\n@Transactional\nvoid 캐시가_모른다() {\n    Member m = memberRepository.save(new Member(\"김\", 20));\n    em.flush();\n\n    System.out.println(\"--- 배치로 지운다 ---\");\n    memberRepository.deleteAllInBatch();\n\n    System.out.println(\"영속 상태: \" + em.contains(m));\n    Member found = memberRepository.findById(m.getId()).orElse(null);\n    System.out.println(\"조회 결과: \" + (found != null ? \"있다\" : \"없다\"));\n}\n\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\n--- 배치로 지운다 ---\nHibernate: delete from member\n영속 상태: true\n조회 결과: 있다\n\n--   지웠는데 있다고 한다\n--   1차 캐시가 답했다\n--   SQL 이 아예 안 나갔다\n\n\n-- clear 하면 진실이 보인다\n\n@Test\n@Transactional\nvoid clear_하면() {\n    Member m = memberRepository.save(new Member(\"김\", 20));\n    em.flush();\n    memberRepository.deleteAllInBatch();\n    em.clear();\n\n    Member found = memberRepository.findById(m.getId()).orElse(null);\n    System.out.println(\"조회 결과: \" + (found != null ? \"있다\" : \"없다\"));\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?)\nHibernate: delete from member\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n조회 결과: 없다\n\n--   5.12절의 벌크 수정과 같은 문제다\n\n\n-- 콜백이 안 돈다\n\n@Entity\npublic class Member {\n    @PreRemove\n    public void 삭제_직전() {\n        System.out.println(\"[콜백] \" + username + \" 을 지운다\");\n    }\n}\n\n@Test\n@Transactional\nvoid 콜백_비교() {\n    for (int i = 0; i < 3; i++) em.persist(new Member(\"m\" + i, i));\n    em.flush(); em.clear();\n\n    System.out.println(\"--- deleteAll ---\");\n    memberRepository.deleteAll();\n    em.flush();\n}\n\n--- deleteAll ---\nHibernate: select m1_0.member_id, ... from member m1_0\n[콜백] m0 을 지운다\n[콜백] m1 을 지운다\n[콜백] m2 을 지운다\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\n\n@Test\n@Transactional\nvoid 배치는_안_돈다() {\n    for (int i = 0; i < 3; i++) em.persist(new Member(\"m\" + i, i));\n    em.flush(); em.clear();\n\n    System.out.println(\"--- deleteAllInBatch ---\");\n    memberRepository.deleteAllInBatch();\n}\n\n--- deleteAllInBatch ---\nHibernate: delete from member\n\n--   콜백이 하나도 안 돌았다\n--   감사 로그를 콜백에 뒀다면 안 남는다\n\n\n-- cascade 도 안 따라간다\n\n@Entity\npublic class Team {\n    @OneToMany(mappedBy = \"team\", cascade = CascadeType.ALL,\n               orphanRemoval = true)\n    private List<Member> members = new ArrayList<>();\n}\n\n@Test\n@Transactional\nvoid cascade_동작() {\n    Team t = new Team(\"A팀\");\n    em.persist(t);\n    t.getMembers().add(new Member(\"a\", 20, t));\n    t.getMembers().add(new Member(\"b\", 21, t));\n    em.flush(); em.clear();\n\n    System.out.println(\"--- teamRepository.deleteAll ---\");\n    teamRepository.deleteAll();\n    em.flush();\n}\n\n--- teamRepository.deleteAll ---\nHibernate: select t1_0.team_id, t1_0.name from team t1_0\nHibernate: select m1_0.team_id, m1_0.member_id, m1_0.age, m1_0.username\n           from member m1_0 where m1_0.team_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from team where team_id=?\n\n--   회원을 먼저 지웠다\n--   cascade 가 따라갔다\n\n@Test\n@Transactional\nvoid cascade_안_따라간다() {\n    Team t = new Team(\"A팀\");\n    em.persist(t);\n    t.getMembers().add(new Member(\"a\", 20, t));\n    em.flush(); em.clear();\n\n    System.out.println(\"--- deleteAllInBatch ---\");\n    teamRepository.deleteAllInBatch();\n}\n\n--- deleteAllInBatch ---\nHibernate: delete from team\n\nJdbcSQLIntegrityConstraintViolationException:\n    Referential integrity constraint violation:\n    \"FKL7WSNY760HJY6X19KQNDUASBM: PUBLIC.MEMBER FOREIGN KEY(TEAM_ID)\"\n\n--   3.2절에서 본 그 제약이다\n--   자식을 먼저 지워야 한다\n\n\n-- 순서를 맞추면\n\n@Test\n@Transactional\nvoid 순서를_맞춘다() {\n    Team t = new Team(\"A팀\");\n    em.persist(t);\n    t.getMembers().add(new Member(\"a\", 20, t));\n    em.flush(); em.clear();\n\n    long n = counter.count(() -> {\n        memberRepository.deleteAllInBatch();\n        teamRepository.deleteAllInBatch();\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: delete from member\nHibernate: delete from team\n쿼리 2개\n\n--   테스트 정리에 쓰기 좋다\n\n\n-- 조건부 삭제는 파생 메서드다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    long deleteByAgeLessThan(int age);\n}\n\n@Test\n@Transactional\nvoid 조건부_삭제() {\n    for (int i = 0; i < 5; i++) em.persist(new Member(\"m\" + i, i * 10));\n    em.flush(); em.clear();\n\n    long n = counter.count(() -> {\n        long deleted = memberRepository.deleteByAgeLessThan(25);\n        System.out.println(\"지운 건수: \" + deleted);\n        em.flush();\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.age<?\n지운 건수: 3\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\nHibernate: delete from member where member_id=?\n쿼리 4개\n\n--   배치가 아니다\n--   조회하고 하나씩 지운다\n--   5.1절에서 이름 규칙을 본다\n\n\n-- 진짜 배치로 하려면\n\n@Modifying\n@Query(\"delete from Member m where m.age < :age\")\nint deleteOldInBatch(@Param(\"age\") int age);\n\n@Test\n@Transactional\nvoid 진짜_배치() {\n    for (int i = 0; i < 5; i++) em.persist(new Member(\"m\" + i, i * 10));\n    em.flush(); em.clear();\n\n    long n = counter.count(() ->\n            System.out.println(\"지운 건수: \" +\n                    memberRepository.deleteOldInBatch(25)));\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    delete\n    from\n        member\n    where\n        age<?\n지운 건수: 3\n쿼리 1개\n\n--   4개가 1개가 됐다\n--   5.12절에서 @Modifying 을 자세히 본다\n\n\n-- 4장을 한 화면에\n\n$ printf '%-24s %s\\n' \\\n  'deleteById' '조회 1 + 삭제 1' \\\n  'deleteAll' '조회 1 + 삭제 N' \\\n  'deleteAllInBatch' '삭제 1, 조건 없음' \\\n  'deleteAllByIdInBatch' '삭제 1, in 절' \\\n  'deleteByXxx (파생)' '조회 1 + 삭제 N' \\\n  '@Modifying @Query' '삭제 1, 조건 있음'\n\ndeleteById               조회 1 + 삭제 1\ndeleteAll                조회 1 + 삭제 N\ndeleteAllInBatch         삭제 1, 조건 없음\ndeleteAllByIdInBatch     삭제 1, in 절\ndeleteByXxx (파생)       조회 1 + 삭제 N\n@Modifying @Query        삭제 1, 조건 있음\n\n--   5장에서 파생 메서드를 본다",
+   "note": "**`deleteById` 가 `select` 뒤에 `delete`** 를 낸다 — `em.remove` 는 객체를 받아서다.\n\n**다섯 건에 `deleteAll` 은 `6개`, `deleteAllInBatch` 는 `1개`** 다.\n\n**배치로 지운 뒤 조회하면 캐시가 \"있다\" 고** 답한다.\n\n**`@PreRemove` 콜백이 배치에서는 하나도 안** 돈다.\n\n**cascade 도 안 따라가 외래 키 제약에** 걸린다."
+  }
+ ],
+ "recap": [
+  "**엔티티 삭제는 조회가** 먼저다.",
+  "**`em.remove` 는 객체를** 받는다.",
+  "**콜백과 cascade 가** 돈다.",
+  "**배치는 그걸 다** 건너뛴다.",
+  "**한 방에 지우고 캐시는** 모른다.",
+  "**`clear` 가** 필요하다.",
+  "**외래 키가 배치를** 막는다.",
+  "**파생 삭제는 배치가** 아니다.",
+  "**진짜 배치는 `@Modifying`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`deleteById` 의 SQL 을 본다.",
+   "done_when": "조회가 앞서는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "두 방식으로 다섯 건을 지운다.",
+   "done_when": "쿼리 수를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배치 뒤에 조회한다.",
+   "done_when": "캐시가 거짓을 주는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@PreRemove` 를 붙인다.",
+   "done_when": "배치에서 안 도는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`deleteById` 가 조회를 먼저 하는 이유는?",
+   "a": "`em.remove` 가 엔티티 객체를 받기 때문이다."
+  },
+  {
+   "q": "`deleteAll` 과 `deleteAllInBatch` 의 쿼리 수는?",
+   "a": "전자는 조회 1 + 삭제 N, 후자는 삭제 1이다."
+  },
+  {
+   "q": "배치 삭제 뒤 주의할 점은?",
+   "a": "영속성 컨텍스트가 모르므로 `clear` 가 필요하다."
+  },
+  {
+   "q": "배치에서 안 도는 것은?",
+   "a": "생명주기 콜백과 cascade 다."
+  },
+  {
+   "q": "조건부 배치 삭제는 어떻게 하나?",
+   "a": "`@Modifying` 을 붙인 `@Query` 로 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "배치 삭제",
+   "def": "엔티티를 읽지 않고 delete 문 하나로 지우는 방식."
+  },
+  {
+   "term": "생명주기 콜백",
+   "def": "`@PreRemove` 처럼 엔티티 상태 변화 시점에 불리는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
