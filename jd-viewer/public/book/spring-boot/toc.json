@@ -220,7 +220,7 @@
           "title": "JAR 안에 JAR 는 못 넣는다",
           "summary": "자바의 제약.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -228,7 +228,7 @@
           "title": "Fat JAR 의 문제",
           "summary": "같은 이름이 겹친다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",

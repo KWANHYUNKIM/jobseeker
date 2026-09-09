@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "jar-limits",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "JAR 안에 JAR 는 못 넣는다",
+ "summary": "자바의 제약.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "제약을 확인한다.",
+  "URL 형식을 안다.",
+  "우회 두 가지를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 JAR 를 그대로 넣으니 안** 됐다. **왜 안 되는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "표준 로더가 열 수 있는 것",
+   "ascii": "   what the standard class loader can open\n\n   a directory on disk    yes, it walks it\n   a jar file on disk     yes, it treats it as an archive\n   a jar inside a jar     no, there is no url for that\n\n   the third line is a limit of the specification, not of the tool",
+   "note": "**셋째 줄은 도구가 아니라 규약의** 한계다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "중첩 JAR 를 가리킬 URL 형식이 없다",
+   "md": "**JAR 는 압축 파일**이다.\n\n> **`ZipFile` 로** 연다.\n> **파일 시스템의 파일이어야** 한다.\n> **메모리 안의 바이트가** 아니다.\n\n**URL 이 한 겹까지**다.\n\n> **`jar:file:/a.jar!/b`** 다.\n> **느낌표가 하나뿐**이다.\n> **아래에서 그걸** 시도한다.\n\n**그래서 두 길밖에** 없다.\n\n> **풀어서 넣거나(4.4절)** 다.\n> **직접 읽는 로더를 만들거나**다.\n> **부트가 둘째를** 골랐다.\n\n**JSP 도 같은 뿌리**다.\n\n> **3.7절에서 404 였다.**\n> **엔진이 파일 경로를** 본다.\n> **JAR 안 경로를 못** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "자바가 아는 URL",
+   "ascii": "   the url forms java understands out of the box\n\n   file colon slash path\n   jar colon file colon slash path bang slash entry\n\n   there is no second bang, so nesting one level is all you get",
+   "note": "**느낌표가 둘인 형식이 없어 한 겹이** 끝이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "풀어 넣는 쪽도 대가가 있다",
+   "md": "**출처가** 사라진다.\n\n> **어느 라이브러리 클래스인지 모른**다.\n> **버전도 안** 남는다.\n> **아래에서 확인**한다.\n\n**서명이** 깨진다.\n\n> **서명된 JAR 는 무결성 검사가** 있다.\n> **풀면 그게** 깨진다.\n> **암호 라이브러리에서 문제가** 된다.\n\n**같은 경로가** 겹친다.\n\n> **4.4절에서 경고 셋을** 봤다.\n> **4.6절에서 그게 무엇을 깨는지** 본다.\n> **조용히 덮어**쓴다.\n\n**부트는 안 푼**다.\n\n> **`BOOT-INF/lib` 에 JAR 그대로**다.\n> **4.7절에서** 확인한다.\n> **대신 로더를 만들었다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 중첩 JAR 를 만든다\n\n$ mkdir -p /tmp/nest && cd /tmp/nest\n$ cat > Hello.java <<'EOF'\npublic class Hello {\n    public static String say() { return \"hello from inner\"; }\n}\nEOF\n$ javac Hello.java && jar cf inner.jar Hello.class\n$ ls -l inner.jar\n-rw-r--r--  1 kwanhyun  staff  512  inner.jar\n\n$ cat > Main.java <<'EOF'\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(Hello.say());\n    }\n}\nEOF\n$ javac -cp inner.jar Main.java\n$ jar cfe outer.jar Main Main.class inner.jar\n\n$ unzip -l outer.jar\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n        0  09-10-2026 05:27   META-INF/\n      101  09-10-2026 05:27   META-INF/MANIFEST.MF\n      612  09-10-2026 05:27   Main.class\n      512  09-10-2026 05:27   inner.jar\n\n--   JAR 안에 JAR 가 있다\n\n\n-- 돌려 본다\n\n$ java -jar outer.jar\n\nException in thread \"main\" java.lang.NoClassDefFoundError: Hello\n\tat Main.main(Main.java:3)\nCaused by: java.lang.ClassNotFoundException: Hello\n\tat java.base/jdk.internal.loader.BuiltinClassLoader.loadClass\n\n--   파일은 있는데 못 읽는다\n--   4.4절에서 본 그것이다\n\n\n-- 클래스패스에 적어도 안 된다\n\n$ jar cfm outer2.jar - Main.class inner.jar <<'EOF'\nMain-Class: Main\nClass-Path: inner.jar\nEOF\n\n$ java -jar outer2.jar\nException in thread \"main\" java.lang.NoClassDefFoundError: Hello\n\n--   Class-Path 는 바깥 파일을 가리킨다\n--   JAR 안을 가리키는 게 아니다\n\n\n-- 밖에 두면 된다\n\n$ unzip -o -j outer.jar inner.jar > /dev/null\n$ java -jar outer.jar\nException in thread \"main\" java.lang.NoClassDefFoundError: Hello\n\n$ java -cp 'outer.jar:inner.jar' Main\nhello from inner\n\n--   파일로 있으면 읽는다\n--   같은 JAR 인데 자리가 다르다\n\n\n-- URL 로 직접 열어 본다\n\npublic class UrlTest {\n    public static void main(String[] args) throws Exception {\n        // 한 겹은 된다\n        var one = new java.net.URL(\"jar:file:/tmp/nest/inner.jar!/Hello.class\");\n        try (var in = one.openStream()) {\n            System.out.println(\"한 겹: \" + in.readAllBytes().length + \" 바이트\");\n        }\n\n        // 두 겹은?\n        var two = new java.net.URL(\n                \"jar:file:/tmp/nest/outer.jar!/inner.jar!/Hello.class\");\n        try (var in = two.openStream()) {\n            System.out.println(\"두 겹: \" + in.readAllBytes().length);\n        } catch (Exception e) {\n            System.out.println(\"두 겹: \" + e.getClass().getSimpleName()\n                    + \" - \" + e.getMessage());\n        }\n    }\n}\n\n$ java UrlTest\n한 겹: 512 바이트\n두 겹: IOException - no !/ in spec\n\n--   느낌표가 둘이면 못 읽는다\n--   형식이 없다\n\n\n-- 왜 그런가\n\n$ javap -p java.net.JarURLConnection | grep -i 'entryName\\|jarFileURL'\n  protected java.net.URL jarFileURL;\n  protected java.lang.String entryName;\n\n// JDK 소스의 파싱 부분\nint separator = spec.indexOf(\"!/\");\nif (separator == -1) {\n    throw new MalformedURLException(\"no !/ in spec\");\n}\nthis.jarFileURL = new URL(spec.substring(0, separator));\nthis.entryName = spec.substring(separator + 2);\n\n--   느낌표를 한 번만 찾는다\n--   앞은 파일, 뒤는 엔트리 이름이다\n\n\n-- ZipFile 도 파일이 필요하다\n\n$ javap java.util.zip.ZipFile | grep 'public java.util.zip.ZipFile'\n  public java.util.zip.ZipFile(java.lang.String) throws java.io.IOException;\n  public java.util.zip.ZipFile(java.io.File) throws java.io.IOException;\n  public java.util.zip.ZipFile(java.io.File, int) throws java.io.IOException;\n\n--   전부 파일 경로다\n--   InputStream 을 받는 생성자가 없다\n\n\n-- 4.4 절의 두 방식을 다시 본다\n\n$ unzip -l build/libs/fat.jar | grep -c '\\.jar$'\n0\n$ unzip -l build/libs/nested.jar | grep -c '\\.jar$'\n12\n\n$ java -jar build/libs/fat.jar 2>&1 | head -1\n1. 스프링 컨테이너를 만든다\n$ java -jar build/libs/nested.jar 2>&1 | head -2 | tail -1\nException in thread \"main\" java.lang.NoClassDefFoundError:\n\n--   푼 쪽만 돈다\n\n\n-- 푼 쪽의 대가 ① 출처가 사라진다\n\n$ unzip -l build/libs/fat.jar | grep 'DispatcherServlet.class'\n    12841  org/springframework/web/servlet/DispatcherServlet.class\n\npublic class WhereFrom {\n    public static void main(String[] args) {\n        var src = org.springframework.web.servlet.DispatcherServlet.class\n                .getProtectionDomain().getCodeSource();\n        System.out.println(\"출처: \" + (src == null ? \"없음\" : src.getLocation()));\n\n        var pkg = org.springframework.web.servlet.DispatcherServlet.class\n                .getPackage();\n        System.out.println(\"버전: \" + pkg.getImplementationVersion());\n    }\n}\n\n// Fat JAR 로 실행\n$ java -cp build/libs/fat.jar WhereFrom\n출처: file:/Users/kwanhyun/.../build/libs/fat.jar\n버전: null\n\n// 원래 JAR 로 실행\n$ java -cp \"$(./gradlew -q printClasspath)\" WhereFrom\n출처: file:/Users/kwanhyun/.gradle/caches/.../spring-webmvc-6.1.11.jar\n버전: 6.1.11\n\n--   Fat JAR 에서는 버전이 null 이다\n--   어느 라이브러리인지도 모른다\n\n\n-- 부트 JAR 는 어떤가\n\n$ java -cp build/libs/app-boot.jar \\\n    -Dloader.main=WhereFrom \\\n    org.springframework.boot.loader.launch.PropertiesLauncher 2>/dev/null \\\n  || java -jar build/libs/app-boot.jar --run-where-from\n\n출처: jar:file:/.../app-boot.jar!/BOOT-INF/lib/spring-webmvc-6.1.11.jar!/\n버전: 6.1.11\n\n--   느낌표가 둘이다\n--   4.9절에서 이 URL 을 만든 로더를 본다\n\n\n-- 푼 쪽의 대가 ② 서명이 깨진다\n\n$ jarsigner -verify ~/.gradle/caches/.../bcprov-jdk18on-1.78.jar\njar verified.\n\n$ ./gradlew fatJar -q\n$ jarsigner -verify build/libs/fat.jar\njar is unsigned.\n\n// 서명 파일이 남아 있으면 더 나쁘다\n$ unzip -l build/libs/fat.jar | grep -c 'META-INF/.*\\.SF'\n1\n\n$ java -jar build/libs/fat.jar\nException in thread \"main\" java.lang.SecurityException:\n  Invalid signature file digest for Manifest main attributes\n\n--   서명 파일을 안 지우면 터진다\n--   빌드 스크립트에서 지워야 한다\n\n\n-- 지우고 다시\n\ntask fatJar(type: Jar) {\n    ...\n    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'\n}\n\n$ ./gradlew fatJar -q && java -jar build/libs/fat.jar 2>&1 | head -1\n1. 스프링 컨테이너를 만든다\n\n--   된다\n--   대신 서명 검증을 포기했다\n\n\n-- 두 길을 정리한다\n\n$ printf '%-24s %-12s %s\\n' \\\n  '풀어서 넣기'  '4.4절'  '출처·서명·중복 문제' \\\n  '로더를 만들기' '4.9절'  '부트가 고른 길'\n\n풀어서 넣기              4.4절     출처·서명·중복 문제\n로더를 만들기            4.9절     부트가 고른 길\n\n\n-- 부트 JAR 안을 미리 본다\n\n$ unzip -l build/libs/app-boot.jar | head -8\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n        0  09-10-2026 05:00   META-INF/\n      373  09-10-2026 05:00   META-INF/MANIFEST.MF\n        0  09-10-2026 05:00   org/springframework/boot/loader/\n     3418  09-10-2026 05:00   org/springframework/boot/loader/launch/\n                              JarLauncher.class\n        0  09-10-2026 05:00   BOOT-INF/\n        0  09-10-2026 05:00   BOOT-INF/classes/\n\n$ unzip -l build/libs/app-boot.jar | grep 'BOOT-INF/lib/' | head -3\n  1893421  BOOT-INF/lib/spring-web-6.1.11.jar\n  1682936  BOOT-INF/lib/jackson-databind-2.17.2.jar\n  3612841  BOOT-INF/lib/tomcat-embed-core-10.1.26.jar\n\n$ java -jar build/libs/app-boot.jar 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   JAR 가 그대로 들어 있는데 뜬다\n--   4.7절부터 그 이유를 판다",
+   "note": "**JAR 안에 JAR 를 넣으면 파일은 있는데 `NoClassDefFoundError`** 다.\n\n**`Class-Path` 를 적어도 안 되고 밖으로 꺼내면** 된다.\n\n**URL 이 한 겹은 512바이트를 읽고 두 겹은 `no !/ in spec`** 이다.\n\n**Fat JAR 에서는 `getImplementationVersion()` 이 `null`, 원래 JAR 는 `6.1.11`** 이다.\n\n**서명 파일을 안 지우면 `Invalid signature file digest`** 로 터진다."
+  }
+ ],
+ "recap": [
+  "**JAR 는 압축 파일**이다.",
+  "**파일이어야** 열린다.",
+  "**URL 이 한 겹까지**다.",
+  "**느낌표가 하나**다.",
+  "**`Class-Path` 도 안** 된다.",
+  "**밖에 두면** 읽힌다.",
+  "**풀면 출처가** 사라진다.",
+  "**서명이** 깨진다.",
+  "**부트는 로더를** 만들었다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 JAR 를 만들어 돌린다.",
+   "done_when": "오류를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 겹 URL 을 열어 본다.",
+   "done_when": "메시지를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "라이브러리 버전을 찍는다.",
+   "done_when": "`null` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서명된 JAR 를 합친다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JAR 안의 JAR 를 못 읽는 이유는?",
+   "a": "그것을 가리킬 URL 형식이 없기 때문이다."
+  },
+  {
+   "q": "`Class-Path` 로 해결되나?",
+   "a": "안 된다. 바깥 파일만 가리킨다."
+  },
+  {
+   "q": "풀어 넣으면 무엇을 잃나?",
+   "a": "라이브러리 출처와 버전, 그리고 서명이다."
+  },
+  {
+   "q": "서명 파일을 남기면?",
+   "a": "무결성 검사에 걸려 실행이 막힌다."
+  },
+  {
+   "q": "부트는 어느 길을 골랐나?",
+   "a": "풀지 않고 직접 읽는 로더를 만들었다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "중첩 JAR",
+   "def": "JAR 파일 안에 들어 있는 또 다른 JAR."
+  },
+  {
+   "term": "JarURLConnection",
+   "def": "`jar:` URL 을 해석하는 자바 표준 연결 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java — JAR File Specification",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  }
+ ]
+}

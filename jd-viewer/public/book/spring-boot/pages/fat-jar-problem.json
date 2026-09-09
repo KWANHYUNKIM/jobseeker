@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "fat-jar-problem",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "Fat JAR 의 문제",
+ "summary": "같은 이름이 겹친다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "겹침을 만든다.",
+  "무엇이 사라지는지 본다.",
+  "합쳐야 하는 파일을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 경고 셋이** 떴다. **그게 무엇을 깨뜨리는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 경로가 둘이면",
+   "ascii": "   what happens to two files with the same path\n\n   the first one is written\n   the second one overwrites it, or is skipped\n   either way only one survives, and nothing is logged at runtime\n\n   class files rarely clash; resource files clash all the time",
+   "note": "**클래스는 드물게, 리소스는 자주** 겹친다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "압축을 풀어 합치면 이름이 유일해야 한다",
+   "md": "**압축 파일에 같은 경로가 둘일 수** 없다.\n\n> **하나만** 남는다.\n> **빌드 도구가 정책을** 정한다.\n> **4.4절에서 `WARN` 을** 골랐다.\n\n**클래스는 거의 안** 겹친다.\n\n> **패키지가 다르**다.\n> **같은 라이브러리 두 버전이면** 겹친다.\n> **그건 다른 문제**다.\n\n**리소스는 자주** 겹친다.\n\n> **`META-INF` 아래가** 그렇다.\n> **라이브러리마다 같은 이름을** 쓴다.\n> **아래에서** 센다.\n\n**목록 파일이 제일** 나쁘다.\n\n> **합쳐져야 하는 것**이다.\n> **덮으면 한쪽만** 남는다.\n> **아래에서 그걸** 깨뜨린다."
+  },
+  {
+   "type": "figure",
+   "caption": "합쳐져야 하는 파일들",
+   "ascii": "   the files that were meant to be added together\n\n   spring factories     a list, one line per extension\n   service loader files a list, one line per implementation\n   the imports file     the auto configuration candidates\n\n   overwriting a list keeps one library's entries and drops the rest",
+   "note": "**덮어쓰면 한 라이브러리 것만 남고 나머지가** 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "증상이 기능이 없어지는 것으로 나타난다",
+   "md": "**예외가 안** 난다.\n\n> **그 확장이 아예 없는 것처럼** 군다.\n> **6장의 자동 구성이 그** 예다.\n> **원인을 찾기** 어렵다.\n\n**빌드는 성공**한다.\n\n> **경고 한 줄이** 전부다.\n> **⑮ 2.1절의 조용한 실패와 같은 종류**다.\n> **넘기기** 쉽다.\n\n**해결이 도구마다** 다르다.\n\n> **셰이도 플러그인의 병합 규칙**이다.\n> **파일마다 규칙을 적어야** 한다.\n> **아래에서 써** 본다.\n\n**부트는 이 문제가 아예** 없다.\n\n> **안 풀어서** 그렇다.\n> **4.7절에서** 확인한다.\n> **4.5절의 두 길 중 그쪽**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 몇 개나 겹치나\n\n$ for j in $(./gradlew -q printClasspath | tr ':' ' '); do\n    unzip -l \"$j\" 2>/dev/null | awk 'NR>3 && $4 !~ /\\/$/ {print $4}'\n  done | sort | uniq -d | head -10\n\nMETA-INF/DEPENDENCIES\nMETA-INF/LICENSE\nMETA-INF/LICENSE.txt\nMETA-INF/NOTICE\nMETA-INF/NOTICE.txt\nMETA-INF/spring.factories\nMETA-INF/spring.handlers\nMETA-INF/spring.schemas\nMETA-INF/spring.tooling\nmodule-info.class\n\n$ for j in $(./gradlew -q printClasspath | tr ':' ' '); do\n    unzip -l \"$j\" 2>/dev/null | awk 'NR>3 && $4 !~ /\\/$/ {print $4}'\n  done | sort | uniq -d | wc -l\n      14\n\n--   열넷이 겹친다\n--   전부 리소스다\n\n\n-- 클래스는 안 겹친다\n\n$ for j in $(./gradlew -q printClasspath | tr ':' ' '); do\n    unzip -l \"$j\" 2>/dev/null | awk 'NR>3 {print $4}' | grep '\\.class$'\n  done | sort | uniq -d | grep -v module-info | wc -l\n       0\n\n--   패키지가 달라서 그렇다\n\n\n-- 목록 파일을 열어 본다\n\n$ for j in $(./gradlew -q printClasspath | tr ':' ' '); do\n    if unzip -l \"$j\" 2>/dev/null | grep -q 'spring.factories'; then\n      echo \"=== $(basename $j)\"\n      unzip -p \"$j\" META-INF/spring.factories | head -3\n    fi\n  done\n\n=== spring-web-6.1.11.jar\norg.springframework.aot.hint.RuntimeHintsRegistrar=\\\norg.springframework.web.util.WebUtilsRuntimeHints\n\n=== spring-webmvc-6.1.11.jar\norg.springframework.aot.hint.RuntimeHintsRegistrar=\\\norg.springframework.web.servlet.support.WebMvcRuntimeHints\n\n--   같은 키에 다른 값이다\n--   둘 다 필요하다\n\n\n-- 합치면 하나만 남는다\n\n$ ./gradlew fatJar -q 2>&1 | grep -c 'duplicate'\n3\n\n$ unzip -p build/libs/fat.jar META-INF/spring.factories\norg.springframework.aot.hint.RuntimeHintsRegistrar=\\\norg.springframework.web.servlet.support.WebMvcRuntimeHints\n\n$ unzip -p build/libs/fat.jar META-INF/spring.factories | wc -l\n       2\n\n--   spring-web 쪽이 사라졌다\n--   나중 것이 덮었다\n\n\n-- 서비스 파일로 확인한다\n\n// 서비스 파일을 쓰는 예제를 만든다\n$ mkdir -p libA/META-INF/services libB/META-INF/services\n$ echo 'study.plugin.AlphaPlugin' > \\\n    libA/META-INF/services/study.plugin.Plugin\n$ echo 'study.plugin.BetaPlugin' > \\\n    libB/META-INF/services/study.plugin.Plugin\n\npublic interface Plugin { String name(); }\npublic class AlphaPlugin implements Plugin {\n    public String name() { return \"alpha\"; }\n}\npublic class BetaPlugin implements Plugin {\n    public String name() { return \"beta\"; }\n}\n\npublic class PluginMain {\n    public static void main(String[] args) {\n        ServiceLoader.load(Plugin.class)\n                .forEach(p -> System.out.println(\"플러그인: \" + p.name()));\n    }\n}\n\n\n-- 따로 두면 둘 다 보인다\n\n$ java -cp 'classes:libA:libB' study.plugin.PluginMain\n플러그인: alpha\n플러그인: beta\n\n--   ServiceLoader 가 둘 다 읽는다\n\n\n-- 합치면 하나만 보인다\n\n$ jar cf libA.jar -C libA . && jar cf libB.jar -C libB .\n$ ./gradlew fatPluginJar -q 2>&1 | grep duplicate\nEncountered duplicate path \"META-INF/services/study.plugin.Plugin\"\n\n$ java -jar build/libs/fat-plugin.jar\n플러그인: beta\n\n$ unzip -p build/libs/fat-plugin.jar META-INF/services/study.plugin.Plugin\nstudy.plugin.BetaPlugin\n\n--   alpha 가 사라졌다\n--   예외가 없다\n--   기능이 그냥 없어졌다\n\n\n-- 합치는 규칙을 준다\n\n// build.gradle\nplugins {\n    id 'com.github.johnrengelman.shadow' version '8.1.1'\n}\n\nshadowJar {\n    mergeServiceFiles()\n    append 'META-INF/spring.factories'\n    append 'META-INF/spring.handlers'\n    append 'META-INF/spring.schemas'\n}\n\n$ ./gradlew shadowJar -q\n$ unzip -p build/libs/app-all.jar META-INF/services/study.plugin.Plugin\nstudy.plugin.AlphaPlugin\nstudy.plugin.BetaPlugin\n\n$ java -jar build/libs/app-all.jar\n플러그인: alpha\n플러그인: beta\n\n--   둘 다 돌아왔다\n--   파일마다 규칙을 적어야 한다\n\n\n-- spring.factories 도 확인한다\n\n$ unzip -p build/libs/app-all.jar META-INF/spring.factories\norg.springframework.aot.hint.RuntimeHintsRegistrar=\\\norg.springframework.web.util.WebUtilsRuntimeHints\norg.springframework.aot.hint.RuntimeHintsRegistrar=\\\norg.springframework.web.servlet.support.WebMvcRuntimeHints\n\n--   둘 다 있다\n--   같은 키가 두 줄이라 형식이 좀 이상하다\n--   스프링은 이걸 읽어 준다\n\n\n-- 자동 구성 목록이면 더 심각하다\n\n$ for j in $(find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar') \\\n           $(find ~/.gradle/caches -name 'spring-boot-actuator-autoconfigure-3.3.2.jar'); do\n    echo \"=== $(basename $j)\"\n    unzip -l \"$j\" | grep -c 'AutoConfiguration.imports'\n  done\n\n=== spring-boot-autoconfigure-3.3.2.jar\n1\n=== spring-boot-actuator-autoconfigure-3.3.2.jar\n1\n\n$ unzip -p \"$AUTOCONF\" META-INF/spring/org.springframework.boot\\\n.autoconfigure.AutoConfiguration.imports | wc -l\n     161\n$ unzip -p \"$ACTUATOR\" META-INF/spring/org.springframework.boot\\\n.autoconfigure.AutoConfiguration.imports | wc -l\n      64\n\n--   2.2절에서 161 을 봤다\n--   액츄에이터가 64 를 더 갖고 있다\n\n\n-- 덮어쓰면 절반이 사라진다\n\n// 규칙 없이 합친 부트 애플리케이션\n$ ./gradlew fatBootJar -q 2>&1 | grep -c 'AutoConfiguration.imports'\n1\n\n$ unzip -p build/libs/fat-boot.jar META-INF/spring/org.springframework.boot\\\n.autoconfigure.AutoConfiguration.imports | wc -l\n      64\n\n$ java -jar build/libs/fat-boot.jar 2>&1 | grep -E 'Tomcat started|Started'\n\n(아무것도 안 나온다)\n\n$ java -jar build/libs/fat-boot.jar 2>&1 | tail -2\nINFO 14022 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 0.398 seconds\n\n$ curl -s -m 1 localhost:8080/hello\ncurl: (7) Failed to connect to localhost port 8080\n\n--   161 개가 64 개가 됐다\n--   웹 자동 구성이 통째로 사라졌다\n--   2.1절에서 자동 구성을 끈 것과 같은 모양이다\n\n\n-- 조건 보고서로 확인한다\n\n$ java -jar build/libs/fat-boot.jar --debug 2>&1 \\\n    | grep -c 'matched\\|did not match'\n     118\n\n// 정상 부트 JAR\n$ java -jar build/libs/app-boot.jar --debug 2>&1 \\\n    | grep -c 'matched\\|did not match'\n     412\n\n--   412 가 118 이 됐다\n--   2.2절에서 센 그 수다\n\n\n-- 부트 JAR 에는 이 문제가 없다\n\n$ unzip -l build/libs/app-boot.jar \\\n    | grep -c 'AutoConfiguration.imports'\n0\n\n$ unzip -l build/libs/app-boot.jar | grep -c 'BOOT-INF/lib/.*\\.jar$'\n41\n\n$ unzip -p build/libs/app-boot.jar BOOT-INF/lib/spring-boot-autoconfigure-3.3.2.jar \\\n    > /tmp/x.jar && unzip -p /tmp/x.jar META-INF/spring/org.springframework.boot\\\n.autoconfigure.AutoConfiguration.imports | wc -l\n     161\n\n--   JAR 안에 그대로 있다\n--   겹칠 일이 없다\n--   4.5절에서 부트가 고른 길이 이것이다\n\n\n-- 두 방식을 나란히\n\n$ printf '%-26s %-14s %s\\n' \\\n  'Fat JAR (규칙 없음)'  '조용히 사라짐' '조건 118' \\\n  'Fat JAR (규칙 있음)'  '합쳐짐'        '규칙을 다 적어야' \\\n  '부트 JAR'             '문제 없음'     '조건 412'\n\nFat JAR (규칙 없음)        조용히 사라짐   조건 118\nFat JAR (규칙 있음)        합쳐짐          규칙을 다 적어야\n부트 JAR                   문제 없음       조건 412\n\n--   4.7절에서 부트 JAR 를 판다",
+   "note": "**의존성 열둘 사이에 같은 경로 파일이 14개 — 전부 리소스고 클래스는 `0`** 개다.\n\n**`spring.factories` 를 합치면 `spring-web` 쪽이 사라져 두 줄만** 남는다.\n\n**서비스 파일이 덮이면 `alpha` 가 사라지고 `beta` 만 — 예외 없이 기능이** 없어진다.\n\n**자동 구성 목록이 덮이면 161개가 64개가 되어 조건 평가가 412 → 118, 포트가 아예 안** 열린다.\n\n**부트 JAR 는 `BOOT-INF/lib` 안에 원본 그대로라 겹칠 일이** 없다."
+  }
+ ],
+ "recap": [
+  "**같은 경로는 하나만** 남는다.",
+  "**클래스는 거의 안** 겹친다.",
+  "**리소스는 자주** 겹친다.",
+  "**열넷이** 겹쳤다.",
+  "**목록이 제일** 나쁘다.",
+  "**기능이 조용히** 사라진다.",
+  "**빌드는** 성공한다.",
+  "**규칙을 적어야** 한다.",
+  "**부트는 안** 푼다."
+ ],
+ "drills": [
+  {
+   "task": "겹치는 파일을 센다.",
+   "done_when": "리소스뿐인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스 파일을 겹치게 만든다.",
+   "done_when": "하나가 사라지는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "병합 규칙을 준다.",
+   "done_when": "둘 다 돌아오는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자동 구성 목록을 덮는다.",
+   "done_when": "조건 수가 주는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 리소스가 자주 겹치나?",
+   "a": "라이브러리마다 `META-INF` 아래 같은 이름을 쓰기 때문이다."
+  },
+  {
+   "q": "목록 파일이 덮이면?",
+   "a": "한쪽 항목만 남고 나머지 기능이 사라진다."
+  },
+  {
+   "q": "증상은 어떻게 나타나나?",
+   "a": "예외 없이 그 기능이 아예 없는 것처럼 군다."
+  },
+  {
+   "q": "해결 방법은?",
+   "a": "빌드 도구에 파일별 병합 규칙을 적는다."
+  },
+  {
+   "q": "부트 JAR 에 이 문제가 없는 이유는?",
+   "a": "의존성 JAR 를 풀지 않고 그대로 담기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "경로 충돌",
+   "def": "합치는 아카이브에 같은 경로 파일이 둘 이상 있는 상태."
+  },
+  {
+   "term": "병합 규칙",
+   "def": "충돌하는 리소스를 덮지 않고 이어 붙이는 빌드 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
