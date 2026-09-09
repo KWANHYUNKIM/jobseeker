@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "url-parts",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "URL 의 조각들",
+ "summary": "스킴부터 프래그먼트까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "일곱 조각을 안다.",
+  "무엇이 와이어에 가는지 안다.",
+  "쿼리의 모호함을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절의 마지막에서 프래그먼트가 안** 갔다. **무엇이 가고 무엇이 안 가는지 나눈다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "일곱 조각",
+   "ascii": "   every piece, and who consumes it\n\n   scheme      https        the client, to pick a protocol and port\n   userinfo    user:pass    almost never used, and a phishing vector\n   host        example.com  dns, and the Host header\n   port        :8443        the transport, omitted when it is the default\n   path        /a/b         the server, this is the resource\n   query       ?q=1&p=2     the server, after the question mark\n   fragment    #section     the browser only, never sent\n\n   the wire only ever carries path and query, plus host in a header",
+   "note": "**와이어에는 경로·쿼리와 `Host` 헤더**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "호스트는 두 번 쓰인다",
+   "md": "**주소를 찾는 데 한 번, 헤더로 한 번**이다.\n\n> **DNS 로 IP 를** 얻고(2.6절),\n> **`Host:` 헤더로 서버에 어느 사이트인지** 말한다.\n> **한 IP 에 사이트가 여럿이라 이게** 필요하다.\n\n**HTTP/1.1 에서 `Host` 가 필수가** 됐다.\n\n> **없으면 400** 이다.\n> **1.0 때는 서버 하나에 사이트 하나였다.**\n> **가상 호스팅이 이 헤더 하나로** 가능해졌다.\n\n**포트는 기본이면 생략**한다.\n\n> **2.5절에서 확인**했다.\n> **`example.com` 과 `example.com:80` 은 같은** 곳인데 `Host` 값이 달라진다.\n> **캐시 키나 CORS 비교에서 문제가 되기도** 한다.\n\n**프래그먼트는 브라우저만** 쓴다.\n\n> **서버는 존재조차** 모른다.\n> **SPA 가 예전에 `#/path` 를 쓴 이유가 이것**이다 — **서버 설정 없이 라우팅**이 됐다.\n> **지금은 History API 를** 쓴다 — **⑫ 의 뷰어도** 그렇다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리는 규격이 없다",
+   "ascii": "   the query string has no official structure\n\n   the rfc says      an opaque string after the question mark\n   everyone does     key=value pairs joined by ampersand\n   nobody agrees on  what a repeated key means\n\n   a=1&a=2 may be a list, the first, or the last, depending on the server\n   and that disagreement is a real source of bugs",
+   "note": "**같은 키가 반복되면 서버마다** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경로와 쿼리는 다른 역할이다",
+   "md": "**경로는 자원, 쿼리는 그 자원을 어떻게 볼지**다.\n\n| | 쓰임 |\n|---|---|\n| 경로 | `/users/5`, `/orders` |\n| 쿼리 | `?page=2&sort=name` |\n\n> **필터·정렬·페이지는 쿼리**다.\n> **자원 자체가 다르면 경로**다.\n> **6장에서 다시 정리한다.**\n\n**쿼리 파라미터 오염**\n\n> **`?a=1&a=2` 를 서버가 어떻게 읽을지** 모른다.\n> **스프링은 리스트로, PHP 는 마지막 것, 어떤 프록시는 첫 것**이다.\n> **프록시와 서버가 다르게 읽으면 우회가** 된다.\n\n**경로에 슬래시 하나가 다르다.**\n\n> **`/a` 와 `/a/` 는 다른 자원**이다.\n> **서버가 대개 리다이렉트해 주지만 안 하면** 404 다.\n> **상대 참조의 기준도** 달라진다 — 3.1절에서 본 그것이다.\n\n**대소문자 규칙이 조각마다** 다르다.\n\n> **스킴과 호스트는 대소문자를 안** 가린다.\n> **경로와 쿼리는** 가린다.\n> **`/Index.html` 과 `/index.html` 은 다른 자원**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 무엇이 실제로 나가나 ---\n\n$ curl -s -o /dev/null -v \\\n    'http://user:pw@localhost:8080/docs/a.html?q=hi&p=2#section' 2>&1 \\\n  | grep -E '^> '\n\n> GET /docs/a.html?q=hi&p=2 HTTP/1.1\n> Host: localhost:8080\n> Authorization: Basic dXNlcjpwdw==\n> User-Agent: curl/8.9.1\n> Accept: */*\n\n#   경로와 쿼리만 요청 줄에 있다\n\n#   호스트는 헤더로 갔다\n\n#   userinfo 는 Authorization 이 됐다\n\n#   프래그먼트는 아예 없다\n\n$ echo dXNlcjpwdw== | base64 -d; echo\n\nuser:pw\n\n#   base64 다\n\n#   암호화가 아니다 (⑫ 7.2절과 같은 말)\n\n# --- Host 가 필수다 ---\n\n$ printf 'GET / HTTP/1.1\\r\\n\\r\\n' | nc localhost 8080 | head -1\n\nHTTP/1.1 400 Bad Request\n\n$ printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n#   헤더 한 줄 차이다\n\n#   1.1 부터 필수다\n\n$ printf 'GET / HTTP/1.0\\r\\n\\r\\n' | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n#   1.0 이면 없어도 된다\n\n# --- 같은 IP 에 사이트 여럿 ---\n\n$ docker exec lab sh -c 'mkdir -p /usr/share/nginx/a /usr/share/nginx/b && \\\n    echo \"A 사이트\" > /usr/share/nginx/a/index.html && \\\n    echo \"B 사이트\" > /usr/share/nginx/b/index.html && \\\n    printf \"server { listen 80; server_name a.test; root /usr/share/nginx/a; }\\n\\\nserver { listen 80; server_name b.test; root /usr/share/nginx/b; }\\n\" \\\n    > /etc/nginx/conf.d/vhost.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -H 'Host: a.test' http://localhost:8080/\n\nA 사이트\n\n$ curl -s -H 'Host: b.test' http://localhost:8080/\n\nB 사이트\n\n#   같은 IP, 같은 포트다\n\n#   헤더 한 줄이 갈랐다\n\n#   가상 호스팅이다\n\n# --- 포트가 기본이면 생략된다 ---\n\n$ curl -s -o /dev/null -v http://example.com/ 2>&1 | grep '^> Host'\n\n> Host: example.com\n\n$ curl -s -o /dev/null -v http://example.com:80/ 2>&1 | grep '^> Host'\n\n> Host: example.com\n\n$ curl -s -o /dev/null -v http://example.com:8080/ 2>&1 | grep '^> Host'\n\n> Host: example.com:8080\n\n#   80 이면 안 붙는다\n\n#   같은 주소인데 표기가 둘이다\n\n# --- 같은 키가 반복되면 ---\n\n$ docker exec lab sh -c \\\n    'echo \"ok\" > /usr/share/nginx/html/echo.html' 2>/dev/null\n\n$ python3 - <<'EOF'\nfrom urllib.parse import parse_qs, parse_qsl\nq = \"a=1&a=2&b=3\"\nprint(\"parse_qs  \", parse_qs(q))\nprint(\"parse_qsl \", parse_qsl(q))\nprint(\"dict()    \", dict(parse_qsl(q)))\nEOF\n\nparse_qs   {'a': ['1', '2'], 'b': ['3']}\nparse_qsl  [('a', '1'), ('a', '2'), ('b', '3')]\ndict()     {'a': '2', 'b': '3'}\n\n#   같은 입력에 결과가 셋이다\n\n#   마지막은 첫 값을 잃었다\n\n#   프록시와 서버가 다르게 읽으면 우회가 된다\n\n# --- 슬래시 하나 ---\n\n$ docker exec lab sh -c 'mkdir -p /usr/share/nginx/html/dir && \\\n    echo \"디렉터리\" > /usr/share/nginx/html/dir/index.html' 2>/dev/null\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/dir\n\n301\n\n$ curl -s -D - -o /dev/null http://localhost:8080/dir | grep -i location\n\nLocation: http://localhost:8080/dir/\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/dir/\n\n200\n\n#   슬래시를 붙여 준다\n\n#   상대 참조 기준이 달라지기 때문이다\n\n#   /dir 기준이면 형제, /dir/ 기준이면 자식이다\n\n# --- 대소문자 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://LOCALHOST:8080/\n\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/DIR/\n\n404\n\n#   호스트는 안 가린다\n\n#   경로는 가린다\n\n#   같은 규칙이 아니다\n\n# --- 프래그먼트는 브라우저 것이다 ---\n\n$ sudo tcpdump -i lo0 -n -A -c 1 \\\n    'tcp port 8080 and tcp[32:4] = 0x47455420' > /tmp/frag.txt &\n$ curl -s -o /dev/null 'http://localhost:8080/#section' ; sleep 1\n$ grep -c 'section' /tmp/frag.txt\n\n0\n\n#   와이어에 없다\n\n#   서버는 존재조차 모른다\n\n#   SPA 가 예전에 이걸 라우팅에 쓴 이유다\n\n# --- 다음 절에서 ---\n\n#   한글과 공백이 주소에 들어갈 때",
+   "note": "**요청 줄에 `GET /docs/a.html?q=hi&p=2` 뿐**이고 userinfo 는 `Authorization` 이, 프래그먼트는 아무것도 안 된다.\n\n**`Host` 가 없으면 HTTP/1.1 은 400, 1.0 은 200** 이다.\n\n**같은 IP·포트에서 `Host` 헤더 한 줄이 A 사이트와 B 사이트를** 가른다.\n\n**`a=1&a=2` 를 같은 파이썬이 세 가지로** 읽는다.\n\n**호스트는 대소문자를 안 가리고 경로는 가려 `/DIR/` 이 404** 다."
+  }
+ ],
+ "recap": [
+  "**조각이 일곱**이다.",
+  "**와이어에는 경로·쿼리와 `Host`** 뿐이다.",
+  "**호스트는 DNS 와 헤더에 두 번** 쓰인다.",
+  "**HTTP/1.1 은 `Host` 가** 필수다.",
+  "**가상 호스팅이 이 헤더로** 된다.",
+  "**기본 포트는 생략**된다.",
+  "**쿼리에 공식 구조가** 없다.",
+  "**슬래시 하나가 자원을** 바꾼다.",
+  "**대소문자 규칙이 조각마다** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "모든 조각이 든 주소를 부른다.",
+   "done_when": "요청 줄에 무엇만 남는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Host` 없이 요청을 만든다.",
+   "done_when": "400 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "가상 호스트 둘을 만든다.",
+   "done_when": "헤더로 갈리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "같은 키를 반복시킨다.",
+   "done_when": "파서마다 다른 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "요청 줄에 실제로 담기는 조각은?",
+   "a": "경로와 쿼리다."
+  },
+  {
+   "q": "`Host` 헤더가 필수가 된 이유는?",
+   "a": "한 IP 에 여러 사이트를 두는 가상 호스팅 때문이다."
+  },
+  {
+   "q": "프래그먼트는 누가 쓰나?",
+   "a": "브라우저만 쓴다. 서버로 전송되지 않는다."
+  },
+  {
+   "q": "`?a=1&a=2` 의 해석은?",
+   "a": "표준이 없어 서버마다 리스트·첫 값·마지막 값으로 갈린다."
+  },
+  {
+   "q": "`/dir` 과 `/dir/` 의 차이는?",
+   "a": "다른 자원이며 상대 참조의 기준도 달라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "가상 호스팅",
+   "def": "하나의 IP·포트에서 `Host` 헤더로 사이트를 구분하는 것."
+  },
+  {
+   "term": "쿼리 파라미터 오염",
+   "def": "같은 키가 반복될 때 파서마다 해석이 달라 생기는 문제."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 3986 — Uniform Resource Identifier (URI): Generic Syntax",
+   "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "WHATWG — URL Standard",
+   "url": "https://url.spec.whatwg.org/",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

@@ -128,7 +128,7 @@
           "title": "URI · URL · URN",
           "summary": "이름과 위치는 다른 것이다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -136,7 +136,7 @@
           "title": "URL 의 조각들",
           "summary": "스킴부터 프래그먼트까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
