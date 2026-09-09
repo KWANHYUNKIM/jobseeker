@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "why-k8s",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "왜 쿠버네티스인가",
+ "summary": "다시 만들면 되는 것과 안 되는 것.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "비용을 먼저 센다.",
+  "다시 만들 수 있는 것과 아닌 것을 가른다.",
+  "언제 쓸지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절의 일곱을 대신해** 준다. **공짜는 아니다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "먼저 드는 비용",
+   "ascii": "   what it costs before it gives anything back\n\n   a cluster to run          three machines, or a managed one\n   a control plane           either you patch it, or you pay\n   yaml for everything       a compose file becomes four files\n   new failure modes         Pending, evicted, OOMKilled, taints\n   a team that reads it      the hardest one to buy\n\n   none of these disappear when the service is small",
+   "note": "**서비스가 작아도 안** 줄어든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "핵심은 다시 만들 수 있느냐",
+   "md": "**쿠버네티스의 전제는 하나**다.\n\n> **파드는 언제든 죽고 다시** 만들어진다.\n> **같은 것이 돌아오는 게 아니라 새것이** 뜬다.\n> **1.1절에서 이름이 바뀐 게** 그거다.\n\n**그래서 갈린다.**\n\n| 다시 만들면 되는 것 | 안 되는 것 |\n|---|---|\n| 상태 없는 웹 서버 | 로컬 디스크에 쓴 파일 |\n| API 서버 | 메모리에 든 세션 |\n| 배치 작업 | 고정 IP 를 요구하는 것 |\n| 큐 소비자 | 라이선스가 MAC 에 묶인 것 |\n\n> **왼쪽만 편하게 돌아간다.**\n> **오른쪽은 8장(스토리지)과 5장(스테이트풀셋)이** 있는데 훨씬 손이 많이 간다.\n\n**서가가 이미 만난 문제**다.\n\n> **⑩ 5.7절에서 세션을 여러 대에서 공유하려고 Redis 를** 붙였다.\n> **그때 \"메모리에 든 세션은 옮겨지지 않는다\" 를** 겪었다.\n> **쿠버네티스는 그걸 매일 강제**한다.\n>\n> **12요소를 지킨 앱이면 대부분 그냥** 뜬다.\n> **안 지킨 앱은 여기서 청구서를** 받는다.\n\n**얻는 것**\n\n| 얻는 것 | 어느 장 |\n|---|---|\n| 죽으면 다시 뜬다 | 5장 |\n| 살아 있는 것에만 보낸다 | 6장 |\n| 설정이 이미지 밖에 있다 | 7장 |\n| 자원을 나눠 쓴다 | 9장 |\n| 안 끊고 교체한다 | 11장 |"
+  },
+  {
+   "type": "figure",
+   "caption": "정직한 선",
+   "ascii": "   the honest line\n\n   one service, one machine, deploys once a month\n     a shell script and a restart policy are enough\n\n   several services, more than one machine, deploys weekly\n     someone is already doing the seven jobs by hand\n\n   the question is not scale, it is how often a person is needed",
+   "note": "**규모가 아니라 사람 손이 몇 번 가느냐**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "새로운 고장 방식",
+   "md": "**없던 문제가** 생긴다.\n\n| 증상 | 뜻 | 어느 장 |\n|---|---|---|\n| `Pending` | 띄울 자리가 없다 | 9장 |\n| `OOMKilled` | 메모리 한도를 넘었다 | 9장 |\n| `Evicted` | 노드가 쫓아냈다 | 9장 |\n| `0/1 Running` | 떴는데 준비가 안 됐다 | 6장 |\n| `Terminating` 에서 멈춤 | 종료가 안 끝난다 | 10장 |\n\n> **다섯 다 도커에는 없던** 말이다.\n> **배우는 데 시간이** 든다.\n\n**YAML 이 늘어난다.**\n\n> **컴포즈 파일 15줄이 쿠버네티스에서 60줄**쯤 된다.\n> **디플로이먼트·서비스·컨피그맵·인그레스**로 나뉜다.\n> **11장에서 이걸 줄이는 방법을** 본다.\n\n**관리형을 쓰면 절반은** 준다.\n\n> **EKS·GKE·AKS 가 컨트롤 플레인을 맡는다.**\n> **비용이 돈으로 바뀔** 뿐이다.\n> **YAML 과 고장 방식은 그대로**다.\n\n**안 쓰는 것도 답**이다.\n\n> **한 대에 도커 컴포즈, 앞에 nginx, `restart: always`** 로 몇 년을 잘 도는 서비스가 많다.\n> **1.2절의 일곱 중 사람 손이 실제로 몇 번 가는지** 세 본다.\n> **한 달에 한 번이면 안 바꿔도** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 비용부터 본다 ---\n\n$ kubectl get pods -n kube-system\n\nNAME                                         READY   STATUS    RESTARTS   AGE\ncoredns-7db6d8ff4d-4k2mv                     1/1     Running   0          42m\ncoredns-7db6d8ff4d-9x7bn                     1/1     Running   0          42m\netcd-kind-control-plane                      1/1     Running   0          42m\nkindnet-p8w4t                                1/1     Running   0          42m\nkube-apiserver-kind-control-plane            1/1     Running   0          42m\nkube-controller-manager-kind-control-plane   1/1     Running   0          42m\nkube-proxy-2m9kx                             1/1     Running   0          42m\nkube-scheduler-kind-control-plane            1/1     Running   0          42m\n\n#   내 앱을 하나도 안 띄웠는데 여덟 개다\n\n$ kubectl top pods -n kube-system --no-headers 2>/dev/null \\\n    | awk '{cpu+=$2; mem+=$3} END {print cpu \"m CPU, \" mem \"Mi\"}'\n\n136m CPU, 312Mi\n\n#   그냥 떠 있는 데 드는 값이다\n\n#   2.2절에서 각각이 뭔지 본다\n\n# --- YAML 이 얼마나 느나 ---\n\n$ wc -l compose.yaml\n\n      15 compose.yaml\n\n$ wc -l k8s/*.yaml\n\n      24 k8s/deployment.yaml\n      12 k8s/service.yaml\n      11 k8s/configmap.yaml\n      18 k8s/ingress.yaml\n      65 total\n\n#   네 배다\n\n#   대신 각각이 하는 일이 분명하다\n\n# --- 다시 만들 수 있는 것 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3\n$ kubectl get pods -l app=web -o name\n\npod/web-6d8f4b9c7-2k9mv\npod/web-6d8f4b9c7-7x4bn\npod/web-6d8f4b9c7-p3w8t\n\n$ kubectl delete pods -l app=web\n\npod \"web-6d8f4b9c7-2k9mv\" deleted\npod \"web-6d8f4b9c7-7x4bn\" deleted\npod \"web-6d8f4b9c7-p3w8t\" deleted\n\n$ kubectl get pods -l app=web -o name\n\npod/web-6d8f4b9c7-8h3nq\npod/web-6d8f4b9c7-r5t2w\npod/web-6d8f4b9c7-v9k7d\n\n#   이름이 다 바뀌었다\n\n#   nginx 라 아무 문제가 없다\n\n# --- 다시 만들면 안 되는 것 ---\n\n$ kubectl exec -it $(kubectl get pod -l app=web -o name | head -1) -- \\\n    sh -c 'echo \"중요한 파일\" > /usr/share/nginx/html/data.txt'\n\n$ kubectl exec -it $(kubectl get pod -l app=web -o name | head -1) -- \\\n    cat /usr/share/nginx/html/data.txt\n\n중요한 파일\n\n$ kubectl delete pod $(kubectl get pod -l app=web -o name | head -1)\n\npod \"web-6d8f4b9c7-8h3nq\" deleted\n\n$ kubectl exec -it $(kubectl get pod -l app=web -o name | head -1) -- \\\n    cat /usr/share/nginx/html/data.txt\n\ncat: can't open '/usr/share/nginx/html/data.txt': No such file or directory\ncommand terminated with exit code 1\n\n#   사라졌다\n\n#   컨테이너 파일 시스템은 파드와 함께 죽는다\n\n#   「도커」 8장의 볼륨 얘기가 여기서 8장이다\n\n# --- 세션이 든 앱이면 ---\n\n$ kubectl create deployment app --image=myapp:1.0 --replicas=3\n$ kubectl expose deployment app --port=8080\n\nservice/app exposed\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- sh -c '\n  for i in 1 2 3 4 5; do\n    curl -s -c /tmp/c -b /tmp/c http://app:8080/session-count\n  done'\n\n1\n1\n1\n1\n1\n\n#   매번 1 이다\n\n#   요청마다 다른 파드로 갔고\n\n#   각 파드가 자기 메모리에 세션을 만든다\n\n#   ⑩ 5.7절의 그 문제다\n\n#   Redis 를 붙이면\n\n$ kubectl apply -f redis.yaml\n$ kubectl set env deployment/app SPRING_SESSION_STORE_TYPE=redis \\\n    SPRING_DATA_REDIS_HOST=redis\n\ndeployment.apps/app env updated\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- sh -c '\n  for i in 1 2 3 4 5; do\n    curl -s -c /tmp/c -b /tmp/c http://app:8080/session-count\n  done'\n\n1\n2\n3\n4\n5\n\n#   이어진다\n\n#   12요소를 지키면 그냥 된다는 게 이 뜻이다\n\n# --- 새로운 고장 방식 ---\n\n$ kubectl create deployment big --image=nginx:1.27\n$ kubectl set resources deployment/big --requests=memory=100Gi\n\ndeployment.apps/big resource requirements updated\n\n$ kubectl get pods -l app=big\n\nNAME                   READY   STATUS    RESTARTS   AGE\nbig-7f9c8d6b5-x4m2k    0/1     Pending   0          8s\n\n$ kubectl describe pod -l app=big | grep -A4 Events\n\nEvents:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  12s   default-scheduler  0/1 nodes are available:\n    1 Insufficient memory. preemption: 0/1 nodes are available: 1 No preemption\n    victims found for incoming pod.\n\n#   Pending 이다\n\n#   도커에는 없던 상태다\n\n#   띄울 자리가 없다는 뜻이다 (9장)\n\n$ kubectl set resources deployment/big --requests=memory=64Mi --limits=memory=64Mi\n$ kubectl exec -it $(kubectl get pod -l app=big -o name) -- \\\n    sh -c 'dd if=/dev/zero of=/dev/null bs=1M count=200' 2>/dev/null\n\n$ kubectl get pods -l app=big\n\nNAME                   READY   STATUS      RESTARTS      AGE\nbig-8c4f9e7a2-m3k8p    0/1     OOMKilled   1 (3s ago)    1m\n\n#   또 다른 상태다\n\n$ kubectl get pod -l app=big -o jsonpath='{.items[0].status.containerStatuses[0].lastState.terminated.reason}'\n\nOOMKilled\n\n#   한도를 넘겨 커널이 죽였다\n\n#   9장에서 다룬다\n\n# --- 사람 손이 몇 번 가나 ---\n\n$ kubectl get events --field-selector reason=Created -A --no-headers \\\n    | wc -l\n\n47\n\n$ history | grep -c '^ *[0-9]* *kubectl'\n\n38\n\n#   컨테이너 47개가 만들어졌고\n\n#   내가 친 명령은 38개다\n\n#   나머지는 컨트롤러가 했다\n\n#   1.2절의 도커 예제에서는 1:1 이었다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web app big\n$ kubectl delete service app\n\ndeployment.apps \"web\" deleted\ndeployment.apps \"app\" deleted\ndeployment.apps \"big\" deleted\nservice \"app\" deleted\n\n# --- 다음 절에서 ---\n\n#   무엇을 배우면 되는지 목록을 만든다",
+   "note": "**내 앱 없이도 `kube-system` 에 파드 여덟 개, 136m CPU · 312Mi** 가 든다.\n\n**컴포즈 15줄이 YAML 65줄**이 된다.\n\n**파드 안에 쓴 파일이 재생성 뒤 사라지고**, **세션이 매번 1** 이다가 Redis 를 붙이자 1→5 로 이어진다 — ⑩ 5.7절의 그 문제다.\n\n**`Pending` 과 `OOMKilled` 는 도커에 없던 상태**다.\n\n**컨테이너 47개가 만들어졌는데 내가 친 명령은 38개**다."
+  }
+ ],
+ "recap": [
+  "**비용이 먼저** 든다.",
+  "**앱 없이도 파드 여덟 개가** 돈다.",
+  "**YAML 이 네 배로** 는다.",
+  "**전제는 파드가 언제든 다시 만들어진다는** 것이다.",
+  "**로컬 디스크와 메모리 세션은 안** 옮겨진다.",
+  "**12요소를 지키면 대부분 그냥** 뜬다.",
+  "**`Pending`·`OOMKilled` 같은 새 고장 방식이** 생긴다.",
+  "**관리형은 비용을 돈으로** 바꾼다.",
+  "**규모가 아니라 사람 손이 몇 번 가느냐**다."
+ ],
+ "drills": [
+  {
+   "task": "`kube-system` 의 파드와 자원을 센다.",
+   "done_when": "숫자를 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "파드 안에 파일을 쓰고 지워 본다.",
+   "done_when": "사라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "메모리 요청을 크게 줘 본다.",
+   "done_when": "`Pending` 과 이벤트를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "우리 서비스에 사람 손이 몇 번 가는지 센다.",
+   "done_when": "한 달 기준으로 적었다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿠버네티스의 전제는?",
+   "a": "파드는 언제든 죽고 새것이 다시 만들어진다."
+  },
+  {
+   "q": "다시 만들면 안 되는 것은?",
+   "a": "로컬 디스크 파일, 메모리 세션, 고정 IP 같은 것이다."
+  },
+  {
+   "q": "새로 배워야 하는 고장 방식은?",
+   "a": "`Pending`, `OOMKilled`, `Evicted`, 준비 안 된 `Running` 등이다."
+  },
+  {
+   "q": "관리형 서비스가 없애 주는 것은?",
+   "a": "컨트롤 플레인 운영이다. YAML 과 고장 방식은 그대로다."
+  },
+  {
+   "q": "도입을 판단하는 기준은?",
+   "a": "규모가 아니라 일곱 가지 일에 사람 손이 얼마나 자주 가느냐다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "OOMKilled",
+   "def": "컨테이너가 메모리 한도를 넘겨 커널에 의해 종료된 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Concepts: Overview",
+   "url": "https://kubernetes.io/docs/concepts/overview/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "The Twelve-Factor App",
+   "url": "https://12factor.net/",
+   "publisher": "Adam Wiggins"
+  },
+  {
+   "title": "Google — Site Reliability Engineering",
+   "url": "https://sre.google/books/",
+   "publisher": "Google"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

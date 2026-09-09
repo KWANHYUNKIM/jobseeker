@@ -1,0 +1,141 @@
+{
+ "book": "docker",
+ "id": "manual-pain",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "손으로 하면 무엇이 어긋나나",
+ "summary": "빌드한 사람마다 다른 이미지.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "수동 빌드·배포의 문제를 목록으로 안다.",
+  "무엇을 자동화해야 하는지 정한다.",
+  "재현 가능한 빌드의 조건을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여기까지 오면 이미지를 만들 줄** 안다. **문제는 그걸 누가 언제 어떻게 만드느냐**다.\n\n```bash\n./gradlew bootJar\ndocker build -t ghcr.io/acme/shop:latest .\ndocker push ghcr.io/acme/shop:latest\nssh prod 'docker pull ... && docker compose up -d'\n```\n\n**이게 사람 손에 있으면 무엇이 어긋나나.**"
+  },
+  {
+   "type": "table",
+   "caption": "수동 배포가 어긋나는 지점",
+   "columns": [
+    "무엇",
+    "어떻게",
+    "절"
+   ],
+   "rows": [
+    [
+     "**빌드 머신이 다르다**",
+     "M1 에서 빌드해 amd64 서버에 올린다 → `exec format error`",
+     "2.6·5.9"
+    ],
+    [
+     "**커밋과 이미지가 안 이어진다**",
+     "`latest` 를 올렸는데 어느 코드인지 모른다",
+     "4.2"
+    ],
+    [
+     "**테스트를 건너뛴다**",
+     "급하면 안 돌린다",
+     "—"
+    ],
+    [
+     "**커밋 안 한 변경이 들어간다**",
+     "로컬 작업 디렉터리로 빌드했다",
+     "—"
+    ],
+    [
+     "로그인 자격이 개인 계정",
+     "누가 배포했는지 모른다. 그 사람이 퇴사하면",
+     "4.5"
+    ],
+    [
+     "**빌드 시간**",
+     "매번 처음부터. 5분씩 기다린다",
+     "11.3"
+    ],
+    [
+     "절차 누락",
+     "태그를 하나 빼먹는다",
+     "11.4"
+    ]
+   ],
+   "note": "**전부 \"사람이 매번 같은 일을 정확히 반복\" 을 전제**한다. **그건 안 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재현 가능한 빌드의 조건",
+   "md": "**\"같은 커밋에서 같은 이미지가 나온다\" 를 만들려면**:\n\n| 조건 | 어떻게 |\n|---|---|\n| **깨끗한 소스** | CI 가 체크아웃한 그 커밋만. 로컬 변경 없음 |\n| **고정된 베이스** | `FROM ...@sha256:`(4.4절) 또는 최소한 정확한 태그 |\n| **고정된 의존성** | lock 파일. Gradle 의 dependency locking |\n| **고정된 빌드 환경** | 컨테이너 안에서 빌드(10.1절) |\n| **같은 아키텍처** | buildx 로 명시(5.9절) |\n\n**완전한 재현성(bit-for-bit)은 어렵다** — **타임스탬프·파일 순서가 섞인다.**\n\n> **목표는 \"완전히 같은 바이트\" 가 아니라 \"같은 커밋에서 같게 동작하는 이미지\"** 다.\n> **그리고 그 이미지가 어느 커밋인지 되찾을 수 있는 것**(3.4절의 라벨)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "파이프라인이 해야 할 일",
+   "md": "```\n커밋 push\n  |\n  +-- 1. 체크아웃 (그 커밋만)\n  +-- 2. 테스트 (10.5절의 Testcontainers 포함)\n  +-- 3. 이미지 빌드 (멀티 아키텍처, 캐시 사용)\n  +-- 4. 취약점 스캔 (10.6절)\n  +-- 5. 태그 붙이기 (커밋 SHA + 버전, 4.2절)\n  +-- 6. 레지스트리에 push\n  +-- 7. (선택) 배포\n```\n\n**2번이 실패하면 3번을 안 한다.** **4번이 CRITICAL 을 찾으면 6번을 안 한다.**\n\n> **11.2절에서 이걸 GitHub Actions 로** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "손으로 만든 이미지가 어긋나는 것을 확인한다",
+   "sql": "# --- 커밋 안 한 변경이 들어간다 ---\n\n$ git status --short\n M src/main/java/hello/App.java     <- 아직 커밋 안 함\n?? debug.txt\n\n$ docker build -t shop:latest . >/dev/null\n$ docker run --rm shop:latest ls /app\napp.jar\ndebug.txt\n\n#   커밋에 없는 파일이 이미지에 들어갔다\n#   .dockerignore 에 없으면 이렇게 된다 (5.4절)\n\n\n# --- 어느 커밋인지 알 수 없다 ---\n\n$ docker inspect shop:latest -f '{{index .Config.Labels \"org.opencontainers.image.revision\"}}'\n<no value>\n\n$ docker inspect shop:latest -f '{{.Created}}'\n2026-09-09T23:12:04.118Z\n\n#   만든 시각밖에 없다. 소스를 되찾을 방법이 없다\n\n\n# --- 아키텍처가 로컬 것이다 ---\n\n$ docker image inspect shop:latest -f '{{.Os}}/{{.Architecture}}'\nlinux/arm64\n\n$ ssh prod 'docker run --rm ghcr.io/acme/shop:latest java -version'\nexec /opt/java/openjdk/bin/java: exec format error\n\n#   2.6절에서 예고한 그것\n\n\n# --- 같은 커밋인데 사람마다 다른 이미지가 나온다 ---\n\n#   A 의 노트북:\n#     $ java -version -> 21.0.4 (Temurin)\n#     $ ./gradlew bootJar && docker build ...\n#\n#   B 의 노트북:\n#     $ java -version -> 21.0.2 (Zulu)\n#     $ ./gradlew bootJar && docker build ...\n#\n#   컨테이너 안에서 빌드하면 (10.1절) 이 차이가 사라진다\n\n\n# --- 라벨을 붙여서 되찾을 수 있게 ---\n\n$ git rev-parse --short HEAD\na1b2c3d\n\n$ docker build \\\n    --label org.opencontainers.image.revision=$(git rev-parse HEAD) \\\n    --label org.opencontainers.image.source=https://github.com/acme/shop \\\n    --label org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ) \\\n    -t ghcr.io/acme/shop:sha-$(git rev-parse --short HEAD) . >/dev/null\n\n$ docker inspect ghcr.io/acme/shop:sha-a1b2c3d -f '{{json .Config.Labels}}' | python3 -m json.tool\n{\n    \"org.opencontainers.image.created\": \"2026-09-09T23:15:02Z\",\n    \"org.opencontainers.image.revision\": \"a1b2c3d4e5f6789...\",\n    \"org.opencontainers.image.source\": \"https://github.com/acme/shop\"\n}\n\n#   이제 운영에서 이미지를 보고 커밋을 찾을 수 있다 (10.8절)\n#   다만 이걸 매번 손으로 치는 것도 사람이 하는 일이다\n#   -> 11.2절"
+  }
+ ],
+ "recap": [
+  "수동 배포는 빌드 머신·아키텍처·커밋 추적·테스트 누락·자격 관리에서 어긋난다.",
+  "재현 가능한 빌드의 조건은 깨끗한 소스·고정된 베이스와 의존성·컨테이너 안 빌드·명시된 아키텍처다.",
+  "목표는 바이트 단위 동일성이 아니라 '같은 커밋에서 같게 동작하고 되찾을 수 있는' 이미지다.",
+  "파이프라인은 체크아웃 → 테스트 → 빌드 → 스캔 → 태그 → push 순서로 하고 앞이 실패하면 뒤를 안 한다."
+ ],
+ "drills": [
+  {
+   "task": "커밋하지 않은 파일이 있는 상태로 빌드해 이미지에 들어가는지 확인한다.",
+   "done_when": ".dockerignore 에 없으면 들어가는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "`--label org.opencontainers.image.revision=$(git rev-parse HEAD)` 을 붙여 빌드하고 inspect 로 확인한다.",
+   "done_when": "이미지에서 커밋 SHA 를 읽을 수 있다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "수동 빌드에서 M1 맥이 만드는 문제는.",
+   "a": "arm64 이미지가 만들어져 amd64 서버에서 exec format error 가 난다."
+  },
+  {
+   "q": "'재현 가능한 빌드' 의 현실적인 목표는.",
+   "a": "바이트 단위 동일성이 아니라, 같은 커밋에서 같게 동작하고 이미지에서 커밋을 되찾을 수 있는 것."
+  },
+  {
+   "q": "파이프라인에서 테스트가 실패하면.",
+   "a": "이미지 빌드와 push 를 하지 않는다. 앞 단계가 뒤 단계의 조건이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "재현 가능한 빌드",
+   "en": "reproducible build",
+   "what": "같은 입력에서 같은 결과가 나오는 빌드."
+  },
+  {
+   "term": "OCI 라벨",
+   "what": "source·revision·version·created 등 표준 이미지 메타데이터."
+  }
+ ],
+ "sources": [
+  {
+   "title": "OCI — Annotations",
+   "url": "https://github.com/opencontainers/image-spec/blob/main/annotations.md",
+   "publisher": "Open Container Initiative"
+  },
+  {
+   "title": "Docker Docs — Build best practices",
+   "url": "https://docs.docker.com/build/building/best-practices/",
+   "publisher": "Docker"
+  }
+ ]
+}

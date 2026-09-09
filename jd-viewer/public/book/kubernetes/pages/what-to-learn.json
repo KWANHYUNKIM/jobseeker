@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "what-to-learn",
+ "no": "1.5",
+ "chapter": 1,
+ "title": "무엇을 배우게 되나",
+ "summary": "오브젝트 열 개면 거의 다 된다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "오브젝트 열 개를 훑는다.",
+  "배우는 순서의 이유를 안다.",
+  "안 다루는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**쿠버네티스에 오브젝트 종류가 예순 개** 넘는다. **열 개면 거의 다** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "열 개",
+   "ascii": "   ten objects cover almost everything\n\n   Pod           one or more containers that live and die together\n   Deployment    keep N copies of a pod, replace them safely\n   Service       one stable name and address for those copies\n   Ingress       route outside http traffic to services\n   ConfigMap     configuration, outside the image\n   Secret        the same, for things you do not print\n   PVC           storage that outlives the pod\n   Job           run once until it succeeds\n   CronJob       run that on a schedule\n   Namespace     a wall between all of the above",
+   "note": "**나머지는 이 열 개를 쓰거나 감싸는** 것들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "열 개가 서로 어떻게 붙나",
+   "md": "```\nIngress  ──▶  Service  ──▶  Pod  ──┬── ConfigMap\n                  ▲                ├── Secret\n                  │                └── PVC\n             Deployment\n```\n\n> **`Deployment` 가 `Pod` 를 만들고 `Service` 가 그걸 찾는다.**\n> **`Ingress` 가 바깥에서 `Service` 로** 보낸다.\n> **`ConfigMap`·`Secret`·`PVC` 는 `Pod` 안으로 들어간다.**\n\n**`Namespace` 는 이 그림 전체를 담는 상자**다.\n\n> **이름이 겹쳐도 되게** 한다.\n> **`dev` 와 `prod` 에 같은 이름의 `Deployment` 를 둘 수** 있다.\n\n**안 다루는 것도** 있다.\n\n| 안 다루는 것 | 이유 |\n|---|---|\n| `StatefulSet` | 5장에서 이름만 (DB 를 클러스터에 안 올린다) |\n| `DaemonSet` | 9장에서 짧게 |\n| `HPA` | 9장에서 짧게 |\n| 오퍼레이터·CRD | 이 책 밖 |\n| 헬름 | 11장에서 이름만 |\n| 서비스 메시 | 이 책 밖 |\n\n> **첫째가 논쟁거리**다.\n> **DB 를 쿠버네티스에 올릴지는 팀마다** 다르고, **입문에서 다룰 주제가** 아니다.\n> **⑩ 5.7절의 Redis 도 여기서는 관리형을 쓴다고** 친다."
+  },
+  {
+   "type": "figure",
+   "caption": "배우는 순서",
+   "ascii": "   the order this book teaches them\n\n   4   Pod          because everything else wraps it\n   5   Deployment   because nobody makes a pod by hand\n   6   Service      because a pod address is useless\n   7   ConfigMap    because the image must not know the environment\n   8   PVC          because some things must survive\n   9   resources    because a node is finite\n  10   operations   because it will break\n  11   rollout      because it will change",
+   "note": "**각 장에 그 순서인 이유가** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이 순서인가",
+   "md": "**파드가 먼저**다.\n\n> **나머지 전부가 파드를 감싸거나 파드를** 가리킨다.\n> **파드를 모르면 디플로이먼트의 `template` 이 무엇인지** 모른다.\n\n**그런데 파드를 직접 만들 일은 거의** 없다.\n\n> **4장에서 손으로 만들어 보고 5장에서 \"이걸 직접 만들면 안 된다\" 를** 배운다.\n> **직접 만든 파드는 죽으면** 끝이다 — **1.2절의 도커와** 같다.\n>\n> **일부러 그 순서**다.\n\n**서비스가 셋째인 이유**\n\n> **파드 IP 는 매번** 바뀐다.\n> **4장에서 그걸 확인하고 6장에서 고정된 이름을** 얻는다.\n> **불편을 먼저 겪고 해법을** 본다.\n\n**설정이 일곱째**\n\n> **⑩ 12.2절에서 설정 파일의 비밀이 새는 걸** 봤다.\n> **7장이 그걸 이미지 밖으로** 뺀다.\n> **`Secret` 이 사실 Base64 일 뿐이라는 것도** 거기서 본다 — **⑩ 3.4절과 같은** 얘기다.\n\n**마지막 두 장**\n\n> **10장은 고장 났을 때, 11장은 바꿀 때**다.\n> **둘 다 앞의 여덟 장을 다 알아야** 읽힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 오브젝트 종류를 센다 ---\n\n$ kubectl api-resources --no-headers | wc -l\n\n62\n\n#   예순둘이다\n\n$ kubectl api-resources --no-headers | awk '{print $NF}' | sort | uniq -c | sort -rn | head -3\n\n  40 true\n  22 false\n\n#   (NAMESPACED 열이다)\n\n$ kubectl api-resources -o name | head -12\n\nbindings\ncomponentstatuses\nconfigmaps\nendpoints\nevents\nlimitranges\nnamespaces\nnodes\npersistentvolumeclaims\npersistentvolumes\npods\npodtemplates\n\n#   이 책에서 쓸 건 열 개다\n\n$ for k in pods deployments services ingresses configmaps secrets \\\n           persistentvolumeclaims jobs cronjobs namespaces; do\n    printf '%-24s %s\\n' $k \"$(kubectl api-resources --no-headers \\\n        | awk -v k=$k '$1==k {print $2, $3}')\"\n  done\n\npods                     po v1\ndeployments              deploy apps/v1\nservices                 svc v1\ningresses                ing networking.k8s.io/v1\nconfigmaps               cm v1\nsecrets                  v1\npersistentvolumeclaims   pvc v1\njobs                     batch/v1\ncronjobs                 cj batch/v1\nnamespaces               ns v1\n\n#   약칭과 API 그룹이 나온다\n\n#   2.3절에서 apiVersion 이 뭔지 본다\n\n# --- 열 개를 한 번에 만들어 본다 ---\n\n$ kubectl create namespace demo\n\nnamespace/demo created\n\n$ kubectl create deployment web --image=nginx:1.27 -n demo\n$ kubectl expose deployment web --port=80 -n demo\n$ kubectl create configmap app-config --from-literal=GREETING=hello -n demo\n$ kubectl create secret generic app-secret --from-literal=TOKEN=abc123 -n demo\n$ kubectl create job hello --image=busybox -n demo -- echo hi\n$ kubectl create cronjob nightly --image=busybox --schedule='0 3 * * *' \\\n    -n demo -- echo nightly\n\ndeployment.apps/web created\nservice/web exposed\nconfigmap/app-config created\nsecret/app-secret created\njob.batch/hello created\ncronjob.batch/nightly created\n\n$ kubectl get all -n demo\n\nNAME                      READY   STATUS      RESTARTS   AGE\npod/hello-x9k2m           0/1     Completed   0          14s\npod/web-6d8f4b9c7-2k9mv   1/1     Running     0          22s\n\nNAME          TYPE        CLUSTER-IP      PORT(S)   AGE\nservice/web   ClusterIP   10.96.201.144   80/TCP    20s\n\nNAME                  READY   UP-TO-DATE   AVAILABLE   AGE\ndeployment.apps/web   1/1     1            1           22s\n\nNAME                            DESIRED   CURRENT   READY   AGE\nreplicaset.apps/web-6d8f4b9c7   1         1         1       22s\n\nNAME              STATUS     COMPLETIONS   DURATION   AGE\njob.batch/hello   Complete   1/1           4s         14s\n\nNAME                  SCHEDULE    SUSPEND   ACTIVE   AGE\ncronjob.batch/nightly 0 3 * * *   False     0        11s\n\n#   get all 이 configmap 과 secret 을 안 보여 준다\n\n$ kubectl get configmap,secret -n demo\n\nNAME                         DATA   AGE\nconfigmap/app-config         1      30s\nconfigmap/kube-root-ca.crt   1      1m\n\nNAME                TYPE     DATA   AGE\nsecret/app-secret   Opaque   1      28s\n\n#   get all 의 all 은 전부가 아니다\n\n#   자주 헷갈린다\n\n# --- Secret 이 정말 비밀인가 ---\n\n$ kubectl get secret app-secret -n demo -o jsonpath='{.data.TOKEN}'\n\nYWJjMTIz\n\n$ echo YWJjMTIz | base64 -d\n\nabc123\n\n#   Base64 다\n\n#   ⑩ 3.4절과 같다\n\n#   7장에서 이 얘기를 제대로 한다\n\n# --- 파드를 직접 만들면 ---\n\n$ kubectl run solo --image=nginx:1.27 -n demo\n\npod/solo created\n\n$ kubectl get pod solo -n demo\n\nNAME   READY   STATUS    RESTARTS   AGE\nsolo   1/1     Running   0          9s\n\n$ kubectl delete pod solo -n demo\n\npod \"solo\" deleted\n\n$ kubectl get pod solo -n demo\n\nError from server (NotFound): pods \"solo\" not found\n\n#   안 살아난다\n\n#   디플로이먼트가 만든 것과 다르다\n\n$ kubectl delete pod -l app=web -n demo\n\npod \"web-6d8f4b9c7-2k9mv\" deleted\n\n$ kubectl get pods -l app=web -n demo\n\nNAME                  READY   STATUS    RESTARTS   AGE\nweb-6d8f4b9c7-h4n8q   1/1     Running   0          4s\n\n#   이건 살아났다\n\n#   4장과 5장의 차이다\n\n# --- 네임스페이스가 벽이다 ---\n\n$ kubectl get pods\n\nNo resources found in default namespace.\n\n$ kubectl get pods -n demo --no-headers | wc -l\n\n2\n\n#   같은 클러스터인데 안 보인다\n\n$ kubectl create deployment web --image=nginx:1.27\n\ndeployment.apps/web created\n\n#   이름이 겹쳐도 된다\n\n$ kubectl get deployment -A | grep ' web '\n\ndefault   web   1/1   1   1   6s\ndemo      web   1/1   1   1   3m\n\n#   둘 다 web 이다\n\n# --- 치운다 ---\n\n$ kubectl delete namespace demo\n\nnamespace \"demo\" deleted\n\n$ kubectl get all -n demo\n\nNo resources found in demo namespace.\n\n#   안에 든 게 다 지워졌다\n\n#   네임스페이스 하나로 정리된다\n\n$ kubectl delete deployment web\n\ndeployment.apps \"web\" deleted\n\n# --- 다음 장에서 ---\n\n#   이 오브젝트들이 어떻게 유지되는지 본다",
+   "note": "**오브젝트가 예순둘인데 이 책은 열 개**를 쓴다.\n\n**`kubectl get all` 이 컨피그맵과 시크릿을 안 보여 준다** — `all` 이 전부가 아니다.\n\n**`Secret` 이 `YWJjMTIz` 라 `base64 -d` 하면 `abc123`** 이다 — ⑩ 3.4절과 같다.\n\n**`kubectl run` 으로 만든 파드는 지우면 안 살아나고**, 디플로이먼트가 만든 건 살아난다.\n\n**네임스페이스를 지우면 안의 것이 다** 지워진다."
+  }
+ ],
+ "recap": [
+  "**오브젝트 예순둘 중 열 개면** 된다.",
+  "**디플로이먼트가 파드를, 서비스가 그걸** 찾는다.",
+  "**네임스페이스가 전체를 담는 상자**다.",
+  "**`get all` 의 `all` 은 전부가** 아니다.",
+  "**`Secret` 은 Base64 일** 뿐이다.",
+  "**직접 만든 파드는 안** 살아난다.",
+  "**파드를 먼저 배우고 직접 만들지 말라고** 배운다.",
+  "**불편을 먼저 겪고 해법을** 본다.",
+  "**스테이트풀셋과 오퍼레이터는 이 책 밖**이다."
+ ],
+ "drills": [
+  {
+   "task": "`api-resources` 로 종류를 센다.",
+   "done_when": "숫자와 약칭을 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "열 개를 한 네임스페이스에 만든다.",
+   "done_when": "`get all` 이 무엇을 빠뜨리는지 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`Secret` 을 디코드한다.",
+   "done_when": "평문이 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`run` 과 디플로이먼트의 파드를 각각 지운다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 다루는 오브젝트는 몇 개인가?",
+   "a": "열 개다. 전체는 예순 개가 넘는다."
+  },
+  {
+   "q": "`kubectl get all` 이 안 보여 주는 것은?",
+   "a": "컨피그맵, 시크릿 등이다. `all` 은 전부가 아니다."
+  },
+  {
+   "q": "`Secret` 은 암호화되나?",
+   "a": "기본은 Base64 인코딩일 뿐이다."
+  },
+  {
+   "q": "직접 만든 파드와 디플로이먼트의 파드 차이는?",
+   "a": "전자는 지우면 끝이고 후자는 다시 만들어진다."
+  },
+  {
+   "q": "네임스페이스를 지우면?",
+   "a": "그 안의 오브젝트가 전부 지워진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "네임스페이스",
+   "def": "클러스터 안을 논리적으로 나누는 벽. 이름이 겹칠 수 있게 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Workloads",
+   "url": "https://kubernetes.io/docs/concepts/workloads/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — kubectl Reference",
+   "url": "https://kubernetes.io/docs/reference/kubectl/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Concepts: Overview",
+   "url": "https://kubernetes.io/docs/concepts/overview/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

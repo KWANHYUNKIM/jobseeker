@@ -1,0 +1,150 @@
+{
+ "book": "docker",
+ "id": "gh-actions",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "GitHub Actions 로 빌드·푸시",
+ "summary": "커밋 하나가 이미지 하나가 된다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "빌드·푸시 워크플로를 쓴다.",
+  "GHCR 인증을 안다.",
+  "멀티 아키텍처를 CI 에서 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절의 목록을 하나씩 지워** 간다. **GitHub 을 쓰면 레지스트리(GHCR)와 인증이 이미** 있다(4.5절)."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": ".github/workflows/build.yml",
+   "caption": "테스트 → 빌드 → 스캔 → push",
+   "code": "name: build\n\non:\n  push:\n    branches: [main]\n    tags: ['v*']\n  pull_request:\n\nenv:\n  IMAGE: ghcr.io/${{ github.repository }}\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: { distribution: temurin, java-version: '21', cache: gradle }\n      - run: ./gradlew test          # Testcontainers 가 러너의 도커를 쓴다 (10.5절)\n\n  build:\n    needs: test                       # 테스트가 실패하면 안 돈다\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      packages: write                 # GHCR 에 push\n    steps:\n      - uses: actions/checkout@v4\n\n      - uses: docker/setup-buildx-action@v3\n\n      - uses: docker/login-action@v3\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n\n      - id: meta\n        uses: docker/metadata-action@v5\n        with:\n          images: ${{ env.IMAGE }}\n          tags: |\n            type=sha,prefix=sha-\n            type=ref,event=branch\n            type=semver,pattern={{version}}\n            type=raw,value=latest,enable={{is_default_branch}}\n\n      - uses: docker/build-push-action@v6\n        with:\n          context: .\n          platforms: linux/amd64,linux/arm64\n          push: ${{ github.event_name != 'pull_request' }}\n          tags: ${{ steps.meta.outputs.tags }}\n          labels: ${{ steps.meta.outputs.labels }}\n          cache-from: type=gha\n          cache-to: type=gha,mode=max",
+   "note": "`metadata-action` 이 4.2절의 태그와 3.4절의 OCI 라벨을 자동으로 만들어 준다."
+  },
+  {
+   "type": "table",
+   "caption": "이 워크플로가 지운 문제들",
+   "columns": [
+    "11.1절의 문제",
+    "어떻게 지웠나"
+   ],
+   "rows": [
+    [
+     "빌드 머신이 다르다",
+     "**러너가 항상 같다.** 컨테이너 안에서 빌드하면 더 확실"
+    ],
+    [
+     "아키텍처",
+     "**`platforms: linux/amd64,linux/arm64`**(5.9절)"
+    ],
+    [
+     "커밋 추적",
+     "**`type=sha` 태그 + `metadata-action` 의 라벨**"
+    ],
+    [
+     "테스트 건너뛰기",
+     "**`needs: test`**"
+    ],
+    [
+     "커밋 안 한 변경",
+     "체크아웃한 커밋만"
+    ],
+    [
+     "개인 계정 자격",
+     "**`GITHUB_TOKEN`** — 워크플로 실행마다 발급되고 끝나면 만료"
+    ],
+    [
+     "빌드 시간",
+     "`cache-from/to: type=gha`(11.3절)"
+    ]
+   ],
+   "note": "**PR 에서는 `push: false` 라 빌드만 검증**한다 — **포크에서 온 PR 이 이미지를 올릴 수 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "멀티 아키텍처가 CI 를 느리게 만든다",
+   "md": "**러너는 amd64** 다. **arm64 는 QEMU 에뮬레이션으로** 만든다(2.6절에서 7배).\n\n```\nlinux/amd64 만:        3분\nlinux/amd64,arm64:    18분\n```\n\n**대응**:\n\n| 방법 | 어떻게 |\n|---|---|\n| **필요할 때만** | main 브랜치·태그에서만 멀티, PR 은 amd64 만 |\n| **아키텍처별 러너로 나눈다** | `runs-on: ubuntu-24.04-arm` 과 amd64 를 매트릭스로 돌리고 manifest 만 합친다 |\n| 정말 필요한가 | **서버가 amd64 뿐이면 arm64 를 안 만들어도 된다** |\n\n```yaml\nplatforms: ${{ github.ref == 'refs/heads/main' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "스캔을 붙인다",
+   "md": "```yaml\n      - uses: aquasecurity/trivy-action@0.24.0\n        with:\n          image-ref: ${{ env.IMAGE }}:sha-${{ github.sha }}\n          severity: CRITICAL,HIGH\n          exit-code: '1'\n          ignore-unfixed: true\n```\n\n| 옵션 | 왜 |\n|---|---|\n| `ignore-unfixed` | **고칠 수 없는 것으로 빌드를 막지 않는다** |\n| `exit-code: 1` | **처음에는 `0` 으로 두고 보고만** 받다가 조인다(10.6절) |\n\n**스캔은 push 뒤에 한다** — **레지스트리에 있는 이미지를 본다.** **막고 싶으면 push 전에 로컬 이미지로** 돌린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 CI 로그",
+   "sql": "# --- Actions 실행 결과 ---\n\ntest\n  ✓ Set up JDK 21                              4s\n  ✓ ./gradlew test                            2m 14s\n      > Task :test\n      OrderRepositoryTest > 주문을_저장한다 PASSED\n      ... 142 tests completed\n      BUILD SUCCESSFUL\n\nbuild\n  ✓ Checkout                                    2s\n  ✓ Set up Docker Buildx                        3s\n  ✓ Login to ghcr.io                            1s\n  ✓ Docker meta                                 0s\n      tags:\n        ghcr.io/acme/shop:sha-a1b2c3d\n        ghcr.io/acme/shop:main\n        ghcr.io/acme/shop:latest\n      labels:\n        org.opencontainers.image.revision=a1b2c3d4e5f6...\n        org.opencontainers.image.source=https://github.com/acme/shop\n        org.opencontainers.image.created=2026-09-09T23:20:11.000Z\n  ✓ Build and push                            4m 32s\n      #12 [linux/amd64 builder 5/6] RUN ./gradlew bootJar --no-daemon\n      #13 [linux/arm64 builder 5/6] RUN ./gradlew bootJar --no-daemon\n      ...\n      #24 exporting to image\n      #24 pushing manifest for ghcr.io/acme/shop:sha-a1b2c3d\n      #24 DONE 18.2s\n  ✓ Trivy scan                                 41s\n      Total: 3 (CRITICAL: 0, HIGH: 3)\n\n\n# --- 만들어진 것 ---\n\n$ docker buildx imagetools inspect ghcr.io/acme/shop:sha-a1b2c3d\nName:      ghcr.io/acme/shop:sha-a1b2c3d\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:1a2b3c4d5e6f...\n\nManifests:\n  Platform:  linux/amd64\n  Platform:  linux/arm64\n\n#   4.3절의 manifest list 를 CI 가 만들었다\n\n$ docker pull -q ghcr.io/acme/shop:sha-a1b2c3d\n$ docker inspect ghcr.io/acme/shop:sha-a1b2c3d \\\n    -f '{{index .Config.Labels \"org.opencontainers.image.revision\"}}'\na1b2c3d4e5f6789012345678901234567890abcd\n\n#   운영에서 이 이미지를 보고 커밋으로 갈 수 있다\n\n\n# --- 서버에서 배포 ---\n\n$ ssh prod\n$ docker pull ghcr.io/acme/shop:sha-a1b2c3d\nsha-a1b2c3d: Pulling from acme/shop\nDigest: sha256:1a2b3c4d...\n\n$ docker inspect ghcr.io/acme/shop:sha-a1b2c3d -f '{{.Os}}/{{.Architecture}}'\nlinux/amd64\n\n#   서버 아키텍처에 맞는 것이 왔다 (4.3절)\n\n\n# --- PR 에서는 push 를 안 한다 ---\n\n#   pull_request 이벤트:\n#     ✓ Build and push   3m 12s\n#       #24 exporting to image\n#       #24 WARNING: No output specified with docker-container driver\n#\n#   빌드만 하고 안 올렸다. 포크 PR 이 레지스트리를 못 건드린다\n\n\n# --- 실패했을 때 ---\n\n#   test\n#     ✗ ./gradlew test                          1m 48s\n#         OrderServiceTest > 재고가_부족하면_예외 FAILED\n#         BUILD FAILED\n#\n#   build\n#     - Skipped (needs: test)\n#\n#   이미지가 아예 안 만들어진다"
+  }
+ ],
+ "recap": [
+  "GitHub Actions 는 GITHUB_TOKEN 으로 GHCR 에 바로 push 할 수 있다.",
+  "metadata-action 이 커밋 SHA 태그와 OCI 라벨을 자동으로 만든다.",
+  "needs: test 로 테스트가 실패하면 이미지가 안 만들어진다.",
+  "멀티 아키텍처는 에뮬레이션이라 느리다. main 에서만 하거나 아키텍처별 러너로 나눈다.",
+  "PR 에서는 push 하지 않는다. 포크 PR 이 레지스트리를 건드릴 수 없게."
+ ],
+ "drills": [
+  {
+   "task": "자기 저장소에 build.yml 을 넣고 커밋을 push 해 GHCR 에 이미지가 올라가는지 본다.",
+   "done_when": "Packages 탭에 이미지가 보이고 sha- 태그가 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "만들어진 이미지의 revision 라벨을 pull 해서 확인한다.",
+   "done_when": "커밋 SHA 가 나오는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "테스트를 일부러 실패시켜 build 잡이 건너뛰어지는지 확인한다.",
+   "done_when": "Skipped 를 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "GitHub Actions 에서 GHCR 에 로그인하는 자격은.",
+   "a": "secrets.GITHUB_TOKEN. 워크플로 실행마다 발급되고 끝나면 만료된다. permissions: packages: write 가 필요하다."
+  },
+  {
+   "q": "PR 에서 push: false 로 두는 이유는.",
+   "a": "포크에서 온 PR 이 레지스트리에 이미지를 올릴 수 없게 하려고. 빌드 검증만 한다."
+  },
+  {
+   "q": "멀티 아키텍처 빌드가 CI 에서 느린 이유는.",
+   "a": "러너가 amd64 라 arm64 를 QEMU 에뮬레이션으로 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "GITHUB_TOKEN",
+   "what": "워크플로 실행마다 자동 발급되는 단기 토큰."
+  },
+  {
+   "term": "metadata-action",
+   "what": "이벤트에 맞는 태그와 OCI 라벨을 만들어 주는 액션."
+  },
+  {
+   "term": "GHCR",
+   "what": "GitHub Container Registry(ghcr.io)."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker — Build and push with GitHub Actions",
+   "url": "https://docs.docker.com/build/ci/github-actions/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "GitHub Docs — Publishing images to GHCR",
+   "url": "https://docs.github.com/en/actions/how-tos/publish-packages/publish-docker-images",
+   "publisher": "GitHub"
+  }
+ ]
+}
