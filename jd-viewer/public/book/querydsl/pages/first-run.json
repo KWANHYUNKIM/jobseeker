@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "first-run",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "동작 확인",
+ "summary": "JPQL 과 SQL 을 같이 본다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 단계를 안다.",
+  "두 겹이 어긋나는 자리를 본다.",
+  "3장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장이 도메인과 팩토리를** 끝냈다. **4장에 들어가기 전에 두 겹을 읽는 연습을** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 번의 호출, 네 단계",
+   "ascii": "   one call, four stages, two of them printed\n\n   assemble   the java objects, no logging at all\n   serialize  the jpql string, printed as a comment\n   translate  the sql, printed by the SQL logger\n   bind       the values, printed by the bind logger\n\n   a section that shows only stage three is missing half the story",
+   "note": "**셋째만 보면 절반을 놓친**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 겹이 어긋나는 자리가 배울 자리다",
+   "md": "**같으면 볼 게** 없다.\n\n> **`where` 조건은 거의 그대로** 간다.\n> **읽고 넘어가면** 된다.\n> **어긋난 자리가 문제의 자리**다.\n\n**페이징이 대표**다.\n\n> **JPQL 에 `offset` 이** 없다.\n> **SQL 에만** 있다.\n> **2.4절의 방언이 붙인 것**이다.\n\n**프로젝션도** 그렇다.\n\n> **JPQL 은 `select member1` 한 마디**다.\n> **SQL 은 컬럼을 다** 편다.\n> **매핑이 편** 것이다.\n\n**조인도** 다르다.\n\n> **JPQL 은 `inner join member1.team`** 이다.\n> **SQL 은 `on` 절을 만들어** 붙인다.\n> **연관을 아니까 쓸 수 있는 축약**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "어긋나는 세 자리",
+   "ascii": "   three places the two layers do not match\n\n   paging      no offset in the jpql, offset in the sql\n   projection  select member in the jpql, nine columns in the sql\n   the join    one join word in the jpql, an on clause in the sql\n\n   every one of those is the dialect and the mapping doing their work",
+   "note": "**방언과 매핑이 일하는** 자리다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "쿼리 수를 세는 습관을 여기서 들인다",
+   "md": "**문장 하나가 쿼리 하나가** 아니다.\n\n> **지연 로딩이 뒤에 더 나갈 수** 있다.\n> **3.2절에서 이미** 봤다.\n> **⑭ 5.13절의 N+1** 이다.\n\n**통계로 센다.**\n\n> **2.5절의 `generate_statistics`** 다.\n> **`Session Metrics` 에 문장 수가** 있다.\n> **아래에서 쓴다.**\n\n**로그로도 센다.**\n\n> **`Hibernate:` 줄을 `grep -c`** 한다.\n> **가장 단순하고** 정확하다.\n> **이 책이 자주 쓰는 방법**이다.\n\n**4장부터는 안 세고 넘어가는 절이** 많다.\n\n> **문법을 보는 절은 문장 하나**다.\n> **조인·페치가 나오면 다시** 센다.\n> **4.13절이 그** 지점이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 조건은 거의 그대로 간다\n\n@Test\nvoid 조건() {\n    queryFactory.selectFrom(member)\n            .where(member.age.goe(20)\n                    .and(member.username.startsWith(\"m\")))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1\n    and member1.username like ?2 escape '!' */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n        and m1_0.username like ? escape '!'\nTRACE binding parameter (1:INTEGER) <- [20]\nTRACE binding parameter (2:VARCHAR) <- [m%]\n\n--   where 절이 거의 같다\n--   startsWith 가 이미 JPQL 에서 like 다\n--   m% 는 값에서 만들어졌다\n\n\n-- 프로젝션은 다르다\n\n@Test\nvoid 프로젝션() {\n    queryFactory.selectFrom(member).limit(1).fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    fetch first ? rows only\n\n--   JPQL 은 한 마디다\n--   SQL 은 네 컬럼이다\n--   매핑이 편 것이다\n\n\n-- 페이징은 JPQL 에 없다\n\n@Test\nvoid 페이징() {\n    queryFactory.selectFrom(member)\n            .orderBy(member.username.asc())\n            .offset(2).limit(3)\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.username asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.username\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [2]\nTRACE binding parameter (2:INTEGER) <- [3]\n\n--   JPQL 에는 offset 이 아예 없다\n--   방언이 SQL 에서 붙였다 (2.4절)\n\n\n-- 조인도 다르다\n\n@Test\nvoid 조인() {\n    queryFactory.selectFrom(member)\n            .join(member.team, team)\n            .where(team.name.eq(\"teamA\"))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    team.name = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n\n--   JPQL 에 on 이 없다\n--   연관을 아니까 안 적어도 된다\n--   SQL 에서는 적어야 한다\n\n\n-- 문장 하나가 쿼리 하나가 아니다\n\n@Test\nvoid 쿼리_수() {\n    em.clear();\n    long n = counter.count(() -> {\n        for (Member m : queryFactory.selectFrom(member).fetch()) {\n            if (m.getTeam() != null) m.getTeam().getName();\n        }\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\nHibernate: select ... from member m1_0\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n쿼리 3개\n\n--   JPQL 은 하나였다\n--   팀이 둘이라 둘이 더 나갔다\n--   4.13절에서 이걸 하나로 만든다\n\n\n-- 통계로도 센다\n\n@Test\nvoid 통계() {\n    em.clear();\n    queryFactory.selectFrom(member).fetch()\n            .forEach(m -> { if (m.getTeam() != null) m.getTeam().getName(); });\n}\n\nINFO  Session Metrics {\n    3 JDBC statements prepared;\n    3 JDBC statements executed;\n    0 flushes;\n    12 entities loaded;\n}\n\n--   2.5절에서 켠 그 통계다\n--   엔티티 12 개는 회원 10 + 팀 2 다\n\n\n-- 로그 줄로도 센다\n\n$ ./gradlew test --tests '*FirstRunTest.쿼리_수*' \\\n    | grep -c '^Hibernate:'\n3\n\n--   제일 단순하다\n\n\n-- 값 없이는 다시 못 돌린다\n\n// 바인딩 로그를 끄고\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.age>=? and m1_0.username like ? escape '!'\n\n--   무엇으로 조회했는지 모른다\n--   2.5절에서 켠 이유다\n\n\n-- 켜면 다시 돌릴 수 있다\n\nTRACE binding parameter (1:INTEGER) <- [20]\nTRACE binding parameter (2:VARCHAR) <- [m%]\n\n-- 그대로 콘솔에서\nselect * from member\nwhere age >= 20 and username like 'm%' escape '!';\n\nMEMBER_ID | AGE | TEAM_ID | USERNAME\n--------- | --- | ------- | --------\n2         | 20  | 1       | m2\n3         | 30  | 1       | m3\n...\n\n--   6건이다\n--   2.4절의 서버 모드라 확인이 된다\n\n\n-- 3장을 닫는다\n\n@Test\nvoid 3장_결론() {\n    em.clear();\n    List<Tuple> rows = queryFactory\n            .select(team.name, member.count(), member.age.avg())\n            .from(member)\n            .leftJoin(member.team, team)\n            .groupBy(team.name)\n            .orderBy(team.name.asc().nullsLast())\n            .fetch();\n\n    rows.forEach(t -> System.out.printf(\"%-6s %d명 평균 %.1f%n\",\n            t.get(team.name) == null ? \"(없음)\" : t.get(team.name),\n            t.get(member.count()), t.get(member.age.avg())));\n}\n\n/* select\n    team.name,\n    count(member1),\n    avg(member1.age)\nfrom\n    Member member1\n  left join\n    member1.team as team\ngroup by\n    team.name\norder by\n    team.name asc nulls last */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id),\n        avg(m1_0.age)\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    order by\n        t1_0.name nulls last\nteamA  4명 평균 25.0\nteamB  3명 평균 25.0\n(없음)  3명 평균 20.0\n\n--   3.3절에서 넣은 열 건이 다 보인다\n--   팀 없는 셋이 마지막 줄이다\n--   4.1절부터 문법을 하나씩 뜯는다",
+   "note": "**`where` 조건은 두 겹이 거의 같고 `startsWith` 가 이미 JPQL 에서 `like ?1 escape '!'`** 다.\n\n**JPQL 의 `select member1` 한 마디가 SQL 에서 네 컬럼으로** 펴진다.\n\n**JPQL 에는 `offset` 이 아예 없고 방언이 SQL 에서** 붙인다.\n\n**JPQL 의 `inner join member1.team` 이 SQL 에서 `on t1_0.team_id=m1_0.team_id` 를** 만든다.\n\n**JPQL 은 하나인데 지연 로딩으로 쿼리가 3개, `Session Metrics` 도 `3 JDBC statements`** 다."
+  }
+ ],
+ "recap": [
+  "**네 단계 중 둘을** 찍는다.",
+  "**조건은 거의** 같다.",
+  "**프로젝션은** 펴진다.",
+  "**페이징은 JPQL 에** 없다.",
+  "**조인은 `on` 이** 생긴다.",
+  "**문장 하나가 쿼리 하나가** 아니다.",
+  "**통계로도** 센다.",
+  "**값이 있어야 다시** 돌린다.",
+  "**어긋난 자리가 배울** 자리다."
+ ],
+ "drills": [
+  {
+   "task": "조건·프로젝션·페이징을 각각 찍는다.",
+   "done_when": "어긋나는 자리를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "지연 로딩으로 쿼리를 늘린다.",
+   "done_when": "3개를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "통계와 로그 개수를 비교한다.",
+   "done_when": "같은 값이 나오는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "바인딩 값으로 콘솔에서 재현한다.",
+   "done_when": "같은 결과를 얻었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JPQL 에 `offset` 이 없는 이유는?",
+   "a": "페이징은 방언이 SQL 단계에서 붙이기 때문이다."
+  },
+  {
+   "q": "`select member1` 이 SQL 에서 어떻게 되나?",
+   "a": "매핑에 따라 컬럼 목록으로 펴진다."
+  },
+  {
+   "q": "JPQL 조인에 `on` 이 없는 이유는?",
+   "a": "연관 정보를 알고 있어 조건을 생략할 수 있어서다."
+  },
+  {
+   "q": "JPQL 하나가 쿼리 하나인가?",
+   "a": "아니다. 지연 로딩으로 뒤에 더 나갈 수 있다."
+  },
+  {
+   "q": "쿼리 수를 세는 두 방법은?",
+   "a": "`Session Metrics` 통계와 로그 줄 세기다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "직렬화 단계",
+   "def": "조립한 객체를 JPQL 문자열로 만드는 단계."
+  },
+  {
+   "term": "번역 단계",
+   "def": "JPQL 을 방언에 맞는 SQL 로 바꾸는 단계."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

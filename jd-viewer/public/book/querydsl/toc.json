@@ -141,7 +141,7 @@
           "title": "JPAQueryFactory",
           "summary": "어디에 두고 어떻게 얻나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -149,7 +149,7 @@
           "title": "동작 확인",
           "summary": "JPQL 과 SQL 을 같이 본다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
