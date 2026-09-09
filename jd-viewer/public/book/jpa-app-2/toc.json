@@ -406,7 +406,7 @@
           "title": "OSIV 를 끄면",
           "summary": "무엇이 깨지나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -414,7 +414,7 @@
           "title": "커맨드와 쿼리를 나눈다",
           "summary": "OrderQueryService.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -422,7 +422,7 @@
           "title": "캐시를 쓸까",
           "summary": "엔티티를 캐시하면 안 된다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

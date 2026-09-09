@@ -1,0 +1,143 @@
+{
+ "book": "jpa-app-2",
+ "id": "query-service",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "커맨드와 쿼리를 나눈다",
+ "summary": "OrderQueryService.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리 서비스를 만든다.",
+  "깨진 API 를 고친다.",
+  "왜 서비스를 나누는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 넷이 깨졌다.** **변환을 트랜잭션 안으로** 옮긴다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderQueryService",
+   "code": "@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class OrderQueryService {\n\n    private final OrderRepository orderRepository;\n\n    public List<OrderDto> findOrders(int offset, int limit) {\n        return orderRepository.findAllWithMemberDelivery(offset, limit)\n                .stream()\n                .map(OrderDto::new)      // 여기가 트랜잭션 안이다\n                .toList();\n    }\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러 — 얇아진다",
+   "code": "@GetMapping(\"/api/v3.1/orders\")\npublic Result ordersV31(\n        @RequestParam(value = \"offset\", defaultValue = \"0\") int offset,\n        @RequestParam(value = \"limit\", defaultValue = \"100\") int limit) {\n\n    return new Result(orderQueryService.findOrders(offset, limit));\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "트랜잭션 경계가 어디로 갔나",
+   "ascii": "   where the transaction boundary sits now\n\n   controller          no transaction, no proxies, dtos only\n     |\n   query service       @Transactional(readOnly = true)\n     repository        entities\n     convert           proxies touched here\n     return dtos\n     |\n   controller          just wraps in Result and returns",
+   "note": "**컨트롤러에 프록시가 안 온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "DTO 를 어디에 두나",
+   "md": "**문제가 하나** 있다.\n\n```java\n// 5.2절, 컨트롤러 안 중첩 클래스\n@Data\nstatic class OrderDto { ... }\n```\n\n> **서비스가 컨트롤러의 중첩 클래스를** 못 쓴다. **거꾸로 의존**이다.\n>\n> **4.6절에서 `OrderSimpleQueryDto` 를 리포지토리 옆으로 옮긴 것과 같은 이유**다.\n\n**서비스 패키지로** 옮긴다.\n\n```\nservice/\n  OrderService.java\n  OrderQueryService.java\n  query/\n    OrderDto.java\n    OrderItemDto.java\n```\n\n| | |\n|---|---|\n| **컨트롤러 중첩** | 컨트롤러가 만들 때 |\n| **서비스 옆** | **서비스가 만들 때** |\n| **리포지토리 옆** | `new` 절이 부를 때 |\n\n> **만드는 곳 옆에** 둔다. **규칙 하나**다.\n\n**컨트롤러가 얇아진다.**\n\n```java\nreturn new Result(orderQueryService.findOrders(offset, limit));\n```\n\n> **변환 코드가 없다.** **`Result` 로 감싸기만** 한다.\n>\n> **1편 4.3절의 계층 구조가 여기서 제대로** 선다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 서비스, 두 변경 이유",
+   "ascii": "   two services, two reasons to change\n\n   OrderService\n     order, cancel, findOne\n     changes when the business rules change\n     tested with the domain\n\n   OrderQueryService\n     findOrdersForApi\n     changes when the screen changes\n     returns dtos, never entities\n\n   the second one is allowed to know the api shape",
+   "note": "**4.8절의 리포지토리와 같은 기준**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 서비스를 나누나",
+   "md": "**한 서비스에 넣을 수도** 있다.\n\n```java\n@Service\npublic class OrderService {\n    @Transactional public Long order(...) { }\n    @Transactional public void cancelOrder(...) { }\n    @Transactional(readOnly = true) public List<OrderDto> findOrders(...) { }\n}\n```\n\n**나누는 이유 넷**\n\n| | |\n|---|---|\n| **변경 이유가 다르다** | 규칙 대 화면 |\n| **`readOnly` 를 클래스에** | 조회만 모으면 메서드마다 안 써도 된다 |\n| **DTO 의존이 한쪽에만** | `OrderService` 는 DTO 를 모른다 |\n| **테스트가 다르다** | 도메인 대 응답 모양 |\n\n**두 번째가 실질적**이다.\n\n```java\n@Transactional(readOnly = true)   // 클래스에 한 번\npublic class OrderQueryService { ... }\n```\n\n> **「DB 2편」 4.5절에서 `readOnly` 가 하는 일을** 다뤘다.\n> **플러시를 안 하고 스냅샷을 안 만든다.**\n>\n> **조회 서비스를 모아 두면 클래스에 한 번**이면 된다.\n\n**세 번째도** 중요하다.\n\n> **`OrderService` 가 DTO 를 알면 도메인 로직에 화면 사정이** 섞인다.\n>\n> **1편 4.2절에서 \"엔티티는 도메인\" 이라고** 했다. **서비스도 마찬가지**다.\n\n**4.8절의 리포지토리 분리와 짝**이다.\n\n```\nOrderService        <- OrderRepository\nOrderQueryService   <- OrderRepository (엔티티) 또는\n                       OrderQueryRepository (DTO)\n```\n\n> **쿼리 서비스가 두 리포지토리를 다** 쓴다. **V3.1 은 엔티티, V5 는 DTO** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "V5 계열은 서비스가 필요 없을 수도",
+   "md": "```java\n@GetMapping(\"/api/v5/orders\")\npublic Result ordersV5() {\n    return new Result(orderQueryRepository.findAllByDtoOptimization());\n}\n```\n\n> **리포지토리가 이미 DTO 를** 준다. **변환할 게 없다.**\n>\n> **서비스를 끼우면 그냥 위임**만 한다.\n\n**그래도 끼우는 게 나은 경우**\n\n| | |\n|---|---|\n| **트랜잭션이 필요하다** | 여러 쿼리를 한 트랜잭션에 |\n| **조합이 필요하다** | 두 리포지토리 결과를 합침 |\n| **권한 검사** | 조회 전에 확인 |\n| **일관성** | 컨트롤러가 리포지토리를 직접 안 쓰게 |\n\n**마지막이 실무에서 흔한 이유**다.\n\n> **\"컨트롤러는 서비스만 부른다\" 는 규칙을** 두면 예외를 안 만들어도 된다.\n>\n> **이 책은 V5 도 서비스를** 거친다. **일관성 때문**이다.\n>\n> **`@Transactional(readOnly = true)` 이 붙어 여러 쿼리가 한 트랜잭션에** 묶이는 이득도 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- OSIV 끈 상태로 V3.1 ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   DEBUG JpaTransactionManager : Beginning JPA transaction\n#         (OrderQueryService.findOrders 진입)\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.*, m1_0.*, o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on ... join member m1_0 on ...\n#     offset ? rows fetch first ? rows only\n\n#   (OrderDto 생성자: order.getOrderItems())\n\n#   Hibernate:\n#     select oi1_0.order_id, ... from order_item oi1_0\n#     where oi1_0.order_id in (?,?,...)\n\n#   (OrderItemDto 생성자: orderItem.getItem().getName())\n\n#   Hibernate:\n#     select i1_0.item_id, ... from item i1_0\n#     left join album ... where i1_0.item_id in (?,?,...)\n\n#   DEBUG JpaTransactionManager : Committing JPA transaction\n#         (서비스 반환. DTO 만 나간다)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...,\n#             \"orderItems\":[{\"itemName\":\"JPA1 BOOK\",...}]}, ...]}\n\n#   6.2절에서 깨졌던 것이 돈다\n#   쿼리 개수도 그대로 3개다\n\n# --- 커넥션이 언제 돌아가나 ---\n\n#   DEBUG HikariPool : Pool stats (total=10, active=1, ...)\n#   DEBUG JpaTransactionManager : Committing JPA transaction\n#   DEBUG HikariPool : Pool stats (total=10, active=0, idle=10, waiting=0)\n\n#   (JSON 직렬화)\n\n#   6.1절에서는 직렬화가 끝나야 돌아갔다\n#   이제 서비스가 끝나면 돌아간다\n\n# --- readOnly 가 하는 일 ---\n\n@Transactional(readOnly = true)\npublic class OrderQueryService { ... }\n\n#   DEBUG JpaTransactionManager :\n#     Beginning JPA transaction ... readOnly=true\n\n#   조회만 하고 커밋할 때\n\n#   Hibernate: (UPDATE 가 안 나간다)\n\n#   readOnly=false 였다면 변경 감지가 돌면서\n#   스냅샷을 비교한다. 500개 엔티티면 500번이다\n\n# --- 깨졌던 넷을 다시 ---\n\nGET /api/v2/orders\n#   Session Metrics { 401 JDBC statements were executed }\n#   200 OK   (OrderQueryService 를 쓰도록 고쳤다)\n\nGET /api/v3/orders\n#   WARN  HHH90003004: ... applying in memory\n#   Session Metrics { 1 JDBC statements were executed }\n#   200 OK\n\nGET /api/v3.1/orders?offset=0&limit=100\n#   Session Metrics { 3 JDBC statements were executed }\n#   200 OK\n\nGET /api/v1/orders\n#   Session Metrics { 401 JDBC statements were executed }\n#   200 OK   (강제 초기화를 서비스로 옮겼다)\n\n#   넷 다 돈다\n\n# --- 1편의 화면은 ---\n\nGET /orders\n\n#   500 Internal Server Error\n#   LazyInitializationException\n\n#   아직 깨져 있다\n\n#   화면은 컨트롤러가 엔티티를 모델에 담아 넘긴다\n#   템플릿이 프록시를 건드린다\n\n#   고치려면 화면도 DTO 로 바꿔야 한다\n#     -> 1편 9.1절에서 '주문 목록만 DTO' 라고 한 결론이\n#        OSIV 를 끄는 순간 '전부 DTO' 가 된다\n\n#   이 책은 화면을 안 고친다\n#   대신 화면용 API 를 하나 더 만드는 게 실무의 방향이다\n\n# --- 패키지 ---\n\n$ tree src/main/java/jpabook/jpashop/service\nservice\n├── ItemService.java\n├── MemberService.java\n├── OrderService.java\n├── OrderQueryService.java\n└── query\n    ├── OrderDto.java\n    └── OrderItemDto.java\n\n#   만드는 곳 옆에 둔다\n\n# --- 다음 절에서 ---\n\n#   캐시를 쓸까",
+   "note": "**6.2절에서 깨졌던 V3.1 이 돈다.** **쿼리도 3개 그대로**다.\n\n**커넥션이 서비스가 끝나면 돌아간다.** **6.1절에서는 직렬화가 끝나야** 돌아갔다.\n\n**`readOnly=true` 라 변경 감지 스냅샷 비교를 안** 한다.\n\n**깨졌던 넷이 다 돈다.**\n\n**1편의 화면은 아직** 깨져 있다. **고치려면 화면도 DTO** 다 — **1편 9.1절의 \"주문 목록만 DTO\" 가 OSIV 를 끄는 순간 \"전부 DTO\"** 가 된다."
+  }
+ ],
+ "recap": [
+  "**변환을 트랜잭션 안으로 옮긴다** — 쿼리 서비스다.",
+  "**컨트롤러가 얇아진다** — `Result` 로 감싸기만 한다.",
+  "**DTO 는 만드는 곳 옆에** 둔다.",
+  "**서비스가 컨트롤러 중첩 클래스를 못 쓴다** — 거꾸로 의존이다.",
+  "**변경 이유가 달라 서비스를** 나눈다 — 규칙 대 화면.",
+  "**`readOnly` 를 클래스에 한 번** 붙일 수 있다.",
+  "**`OrderService` 가 DTO 를 모르게** 된다.",
+  "**커넥션이 서비스가 끝나면** 돌아간다.",
+  "**화면은 고치려면 전부 DTO** 여야 한다 — 이 책은 안 고친다."
+ ],
+ "drills": [
+  {
+   "task": "`OrderQueryService` 를 만든다.",
+   "done_when": "V3.1 이 OSIV 끈 상태로 도는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "DTO 를 서비스 패키지로 옮긴다.",
+   "done_when": "컨트롤러가 얇아진 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "커넥션 반납 시점을 로그로 확인한다.",
+   "done_when": "서비스 종료 시점인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1편의 화면이 여전히 깨지는지 확인한다.",
+   "done_when": "`/orders` 만 깨진 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿼리 서비스가 하는 일은?",
+   "a": "트랜잭션 안에서 엔티티를 DTO 로 바꿔 반환한다."
+  },
+  {
+   "q": "DTO 를 어디에 두나?",
+   "a": "만드는 곳 옆이다. 서비스가 만들면 서비스 패키지다."
+  },
+  {
+   "q": "왜 서비스를 나누나?",
+   "a": "변경 이유가 다르고, `readOnly` 를 클래스에 붙일 수 있고, 도메인 서비스가 DTO 를 모르게 된다."
+  },
+  {
+   "q": "커넥션이 언제 돌아가나?",
+   "a": "서비스가 끝날 때다. OSIV 켬에서는 직렬화가 끝나야 돌아갔다."
+  },
+  {
+   "q": "화면을 고치려면?",
+   "a": "전부 DTO 로 바꿔야 한다. 1편의 \"목록만 DTO\" 결론이 뒤집힌다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Data Access, Transactions",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

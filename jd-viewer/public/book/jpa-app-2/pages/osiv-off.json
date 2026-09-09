@@ -1,0 +1,142 @@
+{
+ "book": "jpa-app-2",
+ "id": "osiv-off",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "OSIV 를 끄면",
+ "summary": "무엇이 깨지나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "OSIV 를 끄고 무엇이 깨지는지 본다.",
+  "`LazyInitializationException` 을 읽는다.",
+  "1편의 화면이 깨지는 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**설정 한 줄**이다. **1.3절에서 화면을 안 지운 이유가 여기서** 드러난다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "caption": "application.yml",
+   "code": "spring:\n  jpa:\n    open-in-view: false"
+  },
+  {
+   "type": "figure",
+   "caption": "끄는 순간 깨지는 것",
+   "ascii": "   what breaks the moment it is off\n\n   screens   /orders           the template asks for member.name\n             /items            fine, no lazy field used\n             /orders/{id}/cancel  fine, all inside the service\n\n   apis      v1                 forced init is in the controller\n             v2, v3, v3.1       the dto constructor is in the controller\n             v4, v5, v6         fine. dtos come out of the repository.\n\n   everything that touched a proxy outside a transaction",
+   "note": "**트랜잭션 밖에서 프록시를 건드린 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "`LazyInitializationException`",
+   "md": "```\norg.hibernate.LazyInitializationException:\n  could not initialize proxy [jpabook.jpashop.domain.Member#1]\n  - no Session\n```\n\n**\"세션이 없다\"** 는 것이다.\n\n> **프록시가 초기화하려면 영속성 컨텍스트가** 필요하다.\n> **이미 닫혔다.**\n\n**어디서 나나**\n\n| | |\n|---|---|\n| **컨트롤러의 DTO 변환** | 4.3절, 5.2절 |\n| **컨트롤러의 강제 초기화** | 4.2절, 5.1절 |\n| **타임리프 템플릿** | 1편의 화면 |\n| **JSON 직렬화 중** | V1 계열 |\n\n**마지막이 가장 고약**하다.\n\n> **컨트롤러는 정상으로 끝나고 잭슨이 직렬화하다** 터진다.\n> **응답이 반쯤 나간 뒤** 일 수도 있다.\n>\n> **`Content-Type` 은 이미 갔고 본문이 잘린 채로** 끊긴다.\n\n**화면은 더 눈에 띈다.**\n\n```\nException evaluating SpringEL expression: \"order.member.name\"\n  (template: \"order/orderList\" - line 26, col 20)\n```\n\n> **타임리프가 SpEL 을 평가하다** 터진다.\n>\n> **1편 8.11절의 화면**이다. **`order.member.name` 을** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "안 깨지는 것들",
+   "md": "**V4·V5·V6 는 멀쩡**하다.\n\n```java\nList<OrderQueryDto> dtos = orderQueryRepository.findAllByDtoOptimization();\n```\n\n> **리포지토리가 DTO 를 반환**한다. **프록시가 없다.**\n> **4.6절에서 \"영속성 컨텍스트 밖\" 이라고 한 게 여기서 장점**이 된다.\n\n**쓰기도 멀쩡**하다.\n\n```java\n@Transactional\npublic void update(Long id, String name) { ... }\n```\n\n> **전부 서비스 안**이다. **OSIV 와 무관**하다.\n>\n> **2.4절의 수정 API 는 안** 깨진다.\n\n**단순 조회도 멀쩡**하다.\n\n```java\n// 2.6절, 회원 목록\n.map(m -> new MemberDto(m.getName()))\n```\n\n> **`getName()` 은 프록시가 아니라 이미 로딩된 필드**다.\n>\n> **연관관계를 안 건드리면 안** 깨진다.\n\n**정리하면**\n\n> **트랜잭션 밖에서 프록시를 건드린 코드만** 깨진다.\n>\n> **깨지는 게 나쁜 게 아니다.** **어디서 지연 로딩이 일어나는지가 드러나는** 것이다.\n>\n> **OSIV 가 켜져 있으면 그게 안 보인다.** **그래서 아무 데서나 쿼리가** 나간다."
+  },
+  {
+   "type": "figure",
+   "caption": "변환을 어디로 옮기나",
+   "ascii": "   where the conversion has to move\n\n   before\n     controller\n       repository.findAll()      transaction opens and closes here\n       new OrderDto(order)       proxy touched. outside.\n\n   after\n     controller\n       queryService.findAll()\n         @Transactional\n         repository.findAll()\n         new OrderDto(order)     proxy touched. inside.\n         return dtos",
+   "note": "**트랜잭션 안으로** 들어간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "고치는 방법 셋",
+   "md": "**① 트랜잭션 안에서 DTO 로 바꾼다** — **답이다**\n\n> **서비스가 DTO 를** 반환한다. **6.3절**에서 만든다.\n\n**② 페치 조인으로 미리 다 가져온다**\n\n```java\n\"select o from Order o join fetch o.member join fetch o.delivery\"\n```\n\n> **프록시가 없으니 밖에서 써도** 된다.\n>\n> **V3.1 은 컬렉션이 배치로** 온다. **그 배치도 트랜잭션 안에서 일어나야** 한다.\n> **DTO 변환이 컨트롤러면 여전히** 깨진다.\n\n**③ `Hibernate.initialize()` 로 강제 초기화**\n\n```java\n@Transactional(readOnly = true)\npublic List<Order> findOrders() {\n    List<Order> orders = orderRepository.findAll();\n    orders.forEach(o -> Hibernate.initialize(o.getOrderItems()));\n    return orders;\n}\n```\n\n> **4.2절의 강제 초기화**다. **거기서 \"터무니없다\" 고** 했다.\n> **여전히 그렇다.**\n\n**②③ 은 엔티티를 트랜잭션 밖으로** 내보낸다.\n\n> **준영속 엔티티를 컨트롤러가** 든다. **어느 필드가 로딩됐는지 코드로 안** 보인다.\n>\n> **①이 유일하게 경계가 분명**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 설정을 끈다 ---\n\nspring:\n  jpa:\n    open-in-view: false\n\n#   (재시작)\n\n#   부팅 경고가 사라졌다\n\n# --- V3.1 (컨트롤러에서 DTO 변환) ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   Hibernate: select o1_0.order_id, d1_0.*, m1_0.*, ... from orders o1_0\n#              join delivery ... join member ...\n#              offset ? rows fetch first ? rows only\n\n#   (트랜잭션 커밋. 영속성 컨텍스트 종료)\n\n#   (컨트롤러: new OrderDto(order) -> order.getOrderItems())\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   org.hibernate.LazyInitializationException:\n#     failed to lazily initialize a collection of role:\n#     jpabook.jpashop.domain.Order.orderItems - no Session\n\n#   member 와 delivery 는 페치 조인이라 괜찮았다\n#   orderItems 에서 터졌다\n\n# --- V2 ---\n\nGET /api/v2/orders\n\n#   Hibernate: select ... from orders o1_0\n\n#   500 Internal Server Error\n#   org.hibernate.LazyInitializationException:\n#     could not initialize proxy [jpabook.jpashop.domain.Member#1]\n#     - no Session\n\n#   첫 프록시에서 바로 터졌다\n\n# --- V5 ---\n\nGET /api/v5/orders?offset=0&limit=100\n\n#   Hibernate: select o1_0.order_id, m1_0.name, ... from orders o1_0\n#              join member ... join delivery ...\n#              offset ? rows fetch first ? rows only\n#   Hibernate: select oi1_0.order_id, i1_0.name, ...\n#              from order_item oi1_0 join item ...\n#              where oi1_0.order_id in (?,?,...)\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[...100건...]}\n\n#   멀쩡하다\n#   리포지토리가 DTO 를 반환해서다\n\n# --- 1편의 화면 ---\n\nGET /orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0 join member ...\n\n#   500 Internal Server Error\n#   org.thymeleaf.exceptions.TemplateProcessingException:\n#     Exception evaluating SpringEL expression: \"order.member.name\"\n#     (template: \"order/orderList\" - line 26, col 20)\n#   Caused by: org.hibernate.LazyInitializationException:\n#     could not initialize proxy - no Session\n\n#   1편 8.11절의 화면이 깨졌다\n\n#   1.3절에서 화면을 안 지운 이유가 이것이다\n\n# --- 회원 목록 화면은 ---\n\nGET /members\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n\n#   200 OK\n#   Content-Type: text/html\n\n#   멀쩡하다\n#   템플릿이 member.name 만 쓴다. 프록시가 아니다\n\n# --- 상품 목록도 ---\n\nGET /items\n\n#   Hibernate: select i1_0.item_id, ... from item i1_0 ...\n\n#   200 OK\n\n#   멀쩡하다\n\n# --- 주문 취소는 ---\n\nPOST /orders/4/cancel\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from order_item where order_id=?\n#   Hibernate: select ... from item where item_id=?\n#   Hibernate: update item set stock_quantity=? where item_id=?\n#   Hibernate: update orders set status=? where order_id=?\n\n#   302 Found\n\n#   멀쩡하다. 전부 @Transactional 안이다\n\n# --- 깨진 것을 세면 ---\n\n#   API      v1, v2, v3, v3.1     4개\n#   화면      /orders             1개\n\n#   안 깨진 것\n#   API      v4, v5, v6, 회원 API\n#   화면      /members, /items, 주문 취소, 주문 등록\n\n#   트랜잭션 밖에서 프록시를 건드린 것만 깨졌다\n\n# --- 처리량은 ---\n\n$ ab -n 200 -c 20 \"http://localhost:8080/api/v5/orders?offset=0&limit=100\"\n\n#   OSIV on   Requests per second:  312.44 [#/sec]\n#   OSIV off  Requests per second:  489.17 [#/sec]\n\n#   같은 쿼리 2개인데 1.5배다\n\n#   커넥션을 JSON 직렬화 동안 안 물어서다\n\n# --- 다음 절에서 ---\n\n#   깨진 넷을 고친다",
+   "note": "**설정 한 줄에 부팅 경고가 사라진다.**\n\n**V3.1 은 `orderItems` 에서** 터진다. **`member`·`delivery` 는 페치 조인이라 괜찮았다.**\n\n**V5 는 멀쩡**하다 — **리포지토리가 DTO 를 반환**한다.\n\n**1편의 `/orders` 화면이 깨진다.** **타임리프가 SpEL 을 평가하다** 터진다. **1.3절에서 화면을 안 지운 이유**다.\n\n**`/members`·`/items`·주문 취소는 멀쩡**하다.\n\n**같은 V5 인데 처리량이 1.5배**다."
+  }
+ ],
+ "recap": [
+  "**설정 한 줄로 끈다** — 부팅 경고가 사라진다.",
+  "**`LazyInitializationException: no Session`** 이 난다.",
+  "**트랜잭션 밖에서 프록시를 건드린 것만** 깨진다.",
+  "**V3.1 은 `orderItems` 에서** 터진다 — 페치 조인한 것은 괜찮다.",
+  "**V4·V5·V6 는 멀쩡**하다 — 리포지토리가 DTO 를 반환한다.",
+  "**1편의 `/orders` 화면이** 깨진다 — 타임리프가 SpEL 평가 중에 터진다.",
+  "**JSON 직렬화 중에 터지면 응답이 잘린 채** 끊긴다.",
+  "**깨지는 게 나쁜 게 아니라 지연 로딩 위치가 드러나는** 것이다.",
+  "**같은 API 인데 처리량이 1.5배**다."
+ ],
+ "drills": [
+  {
+   "task": "`open-in-view: false` 로 끈다.",
+   "done_when": "부팅 경고가 사라진 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "API 일곱 개를 전부 불러 본다.",
+   "done_when": "어느 것이 깨지는지 표로 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "1편의 화면 네 개를 눌러 본다.",
+   "done_when": "`/orders` 만 깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "V5 로 처리량을 재 본다.",
+   "done_when": "켬/끔 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇이 깨지나?",
+   "a": "트랜잭션 밖에서 프록시를 건드린 코드 전부다."
+  },
+  {
+   "q": "V3.1 은 어디서 터지나?",
+   "a": "`orderItems` 다. `member`·`delivery` 는 페치 조인이라 괜찮다."
+  },
+  {
+   "q": "V5 가 왜 멀쩡한가?",
+   "a": "리포지토리가 DTO 를 반환해 프록시가 없기 때문이다."
+  },
+  {
+   "q": "JSON 직렬화 중에 터지면 왜 고약한가?",
+   "a": "헤더가 이미 나가고 본문이 잘린 채 끊긴다."
+  },
+  {
+   "q": "고치는 정답은?",
+   "a": "트랜잭션 안에서 DTO 로 바꾸는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "LazyInitializationException",
+   "def": "영속성 컨텍스트가 닫힌 뒤 프록시를 초기화하려 할 때 나는 하이버네이트 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Data Properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
