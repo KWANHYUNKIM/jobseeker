@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "httpexchanges",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "요청 기록",
+ "summary": "최근 요청을 본다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "저장소를 만든다.",
+  "무엇이 담기는지 안다.",
+  "한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.5절에서 로그를** 켰다. **로그를 안 켜도 최근 것은** 남는다."
+  },
+  {
+   "type": "figure",
+   "caption": "고리다",
+   "ascii": "   the store is a ring, not a log\n\n   a fixed number of slots, in memory\n   the newest push out the oldest\n   restarting empties it completely\n\n   so it answers what just happened, never what happened yesterday",
+   "note": "**방금 무슨 일이 있었나에만** 답한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "지금 무슨 요청이 오고 있는지 바로 본다",
+   "md": "**로그를 켜기 전에** 본다.\n\n> **8.5절은 그다음** 단계다.\n> **여기는 늘 담겨** 있다.\n> **아래에서 켜** 본다.\n\n**느린 것을 찾는**다.\n\n> **걸린 시간이** 있다.\n> **아래에서 줄 세워** 본다.\n> **9장의 메트릭과 다르**다.\n\n**메트릭은 합계**다.\n\n> **어느 요청인지** 모른다.\n> **여기는 하나하나**다.\n> **아래에서 견줘** 본다.\n\n**기본은 꺼져** 있다.\n\n> **저장소 빈이** 없다.\n> **아래에서 그 오류를** 본다.\n> **일부러 그렇게** 뒀다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 담기나",
+   "ascii": "   what it records, and what it leaves out by default\n\n   always   method, uri, status, time taken\n   opt in   request headers, response headers, cookies, principal\n   never    the request body or the response body\n\n   the middle row is where secrets leak if you turn it all on",
+   "note": "**가운데 줄을 다 켜면 비밀이 새어** 나간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이걸 감사 기록으로 쓰면 안 된다",
+   "md": "**메모리에만** 있다.\n\n> **다시 뜨면 다** 사라진다.\n> **아래에서 확인**한다.\n> **8.5절과 같은 결**이다.\n\n**금방 밀려**난다.\n\n> **기본이 백** 개다.\n> **바쁜 서버면 몇 초**다.\n> **아래에서 재** 본다.\n\n**한 대 것만** 본다.\n\n> **8.5절과 같은 문제**다.\n> **다 돌아야** 한다.\n> **모아 두는 건 다른** 도구다.\n\n**켜면 메모리를** 먹는다.\n\n> **머리말까지 담으면** 크다.\n> **아래에서 재** 본다.\n> **개수를 줄인**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 열어도 없다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/httpexchanges\n404\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print('httpexchanges' in json.load(sys.stdin)['_links'])\"\nFalse\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'HttpExchangesAutoConfiguration' | head -4\n   HttpExchangesAutoConfiguration:\n      Did not match:\n         - @ConditionalOnBean (types: HttpExchangeRepository) did not find any beans\n\n--   6.5절의 그 조건이다\n--   저장소 빈이 없어서 안 걸렸다\n\n\n-- 저장소를 만든다\n\n@Bean\nInMemoryHttpExchangeRepository httpExchangeRepository() {\n    return new InMemoryHttpExchangeRepository();\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'HttpExchangesAutoConfiguration matched' | head -3\n   HttpExchangesAutoConfiguration matched:\n      - @ConditionalOnBean (types: HttpExchangeRepository) found bean\n        'httpExchangeRepository'\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -m json.tool\n{\n    \"exchanges\": []\n}\n\n\n-- 몇 번 부른다\n\n$ curl -s localhost:8080/hello > /dev/null\n$ curl -s -X POST 'localhost:8080/orders?item=연필&qty=3' > /dev/null\n$ curl -s -o /dev/null localhost:8080/nowhere\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\nfor e in json.load(sys.stdin)['exchanges']:\n    print('%-6s %-34s %3d  %s' % (\n        e['request']['method'],\n        e['request']['uri'].replace('http://localhost:8080',''),\n        e['response']['status'], e['timeTaken']))\n\"\nGET    /hello                              200  PT0.021S\nPOST   /orders?item=연필&qty=3             201  PT0.048S\nGET    /nowhere                            404  PT0.004S\nGET    /actuator/httpexchanges             200  PT0.011S\n\n--   자기 자신도 담긴다\n\n\n-- 하나를 자세히 본다\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\nprint(json.dumps(json.load(sys.stdin)['exchanges'][0], ensure_ascii=False, indent=1))\"\n{\n \"timestamp\": \"2026-09-10T06:44:02.118Z\",\n \"request\": {\n  \"uri\": \"http://localhost:8080/hello\",\n  \"method\": \"GET\",\n  \"headers\": {}\n },\n \"response\": {\n  \"status\": 200,\n  \"headers\": {}\n },\n \"timeTaken\": \"PT0.021S\"\n}\n\n--   머리말이 비어 있다\n--   기본으로는 안 담는다\n\n\n-- 무엇을 담을지 고른다\n\nmanagement:\n  httpexchanges:\n    recording:\n      include: request-headers, response-headers, time-taken, principal\n\n$ curl -s -H 'X-Trace-Id: abc123' localhost:8080/hello > /dev/null\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint(json.dumps(e['request']['headers'], ensure_ascii=False, indent=1))\"\n{\n \"accept\": [\"*/*\"],\n \"host\": [\"localhost:8080\"],\n \"user-agent\": [\"curl/8.7.1\"],\n \"x-trace-id\": [\"abc123\"]\n}\n\n--   내가 보낸 머리말이 그대로 있다\n\n\n-- 인증 머리말은 가려진다\n\n$ curl -s -H 'Authorization: Bearer eyJhbGciOi...' localhost:8080/hello > /dev/null\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint(e['request']['headers'].get('authorization', '(없음)'))\"\n(없음)\n\nmanagement:\n  httpexchanges:\n    recording:\n      include: request-headers, authorization-header\n\n$ curl -s -H 'Authorization: Bearer eyJhbGciOi...' localhost:8080/hello > /dev/null\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint(e['request']['headers']['authorization'])\"\n['Bearer eyJhbGciOi...']\n\n--   기본은 빠져 있다\n--   켜면 토큰이 그대로 보인다\n--   8.9절에서 이런 것을 본다\n\n\n-- 쿠키도 마찬가지다\n\n$ curl -s -H 'Cookie: JSESSIONID=A1B2C3' localhost:8080/hello > /dev/null\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint(e['request']['headers'].get('cookie', '(없음)'))\"\n(없음)\n\n--   따로 켜야 나온다\n\n\n-- 본문은 아예 안 담는다\n\n$ curl -s -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"연필\",\"qty\":3,\"card\":\"4111-1111-1111-1111\"}' > /dev/null\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint('본문 키:', [k for k in e['request'] if 'body' in k.lower()])\"\n본문 키: []\n\n$ curl -s localhost:8080/actuator/httpexchanges | grep -c '4111'\n0\n\n--   켤 수 있는 선택지 자체가 없다\n\n\n-- 느린 것을 찾는다\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null \\\n    \"localhost:8080/orders?item=x$i&qty=1\"; done\n$ curl -s -o /dev/null 'localhost:8080/report?heavy=true'\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys, re\nex = json.load(sys.stdin)['exchanges']\ndef ms(s): return float(re.match(r'PT([0-9.]+)S', s).group(1)) * 1000\nfor e in sorted(ex, key=lambda x: -ms(x['timeTaken']))[:4]:\n    print('%7.1f ms  %-8s %s' % (ms(e['timeTaken']), e['request']['method'],\n        e['request']['uri'].replace('http://localhost:8080','')[:44]))\n\"\n 1204.0 ms  GET      /report?heavy=true\n   61.2 ms  POST     /orders?item=x1&qty=1\n   14.8 ms  POST     /orders?item=x7&qty=1\n   12.1 ms  POST     /orders?item=x3&qty=1\n\n--   느린 요청이 어느 것인지 바로 보인다\n--   9장의 메트릭은 이걸 못 한다\n\n\n-- 메트릭과 견준다\n\n$ curl -s 'localhost:8080/actuator/metrics/http.server.requests?tag=uri:/report' \\\n    | python3 -c \"\nimport json,sys\nfor m in json.load(sys.stdin)['measurements']: print(m['statistic'], m['value'])\"\nCOUNT 1.0\nTOTAL_TIME 1.204\nMAX 1.204\n\n--   합계와 최댓값만 있다\n--   어떤 요청이었는지는 없다\n\n\n-- 고리가 밀려난다\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['exchanges']))\"\n26\n\n$ for i in $(seq 1 200); do curl -s -o /dev/null localhost:8080/hello; done\n\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\nex = json.load(sys.stdin)['exchanges']\nprint('개수', len(ex))\nprint('가장 오래된 것', ex[0]['timestamp'])\nprint('report 남았나', any('report' in e['request']['uri'] for e in ex))\n\"\n개수 100\n가장 오래된 것 2026-09-10T06:45:31.882Z\nreport 남았나 False\n\n--   기본이 백 개다\n--   방금 그 느린 요청이 이미 사라졌다\n\n\n-- 개수를 바꾼다\n\n@Bean\nInMemoryHttpExchangeRepository httpExchangeRepository() {\n    var repo = new InMemoryHttpExchangeRepository();\n    repo.setCapacity(1000);\n    return repo;\n}\n\n$ for i in $(seq 1 300); do curl -s -o /dev/null localhost:8080/hello; done\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['exchanges']))\"\n301\n\n$ curl -s localhost:8080/actuator/httpexchanges | wc -c\n  184220\n\n$ curl -s localhost:8080/actuator/metrics/jvm.memory.used \\\n    | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n148 MB\n\n--   머리말까지 담으면 응답이 180KB 다\n--   8.2절에서 잰 덤프에 가까워진다\n\n\n-- 다시 뜨면 빈다\n\n$ pkill -f app.jar && java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['exchanges']))\"\n1\n\n--   자기 자신 하나뿐이다\n--   감사 기록으로 쓸 수 없다\n\n\n-- 액츄에이터 자신을 뺀다\n\n@Bean\nHttpExchangeRepository httpExchangeRepository() {\n    return new InMemoryHttpExchangeRepository() {\n        @Override public void add(HttpExchange exchange) {\n            if (exchange.getRequest().getUri().getPath().startsWith(\"/actuator\"))\n                return;\n            super.add(exchange);\n        }\n    };\n}\n\n$ curl -s localhost:8080/hello > /dev/null\n$ curl -s localhost:8080/actuator/httpexchanges | python3 -c \"\nimport json,sys\nex = json.load(sys.stdin)['exchanges']\nprint(len(ex), [e['request']['uri'].split('8080')[1] for e in ex])\"\n1 ['/hello']\n\n--   폴링이 고리를 밀어내는 걸 막는다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '기본'      '저장소 빈 없음' \\\n  '켜기'      '빈 하나' \\\n  '늘 담김'   '메서드, 주소, 상태, 시간' \\\n  '골라 담김' '머리말, 쿠키' \\\n  '못 담음'   '본문' \\\n  '인증'      '따로 켜야 함' \\\n  '기본 개수' '100' \\\n  '다시 뜨면' '빔' \\\n  '메트릭'    '합계만'\n\n기본                     저장소 빈 없음\n켜기                     빈 하나\n늘 담김                  메서드, 주소, 상태, 시간\n골라 담김                머리말, 쿠키\n못 담음                  본문\n인증                     따로 켜야 함\n기본 개수                100\n다시 뜨면                빔\n메트릭                   합계만\n\n--   8.7절에서 이 모든 것을 잠근다",
+   "note": "**저장소 빈이 없어 `@ConditionalOnBean ... did not find any beans` 로 404 이던 것이 빈 하나에** 열린다.\n\n**기본으로는 머리말이 비어 있고 켜면 `x-trace-id` 가 그대로, 인증 머리말은 따로 켜야 토큰이** 보인다.\n\n**본문은 켤 선택지 자체가 없어 카드 번호가 0 건** 잡힌다.\n\n**걸린 시간으로 줄 세우니 `/report` 가 1204 ms 로 바로 드러나는데 메트릭은 `COUNT 1.0`·`MAX 1.204` 만** 준다.\n\n**200 건을 더 보내니 100 개로 잘려 그 느린 요청이 이미 사라지고 다시 뜨면 1 개만** 남는다."
+  }
+ ],
+ "recap": [
+  "**빈이** 필요하다.",
+  "**고리**다.",
+  "**넷은 늘** 담긴다.",
+  "**머리말은 골라** 담는다.",
+  "**본문은 못** 담는다.",
+  "**인증은** 따로다.",
+  "**백 개**다.",
+  "**다시 뜨면** 빈다.",
+  "**메트릭과** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "저장소를 만들어 켠다.",
+   "done_when": "조건이 걸린 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "머리말을 켜 본다.",
+   "done_when": "인증 머리말 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "느린 요청을 줄 세운다.",
+   "done_when": "제일 느린 것을 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "고리를 넘겨 본다.",
+   "done_when": "오래된 것이 사라진 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본으로 왜 404 인가?",
+   "a": "저장소 빈이 없어 자동 구성 조건이 안 맞아서다."
+  },
+  {
+   "q": "본문을 담을 수 있나?",
+   "a": "없다. 선택지 자체가 없다."
+  },
+  {
+   "q": "인증 머리말은?",
+   "a": "기본으로 빠지고 따로 켜야 담긴다."
+  },
+  {
+   "q": "메트릭과 무엇이 다른가?",
+   "a": "메트릭은 합계고 이건 요청 하나하나다."
+  },
+  {
+   "q": "감사 기록으로 쓸 수 있나?",
+   "a": "없다. 메모리뿐이고 금방 밀려나며 재기동에 사라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "요청 기록 저장소",
+   "def": "최근 요청 몇 건을 메모리에 담아 두는 고리 모양 저장소."
+  },
+  {
+   "term": "기록 항목 선택",
+   "def": "머리말이나 사용자 같은 것을 담을지 고르는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

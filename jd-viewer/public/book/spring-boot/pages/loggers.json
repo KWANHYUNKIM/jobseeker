@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "loggers",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "로거 바꾸기",
+ "summary": "재기동 없이 레벨을 올린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 레벨을 가른다.",
+  "돌면서 바꾼다.",
+  "되돌린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 등록을 한 번 보냈다.** **그게 무엇이었는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "레벨이 둘이다",
+   "ascii": "   two levels per logger, and they are different things\n\n   configured   what someone explicitly set on this name\n   effective    what actually applies, inherited if not set\n\n   most loggers have no configured level at all",
+   "note": "**대부분의 로거는 지정된 레벨이 아예** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "문제는 늘 로그를 안 켜 둔 곳에서 난다",
+   "md": "**평소엔 낮게** 둔다.\n\n> **다 켜면 느리고** 크다.\n> **아래에서 재** 본다.\n> **그래서 안 남는**다.\n\n**터졌을 때 올려야** 한다.\n\n> **설정을 고치면 다시** 떠야 한다.\n> **뜨면 그 상태가** 사라진다.\n> **재현이 안** 된다.\n\n**돌면서 바꾼**다.\n\n> **등록 한 번**이다.\n> **아래에서 그 효과를** 본다.\n> **다시 안** 뜬다.\n\n**되돌릴 수도** 있다.\n\n> **널을 보낸**다.\n> **상속으로** 돌아간다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 나무를 이룬다",
+   "ascii": "   names form a tree by dots\n\n   root\n     study\n       study.boot\n         study.boot.OrderService\n\n   setting a parent moves every child that set nothing",
+   "note": "**부모를 바꾸면 아무것도 안 정한 자식이 다** 따라온다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "바꾼 것은 다시 뜨면 사라진다",
+   "md": "**메모리에만** 있다.\n\n> **파일에 안** 적힌다.\n> **아래에서 확인**한다.\n> **그게 장점이자** 함정이다.\n\n**켜 놓고 잊으면** 커진다.\n\n> **디스크가** 찬다.\n> **8.3절의 그 검사가** 내려간다.\n> **아래에서 재** 본다.\n\n**여러 대면 한 대만** 바뀐다.\n\n> **부하 분산 뒤에** 있으면 그렇다.\n> **아래에서 그걸** 겪는다.\n> **다 돌아야** 한다.\n\n**아무나 바꾸면 안** 된다.\n\n> **쓰기 엔드포인트**다.\n> **8.7절에서** 잠근다.\n> **8.9절에서 왜인지** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 평소 상태\n\n@Service\nclass OrderService {\n    private static final Logger log = LoggerFactory.getLogger(OrderService.class);\n\n    Order place(String item, int qty) {\n        log.debug(\"주문 시작 item={} qty={}\", item, qty);\n        var o = repo.save(new Order(item, qty));\n        log.info(\"주문 완료 id={}\", o.getId());\n        log.trace(\"주문 전체 {}\", o);\n        return o;\n    }\n}\n\n$ curl -s -X POST 'localhost:8080/orders?item=연필&qty=3' > /dev/null\n$ tail -2 logs/app.log\n06:41:02.118 INFO  s.b.OrderService - 주문 완료 id=1\n\n--   한 줄만 남았다\n--   디버그와 트레이스는 안 나온다\n\n\n-- 무엇이 걸려 있나\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('레벨 목록', d['levels'])\nprint('로거 수  ', len(d['loggers']))\nn = sum(1 for v in d['loggers'].values() if v.get('configuredLevel'))\nprint('지정된 것', n)\n\"\n레벨 목록 ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE']\n로거 수   214\n지정된 것 2\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys\nfor k, v in json.load(sys.stdin)['loggers'].items():\n    if v.get('configuredLevel'): print(k, v)\n\"\nROOT {'configuredLevel': 'INFO', 'effectiveLevel': 'INFO'}\norg.hibernate.SQL {'configuredLevel': 'DEBUG', 'effectiveLevel': 'DEBUG'}\n\n--   214 개 중 둘만 지정돼 있다\n--   나머지는 물려받는다\n\n\n-- 하나를 본다\n\n$ curl -s localhost:8080/actuator/loggers/study.boot.OrderService | python3 -m json.tool\n{\n    \"effectiveLevel\": \"INFO\"\n}\n\n$ curl -s localhost:8080/actuator/loggers/study.boot | python3 -m json.tool\n{\n    \"effectiveLevel\": \"INFO\"\n}\n\n--   지정된 레벨 자체가 없다\n--   ROOT 에서 물려받았다\n\n\n-- 돌면서 바꾼다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/study.boot \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"configuredLevel\":\"DEBUG\"}'\n204\n\n$ curl -s localhost:8080/actuator/loggers/study.boot.OrderService | python3 -m json.tool\n{\n    \"effectiveLevel\": \"DEBUG\"\n}\n\n$ curl -s -X POST 'localhost:8080/orders?item=지우개&qty=1' > /dev/null\n$ tail -2 logs/app.log\n06:41:44.203 DEBUG s.b.OrderService - 주문 시작 item=지우개 qty=1\n06:41:44.219 INFO  s.b.OrderService - 주문 완료 id=2\n\n--   다시 뜨지 않았다\n--   부모를 바꿨더니 자식이 따라왔다\n\n\n-- 자식은 여전히 안 지정됐다\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['loggers']\nfor k in ('ROOT','study','study.boot','study.boot.OrderService'):\n    v = d.get(k, {})\n    print('%-26s %-8s %s' % (k, v.get('configuredLevel','-'), v.get('effectiveLevel')))\n\"\nROOT                       INFO     INFO\nstudy                      -        INFO\nstudy.boot                 DEBUG    DEBUG\nstudy.boot.OrderService    -        DEBUG\n\n--   study 는 안 바뀌었다\n--   나무의 그 가지 아래만 바뀐다\n\n\n-- 없는 이름도 만들 수 있다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/study.nope \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n204\n\n$ curl -s localhost:8080/actuator/loggers/study.nope\n{\"configuredLevel\":\"TRACE\",\"effectiveLevel\":\"TRACE\"}\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['loggers']))\"\n215\n\n--   오타를 쳐도 204 다\n--   7.4절에서 본 그 조용함이다\n\n\n-- 되돌린다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/study.boot \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":null}'\n204\n\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"effectiveLevel\":\"INFO\"}\n\n$ curl -s -X POST 'localhost:8080/orders?item=자&qty=2' > /dev/null\n$ tail -1 logs/app.log\n06:42:10.881 INFO  s.b.OrderService - 주문 완료 id=3\n\n--   널을 보내면 상속으로 돌아간다\n--   빈 본문을 보내도 같다\n\n\n-- 다시 뜨면 사라진다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.boot \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"configuredLevel\":\"TRACE\",\"effectiveLevel\":\"TRACE\"}\n\n$ grep -c 'study.boot' src/main/resources/application.yml\n0\n\n$ pkill -f app.jar && java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"effectiveLevel\":\"INFO\"}\n\n--   파일에 안 적힌다\n--   급할 때 좋고 잊기도 쉽다\n\n\n-- 설정으로도 같은 걸 한다\n\nlogging:\n  level:\n    study.boot: DEBUG\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"configuredLevel\":\"DEBUG\",\"effectiveLevel\":\"DEBUG\"}\n\n$ java -jar build/libs/app.jar --logging.level.study.boot=TRACE > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"configuredLevel\":\"TRACE\",\"effectiveLevel\":\"TRACE\"}\n\n--   7.5절의 인수로도 된다\n--   다만 다시 떠야 한다\n\n\n-- 그룹으로 묶는다\n\nlogging:\n  group:\n    sql: org.hibernate.SQL,org.hibernate.orm.jdbc.bind,org.springframework.jdbc.core\n    web: org.springframework.web,org.apache.tomcat\n\n$ curl -s -X POST localhost:8080/actuator/loggers/sql \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n\n$ for n in org.hibernate.SQL org.hibernate.orm.jdbc.bind \\\n           org.springframework.jdbc.core; do\n    printf '%-38s ' \"$n\"\n    curl -s \"localhost:8080/actuator/loggers/$n\" \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['effectiveLevel'])\"\n  done\norg.hibernate.SQL                      TRACE\norg.hibernate.orm.jdbc.bind            TRACE\norg.springframework.jdbc.core          TRACE\n\n$ curl -s -X POST 'localhost:8080/orders?item=펜&qty=5' > /dev/null\n$ tail -3 logs/app.log\n06:42:51.104 DEBUG org.hibernate.SQL -\n    insert into orders (item,qty,id) values (?,?,default)\n06:42:51.106 TRACE o.h.o.jdbc.bind - binding parameter (1:VARCHAR) <- [펜]\n06:42:51.106 TRACE o.h.o.jdbc.bind - binding parameter (2:INTEGER) <- [5]\n\n--   ⑤ 4장에서 보던 그 바인딩 로그다\n--   한 번에 셋이 켜졌다\n\n\n-- 부트가 준 그룹도 있다\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['groups']))\"\n['sql', 'web']\n\n$ curl -s localhost:8080/actuator/loggers | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['groups']['web']['members'])\"\n['org.springframework.core.codec', 'org.springframework.http',\n 'org.springframework.web', 'org.springframework.boot.actuate.endpoint.web',\n 'org.springframework.boot.web.servlet.ServletContextInitializerBeans']\n\n--   내가 적은 것이 부트 기본을 덮었다\n\n\n-- 켜 놓으면 커진다\n\n$ ls -lh logs/app.log | awk '{print $5}'\n248K\n\n$ curl -s -X POST localhost:8080/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n\n$ for i in $(seq 1 200); do\n    curl -s -X POST \"localhost:8080/orders?item=x$i&qty=1\" > /dev/null\n  done\n\n$ ls -lh logs/app.log | awk '{print $5}'\n 31M\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['components']['diskSpace']['details']\nprint(round(d['free']/1e9, 1), 'GB 남음')\"\n82.8 GB 남음\n\n--   요청 200 건에 31MB 다\n--   8.3절의 그 검사가 결국 내려간다\n\n\n-- 느려지기도 한다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"INFO\"}'\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{time_total}\\n' -X POST \\\n      'localhost:8080/orders?item=a&qty=1'\n  done\n0.014\n0.011\n0.012\n\n$ curl -s -X POST localhost:8080/actuator/loggers/ROOT \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"TRACE\"}'\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{time_total}\\n' -X POST \\\n      'localhost:8080/orders?item=a&qty=1'\n  done\n0.089\n0.081\n0.084\n\n--   일곱 배 가까이 느려졌다\n\n\n-- 여러 대면 한 대만 바뀐다\n\n$ for h in app-1 app-2 app-3; do\n    printf '%-8s ' \"$h\"\n    curl -s \"http://$h:8080/actuator/loggers/study.boot\" \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['effectiveLevel'])\"\n  done\napp-1    DEBUG\napp-2    INFO\napp-3    INFO\n\n$ for h in app-1 app-2 app-3; do\n    curl -s -o /dev/null -X POST \"http://$h:8080/actuator/loggers/study.boot\" \\\n      -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"DEBUG\"}'\n  done\n\n$ for h in app-1 app-2 app-3; do\n    printf '%-8s ' \"$h\"\n    curl -s \"http://$h:8080/actuator/loggers/study.boot\" \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['effectiveLevel'])\"\n  done\napp-1    DEBUG\napp-2    DEBUG\napp-3    DEBUG\n\n--   부하 분산 뒤라 한 번 눌러서는 한 대만 바뀐다\n\n\n-- 되돌리는 것을 잊지 않는다\n\n$ for h in app-1 app-2 app-3; do\n    curl -s -o /dev/null -X POST \"http://$h:8080/actuator/loggers/study.boot\" \\\n      -H 'Content-Type: application/json' -d '{\"configuredLevel\":null}'\n  done\n\n$ for h in app-1 app-2 app-3; do\n    printf '%-8s ' \"$h\"\n    curl -s \"http://$h:8080/actuator/loggers/study.boot\" \\\n      | python3 -c \"\nimport json,sys; d=json.load(sys.stdin); print(d.get('configuredLevel','-'),\n  d['effectiveLevel'])\"\n  done\napp-1    - INFO\napp-2    - INFO\napp-3    - INFO\n\n--   8.6절에서 요청 기록을 본다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '로거'      '214 개' \\\n  '지정된 것' '2 개' \\\n  '두 레벨'   '지정과 실효' \\\n  '부모'      '자식이 따라옴' \\\n  '없는 이름' '만들어짐' \\\n  '되돌리기'  '널' \\\n  '재기동'    '사라짐' \\\n  '그룹'      '한 번에' \\\n  'TRACE'    '31MB, 7 배 느림'\n\n로거                     214 개\n지정된 것                2 개\n두 레벨                  지정과 실효\n부모                     자식이 따라옴\n없는 이름                만들어짐\n되돌리기                 널\n재기동                   사라짐\n그룹                     한 번에\nTRACE                   31MB, 7 배 느림",
+   "note": "**로거 214 개 중 지정된 레벨이 있는 건 둘뿐이고 나머지는 물려**받는다.\n\n**부모를 `DEBUG` 로 바꾸니 다시 뜨지 않고 `주문 시작 item=지우개` 가** 찍혔다.\n\n**널을 보내면 상속으로 돌아가고 다시 뜨면 바꾼 것이 아예** 사라진다.\n\n**그룹 하나를 `TRACE` 로 올리니 ⑤ 4장의 `binding parameter` 로그가 한 번에** 켜졌다.\n\n**전체를 `TRACE` 로 두고 200 건을 보내니 로그가 31MB, 응답이 0.012 초에서 0.084 초로** 됐다."
+  }
+ ],
+ "recap": [
+  "**레벨이** 둘이다.",
+  "**대부분 안** 지정됐다.",
+  "**나무를** 이룬다.",
+  "**부모를** 바꾼다.",
+  "**돌면서** 바꾼다.",
+  "**널로** 되돌린다.",
+  "**다시 뜨면** 사라진다.",
+  "**그룹으로** 묶는다.",
+  "**켜 두면** 커진다."
+ ],
+ "drills": [
+  {
+   "task": "지정된 로거를 센다.",
+   "done_when": "둘뿐인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부모를 바꿔 본다.",
+   "done_when": "자식이 따라온 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "그룹으로 SQL 을 켠다.",
+   "done_when": "바인딩 로그를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "전체를 올리고 크기와 시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 레벨의 차이는?",
+   "a": "누가 명시한 것과 실제로 적용되는 것이다."
+  },
+  {
+   "q": "부모 이름을 바꾸면?",
+   "a": "아무것도 안 정한 자식이 다 따라온다."
+  },
+  {
+   "q": "되돌리려면?",
+   "a": "널을 보내 상속 상태로 되돌린다."
+  },
+  {
+   "q": "바꾼 레벨은 어디에 남나?",
+   "a": "메모리에만 남는다. 다시 뜨면 사라진다."
+  },
+  {
+   "q": "여러 대일 때 주의할 점은?",
+   "a": "한 번 눌러서는 한 대만 바뀐다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "실효 레벨",
+   "def": "지정이 없을 때 부모에서 물려받아 실제로 적용되는 레벨."
+  },
+  {
+   "term": "로거 그룹",
+   "def": "여러 로거 이름을 한 이름으로 묶어 한 번에 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

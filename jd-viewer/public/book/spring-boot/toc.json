@@ -568,7 +568,7 @@
           "title": "로거 바꾸기",
           "summary": "재기동 없이 레벨을 올린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -576,7 +576,7 @@
           "title": "요청 기록",
           "summary": "최근 요청을 본다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",
