@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "custom-handlers",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "성공과 실패 핸들러",
+ "summary": "리다이렉트를 내가 정한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "성공 핸들러가 되돌려야 할 것을 안다.",
+  "실패 이유를 화면 메시지로 옮긴다.",
+  "무엇을 드러낼지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 5번과 6번**이다. **3.2절에서 핸들러를 주면 잊는다고** 했다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 끝",
+   "ascii": "   the two endings, and what each has to restore\n\n   success handler\n     the saved request, or a default url\n     a first login may want a different destination\n\n   failure handler\n     the reason, mapped to a message the page can show\n     never the raw exception text\n\n   replacing either one means doing its old job by hand",
+   "note": "**바꾸면 옛 일을 손으로 해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "성공 핸들러",
+   "md": "```java\n@Component\n@RequiredArgsConstructor\npublic class MemberLoginSuccessHandler\n        extends SavedRequestAwareAuthenticationSuccessHandler {\n\n    @Override\n    public void onAuthenticationSuccess(HttpServletRequest request,\n            HttpServletResponse response, Authentication authentication)\n            throws ServletException, IOException {\n        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();\n        if (user.isFirstLogin()) {\n            getRedirectStrategy().sendRedirect(request, response, \"/welcome\");\n            return;\n        }\n        super.onAuthenticationSuccess(request, response, authentication);\n    }\n}\n```\n\n> **상속하면 `SavedRequest` 처리가 공짜**다.\n> **3.10절에서 직접 읽던 걸 안 해도** 된다.\n>\n> **처음부터 `AuthenticationSuccessHandler` 를 구현하면 그걸 잃는다.**\n> **필요한 것만 덮어쓰는 게** 싸다.\n\n**등록**\n\n```java\nhttp.formLogin(f -> f\n        .loginPage(\"/login\").permitAll()\n        .successHandler(successHandler)\n        .failureHandler(failureHandler));\n```\n\n**`defaultSuccessUrl` 과 같이 쓰면**\n\n> **핸들러가** 이긴다.\n> **`defaultSuccessUrl` 은 기본 핸들러를 설정하는 지름길**이라서다.\n> **둘 다 쓰면 앞의 것이 무시되는데 경고가** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "예외를 메시지로",
+   "ascii": "   exception to message, and what each one reveals\n\n   BadCredentials      wrong id or password   reveals nothing\n   Locked              account is locked      reveals it exists\n   Disabled            account is disabled    reveals it exists\n   CredentialsExpired  password too old       reveals it exists\n\n   the first line covers both unknown user and wrong password",
+   "note": "**첫 줄이 둘을 덮어** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇까지 알려 줄까",
+   "md": "**4.4절에서 응답을 뭉뚱그렸다.**\n\n> **없는 계정과 틀린 비밀번호는 여전히 같게** 둔다.\n> **잠김과 비활성은 알려** 준다 — **10.1절의 결정**이다.\n\n**왜 그래도 되나**\n\n> **잠김 메시지가 나오려면 다섯 번 실패가 필요**하다.\n> **거기까지 갔으면 공격자는 이미 그 계정이 있는 줄** 안다.\n> **정직한 사용자에게는 \"왜 안 되는지\" 를 말해 주는 게** 낫다.\n>\n> **비활성은 관리자가 끈 것**이라 문의로 이어져야 한다.\n\n**메시지를 예외에서 바로 쓰면 안 된다.**\n\n```java\n// 이러면 안 된다\nrequest.getSession().setAttribute(\"error\", exception.getMessage());\n```\n\n> **`Failed to find user 'nobody@a.com'`** 같은 게 화면에 뜬다.\n> **로케일도 안 맞고 내부 정보가** 샌다.\n> **타입으로 매핑**한다.\n\n**어디에 담나**\n\n> **`?error` 쿼리와 세션 속성 둘 다** 쓴다.\n> **쿼리는 새로고침에 남고 세션은 한 번 쓰고** 지운다.\n> **`FlashMap` 을 쓰면 더** 깔끔하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 실패 핸들러 ---\n\n@Component\npublic class MemberLoginFailureHandler\n        extends SimpleUrlAuthenticationFailureHandler {\n\n    @Override\n    public void onAuthenticationFailure(HttpServletRequest request,\n            HttpServletResponse response, AuthenticationException exception)\n            throws IOException, ServletException {\n        String code = switch (exception) {\n            case LockedException e -> \"locked\";\n            case DisabledException e -> \"disabled\";\n            case CredentialsExpiredException e -> \"expired\";\n            default -> \"bad\";\n        };\n        System.out.println(\">>> failure \" + exception.getClass().getSimpleName()\n                + \" -> \" + code);\n        setDefaultFailureUrl(\"/login?error=\" + code);\n        super.onAuthenticationFailure(request, response, exception);\n    }\n}\n\n#   틀린 비밀번호\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n\nhttp://localhost:8080/login?error=bad\n\n>>> failure BadCredentialsException -> bad\n\n#   없는 계정\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=nobody@a.com&password=x&_csrf=$TOKEN\"\n\nhttp://localhost:8080/login?error=bad\n\n>>> failure BadCredentialsException -> bad\n\n#   둘이 같다 (4.4절)\n\n#   잠긴 계정\nupdate member set locked = true, locked_at = now() where email = 'user@a.com';\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nhttp://localhost:8080/login?error=locked\n\n>>> failure LockedException -> locked\n\n#   구별된다\n\n#   비활성\nupdate member set locked = false, active = false where email = 'user@a.com';\n\nhttp://localhost:8080/login?error=disabled\n\n>>> failure DisabledException -> disabled\n\n# --- 화면에 메시지 ---\n\n<div th:if=\"${param.error}\" class=\"error\">\n  <span th:if=\"${param.error[0] == 'bad'}\">아이디 또는 비밀번호가 올바르지 않습니다.</span>\n  <span th:if=\"${param.error[0] == 'locked'}\">계정이 잠겼습니다. 30분 뒤 다시 시도하세요.</span>\n  <span th:if=\"${param.error[0] == 'disabled'}\">비활성 계정입니다. 관리자에게 문의하세요.</span>\n  <span th:if=\"${param.error[0] == 'expired'}\">비밀번호를 변경해야 합니다.</span>\n</div>\n\n$ curl -s -b c.txt 'localhost:8080/login?error=locked' | grep -o '계정이 잠겼습니다[^<]*'\n\n계정이 잠겼습니다. 30분 뒤 다시 시도하세요.\n\n$ curl -s -b c.txt 'localhost:8080/login?error=bad' | grep -o '아이디 또는[^<]*'\n\n아이디 또는 비밀번호가 올바르지 않습니다.\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n잠긴_계정은_다른_메시지 PASSED\n\n2 tests completed, 2 failed\n\n#   아홉 중 일곱이 초록이다\n\n# --- 예외 메시지를 그대로 쓰면 ---\n\nsetDefaultFailureUrl(\"/login?error=\" + exception.getMessage());\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=nobody@a.com&password=x&_csrf=$TOKEN\"\n\nhttp://localhost:8080/login?error=자격%20증명에%20실패하였습니다.\n\n#   기본 메시지는 한국어라 그나마 낫다\n\n#   hideUserNotFoundExceptions 를 끄면 (4.4절)\n\nhttp://localhost:8080/login?error=nobody@a.com\n\n#   이메일이 URL 에 그대로 뜬다\n\n#   브라우저 히스토리와 접근 로그에 남는다\n\n#   타입으로 매핑해야 한다\n\n# --- 성공 핸들러 ---\n\n@Component\npublic class MemberLoginSuccessHandler\n        extends SavedRequestAwareAuthenticationSuccessHandler {\n    @Override\n    public void onAuthenticationSuccess(HttpServletRequest request,\n            HttpServletResponse response, Authentication authentication)\n            throws ServletException, IOException {\n        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();\n        System.out.println(\">>> success first=\" + user.isFirstLogin());\n        if (user.isFirstLogin()) {\n            getRedirectStrategy().sendRedirect(request, response, \"/welcome\");\n            return;\n        }\n        super.onAuthenticationSuccess(request, response, authentication);\n    }\n}\n\n#   처음 로그인\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -c n.txt -b n.txt -X POST \\\n    localhost:8080/login -d \"username=new@a.com&password=hunter2secret&_csrf=$T\"\n\nhttp://localhost:8080/welcome\n\n>>> success first=true\n\n#   두 번째\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -c n.txt -b n.txt -X POST \\\n    localhost:8080/login -d \"username=new@a.com&password=hunter2secret&_csrf=$T\"\n\nhttp://localhost:8080/\n\n>>> success first=false\n\n#   last_login_at 이 채워져서다 (10.5절)\n\n# --- 원래 가려던 곳 ---\n\n$ rm -f s.txt\n$ curl -s -o /dev/null -c s.txt 'localhost:8080/report/x?page=3'\n$ TOKEN=$(curl -s -b s.txt -c s.txt localhost:8080/login \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b s.txt -c s.txt -X POST \\\n    localhost:8080/login -d \"username=manager@a.com&password=1234&_csrf=$TOKEN\"\n\nhttp://localhost:8080/report/x?page=3\n\n#   상속했으니 그대로 산다 (3.10절)\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n로그인하면_원래_가려던_곳으로 PASSED\n\n1 test completed, 1 failed\n\n#   아홉 중 여덟이다\n\n# --- 상속 안 하면 ---\n\n@Component\npublic class PlainSuccessHandler implements AuthenticationSuccessHandler {\n    @Override\n    public void onAuthenticationSuccess(HttpServletRequest request,\n            HttpServletResponse response, Authentication authentication)\n            throws IOException {\n        response.sendRedirect(\"/\");\n    }\n}\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b s2.txt -X POST \\\n    localhost:8080/login -d \"username=manager@a.com&password=1234&_csrf=$T\"\n\nhttp://localhost:8080/\n\n#   /report/x 를 잊었다\n\n$ curl -s -b s2.txt localhost:8080/peek\n\nhttp://localhost:8080/report/x?page=3\n\n#   세션에는 아직 있다\n\n#   아무도 안 읽었을 뿐이다\n\n#   3.2절에서 본 그것이다\n\n# --- defaultSuccessUrl 과 같이 쓰면 ---\n\nhttp.formLogin(f -> f\n        .defaultSuccessUrl(\"/dashboard\", true)\n        .successHandler(successHandler));\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b s3.txt -X POST \\\n    localhost:8080/login -d \"username=manager@a.com&password=1234&_csrf=$T\"\n\nhttp://localhost:8080/report/x?page=3\n\n#   핸들러가 이겼다\n\n#   /dashboard 는 안 쓰인다\n\n#   경고가 없다\n\n#   순서를 바꿔도\n\nhttp.formLogin(f -> f\n        .successHandler(successHandler)\n        .defaultSuccessUrl(\"/dashboard\", true));\n\nhttp://localhost:8080/dashboard\n\n#   이번엔 defaultSuccessUrl 이 이겼다\n\n#   나중에 쓴 것이 앞의 것을 덮는다\n\n#   둘을 같이 쓰지 않는다\n\n# --- 실패에도 이벤트는 나간다 ---\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n\n>>> failure BadCredentialsException -> bad\n>>> FAILURE user@a.com AuthenticationFailureBadCredentialsEvent\n\nupdate member set failed_count = failed_count + 1 where id = ?\n\n#   핸들러를 바꿔도 9.3절의 카운터는 돈다\n\n#   이벤트는 매니저가 내고 핸들러는 필터가 부른다\n\n#   서로 모른다\n\n# --- 다음 절에서 ---\n\n#   필터를 하나 끼운다",
+   "note": "**틀린 비밀번호와 없는 계정이 둘 다 `error=bad`, 잠김·비활성은 `locked`·`disabled`** 로 갈린다.\n\n**예외 메시지를 그대로 쓰면 `hideUserNotFoundExceptions` 를 끈 순간 이메일이 URL 에** 뜬다.\n\n**상속한 성공 핸들러는 `/report/x?page=3` 을 그대로** 살리고, 구현만 하면 세션에 있는데 아무도 안 읽는다.\n\n**`defaultSuccessUrl` 과 핸들러는 나중에 쓴 것이** 이긴다 — 경고가 없다.\n\n**핸들러를 바꿔도 실패 카운터는** 돈다."
+  }
+ ],
+ "recap": [
+  "**성공 핸들러는 상속해서 필요한 것만** 덮는다.",
+  "**구현만 하면 `SavedRequest` 를** 잃는다.",
+  "**실패는 예외 타입을 코드로** 매핑한다.",
+  "**예외 메시지를 화면에 그대로 쓰면 안** 된다.",
+  "**없는 계정과 틀린 비밀번호는 같게** 둔다.",
+  "**잠김과 비활성은 알려** 준다.",
+  "**`defaultSuccessUrl` 과 핸들러를 같이 쓰지** 않는다.",
+  "**나중에 쓴 것이 앞을** 덮는다.",
+  "**핸들러와 이벤트는 서로** 모른다."
+ ],
+ "drills": [
+  {
+   "task": "실패 핸들러로 네 코드를 만든다.",
+   "done_when": "네 경우의 `redirect_url` 을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "예외 메시지를 그대로 써 본다.",
+   "done_when": "무엇이 새는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "성공 핸들러를 상속과 구현 둘로 만든다.",
+   "done_when": "`SavedRequest` 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`defaultSuccessUrl` 과 같이 써 본다.",
+   "done_when": "순서에 따라 갈리는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "성공 핸들러를 왜 상속하나?",
+   "a": "`SavedRequest` 처리를 그대로 물려받으려고다."
+  },
+  {
+   "q": "실패 메시지를 예외에서 바로 쓰면?",
+   "a": "내부 정보가 새고 로케일도 안 맞는다."
+  },
+  {
+   "q": "어디까지 구별해 알려 주나?",
+   "a": "잠김과 비활성까지다. 없는 계정과 틀린 비밀번호는 같게 둔다."
+  },
+  {
+   "q": "`defaultSuccessUrl` 과 `successHandler` 를 같이 쓰면?",
+   "a": "나중에 설정한 쪽이 이기고 경고는 없다."
+  },
+  {
+   "q": "핸들러를 바꾸면 잠금 카운터가 멈추나?",
+   "a": "안 멈춘다. 이벤트는 매니저가 낸다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Form Login",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

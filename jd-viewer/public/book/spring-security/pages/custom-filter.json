@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "custom-filter",
+ "no": "10.7",
+ "chapter": 10,
+ "title": "필터 추가하기",
+ "summary": "체인의 어디에 끼우나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "자리를 고르는 기준을 안다.",
+  "OncePerRequestFilter 를 쓴다.",
+  "빈 등록의 함정을 피한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 `addFilterBefore` 를** 봤다. **실제로 하나** 끼운다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리와 볼 수 있는 것",
+   "ascii": "   where a filter of your own can go, and what it may see\n\n   before SecurityContextHolderFilter   no user yet, ever\n   before UsernamePasswordAuth          the raw login request\n   after  UsernamePasswordAuth          the result of a login\n   before AuthorizationFilter           the user, before the verdict\n   after  AuthorizationFilter           only allowed requests\n\n   pick by what the filter needs to read, not by taste",
+   "note": "**읽어야 할 것으로** 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 만드나",
+   "md": "**요청마다 추적 ID 를 붙이고 로그에 사용자를 남기는 필터**다.\n\n```java\npublic class RequestTraceFilter extends OncePerRequestFilter {\n\n    @Override\n    protected void doFilterInternal(HttpServletRequest request,\n            HttpServletResponse response, FilterChain chain)\n            throws ServletException, IOException {\n        String traceId = UUID.randomUUID().toString().substring(0, 8);\n        MDC.put(\"traceId\", traceId);\n        response.setHeader(\"X-Trace-Id\", traceId);\n        try {\n            chain.doFilter(request, response);\n        } finally {\n            Authentication auth =\n                    SecurityContextHolder.getContext().getAuthentication();\n            log.info(\"{} {} {} user={}\", request.getMethod(),\n                    request.getRequestURI(), response.getStatus(),\n                    auth == null ? \"-\" : auth.getName());\n            MDC.remove(\"traceId\");\n        }\n    }\n}\n```\n\n> **`finally` 에서 읽는 게 중요**하다.\n> **4.2절대로 체인을 빠져나오면 홀더가** 비워지는데, **이 필터가 체인 안에 있으면 아직** 살아 있다.\n\n**자리를 고른다.**\n\n> **사용자를 알아야 하니 3번 뒤여야** 한다.\n> **거부된 요청도 남기고 싶으니 인가 필터를 감싸야** 한다.\n> **`ExceptionTranslationFilter` 앞에 두면 403 응답도** 본다.\n\n```java\nhttp.addFilterBefore(new RequestTraceFilter(),\n        SecurityContextHolderFilter.class);\n```\n\n> **3번 앞에 두면 `finally` 시점에는 이미 비워진** 뒤다.\n> **`ExceptionTranslationFilter` 앞이 낫다.**\n> **아래에서 둘을 다** 해 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 OncePerRequestFilter 인가",
+   "ascii": "   why OncePerRequestFilter, and what happens without it\n\n   a plain Filter runs on every dispatch\n     REQUEST, then FORWARD, then ERROR\n     a counter counts three, a log line prints three\n\n   OncePerRequestFilter sets a request attribute and skips\n     the second and third pass\n\n   almost every filter you write wants the second behaviour",
+   "note": "**대개 두 번째 동작을** 원한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈으로 등록하면 두 번 돈다",
+   "md": "**`Filter` 를 구현한 클래스에 `@Component` 를 붙이면**\n\n> **부트가 서블릿 컨테이너에도 자동으로** 등록한다.\n> **시큐리티 체인에도 있고 컨테이너에도** 있다.\n> **한 요청에 두 번** 돈다.\n\n**두 가지 해법**\n\n```java\n// 1) 빈으로 안 만든다\nhttp.addFilterBefore(new RequestTraceFilter(), ...);\n\n// 2) 빈으로 만들고 자동 등록을 끈다\n@Bean\nFilterRegistrationBean<RequestTraceFilter> traceFilterRegistration(\n        RequestTraceFilter filter) {\n    FilterRegistrationBean<RequestTraceFilter> registration =\n            new FilterRegistrationBean<>(filter);\n    registration.setEnabled(false);\n    return registration;\n}\n```\n\n> **의존성 주입이 필요하면** 둘째다.\n> **첫째는 `new` 라 주입이 안** 된다 — **생성자로 넘긴다.**\n\n**필터 안에서 예외를 던지면**\n\n> **`ExceptionTranslationFilter` 보다 앞이면 안** 잡힌다.\n> **500 이** 된다.\n> **6.1절의 그 `try` 범위**다.\n\n**응답을 쓰고 나면 늦다.**\n\n> **`finally` 에서 `response.setHeader` 를 하면 이미 커밋된** 뒤다.\n> **헤더는 `chain.doFilter` 전에** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 3번 앞에 끼운다 ---\n\nhttp.addFilterBefore(new RequestTraceFilter(),\n        SecurityContextHolderFilter.class);\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | nl | head -5\n\n     1   DisableEncodeUrlFilter\n     2   WebAsyncManagerIntegrationFilter\n     3   RequestTraceFilter\n     4   SecurityContextHolderFilter\n     5   HeaderWriterFilter\n\n#   열일곱이 됐다\n\n$ curl -is -b c.txt localhost:8080/orders | grep -i x-trace-id\n\nX-Trace-Id: a3f21b84\n\nINFO RequestTraceFilter : GET /orders 200 user=-\n\n#   user 가 - 다\n\n#   finally 시점에 이미 비워졌다\n\n#   4번 필터의 finally 가 먼저 돌았다\n\n#   내가 3번이라 그 바깥이다\n\n# --- 안쪽으로 옮긴다 ---\n\nhttp.addFilterBefore(new RequestTraceFilter(),\n        ExceptionTranslationFilter.class);\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | nl | tail -4\n\n    14   SessionManagementFilter\n    15   RequestTraceFilter\n    16   ExceptionTranslationFilter\n    17   AuthorizationFilter\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders\n\nINFO RequestTraceFilter : GET /orders 200 user=user@a.com\n\n#   사용자가 나온다\n\n#   거부도 본다\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\nINFO RequestTraceFilter : GET /admin/panel 403 user=user@a.com\n\n#   403 도 남는다\n\n#   9.2절의 이벤트와 겹치는데 응답 코드가 같이 있다\n\n# --- 익명 요청 ---\n\n$ curl -s -o /dev/null localhost:8080/about\n\nINFO RequestTraceFilter : GET /about 200 user=anonymousUser\n\n#   3.7절의 익명 토큰이다\n\n#   null 이 아니다\n\n# --- OncePerRequestFilter 를 안 쓰면 ---\n\npublic class NaiveTraceFilter implements Filter {\n    @Override\n    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)\n            throws IOException, ServletException {\n        System.out.println(\">>> naive \"\n                + ((HttpServletRequest) req).getDispatcherType()\n                + \" \" + ((HttpServletRequest) req).getRequestURI());\n        chain.doFilter(req, res);\n    }\n}\n\nhttp.authorizeHttpRequests(a -> a.shouldFilterAllDispatcherTypes(true) ...);\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\n>>> naive REQUEST /admin/panel\n>>> naive ERROR /error\n\n#   두 번 돈다\n\n#   OncePerRequestFilter 로 바꾸면\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/admin/panel\n\n>>> once REQUEST /admin/panel\n\n#   한 번이다\n\n#   요청당 하나의 traceId 를 보장한다\n\n# --- 빈으로 등록하면 ---\n\n@Component\npublic class RequestTraceFilter extends OncePerRequestFilter { ... }\n\n$ curl -is -b c.txt localhost:8080/orders | grep -c x-trace-id\n1\n\nINFO RequestTraceFilter : GET /orders 200 user=-\nINFO RequestTraceFilter : GET /orders 200 user=user@a.com\n\n#   두 줄이다\n\n#   컨테이너에도 등록됐다\n\n$ curl -s localhost:8080/actuator/beans 2>/dev/null \\\n    | grep -c requestTraceFilter\n1\n\n$ ./gradlew bootRun 2>&1 | grep -i \"Mapping filters\"\n\nINFO ... : Mapping filters: characterEncodingFilter urls=[/*],\n  requestTraceFilter urls=[/*], springSecurityFilterChain urls=[/*], ...\n\n#   컨테이너 필터 목록에 있다\n\n#   시큐리티 체인 밖에서 한 번, 안에서 한 번이다\n\n#   바깥 것은 홀더가 비어 user=- 다\n\n# --- 자동 등록을 끈다 ---\n\n@Bean\nFilterRegistrationBean<RequestTraceFilter> traceFilterRegistration(\n        RequestTraceFilter filter) {\n    FilterRegistrationBean<RequestTraceFilter> registration =\n            new FilterRegistrationBean<>(filter);\n    registration.setEnabled(false);\n    return registration;\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i \"Mapping filters\"\n\nINFO ... : Mapping filters: characterEncodingFilter urls=[/*],\n  springSecurityFilterChain urls=[/*], ...\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders\n\nINFO RequestTraceFilter : GET /orders 200 user=user@a.com\n\n#   한 줄이다\n\n# --- 필터에서 예외를 던지면 ---\n\nif (request.getHeader(\"X-Break\") != null) {\n    throw new AccessDeniedException(\"막았다\");\n}\n\n#   ExceptionTranslationFilter 앞(15번)에 있다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt \\\n    -H 'X-Break: 1' localhost:8080/orders\n500\n\njava.lang.RuntimeException: AccessDeniedException: 막았다\n\n#   안 잡힌다\n\n#   16번보다 앞이라 그 try 밖이다 (6.1절)\n\n#   뒤로 옮기면\n\nhttp.addFilterAfter(new RequestTraceFilter(),\n        ExceptionTranslationFilter.class);\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt \\\n    -H 'X-Break: 1' localhost:8080/orders\n403\n\n#   잡힌다\n\n#   그런데 이제 로그를 못 남긴다\n\n#   403 을 만든 건 나 자신이라\n\n#   자리 하나에 두 성질이 따라온다\n\n# --- 헤더를 늦게 쓰면 ---\n\ntry {\n    chain.doFilter(request, response);\n} finally {\n    response.setHeader(\"X-Trace-Id\", traceId);      // 늦다\n}\n\n$ curl -is -b c.txt localhost:8080/orders | grep -ci x-trace-id\n0\n\n#   이미 커밋됐다\n\n$ curl -is -b c.txt localhost:8080/orders | head -1\nHTTP/1.1 200\n\n#   에러도 안 난다\n\n#   조용히 안 붙는다\n\n#   doFilter 앞에서 쓴다\n\n# --- 요구사항 확인 ---\n\n$ ./gradlew test\n\n141 tests completed\n\nBUILD SUCCESSFUL\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n8 tests passed, 1 failed\n\n다섯번_틀리면_잠긴다 FAILED\n\n#   9.3절에서 만들었는데 왜?\n\n#   10.2절에서 표를 다시 만들면서 리스너가 옛 표를 본다\n\n#   다음 절에서 고친다\n\n# --- 다음 절에서 ---\n\n#   잠금을 이 도메인에 맞춘다",
+   "note": "**3번 앞에 두면 `finally` 에서 `user=-`** 다 — 4번의 `finally` 가 먼저 돈다.\n\n**`ExceptionTranslationFilter` 앞(15번)으로 옮기니 `user=user@a.com` 과 403 까지** 남는다.\n\n**`@Component` 만 붙이면 컨테이너에도 등록돼 로그가 두 줄**이고, `FilterRegistrationBean` 으로 끄면 한 줄이다.\n\n**15번에서 던진 예외는 500, 16번 뒤로 옮기면 403** 이지만 그러면 로그를 못 남긴다.\n\n**`finally` 에서 헤더를 쓰면 조용히 안** 붙는다."
+  }
+ ],
+ "recap": [
+  "**자리는 읽어야 할 것으로** 고른다.",
+  "**3번 앞이면 `finally` 에 홀더가** 비어 있다.",
+  "**`ExceptionTranslationFilter` 앞이 거부까지** 본다.",
+  "**`OncePerRequestFilter` 로 디스패치 중복을** 막는다.",
+  "**`@Component` 만 붙이면 두 번** 돈다.",
+  "**`FilterRegistrationBean` 으로 자동 등록을** 끈다.",
+  "**예외를 던지려면 16번 뒤여야** 잡힌다.",
+  "**한 자리에 두 성질이 따라** 온다.",
+  "**헤더는 `doFilter` 전에** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "추적 필터를 만들어 두 자리에 끼운다.",
+   "done_when": "`user` 값 차이를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`@Component` 를 붙여 본다.",
+   "done_when": "로그가 두 줄인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필터에서 예외를 던진다.",
+   "done_when": "자리에 따라 500/403 이 갈리는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "헤더를 `finally` 에서 써 본다.",
+   "done_when": "안 붙는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "필터 자리를 무엇으로 고르나?",
+   "a": "그 필터가 읽어야 할 것이 언제 준비되는지로 고른다."
+  },
+  {
+   "q": "3번 앞에 두면 왜 사용자가 안 보이나?",
+   "a": "안쪽 필터의 `finally` 가 먼저 돌아 홀더가 비워진다."
+  },
+  {
+   "q": "`@Component` 를 붙이면?",
+   "a": "서블릿 컨테이너에도 등록돼 한 요청에 두 번 돈다."
+  },
+  {
+   "q": "필터에서 던진 예외가 500 인 이유는?",
+   "a": "`ExceptionTranslationFilter` 의 `try` 바깥이라서다."
+  },
+  {
+   "q": "응답 헤더는 언제 쓰나?",
+   "a": "`chain.doFilter` 전에 쓴다. 뒤면 이미 커밋됐다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "OncePerRequestFilter",
+   "def": "요청 하나에 한 번만 도는 필터 기반 클래스. 디스패치가 여러 번이어도 한 번만 실행된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Java Configuration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/configuration/java.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
