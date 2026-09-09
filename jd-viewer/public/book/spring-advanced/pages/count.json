@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "count",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "세어 본다",
+ "summary": "고친 줄 수와 남은 중복.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 버전을 나란히 센다.",
+  "비율을 본다.",
+  "2장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항은 다 됐다.** **값을 얼마나 치렀는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 버전",
+   "ascii": "   three versions, measured the same way\n\n   v0   nothing\n   v1   logging, no identifier\n   v2   logging with identifier and depth\n\n   the log improves in three steps; the code gets worse in three steps",
+   "note": "**로그가 세 단계로 좋아지고 코드가 세 단계로** 나빠졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "숫자로 남겨 둬야 다음 장이 뜻을 갖는다",
+   "md": "**나아진 것도** 있다.\n\n> **로그 여섯 줄이** 생겼다.\n> **요구사항 여섯이 다** 됐다.\n> **아래에서 그것부터** 센다.\n\n**나빠진 것이 더** 많다.\n\n> **줄 수·인자·테스트**다.\n> **아래에서 하나씩** 센다.\n> **다음 장들이 이걸** 줄인다.\n\n**비율이 제일** 중요하다.\n\n> **업무 한 줄에 몇 줄인가**다.\n> **아래에서 그** 값을 낸다.\n> **9장에서 다시** 잰다.\n\n**태그를 달아** 뒀다.\n\n> **2.1절부터 셋**이다.\n> **아래에서 나란히** 본다.\n> **되돌릴 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "중요한 비율",
+   "ascii": "   the number that matters\n\n   lines of business logic in the service\n   lines of everything else in the same method\n\n   one to ten is where this chapter ends",
+   "note": "**이 장은 일 대 십에서** 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "여기서 멈추면 다음 요구사항에 무너진다",
+   "md": "**요구사항이 하나 더** 온다.\n\n> **실무는 늘 그렇**다.\n> **아래에서 하나 더** 넣어 본다.\n> **줄이 또** 는다.\n\n**클래스가 하나 더** 는다.\n\n> **여덟 줄을 또** 쓴다.\n> **아래에서 세어** 본다.\n> **깜빡하면** 빠진다.\n\n**되돌리기도** 어렵다.\n\n> **로그를 빼려면 다시 열네 곳**이다.\n> **아래에서 그걸** 센다.\n> **넣는 것보다** 어렵다.\n\n**그래서 다음 장으로** 간다.\n\n> **3장이 인자를** 없앤다.\n> **아래에서 그 목표를** 적는다.\n> **줄 수가** 기준이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 태그 셋을 나란히 본다\n\n$ git tag\nv0\nv1\nv2\nv2-level\n\n$ for t in v0 v1 v2-level; do\n    printf '%-10s ' \"$t\"\n    git show $t:src/main/java/study/adv/OrderService.java 2>/dev/null | wc -l\n  done\nv0         16\nv1         28\nv2-level   32\n\n\n-- 업무 코드 전체\n\n$ for t in v0 v1 v2-level; do\n    printf '%-10s ' \"$t\"\n    git ls-tree -r $t --name-only | grep 'study/adv/Order' \\\n      | xargs -I{} git show $t:{} | wc -l\n  done\nv0         56\nv1         98\nv2-level   104\n\n$ python3 -c \"print('56 에서 104, %.0f%% 늘었다' % ((104-56)/56*100))\"\n56 에서 104, 86% 늘었다\n\n\n-- 추적기까지 포함하면\n\n$ for t in v0 v1 v2-level; do\n    printf '%-10s ' \"$t\"\n    git ls-tree -r $t --name-only | grep 'study/adv/' \\\n      | xargs -I{} git show $t:{} 2>/dev/null | wc -l\n  done\nv0         92\nv1         148\nv2-level   196\n\n--   92 줄이 196 줄이 됐다\n\n\n-- 로그는 이렇게 나아졌다\n\n$ printf '%-10s %s\\n' \\\n  'v0'  '(없음)' \\\n  'v1'  '[] OrderService.orderItem()' \\\n  'v2'  '[796bccd9] OrderService.orderItem()' \\\n  'v2-level' '[796bccd9] |-->OrderService.orderItem()'\n\nv0         (없음)\nv1         [] OrderService.orderItem()\nv2         [796bccd9] OrderService.orderItem()\nv2-level   [796bccd9] |-->OrderService.orderItem()\n\n--   세 단계로 좋아졌다\n\n\n-- 요구사항 여섯을 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ printf '%-4s %-40s %s\\n' \\\n  '①' '모든 메서드의 호출과 응답'   'O' \\\n  '②' '흐름을 안 바꾼다'           'O' \\\n  '③' '걸린 시간'                  'O' \\\n  '④' '정상과 예외 구분'           'O' \\\n  '⑤' '깊이 표현'                  'O' \\\n  '⑥' '요청 하나를 구분'           'O'\n\n①    모든 메서드의 호출과 응답                O\n②    흐름을 안 바꾼다                        O\n③    걸린 시간                               O\n④    정상과 예외 구분                        O\n⑤    깊이 표현                               O\n⑥    요청 하나를 구분                        O\n\n\n-- 값은 이만큼 치렀다\n\n$ printf '%-24s %-10s %s\\n' \\\n  '업무 코드 줄'   '56'  '104' \\\n  '전체 줄'        '92'  '196' \\\n  '바뀐 시그니처'  '0'   '2' \\\n  '부르는 곳'      '0'   '14' \\\n  '고친 테스트'    '0'   '11' \\\n  '추적기 클래스'  '0'   '3'\n\n업무 코드 줄              56          104\n전체 줄                   92          196\n바뀐 시그니처             0           2\n부르는 곳                 0           14\n고친 테스트               0           11\n추적기 클래스             0           3\n\n\n-- 비율을 낸다\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java | grep -c '^\\s*[a-zA-Z}]'\n11\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java \\\n    | grep -E 'orderRepository\\.save' | wc -l\n1\n\n$ python3 -c \"print('업무 1 줄에 감싸는 코드 10 줄')\"\n업무 1 줄에 감싸는 코드 10 줄\n\n--   일 대 십이다\n\n\n-- 저장소도 본다\n\n$ sed -n '11,23p' src/main/java/study/adv/OrderRepository.java\n    public void save(TraceId traceId, String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.beginSync(traceId, \"OrderRepository.save()\");\n            if (itemId.equals(\"ex\")) throw new IllegalStateException(\"예외 발생!\");\n            sleep(1000);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n$ python3 -c \"print('업무 2 줄에 감싸는 코드 9 줄')\"\n업무 2 줄에 감싸는 코드 9 줄\n\n\n-- 요구사항이 하나 더 오면\n\n// ⑦ 느린 메서드는 경고로 남긴다 (1 초 넘으면)\n\nprivate void complete(TraceStatus status, Exception e) {\n    long resultTimeMs = System.currentTimeMillis() - status.getStartTimeMs();\n    ...\n    if (resultTimeMs > 1000) log.warn(\"[{}] {} 느림 {}ms\", ...);\n}\n\n$ git diff --stat src/main/java/study/adv/trace/\n TraceV2.java | 4 +++-\n 1 file changed, 3 insertions(+), 1 deletion(-)\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep WARN logs/app.log | tail -1 | cut -c56-\n[3d81f0a2] |   |<--OrderRepository.save() 느림 1004ms\n\n--   추적기 안에 있는 건 세 줄로 된다\n--   이건 다행이다\n\n\n-- 그런데 대상이 하나 늘면\n\n@Service\npublic class MemberService {\n    public void join(String name) {\n        memberRepository.save(name);\n    }\n}\n\n// 로그를 넣으려면\npublic void join(TraceId traceId, String name) {\n    TraceStatus status = null;\n    try {\n        status = trace.beginSync(traceId, \"MemberService.join()\");\n        memberRepository.save(status.getTraceId(), name);\n        trace.end(status);\n    } catch (Exception e) {\n        trace.exception(status, e);\n        throw e;\n    }\n}\n\n$ git diff --stat src/main/java/study/adv/MemberService.java\n MemberService.java | 14 ++++++++++----\n 1 file changed, 11 insertions(+), 3 deletions(-)\n\n--   또 여덟 줄이다\n--   2.6 절에서 세던 그것이다\n\n\n-- 되돌리기가 더 어렵다\n\n$ grep -rn 'trace\\.\\|TraceId\\|TraceStatus' src/main/java src/test/java | wc -l\n      38\n\n$ git checkout v0 -- src/main/java/study/adv/OrderService.java\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nOrderController.java:21: error: method orderItem in class OrderService\n  cannot be applied to given types;\n\n$ git checkout HEAD -- src/main/java/\n\n--   한 파일만 되돌릴 수도 없다\n--   시그니처가 얽혀 있다\n\n\n-- 로그를 꺼도 남는 것\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.adv.trace \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"OFF\"}'\n\n$ grep -rc 'TraceId traceId' src/main/java/study/adv/*.java | grep -v ':0' | wc -l\n2\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n200\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   로그는 안 나오는데 시그니처는 그대로다\n--   껐다고 지워지지 않는다\n\n\n-- 다음 장의 목표\n\n$ printf '%-8s %-24s %s\\n' \\\n  '지금'  '104 줄, 인자 2 개'   '일 대 십' \\\n  '3 장'  '인자 0 개'           '시그니처 원복' \\\n  '4 장'  '여덟 줄이 한 줄'     '부르는 줄은 남음' \\\n  '5 장'  '업무 코드 0 줄'      '클래스가 늚' \\\n  '9 장'  '설정도 0 줄'         '애너테이션 하나'\n\n지금     104 줄, 인자 2 개          일 대 십\n3 장     인자 0 개                  시그니처 원복\n4 장     여덟 줄이 한 줄            부르는 줄은 남음\n5 장     업무 코드 0 줄             클래스가 늚\n9 장     설정도 0 줄                애너테이션 하나\n\n\n-- 마지막 확인\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.adv.trace \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"INFO\"}'\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[c14e0b93] OrderController.request()\n[c14e0b93] |-->OrderService.orderItem()\n[c14e0b93] |   |-->OrderRepository.save()\n[c14e0b93] |   |<--OrderRepository.save() time=1004ms\n[c14e0b93] |<--OrderService.orderItem() time=1006ms\n[c14e0b93] OrderController.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n0\n\n$ git add -A && git commit -q -m 'chore: v2 정리' && git tag v2-final\n\n--   여전히 아무것도 안 감싸졌다\n--   3.1 절에서 인자부터 없앤다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '업무 줄'    '56 에서 104' \\\n  '전체 줄'    '92 에서 196' \\\n  '시그니처'   '2 곳' \\\n  '부르는 곳'  '14 곳' \\\n  '테스트'     '11 곳' \\\n  '비율'       '일 대 십' \\\n  '대상 추가'  '또 여덟 줄' \\\n  '되돌리기'   '한 파일도 못 함' \\\n  '프록시'     '0 개'\n\n업무 줄                    56 에서 104\n전체 줄                    92 에서 196\n시그니처                   2 곳\n부르는 곳                  14 곳\n테스트                     11 곳\n비율                       일 대 십\n대상 추가                  또 여덟 줄\n되돌리기                   한 파일도 못 함\n프록시                     0 개",
+   "note": "**업무 코드가 56 줄에서 104 줄로 86% 늘고 전체는 92 줄에서 196 줄이** 됐다.\n\n**요구사항 여섯은 다 채웠고 로그가 세 단계로** 좋아졌다.\n\n**서비스 메서드 열한 줄 중 업무는 한 줄이라 일 대 십**이다.\n\n**추적기 안에 있는 요구사항 ⑦은 세 줄로 되는데 대상이 하나 늘면 또 여덟 줄**이다.\n\n**한 파일만 되돌리려 해도 시그니처가 얽혀 컴파일이** 깨진다."
+  }
+ ],
+ "recap": [
+  "**세 버전을** 센다.",
+  "**86% 늘었다**.",
+  "**요구사항은 다** 됐다.",
+  "**일 대 십**이다.",
+  "**추적기 안은** 낫다.",
+  "**대상이 늘면** 또다.",
+  "**되돌리기가** 어렵다.",
+  "**꺼도** 남는다.",
+  "**프록시는 0 개**다."
+ ],
+ "drills": [
+  {
+   "task": "태그별로 줄 수를 센다.",
+   "done_when": "세 버전을 비교했다.",
+   "minutes": 15
+  },
+  {
+   "task": "비율을 낸다.",
+   "done_when": "업무 줄과 나머지를 나눴다.",
+   "minutes": 10
+  },
+  {
+   "task": "대상을 하나 늘려 본다.",
+   "done_when": "여덟 줄이 또 붙는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "한 파일만 되돌려 본다.",
+   "done_when": "컴파일이 깨지는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "업무 코드는 얼마나 늘었나?",
+   "a": "56 줄에서 104 줄로 거의 두 배다."
+  },
+  {
+   "q": "제일 중요한 숫자는?",
+   "a": "업무 한 줄에 감싸는 코드가 몇 줄인가다."
+  },
+  {
+   "q": "추적기 안의 요구사항은 왜 쉬운가?",
+   "a": "한 곳만 고치면 되어서다. 대상이 늘 때가 문제다."
+  },
+  {
+   "q": "되돌리기가 왜 어려운가?",
+   "a": "시그니처가 얽혀 한 파일만 되돌릴 수 없다."
+  },
+  {
+   "q": "로그를 끄면 코드도 깨끗해지나?",
+   "a": "아니다. 시그니처는 그대로 남는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "감싸는 코드",
+   "def": "본문을 앞뒤로 둘러싼, 업무가 아닌 줄들."
+  },
+  {
+   "term": "일 대 십",
+   "def": "업무 한 줄에 부가 코드 열 줄인 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

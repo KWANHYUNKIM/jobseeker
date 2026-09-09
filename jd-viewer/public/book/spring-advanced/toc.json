@@ -110,7 +110,7 @@
           "title": "세어 본다",
           "summary": "고친 줄 수와 남은 중복.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -125,7 +125,7 @@
           "title": "필드에 담아 본다",
           "summary": "파라미터가 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
