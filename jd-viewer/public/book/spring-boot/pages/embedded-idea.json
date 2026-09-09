@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "embedded-idea",
+ "no": "3.9",
+ "chapter": 3,
+ "title": "서버를 라이브러리로",
+ "summary": "뒤집으면 무엇이 달라지나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "발상을 안다.",
+  "무엇이 풀리는지 본다.",
+  "남는 것도 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.8절에서 다섯 아픔을** 셌다. **화살표를 뒤집으면 어디까지 풀리는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "화살표를 뒤집는다",
+   "ascii": "   the same two things, in two arrangements\n\n   before   the server holds the application, and starts it\n   after    the application holds the server, and starts it\n\n   nothing new was invented; the arrow was turned around",
+   "note": "**새로 만든 게 아니라 방향을** 바꿨다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서버는 그냥 자바 라이브러리다",
+   "md": "**톰캣도 JAR** 이다.\n\n> **3.2절의 `lib` 이 그** 증거다.\n> **클래스패스에 넣으면** 된다.\n> **`new` 로 만들 수** 있다.\n\n**시작점이 내 코드가** 된다.\n\n> **`main` 에서 서버를** 만든다.\n> **3.1절에서 없던 그** 자리다.\n> **4.1절에서 실제로** 쓴다.\n\n**그러면 산출물이 하나**다.\n\n> **JAR 만 옮기면** 된다.\n> **3.8절의 배포 스크립트가** 준다.\n> **4.4절에서 그걸** 만든다.\n\n**버전이 내 것이** 된다.\n\n> **프로젝트마다 다른 톰캣을 쓸 수** 있다.\n> **2.3절의 BOM 이** 정한다.\n> **3.8절의 첫째 아픔이** 풀린다."
+  },
+  {
+   "type": "figure",
+   "caption": "뒤집어서 얻는 넷",
+   "ascii": "   what turning the arrow around gives you\n\n   one artifact     it carries its own server, so it runs anywhere\n   one version      the server is pinned by this project alone\n   one process      a crash takes down only this application\n   one main         the build tool and the ide can start it directly\n\n   the last line is why the edit and run loop got short",
+   "note": "**마지막 줄 덕분에 고치고 돌리는 고리가** 짧아졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 풀리는 것도 있다",
+   "md": "**JSP 가 안** 된다.\n\n> **3.7절에서 봤다.**\n> **엔진이 파일 시스템을** 본다.\n> **템플릿으로** 간다.\n\n**격리가 저절로 생기진** 않는다.\n\n> **프로세스가 하나면 여전히 하나**다.\n> **⑪의 컨테이너가 그걸** 준다.\n> **3.8절에서 확인**했다.\n\n**기동 시간이 사라지진** 않는다.\n\n> **스캔과 조건 평가가** 남는다.\n> **3.8절에서 412 번을** 셌다.\n> **줄어든 건 배포 절차**다.\n\n**서버를 안다는 건 여전히** 필요하다.\n\n> **스레드 풀·타임아웃이** 있다.\n> **설정이 `server.*` 로 옮겼을** 뿐이다.\n> **7장에서 그걸** 만진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 톰캣은 그냥 JAR 다\n\n$ ls ~/apache-tomcat-10.1.26/lib/catalina.jar\n/Users/kwanhyun/apache-tomcat-10.1.26/lib/catalina.jar\n\n$ unzip -l ~/apache-tomcat-10.1.26/lib/catalina.jar \\\n    | grep -c 'org/apache/catalina/startup/Tomcat'\n8\n\n$ javap -cp ~/apache-tomcat-10.1.26/lib/catalina.jar \\\n    org.apache.catalina.startup.Tomcat | head -6\npublic class org.apache.catalina.startup.Tomcat {\n  public org.apache.catalina.startup.Tomcat();\n  public void setPort(int);\n  public void start() throws org.apache.catalina.LifecycleException;\n  public org.apache.catalina.Context addContext(java.lang.String,\n      java.lang.String);\n\n--   생성자와 setPort 와 start 가 있다\n--   내가 부를 수 있는 클래스다\n\n\n-- 의존성으로 가져온다\n\ndependencies {\n    implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | head -4\nruntimeClasspath - Runtime classpath of source set 'main'.\n\\--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n     \\--- org.apache.tomcat.embed:tomcat-embed-el:10.1.26\n\n$ find ~/.gradle/caches -name 'tomcat-embed-core-10.1.26.jar' | head -1\n/Users/kwanhyun/.gradle/caches/.../tomcat-embed-core-10.1.26.jar\n\n--   설치가 아니라 다운로드다\n--   1.2절에서 본 그것이다\n\n\n-- 그럼 main 을 쓸 수 있다\n\npublic class EmbeddedMain {\n    public static void main(String[] args) throws Exception {\n        System.out.println(\"내 코드가 시작점이다\");\n        Tomcat tomcat = new Tomcat();\n        tomcat.setPort(8080);\n        // 4.1절에서 마저 쓴다\n    }\n}\n\n$ ./gradlew run -q\n내 코드가 시작점이다\n\n--   3.1절에서 없던 자리다\n--   4.1절에서 서버까지 띄운다\n\n\n-- 프로젝트마다 다른 버전을 쓴다\n\n// 프로젝트 A\nimplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'\n// 프로젝트 B\nimplementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.83'\n\n$ (cd projectA && ./gradlew bootRun 2>&1 | grep 'Servlet engine')\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.26]\n$ (cd projectB && ./gradlew bootRun 2>&1 | grep 'Servlet engine')\nINFO ... : Starting Servlet engine: [Apache Tomcat/9.0.83]\n\n--   3.8절의 첫째 아픔이 풀렸다\n--   같은 컴퓨터에서 둘이 다르다\n\n\n-- 서버를 바꿔 끼울 수도 있다\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude module: 'spring-boot-starter-tomcat'\n    }\n    implementation 'org.springframework.boot:spring-boot-starter-undertow'\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'undertow\\|tomcat'\nINFO 13502 --- [           main] io.undertow\n     : starting server: Undertow - 2.3.15.Final\nINFO 13502 --- [           main] o.s.b.w.e.undertow.UndertowWebServer\n     : Undertow started on port 8080 (http) with context path '/'\n\n$ curl -s localhost:8080/hello\nhello\n\n--   톰캣 줄이 사라졌다\n--   내 코드는 안 고쳤다\n--   5.5절에서 이걸 다시 한다\n\n\n-- 산출물이 하나가 된다\n\n$ ./gradlew bootJar -q\n$ ls build/libs/\napp-0.0.1-SNAPSHOT.jar  app-0.0.1-SNAPSHOT-plain.jar\n\n$ java -jar build/libs/app-0.0.1-SNAPSHOT.jar &\n$ sleep 3 && curl -s localhost:8080/hello\nhello\n\n$ scp build/libs/app-0.0.1-SNAPSHOT.jar deploy@server:/opt/app/app.jar\n$ ssh deploy@server 'java -jar /opt/app/app.jar &'\n$ ssh deploy@server 'sleep 3 && curl -s localhost:8080/hello'\nhello\n\n--   서버를 안 깔았다\n--   3.8절의 7줄 스크립트가 3줄이 됐다\n\n\n-- 프로세스가 따로다\n\n$ java -jar build/libs/app.jar --server.port=8080 &\n$ java -jar build/libs/app.jar --server.port=8081 &\n\n$ ps aux | grep -c '[a]pp.jar'\n2\n$ lsof -iTCP -sTCP:LISTEN -P | grep -c java\n2\n\n// 하나를 죽여 본다\n$ curl -s -m 30 localhost:8080/eat &\n$ sleep 20\n$ curl -s localhost:8081/hello\nhello\n\n--   3.8절에서는 같이 죽었다\n--   여기서는 옆이 살아 있다\n--   프로세스가 다르다\n\n\n-- 그런데 격리가 완전하진 않다\n\n$ curl -s -m 30 localhost:8080/eat &\n$ sleep 25\n$ top -l 1 | grep PhysMem\nPhysMem: 15G used (2.1G wired), 892M unused\n\n$ curl -s -m 3 localhost:8081/hello\ncurl: (28) Operation timed out\n\n--   컴퓨터 메모리는 같이 쓴다\n--   ⑪ 6장의 리소스 제한이 필요하다\n\n\n-- 기동 시간은 남는다\n\n$ ./gradlew bootRun 2>&1 | grep 'Started BootApplication'\nINFO ... : Started BootApplication in 1.084 seconds\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'matched\\|did not match'\n     412\n\n--   3.8절에서 센 그 수다\n--   스캔이 사라진 게 아니다\n\n\n-- 서버 설정도 남는다\n\n$ curl -s localhost:9090/actuator/configprops \\\n    | jq -r '.contexts.application.beans\n             | keys[] | select(test(\"server\"))' | head -3\nserver-org.springframework.boot.autoconfigure.web.ServerProperties\n\n$ curl -s localhost:9090/actuator/configprops \\\n    | jq -r '.contexts.application.beans[\n              \"server-org.springframework.boot.autoconfigure.web.ServerProperties\"\n             ].properties | keys[]' | grep -i tomcat | head -5\ntomcat\n\n$ curl -s localhost:9090/actuator/env \\\n    | jq -r '.propertySources[] | select(.name==\"systemProperties\")' > /dev/null\n\n$ ./gradlew bootRun --args='--server.tomcat.threads.max=50' 2>&1 \\\n    | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   3.2절의 server.xml 이 여기로 옮겨왔다\n--   없어진 게 아니다\n--   7장에서 이 값들을 만진다\n\n\n-- JSP 는 여전히 안 된다\n\n$ java -jar build/libs/app.jar &\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello.jsp\n404\n\n--   3.7절에서 본 그대로다\n--   뒤집는다고 다 풀리진 않는다\n\n\n-- 무엇이 풀리고 무엇이 남았나\n\n$ printf '%-24s %-10s %s\\n' \\\n  '서버 설치'   '풀림'   '의존성이 됨' \\\n  '버전 공유'   '풀림'   '프로젝트마다' \\\n  '혼자 못 뜸'  '풀림'   'java -jar' \\\n  '배포 절차'   '풀림'   '파일 하나' \\\n  '같이 죽음'   '반쯤'   '프로세스는 나뉨' \\\n  '기동 시간'   '남음'   '스캔은 그대로' \\\n  'JSP'         '남음'   '오히려 못 씀'\n\n서버 설치                풀림       의존성이 됨\n버전 공유                풀림       프로젝트마다\n혼자 못 뜸               풀림       java -jar\n배포 절차                풀림       파일 하나\n같이 죽음                반쯤       프로세스는 나뉨\n기동 시간                남음       스캔은 그대로\nJSP                      남음       오히려 못 씀\n\n--   3.10절에서 두 방식을 나란히 띄운다",
+   "note": "**`catalina.jar` 안의 `Tomcat` 클래스에 `setPort` 와 `start` 가 있어 내가 부를 수** 있다.\n\n**프로젝트마다 다른 톰캣(10.1.26 과 9.0.83)이 같은 컴퓨터에서** 돈다.\n\n**의존성 두 줄로 서버를 언더토우로 바꿔도 내 코드는 안** 고쳤다.\n\n**`java -jar` 둘을 띄우면 하나가 죽어도 옆이 살아 있다 — 3.8절에서는 같이** 죽었다.\n\n**그래도 기동 시 조건 평가 412번과 JSP 404 는** 남는다."
+  }
+ ],
+ "recap": [
+  "**화살표를** 뒤집는다.",
+  "**서버도 라이브러리**다.",
+  "**시작점이 내 코드**다.",
+  "**산출물이 하나**다.",
+  "**버전이 내 것**이다.",
+  "**서버를 바꿔** 낀다.",
+  "**프로세스가** 나뉜다.",
+  "**격리는 반쯤**이다.",
+  "**JSP 는 오히려 못** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "톰캣 클래스를 열어 본다.",
+   "done_when": "`start` 메서드를 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 프로젝트에 다른 버전을 쓴다.",
+   "done_when": "로그가 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서버를 언더토우로 바꾼다.",
+   "done_when": "로그가 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JAR 둘을 띄우고 하나를 죽인다.",
+   "done_when": "옆이 사는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "내장 서버의 발상은?",
+   "a": "서버가 애플리케이션을 품던 관계를 뒤집은 것이다."
+  },
+  {
+   "q": "그게 가능한 이유는?",
+   "a": "서버도 결국 클래스패스에 올릴 수 있는 자바 라이브러리다."
+  },
+  {
+   "q": "무엇이 풀리나?",
+   "a": "설치, 버전 공유, 실행 불가 산출물, 배포 절차다."
+  },
+  {
+   "q": "격리는 완전한가?",
+   "a": "프로세스는 나뉘지만 자원은 여전히 공유한다."
+  },
+  {
+   "q": "오히려 못 하게 된 것은?",
+   "a": "JAR 로 패키징한 JSP 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내장 서버",
+   "def": "애플리케이션이 라이브러리로 들고 직접 띄우는 웹 서버."
+  },
+  {
+   "term": "실행 가능한 아카이브",
+   "def": "그 자체로 실행되는 산출물 파일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Jakarta Servlet 6.0 Specification",
+   "url": "https://jakarta.ee/specifications/servlet/6.0/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

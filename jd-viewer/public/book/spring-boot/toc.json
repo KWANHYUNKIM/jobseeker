@@ -165,7 +165,7 @@
           "title": "서버를 라이브러리로",
           "summary": "뒤집으면 무엇이 달라지나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.10",
@@ -173,7 +173,7 @@
           "title": "여기까지 확인",
           "summary": "두 방식을 나란히 띄운다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
