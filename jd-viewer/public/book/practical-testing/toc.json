@@ -277,7 +277,7 @@
           "title": "테스트 픽스처",
           "summary": "given 을 어디에 둘까.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -285,7 +285,7 @@
           "title": "@Transactional 의 함정",
           "summary": "테스트가 롤백되면.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",

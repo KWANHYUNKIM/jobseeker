@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "transactional-trap",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "@Transactional 의 함정",
+ "summary": "테스트가 롤백되면.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "테스트 트랜잭션이 무엇을 바꾸는지 안다.",
+  "무엇이 가려지는지 안다.",
+  "언제 쓰고 언제 안 쓸지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 `@AfterEach` 로 지웠다.** **`@Transactional` 을 붙이면 그게 필요** 없어진다. **대신 넷이 가려진다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 개의 트랜잭션",
+   "ascii": "   two transactions, and which one is real\n\n   without @Transactional on the test\n     [ service tx: read, write, commit ]\n     then the test reads with a new connection\n     what it sees is what production sees\n\n   with @Transactional on the test\n     [ test tx: [ service joins this one ] ... rollback ]\n     the service never commits\n     the test reads its own uncommitted changes",
+   "note": "**서비스가 테스트 트랜잭션에** 참여한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트에 붙이면 무슨 일이 나나",
+   "md": "**스프링이 테스트마다 트랜잭션을 열고 끝에 롤백**한다.\n\n```java\n@SpringBootTest\n@Transactional          // 이 한 줄\nclass OrderServiceTest { }\n```\n\n| | |\n|---|---|\n| `@AfterEach` | **필요 없다** |\n| 데이터 격리 | **자동** |\n| 속도 | **조금 빠르다** |\n\n> **편하다.** **그래서 많이** 쓴다.\n\n**서비스의 트랜잭션이 사라진다.**\n\n> **`@Transactional` 의 기본 전파는 `REQUIRED`** 다(「DB 2편」 5장).\n> **이미 트랜잭션이 있으면 거기 참여**한다.\n>\n> **서비스가 커밋해도 실제로 커밋이 안** 된다. **테스트가 롤백할 때 같이** 사라진다.\n\n**5.3절의 테스트가 무력해진다.**\n\n```java\n// 서비스에서 @Transactional 을 빼도\nassertThat(stockRepository.findAll())\n        .containsExactlyInAnyOrder(tuple(\"001\", 2), tuple(\"002\", 0));\n```\n\n> **테스트 트랜잭션이 롤백해 주니** **서비스에 `@Transactional` 이 없어도** 통과한다.\n>\n> **가장 중요한 검증이 사라진** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "롤백이 가리는 넷",
+   "ascii": "   four things the rollback hides\n\n   a missing @Transactional on the service\n     the test tx covers for it\n\n   lazy loading outside a transaction\n     the test tx keeps the session open\n\n   a constraint violation on flush\n     no commit, no flush, no error\n\n   what other transactions would see\n     nothing is ever committed",
+   "note": "**커밋이 없으면 커밋 때 나는 일도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "가려지는 것들",
+   "md": "**① 서비스의 `@Transactional` 누락**\n\n> **위에서 본 것**이다. **운영에서만** 터진다.\n\n**② 트랜잭션 밖 지연 로딩**\n\n```java\nOrder order = orderRepository.findById(id).get();\norder.getOrderProducts().size();   // 테스트에서는 된다\n```\n\n> **테스트 트랜잭션이 세션을 열어** 둔다.\n> **컨트롤러에서 부르면 `LazyInitializationException`** 이다.\n>\n> **「활용 2편」 6.2절에서 OSIV 를 끄고 겪은 그것**이다.\n\n**③ 커밋 시점의 제약 위반**\n\n> **`flush` 는 커밋 때** 일어난다(「JPA 기본편」 3장).\n> **롤백하면 `flush` 를 안** 한다.\n>\n> **유니크 제약 위반, `not null` 위반이 테스트에서 안** 난다.\n>\n> **`entityManager.flush()` 를 직접 부르면 보이긴** 한다.\n\n**④ 다른 트랜잭션이 보는 것**\n\n> **동시성 테스트를 못** 짠다.\n> **다른 스레드가 커밋 안 된 데이터를 못** 본다.\n>\n> **「활용 2편」 7.3절의 동시 가입 테스트가 그래서 `@Transactional` 없이** 짜여 있다.\n\n**5.2절의 `@DataJpaTest` 는 어떤가**\n\n> **`@Transactional` 이 안에** 들어 있다.\n>\n> **리포지토리 테스트에서는 대개 괜찮다** — **서비스 트랜잭션을 검증할 게** 없다.\n> **다만 `flush` 문제는 그대로**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "언제 쓰고 언제 안 쓰나",
+   "md": "| | `@Transactional` |\n|---|---|\n| **리포지토리 테스트** | **써도 된다** |\n| **서비스 테스트** | **안 쓴다** |\n| **컨트롤러 테스트** | DB 를 안 쓴다 |\n| **동시성 테스트** | **안 쓴다** |\n\n**서비스 테스트는 `@AfterEach` 로** 지운다.\n\n```java\n@AfterEach\nvoid tearDown() {\n    orderProductRepository.deleteAllInBatch();\n    orderRepository.deleteAllInBatch();\n    stockRepository.deleteAllInBatch();\n    productRepository.deleteAllInBatch();\n}\n```\n\n> **순서가** 있다 — **FK 를 참조하는 쪽부터**.\n> **5.9절에서 다룬다.**\n\n**`@Rollback(false)` 로 확인**할 수 있다.\n\n```java\n@Transactional\n@Rollback(false)\n@Test\nvoid test() { }\n```\n\n> **커밋하고 데이터가 남는다.** **디버깅용**이다.\n> **커밋 시점의 오류가 여기서** 보인다.\n>\n> **CI 에 남기면 안 된다** — **데이터가 쌓인다.**\n\n**절충** — **리포지토리는 `@DataJpaTest`, 서비스는 `@SpringBootTest` + `@AfterEach`**\n\n> **이 책의 선택**이다.\n> **서비스 테스트가 느려지는 대신 진짜를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 테스트에 @Transactional 을 붙인다 ---\n\n@SpringBootTest\n@Transactional\nclass OrderServiceTest {\n    // @AfterEach 를 지웠다\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\nBUILD SUCCESSFUL in 6s\n\n#   @AfterEach 없이 통과한다\n#   8초가 6초로 줄었다\n\n#   편하다\n\n# --- 그런데 서비스의 @Transactional 을 빼면 ---\n\npublic OrderResponse createOrder(...) {      // @Transactional 없음\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\n#   통과한다\n\n#   5.3절에서는 이게 빨개졌다\n\n#     Expecting ArrayList:\n#       [(\"001\", 1), (\"002\", 0)]\n\n#   테스트 트랜잭션이 롤백해 줘서 001 이 2 로 남았다\n\n#   가장 중요한 검증이 사라졌다\n\n# --- 롤백을 껐다 켜 보면 ---\n\n@Transactional\n@Rollback(false)\n@Test\nvoid createOrderWithNotEnoughStock() { ... }\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: update stock set product_number=?, quantity=? where id=?\nbinding parameter (2:INTEGER) <- [1]\n\nOrderServiceTest > 재고가 부족하면 ... FAILED\n    Expecting ArrayList:\n      [(\"001\", 1), (\"002\", 0)]\n    to contain exactly in any order:\n      [(\"001\", 2), (\"002\", 0)]\n\n#   커밋하니 드러난다\n\n#   update 가 나가고 001 이 1 이 됐다\n\n# --- 지연 로딩이 가려지는 것 ---\n\n@SpringBootTest\n@Transactional\nclass OrderQueryTest {\n\n    @DisplayName(\"주문을 조회하면 주문 상품도 볼 수 있다\")\n    @Test\n    void findOrder() {\n        // given\n        Long orderId = 저장된_주문_아이디();\n\n        // when\n        Order order = orderRepository.findById(orderId).orElseThrow();\n\n        // then\n        assertThat(order.getOrderProducts()).hasSize(2);\n    }\n}\n\n$ ./gradlew test --tests OrderQueryTest\n\nHibernate: select o1_0.id, ... from orders o1_0 where o1_0.id=?\nHibernate: select op1_0.order_id, ... from order_product op1_0\n           where op1_0.order_id=?\n\nOrderQueryTest > 주문을 조회하면 주문 상품도 볼 수 있다 PASSED\n\n#   지연 로딩이 된다\n\n# --- @Transactional 을 빼면 ---\n\n@SpringBootTest\nclass OrderQueryTest { ... }\n\n$ ./gradlew test --tests OrderQueryTest\n\nHibernate: select o1_0.id, ... from orders o1_0 where o1_0.id=?\n\nOrderQueryTest > 주문을 조회하면 주문 상품도 볼 수 있다 FAILED\n    org.hibernate.LazyInitializationException:\n    failed to lazily initialize a collection of role:\n    Order.orderProducts - no Session\n\n#   프로덕션에서 나는 오류가 여기서 난다\n\n#   「활용 2편」 6.2절의 그 예외다\n\n#   @Transactional 이 이걸 가리고 있었다\n\n# --- flush 가 안 되는 것 ---\n\n@SpringBootTest\n@Transactional\nclass ProductUniqueTest {\n\n    @DisplayName(\"같은 상품 번호는 저장할 수 없다\")\n    @Test\n    void duplicateProductNumber() {\n        productRepository.save(createProduct(\"001\", 4000));\n\n        assertThatThrownBy(() -> productRepository.save(createProduct(\"001\", 4500)))\n                .isInstanceOf(DataIntegrityViolationException.class);\n    }\n}\n\n#   (product_number 에 unique 제약이 있다고 하자)\n\n$ ./gradlew test --tests ProductUniqueTest\n\nProductUniqueTest > 같은 상품 번호는 저장할 수 없다 FAILED\n    java.lang.AssertionError:\n    Expecting code to raise a throwable.\n\n#   예외가 안 난다\n\n#   save 는 영속성 컨텍스트에만 넣고\n#   INSERT 는 flush 때 나가는데 롤백이라 flush 를 안 한다\n\n# --- flush 를 직접 부르면 ---\n\nassertThatThrownBy(() -> {\n    productRepository.save(createProduct(\"001\", 4500));\n    entityManager.flush();\n}).isInstanceOf(DataIntegrityViolationException.class);\n\nHibernate: insert into product (...) values (?,?,?,?,?)\n\nProductUniqueTest > 같은 상품 번호는 저장할 수 없다 PASSED\n\n#   보인다\n\n#   saveAndFlush 를 쓰는 방법도 있다\n\n# --- 이 책의 선택 ---\n\n@DataJpaTest                          # 리포지토리. @Transactional 포함\nclass ProductRepositoryTest { }\n\n@SpringBootTest                       # 서비스. @Transactional 없음\nclass OrderServiceTest {\n    @AfterEach void tearDown() { ... }\n}\n\n$ ./gradlew test\n\n28 tests completed\n\nBUILD SUCCESSFUL in 14s\n\n#   6초가 아니라 8초짜리 서비스 테스트를 쓴다\n\n#   2초를 주고 진짜를 본다\n\n# --- 다음 절에서 ---\n\n#   애노테이션이 무엇을 띄우는지 정리한다",
+   "note": "**`@Transactional` 을 붙이면 `@AfterEach` 없이 통과**하고 **8초가 6초**가 된다.\n\n**서비스의 `@Transactional` 을 빼도** 통과한다. **5.3절에서 빨개지던 게** 사라졌다.\n\n**`@Rollback(false)` 로 커밋하면 `update` 가 나가고 `001` 이 1** 이 된다.\n\n**지연 로딩이 테스트에서는 되고 `@Transactional` 을 빼면 `LazyInitializationException`** 이다.\n\n**유니크 제약 위반이 안 난다** — **롤백이라 `flush` 를 안** 한다."
+  }
+ ],
+ "recap": [
+  "**테스트에 `@Transactional` 을 붙이면 서비스가 거기 참여**한다.",
+  "**서비스가 커밋해도 실제로 커밋이 안** 된다.",
+  "**5.3절의 가장 중요한 검증이** 사라진다.",
+  "**가려지는 넷** — 서비스 트랜잭션 누락, 트랜잭션 밖 지연 로딩, 커밋 시점 제약, 다른 트랜잭션의 시야.",
+  "**`LazyInitializationException` 이 테스트에서 안** 난다.",
+  "**롤백이면 `flush` 를 안 해 유니크 위반이 안** 보인다.",
+  "**`@DataJpaTest` 에 `@Transactional` 이 들어** 있다.",
+  "**서비스 테스트는 `@AfterEach` 로** 지운다.",
+  "**2초를 주고 진짜를** 본다."
+ ],
+ "drills": [
+  {
+   "task": "서비스 테스트에 `@Transactional` 을 붙여 본다.",
+   "done_when": "`@AfterEach` 없이 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "그 상태에서 서비스의 `@Transactional` 을 뺀다.",
+   "done_when": "여전히 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Rollback(false)` 로 돌린다.",
+   "done_when": "커밋되고 검증이 깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지연 로딩 테스트를 `@Transactional` 있이·없이 돌린다.",
+   "done_when": "예외 유무를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트에 `@Transactional` 을 붙이면?",
+   "a": "서비스가 그 트랜잭션에 참여해 실제로 커밋이 안 된다."
+  },
+  {
+   "q": "무엇이 가려지나?",
+   "a": "서비스 트랜잭션 누락, 트랜잭션 밖 지연 로딩, 커밋 시점 제약 위반, 다른 트랜잭션의 시야다."
+  },
+  {
+   "q": "유니크 제약 위반이 왜 안 나나?",
+   "a": "롤백이라 `flush` 를 안 해 `INSERT` 가 안 나간다."
+  },
+  {
+   "q": "확인하는 방법은?",
+   "a": "`@Rollback(false)` 로 커밋해 보거나 `entityManager.flush()` 를 직접 부른다."
+  },
+  {
+   "q": "이 책의 선택은?",
+   "a": "리포지토리는 `@DataJpaTest`, 서비스는 `@SpringBootTest` + `@AfterEach` 다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Testing, Transactions",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
