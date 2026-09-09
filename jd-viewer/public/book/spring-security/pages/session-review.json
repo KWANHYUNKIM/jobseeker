@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "session-review",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "세션 기본값.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여섯 기본값을 안다.",
+  "세션이 생기는 세 경로를 안다.",
+  "무엇을 바꿔야 하는지 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장에서 만진 것을 한 장에** 모은다."
+  },
+  {
+   "type": "figure",
+   "caption": "아무것도 안 썼을 때의 기본값",
+   "ascii": "   the defaults you get without writing anything\n\n   creation policy      IF_REQUIRED\n   fixation strategy    changeSessionId\n   context repository   HttpSessionSecurityContextRepository\n   max sessions         unlimited\n   cookie               JSESSIONID, HttpOnly, Secure only over https\n   server timeout       30 minutes of silence\n\n   four of these six are already the right answer",
+   "note": "**여섯 중 넷은 이미 맞는** 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 바꾸나",
+   "md": "| 상황 | 바꿀 것 | 절 |\n|---|---|---|\n| **토큰 API** | `STATELESS` + `NullRequestCache` | 5.3·3.10 |\n| **한 계정 한 세션** | `maximumSessions` + 이벤트 리스너 | 5.5 |\n| **서버 여러 대** | Spring Session + 공유 레지스트리 | 5.7 |\n| **타임아웃** | `server.servlet.session.timeout` | — |\n| **쿠키 이름** | `server.servlet.session.cookie.name` | — |\n\n**안 바꿔도 되는 것**\n\n> **세션 고정 전략은 기본이** 맞다.\n> **저장소도 웹이면 기본이** 맞다.\n> **`IF_REQUIRED` 도 웹이면** 맞다.\n>\n> **바꿀 이유가 없으면 안 바꾸는 게** 안전하다.\n\n**타임아웃은 시큐리티 밖**이다.\n\n```properties\nserver.servlet.session.timeout=30m\nserver.servlet.session.cookie.http-only=true\nserver.servlet.session.cookie.secure=true\nserver.servlet.session.cookie.same-site=lax\n```\n\n> **시큐리티 설정이 아니라 서블릿 설정**이다.\n> **`same-site` 는 6.4절의 CSRF 와 짝**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세션의 생몰",
+   "ascii": "   where a session is born, read, and dies\n\n   born     an authentication filter saves a context\n            or RequestCache saves a denied request\n            or a controller calls getSession\n\n   read     filter 3, and only if someone asks\n\n   dies     logout, timeout, invalidate, or an expired flag\n\n   nothing else in the security chain creates one",
+   "note": "**시큐리티 체인에서 세션을 만드는 건 이 셋** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "5장에서 본 함정들",
+   "md": "| 함정 | 증상 | 절 |\n|---|---|---|\n| **홀더에만 넣음** | 로그인 후 새로고침하면 풀림 | 5.1 |\n| **실패해도 세션 유지** | 실패 후에도 로그인 상태 | 5.2 |\n| **무상태인데 세션** | `Set-Cookie` 가 나감 | 5.3 |\n| **`NEVER` 인데 저장** | 쿠키는 있는데 로그인 안 됨 | 5.4 |\n| **리스너 누락** | 재로그인이 영영 막힘 | 5.5 |\n| **`equals` 누락** | 동시 세션 제한이 안 걸림 | 5.5 |\n| **엔티티 직렬화** | 클러스터에서 로그인 500 | 5.7 |\n\n> **일곱 중 넷이 \"설정은 맞는데 다른 자리가 어긋난\"** 경우다.\n> **시큐리티만 봐서는 안 보이는 것들**이다.\n\n**아직 갚지 못한 빚**\n\n> **4.8절 표에서 하나도 안** 줄었다.\n> **5장은 인증을 기억하는 방법이었지 막는 방법이** 아니었다.\n>\n> **다음 장이 그 표의 절반을** 지운다 — **API 의 302 와 CSRF** 다.\n\n**한 가지 확인**\n\n> **지금 테스트가 80개**다(5.3절에서 하나 늘었다).\n> **여전히 인가 테스트는 0개**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 기본값을 눈으로 확인한다 ---\n\n@Bean\nSecurityFilterChain chain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .formLogin(withDefaults());\n    return http.build();\n}\n\n#   아무 세션 설정도 안 썼다\n\n#   1) 익명 요청은 세션을 안 만든다\n$ curl -is localhost:8080/login | grep -ci set-cookie\n1\n\n#   (SavedRequest 없이 로그인 화면만)\n$ rm -f x.txt; curl -is -c x.txt localhost:8080/login | grep -i set-cookie\nSet-Cookie: JSESSIONID=A1B2C3; Path=/; HttpOnly\n\n#   생겼다. CSRF 토큰을 담느라 그렇다 (6.5절)\n\n#   2) 로그인하면 ID 가 바뀐다\n$ curl -is -b x.txt -c x.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i set-cookie\nSet-Cookie: JSESSIONID=D4E5F6; Path=/; HttpOnly\n\n#   3) Secure 는 안 붙었다\n$ curl -is -b x.txt -c x.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -ci 'Secure'\n0\n\n#   http 라서다. https 면 붙는다 (6.8절)\n\n#   4) 동시 로그인이 막히지 않는다\n$ curl -s -c y.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ for f in x.txt y.txt; do\n    curl -s -o /dev/null -b $f localhost:8080/orders -w '%{http_code}\\n'\n  done\n200\n200\n\n#   기본은 무제한이다\n\n# --- 타임아웃을 줄여 확인한다 ---\n\nserver.servlet.session.timeout=1m\n\n$ curl -s -o /dev/null -b x.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   (70초 기다린 뒤)\n\n$ curl -s -o /dev/null -b x.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.expired | ...\n\n1.0\n\n#   시큐리티가 아니라 컨테이너가 지웠다\n\n# --- 세션이 몇 개 생기나 한 흐름에서 ---\n\n$ rm -f z.txt\n$ curl -s -c z.txt 'localhost:8080/orders?page=3' -o /dev/null      # 1\n$ TOKEN=$(curl -s -b z.txt -c z.txt localhost:8080/login | grep _csrf | sed '...')\n$ curl -s -b z.txt -c z.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -b z.txt localhost:8080/orders -o /dev/null\n\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created | ...\n\n1.0\n\n#   하나다\n\n#   첫 요청에서 만들고 로그인 때 ID 만 바꿨다\n\n#   changeSessionId 라 세션 객체는 그대로다\n\n#   newSession 이었다면 2개였다\n\n# --- 함정 일곱을 한 번에 검사한다 ---\n\n@Test\nvoid 세션_기본값_점검() throws Exception {\n    MvcResult login = mockMvc.perform(post(\"/login\").with(csrf())\n                    .param(\"username\", \"user@a.com\").param(\"password\", \"1234\"))\n            .andExpect(status().is3xxRedirection())\n            .andReturn();\n\n    MockHttpSession session = (MockHttpSession) login.getRequest().getSession(false);\n\n    assertThat(session).isNotNull();\n    assertThat(session.getAttribute(\"SPRING_SECURITY_CONTEXT\")).isNotNull();\n\n    mockMvc.perform(get(\"/orders\").session(session))\n            .andExpect(status().isOk());\n}\n\n@Test\nvoid api_는_세션을_안_만든다() throws Exception {\n    MvcResult result = mockMvc.perform(get(\"/api/v1/orders\")\n                    .with(httpBasic(\"user@a.com\", \"1234\")))\n            .andExpect(status().isOk())\n            .andReturn();\n\n    assertThat(result.getRequest().getSession(false)).isNull();\n}\n\n$ ./gradlew test\n\n81 tests completed\n\nBUILD SUCCESSFUL\n\n#   하나 더 늘어 81 이다\n\n$ grep -rn \"isForbidden\\|hasRole\\|hasAuthority\" src/test | wc -l\n\n0\n\n#   인가 테스트는 여전히 0이다\n\n# --- 다음 장에서 ---\n\n#   막힌 뒤에 무슨 일이 벌어지는지 본다",
+   "note": "**설정을 하나도 안 썼는데 로그인 화면에서 세션이 생긴다** — **CSRF 토큰 때문**이다(6.5절).\n\n**로그인 시 ID 가 바뀌고 `Secure` 는 `http` 라 안** 붙는다.\n\n**동시 로그인 둘 다 200** 이다 — **기본이 무제한**.\n\n**한 흐름 전체에 세션은 1개**다 — `changeSessionId` 라 객체는 그대로다.\n\n**테스트 81개, 인가 테스트는 여전히 0개**다."
+  }
+ ],
+ "recap": [
+  "**기본값 여섯 중 넷은 이미** 맞다.",
+  "**바꿀 것은 무상태·동시 세션·클러스터·타임아웃 정도**다.",
+  "**타임아웃과 쿠키 속성은 서블릿 설정**이다.",
+  "**세션이 생기는 경로는** 셋이다.",
+  "**읽는 건 3번 필터 하나**다.",
+  "**한 로그인 흐름에 세션은 하나**다.",
+  "**5장의 함정 일곱 중 넷은 다른 자리가** 어긋난 것이다.",
+  "**4.8절의 빚은 하나도 안** 줄었다.",
+  "**테스트 81개, 인가 테스트 0개**다."
+ ],
+ "drills": [
+  {
+   "task": "설정 없이 기본값 여섯을 확인한다.",
+   "done_when": "표를 채웠다.",
+   "minutes": 25
+  },
+  {
+   "task": "타임아웃을 1분으로 줄여 본다.",
+   "done_when": "만료 지표를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "한 로그인 흐름의 세션 수를 센다.",
+   "done_when": "1개인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "함정 일곱을 내 프로젝트에서 점검한다.",
+   "done_when": "해당하는 것을 적었다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 생성 정책과 고정 전략은?",
+   "a": "`IF_REQUIRED` 와 `changeSessionId` 다."
+  },
+  {
+   "q": "세션 타임아웃은 어디 설정인가?",
+   "a": "시큐리티가 아니라 서블릿 컨테이너 설정이다."
+  },
+  {
+   "q": "설정 없이도 로그인 화면에서 세션이 생기는 이유는?",
+   "a": "CSRF 토큰을 세션에 담아서다."
+  },
+  {
+   "q": "한 로그인 흐름에 세션이 몇 개 생기나?",
+   "a": "하나다. `changeSessionId` 는 ID 만 바꾼다."
+  },
+  {
+   "q": "5장에서 4.8절의 빚이 줄었나?",
+   "a": "줄지 않았다. 6장이 절반을 지운다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

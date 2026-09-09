@@ -333,7 +333,7 @@
           "title": "여러 대에서",
           "summary": "Spring Session.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -341,7 +341,7 @@
           "title": "정리",
           "summary": "세션 기본값.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -356,7 +356,7 @@
           "title": "ExceptionTranslationFilter",
           "summary": "401 과 403 을 가르는 자리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -364,7 +364,7 @@
           "title": "EntryPoint 와 AccessDeniedHandler",
           "summary": "누구를 어디로 보내나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",

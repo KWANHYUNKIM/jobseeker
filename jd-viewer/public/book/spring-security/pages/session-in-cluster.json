@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "session-in-cluster",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "여러 대에서",
+ "summary": "Spring Session.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 방법을 비교한다.",
+  "무엇이 바뀌고 무엇이 그대로인지 안다.",
+  "직렬화가 왜 문제가 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.5절의 레지스트리가 JVM 메모리**였다. **서버가 둘이면 셈이** 어긋난다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 대를 견디는 세 방법",
+   "ascii": "   three ways to survive two servers\n\n   sticky sessions\n     the balancer sends one browser to one node, always\n     one node dies, its users are logged out\n\n   session replication\n     every node holds every session\n     memory times the number of nodes\n\n   an external store\n     one place holds them, every node reads it\n     one more thing that can be down",
+   "note": "**셋 다 대가가** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "필터 하나를 앞에 세운다",
+   "md": "```groovy\nimplementation 'org.springframework.session:spring-session-data-redis'\nimplementation 'org.springframework.boot:spring-boot-starter-data-redis'\n```\n\n```properties\nspring.session.store-type=redis\nspring.session.timeout=30m\nspring.data.redis.host=localhost\n```\n\n> **`@EnableRedisHttpSession` 도 있지만 부트가 자동으로** 켠다.\n\n**`SessionRepositoryFilter` 가 요청을** 감싼다.\n\n> **`request.getSession()` 이 톰캣 세션이 아니라 Redis 세션을** 준다.\n> **그 위의 코드는 아무것도 안** 바뀐다.\n>\n> **`HttpSessionSecurityContextRepository` 도 그대로**다.\n> **5.2절에서 본 그 클래스가 계속 `getSession()` 을** 부른다.\n\n**시큐리티 필터보다 앞**이다.\n\n> **`SecurityFilterAutoConfiguration` 의 순서가 `-100`, 세션 필터가 훨씬** 앞이다.\n> **2.2절에서 필터 순서가 왜 중요한지 봤던 그** 얘기다.\n\n**쿠키 이름이 바뀐다.**\n\n> **`JSESSIONID` 가 아니라 `SESSION`** 이다.\n> **값도 Base64 로 인코딩된 UUID**다.\n> **`deleteCookies(\"JSESSIONID\")` 를 적어 뒀다면 이제 안** 맞는다(3.8절)."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 바뀌나",
+   "ascii": "   what Spring Session actually replaces\n\n   SessionRepositoryFilter wraps the request\n     request.getSession() -> a Spring Session, not a Tomcat one\n\n   so nothing above it changes\n     HttpSessionSecurityContextRepository still calls getSession\n     the concurrent session registry can now be shared\n\n   the filter sits before the security chain, order -2147483598",
+   "note": "**위층이 안 바뀌는 게 설계의** 핵심이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "직렬화가 발목을 잡는다",
+   "md": "**세션이 바이트로 나갔다 들어온다.**\n\n> **4.1절에서 `Authentication` 이 `Serializable` 이라고** 했다.\n> **거기 담긴 `principal` 도 직렬화**된다.\n\n**4.6절의 선택이 여기서** 청구된다.\n\n> **엔티티를 `UserDetails` 로 썼다면 엔티티가 Redis 로** 간다.\n> **지연 로딩 프록시가 있으면 직렬화가** 실패한다.\n>\n> ```\n> SerializationException: Cannot serialize;\n>   nested exception is java.io.NotSerializableException:\n>   org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor\n> ```\n>\n> **어댑터를 썼다면 필요한 값만** 간다.\n\n**클래스가 바뀌면 못 읽는다.**\n\n> **`serialVersionUID` 가 안 맞으면 배포 직후 전원** 로그아웃이다.\n> **JSON 직렬화로 바꾸면 완화**된다.\n>\n> ```java\n> @Bean\n> RedisSerializer<Object> springSessionDefaultRedisSerializer() {\n>     return new GenericJackson2JsonRedisSerializer(\n>             new ObjectMapper().registerModules(\n>                     SecurityJackson2Modules.getModules(\n>                             getClass().getClassLoader())));\n> }\n> ```\n>\n> **시큐리티 객체는 전용 모듈이** 필요하다.\n\n**동시 세션 제어도 같이** 고쳐야 한다.\n\n> **`SpringSessionBackedSessionRegistry` 로 바꾸면 여러 대에서 센다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 두 대를 띄운다 ---\n\n$ SERVER_PORT=8080 ./gradlew bootRun &\n$ SERVER_PORT=8081 ./gradlew bootRun &\n\n#   (Redis 없이)\n\n$ curl -is -c c.txt -X POST localhost:8080/login -d \"...\" | grep -i set-cookie\nSet-Cookie: JSESSIONID=9D77AB31; Path=/; HttpOnly\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n$ curl -s -o /dev/null -b c.txt localhost:8081/orders -w '%{http_code}\\n'\n302\n\n#   8081 은 이 세션을 모른다\n\n# --- Redis 를 붙인다 ---\n\n$ redis-server --port 6379 &\n\nspring.session.store-type=redis\n\n$ curl -is -c c2.txt -X POST localhost:8080/login -d \"...\" | grep -i set-cookie\n\nSet-Cookie: SESSION=NGQyM2VmMDgtN2ExYy00YjM5LWE4ZjItMWM4ZTNi; Path=/; HttpOnly\n\n#   이름이 SESSION 이다\n\n$ curl -s -o /dev/null -b c2.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n$ curl -s -o /dev/null -b c2.txt localhost:8081/orders -w '%{http_code}\\n'\n200\n\n#   다른 서버에서도 된다\n\n# --- Redis 안을 본다 ---\n\n$ redis-cli keys 'spring:session:*'\n\n1) \"spring:session:sessions:4d23ef08-7a1c-4b39-a8f2-1c8e3b\"\n2) \"spring:session:sessions:expires:4d23ef08-7a1c-4b39-a8f2-1c8e3b\"\n3) \"spring:session:expirations:1789012800000\"\n\n$ redis-cli hkeys 'spring:session:sessions:4d23ef08-7a1c-4b39-a8f2-1c8e3b'\n\n1) \"creationTime\"\n2) \"lastAccessedTime\"\n3) \"maxInactiveInterval\"\n4) \"sessionAttr:SPRING_SECURITY_CONTEXT\"\n\n#   5.1절에서 본 그 속성이 여기 있다\n\n$ redis-cli ttl 'spring:session:sessions:expires:4d23ef08-...'\n\n(integer) 1795\n\n#   30분에서 줄고 있다\n\n# --- 엔티티를 담아 본다 ---\n\n@Entity\npublic class Member implements UserDetails {\n    @OneToMany(fetch = FetchType.LAZY)\n    private List<MemberRole> roles;\n}\n\n$ curl -is -c c3.txt -X POST localhost:8080/login -d \"...\"\n\nHTTP/1.1 500\n\norg.springframework.data.redis.serializer.SerializationException:\n  Cannot serialize; nested exception is\n  java.io.NotSerializableException:\n  org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor\n\n#   로그인이 아예 안 된다\n\n#   4.6절에서 어댑터를 쓰라고 한 이유다\n\n#   어댑터로 바꾸면\n\npublic class CustomUserDetails implements UserDetails, Serializable {\n    private final String username;\n    private final String password;\n    private final List<GrantedAuthority> authorities;\n}\n\n$ curl -is -c c3.txt -X POST localhost:8080/login -d \"...\" | head -1\n\nHTTP/1.1 302\n\n#   된다\n\n# --- 배포로 클래스가 바뀌면 ---\n\n#   (필드를 하나 추가하고 재배포)\n\npublic class CustomUserDetails implements UserDetails, Serializable {\n    private final String nickname;      // 새 필드\n}\n\n$ curl -s -o /dev/null -b c3.txt localhost:8080/orders -w '%{http_code}\\n'\n\n302\n\nWARN Failed to deserialize session attribute\njava.io.InvalidClassException: CustomUserDetails; local class\n  incompatible: stream classdesc serialVersionUID = 7382919...,\n  local class serialVersionUID = 1029384...\n\n#   배포하자 전원 로그아웃이다\n\n#   serialVersionUID 를 고정하거나 JSON 으로 바꾼다\n\n# --- 동시 세션 제어를 고친다 ---\n\n@Bean\nSpringSessionBackedSessionRegistry<?> sessionRegistry(\n        FindByIndexNameSessionRepository<?> repository) {\n    return new SpringSessionBackedSessionRegistry<>(repository);\n}\n\nhttp.sessionManagement(s -> s\n        .maximumSessions(1)\n        .sessionRegistry(sessionRegistry));\n\n#   8080 에서 로그인\n$ curl -s -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n#   8081 에서 로그인\n$ curl -s -c b.txt -X POST localhost:8081/login -d \"...\" -o /dev/null\n\n$ curl -s -o /dev/null -b a.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   다른 서버의 로그인이 이쪽을 만료시켰다\n\n#   메모리 레지스트리였다면 둘 다 200 이었다\n\n$ redis-cli keys 'spring:session:index:*'\n\n1) \"spring:session:index:...PRINCIPAL_NAME_INDEX_NAME:user@a.com\"\n\n#   사람 이름으로 찾을 수 있게 색인을 만들어 둔다\n\n# --- 다음 절에서 ---\n\n#   5장의 기본값을 한 장으로 모은다",
+   "note": "**Redis 없이 8081 은 302, 붙이면 200** 이다. **쿠키 이름이 `JSESSIONID` 에서 `SESSION`** 으로 바뀐다.\n\n**Redis 해시에 `sessionAttr:SPRING_SECURITY_CONTEXT` 가 그대로** 들어 있다.\n\n**엔티티를 `UserDetails` 로 쓰면 `ByteBuddyInterceptor` 직렬화 실패로 로그인이 500** 이다.\n\n**클래스가 바뀌면 `InvalidClassException` 으로 배포 즉시 전원** 로그아웃이다.\n\n**`SpringSessionBackedSessionRegistry` 로 바꾸니 다른 서버의 로그인이 이쪽을** 만료시켰다."
+  }
+ ],
+ "recap": [
+  "**메모리 레지스트리는 서버마다 따로** 센다.",
+  "**고정 세션·복제·외부 저장소 셋 다 대가가** 있다.",
+  "**Spring Session 은 필터 하나로 `getSession()` 을** 바꿔치기한다.",
+  "**그 위 코드는 안** 바뀐다.",
+  "**쿠키 이름이 `SESSION` 이** 된다.",
+  "**세션 내용이 직렬화돼** 나간다.",
+  "**엔티티를 담으면 프록시 때문에** 터진다.",
+  "**클래스가 바뀌면 배포 즉시 전원** 로그아웃이다.",
+  "**`SpringSessionBackedSessionRegistry` 로 동시 세션 제어가** 산다."
+ ],
+ "drills": [
+  {
+   "task": "두 포트로 띄우고 세션을 시험한다.",
+   "done_when": "다른 쪽이 302 인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "Redis 를 붙인다.",
+   "done_when": "양쪽 다 200 인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "Redis 안의 키를 본다.",
+   "done_when": "컨텍스트 속성을 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "동시 세션 제어를 공유 레지스트리로 바꾼다.",
+   "done_when": "다른 서버 로그인이 만료시키는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Spring Session 이 바꾸는 것은?",
+   "a": "`request.getSession()` 이 돌려주는 세션 구현이다."
+  },
+  {
+   "q": "그 위의 시큐리티 코드는 바뀌나?",
+   "a": "안 바뀐다. 같은 서블릿 API 를 쓴다."
+  },
+  {
+   "q": "엔티티를 `UserDetails` 로 쓰면?",
+   "a": "지연 로딩 프록시가 직렬화되지 않아 실패한다."
+  },
+  {
+   "q": "배포 후 전원 로그아웃의 원인은?",
+   "a": "직렬화 클래스가 바뀌어 `InvalidClassException` 이 난 것이다."
+  },
+  {
+   "q": "여러 대에서 동시 세션 제어를 하려면?",
+   "a": "`SpringSessionBackedSessionRegistry` 를 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SessionRepositoryFilter",
+   "def": "요청을 감싸 `getSession()` 이 외부 저장소 세션을 돌려주게 만드는 Spring Session 의 필터."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Session — Reference",
+   "url": "https://docs.spring.io/spring-session/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
