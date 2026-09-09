@@ -1,0 +1,125 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-v2",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "V2 — DTO 로 변환",
+ "summary": "엔티티가 안 나간다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "응답 DTO 로 바꾼다.",
+  "무엇이 해결되고 무엇이 남는지 가른다.",
+  "엔티티를 다시 깨끗하게 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 못 박은 JSON 을 처음으로 정확히** 만든다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderSimpleApiController — V2",
+   "code": "@GetMapping(\"/api/v2/simple-orders\")\npublic Result ordersV2() {\n    List<Order> orders = orderRepository.findAllByString(new OrderSearch());\n\n    List<SimpleOrderDto> result = orders.stream()\n            .map(SimpleOrderDto::new)\n            .toList();\n\n    return new Result(result);\n}\n\n@Data\nstatic class SimpleOrderDto {\n    private Long orderId;\n    private String name;\n    private LocalDateTime orderDate;\n    private OrderStatus orderStatus;\n    private Address address;\n\n    public SimpleOrderDto(Order order) {\n        orderId = order.getId();\n        name = order.getMember().getName();          // LAZY 초기화\n        orderDate = order.getOrderDate();\n        orderStatus = order.getStatus();\n        address = order.getDelivery().getAddress();  // LAZY 초기화\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "바뀐 것과 안 바뀐 것",
+   "ascii": "   what changed and what did not\n\n   changed\n     the wire now carries SimpleOrderDto\n     four fields, no cycles, no proxies\n     @JsonIgnore removed from three entities\n\n   not changed\n     the repository still returns List<Order>\n     getMember().getName() still breaks a proxy\n     the query count",
+   "note": "**쿼리 개수는 그대로**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "해결된 것",
+   "md": "| 4.1·4.2절의 문제 | V2 에서 |\n|---|---|\n| **무한 재귀** | DTO 에 순환이 없다 |\n| **프록시 직렬화** | DTO 에 프록시가 없다 |\n| **`@JsonIgnore` 세 개** | **전부 지운다** |\n| **하이버네이트 모듈** | 필요 없다 |\n| **강제 초기화** | 생성자가 대신한다 |\n| **재고·ISBN 노출** | 네 필드만 |\n| **`totalPrice` 거짓** | 필드가 없다 |\n| **최상위 배열** | `Result` 로 감쌌다 |\n\n**엔티티가 다시 깨끗**해졌다.\n\n```java\n@Entity\npublic class Member {\n    @OneToMany(mappedBy = \"member\")   // @JsonIgnore 없음\n    private List<Order> orders = new ArrayList<>();\n}\n```\n\n> **2.6절에서 지웠던 상태로** 돌아왔다.\n>\n> **4.1절에서 붙였던 셋이 전부 불필요**해졌다. **원인을 없애면 처방이 필요 없다.**\n\n**DTO 생성자가 `Order` 를 받는** 것에 주의한다.\n\n```java\npublic SimpleOrderDto(Order order) { ... }\n```\n\n> **DTO 가 엔티티를 의존**한다. **이건 괜찮다.**\n>\n> **금지된 건 반대 방향**이다 — **엔티티가 DTO 를** 알면 안 된다.\n>\n> **그리고 DTO 가 엔티티를 \"품는\" 것과도 다르다**(2.6절). **필드로 들고 있으면 나가고**, **생성자에서 읽고 버리면 안 나간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 해결된 것",
+   "md": "**쿼리 개수가 안 줄었다.**\n\n```\nV1  쿼리 5\nV2  쿼리 5\n```\n\n**리포지토리가 그대로**라서다.\n\n```java\nList<Order> orders = orderRepository.findAllByString(new OrderSearch());\n```\n\n> **`Order` 를 다 가져온다.** **`member` 와 `delivery` 는 프록시**다.\n>\n> **DTO 생성자가 `getName()` 과 `getAddress()` 를 부르면서 하나씩** 깬다.\n>\n> **4.2절의 강제 초기화와 같은 일**이다. **자리만 옮겼다.**\n\n**그래서 2.8절의 관찰이 여기서 확인**된다.\n\n| | 회원 목록 | 주문 목록 |\n|---|---|---|\n| DTO 전 | 17 | 5 |\n| DTO 후 | **1** | **5** |\n\n> **회원은 DTO 가 프록시를 안 건드려서 줄었다.**\n> **주문은 DTO 가 프록시를 건드려야** 한다. **주문자 이름이 필요하니까.**\n>\n> **DTO 는 \"무엇을 내보낼지\" 를 정할 뿐 \"어떻게 가져올지\" 를 안** 정한다.\n\n**다음 절의 주제**가 그것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V2 ---\n\nGET /api/v2/simple-orders\n\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n\n#   (SimpleOrderDto 생성자: order.getMember().getName())\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0 where m1_0.member_id=?\n#   binding parameter (1:BIGINT) <- [1]\n\n#   (order.getDelivery().getAddress())\n\n#   Hibernate: select d1_0.delivery_id, d1_0.city, d1_0.street,\n#              d1_0.zipcode, d1_0.status from delivery d1_0\n#              where d1_0.delivery_id=?\n#   binding parameter (1:BIGINT) <- [4]\n\n#   (두 번째 주문)\n\n#   Hibernate: select ... from member m1_0 where m1_0.member_id=?\n#   binding parameter (1:BIGINT) <- [8]\n\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   binding parameter (1:BIGINT) <- [11]\n\n#   Session Metrics {\n#       5 JDBC statements were executed\n#       6 entities were loaded\n#   }\n\n#   200 OK\n#   {\n#     \"data\": [\n#       {\"orderId\": 4,\n#        \"name\": \"userA\",\n#        \"orderDate\": \"2026-09-09T15:12:03.331\",\n#        \"orderStatus\": \"ORDER\",\n#        \"address\": {\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"}},\n#       {\"orderId\": 11,\n#        \"name\": \"userB\",\n#        \"orderDate\": \"2026-09-09T15:12:03.402\",\n#        \"orderStatus\": \"ORDER\",\n#        \"address\": {\"city\":\"진주\",\"street\":\"2\",\"zipcode\":\"2222\"}}\n#     ]\n#   }\n\n#   3.4절에서 못 박은 JSON 과 정확히 같다\n\n# --- V1 과 나란히 ---\n\n#            쿼리   바이트   응답\n#   V1        5      612    엔티티. totalPrice 가 거짓\n#   V2        5      281    DTO. 3.4절의 계약\n\n#   쿼리는 같고 바이트는 절반 이하다\n\n# --- 엔티티를 확인 ---\n\n@Entity\npublic class Member {\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders = new ArrayList<>();\n}\n\n@Entity\npublic class Delivery {\n    @OneToOne(mappedBy = \"delivery\", fetch = LAZY)\n    private Order order;\n}\n\n@Entity\npublic class OrderItem {\n    @ManyToOne(fetch = LAZY)\n    private Order order;\n}\n\n#   @JsonIgnore 가 하나도 없다\n#   4.1절에서 붙인 셋을 전부 지웠다\n\n# --- 쿼리가 왜 그대로인지 ---\n\nList<Order> orders = orderRepository.findAllByString(new OrderSearch());\n\n#   -> select ... from orders          1개\n\nnew SimpleOrderDto(order)\n  order.getMember().getName()          프록시를 깬다\n  order.getDelivery().getAddress()     프록시를 깬다\n\n#   주문 2건 x 2 = 4개\n\n#   1 + 4 = 5\n\n#   주문이 10건이면 1 + 20 = 21\n#   100건이면 1 + 200 = 201\n\n# --- 다음 절에서 ---\n\n#   이 증가를 이름 붙여 센다",
+   "note": "**쿼리 5개**다. **V1 과 같다.**\n\n**응답이 3.4절에서 못 박은 JSON 과 정확히** 같다. **바이트는 612 에서 281 로** 줄었다.\n\n**엔티티에 `@JsonIgnore` 가 하나도 없다.** **4.1절에서 붙인 셋을 전부** 지웠다.\n\n**쿼리가 안 준 이유가 마지막에** 있다 — **`1 + 주문수×2`** 다. **100건이면 201개**다.\n\n**다음 절에서 이 증가에 이름을 붙인다.**"
+  }
+ ],
+ "recap": [
+  "**응답 DTO 로 3.4절의 JSON 을 정확히** 만든다.",
+  "**재귀·프록시·과다 노출·거짓 값이 한 번에** 사라진다.",
+  "**`@JsonIgnore` 셋을 전부 지운다** — 원인을 없애면 처방이 필요 없다.",
+  "**DTO 가 엔티티를 의존하는 건 괜찮다** — 반대가 금지다.",
+  "**생성자에서 읽고 버리면 안 나간다** — 필드로 들면 나간다.",
+  "**쿼리 개수는 안 줄었다** — 리포지토리가 그대로다.",
+  "**DTO 생성자가 프록시를 하나씩** 깬다.",
+  "**회원은 프록시를 안 건드려 1개가 됐고 주문은 건드려야** 한다.",
+  "**DTO 는 무엇을 내보낼지만 정한다** — 어떻게 가져올지는 안 정한다."
+ ],
+ "drills": [
+  {
+   "task": "V2 를 만들고 응답을 3.4절과 비교한다.",
+   "done_when": "정확히 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@JsonIgnore` 셋을 지운다.",
+   "done_when": "V2 가 그대로 도는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "V1 과 V2 의 응답 크기를 잰다.",
+   "done_when": "612 와 281 정도의 차이를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿼리 5개가 어디서 왔는지 센다.",
+   "done_when": "1 + 2×2 로 설명했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "V2 가 해결한 것은?",
+   "a": "재귀, 프록시 직렬화, 과다 노출, 거짓 `totalPrice`, 최상위 배열이다."
+  },
+  {
+   "q": "`@JsonIgnore` 를 왜 지울 수 있나?",
+   "a": "엔티티가 응답에 안 나가서 순환을 끊을 이유가 없다."
+  },
+  {
+   "q": "DTO 가 엔티티를 의존해도 되나?",
+   "a": "된다. 반대로 엔티티가 DTO 를 알면 안 된다."
+  },
+  {
+   "q": "쿼리가 왜 안 줄었나?",
+   "a": "리포지토리가 여전히 `Order` 만 가져오고 DTO 생성자가 프록시를 깬다."
+  },
+  {
+   "q": "주문 100건이면 쿼리가 몇 개인가?",
+   "a": "1 + 200 = 201 개다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  }
+ ]
+}

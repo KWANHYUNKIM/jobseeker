@@ -1,0 +1,136 @@
+{
+ "book": "jpa-app-2",
+ "id": "simple-v1",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "간단한 주문 조회 V1",
+ "summary": "엔티티를 직접 노출한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "주문 조회 API 를 가장 단순하게 만든다.",
+  "2.5절보다 나쁜 이유를 안다.",
+  "세 개의 순환을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.5절에서 회원으로 한 번 겪었다.** **주문은 더 심하다** — **순환이 셋**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "OrderSimpleApiController — V1",
+   "code": "@RestController\n@RequiredArgsConstructor\npublic class OrderSimpleApiController {\n\n    private final OrderRepository orderRepository;\n\n    @GetMapping(\"/api/v1/simple-orders\")\n    public List<Order> ordersV1() {\n        return orderRepository.findAllByString(new OrderSearch());\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "V1 이 잭슨에게 넘기는 그래프",
+   "ascii": "   the graph v1 hands to jackson\n\n   Order\n     member    -> Member   -> orders -> Order -> ...   cycle\n     delivery  -> Delivery -> order  -> Order -> ...   cycle\n     orderItems-> OrderItem-> order  -> Order -> ...   cycle\n                            -> item   -> Item\n\n   three cycles out of one entity",
+   "note": "**엔티티 하나에서 순환이 셋**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "회원보다 나쁜 이유",
+   "md": "**2.5절의 `Member`**\n\n```\nMember -> orders -> Order -> member -> ...\n```\n\n> **순환 하나**다. **`Order.member` 에 `@JsonIgnore` 를 붙이면** 끊긴다.\n\n**여기의 `Order`**\n\n| 필드 | 순환 |\n|---|---|\n| `member` | `Member.orders` 로 돌아온다 |\n| `delivery` | `Delivery.order` 로 돌아온다 |\n| `orderItems` | `OrderItem.order` 로 돌아온다 |\n\n> **`@JsonIgnore` 를 세 군데** 붙여야 한다.\n>\n> ```java\n> @JsonIgnore private List<Order> orders;      // Member\n> @JsonIgnore private Order order;             // Delivery\n> @JsonIgnore private Order order;             // OrderItem\n> ```\n>\n> **엔티티 세 개가 API 사정을 알게** 된다.\n\n**그리고 2.6절에서 지웠던 걸 다시 붙이는** 셈이다.\n\n> **2.6절에서 `Order.member` 의 `@JsonIgnore` 를 지웠다.** **\"4.1절에서 `member` 가 필요하다\" 고** 했다.\n>\n> **지금 필요한 게 맞는데**, **`Member.orders` 쪽에 붙여야** 한다. **방향이 반대**다.\n>\n> **양방향 중 어느 쪽을 끊을지가 API 마다** 다르다. **애노테이션은 하나**다."
+  },
+  {
+   "type": "figure",
+   "caption": "지연 로딩 필드에 실제로 들어 있는 것",
+   "ascii": "   what is actually in the field before anyone touches it\n\n   order.member\n     not a Member\n     a Member$HibernateProxy$8fk3lq\n       handler -> ByteBuddyInterceptor\n         session, entity id, uninitialized\n\n   jackson asks: how do i serialize ByteBuddyInterceptor",
+   "note": "**`Member` 가 아니라 프록시**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "순환을 다 끊어도 남는 것",
+   "md": "**`@JsonIgnore` 셋을 붙이면 재귀는** 멎는다. **그런데 `500` 이 안 없어진다.**\n\n```\nNo serializer found for class\n  org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor\n```\n\n**`order.member` 가 `Member` 가 아니기** 때문이다.\n\n```java\n@ManyToOne(fetch = LAZY)\nprivate Member member;\n```\n\n> **「JPA 기본편」 8.2절**에서 본 것이다. **하이버네이트가 `Member` 를 상속한 가짜 객체를** 넣어 둔다.\n>\n> **`getName()` 을 부르면 그때 쿼리가** 나간다. **아무도 안 부르면 가짜 그대로**다.\n\n**잭슨은 그 가짜를 직렬화하려 한다.**\n\n> **`Member$HibernateProxy$8fk3lq` 라는 클래스**다.\n> **필드로 `handler` 가 있고 그 안이 `ByteBuddyInterceptor`** 다.\n>\n> **잭슨은 그게 뭔지 모른다.**\n\n**2.5절에서는 왜 안 났나**\n\n> **`Member` 를 조회했고 `Member` 는 프록시가 아니었다.**\n> **`orders` 는 컬렉션이라 `PersistentBag` 이고**, **잭슨이 `List` 로 취급해 그냥 돌았다.**\n>\n> **여기서는 `order.member` 자체가 프록시**다. **`ManyToOne` 이라 그렇다.**\n>\n> **`OneToMany` 와 `ManyToOne` 의 프록시가 다르게** 걸린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 그대로 부르면 ---\n\nGET /api/v1/simple-orders\n\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0 where m1_0.member_id=?\n#   binding parameter (1:BIGINT) <- [1]\n\n#   Hibernate: select o1_0.member_id, o1_0.order_id, ... from orders o1_0\n#              where o1_0.member_id=?\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   Could not write JSON: Infinite recursion (StackOverflowError)\n#     (through reference chain:\n#        java.util.ArrayList[0]\n#        ->jpabook.jpashop.domain.Order[\"member\"]\n#        ->jpabook.jpashop.domain.Member[\"orders\"]\n#        ->org.hibernate.collection.spi.PersistentBag[0]\n#        ->jpabook.jpashop.domain.Order[\"member\"]\n#        -> ... )\n\n#   2.5절과 같은 오류인데 시작점이 다르다\n#   거기는 Member[\"orders\"], 여기는 Order[\"member\"]\n\n# --- @JsonIgnore 를 세 군데 붙이면 ---\n\n#   Member.orders      @JsonIgnore\n#   Delivery.order     @JsonIgnore\n#   OrderItem.order    @JsonIgnore\n\nGET /api/v1/simple-orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   Type definition error: [simple type, class\n#     org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor]\n#   No serializer found for class ByteBuddyInterceptor and no properties\n#     discovered to create BeanSerializer\n#     (through reference chain:\n#        java.util.ArrayList[0]\n#        ->jpabook.jpashop.domain.Order[\"member\"]\n#        ->jpabook.jpashop.domain.Member$HibernateProxy$8fk3lq[\"handler\"])\n\n#   재귀는 멎었는데 프록시에서 막혔다\n\n#   쿼리가 3 -> 1 로 줄었다\n#   재귀를 안 도니 member 를 안 깨서다\n\n# --- 필드에 뭐가 들었는지 확인 ---\n\nOrder order = orderRepository.findAllByString(new OrderSearch()).get(0);\nSystem.out.println(order.getMember().getClass());\n\n#   class jpabook.jpashop.domain.Member$HibernateProxy$8fk3lq\n\nSystem.out.println(Hibernate.isInitialized(order.getMember()));\n\n#   false\n\norder.getMember().getName();\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?\n\nSystem.out.println(Hibernate.isInitialized(order.getMember()));\n\n#   true\n\n#   부르는 순간 쿼리가 나간다\n\n# --- 정리 ---\n\n#   순환 3개를 @JsonIgnore 로 끊었다\n#   그래도 500 이다. 프록시가 남아서다\n\n#   엔티티 3개에 애노테이션을 붙였는데 아직도 응답이 없다\n\n# --- 다음 절에서 ---\n\n#   프록시를 어떻게든 직렬화해 본다\n#   되기는 되는데, 그게 답이 아니다",
+   "note": "**그대로 부르면 쿼리 3개에 `Infinite recursion`** 이다. **2.5절과 같은 오류인데 시작점이 `Order[\"member\"]`** 다.\n\n**`@JsonIgnore` 를 세 군데 붙이면 쿼리가 1개로** 준다 — **재귀를 안 도니 `member` 를 안 깨서**다.\n\n**그래도 `500`** 이다. **`ByteBuddyInterceptor` 에 시리얼라이저가** 없다.\n\n**`order.getMember().getClass()` 가 `Member$HibernateProxy$8fk3lq`** 다. **`isInitialized` 가 `false` 이고 `getName()` 을 부르면 쿼리가** 나간다.\n\n**엔티티 셋에 애노테이션을 붙였는데 아직 응답이 없다.**"
+  }
+ ],
+ "recap": [
+  "**`Order` 는 순환이 셋**이다 — `member`·`delivery`·`orderItems`.",
+  "**`@JsonIgnore` 를 엔티티 세 개에** 붙여야 한다.",
+  "**2.6절에서 지운 것을 반대 방향으로 다시** 붙이는 셈이다.",
+  "**양방향 중 어느 쪽을 끊을지가 API 마다** 다르다.",
+  "**재귀를 끊어도 `ByteBuddyInterceptor` 로 500** 이다.",
+  "**`order.member` 는 `Member` 가 아니라 프록시**다.",
+  "**`Hibernate.isInitialized` 로 확인**할 수 있다.",
+  "**부르는 순간 쿼리가 나간다.**",
+  "**`ManyToOne` 과 `OneToMany` 의 프록시가 다르게** 걸린다."
+ ],
+ "drills": [
+  {
+   "task": "V1 을 그대로 부른다.",
+   "done_when": "재귀 500 과 참조 체인을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@JsonIgnore` 셋을 붙인다.",
+   "done_when": "`ByteBuddyInterceptor` 500 과 쿼리 1개를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`order.getMember().getClass()` 를 출력한다.",
+   "done_when": "프록시 클래스 이름을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Hibernate.isInitialized` 를 호출 전후로 찍는다.",
+   "done_when": "`false` → `true` 를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Order` 의 순환이 몇 개인가?",
+   "a": "셋이다. `member`, `delivery`, `orderItems`."
+  },
+  {
+   "q": "`@JsonIgnore` 를 붙이면 왜 쿼리가 주나?",
+   "a": "재귀를 안 돌아 `member` 프록시를 초기화하지 않아서다."
+  },
+  {
+   "q": "재귀를 끊어도 왜 500 인가?",
+   "a": "`order.member` 가 프록시고 잭슨이 `ByteBuddyInterceptor` 를 직렬화 못 한다."
+  },
+  {
+   "q": "2.5절에서는 왜 이 오류가 안 났나?",
+   "a": "`Member` 자체는 프록시가 아니었고 `orders` 는 컬렉션이라 `List` 로 취급됐다."
+  },
+  {
+   "q": "프록시 초기화 여부를 어떻게 확인하나?",
+   "a": "`Hibernate.isInitialized(entity)` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HibernateProxy",
+   "def": "하이버네이트가 지연 로딩을 위해 엔티티를 상속해 만든 가짜 객체. 실제 값을 부를 때 초기화된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  }
+ ]
+}

@@ -208,7 +208,7 @@
           "title": "간단한 주문 조회 V1",
           "summary": "엔티티를 직접 노출한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -216,7 +216,7 @@
           "title": "프록시와 JSON",
           "summary": "무한 재귀와 프록시 직렬화.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -224,7 +224,7 @@
           "title": "V2 — DTO 로 변환",
           "summary": "엔티티가 안 나간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
