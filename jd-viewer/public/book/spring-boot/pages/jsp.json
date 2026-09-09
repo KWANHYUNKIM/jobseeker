@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "jsp",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "JSP 와 서블릿",
+ "summary": "왜 서버가 필요했나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "변환을 본다.",
+  "생성된 소스를 연다.",
+  "JAR 로 못 가는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.6절에서 서블릿 목록에 `jsp` 가** 있었다. **그게 무엇인지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "JSP 한 장이 겪는 일",
+   "ascii": "   what happens to a jsp file, the first time it is asked for\n\n   the container reads it\n   turns it into a servlet source file\n   compiles that source\n   and from then on it is just another servlet\n\n   so the first request pays for a compile, and the rest do not",
+   "note": "**첫 요청이 컴파일 값을 치르고 나머지는 안** 치른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JSP 는 결국 서블릿이 된다",
+   "md": "**HTML 처럼** 생겼다.\n\n> **안에 자바를 섞어** 썼다.\n> **서버가 그걸** 뒤집는다.\n> **서블릿 소스로** 바꾼다.\n\n**컴파일해서** 돈다.\n\n> **`work` 폴더에 소스가** 생긴다.\n> **아래에서 그 파일을** 연다.\n> **3.3절의 생명주기를 그대로** 탄다.\n\n**첫 요청이** 느리다.\n\n> **그때 변환하고 컴파일**한다.\n> **3.3절의 첫 요청 지연과 다른** 이유다.\n> **아래에서 시간을** 잰다.\n\n**엔진이 서버에** 있다.\n\n> **내 WAR 에 없**다.\n> **3.2절의 `lib` 에 있는** 것이다.\n> **그래서 JAR 로 못** 간다."
+  },
+  {
+   "type": "figure",
+   "caption": "서버가 필요했던 이유 셋",
+   "ascii": "   why the server had to be there\n\n   the jsp engine   lives in the server, not in your war\n   the compiler     needs a jdk, not just a jre\n   the work folder  is where the generated sources land\n\n   none of those three can be packed into a jar",
+   "note": "**셋 다 JAR 안에 못 넣는** 것들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부트 JAR 에서는 JSP 가 안 된다",
+   "md": "**공식 제약**이다.\n\n> **JAR 로 패키징하면 안** 된다.\n> **문서에 그렇게 적혀** 있다.\n> **아래에서 그 결과를** 본다.\n\n**JAR 안 경로를 못** 읽는다.\n\n> **엔진이 파일 시스템을** 본다.\n> **4.5절의 그 제약과 같은 뿌리**다.\n> **WAR 면 폴더로 풀려** 있다.\n\n**그래서 템플릿 엔진으로** 갔다.\n\n> **타임리프는 그냥 리소스**다.\n> **④ 2장에서 쓴** 그것이다.\n> **JAR 안에서도** 읽힌다.\n\n**WAR 로 만들면 되긴** 한다.\n\n> **3.4절의 `bootWar`** 다.\n> **서버가 여전히** 필요하다.\n> **3.8절에서 그 값을** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- JSP 를 하나 만든다\n\n<%-- src/main/webapp/hello.jsp --%>\n<%@ page contentType=\"text/html;charset=UTF-8\" %>\n<html>\n<body>\n<h1>JSP</h1>\n<p>지금: <%= java.time.LocalTime.now() %></p>\n<p>스레드: <%= Thread.currentThread().getName() %></p>\n</body>\n</html>\n\n$ wc -l src/main/webapp/hello.jsp\n       9\n\n\n-- 배포하고 부른다\n\n$ ./gradlew war -q\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/\n$ sleep 4\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/hello.jsp\n0.612\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/hello.jsp\n0.004\n\n--   첫 요청이 0.612 초다\n--   그때 변환하고 컴파일했다\n\n\n-- 응답을 본다\n\n$ curl -s localhost:8080/app/hello.jsp\n<html>\n<body>\n<h1>JSP</h1>\n<p>지금: 05:14:31.204</p>\n<p>스레드: http-nio-8080-exec-3</p>\n</body>\n</html>\n\n--   자바가 실행된 결과가 왔다\n--   스레드가 3.3절의 그것이다\n\n\n-- 생성된 소스를 연다\n\n$ find ~/apache-tomcat-10.1.26/work -name 'hello_jsp.java'\n/Users/kwanhyun/apache-tomcat-10.1.26/work/Catalina/localhost/app/\n  org/apache/jsp/hello_jsp.java\n\n$ head -20 ~/apache-tomcat-10.1.26/work/Catalina/localhost/app/\\\norg/apache/jsp/hello_jsp.java\n\npackage org.apache.jsp;\n\nimport jakarta.servlet.*;\nimport jakarta.servlet.http.*;\nimport jakarta.servlet.jsp.*;\n\npublic final class hello_jsp extends org.apache.jasper.runtime.HttpJspBase\n    implements org.apache.jasper.runtime.JspSourceDependent,\n               org.apache.jasper.runtime.JspSourceImports {\n\n  public void _jspService(final HttpServletRequest request,\n                          final HttpServletResponse response)\n      throws java.io.IOException, ServletException {\n\n    out.write(\"<html>\\n<body>\\n<h1>JSP</h1>\\n<p>지금: \");\n    out.print( java.time.LocalTime.now() );\n    out.write(\"</p>\\n<p>스레드: \");\n    out.print( Thread.currentThread().getName() );\n\n$ wc -l ~/apache-tomcat-10.1.26/work/Catalina/localhost/app/\\\norg/apache/jsp/hello_jsp.java\n     131\n\n--   9 줄이 131 줄이 됐다\n--   HTML 이 out.write 가 됐다\n--   HttpJspBase 는 HttpServlet 을 상속한다\n\n\n-- 클래스도 있다\n\n$ ls ~/apache-tomcat-10.1.26/work/Catalina/localhost/app/org/apache/jsp/\nhello_jsp.class  hello_jsp.java\n\n$ javap -cp ~/apache-tomcat-10.1.26/work/Catalina/localhost/app \\\n    org.apache.jsp.hello_jsp | head -3\npublic final class org.apache.jsp.hello_jsp\n  extends org.apache.jasper.runtime.HttpJspBase\n  implements org.apache.jasper.runtime.JspSourceDependent {\n\n$ javap -cp ~/.../work/... org.apache.jasper.runtime.HttpJspBase 2>/dev/null \\\n    | head -2\npublic abstract class org.apache.jasper.runtime.HttpJspBase\n  extends jakarta.servlet.http.HttpServlet\n\n--   결국 서블릿이다\n\n\n-- 서블릿 목록에도 나온다\n\n$ curl -s localhost:8080/app/servlets\ndispatcher -> [/]\njsp -> [*.jsp, *.jspx]\ndefault -> [/]\n...\n\n--   3.6절에서 본 그 줄이다\n--   확장자로 매핑돼 있다\n\n\n-- 파일을 고치면 다시 변환한다\n\n$ sed -i '' 's/<h1>JSP<\\/h1>/<h1>JSP 고침<\\/h1>/' \\\n    ~/apache-tomcat-10.1.26/webapps/app/hello.jsp\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/app/hello.jsp\n0.428\n$ curl -s localhost:8080/app/hello.jsp | grep h1\n<h1>JSP 고침</h1>\n\n--   재배포를 안 했는데 바뀌었다\n--   푼 폴더를 직접 고쳤다\n--   3.5절에서 폴더가 남던 그 자리다\n\n\n-- 엔진은 서버에 있다\n\n$ unzip -l build/libs/app.war | grep -ci jasper\n0\n\n$ ls ~/apache-tomcat-10.1.26/lib | grep -i jasper\njasper-el.jar\njasper.jar\n\n--   내 WAR 에 없다\n--   3.2절의 lib 에 있다\n\n\n-- 부트 JAR 로 하면\n\n// build.gradle\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n}\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'\n}\n\n// src/main/resources/META-INF/resources/hello.jsp 로 옮기고\n\n$ ./gradlew bootJar -q\n$ java -jar build/libs/app.jar &\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello.jsp\n404\n\n--   404 다\n--   JAR 안의 JSP 를 못 읽는다\n\n\n-- 로그를 본다\n\n$ java -jar build/libs/app.jar 2>&1 | grep -i jsp\nWARN 13411 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]\n     : Failed to scan [jar:file:/.../app.jar!/BOOT-INF/lib/...] for JSPs\n\n--   JAR 안 경로를 못 다룬다\n--   4.5절의 제약과 같은 뿌리다\n\n\n-- 폴더에서 실행하면 된다\n\n$ ./gradlew bootRun &\n$ curl -s localhost:8080/hello.jsp | grep h1\n<h1>JSP</h1>\n\n--   개발할 때는 된다\n--   빌드해서 배포하면 안 된다\n--   이 차이가 사고를 만든다\n\n\n-- 공식 문서는 이렇게 말한다\n\n$ curl -s https://docs.spring.io/spring-boot/reference/web/servlet.html \\\n    | grep -A2 -i 'JSP Limitations' | sed 's/<[^>]*>//g' | head -4\n\nJSP Limitations\nWhen running a Spring Boot application that uses an embedded servlet\ncontainer (and is packaged as an executable archive), there are some\nlimitations in the JSP support.\n\n--   실행 가능한 아카이브에서 제한이 있다\n\n\n-- WAR 로 만들면 된다\n\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'war'\n}\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'\n    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'\n}\n\n$ ./gradlew bootWar -q\n$ cp build/libs/app-0.0.1-SNAPSHOT.war \\\n     ~/apache-tomcat-10.1.26/webapps/boot.war\n$ sleep 4 && curl -s localhost:8080/boot/hello.jsp | grep h1\n<h1>JSP</h1>\n\n--   서버가 있으니 된다\n--   그런데 서버가 있어야 한다\n\n\n-- 템플릿 엔진은 안 그렇다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'\n}\n\n<!-- src/main/resources/templates/hello.html -->\n<html xmlns:th=\"http://www.thymeleaf.org\">\n<body>\n<h1>타임리프</h1>\n<p th:text=\"${now}\"></p>\n</body>\n</html>\n\n@Controller\nclass ViewController {\n    @GetMapping(\"/view\")\n    String view(Model model) {\n        model.addAttribute(\"now\", LocalTime.now().toString());\n        return \"hello\";\n    }\n}\n\n$ ./gradlew bootJar -q\n$ java -jar build/libs/app.jar &\n$ curl -s localhost:8080/view\n<html>\n<body>\n<h1>타임리프</h1>\n<p>05:15:02.418</p>\n</body>\n</html>\n\n$ unzip -l build/libs/app.jar | grep templates\n      142  BOOT-INF/classes/templates/hello.html\n\n--   JAR 안에서 읽힌다\n--   그냥 리소스라 그렇다\n--   ④ 2장에서 쓰던 그것이다\n\n\n-- 첫 요청 시간을 비교한다\n\n$ printf '%-16s %-12s %s\\n' \\\n  'JSP 첫 요청'   '0.612 초' '변환 + 컴파일' \\\n  'JSP 두 번째'   '0.004 초' '서블릿' \\\n  '타임리프 첫 요청' '0.089 초' '템플릿 파싱' \\\n  '타임리프 두 번째' '0.003 초' '캐시'\n\nJSP 첫 요청       0.612 초     변환 + 컴파일\nJSP 두 번째       0.004 초     서블릿\n타임리프 첫 요청   0.089 초     템플릿 파싱\n타임리프 두 번째   0.003 초     캐시\n\n--   3.8절에서 WAR 방식의 한계를 정리한다",
+   "note": "**JSP 첫 요청이 0.612초, 두 번째는 0.004초 — 그때 변환하고** 컴파일한다.\n\n**`work` 폴더에 9줄이 131줄짜리 `hello_jsp.java` 로 생기고 `HttpJspBase` 가 `HttpServlet` 을** 상속한다.\n\n**푼 폴더의 JSP 를 고치면 재배포 없이** 바뀐다.\n\n**부트 JAR 로 만들면 404 이고 `Failed to scan ... for JSPs` 가** 찍힌다.\n\n**타임리프는 `BOOT-INF/classes/templates/` 에서 그냥** 읽힌다."
+  }
+ ],
+ "recap": [
+  "**JSP 는 서블릿이** 된다.",
+  "**첫 요청에** 변환한다.",
+  "**소스가 `work` 에** 생긴다.",
+  "**9줄이 131줄이** 된다.",
+  "**엔진이 서버에** 있다.",
+  "**JAR 에서는 안** 된다.",
+  "**경로를 못** 읽는다.",
+  "**WAR 면 된다.**",
+  "**템플릿은 리소스**다."
+ ],
+ "drills": [
+  {
+   "task": "JSP 를 배포해 부른다.",
+   "done_when": "첫 요청 시간을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성된 소스를 연다.",
+   "done_when": "`out.write` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부트 JAR 로 시도한다.",
+   "done_when": "404 와 경고를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "타임리프로 바꾼다.",
+   "done_when": "JAR 안에서 읽히는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JSP 는 무엇이 되나?",
+   "a": "서블릿 소스로 변환되어 컴파일된다."
+  },
+  {
+   "q": "첫 요청이 느린 이유는?",
+   "a": "그때 변환과 컴파일을 하기 때문이다."
+  },
+  {
+   "q": "JSP 엔진은 어디 있나?",
+   "a": "WAR 가 아니라 서버의 `lib` 에 있다."
+  },
+  {
+   "q": "부트 JAR 에서 JSP 가 되나?",
+   "a": "안 된다. JAR 안 경로를 다루지 못한다."
+  },
+  {
+   "q": "그럼 무엇을 쓰나?",
+   "a": "리소스로 읽히는 템플릿 엔진을 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JSP 변환",
+   "def": "JSP 파일을 서블릿 소스로 바꾸는 서버의 처리."
+  },
+  {
+   "term": "work 디렉터리",
+   "def": "변환된 소스와 클래스가 놓이는 서버 작업 폴더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Server Pages 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/pages/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

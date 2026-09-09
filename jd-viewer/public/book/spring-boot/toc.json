@@ -149,7 +149,7 @@
           "title": "JSP 와 서블릿",
           "summary": "왜 서버가 필요했나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",
@@ -157,7 +157,7 @@
           "title": "WAR 방식의 한계",
           "summary": "빌드와 배포가 왜 아팠나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",
