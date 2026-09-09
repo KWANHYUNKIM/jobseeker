@@ -281,7 +281,7 @@
           "title": "정리",
           "summary": "그리고 Testcontainers.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -296,7 +296,7 @@
           "title": "소개",
           "summary": "JdbcTemplate 과 무엇이 다른가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -304,7 +304,7 @@
           "title": "설정",
           "summary": "의존성과 매퍼 스캔.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

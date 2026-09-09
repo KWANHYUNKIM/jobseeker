@@ -1,0 +1,145 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-intro",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "소개",
+ "summary": "JdbcTemplate 과 무엇이 다른가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "MyBatis 가 무엇인지 안다.",
+  "JdbcTemplate 과의 차이를 안다.",
+  "무엇을 기대하고 무엇을 기대하지 않을지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**두 번째 기술**이다. **여전히 SQL 을 직접 쓴다.** 다만 **쓰는 자리가 바뀐다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "SQL 이 어디에 사나",
+   "ascii": "   jdbctemplate                    mybatis\n   ------------                    -------\n   sql lives in java               sql lives in xml\n\n   \"select ...\" +                  <select id=\"findAll\">\n   (cond ? \" and x\" : \"\")            select ...\n                                     <if test=\"x != null\">\n                                       and x\n                                     </if>\n                                   </select>\n\n   java concatenates               xml decides",
+   "note": "**맨 아랫줄이 이 장의 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SQL 을 밖으로 빼면 무엇이 좋나",
+   "md": "**3.3절의 코드를 다시 본다.**\n\n```java\nString sql = \"select id, item_name, price, quantity from item\";\nif (StringUtils.hasText(itemName) || maxPrice != null) {\n    sql += \" where\";\n}\n```\n\n**문제가 셋** 있었다.\n\n| 문제 | XML 로 빼면 |\n|---|---|\n| **줄바꿈이 안 된다** | **된다** — XML 은 여러 줄이 자연스럽다 |\n| **`if` 가 자바 문법** | **`<if>` 태그** — SQL 옆에 붙는다 |\n| **`and`·공백을 내가** | **`<where>` 가 알아서** |\n\n**세 번째가 5.4절의 주인공**이다.\n\n**긴 SQL 을 자바 문자열로 쓰는 고통**도 있다.\n\n```java\n// 자바 15 이전\nString sql = \"select i.id, i.item_name, \" +\n             \"       c.name as category_name \" +\n             \"  from item i \" +\n             \"  join category c on i.category_id = c.id \" +\n             \" where ...\";\n```\n\n**따옴표와 `+` 와 공백**을 매 줄 신경 쓴다. **자바 15 의 텍스트 블록**(`\"\"\"`)이 이 고통을 많이 줄였지만, **`<if>` 는 여전히 자바 코드**다.\n\n> **DBA 나 다른 팀에게 SQL 을 보여 줘야** 할 때도 XML 이 낫다. **자바 문자열을 복사해 실행하려면 `+` 를 다 지워야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장에서 만들 것",
+   "ascii": "   ItemRepository (interface)\n        |\n   MyBatisItemRepository\n        |\n   ItemMapper (interface)          <-- no implementation written by me\n        |\n   ItemMapper.xml                  <-- the sql\n        |\n   jdbc",
+   "note": "**세 번째 줄에 구현이 없다** — 5.7절의 주제다."
+  },
+  {
+   "type": "compare",
+   "caption": "JdbcTemplate vs MyBatis",
+   "left": {
+    "title": "JdbcTemplate",
+    "points": [
+     "**의존관계 하나** — 스프링에 포함",
+     "**설정이 거의 없다**",
+     "SQL 이 자바 안에",
+     "**동적 쿼리를 손으로**",
+     "**결과 매핑을 `RowMapper` 로**"
+    ]
+   },
+   "right": {
+    "title": "MyBatis",
+    "points": [
+     "**외부 라이브러리**",
+     "XML 위치·별칭 등 **설정이 있다**",
+     "**SQL 이 XML 에**",
+     "**`<if>`·`<where>` 태그**",
+     "**`resultMap` 이나 자동 매핑**"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 안 바뀌나",
+   "md": "**MyBatis 도 JDBC 위에** 있다.\n\n| | JdbcTemplate | MyBatis |\n|---|---|---|\n| 커넥션 | `DataSource` | **`DataSource`** |\n| 트랜잭션 | 스프링 | **스프링** |\n| 예외 | `DataAccessException` | **`DataAccessException`** |\n| 나가는 SQL | 내가 쓴 것 | **내가 쓴 것** |\n\n**네 줄이 다 같다.**\n\n**특히 마지막이 중요**하다. **3.9절에서 적어 둔 SQL 일곱 개가 그대로** 나올 것이다.\n\n> **1편 6장에서 만든 예외 추상화**가 여기서 값을 한다. `mybatis-spring` 이 **MyBatis 의 `PersistenceException` 을 스프링 예외로 변환**한다. **서비스 코드가 안 바뀐다.**\n\n**그래서 이 장은 3장보다 짧게 느껴진다.** **바뀌는 것이 리포지토리 한 겹**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "기대하지 말 것",
+   "md": "**MyBatis 는 이 문제들을 안 푼다.**\n\n| 문제 | 왜 안 풀리나 |\n|---|---|\n| **컴파일러가 SQL 을 검사** | XML 은 문자열이다 |\n| **컬럼명 오타** | 실행할 때 안다 |\n| **객체 그래프** | 연관 관계를 자동으로 안 따라간다 |\n| **DB 방언** | 내가 쓴 SQL 그대로 나간다 |\n\n**첫 번째가 특히 그렇다.** **XML 오타는 애플리케이션이 뜰 때** 잡히기도 하고(태그 문법), **실행할 때** 잡히기도 한다(컬럼명).\n\n> **8장 Querydsl 만이 컴파일 시점에** 잡는다. **3.3절의 표를 다시 보면** MyBatis 는 **\"XML 이 해 준다\"** 였지 **\"컴파일러가 잡는다\"** 가 아니었다.\n\n**세 번째는 6장 JPA 의 영역**이다. MyBatis 로도 `<association>`·`<collection>` 으로 **할 수는 있는데, 매번 매핑을 쓴다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL (미리 보기)",
+   "sql": "# 5장이 끝나면 이렇게 나온다\n\nfindAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   ==>  Preparing: select id, item_name, price, quantity from item\n#                   WHERE item_name like concat('%',?,'%') and price <= ?\n#   ==> Parameters: itemA(String), 10000(Integer)\n#   <==      Total: 1\n\n# 3장에서 나갔던 것과 비교\n\n#   [select id, item_name, price, quantity from item\n#    where item_name like concat('%',?,'%') and price <= ?]\n#   {1: 'itemA', 2: 10000}\n\n# 대문자 WHERE 와 로그 형식만 다르다\n# DB 가 받은 것은 사실상 같다\n\n# 로그 형식이 다른 이유\n#   3장  스프링의 JdbcTemplate 로거\n#   5장  MyBatis 자신의 로거\n\n#   logging.level.hello.itemservice.repository.mybatis=trace\n\n# 자바 코드는 완전히 다르다\n#   3장  25줄의 findAll\n#   5장  인터페이스 한 줄 + XML",
+   "note": "**`==> Preparing` 과 `==> Parameters`** 가 MyBatis 의 로그 형식이다. **패키지 단위로 켠다** — 매퍼 인터페이스가 있는 패키지다.\n\n**대문자 `WHERE` 는 `<where>` 태그**가 만든 것이다. 5.4절에서 본다.\n\n**DB 가 받은 것은 같다.** **자바 코드만 완전히 다르다** — 2.1절에서 말한 그 비교다.\n\n**다음 절에서 설정부터 한다.**"
+  }
+ ],
+ "recap": [
+  "**MyBatis 도 SQL 을 직접** 쓴다 — 자리만 XML 로 옮긴다.",
+  "**줄바꿈·`<if>`·`<where>`** 가 XML 의 이점이다.",
+  "**긴 SQL 을 복사해 실행**하기 쉽다.",
+  "**커넥션·트랜잭션·예외는 그대로** 스프링 것이다.",
+  "**`DataAccessException` 으로 변환**된다 — 서비스가 안 바뀐다.",
+  "**3.9절의 SQL 일곱 개가 그대로** 나온다.",
+  "**컴파일러는 여전히 아무것도 안 잡는다.**",
+  "**객체 그래프는 JPA 의 영역**이다.",
+  "**로그 형식이 `==> Preparing`** 으로 바뀐다."
+ ],
+ "drills": [
+  {
+   "task": "3.3절의 `findAll` 을 XML 로 옮기면 어떻게 될지 손으로 써 본다.",
+   "done_when": "`<if>` 가 들어갈 자리를 표시했다.",
+   "minutes": 15
+  },
+  {
+   "task": "긴 SQL 을 자바 문자열과 XML 로 각각 써 본다.",
+   "done_when": "복사해서 실행하기 쉬운 쪽을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "MyBatis 가 안 푸는 문제 넷을 적는다.",
+   "done_when": "각각 어느 장이 푸는지 붙였다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "MyBatis 와 JdbcTemplate 의 가장 큰 차이는?",
+   "a": "SQL 이 자바 안에 있느냐 XML 에 있느냐다."
+  },
+  {
+   "q": "무엇이 그대로인가?",
+   "a": "커넥션·트랜잭션·예외 변환, 그리고 나가는 SQL 이 내가 쓴 것이라는 점이다."
+  },
+  {
+   "q": "MyBatis 가 안 푸는 문제는?",
+   "a": "컴파일 시점 검사, 컬럼명 오타, 객체 그래프, DB 방언이다."
+  },
+  {
+   "q": "MyBatis 의 로그 형식은?",
+   "a": "`==> Preparing`, `==> Parameters`, `<== Total` 이다."
+  },
+  {
+   "q": "그 로그를 어떻게 켜나?",
+   "a": "매퍼 인터페이스가 있는 패키지의 로그 레벨을 `trace` 로 올린다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "MyBatis 3 — Introduction",
+   "url": "https://mybatis.org/mybatis-3/",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

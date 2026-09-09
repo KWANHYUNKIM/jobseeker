@@ -1,0 +1,162 @@
+{
+ "book": "spring-db-2",
+ "id": "test-summary",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "정리",
+ "summary": "그리고 Testcontainers.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "4장에서 없앤 것을 센다.",
+  "Testcontainers 를 안다.",
+  "무엇을 고를지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여섯 절이 하나씩 손으로 하던 것을 없앴다.** 무엇이 남았는지 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 절에 하나씩",
+   "ascii": "   4.1   the problem            tests remember each other\n   4.2   separate database      dev data is safe\n   4.3   delete rows            green, but a debt\n   4.4   @Transactional         nothing to delete\n   4.6   embedded db            nothing to start\n   4.7   testcontainers         the real database\n\n   each step removed one manual thing",
+   "note": "**마지막 줄이 이 절의 새 이야기**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "임베디드 H2 가 남긴 위험",
+   "md": "**4.6절에서 편해졌는데, 한 가지가 남았다.**\n\n> **테스트가 도는 DB 와 운영이 도는 DB 가 다르다.**\n\n**H2 로 초록인데 MySQL 에서 터지는 것**들이다.\n\n```sql\n-- H2 에서는 되고 MySQL 에서는 안 되는 것\nselect * from item order by item_name nulls last;\n\n-- MySQL 에서는 되고 H2 에서는 다른 것\nselect group_concat(item_name separator ', ') from item;\n\n-- 예약어\nselect * from order;\n```\n\n**3장처럼 SQL 을 직접 쓰면 위험이 그대로**다. **5장 MyBatis 도 같다** — SQL 을 직접 쓴다.\n\n**6장 JPA 부터는 줄어든다** — **방언이 SQL 을 만들어** 주니까. **그래도 네이티브 쿼리를 쓰면 그대로**다.\n\n> **위험을 없애는 방법은 하나**다. **테스트도 진짜 MySQL 로** 돌린다."
+  },
+  {
+   "type": "figure",
+   "caption": "Testcontainers 가 하는 일",
+   "ascii": "   junit starts                       docker\n     |                                  |\n     +--> MySQLContainer.start() -----> pull image\n     |                                  run container\n     |                                  wait for port\n     |<-- jdbc url, user, password -----+\n     |\n     +--> spring context uses that url\n     |\n   junit ends\n     +--> container stopped and removed",
+   "note": "**테스트가 도커를 부린다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "쓰는 법",
+   "code": "@SpringBootTest\n@Testcontainers\nclass ItemRepositoryTest {\n\n    @Container\n    static MySQLContainer<?> mysql = new MySQLContainer<>(\"mysql:8.0\");\n\n    @DynamicPropertySource\n    static void props(DynamicPropertyRegistry registry) {\n        registry.add(\"spring.datasource.url\", mysql::getJdbcUrl);\n        registry.add(\"spring.datasource.username\", mysql::getUsername);\n        registry.add(\"spring.datasource.password\", mysql::getPassword);\n    }\n\n    @Autowired ItemRepository itemRepository;\n}",
+   "note": "**`static` 이라 클래스당 한 번** 뜬다. **메서드마다 뜨면 못 쓸 만큼 느리다.**\n\n**`@DynamicPropertySource`** 가 핵심이다. **컨테이너가 뜬 뒤에야 포트를 알 수 있어서**, 설정 파일에 URL 을 못 적는다. **컨텍스트가 뜨기 직전에 값을 넣어** 준다.\n\n**부트 3.1 부터는 더 짧다.**\n\n```java\n@ServiceConnection\n@Container\nstatic MySQLContainer<?> mysql = new MySQLContainer<>(\"mysql:8.0\");\n```\n\n**`@ServiceConnection` 이 URL·계정을 알아서** 연결한다."
+  },
+  {
+   "type": "compare",
+   "caption": "임베디드 H2 vs Testcontainers",
+   "left": {
+    "title": "임베디드 H2",
+    "points": [
+     "**밀리초**에 뜬다",
+     "도커가 필요 없다",
+     "**방언이 다르다**",
+     "예약어·함수·페이징이 다르다",
+     "**빠른 되먹임**에 좋다"
+    ]
+   },
+   "right": {
+    "title": "Testcontainers",
+    "points": [
+     "**초** 단위로 뜬다",
+     "**도커가 있어야** 한다",
+     "**운영과 같은 DB**",
+     "방언 문제가 없다",
+     "**CI 에서 값을 한다**"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 절충",
+   "md": "**둘 중 하나를 고르는 것이 아니라 나눠 쓴다.**\n\n| 언제 | 무엇으로 |\n|---|---|\n| **개발 중 빠른 확인** | 임베디드 H2 |\n| **CI · 병합 전** | Testcontainers |\n| **SQL 이 많은 리포지토리** | Testcontainers |\n| **서비스 로직** | 목이나 H2 |\n\n**태그로 가른다.**\n\n```java\n@Tag(\"slow\")\n@Testcontainers\nclass ItemRepositoryMysqlTest { ... }\n```\n\n```groovy\ntest { useJUnitPlatform { excludeTags 'slow' } }\ntask slowTest(type: Test) { useJUnitPlatform { includeTags 'slow' } }\n```\n\n> **`@Transactional` 격리는 어느 쪽이든 그대로** 쓴다. **4.4절이 DB 종류와 무관**한 것이 이 절의 좋은 점이다.\n\n**Testcontainers 는 재사용 모드**(`.withReuse(true)`)로 **컨테이너를 껐다 켜지 않게** 할 수도 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "4장이 남긴 규칙 다섯",
+   "md": "| | |\n|---|---|\n| 1 | **테스트용 DB 를 따로** 둔다 |\n| 2 | **`@Transactional` 로 격리**한다 |\n| 3 | **`@Commit` 은 임시로만** 쓴다 |\n| 4 | **id 값을 기대값에 안 쓴다** — 시퀀스는 롤백 밖 |\n| 5 | **`containsExactly`·`hasSize`** 로 엄격하게 검증한다 |\n\n**이 다섯이 5~8장 내내 유지**된다. **테스트 파일을 다시 안 고친다.**\n\n> **2.5절의 약속**을 이제야 지켰다. **여섯 구현이 같은 시험지를 푼다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 임베디드 H2 ---\n#   jdbcUrl.....jdbc:h2:mem:0b9ff05c-...;DB_CLOSE_DELAY=-1\n#   Executed SQL script in 8 ms\n#   Tests: 3 passed in 1.2 s\n\n# --- Testcontainers (MySQL 8.0) ---\n\n#   Creating container for image: mysql:8.0\n#   Container mysql:8.0 started in PT8.431S\n#   jdbcUrl.....jdbc:mysql://localhost:53142/test\n\n#   Executed SQL script in 41 ms\n\nfindItems()\n#   Begin transaction for test context\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)] x3\n#   [select id, item_name, price, quantity from item\n#    where item_name like concat('%',?,'%') and price <= ?]\n#   {1: 'itemA', 2: 10000}\n#   -> 1 row\n#   Rolled back transaction for test\n\n#   Tests: 3 passed in 11.7 s\n\n# --- H2 에서는 통과하고 MySQL 에서 터지는 예 ---\n\n#   [select * from item order by item_name nulls last]\n\n#   H2   : 통과\n#   MySQL: You have an error in your SQL syntax near 'nulls last'\n\n# 같은 코드, 같은 테스트, 다른 결과\n\n# --- 4장이 끝난 상태 ---\n#   테스트 파일에 SQL 이 없다\n#   테스트 파일에 기술 이름이 없다\n#   @AfterEach 가 없다",
+   "note": "**1.2 초와 11.7 초**다. **열 배 차이**가 절충의 이유다.\n\n**세 번째 블록이 이 절의 요점**이다. **같은 코드가 DB 에 따라 갈린다.** H2 로만 돌렸다면 배포하고 알았을 것이다.\n\n**맨 아래 세 줄이 4장의 결과**다. **테스트가 다시 기술을 모른다.**\n\n**이제 두 번째 기술을 붙인다.**"
+  }
+ ],
+ "recap": [
+  "**한 절에 손으로 하던 것 하나씩** 없앴다.",
+  "**임베디드 H2 는 방언 위험**을 남긴다.",
+  "**Testcontainers 는 진짜 DB** 를 도커로 띄운다.",
+  "**`@DynamicPropertySource`** 로 뜬 뒤의 URL 을 넘긴다.",
+  "**`@ServiceConnection`**(부트 3.1+)이 그것을 대신한다.",
+  "**`static` 컨테이너**로 클래스당 한 번만 띄운다.",
+  "**둘을 나눠 쓴다** — 개발은 H2, CI 는 Testcontainers.",
+  "**`@Transactional` 격리는 DB 종류와 무관**하다.",
+  "**규칙 다섯**이 8장까지 유지된다."
+ ],
+ "drills": [
+  {
+   "task": "Testcontainers 로 MySQL 테스트를 하나 만든다.",
+   "done_when": "컨테이너가 뜨고 통과하는 것을 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "두 방식의 실행 시간을 잰다.",
+   "done_when": "차이를 숫자로 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "H2 에서만 통과하는 SQL 을 하나 찾는다.",
+   "done_when": "MySQL 에서 터지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "4장의 규칙 다섯을 적어 둔다.",
+   "done_when": "테스트 파일에 SQL 과 기술 이름이 없는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "임베디드 H2 가 남기는 위험은?",
+   "a": "테스트 DB 와 운영 DB 의 방언이 다르다는 것이다."
+  },
+  {
+   "q": "Testcontainers 가 하는 일은?",
+   "a": "테스트가 도커로 진짜 DB 를 띄우고, 끝나면 지운다."
+  },
+  {
+   "q": "`@DynamicPropertySource` 가 왜 필요한가?",
+   "a": "컨테이너가 뜬 뒤에야 포트를 알 수 있어 설정 파일에 URL 을 못 적기 때문이다."
+  },
+  {
+   "q": "실무에서 어떻게 나눠 쓰나?",
+   "a": "개발 중에는 H2, CI 나 병합 전에는 Testcontainers 로 돌린다."
+  },
+  {
+   "q": "4장이 남긴 규칙 다섯 중 시퀀스 관련은?",
+   "a": "id 값을 기대값에 쓰지 않는다. 시퀀스는 롤백 밖이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Testcontainers for Java",
+   "url": "https://java.testcontainers.org/",
+   "publisher": "Testcontainers"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

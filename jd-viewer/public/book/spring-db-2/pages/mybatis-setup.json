@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "mybatis-setup",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "설정",
+ "summary": "의존성과 매퍼 스캔.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "의존관계를 추가한다.",
+  "XML 을 어디에 둘지 안다.",
+  "설정 항목의 의미를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절은 설정이 없었다.** 여기는 **조금 있다.**"
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "의존관계",
+   "code": "dependencies {\n    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'\n}",
+   "note": "**버전을 직접 적는다.** **스프링 부트가 관리하는 라이브러리가 아니라서** 그렇다.\n\n| | 버전을 |\n|---|---|\n| `spring-boot-starter-jdbc` | **부트가 정한다** |\n| `mybatis-spring-boot-starter` | **내가 정한다** |\n\n**부트 버전을 올릴 때 이것도 같이 봐야** 한다. **부트 3.x 는 MyBatis 3.0.x** 가 필요하다 — `javax` 가 `jakarta` 로 바뀐 것 때문이다.\n\n> **외부 라이브러리를 쓰는 값**이다. **JdbcTemplate 은 이런 걱정이 없다.**"
+  },
+  {
+   "type": "code",
+   "lang": "properties",
+   "caption": "설정",
+   "code": "# 매퍼 XML 위치 (선택)\nmybatis.mapper-locations=classpath:mapper/**/*.xml\n\n# 타입 별칭 패키지\nmybatis.type-aliases-package=hello.itemservice.domain\n\n# item_name -> itemName 자동 변환\nmybatis.configuration.map-underscore-to-camel-case=true\n\n# SQL 로그\nlogging.level.hello.itemservice.repository.mybatis=trace",
+   "note": "**세 번째가 3.6절의 `BeanPropertyRowMapper` 와 같은 일**을 한다.\n\n**첫 번째는 안 쓰는 편**이 낫다 — 아래 그림의 규칙을 따르면 자동으로 찾는다.\n\n**두 번째**는 XML 에서 `hello.itemservice.domain.Item` 대신 **`Item`** 이라고 쓸 수 있게 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "스캔과 XML 찾기",
+   "ascii": "   @Mapper on ItemMapper\n        |\n   mybatis-spring-boot-starter scans for it\n        |\n   creates a proxy that implements ItemMapper\n        |\n   registers it as a bean\n\n   xml lookup\n   ----------\n   hello.itemservice.repository.mybatis.ItemMapper\n        |\n   src/main/resources/hello/itemservice/repository/mybatis/ItemMapper.xml\n\n   same package path, same file name",
+   "note": "**패키지 경로를 그대로 `resources` 아래에** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 경로를 맞추나",
+   "md": "**MyBatis 는 인터페이스와 XML 을 이름으로** 잇는다.\n\n```\njava      hello/itemservice/repository/mybatis/ItemMapper.java\nresources hello/itemservice/repository/mybatis/ItemMapper.xml\n```\n\n**XML 안에서도 한 번 더** 적는다.\n\n```xml\n<mapper namespace=\"hello.itemservice.repository.mybatis.ItemMapper\">\n```\n\n**셋이 다 맞아야** 한다. **하나라도 어긋나면** 이렇게 된다.\n\n```\nInvalid bound statement (not found):\n  hello.itemservice.repository.mybatis.ItemMapper.findAll\n```\n\n**이 장에서 가장 자주 보게 될 오류**다. **원인은 거의 항상 넷 중 하나**다.\n\n| 원인 | 확인 |\n|---|---|\n| **경로가 다르다** | 폴더를 하나씩 본다 |\n| **`namespace` 오타** | 패키지 이름 전체 |\n| **`id` 오타** | 메서드 이름과 같은지 |\n| **빌드에 XML 이 안 들어갔다** | `build/resources` 를 본다 |\n\n**네 번째가 잘 안 보인다.** IDE 가 `src/main/java` 아래 XML 을 **복사 안 하는 설정**이면 그렇다. **`resources` 아래에 두는 이유**이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설정 클래스",
+   "md": "```java\n@Configuration\n@RequiredArgsConstructor\npublic class MyBatisConfig {\n\n    private final ItemMapper itemMapper;\n\n    @Bean\n    public ItemService itemService() {\n        return new ItemServiceV1(itemRepository());\n    }\n\n    @Bean\n    public ItemRepository itemRepository() {\n        return new MyBatisItemRepository(itemMapper);\n    }\n}\n```\n\n**`DataSource` 대신 `ItemMapper` 를 주입**받는다. **그 빈은 내가 안 만들었다** — `@Mapper` 를 보고 스타터가 만든다(5.7절).\n\n```java\n@Import(MyBatisConfig.class)\n@SpringBootApplication(scanBasePackages = \"hello.itemservice.web\")\npublic class ItemServiceApplication { }\n```\n\n> **또 한 줄**이다. **3.4절과 같은 모양**의 diff 가 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 뜰 때 ---\n\n#   HikariPool-1 - Start completed.\n#   Executing SQL script from class path resource [schema.sql]\n\n#   (MyBatis 는 뜰 때 XML 을 읽는다)\n\n# --- XML 문법이 틀렸으면 ---\n\n#   Failed to parse mapping resource:\n#     'file [.../ItemMapper.xml]'\n#   Cause: org.apache.ibatis.builder.BuilderException:\n#     Error creating document instance.\n#     The element type \"select\" must be terminated by\n#     the matching end-tag \"</select>\"\n\n#   (애플리케이션이 아예 안 뜬다)\n\n# --- namespace 가 안 맞으면 ---\n\n#   (애플리케이션은 뜬다)\n\nitemRepository.findAll(cond);\n\n#   BindingException: Invalid bound statement (not found):\n#     hello.itemservice.repository.mybatis.ItemMapper.findAll\n\n#   (SQL 이 안 나갔다)\n\n# --- 다 맞으면 ---\n\nitemRepository.findAll(new ItemSearchCond());\n\n#   ==>  Preparing: select id, item_name, price, quantity from item\n#   ==> Parameters:\n#   <==      Total: 0",
+   "note": "**두 오류의 시점이 다르다.**\n\n| 무엇 | 언제 |\n|---|---|\n| **XML 문법** | **뜰 때** — 앱이 안 뜬다 |\n| **`namespace`·`id`** | **부를 때** — 앱은 뜬다 |\n\n**첫 번째가 낫다.** **일찍 터지는 오류가 좋은 오류**다.\n\n**두 번째가 5.1절에서 말한 \"컴파일러가 안 잡는다\"** 의 실물이다. **인터페이스에 메서드가 있어도 XML 에 없으면 실행할 때** 안다.\n\n**설정이 끝났다. 다음 절에서 네 메서드를 옮긴다.**"
+  }
+ ],
+ "recap": [
+  "**`mybatis-spring-boot-starter`** 를 넣는다 — **버전을 직접** 적는다.",
+  "**부트 3.x 는 MyBatis 3.0.x** 가 필요하다.",
+  "**패키지 경로를 `resources` 아래에 그대로** 만든다.",
+  "**`namespace` 는 인터페이스의 전체 이름**이다.",
+  "**`Invalid bound statement`** 가 이 장에서 가장 흔한 오류다.",
+  "**`map-underscore-to-camel-case=true`** 로 자동 매핑을 켠다.",
+  "**`type-aliases-package`** 로 XML 을 짧게 쓴다.",
+  "**XML 문법 오류는 뜰 때, 이름 오류는 부를 때** 난다.",
+  "**설정 클래스는 `ItemMapper` 를 주입**받는다."
+ ],
+ "drills": [
+  {
+   "task": "의존관계를 넣고 부트를 띄운다.",
+   "done_when": "오류 없이 뜨는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "XML 을 잘못된 경로에 둔다.",
+   "done_when": "`Invalid bound statement` 를 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "XML 태그를 안 닫고 띄운다.",
+   "done_when": "앱이 아예 안 뜨는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "`map-underscore-to-camel-case` 를 꺼 본다.",
+   "done_when": "`itemName` 이 `null` 이 되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 MyBatis 버전을 직접 적나?",
+   "a": "스프링 부트가 관리하는 라이브러리가 아니기 때문이다."
+  },
+  {
+   "q": "XML 을 어디에 두나?",
+   "a": "`resources` 아래에 매퍼 인터페이스와 같은 패키지 경로로 둔다."
+  },
+  {
+   "q": "`Invalid bound statement` 의 원인은?",
+   "a": "경로·`namespace`·`id` 가 안 맞거나 XML 이 빌드에 안 들어간 것이다."
+  },
+  {
+   "q": "두 종류 오류의 시점 차이는?",
+   "a": "XML 문법은 뜰 때, 이름 불일치는 메서드를 부를 때 난다."
+  },
+  {
+   "q": "`map-underscore-to-camel-case` 는 무엇을 하나?",
+   "a": "`item_name` 컬럼을 `itemName` 필드에 매핑한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "mybatis-spring-boot-starter",
+   "url": "https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "MyBatis 3 — Introduction",
+   "url": "https://mybatis.org/mybatis-3/",
+   "publisher": "MyBatis"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
