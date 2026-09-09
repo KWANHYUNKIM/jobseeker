@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "alert",
+ "no": "9.10",
+ "chapter": 9,
+ "title": "알림",
+ "summary": "언제 깨울 것인가.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "규칙을 쓴다.",
+  "떨림을 없앤다.",
+  "9장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.8절에서 화면을** 만들었다. **아무도 새벽에 그걸 안** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓰기 전에 묻는 둘",
+   "ascii": "   two questions before writing any rule\n\n   is a person going to do something about this, right now\n   would they rather have been woken up, in hindsight\n\n   if either answer is no, it belongs on a board, not a phone",
+   "note": "**둘 중 하나라도 아니면 화면에** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "울리는데 할 일이 없으면 다음엔 안 본다",
+   "md": "**사람이 지금 할 일이** 있어야 한다.\n\n> **없으면 화면에** 둔다.\n> **아래에서 그 선을** 긋는다.\n> **9.8절의 셋째 줄이 대개** 그렇다.\n\n**증상에** 건다.\n\n> **원인이** 아니다.\n> **힙이 90% 여도 멀쩡할 수** 있다.\n> **아래에서 그걸** 본다.\n\n**한동안 계속돼야** 센다.\n\n> **한 번 튄 건 안** 깨운다.\n> **9.6절의 그 흔들림**이다.\n> **아래에서 그걸** 만든다.\n\n**읽고 뭘 할지 적어** 둔다.\n\n> **새벽에 그것만** 읽는다.\n> **아래에서 그 문장을** 쓴다.\n> **9.8절 화면 주소도** 넣는다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙은 넷이다",
+   "ascii": "   a rule is four things\n\n   the expression, which decides true or false\n   the duration, which says how long before it counts\n   the labels, which decide where it is sent\n   the annotations, which are what the person reads at 3am\n\n   most bad alerts are missing the second one",
+   "note": "**나쁜 알림은 대개 둘째가** 빠져 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "잘 우는 알림은 안 우는 알림이 된다",
+   "md": "**자주 울면 무시**된다.\n\n> **아래에서 그 횟수를** 센다.\n> **한 주에 몇 번이면** 끝이다.\n> **문턱을 다시** 잡는다.\n\n**트래픽이 없으면 비율이** 튄다.\n\n> **한 건 중 한 건이면 100%** 다.\n> **아래에서 그걸** 만든다.\n> **건수 조건을 같이** 건다.\n\n**계열이 없어지면 안** 운다.\n\n> **9.6절에서 봤다.**\n> **없는 건 0 이** 아니다.\n> **아래에서 그걸** 겪는다.\n\n**긁기가 죽으면 다** 멈춘다.\n\n> **9.5절의 그** 방향이다.\n> **`up` 자체에도 규칙을** 건다.\n> **아래에서 그걸** 건다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 규칙을 적는다\n\n$ cat rules/orders.yml\ngroups:\n  - name: orders\n    interval: 30s\n    rules:\n      - alert: 서비스내려감\n        expr: up{job=\"orders\"} == 0\n        for: 2m\n        labels:\n          severity: page\n        annotations:\n          summary: \"{{ $labels.instance }} 가 2 분째 안 긁힘\"\n          runbook: \"파드 상태부터 본다: kubectl get pod -l app=orders\"\n          dashboard: \"http://grafana:3000/d/orders\"\n\n      - alert: 오류율높음\n        expr: |\n          sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n          / sum(rate(http_server_requests_seconds_count[5m])) > 0.01\n          and\n          sum(rate(http_server_requests_seconds_count[5m])) > 1\n        for: 5m\n        labels:\n          severity: page\n        annotations:\n          summary: \"오류율 {{ $value | humanizePercentage }}\"\n          runbook: \"주소별로 가른다: 9.8 절 둘째 줄\"\n\n      - alert: 응답느림\n        expr: |\n          histogram_quantile(0.95,\n            sum by (le) (rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[5m])))\n          > 1\n        for: 10m\n        labels:\n          severity: ticket\n\n$ curl -s -X POST localhost:9091/-/reload\n$ curl -s localhost:9091/api/v1/rules | python3 -c \"\nimport json,sys\nfor g in json.load(sys.stdin)['data']['groups']:\n    for r in g['rules']:\n        print('%-16s %-8s %-8s %s' % (\n            r['name'], r['labels'].get('severity'), r['duration'], r['state']))\n\"\n서비스내려감      page     120      inactive\n오류율높음        page     300      inactive\n응답느림          ticket   600      inactive\n\n--   9.6절에서 만든 질문들이 그대로 조건이 됐다\n\n\n-- 문법을 먼저 검사한다\n\n$ promtool check rules rules/orders.yml\nChecking rules/orders.yml\n  SUCCESS: 3 rules found\n\n$ sed -i '' 's/severity: page/severity page/' rules/orders.yml\n$ promtool check rules rules/orders.yml\nChecking rules/orders.yml\n  FAILED:\nrules/orders.yml: yaml: line 9: could not find expected ':'\n\n$ git checkout rules/orders.yml\n\n--   커밋 전에 이걸 돌린다\n\n\n-- 고장을 만든다\n\n$ docker stop app-3\n\n$ sleep 20 && curl -s localhost:9091/api/v1/rules | python3 -c \"\nimport json,sys\nfor g in json.load(sys.stdin)['data']['groups']:\n    for r in g['rules']:\n        if r['name'] != '서비스내려감': continue\n        print('상태', r['state'])\n        for a in r.get('alerts', []):\n            print(' ', a['labels']['instance'], a['state'], a['activeAt'][11:19])\n\"\n상태 pending\n  app-3:9090 pending 07:08:31\n\n$ sleep 130 && curl -s localhost:9091/api/v1/alerts | python3 -c \"\nimport json,sys\nfor a in json.load(sys.stdin)['data']['alerts']:\n    print('%-14s %-10s %s' % (\n        a['labels']['alertname'], a['state'], a['annotations']['summary']))\n\"\n서비스내려감    firing     app-3:9090 가 2 분째 안 긁힘\n\n--   2 분 동안 pending 이었다\n--   그동안은 안 울린다\n\n\n-- 한 번 튄 것은 안 깨운다\n\n$ docker start app-3 && sleep 5 && docker stop app-3 && sleep 5 && docker start app-3\n\n$ sleep 40 && curl -s localhost:9091/api/v1/alerts | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['data']['alerts']\nprint(len(d), '건')\"\n0 건\n\n$ curl -s localhost:9091/api/v1/rules | python3 -c \"\nimport json,sys\nfor g in json.load(sys.stdin)['data']['groups']:\n    for r in g['rules']:\n        if r['name'] == '서비스내려감': print(r['state'])\"\ninactive\n\n--   for 가 없으면 여기서 울렸다\n--   9.6절에서 본 그 흔들림이다\n\n\n-- for 를 빼 보면\n\n      - alert: 오류율높음_민감\n        expr: sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n              / sum(rate(http_server_requests_seconds_count[5m])) > 0.01\n\n$ curl -s -X POST localhost:9091/-/reload\n\n$ for i in $(seq 1 12); do\n    curl -s localhost:9091/api/v1/alerts | python3 -c \"\nimport json,sys\nd = [a for a in json.load(sys.stdin)['data']['alerts']\n     if a['labels']['alertname'] == '오류율높음_민감']\nprint('firing' if d else '-', end=' ')\"\n    sleep 30\n  done; echo\nfiring - firing firing - - firing - firing - - firing\n\n$ curl -s localhost:9091/api/v1/alerts | python3 -c \"\nimport json,sys\nd = [a for a in json.load(sys.stdin)['data']['alerts']\n     if a['labels']['alertname'] == '오류율높음']\nprint(len(d), '건')\"\n0 건\n\n--   여섯 시간이면 스무 번은 온다\n--   for 가 있는 쪽은 한 번도 안 울렸다\n\n\n-- 트래픽이 없으면 비율이 튄다\n\n$ Q() { curl -sG localhost:9091/api/v1/query --data-urlencode \"query=$1\" \\\n    | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result']\nprint(round(float(r[0]['value'][1]), 4) if r else '(없음)')\"; }\n\n// 새벽 세 시, 요청이 초당 0.02 건\n$ Q 'sum(rate(http_server_requests_seconds_count[5m]))'\n0.0167\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))'\n0.0033\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n0.1976\n\n--   다섯 건 중 한 건이 실패했다\n--   비율로는 19.8% 다, 문턱 1% 를 훌쩍 넘는다\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m])) > 0.01\n     and sum(rate(http_server_requests_seconds_count[5m])) > 1'\n(없음)\n\n--   건수 조건이 막았다\n--   초당 한 건도 안 되면 안 깨운다\n\n\n-- 계열이 없어지면 안 운다\n\n$ Q 'order_pending > 100'\n(없음)\n\n$ docker stop app-1 app-2 app-3\n$ sleep 20\n$ Q 'order_pending > 100'\n(없음)\n\n$ Q 'up{job=\"orders\"} == 0'\n1\n\n--   앱이 다 죽으면 order_pending 자체가 사라진다\n--   그 규칙은 영원히 안 운다\n--   그래서 up 규칙이 따로 필요하다\n\n\n-- 없어진 것도 잡는다\n\n      - alert: 메트릭사라짐\n        expr: absent(order_pending)\n        for: 5m\n        labels:\n          severity: page\n        annotations:\n          summary: \"order_pending 계열이 5 분째 없다\"\n\n$ docker start app-1 app-2 app-3 && sleep 60\n$ curl -s localhost:9091/api/v1/rules | python3 -c \"\nimport json,sys\nfor g in json.load(sys.stdin)['data']['groups']:\n    for r in g['rules']:\n        if r['name'] == '메트릭사라짐': print(r['state'])\"\ninactive\n\n--   9.3절에서 계기를 미리 만들어 두던 것과 같은 이유다\n\n\n-- 원인이 아니라 증상에 건다\n\n// 원인에 걸면\n      - alert: 힙높음\n        expr: sum by (instance) (jvm_memory_used_bytes{area=\"heap\"})\n              / sum by (instance) (jvm_memory_max_bytes{area=\"heap\"}) > 0.9\n        for: 5m\n\n$ Q 'max(sum by (instance) (jvm_memory_used_bytes{area=\"heap\"})\n        / sum by (instance) (jvm_memory_max_bytes{area=\"heap\"}))'\n0.92\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le) (rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[5m])))'\n0.0418\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n0.0\n\n--   힙이 92% 인데 사람은 아무것도 못 느낀다\n--   G1 이 곧 치운다\n--   깨우면 할 일이 없다\n\n\n-- 몇 번이나 울렸나\n\n$ curl -sG localhost:9091/api/v1/query_range \\\n    --data-urlencode 'query=changes(ALERTS_FOR_STATE[7d])' \\\n    --data-urlencode \"start=$(date -v-7d +%s)\" --data-urlencode \"end=$(date +%s)\" \\\n    --data-urlencode 'step=3600' | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    n = max(float(v[1]) for v in r['values'])\n    print('%-16s %d 번' % (r['metric']['alertname'], n))\n\"\n힙높음            42 번\n오류율높음_민감    31 번\n서비스내려감       1 번\n응답느림           2 번\n\n--   앞의 둘은 지웠다\n--   한 주에 마흔 번 울리면 아무도 안 본다\n\n\n-- 어디로 보낼지 정한다\n\n$ cat alertmanager.yml\nroute:\n  receiver: slack-backend\n  group_by: [alertname, job]\n  group_wait: 30s\n  group_interval: 5m\n  repeat_interval: 4h\n  routes:\n    - matchers: [severity=\"page\"]\n      receiver: pager\n      repeat_interval: 30m\n    - matchers: [severity=\"ticket\"]\n      receiver: slack-backend\n\nreceivers:\n  - name: pager\n    webhook_configs:\n      - url: http://pager:9095/hook\n  - name: slack-backend\n    webhook_configs:\n      - url: http://slack-relay:9096/hook\n\n$ curl -s localhost:9093/api/v2/status | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['cluster']['status'])\"\nready\n\n--   9.8절에서 나눈 그 심각도다\n\n\n-- 묶어서 한 번만 보낸다\n\n$ docker stop app-1 app-2 app-3\n$ sleep 150\n\n$ curl -s localhost:9093/api/v2/alerts | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint(len(d), '건')\nfor a in d: print(' ', a['labels']['instance'])\"\n3 건\n  app-1:9090\n  app-2:9090\n  app-3:9090\n\n$ curl -s localhost:9096/received | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('보낸 횟수', len(d))\nprint('한 통에 담긴 건수', len(d[-1]['alerts']))\"\n보낸 횟수 1\n한 통에 담긴 건수 3\n\n--   세 대가 죽었는데 한 통이다\n--   group_by 가 묶었다\n\n\n-- 사람이 읽는 것\n\n$ curl -s localhost:9096/received | python3 -c \"\nimport json,sys\na = json.load(sys.stdin)[-1]['alerts'][0]\nprint('제목  ', a['annotations']['summary'])\nprint('할 일 ', a['annotations']['runbook'])\nprint('화면  ', a['annotations']['dashboard'])\nprint('시작  ', a['startsAt'][11:19])\"\n제목   app-1:9090 가 2 분째 안 긁힘\n할 일  파드 상태부터 본다: kubectl get pod -l app=orders\n화면   http://grafana:3000/d/orders\n시작   07:10:12\n\n--   새벽에 이 세 줄만 읽는다\n--   9.8절 화면으로 바로 간다\n\n\n-- 조용히 시킬 수 있다\n\n$ curl -s -X POST localhost:9093/api/v2/silences \\\n    -H 'Content-Type: application/json' -d '{\n      \"matchers\": [{\"name\":\"alertname\",\"value\":\"서비스내려감\",\"isRegex\":false}],\n      \"startsAt\": \"2026-09-10T07:15:00Z\",\n      \"endsAt\": \"2026-09-10T08:15:00Z\",\n      \"createdBy\": \"kwanhyun\",\n      \"comment\": \"배포 중\"\n    }' | python3 -c \"import json,sys; print(json.load(sys.stdin)['silenceID'])\"\n8f2a1c04-3e97-4b62-a018-52c9d7e3b410\n\n$ curl -s localhost:9093/api/v2/alerts | python3 -c \"\nimport json,sys\nfor a in json.load(sys.stdin):\n    print(a['labels']['alertname'], a['status']['state'])\"\n서비스내려감 suppressed\n\n--   배포 때 쓴다\n--   끝나면 저절로 풀린다\n\n\n-- 되돌린다\n\n$ docker start app-1 app-2 app-3 && sleep 60\n\n$ curl -s localhost:9091/api/v1/alerts | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['data']['alerts']), '건')\"\n0 건\n\n$ curl -s localhost:9096/received | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)[-1]\nprint('상태', d['status'])\"\n상태 resolved\n\n--   해제도 알려 준다\n\n\n-- 세 규칙만 남긴다\n\n$ promtool check rules rules/orders.yml\nChecking rules/orders.yml\n  SUCCESS: 4 rules found\n\n$ curl -s localhost:9091/api/v1/rules | python3 -c \"\nimport json,sys\nfor g in json.load(sys.stdin)['data']['groups']:\n    for r in g['rules']:\n        print('%-16s %-8s for=%s' % (\n            r['name'], r['labels'].get('severity'), r['duration']))\"\n서비스내려감      page     for=120\n오류율높음        page     for=300\n응답느림          ticket   for=600\n메트릭사라짐      page     for=300\n\n$ git add rules/ alertmanager.yml\n$ git commit -q -m 'chore: 알림 규칙 네 개로 정리'\n\n\n-- 9장에서 만든 것들\n\n$ printf '%-8s %-22s %s\\n' \\\n  '9.1'  '무엇을'      '로그 308GB, 메트릭 1.2KB' \\\n  '9.2'  '마이크로미터' '계기 넷' \\\n  '9.3'  '엔드포인트'   '이름 74 개' \\\n  '9.4'  '형식'        '412 줄 한 번' \\\n  '9.5'  '수집'        '계열 1308, 보름 226MB' \\\n  '9.6'  '쿼리'        'rate 와 분위' \\\n  '9.7'  '그림'        '질문만 가짐' \\\n  '9.8'  '화면'        '넷, 세 줄' \\\n  '9.9'  '업무 숫자'   '커밋 뒤에 셈' \\\n  '9.10' '알림'        '네 규칙'\n\n9.1    무엇을                 로그 308GB, 메트릭 1.2KB\n9.2    마이크로미터           계기 넷\n9.3    엔드포인트             이름 74 개\n9.4    형식                   412 줄 한 번\n9.5    수집                   계열 1308, 보름 226MB\n9.6    쿼리                   rate 와 분위\n9.7    그림                   질문만 가짐\n9.8    화면                   넷, 세 줄\n9.9    업무 숫자              커밋 뒤에 셈\n9.10   알림                   네 규칙\n\n--   10.1 절에서 기동 로그를 다시 읽는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '묻는 것'    '지금 할 일이 있나' \\\n  '거는 곳'    '원인 아닌 증상' \\\n  'for'        '한 번 튄 건 무시' \\\n  '건수 조건'  '새벽 20% 를 막음' \\\n  '없어짐'     'absent 로 잡음' \\\n  '묶기'       '세 대가 한 통' \\\n  '주석'       '새벽에 읽는 세 줄' \\\n  '침묵'       '배포 때' \\\n  '횟수'       '주 40 번이면 실패'\n\n묻는 것                    지금 할 일이 있나\n거는 곳                    원인 아닌 증상\nfor                        한 번 튄 건 무시\n건수 조건                  새벽 20% 를 막음\n없어짐                     absent 로 잡음\n묶기                       세 대가 한 통\n주석                       새벽에 읽는 세 줄\n침묵                       배포 때\n횟수                       주 40 번이면 실패",
+   "note": "**한 대를 멈추니 2 분 동안 `pending` 이다가 `firing` 이 되고 잠깐 껐다 켠 건 0 건으로** 지나간다.\n\n**`for` 를 뺀 규칙은 여섯 시간에 스무 번 깜빡이고 붙인 쪽은 한 번도 안** 울렸다.\n\n**새벽 다섯 건 중 한 건 실패가 19.8% 인데 건수 조건이** 막는다.\n\n**앱이 다 죽으면 `order_pending` 계열 자체가 사라져 그 규칙은 영원히 안 울고 `absent` 가 그걸** 잡는다.\n\n**세 대가 죽었는데 한 통으로 묶여 나가고 주석 세 줄이 새벽에 읽을 전부**다."
+  }
+ ],
+ "recap": [
+  "**지금 할 일이** 있어야 한다.",
+  "**증상에** 건다.",
+  "**한동안** 계속돼야 한다.",
+  "**건수도** 본다.",
+  "**없어짐도** 잡는다.",
+  "**묶어서** 보낸다.",
+  "**주석이** 전부다.",
+  "**침묵을** 쓴다.",
+  "**자주 울면** 실패다."
+ ],
+ "drills": [
+  {
+   "task": "규칙 셋을 쓴다.",
+   "done_when": "문법 검사를 통과했다.",
+   "minutes": 25
+  },
+  {
+   "task": "한 대를 멈춘다.",
+   "done_when": "pending 에서 firing 으로 가는 걸 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`for` 를 빼 본다.",
+   "done_when": "깜빡이는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "울린 횟수를 센다.",
+   "done_when": "지울 규칙을 골랐다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "알림을 쓰기 전에 묻는 것은?",
+   "a": "사람이 지금 할 일이 있는지, 깨워 준 게 고마울지다."
+  },
+  {
+   "q": "`for` 가 왜 필요한가?",
+   "a": "한 번 튄 것으로 깨우지 않기 위해서다."
+  },
+  {
+   "q": "새벽에 비율이 튀는 이유는?",
+   "a": "요청이 적어 한 건 실패가 큰 비율이 된다. 건수 조건을 같이 건다."
+  },
+  {
+   "q": "계열이 사라지면?",
+   "a": "그 규칙은 영원히 안 운다. 없어짐 자체를 잡는 규칙이 필요하다."
+  },
+  {
+   "q": "너무 자주 우는 알림은?",
+   "a": "무시되므로 없는 것과 같다. 지우거나 문턱을 다시 잡는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "지속 시간",
+   "def": "조건이 참인 채로 얼마나 이어져야 실제로 울릴지 정하는 값."
+  },
+  {
+   "term": "침묵",
+   "def": "정해진 동안 특정 알림을 눌러 두는 것. 배포 때 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Prometheus — Alerting rules",
+   "url": "https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Prometheus — Alertmanager",
+   "url": "https://prometheus.io/docs/alerting/latest/alertmanager/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Google SRE Workbook — Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "publisher": "Google"
+  }
+ ]
+}

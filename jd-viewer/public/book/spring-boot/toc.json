@@ -687,7 +687,7 @@
           "title": "알림",
           "summary": "언제 깨울 것인가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -702,7 +702,7 @@
           "title": "다시 보는 로그",
           "summary": "기동 한 번에 무엇이 있었나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
