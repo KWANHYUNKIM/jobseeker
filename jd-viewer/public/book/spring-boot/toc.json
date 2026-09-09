@@ -536,7 +536,7 @@
           "title": "켜고 본다",
           "summary": "의존성 하나와 엔드포인트.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -544,7 +544,7 @@
           "title": "엔드포인트 목록",
           "summary": "무엇이 열리나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

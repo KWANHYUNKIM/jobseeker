@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "actuator",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "켜고 본다",
+ "summary": "의존성 하나와 엔드포인트.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 필요한지 안다.",
+  "한 줄로 켠다.",
+  "두 스위치를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장 내내 액츄에이터를 빌려** 썼다. **이제 그것 자체를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "밖에서는 못 묻는 것들",
+   "ascii": "   questions you cannot answer from the outside\n\n   is it alive, or just accepting connections\n   which build is this, and from which commit\n   what value did that property end up as\n   how many threads are in the pool right now\n\n   the process knows all four; nothing else does",
+   "note": "**넷 다 프로세스만** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "떠 있다는 것과 잘 돌고 있다는 것은 다르다",
+   "md": "**포트가 열린 것만으로는** 모른다.\n\n> **4.11절에서 `000` 과 `200` 만** 봤다.\n> **DB 가 끊겨도 200 은** 나온다.\n> **8.3절에서 그걸** 만든다.\n\n**어느 빌드인지도** 모른다.\n\n> **7.1절에서 해시를** 쟀다.\n> **밖에서는 그걸 못** 본다.\n> **8.4절에서 담는**다.\n\n**설정 값도** 모른다.\n\n> **7.12절에서 물어** 봤다.\n> **그게 이 장치** 덕이다.\n> **아래에서 다시** 본다.\n\n**한 줄이면** 켜진다.\n\n> **5.3절의 그 스타터**다.\n> **6장의 자동 구성이** 돈다.\n> **아래에서 그 흔적을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "스위치가 둘이다",
+   "ascii": "   two switches, not one\n\n   enabled    does the endpoint exist at all\n   exposed    is it reachable over http\n\n   most endpoints are enabled but not exposed",
+   "note": "**대부분은 켜져 있고 열려 있지** 않다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "다 열어 두면 그대로 새어 나간다",
+   "md": "**기본은 둘만** 열린다.\n\n> **`health` 와 이름 목록**이다.\n> **아래에서 세어** 본다.\n> **이유가** 있다.\n\n**별표는 위험**하다.\n\n> **7.5절에서 한 번** 썼다.\n> **환경 변수가 다** 보인다.\n> **8.9절에서 그걸** 본다.\n\n**포트를 나눌 수** 있다.\n\n> **밖에 안 내보낸**다.\n> **8.7절에서** 나눈다.\n> **운영에서는 그렇게** 한다.\n\n**끄는 것과 안 여는 건 다르**다.\n\n> **꺼진 건 빈도** 없다.\n> **아래에서 세어** 본다.\n> **6.6절의 조건**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 없을 때\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator\n404\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n200\n\n--   떠 있다는 것만 안다\n\n\n-- 한 줄을 넣는다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-actuator'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n      44\n\n// 넣기 전에는\n      37\n\n--   일곱이 늘었다\n--   5.3절에서 세던 그 방식이다\n\n\n-- 자동 구성이 돈다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'matched:'\n      92\n\n// 넣기 전에는\n      44\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep ' matched:$' | grep -oE '[A-Za-z]+EndpointAutoConfiguration' \\\n    | sort -u | head -6\nBeansEndpointAutoConfiguration\nConditionsReportEndpointAutoConfiguration\nConfigurationPropertiesReportEndpointAutoConfiguration\nEnvironmentEndpointAutoConfiguration\nHealthEndpointAutoConfiguration\nInfoEndpointAutoConfiguration\n\n--   6.7절의 그 보고서다\n--   44 가 92 가 됐다\n\n\n-- 기동 로그에도 남는다\n\n$ ./gradlew bootRun 2>&1 | grep -i 'actuator\\|Exposing'\nINFO ... : Exposing 1 endpoint beneath base path '/actuator'\n\n$ curl -s localhost:8080/actuator | python3 -m json.tool\n{\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:8080/actuator\",\n            \"templated\": false\n        },\n        \"health\": {\n            \"href\": \"http://localhost:8080/actuator/health\",\n            \"templated\": false\n        },\n        \"health-path\": {\n            \"href\": \"http://localhost:8080/actuator/health/{*path}\",\n            \"templated\": true\n        }\n    }\n}\n\n--   기본으로 열린 건 health 하나다\n\n\n-- 두 스위치를 센다\n\n@GetMapping(value = \"/eps\", produces = \"text/plain\")\nString eps(ApplicationContext ctx) {\n    var beans = ctx.getBeanNamesForAnnotation(Endpoint.class);\n    return \"엔드포인트 빈: \" + beans.length + \"\\n\"\n         + String.join(\"\\n\", beans) + \"\\n\";\n}\n\n$ curl -s localhost:8080/eps | head -3\n엔드포인트 빈: 13\nbeansEndpoint\ncachesEndpoint\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['_links']))\"\n3\n\n--   빈은 열셋인데 열린 건 하나다\n--   나머지는 있는데 못 부른다\n\n\n-- 열어 본다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info,env,beans\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys\nfor k in json.load(sys.stdin)['_links']: print(k)\"\nself\nbeans\nenv\nenv-toMatch\nhealth\nhealth-path\ninfo\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Exposing'\nINFO ... : Exposing 4 endpoints beneath base path '/actuator'\n\n--   로그에 숫자가 나온다\n\n\n-- 끄면 빈도 사라진다\n\nmanagement:\n  endpoint:\n    beans:\n      access: none\n  endpoints:\n    web:\n      exposure:\n        include: health,info,env,beans\n\n$ curl -s localhost:8080/eps | head -1\n엔드포인트 빈: 12\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/beans\n404\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'BeansEndpointAutoConfiguration' | head -4\n   BeansEndpointAutoConfiguration:\n      Did not match:\n         - @ConditionalOnAvailableEndpoint no property management.endpoint.beans.access\n           matched\n\n--   6.6절의 속성 조건이다\n--   안 여는 것과 끄는 것이 다르다\n\n\n-- 안 열면 빈은 남는다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health\n\n$ curl -s localhost:8080/eps | head -1\n엔드포인트 빈: 13\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/beans\n404\n\n--   응답은 같은 404 다\n--   안쪽 상태가 다르다\n\n\n-- 7장에서 쓰던 것들\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: env,configprops,conditions,health,info\n\n$ curl -s localhost:8080/actuator/env/study.mode \\\n    | python3 -c \"import json,sys; d=json.load(sys.stdin); \\\nprint(d['property']['source'], '=', d['property']['value'])\"\ncommandLineArgs = dev\n\n$ curl -s localhost:8080/actuator/conditions \\\n    | python3 -c \"import json,sys; d=json.load(sys.stdin)['contexts']['application']; \\\nprint(len(d['positiveMatches']), len(d['negativeMatches']))\"\n92 71\n\n$ curl -s localhost:8080/actuator/configprops \\\n    | python3 -c \"import json,sys; \\\nprint(len(json.load(sys.stdin)['contexts']['application']['beans']))\"\n38\n\n--   7.12절과 6.7절과 7.8절에서 쓰던 그것들이다\n\n\n-- 기본 경로를 바꾼다\n\nmanagement:\n  endpoints:\n    web:\n      base-path: /manage\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n404\n$ curl -s localhost:8080/manage/health\n{\"status\":\"UP\"}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Exposing'\nINFO ... : Exposing 5 endpoints beneath base path '/manage'\n\n--   기본은 /actuator 다\n\n\n-- 하나만 경로를 바꾼다\n\nmanagement:\n  endpoints:\n    web:\n      path-mapping:\n        health: healthcheck\n\n$ curl -s localhost:8080/actuator/healthcheck\n{\"status\":\"UP\"}\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n404\n\n--   ⑫ 6장의 프로브가 이 이름을 부른다\n\n\n-- 내 컨트롤러와 안 부딪힌다\n\n@RestController\nclass MyController {\n    @GetMapping(\"/actuator/mine\")\n    String mine() { return \"내 것\"; }\n}\n\n$ curl -s localhost:8080/actuator/mine\n내 것\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n--   같은 경로 아래 섞여도 된다\n--   섞지 않는 게 낫다\n\n\n-- JSON 이 특별한 타입이다\n\n$ curl -s -D - -o /dev/null localhost:8080/actuator/health | grep -i '^content-type'\nContent-Type: application/vnd.spring-boot.actuator.v3+json\n\n$ curl -s -H 'Accept: application/json' localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n--   버전이 박힌 타입이다\n--   도구들이 이걸로 알아본다\n\n\n-- 별표를 쓰면\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['_links']))\"\n17\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Exposing'\nINFO ... : Exposing 13 endpoints beneath base path '/actuator'\n\n$ curl -s localhost:8080/actuator/env \\\n    | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    if s['name'] == 'systemEnvironment':\n        print(len(s['properties']), '개')\n\"\n42 개\n\n--   환경 변수 마흔둘이 한 번에 보인다\n--   8.9절에서 이게 왜 위험한지 본다\n\n\n-- 빼는 쪽도 있다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n        exclude: env,beans,configprops,heapdump,threaddump\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['_links'].keys()))\"\n['caches', 'caches-cache', 'health', 'health-path', 'info', 'loggers',\n 'loggers-name', 'mappings', 'metrics', 'metrics-requiredMetricName',\n 'scheduledtasks', 'self']\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/env\n404\n\n--   빼는 쪽이 이긴다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '넣기 전'     '404' \\\n  '한 줄'       '의존성 7 개' \\\n  '자동 구성'   '44 에서 92' \\\n  '엔드포인트'  '빈 13 개' \\\n  '기본 노출'   'health 하나' \\\n  '끄기'        '빈이 사라짐' \\\n  '안 열기'     '빈은 남음' \\\n  '별표'        '13 개 다' \\\n  '빼기'        '빼는 쪽이 이김'\n\n넣기 전                    404\n한 줄                      의존성 7 개\n자동 구성                  44 에서 92\n엔드포인트                 빈 13 개\n기본 노출                  health 하나\n끄기                       빈이 사라짐\n안 열기                    빈은 남음\n별표                       13 개 다\n빼기                       빼는 쪽이 이김\n\n--   8.2절에서 열셋을 하나씩 본다",
+   "note": "**한 줄을 넣으니 의존성이 37 에서 44 로, 걸린 자동 구성이 44 에서 92 로** 늘었다.\n\n**엔드포인트 빈은 열셋인데 기본으로 열린 건 `health` 하나**다.\n\n**끄면 빈이 12 로 줄고 안 열기만 하면 빈은 13 그대로인데 응답은 둘 다 404**다.\n\n**응답 타입이 `application/vnd.spring-boot.actuator.v3+json` 으로** 박혀 있다.\n\n**별표로 다 열면 13 개가 열리고 `/actuator/env` 에 환경 변수 마흔둘이 그대로** 보인다."
+  }
+ ],
+ "recap": [
+  "**밖에서는 못** 묻는다.",
+  "**한 줄이면** 켜진다.",
+  "**자동 구성이** 돈다.",
+  "**스위치가** 둘이다.",
+  "**기본은 하나**다.",
+  "**끄면 빈도** 없다.",
+  "**안 열면 빈은** 남는다.",
+  "**경로를** 바꾼다.",
+  "**별표는** 위험하다."
+ ],
+ "drills": [
+  {
+   "task": "넣기 전후를 센다.",
+   "done_when": "의존성과 자동 구성 수를 비교했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 수와 열린 수를 센다.",
+   "done_when": "둘이 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "끄기와 안 열기를 비교한다.",
+   "done_when": "빈 수 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "별표로 열어 본다.",
+   "done_when": "무엇이 보이는지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "밖에서 200 이 나오면 잘 도는 건가?",
+   "a": "아니다. 포트가 열린 것만 안다."
+  },
+  {
+   "q": "두 스위치는?",
+   "a": "켜져 있느냐와 HTTP 로 열려 있느냐다."
+  },
+  {
+   "q": "기본으로 열리는 것은?",
+   "a": "헬스 하나다."
+  },
+  {
+   "q": "끄기와 안 열기의 차이는?",
+   "a": "끄면 빈 자체가 없고 안 열면 빈은 남는다."
+  },
+  {
+   "q": "노출에서 넣기와 빼기가 겹치면?",
+   "a": "빼는 쪽이 이긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "액츄에이터",
+   "def": "도는 애플리케이션의 안쪽을 묻고 바꿀 수 있게 해 주는 장치."
+  },
+  {
+   "term": "노출",
+   "def": "엔드포인트를 HTTP 로 부를 수 있게 여는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

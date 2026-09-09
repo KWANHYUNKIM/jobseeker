@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "endpoints",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "엔드포인트 목록",
+ "summary": "무엇이 열리나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "열셋을 훑는다.",
+  "네 갈래로 묶는다.",
+  "메서드 규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 열셋을** 셌다. **하나씩 무엇을 주는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 갈래",
+   "ascii": "   endpoints group into four kinds\n\n   what is inside   beans, mappings, conditions, configprops\n   what is set      env, configprops\n   what is running  health, metrics, threaddump, scheduledtasks\n   what can change  loggers, caches, shutdown\n\n   the last group answers to post and delete, not just get",
+   "note": "**마지막 갈래만 조회 말고 다른 메서드도** 받는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 물을 수 있는지 알아야 고를 수 있다",
+   "md": "**들여다보는 것들이** 있다.\n\n> **빈·매핑·조건·설정**이다.\n> **6·7장에서 이미** 썼다.\n> **아래에서 한 줄씩** 본다.\n\n**지금 상태를 보는 것도** 있다.\n\n> **헬스·메트릭·스레드**다.\n> **8.3절과 9장에서 깊이** 본다.\n> **여기선 모양만** 본다.\n\n**바꾸는 것도** 있다.\n\n> **로거·캐시·종료**다.\n> **8.5절에서 로거를** 바꾼다.\n> **메서드가** 다르다.\n\n**모양이 규칙적**이다.\n\n> **읽기는 조회, 쓰기는 등록**이다.\n> **인자는 경로에** 붙는다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드 규칙",
+   "ascii": "   an operation maps to a method by its kind\n\n   read       becomes get\n   write      becomes post\n   delete     becomes delete\n\n   a read taking a parameter becomes a path segment, not a query",
+   "note": "**인자 있는 읽기는 질의가 아니라 경로 조각이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무거운 것이 섞여 있다",
+   "md": "**덤프는 몇 초 걸린**다.\n\n> **그 사이 멈춘**다.\n> **아래에서 재** 본다.\n> **운영에서 조심**한다.\n\n**종료는 진짜로** 죽인다.\n\n> **기본은 꺼져** 있다.\n> **아래에서 켜** 본다.\n> **되돌릴 수** 없다.\n\n**응답이 아주** 크다.\n\n> **빈 목록이 수십 KB** 다.\n> **아래에서 재** 본다.\n> **자주 부르면 안** 된다.\n\n**JAR 에 따라 개수가** 다르다.\n\n> **6.4절의 조건**이다.\n> **DB 를 넣으면** 는다.\n> **아래에서 그걸** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 다 열고 센다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys\nfor k in sorted(json.load(sys.stdin)['_links']):\n    if not k.endswith('-path') and '-' not in k: print(k)\n\"\nbeans\ncaches\nconditions\nconfigprops\nenv\nhealth\ninfo\nloggers\nmappings\nmetrics\nscheduledtasks\nself\nthreaddump\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['_links']))\"\n17\n\n--   열셋에 인자 붙은 형태가 더해져 열일곱이다\n\n\n-- 크기를 잰다\n\n$ for e in beans mappings conditions configprops env health info \\\n           metrics loggers caches scheduledtasks threaddump; do\n    printf '%-16s %8s  %s\\n' \"$e\" \\\n      \"$(curl -s localhost:8080/actuator/$e | wc -c)\" \\\n      \"$(curl -s -o /dev/null -w '%{time_total}' localhost:8080/actuator/$e)\"\n  done\n\nbeans               48210  0.041\nmappings            31884  0.028\nconditions          62103  0.055\nconfigprops         27441  0.031\nenv                  9820  0.008\nhealth                 15  0.002\ninfo                    2  0.001\nmetrics              1204  0.003\nloggers             18932  0.014\ncaches                 22  0.002\nscheduledtasks         51  0.002\nthreaddump          98771  0.318\n\n--   덤프가 제일 크고 제일 느리다\n--   헬스는 열다섯 바이트다\n\n\n-- ① 들여다보는 것\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nprint('빈', len(b))\nprint(json.dumps(b['helloController'], ensure_ascii=False, indent=1))\n\"\n빈 187\n{\n \"aliases\": [],\n \"scope\": \"singleton\",\n \"type\": \"study.boot.HelloController\",\n \"resource\": \"file [.../HelloController.class]\",\n \"dependencies\": [\"studyProperties\"]\n}\n\n--   6.1절에서 센 187 이 여기 있다\n\n\n-- 매핑을 본다\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['contexts']['application']['mappings']\nm = d['dispatcherServlets']['dispatcherServlet']\nprint('매핑', len(m))\nfor x in m:\n    if 'hello' in str(x.get('predicate','')): print(' ', x['predicate'])\n\"\n매핑 34\n  {GET [/hello]}\n\n--   ③ 2장에서 로그로 보던 그것이다\n--   여기선 JSON 이다\n\n\n-- ② 설정을 본다\n\n$ curl -s localhost:8080/actuator/env | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('프로필', d['activeProfiles'])\nfor s in d['propertySources']: print(' ', s['name'][:46], len(s['properties']))\n\"\n프로필 ['prod']\n  server.ports 1\n  commandLineArgs 2\n  servletContextInitParams 0\n  systemProperties 69\n  systemEnvironment 42\n  applicationConfig: [classpath:/application-prod.yml] 3\n  applicationConfig: [classpath:/application.yml] 7\n\n--   7.6절에서 찍던 그 목록이다\n\n\n-- ③ 지금 상태를 본다\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys; n=json.load(sys.stdin)['names']; print(len(n)); print(n[:5])\"\n52\n['application.ready.time', 'application.started.time', 'disk.free',\n 'disk.total', 'executor.active']\n\n$ curl -s localhost:8080/actuator/metrics/jvm.threads.live | python3 -m json.tool\n{\n    \"name\": \"jvm.threads.live\",\n    \"description\": \"The current number of live threads\",\n    \"baseUnit\": \"threads\",\n    \"measurements\": [ { \"statistic\": \"VALUE\", \"value\": 31.0 } ],\n    \"availableTags\": []\n}\n\n--   9장에서 이걸 제대로 본다\n\n\n-- 스레드 덤프\n\n$ curl -s localhost:8080/actuator/threaddump | python3 -c \"\nimport json,sys\nt = json.load(sys.stdin)['threads']\nprint('스레드', len(t))\nfrom collections import Counter\nprint(Counter(x['threadState'] for x in t))\n\"\n스레드 31\nCounter({'WAITING': 14, 'TIMED_WAITING': 11, 'RUNNABLE': 6})\n\n$ curl -s -H 'Accept: text/plain' localhost:8080/actuator/threaddump | head -3\n2026-09-10 06:33:41\nFull thread dump OpenJDK 64-Bit Server VM (21.0.3+9-LTS):\n\n\"http-nio-8080-exec-1\" #52 daemon prio=5 os_prio=31 ...\n\n--   같은 것을 두 모양으로 준다\n--   아래쪽이 jstack 과 같은 형식이다\n\n\n-- 예약 작업\n\n@Scheduled(fixedRate = 60000)\nvoid ping() { }\n\n$ curl -s localhost:8080/actuator/scheduledtasks | python3 -m json.tool\n{\n    \"cron\": [],\n    \"fixedDelay\": [],\n    \"fixedRate\": [\n        {\n            \"runnable\": { \"target\": \"study.boot.Pinger.ping\" },\n            \"initialDelay\": 0,\n            \"interval\": 60000\n        }\n    ]\n}\n\n--   등록만 하고 잊는 일이 흔하다\n\n\n-- ④ 바꾸는 것\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/study.boot \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"configuredLevel\":\"DEBUG\"}'\n204\n\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"configuredLevel\":\"DEBUG\",\"effectiveLevel\":\"DEBUG\"}\n\n--   8.5절에서 이걸 제대로 쓴다\n\n\n-- 메서드 규칙\n\n$ curl -s -o /dev/null -w 'GET  %{http_code}\\n' localhost:8080/actuator/loggers\nGET  200\n$ curl -s -o /dev/null -w 'POST %{http_code}\\n' -X POST localhost:8080/actuator/loggers\nPOST 405\n$ curl -s -o /dev/null -w 'POST %{http_code}\\n' -X POST \\\n    localhost:8080/actuator/loggers/study.boot \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"INFO\"}'\nPOST 204\n$ curl -s -o /dev/null -w 'DEL  %{http_code}\\n' -X DELETE \\\n    localhost:8080/actuator/caches/myCache\nDEL  404\n\n--   목록은 조회, 하나는 등록이다\n\n\n-- 인자는 경로에 붙는다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'localhost:8080/actuator/loggers?name=study.boot'\n200\n$ curl -s 'localhost:8080/actuator/loggers?name=study.boot' \\\n    | python3 -c \"import json,sys; print(len(json.load(sys.stdin)['loggers']))\"\n214\n\n$ curl -s localhost:8080/actuator/loggers/study.boot\n{\"configuredLevel\":\"INFO\",\"effectiveLevel\":\"INFO\"}\n\n--   질의 문자열은 무시하고 전체를 준다\n--   경로 조각이어야 한다\n\n\n-- 종료는 기본이 꺼짐이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/actuator/shutdown\n404\n\nmanagement:\n  endpoint:\n    shutdown:\n      access: unrestricted\n  endpoints:\n    web:\n      exposure:\n        include: \"*\"\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print('shutdown' in json.load(sys.stdin)['_links'])\"\nTrue\n\n$ curl -s -X POST localhost:8080/actuator/shutdown\n{\"message\":\"Shutting down, bye...\"}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n000\n\n$ jobs\n[1]  + done       java -jar build/libs/app.jar\n\n--   진짜로 죽었다\n--   8.9절에서 왜 열면 안 되는지 본다\n\n\n-- JAR 에 따라 개수가 다르다\n\n// JPA 와 레디스를 넣으면\n$ curl -s localhost:8080/actuator/health | python3 -m json.tool\n{ \"status\": \"UP\" }\n\nmanagement:\n  endpoint:\n    health:\n      show-details: always\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['components']))\"\n['db', 'diskSpace', 'ping', 'redis']\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['names']))\"\n74\n\n--   52 가 74 가 됐다\n--   6.4절의 조건이 여기서도 돈다\n\n\n-- 문서와 맞춰 본다\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['_links']\nfor k, v in sorted(d.items()):\n    print('%-28s %s' % (k, v['href'].replace('http://localhost:8080','')))\n\" | head -8\nbeans                        /actuator/beans\ncaches                       /actuator/caches\ncaches-cache                 /actuator/caches/{cache}\nconditions                   /actuator/conditions\nconfigprops                  /actuator/configprops\nenv                          /actuator/env\nenv-toMatch                  /actuator/env/{toMatch}\nhealth                       /actuator/health\n\n--   중괄호가 붙은 것이 인자를 받는 것이다\n\n\n-- 정리\n\n$ printf '%-22s %s\\n' \\\n  '열셋'        '인자형 포함 열일곱' \\\n  '제일 큰 것'  'threaddump 98KB' \\\n  '제일 느린 것' 'threaddump 0.3 초' \\\n  '제일 작은 것' 'health 15 바이트' \\\n  '읽기'        'GET' \\\n  '쓰기'        'POST' \\\n  '인자'        '경로 조각' \\\n  '종료'        '기본 꺼짐' \\\n  'JAR 늘면'    '메트릭 52 에서 74'\n\n열셋                   인자형 포함 열일곱\n제일 큰 것             threaddump 98KB\n제일 느린 것           threaddump 0.3 초\n제일 작은 것           health 15 바이트\n읽기                   GET\n쓰기                   POST\n인자                   경로 조각\n종료                   기본 꺼짐\nJAR 늘면               메트릭 52 에서 74\n\n--   8.3절에서 헬스를 판다",
+   "note": "**열셋에 인자형이 더해져 링크가 열일곱이고 `threaddump` 가 98KB·0.318 초로 제일** 무겁다.\n\n**`beans` 가 6.1절의 187 을, `env` 가 7.6절의 덩어리 목록을 그대로** 준다.\n\n**읽기는 조회·쓰기는 등록이고 인자는 질의가 아니라 경로 조각이어야** 한다.\n\n**종료를 열고 부르니 `Shutting down, bye...` 뒤에 `000`** 이 된다.\n\n**JPA 와 레디스를 넣으니 헬스 구성 요소가 넷이 되고 메트릭이 52 에서 74 로** 늘었다."
+  }
+ ],
+ "recap": [
+  "**열셋**이다.",
+  "**네 갈래**다.",
+  "**덤프가 제일** 무겁다.",
+  "**헬스가 제일** 작다.",
+  "**읽기는** 조회다.",
+  "**쓰기는** 등록이다.",
+  "**인자는** 경로다.",
+  "**종료는 기본이** 꺼짐이다.",
+  "**JAR 따라** 는다."
+ ],
+ "drills": [
+  {
+   "task": "다 열고 크기와 시간을 잰다.",
+   "done_when": "제일 무거운 것을 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈과 매핑을 열어 본다.",
+   "done_when": "6.1절 숫자와 맞춰 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "메서드를 바꿔 불러 본다.",
+   "done_when": "405 를 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "JAR 를 더해 개수를 비교한다.",
+   "done_when": "메트릭이 늘어난 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 무거운 엔드포인트는?",
+   "a": "스레드 덤프다. 크고 느리다."
+  },
+  {
+   "q": "인자를 어떻게 넘기나?",
+   "a": "질의 문자열이 아니라 경로 조각으로 넘긴다."
+  },
+  {
+   "q": "값을 바꾸는 엔드포인트의 메서드는?",
+   "a": "등록이다. 목록에 등록을 보내면 405 다."
+  },
+  {
+   "q": "종료 엔드포인트의 기본 상태는?",
+   "a": "꺼져 있다. 열면 실제로 프로세스가 죽는다."
+  },
+  {
+   "q": "엔드포인트 개수가 왜 달라지나?",
+   "a": "클래스패스에 따라 조건이 갈려서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "엔드포인트",
+   "def": "액츄에이터가 노출하는 하나의 조회나 조작 단위."
+  },
+  {
+   "term": "선택기",
+   "def": "엔드포인트가 받는 인자. 경로 조각으로 넘긴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot Actuator Web API Documentation",
+   "url": "https://docs.spring.io/spring-boot/api/rest/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
