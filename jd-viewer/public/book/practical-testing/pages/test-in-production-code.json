@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "test-in-production-code",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "테스트를 위한 프로덕션 코드",
+ "summary": "어디까지 허용할까.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "허용 범위를 정한다.",
+  "판단 기준 하나를 안다.",
+  "안 되는 것을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 미뤘다** — **빌더를 프로덕션에 두는 문제**. **여기서 갚는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "어디까지 가나",
+   "ascii": "   how far a production change goes for a test\n\n   fine\n     a builder, a static factory, a getter you would want anyway\n     an interface that hides a library                    6.8\n     a parameter instead of now()                         2.7\n\n   borderline\n     a constructor only tests call\n     package private instead of private\n\n   not fine\n     an if that checks whether it is running under test\n     a setter that breaks an invariant\n     a public method that exposes internal state",
+   "note": "**세 구간**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "판단 기준 하나",
+   "md": "**\"테스트가 없어도 이 변경이 좋은가\"**\n\n> **좋으면 설계 개선**이다.\n> **아니면 테스트 훅**이다.\n\n**2.7절의 시각 파라미터**\n\n```java\npublic Order createOrder(LocalDateTime currentDateTime)\n```\n\n> **테스트가 없어도** 좋다. **의존성이 명시**되고 **호출자가 통제**한다.\n> **설계 개선**이다.\n\n**6.8절의 인터페이스**\n\n```java\npublic interface MailSendClient { boolean sendEmail(...); }\n```\n\n> **테스트가 없어도** 좋다. **DIP** 다.\n> **메일 라이브러리를 바꿔도 서비스가 안** 바뀐다.\n\n**둘 다 \"테스트 때문에\" 시작했는데 결과가 설계 개선**이다.\n\n> **1.2절의 \"설계 압력\"** 이다."
+  },
+  {
+   "type": "figure",
+   "caption": "물어볼 것",
+   "ascii": "   the question to ask before changing production code\n\n   would this change be good even with no tests\n\n   yes  -> it is a design improvement. do it.\n   no   -> it is a test hook. look for another way.\n\n   most of chapter 2 and 6 answered yes",
+   "note": "**2·6장이 대부분 \"예\"** 였다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "괜찮은 것들",
+   "md": "**빌더·정적 팩터리**\n\n```java\n@Builder\npublic class Product { }\n```\n\n> **테스트가 없어도** 쓴다. **파라미터가 다섯 넘으면 생성자가 안** 읽힌다.\n>\n> **1.4절에서 본 위험**은 남는다 — **필수 필드를 빼먹어도 컴파일**된다.\n> **`@Builder` 를 정적 팩터리로 감싸면** 된다(5.5절).\n\n**게터**\n\n```java\npublic List<Beverage> getBeverages() {\n    return Collections.unmodifiableList(beverages);\n}\n```\n\n> **`unmodifiableList` 가** 핵심이다. **밖에서 못 바꾼다.**\n> **테스트용 게터가 캡슐화를 깨면 안** 된다.\n\n**패키지 프라이빗**\n\n```java\nclass OrderCalculator {          // public 아님\n    int calculate(...) { }\n}\n```\n\n> **1.4절에서 테스트를 같은 패키지에 두는 이유**였다.\n> **`private` 을 패키지 프라이빗으로 여는 건 대개** 괜찮다.\n>\n> **`public` 으로 여는 건** 다르다 — **외부에 공개**된다.\n\n**애매한 것**\n\n```java\nprotected Order(List<Beverage> beverages, LocalDateTime now) { }\n```\n\n> **테스트만 부르는 생성자**다.\n> **JPA 가 요구하는 `@NoArgsConstructor(PROTECTED)` 와** 다르다.\n>\n> **정적 팩터리로 대체할 수 있으면 그쪽**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 되는 것들",
+   "md": "**① 테스트인지 판단하는 코드**\n\n```java\nif (System.getProperty(\"test\") != null) {\n    return dummyResponse();\n}\n```\n\n> **프로덕션과 테스트가 다른 코드를** 돈다.\n> **테스트가 통과해도 프로덕션이 도는지** 모른다.\n>\n> **8.2절의 프로파일과는 다르다** — **그건 설정이고 이건 로직**이다.\n\n**② 불변을 깨는 세터**\n\n```java\npublic void setTotalPrice(int totalPrice) {   // 테스트에서 쓰려고\n    this.totalPrice = totalPrice;\n}\n```\n\n> **금액은 계산 결과**다. **밖에서 정하면 안** 된다.\n> **누군가 프로덕션에서 쓴다.**\n>\n> **테스트가 원하는 상태를 못 만들면 팩터리를** 만든다.\n\n**③ 내부 상태를 여는 게터**\n\n```java\npublic Map<String, Stock> getStockMap() {   // 계산 중간 결과\n    return stockMap;\n}\n```\n\n> **7.4절과 이어**진다.\n> **중간 결과를 검증하고 싶은 건 대개 `private` 메서드를 테스트하고 싶은** 것이다.\n\n**④ `@VisibleForTesting`**\n\n> **구아바의 애노테이션**이다. **\"테스트 때문에 열었다\" 를 표시**한다.\n>\n> **정직한데 냄새이기도** 하다.\n> **붙일 곳이 늘면 설계를 본다.**\n\n**규칙**\n\n> **테스트가 프로덕션 코드를 바꾸는 건** 좋다.\n> **테스트 전용 코드가 프로덕션에 남는 건** 나쁘다.\n>\n> **둘의 차이는 \"프로덕션도 쓰나\"** 다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 테스트 훅을 넣어 보면 ---\n\npublic Order createOrder(LocalDateTime currentDateTime) {\n    if (System.getProperty(\"skipTimeCheck\") != null) {\n        return new Order(currentDateTime, beverages);   // 검증을 건너뛴다\n    }\n    LocalTime currentTime = currentDateTime.toLocalTime();\n    if (currentTime.isBefore(SHOP_OPEN_TIME) || ...) {\n        throw new IllegalArgumentException(\"주문 시간이 아닙니다.\");\n    }\n    ...\n}\n\n# build.gradle\ntasks.named('test') {\n    systemProperty 'skipTimeCheck', 'true'\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n카페 키오스크 > 주문을 생성할 때 > 개점 1분 전에는 주문할 수 없다 FAILED\n    Expecting code to raise a throwable.\n카페 키오스크 > 주문을 생성할 때 > 마감 정각에는 주문할 수 없다 FAILED\n    Expecting code to raise a throwable.\n\n#   경계 테스트가 다 깨진다\n\n#   훅을 넣은 순간 그 검증을 테스트할 수 없게 됐다\n\n#   되돌린다\n\n# --- 불변을 깨는 세터 ---\n\npublic class Order {\n    public void setTotalPrice(int totalPrice) {\n        this.totalPrice = totalPrice;\n    }\n}\n\n@Test\nvoid orderWithFixedPrice() {\n    Order order = Order.create(products, 영업중);\n    order.setTotalPrice(99999);        // 테스트가 원하는 값으로\n\n    assertThat(order.getTotalPrice()).isEqualTo(99999);\n}\n\n$ ./gradlew test\n\n주문 > orderWithFixedPrice() PASSED\n\n#   통과한다\n\n#   그런데 이 세터가 프로덕션에도 있다\n\n$ grep -rn \"setTotalPrice\" src/main/java/\n\nsrc/main/java/sample/cafekiosk/domain/order/Order.java:52\nsrc/main/java/sample/cafekiosk/api/service/OrderService.java:41\n\n#   서비스가 쓰기 시작했다\n\n#   금액이 계산 결과가 아니라 밖에서 정해지는 값이 됐다\n\n# --- 팩터리로 대신하면 ---\n\npublic static Order createWithPrice(List<Product> products,\n                                    LocalDateTime now, int totalPrice) {\n    // 테스트 전용이 아니라 '금액이 이미 정해진 주문' 이라는 개념\n}\n\n#   그런데 그런 개념이 도메인에 있나\n\n#   없으면 만들지 않는다\n\n#   테스트가 99999원짜리 주문이 필요하면\n#   99999원어치 상품을 given 에 넣는다\n\n@Test\nvoid orderWithBigAmount() {\n    // given\n    Product expensive = createProduct(\"001\", 99999);\n\n    // when\n    Order order = Order.create(List.of(expensive), 영업중);\n\n    // then\n    assertThat(order.getTotalPrice()).isEqualTo(99999);\n}\n\n주문 > orderWithBigAmount() PASSED\n\n#   프로덕션 코드를 안 바꿨다\n\n# --- 괜찮은 변경: 게터 ---\n\npublic List<Beverage> getBeverages() {\n    return beverages;                       // 그대로 노출\n}\n\n@Test\nvoid canModifyFromOutside() {\n    cafeKiosk.add(new Americano(), 1);\n\n    cafeKiosk.getBeverages().clear();       // 밖에서 비운다\n\n    assertThat(cafeKiosk.getBeverages()).isEmpty();\n}\n\n$ ./gradlew test\n\n카페 키오스크 > canModifyFromOutside() PASSED\n\n#   통과한다. 그게 문제다\n\n#   프로덕션에서도 누군가 이럴 수 있다\n\npublic List<Beverage> getBeverages() {\n    return Collections.unmodifiableList(beverages);\n}\n\n$ ./gradlew test\n\n카페 키오스크 > canModifyFromOutside() FAILED\n    java.lang.UnsupportedOperationException\n\n#   막힌다\n\n#   테스트를 위한 게터인데 캡슐화를 안 깼다\n\n# --- 괜찮은 변경: 인터페이스 ---\n\n$ git log --oneline -1 -- src/main/java/.../MailSendClient.java\n\na1b2c3d refactor(mail): 메일 전송을 인터페이스 뒤로 옮긴다\n\n#   6.8절에서 만든 것이다\n\n#   테스트가 없어도 좋은 변경인가\n\n#   메일 라이브러리를 바꿔도 MailService 가 안 바뀐다\n#   -> 그렇다\n\n# --- 지금 프로덕션에 테스트 전용 코드가 있는지 ---\n\n$ grep -rn \"VisibleForTesting\\|forTest\\|System.getProperty(\\\"test\" src/main/java/\n\n(결과 없음)\n\n$ grep -rn \"@Builder\" src/main/java/ | wc -l\n4\n\n#   빌더 넷은 프로덕션도 쓴다\n\n$ grep -rn \"Product.builder()\" src/main/java/ | wc -l\n2\n\n#   서비스와 초기 데이터에서 쓴다\n\n#   테스트 전용이 아니다\n\n# --- 다음 절에서 ---\n\n#   private 메서드를 테스트하고 싶어질 때를 다룬다",
+   "note": "**테스트 훅을 넣으니 경계 테스트가 다** 깨진다. **그 검증을 테스트할 수 없게** 됐다.\n\n**불변을 깨는 세터는 통과**하는데, **`grep` 해 보니 서비스가 쓰기** 시작했다. **금액이 계산 결과가 아니라 밖에서 정해지는 값**이 됐다.\n\n**팩터리 대신 given 에 99999원어치 상품을** 넣으면 프로덕션을 안 바꾼다.\n\n**게터를 그대로 노출하면 밖에서 비울 수** 있다. **`unmodifiableList` 로** 막는다.\n\n**프로덕션에 테스트 전용 코드가 하나도** 없다."
+  }
+ ],
+ "recap": [
+  "**기준 하나** — 테스트가 없어도 이 변경이 좋은가.",
+  "**시각 파라미터와 인터페이스는 설계 개선**이었다.",
+  "**빌더는 프로덕션도** 쓴다.",
+  "**게터는 `unmodifiableList` 로** 캡슐화를 지킨다.",
+  "**패키지 프라이빗은 대개 괜찮고 `public` 은** 다르다.",
+  "**테스트인지 판단하는 코드는 안** 된다 — 검증을 못 하게 만든다.",
+  "**불변을 깨는 세터는 프로덕션이 쓰기** 시작한다.",
+  "**테스트가 프로덕션을 바꾸는 건 좋고 테스트 전용 코드가 남는 건** 나쁘다.",
+  "**차이는 \"프로덕션도 쓰나\"** 다."
+ ],
+ "drills": [
+  {
+   "task": "테스트 훅을 넣어 본다.",
+   "done_when": "관련 테스트가 깨지는 것을 확인하고 되돌렸다.",
+   "minutes": 20
+  },
+  {
+   "task": "게터를 그대로 노출해 본다.",
+   "done_when": "밖에서 바꿀 수 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "프로덕션에서 테스트 전용 코드를 찾는다.",
+   "done_when": "`grep` 으로 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빌더가 프로덕션에서 쓰이는지 센다.",
+   "done_when": "테스트 전용인지 판단했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "판단 기준 하나는?",
+   "a": "테스트가 없어도 이 변경이 좋은가다."
+  },
+  {
+   "q": "테스트 훅이 왜 나쁜가?",
+   "a": "프로덕션과 다른 코드가 돌아 그 검증을 테스트할 수 없게 된다."
+  },
+  {
+   "q": "불변을 깨는 세터의 문제는?",
+   "a": "프로덕션이 쓰기 시작해 계산 결과가 밖에서 정해지는 값이 된다."
+  },
+  {
+   "q": "게터를 열 때 지킬 것은?",
+   "a": "`unmodifiableList` 등으로 밖에서 못 바꾸게 한다."
+  },
+  {
+   "q": "좋은 변경과 나쁜 변경의 차이는?",
+   "a": "프로덕션도 쓰느냐다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

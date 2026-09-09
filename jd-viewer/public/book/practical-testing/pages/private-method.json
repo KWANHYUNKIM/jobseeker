@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "private-method",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "private 메서드 테스트",
+ "summary": "하고 싶어지면 신호다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 안 하는지 안다.",
+  "그 욕구가 무슨 신호인지 안다.",
+  "클래스를 나누는 판단을 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절에서 \"스파이를 쓰고 싶다\" 가 신호라고** 했다. **이것도 같은 종류**다."
+  },
+  {
+   "type": "figure",
+   "caption": "그 욕구의 의미",
+   "ascii": "   what the urge usually means\n\n   i want to test this private method\n\n   it is complex enough to deserve its own test\n     -> it is a separate responsibility\n        pull it into its own class\n\n   the public method has too many paths to reach it\n     -> the public method does too much\n\n   either way, the answer is not a reflection call",
+   "note": "**리플렉션이 답이 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 하는 이유",
+   "md": "**① 공개 메서드로 다 커버된다**\n\n```java\npublic OrderResponse createOrder(...) {\n    List<Product> products = findProductsBy(numbers);   // private\n    deductStockQuantities(products);                    // private\n    Order order = Order.create(products, now);\n    return OrderResponse.of(orderRepository.save(order));\n}\n```\n\n> **5.10절에서 \"판매 중지 상품이면 예외\" 를** 짰다.\n> **그게 `findProductsBy` 를 테스트한** 것이다.\n>\n> **`private` 을 직접 안 불러도 검증**된다.\n\n**② 리팩터링을 막는다**\n\n> **`private` 메서드는 구현 세부**다.\n> **추출하고 합치고 이름 바꾸는 게** 자유로워야 한다.\n>\n> **테스트가 그걸 붙잡으면 6.7절의 목 테스트와 같은 상태**가 된다.\n\n**③ 리플렉션은 컴파일러를 우회한다**\n\n```java\nMethod method = OrderService.class.getDeclaredMethod(\"findProductsBy\", List.class);\nmethod.setAccessible(true);\n```\n\n> **이름을 바꾸면 런타임에** 터진다.\n> **2.3절의 `extracting(\"nmae\")` 과 같은 문제**다.\n\n**④ 테스트할 게 남았다면 설계 문제**\n\n> **공개 메서드로 못 닿는 경로가** 있으면\n> **그 `private` 이 다른 책임**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "공개 메서드로 충분한 이유",
+   "ascii": "   why testing through the public method is enough\n\n   public createOrder\n     private validateSellingStatus\n     private deductStock\n     private buildOrder\n\n   three tests on createOrder cover all three privates\n   and they survive an extract or an inline\n\n   a test on the private does not",
+   "note": "**추출·인라인에도 살아남는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "정말 테스트하고 싶으면 나눈다",
+   "md": "**신호를 따른다.**\n\n```java\n// 전\npublic class OrderService {\n    private List<Product> findProductsBy(List<String> numbers) {\n        List<Product> products = productRepository.findAllByProductNumberIn(numbers);\n        validateSellingStatus(products);\n        return sortByRequestOrder(products, numbers);   // 복잡해졌다\n    }\n}\n```\n\n> **정렬 규칙이 붙으면서 로직이** 생겼다.\n> **테스트하고 싶어진다.**\n\n```java\n// 후\npublic class ProductOrderResolver {\n    public List<Product> resolve(List<Product> found, List<String> requested) {\n        Map<String, Product> map = found.stream()\n                .collect(toMap(Product::getProductNumber, identity()));\n        return requested.stream().map(map::get).toList();\n    }\n}\n```\n\n| | |\n|---|---|\n| **`public` 이다** | 테스트할 수 있다 |\n| **순수 함수다** | 2.7절 |\n| **스프링이 없다** | 1초 |\n| **이름이 생겼다** | 개념이 드러났다 |\n\n> **\"테스트하고 싶다\" 를 따라갔더니 클래스가** 나왔다.\n> **1.2절의 설계 압력**이다.\n\n**언제 나누나**\n\n| | |\n|---|---|\n| **분기가 셋 넘는다** | 케이스가 많다 |\n| **이름을 붙일 수 있다** | 개념이다 |\n| **다른 데서도 쓸 것 같다** | |\n| **`private` 이 `private` 을 부른다** | 계층이 생겼다 |\n\n**안 나눠도 되는 경우**\n\n> **세 줄짜리 헬퍼**다. **`private String buildSubject(LocalDate date)`**.\n> **공개 메서드 테스트로 충분**하다.\n\n**패키지 프라이빗이라는 중간**도 있다.\n\n> **7.3절**이다. **같은 패키지의 테스트가** 부를 수 있다.\n> **다만 그것도 \"열었다\" 는 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- private 을 리플렉션으로 부르면 ---\n\n@Test\nvoid findProductsByWithReflection() throws Exception {\n    Method method = OrderService.class\n            .getDeclaredMethod(\"findProductsBy\", List.class);\n    method.setAccessible(true);\n\n    @SuppressWarnings(\"unchecked\")\n    List<Product> products = (List<Product>)\n            method.invoke(orderService, List.of(\"001\"));\n\n    assertThat(products).hasSize(1);\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > findProductsByWithReflection() PASSED\n\n#   된다\n\n# --- 메서드 이름을 바꾸면 ---\n\nprivate List<Product> loadProducts(List<String> numbers) { ... }\n\n$ ./gradlew compileTestJava\n\nBUILD SUCCESSFUL\n\n#   컴파일은 통과한다\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > findProductsByWithReflection() FAILED\n    java.lang.NoSuchMethodException:\n    sample.cafekiosk.api.service.OrderService.findProductsBy(java.util.List)\n\n#   런타임에 터진다\n\n#   2.3절의 extracting(\"nmae\") 과 같다\n\n# --- 공개 메서드 테스트는 ---\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 판매 중지된 상품이 있으면 주문할 수 없다 PASSED\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\n\n#   이름을 바꿔도 안 깨진다\n\n#   findProductsBy 가 하는 일은 이미 검증되고 있다\n\n# --- private 을 지워 보면 ---\n\nprivate List<Product> findProductsBy(List<String> numbers) {\n    return List.of();      // 아무것도 안 찾는다\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... FAILED\n    expected: 8000 but was: 0\nOrderServiceTest > 판매 중지된 상품이 있으면 ... FAILED\n    Expecting code to raise a throwable.\nOrderServiceTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n    expected: 4000 but was: 0\n\n3 tests failed\n\n#   셋이 지키고 있다\n\n#   1.1절의 방법으로 확인했다\n\n# --- 로직이 복잡해지면 ---\n\nprivate List<Product> findProductsBy(List<String> numbers) {\n    List<Product> found = productRepository.findAllByProductNumberIn(numbers);\n    validateSellingStatus(found);\n\n    // 요청한 순서대로 정렬. 같은 번호가 여러 번 오면 그만큼 반복\n    Map<String, Product> map = found.stream()\n            .collect(toMap(Product::getProductNumber, identity()));\n    return numbers.stream().map(map::get).toList();\n}\n\n#   케이스가 늘었다\n\n#   - 요청 순서대로 나오나\n#   - 같은 번호를 두 번 요청하면 두 개가 나오나\n#   - 없는 번호가 섞이면\n\n#   공개 메서드로 짜면\n\n@Test\nvoid createOrderKeepsRequestOrder() {\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", 1000), createProduct(\"002\", 2000)));\n\n    OrderResponse response = orderService.createOrder(\n            OrderCreateRequest.builder()\n                    .productNumbers(List.of(\"002\", \"001\")).build(), 영업중);\n\n    assertThat(response.getProducts())\n            .extracting(\"productNumber\").containsExactly(\"002\", \"001\");\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > createOrderKeepsRequestOrder() PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   되긴 한다. 9초짜리다\n\n#   세 케이스면 27초다\n\n# --- 클래스로 빼면 ---\n\npublic class ProductOrderResolver {\n    public List<Product> resolve(List<Product> found, List<String> requested) {\n        Map<String, Product> map = found.stream()\n                .collect(toMap(Product::getProductNumber, identity()));\n        return requested.stream().map(map::get).toList();\n    }\n}\n\nclass ProductOrderResolverTest {\n\n    private final ProductOrderResolver resolver = new ProductOrderResolver();\n\n    @DisplayName(\"요청한 순서대로 상품이 정렬된다\")\n    @Test void keepsOrder() {\n        List<Product> found = List.of(\n                createProduct(\"001\", 1000), createProduct(\"002\", 2000));\n\n        List<Product> result = resolver.resolve(found, List.of(\"002\", \"001\"));\n\n        assertThat(result).extracting(\"productNumber\")\n                .containsExactly(\"002\", \"001\");\n    }\n\n    @DisplayName(\"같은 상품을 두 번 요청하면 두 개가 나온다\")\n    @Test void duplicates() { ... }\n\n    @DisplayName(\"없는 상품 번호가 섞이면 null 이 들어간다\")\n    @Test void missing() { ... }\n}\n\n$ ./gradlew test --tests ProductOrderResolverTest\n\nProductOrderResolverTest > 요청한 순서대로 상품이 정렬된다 PASSED\nProductOrderResolverTest > 같은 상품을 두 번 요청하면 두 개가 나온다 PASSED\nProductOrderResolverTest > 없는 상품 번호가 섞이면 null 이 들어간다 PASSED\n\n3 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   27초가 1초가 됐다\n\n#   그리고 세 번째 케이스에서 버그를 찾았다\n\nProductOrderResolverTest > 없는 상품 번호가 섞이면 null 이 들어간다 FAILED\n    Expecting ArrayList: [Product(001), null]\n    to contain exactly: [Product(001)]\n\n#   map.get 이 null 을 준다\n\n#   공개 메서드 테스트로는 이 케이스를 짜기 어려웠다\n#   (없는 상품이면 앞에서 예외가 나니까)\n\n#   클래스를 나누니 경계가 보였다\n\n# --- 서비스는 이제 ---\n\nprivate List<Product> findProductsBy(List<String> numbers) {\n    List<Product> found = productRepository.findAllByProductNumberIn(numbers);\n    validateSellingStatus(found);\n    return productOrderResolver.resolve(found, numbers);\n}\n\n#   세 줄이다\n\n#   private 이 남았는데 테스트하고 싶지 않다\n\n# --- 다음 절에서 ---\n\n#   @BeforeEach 의 대가를 잰다",
+   "note": "**리플렉션으로 부르면 되는데 이름을 바꾸면 런타임에** 터진다. **컴파일은** 통과한다.\n\n**공개 메서드 테스트는 이름을 바꿔도 안** 깨지고, **`private` 을 비우면 셋이** 빨개진다 — **이미 검증되고** 있다.\n\n**로직이 복잡해지면 공개 메서드로 세 케이스가 27초**다.\n\n**클래스로 빼면 1초**이고, **세 번째 케이스에서 `map.get` 이 `null` 을 주는 버그**가 나왔다. **공개 메서드로는 그 케이스를 짜기 어려웠다.**\n\n**나누고 나니 `private` 이 세 줄로 줄어 테스트하고 싶지** 않다."
+  }
+ ],
+ "recap": [
+  "**공개 메서드 테스트가 `private` 을 이미** 커버한다.",
+  "**`private` 을 비우면 셋이** 빨개진다.",
+  "**리플렉션은 컴파일러를 우회**한다 — 이름을 바꾸면 런타임에 터진다.",
+  "**`private` 테스트는 리팩터링을** 막는다.",
+  "**\"테스트하고 싶다\" 가 \"다른 책임이다\" 라는** 신호다.",
+  "**나누면 27초가 1초**가 된다.",
+  "**나누고 나서 경계 버그가** 보였다.",
+  "**세 줄짜리 헬퍼는 안 나눠도** 된다.",
+  "**패키지 프라이빗은 중간이지만 그것도 \"열었다\"** 는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "리플렉션으로 `private` 을 테스트해 본다.",
+   "done_when": "이름을 바꿔 런타임 오류를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`private` 메서드를 비워 본다.",
+   "done_when": "몇 개가 빨개지는지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "복잡한 `private` 을 클래스로 뺀다.",
+   "done_when": "속도 차이를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "빼낸 클래스에 경계 케이스를 짠다.",
+   "done_when": "새 버그를 찾았는지 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `private` 을 직접 테스트 안 하나?",
+   "a": "공개 메서드로 이미 커버되고 리팩터링을 막기 때문이다."
+  },
+  {
+   "q": "리플렉션의 문제는?",
+   "a": "컴파일러를 우회해 이름을 바꾸면 런타임에 터진다."
+  },
+  {
+   "q": "테스트하고 싶어지면 무슨 신호인가?",
+   "a": "그 `private` 이 다른 책임이거나 공개 메서드가 너무 많이 한다는 것이다."
+  },
+  {
+   "q": "나누면 뭐가 좋아지나?",
+   "a": "속도와 케이스 작성이다. 27초가 1초가 되고 경계를 짤 수 있다."
+  },
+  {
+   "q": "안 나눠도 되는 경우는?",
+   "a": "세 줄짜리 헬퍼처럼 분기도 개념도 없을 때다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  }
+ ]
+}
