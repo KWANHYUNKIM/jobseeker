@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "environment",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "Environment 하나로",
+ "summary": "출처를 안 가린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "덩어리 목록을 본다.",
+  "찾는 순서를 안다.",
+  "타입 변환을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.2절부터 넷을 따로** 봤다. **읽는 쪽은 하나만** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 번 찾으면 덩어리를 훑는다",
+   "ascii": "   one lookup walks a stack of sources\n\n   ask the first source; if it has the key, stop\n   otherwise ask the next one\n   return null when the stack runs out\n\n   so position in the stack is the whole priority rule",
+   "note": "**쌓인 자리가 곧 우선순위**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "읽는 코드가 출처를 몰라도 된다",
+   "md": "**덩어리들이 쌓여** 있다.\n\n> **7.5절에서 목록을** 봤다.\n> **위에서부터** 묻는다.\n> **아래에서 세어** 본다.\n\n**첫 답이** 이긴다.\n\n> **나머지는 안** 묻는다.\n> **7.12절이 그 순서**다.\n> **아래에서 확인**한다.\n\n**타입을 달라고 할 수** 있다.\n\n> **원래는 다 문자열**이다.\n> **변환기가 붙어** 있다.\n> **아래에서 그걸** 본다.\n\n**직접 넣을 수도** 있다.\n\n> **덩어리를 하나 얹는**다.\n> **아래에서 얹어** 본다.\n> **자리를 내가** 고른다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 감추고 무엇을 안 감추나",
+   "ascii": "   what the abstraction hides and what it does not\n\n   hides   which file or variable the value came from\n   hides   whether it was a dot or an underscore\n   keeps   the type, which is always a string\n\n   the third line is why conversion has to happen somewhere",
+   "note": "**셋째 줄이 변환이 필요한** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "여기서 꺼내면 오타를 못 잡는다",
+   "md": "**없으면 `null`** 이다.\n\n> **7.4절에서** 겪었다.\n> **기본값을 안 주면 그대로** 흘러간다.\n> **아래에서 그걸** 본다.\n\n**느슨하지** 않다.\n\n> **7.2절에서 갈렸다.**\n> **묶어 받을 때만** 느슨하다.\n> **아래에서 다시** 확인한다.\n\n**변환이 실패하면** 늦게 터진다.\n\n> **읽는 순간**이다.\n> **기동은 이미** 끝났다.\n> **7.9절이 그걸** 앞당긴다.\n\n**빈으로 꽂는 게 대개** 낫다.\n\n> **7.7절과 7.8절**이다.\n> **여기 직접 쓰는 건 드물**다.\n> **아래에서 그 이유를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 덩어리를 다 센다\n\n@GetMapping(value = \"/sources\", produces = \"text/plain\")\nString sources() {\n    var ce = (ConfigurableEnvironment) env;\n    var sb = new StringBuilder();\n    int i = 0;\n    for (PropertySource<?> ps : ce.getPropertySources()) {\n        int n = (ps instanceof EnumerablePropertySource<?> e)\n                ? e.getPropertyNames().length : -1;\n        sb.append(String.format(\"%2d  %-42s %s%n\", i++, ps.getName(), n));\n    }\n    return sb.toString();\n}\n\n$ STUDY_MODE=env java -Dstudy.mode=sys \\\n    -jar build/libs/app.jar --study.mode=arg > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/sources\n 0  configurationProperties                     -1\n 1  server.ports                                1\n 2  commandLineArgs                             1\n 3  servletContextInitParams                    0\n 4  systemProperties                            69\n 5  systemEnvironment                           42\n 6  random                                      -1\n 7  applicationConfig: [classpath:/application.yml]  3\n\n--   여덟 덩어리다\n--   7.3절에서 센 69 가 4 번에 있다\n\n\n-- 위에서부터 묻는다\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   arg\n출처: commandLineArgs (2 번)\n\n$ curl -s 'localhost:8080/which?key=os.name'\n값:   Mac OS X\n출처: systemProperties (4 번)\n\n$ curl -s 'localhost:8080/which?key=HOME'\n값:   /Users/kwanhyun\n출처: systemEnvironment (5 번)\n\n$ curl -s 'localhost:8080/which?key=study.title'\n값:   내 앱\n출처: applicationConfig: [classpath:/application.yml] (7 번)\n\n--   네 값이 네 덩어리에서 왔다\n--   읽는 코드는 같은 한 줄이다\n\n\n-- 첫 답에서 멈춘다\n\nfor (PropertySource<?> ps : ce.getPropertySources()) {\n    Object v = ps.getProperty(key);\n    System.out.println(\"[찾음] \" + ps.getName() + \" -> \" + v);\n    if (v != null) { System.out.println(\"[멈춤]\"); break; }\n}\n\n$ curl -s 'localhost:8080/walk?key=study.mode'\n[찾음] configurationProperties -> null\n[찾음] server.ports -> null\n[찾음] commandLineArgs -> arg\n[멈춤]\n\n$ curl -s 'localhost:8080/walk?key=study.title'\n[찾음] configurationProperties -> null\n[찾음] server.ports -> null\n[찾음] commandLineArgs -> null\n[찾음] servletContextInitParams -> null\n[찾음] systemProperties -> null\n[찾음] systemEnvironment -> null\n[찾음] random -> null\n[찾음] applicationConfig: [classpath:/application.yml] -> 내 앱\n[멈춤]\n\n--   7.12절의 우선순위가 사실 이 순회다\n\n\n-- 타입을 달라고 한다\n\n@GetMapping(value = \"/typed\", produces = \"text/plain\")\nString typed() {\n    return \"문자열: \" + env.getProperty(\"study.db.pool-size\") + \"\\n\"\n         + \"정수:   \" + env.getProperty(\"study.db.pool-size\", Integer.class) + \"\\n\"\n         + \"기간:   \" + env.getProperty(\"study.timeout\", Duration.class) + \"\\n\"\n         + \"목록:   \" + env.getProperty(\"study.hosts\", List.class) + \"\\n\"\n         + \"용량:   \" + env.getProperty(\"study.max-body\", DataSize.class) + \"\\n\";\n}\n\n$ java -jar build/libs/app.jar --study.db.pool-size=20 \\\n    --study.timeout=30s --study.hosts=a.com,b.com --study.max-body=10MB \\\n    > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/typed\n문자열: 20\n정수:   20\n기간:   PT30S\n목록:   [a.com, b.com]\n용량:   10485760\n\n--   원래는 다 문자열이었다\n--   30s 와 10MB 를 알아들었다\n\n\n-- 변환이 실패하면\n\n$ java -jar build/libs/app.jar --study.db.pool-size=스물 > /dev/null 2>&1 &\n\n$ ./gradlew bootRun --args='--study.db.pool-size=스물' 2>&1 | grep -c 'Started'\n1\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/typed\n500\n\n$ curl -s localhost:8080/typed 2>&1 | head -2\nFailed to convert value of type 'java.lang.String' to required type\n  'java.lang.Integer'; For input string: \"스물\"\n\n--   기동은 됐다\n--   부르는 순간 터진다\n--   7.4절보다 늦다, 7.9절이 이걸 앞당긴다\n\n\n-- 없으면 null 이다\n\n$ curl -s 'localhost:8080/raw2?key=study.nope'\n(없음)\n\n@GetMapping(\"/required\")\nString required() { return env.getRequiredProperty(\"study.nope\"); }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/required\n500\n$ curl -s localhost:8080/required | head -1\njava.lang.IllegalStateException: Required key 'study.nope' not bound\n\n--   기본값을 안 주면 조용히 null 이 흘러간다\n\n\n-- 느슨하지 않다\n\n$ STUDY_DB_POOLSIZE=42 java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ for k in study.db.poolSize study.db.pool-size study.db.pool_size study.db.POOLSIZE; do\n    printf '%-24s ' \"$k\"\n    curl -s \"localhost:8080/raw2?key=$k\"\n  done\nstudy.db.poolSize        42\nstudy.db.pool-size       42\nstudy.db.pool_size       (없음)\nstudy.db.POOLSIZE        (없음)\n\n$ java -jar build/libs/app.jar --study.db.pool-size=42 > /dev/null 2>&1 &\n$ for k in study.db.poolSize study.db.pool-size; do\n    printf '%-24s ' \"$k\"; curl -s \"localhost:8080/raw2?key=$k\"\n  done\nstudy.db.poolSize        (없음)\nstudy.db.pool-size       42\n\n$ curl -s localhost:8080/db/poolsize\n42\n\n--   환경 변수만 특별히 둘을 만들어 준다\n--   묶어 받는 쪽은 넷 다 된다\n--   7.8절에서 그걸 본다\n\n\n-- 맨 위 덩어리는 특별하다\n\n$ curl -s localhost:8080/sources | head -1\n 0  configurationProperties                     -1\n\n$ curl -s 'localhost:8080/walk?key=study.db.pool-size' | head -2\n[찾음] configurationProperties -> 42\n[멈춤]\n\n--   앞의 것들을 느슨하게 다시 감싼 덩어리다\n--   그래서 묶어 받을 때 넷 다 된다\n\n\n-- 덩어리를 직접 얹는다\n\n@Component\nclass ExtraSource implements EnvironmentPostProcessor {\n    @Override\n    public void postProcessEnvironment(ConfigurableEnvironment env,\n                                       SpringApplication app) {\n        var map = Map.<String, Object>of(\"study.mode\", \"from-post\",\n                                         \"study.extra\", \"yes\");\n        env.getPropertySources()\n           .addLast(new MapPropertySource(\"myExtra\", map));\n    }\n}\n\n// META-INF/spring.factories\norg.springframework.boot.env.EnvironmentPostProcessor=study.boot.ExtraSource\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/sources | tail -1\n 8  myExtra                                      2\n\n$ curl -s 'localhost:8080/which?key=study.extra'\n값:   yes\n출처: myExtra (8 번)\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   packaged\n출처: applicationConfig: [classpath:/application.yml] (7 번)\n\n--   맨 뒤에 얹어서 파일에 졌다\n\n\n-- 앞에 얹으면 이긴다\n\nenv.getPropertySources().addFirst(new MapPropertySource(\"myExtra\", map));\n\n$ curl -s localhost:8080/sources | head -2\n 0  configurationProperties                     -1\n 1  myExtra                                      2\n\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   from-post\n출처: myExtra (1 번)\n\n$ java -jar build/libs/app.jar --study.mode=arg > /dev/null 2>&1 &\n$ curl -s 'localhost:8080/which?key=study.mode'\n값:   from-post\n출처: myExtra (1 번)\n\n--   인수까지 이겼다\n--   자리를 내가 골랐다\n\n\n-- 6.3절의 조건도 여기를 봤다\n\npublic boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n    String os = ctx.getEnvironment().getProperty(\"os.name\");\n    ...\n}\n\n$ curl -s 'localhost:8080/which?key=os.name'\n값:   Mac OS X\n출처: systemProperties (4 번)\n\n$ java -Dos.name=Linux -jar build/libs/app.jar --debug 2>&1 \\\n    | grep 'OnMac' | head -1\n         - OnMac because os.name = Linux\n\n--   조건이 읽은 것도 같은 덩어리였다\n\n\n-- 랜덤도 한 덩어리다\n\n$ curl -s 'localhost:8080/raw2?key=random.int'\n1849302471\n$ curl -s 'localhost:8080/raw2?key=random.int'\n-902184773\n$ curl -s 'localhost:8080/raw2?key=random.int(1,7)'\n4\n$ curl -s 'localhost:8080/raw2?key=random.uuid'\n8f2a1c04-3e97-4b62-a018-52c9d7e3b410\n\n--   6 번 자리의 그 random 이다\n--   부를 때마다 다르다, 설정에 쓰면 위험하다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '덩어리'      '여덟' \\\n  '순서'        '위에서부터' \\\n  '첫 답'       '거기서 멈춤' \\\n  '타입'        '달라고 하면 변환' \\\n  '변환 실패'   '읽을 때 터짐' \\\n  '없으면'      'null' \\\n  '느슨함'      '여기선 덜함' \\\n  '얹기'        '자리를 내가 정함'\n\n덩어리                     여덟\n순서                       위에서부터\n첫 답                      거기서 멈춤\n타입                       달라고 하면 변환\n변환 실패                  읽을 때 터짐\n없으면                     null\n느슨함                     여기선 덜함\n얹기                       자리를 내가 정함\n\n--   7.7절에서 빈에 꽂는다",
+   "note": "**덩어리가 여덟이고 네 키가 네 덩어리에서 오는데 읽는 코드는 같은 한 줄**이다.\n\n**순회를 찍어 보니 첫 답에서 멈추고 그 순회가 곧 7.12절의 우선순위**다.\n\n**타입을 달라고 하면 `30s` 가 `PT30S`, `10MB` 가 `10485760` 으로** 바뀐다.\n\n**변환이 실패해도 기동은 되고 부르는 순간 500 으로** 터진다.\n\n**덩어리를 맨 앞에 얹으니 인수까지 이겨 `from-post` 가** 나온다."
+  }
+ ],
+ "recap": [
+  "**덩어리가 쌓여** 있다.",
+  "**위에서부터** 묻는다.",
+  "**첫 답에서** 멈춘다.",
+  "**출처를 안** 가린다.",
+  "**타입을 달라고** 한다.",
+  "**실패는 읽을 때**다.",
+  "**없으면 null**이다.",
+  "**여기선 덜** 느슨하다.",
+  "**얹을 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "덩어리 목록을 찍는다.",
+   "done_when": "여덟 개를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "순회를 찍어 본다.",
+   "done_when": "첫 답에서 멈추는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "타입 변환을 시켜 본다.",
+   "done_when": "기간과 용량이 바뀐 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "덩어리를 앞에 얹는다.",
+   "done_when": "인수를 이긴 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값을 찾을 때 어떻게 도나?",
+   "a": "덩어리를 위에서부터 묻고 첫 답에서 멈춘다."
+  },
+  {
+   "q": "우선순위는 어떻게 정해지나?",
+   "a": "덩어리가 쌓인 자리가 곧 우선순위다."
+  },
+  {
+   "q": "타입 변환은 언제 터지나?",
+   "a": "기동 때가 아니라 값을 읽는 순간이다."
+  },
+  {
+   "q": "여기서 꺼낼 때도 느슨한가?",
+   "a": "덜 느슨하다. 묶어 받을 때만 넷을 다 받는다."
+  },
+  {
+   "q": "내 덩어리를 가장 세게 만들려면?",
+   "a": "맨 앞에 얹는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "환경",
+   "def": "여러 속성 덩어리를 순서대로 묶어 하나처럼 읽게 해 주는 것."
+  },
+  {
+   "term": "속성 덩어리 순회",
+   "def": "위에서부터 묻고 첫 답에서 멈추는 조회 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Environment Abstraction",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/environment.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -465,7 +465,7 @@
           "title": "스프링 부트 인수",
           "summary": "--key=value 가 속성이 된다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -473,7 +473,7 @@
           "title": "Environment 하나로",
           "summary": "출처를 안 가린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
