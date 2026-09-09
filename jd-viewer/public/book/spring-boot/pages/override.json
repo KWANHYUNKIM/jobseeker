@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "override",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "기본값을 덮는다",
+ "summary": "무엇이 이기나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 가지 방법을 안다.",
+  "가벼운 것부터 쓴다.",
+  "덮을 때 잃는 걸 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절에서 내 빈이** 이겼다. **그게 늘 좋은 건** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "덮는 방법이 넷이다",
+   "ascii": "   four ways to change what boot gave me\n\n   a property        the value only, no code\n   a customizer      one knob on an object boot builds\n   my own bean       the whole object is mine\n   an exclusion      the feature is gone\n\n   they get heavier downward; stop at the first one that works",
+   "note": "**아래로 갈수록 무겁다 — 먼저 되는 데서** 멈춘다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "덮는 순간 기본값도 같이 사라진다",
+   "md": "**빈 하나에 설정이 여럿** 붙는다.\n\n> **부트가 여러 값을 넣어** 준다.\n> **내가 만들면 그게 다** 사라진다.\n> **아래에서 세어** 본다.\n\n**설정으로 되면 그게 제일** 낫다.\n\n> **코드가 하나도 안** 는다.\n> **7장에서 그 키들을** 본다.\n> **아래에서 먼저** 시도한다.\n\n**손잡이만 돌리는 길도** 있다.\n\n> **커스터마이저**다.\n> **부트가 만든 걸 받아** 고친다.\n> **기본값은 남는**다.\n\n**제외가 제일** 무겁다.\n\n> **6.2절의 그것**이다.\n> **다른 빈까지 다** 없어진다.\n> **아래에서 그 값을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "무거워질수록 잃는 것",
+   "ascii": "   what you give up as you go heavier\n\n   property     nothing\n   customizer   nothing much\n   own bean     every default that bean carried\n   exclusion    every other bean in that configuration\n\n   the third row is where people quietly lose things",
+   "note": "**셋째 줄에서 사람들이 조용히** 잃는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "덮은 다음에 설정을 적으면 안 먹는다",
+   "md": "**설정을 읽는 건 부트 코드**다.\n\n> **내가 만든 빈은 그걸 안** 읽는다.\n> **키를 적어도** 조용하다.\n> **아래에서 그걸** 겪는다.\n\n**같은 타입 둘이면** 터진다.\n\n> **6.5절 조건이 없는 빈이면** 그렇다.\n> **`@Primary` 로** 푼다.\n> **아래에서 확인**한다.\n\n**커스터마이저는 여럿이** 돈다.\n\n> **부트 것 다음에 내** 것이다.\n> **순서는 정할 수** 있다.\n> **아래에서 그걸** 본다.\n\n**제외는 딸린 것도 데려간**다.\n\n> **6.5절에서 500 이** 났다.\n> **아래에서 몇 개가 사라지는지** 센다.\n> **마지막 수단**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 부트가 준 상태를 본다\n\n@GetMapping(\"/item\")\nItem item() { return new Item(\"연필\", null, LocalDate.of(2026, 9, 10)); }\n\nrecord Item(String name, String memo, LocalDate madeOn) {}\n\n$ curl -s localhost:8080/item\n{\"name\":\"연필\",\"memo\":null,\"madeOn\":\"2026-09-10\"}\n\n$ curl -s localhost:8080/mapper/modules\nJdk8Module,JavaTimeModule,ParameterNamesModule\n\n--   부트가 모듈 셋을 넣어 줬다\n--   그래서 날짜가 문자열로 나온다\n\n\n-- ① 설정으로\n\nspring:\n  jackson:\n    default-property-inclusion: non_null\n\n$ curl -s localhost:8080/item\n{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n\n$ curl -s localhost:8080/mapper/modules\nJdk8Module,JavaTimeModule,ParameterNamesModule\n\n--   코드가 한 줄도 안 늘었다\n--   모듈 셋도 그대로다\n\n\n-- 키가 몇 개나 있나\n\n$ curl -s localhost:8080/actuator/configprops \\\n    | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)['contexts']['application']['beans']\nfor k,v in d.items():\n    if 'jackson' in k:\n        print(k, len(v['properties']))\n\"\nspring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties 8\n\n--   여덟 개를 설정으로 만질 수 있다\n--   7.8절에서 이 바인딩을 본다\n\n\n-- ② 커스터마이저로\n\n@Bean\nJackson2ObjectMapperBuilderCustomizer myCustomizer() {\n    return builder -> {\n        System.out.println(\"[손잡이] 내 커스터마이저\");\n        builder.simpleDateFormat(\"yyyy/MM/dd\");\n        builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);\n    };\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[손잡이\\]'\n[손잡이] 내 커스터마이저\n\n$ curl -s localhost:8080/item\n{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n\n$ curl -s localhost:8080/mapper/modules\nJdk8Module,JavaTimeModule,ParameterNamesModule\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -c 'jacksonObjectMapper matched'\n1\n\n--   부트 빈은 그대로 만들어졌다\n--   내 손잡이만 하나 더 돌았다\n\n\n-- 커스터마이저는 여럿이 돈다\n\n$ curl -s localhost:8080/beans/names?type=Jackson2ObjectMapperBuilderCustomizer\nstandardJacksonObjectMapperBuilderCustomizer,myCustomizer\n\n@Bean\n@Order(Ordered.LOWEST_PRECEDENCE)\nJackson2ObjectMapperBuilderCustomizer myCustomizer() { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[손잡이\\]|Jackson2ObjectMapperBuilder'\n[손잡이] 내 커스터마이저\n\n--   부트 것 다음에 내 것이 돈다\n--   순서를 앞으로 당기면 부트가 덮어쓴다\n\n\n-- ③ 내 빈으로\n\n@Bean\nObjectMapper objectMapper() {\n    return new ObjectMapper();\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/item\n500\n\n$ ./gradlew bootRun 2>&1 | grep -i 'InvalidDefinitionException' | head -1\nJava 8 date/time type `java.time.LocalDate` not supported by default:\n  add Module \"com.fasterxml.jackson.datatype:jackson-datatype-jsr310\"\n\n$ curl -s localhost:8080/mapper/modules\n(없음)\n\n--   모듈 셋이 다 사라졌다\n--   부트가 넣어 주던 것들이었다\n\n\n-- 설정도 안 먹는다\n\nspring:\n  jackson:\n    default-property-inclusion: non_null\n\n$ curl -s localhost:8080/item2\n{\"name\":\"연필\",\"memo\":null}\n\n$ curl -s localhost:8080/actuator/env/spring.jackson.default-property-inclusion \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['property']['value'])\"\nnon_null\n\n--   값은 읽혔는데 아무 일도 안 한다\n--   그 값을 쓰던 코드를 내가 치웠다\n\n\n-- 빌더를 받아 쓰면 낫다\n\n@Bean\nObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {\n    return builder.build();\n}\n\n$ curl -s localhost:8080/mapper/modules\nJdk8Module,JavaTimeModule,ParameterNamesModule\n\n$ curl -s localhost:8080/item\n{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n\n--   설정도 모듈도 살아 있다\n--   내 빈인데 기본값을 안 잃었다\n\n\n-- 같은 타입 둘이면\n\n@Bean ObjectMapper a() { return new ObjectMapper(); }\n@Bean ObjectMapper b() { return new ObjectMapper(); }\n\n$ ./gradlew bootRun 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of method ... required a single bean, but 2 were found:\n\t- a: ...  - b: ...\n\n@Bean @Primary ObjectMapper a() { return new ObjectMapper(); }\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s localhost:8080/mapper/which\na\n\n--   6.5절 조건이 없는 빈은 서로 안 비킨다\n\n\n-- ④ 제외로\n\n@SpringBootApplication(exclude = JacksonAutoConfiguration.class)\n\n$ curl -s localhost:8080/beans/count\n전체: 181\n\n// 제외 전에는\n$ curl -s localhost:8080/beans/count\n전체: 187\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/item\n500\n$ ./gradlew bootRun 2>&1 | grep -i 'No converter' | head -1\nNo converter for [class study.boot.Item] with preset Content-Type 'null'\n\n--   여섯 개가 같이 사라졌다\n--   메시지 컨버터까지 없어졌다\n\n\n-- 무엇이 사라졌나\n\n$ diff <(curl -s localhost:8080/beans/all | tr ',' '\\n' | sort) \\\n       <(curl -s localhost:8080/beans/all | tr ',' '\\n' | sort) \\\n  | grep '^<'\n< jacksonObjectMapper\n< jacksonObjectMapperBuilder\n< parameterNamesModule\n< standardJacksonObjectMapperBuilderCustomizer\n< jsonComponentModule\n< jacksonProperties\n\n--   내가 원한 건 하나였는데 여섯이 갔다\n\n\n-- 넷을 나란히 본다\n\n$ printf '%-14s %-10s %-12s %s\\n' \\\n  '설정'        '코드 0 줄' '모듈 3'   '{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}' \\\n  '커스터마이저' '코드 4 줄' '모듈 3'   '{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}' \\\n  '내 빈'       '코드 3 줄' '모듈 0'   '500' \\\n  '빌더 받기'   '코드 3 줄' '모듈 3'   '{\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}' \\\n  '제외'        '코드 1 줄' '빈 -6'    '500'\n\n설정           코드 0 줄  모듈 3       {\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n커스터마이저   코드 4 줄  모듈 3       {\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n내 빈          코드 3 줄  모듈 0       500\n빌더 받기      코드 3 줄  모듈 3       {\"name\":\"연필\",\"madeOn\":\"2026-09-10\"}\n제외           코드 1 줄  빈 -6        500\n\n--   위에서부터 시도하면 된다\n\n\n-- 서버도 같은 이야기다\n\n// ① 설정으로\nserver:\n  port: 9090\n  tomcat:\n    threads:\n      max: 50\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 9090 (http) with context path '/'\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.config.max \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n50.0\n\n// ② 커스터마이저로\n@Bean\nWebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {\n    return factory -> factory.addConnectorCustomizers(\n        c -> c.setProperty(\"maxKeepAliveRequests\", \"50\"));\n}\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 9090 (http) with context path '/'\n\n// ③ 내 빈으로\n@Bean\nTomcatServletWebServerFactory factory() {\n    return new TomcatServletWebServerFactory();\n}\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   9090 이 8080 으로 돌아갔다\n--   설정을 읽던 코드를 치웠으니 그렇다\n\n\n-- 정리\n\n$ printf '%-16s %s\\n' \\\n  '설정'         '아무것도 안 잃음' \\\n  '커스터마이저' '기본값 남음' \\\n  '내 빈'        '기본값 다 잃음' \\\n  '빌더 받기'    '내 빈인데 안 잃음' \\\n  '제외'         '딸린 것까지 감' \\\n  '설정 안 먹음' '읽던 코드를 치움' \\\n  '같은 타입 둘' '@Primary 필요'\n\n설정             아무것도 안 잃음\n커스터마이저     기본값 남음\n내 빈            기본값 다 잃음\n빌더 받기        내 빈인데 안 잃음\n제외             딸린 것까지 감\n설정 안 먹음     읽던 코드를 치움\n같은 타입 둘     @Primary 필요\n\n--   6.9절에서 누가 먼저 도는지 본다",
+   "note": "**설정 한 줄로 `memo` 가 사라지는데 모듈 셋은 그대로**다.\n\n**커스터마이저를 넣어도 부트 빈은 `matched` 그대로 만들어지고 내 손잡이만 하나 더** 돈다.\n\n**`new ObjectMapper()` 로 덮으니 모듈이 0 개가 되어 `LocalDate` 에서 500, 설정 키는 읽히는데 아무 일도 안** 한다.\n\n**빌더를 받아 만들면 내 빈인데도 모듈 셋과 설정이 다** 산다.\n\n**제외하니 빈이 187 에서 181 로 여섯이 사라지고 서버도 내 빈으로 덮자 9090 이 8080 으로** 돌아갔다."
+  }
+ ],
+ "recap": [
+  "**방법이** 넷이다.",
+  "**아래로 갈수록** 무겁다.",
+  "**설정이 제일** 가볍다.",
+  "**커스터마이저는 안** 잃는다.",
+  "**내 빈은 다** 잃는다.",
+  "**빌더를 받으면** 산다.",
+  "**설정이 안** 먹는다.",
+  "**둘이면** 터진다.",
+  "**제외는 딸린 것도** 간다."
+ ],
+ "drills": [
+  {
+   "task": "설정으로 먼저 바꿔 본다.",
+   "done_when": "코드 없이 바뀐 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "커스터마이저를 넣는다.",
+   "done_when": "부트 빈이 그대로인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "직접 만들어 덮는다.",
+   "done_when": "잃은 것을 세어 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "빌더를 받아 만든다.",
+   "done_when": "기본값이 산 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 가벼운 방법은?",
+   "a": "설정 값을 적는 것이다. 코드가 안 는다."
+  },
+  {
+   "q": "직접 만들어 덮으면 무엇을 잃나?",
+   "a": "그 빈에 부트가 넣어 주던 기본값을 전부 잃는다."
+  },
+  {
+   "q": "덮은 뒤 설정 키가 왜 안 먹나?",
+   "a": "그 값을 읽어 적용하던 코드를 치워서다."
+  },
+  {
+   "q": "내 빈을 만들면서 기본값을 살리려면?",
+   "a": "부트가 준 빌더를 받아서 만든다."
+  },
+  {
+   "q": "제외의 문제는?",
+   "a": "그 구성 안의 다른 빈까지 함께 사라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "커스터마이저",
+   "def": "부트가 만든 객체를 넘겨받아 일부만 고치는 빈."
+  },
+  {
+   "term": "우선 빈",
+   "def": "같은 타입이 여럿일 때 먼저 고르라고 표시한 빈."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Creating Your Own Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

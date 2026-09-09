@@ -378,7 +378,7 @@
           "title": "자동 구성 보고서",
           "summary": "걸린 것과 안 걸린 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -386,7 +386,7 @@
           "title": "기본값을 덮는다",
           "summary": "무엇이 이기나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.9",
