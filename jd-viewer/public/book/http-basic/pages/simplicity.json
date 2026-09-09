@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "simplicity",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "단순함이 남긴 것",
+ "summary": "확장 가능해서 살아남았다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "확장 방식을 안다.",
+  "모르는 걸 무시하는 규칙을 안다.",
+  "단순함의 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4장을 닫으며 왜 이 형식이 30년을 살았는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "안 바뀐 것",
+   "ascii": "   what stayed the same for thirty years\n\n   a method, a target, and a version\n   name colon value, repeated\n   a blank line\n   a body, if there is one\n\n   everything added since arrived as a new header or a new status code\n   nothing had to break for cookies, caching, cors, or compression",
+   "note": "**추가는 전부 헤더나 상태 코드로** 왔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "모르는 것을 무시하는 게 규칙이다",
+   "md": "**이해 못 하는 헤더는 그냥** 지나친다.\n\n> **오류를 내지** 않는다.\n> **그래서 새 헤더를 마음대로 만들 수** 있다.\n> **옛 클라이언트도 계속** 돈다.\n\n**상태 코드도** 같다.\n\n> **모르면 앞자리로** 본다(4.6절).\n> **`418` 을 몰라도 4로 시작하니 요청 잘못으로** 안다.\n> **`103` 이 나중에 생겨도 옛 클라이언트가 안** 깨졌다.\n\n**그래서 버전을 안 올려도** 됐다.\n\n> **쿠키·캐시·CORS·압축·인증이 전부 1.1 위에** 얹혔다.\n> **1.1 이 1997년**이다.\n> **그 뒤로 20년 넘게 헤더만** 늘었다.\n\n**⑫ 2.3절과 같은 생각**이다.\n\n> **쿠버네티스가 CRD 로 확장하던 것**이다.\n> **핵심은 안 건드리고 옆에** 붙인다.\n> **오래 사는 시스템의 공통점**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 어떻게 얹혔나",
+   "ascii": "   how each addition fitted in without a new version\n\n   cookies         two headers\n   caching         a handful of headers\n   compression     one request header, one response header\n   cors            a preflight request and some headers\n   auth            one request header, one response header, one status\n   websocket       one status code and an upgrade header\n\n   the rule that made this work is simple, ignore what you do not know",
+   "note": "**모르면 무시한다는 한 줄이 이걸 가능하게** 했다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "단순함이 공짜는 아니었다",
+   "md": "**관대함이 취약점을** 만들었다.\n\n> **4.4절의 밀수, 4.5절의 콜론 앞 공백, 3.3절의 이중 인코딩**이다.\n> **파서마다 조금씩 다르게 관대**했다.\n> **그 틈이 전부 공격 표면이** 됐다.\n\n**텍스트가 비싸다.**\n\n> **매 요청에 같은 헤더를 다시** 보낸다(4.3절).\n> **파싱도 비싸다.**\n> **HTTP/2 가 이진과 압축으로 간 이유**다(4.1절).\n\n**규격에 안 적힌 게 관행이** 됐다.\n\n> **`X-` 접두어는 폐기됐는데 아직** 쓴다.\n> **`?a=1&a=2` 는 표준이** 없다(3.2절).\n> **다들 하는 대로 따라야** 한다.\n\n**그래도 남는 이점**\n\n> **`nc` 로 손으로 칠 수** 있다 — **이 책 내내 그랬다.**\n> **로그가 읽힌다.**\n> **중간에 무엇이든 끼울 수** 있다(4.2절).\n> **다음 장부터 그 위에 무엇을 얹었는지** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 모르는 헤더는 무시된다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'X-Made-Up-Header: 아무 값' \\\n    -H 'Quantum-Flux: 42' \\\n    http://localhost:8080/api.json\n\n200\n\n#   오류가 안 난다\n\n#   서버가 그냥 지나쳤다\n\n$ curl -s -D - -o /dev/null \\\n    -H 'X-Made-Up-Header: 아무 값' http://localhost:8080/api.json \\\n    | grep -c 'Made-Up'\n\n0\n\n#   응답에도 안 나온다\n\n#   본 적 없다는 듯이 군다\n\n# --- 모르는 상태 코드도 ---\n\n$ cat teapot.py\n\nimport http.server\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        self.send_response(418, \"I'm a teapot\")\n        self.send_header(\"Content-Length\", \"0\")\n        self.end_headers()\nhttp.server.HTTPServer((\"\", 9988), H).serve_forever()\n\n$ python3 teapot.py & sleep 1\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9988/\n\n418\n\n$ python3 - <<'EOF'\nimport urllib.request, urllib.error\ntry:\n    urllib.request.urlopen(\"http://localhost:9988/\")\nexcept urllib.error.HTTPError as e:\n    print(\"오류로 처리\", e.code, \"->\", e.code // 100, \"번대\")\nEOF\n\n오류로 처리 418 -> 4 번대\n\n#   418 을 몰라도 4번대로 안다\n\n#   요청 잘못이라고 판단한다\n\n$ kill %1 2>/dev/null\n\n# --- 확장이 어떻게 얹혔나 ---\n\n$ curl -s -D - -o /dev/null \\\n    -H 'Accept-Encoding: gzip' \\\n    -H 'Origin: https://other.example' \\\n    -H 'Cookie: sid=abc' \\\n    -H 'Authorization: Bearer t' \\\n    -H 'If-None-Match: \"xyz\"' \\\n    http://localhost:8080/api.json | head -1\n\nHTTP/1.1 200 OK\n\n#   압축, CORS, 쿠키, 인증, 캐시를 한꺼번에 걸었다\n\n#   전부 헤더 한 줄씩이다\n\n#   시작 줄은 그대로다\n\n$ curl -s -o /dev/null -v \\\n    -H 'Accept-Encoding: gzip' http://localhost:8080/api.json 2>&1 \\\n  | grep -iE '^[<>].*(encoding|vary)'\n\n> Accept-Encoding: gzip\n\n#   nginx 가 json 압축을 껐다\n\n$ docker exec lab sh -c \\\n    'printf \"gzip on;\\ngzip_types application/json;\\n\" \\\n     > /etc/nginx/conf.d/gzip.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -o /dev/null -v \\\n    -H 'Accept-Encoding: gzip' http://localhost:8080/api.json 2>&1 \\\n  | grep -iE '^<.*(encoding|vary)'\n\n#   본문이 25바이트라 안 줄인다\n\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:8080/big.txt | grep -iE 'content-encoding|vary'\n\nContent-Encoding: gzip\nVary: Accept-Encoding\n\n#   요청 헤더 하나, 응답 헤더 둘이다\n\n#   1997년 형식이 안 바뀌었다\n\n#   8장에서 다시 본다\n\n# --- 옛 클라이언트도 돈다 ---\n\n$ printf 'GET /api.json HTTP/1.0\\r\\n\\r\\n' | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n$ printf 'GET /api.json\\r\\n' | nc localhost 8080\n\n{\"id\": 1, \"name\": \"주문\"}\n\n#   0.9 도 아직 답해 준다\n\n#   1991년 형식이다\n\n#   35년 된 클라이언트가 오늘 서버에서 돈다\n\n# --- 관대함의 대가 ---\n\n$ printf 'GET / HTTP/1.1\\nHost: localhost\\n\\n' | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n$ printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\nHost: evil.test\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 400 Bad Request\n\n#   LF 만 써도 받아 준다\n\n#   Host 가 둘이면 거부한다\n\n#   어디까지 관대할지가 서버마다 다르다\n\n#   그 틈이 공격 표면이다 (4.4절)\n\n# --- 텍스트의 비용 ---\n\n$ curl -s -o /dev/null -w '요청 %{size_request} 헤더 %{size_header}\\n' \\\n    http://localhost:8080/api.json\n\n요청 82 헤더 233\n\n$ curl -s -o /dev/null -w '본문 %{size_download}\\n' \\\n    http://localhost:8080/api.json\n\n본문 25\n\n#   본문 25바이트에 헤더가 233 이다\n\n#   아홉 배다\n\n#   작은 응답일수록 비율이 나쁘다\n\n#   HTTP/2 의 헤더 압축이 이걸 노렸다 (4.1절)\n\n# --- 그래도 손으로 칠 수 있다 ---\n\n$ printf 'GET /api.json HTTP/1.1\\r\\nHost: localhost\\r\\n\\\nAccept: application/json\\r\\nConnection: close\\r\\n\\r\\n' \\\n  | nc localhost 8080 | tail -1\n\n{\"id\": 1, \"name\": \"주문\"}\n\n#   이 책 내내 이렇게 했다\n\n#   이진이었다면 못 했다\n\n#   그게 이 형식이 남긴 것이다\n\n# --- 다음 장에서 ---\n\n#   메서드를 하나씩 본다",
+   "note": "**모르는 헤더 둘을 보내도 200 이고 응답에 흔적도** 없다.\n\n**`418` 을 모르는 클라이언트가 4번대로 보고 오류로** 처리한다.\n\n**압축·CORS·쿠키·인증·캐시를 한꺼번에 걸어도 시작 줄은** 그대로다.\n\n**1991년 형식인 `GET /api.json` 한 줄이 오늘도** 답을 받는다.\n\n**본문 25바이트에 헤더가 233바이트로 아홉 배**다."
+  }
+ ],
+ "recap": [
+  "**형식이 30년 동안 안** 바뀌었다.",
+  "**추가는 전부 헤더와 상태 코드로** 왔다.",
+  "**모르는 건 무시한다는 규칙이** 핵심이다.",
+  "**그래서 옛 클라이언트가 안** 깨진다.",
+  "**버전을 안 올려도** 됐다.",
+  "**관대함이 취약점을** 만들었다.",
+  "**텍스트라 매번 비용을** 낸다.",
+  "**규격 밖 관행이** 많다.",
+  "**손으로 칠 수 있다는 게 남은** 이점이다."
+ ],
+ "drills": [
+  {
+   "task": "없는 헤더를 보낸다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "모르는 상태 코드를 받는다.",
+   "done_when": "앞자리로 처리되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "확장 헤더를 한꺼번에 건다.",
+   "done_when": "시작 줄이 안 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "헤더와 본문 크기를 잰다.",
+   "done_when": "비율을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "HTTP 가 확장돼 온 방식은?",
+   "a": "형식을 바꾸지 않고 헤더와 상태 코드를 더하는 것이다."
+  },
+  {
+   "q": "그걸 가능하게 한 규칙은?",
+   "a": "모르는 헤더와 코드를 무시하거나 앞자리로 처리하는 것이다."
+  },
+  {
+   "q": "단순함의 대가는?",
+   "a": "관대한 파싱이 취약점을 만들고 텍스트라 비용이 크다."
+  },
+  {
+   "q": "HTTP/2 가 이진으로 간 이유는?",
+   "a": "텍스트 파싱과 반복되는 헤더의 비용 때문이다."
+  },
+  {
+   "q": "텍스트라서 남은 이점은?",
+   "a": "손으로 요청을 칠 수 있고 로그와 중간 장비가 읽을 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "확장성",
+   "def": "형식을 바꾸지 않고 새 기능을 더할 수 있는 성질."
+  },
+  {
+   "term": "관대한 파싱",
+   "def": "규격에 어긋난 입력도 받아 주는 태도. 호환성과 취약점을 함께 만든다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9112 — HTTP/1.1",
+   "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

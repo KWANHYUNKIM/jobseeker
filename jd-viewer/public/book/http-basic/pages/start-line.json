@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "start-line",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "시작 줄 읽기",
+ "summary": "요청 줄과 상태 줄.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 토큰을 안다.",
+  "네 가지 대상 형식을 안다.",
+  "이유 구문의 위상을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.5절에서 요청과 응답이 첫 줄만 다르다고** 했다. **그 첫 줄**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 토큰",
+   "ascii": "   three tokens each, in both directions\n\n   request    method   request target   version\n              GET      /a/b?q=1         HTTP/1.1\n\n   response   version  status code      reason phrase\n              HTTP/1.1 200             OK\n\n   the reason phrase carries no meaning, and http2 dropped it entirely",
+   "note": "**이유 구문은 뜻이 없고 HTTP/2 는 아예** 없앴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메서드는 자유롭지만 아무거나 쓰지는 않는다",
+   "md": "**대소문자를** 가린다.\n\n> **`get` 은 `GET` 이** 아니다.\n> **헤더 이름과 반대**다(4.5절).\n> **거의 유일하게 대소문자를 가리는** 곳이다.\n\n**목록은 IANA 에** 있다.\n\n> **표준은 아홉 개쯤**이다 — 5장에서 하나씩 본다.\n> **WebDAV 가 `PROPFIND` 같은 걸** 더했다.\n> **새로 만들 수는 있는데 중간 장비가 막을 수** 있다.\n\n**대상은 형식이** 넷이다.\n\n> **보통은 `/path?query`** 다(3.2절).\n> **프록시에는 전체 URL 을** 보낸다.\n> **`CONNECT` 만 `host:port` 를** 쓴다 — **터널을** 뚫는다.\n\n**버전 표기가 협상을** 한다.\n\n> **클라이언트가 `HTTP/1.1` 이라고** 말한다.\n> **서버가 더 낮은 걸로 답할 수** 있다.\n> **2와 3은 이 줄이 아니라 ALPN 으로** 정한다(4.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 대상",
+   "ascii": "   the request target has four forms, and you meet three of them\n\n   origin form     /a/b?q=1              the normal one\n   absolute form   http://host/a/b       what you send to a proxy\n   authority form  host:443              only with CONNECT\n   asterisk form   *                     only with OPTIONS\n\n   a server that accepts absolute form from a browser is a common bug",
+   "note": "**브라우저에서 절대 형식을 받으면** 위험하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "상태 코드는 숫자만 뜻이 있다",
+   "md": "**이유 구문은 아무 말이나 넣어도** 된다.\n\n> **`HTTP/1.1 200 다 됐음`** 도 규격에 맞다.\n> **클라이언트가 그걸 보고 판단하면** 안 된다.\n> **HTTP/2 는 아예 안** 보낸다.\n\n**앞자리가 분류**다.\n\n| 앞자리 | 뜻 |\n|---|---|\n| 1 | 진행 중 |\n| 2 | 성공 |\n| 3 | 더 해야 할 일이 있다 |\n| 4 | 요청 쪽 문제 |\n| 5 | 서버 쪽 문제 |\n\n> **모르는 코드는 앞자리로** 처리한다.\n> **`299` 를 받으면 성공으로** 본다.\n> **7장에서 하나씩 본다.**\n\n**절대 형식이 위험한 이유**\n\n> **`GET http://내부서버/ HTTP/1.1` 을 그대로 프록시하면 내부망이** 열린다.\n> **`Host` 헤더와 다를 때 어느 쪽을 볼지도** 문제다.\n> **원본 서버는 절대 형식도 받아야 한다고 규격에** 적혀 있는데, 이게 사고를 만든다.\n\n**요청 줄에도 길이 제한이** 있다.\n\n> **nginx 기본이 8KB 쯤**이다.\n> **넘으면 414** 다.\n> **쿼리에 데이터를 잔뜩 넣으면** 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 요청 줄과 상태 줄 ---\n\n$ printf 'GET /api.json HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n$ curl -s -o /dev/null -v http://localhost:8080/api.json 2>&1 \\\n    | grep -E '^[<>] (GET|HTTP)'\n\n> GET /api.json HTTP/1.1\n< HTTP/1.1 200 OK\n\n#   양쪽 다 토큰 셋이다\n\n#   순서만 다르다\n\n# --- 메서드는 대소문자를 가린다 ---\n\n$ printf 'get / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 400 Bad Request\n\n$ printf 'GET / HTTP/1.1\\r\\nhOsT: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n#   메서드는 가리고 헤더 이름은 안 가린다\n\n#   4.5절과 반대다\n\n# --- 없는 메서드 ---\n\n$ printf 'BREW / HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 405 Not Allowed\n\n#   문법은 맞다\n\n#   서버가 안 받는 것뿐이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X BREW http://localhost:8080/\n\n405\n\n#   405 는 5.8절에서 다시 본다\n\n# --- 대상 네 형식 ---\n\n$ printf 'GET http://localhost/api.json HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n#   절대 형식도 받는다\n\n#   규격이 그렇게 하라고 한다\n\n$ printf 'GET http://example.com/ HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | head -1\n\nHTTP/1.1 200 OK\n\n$ printf 'GET http://example.com/ HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' \\\n    | nc localhost 8080 | grep -i '^content-length'\n\nContent-Length: 615\n\n#   615 는 로컬 nginx 의 기본 페이지다\n\n#   example.com 이 아니라 여기서 답했다\n\n#   프록시였다면 정말로 example.com 에 갔을 것이다\n\n#   그게 내부망이 열리는 경로다\n\n$ curl -s -o /dev/null -v -X OPTIONS --request-target '*' \\\n    http://localhost:8080/ 2>&1 | grep '^> OPTIONS'\n\n> OPTIONS * HTTP/1.1\n\n#   별표 형식이다\n\n#   서버 전체를 가리킨다\n\n#   5.8절에서 본다\n\n$ curl -s -o /dev/null -v -x http://localhost:8080 \\\n    http://example.com/ 2>&1 | grep '^> GET' | head -1\n\n> GET http://example.com/ HTTP/1.1\n\n#   프록시로 보낼 때는 절대 형식이다\n\n#   curl 이 알아서 바꿨다\n\n# --- 이유 구문은 아무거나 된다 ---\n\n$ cat reason.py\n\nimport http.server\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        self.send_response(200, \"다 됐음\")\n        self.send_header(\"Content-Length\", \"0\")\n        self.end_headers()\nhttp.server.HTTPServer((\"\", 9990), H).serve_forever()\n\n$ python3 reason.py & sleep 1\n$ printf 'GET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\n' | nc -w 2 localhost 9990 | head -1\n\nHTTP/1.1 200 다 됐음\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9990/\n\n200\n\n#   curl 은 숫자만 본다\n\n#   이유 구문은 무시한다\n\n$ kill %1 2>/dev/null\n\n# --- 빈 이유 구문 ---\n\n$ curl -s -D - -o /dev/null --http2 https://example.com/ | head -1 | cat -A\n\nHTTP/2 200 $\n\n#   숫자 뒤가 비었다\n\n#   HTTP/2 에는 이유 구문이 없다\n\n#   curl 이 자리만 남겨 놓았다\n\n# --- 모르는 코드는 앞자리로 ---\n\n$ cat weird.py\n\n        self.send_response(299, \"Custom\")\n\n$ python3 weird.py & sleep 1\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9989/\n\n299\n\n$ python3 - <<'EOF'\nimport urllib.request, urllib.error\ntry:\n    r = urllib.request.urlopen(\"http://localhost:9989/\")\n    print(\"성공으로 처리됨\", r.status)\nexcept urllib.error.HTTPError as e:\n    print(\"오류로 처리됨\", e.code)\nEOF\n\n성공으로 처리됨 299\n\n#   2로 시작하니 성공이다\n\n#   목록에 없는 코드다\n\n#   앞자리만으로 판단해야 한다\n\n$ kill %1 2>/dev/null\n\n# --- 요청 줄이 너무 길면 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    \"http://localhost:8080/?q=$(head -c 12000 /dev/zero | tr '\\0' 'a')\"\n\n414\n\n$ docker exec lab grep -r large_client_header /etc/nginx/ 2>/dev/null | head -1\n\n(없음)\n\n#   기본값이다\n\n#   8KB 쯤이다\n\n#   414 는 Request-URI Too Long 이다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    \"http://localhost:8080/?q=$(head -c 4000 /dev/zero | tr '\\0' 'a')\"\n\n404\n\n#   4KB 는 통과했다\n\n#   404 는 파일이 없어서다\n\n#   쿼리에 데이터를 잔뜩 넣으면 만나는 벽이다\n\n#   그래서 큰 건 본문으로 보낸다 (5.3절)\n\n# --- 다음 절에서 ---\n\n#   이 단순함이 무엇을 남겼나",
+   "note": "**`get` 은 400 인데 `hOsT` 는 200** — 메서드만 대소문자를 가린다.\n\n**`BREW` 는 문법이 맞아 400 이 아니라 405** 다.\n\n**절대 형식 `GET http://example.com/` 에 로컬 nginx 가 `Content-Length: 615` 로** 답한다.\n\n**`HTTP/1.1 200 다 됐음` 도 규격에 맞고 `curl` 은 숫자만** 본다.\n\n**요청 줄이 12KB 면 414, 4KB 면** 통과한다."
+  }
+ ],
+ "recap": [
+  "**양쪽 다 토큰** 셋이다.",
+  "**메서드는 대소문자를** 가린다.",
+  "**모르는 메서드는 405** 다.",
+  "**대상 형식이** 넷이다.",
+  "**프록시에는 절대 형식을** 보낸다.",
+  "**절대 형식을 그대로 믿으면** 위험하다.",
+  "**이유 구문에는 뜻이** 없다.",
+  "**모르는 코드는 앞자리로** 처리한다.",
+  "**요청 줄에도 길이 제한이** 있다."
+ ],
+ "drills": [
+  {
+   "task": "소문자 메서드를 보낸다.",
+   "done_when": "400 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "없는 메서드를 보낸다.",
+   "done_when": "405 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "절대 형식으로 요청한다.",
+   "done_when": "어디가 답했는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "긴 쿼리를 보낸다.",
+   "done_when": "414 를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "요청 줄의 세 토큰은?",
+   "a": "메서드, 요청 대상, 버전이다."
+  },
+  {
+   "q": "메서드의 대소문자는?",
+   "a": "가린다. 헤더 이름과 반대다."
+  },
+  {
+   "q": "절대 형식은 언제 쓰나?",
+   "a": "프록시에 보낼 때다."
+  },
+  {
+   "q": "이유 구문의 위상은?",
+   "a": "의미가 없고 HTTP/2 에는 아예 없다."
+  },
+  {
+   "q": "모르는 상태 코드는?",
+   "a": "앞자리 분류로 처리한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "요청 대상",
+   "def": "요청 줄 가운데 오는 경로나 URL. 형식이 넷이다."
+  },
+  {
+   "term": "이유 구문",
+   "def": "상태 코드 뒤의 사람용 문구. 의미는 없다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9112 — HTTP/1.1",
+   "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "IANA — HTTP Method Registry",
+   "url": "https://www.iana.org/assignments/http-methods/http-methods.xhtml",
+   "publisher": "IANA"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

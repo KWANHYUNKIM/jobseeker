@@ -215,7 +215,7 @@
           "title": "시작 줄 읽기",
           "summary": "요청 줄과 상태 줄.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
@@ -223,7 +223,7 @@
           "title": "단순함이 남긴 것",
           "summary": "확장 가능해서 살아남았다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
