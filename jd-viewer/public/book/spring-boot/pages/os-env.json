@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "os-env",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "OS 환경변수",
+ "summary": "이름 규칙이 다르다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "변환 규칙을 안다.",
+  "느슨한 바인딩을 안다.",
+  "언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절에서 점을 못** 썼다. **그 규칙**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 키를 네 가지로 적는다",
+   "ascii": "   the same key written four ways\n\n   study.db.poolSize\n   study.db.pool-size\n   study.db.pool_size\n   STUDY_DB_POOLSIZE\n\n   all four bind to one property; only the last is an env var",
+   "note": "**넷이 한 속성으로 붙고 마지막만 환경 변수**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "프로세스에 값을 주는 가장 흔한 길이다",
+   "md": "**어디서나 있**다.\n\n> **셸·컨테이너·배포 도구**다.\n> **⑪ 3장에서 그렇게** 넘겼다.\n> **자바 밖의 이야기**다.\n\n**명령줄에 안** 남는다.\n\n> **`ps` 에 안** 보인다.\n> **인수는 보인**다.\n> **아래에서 그 차이를** 본다.\n\n**이름에 점을 못** 쓴다.\n\n> **셸이 안 받아** 준다.\n> **7.1절에서** 겪었다.\n> **그래서 변환 규칙이** 있다.\n\n**느슨하게 붙는**다.\n\n> **대소문자·하이픈·밑줄을 무시**한다.\n> **아래에서 넷을 다** 써 본다.\n> **7.8절 바인딩에서도** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "변환 규칙",
+   "ascii": "   turning a property name into an environment variable\n\n   uppercase every letter\n   replace a dot with an underscore\n   drop the hyphen, do not replace it\n   an index in brackets becomes an underscore too\n\n   the third rule is the one people get wrong",
+   "note": "**셋째를 사람들이 자주** 틀린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "느슨한 바인딩이 늘 되는 건 아니다",
+   "md": "**꺼내 쓰면 다르**다.\n\n> **키를 그대로 찾는** 방식이다.\n> **7.6절에서 그걸** 본다.\n> **묶어 받을 때만 느슨하**다.\n\n**하이픈은 지운**다.\n\n> **밑줄로 바꾸는 게** 아니다.\n> **아래에서 둘 다** 해 본다.\n> **틀리면 안** 먹는다.\n\n**목록은 밑줄과 숫자**다.\n\n> **대괄호를 못** 쓴다.\n> **아래에서 목록을** 넣는다.\n> **7.8절에서 다시** 본다.\n\n**셸이 먼저 건드린**다.\n\n> **따옴표가 없으면 값이** 잘린다.\n> **아래에서 그걸** 겪는다.\n> **`$` 도** 위험하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 점은 못 쓴다\n\n$ study.db.url=x java -jar build/libs/app.jar\nzsh: command not found: study.db.url=x\n\n$ env 'study.db.url=x' java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/actuator/env/study.db.url \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin).get('property'))\"\nNone\n\n--   억지로 넣어도 안 읽힌다\n\n\n-- 규칙대로 넣는다\n\n$ STUDY_DB_URL='jdbc:postgresql://db.prod:5432/app' \\\n  java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.db.url \\\n    | python3 -m json.tool | head -6\n{\n    \"property\": {\n        \"source\": \"systemEnvironment\",\n        \"value\": \"jdbc:postgresql://db.prod:5432/app\"\n    },\n\n\n-- 하이픈은 지운다\n\n@ConfigurationProperties(prefix = \"study.db\")\npublic class DbProperties {\n    private int poolSize = 10;\n}\n\n$ for v in STUDY_DB_POOLSIZE STUDY_DB_POOL_SIZE STUDY_DB_POOL-SIZE; do\n    printf '%-22s ' \"$v\"\n    env \"$v=42\" java -jar build/libs/app.jar > /dev/null 2>&1 &\n    until curl -sf localhost:8080/config > /dev/null 2>&1; do sleep 0.1; done\n    curl -s localhost:8080/db/poolsize\n    pkill -f app.jar\n  done\n\nSTUDY_DB_POOLSIZE      42\nSTUDY_DB_POOL_SIZE     42\nSTUDY_DB_POOL-SIZE     10\n\n--   앞의 둘은 되고 셋째는 안 된다\n--   하이픈은 지우는 것이지 밑줄이 아니다\n\n\n-- 속성 쪽은 네 가지로 다 된다\n\n$ for k in study.db.poolSize study.db.pool-size study.db.pool_size study.db.POOLSIZE; do\n    printf '%-24s ' \"$k\"\n    java -jar build/libs/app.jar \"--$k=42\" > /dev/null 2>&1 &\n    until curl -sf localhost:8080/config > /dev/null 2>&1; do sleep 0.1; done\n    curl -s localhost:8080/db/poolsize\n    pkill -f app.jar\n  done\n\nstudy.db.poolSize        42\nstudy.db.pool-size       42\nstudy.db.pool_size       42\nstudy.db.POOLSIZE        42\n\n--   묶어 받을 때는 느슨하다\n--   7.8절에서 이 바인딩을 본다\n\n\n-- 꺼내 쓰면 느슨하지 않다\n\n@GetMapping(value = \"/raw\", produces = \"text/plain\")\nString raw() {\n    return \"poolSize:  \" + env.getProperty(\"study.db.poolSize\", \"(없음)\") + \"\\n\"\n         + \"pool-size: \" + env.getProperty(\"study.db.pool-size\", \"(없음)\") + \"\\n\";\n}\n\n$ STUDY_DB_POOLSIZE=42 java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/raw\npoolSize:  42\npool-size: (없음)\n\n--   환경 변수는 특별히 이 둘을 다 만들어 준다\n--   하지만 아무 이름이나 되는 건 아니다\n\n$ curl -s 'localhost:8080/raw2?key=study.db.pool_size'\n(없음)\n\n--   7.6절에서 이 차이를 다시 본다\n\n\n-- 목록을 넣는다\n\n@ConfigurationProperties(prefix = \"study\")\npublic class StudyProperties {\n    private List<String> hosts = new ArrayList<>();\n}\n\n$ STUDY_HOSTS_0=a.example.com STUDY_HOSTS_1=b.example.com \\\n  java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/hosts\na.example.com,b.example.com\n\n$ env 'STUDY_HOSTS[0]=a.example.com' java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/hosts\n(비어 있음)\n\n--   대괄호는 못 쓴다\n--   밑줄과 숫자다\n\n\n-- 명령줄에 안 남는다\n\n$ java -jar build/libs/app.jar --study.db.password='p@ssw0rd' > /dev/null 2>&1 &\n$ ps -o command= -p $! | head -c 80\njava -jar build/libs/app.jar --study.db.password=p@ssw0rd\n\n$ pkill -f app.jar\n$ STUDY_DB_PASSWORD='p@ssw0rd' java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ ps -o command= -p $! | head -c 80\njava -jar build/libs/app.jar\n\n$ ps eww -p $! | grep -o 'STUDY_DB_PASSWORD=[^ ]*'\nSTUDY_DB_PASSWORD=p@ssw0rd\n\n--   기본 ps 에는 안 보인다\n--   찾으려면 찾을 수 있다, 완전한 비밀은 아니다\n\n\n-- 셸이 먼저 건드린다\n\n$ STUDY_MODE=a b c java -jar build/libs/app.jar 2>&1 | head -1\nzsh: command not found: b\n\n$ STUDY_MODE='a b c' java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/config | grep 모드\n모드: a b c\n\n$ STUDY_DB_PASSWORD=\"p\\$w0rd\" java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/db/password/len\n2\n\n$ STUDY_DB_PASSWORD='p$w0rd' java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/db/password/len\n6\n\n--   따옴표를 안 쓰면 값이 잘린다\n--   자바가 아니라 셸이 한 일이다\n\n\n-- 프로세스가 보는 것\n\n@GetMapping(value = \"/env/raw\", produces = \"text/plain\")\nString envRaw() {\n    return System.getenv().entrySet().stream()\n        .filter(e -> e.getKey().startsWith(\"STUDY_\"))\n        .map(e -> e.getKey() + \" = \" + e.getValue())\n        .sorted().collect(Collectors.joining(\"\\n\")) + \"\\n\";\n}\n\n$ STUDY_MODE=env STUDY_DB_URL=jdbc:h2:mem:x \\\n  java -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/env/raw\nSTUDY_DB_URL = jdbc:h2:mem:x\nSTUDY_MODE = env\n\n$ curl -s localhost:8080/actuator/env \\\n    | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    print(s['name'])\n\" | head -4\nserver.ports\ncommandLineArgs\nservletContextInitParams\nsystemEnvironment\n\n--   자바가 본 것을 스프링이 한 덩어리로 감쌌다\n--   7.6절에서 그 덩어리를 본다\n\n\n-- 컨테이너에서는 이게 기본이다\n\n$ cat Dockerfile\nFROM eclipse-temurin:21-jre\nCOPY build/libs/app.jar /app.jar\nENTRYPOINT [\"java\", \"-jar\", \"/app.jar\"]\n\n$ docker run --rm -d -p 8080:8080 \\\n    -e STUDY_MODE=prod \\\n    -e STUDY_DB_URL=jdbc:postgresql://db:5432/app \\\n    app:latest\n\n$ curl -s localhost:8080/config\nurl:  jdbc:postgresql://db:5432/app\n모드: prod\n\n$ docker inspect --format '{{json .Config.Env}}' $(docker ps -q) \\\n    | python3 -c \"import json,sys; [print(v) for v in json.load(sys.stdin) if 'STUDY' in v]\"\nSTUDY_MODE=prod\nSTUDY_DB_URL=jdbc:postgresql://db:5432/app\n\n--   ⑪ 3장에서 쓰던 그 -e 다\n--   이미지는 하나고 값만 다르다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '점'          '못 씀' \\\n  '규칙'        '대문자, 점은 밑줄' \\\n  '하이픈'      '지움' \\\n  '목록'        '밑줄과 숫자' \\\n  '묶어 받기'   '느슨함' \\\n  '꺼내 쓰기'   '덜 느슨함' \\\n  'ps'          '기본엔 안 보임' \\\n  '따옴표'      '없으면 잘림'\n\n점                         못 씀\n규칙                       대문자, 점은 밑줄\n하이픈                     지움\n목록                       밑줄과 숫자\n묶어 받기                  느슨함\n꺼내 쓰기                  덜 느슨함\nps                         기본엔 안 보임\n따옴표                     없으면 잘림\n\n--   7.3절에서 시스템 속성을 본다",
+   "note": "**점이 든 이름은 셸이 안 받고 억지로 넣어도 안** 읽힌다.\n\n**`STUDY_DB_POOLSIZE` 와 `STUDY_DB_POOL_SIZE` 는 42 인데 `STUDY_DB_POOL-SIZE` 는 기본값 10**이다.\n\n**속성 쪽은 대소문자·하이픈·밑줄 넷을 다 42 로 받고 꺼내 쓰는 쪽은 덜** 느슨하다.\n\n**목록은 `STUDY_HOSTS_0` 로 붙고 대괄호는 안** 붙는다.\n\n**인수는 `ps` 에 그대로 보이고 환경 변수는 기본 `ps` 에 안 보이며 따옴표를 빼면 값이 6 자에서 2 자로** 잘렸다."
+  }
+ ],
+ "recap": [
+  "**점을 못** 쓴다.",
+  "**대문자로** 쓴다.",
+  "**점은** 밑줄이다.",
+  "**하이픈은** 지운다.",
+  "**목록은** 숫자다.",
+  "**묶어 받으면** 느슨하다.",
+  "**꺼내 쓰면 덜** 느슨하다.",
+  "**ps 에 안** 보인다.",
+  "**따옴표를** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "세 가지 이름으로 넣어 본다.",
+   "done_when": "하이픈 규칙을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "속성 이름 넷으로 넣어 본다.",
+   "done_when": "다 먹는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "목록을 환경 변수로 넣는다.",
+   "done_when": "밑줄과 숫자로 붙는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "따옴표를 빼고 넣어 본다.",
+   "done_when": "값이 잘리는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "점이 든 이름을 환경 변수로 쓸 수 있나?",
+   "a": "없다. 셸이 받지 않고 읽히지도 않는다."
+  },
+  {
+   "q": "하이픈은 어떻게 바꾸나?",
+   "a": "밑줄로 바꾸는 게 아니라 지운다."
+  },
+  {
+   "q": "목록의 첫 항목은?",
+   "a": "이름 뒤에 밑줄과 0 을 붙인다. 대괄호는 안 된다."
+  },
+  {
+   "q": "느슨한 바인딩은 어디서 되나?",
+   "a": "묶어서 받을 때다. 키로 꺼내 쓸 때는 덜 느슨하다."
+  },
+  {
+   "q": "왜 인수 대신 환경 변수로 비밀을 주나?",
+   "a": "인수는 기본 프로세스 목록에 그대로 보여서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "느슨한 바인딩",
+   "def": "대소문자·하이픈·밑줄 차이를 무시하고 같은 속성으로 붙이는 규칙."
+  },
+  {
+   "term": "환경 변수 변환",
+   "def": "속성 이름을 대문자와 밑줄로 바꿔 환경 변수 이름으로 만드는 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Environment Abstraction",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/environment.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

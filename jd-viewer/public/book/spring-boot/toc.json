@@ -433,7 +433,7 @@
           "title": "네 가지 방법",
           "summary": "무엇을 언제 쓰나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -441,7 +441,7 @@
           "title": "OS 환경변수",
           "summary": "이름 규칙이 다르다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
