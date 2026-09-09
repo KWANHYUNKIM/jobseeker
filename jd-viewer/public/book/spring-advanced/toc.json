@@ -456,7 +456,7 @@
           "title": "설정이 늘어난다",
           "summary": "대상마다 한 벌씩.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -464,7 +464,7 @@
           "title": "빈 후처리기",
           "summary": "만들어진 빈을 가로챈다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

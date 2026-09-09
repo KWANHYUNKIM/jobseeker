@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "postprocessor",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "빈 후처리기",
+ "summary": "만들어진 빈을 가로챈다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "자리를 안다.",
+  "바꿔치기한다.",
+  "생명주기를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.7절에서 이름만** 봤다. **그 자리를 제대로** 연다."
+  },
+  {
+   "type": "figure",
+   "caption": "빈의 일생 중 어디에 있나",
+   "ascii": "   where the hook sits in a bean's life\n\n   the object is created\n   dependencies are injected\n   the before hook runs\n   init callbacks run\n   the after hook runs\n\n   whatever the last step returns is what gets registered",
+   "note": "**마지막 걸음이 돌려준 것이 등록**된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "만들어진 다음, 등록되기 전이 열려 있다",
+   "md": "**컨테이너가** 만든다.\n\n> **스캔이든 설정이든** 같다.\n> **8.1절에서 76% 가 스캔**이었다.\n> **여기선 다** 지나간다.\n\n**중간에 끼어든**다.\n\n> **주입이 끝난** 뒤다.\n> **아래에서 그 순서를** 찍는다.\n> **초기화 전후 둘이** 있다.\n\n**돌려준 것이** 등록된다.\n\n> **다른 걸 주면 그게** 빈이다.\n> **아래에서 바꿔** 친다.\n> **5.5절의 그 낱말과** 같다.\n\n**부르는 쪽은** 모른다.\n\n> **5.1절의 그** 이야기다.\n> **아래에서 확인**한다.\n> **타입만 맞으면** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "돌려주는 값이 전부다",
+   "ascii": "   the return value is the whole mechanism\n\n   return the same object and nothing changes\n   return a different object and that one is registered\n   return null and the bean disappears\n\n   nobody downstream can tell which of the three happened",
+   "note": "**셋 중 무엇이었는지 받는 쪽은 구분할 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "모든 빈이 여기를 지난다",
+   "md": "**수백 번** 불린다.\n\n> **내 것만 오지** 않는다.\n> **아래에서 세어** 본다.\n> **걸러야** 한다.\n\n**타입을 안 보면** 위험하다.\n\n> **엉뚱한 걸** 감싼다.\n> **아래에서 그걸** 겪는다.\n> **기동이** 깨진다.\n\n**후처리기 자신도** 빈이다.\n\n> **먼저 만들어져야** 한다.\n> **아래에서 그** 순서를 본다.\n> **주입이 안 될 수** 있다.\n\n**너무 이른 빈은 못** 감싼다.\n\n> **후처리기보다 먼저 만들어진 것**이다.\n> **아래에서 그 경고를** 본다.\n> **8.7절에서 다시** 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 자리를 확인한다\n\n@Component\npublic class TraceLifecycle implements BeanPostProcessor {\n\n    @Override\n    public Object postProcessBeforeInitialization(Object bean, String name) {\n        if (name.startsWith(\"order\")) log.info(\"[후처리 앞] {}\", name);\n        return bean;\n    }\n\n    @Override\n    public Object postProcessAfterInitialization(Object bean, String name) {\n        if (name.startsWith(\"order\")) log.info(\"[후처리 뒤] {}\", name);\n        return bean;\n    }\n}\n\n@Service\npublic class OrderServiceV3 {\n    public OrderServiceV3(OrderRepositoryV3 r) { log.info(\"[① 생성자]\"); }\n\n    @Autowired void setClock(Clock c) { log.info(\"[② 주입]\"); }\n\n    @PostConstruct void init() { log.info(\"[③ 초기화]\"); }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[①|\\[②|\\[③|후처리'\n[① 생성자]\n[② 주입]\n[후처리 앞] orderServiceV3\n[③ 초기화]\n[후처리 뒤] orderServiceV3\n\n--   생성자와 주입이 끝난 뒤다\n--   초기화 앞뒤로 두 번 온다\n\n\n-- 바꿔치기한다\n\n@Component\npublic class ProxyPostProcessor implements BeanPostProcessor {\n\n    private final Advisor advisor;\n\n    @Override\n    public Object postProcessAfterInitialization(Object bean, String name) {\n        if (!bean.getClass().getPackageName().startsWith(\"study.adv.app\"))\n            return bean;\n        ProxyFactory factory = new ProxyFactory(bean);\n        factory.addAdvisor(advisor);\n        log.info(\"감쌈 {} -> {}\", name, bean.getClass().getSimpleName());\n        return factory.getProxy();                 // 다른 것을 돌려준다\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | head -4\n감쌈 orderControllerV3 -> OrderControllerV3\n감쌈 orderServiceV3 -> OrderServiceV3\n감쌈 orderRepositoryV3 -> OrderRepositoryV3\n감쌈 memberServiceV3 -> MemberServiceV3\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\n원본:      study.adv.app.OrderServiceV3\n\n--   스캔된 빈이 감싸졌다\n--   5.7 절과 8.1 절에서 못 하던 것이다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v3/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ grep -c 'V3' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n0\n\n--   설정에 V3 가 한 글자도 없다\n--   2.4 절의 여섯 줄이 그대로 나온다\n\n\n-- 애너테이션이 살아 있다\n\n$ grep -c '@Service\\|@Repository\\|@RestController' \\\n    src/main/java/study/adv/app/*V3*.java | awk -F: '{s+=$2} END {print s}'\n3\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nprint(b['orderServiceV3']['resource'])\"\nfile [.../study/adv/app/OrderServiceV3.class]\n\n--   5.5 절에서는 애너테이션을 뗐다\n--   여기선 그대로 둔다\n\n\n-- 주입도 된다\n\n@Service\npublic class OrderServiceV3 {\n    private final OrderRepositoryV3 repository;\n    @Autowired private Clock clock;               // 컨테이너가 채운다\n}\n\n$ curl -s 'localhost:8080/proxy/target?name=orderServiceV3'\n대상 원본:   study.adv.app.OrderServiceV3@4f21a1c9\n\n$ curl -s 'localhost:8080/v3/now'\n2026-09-10T08:53:41Z\n\n--   7.7 절에서 안 되던 것이다\n--   내가 안 만들었으니 컨테이너가 채웠다\n\n\n-- 부르는 쪽은 모른다\n\n@RestController\npublic class OrderControllerV3 {\n    private final OrderServiceV3 orderService;    // 구체 타입\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v3/request?itemId=연필'\n200\n\n$ curl -s 'localhost:8080/who?name=orderControllerV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderControllerV3$$SpringCGLIB$$0\n\n--   상속 방식이라 구체 타입으로 받힌다\n--   7.1 절의 그 규칙이다\n\n\n-- 같은 것을 돌려주면\n\n@Override\npublic Object postProcessAfterInitialization(Object bean, String name) {\n    return bean;                                  // 그대로\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   아무 일도 안 일어난다\n\n\n-- 널을 돌려주면\n\n@Override\npublic Object postProcessAfterInitialization(Object bean, String name) {\n    if (name.equals(\"orderServiceV3\")) return null;\n    return bean;\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.adv.app.OrderControllerV3 required a bean\nof type 'study.adv.app.OrderServiceV3' that could not be found.\n\n--   빈이 사라졌다\n--   돌려준 것이 전부다\n\n\n-- 엉뚱한 것을 돌려주면\n\n@Override\npublic Object postProcessAfterInitialization(Object bean, String name) {\n    if (name.equals(\"orderServiceV3\")) return \"엉뚱한 것\";\n    return bean;\n}\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'BeanNotOfRequiredType' | head -2\norg.springframework.beans.factory.BeanNotOfRequiredTypeException:\n  Bean named 'orderServiceV3' is expected to be of type 'OrderServiceV3'\n  but was actually of type 'java.lang.String'\n\n--   타입이 안 맞으면 기동에서 잡힌다\n\n\n-- 모든 빈이 지나간다\n\n@Override\npublic Object postProcessAfterInitialization(Object bean, String name) {\n    count.incrementAndGet();\n    return bean;\n}\n\n$ ./gradlew bootRun 2>&1 | grep '후처리 횟수'\nINFO ... : 후처리 횟수: 188\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nprint(len(json.load(sys.stdin)['contexts']['application']['beans']))\"\n188\n\n--   빈 수만큼이다\n--   ⑯ 6.1절에서 센 그 숫자다\n\n\n-- 안 거르면\n\n@Override\npublic Object postProcessAfterInitialization(Object bean, String name) {\n    ProxyFactory factory = new ProxyFactory(bean);   // 무조건 감싼다\n    factory.addAdvisor(advisor);\n    return factory.getProxy();\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\njava.lang.IllegalArgumentException: Cannot subclass final class\n  org.springframework.boot.autoconfigure.web.ServerProperties\n\n--   6.7 절의 그 제약이다\n--   부트 내부 빈까지 감싸려 했다\n\n\n-- 걸러야 한다\n\nif (!bean.getClass().getPackageName().startsWith(\"study.adv.app\"))\n    return bean;\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Cannot subclass'\n0\n\n$ ./gradlew bootRun 2>&1 | grep -c '감쌈'\n7\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      188\n프록시:        21\n\n--   일곱이 감싸졌다\n--   8.5 절에서 이 거르개를 제대로 만든다\n\n\n-- 후처리기도 빈이다\n\n@Component\npublic class ProxyPostProcessor implements BeanPostProcessor {\n    private final Advisor advisor;                  // 주입받는다\n\n    public ProxyPostProcessor(Advisor advisor) { this.advisor = advisor; }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'is not eligible' | head -2\nINFO ... : Bean 'logTraceAdvisor' of type [DefaultPointcutAdvisor] is not\n  eligible for getting processed by all BeanPostProcessors\n\n$ curl -s 'localhost:8080/who?name=logTraceAdvisor' | sed -n '2p'\n프록시인가: false\n\n--   후처리기가 쓰는 빈은 먼저 만들어진다\n--   그래서 자기는 후처리를 못 받는다\n\n\n-- 너무 이른 빈은 못 감싼다\n\n@Component\npublic class EarlyBean implements BeanFactoryPostProcessor { ... }\n\n@Service\npublic class UsedByEarly { ... }\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | wc -l\n      4\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | head -2\nINFO ... : Bean 'usedByEarly' of type [UsedByEarly] is not eligible for getting\n  processed by all BeanPostProcessors (for example: not eligible for auto-proxying)\n\n$ curl -s 'localhost:8080/who?name=usedByEarly' | sed -n '2p'\n프록시인가: false\n\n--   경고에 auto-proxying 이라고 적혀 있다\n--   8.7 절에서 이걸 다시 만난다\n\n\n-- 순서를 정할 수 있다\n\n@Component\n@Order(Ordered.LOWEST_PRECEDENCE)\npublic class ProxyPostProcessor implements BeanPostProcessor, Ordered { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -E '후처리 앞|후처리 뒤|다른 후처리'\n[다른 후처리] orderServiceV3\n[후처리 뒤] orderServiceV3\n\n--   나중에 도는 쪽이 바깥이 된다\n--   9.4 절에서 이 순서를 다시 본다\n\n\n-- 설정을 센다\n\n@Configuration\npublic class PostProcessorConfig {\n\n    @Bean\n    public Advisor logTraceAdvisor(LogTrace trace) {\n        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n        pointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\");\n        return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n    }\n}\n\n$ wc -l < src/main/java/study/adv/post/PostProcessorConfig.java\n      14\n$ wc -l < src/main/java/study/adv/post/ProxyPostProcessor.java\n      26\n\n// 8.1 절에서는\n$ git show v8-done:src/main/java/study/adv/factory/ProxyFactoryConfig.java | wc -l\n      52\n\n--   설정이 52 줄에서 14 줄이 됐다\n--   후처리기 26 줄이 새로 생겼다\n\n\n-- 새 클래스를 만들면\n\n@Service\npublic class PaymentServiceV3 {\n    public void pay(int won) { ... }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | tail -1\n감쌈 paymentServiceV3 -> PaymentServiceV3\n\n$ curl -s 'localhost:8080/who?name=paymentServiceV3' | sed -n '2p'\n프록시인가: true\n\n$ grep -c 'paymentService' src/main/java/study/adv/post/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n--   설정을 한 줄도 안 고쳤다\n--   2.6 절부터 일곱 번 나온 그 깜빡함이 사라졌다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ curl -s -o /dev/null 'localhost:8080/v3/join?name=철수'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] MemberServiceV3.join()\n[3d81f0a2] MemberServiceV3.join() time=2ms\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      189\n프록시:        22\n\n$ git add -A && git commit -q -m 'feat: v9 빈 후처리기' && git tag v9\n\n--   8.3 절에서 제대로 적용한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '자리'        '주입 뒤, 등록 전' \\\n  '두 번'       '초기화 앞뒤' \\\n  '돌려준 것'   '그것이 빈' \\\n  '널'          '빈이 사라짐' \\\n  '엉뚱한 타입' '기동 실패' \\\n  '모든 빈'     '188 번' \\\n  '안 거르면'   'final 에서 터짐' \\\n  '스캔'        '감쌀 수 있음' \\\n  '주입'        '그대로 됨' \\\n  '설정'        '52 에서 14 줄'\n\n자리                       주입 뒤, 등록 전\n두 번                      초기화 앞뒤\n돌려준 것                  그것이 빈\n널                         빈이 사라짐\n엉뚱한 타입                기동 실패\n모든 빈                    188 번\n안 거르면                  final 에서 터짐\n스캔                       감쌀 수 있음\n주입                       그대로 됨\n설정                       52 에서 14 줄",
+   "note": "**생성자 → 주입 → `[후처리 앞]` → 초기화 → `[후처리 뒤]` 순으로 찍혀 자리가** 드러난다.\n\n**돌려준 것이 곧 빈이라 널을 주면 빈이 사라지고 엉뚱한 타입이면 `BeanNotOfRequiredTypeException`** 이다.\n\n**모든 빈이 188 번 지나가고 안 거르면 부트 내부의 `final` 클래스에서** 터진다.\n\n**스캔된 빈이 애너테이션을 단 채로 감싸지고 `@Autowired` 도 그대로** 들어온다.\n\n**설정이 52 줄에서 14 줄이 되고 새 클래스는 한 줄도 안 적었는데 저절로** 걸린다."
+  }
+ ],
+ "recap": [
+  "**주입 뒤에** 온다.",
+  "**두 번** 온다.",
+  "**돌려준 게** 빈이다.",
+  "**널이면** 사라진다.",
+  "**모든 빈이** 지난다.",
+  "**걸러야** 한다.",
+  "**스캔도** 된다.",
+  "**주입이** 산다.",
+  "**설정이** 줄었다."
+ ],
+ "drills": [
+  {
+   "task": "생명주기를 찍는다.",
+   "done_when": "다섯 걸음을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "바꿔치기한다.",
+   "done_when": "스캔된 빈이 감싸진 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "안 거르고 돌려 본다.",
+   "done_when": "기동이 깨지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "새 클래스를 만든다.",
+   "done_when": "설정을 안 고쳐도 걸리는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "후처리기는 언제 불리나?",
+   "a": "주입이 끝난 뒤, 초기화 앞뒤로 두 번이다."
+  },
+  {
+   "q": "무엇이 빈으로 등록되나?",
+   "a": "후처리기가 돌려준 객체다."
+  },
+  {
+   "q": "널을 돌려주면?",
+   "a": "그 빈이 사라져 주입이 실패한다."
+  },
+  {
+   "q": "왜 걸러야 하나?",
+   "a": "모든 빈이 지나가므로 감싸면 안 되는 것까지 감싸게 된다."
+  },
+  {
+   "q": "스캔된 빈을 감쌀 수 있는 이유는?",
+   "a": "컨테이너가 만든 뒤에 끼어들기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빈 후처리기",
+   "def": "빈이 만들어진 뒤 등록되기 전에 끼어들어 바꿔치기할 수 있는 자리."
+  },
+  {
+   "term": "이른 참조",
+   "def": "후처리기보다 먼저 만들어져 후처리를 못 받는 빈."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — BeanPostProcessor",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Bean Lifecycle Callbacks",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
