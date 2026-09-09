@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "loader",
+ "no": "4.9",
+ "chapter": 4,
+ "title": "부트 로더",
+ "summary": "누가 JAR 안의 JAR 를 읽나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "실행 순서를 안다.",
+  "로더 타입을 본다.",
+  "두 겹 URL 을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.5절에서 표준으로는 못 읽는다고** 했다. **부트가 어떻게 읽는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "내 코드 전에 벌어지는 일",
+   "ascii": "   what the launcher does before your code runs\n\n   read the manifest    find the start class and the index\n   open the archive     as a file, which is allowed\n   list the nested jars from the index, in order\n   build a class loader that knows how to read inside them\n   call your main        through that loader\n\n   the fourth line is the part the jdk does not provide",
+   "note": "**넷째 줄이 JDK 가 안 주는** 부분이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "직접 읽는 로더를 하나 더 만든 것이다",
+   "md": "**바깥 JAR 는 평범**하다.\n\n> **파일이라 표준으로** 열린다.\n> **4.5절의 제약은 안쪽**이었다.\n> **로더 클래스가 거기 풀려** 있다.\n\n**로더가 안쪽을 직접** 읽는다.\n\n> **`RandomAccessFile` 로 오프셋을** 잡는다.\n> **그래서 `Stored` 여야** 한다.\n> **4.8절에서 그** 오류를 봤다.\n\n**URL 핸들러도 등록**한다.\n\n> **느낌표 둘을 받아**준다.\n> **4.5절에서 `no !/ in spec`** 이었다.\n> **아래에서 그 URL 을** 본다.\n\n**그리고 내 `main` 을** 부른다.\n\n> **리플렉션으로** 부른다.\n> **`Start-Class` 를 읽어**서다.\n> **4.10절이 그** 이야기다."
+  },
+  {
+   "type": "figure",
+   "caption": "로더가 내주는 URL",
+   "ascii": "   the url the boot loader hands out\n\n   jar colon file colon slash app jar bang slash BOOT-INF lib x jar bang slash\n\n   two bangs, which 4.5 showed the standard parser refuses,\n   so the loader registers a handler that accepts it",
+   "note": "**표준 파서가 거부하던 형식을 핸들러가 받아** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "스레드 컨텍스트 로더를 봐야 할 때가 있다",
+   "md": "**로더가 둘 이상**이다.\n\n> **시스템 로더와 부트 로더**다.\n> **`getClass().getClassLoader()` 가 후자**다.\n> **아래에서 이름을** 찍는다.\n\n**리소스를 못 찾는 일이** 있다.\n\n> **시스템 로더로 찾으면 안** 나온다.\n> **`BOOT-INF` 안이라** 그렇다.\n> **아래에서 그걸** 만든다.\n\n**라이브러리가 그걸 틀리기도** 한다.\n\n> **`ClassLoader.getSystemResource` 를** 쓴다.\n> **JAR 에서만** 깨진다.\n> **개발에서는 안** 드러난다.\n\n**풀어서 돌릴 수도** 있다.\n\n> **`-Djarmode=tools extract`** 다.\n> **4.7절에서 레이어로** 풀었다.\n> **아래에서 그렇게도** 돌린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 로더 클래스가 풀려 있다\n\n$ unzip -l build/libs/app.jar | grep 'loader/launch' | head -5\n     3418  org/springframework/boot/loader/launch/JarLauncher.class\n     8214  org/springframework/boot/loader/launch/Launcher.class\n     6102  org/springframework/boot/loader/launch/ExecutableArchiveLauncher.class\n    12418  org/springframework/boot/loader/launch/LaunchedClassLoader.class\n     2204  org/springframework/boot/loader/launch/PropertiesLauncher.class\n\n$ unzip -v build/libs/app.jar | grep 'JarLauncher.class'\n     3418  Defl:N      1902  44% ... JarLauncher.class\n\n--   압축돼 있다\n--   표준 로더가 읽을 수 있다\n--   4.8절에서 라이브러리만 Stored 였다\n\n\n-- 실행 순서를 찍는다\n\n$ java -jar build/libs/app.jar --debug 2>&1 | head -3\n... 기동 로그\n\n// 로더가 무엇을 하는지 보려면 시스템 속성을 쓴다\n$ java -verbose:class -jar build/libs/app.jar 2>&1 \\\n    | grep -n 'JarLauncher\\|LaunchedClassLoader\\|BootApplication' | head -5\n\n412:[class,load] org.springframework.boot.loader.launch.JarLauncher\n                 source: file:/Users/kwanhyun/proj/build/libs/app.jar\n418:[class,load] org.springframework.boot.loader.launch.LaunchedClassLoader\n                 source: file:/Users/kwanhyun/proj/build/libs/app.jar\n1204:[class,load] study.boot.BootApplication\n                 source: jar:file:/.../app.jar!/BOOT-INF/classes/!/\n\n--   JarLauncher 가 먼저 로드된다\n--   내 클래스는 한참 뒤다\n--   출처 URL 이 다르다\n\n\n-- 로더 타입을 본다\n\n@RestController\nclass LoaderController {\n\n    @GetMapping(value = \"/loader\", produces = \"text/plain;charset=UTF-8\")\n    String loader() {\n        var mine = getClass().getClassLoader();\n        var system = ClassLoader.getSystemClassLoader();\n        var context = Thread.currentThread().getContextClassLoader();\n\n        return \"내 클래스:   \" + mine.getClass().getName() + \"\\n\"\n             + \"시스템:      \" + system.getClass().getName() + \"\\n\"\n             + \"컨텍스트:    \" + context.getClass().getName() + \"\\n\"\n             + \"내 부모:     \" + mine.getParent().getClass().getName() + \"\\n\";\n    }\n}\n\n// JAR 로 실행\n$ curl -s localhost:8080/loader\n내 클래스:   org.springframework.boot.loader.launch.LaunchedClassLoader\n시스템:      jdk.internal.loader.ClassLoaders$AppClassLoader\n컨텍스트:    org.springframework.boot.loader.launch.LaunchedClassLoader\n내 부모:     jdk.internal.loader.ClassLoaders$AppClassLoader\n\n--   로더가 둘이다\n--   부트 로더가 시스템 로더를 부모로 둔다\n\n\n-- bootRun 으로 돌리면\n\n$ ./gradlew bootRun &\n$ curl -s localhost:8080/loader\n내 클래스:   jdk.internal.loader.ClassLoaders$AppClassLoader\n시스템:      jdk.internal.loader.ClassLoaders$AppClassLoader\n컨텍스트:    jdk.internal.loader.ClassLoaders$AppClassLoader\n내 부모:     jdk.internal.loader.ClassLoaders$PlatformClassLoader\n\n--   부트 로더가 없다\n--   폴더로 도니 필요가 없다\n--   그래서 개발에서는 문제가 안 드러난다\n\n\n-- 두 겹 URL 을 본다\n\n@GetMapping(value = \"/urls\", produces = \"text/plain\")\nString urls() throws Exception {\n    var cl = getClass().getClassLoader();\n    var res = cl.getResource(\"org/springframework/web/servlet/\"\n            + \"DispatcherServlet.class\");\n    var mine = cl.getResource(\"study/boot/BootApplication.class\");\n    return \"라이브러리: \" + res + \"\\n내 클래스:  \" + mine + \"\\n\";\n}\n\n$ curl -s localhost:8080/urls\n라이브러리: jar:file:/Users/kwanhyun/proj/build/libs/app.jar\n            !/BOOT-INF/lib/spring-webmvc-6.1.11.jar!/org/springframework/\n            web/servlet/DispatcherServlet.class\n내 클래스:  jar:file:/Users/kwanhyun/proj/build/libs/app.jar\n            !/BOOT-INF/classes/study/boot/BootApplication.class\n\n--   느낌표가 둘이다\n--   4.5절에서 표준이 거부하던 형식이다\n\n\n-- 표준 파서로는 여전히 안 된다\n\n@GetMapping(value = \"/parse\", produces = \"text/plain\")\nString parse() {\n    String spec = \"jar:file:/tmp/outer.jar!/inner.jar!/Hello.class\";\n    try {\n        new java.net.URL(spec).openStream().close();\n        return \"열렸다\";\n    } catch (Exception e) {\n        return e.getClass().getSimpleName() + \": \" + e.getMessage();\n    }\n}\n\n$ curl -s localhost:8080/parse\nIOException: no !/ in spec\n\n--   4.5절과 같다\n--   부트 로더가 자기 것만 처리한다\n\n\n-- 어떻게 읽나\n\n// LaunchedClassLoader 는 UrlClassLoader 를 상속한다\n$ unzip -p build/libs/app.jar \\\n    org/springframework/boot/loader/launch/LaunchedClassLoader.class \\\n  | javap -c /dev/stdin 2>/dev/null | head -3 \\\n  || javap -cp build/libs/app.jar \\\n     org.springframework.boot.loader.launch.LaunchedClassLoader | head -3\n\npublic class org.springframework.boot.loader.launch.LaunchedClassLoader\n  extends java.net.URLClassLoader {\n\n// 그리고 자기 URL 핸들러를 쓴다\n$ unzip -l build/libs/app.jar | grep -c 'loader/net/protocol/jar'\n8\n\n$ unzip -l build/libs/app.jar | grep 'loader/net/protocol/jar' | head -3\n     4218  org/springframework/boot/loader/net/protocol/jar/Handler.class\n     6102  org/springframework/boot/loader/net/protocol/jar/JarUrl.class\n     8418  org/springframework/boot/loader/net/protocol/jar/\n           JarUrlConnection.class\n\n--   자기 Handler 를 등록한다\n--   4.5절에서 본 JDK 파서를 대신한다\n\n\n-- Stored 여야 하는 이유\n\n$ unzip -l build/libs/app.jar | grep -c 'loader/zip/'\n14\n\n$ unzip -l build/libs/app.jar | grep 'loader/zip/' | head -3\n     3418  org/springframework/boot/loader/zip/ZipContent.class\n     2204  org/springframework/boot/loader/zip/DataBlock.class\n     1902  org/springframework/boot/loader/zip/FileDataBlock.class\n\n// FileDataBlock 은 파일 오프셋을 잡는다\n// 안쪽 JAR 가 Stored 면 바깥 파일 안에서 그 구간이 그대로 JAR 다\n\n$ python3 - <<'PY'\nimport zipfile\nwith zipfile.ZipFile('build/libs/app.jar') as z:\n    info = z.getinfo('BOOT-INF/lib/spring-web-6.1.11.jar')\n    print('압축 방식:', info.compress_type, '(0=Stored)')\n    print('헤더 오프셋:', info.header_offset)\n    print('크기:', info.file_size, '=', info.compress_size)\nPY\n\n압축 방식: 0 (0=Stored)\n헤더 오프셋: 3618204\n크기: 1893421 = 1893421\n\n--   원본 크기와 압축 크기가 같다\n--   바깥 파일의 그 구간을 그대로 읽으면 JAR 다\n\n\n-- 손으로 흉내 내 본다\n\n$ python3 - <<'PY'\nimport zipfile, io\nwith open('build/libs/app.jar','rb') as f:\n    with zipfile.ZipFile(f) as outer:\n        info = outer.getinfo('BOOT-INF/lib/spring-web-6.1.11.jar')\n        f.seek(info.header_offset)\n        # 로컬 헤더를 건너뛰고 데이터 구간을 그대로 잘라 낸다\n        raw = outer.open(info).read()\n        with zipfile.ZipFile(io.BytesIO(raw)) as inner:\n            print('안쪽 항목 수:', len(inner.namelist()))\n            print('매니페스트:',\n                  inner.read('META-INF/MANIFEST.MF').decode().splitlines()[1])\nPY\n\n안쪽 항목 수: 1284\n매니페스트: Implementation-Title: spring-web\n\n--   자바가 하는 일이 이것이다\n--   압축돼 있으면 이 구간이 JAR 가 아니다\n\n\n-- 시스템 로더로 찾으면 못 찾는다\n\n@GetMapping(value = \"/resource\", produces = \"text/plain\")\nString resource() {\n    var byMine = getClass().getClassLoader()\n            .getResource(\"application.yml\");\n    var bySystem = ClassLoader.getSystemResource(\"application.yml\");\n    return \"내 로더:   \" + byMine + \"\\n시스템:    \" + bySystem + \"\\n\";\n}\n\n// JAR 로 실행\n$ curl -s localhost:8080/resource\n내 로더:   jar:file:/.../app.jar!/BOOT-INF/classes/application.yml\n시스템:    null\n\n// bootRun 으로 실행\n$ curl -s localhost:8080/resource\n내 로더:   file:/Users/kwanhyun/proj/build/resources/main/application.yml\n시스템:    file:/Users/kwanhyun/proj/build/resources/main/application.yml\n\n--   JAR 에서만 null 이다\n--   라이브러리가 이걸 틀리면 개발에서는 안 드러난다\n\n\n-- 풀어서 돌릴 수도 있다\n\n$ java -Djarmode=tools -jar build/libs/app.jar \\\n    extract --destination /tmp/unpacked\n$ ls /tmp/unpacked\napp.jar  lib\n\n$ ls /tmp/unpacked/lib | head -3\njakarta.annotation-api-2.1.1.jar\nspring-boot-3.3.2.jar\nspring-web-6.1.11.jar\n\n$ java -jar /tmp/unpacked/app.jar 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ curl -s localhost:8080/loader | head -1\n내 클래스:   jdk.internal.loader.ClassLoaders$AppClassLoader\n\n--   부트 로더가 없다\n--   JAR 가 밖에 있어 표준으로 읽는다\n--   ⑪ 4장에서 이렇게 이미지를 만든다\n\n\n-- 기동 시간을 비교한다\n\n$ for m in 'build/libs/app.jar' '/tmp/unpacked/app.jar'; do\n    printf '%-28s ' \"$m\"\n    java -jar \"$m\" 2>&1 | grep -o 'in [0-9.]* seconds' | head -1\n  done\n\nbuild/libs/app.jar            in 1.084 seconds\n/tmp/unpacked/app.jar         in 0.912 seconds\n\n--   조금 빠르다\n--   중첩을 안 뚫어서다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  'JarLauncher'        '먼저 로드되어 준비한다' \\\n  'LaunchedClassLoader' 'URLClassLoader 를 상속' \\\n  '자체 Handler'       '느낌표 둘을 받는다' \\\n  'ZipContent'         '파일 오프셋으로 읽는다' \\\n  'Stored 필요'        '그 구간이 그대로 JAR' \\\n  '시스템 로더'        'BOOT-INF 를 모른다' \\\n  '풀어서 실행'        '부트 로더가 없어진다'\n\nJarLauncher                먼저 로드되어 준비한다\nLaunchedClassLoader        URLClassLoader 를 상속\n자체 Handler               느낌표 둘을 받는다\nZipContent                 파일 오프셋으로 읽는다\nStored 필요                그 구간이 그대로 JAR\n시스템 로더                BOOT-INF 를 모른다\n풀어서 실행                부트 로더가 없어진다\n\n--   4.10절에서 main 이 둘인 걸 본다",
+   "note": "**`-verbose:class` 로 보면 `JarLauncher` 가 먼저 로드되고 내 클래스는 `!/BOOT-INF/classes/!/` 출처로** 나온다.\n\n**JAR 실행에서는 로더가 `LaunchedClassLoader`, `bootRun` 에서는 `AppClassLoader`** 다.\n\n**로더가 내주는 URL 에 느낌표가 둘인데 표준 파서로 열면 여전히 `no !/ in spec`** 이다.\n\n**안쪽 JAR 는 `압축 방식: 0` 이라 파일 구간을 그대로 잘라 열 수 있고 항목이 1284개**다.\n\n**`ClassLoader.getSystemResource` 는 JAR 에서만 `null`** 이다."
+  }
+ ],
+ "recap": [
+  "**로더가 풀려** 있다.",
+  "**바깥은 평범**하다.",
+  "**안쪽을 직접** 읽는다.",
+  "**핸들러를** 등록한다.",
+  "**느낌표 둘을** 받는다.",
+  "**`Stored` 여야** 한다.",
+  "**로더가 둘**이다.",
+  "**시스템 로더는 모른**다.",
+  "**풀면 로더가** 없어진다."
+ ],
+ "drills": [
+  {
+   "task": "로더 타입을 찍는다.",
+   "done_when": "JAR 와 폴더 실행 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "리소스 URL 을 비교한다.",
+   "done_when": "느낌표 둘을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "안쪽 JAR 를 손으로 읽는다.",
+   "done_when": "항목 수를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "풀어서 실행한다.",
+   "done_when": "로더가 바뀌는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트가 4.5절 제약을 어떻게 넘었나?",
+   "a": "중첩 JAR 를 직접 읽는 클래스 로더를 만들었다."
+  },
+  {
+   "q": "로더 클래스는 왜 압축돼 있어도 되나?",
+   "a": "바깥 JAR 의 평범한 항목이라 표준으로 읽히기 때문이다."
+  },
+  {
+   "q": "안쪽 JAR 가 `Stored` 여야 하는 이유는?",
+   "a": "파일 구간을 그대로 아카이브로 읽기 때문이다."
+  },
+  {
+   "q": "`getSystemResource` 가 `null` 인 이유는?",
+   "a": "시스템 로더는 `BOOT-INF` 안을 모른다."
+  },
+  {
+   "q": "풀어서 실행하면?",
+   "a": "표준 로더로 돌아 부트 로더가 쓰이지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "LaunchedClassLoader",
+   "def": "중첩 JAR 를 읽을 수 있는 부트의 클래스 로더."
+  },
+  {
+   "term": "URL 핸들러",
+   "def": "특정 프로토콜 형식의 URL 을 해석하는 등록 가능한 처리기."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java — ClassLoader",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ClassLoader.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java — JAR File Specification",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

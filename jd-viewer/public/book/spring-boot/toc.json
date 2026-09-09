@@ -252,7 +252,7 @@
           "title": "부트 로더",
           "summary": "누가 JAR 안의 JAR 를 읽나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.10",
@@ -260,7 +260,7 @@
           "title": "main 이 둘이다",
           "summary": "매니페스트를 읽는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.11",

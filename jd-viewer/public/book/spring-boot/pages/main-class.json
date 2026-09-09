@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "main-class",
+ "no": "4.10",
+ "chapter": 4,
+ "title": "main 이 둘이다",
+ "summary": "매니페스트를 읽는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 항목을 안다.",
+  "호출 사슬을 본다.",
+  "바꿔 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.9절에서 로더가 준비를** 했다. **누가 내 `main` 을 부르는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "매니페스트의 두 줄",
+   "ascii": "   two entries in one manifest\n\n   Main-Class   the launcher, which java itself calls\n   Start-Class  your class, which the launcher calls later\n\n   java knows only the first; the second is a boot convention",
+   "note": "**자바는 첫 줄만 알고 둘째는 부트의 약속**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자바가 부르는 것과 내 것이 다르다",
+   "md": "**`java -jar` 는 `Main-Class` 만** 본다.\n\n> **3.4절에서 없어서** 막혔다.\n> **JAR 규약**이다.\n> **거기에 런처를 적어** 뒀다.\n\n**런처가 내 것을** 부른다.\n\n> **`Start-Class` 를 읽는**다.\n> **리플렉션으로** 부른다.\n> **아래에서 스택으로** 본다.\n\n**같은 스레드**다.\n\n> **`main` 그대로**다.\n> **1.4절의 `[main]` 이 그것**이다.\n> **아래에서 확인**한다.\n\n**빌드가 찾아** 준다.\n\n> **`main` 이 있는 클래스를** 스캔한다.\n> **여럿이면 못** 고른다.\n> **아래에서 그** 오류를 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "명령줄에서 내 코드까지",
+   "ascii": "   the chain from the command line to your code\n\n   java minus jar        reads Main-Class\n   JarLauncher main      prepares the loader\n   reflection            invokes Start-Class main\n   your main             runs, on the same thread\n\n   the stack trace shows all four, which is how you can prove it",
+   "note": "**스택 추적에 넷이 다 나와 증명이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "main 이 여럿이면 빌드가 멈춘다",
+   "md": "**클래스를** 뒤진다.\n\n> **`main` 메서드가 있는 걸** 찾는다.\n> **하나면 그걸** 쓴다.\n> **여럿이면 못** 고른다.\n\n**적어 주면** 된다.\n\n> **`mainClass` 를 빌드에** 적는다.\n> **아래에서** 한다.\n> **테스트용 `main` 이 있으면 흔한** 일이다.\n\n**런처를 바꿀 수도** 있다.\n\n> **`PropertiesLauncher` 가** 있다.\n> **밖의 JAR 를 더 읽게** 한다.\n> **플러그인 구조에** 쓴다.\n\n**WAR 면 런처가** 다르다.\n\n> **`WarLauncher`** 다.\n> **3.4절에서 본** 그것이다.\n> **`WEB-INF` 를 읽는**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 매니페스트를 읽는다\n\n$ unzip -p build/libs/app.jar META-INF/MANIFEST.MF\nManifest-Version: 1.0\nMain-Class: org.springframework.boot.loader.launch.JarLauncher\nStart-Class: study.boot.BootApplication\nSpring-Boot-Version: 3.3.2\nSpring-Boot-Classes: BOOT-INF/classes/\nSpring-Boot-Lib: BOOT-INF/lib/\nSpring-Boot-Classpath-Index: BOOT-INF/classpath.idx\nSpring-Boot-Layers-Index: BOOT-INF/layers.idx\n\n$ unzip -p build/libs/app.jar META-INF/MANIFEST.MF | grep -c 'Class:'\n2\n\n--   Main 과 Start 다\n--   4.7절에서 본 그 파일이다\n\n\n-- 자바는 첫 줄만 본다\n\n$ java -jar build/libs/app.jar 2>&1 | grep 'Started BootApplication'\nINFO ... : Started BootApplication in 1.084 seconds\n\n// Main-Class 를 지우면\n$ cd /tmp && unzip -q ~/proj/build/libs/app.jar -d j\n$ sed -i '' '/^Main-Class:/d' j/META-INF/MANIFEST.MF\n$ (cd j && zip -qr ../nomain.jar .)\n$ java -jar /tmp/nomain.jar\nno main manifest attribute, in /tmp/nomain.jar\n\n--   3.4절·4.4절과 같은 메시지다\n\n\n-- Start-Class 를 지우면\n\n$ cd /tmp && rm -rf j && unzip -q ~/proj/build/libs/app.jar -d j\n$ sed -i '' '/^Start-Class:/d' j/META-INF/MANIFEST.MF\n$ (cd j && zip -qr ../nostart.jar .)\n$ java -jar /tmp/nostart.jar\n\nException in thread \"main\" java.lang.IllegalStateException:\n  No 'Start-Class' manifest entry specified in\n  [org.springframework.boot.loader.launch.JarLauncher@1b6d3586]\n\n--   런처는 떴는데 부를 게 없다\n--   부트가 정한 약속이다\n\n\n-- 호출 사슬을 본다\n\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        System.out.println(\"=== main 스택 ===\");\n        for (var e : Thread.currentThread().getStackTrace()) {\n            System.out.println(\"  \" + e);\n        }\n        System.out.println(\"스레드: \" + Thread.currentThread().getName());\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ java -jar build/libs/app.jar 2>&1 | head -10\n\n=== main 스택 ===\n  java.base/java.lang.Thread.getStackTrace(Thread.java:1619)\n  study.boot.BootApplication.main(BootApplication.java:9)\n  java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(...)\n  java.base/java.lang.reflect.Method.invoke(Method.java:580)\n  org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:104)\n  org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:65)\n  org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40)\n스레드: main\n\n--   넷이 다 보인다\n--   Method.invoke 가 리플렉션이다\n--   스레드는 그대로 main 이다\n\n\n-- bootRun 은 다르다\n\n$ ./gradlew bootRun 2>&1 | head -6\n\n=== main 스택 ===\n  java.base/java.lang.Thread.getStackTrace(Thread.java:1619)\n  study.boot.BootApplication.main(BootApplication.java:9)\n스레드: main\n\n--   두 줄뿐이다\n--   자바가 직접 불렀다\n--   4.9절에서 로더가 없던 것과 같은 이유다\n\n\n-- 런처를 직접 불러도 된다\n\n$ java -cp build/libs/app.jar \\\n    org.springframework.boot.loader.launch.JarLauncher 2>&1 \\\n  | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   -jar 가 하는 일이 이것이다\n\n\n-- 내 클래스를 직접 부르면\n\n$ java -cp build/libs/app.jar study.boot.BootApplication\n\nError: Could not find or load main class study.boot.BootApplication\nCaused by: java.lang.ClassNotFoundException: study.boot.BootApplication\n\n--   BOOT-INF/classes 는 클래스패스 루트가 아니다\n--   4.9절의 로더가 있어야 찾는다\n\n\n-- main 이 여럿이면\n\npublic class ToolMain {\n    public static void main(String[] args) {\n        System.out.println(\"도구\");\n    }\n}\n\n$ ./gradlew bootJar\n\n> Task :bootJar FAILED\nExecution failed for task ':bootJar'.\n> Main class name has not been configured and it could not be resolved\n  from classpath /Users/kwanhyun/proj/build/classes/java/main\n\n--   못 고른다\n\n\n-- 적어 주면 된다\n\n// build.gradle\nspringBoot {\n    mainClass = 'study.boot.BootApplication'\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar META-INF/MANIFEST.MF | grep Start-Class\nStart-Class: study.boot.BootApplication\n\n$ java -jar build/libs/app.jar 2>&1 | grep 'Started'\nINFO ... : Started BootApplication in 1.084 seconds\n\n--   매니페스트에 그대로 들어갔다\n\n\n-- 바꿔 본다\n\nspringBoot {\n    mainClass = 'study.boot.ToolMain'\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar META-INF/MANIFEST.MF | grep Start-Class\nStart-Class: study.boot.ToolMain\n\n$ java -jar build/libs/app.jar\n도구\n\n$ java -jar build/libs/app.jar 2>&1 | grep -c Tomcat\n0\n\n--   같은 JAR 인데 다른 게 돌았다\n--   서버가 안 떴다\n\n\n-- 실행할 때 바꿀 수도 있다\n\n// PropertiesLauncher 를 Main-Class 로 쓰면\n$ java -cp build/libs/app.jar \\\n    -Dloader.main=study.boot.BootApplication \\\n    org.springframework.boot.loader.launch.PropertiesLauncher 2>&1 \\\n  | grep 'Started'\nINFO ... : Started BootApplication in 1.121 seconds\n\n$ java -cp build/libs/app.jar \\\n    -Dloader.main=study.boot.ToolMain \\\n    org.springframework.boot.loader.launch.PropertiesLauncher\n도구\n\n--   빌드를 다시 안 했다\n--   플러그인 구조에서 쓴다\n\n\n-- 밖의 JAR 도 읽게 한다\n\n$ mkdir -p /tmp/plugins && cp libA.jar /tmp/plugins/\n$ java -cp build/libs/app.jar \\\n    -Dloader.path=/tmp/plugins \\\n    -Dloader.main=study.boot.BootApplication \\\n    org.springframework.boot.loader.launch.PropertiesLauncher &\n\n$ curl -s localhost:8080/dup\nA / file:/tmp/plugins/libA.jar\n\n--   JAR 밖의 것을 읽었다\n--   JarLauncher 는 못 하는 일이다\n\n\n-- WAR 면 런처가 다르다\n\n$ ./gradlew bootWar -q\n$ unzip -p build/libs/app.war META-INF/MANIFEST.MF | head -3\nManifest-Version: 1.0\nMain-Class: org.springframework.boot.loader.launch.WarLauncher\nStart-Class: study.boot.BootApplication\n\n$ unzip -l build/libs/app.war | grep -E 'WEB-INF/(classes|lib)/$'\n        0  WEB-INF/classes/\n        0  WEB-INF/lib/\n\n$ java -jar build/libs/app.war 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ cp build/libs/app.war ~/apache-tomcat-10.1.26/webapps/boot.war\n$ sleep 4 && curl -s localhost:8080/boot/hello\nhello\n\n--   3.4절에서 본 둘 다 되는 WAR 다\n--   구역 이름만 WEB-INF 다\n\n\n-- 세 런처를 정리한다\n\n$ printf '%-26s %-18s %s\\n' \\\n  'JarLauncher'        'BOOT-INF/lib'   'java -jar 기본' \\\n  'WarLauncher'        'WEB-INF/lib'    '서버에도 넣을 수 있음' \\\n  'PropertiesLauncher' 'loader.path'    '밖의 JAR 도 읽음'\n\nJarLauncher                BOOT-INF/lib       java -jar 기본\nWarLauncher                WEB-INF/lib        서버에도 넣을 수 있음\nPropertiesLauncher         loader.path        밖의 JAR 도 읽음\n\n--   4.11절에서 실행 방식 셋을 비교한다",
+   "note": "**매니페스트에 `Main-Class`(런처)와 `Start-Class`(내 클래스) 둘이** 있다.\n\n**`Start-Class` 를 지우면 `No 'Start-Class' manifest entry specified`** 다.\n\n**스택에 `JarLauncher.main` → `Method.invoke` → 내 `main` 이 다 찍히고 스레드는 `main`** 이다.\n\n**`java -cp app.jar study.boot.BootApplication` 은 `ClassNotFoundException` — `BOOT-INF/classes` 는 루트가** 아니다.\n\n**`mainClass` 를 바꾸면 같은 JAR 가 서버 없이 `도구` 만 찍고** 끝난다."
+  }
+ ],
+ "recap": [
+  "**항목이 둘**이다.",
+  "**자바는 첫째만** 본다.",
+  "**런처가 내 것을** 부른다.",
+  "**리플렉션으로** 부른다.",
+  "**스레드는 그대로**다.",
+  "**직접 못** 부른다.",
+  "**`main` 이 여럿이면** 막힌다.",
+  "**적어 주면** 된다.",
+  "**런처가 셋**이다."
+ ],
+ "drills": [
+  {
+   "task": "매니페스트를 읽는다.",
+   "done_when": "두 항목을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Start-Class` 를 지운다.",
+   "done_when": "오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스택을 찍는다.",
+   "done_when": "네 단계를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`mainClass` 를 바꾼다.",
+   "done_when": "다른 게 도는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`java -jar` 가 읽는 항목은?",
+   "a": "`Main-Class` 하나다."
+  },
+  {
+   "q": "`Start-Class` 는 누가 읽나?",
+   "a": "런처가 읽어 리플렉션으로 부른다."
+  },
+  {
+   "q": "내 클래스를 직접 부르면?",
+   "a": "`BOOT-INF/classes` 가 루트가 아니라 못 찾는다."
+  },
+  {
+   "q": "`main` 이 여럿이면?",
+   "a": "빌드가 고르지 못해 실패하므로 직접 지정한다."
+  },
+  {
+   "q": "`PropertiesLauncher` 는 무엇이 다른가?",
+   "a": "JAR 밖의 경로도 클래스패스에 넣을 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Start-Class",
+   "def": "부트 런처가 실행할 실제 애플리케이션 클래스."
+  },
+  {
+   "term": "PropertiesLauncher",
+   "def": "외부 경로를 클래스패스에 더할 수 있는 부트 런처."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Executable Jar Format",
+   "url": "https://docs.spring.io/spring-boot/specification/executable-jar/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java — JAR File Specification",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot Gradle Plugin",
+   "url": "https://docs.spring.io/spring-boot/gradle-plugin/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
