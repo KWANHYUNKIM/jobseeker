@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "basic-sql",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "기본 메서드가 내는 SQL",
+ "summary": "findById 와 findAll 의 차이.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 조회의 차이를 안다.",
+  "플러시가 왜 끼는지 안다.",
+  "정렬과 개수의 SQL 을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 메서드를 훑었다.** **여기서는 왜 그런 SQL 이 나오는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "닮았는데 다른 두 조회",
+   "ascii": "   two reads that look similar and are not\n\n   findById       em.find, so the first level cache answers first\n                  and a second call in the same transaction is free\n\n   findAll        a jpql query, so it always goes to the database\n                  and it flushes first, to keep results consistent\n\n   so a loop calling findById is cheaper than it looks, and findAll is not",
+   "note": "**반복 `findById` 가 생각보다** 싸다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "find 와 query 는 다른 길이다",
+   "md": "**`findById` 는 `em.find`** 다(2.2절).\n\n> **1차 캐시를 먼저** 본다.\n> **있으면 SQL 이** 없다(2.4절).\n> **없으면 조회하고 캐시에** 넣는다.\n\n**`findAll` 은 JPQL** 이다.\n\n> **캐시를 안** 본다.\n> **매번 DB 로** 간다.\n> **결과를 캐시에 넣기는** 한다.\n\n**그래서 순서가 중요**하다.\n\n> **`findAll` 뒤의 `findById` 는 캐시에서** 온다.\n> **반대는 아니다.**\n> **목록을 먼저 읽는 코드가 유리할 때가** 있다.\n\n**JPQL 이 플러시를** 부른다.\n\n> **2.4절에서 봤다.**\n> **읽기 메서드 중간에 `insert` 가 보이는** 이유다.\n> **`find` 는 안** 부른다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 플러시가 끼나",
+   "ascii": "   why a query forces a flush and a find does not\n\n   find      looks in the cache by identifier, nothing else can match\n   query     asks the database, which has not seen your pending changes\n\n   so hibernate empties the queue before any jpql,\n   and that is why an insert appears in the middle of your read method",
+   "note": "**DB 는 아직 내 변경을 모른다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "정렬과 개수는 그대로 번역된다",
+   "md": "**`Sort` 가 `order by` 가** 된다(1.4절).\n\n> **필드 이름이 컬럼으로** 바뀐다.\n> **`Sort.by(\"team.name\")` 처럼 점을 쓰면 조인**이 된다.\n> **여러 개면 순서대로** 붙는다.\n\n**`count` 는 별칭이** 다르다.\n\n> **`count(m1_0.member_id)`** 다.\n> **`count(*)` 가 아니다.**\n> **식별자로 세는 게 안전해서**다.\n\n**`existsById` 도 `count`** 다(1.4절).\n\n> **버전에 따라 `select 1` 을 쓰기도** 한다.\n> **엔티티를 다 읽지는** 않는다.\n> **큰 엔티티일수록 이 차이가** 크다.\n\n**`findAllById` 는 `in` 절**이다.\n\n> **개수가 많으면 DB 한계에 걸릴 수** 있다.\n> **오라클은 1000개** 제한이다.\n> **하이버네이트가 나눠 보내기도** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- findById 는 캐시를 본다\n\n@Test\n@Transactional\nvoid findById_두_번() {\n    em.clear();\n    System.out.println(\"--- 첫 번째 ---\");\n    memberRepository.findById(1L);\n    System.out.println(\"--- 두 번째 ---\");\n    memberRepository.findById(1L);\n    System.out.println(\"--- 끝 ---\");\n}\n\n--- 첫 번째 ---\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n--- 두 번째 ---\n--- 끝 ---\n\n--   두 번째는 SQL 이 없다\n\n\n-- findAll 은 매번 간다\n\n@Test\n@Transactional\nvoid findAll_두_번() {\n    em.clear();\n    System.out.println(\"--- 첫 번째 ---\");\n    memberRepository.findAll();\n    System.out.println(\"--- 두 번째 ---\");\n    memberRepository.findAll();\n    System.out.println(\"--- 끝 ---\");\n}\n\n--- 첫 번째 ---\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n--- 두 번째 ---\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n--- 끝 ---\n\n--   두 번 다 나갔다\n--   JPQL 은 캐시를 안 본다\n\n\n-- 순서가 중요하다\n\n@Test\n@Transactional\nvoid 목록_먼저() {\n    em.clear();\n    long n = counter.count(() -> {\n        memberRepository.findAll();\n        for (long id = 1; id <= 3; id++) memberRepository.findById(id);\n    });\n    System.out.println(\"목록 먼저: 쿼리 \" + n + \"개\");\n}\n\n목록 먼저: 쿼리 1개\n\n@Test\n@Transactional\nvoid 단건_먼저() {\n    em.clear();\n    long n = counter.count(() -> {\n        for (long id = 1; id <= 3; id++) memberRepository.findById(id);\n        memberRepository.findAll();\n    });\n    System.out.println(\"단건 먼저: 쿼리 \" + n + \"개\");\n}\n\n단건 먼저: 쿼리 4개\n\n--   순서만 바꿨는데 1개와 4개다\n--   목록이 캐시를 채워 둔다\n\n\n-- 그런데 findAll 은 캐시를 덮지 않는다\n\n@Test\n@Transactional\nvoid 캐시_우선() {\n    Member m = memberRepository.findById(1L).orElseThrow();\n    m.changeAge(999);\n\n    System.out.println(\"--- findAll ---\");\n    List<Member> all = memberRepository.findAll();\n    Member same = all.stream()\n            .filter(x -> x.getId().equals(1L)).findFirst().orElseThrow();\n    System.out.println(\"나이: \" + same.getAge());\n    System.out.println(\"같은 객체: \" + (m == same));\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n--- findAll ---\nHibernate: update member set age=?, team_id=?, username=? where member_id=?\nHibernate: select m1_0.member_id, ... from member m1_0\n나이: 999\n같은 객체: true\n\n--   update 가 먼저 나갔다 (플러시)\n--   DB 에서 읽어 왔는데 999 다\n--   캐시에 있던 객체를 그대로 준다\n--   동일성 보장이다\n\n\n-- find 는 플러시를 안 부른다\n\n@Test\n@Transactional\nvoid find_는_안_부른다() {\n    memberRepository.save(new Member(\"새회원\", 40));\n    System.out.println(\"--- findById ---\");\n    memberRepository.findById(1L);\n    System.out.println(\"--- 끝 ---\");\n}\n\n--- findById ---\n--- 끝 ---\n\n--   insert 가 안 나갔다\n--   findById 도 캐시에서 왔다\n\n@Test\n@Transactional\nvoid query_는_부른다() {\n    memberRepository.save(new Member(\"새회원\", 40));\n    System.out.println(\"--- findAll ---\");\n    memberRepository.findAll();\n    System.out.println(\"--- 끝 ---\");\n}\n\n--- findAll ---\nHibernate: insert into member (age, team_id, username, member_id)\n           values (?, ?, ?, ?)\nHibernate: select m1_0.member_id, ... from member m1_0\n--- 끝 ---\n\n--   읽기 메서드 중간에 insert 가 있다\n--   2.4절에서 본 그것이다\n\n\n-- Sort 는 order by 다\n\n@Test\n@Transactional\nvoid 정렬() {\n    em.clear();\n    memberRepository.findAll(\n            Sort.by(Sort.Direction.DESC, \"age\").and(Sort.by(\"username\")));\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age desc,\n        m1_0.username asc\n\n--   순서대로 붙었다\n\n\n-- 점을 쓰면 조인이다\n\n@Test\n@Transactional\nvoid 연관_정렬() {\n    em.clear();\n    memberRepository.findAll(Sort.by(\"team.name\"));\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    order by\n        t1_0.name asc\n\n--   조인이 생겼다\n--   select 에는 팀 컬럼이 없다\n--   정렬에만 쓴다\n\n\n-- count 의 별칭\n\n@Test\n@Transactional\nvoid 개수() {\n    memberRepository.count();\n}\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n\n--   count(*) 가 아니다\n--   식별자로 센다\n\n\n-- existsById\n\n@Test\n@Transactional\nvoid 존재() {\n    em.clear();\n    System.out.println(memberRepository.existsById(1L));\n    System.out.println(memberRepository.existsById(999L));\n}\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\ntrue\nHibernate:\n    select count(m1_0.member_id) from member m1_0 where m1_0.member_id=?\nfalse\n\n--   엔티티를 안 읽는다\n--   컬럼이 많을수록 이득이다\n\n\n-- findById 로 존재를 확인하면\n\n@Test\n@Transactional\nvoid 존재_확인_비교() {\n    em.clear();\n    System.out.println(\"--- existsById ---\");\n    memberRepository.existsById(1L);\n    em.clear();\n    System.out.println(\"--- findById().isPresent() ---\");\n    memberRepository.findById(1L).isPresent();\n}\n\n--- existsById ---\nHibernate: select count(m1_0.member_id) from member m1_0\n           where m1_0.member_id=?\n--- findById().isPresent() ---\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.member_id=?\n\n--   뒤는 컬럼을 다 읽는다\n--   존재만 알면 될 때는 앞을 쓴다\n\n\n-- findAllById 의 in 절\n\n@Test\n@Transactional\nvoid in_절() {\n    em.clear();\n    memberRepository.findAllById(List.of(1L, 2L, 3L));\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id in (?, ?, ?)\n\n--   한 번이다\n\n\n-- 개수가 많으면\n\n@Test\n@Transactional\nvoid 큰_in_절() {\n    em.clear();\n    List<Long> ids = LongStream.rangeClosed(1, 1200)\n            .boxed().collect(Collectors.toList());\n    long n = counter.count(() -> memberRepository.findAllById(ids));\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate:\n    select ... where m1_0.member_id in (?, ?, ... 1024개)\nHibernate:\n    select ... where m1_0.member_id in (?, ?, ... 176개)\n쿼리 2개\n\n--   나눠서 보냈다\n--   오라클은 1000개 제한이 있다\n--   하이버네이트가 알아서 자른다\n\n\n-- 빈 목록을 주면\n\n@Test\n@Transactional\nvoid 빈_목록() {\n    long n = counter.count(() ->\n            memberRepository.findAllById(List.of()));\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n쿼리 0개\n\n--   SQL 을 아예 안 낸다\n--   빈 리스트를 그냥 준다",
+   "note": "**`findById` 두 번은 SQL 한 번, `findAll` 두 번은 두 번**이다.\n\n**목록을 먼저 읽으면 쿼리 `1개`, 단건을 먼저 읽으면 `4개`** 다.\n\n**읽기 메서드인 `findAll` 중간에 `insert` 가** 나온다.\n\n**`Sort.by(\"team.name\")` 이 `left join` 을 만들고 select 에는 팀 컬럼이** 없다.\n\n**1200개를 `findAllById` 하면 `in` 절이 둘로** 잘린다."
+  }
+ ],
+ "recap": [
+  "**`findById` 는 캐시를** 본다.",
+  "**`findAll` 은 매번 DB 로** 간다.",
+  "**목록을 먼저 읽으면 캐시가** 찬다.",
+  "**JPQL 이 플러시를** 부른다.",
+  "**읽기 중간에 `insert` 가** 보인다.",
+  "**동일성은 캐시가** 보장한다.",
+  "**`Sort` 에 점을 쓰면 조인**이다.",
+  "**`count` 는 식별자로** 센다.",
+  "**긴 `in` 절은 나눠** 보낸다."
+ ],
+ "drills": [
+  {
+   "task": "`findById` 를 두 번 부른다.",
+   "done_when": "두 번째에 SQL 이 없는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "조회 순서를 바꿔 본다.",
+   "done_when": "쿼리 수 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "연관 필드로 정렬한다.",
+   "done_when": "조인이 생기는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "긴 id 목록으로 조회한다.",
+   "done_when": "`in` 절이 나뉘는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`findById` 와 `findAll` 의 근본적 차이는?",
+   "a": "전자는 `em.find` 로 캐시를 보고 후자는 JPQL 로 항상 DB 에 간다."
+  },
+  {
+   "q": "읽기 메서드에서 `insert` 가 보이는 이유는?",
+   "a": "JPQL 실행 전에 플러시가 일어나기 때문이다."
+  },
+  {
+   "q": "`Sort.by(\"team.name\")` 의 결과는?",
+   "a": "정렬을 위해 조인이 붙는다."
+  },
+  {
+   "q": "`existsById` 가 `findById` 보다 나은 점은?",
+   "a": "엔티티 컬럼을 다 읽지 않고 개수만 센다."
+  },
+  {
+   "q": "`in` 절 항목이 아주 많으면?",
+   "a": "하이버네이트가 여러 쿼리로 나눠 보낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동일성 보장",
+   "def": "같은 트랜잭션에서 같은 식별자는 같은 객체를 돌려주는 성질."
+  },
+  {
+   "term": "in 절 분할",
+   "def": "너무 긴 in 목록을 여러 쿼리로 나눠 보내는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

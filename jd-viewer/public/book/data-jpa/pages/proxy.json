@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "proxy",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "프록시가 만들어지는 순간",
+ "summary": "getClass() 가 무엇을 돌려주나.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "언제 만들어지는지 안다.",
+  "호출이 어디로 가는지 안다.",
+  "기동 시점 검증을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 `$Proxy127` 을** 봤다. **그게 언제 어떻게 만들어지는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "기동 때 일어나는 일",
+   "ascii": "   what happens between startup and your first call\n\n   scan        find interfaces extending Repository, in the base packages\n   validate    check every declared method can be answered\n   build       create a factory bean for each interface\n   proxy       make a jdk dynamic proxy implementing that interface\n   target      put a SimpleJpaRepository behind it\n\n   the second step is why a typo in a method name fails at startup",
+   "note": "**둘째 단계가 오타를 기동에서** 잡는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "기동 시점에 다 검증한다",
+   "md": "**메서드마다 답할 방법을** 찾는다.\n\n> **이름을 파싱해 보고**(5.1절),\n> **`@Query` 를 파싱해 보고**(5.4절),\n> **사용자 정의 구현을** 찾는다(6.1절).\n> **하나도 안 맞으면 기동이** 실패한다.\n\n**그래서 오타가 일찍** 잡힌다.\n\n> **4.1절의 JPQL 문자열은 실행해야** 알았다.\n> **여기서는 애플리케이션이 안** 뜬다.\n> **⑨ 의 \"빨리 실패하라\" 와 같은** 이야기다.\n\n**JDK 동적 프록시**다.\n\n> **인터페이스만 있으면** 된다.\n> **CGLIB 이 아니다** — 클래스를 상속할 게 없다.\n> **⑤ 에서 본 두 방식 중 앞의 것**이다.\n\n**팩토리 빈이** 만든다.\n\n> **`JpaRepositoryFactoryBean` 이 각 인터페이스마다** 하나다.\n> **`getObject()` 가 프록시를** 준다.\n> **빈 이름이 인터페이스 이름의 첫 글자를 내린 것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "호출이 갈 수 있는 다섯 곳",
+   "ascii": "   where one call can end up\n\n   a base method         SimpleJpaRepository, written once by the framework\n   a derived name        a query built from the method name at startup\n   an annotated query    the string you wrote, parsed at startup\n   a custom fragment     a class you wrote, found by naming convention\n   a default method      your own code, in the interface itself\n\n   five destinations, and the proxy decides at startup which one applies",
+   "note": "**어디로 갈지는 기동 때** 정해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터셉터가 순서대로 붙는다",
+   "md": "**프록시 안에 체인이** 있다.\n\n| 인터셉터 | 무엇 |\n|---|---|\n| 예외 변환 | `PersistenceException` 을 바꾼다(4.2절) |\n| 트랜잭션 | `@Transactional` 을 적용한다(7.2절) |\n| 쿼리 실행 | 최종 목적지로 보낸다 |\n\n> **⑩ 의 필터 체인과 같은** 모양이다.\n> **`AopUtils` 로 확인할 수** 있다.\n\n**`default` 메서드는 그대로** 간다.\n\n> **인터페이스에 직접 구현을 쓸 수** 있다.\n> **프록시가 가로채지 않는다.**\n> **트랜잭션도 안** 걸린다 — 주의해야 한다.\n\n**`toString`·`equals` 는 특별**하다.\n\n> **프록시가 직접** 답한다.\n> **`toString` 을 찍으면 리포지토리 정보가** 나온다.\n> **디버깅에 쓸 수** 있다.\n\n**메서드가 없으면 기동이** 죽는다.\n\n> **`findByNoSuchField` 를 선언하면** 그렇다.\n> **5.1절에서 자세히** 본다.\n> **이 검증이 이 방식의 가장 큰 이점 중** 하나다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 프록시 확인\n\n@Test\nvoid 프록시() {\n    System.out.println(\"선언   : \" + MemberRepository.class.getName());\n    System.out.println(\"실제   : \" + memberRepository.getClass().getName());\n    System.out.println(\"JDK?   : \" +\n            Proxy.isProxyClass(memberRepository.getClass()));\n    System.out.println(\"타깃   : \" +\n            AopUtils.getTargetClass(memberRepository).getName());\n}\n\n선언   : study.datajpa.repository.MemberRepository\n실제   : jdk.proxy3.$Proxy127\nJDK?   : true\n타깃   : org.springframework.data.jpa.repository.support.SimpleJpaRepository\n\n--   JDK 동적 프록시다\n--   CGLIB 이 아니다\n--   인터페이스만 있어서 상속할 게 없다\n\n\n-- 프록시가 구현한 인터페이스\n\n@Test\nvoid 구현_목록() {\n    for (Class<?> c : memberRepository.getClass().getInterfaces()) {\n        System.out.println(\"  \" + c.getName());\n    }\n}\n\n  study.datajpa.repository.MemberRepository\n  org.springframework.data.repository.Repository\n  org.springframework.transaction.interceptor.TransactionalProxy\n  org.springframework.aop.framework.Advised\n  org.springframework.core.DecoratingProxy\n\n--   TransactionalProxy 가 있다\n--   트랜잭션이 여기 걸려 있다는 뜻이다 (4.2절)\n\n\n-- 인터셉터 체인\n\n@Test\nvoid 체인() {\n    Advised advised = (Advised) memberRepository;\n    for (Advisor a : advised.getAdvisors()) {\n        System.out.println(\"  \" + a.getAdvice().getClass().getSimpleName());\n    }\n}\n\n  ExposeInvocationInterceptor\n  PersistenceExceptionTranslationInterceptor\n  TransactionInterceptor\n  QueryExecutorMethodInterceptor\n\n--   순서대로 지난다\n--   예외 변환 -> 트랜잭션 -> 실행이다\n--   ⑩ 의 필터 체인과 같은 모양이다\n\n\n-- 팩토리 빈\n\n@Test\nvoid 팩토리() {\n    Object factory = ctx.getBean(\"&memberRepository\");\n    System.out.println(\"팩토리: \" + factory.getClass().getSimpleName());\n}\n\n팩토리: JpaRepositoryFactoryBean\n\n--   & 를 붙이면 팩토리 자체를 받는다\n--   붙이면 프록시가 온다\n\n\n-- 기동 때 검증한다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    List<Member> findByNoSuchField(String x);\n}\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nFailed to initialize JPA EntityManagerFactory:\n    Could not create query for public abstract java.util.List\n    study.datajpa.repository.MemberRepository.findByNoSuchField(String);\n    Reason: Failed to create query for method ...\n\nCaused by: PropertyReferenceException:\n    No property 'noSuchField' found for type 'Member'\n\n--   애플리케이션이 안 뜬다\n--   4.1절의 JPQL 은 실행해야 알았다\n--   ⑨ 의 빨리 실패하라와 같다\n\n\n-- 어디로 가는지 본다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    // 1) 기본 메서드 - SimpleJpaRepository\n    // findById, findAll ... 선언 안 해도 있다\n\n    // 2) 이름으로 파생\n    List<Member> findByUsername(String username);\n\n    // 3) @Query\n    @Query(\"select m from Member m where m.age > :age\")\n    List<Member> findOlderThan(@Param(\"age\") int age);\n\n    // 4) default 메서드\n    default String describe() {\n        return \"회원 \" + count() + \"명\";\n    }\n}\n\n@Test\n@Transactional\nvoid 네_경로() {\n    System.out.println(\"1) \" + memberRepository.count());\n    System.out.println(\"2) \" + memberRepository.findByUsername(\"m1\").size());\n    System.out.println(\"3) \" + memberRepository.findOlderThan(15).size());\n    System.out.println(\"4) \" + memberRepository.describe());\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0\n1) 3\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.username=?\n2) 1\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0 where m1_0.age>?\n3) 2\nHibernate: select count(m1_0.member_id) from member m1_0\n4) 회원 3명\n\n--   넷 다 SQL 이 나갔다\n--   출발지는 다 다르다\n\n\n-- 어느 경로인지 로그로 본다\n\nlogging.level.org.springframework.data.repository.core.support: debug\n\n$ ./gradlew bootRun\n\nDEBUG RepositoryFactorySupport :\n    Initializing repository instance for\n    study.datajpa.repository.MemberRepository...\nDEBUG RepositoryFactorySupport :\n    Looking up query method findByUsername\nDEBUG PartTreeJpaQuery :\n    Created query for method findByUsername:\n    select m from Member m where m.username = :username\nDEBUG RepositoryFactorySupport :\n    Looking up query method findOlderThan\nDEBUG SimpleJpaQuery :\n    Using declared query for method findOlderThan\nDEBUG RepositoryFactorySupport :\n    Finished creation of repository instance for MemberRepository.\n\n--   PartTreeJpaQuery 가 이름을 파싱했다\n--   SimpleJpaQuery 가 @Query 를 썼다\n--   기동 때 다 정해진다\n\n\n-- default 메서드는 프록시를 안 지난다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n    default String 트랜잭션_확인() {\n        return \"활성: \" +\n            TransactionSynchronizationManager.isActualTransactionActive();\n    }\n}\n\n@Test\nvoid default_트랜잭션() {\n    System.out.println(memberRepository.트랜잭션_확인());\n    System.out.println(\"count 는: \" + memberRepository.count());\n}\n\n활성: false\nDEBUG JpaTransactionManager : Creating new transaction with name\n    [...SimpleJpaRepository.count]; readOnly\nHibernate: select count(m1_0.member_id) from member m1_0\ncount 는: 3\n\n--   default 메서드에는 트랜잭션이 없다\n--   그 안에서 부른 count 에는 있다\n--   주의해야 한다\n\n\n-- toString 은 프록시가 답한다\n\n@Test\nvoid toString_확인() {\n    System.out.println(memberRepository.toString());\n}\n\norg.springframework.data.jpa.repository.support.SimpleJpaRepository@3f9c2b1d\n\n--   SQL 이 안 나갔다\n--   프록시가 타깃에 위임했다\n\n\n-- equals 도 특별하다\n\n@Test\nvoid equals_확인() {\n    MemberRepository a = ctx.getBean(MemberRepository.class);\n    MemberRepository b = ctx.getBean(MemberRepository.class);\n    System.out.println(\"같은 인스턴스: \" + (a == b));\n    System.out.println(\"equals      : \" + a.equals(b));\n}\n\n같은 인스턴스: true\nequals      : true\n\n--   싱글턴이다\n--   인터페이스 하나에 프록시 하나다 (2.1절)\n\n\n-- 인터페이스가 늘면 프록시도 는다\n\n@Test\nvoid 프록시_개수() {\n    ctx.getBeansOfType(Repository.class)\n       .forEach((k, v) -> System.out.printf(\"%-18s %s%n\",\n               k, v.getClass().getSimpleName()));\n}\n\nmemberRepository   $Proxy127\nteamRepository     $Proxy128\n\n--   인터페이스마다 하나씩이다\n\n\n-- 실행 시점에는 아무 일도 안 한다\n\n@Test\n@Transactional\nvoid 실행_시점() {\n    long n = counter.count(() ->\n            memberRepository.findByUsername(\"m1\"));\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0 where m1_0.username=?\n쿼리 1개\n\n--   이름 파싱은 기동 때 끝났다\n--   호출할 때는 만들어 둔 쿼리를 쓴다\n--   런타임 비용이 없다\n\n\n-- 프록시가 가로챈 것을 세어 본다\n\n@Test\n@Transactional\nvoid 가로채기() {\n    memberRepository.count();\n}\n\nDEBUG TransactionInterceptor :\n    Getting transaction for [...SimpleJpaRepository.count]\nHibernate: select count(m1_0.member_id) from member m1_0\nDEBUG TransactionInterceptor :\n    Completing transaction for [...SimpleJpaRepository.count]\n\n--   앞뒤로 인터셉터가 감쌌다\n--   그 사이에 SQL 이 있다\n--   7.1절에서 그 안쪽 코드를 연다",
+   "note": "**`jdk.proxy3.$Proxy127` 이 JDK 동적 프록시이고 타깃이 `SimpleJpaRepository`** 다.\n\n**인터셉터가 예외 변환 → 트랜잭션 → 실행 순으로** 붙어 있다.\n\n**`findByNoSuchField` 를 선언하면 애플리케이션이 아예 안** 뜬다.\n\n**기동 로그에 `PartTreeJpaQuery` 와 `SimpleJpaQuery` 가 각각 무엇을 만들었는지** 찍힌다.\n\n**`default` 메서드에는 트랜잭션이 `false`** 다."
+  }
+ ],
+ "recap": [
+  "**기동 때 스캔하고 검증**한다.",
+  "**메서드마다 답할 방법을** 찾는다.",
+  "**못 찾으면 기동이** 실패한다.",
+  "**JDK 동적 프록시**다.",
+  "**인터셉터가 순서대로** 붙는다.",
+  "**호출은 다섯 곳 중 하나로** 간다.",
+  "**어디로 갈지는 기동 때** 정해진다.",
+  "**`default` 메서드는 안** 가로챈다.",
+  "**실행 시점 비용이** 없다."
+ ],
+ "drills": [
+  {
+   "task": "프록시와 타깃을 찍는다.",
+   "done_when": "둘을 다 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인터셉터 목록을 본다.",
+   "done_when": "순서를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 필드로 메서드를 선언한다.",
+   "done_when": "기동 실패를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`default` 메서드에서 트랜잭션을 본다.",
+   "done_when": "없는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리포지토리 프록시는 언제 만들어지나?",
+   "a": "애플리케이션 기동 시점이다."
+  },
+  {
+   "q": "메서드 이름 오타는 언제 드러나나?",
+   "a": "기동 시점이다. 애플리케이션이 뜨지 않는다."
+  },
+  {
+   "q": "JDK 프록시인 이유는?",
+   "a": "구현할 대상이 인터페이스뿐이라 상속이 필요 없다."
+  },
+  {
+   "q": "인터셉터 순서는?",
+   "a": "예외 변환, 트랜잭션, 쿼리 실행 순이다."
+  },
+  {
+   "q": "`default` 메서드의 주의점은?",
+   "a": "프록시를 지나지 않아 트랜잭션이 적용되지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JDK 동적 프록시",
+   "def": "인터페이스만으로 런타임에 구현체를 만드는 방식."
+  },
+  {
+   "term": "PartTreeJpaQuery",
+   "def": "메서드 이름을 파싱해 쿼리를 만드는 구현."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

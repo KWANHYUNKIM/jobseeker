@@ -172,7 +172,7 @@
           "title": "프록시가 만들어지는 순간",
           "summary": "getClass() 가 무엇을 돌려주나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -180,7 +180,7 @@
           "title": "기본 메서드가 내는 SQL",
           "summary": "findById 와 findAll 의 차이.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
