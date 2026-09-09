@@ -419,7 +419,7 @@
           "title": "한 문단에 한 주제",
           "summary": "테스트 하나에 검증 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -427,7 +427,7 @@
           "title": "완벽하게 통제하기",
           "summary": "given 에 변수를 남기지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",

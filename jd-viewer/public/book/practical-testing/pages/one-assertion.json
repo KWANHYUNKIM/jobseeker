@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "one-assertion",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "한 문단에 한 주제",
+ "summary": "테스트 하나에 검증 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "단언이 여럿일 때의 비용을 안다.",
+  "언제 나누고 언제 묶는지 안다.",
+  "소프트 어서션을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 미뤘다** — **\"then 에 단언이 여덟이면\"**. **여기서 갚는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "첫 실패 뒤에 일어나는 일",
+   "ascii": "   what happens after the first failure\n\n   assertThat(order.getTotalPrice()).isEqualTo(8500);   <- fails here\n   assertThat(order.getBeverages()).hasSize(2);         never runs\n   assertThat(order.getStatus()).isEqualTo(INIT);       never runs\n\n   you fix the price, run again, and learn about the size\n   fix that, run again, and learn about the status\n\n   three runs to see three problems",
+   "note": "**세 문제를 보려고 세 번** 돌린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "단언은 예외를 던진다",
+   "md": "```java\nassertThat(actual).isEqualTo(expected);\n```\n\n> **틀리면 `AssertionError` 를** 던진다.\n> **그 뒤 줄은 안** 돈다.\n\n**그래서 실패가 하나씩** 나온다.\n\n| | |\n|---|---|\n| 1회차 | 가격이 틀렸다 |\n| 2회차 | 개수도 틀렸다 |\n| 3회차 | 상태도 틀렸다 |\n\n> **통합 테스트면 한 번에 9초**다. **27초**다.\n> **8장의 주제와 이어**진다.\n\n**그리고 이름이 거짓말**이 된다.\n\n```java\n@DisplayName(\"주문을 생성하면 총 금액이 계산된다\")\n@Test\nvoid createOrder() {\n    ...\n    assertThat(order.getTotalPrice()).isEqualTo(8500);\n    assertThat(order.getBeverages()).hasSize(2);\n    assertThat(order.getStatus()).isEqualTo(INIT);\n}\n```\n\n> **이름은 \"총 금액\" 하나인데 셋을** 본다.\n> **개수 때문에 깨져도 \"총 금액이 계산된다 FAILED\"** 다.\n>\n> **4.1절의 네 번째 독자가 헷갈린다.**\n\n**\"한 문단에 한 주제\"**\n\n> **논리적으로 한 가지**를 본다.\n> **`assertThat` 이 하나여야 한다는 뜻이** 아니다.\n>\n> ```java\n> assertThat(order.getAddress())\n>         .extracting(\"city\", \"street\", \"zipcode\")\n>         .containsExactly(\"서울\", \"1\", \"1111\");\n> ```\n>\n> **주소 하나를 보는데 필드가** 셋이다. **이건 한 주제**다."
+  },
+  {
+   "type": "figure",
+   "caption": "셋을 한 번에 보는 두 방법",
+   "ascii": "   two ways to see all three at once\n\n   split into three tests\n     three names, three failures, three green bars\n     the given is repeated\n\n   soft assertions\n     one test, all assertions run, one grouped failure\n     the name still describes only one thing\n\n   splitting is better when the names differ",
+   "note": "**이름이 다르면 나누는 게** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "나누기와 소프트 어서션",
+   "md": "**나누기**\n\n```java\n@DisplayName(\"주문을 생성하면 총 금액이 계산된다\")\n@Test void totalPrice() { ... }\n\n@DisplayName(\"주문을 생성하면 담은 음료가 모두 들어간다\")\n@Test void beverages() { ... }\n\n@DisplayName(\"생성된 주문의 상태는 INIT 이다\")\n@Test void status() { ... }\n```\n\n| | |\n|---|---|\n| **이름 셋** | 요구사항 셋이 문서에 남는다 |\n| **실패 셋** | 한 번에 다 보인다 |\n| **given 이 반복** | 5.5절의 팩터리로 줄인다 |\n| **느려진다** | 통합이면 9초가 27초 |\n\n**소프트 어서션**\n\n```java\n@Test\nvoid createOrder() {\n    Order order = cafeKiosk.createOrder(영업중);\n\n    assertSoftly(softly -> {\n        softly.assertThat(order.getTotalPrice()).isEqualTo(8500);\n        softly.assertThat(order.getBeverages()).hasSize(2);\n        softly.assertThat(order.getStatus()).isEqualTo(INIT);\n    });\n}\n```\n\n> **전부 돌고 끝에 모아서** 던진다.\n> **한 번 돌려 셋을 다** 본다.\n\n| | |\n|---|---|\n| **빠르다** | given 이 한 번 |\n| **실패를 다 본다** | |\n| **이름이 하나** | 여전히 뭉뚱그려진다 |\n\n**어느 쪽인가**\n\n| 상황 | |\n|---|---|\n| **요구사항이 다르다** | **나눈다** |\n| **한 결과의 여러 면** | **소프트 어서션** |\n| **통합 테스트라 느리다** | 소프트 쪽으로 기운다 |\n\n> **\"총 금액\" 과 \"상태\" 는 다른 요구사항**이다. **나눈다.**\n> **응답 DTO 의 필드 다섯을 확인하는 건 한 결과**다. **묶는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 단언 셋을 한 테스트에 ---\n\n@DisplayName(\"주문을 생성하면 총 금액이 계산된다\")\n@Test\nvoid createOrder() {\n    // given\n    cafeKiosk.add(new Americano(), 1);\n    cafeKiosk.add(new Latte(), 1);\n\n    // when\n    Order order = cafeKiosk.createOrder(영업중);\n\n    // then\n    assertThat(order.getTotalPrice()).isEqualTo(8500);\n    assertThat(order.getBeverages()).hasSize(2);\n    assertThat(order.getStatus()).isEqualTo(OrderStatus.INIT);\n}\n\n#   Order 를 셋 다 틀리게 만든다\n\npublic static Order create(List<Beverage> beverages, LocalDateTime now) {\n    return Order.builder()\n            .totalPrice(0)\n            .beverages(List.of())\n            .status(OrderStatus.COMPLETED)\n            .build();\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n카페 키오스크 > 주문을 생성할 때 > 주문을 생성하면 총 금액이 계산된다 FAILED\n    org.opentest4j.AssertionFailedError:\n    expected: 8500\n     but was: 0\n\n1 test completed, 1 failed\n\n#   가격만 나온다\n\n#   가격을 고치고 다시 돌리면\n\n카페 키오스크 > ... 주문을 생성하면 총 금액이 계산된다 FAILED\n    java.lang.AssertionError:\n    Expected size: 2 but was: 0\n\n#   이번엔 개수다\n\n#   또 고치고 다시 돌리면\n\n카페 키오스크 > ... 주문을 생성하면 총 금액이 계산된다 FAILED\n    expected: INIT\n     but was: COMPLETED\n\n#   세 번 돌려서 세 문제를 알았다\n\n#   그리고 이름은 '총 금액' 인데 상태 때문에 깨졌다\n\n# --- 나누면 ---\n\n@Nested\n@DisplayName(\"주문을 생성할 때\")\nclass CreateOrder {\n\n    @DisplayName(\"담은 음료의 총 금액이 계산된다\")\n    @Test void totalPrice() {\n        cafeKiosk.add(new Americano(), 1);\n        cafeKiosk.add(new Latte(), 1);\n\n        Order order = cafeKiosk.createOrder(영업중);\n\n        assertThat(order.getTotalPrice()).isEqualTo(8500);\n    }\n\n    @DisplayName(\"담은 음료가 모두 주문에 들어간다\")\n    @Test void beverages() { ... }\n\n    @DisplayName(\"생성된 주문의 상태는 INIT 이다\")\n    @Test void status() { ... }\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n카페 키오스크 > 주문을 생성할 때 > 담은 음료의 총 금액이 계산된다 FAILED\n    expected: 8500 but was: 0\n카페 키오스크 > 주문을 생성할 때 > 담은 음료가 모두 주문에 들어간다 FAILED\n    Expected size: 2 but was: 0\n카페 키오스크 > 주문을 생성할 때 > 생성된 주문의 상태는 INIT 이다 FAILED\n    expected: INIT but was: COMPLETED\n\n3 tests completed, 3 failed\n\n#   한 번에 셋 다 나온다\n\n#   이름이 각각 뭐가 깨졌는지 말한다\n\n# --- 소프트 어서션 ---\n\n@DisplayName(\"주문을 생성한다\")\n@Test\nvoid createOrder() {\n    cafeKiosk.add(new Americano(), 1);\n    cafeKiosk.add(new Latte(), 1);\n\n    Order order = cafeKiosk.createOrder(영업중);\n\n    assertSoftly(softly -> {\n        softly.assertThat(order.getTotalPrice()).isEqualTo(8500);\n        softly.assertThat(order.getBeverages()).hasSize(2);\n        softly.assertThat(order.getStatus()).isEqualTo(OrderStatus.INIT);\n    });\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\n카페 키오스크 > 주문을 생성할 때 > 주문을 생성한다 FAILED\n    org.assertj.core.error.AssertJMultipleFailuresError:\n    Multiple Failures (3 failures)\n    -- failure 1 --\n    expected: 8500\n     but was: 0\n    at CafeKioskTest.lambda$createOrder$0(CafeKioskTest.java:88)\n    -- failure 2 --\n    Expected size: 2 but was: 0\n    at CafeKioskTest.lambda$createOrder$0(CafeKioskTest.java:89)\n    -- failure 3 --\n    expected: INIT\n     but was: COMPLETED\n    at CafeKioskTest.lambda$createOrder$0(CafeKioskTest.java:90)\n\n1 test completed, 1 failed\n\n#   한 번에 셋 다 나온다\n\n#   given 은 한 번만 돌았다\n\n# --- 통합 테스트면 시간이 다르다 ---\n\n#   나눈 판\n\nOrderServiceTest > 주문 총 금액이 계산된다 FAILED       (9s)\nOrderServiceTest > 주문 상품이 모두 저장된다 FAILED\nOrderServiceTest > 재고가 차감된다 FAILED\n\n3 tests completed, 3 failed\n\nBUILD FAILED in 14s\n\n#   given 이 세 번 돈다 (DB insert 도 세 번)\n\n#   소프트 판\n\nOrderServiceTest > 주문을 생성한다 FAILED\n    AssertJMultipleFailuresError: Multiple Failures (3 failures)\n\n1 test completed, 1 failed\n\nBUILD FAILED in 10s\n\n#   14초가 10초다\n\n# --- 한 주제인 경우 ---\n\n@DisplayName(\"주문의 배송지가 회원 주소로 설정된다\")\n@Test\nvoid deliveryAddress() {\n    Order order = ...;\n\n    assertThat(order.getDelivery().getAddress())\n            .extracting(\"city\", \"street\", \"zipcode\")\n            .containsExactly(\"서울\", \"1\", \"1111\");\n}\n\n#   assertThat 은 하나인데 필드가 셋이다\n\n#   '배송지' 라는 한 주제다. 나눌 이유가 없다\n\n$ ./gradlew test\n\n주문 > 주문의 배송지가 회원 주소로 설정된다 FAILED\n    Expecting ArrayList:\n      [\"서울\", \"1\", null]\n    to contain exactly:\n      [\"서울\", \"1\", \"1111\"]\n\n#   셋이 한 메시지에 나온다\n\n#   extracting 이 이미 소프트 어서션 역할을 한다\n\n# --- 지금 테스트에서 단언이 셋 넘는 곳 ---\n\n$ awk '/@Test/{c=0} /assertThat/{c++} /^    }/{if(c>2) print FILENAME\": \"c}' \\\n    src/test/java/**/*.java\n\nOrderServiceTest.java: 3\nOrderStatisticsServiceFakeTest.java: 3\n\n#   두 곳이다\n\n#   OrderServiceTest 의 셋은\n#     예외 + orderRepository 비었나 + stockRepository 그대로인가\n\n#   '아무것도 저장되지 않았다' 라는 한 주제다  (5.3절)\n\n#   묶어 둔다\n\n# --- 다음 절에서 ---\n\n#   given 에 변수를 남기지 않는 이야기를 한다",
+   "note": "**단언 셋을 한 테스트에 두면 세 번 돌려야 세 문제를** 안다. **이름은 \"총 금액\" 인데 상태 때문에** 깨진다.\n\n**나누면 한 번에 셋 다** 나오고 **이름이 각각 뭐가 깨졌는지** 말한다.\n\n**소프트 어서션은 `AssertJMultipleFailuresError` 로 셋을 모아** 준다. **given 이 한 번만** 돈다.\n\n**통합 테스트면 나눈 판이 14초, 소프트 판이 10초**다.\n\n**`extracting` 은 이미 소프트 어서션 역할**을 한다."
+  }
+ ],
+ "recap": [
+  "**단언이 예외를 던져 그 뒤가 안** 돈다.",
+  "**세 문제를 보려면 세 번** 돌린다.",
+  "**이름이 하나인데 여럿을 보면 거짓말**이 된다.",
+  "**\"한 문단에 한 주제\" 는 `assertThat` 개수가** 아니다.",
+  "**나누면 이름 셋이 문서에** 남는다.",
+  "**소프트 어서션은 한 번 돌려 다** 보여 준다.",
+  "**통합 테스트면 given 반복이 시간**이다 — 14초 대 10초.",
+  "**요구사항이 다르면 나누고 한 결과의 여러 면이면** 묶는다.",
+  "**`extracting` 이 이미 소프트 어서션** 역할이다."
+ ],
+ "drills": [
+  {
+   "task": "단언이 셋 넘는 테스트를 찾는다.",
+   "done_when": "한 주제인지 판단했다.",
+   "minutes": 15
+  },
+  {
+   "task": "일부러 셋을 다 틀리게 만든다.",
+   "done_when": "한 번에 하나씩 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "소프트 어서션으로 바꾼다.",
+   "done_when": "`MultipleFailures` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "통합 테스트에서 나눈 판과 소프트 판의 시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "단언이 여럿이면 왜 불편한가?",
+   "a": "첫 실패에서 멈춰 문제를 하나씩 알게 된다."
+  },
+  {
+   "q": "이름이 왜 거짓말이 되나?",
+   "a": "이름은 하나를 말하는데 다른 단언 때문에 깨질 수 있어서다."
+  },
+  {
+   "q": "\"한 문단에 한 주제\" 의 뜻은?",
+   "a": "논리적으로 한 가지를 본다는 것이지 `assertThat` 이 하나라는 게 아니다."
+  },
+  {
+   "q": "소프트 어서션의 이점은?",
+   "a": "전부 돌고 실패를 모아 던진다. given 이 한 번만 돈다."
+  },
+  {
+   "q": "언제 나누고 언제 묶나?",
+   "a": "요구사항이 다르면 나누고 한 결과의 여러 면이면 묶는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "소프트 어서션",
+   "def": "단언 실패를 모아 두었다가 끝에 한꺼번에 보고하는 방식. AssertJ 의 `assertSoftly`."
+  }
+ ],
+ "sources": [
+  {
+   "title": "AssertJ — Soft Assertions",
+   "url": "https://assertj.github.io/doc/#assertj-core-soft-assertions",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

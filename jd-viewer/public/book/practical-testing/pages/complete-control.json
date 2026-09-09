@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "complete-control",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "완벽하게 통제하기",
+ "summary": "given 에 변수를 남기지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "given 에 새는 변수를 찾는다.",
+  "경계 시각의 함정을 안다.",
+  "전부 상수로 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절에서 프로덕션 코드의 `now()` 를** 밀어냈다. **테스트 코드에도** 남아 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "given 에 새는 것",
+   "ascii": "   what leaks into given if you are not careful\n\n   LocalDate.now()          today, whatever that is\n   new Random().nextInt()   a different number each run\n   System.getenv()          the machine it runs on\n   database defaults        whatever the schema says\n   the previous test        5.9\n\n   every one of these is a variable you did not declare",
+   "note": "**선언 안 한 변수**들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트에도 `now()` 를 안 쓴다",
+   "md": "**프로덕션은 고쳤는데 테스트가** 남아 있다.\n\n```java\n// given\nOrder order = createOrder(LocalDateTime.now());   // 여기\norderRepository.save(order);\n\n// when\nboolean result = orderStatisticsService.sendOrderStatisticsMail(\n        LocalDate.now(), \"admin@cafekiosk.com\");   // 여기도\n```\n\n> **2.7절에서 서비스는 시각을 파라미터로 받게** 했다.\n> **테스트가 그 파라미터에 `now()` 를 넣으면 원점**이다.\n\n**대부분의 날은** 통과한다.\n\n> **그래서 안 보인다.**\n> **7.11절의 \"가끔 깨지는 테스트\"** 로 간다.\n\n**고정 상수로**\n\n```java\nprivate static final LocalDateTime 등록시각 =\n        LocalDateTime.of(2026, 9, 9, 11, 0);\nprivate static final LocalDate 통계일자 = LocalDate.of(2026, 9, 9);\n```\n\n> **4.3절의 \"숫자에 이름을 준다\" 와 같은** 것이다.\n> **여기서는 이름보다 고정이 중요**하다.\n\n**날짜만이 아니다.**\n\n| | |\n|---|---|\n| **`Random`** | 2.6절 |\n| **UUID** | 2.6절 |\n| **환경 변수** | CI 와 로컬이 다르다 |\n| **DB 기본값** | 스키마가 정한다 |\n| **앞 테스트의 데이터** | 5.9절 |\n\n> **마지막이 가장 자주** 걸린다."
+  },
+  {
+   "type": "figure",
+   "caption": "1년에 한 번 깨지는 테스트",
+   "ascii": "   the date test that passes 364 days a year\n\n   given   an order registered at LocalDateTime.now()\n   when    the statistics for LocalDate.now() are built\n   then    the order is included\n\n   run it at 23:59:59.998 on the last day of the month\n     the order lands in this month\n     now() in the service lands in the next one\n\n   the test is green today and red once a year",
+   "note": "**월말 자정에** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경계 시각",
+   "md": "**통계 서비스가 이렇게 생겼다면**\n\n```java\npublic boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {\n    List<Order> orders = orderRepository.findOrdersBy(\n            orderDate.atStartOfDay(),\n            orderDate.plusDays(1).atStartOfDay(),\n            List.of(PAYMENT_COMPLETED));\n    ...\n}\n```\n\n**테스트가 `now()` 를 쓰면**\n\n```java\nOrder order = createOrder(LocalDateTime.now());\n...\nservice.sendOrderStatisticsMail(LocalDate.now(), email);\n```\n\n> **`23:59:59.998` 에 주문을 만들고**\n> **`23:59:59.999` 에 `LocalDate.now()` 를** 부르면\n> **날짜가 넘어갈 수** 있다.\n>\n> **주문은 어제 것이고 통계는 오늘 것**이다.\n\n**확률이 낮아 더 나쁘다.**\n\n> **1년에 몇 번**이다. **재현이 안** 된다.\n> **\"CI 가 가끔 깨진다\" 로** 끝난다.\n\n**고정하면 사라진다.**\n\n```java\nOrder order = createOrder(LocalDateTime.of(2026, 9, 9, 23, 59, 59));\n...\nservice.sendOrderStatisticsMail(LocalDate.of(2026, 9, 9), email);\n```\n\n> **그리고 경계 자체를 테스트할 수** 있다.\n>\n> ```java\n> @DisplayName(\"자정 직전 주문은 그날 통계에 포함된다\")\n> @DisplayName(\"자정 정각 주문은 다음날 통계에 포함된다\")\n> ```\n>\n> **2.5절의 경계값이** 여기도 있다.\n\n**통제하면 검증할 수 있다.**\n\n> **통제 못 하면 경계를 못** 짠다.\n> **2.6절의 결론과 같다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 테스트에 now() 가 있으면 ---\n\n@DisplayName(\"결제 완료 주문의 매출 통계 메일을 보낸다\")\n@Test\nvoid sendOrderStatisticsMail() {\n    // given\n    createPaymentCompletedOrder(LocalDateTime.now());\n\n    // when\n    boolean result = orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.now(), \"admin@cafekiosk.com\");\n\n    // then\n    assertThat(result).isTrue();\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nHibernate: insert into orders (order_status,registered_date_time,total_price)\n           values (?,?,?)\nbinding parameter (2:TIMESTAMP) <- [2026-09-09T17:23:41.882]\n\nHibernate: select ... from orders o1_0\n           where o1_0.registered_date_time between ? and ?\nbinding parameter (1:TIMESTAMP) <- [2026-09-09T00:00]\nbinding parameter (2:TIMESTAMP) <- [2026-09-10T00:00]\n\nOrderStatisticsServiceTest > 결제 완료 주문의 매출 통계 메일을 보낸다 PASSED\n\n#   통과한다\n\n#   오늘 낮에 돌려서다\n\n# --- 시계를 23:59:59.998 로 맞추고 ---\n\n$ sudo date 0909235959\n$ ./gradlew test --tests OrderStatisticsServiceTest --rerun-tasks\n\nbinding parameter (2:TIMESTAMP) <- [2026-09-09T23:59:59.998]\n\nbinding parameter (1:TIMESTAMP) <- [2026-09-10T00:00]\nbinding parameter (2:TIMESTAMP) <- [2026-09-11T00:00]\n\nOrderStatisticsServiceTest > 결제 완료 주문의 매출 통계 메일을 보낸다 FAILED\n    java.lang.AssertionError:\n    Expecting value to be true but was false\n\n#   주문은 9일 23:59:59 에 만들어졌고\n#   통계는 10일 것을 조회했다\n\n#   두 now() 사이에 자정이 지났다\n\n#   1년에 몇 번 일어난다\n\n# --- 고정하면 ---\n\nprivate static final LocalDateTime 등록시각 =\n        LocalDateTime.of(2026, 9, 9, 11, 0);\nprivate static final LocalDate 통계일자 = LocalDate.of(2026, 9, 9);\n\n@Test\nvoid sendOrderStatisticsMail() {\n    // given\n    createPaymentCompletedOrder(등록시각);\n\n    // when\n    boolean result = orderStatisticsService.sendOrderStatisticsMail(\n            통계일자, \"admin@cafekiosk.com\");\n\n    // then\n    assertThat(result).isTrue();\n}\n\n$ sudo date 0909235959\n$ ./gradlew test --tests OrderStatisticsServiceTest --rerun-tasks\n\nbinding parameter (2:TIMESTAMP) <- [2026-09-09T11:00]\nbinding parameter (1:TIMESTAMP) <- [2026-09-09T00:00]\nbinding parameter (2:TIMESTAMP) <- [2026-09-10T00:00]\n\nOrderStatisticsServiceTest > 결제 완료 주문의 매출 통계 메일을 보낸다 PASSED\n\n#   시계를 어디로 옮겨도 같다\n\n# --- 그리고 경계를 짤 수 있다 ---\n\n@DisplayName(\"자정 1초 전 주문은 그날 통계에 포함된다\")\n@Test\nvoid orderJustBeforeMidnight() {\n    createPaymentCompletedOrder(LocalDateTime.of(2026, 9, 9, 23, 59, 59));\n\n    boolean result = orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n    assertThat(result).isTrue();\n    assertThat(mailSendHistoryRepository.findAll())\n            .extracting(\"content\").containsExactly(\"총 매출: 4000\");\n}\n\n@DisplayName(\"자정 정각 주문은 다음날 통계에 포함된다\")\n@Test\nvoid orderAtMidnight() {\n    createPaymentCompletedOrder(LocalDateTime.of(2026, 9, 10, 0, 0, 0));\n\n    orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n    assertThat(mailSendHistoryRepository.findAll())\n            .extracting(\"content\").containsExactly(\"총 매출: 0\");\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > 자정 1초 전 주문은 그날 통계에 포함된다 PASSED\nOrderStatisticsServiceTest > 자정 정각 주문은 다음날 통계에 포함된다 PASSED\n\n#   경계 둘을 짰다\n\n#   now() 를 쓰면 이걸 못 짠다\n\n# --- between 이 양끝을 포함하는지 ---\n\n#   서비스를 이렇게 바꿔 보면\n\norderDate.plusDays(1).atStartOfDay()\n\n#   between 은 양끝 포함이라 10일 00:00 도 들어온다\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > 자정 정각 주문은 다음날 통계에 포함된다 FAILED\n    Expecting ArrayList: [\"총 매출: 4000\"]\n    to contain exactly: [\"총 매출: 0\"]\n\n#   경계 버그를 잡았다\n\n#   2.5절의 22:00 과 같은 종류다\n\n#   고치면\n\norderDate.plusDays(1).atStartOfDay().minusNanos(1)\n\nOrderStatisticsServiceTest > 자정 정각 주문은 다음날 통계에 포함된다 PASSED\n\n# --- 남은 변수를 찾는다 ---\n\n$ grep -rn \"LocalDate.now()\\|LocalDateTime.now()\\|new Random()\\|UUID.randomUUID()\" \\\n    src/test/java/\n\n(결과 없음)\n\n$ grep -rn \"System.getenv\\|System.getProperty\" src/test/java/\n\n(결과 없음)\n\n#   테스트에 통제 안 되는 게 없다\n\n# --- 프로덕션은 ---\n\n$ grep -rn \"LocalDateTime.now()\" src/main/java/\n\nsrc/main/java/sample/cafekiosk/api/controller/order/OrderController.java:31\n\n#   컨트롤러 한 곳이다  (2.7절)\n\n#   그 한 줄은 테스트를 안 한다\n\n# --- 다음 절에서 ---\n\n#   테스트를 위해 프로덕션 코드를 어디까지 바꿀지 정한다",
+   "note": "**테스트에 `now()` 가 있으면 낮에는** 통과한다.\n\n**시계를 `23:59:59` 로 맞추면 주문은 9일, 통계는 10일**을 조회한다. **두 `now()` 사이에 자정이** 지났다.\n\n**고정하면 시계를 어디로 옮겨도** 같다.\n\n**그리고 경계 둘을 짤 수** 있다. **`between` 이 양끝 포함이라 자정 정각 주문이 들어오는 버그**가 잡힌다 — 2.5절의 `22:00` 과 같은 종류.\n\n**`grep` 으로 테스트에 통제 안 되는 게 하나도 없는 걸** 확인했다."
+  }
+ ],
+ "recap": [
+  "**프로덕션을 고쳐도 테스트에 `now()` 가** 남는다.",
+  "**대부분의 날은 통과해서 안** 보인다.",
+  "**두 `now()` 사이에 자정이 지날 수** 있다.",
+  "**1년에 몇 번이라 재현이 안** 된다.",
+  "**고정하면 시계를 옮겨도** 같다.",
+  "**통제하면 경계를 짤 수** 있다.",
+  "**`between` 이 양끝을 포함하는 버그가** 잡힌다.",
+  "**날짜만이 아니다** — 랜덤·UUID·환경 변수·DB 기본값·앞 테스트.",
+  "**`grep` 으로 남은 것을** 찾는다."
+ ],
+ "drills": [
+  {
+   "task": "테스트에서 `now()` 를 전부 찾는다.",
+   "done_when": "개수를 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "시계를 자정 직전으로 맞추고 돌린다.",
+   "done_when": "깨지는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "고정 상수로 바꾼다.",
+   "done_when": "시계와 무관해진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "자정 경계 테스트 둘을 짠다.",
+   "done_when": "`between` 동작을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트에 `now()` 가 남으면?",
+   "a": "프로덕션을 고친 의미가 사라지고 가끔 깨지는 테스트가 된다."
+  },
+  {
+   "q": "두 `now()` 사이에 무슨 일이 나나?",
+   "a": "자정이 지나 주문 날짜와 통계 날짜가 갈릴 수 있다."
+  },
+  {
+   "q": "왜 더 나쁜가?",
+   "a": "1년에 몇 번이라 재현이 안 되고 원인을 못 찾는다."
+  },
+  {
+   "q": "고정하면 뭐가 가능해지나?",
+   "a": "자정 경계 같은 케이스를 직접 테스트할 수 있다."
+  },
+  {
+   "q": "날짜 말고 새는 것은?",
+   "a": "랜덤, UUID, 환경 변수, DB 기본값, 앞 테스트의 데이터다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
