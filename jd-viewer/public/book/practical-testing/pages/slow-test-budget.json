@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "slow-test-budget",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "느린 테스트 예산",
+ "summary": "몇 분까지 참을까.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예산이라는 개념을 안다.",
+  "숫자를 정한다.",
+  "넘었을 때 뭘 할지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1~8.5절은 방법**이었다. **여기는 기준**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "예산이란",
+   "ascii": "   a budget is a number you decide before you need it\n\n   unit suite       under 5 seconds\n   full suite       under 2 minutes locally\n   ci               under 5 minutes\n\n   when a number is crossed, something happens\n     not 'we should look into it'\n     a build warning, a blocked merge, a scheduled task",
+   "note": "**넘으면 무슨 일이 일어나야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 미리 정하나",
+   "md": "**테스트는 한 번에 안** 느려진다.\n\n> **커밋마다 2초씩** 는다.\n> **아무도 안 알아챈다.**\n\n**어느 날 \"CI 가 너무 느리다\" 가** 된다.\n\n> **그때는 300개가 4분**이다.\n> **어디서 늘었는지** 모른다.\n\n**예산은 그걸 매번 묻게** 만든다.\n\n```gradle\ntasks.named('test') {\n    doLast {\n        def seconds = (System.currentTimeMillis() - startTime) / 1000\n        if (seconds > 120) {\n            logger.warn(\"테스트가 ${seconds}초 걸렸다. 예산은 120초다.\")\n        }\n    }\n}\n```\n\n> **경고가 뜨면 그 커밋에서** 본다.\n> **5초 늘어난 테스트 하나를 찾는 건** 쉽다.\n\n**7.11절과 같은 발상**이다.\n\n> **\"가끔 깨진다\" 를 방치하면 신뢰가 죽고**\n> **\"조금 느려졌다\" 를 방치하면 안 돌리게** 된다.\n>\n> **둘 다 테스트가 죽는 방식**이다.\n\n**숫자에 근거가 있나**\n\n> **없다.** **팀이** 정한다.\n>\n> **참고할 것**\n> | | |\n> |---|---|\n> | **로컬 전체** | 커밋 전에 돌릴 만한가 |\n> | **CI** | 8.5절의 2/10분 경계 |\n> | **단위만** | 저장할 때마다 돌릴 만한가 |"
+  },
+  {
+   "type": "figure",
+   "caption": "느려지는 방식",
+   "ascii": "   how a suite gets slow\n\n   never in one commit\n\n   68 tests   31s\n   +5 tests   33s     nobody notices\n   +5 tests   36s     nobody notices\n   ...\n   300 tests  4m      everybody notices, nobody knows when\n\n   a budget notices at +5",
+   "note": "**예산은 +5 에서** 알아챈다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "넘었을 때 할 것",
+   "md": "**순서가** 있다.\n\n**① 새로 든 시간이 어디서 왔나**\n\n```bash\n./gradlew test --profile\n```\n\n> **테스트 클래스별 시간을** 본다.\n> **대개 한두 개가** 범인이다.\n\n**② 그 테스트가 통합이어야 하나**\n\n> **5.8절**이다. **도메인으로 밀어낼 수** 있나.\n> **7.4절에서 27초가 1초가 된 것**이 그 예다.\n\n**③ 컨텍스트가 늘었나**\n\n> **8.1절**이다. **`@MockBean` 을 새로 붙였나.**\n\n**④ 중복 검증인가**\n\n> **5.1절**이다. **컨트롤러가 DB 를 쓰고** 있나.\n\n**⑤ 여기까지 해도 넘으면**\n\n| | |\n|---|---|\n| **분리** | 7.10절의 `*IT` |\n| **CI 매트릭스** | 8.5절 |\n| **예산을 올린다** | 근거를 적는다 |\n\n> **마지막이 정직한 선택일 때가** 있다.\n> **\"통합 테스트 150개면 2분은 어쩔 수 없다\"** 는 결론도 결론이다.\n>\n> **다만 그걸 정하고 적어** 둔다.\n\n**하면 안 되는 것**\n\n| | |\n|---|---|\n| **테스트를 지운다** | 커버리지가 준다 |\n| **`@Disabled`** | 7.11절 |\n| **단언을 줄인다** | 1.1절 |\n| **DB 를 목으로** | 6.7절 |\n\n> **넷 다 \"빨라졌다\" 는 숫자를 만들고 검증을** 없앤다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 책의 숫자",
+   "md": "```\n단위 47개      2초\n통합 21개     29초\n전체 68개     31초\nCI            1분 12초\n```\n\n**예산을** 정하면\n\n| | 예산 | 지금 |\n|---|---|---|\n| **단위** | 5초 | **2초** |\n| **전체 로컬** | 2분 | **31초** |\n| **CI** | 5분 | **1분 12초** |\n\n> **여유가** 있다.\n> **통합 테스트를 100개 더 넣어도 2분 안**이다.\n\n**언제 다시 보나**\n\n> **예산의 70% 를 넘으면** 본다.\n> **전체가 84초를 넘으면** 이 장을 다시 읽는다.\n\n**규모별 감각**\n\n| 테스트 수 | 통합 비율 | 대략 |\n|---|---|---|\n| 100 | 30% | 1분 |\n| 500 | 30% | 4분 |\n| 2000 | 20% | 12분 |\n\n> **2000개면 8.5절의 매트릭스가** 필요하다.\n> **그전에는 8.1절과 5.8절로** 충분하다.\n\n**가장 큰 변수는 통합 비율**이다.\n\n> **5.8절의 피라미드가 8장 전체의 전제**다.\n> **아이스크림콘이면 어떤 최적화도 부족**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 예산을 코드로 ---\n\n// build.gradle\nimport java.time.Duration\n\ntasks.named('test') {\n    useJUnitPlatform()\n\n    def budget = Duration.ofSeconds(120)\n    def start\n\n    doFirst { start = System.currentTimeMillis() }\n    doLast {\n        def elapsed = Duration.ofMillis(System.currentTimeMillis() - start)\n        logger.lifecycle(\"테스트 ${elapsed.toSeconds()}초 (예산 ${budget.toSeconds()}초)\")\n        if (elapsed > budget) {\n            logger.warn(\"예산을 넘었다. 8장을 다시 읽는다.\")\n        }\n    }\n}\n\n$ ./gradlew test\n\n68 tests completed\n테스트 31초 (예산 120초)\n\nBUILD SUCCESSFUL in 33s\n\n#   여유가 있다\n\n# --- 예산을 넘겨 보면 ---\n\n#   통합 테스트를 100개 복사해 넣는다\n\n$ ./gradlew test\n\n168 tests completed\n테스트 142초 (예산 120초)\n예산을 넘었다. 8장을 다시 읽는다.\n\nBUILD SUCCESSFUL in 145s\n\n#   경고가 나온다\n\n# --- 어디서 늘었나 ---\n\n$ ./gradlew test --profile\n\n$ open build/reports/profile/profile-*.html\n\nTask Execution\n  :test                   142.118s\n\n#   테스트 안이다. 태스크 단위로는 안 보인다\n\n$ ./gradlew test 2>&1 | grep -E \"^[A-Za-z]+Test\" | head\n\n#   클래스별 시간은 XML 리포트에 있다\n\n$ python3 - <<'PY'\nimport glob, xml.etree.ElementTree as ET\nrows = []\nfor f in glob.glob('build/test-results/test/TEST-*.xml'):\n    r = ET.parse(f).getroot()\n    rows.append((float(r.get('time')), r.get('name'), r.get('tests')))\nfor t, name, n in sorted(rows, reverse=True)[:8]:\n    print(f\"{t:8.2f}s  {n:>3} tests  {name}\")\nPY\n\n   38.41s  100 tests  sample.cafekiosk.api.service.order.OrderServiceBulkTest\n   12.88s    5 tests  sample.cafekiosk.api.service.order.OrderServiceTest\n    6.22s    4 tests  sample.cafekiosk.repository.ProductRepositoryTest\n    4.11s    3 tests  sample.cafekiosk.api.controller.OrderControllerTest\n    2.04s    3 tests  sample.cafekiosk.api.service.MailServiceTest\n    0.42s   13 tests  sample.cafekiosk.unit.CafeKioskTest\n    0.18s    5 tests  sample.cafekiosk.domain.order.OrderTest\n    0.09s    7 tests  sample.cafekiosk.discount.DiscountCalculatorTest\n\n#   범인이 보인다\n\n#   100개짜리 하나가 38초다\n\n#   그리고 CafeKioskTest 는 13개에 0.42초다\n\n# --- 그 테스트가 통합이어야 하나 ---\n\n#   100개 중 60개가 금액 계산이었다\n\n#   도메인으로 밀어내면  (5.8절, 7.4절)\n\n$ ./gradlew test\n\n168 tests completed\n테스트 54초 (예산 120초)\n\nBUILD SUCCESSFUL in 56s\n\n#   142초가 54초가 됐다\n\n#   테스트 개수는 그대로다\n\n#   60개가 통합에서 단위로 갔다\n\n# --- 다시 클래스별로 ---\n\n   14.22s   40 tests  OrderServiceBulkTest\n    0.31s   60 tests  OrderPriceCalculatorTest\n   12.88s    5 tests  OrderServiceTest\n\n#   60개가 0.31초다\n\n#   같은 검증인데 128배 빠르다\n\n# --- 하면 안 되는 것을 해 보면 ---\n\n#   ① 단언을 줄인다\n\n@Test\nvoid createOrder() {\n    OrderResponse response = orderService.createOrder(request, 영업중);\n\n    assertThat(response).isNotNull();      // 다 지우고 이것만\n}\n\n$ ./gradlew test\n\n168 tests completed\n테스트 52초\n\n#   2초 빨라졌다\n\n#   그리고 아무것도 안 지킨다  (1.1절)\n\n#   ② 리포지토리를 목으로\n\n@Mock ProductRepository productRepository;\n\n$ ./gradlew test\n\n168 tests completed\n테스트 31초\n\n#   23초 빨라졌다\n\n#   그리고 6.7절의 네 실험이 다 통과한다\n\n#   쿼리 오타도 트랜잭션 누락도 안 잡힌다\n\n#   되돌린다\n\n# --- 예산의 70% 경보 ---\n\ndef warnAt = budget.multipliedBy(70).dividedBy(100)\n\ndoLast {\n    if (elapsed > budget) {\n        logger.warn(\"예산 초과\")\n    } else if (elapsed > warnAt) {\n        logger.lifecycle(\"예산의 ${elapsed.toSeconds() * 100 / budget.toSeconds()}% 다\")\n    }\n}\n\n$ ./gradlew test\n\n168 tests completed\n테스트 54초 (예산 120초)\n\nBUILD SUCCESSFUL in 56s\n\n#   45% 라 경고가 없다\n\n#   84초를 넘으면 나온다\n\n# --- 원래 상태로 ---\n\n$ ./gradlew test\n\n68 tests completed\n테스트 31초 (예산 120초)\n\nBUILD SUCCESSFUL in 33s\n\n#   단위 47개 2초, 통합 21개 29초\n\n#   예산의 26% 다\n\n# --- 다음 절에서 ---\n\n#   8장을 정리한다",
+   "note": "**예산을 넘기면 경고가** 나온다. **168개에 142초**다.\n\n**XML 리포트를 파싱하니 100개짜리 하나가 38초**다. **범인이** 보인다.\n\n**그중 60개를 도메인으로 밀어내니 142초가 54초**다. **개수는 그대로**인데 **60개가 0.31초** — **128배**다.\n\n**단언을 줄이면 2초, 리포지토리를 목으로 하면 23초** 빨라진다. **그리고 6.7절의 네 실험이 다** 통과한다.\n\n**지금은 예산의 26%** 다."
+  }
+ ],
+ "recap": [
+  "**예산은 필요해지기 전에 정하는 숫자**다.",
+  "**테스트는 커밋마다 2초씩** 느려진다.",
+  "**예산이 +5 에서 알아채게** 만든다.",
+  "**넘으면 무슨 일이 일어나야** 한다.",
+  "**순서** — 어디서 늘었나, 통합이어야 하나, 컨텍스트, 중복 검증.",
+  "**예산을 올리는 것도 결론**이다 — 근거를 적는다.",
+  "**하면 안 되는 넷** — 삭제, `@Disabled`, 단언 축소, DB 를 목으로.",
+  "**넷 다 숫자를 만들고 검증을** 없앤다.",
+  "**가장 큰 변수는 통합 비율** — 5.8절이 8장의 전제다."
+ ],
+ "drills": [
+  {
+   "task": "예산 경고를 빌드에 넣는다.",
+   "done_when": "경고가 뜨는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "XML 리포트로 클래스별 시간을 뽑는다.",
+   "done_when": "가장 느린 셋을 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "느린 통합 테스트를 도메인으로 밀어낸다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "자기 팀의 예산 숫자를 정한다.",
+   "done_when": "셋을 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예산이 필요한 이유는?",
+   "a": "테스트는 한 번에 안 느려지고 커밋마다 조금씩 늘어 아무도 못 알아채기 때문이다."
+  },
+  {
+   "q": "예산을 넘으면 볼 순서는?",
+   "a": "어디서 늘었나 → 통합이어야 하나 → 컨텍스트 → 중복 검증이다."
+  },
+  {
+   "q": "예산을 올려도 되나?",
+   "a": "된다. 다만 근거를 적어야 한다."
+  },
+  {
+   "q": "하면 안 되는 넷은?",
+   "a": "삭제, `@Disabled`, 단언 축소, DB 를 목으로 바꾸기다."
+  },
+  {
+   "q": "가장 큰 변수는?",
+   "a": "통합 테스트 비율이다. 피라미드가 8장 전체의 전제다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Context Caching",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html",
+   "publisher": "Spring"
+  }
+ ]
+}

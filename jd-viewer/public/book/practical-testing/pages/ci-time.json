@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "ci-time",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "CI 시간",
+ "summary": "전체를 언제 돌리나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "단계별로 무엇을 돌릴지 정한다.",
+  "CI 시간의 진짜 비용을 안다.",
+  "캐시와 분할을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1~8.4절은 테스트를 빠르게** 했다. **여기는 언제 돌릴지**다."
+  },
+  {
+   "type": "figure",
+   "caption": "단계별로 무엇을",
+   "ascii": "   what runs when\n\n   on save        the one test you are working on\n                  under a second\n\n   before commit  the unit tests\n                  a few seconds\n\n   on push        unit plus integration\n                  under five minutes\n\n   before merge   everything, including slow ones\n\n   nightly        everything, twenty times   7.11",
+   "note": "**전부 매번 돌릴 필요가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "느린 CI 의 진짜 비용",
+   "md": "**머신 시간이** 아니다.\n\n> **10분짜리 CI 를 하루 20번 돌리면 200분**이다.\n> **그건 서버가 쓰는 시간**이다.\n\n**사람이 쓰는 시간이 문제**다.\n\n| CI 시간 | 개발자 행동 |\n|---|---|\n| **2분 미만** | 기다린다 |\n| **2~10분** | 다른 일로 전환 |\n| **10분 초과** | 잊는다 |\n\n> **전환 비용이 선형이** 아니다.\n> **10분 CI 는 10분 손해가 아니라 반나절**일 수 있다.\n\n**그리고 행동이 바뀐다.**\n\n| | |\n|---|---|\n| **커밋을 뭉친다** | 매번 못 기다리니까 |\n| **로컬에서 안 돌린다** | 어차피 느리니까 |\n| **빨간 걸 방치한다** | 7.11절과 같은 종류 |\n\n> **마지막이 가장** 나쁘다.\n> **\"CI 는 원래 빨간색\" 이 되면 테스트가 죽은** 것이다.\n\n**7.11절의 결론과 같다.**\n\n> **신뢰가 값어치**다.\n> **느리면 안 돌리고, 안 돌리면 없는 것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "기다림의 비용",
+   "ascii": "   what a developer does while ci runs\n\n   under 2 minutes    waits, watches the log\n   2 to 10 minutes    switches to another task\n   over 10 minutes    forgets, comes back tomorrow\n\n   the cost is not the machine time.\n   it is the context switch, and it is not linear.",
+   "note": "**전환 비용이 선형이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "CI 를 줄이는 순서",
+   "md": "**① 의존성 캐시**\n\n```yaml\n- uses: actions/setup-java@v4\n  with:\n    java-version: '21'\n    distribution: 'temurin'\n    cache: gradle\n```\n\n> **가장 싸고 효과가** 크다.\n> **`~/.gradle` 을 안 받으면 매번 1~2분**이다.\n\n**② 빌드 캐시**\n\n```gradle\n// gradle.properties\norg.gradle.caching=true\n```\n\n> **안 바뀐 모듈을 다시 안** 만든다.\n> **단일 모듈이면 효과가** 적다.\n\n**③ 단계 분리**\n\n```yaml\njobs:\n  unit:\n    steps:\n      - run: ./gradlew unitTest\n  integration:\n    needs: unit\n    steps:\n      - run: ./gradlew integrationTest\n```\n\n> **7.10절의 접미사 분리**를 쓴다.\n> **단위가 깨지면 통합을 안** 돌린다.\n\n**④ 병렬 잡**\n\n```yaml\nstrategy:\n  matrix:\n    shard: [1, 2, 3, 4]\nsteps:\n  - run: ./gradlew test -Pshard=${{ matrix.shard }}\n```\n\n> **머신을 늘린다.** **8.4절의 병렬과** 다르다.\n> **JVM 이 다르니 상태 공유가** 없다.\n>\n> **비용이** 든다. **머신 넷을 쓴다.**\n\n**⑤ 변경 기반 선택**\n\n> **바뀐 파일과 관련된 테스트만** 돌린다.\n> **도구가** 필요하고 **틀리면 위험**하다.\n>\n> **머지 전에는 전부** 돌린다.\n\n**측정이 먼저**다.\n\n> **어디서 시간이 가는지** 본다.\n> **의존성 다운로드가 절반인 경우가** 많다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 캐시 없이 ---\n\n# .github/workflows/ci.yml\nname: CI\non: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n      - run: ./gradlew test\n\n#   실행 로그\n\nSet up job                              3s\nCheckout                                2s\nSet up JDK 21                          11s\nRun ./gradlew test                    142s\n  Downloading gradle-8.5-bin.zip       34s\n  Download dependencies                48s\n  compileJava                           6s\n  compileTestJava                       4s\n  test                                 41s\nComplete job                            1s\n\nTotal: 2m 39s\n\n#   테스트는 41초인데 전체가 2분 39초다\n\n#   82초가 다운로드다\n\n# --- 캐시를 켜면 ---\n\n      - uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n          cache: gradle\n\n#   첫 실행 (캐시 저장)\n\nTotal: 2m 51s\n\n#   두 번째\n\nSet up job                              3s\nCheckout                                2s\nSet up JDK 21                          14s\n  Restore gradle cache                  9s\nRun ./gradlew test                     53s\n  compileJava                           5s\n  compileTestJava                       3s\n  test                                 40s\nComplete job                            2s\n\nTotal: 1m 12s\n\n#   2분 39초가 1분 12초가 됐다\n\n#   87초를 줄였다\n\n#   테스트 코드는 한 줄도 안 고쳤다\n\n# --- 단계를 나누면 ---\n\njobs:\n  unit:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: { java-version: '21', distribution: 'temurin', cache: gradle }\n      - run: ./gradlew unitTest\n\n  integration:\n    needs: unit\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: { java-version: '21', distribution: 'temurin', cache: gradle }\n      - run: ./gradlew integrationTest\n\n$ gh run view --log | grep -E \"unit|integration\"\n\nunit           Run ./gradlew unitTest          8s\nintegration    Run ./gradlew integrationTest  47s\n\n#   합치면 55초인데 순차라 총 1분 30초쯤이다\n\n#   전체보다 느리다 (셋업이 두 번이라)\n\n# --- 단위가 깨진 경우 ---\n\n#   도메인 로직을 일부러 깨뜨리고 푸시\n\nunit          FAILED in 9s\nintegration   SKIPPED\n\nTotal: 34s\n\n#   1분 12초가 34초가 됐다\n\n#   빠른 피드백이다\n\n#   합쳐 놨으면 통합까지 다 돌고 나서야 알았다\n\n# --- 매트릭스로 나누면 ---\n\njobs:\n  test:\n    strategy:\n      matrix:\n        shard: [1, 2]\n    runs-on: ubuntu-latest\n    steps:\n      - run: ./gradlew test -Pshard=${{ matrix.shard }}\n\n// build.gradle\ntasks.named('test') {\n    def shard = project.findProperty('shard') as Integer\n    if (shard) {\n        def all = []\n        // 클래스 목록을 정렬해 shard 로 나눈다\n        filter { includeTestsMatching \"*\" }\n        // 실제로는 별도 플러그인이나 스크립트로 나눈다\n    }\n}\n\n#   두 잡이 동시에 돈다\n\nshard 1    41s\nshard 2    38s\n\nTotal: 1m 4s   (병렬이라 가장 긴 것 + 셋업)\n\n#   1분 12초가 1분 4초다\n\n#   8초 벌고 머신을 두 배 쓴다\n\n#   68개 규모에서는 남는 게 없다\n\n# --- 테스트가 500개라면 (계산) ---\n\n#   단위 350개    10초\n#   통합 150개   210초\n\n#   합계 220초 + 셋업 30초 = 4분 10초\n\n#   샤드 4개로 나누면\n#   통합 150개 / 4 = 각 53초\n#   + 컨텍스트 기동 3번씩 = 각 62초\n\n#   총 1분 32초\n\n#   이 규모부터 매트릭스가 값을 한다\n\n# --- 어디서 시간이 가는지 ---\n\n$ ./gradlew test --profile\n\n$ open build/reports/profile/profile-2026-09-09-17-51-02.html\n\nTask Execution\n  :test                    31.442s\n  :compileTestJava          2.118s\n  :compileJava              1.882s\n  :processTestResources     0.041s\n\n#   테스트가 대부분이다\n\n$ ./gradlew test 2>&1 | grep \"Started .* in\" \n\nStarted ProductRepositoryTest in 1.912 seconds\nStarted IntegrationTestSupport in 3.481 seconds\nStarted ControllerTestSupport in 1.842 seconds\n\n#   기동이 7.2초다\n\n#   31초 중 7초가 기동, 24초가 본문과 DB 다\n\n# --- 야간 잡 ---\n\nname: Nightly\non:\n  schedule:\n    - cron: '0 18 * * *'\njobs:\n  flaky:\n    runs-on: ubuntu-latest\n    steps:\n      - run: |\n          for i in $(seq 1 20); do\n            ./gradlew test --rerun-tasks || echo \"FAIL $i\" >> flaky.log\n          done\n      - run: cat flaky.log || echo \"no flaky tests\"\n\n#   7.11절의 스무 번 실행이다\n\n#   8분 걸린다. 밤에 돌린다\n\n$ gh run view --log | tail -1\n\nno flaky tests\n\n# --- 지금 이 프로젝트의 CI ---\n\n#   push       ./gradlew test            1분 12초\n#   nightly    20회 반복                  8분\n\n#   68개에 31초라 단계를 안 나눴다\n\n#   나누면 셋업이 두 번이라 더 느리다\n\n# --- 다음 절에서 ---\n\n#   몇 분까지 참을지 정한다",
+   "note": "**캐시 없이 2분 39초**인데 **82초가 다운로드**다. **`cache: gradle` 한 줄로 1분 12초**가 된다 — **테스트 코드는 한 줄도 안 고쳤다.**\n\n**단계를 나누면 셋업이 두 번이라 더** 느린데, **단위가 깨지면 34초에 끝**난다.\n\n**매트릭스는 8초 벌고 머신을 두 배** 쓴다. **68개 규모에서는 남는 게** 없다.\n\n**31초 중 7초가 컨텍스트 기동**이다.\n\n**야간 잡으로 스무 번 반복을** 돌린다 — 7.11절."
+  }
+ ],
+ "recap": [
+  "**단계마다 다른 것을** 돌린다 — 저장·커밋·푸시·머지·야간.",
+  "**진짜 비용은 사람의 전환**이다 — 선형이 아니다.",
+  "**느리면 커밋을 뭉치고 로컬에서 안** 돌린다.",
+  "**\"CI 는 원래 빨간색\" 이 되면 테스트가 죽은** 것이다.",
+  "**의존성 캐시가 가장 싸고 효과가** 크다 — 87초를 줄였다.",
+  "**단계 분리는 셋업이 늘어 총시간은 늘 수** 있다.",
+  "**대신 단위가 깨지면 빨리** 끝난다.",
+  "**매트릭스는 규모가 커야 값을** 한다.",
+  "**측정이 먼저** — 다운로드가 절반인 경우가 많다."
+ ],
+ "drills": [
+  {
+   "task": "CI 로그에서 단계별 시간을 뽑는다.",
+   "done_when": "어디가 오래 걸리는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "의존성 캐시를 켠다.",
+   "done_when": "전후 시간을 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "단위와 통합을 나눈다.",
+   "done_when": "단위 실패 시 시간을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "야간 반복 잡을 만든다.",
+   "done_when": "스무 번 실행이 도는지 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "느린 CI 의 진짜 비용은?",
+   "a": "머신 시간이 아니라 개발자의 컨텍스트 전환이다."
+  },
+  {
+   "q": "행동이 어떻게 바뀌나?",
+   "a": "커밋을 뭉치고 로컬에서 안 돌리고 빨간 걸 방치한다."
+  },
+  {
+   "q": "가장 먼저 할 것은?",
+   "a": "의존성 캐시다. 가장 싸고 효과가 크다."
+  },
+  {
+   "q": "단계 분리의 이점은?",
+   "a": "총시간은 늘 수 있지만 단위가 깨지면 빨리 끝난다."
+  },
+  {
+   "q": "매트릭스는 언제 값을 하나?",
+   "a": "테스트가 수백 개로 늘어 통합이 수 분 걸릴 때다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "GitHub Actions — Workflow syntax",
+   "url": "https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions",
+   "publisher": "GitHub"
+  },
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
