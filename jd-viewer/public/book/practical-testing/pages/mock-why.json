@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "mock-why",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "왜 가짜가 필요한가",
+ "summary": "메일을 실제로 보낼 순 없다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "밀어낼 수 없는 것을 안다.",
+  "가짜가 필요한 이유를 안다.",
+  "세 가지 길을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절에서 두 종류를** 봤다. **첫째는 밀어냈고 둘째는 못** 밀어낸다."
+  },
+  {
+   "type": "figure",
+   "caption": "밀어낼 수 없는 것",
+   "ascii": "   what you cannot push outward\n\n   pushable                       not pushable\n     LocalDateTime.now()            sending an email\n     Math.random()                  calling a payment api\n     reading an env var             writing to a queue\n\n   the first group is an input the method reads\n   the second group is the point of the method",
+   "note": "**둘째 무리는 그게 메서드의 목적**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 못 밀어내나",
+   "md": "**2.7절의 방법**을 다시 본다.\n\n```java\n// 전\npublic Order createOrder() {\n    LocalDateTime now = LocalDateTime.now();   // 안에서 정한다\n    ...\n}\n\n// 후\npublic Order createOrder(LocalDateTime currentDateTime) {   // 밖에서 받는다\n    ...\n}\n```\n\n> **`now()` 는 이 메서드의 목적이** 아니다. **입력**이다.\n> **입력이니 밖에서 줄 수** 있다.\n\n**메일은 다르다.**\n\n```java\npublic boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {\n    List<Order> orders = orderRepository.findOrdersBy(orderDate);\n    int totalAmount = orders.stream().mapToInt(Order::getTotalPrice).sum();\n\n    boolean result = mailService.sendMail(\n            \"no-reply@cafekiosk.com\", email,\n            orderDate + \" 매출 통계\", \"총 매출: \" + totalAmount);\n\n    if (!result) {\n        throw new IllegalArgumentException(\"매출 통계 메일 전송에 실패했습니다.\");\n    }\n    return true;\n}\n```\n\n> **메일을 보내는 게 이 메서드의 존재 이유**다.\n> **밖으로 빼면 메서드가 아무것도 안** 하게 된다.\n\n**계산 부분은 밀어낼 수** 있다.\n\n```java\nint totalAmount = orders.stream().mapToInt(Order::getTotalPrice).sum();\n```\n\n> **이건 순수 함수로** 뺄 수 있다. **그러면 단위 테스트가** 된다.\n>\n> **그래도 \"메일을 보냈는가\" 는 여전히 남는다.**\n\n**테스트가 진짜로 보내면**\n\n| | |\n|---|---|\n| **느리다** | SMTP 왕복 |\n| **불안정하다** | 네트워크·서버 |\n| **부작용** | 진짜 메일이 간다 |\n| **CI 에서 못 돈다** | 계정 정보가 필요하다 |\n\n> **2.1절의 \"반복 가능하다\" 가** 깨진다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 길",
+   "ascii": "   three ways to deal with the second group\n\n   let it happen\n     the test sends a real email, every run\n\n   an interface plus a hand written fake\n     you write a class that records instead of sending\n\n   a mocking library\n     the class is generated, and you say what it returns\n\n   all three are used in real projects",
+   "note": "**셋 다 실무에서** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 가지",
+   "md": "**① 그냥 보낸다**\n\n> **개발 서버로 보내는 팀도** 있다.\n> **로컬에서만 돌리면 그럴 수도** 있는데 **CI 에서는 못** 한다.\n>\n> **MailHog 같은 로컬 SMTP 를 띄우는 방법도** 있다.\n> **8.3절의 Testcontainers 와 같은 발상**이다.\n\n**② 인터페이스 + 손으로 만든 페이크**\n\n```java\npublic interface MailSendClient {\n    boolean sendEmail(String from, String to, String subject, String content);\n}\n\npublic class FakeMailSendClient implements MailSendClient {\n    private final List<String> sent = new ArrayList<>();\n\n    @Override\n    public boolean sendEmail(String from, String to, String subject, String content) {\n        sent.add(to);\n        return true;\n    }\n\n    public List<String> getSent() { return sent; }\n}\n```\n\n| | |\n|---|---|\n| **코드가 보인다** | 뭘 하는지 명확 |\n| **재사용된다** | 여러 테스트에서 |\n| **직접 짜야** 한다 | 메서드가 많으면 귀찮다 |\n\n> **6.8절**에서 다시 다룬다.\n\n**③ 목 라이브러리**\n\n```java\n@Mock\nprivate MailSendClient mailSendClient;\n\ngiven(mailSendClient.sendEmail(any(), any(), any(), any()))\n        .willReturn(true);\n```\n\n| | |\n|---|---|\n| **한 줄** | 클래스를 안 만든다 |\n| **호출 검증** | `verify` |\n| **구현에 묶인다** | 6.7절 |\n\n**이 책의 기본은 ③, 경우에 따라 ②**\n\n> **6.7절에서 ③의 대가를 재고 6.8절에서 ②로 돌아온다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 진짜로 보내면 ---\n\n@SpringBootTest\nclass OrderStatisticsServiceTest {\n\n    @Autowired OrderStatisticsService orderStatisticsService;\n\n    @DisplayName(\"결제 완료 주문의 매출 통계 메일을 보낸다\")\n    @Test\n    void sendOrderStatisticsMail() {\n        // given\n        주문_3건_저장();\n\n        // when\n        boolean result = orderStatisticsService.sendOrderStatisticsMail(\n                LocalDate.of(2026, 9, 9), \"test@cafekiosk.com\");\n\n        // then\n        assertThat(result).isTrue();\n    }\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\n2026-09-09T17:08:12.331 DEBUG --- Connecting to SMTP host smtp.gmail.com:587\n\nOrderStatisticsServiceTest > 결제 완료 주문의 매출 통계 메일을 보낸다 FAILED\n    org.springframework.mail.MailAuthenticationException:\n    Authentication failed; nested exception is\n    jakarta.mail.AuthenticationFailedException: 535-5.7.8 Username and\n    Password not accepted\n\n#   CI 에 계정 정보가 없다\n\n#   있다면 있는 대로 문제다\n\n# --- 계정을 넣고 돌리면 ---\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\n2026-09-09T17:09:41.882 DEBUG --- Connecting to SMTP host smtp.gmail.com:587\n2026-09-09T17:09:44.117 DEBUG --- Sent message successfully\n\nOrderStatisticsServiceTest > 결제 완료 주문의 매출 통계 메일을 보낸다 PASSED\n\nBUILD SUCCESSFUL in 12s\n\n#   3.5초가 메일 전송에 들었다\n\n#   그리고 test@cafekiosk.com 으로 진짜 메일이 갔다\n\n#   CI 를 100번 돌리면 메일이 100통이다\n\n# --- 네트워크가 끊기면 ---\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > ... FAILED\n    org.springframework.mail.MailSendException:\n    Mail server connection failed;\n    nested exception is jakarta.mail.MessagingException:\n    Could not connect to SMTP host: smtp.gmail.com, port: 587\n\n#   내 코드는 안 바뀌었는데 깨진다\n\n#   2.1절의 '반복 가능하다' 가 깨졌다\n#   7.11절의 가끔 깨지는 테스트다\n\n# --- 인터페이스로 감싼다 ---\n\npublic interface MailSendClient {\n    boolean sendEmail(String fromEmail, String toEmail,\n                      String subject, String content);\n}\n\n@Component\npublic class SmtpMailSendClient implements MailSendClient {\n    @Override\n    public boolean sendEmail(...) {\n        // 진짜 전송\n    }\n}\n\n# --- 손으로 만든 페이크로 ---\n\npublic class FakeMailSendClient implements MailSendClient {\n    private final List<String> sentTo = new ArrayList<>();\n\n    @Override\n    public boolean sendEmail(String from, String to,\n                             String subject, String content) {\n        sentTo.add(to);\n        return true;\n    }\n\n    public List<String> getSentTo() { return sentTo; }\n}\n\n@Test\nvoid sendWithFake() {\n    // given\n    FakeMailSendClient fake = new FakeMailSendClient();\n    OrderStatisticsService service = new OrderStatisticsService(\n            orderRepository, new MailService(fake, mailSendHistoryRepository));\n    주문_3건_저장();\n\n    // when\n    boolean result = service.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"test@cafekiosk.com\");\n\n    // then\n    assertThat(result).isTrue();\n    assertThat(fake.getSentTo()).containsExactly(\"test@cafekiosk.com\");\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > sendWithFake() PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   SMTP 로그가 없다\n#   12초가 8초가 됐다\n\n#   그리고 '누구에게 보냈는지' 를 검증했다\n\n# --- 목 라이브러리로 ---\n\n@MockBean\nprivate MailSendClient mailSendClient;\n\n@Test\nvoid sendWithMock() {\n    // given\n    given(mailSendClient.sendEmail(any(), any(), any(), any()))\n            .willReturn(true);\n    주문_3건_저장();\n\n    // when\n    boolean result = orderStatisticsService.sendOrderStatisticsMail(\n            LocalDate.of(2026, 9, 9), \"test@cafekiosk.com\");\n\n    // then\n    assertThat(result).isTrue();\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\nOrderStatisticsServiceTest > sendWithMock() PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   클래스를 안 만들었다\n\n#   대신 '누구에게' 를 검증하려면 verify 가 필요하다\n\n# --- 셋을 나란히 ---\n\n#   진짜 전송   12초   메일 100통   네트워크에 달림\n#   페이크      8초    없음         클래스 하나\n#   목          8초    없음         한 줄\n\n# --- 다음 절에서 ---\n\n#   Mockito 를 제대로 쓴다",
+   "note": "**진짜로 보내면 CI 에 계정이 없어 `AuthenticationFailedException`** 이다.\n\n**계정을 넣으면 통과**하는데 **3.5초가 전송에** 들고 **진짜 메일이** 간다. **CI 100번이면 100통**이다.\n\n**네트워크가 끊기면 내 코드가 안 바뀌었는데** 깨진다 — **2.1절의 반복 가능성**이 깨졌다.\n\n**페이크는 8초에 SMTP 로그가** 없고 **\"누구에게 보냈는지\" 까지** 검증한다.\n\n**목은 클래스를 안 만든다.** **대신 `verify` 가** 필요하다."
+  }
+ ],
+ "recap": [
+  "**밀어낼 수 있는 건 입력, 없는 건 목적**이다.",
+  "**메일 발송은 그 메서드의 존재 이유**다.",
+  "**진짜로 보내면 느리고 불안정하고 부작용이** 있다.",
+  "**CI 에서 100번 돌리면 메일이 100통**이다.",
+  "**네트워크가 끊기면 코드가 안 바뀌어도** 깨진다.",
+  "**세 가지 길** — 그냥 보낸다, 페이크, 목 라이브러리.",
+  "**페이크는 코드가 보이고 재사용**된다.",
+  "**목은 한 줄인데 구현에** 묶인다.",
+  "**계산 부분은 여전히 밀어낼 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "외부를 부르는 메서드를 하나 찾는다.",
+   "done_when": "밀어낼 수 있는지 판단했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인터페이스로 감싸 본다.",
+   "done_when": "프로덕션 구현과 분리했다.",
+   "minutes": 25
+  },
+  {
+   "task": "손으로 페이크를 만든다.",
+   "done_when": "호출 내용을 검증했다.",
+   "minutes": 25
+  },
+  {
+   "task": "목으로 같은 테스트를 짠다.",
+   "done_when": "줄 수를 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "밀어낼 수 있는 것과 없는 것의 차이는?",
+   "a": "입력이면 밀어낼 수 있고 그게 메서드의 목적이면 못 한다."
+  },
+  {
+   "q": "진짜로 보내면 뭐가 깨지나?",
+   "a": "2.1절의 반복 가능성이다. 네트워크에 따라 결과가 바뀐다."
+  },
+  {
+   "q": "세 가지 길은?",
+   "a": "그냥 보내기, 인터페이스+페이크, 목 라이브러리다."
+  },
+  {
+   "q": "페이크의 장점은?",
+   "a": "코드가 보이고 재사용되며 호출 내용을 직접 기록할 수 있다."
+  },
+  {
+   "q": "목의 단점은?",
+   "a": "구현에 묶인다. 6.7절에서 다룬다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "페이크",
+   "def": "실제 동작을 흉내 내는 간단한 구현. 메모리에 저장하거나 기록만 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

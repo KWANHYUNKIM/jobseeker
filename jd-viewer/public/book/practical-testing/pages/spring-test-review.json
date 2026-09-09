@@ -1,0 +1,192 @@
+{
+ "book": "practical-testing",
+ "id": "spring-test-review",
+ "no": "5.11",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "계층별 기본값.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "5장의 기본값을 표로 모은다.",
+  "비용을 센다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**계층 다섯에 애노테이션 셋**이다. **표 하나로** 정리된다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장이 정한 기본값",
+   "ascii": "   the defaults this chapter settled on\n\n   layer          annotation           transaction     db\n   domain         none                 none            none\n   repository     @DataJpaTest         rolled back     h2\n   service        @SpringBootTest      the service's   h2, cleaned\n   controller     @WebMvcTest          none            none\n   end to end     @SpringBootTest      the service's   h2, cleaned\n\n   only the service row runs the real transaction",
+   "note": "**서비스 줄만 진짜 트랜잭션이** 돈다."
+  },
+  {
+   "type": "table",
+   "caption": "5장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "5.1",
+     "계층별 전략",
+     "**각 계층은 자기 이유로 깨진다**"
+    ],
+    [
+     "5.2",
+     "퍼시스턴스",
+     "**내가 쓴 쿼리만 짠다**"
+    ],
+    [
+     "5.3",
+     "비즈니스",
+     "**실패 경로의 DB 상태를 본다**"
+    ],
+    [
+     "5.4",
+     "프레젠테이션",
+     "**스텁한 값 검증은 형식 검증이다**"
+    ],
+    [
+     "5.5",
+     "테스트 픽스처",
+     "**팩터리가 주제를 삼키면 안 된다**"
+    ],
+    [
+     "5.6",
+     "`@Transactional`",
+     "**롤백이 넷을 가린다**"
+    ],
+    [
+     "5.7",
+     "슬라이스",
+     "**컨텍스트 개수가 기동 시간이다**"
+    ],
+    [
+     "5.8",
+     "통합과 슬라이스",
+     "**통합은 더 찾고 덜 설명한다**"
+    ],
+    [
+     "5.9",
+     "데이터 정리",
+     "**자식부터, `InBatch` 로**"
+    ],
+    [
+     "5.10",
+     "직접 해 보기",
+     "**서비스부터 짠다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 가지 결정",
+   "md": "**① 서비스 테스트에 `@Transactional` 을 안 붙인다**\n\n> **5.6절**이다. **가장 논쟁적인 결정**이다.\n>\n> **`@AfterEach` 를 관리하는 비용을 내고 진짜 트랜잭션을** 본다.\n> **팀이 반대로 정해도** 된다 — **대신 서비스 트랜잭션을 어떻게 검증할지 답이** 있어야 한다.\n\n**② 컨트롤러 테스트는 `@WebMvcTest`**\n\n> **DB 를 안 띄운다.** **규칙을 스텁**한다.\n> **그래서 규칙 검증은 서비스 테스트가** 진다.\n\n**③ 공통 부모로 컨텍스트를 묶는다**\n\n> **5.7·5.9절**이다. **`IntegrationTestSupport`, `ControllerTestSupport`**.\n> **안 쓰는 목이 뜨는 대가를** 낸다.\n\n**④ 픽스처는 같은 파일의 `private` 메서드**\n\n> **5.5절**이다. **공용 픽스처 클래스를 안** 만든다.\n> **클래스마다 주제가** 달라서다.\n\n**⑤ 피라미드를 지킨다**\n\n> **5.8절**이다. **로직을 도메인으로 밀어내 단위 테스트로** 덮는다.\n> **2.7절의 밀어내기가 여기서도** 작동한다.\n\n**전부 \"대가를 알고 고른 것\"** 이다.\n\n> **팀마다 다르게 정할 수** 있다.\n> **모르고 정한 것과 알고 정한 게** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "비용",
+   "ascii": "   what the chapter cost, in seconds\n\n   chapters 2 to 4   25 tests   1s     no spring\n   chapter 5         11 tests   19s    three contexts\n\n   36 tests, 20 seconds\n\n   31 percent of the tests take 95 percent of the time",
+   "note": "**31% 가 95% 의 시간을** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스프링 테스트의 값어치",
+   "md": "**20초를 내고 무엇을** 얻나.\n\n**단위 테스트가 절대 못 잡는 것**\n\n| | 어디서 |\n|---|---|\n| **쿼리 문법과 결과** | 5.2 |\n| **트랜잭션 롤백** | 5.3 |\n| **빈 주입** | 5.8 |\n| **`@Valid` 동작** | 5.4 |\n| **JSON 직렬화** | 5.4 |\n\n> **전부 \"프레임워크가 하는 일\"** 이다.\n> **내 코드만 봐서는 모른다.**\n\n**5.3절의 재고 사고가 대표**다.\n\n```\n@Transactional 을 빼면\n  주문은 안 만들어지고 재고만 깎인다\n```\n\n> **단위 테스트로는 절대 못** 잡는다.\n> **`OrderService` 를 `new` 로 만들면 트랜잭션이 아예** 없다.\n\n**그래도 개수는 적게** 유지한다.\n\n> **11개가 19초**다. **100개면 3분**이다.\n> **8장의 주제**다.\n\n**늘리지 않는 법**\n\n| | |\n|---|---|\n| **규칙을 도메인으로** | 단위 테스트로 간다 |\n| **예외 케이스는 한 계층에만** | 5.10절 |\n| **컨텍스트를 묶는다** | 5.7절 |"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장이 이어받는 것",
+   "md": "**5.4절에서 `@MockBean` 을 이미** 썼다.\n\n```java\n@MockBean\nprivate OrderService orderService;\n```\n\n> **왜 쓰는지, 뭘 대체하는지는 설명을 안** 했다.\n> **6장이 그것**이다.\n\n**그리고 아직 못 짠 테스트가** 있다.\n\n```java\n@Service\npublic class OrderStatisticsService {\n    public boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {\n        // 주문 통계를 계산하고\n        // 메일을 보낸다\n    }\n}\n```\n\n> **테스트를 돌릴 때마다 진짜 메일이** 나간다.\n> **2.6절의 \"스스로 밖에 쓴다\"** 다.\n>\n> **밖으로 밀어낼 수가** 없다 — **메일 발송이 이 메서드의 목적**이다.\n\n**6장의 주제**\n\n| | |\n|---|---|\n| 6.1 | 왜 가짜가 필요한가 |\n| 6.2~6.5 | Mockito, 스텁과 목, 대역 다섯, Spy |\n| 6.6 | `@MockBean` |\n| **6.7** | **목이 만드는 함정** |\n| 6.8 | 가짜를 안 쓰는 길 |\n\n> **1.1절에서 \"6장이 가장 위험한 장\" 이라고** 했다.\n> **목을 배우면 다 목으로 짜고 싶어**진다.\n>\n> **6.7절에서 그 대가를** 잰다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 5장이 끝난 상태",
+   "sql": "# --- 전체 ---\n\n$ ./gradlew test\n\n카페 키오스크\n  음료를 담을 때 ... 4 tests\n  음료를 뺄 때 ... 3 tests\n  주문 목록을 비울 때 ... 1 test\n  총 금액을 계산할 때 ... 1 test\n  주문을 생성할 때 ... 4 tests\n주문\n  금액을 계산할 때 ... 5 tests\n할인 계산\n  등급별 할인 ... 4 tests\n  계산 규칙 ... 3 tests\nProductRepositoryTest\n  판매 상태로 조회하면 해당 상태의 상품만 나온다 PASSED\n  상품 번호 목록으로 조회하면 해당 상품들만 나온다 PASSED\n  기준 가격과 같은 상품도 조회된다 PASSED\n  최근 상품 번호를 조회한다 PASSED\nOrderServiceTest\n  같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\n  재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n  판매 중지된 상품이 있으면 주문할 수 없다 PASSED\n  주문을 생성하면 총 금액이 계산된다 PASSED\nOrderControllerTest\n  신규 주문을 등록한다 PASSED\n  주문 시 상품 번호는 1개 이상이어야 한다 PASSED\n  주문 응답에 총 금액이 담긴다 PASSED\n\n36 tests completed\n\nBUILD SUCCESSFUL in 20s\n\n# --- 나눠서 재면 ---\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n    --tests DiscountCalculatorTest\n25 tests completed\nBUILD SUCCESSFUL in 1s\n\n$ ./gradlew test --tests ProductRepositoryTest\n4 tests completed\nBUILD SUCCESSFUL in 5s\n\n$ ./gradlew test --tests OrderServiceTest\n4 tests completed\nBUILD SUCCESSFUL in 9s\n\n$ ./gradlew test --tests OrderControllerTest\n3 tests completed\nBUILD SUCCESSFUL in 4s\n\n#   25개 1초, 11개 18초\n\n# --- 컨텍스트 개수 ---\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  Spring test ApplicationContext cache statistics:\n    [size = 3, maxSize = 32, hitCount = 0, missCount = 3]\n\n#   @DataJpaTest, @SpringBootTest, @WebMvcTest 각각 하나\n\n#   공통 부모로 묶은 결과다  (5.7절)\n\n# --- 각 계층이 자기 이유로만 깨지는지 ---\n\n#   ① 도메인 규칙을 깨뜨린다\n\npublic int calculateTotalPrice() { return 0; }\n\n$ ./gradlew test\n\n주문 > 금액을 계산할 때 > 음료 한 잔이면 ... FAILED\n주문 > 금액을 계산할 때 > 같은 음료 두 잔이면 ... FAILED\n주문 > 금액을 계산할 때 > 서로 다른 음료면 ... FAILED\n주문 > 금액을 계산할 때 > 백 잔이어도 ... FAILED\nOrderServiceTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n\n36 tests completed, 5 failed\n\n#   도메인 4개 + 서비스 1개\n\n#   컨트롤러는 안 깨진다. 목이라서다\n\n#   ② 쿼리를 깨뜨린다\n\nList<Product> findAllByProductNumberNotIn(List<String> productNumbers);\n\n$ ./gradlew test\n\nProductRepositoryTest > 상품 번호 목록으로 조회하면 ... FAILED\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... FAILED\nOrderServiceTest > 재고가 부족하면 ... FAILED\nOrderServiceTest > 판매 중지된 상품이 ... FAILED\nOrderServiceTest > 주문을 생성하면 ... FAILED\n\n36 tests completed, 5 failed\n\n#   리포지토리 1개 + 서비스 4개\n\n#   서비스가 그 쿼리를 쓰니 같이 깨진다. 이건 맞다\n\n#   도메인과 컨트롤러는 안 깨진다\n\n#   ③ @Valid 를 지운다\n\n$ ./gradlew test\n\nOrderControllerTest > 주문 시 상품 번호는 1개 이상이어야 한다 FAILED\n\n36 tests completed, 1 failed\n\n#   컨트롤러 하나만\n\n#   ④ 서비스의 @Transactional 을 지운다\n\n$ ./gradlew test\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 FAILED\n    Expecting ArrayList:\n      [(\"001\", 1), (\"002\", 0)]\n\n36 tests completed, 1 failed\n\n#   서비스 하나만\n\n#   5.6절에서 @Transactional 을 안 붙인 덕이다\n\n# --- 네 번의 실험 요약 ---\n\n#   깨뜨린 것          깨진 테스트\n#   도메인 계산        도메인 4 + 서비스 1\n#   리포지토리 쿼리     리포지토리 1 + 서비스 4\n#   @Valid            컨트롤러 1\n#   @Transactional    서비스 1\n\n#   위로 안 번진다\n\n#   컨트롤러는 어느 경우에도 자기 것만 깨진다\n\n# --- 5장이 남긴 것 ---\n\n#   테스트 36개, 20초\n#   컨텍스트 3개\n#   계층별 기본값 표 하나\n\n#   그리고 아직 못 짠 것 하나\n\n@Service\npublic class OrderStatisticsService {\n    public boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {\n        // 진짜 메일이 나간다\n    }\n}\n\n#   테스트를 돌릴 때마다 메일이 온다\n\n# --- 다음 장에서 ---\n\n#   가짜를 만든다",
+   "note": "**36개가 20초**다. **25개가 1초, 11개가 18초**다.\n\n**컨텍스트가 3개**다 — **공통 부모로 묶은 결과**다.\n\n**네 가지를 깨뜨려 봤다.** **도메인 계산은 도메인 4 + 서비스 1, 쿼리는 리포지토리 1 + 서비스 4, `@Valid` 는 컨트롤러 1, `@Transactional` 은 서비스 1** 이다.\n\n**위로 안 번진다.** **컨트롤러는 어느 경우에도 자기 것만** 깨진다.\n\n**아직 못 짠 게 하나** 있다 — **메일**이다."
+  }
+ ],
+ "recap": [
+  "**계층 다섯에 애노테이션 셋**이 표 하나로 정리된다.",
+  "**서비스 줄만 진짜 트랜잭션이** 돈다.",
+  "**다섯 가지 결정을 대가를 알고** 골랐다.",
+  "**25개가 1초, 11개가 18초** — 31% 가 95% 의 시간을 쓴다.",
+  "**스프링 테스트가 잡는 건 프레임워크가 하는 일**이다.",
+  "**단위 테스트로는 재고 사고를 절대 못** 잡는다.",
+  "**네 가지를 깨뜨려도 위로 안** 번진다.",
+  "**컨트롤러는 어느 경우에도 자기 것만** 깨진다.",
+  "**아직 못 짠 게 메일**이다 — 6장이다."
+ ],
+ "drills": [
+  {
+   "task": "계층별 기본값 표를 자기 프로젝트에 적용한다.",
+   "done_when": "어느 줄이 다른지 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "네 가지를 하나씩 깨뜨려 본다.",
+   "done_when": "번지지 않는지 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "단위와 스프링 테스트 시간을 나눠 잰다.",
+   "done_when": "비율을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨텍스트 개수를 센다.",
+   "done_when": "3개인지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "어느 계층만 진짜 트랜잭션이 도나?",
+   "a": "서비스다. 리포지토리는 롤백되고 컨트롤러는 DB 가 없다."
+  },
+  {
+   "q": "가장 논쟁적인 결정은?",
+   "a": "서비스 테스트에 `@Transactional` 을 안 붙이는 것이다."
+  },
+  {
+   "q": "스프링 테스트가 잡는 것은?",
+   "a": "쿼리, 트랜잭션, 빈 주입, `@Valid`, 직렬화 — 프레임워크가 하는 일이다."
+  },
+  {
+   "q": "쿼리를 깨뜨리면 어디까지 번지나?",
+   "a": "리포지토리와 그 쿼리를 쓰는 서비스까지다. 도메인·컨트롤러는 안 깨진다."
+  },
+  {
+   "q": "6장이 다루는 문제는?",
+   "a": "메일 발송처럼 밖으로 밀어낼 수 없는 부수 효과다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Testing, Transactions",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

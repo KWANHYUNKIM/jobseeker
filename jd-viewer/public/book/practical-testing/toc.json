@@ -325,7 +325,7 @@
           "title": "정리",
           "summary": "계층별 기본값.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -340,7 +340,7 @@
           "title": "왜 가짜가 필요한가",
           "summary": "메일을 실제로 보낼 순 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
