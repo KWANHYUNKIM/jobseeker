@@ -231,7 +231,7 @@
           "title": "안 뜨는 파드 읽기",
           "summary": "CrashLoopBackOff · ImagePullBackOff · Pending.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -246,7 +246,7 @@
           "title": "레플리카셋",
           "summary": "개수를 지키는 컨트롤러.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",

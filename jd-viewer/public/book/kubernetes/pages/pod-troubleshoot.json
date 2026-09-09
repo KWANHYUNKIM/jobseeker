@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "pod-troubleshoot",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "안 뜨는 파드 읽기",
+ "summary": "CrashLoopBackOff · ImagePullBackOff · Pending.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "상태별 분기를 안다.",
+  "종료 코드를 읽는다.",
+  "안 지워지는 파드를 다룬다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 넷을 읽는 게 이 책의 절반이라고** 했다. **여기서 한 번에** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "상태별 분기",
+   "ascii": "   read the status, then take the matching branch\n\n   Pending              no node was picked\n     describe, look at FailedScheduling\n   ImagePullBackOff     the node cannot get the image\n     describe, look at the pull error\n   CrashLoopBackOff     it starts and dies\n     logs --previous\n   Running but 0/1      readiness is failing\n     describe, look at the probe\n   Terminating forever  something is holding it\n     check finalizers and the grace period",
+   "note": "**상태를 읽고 해당 가지로** 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "Pending 의 세 가지 이유",
+   "md": "| 이유 | 메시지 |\n|---|---|\n| **자원 부족** | `Insufficient cpu` / `Insufficient memory` |\n| **노드 선택 조건** | `node(s) didn't match Pod's node affinity/selector` |\n| **테인트** | `node(s) had untolerated taint` |\n| **볼륨** | `pod has unbound immediate PersistentVolumeClaims` |\n\n> **넷째가 8장**이고 **둘째·셋째가 9장**이다.\n> **첫째는 4.6절에서** 봤다.\n\n**`ImagePullBackOff` 의 세 가지**\n\n| 이유 | 확인 |\n|---|---|\n| 이름·태그 오타 | 레지스트리에서 직접 확인 |\n| 비공개 레지스트리 | `imagePullSecrets` 가 있나 |\n| 로컬 이미지 | 3.2절의 `kind load` |\n\n> **`ErrImagePull` 이 먼저 나오고 `ImagePullBackOff` 로** 바뀐다.\n> **후자는 \"재시도 간격을 늘리는 중\"** 이다.\n\n**`CrashLoopBackOff` 는 원인이 밖에 있다.**\n\n> **상태 자체는 \"계속 죽는다\" 만** 말한다.\n> **이유는 `logs --previous` 나 종료 코드에** 있다.\n> **1.3절처럼 의존성이 없어서일 수도, 4.6절처럼 메모리일 수도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "종료 코드",
+   "ascii": "   exit codes worth recognising\n\n   0     finished normally, and with Always that means a restart loop\n   1     the application threw and died\n   2     usually a shell misuse\n   126   the command is not executable\n   127   the command was not found\n   137   SIGKILL, which usually means OOMKilled or a grace timeout\n   143   SIGTERM, a normal shutdown\n\n   127 and 126 mean the yaml is wrong, not the app",
+   "note": "**127·126 은 앱이 아니라 YAML 이** 틀린 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 지워지는 파드",
+   "md": "**`Terminating` 에서 안 넘어간다.**\n\n> **세 가지 이유**가 있다.\n>\n> | 이유 | 확인 |\n> |---|---|\n> | 유예 시간 대기 | `terminationGracePeriodSeconds` (4.7절) |\n> | 파이널라이저 | `metadata.finalizers` 가 남아 있다 |\n> | 노드가 죽음 | `kubelet` 이 응답을 안 한다 |\n\n**파이널라이저**\n\n```bash\nkubectl patch pod stuck -p '{\"metadata\":{\"finalizers\":null}}' --type=merge\n```\n\n> **누가 \"내가 정리할 게 있다\" 고 걸어 둔** 표시다.\n> **그 컨트롤러가 죽으면 영영 안** 지워진다.\n> **강제로 지우면 그 정리가 안 된 채로** 남는다.\n\n**`--force` 는 마지막 수단**이다.\n\n```bash\nkubectl delete pod stuck --grace-period=0 --force\n```\n\n> **API 에서만 지우고 노드의 컨테이너는 남을 수** 있다.\n> **노드가 살아나면 유령 컨테이너가** 돈다.\n> **스테이트풀셋에서는 데이터 손상 위험이** 있다(5.5절).\n\n**`Evicted` 는 또 다르다.**\n\n> **노드가 자원 부족으로 쫓아낸** 것이다.\n> **파드는 남아 있고 상태만 `Failed`** 다.\n> **쌓이면 청소해야** 한다 — **아래에서** 본다.\n\n**`Unknown` 은 노드 문제**다.\n\n> **2.6절에서 노드를 멈췄을 때 본** 것이다.\n> **파드가 아니라 노드를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- Pending: 자원 ---\n\n$ kubectl run big --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"big\",\"image\":\"nginx:1.27\",\n      \"resources\":{\"requests\":{\"memory\":\"100Gi\"}}}]}}' > /dev/null\n\n$ sleep 5 && kubectl get pod big --no-headers\n\nbig   0/1   Pending   0   5s\n\n$ kubectl describe pod big | tail -4\n\nEvents:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  6s    default-scheduler  0/3 nodes are available:\n    3 Insufficient memory.\n\n#   메시지에 이유와 노드 수가 있다\n\n$ kubectl get pod big -o jsonpath='{.spec.nodeName}'\n\n#   (비어 있다)\n\n#   노드가 안 정해졌다\n\n$ kubectl delete pod big > /dev/null\n\n# --- Pending: 셀렉터 ---\n\n$ kubectl run picky --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"nodeSelector\":{\"disktype\":\"ssd\"}}}' > /dev/null\n\n$ sleep 5 && kubectl describe pod picky | tail -3\n\n  Warning  FailedScheduling  4s  default-scheduler  0/3 nodes are available:\n    3 node(s) didn't match Pod's node affinity/selector.\n\n#   자원이 아니라 라벨이다\n\n$ kubectl label node lab-worker disktype=ssd\n\nnode/lab-worker labeled\n\n$ sleep 5 && kubectl get pod picky --no-headers\n\npicky   1/1   Running   0   25s\n\n#   라벨을 붙이자 떴다\n\n#   9장에서 자세히 본다\n\n$ kubectl delete pod picky > /dev/null\n$ kubectl label node lab-worker disktype- > /dev/null\n\n# --- ImagePullBackOff ---\n\n$ kubectl run typo --image=nginx:1.27-alpne > /dev/null\n$ sleep 20 && kubectl get pod typo --no-headers\n\ntypo   0/1   ImagePullBackOff   0   20s\n\n$ kubectl describe pod typo | grep -A2 'Failed' | head -3\n\n  Warning  Failed  12s  kubelet  Failed to pull image \"nginx:1.27-alpne\":\n    failed to resolve reference \"docker.io/library/nginx:1.27-alpne\":\n    docker.io/library/nginx:1.27-alpne: not found\n\n#   not found 다\n\n#   태그 오타다\n\n$ kubectl get pod typo -o jsonpath=\\\n'{.status.containerStatuses[0].state.waiting.reason}{\"\\n\"}'\n\nImagePullBackOff\n\n$ kubectl delete pod typo > /dev/null\n\n#   비공개 레지스트리라면\n\n$ kubectl run private --image=ghcr.io/nobody/secret:1.0 > /dev/null\n$ sleep 15 && kubectl describe pod private | grep -A2 Failed | head -3\n\n  Warning  Failed  8s  kubelet  Failed to pull image \"ghcr.io/nobody/secret:1.0\":\n    failed to resolve reference: unexpected status from HEAD request:\n    403 Forbidden\n\n#   403 이다\n\n#   imagePullSecrets 가 필요하다\n\n#   7장에서 만든다\n\n$ kubectl delete pod private > /dev/null\n\n# --- CrashLoopBackOff: 종료 코드별 ---\n\n$ for c in 'exit 1' 'exit 2' 'nosuchcommand' './notexecutable'; do\n    kubectl run \"crash-$(echo $c | tr -cd 'a-z' | head -c6)\" \\\n      --image=busybox:1.36 -- sh -c \"$c\" > /dev/null 2>&1\n  done\n\n$ sleep 25 && kubectl get pods -o custom-columns=\\\nNAME:.metadata.name,CODE:.status.containerStatuses[0].lastState.terminated.exitCode,\\\nREASON:.status.containerStatuses[0].lastState.terminated.reason --no-headers \\\n    | grep crash\n\ncrash-exit    1    Error\ncrash-exit2   2    Error\ncrash-nosuch  127  Error\ncrash-notexe  126  Error\n\n#   127 은 명령이 없다\n\n#   126 은 실행 권한이 없다\n\n#   둘 다 YAML 이 틀린 것이다\n\n$ kubectl logs crash-nosuch --previous\n\nsh: nosuchcommand: not found\n\n#   로그가 말해 준다\n\n$ kubectl delete pod -l run --field-selector=status.phase!=Succeeded \\\n    2>/dev/null; kubectl delete pod crash-exit crash-exit2 crash-nosuch \\\n    crash-notexe > /dev/null 2>&1\n\n# --- 정상 종료인데 CrashLoop ---\n\n$ kubectl run zero --image=busybox:1.36 -- echo 끝\n$ sleep 25 && kubectl get pod zero -o custom-columns=\\\nSTATUS:.status.containerStatuses[0].state.waiting.reason,\\\nCODE:.status.containerStatuses[0].lastState.terminated.exitCode --no-headers\n\nCrashLoopBackOff   0\n\n#   코드가 0 인데 CrashLoopBackOff 다\n\n#   4.1절에서 본 것이다\n\n#   Job 을 써야 한다 (5.7절)\n\n$ kubectl delete pod zero > /dev/null\n\n# --- 0/1 Running ---\n\n$ kubectl run notready --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"notready\",\"image\":\"nginx:1.27\",\n      \"readinessProbe\":{\"httpGet\":{\"path\":\"/health\",\"port\":80},\n                        \"periodSeconds\":3}}]}}' > /dev/null\n\n$ sleep 12 && kubectl get pod notready --no-headers\n\nnotready   0/1   Running   0   12s\n\n$ kubectl describe pod notready | grep -A1 'Readiness probe failed' | head -2\n\n  Warning  Unhealthy  2s (x3 over 8s)  kubelet  Readiness probe failed:\n    HTTP probe failed with statuscode: 404\n\n#   404 다\n\n#   경로가 없다\n\n#   4.5절이다\n\n$ kubectl delete pod notready > /dev/null\n\n# --- 안 지워지는 파드 ---\n\n$ kubectl run stuck --image=nginx:1.27 > /dev/null && sleep 5\n$ kubectl patch pod stuck -p \\\n    '{\"metadata\":{\"finalizers\":[\"example.com/cleanup\"]}}' --type=merge\n\npod/stuck patched\n\n$ kubectl delete pod stuck --wait=false\n\npod \"stuck\" deleted\n\n$ sleep 10 && kubectl get pod stuck --no-headers\n\nstuck   1/1   Terminating   0   20s\n\n#   안 지워진다\n\n$ kubectl get pod stuck -o jsonpath=\\\n'{.metadata.finalizers} {.metadata.deletionTimestamp}{\"\\n\"}'\n\n[\"example.com/cleanup\"] 2026-09-09T12:50:11Z\n\n#   파이널라이저가 남아 있다\n\n#   그걸 지울 컨트롤러가 없다\n\n$ kubectl patch pod stuck -p '{\"metadata\":{\"finalizers\":null}}' --type=merge\n\npod/stuck patched\n\n$ kubectl get pod stuck --no-headers 2>&1\n\nError from server (NotFound): pods \"stuck\" not found\n\n#   즉시 사라졌다\n\n#   삭제는 이미 요청돼 있었다\n\n# --- 유예 시간 때문에 오래 걸리는 것 ---\n\n$ kubectl run slow --image=busybox:1.36 \\\n    --overrides='{\"spec\":{\"terminationGracePeriodSeconds\":60,\n      \"containers\":[{\"name\":\"slow\",\"image\":\"busybox:1.36\",\n      \"command\":[\"sh\",\"-c\",\"trap \\\"\\\" TERM; sleep 3600\"]}]}}' > /dev/null\n\n$ sleep 5 && time kubectl delete pod slow --wait=true\n\npod \"slow\" deleted\n\nreal    1m0.412s\n\n#   1분이다\n\n#   파이널라이저가 아니라 유예 시간이다\n\n#   구별해야 한다\n\n$ kubectl get pod slow -o jsonpath='{.metadata.finalizers}' 2>/dev/null\n\n#   (없다)\n\n# --- Evicted 가 쌓인다 ---\n\n#   (노드 압박을 흉내 내기 어려워 상태만 흉내 낸다)\n\n$ kubectl get pods -A --field-selector=status.phase=Failed --no-headers \\\n    | wc -l\n\n0\n\n#   지금은 없다\n\n#   실제로 쌓이면\n\n$ cat cleanup.sh\n\nkubectl get pods -A --field-selector=status.phase=Failed \\\n  -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name --no-headers \\\n  | while read ns name; do kubectl delete pod -n \"$ns\" \"$name\"; done\n\n#   Evicted 는 자동으로 안 지워진다\n\n#   목록만 지저분해진다\n\n# --- 한 번에 훑는 스크립트 ---\n\n$ cat triage.sh\n\n#!/bin/bash\nkubectl get pods -A --no-headers \\\n  | awk '$4 != \"Running\" && $4 != \"Completed\" {print $1, $2, $4}' \\\n  | while read ns name status; do\n      echo \"=== $ns/$name ($status)\"\n      case \"$status\" in\n        Pending)\n          kubectl describe pod -n \"$ns\" \"$name\" \\\n            | grep -A2 FailedScheduling | tail -2 ;;\n        ImagePullBackOff|ErrImagePull)\n          kubectl describe pod -n \"$ns\" \"$name\" \\\n            | grep -A2 'Failed to pull' | tail -2 ;;\n        CrashLoopBackOff|Error)\n          kubectl logs -n \"$ns\" \"$name\" --previous --tail=5 2>&1 | tail -5 ;;\n        *)\n          kubectl describe pod -n \"$ns\" \"$name\" | tail -5 ;;\n      esac\n    done\n\n$ kubectl run a --image=nginx:1.27-badtag > /dev/null\n$ kubectl run b --image=busybox:1.36 -- sh -c 'exit 1' > /dev/null\n$ sleep 25 && ./triage.sh\n\n=== default/a (ImagePullBackOff)\n  Warning  Failed  9s  kubelet  Failed to pull image \"nginx:1.27-badtag\":\n    failed to resolve reference: not found\n=== default/b (CrashLoopBackOff)\n(로그 없음)\n\n#   상태별로 다른 것을 뽑는다\n\n#   3.5절의 넷을 자동화한 것이다\n\n$ kubectl delete pod a b > /dev/null\n\n# --- 지금 클러스터가 깨끗한지 ---\n\n$ kubectl get pods -A --no-headers \\\n    | awk '$4 != \"Running\" && $4 != \"Completed\"' | wc -l\n\n0\n\n$ kubectl get events -A --field-selector type=Warning --no-headers | wc -l\n\n0\n\n#   경고가 없다\n\n#   운영에서는 이 둘을 감시한다\n\n# --- 다음 장에서 ---\n\n#   파드를 직접 만들지 않는 이유로 간다",
+   "note": "**`Pending` 이 자원이면 `Insufficient memory`, 셀렉터면 `didn't match Pod's node affinity/selector`** 로 메시지가 다르다.\n\n**종료 코드 127은 명령 없음, 126은 실행 권한 없음** — 둘 다 앱이 아니라 YAML 문제다.\n\n**`exitCode: 0` 인데 `CrashLoopBackOff`** 인 경우도 재현했다.\n\n**파이널라이저를 걸면 `Terminating` 에서 안 넘어가고, `finalizers: null` 로 즉시** 사라진다.\n\n**유예 시간 60초짜리는 파이널라이저 없이도 1분** 걸린다 — 구별해야 한다."
+  }
+ ],
+ "recap": [
+  "**상태를 읽고 해당 가지로** 간다.",
+  "**`Pending` 은 자원·셀렉터·테인트·볼륨** 넷이다.",
+  "**`ImagePullBackOff` 는 오타·권한·로컬 이미지**다.",
+  "**`CrashLoopBackOff` 는 원인이 밖에** 있다.",
+  "**127·126 은 YAML 이 틀린** 것이다.",
+  "**`exitCode 0` 인데 재시작 루프일 수** 있다.",
+  "**`Terminating` 은 파이널라이저나 유예 시간**이다.",
+  "**`--force` 는 유령 컨테이너를 남길 수** 있다.",
+  "**`Evicted` 는 자동으로 안** 지워진다."
+ ],
+ "drills": [
+  {
+   "task": "`Pending` 을 두 가지 이유로 만든다.",
+   "done_when": "메시지가 다른 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "종료 코드 네 가지를 만든다.",
+   "done_when": "127 과 126 을 구별했다.",
+   "minutes": 25
+  },
+  {
+   "task": "파이널라이저를 걸고 지워 본다.",
+   "done_when": "안 지워지는 것과 푸는 법을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "분류 스크립트를 만든다.",
+   "done_when": "상태별로 다른 것을 뽑았다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Pending` 의 이유를 어디서 보나?",
+   "a": "`describe` 의 `FailedScheduling` 메시지다."
+  },
+  {
+   "q": "종료 코드 127 은?",
+   "a": "명령을 못 찾은 것이다. YAML 이 틀렸다."
+  },
+  {
+   "q": "`exitCode 0` 인데 `CrashLoopBackOff` 면?",
+   "a": "`restartPolicy: Always` 인데 끝나는 프로그램이다. Job 을 써야 한다."
+  },
+  {
+   "q": "`Terminating` 이 안 끝나는 이유 둘은?",
+   "a": "파이널라이저와 유예 시간이다."
+  },
+  {
+   "q": "`--force` 의 위험은?",
+   "a": "API 에서만 지워 노드에 컨테이너가 남을 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "파이널라이저",
+   "def": "삭제 전에 정리할 것이 있다고 걸어 두는 표시. 지워지지 않으면 삭제가 멈춘다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Determine the Reason for Pod Failure",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Pod Lifecycle",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Scheduling, Preemption and Eviction",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "replicaset",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "레플리카셋",
+ "summary": "개수를 지키는 컨트롤러.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "루프가 하는 일을 안다.",
+  "입양을 확인한다.",
+  "직접 쓰지 않는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절 이벤트에 `replicaset` 이 계속** 나왔다. **그게 무엇인지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "레플리카셋의 루프",
+   "ascii": "   what a ReplicaSet actually does, in one loop\n\n   count pods matching the selector\n     fewer than replicas  -> create from the template\n     more than replicas   -> delete some, by a ranking\n     exactly replicas     -> do nothing\n\n   it never updates a pod, it only creates and deletes\n   that is why changing the template alone does nothing",
+   "note": "**만들고 지우기만 하고 고치지는** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "템플릿을 고쳐도 안 바뀐다",
+   "md": "**이게 핵심**이다.\n\n> **`spec.template` 을 고쳐도 기존 파드는 그대로**다.\n> **다음에 파드를 만들 때부터** 새 템플릿이다.\n>\n> **파드를 지워야 새것이** 뜬다.\n> **레플리카셋만으로는 롤링 업데이트가 안** 된다.\n\n**그래서 디플로이먼트가** 있다.\n\n> **디플로이먼트는 레플리카셋을 새로** 만든다.\n> **옛것을 줄이고 새것을** 늘린다 — **2.4절에서 본** 그것.\n> **레플리카셋 자체는 그 도구일 뿐**이다.\n\n**지울 파드를 고르는 순서가** 있다.\n\n| 우선 | 조건 |\n|---|---|\n| 1 | `Pending` 인 것 |\n| 2 | `Ready` 가 아닌 것 |\n| 3 | 준비된 지 얼마 안 된 것 |\n| 4 | 재시작이 많은 것 |\n| 5 | 더 최근에 만들어진 것 |\n\n> **덜 아까운 것부터** 지운다.\n> **`kubectl scale` 로 줄일 때 이 순서로** 나간다.\n\n**직접 쓸 일은 거의** 없다.\n\n> **`kubectl get rs` 로 보기는** 한다.\n> **디플로이먼트를 디버깅할 때 어느 레플리카셋이 몇 개인지 보는** 용도다."
+  },
+  {
+   "type": "figure",
+   "caption": "입양",
+   "ascii": "   adoption, and the accident it causes\n\n   a ReplicaSet owns every pod matching its selector\n     including pods it did not create\n\n   create a bare pod with label app=web\n   create a ReplicaSet with selector app=web, replicas 3\n     it counts your pod as one of the three\n     it makes only two more\n     and it may delete yours later",
+   "note": "**내가 만든 파드를 가져가 버린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "셀렉터가 겹치면",
+   "md": "**두 레플리카셋이 같은 라벨을** 고르면\n\n> **서로 상대의 파드를 자기 것으로** 센다.\n> **A 가 3개를 세고 B 도 3개를 센다.**\n> **둘 다 만족했다고 판단해 아무것도 안** 만든다.\n>\n> **하나를 지우면 둘 다 만든다** — **6개가** 된다.\n\n**디플로이먼트는 `pod-template-hash` 로** 피한다.\n\n> **템플릿의 해시를 라벨에 자동으로** 붙인다.\n> **2.3절의 `pod-template-hash=6d8f4b9c7` 이** 그거다.\n> **템플릿이 다르면 해시가 달라 안** 겹친다.\n>\n> **직접 레플리카셋을 쓰면 이 보호가** 없다.\n\n**셀렉터는 못 바꾼다.**\n\n> **2.3절에서 봤다** — **`field is immutable`** 이다.\n> **바꾸려면 지우고 다시** 만든다.\n\n**`--cascade=orphan` 으로 파드를 남길 수** 있다.\n\n> **레플리카셋만 지우고 파드는** 둔다.\n> **디버깅할 때 파드를 살려 두고 컨트롤러를 떼는 데** 쓴다.\n> **2.3절에서 해 봤다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 레플리카셋을 직접 만든다 ---\n\n$ cat rs.yaml\n\napiVersion: apps/v1\nkind: ReplicaSet\nmetadata:\n  name: web\nspec:\n  replicas: 3\n  selector:\n    matchLabels: { app: web }\n  template:\n    metadata:\n      labels: { app: web }\n    spec:\n      containers:\n        - name: nginx\n          image: nginx:1.27\n\n$ kubectl apply -f rs.yaml > /dev/null && sleep 8\n$ kubectl get rs web --no-headers\n\nweb   3   3   3   8s\n\n$ kubectl get pods -l app=web --no-headers | wc -l\n\n3\n\n$ kubectl get pods -l app=web --show-labels --no-headers | head -1 | awk '{print $6}'\n\napp=web\n\n#   pod-template-hash 가 없다\n\n#   디플로이먼트가 붙이는 것이었다\n\n# --- 템플릿을 고쳐 본다 ---\n\n$ kubectl set image rs/web nginx=nginx:1.27-alpine\n\nreplicaset.apps/web image updated\n\n$ kubectl get rs web -o jsonpath=\\\n'{.spec.template.spec.containers[0].image}{\"\\n\"}'\n\nnginx:1.27-alpine\n\n$ kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.spec.containers[0].image}{\"\\n\"}{end}'\n\nnginx:1.27\nnginx:1.27\nnginx:1.27\n\n#   파드는 안 바뀌었다\n\n#   레플리카셋은 고치지 않는다\n\n$ kubectl delete pod -l app=web > /dev/null\n$ sleep 10 && kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.spec.containers[0].image}{\"\\n\"}{end}'\n\nnginx:1.27-alpine\nnginx:1.27-alpine\nnginx:1.27-alpine\n\n#   지우니 새 템플릿으로 떴다\n\n#   이래서 롤링이 안 된다\n\n#   중간에 서비스가 다 끊겼다\n\n# --- 지울 파드를 고르는 순서 ---\n\n$ kubectl scale rs/web --replicas=5 > /dev/null && sleep 10\n$ kubectl get pods -l app=web --sort-by=.metadata.creationTimestamp \\\n    --no-headers | awk '{print $1, $5}'\n\nweb-h4n8q   45s\nweb-r5t2w   45s\nweb-x9m2k   45s\nweb-k2m9v   10s\nweb-w7t4x   10s\n\n$ kubectl scale rs/web --replicas=3 > /dev/null && sleep 5\n$ kubectl get pods -l app=web --no-headers | awk '{print $1}' | sort\n\nweb-h4n8q\nweb-r5t2w\nweb-x9m2k\n\n#   최근에 만든 둘이 나갔다\n\n#   덜 아까운 것부터다\n\n# --- 입양 ---\n\n$ kubectl delete rs web --cascade=orphan > /dev/null\n$ kubectl get pods -l app=web --no-headers | wc -l\n\n3\n\n#   파드가 남았다\n\n$ kubectl get pod -l app=web -o jsonpath=\\\n'{.items[0].metadata.ownerReferences}{\"\\n\"}'\n\n#   (비어 있다)\n\n#   주인이 없어졌다\n\n$ kubectl delete pod -l app=web > /dev/null\n\n#   이제 손으로 파드 하나를 만든다\n\n$ kubectl run mine --image=busybox:1.36 --labels=app=web \\\n    -- sleep 3600 > /dev/null\n$ sleep 5 && kubectl get pods -l app=web --no-headers\n\nmine   1/1   Running   0   5s\n\n$ kubectl apply -f rs.yaml > /dev/null && sleep 10\n$ kubectl get pods -l app=web --no-headers\n\nmine        1/1   Running   0   20s\nweb-8h3nq   1/1   Running   0   10s\nweb-v9k7d   1/1   Running   0   10s\n\n#   셋인데 mine 이 끼어 있다\n\n#   레플리카셋이 둘만 만들었다\n\n$ kubectl get pod mine -o jsonpath=\\\n'{.metadata.ownerReferences[0].kind}/{.metadata.ownerReferences[0].name}{\"\\n\"}'\n\nReplicaSet/web\n\n#   입양됐다\n\n#   내가 만든 파드인데 주인이 생겼다\n\n$ kubectl get pod mine -o jsonpath=\\\n'{.spec.containers[0].image}{\"\\n\"}'\n\nbusybox:1.36\n\n#   이미지가 다른데도 자기 것으로 센다\n\n#   라벨만 봤다\n\n$ kubectl scale rs/web --replicas=2 > /dev/null && sleep 5\n$ kubectl get pods -l app=web --no-headers | awk '{print $1}'\n\nmine\nweb-8h3nq\n\n#   mine 이 살아남았다\n\n#   더 오래돼서다\n\n$ kubectl delete rs web > /dev/null && sleep 5\n$ kubectl get pod mine --no-headers 2>&1\n\nError from server (NotFound): pods \"mine\" not found\n\n#   같이 지워졌다\n\n#   입양된 뒤라 소유 사슬에 들어갔다\n\n# --- 셀렉터가 겹치면 ---\n\n$ sed 's/name: web/name: web-a/' rs.yaml | kubectl apply -f - > /dev/null\n$ sed 's/name: web/name: web-b/' rs.yaml | kubectl apply -f - > /dev/null\n$ sleep 10 && kubectl get rs --no-headers\n\nweb-a   3   3   3   10s\nweb-b   3   3   3   10s\n\n$ kubectl get pods -l app=web --no-headers | wc -l\n\n3\n\n#   레플리카셋 둘이 3 이라고 하는데\n\n#   파드는 셋뿐이다\n\n$ kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.metadata.name} {.metadata.ownerReferences[0].name}{\"\\n\"}{end}'\n\nweb-a-2k9mv web-a\nweb-a-7x4bn web-a\nweb-b-p3w8t web-b\n\n#   서로 상대의 파드를 세고 있다\n\n$ kubectl delete pod web-a-2k9mv > /dev/null\n$ sleep 8 && kubectl get pods -l app=web --no-headers | wc -l\n\n4\n\n#   하나 지웠는데 넷이 됐다\n\n#   둘이 각자 하나씩 만들었다\n\n$ kubectl delete rs web-a web-b > /dev/null\n\n# --- 디플로이먼트는 해시로 막는다 ---\n\n$ kubectl create deployment d1 --image=nginx:1.27 --replicas=2 > /dev/null\n$ kubectl create deployment d2 --image=nginx:1.27 --replicas=2 > /dev/null\n$ sleep 10 && kubectl get pods --show-labels --no-headers \\\n    | awk '{print $1, $6}' | head -4\n\nd1-6d8f4b9c7-h4n8q   app=d1,pod-template-hash=6d8f4b9c7\nd1-6d8f4b9c7-r5t2w   app=d1,pod-template-hash=6d8f4b9c7\nd2-6d8f4b9c7-k2m9v   app=d2,pod-template-hash=6d8f4b9c7\nd2-6d8f4b9c7-w7t4x   app=d2,pod-template-hash=6d8f4b9c7\n\n#   app 라벨이 다르다\n\n#   그리고 pod-template-hash 가 붙었다\n\n$ kubectl get rs -o jsonpath=\\\n'{range .items[*]}{.metadata.name} {.spec.selector.matchLabels}{\"\\n\"}{end}'\n\nd1-6d8f4b9c7 {\"app\":\"d1\",\"pod-template-hash\":\"6d8f4b9c7\"}\nd2-6d8f4b9c7 {\"app\":\"d2\",\"pod-template-hash\":\"6d8f4b9c7\"}\n\n#   셀렉터에 해시가 들어 있다\n\n#   같은 app 라벨이어도 템플릿이 다르면 안 겹친다\n\n$ kubectl delete deployment d1 d2 > /dev/null\n\n# --- 다음 절에서 ---\n\n#   실무에서 실제로 쓰는 것을 본다",
+   "note": "**템플릿을 고쳐도 기존 파드는 `nginx:1.27` 그대로**고 지워야 새 이미지로 뜬다 — 롤링이 안 되는 이유다.\n\n**스케일을 줄이면 최근에 만든 것부터** 나간다.\n\n**손으로 만든 `mine` 을 레플리카셋이 입양**해 둘만 더 만들고, 나중에 같이 지워졌다.\n\n**셀렉터가 겹친 레플리카셋 둘이 각자 3이라고 하는데 파드는 셋**이고, 하나 지우니 넷이 됐다.\n\n**디플로이먼트는 `pod-template-hash` 를 셀렉터에 넣어** 이걸 막는다."
+  }
+ ],
+ "recap": [
+  "**레플리카셋은 개수만** 지킨다.",
+  "**만들고 지우기만 하고 고치지** 않는다.",
+  "**템플릿을 바꿔도 기존 파드는** 그대로다.",
+  "**그래서 롤링이 안** 된다.",
+  "**지울 때 덜 아까운 것부터** 고른다.",
+  "**셀렉터에 맞으면 남의 파드도** 입양한다.",
+  "**셀렉터가 겹치면 개수가** 어긋난다.",
+  "**디플로이먼트는 해시로** 막는다.",
+  "**직접 쓸 일은 거의** 없다."
+ ],
+ "drills": [
+  {
+   "task": "레플리카셋의 템플릿을 고쳐 본다.",
+   "done_when": "파드가 안 바뀌는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스케일을 줄여 어느 것이 나가는지 본다.",
+   "done_when": "순서를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "라벨이 같은 파드를 손으로 만든다.",
+   "done_when": "입양되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "셀렉터가 겹치는 둘을 만든다.",
+   "done_when": "개수가 어긋나는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "레플리카셋이 하는 일은?",
+   "a": "셀렉터에 맞는 파드 개수를 목표에 맞춘다."
+  },
+  {
+   "q": "템플릿을 고치면?",
+   "a": "기존 파드는 그대로고 다음에 만들 때부터 적용된다."
+  },
+  {
+   "q": "입양이란?",
+   "a": "셀렉터에 맞으면 자기가 안 만든 파드도 소유한다."
+  },
+  {
+   "q": "셀렉터가 겹치면?",
+   "a": "서로 상대의 파드를 세어 개수가 어긋난다."
+  },
+  {
+   "q": "디플로이먼트는 이걸 어떻게 막나?",
+   "a": "`pod-template-hash` 를 셀렉터에 넣는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "입양",
+   "def": "컨트롤러가 셀렉터에 맞는 기존 파드를 자기 소유로 가져가는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — ReplicaSet",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Deployments",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
