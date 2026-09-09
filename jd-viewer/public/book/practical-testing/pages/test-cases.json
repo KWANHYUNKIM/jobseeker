@@ -1,0 +1,126 @@
+{
+ "book": "practical-testing",
+ "id": "test-cases",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "테스트 케이스 세분화",
+ "summary": "해피 케이스와 예외 케이스.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요구사항에서 케이스를 뽑는다.",
+  "예외 케이스를 빠뜨리지 않는다.",
+  "테스트가 요구사항을 되묻게 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 한 줄에 케이스가** 넷이다. **둘은 어디에도 안 적혀** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "요구사항 한 줄에 든 것",
+   "ascii": "   what a requirement actually contains\n\n   \"음료를 여러 잔 담을 수 있다\"\n\n   happy      2 cups  -> 2 in the list\n   boundary   1 cup   -> 1 in the list\n   exception  0 cups  -> what should happen\n              -1 cups -> what should happen\n\n   one line of requirement, four test cases\n   two of them are not written down anywhere",
+   "note": "**둘은 물어봐야** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "1.3절의 세 번째 문제",
+   "md": "**`add` 가 수량을 못** 받는다.\n\n```java\ncafeKiosk.add(americano);\ncafeKiosk.add(americano);\ncafeKiosk.add(americano);\n```\n\n**요구사항을 추가**한다.\n\n```\n음료를 여러 잔 담을 수 있다\n```\n\n**구현은 쉽다.**\n\n```java\npublic void add(Beverage beverage, int count) {\n    for (int i = 0; i < count; i++) {\n        beverages.add(beverage);\n    }\n}\n```\n\n**테스트를 짜려는 순간 질문이** 생긴다.\n\n| 질문 | 요구사항에 있나 |\n|---|---|\n| 2잔을 담으면 2개인가 | **있다** |\n| **0잔을 담으면** | **없다** |\n| **음수를 담으면** | **없다** |\n| 100잔은 되나 | 없다 |\n\n> **`for` 문을 쓸 때는 아무도 안** 묻는다.\n> **테스트를 짤 때는 반드시** 묻게 된다.\n>\n> **1.2절의 \"설계 압력\"** 이다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트가 시키는 질문들",
+   "ascii": "   the questions a test forces you to ask\n\n   what if the input is zero\n   what if it is negative\n   what if the list is empty\n   what if it is called twice\n   what if it is exactly at the boundary\n\n   nobody asks these while writing an if statement\n   everybody asks them while writing a test",
+   "note": "**`if` 문을 쓸 때는 아무도 안** 묻는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 갈래로 나눈다",
+   "md": "**① 해피 케이스**\n\n> **정상 흐름**이다. **대개 이것만** 짠다.\n\n**② 예외 케이스**\n\n> **잘못된 입력, 없는 데이터, 권한 없음**.\n>\n> **여기서 버그가** 난다.\n\n**③ 경계값**\n\n> **2.5절**에서 따로 다룬다.\n> **`0`, `1`, 최대, 최소, 딱 그 값**.\n\n**예외 케이스를 어떻게 찾나**\n\n| 입력 타입 | 물어볼 것 |\n|---|---|\n| 숫자 | 0, 음수, 최댓값 |\n| 문자열 | `null`, 빈 문자열, 공백, 아주 긴 것 |\n| 컬렉션 | `null`, 비었음, 중복 포함 |\n| 날짜 | 과거, 미래, 경계 시각 |\n| 객체 | `null`, 없는 ID |\n\n> **이 표를 놓고 하나씩** 대 본다.\n>\n> **5장에서 리포지토리·서비스 테스트를 짤 때 계속** 쓴다.\n\n**전부 짜지는 않는다.**\n\n> **\"100잔\" 은 안** 짠다. **경계가 아니고 규칙도** 없다.\n>\n> **요구사항에 \"1회 최대 20잔\" 이 생기면 그때** 짠다.\n>\n> **이 책이 \"실용적인\" 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "테스트가 요구사항을 되묻는다",
+   "md": "**\"0잔을 담으면?\" 에 답이 셋**이다.\n\n| 답 | 코드 |\n|---|---|\n| **예외** | `throw new IllegalArgumentException` |\n| **무시** | 아무것도 안 담는다 |\n| **1잔으로** | 말이 안 된다 |\n\n> **개발자가 혼자 못** 정한다. **기획에 물어야** 한다.\n>\n> **테스트를 안 짜면 그 질문 자체가 안** 생긴다.\n> **`for (int i = 0; i < 0; i++)` 는 조용히 아무것도 안** 한다.\n\n**이 책은 예외로** 정한다.\n\n```java\npublic void add(Beverage beverage, int count) {\n    if (count <= 0) {\n        throw new IllegalArgumentException(\"음료는 1잔 이상 주문하실 수 있습니다.\");\n    }\n    for (int i = 0; i < count; i++) {\n        beverages.add(beverage);\n    }\n}\n```\n\n> **\"조용히 무시\" 는 버그를 숨긴다.** **1.3절의 `remove` 가 그랬다.**\n\n**케이스 이름이 곧 문서**다.\n\n```\n음료 두 잔을 담으면 목록에 두 개가 담긴다\n음료를 0잔 담으면 예외가 난다\n음료를 음수로 담으면 예외가 난다\n```\n\n> **이 셋을 읽으면 요구사항을** 안다.\n> **4장의 주제**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 해피 케이스만 짜면 ---\n\n@DisplayName(\"음료 두 잔을 담으면 목록에 두 개가 담긴다\")\n@Test\nvoid addSeveralBeverages() {\n    Americano americano = new Americano();\n\n    cafeKiosk.add(americano, 2);\n\n    assertThat(cafeKiosk.getBeverages()).hasSize(2);\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 두 잔을 담으면 목록에 두 개가 담긴다 PASSED\n\nBUILD SUCCESSFUL\n\n#   통과했다. 여기서 멈추기 쉽다\n\n# --- 0잔을 담아 보면 ---\n\n@DisplayName(\"음료를 0잔 담으면 예외가 난다\")\n@Test\nvoid addZeroBeverages() {\n    assertThatThrownBy(() -> cafeKiosk.add(new Americano(), 0))\n            .isInstanceOf(IllegalArgumentException.class)\n            .hasMessage(\"음료는 1잔 이상 주문하실 수 있습니다.\");\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료를 0잔 담으면 예외가 난다 FAILED\n    java.lang.AssertionError:\n    Expecting code to raise a throwable.\n\n#   예외가 안 났다\n\n#   for (int i = 0; i < 0; i++) 가 조용히 지나갔다\n\n# --- 음수도 ---\n\n@DisplayName(\"음료를 음수로 담으면 예외가 난다\")\n@Test\nvoid addNegativeBeverages() {\n    assertThatThrownBy(() -> cafeKiosk.add(new Americano(), -1))\n            .isInstanceOf(IllegalArgumentException.class);\n}\n\nCafeKioskTest > 음료를 음수로 담으면 예외가 난다 FAILED\n    Expecting code to raise a throwable.\n\n#   음수도 조용하다\n\n#   -1 잔 주문이 성공한 것처럼 보인다\n\n# --- 실제로 어떻게 됐는지 ---\n\n@Test\nvoid whatHappensWithNegative() {\n    cafeKiosk.add(new Americano(), -1);\n    System.out.println(\">>> size: \" + cafeKiosk.getBeverages().size());\n    System.out.println(\">>> total: \" + cafeKiosk.calculateTotalPrice());\n}\n\nCafeKioskTest > whatHappensWithNegative() STANDARD_OUT\n    >>> size: 0\n    >>> total: 0\n\nCafeKioskTest > whatHappensWithNegative() PASSED\n\n#   0원짜리 주문이 만들어진다\n\n#   화면에는 '담기 완료' 가 뜨고 목록은 비어 있다\n\n# --- 검증을 넣는다 ---\n\npublic void add(Beverage beverage, int count) {\n    if (count <= 0) {\n        throw new IllegalArgumentException(\"음료는 1잔 이상 주문하실 수 있습니다.\");\n    }\n    for (int i = 0; i < count; i++) {\n        beverages.add(beverage);\n    }\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 두 잔을 담으면 목록에 두 개가 담긴다 PASSED\nCafeKioskTest > 음료를 0잔 담으면 예외가 난다 PASSED\nCafeKioskTest > 음료를 음수로 담으면 예외가 난다 PASSED\n\nBUILD SUCCESSFUL in 1s\n\n# --- remove 도 같은 방법으로 ---\n\n#   해피     담은 음료를 빼면 목록에서 사라진다\n#   예외     없는 음료를 빼면 예외가 난다        (2.2절에서 짰다)\n#   경계     마지막 하나를 빼면 목록이 빈다\n\n@DisplayName(\"마지막 한 잔을 빼면 목록이 빈다\")\n@Test\nvoid removeLast() {\n    Americano americano = new Americano();\n    cafeKiosk.add(americano);\n\n    cafeKiosk.remove(americano);\n\n    assertThat(cafeKiosk.getBeverages()).isEmpty();\n}\n\nCafeKioskTest > 마지막 한 잔을 빼면 목록이 빈다 PASSED\n\n# --- clear 는 ---\n\n@DisplayName(\"비어 있는 목록을 비워도 예외가 안 난다\")\n@Test\nvoid clearEmpty() {\n    assertThatNoException().isThrownBy(() -> cafeKiosk.clear());\n}\n\nCafeKioskTest > 비어 있는 목록을 비워도 예외가 안 난다 PASSED\n\n#   1.1절에서 add() 를 지워도 통과하던 그 테스트다\n\n#   그때는 문제였는데 여기서는 의도한 것이다\n#   '빈 목록을 비워도 괜찮다' 를 검증하고 있다\n\n#   같은 테스트도 무엇을 검증하려는지에 따라 뜻이 다르다\n\n# --- 케이스 목록 ---\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 음료 두 잔을 담으면 목록에 두 개가 담긴다 PASSED\nCafeKioskTest > 음료를 0잔 담으면 예외가 난다 PASSED\nCafeKioskTest > 음료를 음수로 담으면 예외가 난다 PASSED\nCafeKioskTest > 주문 목록에 있는 음료를 뺀다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 PASSED\nCafeKioskTest > 마지막 한 잔을 빼면 목록이 빈다 PASSED\nCafeKioskTest > 비어 있는 목록을 비워도 예외가 안 난다 PASSED\n\n8 tests completed\n\n#   이 목록이 요구사항 문서다\n\n#   요구사항은 여섯 줄이었는데 (1.3절)\n#   케이스는 여덟이다\n\n# --- 다음 절에서 ---\n\n#   경계값을 따로 본다",
+   "note": "**해피 케이스만 짜면 `PASSED`** 다. **여기서 멈추기 쉽다.**\n\n**0잔·음수를 담으면 예외가 안** 난다. **`for (int i = 0; i < 0; i++)` 가 조용히** 지나간다.\n\n**음수로 담으면 `size: 0, total: 0`** 이다. **0원짜리 주문**이 만들어진다.\n\n**`clearEmpty` 는 1.1절에서 문제였던 그 테스트**인데 **여기서는 의도한 것**이다. **같은 테스트도 무엇을 검증하려는지에 따라 뜻이** 다르다.\n\n**요구사항 여섯 줄에 케이스 여덟**이다."
+  }
+ ],
+ "recap": [
+  "**요구사항 한 줄에 케이스가 넷**이다.",
+  "**둘은 어디에도 안 적혀** 있다.",
+  "**`for` 문을 쓸 때는 아무도 안 묻고 테스트를 짤 때는** 묻는다.",
+  "**세 갈래** — 해피, 예외, 경계값.",
+  "**입력 타입별로 물어볼 것을 표로** 둔다.",
+  "**전부 짜지는 않는다** — 규칙이 없는 값은 안 짠다.",
+  "**\"0잔이면?\" 의 답은 개발자가 혼자 못** 정한다.",
+  "**조용히 무시하면 0원짜리 주문이** 만들어진다.",
+  "**같은 테스트도 무엇을 검증하려는지에 따라 뜻이** 다르다."
+ ],
+ "drills": [
+  {
+   "task": "`add(beverage, count)` 의 해피 케이스만 짠다.",
+   "done_when": "통과를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "0잔·음수 케이스를 추가한다.",
+   "done_when": "둘 다 빨개지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "음수로 담고 총 금액을 찍어 본다.",
+   "done_when": "0원 주문이 만들어지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "입력 타입별 질문 표를 만든다.",
+   "done_when": "자기 프로젝트의 메서드 하나에 대 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "요구사항 한 줄에 케이스가 몇 개인가?",
+   "a": "대개 넷이다. 해피, 경계, 그리고 적히지 않은 예외 둘이다."
+  },
+  {
+   "q": "테스트가 왜 질문을 만드나?",
+   "a": "구현할 때는 안 묻는 \"0이면? 음수면?\" 을 반드시 묻게 되기 때문이다."
+  },
+  {
+   "q": "\"0잔이면?\" 을 개발자가 정해도 되나?",
+   "a": "안 된다. 예외·무시 중 무엇인지 기획에 물어야 한다."
+  },
+  {
+   "q": "조용히 무시하면 무엇이 문제인가?",
+   "a": "0원짜리 주문이 성공한 것처럼 보인다. 버그가 숨는다."
+  },
+  {
+   "q": "전부 다 짜야 하나?",
+   "a": "아니다. 규칙이 없는 값은 안 짠다. 요구사항이 생기면 그때 짠다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "assertj",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "AssertJ 로 단언하기",
+ "summary": "실패 메시지가 다르다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "실패 메시지의 차이를 본다.",
+  "자주 쓰는 단언을 익힌다.",
+  "체이닝을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 예고한 것**이다. **실패 메시지의 품질이 테스트의 품질**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 실패, 세 가지 메시지",
+   "ascii": "   the same failure, three ways\n\n   assertTrue(list.size() == 2)\n     expected: <true> but was: <false>\n\n   assertEquals(2, list.size())\n     expected: <2> but was: <1>\n\n   assertThat(list).hasSize(2)\n     Expected size: 2 but was: 1 in:\n     [Americano(name=아메리카노, price=4000)]\n\n   only the third one shows what was actually in there",
+   "note": "**세 번째만 실제 내용을 보여 준다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 메시지가 중요한가",
+   "md": "**실패는 대개 CI 로그로** 본다.\n\n> **내 화면이 아니라 슬랙 알림이나 CI 페이지**다.\n> **디버거를 못 붙인다.**\n\n**메시지만 보고 원인을 알 수 있어야** 한다.\n\n| | 알 수 있나 |\n|---|---|\n| `expected: <true> but was: <false>` | **아무것도** |\n| `expected: <2> but was: <1>` | 개수는 |\n| `Expected size: 2 but was: 1 in: [...]` | **내용까지** |\n\n**세 번째면 로그만 보고 고칠 수** 있다.\n\n> **\"아메리카노만 담겼네, 라떼 추가가 안 됐구나\"**\n\n**`assertTrue` 를 쓰지 않는다.**\n\n```java\nassertTrue(order.getTotalPrice() > 0);\n```\n\n> **얼마였는지 안** 나온다. **`-1` 이었는지 `0` 이었는지** 모른다.\n>\n> ```java\n> assertThat(order.getTotalPrice()).isPositive();\n> ```\n>\n> **`Expecting actual: 0 to be positive`** 다.\n\n**JUnit 의 `Assertions` 도 안** 쓴다.\n\n> **`assertEquals(expected, actual)` 은 순서를 헷갈린다.**\n> **`assertThat(actual).isEqualTo(expected)` 는 순서가 자연스럽다.**\n>\n> **AssertJ 가 타입별로 다른 메서드를** 준다. **자동완성이 안내**한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "자주 쓰는 것들",
+   "code": "// 값\nassertThat(actual).isEqualTo(expected);\nassertThat(actual).isNotNull();\nassertThat(name).isEqualTo(\"아메리카노\").startsWith(\"아메\");\n\n// 숫자\nassertThat(price).isPositive();\nassertThat(price).isBetween(1000, 5000);\nassertThat(rate).isCloseTo(0.1, within(0.001));\n\n// 컬렉션\nassertThat(beverages).hasSize(2);\nassertThat(beverages).isEmpty();\nassertThat(beverages).contains(americano);\nassertThat(beverages).containsExactly(americano, latte);              // 순서까지\nassertThat(beverages).containsExactlyInAnyOrder(latte, americano);    // 순서 무관\nassertThat(beverages).extracting(\"name\").containsExactly(\"아메리카노\", \"라떼\");\n\n// 예외\nassertThatThrownBy(() -> cafeKiosk.remove(latte))\n        .isInstanceOf(IllegalArgumentException.class)\n        .hasMessage(\"주문 목록에 없는 음료입니다.\");\nassertThatNoException().isThrownBy(() -> cafeKiosk.add(americano));\n\n// 객체\nassertThat(order).usingRecursiveComparison().isEqualTo(expected);\nassertThat(order).extracting(\"totalPrice\", \"status\")\n        .contains(8500, OrderStatus.INIT);"
+  },
+  {
+   "type": "figure",
+   "caption": "체이닝",
+   "ascii": "   what chaining buys\n\n   assertThat(beverages)\n     .hasSize(2)\n     .extracting(\"name\")\n     .containsExactly(\"아메리카노\", \"라떼\");\n\n   one statement, three checks\n   and the failure names which link broke",
+   "note": "**한 문장에 세 검증**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`extracting` 과 `tuple`",
+   "md": "**객체 목록에서 필드만** 뽑는다.\n\n```java\nassertThat(beverages)\n        .extracting(\"name\")\n        .containsExactly(\"아메리카노\", \"라떼\");\n```\n\n> **`get(0).getName()` 을 두 번 쓰는 것보다** 짧다.\n> **실패 메시지도 목록 전체를** 보여 준다.\n\n**필드가 둘 이상이면 `tuple`** 이다.\n\n```java\nassertThat(products)\n        .extracting(\"productNumber\", \"name\", \"price\")\n        .containsExactlyInAnyOrder(\n                tuple(\"001\", \"아메리카노\", 4000),\n                tuple(\"002\", \"라떼\", 4500)\n        );\n```\n\n> **5장에서 리포지토리 테스트를 짤 때 계속** 쓴다.\n\n**문자열 대신 메서드 참조**도 된다.\n\n```java\n.extracting(Beverage::getName)\n```\n\n> **오타를 컴파일러가** 잡는다. **필드명 리팩터링도 따라온다.**\n>\n> **문자열 판은 런타임에** 터진다 — **「활용 2편」 4.7절의 JPQL 문자열과 같은** 문제다.\n\n**`containsExactly` 와 `containsExactlyInAnyOrder`**\n\n| | |\n|---|---|\n| `contains` | 포함만 |\n| `containsExactly` | **순서까지 정확히** |\n| `containsExactlyInAnyOrder` | 개수·내용 정확히, 순서 무관 |\n\n> **DB 조회 결과는 순서가 보장 안 되는 경우가** 많다.\n> **`ORDER BY` 를 안 걸었으면 `InAnyOrder`** 를 쓴다.\n>\n> **안 그러면 7.11절의 \"가끔 깨지는 테스트\"** 가 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 세 가지 단언, 같은 상황 ---\n\n@Test void withAssertTrue() {\n    cafeKiosk.add(new Americano());\n    assertTrue(cafeKiosk.getBeverages().size() == 2);\n}\n\n@Test void withAssertEquals() {\n    cafeKiosk.add(new Americano());\n    assertEquals(2, cafeKiosk.getBeverages().size());\n}\n\n@Test void withAssertThat() {\n    cafeKiosk.add(new Americano());\n    assertThat(cafeKiosk.getBeverages()).hasSize(2);\n}\n\n$ ./gradlew test --tests AssertionCompareTest\n\nAssertionCompareTest > withAssertTrue() FAILED\n    org.opentest4j.AssertionFailedError:\n    expected: <true> but was: <false>\n\nAssertionCompareTest > withAssertEquals() FAILED\n    org.opentest4j.AssertionFailedError:\n    expected: <2> but was: <1>\n\nAssertionCompareTest > withAssertThat() FAILED\n    java.lang.AssertionError:\n    Expected size: 2 but was: 1 in:\n    [Americano(name=아메리카노, price=4000)]\n\n3 tests completed, 3 failed\n\n#   같은 코드, 같은 실패, 다른 정보량\n\n# --- 체이닝의 실패 메시지 ---\n\n@Test void chaining() {\n    cafeKiosk.add(new Americano());\n    cafeKiosk.add(new Latte());\n\n    assertThat(cafeKiosk.getBeverages())\n            .hasSize(2)\n            .extracting(\"name\")\n            .containsExactly(\"라떼\", \"아메리카노\");\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > chaining() FAILED\n    java.lang.AssertionError:\n    Actual and expected have the same elements but not in the same order,\n    at index 0 actual element was:\n      \"아메리카노\"\n    whereas expected element was:\n      \"라떼\"\n\n#   hasSize(2) 는 통과하고 순서에서 걸렸다\n#   어느 고리가 끊겼는지 나온다\n\n# --- containsExactlyInAnyOrder 로 바꾸면 ---\n\n    .containsExactlyInAnyOrder(\"라떼\", \"아메리카노\");\n\nCafeKioskTest > chaining() PASSED\n\n# --- extracting 을 문자열로 쓰면 ---\n\n    .extracting(\"nmae\")     // 오타\n\n$ ./gradlew test\n\nCafeKioskTest > chaining() FAILED\n    java.lang.IllegalArgumentException:\n    Unable to extract value from property or field 'nmae' of\n    class Americano - Element was: Americano(...)\n\n#   컴파일은 통과하고 런타임에 터진다\n\n# --- 메서드 참조로 쓰면 ---\n\n    .extracting(Beverage::getNmae)\n\n$ ./gradlew compileTestJava\n\nCafeKioskTest.java:52: error: cannot find symbol\n        .extracting(Beverage::getNmae)\n                            ^\n  symbol:   method getNmae()\n\n#   컴파일에서 잡힌다\n\n# --- 예외 메시지까지 검증 ---\n\nassertThatThrownBy(() -> cafeKiosk.remove(new Latte()))\n        .isInstanceOf(IllegalArgumentException.class)\n        .hasMessage(\"주문 목록에 없는 음료입니다\");     // 마침표를 뺐다\n\n$ ./gradlew test\n\nCafeKioskTest > removeNotExists() FAILED\n    java.lang.AssertionError:\n    Expecting message to be:\n      \"주문 목록에 없는 음료입니다\"\n    but was:\n      \"주문 목록에 없는 음료입니다.\"\n\n#   마침표 하나까지 잡는다\n\n#   메시지를 너무 정확히 검증하면 문구를 못 바꾼다\n#   hasMessageContaining 이 무난한 경우가 많다\n\n# --- usingRecursiveComparison ---\n\n@Test void recursive() {\n    Order actual = cafeKiosk.createOrder(LocalDateTime.of(2026, 9, 9, 11, 0));\n    Order expected = new Order(LocalDateTime.of(2026, 9, 9, 11, 0),\n                               List.of(new Americano()));\n\n    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);\n}\n\nCafeKioskTest > recursive() PASSED\n\n#   equals 없이 필드를 재귀로 비교한다\n\n#   Order 에 equals 를 만들 이유가 없어진다\n#   프로덕션 코드를 테스트 때문에 안 고쳐도 된다  (7.3절)\n\n# --- 다음 절에서 ---\n\n#   케이스를 세분화한다",
+   "note": "**세 단언이 같은 실패에 다른 정보량**을 준다. **`assertThat` 만 실제 내용**을 보여 준다.\n\n**체이닝은 어느 고리가 끊겼는지** 알려 준다 — **`hasSize(2)` 는 통과하고 순서에서** 걸렸다.\n\n**`extracting(\"nmae\")` 는 런타임, `Beverage::getNmae` 는 컴파일**에서 터진다.\n\n**`hasMessage` 는 마침표 하나까지** 잡는다. **너무 정확하면 문구를 못 바꾼다.**\n\n**`usingRecursiveComparison` 은 `equals` 없이** 비교한다 — **테스트 때문에 프로덕션 코드를 안 고쳐도** 된다."
+  }
+ ],
+ "recap": [
+  "**실패 메시지의 품질이 테스트의 품질**이다.",
+  "**실패는 대개 CI 로그로** 본다 — 디버거를 못 붙인다.",
+  "**`assertTrue` 는 아무것도 안** 알려 준다.",
+  "**`assertThat` 은 실제 내용까지** 보여 준다.",
+  "**체이닝이 어느 고리가 끊겼는지** 알려 준다.",
+  "**`extracting` 은 메서드 참조로** 쓴다 — 컴파일러가 잡는다.",
+  "**DB 조회는 `containsExactlyInAnyOrder`** 가 안전하다.",
+  "**`hasMessage` 는 마침표까지** 잡는다 — 과하면 문구를 못 바꾼다.",
+  "**`usingRecursiveComparison` 은 `equals` 없이** 비교한다."
+ ],
+ "drills": [
+  {
+   "task": "세 가지 단언으로 같은 실패를 만든다.",
+   "done_when": "메시지 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`extracting` 을 문자열과 메서드 참조로 각각 오타 내 본다.",
+   "done_when": "런타임과 컴파일 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`containsExactly` 로 순서를 틀리게 해 본다.",
+   "done_when": "인덱스까지 나오는 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`usingRecursiveComparison` 을 써 본다.",
+   "done_when": "`equals` 없이 통과하는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `assertTrue` 를 안 쓰나?",
+   "a": "실패 메시지가 `<true> but was: <false>` 라 아무것도 안 알려 준다."
+  },
+  {
+   "q": "체이닝의 이점은?",
+   "a": "한 문장에 여러 검증을 담고 어느 고리가 끊겼는지 메시지가 알려 준다."
+  },
+  {
+   "q": "`extracting` 을 왜 메서드 참조로 쓰나?",
+   "a": "문자열은 런타임에 터지고 메서드 참조는 컴파일에서 잡힌다."
+  },
+  {
+   "q": "DB 조회 결과에 무엇을 쓰나?",
+   "a": "`containsExactlyInAnyOrder` 다. 순서가 보장되지 않을 수 있다."
+  },
+  {
+   "q": "`usingRecursiveComparison` 은 무엇을 피하게 해 주나?",
+   "a": "테스트 때문에 프로덕션 클래스에 `equals` 를 만드는 일이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "AssertJ — Assertions Guide",
+   "url": "https://assertj.github.io/doc/#assertj-core-assertions-guide",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

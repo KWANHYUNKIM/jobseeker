@@ -80,7 +80,7 @@
           "title": "AssertJ 로 단언하기",
           "summary": "실패 메시지가 다르다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -88,7 +88,7 @@
           "title": "테스트 케이스 세분화",
           "summary": "해피 케이스와 예외 케이스.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
