@@ -270,7 +270,7 @@
           "title": "무중단이 깨지는 자리",
           "summary": "종료 훅과 그레이스 피리어드.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -278,7 +278,7 @@
           "title": "스테이트풀셋",
           "summary": "이름과 순서가 있어야 하는 것들.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",

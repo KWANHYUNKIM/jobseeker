@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "statefulset",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "스테이트풀셋",
+ "summary": "이름과 순서가 있어야 하는 것들.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "디플로이먼트와 다른 넷을 안다.",
+  "볼륨이 남는 것을 확인한다.",
+  "언제 안 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 다시 만들면 안 되는 것이 있다고** 했다. **그쪽을 위한 컨트롤러**다."
+  },
+  {
+   "type": "figure",
+   "caption": "다른 넷",
+   "ascii": "   what a StatefulSet gives that a Deployment does not\n\n   names        web-0, web-1, web-2, and they come back the same\n   order        0 starts before 1, and 2 stops before 1\n   storage      each pod keeps its own volume across restarts\n   dns          web-0.web.default.svc, one name per pod\n\n   a Deployment gives none of these, on purpose",
+   "note": "**디플로이먼트는 넷 다 일부러 안** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이름이 고정된다",
+   "md": "```yaml\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: web\nspec:\n  serviceName: web        # 헤드리스 서비스 이름\n  replicas: 3\n  selector:\n    matchLabels: { app: web }\n  template: ...\n  volumeClaimTemplates:\n    - metadata: { name: data }\n      spec:\n        accessModes: [ReadWriteOnce]\n        resources: { requests: { storage: 1Gi } }\n```\n\n> **파드 이름이 `web-0`·`web-1`·`web-2`** 다.\n> **`web-1` 이 죽으면 다시 `web-1` 로** 뜬다.\n> **디플로이먼트는 매번 새 해시**였다(2.3절).\n\n**`volumeClaimTemplates` 가 핵심**이다.\n\n> **파드마다 PVC 를 하나씩** 만든다.\n> **`data-web-0`·`data-web-1`** 이다.\n> **파드가 죽고 다시 떠도 같은 볼륨에** 붙는다.\n>\n> **8장에서 PVC 를 제대로** 다룬다.\n\n**헤드리스 서비스가** 필요하다.\n\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  clusterIP: None       # 헤드리스\n  selector: { app: web }\n  ports: [{ port: 80 }]\n```\n\n> **`clusterIP: None` 이면 로드밸런싱을 안** 한다.\n> **DNS 가 파드 IP 를 그대로** 준다.\n> **`web-0.web.default.svc.cluster.local` 로 특정 파드를** 부른다.\n>\n> **6장에서 서비스를 제대로 볼 때 다시** 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "대가",
+   "ascii": "   what it costs\n\n   scaling down leaves the volumes behind, deliberately\n   a rolling update goes one at a time, from the highest index\n   a stuck pod blocks every pod below it\n   deleting the set does not delete the claims\n\n   most databases in production do not run here, and that is fine",
+   "note": "**운영 DB 를 여기 안 올리는 팀이** 많다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "하나가 막히면 다 막힌다",
+   "md": "**순서가 보장되는 대가**다.\n\n> **`web-1` 이 `Ready` 가 안 되면 `web-2` 는 시작도 안** 한다.\n> **롤링 업데이트도 높은 번호부터 하나씩**이다.\n> **`web-2` 가 안 뜨면 `web-1` 은 손도 안** 댄다.\n>\n> **디플로이먼트는 병렬이라 이런 일이** 없다.\n\n**병렬로 바꿀 수 있다.**\n\n```yaml\nspec:\n  podManagementPolicy: Parallel\n```\n\n> **순서가 필요 없으면 이쪽이** 빠르다.\n> **다만 이름과 볼륨은 그대로 유지**된다.\n\n**볼륨이 안 지워진다.**\n\n> **`replicas` 를 3에서 1로 줄여도 `data-web-1`·`data-web-2` 는** 남는다.\n> **다시 늘리면 그 데이터로** 돌아온다.\n> **일부러 그렇게** 만들었다.\n>\n> **스테이트풀셋을 지워도 PVC 는** 남는다.\n> **손으로 지워야** 한다.\n\n**운영 DB 는 신중하게**\n\n> **1.5절에서 이 책이 깊게 안 다룬다고** 했다.\n> **백업·복구·페일오버·버전 업그레이드가 다 직접**이다.\n> **관리형 DB 를 쓰고 앱만 클러스터에 올리는 게 흔한** 선택이다.\n>\n> **오퍼레이터를 쓰면 그 일들이 자동화되는데 그건 이 책 밖**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 만든다 ---\n\n$ cat sts.yaml\n\napiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  clusterIP: None\n  selector: { app: web }\n  ports: [{ port: 80, name: http }]\n---\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: web\nspec:\n  serviceName: web\n  replicas: 3\n  selector:\n    matchLabels: { app: web }\n  template:\n    metadata:\n      labels: { app: web }\n    spec:\n      terminationGracePeriodSeconds: 5\n      containers:\n        - name: nginx\n          image: nginx:1.27\n          volumeMounts:\n            - { name: data, mountPath: /usr/share/nginx/html }\n  volumeClaimTemplates:\n    - metadata: { name: data }\n      spec:\n        accessModes: [ReadWriteOnce]\n        resources: { requests: { storage: 100Mi } }\n\n$ kubectl apply -f sts.yaml > /dev/null\n$ for i in 1 2 3 4; do\n    kubectl get pods -l app=web --no-headers | awk '{print $1, $3}' | tr '\\n' ' '\n    echo; sleep 5\n  done\n\nweb-0 ContainerCreating\nweb-0 Running\nweb-0 Running web-1 ContainerCreating\nweb-0 Running web-1 Running web-2 ContainerCreating\n\n#   하나씩 뜬다\n\n#   0 이 준비돼야 1 이 시작한다\n\n$ sleep 10 && kubectl get pods -l app=web --no-headers | awk '{print $1}'\n\nweb-0\nweb-1\nweb-2\n\n#   해시가 없다\n\n#   번호다\n\n# --- PVC 가 하나씩 ---\n\n$ kubectl get pvc --no-headers\n\ndata-web-0   Bound   pvc-8f3a2b1c   100Mi   RWO   standard   1m\ndata-web-1   Bound   pvc-7e4c2a9f   100Mi   RWO   standard   1m\ndata-web-2   Bound   pvc-3d5b8e1a   100Mi   RWO   standard   45s\n\n#   파드마다 하나다\n\n$ kubectl get pod web-0 -o jsonpath=\\\n'{.spec.volumes[0].persistentVolumeClaim.claimName}{\"\\n\"}'\n\ndata-web-0\n\n# --- 데이터를 쓴다 ---\n\n$ for i in 0 1 2; do\n    kubectl exec web-$i -- sh -c \"echo '나는 web-$i 다' > \\\n      /usr/share/nginx/html/index.html\"\n  done\n\n$ for i in 0 1 2; do\n    kubectl exec web-$i -- cat /usr/share/nginx/html/index.html\n  done\n\n나는 web-0 다\n나는 web-1 다\n나는 web-2 다\n\n# --- 파드를 지워도 ---\n\n$ kubectl delete pod web-1 > /dev/null\n$ sleep 15 && kubectl get pods -l app=web --no-headers | awk '{print $1}'\n\nweb-0\nweb-1\nweb-2\n\n#   같은 이름으로 돌아왔다\n\n$ kubectl exec web-1 -- cat /usr/share/nginx/html/index.html\n\n나는 web-1 다\n\n#   데이터도 그대로다\n\n#   1.4절에서 파일이 사라지던 것과 다르다\n\n$ kubectl get pod web-1 -o jsonpath='{.spec.nodeName}{\"\\n\"}'\n\nlab-worker\n\n#   노드도 같다\n\n#   볼륨이 그 노드에 있어서다 (8장)\n\n# --- DNS 로 특정 파드를 ---\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    sh -c 'for i in 0 1 2; do wget -qO- web-$i.web.default.svc.cluster.local; done'\n\n나는 web-0 다\n나는 web-1 다\n나는 web-2 다\npod \"tmp\" deleted\n\n#   파드마다 이름이 있다\n\n#   디플로이먼트에는 없는 것이다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    nslookup web.default.svc.cluster.local 2>/dev/null | grep Address | tail -3\n\nAddress: 10.244.1.20\nAddress: 10.244.2.15\nAddress: 10.244.1.21\n\n#   헤드리스라 파드 IP 가 다 나온다\n\n#   6장에서 일반 서비스와 비교한다\n\n# --- 순서대로 지운다 ---\n\n$ kubectl scale statefulset web --replicas=1 > /dev/null\n$ for i in 1 2 3; do\n    kubectl get pods -l app=web --no-headers | awk '{print $1}' | tr '\\n' ' '\n    echo; sleep 4\n  done\n\nweb-0 web-1 web-2\nweb-0 web-1\nweb-0\n\n#   2 -> 1 순서다\n\n#   높은 번호부터다\n\n$ kubectl get pvc --no-headers | awk '{print $1}'\n\ndata-web-0\ndata-web-1\ndata-web-2\n\n#   PVC 는 셋 다 남았다\n\n#   일부러 그렇게 한다\n\n$ kubectl scale statefulset web --replicas=3 > /dev/null\n$ sleep 25 && kubectl exec web-2 -- cat /usr/share/nginx/html/index.html\n\n나는 web-2 다\n\n#   데이터가 돌아왔다\n\n# --- 하나가 막히면 ---\n\n$ kubectl set image statefulset/web nginx=nginx:없는버전 > /dev/null\n$ sleep 25 && kubectl get pods -l app=web --no-headers\n\nweb-0   1/1   Running            0     5m\nweb-1   1/1   Running            0     5m\nweb-2   0/1   ImagePullBackOff   0     25s\n\n#   2 만 바뀌고 멈췄다\n\n#   1 은 손도 안 댔다\n\n$ kubectl rollout status statefulset/web --timeout=20s\n\nWaiting for 1 pods to be ready...\nerror: timed out waiting for the condition\n\n$ kubectl rollout undo statefulset/web > /dev/null\n$ sleep 20 && kubectl get pods -l app=web --no-headers | awk '{print $2}'\n\n1/1\n1/1\n1/1\n\n#   되돌렸다\n\n#   디플로이먼트였다면 병렬로 다 바뀌었다\n\n# --- 병렬로 바꾼다 ---\n\n$ kubectl delete statefulset web --cascade=orphan > /dev/null\n$ sed 's/serviceName: web/serviceName: web\\n  podManagementPolicy: Parallel/' \\\n    sts.yaml | kubectl apply -f - > /dev/null\n$ kubectl delete pod -l app=web > /dev/null\n$ sleep 3 && kubectl get pods -l app=web --no-headers | awk '{print $1, $3}'\n\nweb-0 ContainerCreating\nweb-1 ContainerCreating\nweb-2 ContainerCreating\n\n#   동시에 뜬다\n\n#   이름과 볼륨은 그대로다\n\n#   순서만 포기했다\n\n# --- 지워도 PVC 는 남는다 ---\n\n$ kubectl delete statefulset web\n\nstatefulset.apps \"web\" deleted\n\n$ kubectl get pvc --no-headers | wc -l\n\n3\n\n#   셋 다 남았다\n\n$ kubectl get pvc data-web-0 -o jsonpath='{.status.phase}{\"\\n\"}'\n\nBound\n\n#   아직 묶여 있다\n\n#   손으로 지워야 한다\n\n$ kubectl delete pvc data-web-0 data-web-1 data-web-2\n\npersistentvolumeclaim \"data-web-0\" deleted\npersistentvolumeclaim \"data-web-1\" deleted\npersistentvolumeclaim \"data-web-2\" deleted\n\n$ kubectl delete service web\n\nservice \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   모든 노드에 하나씩 두는 컨트롤러를 본다",
+   "note": "**파드가 `web-0` → `web-1` → `web-2` 순으로 하나씩** 뜬다.\n\n**`web-1` 을 지워도 같은 이름·같은 노드로 돌아오고 데이터가** 그대로다 — 1.4절과 반대다.\n\n**`web-0.web.default.svc` 로 파드 하나를 지목**할 수 있다.\n\n**스케일을 1로 줄여도 PVC 셋이 남고**, 다시 늘리면 데이터가 돌아온다.\n\n**`web-2` 가 `ImagePullBackOff` 면 `web-1` 은 손도 안 댄다** — 디플로이먼트였다면 병렬이다."
+  }
+ ],
+ "recap": [
+  "**이름·순서·볼륨·DNS 넷이** 다르다.",
+  "**파드 이름이 번호로** 고정된다.",
+  "**`volumeClaimTemplates` 가 파드마다 볼륨을** 만든다.",
+  "**헤드리스 서비스가** 필요하다.",
+  "**시작은 낮은 번호부터, 종료는 높은 번호부터**다.",
+  "**하나가 막히면 아래가 다** 막힌다.",
+  "**`podManagementPolicy: Parallel` 로 순서를** 포기할 수 있다.",
+  "**스케일을 줄여도 PVC 는** 남는다.",
+  "**운영 DB 는 신중하게** 판단한다."
+ ],
+ "drills": [
+  {
+   "task": "스테이트풀셋을 만들고 순서를 본다.",
+   "done_when": "하나씩 뜨는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "파드를 지우고 데이터를 확인한다.",
+   "done_when": "같은 이름과 데이터를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스케일을 줄였다 늘린다.",
+   "done_when": "PVC 가 남고 데이터가 돌아오는 것을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 이미지로 업데이트한다.",
+   "done_when": "아래 파드가 안 바뀌는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "디플로이먼트와 다른 넷은?",
+   "a": "고정된 이름, 순서, 파드별 볼륨, 파드별 DNS 다."
+  },
+  {
+   "q": "`volumeClaimTemplates` 는 무엇을 만드나?",
+   "a": "파드마다 하나씩 PVC 를 만든다."
+  },
+  {
+   "q": "스케일을 줄이면 볼륨은?",
+   "a": "남는다. 다시 늘리면 그 데이터로 돌아온다."
+  },
+  {
+   "q": "업데이트 중 하나가 막히면?",
+   "a": "그보다 낮은 번호는 시작도 안 한다."
+  },
+  {
+   "q": "순서를 포기하려면?",
+   "a": "`podManagementPolicy: Parallel` 을 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "헤드리스 서비스",
+   "def": "`clusterIP: None` 인 서비스. 로드밸런싱 없이 DNS 로 파드 IP 를 그대로 준다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — StatefulSets",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Service",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
