@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "proxy-idea",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "대신 받는 것",
+ "summary": "부르는 쪽은 모른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 원본을 안 고쳐도 되는지 안다.",
+  "세 조건을 안다.",
+  "두 이름을 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절에서 네 버전 다 파일을** 열었다. **안 열고 넣는 길이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "부르는 쪽이 모른다",
+   "ascii": "   the caller does not know it was swapped\n\n   the caller holds a type, not an object\n   two objects satisfy that type\n   only the wiring decides which one arrives\n\n   so a new object can be inserted without touching either side",
+   "note": "**양쪽을 안 건드리고 새 객체를 끼워 넣을 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타입만 같으면 바꿔치기할 수 있다",
+   "md": "**타입을 들고** 있다.\n\n> **객체를 직접 안** 가리킨다.\n> **3.4절에서 그렇게** 갈아 끼웠다.\n> **여기선 한 겹 더** 넣는다.\n\n**끼워 넣은 것이** 대신 받는다.\n\n> **원본을 자기가** 부른다.\n> **앞뒤에 뭘 더할 수** 있다.\n> **아래에서 그걸** 만든다.\n\n**원본은 그대로**다.\n\n> **파일을 안** 연다.\n> **아래에서 diff 로** 확인한다.\n> **4장이 못 하던 것**이다.\n\n**조건이** 셋이다.\n\n> **타입·참조·주입**이다.\n> **아래에서 하나씩** 깬다.\n> **하나만 없어도 안** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 것의 두 이름",
+   "ascii": "   two names for the same mechanism\n\n   proxy      stands in for the target, controls access to it\n   decorator  stands in for the target, adds behaviour to it\n\n   the code is identical; only the intent differs",
+   "note": "**코드는 같고 의도만** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부르는 쪽이 구체 타입을 알면 못 끼운다",
+   "md": "**타입이 같아야** 한다.\n\n> **인터페이스나 부모 클래스**다.\n> **1.4절에서 그게** 터졌다.\n> **아래에서 다시** 겪는다.\n\n**원본을 들고 있어야** 한다.\n\n> **참조를 안 주면 못** 부른다.\n> **아래에서 그걸** 본다.\n> **감싸는 게 아니라 대체**가 된다.\n\n**주입이 바뀌어야** 한다.\n\n> **설정이 그걸** 정한다.\n> **아래에서 그** 자리를 본다.\n> **7·8장이 이걸 자동으로** 한다.\n\n**직접 만들면 못** 끼운다.\n\n> **`new` 로 만들면 그렇**다.\n> **아래에서 그걸** 겪는다.\n> **②의 그** 이야기다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금 상태\n\npublic interface OrderService {\n    void orderItem(String itemId);\n}\n\n@Service\npublic class OrderServiceImpl implements OrderService {\n    private final OrderRepository orderRepository;\n\n    @Override\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);          // v0 로 되돌렸다\n    }\n}\n\n$ wc -l < src/main/java/study/adv/app/OrderServiceImpl.java\n      16\n\n$ grep -c 'trace\\|template' src/main/java/study/adv/app/OrderServiceImpl.java\n0\n\n--   4 장의 흔적이 없다\n--   v0 처럼 깨끗하다\n\n\n-- 대신 받는 것을 만든다\n\npublic class OrderServiceProxy implements OrderService {\n\n    private final OrderService target;          // 원본을 들고 있다\n    private final LogTrace trace;\n\n    public OrderServiceProxy(OrderService target, LogTrace trace) {\n        this.target = target;\n        this.trace = trace;\n    }\n\n    @Override\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            target.orderItem(itemId);           // 원본을 부른다\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ wc -l < src/main/java/study/adv/proxy/OrderServiceProxy.java\n      26\n\n--   4.1 절의 아홉 줄이 여기 있다\n--   업무 코드에서는 사라졌다\n\n\n-- 설정이 끼워 넣는다\n\n@Configuration\npublic class ProxyConfig {\n\n    @Bean\n    public OrderService orderService(LogTrace trace) {\n        OrderServiceImpl target = new OrderServiceImpl(orderRepository(trace));\n        return new OrderServiceProxy(target, trace);       // 프록시를 등록한다\n    }\n}\n\n$ curl -s 'localhost:8080/who?name=orderService'\n빈 이름:   orderService\n주입된 것: study.adv.proxy.OrderServiceProxy\n원본:     study.adv.proxy.OrderServiceProxy\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   1.1 절부터 기다린 그 순간이다\n--   이름이 달라졌다\n--   스프링이 만든 게 아니라 내가 만들어서 프록시는 false 다\n\n\n-- 부르는 쪽은 모른다\n\n@RestController\npublic class OrderController {\n    private final OrderService orderService;    // 인터페이스다\n\n    @GetMapping(\"/request\")\n    public String request(String itemId) {\n        orderService.orderItem(itemId);\n        return \"ok\";\n    }\n}\n\n$ git diff --stat v5-callback HEAD -- src/main/java/study/adv/app/\n OrderController.java   | 12 ++++--------\n OrderServiceImpl.java  | 14 +++++---------\n OrderRepositoryImpl.java | 12 ++++--------\n\n$ git diff v0 HEAD -- src/main/java/study/adv/app/OrderServiceImpl.java \\\n    | grep -c '^[+-][^+-]'\n2\n\n--   v0 과 두 줄 차이다\n--   인터페이스를 구현한 것뿐이다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[796bccd9] OrderService.orderItem()\n[796bccd9] OrderService.orderItem() time=1004ms\n\n--   업무 코드에 로그 코드가 없는데 찍혔다\n--   1.2 절에서 목표로 삼은 그것이다\n\n\n-- 원본은 진짜 안 고쳤나\n\n$ git log --oneline -1 -- src/main/java/study/adv/app/OrderServiceImpl.java\na41c9f2 chore: v6 시작\n\n$ git diff HEAD~1 HEAD --name-only\nsrc/main/java/study/adv/proxy/OrderServiceProxy.java\nsrc/main/java/study/adv/proxy/ProxyConfig.java\n\n$ git diff HEAD~1 HEAD --name-only | grep -c 'app/'\n0\n\n--   앱 패키지의 파일이 하나도 안 바뀌었다\n--   4.8 절에서 세 파일을 열었었다\n\n\n-- 조건 ① 타입이 같아야 한다\n\n// 인터페이스를 없애고 구체 클래스로 받으면\n@RestController\npublic class OrderController {\n    private final OrderServiceImpl orderService;     // 구체 타입\n}\n\n@Bean\npublic OrderService orderService(LogTrace trace) {\n    return new OrderServiceProxy(target, trace);\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.adv.app.OrderController required a bean\nof type 'study.adv.app.OrderServiceImpl' that could not be found.\n\n--   1.4 절에서 본 그 오류다\n--   5.3 절에서 이걸 푼다\n\n\n-- 조건 ② 원본을 들고 있어야 한다\n\npublic class OrderServiceProxy implements OrderService {\n    private final LogTrace trace;              // target 이 없다\n\n    @Override\n    public void orderItem(String itemId) {\n        TraceStatus status = trace.begin(\"OrderService.orderItem()\");\n        trace.end(status);                      // 원본을 못 부른다\n    }\n}\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ curl -s localhost:8080/order/count\n연필: 0 개\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] OrderService.orderItem()\n[3d81f0a2] OrderService.orderItem() time=0ms\n\n--   로그는 찍히는데 저장이 안 됐다\n--   감싼 게 아니라 대체해 버렸다\n\n\n-- 조건 ③ 주입이 바뀌어야 한다\n\n// 설정에서 원본을 그대로 등록하면\n@Bean\npublic OrderService orderService(LogTrace trace) {\n    return new OrderServiceImpl(orderRepository(trace));    // 프록시가 아니다\n}\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -2\n빈 이름:   orderService\n주입된 것: study.adv.app.OrderServiceImpl\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   프록시 클래스는 있는데 안 쓰인다\n--   설정 한 줄이 정한다\n\n\n-- 직접 만들면 못 끼운다\n\n@Service\npublic class OrderServiceImpl implements OrderService {\n    private final OrderRepository repository = new OrderRepositoryImpl();   // new\n}\n\n$ curl -s 'localhost:8080/who?name=orderRepository' | head -2\n빈 이름:   orderRepository\n주입된 것: study.adv.proxy.OrderRepositoryProxy\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] OrderService.orderItem()\n[c14e0b93] OrderService.orderItem() time=1004ms\n\n$ grep -c 'OrderRepository.save' logs/app.log\n0\n\n--   빈은 프록시인데 서비스가 자기 것을 만들어 쓴다\n--   저장소 로그가 안 찍힌다\n--   ② 에서 배운 그 이유다\n\n\n-- 프록시가 원본을 진짜 부르나\n\n$ curl -s 'localhost:8080/proxy/chain?name=orderService'\n빈:      study.adv.proxy.OrderServiceProxy\n  안의 target: study.adv.app.OrderServiceImpl\n    안의 repository: study.adv.proxy.OrderRepositoryProxy\n      안의 target: study.adv.app.OrderRepositoryImpl\n\n--   네 겹이다\n--   프록시와 원본이 번갈아 있다\n\n\n-- 두 이름의 차이\n\n// 프록시 — 접근을 통제한다\npublic void orderItem(String itemId) {\n    if (!hasPermission()) throw new AccessDeniedException(\"권한 없음\");\n    target.orderItem(itemId);\n}\n\n// 데코레이터 — 기능을 더한다\npublic void orderItem(String itemId) {\n    trace.begin(\"...\");\n    target.orderItem(itemId);\n    trace.end(status);\n}\n\n$ javap build/classes/java/main/study/adv/proxy/OrderServiceProxy.class | head -2\npublic class study.adv.proxy.OrderServiceProxy implements study.adv.app.OrderService {\n  public study.adv.proxy.OrderServiceProxy(study.adv.app.OrderService, study.adv.trace.LogTrace);\n\n$ javap build/classes/java/main/study/adv/proxy/PermissionProxy.class | head -2\npublic class study.adv.proxy.PermissionProxy implements study.adv.app.OrderService {\n  public study.adv.proxy.PermissionProxy(study.adv.app.OrderService, ...);\n\n--   바이트코드가 같은 모양이다\n--   5.4 절에서 이 이름을 정리한다\n\n\n-- 캐시로도 쓴다\n\npublic class CacheProxy implements OrderService {\n    private final OrderService target;\n    private String cached;\n\n    @Override\n    public String find(String itemId) {\n        if (cached != null) { log.info(\"캐시에서\"); return cached; }\n        cached = target.find(itemId);\n        return cached;\n    }\n}\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/find?itemId=연필'\n1.008\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/find?itemId=연필'\n0.003\n\n$ grep -c '캐시에서' logs/app.log\n1\n\n--   1.4 절의 @Cacheable 이 이 구조였다\n--   원본은 두 번 다 안 불렸다\n\n\n-- 아예 안 부를 수도 있다\n\n$ curl -s localhost:8080/order/count\n연필: 1 개\n\n--   두 번 불렀는데 한 번만 저장됐다\n--   프록시는 원본을 안 부를 자유가 있다\n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/app/*.java | tail -1\n      48 total\n\n// v0 은\n$ git show v0:src/main/java/study/adv/OrderService.java | wc -l\n      16\n\n$ wc -l src/main/java/study/adv/proxy/*.java | tail -1\n      92 total\n\n$ python3 -c \"print('업무 48 + 프록시 92 =', 48+92)\"\n업무 48 + 프록시 92 = 140\n\n--   업무는 v0 수준이다\n--   프록시가 따로 92 줄이다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderService.orderItem()\n[796bccd9] |-->OrderRepository.save()\n[796bccd9] |<--OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n\n$ curl -s 'localhost:8080/who?name=orderService'\n빈 이름:   orderService\n주입된 것: study.adv.proxy.OrderServiceProxy\n원본:     study.adv.proxy.OrderServiceProxy\n프록시:   false\n\n$ git add -A && git commit -q -m 'feat: v6 프록시' && git tag v6\n\n--   업무 코드를 한 줄도 안 고쳤다\n--   5.2 절에서 제대로 만든다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '원본'        '안 고침' \\\n  '이름'        '달라짐' \\\n  '조건'        '셋' \\\n  '타입'        '같아야 함' \\\n  '참조'        '없으면 대체됨' \\\n  '주입'        '설정이 정함' \\\n  'new'         '못 끼움' \\\n  '겹'          '네 겹' \\\n  '두 이름'     '코드는 같음' \\\n  '안 부를 수도' '캐시'\n\n원본                       안 고침\n이름                       달라짐\n조건                       셋\n타입                       같아야 함\n참조                       없으면 대체됨\n주입                       설정이 정함\nnew                        못 끼움\n겹                         네 겹\n두 이름                    코드는 같음\n안 부를 수도               캐시",
+   "note": "**설정만 바꿔 끼우니 주입된 이름이 `OrderServiceProxy` 가 되고 앱 패키지 파일은 하나도 안** 바뀌었다.\n\n**업무 코드에 로그 코드가 0 개인데 로그가** 찍힌다.\n\n**원본 참조를 안 주면 로그는 찍히는데 `연필: 0 개` 로 저장이 아예 안** 된다.\n\n**서비스가 저장소를 `new` 로 만들면 빈은 프록시인데 저장소 로그가 0 줄**이다.\n\n**캐시 프록시로 만드니 두 번째가 1.008 초에서 0.003 초, 저장은 한 번만** 됐다."
+  }
+ ],
+ "recap": [
+  "**타입만 같으면** 된다.",
+  "**원본을 안** 고친다.",
+  "**이름이** 달라진다.",
+  "**조건이** 셋이다.",
+  "**참조가** 필요하다.",
+  "**설정이** 정한다.",
+  "**new 는 못** 끼운다.",
+  "**두 이름이** 있다.",
+  "**안 부를 수도** 있다."
+ ],
+ "drills": [
+  {
+   "task": "프록시를 하나 만든다.",
+   "done_when": "원본을 안 고친 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "참조를 빼 본다.",
+   "done_when": "저장이 안 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`new` 로 만들어 본다.",
+   "done_when": "안 끼워지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "캐시 프록시를 만든다.",
+   "done_when": "원본이 안 불리는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 원본을 안 고쳐도 되나?",
+   "a": "부르는 쪽이 타입만 알고 어느 객체인지 모르기 때문이다."
+  },
+  {
+   "q": "필요한 조건 셋은?",
+   "a": "같은 타입, 원본 참조, 주입을 바꾸는 설정이다."
+  },
+  {
+   "q": "원본 참조가 없으면?",
+   "a": "감싸는 게 아니라 대체가 되어 본래 일이 안 일어난다."
+  },
+  {
+   "q": "`new` 로 만든 의존은 왜 못 끼우나?",
+   "a": "설정이 개입할 자리가 없어서다."
+  },
+  {
+   "q": "프록시와 데코레이터의 차이는?",
+   "a": "코드는 같고 접근 통제냐 기능 추가냐는 의도만 다르다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "대상",
+   "def": "프록시가 안에 들고 있는 원래 객체."
+  },
+  {
+   "term": "바꿔치기",
+   "def": "부르는 쪽을 안 고치고 주입되는 객체만 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Design Patterns — Decorator",
+   "url": "https://refactoring.guru/design-patterns/decorator",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

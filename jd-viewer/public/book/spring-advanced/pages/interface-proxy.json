@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "interface-proxy",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "인터페이스 기반",
+ "summary": "같은 얼굴을 하나 더 만든다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 파일로 나눈다.",
+  "메서드마다 쓴다.",
+  "빠뜨리면 어떻게 되나 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 하나를** 만들었다. **세 곳에 다** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "파일 셋, 역할 셋",
+   "ascii": "   three files, three jobs\n\n   the interface   what the caller depends on\n   the target      what actually does the work\n   the proxy       what is registered under the interface\n\n   only the third one knows the other two",
+   "note": "**나머지 둘을 아는 건 셋째**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스가 있으면 제일 쉽다",
+   "md": "**구현하면** 끝이다.\n\n> **상속이 아니라 구현**이다.\n> **4.5절의 그 충돌이** 없다.\n> **아래에서 확인**한다.\n\n**원본이 뭐든 상관** 없다.\n\n> **`final` 이어도** 된다.\n> **생성자가 어떻든** 된다.\n> **5.3절과 다른 점**이다.\n\n**여러 겹을 쌓을 수** 있다.\n\n> **프록시가 프록시를** 감싼다.\n> **아래에서 그렇게** 한다.\n> **7.5절에서 다시** 본다.\n\n**메서드마다 써야** 한다.\n\n> **인터페이스에 있는 만큼**이다.\n> **아래에서 세어** 본다.\n> **6장이 그걸** 없앤다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드마다 쓸 것",
+   "ascii": "   what the proxy has to write for each method\n\n   the same signature, or it does not compile\n   the wrapping, or the method is not logged\n   the call to the target, or the work is skipped\n\n   forgetting the second is silent; forgetting the third is not",
+   "note": "**둘째를 빠뜨리면 조용하고 셋째를 빠뜨리면 안** 조용하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스에 메서드가 늘면 프록시가 깨진다",
+   "md": "**구현을 안 하면 컴파일이** 막는다.\n\n> **다행히 조용하지** 않다.\n> **아래에서 그** 오류를 본다.\n> **잊을 수가** 없다.\n\n**기본 메서드면** 조용하다.\n\n> **인터페이스가 몸통을 주면** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **프록시를 안** 지난다.\n\n**`equals` 와 `hashCode` 가** 샌다.\n\n> **오브젝트 메서드**다.\n> **아래에서 그걸** 본다.\n> **비교가** 깨진다.\n\n**클래스가 대상 수만큼** 는다.\n\n> **5.8절에서 세어** 본다.\n> **6장이 그걸** 없앤다.\n> **여기선 손으로 다** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 파일을 나눈다\n\n$ tree src/main/java/study/adv -L 2 -I 'trace'\nsrc/main/java/study/adv\n├── app\n│   ├── OrderController.java\n│   ├── OrderRepository.java          인터페이스\n│   ├── OrderRepositoryImpl.java      원본\n│   ├── OrderService.java             인터페이스\n│   └── OrderServiceImpl.java         원본\n├── proxy\n│   ├── OrderRepositoryProxy.java\n│   ├── OrderServiceProxy.java\n│   └── ProxyConfig.java\n└── AdvApplication.java\n\n$ find src/main/java/study/adv/app -name '*.java' | wc -l\n       5\n$ find src/main/java/study/adv/proxy -name '*.java' | wc -l\n       3\n\n\n-- 원본은 깨끗하다\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceImpl implements OrderService {\n    private final OrderRepository orderRepository;\n\n    @Override\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n\n    @Override\n    public String find(String itemId) {\n        return orderRepository.findById(itemId);\n    }\n}\n\n$ grep -c 'trace\\|Trace\\|template' src/main/java/study/adv/app/OrderServiceImpl.java\n0\n\n$ diff <(git show v0:src/main/java/study/adv/OrderService.java \\\n           | grep -A2 'public void orderItem') \\\n       <(grep -A2 'public void orderItem' src/main/java/study/adv/app/OrderServiceImpl.java) \\\n  | grep -c '^[<>]'\n0\n\n--   v0 의 그 메서드 그대로다\n\n\n-- 프록시가 인터페이스를 구현한다\n\npublic class OrderServiceProxy implements OrderService {\n\n    private final OrderService target;\n    private final LogTrace trace;\n\n    @Override\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            target.orderItem(itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n    @Override\n    public String find(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.find()\");\n            String result = target.find(itemId);\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ grep -c '@Override' src/main/java/study/adv/proxy/OrderServiceProxy.java\n2\n$ grep -c 'try {' src/main/java/study/adv/proxy/OrderServiceProxy.java\n2\n$ wc -l < src/main/java/study/adv/proxy/OrderServiceProxy.java\n      42\n\n--   메서드마다 아홉 줄이다\n--   4.1 절의 그 아홉 줄이 여기로 왔다\n\n\n-- 설정이 조립한다\n\n@Configuration\npublic class ProxyConfig {\n\n    @Bean\n    public OrderService orderService(LogTrace trace) {\n        OrderServiceImpl impl = new OrderServiceImpl(orderRepository(trace));\n        return new OrderServiceProxy(impl, trace);\n    }\n\n    @Bean\n    public OrderRepository orderRepository(LogTrace trace) {\n        OrderRepositoryImpl impl = new OrderRepositoryImpl();\n        return new OrderRepositoryProxy(impl, trace);\n    }\n}\n\n$ grep -c '@Bean' src/main/java/study/adv/proxy/ProxyConfig.java\n2\n$ wc -l < src/main/java/study/adv/proxy/ProxyConfig.java\n      24\n\n--   빈마다 두 줄씩이다\n--   7.7 절에서 이게 문제가 된다\n\n\n-- 원본은 빈이 아니다\n\n$ curl -s localhost:8080/who/all\norderController      study.adv.app.OrderController\norderService         study.adv.proxy.OrderServiceProxy\norderRepository      study.adv.proxy.OrderRepositoryProxy\nwhoController        study.adv.WhoController\n\n$ curl -s localhost:8080/who/all | grep -c 'Impl'\n0\n\n$ grep -n '@Service\\|@Repository' src/main/java/study/adv/app/*Impl.java\n(없음)\n\n--   원본에서 애너테이션을 뗐다\n--   설정이 직접 만든다\n--   8 장에서 이걸 되돌린다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderService.orderItem()\n[796bccd9] |-->OrderRepository.save()\n[796bccd9] |<--OrderRepository.save() time=1004ms\n[796bccd9] OrderService.orderItem() time=1006ms\n\n--   네 줄이다\n--   컨트롤러는 아직 프록시가 없다\n\n\n-- 컨트롤러도 감싼다\n\npublic interface OrderController {\n    String request(String itemId);\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n404\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nprint(len([x for x in d if 'request' in str(x.get('predicate',''))]))\"\n0\n\n--   매핑이 사라졌다\n--   애너테이션이 인터페이스에 있어야 한다\n\n\n-- 애너테이션을 인터페이스로 옮긴다\n\n@RequestMapping\n@ResponseBody\npublic interface OrderController {\n    @GetMapping(\"/request\")\n    String request(@RequestParam String itemId);\n}\n\n$ curl -s 'localhost:8080/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   2.4 절의 그 여섯 줄이다\n--   업무 코드에 로그가 0 줄인데 나온다\n\n\n-- 감싸는 걸 빠뜨리면\n\n@Override\npublic String find(String itemId) {\n    return target.find(itemId);          // 감싸는 코드를 안 썼다\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null 'localhost:8080/find?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] OrderController.find()\n[3d81f0a2] OrderController.find() time=1004ms\n\n--   서비스 줄이 빠졌다\n--   컴파일은 통과한다\n--   2.6 절의 그 깜빡함이 여기로 옮겨 왔다\n\n\n-- 원본 호출을 빠뜨리면\n\n@Override\npublic void orderItem(String itemId) {\n    TraceStatus status = trace.begin(\"OrderService.orderItem()\");\n    trace.end(status);                    // target 을 안 불렀다\n}\n\n$ curl -s localhost:8080/order/count\n연필: 0 개\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] |-->OrderService.orderItem()\n[c14e0b93] |<--OrderService.orderItem() time=0ms\n\n--   5.1 절에서 본 그것이다\n--   시간이 0ms 인 게 실마리다\n\n\n-- 메서드가 늘면\n\npublic interface OrderService {\n    void orderItem(String itemId);\n    String find(String itemId);\n    void cancel(Long id);              // 새로 넣었다\n}\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: OrderServiceProxy is not abstract and does not override abstract\n  method cancel(Long) in OrderService\n\n--   컴파일이 막는다\n--   이건 조용하지 않다\n\n\n-- 기본 메서드면 조용하다\n\npublic interface OrderService {\n    void orderItem(String itemId);\n    default void cancelAll() {          // 몸통이 있다\n        System.out.println(\"전부 취소\");\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/cancel-all'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n$ grep -c '전부 취소' logs/app.log\n1\n\n--   프록시를 안 지났다\n--   구현을 안 해도 컴파일이 통과한다\n\n\n-- equals 가 샌다\n\n$ curl -s localhost:8080/proxy/equals\n프록시 == 원본:        false\n프록시.equals(원본):   false\n원본.equals(프록시):   false\n프록시.hashCode():     1329552333\n원본.hashCode():       852447229\n\n@Service\nclass CartService {\n    private final Set<OrderService> services = new HashSet<>();\n    void add(OrderService s) { services.add(s); }\n}\n\n$ curl -s localhost:8080/proxy/set-size\n원본과 프록시를 다 넣으면: 2\n\n--   같은 것으로 안 본다\n--   12 장에서 이걸 다시 만난다\n\n\n-- 여러 겹을 쌓는다\n\n@Bean\npublic OrderService orderService(LogTrace trace) {\n    OrderServiceImpl impl = new OrderServiceImpl(orderRepository(trace));\n    OrderService logged = new OrderServiceProxy(impl, trace);\n    OrderService timed = new TimeProxy(logged);\n    OrderService cached = new CacheProxy(timed);\n    return cached;\n}\n\n$ curl -s 'localhost:8080/proxy/chain?name=orderService'\n빈:      study.adv.proxy.CacheProxy\n  안의 target: study.adv.proxy.TimeProxy\n    안의 target: study.adv.proxy.OrderServiceProxy\n      안의 target: study.adv.app.OrderServiceImpl\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -E 'study.adv.trace|ms$' logs/app.log | tail -3 | cut -c56-\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |<--OrderService.orderItem() time=1004ms\n1006 ms\n\n--   네 겹이다\n--   4.5 절에서 손으로 중첩하던 것과 다르다\n--   업무 코드는 여전히 0 줄이다\n\n\n-- 순서를 바꾸면\n\nOrderService timed = new TimeProxy(impl);\nOrderService logged = new OrderServiceProxy(timed, trace);\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -E 'study.adv.trace|ms$' logs/app.log | tail -3 | cut -c56-\n[3d81f0a2] |-->OrderService.orderItem()\n1004 ms\n[3d81f0a2] |<--OrderService.orderItem() time=1006ms\n\n--   설정 두 줄로 순서가 바뀐다\n--   4.5 절에서는 코드를 뒤집어야 했다\n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/app/*.java | tail -1\n      68 total\n$ wc -l src/main/java/study/adv/proxy/*.java | tail -1\n     108 total\n\n$ grep -c 'try {' src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n0\n$ grep -c 'try {' src/main/java/study/adv/proxy/*.java | awk -F: '{s+=$2} END {print s}'\n6\n\n--   업무에 감싸는 코드가 0 개다\n--   프록시에 여섯 개가 있다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep -v Controller\norderService         study.adv.proxy.OrderServiceProxy\norderRepository      study.adv.proxy.OrderRepositoryProxy\n\n$ git add -A && git commit -q -m 'feat: v6 인터페이스 프록시' && git tag v6-interface\n\n--   5.3 절에서 인터페이스가 없을 때를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '파일'        '인터페이스, 원본, 프록시' \\\n  '원본'        'v0 그대로' \\\n  '프록시'      '메서드마다 아홉 줄' \\\n  '설정'        '빈마다 두 줄' \\\n  '컨트롤러'    '애너테이션도 인터페이스로' \\\n  '감싸기 누락' '조용함' \\\n  '호출 누락'   '0ms 가 실마리' \\\n  '메서드 추가' '컴파일이 막음' \\\n  '기본 메서드' '안 지남' \\\n  '겹치기'      '설정 두 줄'\n\n파일                       인터페이스, 원본, 프록시\n원본                       v0 그대로\n프록시                     메서드마다 아홉 줄\n설정                       빈마다 두 줄\n컨트롤러                   애너테이션도 인터페이스로\n감싸기 누락                조용함\n호출 누락                  0ms 가 실마리\n메서드 추가                컴파일이 막음\n기본 메서드                안 지남\n겹치기                     설정 두 줄",
+   "note": "**원본이 v0 의 메서드와 diff 0 줄이고 감싸는 코드가 프록시 쪽 여섯 곳에만** 있다.\n\n**컨트롤러는 애너테이션을 인터페이스로 옮겨야 매핑이 살아 2.4절의 여섯 줄이** 나온다.\n\n**감싸는 걸 빠뜨리면 컴파일은 통과하고 서비스 줄만 조용히 빠지며 원본 호출을 빠뜨리면 `time=0ms` 가** 실마리다.\n\n**인터페이스에 메서드가 늘면 컴파일이 막지만 기본 메서드는 프록시를 안 지나고 `equals` 도** 샌다.\n\n**설정 두 줄로 네 겹을 쌓고 순서도 바꿀 수 있어 4.5절의 손 중첩과** 다르다."
+  }
+ ],
+ "recap": [
+  "**파일이** 셋이다.",
+  "**원본은** 그대로다.",
+  "**메서드마다** 쓴다.",
+  "**설정이** 조립한다.",
+  "**애너테이션도** 옮긴다.",
+  "**빠뜨리면** 조용하다.",
+  "**추가는 컴파일이** 막는다.",
+  "**기본 메서드는** 샌다.",
+  "**겹치기가** 쉽다."
+ ],
+ "drills": [
+  {
+   "task": "세 곳에 프록시를 만든다.",
+   "done_when": "여섯 줄이 나온 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "감싸기를 빠뜨려 본다.",
+   "done_when": "조용히 빠지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "기본 메서드를 넣어 본다.",
+   "done_when": "안 지나는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "여러 겹을 쌓는다.",
+   "done_when": "순서를 바꿔 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프록시는 무엇을 구현하나?",
+   "a": "원본과 같은 인터페이스다."
+  },
+  {
+   "q": "컨트롤러를 감쌀 때 주의할 점은?",
+   "a": "요청 매핑 애너테이션이 인터페이스에 있어야 한다."
+  },
+  {
+   "q": "원본 호출을 빠뜨리면 어떻게 아나?",
+   "a": "걸린 시간이 0 으로 찍힌다."
+  },
+  {
+   "q": "기본 메서드는 왜 안 지나나?",
+   "a": "구현하지 않아도 컴파일되어 프록시에 그 메서드가 없어서다."
+  },
+  {
+   "q": "여러 겹은 어떻게 쌓나?",
+   "a": "설정에서 프록시가 프록시를 감싸게 조립한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "인터페이스 프록시",
+   "def": "원본과 같은 인터페이스를 구현해 대신 등록되는 클래스."
+  },
+  {
+   "term": "프록시 체인",
+   "def": "프록시가 다른 프록시를 대상으로 삼아 겹겹이 쌓인 구조."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "JLS — Classes",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
