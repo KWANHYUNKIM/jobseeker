@@ -164,7 +164,7 @@
           "title": "시작하기",
           "summary": "JPQL 과 Querydsl 을 한 화면에.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -172,7 +172,7 @@
           "title": "기본 Q 타입",
           "summary": "별칭과 static import.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",

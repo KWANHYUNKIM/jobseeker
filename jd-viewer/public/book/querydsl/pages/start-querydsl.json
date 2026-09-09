@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "start-querydsl",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "시작하기",
+ "summary": "JPQL 과 Querydsl 을 한 화면에.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "같은 쿼리를 두 번 쓴다.",
+  "파라미터 처리를 비교한다.",
+  "실수를 나란히 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장이 준비를** 끝냈다. **이제 문법을 하나씩 뜯는다 — 매번 JPQL 을 먼저** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 쿼리, 두 번",
+   "ascii": "   the same query, written twice\n\n   jpql        a string, a parameter name, and a result class\n   querydsl    a factory call, a path, and a value\n\n   one of them can be typed wrong and still compile",
+   "note": "**한쪽만 틀린 채로 컴파일이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 절은 4장 전체의 형식이다",
+   "md": "**먼저 JPQL 로** 쓴다.\n\n> **내가 원하는 문장을 확실히** 한다.\n> **그다음 조립으로** 옮긴다.\n> **결과 JPQL 이 같아야** 한다.\n\n**같은지 눈으로** 본다.\n\n> **1.1절의 두 겹이 그 확인** 수단이다.\n> **주석으로 나오는 게 내가 쓴 것과 같은지** 본다.\n> **다르면 조립을 잘못한** 것이다.\n\n**그래서 4장이 안전**하다.\n\n> **새 문법을 배울 때마다 답이** 있다.\n> **JPQL 을 알면 검증이** 된다.\n> **1.2절에서 JPQL 을 알아야 한다고 한 이유**다.\n\n**파라미터 처리가 제일 크게** 다르다.\n\n> **JPQL 은 이름을 두 번** 적는다.\n> **조립은 한 번**이다.\n> **아래에서 그 실수를** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "값이 가는 길",
+   "ascii": "   what happens to a value on each side\n\n   jpql       you write :username, then set it, and hope they match\n   querydsl   you pass the value, and the placeholder is made for you\n\n   forgetting setParameter is possible; forgetting the value is not",
+   "note": "**`setParameter` 를 잊을 수는 있어도 값을 잊을 수는** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "결과 타입도 JPQL 에서는 따로 적는다",
+   "md": "**`Member.class` 를 또** 적는다.\n\n> **문자열과 클래스가 따로** 논다.\n> **어긋나면 실행에서** 터진다.\n> **조립은 경로에서 타입이** 나온다.\n\n**`getResultList` 와 `getSingleResult` 도** 따로다.\n\n> **⑭ 5.8절에서 본** 문제다.\n> **없으면 `NoResultException`** 이다.\n> **조립은 `fetchOne` 이 `null` 을** 준다.\n\n**별칭을 안 쓰면 못** 쓴다.\n\n> **JPQL 은 `Member m` 이라고 꼭** 적는다.\n> **빼면 파싱이** 안 된다.\n> **조립은 Q 타입이 들고** 있다.\n\n**둘의 SQL 은 완전히** 같다.\n\n> **1.3절에서 이미** 봤다.\n> **여기서도 매번** 확인한다.\n> **바뀌는 건 타이핑뿐**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- JPQL 로 쓴다\n\n@Test\nvoid JPQL로() {\n    Member found = em.createQuery(\n            \"select m from Member m where m.username = :username\",\n            Member.class)\n        .setParameter(\"username\", \"m1\")\n        .getSingleResult();\n\n    System.out.println(\"이름: \" + found.getUsername());\n}\n\n/* select\n    m\nfrom\n    Member m\nwhere\n    m.username = :username */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\n이름: m1\n\n\n-- Querydsl 로 쓴다\n\n@Test\nvoid Querydsl로() {\n    Member found = queryFactory\n            .selectFrom(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"이름: \" + found.getUsername());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\n이름: m1\n\n--   SQL 이 같다\n--   JPQL 은 별칭과 파라미터 표기만 다르다\n\n\n-- 줄 수를 센다\n\n$ awk '/JPQL로/,/^    }/' StartTest.java | grep -c ';'\n2\n$ awk '/Querydsl로/,/^    }/' StartTest.java | grep -c ';'\n2\n\n--   비슷하다\n--   길이가 이유가 아니다\n\n\n-- 파라미터 이름을 틀린다\n\n@Test\nvoid 이름_불일치() {\n    try {\n        em.createQuery(\n                \"select m from Member m where m.username = :username\",\n                Member.class)\n            .setParameter(\"userName\", \"m1\")     // N 이 대문자다\n            .getSingleResult();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage());\n    }\n}\n\n예외: IllegalArgumentException\n말:   Could not locate named parameter [userName]\n\n--   SQL 이 안 나갔다\n--   컴파일은 통과했다\n\n\n-- 조립에는 그런 실수가 없다\n\nqueryFactory.selectFrom(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n--   이름을 적을 데가 없다\n--   값이 곧 파라미터다\n\n\n-- setParameter 를 아예 잊으면\n\n@Test\nvoid 안_넣으면() {\n    try {\n        em.createQuery(\n                \"select m from Member m where m.username = :username\",\n                Member.class)\n            .getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: IllegalArgumentException\n\n--   실행에서 알았다\n\n\n-- 결과 타입을 틀린다\n\n@Test\nvoid 타입_불일치() {\n    try {\n        em.createQuery(\n                \"select m from Member m\", Team.class)\n            .getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\";\")[0]);\n    }\n}\n\n예외: IllegalArgumentException\n말:   Specified result type [study.querydsl.entity.Team] did not match\n      Query selection type [study.querydsl.entity.Member]\n\n--   컴파일은 통과했다\n\n\n-- 조립은 경로가 타입이다\n\n@Test\nvoid 타입_자동() {\n    List<Member> members = queryFactory.selectFrom(member).fetch();\n    List<Team> teams = queryFactory.selectFrom(team).fetch();\n    System.out.println(members.size() + \" / \" + teams.size());\n}\n\n/* select member1 from Member member1 */\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n/* select team from Team team */\nHibernate: select t1_0.team_id, t1_0.name from team t1_0\n10 / 2\n\n--   List<Team> 에 member 를 넣으면 컴파일이 깨진다\n\n\n-- 없을 때가 다르다\n\n@Test\nvoid 없을_때() {\n    try {\n        em.createQuery(\n                \"select m from Member m where m.username = :u\", Member.class)\n            .setParameter(\"u\", \"없음\")\n            .getSingleResult();\n    } catch (Exception e) {\n        System.out.println(\"JPQL:     \" + e.getClass().getSimpleName());\n    }\n\n    Member found = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"없음\"))\n            .fetchOne();\n    System.out.println(\"Querydsl: \" + found);\n}\n\nHibernate: select ... where m1_0.username=?\nJPQL:     NoResultException\nHibernate: select ... where m1_0.username=?\nQuerydsl: null\n\n--   ⑭ 5.8절에서 본 차이다\n--   4.5절에서 fetch 다섯을 본다\n\n\n-- 두 건이면 둘 다 터진다\n\n@Test\nvoid 두_건() {\n    try {\n        queryFactory.selectFrom(member)\n                .where(member.age.eq(10))\n                .fetchOne();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage());\n    }\n}\n\nHibernate: select ... from member m1_0 where m1_0.age=?\n예외: NonUniqueResultException\n말:   Only one result expected, but 2 results were found\n\n--   3.3절에서 10살을 둘 넣었다\n--   ⑭ 5.8절과 같은 상황이다\n\n\n-- 별칭을 빼면 JPQL 이 안 된다\n\n@Test\nvoid 별칭_없이() {\n    try {\n        em.createQuery(\"select m from Member where m.age > 20\",\n                Member.class).getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: SyntaxException\n\n--   조립에는 별칭을 적을 데가 없다\n--   Q 타입이 들고 있다 (2.2절)\n\n\n-- 조건을 하나 더 얹는다\n\n@Test\nvoid 조건_둘() {\n    System.out.println(\"--- JPQL ---\");\n    em.createQuery(\n            \"select m from Member m\" +\n            \" where m.username = :username and m.age >= :age\",\n            Member.class)\n        .setParameter(\"username\", \"m3\")\n        .setParameter(\"age\", 20)\n        .getResultList();\n\n    em.clear();\n    System.out.println(\"--- Querydsl ---\");\n    queryFactory.selectFrom(member)\n            .where(member.username.eq(\"m3\")\n                    .and(member.age.goe(20)))\n            .fetch();\n}\n\n--- JPQL ---\n/* select\n    m\nfrom\n    Member m\nwhere\n    m.username = :username\n    and m.age >= :age */\nHibernate:\n    select ... from member m1_0\n    where m1_0.username=? and m1_0.age>=?\n--- Querydsl ---\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1\n    and member1.age >= ?2 */\nHibernate:\n    select ... from member m1_0\n    where m1_0.username=? and m1_0.age>=?\n\n--   문자열은 이어 붙였고 조립은 and 로 이었다\n--   4.4절에서 쉼표로도 되는 걸 본다\n\n\n-- 조건이 늘어나면 차이가 커진다\n\n// JPQL — 조건이 셋이면\n\"select m from Member m where m.username = :username\"\n  + \" and m.age >= :age\"\n  + \" and m.team.name = :teamName\"\n\n// 조립\n.where(member.username.eq(username)\n        .and(member.age.goe(age))\n        .and(member.team.name.eq(teamName)))\n\n--   문자열은 띄어쓰기를 내가 챙긴다\n--   빠뜨리면 andm.age 가 된다\n\n\n-- 띄어쓰기를 빠뜨려 본다\n\n@Test\nvoid 띄어쓰기() {\n    try {\n        em.createQuery(\n                \"select m from Member m where m.username = :u\" +\n                \"and m.age >= :a\", Member.class)      // 앞 공백이 없다\n            .setParameter(\"u\", \"m1\").setParameter(\"a\", 10)\n            .getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: IllegalArgumentException\n\n--   :uand 라는 파라미터가 됐다\n--   1.2절에서 본 그 종류다\n\n\n-- 4장의 형식\n\n$ printf '%-8s %s\\n' \\\n  '① 먼저' 'JPQL 로 원하는 문장을 쓴다' \\\n  '② 옮김' '조립으로 같은 문장을 만든다' \\\n  '③ 확인' '주석의 JPQL 이 같은지 본다' \\\n  '④ 확인' 'SQL 이 기대와 같은지 본다'\n\n① 먼저   JPQL 로 원하는 문장을 쓴다\n② 옮김   조립으로 같은 문장을 만든다\n③ 확인   주석의 JPQL 이 같은지 본다\n④ 확인   SQL 이 기대와 같은지 본다\n\n--   4.2절에서 Q 타입 쓰는 법을 정한다",
+   "note": "**같은 쿼리의 SQL 이 완전히 같고 JPQL 은 별칭(`m`/`member1`)과 파라미터 표기(`:username`/`?1`)만** 다르다.\n\n**파라미터 이름을 틀리면 `Could not locate named parameter [userName]` 로 SQL 전에** 터진다.\n\n**결과 타입을 틀리면 `did not match Query selection type` — 조립은 경로가 타입이라 컴파일이** 잡는다.\n\n**없을 때 JPQL 은 `NoResultException`, 조립은 `null`** 이다.\n\n**문자열은 띄어쓰기를 빼면 `:uand` 가 되어** 터진다."
+  }
+ ],
+ "recap": [
+  "**먼저 JPQL 로** 쓴다.",
+  "**주석으로 확인**한다.",
+  "**SQL 은 완전히** 같다.",
+  "**파라미터 이름을 두 번** 적는다.",
+  "**틀리면 실행에서** 난다.",
+  "**결과 타입도 따로** 적는다.",
+  "**조립은 경로가 타입**이다.",
+  "**없을 때가** 다르다.",
+  "**띄어쓰기를 안 챙겨도** 된다."
+ ],
+ "drills": [
+  {
+   "task": "같은 쿼리를 두 번 쓴다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "파라미터 이름을 틀린다.",
+   "done_when": "실행 시점 예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "결과 타입을 틀린다.",
+   "done_when": "메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "띄어쓰기를 빠뜨린다.",
+   "done_when": "무엇이 파라미터가 됐는지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책의 4장이 매 절 쓰는 순서는?",
+   "a": "JPQL 을 먼저 쓰고 조립으로 옮긴 뒤 두 겹을 확인한다."
+  },
+  {
+   "q": "파라미터 이름 오타는 언제 드러나나?",
+   "a": "실행 시점이다."
+  },
+  {
+   "q": "조립에서 결과 타입은 어떻게 정해지나?",
+   "a": "경로가 타입을 들고 있어 자동으로 정해진다."
+  },
+  {
+   "q": "결과가 없을 때 `fetchOne` 은?",
+   "a": "예외가 아니라 `null` 을 준다."
+  },
+  {
+   "q": "결과가 둘일 때는?",
+   "a": "`NonUniqueResultException` 이 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이름 파라미터",
+   "def": "`:username` 처럼 이름으로 지정하는 JPQL 자리표시자."
+  },
+  {
+   "term": "fetchOne",
+   "def": "단건을 받되 없으면 `null`, 여럿이면 예외를 내는 실행 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
