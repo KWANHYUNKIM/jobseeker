@@ -1,0 +1,139 @@
+{
+ "book": "jpa-app-1",
+ "id": "entity-item",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "상품 엔티티",
+ "summary": "상속 관계 매핑.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "상속 전략을 고른다.",
+  "`Item`·`Book`·`Album`·`Movie` 를 만든다.",
+  "그 선택의 대가를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절의 \"책·앨범·영화\"** 를 설계로 옮긴다. **3.3절에서 미룬 결정**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 전략",
+   "ascii": "   SINGLE_TABLE                    JOINED\n   ------------                    ------\n   item                            item\n     dtype name price stock          item_id name price stock\n     author isbn                   book\n     artist etc                      item_id author isbn\n     director actor                album\n                                     item_id artist etc\n   1 table, many nulls             4 tables, joins on read\n\n   this book: SINGLE_TABLE",
+   "note": "**「JPA 기본편」 8장에서 본 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`SINGLE_TABLE` 을 고른다",
+   "md": "**세 전략 중 둘이 현실적**이다.\n\n| | `SINGLE_TABLE` | `JOINED` |\n|---|---|---|\n| 테이블 | **1** | 4 |\n| **조회** | **조인 없음** | **조인 필요** |\n| **`not null`** | **못 건다** | **건다** |\n| 저장 | insert 1 | **insert 2** |\n| 정규화 | **안 됨** | 됨 |\n| 컬럼 추가 | 넓어진다 | 해당 테이블만 |\n\n**이 책은 `SINGLE_TABLE`** 이다.\n\n**이유가 예제 규모**다.\n\n> **하위 타입이 셋이고 각각 필드가 두 개**다. **`null` 컬럼이 넷** 생긴다. **감당할 만하다.**\n>\n> **하위 타입이 열 개고 필드가 스물이면 `JOINED`** 로 간다.\n\n**조회가 단순한 것**이 크다.\n\n```sql\n-- SINGLE_TABLE\nselect * from item where item_id = ?\n\n-- JOINED\nselect i.*, b.author, b.isbn, a.artist, a.etc, m.director, m.actor\n  from item i\n  left join book b on i.item_id = b.item_id\n  left join album a on i.item_id = a.item_id\n  left join movie m on i.item_id = m.item_id\n where i.item_id = ?\n```\n\n**8장에서 상품 목록을 그릴 때 이 차이가 보인다.**\n\n> **`TABLE_PER_CLASS` 는 안 쓴다.** **부모 타입으로 조회하면 `union` 이** 되고, **`Item` 만으로는 id 생성 전략도 못 정한다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Item` — 부모",
+   "code": "@Entity\n@Inheritance(strategy = InheritanceType.SINGLE_TABLE)\n@DiscriminatorColumn(name = \"dtype\")\n@Getter @Setter\npublic abstract class Item {\n\n    @Id @GeneratedValue\n    @Column(name = \"item_id\")\n    private Long id;\n\n    private String name;\n    private int price;\n    private int stockQuantity;\n\n    @ManyToMany(mappedBy = \"items\")\n    private List<Category> categories = new ArrayList<>();\n}",
+   "note": "**`abstract`** 다. **상품 자체를 만들 일이 없다.**\n\n**`@DiscriminatorColumn(name = \"dtype\")`** 이 구분 컬럼이다. **`SINGLE_TABLE` 이면 안 붙여도 자동으로** 생기는데, **명시하는 편**이 낫다.\n\n**`int price`** 다. **`Integer` 가 아니다.**\n\n> **「DB 2편」 1.3절에서 `Integer` 여야 \"조건 없음\" 을 표현한다고** 했다. **거기는 검색 조건**이었다.\n>\n> **여기는 엔티티**다. **가격이 `null` 인 상품은 없다.** **`int` 로 두면 `not null` 이 자동으로** 붙는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "세 자식",
+   "code": "@Entity\n@DiscriminatorValue(\"B\")\n@Getter @Setter\npublic class Book extends Item {\n    private String author;\n    private String isbn;\n}\n\n@Entity\n@DiscriminatorValue(\"A\")\n@Getter @Setter\npublic class Album extends Item {\n    private String artist;\n    private String etc;\n}\n\n@Entity\n@DiscriminatorValue(\"M\")\n@Getter @Setter\npublic class Movie extends Item {\n    private String director;\n    private String actor;\n}",
+   "note": "**`@DiscriminatorValue`** 를 안 붙이면 **클래스 이름(`Book`)** 이 들어간다.\n\n**짧게 `B`·`A`·`M`** 으로 둘 수도 있고, **`BOOK`·`ALBUM`·`MOVIE`** 로 둘 수도 있다.\n\n> **짧으면 저장 공간이 줄고, 길면 DB 를 직접 볼 때 읽기 쉽다.** **이 책은 `B`·`A`·`M`** 으로 간다.\n>\n> **한 번 정하면 못 바꾼다** — 이미 저장된 값이 있으니까. **바꾸려면 데이터 마이그레이션**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "`dtype` 이 클래스를 정한다",
+   "ascii": "   how hibernate tells them apart\n\n   insert into item (dtype, name, price, author, isbn, item_id)\n   values ('B', ?, ?, ?, ?, ?)\n\n   select ... from item where item_id = ?\n     dtype = 'B'  ->  new Book()\n     dtype = 'A'  ->  new Album()\n     dtype = 'M'  ->  new Movie()\n\n   one column decides which class comes back",
+   "note": "**컬럼 하나가 자바 타입을** 결정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 선택이 청구될 자리",
+   "md": "| 대가 | 어디서 |\n|---|---|\n| **`author` 에 `not null` 을 못 건다** | 3.9절 |\n| **`null` 컬럼이 넷** | 6.5절 |\n| **화면에서 타입을 확인해야** | **8.6, 8.7절** |\n| **수정 화면이 타입마다** 다르다 | 8.7절 |\n\n**세 번째와 네 번째가 8장에서 아프다.**\n\n```java\n// 상품 수정 화면에서\nif (item instanceof Book book) {\n    form.setAuthor(book.getAuthor());\n    form.setIsbn(book.getIsbn());\n}\n```\n\n**`instanceof` 가 화면 코드에** 들어온다.\n\n> **상속을 쓰면 다형성으로 풀릴 것 같은데**, **화면은 필드가 다르면 폼도 달라야** 한다. **다형성이 안 통하는 자리**다.\n>\n> **8.7절에서 이 문제를 직접** 만난다. **이 책은 책(`Book`)만 화면을 만들고** 나머지는 안 만든다 — **1.3절에서 \"일부러 뺀 것\"** 목록에 있다.\n\n**9.7절에서 \"상속이 여기서 값을 했나\" 를 다시** 묻는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL",
+   "sql": "# --- 애플리케이션 실행 ---\n\n#   Hibernate: \n#       create table item (\n#           dtype varchar(31) not null,\n#           price integer not null,\n#           stock_quantity integer not null,\n#           item_id bigint not null,\n#           actor varchar(255),\n#           artist varchar(255),\n#           author varchar(255),\n#           director varchar(255),\n#           etc varchar(255),\n#           isbn varchar(255),\n#           name varchar(255),\n#           primary key (item_id)\n#       )\n\n#   테이블 하나. 컬럼 열하나.\n\n#   price, stock_quantity 에 not null 이 붙었다  -> int 라서\n#   author, isbn 등에는 안 붙었다              -> SINGLE_TABLE 이라서\n\n#   dtype varchar(31)  <- 기본 길이\n\n# --- book 테이블이 없다 ---\n\nshow tables;\n#   ITEM\n\n#   Book, Album, Movie 세 클래스가 한 테이블에 들어갔다\n\n# --- 책을 저장하면 ---\n\nBook book = new Book();\nbook.setName(\"JPA1 BOOK\");\nbook.setPrice(10000);\nbook.setStockQuantity(100);\nbook.setAuthor(\"김영한\");\nbook.setIsbn(\"123456\");\nem.persist(book);\nem.flush();\n\n#   Hibernate: \n#       select next value for item_seq\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, author, isbn,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'B', ?)\n\n#   dtype 에 'B' 가 하드코딩돼 있다\n#   내가 안 쓴 값이다\n\n# --- 앨범을 저장하면 ---\n\n#   Hibernate: \n#       insert into item (name, price, stock_quantity, artist, etc,\n#                         dtype, item_id)\n#       values (?, ?, ?, ?, ?, 'A', ?)\n\n#   컬럼 목록이 다르다\n#   author, isbn 은 아예 안 들어갔다 (null 로 남는다)\n\n# --- 조회하면 ---\n\nItem item = em.find(Item.class, 1L);\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.actor, i1_0.artist, i1_0.author,\n#              i1_0.director, i1_0.etc, i1_0.isbn\n#       from item i1_0 where i1_0.item_id=?\n\nlog.info(\"class={}\", item.getClass());\n#   class=class jpabook.jpashop.domain.item.Book\n\n#   Item 으로 찾았는데 Book 이 왔다\n#   dtype 을 보고 정했다\n\n# --- 전체 조회 ---\n\nem.createQuery(\"select i from Item i\", Item.class).getResultList();\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, ... from item i1_0\n\n#   조인이 없다\n#   JOINED 였다면 left join 셋이 붙었을 것이다\n\n# --- 테이블을 직접 보면 ---\n\nselect dtype, name, author, artist, director from item;\n\n#   B  JPA1 BOOK   김영한  null    null\n#   A  좋은앨범     null    아이유  null\n#   M  좋은영화     null    null    봉준호\n\n#   null 이 많다. 이것이 SINGLE_TABLE 의 모습이다.",
+   "note": "**`price`·`stock_quantity` 에만 `not null`** 이 붙었다. **`int` 라서**다. **`author` 에는 못 붙인다** — 3.3절에서 말한 대가.\n\n**`dtype` 에 `'B'` 가 하드코딩**돼 있다. **내가 안 쓴 값**이 SQL 에 들어갔다.\n\n**앨범을 저장할 때 컬럼 목록이 다르다.** **하이버네이트가 타입마다 다른 `insert`** 를 만든다.\n\n**`em.find(Item.class, ...)` 가 `Book` 을 돌려줬다.** **`dtype` 을 보고 정한 것**이다.\n\n**맨 아래 `null` 의 모양**이 이 전략의 얼굴이다.\n\n**다음 절에서 주문을 만든다.**"
+  }
+ ],
+ "recap": [
+  "**`SINGLE_TABLE` 을 고른다** — 하위 타입 셋에 필드 둘씩이라 감당된다.",
+  "**조회에 조인이 없다** — 가장 큰 이득.",
+  "**하위 타입 필드에 `not null` 을 못 건다** — 가장 큰 대가.",
+  "**`Item` 은 `abstract`** 다.",
+  "**`@DiscriminatorValue`** 를 안 붙이면 클래스 이름이 들어간다.",
+  "**한 번 정한 구분 값은 못 바꾼다** — 데이터가 있으니까.",
+  "**`int price`** 로 두면 `not null` 이 자동이다.",
+  "**`dtype` 하나가 자바 타입**을 결정한다.",
+  "**화면에서 `instanceof` 가 필요**해진다 — 8.7절."
+ ],
+ "drills": [
+  {
+   "task": "`Item` 과 세 자식을 만든다.",
+   "done_when": "테이블이 하나인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "책과 앨범을 저장하고 `insert` 를 비교한다.",
+   "done_when": "컬럼 목록이 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`em.find(Item.class, ...)` 의 결과 클래스를 찍는다.",
+   "done_when": "`Book` 이 오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`JOINED` 로 바꿔 DDL 과 조회 SQL 을 본다.",
+   "done_when": "테이블 넷과 조인을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `SINGLE_TABLE` 인가?",
+   "a": "하위 타입이 셋이고 필드가 적어 `null` 컬럼을 감당할 수 있고, 조회에 조인이 없다."
+  },
+  {
+   "q": "가장 큰 대가는?",
+   "a": "하위 타입의 필수 필드에 `not null` 을 걸 수 없다."
+  },
+  {
+   "q": "`dtype` 은 무엇을 하나?",
+   "a": "조회할 때 어느 자바 클래스로 만들지 결정한다."
+  },
+  {
+   "q": "`int price` 와 `Integer price` 의 차이는?",
+   "a": "`int` 면 DDL 에 `not null` 이 붙는다."
+  },
+  {
+   "q": "상속이 화면에서 어떻게 아픈가?",
+   "a": "타입마다 필드가 달라 `instanceof` 와 별도 폼이 필요해진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

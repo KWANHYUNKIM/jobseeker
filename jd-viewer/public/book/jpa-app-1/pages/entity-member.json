@@ -1,0 +1,139 @@
+{
+ "book": "jpa-app-1",
+ "id": "entity-member",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "회원 엔티티",
+ "summary": "임베디드 값 타입과 주소.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`Member` 를 만든다.",
+  "값 타입을 쓴다.",
+  "id 생성 전략을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**첫 엔티티**다. **3.3절에서 예상한 DDL 이 나오는지** 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Member`",
+   "code": "@Entity\n@Getter @Setter\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"member_id\")\n    private Long id;\n\n    private String name;\n\n    @Embedded\n    private Address address;\n\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders = new ArrayList<>();\n}",
+   "note": "**`@Column(name = \"member_id\")`** 를 붙인다. **안 붙이면 `id`** 가 된다.\n\n> **테이블마다 `id` 라는 컬럼이 있으면 조인 쿼리를 읽기 어렵다.** **`member_id`, `order_id` 로 두면 `select ... where member_id = ?` 만 봐도 어느 테이블인지** 안다.\n>\n> **취향이다.** 이 책은 붙인다.\n\n**`orders` 를 `new ArrayList<>()` 로 초기화**한다. **`null` 체크를 안 해도 되고**, **하이버네이트가 컬렉션을 자기 것으로 바꿔치기할 때 안전**하다.\n\n**`@Setter` 를 붙였다.** **3.8절에서 뗀다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Address` — 값 타입",
+   "code": "@Embeddable\n@Getter\npublic class Address {\n\n    private String city;\n    private String street;\n    private String zipcode;\n\n    protected Address() {}\n\n    public Address(String city, String street, String zipcode) {\n        this.city = city;\n        this.street = street;\n        this.zipcode = zipcode;\n    }\n}",
+   "note": "**`@Embeddable`** 이 값 타입 표시다.\n\n**`@Setter` 가 없다.** **값 타입은 불변**이어야 한다.\n\n```java\nAddress a = member.getAddress();\na.setCity(\"부산\");        // 안 된다. setter 가 없다.\n```\n\n> **값 타입을 공유하면 사고**가 난다.\n>\n> ```java\n> Address addr = member1.getAddress();\n> member2.setAddress(addr);      // 같은 인스턴스\n> // member2 의 주소를 고치면 member1 도 바뀐다\n> ```\n>\n> **불변으로 만들면 그럴 수가 없다.** **바꾸려면 새로 만든다.**\n\n**`protected Address() {}`** 가 필요하다. **JPA 가 리플렉션으로 만들 때** 쓴다. **`public` 이 아니라 `protected`** 로 두어 **아무도 빈 주소를 못 만들게** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "값 타입은 컬럼으로 풀린다",
+   "ascii": "   Member                          member table\n   ------                          ------------\n   Long id                         member_id\n   String name                     name\n   Address address    ------->     city\n                                   street\n                                   zipcode\n\n   the class disappears. the fields stay.",
+   "note": "**`address` 테이블이 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 값 타입인가",
+   "md": "**주소를 엔티티로 만들 수도** 있다.\n\n```java\n@Entity\npublic class Address {\n    @Id @GeneratedValue Long id;\n    String city, street, zipcode;\n}\n```\n\n**그러면 이런 것들이 따라온다.**\n\n| | 엔티티로 | 값 타입으로 |\n|---|---|---|\n| **테이블** | 생긴다 | **안 생긴다** |\n| **조회** | **조인** | 같은 행 |\n| **식별자** | 있다 | **없다** |\n| **생명주기** | 따로 | **주인과 함께** |\n| **공유** | 된다 | **안 된다(불변)** |\n\n**두 번째가 실질적**이다. **회원을 조회할 때마다 조인**이 생긴다.\n\n**판단 기준**이 있다.\n\n> **\"이것을 따로 찾을 일이 있나?\"**\n>\n> **`select * from address where city = '서울'`** 을 할 일이 있으면 엔티티다.\n> **\"누구의 주소\" 만 중요하면 값 타입**이다.\n\n**주소는 후자**다.\n\n**`Delivery` 도 같은 `Address` 를 쓴다.**\n\n```java\n@Entity\npublic class Delivery {\n    @Embedded\n    private Address address;\n}\n```\n\n**`delivery` 테이블에도 `city`·`street`·`zipcode` 세 컬럼**이 생긴다. **재사용**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "id 생성 전략",
+   "ascii": "   @GeneratedValue strategies\n\n   AUTO       the dialect picks    (h2 -> sequence)\n   IDENTITY   auto_increment       insert happens at persist\n   SEQUENCE   a db sequence        allocationSize batching\n   TABLE      a key table          slow, portable\n\n   this book uses the default, which becomes SEQUENCE on h2",
+   "note": "**기본값이 H2 에서 시퀀스**가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`allocationSize` 가 50 인 이유",
+   "md": "**2.5절에서 본 그것**이다.\n\n```\ncreate sequence member_seq start with 1 increment by 50\n```\n\n**시퀀스를 한 번 호출하면 50개를 미리** 받는다.\n\n```\n첫 persist   -> select next value for member_seq  (1 을 받음)\n              메모리에서 1~50 을 쓴다\n51번째       -> select next value for member_seq  (51 을 받음)\n```\n\n**왜 그러나.** **`SEQUENCE` 전략은 `persist` 할 때마다 DB 를 왕복**해야 한다. **50개씩 받으면 왕복이 1/50** 이 된다.\n\n| | 왕복 |\n|---|---|\n| `allocationSize = 1` | **저장 100건 = 100번** |\n| `allocationSize = 50` | **저장 100건 = 2번** |\n\n**대가**가 있다.\n\n| 대가 | |\n|---|---|\n| **id 에 구멍이 생긴다** | 앱을 재시작하면 남은 번호를 버린다 |\n| **여러 인스턴스가 다른 구간** | 그것이 목적이다 |\n\n> **id 가 연속이 아니어도 상관없으면** 그대로 둔다. **대부분 상관없다.**\n>\n> **`IDENTITY` 로 바꾸면** 구멍이 없는 대신 **`persist` 즉시 `insert`** 가 나가고 **배치가 안 된다**(「DB 2편」 6.6절).\n\n**이 책은 기본값**을 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL",
+   "sql": "# --- 애플리케이션 실행 ---\n\n#   Hibernate: \n#       drop table if exists member cascade \n#   Hibernate: \n#       drop sequence if exists member_seq\n#   Hibernate: \n#       create sequence member_seq start with 1 increment by 50\n#   Hibernate: \n#       create table member (\n#           member_id bigint not null,\n#           city varchar(255),\n#           street varchar(255),\n#           zipcode varchar(255),\n#           name varchar(255),\n#           primary key (member_id)\n#       )\n\n#   3.3절에서 예상한 그대로다\n\n# --- Address 테이블이 없다 ---\n\nshow tables;\n#   MEMBER\n\n#   @Embeddable 은 테이블을 안 만든다\n\n# --- 컬럼 순서 ---\n\n#   member_id, city, street, zipcode, name\n\n#   내가 쓴 순서(id, name, address)가 아니다\n#   하이버네이트가 알파벳순으로 정렬했다\n#   (id 는 PK 라 맨 앞)\n\n# --- Delivery 를 추가하면 ---\n\n@Entity\npublic class Delivery {\n    @Id @GeneratedValue\n    @Column(name = \"delivery_id\")\n    private Long id;\n\n    @Embedded\n    private Address address;\n}\n\n#   Hibernate: \n#       create table delivery (\n#           delivery_id bigint not null,\n#           city varchar(255),\n#           street varchar(255),\n#           zipcode varchar(255),\n#           primary key (delivery_id)\n#       )\n\n#   같은 세 컬럼이 또 나왔다\n#   Address 클래스 하나가 두 테이블에 풀렸다\n\n# --- 저장해 보면 ---\n\nMember member = new Member();\nmember.setName(\"회원1\");\nmember.setAddress(new Address(\"서울\", \"강남대로\", \"12345\"));\nem.persist(member);\nem.flush();\n\n#   Hibernate: \n#       select next value for member_seq\n#   Hibernate: \n#       insert into member (city, street, zipcode, name, member_id)\n#       values (?, ?, ?, ?, ?)\n#   binding parameter [1] as [VARCHAR] - [서울]\n#   binding parameter [2] as [VARCHAR] - [강남대로]\n#   binding parameter [3] as [VARCHAR] - [12345]\n#   binding parameter [4] as [VARCHAR] - [회원1]\n#   binding parameter [5] as [BIGINT] - [1]\n\n#   Address 객체 하나가 파라미터 셋이 됐다\n\n# --- 두 번째 저장 ---\n\n#   Hibernate: \n#       insert into member (...) values (?, ?, ?, ?, ?)\n#   binding parameter [5] as [BIGINT] - [2]\n\n#   (select next value 가 없다)\n#   allocationSize 50 이라 메모리에서 꺼냈다\n\n# --- orders 컬렉션 ---\n\n#   member 테이블에 아무 컬럼도 안 생겼다\n#   3.3절에서 말한 대로다",
+   "note": "**컬럼 순서가 내가 쓴 순서가 아니다.** **하이버네이트가 정렬**한다. **DDL 을 예상할 때 헷갈리는 자리**다.\n\n**`Address` 객체 하나가 파라미터 셋**이 됐다. **값 타입이 하는 일**이다.\n\n**두 번째 저장에 `select next value` 가 없다.** **`allocationSize = 50`** 의 효과다.\n\n**`orders` 컬렉션이 DDL 에 아무것도 안 만들었다.** **3.3절의 \"컬렉션은 테이블에 없다\"** 를 눈으로 확인했다.\n\n**다음 절에서 상속을** 다룬다."
+  }
+ ],
+ "recap": [
+  "**`@Column(name = \"member_id\")`** 로 컬럼 이름을 명시한다.",
+  "**컬렉션을 `new ArrayList<>()`** 로 초기화한다.",
+  "**`@Embeddable` 은 테이블을 안 만든다** — 컬럼으로 풀린다.",
+  "**값 타입은 불변**이어야 한다 — setter 를 안 만든다.",
+  "**`protected` 기본 생성자**가 필요하다.",
+  "**\"따로 찾을 일이 있나\"** 가 엔티티/값 타입의 기준이다.",
+  "**`Address` 하나를 `Member` 와 `Delivery` 가** 쓴다.",
+  "**`allocationSize` 50** 이 왕복을 1/50 로 줄인다 — id 에 구멍이 생긴다.",
+  "**컬럼 순서를 하이버네이트가 정렬**한다."
+ ],
+ "drills": [
+  {
+   "task": "`Member` 와 `Address` 를 만든다.",
+   "done_when": "DDL 이 3.3절 예상과 같은지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`Address` 에 setter 를 넣고 공유해 본다.",
+   "done_when": "한쪽을 고치면 다른 쪽도 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "회원을 두 명 저장하고 로그를 본다.",
+   "done_when": "`select next value` 가 한 번만 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`allocationSize = 1` 로 바꿔 본다.",
+   "done_when": "왕복이 늘어나는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Embeddable` 은 테이블을 만드나?",
+   "a": "안 만든다. 쓰는 쪽 테이블에 컬럼으로 풀린다."
+  },
+  {
+   "q": "값 타입에 setter 를 왜 안 만드나?",
+   "a": "공유되면 한쪽을 고칠 때 다른 쪽도 바뀌기 때문이다."
+  },
+  {
+   "q": "엔티티와 값 타입의 판단 기준은?",
+   "a": "그것을 따로 찾을 일이 있느냐다."
+  },
+  {
+   "q": "`allocationSize` 50 의 이득과 대가는?",
+   "a": "시퀀스 왕복이 1/50 로 줄고, id 에 구멍이 생긴다."
+  },
+  {
+   "q": "컬럼 순서가 왜 내가 쓴 대로가 아닌가?",
+   "a": "하이버네이트가 정렬하기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

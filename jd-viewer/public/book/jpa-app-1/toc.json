@@ -177,7 +177,7 @@
           "title": "회원 엔티티",
           "summary": "임베디드 값 타입과 주소.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -185,7 +185,7 @@
           "title": "상품 엔티티",
           "summary": "상속 관계 매핑.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -193,7 +193,7 @@
           "title": "주문과 주문상품",
           "summary": "연관 관계의 주인.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
