@@ -593,7 +593,7 @@
           "title": "Spring REST Docs",
           "summary": "테스트가 문서를 만든다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -601,7 +601,7 @@
           "title": "AssertJ 더 쓰기",
           "summary": "컬렉션과 예외.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",

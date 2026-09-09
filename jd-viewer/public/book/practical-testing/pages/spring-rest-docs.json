@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "spring-rest-docs",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "Spring REST Docs",
+ "summary": "테스트가 문서를 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "테스트에서 문서가 나오는 흐름을 안다.",
+  "스웨거와의 차이를 안다.",
+  "누락된 필드가 어떻게 잡히는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 \"테스트는 문서다\" 라고** 했다. **여기서는 진짜 문서가** 나온다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트가 문서가 되는 흐름",
+   "ascii": "   how a test becomes a document\n\n   the controller test runs\n     -> restdocs writes .adoc snippets per field\n       -> asciidoctor assembles them into html\n         -> the html is served or published\n\n   if the test fails, no snippet\n   if a field is undocumented, the test fails",
+   "note": "**테스트가 깨지면 문서도 안** 나온다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "문서를 만드는 컨트롤러 테스트",
+   "code": "@ExtendWith(RestDocumentationExtension.class)\n@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerDocsTest {\n\n    private MockMvc mockMvc;\n\n    @MockBean\n    private OrderService orderService;\n\n    @BeforeEach\n    void setUp(WebApplicationContext context,\n               RestDocumentationContextProvider provider) {\n        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)\n                .apply(documentationConfiguration(provider))\n                .build();\n    }\n\n    @DisplayName(\"신규 주문을 등록하는 API\")\n    @Test\n    void createOrder() throws Exception {\n        // given\n        given(orderService.createOrder(any(), any()))\n                .willReturn(OrderResponse.builder()\n                        .id(1L).totalPrice(8500).build());\n\n        // when & then\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(\n                                new OrderCreateRequest(List.of(\"001\", \"002\"))))\n                        .contentType(APPLICATION_JSON))\n                .andExpect(status().isOk())\n                .andDo(document(\"order-create\",\n                        preprocessRequest(prettyPrint()),\n                        preprocessResponse(prettyPrint()),\n                        requestFields(\n                                fieldWithPath(\"productNumbers\").type(ARRAY)\n                                        .description(\"상품 번호 목록\")\n                        ),\n                        responseFields(\n                                fieldWithPath(\"code\").type(NUMBER).description(\"코드\"),\n                                fieldWithPath(\"status\").type(STRING).description(\"상태\"),\n                                fieldWithPath(\"message\").type(STRING).description(\"메시지\"),\n                                fieldWithPath(\"data.id\").type(NUMBER).description(\"주문 ID\"),\n                                fieldWithPath(\"data.totalPrice\").type(NUMBER)\n                                        .description(\"주문 총 금액\")\n                        )\n                ));\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "스웨거와의 차이",
+   "ascii": "   two ways to get api docs\n\n   swagger / springdoc\n     annotations on the production code\n     always generated, even when wrong\n     shows the shape, not the behaviour\n\n   rest docs\n     written from a passing test\n     cannot describe a response that did not happen\n     production code stays clean",
+   "note": "**하나는 애노테이션, 하나는 통과한 테스트**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 테스트에서 뽑나",
+   "md": "**스웨거는 프로덕션 코드에** 붙는다.\n\n```java\n@Operation(summary = \"주문 등록\")\n@ApiResponse(responseCode = \"200\", description = \"성공\")\n@PostMapping(\"/api/v1/orders/new\")\npublic ApiResponse<OrderResponse> createOrder(...) { }\n```\n\n| | |\n|---|---|\n| **항상 생성**된다 | 틀려도 생성된다 |\n| **프로덕션이 지저분**해진다 | 7.3절의 기준 |\n| **동작을 안 본다** | 애노테이션만 읽는다 |\n\n> **응답 형식을 바꿔도 애노테이션은 그대로**다.\n> **4.1절의 주석과 같은 상태**가 된다.\n\n**REST Docs 는 통과한 테스트에서** 나온다.\n\n| | |\n|---|---|\n| **테스트가 깨지면 문서가 안 나온다** | |\n| **필드를 빠뜨리면 테스트가 깨진다** | |\n| **프로덕션이 깨끗**하다 | |\n\n> **문서가 낡을 수가** 없다.\n> **4.1절의 \"틀리면 빌드가 깨지는 문서\" 를 API 문서까지** 확장한 것이다.\n\n**대가**\n\n| | |\n|---|---|\n| **설정이 복잡** | 그레이들 플러그인, 아스키닥 |\n| **테스트가 길어진다** | 필드마다 한 줄 |\n| **UI 가 없다** | 스웨거의 \"실행해 보기\" 가 없다 |\n\n> **마지막이 실무에서 자주 아쉬운** 점이다.\n>\n> **둘을 같이 쓰는 팀도** 있다 — **개발용 스웨거, 배포용 REST Docs**."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누락이 잡히는 것",
+   "md": "**응답에 필드를 추가하면**\n\n```java\npublic class OrderResponse {\n    private Long id;\n    private int totalPrice;\n    private LocalDateTime registeredDateTime;   // 추가\n}\n```\n\n**문서를 안 고치면**\n\n```\norg.springframework.restdocs.snippet.SnippetException:\nThe following parts of the payload were not documented:\n{\n  \"data\" : {\n    \"registeredDateTime\" : \"2026-09-09T11:00:00\"\n  }\n}\n```\n\n> **테스트가** 깨진다.\n> **문서를 고쳐야 통과**한다.\n\n**반대도** 잡힌다.\n\n```\nFields with the following paths were not found in the payload:\n[data.orderNumber]\n```\n\n> **없는 필드를 문서화하면** 깨진다.\n>\n> **문서와 응답이 항상** 같다.\n\n**`optional()` 과 `ignored()`**\n\n```java\nfieldWithPath(\"data.discountAmount\").type(NUMBER)\n        .description(\"할인 금액\").optional(),\nfieldWithPath(\"message\").ignored()\n```\n\n> **`optional` 은 없을 수 있다고** 표시한다.\n> **`ignored` 는 문서에 안 넣고 검사도 안** 한다.\n>\n> **`ignored` 를 남발하면 이 절의 값어치가** 사라진다.\n\n**공통 필드는 뽑는다.**\n\n```java\npublic abstract class RestDocsSupport {\n    protected static FieldDescriptor[] commonResponse() {\n        return new FieldDescriptor[]{\n                fieldWithPath(\"code\").type(NUMBER).description(\"코드\"),\n                fieldWithPath(\"status\").type(STRING).description(\"상태\"),\n                fieldWithPath(\"message\").type(STRING).description(\"메시지\")\n        };\n    }\n}\n```\n\n> **`ApiResponse` 껍데기가 모든 API 에** 있다.\n> **8.1절의 공통 부모와 같은 발상**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 설정 ---\n\n// build.gradle\nplugins {\n    id 'org.asciidoctor.jvm.convert' version '3.3.2'\n}\n\ndependencies {\n    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'\n    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'\n}\n\next { snippetsDir = file('build/generated-snippets') }\n\ntest { outputs.dir snippetsDir }\n\nasciidoctor {\n    inputs.dir snippetsDir\n    dependsOn test\n}\n\n# --- 테스트를 돌리면 ---\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API PASSED\n\nBUILD SUCCESSFUL in 4s\n\n$ ls build/generated-snippets/order-create/\n\ncurl-request.adoc\nhttp-request.adoc\nhttp-response.adoc\nhttpie-request.adoc\nrequest-body.adoc\nrequest-fields.adoc\nresponse-body.adoc\nresponse-fields.adoc\n\n#   여덟 개가 생겼다\n\n$ cat build/generated-snippets/order-create/http-request.adoc\n\n[source,http,options=\"nowrap\"]\n----\nPOST /api/v1/orders/new HTTP/1.1\nContent-Type: application/json\nContent-Length: 40\nHost: localhost:8080\n\n{\n  \"productNumbers\" : [ \"001\", \"002\" ]\n}\n----\n\n#   진짜로 오간 요청이다\n\n$ cat build/generated-snippets/order-create/response-fields.adoc\n\n|===\n|Path|Type|Description\n\n|`+code+`\n|`+Number+`\n|코드\n\n|`+data.id+`\n|`+Number+`\n|주문 ID\n\n|`+data.totalPrice+`\n|`+Number+`\n|주문 총 금액\n...\n|===\n\n# --- 문서를 조립한다 ---\n\n# src/docs/asciidoc/index.adoc\n= 카페 키오스크 API\n\n== 주문\n\n=== 신규 주문 등록\n\noperation::order-create[snippets='http-request,request-fields,http-response,response-fields']\n\n$ ./gradlew asciidoctor\n\nBUILD SUCCESSFUL in 6s\n\n$ open build/docs/asciidoc/index.html\n\n#   HTML 문서가 나왔다\n\n# --- 응답에 필드를 추가하면 ---\n\npublic class OrderResponse {\n    private Long id;\n    private int totalPrice;\n    private LocalDateTime registeredDateTime;   // 추가\n}\n\ngiven(orderService.createOrder(any(), any()))\n        .willReturn(OrderResponse.builder()\n                .id(1L).totalPrice(8500)\n                .registeredDateTime(LocalDateTime.of(2026, 9, 9, 11, 0))\n                .build());\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API FAILED\n    org.springframework.restdocs.snippet.SnippetException:\n    The following parts of the payload were not documented:\n    {\n      \"data\" : {\n        \"registeredDateTime\" : \"2026-09-09T11:00:00\"\n      }\n    }\n\n#   문서화 안 한 필드가 있다고 깨진다\n\n#   스웨거였으면 조용히 지나갔다\n\n# --- 문서를 고치면 ---\n\nfieldWithPath(\"data.registeredDateTime\").type(STRING)\n        .description(\"주문 등록 시각\")\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API PASSED\n\n#   통과한다\n\n# --- 없는 필드를 문서화하면 ---\n\nfieldWithPath(\"data.orderNumber\").type(STRING).description(\"주문 번호\")\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API FAILED\n    org.springframework.restdocs.snippet.SnippetException:\n    Fields with the following paths were not found in the payload:\n    [data.orderNumber]\n\n#   반대도 잡는다\n\n#   문서와 응답이 항상 같다\n\n# --- 테스트가 깨지면 ---\n\n#   컨트롤러 매핑을 /api/v2/ 로 바꾸고\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API FAILED\n    java.lang.AssertionError: Status expected:<200> but was:<404>\n\n$ ls build/generated-snippets/order-create/ 2>/dev/null\n\nls: build/generated-snippets/order-create/: No such file or directory\n\n#   스니펫이 안 생겼다\n\n$ ./gradlew asciidoctor\n\n> Task :asciidoctor FAILED\nasciidoctor: ERROR: index.adoc: line 7: operation block macro:\n  no snippets found for operation order-create\n\n#   문서 빌드도 실패한다\n\n#   깨진 API 의 문서가 나갈 수가 없다\n\n# --- 스웨거와 비교 ---\n\n#   springdoc 을 붙이고\n\n@Operation(summary = \"주문 등록\")\n@PostMapping(\"/api/v1/orders/new\")\npublic ApiResponse<OrderResponse> createOrder(...) { }\n\n#   응답에 필드를 추가해도\n\n$ curl localhost:8080/v3/api-docs | jq '.paths.\"/api/v1/orders/new\"'\n\n{\n  \"post\": {\n    \"summary\": \"주문 등록\",\n    \"responses\": { \"200\": { ... } }\n  }\n}\n\n#   생성된다\n\n#   매핑을 /api/v2/ 로 바꾸면\n\n$ curl localhost:8080/v3/api-docs | jq '.paths | keys'\n\n[\"/api/v2/orders/new\"]\n\n#   따라간다. 그건 좋다\n\n#   그런데 응답 예시가 실제로 나간 것이 아니다\n\n#   REST Docs 의 http-response.adoc 은 진짜다\n\n# --- 공통 필드를 뽑으면 ---\n\npublic abstract class RestDocsSupport {\n    protected static FieldDescriptor[] common() {\n        return new FieldDescriptor[]{\n                fieldWithPath(\"code\").type(NUMBER).description(\"코드\"),\n                fieldWithPath(\"status\").type(STRING).description(\"상태\"),\n                fieldWithPath(\"message\").type(STRING).description(\"메시지\")\n        };\n    }\n}\n\nresponseFields(common())\n        .and(fieldWithPath(\"data.id\").type(NUMBER).description(\"주문 ID\"),\n             fieldWithPath(\"data.totalPrice\").type(NUMBER).description(\"총 금액\"))\n\n$ ./gradlew test --tests OrderControllerDocsTest\n\nOrderControllerDocsTest > 신규 주문을 등록하는 API PASSED\n\n#   API 마다 세 줄씩 안 쓴다\n\n# --- 시간 ---\n\n$ ./gradlew test\n\n74 tests completed\n테스트 32초 (예산 120초)\n\n#   문서 테스트 하나가 늘었다\n\n$ ./gradlew asciidoctor\n\nBUILD SUCCESSFUL in 6s\n\n#   문서 빌드가 6초다\n\n#   CI 에서는 배포 잡에만 넣는다\n\n# --- 다음 절에서 ---\n\n#   AssertJ 를 더 쓴다",
+   "note": "**테스트가 통과하면 스니펫 여덟 개**가 생긴다. **`http-request.adoc` 이 진짜로 오간 요청**이다.\n\n**응답에 필드를 추가하면 `not documented` 로** 깨진다. **스웨거였으면 조용히** 지나갔다.\n\n**없는 필드를 문서화해도** 깨진다. **문서와 응답이 항상** 같다.\n\n**테스트가 깨지면 스니펫이 안 생기고 문서 빌드도** 실패한다. **깨진 API 의 문서가 나갈 수가** 없다.\n\n**문서 빌드가 6초**라 배포 잡에만 넣는다."
+  }
+ ],
+ "recap": [
+  "**통과한 테스트에서 문서가** 나온다.",
+  "**테스트가 깨지면 스니펫이 안** 생긴다.",
+  "**필드를 빠뜨리면 테스트가** 깨진다.",
+  "**없는 필드를 문서화해도** 깨진다.",
+  "**스웨거는 애노테이션이라 틀려도** 생성된다.",
+  "**프로덕션 코드가 깨끗**하다 — 7.3절의 기준.",
+  "**대가는 설정과 긴 테스트와 UI 없음**이다.",
+  "**공통 필드는 부모로** 뽑는다.",
+  "**문서 빌드는 배포 잡에만** 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "REST Docs 를 붙이고 스니펫을 확인한다.",
+   "done_when": "여덟 개가 생기는 것을 봤다.",
+   "minutes": 40
+  },
+  {
+   "task": "응답에 필드를 추가해 본다.",
+   "done_when": "`not documented` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 필드를 문서화해 본다.",
+   "done_when": "`not found` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "공통 필드를 부모로 뽑는다.",
+   "done_when": "중복이 줄었는지 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "문서가 어디서 나오나?",
+   "a": "통과한 컨트롤러 테스트가 만든 스니펫이다."
+  },
+  {
+   "q": "스웨거와의 차이는?",
+   "a": "스웨거는 애노테이션이라 틀려도 생성되고 REST Docs 는 테스트가 통과해야 나온다."
+  },
+  {
+   "q": "필드를 빠뜨리면?",
+   "a": "`not documented` 로 테스트가 깨진다."
+  },
+  {
+   "q": "없는 필드를 문서화하면?",
+   "a": "`not found` 로 깨진다. 문서와 응답이 항상 같다."
+  },
+  {
+   "q": "대가는?",
+   "a": "설정이 복잡하고 테스트가 길어지고 스웨거 같은 UI 가 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring REST Docs",
+   "url": "https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — MockMvc",
+   "url": "https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

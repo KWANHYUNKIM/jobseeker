@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "assertj-deep",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "AssertJ 더 쓰기",
+ "summary": "컬렉션과 예외.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "모양에 맞는 단언을 고른다.",
+  "재귀 비교를 쓴다.",
+  "커스텀 단언을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 기본을** 봤다. **여기서 나머지**다."
+  },
+  {
+   "type": "figure",
+   "caption": "검증 대상의 모양",
+   "ascii": "   what shape is being asserted\n\n   one value        isEqualTo, isBetween, isCloseTo\n   a collection     hasSize, contains, extracting\n   an exception     assertThatThrownBy, hasMessage, hasCause\n   a whole object   usingRecursiveComparison\n   several fields   extracting with tuple\n   a map            containsEntry, containsKeys\n\n   picking the right one makes the failure readable",
+   "note": "**맞는 걸 고르면 실패가 읽힌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컬렉션",
+   "md": "**포함 관계**\n\n```java\nassertThat(products).contains(a, b);              // 있다\nassertThat(products).containsOnly(a, b);          // 이것들만 (순서·중복 무관)\nassertThat(products).containsExactly(a, b);       // 순서까지\nassertThat(products).containsExactlyInAnyOrder(a, b);\nassertThat(products).containsAnyOf(a, b);         // 하나라도\nassertThat(products).doesNotContain(c);\n```\n\n> **`containsOnly` 와 `containsExactlyInAnyOrder` 가** 다르다.\n> **전자는 중복을 무시**한다 — **`[a, a, b]` 도 통과**한다.\n\n**조건**\n\n```java\nassertThat(products).allMatch(p -> p.getPrice() > 0);\nassertThat(products).anyMatch(p -> p.getType() == BOTTLE);\nassertThat(products).noneMatch(p -> p.getPrice() < 0);\nassertThat(products).filteredOn(p -> p.getPrice() > 4000).hasSize(2);\n```\n\n> **`allMatch` 는 실패 메시지가** 약하다.\n>\n> ```\n> Expecting all elements to match given predicate but these elements did not:\n> [Product(price=-100)]\n> ```\n>\n> **그래도 어느 원소인지는** 나온다.\n\n**중첩 컬렉션**\n\n```java\nassertThat(orders)\n        .flatExtracting(\"orderProducts\")\n        .extracting(\"productNumber\")\n        .containsExactly(\"001\", \"002\", \"003\");\n```\n\n> **주문마다 상품이 여럿일 때 평평하게** 편다.\n\n**정렬**\n\n```java\nassertThat(products).isSortedAccordingTo(comparing(Product::getPrice));\n```\n\n> **`ORDER BY` 를 검증**할 때 쓴다.\n> **5.2절에서 순서를 안 봤던 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "예외",
+   "md": "```java\nassertThatThrownBy(() -> service.createOrder(request, 마감정각))\n        .isInstanceOf(IllegalArgumentException.class)\n        .hasMessage(\"주문 시간이 아닙니다.\")\n        .hasNoCause();\n```\n\n**메시지 검증의 강도**\n\n| | |\n|---|---|\n| `hasMessage` | **정확히 같아야** |\n| `hasMessageContaining` | 포함 |\n| `hasMessageStartingWith` | 시작 |\n| `hasMessageMatching` | 정규식 |\n\n> **2.3절에서 마침표 하나에** 깨졌다.\n> **문구를 자주 바꾸면 `Containing`** 이 낫다.\n\n**원인 사슬**\n\n```java\nassertThatThrownBy(() -> service.save(product))\n        .isInstanceOf(DataIntegrityViolationException.class)\n        .hasCauseInstanceOf(ConstraintViolationException.class)\n        .hasRootCauseMessage(\"Duplicate entry '001' for key 'uk_product_number'\");\n```\n\n> **스프링이 감싼 예외를 뚫고** 들어간다.\n> **8.3절의 `Data too long` 같은 걸 검증**할 때 쓴다.\n\n**타입만 볼지 메시지까지 볼지**\n\n> **`IllegalArgumentException` 은 너무** 흔하다.\n> **타입만 보면 다른 이유로 난 예외도** 통과한다.\n>\n> **메시지까지 보는 게** 낫다.\n\n**예외가 안 나는 것**\n\n```java\nassertThatNoException().isThrownBy(() -> cafeKiosk.clear());\nassertThatCode(() -> cafeKiosk.clear()).doesNotThrowAnyException();\n```\n\n> **2.4절의 `clearEmpty` 가** 그것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "재귀 비교가 값을 하는 자리",
+   "ascii": "   when recursive comparison earns its keep\n\n   an object with eight fields\n     eight assertThat lines, or one recursive comparison\n\n   with an id that differs\n     ignoringFields(\"id\")\n\n   with a timestamp that differs\n     ignoringFieldsMatchingRegexes(\".*DateTime\")\n\n   the failure names every field that differs, at once",
+   "note": "**다른 필드를 한 번에 다** 보여 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "재귀 비교와 커스텀 단언",
+   "md": "**재귀 비교**\n\n```java\nassertThat(actual)\n        .usingRecursiveComparison()\n        .ignoringFields(\"id\", \"registeredDateTime\")\n        .isEqualTo(expected);\n```\n\n| | |\n|---|---|\n| **`equals` 가 필요 없다** | 7.3절 — 테스트 때문에 안 만든다 |\n| **중첩 객체까지** | 필드를 재귀로 |\n| **무시 규칙** | 필드명, 정규식, 타입 |\n\n> **DTO 비교에** 좋다.\n> **엔티티는 조심**한다 — **지연 로딩 프록시를 파고들** 수 있다.\n\n**커스텀 단언**\n\n```java\npublic class OrderAssert extends AbstractAssert<OrderAssert, Order> {\n\n    public static OrderAssert assertThat(Order actual) {\n        return new OrderAssert(actual);\n    }\n\n    private OrderAssert(Order actual) {\n        super(actual, OrderAssert.class);\n    }\n\n    public OrderAssert hasTotalPrice(int expected) {\n        isNotNull();\n        if (actual.getTotalPrice() != expected) {\n            failWithMessage(\"주문 총 금액이 <%d> 여야 하는데 <%d> 다\",\n                    expected, actual.getTotalPrice());\n        }\n        return this;\n    }\n}\n```\n\n```java\nOrderAssert.assertThat(order)\n        .hasTotalPrice(8500)\n        .hasStatus(INIT);\n```\n\n> **도메인 언어로 단언**한다.\n> **실패 메시지를 내가** 쓴다.\n\n**언제 만드나**\n\n| | |\n|---|---|\n| **같은 검증이 열 번 넘게** | |\n| **기본 메시지가 안 읽힌다** | |\n| **도메인 개념이 있다** | \"주문이 완료 가능한 상태\" |\n\n> **드물다.** **`extracting` 으로 대부분** 된다.\n> **만들면 유지해야 하고 팀이 배워야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- containsOnly 와 containsExactlyInAnyOrder ---\n\n@Test\nvoid containsOnlyIgnoresDuplicates() {\n    List<String> numbers = List.of(\"001\", \"001\", \"002\");\n\n    assertThat(numbers).containsOnly(\"001\", \"002\");\n}\n\n$ ./gradlew test --tests AssertJTest\n\nAssertJTest > containsOnlyIgnoresDuplicates() PASSED\n\n#   중복이 있어도 통과한다\n\n@Test\nvoid containsExactlyInAnyOrderCounts() {\n    List<String> numbers = List.of(\"001\", \"001\", \"002\");\n\n    assertThat(numbers).containsExactlyInAnyOrder(\"001\", \"002\");\n}\n\nAssertJTest > containsExactlyInAnyOrderCounts() FAILED\n    java.lang.AssertionError:\n    Expecting actual:\n      [\"001\", \"001\", \"002\"]\n    to contain exactly in any order:\n      [\"001\", \"002\"]\n    but the following elements were unexpected:\n      [\"001\"]\n\n#   개수까지 본다\n\n#   5.10절의 '같은 상품을 두 번 주문' 검증에는 이쪽이 맞다\n\n# --- flatExtracting ---\n\n@Test\nvoid flatExtracting() {\n    List<Order> orders = List.of(\n            createOrder(List.of(\"001\", \"002\")),\n            createOrder(List.of(\"003\")));\n\n    assertThat(orders)\n            .flatExtracting(\"orderProducts\")\n            .extracting(\"productNumber\")\n            .containsExactly(\"001\", \"002\", \"003\");\n}\n\nAssertJTest > flatExtracting() PASSED\n\n#   중첩을 평평하게 폈다\n\n# --- isSortedAccordingTo ---\n\n@DisplayName(\"상품은 가격 오름차순으로 조회된다\")\n@Test\nvoid findAllOrderByPrice() {\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", 7000),\n            createProduct(\"002\", 4000),\n            createProduct(\"003\", 4500)));\n\n    List<Product> products = productRepository.findAllByOrderByPriceAsc();\n\n    assertThat(products)\n            .isSortedAccordingTo(comparing(Product::getPrice));\n}\n\nHibernate: select ... from product p1_0 order by p1_0.price\n\nProductRepositoryTest > 상품은 가격 오름차순으로 조회된다 PASSED\n\n#   order by 를 지운다\n\nList<Product> findAllByOrderByPriceDesc();\n\nProductRepositoryTest > 상품은 가격 오름차순으로 조회된다 FAILED\n    java.lang.AssertionError:\n    Expecting actual:\n      [Product(001, 7000), Product(003, 4500), Product(002, 4000)]\n    to be sorted according to given comparator but\n    Product(001, 7000) and Product(003, 4500) are not\n\n#   어느 두 원소가 어긋났는지 나온다\n\n# --- 예외 원인 사슬 ---\n\n@DisplayName(\"같은 상품 번호를 저장하면 유니크 제약에 걸린다\")\n@Test\nvoid duplicateProductNumber() {\n    productRepository.saveAndFlush(createProduct(\"001\", 4000));\n\n    assertThatThrownBy(() ->\n            productRepository.saveAndFlush(createProduct(\"001\", 4500)))\n            .isInstanceOf(DataIntegrityViolationException.class)\n            .hasCauseInstanceOf(ConstraintViolationException.class)\n            .hasRootCauseMessage(\n                    \"Unique index or primary key violation: \"\n                    + \"\\\"PUBLIC.UK_PRODUCT_NUMBER_INDEX_5 ON PUBLIC.PRODUCT(PRODUCT_NUMBER)\");\n}\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\n\nProductRepositoryTest > 같은 상품 번호를 저장하면 유니크 제약에 걸린다 PASSED\n\n#   스프링이 감싼 예외를 뚫고 원인까지 봤다\n\n#   5.6절에서 saveAndFlush 가 필요했던 이유다\n\n# --- 타입만 보면 ---\n\nassertThatThrownBy(() -> orderService.createOrder(request, 마감정각))\n        .isInstanceOf(IllegalArgumentException.class);\n\n#   재고 부족도 IllegalArgumentException 이다\n\n#   시간을 안 넘겨도 재고가 없으면 통과한다\n\n#   메시지까지 보면\n\n        .hasMessage(\"주문 시간이 아닙니다.\");\n\nOrderServiceTest > ... FAILED\n    Expecting message to be:\n      \"주문 시간이 아닙니다.\"\n    but was:\n      \"재고가 부족한 상품이 있습니다.\"\n\n#   다른 이유로 난 예외를 잡는다\n\n# --- 재귀 비교 ---\n\n@Test\nvoid recursiveComparison() {\n    OrderResponse actual = orderService.createOrder(request, 영업중);\n\n    OrderResponse expected = OrderResponse.builder()\n            .totalPrice(8500)\n            .products(List.of(\n                    ProductResponse.builder().productNumber(\"001\").price(4000).build(),\n                    ProductResponse.builder().productNumber(\"002\").price(4500).build()))\n            .build();\n\n    assertThat(actual)\n            .usingRecursiveComparison()\n            .ignoringFields(\"id\", \"registeredDateTime\")\n            .isEqualTo(expected);\n}\n\nOrderServiceTest > recursiveComparison() PASSED\n\n#   equals 를 안 만들었는데 비교됐다\n\n# --- 필드 셋을 틀리게 하면 ---\n\n#   totalPrice 를 0 으로, 첫 상품 가격을 999 로\n\nOrderServiceTest > recursiveComparison() FAILED\n    java.lang.AssertionError:\n    Expecting actual:\n      OrderResponse(totalPrice=0, products=[...])\n    to be equal to:\n      OrderResponse(totalPrice=8500, products=[...])\n    when recursively comparing field by field, but found the following\n    2 differences:\n\n    field/property 'totalPrice' differ:\n    - actual value  : 0\n    - expected value: 8500\n\n    field/property 'products.price' differ:\n    - actual value  : 999\n    - expected value: 4000\n\n#   둘을 한 번에 보여 준다\n\n#   7.1절의 소프트 어서션과 같은 효과다\n\n# --- 엔티티에 쓰면 ---\n\nassertThat(order).usingRecursiveComparison().isEqualTo(expected);\n\nOrderServiceTest > ... FAILED\n    org.assertj.core.api.exception.RuntimeIOException:\n    Unable to compare: LazyInitializationException:\n    could not initialize proxy [Product#1] - no Session\n\n#   지연 로딩 프록시를 파고들었다\n\n#   엔티티에는 조심한다. DTO 에 쓴다\n\n# --- 커스텀 단언 ---\n\nOrderAssert.assertThat(order)\n        .hasTotalPrice(8500)\n        .hasStatus(OrderStatus.INIT);\n\n#   총 금액을 0 으로 만들면\n\nOrderTest > customAssert() FAILED\n    java.lang.AssertionError:\n    주문 총 금액이 <8500> 여야 하는데 <0> 다\n\n#   내가 쓴 메시지가 나온다\n\n#   그런데 이 클래스를 유지해야 한다\n\n$ wc -l OrderAssert.java\n42\n\n#   42줄이다\n\n#   extracting 으로 하면\n\nassertThat(order)\n        .extracting(\"totalPrice\", \"orderStatus\")\n        .containsExactly(8500, OrderStatus.INIT);\n\nOrderTest > extractingVersion() FAILED\n    Expecting ArrayList:\n      [0, INIT]\n    to contain exactly:\n      [8500, INIT]\n\n#   메시지가 조금 덜 친절한데 클래스가 없다\n\n#   대부분 이쪽으로 충분하다\n\n# --- 다음 절에서 ---\n\n#   커버리지를 다룬다",
+   "note": "**`containsOnly` 는 중복을 무시하고 `containsExactlyInAnyOrder` 는 개수까지** 본다.\n\n**`isSortedAccordingTo` 는 어느 두 원소가 어긋났는지** 알려 준다.\n\n**`hasRootCauseMessage` 로 스프링이 감싼 예외를 뚫고** 들어간다.\n\n**타입만 보면 다른 이유로 난 예외도** 통과한다. **메시지까지 보면** 잡는다.\n\n**재귀 비교는 `equals` 없이 두 차이를 한 번에** 보여 준다. **엔티티에 쓰면 프록시를** 파고든다.\n\n**커스텀 단언은 42줄**이다. **`extracting` 으로 대부분** 된다."
+  }
+ ],
+ "recap": [
+  "**모양에 맞는 단언을 고르면 실패가** 읽힌다.",
+  "**`containsOnly` 는 중복을 무시**한다.",
+  "**`flatExtracting` 으로 중첩을** 편다.",
+  "**`isSortedAccordingTo` 로 `ORDER BY` 를** 검증한다.",
+  "**`hasRootCauseMessage` 로 감싼 예외를** 뚫는다.",
+  "**타입만 보면 다른 이유의 예외도** 통과한다.",
+  "**재귀 비교는 `equals` 없이 차이를 다** 보여 준다.",
+  "**엔티티에는 조심**한다 — 프록시를 파고든다.",
+  "**커스텀 단언은 드물게** 쓴다 — `extracting` 으로 대부분 된다."
+ ],
+ "drills": [
+  {
+   "task": "`containsOnly` 와 `containsExactlyInAnyOrder` 를 비교한다.",
+   "done_when": "중복 처리 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외 타입만 보는 테스트를 찾는다.",
+   "done_when": "메시지를 추가해 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "재귀 비교로 DTO 를 검증한다.",
+   "done_when": "여러 차이가 한 번에 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "엔티티에 재귀 비교를 써 본다.",
+   "done_when": "프록시 문제를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`containsOnly` 의 특징은?",
+   "a": "중복과 순서를 무시한다. `[a, a, b]` 도 통과한다."
+  },
+  {
+   "q": "감싼 예외의 원인을 어떻게 보나?",
+   "a": "`hasCauseInstanceOf`, `hasRootCauseMessage` 다."
+  },
+  {
+   "q": "예외 타입만 보면 뭐가 문제인가?",
+   "a": "다른 이유로 난 같은 타입의 예외도 통과한다."
+  },
+  {
+   "q": "재귀 비교의 이점은?",
+   "a": "`equals` 없이 비교하고 다른 필드를 한 번에 다 보여 준다."
+  },
+  {
+   "q": "커스텀 단언은 언제 만드나?",
+   "a": "같은 검증이 열 번 넘고 도메인 개념이 있을 때다. 드물다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
