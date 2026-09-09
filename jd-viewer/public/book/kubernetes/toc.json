@@ -89,7 +89,7 @@
           "title": "오브젝트",
           "summary": "apiVersion · kind · metadata · spec · status.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -97,7 +97,7 @@
           "title": "컨트롤러 루프",
           "summary": "차이를 계속 메우는 것이 전부다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",

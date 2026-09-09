@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "objects",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "오브젝트",
+ "summary": "apiVersion · kind · metadata · spec · status.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 필드를 안다.",
+  "spec 과 status 를 가른다.",
+  "라벨로 묶이는 방식을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 YAML 을** 적었다. **그 YAML 의 모양이 다** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 필드",
+   "ascii": "   every object has the same five fields\n\n   apiVersion   which api group and version this shape belongs to\n   kind         what it is\n   metadata     name, namespace, labels, annotations\n   spec         what you want          you write this\n   status       what is                the cluster writes this\n\n   the line between spec and status is the whole idea",
+   "note": "**`spec` 과 `status` 사이의 선이** 전부다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누가 무엇을 쓰나",
+   "md": "```yaml\napiVersion: apps/v1        # 이 모양의 버전\nkind: Deployment           # 무엇인지\nmetadata:                  # 이름표\n  name: web\n  labels: { app: web }\nspec:                      # 내가 원하는 것\n  replicas: 2\nstatus:                    # 지금 그런지 (클러스터가 쓴다)\n  readyReplicas: 2\n```\n\n> **`spec` 은 내가, `status` 는 클러스터가** 쓴다.\n> **`status` 를 YAML 에 적어도** 무시된다.\n> **2.1절의 `managedFields` 에서 이미** 봤다 — **컨트롤러가 `f:status`, 내가 `f:spec`** 이었다.\n\n**`apiVersion` 이 둘로 나뉜다.**\n\n| 형태 | 뜻 | 예 |\n|---|---|---|\n| `v1` | 핵심 그룹 | Pod, Service, ConfigMap |\n| `apps/v1` | `apps` 그룹 | Deployment, ReplicaSet |\n| `batch/v1` | `batch` 그룹 | Job, CronJob |\n| `networking.k8s.io/v1` | 그 그룹 | Ingress |\n\n> **1.5절에서 약칭과 함께** 봤다.\n> **틀리면 기동이 아니라 `apply` 가** 실패한다.\n\n**`metadata` 의 넷**\n\n| 필드 | 무엇 |\n|---|---|\n| `name` | 네임스페이스 안에서 유일 |\n| `namespace` | 어느 벽 안인지 |\n| `labels` | 고르는 데 쓴다 |\n| `annotations` | 고르는 데 안 쓴다 |\n\n> **라벨과 애너테이션의 차이가** 그거다.\n> **`last-applied-configuration` 이 애너테이션인 이유**다(2.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "라벨로 묶인다",
+   "ascii": "   labels are how objects find each other\n\n   a Pod carries       app: web, tier: front\n   a Service selects   app: web\n   a Deployment owns   app: web, via its selector\n\n   nothing holds a reference to anything\n   change a label and the pod silently leaves the group",
+   "note": "**아무도 서로를 참조하지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "라벨을 바꾸면 조용히 빠진다",
+   "md": "**참조가** 없다.\n\n> **서비스는 파드 이름을 모른다.**\n> **`selector: {app: web}` 로 매번** 찾는다.\n>\n> **파드의 라벨을 바꾸면 그 순간부터 안** 찾아진다.\n> **에러가 없다** — **그냥 대상에서** 빠진다.\n\n**디플로이먼트도** 같다.\n\n> **자기가 만든 파드를 라벨로** 센다.\n> **라벨을 바꾸면 \"하나가 사라졌다\" 고 보고 새로** 만든다.\n> **바꾼 파드는 고아로** 남는다.\n>\n> **이걸 일부러 쓰기도** 한다 — **문제 있는 파드를 서비스에서 빼고 살려 두는** 것.\n> **10장에서 그** 얘기를 한다.\n\n**소유 관계는 따로** 있다.\n\n```yaml\nmetadata:\n  ownerReferences:\n    - apiVersion: apps/v1\n      kind: ReplicaSet\n      name: web-6d8f4b9c7\n      uid: 3f2a...\n```\n\n> **가비지 컬렉션에** 쓴다.\n> **레플리카셋을 지우면 그걸 소유자로 가진 파드가 같이** 지워진다.\n> **1.5절에서 네임스페이스를 지우니 안의 것이 다 지워진** 것도 이 구조다.\n\n**`selector` 는 못 바꾼다.**\n\n> **디플로이먼트의 `selector` 는 만든 뒤 변경** 불가다.\n> **바꾸려면 지우고 다시** 만든다.\n> **아래에서 실제 오류를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 다섯 필드를 본다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=2\n$ kubectl get deployment web -o yaml | head -20\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  annotations:\n    deployment.kubernetes.io/revision: \"1\"\n  creationTimestamp: \"2026-09-09T12:21:04Z\"\n  generation: 1\n  labels:\n    app: web\n  name: web\n  namespace: default\n  resourceVersion: \"4821\"\n  uid: 8f3a2b1c-9d4e-4f11-b2d6-0e8a75c31d94\nspec:\n  progressDeadlineSeconds: 600\n  replicas: 2\n  revisionHistoryLimit: 10\n  selector:\n    matchLabels:\n      app: web\n\n$ kubectl get deployment web -o jsonpath='{.status}' | python3 -m json.tool\n\n{\n    \"availableReplicas\": 2,\n    \"conditions\": [...],\n    \"observedGeneration\": 1,\n    \"readyReplicas\": 2,\n    \"replicas\": 2,\n    \"updatedReplicas\": 2\n}\n\n#   spec.replicas 는 2, status.readyReplicas 도 2 다\n\n#   원하는 것과 지금이 같다\n\n# --- status 를 적어 본다 ---\n\n$ cat bad.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 2\n  selector:\n    matchLabels: { app: web }\n  template:\n    metadata:\n      labels: { app: web }\n    spec:\n      containers:\n        - name: nginx\n          image: nginx:1.27\nstatus:\n  readyReplicas: 99\n\n$ kubectl apply -f bad.yaml\n\ndeployment.apps/web configured\n\n$ kubectl get deployment web -o jsonpath='{.status.readyReplicas}{\"\\n\"}'\n\n2\n\n#   99 가 아니다\n\n#   status 는 무시된다\n\n#   에러도 안 난다\n\n# --- 원하는 것과 지금이 다를 때 ---\n\n$ kubectl scale deployment web --replicas=6\n$ kubectl get deployment web \\\n    -o jsonpath='spec={.spec.replicas} ready={.status.readyReplicas}{\"\\n\"}'\n\nspec=6 ready=2\n\n$ sleep 5 && kubectl get deployment web \\\n    -o jsonpath='spec={.spec.replicas} ready={.status.readyReplicas}{\"\\n\"}'\n\nspec=6 ready=6\n\n#   5초 사이에 메워졌다\n\n#   2.4절이 그 얘기다\n\n$ kubectl scale deployment web --replicas=2\n\n# --- apiVersion 을 틀리면 ---\n\n$ sed 's|apps/v1|v1|' bad.yaml | kubectl apply -f -\n\nerror: resource mapping not found for name: \"web\" namespace: \"\" from \"STDIN\":\n  no matches for kind \"Deployment\" in version \"v1\"\nensure CRDs are installed first\n\n#   apply 때 잡힌다\n\n$ kubectl explain deployment | head -4\n\nGROUP:      apps\nKIND:       Deployment\nVERSION:    v1\n\n#   explain 이 알려 준다\n\n$ kubectl explain deployment.spec.replicas\n\nGROUP:      apps\nKIND:       Deployment\nVERSION:    v1\n\nFIELD: replicas <integer>\n\nDESCRIPTION:\n    Number of desired pods. This is a pointer to distinguish between explicit\n    zero and not specified. Defaults to 1.\n\n#   문서를 안 열어도 된다\n\n# --- 라벨로 찾는다 ---\n\n$ kubectl get pods --show-labels\n\nNAME                  READY   STATUS    RESTARTS   AGE   LABELS\nweb-6d8f4b9c7-h4n8q   1/1     Running   0          4m    app=web,\n  pod-template-hash=6d8f4b9c7\nweb-6d8f4b9c7-r5t2w   1/1     Running   0          4m    app=web,\n  pod-template-hash=6d8f4b9c7\n\n$ kubectl expose deployment web --port=80\n\nservice/web exposed\n\n$ kubectl get endpoints web\n\nNAME   ENDPOINTS                     AGE\nweb    10.244.1.5:80,10.244.2.4:80   6s\n\n#   둘이 붙었다\n\n$ kubectl get service web -o jsonpath='{.spec.selector}{\"\\n\"}'\n\n{\"app\":\"web\"}\n\n#   이름이 아니라 라벨이다\n\n# --- 라벨을 바꿔 본다 ---\n\n$ kubectl label pod web-6d8f4b9c7-h4n8q app=quarantine --overwrite\n\npod/web-6d8f4b9c7-h4n8q labeled\n\n$ kubectl get endpoints web\n\nNAME   ENDPOINTS         AGE\nweb    10.244.2.4:80     1m\n\n#   하나로 줄었다\n\n#   에러가 없다\n\n$ kubectl get pods --show-labels --no-headers | awk '{print $1, $6}'\n\nweb-6d8f4b9c7-h4n8q app=quarantine,pod-template-hash=6d8f4b9c7\nweb-6d8f4b9c7-r5t2w app=web,pod-template-hash=6d8f4b9c7\nweb-6d8f4b9c7-x9m2k app=web,pod-template-hash=6d8f4b9c7\n\n#   셋이다\n\n#   디플로이먼트가 하나 더 만들었다\n\n$ kubectl get deployment web\n\nNAME   READY   UP-TO-DATE   AVAILABLE   AGE\nweb    2/2     2            2           5m\n\n#   디플로이먼트는 2/2 라고 본다\n\n#   quarantine 은 자기 것이 아니다\n\n$ kubectl get pod web-6d8f4b9c7-h4n8q \\\n    -o jsonpath='{.metadata.ownerReferences[0].name}{\"\\n\"}'\n\nweb-6d8f4b9c7\n\n#   그런데 소유자는 아직 그 레플리카셋이다\n\n#   라벨만 바뀌었다\n\n#   10장에서 이걸 디버깅에 쓴다\n\n$ kubectl delete pod web-6d8f4b9c7-h4n8q\n\npod \"web-6d8f4b9c7-h4n8q\" deleted\n\n$ kubectl get pods --no-headers | wc -l\n\n2\n\n#   안 살아났다\n\n#   라벨이 달라 셈에서 빠져 있었다\n\n# --- selector 를 바꿔 본다 ---\n\n$ kubectl patch deployment web --type=merge \\\n    -p '{\"spec\":{\"selector\":{\"matchLabels\":{\"app\":\"web2\"}}}}'\n\nThe Deployment \"web\" is invalid: spec.selector: Invalid value:\n  v1.LabelSelector{MatchLabels:map[string]string{\"app\":\"web2\"}}:\n  field is immutable\n\n#   못 바꾼다\n\n#   지우고 다시 만들어야 한다\n\n# --- 소유 관계 ---\n\n$ kubectl get replicaset -o name\n\nreplicaset.apps/web-6d8f4b9c7\n\n$ kubectl get pod -o jsonpath=\\\n'{range .items[*]}{.metadata.name}{\" <- \"}{.metadata.ownerReferences[0].kind}\\\n{\"/\"}{.metadata.ownerReferences[0].name}{\"\\n\"}{end}'\n\nweb-6d8f4b9c7-r5t2w <- ReplicaSet/web-6d8f4b9c7\nweb-6d8f4b9c7-x9m2k <- ReplicaSet/web-6d8f4b9c7\n\n$ kubectl get replicaset web-6d8f4b9c7 \\\n    -o jsonpath='{.metadata.ownerReferences[0].kind}/{.metadata.ownerReferences[0].name}{\"\\n\"}'\n\nDeployment/web\n\n#   Deployment -> ReplicaSet -> Pod 다\n\n$ kubectl delete deployment web --cascade=orphan\n\ndeployment.apps \"web\" deleted\n\n$ kubectl get replicaset,pods --no-headers | wc -l\n\n3\n\n#   남았다\n\n#   소유자만 지웠다\n\n$ kubectl delete replicaset web-6d8f4b9c7\n\nreplicaset.apps \"web-6d8f4b9c7\" deleted\n\n$ kubectl get pods --no-headers | wc -l\n\n0\n\n#   이번엔 같이 지워졌다\n\n#   가비지 컬렉션이다\n\n$ kubectl delete service web\n\nservice \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   spec 과 status 의 차이를 메우는 것이 무엇인지 본다",
+   "note": "**`spec.replicas` 는 내가, `status.readyReplicas` 는 클러스터가** 쓴다 — YAML 에 `status: {readyReplicas: 99}` 를 적어도 무시된다.\n\n**`apiVersion` 을 틀리면 `apply` 때 `no matches for kind`** 다.\n\n**파드 라벨을 바꾸니 엔드포인트가 둘에서 하나로 줄고 에러가** 없다. 디플로이먼트는 새것을 만들어 2/2 로 본다.\n\n**`selector` 는 `field is immutable`** 이다.\n\n**`--cascade=orphan` 이면 남고, 레플리카셋을 지우면 파드가 같이** 지워진다."
+  }
+ ],
+ "recap": [
+  "**모든 오브젝트가 같은 다섯 필드**를 가진다.",
+  "**`spec` 은 내가, `status` 는 클러스터가** 쓴다.",
+  "**`status` 를 적어도** 무시된다.",
+  "**`apiVersion` 이 틀리면 `apply` 가** 실패한다.",
+  "**`kubectl explain` 이 필드 문서**다.",
+  "**라벨로 찾고 애너테이션으로는 안** 찾는다.",
+  "**라벨을 바꾸면 조용히 대상에서** 빠진다.",
+  "**`selector` 는 변경** 불가다.",
+  "**소유 관계가 가비지 컬렉션을** 만든다."
+ ],
+ "drills": [
+  {
+   "task": "디플로이먼트의 `spec` 과 `status` 를 나란히 본다.",
+   "done_when": "누가 쓰는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`status` 를 YAML 에 적어 본다.",
+   "done_when": "무시되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "파드 라벨을 바꾼다.",
+   "done_when": "엔드포인트가 주는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`--cascade=orphan` 으로 지운다.",
+   "done_when": "파드가 남는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`spec` 과 `status` 는 각각 누가 쓰나?",
+   "a": "`spec` 은 사용자, `status` 는 클러스터다."
+  },
+  {
+   "q": "YAML 에 `status` 를 적으면?",
+   "a": "조용히 무시된다."
+  },
+  {
+   "q": "서비스는 파드를 어떻게 찾나?",
+   "a": "이름이 아니라 라벨 셀렉터로 매번 찾는다."
+  },
+  {
+   "q": "라벨을 바꾸면?",
+   "a": "에러 없이 그 그룹에서 빠지고 컨트롤러가 새것을 만든다."
+  },
+  {
+   "q": "가비지 컬렉션의 근거는?",
+   "a": "`ownerReferences` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "라벨",
+   "def": "오브젝트를 고르는 데 쓰는 키·값. 셀렉터가 이걸 보고 대상을 찾는다."
+  },
+  {
+   "term": "ownerReferences",
+   "def": "누가 이 오브젝트를 만들었는지 적힌 필드. 소유자가 지워지면 같이 지워진다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Understanding Kubernetes Objects",
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Labels and Selectors",
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
