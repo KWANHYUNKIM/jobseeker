@@ -470,7 +470,7 @@
           "title": "사용자 정의 리포지토리",
           "summary": "직접 구현을 끼워 넣는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -478,7 +478,7 @@
           "title": "정리",
           "summary": "무엇이 남고 무엇이 사라졌나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -493,7 +493,7 @@
           "title": "소개와 설정",
           "summary": "1편 7.7절이 남긴 문제의 답.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",

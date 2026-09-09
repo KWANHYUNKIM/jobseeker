@@ -1,0 +1,134 @@
+{
+ "book": "spring-db-2",
+ "id": "querydsl-intro",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "소개와 설정",
+ "summary": "1편 7.7절이 남긴 문제의 답.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Querydsl 이 무엇을 푸는지 안다.",
+  "빌드 설정을 한다.",
+  "Q 타입이 언제 생기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「스프링 DB 1편」 7.7절이 남긴 문제**를 여기서 닫는다. **이 책의 1.2절이 그것으로 시작**했다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 문제를 한 번에",
+   "ascii": "   the four problems from 3.3\n\n   string concatenation      ->  method calls\n   spacing and 'and'         ->  the builder joins them\n   compiler checks nothing   ->  the compiler checks everything\n   2^n cases                 ->  null conditions vanish\n\n   all four. in one chapter.",
+   "note": "**이 책에서 처음으로 넷이 다 풀린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "지금까지의 시도를 되짚으면",
+   "md": "| 기술 | 동적 쿼리를 어떻게 |\n|---|---|\n| 2.2 메모리 | **`filter` 둘** — 자바라 다 됐다 |\n| 3.3 JdbcTemplate | 문자열 + `andFlag` |\n| 5.4 MyBatis | **`<where>`·`<if>`** — 태그가 관리 |\n| 6.4 JPA | 문자열 + `andFlag` (다시) |\n| 7.3 Data JPA | 분기 나열 (2ⁿ) |\n| **8장 Querydsl** | **자바 메서드** |\n\n**2.2절의 메모리 구현이 가장 편했다.** **자바로 썼으니까.**\n\n> **2.2절에서 만든 표**를 떠올린다.\n>\n> | 기술 | `if` 둘로 되나 | 컴파일러가 잡나 |\n> |---|---|---|\n> | 메모리 | ✅ | ✅ |\n> | **Querydsl** | ✅ | ✅ |\n>\n> **\"Querydsl 이 메모리 구현과 같은 줄에 있다\"** 고 적어 뒀다. **그래서 8장이 마지막**이다.\n\n**다른 점 하나**가 있다. **메모리는 전 건을 자바로 걸렀고, Querydsl 은 SQL 을 만들어 DB 에 보낸다.**"
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "빌드 설정",
+   "code": "dependencies {\n    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'\n    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'\n    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'\n    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'\n}\n\nclean {\n    delete file('src/main/generated')\n}",
+   "note": "**`annotationProcessor` 가 셋**이다. **이것이 8.5절에서 말할 \"빌드가 복잡해지는 대가\"** 의 시작이다.\n\n**`:jakarta` 분류자**를 빠뜨리면 부트 3.x 에서 `javax` 를 찾다가 터진다.\n\n**버전을 직접** 적는다 — **5.2절의 MyBatis 와 같다.** 다만 **부트가 `querydslVersion` 을 관리**해 주기도 한다.\n\n> **의존관계가 넷**이다. **JdbcTemplate 은 한 줄, MyBatis 는 한 줄**이었다."
+  },
+  {
+   "type": "figure",
+   "caption": "Q 타입이 만들어지는 시점",
+   "ascii": "   compile time\n   ------------\n   Item.java  (@Entity)\n        |\n   annotation processor (JPAAnnotationProcessor)\n        |\n   build/generated/.../QItem.java\n        |\n   javac compiles both\n\n   so the ide needs a build before QItem exists",
+   "note": "**빌드를 한 번 해야 `QItem` 이 생긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "처음에 겪는 것들",
+   "md": "| 증상 | 원인 |\n|---|---|\n| **`QItem` 을 못 찾는다** | **빌드를 안 했다** — `./gradlew compileJava` |\n| **IDE 만 빨갛다** | 생성 폴더가 소스로 안 잡혔다 |\n| **`clean` 후 사라진다** | 정상이다. 다시 빌드한다 |\n| **엔티티를 고쳤는데 Q 가 안 바뀐다** | 빌드를 다시 한다 |\n| **`javax` 오류** | `:jakarta` 분류자 누락 |\n\n**첫 번째가 제일 흔하다.** **`@Entity` 를 붙이고 저장해도 `QItem` 은 안 생긴다.** **컴파일을 해야** 한다.\n\n> **`build/generated/sources/annotationProcessor/...`** 아래에 생긴다. **Gradle 이 자동으로 소스 경로에** 넣어 주는데, **IDE 가 늦게 알아채기도** 한다.\n\n**Q 타입을 커밋하지 않는다.** **생성물이다** — `.gitignore` 에 넣는다.\n\n```\nbuild/\nsrc/main/generated/\n```"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "설정 클래스",
+   "code": "@Configuration\n@RequiredArgsConstructor\npublic class QuerydslConfig {\n\n    private final EntityManager em;\n\n    @Bean\n    public JPAQueryFactory jpaQueryFactory() {\n        return new JPAQueryFactory(em);\n    }\n}",
+   "note": "**`JPAQueryFactory` 하나만 빈으로** 등록하면 된다.\n\n**`EntityManager` 를 받는다.** **Querydsl 은 JPQL 을 만들어 `EntityManager` 에 넘긴다.**\n\n> **그래서 Querydsl 은 JPA 를 대체하지 않는다.** **JPQL 을 자바로 쓰는 도구**다.\n>\n> ```\n> Querydsl 코드  ->  JPQL  ->  하이버네이트  ->  SQL\n> ```\n>\n> **6장의 층 위에 한 겹**이다. **7장과 같은 자리**이고, **둘을 같이 쓴다**(8.4절).\n\n**`EntityManager` 를 직접 받아도** 된다. `new JPAQueryFactory(em)` 을 매번 만드는 것도 문제없다 — **스레드 안전하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 빌드 로그",
+   "sql": "# --- 빌드 ---\n\n./gradlew compileJava\n\n#   > Task :compileJava\n#   Note: Q types generated:\n#     build/generated/sources/annotationProcessor/java/main/\n#       hello/itemservice/domain/QItem.java\n\n#   BUILD SUCCESSFUL\n\n# --- 빌드 전에 QItem 을 쓰면 ---\n\n#   error: cannot find symbol\n#     symbol:   class QItem\n#     location: package hello.itemservice.domain\n\n#   (컴파일 오류다. 실행 오류가 아니다.)\n\n# --- 첫 쿼리 ---\n\nJPAQueryFactory query = new JPAQueryFactory(em);\nQItem item = QItem.item;\n\nList<Item> result = query.selectFrom(item)\n        .where(item.price.loe(10000))\n        .fetch();\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.price<=?\n#   binding parameter [1] as [INTEGER] - [10000]\n\n# 6장·7장과 같은 SQL 이다\n\n# --- 필드 이름을 틀리면 ---\n\n.where(item.prise.loe(10000))\n\n#   error: cannot find symbol\n#     symbol:   variable prise\n#     location: variable item of type QItem\n\n#   (빌드가 안 된다)\n\n# --- 이 책의 오류 시점 표에 마지막 줄이 채워진다 ---\n\n#   JdbcTemplate        실행할 때\n#   MyBatis XML         부를 때\n#   MyBatis test 속성   안 터진다\n#   JPQL                실행할 때\n#   Data JPA 쿼리메서드  뜰 때\n#   Querydsl            컴파일할 때",
+   "note": "**두 번째 블록과 네 번째 블록이 `error:`** 다. **런타임 예외가 아니라 컴파일 오류**다.\n\n**이 책에서 처음**이다. **3장부터 7장까지의 오타는 전부 실행하거나 뜰 때** 났다.\n\n**맨 아래 표의 마지막 줄이 채워졌다.** **7.1절에서 미리 적어 둔 그 줄**이다.\n\n**SQL 은 6장·7장과 같다.** **다음 절에서 Q 타입이 무엇인지** 본다."
+  }
+ ],
+ "recap": [
+  "**3.3절의 문제 넷을 한 번에** 푼다.",
+  "**2.2절의 메모리 구현과 같은 줄**로 돌아온다.",
+  "**다만 SQL 을 만들어 DB 에 보낸다** — 메모리는 자바로 걸렀다.",
+  "**`annotationProcessor` 셋**이 필요하다 — 빌드가 복잡해진다.",
+  "**부트 3.x 는 `:jakarta` 분류자**가 필요하다.",
+  "**Q 타입은 컴파일할 때** 생긴다 — 빌드를 한 번 해야 한다.",
+  "**Q 타입을 커밋하지 않는다** — 생성물이다.",
+  "**`JPAQueryFactory` 하나만 빈**으로 등록한다.",
+  "**Querydsl 은 JPQL 을 자바로 쓰는 도구**다 — JPA 를 대체하지 않는다."
+ ],
+ "drills": [
+  {
+   "task": "빌드 설정을 넣고 `compileJava` 를 돌린다.",
+   "done_when": "`QItem.java` 가 생긴 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`clean` 후 `QItem` 을 참조해 본다.",
+   "done_when": "컴파일 오류가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`JPAQueryFactory` 를 빈으로 등록하고 첫 쿼리를 날린다.",
+   "done_when": "6장과 같은 SQL 이 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필드 이름을 틀려 본다.",
+   "done_when": "빌드가 실패하는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Querydsl 은 JPA 를 대체하나?",
+   "a": "아니다. JPQL 을 자바 코드로 쓰는 도구다."
+  },
+  {
+   "q": "Q 타입은 언제 생기나?",
+   "a": "컴파일 시점에 애너테이션 프로세서가 만든다."
+  },
+  {
+   "q": "`QItem` 을 못 찾는 가장 흔한 이유는?",
+   "a": "빌드를 안 했기 때문이다."
+  },
+  {
+   "q": "Q 타입을 커밋하나?",
+   "a": "안 한다. 생성물이라 `.gitignore` 에 넣는다."
+  },
+  {
+   "q": "이 책의 오류 시점 표에서 Querydsl 의 자리는?",
+   "a": "가장 이르다. 컴파일할 때 터진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference — JPA",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#jpa_integration",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

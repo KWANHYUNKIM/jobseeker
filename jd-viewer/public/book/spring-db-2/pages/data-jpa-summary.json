@@ -1,0 +1,150 @@
+{
+ "book": "spring-db-2",
+ "id": "data-jpa-summary",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "정리",
+ "summary": "무엇이 남고 무엇이 사라졌나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "7장의 손익을 센다.",
+  "주의할 것을 안다.",
+  "8장이 왜 필요한지 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 번째 기술이 끝났다.** **한 줄이 나빠졌다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "3.3절의 문제 다섯",
+   "ascii": "   3.3 problems                    data jpa\n   ------------                    --------\n   string concatenation            gone for fixed queries\n   spacing / and                   gone\n   compiler checks nothing         better: fails at startup\n   2^n cases                       WORSE: 2^n methods\n   object <-> row by hand          gone (jpa did it)\n\n   the only row that got worse in this whole book",
+   "note": "**이 책에서 나빠진 유일한 칸**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "코드의 부피",
+   "ascii": "   repository code, same four methods\n\n   memory        60 lines\n   jdbc v1       96 lines    4 sql strings\n   mybatis       20 lines  + 35 xml\n   jpa           50 lines    4 jpql strings\n   data jpa      30 lines    0 query strings\n\n   and 3 method names in an interface",
+   "note": "**쿼리 문자열이 0개**가 됐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "가장 크게 얻은 것",
+   "md": "**줄 수가 아니다.** **쿼리 문자열이 사라진 것**이다.\n\n| 기술 | 쿼리 문자열 |\n|---|---|\n| JdbcTemplate | **4개** — SQL |\n| MyBatis | **4개** — XML 안의 SQL |\n| JPA | **4개** — JPQL |\n| **Data JPA** | **0개** |\n\n**문자열이 없으면 오타가 없다.** **7.1절의 표에서 \"뜰 때 터진다\" 가 그것**이다.\n\n**두 번째로 얻은 것은 반복의 제거**다.\n\n```java\n// 엔티티가 10개여도\npublic interface MemberRepository extends JpaRepository<Member, Long> {}\npublic interface OrderRepository extends JpaRepository<Order, Long> {}\n// ...\n```\n\n**한 줄씩**이다. **6.3절의 `save`/`findById` 를 열 벌 쓰던 것**이 사라졌다.\n\n> **이 둘이 스프링 데이터 JPA 가 실무 표준이 된 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "주의할 것 넷",
+   "md": "**① `save` 로 수정하지 않는다** (7.3절)\n\n**`merge` 가 되어 `null` 필드를 덮는다.** **변경 감지를 쓴다.**\n\n**② 벌크 연산 뒤에는 컨텍스트를 비운다** (7.2절)\n\n**`@Modifying(clearAutomatically = true)`**.\n\n**③ 쿼리 메서드 이름이 길어지면 멈춘다** (7.4절)\n\n**조건 셋부터는 `@Query` 나 Querydsl 이다.**\n\n**④ 엔티티를 화면까지 내보내지 않는다**\n\n```java\n// 이러면 안 된다\n@GetMapping(\"/items\")\npublic List<Item> items() {\n    return repository.findAll();\n}\n```\n\n| 왜 | |\n|---|---|\n| **지연 로딩 프록시가 직렬화**된다 | `LazyInitializationException` 또는 N+1 |\n| **엔티티가 바뀌면 API 스펙이 바뀐다** | 필드 하나 추가가 API 변경 |\n| **불필요한 필드가 나간다** | 비밀번호, 내부 상태 |\n\n> **`Page.map()`** 으로 DTO 변환하는 습관을 7.2절에서 봤다. **그것이 답이다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "Data JPA 를 쓸 때와 안 쓸 때",
+   "left": {
+    "title": "쓴다",
+    "points": [
+     "**CRUD 가 대부분**",
+     "**엔티티가 많다** — 한 줄씩",
+     "**조건 한둘의 고정 조회**",
+     "**페이징이 필요**하다",
+     "**팀이 JPA 를 안다**"
+    ]
+   },
+   "right": {
+    "title": "이것만으로는 부족",
+    "points": [
+     "**동적 쿼리** — 8장",
+     "**복잡한 통계** — JdbcTemplate",
+     "**대량 배치** — JdbcTemplate",
+     "**조회 전용 화면이 많다** — DTO·Querydsl",
+     "**레거시 스키마**"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 기술을 지나오며",
+   "md": "**2.1절에서 세운 방법**을 확인한다.\n\n| 장 | 리포지토리 | 쿼리 문자열 | 컨트롤러 변경 |\n|---|---|---|---|\n| 2 메모리 | 60줄 | 0 | **없음** |\n| 3 JdbcTemplate | 96줄 | 4 | **없음** |\n| 5 MyBatis | 20+35줄 | 4 | **없음** |\n| 6 JPA | 50줄 | 4 | **없음** |\n| 7 Data JPA | 30줄 | 0 | **없음** |\n\n**마지막 열이 이 책의 성공 조건**이었다(1.3절). **다섯 번 바꾸는 동안 컨트롤러를 한 번도 안 열었다.**\n\n**도메인은 한 번 바뀌었다** — 6.2절의 `@Entity`.\n\n> **테스트도 한 번도 안 바뀌었다.** **4장에서 고친 뒤로는** 그렇다.\n\n**남은 것은 동적 쿼리 하나**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 7장이 만든 SQL 전부\n\n# save\n#   insert into item (item_name,price,quantity) values (?,?,?)\n\n# update (변경 감지)\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#     from item i1_0 where i1_0.id=?\n#   update item set item_name=?,price=?,quantity=? where id=?\n\n# findById\n#   select i1_0.id, ... from item i1_0 where i1_0.id=?\n\n# findAll x4\n#   select i1_0.id, ... from item i1_0\n#   select ... where i1_0.item_name like ? escape ''\n#   select ... where i1_0.price<=?\n#   select ... where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# 여덟 개다. 6장과 완전히 같다.\n\n# --- 다섯 기술의 마지막 SQL ---\n\n#   3장  select id, item_name, price, quantity from item\n#        where item_name like concat('%',?,'%') and price <= ?\n\n#   5장  select id, item_name, price, quantity from item\n#        WHERE item_name like concat('%', ?, '%') and price <= ?\n\n#   6장  select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#        from item i1_0\n#        where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n#   7장  (6장과 동일)\n\n# 자바 코드는 다 달랐다\n# DB 가 받은 것은 사실상 같다\n\n# 1.1절에서 세운 가설이 확인됐다\n\n# --- 그런데 findAll 을 부르는 코드는 ---\n\n#   3장  if 4개 + andFlag\n#   5장  <if> 2개 (XML)\n#   6장  if 4개 + andFlag\n#   7장  if 4개 (분기 나열)\n\n# 5장만 둘이다. 나머지는 넷이다.\n\n# --- 8장이 만들 것 ---\n\n#   query.selectFrom(item)\n#        .where(likeItemName(name), maxPrice(price))\n#        .fetch()\n\n# if 가 0개다",
+   "note": "**여덟 개가 6장과 같다.** **아래가 같은 기술이니 당연**하다.\n\n**중간 블록이 이 책의 첫 번째 결론**이다. **1.1절에서 \"SQL 은 상수, 자바 코드는 변수\" 라고 한 가설**이 다섯 기술을 지나 확인됐다.\n\n**맨 아래 두 블록이 남은 문제**다. **`findAll` 을 부르는 코드만 아직 넷**이다. **5장만 둘이었다.**\n\n> **8장이 그것을 0으로** 만든다. **`if` 가 없다.**\n\n**마지막 기술로 간다.**"
+  }
+ ],
+ "recap": [
+  "**쿼리 문자열이 0개**가 됐다 — 이 기술의 가장 큰 값.",
+  "**엔티티가 열 개여도 인터페이스 한 줄씩**이다.",
+  "**2ⁿ 칸이 나빠졌다** — 이 책에서 유일하다.",
+  "**`save` 로 수정하지 않는다** — `merge` 가 `null` 을 덮는다.",
+  "**벌크 뒤에는 컨텍스트를 비운다.**",
+  "**조건 셋부터는 `@Query` 나 Querydsl** 이다.",
+  "**엔티티를 화면까지 내보내지 않는다** — DTO 로 변환한다.",
+  "**다섯 번 바꾸는 동안 컨트롤러를 한 번도 안 열었다.**",
+  "**남은 것은 동적 쿼리 하나**다."
+ ],
+ "drills": [
+  {
+   "task": "다섯 기술의 리포지토리 줄 수와 쿼리 문자열 수를 표로 만든다.",
+   "done_when": "무엇이 줄고 무엇이 늘었는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨트롤러의 git 로그를 확인한다.",
+   "done_when": "비어 있는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "엔티티를 그대로 반환하는 컨트롤러를 만들어 본다.",
+   "done_when": "무슨 문제가 생기는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`findAll` 을 부르는 코드의 `if` 개수를 기술별로 센다.",
+   "done_when": "5장만 둘인 이유를 설명했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Data JPA 의 가장 큰 값은?",
+   "a": "쿼리 문자열이 0개가 되는 것이다. 오타가 없다."
+  },
+  {
+   "q": "어떤 칸이 나빠졌나?",
+   "a": "2ⁿ 이다. SQL 대신 메서드가 2ⁿ 개 필요해졌다."
+  },
+  {
+   "q": "`save` 로 수정하면 안 되는 이유는?",
+   "a": "`merge` 가 되어 채우지 않은 필드를 `null` 로 덮는다."
+  },
+  {
+   "q": "엔티티를 화면까지 내보내면?",
+   "a": "프록시 직렬화, API 스펙 결합, 불필요한 필드 노출 문제가 생긴다."
+  },
+  {
+   "q": "이 책의 성공 조건은 지켜졌나?",
+   "a": "지켜졌다. 다섯 번 구현을 바꾸는 동안 컨트롤러를 한 번도 안 열었다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
