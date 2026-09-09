@@ -522,7 +522,7 @@
           "title": "캐시가 없으면",
           "summary": "같은 이미지를 매번 받는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -530,7 +530,7 @@
           "title": "캐시 기본 동작",
           "summary": "max-age 와 신선도.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",

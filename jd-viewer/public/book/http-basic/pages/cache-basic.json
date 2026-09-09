@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "cache-basic",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "캐시 기본 동작",
+ "summary": "max-age 와 신선도.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "신선도와 나이를 안다.",
+  "우선순위를 안다.",
+  "Age 를 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절에서 신선하면 요청을 안 보낸다고** 했다. **그 판단이 어떻게 이뤄지는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 숫자를 비교한다",
+   "ascii": "   the two numbers a cache compares, every time\n\n   freshness lifetime   from max-age, or Expires, or a guess\n   current age          now minus Date, plus time spent in other caches\n\n   age below lifetime   fresh, serve it, ask nobody\n   age above lifetime   stale, so revalidate before serving\n\n   Age in the response tells you how long it already sat somewhere",
+   "note": "**`Age` 가 이미 얼마나 있었는지** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "max-age 는 상대, Expires 는 절대다",
+   "md": "**시계가 어긋나면 절대는 위험**하다.\n\n> **8.6절의 `Retry-After` 와 같은** 이야기다.\n> **`Expires` 는 서버와 클라이언트 시계가 맞아야** 한다.\n> **`max-age` 는 받은 시점부터** 센다.\n\n**나이는 누적**된다.\n\n> **CDN 에 10분 있던 응답이 브라우저에** 오면,\n> **브라우저는 `Age: 600` 을 보고 남은 수명을** 계산한다.\n> **`max-age=3600` 이면 앞으로 3000초**다.\n\n**신선하면 아무에게도 안** 묻는다.\n\n> **개발자 도구에 `(disk cache)` 로** 뜬다(3.4절).\n> **크기가 0에 가깝고 시간이 1ms 미만**이다.\n> **서버 로그에 아무것도 안** 남는다.\n\n**만료돼도 지우지는 않는다.**\n\n> **재검증해서 `304` 면 다시 신선해**진다(7.4절).\n> **`Date` 가 새로 오고 나이가 0으로** 돌아간다.\n> **그래서 검증자를 같이 보내는 게** 중요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "우선순위",
+   "ascii": "   which directive wins, in order\n\n   1  Cache-Control: no-store       never write it down\n   2  Cache-Control: max-age        the number to use\n   3  Expires                       only if no max-age\n   4  heuristic from Last-Modified  only if neither\n\n   Expires is a clock, and clocks drift, which is why max-age won",
+   "note": "**시계가 흔들려서 `max-age` 가** 이겼다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "no-cache 는 캐시하지 말라는 뜻이 아니다",
+   "md": "**이름이** 나쁘다.\n\n| 지시어 | 뜻 |\n|---|---|\n| `no-cache` | 저장은 하되 쓸 때마다 물어봐라 |\n| `no-store` | 아예 저장하지 마라 |\n\n> **비밀을 안 남기려면 `no-store`** 다.\n> **`no-cache` 는 매번 검증하지만 저장은 되어** 있다.\n> **디스크에 남는다.**\n\n**요청에도 붙일 수** 있다.\n\n> **`Cache-Control: no-cache` 를 요청에 보내면 새로 받아** 온다.\n> **브라우저 새로고침이 이걸** 보낸다.\n> **강제 새로고침은 `no-store` 에 가깝게** 동작한다.\n\n**`max-age=0` 과 `no-cache` 가 거의** 같다.\n\n> **둘 다 즉시 만료라 매번 검증**한다.\n> **`must-revalidate` 를 더하면 만료된 걸 절대 못 쓰게** 한다.\n\n**`Pragma: no-cache` 는 옛것**이다.\n\n> **HTTP/1.0 호환용**이다.\n> **요청에만 의미가** 있다.\n> **응답에 붙여도 지금은 무의미**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- max-age 와 Age ---\n\n$ cat freshness.py\n\nimport http.server, time\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        b = f\"생성 {time.strftime('%H:%M:%S')}\\n\".encode()\n        self.send_response(200)\n        self.send_header(\"Cache-Control\", \"max-age=10\")\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9009), H).serve_forever()\n\n$ python3 freshness.py & sleep 1\n$ docker exec lab sh -c \\\n    'printf \"proxy_cache_path /tmp/pc2 levels=1:2 keys_zone=z2:1m;\\n\\\nserver { listen 80;\\n\\\n  location /f/ { proxy_pass http://host.docker.internal:9009/;\\n\\\n    proxy_cache z2; add_header X-Cache \\$upstream_cache_status; }\\n\\\n  location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ for i in 1 2 3; do\n    curl -s -D - http://localhost:8080/f/x \\\n      | grep -iE 'x-cache|^age|생성' | tr '\\n' ' '; echo\n    sleep 3\n  done\n\nX-Cache: MISS 생성 01:10:02 \nX-Cache: HIT Age: 3 생성 01:10:02 \nX-Cache: HIT Age: 6 생성 01:10:02 \n\n#   본문이 그대로다\n\n#   Age 가 올라간다\n\n#   같은 응답을 계속 준다\n\n$ sleep 6 && curl -s -D - http://localhost:8080/f/x \\\n  | grep -iE 'x-cache|생성' | tr '\\n' ' '; echo\n\nX-Cache: EXPIRED 생성 01:10:14 \n\n#   10초가 지나 다시 받았다\n\n#   생성 시각이 바뀌었다\n\n# --- 나이는 누적된다 ---\n\n$ python3 - <<'EOF'\nprint(\"CDN 이 max-age=3600 응답을 600초 갖고 있었다\")\nprint(\"브라우저가 받으면\")\nprint(\"  Age: 600\")\nprint(\"  남은 신선 시간 = 3600 - 600 = 3000초\")\nprint()\nprint(\"Age 가 없으면 브라우저는 방금 만든 줄 안다\")\nEOF\n\nCDN 이 max-age=3600 응답을 600초 갖고 있었다\n브라우저가 받으면\n  Age: 600\n  남은 신선 시간 = 3600 - 600 = 3000초\n\nAge 가 없으면 브라우저는 방금 만든 줄 안다\n\n# --- max-age 가 Expires 를 이긴다 ---\n\n$ cat both2.py\n\nimport email.utils, time\n        self.send_header(\"Cache-Control\", \"max-age=5\")\n        self.send_header(\"Expires\",\n            email.utils.formatdate(time.time() + 3600, usegmt=True))\n\n$ python3 both2.py & sleep 1\n$ docker exec lab sh -c \\\n    'sed -i \"s|internal:9009|internal:9008|\" /etc/nginx/conf.d/default.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/f/y \\\n  | grep -iE 'cache-control|^expires'\n\nCache-Control: max-age=5\nExpires: Thu, 10 Sep 2026 02:10:31 GMT\n\n$ curl -s -o /dev/null http://localhost:8080/f/y\n$ sleep 7 && curl -s -D - -o /dev/null http://localhost:8080/f/y \\\n  | grep -i x-cache\n\nX-Cache: EXPIRED\n\n#   Expires 는 한 시간 뒤인데\n\n#   5초 만에 만료됐다\n\n#   max-age 가 이긴다\n\n$ kill %1 2>/dev/null\n\n# --- no-cache 와 no-store ---\n\n$ cat nc.py\n\nMODES = {\"/nocache\": \"no-cache\", \"/nostore\": \"no-store\",\n         \"/zero\": \"max-age=0\", \"/must\": \"max-age=0, must-revalidate\"}\n    def do_GET(self):\n        self.send_header(\"Cache-Control\", MODES.get(self.path, \"max-age=60\"))\n        self.send_header(\"ETag\", '\"v1\"')\n\n$ python3 nc.py & sleep 1\n$ docker exec lab sh -c \\\n    'sed -i \"s|internal:9008|internal:9007|\" /etc/nginx/conf.d/default.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n$ for p in nocache nostore zero must; do\n    curl -s -o /dev/null http://localhost:8080/f/$p\n    printf '%-9s' $p\n    curl -s -D - -o /dev/null http://localhost:8080/f/$p \\\n      | grep -i '^x-cache' | tr -d '\\r'\n  done\n\nnocache   X-Cache: REVALIDATED\nnostore   X-Cache: MISS\nzero      X-Cache: REVALIDATED\nmust      X-Cache: REVALIDATED\n\n#   no-cache 는 저장은 했다\n\n#   검증하고 썼다\n\n#   no-store 는 매번 MISS 다\n\n#   저장 자체를 안 했다\n\n$ ls /tmp 2>/dev/null | head -0\n$ docker exec lab sh -c 'find /tmp/pc2 -type f | wc -l'\n\n       3\n\n#   no-store 것만 파일이 없다\n\n#   비밀은 no-store 를 써야 한다\n\n$ kill %1 2>/dev/null\n\n# --- 요청에도 붙는다 ---\n\n$ python3 freshness.py & sleep 1\n$ docker exec lab sh -c \\\n    'sed -i \"s|internal:9007|internal:9009|\" /etc/nginx/conf.d/default.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -o /dev/null http://localhost:8080/f/z\n$ curl -s -D - -o /dev/null http://localhost:8080/f/z | grep -i x-cache\n$ curl -s -D - -o /dev/null -H 'Cache-Control: no-cache' \\\n    http://localhost:8080/f/z | grep -i x-cache\n\nX-Cache: HIT\nX-Cache: EXPIRED\n\n#   요청 헤더로 강제로 새로 받았다\n\n#   브라우저 새로고침이 이걸 보낸다\n\n$ python3 -c \"\nprint('새로고침       Cache-Control: max-age=0')\nprint('강제 새로고침  Cache-Control: no-cache 와 Pragma: no-cache')\nprint('  하위 자원까지 다시 받는다')\"\n\n새로고침       Cache-Control: max-age=0\n강제 새로고침  Cache-Control: no-cache 와 Pragma: no-cache\n  하위 자원까지 다시 받는다\n\n# --- 브라우저에서 본다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80; root /usr/share/nginx/html;\\n\\\n  location ~ \\\\.txt\\$ { expires 30s; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/a1.txt \\\n  | grep -iE 'cache-control|expires'\n\nExpires: Thu, 10 Sep 2026 01:11:12 GMT\nCache-Control: max-age=30\n\n#   nginx 는 둘 다 보낸다\n\n#   1.0 호환 때문이다\n\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/cachepage.html 2>/dev/null\n$ sleep 2\n$ open -a \"Google Chrome\" http://localhost:8080/cachepage.html 2>/dev/null\n$ sleep 3 && docker logs --tail 6 lab 2>&1 | awk '{print $7, $9}'\n\n/cachepage.html 200\n/a1.txt 200\n/a2.txt 200\n/a3.txt 200\n/cachepage.html 200\n\n#   두 번째에는 txt 가 없다\n\n#   30초 안이라 신선하다\n\n$ sleep 35\n$ docker logs --tail 0 lab 2>&1\n$ open -a \"Google Chrome\" http://localhost:8080/cachepage.html 2>/dev/null\n$ sleep 3 && docker logs --tail 5 lab 2>&1 | awk '{print $7, $9}'\n\n/cachepage.html 200\n/a1.txt 304\n/a2.txt 304\n/a3.txt 304\n\n#   만료되니 물어봤다\n\n#   304 로 다시 신선해졌다\n\n#   본문은 안 왔다 (7.4절)\n\n#   지우지 않고 되살린 것이다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   그 304 를 만드는 첫 방법",
+   "note": "**`Age` 가 3, 6 으로 올라가는 동안 본문의 생성 시각은** 그대로다.\n\n**`max-age=5` 와 `Expires` 한 시간이 겹치면 5초에** 만료된다.\n\n**`no-cache` 는 `REVALIDATED` 인데 `no-store` 는 매번 `MISS`** 다.\n\n**캐시 디렉터리에 `no-store` 것만 파일이** 없다.\n\n**30초가 지나자 브라우저가 물어보고 `304` 로 다시** 신선해졌다."
+  }
+ ],
+ "recap": [
+  "**신선도와 나이를** 비교한다.",
+  "**`max-age` 는 상대, `Expires` 는** 절대다.",
+  "**시계가 흔들려 `max-age` 가** 이긴다.",
+  "**나이는 캐시 사이에서** 누적된다.",
+  "**신선하면 아무에게도 안** 묻는다.",
+  "**만료돼도 지우지는** 않는다.",
+  "**`no-cache` 는 저장하되 검증**이다.",
+  "**`no-store` 라야 안** 남는다.",
+  "**요청에도 지시어를 붙일 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "`max-age` 응답을 프록시로 캐시한다.",
+   "done_when": "`Age` 가 오르는 걸 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`max-age` 와 `Expires` 를 겹친다.",
+   "done_when": "어느 쪽이 이기는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`no-cache` 와 `no-store` 를 비교한다.",
+   "done_when": "저장 여부를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "만료를 기다려 브라우저로 연다.",
+   "done_when": "`304` 를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "캐시가 비교하는 두 숫자는?",
+   "a": "신선도 수명과 현재 나이다."
+  },
+  {
+   "q": "`Age` 헤더의 뜻은?",
+   "a": "이 응답이 캐시에 머문 시간이다."
+  },
+  {
+   "q": "`max-age` 가 `Expires` 를 이기는 이유는?",
+   "a": "절대 시각은 시계 오차에 취약하기 때문이다."
+  },
+  {
+   "q": "`no-cache` 와 `no-store` 의 차이는?",
+   "a": "전자는 저장 후 매번 검증, 후자는 저장 자체를 금지한다."
+  },
+  {
+   "q": "만료된 캐시는 어떻게 되나?",
+   "a": "지우지 않고 재검증해 `304` 면 다시 신선해진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "재검증",
+   "def": "만료된 캐시가 여전히 유효한지 서버에 확인하는 것."
+  },
+  {
+   "term": "Age",
+   "def": "응답이 캐시에 머문 시간을 알리는 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "web.dev — HTTP caching",
+   "url": "https://web.dev/articles/http-cache",
+   "publisher": "Google"
+  }
+ ]
+}
