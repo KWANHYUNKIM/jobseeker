@@ -1,0 +1,150 @@
+{
+ "book": "jpa-app-1",
+ "id": "whats-different",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "앞의 책들과 무엇이 다른가",
+ "summary": "여섯 권이 각자 답한 것을 한 프로젝트에 모은다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "앞의 책들이 이 책 어디에 오는지 안다.",
+  "규모가 커져야 보이는 것을 안다.",
+  "이 책이 새로 다루는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**앞의 여섯 권을 다 읽었다고 가정**한다. **그것들이 여기 어떻게 모이는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 권이 오는 자리",
+   "ascii": "   what each book answered, and where it lands here\n\n   jpa basic      mapping        ->  chapter 3\n   spring core    di, layers     ->  chapter 4\n   mvc 1, 2       forms, views   ->  chapter 8\n   db 1           transaction    ->  chapter 5, 7\n   db 2           tech choice    ->  chapter 4.4\n   db 2 ch 6.7    n+1            ->  chapter 9\n\n   six answers, one project",
+   "note": "**한 프로젝트에 여섯 답이 다** 들어온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "규모가 커져야 보이는 것",
+   "md": "**「JPA 기본편」에서 지연 로딩을 배웠다.**\n\n```java\n@ManyToOne(fetch = FetchType.LAZY)\nprivate Member member;\n```\n\n**거기서는 \"프록시가 나중에 채워진다\" 로** 끝났다.\n\n**여기서는 이렇게** 된다.\n\n```\n주문 목록 화면 (주문 5건)\n  -> 주문 조회 1\n  -> 회원 조회 5     (지연 로딩)\n  -> 주문상품 조회 5\n  -> 상품 조회 5\n  = 16개\n```\n\n**같은 애너테이션인데 결과가 다르다.** **엔티티가 둘일 때는 안 보이던 것**이다.\n\n**넷을 더 든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이 규모에서만 보이는 것",
+   "ascii": "   what only shows up at this size\n\n   a mapping choice becomes a query count\n   a cascade choice becomes an insert i did not write\n   a tx boundary decides if the view can read a lazy field\n   a form object decides whether merge overwrites with null\n\n   none of these fit in a two entity example",
+   "note": "**엔티티 둘짜리 예제에는 안 들어간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "네 가지를 하나씩",
+   "md": "**① 매핑 선택이 쿼리 개수가 된다** (9.4절)\n\n**`LAZY` 냐 `EAGER` 냐가 화면마다 다른 숫자**를 만든다.\n\n**② `cascade` 가 내가 안 쓴 `insert` 를 만든다** (7.7절)\n\n```java\norderRepository.save(order);      // 한 줄\n```\n\n**`insert` 가 셋 나간다** — 주문, 배송, 주문상품.\n\n**「JPA 기본편」에서 `CascadeType.ALL` 을 배웠지만**, **\"어디까지 걸어야 하나\" 는 엔티티가 여덟 개여야** 물을 수 있다(9.6절).\n\n**③ 트랜잭션 경계가 화면을 정한다** (9.2, 9.3절)\n\n**서비스에서 트랜잭션이 끝나면 화면에서 지연 로딩이 안 된다.** **「DB 2편」 6.7절의 `LazyInitializationException`** 이다.\n\n**OSIV 를 켜면 되는데, 켜면 커넥션을 오래 쥔다.** **그 판단이 9.3절**이다.\n\n**④ 폼 객체가 병합의 안전을 정한다** (8.8, 8.9절)\n\n**「MVC 2편」에서 폼 객체를 따로 두는 법**을 배웠다. **여기서는 그것이 준영속 엔티티 문제**와 만난다.\n\n> **「DB 2편」 7.3절에서 `merge` 가 `null` 로 덮는 것**을 봤다. **그것이 진짜 화면에서 어떻게 나타나는지**를 8.9절에서 본다."
+  },
+  {
+   "type": "compare",
+   "caption": "조각 예제 vs 이 책",
+   "left": {
+    "title": "조각 예제",
+    "points": [
+     "**엔티티 둘셋**",
+     "기능 하나를 보여 준다",
+     "**결정의 대가가 안 보인다**",
+     "화면이 없거나 최소",
+     "**설계를 안 해도 된다**"
+    ]
+   },
+   "right": {
+    "title": "이 책",
+    "points": [
+     "**엔티티 여덟**",
+     "**애플리케이션 하나**",
+     "**3장의 결정이 9장에 청구된다**",
+     "화면 열 개",
+     "**설계가 먼저다**"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 책이 안 다루는 것",
+   "md": "| 무엇 | 어디로 |\n|---|---|\n| **API 개발** | 다음 권 (활용 2편) |\n| **성능 최적화 전면** | 다음 권 — 여기서는 9장에서 문제만 |\n| **Querydsl 로 다시 쓰기** | 「DB 2편」 8장 + 다음 권 |\n| **인증·인가** | 스프링 시큐리티 |\n| **배포·운영** | |\n\n**두 번째가 중요**하다.\n\n> **9장은 문제를 세는 장**이지 **푸는 장이 아니다.**\n>\n> **N+1 을 발견하고, 해결책 넷을 다시 확인하고, \"어느 것을 언제\" 는 다음 권**으로 넘긴다.\n\n**「DB 2편」 6.7절에서 해결책 넷을 이미 봤다.** **여기서는 그것을 실제 화면에 적용할 때 생기는 판단**만 다룬다.\n\n**세 번째도 그렇다.** **이 책은 `EntityManager` 를 직접** 쓴다(4.4절). **스프링 데이터 JPA 와 Querydsl 은 다음 권**이다.\n\n> **왜 그러나.** **한 번은 손으로 써 봐야 그 위의 층이 무엇을 대신하는지** 안다. **「DB 2편」 6장 다음에 7장이 온 것**과 같은 순서다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책에서 만날 로그 (미리 보기)",
+   "sql": "# --- 「JPA 기본편」에서 본 것 ---\n\nem.find(Member.class, 1L);\n#   Hibernate: select m1_0.id, m1_0.name from member m1_0 where m1_0.id=?\n\n#   한 줄에 한 쿼리. 예측 가능하다.\n\n# --- 이 책 8.11절의 화면 하나 ---\n\nGET /orders\n\n#   Hibernate: select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n#              join member m1_0 on m1_0.member_id=o1_0.member_id\n#              where m1_0.name like ? escape ''\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name from member m1_0 where m1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price from order_item oi1_0\n#              where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, i1_0.author, i1_0.isbn from item i1_0\n#              where i1_0.item_id=?\n\n#   (주문이 2건이면 위 세 개가 두 벌)\n\n#   200 OK\n\n#   쿼리 7개. 자바 코드에는 반복문 하나.\n\n# --- 「DB 2편」 6.7절과 같은 문제다 ---\n\n#   거기: 예제로 만든 카테고리 조회\n#   여기: 내가 만든 주문 목록 화면\n\n# --- 3장에서 한 결정 ---\n\n#   @ManyToOne(fetch = FetchType.LAZY)\n#   private Member member;\n\n#   이 한 줄이 위 로그를 만들었다\n\n# --- 이 책의 방법 ---\n\n#   1  3장에서 그 결정을 한다\n#   2  8장에서 화면을 만든다\n#   3  9장에서 로그를 센다\n#   4  그 결정을 다시 본다\n\n# 말로 논하지 않는다",
+   "note": "**첫 블록이 「JPA 기본편」의 세계**다. **한 줄에 한 쿼리.**\n\n**두 번째 블록이 이 책의 세계**다. **화면 한 번에 일곱 개**이고, **자바 코드에는 반복문 하나**뿐이다.\n\n**맨 아래 네 단계가 이 책의 방법**이다. **결정 → 구현 → 측정 → 재검토.**\n\n**다음 절에서 무엇을 만들지** 정한다."
+  }
+ ],
+ "recap": [
+  "**여섯 권의 답이 한 프로젝트**에 모인다.",
+  "**규모가 커져야 보이는 것**이 넷 있다.",
+  "**매핑 선택이 쿼리 개수**가 된다.",
+  "**`cascade` 가 내가 안 쓴 `insert`** 를 만든다.",
+  "**트랜잭션 경계가 화면의 지연 로딩**을 정한다.",
+  "**폼 객체가 병합의 안전**을 정한다.",
+  "**9장은 문제를 세는 장**이지 푸는 장이 아니다.",
+  "**API·최적화·Querydsl 은 다음 권**이다.",
+  "**`EntityManager` 를 직접** 쓴다 — 한 번은 손으로."
+ ],
+ "drills": [
+  {
+   "task": "여섯 권이 이 책 어느 장에 오는지 표로 적는다.",
+   "done_when": "여섯 줄을 채웠다.",
+   "minutes": 15
+  },
+  {
+   "task": "엔티티 둘짜리 예제에서 안 보이는 것 넷을 적는다.",
+   "done_when": "각각 왜 안 보이는지 붙였다.",
+   "minutes": 15
+  },
+  {
+   "task": "이 책이 안 다루는 것을 확인한다.",
+   "done_when": "다음 권으로 넘길 것을 알았다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규모가 커져야 보이는 것 넷은?",
+   "a": "매핑이 쿼리 개수로, cascade 가 안 쓴 insert 로, 트랜잭션 경계가 화면의 지연 로딩으로, 폼 객체가 병합의 안전으로 나타나는 것이다."
+  },
+  {
+   "q": "9장의 성격은?",
+   "a": "문제를 세는 장이다. 해결은 다음 권이다."
+  },
+  {
+   "q": "왜 `EntityManager` 를 직접 쓰나?",
+   "a": "한 번 손으로 써 봐야 그 위의 층이 무엇을 대신하는지 안다."
+  },
+  {
+   "q": "이 책이 안 다루는 것은?",
+   "a": "API 개발, 성능 최적화 전면, Querydsl, 인증·인가, 배포다."
+  },
+  {
+   "q": "이 책의 방법 네 단계는?",
+   "a": "결정 → 구현 → 로그 측정 → 결정 재검토다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Boot Reference",
+   "url": "https://docs.spring.io/spring-boot/reference/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

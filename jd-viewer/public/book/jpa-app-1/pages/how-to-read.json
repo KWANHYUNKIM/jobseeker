@@ -1,0 +1,121 @@
+{
+ "book": "jpa-app-1",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "기능이 아니라 애플리케이션을 만든다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 방법을 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "어느 장부터 읽을지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 일곱 번째 책**이다. **앞의 여섯 권과 방법이 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조각이 아니라 하나를 만든다",
+   "md": "**앞의 책들은 \"이 기능이 어떻게 도나\"** 를 물었다.\n\n| 책 | 예제 |\n|---|---|\n| JPA 기본편 | **매핑 하나씩** — 회원, 팀, 주문 조각조각 |\n| 핵심 원리 | **주문 할인** — DI 를 보여 주기 위한 최소 예제 |\n| MVC 1·2편 | **상품 관리** — 화면 하나씩 |\n| DB 1편 | **계좌이체** — 트랜잭션을 보여 주기 위한 둘 |\n| DB 2편 | **상품 검색** — 기술을 비교하기 위한 하나 |\n\n**전부 무언가를 보여 주기 위한 예제**였다. **필요한 만큼만** 있었다.\n\n**이 책의 예제는 다르다.**\n\n> **회원이 상품을 주문한다.**\n\n**엔티티가 여덟 개**고, **화면이 열 개**고, **주문 하나에 배송과 주문상품이 딸린다.**\n\n**그러면 앞의 책에서 안 보이던 것이 보인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "결정이 흘러가는 길",
+   "ascii": "   a decision in chapter 3\n        |\n   becomes ddl                     chapter 3\n        |\n   decides where the tx begins     chapter 5, 7\n        |\n   decides what the view can read  chapter 8\n        |\n   shows up as a query count       chapter 9\n\n   one arrow per chapter. the bill arrives at the end.",
+   "note": "**청구서가 맨 끝에** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 책의 뼈대",
+   "md": "| 장 | 무엇 |\n|---|---|\n| **1** | 시작하기 전에 |\n| **2** | 환경설정 — 빈 프로젝트에서 DDL 까지 |\n| **3** | **도메인 설계** — 이 책의 나머지가 다 여기서 나온다 |\n| **4** | 구현 준비 — 무엇을 어디에 둘까 |\n| **5·6·7** | **도메인 개발** — 회원 · 상품 · 주문 |\n| **8** | **웹 계층** — 화면을 붙인다 |\n| **9** | **설계를 돌아본다** — 청구서를 읽는다 |\n| **10** | 다음으로 |\n\n**9장이 이 책이 더한 장**이다.\n\n> **강의 차례에는 8장까지**다. **거기서 끝나면 \"만들었다\" 로 끝난다.** **이 책은 만든 뒤에 그것을 다시** 본다.\n>\n> **8장에서 엔티티를 화면에 그대로 내보내고**, **9장에서 그 대가를 센다.** **일부러 그렇게** 만든다.\n\n**5~7장의 순서에도 이유**가 있다. **회원(단순) → 상품(로직) → 주문(연관 관계 셋)** 으로 복잡도가 는다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 것",
+   "ascii": "   what every section ends with\n\n   ch 2, 3    the ddl hibernate generated\n   ch 4 - 7   the sql that went out\n   ch 8       the http that was exchanged, and the sql behind it\n   ch 9       the number of queries\n\n   a design is not discussed. it is shown by what it produced.",
+   "note": "**마지막 줄이 이 서가 전체의 규칙**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "읽는 순서",
+   "md": "**처음이면 1장부터** 차례대로 읽는다.\n\n**골라 읽는다면**\n\n| 관심 | 어디 |\n|---|---|\n| **엔티티 설계** | 3장 |\n| **비즈니스 로직을 어디에** | 6.1, 7.3, 9.5 |\n| **변경 감지 vs 병합** | 8.7~8.9 |\n| **N+1 과 OSIV** | **9.2~9.4** |\n| **트랜잭션 경계** | 4.2, 5.5, 7.7 |\n\n**9장만 읽어도 되나** — **안 된다.** **8장까지 만든 애플리케이션이 있어야 9장의 숫자가 의미**가 있다.\n\n> **\"주문 목록 화면이 쿼리를 11개 날린다\"** 는 문장은 **그 화면을 만들어 봐야** 읽힌다.\n\n**코드는 따라 친다.** **이 책은 로그를 읽는 책**인데, **내가 안 만든 코드의 로그는 안 읽힌다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책이 만들 것 (미리 보기)",
+   "sql": "# --- 3장이 끝나면 (DDL) ---\n\n#   Hibernate: create table member (\n#       member_id bigint not null,\n#       city varchar(255),\n#       street varchar(255),\n#       zipcode varchar(255),\n#       name varchar(255),\n#       primary key (member_id))\n\n#   Hibernate: create table orders (\n#       order_id bigint not null,\n#       delivery_id bigint unique,\n#       member_id bigint,\n#       order_date timestamp(6),\n#       status varchar(255) check (status in ('ORDER','CANCEL')),\n#       primary key (order_id))\n\n#   내가 쓴 애너테이션이 만든 것이다\n\n# --- 7장이 끝나면 (SQL) ---\n\norderService.order(memberId, itemId, 2);\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?\n#   Hibernate: select i1_0.item_id, i1_0.dtype, ... from item i1_0\n#              where i1_0.item_id=?\n#   Hibernate: insert into delivery (city,street,zipcode,status,delivery_id)\n#              values (?,?,?,?,?)\n#   Hibernate: insert into orders (delivery_id,member_id,order_date,status,\n#              order_id) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (count,item_id,order_id,order_price,\n#              order_item_id) values (?,?,?,?,?)\n#   Hibernate: update item set name=?,price=?,stock_quantity=?\n#              where item_id=?\n\n#   여섯 개다. insert 를 두 번만 썼는데.\n\n# --- 8장이 끝나면 (HTTP) ---\n\nGET /orders?memberName=회원1&orderStatus=ORDER\n\n#   200 OK\n#   <tr><td>1</td><td>회원1</td><td>JPA1 BOOK</td>...\n\n# --- 9장에서 세면 ---\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#              join member m1_0 ... where m1_0.name like ?\n#   Hibernate: select m1_0.member_id, ... from member m1_0 where ...\n#   Hibernate: select o1_0.order_id, oi1_0... from order_item oi1_0 ...\n#   Hibernate: select i1_0.item_id, ... from item i1_0 where ...\n#   ... (주문 건수만큼)\n\n#   화면 한 번에 11개\n\n#   3장에서 지연 로딩을 고른 결과다",
+   "note": "**네 블록이 이 책의 네 구간**이다.\n\n**첫 블록의 DDL 을 내가 안 썼다.** **애너테이션이 만들었다.**\n\n**두 번째 블록에 `insert` 가 셋인데 내 코드에는 하나**다. **영속성 전이**다 — 7.7절.\n\n**맨 아래 11개가 9장의 주제**다. **3장의 결정이 여기까지** 온다.\n\n**다음 절에서 앞의 책들과 무엇이 다른지** 더 본다."
+  }
+ ],
+ "recap": [
+  "**앞의 여섯 권은 조각**, 이 책은 **애플리케이션 하나**다.",
+  "**엔티티 여덟 개, 화면 열 개**다.",
+  "**3장의 설계 결정이 나머지 전부**를 정한다.",
+  "**9장은 이 책이 더한 장** — 청구서를 읽는다.",
+  "**8장에서 일부러 엔티티를 화면에** 내보낸다.",
+  "**5~7장은 복잡도 순서** — 회원 → 상품 → 주문.",
+  "**2~3장은 DDL, 4~7장은 SQL, 8장은 HTTP, 9장은 쿼리 개수**로 끝난다.",
+  "**설계를 말로 논하지 않고 만든 것을** 본다.",
+  "**코드를 따라 친다** — 안 만든 코드의 로그는 안 읽힌다."
+ ],
+ "drills": [
+  {
+   "task": "앞의 여섯 권에서 예제가 무엇이었는지 적어 본다.",
+   "done_when": "전부 최소 예제였던 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "이 책의 장 구성을 훑는다.",
+   "done_when": "9장이 왜 있는지 말할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "매 절이 무엇으로 끝나는지 표로 적는다.",
+   "done_when": "네 구간을 구분했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 앞의 책들과 다른 점은?",
+   "a": "조각 예제가 아니라 애플리케이션 하나를 통째로 만든다."
+  },
+  {
+   "q": "3장이 왜 중요한가?",
+   "a": "나머지 장 전체가 3장의 설계 결정에서 나온다."
+  },
+  {
+   "q": "9장은 무엇인가?",
+   "a": "이 책이 더한 장으로, 만든 뒤에 설계의 대가를 세는 청구서다."
+  },
+  {
+   "q": "매 절은 무엇으로 끝나나?",
+   "a": "2~3장은 DDL, 4~7장은 SQL, 8장은 HTTP, 9장은 쿼리 개수다."
+  },
+  {
+   "q": "9장만 읽어도 되나?",
+   "a": "안 된다. 만들어 본 애플리케이션이 있어야 숫자가 읽힌다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

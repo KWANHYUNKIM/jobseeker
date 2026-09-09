@@ -1,0 +1,642 @@
+{
+  "id": "jpa-app-1",
+  "title": "스프링 부트와 JPA 활용",
+  "subtitle": "1편 — 웹 애플리케이션 하나를 통째로",
+  "blurb": "회원이 상품을 주문하는 애플리케이션을 설계부터 화면까지 만든다. 앞의 여섯 권이 조각으로 답한 것들이 한 프로젝트에서 만난다. 매 절은 그 결정이 만들어 낸 것으로 끝난다 — DDL, 나간 SQL, 오간 HTTP.",
+  "updated_at": "2026-09-09",
+  "preface": "**서가의 여섯 권은 각자 한 조각씩** 다뤘다.\n\n| 책 | 무엇을 |\n|---|---|\n| JPA 기본편 | **매핑 하나가 만드는 SQL** |\n| 스프링 핵심 원리 | **DI 와 AOP** |\n| MVC 1·2편 | **HTTP 와 화면** |\n| DB 1·2편 | **트랜잭션과 데이터 접근 기술** |\n\n**전부 \"이 기능이 어떻게 도나\" 였다.**\n\n**이 책은 다르다.** **애플리케이션 하나를 처음부터 끝까지** 만든다. 회원이 있고, 상품이 있고, 주문이 있고, 화면이 있다.\n\n**그러면 앞의 여섯 권이 한자리에서** 만난다. **엔티티 설계가 DDL 을 만들고, 그 설계가 서비스의 트랜잭션 경계를 정하고, 그 경계가 화면에서 지연 로딩이 되는지를 정한다.** **조각으로 볼 때는 안 보이던 연결**이다.\n\n**그리고 청구서가 온다.**\n\n> **6장에서 편하려고 한 결정이 8장에서 값을 청구하고, 9장에서 그것을 읽는다.**\n\n**「DB 2편」 6.7절에서 N+1 을 봤다.** **거기서는 예제였고 여기서는 내 애플리케이션**이다. **주문 목록 화면 하나가 쿼리를 몇 개 날리는지** 직접 센다.\n\n**매 절은 그 결정이 만들어 낸 것으로 끝난다.**\n\n| 장 | 무엇으로 끝나나 |\n|---|---|\n| 2~3장 | **하이버네이트가 만든 DDL** |\n| 4~7장 | **나간 SQL** |\n| 8장 | **오간 HTTP 와 그때 나간 SQL** |\n| 9장 | **쿼리 개수** |\n\n**설계를 말로 논하지 않는다.** **그 설계가 만든 것을 본다.**",
+  "how_to_read": [
+    "**앞의 여섯 권을 다 읽었다고 가정**한다. 특히 「JPA 기본편」과 「DB 2편」은 설명 없이 쓴다.",
+    "**3장을 건너뛰지 않는다.** 이 책의 나머지가 전부 3장의 설계 결정에서 나온다.",
+    "**8장까지 만들고 9장을 읽는다.** 9장은 청구서라 만들어 봐야 읽힌다.",
+    "**로그를 켜고 읽는다.** 2.6절에 설정이 있다.",
+    "**코드를 따라 친다.** 이 책은 읽기만 해서는 절반이다."
+  ],
+  "prereq": [
+    "**「JPA 기본편」 전체.** 영속성 컨텍스트 · 연관 관계 · 상속 매핑 · 값 타입 · JPQL.",
+    "**「스프링 DB 2편」.** 특히 6장(JPA)·9장(구조)·10~12장(트랜잭션).",
+    "**「스프링 MVC 1·2편」.** 8장이 폼 · 검증 · 타임리프를 그대로 쓴다.",
+    "**「스프링 핵심 원리」.** 생성자 주입과 계층 분리."
+  ],
+  "env": [
+    {
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
+    },
+    {
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": ""
+    },
+    {
+      "name": "데이터베이스",
+      "value": "H2 2.x",
+      "note": "서버 모드"
+    },
+    {
+      "name": "빌드",
+      "value": "Gradle",
+      "note": ""
+    },
+    {
+      "name": "의존성",
+      "value": "Web, Thymeleaf, JPA, Validation, H2, Lombok",
+      "note": "2.1절"
+    },
+    {
+      "name": "확인 도구",
+      "value": "SQL 로그 · 트랜잭션 로그 · 쿼리 카운터",
+      "note": "2.6절과 9.4절"
+    }
+  ],
+  "source": {
+    "name": "실전! 스프링 부트와 JPA 활용1 — 웹 애플리케이션 개발 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+    "note": "차례(8개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·DDL·SQL 로그·그림은 이 책에서 새로 쓴 것이다. 9장은 이 책이 더한 장이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "여섯 권 위에 처음으로 애플리케이션 하나를 통째로 올린다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "기능이 아니라 애플리케이션을 만든다.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "whats-different",
+          "title": "앞의 책들과 무엇이 다른가",
+          "summary": "여섯 권이 각자 답한 것을 한 프로젝트에 모은다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "requirements",
+          "title": "요구사항",
+          "summary": "회원이 상품을 주문한다.",
+          "minutes": 11,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "프로젝트 환경설정",
+      "goal": "빈 프로젝트에서 DDL 이 나올 때까지.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "project-create",
+          "title": "프로젝트 생성",
+          "summary": "스타터 다섯 개로 시작한다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "libraries",
+          "title": "라이브러리 살펴보기",
+          "summary": "한 줄이 무엇을 딸고 오나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "view-setup",
+          "title": "View 환경 설정",
+          "summary": "타임리프와 개발 편의 설정.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "db-setup",
+          "title": "H2 와 JPA 설정",
+          "summary": "설정 파일 한 장.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "first-run",
+          "title": "동작 확인",
+          "summary": "테이블이 생기는 것을 본다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "logging-setup",
+          "title": "로그 설정",
+          "summary": "이 책이 무엇을 보고 판단하나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "도메인 분석과 설계",
+      "goal": "설계 결정이 그대로 DDL 이 된다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "requirements-analysis",
+          "title": "요구사항 분석",
+          "summary": "화면에서 기능을 뽑는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "domain-model",
+          "title": "도메인 모델",
+          "summary": "회원 · 주문 · 상품의 관계.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "table-design",
+          "title": "테이블 설계",
+          "summary": "객체 모델을 테이블로 옮긴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "entity-member",
+          "title": "회원 엔티티",
+          "summary": "임베디드 값 타입과 주소.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "entity-item",
+          "title": "상품 엔티티",
+          "summary": "상속 관계 매핑.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "entity-order",
+          "title": "주문과 주문상품",
+          "summary": "연관 관계의 주인.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "entity-category",
+          "title": "카테고리와 다대다",
+          "summary": "쓰면 안 되는 것을 써 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "entity-caution",
+          "title": "엔티티 설계 시 주의점",
+          "summary": "setter · 컬렉션 · 지연 로딩 · Cascade.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.9",
+          "id": "ddl-review",
+          "title": "만들어진 DDL 읽기",
+          "summary": "내 설계가 무엇을 만들었나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "애플리케이션 구현 준비",
+      "goal": "무엇을 어디에 둘지 먼저 정한다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "impl-requirements",
+          "title": "구현 요구사항",
+          "summary": "무엇까지 만들고 무엇을 뺄까.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "architecture",
+          "title": "계층 구조",
+          "summary": "컨트롤러 · 서비스 · 리포지토리 · 도메인.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "package-structure",
+          "title": "패키지 구조",
+          "summary": "계층으로 나눌까 도메인으로 나눌까.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "repository-style",
+          "title": "리포지토리를 어떻게 쓸까",
+          "summary": "EntityManager 를 직접 쓴다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "회원 도메인 개발",
+      "goal": "가장 단순한 도메인으로 흐름을 만든다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "member-repository",
+          "title": "회원 리포지토리",
+          "summary": "저장과 조회.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "member-service",
+          "title": "회원 서비스",
+          "summary": "가입과 조회.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "member-duplicate",
+          "title": "중복 회원 검증",
+          "summary": "동시에 가입하면.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "member-test",
+          "title": "회원 기능 테스트",
+          "summary": "4장에서 배운 격리를 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "member-readonly",
+          "title": "readOnly 를 어디에",
+          "summary": "조회가 대부분이다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "member-review",
+          "title": "정리",
+          "summary": "여기까지 나간 SQL.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "상품 도메인 개발",
+      "goal": "비즈니스 로직을 어디에 둘지 정한다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "item-business-logic",
+          "title": "상품 엔티티에 비즈니스 로직",
+          "summary": "데이터를 가진 쪽이 계산한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "item-stock",
+          "title": "재고 증가와 감소",
+          "summary": "예외를 어디서 던지나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "item-repository",
+          "title": "상품 리포지토리",
+          "summary": "저장과 수정이 한 메서드다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "item-service",
+          "title": "상품 서비스",
+          "summary": "위임만 하는 계층.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "item-inheritance",
+          "title": "상속 매핑이 만든 SQL",
+          "summary": "한 테이블에 셋이 들어간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "item-review",
+          "title": "정리",
+          "summary": "엔티티가 로직을 가지면.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "주문 도메인 개발",
+      "goal": "이 책에서 가장 복잡한 도메인.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "order-entity",
+          "title": "주문 엔티티",
+          "summary": "회원 · 배송 · 주문상품.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "orderitem-entity",
+          "title": "주문상품 엔티티",
+          "summary": "주문 시점의 가격을 남긴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "order-create",
+          "title": "생성 메서드",
+          "summary": "정적 팩토리로 조립한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "order-cancel",
+          "title": "주문 취소",
+          "summary": "재고를 되돌린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "order-price",
+          "title": "전체 주문 가격 조회",
+          "summary": "합계를 누가 계산하나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "order-repository",
+          "title": "주문 리포지토리",
+          "summary": "저장과 단건 조회.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "order-service",
+          "title": "주문 서비스",
+          "summary": "Cascade 가 하는 일.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "order-test",
+          "title": "주문 기능 테스트",
+          "summary": "재고가 줄고 되돌아온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "order-search",
+          "title": "주문 검색",
+          "summary": "동적 쿼리를 네 번째로 만난다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "웹 계층 개발",
+      "goal": "화면을 붙이면 설계의 값이 청구된다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "home-layout",
+          "title": "홈 화면과 레이아웃",
+          "summary": "부트스트랩과 프래그먼트.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "member-form",
+          "title": "회원 등록",
+          "summary": "폼 객체를 따로 둔다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "member-form-validation",
+          "title": "폼 검증",
+          "summary": "MVC 2편의 그 검증.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "member-list",
+          "title": "회원 목록 조회",
+          "summary": "엔티티를 그대로 넘겼다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "item-form",
+          "title": "상품 등록",
+          "summary": "책 · 앨범 · 영화 중 하나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "item-list",
+          "title": "상품 목록",
+          "summary": "상속이 화면에서 어떻게 보이나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "item-edit-form",
+          "title": "상품 수정 폼",
+          "summary": "준영속 엔티티가 나타난다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "dirty-check-merge",
+          "title": "변경 감지와 병합",
+          "summary": "두 방법이 만드는 SQL.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.9",
+          "id": "merge-danger",
+          "title": "병합의 위험",
+          "summary": "안 채운 필드가 null 이 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.10",
+          "id": "order-form",
+          "title": "상품 주문",
+          "summary": "회원과 상품을 고른다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.11",
+          "id": "order-list",
+          "title": "주문 목록 검색",
+          "summary": "동적 쿼리가 화면에 붙는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.12",
+          "id": "order-cancel-web",
+          "title": "주문 취소",
+          "summary": "화면에서 재고가 돌아온다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "설계를 돌아본다",
+      "goal": "만들고 나서 청구서를 읽는다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "entity-to-web",
+          "title": "엔티티를 화면에 내보냈다",
+          "summary": "그 대가를 센다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "lazy-in-view",
+          "title": "화면에서 지연 로딩이 돈다",
+          "summary": "쿼리가 어디서 나가나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "osiv",
+          "title": "OSIV",
+          "summary": "켤까 끌까.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "n-plus-one-here",
+          "title": "이 애플리케이션의 N+1",
+          "summary": "주문 목록에서 센다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "rich-vs-anemic",
+          "title": "도메인 모델 패턴",
+          "summary": "로직이 엔티티에 있을 때와 없을 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "cascade-decision",
+          "title": "영속성 전이를 어디까지",
+          "summary": "주문에는 되고 회원에는 안 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "what-broke",
+          "title": "무엇이 어색했나",
+          "summary": "다음 권이 고칠 것들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.8",
+          "id": "review-summary",
+          "title": "정리",
+          "summary": "설계 결정과 그 청구서.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "다음으로",
+      "goal": "이 애플리케이션 위에 무엇을 올릴까.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "서가 일곱 권과 그다음.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

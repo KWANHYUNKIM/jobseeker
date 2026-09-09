@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "requirements",
+ "no": "1.3",
+ "chapter": 1,
+ "title": "요구사항",
+ "summary": "회원이 상품을 주문한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇을 만들지 안다.",
+  "무엇을 안 만들지 안다.",
+  "요구사항에서 도메인이 어떻게 나오는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**만들 것을 문장으로 먼저** 적는다. **3장이 이것을 엔티티로** 옮긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "기능 목록",
+   "ascii": "   member\n     sign up, list\n\n   item        book / album / movie\n     register, list, edit\n\n   order\n     place an order   (member + item + count)\n     search orders    (member name, status)\n     cancel an order  (stock goes back)\n\n   three domains, eight use cases",
+   "note": "**도메인 셋에 기능 여덟**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "문장으로 적으면",
+   "md": "**회원 기능**\n\n- 회원을 등록한다. **이름과 주소**를 받는다.\n- **같은 이름으로 두 번 가입할 수 없다.**\n- 회원 목록을 본다.\n\n**상품 기능**\n\n- 상품을 등록한다. **책·앨범·영화 중 하나**다.\n- 종류마다 **다른 항목**이 있다 — 책은 저자와 ISBN, 앨범은 아티스트, 영화는 감독과 배우.\n- **재고 수량**을 관리한다.\n- 상품 목록을 보고 **수정**한다.\n\n**주문 기능**\n\n- **회원 한 명이 상품 하나를 수량만큼** 주문한다.\n- 주문하면 **재고가 준다.** 재고보다 많이 주문할 수 없다.\n- 주문에는 **배송 정보**가 딸린다.\n- **회원 이름과 주문 상태**로 주문을 검색한다.\n- 주문을 **취소**하면 재고가 돌아온다. **이미 배송된 것은 취소할 수 없다.**\n\n> **밑줄 친 것들이 3장의 설계 결정**이 된다.\n>\n> | 문장 | 결정 |\n> |---|---|\n> | 이름과 주소 | **주소를 값 타입으로** (3.4절) |\n> | 책·앨범·영화 | **상속 관계 매핑** (3.5절) |\n> | 재고가 준다 | **비즈니스 로직을 엔티티에** (6.1절) |\n> | 배송 정보가 딸린다 | **일대일과 `cascade`** (3.6절) |\n> | 이미 배송된 것은 취소 불가 | **상태를 엔티티가 검사** (7.4절) |"
+  },
+  {
+   "type": "figure",
+   "caption": "일부러 뺀 것",
+   "ascii": "   what the requirements leave out, on purpose\n\n   login and permissions\n   paying for anything\n   more than one item per order in the ui\n   partial cancel\n   categories on the screen\n\n   the entities exist. the screens do not.\n   that gap is deliberate; 9장 talks about it",
+   "note": "**엔티티는 있는데 화면은 없다** — 의도한 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 반쯤만 만드나",
+   "md": "**이 책의 목적이 완성이 아니다.**\n\n| 목적 | |\n|---|---|\n| **설계 결정이 어떻게 흘러가나** | 3장 → 9장 |\n| **JPA 를 실제 크기에서** 쓴다 | 엔티티 여덟 |\n| **결정의 대가를 센다** | 9장 |\n\n**로그인을 만들면 스프링 시큐리티가 절반**을 차지한다. **결제를 만들면 외부 연동이** 들어온다. **둘 다 이 책의 주제가 아니다.**\n\n**그런데 엔티티는 만든다.**\n\n```java\n@Entity\npublic class Category {\n    @ManyToMany\n    private List<Item> items;\n}\n```\n\n**카테고리는 화면이 없는데 엔티티를** 만든다. **다대다 매핑을 실제로 써 보고 왜 안 쓰는지** 확인하기 위해서다(3.7절).\n\n> **\"엔티티는 있고 화면은 없다\" 는 상태가 실무에도** 흔하다. **설계할 때 그린 것을 다 만들지 않는다.**\n>\n> **9.7절에서 그 격차를 다시** 본다 — **안 쓰는 매핑이 있으면 무엇이 나빠지나.**\n\n**주문에 상품이 하나뿐인 것**도 그렇다. **`OrderItem` 은 여럿을 담을 수 있게** 만들어 두고 **화면만 하나**로 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "요구사항을 다시 볼 때",
+   "md": "**3장을 쓰기 전에 이 절로 돌아온다.**\n\n**설계가 막히면 대개 요구사항이 모호한 것**이다.\n\n| 물음 | 답 |\n|---|---|\n| **주문 상태가 몇 개인가** | `ORDER`, `CANCEL` 둘 |\n| **배송 상태는** | `READY`, `COMP` 둘 |\n| **한 회원이 주문을 여러 번** | 그렇다 |\n| **한 주문에 상품 여럿** | **엔티티는 그렇다**, 화면은 하나 |\n| **주문 가격은 언제 정해지나** | **주문 시점** — 나중에 상품 값이 변해도 안 바뀐다 |\n\n**마지막이 자주 놓치는 것**이다.\n\n```java\n// OrderItem 에 orderPrice 를 따로 둔다\nprivate int orderPrice;\n```\n\n> **`item.getPrice()` 를 쓰면 과거 주문의 금액이 오늘 값으로** 바뀐다. **7.2절에서 이 이야기를** 한다.\n\n**요구사항 문장 하나가 필드 하나**를 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 요구사항이 만들 DDL (미리 보기)",
+   "sql": "# --- 3장이 끝나면 이 테이블들이 생긴다 ---\n\n#   member          member_id, name, city, street, zipcode\n#   delivery        delivery_id, city, street, zipcode, status\n#   orders          order_id, member_id, delivery_id, order_date, status\n#   order_item      order_item_id, order_id, item_id, order_price, count\n#   item            item_id, dtype, name, price, stock_quantity,\n#                   author, isbn, artist, etc, actor, director\n#   category        category_id, parent_id, name\n#   category_item   category_id, item_id\n\n#   테이블 일곱\n\n# --- 요구사항 문장이 어디로 갔나 ---\n\n#   \"이름과 주소\"\n#     -> member.city, member.street, member.zipcode\n#        (Address 라는 클래스는 테이블에 없다)\n\n#   \"책 · 앨범 · 영화\"\n#     -> item.dtype 하나에 셋이 들어간다\n#        author, isbn, artist, actor, director 가 한 테이블에\n\n#   \"재고 수량\"\n#     -> item.stock_quantity\n\n#   \"배송 정보가 딸린다\"\n#     -> orders.delivery_id unique\n\n#   \"주문 시점의 가격\"\n#     -> order_item.order_price\n#        (item.price 와 별개다)\n\n#   \"주문 상태\"\n#     -> orders.status check (status in ('ORDER','CANCEL'))\n\n# --- 화면이 없는 테이블 ---\n\n#   category\n#   category_item\n\n#   만들기는 만든다. 3.7절에서 그 이유를 본다.\n\n# --- 아직 아무것도 안 만들었다 ---\n\n#   다음 절부터 프로젝트를 만든다",
+   "note": "**요구사항 문장 하나하나가 컬럼**이 됐다.\n\n**`Address` 클래스가 테이블에 없다** — **값 타입은 필드가 풀린다**(3.4절).\n\n**`item` 한 테이블에 다섯 종류 컬럼**이 들어간다. **상속 매핑의 결과**다(3.5절).\n\n**`order_price` 가 `item.price` 와 별개**다. **\"주문 시점\" 이라는 문장 하나가 만든 컬럼**이다.\n\n**`category` 는 화면이 없는데 테이블이 생긴다.**\n\n**2장에서 프로젝트부터 만든다.**"
+  }
+ ],
+ "recap": [
+  "**도메인 셋에 기능 여덟**이다.",
+  "**요구사항 문장이 그대로 설계 결정**이 된다.",
+  "**주소는 값 타입, 상품은 상속, 배송은 일대일**이다.",
+  "**주문 가격은 주문 시점**에 박제된다 — `order_price`.",
+  "**로그인·결제·부분 취소는 안 만든다.**",
+  "**카테고리는 엔티티만 만들고 화면은 없다** — 다대다를 확인하려고.",
+  "**주문에 상품 여럿은 엔티티만** 지원한다.",
+  "**설계가 막히면 요구사항이 모호한 것**이다.",
+  "**테이블 일곱**이 나온다."
+ ],
+ "drills": [
+  {
+   "task": "요구사항을 문장으로 다시 적어 본다.",
+   "done_when": "밑줄 칠 결정 다섯 개를 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "각 문장이 어떤 컬럼이 될지 예상해 본다.",
+   "done_when": "3장에서 맞춰 볼 목록을 만들었다.",
+   "minutes": 20
+  },
+  {
+   "task": "일부러 뺀 것 다섯 개를 확인한다.",
+   "done_when": "각각 왜 뺐는지 말할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "\"주문 시점의 가격\" 이 왜 필요한지 설명해 본다.",
+   "done_when": "상품 값이 바뀌는 경우를 들었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "도메인은 몇 개인가?",
+   "a": "회원·상품·주문 셋이다."
+  },
+  {
+   "q": "\"책·앨범·영화\" 는 어떤 설계 결정이 되나?",
+   "a": "상속 관계 매핑이다."
+  },
+  {
+   "q": "주문 가격을 왜 따로 두나?",
+   "a": "주문 시점의 값이라 나중에 상품 값이 변해도 안 바뀌어야 한다."
+  },
+  {
+   "q": "카테고리는 왜 만드나?",
+   "a": "다대다 매핑을 실제로 써 보고 왜 안 쓰는지 확인하기 위해서다."
+  },
+  {
+   "q": "무엇을 일부러 뺐나?",
+   "a": "로그인·결제·부분 취소·다중 상품 주문 화면·카테고리 화면이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
