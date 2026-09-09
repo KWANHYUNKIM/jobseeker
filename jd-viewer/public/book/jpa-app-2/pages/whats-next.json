@@ -1,0 +1,136 @@
+{
+ "book": "jpa-app-2",
+ "id": "whats-next",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "다음 단계",
+ "summary": "서가 여덟 권과 그다음.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여덟 권의 관계를 정리한다.",
+  "서가에 빠진 것을 안다.",
+  "다음에 읽을 것을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여덟 번째 책이 끝났다.** **서가를 한 번** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가 여덟 권",
+   "ascii": "   the shelf, eight books\n\n   1  jpa basic          the sql that goes out\n   2  spring core        the container log\n   3  spring mvc 1       the http that went\n   4  spring mvc 2       the http, half of it errors\n   5  spring db 1        the sql, plus connection and tx logs\n   6  spring db 2        the same sql from five technologies\n   7  jpa app 1          what a decision produced\n   8  jpa app 2          the json, and how many queries made it\n\n   the same project runs through 7 and 8",
+   "note": "**7권과 8권이 같은 프로젝트**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "여덟 권이 서로를 어떻게 부르나",
+   "md": "**기술이 층으로** 쌓인다.\n\n| | |\n|---|---|\n| **①** | JPA 자체 — 영속성 컨텍스트, 연관관계, 프록시 |\n| **②** | 스프링 컨테이너 — DI, AOP |\n| **③④** | 웹 계층 — 요청·응답, 예외 |\n| **⑤⑥** | 데이터 접근 — 트랜잭션, JdbcTemplate·MyBatis·JPA |\n| **⑦⑧** | **그 전부를 하나로** |\n\n**이 책이 부른 곳들**\n\n| 부른 곳 | 무엇 |\n|---|---|\n| ① 2.3·2.4절 | 1차 캐시, 동일성 보장 |\n| ① 8.2·8.4절 | 프록시, 즉시 로딩의 N+1 |\n| ① 10.5절 | 페치 조인 |\n| ② 8.5절 | 프록시 내부 호출 |\n| ② 9장 | AOP |\n| ③ 6.5·6.6절 | `@RestController`, 메시지 컨버터 |\n| ④ 8장 | 예외 처리 |\n| ⑤ 5.11절 | 트랜잭션 주의점 |\n| ⑥ 4.5·5장 | `readOnly`, 롤백 규칙 |\n| ⑥ 2.1절 | 비교의 방법 |\n| ⑦ 전체 | 같은 프로젝트 |\n\n> **여덟 권이 독립된 책이 아니라 한 덩어리**다.\n>\n> **어느 절에서든 앞 책을 부른다.** **뒤에서 갚기도** 한다 — **⑤ 7.7절의 동적 쿼리를 여기 7.2절에서** 닫았다.\n\n**각 권이 무엇으로 끝나는지도** 다르다.\n\n| | 끝나는 것 |\n|---|---|\n| ① | 나가는 SQL |\n| ② | 컨테이너 로그 |\n| ③ | 오간 HTTP |\n| ④ | HTTP, 절반이 오류 |\n| ⑤ | SQL + 커넥션·트랜잭션 로그 |\n| ⑥ | SQL. 다섯 기술이 같은 것을 만든다 |\n| ⑦ | 결정이 만든 것 |\n| ⑧ | **JSON 과 쿼리 개수** |\n\n> **눈으로 확인할 수 있는 것으로** 끝난다는 규칙은 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가에 없는 것",
+   "ascii": "   what is missing from the shelf\n\n   querydsl            7.2 only introduced it\n   spring data jpa     7.1 only introduced it\n   testing             no book. every book skipped it.\n   security            the one hole both app books left open\n   architecture        clean, hexagonal, ddd\n\n   the first two have obvious next courses\n   the last three are choices, not sequels",
+   "note": "**앞의 둘은 다음 강의가 분명**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다음에 무엇을 읽나",
+   "md": "**① Querydsl**\n\n> **7.2절에서 소개만** 했다.\n> **동적 쿼리는 실무에서 거의 항상** 필요하다.\n>\n> **1편 8.11절에서 열고 여기서 닫았는데**, **닫은 게 \"이걸 쓰면 된다\" 까지**다.\n> **서브쿼리·`case`·벌크 연산은 안** 다뤘다.\n\n**② 스프링 데이터 JPA**\n\n> **7.1절에서 소개만** 했다.\n> **커스텀 리포지토리, 스펙, 프로젝션, 감사(`@CreatedDate`)가** 남았다.\n\n**③ 테스트**\n\n> **여덟 권이 다 건너뛰었다.**\n> **1편 9.7절 목록에도 \"테스트 부족\" 이** 있었다.\n>\n> **이 책의 주장은 전부 로그로 확인**했는데, **자동화된 검증은** 없다.\n> **`@DataJpaTest`, 쿼리 개수 단언, 테스트 컨테이너**가 다음이다.\n\n**④ 보안**\n\n> **7.3절에서 남은 것 중 가장** 크다.\n> **API 를 아무나 부른다.**\n\n**⑤ 아키텍처**\n\n> **4.8절과 6.3절에서 계층을** 나눴다. **그 이상은 안** 갔다.\n> **클린 아키텍처·헥사고날·DDD 가** 다음이다.\n>\n> **다만 이건 순서가 아니라 선택**이다. **이 규모에는 과할 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 책들을 다시 읽는다면",
+   "md": "**한 번에 다 안 남는다.**\n\n**다시 볼 만한 절**\n\n| | |\n|---|---|\n| **5.12절** | 여섯 버전 표. 실무에서 고를 때 |\n| **6.5절** | 내려가는 순서와 근거 넷 |\n| **6.6절** | 최종 설정 다섯 줄 |\n| **5.13절** | 권장 순서 |\n\n> **나머지는 왜 그런지를 설명하는** 절이다.\n> **한 번 이해하면 표만 보면** 된다.\n\n**실무에서 막혔을 때**\n\n| 증상 | 절 |\n|---|---|\n| 쿼리가 많다 | 4.4·5.3 |\n| 페이징에 경고가 나온다 | 5.6 |\n| `LazyInitializationException` | 6.2·6.3 |\n| `MultipleBagFetchException` | 5.5·5.7 |\n| 무한 재귀 | 2.5·4.1 |\n| `detached entity` | 2.2 |\n\n**마지막으로**\n\n> **이 책의 모든 숫자는 8GB 노트북의 H2 인메모리에서** 나왔다.\n>\n> **3.3절에서 \"노트북의 시간은 못 믿는다\" 고** 했고 **5.12절에서 다시** 말했다.\n>\n> **믿을 건 데이터가 늘 때 쿼리가 어떻게 자라는지**다.\n> **그건 환경과 무관**하다.\n>\n> **직접 재 보는 것이 이 책을 읽는 것보다** 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 마지막",
+   "sql": "# --- 이 책이 만든 마지막 상태 ---\n\n$ curl -s \"localhost:8080/api/v3.1/orders?offset=0&limit=100\" | jq .\n\n#   Hibernate: select ... from orders join delivery join member\n#              offset ? rows fetch first ? rows only\n#   Hibernate: select ... from order_item where order_id in (?,?,...)\n#   Hibernate: select ... from item where item_id in (?,?,...)\n\n#   Session Metrics {\n#       3 JDBC statements were executed\n#       500 entities were loaded\n#       100 collections were fetched\n#   }\n\n{\n  \"data\": [\n    {\n      \"orderId\": 4,\n      \"name\": \"userA\",\n      \"orderDate\": \"2026-09-09T15:12:03.331\",\n      \"orderStatus\": \"ORDER\",\n      \"address\": {\n        \"city\": \"서울\",\n        \"street\": \"1\",\n        \"zipcode\": \"1111\"\n      },\n      \"orderItems\": [\n        {\"itemName\": \"JPA1 BOOK\", \"orderPrice\": 10000, \"count\": 1},\n        {\"itemName\": \"JPA2 BOOK\", \"orderPrice\": 20000, \"count\": 2}\n      ]\n    }\n  ]\n}\n\n#   3.4절에서 못 박은 계약 그대로다\n\n# --- 1.1절에서 미리 보여 준 것과 비교 ---\n\n#   1.1절\n#     v1    entity exposed        31   and it does not even serialize\n#     v2    dto                   31\n#     v3    fetch join             1\n#     v3.1  batch size             3   and paging works\n#     v4    dto direct           1+N\n#     v5    in clause              2\n#     v6    flat                   1   with duplicate rows\n\n#   실제로 잰 것 (주문 1000건, 페이지 100건)\n#     v1    401 queries   entity     500ms\n#     v2    401 queries   dto        480ms\n#     v3      1 query     dto       4218ms   페이징 메모리\n#     v3.1    3 queries   dto         19ms   페이징 SQL\n#     v4    101 queries   dto        187ms\n#     v5      2 queries   dto         14ms\n#     v6      1 query     dto         22ms   페이징 깨짐\n\n#   1.1절에서 \"단조 감소가 아니다\" 라고 했다\n#   실제로 아니었다\n\n# --- 최종 설정 ---\n\nspring:\n  jpa:\n    open-in-view: false\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100\n        query:\n          fail_on_pagination_over_collection_fetch: true\n\n#   세 줄이다\n\n# --- 최종 규칙 ---\n\n#   엔티티를 API 로 주고받지 않는다\n#   ToOne 은 페치 조인, ToMany 는 배치 사이즈\n#   변환은 트랜잭션 안에서\n#   측정하고 한 단계씩 내려간다\n\n#   네 줄이다\n\n# --- 서가 ---\n\n#   ① JPA 기본편          12장 56절\n#   ② 스프링 핵심 원리      9장 61절\n#   ③ 스프링 MVC 1편       9장 71절\n#   ④ 스프링 MVC 2편      13장 99절\n#   ⑤ 스프링 DB 1편        8장 57절\n#   ⑥ 스프링 DB 2편       13장 83절\n#   ⑦ JPA 활용 1편        10장 64절\n#   ⑧ JPA 활용 2편         7장 48절\n\n#   여덟 권 539절\n\n# --- 마지막으로 ---\n\n#   이 책의 숫자는 전부 한 대의 노트북에서 나왔다\n\n#   3.3절: 노트북의 시간은 못 믿는다\n#   5.12절: 믿을 건 데이터가 늘 때 쿼리가 자라는 방식이다\n\n#   직접 재 보는 것이 읽는 것보다 낫다\n\n#   generate_statistics: true\n#   그리고 로그를 본다",
+   "note": "**마지막 응답이 3.4절에서 못 박은 계약 그대로**다.\n\n**1.1절에서 미리 보여 준 표와 실제로 잰 숫자를** 나란히 놨다. **\"단조 감소가 아니다\" 가 맞았다.**\n\n**최종 설정 세 줄, 최종 규칙 네 줄**이다.\n\n**서가가 여덟 권 539절**이 됐다.\n\n**이 책의 숫자는 전부 한 대의 노트북에서** 나왔다. **직접 재 보는 것이 읽는 것보다** 낫다."
+  }
+ ],
+ "recap": [
+  "**서가가 여덟 권**이 됐다 — 기술이 층으로 쌓인다.",
+  "**⑦과 ⑧이 같은 프로젝트**다.",
+  "**여덟 권이 서로를 부른다** — 앞에서 열고 뒤에서 닫는다.",
+  "**각 권이 눈으로 확인할 수 있는 것으로** 끝난다.",
+  "**서가에 없는 것** — Querydsl, 스프링 데이터 JPA, 테스트, 보안, 아키텍처.",
+  "**테스트는 여덟 권이 다 건너뛰었다.**",
+  "**다시 볼 절은 5.12·5.13·6.5·6.6** 이다.",
+  "**최종 설정 세 줄, 규칙 네 줄**이다.",
+  "**직접 재 보는 것이 읽는 것보다** 낫다."
+ ],
+ "drills": [
+  {
+   "task": "서가 여덟 권의 관계를 그린다.",
+   "done_when": "어느 책이 어느 책을 부르는지 표시했다.",
+   "minutes": 20
+  },
+  {
+   "task": "최종 설정과 규칙을 자기 프로젝트에 적용한다.",
+   "done_when": "쿼리 개수가 줄어든 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "자기 프로젝트에서 가장 느린 API 를 잰다.",
+   "done_when": "쿼리 개수를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "다음에 읽을 것을 하나 정한다.",
+   "done_when": "이유를 적었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "서가 여덟 권의 층은?",
+   "a": "JPA → 스프링 컨테이너 → 웹 → 데이터 접근 → 그 전부를 합친 애플리케이션이다."
+  },
+  {
+   "q": "여덟 권이 다 건너뛴 것은?",
+   "a": "테스트다."
+  },
+  {
+   "q": "다시 볼 만한 절은?",
+   "a": "5.12(버전 표), 5.13(권장 순서), 6.5(내려가는 기준), 6.6(최종 설정)이다."
+  },
+  {
+   "q": "최종 규칙 네 줄은?",
+   "a": "엔티티를 API 로 안 보낸다, `ToOne` 페치 조인·`ToMany` 배치, 변환은 트랜잭션 안, 측정하고 한 단계씩이다."
+  },
+  {
+   "q": "이 책의 숫자를 어떻게 대해야 하나?",
+   "a": "환경이 다르니 직접 재 봐야 한다. 믿을 건 데이터가 늘 때 자라는 방식이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용2 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-API개발-성능최적화",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

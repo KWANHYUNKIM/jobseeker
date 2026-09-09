@@ -461,7 +461,7 @@
           "title": "Querydsl",
           "summary": "동적 쿼리를 다섯 번째로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -469,7 +469,7 @@
           "title": "1편의 스물한 개",
           "summary": "무엇이 남았나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -477,7 +477,7 @@
           "title": "두 권이 만든 것",
           "summary": "화면과 API.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -485,7 +485,7 @@
           "title": "다음 단계",
           "summary": "서가 여덟 권과 그다음.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

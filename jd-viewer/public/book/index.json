@@ -1,102 +1,102 @@
 {
-  "updated_at": "2026-09-09",
-  "note": "혼자 읽으려고 쓰는 책. 강의를 옮겨 적은 것이 아니라, 차례만 빌려 와서 내 문장으로 다시 쓴다.",
-  "books": [
-    {
-      "id": "jpa-basic",
-      "title": "자바 ORM 표준 JPA 프로그래밍",
-      "subtitle": "기본편 — 객체와 테이블이 어긋나는 자리에서",
-      "blurb": "SQL 을 손으로 쓰던 사람이 JPA 로 넘어올 때 정확히 어디서 막히는지를 따라가는 책이다. 12장 56절 전부 완성. 매 절이 '이 자바 코드가 어떤 SQL 로 나가는가' 로 끝난다.",
-      "emoji": "🗄️",
-      "chapters": 12,
-      "sections": 56,
-      "written": 56,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "spring-core",
-      "title": "스프링 핵심 원리",
-      "subtitle": "기본편 — 스프링이 없으면 무엇이 불편한지부터",
-      "blurb": "순수 자바로 DI 컨테이너를 직접 만들어 본 다음, 그것이 스프링과 같은 물건임을 확인한다. 어노테이션을 외우는 대신 왜 그것이 있어야 하는지에서 시작한다.",
-      "emoji": "🌱",
-      "chapters": 9,
-      "sections": 61,
-      "written": 61,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "spring-mvc-1",
-      "title": "스프링 MVC",
-      "subtitle": "1편 — 프레임워크가 없는 자리에서 시작한다",
-      "emoji": "🌐",
-      "chapters": 9,
-      "sections": 71,
-      "written": 71,
-      "status": "done",
-      "updated_at": "2026-09-09",
-      "blurb": "서블릿으로 요청을 직접 받아 보고, MVC 프레임워크를 v1 부터 v5 까지 만들어 본 다음, 그것이 DispatcherServlet 과 같은 구조임을 확인한다. 매 절이 실제로 오간 HTTP 로 끝난다."
-    },
-    {
-      "id": "spring-mvc-2",
-      "title": "스프링 MVC",
-      "subtitle": "2편 — 1편이 미뤄 둔 것들을 하나씩 붙인다",
-      "blurb": "검증·예외·인터셉터·파일 업로드. 전부 1편에서 만든 흐름에 끼어드는 것들이고, 절의 절반이 오류에 관한 것이다.",
-      "emoji": "🛡️",
-      "chapters": 13,
-      "sections": 99,
-      "written": 99,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "spring-db-1",
-      "title": "스프링 DB",
-      "subtitle": "1편 — 트랜잭션과 예외, 데이터 계층의 두 문제",
-      "blurb": "JDBC 를 손으로 쓰다가 커넥션을 파라미터로 넘기는 지경까지 간 뒤, 스프링이 그것을 어떻게 걷어내는지 본다. 앞 네 권이 미뤄 둔 Service 계층과 동시성이 여기서 끝난다.",
-      "emoji": "🔌",
-      "chapters": 8,
-      "sections": 57,
-      "written": 57,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "spring-db-2",
-      "title": "스프링 DB",
-      "subtitle": "2편 — 같은 기능을 다섯 가지 기술로",
-      "blurb": "JdbcTemplate 부터 Querydsl 까지 같은 화면을 다섯 번 만든다. 나가는 SQL 이 같으니 코드만 비교하면 된다. 뒤 세 장은 1편이 @Transactional 뒤에 남겨 둔 전파와 롤백 규칙이다.",
-      "emoji": "🧰",
-      "chapters": 13,
-      "sections": 83,
-      "written": 83,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "jpa-app-1",
-      "title": "스프링 부트와 JPA 활용",
-      "subtitle": "1편 — 웹 애플리케이션 하나를 통째로",
-      "blurb": "회원이 상품을 주문하는 애플리케이션을 설계부터 화면까지 만든다. 앞의 여섯 권이 조각으로 답한 것들이 한 프로젝트에서 만난다. 6장에서 편하려고 한 결정이 8장에서 값을 청구하고 9장에서 그것을 읽는다.",
-      "emoji": "🏪",
-      "chapters": 10,
-      "sections": 64,
-      "written": 64,
-      "status": "done",
-      "updated_at": "2026-09-09"
-    },
-    {
-      "id": "jpa-app-2",
-      "title": "스프링 부트와 JPA 활용",
-      "subtitle": "2편 — 응답 하나에 쿼리 몇 개",
-      "blurb": "1편이 31로 센 쿼리를 실제로 줄인다. 같은 JSON 을 여섯 버전으로 만들며 매번 응답과 쿼리 개수를 나란히 놓는다. 31 에서 1 까지 가는 사이에 세 가지 함정이 있다.",
-      "emoji": "📡",
-      "chapters": 7,
-      "sections": 48,
-      "written": 44,
-      "status": "writing",
-      "updated_at": "2026-09-09"
-    }
-  ]
+ "updated_at": "2026-09-09",
+ "note": "혼자 읽으려고 쓰는 책. 강의를 옮겨 적은 것이 아니라, 차례만 빌려 와서 내 문장으로 다시 쓴다.",
+ "books": [
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍",
+   "subtitle": "기본편 — 객체와 테이블이 어긋나는 자리에서",
+   "blurb": "SQL 을 손으로 쓰던 사람이 JPA 로 넘어올 때 정확히 어디서 막히는지를 따라가는 책이다. 12장 56절 전부 완성. 매 절이 '이 자바 코드가 어떤 SQL 로 나가는가' 로 끝난다.",
+   "emoji": "🗄️",
+   "chapters": 12,
+   "sections": 56,
+   "written": 56,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "spring-core",
+   "title": "스프링 핵심 원리",
+   "subtitle": "기본편 — 스프링이 없으면 무엇이 불편한지부터",
+   "blurb": "순수 자바로 DI 컨테이너를 직접 만들어 본 다음, 그것이 스프링과 같은 물건임을 확인한다. 어노테이션을 외우는 대신 왜 그것이 있어야 하는지에서 시작한다.",
+   "emoji": "🌱",
+   "chapters": 9,
+   "sections": 61,
+   "written": 61,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "spring-mvc-1",
+   "title": "스프링 MVC",
+   "subtitle": "1편 — 프레임워크가 없는 자리에서 시작한다",
+   "emoji": "🌐",
+   "chapters": 9,
+   "sections": 71,
+   "written": 71,
+   "status": "done",
+   "updated_at": "2026-09-09",
+   "blurb": "서블릿으로 요청을 직접 받아 보고, MVC 프레임워크를 v1 부터 v5 까지 만들어 본 다음, 그것이 DispatcherServlet 과 같은 구조임을 확인한다. 매 절이 실제로 오간 HTTP 로 끝난다."
+  },
+  {
+   "id": "spring-mvc-2",
+   "title": "스프링 MVC",
+   "subtitle": "2편 — 1편이 미뤄 둔 것들을 하나씩 붙인다",
+   "blurb": "검증·예외·인터셉터·파일 업로드. 전부 1편에서 만든 흐름에 끼어드는 것들이고, 절의 절반이 오류에 관한 것이다.",
+   "emoji": "🛡️",
+   "chapters": 13,
+   "sections": 99,
+   "written": 99,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "spring-db-1",
+   "title": "스프링 DB",
+   "subtitle": "1편 — 트랜잭션과 예외, 데이터 계층의 두 문제",
+   "blurb": "JDBC 를 손으로 쓰다가 커넥션을 파라미터로 넘기는 지경까지 간 뒤, 스프링이 그것을 어떻게 걷어내는지 본다. 앞 네 권이 미뤄 둔 Service 계층과 동시성이 여기서 끝난다.",
+   "emoji": "🔌",
+   "chapters": 8,
+   "sections": 57,
+   "written": 57,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "spring-db-2",
+   "title": "스프링 DB",
+   "subtitle": "2편 — 같은 기능을 다섯 가지 기술로",
+   "blurb": "JdbcTemplate 부터 Querydsl 까지 같은 화면을 다섯 번 만든다. 나가는 SQL 이 같으니 코드만 비교하면 된다. 뒤 세 장은 1편이 @Transactional 뒤에 남겨 둔 전파와 롤백 규칙이다.",
+   "emoji": "🧰",
+   "chapters": 13,
+   "sections": 83,
+   "written": 83,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "jpa-app-1",
+   "title": "스프링 부트와 JPA 활용",
+   "subtitle": "1편 — 웹 애플리케이션 하나를 통째로",
+   "blurb": "회원이 상품을 주문하는 애플리케이션을 설계부터 화면까지 만든다. 앞의 여섯 권이 조각으로 답한 것들이 한 프로젝트에서 만난다. 6장에서 편하려고 한 결정이 8장에서 값을 청구하고 9장에서 그것을 읽는다.",
+   "emoji": "🏪",
+   "chapters": 10,
+   "sections": 64,
+   "written": 64,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  },
+  {
+   "id": "jpa-app-2",
+   "title": "스프링 부트와 JPA 활용",
+   "subtitle": "2편 — 응답 하나에 쿼리 몇 개",
+   "blurb": "1편이 31로 센 쿼리를 실제로 줄인다. 같은 JSON 을 여섯 버전으로 만들며 매번 응답과 쿼리 개수를 나란히 놓는다. 31 에서 1 까지 가는 사이에 세 가지 함정이 있다.",
+   "emoji": "📡",
+   "chapters": 7,
+   "sections": 48,
+   "written": 48,
+   "status": "done",
+   "updated_at": "2026-09-09"
+  }
+ ]
 }

@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-2",
+ "id": "two-books",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "두 권이 만든 것",
+ "summary": "화면과 API.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 권의 관계를 정리한다.",
+  "숫자를 한자리에 모은다.",
+  "무엇을 배웠는지 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 프로젝트를 두 권이** 다뤘다. **한 권은 만들고 한 권은 고쳤다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 권의 구조",
+   "ascii": "   what the two books did, side by side\n\n   book 7   build it\n            requirements -> entities -> repositories\n            -> services -> screens\n            ends by counting 21 things wrong\n\n   book 8   make it not slow\n            expose -> measure -> fetch join -> batch\n            -> osiv -> defaults\n            ends by closing 6 of them\n\n   one made the debt, the other paid part of it",
+   "note": "**빚을 지고 일부를 갚았다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1편이 일부러 남긴 것",
+   "md": "**1편은 안티패턴을 일부러** 만들었다.\n\n| 1편 | 어디서 |\n|---|---|\n| 엔티티를 화면에 넘김 | 8.4절 |\n| `merge` 로 수정 | 8.10절 |\n| 동적 쿼리를 문자열로 | 8.11절 |\n| 유니크 제약 없이 | 3.3절 |\n| OSIV 켜 둠 | 9.3절 |\n\n> **9장에서 청구서를 받았다.** **\"하나도 테스트를 안 깼다\"** 로 끝났다.\n\n**이 책이 그중 여섯을 갚았다.**\n\n> **7.3절에서 셌다.**\n\n**왜 처음부터 잘 안 만들었나**\n\n> **문제를 안 겪으면 처방이 안 보인다.**\n>\n> **1편 8.4절에서 엔티티를 화면에 넘겼기 때문에** **2.5절의 `Infinite recursion` 이 이해**된다.\n> **1편 8.10절에서 `merge` 를 썼기 때문에** **2.4절의 변경 감지가 왜 다른지** 안다.\n>\n> **이 책도 같은 방법을 썼다** — **4.1절의 V1, 5.2절의 절반만 DTO.**\n\n**두 권의 공통 방법**\n\n| | |\n|---|---|\n| **되는 것부터** | 나쁘게라도 만든다 |\n| **대가를 잰다** | 로그와 숫자로 |\n| **고친다** | 왜 그래야 하는지 알고 |\n| **다시 잰다** | 나아졌는지 확인 |"
+  },
+  {
+   "type": "figure",
+   "caption": "두 권이 낸 숫자",
+   "ascii": "   every number these two books produced\n\n   book 7\n     27 lines of ddl from 6 entities\n     31 queries for one order list screen\n     21 problems in the final review\n\n   book 8\n     17 -> 1    member list, chapter 2\n      5 -> 1    simple order list, chapter 4\n     31 -> 3    order list with items, chapter 5\n      2x        throughput after osiv off\n\n   the 31 appears in both. that is the seam.",
+   "note": "**31 이 두 권에 다 나온다** — 그게 이음매다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "31 이라는 숫자",
+   "md": "**1편 9.4절에서 처음** 나왔다.\n\n```\nGET /orders\nSession Metrics { 31 JDBC statements were executed }\n```\n\n> **주문 목록 화면 하나**다. **주문 10건에 쿼리 31개**.\n\n**1편은 계단만 보여 주고** 안 고쳤다.\n\n```\n31 -> 21 -> 11 -> 3 -> 1\n```\n\n> **9.8절의 \"다시 만들면 바꿀 셋\" 에 넣고** 넘겼다.\n\n**이 책 1.2절에서 그걸 가져왔다.**\n\n> **\"31 을 1 로 줄인다\" 가 책의 부제**였다.\n\n**실제로는 3 이** 됐다.\n\n| | |\n|---|---|\n| **1이 목표가 아니었다** | 5.4절에서 1은 응답이 틀렸다 |\n| **3이 답이었다** | 5.7절의 V3.1 |\n| **2도 있었다** | 5.10절의 V5, 코드 세 배 |\n\n> **1.1절에서 \"단조 감소가 아니다\" 라고 미리** 말했다.\n>\n> **책을 다 쓰고 보면 그 문장이 결론**이다.\n\n**그리고 화면도 3 이** 됐다.\n\n> **설정 한 줄이 화면과 API 를 같이** 고쳤다(5.7절).\n>\n> **1편이 만든 화면이 2편의 설정으로** 빨라졌다. **두 권이 한 프로젝트인 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "두 권을 읽고 남는 것",
+   "md": "**기술 셋**\n\n| | |\n|---|---|\n| **엔티티 설계** | 1편 3장 |\n| **N+1 진단과 해결** | 2편 4·5장 |\n| **계층 구조** | 1편 4장, 2편 4.8·6.3절 |\n\n**습관 셋**\n\n| | |\n|---|---|\n| **로그를 켜고 본다** | 1편 2.6절부터 |\n| **숫자로 말한다** | \"느린 것 같다\" 가 아니라 |\n| **고치기 전에 잰다** | 2편 6.5절 |\n\n**판단 기준 셋**\n\n| | |\n|---|---|\n| **엔티티를 API 로 안 보낸다** | 2.8절 |\n| **`ToOne` 은 페치 조인, `ToMany` 는 배치** | 5.13절 |\n| **싼 단계를 먼저** | 6.5절 |\n\n**가장 오래 남을 것 하나를 고르면**\n\n> **\"응답을 고정하고 그 아래 숫자를 본다\"** 다.\n>\n> **1.1절에서 정한 방법**이다. **매 절이 JSON 과 쿼리 개수로** 끝났다.\n>\n> **최적화가 응답을 바꾸면 최적화가 아니다.** **5.4절과 5.11절에서 실제로** 겪었다.\n>\n> **이건 JPA 이야기가** 아니다. **무엇을 고칠 때든 같다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 두 권의 처음과 끝",
+   "sql": "# --- 1편의 첫 로그 (2.5절) ---\n\n#   Hibernate: create table member (\n#       member_id bigint not null,\n#       city varchar(255),\n#       name varchar(255),\n#       street varchar(255),\n#       zipcode varchar(255),\n#       primary key (member_id)\n#   )\n\n#   엔티티 하나가 만든 테이블 하나\n\n# --- 1편의 마지막 로그 (9.4절) ---\n\nGET /orders\n\n#   Session Metrics { 31 JDBC statements were executed }\n\n#   200 OK\n#   Content-Type: text/html\n\n#   화면 하나에 쿼리 31개\n\n# --- 2편의 첫 로그 (2.2절) ---\n\nPOST /api/v1/members\n{\"name\": \"hello\", \"id\": 100}\n\n#   500 Internal Server Error\n#   detached entity passed to persist\n\n#   엔티티를 파라미터로 받은 대가\n\n# --- 2편의 마지막 로그 ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   DEBUG JpaTransactionManager : Beginning JPA transaction ... readOnly=true\n\n#   Hibernate:\n#     select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#            d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#            m1_0.name, m1_0.street, m1_0.zipcode,\n#            o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     offset ? rows fetch first ? rows only\n\n#   Hibernate:\n#     select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#            oi1_0.item_id, oi1_0.order_price\n#     from order_item oi1_0 where oi1_0.order_id in (?,?,...)\n\n#   Hibernate:\n#     select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#            i1_0.stock_quantity, ... from item i1_0\n#     left join album ... left join book ... left join movie ...\n#     where i1_0.item_id in (?,?,...)\n\n#   DEBUG JpaTransactionManager : Committing JPA transaction\n#   DEBUG HikariPool : Pool stats (total=10, active=0, idle=10, waiting=0)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[\n#     {\"orderId\":4,\"name\":\"userA\",\n#      \"orderDate\":\"2026-09-09T15:12:03.331\",\"orderStatus\":\"ORDER\",\n#      \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},\n#      \"orderItems\":[\n#        {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#        {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}]},\n#     ...\n#   ]}\n\n#   같은 데이터, 같은 도메인\n#   쿼리 3개, 커넥션은 서비스 끝에 반납\n\n# --- 1편의 화면도 ---\n\nGET /orders\n\n#   (OSIV 를 끄기 전 기준)\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   31 -> 3\n\n#   화면 코드는 한 줄도 안 고쳤다\n#   설정 한 줄과 리포지토리 메서드 하나다\n\n# --- 두 권이 낸 숫자 ---\n\n#   1편\n#     엔티티 6개 -> DDL 27줄\n#     화면 하나 -> 쿼리 31개\n#     마지막 점검 -> 문제 21개\n\n#   2편\n#     회원 목록  17 -> 1\n#     주문 목록   5 -> 1\n#     주문+상품  31 -> 3\n#     OSIV 끄고 처리량 2배\n#     문제 21개 중 6개 닫음\n\n# --- 마지막 확인 ---\n\n$ grep -rn \"JsonIgnore\\|EAGER\\|merge(\" src/main/java/jpabook/jpashop/\n\n#   (결과 없음)\n\n#   1편이 남긴 흔적이 코드에서 사라졌다\n\n# --- 다음 절에서 ---\n\n#   서가 여덟 권과 그다음",
+   "note": "**1편의 첫 로그가 `create table`** 이었고 **마지막이 31**이었다.\n\n**2편의 첫 로그가 `detached entity passed to persist`** 였고 **마지막이 쿼리 3개**다.\n\n**1편의 화면도 31 → 3** 이다. **화면 코드는 한 줄도 안 고쳤다.**\n\n**`JsonIgnore`·`EAGER`·`merge(` 를 `grep` 하면 아무것도 안** 나온다. **1편이 남긴 흔적이 사라졌다.**"
+  }
+ ],
+ "recap": [
+  "**1편은 만들고 2편은** 고쳤다.",
+  "**1편이 안티패턴을 일부러** 만들었고 9장에서 청구서를 받았다.",
+  "**이 책이 그중 여섯을** 갚았다.",
+  "**문제를 안 겪으면 처방이 안 보인다** — 두 권의 공통 방법이다.",
+  "**31 이 두 권에 다 나온다** — 그게 이음매다.",
+  "**1이 목표가 아니었고 3이 답**이었다.",
+  "**설정 한 줄이 화면과 API 를 같이** 고쳤다.",
+  "**남는 건 기술 셋·습관 셋·판단 기준 셋**이다.",
+  "**가장 오래 남을 것은 \"응답을 고정하고 그 아래 숫자를 본다\"** 다."
+ ],
+ "drills": [
+  {
+   "task": "1편 9.4절과 이 책 5.7절의 로그를 나란히 놓는다.",
+   "done_when": "31 과 3 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`grep` 으로 안티패턴 흔적을 찾는다.",
+   "done_when": "아무것도 안 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "두 권에서 배운 판단 기준 셋을 적는다.",
+   "done_when": "자기 말로 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 권의 관계는?",
+   "a": "1편이 만들며 빚을 지고 2편이 그중 여섯을 갚았다."
+  },
+  {
+   "q": "왜 1편이 안티패턴을 일부러 만들었나?",
+   "a": "문제를 안 겪으면 처방이 왜 필요한지 안 보이기 때문이다."
+  },
+  {
+   "q": "31 은 어디에 나오나?",
+   "a": "1편 9.4절과 이 책 1.2·5.7절이다. 두 권의 이음매다."
+  },
+  {
+   "q": "31 이 결국 몇이 됐나?",
+   "a": "3 이다. 1 이 목표가 아니었다."
+  },
+  {
+   "q": "가장 오래 남을 방법은?",
+   "a": "응답을 고정하고 그 아래 숫자를 보는 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용2 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-API개발-성능최적화",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

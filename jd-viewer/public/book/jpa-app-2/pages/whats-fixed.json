@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-2",
+ "id": "whats-fixed",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "1편의 스물한 개",
+ "summary": "무엇이 남았나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "1편 9.7절의 목록을 다시 센다.",
+  "닫힌 것과 남은 것을 가른다.",
+  "남은 것이 어디 몫인지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 9.7절에 스물한 개가** 있었다. **1.2절에서 넷 갈래를** 가져왔다."
+  },
+  {
+   "type": "figure",
+   "caption": "다시 센 스물한 개",
+   "ascii": "   the twenty one, counted again\n\n   entity on the wire       fixed   chapter 2\n   n+1 measured only        fixed   chapter 4, 5\n   dto only discussed       fixed   chapter 2, 4, 5\n   osiv left on             fixed   chapter 6\n   merge for updates        fixed   2.4\n   dynamic query as string  fixed   7.2\n\n   member.name not unique   open\n   no not null              open\n   no index                 open\n   fk name unreadable       open\n   hidden id tampering      open\n   no authentication        open\n   error handling (3)       partly. api side done, screens not.\n   business rules (3)       open\n   two more                 open\n\n   six closed, the rest is not this book",
+   "note": "**여섯이 닫혔다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "닫힌 여섯",
+   "md": "**① 엔티티를 화면·API 에 노출**\n\n> **2.8절의 규칙**이다. **API 는 예외 없이 DTO**.\n> **6.6절에서 도메인에 웹 애노테이션이 하나도 없는 것을** 확인했다.\n>\n> **화면은 안 고쳤다.** **그건 아래에 남긴다.**\n\n**② N+1 을 측정만 함**\n\n> **1편 9.4절의 31 이 3 이** 됐다(5.7절).\n> **화면도 같이** 고쳐졌다 — 설정 한 줄이라.\n\n**③ DTO 를 논의만 함**\n\n> **요청 DTO(2.3), 응답 DTO(2.6, 4.3, 5.2), 조회 전용 DTO(4.6, 5.9)** 를 다 만들었다.\n\n**④ OSIV 를 켜 둠**\n\n> **6.2절에서 껐다.** **6.3절에서 깨진 것을 고쳤다.**\n> **판단 기준을 6.1절에** 뒀다.\n\n**⑤ 수정에 `merge` 를 씀**\n\n> **1편 8.10절**이다. **2.4절에서 변경 감지로** 만들었다.\n> **1편 9.8절의 \"다시 만들면 바꿀 셋\" 중 하나**였다.\n\n**⑥ 동적 쿼리를 문자열로**\n\n> **1편 8.11절**이다. **7.2절에서 Querydsl 로** 닫았다.\n>\n> **「DB 1편」 7.7절에서 열고 「DB 2편」 8.3절에서 언급하고** 여기서 끝났다.\n\n**여섯 중 넷이 1.2절에서 가져온 것**이고, **둘은 덤**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "남은 것은 누구 몫인가",
+   "ascii": "   whose book each leftover belongs to\n\n   db constraints      a migration tool. flyway or liquibase.\n   security            spring security\n   error handling      mvc 2, chapter 8\n   business rules      a few lines each. nobody writes a book.\n   test coverage       a test book\n\n   the list is not shrinking because it was never one topic",
+   "note": "**한 주제가 아니었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "남은 열다섯",
+   "md": "**DB 제약 넷**\n\n| | |\n|---|---|\n| `member.name` 유니크 없음 | **동시 가입이 뚫린다** |\n| `not null` 없음 | |\n| 인덱스 없음 | **6.5절에서 실행 계획으로 봤다** |\n| FK 이름이 자동 생성 | |\n\n> **`ddl-auto: create` 로 개발**했다. **운영 스키마는 마이그레이션 도구가** 관리한다.\n>\n> **Flyway·Liquibase 의 몫**이다. **JPA 가 만든 DDL 을 운영에 쓰지** 않는다.\n\n**보안 둘**\n\n| | |\n|---|---|\n| `hidden` id 조작 | **실제 취약점** |\n| 인증·인가 없음 | |\n\n> **API 가 되면서 더 커졌다.** **`/api/v2/members` 를 아무나** 부른다.\n>\n> **스프링 시큐리티**다.\n\n**예외 처리 셋 — 절반**\n\n> **2.7절에서 API 쪽은** 했다. **화면 쪽 오류 페이지는 안** 했다.\n> **중복 회원 `409` 도 안 했다**(2.8절).\n>\n> **「MVC 2편」 8장**의 주제다.\n\n**비즈니스 규칙 셋**\n\n| | |\n|---|---|\n| 주문 수량 상한 없음 | |\n| 취소 가능 기간 없음 | |\n| 배송 상태 검증 부족 | |\n\n> **각각 몇 줄**이다. **책이 될 주제가** 아니다.\n\n**나머지 셋**\n\n> **화면의 엔티티 노출, 테스트 부족, 로깅 부재**다.\n>\n> **첫째는 6.6절에서 선택지 셋을 적었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "목록이 줄지 않는 이유",
+   "md": "**두 권을 다 읽어도 열다섯이** 남는다.\n\n**그게 정상**이다.\n\n> **1편 9.7절의 목록은 한 주제가** 아니었다. **\"이 프로젝트에 없는 것 전부\"** 였다.\n>\n> **스키마·보안·예외·검증·테스트·로깅**이 다 들어 있다.\n> **각각이 다른 책**이다.\n\n**이 두 권이 한 것**\n\n> **\"JPA 로 만든 애플리케이션이 느린 이유\" 하나**를 끝까지 팠다.\n>\n> **1편에서 만들고 재고**, **2편에서 고쳤다.**\n\n**남은 것을 아는 게 성과**다.\n\n> **1편 9.7절을 쓸 때는 \"뭐가 없는지\" 를 세는 게 목적**이었다.\n> **지금은 \"뭐가 남았고 그게 어느 책 몫인지\" 를** 안다.\n>\n> **모르는 것을 모르는 상태에서 아는 상태로** 온 것이다.\n\n**다음에 뭘 읽을지도 여기서** 나온다.\n\n| 남은 것 | 다음 |\n|---|---|\n| DB 제약·마이그레이션 | Flyway 문서, DB 설계 |\n| 보안 | 스프링 시큐리티 |\n| 테스트 | 테스트 코드 강의 |\n| 로깅·모니터링 | APM, 로그 수집 |\n\n> **7.5절에서 서가와 같이** 정리한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 남은 것을 확인한다",
+   "sql": "# --- 동시 가입이 뚫리는지 ---\n\n$ for i in 1 2 3; do\n>   curl -X POST localhost:8080/api/v2/members \\\n>        -H 'Content-Type: application/json' \\\n>        -d '{\"name\":\"동시가입\"}' &\n> done\n\n#   Hibernate: select ... from member where m1_0.name=?  [동시가입]\n#   Hibernate: select ... from member where m1_0.name=?  [동시가입]\n#   Hibernate: select ... from member where m1_0.name=?  [동시가입]\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n\n#   {\"id\":11}\n#   {\"id\":12}\n#   {\"id\":13}\n\nselect name, count(*) from member group by name having count(*) > 1;\n\n#   NAME     | COUNT(*)\n#   ---------+---------\n#   동시가입   | 3\n\n#   셋 다 들어갔다\n\n#   1편 5.2절의 validateDuplicateMember 가 막지 못한다\n#   select 후 insert 사이에 다른 트랜잭션이 들어온다\n\n#   1편 3.3절에서 지적하고 안 고친 것이다\n#   여전히 안 고쳤다\n\n# --- 고치려면 ---\n\n@Column(unique = true)\nprivate String name;\n\n#   Hibernate: alter table member add constraint UK_x unique (name)\n\n#   그리고 애플리케이션에서 잡는다\n\n#   catch (DataIntegrityViolationException e) -> 409\n\n#   두 줄이다. 그런데 이 책의 주제가 아니라 안 한다\n\n# --- 인증이 없는지 ---\n\n$ curl -X POST localhost:8080/api/v2/members \\\n>      -H 'Content-Type: application/json' \\\n>      -d '{\"name\":\"아무나\"}'\n\n#   200 OK\n#   {\"id\": 14}\n\n#   헤더도 쿠키도 없이 들어갔다\n\n$ curl localhost:8080/api/v3.1/orders\n\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",\n#             \"address\":{\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"},...}]}\n\n#   남의 주문과 주소가 그냥 나온다\n\n#   1편 8.7절에서 지적한 것보다 심하다\n#   화면은 그래도 폼을 거쳤다\n\n# --- 중복 회원이 409 인지 ---\n\nPOST /api/v2/members\n{\"name\": \"userA\"}\n\n#   400 Bad Request\n#   {\"code\": \"INTERNAL\", \"message\": \"서버 오류가 발생했습니다\"}\n\n#   2.7절에서 열어 둔 것이다\n#   IllegalStateException 이라 마지막 핸들러가 잡는다\n\n#   409 가 맞다\n\n# --- 인덱스가 없는지 ---\n\nexplain analyze select * from orders where order_date > '2026-01-01';\n\n#   Seq Scan on orders (cost=0.00..18334.00 rows=1000000 width=44)\n\n#   전체 스캔이다\n\n# --- 화면이 아직 깨져 있는지 ---\n\nGET /orders\n\n#   500 Internal Server Error\n#   LazyInitializationException\n\n#   6.2절에서 깨진 것이다\n\n# --- 그래서 남은 것 ---\n\n#   닫힌 것 6\n#     엔티티 노출(API), N+1, DTO, OSIV, merge, 동적 쿼리\n\n#   남은 것 15\n#     DB 제약 4, 보안 2, 예외 처리 2(API 는 함), 비즈니스 규칙 3,\n#     화면 엔티티 노출 1, 테스트 1, 로깅 1, 인덱스 1\n\n#   각각 다른 책이다\n\n# --- 다음 절에서 ---\n\n#   두 권이 만든 것을 본다",
+   "note": "**동시 가입이 실제로 뚫린다.** **같은 이름 셋이** 들어갔다. **1편 3.3절에서 지적하고 안 고친 것**이다.\n\n**인증 없이 남의 주문과 주소가 그냥** 나온다. **화면은 그래도 폼을** 거쳤다.\n\n**중복 회원이 아직 `INTERNAL`** 이다 — 2.7절에서 열어 둔 것.\n\n**인덱스가 없어 전체 스캔**이다.\n\n**`/orders` 화면이 6.2절에서 깨진 채**다.\n\n**닫힌 것 여섯, 남은 것 열다섯**이다. **각각 다른 책**이다."
+  }
+ ],
+ "recap": [
+  "**1편 9.7절의 스물한 개 중 여섯이** 닫혔다.",
+  "**엔티티 노출·N+1·DTO·OSIV** 가 1.2절에서 가져온 넷이다.",
+  "**`merge` 와 동적 쿼리는** 덤이다.",
+  "**동시 가입이 실제로** 뚫린다 — 유니크 제약이 없다.",
+  "**인증 없이 남의 주문과 주소가** 나온다.",
+  "**남은 열다섯은 각각 다른 책** 몫이다.",
+  "**목록이 안 줄어드는 건 한 주제가 아니어서**다.",
+  "**이 두 권은 \"느린 이유\" 하나를 끝까지** 팠다.",
+  "**남은 것을 아는 게 성과**다 — 다음에 뭘 읽을지가 여기서 나온다."
+ ],
+ "drills": [
+  {
+   "task": "동시 가입을 재현한다.",
+   "done_when": "같은 이름이 여러 건 들어가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "인증 없이 API 를 부른다.",
+   "done_when": "남의 주소가 나오는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편 9.7절의 목록에 O/X 를 표시한다.",
+   "done_when": "여섯과 열다섯을 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "남은 열다섯을 주제별로 묶는다.",
+   "done_when": "어느 책 몫인지 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "닫힌 여섯은?",
+   "a": "엔티티 노출(API), N+1, DTO, OSIV, `merge`, 동적 쿼리다."
+  },
+  {
+   "q": "동시 가입이 왜 뚫리나?",
+   "a": "select 후 insert 사이에 다른 트랜잭션이 들어오는데 유니크 제약이 없다."
+  },
+  {
+   "q": "API 가 되면서 보안이 왜 더 나빠졌나?",
+   "a": "화면은 폼을 거쳤지만 API 는 아무나 직접 부른다."
+  },
+  {
+   "q": "목록이 왜 안 줄어드나?",
+   "a": "한 주제가 아니라 \"이 프로젝트에 없는 것 전부\" 였기 때문이다."
+  },
+  {
+   "q": "이 두 권이 한 것은?",
+   "a": "\"JPA 로 만든 애플리케이션이 느린 이유\" 하나를 끝까지 판 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}

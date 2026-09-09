@@ -1,0 +1,142 @@
+{
+ "book": "jpa-app-2",
+ "id": "querydsl-intro",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "Querydsl",
+ "summary": "동적 쿼리를 다섯 번째로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "1편 8.11절이 남긴 문제를 닫는다.",
+  "Querydsl 이 무엇을 바꾸는지 안다.",
+  "이 책의 DTO 조회가 어떻게 바뀌는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 8.11절에서 JPQL 문자열을 이어 붙였다.** **\"이건 아니다\" 로** 끝냈다."
+  },
+  {
+   "type": "figure",
+   "caption": "그때 그 코드",
+   "ascii": "   the problem book 5 left open, one more time\n\n   String jpql = \"select o from Order o join o.member m\";\n   boolean isFirstCondition = true;\n\n   if (search.getOrderStatus() != null) {\n     if (isFirstCondition) { jpql += \" where\"; isFirstCondition = false; }\n     else { jpql += \" and\"; }\n     jpql += \" o.status = :status\";\n   }\n\n   string concatenation deciding where the word where goes",
+   "note": "**`where` 를 어디에 넣을지 `boolean` 이 정한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "문자열의 문제 넷",
+   "md": "**① 컴파일러가 안 잡는다**\n\n```java\njpql += \" o.staus = :status\";   // 오타\n```\n\n> **애플리케이션이 뜨고 그 조건이 걸릴 때** 터진다.\n\n**② 띄어쓰기를 손으로 챙긴다**\n\n```java\n\"select o from Order o\" +\n\" join o.member m\"        // 앞의 공백을 빼먹으면 붙는다\n```\n\n> **`Order ojoin`** 이 된다.\n\n**③ 조건이 늘면 분기가 곱**\n\n> **조건 3개면 `where` 유무 판단이 세 군데**다.\n> **하나만 빠뜨려도 `where and`** 가 된다.\n\n**④ 파라미터 바인딩이 따로**\n\n```java\nTypedQuery<Order> query = em.createQuery(jpql, Order.class);\nif (search.getOrderStatus() != null) {\n    query = query.setParameter(\"status\", search.getOrderStatus());\n}\n```\n\n> **조건 추가와 바인딩이 두 군데**다. **한쪽만 고치면** 터진다.\n\n**JPA Criteria 는 어떤가**\n\n> **1편에서 언급만** 했다. **컴파일 검증은 되는데 읽을 수가** 없다.\n>\n> ```java\n> CriteriaBuilder cb = em.getCriteriaBuilder();\n> CriteriaQuery<Order> cq = cb.createQuery(Order.class);\n> Root<Order> o = cq.from(Order.class);\n> Join<Object, Object> m = o.join(\"member\", JoinType.INNER);\n> ```\n>\n> **무슨 SQL 이 나갈지 안** 보인다. **실무에서 안 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "Querydsl 로 쓰면",
+   "ascii": "   the same thing in querydsl\n\n   queryFactory\n     .select(order)\n     .from(order)\n     .join(order.member, member)\n     .where(statusEq(search.getOrderStatus()),\n            nameLike(search.getMemberName()))\n     .fetch();\n\n   a null condition is simply ignored\n   no if, no string, no isFirstCondition",
+   "note": "**`null` 조건은 그냥 무시**된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "조건을 메서드로",
+   "code": "public List<Order> findAll(OrderSearch search) {\n    return queryFactory\n            .select(order)\n            .from(order)\n            .join(order.member, member)\n            .where(statusEq(search.getOrderStatus()),\n                   nameLike(search.getMemberName()))\n            .limit(1000)\n            .fetch();\n}\n\nprivate BooleanExpression statusEq(OrderStatus statusCond) {\n    return statusCond == null ? null : order.status.eq(statusCond);\n}\n\nprivate BooleanExpression nameLike(String nameCond) {\n    return StringUtils.hasText(nameCond) ? member.name.like(nameCond) : null;\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 좋아지나",
+   "md": "**`where` 에 `null` 을 넘기면 그 조건이** 빠진다.\n\n> **`if` 가 사라진다.** **조건이 열 개여도 `where` 안이 열 줄**이다.\n\n**조건을 조합할 수 있다.**\n\n```java\nprivate BooleanExpression activeOrder(OrderSearch s) {\n    return statusEq(s.getOrderStatus()).and(nameLike(s.getMemberName()));\n}\n```\n\n> **메서드가 재사용**된다. **다른 쿼리에서도** 쓴다.\n\n**컴파일러가 잡는다.**\n\n```java\norder.staus.eq(...)   // 컴파일 오류\n```\n\n> **`QOrder` 클래스가 빌드 때 생성**된다. **엔티티 필드가 곧 자바 필드**다.\n>\n> **4.7절에서 \"V4 는 컴파일 검증을 반납한다\" 고** 했다. **Querydsl 이 그걸 돌려준다.**\n\n**DTO 조회도 코드가** 된다.\n\n```java\nqueryFactory\n    .select(Projections.constructor(OrderQueryDto.class,\n            order.id, member.name, order.orderDate,\n            order.status, delivery.address))\n    .from(order)\n    .join(order.member, member)\n    .join(order.delivery, delivery)\n    .fetch();\n```\n\n> **4.6절의 `new jpabook.jpashop...` 문자열이** 사라진다.\n>\n> **패키지 이름을 안 적는다.** **생성자 시그니처가 안 맞으면 컴파일 오류**다.\n\n**페치 조인도** 된다.\n\n```java\n.join(order.member, member).fetchJoin()\n```\n\n> **5.7절의 V3.1 이 그대로** 표현된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "5.13절의 순서에서 어디인가",
+   "md": "**Querydsl 은 4단계의 도구**다.\n\n```\n1  엔티티 조회\n2  ToOne 페치 조인          <- Querydsl 로 써도 된다\n3  배치 사이즈              <- 설정. Querydsl 무관\n4  DTO 직접 조회            <- Querydsl 이 여기서 빛난다\n5  네이티브 SQL\n```\n\n> **1~3 단계에도 쓸 수 있는데 이득이** 적다.\n> **JPQL 문자열이 짧아 문제가 안** 된다.\n\n**4단계에서 이득이 크다.**\n\n| | JPQL | Querydsl |\n|---|---|---|\n| 패키지 이름 | **적는다** | 안 적는다 |\n| 오타 | **런타임** | **컴파일** |\n| 동적 조건 | **문자열 조립** | `null` 무시 |\n| 재사용 | 안 된다 | **메서드로** |\n\n**대가**\n\n| | |\n|---|---|\n| **빌드 설정** | `Q` 클래스 생성 플러그인 |\n| **의존성** | 하나 더 |\n| **`Q` 클래스** | 빌드 산출물이 는다 |\n| **학습** | API 를 익혀야 한다 |\n\n> **동적 쿼리가 하나도 없으면 안 넣어도** 된다.\n>\n> **이 책은 3.4절에서 검색 조건을 뺐다.** **그래서 안 썼다.**\n>\n> **실무에서 검색 조건 없는 목록 화면이 있나.** **거의 없다.** **그래서 대개** 넣는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 1편 8.11절의 문자열 방식 ---\n\nGET /orders?orderStatus=ORDER&memberName=userA\n\n#   Hibernate:\n#     select o1_0.order_id, ... from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     where o1_0.status=? and m1_0.name like ?\n\n#   binding parameter (1:VARCHAR) <- [ORDER]\n#   binding parameter (2:VARCHAR) <- [userA]\n\n#   된다. 그런데 이걸 만든 코드가\n\n#     String jpql = \"select o from Order o join o.member m\";\n#     boolean isFirstCondition = true;\n#     if (...) { if (isFirstCondition) { jpql += \" where\"; ... } }\n#     ... 30줄\n\n# --- 조건을 하나만 주면 ---\n\nGET /orders?orderStatus=ORDER\n\n#   Hibernate:\n#     select ... from orders o1_0 join member m1_0 on ...\n#     where o1_0.status=?\n\n#   where 하나다\n\n# --- 조건을 안 주면 ---\n\nGET /orders\n\n#   Hibernate:\n#     select ... from orders o1_0 join member m1_0 on ...\n\n#   where 가 없다\n\n#   세 경우를 문자열로 만들어 내야 했다\n\n# --- Querydsl 로 같은 셋 ---\n\nGET /orders?orderStatus=ORDER&memberName=userA\n\n#   Hibernate:\n#     select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#            o1_0.order_date, o1_0.status\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     where o1_0.status=? and m1_0.name like ?\n#     fetch first ? rows only\n\nGET /orders?orderStatus=ORDER\n\n#   Hibernate:\n#     select ... from orders o1_0 join member m1_0 on ...\n#     where o1_0.status=?\n#     fetch first ? rows only\n\nGET /orders\n\n#   Hibernate:\n#     select ... from orders o1_0 join member m1_0 on ...\n#     fetch first ? rows only\n\n#   SQL 이 같다\n\n#   코드는\n\n#     .where(statusEq(search.getOrderStatus()),\n#            nameLike(search.getMemberName()))\n\n#   두 줄이다\n\n# --- DTO 조회를 Querydsl 로 ---\n\nqueryFactory\n    .select(Projections.constructor(OrderQueryDto.class,\n            order.id, member.name, order.orderDate,\n            order.status, delivery.address))\n    .from(order)\n    .join(order.member, member)\n    .join(order.delivery, delivery)\n    .fetch();\n\nGET /api/v5/orders\n\n#   Hibernate:\n#     select o1_0.order_id, m1_0.name, o1_0.order_date, o1_0.status,\n#            d1_0.city, d1_0.street, d1_0.zipcode\n#     from orders o1_0\n#     join member m1_0 on m1_0.member_id=o1_0.member_id\n#     join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Hibernate:\n#     select oi1_0.order_id, i1_0.name, oi1_0.order_price, oi1_0.count\n#     from order_item oi1_0 join item i1_0 on ...\n#     where oi1_0.order_id in (?,?)\n\n#   Session Metrics { 2 JDBC statements were executed }\n\n#   200 OK\n#   {\"data\":[{\"orderId\":4,\"name\":\"userA\",...,\n#             \"orderItems\":[{\"itemName\":\"JPA1 BOOK\",...}]}, ...]}\n\n#   5.10절과 완전히 같은 SQL, 같은 JSON\n\n#   바뀐 건 new jpabook.jpashop.repository... 문자열이 사라진 것뿐이다\n\n# --- 엔티티 필드 이름을 바꿔 보면 ---\n\n#   Member.name -> Member.username\n\n#   JPQL 판\n#     (컴파일 통과)\nGET /api/v5/orders\n#     500 SemanticException: Could not interpret path expression 'm.name'\n\n#   Querydsl 판\n#     OrderQueryRepository.java:38: error: cannot find symbol\n#         .select(..., member.name, ...)\n#                             ^\n#     symbol: variable name\n\n#   4.7절에서 반납한 컴파일 검증이 돌아왔다\n\n# --- 1편 9.7절 목록에서 ---\n\n#   \"동적 쿼리를 문자열로 만든다\"   -> 닫혔다\n\n#   1편 8.11절에서 열고\n#   1편 9.8절에서 '다시 만들면 바꿀 셋' 에 넣고\n#   「DB 1편」 7.7절, 「DB 2편」 1.2절, 8.3절에서 언급하고\n#   여기서 닫는다\n\n# --- 다음 절에서 ---\n\n#   1편의 스물한 개를 다시 센다",
+   "note": "**세 가지 조건 조합에 같은 SQL 이** 나간다. **코드는 두 줄**이다.\n\n**DTO 조회도 5.10절과 완전히 같은 SQL·JSON** 이다. **바뀐 건 `new jpabook...` 문자열이 사라진 것**뿐이다.\n\n**엔티티 필드 이름을 바꾸면 컴파일 오류**다. **4.7절에서 반납한 검증이** 돌아왔다.\n\n**1편 8.11절에서 연 문제가 여기서 닫힌다.**"
+  }
+ ],
+ "recap": [
+  "**1편 8.11절의 문자열 조립을** 닫는다.",
+  "**문자열의 문제 넷** — 오타, 띄어쓰기, 분기 곱, 바인딩 분리.",
+  "**Criteria 는 컴파일 검증은 되는데 읽을 수가** 없다.",
+  "**`where` 에 `null` 을 넘기면 그 조건이** 빠진다.",
+  "**조건을 메서드로 빼 재사용**한다.",
+  "**`Q` 클래스가 빌드 때 생성**돼 컴파일러가 잡는다.",
+  "**`Projections` 로 DTO 조회도 코드가** 된다.",
+  "**4.7절에서 반납한 컴파일 검증이** 돌아온다.",
+  "**5.13절 순서의 4단계 도구**다 — 1~3 단계에는 이득이 적다."
+ ],
+ "drills": [
+  {
+   "task": "1편 8.11절의 코드를 다시 읽는다.",
+   "done_when": "`isFirstCondition` 이 하는 일을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "Querydsl 을 붙이고 `Q` 클래스를 생성한다.",
+   "done_when": "빌드가 되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "조건 셋을 조합해 SQL 을 비교한다.",
+   "done_when": "문자열 방식과 같은 SQL 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "엔티티 필드 이름을 바꿔 본다.",
+   "done_when": "컴파일 오류가 나는 것을 확인하고 되돌렸다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "문자열 JPQL 의 문제는?",
+   "a": "오타·띄어쓰기를 손으로 챙기고, 조건이 늘면 분기가 곱이 되고, 바인딩이 따로다."
+  },
+  {
+   "q": "Criteria 를 왜 안 쓰나?",
+   "a": "컴파일 검증은 되는데 어떤 SQL 이 나갈지 읽을 수가 없다."
+  },
+  {
+   "q": "동적 조건이 어떻게 처리되나?",
+   "a": "`where` 에 `null` 을 넘기면 그 조건이 빠진다."
+  },
+  {
+   "q": "무엇이 컴파일 오류가 되나?",
+   "a": "필드 이름 오타와 DTO 생성자 시그니처 불일치다."
+  },
+  {
+   "q": "순서의 어느 단계 도구인가?",
+   "a": "4단계 DTO 직접 조회다. 1~3 단계에는 이득이 적다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Q 클래스",
+   "def": "Querydsl 이 엔티티로부터 빌드 때 생성하는 쿼리 타입. `QOrder.order` 같은 식으로 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
