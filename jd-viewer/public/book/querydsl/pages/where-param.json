@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "where-param",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "동적 쿼리 — Where 다중 파라미터",
+ "summary": "null 이면 무시된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조건 메서드로 나눈다.",
+  "재사용을 본다.",
+  "합칠 때의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.7절의 빌더는 메서드로 빼기** 어려웠다. **조건 하나에 메서드 하나로** 나눈다."
+  },
+  {
+   "type": "figure",
+   "caption": "조건 하나에 메서드 하나",
+   "ascii": "   one method per condition, and what it returns\n\n   a value was given   a predicate, ready to be used\n   nothing was given   null, which the where clause drops\n\n   the branching is inside the method, so the query reads flat",
+   "note": "**분기가 안으로 들어가 쿼리가 평평해**진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메서드 이름이 조건의 뜻이 된다",
+   "md": "**`if` 가 안으로** 들어간다.\n\n> **쿼리에는 이름만** 남는다.\n> **`where(usernameStarts(...), ageGoe(...))`** 다.\n> **읽으면 무슨 조건인지** 안다.\n\n**`null` 을 돌려주면** 빠진다.\n\n> **4.4절에서 확인**했다.\n> **`where` 가 가변 인자라** 그렇다.\n> **⑭ 8.1절 명세의 `null` 과 같은 발상**이다.\n\n**재사용이** 된다.\n\n> **다른 쿼리에서 그대로** 쓴다.\n> **빌더는 그게** 어려웠다.\n> **6.4절에서 리포지토리에** 옮긴다.\n\n**조건을 합쳐 새 조건을** 만든다.\n\n> **`ageBetween` 처럼 이름을** 붙인다.\n> **거기서 `null` 을 만나면** 터진다.\n> **6.5절에서 그걸** 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "빌더가 못 하는 것",
+   "ascii": "   what these methods can do that a builder cannot\n\n   be read alone      the name says what the condition means\n   be reused          the same method serves several queries\n   be combined        two of them make a third, named condition\n\n   the third line is where a null needs handling, and 6.5 does it",
+   "note": "**셋째 줄의 `null` 처리는 6.5절이** 맡는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "합치는 순간 null 이 문제가 된다",
+   "md": "**`.and(...)` 를 부를 수** 없다.\n\n> **앞이 `null` 이면 `NullPointerException`** 이다.\n> **4.4절 끝에서 이미** 봤다.\n> **합치기 전에 검사해야** 한다.\n\n**반환 타입이 중요**하다.\n\n> **`BooleanExpression` 이어야 `.and` 가** 있다.\n> **`Predicate` 로 두면 못** 합친다.\n> **아래에서 확인**한다.\n\n**조인은 여전히 조건이** 만든다.\n\n> **`member.team.name` 이 묵시적 조인**이다.\n> **4.10절의 그** 함정이다.\n> **명시적으로 두는 게** 낫다.\n\n**정렬은 이 방식으로 못** 준다.\n\n> **`OrderSpecifier` 는 `null` 이면** 터진다.\n> **4.6절에서 본** 타입이다.\n> **7.7절에서 다시** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 조건 메서드를 만든다\n\nprivate BooleanExpression usernameStarts(String prefix) {\n    return prefix == null ? null : member.username.startsWith(prefix);\n}\n\nprivate BooleanExpression ageGoe(Integer age) {\n    return age == null ? null : member.age.goe(age);\n}\n\nprivate BooleanExpression ageLoe(Integer age) {\n    return age == null ? null : member.age.loe(age);\n}\n\nprivate BooleanExpression teamNameEq(String name) {\n    return name == null ? null : team.name.eq(name);\n}\n\n\n-- 쿼리는 평평해진다\n\nprivate List<Member> search(String prefix, Integer min,\n                            Integer max, String teamName) {\n    return queryFactory\n            .selectFrom(member)\n            .leftJoin(member.team, team)\n            .where(usernameStarts(prefix),\n                   ageGoe(min),\n                   ageLoe(max),\n                   teamNameEq(teamName))\n            .fetch();\n}\n\n$ grep -c 'if' SearchRepository.java\n0\n\n--   쿼리 메서드에 if 가 없다\n--   5.7절의 빌더에는 넷이었다\n\n\n-- 조건 없이\n\n@Test\nvoid 조건_없음() {\n    em.clear();\n    System.out.println(\"건수: \" + search(null, null, null, null).size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 10\n\n--   where 가 없다\n--   조인은 남았다 (명시적이라 그렇다)\n\n\n-- 넷을 다 준다\n\n@Test\nvoid 넷() {\n    em.clear();\n    search(\"m\", 15, 35, \"teamB\")\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age >= ?2\n    and member1.age <= ?3\n    and team.name = ?4 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age>=?\n        and m1_0.age<=?\n        and t1_0.name=?\nm5\nm6\nm7\n\n--   5.7절과 결과가 같다\n\n\n-- 5.7 과 SQL 을 비교한다\n\n$ diff builder.jpql where-param.jpql\n5c5\n<   inner join\n---\n>   left join\n\n--   조인 종류만 다르다\n--   빌더판은 묵시적 조인이라 inner 였다\n--   4.10절의 그 차이다\n\n\n-- 재사용한다\n\nprivate Long countMembers(String prefix, Integer min) {\n    return queryFactory\n            .select(member.count())\n            .from(member)\n            .where(usernameStarts(prefix), ageGoe(min))\n            .fetchOne();\n}\n\n@Test\nvoid 재사용() {\n    em.clear();\n    System.out.println(\"건수: \" + countMembers(\"m\", 20));\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age >= ?2 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age>=?\n건수: 6\n\n--   같은 메서드를 다른 쿼리가 썼다\n--   4.7절에서 조건을 손으로 복사하던 자리다\n\n\n-- 목록과 개수가 같은 조건을 쓴다\n\n@Test\nvoid 목록과_개수() {\n    em.clear();\n    List<Member> content = queryFactory.selectFrom(member)\n            .where(usernameStarts(\"m\"), ageGoe(20))\n            .limit(3).fetch();\n\n    Long total = queryFactory.select(member.count()).from(member)\n            .where(usernameStarts(\"m\"), ageGoe(20))\n            .fetchOne();\n\n    System.out.println(\"내용 \" + content.size() + \" / 전체 \" + total);\n}\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '!' and m1_0.age>=?\n    fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    where m1_0.username like ? escape '!' and m1_0.age>=?\n내용 3 / 전체 6\n\n--   4.7절에서 어긋났던 그 조건이 같아졌다\n--   7.4절에서 이걸 페이지로 묶는다\n\n\n-- 문장 모양을 센다\n\n@Test\nvoid 문장_수() {\n    Set<String> shapes = new LinkedHashSet<>();\n    for (String p : new String[]{null, \"m\"})\n      for (Integer mi : new Integer[]{null, 15})\n        for (Integer ma : new Integer[]{null, 35})\n          for (String t : new String[]{null, \"teamB\"}) {\n            em.clear();\n            shapes.add(sqlCapture.capture(() -> search(p, mi, ma, t)));\n          }\n    System.out.println(\"서로 다른 문장: \" + shapes.size());\n}\n\n서로 다른 문장: 16\n\n--   4.4절과 같다\n--   메서드 넷이 문장 열여섯을 낸다\n\n\n-- 조건을 합친다\n\nprivate BooleanExpression ageBetween(Integer min, Integer max) {\n    return ageGoe(min).and(ageLoe(max));\n}\n\n@Test\nvoid 합치기() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(ageBetween(15, 35))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1\n    and member1.age <= ?2 */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.age>=? and m1_0.age<=?\n\n--   이름 하나로 뜻이 드러난다\n\n\n-- 한쪽이 null 이면\n\n@Test\nvoid 합치기_null() {\n    try {\n        queryFactory.selectFrom(member)\n                .where(ageBetween(null, 35))\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: NullPointerException\n\n--   ageGoe(null) 이 null 이라 .and 를 못 부른다\n--   4.4절 끝에서 본 그것이다\n--   6.5절에서 고친다\n\n\n-- 반환 타입이 Predicate 면\n\nprivate Predicate usernameStartsP(String prefix) {\n    return prefix == null ? null : member.username.startsWith(prefix);\n}\n\n// usernameStartsP(\"m\").and(ageGoe(20))\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol:   method and(BooleanExpression)\n  location: interface Predicate\n\n--   합칠 수 없다\n--   BooleanExpression 으로 둔다\n\n\n-- 묵시적 조인을 조심한다\n\nprivate BooleanExpression teamNameImplicit(String name) {\n    return name == null ? null : member.team.name.eq(name);\n}\n\n@Test\nvoid 묵시적() {\n    em.clear();\n    System.out.println(\"명시적: \" + queryFactory.selectFrom(member)\n            .leftJoin(member.team, team)\n            .where(teamNameEq(null))\n            .fetch().size());\n\n    em.clear();\n    System.out.println(\"묵시적: \" + queryFactory.selectFrom(member)\n            .where(teamNameImplicit(\"teamA\"))\n            .fetch().size());\n}\n\n/* select member1 from Member member1\n     left join member1.team as team */\nHibernate: select ... left join team t1_0 on ...\n명시적: 10\n/* select member1 from Member member1\n     inner join member1.team as team\n   where team.name = ?1 */\nHibernate: select ... join team t1_0 on ... where t1_0.name=?\n묵시적: 4\n\n--   메서드 안에 조인이 숨는다\n--   4.10절의 함정이 여기도 있다\n\n\n-- 정렬은 이 방식으로 못 준다\n\nprivate OrderSpecifier<?> orderBy(String field) {\n    return field == null ? null : member.age.desc();\n}\n\n@Test\nvoid 정렬_null() {\n    try {\n        queryFactory.selectFrom(member)\n                .orderBy(orderBy(null))\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: NullPointerException\n\n--   orderBy 는 null 을 안 버린다\n--   where 와 다르다\n--   7.7절에서 다룬다\n\n\n-- 두 방식을 저울질한다\n\n$ printf '%-20s %-10s %-10s %s\\n' \\\n  'BooleanBuilder' 'if 넷'   '한자리'  '재사용 어려움' \\\n  'Where 파라미터' 'if 0개'  '메서드 넷' '재사용·조합 가능'\n\nBooleanBuilder       if 넷       한자리      재사용 어려움\nWhere 파라미터       if 0개      메서드 넷   재사용·조합 가능\n\n--   SQL 은 같다\n--   6.4절에서 리포지토리에 옮긴다\n--   5.9절에서 벌크 연산을 본다",
+   "note": "**쿼리 메서드의 `if` 가 `0` 개가 되고 5.7절 빌더판과 조인 종류만** 다르다.\n\n**같은 조건 메서드를 목록과 개수 쿼리가 함께 써 4.7절에서 어긋나던 조건이** 같아졌다.\n\n**메서드 넷이 서로 다른 문장 16개를** 낸다.\n\n**`ageBetween(null, 35)` 은 `NullPointerException` — 합치는 순간 `null` 이** 문제가 된다.\n\n**반환을 `Predicate` 로 두면 `.and` 가 없어 컴파일이** 안 된다."
+  }
+ ],
+ "recap": [
+  "**조건 하나에 메서드 하나**다.",
+  "**`if` 가 안으로** 들어간다.",
+  "**쿼리가 평평해**진다.",
+  "**`null` 이면** 빠진다.",
+  "**재사용이** 된다.",
+  "**개수 쿼리와 조건이** 같아진다.",
+  "**합치면 `null` 이** 문제다.",
+  "**`BooleanExpression` 이어야** 한다.",
+  "**정렬에는 못** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "조건 메서드 넷을 만든다.",
+   "done_when": "쿼리에 `if` 가 없는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "목록과 개수에 같이 쓴다.",
+   "done_when": "조건이 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건을 합쳐 본다.",
+   "done_when": "`null` 에서 터지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "반환을 `Predicate` 로 바꾼다.",
+   "done_when": "컴파일 실패를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조건 메서드가 `null` 을 돌려주면?",
+   "a": "그 조건이 `where` 에서 빠진다."
+  },
+  {
+   "q": "빌더보다 나은 점은?",
+   "a": "이름으로 뜻이 드러나고 재사용·조합이 된다."
+  },
+  {
+   "q": "합칠 때의 문제는?",
+   "a": "앞이 `null` 이면 `.and` 에서 터진다."
+  },
+  {
+   "q": "반환 타입을 무엇으로 둬야 하나?",
+   "a": "`.and` 가 있는 `BooleanExpression` 이다."
+  },
+  {
+   "q": "정렬에도 같은 방식이 되나?",
+   "a": "안 된다. `orderBy` 는 `null` 을 버리지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건 메서드",
+   "def": "값이 없으면 `null` 을 돌려주는 이름 붙은 조건 조각."
+  },
+  {
+   "term": "평평한 쿼리",
+   "def": "분기 없이 조건 이름만 나열되어 읽히는 쿼리 코드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

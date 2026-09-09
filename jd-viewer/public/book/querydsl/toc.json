@@ -347,7 +347,7 @@
           "title": "동적 쿼리 — Where 다중 파라미터",
           "summary": "null 이면 무시된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",
@@ -355,7 +355,7 @@
           "title": "수정·삭제 벌크 연산",
           "summary": "영속성 컨텍스트를 건너뛴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",
