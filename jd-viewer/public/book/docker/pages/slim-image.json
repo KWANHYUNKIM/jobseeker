@@ -1,0 +1,168 @@
+{
+ "book": "docker",
+ "id": "slim-image",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "이미지가 작아야 하는 이유",
+ "summary": "1.2GB 를 180MB 로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "크기가 무엇에 영향을 주는지 안다.",
+  "크기를 줄이는 수단을 순서대로 안다.",
+  "어디까지 줄일지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "작아야 하는 이유 넷",
+   "md": "| 이유 | 얼마나 |\n|---|---|\n| **배포 속도** | 새 노드에 첫 pull. 1.2GB 와 180MB 는 오토스케일링에서 분 단위 차이 |\n| **공격면** | 패키지가 적으면 CVE 도 적다. 셸이 없으면 침입 후 할 게 없다 |\n| **비용** | 레지스트리 저장·전송 비용. 이미지 100개 × 여러 태그 |\n| **CI 시간** | 매 빌드마다 push/pull |\n\n**그런데 크기 자체가 목적은** 아니다.\n\n> **레이어를 잘 나눠 두면**(5.6절) **두 번째 배포부터는 바뀐 것만** 오간다.\n> **크기가 진짜 아픈 건 \"처음 받을 때\" 와 \"공격면\"** 이다."
+  },
+  {
+   "type": "steps",
+   "caption": "줄이는 순서 — 효과가 큰 것부터",
+   "items": [
+    {
+     "title": "멀티 스테이지",
+     "md": "**5.7절.** 대개 이 하나로 절반이 줄어든다. **JDK 458MB → JRE 279MB**"
+    },
+    {
+     "title": "베이스를 바꾼다",
+     "md": "**5.2절.** `-jre` → `-jre-alpine` 또는 distroless. **다만 musl 함정을 확인**한다"
+    },
+    {
+     "title": "한 RUN 안에서 정리",
+     "md": "**5.3절.** `apt` 캐시·빌드 도구를 같은 레이어에서 지운다"
+    },
+    {
+     "title": ".dockerignore",
+     "md": "**5.4절.** 안 들어가야 할 것이 안 들어간다"
+    },
+    {
+     "title": "JRE 를 깎는다",
+     "md": "**`jlink`** 로 필요한 모듈만. 279MB → 60MB 대까지. **관리 비용이 늘어난다**"
+    },
+    {
+     "title": "레이어를 합친다",
+     "md": "효과가 작다. **가독성과 캐시를 잃으므로 마지막에** 고려한다"
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "작게 만들다 잃는 것",
+   "md": "| 선택 | 얻는 것 | 잃는 것 |\n|---|---|---|\n| alpine | 100MB | musl 호환 문제(5.2절), 디버깅 도구 |\n| **distroless** | 셸이 없어 공격면 최소 | **`docker exec` 로 못 들어간다**(3.6절) |\n| `scratch` | 0 | 인증서·타임존 파일도 직접 넣어야 한다 |\n| jlink | 200MB | **모듈을 빠뜨리면 런타임에** 터진다 |\n\n**판단 기준**:\n\n> **운영 이미지는 작게, 개발·디버깅용은 도구가 있는 쪽으로** 둘 다 만들 수 있다(`--target`).\n> **\"몇 MB 를 더 줄이겠다\" 로 하루를 쓰기 전에, 그 이미지가 하루에 몇 번 pull 되는지를** 센다."
+  },
+  {
+   "type": "table",
+   "caption": "같은 스프링 부트 애플리케이션의 크기",
+   "columns": [
+    "구성",
+    "크기",
+    "비고"
+   ],
+   "rows": [
+    [
+     "`temurin:21-jdk` 단일 스테이지 + 소스",
+     "**1.21GB**",
+     "Gradle 캐시까지 들어간 상태"
+    ],
+    [
+     "멀티 스테이지 + `21-jdk` 실행",
+     "505MB",
+     "실행에 JDK 를 쓰면"
+    ],
+    [
+     "멀티 스테이지 + `21-jre`",
+     "**326MB**",
+     "**여기까지가 기본**"
+    ],
+    [
+     "+ `21-jre-alpine`",
+     "**231MB**",
+     "musl 확인 필요"
+    ],
+    [
+     "+ distroless `java21`",
+     "278MB",
+     "셸 없음. 크기보다 보안 목적"
+    ],
+    [
+     "+ jlink 커스텀 런타임",
+     "**178MB**",
+     "모듈 선택 관리 필요"
+    ]
+   ],
+   "note": "**대부분의 팀에게 326MB 가 합리적인 지점**이다. **더 가려면 이유가 있어야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "단계별로 실제로 줄여 본다",
+   "sql": "$ mkdir -p /tmp/lab/src/main/java/hello && cd /tmp/lab\n$ cat > src/main/java/hello/App.java <<'EOF'\npackage hello;\npublic class App { public static void main(String[] a){ System.out.println(\"hi\"); } }\nEOF\n\n# --- 1) 단일 스테이지, JDK ---\n\n$ cat > Dockerfile.1 <<'EOF'\nFROM eclipse-temurin:21-jdk\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\nCMD [\"java\",\"-jar\",\"/src/app.jar\"]\nEOF\n$ docker build -q -f Dockerfile.1 -t s1 . >/dev/null\n\n# --- 2) 멀티 스테이지, JRE ---\n\n$ cat > Dockerfile.2 <<'EOF'\nFROM eclipse-temurin:21-jdk AS b\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\n\nFROM eclipse-temurin:21-jre\nCOPY --from=b /src/app.jar /app/app.jar\nCMD [\"java\",\"-jar\",\"/app/app.jar\"]\nEOF\n$ docker build -q -f Dockerfile.2 -t s2 . >/dev/null\n\n# --- 3) 알파인 JRE ---\n\n$ sed 's|FROM eclipse-temurin:21-jre$|FROM eclipse-temurin:21-jre-alpine|' Dockerfile.2 > Dockerfile.3\n$ docker build -q -f Dockerfile.3 -t s3 . >/dev/null\n\n# --- 4) jlink 로 런타임을 깎는다 ---\n\n$ cat > Dockerfile.4 <<'EOF'\nFROM eclipse-temurin:21-jdk AS b\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\nRUN jlink --add-modules java.base \\\n      --strip-debug --no-header-files --no-man-pages --compress=zip-9 \\\n      --output /jre\n\nFROM debian:12-slim\nCOPY --from=b /jre /jre\nCOPY --from=b /src/app.jar /app/app.jar\nCMD [\"/jre/bin/java\",\"-jar\",\"/app/app.jar\"]\nEOF\n$ docker build -q -f Dockerfile.4 -t s4 . >/dev/null\n\n\n# --- 비교 ---\n\n$ for t in s1 s2 s3 s4; do docker run --rm $t; done\nhi\nhi\nhi\nhi\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E '^s[1-4] '\ns4    122MB\ns3    189MB\ns2    280MB\ns1    459MB\n\n#   459 -> 280 -> 189 -> 122\n#   가장 큰 한 걸음은 멀티 스테이지였다 (459 -> 280)\n\n\n# --- 무엇이 없어졌나 ---\n\n$ docker run --rm s2 sh -c 'ls /opt/java/openjdk/bin | wc -l'\n4\n\n$ docker run --rm s1 sh -c 'ls /opt/java/openjdk/bin | wc -l'\n41\n\n#   41개에서 4개로. 컴파일러·디버거·프로파일러가 빠졌다\n\n\n# --- 패키지 개수(공격면) ---\n\n$ docker run --rm s2 sh -c 'dpkg -l 2>/dev/null | grep -c ^ii'\n96\n\n$ docker run --rm s3 sh -c 'apk info 2>/dev/null | wc -l'\n17\n\n#   96개 대 17개. CVE 스캔 결과가 그만큼 달라진다\n\n\n# --- 다만 알파인은 확인이 필요하다 ---\n\n$ docker run --rm s3 sh -c 'java -version' 2>&1 | head -1\nopenjdk version \"21.0.4\" 2024-07-16 LTS\n\n$ docker run --rm s3 sh -c 'ls /lib/ld-musl-*'\n/lib/ld-musl-aarch64.so.1\n\n#   musl 이다. 네이티브 의존성이 있는 프로젝트는 여기서 검증해야 한다 (5.2절)\n\n\n# --- 최종 이미지의 레이어 ---\n\n$ docker history s2 --format 'table {{.Size}}\\t{{.CreatedBy}}' | head -4\nSIZE      CREATED BY\n0B        CMD [\"java\" \"-jar\" \"/app/app.jar\"]\n1.24kB    COPY /src/app.jar /app/app.jar # buildkit\n0B        /bin/sh -c #(nop)  CMD [\"jshell\"]\n\n#   내 애플리케이션은 1.24kB 다. 나머지 전부가 런타임이다\n#   그래서 런타임을 고르는 것이 크기의 거의 전부다\n\n$ cd - >/dev/null && rm -rf /tmp/lab && docker rmi -f s1 s2 s3 s4 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "작아야 하는 이유는 첫 배포 속도·공격면·비용·CI 시간이다. 두 번째 배포부터는 레이어 구조가 더 중요하다.",
+  "줄이는 순서는 멀티 스테이지 → 베이스 교체 → 같은 RUN 정리 → dockerignore → jlink 다.",
+  "가장 큰 한 걸음은 멀티 스테이지다. 대개 이것만으로 절반이 준다.",
+  "작게 만들수록 디버깅이 어려워진다. distroless 는 exec 로 못 들어간다.",
+  "내 코드는 몇 KB 고 나머지는 런타임이다. 런타임 선택이 크기의 거의 전부다."
+ ],
+ "drills": [
+  {
+   "task": "같은 애플리케이션을 단일/멀티/알파인 세 가지로 빌드해 크기를 표로 만든다.",
+   "done_when": "어느 단계에서 가장 많이 줄었는지 지목할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "JDK 이미지와 JRE 이미지의 `bin` 디렉터리 파일 개수를 세어 본다.",
+   "done_when": "무엇이 빠졌는지 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "두 이미지의 설치 패키지 개수를 세어 공격면 차이를 확인한다.",
+   "done_when": "패키지 수 차이를 숫자로 본다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이미지 크기가 가장 아픈 순간은 언제인가.",
+   "a": "처음 받을 때(새 노드·오토스케일링)와 보안 관점의 공격면. 재배포는 레이어 공유로 완화된다."
+  },
+  {
+   "q": "크기를 줄이는 가장 효과 큰 한 걸음은.",
+   "a": "멀티 스테이지 빌드. 빌드 도구와 소스를 최종 이미지에서 빼는 것."
+  },
+  {
+   "q": "distroless 를 쓰면 무엇을 포기하나.",
+   "a": "셸이 없어 docker exec 로 들어가 디버깅할 수 없다. 옆에서 네임스페이스를 공유해 봐야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "jlink",
+   "what": "필요한 자바 모듈만 골라 커스텀 런타임을 만드는 JDK 도구."
+  },
+  {
+   "term": "공격면",
+   "en": "attack surface",
+   "what": "공격에 이용될 수 있는 지점의 총량. 패키지·셸·권한이 적을수록 작다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Best practices for building images",
+   "url": "https://docs.docker.com/build/building/best-practices/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Google — Distroless container images",
+   "url": "https://github.com/GoogleContainerTools/distroless",
+   "publisher": "GoogleContainerTools"
+  }
+ ]
+}

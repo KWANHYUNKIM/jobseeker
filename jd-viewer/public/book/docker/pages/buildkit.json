@@ -1,0 +1,161 @@
+{
+ "book": "docker",
+ "id": "buildkit",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "빌드 컨텍스트와 BuildKit",
+ "summary": "빌드가 느린 이유가 빌드가 아닐 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "빌드 컨텍스트가 무엇인지 안다.",
+  "BuildKit 의 기능 셋을 안다.",
+  "멀티 아키텍처를 빌드한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.5절에서 \"빌드는 데몬이 한다\" 고** 했다. **그래서 `docker build .` 의 마지막 점이 중요**하다.\n\n```\n=> [internal] load build context\n=> => transferring context: 189.21MB    4.8s\n```\n\n**빌드가 시작되기도 전에 5초가** 갔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빌드 컨텍스트란",
+   "md": "**`docker build <경로>` 의 그 경로를 통째로 데몬에게 보내는** 것이다.\n\n```\ndocker build .        <- 현재 디렉터리 전체를 tar 로 묶어 전송\n```\n\n| 왜 보내나 | 데몬이 `COPY` 할 파일을 봐야 하므로 |\n|---|---|\n| **얼마나** | `.dockerignore` 에 안 걸린 전부 |\n| **어디로** | 로컬 데몬이면 소켓, 원격이면 네트워크 |\n\n**그래서 5.4절의 `.dockerignore` 가 빌드 속도에 직접 영향을** 준다.\n\n**컨텍스트를 아예 안 보내는 방법도** 있다:\n\n```bash\n# stdin 으로 Dockerfile 만\ndocker build -t img - <<'EOF'\nFROM alpine:3.20\nRUN apk add --no-cache curl\nEOF\n\n# Git 저장소를 컨텍스트로\ndocker build -t img https://github.com/acme/shop.git#main\n```"
+  },
+  {
+   "type": "table",
+   "caption": "BuildKit 이 준 것들",
+   "columns": [
+    "기능",
+    "무엇",
+    "절"
+   ],
+   "rows": [
+    [
+     "**병렬 실행**",
+     "의존 없는 단계를 동시에",
+     "5.7"
+    ],
+    [
+     "**캐시 마운트**",
+     "`RUN --mount=type=cache`",
+     "5.3"
+    ],
+    [
+     "**시크릿 마운트**",
+     "`RUN --mount=type=secret` — **레이어에 안 남는다**",
+     "10.7"
+    ],
+    [
+     "**멀티 플랫폼**",
+     "`docker buildx build --platform`",
+     "아래"
+    ],
+    [
+     "**원격 캐시**",
+     "`--cache-from/to` 로 CI 에서 재사용",
+     "11.3"
+    ],
+    [
+     "**불필요 단계 생략**",
+     "목표에 안 쓰이는 단계는 아예 안 돈다",
+     "5.7"
+    ]
+   ],
+   "note": "**도커 23 부터 BuildKit 이 기본**이다. **옛 빌더를 쓰려면 `DOCKER_BUILDKIT=0`** 인데, 쓸 이유가 거의 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "멀티 아키텍처 빌드",
+   "md": "**2.6절의 `exec format error` 를 여기서** 끝낸다.\n\n```bash\n# 빌더를 하나 만든다 (한 번만)\ndocker buildx create --name multi --use --bootstrap\n\n# 두 아키텍처를 한 번에 만들어 레지스트리로 바로 밀어 넣는다\ndocker buildx build \\\n  --platform linux/amd64,linux/arm64 \\\n  -t ghcr.io/acme/shop:1.4.2 \\\n  --push .\n```\n\n| 주의 | 왜 |\n|---|---|\n| **`--push` 가 사실상 필수** | 멀티 플랫폼 결과는 로컬 이미지 저장소에 못 넣는다(manifest list 라서) |\n| **QEMU 에뮬레이션은 느리다** | 2.6절에서 7배. **CI 에서는 아키텍처별 러너를 쓰는 게 빠르다**(11.2절) |\n| 네이티브 의존성 | 아키텍처마다 다른 바이너리를 받는지 확인 |\n\n**확인**:\n\n```bash\ndocker buildx imagetools inspect ghcr.io/acme/shop:1.4.2\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "ARG 는 이미지에 남을 수 있다",
+   "md": "**빌드 인자를 비밀 전달에 쓰지 않는다.**\n\n```dockerfile\nARG NPM_TOKEN\nRUN npm ci                 # 토큰이 필요\n```\n\n```bash\ndocker build --build-arg NPM_TOKEN=$TOKEN .\n```\n\n**`docker history` 에 `ARG NPM_TOKEN=xxx` 가 그대로** 나온다.\n\n**BuildKit 의 시크릿 마운트를 쓴다**:\n\n```dockerfile\n# syntax=docker/dockerfile:1\nRUN --mount=type=secret,id=npmtoken \\\n    NPM_TOKEN=$(cat /run/secrets/npmtoken) npm ci\n```\n\n```bash\ndocker build --secret id=npmtoken,env=NPM_TOKEN .\n```\n\n> **파일이 빌드 중에만 마운트되고 레이어에 안** 남는다. **10.7절에서 다시** 본다.\n\n**`ARG` 와 `ENV` 의 차이도 기억**한다:\n\n| | 언제 | 컨테이너에서 보이나 |\n|---|---|---|\n| `ARG` | 빌드 중에만 | **안 보인다** (history 에는 남는다) |\n| `ENV` | 빌드 + 실행 | **보인다** |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "컨텍스트 전송과 멀티 플랫폼",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n$ dd if=/dev/urandom of=big.bin bs=1M count=150 2>/dev/null\n$ printf 'FROM alpine:3.20\\nRUN echo hi\\n' > Dockerfile\n\n# --- COPY 를 한 줄도 안 쓰는데도 전부 보낸다 ---\n\n$ docker build -t ctx .\n[+] Building 5.2s (5/5) FINISHED\n => [internal] load build definition from Dockerfile        0.0s\n => [internal] load build context                           4.6s\n => => transferring context: 157.29MB                       4.5s\n => CACHED [1/2] FROM docker.io/library/alpine:3.20         0.0s\n => [2/2] RUN echo hi                                       0.3s\n\n#   Dockerfile 이 big.bin 을 안 쓰는데도 157MB 를 보냈다\n\n$ echo 'big.bin' > .dockerignore\n$ docker build -t ctx .\n[+] Building 0.4s (5/5) FINISHED\n => [internal] load build context                           0.0s\n => => transferring context: 122B                           0.0s\n\n#   157MB -> 122B, 5.2초 -> 0.4초\n\n\n# --- 컨텍스트를 아예 안 보내기 ---\n\n$ docker build -t nostdin - <<'EOF'\nFROM alpine:3.20\nRUN apk add --no-cache curl\nEOF\n[+] Building 3.1s (5/5) FINISHED\n\n#   load build context 줄이 아예 없다\n\n\n# --- ARG 는 history 에 남는다 ---\n\n$ cat > Dockerfile.arg <<'EOF'\nFROM alpine:3.20\nARG TOKEN\nRUN echo \"using $TOKEN\" > /dev/null\nEOF\n\n$ docker build -q -f Dockerfile.arg --build-arg TOKEN=ghp_supersecret -t leaky . >/dev/null\n$ docker run --rm leaky env | grep -c TOKEN\n0\n\n#   컨테이너 환경에는 없다\n\n$ docker history --no-trunc leaky --format '{{.CreatedBy}}' | grep -i token\nARG TOKEN\nRUN |1 TOKEN=ghp_supersecret /bin/sh -c echo \"using $TOKEN\" > /dev/null # buildkit\n\n#   history 에는 그대로 있다. 이미지를 받은 사람이 볼 수 있다\n\n\n# --- 시크릿 마운트를 쓰면 ---\n\n$ cat > Dockerfile.secret <<'EOF'\n# syntax=docker/dockerfile:1\nFROM alpine:3.20\nRUN --mount=type=secret,id=tok \\\n    cat /run/secrets/tok > /dev/null && echo used-secret\nEOF\n\n$ TOKEN=ghp_supersecret docker build -q -f Dockerfile.secret \\\n    --secret id=tok,env=TOKEN -t safe . >/dev/null\n\n$ docker history --no-trunc safe --format '{{.CreatedBy}}' | grep -ci supersecret\n0\n\n$ docker run --rm safe ls /run/secrets 2>&1\nls: /run/secrets: No such file or directory\n\n#   레이어에도 컨테이너에도 없다\n\n\n# --- 멀티 플랫폼 ---\n\n$ docker buildx create --name multi --use --bootstrap >/dev/null 2>&1\n$ docker run -d --name reg -p 5000:5000 registry:2 >/dev/null\n\n$ docker buildx build --platform linux/amd64,linux/arm64 \\\n    -t localhost:5000/multi:1 --push .\n[+] Building 21.4s (12/12) FINISHED\n => [linux/arm64 1/2] FROM docker.io/library/alpine:3.20     0.0s\n => [linux/amd64 1/2] FROM docker.io/library/alpine:3.20     1.2s\n => [linux/amd64 2/2] RUN echo hi                            2.8s\n => [linux/arm64 2/2] RUN echo hi                            0.3s\n => exporting to image                                       1.1s\n => pushing layers                                           2.4s\n\n#   두 아키텍처를 병렬로 만들었다. amd64 쪽이 에뮬레이션이라 9배 느리다\n\n$ docker buildx imagetools inspect localhost:5000/multi:1\nName:      localhost:5000/multi:1\nMediaType: application/vnd.oci.image.index.v1+json\n\nManifests:\n  Platform:  linux/amd64\n  Platform:  linux/arm64\n\n#   4.3절에서 본 manifest list 를 내가 만들었다\n#   이제 amd64 서버에서도 돈다\n\n$ docker buildx rm multi >/dev/null 2>&1\n$ docker rm -f reg >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f ctx nostdin leaky safe >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "빌드 컨텍스트는 데몬에게 보내는 디렉터리 전체다. COPY 를 안 써도 보낸다.",
+  ".dockerignore 가 빌드 속도에 직접 영향을 준다. stdin 이나 Git URL 로 아예 안 보낼 수도 있다.",
+  "BuildKit 은 병렬 실행·캐시 마운트·시크릿 마운트·멀티 플랫폼·원격 캐시를 준다.",
+  "ARG 로 넘긴 비밀은 docker history 에 남는다. --mount=type=secret 을 쓴다.",
+  "buildx 로 여러 아키텍처를 한 번에 만들어 --push 한다. 에뮬레이션은 느리므로 CI 는 러너를 나눈다."
+ ],
+ "drills": [
+  {
+   "task": "큰 파일이 있는 디렉터리에서 그 파일을 안 쓰는 Dockerfile 을 빌드해 transferring context 를 확인한다.",
+   "done_when": "COPY 를 안 써도 전송되는 것을 보고, .dockerignore 로 줄인다.",
+   "minutes": 6
+  },
+  {
+   "task": "`--build-arg` 로 비밀을 넘기고 `docker history --no-trunc` 에서 찾아본다.",
+   "done_when": "평문으로 남는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 값을 `--mount=type=secret` 으로 넘기고 history 에 없는 것을 확인한다.",
+   "done_when": "grep 결과가 0 인 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "buildx 로 linux/amd64,linux/arm64 를 사설 레지스트리에 push 하고 imagetools 로 확인한다.",
+   "done_when": "manifest list 에 두 플랫폼이 있는 것을 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "COPY 를 하나도 안 쓰는 Dockerfile 인데도 빌드가 느린 이유는.",
+   "a": "빌드 컨텍스트를 통째로 데몬에 보내기 때문. .dockerignore 로 줄인다."
+  },
+  {
+   "q": "--build-arg 로 토큰을 넘기면 왜 위험한가.",
+   "a": "docker history 에 평문으로 남아 이미지를 받은 사람이 볼 수 있다."
+  },
+  {
+   "q": "멀티 플랫폼 빌드에 --push 가 사실상 필수인 이유는.",
+   "a": "결과가 manifest list 라 로컬 이미지 저장소에 그대로 못 넣기 때문."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빌드 컨텍스트",
+   "what": "docker build 의 경로 인자. 데몬에 전송되는 파일 집합."
+  },
+  {
+   "term": "buildx",
+   "what": "BuildKit 기능을 쓰는 도커 빌드 CLI. 멀티 플랫폼·원격 캐시를 담당한다."
+  },
+  {
+   "term": "시크릿 마운트",
+   "what": "빌드 중에만 파일로 노출되고 레이어에 안 남는 비밀 전달 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Build context",
+   "url": "https://docs.docker.com/build/concepts/context/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Build secrets",
+   "url": "https://docs.docker.com/build/building/secrets/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Multi-platform builds",
+   "url": "https://docs.docker.com/build/building/multi-platform/",
+   "publisher": "Docker"
+  }
+ ]
+}

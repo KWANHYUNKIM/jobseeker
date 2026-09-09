@@ -1,0 +1,120 @@
+{
+ "book": "docker",
+ "id": "multi-stage",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "멀티 스테이지 빌드",
+ "summary": "빌드에 쓴 것을 결과에 남기지 않는다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "멀티 스테이지의 구조를 안다.",
+  "무엇이 최종 이미지에 남는지 안다.",
+  "target 으로 단계를 골라 빌드한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**자바 애플리케이션을 이미지로 만들려면 두 가지가** 필요하다.\n\n| 필요 | 무엇을 위해 |\n|---|---|\n| **JDK, Gradle, 소스, 의존성** | **빌드할 때만** |\n| **JRE, jar 하나** | **실행할 때** |\n\n**한 이미지에 다 넣으면 실행에 필요 없는 것이 400MB 따라온다.**\n\n> **3.2절 때문에 나중에 `RUN rm` 으로 지워도 안** 작아진다.\n> **답은 애초에 다른 이미지에서 빌드하는** 것이다."
+  },
+  {
+   "type": "code",
+   "lang": "dockerfile",
+   "file": "Dockerfile",
+   "caption": "두 단계로 나눈다",
+   "code": "# ---- 1단계: 빌드 ----\nFROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\n\nCOPY gradle/ gradle/\nCOPY gradlew build.gradle settings.gradle ./\nRUN ./gradlew dependencies --no-daemon\n\nCOPY src/ src/\nRUN ./gradlew bootJar --no-daemon\n\n# ---- 2단계: 실행 ----\nFROM eclipse-temurin:21-jre\nWORKDIR /app\n\nCOPY --from=builder /src/build/libs/*.jar app.jar\n\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]",
+   "note": "`--from=builder` 가 앞 단계의 파일을 가져온다. **가져온 것 말고는 아무것도 안 따라온다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "최종 이미지에 남는 것",
+   "ascii": "   stage 1 (builder)                 stage 2 (final)\n   -----------------                 ---------------\n   JDK          458MB\n   Gradle        90MB\n   ~/.gradle    320MB   discarded\n   source        12MB     ------->   \n   build/        60MB\n   app.jar       47MB   -- copied -> app.jar   47MB\n                                     JRE      279MB\n                                     ----------------\n   total        987MB                total    326MB\n\n   builder 단계는 최종 이미지에 한 레이어도 안 들어간다",
+   "note": "**빌드 캐시에는 남아 있어서 다음 빌드가 빠르다.** **이미지에만 안 들어간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보안 관점에서 더 중요하다",
+   "md": "**크기만의 문제가** 아니다.\n\n| 최종 이미지에 없어야 할 것 | 왜 |\n|---|---|\n| **컴파일러·빌드 도구** | 침입자가 안에서 뭘 만들 수 있다 |\n| **소스 코드** | 배포에 필요 없다 |\n| **`.git`** | 히스토리에 비밀이 있을 수 있다 |\n| **빌드용 토큰·키** | 3.2절 — 레이어에 남으면 꺼낼 수 있다 |\n| **테스트 코드·픽스처** | 공격면 |\n\n> **10.6절의 취약점 스캔 결과도 크게** 줄어든다. **패키지가 적으면 CVE 도 적다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "단계는 둘 이상도 되고 이름으로 참조한다",
+   "md": "```dockerfile\nFROM node:20 AS web-builder\n# ... 프런트엔드 빌드\n\nFROM eclipse-temurin:21-jdk AS api-builder\n# ... 백엔드 빌드\n\nFROM eclipse-temurin:21-jre\nCOPY --from=api-builder /src/build/libs/app.jar /app/app.jar\nCOPY --from=web-builder /web/dist /app/static\n```\n\n**외부 이미지에서 바로 가져올 수도** 있다.\n\n```dockerfile\nCOPY --from=ghcr.io/acme/certs:1.0 /certs/ca.pem /etc/ssl/certs/\n```\n\n**BuildKit 은 서로 의존하지 않는 단계를 병렬로** 돌린다 — **위 두 빌더가 동시에** 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "--target 으로 단계를 골라 빌드한다",
+   "md": "**테스트 단계를 두고 CI 에서만 돌리는 패턴**이다.\n\n```dockerfile\nFROM eclipse-temurin:21-jdk AS builder\n# ...\nRUN ./gradlew bootJar --no-daemon\n\nFROM builder AS tester\nRUN ./gradlew test --no-daemon\n\nFROM eclipse-temurin:21-jre AS runtime\nCOPY --from=builder /src/build/libs/*.jar app.jar\n```\n\n```bash\ndocker build --target tester -t app:test .    # CI 에서 테스트만\ndocker build -t app:1.4.2 .                   # 배포용 (tester 는 안 돈다)\n```\n\n> **`--target` 없이 빌드하면 마지막 단계까지만** 만든다. **`tester` 는 아무도 의존하지 않으므로 건너뛴다.**\n> **5.1절의 \"실패 직전 단계에 들어가 보기\" 도 이걸로** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "한 단계와 두 단계의 차이를 잰다",
+   "sql": "$ mkdir -p /tmp/lab/src/main/java/hello && cd /tmp/lab\n\n$ cat > src/main/java/hello/App.java <<'EOF'\npackage hello;\npublic class App {\n  public static void main(String[] a) { System.out.println(\"hi\"); }\n}\nEOF\n\n# --- 단일 스테이지 ---\n\n$ cat > Dockerfile.single <<'EOF'\nFROM eclipse-temurin:21-jdk\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir -p out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\nCMD [\"java\", \"-jar\", \"/src/app.jar\"]\nEOF\n\n$ docker build -q -f Dockerfile.single -t single . >/dev/null\n$ docker run --rm single\nhi\n\n$ docker images single --format '{{.Size}}'\n459MB\n\n$ docker run --rm single sh -c 'which javac && ls /src'\n/opt/java/openjdk/bin/javac\napp.jar\nout\nsrc\n\n#   컴파일러도 소스도 클래스 파일도 다 들어 있다\n\n\n# --- 멀티 스테이지 ---\n\n$ cat > Dockerfile.multi <<'EOF'\nFROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir -p out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=builder /src/app.jar app.jar\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\nEOF\n\n$ docker build -q -f Dockerfile.multi -t multi . >/dev/null\n$ docker run --rm multi\nhi\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E '^single|^multi'\nmulti     280MB\nsingle    459MB\n\n#   459MB -> 280MB\n\n$ docker run --rm multi sh -c 'which javac || echo \"no javac\"; ls /app'\nno javac\napp.jar\n\n$ docker run --rm multi sh -c 'ls /src 2>&1 || true'\nls: /src: No such file or directory\n\n#   소스도 컴파일러도 없다\n\n\n# --- 레이어 목록으로 확인 ---\n\n$ docker history multi --format 'table {{.Size}}\\t{{.CreatedBy}}' | head -5\nSIZE      CREATED BY\n0B        CMD [\"java\" \"-jar\" \"/app/app.jar\"]\n1.24kB    COPY /src/app.jar app.jar # buildkit\n0B        WORKDIR /app\n0B        /bin/sh -c #(nop)  CMD [\"jshell\"]\n\n#   builder 단계의 레이어가 하나도 없다\n\n\n# --- 빌드 캐시에는 남아 있다 ---\n\n$ docker system df --format 'table {{.Type}}\\t{{.Size}}' | grep -i build\nBuild Cache    684.2MB\n\n#   그래서 다시 빌드하면 빠르다. 이미지에만 안 들어간 것이다\n\n\n# --- target 으로 단계를 고른다 ---\n\n$ cat > Dockerfile.target <<'EOF'\nFROM eclipse-temurin:21-jdk AS builder\nWORKDIR /src\nCOPY src/ src/\nRUN mkdir -p out && javac -d out src/main/java/hello/App.java \\\n && jar --create --file app.jar --main-class hello.App -C out .\n\nFROM builder AS tester\nRUN echo \"running tests...\" && java -cp out hello.App && echo \"tests passed\"\n\nFROM eclipse-temurin:21-jre AS runtime\nWORKDIR /app\nCOPY --from=builder /src/app.jar app.jar\nCMD [\"java\", \"-jar\", \"/app/app.jar\"]\nEOF\n\n$ docker build -f Dockerfile.target --target tester -t app:test . 2>&1 | grep -E 'tests|DONE'\n => [tester 1/1] RUN echo \"running tests...\" && java -cp out hello.App ...\n => => # running tests...\n => => # hi\n => => # tests passed\n\n$ docker build -q -f Dockerfile.target -t app:1.0 . >/dev/null\n$ docker build -f Dockerfile.target -t app:1.0 . 2>&1 | grep -c tester\n0\n\n#   기본 빌드에서는 tester 단계를 아예 안 돌렸다\n#   runtime 이 tester 에 의존하지 않기 때문이다\n\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f single multi app:test app:1.0 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "빌드에 필요한 것과 실행에 필요한 것을 다른 단계로 나눈다.",
+  "COPY --from=<단계> 로 가져온 것만 최종 이미지에 들어간다. 나머지는 레이어 하나도 안 남는다.",
+  "크기뿐 아니라 보안이 좋아진다 — 컴파일러·소스·빌드 토큰이 최종 이미지에 없다.",
+  "단계는 여러 개 둘 수 있고 서로 의존하지 않으면 병렬로 돈다.",
+  "--target 으로 단계를 골라 빌드한다. CI 의 테스트 단계와 디버깅에 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "같은 애플리케이션을 단일 스테이지와 멀티 스테이지로 각각 빌드해 크기를 비교한다.",
+   "done_when": "차이를 숫자로 확인하고 최종 이미지에 javac 가 없는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "멀티 스테이지 이미지의 `docker history` 를 보고 builder 레이어가 없는 것을 확인한다.",
+   "done_when": "COPY --from 으로 들어온 한 줄만 보이는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "tester 단계를 추가하고 `--target tester` 로만 돌려 본다.",
+   "done_when": "기본 빌드에서는 tester 가 안 도는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "멀티 스테이지에서 최종 이미지에 남는 것은.",
+   "a": "마지막 단계의 레이어와 COPY --from 으로 명시적으로 가져온 파일뿐이다."
+  },
+  {
+   "q": "빌드 도구를 나중에 RUN rm 으로 지우면 안 되는 이유는.",
+   "a": "레이어는 더해지기만 하므로 용량이 그대로 남고, 파일 내용도 레이어 tar 에서 꺼낼 수 있다."
+  },
+  {
+   "q": "--target 을 안 주고 빌드하면 어떤 단계가 도나.",
+   "a": "마지막 단계와 그것이 의존하는 단계들만 돈다. 아무도 참조 안 하는 단계는 건너뛴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스테이지",
+   "en": "stage",
+   "what": "Dockerfile 안의 FROM 하나로 시작하는 구간. AS 로 이름을 붙인다."
+  },
+  {
+   "term": "--from",
+   "what": "다른 단계나 외부 이미지에서 파일을 가져오는 COPY 옵션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Multi-stage builds",
+   "url": "https://docs.docker.com/build/building/multi-stage/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Spring Boot — Container images",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html",
+   "publisher": "Spring"
+  }
+ ]
+}
