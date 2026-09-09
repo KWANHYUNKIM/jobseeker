@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "proxy-factory",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "프록시 팩토리",
+ "summary": "무엇으로 만들지 알아서 고른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "하나로 만든다.",
+  "고르는 규칙을 안다.",
+  "강제하는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절에서 둘을 손으로** 골랐다. **스프링이 그걸 감싼 것이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "갈래 대신 한 번",
+   "ascii": "   one call instead of two branches\n\n   before   I check for an interface and pick an implementation\n   after    I hand over the target and get a proxy back\n\n   the choice is still made, but not by me",
+   "note": "**고르기는 여전히 일어나고 내가 안 할** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 기술이 하나의 사용법을 갖는다",
+   "md": "**6.3절과 6.6절이** 달랐다.\n\n> **한쪽은 인터페이스 배열**이다.\n> **한쪽은 `Enhancer`** 다.\n> **아래에서 하나로** 만든다.\n\n**설정이 반으로** 준다.\n\n> **여섯 벌이 세 벌**이 된다.\n> **아래에서 세어** 본다.\n> **갈래가** 사라진다.\n\n**부가 기능도** 하나다.\n\n> **6.7절에서 두 벌**이었다.\n> **7.2절에서 그걸** 본다.\n> **여기선 만드는 것만**이다.\n\n**강제할 수도** 있다.\n\n> **인터페이스가 있어도 상속으로**.\n> **1.4절의 그 설정**이다.\n> **아래에서 켜** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "고르는 규칙",
+   "ascii": "   how the factory decides\n\n   the target has interfaces and I did not force otherwise\n   the target has none, or I asked for a subclass\n\n   the first gives an interface proxy, the second a subclass",
+   "note": "**첫째면 인터페이스 프록시, 둘째면** 자식이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇이 만들어졌는지 확인해야 한다",
+   "md": "**이름이** 다르다.\n\n> **1.4절에서 셋을** 봤다.\n> **아래에서 물어**본다.\n> **도구가** 있다.\n\n**제약도 따라**온다.\n\n> **6.7절의 다섯**이다.\n> **어느 쪽이냐에** 달렸다.\n> **아래에서 확인**한다.\n\n**대상이** 필요하다.\n\n> **6.6절의 부모 호출은 못** 쓴다.\n> **아래에서 그걸** 본다.\n> **초기화가 두 번** 돈다.\n\n**스프링 것만 쓸 수** 있다.\n\n> **6.3절의 핸들러가 안** 맞는다.\n> **7.2절의 그것으로** 바꾼다.\n> **아래에서 그 타입을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 6 장에서는 둘로 갈렸다\n\n// 인터페이스가 있으면\nreturn (OrderServiceV1) Proxy.newProxyInstance(\n        OrderServiceV1.class.getClassLoader(),\n        new Class[]{OrderServiceV1.class},\n        new LogTraceHandler(target, trace));\n\n// 없으면\nEnhancer enhancer = new Enhancer();\nenhancer.setSuperclass(OrderServiceV2.class);\nenhancer.setCallback(new LogTraceInterceptor(target, trace));\nreturn (OrderServiceV2) enhancer.create();\n\n$ grep -c 'newProxyInstance\\|new Enhancer' \\\n    src/main/java/study/adv/dynamic/*Config.java | awk -F: '{s+=$2} END {print s}'\n6\n\n--   6.7 절에서 센 그 여섯이다\n\n\n-- 하나로 만든다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    ProxyFactory factory = new ProxyFactory(target);\n    factory.addAdvice(new LogTraceAdvice(trace));\n    return (OrderServiceV1) factory.getProxy();\n}\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    OrderServiceV2 target = new OrderServiceV2(orderRepositoryV2(trace));\n    ProxyFactory factory = new ProxyFactory(target);\n    factory.addAdvice(new LogTraceAdvice(trace));\n    return (OrderServiceV2) factory.getProxy();\n}\n\n$ diff <(sed -n '/orderServiceV1/,/^}/p' \\\n           src/main/java/study/adv/factory/ProxyFactoryConfig.java \\\n         | sed 's/V1//g; s/Impl//g') \\\n       <(sed -n '/orderServiceV2/,/^}/p' \\\n           src/main/java/study/adv/factory/ProxyFactoryConfig.java \\\n         | sed 's/V2//g') \\\n  | grep -c '^[<>]'\n0\n\n--   두 코드가 완전히 같아졌다\n--   인터페이스 배열도 Enhancer 도 없다\n\n\n-- 무엇이 만들어졌나\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1'\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy142\n원본:     study.adv.app.OrderServiceV1Impl\n프록시:   true\nJDK:      true\nCGLIB:    false\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2'\n빈 이름:   orderServiceV2\n주입된 것: study.adv.app.OrderServiceV2$$SpringCGLIB$$0\n원본:     study.adv.app.OrderServiceV2\n프록시:   true\nJDK:      false\nCGLIB:    true\n\n--   같은 코드가 다른 것을 만들었다\n--   프록시 항목이 처음으로 true 다\n--   1.1 절부터 계속 false 였다\n\n\n-- 이름이 달라졌다\n\n// 6.6 절에서는\nstudy.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n\n// 여기서는\nstudy.adv.app.OrderServiceV2$$SpringCGLIB$$0\n\n$ curl -s localhost:8080/who/all | grep -c 'SpringCGLIB'\n3\n$ curl -s localhost:8080/who/all | grep -c 'EnhancerByCGLIB'\n0\n\n--   스프링이 자기 것으로 다시 묶은 이름이다\n--   1.4 절에서 본 그 이름이 이것이다\n\n\n-- 원본을 물어볼 수 있다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | sed -n '3p'\n원본:     study.adv.app.OrderServiceV1Impl\n\n// 6.3 절에서는\n원본:     jdk.proxy2.$Proxy142\n\n--   6 장에서는 원본을 못 물어봤다\n--   스프링이 만든 것이라 알고 있다\n\n\n-- 돌려 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1Impl.request()\n[796bccd9] |-->OrderServiceV1Impl.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1Impl.save()\n[796bccd9] |   |<--OrderRepositoryV1Impl.save() time=1004ms\n[796bccd9] |<--OrderServiceV1Impl.orderItem() time=1006ms\n[796bccd9] OrderControllerV1Impl.request() time=1007ms\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   두 버전 다 여섯 줄이다\n\n\n-- 고르는 규칙을 확인한다\n\n@GetMapping(value = \"/factory/decide\", produces = \"text/plain\")\nString decide() {\n    var sb = new StringBuilder();\n    for (Object target : List.of(new OrderServiceV1Impl(repo1), new OrderServiceV2(repo2))) {\n        ProxyFactory f = new ProxyFactory(target);\n        f.addAdvice(new LogTraceAdvice(trace));\n        Object proxy = f.getProxy();\n        sb.append(String.format(\"%-24s 인터페이스 %d 개 -> %s%n\",\n            target.getClass().getSimpleName(),\n            target.getClass().getInterfaces().length,\n            AopUtils.isJdkDynamicProxy(proxy) ? \"JDK\" : \"CGLIB\"));\n    }\n    return sb.toString();\n}\n\n$ curl -s localhost:8080/factory/decide\nOrderServiceV1Impl       인터페이스 1 개 -> JDK\nOrderServiceV2           인터페이스 0 개 -> CGLIB\n\n--   인터페이스 개수를 보고 고른다\n\n\n-- 강제할 수 있다\n\nProxyFactory factory = new ProxyFactory(target);\nfactory.setProxyTargetClass(true);              // 상속으로 강제한다\nfactory.addAdvice(new LogTraceAdvice(trace));\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -3\n빈 이름:   orderServiceV1\n주입된 것: study.adv.app.OrderServiceV1Impl$$SpringCGLIB$$0\n원본:     study.adv.app.OrderServiceV1Impl\n\n$ curl -s localhost:8080/factory/decide\nOrderServiceV1Impl       인터페이스 1 개 -> CGLIB\n\n--   인터페이스가 있어도 상속으로 만들었다\n--   1.4 절의 그 설정이 이것이다\n\n\n-- 구체 타입으로 받을 수 있다\n\n@RestController\npublic class SomeController {\n    private final OrderServiceV1Impl service;      // 구현 타입\n}\n\n// 강제 전\n$ ./gradlew bootRun 2>&1 | grep -c 'could not be found'\n1\n\n// 강제 후\n$ ./gradlew bootRun 2>&1 | grep -c 'could not be found'\n0\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n200\n\n--   6.3 절에서 막히던 자리다\n--   12.4 절에서 이 선택을 다시 본다\n\n\n-- 인터페이스도 강제할 수 있다\n\nProxyFactory factory = new ProxyFactory(target);\nfactory.setInterfaces(OrderServiceV1.class);\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy142\n\n$ curl -s localhost:8080/proxy/interfaces?name=orderServiceV1\nstudy.adv.app.OrderServiceV1\norg.springframework.aop.SpringProxy\norg.springframework.aop.framework.Advised\njava.io.Serializable\n\n--   내가 안 적은 것이 셋 더 있다\n--   7.6 절에서 이걸 쓴다\n\n\n-- 대상이 필요하다\n\nProxyFactory factory = new ProxyFactory();          // 대상 없이\nfactory.addAdvice(new LogTraceAdvice(trace));\nObject proxy = factory.getProxy();\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'AopConfigException' | head -1\norg.springframework.aop.framework.AopConfigException:\n  No advisor chain, TargetSource or interfaces specified\n\n--   6.6 절의 부모 호출 방식은 못 쓴다\n--   늘 대상을 들고 있어야 한다\n\n\n-- 그래서 초기화가 두 번이다\n\npublic OrderServiceV2(OrderRepositoryV2 r) {\n    System.out.println(\"[초기화] 서비스\");\n    ...\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\] 서비스'\n2\n\n--   6.6 절에서 invokeSuper 로 한 번을 만들었다\n--   여기선 안 된다\n--   6.7 절의 셋째 길을 쓴다\n\n\n-- 설정을 센다\n\n$ grep -c 'new ProxyFactory' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ wc -l < src/main/java/study/adv/factory/ProxyFactoryConfig.java\n      62\n\n// 6.7 절에서는\n$ git show v7-done:src/main/java/study/adv/dynamic/DynamicProxyConfig.java | wc -l\n      84\n\n$ python3 -c \"print('84 에서 62, %.0f%% 로 줄었다' % (62/84*100))\"\n84 에서 62, 74% 로 줄었다\n\n--   갈래가 사라져서 줄었다\n\n\n-- 부가 기능은 아직 두 벌인가\n\n$ ls src/main/java/study/adv/factory/\nLogTraceAdvice.java\nProxyFactoryConfig.java\n\n$ ls src/main/java/study/adv/dynamic/\nLogTraceHandler.java\nLogTraceInterceptor.java\n\n$ wc -l < src/main/java/study/adv/factory/LogTraceAdvice.java\n      26\n\n--   한 벌이 됐다\n--   6.7 절에서 두 벌이었다\n--   7.2 절에서 그 타입을 본다\n\n\n-- 제약은 그대로다\n\npublic final class OrderServiceV2 { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'Cannot subclass' | head -1\njava.lang.IllegalArgumentException: Cannot subclass final class\n  study.adv.app.OrderServiceV2\n\npublic final void orderItem(String itemId) { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | wc -l\n4\n\n--   6.7 절의 다섯이 그대로다\n--   감싸는 방법만 바뀌었다\n\n\n-- 인터페이스 쪽이면 그 제약이 없다\n\nfactory.setProxyTargetClass(false);\n\npublic final void orderItem(String itemId) { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   인터페이스 구현이라 final 이 상관없다\n--   6.5 절과 6.7 절의 표가 여기서 뜻을 갖는다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null -w 'v1 %{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\nv1 200\n$ curl -s -o /dev/null -w 'v2 %{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\nv2 200\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n2\n\n$ curl -s localhost:8080/who/all | grep -E 'V1|V2'\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\norderControllerV2    study.adv.app.OrderControllerV2$$SpringCGLIB$$0\norderServiceV2       study.adv.app.OrderServiceV2$$SpringCGLIB$$0\norderRepositoryV2    study.adv.app.OrderRepositoryV2$$SpringCGLIB$$0\n\n$ git add -A && git commit -q -m 'feat: v8 프록시 팩토리' && git tag v8\n\n--   7.2 절에서 부가 기능의 타입을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '갈래'        '사라짐' \\\n  '코드'        '두 곳이 같음' \\\n  '고르는 것'   '인터페이스 개수' \\\n  '이름'        'SpringCGLIB' \\\n  '원본'        '물어볼 수 있음' \\\n  '프록시 여부' '처음으로 true' \\\n  '강제'        '상속이나 인터페이스' \\\n  '대상'        '반드시 필요' \\\n  '설정'        '84 에서 62 줄' \\\n  '제약'        '그대로'\n\n갈래                       사라짐\n코드                       두 곳이 같음\n고르는 것                  인터페이스 개수\n이름                       SpringCGLIB\n원본                       물어볼 수 있음\n프록시 여부                처음으로 true\n강제                       상속이나 인터페이스\n대상                       반드시 필요\n설정                       84 에서 62 줄\n제약                       그대로",
+   "note": "**두 버전의 조립 코드가 `V1`·`V2` 만 빼면 diff 0 줄로** 같아졌다.\n\n**같은 코드가 인터페이스 개수를 보고 `jdk.proxy2.$Proxy142` 와 `$$SpringCGLIB$$0` 을 갈라** 만든다.\n\n**`/who` 의 프록시 항목이 1.1절 이후 처음으로 `true` 이고 원본도 물어볼 수** 있다.\n\n**상속을 강제하면 인터페이스가 있어도 자식이 되어 구체 타입 주입이** 살아난다.\n\n**설정이 84 줄에서 62 줄로 줄고 부가 기능이 두 벌에서 한 벌이** 됐다."
+  }
+ ],
+ "recap": [
+  "**갈래가** 사라진다.",
+  "**코드가** 같아진다.",
+  "**개수를 보고** 고른다.",
+  "**이름이** 바뀐다.",
+  "**원본을** 안다.",
+  "**강제할 수** 있다.",
+  "**대상이** 필요하다.",
+  "**설정이** 줄었다.",
+  "**제약은** 그대로다."
+ ],
+ "drills": [
+  {
+   "task": "두 버전을 같은 코드로 만든다.",
+   "done_when": "diff 가 0 인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "무엇이 만들어졌는지 묻는다.",
+   "done_when": "둘이 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "상속을 강제해 본다.",
+   "done_when": "구체 타입 주입이 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "설정 줄을 센다.",
+   "done_when": "6.7 절과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇을 보고 방식을 고르나?",
+   "a": "대상이 구현한 인터페이스가 있는지다."
+  },
+  {
+   "q": "강제하면 어떻게 되나?",
+   "a": "인터페이스가 있어도 자식 클래스로 만든다."
+  },
+  {
+   "q": "6장과 이름이 왜 다른가?",
+   "a": "스프링이 자기 것으로 다시 묶어 만들어서다."
+  },
+  {
+   "q": "대상 없이 만들 수 있나?",
+   "a": "없다. 반드시 대상을 줘야 한다."
+  },
+  {
+   "q": "제약은 사라졌나?",
+   "a": "안 사라졌다. 어느 방식이 골라졌느냐에 따라 그대로 따라온다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프록시 팩토리",
+   "def": "대상을 주면 알맞은 방식으로 프록시를 만들어 주는 스프링 도구."
+  },
+  {
+   "term": "상속 강제",
+   "def": "인터페이스가 있어도 자식 클래스로 만들게 하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — ProxyFactory",
+   "url": "https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/framework/ProxyFactory.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

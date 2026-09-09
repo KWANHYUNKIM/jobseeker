@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "cglib-limit",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "CGLIB 의 제약",
+ "summary": "final 과 기본 생성자.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯을 다 만든다.",
+  "시끄러운 것과 조용한 것을 가른다.",
+  "6장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절에서 인터페이스가 필요** 없어졌다. **대신 무엇이 막히는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "막는 다섯",
+   "ascii": "   five things that stop a subclass proxy\n\n   a final class, which cannot be extended at all\n   a final method, which cannot be overridden\n   a private method, which is not visible to override\n   a static method, which has nothing to override\n   a constructor that refuses the arguments it is given\n\n   only the first and the last announce themselves",
+   "note": "**스스로 알리는 건 첫째와 마지막**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "상속으로 만드니 상속의 제약을 그대로 받는다",
+   "md": "**5.3절의 넷이 그대로**다.\n\n> **손으로 쓸 때 겪었**다.\n> **거기선 컴파일이** 막았다.\n> **여기선 실행이나** 침묵이다.\n\n**시점이** 밀렸다.\n\n> **6.2절에서 말한 그것**이다.\n> **아래에서 다시** 센다.\n> **배포하고 나서** 안다.\n\n**조용한 게 더** 나쁘다.\n\n> **뜨는데 로그만** 빠진다.\n> **아래에서 그걸** 만든다.\n> **줄을 세어야** 안다.\n\n**생성자가 하나 더** 있다.\n\n> **5.3절에서 두 번** 돌았다.\n> **아래에서 그 셋을** 견준다.\n> **피하는 길도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "시끄러운 것과 조용한 것",
+   "ascii": "   loud failures and quiet ones\n\n   loud   the application does not start\n   quiet  the application starts and the log line is missing\n\n   the quiet ones are found by counting lines, not by reading errors",
+   "note": "**조용한 쪽은 오류가 아니라 줄 수로** 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "라이브러리 클래스는 대개 final 이다",
+   "md": "**값 객체가** 그렇다.\n\n> **`String` 과 기록 타입**이다.\n> **아래에서 세어** 본다.\n> **감쌀 일도 없긴** 하다.\n\n**코틀린은 기본이 final** 이다.\n\n> **`open` 을 적어야** 한다.\n> **아래에서 그 이야기를** 본다.\n> **플러그인이 대신** 열어 준다.\n\n**기록 타입도** 막힌다.\n\n> **자바 16 부터**다.\n> **아래에서 확인**한다.\n> **인터페이스가 없으면 끝**이다.\n\n**둘 다 안 되면 남는 건** 하나다.\n\n> **원본을 고치는 것**이다.\n> **6.5절의 셋째 길**이다.\n> **아래에서 그 표를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- ① final 클래스 (시끄럽다)\n\npublic final class OrderServiceV2 { ... }\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\njava.lang.IllegalArgumentException: Cannot subclass final class\n  study.adv.app.OrderServiceV2\n\n--   6.6 절에서 본 그것이다\n--   기동에서 멈춘다\n\n\n-- 5.3 절과 견준다\n\n// 손으로 썼을 때\npublic class OrderServiceConcreteProxy extends OrderServiceV2 { ... }\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: cannot inherit from final study.adv.app.OrderServiceV2\n\n--   그때는 빌드에서 막았다\n--   6.2 절의 그 시점 이동이다\n\n\n-- ② final 메서드 (조용하다)\n\npublic final void orderItem(String itemId) { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|Cannot subclass'\n0\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderControllerV2.request()\n[796bccd9] |-->OrderRepositoryV2.save()\n[796bccd9] |<--OrderRepositoryV2.save() time=1004ms\n[796bccd9] OrderControllerV2.request() time=1006ms\n\n$ grep 'study.adv.trace' logs/app.log | tail -4 | wc -l\n4\n\n--   여섯 줄이어야 하는데 넷이다\n--   서비스가 빠졌다\n--   오류는 하나도 없다\n\n\n-- 생성된 클래스를 확인한다\n\n$ javap -p '/tmp/cglib/study/adv/app/OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | grep -c 'orderItem'\n0\n\n$ javap -p '/tmp/cglib/study/adv/app/OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | grep 'public final'\n  public final java.lang.String find(java.lang.String);\n  public final boolean equals(java.lang.Object);\n\n--   그 메서드가 아예 없다\n--   덮어쓸 수 없으니 안 만들었다\n\n\n-- 줄을 세어 찾는다\n\n@Component\nclass ProxyChecker implements InitializingBean {\n    @Override\n    public void afterPropertiesSet() {\n        for (String name : List.of(\"orderServiceV2\", \"orderRepositoryV2\")) {\n            Object bean = ctx.getBean(name);\n            Class<?> proxy = bean.getClass();\n            Class<?> target = proxy.getSuperclass();\n            for (Method m : target.getDeclaredMethods()) {\n                if (Modifier.isFinal(m.getModifiers()))\n                    log.warn(\"안 걸린다: {}.{}\", target.getSimpleName(), m.getName());\n            }\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '안 걸린다'\nWARN ... : 안 걸린다: OrderServiceV2.orderItem\n\n--   6.2 절에서 기동 검사를 하던 것과 같다\n--   조용한 실패를 시끄럽게 만들었다\n\n\n-- ③ private 메서드 (조용하다)\n\nprivate void validate(String itemId) { log.info(\"검사 {}\", itemId); }\n\npublic void orderItem(String itemId) {\n    validate(itemId);\n    orderRepository.save(itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep -c '검사 연필' logs/app.log\n1\n$ grep -c 'OrderServiceV2.validate' logs/app.log\n0\n\n$ javap -p '/tmp/cglib/.../OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | grep -c 'validate'\n0\n\n--   불리기는 한다\n--   프록시를 안 지난다\n--   12.1 절에서 이게 큰 문제가 된다\n\n\n-- ④ 정적 메서드 (조용하다)\n\npublic static String describe() { return \"주문 서비스\"; }\n\n$ curl -s 'localhost:8080/v2/describe'\n주문 서비스\n\n$ grep -c 'describe' logs/app.log\n0\n\n$ javap -p '/tmp/cglib/.../OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | grep -c 'static java.lang.String describe'\n0\n\n--   덮어쓸 개념 자체가 없다\n--   5.3 절과 같다\n\n\n-- ⑤ 생성자 (시끄럽다)\n\npublic OrderServiceV2(OrderRepositoryV2 r) { ... }\n\nreturn (OrderServiceV2) enhancer.create();          // 인자를 안 줬다\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'NoSuchMethod' | head -2\njava.lang.NoSuchMethodError: study.adv.app.OrderServiceV2.<init>()\n\n// 인자를 주면\nreturn (OrderServiceV2) enhancer.create(\n        new Class[]{OrderRepositoryV2.class}, new Object[]{repo});\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n200\n\n--   5.3 절의 super(null) 자리다\n\n\n-- 생성자가 무거우면\n\npublic OrderServiceV2(OrderRepositoryV2 r) {\n    System.out.println(\"[초기화] 가격표\");\n    this.priceTable = loadPriceTable();       // 3 초\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n2\n\n$ ./gradlew bootRun 2>&1 | grep 'Started' | tail -1\nINFO ... : Started AdvApplication in 8.412 seconds\n\n--   5.3 절과 5.6 절에서 본 그것이다\n--   원본 한 번, 프록시 한 번이다\n\n\n-- 세 가지로 피한다\n\n// ① 부모를 바로 부른다 (6.6 절)\nObject result = proxy.invokeSuper(obj, args);\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n1\n\n// ② 생성자를 건너뛴다\nObjenesis objenesis = new ObjenesisStd();\nObject proxy = objenesis.newInstance(enhancedClass);\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n1\n$ curl -s localhost:8080/proxy/fields?name=orderServiceV2 | tail -1\n물려받은 필드: priceTable = null\n\n// ③ 무거운 것을 생성자에서 뺀다\n@PostConstruct\nvoid init() { this.priceTable = loadPriceTable(); }\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n1\n\n--   셋 다 한 번이 된다\n--   ②는 필드가 비니 target 과 같이 써야 한다\n--   ③이 제일 낫다\n\n\n-- 다섯을 표로\n\n$ printf '%-16s %-12s %-16s %s\\n' \\\n  'final 클래스' '시끄러움'  '기동 실패'      'Cannot subclass' \\\n  'final 메서드' '조용함'    '줄이 빠짐'      '생성 클래스에 없음' \\\n  'private'      '조용함'    '줄이 빠짐'      '덮을 수 없음' \\\n  'static'       '조용함'    '줄이 빠짐'      '덮을 개념 없음' \\\n  '생성자'       '시끄러움'  '기동 실패'      'NoSuchMethodError'\n\nfinal 클래스     시끄러움     기동 실패        Cannot subclass\nfinal 메서드     조용함       줄이 빠짐        생성 클래스에 없음\nprivate          조용함       줄이 빠짐        덮을 수 없음\nstatic           조용함       줄이 빠짐        덮을 개념 없음\n생성자           시끄러움     기동 실패        NoSuchMethodError\n\n\n-- 라이브러리는 대개 막힌다\n\n$ jshell -q <<'EOF'\nimport java.lang.reflect.Modifier;\nvar names = java.util.List.of(\n    \"java.lang.String\", \"java.time.LocalDate\", \"java.util.UUID\",\n    \"java.util.ArrayList\", \"java.math.BigDecimal\");\nfor (var n : names)\n    System.out.printf(\"%-24s final=%b%n\", n,\n        Modifier.isFinal(Class.forName(n).getModifiers()));\nEOF\njava.lang.String         final=true\njava.time.LocalDate      final=true\njava.util.UUID           final=true\njava.util.ArrayList      final=false\njava.math.BigDecimal     final=false\n\n--   값 객체는 대개 final 이다\n--   감쌀 일도 없긴 하다\n\n\n-- 기록 타입도 막힌다\n\npublic record Order(Long id, String item) {}\n\n$ javap build/classes/java/main/study/adv/app/Order.class | head -1\npublic final record study.adv.app.Order extends java.lang.Record\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'Cannot subclass' | head -1\njava.lang.IllegalArgumentException: Cannot subclass final class study.adv.app.Order\n\n--   자바 16 부터 그렇다\n--   ⑦ 5장에서 쓰던 그 타입이다\n\n\n-- 코틀린은 기본이 final 이다\n\nclass OrderService {            // final 이다\n    fun orderItem(itemId: String) { ... }\n}\n\n$ javap OrderService.class | head -1\npublic final class OrderService\n\n// 열려면\nopen class OrderService {\n    open fun orderItem(itemId: String) { ... }\n}\n\n$ javap OrderService.class | head -1\npublic class OrderService\n\n--   플러그인이 스프링 애너테이션이 붙은 것을 자동으로 연다\n--   안 쓰면 기동에서 다 막힌다\n\n\n-- 두 방식이 다 막히면\n\n$ printf '%-24s %-14s %-14s %s\\n' \\\n  '인터페이스 있음'   'JDK 가능'   'CGLIB 가능'  '둘 다' \\\n  '인터페이스 없음'   'JDK 불가'   'CGLIB 가능'  '상속만' \\\n  'final 클래스'      'JDK 불가'   'CGLIB 불가'  '원본을 고침' \\\n  '기록 타입'         'JDK 불가'   'CGLIB 불가'  '원본을 고침'\n\n인터페이스 있음          JDK 가능     CGLIB 가능    둘 다\n인터페이스 없음          JDK 불가     CGLIB 가능    상속만\nfinal 클래스             JDK 불가     CGLIB 불가    원본을 고침\n기록 타입                JDK 불가     CGLIB 불가    원본을 고침\n\n--   6.5 절의 셋째 길로 돌아간다\n\n\n-- 실무에서 얼마나 막히나\n\n$ curl -s localhost:8080/proxy/limits\n전체 빈:            187\n  final 클래스:       12\n  인터페이스 있음:    84\n  둘 다 없음:         91\n\n$ python3 -c \"print('%.0f%% 는 CGLIB 로만 된다' % (91/187*100))\"\n49% 는 CGLIB 로만 된다\n$ python3 -c \"print('%.0f%% 는 아예 안 된다' % (12/187*100))\"\n6% 는 아예 안 된다\n\n--   6.5 절에서 55% 라고 했다\n--   CGLIB 을 쓰면 6% 로 준다\n\n\n-- 조용한 실패를 다 찾는다\n\n@Component\nclass ProxyAudit implements InitializingBean {\n    @Override\n    public void afterPropertiesSet() {\n        int hidden = 0;\n        for (String name : ctx.getBeanDefinitionNames()) {\n            Object bean = ctx.getBean(name);\n            if (!AopUtils.isCglibProxy(bean)) continue;\n            Class<?> target = AopProxyUtils.ultimateTargetClass(bean);\n            for (Method m : target.getDeclaredMethods()) {\n                int mod = m.getModifiers();\n                if (Modifier.isFinal(mod) || Modifier.isPrivate(mod)\n                        || Modifier.isStatic(mod)) {\n                    log.warn(\"안 걸림: {}.{} ({})\", target.getSimpleName(),\n                             m.getName(), Modifier.toString(mod));\n                    hidden++;\n                }\n            }\n        }\n        log.info(\"조용히 빠지는 메서드 {} 개\", hidden);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '안 걸림\\|조용히'\nWARN ... : 안 걸림: OrderServiceV2.orderItem (public final)\nWARN ... : 안 걸림: OrderServiceV2.validate (private)\nWARN ... : 안 걸림: OrderServiceV2.describe (public static)\nINFO ... : 조용히 빠지는 메서드 3 개\n\n--   기동에서 다 드러난다\n--   6.2 절의 그 방법이다\n\n\n-- 6 장이 만든 것\n\n$ printf '%-8s %-26s %s\\n' \\\n  '6.1'  '리플렉션'        '메서드가 값' \\\n  '6.2'  '그 값'           '넷을 잃음' \\\n  '6.3'  'JDK 동적 프록시' '클래스 0 개' \\\n  '6.4'  '적용'            '거르개 필요' \\\n  '6.5'  '한계'            '인터페이스 필요' \\\n  '6.6'  'CGLIB'           '상속으로' \\\n  '6.7'  '제약'            '다섯'\n\n6.1    리플렉션                  메서드가 값\n6.2    그 값                     넷을 잃음\n6.3    JDK 동적 프록시           클래스 0 개\n6.4    적용                      거르개 필요\n6.5    한계                      인터페이스 필요\n6.6    CGLIB                     상속으로\n6.7    제약                      다섯\n\n\n-- 남은 것을 센다\n\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n$ find src/main/java/study/adv/dynamic -name '*.java' | wc -l\n       2\n\n$ grep -c 'newProxyInstance\\|new Enhancer' \\\n    src/main/java/study/adv/dynamic/*Config.java | awk -F: '{s+=$2} END {print s}'\n6\n\n$ wc -l src/main/java/study/adv/dynamic/*Config.java | tail -1\n      84 total\n\n--   프록시 클래스는 0 개다\n--   그런데 설정에 만드는 코드가 여섯 벌이다\n--   두 방식을 손으로 갈라 쓴다\n\n\n-- 어느 것을 쓸지도 내가 정한다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    return (OrderServiceV1) Proxy.newProxyInstance(...);      // JDK\n}\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    Enhancer enhancer = new Enhancer();                        // CGLIB\n    ...\n}\n\n$ grep -c 'Proxy.newProxyInstance' src/main/java/study/adv/dynamic/*Config.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'new Enhancer' src/main/java/study/adv/dynamic/*Config.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   인터페이스가 있나 없나를 내가 보고 골랐다\n--   7.1 절이 이걸 대신한다\n\n\n-- 두 인터셉터가 따로다\n\n$ ls src/main/java/study/adv/dynamic/\nDynamicProxyConfig.java\nLogTraceHandler.java        JDK 용\nLogTraceInterceptor.java    CGLIB 용\n\n$ diff <(grep -v 'InvocationHandler\\|import' \\\n           src/main/java/study/adv/dynamic/LogTraceHandler.java) \\\n       <(grep -v 'MethodInterceptor\\|MethodProxy\\|import' \\\n           src/main/java/study/adv/dynamic/LogTraceInterceptor.java) \\\n  | grep -c '^[<>]'\n6\n\n--   부가 기능이 같은데 두 벌이다\n--   7.2 절이 이걸 하나로 만든다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null -w 'v1 %{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\nv1 200\n$ curl -s -o /dev/null -w 'v2 %{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\nv2 200\n\n$ curl -s localhost:8080/who/all | grep -E 'V1|V2'\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\norderControllerV2    study.adv.app.OrderControllerV2$$EnhancerByCGLIB$$c14e0b93\norderServiceV2       study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\norderRepositoryV2    study.adv.app.OrderRepositoryV2$$EnhancerByCGLIB$$4f21a1c9\n\n$ git add -A && git commit -q -m 'chore: v7 정리' && git tag v7-done\n\n--   7.1 절에서 이 둘을 하나로 감싼다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '막는 것'      '다섯' \\\n  '시끄러운 것'  '둘' \\\n  '조용한 것'    '셋' \\\n  '찾는 법'      '줄을 셈' \\\n  '생성자'       '두 번 돎' \\\n  '피하는 길'    '셋' \\\n  '라이브러리'   '대개 final' \\\n  '실무'         '6% 는 불가' \\\n  '남은 것'      '둘을 손으로 고름'\n\n막는 것                    다섯\n시끄러운 것                둘\n조용한 것                  셋\n찾는 법                    줄을 셈\n생성자                     두 번 돎\n피하는 길                  셋\n라이브러리                 대개 final\n실무                       6% 는 불가\n남은 것                    둘을 손으로 고름",
+   "note": "**`final` 클래스와 생성자는 기동에서 멈추고 `final`·`private`·정적 메서드는 오류 없이 로그가 여섯 줄에서 넷으로** 준다.\n\n**생성된 클래스를 열어 보니 그 메서드가 아예 없어 덮어쓸 수 없는 건 안** 만든다.\n\n**기동 검사로 훑으니 `조용히 빠지는 메서드 3 개` 로 침묵이 시끄러워**진다.\n\n**빈 187 개 중 인터페이스도 상속도 안 되는 건 12 개로 6.5절의 55% 가 6% 로** 준다.\n\n**프록시 클래스는 0 개인데 설정에 만드는 코드가 여섯 벌, 부가 기능도 두 벌**이다."
+  }
+ ],
+ "recap": [
+  "**다섯이** 막는다.",
+  "**둘은** 시끄럽다.",
+  "**셋은** 조용하다.",
+  "**줄을** 센다.",
+  "**생성자가 두 번** 돈다.",
+  "**피할 길이** 있다.",
+  "**라이브러리는** 막힌다.",
+  "**6% 는** 불가다.",
+  "**둘을 손으로** 고른다."
+ ],
+ "drills": [
+  {
+   "task": "다섯을 다 만든다.",
+   "done_when": "시끄러운 것과 조용한 것을 갈랐다.",
+   "minutes": 25
+  },
+  {
+   "task": "생성된 클래스를 확인한다.",
+   "done_when": "메서드가 없는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "기동 검사를 넣는다.",
+   "done_when": "조용한 실패를 찾았다.",
+   "minutes": 25
+  },
+  {
+   "task": "생성자를 한 번만 돌게 한다.",
+   "done_when": "세 길 중 하나를 골랐다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "다섯 중 시끄러운 것은?",
+   "a": "`final` 클래스와 맞지 않는 생성자다."
+  },
+  {
+   "q": "조용한 실패는 어떻게 찾나?",
+   "a": "로그 줄 수를 세거나 기동 때 훑어 경고를 낸다."
+  },
+  {
+   "q": "`final` 메서드는 생성된 클래스에?",
+   "a": "아예 없다. 덮어쓸 수 없어 안 만든다."
+  },
+  {
+   "q": "생성자를 한 번만 돌게 하려면?",
+   "a": "부모를 바로 부르거나 무거운 일을 생성자 밖으로 뺀다."
+  },
+  {
+   "q": "두 방식 다 막히면?",
+   "a": "원본을 고치는 수밖에 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조용한 실패",
+   "def": "오류 없이 기능만 빠지는 상태. 줄 수로만 알 수 있다."
+  },
+  {
+   "term": "생성자 우회",
+   "def": "객체를 만들되 생성자를 돌리지 않고 만드는 방법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "cglib — Byte Code Generation Library",
+   "url": "https://github.com/cglib/cglib/wiki",
+   "publisher": "cglib"
+  },
+  {
+   "title": "Objenesis",
+   "url": "https://objenesis.org/",
+   "publisher": "Objenesis"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

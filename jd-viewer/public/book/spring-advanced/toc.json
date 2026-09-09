@@ -378,7 +378,7 @@
           "title": "CGLIB 의 제약",
           "summary": "final 과 기본 생성자.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -393,7 +393,7 @@
           "title": "프록시 팩토리",
           "summary": "무엇으로 만들지 알아서 고른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
