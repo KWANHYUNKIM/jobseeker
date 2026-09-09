@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "paging",
+ "no": "4.7",
+ "chapter": 4,
+ "title": "페이징",
+ "summary": "offset 과 limit.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 메서드를 안다.",
+  "JPQL 에 없는 걸 본다.",
+  "개수를 따로 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.6절에서 정렬을** 정했다. **정렬이 있어야 페이징이** 의미가 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "숫자 둘, 절 둘, 빠진 하나",
+   "ascii": "   two numbers, two clauses, one missing piece\n\n   offset(n)   how many rows to skip\n   limit(n)    how many rows to take\n   the total   not here, it is a second query you write yourself\n\n   4.5 removed the method that used to guess that third line",
+   "note": "**셋째 줄은 내가 쓰는 두 번째 쿼리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "정렬 없는 페이징은 페이징이 아니다",
+   "md": "**어느 행이 건너뛰어질지** 모른다.\n\n> **DB 가 순서를 보장 안** 한다.\n> **⑭ 5.9절에서 본** 것이다.\n> **페이지 사이에 중복이나 누락이** 난다.\n\n**정렬 키가 유일해야** 한다.\n\n> **4.6절의 보조 키**다.\n> **`age` 만으로는 동점이** 생긴다.\n> **`id` 를 같이** 준다.\n\n**개수는 따로** 센다.\n\n> **4.5절에서 `fetchResults` 가** 사라졌다.\n> **`select(member.count())` 를 직접** 쓴다.\n> **7.4절에서 페이지 객체로** 묶는다.\n\n**오프셋은 뒤로 갈수록** 비싸다.\n\n> **⑭ 5.9절에서 시간을** 쟀다.\n> **건너뛴 행도** 읽는다.\n> **여기서도 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "페이징이 나타나는 자리",
+   "ascii": "   where the paging actually appears\n\n   the jpql    nothing, not one word about offset or limit\n   the sql     offset rows fetch first rows only, added by the dialect\n\n   so a paging bug cannot be found by reading the jpql alone",
+   "note": "**JPQL 만 읽어서는 못** 찾는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "limit 만 주면 offset 이 0 이 아니다",
+   "md": "**`limit` 만 주면 오프셋은** 없다.\n\n> **SQL 에 `fetch first` 만** 붙는다.\n> **`offset` 절 자체가 안** 나온다.\n> **아래에서 확인**한다.\n\n**`offset` 만 주면 `limit` 이** 없다.\n\n> **끝까지 다** 읽는다.\n> **의도한 게 아닐** 수 있다.\n> **둘을 같이** 준다.\n\n**범위를 넘으면 빈 리스트**다.\n\n> **예외가 안** 난다.\n> **⑭ 5.9절과 같다.**\n> **개수를 봐야 마지막 쪽을** 안다.\n\n**컬렉션 조인과 같이 쓰면** 깨진다.\n\n> **행이 늘어 `limit` 이 엉뚱한 걸** 자른다.\n> **4.13절에서 그** 문제를 본다.\n> **⑭ 5.13절의 그 벽**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 첫 페이지\n\n@Test\nvoid 첫_페이지() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.username.asc())\n            .offset(0).limit(3)\n            .fetch()\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1\norder by\n    member1.username asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.username\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [0]\nTRACE binding parameter (2:INTEGER) <- [3]\nm1\nm10\nm2\n\n--   JPQL 에 offset 이 없다\n--   3.5절에서 본 그것이다\n--   m10 이 m2 앞이다 (문자열 정렬)\n\n\n-- 두 번째 페이지\n\n@Test\nvoid 두번째() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.username.asc())\n            .offset(3).limit(3)\n            .fetch()\n            .forEach(m -> System.out.println(m.getUsername()));\n}\n\nHibernate:\n    select ... order by m1_0.username\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [3]\nTRACE binding parameter (2:INTEGER) <- [3]\nm3\nm4\nm5\n\n--   내가 곱셈을 했다\n--   ⑭ 5.10절에서는 Pageable 이 했다\n--   7.3절에서 다시 만난다\n\n\n-- limit 만 주면\n\n@Test\nvoid limit만() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .orderBy(member.id.asc())\n            .limit(2)\n            .fetch();\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.member_id\n    fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [2]\n\n--   offset 절이 아예 없다\n--   바인딩도 하나뿐이다\n\n\n-- offset 만 주면\n\n@Test\nvoid offset만() {\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory.selectFrom(member)\n            .orderBy(member.id.asc())\n            .offset(7)\n            .fetch().size());\n}\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows\nTRACE binding parameter (1:INTEGER) <- [7]\n건수: 3\n\n--   limit 이 없다\n--   남은 걸 다 읽었다\n\n\n-- 범위를 넘으면\n\n@Test\nvoid 범위_초과() {\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory.selectFrom(member)\n            .orderBy(member.id.asc())\n            .offset(100).limit(3)\n            .fetch().size());\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [100]\n건수: 0\n\n--   빈 리스트다\n--   예외가 아니다\n\n\n-- 개수를 따로 센다\n\n@Test\nvoid 개수와_목록() {\n    em.clear();\n    List<Member> content = queryFactory.selectFrom(member)\n            .where(member.age.goe(20))\n            .orderBy(member.age.asc(), member.id.asc())\n            .offset(0).limit(3)\n            .fetch();\n\n    Long total = queryFactory\n            .select(member.count())\n            .from(member)\n            .where(member.age.goe(20))\n            .fetchOne();\n\n    System.out.println(\"내용 \" + content.size() + \" / 전체 \" + total);\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1\norder by\n    member1.age asc,\n    member1.id asc */\nHibernate:\n    select ... from member m1_0 where m1_0.age>=?\n    order by m1_0.age, m1_0.member_id\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select count(m1_0.member_id) from member m1_0 where m1_0.age>=?\n내용 3 / 전체 6\n\n--   조건을 두 번 썼다\n--   ⑭ 5.9절과 같은 상태다\n--   6.3절에서 조건 메서드로 묶는다\n\n\n-- 조건이 어긋나면\n\n@Test\nvoid 조건_불일치() {\n    em.clear();\n    List<Member> content = queryFactory.selectFrom(member)\n            .where(member.age.goe(20))\n            .offset(0).limit(3).fetch();\n\n    Long total = queryFactory.select(member.count()).from(member)\n            .where(member.age.goe(30))       // 30 으로 잘못 썼다\n            .fetchOne();\n\n    System.out.println(\"내용 \" + content.size() + \" / 전체 \" + total);\n}\n\nHibernate: select ... where m1_0.age>=? offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0 where m1_0.age>=?\n내용 3 / 전체 3\n\n--   3쪽이 1쪽이 됐다\n--   예외가 없다\n--   손으로 복사한 조건의 값이다\n\n\n-- 정렬이 없으면\n\n@Test\nvoid 정렬_없이() {\n    em.clear();\n    List<String> p1 = queryFactory.select(member.username).from(member)\n            .offset(0).limit(3).fetch();\n    em.clear();\n    List<String> p2 = queryFactory.select(member.username).from(member)\n            .offset(3).limit(3).fetch();\n    System.out.println(\"1쪽: \" + p1);\n    System.out.println(\"2쪽: \" + p2);\n}\n\nHibernate:\n    select m1_0.username from member m1_0\n    offset ? rows fetch first ? rows only\n1쪽: [m1, m2, m3]\n2쪽: [m4, m5, m6]\n\n--   order by 가 없다\n--   여기서는 우연히 맞았다\n--   4.6절에서 경고한 상태다\n\n\n-- 오프셋이 커지면\n\n@Test\nvoid 큰_오프셋() {\n    for (int i = 0; i < 20000; i++) em.persist(new Member(\"p\" + i, 10));\n    em.flush(); em.clear();\n\n    for (int offset : new int[]{0, 8000, 19000}) {\n        em.clear();\n        long t = System.nanoTime();\n        queryFactory.selectFrom(member)\n                .orderBy(member.id.asc())\n                .offset(offset).limit(20)\n                .fetch();\n        System.out.printf(\"offset %-6d %d ms%n\",\n                offset, (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select ... order by m1_0.member_id\n           offset ? rows fetch first ? rows only\noffset 0      5 ms\noffset 8000   19 ms\noffset 19000  41 ms\n\n--   ⑭ 5.9절에서 잰 것과 같은 곡선이다\n--   건너뛴 행도 읽는다\n\n\n-- 커서 방식은 안 그렇다\n\n@Test\nvoid 커서() {\n    em.clear();\n    Long lastId = 19000L;\n    long t = System.nanoTime();\n    queryFactory.selectFrom(member)\n            .where(member.id.gt(lastId))\n            .orderBy(member.id.asc())\n            .limit(20)\n            .fetch();\n    System.out.printf(\"커서 %d ms%n\", (System.nanoTime() - t) / 1_000_000);\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.id > ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.member_id>?\n    order by m1_0.member_id\n    fetch first ? rows only\n커서 4 ms\n\n--   41 ms 가 4 ms 다\n--   대신 임의 페이지로 못 뛴다\n--   ⑭ 5.9절에서 예고한 방식이다\n\n\n-- 정리\n\n$ printf '%-22s %s\\n' \\\n  'offset + limit' 'offset ? rows fetch first ? rows only' \\\n  'limit 만'       'fetch first 만' \\\n  'offset 만'      'offset 만, 끝까지 읽음' \\\n  '범위 초과'      '빈 리스트' \\\n  '개수'           '두 번째 쿼리를 직접' \\\n  '큰 오프셋'      '뒤로 갈수록 느림'\n\noffset + limit         offset ? rows fetch first ? rows only\nlimit 만               fetch first 만\noffset 만              offset 만, 끝까지 읽음\n범위 초과              빈 리스트\n개수                   두 번째 쿼리를 직접\n큰 오프셋              뒤로 갈수록 느림\n\n--   4.8절에서 집합 함수를 본다",
+   "note": "**JPQL 에는 페이징이 한 마디도 없고 SQL 에만 `offset ? rows fetch first ? rows only` 가** 있다.\n\n**`limit` 만 주면 `offset` 절이 아예 없고 바인딩도** 하나다.\n\n**개수 조건을 손으로 복사하다 틀리면 3쪽이 1쪽이 되는데 예외가** 없다.\n\n**오프셋 0→8000→19000 이 5→19→41ms 로** 느려진다.\n\n**커서 방식은 같은 위치를 41ms 대신 4ms 에** 읽는다."
+  }
+ ],
+ "recap": [
+  "**정렬이 있어야** 한다.",
+  "**JPQL 에 페이징이** 없다.",
+  "**방언이 SQL 에서** 붙인다.",
+  "**`limit` 만 주면 `offset` 이** 없다.",
+  "**범위를 넘으면 빈 리스트**다.",
+  "**개수는 따로** 센다.",
+  "**조건을 두 번** 쓴다.",
+  "**어긋나도 예외가** 없다.",
+  "**뒤로 갈수록** 느리다."
+ ],
+ "drills": [
+  {
+   "task": "두 쪽을 차례로 읽는다.",
+   "done_when": "바인딩 값을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`limit` 만 줘 본다.",
+   "done_when": "`offset` 절이 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "개수 조건을 일부러 틀린다.",
+   "done_when": "쪽수가 달라지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "오프셋을 키워 시간을 잰다.",
+   "done_when": "느려지는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "페이징은 JPQL 에 나타나나?",
+   "a": "안 나타난다. 방언이 SQL 단계에서 붙인다."
+  },
+  {
+   "q": "`limit` 만 주면?",
+   "a": "`offset` 절 없이 `fetch first` 만 붙는다."
+  },
+  {
+   "q": "전체 개수는 어떻게 얻나?",
+   "a": "조건이 같은 개수 쿼리를 직접 실행한다."
+  },
+  {
+   "q": "그 조건이 어긋나면?",
+   "a": "예외 없이 쪽수만 틀린다."
+  },
+  {
+   "q": "오프셋이 커지면 왜 느린가?",
+   "a": "건너뛰는 행도 읽어야 하기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "오프셋 페이징",
+   "def": "건너뛸 개수와 가져올 개수로 자르는 방식."
+  },
+  {
+   "term": "커서 페이징",
+   "def": "마지막으로 본 키 다음부터 읽어 오프셋을 없애는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

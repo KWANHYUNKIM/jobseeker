@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "aggregation",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "집합",
+ "summary": "Tuple 이 오는 이유.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "함수 다섯을 쓴다.",
+  "Tuple 을 읽는다.",
+  "빈 결과의 null 을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.7절까지 행을** 골랐다. **이제 행을 접어 값 하나로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 Tuple 인가",
+   "ascii": "   why a Tuple comes back instead of a class\n\n   one expression      the value itself, typed\n   several expressions no class exists to hold them, so a Tuple does\n\n   the Tuple is read by handing back the same expression you selected",
+   "note": "**고를 때 쓴 표현식을 그대로 넣어** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여럿을 담을 타입이 없어서 Tuple 이다",
+   "md": "**하나면 그 타입 그대로**다.\n\n> **`select(member.count())` 는 `Long`** 이다.\n> **캐스팅이 필요** 없다.\n> **경로가 타입을 안다.**\n\n**여럿이면 담을 데가** 없다.\n\n> **자바에 익명 튜플이** 없다.\n> **그래서 `Tuple` 을** 준다.\n> **⑭ 8.6절의 `Object[]` 보다** 낫다.\n\n**읽을 때 표현식을 다시** 준다.\n\n> **`t.get(member.count())`** 다.\n> **인덱스가 아니라 이름**이다.\n> **순서를 바꿔도 안** 깨진다.\n\n**그래도 밖으로 내보내진** 않는다.\n\n> **Querydsl 타입이 서비스까지** 샌다.\n> **5.2절에서 그** 이야기다.\n> **DTO 로 바꾸는 게** 낫다."
+  },
+  {
+   "type": "figure",
+   "caption": "빈 결과에서의 값",
+   "ascii": "   what each function does with an empty result set\n\n   count   zero, always a number\n   sum     null, not zero\n   avg     null\n   max min null\n\n   only the first row is safe to unbox into a primitive",
+   "note": "**첫 줄만 원시 타입으로 받아도** 안전하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "sum 은 0 이 아니라 null 이다",
+   "md": "**행이 없으면 더할 게** 없다.\n\n> **SQL 표준이 `null` 을** 준다.\n> **`0` 이 아니**다.\n> **`int` 로 받으면 언박싱에서** 터진다.\n\n**`coalesce` 로** 막는다.\n\n> **`sum(...).coalesce(0)` 이다.**\n> **JPQL 에 그대로** 나간다.\n> **아래에서 확인**한다.\n\n**`count` 는 언제나 숫자**다.\n\n> **행이 없으면 `0`** 이다.\n> **`count(*)` 와 `count(컬럼)` 이** 다르다.\n> **후자는 `null` 을 안** 센다.\n\n**`countDistinct` 는 따로**다.\n\n> **4.5절에서 이미** 썼다.\n> **`count(distinct ...)` 가** 된다.\n> **중복을 빼고 센다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 하나만 고르면 그 타입이다\n\n@Test\nvoid 하나() {\n    em.clear();\n    Long count = queryFactory\n            .select(member.count())\n            .from(member)\n            .fetchOne();\n    System.out.println(\"타입: \" + count.getClass().getSimpleName());\n    System.out.println(\"값:   \" + count);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n타입: Long\n값:   10\n\n--   Tuple 이 아니다\n\n\n-- 다섯을 한꺼번에\n\n@Test\nvoid 다섯() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.count(),\n                    member.age.sum(),\n                    member.age.avg(),\n                    member.age.max(),\n                    member.age.min())\n            .from(member)\n            .fetchOne();\n\n    System.out.println(\"count: \" + t.get(member.count()));\n    System.out.println(\"sum:   \" + t.get(member.age.sum()));\n    System.out.println(\"avg:   \" + t.get(member.age.avg()));\n    System.out.println(\"max:   \" + t.get(member.age.max()));\n    System.out.println(\"min:   \" + t.get(member.age.min()));\n}\n\n/* select\n    count(member1),\n    sum(member1.age),\n    avg(member1.age),\n    max(member1.age),\n    min(member1.age)\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        count(m1_0.member_id),\n        sum(m1_0.age),\n        avg(m1_0.age),\n        max(m1_0.age),\n        min(m1_0.age)\n    from\n        member m1_0\ncount: 10\nsum:   235\navg:   23.5\nmax:   40\nmin:   10\n\n--   3.3절의 열 건이다\n\n\n-- Tuple 의 타입을 본다\n\n@Test\nvoid 튜플_타입() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.count(), member.age.avg())\n            .from(member).fetchOne();\n\n    System.out.println(\"Tuple:  \" + t.getClass().getSimpleName());\n    System.out.println(\"count:  \" + t.get(member.count()).getClass()\n            .getSimpleName());\n    System.out.println(\"avg:    \" + t.get(member.age.avg()).getClass()\n            .getSimpleName());\n    System.out.println(\"크기:   \" + t.size());\n}\n\nTuple:  QTuple\ncount:  Long\navg:    Double\n크기:   2\n\n--   각 자리가 제 타입을 안다\n--   avg 는 Double 이다\n\n\n-- 인덱스로도 읽힌다\n\n@Test\nvoid 인덱스() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.count(), member.age.avg())\n            .from(member).fetchOne();\n\n    System.out.println(\"0: \" + t.get(0, Long.class));\n    System.out.println(\"1: \" + t.get(1, Double.class));\n}\n\n0: 10\n1: 23.5\n\n--   ⑭ 8.6절의 Object[] 와 같아진다\n--   표현식으로 읽는 게 낫다\n\n\n-- 빈 결과에서\n\n@Test\nvoid 빈_결과() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.count(),\n                    member.age.sum(),\n                    member.age.avg(),\n                    member.age.max())\n            .from(member)\n            .where(member.age.gt(999))\n            .fetchOne();\n\n    System.out.println(\"count: \" + t.get(member.count()));\n    System.out.println(\"sum:   \" + t.get(member.age.sum()));\n    System.out.println(\"avg:   \" + t.get(member.age.avg()));\n    System.out.println(\"max:   \" + t.get(member.age.max()));\n}\n\n/* select\n    count(member1),\n    sum(member1.age),\n    avg(member1.age),\n    max(member1.age)\nfrom\n    Member member1\nwhere\n    member1.age > ?1 */\n\nHibernate:\n    select count(m1_0.member_id), sum(m1_0.age),\n           avg(m1_0.age), max(m1_0.age)\n    from member m1_0 where m1_0.age>?\ncount: 0\nsum:   null\navg:   null\nmax:   null\n\n--   count 만 0 이다\n--   나머지는 null 이다\n\n\n-- 원시 타입으로 받으면\n\n@Test\nvoid 언박싱() {\n    em.clear();\n    try {\n        int sum = queryFactory\n                .select(member.age.sum())\n                .from(member)\n                .where(member.age.gt(999))\n                .fetchOne();\n        System.out.println(\"sum: \" + sum);\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select sum(m1_0.age) from member m1_0 where m1_0.age>?\n예외: NullPointerException\n\n--   null 을 int 에 넣으려다 터졌다\n\n\n-- coalesce 로 막는다\n\n@Test\nvoid coalesce() {\n    em.clear();\n    int sum = queryFactory\n            .select(member.age.sum().coalesce(0))\n            .from(member)\n            .where(member.age.gt(999))\n            .fetchOne();\n    System.out.println(\"sum: \" + sum);\n}\n\n/* select\n    coalesce(sum(member1.age), ?1)\nfrom\n    Member member1\nwhere\n    member1.age > ?2 */\n\nHibernate:\n    select\n        coalesce(sum(m1_0.age), ?)\n    from\n        member m1_0\n    where\n        m1_0.age>?\nTRACE binding parameter (1:INTEGER) <- [0]\nsum: 0\n\n--   JPQL 에 coalesce 가 나갔다\n\n\n-- count 두 가지\n\n@Test\nvoid count_두_가지() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.count(),\n                    member.team.count(),\n                    member.team.countDistinct())\n            .from(member)\n            .fetchOne();\n\n    System.out.println(\"전체:        \" + t.get(member.count()));\n    System.out.println(\"팀 있는 행:  \" + t.get(member.team.count()));\n    System.out.println(\"팀 종류:     \" + t.get(member.team.countDistinct()));\n}\n\n/* select\n    count(member1),\n    count(member1.team),\n    count(distinct member1.team)\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        count(m1_0.member_id),\n        count(m1_0.team_id),\n        count(distinct m1_0.team_id)\n    from\n        member m1_0\n전체:        10\n팀 있는 행:  7\n팀 종류:     2\n\n--   null 은 안 센다\n--   3.3절의 셋이 빠졌다\n\n\n-- 계산도 된다\n\n@Test\nvoid 계산() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.age.sum(),\n                    member.age.avg().round(),\n                    member.age.max().subtract(member.age.min()))\n            .from(member)\n            .fetchOne();\n\n    System.out.println(\"합:   \" + t.get(member.age.sum()));\n    System.out.println(\"반올림 평균: \" + t.get(member.age.avg().round()));\n    System.out.println(\"폭:   \" +\n            t.get(member.age.max().subtract(member.age.min())));\n}\n\n/* select\n    sum(member1.age),\n    round(avg(member1.age)),\n    max(member1.age) - min(member1.age)\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        sum(m1_0.age),\n        round(avg(m1_0.age)),\n        max(m1_0.age)-min(m1_0.age)\n    from\n        member m1_0\n합:   235\n반올림 평균: 24.0\n폭:   30\n\n--   읽을 때도 같은 표현식을 준다\n\n\n-- 표현식을 변수로 두면 읽기 쉽다\n\n@Test\nvoid 변수로() {\n    em.clear();\n    NumberExpression<Integer> sum = member.age.sum();\n    NumberExpression<Double> avg = member.age.avg();\n\n    Tuple t = queryFactory.select(sum, avg).from(member).fetchOne();\n    System.out.println(t.get(sum) + \" / \" + t.get(avg));\n}\n\nHibernate: select sum(m1_0.age), avg(m1_0.age) from member m1_0\n235 / 23.5\n\n--   같은 객체를 넣고 뺀다\n--   실무에서 이렇게 쓴다\n\n\n-- 정리\n\n$ printf '%-18s %-10s %s\\n' \\\n  'count()'         'Long'    '빈 결과에도 0' \\\n  'sum()'           'Integer' '빈 결과면 null' \\\n  'avg()'           'Double'  '빈 결과면 null' \\\n  'max() min()'     '원 타입'  '빈 결과면 null' \\\n  'countDistinct()' 'Long'    'count(distinct ...)' \\\n  'coalesce(0)'     '기본값'   'null 을 막는다'\n\ncount()            Long       빈 결과에도 0\nsum()              Integer    빈 결과면 null\navg()              Double     빈 결과면 null\nmax() min()        원 타입     빈 결과면 null\ncountDistinct()    Long       count(distinct ...)\ncoalesce(0)        기본값      null 을 막는다\n\n--   4.9절에서 이걸 그룹으로 나눈다",
+   "note": "**하나만 고르면 `Long`, 여럿이면 `QTuple` 이고 각 자리가 제 타입(`Long`·`Double`)을** 안다.\n\n**빈 결과에서 `count` 만 `0` 이고 `sum`·`avg`·`max` 는 전부 `null`** 이다.\n\n**`int` 로 받으면 `NullPointerException`, `coalesce(0)` 을 주면 JPQL 에 그대로** 나간다.\n\n**`count(m1_0.team_id)` 는 `null` 을 안 세 10 대 7 로** 갈린다.\n\n**`max().subtract(min())` 이 `max(m1_0.age)-min(m1_0.age)` 가** 된다."
+  }
+ ],
+ "recap": [
+  "**하나면 그 타입**이다.",
+  "**여럿이면 `Tuple`** 이다.",
+  "**표현식으로** 읽는다.",
+  "**인덱스로도 되지만** 나쁘다.",
+  "**`count` 만 `0`** 이다.",
+  "**나머지는 `null`** 이다.",
+  "**원시 타입은** 위험하다.",
+  "**`coalesce` 로** 막는다.",
+  "**`null` 은 안** 센다."
+ ],
+ "drills": [
+  {
+   "task": "집합 함수 다섯을 쓴다.",
+   "done_when": "`Tuple` 로 읽었다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈 결과로 호출한다.",
+   "done_when": "`null` 셋을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "원시 타입으로 받는다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`coalesce` 를 붙인다.",
+   "done_when": "JPQL 에 나가는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "여러 값을 고르면 무엇이 오나?",
+   "a": "담을 타입이 없어 `Tuple` 이 온다."
+  },
+  {
+   "q": "`Tuple` 은 어떻게 읽나?",
+   "a": "고를 때 쓴 표현식을 그대로 `get` 에 넘긴다."
+  },
+  {
+   "q": "빈 결과에서 `sum` 은?",
+   "a": "`0` 이 아니라 `null` 이다."
+  },
+  {
+   "q": "그걸 원시 타입으로 받으면?",
+   "a": "언박싱에서 `NullPointerException` 이 난다."
+  },
+  {
+   "q": "`count(컬럼)` 과 `count(*)` 의 차이는?",
+   "a": "전자는 `null` 인 행을 세지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Tuple",
+   "def": "여러 표현식의 결과를 함께 담는 Querydsl 의 결과 타입."
+  },
+  {
+   "term": "coalesce",
+   "def": "앞 값이 `null` 이면 뒤 값을 쓰는 SQL 함수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

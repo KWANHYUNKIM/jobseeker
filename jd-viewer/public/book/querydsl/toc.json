@@ -212,7 +212,7 @@
           "title": "페이징",
           "summary": "offset 과 limit.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -220,7 +220,7 @@
           "title": "집합",
           "summary": "Tuple 이 오는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.9",
