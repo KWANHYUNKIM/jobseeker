@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "request-cache",
+ "no": "3.10",
+ "chapter": 3,
+ "title": "RequestCache 와 SavedRequest",
+ "summary": "로그인 뒤 원래 가려던 곳.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "누가 저장하고 누가 읽는지 안다.",
+  "쿼리스트링이 살아 돌아오는 이유를 본다.",
+  "API 에서 이걸 꺼야 하는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `Location` 이 `/` 가 아니라 `/orders`** 였다. **누가 기억하고 있었나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "저장과 회수",
+   "ascii": "   who saves and who reads\n\n   1  GET /orders  denied\n        ExceptionTranslationFilter\n          requestCache.saveRequest  -> into the session\n          entryPoint.commence       -> 302 to /login\n\n   3  POST /login  ok\n        SavedRequestAwareAuthenticationSuccessHandler\n          requestCache.getRequest   -> /orders\n          302 to /orders\n\n   the detour is remembered by the filter that denied it",
+   "note": "**막은 필터가 목적지를 적어** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세션에 적힌다",
+   "md": "**기본 구현이 `HttpSessionRequestCache`** 다.\n\n```java\npublic void saveRequest(HttpServletRequest request,\n        HttpServletResponse response) {\n    if (!this.requestMatcher.matches(request)) return;\n    DefaultSavedRequest saved = new DefaultSavedRequest(request, this.portResolver);\n    request.getSession().setAttribute(\n            \"SPRING_SECURITY_SAVED_REQUEST\", saved);\n}\n```\n\n> **세션 속성 하나**다.\n> **3.1절 2번 요청에서 세션이 생긴 이유가** 이거였다.\n\n**`SavedRequest` 가 들고 있는 것**\n\n| | |\n|---|---|\n| **URL·쿼리스트링** | `/orders?page=3&size=20` |\n| **HTTP 메서드** | `GET` |\n| **헤더** | `Accept`, `Accept-Language` … |\n| **파라미터** | 쿼리·폼 |\n| **쿠키** | 그때의 것 |\n\n> **요청 하나를 통째로 적어** 둔다.\n> **세션에 들어가니 크기를** 생각해야 한다 — **파일 업로드 POST 를 저장하지는** 않는다.\n\n**기본으로 저장 안 하는 것도** 있다.\n\n> **`X-Requested-With: XMLHttpRequest` 같은 비동기 요청**이다.\n> **`favicon.ico`** 도 뺀다.\n> **안 그러면 로그인 후 파비콘으로 리다이렉트**된다.\n>\n> **실제로 겪는 버그**다 — **화면이 아니라 이미지로 튀는**."
+  },
+  {
+   "type": "figure",
+   "caption": "잊기 쉬운 7번 필터",
+   "ascii": "   RequestCacheAwareFilter, the part people forget\n\n   4  GET /orders\n        RequestCacheAwareFilter\n          is there a saved request matching this url?\n            yes -> wrap the request with the saved one\n                   the old query string and headers come back\n                   and the saved request is removed\n\n   this is why ?page=3 survives a login",
+   "note": "**`?page=3` 이 살아 돌아오는 자리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "API 에서는 꺼야 한다",
+   "md": "**세션을 만드는 게 문제**다.\n\n> **무상태로 만들었는데(5.3절) 이게 세션을 만든다.**\n> **인증 실패한 요청마다 세션이** 쌓인다.\n\n```java\nhttp.requestCache(c -> c.requestCache(new NullRequestCache()));\n```\n\n> **아무것도 저장 안 하고 아무것도 안** 돌려준다.\n> **`RequestCacheAwareFilter` 는 남지만 할 일이** 없다.\n\n**저장 조건만 좁힐 수도** 있다.\n\n```java\nHttpSessionRequestCache cache = new HttpSessionRequestCache();\ncache.setRequestMatcher(new AntPathRequestMatcher(\"/**\", \"GET\"));\ncache.setCreateSessionAllowed(false);\nhttp.requestCache(c -> c.requestCache(cache));\n```\n\n> **`createSessionAllowed(false)` 면 이미 세션이 있을 때만** 적는다.\n\n**성공 핸들러를 직접 주면 이게** 끊긴다.\n\n> **3.2절에서 `/orders` 를 잊고 `/` 로** 갔다.\n> **되살리려면 캐시를 직접** 읽는다.\n>\n> ```java\n> SavedRequest saved = requestCache.getRequest(req, res);\n> String target = (saved != null) ? saved.getRedirectUrl() : \"/\";\n> res.sendRedirect(target);\n> ```\n>\n> **10.6절에서 이 코드를 실제로** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 쿼리스트링을 달고 막혀 본다 ---\n\n$ curl -i -c c.txt 'localhost:8080/orders?page=3&size=20'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\nSet-Cookie: JSESSIONID=A1B2...; Path=/; HttpOnly\n\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (12/14)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\nDEBUG HttpSessionRequestCache : Saved request\n  http://localhost:8080/orders?page=3&size=20 to session\nDEBUG LoginUrlAuthenticationEntryPoint : Redirecting to /login\n\n#   막은 뒤에 저장했다\n\n#   세션이 여기서 생겼다\n\n# --- 세션 속성을 들여다본다 ---\n\n@GetMapping(\"/peek\")\n@ResponseBody\npublic String peek(HttpSession session) {\n    SavedRequest saved = (SavedRequest) session.getAttribute(\n            \"SPRING_SECURITY_SAVED_REQUEST\");\n    if (saved == null) return \"none\";\n    System.out.println(\">>> url    = \" + saved.getRedirectUrl());\n    System.out.println(\">>> method = \" + saved.getMethod());\n    System.out.println(\">>> params = \" + saved.getParameterMap().keySet());\n    return saved.getRedirectUrl();\n}\n\n$ curl -s -b c.txt localhost:8080/peek\n\nhttp://localhost:8080/orders?page=3&size=20\n\n>>> url    = http://localhost:8080/orders?page=3&size=20\n>>> method = GET\n>>> params = [page, size]\n\n#   요청이 통째로 적혀 있다\n\n# --- 로그인한다 ---\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/orders?page=3&size=20\n\nDEBUG SavedRequestAwareAuthenticationSuccessHandler :\n  Redirecting to http://localhost:8080/orders?page=3&size=20\n\n#   page=3 이 살아 돌아왔다\n\n#   / 가 아니다\n\n# --- 그 뒤에 캐시가 지워진다 ---\n\n$ curl -s -b c.txt 'localhost:8080/orders?page=3&size=20' -o /dev/null\n\nTRACE FilterChainProxy : Invoking RequestCacheAwareFilter (8/14)\nDEBUG HttpSessionRequestCache : Removed DefaultSavedRequest from session\n  if present\n\n$ curl -s -b c.txt localhost:8080/peek\n\nnone\n\n#   한 번 쓰고 지워진다\n\n#   안 그러면 로그인할 때마다 옛 목적지로 간다\n\n# --- 성공 핸들러를 직접 주면 ---\n\nhttp.formLogin(f -> f\n        .loginPage(\"/login\").permitAll()\n        .successHandler((req, res, auth) -> res.sendRedirect(\"/\")));\n\n$ curl -i -c c2.txt 'localhost:8080/orders?page=3' -o /dev/null\n$ curl -i -b c2.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$T2\" | grep -i location\n\nLocation: http://localhost:8080/\n\n#   잊었다\n\n#   3.2절에서 본 그것이다\n\n# --- 되살린다 ---\n\nprivate final RequestCache requestCache = new HttpSessionRequestCache();\n\n.successHandler((req, res, auth) -> {\n    SavedRequest saved = requestCache.getRequest(req, res);\n    String target = (saved != null) ? saved.getRedirectUrl() : \"/\";\n    System.out.println(\">>> target = \" + target);\n    res.sendRedirect(target);\n})\n\n$ curl -i -b c2.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$T2\" | grep -i location\n\n>>> target = http://localhost:8080/orders?page=3\nLocation: http://localhost:8080/orders?page=3\n\n#   되돌아왔다\n\n# --- 파비콘 문제 ---\n\n#   (브라우저가 로그인 화면을 열면서 파비콘도 요청한다)\n\n$ curl -s -c f.txt localhost:8080/favicon.ico -o /dev/null\n$ curl -s -b f.txt localhost:8080/peek\n\nnone\n\n#   저장 안 됐다\n\n#   기본 매처가 걸러 준다\n\n#   이걸 모르고 매처를 /** 로 열면\n\ncache.setRequestMatcher(new AntPathRequestMatcher(\"/**\"));\n\n$ curl -s -c f2.txt localhost:8080/favicon.ico -o /dev/null\n$ curl -s -b f2.txt localhost:8080/peek\n\nhttp://localhost:8080/favicon.ico\n\n#   로그인하면 파비콘으로 리다이렉트된다\n\n# --- API 체인에서 끈다 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(c -> c.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n        .requestCache(c -> c.requestCache(new NullRequestCache()));\n    return http.build();\n}\n\n#   끄기 전\n$ for i in $(seq 1 3); do curl -s -o /dev/null localhost:8080/api/v1/orders; done\n$ curl -s localhost:8080/actuator/metrics/tomcat.sessions.created 2>/dev/null \\\n    | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"measurements\"][0][\"value\"])'\n\n3.0\n\n#   실패한 요청 셋이 세션 셋을 만들었다\n\n#   무상태로 해 놨는데 세션이 쌓인다\n\n#   끈 뒤\n0.0\n\n#   하나도 안 생긴다\n\n$ curl -i localhost:8080/api/v1/orders | grep -ci set-cookie\n\n0\n\n# --- 다음 장에서 ---\n\n#   그 인증 객체가 어디서 만들어지는지 본다",
+   "note": "**막은 뒤 `HttpSessionRequestCache` 가 `?page=3&size=20` 까지 통째로 세션에** 적는다.\n\n**로그인 성공의 `Location` 에 쿼리스트링이 살아** 돌아온다.\n\n**8번 필터가 한 번 쓰고 지운다** — `/peek` 가 `none` 이다.\n\n**성공 핸들러를 직접 주면 잊고, `requestCache.getRequest` 로 되살릴 수** 있다.\n\n**매처를 `/**` 로 열면 로그인 후 파비콘으로** 튄다.\n\n**API 체인에서 `NullRequestCache` 로 끄니 세션 생성이 3에서 0** 이 됐다."
+  }
+ ],
+ "recap": [
+  "**막은 `ExceptionTranslationFilter` 가 목적지를** 저장한다.",
+  "**저장 위치는 세션 속성 하나**다.",
+  "**요청을 통째로 적는다** — URL·메서드·헤더·파라미터.",
+  "**성공 핸들러가 그걸 읽어** 돌려보낸다.",
+  "**`RequestCacheAwareFilter` 가 한 번 쓰고** 지운다.",
+  "**그래서 `?page=3` 이 로그인을 건너** 산다.",
+  "**기본 매처가 파비콘과 비동기 요청을** 거른다.",
+  "**성공 핸들러를 직접 주면 이 연결이** 끊긴다.",
+  "**API 에서는 `NullRequestCache` 로** 끈다."
+ ],
+ "drills": [
+  {
+   "task": "쿼리스트링을 달고 막힌 뒤 로그인한다.",
+   "done_when": "`Location` 에 쿼리가 살아 있는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세션 속성을 직접 꺼내 본다.",
+   "done_when": "메서드와 파라미터를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "성공 핸들러를 주고 다시 되살린다.",
+   "done_when": "목적지가 돌아온 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "API 체인에서 캐시를 끈다.",
+   "done_when": "세션 생성 수가 0인 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "누가 요청을 저장하나?",
+   "a": "`ExceptionTranslationFilter` 가 진입점을 부르기 직전에 저장한다."
+  },
+  {
+   "q": "어디에 저장되나?",
+   "a": "세션 속성 `SPRING_SECURITY_SAVED_REQUEST` 다."
+  },
+  {
+   "q": "쿼리스트링이 왜 살아남나?",
+   "a": "요청을 통째로 적어 두고 성공 핸들러가 그 URL 로 보내서다."
+  },
+  {
+   "q": "저장된 요청은 언제 지워지나?",
+   "a": "`RequestCacheAwareFilter` 가 매칭되는 요청에서 한 번 쓰고 지운다."
+  },
+  {
+   "q": "API 에서 왜 꺼야 하나?",
+   "a": "무상태로 만들었는데 실패한 요청마다 세션이 생기기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SavedRequest",
+   "def": "인증 때문에 막힌 요청을 통째로 적어 둔 것. URL·메서드·헤더·파라미터를 들고 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Handling Security Exceptions",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

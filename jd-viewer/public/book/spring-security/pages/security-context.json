@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "security-context",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "SecurityContext 와 Holder",
+ "summary": "ThreadLocal 이다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "홀더가 스레드 로컬인 것을 확인한다.",
+  "새 스레드가 왜 비어 있는지 안다.",
+  "요청 끝에 비워지는 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**컨트롤러가 `SecurityContextHolder.getContext()` 를 파라미터 없이** 부른다. **어떻게 아나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "스레드로 나뉜 지도",
+   "ascii": "   one map, keyed by thread\n\n   http-nio-8080-exec-1  ->  SecurityContext(user)\n   http-nio-8080-exec-2  ->  SecurityContext(admin)\n   pool-1-thread-1       ->  (nothing)\n\n   a new thread inherits nothing by default\n   that is why an @Async method sees no one",
+   "note": "**새 스레드는 아무것도 물려받지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "전략이 셋이다",
+   "md": "```java\npublic class SecurityContextHolder {\n    public static final String MODE_THREADLOCAL = \"MODE_THREADLOCAL\";\n    public static final String MODE_INHERITABLETHREADLOCAL =\n            \"MODE_INHERITABLETHREADLOCAL\";\n    public static final String MODE_GLOBAL = \"MODE_GLOBAL\";\n}\n```\n\n| 전략 | 뜻 | 쓰는 곳 |\n|---|---|---|\n| **`THREADLOCAL`** | 스레드마다 따로 (기본) | 웹 |\n| **`INHERITABLETHREADLOCAL`** | 자식 스레드가 물려받음 | 직접 만든 스레드 |\n| **`GLOBAL`** | 전체가 하나 | 데스크톱 앱 |\n\n> **`GLOBAL` 을 웹에 쓰면 모든 사용자가 한 사람이** 된다.\n\n**바꾸는 법**\n\n```java\n// 코드로\nSecurityContextHolder.setStrategyName(\n        SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);\n\n// 시스템 속성으로\n-Dspring.security.strategy=MODE_INHERITABLETHREADLOCAL\n```\n\n> **스레드 풀에서는 `INHERITABLE` 도 위험**하다.\n> **풀의 스레드는 만들 때 한 번 물려받고 계속** 재사용된다.\n> **첫 요청의 사용자가 계속** 따라다닌다.\n>\n> **그래서 스레드 풀에는 `DelegatingSecurityContextExecutor` 를** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 요청 동안의 수명",
+   "ascii": "   the life of one context, per request\n\n   FilterChainProxy\n     try\n       filter 3  read from the session, set into the holder\n       ...       the request runs, controller included\n     finally\n       SecurityContextHolder.clearContext\n\n   the thread goes back to the pool empty, on purpose",
+   "note": "**`finally` 에서 비운다** — **일부러 그렇게** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 비우면 남의 신분이 된다",
+   "md": "**톰캣은 스레드를 재사용**한다.\n\n> **`exec-1` 이 A 의 요청을 처리하고 풀로** 돌아간다.\n> **다음에 B 의 요청이 `exec-1` 을** 받는다.\n> **안 비웠다면 B 가 A 로** 보인다.\n\n**그래서 `FilterChainProxy` 가 `finally` 에서** 비운다.\n\n```java\ntry {\n    doFilterInternal(request, response, chain);\n}\nfinally {\n    this.securityContextHolderStrategy.clearContext();\n    request.removeAttribute(FILTER_APPLIED);\n}\n```\n\n> **2.6절의 `ignoring` 요청은 이 `try` 에 아예 안** 들어간다.\n\n**비동기에서 깨진다.**\n\n| 상황 | 컨텍스트 |\n|---|---|\n| **컨트롤러** | 있다 |\n| **`new Thread()`** | 없다 |\n| **`@Async`** | 없다 |\n| **`Callable` 반환** | 있다 (`WebAsyncManagerIntegrationFilter`) |\n| **`@Transactional` 안** | 있다 (같은 스레드) |\n\n> **2번 필터 `WebAsyncManagerIntegrationFilter` 가 네 번째를** 해결한다.\n> **`@Async` 는 따로 손을** 봐야 한다.\n>\n> ```java\n> @Bean\n> Executor taskExecutor() {\n>     return new DelegatingSecurityContextExecutor(\n>             Executors.newFixedThreadPool(4));\n> }\n> ```\n>\n> **감싸면 컨텍스트를 실어** 나른다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 스레드 이름과 함께 찍는다 ---\n\n@GetMapping(\"/ctx\")\n@ResponseBody\npublic String ctx() throws Exception {\n    System.out.println(\">>> [\" + Thread.currentThread().getName() + \"] \"\n            + SecurityContextHolder.getContext().getAuthentication());\n\n    Thread t = new Thread(() -> System.out.println(\">>> [\"\n            + Thread.currentThread().getName() + \"] \"\n            + SecurityContextHolder.getContext().getAuthentication()));\n    t.start();\n    t.join();\n    return \"ok\";\n}\n\n$ curl -s -b c.txt localhost:8080/ctx\n\n>>> [http-nio-8080-exec-1] UsernamePasswordAuthenticationToken\n     [Principal=User [Username=user], Authenticated=true]\n>>> [Thread-5] null\n\n#   같은 요청 안인데 다른 스레드는 null 이다\n\n#   ThreadLocal 이라서다\n\n# --- 전략을 바꾼다 ---\n\n@PostConstruct\nvoid init() {\n    SecurityContextHolder.setStrategyName(\n            SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);\n}\n\n$ curl -s -b c.txt localhost:8080/ctx\n\n>>> [http-nio-8080-exec-1] UsernamePasswordAuthenticationToken [...user...]\n>>> [Thread-5] UsernamePasswordAuthenticationToken [...user...]\n\n#   물려받았다\n\n# --- 스레드 풀에서는 ---\n\nprivate final ExecutorService pool = Executors.newFixedThreadPool(1);\n\n@GetMapping(\"/pool\")\n@ResponseBody\npublic String pool() throws Exception {\n    Authentication here = SecurityContextHolder.getContext().getAuthentication();\n    Future<String> f = pool.submit(() -> {\n        Authentication there = SecurityContextHolder.getContext()\n                .getAuthentication();\n        return Thread.currentThread().getName() + \" -> \"\n                + (there == null ? \"null\" : there.getName());\n    });\n    System.out.println(\">>> here  = \" + here.getName());\n    System.out.println(\">>> there = \" + f.get());\n    return \"ok\";\n}\n\n#   user 로 로그인해 부른다\n$ curl -s -b user.txt localhost:8080/pool\n\n>>> here  = user\n>>> there = pool-1-thread-1 -> user\n\n#   INHERITABLE 이라 물려받았다\n\n#   admin 으로 로그인해 부른다\n$ curl -s -b admin.txt localhost:8080/pool\n\n>>> here  = admin\n>>> there = pool-1-thread-1 -> user\n\n#   admin 이 부른 작업이 user 로 돈다\n\n#   풀 스레드는 처음 만들 때 한 번 물려받고 끝이다\n\n#   이게 INHERITABLE 의 함정이다\n\n# --- 감싼 실행기를 쓴다 ---\n\nprivate final ExecutorService pool =\n        new DelegatingSecurityContextExecutorService(\n                Executors.newFixedThreadPool(1));\n\n$ curl -s -b user.txt localhost:8080/pool\n>>> there = pool-1-thread-1 -> user\n\n$ curl -s -b admin.txt localhost:8080/pool\n>>> there = pool-1-thread-1 -> admin\n\n#   이번엔 맞다\n\n#   제출할 때의 컨텍스트를 실어 나른다\n\n# --- 요청이 끝나면 비워지나 ---\n\n@Component\npublic class TailFilter extends OncePerRequestFilter {\n    @Override\n    protected void doFilterInternal(HttpServletRequest req,\n            HttpServletResponse res, FilterChain chain)\n            throws ServletException, IOException {\n        chain.doFilter(req, res);\n        System.out.println(\">>> after chain [\"\n                + Thread.currentThread().getName() + \"] \"\n                + SecurityContextHolder.getContext().getAuthentication());\n    }\n}\n\n#   (security 필터보다 앞에 등록되게 order 를 -200 으로 준다)\n\n$ curl -s -b c.txt localhost:8080/orders -o /dev/null\n\n>>> after chain [http-nio-8080-exec-1] null\n\n#   FilterChainProxy 를 빠져나오면 비어 있다\n\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/14)\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl [...]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   3번이 채우고 finally 가 비운다\n\n# --- 안 비우면 어떻게 되나 ---\n\n#   (홀더를 요청 밖에서 직접 채워 본다)\n\n@Component\npublic class LeakFilter extends OncePerRequestFilter {\n    protected void doFilterInternal(...) {\n        SecurityContextHolder.getContext().setAuthentication(\n                UsernamePasswordAuthenticationToken.authenticated(\n                        \"leaked\", null, List.of()));\n        chain.doFilter(req, res);\n        // clearContext 를 안 부른다\n    }\n}\n\n$ curl -s localhost:8080/ctx\n>>> [http-nio-8080-exec-1] ... Principal=leaked ...\n\n$ curl -s localhost:8080/ctx\n>>> [http-nio-8080-exec-2] ... Principal=leaked ...\n\n#   (톰캣 스레드가 8개라 몇 번 부르면 도는데)\n\n#   같은 스레드가 재사용되면 남의 신분이 남는다\n\n#   FilterChainProxy 의 finally 가 이걸 막는다\n\n# --- 다음 절에서 ---\n\n#   누가 이 인증을 만들어 주는지 본다",
+   "note": "**같은 요청 안이어도 `new Thread()` 는 `null`** 이다.\n\n**`INHERITABLETHREADLOCAL` 로 바꾸면 물려받지만, 스레드 풀에서는 `admin` 이 부른 작업이 `user` 로** 돈다 — **풀 스레드는 만들 때 한 번만** 물려받는다.\n\n**`DelegatingSecurityContextExecutorService` 로 감싸면** 맞아진다.\n\n**`FilterChainProxy` 를 빠져나오면 홀더가 `null`** 이다 — **`finally` 가** 비운다.\n\n**안 비우면 재사용된 스레드에 남의 신분이** 남는다."
+  }
+ ],
+ "recap": [
+  "**홀더는 기본으로 `ThreadLocal`** 이다.",
+  "**새 스레드는 아무것도 물려받지** 않는다.",
+  "**전략이 셋인데 웹은 `THREADLOCAL`** 이다.",
+  "**`INHERITABLE` 은 스레드 풀에서** 위험하다.",
+  "**풀 스레드는 만들 때 한 번만** 물려받는다.",
+  "**`DelegatingSecurityContext…` 로 감싸면 제출 시점 컨텍스트를 나른다.**",
+  "**`FilterChainProxy` 가 `finally` 에서** 비운다.",
+  "**안 비우면 재사용 스레드에 남의 신분이** 남는다.",
+  "**`Callable` 반환은 2번 필터가** 처리해 준다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러에서 새 스레드를 띄워 찍는다.",
+   "done_when": "`null` 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "전략을 `INHERITABLE` 로 바꾼다.",
+   "done_when": "물려받는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스레드 풀에서 두 사용자로 번갈아 부른다.",
+   "done_when": "신분이 섞이는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "필터 체인 뒤에서 홀더를 찍는다.",
+   "done_when": "비어 있는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "홀더의 기본 전략은?",
+   "a": "`MODE_THREADLOCAL` — 스레드마다 따로다."
+  },
+  {
+   "q": "`@Async` 메서드에서 컨텍스트가 없는 이유는?",
+   "a": "다른 스레드에서 돌고 `ThreadLocal` 은 물려주지 않아서다."
+  },
+  {
+   "q": "`INHERITABLE` 을 스레드 풀에 쓰면?",
+   "a": "풀 스레드가 처음 만들어질 때의 사용자를 계속 들고 다닌다."
+  },
+  {
+   "q": "요청이 끝나면 홀더는?",
+   "a": "`FilterChainProxy` 의 `finally` 가 비운다."
+  },
+  {
+   "q": "안 비우면 무슨 일이 나나?",
+   "a": "재사용된 스레드에서 다음 사용자가 앞사람으로 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DelegatingSecurityContextExecutor",
+   "def": "작업을 제출할 때의 `SecurityContext` 를 실행 스레드로 실어 나르는 실행기 래퍼."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Concurrency Support",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/integrations/concurrency.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

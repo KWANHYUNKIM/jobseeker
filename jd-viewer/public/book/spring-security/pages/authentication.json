@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "authentication",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "Authentication",
+ "summary": "인증 전과 후가 같은 타입이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 필드가 무엇인지 안다.",
+  "인증 전후에 무엇이 바뀌는지 본다.",
+  "setAuthenticated(true) 의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절에서 필터가 토큰을 만들어 매니저에게** 줬다. **돌아온 것도 같은 타입**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 타입, 다른 내용",
+   "ascii": "   the same type, twice, with different fields filled\n\n   before                            after\n   principal    \"user\" (a String)     a UserDetails\n   credentials  \"1234\"               null\n   authorities  empty                 [ROLE_USER]\n   authenticated false                true\n   details      null                  ip and session id\n\n   the filter builds the left one, the manager returns the right one",
+   "note": "**요청서와 신분증이 같은 종이**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 개의 필드",
+   "md": "```java\npublic interface Authentication extends Principal, Serializable {\n    Collection<? extends GrantedAuthority> getAuthorities();\n    Object getCredentials();\n    Object getDetails();\n    Object getPrincipal();\n    boolean isAuthenticated();\n    void setAuthenticated(boolean isAuthenticated);\n}\n```\n\n> **`Principal` 을 상속해 `getName()` 도** 있다.\n> **`Serializable` 이라 세션에 담긴다** — **5.7절의 클러스터에서** 중요해진다.\n\n| 필드 | 인증 전 | 인증 후 |\n|---|---|---|\n| **`principal`** | 아이디 문자열 | `UserDetails` |\n| **`credentials`** | 비밀번호 | `null` |\n| **`authorities`** | 비어 있음 | `[ROLE_USER]` |\n| **`details`** | `null` | IP·세션 ID |\n| **`isAuthenticated`** | `false` | `true` |\n\n**`credentials` 가 지워지는 건 설정**이다.\n\n```java\n// ProviderManager\nif (this.eraseCredentialsAfterAuthentication\n        && result instanceof CredentialsContainer container) {\n    container.eraseCredentials();\n}\n```\n\n> **기본값이 `true`** 다.\n> **세션에 비밀번호가 남지 않게** 하려고다.\n> **끄면 세션 저장소에 비밀번호가 그대로** 간다."
+  },
+  {
+   "type": "figure",
+   "caption": "필드를 읽는 사람들",
+   "ascii": "   who reads which field\n\n   principal    controllers, AuthenticationPrincipal, auditing\n   credentials  the provider, once, then erased\n   authorities  AuthorizationManager, hasRole, method security\n   details      loggers, ip based rules\n   authenticated nobody should trust it alone",
+   "note": "**`isAuthenticated` 하나만 믿으면 3.7절의 익명에** 뚫린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "생성자가 두 개인 이유",
+   "md": "```java\n// 인증 전 — authenticated = false\nUsernamePasswordAuthenticationToken.unauthenticated(username, password);\n\n// 인증 후 — authenticated = true\nUsernamePasswordAuthenticationToken.authenticated(principal, null, authorities);\n```\n\n> **두 번째 생성자는 `protected` 가 아니라 공개**다.\n> **누구나 인증된 토큰을 만들 수** 있다.\n\n**그래서 `setAuthenticated(true)` 는 막혀** 있다.\n\n```java\n@Override\npublic void setAuthenticated(boolean isAuthenticated) {\n    Assert.isTrue(!isAuthenticated,\n            \"Cannot set this token to trusted - use constructor which \"\n            + \"takes a GrantedAuthority list instead\");\n    super.setAuthenticated(false);\n}\n```\n\n> **`true` 로 못 바꾼다.**\n> **`false` 로 내리는 건** 된다.\n\n**하지만 생성자로는** 된다.\n\n> **`authenticated(...)` 생성자를 부르면 그냥 인증된 토큰**이다.\n> **홀더에 넣으면 그대로** 통한다.\n>\n> **이게 구멍이 아니라 설계**다.\n> **인증을 이미 마친 코드가 결과를 담을 방법이 필요**하다 — **필터도 매니저도 이걸** 쓴다.\n> **10.5절에서 직접 만든 인증 방식이 그** 자리다.\n>\n> **위험한 건 이 생성자가 아니라 검증 없이 부르는 코드**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 인증 전 토큰을 찍어 본다 ---\n\npublic class LoudFilter extends UsernamePasswordAuthenticationFilter {\n    @Override\n    public Authentication attemptAuthentication(HttpServletRequest req,\n            HttpServletResponse res) {\n        Authentication before = UsernamePasswordAuthenticationToken\n                .unauthenticated(req.getParameter(\"username\"),\n                                 req.getParameter(\"password\"));\n        System.out.println(\">>> before principal   = \" + before.getPrincipal());\n        System.out.println(\">>> before credentials = \" + before.getCredentials());\n        System.out.println(\">>> before authorities = \" + before.getAuthorities());\n        System.out.println(\">>> before authed      = \" + before.isAuthenticated());\n\n        Authentication after = super.attemptAuthentication(req, res);\n        System.out.println(\">>> after  principal   = \" + after.getPrincipal());\n        System.out.println(\">>> after  credentials = \" + after.getCredentials());\n        System.out.println(\">>> after  authorities = \" + after.getAuthorities());\n        System.out.println(\">>> after  authed      = \" + after.isAuthenticated());\n        System.out.println(\">>> after  details     = \" + after.getDetails());\n        System.out.println(\">>> same class? \"\n                + (before.getClass() == after.getClass()));\n        return after;\n    }\n}\n\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\" -o /dev/null\n\n>>> before principal   = user\n>>> before credentials = 1234\n>>> before authorities = []\n>>> before authed      = false\n>>> after  principal   = User [Username=user, Password=[PROTECTED],\n     Enabled=true, AccountNonExpired=true, CredentialsNonExpired=true,\n     AccountNonLocked=true, Granted Authorities=[ROLE_USER]]\n>>> after  credentials = null\n>>> after  authorities = [ROLE_USER]\n>>> after  authed      = true\n>>> after  details     = WebAuthenticationDetails\n     [RemoteIpAddress=127.0.0.1, SessionId=A1B2...]\n>>> same class? true\n\n#   클래스가 같다\n\n#   비밀번호가 사라졌다\n\n#   문자열이 UserDetails 로 바뀌었다\n\n#   details 에 IP 와 세션 ID 가 들어왔다\n\n# --- 지우지 말라고 하면 ---\n\n@Bean\nAuthenticationManager authenticationManager(\n        AuthenticationConfiguration config) throws Exception {\n    ProviderManager manager = (ProviderManager) config.getAuthenticationManager();\n    manager.setEraseCredentialsAfterAuthentication(false);\n    return manager;\n}\n\n>>> after  credentials = 1234\n\n#   비밀번호가 남았다\n\n#   그리고 이게 세션에 저장된다\n\n#   5.7절에서 세션을 Redis 에 넣으면 거기까지 간다\n\n# --- setAuthenticated(true) 를 해 본다 ---\n\n@GetMapping(\"/hack\")\n@ResponseBody\npublic String hack() {\n    Authentication auth = SecurityContextHolder.getContext().getAuthentication();\n    try {\n        auth.setAuthenticated(true);\n        return \"ok\";\n    } catch (Exception e) {\n        return e.getClass().getSimpleName() + \": \" + e.getMessage();\n    }\n}\n\n$ curl -s localhost:8080/hack\n\nIllegalArgumentException: Cannot set this token to trusted - use\nconstructor which takes a GrantedAuthority list instead\n\n#   막혀 있다\n\n# --- 생성자로는 된다 ---\n\n@GetMapping(\"/hack2\")\n@ResponseBody\npublic String hack2() {\n    Authentication forged = UsernamePasswordAuthenticationToken.authenticated(\n            \"admin\", null,\n            List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\")));\n    SecurityContextHolder.getContext().setAuthentication(forged);\n    System.out.println(\">>> \" + forged.getName() + \" \"\n            + forged.getAuthorities() + \" \" + forged.isAuthenticated());\n    return \"ok\";\n}\n\n$ curl -s localhost:8080/hack2\n\nok\n\n>>> admin [ROLE_ADMIN] true\n\n#   만들어졌다\n\n#   이 요청 안에서는 관리자다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/admin\n\n302\n\n#   그런데 다음 요청은 아니다\n\n#   홀더는 요청이 끝나면 비워진다 (4.2절)\n\n#   그리고 저장소에 저장한 적이 없다\n\n# --- 익명과 비교 ---\n\n@GetMapping(\"/fields\")\n@ResponseBody\npublic String fields() {\n    Authentication a = SecurityContextHolder.getContext().getAuthentication();\n    System.out.printf(\">>> %-32s p=%-14s c=%-6s a=%s%n\",\n            a.getClass().getSimpleName(), a.getPrincipal(),\n            a.getCredentials(), a.getAuthorities());\n    return \"ok\";\n}\n\n#   로그인 안 함\n>>> AnonymousAuthenticationToken    p=anonymousUser c=null  a=[ROLE_ANONYMOUS]\n\n#   비밀번호로 로그인\n>>> UsernamePasswordAuthenticationToken p=User [Usern... c=null  a=[ROLE_USER]\n\n#   기억하기 쿠키로 되살아남\n>>> RememberMeAuthenticationToken   p=User [Usern... c=null  a=[ROLE_USER]\n\n#   셋 다 credentials 가 null 이고 authenticated 가 true 다\n\n#   구별은 클래스와 authorities 로 한다\n\n# --- 다음 절에서 ---\n\n#   이 객체가 어디에 담겨 있는지 본다",
+   "note": "**인증 전후의 클래스가 같다** — `same class? true`.\n\n**`principal` 이 `user` 문자열에서 `UserDetails` 로, `credentials` 가 `1234` 에서 `null`** 로 바뀐다.\n\n**`eraseCredentials` 를 끄면 비밀번호가 남고 세션까지** 간다.\n\n**`setAuthenticated(true)` 는 `IllegalArgumentException`** 이지만 **생성자로는** 만들어진다 — **다음 요청에는 안 남는다.**\n\n**익명·비밀번호·기억하기 셋 다 `authenticated=true`** 다. **클래스와 권한으로** 구별한다."
+  }
+ ],
+ "recap": [
+  "**`Authentication` 은 필드 다섯을 가진 인터페이스**다.",
+  "**인증 전후가 같은 타입**이다.",
+  "**`principal` 이 문자열에서 `UserDetails` 로** 바뀐다.",
+  "**`credentials` 는 인증 후 지워진다** — 기본값이 그렇다.",
+  "**`details` 에 IP 와 세션 ID 가** 들어온다.",
+  "**`Serializable` 이라 세션에** 담긴다.",
+  "**`setAuthenticated(true)` 는 막혀** 있다.",
+  "**생성자로는 만들 수 있고 그게 정상**이다.",
+  "**만든 토큰은 그 요청에서만** 산다."
+ ],
+ "drills": [
+  {
+   "task": "인증 전후 토큰을 찍는다.",
+   "done_when": "다섯 필드가 어떻게 바뀌는지 적었다.",
+   "minutes": 25
+  },
+  {
+   "task": "`eraseCredentials` 를 끈다.",
+   "done_when": "비밀번호가 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`setAuthenticated(true)` 를 시도한다.",
+   "done_when": "예외 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "익명·로그인·기억하기의 필드를 나란히 찍는다.",
+   "done_when": "구별 기준을 정했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인증 전후 객체의 타입은?",
+   "a": "같다. 채워진 필드가 다를 뿐이다."
+  },
+  {
+   "q": "`credentials` 가 왜 `null` 이 되나?",
+   "a": "`eraseCredentialsAfterAuthentication` 이 기본으로 켜져 있어서다."
+  },
+  {
+   "q": "`setAuthenticated(true)` 가 막힌 이유는?",
+   "a": "권한 목록을 받는 생성자를 쓰라는 뜻이다."
+  },
+  {
+   "q": "생성자로 만든 인증 토큰은 왜 위험하지 않나?",
+   "a": "저장하지 않으면 그 요청에서만 살고, 검증은 부르는 쪽 책임이다."
+  },
+  {
+   "q": "세 종류 토큰을 무엇으로 구별하나?",
+   "a": "클래스와 권한이다. `isAuthenticated` 는 셋 다 `true` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "credentials",
+   "def": "인증 재료. 폼 로그인에서는 비밀번호이며 인증이 끝나면 지워진다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

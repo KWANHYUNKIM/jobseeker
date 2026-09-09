@@ -191,7 +191,7 @@
           "title": "LogoutHandler 와 SuccessHandler",
           "summary": "지우는 순서.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.10",
@@ -199,7 +199,7 @@
           "title": "RequestCache 와 SavedRequest",
           "summary": "로그인 뒤 원래 가려던 곳.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -214,7 +214,7 @@
           "title": "Authentication",
           "summary": "인증 전과 후가 같은 타입이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -222,7 +222,7 @@
           "title": "SecurityContext 와 Holder",
           "summary": "ThreadLocal 이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
