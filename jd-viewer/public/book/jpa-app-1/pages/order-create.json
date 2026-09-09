@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-create",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "생성 메서드",
+ "summary": "정적 팩토리로 조립한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "정적 팩토리를 만든다.",
+  "왜 생성자가 아닌지 안다.",
+  "생성 경로를 하나로 막는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**주문을 만들려면 셋을 이어야** 한다(7.1절). **빠뜨리면 안 된다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "정적 팩토리",
+   "ascii": "   Order.createOrder(member, delivery, orderItems...)\n\n     new Order\n     setMember(member)\n     setDelivery(delivery)\n     for each: addOrderItem(oi)\n     status = ORDER\n     orderDate = now\n     return it\n\n   nobody can build a half connected Order",
+   "note": "**반쯤 연결된 주문을 만들 수 없다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Order.createOrder`",
+   "code": "public class Order {\n\n    // ... 필드와 편의 메서드 ...\n\n    public static Order createOrder(Member member, Delivery delivery,\n                                    OrderItem... orderItems) {\n        Order order = new Order();\n        order.setMember(member);\n        order.setDelivery(delivery);\n        for (OrderItem orderItem : orderItems) {\n            order.addOrderItem(orderItem);\n        }\n        order.status = OrderStatus.ORDER;\n        order.orderDate = LocalDateTime.now();\n        return order;\n    }\n}",
+   "note": "**`OrderItem...` 가변 인자**다. **하나든 여럿이든** 된다.\n\n> **1.3절에서 \"주문에 상품 여럿은 엔티티만 지원\" 이라고** 했다. **여기가 그 자리**다. **화면은 하나만 보낸다**(8.10절).\n\n**`status` 와 `orderDate` 를 여기서** 정한다. **밖에서 못 정한다.**\n\n> **취소된 상태로 주문을 만들 수 없다.** **미래 날짜로도 못 만든다.**\n\n**`@NoArgsConstructor(PROTECTED)`** 라 **`new Order()` 를 밖에서 못** 부른다(7.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "생성자가 아닌 이유",
+   "ascii": "   why not a constructor\n\n   new Order(member, delivery, items)\n     works, but cannot call the convenience methods on this\n     cleanly before the object is fully built\n\n   a static factory\n     names the intent          createOrder\n     can run steps in order\n     leaves room for a second one   createGiftOrder",
+   "note": "**이름이 있는 것**이 크다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "정적 팩토리의 이득",
+   "md": "**① 이름이 있다**\n\n```java\nOrder.createOrder(member, delivery, orderItem);\n```\n\n**생성자면 `new Order(...)`** 다. **인자만 보고 무슨 주문인지** 알아야 한다.\n\n**나중에 종류가 늘면**\n\n```java\nOrder.createOrder(...)        // 일반 주문\nOrder.createGiftOrder(...)    // 선물 주문\nOrder.createSubscription(...) // 정기 구독\n```\n\n**생성자로는 인자 목록이 같으면 못 나눈다.**\n\n**② 조립 순서를 통제한다**\n\n**편의 메서드가 `this` 를 다른 객체에 넘긴다.**\n\n```java\npublic void setMember(Member member) {\n    this.member = member;\n    member.getOrders().add(this);      // this 를 넘긴다\n}\n```\n\n**생성자 안에서 `this` 를 밖으로 내보내는 것**은 권하지 않는다. **아직 완전히 만들어지지 않은 객체**다.\n\n> **정적 팩토리는 `new` 가 끝난 뒤에** 부른다. **안전하다.**\n\n**③ 생성 경로를 하나로 막는다**\n\n```java\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n```\n\n**`new Order()` 를 못 쓴다.** **`createOrder` 밖에 없다.**\n\n**그러면 검색이 쉬워진다.**\n\n> **\"주문이 어디서 만들어지나\"** 를 알려면 **`createOrder` 를 찾으면** 된다.\n>\n> **`new Order()` 가 열려 있으면 전부 찾아야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "빌더는 어떤가",
+   "md": "**롬복의 `@Builder`** 를 쓸 수도 있다.\n\n```java\nOrder order = Order.builder()\n        .member(member)\n        .delivery(delivery)\n        .status(OrderStatus.ORDER)\n        .build();\n```\n\n**인자가 많을 때 읽기 좋다.**\n\n**그런데 엔티티에는 안 맞는 경우**가 있다.\n\n| 문제 | |\n|---|---|\n| **편의 메서드를 못 부른다** | 필드에 직접 넣는다 |\n| **필수 필드를 빠뜨릴 수** 있다 | 컴파일러가 안 막는다 |\n| **`status` 를 밖에서** 정한다 | 취소 상태로 생성 가능 |\n\n**첫 번째가 결정적**이다.\n\n```java\n.member(member)     // member.getOrders() 는 안 채워진다\n```\n\n**양방향이 깨진다.**\n\n> **빌더를 쓰려면 `build()` 안에서 편의 메서드를 부르게** 만들어야 한다. **그러면 정적 팩토리와 같아진다.**\n>\n> **엔티티에는 정적 팩토리, DTO 에는 빌더**가 대체로 맞다.\n\n**이 책은 정적 팩토리**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문 생성 ---\n\n@Test\n@Transactional\nvoid 주문생성() {\n    Member member = 회원만들기();\n    em.persist(member);\n\n    Book book = 책만들기(\"JPA\", 10000, 10);\n    em.persist(book);\n    em.flush();\n\n    Delivery delivery = new Delivery();\n    delivery.setAddress(member.getAddress());\n\n    OrderItem orderItem = OrderItem.createOrderItem(book, book.getPrice(), 2);\n    Order order = Order.createOrder(member, delivery, orderItem);\n\n    em.persist(order);\n    em.flush();\n}\n\n#   Hibernate: select next value for member_seq\n#   Hibernate: select next value for item_seq\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: insert into item (...) values (?,?,?,?,?,'B',?)\n\n#   (여기까지 준비)\n\n#   (createOrderItem, createOrder - 자바 코드만)\n\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n#   Hibernate: select next value for order_item_seq\n\n#   Hibernate: \n#       insert into delivery (city, street, zipcode, status, delivery_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       insert into orders (delivery_id, member_id, order_date, status,\n#                           order_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       insert into order_item (count, item_id, order_id, order_price,\n#                               order_item_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [8]\n\n#   내가 쓴 persist: order 하나\n#   나간 insert: 셋\n#   그리고 update 하나\n\n#   1.1절에서 예고한 그 로그다\n\n# --- 순서를 보면 ---\n\n#   insert delivery   먼저\n#   insert orders     그다음\n#   insert order_item 마지막\n\n#   외래 키 때문이다\n#   orders.delivery_id 가 delivery 를 참조하니 delivery 가 먼저\n#   order_item.order_id 가 orders 를 참조하니 orders 가 먼저\n\n#   하이버네이트가 순서를 정한다\n\n# --- status 와 orderDate ---\n\n#   binding parameter [3] as [TIMESTAMP] - [2026-09-09T14:11:23.451]\n#   binding parameter [4] as [VARCHAR] - [ORDER]\n\n#   createOrder 안에서 정한 값이다\n\n# --- new Order() 를 부르면 ---\n\nOrder order = new Order();\n\n#   java: Order() has protected access in Order\n\n#   컴파일 오류다\n\n# --- 편의 메서드를 안 부르고 만들면 ---\n\n#   (리플렉션으로 필드를 직접 넣었다고 치면)\n\nem.persist(order);\n\n#   TransientPropertyValueException:\n#     object references an unsaved transient instance :\n#     Order.delivery -> Delivery\n\n#   delivery 를 안 이었으면 cascade 가 못 따라간다\n\n# --- 그래서 생성 경로를 하나로 막는다 ---",
+   "note": "**`persist` 하나에 `insert` 셋과 `update` 하나**다. **1.1절에서 예고한 그 로그**다.\n\n**순서를 하이버네이트가 정한다.** **외래 키 참조 순서**대로다 — `delivery` → `orders` → `order_item`.\n\n**`status` 와 `orderDate` 가 `createOrder` 안에서** 정해졌다.\n\n**`new Order()` 는 컴파일 오류**다. **생성 경로가 하나**다.\n\n**다음 절에서 취소를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**정적 팩토리로 조립**한다 — 반쯤 연결된 주문을 못 만든다.",
+  "**`OrderItem...` 가변 인자**로 여럿을 받는다.",
+  "**`status`·`orderDate` 를 안에서** 정한다.",
+  "**이름이 있어 종류를 나눌 수** 있다.",
+  "**생성자에서 `this` 를 밖으로 내보내지 않는다.**",
+  "**`new Order()` 를 막아 생성 경로를 하나**로 만든다.",
+  "**빌더는 편의 메서드를 못 불러** 양방향이 깨진다.",
+  "**`persist` 하나에 `insert` 셋 + `update` 하나**다.",
+  "**순서는 외래 키 참조 순서**로 하이버네이트가 정한다."
+ ],
+ "drills": [
+  {
+   "task": "`createOrder` 를 만들고 주문을 저장한다.",
+   "done_when": "`insert` 셋을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`insert` 순서와 외래 키를 대조한다.",
+   "done_when": "왜 그 순서인지 설명했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`new Order()` 를 불러 본다.",
+   "done_when": "컴파일 오류를 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "빌더로 만들어 양방향을 확인한다.",
+   "done_when": "반대쪽이 안 채워지는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 생성자가 아니라 정적 팩토리인가?",
+   "a": "이름이 있고, `this` 를 안전하게 넘길 수 있고, 종류를 나눌 수 있다."
+  },
+  {
+   "q": "`new Order()` 를 왜 막나?",
+   "a": "생성 경로를 하나로 만들어 반쯤 연결된 주문이 없게 하려고."
+  },
+  {
+   "q": "빌더의 문제는?",
+   "a": "필드에 직접 넣어 편의 메서드를 안 불러 양방향이 깨진다."
+  },
+  {
+   "q": "`persist` 하나에 SQL 이 몇 개 나가나?",
+   "a": "`insert` 셋과 `update` 하나다."
+  },
+  {
+   "q": "`insert` 순서를 누가 정하나?",
+   "a": "하이버네이트가 외래 키 참조 순서대로 정한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

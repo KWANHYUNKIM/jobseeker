@@ -1,0 +1,127 @@
+{
+ "book": "jpa-app-1",
+ "id": "orderitem-entity",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "주문상품 엔티티",
+ "summary": "주문 시점의 가격을 남긴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`OrderItem` 을 완성한다.",
+  "`orderPrice` 가 왜 있는지 안다.",
+  "생성 메서드에 부수 효과를 둔다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 \"주문 시점의 가격\"** 이라고 적었다. **그 문장 하나가 만든 필드**다."
+  },
+  {
+   "type": "figure",
+   "caption": "`orderPrice` 가 있는 이유",
+   "ascii": "   why orderPrice exists\n\n   day 1   item.price = 10000   order_item.order_price = 10000\n   day 2   item.price = 20000   order_item.order_price = 10000\n\n   the receipt does not change when the shop raises the price\n\n   without the column\n     select ... join item ... -> 20000, and the past is rewritten",
+   "note": "**영수증은 나중에 안 바뀐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스냅숏 필드",
+   "md": "**참조로 충분해 보인다.**\n\n```java\n// 이러면 안 되나\npublic int getTotalPrice() {\n    return item.getPrice() * count;\n}\n```\n\n**상품 값이 오르면 과거 주문 금액도 오른다.**\n\n| 상황 | |\n|---|---|\n| 어제 10000원에 2개 주문 | 20000원 |\n| 오늘 상품이 20000원이 됨 | **40000원으로 보인다** |\n\n**결제한 금액과 다르다.** **회계가 깨진다.**\n\n**그래서 그 시점의 값을 복사**한다.\n\n```java\nprivate int orderPrice;\n```\n\n> **정규화 관점에서는 중복**이다. **`item.price` 와 같은 값이 두 곳**에 있다.\n>\n> **그런데 의미가 다르다.** **`item.price` 는 \"지금 파는 값\", `order_price` 는 \"그때 판 값\"** 이다.\n>\n> **같은 숫자인데 다른 사실**이다.\n\n**같은 패턴이 실무에 많다.**\n\n| 스냅숏 | 참조 대신 |\n|---|---|\n| 주문 시 배송지 | 회원 주소가 바뀌어도 |\n| 주문 시 상품명 | 상품명이 바뀌어도 |\n| 결제 시 환율 | |\n\n> **이 책은 `Delivery.address` 도 그렇다.** **회원 주소를 복사**한다(7.3절).\n>\n> **상품명은 안 한다.** **화면에서 `orderItem.getItem().getName()`** 을 쓴다 — **9.7절 목록**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderItem`",
+   "code": "@Entity\n@Getter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\npublic class OrderItem {\n\n    @Id @GeneratedValue\n    @Column(name = \"order_item_id\")\n    private Long id;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"item_id\")\n    private Item item;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"order_id\")\n    private Order order;\n\n    private int orderPrice;\n    private int count;\n\n    // 생성 메서드\n    public static OrderItem createOrderItem(Item item, int orderPrice, int count) {\n        OrderItem orderItem = new OrderItem();\n        orderItem.item = item;\n        orderItem.orderPrice = orderPrice;\n        orderItem.count = count;\n\n        item.removeStock(count);\n        return orderItem;\n    }\n\n    // 비즈니스 로직\n    public void cancel() {\n        getItem().addStock(count);\n    }\n\n    // 조회 로직\n    public int getTotalPrice() {\n        return getOrderPrice() * getCount();\n    }\n\n    void setOrder(Order order) {\n        this.order = order;\n    }\n}",
+   "note": "**`setOrder` 가 package-private** 이다. **`Order.addOrderItem` 만 부른다**(7.1절).\n\n> **4.3절에서 \"패키지의 진짜 일은 접근 제어\" 라고** 했다. **여기서 그것을 쓴다.**\n>\n> **`domain` 패키지 안에서만 보인다.**\n\n**`createOrderItem` 이 `static`** 이다. **정적 팩토리**다 — 7.3절.\n\n**`cancel()` 이 재고를 되돌린다.** **6.1절의 `addStock`** 을 부른다."
+  },
+  {
+   "type": "figure",
+   "caption": "생성이 재고를 바꾼다",
+   "ascii": "   OrderItem.createOrderItem(item, orderPrice, count)\n\n     new OrderItem\n     set item, orderPrice, count\n     item.removeStock(count)        <-- the side effect\n     return it\n\n   creating an order item changes the stock. by design.",
+   "note": "**부수 효과가 의도된 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "생성 메서드에 부수 효과가 있다",
+   "md": "**`createOrderItem` 이 `item.removeStock(count)`** 를 부른다.\n\n**\"만들기\" 인데 재고가 준다.**\n\n**이것이 좋은 설계인가.**\n\n| 찬성 | 반대 |\n|---|---|\n| **주문상품 생성 = 재고 감소** 가 늘 함께다 | **이름이 `create` 인데 상태를 바꾼다** |\n| 빠뜨릴 수 없다 | 테스트에서 재고를 준비해야 한다 |\n| 규칙이 한곳에 | **부수 효과가 안 보인다** |\n\n**서비스로 옮기면**\n\n```java\n// OrderService.order()\nOrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);\nitem.removeStock(count);      // 따로 부른다\n```\n\n**빠뜨릴 수** 있다. **주문상품을 만드는 곳이 여럿이면 하나가 빠진다.**\n\n> **6.1절의 논리와 같다** — **규칙을 한곳에** 둔다.\n>\n> **대신 이름이 거짓말**을 한다. **`createOrderItemAndReduceStock`** 이 정직한데 길다.\n\n**이 책은 강의 예제를 따른다.** **9.5절에서 이 판단을** 다시 본다.\n\n**한 가지 확실한 것**이 있다.\n\n> **부수 효과가 있으면 이름이나 문서에 드러나야** 한다. **주석 한 줄이라도.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문상품 생성 ---\n\n@Test\n@Transactional\nvoid 주문상품_생성() {\n    Book book = 책만들기(\"JPA\", 10000, 10);\n    em.persist(book);\n    em.flush();\n\n    OrderItem orderItem = OrderItem.createOrderItem(book, book.getPrice(), 2);\n\n    assertThat(book.getStockQuantity()).isEqualTo(8);\n    assertThat(orderItem.getOrderPrice()).isEqualTo(10000);\n    assertThat(orderItem.getTotalPrice()).isEqualTo(20000);\n}\n\n#   Hibernate: select next value for item_seq\n#   Hibernate: insert into item (...) values (?, ?, ?, ?, ?, 'B', ?)\n#   binding parameter [3] as [INTEGER] - [10]\n\n#   (createOrderItem - 자바 코드만)\n\n#   PASSED\n\n#   (트랜잭션이 끝나면)\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [8]\n\n#   OrderItem 을 persist 안 했는데 item 이 바뀌었다\n\n# --- 상품 값이 오르면 ---\n\nBook book = 책만들기(\"JPA\", 10000, 10);\nem.persist(book);\n\nOrderItem orderItem = OrderItem.createOrderItem(book, book.getPrice(), 2);\n// orderPrice = 10000\n\nbook.change(\"JPA\", 20000, 10);   // 값을 올린다\nem.flush();\n\n#   Hibernate: update item set ... price=? ... where item_id=?\n#   binding parameter [2] as [INTEGER] - [20000]\n\nlog.info(\"주문 금액 = {}\", orderItem.getTotalPrice());\n#   주문 금액 = 20000\n\nlog.info(\"지금 상품 값 = {}\", book.getPrice());\n#   지금 상품 값 = 20000\n\n#   주문 금액은 안 바뀌었다\n#   (10000 x 2 = 20000)\n\n# --- orderPrice 없이 item.getPrice() 를 쓰면 ---\n\npublic int getTotalPrice() {\n    return item.getPrice() * count;    // 이러면\n}\n\nlog.info(\"주문 금액 = {}\", orderItem.getTotalPrice());\n#   주문 금액 = 40000\n\n#   과거 주문 금액이 바뀌었다\n\n# --- 취소하면 ---\n\norderItem.cancel();\nem.flush();\n\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [10]\n\n#   재고가 돌아왔다\n\n#   OrderItem 은 아무 SQL 도 안 냈다\n#   Item 만 바뀌었다\n\n# --- 저장하면 ---\n\nem.persist(orderItem);\nem.flush();\n\n#   Hibernate: select next value for order_item_seq\n#   Hibernate: \n#       insert into order_item (count, item_id, order_id, order_price,\n#                               order_item_id)\n#       values (?, ?, ?, ?, ?)\n#   binding parameter [4] as [INTEGER] - [10000]\n\n#   order_price 에 10000 이 박혔다\n#   item.price 가 20000 이어도",
+   "note": "**`OrderItem` 을 `persist` 안 했는데 `item` 의 `update`** 가 나갔다. **생성 메서드의 부수 효과**다.\n\n**상품 값을 올려도 `getTotalPrice()` 가 20000** 이다. **`orderPrice` 를 복사해 뒀으니까.**\n\n**`item.getPrice()` 를 쓰면 40000** 이 된다. **과거 주문 금액이 바뀐다** — 그것이 이 필드의 존재 이유다.\n\n**`cancel()` 이 `Item` 만 바꾼다.** **`OrderItem` 자신은 SQL 을 안 낸다.**\n\n**`insert` 에 `order_price = 10000`** 이 박혔다. **상품 값이 20000 인데도**다.\n\n**다음 절에서 주문을 조립한다.**"
+  }
+ ],
+ "recap": [
+  "**`orderPrice` 가 주문 시점 값**을 복사한다.",
+  "**참조로 두면 과거 주문 금액이 바뀐다.**",
+  "**같은 숫자인데 다른 사실**이다 — 지금 값 vs 그때 값.",
+  "**`Delivery.address` 도 같은 스냅숏**이다.",
+  "**상품명은 스냅숏을 안 했다** — 9.7절 목록.",
+  "**`setOrder` 가 package-private** — 4.3절의 접근 제어.",
+  "**`createOrderItem` 이 재고를 줄인다** — 의도된 부수 효과.",
+  "**이름이 거짓말한다는 반론**도 있다 — 9.5절.",
+  "**`cancel()` 이 `Item` 만 바꾼다.**"
+ ],
+ "drills": [
+  {
+   "task": "`OrderItem` 을 만들고 재고가 주는지 확인한다.",
+   "done_when": "`update` 가 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "상품 값을 올리고 `getTotalPrice()` 를 본다.",
+   "done_when": "안 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`item.getPrice()` 를 쓰도록 바꿔 본다.",
+   "done_when": "과거 금액이 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`createOrderItem` 에서 `removeStock` 을 빼고 서비스로 옮겨 본다.",
+   "done_when": "어느 쪽이 나은지 판단했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`orderPrice` 가 왜 필요한가?",
+   "a": "상품 값이 바뀌어도 과거 주문 금액이 안 바뀌어야 하기 때문이다."
+  },
+  {
+   "q": "정규화 관점에서 중복 아닌가?",
+   "a": "같은 숫자지만 \"지금 값\" 과 \"그때 값\" 으로 의미가 다르다."
+  },
+  {
+   "q": "`setOrder` 를 왜 package-private 으로 두나?",
+   "a": "`Order.addOrderItem` 만 부르게 하려고 접근을 제한한다."
+  },
+  {
+   "q": "`createOrderItem` 의 부수 효과는?",
+   "a": "`item.removeStock(count)` 로 재고를 줄인다."
+  },
+  {
+   "q": "그 설계의 반론은?",
+   "a": "이름이 `create` 인데 상태를 바꿔 부수 효과가 안 보인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

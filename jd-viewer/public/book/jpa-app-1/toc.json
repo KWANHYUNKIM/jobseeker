@@ -381,7 +381,7 @@
           "title": "주문 엔티티",
           "summary": "회원 · 배송 · 주문상품.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -389,7 +389,7 @@
           "title": "주문상품 엔티티",
           "summary": "주문 시점의 가격을 남긴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -397,7 +397,7 @@
           "title": "생성 메서드",
           "summary": "정적 팩토리로 조립한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
