@@ -1,0 +1,153 @@
+{
+ "book": "jpa-app-2",
+ "id": "member-update",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "회원 수정 API",
+ "summary": "변경 감지와 응답 DTO.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "수정 API 를 변경 감지로 만든다.",
+  "서비스가 왜 `void` 인지 안다.",
+  "PUT 과 PATCH 의 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**수정은 1편 8.10절에서 이미 겪었다.** **`merge` 를 쓰고 대가를** 봤다. **여기서는 처음부터 변경 감지**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberApiController — 수정",
+   "code": "@PutMapping(\"/api/v2/members/{id}\")\npublic UpdateMemberResponse updateMemberV2(\n        @PathVariable(\"id\") Long id,\n        @RequestBody @Valid UpdateMemberRequest request) {\n\n    memberService.update(id, request.getName());\n    Member findMember = memberService.findOne(id);\n    return new UpdateMemberResponse(findMember.getId(), findMember.getName());\n}\n\n@Data\nstatic class UpdateMemberRequest {\n    @NotEmpty\n    private String name;\n}\n\n@Data\n@AllArgsConstructor\nstatic class UpdateMemberResponse {\n    private Long id;\n    private String name;\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberService — 변경 감지",
+   "code": "@Transactional\npublic void update(Long id, String name) {\n    Member member = memberRepository.findOne(id);\n    member.setName(name);\n    // save 를 부르지 않는다\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 `void` 인가",
+   "md": "**`update` 가 `Member` 를 반환하면 안 되나.**\n\n```java\n@Transactional\npublic Member update(Long id, String name) {\n    Member member = memberRepository.findOne(id);\n    member.setName(name);\n    return member;   // 이러면?\n}\n```\n\n**동작은 한다.** **그런데 반환된 것이 무엇인지가 애매**해진다.\n\n| | |\n|---|---|\n| **트랜잭션이 끝났다** | 영속성 컨텍스트가 닫혔다 |\n| **준영속** | 지연 로딩을 걸면 터진다 |\n| **커맨드와 쿼리가 섞였다** | 수정 메서드가 조회 결과도 준다 |\n\n> **커맨드와 쿼리를 분리한다**(CQS). **바꾸는 메서드는 아무것도 안 돌려주고**, **읽는 메서드는 아무것도 안 바꾼다.**\n>\n> **그러면 `update` 를 부른 쪽이 \"이건 바꾸는 거구나\" 를** 안다.\n\n**대신 컨트롤러가 다시 읽는다.**\n\n```java\nmemberService.update(id, request.getName());\nMember findMember = memberService.findOne(id);\n```\n\n> **쿼리가 하나 더** 나간다. **`id` 로 읽는 것이라 비싸지 않다.**\n>\n> **엄밀히 하려면 `update` 가 `id` 만 반환**하는 방법도 있다. **그건 값을 돌려주는 게 아니라 식별자만** 주는 것이라 CQS 에 어긋나지 않는다."
+  },
+  {
+   "type": "figure",
+   "caption": "서비스가 `void` 이고 컨트롤러가 다시 읽는 이유",
+   "ascii": "   why the service returns void and the controller re-reads\n\n   @Transactional update(id, name)\n     member = em.find(id)      managed\n     member.setName(name)      dirty\n   commit -> flush -> update sql\n     the persistence context closes here\n\n   controller\n     findOne(id)               a second read, outside that tx\n\n   returning the entity from update would hand back\n   something whose context is already gone",
+   "note": "**1편 8.10절의 `merge` 와 대비해 읽는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1편의 `merge` 와 무엇이 다른가",
+   "md": "**1편 8.10절의 상품 수정**\n\n```java\nItem merged = itemRepository.save(item);  // merge\n```\n\n| | |\n|---|---|\n| **모든 필드가 덮인다** | `null` 이면 `null` 로 |\n| **선택 수정이 안 된다** | |\n| **반환값을 써야 한다** | 넘긴 객체는 여전히 준영속 |\n\n**여기의 변경 감지**\n\n```java\nMember member = memberRepository.findOne(id);\nmember.setName(name);\n```\n\n| | |\n|---|---|\n| **바꾼 것만 바뀐다** | `address` 는 그대로 |\n| **선택 수정이 된다** | |\n| **반환값이 필요 없다** | 영속 상태 그대로 |\n\n> **1편 9.8절에서 \"다시 만들면 바꿀 셋\" 에 `merge` 제거를** 넣었다. **이 API 가 그 답**이다.\n>\n> **UPDATE SQL 을 보면 차이가 보인다** — **`merge` 는 전 컬럼, 변경 감지는 바뀐 컬럼만**(설정에 따라)."
+  },
+  {
+   "type": "figure",
+   "caption": "PUT 인가 PATCH 인가",
+   "ascii": "   put or patch\n\n   PUT      replace the whole resource\n            missing field means set it to null\n\n   PATCH    change the named fields only\n            missing field means leave it alone\n\n   this api sends only name, so it is really a patch\n   the course uses PUT. the book keeps PUT and says why.",
+   "note": "**의미로는 PATCH 에 가깝다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "PUT 을 쓰는 이유",
+   "md": "**엄밀히는 PATCH 가** 맞다.\n\n```json\n{\"name\": \"hello-updated\"}\n```\n\n> **`address` 를 안 보냈는데 안 지운다.** **PUT 의 의미대로면 `address` 는 `null` 이 돼야** 한다.\n\n**그래도 PUT 을 쓴다.**\n\n| | |\n|---|---|\n| **강의가 PUT** | 차례를 그대로 따른다 |\n| **PATCH 를 안 쓰는 팀이 많다** | 프록시·클라이언트가 막는 경우 |\n| **회원 수정이 사실상 전체 교체** | 필드가 이름 하나뿐 |\n\n> **실무에서는 정하고 지키는 게 중요**하다. **섞여 있으면 클라이언트가 헷갈린다.**\n\n**주의할 것 하나** — **`@PathVariable` 의 이름**이다.\n\n```java\n@PathVariable(\"id\") Long id\n```\n\n> **이름을 생략하면 `-parameters` 컴파일 옵션이** 필요하다(「MVC 1편」 5.3절).\n>\n> **부트는 기본으로 켜 주는데**, **명시하면 확실**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 수정 요청 ---\n\nPUT /api/v2/members/1\nContent-Type: application/json\n\n{\"name\": \"hello-updated\"}\n\n#   --- memberService.update (트랜잭션 1) ---\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0 where m1_0.member_id=?\n#   binding parameter (1:BIGINT) <- [1]\n\n#   (setName 만 했다. save 를 안 불렀다)\n\n#   Hibernate: update member set city=?, name=?, street=?, zipcode=?\n#              where member_id=?\n#   binding parameter (1:VARCHAR) <- [null]\n#   binding parameter (2:VARCHAR) <- [hello-updated]\n#   binding parameter (5:BIGINT)  <- [1]\n\n#   커밋 시점에 flush 가 UPDATE 를 만들었다\n\n#   --- memberService.findOne (트랜잭션 2) ---\n\n#   Hibernate: select m1_0.member_id, ... from member m1_0\n#              where m1_0.member_id=?\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   200 OK\n#   {\"id\": 1, \"name\": \"hello-updated\"}\n\n#   쿼리 3개다. select, update, select\n\n# --- 안 보낸 필드는 어떻게 됐나 ---\n\nGET /api/v1/members/1\n\n#   address 가 그대로다\n\n#   UPDATE 문에는 city=? 가 들어 있는데 [null] 을 넣었다\n#   원래 null 이었기 때문이다. 지운 게 아니다\n\n#   1편 8.10절의 merge 와 결정적으로 다른 지점이다\n#   merge 는 안 보낸 값을 null 로 덮는다\n\n# --- 바뀐 컬럼만 UPDATE 하려면 ---\n\n@Entity\n@DynamicUpdate\npublic class Member { ... }\n\nPUT /api/v2/members/1\n{\"name\": \"hello-again\"}\n\n#   Hibernate: update member set name=? where member_id=?\n\n#   컬럼이 하나로 줄었다\n\n#   (기본은 전 컬럼이다. 「JPA 기본편」 3.7절)\n#   컬럼이 30개 넘게 많을 때만 고려한다\n\n# --- 빈 이름 ---\n\nPUT /api/v2/members/1\n{\"name\": \"\"}\n\n#   Session Metrics { 0 JDBC statements were executed }\n\n#   400 Bad Request\n\n#   검증이 DTO 에 있어 DB 에 닿지 않는다\n\n# --- 없는 회원 ---\n\nPUT /api/v2/members/999\n{\"name\": \"x\"}\n\n#   Hibernate: select ... where m1_0.member_id=?\n\n#   500 Internal Server Error\n#   No class jpabook.jpashop.domain.Member entity with id 999\n\n#   500 이 맞나. 404 가 맞다   (2.7절)\n\n# --- 다음 절에서 ---\n\n#   조회 API 를 만든다\n#   여기서 2.1절의 500 이 실제로 난다",
+   "note": "**쿼리 3개**다 — `select`, `update`, `select`. **`save` 를 안 불렀는데 `UPDATE` 가** 나갔다.\n\n**`UPDATE` 에 `city=?` 가 들어 있는데 `[null]`** 이다. **원래 `null` 이라 넣은 것**이지 지운 게 아니다 — **1편 8.10절의 `merge` 와 결정적으로 다른 지점**이다.\n\n**`@DynamicUpdate` 를 붙이면 컬럼이 하나로** 준다.\n\n**없는 회원에 `500`** 이 난다. **`404` 가 맞다** — 2.7절에서 고친다.\n\n**다음 절에서 2.1절의 `500` 이 실제로 난다.**"
+  }
+ ],
+ "recap": [
+  "**수정은 변경 감지로** 한다 — `save` 를 안 부른다.",
+  "**서비스는 `void`** 다 — 커맨드와 쿼리를 분리한다.",
+  "**엔티티를 반환하면 준영속을 돌려주는 것**이 된다.",
+  "**컨트롤러가 다시 읽는다** — `id` 조회라 비싸지 않다.",
+  "**`merge` 는 전 필드를 덮고 변경 감지는 바꾼 것만** 바꾼다.",
+  "**`UPDATE` 는 기본이 전 컬럼**이다 — `@DynamicUpdate` 로 줄인다.",
+  "**의미로는 PATCH 인데 PUT 을** 쓴다.",
+  "**쿼리 3개** — `select`, `update`, `select`.",
+  "**없는 회원에 500 이 난다** — 2.7절의 숙제다."
+ ],
+ "drills": [
+  {
+   "task": "회원 이름을 수정한다.",
+   "done_when": "`save` 없이 `UPDATE` 가 나간 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`UPDATE` 문의 컬럼 개수를 센다.",
+   "done_when": "전 컬럼인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@DynamicUpdate` 를 붙여 본다.",
+   "done_when": "컬럼이 준 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 id 로 수정한다.",
+   "done_when": "500 이 나는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 서비스가 `void` 인가?",
+   "a": "커맨드와 쿼리를 분리하고, 트랜잭션 밖으로 준영속 엔티티를 넘기지 않기 위해서다."
+  },
+  {
+   "q": "`save` 를 안 불렀는데 왜 `UPDATE` 가 나가나?",
+   "a": "영속 상태 엔티티의 변경 감지가 커밋 시점 flush 에서 잡기 때문이다."
+  },
+  {
+   "q": "`merge` 와 무엇이 다른가?",
+   "a": "`merge` 는 안 보낸 필드를 `null` 로 덮고 변경 감지는 바꾼 것만 바꾼다."
+  },
+  {
+   "q": "`UPDATE` 에 전 컬럼이 들어가는 이유는?",
+   "a": "하이버네이트 기본이 전 컬럼이다. `@DynamicUpdate` 로 바꾼다."
+  },
+  {
+   "q": "PUT 인데 왜 `address` 가 안 지워지나?",
+   "a": "구현이 변경 감지라서다. 의미로는 PATCH 에 가깝다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CQS",
+   "def": "Command Query Separation. 상태를 바꾸는 메서드는 값을 반환하지 않고 값을 반환하는 메서드는 상태를 바꾸지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Spring Framework — Data Access, Transactions",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  }
+ ]
+}

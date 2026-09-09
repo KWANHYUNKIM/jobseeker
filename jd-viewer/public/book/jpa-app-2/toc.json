@@ -122,7 +122,7 @@
           "title": "회원 수정 API",
           "summary": "변경 감지와 응답 DTO.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -130,7 +130,7 @@
           "title": "회원 조회 V1",
           "summary": "엔티티를 그대로 내보낸다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -138,7 +138,7 @@
           "title": "회원 조회 V2",
           "summary": "Result 로 감싼다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",

@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "member-list-v2",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "회원 조회 V2",
+ "summary": "Result 로 감싼다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "응답 DTO 를 만든다.",
+  "왜 배열을 감싸는지 안다.",
+  "쿼리가 몇 개로 주는지 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**쿼리 17개와 과다 노출이 한 번에** 사라진다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberApiController — 조회 V2",
+   "code": "@GetMapping(\"/api/v2/members\")\npublic Result membersV2() {\n    List<Member> findMembers = memberService.findMembers();\n\n    List<MemberDto> collect = findMembers.stream()\n            .map(m -> new MemberDto(m.getName()))\n            .toList();\n\n    return new Result(collect.size(), collect);\n}\n\n@Data\n@AllArgsConstructor\nstatic class Result<T> {\n    private int count;\n    private T data;\n}\n\n@Data\n@AllArgsConstructor\nstatic class MemberDto {\n    private String name;\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "배열을 왜 감싸나",
+   "ascii": "   why the top level must not be an array\n\n   [ {...}, {...} ]\n     to add a count you have to change the shape\n     every client breaks\n\n   { \"data\": [ {...}, {...} ] }\n     to add a count you add a key\n     old clients keep reading data\n\n   an object can grow. an array cannot.",
+   "note": "**객체는 자라고 배열은 못 자란다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "최상위가 배열이면",
+   "md": "```json\n[{\"name\": \"userA\"}, {\"name\": \"userB\"}]\n```\n\n**여기에 `count` 를 넣고 싶으면 모양을 바꿔야** 한다.\n\n```json\n{\"count\": 2, \"data\": [...]}\n```\n\n> **배열을 읽던 클라이언트가 전부** 깨진다.\n>\n> **2.2절에서 `Long` 대신 `CreateMemberResponse` 를 만든 것과 같은 이야기**다. **거기는 값 하나, 여기는 배열**이다.\n\n**감싸 두면 키를 더하기만** 하면 된다.\n\n```json\n{\"count\": 2, \"data\": [...], \"hasNext\": false}\n```\n\n> **`data` 를 읽던 클라이언트가 안** 깨진다. **1.3절에서 \"하위 호환을 지키면 버전이 필요 없다\" 고** 한 것이 이렇게 가능해진다.\n\n**`Result` 를 제네릭으로** 둔 이유도 같다.\n\n```java\nstatic class Result<T> {\n    private T data;\n}\n```\n\n> **회원 목록에도 주문 목록에도** 쓴다. **API 마다 `Result` 를 새로 만들지 않는다.**\n>\n> **다만 `count` 는 목록에만 의미가** 있다. **실무에서는 `Result<T>` 를 최소로 두고 페이지 정보는 따로 두는 편**이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "DTO 가 없앤 것",
+   "md": "| 2.5절의 문제 | V2 에서 |\n|---|---|\n| **무한 재귀** | DTO 에 연관관계가 없다 |\n| **쿼리 17개** | **1개** |\n| **재고·저자·ISBN 노출** | `name` 만 |\n| **게터가 전부 나감** | DTO 의 필드만 |\n| **프록시 직렬화** | 프록시를 안 만진다 |\n| **최상위 배열** | `Result` 로 감쌌다 |\n| **`@JsonIgnore` 필요** | **엔티티가 깨끗** |\n\n**쿼리가 1개가 된 이유**가 중요하다.\n\n```java\n.map(m -> new MemberDto(m.getName()))\n```\n\n> **`m.getName()` 만 부른다.** **`m.getOrders()` 를 안 부르니 프록시가 초기화 안 된다.**\n>\n> **2.1절의 \"타임리프는 멈춘다\" 와 같은 원리**다. **DTO 변환이 잭슨 대신 멈춰 준다.**\n\n**엔티티가 자유로워진 것도 확인**한다.\n\n```java\n@Entity\npublic class Order {\n    // @JsonIgnore 를 지웠다\n    @ManyToOne(fetch = LAZY)\n    private Member member;\n}\n```\n\n> **4.1절에서 주문 API 가 `member` 를 필요로** 한다. **`@JsonIgnore` 가 남아 있었으면 거기서 걸렸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "DTO 안에 엔티티를 넣지 않는다",
+   "md": "**흔한 실수**다.\n\n```java\n@Data\nstatic class MemberDto {\n    private Member member;   // 이러면 헛일\n}\n```\n\n> **DTO 를 만들었는데 안에 엔티티가** 있다. **잭슨이 그 엔티티를 그대로** 돈다.\n>\n> **2.5절의 문제가 그대로** 돌아온다.\n\n**연관 엔티티도 마찬가지**다.\n\n```java\nstatic class OrderDto {\n    private List<OrderItem> orderItems;   // 엔티티다\n}\n```\n\n> **5.2절에서 실제로 이 실수를** 한 번 만들어 본다. **응답에 엔티티가 섞여 나가는 것**을 보고 고친다.\n\n**규칙 하나** — **DTO 는 DTO 만 품는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- V2 ---\n\nGET /api/v2/members\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       3 entities were loaded\n#   }\n\n#   200 OK\n#   {\n#     \"count\": 3,\n#     \"data\": [\n#       {\"name\": \"userA\"},\n#       {\"name\": \"userB\"},\n#       {\"name\": \"hello-updated\"}\n#     ]\n#   }\n\n#   쿼리 1개\n\n# --- V1 과 나란히 ---\n\n#   V1 (그대로)        쿼리 9    500 Infinite recursion\n#   V1 (@JsonIgnore)  쿼리 17   200  과다 노출\n#   V2 (DTO)          쿼리 1    200  name 만\n\n#   17 -> 1 이다\n\n# --- 왜 1개인가 ---\n\n#   .map(m -> new MemberDto(m.getName()))\n\n#   getName() 만 불렀다\n#   getOrders() 를 안 불러 프록시가 그대로 남았다\n\n#   프록시는 응답에 안 실린다. DTO 에 그 필드가 없어서다\n\n# --- 엔티티를 확인 ---\n\n@Entity\npublic class Order {\n    @ManyToOne(fetch = LAZY)\n    private Member member;\n}\n\n#   @JsonIgnore 가 없다\n#   @NotEmpty 도 없다   (2.3절)\n\n#   엔티티가 API 를 모른다\n\n# --- 필드를 하나 더한다면 ---\n\nstatic class MemberDto {\n    private String name;\n    private String city;      // 추가\n}\n\nGET /api/v2/members\n\n#   Hibernate: select ... from member m1_0\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   {\n#     \"count\": 3,\n#     \"data\": [{\"name\": \"userA\", \"city\": \"서울\"}, ...]\n#   }\n\n#   쿼리가 안 늘었다. 임베디드 값 타입이라 같은 행에 있다\n#   (1편 3.4절)\n\n# --- 응답에 키를 더한다면 ---\n\n#   {\"count\": 3, \"data\": [...], \"hasNext\": false}\n\n#   data 를 읽던 클라이언트는 안 깨진다\n\n#   최상위가 배열이었으면 못 했다\n\n# --- 다음 절에서 ---\n\n#   2.2절과 2.4절이 남긴 500 을 고친다\n#   API 의 오류 응답은 화면과 다르다",
+   "note": "**쿼리 1개에 `{\"count\":3,\"data\":[...]}`** 다. **17 → 1** 이다.\n\n**`getName()` 만 불러 프록시가 안 깨졌다.** **2.1절의 \"타임리프는 멈춘다\" 와 같은 원리**다.\n\n**`Order` 에 `@JsonIgnore` 도 `@NotEmpty` 도 없다.** **엔티티가 API 를 모른다.**\n\n**`city` 를 더해도 쿼리가 안 는다** — **임베디드 값 타입이라 같은 행**이다.\n\n**`hasNext` 를 더해도 클라이언트가 안 깨진다.** **최상위가 배열이었으면 못 했다.**"
+  }
+ ],
+ "recap": [
+  "**응답 DTO 로 쿼리 17개가 1개**가 된다.",
+  "**`getName()` 만 부르면 프록시가 안 깨진다.**",
+  "**DTO 변환이 잭슨 대신 멈춰 준다.**",
+  "**최상위 배열은 못 자란다** — `Result` 로 감싼다.",
+  "**객체면 키를 더하기만 하면 되고 클라이언트가 안 깨진다.**",
+  "**`Result<T>` 를 제네릭으로 둬 API 마다 안 만든다.**",
+  "**엔티티에서 `@JsonIgnore` 를 지운다** — 4.1절에서 `member` 가 필요하다.",
+  "**DTO 안에 엔티티를 넣으면 헛일**이다.",
+  "**DTO 는 DTO 만 품는다.**"
+ ],
+ "drills": [
+  {
+   "task": "V2 를 부르고 쿼리를 센다.",
+   "done_when": "1개인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`MemberDto` 에 `city` 를 더한다.",
+   "done_when": "쿼리가 안 느는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`MemberDto` 에 `Member` 를 통째로 넣어 본다.",
+   "done_when": "재귀가 돌아오는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Order` 에서 `@JsonIgnore` 를 지운다.",
+   "done_when": "V2 가 그대로 도는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿼리가 왜 1개가 되나?",
+   "a": "`getName()` 만 불러 지연 로딩 프록시가 초기화되지 않아서다."
+  },
+  {
+   "q": "왜 최상위를 배열로 두면 안 되나?",
+   "a": "키를 더할 수 없어 모양을 바꿔야 하고 클라이언트가 깨진다."
+  },
+  {
+   "q": "`Result<T>` 를 제네릭으로 둔 이유는?",
+   "a": "회원·주문 등 여러 API 가 같이 쓰기 위해서다."
+  },
+  {
+   "q": "DTO 안에 엔티티를 넣으면?",
+   "a": "잭슨이 그 엔티티를 돌아 2.5절의 문제가 그대로 돌아온다."
+  },
+  {
+   "q": "`city` 를 더해도 쿼리가 왜 안 느나?",
+   "a": "임베디드 값 타입이라 `member` 와 같은 행에 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

@@ -1,0 +1,136 @@
+{
+ "book": "jpa-app-2",
+ "id": "member-list-v1",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "회원 조회 V1",
+ "summary": "엔티티를 그대로 내보낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무한 재귀를 직접 낸다.",
+  "`@JsonIgnore` 가 왜 답이 아닌지 안다.",
+  "프록시 직렬화 문제를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 예고한 `500` 을 실제로** 낸다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "MemberApiController — 조회 V1",
+   "code": "@GetMapping(\"/api/v1/members\")\npublic List<Member> membersV1() {\n    return memberService.findMembers();\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "잭슨이 도는 고리",
+   "ascii": "   the recursion jackson walks\n\n   Member.getOrders()\n     Order.getMember()\n       Member.getOrders()\n         Order.getMember()\n           ... until the stack ends\n\n   the entity graph is a cycle.\n   json is a tree. they do not fit.",
+   "note": "**엔티티 그래프는 순환, JSON 은 트리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무한 재귀",
+   "md": "**1편 3.5절에서 `Member` 와 `Order` 를 양방향으로** 걸었다.\n\n```java\n@Entity\npublic class Member {\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders = new ArrayList<>();\n}\n\n@Entity\npublic class Order {\n    @ManyToOne(fetch = LAZY)\n    private Member member;\n}\n```\n\n**객체 그래프로는 편했다.** **JSON 으로는 못 쓴다.**\n\n> **JSON 에 순환이** 없다. **끝이 있어야** 한다.\n>\n> **잭슨은 `Member` → `orders` → `Order` → `member` → `orders` → ... 를** 돌다 **스택을 다 쓴다.**\n\n**당장의 처방은 `@JsonIgnore`** 다.\n\n```java\n@Entity\npublic class Order {\n    @JsonIgnore\n    @ManyToOne(fetch = LAZY)\n    private Member member;\n}\n```\n\n**고리는 끊긴다.** **문제가 옮겨 간다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "`@JsonIgnore` 가 하는 일",
+   "ascii": "   what @JsonIgnore actually does\n\n   Order\n     @JsonIgnore member          the cycle is cut\n\n   but now\n     every api that serializes Order loses member\n     even the ones that wanted it\n\n   the entity now carries a presentation decision",
+   "note": "**엔티티가 화면 사정을 들게 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`@JsonIgnore` 가 답이 아닌 이유",
+   "md": "**① 엔티티에 프레젠테이션 관심사가 붙는다**\n\n> **`@Entity` 옆에 `@JsonIgnore`** 다. **1편 4.2절에서 \"엔티티는 도메인\" 이라고** 한 것과 어긋난다.\n>\n> **2.3절에서 `@NotEmpty` 를 뺀 것과 같은 이야기**다. **뺐다가 다시 넣는 셈**이다.\n\n**② API 마다 필요한 것이 다르다**\n\n| API | `Order.member` 가 |\n|---|---|\n| 회원 목록 | **필요 없다** |\n| 주문 목록 | **필요하다** — 주문자 이름 |\n\n> **애노테이션은 하나**다. **둘을 동시에 못 맞춘다.**\n>\n> **4.1절에서 주문 목록을 만들 때 이게 실제로 걸린다.**\n\n**③ 고리를 끊어도 다음 문제가 남는다**\n\n> **`@JsonIgnore` 로 재귀는 막았는데**, **`orders` 는 여전히 나간다.**\n>\n> **지연 로딩이 전부 초기화**된다. **회원 3명이면 쿼리가 계속** 는다.\n\n**④ 프록시가 남아 있으면 터진다**\n\n> **`Order.delivery` 처럼 초기화 안 된 프록시**가 있으면\n>\n> ```\n> No serializer found for class ByteBuddyInterceptor\n> ```\n>\n> **`Hibernate5JakartaModule` 을 넣어 막는 방법**이 있는데, **그것도 처방이지 해결이** 아니다.\n\n**⑤ 배열이 최상위로 나간다**\n\n```json\n[{...}, {...}]\n```\n\n> **필드를 못 늘린다.** **2.6절에서 다룬다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 그대로 부르면 ---\n\nGET /api/v1/members\n\n#   Hibernate: select m1_0.member_id, m1_0.city, m1_0.name, m1_0.street,\n#              m1_0.zipcode from member m1_0\n\n#   Hibernate: select o1_0.member_id, o1_0.order_id, o1_0.delivery_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n#              where o1_0.member_id=?\n\n#   Hibernate: select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price from order_item oi1_0\n#              where oi1_0.order_id=?\n\n#   Hibernate: select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   ... (계속 나간다)\n\n#   Session Metrics { 9 JDBC statements were executed }\n\n#   500 Internal Server Error\n#   Could not write JSON: Infinite recursion (StackOverflowError)\n#     (through reference chain:\n#        java.util.ArrayList[0]\n#        ->jpabook.jpashop.domain.Member[\"orders\"]\n#        ->org.hibernate.collection.spi.PersistentBag[0]\n#        ->jpabook.jpashop.domain.Order[\"member\"]\n#        ->jpabook.jpashop.domain.Member[\"orders\"]\n#        ->... )\n\n#   쿼리는 9개 나가고 응답은 없다\n\n# --- Order.member 에 @JsonIgnore 를 붙이면 ---\n\nGET /api/v1/members\n\n#   Hibernate: select ... from member m1_0\n#   Hibernate: select ... from orders o1_0 where o1_0.member_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   ...\n\n#   Session Metrics { 17 JDBC statements were executed }\n\n#   200 OK\n#   [\n#     {\n#       \"id\": 1,\n#       \"name\": \"userA\",\n#       \"address\": {\"city\": \"서울\", \"street\": \"1\", \"zipcode\": \"1111\"},\n#       \"orders\": [\n#         {\n#           \"id\": 4,\n#           \"orderItems\": [\n#             {\"id\": 6, \"item\": {\"id\": 2, \"name\": \"JPA1 BOOK\",\n#                                \"price\": 10000, \"stockQuantity\": 99,\n#                                \"author\": \"kim\", \"isbn\": \"111\"},\n#              \"orderPrice\": 10000, \"count\": 1, \"totalPrice\": 10000}\n#           ],\n#           \"delivery\": {\"id\": 4,\n#                        \"address\": {\"city\": \"서울\", ...},\n#                        \"status\": null},\n#           \"orderDate\": \"2026-09-09T15:12:03.331\",\n#           \"status\": \"ORDER\",\n#           \"totalPrice\": 10000\n#         }\n#       ]\n#     },\n#     ...\n#   ]\n\n#   응답은 나온다. 그런데\n\n#     회원 목록인데 재고 수량과 저자와 ISBN 이 나간다\n#     회원 목록인데 배송 주소가 나간다\n#     totalPrice 는 필드가 아니라 getTotalPrice() 다\n#         (getter 면 전부 나간다)\n#     쿼리 17개\n\n# --- delivery 를 초기화 안 하고 프록시로 두면 ---\n\n#   500 Internal Server Error\n#   No serializer found for class\n#     org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor\n\n# --- 여기까지 ---\n\n#   재귀 500 -> @JsonIgnore -> 200 인데 쿼리 17개에 과다 노출\n#   프록시가 남으면 다시 500\n\n#   처방을 붙일수록 엔티티가 무거워진다\n\n# --- 다음 절에서 ---\n\n#   DTO 로 쿼리 1개와 필드 하나로 줄인다",
+   "note": "**그대로 부르면 쿼리 9개에 `Infinite recursion` `500`** 이다. **응답이 아예 없다.**\n\n**`@JsonIgnore` 를 붙이면 `200` 인데 쿼리 17개**다. **회원 목록에 재고 수량·저자·ISBN·배송 주소가** 나간다.\n\n**`totalPrice` 는 필드가 아니라 게터**다. **게터면 전부** 나간다.\n\n**프록시가 남으면 `ByteBuddyInterceptor` 로 다시 `500`** 이다.\n\n**처방을 붙일수록 엔티티가 무거워진다.**"
+  }
+ ],
+ "recap": [
+  "**양방향 연관관계가 JSON 에서 무한 재귀**가 된다.",
+  "**엔티티 그래프는 순환, JSON 은 트리**다.",
+  "**`@JsonIgnore` 는 고리를 끊고 문제를 옮긴다.**",
+  "**엔티티에 프레젠테이션 관심사가 붙는다.**",
+  "**API 마다 필요한 것이 다른데 애노테이션은 하나**다.",
+  "**고리를 끊어도 지연 로딩이 전부 초기화**된다 — 쿼리 17개.",
+  "**게터면 전부 나간다** — `totalPrice` 는 필드가 아니다.",
+  "**프록시가 남으면 `ByteBuddyInterceptor` 로 500** 이다.",
+  "**배열이 최상위로 나가 필드를 못 늘린다.**"
+ ],
+ "drills": [
+  {
+   "task": "V1 을 그대로 부른다.",
+   "done_when": "재귀 500 과 쿼리 개수를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Order.member` 에 `@JsonIgnore` 를 붙인다.",
+   "done_when": "200 이 나오고 쿼리가 17개인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답 JSON 에서 안 나가야 할 필드를 센다.",
+   "done_when": "다섯 개 이상 꼽았다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@JsonIgnore` 를 되돌린다.",
+   "done_when": "엔티티가 다시 깨끗해졌다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무한 재귀는 왜 나나?",
+   "a": "양방향 연관관계가 순환인데 JSON 은 트리라서다."
+  },
+  {
+   "q": "`@JsonIgnore` 의 문제는?",
+   "a": "엔티티에 프레젠테이션 관심사가 붙고, API 마다 다른 요구를 하나로 못 맞춘다."
+  },
+  {
+   "q": "고리를 끊어도 남는 문제는?",
+   "a": "지연 로딩이 전부 초기화돼 쿼리가 늘고 필드가 과다 노출된다."
+  },
+  {
+   "q": "`totalPrice` 는 왜 나가나?",
+   "a": "필드가 아니라 게터인데 잭슨은 게터를 전부 부른다."
+  },
+  {
+   "q": "`ByteBuddyInterceptor` 오류는 언제 나나?",
+   "a": "초기화 안 된 프록시를 직렬화하려 할 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PersistentBag",
+   "def": "하이버네이트가 `List` 자리에 넣는 컬렉션 래퍼. 지연 로딩을 지원한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jackson Databind",
+   "url": "https://github.com/FasterXML/jackson-databind/wiki",
+   "publisher": "FasterXML"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
