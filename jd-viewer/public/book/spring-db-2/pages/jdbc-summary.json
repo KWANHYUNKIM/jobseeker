@@ -1,0 +1,150 @@
+{
+ "book": "spring-db-2",
+ "id": "jdbc-summary",
+ "no": "3.9",
+ "chapter": 3,
+ "title": "정리",
+ "summary": "동적 쿼리가 여전히 문제다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "3장에서 푼 것과 못 푼 것을 센다.",
+  "JdbcTemplate 을 언제 쓸지 정한다.",
+  "다음 장이 무엇을 노리는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**첫 번째 기술이 끝났다.** 무엇이 줄고 무엇이 남았는지 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "푼 것과 남은 것",
+   "ascii": "   solved in this chapter\n   ----------------------\n   connection open/close        JdbcTemplate\n   resultset loop               RowMapper\n   SQLException                 DataAccessException\n   parameter order              named parameters\n   insert statement             SimpleJdbcInsert\n\n   still open\n   ----------\n   string concatenation         -> 5장, 8장\n   no compile check on sql      -> 8장\n   2^n cases                    -> 8장\n   object <-> row by hand       -> 6장",
+   "note": "**아래 넷이 나머지 다섯 장의 목록**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "코드의 부피",
+   "ascii": "   MemoryItemRepository        60 lines,  no sql\n   JdbcTemplateV1              96 lines,  4 sql strings\n   JdbcTemplateV2              88 lines,  4 sql strings\n   JdbcTemplateV3              80 lines,  3 sql strings\n\n   findAll alone: 25 lines in every version",
+   "note": "**맨 아랫줄이 안 줄었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 안 줄었나",
+   "md": "**V1 에서 V3 까지 오면서 `save` 는 열 줄에서 세 줄**이 됐다.\n\n**`findAll` 은 스물다섯 줄 그대로**다.\n\n```java\n// V1, V2, V3 전부\nif (StringUtils.hasText(itemName) || maxPrice != null) {\n    sql += \" where\";\n}\nboolean andFlag = false;\n...\n```\n\n**JdbcTemplate 이 도와준 것은 \"SQL 을 실행하는 일\"** 이다. **\"SQL 을 만드는 일\"** 은 안 도와줬다.\n\n| | 누가 하나 |\n|---|---|\n| 커넥션·반환 | **JdbcTemplate** |\n| 결과 매핑 | JdbcTemplate + 내 `RowMapper` |\n| 예외 변환 | **JdbcTemplate** |\n| 파라미터 바인딩 | **JdbcTemplate** |\n| **SQL 문자열 조립** | **나** |\n\n> **3.3절에서 센 네 가지 문제 중 하나(파라미터 순서)만 풀렸다.** 나머지 셋은 **문자열이라는 사실 자체**에서 나온다. **문자열을 안 붙이거나, 붙이는 것을 남에게 맡기지 않으면** 안 풀린다."
+  },
+  {
+   "type": "compare",
+   "caption": "JdbcTemplate 의 값과 한계",
+   "left": {
+    "title": "값",
+    "points": [
+     "**설정이 거의 없다** — `DataSource` 뿐",
+     "**나간 SQL 이 내가 쓴 SQL** 이다",
+     "**튜닝이 직접적**이다 — SQL 을 고치면 끝",
+     "학습할 것이 적다",
+     "**부트 스타터 한 줄**"
+    ]
+   },
+   "right": {
+    "title": "한계",
+    "points": [
+     "**동적 쿼리를 문자열로** 만든다",
+     "**컴파일러가 아무것도 안 잡는다**",
+     "**객체와 행을 손으로** 잇는다",
+     "테이블이 늘면 코드가 비례해 는다",
+     "**반복이 많다** — 비슷한 SQL 을 계속 쓴다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "언제 JdbcTemplate 인가",
+   "md": "**이 기술은 안 죽었다.** 실무에서 지금도 쓴다.\n\n| 상황 | 왜 |\n|---|---|\n| **통계·집계 쿼리** | JPQL 로 표현이 안 되는 SQL |\n| **대량 배치** | 영속성 컨텍스트가 짐이 된다 |\n| **레거시 스키마** | 매핑이 안 맞는다 |\n| **읽기 전용 화면** | 엔티티가 필요 없다 |\n| **DB 고유 기능** | 힌트, 윈도우 함수, `MERGE` |\n\n**JPA 를 쓰는 프로젝트에서도 JdbcTemplate 을 같이** 쓴다. **`spring-boot-starter-data-jpa` 가 `spring-jdbc` 를 딸고 오니** 의존관계를 더할 것도 없다(3.1절).\n\n> **9장에서 이 조합을 다시** 다룬다. **하나를 고르는 것이 아니라 섞는 것**이 실무의 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "3장이 남긴 숙제",
+   "md": "**두 가지를 들고 4장으로 간다.**\n\n**① 테스트가 못 미덥다** (3.4절)\n\n```java\nif (itemRepository instanceof MemoryItemRepository) { ... }\n```\n\n**JdbcTemplate 구현에서는 이 줄이 안 걸린다.** **두 번 돌리면 깨진다.**\n\n**② 동적 쿼리가 그대로다** (3.3절)\n\n**5장 MyBatis 가 이것을 XML 로** 옮긴다. **8장 Querydsl 이 자바로** 되돌린다.\n\n> **먼저 4장**이다. **구현이 여섯인데 테스트가 못 미더우면 비교 전체가 못 미덥다** — 2.5절에서 한 말이다. **다음 기술을 붙이기 전에 시험대를 고친다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 3장이 만들어 낸 SQL 전부\n\n# save (V3)\n#   [INSERT INTO item (item_name, price, quantity) VALUES(?, ?, ?)]\n\n# update\n#   [update item set item_name=?, price=?, quantity=? where id=?]\n\n# findById\n#   [select id, item_name, price, quantity from item where id = ?]\n\n# findAll x4\n#   [select id, item_name, price, quantity from item]\n#   [select ... where item_name like concat('%',?,'%')]\n#   [select ... where price <= ?]\n#   [select ... where item_name like concat('%',?,'%') and price <= ?]\n\n# 일곱 개다\n# 이 일곱 개가 5장·6장·7장·8장에서 다시 나온다\n# 자바 코드는 매번 다르고, 이 목록은 안 바뀐다\n\n# --- 테스트를 두 번 돌리면 ---\n\nfindItems()\n#   [select id, item_name, price, quantity from item]\n#   expected: 3, actual: 6   FAILED\n\n# 4장으로 간다",
+   "note": "**일곱 개를 적어 뒀다.** **이 목록이 이 책의 기준선**이다.\n\n**5장부터는 자바 코드를 보기 전에 이 로그부터** 본다. **같은 일곱 개가 나오면 같은 일을 한 것**이다.\n\n**맨 아래가 다음 장의 문**이다."
+  }
+ ],
+ "recap": [
+  "**푼 것**: 커넥션·반복문·예외 변환·파라미터 순서·`insert` 문.",
+  "**남은 것**: 문자열 조립·컴파일 검사 없음·2ⁿ·손 매핑.",
+  "**`save` 는 열 줄에서 세 줄, `findAll` 은 그대로 스물다섯 줄.**",
+  "**JdbcTemplate 은 실행을 돕고 조립은 안 돕는다.**",
+  "**나간 SQL 이 내가 쓴 SQL** 이라는 것이 이 기술의 값이다.",
+  "**통계·배치·레거시·읽기 전용**에서 지금도 쓴다.",
+  "**JPA 와 같이 쓴다** — 스타터가 이미 딸고 온다.",
+  "**SQL 일곱 개**가 이 책의 기준선이다.",
+  "**다음은 4장** — 시험대를 먼저 고친다."
+ ],
+ "drills": [
+  {
+   "task": "V1~V3 의 줄 수를 세어 표로 만든다.",
+   "done_when": "`findAll` 만 안 줄어든 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "3장이 만든 SQL 일곱 개를 적어 둔다.",
+   "done_when": "5장 이후에 비교할 목록이 생겼다.",
+   "minutes": 10
+  },
+  {
+   "task": "JdbcTemplate 이 여전히 나은 상황을 세 개 적어 본다.",
+   "done_when": "왜 그런지 한 줄씩 붙였다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트를 두 번 돌려 실패를 재현한다.",
+   "done_when": "4장에서 무엇을 고쳐야 하는지 말할 수 있다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JdbcTemplate 이 안 도와주는 것은?",
+   "a": "SQL 문자열을 조립하는 일이다."
+  },
+  {
+   "q": "`save` 와 `findAll` 중 무엇이 안 줄었나?",
+   "a": "`findAll` 이다. 스물다섯 줄 그대로다."
+  },
+  {
+   "q": "이 기술의 가장 큰 값은?",
+   "a": "나간 SQL 이 내가 쓴 SQL 이라는 것이다. 튜닝이 직접적이다."
+  },
+  {
+   "q": "JPA 프로젝트에서도 쓰는 이유는?",
+   "a": "통계·배치·레거시 스키마·읽기 전용 화면에서 더 낫다. 의존관계도 이미 있다."
+  },
+  {
+   "q": "3장이 남긴 숙제 둘은?",
+   "a": "테스트가 못 미덥고, 동적 쿼리가 그대로다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -202,7 +202,7 @@
           "title": "SimpleJdbcInsert",
           "summary": "insert 문을 안 쓴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",
@@ -210,7 +210,7 @@
           "title": "기능 정리",
           "summary": "언제 무엇을 쓸까.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",
@@ -218,7 +218,7 @@
           "title": "정리",
           "summary": "동적 쿼리가 여전히 문제다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

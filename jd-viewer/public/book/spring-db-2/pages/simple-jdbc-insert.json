@@ -1,0 +1,154 @@
+{
+ "book": "spring-db-2",
+ "id": "simple-jdbc-insert",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "SimpleJdbcInsert",
+ "summary": "insert 문을 안 쓴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`SimpleJdbcInsert` 로 저장을 만든다.",
+  "SQL 을 메타데이터가 만드는 것을 본다.",
+  "이 책에서 처음으로 SQL 을 남에게 맡긴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절의 열 줄, 3.5절의 다섯 줄**을 **세 줄**로 만든다. 그런데 **줄 수보다 중요한 것**이 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "V3",
+   "code": "public class JdbcTemplateItemRepositoryV3 implements ItemRepository {\n\n    private final NamedParameterJdbcTemplate template;\n    private final SimpleJdbcInsert jdbcInsert;\n\n    public JdbcTemplateItemRepositoryV3(DataSource dataSource) {\n        this.template = new NamedParameterJdbcTemplate(dataSource);\n        this.jdbcInsert = new SimpleJdbcInsert(dataSource)\n                .withTableName(\"item\")\n                .usingGeneratedKeyColumns(\"id\");\n    }\n\n    @Override\n    public Item save(Item item) {\n        SqlParameterSource param = new BeanPropertySqlParameterSource(item);\n        Number key = jdbcInsert.executeAndReturnKey(param);\n        item.setId(key.longValue());\n        return item;\n    }\n}",
+   "note": "**`save` 에 SQL 문자열이 없다.**\n\n**테이블 이름과 키 컬럼**만 알려 준다. **어떤 컬럼에 무엇을 넣을지는 안 적었다.**\n\n**`executeAndReturnKey`** 가 `KeyHolder` 까지 대신한다."
+  },
+  {
+   "type": "figure",
+   "caption": "SQL 을 누가 만드나",
+   "ascii": "   new SimpleJdbcInsert(dataSource)\n        .withTableName(\"item\")\n        .usingGeneratedKeyColumns(\"id\")\n\n   at first execute:\n     DatabaseMetaData  ->  columns of table ITEM\n                           ID  ITEM_NAME  PRICE  QUANTITY\n\n     minus generated key   ->  ITEM_NAME  PRICE  QUANTITY\n\n     builds  insert into item (item_name, price, quantity)\n             values (?, ?, ?)\n\n   the sql is written by the database, not by me",
+   "note": "**맨 아랫줄이 이 절의 사건**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메타데이터로 만든다는 것",
+   "md": "**JDBC 드라이버는 DB 에 테이블 구조를 물어볼 수 있다.**\n\n```java\nDatabaseMetaData meta = con.getMetaData();\nResultSet columns = meta.getColumns(null, null, \"ITEM\", null);\n// ID, ITEM_NAME, PRICE, QUANTITY\n```\n\n**`SimpleJdbcInsert` 는 첫 실행 때 이것을 한 번 읽고 캐시**한다. 그다음부터는 **읽지 않는다.**\n\n**그래서 `insert` 문을 만들 수 있다.**\n\n| 아는 것 | 어디서 |\n|---|---|\n| 테이블 이름 | 내가 줬다 |\n| **컬럼 목록** | **DB 에 물었다** |\n| 제외할 컬럼 | 내가 줬다 (`usingGeneratedKeyColumns`) |\n| 값 | `SqlParameterSource` |\n\n> **이 책에서 처음으로 SQL 을 내가 안 쓴다.** 3.1절에서 \"3장의 로그는 지루하다\" 고 했는데, **이 절부터 조금 달라진다** — 로그에 찍힌 `insert` 문을 **내 코드에서 찾을 수 없다.**\n>\n> **6장 JPA 가 하는 일이 이것의 확장**이다. **매핑 정보로 SQL 을 만든다.** 다만 JPA 는 **DB 가 아니라 애너테이션에** 묻는다."
+  },
+  {
+   "type": "compare",
+   "caption": "메타데이터에 묻기 vs 매핑에 묻기",
+   "left": {
+    "title": "SimpleJdbcInsert",
+    "points": [
+     "**DB 에 물어본다** — 실제 테이블",
+     "컬럼이 추가되면 **자동으로 따라간다**",
+     "**첫 실행에 커넥션이 필요**하다",
+     "`insert` 만 된다 — `select` 는 못 만든다"
+    ]
+   },
+   "right": {
+    "title": "JPA (6장)",
+    "points": [
+     "**애너테이션에 물어본다** — `@Column`",
+     "컬럼이 추가되면 **매핑도 고쳐야** 한다",
+     "**뜰 때 매핑만으로** 다 만든다",
+     "`select`·`update`·`delete` 도 만든다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "자동으로 따라가는 것의 대가",
+   "md": "**컬럼을 하나 추가하면 어떻게 되나.**\n\n```sql\nalter table item add column reg_date timestamp;\n```\n\n**`SimpleJdbcInsert` 는 `reg_date` 도 넣으려고** 한다. **`Item` 에 그 필드가 없으면** 이렇게 된다.\n\n```\nInvalidDataAccessApiUsageException:\n  No value supplied for the SQL parameter 'regDate'\n```\n\n**저장이 통째로 깨진다.** 3.6절의 `select` 는 **조용히 `null`** 이었는데, **여기는 시끄럽게 터진다.**\n\n**막는 방법**이 있다.\n\n```java\nnew SimpleJdbcInsert(dataSource)\n        .withTableName(\"item\")\n        .usingGeneratedKeyColumns(\"id\")\n        .usingColumns(\"item_name\", \"price\", \"quantity\");   // 명시\n```\n\n> **`usingColumns` 를 쓰면 메타데이터를 안 읽는다.** 그러면 **이 절의 장점도 같이 사라진다.**\n>\n> **자동은 공짜가 아니다** — 이 책이 6장 이후로 계속 하게 될 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`select` 는 왜 못 만드나",
+   "md": "**`insert` 는 컬럼 목록만 알면 만들 수 있다.** 자리마다 값 하나씩이다.\n\n**`select` 는 다르다.**\n\n| `insert` 에 필요한 것 | `select` 에 필요한 것 |\n|---|---|\n| 테이블 | 테이블 |\n| 컬럼 목록 | 컬럼 목록 |\n| — | **어떤 조건으로** |\n| — | **어떤 순서로** |\n| — | **어디까지** |\n\n**아래 셋은 메타데이터에 없다.** **의도**라서 그렇다.\n\n> **`SimpleJdbcCall`** 로 저장 프로시저를 부를 수는 있다. 그것도 **이름과 파라미터가 정해져 있어서** 가능하다.\n>\n> **조회를 자동으로 만들려면 조건을 표현할 방법**이 필요하다. **7장 스프링 데이터 JPA 의 쿼리 메서드**(`findByItemNameLike`)와 **8장 Querydsl** 이 각각 그 답이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 첫 번째 save\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   Fetching JDBC Connection from DataSource\n#   Retrieving database meta-data\n#   Compiled insert object: insert string is\n#     [INSERT INTO item (item_name, price, quantity) VALUES(?, ?, ?)]\n#   {1: 'itemA', 2: 10000, 3: 10}\n#   generated key = 1\n\n# 두 번째 save\nrepository.save(new Item(\"itemB\", 20000, 20));\n\n#   [INSERT INTO item (item_name, price, quantity) VALUES(?, ?, ?)]\n#   {1: 'itemB', 2: 20000, 3: 20}\n#   generated key = 2\n\n#   (메타데이터를 다시 안 읽었다)\n\n# 나머지는 V2 와 같다\nrepository.findById(1L);\n#   [select id, item_name, price, quantity from item where id = ?]\n\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n#   [update item set item_name=?, price=?, quantity=? where id=?]\n\n# --- 컬럼을 추가하면 ---\nalter table item add column reg_date timestamp;\n\nrepository.save(new Item(\"itemC\", 30000, 30));\n\n#   Retrieving database meta-data\n#   [INSERT INTO item (item_name, price, quantity, reg_date) VALUES(?, ?, ?, ?)]\n#   InvalidDataAccessApiUsageException:\n#     No value supplied for the SQL parameter 'regDate'",
+   "note": "**`Compiled insert object`** 가 이 절의 증거다. **내 코드에 없는 SQL 이 로그에 있다.**\n\n**두 번째 `save` 에 `Retrieving database meta-data` 가 없다** — 한 번만 읽는다.\n\n**맨 아래가 대가**다. **DB 를 고쳤더니 자바 코드가 안 고쳐졌는데 깨졌다.** `select`·`update` 는 **내가 컬럼을 적어 놨으니** 멀쩡하다.\n\n> **자동이 늘수록 DB 변경이 코드로 전파**된다. 6장 이후의 주제다."
+  }
+ ],
+ "recap": [
+  "**`save` 에서 SQL 문자열이 사라졌다.**",
+  "**테이블 이름과 키 컬럼**만 알려 준다.",
+  "**`DatabaseMetaData` 로 컬럼 목록**을 읽어 `insert` 를 만든다.",
+  "**첫 실행에 한 번만** 읽고 캐시한다.",
+  "**이 책에서 처음으로 SQL 을 내가 안 쓴다.**",
+  "**JPA 는 DB 가 아니라 애너테이션에** 묻는다 — 확장판이다.",
+  "**컬럼이 늘면 저장이 깨진다** — `usingColumns` 로 막지만 장점도 사라진다.",
+  "**`select` 는 못 만든다** — 조건·순서·범위가 메타데이터에 없다.",
+  "**그 답이 7장 쿼리 메서드와 8장 Querydsl** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`V3` 를 만들고 설정을 바꾼다.",
+   "done_when": "`Compiled insert object` 로그를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`save` 를 두 번 부른다.",
+   "done_when": "메타데이터를 한 번만 읽는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "컬럼을 하나 추가하고 저장해 본다.",
+   "done_when": "저장이 깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`usingColumns` 로 막아 본다.",
+   "done_when": "다시 되고, 대신 자동이 사라진 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`SimpleJdbcInsert` 는 SQL 을 어떻게 만드나?",
+   "a": "`DatabaseMetaData` 로 테이블의 컬럼 목록을 읽어서 만든다."
+  },
+  {
+   "q": "메타데이터를 몇 번 읽나?",
+   "a": "첫 실행 때 한 번 읽고 캐시한다."
+  },
+  {
+   "q": "컬럼이 추가되면?",
+   "a": "그 컬럼에 넣을 값이 없어 저장이 깨진다."
+  },
+  {
+   "q": "`select` 는 왜 못 만드나?",
+   "a": "조건·순서·범위는 의도라서 메타데이터에 없다."
+  },
+  {
+   "q": "JPA 와 무엇이 다른가?",
+   "a": "DB 에 묻느냐 애너테이션에 묻느냐다. JPA 는 조회도 만든다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — SimpleJdbcInsert",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/simple.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
