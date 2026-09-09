@@ -244,7 +244,7 @@
           "title": "세타 조인",
           "summary": "연관 없는 두 표.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.12",
@@ -252,7 +252,7 @@
           "title": "조인 on 절",
           "summary": "필터링과 외부 조인.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.13",

@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "theta-join",
+ "no": "4.11",
+ "chapter": 4,
+ "title": "세타 조인",
+ "summary": "연관 없는 두 표.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "연관 없이 조인한다.",
+  "곱집합을 본다.",
+  "한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.10절의 조인은 전부 연관을** 탔다. **연관이 없으면 어떻게 하는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "표 둘을 그냥 나열하면",
+   "ascii": "   what happens when two tables are simply listed\n\n   from member, team   every member paired with every team\n   ten and two         twenty rows before any condition\n   then the where      the pairs that survive are the result\n\n   the database may still choose a hash join to compute it",
+   "note": "**DB 는 여전히 해시 조인을 고를 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "연관이 없어도 비교는 할 수 있다",
+   "md": "**`from` 에 둘을** 적는다.\n\n> **쉼표로 나열**한다.\n> **곱집합이** 된다.\n> **`where` 로 남길 짝을** 고른다.\n\n**연관이 필요** 없다.\n\n> **회원 이름과 팀 이름을 비교하는 식**이다.\n> **외래키가 없어도** 된다.\n> **⑭ 8.1절의 명세로는 이게** 어려웠다.\n\n**자기 조인에도** 쓴다.\n\n> **4.2절에서 이미** 봤다.\n> **`new QMember(\"older\")` 를 나열**했다.\n> **같은 표 두 별칭**이다.\n\n**SQL 은 옛 문법**이다.\n\n> **`from a, b where ...` 가** 나간다.\n> **`join ... on` 이** 아니다.\n> **결과는 같고 계획도 대개** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "세타 조인이 못 하는 것",
+   "ascii": "   what a theta join cannot do\n\n   an outer join       not without an on clause, which 4.12 adds\n   a fetch join        no, there is no association to fetch\n   an association path no, the two tables are unrelated by design\n\n   the first line is the reason the on clause was added to jpql",
+   "note": "**첫 줄 때문에 `on` 절이** 생겼다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "곱집합이 먼저 만들어질 수 있다",
+   "md": "**행 수가** 곱해진다.\n\n> **10과 2면 20**이다.\n> **만과 만이면 억**이다.\n> **조건이 없으면 그대로** 나간다.\n\n**실행 계획을 봐야** 안다.\n\n> **DB 가 해시 조인으로 풀면** 괜찮다.\n> **중첩 루프면 곱집합을 다** 만든다.\n> **아래에서 계획을** 본다.\n\n**외부 조인이 안** 된다.\n\n> **연관이 없으니 `leftJoin` 을 못** 쓴다.\n> **한쪽만 남기는 걸 표현 못**한다.\n> **4.12절의 `on` 이 그** 답이다.\n\n**페치 조인도 안** 된다.\n\n> **채울 연관이 애초에** 없다.\n> **엔티티 둘을 따로** 받는다.\n> **`Tuple` 로** 온다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 회원 이름이 팀 이름과 같은 경우를 찾는다\n\n@BeforeEach\nvoid 준비() {\n    em.persist(new Member(\"teamA\", 0));\n    em.persist(new Member(\"teamB\", 0));\n    em.flush(); em.clear();\n}\n\n@Test\nvoid 세타() {\n    List<Member> r = queryFactory\n            .select(member)\n            .from(member, team)\n            .where(member.username.eq(team.name))\n            .fetch();\n    r.forEach(m -> System.out.println(m.getUsername()));\n}\n\n/* select\n    member1\nfrom\n    Member member1,\n    Team team\nwhere\n    member1.username = team.name */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0,\n        team t1_0\n    where\n        m1_0.username=t1_0.name\nteamA\nteamB\n\n--   from 에 둘이 나란히 있다\n--   on 절이 없다\n\n\n-- 조건이 없으면 곱집합이다\n\n@Test\nvoid 곱집합() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member, team)\n            .fetch();\n    System.out.println(\"회원 \" + queryFactory.select(member.count())\n            .from(member).fetchOne());\n    System.out.println(\"팀   \" + queryFactory.select(team.count())\n            .from(team).fetchOne());\n    System.out.println(\"결과 \" + r.size());\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1,\n    Team team */\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0,\n        team t1_0\n회원 12\n팀   2\n결과 24\n\n--   12 곱하기 2 다\n\n\n-- 실행 계획을 본다\n\n@Test\nvoid 계획() {\n    List<?> plan = em.createNativeQuery(\n            \"explain analyze \" +\n            \"select m.username, t.name from member m, team t \" +\n            \"where m.username = t.name\").getResultList();\n    plan.forEach(System.out::println);\n}\n\nSELECT\n    M.USERNAME, T.NAME\nFROM PUBLIC.MEMBER M\n    /* PUBLIC.MEMBER.tableScan */\n    /* scanCount: 13 */\nINNER JOIN PUBLIC.TEAM T\n    /* PUBLIC.TEAM.tableScan */\n    ON 1=1\n    /* scanCount: 3 */\nWHERE M.USERNAME = T.NAME\n\n--   H2 가 inner join 으로 바꿔 읽었다\n--   scanCount 가 13 과 3 이다\n--   곱집합을 다 만들지는 않았다\n\n\n-- 자기 조인에도 쓴다\n\n@Test\nvoid 자기_조인() {\n    QMember older = new QMember(\"older\");\n    em.clear();\n\n    List<Tuple> r = queryFactory\n            .select(member.username, older.username)\n            .from(member, older)\n            .where(member.team.eq(older.team),\n                   member.age.lt(older.age))\n            .orderBy(member.username.asc(), older.username.asc())\n            .fetch();\n\n    r.stream().limit(4).forEach(t -> System.out.println(\n            t.get(member.username) + \" < \" + t.get(older.username)));\n    System.out.println(\"쌍: \" + r.size());\n}\n\n/* select\n    member1.username,\n    older.username\nfrom\n    Member member1,\n    Member older\nwhere\n    member1.team = older.team\n    and member1.age < older.age\norder by\n    member1.username asc,\n    older.username asc */\n\nHibernate:\n    select\n        m1_0.username,\n        m2_0.username\n    from\n        member m1_0,\n        member m2_0\n    where\n        m1_0.team_id=m2_0.team_id\n        and m1_0.age<m2_0.age\n    order by\n        m1_0.username,\n        m2_0.username\nm1 < m2\nm1 < m3\nm1 < m4\nm2 < m3\n쌍: 9\n\n--   4.2절의 그 쿼리다\n--   teamA 에서 6쌍, teamB 에서 3쌍이다\n\n\n-- 팀 없는 회원은 안 나온다\n\n@Test\nvoid 팀_없음() {\n    QMember other = new QMember(\"other\");\n    em.clear();\n    Long n = queryFactory\n            .select(member.count())\n            .from(member, other)\n            .where(member.team.eq(other.team))\n            .fetchOne();\n    System.out.println(\"쌍: \" + n);\n}\n\nHibernate:\n    select count(m1_0.member_id)\n    from member m1_0, member m2_0\n    where m1_0.team_id=m2_0.team_id\n쌍: 25\n\n--   null = null 은 참이 아니다\n--   팀 없는 셋이 빠졌다\n--   teamA 16 + teamB 9 다\n\n\n-- 외부 조인은 안 된다\n\n// queryFactory.select(member, team)\n//     .from(member)\n//     .leftJoin(team)          // 연관이 없다\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: no suitable method found for leftJoin(QTeam)\n\n--   연관 경로가 필요하다\n--   4.12절의 on 이 이걸 푼다\n\n\n-- 엔티티 둘을 받으면 Tuple 이다\n\n@Test\nvoid 엔티티_둘() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member, team)\n            .from(member, team)\n            .where(member.username.eq(team.name))\n            .fetch();\n\n    r.forEach(t -> System.out.println(\n            t.get(member).getUsername() + \" / \" + t.get(team).getName()));\n}\n\n/* select\n    member1,\n    team\nfrom\n    Member member1,\n    Team team\nwhere\n    member1.username = team.name */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0,\n        team t1_0\n    where\n        m1_0.username=t1_0.name\nteamA / teamA\nteamB / teamB\n\n--   두 엔티티의 컬럼이 다 나왔다\n--   4.8절의 Tuple 이다\n\n\n-- 페치 조인은 못 한다\n\n// .from(member, team).fetchJoin()\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol: method fetchJoin()\n\n--   채울 연관이 없다\n--   4.13절은 연관이 있을 때 이야기다\n\n\n-- 큰 표에서 재 본다\n\n@Test\nvoid 비용() {\n    for (int i = 0; i < 3000; i++) em.persist(new Member(\"p\" + i, i % 50));\n    for (int i = 0; i < 300; i++) em.persist(new Team(\"t\" + i));\n    em.flush(); em.clear();\n\n    long t1 = System.nanoTime();\n    Long matched = queryFactory.select(member.count())\n            .from(member, team)\n            .where(member.username.eq(team.name))\n            .fetchOne();\n    System.out.printf(\"조건 있음: %d건 %d ms%n\",\n            matched, (System.nanoTime() - t1) / 1_000_000);\n\n    em.clear();\n    long t2 = System.nanoTime();\n    Long all = queryFactory.select(member.count())\n            .from(member, team)\n            .fetchOne();\n    System.out.printf(\"조건 없음: %d건 %d ms%n\",\n            all, (System.nanoTime() - t2) / 1_000_000);\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0, team t1_0\n           where m1_0.username=t1_0.name\n조건 있음: 0건 24 ms\nHibernate: select count(m1_0.member_id) from member m1_0, team t1_0\n조건 없음: 903600건 61 ms\n\n--   3012 곱하기 300 이다\n--   개수만 세서 이 정도다\n--   행을 다 읽으면 못 버틴다\n\n\n-- 언제 쓰나\n\n$ printf '%-24s %s\\n' \\\n  '연관 없는 두 표'   '이름 비교, 코드 대조' \\\n  '자기 조인'         '같은 표의 행끼리 비교' \\\n  '외부 조인 필요'    '못 함, 4.12절로' \\\n  '페치 필요'         '못 함, 연관이 없음'\n\n연관 없는 두 표          이름 비교, 코드 대조\n자기 조인                같은 표의 행끼리 비교\n외부 조인 필요           못 함, 4.12절로\n페치 필요                못 함, 연관이 없음\n\n--   4.12절에서 on 절을 본다",
+   "note": "**`from` 에 둘을 나열하면 `from member m1_0, team t1_0` 로 나가고 `on` 절이** 없다.\n\n**조건 없이는 12×2=24행 — H2 는 계획에서 `INNER JOIN ... ON 1=1` 로 바꿔** 읽었다.\n\n**`member.team.eq(other.team)` 에서 `null = null` 은 참이 아니라 팀 없는 셋이** 빠진다.\n\n**연관이 없어 `leftJoin(QTeam)` 도 `fetchJoin()` 도 컴파일이** 안 된다.\n\n**3012×300 곱집합은 개수만 세는 데도 61ms** 였다."
+  }
+ ],
+ "recap": [
+  "**`from` 에 둘을** 적는다.",
+  "**곱집합이** 된다.",
+  "**`where` 로** 고른다.",
+  "**연관이 필요** 없다.",
+  "**자기 조인에도** 쓴다.",
+  "**`null` 끼리는 안** 맞는다.",
+  "**외부 조인이 안** 된다.",
+  "**페치도 안** 된다.",
+  "**행 수가** 곱해진다."
+ ],
+ "drills": [
+  {
+   "task": "이름이 같은 짝을 찾는다.",
+   "done_when": "`from` 에 둘이 나오는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건 없이 실행한다.",
+   "done_when": "곱집합 건수를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "자기 조인을 만든다.",
+   "done_when": "쌍 수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "실행 계획을 본다.",
+   "done_when": "DB 가 어떻게 푸는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세타 조인은 어떻게 쓰나?",
+   "a": "`from` 에 표를 나열하고 `where` 로 짝을 고른다."
+  },
+  {
+   "q": "조건이 없으면?",
+   "a": "두 표의 곱집합이 된다."
+  },
+  {
+   "q": "팀이 `null` 인 행끼리는 짝이 되나?",
+   "a": "안 된다. `null = null` 은 참이 아니다."
+  },
+  {
+   "q": "세타 조인으로 외부 조인이 되나?",
+   "a": "안 된다. `on` 절이 필요하다."
+  },
+  {
+   "q": "페치 조인은?",
+   "a": "채울 연관이 없어 불가능하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세타 조인",
+   "def": "연관 없이 두 표를 나열하고 조건으로 짝을 고르는 조인."
+  },
+  {
+   "term": "곱집합",
+   "def": "두 표의 모든 행 조합. 조건이 없을 때의 결과."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

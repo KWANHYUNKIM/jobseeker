@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "join-on",
+ "no": "4.12",
+ "chapter": 4,
+ "title": "조인 on 절",
+ "summary": "필터링과 외부 조인.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 쓰임을 가른다.",
+  "where 와의 차이를 본다.",
+  "연관 없는 외부 조인을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.11절에서 외부 조인을 못** 했다. **`on` 이 그걸** 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "on 이 하는 두 가지 일",
+   "ascii": "   the on clause does two different jobs\n\n   with an association   an extra filter, applied before the join\n   without one           the join condition itself, for unrelated tables\n\n   the first one only matters for an outer join",
+   "note": "**첫째는 외부 조인에서만** 의미가 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "on 은 조인하기 전에 걸린다",
+   "md": "**조인 대상을 먼저** 줄인다.\n\n> **붙일 행을 고르는 조건**이다.\n> **`where` 는 붙인 뒤 거른**다.\n> **내부 조인이면 결과가** 같다.\n\n**외부 조인이면 다르**다.\n\n> **왼쪽 행은 어차피 다** 남는다.\n> **`on` 이 안 맞으면 오른쪽이 `null`** 이다.\n> **`where` 면 그 행이 통째로** 빠진다.\n\n**연관 없이도 조인할 수** 있다.\n\n> **`from(member).leftJoin(team).on(...)`** 이다.\n> **4.11절이 못 하던 것**이다.\n> **하이버네이트 5.1부터** 된다.\n\n**연관을 안 쓰면 `on` 이 조인 조건 전부**다.\n\n> **외래키를 안** 본다.\n> **내가 준 조건만으로** 붙인다.\n> **아래에서 그 차이를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "where 로 옮기면",
+   "ascii": "   the same condition, two places, two answers\n\n   left join on team.name = A   ten rows, seven of them with null\n   left join then where name = A four rows, the outer join undone\n\n   a where clause on the outer side turns it back into an inner join",
+   "note": "**외부 조인이 내부 조인으로** 되돌아간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "외부 조인 뒤 where 는 조인을 되돌린다",
+   "md": "**`null` 인 행이 걸러진**다.\n\n> **`t1_0.name = 'teamA'` 가 `null` 에는 거짓**이다.\n> **`leftJoin` 이 무의미해**진다.\n> **가장 흔한 실수**다.\n\n**`is null` 을 같이 쓰면 살릴 수** 있다.\n\n> **`.or(team.name.isNull())` 이다.**\n> **읽기가 나빠**진다.\n> **`on` 에 두는 게** 낫다.\n\n**내부 조인이면 아무 차이가** 없다.\n\n> **결과가 같**다.\n> **그럴 땐 `where` 가 익숙해서** 낫다.\n> **아래에서 확인**한다.\n\n**연관 없는 `on` 은 별칭 하나만** 준다.\n\n> **`leftJoin(team)` 에 경로가** 없다.\n> **`on` 이 전부를** 정한다.\n> **빼먹으면 곱집합**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- on 으로 조인 대상을 줄인다\n\n@Test\nvoid on_필터() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team).on(team.name.eq(\"teamA\"))\n            .orderBy(member.id.asc())\n            .fetch();\n\n    r.forEach(t -> System.out.printf(\"%-4s %s%n\",\n            t.get(member.username), t.get(team.name)));\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\n        on team.name = ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n            and t1_0.name=?\n    order by\n        m1_0.member_id\nm1   teamA\nm2   teamA\nm3   teamA\nm4   teamA\nm5   null\nm6   null\nm7   null\nm8   null\nm9   null\nm10  null\n\n--   열 줄이 다 남았다\n--   teamB 회원은 팀이 null 이다\n--   on 에 두 조건이 붙었다\n\n\n-- where 로 옮기면\n\n@Test\nvoid where_로() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(team.name.eq(\"teamA\"))\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1 */\n\nHibernate:\n    select\n        m1_0.username, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n건수: 4\n\n--   10 이 4 가 됐다\n--   leftJoin 이 무의미해졌다\n--   null 인 행이 조건에서 떨어졌다\n\n\n-- 내부 조인이면 같다\n\n@Test\nvoid 내부는_같다() {\n    em.clear();\n    System.out.println(\"on:    \" + queryFactory\n            .select(member.username).from(member)\n            .join(member.team, team).on(team.name.eq(\"teamA\"))\n            .fetch().size());\n\n    em.clear();\n    System.out.println(\"where: \" + queryFactory\n            .select(member.username).from(member)\n            .join(member.team, team).where(team.name.eq(\"teamA\"))\n            .fetch().size());\n}\n\n/* ... inner join member1.team as team on team.name = ?1 */\nHibernate: select m1_0.username from member m1_0\n           join team t1_0 on t1_0.team_id=m1_0.team_id and t1_0.name=?\non:    4\n/* ... inner join member1.team as team where team.name = ?1 */\nHibernate: select m1_0.username from member m1_0\n           join team t1_0 on t1_0.team_id=m1_0.team_id where t1_0.name=?\nwhere: 4\n\n--   SQL 은 다르고 결과는 같다\n\n\n-- 연관 없이 외부 조인한다\n\n@Test\nvoid 연관_없는_외부() {\n    em.persist(new Member(\"teamA\", 0));\n    em.persist(new Member(\"teamB\", 0));\n    em.flush(); em.clear();\n\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(team).on(member.username.eq(team.name))\n            .orderBy(member.id.asc())\n            .fetch();\n\n    System.out.println(\"건수: \" + r.size());\n    r.stream().filter(t -> t.get(team.name) != null)\n            .forEach(t -> System.out.println(\n                    t.get(member.username) + \" -> \" + t.get(team.name)));\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    Team team\n        on member1.username = team.name\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on m1_0.username=t1_0.name\n    order by\n        m1_0.member_id\n건수: 12\nteamA -> teamA\nteamB -> teamB\n\n--   on 에 외래키 조건이 없다\n--   내가 준 조건만 있다\n--   4.11절이 못 하던 것이다\n\n\n-- 세타 조인과 비교한다\n\n@Test\nvoid 세타와_비교() {\n    em.clear();\n    System.out.println(\"세타(내부): \" + queryFactory\n            .select(member.username).from(member, team)\n            .where(member.username.eq(team.name))\n            .fetch().size());\n\n    em.clear();\n    System.out.println(\"on(외부):   \" + queryFactory\n            .select(member.username).from(member)\n            .leftJoin(team).on(member.username.eq(team.name))\n            .fetch().size());\n}\n\nHibernate: select m1_0.username from member m1_0, team t1_0\n           where m1_0.username=t1_0.name\n세타(내부): 2\nHibernate: select m1_0.username from member m1_0\n           left join team t1_0 on m1_0.username=t1_0.name\non(외부):   12\n\n--   같은 조건인데 2 와 12 다\n--   외부 조인이라 왼쪽이 다 남았다\n\n\n-- on 을 빼먹으면\n\n@Test\nvoid on_없이() {\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(team)\n            .fetch().size());\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    Team team */\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0 on 1=1\n건수: 24\n\n--   on 1=1 이다\n--   곱집합이 됐다\n--   4.11절과 같은 결과다\n\n\n-- 조건을 여럿 준다\n\n@Test\nvoid on_여럿() {\n    em.clear();\n    queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n                .on(team.name.startsWith(\"team\"), team.name.ne(\"teamB\"))\n            .fetch();\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\n        on team.name like ?1 escape '!'\n        and team.name != ?2 */\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0\n        on t1_0.team_id=m1_0.team_id\n        and t1_0.name like ? escape '!'\n        and t1_0.name!=?\n\n--   4.4절처럼 쉼표가 and 다\n--   외래키 조건이 맨 앞에 있다\n\n\n-- where 로 살리려면\n\n@Test\nvoid null_살리기() {\n    em.clear();\n    System.out.println(\"건수: \" + queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(team.name.eq(\"teamA\").or(team.name.isNull()))\n            .fetch().size());\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    or team.name is null */\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=? or t1_0.name is null\n건수: 7\n\n--   teamA 넷 + 팀 없는 셋이다\n--   teamB 셋은 여전히 빠졌다\n--   on 에 두는 게 맞다\n\n\n-- 정리\n\n$ printf '%-28s %-8s %s\\n' \\\n  'leftJoin + on'           '10건'  '왼쪽이 다 남음' \\\n  'leftJoin + where'        '4건'   '내부 조인이 됨' \\\n  'join + on'               '4건'   'where 와 같음' \\\n  'leftJoin(표) + on'       '12건'  '연관 없는 외부 조인' \\\n  'leftJoin(표), on 없음'   '24건'  'on 1=1, 곱집합'\n\nleftJoin + on             10건    왼쪽이 다 남음\nleftJoin + where          4건     내부 조인이 됨\njoin + on                 4건     where 와 같음\nleftJoin(표) + on         12건    연관 없는 외부 조인\nleftJoin(표), on 없음     24건    on 1=1, 곱집합\n\n--   4.13절에서 페치 조인을 본다",
+   "note": "**`leftJoin ... on(team.name.eq(\"teamA\"))` 은 10건이 다 남고 teamB 회원의 팀만 `null`** 이다.\n\n**같은 조건을 `where` 로 옮기면 4건 — 외부 조인이 내부 조인으로** 되돌아간다.\n\n**내부 조인이면 `on` 과 `where` 의 SQL 은 달라도 결과는 둘 다 4건**이다.\n\n**`leftJoin(team).on(...)` 은 `on m1_0.username=t1_0.name` 만 붙어 외래키를 안** 본다.\n\n**`on` 을 빼면 `on 1=1` 이 되어 24건 곱집합**이다."
+  }
+ ],
+ "recap": [
+  "**`on` 은 붙이기 전에** 건다.",
+  "**`where` 는 붙인 뒤**다.",
+  "**내부면 결과가** 같다.",
+  "**외부면** 다르다.",
+  "**`where` 가 외부를** 되돌린다.",
+  "**연관 없이도 조인**한다.",
+  "**그땐 `on` 이** 전부다.",
+  "**빼먹으면 `on 1=1`** 이다.",
+  "**쉼표가 `and`** 다."
+ ],
+ "drills": [
+  {
+   "task": "`on` 으로 필터링한다.",
+   "done_when": "10건이 남는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 조건을 `where` 로 옮긴다.",
+   "done_when": "4건이 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "연관 없이 외부 조인한다.",
+   "done_when": "`on` 만 붙는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`on` 을 빼 본다.",
+   "done_when": "곱집합을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`on` 과 `where` 는 언제 걸리나?",
+   "a": "`on` 은 조인 전, `where` 는 조인 후다."
+  },
+  {
+   "q": "내부 조인에서는 차이가 있나?",
+   "a": "SQL 은 달라도 결과는 같다."
+  },
+  {
+   "q": "외부 조인 뒤 `where` 를 쓰면?",
+   "a": "`null` 행이 걸러져 내부 조인처럼 된다."
+  },
+  {
+   "q": "연관 없는 외부 조인은?",
+   "a": "`leftJoin(표).on(조건)` 으로 만든다."
+  },
+  {
+   "q": "`on` 을 빼면?",
+   "a": "`on 1=1` 이 되어 곱집합이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "on 절",
+   "def": "조인할 행을 고르는 조건. 조인 전에 적용된다."
+  },
+  {
+   "term": "외부 조인 되돌리기",
+   "def": "외부 조인 뒤 `where` 로 `null` 을 걸러 내부 조인처럼 되는 현상."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
