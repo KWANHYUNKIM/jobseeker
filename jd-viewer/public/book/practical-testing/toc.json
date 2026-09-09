@@ -245,7 +245,7 @@
           "title": "계층별 테스트 전략",
           "summary": "무엇을 어디서 검증하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -253,7 +253,7 @@
           "title": "Persistence Layer 테스트",
           "summary": "저장하고 다시 읽는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

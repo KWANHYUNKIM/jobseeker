@@ -1,0 +1,137 @@
+{
+ "book": "practical-testing",
+ "id": "layer-test",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "계층별 테스트 전략",
+ "summary": "무엇을 어디서 검증하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "계층마다 검증할 것을 가른다.",
+  "중복 검증의 비용을 안다.",
+  "샘플 도메인을 확장한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2~4장은 스프링이 없었다.** **여기서 계층이** 생긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 계층, 세 질문",
+   "ascii": "   three layers, three questions\n\n   presentation   did the request map, did validation fire,\n                  did the response have the right shape\n                  -> http in, json out. nothing else.\n\n   business       did the rules run, did the transaction commit,\n                  did the right things get saved\n                  -> objects in, objects out, database behind\n\n   persistence    does this query return what i think\n                  -> entities in, entities out, sql in between",
+   "note": "**각자 다른 것을 묻는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "계층마다 다른 질문",
+   "md": "**프레젠테이션 — \"요청과 응답이 맞나\"**\n\n| 검증한다 | 안 한다 |\n|---|---|\n| URL·메서드 매핑 | **비즈니스 규칙** |\n| 요청 본문 파싱 | 계산 결과 |\n| **검증(`@Valid`) 동작** | DB 상태 |\n| 응답 상태 코드·형식 | |\n\n> **서비스는 목으로** 대체한다. **6.6절의 `@MockBean`** 이다.\n>\n> **「MVC 1편」의 `MockMvc`** 를 쓴다.\n\n**비즈니스 — \"규칙이 도나\"**\n\n| 검증한다 | 안 한다 |\n|---|---|\n| **도메인 규칙** | HTTP |\n| 트랜잭션 경계 | JSON 형식 |\n| **여러 리포지토리 조합** | 쿼리 문법 |\n| 예외 발생 | |\n\n> **DB 는 진짜로** 쓴다. **여기가 가장 값어치** 있다.\n\n**퍼시스턴스 — \"쿼리가 내가 생각한 걸 주나\"**\n\n| 검증한다 | 안 한다 |\n|---|---|\n| **쿼리 메서드 결과** | 비즈니스 규칙 |\n| 조건·정렬·페이징 | 서비스 흐름 |\n| **연관관계 로딩** | |\n\n> **스프링 데이터 JPA 가 만들어 주는 쿼리는 안** 짠다.\n> **`findById` 를 테스트할 이유가** 없다.\n>\n> **내가 쓴 것만** 짠다 — **`findByNameContaining`, `@Query`**.\n\n**규칙 하나** — **각 계층은 자기 이유로 깨져야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "전부 다 검증하면",
+   "ascii": "   what happens when every layer tests everything\n\n   controller test   sets up 5 entities, checks the total price\n   service test      sets up 5 entities, checks the total price\n   repository test   sets up 5 entities, checks the total price\n\n   change the price rule\n     three tests break, for one reason\n\n   each layer should break for its own reason",
+   "note": "**한 이유로 셋이** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "중복 검증의 비용",
+   "md": "**가격 규칙을 바꿨는데 컨트롤러 테스트가 깨진다면**\n\n> **컨트롤러는 가격을 모른다.** **깨질 이유가** 없다.\n>\n> **그 테스트가 서비스까지 진짜로 부르고** 있어서다.\n\n**세 가지가 나빠진다.**\n\n| | |\n|---|---|\n| **한 변경에 여러 테스트** | 고칠 데가 는다 |\n| **어디가 문제인지 흐려짐** | 셋 다 빨간데 원인은 하나 |\n| **느려짐** | 컨트롤러 테스트가 DB 를 쓴다 |\n\n**그렇다고 통합 테스트를 안 짜는 건** 아니다.\n\n> **5.8절에서 통합 대 슬라이스를** 다룬다.\n> **\"전 계층을 한 번 관통하는\" 테스트는 몇 개** 필요하다.\n>\n> **문제는 그게 기본이 되는** 것이다.\n\n**계층을 안 나눈 코드라면**\n\n> **컨트롤러에 비즈니스 로직이 있으면 계층별 테스트가** 안 된다.\n> **테스트가 설계를 드러내는 또 다른 자리**다(1.2절).\n>\n> **「활용 2편」 6.3절에서 쿼리 서비스를 만든 이유와 같은** 종류다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "5장의 도메인 — 스프링이 붙는다",
+   "code": "@Entity\npublic class Product {\n    @Id @GeneratedValue(strategy = IDENTITY)\n    private Long id;\n\n    private String productNumber;      // \"001\"\n\n    @Enumerated(STRING)\n    private ProductType type;          // HANDMADE, BOTTLE, BAKERY\n\n    @Enumerated(STRING)\n    private ProductSellingStatus sellingStatus;   // SELLING, HOLD, STOP_SELLING\n\n    private String name;\n    private int price;\n}\n\n@Entity\npublic class Order {\n    @Id @GeneratedValue(strategy = IDENTITY)\n    private Long id;\n\n    @Enumerated(STRING)\n    private OrderStatus orderStatus;   // INIT, PAYMENT_COMPLETED, ...\n\n    private int totalPrice;\n    private LocalDateTime registeredDateTime;\n\n    @OneToMany(mappedBy = \"order\", cascade = ALL)\n    private List<OrderProduct> orderProducts = new ArrayList<>();\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1.3절의 키오스크는 어떻게 되나",
+   "md": "**남는다.**\n\n> **`CafeKiosk` 는 스프링 빈이** 아니다. **2~4장의 테스트가 그대로** 돈다.\n>\n> **1.3절에서 \"키오스크는 남고 스프링이 둘러싼다\" 고** 했다.\n\n**새로 오는 것**\n\n| | |\n|---|---|\n| `Product` | 상품. 판매 상태를 가진다 |\n| `Order` | 주문. 여러 상품을 담는다 |\n| `Stock` | 재고. 6장에서 쓴다 |\n| `ProductRepository` | 퍼시스턴스 |\n| `OrderService` | 비즈니스 |\n| `OrderController` | 프레젠테이션 |\n\n**요구사항이 늘었다.**\n\n```\n판매 중인 상품만 주문할 수 있다\n상품 번호로 주문한다\n주문하면 총 금액이 계산된다\n같은 상품을 여러 개 주문할 수 있다\n```\n\n> **\"판매 중인 상품만\" 이 세 계층에 다 걸린다.**\n>\n> | | |\n> |---|---|\n> | 퍼시스턴스 | **판매 상태로 조회하는 쿼리** |\n> | 비즈니스 | **없는 상품이면 예외** |\n> | 프레젠테이션 | **상품 번호가 비면 400** |\n>\n> **같은 요구사항인데 계층마다 검증할 게** 다르다.\n> **5.2·5.3·5.4절이 각각 그것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 2~4장 테스트는 그대로 ---\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n    --tests DiscountCalculatorTest\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   스프링 의존성을 넣어도 이건 안 변한다\n\n# --- 첫 스프링 테스트 ---\n\n@SpringBootTest\nclass ProductRepositoryTest {\n\n    @Autowired\n    private ProductRepository productRepository;\n\n    @DisplayName(\"상품을 저장하면 조회할 수 있다\")\n    @Test\n    void save() {\n        // given\n        Product product = Product.builder()\n                .productNumber(\"001\")\n                .type(HANDMADE)\n                .sellingStatus(SELLING)\n                .name(\"아메리카노\")\n                .price(4000)\n                .build();\n\n        // when\n        Product saved = productRepository.save(product);\n\n        // then\n        assertThat(saved.getId()).isNotNull();\n    }\n}\n\n$ ./gradlew test --tests ProductRepositoryTest\n\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n\n2026-09-09T16:48:11.204  INFO --- Starting ProductRepositoryTest\n2026-09-09T16:48:12.881  INFO --- HHH000412: Hibernate ORM core version 6.4.1\n2026-09-09T16:48:13.442  INFO --- Initialized JPA EntityManagerFactory\n2026-09-09T16:48:14.109  INFO --- Started ProductRepositoryTest in 3.412 seconds\n\nHibernate: insert into product (name,price,product_number,selling_status,type)\n           values (?,?,?,?,?)\n\nProductRepositoryTest > 상품을 저장하면 조회할 수 있다 PASSED\n\nBUILD SUCCESSFUL in 7s\n\n#   1초가 7초가 됐다\n\n#   2.7절에서 예고한 것이다\n\n# --- 계층을 섞으면 어떻게 되나 ---\n\n#   컨트롤러 테스트인데 서비스와 DB 를 다 쓴다\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass OrderControllerTest {\n\n    @Autowired MockMvc mockMvc;\n    @Autowired ProductRepository productRepository;\n\n    @DisplayName(\"주문을 생성하면 총 금액이 계산된다\")\n    @Test\n    void createOrder() throws Exception {\n        // given\n        productRepository.save(createProduct(\"001\", 4000));\n        productRepository.save(createProduct(\"002\", 4500));\n\n        // when & then\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(\n                                new OrderCreateRequest(List.of(\"001\", \"002\"))))\n                        .contentType(APPLICATION_JSON))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.data.totalPrice\").value(8500));\n    }\n}\n\n$ ./gradlew test --tests OrderControllerTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: select p1_0.id, ... from product p1_0 where p1_0.product_number in (?,?)\nHibernate: insert into orders (...) values (?,?,?)\nHibernate: insert into order_product (...) values (?,?)\nHibernate: insert into order_product (...) values (?,?)\n\nOrderControllerTest > 주문을 생성하면 총 금액이 계산된다 PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   통과한다\n\n# --- 그런데 가격 규칙을 바꾸면 ---\n\n#   주문 금액에 10% 부가세를 더하기로 했다\n\npublic int calculateTotalPrice() {\n    return (int) (products.stream().mapToInt(Product::getPrice).sum() * 1.1);\n}\n\n$ ./gradlew test\n\nOrderTest > 서로 다른 음료면 합이다 FAILED\n    expected: 8500 but was: 9350\n\nOrderServiceTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n    expected: 8500 but was: 9350\n\nOrderControllerTest > 주문을 생성하면 총 금액이 계산된다 FAILED\n    JSON path \"$.data.totalPrice\"\n    expected: 8500 but was: 9350\n\n3 tests failed\n\n#   세 계층이 한 이유로 깨졌다\n\n#   컨트롤러는 가격을 모르는데 깨진다\n\n# --- 컨트롤러가 서비스를 목으로 쓰면 ---\n\n@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerTest {\n\n    @Autowired MockMvc mockMvc;\n    @MockBean OrderService orderService;\n\n    @DisplayName(\"주문 상품 번호가 비어 있으면 400 을 반환한다\")\n    @Test\n    void createOrderWithEmptyProductNumbers() throws Exception {\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(\n                                new OrderCreateRequest(List.of())))\n                        .contentType(APPLICATION_JSON))\n                .andExpect(status().isBadRequest());\n    }\n}\n\n$ ./gradlew test --tests OrderControllerTest\n\n2026-09-09T16:52:03.881  INFO --- Started OrderControllerTest in 1.842 seconds\n\nOrderControllerTest > 주문 상품 번호가 비어 있으면 400 을 반환한다 PASSED\n\nBUILD SUCCESSFUL in 4s\n\n#   Hibernate 로그가 없다. DB 를 안 쓴다\n#   3.4초에서 1.8초로 줄었다\n\n#   그리고 가격 규칙을 바꿔도 안 깨진다\n\n$ ./gradlew test --tests OrderControllerTest\n\nOrderControllerTest > 주문 상품 번호가 비어 있으면 400 을 반환한다 PASSED\n\n#   컨트롤러는 자기 이유로만 깨진다\n\n# --- 다음 절에서 ---\n\n#   퍼시스턴스 계층부터 짠다",
+   "note": "**첫 스프링 테스트에 컨텍스트가 3.4초** 걸린다. **1초가 7초**가 됐다.\n\n**계층을 섞은 컨트롤러 테스트는 `Hibernate:` 로그가 여섯 줄**이다.\n\n**가격 규칙을 바꾸니 세 계층이 한 이유로** 깨진다. **컨트롤러는 가격을 모르는데** 깨진다.\n\n**`@WebMvcTest` 로 바꾸면 `Hibernate` 로그가 사라지고 1.8초**다. **가격 규칙을 바꿔도 안** 깨진다.\n\n**각 계층이 자기 이유로만** 깨진다."
+  }
+ ],
+ "recap": [
+  "**계층마다 묻는 질문이** 다르다.",
+  "**프레젠테이션은 요청·응답만** 본다 — 서비스는 목으로.",
+  "**비즈니스가 가장 값어치** 있다 — DB 를 진짜로 쓴다.",
+  "**퍼시스턴스는 내가 쓴 쿼리만** 짠다 — `findById` 는 안 짠다.",
+  "**각 계층은 자기 이유로 깨져야** 한다.",
+  "**중복 검증은 한 변경에 여러 테스트를** 깨뜨린다.",
+  "**컨트롤러가 가격 때문에 깨지면 잘못된** 것이다.",
+  "**계층을 안 나눈 코드는 계층별 테스트가 안** 된다.",
+  "**`@SpringBootTest` 로 1초가 7초**가 된다."
+ ],
+ "drills": [
+  {
+   "task": "첫 `@SpringBootTest` 를 돌린다.",
+   "done_when": "컨텍스트 기동 시간을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "계층을 섞은 컨트롤러 테스트를 짠다.",
+   "done_when": "`Hibernate` 로그가 나오는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "가격 규칙을 바꿔 본다.",
+   "done_when": "몇 개가 깨지는지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@WebMvcTest` 로 바꾼다.",
+   "done_when": "DB 로그가 사라지고 빨라진 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프레젠테이션 계층에서 검증하는 것은?",
+   "a": "매핑, 요청 파싱, 검증 동작, 응답 상태·형식이다. 비즈니스 규칙은 아니다."
+  },
+  {
+   "q": "퍼시스턴스에서 무엇을 안 짜나?",
+   "a": "`findById` 처럼 스프링 데이터 JPA 가 만들어 주는 쿼리다."
+  },
+  {
+   "q": "각 계층이 지켜야 할 규칙은?",
+   "a": "자기 이유로만 깨져야 한다."
+  },
+  {
+   "q": "중복 검증의 비용 셋은?",
+   "a": "고칠 데가 늘고, 원인이 흐려지고, 느려진다."
+  },
+  {
+   "q": "계층을 안 나눈 코드는?",
+   "a": "계층별 테스트가 안 된다. 테스트가 설계를 드러내는 자리다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

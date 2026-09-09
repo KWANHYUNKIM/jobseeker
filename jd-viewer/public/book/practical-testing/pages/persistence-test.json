@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "persistence-test",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "Persistence Layer 테스트",
+ "summary": "저장하고 다시 읽는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇을 짜고 무엇을 안 짜는지 가른다.",
+  "리포지토리 테스트를 쓴다.",
+  "쿼리를 눈으로 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**가장 아래부터** 짠다. **쿼리가 내가 생각한 걸 주는지**만 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 짜나",
+   "ascii": "   what belongs in a repository test\n\n   yes\n     findBySellingStatusIn      i wrote the method name\n     @Query with a join         i wrote the jpql\n     a native query             i wrote the sql\n     sorting and paging         i chose the order\n\n   no\n     save, findById, delete     spring data wrote them\n     the entity's own methods   that is a unit test\n     business rules            that is the service",
+   "note": "**내가 쓴 것만** 짠다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`findById` 를 왜 안 짜나",
+   "md": "```java\n@Test\nvoid findById() {\n    Product saved = productRepository.save(product);\n\n    Optional<Product> found = productRepository.findById(saved.getId());\n\n    assertThat(found).isPresent();\n}\n```\n\n> **통과한다.** **그런데 뭘 검증했나.**\n>\n> **스프링 데이터 JPA 가 구현한 코드**다. **내 코드가** 아니다.\n>\n> **9.1절의 학습 테스트로는 값어치가** 있는데 **프로덕션 테스트로는** 아니다.\n\n**깨질 일이 없는 테스트는 안** 짠다.\n\n> **2.8절의 방법으로 확인해** 본다.\n> **내 코드를 뭘 지워야 이게 빨개지나** — **지울 게 없다.**\n\n**내가 쓴 것은 다르다.**\n\n```java\nList<Product> findAllBySellingStatusIn(List<ProductSellingStatus> statuses);\n```\n\n> **메서드 이름을 내가** 지었다.\n> **`In` 을 빼먹거나 `SellingStatus` 를 오타 내면** 터진다.\n>\n> **부팅 때 잡히긴** 하는데 **결과가 맞는지는 안** 잡힌다.\n>\n> **`findAllBySellingStatusNotIn` 으로 잘못 써도 애플리케이션은** 뜬다.\n\n**`@Query` 는 더** 그렇다.\n\n```java\n@Query(\"select p from Product p where p.type = :type and p.price >= :price\")\nList<Product> findExpensiveProducts(@Param(\"type\") ProductType type,\n                                    @Param(\"price\") int price);\n```\n\n> **`>=` 인지 `>` 인지가 여기** 있다. **2.5절의 경계값**이다.\n>\n> **「활용 2편」 4.7절에서 JPQL 문자열이 런타임에 터진다고** 했다.\n> **테스트가 그걸 부팅이 아니라 CI 에서** 잡는다."
+  },
+  {
+   "type": "figure",
+   "caption": "애노테이션이 띄우는 것",
+   "ascii": "   what each annotation loads\n\n   @SpringBootTest       every bean in the application\n                         3.4s here\n\n   @DataJpaTest          jpa beans, repositories, an embedded db\n                         1.9s here\n                         and @Transactional, which rolls back\n\n   the rollback is convenient and it hides things  (5.6)",
+   "note": "**롤백이 편한데 감추는 게** 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "ProductRepositoryTest",
+   "code": "@DataJpaTest\nclass ProductRepositoryTest {\n\n    @Autowired\n    private ProductRepository productRepository;\n\n    @DisplayName(\"판매 상태로 조회하면 해당 상태의 상품만 나온다\")\n    @Test\n    void findAllBySellingStatusIn() {\n        // given\n        Product product1 = createProduct(\"001\", SELLING, \"아메리카노\", 4000);\n        Product product2 = createProduct(\"002\", HOLD, \"카페라떼\", 4500);\n        Product product3 = createProduct(\"003\", STOP_SELLING, \"팥빙수\", 7000);\n        productRepository.saveAll(List.of(product1, product2, product3));\n\n        // when\n        List<Product> products =\n                productRepository.findAllBySellingStatusIn(List.of(SELLING, HOLD));\n\n        // then\n        assertThat(products).hasSize(2)\n                .extracting(\"productNumber\", \"name\", \"sellingStatus\")\n                .containsExactlyInAnyOrder(\n                        tuple(\"001\", \"아메리카노\", SELLING),\n                        tuple(\"002\", \"카페라떼\", HOLD)\n                );\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 테스트가 지키는 것",
+   "md": "**셋**이다.\n\n**① 조건이 맞나**\n\n> **`In` 이 세 상태 중 둘만** 골랐다.\n> **`NotIn` 이었으면 `STOP_SELLING` 하나가** 나왔을 것이다.\n\n**② 결과 내용이 맞나**\n\n```java\n.extracting(\"productNumber\", \"name\", \"sellingStatus\")\n.containsExactlyInAnyOrder(...)\n```\n\n> **개수만 보면 부족**하다. **`hasSize(2)` 만으로는 엉뚱한 둘이 와도** 통과한다.\n>\n> **2.3절의 `tuple`** 이다.\n\n**③ 순서를 안 정했다**\n\n> **`containsExactlyInAnyOrder`** 다.\n> **`ORDER BY` 를 안 걸었으면 순서가 보장 안** 된다(2.3절).\n>\n> **`containsExactly` 로 쓰면 DB 를 바꿀 때 깨질 수** 있다.\n> **7.11절의 가끔 깨지는 테스트**다.\n\n**`@DataJpaTest` 를 쓴 이유**\n\n| | |\n|---|---|\n| **빠르다** | 3.4초 → 1.9초 |\n| **필요한 빈만** | 서비스·컨트롤러를 안 띄운다 |\n| **롤백** | 테스트끼리 안 섞인다 |\n\n> **마지막이 5.6절의 함정**이기도 하다.\n> **편한데 프로덕션과 다르게** 돈다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 설정 ---\n\n# application-test.yml\nspring:\n  jpa:\n    hibernate.ddl-auto: create\n    properties:\n      hibernate.format_sql: true\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace\n\n# --- 실행 ---\n\n$ ./gradlew test --tests ProductRepositoryTest\n\n2026-09-09T16:50:02.117  INFO --- Started ProductRepositoryTest in 1.912 seconds\n\nHibernate:\n    insert into product (name,price,product_number,selling_status,type)\n    values (?,?,?,?,?)\nbinding parameter (1:VARCHAR) <- [아메리카노]\nbinding parameter (2:INTEGER) <- [4000]\nbinding parameter (3:VARCHAR) <- [001]\nbinding parameter (4:VARCHAR) <- [SELLING]\nbinding parameter (5:VARCHAR) <- [HANDMADE]\n\nHibernate:\n    insert into product (...) values (?,?,?,?,?)\nbinding parameter (4:VARCHAR) <- [HOLD]\n\nHibernate:\n    insert into product (...) values (?,?,?,?,?)\nbinding parameter (4:VARCHAR) <- [STOP_SELLING]\n\nHibernate:\n    select\n        p1_0.id, p1_0.name, p1_0.price, p1_0.product_number,\n        p1_0.selling_status, p1_0.type\n    from\n        product p1_0\n    where\n        p1_0.selling_status in (?,?)\nbinding parameter (1:VARCHAR) <- [SELLING]\nbinding parameter (2:VARCHAR) <- [HOLD]\n\nProductRepositoryTest > 판매 상태로 조회하면 해당 상태의 상품만 나온다 PASSED\n\nBUILD SUCCESSFUL in 5s\n\n#   in (?,?) 이 나갔다\n\n#   메서드 이름이 만든 SQL 을 눈으로 확인했다\n\n# --- 메서드 이름을 오타 내면 ---\n\nList<Product> findAllBySellingStatusNotIn(List<ProductSellingStatus> statuses);\n\n$ ./gradlew test --tests ProductRepositoryTest\n\nHibernate:\n    select ... from product p1_0 where p1_0.selling_status not in (?,?)\n\nProductRepositoryTest > 판매 상태로 조회하면 해당 상태의 상품만 나온다 FAILED\n    java.lang.AssertionError:\n    Expected size: 2 but was: 1 in:\n    [Product(productNumber=003, name=팥빙수, sellingStatus=STOP_SELLING)]\n\n#   애플리케이션은 정상으로 뜬다\n#   테스트가 잡는다\n\n#   되돌린다\n\n# --- hasSize 만 검증하면 ---\n\nassertThat(products).hasSize(2);\n\n#   findAllBySellingStatusIn(List.of(STOP_SELLING, HOLD)) 로 바꿔도\n\nProductRepositoryTest > ... PASSED\n\n#   엉뚱한 둘이 와도 통과한다\n\n#   tuple 로 내용을 보면\n\nProductRepositoryTest > ... FAILED\n    Expecting ArrayList:\n      [(\"002\", \"카페라떼\", HOLD), (\"003\", \"팥빙수\", STOP_SELLING)]\n    to contain exactly in any order:\n      [(\"001\", \"아메리카노\", SELLING), (\"002\", \"카페라떼\", HOLD)]\n\n#   잡힌다\n\n# --- findById 를 짜 보면 ---\n\n@Test\nvoid findById() {\n    Product saved = productRepository.save(createProduct(\"001\", SELLING, \"아메리카노\", 4000));\n\n    Optional<Product> found = productRepository.findById(saved.getId());\n\n    assertThat(found).isPresent();\n}\n\nProductRepositoryTest > findById() PASSED\n\n#   통과한다\n\n#   그런데 내 코드 중 무엇을 지워야 이게 빨개지나\n\n#   ProductRepository 인터페이스를 지우면 컴파일이 안 된다\n#   Product 엔티티를 지워도 컴파일이 안 된다\n\n#   지울 게 없다. 아무것도 안 지킨다\n\n#   1.1절의 기준으로 이건 값어치가 없는 테스트다\n\n# --- @Query 의 경계값 ---\n\n@Query(\"select p from Product p where p.type = :type and p.price >= :price\")\nList<Product> findExpensiveProducts(@Param(\"type\") ProductType type,\n                                    @Param(\"price\") int price);\n\n@DisplayName(\"기준 가격과 같은 상품도 조회된다\")\n@Test\nvoid findExpensiveProductsAtBoundary() {\n    // given\n    productRepository.saveAll(List.of(\n            createProduct(\"001\", SELLING, \"아메리카노\", 4000),\n            createProduct(\"002\", SELLING, \"카페라떼\", 4500)));\n\n    // when\n    List<Product> products = productRepository.findExpensiveProducts(HANDMADE, 4000);\n\n    // then\n    assertThat(products).hasSize(2);\n}\n\nHibernate:\n    select ... from product p1_0 where p1_0.type=? and p1_0.price>=?\nbinding parameter (2:INTEGER) <- [4000]\n\nProductRepositoryTest > 기준 가격과 같은 상품도 조회된다 PASSED\n\n#   >= 를 > 로 바꾸면\n\nProductRepositoryTest > 기준 가격과 같은 상품도 조회된다 FAILED\n    Expected size: 2 but was: 1\n\n#   2.5절의 경계값이 JPQL 안에도 있다\n\n#   부등호 하나를 테스트가 지킨다\n\n# --- @SpringBootTest 와 비교 ---\n\n@SpringBootTest\nclass ProductRepositoryTest { ... }\n\n2026-09-09T16:53:41.882  INFO --- Started ProductRepositoryTest in 3.418 seconds\n\nBUILD SUCCESSFUL in 8s\n\n#   1.9초가 3.4초가 됐다\n\n#   서비스와 컨트롤러 빈까지 다 뜬다\n\n#   리포지토리만 필요하면 @DataJpaTest 다\n\n# --- 다음 절에서 ---\n\n#   비즈니스 계층으로 올라간다",
+   "note": "**`in (?,?)` 이 나간 걸 눈으로** 확인했다. **메서드 이름이 만든 SQL** 이다.\n\n**`NotIn` 으로 오타 내면 애플리케이션은 뜨고 테스트가** 잡는다.\n\n**`hasSize(2)` 만 보면 엉뚱한 둘이 와도** 통과한다. **`tuple` 로 내용을 봐야** 잡힌다.\n\n**`findById` 는 내 코드 중 지울 게 없어 아무것도 안** 지킨다.\n\n**`@Query` 의 `>=` 를 `>` 로 바꾸면** 깨진다 — **JPQL 안에도 경계값**이 있다.\n\n**`@DataJpaTest` 1.9초, `@SpringBootTest` 3.4초**다."
+  }
+ ],
+ "recap": [
+  "**내가 쓴 쿼리만** 짠다.",
+  "**`findById` 는 지울 게 없어 아무것도 안** 지킨다.",
+  "**메서드 이름은 부팅 때 잡혀도 결과가 맞는지는 안** 잡힌다.",
+  "**`@Query` 안에도 경계값이** 있다 — `>=` 냐 `>` 냐.",
+  "**`hasSize` 만으로는 엉뚱한 결과가** 통과한다.",
+  "**`tuple` 로 내용까지** 본다.",
+  "**`ORDER BY` 가 없으면 `InAnyOrder`** 를 쓴다.",
+  "**`@DataJpaTest` 가 `@SpringBootTest` 보다 빠르다** — 1.9초 대 3.4초.",
+  "**롤백이 편한데 감추는 게** 있다 — 5.6절."
+ ],
+ "drills": [
+  {
+   "task": "리포지토리 테스트를 하나 짜고 SQL 을 확인한다.",
+   "done_when": "생각한 쿼리가 나가는지 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "메서드 이름에 `Not` 을 넣어 본다.",
+   "done_when": "애플리케이션은 뜨고 테스트가 잡는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`hasSize` 만 검증하도록 바꿔 본다.",
+   "done_when": "엉뚱한 결과가 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@DataJpaTest` 와 `@SpringBootTest` 시간을 비교한다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇을 짜고 무엇을 안 짜나?",
+   "a": "내가 쓴 쿼리는 짜고 스프링 데이터 JPA 가 만든 것은 안 짠다."
+  },
+  {
+   "q": "`findById` 테스트가 왜 값어치 없나?",
+   "a": "내 코드 중 지울 게 없어 아무것도 안 지킨다."
+  },
+  {
+   "q": "`hasSize` 만 보면?",
+   "a": "엉뚱한 결과가 와도 개수만 맞으면 통과한다."
+  },
+  {
+   "q": "순서 검증에 무엇을 쓰나?",
+   "a": "`ORDER BY` 가 없으면 `containsExactlyInAnyOrder` 다."
+  },
+  {
+   "q": "`@DataJpaTest` 의 이점은?",
+   "a": "필요한 빈만 띄워 빠르고 트랜잭션 롤백이 붙는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
