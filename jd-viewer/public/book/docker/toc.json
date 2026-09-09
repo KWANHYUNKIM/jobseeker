@@ -624,7 +624,7 @@
           "title": "CI 에서 캐시 재우기",
           "summary": "매번 처음부터 빌드하지 않게.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
@@ -632,7 +632,7 @@
           "title": "태그 전략",
           "summary": "무엇을 배포했는지 되찾을 수 있게.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -640,7 +640,7 @@
           "title": "컨테이너가 여러 대가 되면",
           "summary": "이 책이 못 하는 것과 다음 권.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

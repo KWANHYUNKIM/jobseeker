@@ -1,0 +1,138 @@
+{
+ "book": "docker",
+ "id": "ci-cache",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "CI 에서 캐시 재우기",
+ "summary": "매번 처음부터 빌드하지 않게.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "CI 에 로컬 캐시가 없는 이유를 안다.",
+  "원격 캐시 백엔드를 고른다.",
+  "의존성 캐시를 함께 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절과 5.6절에서 캐시로 빌드를 47초에서 1초로** 줄였다. **그런데 CI 에서는 그게** 안 된다.\n\n> **러너는 매번 새 머신**이다. **로컬 레이어 캐시가 없다.**\n> **`docker build` 가 항상 `--no-cache` 처럼** 돈다."
+  },
+  {
+   "type": "table",
+   "caption": "캐시 백엔드",
+   "columns": [
+    "`cache-to/from`",
+    "저장 위치",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**`type=gha`**",
+     "**GitHub Actions 캐시**",
+     "GitHub 이면 가장 간단. 저장소당 10GB 한도"
+    ],
+    [
+     "**`type=registry`**",
+     "**레지스트리에 캐시 이미지로**",
+     "**어느 CI 에서나 된다.** 별도 태그 필요"
+    ],
+    [
+     "`type=local`",
+     "러너의 디스크",
+     "셀프 호스트 러너에서"
+    ],
+    [
+     "`type=inline`",
+     "이미지 안에 캐시 메타데이터",
+     "간단하지만 `mode=max` 가 안 된다"
+    ]
+   ],
+   "note": "**`mode=max` 는 중간 단계까지 전부 캐시**한다. **멀티 스테이지에서 특히 중요**하다 — 기본값 `min` 은 최종 이미지 레이어만 저장한다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": ".github/workflows/build.yml",
+   "caption": "두 가지 방식",
+   "code": "# GitHub Actions 캐시\n      - uses: docker/build-push-action@v6\n        with:\n          cache-from: type=gha\n          cache-to: type=gha,mode=max\n\n# 레지스트리 캐시 (어느 CI 에서나)\n      - uses: docker/build-push-action@v6\n        with:\n          cache-from: type=registry,ref=ghcr.io/acme/shop:buildcache\n          cache-to: type=registry,ref=ghcr.io/acme/shop:buildcache,mode=max"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 종류의 캐시를 헷갈리지 않는다",
+   "md": "| 캐시 | 무엇 | 어떻게 |\n|---|---|---|\n| **레이어 캐시** | Dockerfile 단계 결과 | `cache-from/to` |\n| **의존성 캐시** | `~/.gradle`, `~/.m2`, `node_modules` | **`RUN --mount=type=cache`**(5.3절) |\n\n**둘은 다른 문제**다.\n\n> **레이어 캐시는 \"이 단계를 다시 안 한다\"** 이고,\n> **의존성 캐시는 \"이 단계를 다시 하되 다운로드는 안 한다\"** 이다.\n\n**함정**: **`RUN --mount=type=cache` 의 내용은 `type=gha` 캐시에 안 실린다** — **러너가 바뀌면 사라진다.**\n\n**그래서 CI 에서는**:\n\n| 방법 | 어떻게 |\n|---|---|\n| **레이어 캐시에 의존** | 의존성 다운로드 단계 자체가 CACHED 되게(5.6절) |\n| `actions/setup-java` 의 `cache: gradle` | **컨테이너 밖에서 빌드할 때만** 유효하다 |\n| `cache-to: type=gha` + 단계 분리 | 대부분 이걸로 충분하다 |"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "캐시가 안 맞는 흔한 이유",
+   "md": "| 이유 | 확인 |\n|---|---|\n| **`COPY . .` 이 위에 있다** | 커밋마다 해시가 바뀌어 그 아래가 전부 깨진다(5.6절) |\n| **파일 타임스탬프** | 체크아웃할 때마다 mtime 이 바뀐다. **BuildKit 은 내용 해시를 보므로 괜찮다** |\n| `.dockerignore` 누락 | `.git` 이 컨텍스트에 들어가면 커밋마다 바뀐다(5.4절) |\n| 캐시 만료 | GitHub 캐시는 **7일 미사용 시 삭제**, 저장소당 10GB |\n| `mode=min` | 멀티 스테이지의 중간 단계가 캐시 안 된다 |\n| 플랫폼이 여러 개 | 아키텍처마다 별도 캐시다 |\n\n**빌드 로그에서 확인**:\n\n```\n=> CACHED [builder 4/6] RUN ./gradlew dependencies --no-daemon\n=> [builder 5/6] COPY src/ src/\n```\n\n> **`CACHED` 가 몇 줄까지 붙는지가 곧 캐시 적중률**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "캐시 유무로 CI 시간이 얼마나 달라지나",
+   "sql": "# --- 캐시 없이 (첫 실행) ---\n\nRun docker/build-push-action@v6\n #5 [builder 3/6] COPY gradlew build.gradle settings.gradle ./\n #6 [builder 4/6] RUN ./gradlew dependencies --no-daemon\n #6 ...\n #6 DONE 96.4s                            <- 의존성 다운로드\n #7 [builder 5/6] COPY src/ src/\n #8 [builder 6/6] RUN ./gradlew bootJar --no-daemon\n #8 DONE 41.2s\n #9 exporting to image\n #10 exporting cache to GitHub Actions Cache\n #10 DONE 12.8s\n\nTotal: 4m 21s\n\n\n# --- 두 번째 실행 (코드만 바뀜) ---\n\nRun docker/build-push-action@v6\n #5 [builder 3/6] COPY gradlew build.gradle settings.gradle ./\n #5 CACHED\n #6 [builder 4/6] RUN ./gradlew dependencies --no-daemon\n #6 CACHED                                <- 96초를 건너뛰었다\n #7 [builder 5/6] COPY src/ src/\n #7 DONE 0.3s\n #8 [builder 6/6] RUN ./gradlew bootJar --no-daemon\n #8 DONE 38.7s\n\nTotal: 1m 12s\n\n#   4분 21초 -> 1분 12초\n\n\n# --- build.gradle 을 고치면 ---\n\n #6 [builder 4/6] RUN ./gradlew dependencies --no-daemon\n #6 DONE 88.1s                            <- 다시 받는다. 당연하다\n\nTotal: 3m 58s\n\n#   중요한 건 '코드만 바뀌는 경우' 가 압도적으로 잦다는 것이다 (5.6절)\n\n\n# --- 캐시가 하나도 안 맞을 때 (COPY . . 이 위에 있는 판) ---\n\n #5 [builder 3/5] COPY . .\n #5 DONE 1.1s\n #6 [builder 4/5] RUN ./gradlew bootJar --no-daemon\n #6 DONE 134.8s                           <- 매번 의존성부터\n\nTotal: 4m 02s\n\n#   커밋마다 4분이다. 하루 20번이면 80분\n\n\n# --- 레지스트리 캐시로 확인 ---\n\n$ docker buildx build \\\n    --cache-from type=registry,ref=ghcr.io/acme/shop:buildcache \\\n    --cache-to   type=registry,ref=ghcr.io/acme/shop:buildcache,mode=max \\\n    -t ghcr.io/acme/shop:test --push .\n\n#6 importing cache manifest from ghcr.io/acme/shop:buildcache\n#6 DONE 1.4s\n#8 [builder 4/6] RUN ./gradlew dependencies --no-daemon\n#8 CACHED\n...\n#22 exporting cache to registry\n#22 DONE 24.1s\n\n$ docker buildx imagetools inspect ghcr.io/acme/shop:buildcache | head -4\nName:      ghcr.io/acme/shop:buildcache\nMediaType: application/vnd.oci.image.index.v1+json\n\n#   캐시가 레지스트리에 이미지처럼 저장돼 있다\n#   다른 CI 나 다른 머신에서도 쓸 수 있다\n\n\n# --- 캐시 크기 관리 ---\n\n#   GitHub: Settings > Actions > Caches 에서 확인\n#   레지스트리: buildcache 태그가 계속 큰다\n#     -> mode=max 는 크다. 주기적으로 지운다\n#\n#   로컬(개발 머신):\n$ docker builder prune --filter 'until=72h' -f\nTotal:  8.4GB\n\n#   3.7절에서 본 그것"
+  }
+ ],
+ "recap": [
+  "CI 러너는 매번 새 머신이라 로컬 레이어 캐시가 없다. 원격 캐시를 붙인다.",
+  "GitHub 이면 type=gha, 범용은 type=registry. 멀티 스테이지에서는 mode=max 를 쓴다.",
+  "레이어 캐시와 의존성 캐시(RUN --mount=type=cache)는 다른 문제다. CI 에서는 레이어 캐시로 푼다.",
+  "COPY . . 이 위에 있으면 캐시가 하나도 안 맞는다. 빌드 로그의 CACHED 줄 수가 적중률이다.",
+  "GitHub 캐시는 7일 미사용 시 삭제되고 저장소당 10GB 한도가 있다."
+ ],
+ "drills": [
+  {
+   "task": "CI 워크플로에 cache-from/to: type=gha 를 붙이고 두 번 돌려 시간 차이를 본다.",
+   "done_when": "두 번째 실행에서 CACHED 줄이 늘어나는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "Dockerfile 의 COPY 순서를 일부러 나쁘게 바꿔 캐시가 안 맞는 것을 확인한다.",
+   "done_when": "CACHED 가 사라지고 시간이 느는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "로컬에서 `docker builder prune --filter 'until=72h'` 로 캐시 용량을 확인·정리한다.",
+   "done_when": "회수된 용량을 확인한다.",
+   "minutes": 3
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CI 에서 도커 레이어 캐시가 기본으로 안 되는 이유는.",
+   "a": "러너가 매번 새 머신이라 로컬 캐시 저장소가 비어 있다."
+  },
+  {
+   "q": "mode=max 가 필요한 경우는.",
+   "a": "멀티 스테이지 빌드. 기본 min 은 최종 이미지 레이어만 캐시해서 builder 단계가 매번 다시 돈다."
+  },
+  {
+   "q": "RUN --mount=type=cache 의 내용은 CI 에서 어떻게 되나.",
+   "a": "러너가 바뀌면 사라진다. gha 캐시에 안 실리므로 레이어 캐시로 푸는 게 낫다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "cache-from / cache-to",
+   "what": "BuildKit 이 원격에서 캐시를 읽고 쓰게 하는 옵션."
+  },
+  {
+   "term": "mode=max",
+   "what": "중간 단계까지 모두 캐시에 저장하는 모드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Cache storage backends",
+   "url": "https://docs.docker.com/build/cache/backends/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — GitHub Actions cache",
+   "url": "https://docs.docker.com/build/cache/backends/gha/",
+   "publisher": "Docker"
+  }
+ ]
+}
