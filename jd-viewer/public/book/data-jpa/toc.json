@@ -330,7 +330,7 @@
           "title": "사용자 정의 리포지토리",
           "summary": "이름 규칙 하나로 붙는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -338,7 +338,7 @@
           "title": "인터페이스를 나누는 법",
           "summary": "핵심 비즈니스와 화면용을 가른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
