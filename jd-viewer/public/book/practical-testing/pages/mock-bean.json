@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "mock-bean",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "@MockBean",
+ "summary": "컨텍스트 안의 가짜.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Mock` 과 `@MockBean` 을 가른다.",
+  "컨텍스트에 미치는 영향을 안다.",
+  "어디에 둘지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.4절에서 썼고 6.2절에서 `@Mock` 을** 봤다. **둘이 다른 물건**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "가짜가 어디 사나",
+   "ascii": "   two ways to get a fake, and where it lives\n\n   @Mock\n     a plain object, held by the test class\n     no spring. the test builds the object under test itself.\n\n   @MockBean\n     a bean, put into the spring context in place of the real one\n     anything that injects that type gets the fake\n\n   the second one changes the context, and the context is cached",
+   "note": "**둘째는 컨텍스트를** 바꾼다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "두 애노테이션",
+   "md": "**`@Mock`**\n\n```java\n@ExtendWith(MockitoExtension.class)\nclass MailServiceTest {\n    @Mock MailSendClient mailSendClient;\n    @InjectMocks MailService mailService;\n}\n```\n\n| | |\n|---|---|\n| 스프링 | **안 뜬다** |\n| 대상 객체 | **테스트가 직접** 만든다(`@InjectMocks`) |\n| 속도 | **1초** |\n| 쓸 곳 | **단위 테스트** |\n\n**`@MockBean`**\n\n```java\n@SpringBootTest\nclass OrderStatisticsServiceTest {\n    @MockBean MailSendClient mailSendClient;\n    @Autowired OrderStatisticsService service;\n}\n```\n\n| | |\n|---|---|\n| 스프링 | **뜬다** |\n| 대상 객체 | **컨테이너가** 만든다 |\n| 교체 범위 | **그 타입을 주입받는 전부** |\n| 속도 | 3초 이상 |\n| 쓸 곳 | **통합 테스트** |\n\n**핵심 차이**\n\n> **`@Mock` 은 내가 만든 객체에** 넣고\n> **`@MockBean` 은 컨테이너의 빈을** 갈아 끼운다.\n>\n> **그래서 `@MockBean` 은 세 단계 아래의 클래스가 주입받는 것도** 바뀐다.\n\n**5.4절에서는 필수**였다.\n\n```java\n@WebMvcTest(controllers = OrderController.class)\nclass OrderControllerTest {\n    @MockBean OrderService orderService;\n}\n```\n\n> **서비스 빈이 안 떠서 컨텍스트 로딩이** 실패한다.\n> **`@Mock` 으로는 못** 채운다 — **컨테이너가 주입할 대상이** 없다.\n\n**부트 3.4 부터 `@MockitoBean`** 이다.\n\n> **`@MockBean` 이 deprecated** 됐다. **하는 일은** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "컨텍스트 개수에 미치는 영향",
+   "ascii": "   what @MockBean does to the context count\n\n   class A  @SpringBootTest\n   class B  @SpringBootTest + @MockBean(MailClient)\n   class C  @SpringBootTest + @MockBean(MailClient) + @MockBean(SlackClient)\n\n   three different context keys, three startups\n\n   move both @MockBean to a shared parent -> one context",
+   "note": "**5.7절의 문제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨텍스트를 가른다",
+   "md": "**`@MockBean` 이 컨텍스트 키에** 들어간다.\n\n> **5.7절에서 `@MockBean` 조합이 다르면 컨텍스트가 갈린다고** 했다.\n>\n> **컨트롤러 테스트마다 다른 서비스를 목으로 하면 컨텍스트가 그 수만큼** 뜬다.\n\n**해결은 공통 부모**다.\n\n```java\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n\n    @MockBean\n    protected MailSendClient mailSendClient;\n\n    @AfterEach\n    void tearDown() { ... }\n}\n```\n\n> **모든 통합 테스트가 같은 컨텍스트를** 쓴다.\n>\n> **메일을 안 쓰는 테스트에도 목이 뜨는 대가를** 낸다(5.7절).\n\n**대가가 하나 더** 있다.\n\n> **`@MockBean` 은 매 테스트 후 리셋**된다.\n> **부모에 있어도 자식마다 새로** 시작한다.\n>\n> **그건 좋은 점**이다 — **스텁이 안 샌다.**\n\n**`@SpyBean` 도** 있다.\n\n```java\n@SpyBean\nprivate MailSendClient mailSendClient;\n```\n\n> **6.5절의 스파이를 빈으로** 만든 것이다.\n> **`doReturn` 규칙이 그대로** 적용된다.\n\n**언제 뭘 쓰나**\n\n| 상황 | |\n|---|---|\n| 스프링 없이 서비스 로직 | **`@Mock`** |\n| `@WebMvcTest` | **`@MockBean` 필수** |\n| 통합 테스트에서 외부 시스템만 막기 | **`@MockBean`** |\n| 통합 테스트에서 리포지토리 막기 | **안 한다** (5장) |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- @Mock 판 ---\n\n@ExtendWith(MockitoExtension.class)\nclass MailServiceTest {\n    @Mock MailSendClient mailSendClient;\n    @Mock MailSendHistoryRepository mailSendHistoryRepository;\n    @InjectMocks MailService mailService;\n\n    @Test\n    void sendMail() {\n        given(mailSendClient.sendEmail(any(), any(), any(), any()))\n                .willReturn(true);\n\n        boolean result = mailService.sendMail(\"\", \"\", \"\", \"\");\n\n        assertThat(result).isTrue();\n        verify(mailSendHistoryRepository).save(any());\n    }\n}\n\n$ ./gradlew test --tests MailServiceTest\n\nMailServiceTest > sendMail() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n#   스프링 로그가 없다\n\n# --- @MockBean 판 ---\n\n@SpringBootTest\nclass OrderStatisticsServiceTest {\n\n    @MockBean MailSendClient mailSendClient;\n    @Autowired OrderStatisticsService orderStatisticsService;\n    @Autowired OrderRepository orderRepository;\n\n    @Test\n    void sendOrderStatisticsMail() {\n        given(mailSendClient.sendEmail(any(), any(), any(), any()))\n                .willReturn(true);\n        주문_3건_저장();\n\n        boolean result = orderStatisticsService.sendOrderStatisticsMail(\n                LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n        assertThat(result).isTrue();\n        assertThat(mailSendHistoryRepository.findAll()).hasSize(1);\n    }\n}\n\n$ ./gradlew test --tests OrderStatisticsServiceTest\n\n2026-09-09T17:16:22.104  INFO --- Started OrderStatisticsServiceTest in 3.512 seconds\n\nHibernate: insert into orders (...) values (?,?,?)\nHibernate: insert into orders (...) values (?,?,?)\nHibernate: insert into orders (...) values (?,?,?)\nHibernate: select o1_0.id, ... from orders o1_0\n           where o1_0.registered_date_time between ? and ?\n           and o1_0.order_status=?\nHibernate: insert into mail_send_history (content,from_email,subject,to_email)\n           values (?,?,?,?)\n\nOrderStatisticsServiceTest > sendOrderStatisticsMail() PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   SMTP 로그가 없다\n#   DB 는 진짜로 쓴다\n\n#   MailSendClient 만 가짜다\n\n#   MailService 도 OrderStatisticsService 도 진짜다\n\n# --- 세 단계 아래까지 바뀌는 것 ---\n\nOrderStatisticsService\n  -> MailService\n    -> MailSendClient    <- 여기가 목이다\n\n#   @Mock 이었다면 OrderStatisticsService 를 직접 만들어야 했다\n\nnew OrderStatisticsService(orderRepository,\n        new MailService(mockClient, historyRepository));\n\n#   @MockBean 은 컨테이너가 알아서 넣어 준다\n\n# --- @Mock 을 @SpringBootTest 에 쓰면 ---\n\n@SpringBootTest\nclass WrongTest {\n    @Mock MailSendClient mailSendClient;     // @MockBean 이 아니다\n    @Autowired OrderStatisticsService service;\n\n    @Test\n    void test() {\n        given(mailSendClient.sendEmail(any(), any(), any(), any()))\n                .willReturn(true);\n        주문_3건_저장();\n\n        boolean result = service.sendOrderStatisticsMail(\n                LocalDate.of(2026, 9, 9), \"admin@cafekiosk.com\");\n\n        assertThat(result).isTrue();\n    }\n}\n\n$ ./gradlew test --tests WrongTest\n\n2026-09-09T17:18:03.117 DEBUG --- Connecting to SMTP host smtp.gmail.com:587\n\nWrongTest > test() FAILED\n    org.springframework.mail.MailAuthenticationException\n\n#   진짜가 불렸다\n\n#   @Mock 은 필드만 채운다. 컨테이너는 모른다\n\n#   그리고 @ExtendWith(MockitoExtension.class) 도 없어서\n#   그 필드조차 null 일 수 있다\n\n# --- 컨텍스트 개수 ---\n\n@SpringBootTest\nclass ATest { }\n\n@SpringBootTest\nclass BTest { @MockBean MailSendClient client; }\n\n@SpringBootTest\nclass CTest { @MockBean MailSendClient client; @MockBean SlackClient slack; }\n\n$ ./gradlew test\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 1, maxSize = 32, hitCount = 0, missCount = 1]\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 2, maxSize = 32, hitCount = 0, missCount = 2]\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 3, maxSize = 32, hitCount = 0, missCount = 3]\n\nBUILD SUCCESSFUL in 18s\n\n#   컨텍스트가 3개다\n\n#   @SpringBootTest 는 같은데 @MockBean 이 다르다\n\n# --- 공통 부모로 ---\n\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n    @MockBean protected MailSendClient mailSendClient;\n    @MockBean protected SlackClient slackClient;\n}\n\nclass ATest extends IntegrationTestSupport { }\nclass BTest extends IntegrationTestSupport { }\nclass CTest extends IntegrationTestSupport { }\n\n$ ./gradlew test\n\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 1, maxSize = 32, hitCount = 0, missCount = 1]\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 1, maxSize = 32, hitCount = 1, missCount = 1]\nDEBUG DefaultCacheAwareContextLoaderDelegate :\n  [size = 1, maxSize = 32, hitCount = 2, missCount = 1]\n\nBUILD SUCCESSFUL in 11s\n\n#   컨텍스트 1개, 18초가 11초\n\n#   ATest 는 메일을 안 쓰는데 목이 떠 있다\n\n#   그게 대가다\n\n# --- 스텁이 테스트 사이에 안 새는지 ---\n\nclass BTest extends IntegrationTestSupport {\n    @Test void first() {\n        given(mailSendClient.sendEmail(any(), any(), any(), any()))\n                .willReturn(true);\n        System.out.println(\">>> first: \" + mailSendClient.sendEmail(\"\",\"\",\"\",\"\"));\n    }\n\n    @Test void second() {\n        System.out.println(\">>> second: \" + mailSendClient.sendEmail(\"\",\"\",\"\",\"\"));\n    }\n}\n\n>>> first: true\n>>> second: false\n\n#   두 번째는 스텁이 리셋됐다\n\n#   @MockBean 은 매 테스트 후 초기화된다\n\n# --- 다음 절에서 ---\n\n#   목이 만드는 함정을 다룬다",
+   "note": "**`@Mock` 판은 1초에 스프링 로그가** 없다.\n\n**`@MockBean` 판은 9초인데 SMTP 로그가 없고 DB 는 진짜로** 쓴다. **세 단계 아래의 `MailSendClient` 만** 가짜다.\n\n**`@SpringBootTest` 에 `@Mock` 을 쓰면 진짜가** 불린다. **컨테이너는 그 필드를** 모른다.\n\n**`@MockBean` 조합이 다르면 컨텍스트가 3개**다. **공통 부모로 묶으면 1개에 18초가 11초**다.\n\n**스텁이 테스트 사이에 안 샌다** — **매번 리셋**된다."
+  }
+ ],
+ "recap": [
+  "**`@Mock` 은 필드, `@MockBean` 은 컨테이너의 빈**을 바꾼다.",
+  "**`@MockBean` 은 세 단계 아래까지** 바뀐다.",
+  "**`@WebMvcTest` 에서는 `@MockBean` 이** 필수다.",
+  "**`@SpringBootTest` 에 `@Mock` 을 쓰면 진짜가** 불린다.",
+  "**`@MockBean` 조합이 컨텍스트를** 가른다.",
+  "**공통 부모로 묶으면 3개가 1개**가 된다.",
+  "**안 쓰는 목이 뜨는 게** 대가다.",
+  "**`@MockBean` 은 매 테스트 후 리셋**된다.",
+  "**부트 3.4 부터 `@MockitoBean`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`@Mock` 과 `@MockBean` 판을 각각 짠다.",
+   "done_when": "속도 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@SpringBootTest` 에 `@Mock` 을 써 본다.",
+   "done_when": "진짜가 불리는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@MockBean` 을 다르게 둔 클래스 셋을 만든다.",
+   "done_when": "컨텍스트가 3개인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "공통 부모로 묶는다.",
+   "done_when": "1개로 준 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@Mock` 과 `@MockBean` 의 차이는?",
+   "a": "`@Mock` 은 필드를 채우고 `@MockBean` 은 컨테이너의 빈을 교체한다."
+  },
+  {
+   "q": "`@MockBean` 의 교체 범위는?",
+   "a": "그 타입을 주입받는 모든 빈이다. 세 단계 아래도 바뀐다."
+  },
+  {
+   "q": "`@SpringBootTest` 에 `@Mock` 을 쓰면?",
+   "a": "컨테이너는 모르니 진짜 빈이 불린다."
+  },
+  {
+   "q": "컨텍스트가 왜 갈리나?",
+   "a": "`@MockBean` 조합이 컨텍스트 키에 들어가서다."
+  },
+  {
+   "q": "스텁이 다음 테스트로 새나?",
+   "a": "안 샌다. `@MockBean` 은 매 테스트 후 리셋된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Mockito Documentation",
+   "url": "https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html",
+   "publisher": "Mockito"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

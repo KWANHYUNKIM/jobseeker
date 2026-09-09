@@ -380,7 +380,7 @@
           "title": "@MockBean",
           "summary": "컨텍스트 안의 가짜.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -388,7 +388,7 @@
           "title": "목이 만드는 함정",
           "summary": "구현에 묶인 테스트.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
