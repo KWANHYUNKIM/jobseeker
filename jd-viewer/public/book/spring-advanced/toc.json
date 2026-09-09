@@ -204,7 +204,7 @@
           "title": "익명 클래스로",
           "summary": "클래스 파일이 안 는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -212,7 +212,7 @@
           "title": "적용한다",
           "summary": "코드가 줄어든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
