@@ -556,7 +556,7 @@
           "title": "실용적인 구조",
           "summary": "스프링 데이터 JPA + Querydsl.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -564,7 +564,7 @@
           "title": "정리",
           "summary": "섞어 쓰는 것이 정상이다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -579,7 +579,7 @@
           "title": "트랜잭션 적용 확인",
           "summary": "지금 트랜잭션이 걸려 있나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",

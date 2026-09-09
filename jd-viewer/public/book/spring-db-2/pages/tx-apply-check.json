@@ -1,0 +1,127 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-apply-check",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "트랜잭션 적용 확인",
+ "summary": "지금 트랜잭션이 걸려 있나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "트랜잭션 AOP 가 걸렸는지 확인한다.",
+  "프록시와 실제 객체를 구분한다.",
+  "확인 방법 셋을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**후반부가 시작된다.** **첫 질문은 \"걸려 있나\"** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "프록시가 빈이다",
+   "ascii": "   caller\n     |\n   proxy (SpringCGLIB)          <-- injected as the bean\n     |  begin\n     |\n   real object                  <-- the class i wrote\n     |  business logic\n     |\n   proxy\n        commit or rollback\n\n   the proxy is the bean. the real object is inside it.",
+   "note": "**6.5절에서 본 예외 변환 프록시와 같은 구조**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이것부터 확인하나",
+   "md": "**6.6절에서 본 그 사고** 때문이다.\n\n```java\npublic void update(Long id, ItemUpdateDto dto) {   // @Transactional 없음\n    Item item = em.find(Item.class, id);\n    item.setPrice(dto.getPrice());\n}\n// 아무 일도 안 일어난다\n```\n\n**예외도 로그도 없다.** **9.2절의 조용한 실패 목록에 있던 것**이다.\n\n**10장의 나머지가 전부 \"안 걸리는 경우\"** 다.\n\n| 안 걸리는 경우 | 절 |\n|---|---|\n| 애너테이션을 안 붙였다 | — |\n| **`private` 메서드** | 10.2 |\n| **같은 클래스 안에서 호출** | **10.3** |\n| **`@PostConstruct` 안** | **10.4** |\n| `final` 클래스·메서드 | 10.2 |\n| **`new` 로 만든 객체** | 10.1 |\n\n**마지막이 테스트에서 자주** 생긴다.\n\n```java\nItemService service = new ItemService(repository);   // 프록시가 아니다\n```\n\n**스프링이 안 만든 객체에는 AOP 가 없다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "확인하는 세 가지 방법",
+   "ascii": "   three ways to check\n\n   1  log the class name\n        service.getClass()  ->  ...$$SpringCGLIB$$0\n\n   2  ask spring\n        TransactionSynchronizationManager\n            .isActualTransactionActive()   ->  true / false\n\n   3  read the log\n        Getting transaction for [...]\n\n   1 says aop applied. 2 and 3 say a transaction is running.",
+   "note": "**1번과 2·3번이 다른 것**을 확인한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "확인 코드",
+   "code": "@Slf4j\n@SpringBootTest\nclass TxApplyTest {\n\n    @Autowired BasicService basicService;\n\n    @Test\n    void proxyCheck() {\n        log.info(\"aop class={}\", basicService.getClass());\n        assertThat(AopUtils.isAopProxy(basicService)).isTrue();\n    }\n\n    @Test\n    void txTest() {\n        basicService.tx();\n        basicService.nonTx();\n    }\n\n    @TestConfiguration\n    static class Config {\n        @Bean\n        BasicService basicService() {\n            return new BasicService();\n        }\n    }\n\n    @Slf4j\n    static class BasicService {\n\n        @Transactional\n        public void tx() {\n            log.info(\"call tx\");\n            boolean active = TransactionSynchronizationManager\n                    .isActualTransactionActive();\n            log.info(\"tx active={}\", active);\n        }\n\n        public void nonTx() {\n            log.info(\"call nonTx\");\n            boolean active = TransactionSynchronizationManager\n                    .isActualTransactionActive();\n            log.info(\"tx active={}\", active);\n        }\n    }\n}",
+   "note": "**클래스에 `@Transactional` 이 하나라도 있으면 프록시가 만들어진다.** **`nonTx` 도 프록시를 거친다.**\n\n**다만 `nonTx` 에서는 트랜잭션을 안 연다.** **프록시가 애너테이션을 보고 판단**한다.\n\n**`isActualTransactionActive()`** 가 가장 확실한 확인이다. **1편 5.4절의 동기화 매니저**에게 직접 묻는다.\n\n> **`isSynchronizationActive()` 와 다르다.** **후자는 `readOnly` 나 동기화만 걸린 경우에도 `true`** 다. **실제 트랜잭션은 `isActualTransactionActive()`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "프록시는 언제 CGLIB 인가",
+   "md": "**스프링 부트는 항상 CGLIB** 를 쓴다.\n\n| | JDK 동적 프록시 | CGLIB |\n|---|---|---|\n| 필요한 것 | **인터페이스** | 없다 |\n| 만드는 것 | 인터페이스 구현체 | **자식 클래스** |\n| 제약 | 인터페이스 메서드만 | **`final` 클래스·메서드 안 됨** |\n\n**부트가 `proxyTargetClass=true` 로 기본 설정**했다. **인터페이스가 있어도 CGLIB** 다.\n\n> **왜 그랬나.** **JDK 프록시는 인터페이스 타입으로만 주입**된다. **구체 클래스로 주입받으면 터진다.** **CGLIB 는 둘 다** 된다.\n\n**5.7절의 MyBatis 프록시는 JDK 동적 프록시**였다 — **`$Proxy67`**. **거기는 인터페이스뿐이고 구현이 없어서** 그렇게 할 수밖에 없었다.\n\n**CGLIB 의 제약**이 하나 있다.\n\n```java\n@Transactional\npublic final void 안걸린다() { }   // 자식이 오버라이드를 못 한다\n```\n\n**코틀린에서 특히 문제**가 된다 — **클래스와 메서드가 기본으로 `final`** 이다. `all-open` 플러그인을 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 프록시 확인 ---\n\nlog.info(\"aop class={}\", basicService.getClass());\n\n#   aop class=class hello.springtx.apply.TxApplyTest$BasicService$$SpringCGLIB$$0\n\n#   내가 쓴 클래스가 아니다\n\n# --- @Transactional 이 붙은 메서드 ---\n\nbasicService.tx();\n\n#   Getting transaction for [hello...BasicService.tx]\n#   Creating new transaction with name [hello...BasicService.tx]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   call tx\n#   tx active=true\n\n#   Completing transaction for [hello...BasicService.tx]\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# --- 안 붙은 메서드 ---\n\nbasicService.nonTx();\n\n#   call nonTx\n#   tx active=false\n\n#   (Getting transaction 이 없다)\n#   (커넥션도 안 빌렸다)\n\n# --- new 로 만들면 ---\n\nBasicService plain = new BasicService();\nplain.tx();\n\n#   call tx\n#   tx active=false\n\n#   (@Transactional 이 붙어 있는데도 아무 일이 없다)\n\n# --- 그리고 실제로 무슨 일이 나는가 ---\n\n@Transactional\npublic void 저장() {\n    em.persist(item);\n}\n\n# 프록시를 통해 부르면\n#   Getting transaction for [...]\n#   Hibernate: insert into item ...\n#   Committing JDBC transaction\n\n# new 로 만든 객체에서 부르면\n#   TransactionRequiredException:\n#     No EntityManager with actual transaction available",
+   "note": "**`$$SpringCGLIB$$0`** 이 첫 번째 증거다.\n\n**`Getting transaction for` 의 유무**가 두 번째다. **`nonTx` 에는 커넥션을 빌리는 줄조차** 없다.\n\n**세 번째 블록이 이 절의 경고**다. **`new` 로 만들면 애너테이션이 장식**이다.\n\n**맨 아래에서 JPA 는 예외를 던지고**(6.6절), **JdbcTemplate 이었다면 그냥 각각 커밋**됐을 것이다. **기술에 따라 실패 방식이 다르다.**\n\n**다음 절에서 우선순위를 본다.**"
+  }
+ ],
+ "recap": [
+  "**프록시가 빈**이고 실제 객체는 그 안에 있다.",
+  "**클래스에 `@Transactional` 이 하나라도 있으면** 프록시가 만들어진다.",
+  "**메서드마다 애너테이션을 보고** 트랜잭션을 열지 정한다.",
+  "**`Getting transaction for` 로그**가 가장 쉬운 확인이다.",
+  "**`isActualTransactionActive()`** 가 가장 확실하다.",
+  "**`isSynchronizationActive()` 와 다르다.**",
+  "**부트는 항상 CGLIB** 프록시다.",
+  "**`final` 클래스·메서드에는 안 걸린다** — 코틀린 주의.",
+  "**`new` 로 만든 객체에는 아무 일도 안 일어난다.**"
+ ],
+ "drills": [
+  {
+   "task": "빈의 클래스 이름을 찍는다.",
+   "done_when": "`$$SpringCGLIB$$0` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`isActualTransactionActive()` 를 두 메서드에서 찍는다.",
+   "done_when": "true/false 가 갈리는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`new` 로 만든 객체의 `@Transactional` 메서드를 부른다.",
+   "done_when": "아무 일도 안 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드를 `final` 로 만들어 본다.",
+   "done_when": "트랜잭션이 안 걸리는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "주입받는 것은 무엇인가?",
+   "a": "프록시다. 실제 객체는 그 안에 있다."
+  },
+  {
+   "q": "트랜잭션이 걸렸는지 확인하는 방법 셋은?",
+   "a": "클래스 이름 확인, `isActualTransactionActive()`, `Getting transaction for` 로그다."
+  },
+  {
+   "q": "부트는 어떤 프록시를 쓰나?",
+   "a": "인터페이스가 있어도 항상 CGLIB 다."
+  },
+  {
+   "q": "`final` 이면 왜 안 걸리나?",
+   "a": "CGLIB 가 자식 클래스를 만들어 오버라이드해야 하는데 못 하기 때문이다."
+  },
+  {
+   "q": "`new` 로 만들면?",
+   "a": "AOP 가 없어 애너테이션이 아무 일도 안 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

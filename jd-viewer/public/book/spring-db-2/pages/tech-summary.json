@@ -1,0 +1,150 @@
+{
+ "book": "spring-db-2",
+ "id": "tech-summary",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "정리",
+ "summary": "섞어 쓰는 것이 정상이다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책 전반부를 마무리한다.",
+  "여섯 구현의 결과를 확인한다.",
+  "후반부가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장부터 8장까지 같은 기능을 여섯 번 만들었다.** **결과를 센다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "지나온 길",
+   "ascii": "   2장  memory        60 lines   0 queries   the baseline\n   3장  jdbctemplate  96 lines   7 sql\n   5장  mybatis       20 + 35    7 sql\n   6장  jpa           50 lines   8 sql   (2 of them unwritten)\n   7장  data jpa      30 lines   8 sql   0 query strings\n   8장  querydsl      30 lines   8 sql   0 query strings, 0 ifs\n\n   controller changes across all six:  none\n   domain changes:                     one (@Entity, 6.2)\n   test changes:                       one (chapter 4)",
+   "note": "**아래 세 줄이 이 책의 방법이 성립했다는 증거**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세 가지 결론",
+   "md": "**① SQL 은 상수, 자바 코드는 변수다.** (1.1절의 가설)\n\n**다섯 기술이 사실상 같은 SQL 을 만들었다.** **자바 코드는 25줄에서 4줄까지** 갔다.\n\n> **기술은 SQL 을 없애지 않는다. 누가 쓰느냐만 바꾼다.** — 2.1절\n\n**② 편함과 통제는 교환된다.**\n\n**오른쪽으로 갈수록 코드가 줄고 봐야 할 것이 늘었다.** **9.2절의 표**가 그것이다.\n\n**③ 하나를 고르는 문제가 아니다.**\n\n**9.1절의 네 화면**이 서로 다른 답을 줬다. **9.3절이 그 답이다.**\n\n---\n\n**그리고 방법 하나.**\n\n> **인터페이스와 테스트를 고정하면 구현을 갈아 끼울 수 있다.**\n\n**여섯 번 바꾸는 동안 컨트롤러를 한 번도 안 열었다.** **2.3절의 패키지 구조와 2.4절의 설정 클래스가 그것을 가능하게** 했다.\n\n**도메인은 한 번 바뀌었고**(6.2절 `@Entity`), **테스트는 4장에서 한 번** 고쳤다."
+  },
+  {
+   "type": "compare",
+   "caption": "이 책이 준 것과 안 준 것",
+   "left": {
+    "title": "다뤘다",
+    "points": [
+     "다섯 기술의 **동작 원리와 로그**",
+     "**동적 쿼리**를 다섯 가지 방법으로",
+     "**테스트 격리**",
+     "**기술 선택의 기준**",
+     "**섞어 쓰는 구조**"
+    ]
+   },
+   "right": {
+    "title": "안 다뤘다",
+    "points": [
+     "**각 기술의 전부** — 「JPA 기본편」 열두 장",
+     "**성능 튜닝** — 인덱스, 실행 계획",
+     "**분산 트랜잭션** — 2PC, 사가",
+     "**NoSQL·리액티브** — R2DBC",
+     "**마이그레이션 도구** — Flyway, Liquibase"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "후반부는 다른 책 같다",
+   "md": "**여기까지가 \"무엇으로 DB 를 다루나\"** 였다.\n\n**10~12장은 \"트랜잭션이 어떻게 도나\"** 다.\n\n| | 전반부 (2~9장) | 후반부 (10~12장) |\n|---|---|---|\n| 질문 | **어떤 기술** | **@Transactional 의 세부** |\n| 예제 | 상품 관리 | **작은 실험 코드** |\n| 매 절의 끝 | **나간 SQL** | **트랜잭션 로그** |\n| 기술 | 다섯 | **관계없다** |\n\n**마지막 줄이 중요**하다. **10~12장의 내용은 JdbcTemplate 을 쓰든 JPA 를 쓰든 똑같이** 적용된다.\n\n> **1편 5장에서 `@Transactional` 을 붙였고, 그때는 \"붙이면 된다\" 였다.** **1편 5.11절에 주의할 점 일곱 개를 적어 두고 넘어갔다.**\n>\n> **그 일곱 개가 10~12장**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "남은 세 장",
+   "ascii": "   what is left\n\n   10장  @Transactional in detail\n         where it applies, when it rolls back, what the options do\n\n   11장  propagation, the basics\n         what happens when a transaction is already running\n\n   12장  propagation, in practice\n         the recovery pattern that everyone gets wrong first\n\n   these three end with transaction logs, not sql",
+   "note": "**여기서부터 SQL 대신 트랜잭션 로그**를 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "후반부를 읽는 준비",
+   "md": "**설정 하나를 바꾼다.**\n\n```properties\n# 지금까지\nlogging.level.org.hibernate.SQL=DEBUG\n\n# 여기서부터\nlogging.level.org.springframework.transaction.interceptor=TRACE\nlogging.level.org.springframework.jdbc.datasource.DataSourceTransactionManager=DEBUG\nlogging.level.org.springframework.orm.jpa.JpaTransactionManager=DEBUG\n```\n\n**로그가 이렇게 바뀐다.**\n\n```\nGetting transaction for [hello...Service.method]\nCreating new transaction with name [...]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT\nAcquired Connection [conn0] for JDBC transaction\nSwitching JDBC Connection to manual commit\n...\nInitiating transaction commit\nCommitting JDBC transaction on Connection [conn0]\nReleasing JDBC Connection [conn0] after transaction\n```\n\n**이 여섯 줄을 읽는 것**이 후반부다.\n\n| 줄 | 무엇을 알려 주나 |\n|---|---|\n| `Getting transaction for` | **AOP 가 걸렸다** — 10.1절 |\n| `Creating new` / `Participating in` | **전파** — 11장 |\n| `Acquired Connection` | 커넥션을 빌렸다 |\n| `Switching to manual commit` | 오토커밋을 껐다 |\n| `Initiating transaction commit` / `rollback` | **롤백 규칙** — 10.6절 |\n| `Releasing` | 반납했다 |\n\n> **`Getting transaction for` 가 안 보이면 트랜잭션이 안 걸린 것**이다. **10.1절이 그 이야기로 시작**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 트랜잭션 로그",
+   "sql": "# --- 전반부의 마지막 확인 ---\n\n# 여덟 개의 설정으로 같은 테스트\n\n#   MemoryConfig             3/3 passed\n#   JdbcTemplateV1Config     3/3 passed\n#   JdbcTemplateV2Config     3/3 passed\n#   JdbcTemplateV3Config     3/3 passed\n#   MyBatisConfig            3/3 passed\n#   JpaConfig                3/3 passed\n#   SpringDataJpaConfig      3/3 passed\n#   QuerydslConfig           3/3 passed\n\n# 같은 SQL\n#   select ... from item where item_name like ? and price <= ?\n\n# --- 여기서부터 로그가 바뀐다 ---\n\nitemService.save(item);\n\n#   Getting transaction for [hello.itemservice.service.ItemService.save]\n#   Creating new transaction with name\n#     [hello.itemservice.service.ItemService.save]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\n#   Completing transaction for\n#     [hello.itemservice.service.ItemService.save]\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# SQL 은 한 줄이고 트랜잭션 로그가 여덟 줄이다\n\n# --- 10장에서 물을 것 ---\n\n#   Getting transaction 이 왜 안 나오나          10.1\n#   클래스와 메서드에 둘 다 붙이면              10.2\n#   같은 클래스 메서드를 부르면                 10.3\n#   @PostConstruct 안에서는                     10.4\n#   체크 예외를 던지면 왜 커밋되나              10.6\n#   readOnly 는 무엇을 하나                     10.9\n\n# 여섯 질문이 1편 5.11절의 목록이다",
+   "note": "**여덟 설정이 같은 테스트를 통과**했다. **전반부가 끝났다.**\n\n**아래 블록에서 SQL 한 줄에 트랜잭션 로그가 여덟 줄**이다. **지금까지 이 여덟 줄을 배경으로** 두고 SQL 만 봤다.\n\n**후반부는 반대**다. **SQL 을 배경으로 두고 이 여덟 줄을 읽는다.**\n\n**맨 아래 여섯 질문이 10장**이다."
+  }
+ ],
+ "recap": [
+  "**여섯 구현, 같은 테스트, 같은 SQL.**",
+  "**컨트롤러는 한 번도 안 바뀌었다.**",
+  "**도메인은 한 번**(`@Entity`), **테스트는 한 번**(4장) 바뀌었다.",
+  "**SQL 은 상수, 자바 코드는 변수**다.",
+  "**편함과 통제는 교환**된다.",
+  "**하나를 고르는 문제가 아니다** — 섞는다.",
+  "**후반부는 기술과 무관**하다 — `@Transactional` 의 세부다.",
+  "**매 절의 끝이 SQL 에서 트랜잭션 로그**로 바뀐다.",
+  "**1편 5.11절의 주의 사항 일곱 개가 10~12장**이다."
+ ],
+ "drills": [
+  {
+   "task": "여섯 구현의 줄 수와 쿼리 문자열 수를 최종 표로 만든다.",
+   "done_when": "전체 흐름이 한눈에 보인다.",
+   "minutes": 20
+  },
+  {
+   "task": "트랜잭션 로그 설정을 켠다.",
+   "done_when": "여덟 줄이 찍히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편 5.11절의 주의 사항을 다시 읽는다.",
+   "done_when": "10~12장에서 다룰 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금 프로젝트에 9.3절 구조를 적용해 본다.",
+   "done_when": "리포지토리를 세 종류로 나눴다.",
+   "minutes": 40
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책 전반부의 세 결론은?",
+   "a": "SQL 은 상수·코드는 변수, 편함과 통제의 교환, 섞어 쓰는 것이 정상이다."
+  },
+  {
+   "q": "구현을 여섯 번 바꾸며 무엇이 안 바뀌었나?",
+   "a": "컨트롤러다. 도메인과 테스트는 각각 한 번 바뀌었다."
+  },
+  {
+   "q": "후반부는 무엇이 다른가?",
+   "a": "기술과 무관한 `@Transactional` 의 세부이고, 매 절이 트랜잭션 로그로 끝난다."
+  },
+  {
+   "q": "`Getting transaction for` 가 안 보이면?",
+   "a": "트랜잭션 AOP 가 안 걸린 것이다."
+  },
+  {
+   "q": "10~12장의 내용은 어디서 왔나?",
+   "a": "1편 5.11절에 적어 두고 넘어간 주의 사항 일곱 개다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
