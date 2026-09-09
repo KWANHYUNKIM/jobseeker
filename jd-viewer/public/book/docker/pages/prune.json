@@ -1,0 +1,147 @@
+{
+ "book": "docker",
+ "id": "prune",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "남은 것들을 치운다",
+ "summary": "디스크를 먹는 것은 대개 이미지가 아니다.",
+ "minutes": 10,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 디스크를 먹는지 안다.",
+  "prune 종류와 위험을 안다.",
+  "볼륨을 실수로 안 지운다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**도커를 몇 달 쓰면 디스크가** 찬다. **어디가 찼는지부터** 본다.\n\n```bash\ndocker system df\n```\n\n> **추측하지 않는다.** **이 한 줄이 네 줄로 답을** 준다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 쌓이나",
+   "columns": [
+    "종류",
+    "왜 쌓이나",
+    "치우는 법"
+   ],
+   "rows": [
+    [
+     "**이미지**",
+     "태그를 다시 붙이면 옛 이미지가 `<none>` 으로 남는다 (dangling)",
+     "`docker image prune`"
+    ],
+    [
+     "**멈춘 컨테이너**",
+     "`--rm` 을 안 쓰면 계속 남는다",
+     "`docker container prune`"
+    ],
+    [
+     "**볼륨**",
+     "컨테이너를 지워도 **볼륨은 안 지워진다**",
+     "`docker volume prune` — **조심**"
+    ],
+    [
+     "**빌드 캐시**",
+     "BuildKit 캐시. **의외로 이게 제일 크다**",
+     "`docker builder prune`"
+    ],
+    [
+     "**로그 파일**",
+     "컨테이너가 오래 돌면 계속 큰다",
+     "6.4절의 로그 로테이션"
+    ]
+   ],
+   "note": "**\"이미지를 지웠는데 안 줄었다\" 는 대개 빌드 캐시나 볼륨**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "dangling 이미지가 생기는 이유",
+   "md": "**같은 태그로 다시 빌드하면 옛 이미지는 태그를** 잃는다.\n\n```\ndocker build -t myapp:latest .    # 이미지 A -> myapp:latest\n(코드 수정)\ndocker build -t myapp:latest .    # 이미지 B -> myapp:latest\n                                   # A 는 <none>:<none> 이 된다\n```\n\n**A 는 안 지워진다.** **참조가 없을 뿐**이다.\n\n```bash\n$ docker images -f dangling=true\nREPOSITORY   TAG       IMAGE ID       SIZE\n<none>       <none>    8a3f1e2b9c0d   312MB\n<none>       <none>    2c9d8e7f6a5b   312MB\n```\n\n> **하루에 열 번 빌드하면 하루에 열 개가** 쌓인다.\n> **`docker image prune` 이 이것만 지운다.** **태그가 붙은 이미지는 안 건드린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "prune 은 되돌릴 수 없다",
+   "md": "**무엇이 지워지는지 정확히 알고** 친다.\n\n| 명령 | 지우는 것 | 위험 |\n|---|---|---|\n| `docker container prune` | **멈춘 컨테이너 전부** | 다른 프로젝트의 것도 |\n| `docker image prune` | dangling 이미지만 | 낮다 |\n| **`docker image prune -a`** | **컨테이너가 안 쓰는 모든 이미지** | 다시 pull 해야 한다 |\n| `docker builder prune` | 빌드 캐시 | 다음 빌드가 느려진다 |\n| **`docker volume prune`** | **어떤 컨테이너도 안 쓰는 볼륨** | **데이터가 사라진다** |\n| **`docker system prune -a --volumes`** | **전부** | **DB 데이터까지** |\n\n**볼륨이 특히 위험**하다.\n\n```\ndocker rm -f db          # 컨테이너를 지운다. 볼륨은 남는다\ndocker volume prune      # 이제 그 볼륨은 '안 쓰는 볼륨' 이다 -> 지워진다\n```\n\n> **이 두 줄 사이에 DB 데이터가** 있다. **8.5절에서 이 순서를 다시** 본다.\n\n**안전하게 보고 나서 지운다**:\n\n```bash\ndocker system df -v | head -30      # 무엇이 있는지 먼저\ndocker image prune --filter 'until=168h'   # 일주일 넘은 것만\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "빌드 캐시가 제일 크다",
+   "md": "**BuildKit 은 빌드 중간 결과를 캐시로** 쌓는다(5.9절). **개발 머신에서는 이게 수십 GB 가** 된다.\n\n```bash\n$ docker system df\nTYPE            TOTAL   ACTIVE   SIZE      RECLAIMABLE\nImages          43      6        12.4GB    8.2GB\nContainers      12      3        1.1GB     980MB\nLocal Volumes   9       2        3.4GB     2.1GB\nBuild Cache     284     0        31.7GB    31.7GB\n```\n\n> **31.7GB 다.** **이미지보다 크다.**\n\n```bash\ndocker builder prune --filter 'until=72h'\n```\n\n**Docker Desktop 은 VM 디스크 파일이 한번 커지면 자동으로 안** 줄어든다. **안에서 지워도 호스트의 `Docker.raw` 는 그대로**일 수 있다 — **Desktop 설정에서 'Clean / Purge data' 를 쓰거나 디스크를 재생성**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "무엇이 얼마나 먹고 있는지 보고 치운다",
+   "sql": "# --- 전체 ---\n\n$ docker system df\nTYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          31        4         9.842GB   6.117GB (62%)\nContainers      18        4         412.3MB   398.1MB (96%)\nLocal Volumes   11        2         2.881GB   1.902GB (66%)\nBuild Cache     212       0         14.66GB   14.66GB\n\n#   RECLAIMABLE 이 지울 수 있는 양이다\n#   합치면 23GB 를 회수할 수 있다\n\n\n# --- 상세: 무엇이 큰가 ---\n\n$ docker system df -v | sed -n '1,12p'\nImages space usage:\n\nREPOSITORY   TAG       IMAGE ID       SHARED SIZE   UNIQUE SIZE   CONTAINERS\nmyapp        latest    8a3f1e2b9c0d   279MB         412MB         1\n<none>       <none>    2c9d8e7f6a5b   279MB         408MB         0\n<none>       <none>    5b4a3c2d1e0f   279MB         407MB         0\n<none>       <none>    9e8d7c6b5a49   279MB         405MB         0\npostgres     16        0MB            438MB         1\n\n#   <none> 셋이 각각 400MB 다. 어제 세 번 빌드한 흔적이다\n\n$ docker images -f dangling=true -q | wc -l\n8\n\n\n# --- dangling 만 치운다 ---\n\n$ docker image prune -f\nDeleted Images:\ndeleted: sha256:2c9d8e7f6a5b...\ndeleted: sha256:5b4a3c2d1e0f...\n...\n\nTotal reclaimed space: 3.216GB\n\n\n# --- 멈춘 컨테이너 ---\n\n$ docker ps -a --filter status=exited --format 'table {{.Names}}\\t{{.Status}}' | head -5\nNAMES       STATUS\nboom        Exited (3) 2 hours ago\nstubborn    Exited (137) 2 hours ago\nweb1        Exited (0) 5 days ago\n\n$ docker container prune -f\nTotal reclaimed space: 398.1MB\n\n\n# --- 빌드 캐시 ---\n\n$ docker builder prune -f --filter 'until=72h'\nTotal:  11.2GB\n\n\n# --- 볼륨은 보고 나서 ---\n\n$ docker volume ls\nDRIVER    VOLUME NAME\nlocal     shop_pgdata            <- 컴포즈가 만든 것. 데이터가 있다\nlocal     3f8a9b2c1d0e5f4a...    <- 익명 볼륨. 정체 불명\n\n$ docker volume inspect shop_pgdata -f '{{.Mountpoint}}'\n/var/lib/docker/volumes/shop_pgdata/_data\n\n$ docker ps -a --filter volume=shop_pgdata --format '{{.Names}}'\n\n#   아무도 안 쓴다 -> prune 하면 지워진다\n#   그런데 이건 지우면 안 되는 DB 데이터다\n\n$ docker volume prune -f\nWARNING! This will remove anonymous local volumes not used by at least one container.\n\n#   기본은 익명 볼륨만 지운다. --all 을 주면 이름 있는 볼륨까지 지운다\n\n\n# --- 최종 ---\n\n$ docker system df\nTYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          9         4         3.212GB   0.881GB (27%)\nContainers      4         4         14.2MB    0B\nLocal Volumes   3         2         2.881GB   0.9GB (31%)\nBuild Cache     41        0         3.44GB    3.44GB\n\n#   23GB 에서 9.5GB 로 줄었다"
+  }
+ ],
+ "recap": [
+  "docker system df 로 먼저 본다. 대개 빌드 캐시와 dangling 이미지가 범인이다.",
+  "같은 태그로 다시 빌드하면 옛 이미지가 <none> 으로 남는다. image prune 이 이것을 지운다.",
+  "prune 은 되돌릴 수 없다. 특히 volume prune 은 데이터를 지운다.",
+  "docker system prune -a --volumes 는 DB 데이터까지 지운다. 실습 머신에서만.",
+  "Docker Desktop 은 VM 디스크가 한번 커지면 자동으로 안 줄어든다."
+ ],
+ "drills": [
+  {
+   "task": "`docker system df` 와 `docker system df -v` 를 쳐서 무엇이 가장 큰지 찾는다.",
+   "done_when": "이미지·컨테이너·볼륨·빌드 캐시 중 범인을 지목할 수 있다.",
+   "minutes": 4
+  },
+  {
+   "task": "같은 태그로 두 번 빌드해서 dangling 이미지를 만들고 `docker images -f dangling=true` 로 확인한다.",
+   "done_when": "<none> 이미지가 생기는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "이름 있는 볼륨을 하나 만들고 컨테이너를 지운 뒤 `docker volume ls` 로 볼륨이 남아 있는 것을 확인한다.",
+   "done_when": "컨테이너를 지워도 볼륨이 남는다는 것을 본다.",
+   "hint": "prune 하기 전에 반드시 확인해야 하는 이유다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이미지를 지웠는데 디스크가 안 줄었다면 어디를 보나.",
+   "a": "빌드 캐시(docker builder prune)와 볼륨. system df 의 Build Cache 줄을 본다."
+  },
+  {
+   "q": "dangling 이미지는 왜 생기나.",
+   "a": "같은 태그로 다시 빌드하면 옛 이미지가 태그를 잃고 <none> 으로 남는다."
+  },
+  {
+   "q": "`docker volume prune` 이 위험한 이유는.",
+   "a": "컨테이너를 지운 뒤라면 DB 볼륨도 '안 쓰는 볼륨' 이 되어 데이터가 지워질 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "dangling 이미지",
+   "what": "태그를 잃고 참조가 없어진 이미지. <none>:<none> 으로 보인다."
+  },
+  {
+   "term": "빌드 캐시",
+   "what": "BuildKit 이 빌드 단계별 결과를 저장해 둔 것. 5.9절."
+  },
+  {
+   "term": "RECLAIMABLE",
+   "what": "지워서 되찾을 수 있는 용량. system df 의 마지막 열."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Prune unused objects",
+   "url": "https://docs.docker.com/engine/manage-resources/pruning/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — docker system df",
+   "url": "https://docs.docker.com/reference/cli/docker/system/df/",
+   "publisher": "Docker"
+  }
+ ]
+}

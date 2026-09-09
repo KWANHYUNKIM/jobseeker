@@ -144,7 +144,7 @@
           "title": "컨테이너는 이미지 + 쓰기 레이어",
           "summary": "같은 이미지로 열 개를 띄워도 디스크는 한 벌.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -152,7 +152,7 @@
           "title": "이미지 메타데이터",
           "summary": "inspect 가 알려 주는 것들.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -160,7 +160,7 @@
           "title": "컨테이너 라이프사이클",
           "summary": "created · running · exited 사이의 이동.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -168,7 +168,7 @@
           "title": "컨테이너 안으로 들어가기",
           "summary": "exec 와 attach 는 다른 일을 한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -176,7 +176,7 @@
           "title": "남은 것들을 치운다",
           "summary": "디스크를 먹는 것은 대개 이미지가 아니다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

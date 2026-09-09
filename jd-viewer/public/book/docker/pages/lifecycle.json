@@ -1,0 +1,172 @@
+{
+ "book": "docker",
+ "id": "lifecycle",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "컨테이너 라이프사이클",
+ "summary": "created · running · exited 사이의 이동.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨테이너 상태와 전이를 안다.",
+  "stop 과 kill 의 차이를 안다.",
+  "종료 신호를 어떻게 받아야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "상태와 전이",
+   "ascii": "                docker create\n                     |\n                     v\n                 [ created ]\n                     |  docker start\n                     v\n   docker pause  [ running ]  <----+\n        |            |            | docker start / restart\n        v            | exit or    |\n   [ paused ]        | docker stop|\n        |            v            |\n        +------> [ exited (code) ]+\n           unpause    |\n                      | docker rm\n                      v\n                  (gone: writable layer deleted)\n\n   restarting 은 running 과 exited 사이를 오가는 상태다 (6.3절)",
+   "note": "**`docker ps` 는 running 만, `docker ps -a` 는 전부** 보여 준다."
+  },
+  {
+   "type": "table",
+   "caption": "명령과 상태",
+   "columns": [
+    "명령",
+    "무엇을 하나",
+    "신호"
+   ],
+   "rows": [
+    [
+     "`docker start`",
+     "exited/created → running",
+     "—"
+    ],
+    [
+     "`docker stop`",
+     "**정중히 내린다**",
+     "**SIGTERM → (10초) → SIGKILL**"
+    ],
+    [
+     "`docker kill`",
+     "**즉시 죽인다**",
+     "SIGKILL (또는 `-s` 로 지정)"
+    ],
+    [
+     "`docker restart`",
+     "stop 후 start",
+     "stop 과 같다"
+    ],
+    [
+     "`docker pause`",
+     "프로세스를 얼린다 (cgroup freezer)",
+     "SIGSTOP 이 아니다. 프로세스는 자기가 멈춘 줄 모른다"
+    ],
+    [
+     "`docker rm`",
+     "컨테이너와 쓰기 레이어를 지운다",
+     "—"
+    ]
+   ],
+   "note": "**`stop` 의 10초가 이 절의 핵심**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "stop 은 10초를 기다려 준다",
+   "md": "**`docker stop` 은 두 단계**다.\n\n```\n1) SIGTERM 을 PID 1 에게 보낸다\n2) 10초 기다린다\n3) 아직 살아 있으면 SIGKILL\n```\n\n**이 10초 동안 애플리케이션이 할 일**:\n\n| 할 일 | 왜 |\n|---|---|\n| 새 요청 안 받기 | 받아 놓고 죽으면 502 |\n| **처리 중인 요청 끝내기** | 결제 중에 죽으면 곤란하다 |\n| 커넥션 풀 반납 | DB 쪽에 세션이 남는다(「스프링 DB 1편」 3.6절) |\n| 캐시 flush | |\n\n**스프링 부트는 이걸 지원**한다.\n\n```properties\nserver.shutdown=graceful\nspring.lifecycle.timeout-per-shutdown-phase=20s\n```\n\n> **다만 애플리케이션이 SIGTERM 을 받아야 이게 돈다.** **PID 1 이 셸이면 신호가 안 간다** — 5.5절의 `exec` 형식 이야기가 바로 이것이다.\n\n**시간을 늘리려면**:\n\n```bash\ndocker stop -t 30 myapp\n```"
+  },
+  {
+   "type": "compare",
+   "caption": "SIGTERM 이 애플리케이션에 닿느냐",
+   "left": {
+    "title": "셸이 PID 1 이면 안 닿는다",
+    "lang": "dockerfile",
+    "bad": true,
+    "code": "CMD java -jar /app/app.jar\n\n# 실제로는 이렇게 실행된다\n#   /bin/sh -c \"java -jar /app/app.jar\"\n#\n# PID 1 = sh\n# PID 7 = java\n#\n# docker stop -> SIGTERM 은 sh 에게\n# sh 는 자식에게 전달하지 않는다\n# 10초 뒤 SIGKILL 로 java 가 강제 종료\n#\n# graceful shutdown 이 한 번도 안 돈다"
+   },
+   "right": {
+    "title": "exec 형식이면 닿는다",
+    "lang": "dockerfile",
+    "code": "CMD [\"java\", \"-jar\", \"/app/app.jar\"]\n\n# PID 1 = java\n#\n# docker stop -> SIGTERM 이 java 에게 직접\n# Spring 이 graceful shutdown 을 수행\n#\n# 로그:\n#   Commencing graceful shutdown...\n#   Graceful shutdown complete\n#   Exited (143)\n#\n# 143 = 128 + 15 (SIGTERM). 정상 종료다"
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "종료 코드로 무슨 일이 있었는지 읽는다",
+   "md": "**1.5절의 표를 라이프사이클 관점에서 다시** 본다.\n\n| 코드 | 무슨 일 |\n|---|---|\n| **0** | 프로세스가 스스로 정상 종료. 서버라면 **왜 끝났는지** 봐야 한다 |\n| **143** | SIGTERM 을 받고 정상 종료. **`docker stop` 이 잘 된 것** |\n| **137** | SIGKILL. **stop 의 10초를 못 지켰거나 OOM** |\n| **1** | 애플리케이션 예외 |\n\n**137 이 나오면 둘 중 하나**다.\n\n```bash\ndocker inspect -f '{{.State.OOMKilled}}' myapp\n```\n\n| 값 | 뜻 |\n|---|---|\n| `true` | 메모리 초과. 6.6절·10.3절 |\n| `false` | **종료 처리가 10초를 넘겼다.** graceful shutdown 이 안 돌거나 너무 느린 것 |\n\n> **배포할 때마다 137 이 찍히면 무중단 배포가 사실은 중단 배포**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "restart 와 재시작 정책은 다르다",
+   "md": "| | 누가 | 언제 |\n|---|---|---|\n| `docker restart` | **내가** | 지금 한 번 |\n| `--restart` 정책 | **데몬이** | 죽을 때마다 자동으로 |\n\n```bash\ndocker run -d --restart unless-stopped myapp\n```\n\n**정책이 붙으면 `docker ps` 에 `Restarting (1)` 이 반복해서** 보인다(1.5절). **6.3절에서 정책 네 가지를 본다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "상태 전이와 종료 코드를 직접 만든다",
+   "sql": "# --- created 상태 ---\n\n$ docker create --name c1 nginx:1.27\n7a8b9c0d1e2f...\n\n$ docker ps -a --format 'table {{.Names}}\\t{{.Status}}'\nNAMES   STATUS\nc1      Created\n\n$ docker start c1 && docker ps --format '{{.Names}} {{.Status}}'\nc1\nc1 Up 1 second\n\n\n# --- stop 은 SIGTERM 을 보낸다 ---\n\n$ docker stop c1\nc1\n\n$ docker inspect -f 'code={{.State.ExitCode}} oom={{.State.OOMKilled}}' c1\ncode=0 oom=false\n\n#   nginx 는 SIGQUIT/SIGTERM 을 받고 0 으로 끝난다\n#   (이미지에 STOPSIGNAL SIGQUIT 이 적혀 있다 -- 3.4절)\n\n\n# --- 신호를 무시하는 프로세스를 만들어 본다 ---\n\n$ docker run -d --name stubborn alpine \\\n    sh -c 'trap \"\" TERM; echo ignoring TERM; while true; do sleep 1; done'\n\n$ time docker stop stubborn\nstubborn\n\nreal    0m10.4s\n\n#   10초를 꽉 기다린 뒤 SIGKILL 했다\n\n$ docker inspect -f '{{.State.ExitCode}}' stubborn\n137\n\n$ docker inspect -f '{{.State.OOMKilled}}' stubborn\nfalse\n\n#   137 인데 OOM 은 아니다 -> 종료 처리가 시간을 넘긴 것이다\n\n\n# --- 기다리는 시간을 줄이거나 늘린다 ---\n\n$ docker start stubborn >/dev/null\n$ time docker stop -t 2 stubborn\nreal    0m2.3s\n\n\n# --- 셸이 PID 1 이면 신호가 안 닿는다 ---\n\n$ docker run -d --name shellform alpine \\\n    sh -c 'sleep 600'\n$ docker exec shellform ps -ef\nPID   USER     COMMAND\n    1 root     sh -c sleep 600\n    7 root     sleep 600\n\n#   PID 1 이 sh 다. sleep 은 자식이다\n\n$ time docker stop shellform\nreal    0m10.3s\n\n#   sh 가 SIGTERM 을 자식에게 전달하지 않아서 10초를 다 썼다\n\n\n# --- exec 형식이면 바로 끝난다 ---\n\n$ docker run -d --name execform alpine sleep 600\n$ docker exec execform ps -ef\nPID   USER     COMMAND\n    1 root     sleep 600\n\n$ time docker stop execform\nreal    0m0.4s\n\n#   0.4초. SIGTERM 이 sleep 에게 직접 갔다\n\n\n# --- pause 는 얼리는 것이다 ---\n\n$ docker run -d --name p1 alpine sh -c 'while true; do date; sleep 1; done'\n$ docker pause p1 && docker ps --format '{{.Names}} {{.Status}}'\np1 Up 5 seconds (Paused)\n\n$ docker unpause p1\n$ docker logs --tail 3 p1\nTue Sep  9 20:31:02 UTC 2026\nTue Sep  9 20:31:09 UTC 2026     <- 7초가 비어 있다\nTue Sep  9 20:31:10 UTC 2026\n\n#   프로세스는 자기가 멈춘 줄 모른다. 시계만 흘렀다\n\n$ docker rm -f c1 stubborn shellform execform p1 >/dev/null"
+  }
+ ],
+ "recap": [
+  "상태는 created → running → exited 이고, rm 하면 쓰기 레이어까지 사라진다.",
+  "docker stop 은 SIGTERM 을 보내고 10초 기다린 뒤 SIGKILL 한다.",
+  "PID 1 이 셸이면 SIGTERM 이 애플리케이션에 안 닿는다. exec 형식으로 쓴다(5.5절).",
+  "종료 코드 143 은 정상적인 stop, 137 은 강제 종료 — OOMKilled 로 원인을 가른다.",
+  "pause 는 프로세스를 얼린다. 프로세스는 자기가 멈춘 줄 모른다."
+ ],
+ "drills": [
+  {
+   "task": "`trap \"\" TERM` 으로 SIGTERM 을 무시하는 컨테이너를 만들고 `time docker stop` 을 재 본다.",
+   "done_when": "10초가 걸리고 종료 코드가 137 인 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "같은 명령을 `sh -c 'sleep 600'` 과 `sleep 600` 두 형태로 띄우고 stop 시간을 비교한다.",
+   "done_when": "셸 형식이 10초, exec 형식이 1초 미만인 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "스프링 부트 애플리케이션이 있다면 `server.shutdown=graceful` 을 켜고 stop 했을 때 로그를 본다.",
+   "done_when": "Commencing graceful shutdown 이 찍히고 143 으로 끝나는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker stop` 과 `docker kill` 의 차이는.",
+   "a": "stop 은 SIGTERM 후 10초 기다렸다 SIGKILL, kill 은 곧바로 SIGKILL."
+  },
+  {
+   "q": "종료 코드 137 인데 OOMKilled 가 false 면.",
+   "a": "종료 처리가 stop 의 유예 시간을 넘겨 SIGKILL 된 것. graceful shutdown 이 안 돌거나 느린 것이다."
+  },
+  {
+   "q": "`CMD java -jar app.jar` 가 왜 문제인가.",
+   "a": "셸 형식이라 PID 1 이 sh 가 되고, SIGTERM 이 java 에 전달되지 않아 graceful shutdown 이 안 돈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SIGTERM",
+   "what": "정중한 종료 요청 신호(15). 프로세스가 무시할 수 있다."
+  },
+  {
+   "term": "SIGKILL",
+   "what": "강제 종료 신호(9). 무시할 수 없다. 종료 코드 137."
+  },
+  {
+   "term": "graceful shutdown",
+   "what": "처리 중인 요청을 끝내고 자원을 정리한 뒤 종료하는 것."
+  },
+  {
+   "term": "STOPSIGNAL",
+   "what": "이미지가 지정한 종료 신호. nginx 는 SIGQUIT 이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker stop",
+   "url": "https://docs.docker.com/reference/cli/docker/container/stop/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Spring Boot — Graceful shutdown",
+   "url": "https://docs.spring.io/spring-boot/reference/web/graceful-shutdown.html",
+   "publisher": "Spring"
+  }
+ ]
+}
