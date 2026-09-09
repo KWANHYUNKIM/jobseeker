@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "rollback-for",
+ "no": "10.7",
+ "chapter": 10,
+ "title": "rollbackFor",
+ "summary": "규칙을 바꾼다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`rollbackFor` 를 쓴다.",
+  "우선순위를 안다.",
+  "언제 애너테이션 대신 예외 설계를 고칠지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.6절의 규칙이 안 맞을 때** 바꾼다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 속성",
+   "ascii": "   @Transactional(rollbackFor = MyException.class)\n     rollback on MyException and its subclasses\n     the default rule still applies on top\n\n   @Transactional(noRollbackFor = MyRuntimeException.class)\n     commit on that one, rollback on other unchecked\n\n   most specific match wins\n     rollbackFor = Exception.class\n     noRollbackFor = IOException.class\n     -> IOException commits, other checked roll back",
+   "note": "**더 구체적인 매칭이 이긴다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "쓰는 법",
+   "code": "// 체크 예외인데 롤백시키고 싶다\n@Transactional(rollbackFor = MyCheckedException.class)\npublic void 주문() throws MyCheckedException {\n    repository.save(order);\n    throw new MyCheckedException();      // 롤백된다\n}\n\n// 전부 롤백\n@Transactional(rollbackFor = Exception.class)\npublic void 전부롤백() throws Exception { }\n\n// 런타임인데 커밋시키고 싶다\n@Transactional(noRollbackFor = 재고부족예외.class)\npublic void 주문2() {\n    repository.save(order);\n    throw new 재고부족예외();             // 커밋된다\n}\n\n// 여럿\n@Transactional(rollbackFor = {IOException.class, SQLException.class})\npublic void 여럿() throws IOException, SQLException { }",
+   "note": "**`rollbackFor` 는 하위 클래스도** 포함한다. **`Exception.class` 를 주면 사실상 전부**다.\n\n**문자열로도** 줄 수 있다.\n\n```java\n@Transactional(rollbackForClassName = \"MyCheckedException\")\n```\n\n**이름 일부만 맞아도 걸린다.** **의존관계 때문에 클래스를 못 import 할 때** 쓴다. **오타가 조용하니** 권하지 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "매칭 규칙",
+   "md": "**스프링이 예외 계층에서 가장 가까운 규칙**을 고른다.\n\n```java\n@Transactional(rollbackFor = Exception.class,\n               noRollbackFor = IOException.class)\n```\n\n| 던진 예외 | 어떻게 되나 |\n|---|---|\n| `IOException` | **커밋** — 정확히 매칭 |\n| `FileNotFoundException` | **커밋** — `IOException` 의 자식 |\n| `SQLException` | **롤백** — `Exception` 에만 매칭 |\n| `RuntimeException` | **롤백** — 기본 규칙 |\n\n**\"깊이\" 로 판단**한다. `FileNotFoundException` 에서 `IOException` 까지 1단계, `Exception` 까지 2단계. **가까운 쪽이 이긴다.**\n\n> **`RollbackRuleAttribute.getDepth()`** 가 그 계산을 한다.\n\n**설정한 규칙에 아무것도 안 맞으면 기본 규칙**으로 돌아간다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 고를까",
+   "ascii": "   which knob to reach for\n\n   business exception that should keep data\n     -> leave it checked, default commit\n\n   business exception that should undo data\n     -> make it a RuntimeException      <-- prefer this\n     -> or rollbackFor\n\n   library throws a checked exception i cannot change\n     -> rollbackFor",
+   "note": "**두 번째 줄이 권장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "애너테이션보다 예외 설계",
+   "md": "**`rollbackFor` 를 자주 쓴다면 예외 설계를 의심**한다.\n\n```java\n// 이런 코드가 반복되면\n@Transactional(rollbackFor = Exception.class)\npublic void a() throws Exception { }\n\n@Transactional(rollbackFor = Exception.class)\npublic void b() throws Exception { }\n```\n\n**모든 메서드에 붙이고 있다면**, **애초에 체크 예외를 쓸 이유가 없는 것**이다.\n\n> **1편 6.3절의 결론**이다. **비즈니스 예외를 언체크로** 만든다.\n>\n> ```java\n> public class 잔고부족예외 extends RuntimeException { }\n> ```\n>\n> **`throws` 선언이 사라지고 롤백이 기본**이 된다.\n\n**정말 필요한 경우는 좁다.**\n\n| 경우 | |\n|---|---|\n| **라이브러리의 체크 예외** | 내가 못 바꾼다 |\n| **`noRollbackFor` 로 특정 언체크만 커밋** | 드물다 |\n\n**AOP 로 전역 설정**도 가능하다.\n\n```java\n@Bean\npublic TransactionAttributeSource txSource() {\n    // 모든 메서드에 rollbackFor = Exception.class\n}\n```\n\n**팀 규칙으로 정하기도** 한다. **다만 스프링의 기본 동작과 달라지니 문서에 남긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "전파와 섞이면 복잡해진다",
+   "md": "**메서드마다 규칙이 다르면** 이런 일이 생긴다.\n\n```java\n@Transactional                                  // 기본 규칙\npublic void 바깥() {\n    안쪽();                                      // rollbackFor = Exception\n}\n\n@Transactional(rollbackFor = Exception.class)\npublic void 안쪽() throws Exception {\n    throw new Exception();\n}\n```\n\n**안쪽이 롤백을 표시**하는데 **트랜잭션은 하나**다(11장).\n\n**바깥은 예외를 잡을 수도** 있는데, **이미 `rollback-only` 표시가 붙어** 있다.\n\n> **12.4절의 `UnexpectedRollbackException`** 이 정확히 이 상황이다.\n>\n> **10.6~10.7절은 트랜잭션이 하나일 때의 이야기**다. **둘 이상이면 11장·12장의 규칙이 위에 얹힌다.**\n\n**규칙을 단순하게 유지하는 것**이 실무의 답이다. **비즈니스 예외를 언체크로 만들고 기본 규칙만** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- rollbackFor 없이 ---\n\n@Transactional\npublic void checked() throws MyException {\n    repository.save(item);\n    throw new MyException();\n}\n\n#   Hibernate: insert into item ...\n#   Completing transaction after exception: MyException\n#   Initiating transaction commit\n\nselect count(*) from item;   # -> 1\n\n# --- rollbackFor 를 주면 ---\n\n@Transactional(rollbackFor = MyException.class)\npublic void checked() throws MyException {\n    repository.save(item);\n    throw new MyException();\n}\n\n#   Hibernate: insert into item ...\n#   Completing transaction after exception: MyException\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\nselect count(*) from item;   # -> 0\n\n# 로그의 마지막 두 줄만 바뀌었다\n\n# --- 하위 클래스도 걸린다 ---\n\n@Transactional(rollbackFor = MyException.class)\n// throw new MySubException()   (MyException 을 상속)\n\n#   Completing transaction after exception: MySubException\n#   Initiating transaction rollback\n\n# --- noRollbackFor ---\n\n@Transactional(noRollbackFor = 재고부족예외.class)\n// throw new 재고부족예외()   (RuntimeException 상속)\n\n#   Hibernate: insert into item ...\n#   Completing transaction after exception: 재고부족예외\n#   Initiating transaction commit\n\n#   런타임 예외인데 커밋됐다\n\n# --- 둘 다 주면 ---\n\n@Transactional(rollbackFor = Exception.class,\n               noRollbackFor = IOException.class)\n\n# throw new FileNotFoundException()\n#   Completing transaction after exception: FileNotFoundException\n#   Initiating transaction commit\n#   (IOException 의 자식. 더 가깝다.)\n\n# throw new SQLException()\n#   Completing transaction after exception: SQLException\n#   Initiating transaction rollback\n#   (Exception 에만 걸린다.)\n\n# --- 예외를 언체크로 바꾸면 ---\n\npublic class 잔고부족예외 extends RuntimeException { }\n\n@Transactional\npublic void 주문() {                       // throws 가 없다\n    repository.save(order);\n    throw new 잔고부족예외();\n}\n\n#   Hibernate: insert into item ...\n#   Completing transaction after exception: 잔고부족예외\n#   Initiating transaction rollback\n\n#   애너테이션 속성 없이 롤백된다",
+   "note": "**첫 두 블록의 차이가 애너테이션 속성 하나**다. **로그의 마지막 두 줄만 바뀌었다.**\n\n**다섯 번째 블록이 깊이 판정**이다. **`FileNotFoundException` 은 커밋, `SQLException` 은 롤백** — 같은 설정에서.\n\n**맨 아래가 권장하는 방향**이다. **`throws` 도 애너테이션 속성도 없이** 롤백된다.\n\n> **가장 단순한 코드가 가장 예측 가능하다.**\n\n**다음 절에서 나머지 옵션들을 본다.**"
+  }
+ ],
+ "recap": [
+  "**`rollbackFor`** 로 체크 예외도 롤백시킨다.",
+  "**`noRollbackFor`** 로 언체크 예외를 커밋시킨다.",
+  "**하위 클래스도 포함**된다.",
+  "**예외 계층에서 가장 가까운 규칙**이 이긴다.",
+  "**안 맞으면 기본 규칙**으로 돌아간다.",
+  "**`rollbackForClassName` 은 오타가 조용하다** — 권하지 않는다.",
+  "**자주 쓴다면 예외 설계를 의심**한다.",
+  "**비즈니스 예외를 언체크로** 만드는 것이 답이다.",
+  "**전파와 섞이면 12.4절의 예외**가 나온다."
+ ],
+ "drills": [
+  {
+   "task": "체크 예외에 `rollbackFor` 를 붙인다.",
+   "done_when": "로그가 `rollback` 으로 바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`rollbackFor` 와 `noRollbackFor` 를 같이 준다.",
+   "done_when": "깊이에 따라 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "예외를 `RuntimeException` 상속으로 바꾼다.",
+   "done_when": "속성 없이 롤백되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 프로젝트의 비즈니스 예외를 확인한다.",
+   "done_when": "체크인지 언체크인지 세어 봤다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`rollbackFor` 는 무엇을 하나?",
+   "a": "지정한 예외와 그 하위 클래스에서 롤백하게 한다."
+  },
+  {
+   "q": "여러 규칙이 겹치면?",
+   "a": "예외 계층에서 가장 가까운 규칙이 이긴다."
+  },
+  {
+   "q": "`rollbackForClassName` 을 왜 권하지 않나?",
+   "a": "문자열이라 오타가 조용히 넘어간다."
+  },
+  {
+   "q": "`rollbackFor` 를 자주 쓰게 되면?",
+   "a": "예외 설계를 의심한다. 비즈니스 예외를 언체크로 만드는 편이 낫다."
+  },
+  {
+   "q": "전파와 섞이면 무슨 문제가 생기나?",
+   "a": "안쪽이 롤백을 표시하고 바깥이 커밋을 시도해 `UnexpectedRollbackException` 이 난다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

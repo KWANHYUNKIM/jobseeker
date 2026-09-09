@@ -611,7 +611,7 @@
           "title": "자동 리소스 등록",
           "summary": "DataSource 와 매니저가 어디서 오나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -619,7 +619,7 @@
           "title": "롤백 규칙",
           "summary": "체크 예외는 왜 커밋되나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.7",
@@ -627,7 +627,7 @@
           "title": "rollbackFor",
           "summary": "규칙을 바꾼다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.8",
