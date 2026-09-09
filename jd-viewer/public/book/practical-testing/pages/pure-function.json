@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "pure-function",
+ "no": "2.7",
+ "chapter": 2,
+ "title": "밖으로 밀어내기",
+ "summary": "받아서 돌려주는 함수로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "순수 함수의 조건을 안다.",
+  "부수 효과의 비용을 안다.",
+  "계층을 어떻게 나누는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절의 처방을 원칙으로** 만든다. **안쪽을 순수하게** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "통제 불가능한 것을 바깥으로",
+   "ascii": "   push the uncontrollable outward, keep the core pure\n\n   +-------------------------------------------+\n   |  controller, config                       |\n   |  now(), random(), env, http               |\n   |   +-------------------------------------+ |\n   |   |  service                            | |\n   |   |  orchestration, transaction         | |\n   |   |   +-------------------------------+ | |\n   |   |   |  domain                       | | |\n   |   |   |  in -> out, nothing else      | | |\n   |   |   +-------------------------------+ | |\n   |   +-------------------------------------+ |\n   +-------------------------------------------+\n\n   the innermost ring is the easiest to test and the\n   most valuable to test",
+   "note": "**안쪽이 가장 테스트하기 쉽고 가장 값어치 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "순수 함수의 조건 둘",
+   "md": "**① 같은 입력에 항상 같은 출력**\n\n```java\npublic int calculateTotalPrice() {\n    return beverages.stream().mapToInt(Beverage::getPrice).sum();\n}\n```\n\n> **`beverages` 가 같으면 결과가** 같다.\n> **몇 번을 불러도, 새벽에 불러도**.\n\n**② 부수 효과가 없다**\n\n> **필드를 안 바꾸고, DB 에 안 쓰고, 파일에 안 쓰고, 로그도 안** 남긴다.\n> **부르기 전과 후에 세상이** 같다.\n\n**이 둘이면 테스트가 세 줄**이다.\n\n```java\ncafeKiosk.add(new Americano());\ncafeKiosk.add(new Latte());\nassertThat(cafeKiosk.calculateTotalPrice()).isEqualTo(8500);\n```\n\n> **준비할 게 없다.** **정리할 것도** 없다.\n> **스프링도 DB 도 필요** 없다.\n\n**자바에서 완전한 순수 함수는** 드물다.\n\n> **객체가 상태를** 가진다. **`add` 는 필드를** 바꾼다.\n>\n> **완전히 순수하지 않아도** 된다. **통제 가능하면** 된다.\n>\n> | | |\n> |---|---|\n> | **`add`** | 필드를 바꾸는데 **밖에서 정한 값**으로 |\n> | **`now()`** | 밖에서 못 정한다 |\n>\n> **차이는 \"밖에서 정할 수 있느냐\"** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "부수 효과의 비용",
+   "ascii": "   what a side effect costs a test\n\n   no side effect\n     call it, look at the return value, done\n\n   writes to a field\n     call it, then call a getter, hope nobody else touched it\n\n   writes to a database\n     set up a database, clean it, isolate it, wait for it\n\n   writes to an email server\n     you cannot test it at all without a fake",
+   "note": "**밖으로 갈수록 준비할 게** 는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "밀어낸 뒤의 CafeKiosk",
+   "code": "public class CafeKiosk {\n\n    private static final LocalTime SHOP_OPEN_TIME = LocalTime.of(10, 0);\n    private static final LocalTime SHOP_CLOSE_TIME = LocalTime.of(22, 0);\n\n    private final List<Beverage> beverages = new ArrayList<>();\n\n    public void add(Beverage beverage, int count) {\n        if (count <= 0) {\n            throw new IllegalArgumentException(\"음료는 1잔 이상 주문하실 수 있습니다.\");\n        }\n        for (int i = 0; i < count; i++) {\n            beverages.add(beverage);\n        }\n    }\n\n    public int calculateTotalPrice() {\n        return beverages.stream().mapToInt(Beverage::getPrice).sum();\n    }\n\n    // 시각을 받는다. now() 를 안 부른다\n    public Order createOrder(LocalDateTime currentDateTime) {\n        LocalTime currentTime = currentDateTime.toLocalTime();\n        if (currentTime.isBefore(SHOP_OPEN_TIME)\n                || !currentTime.isBefore(SHOP_CLOSE_TIME)) {\n            throw new IllegalArgumentException(\"주문 시간이 아닙니다.\");\n        }\n        return new Order(currentDateTime, beverages);\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "밀어낸 것이 어디로 갔나",
+   "md": "**`now()` 는 사라진 게** 아니다.\n\n```java\n// 서비스 (5장에서 만든다)\n@Service\npublic class OrderService {\n    public Order createOrder(OrderRequest request, LocalDateTime registeredDateTime) {\n        ...\n    }\n}\n\n// 컨트롤러\n@PostMapping(\"/api/orders\")\npublic Order createOrder(@RequestBody OrderRequest request) {\n    return orderService.createOrder(request, LocalDateTime.now());   // 여기\n}\n```\n\n> **가장 바깥에서** 부른다.\n>\n> **컨트롤러는 얇다.** **거기서 테스트 못 하는 한 줄이 있는 건** 감수한다.\n\n**그럼 컨트롤러는 어떻게 테스트하나**\n\n| | |\n|---|---|\n| **`MockMvc`** | 요청·응답 형식만 본다 |\n| **시각 검증** | 안 한다 |\n\n> **5.4절**의 주제다.\n> **컨트롤러 테스트에서 \"시각이 맞는지\" 는 안** 본다.\n\n**중요한 건 비율**이다.\n\n```\n도메인 테스트    많다   빠르다   스프링 없음\n서비스 테스트    중간   느리다   컨텍스트 필요\n컨트롤러 테스트  적다   느리다   MockMvc\n```\n\n> **테스트 피라미드**다. **안쪽이 넓어야** 한다.\n>\n> **밀어내기를 안 하면 도메인 테스트를 못 짜서 피라미드가** 뒤집힌다.\n> **전부 `@SpringBootTest` 가** 된다. **8장의 주제**다.\n\n**밀어낼 수 없는 것도** 있다.\n\n> **메일 발송, 외부 API, DB 쓰기**다.\n> **그건 인터페이스로 감싸고 가짜를 넣는다** — **6장**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 2장의 테스트 전체 ---\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 음료 두 잔을 담으면 목록에 두 개가 담긴다 PASSED\nCafeKioskTest > 음료를 0잔 담으면 예외가 난다 PASSED\nCafeKioskTest > 음료를 음수로 담으면 예외가 난다 PASSED\nCafeKioskTest > 주문 목록에 있는 음료를 뺀다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 PASSED\nCafeKioskTest > 마지막 한 잔을 빼면 목록이 빈다 PASSED\nCafeKioskTest > 비어 있는 목록을 비워도 예외가 안 난다 PASSED\nCafeKioskTest > 담긴 음료들의 총 금액을 계산한다 PASSED\nCafeKioskTest > 영업 시작 1분 전에는 주문할 수 없다 PASSED\nCafeKioskTest > 영업 시작 정각에는 주문할 수 있다 PASSED\nCafeKioskTest > 마감 1분 전에는 주문할 수 있다 PASSED\nCafeKioskTest > 마감 시각 정각에는 주문할 수 없다 PASSED\n\n13 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   1초다\n\n#   스프링이 안 뜬다\n#   DB 가 없다\n#   외부 호출이 없다\n\n# --- 몇 번을 돌려도 ---\n\n$ for i in 1 2 3; do ./gradlew test --tests CafeKioskTest --rerun-tasks -q; done\n\nBUILD SUCCESSFUL in 1s\nBUILD SUCCESSFUL in 1s\nBUILD SUCCESSFUL in 1s\n\n#   같다\n\n# --- 새벽 3시로 시계를 바꿔도 ---\n\n$ sudo date 0909030000\n$ ./gradlew test --tests CafeKioskTest --rerun-tasks\n\n13 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   같다\n\n#   2.1절에서 깨졌던 createOrder 테스트가 이제 안 깨진다\n\n# --- 순수 함수 하나를 확인 ---\n\n@DisplayName(\"담긴 음료들의 총 금액을 계산한다\")\n@Test\nvoid calculateTotalPrice() {\n    cafeKiosk.add(new Americano());\n    cafeKiosk.add(new Latte());\n\n    int totalPrice = cafeKiosk.calculateTotalPrice();\n\n    assertThat(totalPrice).isEqualTo(8500);\n}\n\nCafeKioskTest > 담긴 음료들의 총 금액을 계산한다 PASSED\n\n#   준비 두 줄, 실행 한 줄, 검증 한 줄\n\n#   @BeforeEach 도 사실 필요 없다\n#   4.3절에서 given-when-then 으로 정리한다\n\n# --- 밀어내기 전과 후 ---\n\n#   전\n#     createOrder()\n#       테스트 가능한 케이스: 지금이 영업시간이면 1개\n#       경계값: 못 짬\n#       재현: 시각에 따라 다름\n\n#   후\n#     createOrder(LocalDateTime)\n#       테스트 가능한 케이스: 무한\n#       경계값: 4개 다 짬\n#       재현: 항상 같음\n\n# --- 부수 효과가 있는 메서드와 비교 ---\n\n#   (5장에서 만들 것을 미리)\n\n@Test\nvoid createOrderWithDatabase() {\n    // given\n    Product product = createProduct(\"001\", 4000);\n    productRepository.save(product);        // DB 에 쓴다\n\n    // when\n    OrderResponse response = orderService.createOrder(\n            request, LocalDateTime.of(2026, 9, 9, 11, 0));\n\n    // then\n    assertThat(response.getTotalPrice()).isEqualTo(4000);\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\n#   Starting OrderServiceTest using Java 21\n#   ... (스프링 컨텍스트 기동)\n#   Started OrderServiceTest in 3.412 seconds\n\nOrderServiceTest > createOrderWithDatabase() PASSED\n\nBUILD SUCCESSFUL in 6s\n\n#   1초가 6초가 됐다\n\n#   그리고 @AfterEach 로 DB 를 비워야 한다  (5.9절)\n\n# --- 2장이 끝난 상태 ---\n\n#   13개 테스트, 1초, 스프링 없음\n\n#   CafeKiosk 안에\n#     now()      없음\n#     random()   없음\n#     DB         없음\n#     외부 호출   없음\n\n#   전부 밖으로 밀어냈다\n\n# --- 다음 절에서 ---\n\n#   2장을 정리한다",
+   "note": "**13개 테스트가 1초**다. **스프링도 DB 도 외부 호출도** 없다.\n\n**세 번을 돌려도, 새벽 3시로 시계를 바꿔도** 같다. **2.1절에서 깨졌던 테스트가 이제 안** 깨진다.\n\n**순수 함수 테스트는 준비 두 줄·실행 한 줄·검증 한 줄**이다.\n\n**DB 를 쓰는 테스트는 1초가 6초**가 된다. **그리고 정리까지 해야** 한다.\n\n**`CafeKiosk` 안에 `now()`·`random()`·DB·외부 호출이 하나도** 없다."
+  }
+ ],
+ "recap": [
+  "**순수 함수의 조건 둘** — 같은 입력에 같은 출력, 부수 효과 없음.",
+  "**둘이면 테스트가 세 줄**이다.",
+  "**완전히 순수하지 않아도 통제 가능하면** 된다.",
+  "**차이는 \"밖에서 정할 수 있느냐\"** 다.",
+  "**밀어낸 `now()` 는 컨트롤러로** 갔다.",
+  "**컨트롤러 테스트에서 시각은 안** 본다.",
+  "**밀어내기를 안 하면 피라미드가** 뒤집힌다 — 전부 `@SpringBootTest` 가 된다.",
+  "**13개 테스트가 1초, DB 하나 붙으면 6초**다.",
+  "**밀어낼 수 없는 건 인터페이스로 감싼다** — 6장."
+ ],
+ "drills": [
+  {
+   "task": "2장의 테스트를 전부 돌린다.",
+   "done_when": "1초 내외인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "시스템 시계를 새벽으로 바꿔 다시 돌린다.",
+   "done_when": "결과가 같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "자기 코드에서 순수 함수를 찾는다.",
+   "done_when": "테스트가 몇 줄인지 세어 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "부수 효과가 있는 메서드의 테스트 준비 코드를 센다.",
+   "done_when": "순수 함수와 줄 수를 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "순수 함수의 조건 둘은?",
+   "a": "같은 입력에 항상 같은 출력, 그리고 부수 효과가 없다."
+  },
+  {
+   "q": "완전히 순수해야 하나?",
+   "a": "아니다. 밖에서 값을 정할 수 있으면 통제 가능하다."
+  },
+  {
+   "q": "밀어낸 `now()` 는 어디로 가나?",
+   "a": "가장 바깥, 대개 컨트롤러나 설정이다."
+  },
+  {
+   "q": "밀어내기를 안 하면?",
+   "a": "도메인 테스트를 못 짜서 전부 `@SpringBootTest` 가 되고 피라미드가 뒤집힌다."
+  },
+  {
+   "q": "DB 를 붙이면 시간이 얼마나 되나?",
+   "a": "1초가 6초쯤 된다. 컨텍스트 기동이 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "순수 함수",
+   "def": "같은 입력에 항상 같은 출력을 내고 부수 효과가 없는 함수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Java SE — java.time.Clock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Clock.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
