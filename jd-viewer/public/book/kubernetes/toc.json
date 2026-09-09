@@ -498,7 +498,7 @@
           "title": "오토스케일링",
           "summary": "지표를 보고 개수를 바꾼다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -506,7 +506,7 @@
           "title": "중단 예산",
           "summary": "노드를 비울 때 한꺼번에 안 내려가게.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

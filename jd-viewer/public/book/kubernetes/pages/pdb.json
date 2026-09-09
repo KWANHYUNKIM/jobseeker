@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "pdb",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "중단 예산",
+ "summary": "노드를 비울 때 한꺼번에 안 내려가게.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "자발과 비자발을 구분한다.",
+  "예산을 계산한다.",
+  "drain 이 막히는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절에서 `NoExecute` 가 파드를** 쫓아냈다. **여기서는 쫓아내는 쪽에 제동을** 건다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 중단",
+   "ascii": "   two kinds of disruption, and only one is negotiable\n\n   involuntary    the node died, the kernel killed it, the disk filled\n                  nothing asks permission, a budget cannot stop it\n\n   voluntary      drain, an upgrade, a cluster autoscaler shrinking\n                  these go through the eviction api and can be refused\n\n   a PodDisruptionBudget only ever speaks to the second column",
+   "note": "**예산은 오른쪽에만 말한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "축출 API 를 거쳐야 물어본다",
+   "md": "**`kubectl delete pod` 는 그냥** 지운다.\n\n> **예산을 안** 본다.\n> **`kubectl drain` 은 축출 API 를** 쓴다.\n> **거기서 예산을** 확인한다.\n\n**그래서 노드 죽음은 못** 막는다.\n\n> **9.3절의 `unreachable` 축출은 비자발**이다.\n> **커널의 OOM 도** 그렇다.\n> **예산은 계획된 작업에만** 쓸모 있다.\n\n**두 가지로 적는다**\n\n```yaml\napiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: web\nspec:\n  minAvailable: 2\n  selector:\n    matchLabels: { app: web }\n```\n\n> **`minAvailable` 이나 `maxUnavailable` 중** 하나다.\n> **둘 다는 못** 쓴다.\n> **셀렉터는 디플로이먼트가 아니라 파드를** 고른다.\n\n**건강한 파드만** 센다.\n\n> **`Ready` 인 파드만 `currentHealthy` 에** 들어간다.\n> **4.5절의 준비성 프로브가 여기서도** 쓰인다.\n> **`0/1` 인 파드가 많으면 예산이 이미 바닥**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "바닥과 천장",
+   "ascii": "   the budget is a floor, or a ceiling\n\n   minAvailable: 2        keep at least two healthy\n   minAvailable: 50%      keep at least half\n   maxUnavailable: 1      allow one to be missing at a time\n\n   with 3 replicas and minAvailable 3, nothing can ever be drained\n   a budget that can never be met blocks the node forever",
+   "note": "**절대 못 채우는 예산은 노드를 영영** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예산이 노드를 막는다",
+   "md": "**레플리카 3에 `minAvailable: 3` 이면 아무것도 못** 내린다.\n\n> **`drain` 이 영원히 재시도**한다.\n> **업그레이드가 거기서** 멈춘다.\n> **`maxUnavailable: 1` 이 더 안전한 표현인 이유**다.\n\n**퍼센트는 올림**이다.\n\n> **레플리카 2에 `minAvailable: 50%` 는 1**이다.\n> **레플리카 3에 `50%` 는 2** 다 — **1.5를 올린다.**\n\n**레플리카 1이면 예산이 무의미**하다.\n\n> **`minAvailable: 1` 이면 절대 못 내린다.**\n> **`maxUnavailable: 1` 이면 언제나 내린다.**\n> **단일 레플리카는 애초에 무중단이** 안 된다.\n\n**`drain` 이 하는 일 셋**\n\n> **`cordon` 하고(9.1절), 파드를 축출하고, 데몬셋은** 건너뛴다.\n> **`--ignore-daemonsets` 를 안 주면 거부**된다.\n> **로컬 저장소를 쓰는 파드도 `--delete-emptydir-data` 가** 필요하다 — **8.1절의 데이터가** 사라져서다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 준비 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=4 > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ kubectl get pods -l app=web -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   2 kind-worker\n   2 kind-worker2\n\n# --- 예산 없이 비운다 ---\n\n$ kubectl drain kind-worker2 --ignore-daemonsets\n\nnode/kind-worker2 cordoned\nWarning: ignoring DaemonSet-managed Pods: kube-system/kindnet-x7t2q,\n  kube-system/kube-proxy-9m4kd\nevicting pod default/web-6d8f4b9c7-k2n8x\nevicting pod default/web-6d8f4b9c7-p5r3m\npod/web-6d8f4b9c7-k2n8x evicted\npod/web-6d8f4b9c7-p5r3m evicted\nnode/kind-worker2 drained\n\n#   둘이 한꺼번에 나갔다\n\n$ kubectl get pods -l app=web -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   4 kind-worker\n\n$ kubectl uncordon kind-worker2 > /dev/null\n\n# --- 예산을 건다 ---\n\n$ kubectl apply -f - > /dev/null <<'EOF'\napiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata: { name: web }\nspec:\n  minAvailable: 4\n  selector:\n    matchLabels: { app: web }\nEOF\n\n$ kubectl rollout restart deployment/web > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ kubectl get pdb web\n\nNAME  MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE\nweb   4              N/A              0                    30s\n\n#   허용 중단이 0이다\n\n#   4개를 유지하라는데 4개뿐이다\n\n$ kubectl get pdb web -o jsonpath=\\\n'healthy={.status.currentHealthy} desired={.status.desiredHealthy}{\"\\n\"}'\n\nhealthy=4 desired=4\n\n$ timeout 30 kubectl drain kind-worker2 --ignore-daemonsets\n\nnode/kind-worker2 cordoned\nevicting pod default/web-5f7c9d8b4-q3m2w\nerror when evicting pods/\"web-5f7c9d8b4-q3m2w\" -n \"default\"\n  (will retry after 5s): Cannot evict pod as it would violate the pod's\n  disruption budget.\nevicting pod default/web-5f7c9d8b4-q3m2w\nerror when evicting pods/\"web-5f7c9d8b4-q3m2w\" -n \"default\"\n  (will retry after 5s): Cannot evict pod as it would violate the pod's\n  disruption budget.\n\n#   영원히 재시도한다\n\n#   업그레이드가 여기서 멈춘다\n\n#   Ctrl-C 밖에 없다\n\n$ kubectl get node kind-worker2 --no-headers | awk '{print $2}'\n\nReady,SchedulingDisabled\n\n#   cordon 은 이미 됐다\n\n#   실패해도 안 되돌린다\n\n$ kubectl uncordon kind-worker2 > /dev/null\n\n# --- 하나쯤 허용한다 ---\n\n$ kubectl patch pdb web --type=merge -p '{\"spec\":{\"minAvailable\":3}}' \\\n    2>&1 | tail -1\n\nThe PodDisruptionBudget \"web\" is invalid: spec: Forbidden: updates to\n  poddisruptionbudget spec for fields other than 'minAvailable',\n  'maxUnavailable', 'selector' and 'unhealthyPodEvictionPolicy'\n  are forbidden\n\n#   ... 라는데 minAvailable 은 된다\n\n$ kubectl patch pdb web -p '{\"spec\":{\"minAvailable\":3}}' > /dev/null\n$ sleep 3 && kubectl get pdb web --no-headers | awk '{print $2, $4}'\n\n3 1\n\n#   허용 중단이 1이 됐다\n\n$ kubectl drain kind-worker2 --ignore-daemonsets 2>&1 | grep -c evicted\n\n2\n\n$ kubectl get pdb web --no-headers | awk '{print $4}'\n\n1\n\n#   하나씩 나가고 새로 뜨기를 기다렸다\n\n#   한꺼번에 둘은 아니었다\n\n$ kubectl get pods -l app=web -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   4 kind-worker\n\n$ kubectl uncordon kind-worker2 > /dev/null\n\n# --- 퍼센트는 올림이다 ---\n\n$ kubectl patch pdb web -p '{\"spec\":{\"minAvailable\":\"50%\"}}' > /dev/null\n$ kubectl scale deployment web --replicas=3 > /dev/null\n$ sleep 15 && kubectl get pdb web --no-headers | awk '{print $2, $4}'\n\n50% 1\n\n$ kubectl get pdb web -o jsonpath='{.status.desiredHealthy}{\"\\n\"}'\n\n2\n\n#   3의 50% 는 1.5인데 2다\n\n#   올림이다\n\n# --- delete 는 예산을 안 본다 ---\n\n$ kubectl delete pod -l app=web --now > /dev/null\n$ kubectl get pods -l app=web --no-headers | wc -l\n\n       3\n\n$ kubectl get pods -l app=web --no-headers | awk '{print $2}' | sort \\\n    | uniq -c\n\n   3 0/1\n\n#   셋 다 한꺼번에 지워졌다\n\n#   예산을 물어보지 않았다\n\n#   축출 API 를 안 거쳐서다\n\n#   delete 는 사람이 하는 실수 쪽이다\n\n# --- 데몬셋을 안 무시하면 ---\n\n$ kubectl drain kind-worker2 2>&1 | tail -2\n\nerror: unable to drain node \"kind-worker2\" due to error: cannot delete\n  DaemonSet-managed Pods (use --ignore-daemonsets to ignore):\n  kube-system/kindnet-x7t2q, kube-system/kube-proxy-9m4kd\n\n#   데몬셋은 어차피 다시 뜬다 (5.6절)\n\n$ kubectl uncordon kind-worker2 > /dev/null\n\n# --- emptyDir 도 물어본다 ---\n\n$ kubectl run withdata --image=busybox:1.36 \\\n    --overrides='{\"spec\":{\"nodeName\":\"kind-worker2\",\n      \"containers\":[{\"name\":\"withdata\",\"image\":\"busybox:1.36\",\n      \"command\":[\"sleep\",\"3600\"],\n      \"volumeMounts\":[{\"name\":\"d\",\"mountPath\":\"/d\"}]}],\n      \"volumes\":[{\"name\":\"d\",\"emptyDir\":{}}]}}' > /dev/null\n\n$ sleep 10 && kubectl drain kind-worker2 --ignore-daemonsets 2>&1 | tail -2\n\nerror: unable to drain node \"kind-worker2\" due to error: cannot delete Pods\n  with local storage (use --delete-emptydir-data to override):\n  default/withdata\n\n#   8.1절의 데이터가 사라진다고 알려준다\n\n#   물어보는 게 맞다\n\n$ kubectl uncordon kind-worker2 > /dev/null\n\n# --- 치운다 ---\n\n$ kubectl delete pod withdata --now > /dev/null\n$ kubectl delete pdb web && kubectl delete deployment web\n\npoddisruptionbudget.policy \"web\" deleted\ndeployment.apps \"web\" deleted\n\n# --- 다음 장에서 ---\n\n#   누가 무엇을 할 수 있는지 정한다",
+   "note": "**`minAvailable: 4` 에 레플리카 4면 `ALLOWED DISRUPTIONS` 가 0 이라 `drain` 이 영원히** 재시도한다.\n\n**실패해도 `cordon` 은 안** 되돌린다.\n\n**3으로 낮추자 하나씩 나가고 새로 뜨기를** 기다렸다.\n\n**`kubectl delete pod` 는 예산을 안 물어보고 셋을 한꺼번에** 지웠다.\n\n**데몬셋과 `emptyDir` 파드는 각각 플래그를 요구**한다."
+  }
+ ],
+ "recap": [
+  "**비자발 중단은 못** 막는다.",
+  "**축출 API 를 거쳐야 예산을** 본다.",
+  "**`kubectl delete` 는 예산을 안** 본다.",
+  "**`minAvailable` 이나 `maxUnavailable` 중** 하나다.",
+  "**`Ready` 인 파드만** 센다.",
+  "**못 채우는 예산은 노드를 영영** 막는다.",
+  "**퍼센트는** 올림이다.",
+  "**`drain` 은 `cordon` 하고 축출**한다.",
+  "**데몬셋과 로컬 저장소는 따로** 물어본다."
+ ],
+ "drills": [
+  {
+   "task": "예산 없이 노드를 비운다.",
+   "done_when": "한꺼번에 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`minAvailable` 을 레플리카와 같게 준다.",
+   "done_when": "`drain` 이 막히는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "값을 낮춘다.",
+   "done_when": "하나씩 나가는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`delete pod` 로 지운다.",
+   "done_when": "예산을 안 보는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예산이 막을 수 있는 중단은?",
+   "a": "축출 API 를 거치는 자발적 중단뿐이다."
+  },
+  {
+   "q": "`kubectl delete pod` 는?",
+   "a": "예산을 보지 않는다. 그냥 지운다."
+  },
+  {
+   "q": "레플리카 3에 `minAvailable: 3` 이면?",
+   "a": "허용 중단이 0 이라 `drain` 이 영원히 막힌다."
+  },
+  {
+   "q": "`minAvailable: 50%` 에 레플리카 3이면?",
+   "a": "올림해서 2 다."
+  },
+  {
+   "q": "`drain` 이 데몬셋에 대해 하는 일은?",
+   "a": "`--ignore-daemonsets` 없이는 거부한다. 어차피 다시 뜨기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PodDisruptionBudget",
+   "def": "자발적 중단 중에 유지해야 할 건강한 파드 수를 정하는 오브젝트."
+  },
+  {
+   "term": "축출 API",
+   "def": "파드를 내보내며 예산을 확인하는 API. `drain` 이 이걸 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Disruptions",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Safely Drain a Node",
+   "url": "https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "hpa",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "오토스케일링",
+ "summary": "지표를 보고 개수를 바꾼다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "계산식을 안다.",
+  "요청이 있어야 하는 이유를 안다.",
+  "왜 느린지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 개수는 사람이** 적었다. **지표가 적게** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "계산식 하나",
+   "ascii": "   one formula decides everything\n\n   desired = ceil( current * ( currentMetric / targetMetric ) )\n\n   4 pods at 90 percent, target 50\n     4 * (90 / 50) = 7.2 -> 8 pods\n\n   the ratio is measured against requests, not against the node\n   so a pod with no cpu request has no percentage at all",
+   "note": "**요청 대비 비율이지 노드 대비가** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "요청이 없으면 아예 못 센다",
+   "md": "**분모가** 없다.\n\n> **`cpu: 50%` 는 '요청의 50%'** 다.\n> **요청을 안 적으면 비율을 계산할 수** 없다.\n> **HPA 가 `<unknown>` 을** 보여준다.\n>\n> **9.4절에서 요청을 정직하게 적으라고** 했다.\n> **여기서도 같은 요구**다.\n\n**metrics-server 가** 있어야 한다.\n\n> **`kubectl top` 도 같은 것을** 쓴다(10.4절).\n> **기본 설치에는** 없다.\n> **없으면 HPA 가 지표를 못 읽고 개수를 안** 바꾼다.\n\n**계산식이 전부**다.\n\n> **목표의 10% 안이면 안 움직인다** — **톨러런스**다.\n> **떨림을 막으려는** 것이다.\n> **`minReplicas`·`maxReplicas` 로 범위를** 가둔다.\n\n**여러 지표를 주면 가장 큰 결과가** 이긴다.\n\n> **CPU 로 4, 메모리로 7 이면 7** 이다.\n> **안전한 쪽으로** 기운다.\n> **커스텀 지표(큐 길이 같은 것)도 쓸 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 느린가",
+   "ascii": "   why nothing happens for a while\n\n   kubelet samples          about every 10 to 15 seconds\n   metrics-server scrapes   about every 15 seconds\n   the hpa loop runs        about every 15 seconds\n   scale down stabilises    300 seconds by default\n\n   so scaling up takes tens of seconds\n   and scaling down deliberately takes minutes",
+   "note": "**줄이는 건 일부러** 느리다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "줄이기가 늘리기보다 위험하다",
+   "md": "**잘못 줄이면 바로 장애**다.\n\n> **트래픽이 잠깐 꺼진 걸 보고 줄였다가 다시 몰리면 늦는다.**\n> **그래서 기본 안정화 창이 300초**다.\n> **그 5분 동안의 최댓값을** 쓴다.\n\n**동작을 적을 수** 있다.\n\n```yaml\nbehavior:\n  scaleDown:\n    stabilizationWindowSeconds: 600\n    policies:\n      - type: Percent\n        value: 50\n        periodSeconds: 60\n  scaleUp:\n    stabilizationWindowSeconds: 0\n    policies:\n      - type: Percent\n        value: 100\n        periodSeconds: 15\n```\n\n> **늘릴 때는 15초마다 두 배까지**,\n> **줄일 때는 60초마다 절반까지**.\n\n**HPA 와 손 스케일은 싸운다.**\n\n> **`kubectl scale` 로 바꿔도 다음 루프에서 되돌아**온다.\n> **5.1절에서 파드를 지워도 다시 생기던 것과 같은** 모양이다.\n> **멈추려면 HPA 를 지우거나 `minReplicas` 를** 고정한다.\n\n**세 종류가** 있다.\n\n| | 무엇을 바꾼다 |\n|---|---|\n| HPA | 파드 개수 |\n| VPA | 파드의 요청·상한 |\n| 클러스터 오토스케일러 | 노드 개수 |\n\n> **HPA 와 VPA 를 같은 지표로 같이 쓰면** 싸운다.\n> **9.1절에서 `Pending` 이던 파드를 노드를 늘려 푸는 게 셋째**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- metrics-server 가 없다 ---\n\n$ kubectl top nodes\n\nerror: Metrics API not available\n\n$ kubectl get apiservices | grep metrics\n\n(빈 줄)\n\n#   기본 설치에는 없다\n\n$ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/\\\nreleases/latest/download/components.yaml > /dev/null\n\n$ kubectl patch deployment metrics-server -n kube-system --type=json \\\n    -p='[{\"op\":\"add\",\n      \"path\":\"/spec/template/spec/containers/0/args/-\",\n      \"value\":\"--kubelet-insecure-tls\"}]' > /dev/null\n\n#   kind 는 인증서가 self-signed 다\n\n#   운영에서는 이 플래그를 쓰면 안 된다\n\n$ kubectl rollout status deployment/metrics-server -n kube-system > /dev/null\n$ sleep 30 && kubectl top nodes\n\nNAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%\nkind-control-plane   184m         2%     742Mi           9%\nkind-worker          41m          0%     238Mi           3%\nkind-worker2         38m          0%     231Mi           2%\n\n#   이제 보인다\n\n# --- 요청 없이 HPA 를 건다 ---\n\n$ kubectl create deployment php --image=registry.k8s.io/hpa-example \\\n    > /dev/null\n$ kubectl expose deployment php --port=80 > /dev/null\n$ kubectl autoscale deployment php --cpu-percent=50 --min=1 --max=10 \\\n    > /dev/null\n\n$ sleep 45 && kubectl get hpa php\n\nNAME  REFERENCE        TARGETS              MINPODS  MAXPODS  REPLICAS\nphp   Deployment/php   cpu: <unknown>/50%   1        10       1\n\n#   unknown 이다\n\n$ kubectl describe hpa php | grep -A2 Conditions | tail -1\n\n  ScalingActive  False  FailedGetResourceMetric  failed to get cpu\n    utilization: missing request for cpu in container php-apache\n\n#   요청이 없어 분모가 없다\n\n#   9.4절과 같은 요구다\n\n# --- 요청을 준다 ---\n\n$ kubectl set resources deployment php --requests=cpu=200m --limits=cpu=500m \\\n    > /dev/null\n$ kubectl rollout status deployment/php > /dev/null\n$ sleep 60 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 0%/50% 1\n\n#   숫자가 나온다\n\n$ kubectl get pod -l app=php -o jsonpath='{.items[0].status.qosClass}{\"\\n\"}'\n\nBurstable\n\n#   요청과 상한이 다르다 (9.4절)\n\n# --- 부하를 준다 ---\n\n$ kubectl run load --image=busybox:1.36 --restart=Never -- \\\n    /bin/sh -c \"while true; do wget -q -O- http://php > /dev/null; done\" \\\n    > /dev/null\n\n$ sleep 90 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 187%/50% 4\n\n#   4개가 됐다\n\n#   1 * (187/50) = 3.74 -> 4 다\n\n$ sleep 90 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 61%/50% 5\n\n#   4 * (61/50) = 4.88 -> 5 다\n\n$ sleep 120 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 48%/50% 5\n\n#   48 은 50 의 10% 안이다\n\n#   톨러런스라 안 움직인다\n\n$ kubectl describe hpa php | grep -A4 Events | tail -3\n\n  Normal  SuccessfulRescale  4m   horizontal-pod-autoscaler  New size: 4;\n    reason: cpu resource utilization (percentage of request) above target\n  Normal  SuccessfulRescale  2m   horizontal-pod-autoscaler  New size: 5;\n    reason: cpu resource utilization (percentage of request) above target\n\n#   왜 바꿨는지 적어 준다\n\n# --- 부하를 끊는다 ---\n\n$ kubectl delete pod load --now > /dev/null\n$ sleep 60 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 0%/50% 5\n\n#   0인데 아직 5다\n\n#   안정화 창이 300초다\n\n$ sleep 260 && kubectl get hpa php --no-headers | awk '{print $3, $6}'\n\ncpu: 0%/50% 1\n\n#   5분이 지나 한 번에 1로 갔다\n\n$ kubectl get hpa php -o jsonpath=\\\n'{.spec.behavior}{\"[안 적었다]\\n\"}'\n\n[안 적었다]\n\n#   기본값이 그렇게 돼 있다\n\n# --- 손으로 바꿔 본다 ---\n\n$ kubectl scale deployment php --replicas=6 > /dev/null\n$ kubectl get deployment php --no-headers | awk '{print $2}'\n\n0/6\n\n$ sleep 60 && kubectl get deployment php --no-headers | awk '{print $2}'\n\n1/1\n\n#   되돌아왔다\n\n#   5.1절에서 파드를 지워도 생기던 것과 같다\n\n#   HPA 가 주인이다\n\n# --- 동작을 적어 준다 ---\n\n$ kubectl patch hpa php --type=merge -p '{\"spec\":{\"behavior\":\n    {\"scaleDown\":{\"stabilizationWindowSeconds\":30},\n     \"scaleUp\":{\"stabilizationWindowSeconds\":0,\n       \"policies\":[{\"type\":\"Percent\",\"value\":100,\"periodSeconds\":15}]}}}}' \\\n    > /dev/null\n\n$ kubectl get hpa php -o jsonpath=\\\n'{.spec.behavior.scaleDown.stabilizationWindowSeconds}{\"\\n\"}'\n\n30\n\n#   이제 30초면 줄어든다\n\n#   테스트에는 편하고 운영에는 위험하다\n\n# --- 여러 지표 ---\n\n$ kubectl patch hpa php --type=json -p='[{\"op\":\"add\",\"path\":\"/spec/metrics/-\",\n  \"value\":{\"type\":\"Resource\",\"resource\":{\"name\":\"memory\",\n    \"target\":{\"type\":\"Utilization\",\"averageUtilization\":60}}}}]' 2>&1 | tail -1\n\nThe HorizontalPodAutoscaler \"php\" is invalid: spec.metrics[1].resource:\n  Invalid value: \"memory\": must set memory request\n\n#   메모리도 요청이 있어야 한다\n\n$ kubectl set resources deployment php --requests=cpu=200m,memory=64Mi \\\n    --limits=cpu=500m,memory=128Mi > /dev/null\n$ kubectl rollout status deployment/php > /dev/null\n$ sleep 60 && kubectl get hpa php --no-headers | awk '{print $3}'\n\ncpu: 1%/50%, memory: 34%/60%\n\n#   둘 중 큰 결과가 이긴다\n\n# --- 치운다 ---\n\n$ kubectl delete hpa php && kubectl delete deployment php \\\n    && kubectl delete service php\n\nhorizontalpodautoscaler.autoscaling \"php\" deleted\ndeployment.apps \"php\" deleted\nservice \"php\" deleted\n\n# --- 다음 절에서 ---\n\n#   노드를 비울 때 한꺼번에 안 내려가게",
+   "note": "**요청이 없으면 `cpu: <unknown>/50%` 이고 `missing request for cpu`** 라고 말한다.\n\n**`1 * (187/50) = 3.74` 라 4개가** 됐다 — 계산식 그대로다.\n\n**48% 는 목표 50 의 10% 안이라 안** 움직인다.\n\n**부하를 끊어도 5분간 5개를 유지하다 한 번에 1로** 간다.\n\n**`kubectl scale` 로 6을 줘도 다음 루프에서 1로** 되돌아온다."
+  }
+ ],
+ "recap": [
+  "**계산식 하나가 개수를** 정한다.",
+  "**비율의 분모는 요청**이다.",
+  "**요청이 없으면 `<unknown>`** 이다.",
+  "**metrics-server 가** 있어야 한다.",
+  "**목표의 10% 안이면 안** 움직인다.",
+  "**늘리기는 수십 초, 줄이기는 5분**이다.",
+  "**`behavior` 로 속도를** 정한다.",
+  "**손 스케일은 되돌아**온다.",
+  "**여러 지표면 큰 결과가** 이긴다."
+ ],
+ "drills": [
+  {
+   "task": "metrics-server 를 깐다.",
+   "done_when": "`kubectl top` 이 나온다.",
+   "minutes": 20
+  },
+  {
+   "task": "요청 없이 HPA 를 건다.",
+   "done_when": "`<unknown>` 과 이유를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부하를 줘 늘린다.",
+   "done_when": "계산식대로 늘어나는 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "부하를 끊고 기다린다.",
+   "done_when": "5분 뒤 줄어드는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "HPA 의 계산식은?",
+   "a": "현재 개수 × (현재 지표 / 목표 지표)를 올림한 값이다."
+  },
+  {
+   "q": "`cpu: 50%` 의 분모는?",
+   "a": "파드의 CPU 요청이다. 노드 용량이 아니다."
+  },
+  {
+   "q": "요청이 없으면?",
+   "a": "비율을 못 구해 `<unknown>` 이 되고 스케일링이 멈춘다."
+  },
+  {
+   "q": "줄이기가 느린 이유는?",
+   "a": "기본 300초 안정화 창으로 떨림과 성급한 축소를 막는다."
+  },
+  {
+   "q": "`kubectl scale` 로 바꾸면?",
+   "a": "다음 HPA 루프에서 되돌아온다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "안정화 창",
+   "def": "축소를 결정할 때 되돌아보는 기간. 그 안의 최댓값을 쓴다."
+  },
+  {
+   "term": "metrics-server",
+   "def": "kubelet 이 모은 자원 사용량을 Metrics API 로 제공하는 부가 구성 요소."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Resource Metrics Pipeline",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
