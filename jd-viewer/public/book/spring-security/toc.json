@@ -80,7 +80,7 @@
           "title": "FilterChainProxy",
           "summary": "필터 하나가 필터 열다섯을.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -88,7 +88,7 @@
           "title": "SecurityBuilder 와 Configurer",
           "summary": "설정이 필터가 되는 과정.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",

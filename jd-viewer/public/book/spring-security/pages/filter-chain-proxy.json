@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "filter-chain-proxy",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "FilterChainProxy",
+ "summary": "필터 하나가 필터 열다섯을.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "여러 체인 중 하나가 골라지는 것을 안다.",
+  "순서가 왜 중요한지 안다.",
+  "체인이 끊기는 자리를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 서블릿 필터가 하나**였다. **그 안에서 열다섯이** 돈다."
+  },
+  {
+   "type": "figure",
+   "caption": "여러 체인 중 하나",
+   "ascii": "   one proxy, several chains, one match\n\n   FilterChainProxy\n     chain 0   api paths        -> 8 filters\n     chain 1   admin paths      -> 12 filters\n     chain 2   everything else  -> 15 filters\n\n   a request walks the list top to bottom\n   the first matching chain runs, the rest never do",
+   "note": "**먼저 맞는 하나만** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "체인이 여럿일 수 있다",
+   "md": "**`SecurityFilterChain` 빈을 여럿** 만들 수 있다.\n\n```java\n@Bean\n@Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(csrf -> csrf.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS));\n    return http.build();\n}\n\n@Bean\n@Order(2)\nSecurityFilterChain webChain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .formLogin(withDefaults());\n    return http.build();\n}\n```\n\n> **API 는 세션 없이 기본 인증, 화면은 폼 로그인**이다.\n> **한 애플리케이션에 정책이** 둘이다.\n\n**`securityMatcher` 가 그 체인이 맡을 URL** 이다.\n\n> **7장의 `requestMatchers` 와 다르다.**\n>\n> | | |\n> |---|---|\n> | **`securityMatcher`** | **어느 체인이 맡나** |\n> | `requestMatchers` | 그 체인 안에서 어느 규칙이 |\n>\n> **자주 헷갈린다.**\n\n**`@Order` 가 없으면**\n\n```\nIllegalStateException: @Order on WebSecurityConfigurers must be unique.\nOrder of 100 was already used on ...\n```\n\n> **여러 체인이면 순서를 명시**해야 한다.\n\n**\"먼저 맞는 하나\" 가 핵심**이다.\n\n> **`/api/orders` 요청이 `apiChain` 에 맞으면 `webChain` 은 아예 안** 본다.\n> **7.2절의 매처 순서와 같은 규칙**인데 **여기는 체인 단위**다.\n>\n> **`/**` 를 `@Order(1)` 에 두면 나머지가 다 죽는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "가상 체인",
+   "ascii": "   why it is called a virtual chain\n\n   the servlet chain\n     encoding -> security -> dispatcher\n\n   inside security, a second chain runs to completion\n     csrf -> logout -> login -> ... -> authorization\n\n   only if all fifteen call chain.doFilter\n   does the request reach the dispatcher",
+   "note": "**열다섯이 다 통과해야 컨트롤러에** 닿는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "체인이 끊기는 자리",
+   "md": "**필터 하나가 `chain.doFilter()` 를 안 부르면 거기서** 끝난다.\n\n```java\n// CsrfFilter 의 일부\nif (!csrfToken.getToken().equals(actualToken)) {\n    accessDeniedHandler.handle(request, response, exception);\n    return;                              // doFilter 를 안 부른다\n}\nfilterChain.doFilter(request, response);\n```\n\n> **1.4절의 `403`** 이 여기다.\n> **뒤의 열 개는 아예 안** 돈다.\n\n**로그로 확인**된다.\n\n```\nTRACE Invoking CsrfFilter (5/15)\nDEBUG Invalid CSRF token found\nDEBUG Responding with 403 status code\n```\n\n> **`(6/15)` 가 없다.**\n> **거기서 끝났다는 뜻**이다.\n\n**`Securing` 과 `Secured`**\n\n```\nDEBUG Securing GET /api/v1/orders     <- 시작\n...\nDEBUG Secured GET /api/v1/orders      <- 열다섯을 다 통과\n```\n\n> **`Secured` 가 나오면 `DispatcherServlet` 으로** 간다.\n> **안 나오면 필터에서** 끝났다.\n>\n> **이 두 줄만 봐도 절반은** 안다.\n\n**응답을 만드는 필터도** 있다.\n\n| 필터 | 언제 응답을 만드나 |\n|---|---|\n| `DefaultLoginPageGeneratingFilter` | `/login` GET |\n| `UsernamePasswordAuthenticationFilter` | `/login` POST |\n| `LogoutFilter` | `/logout` |\n| `CsrfFilter` | 토큰 불일치 |\n| `AuthorizationFilter` | 권한 없음 |\n\n> **다섯 다 컨트롤러에 안** 간다.\n> **1.4절에서 로그인 화면에 컨트롤러가 없던 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 체인이 하나일 때 ---\n\n@SpringBootTest\nclass ChainTest {\n    @Autowired FilterChainProxy proxy;\n\n    @Test\n    void chains() {\n        List<SecurityFilterChain> chains = proxy.getFilterChains();\n        System.out.println(\">>> chains: \" + chains.size());\n        for (int i = 0; i < chains.size(); i++) {\n            System.out.println(\"  [\" + i + \"] \" + chains.get(i)\n                    + \"  filters=\" + chains.get(i).getFilters().size());\n        }\n    }\n}\n\n$ ./gradlew test --tests ChainTest\n\n>>> chains: 1\n  [0] DefaultSecurityFilterChain [RequestMatcher=any request]  filters=15\n\n# --- 체인을 둘로 나누면 ---\n\n@Bean @Order(1)\nSecurityFilterChain apiChain(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .httpBasic(withDefaults())\n        .csrf(csrf -> csrf.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS));\n    return http.build();\n}\n\n@Bean @Order(2)\nSecurityFilterChain webChain(HttpSecurity http) throws Exception {\n    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())\n        .formLogin(withDefaults());\n    return http.build();\n}\n\n$ ./gradlew test --tests ChainTest\n\n>>> chains: 2\n  [0] DefaultSecurityFilterChain [RequestMatcher=[/api/**]]  filters=11\n  [1] DefaultSecurityFilterChain [RequestMatcher=any request]  filters=14\n\n#   API 체인이 열하나다\n\n#   CsrfFilter 가 빠졌고 (disable)\n#   SecurityContextPersistenceFilter 가 다르게 설정됐다 (STATELESS)\n\n# --- 어느 체인이 도는지 ---\n\n$ curl -i -u user:1234 localhost:8080/api/v1/orders\n\nHTTP/1.1 200\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking DisableEncodeUrlFilter (1/11)\nTRACE FilterChainProxy : Invoking WebAsyncManagerIntegrationFilter (2/11)\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/11)\nTRACE FilterChainProxy : Invoking HeaderWriterFilter (4/11)\nTRACE FilterChainProxy : Invoking LogoutFilter (5/11)\nTRACE FilterChainProxy : Invoking BasicAuthenticationFilter (6/11)\nDEBUG BasicAuthenticationFilter : Found username 'user' in Basic\n  Authorization header\nTRACE FilterChainProxy : Invoking RequestCacheAwareFilter (7/11)\nTRACE FilterChainProxy : Invoking SecurityContextHolderAwareRequestFilter (8/11)\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (9/11)\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (10/11)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (11/11)\nDEBUG FilterChainProxy : Secured GET /api/v1/orders\n\n#   (n/11) 이다. API 체인이 돌았다\n\n#   CsrfFilter 가 없다\n\n$ curl -i localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG FilterChainProxy : Securing GET /orders\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\n...\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\n\n#   (n/14) 다. 웹 체인이다\n\n#   같은 애플리케이션에 정책이 둘이다\n\n# --- 순서를 뒤집으면 ---\n\n@Bean @Order(1)\nSecurityFilterChain webChain(...)      // /** 를 1번으로\n\n@Bean @Order(2)\nSecurityFilterChain apiChain(...)      // /api/** 를 2번으로\n\n$ curl -i -u user:1234 localhost:8080/api/v1/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG FilterChainProxy : Securing GET /api/v1/orders\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\n\n#   (n/14) 다. 웹 체인이 잡았다\n\n#   /** 가 /api/** 도 맞으니까\n\n#   apiChain 은 영원히 안 돈다\n\n#   Basic 인증 헤더를 보냈는데 무시됐다\n\n#   BasicAuthenticationFilter 가 그 체인에 없어서다\n\n# --- @Order 를 안 주면 ---\n\n@Bean\nSecurityFilterChain apiChain(...) { }\n\n@Bean\nSecurityFilterChain webChain(...) { }\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nThe Filter Chain [0] is misconfigured. The filter chain\n[ Ant [pattern='/api/**'] ] is configured to accept any request,\nrejecting the following filter chains: [ ... ]\n\n#   기동이 실패한다\n\n#   다행히 이건 기동 때 잡힌다\n\n# --- 체인이 끊기는 자리 ---\n\n$ curl -i -X POST localhost:8080/orders/new -d 'productNumbers=001'\n\nHTTP/1.1 403\n\nDEBUG FilterChainProxy : Securing POST /orders/new\nTRACE FilterChainProxy : Invoking DisableEncodeUrlFilter (1/14)\nTRACE FilterChainProxy : Invoking WebAsyncManagerIntegrationFilter (2/14)\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/14)\nTRACE FilterChainProxy : Invoking HeaderWriterFilter (4/14)\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\nDEBUG CsrfFilter : Invalid CSRF token found for\n  http://localhost:8080/orders/new\nDEBUG AccessDeniedHandlerImpl : Responding with 403 status code\n\n#   (6/14) 가 없다\n\n#   5번에서 끝났다\n\n#   Secured 도 없다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Secured POST /orders/new\"\n\n0\n\n#   통과의 표시가 안 찍혔다\n\n# --- 통과할 때와 비교 ---\n\n$ curl -s -b cookies.txt localhost:8080/orders > /dev/null\n\nDEBUG FilterChainProxy : Securing GET /orders\nTRACE ... (14개 전부)\nDEBUG FilterChainProxy : Secured GET /orders\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Secured GET /orders\"\n\n1\n\n#   Securing 과 Secured 가 짝이면 통과다\n\n#   Securing 만 있으면 필터에서 끝났다\n\n#   이 두 줄만 grep 해도 절반은 안다\n\n# --- 컨트롤러에 닿았는지 ---\n\n@GetMapping(\"/orders\")\npublic String orders() {\n    System.out.println(\">>> OrderController.orders\");\n    ...\n}\n\n#   403 인 경우\n$ ./gradlew bootRun 2>&1 | grep -c \">>> OrderController\"\n0\n\n#   200 인 경우\n1\n\n#   Secured 가 찍혀야 컨트롤러가 돈다\n\n# --- 다음 절에서 ---\n\n#   그 열다섯이 설정에서 어떻게 만들어지는지 본다",
+   "note": "**체인을 둘로 나누니 `[0]` 이 11개, `[1]` 이 14개**다.\n\n**`/api/**` 요청이 `(n/11)`, `/orders` 가 `(n/14)`** 다. **같은 애플리케이션에 정책이** 둘이다.\n\n**순서를 뒤집으면 `/**` 가 `/api/**` 도 잡아 `apiChain` 이 영원히 안** 돈다. **Basic 헤더를 보냈는데** 무시된다.\n\n**`@Order` 가 없으면 기동이** 실패한다.\n\n**`403` 일 때 `(6/14)` 가 없고 `Secured` 도** 없다. **`Securing` 과 `Secured` 가 짝이면** 통과다."
+  }
+ ],
+ "recap": [
+  "**체인이 여럿일 수** 있다 — API 와 화면의 정책이 다르다.",
+  "**`securityMatcher` 는 어느 체인, `requestMatchers` 는 어느 규칙**이다.",
+  "**먼저 맞는 하나만** 돈다.",
+  "**`/**` 를 앞에 두면 나머지가 다** 죽는다.",
+  "**`@Order` 가 없으면 기동이** 실패한다.",
+  "**필터가 `doFilter` 를 안 부르면 거기서** 끝난다.",
+  "**`(6/14)` 가 없으면 5번에서 끝난** 것이다.",
+  "**`Securing` 과 `Secured` 가 짝이면** 통과다.",
+  "**응답을 만드는 필터가 다섯** 있다 — 컨트롤러에 안 간다."
+ ],
+ "drills": [
+  {
+   "task": "체인을 둘로 나눈다.",
+   "done_when": "필터 개수가 다른 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "각 URL 로 요청해 `(n/M)` 을 본다.",
+   "done_when": "어느 체인인지 구분했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Order` 를 뒤집어 본다.",
+   "done_when": "한 체인이 안 도는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Securing` 과 `Secured` 를 `grep` 한다.",
+   "done_when": "짝이 안 맞는 요청을 찾았다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "체인이 여럿이면 몇 개가 도나?",
+   "a": "먼저 맞는 하나만 돈다."
+  },
+  {
+   "q": "`securityMatcher` 와 `requestMatchers` 의 차이는?",
+   "a": "전자는 어느 체인이 맡을지, 후자는 그 체인 안에서 어느 규칙인지다."
+  },
+  {
+   "q": "`/**` 를 앞에 두면?",
+   "a": "나머지 체인이 영원히 안 돈다."
+  },
+  {
+   "q": "체인이 어디서 끊겼는지 어떻게 아나?",
+   "a": "`(n/M)` 이 끊긴 자리와 `Secured` 유무를 본다."
+  },
+  {
+   "q": "`Secured` 가 안 나오면?",
+   "a": "필터에서 끝났고 컨트롤러에 안 갔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Java Configuration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/configuration/java.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
