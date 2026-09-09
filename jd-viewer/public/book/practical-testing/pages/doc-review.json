@@ -1,0 +1,162 @@
+{
+ "book": "practical-testing",
+ "id": "doc-review",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "정리",
+ "summary": "누가 읽는가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "4장의 규칙을 모은다.",
+  "비용을 정직하게 적는다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 한 줄이 리포트 한 줄이 되기까지** 사슬이 다섯이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장이 만든 사슬",
+   "ascii": "   the chain this chapter built\n\n   requirement\n     -> a todo list item        3.4\n       -> given when then       4.3\n         -> a sentence name     4.2, 4.4\n           -> a line in the report\n             -> read by someone six months later   4.1\n\n   every link is machine checked except the last",
+   "note": "**마지막 고리만 기계가 확인 못** 한다."
+  },
+  {
+   "type": "table",
+   "caption": "4장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "4.1",
+     "테스트는 문서다",
+     "**틀리면 빌드가 깨지는 문서는 하나뿐**"
+    ],
+    [
+     "4.2",
+     "`@DisplayName`",
+     "**메서드가 아니라 행위를 말한다**"
+    ],
+    [
+     "4.3",
+     "given when then",
+     "**칸의 모양이 설계 신호다**"
+    ],
+    [
+     "4.4",
+     "BDD 표현",
+     "**세 칸을 읽으면 이름이 나온다**"
+    ],
+    [
+     "4.5",
+     "다시 읽어 보기",
+     "**단언 개수가 안 바뀌면 리팩터링이다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "규칙 여섯",
+   "md": "**① 이름은 행위를 말한다**\n\n```\n[조건] 하면 [결과] 한다\n```\n\n**② 빼는 단어가 있다**\n\n> **테스트, 성공한다, 정상적으로, 검증한다**.\n\n**③ 도메인 용어로 쓴다**\n\n> **`beverages` 가 아니라 \"음료\"**.\n> **구현 용어를 쓰면 리팩터링 때 거짓말이** 된다.\n\n**④ 세 칸으로 나눈다**\n\n> **given 이 없으면 안** 쓴다.\n> **예외는 `// when & then`**.\n\n**⑤ 숫자에 이름을 준다**\n\n> **기대값은 상수로** 남긴다.\n> **계산식으로 쓰면 프로덕션을 되풀이한다**(4.3절).\n\n**⑥ 열 개 넘으면 `@Nested`**\n\n> **다섯 개면 평평한 게** 낫다.\n\n**이 여섯이 2.8절의 조건 여섯과 다른** 점\n\n| | |\n|---|---|\n| **2.8절** | 테스트로서의 자격과 값어치 |\n| **4장** | **읽는 사람을 위한 것** |\n\n> **2.8절을 안 지키면 테스트가 틀린** 것이고\n> **4장을 안 지키면 테스트가 안 읽히는** 것이다.\n>\n> **둘 다 필요**하다."
+  },
+  {
+   "type": "figure",
+   "caption": "비용과 비용이 아닌 것",
+   "ascii": "   what it costs and what it does not\n\n   costs\n     a DisplayName line per test\n     three comment lines per test\n     naming constants\n\n   does not cost\n     runtime            same 1 second\n     assertions         same 31\n     production code    zero lines changed\n\n   it is the cheapest documentation there is",
+   "note": "**가장 싼 문서**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "비용을 정직하게",
+   "md": "**드는 것**\n\n| | |\n|---|---|\n| **`@DisplayName` 한 줄** | 테스트마다 |\n| **주석 세 줄** | 테스트마다 |\n| **상수 이름 짓기** | 몇 분 |\n| **`@Nested` 들여쓰기** | 한 단계 |\n\n> **테스트 25개면 100줄쯤** 는다.\n> **4.5절에서 실제로 그랬다.**\n\n**안 드는 것**\n\n| | |\n|---|---|\n| **실행 시간** | 1초 그대로 |\n| **단언 개수** | 31 그대로 |\n| **프로덕션 코드** | 0줄 |\n\n> **런타임 비용이 0** 이다.\n> **`@DisplayName` 은 리포트에만** 쓰인다.\n\n**그래서 가장 싼 문서**다.\n\n> **위키는 쓰는 데 시간이 들고 낡고 아무도 안 고친다.**\n> **테스트 이름은 이미 있는 테스트에 한 줄 더하는** 것이다.\n\n**과하면 안 되는 것도** 있다.\n\n| | |\n|---|---|\n| **너무 긴 이름** | 40자 넘으면 안 읽힌다 |\n| **`@Nested` 세 단계** | 찾기 어렵다 |\n| **모든 숫자에 이름** | `1`, `2` 는 그냥 둔다 |\n\n> **읽기 쉬우려고 하는 건데 과하면 반대**가 된다.\n\n**팀 규약으로** 만든다.\n\n> **혼자 지키면 섞인다.** **4.5절의 \"주문 목록\" 통일이** 그렇다.\n>\n> **PR 체크리스트에 한 줄** 넣는 게 실질적이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "5장이 이어받는 것",
+   "md": "**4장까지는 스프링이 없었다.**\n\n```\nCafeKiosk       new 로 만든다\nOrder           new 로 만든다\nDiscountCalc    static 메서드\n```\n\n> **25개가 1초**다(2.7절).\n\n**5장에서 컨테이너가** 붙는다.\n\n| | |\n|---|---|\n| **`@SpringBootTest`** | 컨텍스트가 뜬다 |\n| **DB** | 저장하고 읽는다 |\n| **트랜잭션** | 롤백을 다룬다 |\n| **`MockMvc`** | HTTP 를 흉내 낸다 |\n\n> **1초가 6초가** 된다(2.7절에서 미리 봤다).\n\n**4장의 규칙은 그대로** 쓴다.\n\n> **이름도 세 칸도 똑같이** 쓴다.\n> **given 이 훨씬 길어질 뿐**이다.\n>\n> **5.5절의 테스트 픽스처가 그 문제**다.\n\n**새로 생기는 것**\n\n| | |\n|---|---|\n| **계층별로 뭘 검증하나** | 5.1절 |\n| **`@Transactional` 의 함정** | 5.6절 |\n| **테스트끼리 간섭** | 5.9절 |\n\n> **마지막이 2.1절의 \"독립적이다\" 가 깨지는** 자리다.\n> **DB 는 테스트 사이에 남는다.**\n>\n> **`static` 필드보다 고약하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 4장이 끝난 상태",
+   "sql": "# --- 전체 실행 ---\n\n$ ./gradlew test\n\n카페 키오스크\n  음료를 담을 때\n    한 잔을 담으면 주문 목록에 한 개가 들어간다 PASSED\n    여러 잔을 담으면 담은 만큼 들어간다 PASSED\n    0잔을 담으면 예외가 난다 PASSED\n    음수로 담으면 예외가 난다 PASSED\n  음료를 뺄 때\n    담은 음료를 빼면 주문 목록에서 사라진다 PASSED\n    담지 않은 음료를 빼면 예외가 난다 PASSED\n    마지막 한 잔을 빼면 주문 목록이 빈다 PASSED\n  주문 목록을 비울 때\n    비어 있어도 예외가 안 난다 PASSED\n  총 금액을 계산할 때\n    담긴 음료 가격의 합이다 PASSED\n  주문을 생성할 때\n    개점 1분 전에는 주문할 수 없다 PASSED\n    개점 정각에는 주문할 수 있다 PASSED\n    마감 1분 전에는 주문할 수 있다 PASSED\n    마감 정각에는 주문할 수 없다 PASSED\n주문\n  금액을 계산할 때\n    음료 한 잔이면 그 음료의 가격이다 PASSED\n    같은 음료 두 잔이면 가격의 두 배다 PASSED\n    서로 다른 음료면 합이다 PASSED\n    빈 주문이면 0원이다 PASSED\n    백 잔이어도 계산한다 PASSED\n할인 계산\n  등급별 할인\n    일반 회원은 할인이 없다 PASSED\n    실버 회원은 5퍼센트 할인을 받는다 PASSED\n    골드 회원은 10퍼센트 할인을 받는다 PASSED\n    VIP 회원은 15퍼센트 할인을 받는다 PASSED\n  계산 규칙\n    할인은 주문 금액에 비례한다 PASSED\n    소수점이 생기면 버린다 PASSED\n    없는 등급이면 예외가 난다 PASSED\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   이 출력이 요구사항 문서다\n\n# --- 줄 수 변화 ---\n\n#   4장 전\n$ wc -l src/test/java/sample/cafekiosk/**/*.java\n 218 total\n\n#   4장 후\n$ wc -l src/test/java/sample/cafekiosk/**/*.java\n 331 total\n\n#   113줄 늘었다\n\n#   DisplayName 25줄, 주석 60줄, 상수와 Nested 28줄\n\n# --- 안 늘어난 것 ---\n\n$ grep -c \"assertThat\\|assertThatThrownBy\\|assertThatNoException\" \\\n    src/test/java/sample/cafekiosk/**/*.java\n31\n\n$ git diff --stat src/main\n(변경 없음)\n\nBUILD SUCCESSFUL in 1s\n\n#   단언 31개, 프로덕션 0줄, 1초\n\n# --- 실패했을 때의 차이 ---\n\n#   4장 전\n\nCafeKioskTest > createOrderAtClose() FAILED\n    Expecting code to raise a throwable.\n\n#   4장 후\n\n카페 키오스크 > 주문을 생성할 때 > 마감 정각에는 주문할 수 없다 FAILED\n    Expecting code to raise a throwable.\n\n#   같은 실패인데 어느 규칙이 깨졌는지가 다르다\n\n#   4.1절의 네 번째 독자(새벽 3시의 CI)에게 주는 것이다\n\n# --- 5장이 붙기 전 마지막 측정 ---\n\n$ ./gradlew test --rerun-tasks\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   스프링 0개\n#   DB 0개\n#   1초\n\n#   다음 장부터 이 셋이 다 바뀐다\n\n# --- 다음 장에서 ---\n\n#   컨테이너를 띄운다",
+   "note": "**출력 25줄이 요구사항 문서**다.\n\n**테스트 코드가 218줄에서 331줄로** 늘었다. **113줄**이다.\n\n**단언 31개, 프로덕션 0줄, 1초는** 그대로다.\n\n**같은 실패인데 어느 규칙이 깨졌는지가** 다르다. **4.1절의 네 번째 독자에게 주는** 것이다.\n\n**스프링 0개, DB 0개, 1초** — **다음 장부터 셋이 다 바뀐다.**"
+  }
+ ],
+ "recap": [
+  "**요구사항 → 목록 → 세 칸 → 이름 → 리포트** 로 이어지는 사슬이다.",
+  "**마지막 고리만 기계가 확인 못** 한다.",
+  "**규칙 여섯** — 행위, 뺄 단어, 도메인 용어, 세 칸, 숫자 이름, `@Nested`.",
+  "**2.8절은 자격, 4장은 읽는 사람**을 위한 것이다.",
+  "**드는 것은 테스트당 네 줄 남짓**이다.",
+  "**안 드는 것은 실행 시간·단언 개수·프로덕션 코드**다.",
+  "**런타임 비용이 0** 이라 가장 싼 문서다.",
+  "**과하면 반대가 된다** — 긴 이름, 세 단계 중첩.",
+  "**5장에서 1초가 6초가** 된다."
+ ],
+ "drills": [
+  {
+   "task": "테스트 전체를 돌려 출력을 읽는다.",
+   "done_when": "요구사항을 알 수 있는지 판단했다.",
+   "minutes": 15
+  },
+  {
+   "task": "4장 전후의 줄 수를 센다.",
+   "done_when": "얼마나 늘었는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "PR 체크리스트에 넣을 규칙을 고른다.",
+   "done_when": "두 개 이하로 골랐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "4장의 규칙 여섯은?",
+   "a": "행위를 말한다, 빼는 단어, 도메인 용어, 세 칸, 숫자 이름, `@Nested` 다."
+  },
+  {
+   "q": "2.8절의 조건과 어떻게 다른가?",
+   "a": "2.8절은 테스트로서의 자격, 4장은 읽는 사람을 위한 것이다."
+  },
+  {
+   "q": "비용이 얼마인가?",
+   "a": "테스트당 네 줄 남짓이고 실행 시간과 단언 개수는 안 변한다."
+  },
+  {
+   "q": "과하면 안 되는 것은?",
+   "a": "너무 긴 이름, 세 단계 중첩, 모든 숫자에 이름 붙이기다."
+  },
+  {
+   "q": "5장에서 무엇이 바뀌나?",
+   "a": "스프링 컨테이너와 DB 가 붙어 1초가 6초가 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Introducing BDD (개념 출처)",
+   "url": "https://dannorth.net/introducing-bdd/",
+   "publisher": "Dan North"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

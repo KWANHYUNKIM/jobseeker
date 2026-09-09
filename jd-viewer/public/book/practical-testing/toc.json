@@ -222,7 +222,7 @@
           "title": "다시 읽어 보기",
           "summary": "2장의 테스트를 고친다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -230,7 +230,7 @@
           "title": "정리",
           "summary": "누가 읽는가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

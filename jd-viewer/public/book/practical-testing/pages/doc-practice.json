@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "doc-practice",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "다시 읽어 보기",
+ "summary": "2장의 테스트를 고친다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "지금까지 짠 테스트를 고친다.",
+  "동작을 안 바꾸고 읽기만 바꾼다.",
+  "테스트 리팩터링도 리팩터링임을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2·3장에서 스물다섯 개를** 짰다. **동작은 그대로 두고 읽히는 방식만** 바꾼다."
+  },
+  {
+   "type": "figure",
+   "caption": "지금 상태",
+   "ascii": "   what the 2 and 3 chapter tests look like now\n\n   names\n     some have DisplayName, some do not\n     some say 주문 목록, some say 담긴 음료\n     one says 테스트\n\n   bodies\n     no given when then anywhere\n     magic numbers: 4000, 8500, 3, 22\n\n   structure\n     two flat classes, 25 tests, no grouping",
+   "note": "**이름·본문·구조 셋 다 손볼 게** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "고칠 것 다섯",
+   "md": "**① `@DisplayName` 이 없는 것**\n\n```java\n@Test void addSeveralBeverages() { }\n@Test void calculateTotalPrice() { }\n```\n\n> **2·3장에서 절반쯤 빠뜨렸다.**\n\n**② 용어가 섞임**\n\n| 지금 | 통일 |\n|---|---|\n| \"주문 목록에 담긴다\" | |\n| \"목록에 두 개가 담긴다\" | **\"주문 목록\"** 으로 |\n| \"담긴 음료들의\" | |\n\n> **4.2절의 도메인 용어**다. **한 단어로** 정한다.\n\n**③ given-when-then 이 없음**\n\n> **2장은 대부분 세 줄짜리라 안 나눴다.**\n> **세 줄이어도 나누면 읽기가** 낫다.\n\n**④ 매직 넘버**\n\n```java\nassertThat(order.calculateTotalPrice()).isEqualTo(8500);\ncafeKiosk.createOrder(LocalDateTime.of(2026, 9, 9, 22, 0));\n```\n\n> **`8500` 은 남긴다**(4.3절 — 기대값은 상수).\n> **`22, 0` 은 이름을 준다** — **`마감정각`**.\n\n**⑤ 구조**\n\n> **`CafeKioskTest` 에 열셋이 평평**하다.\n> **`@Nested` 로** 묶는다(4.2절).\n\n**안 고칠 것 하나** — **단언 개수**다.\n\n> **이건 리팩터링**이다. **동작을 안 바꾼다.**\n> **단언을 늘리거나 줄이면 그건 다른 작업**이다.\n>\n> **7.1절에서 \"한 문단에 한 주제\" 를 다룰 때 그걸** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "고친 CafeKioskTest (일부)",
+   "code": "@DisplayName(\"카페 키오스크\")\nclass CafeKioskTest {\n\n    private static final LocalDateTime 개점직전 = LocalDateTime.of(2026, 9, 9, 9, 59);\n    private static final LocalDateTime 개점정각 = LocalDateTime.of(2026, 9, 9, 10, 0);\n    private static final LocalDateTime 마감직전 = LocalDateTime.of(2026, 9, 9, 21, 59);\n    private static final LocalDateTime 마감정각 = LocalDateTime.of(2026, 9, 9, 22, 0);\n\n    private CafeKiosk cafeKiosk;\n\n    @BeforeEach\n    void setUp() {\n        cafeKiosk = new CafeKiosk();\n    }\n\n    @Nested\n    @DisplayName(\"음료를 담을 때\")\n    class Add {\n\n        @DisplayName(\"한 잔을 담으면 주문 목록에 한 개가 들어간다\")\n        @Test\n        void one() {\n            // given\n            Americano americano = new Americano();\n\n            // when\n            cafeKiosk.add(americano, 1);\n\n            // then\n            assertThat(cafeKiosk.getBeverages()).hasSize(1);\n        }\n\n        @DisplayName(\"0잔을 담으면 예외가 난다\")\n        @Test\n        void zero() {\n            // given\n            Americano americano = new Americano();\n\n            // when & then\n            assertThatThrownBy(() -> cafeKiosk.add(americano, 0))\n                    .isInstanceOf(IllegalArgumentException.class)\n                    .hasMessage(\"음료는 1잔 이상 주문하실 수 있습니다.\");\n        }\n    }\n\n    @Nested\n    @DisplayName(\"주문을 생성할 때\")\n    class CreateOrder {\n\n        @DisplayName(\"마감 시각 정각에는 주문할 수 없다\")\n        @Test\n        void atCloseTime() {\n            // given\n            cafeKiosk.add(new Americano(), 1);\n\n            // when & then\n            assertThatThrownBy(() -> cafeKiosk.createOrder(마감정각))\n                    .isInstanceOf(IllegalArgumentException.class)\n                    .hasMessage(\"주문 시간이 아닙니다.\");\n        }\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "고친 뒤",
+   "ascii": "   after the rewrite\n\n   every test has a sentence name\n   every body has three sections\n   every number that means something has a name\n   two classes grouped by behaviour, not by method\n\n   and the assertion count did not change",
+   "note": "**단언 개수는 안 바뀌었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것도 리팩터링이다",
+   "md": "**3.2절의 규칙**을 그대로 적용한다.\n\n> **동작을 안 바꾼다.** **테스트가 계속 초록이면 성공**이다.\n\n**여기서는 대상이** 다르다.\n\n| | 3.2절 | 여기 |\n|---|---|---|\n| 고치는 것 | **프로덕션 코드** | **테스트 코드** |\n| 지켜 주는 것 | **테스트** | **프로덕션 코드** |\n\n> **프로덕션 코드를 한 줄도 안 고쳤으니 동작이 안 바뀐 게** 확실하다.\n>\n> **그리고 테스트가 여전히 초록이면 검증 내용도 안** 바뀌었다.\n\n**주의할 함정**\n\n```java\n// 고치다 실수로\nassertThat(cafeKiosk.getBeverages()).hasSize(1);\n// 를\nassertThat(cafeKiosk.getBeverages()).isNotEmpty();\n// 로 바꾸면\n```\n\n> **여전히 통과**한다. **검증이 약해졌는데 안** 보인다.\n>\n> **1.1절의 방법으로** 확인한다 — **프로덕션 코드를 깨뜨려 같은 개수가 빨개지는지** 본다.\n\n**테스트 코드도 코드**다.\n\n> **7.5절에서 `@BeforeEach` 공유의 대가를** 다룬다.\n> **테스트 코드에도 중복과 결합이** 생긴다.\n>\n> **다만 프로덕션 코드보다 중복에 관대**하다. **읽기가 우선**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 고치기 전 ---\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n    --tests DiscountCalculatorTest -i | grep -E \"PASSED|FAILED\"\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 음료 두 잔을 담으면 목록에 두 개가 담긴다 PASSED\nCafeKioskTest > 음료를 0잔 담으면 예외가 난다 PASSED\nCafeKioskTest > 음료를 음수로 담으면 예외가 난다 PASSED\nCafeKioskTest > 주문 목록에 있는 음료를 뺀다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 PASSED\nCafeKioskTest > 마지막 한 잔을 빼면 목록이 빈다 PASSED\nCafeKioskTest > 비어 있는 목록을 비워도 예외가 안 난다 PASSED\nCafeKioskTest > 담긴 음료들의 총 금액을 계산한다 PASSED\nCafeKioskTest > 영업 시작 1분 전에는 주문할 수 없다 PASSED\nCafeKioskTest > 영업 시작 정각에는 주문할 수 있다 PASSED\nCafeKioskTest > 마감 1분 전에는 주문할 수 있다 PASSED\nCafeKioskTest > 마감 시각 정각에는 주문할 수 없다 PASSED\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 PASSED\n... (12개)\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   '주문 목록에' 와 '목록에' 와 '담긴 음료들의' 가 섞여 있다\n\n# --- 단언 개수를 먼저 센다 ---\n\n$ grep -c \"assertThat\\|assertThatThrownBy\\|assertThatNoException\" \\\n    src/test/java/sample/cafekiosk/**/*.java\n\n31\n\n#   31 개다. 이 숫자가 안 바뀌어야 한다\n\n# --- 고친 뒤 ---\n\n$ ./gradlew test -i | grep -E \"PASSED|FAILED\"\n\n카페 키오스크 > 음료를 담을 때 > 한 잔을 담으면 주문 목록에 한 개가 들어간다 PASSED\n카페 키오스크 > 음료를 담을 때 > 여러 잔을 담으면 담은 만큼 들어간다 PASSED\n카페 키오스크 > 음료를 담을 때 > 0잔을 담으면 예외가 난다 PASSED\n카페 키오스크 > 음료를 담을 때 > 음수로 담으면 예외가 난다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 담은 음료를 빼면 주문 목록에서 사라진다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 담지 않은 음료를 빼면 예외가 난다 PASSED\n카페 키오스크 > 음료를 뺄 때 > 마지막 한 잔을 빼면 주문 목록이 빈다 PASSED\n카페 키오스크 > 주문 목록을 비울 때 > 비어 있어도 예외가 안 난다 PASSED\n카페 키오스크 > 총 금액을 계산할 때 > 담긴 음료 가격의 합이다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 개점 1분 전에는 주문할 수 없다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 개점 정각에는 주문할 수 있다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 마감 1분 전에는 주문할 수 있다 PASSED\n카페 키오스크 > 주문을 생성할 때 > 마감 정각에는 주문할 수 없다 PASSED\n주문 > 금액을 계산할 때 > 음료 한 잔이면 그 음료의 가격이다 PASSED\n... (12개)\n\n25 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   개수가 같다\n\n# --- 단언 개수도 확인 ---\n\n$ grep -c \"assertThat\\|assertThatThrownBy\\|assertThatNoException\" \\\n    src/test/java/sample/cafekiosk/**/*.java\n\n31\n\n#   같다. 검증을 안 늘리고 안 줄였다\n\n# --- 프로덕션 코드는 안 건드렸는지 ---\n\n$ git diff --stat src/main\n\n#   (변경 없음)\n\n#   동작이 안 바뀐 게 확실하다\n\n# --- 검증이 약해지지 않았는지 ---\n\n#   프로덕션 코드를 깨뜨려 본다\n\npublic void add(Beverage beverage, int count) {\n    if (count <= 0) { throw new IllegalArgumentException(...); }\n    // for 문을 지운다\n}\n\n$ ./gradlew test\n\n카페 키오스크 > 음료를 담을 때 > 한 잔을 담으면 ... FAILED\n    Expected size: 1 but was: 0\n카페 키오스크 > 음료를 담을 때 > 여러 잔을 담으면 ... FAILED\n    Expected size: 2 but was: 0\n카페 키오스크 > 음료를 뺄 때 > 담은 음료를 빼면 ... FAILED\n    java.lang.IllegalArgumentException: 주문 목록에 없는 음료입니다.\n카페 키오스크 > 음료를 뺄 때 > 마지막 한 잔을 빼면 ... FAILED\n    java.lang.IllegalArgumentException: 주문 목록에 없는 음료입니다.\n카페 키오스크 > 총 금액을 계산할 때 > ... FAILED\n    expected: 8500 but was: 0\n카페 키오스크 > 주문을 생성할 때 > 개점 정각에는 ... PASSED\n\n25 tests completed, 5 failed\n\n#   5개가 빨개진다\n\n#   고치기 전에도 같은 5개가 빨개졌다\n\n#   검증 강도가 그대로다\n\n#   되돌린다\n\n# --- 매직 넘버 하나를 실수로 바꾸면 ---\n\nprivate static final LocalDateTime 마감정각 = LocalDateTime.of(2026, 9, 9, 22, 1);\n\n$ ./gradlew test\n\n카페 키오스크 > 주문을 생성할 때 > 마감 정각에는 주문할 수 없다 PASSED\n\n#   통과한다. 22:01 도 주문 불가라서다\n\n#   그런데 이름이 '마감 정각' 인데 22:01 을 테스트한다\n\n#   상수 이름이 거짓말이 됐다\n#   4.2절의 구현 용어 문제와 같은 종류다\n\n#   상수는 이름과 값이 맞아야 한다\n\n#   되돌린다\n\n# --- HTML 리포트 ---\n\n$ open build/reports/tests/test/index.html\n\n#   카페 키오스크\n#     음료를 담을 때        4 tests\n#     음료를 뺄 때          3 tests\n#     주문 목록을 비울 때     1 test\n#     총 금액을 계산할 때     1 test\n#     주문을 생성할 때        4 tests\n#   주문\n#     금액을 계산할 때        5 tests\n#   할인 계산\n#     등급별 할인            4 tests\n#     계산 규칙              3 tests\n\n#   요구사항 목차다\n\n#   1.3절에서 여섯 줄이던 요구사항이\n#   지금은 여덟 개 항목의 스물다섯 줄이다\n\n# --- 다음 절에서 ---\n\n#   4장을 정리한다",
+   "note": "**고치기 전후로 테스트 개수도 단언 개수도 31 로** 같다.\n\n**`git diff --stat src/main` 이 비어** 있다. **프로덕션을 안 건드렸다.**\n\n**`for` 문을 지우니 고치기 전과 같은 5개가** 빨개진다. **검증 강도가** 그대로다.\n\n**`마감정각` 상수를 `22, 1` 로 바꾸면 통과**한다. **이름이 거짓말**이 됐다 — 4.2절의 구현 용어 문제와 같은 종류.\n\n**HTML 리포트가 요구사항 목차**가 됐다."
+  }
+ ],
+ "recap": [
+  "**동작을 안 바꾸고 읽히는 방식만** 바꾼다.",
+  "**고칠 다섯** — `@DisplayName`, 용어 통일, 세 칸, 매직 넘버, 구조.",
+  "**단언 개수는 안** 바꾼다 — 그건 다른 작업이다.",
+  "**테스트 코드 리팩터링은 프로덕션 코드가** 지켜 준다.",
+  "**`git diff --stat src/main` 이 비어야** 한다.",
+  "**검증이 약해졌는지는 깨뜨려** 확인한다.",
+  "**같은 개수가 빨개지면 강도가** 그대로다.",
+  "**상수 이름과 값이 어긋나면 거짓말**이 된다.",
+  "**HTML 리포트가 요구사항 목차**가 된다."
+ ],
+ "drills": [
+  {
+   "task": "단언 개수를 세고 기록한다.",
+   "done_when": "고치기 전 숫자를 적었다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트 하나를 세 칸으로 고친다.",
+   "done_when": "여전히 통과하는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Nested` 로 묶고 리포트를 연다.",
+   "done_when": "목차가 나오는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "프로덕션 코드를 깨뜨려 같은 개수가 빨개지는지 본다.",
+   "done_when": "고치기 전후가 같은 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트 리팩터링에서 무엇을 안 바꾸나?",
+   "a": "단언 개수와 검증 내용이다. 그건 다른 작업이다."
+  },
+  {
+   "q": "동작이 안 바뀐 걸 어떻게 확인하나?",
+   "a": "프로덕션 코드를 한 줄도 안 고쳤는지(`git diff`) 본다."
+  },
+  {
+   "q": "검증이 약해졌는지는?",
+   "a": "프로덕션을 깨뜨려 고치기 전과 같은 개수가 빨개지는지 본다."
+  },
+  {
+   "q": "상수 이름과 값이 어긋나면?",
+   "a": "통과하는데 이름이 거짓말이 된다. 4.2절의 구현 용어 문제와 같다."
+  },
+  {
+   "q": "무엇이 요구사항 목차가 되나?",
+   "a": "`@Nested` 로 묶은 HTML 테스트 리포트다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "JUnit 5 — Display Names",
+   "url": "https://junit.org/junit5/docs/current/user-guide/#writing-tests-display-names",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
