@@ -1,0 +1,144 @@
+{
+ "book": "http-basic",
+ "id": "put-patch",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "PUT 과 PATCH",
+ "summary": "덮어쓰기와 부분 수정.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "PUT 이 대체임을 안다.",
+  "PATCH 형식 둘을 안다.",
+  "덮어쓰기 충돌을 막는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절은 서버가 위치를** 정했다. **여기는 클라이언트가** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 변경, 세 방식",
+   "ascii": "   the same change, three ways\n\n   starting from   {id: 5, item: laptop, qty: 1, memo: urgent}\n\n   PUT   {id: 5, item: laptop, qty: 2, memo: urgent}\n         send the whole thing, and memo survives because you sent it\n\n   PUT   {id: 5, qty: 2}\n         send the whole thing, and item and memo are now gone\n\n   PATCH {qty: 2}\n         send only the change, and everything else is untouched",
+   "note": "**둘째 줄에서 안 보낸 필드가** 사라졌다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "PUT 은 수정이 아니라 대체다",
+   "md": "**가장 흔한 오해**다.\n\n> **보낸 것으로 통째로** 바꾼다.\n> **안 보낸 필드는 지워지는 게** 맞다.\n> **파일을 덮어쓰는 것과 같은** 동작이다.\n\n**부분만 보내면 나머지를** 잃는다.\n\n> **많은 서버가 관대하게 병합해** 준다.\n> **그건 규격을 안 지키는** 것이다.\n> **클라이언트가 어느 쪽인지 모르면 사고가** 난다.\n\n**PATCH 가 그래서** 생겼다.\n\n| 형식 | 무엇 |\n|---|---|\n| JSON Merge Patch | 바꿀 필드만. `null` 이면 삭제 |\n| JSON Patch | `op`·`path`·`value` 목록 |\n\n> **앞이 쓰기** 쉽고, **뒤가 정확**하다.\n> **배열 원소를 바꾸려면 뒤가** 필요하다.\n> **⑫ 에서 `kubectl patch --type=json` 을 쓰던 게 뒤**다.\n\n**PUT 은 멱등, PATCH 는 아닐 수** 있다.\n\n> **같은 PUT 을 열 번 해도 결과가** 같다.\n> **`{\"op\":\"add\",\"path\":\"/tags/-\"}` 는 열 번이면 열 개가** 붙는다.\n> **5.6절에서 정리한다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "누가 위치를 정하나",
+   "ascii": "   who decides the location\n\n   POST /orders          the server picks the id, and returns it\n   PUT  /orders/5        the client already knows the id\n\n   so PUT works when the name comes from outside\n   a filename, a username, a device id, a date\n   and PUT on a url that does not exist yet may create it",
+   "note": "**이름이 밖에서 올 때 PUT 이** 맞는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "덮어쓰기는 남의 변경을 지운다",
+   "md": "**잃어버린 갱신** 문제다.\n\n> **둘이 같은 자원을 읽고 각자 고쳐** 보낸다.\n> **나중 것이 앞의 변경을 통째로** 덮는다.\n> **PATCH 라도 같은 필드면** 같다.\n\n**조건부 요청이 답**이다.\n\n```\nGET  /orders/5     -> ETag: \"v3\"\nPUT  /orders/5     If-Match: \"v3\"\n```\n\n> **그 사이 누가 바꿨으면 `412`** 다.\n> **⑤ 의 낙관적 잠금과 같은** 생각이다.\n> **9장에서 `ETag` 를 자세히** 본다.\n\n**PUT 이 만들 수도** 있다.\n\n> **없는 주소에 PUT 하면 `201`** 이다.\n> **있으면 `200` 이나 `204`** 다.\n> **응답 코드로 어느 쪽인지** 구분한다.\n\n**PATCH 는 캐시가 안** 된다.\n\n> **안전하지도 멱등하지도 않다고 봐야** 한다.\n> **`Accept-Patch` 로 어떤 형식을 받는지 알릴 수** 있다.\n> **실무에서는 대부분 Merge Patch 만** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 준비 ---\n\n$ curl -s -X PUT -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"노트북\",\"qty\":1,\"memo\":\"급함\"}' \\\n    http://localhost:9080/orders/5\n\n{\"item\": \"노트북\", \"qty\": 1, \"memo\": \"급함\", \"id\": 5}\n\n# --- 전부 보내면 다 남는다 ---\n\n$ curl -s -X PUT -d '{\"item\":\"노트북\",\"qty\":2,\"memo\":\"급함\"}' \\\n    http://localhost:9080/orders/5\n\n{\"item\": \"노트북\", \"qty\": 2, \"memo\": \"급함\", \"id\": 5}\n\n# --- 일부만 보내면 ---\n\n$ curl -s -X PUT -d '{\"qty\":3}' http://localhost:9080/orders/5\n\n{\"qty\": 3, \"id\": 5}\n\n$ curl -s http://localhost:9080/orders/5\n\n{\"qty\": 3, \"id\": 5}\n\n#   item 과 memo 가 사라졌다\n\n#   버그가 아니라 규격대로다\n\n#   PUT 은 대체다\n\n# --- PUT 은 없으면 만든다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9080/orders/77\n\n404\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -d '{\"item\":\"새것\"}' http://localhost:9080/orders/77\n\n201\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -d '{\"item\":\"덮어씀\"}' http://localhost:9080/orders/77\n\n200\n\n#   201 다음엔 200 이다\n\n#   코드로 생성인지 대체인지 구분한다\n\n#   POST 와 달리 위치를 내가 정했다\n\n# --- 몇 번 해도 같다 ---\n\n$ for i in 1 2 3; do\n    curl -s -X PUT -d '{\"item\":\"고정\",\"qty\":9}' \\\n      http://localhost:9080/orders/77 > /dev/null\n  done\n$ curl -s http://localhost:9080/orders/77\n\n{\"item\": \"고정\", \"qty\": 9, \"id\": 77}\n\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n9 건\n\n#   세 번 해도 9건 그대로다\n\n#   5.3절의 POST 는 셋이 늘었다\n\n#   그게 멱등이다 (5.6절)\n\n# --- PATCH 서버 ---\n\n$ cat patch.py\n\nDB = {5: {\"id\": 5, \"item\": \"노트북\", \"qty\": 1, \"memo\": \"급함\",\n          \"tags\": [\"a\"]}}\n\n    def do_PATCH(self):\n        ct = self.headers.get(\"Content-Type\", \"\")\n        n = int(self.headers.get(\"Content-Length\", 0))\n        body = json.loads(self.rfile.read(n) or b\"{}\")\n        cur = DB[5]\n        if ct == \"application/merge-patch+json\":\n            for k, v in body.items():\n                if v is None:\n                    cur.pop(k, None)\n                else:\n                    cur[k] = v\n        elif ct == \"application/json-patch+json\":\n            for op in body:\n                p = op[\"path\"].lstrip(\"/\").split(\"/\")\n                if op[\"op\"] == \"replace\":\n                    cur[p[0]] = op[\"value\"]\n                elif op[\"op\"] == \"add\" and p[-1] == \"-\":\n                    cur[p[0]].append(op[\"value\"])\n                elif op[\"op\"] == \"remove\":\n                    cur.pop(p[0], None)\n        else:\n            self._send(415, {\"error\": \"지원 안 함\"},\n                       {\"Accept-Patch\":\n                        \"application/merge-patch+json, \"\n                        \"application/json-patch+json\"})\n            return\n        self._send(200, cur)\n\n$ python3 patch.py & sleep 1\n\n# --- Merge Patch ---\n\n$ curl -s -X PATCH -H 'Content-Type: application/merge-patch+json' \\\n    -d '{\"qty\":5}' http://localhost:9077/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"qty\": 5, \"memo\": \"급함\", \"tags\": [\"a\"]}\n\n#   qty 만 바뀌었다\n\n#   나머지는 그대로다\n\n#   PUT 과 다른 점이다\n\n$ curl -s -X PATCH -H 'Content-Type: application/merge-patch+json' \\\n    -d '{\"memo\":null}' http://localhost:9077/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"qty\": 5, \"tags\": [\"a\"]}\n\n#   null 이 삭제다\n\n#   그래서 null 을 값으로 못 넣는다\n\n#   Merge Patch 의 한계다\n\n# --- JSON Patch ---\n\n$ curl -s -X PATCH -H 'Content-Type: application/json-patch+json' \\\n    -d '[{\"op\":\"add\",\"path\":\"/tags/-\",\"value\":\"b\"}]' \\\n    http://localhost:9077/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"qty\": 5, \"tags\": [\"a\", \"b\"]}\n\n$ for i in 1 2; do\n    curl -s -o /dev/null -X PATCH \\\n      -H 'Content-Type: application/json-patch+json' \\\n      -d '[{\"op\":\"add\",\"path\":\"/tags/-\",\"value\":\"c\"}]' \\\n      http://localhost:9077/orders/5\n  done\n$ curl -s -X PATCH -H 'Content-Type: application/merge-patch+json' \\\n    -d '{}' http://localhost:9077/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"qty\": 5, \"tags\": [\"a\", \"b\", \"c\", \"c\"]}\n\n#   두 번 하니 두 개 붙었다\n\n#   PATCH 는 멱등이 아닐 수 있다\n\n#   ⑫ 에서 --type=json 을 쓰던 그 형식이다\n\n# --- 모르는 형식은 415 ---\n\n$ curl -s -D - -X PATCH -H 'Content-Type: application/json' \\\n    -d '{\"qty\":1}' http://localhost:9077/orders/5 \\\n  | grep -E 'HTTP|Accept-Patch'\n\nHTTP/1.1 415 Unsupported Media Type\nAccept-Patch: application/merge-patch+json, application/json-patch+json\n\n#   무엇을 받는지 알려 준다\n\n#   415 는 7장에서 본다\n\n$ kill %1 2>/dev/null\n\n# --- 잃어버린 갱신 ---\n\n$ curl -s -X PUT -d '{\"item\":\"원본\",\"qty\":1,\"memo\":\"중요\"}' \\\n    http://localhost:9080/orders/5 > /dev/null\n\n$ A=$(curl -s http://localhost:9080/orders/5)\n$ B=$(curl -s http://localhost:9080/orders/5)\n$ echo \"둘 다 읽었다: $A\"\n\n둘 다 읽었다: {\"item\": \"원본\", \"qty\": 1, \"memo\": \"중요\", \"id\": 5}\n\n$ curl -s -X PUT -d '{\"item\":\"원본\",\"qty\":1,\"memo\":\"A 가 고침\"}' \\\n    http://localhost:9080/orders/5 > /dev/null\n$ curl -s -X PUT -d '{\"item\":\"원본\",\"qty\":9,\"memo\":\"중요\"}' \\\n    http://localhost:9080/orders/5 > /dev/null\n\n$ curl -s http://localhost:9080/orders/5\n\n{\"item\": \"원본\", \"qty\": 9, \"memo\": \"중요\", \"id\": 5}\n\n#   A 의 메모가 사라졌다\n\n#   B 가 옛 값을 그대로 다시 썼다\n\n#   아무 오류도 안 났다\n\n# --- 조건부로 막는다 ---\n\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X PUT \\\n    -H \"If-Match: $E\" -d 'x' http://localhost:8080/api.json\n\n405\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'If-Match: \"틀린값\"' http://localhost:8080/api.json\n\n412\n\n#   412 Precondition Failed 다\n\n#   그 사이 바뀌었다는 뜻이다\n\n#   ⑤ 의 낙관적 잠금과 같다\n\n#   9장에서 자세히 본다\n\n# --- 다음 절에서 ---\n\n#   지운 뒤에 무엇을 돌려주나",
+   "note": "**`{\"qty\":3}` 만 PUT 하자 `item` 과 `memo` 가** 사라졌다 — 대체이기 때문이다.\n\n**없는 `/orders/77` 에 PUT 하면 `201`, 다시 하면 `200`** 이다.\n\n**PUT 을 세 번 해도 건수가 9건 그대로**다 — POST 는 셋이 늘었다.\n\n**Merge Patch 의 `null` 이 삭제**라 `null` 을 값으로 못 넣는다.\n\n**`add /tags/-` 를 두 번 하면 `c` 가 두 개** 붙는다."
+  }
+ ],
+ "recap": [
+  "**PUT 은 수정이 아니라** 대체다.",
+  "**안 보낸 필드는** 사라진다.",
+  "**클라이언트가 위치를** 안다.",
+  "**없으면 만들고 `201`** 을 준다.",
+  "**PUT 은 멱등**이다.",
+  "**PATCH 는 바뀔 부분만** 보낸다.",
+  "**Merge Patch 는 `null` 이** 삭제다.",
+  "**JSON Patch 는 배열도** 다룬다.",
+  "**덮어쓰기 충돌은 `If-Match` 로** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "일부 필드만 PUT 한다.",
+   "done_when": "나머지가 사라지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 주소에 PUT 한다.",
+   "done_when": "`201` 과 `200` 을 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 형식으로 PATCH 한다.",
+   "done_when": "결과 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "잃어버린 갱신을 만든다.",
+   "done_when": "오류 없이 덮이는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "PUT 의 정확한 의미는?",
+   "a": "보낸 표현으로 자원을 통째로 대체하는 것이다."
+  },
+  {
+   "q": "PUT 에 일부 필드만 보내면?",
+   "a": "나머지 필드가 사라지는 것이 규격대로다."
+  },
+  {
+   "q": "Merge Patch 에서 `null` 은?",
+   "a": "그 필드를 삭제하라는 뜻이다."
+  },
+  {
+   "q": "PATCH 가 멱등하지 않을 수 있는 예는?",
+   "a": "배열 끝에 원소를 추가하는 연산이다."
+  },
+  {
+   "q": "잃어버린 갱신을 막는 방법은?",
+   "a": "`ETag` 와 `If-Match` 로 조건부 갱신을 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Merge Patch",
+   "def": "바꿀 필드만 담고 `null` 로 삭제를 표현하는 PATCH 형식."
+  },
+  {
+   "term": "잃어버린 갱신",
+   "def": "동시에 읽고 각자 쓴 탓에 앞의 변경이 덮이는 문제."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 5789 — PATCH Method for HTTP",
+   "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 6902 — JavaScript Object Notation (JSON) Patch",
+   "url": "https://www.rfc-editor.org/rfc/rfc6902.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 7386 — JSON Merge Patch",
+   "url": "https://www.rfc-editor.org/rfc/rfc7386.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

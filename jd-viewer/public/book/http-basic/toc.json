@@ -254,7 +254,7 @@
           "title": "POST",
           "summary": "이 리소스에 처리해 달라.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -262,7 +262,7 @@
           "title": "PUT 과 PATCH",
           "summary": "덮어쓰기와 부분 수정.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",

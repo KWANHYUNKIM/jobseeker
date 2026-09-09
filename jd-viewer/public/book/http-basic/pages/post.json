@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "post",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "POST",
+ "summary": "이 리소스에 처리해 달라.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "생성만이 아님을 안다.",
+  "응답 코드를 고른다.",
+  "중복 제출을 막는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절의 GET 이 안 바꾸는 쪽**이었다면 **여기부터는 바꾸는 쪽**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "POST 의 뜻",
+   "ascii": "   post does not mean create, it means process this\n\n   create        POST /orders          a new order appears\n   append        POST /logs            a line is added\n   trigger       POST /jobs/5/retry    something runs\n   convert       POST /pdf             a file comes back, nothing stored\n   too long      POST /search          a get that would not fit\n\n   the target decides what processing means, and the spec says no more",
+   "note": "**처리 방식은 대상이** 정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "규격이 일부러 안 정했다",
+   "md": "**\"본문을 대상의 의미에 따라 처리하라\" 가** 전부다.\n\n> **무엇을 하는지는 서버가** 정한다.\n> **그래서 뭐든 담을 수** 있다.\n> **5.7절에서 그 자유가 만든 문제를** 본다.\n\n**생성이 가장 흔할** 뿐이다.\n\n> **컬렉션에 POST 하면 새로 만든다는 건** 관행이다(5.1절).\n> **규격이 그렇게 하라고 한 건** 아니다.\n> **작업을 시작시키거나 변환만 하고 아무것도 안 남길 수도** 있다.\n\n**응답 코드가 의미를** 나눈다.\n\n> **새로 생겼으면 `201` 과 `Location`** 이다.\n> **오래 걸리면 `202` 로 받아만** 둔다.\n> **결과가 없으면 `204`** 다 — **7장에서 다시** 본다.\n\n**본문 형식은 `Content-Type` 이** 말한다.\n\n| 형식 | 어디에 |\n|---|---|\n| `application/json` | API |\n| `application/x-www-form-urlencoded` | 기본 폼 |\n| `multipart/form-data` | 파일 업로드 |\n| `text/plain` | 드물다 |\n\n> **폼 인코딩이 3.3절에서 본 그** `+` 규칙이다.\n> **멀티파트는 경계 문자열로 조각을** 나눈다."
+  },
+  {
+   "type": "figure",
+   "caption": "어떤 코드로 답하나",
+   "ascii": "   which status a post should answer with\n\n   201 created      something new exists, and Location says where\n   200 ok           processed, and here is the result\n   204 no content   processed, nothing to return\n   202 accepted     taken, but not finished yet\n   303 see other    done, now go and get that page\n\n   the last one exists to stop a refresh from posting twice",
+   "note": "**마지막이 새로고침 중복을** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "새로고침이 두 번 보낸다",
+   "md": "**POST 응답을 그대로 화면에** 그리면,\n\n> **새로고침할 때 브라우저가 \"다시 보낼까요\" 를** 묻는다.\n> **누르면 주문이 둘이** 된다.\n> **뒤로 가기에서도** 생긴다.\n\n**POST-리다이렉트-GET 이 답**이다.\n\n> **처리하고 `303` 으로 결과 페이지를** 가리킨다.\n> **브라우저는 그 페이지를 GET 으로** 받는다.\n> **새로고침하면 GET 만 다시** 된다 — **안전하다**(5.2절).\n\n**API 는 멱등 키를** 쓴다.\n\n> **`Idempotency-Key` 헤더에 고유값을** 준다.\n> **서버가 그 키를 기억해 두 번째는 같은 답을** 준다.\n> **결제 API 가 대부분 이렇게** 한다.\n> **5.6절에서 왜 POST 가 멱등이 아닌지** 본다.\n\n**타임아웃이 제일** 곤란하다.\n\n> **응답을 못 받았을 때 다시 보내도 되는지 알 수** 없다.\n> **서버가 이미 처리했을 수도** 있다.\n> **멱등 키가 없으면 재시도를 못** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 생성 ---\n\n$ curl -s -D - -X POST -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"의자\",\"qty\":1}' http://localhost:9080/orders \\\n  | grep -E 'HTTP|Location|item'\n\nHTTP/1.1 201 Created\nLocation: /orders/9\n{\"item\": \"의자\", \"qty\": 1, \"id\": 9}\n\n$ curl -s http://localhost:9080/orders/9\n\n{\"item\": \"의자\", \"qty\": 1, \"id\": 9}\n\n#   Location 이 가리킨 곳에 진짜 있다\n\n#   클라이언트가 id 를 안 정했다\n\n#   서버가 정했다 (5.4절과 다른 점이다)\n\n# --- 요청 원문 ---\n\n$ curl -s -o /dev/null -v -X POST -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"책상\"}' http://localhost:9080/orders 2>&1 \\\n  | grep -E '^[>*] ' | head -8\n\n> POST /orders HTTP/1.1\n> Host: localhost:9080\n> User-Agent: curl/8.9.1\n> Accept: */*\n> Content-Type: application/json\n> Content-Length: 20\n> \n* upload completely sent off: 20 bytes\n\n#   빈 줄 뒤에 본문이 있다\n\n#   4.5절의 네 부분이 다 있다\n\n#   GET 에는 없던 셋째, 넷째다\n\n# --- 폼 인코딩 ---\n\n$ curl -s -o /dev/null -v -d 'item=의자 하나&qty=2' \\\n    http://localhost:9080/orders 2>&1 | grep -E '^> Content-Type'\n\n> Content-Type: application/x-www-form-urlencoded\n\n$ curl -s -o /dev/null -v --data-urlencode 'item=의자 하나' \\\n    http://localhost:9080/orders 2>&1 | grep -A1 'upload'\n\n* upload completely sent off: 38 bytes\n\n$ python3 -c \"\nfrom urllib.parse import urlencode\nprint(urlencode({'item': '의자 하나', 'qty': 2}))\"\n\nitem=%EC%9D%98%EC%9E%90+%ED%95%98%EB%82%98&qty=2\n\n#   공백이 + 다\n\n#   3.3절의 그 규칙이다\n\n#   -d 는 인코딩을 안 해 준다\n\n#   --data-urlencode 를 써야 한다\n\n# --- 멀티파트 ---\n\n$ echo \"파일 내용\" > /tmp/up.txt\n$ curl -s -o /dev/null -v -F 'name=김' -F 'file=@/tmp/up.txt' \\\n    http://localhost:9080/orders 2>&1 | grep -E '^> Content-Type'\n\n> Content-Type: multipart/form-data; boundary=------------------------abc123\n\n$ curl -s --trace-ascii - -F 'name=김' -F 'file=@/tmp/up.txt' \\\n    http://localhost:9080/orders 2>&1 | sed -n '/boundary/,/^$/p' | head -14\n\n--------------------------abc123\nContent-Disposition: form-data; name=\"name\"\n\n김\n--------------------------abc123\nContent-Disposition: form-data; name=\"file\"; filename=\"up.txt\"\nContent-Type: text/plain\n\n파일 내용\n--------------------------abc123--\n\n#   경계 문자열로 조각을 나눈다\n\n#   조각마다 헤더가 또 있다\n\n#   마지막 경계 끝에 -- 가 붙는다\n\n#   본문 안에 또 메시지 구조가 있다\n\n# --- 응답이 여러 가지다 ---\n\n$ cat post2.py\n\n    def do_POST(self):\n        p = self.path\n        if p == \"/jobs\":\n            self._send(202, {\"status\": \"접수됨\"},\n                       {\"Location\": \"/jobs/1\"})\n        elif p == \"/logs\":\n            self._send(204)\n        elif p == \"/pdf\":\n            self._send(200, {\"bytes\": 1024})\n        elif p == \"/checkout\":\n            self._send(303, None, {\"Location\": \"/orders/9\"})\n\n$ python3 post2.py & sleep 1\n$ for p in /jobs /logs /pdf /checkout; do\n    printf '%-11s' $p\n    curl -s -o /dev/null -w '%{http_code}\\n' -X POST http://localhost:9079$p\n  done\n\n/jobs      202\n/logs      204\n/pdf       200\n/checkout  303\n\n#   전부 POST 인데 답이 다르다\n\n#   무엇을 했는지를 코드가 말한다\n\n# --- 새로고침 문제 ---\n\n$ curl -s -o /dev/null -w '%{http_code} %{redirect_url}\\n' -X POST \\\n    http://localhost:9079/checkout\n\n303 /orders/9\n\n$ curl -s -L -o /dev/null -w '%{http_code} %{url_effective}\\n' -X POST \\\n    http://localhost:9079/checkout 2>/dev/null\n\n404 http://localhost:9079/orders/9\n\n$ curl -s -L -o /dev/null -v -X POST \\\n    http://localhost:9079/checkout 2>&1 | grep -E '^> (POST|GET)'\n\n> POST /checkout HTTP/1.1\n> GET /orders/9 HTTP/1.1\n\n#   303 이면 GET 으로 바뀐다\n\n#   POST 로 안 따라간다\n\n#   그래서 새로고침해도 GET 만 다시 된다\n\n#   7장에서 307 과 비교한다\n\n$ kill %1 2>/dev/null\n\n# --- 두 번 보내면 두 번 생긴다 ---\n\n$ B=$(curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)))')\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -X POST -d '{\"item\":\"같은 주문\"}' \\\n      http://localhost:9080/orders\n  done\n$ A=$(curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)))')\n$ echo \"$B 건 -> $A 건\"\n\n5 건 -> 8 건\n\n#   같은 요청 셋이 셋 다 만들었다\n\n#   멱등이 아니다 (5.6절)\n\n#   타임아웃이면 재시도를 못 한다\n\n# --- 멱등 키 ---\n\n$ cat idem.py\n\nSEEN = {}\n    def do_POST(self):\n        k = self.headers.get(\"Idempotency-Key\")\n        if k and k in SEEN:\n            self._send(200, SEEN[k], {\"Idempotent-Replay\": \"true\"})\n            return\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = json.loads(self.rfile.read(n) or b\"{}\")\n        d[\"id\"] = len(SEEN) + 100\n        if k:\n            SEEN[k] = d\n        self._send(201, d)\n\n$ python3 idem.py & sleep 1\n$ for i in 1 2 3; do\n    curl -s -D - -X POST -H 'Idempotency-Key: key-abc' \\\n      -d '{\"item\":\"결제\"}' http://localhost:9078/pay \\\n      | grep -E 'HTTP|Replay|id'\n  done\n\nHTTP/1.1 201 Created\n{\"item\": \"결제\", \"id\": 100}\nHTTP/1.1 200 OK\nIdempotent-Replay: true\n{\"item\": \"결제\", \"id\": 100}\nHTTP/1.1 200 OK\nIdempotent-Replay: true\n{\"item\": \"결제\", \"id\": 100}\n\n#   첫 번째만 만들었다\n\n#   같은 id 가 세 번 왔다\n\n#   결제 API 가 이렇게 한다\n\n#   서버가 키를 기억하니 상태가 생긴다 (4.3절)\n\n$ kill %1 2>/dev/null\n\n# --- 큰 본문 ---\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_upload}바이트\\n' -X POST \\\n    --data-binary @/dev/stdin http://localhost:9080/orders \\\n    <<< \"$(head -c 100000 /dev/zero | tr '\\0' 'a')\"\n\n201 100001바이트\n\n#   100KB 가 그냥 간다\n\n#   5.2절의 8KB 벽이 없다\n\n#   본문에는 실질적 제한이 없다\n\n#   대신 캐시도 북마크도 안 된다\n\n# --- 다음 절에서 ---\n\n#   내가 위치를 정하는 쪽",
+   "note": "**`201` 과 `Location: /orders/9` 가 오고 그 자리에 진짜** 있다.\n\n**멀티파트 본문 안에 경계 문자열과 조각별 헤더가 또** 있다.\n\n**같은 POST 를 넷 보내면 `202`·`204`·`200`·`303` 으로 답이** 갈린다.\n\n**`303` 을 따라가면 `POST` 가 `GET` 으로** 바뀐다.\n\n**같은 본문 셋이 5건을 8건으로 만들지만 `Idempotency-Key` 를 주면 `id` 가 세 번 다 100** 이다."
+  }
+ ],
+ "recap": [
+  "**POST 는 생성이 아니라 처리해 달라는** 뜻이다.",
+  "**무엇을 하는지는 대상이** 정한다.",
+  "**컬렉션에 POST 가 생성인 건** 관행이다.",
+  "**`201` 에는 `Location` 을** 붙인다.",
+  "**오래 걸리면 `202`** 다.",
+  "**본문 형식은 `Content-Type` 이** 말한다.",
+  "**새로고침이 두 번 보낸다.**",
+  "**`303` 리다이렉트가 그걸** 막는다.",
+  "**API 는 멱등 키를** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "컬렉션에 POST 한다.",
+   "done_when": "`201` 과 `Location` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "멀티파트로 파일을 보낸다.",
+   "done_when": "경계 문자열을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`303` 을 따라간다.",
+   "done_when": "GET 으로 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "멱등 키를 붙인다.",
+   "done_when": "두 번째부터 같은 결과가 오는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "POST 의 규격상 의미는?",
+   "a": "본문을 대상 자원의 의미에 따라 처리하라는 것이다."
+  },
+  {
+   "q": "`201` 에 함께 보내야 할 헤더는?",
+   "a": "새로 생긴 자원의 위치를 알리는 `Location` 이다."
+  },
+  {
+   "q": "새로고침 중복 제출을 막는 방법은?",
+   "a": "처리 후 `303` 으로 리다이렉트해 GET 으로 결과를 보게 한다."
+  },
+  {
+   "q": "멱등 키는 무엇을 푸나?",
+   "a": "타임아웃 후 재시도해도 중복 처리되지 않게 한다."
+  },
+  {
+   "q": "POST 본문의 크기 제한은?",
+   "a": "요청 줄과 달리 실질적 제한이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "멱등 키",
+   "def": "같은 요청을 한 번만 처리하도록 클라이언트가 붙이는 고유값."
+  },
+  {
+   "term": "멀티파트",
+   "def": "경계 문자열로 여러 조각을 담는 본문 형식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "WHATWG HTML — Form submission",
+   "url": "https://html.spec.whatwg.org/multipage/form-control-infrastructure.html",
+   "publisher": "WHATWG"
+  },
+  {
+   "title": "RFC 7578 — Returning Values from Forms: multipart/form-data",
+   "url": "https://www.rfc-editor.org/rfc/rfc7578.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
