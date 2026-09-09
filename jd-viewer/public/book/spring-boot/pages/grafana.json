@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "grafana",
+ "no": "9.7",
+ "chapter": 9,
+ "title": "그라파나",
+ "summary": "붙이고 그린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "붙인다.",
+  "패널을 하나 만든다.",
+  "파일로 관리한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.6절에서 숫자를** 얻었다. **숫자를 줄줄이 읽는 건** 어렵다."
+  },
+  {
+   "type": "figure",
+   "caption": "역할이 갈린다",
+   "ascii": "   who does what\n\n   the store   keeps the numbers and answers queries\n   the viewer  asks queries and draws the answers\n\n   the viewer keeps no numbers of its own, only the questions",
+   "note": "**보는 쪽은 숫자를 안 갖고 질문만** 갖는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "모양이 숫자보다 빨리 읽힌다",
+   "md": "**9.6절 마지막이** 그랬다.\n\n> **두 지점만** 튀었다.\n> **표로는 세어야** 한다.\n> **그림은 한눈에** 보인다.\n\n**여러 질문을 한 화면에** 둔다.\n\n> **9.8절에서 무엇을 둘지** 정한다.\n> **여기선 붙이는 것까지**다.\n> **패널 하나를** 만든다.\n\n**저장은 저쪽이** 한다.\n\n> **여긴 질문만** 갖는다.\n> **9.5절의 보름이 그대로**다.\n> **아래에서 확인**한다.\n\n**파일로 둘 수** 있다.\n\n> **화면에서 만든 걸 JSON 으로** 뽑는다.\n> **저장소에 넣는**다.\n> **아래에서 그걸** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "패널 하나는 결정 셋",
+   "ascii": "   one panel is three decisions\n\n   the query, which decides what is true\n   the visualisation, which decides what is easy to see\n   the unit, which decides whether the number reads right\n\n   getting the third one wrong makes a correct panel lie",
+   "note": "**셋째를 틀리면 맞는 패널이** 거짓말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "화면에서 만든 것은 화면에만 있다",
+   "md": "**손으로 만들면 잃**는다.\n\n> **컨테이너를 지우면** 끝이다.\n> **아래에서 그걸** 겪는다.\n> **파일로** 둔다.\n\n**단위를 안 정하면** 이상하다.\n\n> **초가 그냥 숫자로** 나온다.\n> **아래에서 그걸** 본다.\n> **한 칸 고르면** 된다.\n\n**구간이 화면 따라** 바뀐다.\n\n> **9.6절에서 손으로 적은 `[1m]`** 이다.\n> **변수로** 둔다.\n> **아래에서 그걸** 쓴다.\n\n**계열이 많으면 못** 읽는다.\n\n> **범례가 화면을** 덮는다.\n> **9.6절처럼 접어야** 한다.\n> **아래에서 접는**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 띄운다\n\n$ docker run -d -p 3000:3000 \\\n    -e GF_SECURITY_ADMIN_PASSWORD=secret \\\n    -v $PWD/provisioning:/etc/grafana/provisioning \\\n    grafana/grafana:11.1.0\n\n$ curl -s localhost:3000/api/health | python3 -m json.tool\n{\n    \"commit\": \"5b85c4c2bc\",\n    \"database\": \"ok\",\n    \"version\": \"11.1.0\"\n}\n\n\n-- 붙인다\n\n$ cat provisioning/datasources/prometheus.yml\napiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    jsonData:\n      timeInterval: 15s\n\n$ curl -s -u admin:secret localhost:3000/api/datasources | python3 -c \"\nimport json,sys\nfor d in json.load(sys.stdin):\n    print('%-12s %-12s %s' % (d['name'], d['type'], d['url']))\"\nPrometheus   prometheus   http://prometheus:9090\n\n$ curl -s -u admin:secret -X POST \\\n    localhost:3000/api/datasources/1/health | python3 -c \"\nimport json,sys; d=json.load(sys.stdin); print(d['status'], d['message'])\"\nOK Successfully queried the Prometheus API.\n\n--   9.5절에서 적은 timeInterval 이 여기 다시 나온다\n\n\n-- 저장은 저쪽이 한다\n\n$ docker exec $(docker ps -qf ancestor=grafana/grafana:11.1.0) \\\n    du -sh /var/lib/grafana\n2.1M\t/var/lib/grafana\n\n$ docker exec $(docker ps -qf ancestor=prom/prometheus:v2.53.0) \\\n    du -sh /prometheus\n188M\t/prometheus\n\n--   그림 쪽은 질문만 갖고 있다\n--   9.5절에서 잰 그 188MB 다\n\n\n-- 질문이 그대로 넘어간다\n\n$ curl -s -u admin:secret -X POST localhost:3000/api/ds/query \\\n    -H 'Content-Type: application/json' -d '{\n      \"queries\": [{\n        \"datasourceId\": 1,\n        \"expr\": \"sum(rate(order_placed_total[1m]))\",\n        \"refId\": \"A\", \"instant\": true\n      }]\n    }' | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['results']['A']['frames'][0]['data']['values']\nprint(d[1][0])\"\n14.2\n\n$ curl -sG localhost:9091/api/v1/query \\\n    --data-urlencode 'query=sum(rate(order_placed_total[1m]))' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['data']['result'][0]['value'][1])\"\n14.2\n\n--   같은 질문이고 같은 답이다\n--   9.6절에서 쓰던 그것이다\n\n\n-- 패널 하나를 만든다\n\n$ cat dashboards/orders.json | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\np = d['panels'][0]\nprint('제목  ', p['title'])\nprint('종류  ', p['type'])\nprint('질문  ', p['targets'][0]['expr'])\nprint('단위  ', p['fieldConfig']['defaults']['unit'])\nprint('범례  ', p['targets'][0]['legendFormat'])\"\n제목   초당 주문\n종류   timeseries\n질문   sum by (channel) (rate(order_placed_total[$__rate_interval]))\n단위   ops\n범례   {{channel}}\n\n--   9.6절에서 손으로 적은 [1m] 이 변수가 됐다\n\n\n-- 구간 변수가 무엇이 되나\n\n$ curl -s -u admin:secret -X POST localhost:3000/api/ds/query \\\n    -H 'Content-Type: application/json' -d '{\n      \"from\": \"now-1h\", \"to\": \"now\",\n      \"queries\": [{\"datasourceId\": 1, \"refId\": \"A\", \"intervalMs\": 15000,\n                   \"expr\": \"sum(rate(order_placed_total[$__rate_interval]))\"}]\n    }' | python3 -c \"\nimport json,sys\nprint(json.load(sys.stdin)['results']['A']['frames'][0]['schema']['meta']\n      ['executedQueryString'])\"\nExpr: sum(rate(order_placed_total[1m]))\nStep: 15s\n\n// 하루로 넓히면\n$ ... \"from\": \"now-24h\" ...\nExpr: sum(rate(order_placed_total[10m]))\nStep: 2m\n\n--   화면을 넓히면 구간도 넓어진다\n--   9.6절에서 짧으면 비었던 그 문제를 피한다\n\n\n-- 단위를 안 정하면\n\n{ \"unit\": \"none\" }\n\n$ curl -s -u admin:secret -X POST localhost:3000/api/ds/query \\\n    -H 'Content-Type: application/json' -d '{\n      \"queries\": [{\"datasourceId\": 1, \"refId\": \"A\", \"instant\": true,\n        \"expr\": \"histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket[5m])))\"}]\n    }' | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['results']['A']['frames'][0]['data']['values']\nprint('값', d[1][0])\"\n값 0.0412\n\n--   화면에는 0.0412 로 나온다\n--   초인지 밀리초인지 안 적혀 있다\n\n{ \"unit\": \"s\" }\n\n--   같은 값이 41.2 ms 로 보인다\n--   9.4절에서 이름이 _seconds 였던 이유다\n\n\n-- 자주 쓰는 단위\n\n$ printf '%-14s %-16s %s\\n' \\\n  'ops'     '초당 건수'     'rate 결과' \\\n  's'       '초'            'histogram_quantile' \\\n  'percentunit' '0 에서 1'  '오류율, 사용률' \\\n  'bytes'   '바이트'        'jvm_memory_used_bytes' \\\n  'short'   '그냥 수'       '커넥션 수'\n\nops            초당 건수         rate 결과\ns              초                histogram_quantile\npercentunit    0 에서 1          오류율, 사용률\nbytes          바이트            jvm_memory_used_bytes\nshort          그냥 수           커넥션 수\n\n--   9.6절에서 만든 질문들과 짝이 맞는다\n\n\n-- 계열이 많으면 못 읽는다\n\n$ Q 'rate(http_server_requests_seconds_count[5m])' | wc -l\n      34\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count[5m]))' | wc -l\n       5\n\n--   34 줄이면 범례가 화면을 덮는다\n--   9.6절에서 접던 그것이다\n\n\n-- 파일로 관리한다\n\n$ cat provisioning/dashboards/all.yml\napiVersion: 1\nproviders:\n  - name: files\n    folder: 서비스\n    type: file\n    options:\n      path: /etc/grafana/provisioning/dashboards\n\n$ ls provisioning/dashboards/\nall.yml\norders.json\n\n$ curl -s -u admin:secret 'localhost:3000/api/search?type=dash-db' \\\n    | python3 -c \"\nimport json,sys\nfor d in json.load(sys.stdin): print('%-16s %s' % (d['folderTitle'], d['title']))\"\n서비스           주문 서비스\n\n$ curl -s -u admin:secret localhost:3000/api/dashboards/uid/orders \\\n    | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['meta']['provisioned'])\"\nTrue\n\n--   파일에서 왔다고 표시된다\n\n\n-- 화면에서 만든 것은 잃는다\n\n$ curl -s -u admin:secret -X POST localhost:3000/api/dashboards/db \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"dashboard\":{\"title\":\"손으로 만든 것\",\"panels\":[]},\"overwrite\":false}' \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin)['status'])\"\nsuccess\n\n$ docker rm -f $(docker ps -qf ancestor=grafana/grafana:11.1.0)\n$ docker run -d -p 3000:3000 -e GF_SECURITY_ADMIN_PASSWORD=secret \\\n    -v $PWD/provisioning:/etc/grafana/provisioning grafana/grafana:11.1.0\n\n$ sleep 8 && curl -s -u admin:secret 'localhost:3000/api/search?type=dash-db' \\\n    | python3 -c \"\nimport json,sys\nfor d in json.load(sys.stdin): print(d['title'])\"\n주문 서비스\n\n--   손으로 만든 것은 사라졌다\n--   파일에서 온 것만 남았다\n\n\n-- 저장소에 넣는다\n\n$ git add provisioning/ && git commit -q -m 'chore: 대시보드 추가'\n$ git log --oneline -1 -- provisioning/\na41c9f2 chore: 대시보드 추가\n\n$ python3 -c \"\nimport json\nd = json.load(open('provisioning/dashboards/orders.json'))\nprint('패널', len(d['panels']))\nfor p in d['panels']:\n    print(' ', p['title'], '|', p['targets'][0]['expr'][:44])\"\n패널 6\n  초당 주문 | sum by (channel) (rate(order_placed_total[$__\n  오류율 | sum(rate(http_server_requests_seconds_count{ou\n  응답 시간 95 분위 | histogram_quantile(0.95, sum by (le, uri) (r\n  힙 사용률 | sum by (instance) (jvm_memory_used_bytes{area\n  커넥션 대기 | hikaricp_connections_pending\n  살아 있는 대수 | count(up{job=\"orders\"} == 1)\n\n--   9.6절에서 만든 질문들이 그대로 들어 있다\n--   9.8절에서 이 여섯을 왜 골랐는지 본다\n\n\n-- 확인한다\n\n$ curl -s -u admin:secret -X POST localhost:3000/api/ds/query \\\n    -H 'Content-Type: application/json' -d '{\n      \"queries\": [{\"datasourceId\": 1, \"refId\": \"A\", \"instant\": true,\n        \"expr\": \"count(up{job=\\\"orders\\\"} == 1)\"}]\n    }' | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['results']['A']['frames'][0]['data']['values']\nprint('살아 있는 대수', int(d[1][0]))\"\n살아 있는 대수 3\n\n--   9.8절에서 무엇을 한 화면에 둘지 고른다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '역할'      '저장과 그리기' \\\n  '데이터'    '저쪽 188MB, 이쪽 2.1MB' \\\n  '질문'      '그대로 넘어감' \\\n  '구간 변수' '화면 따라 바뀜' \\\n  '단위'      '안 정하면 0.0412' \\\n  '계열'      '접어야 읽힘' \\\n  '파일'      '되살아남' \\\n  '손으로'    '사라짐'\n\n역할                       저장과 그리기\n데이터                     저쪽 188MB, 이쪽 2.1MB\n질문                       그대로 넘어감\n구간 변수                  화면 따라 바뀜\n단위                       안 정하면 0.0412\n계열                       접어야 읽힘\n파일                       되살아남\n손으로                     사라짐",
+   "note": "**같은 질문이 양쪽에서 다 14.2 를 돌려주고 그림 쪽 저장소는 2.1MB, 값 쪽은 188MB** 다.\n\n**구간 변수가 한 시간 화면에서 `[1m]`, 하루 화면에서 `[10m]` 으로** 바뀐다.\n\n**단위를 안 정하면 `0.0412` 로 보이고 초로 정하면 41.2 ms 로** 읽힌다.\n\n**컨테이너를 지웠다 띄우니 손으로 만든 것은 사라지고 파일에서 온 것만** 남는다.\n\n**패널 여섯의 질문이 9.6절에서 만든 것들 그대로**다."
+  }
+ ],
+ "recap": [
+  "**역할이** 갈린다.",
+  "**질문만** 갖는다.",
+  "**같은 답이** 온다.",
+  "**구간이 변수**다.",
+  "**단위를** 정한다.",
+  "**계열을** 접는다.",
+  "**파일로** 둔다.",
+  "**손으로는** 잃는다.",
+  "**저장소에** 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "붙이고 확인한다.",
+   "done_when": "질의가 성공한 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "패널 하나를 만든다.",
+   "done_when": "질문과 단위를 정했다.",
+   "minutes": 25
+  },
+  {
+   "task": "구간 변수를 본다.",
+   "done_when": "화면 폭에 따라 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "파일로 넣고 다시 띄운다.",
+   "done_when": "살아남는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "그림 쪽은 무엇을 갖고 있나?",
+   "a": "숫자가 아니라 질문만 갖는다."
+  },
+  {
+   "q": "구간을 왜 변수로 두나?",
+   "a": "화면 폭이 넓어지면 구간도 넓어져야 결과가 안 빈다."
+  },
+  {
+   "q": "단위를 안 정하면?",
+   "a": "초인지 밀리초인지 모를 맨 숫자로 보인다."
+  },
+  {
+   "q": "화면에서 만든 대시보드는?",
+   "a": "그 인스턴스에만 있어 지우면 사라진다."
+  },
+  {
+   "q": "계열이 많으면?",
+   "a": "범례가 화면을 덮으므로 묶어서 접는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "데이터 소스",
+   "def": "그림 쪽이 질문을 보낼 저장소 연결."
+  },
+  {
+   "term": "프로비저닝",
+   "def": "대시보드와 연결을 파일로 정의해 기동 때 만들어 두는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Grafana — Documentation",
+   "url": "https://grafana.com/docs/grafana/latest/",
+   "publisher": "Grafana Labs"
+  },
+  {
+   "title": "Prometheus — Documentation",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Micrometer — Concepts",
+   "url": "https://docs.micrometer.io/micrometer/reference/concepts.html",
+   "publisher": "Micrometer"
+  }
+ ]
+}

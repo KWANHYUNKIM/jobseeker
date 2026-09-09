@@ -655,7 +655,7 @@
           "title": "쿼리",
           "summary": "레이트와 백분위.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
@@ -663,7 +663,7 @@
           "title": "그라파나",
           "summary": "붙이고 그린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.8",

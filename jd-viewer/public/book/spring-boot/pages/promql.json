@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "promql",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "쿼리",
+ "summary": "레이트와 백분위.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "레이트를 안다.",
+  "묶어서 센다.",
+  "백분위를 낸다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.5절에서 값을** 모았다. **이제 질문을** 던진다."
+  },
+  {
+   "type": "figure",
+   "caption": "결과가 두 모양이다",
+   "ascii": "   two shapes of result, and functions care which one\n\n   instant   one value per series, right now\n   range     a list of values per series, over a window\n\n   a rate needs a range and gives back an instant",
+   "note": "**비율은 구간을 받아 순간을** 돌려준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "누적값 자체는 아무 뜻이 없다",
+   "md": "**얼마나 떠 있었나에** 달렸다.\n\n> **9.3절에서 두 번 빼** 봤다.\n> **음수가** 나왔다.\n> **아래에서 그걸** 고친다.\n\n**초당 몇 건인지가** 궁금하다.\n\n> **그게 트래픽**이다.\n> **함수 하나면** 된다.\n> **아래에서 확인**한다.\n\n**재기동을 알아서** 다룬다.\n\n> **줄어들면 되감긴 걸로** 본다.\n> **9.1절의 그 문제**다.\n> **아래에서 만들어** 본다.\n\n**묶어서 볼 수** 있다.\n\n> **꼬리표별로 접는**다.\n> **9.4절의 그 꼬리표들**이다.\n> **아래에서 접어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 누적값을 그대로 안 보나",
+   "ascii": "   why a counter is never read directly\n\n   the raw number depends on how long the process has been up\n   the useful number is how fast it is going up\n\n   and the function that does this also survives a restart",
+   "note": "**그 함수가 재기동까지 같이** 처리한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "구간이 긁는 주기보다 짧으면 빈다",
+   "md": "**표본이 둘은 있어야** 한다.\n\n> **15 초마다면 구간이 30 초 넘게**.\n> **아래에서 그걸** 겪는다.\n> **보통 네 배로** 잡는다.\n\n**분위는 히스토그램이** 있어야 한다.\n\n> **9.4절에서 켰다.**\n> **안 켜면 결과가** 없다.\n> **아래에서 확인**한다.\n\n**나눗셈에서 0 이** 나온다.\n\n> **분모가 0 이면 없어**진다.\n> **아래에서 그걸** 본다.\n> **묶는 꼬리표가** 맞아야 한다.\n\n**꼬리표가 다르면 못** 나눈다.\n\n> **한쪽에만 있는 꼬리표**다.\n> **아래에서 그걸** 만든다.\n> **떼고 나눈**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 누적값을 그대로 보면\n\n$ Q() { curl -sG localhost:9091/api/v1/query --data-urlencode \"query=$1\" \\\n    | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    m = {k:v for k,v in r['metric'].items() if k != '__name__'}\n    print('%-56s %s' % (str(m)[:56], r['value'][1]))\n\"; }\n\n$ Q 'sum(order_placed_total)'\n{}                                                       6012\n\n$ Q 'order_placed_total{instance=\"app-1:9090\"}'\n{'application': 'orders', 'channel': 'app', ...}          892\n{'application': 'orders', 'channel': 'web', ...}         2104\n\n--   떠 있는 동안 쌓인 값이다\n--   많은지 적은지 알 수 없다\n\n\n-- 초당 몇 건인가\n\n$ Q 'rate(order_placed_total[1m])'\n{'channel': 'app', 'instance': 'app-1:9090', ...}    2.4666666666666663\n{'channel': 'web', 'instance': 'app-1:9090', ...}    5.8\n{'channel': 'web', 'instance': 'app-2:9090', ...}    5.9333333333333336\n\n$ Q 'sum(rate(order_placed_total[1m]))'\n{}                                                   14.2\n\n--   초당 14.2 건이다\n--   구간을 받아 순간 하나를 돌려줬다\n\n\n-- 재기동을 알아서 다룬다\n\n$ Q 'order_placed_total{instance=\"app-3:9090\",channel=\"web\"}'\n{'channel': 'web', 'instance': 'app-3:9090', ...}    1841\n\n$ docker restart app-3 && sleep 40\n\n$ Q 'order_placed_total{instance=\"app-3:9090\",channel=\"web\"}'\n{'channel': 'web', 'instance': 'app-3:9090', ...}      82\n\n$ Q 'rate(order_placed_total{instance=\"app-3:9090\",channel=\"web\"}[5m])'\n{'channel': 'web', 'instance': 'app-3:9090', ...}    5.733333333333333\n\n--   1841 이 82 로 떨어졌는데 비율은 음수가 아니다\n--   9.3절에서 -4.1 이 나왔던 그 자리다\n\n\n-- 구간이 짧으면 빈다\n\n$ Q 'rate(order_placed_total[10s])'\n(결과 없음)\n\n$ Q 'rate(order_placed_total[30s])'\n{'channel': 'web', 'instance': 'app-1:9090', ...}     5.6\n\n$ curl -s localhost:9091/api/v1/status/config | python3 -c \"\nimport json,sys\nimport re\nc = json.load(sys.stdin)['data']['yaml']\nprint(re.search(r'scrape_interval: \\S+', c).group())\"\nscrape_interval: 15s\n\n--   15 초마다 긁는데 10 초 구간에는 표본이 하나뿐이다\n--   보통 네 배인 1m 로 잡는다\n\n\n-- 묶어서 접는다\n\n$ Q 'sum by (channel) (rate(order_placed_total[1m]))'\n{'channel': 'app'}                                    4.9\n{'channel': 'web'}                                    9.3\n\n$ Q 'sum by (instance) (rate(order_placed_total[1m]))'\n{'instance': 'app-1:9090'}                            4.7\n{'instance': 'app-2:9090'}                            4.8\n{'instance': 'app-3:9090'}                            4.7\n\n$ Q 'sum without (instance, channel, paid) (rate(order_placed_total[1m]))'\n{'application': 'orders', 'cluster': 'seoul-1', 'env': 'prod', 'job': 'orders',\n 'team': 'backend'}                                  14.2\n\n--   9.5절에서 붙은 꼬리표들이다\n--   남길 것을 고르거나 뺄 것을 고른다\n\n\n-- 오류율을 낸다\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     /\n     sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                                    0.0053191489361702\n\n$ Q '100 * sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n{}                                                    0.53191489361702\n\n--   9.3절에서 손으로 계산했던 0.532% 다\n\n\n-- 꼬리표가 다르면 못 나눈다\n\n$ Q 'rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m])\n     / rate(http_server_requests_seconds_count[5m])'\n(결과 없음)\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum by (uri) (rate(http_server_requests_seconds_count[5m]))'\n{'uri': '/orders'}                                    0.0041\n{'uri': '/report'}                                    0.5\n\n--   위쪽은 outcome 꼬리표가 한쪽에만 있어서 짝이 안 맞았다\n--   묶어서 떼고 나눠야 한다\n\n\n-- 없는 계열은 사라진다\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))'\n{'uri': '/orders'}                                    0.0041\n{'uri': '/report'}                                    0.5\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count[5m]))'\n{'uri': '/hello'}                                    12.4\n{'uri': '/orders'}                                    1.0\n{'uri': '/report'}                                    1.0\n{'uri': '/actuator/health'}                           0.2\n\n--   오류가 없는 주소는 아예 안 나온다\n--   0% 가 아니라 없는 것이다\n\n\n-- 0 으로 채운다\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     or\n     0 * sum by (uri) (rate(http_server_requests_seconds_count[5m]))'\n{'uri': '/orders'}                                    0.0041\n{'uri': '/report'}                                    0.5\n{'uri': '/hello'}                                     0\n{'uri': '/actuator/health'}                           0\n\n--   9.3절에서 계기를 미리 만들어 두던 것과 같은 이유다\n\n\n-- 평균 응답 시간\n\n$ Q 'sum by (uri) (rate(http_server_requests_seconds_sum[5m]))\n     / sum by (uri) (rate(http_server_requests_seconds_count[5m]))'\n{'uri': '/hello'}                                     0.0021\n{'uri': '/orders'}                                    0.0115\n{'uri': '/report'}                                    2.05\n\n--   9.3절에서 손으로 나눈 그 값이다\n--   합계와 건수를 각각 비율로 만들어 나눈다\n\n\n-- 백분위를 낸다\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le, uri) (rate(http_server_requests_seconds_bucket[5m])))'\n{'uri': '/hello'}                                     0.0043\n{'uri': '/orders'}                                    0.0412\n{'uri': '/report'}                                    2.1\n\n$ Q 'histogram_quantile(0.99,\n       sum by (le) (rate(http_server_requests_seconds_bucket[5m])))'\n{}                                                    1.812\n\n--   le 를 반드시 남겨야 한다\n--   9.4절에서 켠 그 칸들이다\n\n\n-- 히스토그램이 없으면\n\nmanagement:\n  metrics:\n    distribution:\n      percentiles-histogram:\n        http.server.requests: false\n\n$ curl -s localhost:9090/actuator/prometheus | grep -c '_bucket'\n0\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le, uri) (rate(http_server_requests_seconds_bucket[5m])))'\n(결과 없음)\n\n--   9.4절에서 켜야 했던 이유다\n\n\n-- 여러 대를 합칠 수 있다\n\n$ Q 'histogram_quantile(0.95,\n       sum by (le) (rate(http_server_requests_seconds_bucket{uri=\"/orders\"}[5m])))'\n{}                                                    0.0412\n\n$ Q 'http_server_requests_seconds{quantile=\"0.95\",uri=\"/orders\"}'\n{'instance': 'app-1:9090', ...}                       0.041\n{'instance': 'app-2:9090', ...}                       0.612\n\n--   위는 세 대를 합쳐 하나를 냈다\n--   아래는 대마다 따로다, 9.4절에서 못 합친다고 했던 그것이다\n\n\n-- 최댓값은 다르게 본다\n\n$ Q 'max by (uri) (http_server_requests_seconds_max)'\n{'uri': '/hello'}                                     0.041\n{'uri': '/orders'}                                    0.204\n{'uri': '/report'}                                    0\n\n$ Q 'max_over_time(http_server_requests_seconds_max{uri=\"/report\"}[1h])'\n{'instance': 'app-1:9090', ...}                       2.104\n\n--   9.4절에서 몇 분 뒤 0 이 됐다\n--   구간 최대를 물어야 남아 있다\n\n\n-- 오르내리는 것은 그대로 본다\n\n$ Q 'jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"}'\n(결과 없음)\n\n$ Q 'sum by (instance) (jvm_memory_used_bytes{area=\"heap\"})\n     / sum by (instance) (jvm_memory_max_bytes{area=\"heap\"})'\n{'instance': 'app-1:9090'}                            0.42\n{'instance': 'app-2:9090'}                            0.38\n{'instance': 'app-3:9090'}                            0.91\n\n$ Q 'hikaricp_connections_pending'\n{'instance': 'app-1:9090', 'pool': 'HikariPool-1'}     0\n{'instance': 'app-3:9090', 'pool': 'HikariPool-1'}     4\n\n--   게이지는 비율로 안 감싼다\n--   9.2절에서 만든 그 종류다\n--   app-3 만 힙도 풀도 밀려 있다\n\n\n-- 살아 있는지도 질문이다\n\n$ Q 'up{job=\"orders\"}'\n{'instance': 'app-1:9090', 'job': 'orders'}           1\n{'instance': 'app-2:9090', 'job': 'orders'}           1\n{'instance': 'app-3:9090', 'job': 'orders'}           1\n\n$ Q 'count(up{job=\"orders\"} == 0)'\n(결과 없음)\n\n$ Q 'time() - process_start_time_seconds'\n{'instance': 'app-1:9090', ...}                       8412.2\n{'instance': 'app-3:9090', ...}                       41.8\n\n--   app-3 만 방금 떴다\n--   아까 다시 띄운 그것이다\n\n\n-- 구간을 그려 본다\n\n$ curl -sG localhost:9091/api/v1/query_range \\\n    --data-urlencode 'query=sum(rate(order_placed_total[1m]))' \\\n    --data-urlencode \"start=$(date -v-10M +%s)\" \\\n    --data-urlencode \"end=$(date +%s)\" \\\n    --data-urlencode 'step=60' \\\n  | python3 -c \"\nimport json,sys\nfor t, v in json.load(sys.stdin)['data']['result'][0]['values']:\n    import datetime\n    print(datetime.datetime.fromtimestamp(t).strftime('%H:%M'), round(float(v),1))\n\"\n06:51 13.8\n06:52 14.1\n06:53 14.0\n06:54 21.4\n06:55 22.1\n06:56 14.2\n06:57 14.0\n\n--   두 지점만 튀었다\n--   9.7절에서 이걸 그림으로 본다\n\n\n-- 정리\n\n$ printf '%-30s %s\\n' \\\n  '누적값'        '뜻 없음' \\\n  'rate'          '초당 몇 건' \\\n  '재기동'        '알아서 다룸' \\\n  '구간'          '주기의 네 배' \\\n  'sum by'        '접기' \\\n  '나눗셈'        '꼬리표가 맞아야' \\\n  '없는 계열'     '0 이 아니라 없음' \\\n  'histogram_quantile' 'le 를 남김' \\\n  '여러 대'       '칸은 합쳐짐' \\\n  '게이지'        '그대로 봄'\n\n누적값                          뜻 없음\nrate                            초당 몇 건\n재기동                          알아서 다룸\n구간                            주기의 네 배\nsum by                          접기\n나눗셈                          꼬리표가 맞아야\n없는 계열                       0 이 아니라 없음\nhistogram_quantile              le 를 남김\n여러 대                         칸은 합쳐짐\n게이지                          그대로 봄\n\n--   9.7절에서 이걸 그림으로 옮긴다",
+   "note": "**누적 6012 는 뜻이 없고 `rate` 로 묶으니 초당 14.2 건이** 나온다.\n\n**다시 띄워 1841 이 82 로 떨어졌는데 비율은 5.73 으로 9.3절의 `-4.1` 이** 안 나온다.\n\n**10 초 구간은 표본이 하나라 결과가 없고 30 초부터** 나온다.\n\n**꼬리표가 한쪽에만 있어 나눗셈이 비고 `sum by (uri)` 로 떼니 0.0041 과 0.5 가** 나온다.\n\n**칸을 합쳐 낸 95 분위가 0.0412 인데 대마다 따로 낸 값은 0.041 과 0.612 로** 갈린다."
+  }
+ ],
+ "recap": [
+  "**누적은 뜻이** 없다.",
+  "**비율로** 본다.",
+  "**재기동을** 다룬다.",
+  "**구간이** 넉넉해야 한다.",
+  "**묶어서** 접는다.",
+  "**꼬리표가 맞아야** 나눈다.",
+  "**없는 건 0 이** 아니다.",
+  "**칸으로 분위를** 낸다.",
+  "**게이지는** 그대로다."
+ ],
+ "drills": [
+  {
+   "task": "누적과 비율을 견준다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "다시 띄우고 비율을 본다.",
+   "done_when": "음수가 안 나오는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "오류율을 낸다.",
+   "done_when": "꼬리표를 맞춰 나눴다.",
+   "minutes": 20
+  },
+  {
+   "task": "칸으로 백분위를 낸다.",
+   "done_when": "여러 대를 합친 값을 얻었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "누적값을 왜 그대로 안 보나?",
+   "a": "떠 있던 시간에 좌우돼 많고 적음을 알 수 없다."
+  },
+  {
+   "q": "구간을 얼마로 잡나?",
+   "a": "긁는 주기의 서너 배는 잡아야 표본이 둘 이상 된다."
+  },
+  {
+   "q": "나눗셈이 비는 이유는?",
+   "a": "양쪽 꼬리표 집합이 달라 짝이 안 맞아서다."
+  },
+  {
+   "q": "여러 대의 백분위를 합치려면?",
+   "a": "칸을 합친 뒤 계산한다. 분위 값 자체는 못 합친다."
+  },
+  {
+   "q": "결과에 없는 계열은?",
+   "a": "0 이 아니라 아예 없는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "비율 함수",
+   "def": "누적값의 구간을 받아 초당 증가량을 돌려주는 함수. 되감김을 처리한다."
+  },
+  {
+   "term": "칸 기반 분위",
+   "def": "히스토그램 칸을 합쳐 근사한 백분위. 여러 대를 합칠 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Prometheus — Querying basics",
+   "url": "https://prometheus.io/docs/prometheus/latest/querying/basics/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Prometheus — Query functions",
+   "url": "https://prometheus.io/docs/prometheus/latest/querying/functions/",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Prometheus — Documentation",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "publisher": "Prometheus"
+  }
+ ]
+}
