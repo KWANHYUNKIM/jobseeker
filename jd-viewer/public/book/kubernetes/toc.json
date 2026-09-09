@@ -105,7 +105,7 @@
           "title": "kubectl 이 실제로 하는 일",
           "summary": "YAML 한 장이 API 호출 하나다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -113,7 +113,7 @@
           "title": "배포 데모",
           "summary": "세 줄로 띄우고 죽여 보고 되살아나는 것을 본다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
