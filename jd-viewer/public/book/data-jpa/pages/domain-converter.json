@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "domain-converter",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "도메인 클래스 컨버터",
+ "summary": "id 를 받는데 엔티티가 온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "동작을 안다.",
+  "숨은 쿼리를 본다.",
+  "쓰지 말아야 할 때를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절까지는 저장 쪽이었다.** **여기서 웹 확장으로** 넘어간다."
+  },
+  {
+   "type": "figure",
+   "caption": "파라미터 타입이 바꾸는 것",
+   "ascii": "   what the argument type changes\n\n   Long id      the method receives a number, and calls findById itself\n   Member m     the resolver called findById before the method started\n\n   the second row hides one query inside the signature,\n   and a query you cannot see is a query you cannot tune",
+   "note": "**시그니처 안에 쿼리가** 숨는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "id 를 받아 조회하는 세 줄이 없어진다",
+   "md": "**컨트롤러마다 같은 세 줄이** 있다.\n\n> **`@PathVariable Long id` 를** 받는다.\n> **`findById(id).orElseThrow()` 를** 부른다.\n> **못 찾으면 404 를** 던진다.\n\n**엔티티로 받으면 그게 다** 사라진다.\n\n> **스프링 데이터가 리졸버를 등록해** 둔다.\n> **경로 변수를 id 로 보고 조회**한다.\n> **컨트롤러는 이미 채워진 객체를** 받는다.\n\n**보기에는 깔끔**하다.\n\n> **줄 수가 준다.**\n> **⑤ 3.4절에서 본 그 유혹**이다.\n> **문제는 안 보인다는 것**이다.\n\n**리졸버는 등록만 하면** 켜진다.\n\n> **부트가 자동으로 켜** 준다.\n> **끄려면 설정을 손대야** 한다.\n> **아래에서 그 스위치를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 읽히나",
+   "ascii": "   when the entity is loaded, relative to the transaction\n\n   resolver runs      before the controller body, its own transaction\n   controller body    no transaction of its own\n   service call       opens a transaction, the entity is already detached\n\n   changing a field on that object updates nothing",
+   "note": "**본문에 닿을 땐 이미 준영속**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조회한 객체를 고쳐도 아무 일이 안 난다",
+   "md": "**컨트롤러에 트랜잭션이** 없다.\n\n> **리졸버가 제 트랜잭션에서 읽고** 닫는다.\n> **본문에 오면 준영속**이다.\n> **⑤ 4.4절의 그 상태**다.\n\n**고쳐도 `update` 가 안** 나간다.\n\n> **변경 감지가 안** 걸린다.\n> **예외도 안** 난다.\n> **6.3절의 `null` 처럼 조용히** 틀린다.\n\n**쿼리가 안 보인**다.\n\n> **`@EntityGraph` 를 붙일 자리가** 없다.\n> **연관을 건드리면 N+1 이** 난다.\n> **5.13절의 해법을 쓸 수가** 없다.\n\n**조회 전용에서만** 쓴다.\n\n> **읽고 화면에 뿌리는 곳까지**다.\n> **수정이 섞이면 id 로 받는 게** 맞다.\n> **실무에서 잘 안 쓰는 이유**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 원래 이렇게 쓴다\n\n@RestController\n@RequiredArgsConstructor\npublic class MemberController {\n\n    private final MemberRepository memberRepository;\n\n    @GetMapping(\"/members/{id}\")\n    public String byId(@PathVariable(\"id\") Long id) {\n        Member m = memberRepository.findById(id)\n                .orElseThrow(() -> new NoSuchElementException(\"없음\"));\n        return m.getUsername();\n    }\n}\n\n$ curl -s localhost:8080/members/1\nm1\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n\n--   내가 부른 조회다\n\n\n-- 엔티티로 받는다\n\n@GetMapping(\"/members2/{id}\")\npublic String byEntity(@PathVariable(\"id\") Member member) {\n    return member.getUsername();\n}\n\n$ curl -s localhost:8080/members2/1\nm1\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n\n--   같은 SQL 이다\n--   내가 부른 적이 없다\n--   리포지토리를 주입도 안 했다\n\n\n-- 누가 불렀나\n\n@Test\nvoid 리졸버_목록() {\n    RequestMappingHandlerAdapter adapter =\n            ctx.getBean(RequestMappingHandlerAdapter.class);\n    adapter.getArgumentResolvers().stream()\n            .map(r -> r.getClass().getSimpleName())\n            .filter(n -> n.contains(\"Domain\") || n.contains(\"Pageable\")\n                      || n.contains(\"Sort\"))\n            .forEach(System.out::println);\n}\n\nProxyingHandlerMethodArgumentResolver\nDomainClassConverter$ToEntityConverter\nPageableHandlerMethodArgumentResolver\nSortHandlerMethodArgumentResolver\n\n--   내가 등록 안 했는데 있다\n--   부트가 켰다\n\n\n-- 없는 id 를 주면\n\n$ curl -s -w '\\n%{http_code}\\n' localhost:8080/members2/999\n\n{\"timestamp\":\"2026-09-10T02:34:11.204+00:00\",\"status\":500,\n \"error\":\"Internal Server Error\",\"path\":\"/members2/999\"}\n500\n\nHibernate: select ... where m1_0.member_id=?\n\nERROR ConversionFailedException: Failed to convert from type\n      [java.lang.String] to type [Member] for value [999]\n\n--   404 가 아니라 500 이다\n--   직접 부를 때는 orElseThrow 로 404 를 냈다\n\n\n-- 고치려 해도 안 된다\n\n@GetMapping(\"/members2/{id}/rename\")\npublic String rename(@PathVariable(\"id\") Member member,\n                     @RequestParam String name) {\n    member.setUsername(name);      // 고쳤다\n    return member.getUsername();\n}\n\n$ curl -s 'localhost:8080/members2/1/rename?name=바뀐이름'\n바뀐이름\n\nHibernate: select ... where m1_0.member_id=?\n\n$ curl -s localhost:8080/members2/1\nm1\n\n--   응답은 바뀐 이름이다\n--   다시 읽으면 옛날 이름이다\n--   update 가 한 번도 안 나갔다\n\n\n-- 준영속인지 확인한다\n\n@GetMapping(\"/members2/{id}/state\")\npublic String state(@PathVariable(\"id\") Member member) {\n    return \"관리 중? \" + em.contains(member);\n}\n\n$ curl -s localhost:8080/members2/1/state\n관리 중? false\n\n--   ⑤ 4.4절의 준영속이다\n--   6.4절에서 본 벌크 뒤 상태와 같다\n\n\n-- 트랜잭션이 어디서 열렸나\n\nlogging:\n  level:\n    org.springframework.orm.jpa.JpaTransactionManager: DEBUG\n\n$ curl -s localhost:8080/members2/1 >/dev/null\n\nDEBUG Creating new transaction with name\n      [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findById]\nDEBUG Initiating transaction commit\nDEBUG Committing JPA transaction\n\n--   findById 하나가 트랜잭션 하나다\n--   7.2절에서 이걸 다시 본다\n--   컨트롤러 본문에는 트랜잭션이 없다\n\n\n-- 연관을 건드리면\n\n@GetMapping(\"/members2/{id}/team\")\npublic String team(@PathVariable(\"id\") Member member) {\n    return member.getTeam().getName();\n}\n\n$ curl -s -w '\\n%{http_code}\\n' localhost:8080/members2/1/team\n\n{\"status\":500,\"error\":\"Internal Server Error\"}\n500\n\nHibernate: select ... where m1_0.member_id=?\n\nERROR LazyInitializationException: could not initialize proxy\n      [Team#1] - no Session\n\n--   프록시를 깨울 세션이 없다\n--   @EntityGraph 를 붙일 자리가 없다\n\n\n-- OSIV 를 켜면 넘어간다\n\nspring:\n  jpa:\n    open-in-view: true      # 부트 기본값이다\n\n$ curl -s localhost:8080/members2/1/team\nteamA\n\nHibernate: select ... from member m1_0 where m1_0.member_id=?\nHibernate: select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n\n--   되긴 된다\n--   쿼리가 화면에서 나간다\n--   ⑧ 6.7절에서 다룬 그 문제다\n\n\n-- 여러 건이면 눈에 안 띄게 늘어난다\n\n@GetMapping(\"/compare\")\npublic String compare(@PathVariable(\"a\") Member a,\n                      @PathVariable(\"b\") Member b,\n                      @PathVariable(\"c\") Member c) {\n    return a.getUsername() + b.getUsername() + c.getUsername();\n}\n\n$ curl -s 'localhost:8080/compare/1/2/3' >/dev/null\n\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\n\n--   파라미터 셋에 쿼리 셋이다\n--   findAllById 였으면 in 하나였다 (5.7절)\n\n\n-- 끄는 법\n\n@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n    // 부트 자동 설정을 대체한다\n}\n\n@SpringBootApplication\n@EnableSpringDataWebSupport(\n        pageSerializationMode = VIA_DTO)\n// DomainClassConverter 는 자동 등록이라\n// 끄려면 스프링 데이터 웹 지원 자체를 손대야 한다\n\n@Test\nvoid 끈_뒤() {\n    // 컨버터가 없으면\n}\n\nERROR MethodArgumentTypeMismatchException:\n      Failed to convert value of type 'java.lang.String'\n      to required type 'Member'\n\n--   Long 으로 되돌리는 게 정석이다\n\n\n-- 되돌린다\n\n@GetMapping(\"/members/{id}\")\npublic MemberDto byId(@PathVariable(\"id\") Long id) {\n    return memberRepository.findWithTeamById(id)\n            .map(MemberDto::of)\n            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));\n}\n\n@EntityGraph(attributePaths = {\"team\"})\nOptional<Member> findWithTeamById(Long id);\n\n$ curl -s -w '\\n%{http_code}\\n' localhost:8080/members/1\n{\"id\":1,\"username\":\"m1\",\"teamName\":\"teamA\"}\n200\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age,\n        t1_0.team_id, t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.member_id=?\n\n$ curl -s -w '\\n%{http_code}\\n' localhost:8080/members/999\n{\"status\":404,\"error\":\"Not Found\"}\n404\n\n--   쿼리 하나다\n--   조인이 보인다\n--   404 도 맞다\n--   세 줄 늘고 셋 다 나아졌다\n\n\n-- 정리\n\n$ printf '%-16s %-8s %-10s %s\\n' \\\n  '엔티티로 받기' '1 쿼리' '숨음'   '조회 전용에서만' \\\n  '없는 id' '500'   '-'      '404 가 아니다' \\\n  '수정' '무시'  '-'      'update 없음' \\\n  '연관' '예외'  'OSIV 켜면 N+1' '튜닝 못 함' \\\n  'Long 으로 받기' '1 쿼리' '보임'   '그래프·404 다 됨'\n\n엔티티로 받기     1 쿼리   숨음       조회 전용에서만\n없는 id          500      -          404 가 아니다\n수정             무시     -          update 없음\n연관             예외     OSIV 켜면 N+1  튜닝 못 함\nLong 으로 받기    1 쿼리   보임       그래프·404 다 됨\n\n--   6.6절에서 페이징을 받는다",
+   "note": "**`Member` 로 받으면 내가 안 불렀는데 `where m1_0.member_id=?` 가** 나간다.\n\n**없는 id 는 404 가 아니라 `ConversionFailedException` 으로 500**이다.\n\n**고쳐도 `update` 가 안 나가고 `em.contains` 가 `false`** 다.\n\n**연관을 건드리면 `LazyInitializationException`, OSIV 를 켜면 화면에서 쿼리가** 나간다.\n\n**`Long` 으로 되돌리니 `left join` 한 방에 404 까지 맞았다**."
+  }
+ ],
+ "recap": [
+  "**엔티티로 받으면 조회가** 숨는다.",
+  "**리졸버가 미리** 읽는다.",
+  "**부트가 자동으로** 켠다.",
+  "**없는 id 는 500**이다.",
+  "**본문에서는 준영속**이다.",
+  "**고쳐도 안** 나간다.",
+  "**연관은 예외가** 난다.",
+  "**튜닝할 자리가** 없다.",
+  "**`Long` 이 정석**이다."
+ ],
+ "drills": [
+  {
+   "task": "엔티티로 받아 본다.",
+   "done_when": "쿼리가 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 id 를 요청한다.",
+   "done_when": "500 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "필드를 고쳐 본다.",
+   "done_when": "`update` 가 없는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Long` 으로 되돌린다.",
+   "done_when": "그래프와 404 가 되는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "엔티티를 파라미터로 받으면 무슨 일이 일어나나?",
+   "a": "리졸버가 미리 `findById` 로 조회해 넘긴다."
+  },
+  {
+   "q": "그 객체를 고치면?",
+   "a": "준영속이라 `update` 가 나가지 않는다."
+  },
+  {
+   "q": "없는 id 를 주면?",
+   "a": "변환 실패로 500 이 난다."
+  },
+  {
+   "q": "연관을 건드리면?",
+   "a": "세션이 없어 `LazyInitializationException` 이 난다."
+  },
+  {
+   "q": "왜 실무에서 잘 안 쓰나?",
+   "a": "쿼리가 숨어 튜닝도 예외 처리도 할 수 없기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "도메인 클래스 컨버터",
+   "def": "경로 변수를 id 로 보고 엔티티를 조회해 넘겨 주는 리졸버."
+  },
+  {
+   "term": "인자 리졸버",
+   "def": "컨트롤러 메서드 파라미터를 채워 주는 스프링 MVC 확장점."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Web Support",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

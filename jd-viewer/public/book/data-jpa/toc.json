@@ -362,7 +362,7 @@
           "title": "도메인 클래스 컨버터",
           "summary": "id 를 받는데 엔티티가 온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -370,7 +370,7 @@
           "title": "Web 확장 — 페이징",
           "summary": "쿼리 파라미터가 Pageable 이 된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

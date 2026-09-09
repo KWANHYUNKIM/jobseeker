@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "web-paging",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "Web 확장 — 페이징",
+ "summary": "쿼리 파라미터가 Pageable 이 된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "파라미터 이름을 안다.",
+  "정렬이 실리는 법을 안다.",
+  "둘을 구분하는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.10절에서 `PageRequest.of` 를 손으로** 만들었다. **이제 주소가** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리 문자열이 되는 것",
+   "ascii": "   the query string, and what it becomes\n\n   ?page=1&size=20&sort=age,desc\n\n   page   the zero based index, so 1 is the second page\n   size   the page size, capped by a setting you should set\n   sort   repeatable, and each one appends to the order by",
+   "note": "**`sort` 는 여러 번 줄 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨트롤러가 파싱을 안 한다",
+   "md": "**원래 셋을** 받았다.\n\n> **`@RequestParam` 셋을** 적는다.\n> **기본값과 범위를 직접** 검사한다.\n> **정렬 문자열을 잘라 `Sort` 로** 만든다.\n\n**`Pageable` 로 받으면 다** 끝난다.\n\n> **리졸버가 `page`·`size`·`sort` 를** 읽는다.\n> **6.5절에서 본 그 목록에** 있었다.\n> **없으면 기본값을** 쓴다.\n\n**정렬 파싱이 제일** 크다.\n\n> **`sort=age,desc` 를 `Sort.Order` 로** 만든다.\n> **여러 번 주면 순서대로** 쌓인다.\n> **5.10절에서 본 그 `order by`** 가 된다.\n\n**검증도 같이 온다.**\n\n> **없는 속성이면 `PropertyReferenceException`** 이다.\n> **5.10절에서 확인**했다.\n> **문자열을 SQL 에 붙이는 게** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 메서드에 둘",
+   "ascii": "   two pageables in one method, told apart by a qualifier\n\n   member_page=0&member_size=3   -> the one qualified member\n   team_page=1&team_size=5       -> the one qualified team\n\n   without the qualifier both read the same page parameter\n   and quietly move together",
+   "note": "**한정자가 없으면 같이** 움직인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "크기 제한을 안 걸면 남이 정한다",
+   "md": "**`size` 를 요청이** 정한다.\n\n> **`?size=100000` 이 그대로** 먹는다.\n> **`limit` 에 십만이** 들어간다.\n> **6.7절에서 이걸 막는다.**\n\n**`page` 가 0부터라 어긋난**다.\n\n> **화면은 보통 1부터** 센다.\n> **`?page=1` 이 두 번째** 페이지다.\n> **`one-indexed-parameters` 로 바꿀 수** 있다.\n\n**정렬에 없는 속성을 주면 500**이다.\n\n> **사용자 입력이 그대로 속성 이름이** 된다.\n> **화이트리스트가** 필요하다.\n> **⑩ 4.5절의 입력 검증과 같은 결**이다.\n\n**`Page` 를 그대로 내보내면 안** 된다.\n\n> **5.10절에서 경고를** 봤다.\n> **`pageable` 통째로 나간다.**\n> **6.8절에서 정리**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 원래 이렇게 받았다\n\n@GetMapping(\"/members-old\")\npublic List<Member> old(\n        @RequestParam(defaultValue = \"0\") int page,\n        @RequestParam(defaultValue = \"10\") int size,\n        @RequestParam(defaultValue = \"id,asc\") String sort) {\n\n    String[] parts = sort.split(\",\");\n    Sort s = Sort.by(Sort.Direction.fromString(parts[1]), parts[0]);\n    return memberRepository.findAll(PageRequest.of(page, size, s))\n            .getContent();\n}\n\n--   정렬 파싱이 손으로 다 있다\n--   sort 를 두 번 주면 못 받는다\n\n\n-- Pageable 로 받는다\n\n@GetMapping(\"/members\")\npublic Page<MemberDto> list(Pageable pageable) {\n    return memberRepository.findAll(pageable).map(MemberDto::of);\n}\n\n--   어노테이션도 없다\n\n\n-- 아무것도 안 주면\n\n$ curl -s 'localhost:8080/members' | jq '.number, .size, .totalElements'\n0\n20\n12\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [0]\nTRACE binding parameter (2:INTEGER) <- [20]\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   기본 크기가 20 이다\n--   order by 가 없다\n\n\n-- 페이지와 크기를 준다\n\n$ curl -s 'localhost:8080/members?page=1&size=3' | jq '.number, .numberOfElements'\n1\n3\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [3]\nTRACE binding parameter (2:INTEGER) <- [3]\nHibernate: select count(m1_0.member_id) from member m1_0\n\n--   offset 이 3 이다\n--   page * size 를 리졸버가 곱했다\n\n\n-- 정렬을 준다\n\n$ curl -s 'localhost:8080/members?size=3&sort=age,desc' >/dev/null\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    order by\n        m1_0.age desc\n    offset ? rows fetch first ? rows only\n\n--   문자열이 order by 가 됐다\n\n\n-- 정렬을 두 번 준다\n\n$ curl -s 'localhost:8080/members?sort=age,desc&sort=username,asc' >/dev/null\n\nHibernate:\n    select ...\n    from member m1_0\n    order by\n        m1_0.age desc,\n        m1_0.username asc\n    offset ? rows fetch first ? rows only\n\n--   준 순서대로 쌓였다\n--   위 old 버전은 못 하던 것이다\n\n\n-- 방향을 생략하면\n\n$ curl -s 'localhost:8080/members?sort=age' >/dev/null\n\nHibernate:\n    select ... order by m1_0.age\n    offset ? rows fetch first ? rows only\n\n--   asc 가 기본이라 방향이 안 붙었다\n\n\n-- 연관 속성으로 정렬하면\n\n$ curl -s 'localhost:8080/members?sort=team.name,desc' >/dev/null\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        t1_0.name desc\n    offset ? rows fetch first ? rows only\n\n--   조인이 생겼다\n--   점 하나로 조인이 붙는다\n\n\n-- 없는 속성을 주면\n\n$ curl -s -w '\\n%{http_code}\\n' 'localhost:8080/members?sort=없는것,desc'\n\n{\"status\":500,\"error\":\"Internal Server Error\"}\n500\n\nERROR PropertyReferenceException: No property '없는것' found for type 'Member'\n\n--   SQL 이 안 나갔다\n--   5.10절에서 본 그 예외다\n--   사용자 입력이 그대로 속성 이름이 됐다\n\n\n-- 크기를 크게 주면\n\n$ curl -s 'localhost:8080/members?size=100000' | jq '.size'\n2000\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [2000]\n\n--   기본 상한이 2000 이다\n--   그래도 2000 이 나간다\n--   6.7절에서 이걸 줄인다\n\n\n-- 음수를 주면\n\n$ curl -s 'localhost:8080/members?page=-1&size=-5' | jq '.number, .size'\n0\n20\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [0]\nTRACE binding parameter (2:INTEGER) <- [20]\n\n--   음수는 기본값으로 되돌린다\n--   예외가 아니다\n\n\n-- 이상한 값을 주면\n\n$ curl -s 'localhost:8080/members?page=abc' | jq '.number'\n0\n\n--   무시하고 기본값이다\n\n\n-- 한 메서드에 둘을 받는다\n\n@GetMapping(\"/both\")\npublic Map<String, Object> both(\n        @Qualifier(\"member\") Pageable memberPage,\n        @Qualifier(\"team\") Pageable teamPage) {\n    return Map.of(\n            \"members\", memberRepository.findAll(memberPage).getContent().size(),\n            \"teams\", teamRepository.findAll(teamPage).getContent().size());\n}\n\n$ curl -s 'localhost:8080/both?member_page=0&member_size=3&team_page=0&team_size=2' \\\n    >/dev/null\n\nHibernate: select ... from member m1_0\n           offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [3]\nHibernate: select count(m1_0.member_id) from member m1_0\nHibernate: select ... from team t1_0\n           offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [2]\nHibernate: select count(t1_0.team_id) from team t1_0\n\n--   접두사가 붙었다\n--   크기가 각각 3 과 2 다\n\n\n-- 한정자가 없으면\n\n@GetMapping(\"/both-bad\")\npublic Map<String, Object> bad(Pageable a, Pageable b) { ... }\n\n$ curl -s 'localhost:8080/both-bad?page=1&size=3' >/dev/null\n\nTRACE binding parameter (1:INTEGER) <- [3]\nTRACE binding parameter (2:INTEGER) <- [3]\nTRACE binding parameter (1:INTEGER) <- [3]\nTRACE binding parameter (2:INTEGER) <- [3]\n\n--   둘이 같은 값을 읽었다\n--   같이 움직인다\n\n\n-- Sort 만 받을 수도 있다\n\n@GetMapping(\"/sorted\")\npublic List<MemberDto> sorted(Sort sort) {\n    return memberRepository.findAll(sort).stream()\n            .map(MemberDto::of).toList();\n}\n\n$ curl -s 'localhost:8080/sorted?sort=age,desc' >/dev/null\n\nHibernate:\n    select ... from member m1_0\n    order by m1_0.age desc\n\n--   페이징 없이 정렬만 나간다\n--   offset 이 없다\n\n\n-- 정렬 화이트리스트를 건다\n\nprivate static final Set<String> ALLOWED = Set.of(\"id\", \"username\", \"age\");\n\n@GetMapping(\"/members-safe\")\npublic Page<MemberDto> safe(Pageable pageable) {\n    Sort clean = Sort.by(pageable.getSort().stream()\n            .filter(o -> ALLOWED.contains(o.getProperty()))\n            .toList());\n    Pageable p = PageRequest.of(pageable.getPageNumber(),\n            pageable.getPageSize(), clean);\n    return memberRepository.findAll(p).map(MemberDto::of);\n}\n\n$ curl -s -w '\\n%{http_code}\\n' 'localhost:8080/members-safe?sort=없는것,desc' \\\n    | tail -1\n200\n\nHibernate:\n    select ... from member m1_0\n    offset ? rows fetch first ? rows only\n\n--   500 이 200 이 됐다\n--   order by 만 안 붙었다\n\n\n-- 정리\n\n$ printf '%-22s %s\\n' \\\n  '?page=1&size=3' 'offset 3, limit 3' \\\n  '?sort=age,desc' 'order by age desc' \\\n  '?sort=a&sort=b' '둘 다, 준 순서대로' \\\n  '?sort=team.name' 'left join 이 생김' \\\n  '?size=100000' '상한 2000' \\\n  '?page=-1' '기본값으로 되돌림'\n\n?page=1&size=3         offset 3, limit 3\n?sort=age,desc         order by age desc\n?sort=a&sort=b         둘 다, 준 순서대로\n?sort=team.name        left join 이 생김\n?size=100000           상한 2000\n?page=-1               기본값으로 되돌림\n\n--   6.7절에서 기본값을 손본다",
+   "note": "**아무것도 안 줘도 `limit` 에 `[20]` 이 들어**간다.\n\n**`?page=1&size=3` 이면 리졸버가 곱해서 `offset [3]`** 이다.\n\n**`sort` 를 두 번 주면 `order by age desc, username asc` 로** 쌓인다.\n\n**`sort=team.name` 은 `left join` 을 만들고, 없는 속성은 SQL 전에 500**이다.\n\n**`?size=100000` 도 상한 2000 이 그대로 `limit` 으로** 나간다."
+  }
+ ],
+ "recap": [
+  "**리졸버가 파싱을** 한다.",
+  "**기본 크기는 20**이다.",
+  "**곱셈도 리졸버가** 한다.",
+  "**`sort` 는 여러 번 줄 수** 있다.",
+  "**점 하나로 조인이** 붙는다.",
+  "**없는 속성은 500**이다.",
+  "**상한이 2000**이다.",
+  "**음수는 기본값**이다.",
+  "**한정자로 둘을** 나눈다."
+ ],
+ "drills": [
+  {
+   "task": "`Pageable` 로 받아 본다.",
+   "done_when": "기본값 SQL 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`sort` 를 두 번 준다.",
+   "done_when": "`order by` 가 둘인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "연관 속성으로 정렬한다.",
+   "done_when": "조인이 생긴 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "정렬 화이트리스트를 건다.",
+   "done_when": "500 이 200 이 된 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Pageable` 이 읽는 파라미터 셋은?",
+   "a": "`page`, `size`, `sort` 다."
+  },
+  {
+   "q": "`?page=1` 은 몇 번째 페이지인가?",
+   "a": "0부터 세므로 두 번째다."
+  },
+  {
+   "q": "`sort=team.name` 을 주면?",
+   "a": "조인이 생기고 그 컬럼으로 정렬한다."
+  },
+  {
+   "q": "없는 속성으로 정렬하면?",
+   "a": "SQL 이 나가기 전에 500 이 난다."
+  },
+  {
+   "q": "한 메서드에 `Pageable` 둘을 받으려면?",
+   "a": "`@Qualifier` 로 접두사를 나눈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Pageable 리졸버",
+   "def": "쿼리 파라미터를 `Pageable` 객체로 바꿔 주는 MVC 확장."
+  },
+  {
+   "term": "정렬 화이트리스트",
+   "def": "허용한 속성 이름만 정렬에 남기는 방어."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Web Support",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
