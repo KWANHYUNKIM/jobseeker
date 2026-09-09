@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-1",
+ "id": "libraries",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "라이브러리 살펴보기",
+ "summary": "한 줄이 무엇을 딸고 오나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "의존관계 트리를 읽는다.",
+  "무엇이 왜 들어왔는지 안다.",
+  "테스트 라이브러리를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여섯 줄이 마흔 개쯤**을 딸고 왔다. **무엇이 왔는지** 본다."
+  },
+  {
+   "type": "code",
+   "lang": "bash",
+   "caption": "직접 확인",
+   "code": "./gradlew dependencies --configuration compileClasspath\n\n# 또는 IDE 의 Gradle 창에서 Dependencies 를 편다",
+   "note": "**한 번은 직접 펼쳐 본다.** **무엇이 어디서 왔는지 아는 것**이 문제가 생겼을 때 값을 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 스타터가 딸고 온 것",
+   "ascii": "   spring-boot-starter-web\n     spring-boot-starter          logging, autoconfigure, core\n     spring-boot-starter-tomcat   embedded tomcat\n     spring-webmvc                dispatcher servlet\n     spring-boot-starter-json     jackson\n\n   spring-boot-starter-data-jpa\n     spring-boot-starter-jdbc     hikaricp, datasource\n     hibernate-core               the jpa implementation\n     spring-data-jpa              repository support\n     spring-orm                   JpaTransactionManager\n\n   two lines pulled in roughly forty jars",
+   "note": "**「DB 2편」 6.2절에서 본 그 목록**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "핵심 라이브러리",
+   "md": "| 라이브러리 | 무엇 |\n|---|---|\n| **spring-webmvc** | 「MVC 1편」의 디스패처 서블릿 |\n| **spring-boot-starter-tomcat** | **내장 톰캣** — jar 하나로 돈다 |\n| **hibernate-core** | **JPA 구현체** — SQL 을 만든다 |\n| **spring-data-jpa** | `JpaRepository` — **이 책은 안 쓴다** |\n| **spring-orm** | `JpaTransactionManager` — 「DB 2편」 10.5절 |\n| **HikariCP** | 커넥션 풀 — 「DB 1편」 4.3절 |\n| **jackson** | JSON — 이 책은 화면이라 거의 안 쓴다 |\n| **thymeleaf** | 8장 |\n\n**`hibernate-core` 가 이 책의 주인공**이다.\n\n> **`jakarta.persistence` 는 인터페이스, `org.hibernate` 는 구현**이다. **「DB 2편」 6.1절의 그 구분**이다.\n>\n> **`@Entity` 는 `jakarta.persistence`** 에서 오고, **DDL 을 만드는 코드는 하이버네이트**에 있다.\n\n**`spring-boot-starter-validation`** 은 **하이버네이트 밸리데이터**를 딸고 온다. **이름이 비슷한데 완전히 다른 것**이다 — 「MVC 2편」의 Bean Validation 구현체다."
+  },
+  {
+   "type": "figure",
+   "caption": "로깅",
+   "ascii": "   logging comes with starter, not by itself\n\n   spring-boot-starter-logging\n     logback-classic     the implementation\n     slf4j-api           the interface i code against\n     jul-to-slf4j        bridges\n     log4j-to-slf4j\n\n   i write against slf4j; logback prints it",
+   "note": "**SLF4J 로 쓰고 로그백이 찍는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책이 로그에 의존하는 이유",
+   "md": "**1.1절에서 \"매 절은 만들어진 것으로 끝난다\" 고 했다.** **그 \"만들어진 것\" 을 로그로** 본다.\n\n**그래서 로깅 스택을 알아 둔다.**\n\n```java\n@Slf4j                          // 롬복\npublic class OrderService {\n    public void order() {\n        log.info(\"주문 시작\");   // slf4j 의 Logger\n    }\n}\n```\n\n**`@Slf4j` 가 만드는 것**은 이것이다.\n\n```java\nprivate static final org.slf4j.Logger log =\n        org.slf4j.LoggerFactory.getLogger(OrderService.class);\n```\n\n**`System.out.println` 을 안 쓴다.**\n\n| | `println` | 로거 |\n|---|---|---|\n| 끌 수 있나 | **못 한다** | **레벨로** |\n| 시각·스레드 | 없다 | **있다** |\n| 파일로 | 직접 | **설정으로** |\n| 운영 | **쓰면 안 된다** | |\n\n**스레드 이름이 중요**하다. **「DB 2편」 12.7절에서 `[task-1]` 로 비동기를 구분**했다.\n\n> **이 책 9장에서 쿼리를 셀 때**, **어느 요청의 쿼리인지 스레드 이름으로** 가른다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "테스트 라이브러리",
+   "md": "**`spring-boot-starter-test` 하나가 다섯**을 딸고 온다.\n\n| | 무엇 |\n|---|---|\n| **JUnit 5** | 테스트 프레임워크 |\n| **AssertJ** | `assertThat(...)` |\n| **Mockito** | 목 객체 |\n| **Hamcrest** | 매처 — 잘 안 쓴다 |\n| **spring-test** | `@SpringBootTest` |\n\n**「DB 2편」 4장에서 쓴 것들**이다.\n\n**이 책은 AssertJ 를** 쓴다.\n\n```java\nassertThat(order.getStatus()).isEqualTo(OrderStatus.ORDER);\nassertThat(item.getStockQuantity()).isEqualTo(8);\nassertThatThrownBy(() -> order.cancel())\n        .isInstanceOf(IllegalStateException.class);\n```\n\n**Mockito 는 거의 안 쓴다.**\n\n> **「DB 2편」 4.1절**에서 말했다 — **리포지토리를 목으로 만들면 SQL 을 검증 못 한다.**\n>\n> **이 책은 진짜 DB 로** 테스트한다. **5.4절과 7.8절**이 그렇다.\n\n**H2 임베디드**를 쓴다(「DB 2편」 4.6절). **테스트가 DB 를 띄운다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 것 — 라이브러리가 남긴 로그",
+   "sql": "# --- 각 라이브러리가 뜰 때 남기는 줄 ---\n\n#   spring-boot-starter\n#     Starting JpashopApplication using Java 17 with PID 12345\n#     No active profile set, falling back to 1 default profile: \"default\"\n\n#   spring-data-jpa\n#     Bootstrapping Spring Data JPA repositories in DEFAULT mode.\n#     Finished Spring Data JPA repository scanning in 3 ms.\n#       Found 0 JPA repository interfaces.\n\n#   spring-boot-starter-tomcat\n#     Tomcat initialized with port 8080 (http)\n#     Starting service [Tomcat]\n#     Starting Servlet engine: [Apache Tomcat/10.1.x]\n\n#   spring-webmvc\n#     Initializing Spring embedded WebApplicationContext\n#     Root WebApplicationContext: initialization completed in 1204 ms\n\n#   HikariCP  (spring-boot-starter-jdbc)\n#     HikariPool-1 - Starting...\n#     HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:...\n#     HikariPool-1 - Start completed.\n\n#   hibernate-core\n#     HHH000204: Processing PersistenceUnitInfo [name: default]\n#     HHH000412: Hibernate ORM core version 6.4.x\n#     HHH000026: Second-level cache disabled\n#     Initialized JPA EntityManagerFactory for persistence unit 'default'\n\n#   spring-orm\n#     (조용하다. 트랜잭션이 돌 때 나온다.)\n\n#   spring-boot-starter-thymeleaf\n#     (조용하다. 화면을 렌더링할 때 나온다.)\n\n# --- 열두 줄 정도가 시작 로그의 전부다 ---\n\n#   Started JpashopApplication in 2.104 seconds\n#     (process running for 2.418)\n\n# --- 없는 줄 ---\n\n#   create table ...        엔티티가 없다\n#   select ... / insert ... 아무도 안 불렀다\n#   Getting transaction for 트랜잭션이 없다\n\n# --- 로거를 하나 써 보면 ---\n\n@Slf4j\n@SpringBootApplication\npublic class JpashopApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(JpashopApplication.class, args);\n        log.info(\"떴다\");\n    }\n}\n\n#   2026-09-09 11:21:03.412  INFO 12345 --- [           main]\n#     jpabook.jpashop.JpashopApplication : 떴다\n\n#   시각 · 레벨 · PID · 스레드([main]) · 클래스 · 메시지\n\n# 스레드 이름이 9장에서 쓰인다",
+   "note": "**시작 로그 열두 줄이 라이브러리 목록과 짝**을 이룬다. **어느 줄이 어디서 왔는지** 알면 **안 뜰 때 어디를 볼지** 안다.\n\n**`Second-level cache disabled`** 는 기본값이다. **이 책은 2차 캐시를 안 쓴다.**\n\n**\"없는 줄\" 셋**이 이 절의 상태다. **DDL 도 SQL 도 트랜잭션도 없다.**\n\n**맨 아래 로그 한 줄에 `[main]` 스레드 이름**이 있다. **9장에서 이것으로 요청을 가른다.**\n\n**다음 절에서 화면 쪽을 준비한다.**"
+  }
+ ],
+ "recap": [
+  "**여섯 줄이 마흔 개쯤**을 딸고 왔다.",
+  "**`starter-data-jpa` 가 `starter-jdbc`·하이버네이트·spring-orm** 을 포함한다.",
+  "**`hibernate-core` 가 이 책의 주인공** — DDL 과 SQL 을 만든다.",
+  "**`jakarta.persistence` 는 인터페이스, `org.hibernate` 는 구현**이다.",
+  "**validation 스타터가 하이버네이트 밸리데이터**를 딸고 온다 — 다른 것이다.",
+  "**SLF4J 로 쓰고 로그백이 찍는다.**",
+  "**`println` 을 안 쓴다** — 끌 수 없고 스레드 이름이 없다.",
+  "**`starter-test` 하나가 JUnit·AssertJ·Mockito·spring-test** 를 준다.",
+  "**Mockito 는 거의 안 쓴다** — 진짜 DB 로 테스트한다."
+ ],
+ "drills": [
+  {
+   "task": "`./gradlew dependencies` 로 트리를 펼친다.",
+   "done_when": "hibernate-core 가 어디서 왔는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "시작 로그의 열두 줄을 라이브러리와 짝지어 본다.",
+   "done_when": "각 줄의 출처를 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Slf4j` 로 로그를 하나 찍는다.",
+   "done_when": "시각·레벨·스레드·클래스가 다 찍히는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "로그 레벨을 `warn` 으로 올려 본다.",
+   "done_when": "`info` 가 안 보이는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`starter-data-jpa` 가 딸고 오는 것 넷은?",
+   "a": "`starter-jdbc`(HikariCP), hibernate-core, spring-data-jpa, spring-orm 이다."
+  },
+  {
+   "q": "`jakarta.persistence` 와 `org.hibernate` 의 차이는?",
+   "a": "앞은 표준 인터페이스, 뒤는 구현체다."
+  },
+  {
+   "q": "왜 `println` 을 안 쓰나?",
+   "a": "끌 수 없고 시각·레벨·스레드 정보가 없다."
+  },
+  {
+   "q": "스레드 이름이 왜 중요한가?",
+   "a": "9장에서 어느 요청의 쿼리인지 가를 때 쓴다."
+  },
+  {
+   "q": "Mockito 를 왜 거의 안 쓰나?",
+   "a": "리포지토리를 목으로 만들면 SQL 을 검증할 수 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot Reference",
+   "url": "https://docs.spring.io/spring-boot/reference/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

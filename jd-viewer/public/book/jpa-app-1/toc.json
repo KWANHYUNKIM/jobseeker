@@ -98,7 +98,7 @@
           "title": "프로젝트 생성",
           "summary": "스타터 다섯 개로 시작한다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -106,7 +106,7 @@
           "title": "라이브러리 살펴보기",
           "summary": "한 줄이 무엇을 딸고 오나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -114,7 +114,7 @@
           "title": "View 환경 설정",
           "summary": "타임리프와 개발 편의 설정.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

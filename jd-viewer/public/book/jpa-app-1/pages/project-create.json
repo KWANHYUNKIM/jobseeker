@@ -1,0 +1,127 @@
+{
+ "book": "jpa-app-1",
+ "id": "project-create",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "프로젝트 생성",
+ "summary": "스타터 다섯 개로 시작한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프로젝트를 만든다.",
+  "의존성을 왜 그것들로 골랐는지 안다.",
+  "롬복을 설정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**빈 프로젝트에서 시작**한다. **2장이 끝나면 테이블이 생긴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "스프링 이니셜라이저",
+   "ascii": "   start.spring.io\n\n   project        Gradle - Groovy\n   language       Java\n   spring boot    3.x\n   packaging      Jar\n   java           17\n\n   dependencies\n     Spring Web\n     Thymeleaf\n     Spring Data JPA\n     Validation\n     H2 Database\n     Lombok\n\n   six lines. the rest comes with them.",
+   "note": "**여섯 줄**이면 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이 여섯인가",
+   "md": "| 의존성 | 어디에 쓰나 |\n|---|---|\n| **Spring Web** | 8장 컨트롤러 |\n| **Thymeleaf** | 8장 화면 |\n| **Spring Data JPA** | **3~7장** — 하이버네이트와 `EntityManager` |\n| **Validation** | 8.3절 폼 검증 |\n| **H2** | 개발용 DB |\n| **Lombok** | 전체 |\n\n**「DB 2편」 6.2절에서 본 대로**, `spring-boot-starter-data-jpa` 하나가 **JdbcTemplate·HikariCP·하이버네이트**를 다 딸고 온다.\n\n**빠진 것**을 확인한다.\n\n| 안 넣은 것 | 왜 |\n|---|---|\n| **Querydsl** | 이 책은 JPQL 로 간다 — 다음 권 |\n| **Spring Security** | 1.3절에서 뺐다 |\n| **MyBatis** | 안 쓴다 |\n| **DevTools** | 넣어도 된다 — 2.3절 |\n\n> **1.2절에서 \"`EntityManager` 를 직접 쓴다\" 고 했다.** **`Spring Data JPA` 를 넣으면서도 `JpaRepository` 는 안 쓴다** — **4.4절에서 그 이유**를 본다.\n>\n> **스타터가 필요한 것은 하이버네이트와 자동 설정**이지 리포지토리 인터페이스가 아니다."
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "`build.gradle`",
+   "code": "plugins {\n    id 'java'\n    id 'org.springframework.boot' version '3.2.0'\n    id 'io.spring.dependency-management' version '1.1.4'\n}\n\ngroup = 'jpabook'\nversion = '0.0.1-SNAPSHOT'\n\njava {\n    sourceCompatibility = '17'\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n    implementation 'org.springframework.boot:spring-boot-starter-validation'\n\n    compileOnly 'org.projectlombok:lombok'\n    annotationProcessor 'org.projectlombok:lombok'\n\n    runtimeOnly 'com.h2database:h2'\n\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n    testCompileOnly 'org.projectlombok:lombok'\n    testAnnotationProcessor 'org.projectlombok:lombok'\n}\n\ntasks.named('test') {\n    useJUnitPlatform()\n}",
+   "note": "**버전을 안 적는다.** **`dependency-management` 플러그인이 부트 버전에 맞춰** 정해 준다.\n\n**「DB 2편」 5.2절의 MyBatis 와 다른 점**이다 — 거기서는 직접 적었다.\n\n**롬복이 네 줄**인 것을 본다. **테스트 쪽에도 `compileOnly`/`annotationProcessor`** 를 따로 넣어야 한다. **안 넣으면 테스트 코드에서 롬복이 안 먹는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "만들어진 구조",
+   "ascii": "   jpashop\n   |\n   +-- src/main/java/jpabook/jpashop\n   |     JpashopApplication.java\n   |\n   +-- src/main/resources\n   |     application.yml\n   |     templates/\n   |     static/\n   |\n   +-- src/test/java\n   |\n   +-- build.gradle",
+   "note": "**패키지는 4.3절에서** 정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "롬복을 쓸 때",
+   "md": "**이 책은 롬복을 쓴다.** **다만 엔티티에서는 골라 쓴다.**\n\n| 애너테이션 | 엔티티에 |\n|---|---|\n| `@Getter` | **쓴다** |\n| **`@Setter`** | **안 쓴다** — 3.8절 |\n| **`@Data`** | **안 쓴다** — 위험하다 |\n| `@NoArgsConstructor(access = PROTECTED)` | **쓴다** |\n| **`@ToString`** | **조심** — 연관 관계를 타고 돈다 |\n\n**`@Data` 가 왜 위험한가.**\n\n**`@Data` 는 `@Getter`·`@Setter`·`@ToString`·`@EqualsAndHashCode` 를 다** 붙인다.\n\n```java\n@Data\n@Entity\npublic class Order {\n    @ManyToOne private Member member;\n}\n\n@Data\n@Entity\npublic class Member {\n    @OneToMany(mappedBy = \"member\")\n    private List<Order> orders;\n}\n```\n\n**`order.toString()`** 을 부르면 **`member` 를 찍고, 그 안의 `orders` 를 찍고, 다시 `member` 를** 찍는다.\n\n```\nStackOverflowError\n```\n\n> **「DB 2편」 6.2절에서 이것을 예고**했다. **거기서는 엔티티가 하나라 안 터졌다.** **여기서는 양방향 연관이 생기니 진짜로** 터진다.\n>\n> **`@EqualsAndHashCode` 도 위험**하다 — 지연 로딩 프록시를 비교하면서 쿼리가 나간다.\n\n**IDE 에 롬복 플러그인**을 설치하고 **애너테이션 처리**를 켠다. **안 켜면 게터가 안 보인다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 것 — 아직 없다",
+   "sql": "# --- 실행 ---\n\n./gradlew bootRun\n\n#   :compileJava\n#   :bootRun\n\n#   .   ____          _            __ _ _\n#   /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n#  ( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n#\n#   :: Spring Boot ::                (v3.2.0)\n\n#   Starting JpashopApplication using Java 17\n#   No active profile set, falling back to 1 default profile: \"default\"\n\n#   Bootstrapping Spring Data JPA repositories in DEFAULT mode.\n#   Finished Spring Data JPA repository scanning in 3 ms.\n#     Found 0 JPA repository interfaces.\n\n#   Tomcat initialized with port 8080 (http)\n\n#   HikariPool-1 - Starting...\n#   HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:...\n#   HikariPool-1 - Start completed.\n\n#   HHH000412: Hibernate ORM core version 6.4.x\n#   Initialized JPA EntityManagerFactory for persistence unit 'default'\n\n#   Tomcat started on port 8080 (http)\n#   Started JpashopApplication in 2.104 seconds\n\n# --- 무엇이 떴나 ---\n\n#   Found 0 JPA repository interfaces      -> 4.4절에서 이대로 둔다\n#   HikariPool-1                            -> DataSource 자동 설정\n#   jdbc:h2:mem:...                         -> 설정을 안 해서 임베디드로\n#   Hibernate ORM core version 6.4.x        -> EntityManagerFactory 준비\n#   Tomcat started on port 8080\n\n# --- 아직 DDL 이 없다 ---\n\n#   (create table 로그가 하나도 없다)\n\n#   엔티티가 하나도 없기 때문이다\n\n# --- 확인 ---\n\ncurl -i localhost:8080\n\n#   HTTP/1.1 404\n#   Content-Type: application/json\n#   {\"timestamp\":\"...\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/\"}\n\n#   화이트라벨 대신 JSON 이 온다 (curl 이라서)\n\n# 뜨기는 떴다\n# 다음 절에서 무엇이 딸려 왔는지 본다",
+   "note": "**`Found 0 JPA repository interfaces`** 를 눈여겨본다. **이 책은 이 숫자를 0 으로 유지**한다 — 4.4절.\n\n**`jdbc:h2:mem:`** 이 나온 것은 **설정을 안 했기 때문**이다. **「DB 2편」 4.6절의 임베디드 모드**가 자동으로 켜졌다.\n\n**`create table` 로그가 없다.** **엔티티가 없으니 만들 것이 없다.**\n\n> **이 책은 매 절이 만들어진 것으로 끝난다**(1.1절). **이 절은 아직 만든 것이 없다** — **그것도 하나의 상태**다.\n\n**다음 절에서 저 여섯 줄이 무엇을 딸고 왔는지** 본다."
+  }
+ ],
+ "recap": [
+  "**의존성 여섯 줄**로 시작한다.",
+  "**버전을 안 적는다** — 부트가 정한다.",
+  "**Querydsl·시큐리티는 안 넣는다** — 다음 권과 범위 밖.",
+  "**`Spring Data JPA` 를 넣되 `JpaRepository` 는 안 쓴다** — 4.4절.",
+  "**롬복은 테스트 쪽에도 따로** 넣는다.",
+  "**엔티티에 `@Setter`·`@Data` 를 안 쓴다.**",
+  "**`@Data` 는 양방향 연관에서 `StackOverflowError`** 를 낸다.",
+  "**`Found 0 JPA repository interfaces`** 를 0 으로 유지한다.",
+  "**아직 DDL 이 없다** — 엔티티가 없어서."
+ ],
+ "drills": [
+  {
+   "task": "이니셜라이저로 프로젝트를 만든다.",
+   "done_when": "`bootRun` 이 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "시작 로그에서 다섯 줄을 찾는다.",
+   "done_when": "리포지토리 수·Hikari·H2·하이버네이트·톰캣을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "롬복 플러그인과 애너테이션 처리를 켠다.",
+   "done_when": "`@Getter` 가 IDE 에서 인식되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Data` 를 붙인 엔티티 둘로 양방향을 만들어 `toString` 을 불러 본다.",
+   "done_when": "`StackOverflowError` 를 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 버전을 안 적나?",
+   "a": "`dependency-management` 플러그인이 부트 버전에 맞춰 정해 준다."
+  },
+  {
+   "q": "`Spring Data JPA` 를 넣고 `JpaRepository` 를 왜 안 쓰나?",
+   "a": "스타터가 필요한 것은 하이버네이트와 자동 설정이고, 이 책은 `EntityManager` 를 직접 쓴다."
+  },
+  {
+   "q": "엔티티에 `@Data` 를 왜 안 쓰나?",
+   "a": "양방향 연관에서 `toString` 이 무한 재귀하고 `equals` 가 프록시를 건드린다."
+  },
+  {
+   "q": "롬복을 테스트에도 넣어야 하는 이유는?",
+   "a": "테스트 소스 셋은 따로 애너테이션 프로세서를 지정해야 한다."
+  },
+  {
+   "q": "왜 아직 DDL 이 없나?",
+   "a": "엔티티를 하나도 안 만들었기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot Reference",
+   "url": "https://docs.spring.io/spring-boot/reference/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
