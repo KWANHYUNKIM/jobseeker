@@ -133,7 +133,7 @@
           "title": "테스트 준비",
           "summary": "롤백과 영속성 컨텍스트.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -141,7 +141,7 @@
           "title": "첫 저장과 조회",
           "summary": "insert 두 번과 select 한 번.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
