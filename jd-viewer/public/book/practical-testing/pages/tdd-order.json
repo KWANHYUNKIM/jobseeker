@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "tdd-order",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "순서가 바꾸는 것",
+ "summary": "구현이 아니라 요구사항부터.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "순서가 바꾸는 것 넷을 안다.",
+  "테스트가 API 설계인 이유를 안다.",
+  "언제 멈출지가 어떻게 달라지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**순서 하나가 넷을** 바꾼다. **3.2절에서 이미 셋이** 보였다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드의 첫 사용자",
+   "ascii": "   who is the first user of a method\n\n   without tdd\n     the first caller is written days later,\n     by someone reading the method signature\n\n   with tdd\n     the first caller is the test,\n     written before the method exists\n\n   an api nobody has called yet is an api nobody has judged",
+   "note": "**아무도 안 불러 본 API 는 아무도 평가 안 한 API** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "① 테스트가 API 설계다",
+   "md": "**3.2절의 첫 빨강**을 다시 본다.\n\n```java\nint result = DiscountCalculator.calculate(10000, 1);\n```\n\n> **이 한 줄이 정한 것**\n>\n> | | |\n> |---|---|\n> | 클래스 이름 | `DiscountCalculator` |\n> | 메서드 이름 | `calculate` |\n> | `static` 인지 | 그렇다 |\n> | 파라미터 | `int price, int level` |\n> | 반환 | `int` |\n\n**쓰기 불편하면 바로** 안다.\n\n```java\n// 이렇게 쓰고 싶었다면\ncalculator.calculate(order, member);\n```\n\n> **테스트를 쓰다 \"어? `int level` 이 뭐지\" 가** 나온다.\n> **`MemberLevel` 을 받는 게 낫겠다는 판단이 여기서** 나온다.\n>\n> **구현부터 하면 \"내가 만들기 편한 시그니처\"** 가 된다.\n\n**실제로 3.2절 리팩터링에서 `enum` 이** 나왔다.\n\n> **그건 뒤늦게** 나온 것이다. **테스트를 짤 때 알았으면 처음부터 `MemberLevel`** 을 받았을 수도 있다.\n>\n> **TDD 를 해도 완벽하진 않다.** **다만 판단할 기회가 앞으로** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "② 관심사가 하나씩 온다",
+   "md": "**구현부터 하면 한꺼번에 생각**한다.\n\n```java\npublic static int calculate(int price, int level) {\n    // 등급을 어떻게 표현하지\n    // 할인율은 어디에 두지\n    // 잘못된 등급은 어쩌지\n    // 소수점은 어떻게 처리하지\n}\n```\n\n> **넷을 동시에** 든다. **어느 하나도 확정 못** 한다.\n\n**TDD 는 하나씩** 온다.\n\n```\n사이클 1  실버 5%           -> 등급 표현만\n사이클 2  골드 10%          -> 분기만\n사이클 3  금액 비례          -> 계산식만\n사이클 4  없는 등급 예외      -> 검증만\n```\n\n> **각 사이클에서 결정할 게 하나**다.\n> **소수점 처리는 사이클 3에서** 나온다. **그전엔 생각할 필요가** 없다.\n\n**3.2절에서 실제로** 그랬다.\n\n> **`(int)` 캐스팅은 사이클 3에서 처음** 나왔다.\n> **사이클 1·2 는 상수라 소수점이 없었다.**\n\n**이게 걸음을 작게 만드는 실질**이다.\n\n> **\"작게 하자\" 가 구호가 아니라 순서가 강제**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 멈출지",
+   "ascii": "   how the two orders decide when to stop\n\n   implementation first\n     stop when the method looks complete\n     complete means: it handles what you thought of\n\n   test first\n     stop when there is no failing test left\n     and adding a test means naming a requirement\n\n   the second one turns scope into a list you can see",
+   "note": "**범위가 눈에 보이는 목록**이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "③ 멈추는 지점이 명확하다 · ④ 과한 구현을 막는다",
+   "md": "**구현부터 하면 \"완성\" 이 주관적**이다.\n\n> **\"이 정도면 됐나\"** 를 감으로 정한다.\n> **빠뜨린 건 안 보이고 과하게 만든 것도 안** 보인다.\n\n**TDD 는 \"실패하는 테스트가 없으면 끝\"** 이다.\n\n> **테스트를 추가하려면 요구사항을 말해야** 한다.\n> **말할 게 없으면 끝난 것**이다.\n\n**과한 구현도** 막는다.\n\n```java\n// 요구사항에 없는데 만든 것들\npublic static int calculate(int price, int level, LocalDate date) { }\npublic static int calculateWithCoupon(...) { }\npublic static BigDecimal calculatePrecise(...) { }\n```\n\n> **\"나중에 필요할 것 같아서\"** 다.\n>\n> **TDD 에서는 이걸 만들 계기가** 없다. **통과시킬 빨간 테스트가** 없다.\n\n**YAGNI 를 순서가 강제**한다.\n\n> **\"필요 없을 거야\" 라고 참는 게** 아니라 **만들 이유 자체가 안** 생긴다.\n\n**대신 이런 일도** 생긴다.\n\n| | |\n|---|---|\n| **테스트가 요구사항의 전부여야** 한다 | 빠뜨리면 구현도 빠진다 |\n| **요구사항이 애매하면** 막힌다 | 3.5절 |\n\n> **3.1절에서 \"볼 게 요구사항밖에 없다\" 고** 했다.\n> **그 요구사항이 부실하면 TDD 도 부실**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 구현부터 한 경우 (2.4절의 add) ---\n\n#   1. 구현\n\npublic void add(Beverage beverage, int count) {\n    for (int i = 0; i < count; i++) {\n        beverages.add(beverage);\n    }\n}\n\n#   2. 테스트\n\n@Test void addSeveralBeverages() {\n    cafeKiosk.add(new Americano(), 2);\n    assertThat(cafeKiosk.getBeverages()).hasSize(2);\n}\n\n$ ./gradlew test\nCafeKioskTest > addSeveralBeverages() PASSED\n\n#   for 문이 하는 일을 그대로 적었다\n\n#   0잔, 음수는 한 박자 뒤에 의식적으로 물어서 나왔다\n\n# --- 순서를 뒤집었다면 ---\n\n#   요구사항: \"같은 음료를 여러 잔 담을 수 있다\"\n\n#   테스트를 짜려는 순간\n\n@Test void ???() {\n    cafeKiosk.add(new Americano(), ???);\n    assertThat(cafeKiosk.getBeverages()).hasSize(???);\n}\n\n#   ??? 에 뭘 넣을지 정해야 한다\n\n#   2 를 넣으면 -> 해피 케이스\n#   0 을 넣으면 -> 뭐가 나와야 하지?\n#   -1 을 넣으면 -> 뭐가 나와야 하지?\n\n#   시그니처를 쓰는 순간 세 질문이 다 온다\n\n# --- API 설계가 되는 것 ---\n\n#   테스트를 이렇게 쓰고 싶었다면\n\n@Test void 여러_잔_담기() {\n    cafeKiosk.add(new Americano(), Quantity.of(2));\n    ...\n}\n\n#   int 가 아니라 Quantity 를 받는 설계가 나온다\n#   Quantity 안에서 0과 음수를 막을 수 있다\n\n#   구현부터 하면 int 로 시작해서 int 로 끝난다\n\n# --- 관심사가 하나씩 오는 것 ---\n\n#   3.2절 사이클 1\n\npublic static int calculate(int price, int level) {\n    return 9500;\n}\n\n#   소수점? 생각 안 했다\n#   등급 표현? 생각 안 했다\n#   예외? 생각 안 했다\n\n#   사이클 3 에서 처음\n\npublic static int calculate(int price, int level) {\n    if (level == 1) return (int) (price * 0.95);\n    return (int) (price * 0.90);\n}\n\n#   (int) 캐스팅이 여기서 처음 나왔다\n\n#   그리고 이 캐스팅이 맞는지 테스트가 묻는다\n\n@DisplayName(\"할인 금액에 소수점이 생기면 버린다\")\n@Test\nvoid discountWithFraction() {\n    int result = DiscountCalculator.calculate(9999, 1);\n\n    assertThat(result).isEqualTo(9499);   // 9499.05 -> 9499\n}\n\n$ ./gradlew test --tests DiscountCalculatorTest\n\nDiscountCalculatorTest > 할인 금액에 소수점이 생기면 버린다 PASSED\n\n#   버림이 맞나? 반올림이 맞나?\n\n#   요구사항에 없다\n\n#   테스트를 짜는 순간 물어야 하는 질문이 또 하나 나왔다\n\n# --- 멈추는 지점 ---\n\n$ ./gradlew test --tests DiscountCalculatorTest\n\nDiscountCalculatorTest\n  일반 회원은 할인이 없다 PASSED\n  실버 회원은 5퍼센트 할인을 받는다 PASSED\n  골드 회원은 10퍼센트 할인을 받는다 PASSED\n  VIP 회원은 15퍼센트 할인을 받는다 PASSED\n  할인은 주문 금액에 비례한다 PASSED\n  할인 금액에 소수점이 생기면 버린다 PASSED\n  없는 등급이면 예외가 난다 PASSED\n\n7 tests completed\n\nBUILD SUCCESSFUL\n\n#   추가할 테스트가 없다\n\n#   추가하려면 요구사항을 말해야 하는데\n#   요구사항 문서에 더 없다\n\n#   끝났다\n\n# --- 과한 구현을 만들어 보면 ---\n\n#   \"나중에 쿠폰도 붙을 테니까\"\n\npublic static int calculate(int price, int level, Coupon coupon) { }\npublic static int calculate(int price, int level) {\n    return calculate(price, level, Coupon.NONE);\n}\n\n$ ./gradlew test --tests DiscountCalculatorTest\n\n7 tests completed\n\nBUILD SUCCESSFUL\n\n#   테스트는 그대로 통과한다\n\n#   그런데 Coupon 을 검증하는 테스트가 하나도 없다\n\n$ ./gradlew jacocoTestReport\n\n#   calculate(int, int, Coupon)   coverage 0%\n\n#   아무도 안 부르는 코드가 생겼다\n\n#   TDD 에서는 이 메서드를 만들 계기가 없다\n#   통과시킬 빨간 테스트가 없어서다\n\n# --- 다음 절에서 ---\n\n#   처음부터 끝까지 TDD 로 하나 만든다",
+   "note": "**`add` 는 구현부터 해서 테스트가 `for` 문을 그대로** 적었다.\n\n**순서를 뒤집으면 `???` 에 뭘 넣을지 정해야** 한다. **시그니처를 쓰는 순간 세 질문이 다** 온다.\n\n**`(int)` 캐스팅이 사이클 3에서 처음** 나왔고, **그게 버림인지 반올림인지 요구사항에** 없다.\n\n**추가할 테스트가 없으면 끝난 것**이다.\n\n**과한 구현을 만들면 커버리지 0% 짜리 메서드가** 생긴다. **TDD 에서는 만들 계기가** 없다."
+  }
+ ],
+ "recap": [
+  "**테스트가 메서드의 첫 사용자**다.",
+  "**한 줄이 클래스·메서드·파라미터·반환을 다** 정한다.",
+  "**구현부터 하면 \"내가 만들기 편한 시그니처\"** 가 된다.",
+  "**관심사가 하나씩** 온다 — 사이클마다 결정할 게 하나다.",
+  "**`(int)` 캐스팅이 사이클 3에서 처음** 나왔다.",
+  "**\"작게 하자\" 를 순서가 강제**한다.",
+  "**실패하는 테스트가 없으면 끝**이다 — 범위가 목록이 된다.",
+  "**과한 구현을 만들 계기가** 없다 — YAGNI 를 순서가 강제한다.",
+  "**요구사항이 부실하면 TDD 도** 부실하다."
+ ],
+ "drills": [
+  {
+   "task": "이미 만든 메서드의 테스트를 지우고 다시 짜 본다.",
+   "done_when": "시그니처가 마음에 드는지 판단했다.",
+   "minutes": 20
+  },
+  {
+   "task": "소수점 처리 테스트를 추가한다.",
+   "done_when": "버림인지 반올림인지 물어야 하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요구사항에 없는 메서드를 하나 만들어 본다.",
+   "done_when": "커버리지 0% 인 것을 확인하고 지웠다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 테스트가 API 설계인가?",
+   "a": "테스트 한 줄이 클래스·메서드 이름·파라미터·반환 타입을 정하기 때문이다."
+  },
+  {
+   "q": "관심사가 하나씩 온다는 건?",
+   "a": "사이클마다 결정할 게 하나뿐이라 나머지를 안 생각해도 된다는 것이다."
+  },
+  {
+   "q": "언제 멈추나?",
+   "a": "실패하는 테스트가 없을 때다. 추가하려면 요구사항을 말해야 한다."
+  },
+  {
+   "q": "과한 구현이 왜 안 생기나?",
+   "a": "통과시킬 빨간 테스트가 없어 만들 계기가 없다."
+  },
+  {
+   "q": "TDD 의 한계 하나는?",
+   "a": "요구사항이 부실하면 TDD 도 부실하다. 볼 게 요구사항밖에 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "YAGNI",
+   "def": "You Aren't Gonna Need It. 지금 필요 없는 것을 미리 만들지 않는다는 원칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Test-Driven Development by Example (개념 출처)",
+   "url": "https://www.oreilly.com/library/view/test-driven-development/0321146530/",
+   "publisher": "Kent Beck"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

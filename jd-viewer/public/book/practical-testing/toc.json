@@ -151,7 +151,7 @@
           "title": "순서가 바꾸는 것",
           "summary": "구현이 아니라 요구사항부터.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -159,7 +159,7 @@
           "title": "직접 해 보기",
           "summary": "주문 금액 계산을 TDD 로.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

@@ -1,0 +1,135 @@
+{
+ "book": "practical-testing",
+ "id": "tdd-practice",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "직접 해 보기",
+ "summary": "주문 금액 계산을 TDD 로.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요구사항 한 줄에서 시작한다.",
+  "할 일 목록을 만들고 지운다.",
+  "구현이 안 바뀌는 사이클도 겪는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 한 줄**이다. **거기서 사이클 다섯이** 나온다."
+  },
+  {
+   "type": "prose",
+   "md": "```\n주문의 총 금액을 계산한다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "할 일 목록",
+   "ascii": "   the todo list, and how it changes\n\n   start\n     [ ] one item, one cup\n     [ ] one item, several cups\n     [ ] several items\n     [ ] empty order\n\n   after cycle 3, a new one appeared\n     [x] one item, one cup\n     [x] one item, several cups\n     [x] several items\n     [ ] empty order\n     [ ] price overflow?      <- found while writing cycle 3\n\n   the list grows as you learn what the requirement did not say",
+   "note": "**요구사항이 안 말한 것을 알아가며** 는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "할 일 목록부터 만든다",
+   "md": "**테스트를 짜기 전에 목록을** 적는다.\n\n```\n[ ] 음료 한 잔이면 그 가격\n[ ] 같은 음료 여러 잔이면 곱\n[ ] 다른 음료 여러 개면 합\n[ ] 빈 주문이면?\n```\n\n> **마지막에 물음표**다. **아직 모른다.**\n>\n> **모르는 걸 목록에 남겨 두는 게** 요점이다. **잊지 않으려고**다.\n\n**목록은 자란다.**\n\n> **사이클 3을 짜다 \"금액이 `int` 를 넘으면?\" 이** 떠오르면 **적어 두고 계속** 간다.\n>\n> **지금 그걸 파면 사이클이** 커진다.\n\n**순서는 쉬운 것부터**다.\n\n| | |\n|---|---|\n| **가장 단순한 케이스** | 사이클 1 |\n| **일반화가 필요한 것** | 사이클 2 |\n| **예외·경계** | 나중 |\n\n> **어려운 것부터 하면 사이클 하나가 길어**진다.\n> **3.2절에서 \"30분째 빨강이면 너무 크게 잡은 것\" 이라고** 했다.\n\n**2.4절의 케이스 세분화와 같은 목록**이다.\n\n> **거기서는 구현 뒤에** 만들었고 **여기서는 구현 전에** 만든다.\n>\n> **같은 목록인데 만드는 시점이** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "사이클 다섯",
+   "ascii": "   five cycles, and what each one added\n\n   1  one americano          return 4000        constant\n   2  two americanos         a loop over prices\n   3  americano + latte      nothing. already worked.\n   4  empty order            an if, and a decision\n   5  a very large order     nothing. int is enough.\n\n   two of the five cycles required no production change\n   they still had to be written",
+   "note": "**둘은 프로덕션 코드를 안 바꿨다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구현이 안 바뀌는 사이클",
+   "md": "**사이클 3에서 아무것도 안** 바꿨다.\n\n```\n테스트: 아메리카노 + 라떼 = 8500\n실행:   PASSED (첫 실행에)\n```\n\n> **사이클 2의 반복문이 이미 처리**했다.\n>\n> **\"그럼 이 테스트는 왜 짰나\"** 가 나온다.\n\n**세 가지 이유로 짠다.**\n\n**① 확인**\n\n> **될 거라고 생각한 것과 되는 건** 다르다.\n> **가격이 다른 두 음료를 합치는 건 실제로 안 해** 봤다.\n\n**② 회귀 방지**\n\n> **나중에 반복문을 다른 걸로 바꿀 수** 있다.\n> **그때 이 테스트가** 지킨다.\n\n**③ 문서**\n\n> **\"서로 다른 음료를 합칠 수 있다\" 가 요구사항**이다.\n> **테스트 목록에 그게 있어야** 한다.\n\n**초록으로 바로 가는 게 문제는** 아니다.\n\n> **다만 한 번은 실패를 확인해 봐야** 한다.\n> **`calculateTotalPrice` 를 `return 0;` 으로 바꿔 빨개지는지** 본다.\n>\n> **1.1절의 방법**이다.\n\n**사이클 5도 그랬다.**\n\n> **\"아주 큰 주문\" 을 짰는데 `int` 로 충분**했다.\n> **목록에서 지우면** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈 주문에서 막힌다",
+   "md": "**사이클 4에서 결정이** 필요하다.\n\n```java\n@Test\nvoid emptyOrder() {\n    Order order = new Order(List.of());\n\n    assertThat(order.calculateTotalPrice()).isEqualTo(???);\n}\n```\n\n| 답 | |\n|---|---|\n| **0** | 자연스럽다 |\n| **예외** | \"빈 주문은 만들 수 없다\" |\n\n> **둘 다 말이** 된다.\n>\n> **\"금액 계산\" 만 보면 0** 이고, **\"주문\" 을 보면 예외**다.\n\n**이건 도메인 결정**이다.\n\n> **`Order` 생성 시점에 막는 게** 맞다.\n> **금액 계산이 빈 주문을 걱정할 이유가** 없다.\n\n**그래서 목록이 갈린다.**\n\n```\n[x] 빈 주문의 금액은 0\n[ ] 빈 주문은 생성할 수 없다    <- Order 생성자의 몫\n```\n\n> **테스트가 책임 경계를** 물었다.\n> **3.3절의 \"테스트가 API 설계\"** 가 여기서도 나온다.\n\n**모르면 물어본다.**\n\n> **개발자가 정하고 넘어가는 게 가장 나쁜 선택**이다.\n> **목록에 물음표로 남기고 다른 사이클을 먼저** 돈다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 사이클 1: 빨강 ---\n\n@DisplayName(\"음료 한 잔의 금액은 그 음료의 가격이다\")\n@Test\nvoid calculateTotalPriceWithOneBeverage() {\n    Order order = new Order(List.of(new Americano()));\n\n    int totalPrice = order.calculateTotalPrice();\n\n    assertThat(totalPrice).isEqualTo(4000);\n}\n\n$ ./gradlew test --tests OrderTest\n\n> Task :compileTestJava FAILED\nOrderTest.java:14: error: cannot find symbol\n        int totalPrice = order.calculateTotalPrice();\n                              ^\n\n#   빨강. 메서드가 없다\n\n# --- 사이클 1: 초록 ---\n\npublic int calculateTotalPrice() {\n    return 4000;\n}\n\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 PASSED\n\n#   가짜다\n\n# --- 사이클 2: 빨강 ---\n\n@DisplayName(\"같은 음료 두 잔의 금액은 가격의 두 배다\")\n@Test\nvoid calculateTotalPriceWithSameBeverages() {\n    Order order = new Order(List.of(new Americano(), new Americano()));\n\n    int totalPrice = order.calculateTotalPrice();\n\n    assertThat(totalPrice).isEqualTo(8000);\n}\n\nOrderTest > 같은 음료 두 잔의 금액은 가격의 두 배다 FAILED\n    expected: 8000\n     but was: 4000\n\n#   가짜가 죽었다\n\n# --- 사이클 2: 초록 ---\n\npublic int calculateTotalPrice() {\n    int total = 0;\n    for (Beverage beverage : beverages) {\n        total += beverage.getPrice();\n    }\n    return total;\n}\n\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 PASSED\nOrderTest > 같은 음료 두 잔의 금액은 가격의 두 배다 PASSED\n\n# --- 사이클 2: 리팩터링 ---\n\npublic int calculateTotalPrice() {\n    return beverages.stream()\n            .mapToInt(Beverage::getPrice)\n            .sum();\n}\n\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 PASSED\nOrderTest > 같은 음료 두 잔의 금액은 가격의 두 배다 PASSED\n\n#   테스트를 안 고쳤다\n\n# --- 사이클 3: 빨강? ---\n\n@DisplayName(\"서로 다른 음료의 금액은 합이다\")\n@Test\nvoid calculateTotalPriceWithDifferentBeverages() {\n    Order order = new Order(List.of(new Americano(), new Latte()));\n\n    int totalPrice = order.calculateTotalPrice();\n\n    assertThat(totalPrice).isEqualTo(8500);\n}\n\nOrderTest > 서로 다른 음료의 금액은 합이다 PASSED\n\n#   첫 실행에 초록이다\n\n#   사이클 2의 stream 이 이미 처리했다\n\n# --- 그래도 실패를 확인한다 ---\n\npublic int calculateTotalPrice() {\n    return 0;\n}\n\nOrderTest > 음료 한 잔의 금액은 그 음료의 가격이다 FAILED\n    expected: 4000 but was: 0\nOrderTest > 같은 음료 두 잔의 금액은 가격의 두 배다 FAILED\n    expected: 8000 but was: 0\nOrderTest > 서로 다른 음료의 금액은 합이다 FAILED\n    expected: 8500 but was: 0\n\n#   셋 다 빨개진다. 셋 다 뭔가를 지키고 있다\n\n#   되돌린다\n\n# --- 사이클 4: 빈 주문 ---\n\n#   결정: 금액은 0, 빈 주문 생성 금지는 Order 생성자에서\n\n@DisplayName(\"빈 주문의 금액은 0원이다\")\n@Test\nvoid calculateTotalPriceWithEmptyOrder() {\n    Order order = new Order(List.of());\n\n    int totalPrice = order.calculateTotalPrice();\n\n    assertThat(totalPrice).isZero();\n}\n\nOrderTest > 빈 주문의 금액은 0원이다 PASSED\n\n#   또 첫 실행에 초록이다. sum() 이 0 을 준다\n\n# --- 사이클 5: 큰 주문 ---\n\n@DisplayName(\"음료 백 잔의 금액도 계산한다\")\n@Test\nvoid calculateTotalPriceWithManyBeverages() {\n    List<Beverage> beverages = IntStream.range(0, 100)\n            .mapToObj(i -> new Americano())\n            .collect(toList());\n    Order order = new Order(beverages);\n\n    int totalPrice = order.calculateTotalPrice();\n\n    assertThat(totalPrice).isEqualTo(400000);\n}\n\nOrderTest > 음료 백 잔의 금액도 계산한다 PASSED\n\n#   int 로 충분하다\n\n#   목록에서 'price overflow?' 를 지운다\n\n# --- 최종 ---\n\n$ ./gradlew test --tests OrderTest\n\nOrderTest\n  음료 한 잔의 금액은 그 음료의 가격이다 PASSED\n  같은 음료 두 잔의 금액은 가격의 두 배다 PASSED\n  서로 다른 음료의 금액은 합이다 PASSED\n  빈 주문의 금액은 0원이다 PASSED\n  음료 백 잔의 금액도 계산한다 PASSED\n\n5 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   프로덕션 코드는 세 줄이다\n\npublic int calculateTotalPrice() {\n    return beverages.stream().mapToInt(Beverage::getPrice).sum();\n}\n\n#   요구사항 한 줄이 테스트 다섯과 코드 세 줄이 됐다\n\n#   그리고 목록에 하나가 남았다\n\n#     [ ] 빈 주문은 생성할 수 없다   <- Order 생성자\n\n# --- 다음 절에서 ---\n\n#   TDD 가 안 맞는 곳을 적는다",
+   "note": "**사이클 1의 `return 4000;` 을 사이클 2가** 죽인다.\n\n**사이클 3·4·5 가 첫 실행에 초록**이다. **`stream().sum()` 이 이미** 처리했다.\n\n**그래도 `return 0;` 으로 바꿔 셋이 빨개지는 걸** 확인했다 — 1.1절의 방법.\n\n**프로덕션 코드가 세 줄**이다. **요구사항 한 줄이 테스트 다섯과 코드 세 줄**이 됐다.\n\n**목록에 하나가 남았다** — **빈 주문 생성 금지는 `Order` 생성자의 몫**이다."
+  }
+ ],
+ "recap": [
+  "**테스트를 짜기 전에 할 일 목록을** 적는다.",
+  "**모르는 건 물음표로 남겨** 둔다.",
+  "**목록은 자란다** — 요구사항이 안 말한 걸 알아가며.",
+  "**쉬운 것부터** 한다 — 어려운 것부터 하면 사이클이 길어진다.",
+  "**구현이 안 바뀌는 사이클도** 있다 — 다섯 중 셋이 그랬다.",
+  "**그래도 짠다** — 확인·회귀 방지·문서.",
+  "**초록으로 바로 가면 한 번은 일부러 깨뜨려** 본다.",
+  "**빈 주문에서 결정이** 필요했다 — 테스트가 책임 경계를 물었다.",
+  "**요구사항 한 줄이 테스트 다섯과 코드 세 줄**이 됐다."
+ ],
+ "drills": [
+  {
+   "task": "요구사항 한 줄로 할 일 목록을 만든다.",
+   "done_when": "물음표가 하나 이상 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "사이클 다섯을 순서대로 밟는다.",
+   "done_when": "매 단계의 빨강·초록을 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "첫 실행에 초록인 테스트를 일부러 깨뜨린다.",
+   "done_when": "빨개지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 주문의 답을 정한다.",
+   "done_when": "어디서 막을지 결정하고 목록에 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "할 일 목록을 왜 먼저 만드나?",
+   "a": "모르는 것을 잊지 않고 남기고, 사이클마다 하나씩 지우기 위해서다."
+  },
+  {
+   "q": "구현이 안 바뀌는 사이클을 왜 짜나?",
+   "a": "확인·회귀 방지·문서 셋 때문이다."
+  },
+  {
+   "q": "첫 실행에 초록이면 어떻게 하나?",
+   "a": "일부러 프로덕션 코드를 깨뜨려 빨개지는지 본다."
+  },
+  {
+   "q": "빈 주문의 금액은?",
+   "a": "0 이다. 빈 주문 생성 금지는 `Order` 생성자의 몫으로 갈랐다."
+  },
+  {
+   "q": "요구사항 한 줄이 무엇이 됐나?",
+   "a": "테스트 다섯과 프로덕션 코드 세 줄, 그리고 남은 할 일 하나다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Test-Driven Development by Example (개념 출처)",
+   "url": "https://www.oreilly.com/library/view/test-driven-development/0321146530/",
+   "publisher": "Kent Beck"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}
