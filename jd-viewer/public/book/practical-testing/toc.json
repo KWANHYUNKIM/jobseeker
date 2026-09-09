@@ -570,7 +570,7 @@
           "title": "정리",
           "summary": "속도를 지키는 법.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -585,7 +585,7 @@
           "title": "학습 테스트",
           "summary": "라이브러리를 테스트로 익힌다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",

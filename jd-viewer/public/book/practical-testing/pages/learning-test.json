@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "learning-test",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "학습 테스트",
+ "summary": "라이브러리를 테스트로 익힌다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "학습 테스트가 무엇인지 안다.",
+  "왜 남기는지 안다.",
+  "무엇을 안 짜는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절에서 예고했다** — **스파이크는 버리고 학습 테스트는 남긴다**."
+  },
+  {
+   "type": "figure",
+   "caption": "라이브러리를 익히는 두 방법",
+   "ascii": "   two ways to learn a library\n\n   read and print\n     write main, System.out, look, delete\n     what you learned stays in your head\n\n   write a test\n     the same work, but it stays\n     and the build tells you when it stops being true\n\n   the second costs one extra line: an assertion",
+   "note": "**차이는 단언 한 줄**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 테스트로 익히나",
+   "md": "**`main` 으로 찍어 보는 것과 비교**하면\n\n| | `main` | 학습 테스트 |\n|---|---|---|\n| **알아내는 것** | 같다 | 같다 |\n| **남는가** | 아니다 | **남는다** |\n| **틀리면** | 모른다 | **빨개진다** |\n| **팀이 보나** | 아니다 | **본다** |\n\n> **2.1절의 \"단언이 자동화를 만든다\" 와 같은** 이야기다.\n\n**세 가지 값어치**\n\n**① 내 이해가 맞는지 확인**\n\n```java\n@DisplayName(\"Lists.partition 은 마지막 조각이 작을 수 있다\")\n@Test\nvoid partitionRemainder() {\n    List<Integer> list = List.of(1, 2, 3, 4, 5);\n\n    List<List<Integer>> result = Lists.partition(list, 2);\n\n    assertThat(result).hasSize(3)\n            .containsExactly(List.of(1, 2), List.of(3, 4), List.of(5));\n}\n```\n\n> **\"나머지가 어떻게 되나\" 를 문서에서 읽고 코드로** 확인한다.\n\n**② 문서가 된다**\n\n> **팀원이 `Lists.partition` 을 처음 볼 때 이 테스트를** 읽는다.\n> **4.1절의 독자 넷과 같다.**\n\n**③ 업그레이드 카나리아**\n\n> **버전을 올리면 이 테스트가 먼저** 깨진다.\n> **내 API 가 깨지기 전에** 안다.\n>\n> **동작이 바뀐 게 릴리스 노트 어디에 있는지 찾는 것보다** 빠르다.\n\n**스파이크와의 차이**\n\n| | 스파이크 | 학습 테스트 |\n|---|---|---|\n| **목적** | 답을 얻는다 | 답을 남긴다 |\n| **뒤에** | 지운다 | 커밋한다 |\n| **단언** | 없어도 된다 | 있어야 한다 |"
+  },
+  {
+   "type": "figure",
+   "caption": "업그레이드 때 잡히는 것",
+   "ascii": "   what a learning test catches at upgrade time\n\n   guava 31 -> 33\n     Lists.partition still works\n\n   jackson 2.15 -> 2.17\n     a date is now serialised differently\n     the learning test goes red before the api does\n\n   it is a canary for the dependency, not for your code",
+   "note": "**내 코드가 아니라 의존성의 카나리아**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇을 안 짜나",
+   "md": "**① 라이브러리 전체**\n\n> **`Lists` 의 모든 메서드를 테스트하는 건 그 라이브러리의** 일이다.\n> **내가 쓰는 것만** 짠다.\n>\n> **5.2절의 \"`findById` 는 안 짠다\" 와 같은** 기준이다.\n\n**② 뻔한 것**\n\n```java\n@Test\nvoid listAdd() {\n    List<String> list = new ArrayList<>();\n    list.add(\"a\");\n    assertThat(list).hasSize(1);\n}\n```\n\n> **아무도 안** 헷갈린다.\n> **헷갈렸던 것만** 남긴다.\n\n**③ 외부 서버를 부르는 것**\n\n```java\n@Test\nvoid callRealApi() {\n    String body = restClient.get().uri(\"https://api.example.com/rates\")\n            .retrieve().body(String.class);\n    assertThat(body).contains(\"USD\");\n}\n```\n\n> **6.1절의 문제**다. **네트워크에** 달렸다.\n> **7.11절의 가끔 깨지는 테스트**가 된다.\n>\n> **응답 문자열을 하드코딩해 파싱만** 검증한다.\n> **그건 3.5절에서 본 것**이다.\n\n**④ 계약 테스트와 혼동**\n\n> **\"외부 API 가 여전히 이 형식인가\" 는 계약 테스트**다.\n> **주기적으로 진짜를 부른다.** **CI 에는 안 넣거나 별도 잡**이다.\n>\n> **학습 테스트는 오프라인에서** 돈다.\n\n**어디에 두나**\n\n```\nsrc/test/java/sample/cafekiosk/learning/\n    GuavaLearningTest.java\n    JacksonLearningTest.java\n```\n\n> **패키지를 나눈다.** **프로덕션 코드와 무관**하다는 표시다.\n> **7.10절의 이름 규칙에 `*LearningTest`** 를 더한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- main 으로 찍어 보면 ---\n\npublic static void main(String[] args) {\n    List<Integer> list = List.of(1, 2, 3, 4, 5);\n    System.out.println(Lists.partition(list, 2));\n}\n\n$ ./gradlew run\n\n[[1, 2], [3, 4], [5]]\n\n#   알았다\n\n#   그리고 지운다\n\n#   6개월 뒤에 다시 궁금해진다\n\n# --- 학습 테스트로 ---\n\npackage sample.cafekiosk.learning;\n\nclass GuavaLearningTest {\n\n    @DisplayName(\"partition 은 나머지를 마지막 조각에 남긴다\")\n    @Test\n    void partitionRemainder() {\n        // given\n        List<Integer> list = List.of(1, 2, 3, 4, 5);\n\n        // when\n        List<List<Integer>> result = Lists.partition(list, 2);\n\n        // then\n        assertThat(result).hasSize(3)\n                .containsExactly(List.of(1, 2), List.of(3, 4), List.of(5));\n    }\n\n    @DisplayName(\"partition 결과는 원본을 들여다보는 뷰다\")\n    @Test\n    void partitionIsView() {\n        // given\n        List<Integer> list = new ArrayList<>(List.of(1, 2, 3, 4));\n        List<List<Integer>> result = Lists.partition(list, 2);\n\n        // when\n        list.set(0, 99);\n\n        // then\n        assertThat(result.get(0)).containsExactly(99, 2);\n    }\n}\n\n$ ./gradlew test --tests GuavaLearningTest\n\nGuavaLearningTest > partition 은 나머지를 마지막 조각에 남긴다 PASSED\nGuavaLearningTest > partition 결과는 원본을 들여다보는 뷰다 PASSED\n\n2 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   두 번째가 진짜 중요한 것이다\n\n#   복사본인 줄 알았으면 버그를 냈을 것이다\n\n# --- 잭슨을 익힌다 ---\n\nclass JacksonLearningTest {\n\n    private final ObjectMapper objectMapper = new ObjectMapper()\n            .registerModule(new JavaTimeModule())\n            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);\n\n    @DisplayName(\"LocalDateTime 은 ISO 문자열로 직렬화된다\")\n    @Test\n    void serializeLocalDateTime() throws Exception {\n        // given\n        var order = new OrderResponse(1L, LocalDateTime.of(2026, 9, 9, 11, 0));\n\n        // when\n        String json = objectMapper.writeValueAsString(order);\n\n        // then\n        assertThat(json).isEqualTo(\n                \"{\\\"id\\\":1,\\\"registeredDateTime\\\":\\\"2026-09-09T11:00:00\\\"}\");\n    }\n\n    @DisplayName(\"모르는 필드가 오면 예외가 난다\")\n    @Test\n    void unknownProperty() {\n        // given\n        String json = \"{\\\"id\\\":1,\\\"nickname\\\":\\\"x\\\"}\";\n\n        // when & then\n        assertThatThrownBy(() -> objectMapper.readValue(json, OrderResponse.class))\n                .isInstanceOf(UnrecognizedPropertyException.class);\n    }\n}\n\n$ ./gradlew test --tests JacksonLearningTest\n\nJacksonLearningTest > LocalDateTime 은 ISO 문자열로 직렬화된다 PASSED\nJacksonLearningTest > 모르는 필드가 오면 예외가 난다 PASSED\n\n#   「활용 2편」 2.2절의 Unrecognized field 가 여기서 확인된다\n\n# --- WRITE_DATES_AS_TIMESTAMPS 를 안 끄면 ---\n\nprivate final ObjectMapper objectMapper = new ObjectMapper()\n        .registerModule(new JavaTimeModule());\n\n$ ./gradlew test --tests JacksonLearningTest\n\nJacksonLearningTest > LocalDateTime 은 ISO 문자열로 직렬화된다 FAILED\n    expected: \"{\\\"id\\\":1,\\\"registeredDateTime\\\":\\\"2026-09-09T11:00:00\\\"}\"\n     but was: \"{\\\"id\\\":1,\\\"registeredDateTime\\\":[2026,9,9,11,0]}\"\n\n#   배열로 나온다\n\n#   설정 하나가 응답 형식을 바꾼다\n\n#   이걸 모르고 배포하면 클라이언트가 깨진다\n\n#   스프링 부트는 기본으로 꺼 준다. 순수 ObjectMapper 는 아니다\n\n# --- 버전을 올려 보면 ---\n\n// build.gradle\nimplementation 'com.google.guava:guava:31.1-jre'\n\n$ ./gradlew test --tests GuavaLearningTest\n\n2 tests completed\n\nBUILD SUCCESSFUL\n\nimplementation 'com.google.guava:guava:33.0.0-jre'\n\n$ ./gradlew test --tests GuavaLearningTest\n\n2 tests completed\n\nBUILD SUCCESSFUL\n\n#   안 깨졌다. partition 은 그대로다\n\n#   깨졌다면 릴리스 노트를 찾기 전에 알았을 것이다\n\n# --- 안 짜는 것들 ---\n\n#   ① 뻔한 것\n\n@Test\nvoid listAdd() {\n    List<String> list = new ArrayList<>();\n    list.add(\"a\");\n    assertThat(list).hasSize(1);\n}\n\n#   아무도 안 헷갈린다\n\n#   ② 라이브러리 전체\n\n$ ls src/test/java/sample/cafekiosk/learning/\n\nGuavaLearningTest.java      2 tests\nJacksonLearningTest.java    2 tests\n\n#   넷이다. 내가 헷갈렸던 것만\n\n#   ③ 외부 서버\n\n@Test\nvoid callRealApi() {\n    String body = RestClient.create()\n            .get().uri(\"https://api.example.com/rates\")\n            .retrieve().body(String.class);\n\n    assertThat(body).contains(\"USD\");\n}\n\n$ ./gradlew test --tests ExchangeApiLearningTest\n\nExchangeApiLearningTest > callRealApi() PASSED\n\nBUILD SUCCESSFUL in 4s\n\n#   통과한다\n\n$ ./gradlew test --tests ExchangeApiLearningTest --rerun-tasks\n\n#   (와이파이를 끄고)\n\nExchangeApiLearningTest > callRealApi() FAILED\n    org.springframework.web.client.ResourceAccessException:\n    I/O error on GET request: api.example.com\n\n#   7.11절의 가끔 깨지는 테스트다\n\n#   응답을 하드코딩해 파싱만 검증한다\n\n@Test\nvoid parseExchangeResponse() throws Exception {\n    String body = \"{\\\"base\\\":\\\"KRW\\\",\\\"rates\\\":{\\\"USD\\\":0.00072}}\";\n\n    ExchangeResponse response = objectMapper.readValue(body, ExchangeResponse.class);\n\n    assertThat(response.getRates()).containsEntry(\"USD\", 0.00072);\n}\n\nExchangeApiLearningTest > parseExchangeResponse() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n#   오프라인에서 돈다\n\n#   \"API 가 여전히 이 형식인가\" 는 계약 테스트다. 별도 잡이다\n\n# --- 학습 테스트가 전체 시간에 미치는 영향 ---\n\n$ ./gradlew test\n\n73 tests completed\n테스트 31초 (예산 120초)\n\n#   5개 늘었는데 시간은 그대로다\n\n#   스프링이 안 뜬다\n\n# --- 다음 절에서 ---\n\n#   테스트가 문서를 만든다",
+   "note": "**`main` 으로 찍으면 6개월 뒤에 다시** 궁금해진다.\n\n**`partition` 이 복사본이 아니라 뷰라는 걸 두 번째 테스트가** 잡는다. **모르고 썼으면 버그**다.\n\n**`WRITE_DATES_AS_TIMESTAMPS` 를 안 끄면 날짜가 `[2026,9,9,11,0]`** 로 나온다. **설정 하나가 응답 형식을** 바꾼다.\n\n**구아바 31 → 33 에서 안** 깨졌다. **깨졌다면 릴리스 노트를 찾기 전에** 알았다.\n\n**진짜 API 를 부르는 판은 와이파이를 끄면** 깨진다.\n\n**5개가 늘었는데 시간은 그대로**다."
+  }
+ ],
+ "recap": [
+  "**스파이크는 버리고 학습 테스트는** 남긴다.",
+  "**차이는 단언 한 줄**이다.",
+  "**세 값어치** — 이해 확인, 문서, 업그레이드 카나리아.",
+  "**`partition` 이 뷰라는 걸 테스트가** 잡았다.",
+  "**설정 하나가 응답 형식을** 바꾼다.",
+  "**내가 쓰는 것, 헷갈렸던 것만** 짠다.",
+  "**뻔한 건 안** 짠다.",
+  "**외부 서버를 부르면 7.11절이** 된다 — 응답을 하드코딩한다.",
+  "**계약 테스트와는 다르다** — 별도 잡이다."
+ ],
+ "drills": [
+  {
+   "task": "최근에 `main` 으로 찍어 본 걸 테스트로 옮긴다.",
+   "done_when": "단언을 붙였다.",
+   "minutes": 20
+  },
+  {
+   "task": "라이브러리 동작 중 헷갈렸던 걸 짠다.",
+   "done_when": "예상과 다른 게 있었는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "의존성 버전을 올려 본다.",
+   "done_when": "학습 테스트가 깨지는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "외부 API 를 부르는 테스트를 오프라인용으로 바꾼다.",
+   "done_when": "와이파이를 꺼도 도는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스파이크와 학습 테스트의 차이는?",
+   "a": "스파이크는 답만 얻고 버리고 학습 테스트는 단언을 붙여 남긴다."
+  },
+  {
+   "q": "세 가지 값어치는?",
+   "a": "내 이해 확인, 팀의 문서, 업그레이드 카나리아다."
+  },
+  {
+   "q": "무엇을 안 짜나?",
+   "a": "라이브러리 전체, 뻔한 것, 외부 서버를 부르는 것이다."
+  },
+  {
+   "q": "외부 API 는 어떻게 하나?",
+   "a": "응답을 하드코딩해 파싱만 검증한다. 진짜 호출은 계약 테스트로 분리한다."
+  },
+  {
+   "q": "어디에 두나?",
+   "a": "별도 패키지와 `*LearningTest` 이름으로 프로덕션과 무관함을 표시한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "학습 테스트",
+   "def": "라이브러리나 프레임워크의 동작을 확인하고 문서로 남기기 위해 짜는 테스트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Guava — Lists",
+   "url": "https://guava.dev/releases/snapshot/api/docs/com/google/common/collect/Lists.html",
+   "publisher": "Google"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

@@ -1,0 +1,166 @@
+{
+ "book": "practical-testing",
+ "id": "env-review",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "정리",
+ "summary": "속도를 지키는 법.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "8장의 순서를 정한다.",
+  "숫자를 한자리에 모은다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여섯 절이 전부 시간을** 다뤘다. **순서가 있다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "느린 테스트를 고치는 순서",
+   "ascii": "   the order to fix a slow suite\n\n   1  count the contexts        8.1   free, biggest win\n   2  check the pyramid         5.8   move logic to the domain\n   3  cache dependencies in ci  8.5   one line\n   4  split the ci stages       8.5   faster feedback on failure\n   5  parallelise               8.4   last, and often negative\n\n   the first two need no new tooling",
+   "note": "**앞의 둘은 도구가 필요** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "8장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "8.1",
+     "컨텍스트 캐싱",
+     "**`@MockBean` 조합이 캐시 키다**"
+    ],
+    [
+     "8.2",
+     "프로파일",
+     "**파일명 한 글자가 설정을 통째로 바꾼다**"
+    ],
+    [
+     "8.3",
+     "Testcontainers",
+     "**H2 는 스키마를 못 지킨다**"
+    ],
+    [
+     "8.4",
+     "병렬 실행",
+     "**병렬로 만들려다 두 배 느려졌다**"
+    ],
+    [
+     "8.5",
+     "CI 시간",
+     "**82초가 의존성 다운로드였다**"
+    ],
+    [
+     "8.6",
+     "예산",
+     "**같은 검증인데 128배 빠르다**"
+    ]
+   ]
+  },
+  {
+   "type": "figure",
+   "caption": "이 장이 낸 숫자들",
+   "ascii": "   every number this chapter produced\n\n   contexts 3 -> 6            31s -> 47s     8.1\n   properties inline          one more context\n   test/application.yml       batch size lost, 21 queries\n   testcontainers             31s -> 44s, units unchanged\n   class parallel             31s -> 19s, 3 broken\n   gradle forks 4             31s -> 38s\n   separate schemas           31s -> 62s\n   ci dependency cache        2m39 -> 1m12\n   60 tests moved to domain   142s -> 54s",
+   "note": "**절반이 \"더 느려졌다\"** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "절반이 실패한 최적화다",
+   "md": "**의도적**이다.\n\n| 시도 | 결과 |\n|---|---|\n| 클래스 병렬 | **19초인데 셋이 깨짐** |\n| 그레이들 포크 | **38초. 더 느림** |\n| 스키마 분리 | **62초. 두 배** |\n| 단언 축소 | 2초 빠르고 검증 없음 |\n| DB 를 목으로 | 23초 빠르고 검증 없음 |\n\n> **\"빨라졌다\" 는 숫자를 만드는 방법이 여럿**이다.\n> **그중 몇은 테스트를 죽인다.**\n\n**성공한 것들의 공통점**\n\n| | |\n|---|---|\n| 컨텍스트 3개 유지 | **검증이 안 준다** |\n| 의존성 캐시 | **테스트를 안 건드린다** |\n| 도메인으로 밀어내기 | **검증이 그대로다** |\n\n> **셋 다 검증을 안 줄이고** 빨라졌다.\n>\n> **8.6절의 \"하면 안 되는 넷\" 과 정확히** 반대다.\n\n**판단 기준 하나**\n\n> **\"이 최적화가 검증을 줄이나\"**\n>\n> **줄이면 최적화가 아니라 삭제**다.\n>\n> **7.3절의 \"테스트가 없어도 좋은 변경인가\" 와 같은 모양**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "9장이 이어받는 것",
+   "md": "**8장까지가 본론**이다.\n\n> **1~4장 기초, 5~6장 스프링과 가짜, 7~8장 실무**.\n\n**9장은 곁가지**다.\n\n| | |\n|---|---|\n| 9.1 | 학습 테스트 |\n| 9.2 | Spring REST Docs |\n| 9.3 | AssertJ 더 쓰기 |\n| 9.4 | 커버리지 |\n| 9.5 | 정리 |\n\n**이미 예고한 것들**\n\n| | 어디서 |\n|---|---|\n| 9.1 | 3.5절 — 스파이크와 학습 테스트 |\n| 9.4 | 2.8절, 3.1절 — 커버리지를 조건에 안 넣었다 |\n\n**9.2 가 새 주제**다.\n\n> **테스트가 문서를 만든다.**\n> **4.1절의 \"테스트는 문서다\" 를 한 단계 더** 간다.\n>\n> **`MockMvc` 테스트가 API 문서를** 낳는다.\n> **테스트가 깨지면 문서도 안** 나온다.\n\n**9.4 가 가장 조심스러운 절**이다.\n\n> **3.1절에서 커버리지 100% 가 요구사항 절반을 놓치는 걸** 봤다.\n> **그런데 커버리지가 쓸모없는 것도** 아니다.\n>\n> **\"낮으면 문제, 높다고 좋은 건 아니다\"** 를 어떻게 쓰나."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 8장이 끝난 상태",
+   "sql": "# --- 최종 설정 ---\n\n# src/test/resources/application-test.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:test;MODE=MySQL\n  jpa:\n    hibernate:\n      ddl-auto: create\n    properties:\n      hibernate:\n        generate_statistics: true\nlogging:\n  level:\n    org.hibernate.SQL: debug\n\n# src/main/resources/application.yml (공통)\nspring:\n  jpa:\n    open-in-view: false\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100\n\n#   테스트하려는 동작은 공통에 있다  (8.2절)\n\n# --- 컨텍스트 ---\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 3, maxSize = 32, hitCount = 10, missCount = 3]\n\n#   IntegrationTestSupport\n#   ControllerTestSupport\n#   @DataJpaTest\n\n#   셋이다\n\n# --- 시간 ---\n\n$ ./gradlew test\n\n68 tests completed\n테스트 31초 (예산 120초)\n\nBUILD SUCCESSFUL in 33s\n\n$ ./gradlew unitTest\n\n47 tests completed\n\nBUILD SUCCESSFUL in 2s\n\n#   단위 2초, 전체 31초\n\n#   예산의 26% 다\n\n# --- CI ---\n\n$ gh run list --limit 1\n\nSTATUS  TITLE              WORKFLOW  BRANCH  ELAPSED\n✓       docs(book): ...    CI        main    1m12s\n\n#   1분 12초\n\n#   8.5절에서 2분 39초를 줄인 것이다\n\n# --- 8장에서 되돌린 것들 ---\n\n$ git log --oneline -8 --grep=\"revert\\|되돌\"\n\n(없음)\n\n#   커밋을 안 남겼다. 실험만 했다\n\n$ cat src/test/resources/junit-platform.properties 2>/dev/null\n\ncat: src/test/resources/junit-platform.properties: No such file or directory\n\n#   병렬 설정이 없다  (8.4절)\n\n$ grep -rn \"Testcontainers\\|MySQLContainer\" src/test/java/\n\n(결과 없음)\n\n#   컨테이너도 없다  (8.3절)\n\n$ grep -rn \"maxParallelForks\" build.gradle\n\n(결과 없음)\n\n#   포크도 없다\n\n#   셋 다 지금 규모에서 손해였다\n\n# --- 남긴 것 ---\n\n$ grep -n \"budget\\|예산\" build.gradle\n\n42:    def budget = Duration.ofSeconds(120)\n48:        logger.lifecycle(\"테스트 ${elapsed.toSeconds()}초 (예산 ${budget.toSeconds()}초)\")\n\n#   예산 경고만 남겼다  (8.6절)\n\n$ cat .github/workflows/ci.yml | grep -A2 \"setup-java\"\n\n      - uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n          cache: gradle\n\n#   캐시도 남겼다  (8.5절)\n\n$ cat .github/workflows/nightly.yml | head -6\n\nname: Nightly\non:\n  schedule:\n    - cron: '0 18 * * *'\n\n#   야간 반복도 남겼다  (7.11절)\n\n# --- 8장 전체를 한 줄로 ---\n\n#   컨텍스트를 세고, 피라미드를 지키고, 캐시를 켜라\n\n#   나머지는 규모가 커진 뒤에\n\n# --- 검증이 그대로인지 ---\n\n#   6.7절의 네 실험을 다시\n\n#   ① 쿼리 오타\nList<Product> findAllByProductNumberNotIn(...);\n\n$ ./gradlew test\n\n5 tests failed\n\n#   ② @Transactional 제거\n\n$ ./gradlew test\n\n1 test failed\n\n#   ③ 메일 계산 오류\n\n$ ./gradlew test\n\n2 tests failed\n\n#   ④ 배치 사이즈 제거\n\n$ ./gradlew test\n\nOrderQueryCountTest > 주문 목록 조회는 쿼리 다섯 개를 안 넘는다 FAILED\n    Expecting actual: 21L to be less than or equal to: 5L\n\n1 test failed\n\n#   넷 다 잡는다\n\n#   8장에서 31초를 유지하면서 검증을 안 줄였다\n\n# --- 다음 장에서 ---\n\n#   곁가지 넷을 다룬다",
+   "note": "**컨텍스트 3개, 전체 31초, 단위 2초, CI 1분 12초**다.\n\n**병렬·컨테이너·포크 설정이 하나도** 없다. **셋 다 지금 규모에서** 손해였다.\n\n**남긴 건 예산 경고와 CI 캐시와 야간 반복 잡** 셋이다.\n\n**6.7절의 네 실험을 다시 돌려 넷 다** 잡힌다. **31초를 유지하면서 검증을 안** 줄였다."
+  }
+ ],
+ "recap": [
+  "**순서** — 컨텍스트, 피라미드, CI 캐시, 단계 분리, 병렬.",
+  "**앞의 둘은 도구가 필요** 없다.",
+  "**이 장이 낸 숫자의 절반이 \"더 느려졌다\"** 다.",
+  "**병렬·포크·스키마 분리가 다** 손해였다.",
+  "**성공한 것들은 검증을 안** 줄였다.",
+  "**판단 기준은 \"이 최적화가 검증을 줄이나\"** 다.",
+  "**줄이면 최적화가 아니라 삭제**다.",
+  "**남긴 건 예산 경고·CI 캐시·야간 잡** 셋이다.",
+  "**네 실험이 다 잡히는 채로 31초**다."
+ ],
+ "drills": [
+  {
+   "task": "자기 프로젝트의 컨텍스트를 센다.",
+   "done_when": "`missCount` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "단위와 통합 비율을 센다.",
+   "done_when": "피라미드인지 판단했다.",
+   "minutes": 15
+  },
+  {
+   "task": "CI 캐시를 켠다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "최적화 후 검증이 그대로인지 확인한다.",
+   "done_when": "일부러 깨뜨려 같은 개수가 잡히는지 봤다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "느린 테스트를 고치는 순서는?",
+   "a": "컨텍스트, 피라미드, CI 캐시, 단계 분리, 병렬이다."
+  },
+  {
+   "q": "이 장의 시도 중 실패한 것은?",
+   "a": "클래스 병렬, 그레이들 포크, 스키마 분리다."
+  },
+  {
+   "q": "성공한 것들의 공통점은?",
+   "a": "검증을 안 줄이고 빨라졌다."
+  },
+  {
+   "q": "판단 기준은?",
+   "a": "이 최적화가 검증을 줄이는가다. 줄이면 삭제다."
+  },
+  {
+   "q": "무엇을 남겼나?",
+   "a": "예산 경고, CI 의존성 캐시, 야간 반복 잡이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}
