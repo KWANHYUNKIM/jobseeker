@@ -346,7 +346,7 @@
           "title": "@Conditional",
           "summary": "조건을 코드로 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -354,7 +354,7 @@
           "title": "클래스가 있으면",
           "summary": "라이브러리 유무로 갈린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

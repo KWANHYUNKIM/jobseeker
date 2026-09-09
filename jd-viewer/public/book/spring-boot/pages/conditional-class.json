@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "conditional-class",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "클래스가 있으면",
+ "summary": "라이브러리 유무로 갈린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "JAR 가 스위치인 걸 안다.",
+  "왜 안 터지는지 안다.",
+  "없을 때 쪽도 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장에서 JAR 를 넣고** 뺐다. **그게 스위치였던 이유**다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름만 읽고 로딩은 안 한다",
+   "ascii": "   why naming a class is safe here but not in my own code\n\n   the annotation value is read from bytecode, not loaded\n   the reader sees the name and never asks the loader for it\n   only if the name resolves is the class actually used\n\n   so an annotation may name a class that is not on the path",
+   "note": "**그래서 없는 클래스를 적어도** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "의존성을 넣는 것이 곧 기능을 켜는 것이다",
+   "md": "**5.3절의 한 줄이** 그거였다.\n\n> **JAR 가 들어오니 조건이** 맞았다.\n> **톰캣이 뜬 이유**다.\n> **아래에서 다시** 본다.\n\n**빼면 조용히** 꺼진다.\n\n> **5.5절의 `000`** 이다.\n> **경고가 없던 이유**다.\n> **조건이 안 맞으면** 끝이다.\n\n**애너테이션이라 안 터진**다.\n\n> **바이트코드에서 이름만** 읽는다.\n> **6.3절에서 타입 직접은** 깨졌다.\n> **아래에서 그 차이를** 본다.\n\n**없을 때 쪽도** 있다.\n\n> **대안을 그걸로** 쓴다.\n> **아래에서 만들어** 본다.\n> **6.5절의 짝과는 다르**다."
+  },
+  {
+   "type": "figure",
+   "caption": "있을 때와 없을 때",
+   "ascii": "   two sides of the same coin\n\n   on class    apply this when the library is present\n   on missing  apply this when the library is absent\n\n   a fallback is usually written with the second one",
+   "note": "**대안은 대개 아래쪽으로** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "내 구성 클래스에 붙이면 그대로 터진다",
+   "md": "**자동 구성이 아니면 다르**다.\n\n> **스캔으로 잡힌 클래스**다.\n> **읽는 방식이** 다르다.\n> **아래에서 그걸** 만든다.\n\n**메서드 반환 타입은 위험**하다.\n\n> **그 타입을 로딩해야** 한다.\n> **안쪽 클래스로 감싸야** 한다.\n> **아래에서 감싼**다.\n\n**여러 개면 전부 있어야** 한다.\n\n> **하나만 없어도 안** 걸린다.\n> **보고서에 이름이** 나온다.\n> **아래에서 그걸** 본다.\n\n**버전은 안** 본다.\n\n> **있고 없고만** 본다.\n> **낡은 버전이면 나중에** 터진다.\n> **5.1절의 세 시점 이야기**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 부트 것을 하나 연다\n\n$ AC=$(find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar' | head -1)\n$ unzip -p \"$AC\" org/springframework/boot/autoconfigure/web/servlet/\\\nServletWebServerFactoryAutoConfiguration.class > /tmp/s.class\n$ javap -v /tmp/s.class | grep -A2 'ConditionalOnClass' | head -3\n  1: #33(#34=[c#35]): CONDITIONAL_ON_CLASS\n     jakarta.servlet.ServletRequest\n\n// 소스로는 이렇다\n@AutoConfiguration\n@ConditionalOnClass(ServletRequest.class)\n@ConditionalOnWebApplication(type = Type.SERVLET)\npublic class ServletWebServerFactoryAutoConfiguration { ... }\n\n--   5.5절에서 본 그 조건이다\n\n\n-- 있을 때\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'ServletWebServerFactoryAutoConfiguration matched' | head -3\n   ServletWebServerFactoryAutoConfiguration matched:\n      - @ConditionalOnClass found required class 'jakarta.servlet.ServletRequest'\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n\n-- 없을 때\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'\n    }\n}\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'ServletWebServerFactoryAutoConfiguration' | head -4\n   ServletWebServerFactoryAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'jakarta.servlet.ServletRequest'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n000\n\n--   5.5절의 그 000 이 여기서 결정된다\n\n\n-- 내가 하나 만든다\n\npackage study.lib;\n\n@AutoConfiguration\n@ConditionalOnClass(name = \"com.fasterxml.jackson.databind.ObjectMapper\")\npublic class PrettyAutoConfiguration {\n    @Bean\n    public String prettyMode() { return \"켜짐\"; }\n}\n\n// META-INF/spring/...AutoConfiguration.imports\nstudy.lib.PrettyAutoConfiguration\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'PrettyAutoConfiguration matched' | head -3\n   PrettyAutoConfiguration matched:\n      - @ConditionalOnClass found required class\n        'com.fasterxml.jackson.databind.ObjectMapper'\n\n$ curl -s 'localhost:8080/beans/one?name=prettyMode'\n켜짐\n\n\n-- 잭슨을 뺀다\n\nimplementation('org.springframework.boot:spring-boot-starter-web') {\n    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c jackson-databind\n0\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'PrettyAutoConfiguration' | head -4\n   PrettyAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'com.fasterxml.jackson.databind.ObjectMapper'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'localhost:8080/beans/one?name=prettyMode'\n404\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   JAR 하나가 스위치였다\n--   경고는 여전히 없다\n\n\n-- 타입으로 적어도 된다\n\n@ConditionalOnClass(ObjectMapper.class)\npublic class PrettyAutoConfiguration { ... }\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n// 그런데 컴파일에는 있어야 한다\n$ ./gradlew dependencies --configuration compileClasspath | grep -c jackson-databind\n1\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c jackson-databind\n0\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'PrettyAutoConfiguration'\n1\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n\n--   런타임에 없는데도 기동이 된다\n--   6.3절에서 타입 직접 참조는 깨졌었다\n\n\n-- 왜 안 터지나\n\n$ javap -v build/classes/java/main/study/lib/PrettyAutoConfiguration.class \\\n    | grep -A2 'RuntimeVisibleAnnotations'\nRuntimeVisibleAnnotations:\n  0: #18(): AUTO_CONFIGURATION\n  1: #19(#20=[c#21]): CONDITIONAL_ON_CLASS\n\n$ javap -v build/classes/java/main/study/lib/PrettyAutoConfiguration.class \\\n    | grep -E '#21 = '\n  #21 = Utf8   Lcom/fasterxml/jackson/databind/ObjectMapper;\n\n--   상수 풀에 이름 문자열로만 들어 있다\n--   읽는 쪽이 로딩을 안 하고 이름만 본다\n\n\n-- 내 구성 클래스에 붙이면 다르다\n\npackage study.boot;   // 스캔되는 자리\n\n@Configuration\n@ConditionalOnClass(ObjectMapper.class)\npublic class MyPretty {\n    @Bean public String myPretty() { return \"내 것\"; }\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\nException in thread \"main\" java.lang.IllegalStateException:\n  Failed to introspect annotated methods on class study.boot.MyPretty\nCaused by: java.lang.NoClassDefFoundError:\n  com/fasterxml/jackson/databind/ObjectMapper\n\n--   스캔으로 잡히면 클래스를 로딩한다\n--   자동 구성은 다른 방식으로 읽힌다\n\n\n-- 메서드 반환 타입도 위험하다\n\n@AutoConfiguration\n@ConditionalOnClass(name = \"com.fasterxml.jackson.databind.ObjectMapper\")\npublic class PrettyAutoConfiguration {\n    @Bean\n    public ObjectMapper prettyMapper() { return new ObjectMapper(); }\n}\n\n// 잭슨이 있으면\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n\n// 잭슨을 빼면\n$ ./gradlew bootRun 2>&1 | grep -E 'NoClassDefFound|Started' | head -1\nINFO ... : Started BootApplication in 0.914 seconds\n\n--   클래스 조건이 막아 줘서 안 읽혔다\n--   6.3절에서 본 그 이득이다\n\n\n-- 그런데 조건을 메서드에만 붙이면\n\n@AutoConfiguration\npublic class PrettyAutoConfiguration {\n    @Bean\n    @ConditionalOnClass(name = \"com.fasterxml.jackson.databind.ObjectMapper\")\n    public ObjectMapper prettyMapper() { return new ObjectMapper(); }\n}\n\n$ ./gradlew bootRun 2>&1 | head -3\nException in thread \"main\" java.lang.IllegalStateException:\n  Failed to introspect annotated methods\nCaused by: java.lang.NoClassDefFoundError:\n  com/fasterxml/jackson/databind/ObjectMapper\n\n--   메서드를 읽으려면 반환 타입을 로딩해야 한다\n--   그래서 부트는 안쪽 클래스로 감싼다\n\n\n-- 부트가 감싸는 방식\n\n@AutoConfiguration\npublic class PrettyAutoConfiguration {\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnClass(name = \"com.fasterxml.jackson.databind.ObjectMapper\")\n    static class JacksonPresent {\n        @Bean public ObjectMapper prettyMapper() { return new ObjectMapper(); }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n200\n\n$ unzip -p \"$AC\" \\\n    'org/springframework/boot/autoconfigure/jackson/JacksonAutoConfiguration*.class' \\\n  > /dev/null; unzip -l \"$AC\" | grep -c 'JacksonAutoConfiguration\\$'\n       5\n\n--   부트 것도 안쪽 클래스가 다섯이다\n\n\n-- 여러 개면 전부 있어야 한다\n\n@ConditionalOnClass(name = {\n    \"com.fasterxml.jackson.databind.ObjectMapper\",\n    \"org.apache.commons.csv.CSVFormat\"\n})\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'PrettyAutoConfiguration' | head -4\n   PrettyAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'org.apache.commons.csv.CSVFormat'\n\n--   못 찾은 것만 이름이 나온다\n\n\n-- 없을 때 쪽\n\n@AutoConfiguration\npublic class StorageAutoConfiguration {\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnClass(name = \"org.apache.commons.csv.CSVFormat\")\n    static class WithCsv {\n        @Bean public String writer() { return \"CSV 로 쓴다\"; }\n    }\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnMissingClass(\"org.apache.commons.csv.CSVFormat\")\n    static class WithoutCsv {\n        @Bean public String writer() { return \"그냥 쉼표로 쓴다\"; }\n    }\n}\n\n$ curl -s 'localhost:8080/beans/one?name=writer'\n그냥 쉼표로 쓴다\n\n// 라이브러리를 넣으면\nimplementation 'org.apache.commons:commons-csv:1.11.0'\n\n$ curl -s 'localhost:8080/beans/one?name=writer'\nCSV 로 쓴다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'WithoutCsv' | head -3\n   StorageAutoConfiguration$WithoutCsv:\n      Did not match:\n         - @ConditionalOnMissingClass found unwanted class\n           'org.apache.commons.csv.CSVFormat'\n\n--   한 줄을 넣었더니 구현이 갈렸다\n--   5.3절의 그 한 줄이 이런 일을 한다\n\n\n-- 버전은 안 본다\n\next['jackson-bom.version'] = '2.9.10'\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -c 'PrettyAutoConfiguration matched'\n1\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/json\n500\n\n--   조건은 맞았는데 부를 때 터진다\n--   5.1절의 셋째 시점이다\n\n\n-- 정리\n\n$ printf '%-28s %s\\n' \\\n  '조건'          'JAR 유무' \\\n  '없으면'        '조용히 꺼짐' \\\n  '타입으로 적기' '가능, 로딩 안 함' \\\n  '스캔 자리'     '로딩해서 터짐' \\\n  '반환 타입'     '안쪽 클래스로 감쌈' \\\n  '여럿'          '전부 있어야 함' \\\n  '없을 때'       '대안 구현' \\\n  '버전'          '안 봄'\n\n조건                         JAR 유무\n없으면                       조용히 꺼짐\n타입으로 적기                가능, 로딩 안 함\n스캔 자리                    로딩해서 터짐\n반환 타입                    안쪽 클래스로 감쌈\n여럿                         전부 있어야 함\n없을 때                      대안 구현\n버전                         안 봄\n\n--   6.5절에서 내가 만든 빈이 이기는 걸 본다",
+   "note": "**서버 자동 구성이 `jakarta.servlet.ServletRequest` 하나로 갈려 5.5절의 `000` 이 여기서** 정해진다.\n\n**잭슨을 빼니 내 자동 구성이 `did not find required class` 로 조용히 꺼지고 `404`** 였다.\n\n**애너테이션 값은 상수 풀에 이름 문자열로만 있어 런타임에 그 클래스가 없어도 기동이** 된다.\n\n**같은 애너테이션을 스캔되는 클래스나 빈 메서드에 붙이면 `NoClassDefFoundError` 로** 터져 안쪽 클래스로 감싼다.\n\n**CSV 한 줄을 넣으니 `writer` 가 `그냥 쉼표로 쓴다` 에서 `CSV 로 쓴다` 로** 바뀌었다."
+  }
+ ],
+ "recap": [
+  "**JAR 가** 스위치다.",
+  "**없으면 조용히** 꺼진다.",
+  "**타입으로 적어도** 된다.",
+  "**이름만** 읽는다.",
+  "**스캔 자리는** 터진다.",
+  "**반환 타입도** 위험하다.",
+  "**안쪽 클래스로** 감싼다.",
+  "**여럿이면 전부** 있어야 한다.",
+  "**버전은 안** 본다."
+ ],
+ "drills": [
+  {
+   "task": "서버 조건을 보고서에서 찾는다.",
+   "done_when": "있을 때와 없을 때를 둘 다 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "클래스 조건 자동 구성을 만든다.",
+   "done_when": "JAR 를 빼서 꺼지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메서드에 붙여 터뜨려 본다.",
+   "done_when": "안쪽 클래스로 고쳤다.",
+   "minutes": 20
+  },
+  {
+   "task": "없을 때 쪽 대안을 만든다.",
+   "done_when": "한 줄로 구현이 갈리는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 없는 클래스를 애너테이션에 적어도 되나?",
+   "a": "값이 이름 문자열로 읽히고 로딩되지 않기 때문이다."
+  },
+  {
+   "q": "같은 조건을 스캔되는 구성 클래스에 붙이면?",
+   "a": "클래스를 로딩해 `NoClassDefFoundError` 가 난다."
+  },
+  {
+   "q": "빈 메서드 반환 타입이 위험한 이유는?",
+   "a": "메서드를 읽으려면 그 타입을 로딩해야 해서다."
+  },
+  {
+   "q": "그래서 부트는 어떻게 쓰나?",
+   "a": "조건 붙은 안쪽 구성 클래스로 감싼다."
+  },
+  {
+   "q": "이 조건이 버전도 보나?",
+   "a": "안 본다. 있고 없고만 보므로 낡은 버전은 나중에 터진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "클래스 조건",
+   "def": "특정 클래스가 클래스패스에 있는지로 적용 여부를 가르는 조건."
+  },
+  {
+   "term": "안쪽 구성 클래스",
+   "def": "위험한 타입을 감싸 조건이 거짓일 때 아예 안 읽히게 하는 정적 중첩 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Creating Your Own Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "conditional",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "@Conditional",
+ "summary": "조건을 코드로 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조건이 뭔지 안다.",
+  "직접 하나 만든다.",
+  "언제 물어보는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 목록은 이름만** 적었다. **조건은 클래스 안에** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 물어보나",
+   "ascii": "   a condition is asked before the class is read as configuration\n\n   the metadata of the candidate is available\n   the bean definitions are not yet registered\n   the beans themselves certainly do not exist\n\n   so a condition may look at types and names, never at instances",
+   "note": "**타입과 이름은 보고 인스턴스는 못** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓸지 말지를 라이브러리가 스스로 판단한다",
+   "md": "**틀이 하나**다.\n\n> **`@Conditional` 에 클래스를** 준다.\n> **`matches` 가 참이면 등록**된다.\n> **아래에서 하나** 만든다.\n\n**부트는 그걸 감싼 것을** 쓴다.\n\n> **`@ConditionalOnClass` 같은 것**들이다.\n> **6.4절부터 하나씩** 본다.\n> **속은 다 같은 틀**이다.\n\n**두 자리에 붙일 수** 있다.\n\n> **클래스와 메서드**다.\n> **클래스면 통째로** 건너뛴다.\n> **아래에서 차이를** 본다.\n\n**보고서에 남는**다.\n\n> **왜 안 걸렸는지 적힌**다.\n> **6.7절이 그 보고서**다.\n> **아래에서 미리** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "붙는 자리가 둘이다",
+   "ascii": "   two places the same annotation can sit\n\n   on the class    nothing inside is even read\n   on the method   only that one bean is skipped\n\n   putting it on the class is much cheaper",
+   "note": "**클래스에 붙이는 쪽이 훨씬** 싸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조건 안에서 빈을 찾으면 안 된다",
+   "md": "**아직 안** 만들어졌다.\n\n> **정의만 있고 객체는** 없다.\n> **`getBean` 을 부르면** 이르다.\n> **아래에서 그걸** 겪는다.\n\n**타입을 직접 쓰면 터진**다.\n\n> **그 클래스가 없을 수도** 있다.\n> **조건이 로딩을** 부른다.\n> **이름 문자열로 물어야** 한다.\n\n**순서에 기대면** 흔들린다.\n\n> **누가 먼저 물어질지** 모른다.\n> **6.9절의 이야기**다.\n> **아래에서 그걸** 본다.\n\n**메서드마다 붙이면** 느리다.\n\n> **클래스는 다 읽어야** 한다.\n> **클래스에 붙이면 안** 읽는다.\n> **아래에서 세어** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 조건 하나를 만든다\n\npackage study.boot.cond;\n\npublic class OnMacCondition implements Condition {\n    @Override\n    public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n        String os = ctx.getEnvironment().getProperty(\"os.name\");\n        System.out.println(\"[조건] os.name = \" + os);\n        return os != null && os.startsWith(\"Mac\");\n    }\n}\n\n@Configuration\npublic class OsConfig {\n    @Bean\n    @Conditional(OnMacCondition.class)\n    public String macBean() { return \"맥에서만\"; }\n\n    @Bean\n    public String alwaysBean() { return \"늘\"; }\n}\n\n\n-- 돌려 본다\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[조건\\]|Started'\n[조건] os.name = Mac OS X\nINFO ... : Started BootApplication in 1.012 seconds\n\n$ curl -s localhost:8080/beans/has?name=macBean\ntrue\n$ curl -s localhost:8080/beans/has?name=alwaysBean\ntrue\n\n--   맥이라 걸렸다\n\n\n-- 거짓으로 만들어 본다\n\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 | grep '\\[조건\\]'\n[조건] os.name = Linux\n\n$ curl -s localhost:8080/beans/has?name=macBean\nfalse\n$ curl -s localhost:8080/beans/has?name=alwaysBean\ntrue\n\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   빈 하나만 사라졌다\n--   경고는 없다\n\n\n-- 없는 빈을 쓰면 그제야 터진다\n\n@RestController\nclass MacController {\n    MacController(@Qualifier(\"macBean\") String mac) { }\n}\n\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 | head -6\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.boot.MacController required a bean\nnamed 'macBean' that could not be found.\n\n--   조건이 아니라 쓰는 쪽에서 터진다\n\n\n-- 클래스에 붙여 본다\n\n@Configuration\n@Conditional(OnMacCondition.class)\npublic class OsConfig {\n    @Bean public String macBean()    { System.out.println(\"[빈] mac\");    return \"맥\"; }\n    @Bean public String alwaysBean() { System.out.println(\"[빈] always\"); return \"늘\"; }\n}\n\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 \\\n    | grep -E '\\[조건\\]|\\[빈\\]'\n[조건] os.name = Linux\n\n$ curl -s localhost:8080/beans/has?name=alwaysBean\nfalse\n\n--   조건은 한 번만 물었다\n--   안에 있는 메서드는 아예 안 읽혔다\n\n\n-- 메서드마다 붙이면\n\n@Configuration\npublic class OsConfig {\n    @Bean @Conditional(OnMacCondition.class) public String a() { return \"a\"; }\n    @Bean @Conditional(OnMacCondition.class) public String b() { return \"b\"; }\n    @Bean @Conditional(OnMacCondition.class) public String c() { return \"c\"; }\n}\n\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 | grep -c '\\[조건\\]'\n3\n\n// 클래스에 한 번만 붙이면\n$ ./gradlew bootRun --args='--os.name=Linux' 2>&1 | grep -c '\\[조건\\]'\n1\n\n--   셋에서 하나로 줄었다\n--   클래스에 붙이는 쪽이 싸다\n\n\n-- 조건은 무엇을 볼 수 있나\n\npublic class SnoopCondition implements Condition {\n    public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n        var reg = ctx.getRegistry();\n        System.out.println(\"[본다] 정의 수   = \" + reg.getBeanDefinitionCount());\n        System.out.println(\"[본다] 클래스로더 = \" + (ctx.getClassLoader() != null));\n        System.out.println(\"[본다] 리소스     = \" + (ctx.getResourceLoader() != null));\n        System.out.println(\"[본다] 붙은 자리  = \" + meta.getAnnotationTypes());\n        return true;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[본다\\]'\n[본다] 정의 수   = 12\n[본다] 클래스로더 = true\n[본다] 리소스     = true\n[본다] 붙은 자리  = [org.springframework.context.annotation.Bean,\n                     org.springframework.context.annotation.Conditional]\n\n--   정의는 열둘뿐이다\n--   6.1절의 187 은 아직 멀었다\n\n\n-- 빈을 꺼내려 하면\n\npublic boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n    var bf = ctx.getBeanFactory();\n    try {\n        var om = bf.getBean(ObjectMapper.class);\n        System.out.println(\"[꺼냄] \" + om);\n        return true;\n    } catch (Exception e) {\n        System.out.println(\"[꺼냄] \" + e.getClass().getSimpleName());\n        return false;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[꺼냄\\]'\n[꺼냄] NoSuchBeanDefinitionException\n\n$ curl -s localhost:8080/beans/has?name=objectMapper\ntrue\n\n--   조건 시점에는 없고 다 뜨고 나면 있다\n--   객체를 보고 판단하면 안 된다\n\n\n-- 타입을 직접 쓰면 터진다\n\npublic class OnRedisCondition implements Condition {\n    public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n        return org.springframework.data.redis.core.RedisTemplate.class != null;\n    }\n}\n\n$ ./gradlew compileJava 2>&1 | head -2\n> Task :compileJava FAILED\nerror: package org.springframework.data.redis.core does not exist\n\n// 이름으로 물어야 한다\npublic class OnRedisCondition implements Condition {\n    public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n        return ClassUtils.isPresent(\n            \"org.springframework.data.redis.core.RedisTemplate\",\n            ctx.getClassLoader());\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s localhost:8080/beans/has?name=redisBean\nfalse\n\n--   6.4절이 이걸 애너테이션으로 감싼 것이다\n\n\n-- 보고서에 남는다\n\n$ ./gradlew bootRun --args='--os.name=Linux --debug' 2>&1 \\\n    | grep -A2 'OsConfig' | head -4\n   OsConfig:\n      Did not match:\n         - @Conditional (study.boot.cond.OnMacCondition) did not match\n\n--   내가 만든 조건 이름이 그대로 나온다\n--   6.7절에서 이 보고서를 제대로 읽는다\n\n\n-- 이유를 적어 줄 수도 있다\n\npublic class OnMacCondition extends SpringBootCondition {\n    @Override\n    public ConditionOutcome getMatchOutcome(ConditionContext ctx,\n                                            AnnotatedTypeMetadata meta) {\n        String os = ctx.getEnvironment().getProperty(\"os.name\");\n        boolean ok = os != null && os.startsWith(\"Mac\");\n        return new ConditionOutcome(ok,\n            ConditionMessage.forCondition(\"OnMac\")\n                .because(\"os.name = \" + os));\n    }\n}\n\n$ ./gradlew bootRun --args='--os.name=Linux --debug' 2>&1 \\\n    | grep -A2 'OsConfig' | head -4\n   OsConfig:\n      Did not match:\n         - OnMac because os.name = Linux\n\n--   6.12절에서 이게 얼마나 고마운지 안다\n\n\n-- 부트 것도 같은 틀이다\n\n$ AC=$(find ~/.gradle/caches -name 'spring-boot-autoconfigure-3.3.2.jar' | head -1)\n$ unzip -p \"$AC\" \\\n    org/springframework/boot/autoconfigure/condition/ConditionalOnClass.class \\\n  > /tmp/coc.class\n$ javap -v /tmp/coc.class | grep -i 'Conditional' | head -3\n  0: #14(#15=[c#16]): CONDITIONAL\n    org.springframework.context.annotation.Conditional\n\n// 소스로는 이렇다\n@Conditional(OnClassCondition.class)\npublic @interface ConditionalOnClass { Class<?>[] value(); }\n\n$ unzip -l \"$AC\" | grep -c 'autoconfigure/condition/Conditional'\n     14\n\n--   부트가 감싸 둔 게 14 개다\n--   6.4절부터 그중 셋을 본다\n\n\n-- 순서에 기대면 흔들린다\n\npublic class OnAlwaysCondition implements Condition {\n    static int n = 0;\n    public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata meta) {\n        System.out.println(\"[순서] \" + (++n) + \" \" + meta.getAnnotationTypes());\n        return true;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[순서\\]'\n163\n\n$ ./gradlew bootRun 2>&1 | grep '\\[순서\\]' | head -2\n[순서] 1 [...ConditionalOnClass]\n[순서] 2 [...ConditionalOnMissingBean]\n\n--   6.2절의 163 이 여기서도 나온다\n--   순서는 6.9절에서 정한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '틀'            'matches 하나' \\\n  '메서드에'      '그 빈만 빠짐' \\\n  '클래스에'      '통째로 안 읽힘' \\\n  '조건 호출'     '3 에서 1 로' \\\n  '볼 수 있는 것' '타입과 이름' \\\n  '못 보는 것'    '빈 객체' \\\n  '타입 직접'     '컴파일 실패' \\\n  '부트 것'       '14 개'\n\n틀                         matches 하나\n메서드에                   그 빈만 빠짐\n클래스에                   통째로 안 읽힘\n조건 호출                  3 에서 1 로\n볼 수 있는 것              타입과 이름\n못 보는 것                 빈 객체\n타입 직접                  컴파일 실패\n부트 것                    14 개\n\n--   6.4절에서 그중 첫째를 본다",
+   "note": "**조건 하나를 만들어 붙이니 `[조건] os.name = Mac OS X` 가 찍히고 거짓일 땐 빈 하나만 조용히** 사라진다.\n\n**메서드마다 붙이면 조건이 3 번, 클래스에 한 번 붙이면 1 번** 불린다.\n\n**조건 시점의 빈 정의는 12 개뿐이고 `getBean` 은 `NoSuchBeanDefinitionException`** 이다.\n\n**타입을 직접 쓰면 `package ... does not exist` 로 컴파일이 깨져 이름 문자열로 물어야** 한다.\n\n**`SpringBootCondition` 으로 바꾸니 보고서에 `OnMac because os.name = Linux` 로** 적힌다."
+  }
+ ],
+ "recap": [
+  "**틀은 `matches` 하나**다.",
+  "**메서드면 그 빈만** 빠진다.",
+  "**클래스면 통째로** 건너뛴다.",
+  "**호출이** 줄어든다.",
+  "**타입과 이름은** 본다.",
+  "**빈 객체는 못** 본다.",
+  "**타입 직접은** 깨진다.",
+  "**이유를 적을 수** 있다.",
+  "**부트 것도 같은** 틀이다."
+ ],
+ "drills": [
+  {
+   "task": "조건 하나를 만든다.",
+   "done_when": "참·거짓 양쪽을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "붙이는 자리를 바꾼다.",
+   "done_when": "호출 횟수가 달라진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건 안에서 빈을 꺼내 본다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이유를 적는 조건으로 바꾼다.",
+   "done_when": "보고서에 문장이 나온 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조건을 클래스에 붙이면?",
+   "a": "안의 메서드를 아예 안 읽어 조건도 한 번만 불린다."
+  },
+  {
+   "q": "조건 안에서 빈을 꺼낼 수 있나?",
+   "a": "없다. 그 시점엔 정의만 있고 객체가 없다."
+  },
+  {
+   "q": "클래스 유무를 왜 이름으로 묻나?",
+   "a": "타입을 직접 쓰면 그 클래스가 없을 때 컴파일이나 로딩이 깨진다."
+  },
+  {
+   "q": "보고서에 이유를 남기려면?",
+   "a": "부트가 준 상위 조건 클래스를 상속해 결과에 문장을 담는다."
+  },
+  {
+   "q": "부트의 조건 애너테이션들은 뭔가?",
+   "a": "같은 틀을 감싸 둔 것들이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건",
+   "def": "구성 클래스나 빈 메서드를 등록할지 참·거짓으로 답하는 것."
+  },
+  {
+   "term": "조건 결과",
+   "def": "참·거짓과 그 이유 문장을 함께 담은 답. 보고서에 그대로 실린다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Conditional",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/java/configuration-annotation.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
