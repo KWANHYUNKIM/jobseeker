@@ -1,0 +1,134 @@
+{
+ "book": "spring-db-2",
+ "id": "jdbc-config",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "구성과 실행",
+ "summary": "설정을 바꿔 구현을 갈아 끼운다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "설정 클래스를 만들어 교체한다.",
+  "바뀐 파일이 하나뿐인 것을 확인한다.",
+  "테스트가 그대로 도는 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 약속한 \"한 줄\"** 을 처음 써 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "설정 클래스",
+   "code": "@Configuration\n@RequiredArgsConstructor\npublic class JdbcTemplateV1Config {\n\n    private final DataSource dataSource;\n\n    @Bean\n    public ItemService itemService() {\n        return new ItemServiceV1(itemRepository());\n    }\n\n    @Bean\n    public ItemRepository itemRepository() {\n        return new JdbcTemplateItemRepositoryV1(dataSource);\n    }\n}",
+   "note": "**`MemoryConfig` 와 다른 줄은 둘**이다 — `DataSource` 를 주입받는 것과 `new` 하는 클래스.\n\n**`itemService()` 는 똑같다.** 그래서 **복사해서 한 줄만 고치면** 된다.\n\n**`TestDataInit` 빈이 없다.** `MemoryConfig` 에만 뒀는데, **실행하면 초기 데이터가 안 들어간다** — 필요하면 여기에도 `@Profile(\"local\")` 로 넣는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "바꾸는 한 줄",
+   "code": "// @Import(MemoryConfig.class)\n@Import(JdbcTemplateV1Config.class)\n@SpringBootApplication(scanBasePackages = \"hello.itemservice.web\")\npublic class ItemServiceApplication {\n\n    public static void main(String[] args) {\n        SpringApplication.run(ItemServiceApplication.class, args);\n    }\n}",
+   "note": "**이것이 전부**다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 바뀌었나",
+   "ascii": "   before                          after\n   ------                          -----\n   @Import(MemoryConfig.class)     @Import(JdbcTemplateV1Config.class)\n\n   diff: 1 line\n\n   untouched\n   ---------\n   ItemController      ItemService      ItemRepository\n   ItemRepositoryTest  Item             ItemSearchCond",
+   "note": "**아래 여섯 파일을 안 열었다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 `V1` 인가",
+   "md": "**이 장에서만 구현을 네 번 만든다.**\n\n| 클래스 | 무엇이 다른가 | 절 |\n|---|---|---|\n| `JdbcTemplateItemRepositoryV1` | 기본 — 물음표 | 3.2 |\n| **`V2`** | **이름 지정 파라미터** | 3.5 |\n| **`V3`** | **`SimpleJdbcInsert`** | 3.7 |\n\n**설정도 같이 는다** — `JdbcTemplateV1Config`, `V2Config`, `V3Config`.\n\n> **버전을 지우고 덮어쓰면 비교가 사라진다.** 이 책은 **나란히 두고 로그를 비교**하는 것이 방법이라, **옛 버전을 안 지운다.**\n\n**「스프링 DB 1편」에서도 같은 방식**이었다 — `MemberServiceV1` 부터 `V3_3` 까지 남겨 두고 **무엇이 줄었는지** 봤다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "테스트는 어떻게 도나",
+   "md": "**`@SpringBootTest` 는 메인 클래스의 설정을 그대로** 쓴다.\n\n```java\n@SpringBootTest\nclass ItemRepositoryTest {\n    @Autowired ItemRepository itemRepository;\n}\n```\n\n**`@Import` 를 바꾸면 테스트에 주입되는 구현도 바뀐다.** 테스트 파일은 안 건드린다.\n\n**그런데 지금 이 테스트에는 문제**가 있다.\n\n```java\n@AfterEach\nvoid afterEach() {\n    if (itemRepository instanceof MemoryItemRepository) {\n        ((MemoryItemRepository) itemRepository).clearStore();\n    }\n}\n```\n\n**JdbcTemplate 구현에서는 이 `if` 가 안 걸린다.** **아무것도 정리하지 않는다.**\n\n> **테스트를 두 번 돌리면 깨진다.** 데이터가 쌓여 `findItems` 의 개수가 안 맞는다. **4장 전체가 이 이야기**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "확인하는 법",
+   "md": "**2.4절에서 말한 명령**을 지금 돌려 본다.\n\n```bash\ngit diff --stat HEAD~1\n```\n\n```\n ItemServiceApplication.java             |  2 +-\n JdbcTemplateV1Config.java               | 24 ++++++++\n JdbcTemplateItemRepositoryV1.java       | 96 +++++++++++++++++++\n 3 files changed\n```\n\n**새 파일 둘과 한 줄짜리 diff 하나.** `web/`, `service/`, `domain/` 은 **목록에 없다.**\n\n> **이 diff 모양이 3장부터 8장까지 반복**된다. **모양이 달라지면 구조가 새는 것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# --- 실행 ---\n\n#   HikariPool-1 - Start completed.\n#   Executing SQL script from class path resource [schema.sql]\n\nGET /\n#   select id, item_name, price, quantity from item\n#   200 OK  (빈 목록)\n\nPOST /add   itemName=itemA&price=10000&quantity=10\n#   insert into item (item_name, price, quantity) values (?, ?, ?)\n#   {1: 'itemA', 2: 10000, 3: 10}\n#   generated key = 1\n#   302 Found  ->  /items/1\n\nGET /items/1\n#   select id, item_name, price, quantity from item where id = ?\n#   {1: 1}\n#   200 OK\n\n# --- 서버를 껐다 켜고 ---\n\nGET /\n#   select id, item_name, price, quantity from item\n#   200 OK  (빈 목록)\n\n# schema.sql 의 drop table 때문이다\n# 그것만 빼면 데이터가 남는다\n\n# --- 테스트 (두 번째 실행) ---\n\nfindItems()\n#   select ... from item\n#   expected: 3 rows, actual: 6 rows   FAILED",
+   "note": "**2.2절의 그 자리**를 다시 본다. **메모리는 재시작하면 무조건 비었는데**, 여기는 **`drop table` 때문에** 비었다. 그 줄을 빼면 **데이터가 남는다** — 그것 하나 때문에 이 장을 쓴다.\n\n**맨 아래가 다음 장의 예고**다. **구현을 바꾸자마자 테스트가 못 미더워졌다.** `instanceof` 가 안 걸리니 정리가 안 된다.\n\n**3.5절에서 이 구현을 조금 낫게** 만든 뒤, **4장에서 테스트를 고친다.**"
+  }
+ ],
+ "recap": [
+  "**설정 클래스를 복사해 한 줄**만 고친다.",
+  "**`@Import` 한 줄**로 구현이 바뀐다.",
+  "**컨트롤러·서비스·도메인·테스트를 안 연다.**",
+  "**`V1`·`V2`·`V3` 를 남겨 둔다** — 비교가 방법이다.",
+  "**`@SpringBootTest` 는 메인의 설정을 따라간다.**",
+  "**`instanceof` 정리가 JdbcTemplate 에서는 안 걸린다.**",
+  "**테스트를 두 번 돌리면 깨진다** — 4장이 그 이야기다.",
+  "**`git diff --stat` 이 새 파일 둘과 한 줄**이어야 한다.",
+  "**이 diff 모양이 8장까지 반복**된다."
+ ],
+ "drills": [
+  {
+   "task": "`JdbcTemplateV1Config` 를 만들고 `@Import` 를 바꾼다.",
+   "done_when": "화면이 그대로 뜨는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`git diff --stat` 을 찍어 본다.",
+   "done_when": "`web`·`service` 가 목록에 없는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "테스트를 두 번 연달아 돌린다.",
+   "done_when": "두 번째가 깨지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`schema.sql` 의 `drop table` 을 지우고 재시작한다.",
+   "done_when": "데이터가 남는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "구현을 바꾸려고 무엇을 고쳤나?",
+   "a": "`@Import` 한 줄이다. 설정 클래스는 새로 만들었다."
+  },
+  {
+   "q": "왜 옛 구현을 안 지우나?",
+   "a": "나란히 두고 로그를 비교하는 것이 이 책의 방법이기 때문이다."
+  },
+  {
+   "q": "테스트 파일을 왜 안 고쳤나?",
+   "a": "인터페이스로 주입받기 때문이다. 메인의 설정을 따라간다."
+  },
+  {
+   "q": "테스트를 두 번 돌리면 왜 깨지나?",
+   "a": "`instanceof` 정리가 JdbcTemplate 구현에서는 안 걸려 데이터가 쌓인다."
+  },
+  {
+   "q": "재시작해도 데이터가 비는 이유는?",
+   "a": "`schema.sql` 의 `drop table` 때문이다. 그 줄을 빼면 남는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

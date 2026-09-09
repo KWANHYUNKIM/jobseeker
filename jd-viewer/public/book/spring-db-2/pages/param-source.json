@@ -1,0 +1,139 @@
+{
+ "book": "spring-db-2",
+ "id": "param-source",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "SqlParameterSource",
+ "summary": "객체를 그대로 넘긴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 파라미터 전달 방식을 안다.",
+  "언제 `BeanProperty` 를 못 쓰는지 안다.",
+  "`BeanPropertyRowMapper` 로 매핑도 줄인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절에서 두 가지를 섞어 썼다.** 왜 그랬는지 여기서 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 방식",
+   "ascii": "   SqlParameterSource (interface)\n        |\n        +-- MapSqlParameterSource\n        |      addValue(name, value)  chained\n        |      anything goes in\n        |\n        +-- BeanPropertySqlParameterSource\n               reads getters of an object\n               getItemName()  ->  :itemName\n               only what the object has\n\n   plain Map also works",
+   "note": "**`Map` 도 그냥 된다** — 이름만 맞으면 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "세 가지를 나란히",
+   "code": "// 1. Map\nMap<String, Object> param = Map.of(\"id\", id);\ntemplate.queryForObject(sql, param, itemRowMapper());\n\n// 2. MapSqlParameterSource - 체이닝과 타입 지정\nSqlParameterSource param = new MapSqlParameterSource()\n        .addValue(\"itemName\", updateParam.getItemName())\n        .addValue(\"price\", updateParam.getPrice())\n        .addValue(\"id\", itemId);\n\n// 3. BeanPropertySqlParameterSource - 객체 통째로\nSqlParameterSource param = new BeanPropertySqlParameterSource(item);",
+   "note": "**아래로 갈수록 짧다.** 그런데 **아래로 갈수록 제약**이 있다.\n\n| | 언제 쓰나 |\n|---|---|\n| `Map` | **파라미터가 하나둘**일 때 |\n| `MapSqlParameterSource` | **객체에 없는 값**을 섞어야 할 때 |\n| `BeanPropertySqlParameterSource` | **객체 하나로 다 될** 때 |"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`update` 에서 왜 `BeanProperty` 를 못 쓰나",
+   "md": "**3.5절의 `update` 를 다시 본다.**\n\n```java\nvoid update(Long itemId, ItemUpdateDto updateParam)\n```\n\n**필요한 이름이 넷**이다 — `itemName`, `price`, `quantity`, `id`.\n\n**`ItemUpdateDto` 에는 앞의 셋**만 있다. **`id` 가 없다.**\n\n```java\n// 이러면 터진다\nSqlParameterSource param = new BeanPropertySqlParameterSource(updateParam);\n// No value supplied for the SQL parameter 'id'\n```\n\n**`itemId` 는 별도 인자로 왔다.** 그래서 **`MapSqlParameterSource` 로 넷을 직접** 담는다.\n\n> **DTO 에 `id` 를 넣으면?** 되기는 한다. 그런데 **\"수정할 값\" 을 담는 그릇에 \"어느 행\" 이 섞인다.** 2.3절에서 폼과 저장소 파라미터를 나눈 것과 같은 이유로, **안 섞는 쪽**을 골랐다.\n\n**`save` 는 반대**다. `Item` 하나에 `itemName`·`price`·`quantity` 가 다 있으니 **`BeanProperty` 한 줄**로 끝난다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름 두 벌",
+   "ascii": "   java                 sql\n   ----                 ---\n   getItemName()  -->   :itemName        parameter name\n                        item_name        column name\n\n   two different conversions in one query\n     parameter : camelCase kept as is\n     column    : snake_case, mapped by RowMapper",
+   "note": "**같은 쿼리에서 변환 규칙이 둘**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`BeanPropertyRowMapper`",
+   "code": "private RowMapper<Item> itemRowMapper() {\n    return BeanPropertyRowMapper.newInstance(Item.class);\n}",
+   "note": "**3.2절의 여덟 줄이 한 줄**이 됐다.\n\n**`item_name` → `setItemName()`** 을 자동으로 한다. **언더스코어를 낙타 표기로** 바꾸는 규칙이 들어 있다.\n\n| DB 컬럼 | 자바 |\n|---|---|\n| `item_name` | `itemName` |\n| `ITEM_NAME` | `itemName` |\n| `price` | `price` |\n\n**이름이 다르면 별칭**을 쓴다.\n\n```sql\nselect item_name as itemName\n```\n\n**`select *` 을 쓰면** 규칙에서 벗어난 컬럼이 **조용히 안 채워진다** — `null` 인 필드가 생긴다. **컬럼을 명시하는 습관**이 여기서도 값을 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "자동 매핑의 값",
+   "md": "**`BeanPropertyRowMapper` 는 편한 대신 두 가지를 요구**한다.\n\n| 요구 | 없으면 |\n|---|---|\n| **기본 생성자** | `BeanInstantiationException` |\n| **setter** | 필드가 `null` |\n\n**`@Data` 를 붙였으면 둘 다 있다.** 그런데 **불변 객체로 만들면 못 쓴다.**\n\n```java\n// 이런 Item 은 BeanPropertyRowMapper 로 못 만든다\npublic class Item {\n    private final String itemName;   // setter 없음\n}\n```\n\n> **이것이 6장에서 다시 온다.** JPA 도 **기본 생성자를 요구**한다(「JPA 기본편」 4장). **프록시를 만들어야 하기 때문**인데, 이유는 달라도 **도메인에 강요하는 것은 같다.**\n\n**8장 Querydsl 은 생성자로 만들 수 있다** — `Projections.constructor`. **불변 객체와 같이 간다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# BeanPropertySqlParameterSource\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   [insert into item (item_name, price, quantity)\n#    values (?, ?, ?)]\n#   {1: 'itemA', 2: 10000, 3: 10}\n#   generated key = 1\n\n# 객체를 그대로 넘겼는데 값이 제자리에 갔다\n\n# BeanPropertyRowMapper\nrepository.findById(1L);\n\n#   [select id, item_name, price, quantity from item where id = ?]\n#   {1: 1}\n#   -> Item(id=1, itemName=itemA, price=10000, quantity=10)\n\n# RowMapper 를 한 줄로 줄였는데 결과가 같다\n\n# --- select * 로 바꾸고 컬럼을 하나 추가하면 ---\n\nalter table item add column reg_date timestamp;\n\n#   [select * from item where id = ?]\n#   -> Item(id=1, itemName=itemA, price=10000, quantity=10)\n\n# reg_date 는 Item 에 없다. 조용히 버려진다.\n\n# --- 반대로 컬럼 이름이 다르면 ---\n\n#   [select id, name, price, quantity from item where id = ?]\n#   -> Item(id=1, itemName=null, price=10000, quantity=10)\n\n# itemName 이 null 이다. 예외는 안 난다.",
+   "note": "**맨 아래 두 블록이 이 절의 경고**다. **자동 매핑은 안 맞으면 조용하다.**\n\n**`itemName=null`** 을 보고 **SQL 을 의심하기까지** 시간이 걸린다. `RowMapper` 를 손으로 썼다면 **`rs.getString(\"name\")`** 이라고 적혀 있어 눈에 보인다.\n\n> **편함과 명시성의 거래**다. 이 책은 **컬럼을 명시하고 자동 매핑을 쓰는** 쪽으로 간다.\n\n**다음 절에서 `insert` 문 자체를 없앤다.**"
+  }
+ ],
+ "recap": [
+  "**`Map` · `MapSqlParameterSource` · `BeanPropertySqlParameterSource`** 셋이 있다.",
+  "**아래로 갈수록 짧고 제약이 크다.**",
+  "**`update` 는 `id` 가 DTO 에 없어** `MapSqlParameterSource` 를 쓴다.",
+  "**`save` 는 `Item` 하나로 다 되니** `BeanProperty` 한 줄이다.",
+  "**파라미터는 낙타 표기, 컬럼은 뱀 표기** — 변환이 둘이다.",
+  "**`BeanPropertyRowMapper`** 가 여덟 줄을 한 줄로 만든다.",
+  "**기본 생성자와 setter** 를 요구한다 — 불변 객체와 안 맞는다.",
+  "**JPA 도 기본 생성자를 요구**한다 — 이유는 다르다.",
+  "**안 맞으면 예외가 아니라 `null`** 이다."
+ ],
+ "drills": [
+  {
+   "task": "`save` 를 `BeanPropertySqlParameterSource` 로 바꾼다.",
+   "done_when": "테스트가 초록인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`update` 에도 `BeanProperty` 를 써 본다.",
+   "done_when": "`id` 가 없어 터지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`BeanPropertyRowMapper` 로 바꾼다.",
+   "done_when": "여덟 줄이 한 줄이 되고 결과가 같은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`item_name` 을 `name as x` 로 바꿔 조회한다.",
+   "done_when": "예외 없이 `null` 이 되는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`update` 에서 왜 `BeanProperty` 를 못 쓰나?",
+   "a": "`id` 가 `ItemUpdateDto` 에 없기 때문이다."
+  },
+  {
+   "q": "`BeanPropertyRowMapper` 의 변환 규칙은?",
+   "a": "`item_name` 같은 뱀 표기를 `itemName` 낙타 표기로 바꾼다."
+  },
+  {
+   "q": "그것이 요구하는 두 가지는?",
+   "a": "기본 생성자와 setter 다."
+  },
+  {
+   "q": "컬럼 이름이 안 맞으면?",
+   "a": "예외가 아니라 그 필드가 `null` 이 된다."
+  },
+  {
+   "q": "`select *` 이 왜 위험한가?",
+   "a": "새 컬럼이 생겨도 조용히 버려지고, 문제를 늦게 안다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — NamedParameterJdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html#jdbc-NamedParameterJdbcTemplate",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

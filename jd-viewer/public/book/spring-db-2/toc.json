@@ -178,7 +178,7 @@
           "title": "구성과 실행",
           "summary": "설정을 바꿔 구현을 갈아 끼운다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -186,7 +186,7 @@
           "title": "이름 지정 파라미터",
           "summary": "물음표를 세지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -194,7 +194,7 @@
           "title": "SqlParameterSource",
           "summary": "객체를 그대로 넘긴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",

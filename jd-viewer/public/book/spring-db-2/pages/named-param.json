@@ -1,0 +1,156 @@
+{
+ "book": "spring-db-2",
+ "id": "named-param",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "이름 지정 파라미터",
+ "summary": "물음표를 세지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`NamedParameterJdbcTemplate` 을 쓴다.",
+  "순서 실수를 없앤다.",
+  "무엇이 여전히 안 잡히는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 가장 무서웠던 실수**를 지운다 — **파라미터 순서**."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "순서 실수가 왜 무서운가",
+   "md": "**이 코드는 컴파일되고 실행되고 예외도 안 난다.**\n\n```java\nString sql = \"update item set item_name=?, price=?, quantity=? where id=?\";\n\ntemplate.update(sql,\n        updateParam.getItemName(),\n        updateParam.getQuantity(),   // 순서가 바뀌었다\n        updateParam.getPrice(),\n        itemId);\n```\n\n**`price` 자리에 수량이, `quantity` 자리에 가격이** 들어간다. **둘 다 `Integer`** 라 타입도 맞다.\n\n**10000원짜리 10개가 10원짜리 10000개**가 된다.\n\n> **테스트가 값까지 검증하지 않으면 못 잡는다.** 2.5절의 `assertThat(findItem).isEqualTo(savedItem)` 이 그래서 필드를 다 본다.\n\n**컬럼이 늘수록 위험이 는다.** 실무 테이블은 **컬럼이 스물**이기도 하다."
+  },
+  {
+   "type": "figure",
+   "caption": "순서 vs 이름",
+   "ascii": "   positional\n   ----------\n   update item set item_name=?, price=?, quantity=? where id=?\n                        1          2           3            4\n\n   template.update(sql, name, price, quantity, id)\n                         1      2       3       4\n\n   two lists that must match. nobody checks.\n\n\n   named\n   -----\n   update item set item_name=:itemName, price=:price, ... where id=:id\n\n   Map.of(\"itemName\", ..., \"price\", ..., \"id\", ...)\n\n   order does not matter. a missing key throws.",
+   "note": "**맨 아랫줄이 차이의 전부**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "이름 지정으로",
+   "code": "public class JdbcTemplateItemRepositoryV2 implements ItemRepository {\n\n    private final NamedParameterJdbcTemplate template;\n\n    public JdbcTemplateItemRepositoryV2(DataSource dataSource) {\n        this.template = new NamedParameterJdbcTemplate(dataSource);\n    }\n\n    @Override\n    public void update(Long itemId, ItemUpdateDto updateParam) {\n        String sql = \"update item \" +\n                \"set item_name=:itemName, price=:price, quantity=:quantity \" +\n                \"where id=:id\";\n\n        SqlParameterSource param = new MapSqlParameterSource()\n                .addValue(\"itemName\", updateParam.getItemName())\n                .addValue(\"price\", updateParam.getPrice())\n                .addValue(\"quantity\", updateParam.getQuantity())\n                .addValue(\"id\", itemId);\n\n        template.update(sql, param);\n    }\n}",
+   "note": "**`?` 가 `:itemName` 이 됐다.** **순서를 바꿔 써도 상관없다.**\n\n**`id` 를 빼먹으면** 실행할 때 **예외가 난다** — 조용히 틀리지 않는다.\n\n> **`itemId` 는 `updateParam` 에 없어서** 따로 넣어야 한다. **그래서 `MapSqlParameterSource`** 를 쓴다 — 3.6절에서 이유가 더 분명해진다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "저장 — `KeyHolder` 가 짧아진다",
+   "code": "@Override\npublic Item save(Item item) {\n    String sql = \"insert into item (item_name, price, quantity) \" +\n            \"values (:itemName, :price, :quantity)\";\n\n    SqlParameterSource param = new BeanPropertySqlParameterSource(item);\n    KeyHolder keyHolder = new GeneratedKeyHolder();\n\n    template.update(sql, param, keyHolder);\n\n    item.setId(keyHolder.getKey().longValue());\n    return item;\n}",
+   "note": "**3.2절의 열 줄이 다섯 줄**이 됐다. **`PreparedStatementCreator` 람다가 사라졌다.**\n\n**`new String[]{\"id\"}` 도 없다** — `NamedParameterJdbcTemplate` 이 알아서 한다.\n\n**`BeanPropertySqlParameterSource`** 는 **객체의 getter 를 이름으로** 쓴다. `getItemName()` → `:itemName`. **3.6절의 주제**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적 쿼리도 이름으로",
+   "code": "@Override\npublic List<Item> findAll(ItemSearchCond cond) {\n    String itemName = cond.getItemName();\n    Integer maxPrice = cond.getMaxPrice();\n\n    SqlParameterSource param = new BeanPropertySqlParameterSource(cond);\n\n    String sql = \"select id, item_name, price, quantity from item\";\n\n    if (StringUtils.hasText(itemName) || maxPrice != null) {\n        sql += \" where\";\n    }\n\n    boolean andFlag = false;\n    if (StringUtils.hasText(itemName)) {\n        sql += \" item_name like concat('%',:itemName,'%')\";\n        andFlag = true;\n    }\n    if (maxPrice != null) {\n        if (andFlag) {\n            sql += \" and\";\n        }\n        sql += \" price <= :maxPrice\";\n    }\n\n    log.info(\"sql={}\", sql);\n    return template.query(sql, param, itemRowMapper());\n}",
+   "note": "**`param` 리스트가 사라졌다.** `cond` 객체를 통째로 넘기니 **더할 것이 없다.**\n\n**그런데 `if` 네 개와 `andFlag` 는 그대로**다. **문자열도 그대로 붙인다.**\n\n> **3.3절의 문제 넷 중 하나만 풀렸다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "무엇이 풀리고 무엇이 남았나",
+   "left": {
+    "title": "풀린 것",
+    "points": [
+     "**파라미터 순서**를 안 센다",
+     "빠뜨리면 **예외가 난다**",
+     "`save` 가 절반으로 줄었다",
+     "**SQL 을 읽으면 무엇이 들어가는지 보인다**"
+    ]
+   },
+   "right": {
+    "title": "남은 것",
+    "points": [
+     "**문자열을 여전히 붙인다**",
+     "**공백 실수**가 그대로다",
+     "`:itemNmae` 오타를 **컴파일러가 못 잡는다**",
+     "**경우의 수가 2ⁿ** 그대로다"
+    ]
+   }
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# update\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n\n#   Executing prepared SQL statement\n#     [update item set item_name=?, price=?, quantity=? where id=?]\n#   {1: 'itemA-updated', 2: 20000, 3: 30, 4: 1}\n#   -> 1\n\n# 이름이 물음표로 바뀌어 나갔다\n# DB 는 :itemName 을 모른다\n\n# 이름을 빠뜨리면\n#   .addValue(\"id\", itemId) 를 지우고 실행\n\n#   InvalidDataAccessApiUsageException:\n#     No value supplied for the SQL parameter 'id'\n\n#   (SQL 이 아예 안 나갔다)\n\n# 이름에 오타를 내면\n#   sql: ... where id=:idd\n\n#   InvalidDataAccessApiUsageException:\n#     No value supplied for the SQL parameter 'idd'\n\n# 동적 쿼리 - 조건 둘\nfindAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   sql=select id, item_name, price, quantity from item\n#       where item_name like concat('%',:itemName,'%') and price <= :maxPrice\n#   [select ... where item_name like concat('%',?,'%') and price <= ?]\n#   {1: 'itemA', 2: 10000}",
+   "note": "**첫 블록이 이 절의 핵심**이다. **`:itemName` 이 `?` 로 바뀌어** 나갔다. **DB 는 이름 지정 파라미터를 모른다** — 스프링이 파싱해서 바꾼다.\n\n**두 번째와 세 번째 블록**에서 **SQL 이 아예 안 나갔다.** 순서 방식이었다면 **조용히 틀린 값**이 들어갔을 것이다.\n\n**마지막 블록**에 **로그가 두 줄**이다 — 내가 만든 SQL 과 실제로 나간 SQL. **이 둘이 다른 것**을 이 절에서 처음 본다. **6장부터는 이 간격이 훨씬 벌어진다.**"
+  }
+ ],
+ "recap": [
+  "**순서 실수는 예외 없이 틀린 값**을 넣는다 — 타입이 같으면 못 잡는다.",
+  "**`?` 를 `:이름`** 으로 바꾼다.",
+  "**`NamedParameterJdbcTemplate`** 을 쓴다.",
+  "**빠뜨리면 SQL 이 아예 안 나가고 예외**가 난다.",
+  "**`save` 가 열 줄에서 다섯 줄**이 됐다.",
+  "**`new String[]{\"id\"}` 가 필요 없다.**",
+  "**`:이름` 은 스프링이 `?` 로 바꿔** 보낸다 — DB 는 모른다.",
+  "**문자열 붙이기·공백·오타·2ⁿ 은 그대로**다.",
+  "**내가 만든 SQL 과 나간 SQL 이 처음으로 달라졌다.**"
+ ],
+ "drills": [
+  {
+   "task": "`V2` 를 만들고 설정을 바꿔 돌린다.",
+   "done_when": "테스트가 그대로 초록인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`V1` 에서 `price` 와 `quantity` 인자를 바꿔 본다.",
+   "done_when": "예외 없이 값이 뒤바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`V2` 에서 `addValue(\"id\", ...)` 를 지운다.",
+   "done_when": "SQL 이 안 나가고 예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`:itemName` 에 오타를 낸다.",
+   "done_when": "컴파일은 되고 실행에서 터지는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "순서 방식의 가장 위험한 실수는?",
+   "a": "같은 타입 인자의 순서가 바뀌는 것이다. 예외 없이 틀린 값이 저장된다."
+  },
+  {
+   "q": "이름을 빠뜨리면 어떻게 되나?",
+   "a": "SQL 이 아예 안 나가고 `InvalidDataAccessApiUsageException` 이 난다."
+  },
+  {
+   "q": "DB 가 `:itemName` 을 보나?",
+   "a": "안 본다. 스프링이 `?` 로 바꿔 보낸다."
+  },
+  {
+   "q": "`save` 가 왜 짧아졌나?",
+   "a": "`PreparedStatementCreator` 람다와 키 컬럼 지정이 필요 없어졌다."
+  },
+  {
+   "q": "3.3절의 문제 중 무엇이 남았나?",
+   "a": "문자열 붙이기, 공백 실수, 오타를 컴파일러가 못 잡는 것, 2ⁿ 경우의 수다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — NamedParameterJdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html#jdbc-NamedParameterJdbcTemplate",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — JDBC",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
