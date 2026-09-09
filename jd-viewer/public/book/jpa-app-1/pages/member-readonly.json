@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-readonly",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "readOnly 를 어디에",
+ "summary": "조회가 대부분이다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`readOnly` 가 실제로 하는 일을 확인한다.",
+  "이 프로젝트에서의 이득을 잰다.",
+  "믿으면 안 되는 부분을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절에서 클래스에 걸었다.** **무엇을 얻었는지** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "스냅숏을 안 만든다",
+   "ascii": "   readOnly = false                readOnly = true\n   ----------------                ---------------\n   entity   +  snapshot            entity only\n   2x memory per row               1x\n\n   at commit                       at commit\n     compare every field             nothing to compare\n     of every loaded entity\n\n   10000 rows loaded: this is the difference that shows up",
+   "note": "**「DB 2편」 10.9절의 그림**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 프로젝트에서 얼마나 이득인가",
+   "md": "**회원이 열 명이면 차이가 없다.** **의미가 생기는 자리**가 따로 있다.\n\n| 화면 | 로딩되는 엔티티 |\n|---|---|\n| 회원 목록 | 회원 N |\n| 상품 목록 | 상품 N |\n| **주문 목록** | **주문 N + 회원 N + 주문상품 N + 상품 N** |\n\n**주문 목록이 가장 크다.**\n\n> **9.4절에서 이 화면의 쿼리를 센다.** **쿼리만 세는 것이 아니라 로딩된 엔티티 수**도 본다.\n>\n> **주문 100건이면 엔티티가 400개**다. **`readOnly` 가 아니면 스냅숏도 400개**다.\n\n**측정해 보면**\n\n```java\n@Transactional(readOnly = true)\npublic List<Order> findOrders(OrderSearch cond) { ... }\n```\n\n**하이버네이트 통계로 확인**할 수 있다(2.6절).\n\n```\nSession Metrics {\n    ...\n    0 entities were dirty-checked;      <- readOnly = true\n}\n```\n\n```\nSession Metrics {\n    ...\n    400 entities were dirty-checked;    <- readOnly = false\n}\n```\n\n> **`0 entities were dirty-checked`** 가 그 증거다. **9.4절에서 이 숫자를** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 층",
+   "ascii": "   where the flag actually goes\n\n   spring          decides the tx attribute\n   hibernate       FlushMode.MANUAL, no snapshot\n   jdbc driver     con.setReadOnly(true)\n   database        may refuse writes, may route to a replica\n\n   only the middle one is guaranteed",
+   "note": "**가운데만 확실**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 프로젝트의 함정",
+   "md": "**5.2절의 구조를 다시** 본다.\n\n```java\n@Service\n@Transactional(readOnly = true)\npublic class MemberService {\n    @Transactional\n    public Long join(Member member) { ... }\n}\n```\n\n**잘 된다.** **7장에서 문제가 생긴다.**\n\n```java\n@Service\n@Transactional(readOnly = true)\npublic class OrderService {\n\n    @Transactional\n    public Long order(...) {\n        // 재고를 줄인다\n        item.removeStock(count);\n    }\n\n    // 이걸 빠뜨리면?\n    public void cancelOrder(Long orderId) {\n        Order order = orderRepository.findOne(orderId);\n        order.cancel();          // 재고를 되돌린다\n    }\n}\n```\n\n**`cancelOrder` 에 `@Transactional` 을 빠뜨리면** — **변경 감지가 꺼져 있다.**\n\n**`insert` 는 드라이버가 막는데**(5.2절), **`update` 는 애초에 안 생긴다.**\n\n| | 빠뜨렸을 때 |\n|---|---|\n| **`persist`** | **시끄럽게 터진다** |\n| **변경 감지** | **조용히 안 된다** |\n\n> **「DB 2편」 10.9절의 그 문제**다. **`readOnly` 가 조용한 실패를 하나 만들기도** 한다.\n>\n> **5.2절에서 \"조용한 실패를 하나 줄이는 장치\" 라고** 했는데, **정확히는 저장에만 그렇다.**\n\n**7.4절에서 이것을 실제로** 만난다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "언제 안 거나",
+   "md": "**항상 거는 것이 좋은 것은 아니다.**\n\n| 상황 | |\n|---|---|\n| **읽고 바로 고치는 서비스** | 클래스 기본값이 방해 |\n| **배치** | 어차피 쓴다 |\n| **트랜잭션 하나에 조회와 수정** | 나눌 수 없다 |\n\n**첫 번째 예**\n\n```java\n@Service\n@Transactional              // readOnly 없음\npublic class BatchService {\n    public void 재고일괄조정() { ... }\n    public void 만료처리() { ... }\n}\n```\n\n**전부 쓰기**면 클래스 기본값이 `readOnly` 일 이유가 없다.\n\n**「DB 2편」 12.7절의 조회 전용 분리**를 하면 더 깔끔하다.\n\n```java\n@Service\n@Transactional(readOnly = true)\npublic class OrderQueryService { }     // 전부 조회\n\n@Service\n@Transactional\npublic class OrderService { }          // 전부 쓰기\n```\n\n> **클래스마다 하나의 성격**을 갖는다. **메서드마다 덮어쓸 일이 없다.**\n>\n> **이 책은 안 나눈다** — 서비스가 셋뿐이고 메서드도 적다. **9.7절에서 이 판단을 다시** 본다.\n\n**전파와 만나면 무시된다.**\n\n> **「DB 2편」 11.3절**: 참여하는 트랜잭션은 바깥의 `readOnly` 를 따른다.\n>\n> **5.4절 테스트에서 이미 그랬다.** **테스트의 트랜잭션이 바깥**이라 서비스의 `readOnly` 가 무시됐다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- readOnly = true 조회 ---\n\nmemberService.findMembers();\n\n#   Creating new transaction with name [MemberService.findMembers]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [conn0] for JPA transaction\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0\n\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Resetting read-only flag of JDBC Connection [conn0]\n#   Releasing JDBC Connection [conn0]\n\n#   Setting / Resetting 이 짝이다\n\n# --- 통계를 켜면 ---\n\n#   spring.jpa.properties.hibernate.generate_statistics: true\n\n#   (readOnly = true)\n#   Session Metrics {\n#       1 JDBC statements were prepared\n#       1 JDBC statements were executed\n#       0 entities were loaded into the persistence context? no - 10\n#       0 entities were dirty-checked\n#   }\n\n#   (readOnly = false)\n#   Session Metrics {\n#       1 JDBC statements were prepared\n#       1 JDBC statements were executed\n#       10 entities were dirty-checked\n#   }\n\n#   dirty-checked 가 10 과 0 이다\n\n#   회원 열 명이면 차이가 안 느껴진다\n#   주문 목록에서는 400 이 된다  (9.4절)\n\n# --- readOnly 에서 엔티티를 고치면 ---\n\n@Transactional(readOnly = true)\npublic void 이러면안된다(Long id) {\n    Member m = memberRepository.findOne(id);\n    m.setName(\"바뀐이름\");\n}\n\n#   Creating new transaction with name [...]: ...,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: \n#       select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n\n#   Initiating transaction commit\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n#   (update 가 없다)\n#   (예외도 없다)\n\nselect name from member where member_id = 1;\n#   kim\n\n#   안 바뀌었다. 조용히.\n\n# --- readOnly 에서 persist 하면 ---\n\n@Transactional(readOnly = true)\npublic void 이것도안된다() {\n    memberRepository.save(new Member());\n}\n\n#   Hibernate: select next value for member_seq\n#   Initiating transaction commit\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n\n#   SQL Error: 90097, SQLState: 90097\n#   The database is read only\n\n#   이건 시끄럽게 터진다\n\n# --- 두 실패의 차이 ---\n\n#   persist    -> SQL 이 나가고 드라이버가 거부   -> 예외\n#   변경 감지   -> SQL 이 아예 안 생긴다          -> 침묵\n\n#   7.4절에서 이 침묵을 만난다\n\n# --- 테스트에서는 무시된다 ---\n\n@SpringBootTest\n@Transactional          // readOnly 아님\nclass MemberServiceTest {\n    @Test\n    void t() {\n        memberService.findMembers();   // readOnly = true 인데\n    }\n}\n\n#   Begin transaction for test context\n#   (readOnly 없음)\n#   Getting transaction for [MemberService.findMembers]\n#   Participating in existing transaction\n\n#   (Setting read-only 로그가 없다)\n\n#   바깥의 속성을 따랐다 (「DB 2편」 11.3절)",
+   "note": "**`Setting` 과 `Resetting` 이 짝**이다. **커넥션을 풀에 돌려주기 전에 되돌린다.**\n\n**`dirty-checked` 가 10 과 0** 이다. **회원 열 명이면 안 느껴지는데 9.4절에서는 400 이 된다.**\n\n**두 실패의 차이가 이 절의 요점**이다. **`persist` 는 예외, 변경 감지는 침묵**.\n\n**테스트에서 `Setting read-only` 로그가 없다.** **참여한 트랜잭션이라 바깥의 속성을 따랐다** — 「DB 2편」 11.3절.\n\n**다음 절에서 5장을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**스냅숏을 안 만들어 메모리와 비교 비용**이 준다.",
+  "**회원 열 명이면 차이가 없다** — 주문 목록에서 커진다.",
+  "**`dirty-checked` 숫자**로 확인한다.",
+  "**네 층 중 하이버네이트 층만 확실**하다.",
+  "**`persist` 는 예외, 변경 감지는 침묵**이다.",
+  "**`readOnly` 가 조용한 실패를 하나 만들기도** 한다.",
+  "**전부 쓰기인 서비스에는 안 건다.**",
+  "**조회 전용 서비스로 분리하면 더 깔끔**하다.",
+  "**참여하는 트랜잭션에서는 무시**된다 — 테스트가 그렇다."
+ ],
+ "drills": [
+  {
+   "task": "`generate_statistics` 를 켜고 `dirty-checked` 를 본다.",
+   "done_when": "`readOnly` 유무로 숫자가 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`readOnly` 트랜잭션에서 엔티티를 고친다.",
+   "done_when": "조용히 안 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`readOnly` 트랜잭션에서 `save` 를 부른다.",
+   "done_when": "예외가 나는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트에서 `Setting read-only` 를 찾아본다.",
+   "done_when": "없는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`readOnly` 의 가장 실용적인 이득은?",
+   "a": "스냅숏을 안 만들어 메모리와 커밋 시 비교 비용이 준다."
+  },
+  {
+   "q": "그것을 어떻게 확인하나?",
+   "a": "하이버네이트 통계의 `dirty-checked` 숫자를 본다."
+  },
+  {
+   "q": "`persist` 와 변경 감지의 실패 방식이 어떻게 다른가?",
+   "a": "`persist` 는 예외가 나고 변경 감지는 조용히 안 된다."
+  },
+  {
+   "q": "언제 안 거나?",
+   "a": "전부 쓰기인 서비스거나, 조회 전용 서비스로 분리했을 때다."
+  },
+  {
+   "q": "테스트에서 왜 안 먹나?",
+   "a": "테스트의 트랜잭션에 참여해 바깥의 속성을 따르기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

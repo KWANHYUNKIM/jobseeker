@@ -1,0 +1,126 @@
+{
+ "book": "jpa-app-1",
+ "id": "member-review",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "여기까지 나간 SQL.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "5장을 정리한다.",
+  "만들어진 계층의 모양을 확인한다.",
+  "6장이 무엇을 더하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**첫 도메인이 끝났다.** **무엇이 만들어졌는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "만들어진 모양",
+   "ascii": "   the shape this chapter established\n\n   MemberController        (chapter 8)\n        |\n   MemberService           @Transactional(readOnly = true)\n        |                  @Transactional on writes\n   MemberRepository        @PersistenceContext EntityManager\n        |\n   Member                  entity, no logic yet\n\n   chapters 6 and 7 fill the bottom box",
+   "note": "**맨 아래 칸이 6·7장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "5장이 정한 것",
+   "md": "| | |\n|---|---|\n| **리포지토리** | `EntityManager` 직접, 네 메서드 |\n| **서비스** | `readOnly` 클래스 + 쓰기 메서드 |\n| **반환** | 쓰기는 `Long`, 조회는 엔티티 |\n| **테스트** | `@SpringBootTest` + `@Transactional` |\n| **로그 확인** | `flush` 로 `insert` 를 본다 |\n\n**이 다섯이 6·7장에서 그대로** 반복된다.\n\n**`Member` 에 로직이 없다.**\n\n```java\n@Entity\npublic class Member {\n    private Long id;\n    private String name;\n    private Address address;\n    private List<Order> orders;\n    // 게터뿐이다\n}\n```\n\n> **회원에게 시킬 일이 없다.** **가입은 서비스가, 검증도 서비스가** 한다.\n>\n> **6장의 `Item` 은 다르다.** **재고를 스스로** 관리한다.\n\n**그것이 5장과 6장의 차이**다."
+  },
+  {
+   "type": "figure",
+   "caption": "5장이 만든 SQL",
+   "ascii": "   the sql this chapter produced\n\n   select next value for member_seq\n   insert into member (city, street, zipcode, name, member_id)\n   select ... from member where member_id = ?\n   select ... from member\n   select ... from member where name = ?\n\n   five. no update, no delete.",
+   "note": "**다섯 개**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`update` 가 없다",
+   "md": "**회원 수정 기능이 없다**(4.1절).\n\n**그래서 이 장에서는 변경 감지를 안 본다.**\n\n**6장에서 나온다.**\n\n```java\n// 6장\nitem.setName(\"바뀐이름\");\n// update 가 나간다\n```\n\n**7장에서 더 복잡해진다.**\n\n```java\n// 7장\norder.cancel();\n// order 의 status 가 바뀌고\n// item 의 stockQuantity 도 바뀐다\n// update 가 둘\n```\n\n> **1.1절에서 \"5~7장은 복잡도 순서\" 라고** 했다.\n>\n> | 장 | SQL 종류 |\n> |---|---|\n> | **5장** | `select`, `insert` |\n> | **6장** | + **`update`** |\n> | **7장** | + **여러 테이블의 `update`** |\n\n**`delete` 는 이 책에 없다.** **주문 취소가 상태 변경**이지 삭제가 아니다(1.3절).\n\n> **실무에서도 대개 그렇다.** **주문을 지우면 통계가 깨진다.** **`deleted_at` 을 두거나 상태로** 관리한다.\n>\n> **9.7절에서 이 이야기를** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "5장에서 남은 것",
+   "md": "**두 가지를 뒤로** 미뤘다.\n\n**① 유니크 제약** (5.3절)\n\n**동시 가입을 못 막는다.** **9.7절 목록**에 있다.\n\n**② `findOne` 이 `null` 을 돌려준다** (4.4절)\n\n```java\npublic Member findOne(Long id) {\n    return em.find(Member.class, id);    // null 일 수 있다\n}\n```\n\n**`Optional` 이 낫다.**\n\n```java\npublic Optional<Member> findOne(Long id) {\n    return Optional.ofNullable(em.find(Member.class, id));\n}\n```\n\n> **「DB 2편」 2.2절에서 정한 규칙**이다 — **리포지토리는 `null` 을 안 내보낸다.**\n>\n> **이 책은 강의 예제를 따라 `null`** 로 둔다. **9.7절 목록**에 넣는다.\n\n**8장에서 이것이 아플 것**이다.\n\n```java\n// 8.4절\nMember member = memberService.findOne(id);\nmodel.addAttribute(\"name\", member.getName());   // NPE 가능\n```\n\n**없는 id 로 들어오면 NPE** 다. **`Optional` 이면 컴파일러가 물어본다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL — 5장 전체",
+   "sql": "# --- 회원 가입 ---\n\nmemberService.join(member);\n\n#   Creating new transaction with name [MemberService.join]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.name=?\n#   binding parameter [1] as [VARCHAR] - [kim]\n\n#   Hibernate: \n#       select next value for member_seq\n\n#   Initiating transaction commit\n\n#   Hibernate: \n#       insert into member (city, street, zipcode, name, member_id)\n#       values (?, ?, ?, ?, ?)\n#   binding parameter [1] as [VARCHAR] - [서울]\n#   binding parameter [2] as [VARCHAR] - [강남대로]\n#   binding parameter [3] as [VARCHAR] - [12345]\n#   binding parameter [4] as [VARCHAR] - [kim]\n#   binding parameter [5] as [BIGINT] - [1]\n\n#   Committing JPA transaction\n\n# --- 회원 목록 ---\n\nmemberService.findMembers();\n\n#   Creating new transaction with name [MemberService.findMembers]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Setting JDBC Connection [conn0] read-only\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0\n\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n# --- 회원 하나 ---\n\nmemberService.findOne(1L);\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n\n#   (같은 트랜잭션에서 두 번째로 부르면 SQL 이 없다)\n\n# --- 5장이 만든 SQL, 전부 ---\n\n#   1  select next value for member_seq\n#   2  insert into member (city, street, zipcode, name, member_id)\n#      values (?, ?, ?, ?, ?)\n#   3  select ... from member m1_0 where m1_0.member_id=?\n#   4  select ... from member m1_0\n#   5  select ... from member m1_0 where m1_0.name=?\n\n#   다섯 개\n\n# --- 아직 없는 것 ---\n\n#   update       6장\n#   delete       이 책에 없다\n#   join         7장 (주문 검색)\n#   여러 테이블   7장\n\n# --- 4.1절의 예상과 비교 ---\n\n#   예상: 다섯 개\n#   실제: 다섯 개\n\n#   맞았다\n\n# --- 지금 상태 ---\n\n#   엔티티 열 개 (3장)\n#   테이블 일곱 개 (3장)\n#   리포지토리 1개\n#   서비스 1개\n#   테스트 1개\n#   화면 0개\n\n# 다음 장에서 상품을 만든다\n# 거기서 처음으로 엔티티가 계산을 한다",
+   "note": "**5장이 만든 SQL 이 다섯 개**다. **4.1절에서 예상한 개수와 같다.**\n\n**`update` 도 `delete` 도 조인도 없다.** **가장 단순한 도메인**이다.\n\n**`readOnly` 가 로그 첫 줄과 `Setting`/`Resetting` 으로** 드러난다.\n\n**같은 트랜잭션에서 `findOne` 을 두 번 부르면 두 번째는 SQL 이 없다.** **1차 캐시**다.\n\n**다음 장에서 처음으로 엔티티가 계산**한다."
+  }
+ ],
+ "recap": [
+  "**계층 모양이 정해졌다** — 6·7장이 그대로 쓴다.",
+  "**리포지토리 네 메서드, 서비스 `readOnly` 패턴, 테스트 격리.**",
+  "**`Member` 에 로직이 없다** — 시킬 일이 없어서다.",
+  "**`update` 가 없다** — 회원 수정 기능이 없다.",
+  "**`delete` 는 이 책에 아예 없다** — 취소가 상태 변경이다.",
+  "**SQL 다섯 개**를 만들었다 — 4.1절 예상과 같다.",
+  "**유니크 제약과 `Optional`** 을 뒤로 미뤘다.",
+  "**8.4절에서 `null` 이 NPE 가 될 수** 있다.",
+  "**6장에서 엔티티가 처음으로 계산**한다."
+ ],
+ "drills": [
+  {
+   "task": "5장이 만든 SQL 다섯 개를 적어 둔다.",
+   "done_when": "4.1절 예상과 대조했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 트랜잭션에서 `findOne` 을 두 번 부른다.",
+   "done_when": "두 번째에 SQL 이 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`findOne` 을 `Optional` 로 바꿔 본다.",
+   "done_when": "호출부가 어떻게 바뀌는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "5장의 계층 모양을 그림으로 그린다.",
+   "done_when": "6·7장이 무엇을 더할지 예상했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "5장이 만든 SQL 은 몇 개인가?",
+   "a": "다섯 개다. 시퀀스, `insert`, `select` 셋이다."
+  },
+  {
+   "q": "왜 `update` 가 없나?",
+   "a": "회원 수정 기능을 안 만들었기 때문이다."
+  },
+  {
+   "q": "`delete` 는 왜 이 책에 없나?",
+   "a": "주문 취소가 삭제가 아니라 상태 변경이기 때문이다."
+  },
+  {
+   "q": "`Member` 에 로직이 없는 이유는?",
+   "a": "회원에게 시킬 계산이 없다. 6장의 `Item` 은 다르다."
+  },
+  {
+   "q": "뒤로 미룬 둘은?",
+   "a": "유니크 제약과 `Optional` 반환이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
