@@ -1,0 +1,126 @@
+{
+ "book": "practical-testing",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "절반이 빨간 막대다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 방법을 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "왜 실패를 보여 주는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 아홉 번째 책**이다. **앞의 여덟 권이 한 번도 안 짠** 것을 짠다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 것",
+   "ascii": "   every section ends with a test run\n\n   CafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\n\n   and, about half the time, with this instead\n\n   CafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 FAILED\n     java.lang.IndexOutOfBoundsException: Index 0 out of bounds\n\n   the red one is not a mistake. it is the point.",
+   "note": "**빨간 쪽이 실수가 아니라 요점**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 실패를 보여 주나",
+   "md": "**통과한 테스트는 두 가지를 구분 못** 한다.\n\n| | |\n|---|---|\n| **코드가 맞다** | 원하는 것 |\n| **테스트가 아무것도 안 본다** | 원하지 않는 것 |\n\n**둘 다 초록**이다.\n\n```java\n@Test\nvoid 음료를_추가한다() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n\n    System.out.println(cafeKiosk.getBeverages().size());   // 검증이 아니다\n}\n```\n\n> **이 테스트는 항상 통과**한다. **`add` 를 비워도** 통과한다.\n>\n> **2.1절에서 이걸** 다룬다.\n\n**한 번 실패시켜 보면** 알 수 있다.\n\n> **프로덕션 코드를 잠깐 망가뜨리고 테스트가 빨개지는지** 본다.\n> **안 빨개지면 그 테스트는 아무것도 안 지키고** 있다.\n\n**그리고 실패 메시지가 좋아야** 한다.\n\n```\nexpected: 2\n but was: 1\n```\n\n> **어느 값이 어긋났는지가** 보인다.\n>\n> **`assertTrue(list.size() == 2)`** 였다면\n>\n> ```\n> expected: <true> but was: <false>\n> ```\n>\n> **아무것도 안 알려 준다.** **2.3절**의 주제다."
+  },
+  {
+   "type": "figure",
+   "caption": "통과가 증명하지 못하는 것",
+   "ascii": "   why a passing test proves less than you think\n\n   assertThat(cafeKiosk.getBeverages()).hasSize(1);\n     passes\n\n   now delete the body of add()\n     still passes?  then it tested nothing\n     now fails?     then you know what it guards\n\n   a test you have never seen fail is a test you do not trust",
+   "note": "**실패를 본 적 없는 테스트는 못 믿는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "책의 뼈대",
+   "md": "| 장 | 무엇 |\n|---|---|\n| **1** | 시작하기 전에 |\n| **2** | **단위 테스트** — 나머지의 기초 |\n| **3** | TDD — 순서를 뒤집으면 |\n| **4** | 테스트는 문서다 |\n| **5** | **Spring & JPA** — 계층마다 다르게 |\n| **6** | Mock — 가짜를 언제 쓰나 |\n| **7** | 더 나은 테스트 — 조언 열둘 |\n| **8** | 환경과 속도 |\n| **9** | Appendix |\n| **10** | 다음으로 |\n\n**2장과 5장이 본론**이다.\n\n> **2장은 스프링 없이** 짠다. **`new` 로 객체를 만들고 메서드를** 부른다.\n> **가장 빠르고 가장 확실**하다.\n>\n> **5장에 컨테이너가** 붙는다. **느려지고 고려할 게 는다.**\n\n**3장을 건너뛰어도** 된다.\n\n> **TDD 를 안 해도 이 책의 나머지는 그대로** 쓴다.\n> **다만 3.6절에서 \"TDD 를 안 해도 남는 것\" 을** 정리한다.\n\n**6장이 가장 위험한 장**이다.\n\n> **목을 배우면 다 목으로 짜고 싶어**진다. **6.7절에서 그 대가를** 잰다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "앞의 여덟 권과의 관계",
+   "md": "**「JPA 활용 1편」 9.7절**이 문제 스물한 개를 세면서\n\n> **\"하나도 테스트를 안 깼다\"**\n\n**로 끝났다.** **깰 테스트가 없었기** 때문이다.\n\n**「활용 2편」 7.3절**에서 다시 셀 때도 **\"테스트 부족\" 은 그대로** 남았다.\n\n**7.5절에 이렇게 적혀** 있다.\n\n> **\"테스트 — 여덟 권이 다 건너뛰었다\"**\n\n**이 책이 그 자리**다.\n\n**5장부터 앞 책들을 그대로** 쓴다.\n\n| | |\n|---|---|\n| 트랜잭션·롤백 | 「DB 2편」 4·5장 |\n| 영속성 컨텍스트 | 「JPA 기본편」 2장 |\n| 스프링 컨테이너·DI | 「스프링 핵심 원리」 |\n| `MockMvc` | 「MVC 1편」 |\n| N+1 | 「활용 2편」 4·5장 |\n\n> **7.6절에서 `deleteAll` 과 `deleteAllInBatch` 의 쿼리 개수를** 센다.\n> **「활용 2편」이 하던 일이 테스트 코드에서 다시** 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 이 책이 만들 테스트 (미리 보기) ---\n\n$ ./gradlew test --tests CafeKioskTest\n\n> Task :test\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 여러 잔을 한 번에 담을 수 있다 PASSED\nCafeKioskTest > 주문 목록에서 음료를 뺀다 PASSED\nCafeKioskTest > 주문 목록을 비운다 PASSED\n\nBUILD SUCCESSFUL in 1s\n\n# --- 그런데 add() 의 몸통을 지워 보면 ---\n\npublic void add(Beverage beverage) {\n    // beverages.add(beverage);\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 FAILED\n    org.opentest4j.AssertionFailedError:\n    expected: 1\n     but was: 0\n\nCafeKioskTest > 여러 잔을 한 번에 담을 수 있다 FAILED\n    expected: 2\n     but was: 0\n\nCafeKioskTest > 주문 목록에서 음료를 뺀다 FAILED\n    java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0\n\nCafeKioskTest > 주문 목록을 비운다 PASSED\n\n4 tests completed, 3 failed\n\n#   셋은 빨개졌다. 그 셋은 add() 를 지키고 있다\n\n#   하나는 통과했다\n#     '주문 목록을 비운다' 는 add() 를 안 지킨다\n#     비어 있는 목록을 비워도 비어 있어서다\n\n#   이걸 알려면 실패를 봐야 한다\n\n# --- 검증이 없는 테스트는 어떤가 ---\n\n@Test\nvoid 음료를_추가한다() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n    System.out.println(cafeKiosk.getBeverages().size());\n}\n\n$ ./gradlew test\n\nCafeKioskTest > 음료를_추가한다 PASSED\n\n#   add() 를 지운 상태인데도 통과했다\n\n#   0 을 출력하고 통과한다\n#   사람이 콘솔을 봐야만 알 수 있다\n\n#   그건 자동화된 테스트가 아니다   (2.1절)\n\n# --- 실패 메시지의 품질 ---\n\nassertTrue(cafeKiosk.getBeverages().size() == 2);\n\n#   CafeKioskTest > ... FAILED\n#       org.opentest4j.AssertionFailedError:\n#       expected: <true> but was: <false>\n\n#   몇 개였는지 안 나온다\n\nassertThat(cafeKiosk.getBeverages()).hasSize(2);\n\n#   CafeKioskTest > ... FAILED\n#       java.lang.AssertionError:\n#       Expected size: 2 but was: 1 in:\n#       [Americano(name=아메리카노, price=4000)]\n\n#   개수도 내용도 나온다   (2.3절)\n\n# --- 이 책이 하는 일 ---\n\n#   통과를 보여 주고\n#   일부러 깨뜨려 실패를 보여 주고\n#   그 실패 메시지가 쓸 만한지 본다\n\n# --- 다음 절에서 ---\n\n#   테스트를 왜 짜는지부터 따진다",
+   "note": "**`add()` 를 지우니 넷 중 셋이** 빨개졌다. **그 셋이 `add()` 를 지키고** 있다.\n\n**하나는 통과**했다 — **빈 목록을 비워도 비어 있어서**다. **그 테스트는 `add()` 를 안 지킨다.**\n\n**검증이 없는 테스트는 `add()` 를 지운 상태에서도** 통과한다. **`0` 을 출력하고 통과**한다.\n\n**`assertTrue` 는 `<true> but was: <false>`** 다. **`assertThat` 은 개수도 내용도** 준다.\n\n**다음 절에서 테스트를 왜 짜는지부터 따진다.**"
+  }
+ ],
+ "recap": [
+  "**매 절이 실제로 돌린 테스트 결과로** 끝난다.",
+  "**절반이 빨간 막대**다 — 실수가 아니라 요점이다.",
+  "**통과는 \"코드가 맞다\" 와 \"테스트가 아무것도 안 본다\" 를 구분 못** 한다.",
+  "**한 번 깨뜨려 봐야 그 테스트가 뭘 지키는지** 안다.",
+  "**실패를 본 적 없는 테스트는 못** 믿는다.",
+  "**실패 메시지의 품질이 테스트의 품질**이다.",
+  "**2장과 5장이 본론** — 스프링 없이, 그리고 있이.",
+  "**6장이 가장 위험한 장**이다.",
+  "**「활용 1편」 9.7절의 \"하나도 테스트를 안 깼다\" 가 이 책의 출발점**이다."
+ ],
+ "drills": [
+  {
+   "task": "아무 테스트나 하나 골라 프로덕션 코드를 망가뜨린다.",
+   "done_when": "빨개지는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빨개지지 않은 테스트를 찾는다.",
+   "done_when": "그 테스트가 무엇을 안 지키는지 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`assertTrue` 와 `assertThat` 의 실패 메시지를 비교한다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매 절이 무엇으로 끝나나?",
+   "a": "실제로 돌린 테스트 결과다. 통과와 실패 둘 다다."
+  },
+  {
+   "q": "통과한 테스트가 증명하지 못하는 것은?",
+   "a": "그 테스트가 실제로 무언가를 검증하고 있는지다."
+  },
+  {
+   "q": "어떻게 확인하나?",
+   "a": "프로덕션 코드를 잠깐 망가뜨리고 빨개지는지 본다."
+  },
+  {
+   "q": "실패 메시지가 왜 중요한가?",
+   "a": "무엇이 어긋났는지 안 알려 주면 고치는 데 시간이 든다."
+  },
+  {
+   "q": "이 책이 서가에서 채우는 자리는?",
+   "a": "여덟 권이 다 건너뛴 테스트다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Practical Testing: 실용적인 테스트 가이드 (차례 출처)",
+   "url": "https://www.inflearn.com/course/practical-testing-실용적인-테스트-가이드",
+   "publisher": "인프런 · 박우빈"
+  }
+ ]
+}
