@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "pool-leak",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "풀에서 왜 남나",
+ "summary": "쓰레드는 재사용된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "풀을 들여다본다.",
+  "재사용을 확인한다.",
+  "가상 쓰레드와 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절에서 값이** 남았다. **쓰레드가 왜 안 죽는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 쓰레드가 요청보다 오래 사나",
+   "ascii": "   why threads outlive requests\n\n   creating a thread costs about a millisecond and a megabyte\n   a request costs a few milliseconds\n   so the server keeps a pool and hands the same threads out again\n\n   the value in the thread outlives the request that put it there",
+   "note": "**쓰레드 안의 값이 그걸 넣은 요청보다 오래** 산다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "만드는 값이 쓰는 값보다 크다",
+   "md": "**만드는 데 비싸**다.\n\n> **밀리초와 메가바이트**다.\n> **아래에서 재** 본다.\n> **요청보다** 비싸다.\n\n**그래서 모아** 둔다.\n\n> **⑯ 4.1절의 그 톰캣**이다.\n> **아래에서 그 수를** 본다.\n> **같은 것을 다시** 준다.\n\n**이름이 같아** 보인다.\n\n> **1.3절에서 그걸** 봤다.\n> **아래에서 그** 이유다.\n> **다른 요청, 같은 쓰레드**다.\n\n**줄지도** 않는다.\n\n> **한 번 늘면 한참** 있다.\n> **아래에서 그걸** 본다.\n> **샌 값도 같이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "부하에 따라 풀이 변한다",
+   "ascii": "   how the pool changes under load\n\n   it starts small and grows to a maximum\n   it does not shrink back immediately\n   idle threads are retired only after a timeout\n\n   so leaked values accumulate up to the maximum, then stay",
+   "note": "**샌 값이 최대치까지 쌓이고 그대로** 있는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "가상 쓰레드로 바꾸면 문제가 달라진다",
+   "md": "**매번 새로** 만든다.\n\n> **재사용을 안** 한다.\n> **아래에서 확인**한다.\n> **남을 자리가** 없다.\n\n**대신 아주** 많아진다.\n\n> **수만 개가** 뜬다.\n> **아래에서 세어** 본다.\n> **값도 그만큼** 만든다.\n\n**그래도 지워야** 한다.\n\n> **한 요청 안에서 겹칠 수** 있다.\n> **⑯의 그 스위치 하나**다.\n> **아래에서 켜** 본다.\n\n**풀은 여러 개**다.\n\n> **웹·비동기·스케줄러**다.\n> **아래에서 다** 센다.\n> **각각 따로** 샌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 쓰레드 하나가 얼마나 비싼가\n\n$ curl -s 'localhost:8080/bench/thread?n=1000'\n쓰레드 1000 개 만들기: 412 ms\n한 개당:               0.41 ms\n\n$ curl -s localhost:9090/actuator/metrics/jvm.threads.live \\\n    | python3 -c \"import json,sys; \\\nprint(int(json.load(sys.stdin)['measurements'][0]['value']), '개')\"\n31 개\n\n$ jcmd $(pgrep -f app.jar) VM.native_memory summary 2>/dev/null \\\n    | grep -A2 'Thread' | head -3\n-                    Thread (reserved=32768KB, committed=2048KB)\n                            (thread #31)\n                            (stack: reserved=31744KB, committed=1024KB)\n\n$ python3 -c \"print('한 개당 스택', round(31744/31), 'KB 예약')\"\n한 개당 스택 1024 KB 예약\n\n--   한 요청이 몇 밀리초인데 만드는 데 0.41 밀리초다\n--   메모리도 1MB 씩 잡는다\n\n\n-- 그래서 모아 둔다\n\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.config.max \\\n    | python3 -c \"import json,sys; \\\nprint('최대', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n최대 200\n\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.current \\\n    | python3 -c \"import json,sys; \\\nprint('현재', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n현재 10\n\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.busy \\\n    | python3 -c \"import json,sys; \\\nprint('일하는 중', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n일하는 중 0\n\n--   ⑯ 9.8절에서 보던 그 숫자들이다\n\n\n-- 같은 쓰레드가 다시 온다\n\n$ for i in $(seq 1 10); do\n    curl -s 'localhost:8080/whoami'\n  done\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\n\n--   열 번이 다 같은 쓰레드다\n--   3.5 절에서 값이 이어지던 이유다\n\n\n-- 동시에 부르면 늘어난다\n\n$ for i in $(seq 1 30); do curl -s 'localhost:8080/whoami' & done | sort | uniq -c\n   1 http-nio-8080-exec-1\n   1 http-nio-8080-exec-2\n   ...\n   1 http-nio-8080-exec-30\n\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.current \\\n    | python3 -c \"import json,sys; \\\nprint('현재', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n현재 30\n\n--   열에서 서른이 됐다\n\n\n-- 안 줄어든다\n\n$ sleep 30\n$ curl -s localhost:9090/actuator/metrics/tomcat.threads.current \\\n    | python3 -c \"import json,sys; \\\nprint('30 초 뒤', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n30 초 뒤 30\n\n$ curl -s localhost:9090/actuator/configprops \\\n    | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nfor k,v in b.items():\n    if 'server' in k.lower():\n        t = v['properties'].get('tomcat', {}).get('threads', {})\n        if t: print(t)\"\n{'min-spare': 10, 'max': 200}\n\n--   최소 열 개는 늘 남는다\n--   나머지는 한참 뒤에 정리된다\n\n\n-- 샌 값이 쓰레드마다 남는다\n\n// remove 를 뺀 상태로\n$ for i in $(seq 1 30); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ curl -s localhost:8080/trace/leak/all\nhttp-nio-8080-exec-1   TraceId(id=796bccd9, level=3)\nhttp-nio-8080-exec-2   TraceId(id=3d81f0a2, level=3)\nhttp-nio-8080-exec-3   TraceId(id=c14e0b93, level=3)\n...\n남은 쓰레드: 30 개\n\n$ curl -s localhost:8080/trace/leak/all | tail -1\n남은 쓰레드: 30 개\n\n--   서른 개 다 값을 붙들고 있다\n--   3.5 절의 26 개와 같은 이야기다\n\n\n-- 부하가 끝나도 안 없어진다\n\n$ sleep 60\n$ curl -s localhost:8080/trace/leak/all | tail -1\n남은 쓰레드: 30 개\n\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ curl -s localhost:8080/trace/leak/all | tail -1\n남은 쓰레드: 30 개\n\n--   GC 로도 안 없어진다\n--   3.5 절에서 본 그 이유다\n\n\n-- 상속형이 왜 안 통하나\n\nprivate final ThreadLocal<TraceId> holder = new InheritableThreadLocal<>();\n\n@Async\nvoid inPool() { log.info(\"풀에서 본 값: {}\", holder.get()); }\n\n$ curl -s -o /dev/null 'localhost:8080/async-pool?id=첫번째'\n$ sleep 1\n$ curl -s -o /dev/null 'localhost:8080/async-pool?id=두번째'\n\n$ grep '풀에서 본 값' logs/app.log | tail -2\n07:47:12.104 INFO  [task-1] ... 풀에서 본 값: TraceId(id=796bccd9, level=1)\n07:47:13.204 INFO  [task-1] ... 풀에서 본 값: TraceId(id=796bccd9, level=1)\n\n--   둘째 요청인데 첫째 값이 나왔다\n--   풀 쓰레드는 만들 때 한 번만 물려받는다\n--   3.3 절에서 예고한 그것이다\n\n\n-- 풀이 여럿이다\n\n$ curl -s localhost:8080/threads/pools\nhttp-nio-8080-exec-*      30 개   웹 요청\ntask-*                     8 개   @Async 기본 풀\nscheduling-*               1 개   @Scheduled\nHikariPool-1 connection    10 개  커넥션 풀 관리\n\n$ curl -s localhost:9090/actuator/metrics/executor.pool.size \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('풀 크기', d['measurements'][0]['value'])\nfor t in d['availableTags']:\n    if t['tag'] == 'name': print('이름', t['values'])\"\n풀 크기 8.0\n이름 ['applicationTaskExecutor']\n\n--   웹 말고도 셋이 더 있다\n--   각각 따로 샌다\n\n\n-- 비동기 풀도 샌다\n\n@Async\nvoid work() {\n    HeavyHolder.BUF.set(new byte[10 * 1024 * 1024]);\n}\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null localhost:8080/async-heavy; done\n$ sleep 3 && jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'byte\\[\\]' | head -1\n   1:          8       83886160  [B (java.base@21.0.3)\n\n$ curl -s localhost:9090/actuator/metrics/executor.pool.size \\\n    | python3 -c \"import json,sys; \\\nprint('풀 크기', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n풀 크기 8\n\n--   비동기 풀 여덟 개가 각각 10MB 씩이다\n\n\n-- 가상 쓰레드로 바꾸면\n\nspring:\n  threads:\n    virtual:\n      enabled: true\n\n$ ./gradlew bootRun 2>&1 | grep -i 'virtual\\|Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ for i in $(seq 1 10); do curl -s 'localhost:8080/whoami'; done\nVirtualThread[#68]/runnable@ForkJoinPool-1-worker-1\nVirtualThread[#71]/runnable@ForkJoinPool-1-worker-2\nVirtualThread[#74]/runnable@ForkJoinPool-1-worker-3\nVirtualThread[#77]/runnable@ForkJoinPool-1-worker-1\nVirtualThread[#80]/runnable@ForkJoinPool-1-worker-4\nVirtualThread[#83]/runnable@ForkJoinPool-1-worker-2\nVirtualThread[#86]/runnable@ForkJoinPool-1-worker-3\nVirtualThread[#89]/runnable@ForkJoinPool-1-worker-1\nVirtualThread[#92]/runnable@ForkJoinPool-1-worker-5\nVirtualThread[#95]/runnable@ForkJoinPool-1-worker-2\n\n--   번호가 매번 다르다\n--   재사용을 안 한다\n\n\n-- 그러면 안 샌다\n\n// remove 를 뺀 채로\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n\n$ grep 'study.adv.trace' logs/app.log | tail -120 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      20\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[e82f14b0] OrderController.request()\n[e82f14b0] |-->OrderService.orderItem()\n\n--   remove 를 안 했는데 안 이어졌다\n--   쓰레드가 매번 새것이라 값도 새것이다\n\n\n-- 대신 아주 많아진다\n\n$ for i in $(seq 1 500); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ curl -s localhost:9090/actuator/metrics/jvm.threads.live \\\n    | python3 -c \"import json,sys; \\\nprint('플랫폼 쓰레드', int(json.load(sys.stdin)['measurements'][0]['value']))\"\n플랫폼 쓰레드 18\n\n$ jcmd $(pgrep -f app.jar) Thread.dump_to_file -format=json /tmp/vt.json > /dev/null\n$ python3 -c \"\nimport json\nd = json.load(open('/tmp/vt.json'))\nn = sum(len(c.get('threads', [])) for c in d['threadDump']['threadContainers'])\nprint('가상 쓰레드 포함', n)\"\n가상 쓰레드 포함 512\n\n--   플랫폼은 18 개인데 가상은 512 개다\n--   ⑯ 9.8절의 그 포화 숫자가 달라진다\n\n\n-- 그래도 지워야 한다\n\n@GetMapping(\"/nested\")\nString nested() {\n    TraceStatus s1 = trace.begin(\"바깥()\");\n    inner();                          // 같은 쓰레드에서 또 부른다\n    trace.end(s1);\n    return \"ok\";\n}\n\n$ curl -s -o /dev/null localhost:8080/nested\n$ curl -s -o /dev/null localhost:8080/nested\n$ grep '바깥' logs/app.log | tail -2 | cut -c56-\n[a3f9c1b2] 바깥()\n[b7119f27] 바깥()\n\n// remove 를 안 했을 때 한 요청 안에서\n$ curl -s localhost:8080/trace/leak | tail -1\n남은 값:  TraceId(id=b7119f27, level=1)\n\n--   요청이 끝났는데 값이 남아 있다\n--   그 가상 쓰레드는 곧 사라지니 새어 나가지는 않는다\n--   그래도 습관을 바꾸면 안 된다\n\n\n-- 스케줄러는 여전히 샌다\n\nspring:\n  threads:\n    virtual:\n      enabled: true\n\n@Scheduled(fixedRate = 1000)\nvoid tick() { holder.set(new TraceId()); }\n\n$ sleep 5 && curl -s localhost:8080/threads/pools | grep scheduling\nscheduling-*               1 개   @Scheduled\n\n$ curl -s localhost:8080/trace/leak/all | grep scheduling\nscheduling-1           TraceId(id=d4a91c02, level=0)\n\n--   스케줄러 쓰레드는 가상이 아니다\n--   여기는 그대로 남는다\n\n\n-- 되돌린다\n\nspring:\n  threads:\n    virtual:\n      enabled: false\n\n$ for i in $(seq 1 3); do curl -s 'localhost:8080/whoami'; done\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\nhttp-nio-8080-exec-1\n\n--   다시 재사용된다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n\n$ grep 'study.adv.trace' logs/app.log | tail -120 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      20\n$ curl -s localhost:8080/trace/leak | tail -1\n남은 값:  null\n\n$ curl -s 'localhost:8080/who?name=logTrace' | head -3\n빈 이름:   logTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n원본:     study.adv.trace.ThreadLocalLogTrace\n\n--   3.7 절에서 3 장을 닫는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '만드는 값'   '0.41 ms, 1MB' \\\n  '그래서'      '모아 둠' \\\n  '순차'        '같은 쓰레드' \\\n  '동시 30'     '30 개로 늚' \\\n  '30 초 뒤'    '그대로' \\\n  '샌 값'       '쓰레드마다' \\\n  '상속형'      '만들 때 한 번' \\\n  '풀'          '넷' \\\n  '가상 쓰레드' '매번 새것' \\\n  '스케줄러'    '여전히 샘'\n\n만드는 값                  0.41 ms, 1MB\n그래서                     모아 둠\n순차                       같은 쓰레드\n동시 30                    30 개로 늚\n30 초 뒤                   그대로\n샌 값                      쓰레드마다\n상속형                     만들 때 한 번\n풀                         넷\n가상 쓰레드                매번 새것\n스케줄러                   여전히 샘",
+   "note": "**쓰레드 하나가 0.41 ms 에 스택 1MB 라 요청보다 비싸서 모아** 둔다.\n\n**순차 열 번이 다 `exec-1` 이고 동시 30 번에 30 개로 늘어난 뒤 30 초가 지나도** 그대로다.\n\n**샌 값이 쓰레드 서른 개에 각각 남고 GC 로도 안** 없어진다.\n\n**상속형은 풀 쓰레드를 만들 때 한 번만 물려받아 둘째 요청이 첫째 값을** 본다.\n\n**가상 쓰레드로 바꾸니 번호가 매번 달라 `remove` 없이도 안 이어지지만 스케줄러 쓰레드는 그대로** 샌다."
+  }
+ ],
+ "recap": [
+  "**만들기가** 비싸다.",
+  "**모아** 둔다.",
+  "**같은 것이 다시** 온다.",
+  "**늘고 안** 준다.",
+  "**샌 값이** 남는다.",
+  "**GC 로도 안** 된다.",
+  "**상속형은 한 번**뿐이다.",
+  "**풀이** 여럿이다.",
+  "**가상은 매번** 새것이다."
+ ],
+ "drills": [
+  {
+   "task": "쓰레드 만드는 값을 잰다.",
+   "done_when": "시간과 메모리를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "순차와 동시를 견준다.",
+   "done_when": "재사용을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "샌 값을 쓰레드별로 센다.",
+   "done_when": "개수를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "가상 쓰레드를 켜 본다.",
+   "done_when": "안 이어지는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 쓰레드를 모아 두나?",
+   "a": "만드는 값이 요청 처리 값보다 커서다."
+  },
+  {
+   "q": "부하가 끝나면 풀이 줄어드나?",
+   "a": "바로 안 준다. 한참 뒤에야 정리된다."
+  },
+  {
+   "q": "상속형이 풀에서 왜 안 통하나?",
+   "a": "쓰레드를 만들 때 한 번 물려받고 계속 재사용돼서다."
+  },
+  {
+   "q": "가상 쓰레드를 쓰면 지울 필요가 없나?",
+   "a": "웹 요청은 덜하지만 습관을 바꾸면 안 된다. 스케줄러 같은 곳은 그대로 샌다."
+  },
+  {
+   "q": "풀은 몇 개인가?",
+   "a": "웹 말고도 비동기·스케줄러 등 여럿이고 각각 따로 샌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "쓰레드 풀",
+   "def": "미리 만들어 두고 요청마다 빌려 주는 쓰레드 묶음."
+  },
+  {
+   "term": "가상 쓰레드",
+   "def": "요청마다 새로 만들어도 값이 싼 경량 쓰레드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Tomcat — The Executor Component",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/config/executor.html",
+   "publisher": "Apache"
+  },
+  {
+   "title": "JEP 444 — Virtual Threads",
+   "url": "https://openjdk.org/jeps/444",
+   "publisher": "OpenJDK"
+  },
+  {
+   "title": "java.lang.ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

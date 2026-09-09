@@ -165,7 +165,7 @@
           "title": "풀에서 왜 남나",
           "summary": "쓰레드는 재사용된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -173,7 +173,7 @@
           "title": "정리",
           "summary": "얻은 것과 치른 값.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

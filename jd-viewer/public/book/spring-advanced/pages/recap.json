@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "recap",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "정리",
+ "summary": "얻은 것과 치른 값.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "얻은 것을 센다.",
+  "치른 값을 안다.",
+  "3장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장은 인자 하나를** 없앴다. **그 대신 무엇을 치렀는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "3장이 산 것",
+   "ascii": "   what chapter three bought\n\n   the parameter is gone from every business method\n   the identifier still threads through one request\n   concurrent requests no longer mix\n\n   all three for zero lines changed in the business code",
+   "note": "**셋 다 업무 코드 0 줄 변경으로** 얻었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "숨긴 것이지 없앤 것이 아니다",
+   "md": "**인자는** 사라졌다.\n\n> **2.5절의 그 오염**이다.\n> **3.4절에서** 확인했다.\n> **시그니처가 v0 과** 같다.\n\n**상태는 여전히** 있다.\n\n> **쓰레드가 들고** 있다.\n> **3.3절에서 그 지도를** 봤다.\n> **안 보일** 뿐이다.\n\n**보이지 않아서** 어렵다.\n\n> **코드를 읽어도** 모른다.\n> **1.2절에서 말한 그** 값이다.\n> **아래에서 그걸** 겪는다.\n\n**지우는 책임이** 생겼다.\n\n> **3.5절 전체가 그** 이야기다.\n> **넘길 때는 없던 일**이다.\n> **아래에서 견줘** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "치른 값",
+   "ascii": "   what it cost\n\n   a value that must be cleared on every exit path\n   a value that is invisible in the method signature\n   a value that does not follow a new thread\n\n   the second one is why this is called hidden state",
+   "note": "**둘째 때문에 이걸 숨은 상태라고** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "여덟 줄은 하나도 안 없어졌다",
+   "md": "**3장이 안 건드린 것**이다.\n\n> **2.6절의 문제 ①**이다.\n> **아래에서 다시** 센다.\n> **비율이 거의** 같다.\n\n**새 메서드는 여전히** 빠진다.\n\n> **1.2절과 2.6절의 그것**이다.\n> **아래에서 확인**한다.\n> **아무것도 안** 바뀌었다.\n\n**대상이 늘면 여전히** 아프다.\n\n> **여덟 줄을 또** 쓴다.\n> **2.7절에서 세** 봤다.\n> **4장이 그걸** 친다.\n\n**원본을 고쳐야** 한다.\n\n> **로그를 넣으려면 파일을** 연다.\n> **5장이 그걸** 없앤다.\n> **아래에서 그 순서를** 적는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 태그를 나란히 본다\n\n$ git tag | grep -E 'v0|v1|v2|v3'\nv0\nv1\nv2\nv2-final\nv2-level\nv3\nv3-final\nv3-threadlocal\n\n$ for t in v0 v1 v2-final v3-final; do\n    printf '%-12s ' \"$t\"\n    git ls-tree -r $t --name-only | grep 'study/adv/Order' \\\n      | xargs -I{} git show $t:{} | wc -l\n  done\nv0           56\nv1           98\nv2-final     104\nv3-final     100\n\n--   3 장이 네 줄 줄였다\n--   인자가 빠진 만큼이다\n\n\n-- 시그니처를 견준다\n\n$ for t in v0 v2-final v3-final; do\n    printf '%-12s ' \"$t\"\n    git show $t:src/main/java/study/adv/OrderService.java | grep 'public void orderItem'\n  done\nv0               public void orderItem(String itemId) {\nv2-final         public void orderItem(TraceId traceId, String itemId) {\nv3-final         public void orderItem(String itemId) {\n\n--   v0 으로 돌아왔다\n\n\n-- 동시성을 견준다\n\n$ for kind in field threadlocal; do\n    ...50 요청...\n    printf '%-14s ID %3d  최대깊이 %2s  NPE %d\\n' \"$kind\" ...\n  done\nfield          ID   7  최대깊이 23  NPE 2\nthreadlocal    ID  50  최대깊이  3  NPE 0\n\n--   3.4 절에서 잰 그 값이다\n\n\n-- 얻은 것 셋\n\n$ printf '%-4s %-30s %s\\n' \\\n  '①' '업무 메서드의 인자'      '2 개에서 0 개' \\\n  '②' '한 요청의 ID'            '여섯 줄이 같음' \\\n  '③' '동시 요청'               '안 섞임'\n\n①    업무 메서드의 인자              2 개에서 0 개\n②    한 요청의 ID                    여섯 줄이 같음\n③    동시 요청                       안 섞임\n\n$ git diff --stat v2-final v3-final -- src/main/java/study/adv/Order*.java\n OrderController.java | 4 ++--\n OrderRepository.java | 4 ++--\n OrderService.java    | 6 +++---\n 3 files changed, 7 insertions(+), 7 deletions(-)\n\n--   업무 코드는 인자만 뺐다\n\n\n-- 치른 값 ① 지워야 한다\n\n$ grep -c 'remove()' src/main/java/study/adv/trace/ThreadLocalLogTrace.java\n1\n$ grep -c 'releaseTraceId()' src/main/java/study/adv/trace/ThreadLocalLogTrace.java\n2\n\n// 넘기던 시절에는\n$ git show v2-final:src/main/java/study/adv/trace/TraceV2.java | grep -c 'remove\\|release'\n0\n\n--   넘길 때는 지울 게 없었다\n--   메서드가 끝나면 인자도 사라졌다\n\n\n-- 치른 값 ② 안 보인다\n\n$ sed -n '14,25p' src/main/java/study/adv/OrderService.java | head -3\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n\n$ grep -c 'ThreadLocal' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n0\n\n--   업무 코드 어디에도 그 낱말이 없다\n--   상태가 있다는 걸 코드로는 모른다\n\n\n-- 그래서 이런 일이 난다\n\n@GetMapping(\"/parallel\")\nString parallel() {\n    TraceStatus status = trace.begin(\"parallel()\");\n    List.of(\"a\", \"b\", \"c\").parallelStream()\n        .forEach(x -> orderService.orderItem(x));       // 다른 쓰레드다\n    trace.end(status);\n    return \"ok\";\n}\n\n$ curl -s -o /dev/null localhost:8080/parallel\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56-\n[796bccd9] parallel()\n[3d81f0a2] OrderService.orderItem()\n[c14e0b93] OrderService.orderItem()\n[796bccd9] |-->OrderService.orderItem()\n[c14e0b93] OrderService.orderItem() time=1004ms\n[3d81f0a2] OrderService.orderItem() time=1005ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] parallel()  time=1008ms\n\n--   셋 중 하나만 이어졌다\n--   3.3 절에서 예고한 그것이다\n--   코드를 읽어서는 예상하기 어렵다\n\n\n-- 치른 값 ③ 새 쓰레드는 못 본다\n\n$ curl -s -o /dev/null localhost:8080/async\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[d4a91c02] async()\n[e82f14b0] 다른쓰레드()\n[e82f14b0] 다른쓰레드() time=0ms\n[d4a91c02] async() time=2ms\n\n--   3.3 절과 같다\n--   넘기던 시절에는 인자로 주면 됐다\n\n\n-- 두 방식을 견준다\n\n$ printf '%-16s %-16s %s\\n' \\\n  '넘기기'      '보임'      '지울 필요 없음' \\\n  ''            '시그니처 오염' '새 쓰레드도 됨' \\\n  '쓰레드 로컬' '안 보임'   '지워야 함' \\\n  ''            '시그니처 깨끗' '새 쓰레드 안 됨'\n\n넘기기           보임             지울 필요 없음\n                 시그니처 오염    새 쓰레드도 됨\n쓰레드 로컬      안 보임          지워야 함\n                 시그니처 깨끗    새 쓰레드 안 됨\n\n--   장단이 정확히 뒤집혀 있다\n\n\n-- 안 없어진 것 ① 여덟 줄\n\n$ grep -c 'try {' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'catch (Exception e)' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n$ python3 -c \"print('업무 1 줄에 감싸는 코드 9 줄')\"\n업무 1 줄에 감싸는 코드 9 줄\n\n// 2.7 절에서는\n업무 1 줄에 감싸는 코드 10 줄\n\n--   거의 그대로다\n\n\n-- 안 없어진 것 ② 깜빡함\n\n@Service\npublic class OrderService {\n    public void cancel(Long id) {\n        orderRepository.delete(id);\n    }\n}\n\n$ curl -s -o /dev/null -X DELETE 'localhost:8080/order/1'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[b7119f27] OrderController.cancel()\n[b7119f27] OrderController.cancel() time=2ms\n\n--   2.6 절과 똑같다\n--   3 장은 이걸 안 건드렸다\n\n\n-- 안 없어진 것 ③ 원본을 고쳐야 한다\n\n$ git diff --stat v0 v3-final -- src/main/java/study/adv/Order*.java\n OrderController.java | 20 ++++++++++++++++----\n OrderRepository.java | 16 ++++++++++++----\n OrderService.java    | 18 +++++++++++++-----\n 3 files changed, 44 insertions(+), 10 deletions(-)\n\n$ git diff --name-only v0 v3-final | grep -c 'Order'\n3\n\n--   세 파일을 다 열어 고쳤다\n--   5 장이 이걸 없앤다\n\n\n-- 다음 장들의 목표\n\n$ printf '%-8s %-26s %s\\n' \\\n  '지금'  '100 줄, 인자 0 개'    '일 대 구' \\\n  '4 장'  '여덟 줄이 한 줄'      '부르는 줄은 남음' \\\n  '5 장'  '원본을 안 고침'       '클래스가 늚' \\\n  '6 장'  '클래스도 안 만듦'     '이름이 자동' \\\n  '7 장'  '만드는 걸 맡김'       '설정이 늚' \\\n  '8 장'  '등록도 맡김'          '설정이 하나' \\\n  '9 장'  '설정도 없앰'          '애너테이션 하나'\n\n지금     100 줄, 인자 0 개           일 대 구\n4 장     여덟 줄이 한 줄             부르는 줄은 남음\n5 장     원본을 안 고침              클래스가 늚\n6 장     클래스도 안 만듦            이름이 자동\n7 장     만드는 걸 맡김              설정이 늚\n8 장     등록도 맡김                 설정이 하나\n9 장     설정도 없앰                 애너테이션 하나\n\n\n-- 마지막 확인\n\n$ for i in $(seq 1 30); do\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n  done; wait\n\n$ grep 'study.adv.trace' logs/app.log | tail -180 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      30\n$ curl -s localhost:8080/trace/leak/all | tail -1\n남은 쓰레드: 0 개\n\n$ grep '796bccd9' logs/app.log | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n0\n\n--   여전히 아무것도 안 감싸졌다\n--   4.1 절에서 여덟 줄을 친다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '인자'      '2 개에서 0 개' \\\n  '시그니처'  'v0 과 같음' \\\n  '동시성'    'ID 50 개' \\\n  '줄'        '104 에서 100' \\\n  '지우기'    '새 책임' \\\n  '보임'      '안 보임' \\\n  '병렬'      '하나만 이어짐' \\\n  '여덟 줄'   '그대로' \\\n  '깜빡함'    '그대로' \\\n  '프록시'    '0 개'\n\n인자                       2 개에서 0 개\n시그니처                   v0 과 같음\n동시성                     ID 50 개\n줄                         104 에서 100\n지우기                     새 책임\n보임                       안 보임\n병렬                       하나만 이어짐\n여덟 줄                    그대로\n깜빡함                     그대로\n프록시                     0 개",
+   "note": "**업무 메서드 인자가 2 개에서 0 개가 되고 시그니처가 v0 과 같아졌는데 줄 수는 104 에서 100 으로 넷만** 줄었다.\n\n**얻은 것 셋을 업무 코드 0 줄 변경으로 얻었지만 지우는 책임이 새로** 생겼다.\n\n**병렬 스트림에서 셋 중 하나만 이어져 코드를 읽어서는 예상하기** 어렵다.\n\n**감싸는 여덟 줄과 새 메서드가 조용히 빠지는 문제는 3장이 하나도 안** 건드렸다.\n\n**비율이 일 대 십에서 일 대 구가 됐고 여전히 감싸진 빈은 0 개**다."
+  }
+ ],
+ "recap": [
+  "**인자가** 사라졌다.",
+  "**시그니처가** 돌아왔다.",
+  "**안** 섞인다.",
+  "**업무는 0 줄** 바뀌었다.",
+  "**지워야** 한다.",
+  "**안** 보인다.",
+  "**새 쓰레드는 못** 본다.",
+  "**여덟 줄은** 남았다.",
+  "**깜빡함도** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "네 태그를 나란히 센다.",
+   "done_when": "줄 수 변화를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "병렬 스트림에서 불러 본다.",
+   "done_when": "하나만 이어지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 방식을 표로 견준다.",
+   "done_when": "장단이 뒤집힌 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "비율을 다시 잰다.",
+   "done_when": "2.7 절과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "3장이 산 것 셋은?",
+   "a": "인자 제거, 요청 단위 식별, 동시성 안전이다."
+  },
+  {
+   "q": "새로 생긴 책임은?",
+   "a": "나가는 모든 길에서 저장소를 비우는 일이다."
+  },
+  {
+   "q": "왜 숨은 상태라고 하나?",
+   "a": "시그니처에 안 나타나 코드를 읽어도 모르기 때문이다."
+  },
+  {
+   "q": "3장이 못 없앤 것은?",
+   "a": "메서드마다 붙은 감싸는 여덟 줄과 깜빡하면 빠지는 문제다."
+  },
+  {
+   "q": "비율은 얼마나 나아졌나?",
+   "a": "일 대 십에서 일 대 구로, 거의 그대로다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "숨은 상태",
+   "def": "시그니처에 안 드러나고 쓰레드에 담겨 흐르는 값."
+  },
+  {
+   "term": "정리 책임",
+   "def": "숨은 상태를 쓴 쪽이 반드시 비워야 하는 의무."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
