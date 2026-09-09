@@ -3,6 +3,12 @@
   "note": "혼자 읽으려고 쓰는 책. 강의를 옮겨 적은 것이 아니라, 차례만 빌려 와서 내 문장으로 다시 쓴다.",
   "tracks": [
     {
+      "id": "foundation",
+      "label": "기반 지식",
+      "emoji": "🌐",
+      "note": "프레임워크 아래의 층. 안 될 때 여기까지 내려와야 답이 나온다."
+    },
+    {
       "id": "spring",
       "label": "스프링",
       "emoji": "🌱",
@@ -187,6 +193,19 @@
       "chapters": 11,
       "sections": 67,
       "written": 7,
+      "status": "writing",
+      "updated_at": "2026-09-09"
+    },
+    {
+      "id": "http-basic",
+      "track": "foundation",
+      "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+      "subtitle": "프레임워크가 대신 써 주던 줄들",
+      "blurb": "스프링 책들은 HTTP 를 프레임워크 너머로 다뤘다 — @RequestBody 를 쓰면 JSON 이 객체가 된다. 이 책은 그 아래에서 실제로 오간 바이트를 본다. CORS 가 막고 캐시가 낡은 것을 주고 리다이렉트 뒤에 POST 가 GET 이 되는 일은 전부 프레임워크 밖에서 정해진다. 매 절은 요청·응답 원문으로 끝난다.",
+      "emoji": "🔡",
+      "chapters": 9,
+      "sections": 64,
+      "written": 0,
       "status": "writing",
       "updated_at": "2026-09-09"
     }

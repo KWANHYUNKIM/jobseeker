@@ -1,0 +1,594 @@
+{
+  "id": "http-basic",
+  "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+  "subtitle": "프레임워크가 대신 써 주던 줄들",
+  "blurb": "서가의 스프링 책들은 HTTP 를 프레임워크 너머로 다뤘다 — @RequestBody 를 쓰면 JSON 이 객체가 되고, @ResponseStatus 를 쓰면 코드가 바뀐다. 이 책은 그 아래에서 실제로 오간 바이트를 본다. 매 절은 요청·응답 원문으로 끝난다.",
+  "updated_at": "2026-09-09",
+  "preface": "「스프링 MVC 1편」은 서블릿으로 요청을 직접 받아 보는 것으로 시작했다. 그런데 그때도 요청은 이미 파싱되어 있었다. `request.getParameter(\"username\")` 을 부르면 값이 나왔다.\n\n그 앞에서 무슨 일이 있었나. 브라우저가 무엇을 보냈고, 어떤 줄들이 오갔고, 왜 그 줄들이 필요한가.\n\n이걸 모르면 프레임워크가 잘 돌 때는 아무 문제가 없다. 문제는 안 될 때다. CORS 가 막고, 캐시가 낡은 것을 주고, 리다이렉트 뒤에 POST 가 GET 이 되고, 쿠키가 안 붙는다. 전부 프레임워크 밖에서 정해진 규칙이고, 답은 오간 원문에 적혀 있다.\n\n그래서 매 절은 실제로 오간 요청·응답으로 끝난다. 성공한 것만이 아니라 막힌 것도 같이 본다 — 어느 줄이 없어서 막혔는지가 고치는 법을 결정한다.",
+  "how_to_read": "차례 순서대로 읽는다. 2장(네트워크)과 4장(HTTP 기본)이 나머지의 기초다. 실습은 `curl -v` 로 한다 — 브라우저 개발자 도구는 편하지만 요청을 예쁘게 정리해서 보여 줘서 원문을 못 본다. 「스프링 MVC 1·2편」을 읽었으면 5~7장이 편하고, 「스프링 시큐리티」를 읽었으면 8장의 쿠키·인증·CORS 가 이어진다.",
+  "prereq": "터미널에서 curl 을 쓸 수 있으면 된다. 서버를 하나 띄워 본 경험(스프링이든 무엇이든)이 있으면 더 좋다.",
+  "env": "curl 8.x, 브라우저 개발자 도구, 실습용 로컬 서버(nginx 컨테이너 또는 스프링 부트), 선택적으로 tcpdump·mitmproxy",
+  "source": {
+    "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (차례 출처)",
+    "url": "https://www.inflearn.com/course/http-웹-네트워크",
+    "publisher": "인프런 · 김영한",
+    "note": "차례의 뼈대를 빌렸고 8~9장은 RFC 9110·9111 의 구성을 참고해 늘렸다. 본문·예제·원문은 직접 쓰고 직접 주고받은 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "와이어에 실제로 흐른 것을 어떻게 볼 것인가.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 오간 요청·응답 원문으로 끝난다.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "1.2",
+          "id": "why-http",
+          "title": "왜 HTTP 를 알아야 하나",
+          "summary": "프레임워크가 감춘 것이 장애 때 드러난다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.3",
+          "id": "tools",
+          "title": "무엇으로 볼 것인가",
+          "summary": "curl -v · 개발자 도구 · tcpdump.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-request",
+          "title": "첫 요청 원문",
+          "summary": "브라우저 주소창 한 번에 오간 바이트.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "인터넷 네트워크",
+      "goal": "내 요청은 어떤 길로 가나.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "internet",
+          "title": "인터넷 통신",
+          "summary": "두 대가 아니라 수많은 노드를 지난다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "ip",
+          "title": "IP 와 그 한계",
+          "summary": "보냈다는 것과 도착했다는 것은 다르다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "tcp",
+          "title": "TCP",
+          "summary": "연결·순서·검증을 얹는다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "udp",
+          "title": "UDP 와 QUIC",
+          "summary": "빼는 대신 얻는 것. HTTP/3 이 여기서 나온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "port",
+          "title": "PORT",
+          "summary": "같은 IP 에 여러 프로그램.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "dns",
+          "title": "DNS",
+          "summary": "이름을 주소로. 캐시가 사고를 만드는 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.7",
+          "id": "packet-path",
+          "title": "패킷이 지나는 길",
+          "summary": "curl 한 줄에 실제로 일어나는 일 전부.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "URI 와 웹 브라우저 요청 흐름",
+      "goal": "주소 한 줄이 무엇을 정하나.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "uri",
+          "title": "URI · URL · URN",
+          "summary": "이름과 위치는 다른 것이다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "url-parts",
+          "title": "URL 의 조각들",
+          "summary": "스킴부터 프래그먼트까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "encoding",
+          "title": "인코딩",
+          "summary": "한글과 공백이 주소에 들어갈 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "browser-flow",
+          "title": "웹 브라우저 요청 흐름",
+          "summary": "주소창 엔터에서 화면까지.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "https-tls",
+          "title": "그 사이에 끼는 TLS",
+          "summary": "https 가 추가하는 왕복.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "HTTP 기본",
+      "goal": "모든 것이 HTTP 위에 있다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "http-history",
+          "title": "HTTP 의 버전들",
+          "summary": "0.9 부터 3 까지, 무엇이 바뀌었나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "client-server",
+          "title": "클라이언트 서버 구조",
+          "summary": "왜 이렇게 나눴나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "stateless",
+          "title": "무상태",
+          "summary": "서버를 늘릴 수 있는 이유.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "connectionless",
+          "title": "비연결성과 연결 유지",
+          "summary": "TCP 연결을 매번 맺으면.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "message",
+          "title": "HTTP 메시지 구조",
+          "summary": "시작 줄 · 헤더 · 공백 줄 · 본문.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "start-line",
+          "title": "시작 줄 읽기",
+          "summary": "요청 줄과 상태 줄.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "simplicity",
+          "title": "단순함이 남긴 것",
+          "summary": "확장 가능해서 살아남았다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "HTTP 메서드",
+      "goal": "무엇을 하겠다는 선언.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "api-uri-design",
+          "title": "리소스 중심으로 설계한다",
+          "summary": "동사를 URI 에서 걷어낸다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "get",
+          "title": "GET",
+          "summary": "본문 없는 조회.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "post",
+          "title": "POST",
+          "summary": "이 리소스에 처리해 달라.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "put-patch",
+          "title": "PUT 과 PATCH",
+          "summary": "덮어쓰기와 부분 수정.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "delete",
+          "title": "DELETE",
+          "summary": "지운 뒤에 무엇을 돌려주나.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "safe-idempotent",
+          "title": "안전 · 멱등 · 캐시 가능",
+          "summary": "세 성질이 재시도를 결정한다.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "method-misuse",
+          "title": "POST 로 다 하는 API",
+          "summary": "되기는 되는데 잃는 것들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "options-head",
+          "title": "OPTIONS · HEAD · TRACE",
+          "summary": "덜 쓰이지만 필요한 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "HTTP 메서드 활용",
+      "goal": "데이터를 어떻게 실어 보내나.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "data-to-server",
+          "title": "클라이언트에서 서버로",
+          "summary": "네 가지 경우로 나뉜다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "form-get",
+          "title": "HTML 폼 — GET 전송",
+          "summary": "쿼리 파라미터가 되는 순간.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "form-post",
+          "title": "HTML 폼 — POST 전송",
+          "summary": "urlencoded 본문.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "multipart",
+          "title": "파일 업로드",
+          "summary": "multipart/form-data 원문.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "api-json",
+          "title": "HTTP API 로 데이터 전송",
+          "summary": "JSON 을 실어 보낸다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "api-collection",
+          "title": "컬렉션",
+          "summary": "서버가 리소스 URI 를 정한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "api-store-controller",
+          "title": "스토어와 컨트롤 URI",
+          "summary": "클라이언트가 정할 때, 그리고 안 떨어질 때.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "HTTP 상태 코드",
+      "goal": "그래서 어떻게 됐나.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "status-overview",
+          "title": "다섯 갈래",
+          "summary": "첫 자리만 봐도 절반은 안다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "status-2xx",
+          "title": "2xx — 성공",
+          "summary": "200 · 201 · 202 · 204.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "status-3xx-redirect",
+          "title": "3xx — 리다이렉션",
+          "summary": "영구와 일시, 그리고 메서드가 바뀌는 문제.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "status-3xx-cache",
+          "title": "3xx — 304",
+          "summary": "캐시와 만나는 자리.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "status-4xx",
+          "title": "4xx — 클라이언트 오류",
+          "summary": "다시 보내도 실패한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "status-5xx",
+          "title": "5xx — 서버 오류",
+          "summary": "다시 보내면 될 수도 있다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "status-misuse",
+          "title": "200 에 오류를 담는 API",
+          "summary": "왜 그렇게들 하고 무엇을 잃나.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "HTTP 헤더 1 — 일반 헤더",
+      "goal": "본문이 무엇인지를 말하는 줄들.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "header-overview",
+          "title": "헤더와 표현",
+          "summary": "2014년에 정리된 개념.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "representation",
+          "title": "표현 헤더",
+          "summary": "Content-Type · Encoding · Language · Length.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "negotiation",
+          "title": "협상 헤더",
+          "summary": "Accept 와 우선순위 q.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "transfer",
+          "title": "전송 방식",
+          "summary": "단순 · 압축 · 분할 · 범위.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "general-info",
+          "title": "일반 정보",
+          "summary": "From · Referer · User-Agent · Server · Date.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "special-headers",
+          "title": "특별한 정보",
+          "summary": "Host · Location · Allow · Retry-After.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "auth",
+          "title": "인증",
+          "summary": "Authorization 과 WWW-Authenticate.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "cookie",
+          "title": "쿠키",
+          "summary": "무상태 위에 상태를 얹는 법.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.9",
+          "id": "cookie-attrs",
+          "title": "쿠키의 속성",
+          "summary": "Domain · Path · Secure · HttpOnly · SameSite.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.10",
+          "id": "cors",
+          "title": "CORS",
+          "summary": "브라우저만 아는 규칙.",
+          "minutes": 14,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "HTTP 헤더 2 — 캐시와 조건부 요청",
+      "goal": "안 보내는 것이 가장 빠르다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "cache-why",
+          "title": "캐시가 없으면",
+          "summary": "같은 이미지를 매번 받는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "cache-basic",
+          "title": "캐시 기본 동작",
+          "summary": "max-age 와 신선도.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "validation-lastmodified",
+          "title": "검증 — Last-Modified",
+          "summary": "304 를 만드는 첫 방법.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "validation-etag",
+          "title": "검증 — ETag",
+          "summary": "날짜로 안 되는 경우.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "cache-control",
+          "title": "Cache-Control 총정리",
+          "summary": "지시어를 언제 무엇으로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "proxy-cache",
+          "title": "프록시 캐시",
+          "summary": "public 과 private 이 갈리는 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "cache-invalidation",
+          "title": "캐시 무효화",
+          "summary": "확실히 안 쓰게 만들기.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.8",
+          "id": "cache-in-practice",
+          "title": "실전 — 정적 자원과 API",
+          "summary": "파일 이름에 해시를 넣는 이유.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.9",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "이 책이 남긴 것과 이어지는 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}
