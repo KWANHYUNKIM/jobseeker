@@ -368,7 +368,7 @@
           "title": "트랜잭션 매니저 적용",
           "summary": "파라미터의 Connection 이 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -376,7 +376,7 @@
           "title": "트랜잭션 템플릿",
           "summary": "try-catch 가 사라진다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -384,7 +384,7 @@
           "title": "트랜잭션 AOP 이해",
           "summary": "프록시가 트랜잭션을 시작한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -392,7 +392,7 @@
           "title": "@Transactional 적용",
           "summary": "서비스에 JDBC 가 한 줄도 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.9",

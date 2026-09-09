@@ -1,0 +1,173 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-annotation",
+ "no": "5.8",
+ "chapter": 5,
+ "title": "@Transactional 적용",
+ "summary": "서비스에 JDBC 가 한 줄도 없다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@Transactional` 로 서비스를 정리할 수 있다.",
+  "주요 속성을 안다.",
+  "5.1절의 넷이 다 끝났다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "열여섯 줄이 한 줄로",
+   "ascii": "   4.7   getConnection, setAutoCommit, commit, rollback, close   16 lines\n   5.2   getTransaction, commit, rollback                        10 lines\n   5.6   txTemplate.executeWithoutResult(lambda)                  6 lines\n   5.8   @Transactional                                           1 line\n\n   the business logic never changed\n   업무 로직은 4.6 절 이후로 한 번도 안 바뀌었다",
+   "note": "**업무 로직은 4.6절 이후로 한 번도 안 바뀌었다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "최종",
+   "code": "@Slf4j\n@RequiredArgsConstructor\npublic class MemberServiceV3_3 {\n\n    private final MemberRepositoryV3 memberRepository;\n\n    @Transactional\n    public void accountTransfer(String fromId, String toId, int money)\n            throws SQLException {\n\n        Member fromMember = memberRepository.findById(fromId);\n        Member toMember = memberRepository.findById(toId);\n\n        memberRepository.update(fromId, fromMember.getMoney() - money);\n        validation(toMember);\n        memberRepository.update(toId, toMember.getMoney() + money);\n    }\n\n    private void validation(Member toMember) {\n        if (toMember.getMemberId().equals(\"ex\")) {\n            throw new IllegalStateException(\"이체중 예외 발생\");\n        }\n    }\n}",
+   "note": "**`bizLogic` 을 다시 합쳤다.** 감쌀 것이 없으니 나눌 이유가 없다.\n\n**필드가 리포지토리 하나**다. `DataSource` 도 `PlatformTransactionManager` 도 `TransactionTemplate` 도 없다.\n\n**`throws SQLException` 만 남았다** — 6·7장의 몫이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "넷이 다 끝났다",
+   "md": "| | 어디서 |\n|---|---|\n| 1. 서비스가 JDBC 를 안다 | 5.2절 + **5.8절** |\n| 2. 커넥션을 파라미터로 | 5.3·5.5절 |\n| 3. `try-catch` 가 채운다 | 5.6절 |\n| 4. 모든 메서드에 반복 | **5.8절** |\n\n**1번이 5.8절에서 마저** 끝났다. 5.6절에서 `TransactionTemplate` 이 필드에 있었는데 **그것도 사라졌다.**\n\n**서비스에 남은 것**\n\n```java\nprivate final MemberRepositoryV3 memberRepository;\n@Transactional\nthrows SQLException\n```\n\n**리포지토리 하나, 애너테이션 하나, 예외 하나**다.\n\n**애너테이션은 기술이 아닌가** — 스프링 것이긴 한데 **선언일 뿐 코드가 아니다.** 지워도 컴파일이 되고, **다른 프레임워크의 애너테이션으로 바꾸면** 끝이다.\n\n**「MVC 2편」에서 반복된 그 교환**이 여기서도 완성된다.\n\n> **자동화의 대가는 동작이 선언 뒤로 숨는 것**이다.\n\n**5.9절이 그 대가**다."
+  },
+  {
+   "type": "table",
+   "caption": "주요 속성",
+   "note": "**전부 `TransactionDefinition`** 의 것이다(5.2절).",
+   "columns": [
+    "",
+    "무엇",
+    "기본"
+   ],
+   "rows": [
+    [
+     "`propagation`",
+     "이미 있으면 어떻게",
+     "`REQUIRED`"
+    ],
+    [
+     "`isolation`",
+     "격리 수준 (4.1절)",
+     "`DEFAULT`"
+    ],
+    [
+     "`readOnly`",
+     "읽기 전용 (4.3절)",
+     "`false`"
+    ],
+    [
+     "`timeout`",
+     "제한 시간",
+     "없음"
+    ],
+    [
+     "`rollbackFor`",
+     "체크 예외도 롤백 (5.6절)",
+     "언체크만"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "클래스에 붙이면 public 만",
+   "md": "```java\n@Transactional\npublic class MemberService { ... }\n```\n\n**모든 `public` 메서드**에 적용된다.\n\n**`protected` · `private` 는 안 된다.** CGLIB 이 오버라이드를 못 하거나(private), **스프링이 의도적으로 제외**한다.\n\n**메서드에 붙인 것이 이긴다.**\n\n```java\n@Transactional(readOnly = true)\npublic class MemberService {\n\n    @Transactional            // 이것이 이긴다. 쓰기 가능\n    public void save() { ... }\n\n    public Member find() { ... }   // 읽기 전용\n}\n```\n\n**클래스에 `readOnly = true` 를 두고 쓰기 메서드에만 덮어쓰는 것**이 흔한 패턴이다.\n\n**우선순위**\n\n```\n1. 메서드\n2. 클래스\n3. 인터페이스의 메서드     <- 권하지 않는다\n4. 인터페이스\n```\n\n**3·4번을 안 쓰는 이유** — **CGLIB 프록시는 인터페이스를 안 본다**(5.7절). 인터페이스에 붙이면 **JDK 프록시일 때만** 동작한다.\n\n> **구현 클래스에 붙인다** 가 규칙이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "readOnly 를 오해하지 않는다",
+   "md": "```java\n@Transactional(readOnly = true)\npublic void save(Member member) {\n    repository.save(member);   // 어떻게 되나\n}\n```\n\n**DB 마다 다르다.**\n\n| | |\n|---|---|\n| **JPA** | **플러시를 안 한다** — 변경이 DB 에 안 간다 |\n| **JDBC + MySQL** | `readOnly` 를 세션에 설정. **쓰기가 실패** |\n| **JDBC + H2** | **아무 일도 안 일어난다** — 그냥 저장된다 |\n\n**\"읽기 전용이니 안전하다\" 가 아니다.** 기술과 DB 에 따라 **막히기도 하고 안 막히기도** 한다.\n\n**진짜 이득은 최적화**다.\n\n- **JPA 는 스냅숏을 안 만든다** — 메모리와 CPU 를 아낀다\n- **DB 는 복제본으로 보낼 수** 있다\n- **의도가 코드에 드러난다**\n\n**세 번째가 실무에서 큰 이득**이다. 조회 메서드에 붙여 두면 **읽는 사람이 안다.**\n\n> **1.3절에서 H2 가 다른 DB 와 다르다**고 한 것이 여기도 해당된다. **테스트에서 안 막힌다고 운영에서도 안 막히는 것이 아니다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "service.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name\n#     [hello.jdbc.service.MemberServiceV3_3.accountTransfer]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     update member set money=? where member_id=?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 4.7 절의 로그와 같다\n\n# 예외\nservice.accountTransfer(\"memberA\", \"ex\", 2000);\n\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\nselect * from member;\n# memberA | 10000\n# ex      | 10000\n\n# 자바 코드\n#   4.7:  업무 5 줄 + 트랜잭션 16 줄 + import java.sql 2 개\n#   5.8:  업무 5 줄 + @Transactional 1 줄",
+   "note": "**4.7절의 로그와 같다.** SQL 도 커넥션도 커밋 시점도 그대로다.\n\n**트랜잭션 이름이 메서드 이름**이다 — 5.7절에서 본 프록시의 증거다.\n\n**맨 아래가 5장 전체의 결과**다. **업무 로직 다섯 줄은 4.6절 이후로 한 번도 안 바뀌었고**, 그 주변의 스무 줄이 **애너테이션 한 줄**이 됐다.\n\n**1.1절에서 로그를 강조한 이유**가 여기서 완성된다. **자바 코드에는 트랜잭션이 안 보이는데 로그에는 다 있다.**"
+  }
+ ],
+ "recap": [
+  "**애너테이션 한 줄**이 됐다.",
+  "**업무 로직은 4.6절 이후로 한 번도 안 바뀌었다.**",
+  "**5.1절의 넷이 다 끝났다.**",
+  "**서비스에 리포지토리 하나, 애너테이션 하나, 예외 하나**만 남았다.",
+  "**애너테이션은 선언이지 코드가 아니다.**",
+  "**클래스에 붙이면 `public` 만** 적용된다.",
+  "**메서드에 붙인 것이 이긴다.**",
+  "**인터페이스에 붙이지 않는다** — CGLIB 은 인터페이스를 안 본다.",
+  "**`readOnly` 는 기술과 DB 에 따라 막히기도 안 막히기도** 한다.",
+  "**진짜 이득은 최적화와 의도 표현**이다.",
+  "**로그는 4.7절과 같다** — 자바 코드만 바뀌었다."
+ ],
+ "drills": [
+  {
+   "task": "`@Transactional` 로 서비스를 다시 쓴다.",
+   "done_when": "필드가 리포지토리 하나가 된 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "4.7절과 로그를 비교한다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "클래스에 붙이고 `private` 메서드를 만든다.",
+   "done_when": "적용이 안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`readOnly = true` 로 저장해 본다.",
+   "done_when": "H2 에서 그냥 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "트랜잭션 이름을 로그에서 확인한다.",
+   "done_when": "메서드 이름인 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "5.8절이 마저 끝낸 문제는?",
+   "a": "1번(서비스가 기술을 안다)과 4번(모든 메서드에 반복)이다."
+  },
+  {
+   "q": "서비스에 무엇이 남았나?",
+   "a": "리포지토리 필드 하나, `@Transactional` 하나, `throws SQLException` 하나다."
+  },
+  {
+   "q": "클래스에 붙이면?",
+   "a": "모든 `public` 메서드에 적용된다. 메서드에 붙인 것이 우선한다."
+  },
+  {
+   "q": "인터페이스에 붙이면 안 되는 이유는?",
+   "a": "CGLIB 프록시는 인터페이스를 안 봐서 JDK 프록시일 때만 동작한다."
+  },
+  {
+   "q": "`readOnly = true` 로 쓰기를 하면?",
+   "a": "JPA 는 플러시를 안 하고 MySQL 은 실패하는데 H2 는 그냥 저장된다. DB 마다 다르다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@Transactional",
+   "en": "",
+   "what": "선언적 트랜잭션. 프록시가 메서드를 감싸 시작·커밋·롤백을 대신한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

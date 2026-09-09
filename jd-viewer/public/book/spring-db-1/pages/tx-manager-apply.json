@@ -1,0 +1,136 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-manager-apply",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "트랜잭션 매니저 적용",
+ "summary": "파라미터의 Connection 이 사라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "커넥션 파라미터를 없앨 수 있다.",
+  "리포지토리 메서드가 하나로 합쳐지는 것을 본다.",
+  "5.1절의 두 번째 문제가 끝났다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "여덟이 넷이 된다",
+   "ascii": "   4.7                                5.5\n   ---                                ---\n   findById(Connection con, String)   findById(String)\n   update(Connection con, String,int) update(String, int)\n   save(Connection con, Member)       save(Member)\n   delete(Connection con, String)     delete(String)\n        |                                  |\n        +--> 8 methods                     +--> 4 methods\n\n   bizLogic(Connection con, ...)      bizLogic(...)\n\n   업무와 무관한 파라미터가 전부 사라졌다",
+   "note": "**업무와 무관한 파라미터**가 사라졌다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리포지토리 — 하나로 합쳐진다",
+   "code": "public Member findById(String memberId) throws SQLException {\n    String sql = \"select * from member where member_id = ?\";\n\n    Connection con = null;\n    PreparedStatement pstmt = null;\n    ResultSet rs = null;\n\n    try {\n        con = getConnection();          // DataSourceUtils 를 쓴다\n        pstmt = con.prepareStatement(sql);\n        pstmt.setString(1, memberId);\n        rs = pstmt.executeQuery();\n        ...\n    } finally {\n        close(con, pstmt, rs);          // DataSourceUtils 로 반납\n    }\n}",
+   "note": "**시그니처가 2장으로 돌아갔다.** `Connection` 파라미터가 없다.\n\n**안에서 하는 일만 달라졌다** — `DataSourceUtils` 를 쓴다(5.3절).\n\n**같은 메서드가 트랜잭션 안팎에서 다르게** 동작한다. 트랜잭션이 있으면 그 커넥션, 없으면 새것."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "서비스",
+   "code": "@RequiredArgsConstructor\npublic class MemberServiceV3_1 {\n\n    private final PlatformTransactionManager transactionManager;\n    private final MemberRepositoryV3 memberRepository;\n\n    public void accountTransfer(String fromId, String toId, int money)\n            throws SQLException {\n\n        TransactionStatus status =\n                transactionManager.getTransaction(new DefaultTransactionDefinition());\n\n        try {\n            bizLogic(fromId, toId, money);      // con 이 없다\n            transactionManager.commit(status);\n        } catch (Exception e) {\n            transactionManager.rollback(status);\n            throw new IllegalStateException(e);\n        }\n    }\n\n    private void bizLogic(String fromId, String toId, int money) throws SQLException {\n        Member fromMember = memberRepository.findById(fromId);\n        Member toMember = memberRepository.findById(toId);\n\n        memberRepository.update(fromId, fromMember.getMoney() - money);\n        validation(toMember);\n        memberRepository.update(toId, toMember.getMoney() + money);\n    }\n}",
+   "note": "**`bizLogic` 이 4.6절과 똑같아졌다.** 트랜잭션이 없던 시절의 코드다.\n\n**업무 로직이 순수해졌다** — `Connection` 이 안 보인다.\n\n**`DataSource` 필드도 사라졌다.** 트랜잭션 매니저가 들고 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 끝났나",
+   "md": "**5.1절의 처음 두 문제**가 풀렸다.\n\n| | 상태 |\n|---|---|\n| 1. 서비스가 JDBC 를 안다 | **끝** — 5.2절 |\n| 2. 커넥션을 파라미터로 넘긴다 | **끝** — 5.3·5.5절 |\n| 3. `try-catch` 가 서비스를 채운다 | 남음 |\n| 4. 모든 메서드에 반복 | 남음 |\n\n**1번의 흔적이 하나 남았다.**\n\n```java\npublic void accountTransfer(...) throws SQLException\n```\n\n**`SQLException` 이 서비스 시그니처에** 있다. **리포지토리가 던지니** 어쩔 수 없다.\n\n**이것은 6·7장의 몫**이다. **체크 예외**라 `throws` 가 위로 번지는 것 — 1.1절에서 말한 이 책의 두 번째 주제다.\n\n> **트랜잭션은 5장에서, 예외는 7장에서** 끝난다. **두 문제가 나란히 간다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "DataSourceUtils 를 안 쓰면 조용히 깨진다",
+   "md": "```java\n// 틀림\nprivate Connection getConnection() throws SQLException {\n    return dataSource.getConnection();   // 풀에서 새로 빌린다\n}\n```\n\n**트랜잭션이 있어도 새 커넥션**을 빌린다. **다른 세션**이다(4.2절).\n\n**무슨 일이 생기나**\n\n```\ntxManager 가 conn0 으로 트랜잭션을 열었다\nrepository 가 conn1 을 빌려서 update 했다  ->  autoCommit 이라 바로 커밋\ntxManager 가 conn0 을 롤백했다             ->  아무것도 안 되돌아간다\n```\n\n**롤백이 안 먹는다.** 그런데 **예외도 안 난다.**\n\n**4.6절의 그 상태**로 돌아간 것인데 **더 나쁘다** — 트랜잭션 코드가 있으니 **되는 줄 안다.**\n\n**어떻게 알아채나** — **로그의 커넥션 번호**다.\n\n```\nAcquired Connection [HikariProxyConnection@1 wrapping conn0]\nget connection=HikariProxyConnection@2 wrapping conn1   <- 다르다\n```\n\n**1.1절에서 로그를 강조한 이유**가 이것이다.\n\n> **커넥션 이름이 다르면 다른 세션**이다.\n\n**7.6절의 `JdbcTemplate` 은 이것을 알아서** 한다 — 직접 쓸 일이 없어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "테스트에서 확인하기",
+   "md": "```java\n@Test\nvoid accountTransferEx() throws SQLException {\n    repository.save(new Member(MEMBER_A, 10000));\n    repository.save(new Member(MEMBER_EX, 10000));\n\n    assertThatThrownBy(() ->\n            service.accountTransfer(MEMBER_A, MEMBER_EX, 2000))\n            .isInstanceOf(IllegalStateException.class);\n\n    assertThat(repository.findById(MEMBER_A).getMoney()).isEqualTo(10000);\n    assertThat(repository.findById(MEMBER_EX).getMoney()).isEqualTo(10000);\n}\n```\n\n**4.6절에서 실패하던 테스트**다. 거기서는 `8000` 이었다.\n\n**이 테스트가 트랜잭션의 유일한 증거**다. 코드만 봐서는 **`DataSourceUtils` 를 썼는지** 안 보인다.\n\n> **트랜잭션 테스트는 예외 케이스가 핵심**이다. 정상 흐름은 트랜잭션이 없어도 통과한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "service.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     update member set money=? where member_id=?\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     update member set money=? where member_id=?\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 프록시 @1 이 다섯 번 다 같다\n\n# DataSourceUtils 대신 dataSource.getConnection() 을 쓰면\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   get connection=HikariProxyConnection@2 wrapping conn1   <- 다르다\n#   get connection=HikariProxyConnection@3 wrapping conn2\n#   ...\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\n# conn0 에는 아무것도 안 했으니 롤백해도 소용없다\nselect * from member;\n# memberA | 8000     <- 롤백이 안 됐다",
+   "note": "**프록시 `@1` 이 다섯 번** 나온다. 트랜잭션 매니저가 빌린 것 하나와 리포지토리가 꺼낸 것 넷이 **같은 객체**다.\n\n**아래가 이 절의 함정**이다. `@1`·`@2`·`@3` 으로 번호가 늘어난다 — **`ThreadLocal` 에서 안 꺼내고 풀에서 새로 빌린** 것이다.\n\n**`Rolling back JDBC transaction on Connection [conn0]`** 이 찍혔는데 **데이터는 안 돌아왔다.** `conn0` 에서는 SQL 이 하나도 안 나갔기 때문이다.\n\n**로그만 보면 정상**이다. **데이터를 확인해야** 안다."
+  }
+ ],
+ "recap": [
+  "**커넥션 파라미터가 전부 사라졌다** — 메서드 여덟이 넷.",
+  "**`bizLogic` 이 4.6절과 똑같아졌다** — 업무 로직이 순수해졌다.",
+  "**같은 메서드가 트랜잭션 안팎에서 다르게** 동작한다.",
+  "**5.1절의 처음 두 문제가 끝났다.**",
+  "**`throws SQLException` 이 남았다** — 6·7장의 몫이다.",
+  "**트랜잭션은 5장, 예외는 7장** — 두 문제가 나란히 간다.",
+  "**`DataSourceUtils` 를 안 쓰면 조용히 깨진다** — 롤백이 안 먹는다.",
+  "**예외도 안 난다** — 트랜잭션 코드가 있으니 되는 줄 안다.",
+  "**로그의 커넥션 번호**로 알아챈다.",
+  "**트랜잭션 테스트는 예외 케이스가 핵심**이다."
+ ],
+ "drills": [
+  {
+   "task": "리포지토리에서 커넥션 파라미터를 없앤다.",
+   "done_when": "메서드가 한 벌이 된 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "로그에서 프록시 번호를 센다.",
+   "done_when": "다 같은 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`DataSourceUtils` 대신 `dataSource.getConnection()` 을 쓴다.",
+   "done_when": "번호가 달라지고 롤백이 안 먹는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "4.6절의 실패 테스트를 다시 돌린다.",
+   "done_when": "이번엔 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서비스에서 `import` 를 센다.",
+   "done_when": "`SQLException` 만 남은 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커넥션 파라미터가 어떻게 사라졌나?",
+   "a": "`ThreadLocal` 에 보관하고 `DataSourceUtils` 로 꺼내기 때문에 넘길 필요가 없다."
+  },
+  {
+   "q": "리포지토리 메서드가 왜 한 벌이면 되나?",
+   "a": "트랜잭션이 있으면 그 커넥션을, 없으면 새것을 알아서 주기 때문이다."
+  },
+  {
+   "q": "서비스에 무엇이 남았나?",
+   "a": "`throws SQLException` 이다. 리포지토리가 던지는 체크 예외라 6·7장에서 없앤다."
+  },
+  {
+   "q": "`DataSourceUtils` 를 안 쓰면?",
+   "a": "새 커넥션을 빌려 다른 세션에서 실행되고 롤백이 안 먹는다. 예외도 안 난다."
+  },
+  {
+   "q": "그것을 어떻게 알아채나?",
+   "a": "로그의 커넥션 번호가 다르다. 그리고 데이터를 확인해야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

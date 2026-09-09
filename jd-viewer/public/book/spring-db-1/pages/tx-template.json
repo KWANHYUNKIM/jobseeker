@@ -1,0 +1,141 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-template",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "트랜잭션 템플릿",
+ "summary": "try-catch 가 사라진다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "템플릿 메서드 패턴을 적용할 수 있다.",
+  "람다로 업무 로직만 넘기는 방식을 안다.",
+  "체크 예외가 왜 걸림돌인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "변하는 것만 넘긴다",
+   "ascii": "   template method pattern\n   -----------------------\n   fixed part                variable part\n   ----------                -------------\n   getTransaction            the business logic\n   try\n     ???                <--  passed in as a lambda\n   commit\n   catch\n     rollback\n     throw\n\n   2.9 -> 7.6  JdbcTemplate\n   4.11 -> 5.6 TransactionTemplate\n\n   같은 진단, 같은 해법",
+   "note": "**2.9절과 4.11절의 진단이 같았고 해법도 같다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "적용",
+   "code": "@RequiredArgsConstructor\npublic class MemberServiceV3_2 {\n\n    private final TransactionTemplate txTemplate;\n    private final MemberRepositoryV3 memberRepository;\n\n    public MemberServiceV3_2(PlatformTransactionManager transactionManager,\n                             MemberRepositoryV3 memberRepository) {\n        this.txTemplate = new TransactionTemplate(transactionManager);\n        this.memberRepository = memberRepository;\n    }\n\n    public void accountTransfer(String fromId, String toId, int money) {\n        txTemplate.executeWithoutResult(status -> {\n            try {\n                bizLogic(fromId, toId, money);\n            } catch (SQLException e) {\n                throw new IllegalStateException(e);\n            }\n        });\n    }\n}",
+   "note": "**`getTransaction`·`commit`·`rollback` 이 사라졌다.** 템플릿이 한다.\n\n**`TransactionTemplate` 은 클래스**다 — 인터페이스가 아니라 구현체를 직접 만든다. 생성자에 매니저를 넣는다.\n\n**`throws SQLException` 이 시그니처에서 사라졌다.** 대신 **`try-catch` 가 람다 안으로** 들어갔다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "람다 안의 try-catch 가 왜 남나",
+   "md": "**체크 예외 때문**이다.\n\n```java\ntxTemplate.executeWithoutResult(status -> {\n    bizLogic(fromId, toId, money);   // SQLException 을 던진다\n});\n```\n\n**컴파일이 안 된다.** 람다가 구현하는 인터페이스가 **체크 예외를 안 던지게** 선언되어 있어서다.\n\n```java\npublic interface Consumer<T> {\n    void accept(T t);   // throws 가 없다\n}\n```\n\n**그래서 안에서 잡아 언체크로 바꿔야** 한다.\n\n```java\ntry {\n    bizLogic(...);\n} catch (SQLException e) {\n    throw new IllegalStateException(e);\n}\n```\n\n**이것이 6장의 주제**다.\n\n> 1.1절: **`SQLException` 은 체크 예외라 `throws` 가 위로 번진다.**\n\n**7.2절에서 리포지토리가 언체크 예외를 던지게 바꾸면** 이 `try-catch` 도 사라진다.\n\n**자바의 람다와 체크 예외가 안 맞는 것**은 유명한 문제다. **스트림에서도 같은 일**이 생긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "롤백 규칙",
+   "md": "**템플릿이 언제 롤백하나.**\n\n```\n언체크 예외(RuntimeException, Error)  ->  롤백\n체크 예외                              ->  커밋\n```\n\n**체크 예외는 커밋한다.** 놀랍지만 그렇다.\n\n**왜인가** — **스프링의 관례**다. 체크 예외는 **\"비즈니스적으로 의미 있는, 복구 가능한 상황\"** 으로 보고, 언체크는 **\"시스템 오류\"** 로 본다.\n\n```java\n// 잔고 부족 - 체크 예외로 만들면 커밋된다\nthrow new NotEnoughMoneyException();\n```\n\n**이게 의도된 동작인 경우도** 있다. \"주문은 실패했지만 실패 이력은 남긴다\" 같은 것.\n\n**모르고 쓰면 사고**다. **6.6절에서 이 판단을 다룬다.**\n\n**바꾸려면**\n\n```java\n@Transactional(rollbackFor = Exception.class)\n```\n\n**`@Transactional` 에도 같은 규칙**이 적용된다 — 5.8절."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그래도 남는 것",
+   "md": "**5.1절의 세 번째 문제는 풀렸는데 네 번째가 남았다.**\n\n```java\npublic void accountTransfer(...) {\n    txTemplate.executeWithoutResult(status -> { ... });\n}\n\npublic void withdraw(...) {\n    txTemplate.executeWithoutResult(status -> { ... });\n}\n\npublic void deposit(...) {\n    txTemplate.executeWithoutResult(status -> { ... });\n}\n```\n\n**모든 메서드가 람다로 감싸진다.**\n\n**그리고 서비스가 여전히 트랜잭션을 안다.**\n\n```java\nprivate final TransactionTemplate txTemplate;\n```\n\n**스프링 클래스가 필드에** 있다. 5.1절의 첫 문제가 **완전히 사라진 것은 아니다** — JDBC 는 안 보이는데 **트랜잭션 기술은 보인다.**\n\n**5.8절이 이 둘을 없앤다.**\n\n> **애너테이션 하나만 남고 코드가 사라진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "service.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 5.5 절과 로그가 같다\n\n# 언체크 예외 - 롤백\ntxTemplate.executeWithoutResult(status -> {\n    throw new IllegalStateException(\"실패\");\n});\n\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\n# 체크 예외 - 커밋된다\ntxTemplate.executeWithoutResult(status -> {\n    try {\n        bizLogic(...);\n        throw new Exception(\"체크 예외\");   // 실제로는 못 던진다\n    } catch (Exception e) { ... }\n});\n\n# @Transactional 로 하면\n@Transactional\npublic void save() throws NotEnoughMoneyException {\n    repository.save(item);\n    throw new NotEnoughMoneyException();\n}\n\n#   Initiating transaction commit      <- 롤백이 아니다\n#   Committing JDBC transaction on Connection [conn0]\n\nselect * from item;\n# 저장되어 있다",
+   "note": "**5.5절과 로그가 같다.** 4.3절·5.2절과 마찬가지로 **SQL 은 안 바뀌고 자바 코드만** 바뀐다.\n\n**아래가 이 절에서 제일 놀라운 부분**이다. **예외를 던졌는데 `Initiating transaction commit`** 이다.\n\n**체크 예외라서** 그렇다. 스프링이 **\"복구 가능한 상황\"** 으로 본 것이다.\n\n**데이터가 저장되어 있다.** 예외를 던졌으니 롤백됐을 것이라고 생각하면 **틀린다.**\n\n**6.6절에서 체크와 언체크를 언제 쓸지** 다룬다. 이 동작이 그 판단의 근거 하나다."
+  }
+ ],
+ "recap": [
+  "**템플릿 메서드 패턴** — 변하지 않는 것을 틀로, 변하는 것을 람다로.",
+  "**2.9절과 4.11절의 진단이 같았고 해법도 같다.**",
+  "**`getTransaction`·`commit`·`rollback` 이 사라졌다.**",
+  "**람다 안의 `try-catch` 는 체크 예외 때문**에 남는다.",
+  "**자바의 람다는 체크 예외를 못 던진다.**",
+  "**7.2절에서 언체크로 바꾸면** 이것도 사라진다.",
+  "**언체크는 롤백, 체크는 커밋**한다.",
+  "**스프링의 관례**다 — 체크는 복구 가능한 상황으로 본다.",
+  "**모르고 쓰면 사고**다 — 6.6절.",
+  "**모든 메서드가 람다로 감싸지는 반복**이 남았다.",
+  "**서비스가 여전히 트랜잭션 클래스를 안다.**"
+ ],
+ "drills": [
+  {
+   "task": "`TransactionTemplate` 으로 서비스를 다시 쓴다.",
+   "done_when": "`try-catch` 가 줄어든 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "람다에서 체크 예외를 그대로 던져 본다.",
+   "done_when": "컴파일이 안 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "언체크 예외를 던지고 롤백을 확인한다.",
+   "done_when": "데이터가 안 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "체크 예외를 던지고 확인한다.",
+   "done_when": "커밋되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`rollbackFor = Exception.class` 를 준다.",
+   "done_when": "체크 예외에서도 롤백되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "템플릿이 없애는 것은?",
+   "a": "`getTransaction`·`commit`·`rollback` 과 그것을 감싸는 `try-catch` 다."
+  },
+  {
+   "q": "람다 안의 `try-catch` 는 왜 남나?",
+   "a": "자바 람다가 체크 예외를 던질 수 없어서 안에서 잡아 언체크로 바꿔야 한다."
+  },
+  {
+   "q": "스프링의 기본 롤백 규칙은?",
+   "a": "언체크 예외는 롤백하고 체크 예외는 커밋한다."
+  },
+  {
+   "q": "왜 체크 예외는 커밋하나?",
+   "a": "복구 가능한 비즈니스 상황으로 보기 때문이다. 모르고 쓰면 사고가 난다."
+  },
+  {
+   "q": "템플릿으로도 안 없어지는 것은?",
+   "a": "모든 메서드를 람다로 감싸는 반복과 서비스가 트랜잭션 클래스를 안다는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "템플릿 메서드 패턴",
+   "en": "template method",
+   "what": "변하지 않는 절차를 틀로 두고 변하는 부분만 넘기는 패턴."
+  },
+  {
+   "term": "rollbackFor",
+   "en": "",
+   "what": "체크 예외에서도 롤백하도록 지정하는 `@Transactional` 속성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

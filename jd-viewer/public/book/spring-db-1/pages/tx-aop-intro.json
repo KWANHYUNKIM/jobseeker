@@ -1,0 +1,147 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-aop-intro",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "트랜잭션 AOP 이해",
+ "summary": "프록시가 트랜잭션을 시작한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "프록시가 무엇을 하는지 안다.",
+  "컨테이너가 프록시를 주입한다는 것을 안다.",
+  "AOP 가 왜 필요한지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "가짜가 앞에 선다",
+   "ascii": "   without aop\n   -----------\n   controller  ->  MemberService (real)\n\n   with aop\n   --------\n   controller  ->  MemberService$$SpringCGLIB (proxy)\n                        |\n                        +--> getTransaction\n                        +--> target.accountTransfer()   the real one\n                        +--> commit or rollback\n\n   the container injects the proxy, not the real object\n   컨트롤러는 진짜를 받은 적이 없다",
+   "note": "**컨트롤러는 진짜 객체를 받은 적이 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "템플릿으로 안 되는 이유",
+   "md": "**5.6절의 남은 문제**를 보자.\n\n```java\npublic void accountTransfer(...) {\n    txTemplate.executeWithoutResult(status -> { ... });\n}\n```\n\n**메서드 안에 트랜잭션 코드가 있다.** 그러면 **메서드마다 써야** 한다.\n\n**메서드 밖에서 감쌀 수 있으면** 안 써도 된다.\n\n```\n호출자  ->  [트랜잭션 시작]  ->  진짜 메서드  ->  [커밋]\n```\n\n**그 \"감싸는 것\" 이 프록시**다.\n\n**어떻게 끼워 넣나** — **호출자가 진짜 대신 프록시를 받게** 한다.\n\n```java\n@Autowired MemberService memberService;   // 프록시가 주입된다\n```\n\n**컨테이너가 바꿔치기**한다. 호출자는 **자기가 무엇을 받았는지 모른다.**\n\n**「MVC 2편」에서 본 그 수법**이다.\n\n> 3.2절: **`HikariProxyConnection` 이 `close` 를 가로챈다** — 부르는 쪽은 모른다.\n\n**같은 발상**이고 여기는 **메서드 전체**를 가로챈다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "프록시가 하는 일 — 개념",
+   "code": "public class TransactionProxy {\n    private final MemberService target;\n    private final PlatformTransactionManager txManager;\n\n    public void accountTransfer(String fromId, String toId, int money) {\n        TransactionStatus status = txManager.getTransaction(...);\n        try {\n            target.accountTransfer(fromId, toId, money);   // 진짜를 부른다\n            txManager.commit(status);\n        } catch (RuntimeException e) {\n            txManager.rollback(status);\n            throw e;\n        }\n    }\n}",
+   "note": "**5.5절의 서비스 코드가 그대로** 여기 있다. **위치만 바뀌었다.**\n\n**`target` 이 진짜 서비스**다. 프록시가 그것을 들고 있다.\n\n**실제로는 이런 클래스를 우리가 안 만든다.** 스프링이 **런타임에 만들어** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "두 가지 방식",
+   "md": "**프록시를 만드는 방법이 둘**이다.\n\n| | 어떻게 | 조건 |\n|---|---|---|\n| **JDK 동적 프록시** | 인터페이스를 구현한 클래스를 만든다 | **인터페이스가 있어야** |\n| **CGLIB** | **클래스를 상속**한 자식을 만든다 | `final` 이면 안 된다 |\n\n**스프링 부트는 기본이 CGLIB** 다. 인터페이스가 있어도 그렇다.\n\n**왜인가** — **인터페이스 없이도 되고**, 클래스 타입으로 주입받을 수 있어서다. 인터페이스가 있는데 JDK 프록시를 쓰면 **구현 클래스로 주입받을 때 실패**한다.\n\n**로그에서 확인**할 수 있다.\n\n```\nmemberService class=class hello.jdbc.service.MemberServiceV3_3$$SpringCGLIB$$0\n```\n\n**`$$SpringCGLIB$$`** 가 붙어 있으면 프록시다.\n\n**CGLIB 의 제약**\n\n- **`final` 클래스는 못 상속**한다\n- **`final` 메서드는 못 오버라이드**한다\n- **기본 생성자가 필요**하다 (요즘은 우회한다)\n\n**코틀린을 쓰면 첫 두 개가 문제**가 된다 — 클래스와 메서드가 **기본으로 `final`** 이다. `allopen` 플러그인을 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "AOP 가 안 걸리는 경우",
+   "md": "**프록시를 안 거치면 트랜잭션이 없다.**\n\n**1. 컨테이너를 안 거치고 만들면**\n\n```java\nMemberService service = new MemberServiceV3_3(repository);   // 프록시가 아니다\nservice.accountTransfer(...);   // 트랜잭션 없음\n```\n\n**테스트에서 자주** 겪는다. `@SpringBootTest` 없이 직접 만들면 그렇다.\n\n**2. 내부 호출**\n\n```java\npublic void outer() {\n    this.inner();   // 프록시를 안 거친다\n}\n\n@Transactional\npublic void inner() { ... }\n```\n\n**5.9절의 주제**다.\n\n**3. `private` 메서드**\n\n**CGLIB 이 오버라이드를 못 한다.** 애너테이션을 붙여도 무시된다.\n\n**어떻게 확인하나** — **로그**다.\n\n```\nCreating new transaction with name [MemberServiceV3_3.accountTransfer]\n```\n\n**이 줄이 없으면 트랜잭션이 안 걸린 것**이다. 5.2절에서 `null` 이던 이름이 **여기서 메서드 이름**으로 나온다.\n\n> **1.1절의 세 가지 중 첫째**를 다시 본다. **`autoCommit=false` 로 바뀌었는지**가 유일한 증거다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "AOP 를 여기서만 쓰는 것이 아니다",
+   "md": "**같은 구조가 스프링 곳곳에** 있다.\n\n| | 애너테이션 |\n|---|---|\n| 트랜잭션 | `@Transactional` |\n| 캐시 | `@Cacheable` |\n| 비동기 | `@Async` |\n| 재시도 | `@Retryable` |\n| 보안 | `@PreAuthorize` |\n| 검증 | `@Validated` (「MVC 2편」 5.10절) |\n\n**전부 프록시로 구현**되어 있다. **5.9절의 한계가 이 전부에 적용**된다.\n\n> 5.1절에서 이렇게 적었다.\n>\n> **같은 구조가 스프링 곳곳에 있다** — 하나를 이해하면 나머지가 보인다.\n\n**「MVC 2편」 8.7절에서 AOP 를 이야기할 때** 웹 계층에는 안 맞는다고 했다.\n\n> **AOP 는 메서드 호출을 가로챈다** / 필터·인터셉터는 **HTTP 요청**을 가로챈다.\n\n**여기가 AOP 가 맞는 자리**다. **서비스 계층의 메서드 호출**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 프록시인지 확인\n@Test\nvoid AopCheck() {\n    log.info(\"memberService class={}\", memberService.getClass());\n    log.info(\"memberRepository class={}\", memberRepository.getClass());\n\n    assertThat(AopUtils.isAopProxy(memberService)).isTrue();\n    assertThat(AopUtils.isAopProxy(memberRepository)).isFalse();\n}\n\n#   memberService class=\n#     class hello.jdbc.service.MemberServiceV3_3$$SpringCGLIB$$0\n#   memberRepository class=\n#     class hello.jdbc.repository.MemberRepositoryV3\n\n# 서비스만 프록시다. @Transactional 이 거기 있어서\n\n# 실행하면\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name\n#     [hello.jdbc.service.MemberServiceV3_3.accountTransfer]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 5.2 절에서 [null] 이던 이름이 메서드 이름이 됐다\n\n# new 로 직접 만들면\nMemberService service = new MemberServiceV3_3(txManager, repository);\nservice.accountTransfer(...);\n\n#   (Creating new transaction 로그가 없다)\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select ...\n#   (각각 autoCommit 으로 커밋된다)",
+   "note": "**`$$SpringCGLIB$$0`** 이 프록시의 증거다. 리포지토리는 **애너테이션이 없어서** 그냥 원본이다.\n\n**트랜잭션 이름이 `MemberServiceV3_3.accountTransfer`** 로 나온다. 5.2절에서 `[null]` 이던 자리다 — **프록시가 어느 메서드인지 알기** 때문이다.\n\n**맨 아래가 함정**이다. `new` 로 만들면 **`Creating new transaction` 로그가 통째로 없다.** 예외도 안 나고 SQL 은 정상적으로 나간다 — **4장 이전 상태로 조용히 돌아간 것**이다."
+  }
+ ],
+ "recap": [
+  "**메서드 밖에서 감싸면** 메서드마다 안 써도 된다.",
+  "**그 감싸는 것이 프록시**다.",
+  "**컨테이너가 프록시를 주입**한다 — 호출자는 모른다.",
+  "**3.2절의 커넥션 프록시와 같은 발상**이다.",
+  "**JDK 동적 프록시와 CGLIB** — 부트는 기본이 CGLIB.",
+  "**`$$SpringCGLIB$$`** 가 붙어 있으면 프록시다.",
+  "**`final` 이면 못 만든다** — 코틀린에서 문제가 된다.",
+  "안 걸리는 경우 — **`new` 로 만들기 · 내부 호출 · `private`**.",
+  "**로그에 `Creating new transaction` 이 없으면** 안 걸린 것이다.",
+  "**같은 구조가 캐시·비동기·재시도·보안**에도 있다.",
+  "**서비스 계층의 메서드 호출**이 AOP 가 맞는 자리다."
+ ],
+ "drills": [
+  {
+   "task": "`memberService.getClass()` 를 찍는다.",
+   "done_when": "`$$SpringCGLIB$$` 를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리의 클래스도 찍어 비교한다.",
+   "done_when": "프록시가 아닌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`new` 로 서비스를 만들고 실행한다.",
+   "done_when": "트랜잭션 로그가 없는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스 클래스를 `final` 로 만든다.",
+   "done_when": "프록시 생성이 실패하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`private` 메서드에 `@Transactional` 을 붙인다.",
+   "done_when": "무시되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프록시가 왜 필요한가?",
+   "a": "메서드 밖에서 감싸야 메서드 안에 트랜잭션 코드를 안 써도 되기 때문이다."
+  },
+  {
+   "q": "호출자는 무엇을 받나?",
+   "a": "프록시다. 컨테이너가 진짜 대신 주입하고 호출자는 모른다."
+  },
+  {
+   "q": "CGLIB 의 제약은?",
+   "a": "`final` 클래스나 메서드를 못 다룬다. 코틀린은 기본이 `final` 이라 플러그인이 필요하다."
+  },
+  {
+   "q": "AOP 가 안 걸리는 경우는?",
+   "a": "`new` 로 직접 만들 때, 내부 호출, `private` 메서드다."
+  },
+  {
+   "q": "안 걸린 것을 어떻게 아나?",
+   "a": "로그에 `Creating new transaction` 이 없다. 예외는 안 나고 SQL 은 정상적으로 나간다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프록시",
+   "en": "proxy",
+   "what": "진짜 객체를 감싸 호출 전후에 일을 더하는 대리 객체."
+  },
+  {
+   "term": "CGLIB",
+   "en": "",
+   "what": "클래스를 상속해 프록시를 만드는 라이브러리. 스프링 부트의 기본."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
