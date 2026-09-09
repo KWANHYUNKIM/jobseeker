@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "q-type",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "Q 타입 생성",
+ "summary": "컴파일 시점에 만들어진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Q 타입이 무엇인지 안다.",
+  "타입이 연산자를 제한하는 것을 본다.",
+  "기본 쿼리를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`QItem` 이 무엇인지** 열어 본다. **이 장의 모든 것이 여기서 나온다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "엔티티가 Q 타입이 된다",
+   "ascii": "   Item.java                       QItem.java  (generated)\n   ---------                       ----------\n   @Entity                         public class QItem\n   Long id                             extends EntityPathBase<Item> {\n   String itemName                   public static final QItem item\n   Integer price                            = new QItem(\"item\");\n   Integer quantity\n                                     NumberPath<Long> id;\n                                     StringPath itemName;\n                                     NumberPath<Integer> price;\n                                     NumberPath<Integer> quantity;\n                                   }\n\n   a field becomes a typed path object",
+   "note": "**필드가 경로 객체**가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 문자열이 아니라 객체인가",
+   "md": "**지금까지 컬럼·필드를 이렇게 가리켰다.**\n\n| 기술 | 어떻게 |\n|---|---|\n| JdbcTemplate | `\"item_name\"` — **문자열** |\n| MyBatis | `#{itemName}` — **문자열** |\n| JPQL | `\"i.itemName\"` — **문자열** |\n| Criteria | `item.get(\"itemName\")` — **문자열** |\n| **Querydsl** | **`item.itemName`** — **필드 참조** |\n\n**마지막만 자바 코드**다.\n\n**따라오는 것이 셋** 있다.\n\n| | |\n|---|---|\n| **오타** | **컴파일 오류** |\n| **자동완성** | `item.` 을 치면 필드가 뜬다 |\n| **리팩터링** | **필드 이름을 바꾸면 따라온다** |\n\n**세 번째가 실무에서 크다.** **`itemName` 을 `name` 으로 바꾸면**, IDE 가 **Q 타입 참조까지 같이** 바꾼다. **다시 빌드하면 새 Q 타입**이 생긴다.\n\n> **3장이었다면** `\"item_name\"` 문자열을 **눈으로 찾아** 고쳐야 했다. **찾다가 빠뜨리면 실행할 때** 안다.\n\n**6.4절에서 \"JPQL 은 필드 이름을 검증한다\" 고 했다.** **실행할 때** 였다. **여기는 컴파일할 때**다."
+  },
+  {
+   "type": "figure",
+   "caption": "타입이 연산자를 정한다",
+   "ascii": "   StringPath itemName\n     eq  ne  like  contains  startsWith  isEmpty  lower  ...\n\n   NumberPath<Integer> price\n     eq  ne  loe  goe  lt  gt  between  ...\n\n   item.itemName.loe(1000)      does not compile\n   item.price.startsWith(\"1\")   does not compile\n\n   the type decides which operators exist",
+   "note": "**틀린 조합은 코드가 안 써진다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "기본 쿼리",
+   "code": "QItem item = QItem.item;   // 또는 static import\n\n// 전체\nList<Item> all = query.selectFrom(item).fetch();\n\n// 조건\nList<Item> cheap = query.selectFrom(item)\n        .where(item.price.loe(10000))\n        .fetch();\n\n// 여러 조건 — and\nList<Item> result = query.selectFrom(item)\n        .where(item.itemName.like(\"%itemA%\"),\n               item.price.loe(10000))\n        .fetch();\n\n// 정렬과 페이징\nList<Item> page = query.selectFrom(item)\n        .where(item.price.goe(1000))\n        .orderBy(item.price.desc(), item.itemName.asc())\n        .offset(0)\n        .limit(10)\n        .fetch();\n\n// 한 건\nItem one = query.selectFrom(item)\n        .where(item.id.eq(1L))\n        .fetchOne();",
+   "note": "**`where` 에 쉼표로 나열하면 `and`** 다. **`.and()` 로 이어도 된다.**\n\n```java\n.where(item.itemName.like(\"%itemA%\").and(item.price.loe(10000)))\n```\n\n**쉼표 쪽이 8.3절에서 값을 한다.**\n\n**`static import`** 를 쓰면 더 짧다.\n\n```java\nimport static hello.itemservice.domain.QItem.item;\n\nquery.selectFrom(item).where(item.price.loe(10000)).fetch();\n```\n\n**결과 메서드**가 여럿이다.\n\n| 메서드 | |\n|---|---|\n| `fetch()` | 리스트 |\n| `fetchOne()` | 하나 — 둘이면 예외 |\n| `fetchFirst()` | 첫 건 — `limit(1)` |\n| ~~`fetchResults()`~~ | **5.0 에서 폐지** — 카운트를 따로 |\n| ~~`fetchCount()`~~ | **폐지** — `select(item.count())` |\n\n**아래 둘이 폐지된 것**에 주의한다. **복잡한 쿼리에서 카운트를 잘못 만들어서**다. **카운트는 직접 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "별칭이 필요할 때",
+   "md": "**같은 테이블을 두 번 쓰면** 별칭을 따로 만든다.\n\n```java\nQItem itemA = new QItem(\"itemA\");\nQItem itemB = new QItem(\"itemB\");\n\nquery.select(itemA)\n     .from(itemA, itemB)\n     .where(itemA.price.gt(itemB.price))\n     .fetch();\n```\n\n**생성자에 넘기는 문자열이 SQL 의 별칭**이 된다. **`QItem.item` 은 `\"item\"` 으로 미리 만들어진 것**이다.\n\n**셀프 조인이나 서브쿼리**에서 필요하다.\n\n```java\n// 서브쿼리\nquery.selectFrom(item)\n     .where(item.price.eq(\n             JPAExpressions.select(itemSub.price.max()).from(itemSub)))\n     .fetch();\n```\n\n> **JPQL 의 제약이 그대로 온다.** **`from` 절 서브쿼리(인라인 뷰)는 안 된다** — JPQL 이 지원하지 않는다. **하이버네이트 6 부터 일부 되지만** 기대하지 않는 편이 낫다.\n>\n> **그럴 때는 3장으로** 간다. **9장에서 그 이야기를** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "DTO 로 바로 받기",
+   "md": "**6.7절에서 본 DTO 조회**를 Querydsl 로 하면 이렇다.\n\n```java\n// 생성자 — 컴파일러가 검사한다\nList<ItemDto> dtos = query\n        .select(Projections.constructor(ItemDto.class,\n                item.id, item.itemName))\n        .from(item)\n        .fetch();\n\n// @QueryProjection — 더 안전하다\n// (ItemDto 생성자에 @QueryProjection 을 붙이면 QItemDto 가 생긴다)\nList<ItemDto> dtos2 = query\n        .select(new QItemDto(item.id, item.itemName))\n        .from(item)\n        .fetch();\n```\n\n**6.7절의 JPQL 판과 비교**한다.\n\n```java\n\"select new hello.dto.ItemDto(i.id, i.itemName) from Item i\"\n```\n\n**패키지 이름이 문자열**이었다. **오타를 실행할 때** 알았다.\n\n| | 검사 시점 |\n|---|---|\n| JPQL `new ...` | **실행할 때** |\n| `Projections.constructor` | **실행할 때** (생성자 시그니처) |\n| **`@QueryProjection`** | **컴파일할 때** |\n\n> **`@QueryProjection` 은 DTO 가 Querydsl 을 알게** 된다. **6.2절의 `@Entity` 와 같은 종류의 거래**다 — **안전함을 사고 결합을 지불**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 전체\nquery.selectFrom(item).fetch();\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n\n# 조건 하나\nquery.selectFrom(item).where(item.price.loe(10000)).fetch();\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.price<=?\n#   binding parameter [1] as [INTEGER] - [10000]\n\n# 조건 둘 - 쉼표\nquery.selectFrom(item)\n     .where(item.itemName.like(\"%itemA%\"), item.price.loe(10000))\n     .fetch();\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.item_name like ? escape '!' and i1_0.price<=?\n\n#   escape '!' 는 Querydsl 이 붙였다\n#   6장의 escape '' 와 다르다\n\n# 정렬 + 페이징\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.price>=?\n#              order by i1_0.price desc, i1_0.item_name asc\n#              offset ? rows fetch first ? rows only\n\n# 서브쿼리\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.price=(select max(i2_0.price) from item i2_0)\n\n# DTO\nquery.select(Projections.constructor(ItemDto.class, item.id, item.itemName))\n     .from(item).fetch();\n\n#   Hibernate: select i1_0.id, i1_0.item_name from item i1_0\n\n#   (컬럼 둘만 조회했다)\n\n# --- 타입이 안 맞으면 ---\n\n.where(item.itemName.loe(1000))\n\n#   error: incompatible types: int cannot be converted to String\n\n#   (StringPath 에 loe 는 String 만 받는다)\n\n.where(item.price.startsWith(\"1\"))\n\n#   error: cannot find symbol\n#     symbol: method startsWith(String)\n#     location: variable price of type NumberPath<Integer>\n\n#   (숫자에 startsWith 가 없다)\n\n# --- 필드를 지우고 빌드하면 ---\n#   Item 에서 quantity 를 지운다\n\n#   error: cannot find symbol\n#     symbol: variable quantity\n#     location: variable item of type QItem\n\n#   쿼리를 쓴 모든 곳이 컴파일 오류가 된다",
+   "note": "**`escape '!'`** 가 6장의 `escape ''` 와 다르다. **Querydsl 이 자기 규칙으로** 붙인 것이다. **DB 가 받는 의미는 같다.**\n\n**맨 아래 세 블록이 이 절의 성과**다. **전부 `error:`** 다.\n\n**마지막 블록이 특히 중요**하다. **엔티티에서 필드를 지우면 그 필드를 쓴 쿼리가 전부 컴파일 오류**가 된다.\n\n> **3장이었다면?** **`quantity` 컬럼을 지웠는데 SQL 문자열은 멀쩡**하다. **배포하고 실행하면 그때** 안다.\n\n**다음 절이 이 장의 본론**이다."
+  }
+ ],
+ "recap": [
+  "**엔티티 필드가 타입 있는 경로 객체**가 된다.",
+  "**`item.itemName` 은 문자열이 아니라 필드 참조**다.",
+  "**오타는 컴파일 오류, 자동완성이 되고, 리팩터링이 따라온다.**",
+  "**타입이 연산자를 제한**한다 — 숫자에 `startsWith` 가 없다.",
+  "**`where` 에 쉼표로 나열하면 `and`** 다.",
+  "**`fetchResults`·`fetchCount` 는 5.0 에서 폐지**됐다.",
+  "**같은 테이블을 두 번 쓰면 `new QItem(\"별칭\")`**.",
+  "**`from` 절 서브쿼리는 안 된다** — JPQL 의 제약.",
+  "**`@QueryProjection` 만 DTO 생성자를 컴파일 시점에** 검사한다."
+ ],
+ "drills": [
+  {
+   "task": "생성된 `QItem.java` 를 열어 본다.",
+   "done_when": "필드가 어떤 타입인지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "숫자 필드에 `startsWith` 를 써 본다.",
+   "done_when": "컴파일 오류를 봤다.",
+   "minutes": 5
+  },
+  {
+   "task": "`Projections.constructor` 로 DTO 를 조회한다.",
+   "done_when": "컬럼 둘만 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "엔티티에서 필드를 하나 지우고 빌드한다.",
+   "done_when": "쿼리 쪽이 전부 컴파일 오류가 나는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Q 타입의 필드는 무엇인가?",
+   "a": "`StringPath`·`NumberPath` 같은 타입 있는 경로 객체다."
+  },
+  {
+   "q": "타입이 있어서 무엇이 되나?",
+   "a": "그 타입에 없는 연산자를 쓰면 컴파일이 안 된다."
+  },
+  {
+   "q": "`where` 에 쉼표로 나열하면?",
+   "a": "`and` 로 이어진다."
+  },
+  {
+   "q": "`fetchResults` 가 왜 폐지됐나?",
+   "a": "복잡한 쿼리에서 카운트 쿼리를 잘못 만들어서다. 카운트는 직접 쓴다."
+  },
+  {
+   "q": "필드를 지우면 무슨 일이 생기나?",
+   "a": "그 필드를 쓴 쿼리가 전부 컴파일 오류가 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference — Code generation",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#d0e112",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Querydsl Reference — JPA",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#jpa_integration",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

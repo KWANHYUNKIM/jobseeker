@@ -501,7 +501,7 @@
           "title": "Q 타입 생성",
           "summary": "컴파일 시점에 만들어진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -509,7 +509,7 @@
           "title": "동적 쿼리",
           "summary": "조건이 넷이어도 코드가 안 는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -517,7 +517,7 @@
           "title": "적용",
           "summary": "스프링 데이터 JPA 와 같이 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",

@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "querydsl-apply",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "적용",
+ "summary": "스프링 데이터 JPA 와 같이 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Querydsl 로 구현을 갈아 끼운다.",
+  "7.5절의 자리에 끼워 넣는다.",
+  "여섯 번째 구현을 완성한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**마지막 구현**이다. **7.5절에서 만든 자리**에 넣는다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "이 책의 구현 (여섯 번째)",
+   "code": "@Repository\n@Transactional\npublic class JpaItemRepositoryV3 implements ItemRepository {\n\n    private final ItemJpaRepository repository;   // Data JPA\n    private final JPAQueryFactory query;          // Querydsl\n\n    public JpaItemRepositoryV3(ItemJpaRepository repository, EntityManager em) {\n        this.repository = repository;\n        this.query = new JPAQueryFactory(em);\n    }\n\n    @Override\n    public Item save(Item item) {\n        return repository.save(item);\n    }\n\n    @Override\n    public void update(Long itemId, ItemUpdateDto updateParam) {\n        Item findItem = repository.findById(itemId).orElseThrow();\n        findItem.setItemName(updateParam.getItemName());\n        findItem.setPrice(updateParam.getPrice());\n        findItem.setQuantity(updateParam.getQuantity());\n    }\n\n    @Override\n    public Optional<Item> findById(Long id) {\n        return repository.findById(id);\n    }\n\n    @Override\n    public List<Item> findAll(ItemSearchCond cond) {\n        return query\n                .selectFrom(item)\n                .where(likeItemName(cond.getItemName()),\n                       maxPrice(cond.getMaxPrice()))\n                .fetch();\n    }\n}",
+   "note": "**CRUD 는 Data JPA, 조회는 Querydsl** 이다.\n\n**7.3절의 `findAll` 에 있던 `if` 넷이 사라졌다.**\n\n> **이것이 실무에서 가장 흔한 모양**이다. **각자가 잘하는 것을 맡는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "실무의 모양 — 7.5절 자리에 끼우면",
+   "ascii": "   ItemRepository\n        extends JpaRepository<Item, Long>       crud\n        extends ItemRepositoryCustom            search\n\n   ItemRepositoryImpl implements ItemRepositoryCustom\n        JPAQueryFactory query\n\n   one bean:\n     save        -> SimpleJpaRepository\n     findById    -> SimpleJpaRepository\n     search      -> querydsl\n\n   7.5 built the socket. 8.4 plugs it in.",
+   "note": "**주입받는 것이 하나**가 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "구현이 하나뿐인 프로젝트라면",
+   "code": "// 1. 조회 인터페이스\npublic interface ItemRepositoryCustom {\n    List<Item> search(ItemSearchCond cond);\n}\n\n// 2. Querydsl 구현\n@RequiredArgsConstructor\npublic class ItemRepositoryImpl implements ItemRepositoryCustom {\n\n    private final JPAQueryFactory query;\n\n    @Override\n    public List<Item> search(ItemSearchCond cond) {\n        return query.selectFrom(item)\n                .where(likeItemName(cond.getItemName()),\n                       maxPrice(cond.getMaxPrice()))\n                .fetch();\n    }\n\n    private BooleanExpression likeItemName(String itemName) {\n        return StringUtils.hasText(itemName)\n                ? item.itemName.like(\"%\" + itemName + \"%\") : null;\n    }\n\n    private BooleanExpression maxPrice(Integer maxPrice) {\n        return maxPrice != null ? item.price.loe(maxPrice) : null;\n    }\n}\n\n// 3. 합친다\npublic interface ItemRepository\n        extends JpaRepository<Item, Long>, ItemRepositoryCustom {\n}",
+   "note": "**이 책의 예제는 여섯 구현 때문에 이 구조를 못 쓴다**(7.3절). **실무에서는 이쪽**이다.\n\n**어댑터 클래스가 사라졌다.** **`save`·`findById` 를 손으로 위임하지 않는다.**\n\n> **`JPAQueryFactory` 를 빈으로 등록**해 뒀으면(8.1절) **주입만 받으면** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "페이징을 붙이려면",
+   "md": "**`Page` 를 직접 만든다.**\n\n```java\npublic Page<Item> search(ItemSearchCond cond, Pageable pageable) {\n    List<Item> content = query\n            .selectFrom(item)\n            .where(likeItemName(cond.getItemName()),\n                   maxPrice(cond.getMaxPrice()))\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n\n    JPAQuery<Long> countQuery = query\n            .select(item.count())\n            .from(item)\n            .where(likeItemName(cond.getItemName()),\n                   maxPrice(cond.getMaxPrice()));\n\n    return PageableExecutionUtils.getPage(\n            content, pageable, countQuery::fetchOne);\n}\n```\n\n**조건 메서드가 두 쿼리에 재사용**된다 — 8.3절의 이점이다.\n\n**`PageableExecutionUtils`** 가 **카운트 쿼리를 생략할 때를 판단**한다.\n\n| 언제 카운트를 안 날리나 |\n|---|\n| **첫 페이지인데 결과가 페이지 크기보다 작을 때** |\n| **마지막 페이지일 때** |\n\n> **8.2절에서 `fetchResults` 가 폐지됐다**고 했다. **이것이 그 대체**다. **카운트를 내가 쓰니 조인을 뺄 수도** 있다 — 7.2절에서 말한 그 최적화다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "정렬을 `Pageable` 에서 받으려면",
+   "md": "**`Sort` 를 Querydsl 의 `OrderSpecifier` 로 바꿔야** 한다.\n\n```java\nfor (Sort.Order o : pageable.getSort()) {\n    PathBuilder<Item> path = new PathBuilder<>(item.getType(), item.getMetadata());\n    query.orderBy(new OrderSpecifier<>(\n            o.isAscending() ? Order.ASC : Order.DESC,\n            path.get(o.getProperty(), Comparable.class)));\n}\n```\n\n**`path.get(o.getProperty(), ...)` 가 문자열**이다. **타입 안전성이 여기서 새어 나간다.**\n\n> **정렬 조건을 화면에서 자유롭게 받으면** 이 문제가 생긴다. **8.2절에서 얻은 것을 여기서 조금 잃는다.**\n\n**대안은 화이트리스트**다.\n\n```java\nprivate OrderSpecifier<?> orderBy(String field) {\n    return switch (field) {\n        case \"price\" -> item.price.desc();\n        case \"itemName\" -> item.itemName.asc();\n        default -> item.id.desc();\n    };\n}\n```\n\n**5.3절의 `${}` 화이트리스트와 같은 발상**이다. **컬럼 이름을 밖에서 받는 순간, 어느 기술이든 검사가 필요**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# save (Data JPA)\nrepository.save(new Item(\"itemA\", 10000, 10));\n\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\n# update (변경 감지)\nrepository.update(1L, new ItemUpdateDto(\"itemA-updated\", 20000, 30));\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0 where i1_0.id=?\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n\n# findById (Data JPA)\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n\n# findAll (Querydsl) x4\n#   Hibernate: select i1_0.id, ... from item i1_0\n#   Hibernate: select ... where i1_0.item_name like ? escape '!'\n#   Hibernate: select ... where i1_0.price<=?\n#   Hibernate: select ... where i1_0.item_name like ? escape '!'\n#              and i1_0.price<=?\n\n# 여덟 개. 6장·7장과 같다.\n\n# --- 페이징 ---\nsearch(cond, PageRequest.of(0, 10));\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.price<=? offset ? rows fetch first ? rows only\n#   Hibernate: select count(i1_0.id) from item i1_0 where i1_0.price<=?\n\n#   쿼리 2개\n\n# --- 마지막 페이지면 ---\nsearch(cond, PageRequest.of(0, 100));   // 전체가 3건\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.price<=? offset ? rows fetch first ? rows only\n\n#   쿼리 1개. 카운트를 생략했다.\n\n# --- 여섯 구현의 최종 확인 ---\n\n#   MemoryConfig            -> 통과\n#   JdbcTemplateV1Config    -> 통과\n#   JdbcTemplateV2Config    -> 통과\n#   JdbcTemplateV3Config    -> 통과\n#   MyBatisConfig           -> 통과\n#   JpaConfig               -> 통과\n#   SpringDataJpaConfig     -> 통과\n#   QuerydslConfig          -> 통과\n\n#   같은 테스트 파일. 여덟 개의 설정.\n\n# --- 컨트롤러 ---\ngit log --oneline -- src/main/java/hello/itemservice/web/\n\n#   (비어 있다)",
+   "note": "**SQL 여덟 개가 6장·7장과 같다.** **아래가 같은 하이버네이트**다.\n\n**세 번째 블록에서 카운트 쿼리가 생략**됐다. **`PageableExecutionUtils` 가 판단한 것**이다.\n\n**맨 아래 두 블록이 이 책의 결말**이다. **설정 여덟 개가 같은 테스트를 통과**했고, **컨트롤러의 git 로그가 비어 있다.**\n\n> **1.3절에서 세운 성공 조건**이다. **\"3~8장을 다 하고 나서 컨트롤러의 git 로그가 비어 있으면 제대로 한 것이다.\"**\n\n**다음 절에서 이 기술의 대가를 센다.**"
+  }
+ ],
+ "recap": [
+  "**CRUD 는 Data JPA, 조회는 Querydsl** 이다.",
+  "**7.3절의 `if` 넷이 사라졌다.**",
+  "**실무는 `ItemRepositoryCustom` + `Impl`** 로 어댑터를 없앤다.",
+  "**페이징은 `PageableExecutionUtils`** 로 만든다.",
+  "**조건 메서드가 목록과 카운트에 재사용**된다.",
+  "**카운트 쿼리를 생략할 때가 있다** — 마지막 페이지 등.",
+  "**`Sort` 를 받으면 문자열이 다시 들어온다** — 화이트리스트로 막는다.",
+  "**SQL 여덟 개가 6장·7장과 같다.**",
+  "**설정 여덟 개가 같은 테스트를 통과했고 컨트롤러는 안 바뀌었다.**"
+ ],
+ "drills": [
+  {
+   "task": "`JpaItemRepositoryV3` 를 만들고 갈아 끼운다.",
+   "done_when": "테스트가 초록인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`ItemRepositoryCustom` 구조로도 만들어 본다.",
+   "done_when": "어댑터가 사라지는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "페이징을 붙인다.",
+   "done_when": "카운트가 생략되는 경우를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "컨트롤러의 git 로그를 확인한다.",
+   "done_when": "비어 있는 것을 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "실무의 흔한 조합은?",
+   "a": "CRUD 는 스프링 데이터 JPA, 동적 조회는 Querydsl 이다."
+  },
+  {
+   "q": "어댑터를 없애려면?",
+   "a": "`ItemRepository extends JpaRepository, ItemRepositoryCustom` 으로 합친다."
+  },
+  {
+   "q": "`PageableExecutionUtils` 가 하는 일은?",
+   "a": "카운트 쿼리를 날릴 필요가 없는 경우를 판단해 생략한다."
+  },
+  {
+   "q": "`Sort` 를 받을 때의 문제는?",
+   "a": "필드 이름이 문자열로 들어와 타입 안전성이 새어 나간다."
+  },
+  {
+   "q": "이 책의 성공 조건은 지켜졌나?",
+   "a": "지켜졌다. 설정 여덟 개가 같은 테스트를 통과했고 컨트롤러 로그는 비어 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference — JPA",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#jpa_integration",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

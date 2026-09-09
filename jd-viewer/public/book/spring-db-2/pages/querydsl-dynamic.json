@@ -1,0 +1,133 @@
+{
+ "book": "spring-db-2",
+ "id": "querydsl-dynamic",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "동적 쿼리",
+ "summary": "조건이 넷이어도 코드가 안 는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`null` 조건이 사라지는 규칙을 안다.",
+  "조건을 메서드로 뽑는다.",
+  "조건을 재사용하고 조합한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 열고 3.3절에서 문제로 세운 것**을 여기서 닫는다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙 하나",
+   "ascii": "   .where(a, b, c)\n\n   a = null   ->  dropped\n   b = null   ->  dropped\n   c != null  ->  kept\n\n   all null   ->  no where clause at all\n\n   this one rule is the whole section",
+   "note": "**`where` 에 들어온 `null` 은 사라진다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적 쿼리",
+   "code": "public List<Item> findAll(ItemSearchCond cond) {\n    String itemName = cond.getItemName();\n    Integer maxPrice = cond.getMaxPrice();\n\n    return query\n            .selectFrom(item)\n            .where(likeItemName(itemName), maxPrice(maxPrice))\n            .fetch();\n}\n\nprivate BooleanExpression likeItemName(String itemName) {\n    if (StringUtils.hasText(itemName)) {\n        return item.itemName.like(\"%\" + itemName + \"%\");\n    }\n    return null;\n}\n\nprivate BooleanExpression maxPrice(Integer maxPrice) {\n    if (maxPrice != null) {\n        return item.price.loe(maxPrice);\n    }\n    return null;\n}",
+   "note": "**쿼리 본문에 `if` 가 없다.** **`where` 한 줄**이다.\n\n**`if` 는 각 조건 메서드 안에 하나씩** 들어갔다. **조건끼리 서로를 모른다** — 5.4절의 `<where>` 와 같은 성질이다.\n\n**`null` 을 돌려주면 그 조건이 빠진다.** **`andFlag` 도, `where` 를 붙일지 말지도 안 따진다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 번째 답",
+   "ascii": "   3.3  jdbctemplate    25 lines, andFlag, 4 ifs\n   5.4  mybatis xml     10 lines, 2 <if>\n   6.4  jpql            27 lines, andFlag, 6 ifs\n   7.3  data jpa        12 lines, 4 branches\n   8.3  querydsl         4 lines, 0 ifs in the query\n\n   plus two small private methods that each hold one if",
+   "note": "**쿼리 본문의 `if` 가 0개**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건을 메서드로 뽑으면 생기는 것",
+   "md": "**단순히 짧아진 것이 아니다.** **세 가지가 따라온다.**\n\n**① 재사용된다.**\n\n```java\n// 다른 쿼리에서도\nquery.select(item.count())\n     .from(item)\n     .where(likeItemName(name))\n     .fetchOne();\n```\n\n**목록과 카운트가 같은 조건을 쓴다.** **8.2절에서 `fetchCount` 가 폐지됐다고 했다** — **조건을 메서드로 뽑아 두면 카운트를 직접 쓰는 것이 어렵지 않다.**\n\n**② 조합된다.**\n\n```java\nprivate BooleanExpression searchCond(ItemSearchCond cond) {\n    BooleanExpression name = likeItemName(cond.getItemName());\n    BooleanExpression price = maxPrice(cond.getMaxPrice());\n\n    if (name == null) return price;\n    if (price == null) return name;\n    return name.and(price);\n}\n```\n\n**`BooleanExpression` 이 값**이라 **변수에 담고 넘기고 합칠 수** 있다.\n\n> **`null` 처리가 귀찮으면 `BooleanBuilder`** 를 쓴다.\n>\n> ```java\n> BooleanBuilder builder = new BooleanBuilder();\n> if (hasText(name)) builder.and(item.itemName.like(\"%\" + name + \"%\"));\n> if (maxPrice != null) builder.and(item.price.loe(maxPrice));\n> query.selectFrom(item).where(builder).fetch();\n> ```\n>\n> **되긴 하는데 조건이 다시 한곳에 뭉친다.** **메서드로 뽑는 쪽이 재사용된다.**\n\n**③ 이름이 붙는다.**\n\n```java\n.where(재고있음(), 판매중(), 가격범위(min, max))\n```\n\n**비즈니스 언어로 읽힌다.** **`item.quantity.gt(0)` 보다 `재고있음()` 이 낫다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`null` 이 사라지는 규칙의 그늘",
+   "md": "**편한 만큼 위험**하다.\n\n```java\nprivate BooleanExpression eqStatus(Status status) {\n    return item.status.eq(status);   // status 가 null 이면?\n}\n```\n\n**`eq(null)` 은 `null` 을 돌려준다** — Querydsl 이 그렇게 만들어 뒀다. **조건이 조용히 빠진다.**\n\n**의도한 것이면 좋고, 아니면 사고**다.\n\n| 의도 | 결과 |\n|---|---|\n| \"상태 조건이 없으면 전체\" | ✅ 맞다 |\n| **\"상태가 `null` 인 것을 찾자\"** | **전체가 나온다** |\n\n**두 번째를 원하면 `isNull()`** 을 써야 한다.\n\n```java\nitem.status.isNull()\n```\n\n> **7.4절의 `price <= null` 과 반대 방향의 함정**이다. **거기서는 조건이 남아 결과가 비었고, 여기서는 조건이 빠져 전체가 나온다.**\n>\n> **둘 다 예외가 안 난다.** **테스트가 유일한 방어**다 — **2.5절의 네 케이스**가 5장·7장·8장 내내 같은 일을 한다.\n\n**`where` 에 전부 `null` 이면 `where` 절이 아예 없다.** **`delete`·`update` 에서는 위험**하다.\n\n```java\nquery.delete(item).where(조건들).execute();   // 조건이 다 null 이면 전체 삭제\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "조건이 넷이어도",
+   "md": "**3.3절에서 \"조건이 넷이면 SQL 이 열여섯 가지\" 라고 셌다.**\n\n```java\nreturn query.selectFrom(item)\n        .where(likeItemName(cond.getItemName()),\n               maxPrice(cond.getMaxPrice()),\n               minQuantity(cond.getMinQuantity()),\n               eqCategory(cond.getCategoryId()))\n        .fetch();\n```\n\n**줄이 두 개 늘었다.** **메서드가 두 개 늘었다.**\n\n| 조건 | 3.3절 | 8.3절 |\n|---|---|---|\n| 2 | 25줄 | **4줄 + 메서드 2** |\n| 3 | 35줄쯤 | **5줄 + 메서드 3** |\n| 4 | 45줄쯤 | **6줄 + 메서드 4** |\n\n**선형으로 는다.** **2ⁿ 이 사라졌다.**\n\n> **정확히 말하면 SQL 은 여전히 열여섯 가지**다. **다만 내가 그 열여섯을 관리하지 않는다.** **5.4절의 `<where>` 와 같은 이야기**인데, **여기서는 자바 컴파일러가 검사까지** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 조건 없음\nfindAll(new ItemSearchCond(null, null));\n\n#   Hibernate: select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#              from item i1_0\n\n#   where 절이 아예 없다\n\n# 이름만\nfindAll(new ItemSearchCond(\"itemA\", null));\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.item_name like ? escape '!'\n#   binding parameter [1] as [VARCHAR] - [%itemA%]\n\n# 가격만\nfindAll(new ItemSearchCond(null, 10000));\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.price<=?\n\n#   3.3절에서 가장 잘 깨지던 경우다\n#   and 를 붙일 일이 없었다\n\n# 둘 다\nfindAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.item_name like ? escape '!' and i1_0.price<=?\n\n# --- 다섯 기술의 세 번째 경우 ---\n\n#   3장  select ... where price <= ?          (andFlag 를 맞춰야 나온다)\n#   5장  select ... WHERE price <= ?          (<where> 가 and 를 지웠다)\n#   6장  select ... where i1_0.price<=?       (andFlag 를 맞춰야 나온다)\n#   7장  select ... where i1_0.price<=?       (전용 메서드를 호출했다)\n#   8장  select ... where i1_0.price<=?       (null 이 사라졌다)\n\n# 같은 SQL. 다섯 가지 방법.\n\n# --- 조건을 하나 더 추가하고 ---\n\n.where(likeItemName(name), maxPrice(price), minQuantity(qty))\n\nfindAll(name=null, price=10000, qty=5);\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n#              where i1_0.price<=? and i1_0.quantity>=?\n\n#   기존 코드를 안 고쳤다\n\n# --- 실수: eq(null) ---\n\n.where(item.itemName.eq(null))\n\n#   Hibernate: select i1_0.id, ... from item i1_0\n\n#   조건이 사라졌다. 예외 없음. 전체가 나온다.\n\n# --- 컴파일 오류로 막히는 것 ---\n\n.where(item.price.loe(\"10000\"))\n\n#   error: incompatible types: String cannot be converted to Integer",
+   "note": "**첫 블록에 `where` 가 없다.** **`<where>` 태그가 한 일을 `null` 규칙이** 했다.\n\n**세 번째 블록**이 3.3절에서 가장 잘 깨지던 경우다. **여기서는 깨질 자리가 없다** — `and` 를 붙이는 코드가 없으니까.\n\n**중간 비교가 이 책의 결론**이다. **같은 SQL 에 다섯 가지 방법.** **1.1절의 가설이 마지막 기술에서도 확인**됐다.\n\n**맨 아래 두 블록이 이 절의 양면**이다. **`eq(null)` 은 조용하고, 타입 오류는 시끄럽다.**\n\n**다음 절에서 스프링 데이터 JPA 와 합친다.**"
+  }
+ ],
+ "recap": [
+  "**`where` 의 `null` 조건은 사라진다** — 규칙 하나가 전부다.",
+  "**쿼리 본문에 `if` 가 0개**다.",
+  "**조건 메서드가 서로를 모른다** — 5.4절 `<where>` 와 같은 성질.",
+  "**`BooleanExpression` 이 값**이라 재사용·조합된다.",
+  "**목록과 카운트가 같은 조건**을 쓴다.",
+  "**조건에 이름이 붙는다** — `재고있음()`.",
+  "**`eq(null)` 은 조건을 조용히 없앤다** — 7.4절과 반대 방향의 함정.",
+  "**`delete`·`update` 에서 전부 `null` 이면 전체가 대상**이다.",
+  "**조건이 늘어도 선형**으로 는다 — 2ⁿ 이 사라졌다."
+ ],
+ "drills": [
+  {
+   "task": "조건 메서드 둘로 `findAll` 을 만든다.",
+   "done_when": "네 경우의 SQL 을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "조건을 하나 더 추가한다.",
+   "done_when": "기존 코드를 안 고친 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 조건 메서드로 카운트 쿼리를 만든다.",
+   "done_when": "재사용되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`eq(null)` 을 써 본다.",
+   "done_when": "조건이 조용히 사라지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Querydsl 의 동적 쿼리 규칙 하나는?",
+   "a": "`where` 에 넘긴 `null` 조건은 사라진다."
+  },
+  {
+   "q": "쿼리 본문에 `if` 가 몇 개인가?",
+   "a": "0개다. 각 조건 메서드 안에 하나씩 있다."
+  },
+  {
+   "q": "조건을 메서드로 뽑으면 무엇이 좋나?",
+   "a": "재사용되고, 조합되고, 이름이 붙는다."
+  },
+  {
+   "q": "`eq(null)` 의 함정은?",
+   "a": "조건이 조용히 빠져 전체가 나온다. `null` 인 것을 찾으려면 `isNull()` 이다."
+  },
+  {
+   "q": "조건이 넷이면 코드가 얼마나 느나?",
+   "a": "선형으로 는다. 줄 넷과 메서드 넷이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference — JPA",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#jpa_integration",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
