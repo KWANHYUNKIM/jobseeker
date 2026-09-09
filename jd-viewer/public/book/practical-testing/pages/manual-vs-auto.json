@@ -1,0 +1,120 @@
+{
+ "book": "practical-testing",
+ "id": "manual-vs-auto",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "수동 테스트와 자동화된 테스트",
+ "summary": "콘솔 출력은 검증이 아니다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 자동화를 만드는지 안다.",
+  "`System.out` 의 한계를 안다.",
+  "첫 단언을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절의 테스트는 `PASSED` 였다.** **`add()` 를 지워도 `PASSED`** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 것을 확인하는 세 방법",
+   "ascii": "   three ways to check the same thing\n\n   run the app, look at the screen\n     needs a human, every time, forever\n\n   main() with System.out\n     needs a human to read two lines\n     the program still does not know if it is right\n\n   a test with an assertion\n     the program knows\n     and it says so with an exit code",
+   "note": "**세 번째만 프로그램이 안다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자동화를 만드는 것은 단언이다",
+   "md": "**`@Test` 가 붙었다고 자동화가** 아니다.\n\n```java\n@Test\nvoid add() {\n    cafeKiosk.add(new Americano());\n    System.out.println(cafeKiosk.getBeverages().size());\n}\n```\n\n| | |\n|---|---|\n| **JUnit 이 실행** | ✅ |\n| **CI 에서 돌아감** | ✅ |\n| **결과를 판정** | ❌ |\n\n> **사람이 로그를 봐야** 한다. **서가 여덟 권이 한 일**과 같다(1.2절).\n\n**단언이 붙으면 달라진다.**\n\n```java\nassertThat(cafeKiosk.getBeverages()).hasSize(1);\n```\n\n> **틀리면 예외를** 던진다. **JUnit 이 실패로** 잡는다.\n> **그레이들이 빌드를 실패**시킨다. **CI 가 머지를** 막는다.\n>\n> **이 사슬이 자동화**다.\n\n**핵심은 종료 코드**다.\n\n```\nBUILD FAILED -> exit code 1\n```\n\n> **`println` 은 절대 `1` 을 만들 수** 없다.\n> **아무리 이상한 값을 찍어도 빌드는** 성공한다.\n\n**수동 테스트가 나쁜 건** 아니다.\n\n| | |\n|---|---|\n| **탐색적 테스트** | 뭐가 이상한지 찾을 때 |\n| **UX 확인** | 사람이 봐야 한다 |\n| **최초 구현** | 손으로 돌려 보는 게 빠를 때 |\n\n> **문제는 그게 유일한 검증일** 때다.\n> **반복되면 자동화**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 자동화인가",
+   "ascii": "   what makes it automated\n\n   the build fails\n\n   BUILD SUCCESSFUL   ->  exit code 0  ->  ci goes green\n   BUILD FAILED       ->  exit code 1  ->  ci stops the merge\n\n   a println can never produce exit code 1",
+   "note": "**빌드가 실패하는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자동화의 조건 셋",
+   "md": "**① 판정한다**\n\n> **단언이** 있어야 한다.\n\n**② 반복 가능하다**\n\n```java\n@Test\nvoid createOrder() {\n    Order order = cafeKiosk.createOrder();   // LocalDateTime.now()\n    assertThat(order.getBeverages()).hasSize(1);\n}\n```\n\n> **새벽 3시에 돌리면** 깨진다(1.3절).\n> **언제 돌려도 같은 결과여야** 한다.\n>\n> **2.6절**의 주제다.\n\n**③ 독립적이다**\n\n```java\nclass CafeKioskTest {\n    CafeKiosk cafeKiosk = new CafeKiosk();   // 필드로 두면?\n\n    @Test void add1() { cafeKiosk.add(new Americano()); ... }\n    @Test void add2() { assertThat(cafeKiosk.getBeverages()).isEmpty(); }\n}\n```\n\n> **JUnit 5 는 테스트마다 인스턴스를 새로** 만든다. **이건 괜찮다.**\n>\n> **`static` 이거나 DB 를 쓰면** 다르다. **5.9절**에서 다룬다.\n>\n> **실행 순서에 기대면** 안 된다. **JUnit 은 순서를 보장 안** 한다.\n\n**셋을 다 지켜야 자동화**다.\n\n> **①만 있고 ②가 없으면 7.11절의 \"가끔 깨지는 테스트\"** 가 된다.\n> **그게 가장 나쁜 상태**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- ① println 만 있는 테스트 ---\n\n@Test\nvoid add() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n    System.out.println(\">>> \" + cafeKiosk.getBeverages().size());\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() STANDARD_OUT\n    >>> 1\nCafeKioskTest > add() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n$ echo $?\n0\n\n# --- add() 를 망가뜨린다 ---\n\npublic void add(Beverage beverage) {\n    // beverages.add(beverage);\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() STANDARD_OUT\n    >>> 0\nCafeKioskTest > add() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n$ echo $?\n0\n\n#   0 을 찍고 통과했다\n#   종료 코드도 0 이다\n\n#   CI 는 초록이다. 머지된다\n\n# --- ② 단언을 붙인다 ---\n\n@Test\nvoid add() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n    assertThat(cafeKiosk.getBeverages()).hasSize(1);\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() FAILED\n    java.lang.AssertionError:\n    Expected size: 1 but was: 0 in:\n    []\n        at CafeKioskTest.add(CafeKioskTest.java:14)\n\n1 test completed, 1 failed\n\n> Task :test FAILED\n\nBUILD FAILED in 1s\n\n$ echo $?\n1\n\n#   종료 코드가 1 이다\n\n#   이게 자동화다\n\n# --- 되돌리면 ---\n\npublic void add(Beverage beverage) {\n    beverages.add(beverage);\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() PASSED\n\nBUILD SUCCESSFUL in 1s\n\n$ echo $?\n0\n\n# --- ③ 반복 가능한지 ---\n\n@Test\nvoid createOrder() {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n    cafeKiosk.add(new Americano());\n\n    Order order = cafeKiosk.createOrder();\n\n    assertThat(order.getBeverages()).hasSize(1);\n}\n\n#   (오전 11시)\nCafeKioskTest > createOrder() PASSED\n\n#   (새벽 3시. 시스템 시계를 바꿔서)\nCafeKioskTest > createOrder() FAILED\n    java.lang.IllegalArgumentException: 주문 시간이 아닙니다.\n        at CafeKiosk.createOrder(CafeKiosk.java:38)\n\n#   코드를 안 고쳤는데 결과가 다르다\n\n#   단언은 있는데 자동화가 아니다\n#   2.6절에서 고친다\n\n# --- ④ 독립적인지 ---\n\nclass CafeKioskTest {\n    CafeKiosk cafeKiosk = new CafeKiosk();\n\n    @Test\n    void add() {\n        cafeKiosk.add(new Americano());\n        assertThat(cafeKiosk.getBeverages()).hasSize(1);\n    }\n\n    @Test\n    void empty() {\n        assertThat(cafeKiosk.getBeverages()).isEmpty();\n    }\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() PASSED\nCafeKioskTest > empty() PASSED\n\n#   둘 다 통과했다\n\n#   JUnit 5 가 테스트마다 인스턴스를 새로 만들기 때문이다\n\n# --- static 이면 ---\n\nstatic CafeKiosk cafeKiosk = new CafeKiosk();\n\n$ ./gradlew test\n\nCafeKioskTest > add() PASSED\nCafeKioskTest > empty() FAILED\n    java.lang.AssertionError:\n    Expecting empty but was: [Americano(name=아메리카노, price=4000)]\n\n#   앞 테스트가 남긴 것이 다음 테스트를 깬다\n\n#   실행 순서를 바꾸면 결과가 바뀐다\n\n# --- 다음 절에서 ---\n\n#   JUnit5 의 기본 애노테이션들을 본다",
+   "note": "**`add()` 를 망가뜨려도 `println` 판은 `PASSED` 에 종료 코드 `0`** 이다. **CI 는 초록**이다.\n\n**단언을 붙이면 `BUILD FAILED` 에 종료 코드 `1`** 이다. **이게 자동화**다.\n\n**`createOrder` 는 단언이 있는데도 새벽에** 깨진다. **반복 가능하지 않다.**\n\n**필드로 두면 JUnit 5 가 인스턴스를 새로 만들어** 준다. **`static` 이면 앞 테스트가 다음 테스트를** 깬다."
+  }
+ ],
+ "recap": [
+  "**`@Test` 가 붙었다고 자동화가** 아니다.",
+  "**자동화를 만드는 건 단언**이다.",
+  "**핵심은 종료 코드** — `println` 은 `1` 을 못 만든다.",
+  "**빌드 실패 → CI 가 머지를 막는다** 는 사슬이 자동화다.",
+  "**수동 테스트가 나쁜 건 아니다** — 유일한 검증일 때 문제다.",
+  "**조건 셋** — 판정하고, 반복 가능하고, 독립적이다.",
+  "**`createOrder` 는 단언이 있어도 새벽에** 깨진다.",
+  "**JUnit 5 는 테스트마다 인스턴스를 새로** 만든다.",
+  "**`static` 이면 앞 테스트가 다음 테스트를** 깬다."
+ ],
+ "drills": [
+  {
+   "task": "`println` 판과 단언 판의 종료 코드를 비교한다.",
+   "done_when": "0 과 1 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "시스템 시계를 새벽으로 바꿔 `createOrder` 테스트를 돌린다.",
+   "done_when": "깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "필드를 `static` 으로 바꿔 본다.",
+   "done_when": "다음 테스트가 깨지는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇이 테스트를 자동화하나?",
+   "a": "단언이다. 틀리면 예외가 나고 빌드가 실패해 종료 코드 1 이 된다."
+  },
+  {
+   "q": "`println` 만 있는 테스트의 문제는?",
+   "a": "프로그램이 맞는지 모르고 사람이 로그를 읽어야 한다."
+  },
+  {
+   "q": "자동화의 조건 셋은?",
+   "a": "판정한다, 반복 가능하다, 독립적이다."
+  },
+  {
+   "q": "단언이 있는데도 자동화가 아닌 경우는?",
+   "a": "`LocalDateTime.now()` 처럼 실행 시점에 따라 결과가 달라질 때다."
+  },
+  {
+   "q": "JUnit 5 는 인스턴스를 언제 만드나?",
+   "a": "테스트 메서드마다 새로 만든다. 그래서 필드가 공유되지 않는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  }
+ ]
+}

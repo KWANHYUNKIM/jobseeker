@@ -1,0 +1,126 @@
+{
+ "book": "practical-testing",
+ "id": "junit5-first",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "JUnit5 로 첫 테스트",
+ "summary": "빨간 막대부터 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "생명주기 애노테이션을 안다.",
+  "예외를 기대하는 법을 안다.",
+  "실패부터 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**애노테이션 몇 개면** 된다. **순서를 알면 나머지는 조합**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "실행 순서",
+   "ascii": "   the order things run in\n\n   @BeforeAll        once, before everything.  static.\n     @BeforeEach     before each test\n       @Test         one test\n     @AfterEach      after each test\n     @BeforeEach\n       @Test\n     @AfterEach\n   @AfterAll         once, after everything.  static.\n\n   BeforeEach runs again for every test, on a new instance",
+   "note": "**`Each` 는 매번, `All` 은 한 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "생명주기 애노테이션",
+   "md": "| | 언제 | `static` |\n|---|---|---|\n| `@BeforeAll` | 클래스에서 한 번 | **필요** |\n| `@BeforeEach` | 테스트마다 | 아니다 |\n| `@Test` | | |\n| `@AfterEach` | 테스트마다 | 아니다 |\n| `@AfterAll` | 클래스에서 한 번 | **필요** |\n\n**`static` 인 이유**\n\n> **JUnit 5 가 테스트마다 인스턴스를 새로 만들어서**다(2.1절).\n> **`All` 은 인스턴스 하나에 속할 수가** 없다.\n>\n> **`@TestInstance(Lifecycle.PER_CLASS)` 를 붙이면 `static` 을 뺄 수** 있다.\n> **대신 인스턴스가 공유돼 2.1절의 문제**가 생긴다.\n\n**`@BeforeEach` 를 언제 쓰나**\n\n```java\n@BeforeEach\nvoid setUp() {\n    cafeKiosk = new CafeKiosk();\n}\n```\n\n> **매번 새로 만드는 거라면 필드 초기화로도** 된다.\n>\n> **`@BeforeEach` 가 커지면 문제**다 — **7.5절에서 그 대가를** 잰다.\n> **테스트를 읽을 때 위로 올라가야** 한다.\n\n**`@DisplayName`**\n\n```java\n@DisplayName(\"음료 한 잔을 추가하면 주문 목록에 담긴다\")\n@Test\nvoid add() { }\n```\n\n> **실행 결과에 이 문장이** 나온다.\n> **4.2절에서 이걸 제대로** 다룬다.\n\n**`@Disabled`**\n\n> **꺼 둔다.** **CI 에서 건너뛴다.**\n>\n> **쌓이면 아무도 안 본다.** **지우는 게 낫다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "첫 테스트들",
+   "code": "class CafeKioskTest {\n\n    private CafeKiosk cafeKiosk;\n\n    @BeforeEach\n    void setUp() {\n        cafeKiosk = new CafeKiosk();\n    }\n\n    @DisplayName(\"음료 한 잔을 추가하면 주문 목록에 담긴다\")\n    @Test\n    void add() {\n        cafeKiosk.add(new Americano());\n\n        assertThat(cafeKiosk.getBeverages()).hasSize(1);\n        assertThat(cafeKiosk.getBeverages().get(0).getName()).isEqualTo(\"아메리카노\");\n    }\n\n    @DisplayName(\"주문 목록에 없는 음료를 빼면 예외가 난다\")\n    @Test\n    void removeNotExists() {\n        assertThatThrownBy(() -> cafeKiosk.remove(new Latte()))\n                .isInstanceOf(IllegalArgumentException.class)\n                .hasMessage(\"주문 목록에 없는 음료입니다.\");\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "예외를 기대하는 두 방법",
+   "ascii": "   two ways to expect an exception\n\n   assertThatThrownBy(() -> cafeKiosk.remove(latte))\n     .isInstanceOf(IllegalArgumentException.class)\n     .hasMessage(\"주문 목록에 없는 음료입니다.\")\n\n   try { cafeKiosk.remove(latte); fail(); }\n   catch (IllegalArgumentException e) { }\n\n   the second one passes even when nothing is thrown,\n   if you forget the fail() call",
+   "note": "**두 번째는 `fail()` 을 빼먹으면 항상 통과**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빨간 막대부터 본다",
+   "md": "**두 번째 테스트는 지금 실패**한다.\n\n```java\npublic void remove(Beverage beverage) {\n    beverages.remove(beverage);   // 예외를 안 던진다\n}\n```\n\n> **1.3절에서 \"조용하다\" 고 한 그것**이다.\n>\n> **테스트가 요구사항을 먼저** 말했다. **코드가 아직 안 따라왔다.**\n>\n> **이게 3장의 TDD** 다. **여기서는 우연히 그 순서가** 됐다.\n\n**실패 메시지를 읽는다.**\n\n```\nExpecting code to raise a throwable.\n```\n\n> **\"예외가 날 줄 알았는데 안 났다\"** 다. **정확하다.**\n\n**고친다.**\n\n```java\npublic void remove(Beverage beverage) {\n    if (!beverages.contains(beverage)) {\n        throw new IllegalArgumentException(\"주문 목록에 없는 음료입니다.\");\n    }\n    beverages.remove(beverage);\n}\n```\n\n**그런데 또 실패**한다.\n\n> **`Latte` 에 `equals` 가** 없다. **`contains` 가 참조 비교**를 한다.\n>\n> **테스트가 설계 문제를** 찾아냈다. **1.2절의 \"설계 압력\"** 이다.\n\n**`try-catch` 판을 안 쓰는 이유**\n\n```java\ntry {\n    cafeKiosk.remove(new Latte());\n    fail(\"예외가 나야 한다\");\n} catch (IllegalArgumentException e) {\n}\n```\n\n> **`fail()` 을 빼먹으면 예외가 안 나도** 통과한다.\n> **네 줄이고 읽기도** 나쁘다.\n>\n> **`assertThatThrownBy` 가 한 문장**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 첫 실행 ---\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 FAILED\n    java.lang.AssertionError:\n    Expecting code to raise a throwable.\n        at CafeKioskTest.removeNotExists(CafeKioskTest.java:31)\n\n2 tests completed, 1 failed\n\nBUILD FAILED in 1s\n\n#   테스트가 요구사항을 먼저 말했다\n\n# --- remove 에 예외를 넣는다 ---\n\npublic void remove(Beverage beverage) {\n    if (!beverages.contains(beverage)) {\n        throw new IllegalArgumentException(\"주문 목록에 없는 음료입니다.\");\n    }\n    beverages.remove(beverage);\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 PASSED\n\nBUILD SUCCESSFUL in 1s\n\n#   초록이다\n\n# --- 그런데 있는 음료를 빼면 ---\n\n@DisplayName(\"주문 목록에 있는 음료를 뺀다\")\n@Test\nvoid remove() {\n    cafeKiosk.add(new Latte());\n\n    cafeKiosk.remove(new Latte());\n\n    assertThat(cafeKiosk.getBeverages()).isEmpty();\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 주문 목록에 있는 음료를 뺀다 FAILED\n    java.lang.IllegalArgumentException: 주문 목록에 없는 음료입니다.\n        at CafeKiosk.remove(CafeKiosk.java:24)\n\n#   담았는데 없다고 한다\n\n#   new Latte() 두 개가 다른 객체다\n#   Latte 에 equals 가 없어 contains 가 참조를 비교한다\n\n#   테스트가 설계 문제를 찾았다\n\n# --- equals 를 넣는다 ---\n\n@EqualsAndHashCode\npublic class Latte implements Beverage { ... }\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > 음료 한 잔을 추가하면 주문 목록에 담긴다 PASSED\nCafeKioskTest > 주문 목록에 없는 음료를 빼면 예외가 난다 PASSED\nCafeKioskTest > 주문 목록에 있는 음료를 뺀다 PASSED\n\nBUILD SUCCESSFUL in 1s\n\n# --- 생명주기 순서를 눈으로 ---\n\nclass LifecycleTest {\n    @BeforeAll  static void beforeAll()  { System.out.println(\"beforeAll\"); }\n    @BeforeEach void beforeEach() { System.out.println(\"  beforeEach\"); }\n    @Test       void test1()      { System.out.println(\"    test1\"); }\n    @Test       void test2()      { System.out.println(\"    test2\"); }\n    @AfterEach  void afterEach()  { System.out.println(\"  afterEach\"); }\n    @AfterAll   static void afterAll()   { System.out.println(\"afterAll\"); }\n}\n\n$ ./gradlew test --tests LifecycleTest\n\nbeforeAll\n  beforeEach\n    test1\n  afterEach\n  beforeEach\n    test2\n  afterEach\nafterAll\n\n#   Each 는 두 번, All 은 한 번이다\n\n# --- @BeforeAll 에서 static 을 빼면 ---\n\n@BeforeAll void beforeAll() { }\n\n$ ./gradlew test --tests LifecycleTest\n\nLifecycleTest > initializationError FAILED\n    org.junit.platform.commons.JUnitException:\n    @BeforeAll method 'void LifecycleTest.beforeAll()' must be static\n    unless the test class is annotated with @TestInstance(Lifecycle.PER_CLASS).\n\n#   테스트가 아예 안 돈다\n\n# --- try-catch 판이 위험한 이유 ---\n\n@Test\nvoid removeNotExistsWithTryCatch() {\n    try {\n        cafeKiosk.remove(new Latte());\n        // fail() 을 빼먹었다\n    } catch (IllegalArgumentException e) {\n    }\n}\n\n#   remove 에서 예외를 다시 없애고\n\npublic void remove(Beverage beverage) {\n    beverages.remove(beverage);\n}\n\n$ ./gradlew test --tests CafeKioskTest\n\nCafeKioskTest > removeNotExistsWithTryCatch PASSED\n\n#   예외가 안 나는데 통과한다\n\n#   assertThatThrownBy 는 이 경우 반드시 실패한다\n\n# --- 다음 절에서 ---\n\n#   단언을 제대로 쓴다",
+   "note": "**두 번째 테스트가 `Expecting code to raise a throwable`** 로 실패한다. **테스트가 요구사항을 먼저** 말했다.\n\n**예외를 넣으니 초록**인데, **있는 음료를 빼는 테스트가 다시** 깨진다. **`Latte` 에 `equals` 가 없어 참조 비교**다. **테스트가 설계 문제를** 찾았다.\n\n**생명주기 출력이 `Each` 두 번, `All` 한 번**이다.\n\n**`@BeforeAll` 에서 `static` 을 빼면 테스트가 아예 안** 돈다.\n\n**`try-catch` 에서 `fail()` 을 빼먹으면 예외가 안 나도** 통과한다."
+  }
+ ],
+ "recap": [
+  "**`@BeforeEach` 는 매번, `@BeforeAll` 은 한 번**이다.",
+  "**`All` 은 `static`** 이어야 한다 — 인스턴스가 매번 새로 만들어져서다.",
+  "**`@BeforeEach` 가 커지면 읽기 어려워**진다 — 7.5절.",
+  "**`assertThatThrownBy` 로 예외를** 기대한다.",
+  "**`try-catch` 판은 `fail()` 을 빼먹으면 항상** 통과한다.",
+  "**빨간 막대부터 본다** — 테스트가 요구사항을 먼저 말했다.",
+  "**`equals` 가 없어 `contains` 가 참조를** 비교했다.",
+  "**테스트가 설계 문제를** 찾아냈다.",
+  "**`@Disabled` 는 쌓이면 아무도 안 본다** — 지우는 게 낫다."
+ ],
+ "drills": [
+  {
+   "task": "생명주기 애노테이션 순서를 출력해 본다.",
+   "done_when": "`Each` 두 번, `All` 한 번을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@BeforeAll` 에서 `static` 을 빼 본다.",
+   "done_when": "`must be static` 오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`remove` 예외 테스트를 실패부터 짠다.",
+   "done_when": "빨간 막대를 보고 고쳤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`try-catch` 에서 `fail()` 을 빼 본다.",
+   "done_when": "예외가 안 나도 통과하는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@BeforeAll` 이 왜 `static` 인가?",
+   "a": "JUnit 5 가 테스트마다 인스턴스를 새로 만들어 인스턴스에 속할 수 없어서다."
+  },
+  {
+   "q": "예외를 어떻게 기대하나?",
+   "a": "`assertThatThrownBy(() -> ...).isInstanceOf(...)` 다."
+  },
+  {
+   "q": "`try-catch` 판의 위험은?",
+   "a": "`fail()` 을 빼먹으면 예외가 안 나도 통과한다."
+  },
+  {
+   "q": "`contains` 가 왜 실패했나?",
+   "a": "`equals` 가 없어 참조를 비교했다."
+  },
+  {
+   "q": "빨간 막대를 먼저 보면 뭐가 좋은가?",
+   "a": "테스트가 실제로 그 동작을 지키고 있는지 확인된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

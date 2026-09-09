@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "project-setup",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "프로젝트 세팅",
+ "summary": "의존성 셋과 첫 실행.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "테스트 의존성이 무엇을 가져오는지 안다.",
+  "테스트가 어디 사는지 안다.",
+  "첫 테스트를 돌린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**의존성 한 줄**이다. **그 한 줄이 일곱 개를** 가져온다."
+  },
+  {
+   "type": "code",
+   "lang": "gradle",
+   "caption": "build.gradle",
+   "code": "dependencies {\n    implementation 'org.springframework.boot:spring-boot-starter'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\ntasks.named('test') {\n    useJUnitPlatform()\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄이 가져오는 것",
+   "ascii": "   what spring-boot-starter-test brings\n\n   junit 5        the runner and the annotations\n   assertj        assertThat\n   mockito        mock, when, verify\n   hamcrest       older matchers. mostly unused here.\n   jsonassert     comparing json\n   xmlunit        comparing xml\n   spring-test    MockMvc, @SpringBootTest\n\n   one line in build.gradle. seven libraries.",
+   "note": "**일곱 개**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`useJUnitPlatform()` 이 필요한 이유",
+   "md": "**그레이들의 기본은 JUnit 4** 다.\n\n```gradle\ntasks.named('test') {\n    useJUnitPlatform()\n}\n```\n\n> **없으면 `@Test` 가 붙은 메서드를 아예 안** 찾는다.\n>\n> ```\n> > Task :test NO-SOURCE\n> ```\n>\n> **1.3절에서 본 그 메시지**다. **테스트를 짜 놓고도 저게 나오면 이 설정**이다.\n\n**부트 이니셜라이저가 자동으로 넣어** 준다.\n\n> **직접 만든 프로젝트에서 빠뜨리기 쉽다.**\n\n**`testImplementation` 과 `implementation` 의 차이**\n\n| | |\n|---|---|\n| `implementation` | **프로덕션에 포함** |\n| `testImplementation` | **테스트에서만** |\n\n> **AssertJ 를 프로덕션 코드에서 쓸 수** 없다. **그게 맞다.**\n>\n> **7.3절에서 \"테스트를 위한 프로덕션 코드\" 를 다룰 때 이 경계가** 나온다.\n\n**JUnit 4 를 빼는 것도 흔한** 일이다.\n\n```gradle\ntestImplementation('org.springframework.boot:spring-boot-starter-test') {\n    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'\n}\n```\n\n> **부트 2.4 부터는 기본으로 안** 들어온다. **레거시에서 보면 이것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트가 사는 곳",
+   "ascii": "   where tests live\n\n   src/main/java/sample/cafekiosk/unit/CafeKiosk.java\n   src/test/java/sample/cafekiosk/unit/CafeKioskTest.java\n\n   same package, different source set\n\n   so the test can reach package private members\n   and the test jar never ships",
+   "note": "**같은 패키지, 다른 소스 세트**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 같은 패키지에 두나",
+   "md": "**패키지 프라이빗에 접근**할 수 있다.\n\n```java\n// main\nclass OrderCalculator {          // public 이 아니다\n    int calculate(...) { }\n}\n\n// test — 같은 패키지라 보인다\nclass OrderCalculatorTest { }\n```\n\n> **테스트 때문에 `public` 으로 열지 않아도** 된다.\n>\n> **7.3절의 주제**다 — **테스트를 위해 프로덕션 코드를 어디까지 바꿀까.**\n\n**소스 세트는 다르다.**\n\n| | |\n|---|---|\n| `src/main` | **jar 에 들어간다** |\n| `src/test` | **안 들어간다** |\n\n> **패키지가 같아도 배포물에는 테스트가 안** 실린다.\n\n**이름 규칙**\n\n```\nCafeKiosk      -> CafeKioskTest\nOrderService   -> OrderServiceTest\n```\n\n> **그레이들이 기본으로 `*Test` 를** 찾는다.\n> **`Tests` 나 `*IT`(통합)를 쓰려면 설정을** 바꾼다.\n>\n> **7.10절에서 이름 짓기를** 다룬다.\n\n**테스트 클래스와 메서드는 `public` 이 아니어도** 된다.\n\n```java\nclass CafeKioskTest {          // public 없음\n    @Test\n    void add() { }             // public 없음\n}\n```\n\n> **JUnit 4 는 `public` 이 필요**했다. **JUnit 5 는 아니다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 첫 테스트 ---\n\n// src/test/java/sample/cafekiosk/unit/CafeKioskTest.java\nclass CafeKioskTest {\n\n    @Test\n    void add() {\n        CafeKiosk cafeKiosk = new CafeKiosk();\n        cafeKiosk.add(new Americano());\n\n        System.out.println(\">>> 담긴 음료 수: \" + cafeKiosk.getBeverages().size());\n        System.out.println(\">>> 담긴 음료: \" + cafeKiosk.getBeverages().get(0).getName());\n    }\n}\n\n$ ./gradlew test\n\n> Task :test\n\nCafeKioskTest > add() PASSED\n\nBUILD SUCCESSFUL in 2s\n\n#   NO-SOURCE 가 아니다. 하나 돌았다\n\n#   그런데 System.out 이 안 보인다\n\n# --- 출력을 보려면 ---\n\ntasks.named('test') {\n    useJUnitPlatform()\n    testLogging {\n        showStandardStreams = true\n        events \"passed\", \"skipped\", \"failed\"\n    }\n}\n\n$ ./gradlew test\n\nCafeKioskTest > add() STANDARD_OUT\n    >>> 담긴 음료 수: 1\n    >>> 담긴 음료: 아메리카노\n\nCafeKioskTest > add() PASSED\n\n#   보인다\n\n#   그런데 이건 여전히 사람이 읽는 것이다\n#   2.1절의 주제다\n\n# --- useJUnitPlatform() 을 빼면 ---\n\ntasks.named('test') {\n    // useJUnitPlatform()\n}\n\n$ ./gradlew test\n\n> Task :test NO-SOURCE\n\nBUILD SUCCESSFUL in 480ms\n\n#   테스트 파일이 있는데 NO-SOURCE 다\n\n#   그레이들 기본이 JUnit 4 라 @Test 를 못 알아본다\n\n#   BUILD SUCCESSFUL 이라 눈치채기 어렵다\n\n# --- 의존성이 뭘 가져왔는지 ---\n\n$ ./gradlew dependencies --configuration testRuntimeClasspath | head -30\n\ntestRuntimeClasspath\n+--- org.springframework.boot:spring-boot-starter-test -> 3.2.1\n|    +--- org.springframework.boot:spring-boot-starter:3.2.1\n|    +--- org.springframework.boot:spring-boot-test:3.2.1\n|    +--- com.jayway.jsonpath:json-path:2.8.0\n|    +--- jakarta.xml.bind:jakarta.xml.bind-api:4.0.1\n|    +--- net.minidev:json-smart:2.5.0\n|    +--- org.assertj:assertj-core:3.24.2\n|    +--- org.awaitility:awaitility:4.2.0\n|    +--- org.hamcrest:hamcrest:2.2\n|    +--- org.junit.jupiter:junit-jupiter:5.10.1\n|    +--- org.mockito:mockito-core:5.7.0\n|    +--- org.mockito:mockito-junit-jupiter:5.7.0\n|    +--- org.skyscreamer:jsonassert:1.5.1\n|    +--- org.springframework:spring-core:6.1.2\n|    +--- org.springframework:spring-test:6.1.2\n|    \\--- org.xmlunit:xmlunit-core:2.9.1\n\n#   한 줄이 이만큼이다\n\n#   assertj-core   2.3절\n#   mockito-core   6장\n#   spring-test    5장\n#   awaitility     비동기 테스트용. 이 책에선 안 쓴다\n\n# --- 프로덕션에서 AssertJ 를 쓰면 ---\n\n// src/main/java/.../CafeKiosk.java\nimport static org.assertj.core.api.Assertions.assertThat;\n\n$ ./gradlew build\n\n> Task :compileJava FAILED\nCafeKiosk.java:5: error: package org.assertj.core.api does not exist\n\n#   testImplementation 이라 main 에서 안 보인다\n\n#   경계가 컴파일러로 지켜진다\n\n# --- 테스트 리포트 ---\n\n$ open build/reports/tests/test/index.html\n\n#   1 tests, 0 failures, 100% successful\n#   duration 0.012s\n\n#   실패하면 여기에 스택트레이스가 남는다\n\n# --- 다음 장에서 ---\n\n#   System.out 을 검증으로 바꾼다",
+   "note": "**첫 테스트가 `PASSED`** 다. **`NO-SOURCE` 가 아니다.**\n\n**`System.out` 이 기본으로 안 보인다.** **`showStandardStreams` 를 켜야** 한다.\n\n**`useJUnitPlatform()` 을 빼면 테스트 파일이 있는데도 `NO-SOURCE`** 다. **`BUILD SUCCESSFUL` 이라 눈치채기** 어렵다.\n\n**의존성 한 줄이 열여섯 줄**을 가져온다.\n\n**프로덕션에서 AssertJ 를 쓰면 컴파일 오류**다. **경계가 컴파일러로** 지켜진다.\n\n**다음 장에서 `System.out` 을 검증으로 바꾼다.**"
+  }
+ ],
+ "recap": [
+  "**`spring-boot-starter-test` 한 줄이 일곱 개**를 가져온다.",
+  "**`useJUnitPlatform()` 이 없으면 `NO-SOURCE`** 다.",
+  "**`BUILD SUCCESSFUL` 이라 눈치채기** 어렵다.",
+  "**`testImplementation` 은 프로덕션에서 안** 보인다 — 컴파일러가 경계를 지킨다.",
+  "**테스트는 같은 패키지, 다른 소스 세트**에 둔다.",
+  "**패키지 프라이빗에 접근**할 수 있다.",
+  "**배포물에는 테스트가 안** 실린다.",
+  "**그레이들이 기본으로 `*Test` 를** 찾는다.",
+  "**JUnit 5 는 `public` 이 필요** 없다."
+ ],
+ "drills": [
+  {
+   "task": "프로젝트를 만들고 첫 테스트를 돌린다.",
+   "done_when": "`PASSED` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`useJUnitPlatform()` 을 빼 본다.",
+   "done_when": "`NO-SOURCE` 를 확인하고 되돌렸다.",
+   "minutes": 10
+  },
+  {
+   "task": "`./gradlew dependencies` 로 의존성을 본다.",
+   "done_when": "AssertJ·Mockito 를 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "프로덕션 코드에서 AssertJ 를 임포트해 본다.",
+   "done_when": "컴파일 오류를 확인하고 되돌렸다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`spring-boot-starter-test` 가 가져오는 것은?",
+   "a": "JUnit 5, AssertJ, Mockito, Hamcrest, JSONassert, XMLUnit, spring-test 다."
+  },
+  {
+   "q": "`useJUnitPlatform()` 이 없으면?",
+   "a": "`@Test` 를 못 찾아 `NO-SOURCE` 가 나온다. 빌드는 성공한다."
+  },
+  {
+   "q": "왜 테스트를 같은 패키지에 두나?",
+   "a": "패키지 프라이빗 멤버에 접근할 수 있어 테스트 때문에 `public` 으로 안 열어도 된다."
+  },
+  {
+   "q": "`testImplementation` 의 효과는?",
+   "a": "프로덕션 코드에서는 그 라이브러리가 안 보인다. 컴파일러가 경계를 지킨다."
+  },
+  {
+   "q": "JUnit 5 에서 `public` 이 필요한가?",
+   "a": "아니다. JUnit 4 에서만 필요했다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
