@@ -307,7 +307,7 @@
           "title": "의존성 트리를 읽는다",
           "summary": "무엇이 무엇을 끌고 오나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -315,7 +315,7 @@
           "title": "빼고 바꾸기",
           "summary": "톰캣을 언더토우로.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

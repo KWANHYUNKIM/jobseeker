@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "tree",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "의존성 나무",
+ "summary": "무엇이 어디서 왔는지 읽는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "나무를 읽는다.",
+  "출처를 찾는다.",
+  "묶음을 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 한 줄이 36 개가** 됐다. **그걸 읽는 법을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄을 읽는 법",
+   "ascii": "   how to read one line of the tree\n\n   plus       one of several children at this level\n   backslash  the last child at this level\n   arrow      the version I asked for was replaced\n   star       already printed above, folded here\n   c          this line came from the managed list\n\n   the arrow and the star are the two that surprise people",
+   "note": "**화살표와 별이 사람을** 놀라게 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "문제는 늘 내가 안 적은 줄에서 난다",
+   "md": "**내가 적은 건 몇 줄** 안 된다.\n\n> **5.1절에서 다섯이 열둘이** 됐다.\n> **나머지는 딸려 온** 거다.\n> **그걸 봐야 고칠 수** 있다.\n\n**화살표가 바뀐 자리**다.\n\n> **내가 부른 버전이** 아니다.\n> **5.1절의 `6.0.9 -> 6.1.11`** 이다.\n> **여기만 보면** 된다.\n\n**거꾸로도 물을 수** 있다.\n\n> **이건 대체 어디서** 왔나.\n> **`dependencyInsight` 가 답한**다.\n> **아래에서 그걸** 쓴다.\n\n**JAR 목록으로도 볼 수** 있다.\n\n> **나무가 아니라 그냥 파일**이다.\n> **4.8절에서 센 그것**이다.\n> **아래에서 맞춰** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "길이 넷이다",
+   "ascii": "   four classpaths, not one\n\n   compileClasspath        what the compiler sees\n   runtimeClasspath        what ends up in the jar\n   testCompileClasspath    what the test compiler sees\n   testRuntimeClasspath    what tests run against\n\n   asking about the wrong one gives a confusing answer",
+   "note": "**엉뚱한 걸 물으면 엉뚱한 답이** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "별표를 안 읽으면 없다고 오해한다",
+   "md": "**별표는 접힌 것**이다.\n\n> **없는 게** 아니다.\n> **위에 이미** 나왔다.\n> **아래에서 펼쳐** 본다.\n\n**컴파일에는 없는 게** 많다.\n\n> **런타임에만 있는 게** 있다.\n> **드라이버가 그** 예다.\n> **아래에서 비교**한다.\n\n**테스트 길은 더** 넓다.\n\n> **⑨ 1장의 그 스타터**다.\n> **본 코드에는 안** 들어간다.\n> **아래에서 차이를** 센다.\n\n**나무는 크다**.\n\n> **웹 하나가 백 줄이** 넘는다.\n> **`grep` 없이 읽기** 어렵다.\n> **아래는 다 걸러서** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 나무를 뽑는다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n    runtimeOnly 'com.h2database:h2'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | wc -l\n     147\n\n$ ./gradlew dependencies --configuration runtimeClasspath | head -12\n\nruntimeClasspath - Runtime classpath of source set 'main'.\n+--- org.springframework.boot:spring-boot-starter-web -> 3.3.2\n|    +--- org.springframework.boot:spring-boot-starter:3.3.2\n|    |    +--- org.springframework.boot:spring-boot:3.3.2\n|    |    |    +--- org.springframework:spring-core:6.1.11\n|    |    |    |    \\--- org.springframework:spring-jcl:6.1.11\n|    |    |    \\--- org.springframework:spring-context:6.1.11 (*)\n|    |    +--- org.springframework.boot:spring-boot-autoconfigure:3.3.2 (*)\n|    |    +--- org.springframework.boot:spring-boot-starter-logging:3.3.2\n|    |    |    +--- ch.qos.logback:logback-classic:1.5.6\n|    |    |    |    \\--- ch.qos.logback:logback-core:1.5.6\n\n--   첫 줄에 화살표가 있다\n--   버전을 안 적어서 목록이 채웠다\n\n\n-- 기호를 센다\n\n$ T=$(./gradlew dependencies --configuration runtimeClasspath)\n\n$ echo \"$T\" | grep -c ' -> '\n      13\n\n$ echo \"$T\" | grep -c '(\\*)'\n      41\n\n$ echo \"$T\" | grep -c '(c)'\n      2\n\n$ echo \"$T\" | grep -c '(n)'\n0\n\n--   화살표 13, 접힘 41, 관리됨 2 다\n\n\n-- 화살표만 본다\n\n$ echo \"$T\" | grep ' -> ' | sed 's/^[^a-z]*//' | sort -u | head -6\ncom.h2database:h2 -> 2.2.224\norg.springframework.boot:spring-boot-starter-data-jpa -> 3.3.2\norg.springframework.boot:spring-boot-starter-web -> 3.3.2\norg.springframework:spring-aop:6.1.11 -> 6.1.11\norg.springframework:spring-beans:6.1.11 -> 6.1.11\norg.springframework:spring-tx:6.1.11 -> 6.1.11\n\n--   앞 셋은 버전을 안 적어서 채워진 것이다\n--   뒤 셋은 값이 같다, 다른 데서도 불렸다는 뜻이다\n\n\n-- 진짜 바뀐 것만 본다\n\n$ echo \"$T\" | grep ' -> ' \\\n    | grep -vE ':([0-9][0-9a-zA-Z.-]*) -> \\1$' \\\n    | sed 's/^[^a-z]*//' | sort -u\ncom.h2database:h2 -> 2.2.224\norg.springframework.boot:spring-boot-starter-data-jpa -> 3.3.2\norg.springframework.boot:spring-boot-starter-web -> 3.3.2\n\n--   실제로 값이 달라진 건 셋뿐이다\n--   5.1절에서는 6.0.9 가 6.1.11 로 올라갔었다\n\n\n-- 별표를 펼친다\n\n$ echo \"$T\" | grep -n 'spring-context:6.1.11' | head -3\n8:|    |    |    \\--- org.springframework:spring-context:6.1.11 (*)\n61:|    |    +--- org.springframework:spring-context:6.1.11\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | sed -n '61,66p'\n|    |    +--- org.springframework:spring-context:6.1.11\n|    |    |    +--- org.springframework:spring-aop:6.1.11 (*)\n|    |    |    +--- org.springframework:spring-beans:6.1.11 (*)\n|    |    |    +--- org.springframework:spring-core:6.1.11 (*)\n|    |    |    \\--- org.springframework:spring-expression:6.1.11\n|    |    |         \\--- org.springframework:spring-core:6.1.11 (*)\n\n--   8 번 줄의 별표가 61 번 줄에 펼쳐져 있다\n--   없는 게 아니다\n\n\n-- 거꾸로 묻는다\n\n$ ./gradlew dependencyInsight --configuration runtimeClasspath \\\n    --dependency logback-core\n\nch.qos.logback:logback-core:1.5.6\n  Variant runtime:\n    org.gradle.status = release\n\nch.qos.logback:logback-core:1.5.6\n\\--- ch.qos.logback:logback-classic:1.5.6\n     \\--- org.springframework.boot:spring-boot-starter-logging:3.3.2\n          \\--- org.springframework.boot:spring-boot-starter:3.3.2\n               +--- org.springframework.boot:spring-boot-starter-web:3.3.2\n               \\--- org.springframework.boot:spring-boot-starter-data-jpa:3.3.2\n\n--   내가 안 적었는데 두 줄이 같이 끌고 왔다\n--   5.5절에서 이걸 뺀다\n\n\n-- 왜 그 버전인지도 답한다\n\n$ ./gradlew dependencyInsight --configuration runtimeClasspath \\\n    --dependency spring-core | grep -A3 'Selection reasons'\n   Selection reasons:\n      - By constraint: spring-boot-dependencies\n      - Was requested: didn't match versions 6.2.0, 6.1.12\n\n--   5.2절의 목록이 정했다고 적혀 있다\n\n\n-- 길이 넷이다\n\n$ for c in compileClasspath runtimeClasspath \\\n           testCompileClasspath testRuntimeClasspath; do\n    printf '%-22s ' \"$c\"\n    ./gradlew dependencies --configuration \"$c\" \\\n      | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n  done\n\ncompileClasspath             52\nruntimeClasspath             61\ntestCompileClasspath         66\ntestRuntimeClasspath         86\n\n--   같은 프로젝트인데 넷이 다 다르다\n\n\n-- 무엇이 다른가\n\n$ diff <(./gradlew dependencies --configuration compileClasspath \\\n          | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u) \\\n       <(./gradlew dependencies --configuration runtimeClasspath \\\n          | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u) \\\n  | grep '^>' | head -5\n> ch.qos.logback:logback-classic:1.5.6\n> ch.qos.logback:logback-core:1.5.6\n> com.h2database:h2:2.2.224\n> org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n> org.slf4j:jul-to-slf4j:2.0.13\n\n--   H2 는 runtimeOnly 라 컴파일에 없다\n--   ⑤ 2장에서 그렇게 적었었다\n\n\n-- 테스트만 있는 것\n\n$ diff <(./gradlew dependencies --configuration runtimeClasspath \\\n          | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u) \\\n       <(./gradlew dependencies --configuration testRuntimeClasspath \\\n          | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u) \\\n  | grep -c '^>'\n      25\n\n$ diff ... | grep '^>' | grep -E 'junit|mockito|assertj' \norg.assertj:assertj-core:3.25.3\norg.junit.jupiter:junit-jupiter:5.10.3\norg.mockito:mockito-core:5.11.0\n\n--   ⑨ 1장에서 본 그 셋이다\n--   본 코드에는 안 들어간다\n\n\n-- JAR 로도 확인한다\n\n$ ./gradlew bootJar -q\n$ unzip -l build/libs/app.jar | grep -c 'BOOT-INF/lib/.*\\.jar'\n      61\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n      61\n\n--   숫자가 같다\n--   runtimeClasspath 가 그대로 JAR 에 들어간다\n--   4.8절에서 센 그 자리다\n\n\n-- 테스트 것은 안 들어간다\n\n$ unzip -l build/libs/app.jar | grep -cE 'junit|mockito|assertj'\n0\n\n--   testRuntimeClasspath 는 JAR 밖이다\n\n\n-- 나무를 파일로 남긴다\n\n$ ./gradlew dependencies --configuration runtimeClasspath > /tmp/tree-before.txt\n\n// 부트를 3.2.8 로 내린다\nid 'org.springframework.boot' version '3.2.8'\n\n$ ./gradlew dependencies --configuration runtimeClasspath > /tmp/tree-after.txt\n$ diff /tmp/tree-before.txt /tmp/tree-after.txt | grep -c '^[<>]'\n     108\n\n$ diff /tmp/tree-before.txt /tmp/tree-after.txt | grep '^[<>].*hibernate-core'\n<          +--- org.hibernate.orm:hibernate-core:6.5.2.Final\n>          +--- org.hibernate.orm:hibernate-core:6.4.9.Final\n\n--   5.2절에서 본 그 이동이 나무에도 보인다\n--   올릴 때 이 diff 를 남기면 다음 사람이 안다\n\n\n-- 실제로 뜨는지 본다\n\n$ ./gradlew bootRun 2>&1 | grep -E 'HHH|Tomcat started|Started'\nINFO ... : HHH000412: Hibernate ORM core version 6.5.2.Final\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 2.104 seconds\n\n$ curl -s localhost:8080/hello\nhello\n\n--   나무에서 본 6.5.2.Final 이 로그에도 나온다\n--   5.5절에서 하나를 빼 본다\n\n\n-- 정리\n\n$ printf '%-20s %s\\n' \\\n  '->'   '버전이 바뀐 자리' \\\n  '(*)'  '위에 이미 나옴' \\\n  '(c)'  '목록이 정함' \\\n  'insight' '거꾸로 묻기' \\\n  'compile' '52' \\\n  'runtime' '61' \\\n  'testRuntime' '86' \\\n  'JAR 안'  '61'\n\n->                   버전이 바뀐 자리\n(*)                  위에 이미 나옴\n(c)                  목록이 정함\ninsight              거꾸로 묻기\ncompile              52\nruntime              61\ntestRuntime          86\nJAR 안               61",
+   "note": "**나무 147 줄에 화살표 13·접힘 41·관리됨 2 가** 있다.\n\n**값이 실제로 달라진 화살표는 셋뿐이고 나머지는 버전을 안 적어서 채워진** 것이다.\n\n**`dependencyInsight` 가 로그백을 두 스타터가 같이 끌고 왔다고, 스프링 버전은 목록이 정했다고** 답한다.\n\n**네 길이 52·61·66·86 으로 다 다르고 JAR 안 JAR 수는 `runtimeClasspath` 와 같은 61**이다.\n\n**부트를 내리니 나무에서 108 줄이 움직이고 하이버네이트가 6.5.2 에서 6.4.9 로** 갔다."
+  }
+ ],
+ "recap": [
+  "**화살표가 바뀐** 자리다.",
+  "**값이 같으면 안** 바뀐 거다.",
+  "**별표는 접힌 것**이다.",
+  "**거꾸로도 물을 수** 있다.",
+  "**이유도** 적힌다.",
+  "**길이** 넷이다.",
+  "**JAR 는 런타임과** 같다.",
+  "**테스트는 JAR** 밖이다.",
+  "**diff 를 남기면** 된다."
+ ],
+ "drills": [
+  {
+   "task": "나무에서 기호를 센다.",
+   "done_when": "화살표·별표 수를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "별표를 펼쳐 본다.",
+   "done_when": "위에 나온 자리를 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "네 길의 수를 센다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JAR 안 JAR 수와 맞춰 본다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "화살표가 늘 버전이 바뀌었다는 뜻인가?",
+   "a": "아니다. 앞뒤 값이 같으면 여러 곳에서 불렸다는 표시일 뿐이다."
+  },
+  {
+   "q": "별표는 무슨 뜻인가?",
+   "a": "위에 이미 나와서 접었다는 뜻이다. 없는 게 아니다."
+  },
+  {
+   "q": "이게 어디서 왔는지 물으려면?",
+   "a": "`dependencyInsight` 로 거꾸로 묻는다."
+  },
+  {
+   "q": "JAR 에 들어가는 건 어느 길인가?",
+   "a": "런타임 길이다. 테스트 것은 안 들어간다."
+  },
+  {
+   "q": "버전을 올릴 때 남기면 좋은 것은?",
+   "a": "나무를 파일로 뽑아 둔 diff 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "의존성 나무",
+   "def": "무엇이 무엇을 끌고 왔는지 계층으로 보여 주는 출력."
+  },
+  {
+   "term": "구성",
+   "def": "컴파일·런타임·테스트처럼 목적이 다른 클래스패스 묶음."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Viewing and Debugging Dependencies",
+   "url": "https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot Gradle Plugin",
+   "url": "https://docs.spring.io/spring-boot/gradle-plugin/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

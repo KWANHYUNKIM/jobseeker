@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "exclude",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "빼고 바꾸기",
+ "summary": "톰캣을 네티로, 로그백을 다른 것으로.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빼는 법을 안다.",
+  "바꾸는 법을 안다.",
+  "빼기만 하면 뭐가 되나 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 톰캣을 빼** 봤다. **뜨는데 포트가 안** 열렸다."
+  },
+  {
+   "type": "figure",
+   "caption": "바꾸기는 두 걸음이다",
+   "ascii": "   swapping one piece out is two steps, not one\n\n   step 1   exclude the piece that comes by default\n   step 2   add the replacement explicitly\n\n   doing only step 1 leaves a hole nobody warns you about",
+   "note": "**첫 걸음만 하면 아무도 안 알려주는 구멍이** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "기본이 안 맞을 때가 있다",
+   "md": "**톰캣 말고 다른 걸 쓸 때**다.\n\n> **언더토우나 제티**다.\n> **부트가 셋 다 스타터로** 만든다.\n> **아래에서 갈아** 끼운다.\n\n**로그를 다른 걸로 볼 때**다.\n\n> **로그백이 늘 딸려** 온다.\n> **⑤ 1장에서 그걸** 썼다.\n> **Log4j2 로 바꾼**다.\n\n**같은 게 둘이면** 싸운다.\n\n> **SLF4J 바인딩은 하나여야** 한다.\n> **둘이면 경고가** 뜬다.\n> **아래에서 그걸** 만든다.\n\n**빼기만 하면** 조용하다.\n\n> **5.3절의 `000`** 이다.\n> **4.6절과 같은 결**이다.\n> **아래에서 로그로** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "제외를 놓는 세 자리",
+   "ascii": "   three places an exclusion can sit\n\n   on one declaration   only that line loses the child\n   on a configuration   the whole classpath loses it\n   in the module itself its own pom already dropped it\n\n   the middle one is the blunt instrument",
+   "note": "**가운데가 무딘 연장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무딘 연장은 엉뚱한 것까지 자른다",
+   "md": "**구성 전체에 걸면** 넓다.\n\n> **다른 데서 필요한 것도** 잘린다.\n> **아래에서 그걸** 겪는다.\n> **줄에 거는 게 안전**하다.\n\n**속성으로 바꾸는 길도** 있다.\n\n> **`server` 대신 `reactive`** 같은 것.\n> **부트가 조건으로** 판단한다.\n> **6.6절에서 그 조건을** 본다.\n\n**빼면 자동 구성도** 꺼진다.\n\n> **JAR 가 없으면 조건이 안** 맞는다.\n> **6.4절이 그 조건**이다.\n> **아래에서 미리** 본다.\n\n**테스트 길에도 같이** 걸린다.\n\n> **5.4절의 그 네 길**이다.\n> **한쪽만 빼면** 어긋난다.\n> **아래에서 세어** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 기본 상태를 본다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 1.033 seconds\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^server\\|^HTTP'\nHTTP/1.1 200\n\n$ curl -s localhost:8080/webserver\norg.springframework.boot.web.embedded.tomcat.TomcatWebServer\n\n\n-- 톰캣을 빼기만 한다\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot',\n                module: 'spring-boot-starter-tomcat'\n    }\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c tomcat\n0\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat|Undertow|Jetty|Started|ERROR'\nINFO ... : Started BootApplication in 0.681 seconds\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/hello\n000\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   경고 한 줄 없이 조용히 뜬다\n--   5.3절과 4.6절에서 본 그 모습이다\n\n\n-- 왜 조용한지 본다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'ServletWebServerFactoryAutoConfiguration' | head -4\n   ServletWebServerFactoryAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'jakarta.servlet.ServletRequest' (OnClassCondition)\n\n--   JAR 가 없으니 조건이 안 맞았다\n--   6.4절에서 이 조건을 읽는다\n\n\n-- 두 걸음을 다 밟는다\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot',\n                module: 'spring-boot-starter-tomcat'\n    }\n    implementation 'org.springframework.boot:spring-boot-starter-undertow'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep undertow\n+--- org.springframework.boot:spring-boot-starter-undertow:3.3.2\n|    +--- io.undertow:undertow-core:2.3.14.Final\n|    +--- io.undertow:undertow-servlet:2.3.14.Final\n|    \\--- org.apache.tomcat.embed:tomcat-embed-el:10.1.26\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Undertow started|Started'\nINFO ... : Undertow started on port 8080 (http) with context path '/'\nINFO ... : Started BootApplication in 0.918 seconds\n\n$ curl -s localhost:8080/hello\nhello\n\n$ curl -s localhost:8080/webserver\norg.springframework.boot.web.embedded.undertow.UndertowWebServer\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^server'\nServer: Undertow/1\n\n--   로그 문구가 Tomcat 에서 Undertow 로 바뀌었다\n--   응답 헤더에도 나온다\n--   4.11절의 세 방식처럼 응답은 같다\n\n\n-- 톰캣 조각이 남아 있다\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c tomcat\n1\n\n$ ./gradlew dependencyInsight --configuration runtimeClasspath \\\n    --dependency tomcat-embed-el | tail -4\norg.apache.tomcat.embed:tomcat-embed-el:10.1.26\n\\--- org.springframework.boot:spring-boot-starter-undertow:3.3.2\n\n--   언더토우가 EL 만 톰캣 것을 쓴다\n--   빼면 안 된다\n\n\n-- 로그백을 바꾼다\n\n$ ./gradlew bootRun 2>&1 | head -1\nINFO 15102 --- [           main] study.boot.BootApplication : Starting...\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot',\n                module: 'spring-boot-starter-logging'\n    }\n    implementation 'org.springframework.boot:spring-boot-starter-log4j2'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -cE 'logback'\n0\n$ ./gradlew dependencies --configuration runtimeClasspath | grep 'log4j' | head -3\n+--- org.springframework.boot:spring-boot-starter-log4j2:3.3.2\n|    +--- org.apache.logging.log4j:log4j-slf4j2-impl:2.23.1\n|    +--- org.apache.logging.log4j:log4j-core:2.23.1\n\n$ ./gradlew bootRun 2>&1 | head -1\n05:47:01.204 [main] INFO  study.boot.BootApplication - Starting...\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\n05:47:02.318 [main] INFO  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8080\n\n--   같은 내용인데 줄 모양이 다르다\n--   ⑤ 1장에서 보던 그 형식이 아니다\n\n\n-- 안 빼고 넣으면 싸운다\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    implementation 'org.springframework.boot:spring-boot-starter-log4j2'\n}\n\n$ ./gradlew bootRun 2>&1 | head -6\nSLF4J(W): Class path contains multiple SLF4J providers.\nSLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@...]\nSLF4J(W): Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@...]\nSLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings\nSLF4J(I): Actual provider is of type [ch.qos.logback...LogbackServiceProvider@...]\nINFO 15140 --- [           main] study.boot.BootApplication : Starting...\n\n--   경고가 뜨고 로그백이 이겼다\n--   순서에 따라 달라진다, 그래서 빼야 한다\n\n\n-- 구성 전체에 걸면\n\nconfigurations.configureEach {\n    exclude group: 'org.springframework.boot',\n            module: 'spring-boot-starter-logging'\n}\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\n$ for c in runtimeClasspath testRuntimeClasspath; do\n    printf '%-22s ' \"$c\"\n    ./gradlew dependencies --configuration \"$c\" | grep -c logback\n  done\nruntimeClasspath        0\ntestRuntimeClasspath    0\n\n$ ./gradlew test 2>&1 | head -3\nSLF4J(W): No SLF4J providers were found.\nSLF4J(W): Defaulting to no-operation (NOP) logger implementation\n\n$ ./gradlew test 2>&1 | grep -c 'Started BootApplication'\n0\n\n--   테스트에서도 로그가 사라졌다\n--   테스트가 왜 실패하는지 안 보인다\n--   줄에 걸었으면 이렇게 안 됐다\n\n\n-- 줄에만 걸면\n\n// configureEach 를 지우고\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot',\n                module: 'spring-boot-starter-logging'\n    }\n    implementation 'org.springframework.boot:spring-boot-starter-log4j2'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\n$ for c in runtimeClasspath testRuntimeClasspath; do\n    printf '%-22s %s %s\\n' \"$c\" \\\n      \"$(./gradlew dependencies --configuration $c | grep -c logback)\" \\\n      \"$(./gradlew dependencies --configuration $c | grep -c log4j-core)\"\n  done\nruntimeClasspath        0 1\ntestRuntimeClasspath    1 1\n\n$ ./gradlew test 2>&1 | head -2\nSLF4J(W): Class path contains multiple SLF4J providers.\n\n--   테스트 길로는 로그백이 다시 들어왔다\n--   test 스타터가 자기 것을 끌고 온다\n--   양쪽에 다 걸어야 한다\n\n\n-- 양쪽에 건다\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'\n    }\n    implementation 'org.springframework.boot:spring-boot-starter-log4j2'\n    testImplementation('org.springframework.boot:spring-boot-starter-test') {\n        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'\n    }\n}\n\n$ for c in runtimeClasspath testRuntimeClasspath; do\n    printf '%-22s %s\\n' \"$c\" \\\n      \"$(./gradlew dependencies --configuration $c | grep -c logback)\"\n  done\nruntimeClasspath        0\ntestRuntimeClasspath    0\n\n$ ./gradlew test 2>&1 | grep -cE 'SLF4J\\(W\\)'\n0\n$ ./gradlew test 2>&1 | grep -E 'Started BootApplication|BUILD'\n05:47:11.882 [main] INFO  study.boot.BootApplication - Started in 1.204 seconds\nBUILD SUCCESSFUL in 4s\n\n--   경고 없이 log4j2 형식으로 나온다\n\n\n-- 갈아 끼운 것을 확인한다\n\n$ ./gradlew bootRun 2>&1 | grep -E 'started on port'\n05:47:14.201 [main] INFO  o.s.b.w.e.u.UndertowWebServer - Undertow started on port 8080\n\n$ curl -s localhost:8080/webserver\norg.springframework.boot.web.embedded.undertow.UndertowWebServer\n\n$ curl -s localhost:8080/hello\nhello\n\n--   서버도 로거도 바뀌었는데 응답은 그대로다\n\n\n-- 5장에서 만든 것들\n\n$ printf '%-8s %-22s %s\\n' \\\n  '5.1' '손으로 맞추기'  '12 개, 세 시점' \\\n  '5.2' '목록'           '297 개, 0 JAR' \\\n  '5.3' '스타터'         '한 줄이 36 개' \\\n  '5.4' '나무'           '화살표와 별표' \\\n  '5.5' '빼고 바꾸기'    '두 걸음'\n\n5.1    손으로 맞추기          12 개, 세 시점\n5.2    목록                   297 개, 0 JAR\n5.3    스타터                 한 줄이 36 개\n5.4    나무                   화살표와 별표\n5.5    빼고 바꾸기            두 걸음\n\n--   6.1절에서 JAR 가 켜는 것을 본다",
+   "note": "**톰캣을 빼기만 하면 경고 0 줄로 뜨고 `curl` 이 `000`, `--debug` 가 `did not find required class` 라고** 적는다.\n\n**언더토우를 넣으면 로그가 `Undertow started` 로, 응답 헤더에 `Server: Undertow/1` 이** 뜬다.\n\n**로그백을 안 빼고 log4j2 를 넣으면 `multiple SLF4J providers` 경고에 로그백이** 이긴다.\n\n**구성 전체에 걸면 테스트 로그까지 `NOP logger` 로** 사라진다.\n\n**줄에만 걸면 테스트 길로 로그백이 다시 들어와 양쪽에 다** 걸어야 한다."
+  }
+ ],
+ "recap": [
+  "**바꾸기는 두** 걸음이다.",
+  "**빼기만 하면** 조용하다.",
+  "**조건이 안** 맞아서다.",
+  "**넣으면 로그가** 바뀐다.",
+  "**조각은 남을 수** 있다.",
+  "**안 빼면** 싸운다.",
+  "**구성 전체는** 무디다.",
+  "**테스트 길도** 있다.",
+  "**응답은 그대로**다."
+ ],
+ "drills": [
+  {
+   "task": "톰캣을 빼기만 한다.",
+   "done_when": "경고 없이 포트가 안 열리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "언더토우로 갈아 끼운다.",
+   "done_when": "로그와 헤더가 바뀐 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그백을 안 빼고 log4j2 를 넣는다.",
+   "done_when": "경고와 승자를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트 길도 제외한다.",
+   "done_when": "양쪽이 0 인 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "톰캣을 빼기만 하면?",
+   "a": "경고 없이 뜨고 포트만 안 열린다."
+  },
+  {
+   "q": "왜 경고가 없나?",
+   "a": "클래스가 없어 자동 구성 조건이 안 맞아 그냥 건너뛴다."
+  },
+  {
+   "q": "로거를 바꿀 때 빼야 하는 이유는?",
+   "a": "바인딩이 둘이면 경고가 뜨고 어느 쪽이 이길지 모른다."
+  },
+  {
+   "q": "구성 전체 제외의 위험은?",
+   "a": "테스트처럼 다른 길에서 필요한 것까지 잘린다."
+  },
+  {
+   "q": "줄에만 걸면 부족한 이유는?",
+   "a": "테스트 스타터가 자기 몫으로 다시 끌고 온다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "제외",
+   "def": "끌려 온 전이 의존성을 특정 선언이나 구성에서 빼는 것."
+  },
+  {
+   "term": "SLF4J 바인딩",
+   "def": "로그 문을 실제 구현으로 잇는 조각. 하나만 있어야 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Excluding transitive dependencies",
+   "url": "https://docs.gradle.org/current/userguide/dependency_downgrade_and_exclude.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot Gradle Plugin",
+   "url": "https://docs.spring.io/spring-boot/gradle-plugin/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
