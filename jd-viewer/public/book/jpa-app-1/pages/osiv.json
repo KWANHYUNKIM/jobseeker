@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "osiv",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "OSIV",
+ "summary": "켤까 끌까.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "OSIV 가 무엇을 하는지 안다.",
+  "커넥션 점유를 이해한다.",
+  "끄고 나서 무엇을 해야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절의 쿼리가 나가게 해 준 것**이다. **부트의 기본값이 `true`** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "켰을 때와 껐을 때",
+   "ascii": "   open-in-view: true   (default)\n\n   request  ---------------------------------------  response\n            [ persistence context alive          ]\n                [ tx ]        [ tx ]\n            connection held from the first tx to the end\n\n   open-in-view: false\n\n   request  ---------------------------------------  response\n                [ ctx ]       [ ctx ]\n                [ tx  ]       [ tx  ]\n            connection returned between them",
+   "note": "**커넥션 점유 구간이 다르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "커넥션을 언제까지 쥐나",
+   "md": "**켜져 있으면 첫 트랜잭션부터 응답까지**다.\n\n```\n요청 시작\n  서비스 호출  -> 커넥션 획득\n  커밋         -> 커넥션을 안 놓는다\n  화면 렌더링   -> 지연 로딩에 쓴다\n응답 완료      -> 커넥션 반납\n```\n\n**\"안 놓는다\" 가 핵심**이다.\n\n> **「DB 2편」 12.6절에서 `REQUIRES_NEW` 가 커넥션을 둘 쥔다**고 했다. **여기는 하나를 오래** 쥔다.\n>\n> **문제의 종류는 같다** — **풀이 마른다.**\n\n**계산해 보면**\n\n| 항목 | 값 |\n|---|---|\n| 풀 크기 | 10 |\n| 요청당 커넥션 | **1** |\n| 요청당 점유 시간 | **화면 렌더링까지** |\n\n**렌더링이 100ms 면 초당 100 요청**을 처리한다.\n\n**OSIV 를 끄면**\n\n| 항목 | 값 |\n|---|---|\n| 요청당 점유 시간 | **서비스 메서드만** |\n\n**서비스가 10ms 면 초당 1000 요청**이다.\n\n> **열 배**다.\n\n**외부 API 를 부르면 더 벌어진다.**\n\n```java\n@Controller\npublic class OrderController {\n    public String orders(Model model) {\n        model.addAttribute(\"orders\", orderService.findOrders(cond));\n        String rate = exchangeApi.getRate();    // 3초\n        // 그동안 커넥션을 쥐고 있다\n    }\n}\n```\n\n**「DB 2편」 11.5절의 긴 트랜잭션**과 같은 문제다.\n\n> **트랜잭션은 이미 끝났는데 커넥션은 살아 있다.** **더 헷갈린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "저울",
+   "ascii": "   on                             off\n   --                             ---\n   lazy loading works in views    LazyInitializationException\n   simple controllers             the service must load everything\n   a connection per request       a connection per transaction\n   fine at low traffic            survives high traffic\n\n   the third line is the whole argument",
+   "note": "**세 번째 줄이 논거 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "끄면 무엇이 깨지나",
+   "md": "**8.11절의 화면이 안 뜬다.**\n\n```\norg.hibernate.LazyInitializationException:\n  could not initialize proxy [Member#1] - no Session\n```\n\n**고치려면 서비스가 다 로딩**해야 한다.\n\n**방법 셋**이다.\n\n**① 페치 조인**\n\n```java\nselect o from Order o\n  join fetch o.member\n  join fetch o.delivery\n```\n\n**컬렉션은 조심**해야 한다(7.5절) — `distinct` 와 페이징 문제.\n\n**② DTO 조회**\n\n**9.1절의 방법 ②** 다. **엔티티를 아예 안 만든다.**\n\n**③ 트랜잭션 안에서 초기화**\n\n```java\n@Transactional(readOnly = true)\npublic List<Order> findOrders(OrderSearch cond) {\n    List<Order> orders = orderRepository.findAll(cond);\n    for (Order order : orders) {\n        order.getMember().getName();          // 강제 초기화\n        order.getOrderItems().forEach(oi -> oi.getItem().getName());\n    }\n    return orders;\n}\n```\n\n**쿼리 수는 그대로**다. **위치만 트랜잭션 안으로** 옮겼다.\n\n> **가장 나쁜 방법**이다. **문제를 옮기기만** 했다.\n>\n> **그래도 커넥션 점유는 줄어든다** — 렌더링 동안은 안 쥔다.\n\n**①과 ②가 답**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "실무의 절충",
+   "md": "**「DB 2편」 9.3절의 구조**로 가면 자연스럽다.\n\n```java\n@Service\n@Transactional(readOnly = true)\npublic class OrderQueryService {\n    // 화면에 필요한 것을 전부 로딩해서 DTO 로 반환\n    public List<OrderListDto> findOrderList(OrderSearch cond) { }\n}\n```\n\n**조회 전용 서비스가 화면이 필요한 것을 다** 만든다.\n\n**그러면 OSIV 를 꺼도** 된다.\n\n| 계층 | |\n|---|---|\n| 컨트롤러 | DTO 만 받는다 |\n| **조회 서비스** | **트랜잭션 안에서 전부 로딩** |\n| 명령 서비스 | 기존 |\n\n**규모별 판단**\n\n| 상황 | |\n|---|---|\n| **관리자 화면, 사내 도구** | **켜도 된다** — 트래픽이 없다 |\n| **고객용 서비스** | **끈다** |\n| **API 서버** | **끈다** — 어차피 DTO 다 |\n\n> **부트가 기본값을 `true` 로 둔 것**은 **입문 편의** 때문이다. **켜져 있어야 튜토리얼이 돈다.**\n>\n> **뜰 때 경고**를 남긴다.\n>\n> ```\n> spring.jpa.open-in-view is enabled by default. Therefore, database\n> queries may be performed during view rendering. Explicitly configure\n> spring.jpa.open-in-view to disable this warning\n> ```\n>\n> **\"명시적으로 설정하라\" 는 뜻**이다. **켜든 끄든 적어 두라는 것**이다.\n\n**이 책은 켜 둔다.** **9.7절 목록**에 넣는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# --- 켜져 있을 때 (기본값) ---\n\n#   (뜰 때)\n#   WARN  JpaBaseConfiguration$JpaWebConfiguration :\n#     spring.jpa.open-in-view is enabled by default. Therefore, database\n#     queries may be performed during view rendering.\n\nGET /orders\n\n#   HikariPool-1 - Connection acquired: conn0\n\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Hibernate: select o1_0.order_id, ... from orders o1_0 join member ...\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Not closing pre-bound JPA EntityManager after transaction\n\n#   (커넥션을 안 놓는다)\n\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n#   ...\n\n#   Closing JPA EntityManager in OpenEntityManagerInViewInterceptor\n#   HikariPool-1 - Connection released: conn0\n\n#   커넥션 점유: 요청 시작부터 응답까지\n\n# --- 껐을 때 ---\n\nspring.jpa.open-in-view: false\n\nGET /orders\n\n#   HikariPool-1 - Connection acquired: conn0\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Hibernate: select o1_0.order_id, ... from orders o1_0 join member ...\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Closing JPA EntityManager [SessionImpl@1] after transaction\n#   HikariPool-1 - Connection released: conn0\n\n#   (화면 렌더링)\n\n#   org.hibernate.LazyInitializationException:\n#     could not initialize proxy\n#     [jpabook.jpashop.domain.Member#1] - no Session\n\nHTTP/1.1 500\n\n#   커넥션은 일찍 놨는데 화면이 안 뜬다\n\n# --- 페치 조인으로 고치면 ---\n\nselect o from Order o\n  join fetch o.member\n  join fetch o.delivery\n\n#   Hibernate: \n#       select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#              d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#              m1_0.street, m1_0.zipcode, m1_0.name,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Closing JPA EntityManager after transaction\n#   HikariPool-1 - Connection released: conn0\n\n#   (화면 렌더링)\n\n#   org.hibernate.LazyInitializationException:\n#     failed to lazily initialize a collection of role:\n#     Order.orderItems\n\n#   orderItems 가 남았다\n\n# --- 컬렉션까지 페치 조인하면 ---\n\nselect distinct o from Order o\n  join fetch o.member\n  join fetch o.delivery\n  join fetch o.orderItems oi\n  join fetch oi.item\n\n#   Hibernate: \n#       select distinct o1_0.order_id, ..., oi1_0.order_item_id, ...,\n#              i1_0.item_id, ...\n#       from orders o1_0\n#       join member m1_0 on ...\n#       join delivery d1_0 on ...\n#       join order_item oi1_0 on ...\n#       join item i1_0 on ...\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#   }\n\nHTTP/1.1 200\n\n#   쿼리 1개\n\n#   31 -> 1\n\n# --- 커넥션 점유 시간을 재면 ---\n\n#   (OSIV on)\n#   Connection acquired ... Connection released\n#   = 87ms\n\n#   (OSIV off + 페치 조인)\n#   = 12ms\n\n#   일곱 배\n\n# --- 이 책은 켜 둔다 ---\n\n#   9.7절 목록\n#   9.4절에서 쿼리를 더 줄여 본다",
+   "note": "**뜰 때 경고**가 나온다. **\"명시적으로 설정하라\"** 는 뜻이다.\n\n**켜져 있으면 `Not closing pre-bound`** 이고 **커넥션을 응답까지** 쥔다.\n\n**끄면 커넥션을 일찍 놓는데 화면이 `500`** 이다.\n\n**페치 조인을 하나씩 더하면 예외가 옮겨 간다.** **전부 하면 쿼리 하나**다.\n\n**커넥션 점유가 87ms 에서 12ms** 로 줄었다. **일곱 배**다.\n\n**다음 절에서 쿼리를 본격적으로 센다.**"
+  }
+ ],
+ "recap": [
+  "**OSIV 가 컨텍스트를 응답까지** 열어 둔다.",
+  "**커넥션을 첫 트랜잭션부터 응답까지** 쥔다.",
+  "**끄면 서비스 메서드 동안만** 쥔다.",
+  "**「DB 2편」 12.6절과 같은 종류의 문제**다 — 풀이 마른다.",
+  "**끄면 `LazyInitializationException`** 으로 드러난다.",
+  "**페치 조인·DTO 조회**로 고친다.",
+  "**트랜잭션 안 강제 초기화는 문제를 옮길** 뿐이다.",
+  "**조회 전용 서비스**를 두면 자연스럽다.",
+  "**부트가 뜰 때 경고**한다 — 명시하라는 뜻이다."
+ ],
+ "drills": [
+  {
+   "task": "시작 로그에서 OSIV 경고를 찾는다.",
+   "done_when": "무슨 뜻인지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`open-in-view: false` 로 두고 주문 목록을 연다.",
+   "done_when": "`500` 이 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "페치 조인을 하나씩 더한다.",
+   "done_when": "예외가 옮겨 가는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "커넥션 점유 시간을 재 본다.",
+   "done_when": "OSIV 유무로 차이가 나는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "OSIV 가 하는 일은?",
+   "a": "영속성 컨텍스트를 응답이 끝날 때까지 열어 둔다."
+  },
+  {
+   "q": "가장 큰 대가는?",
+   "a": "커넥션을 요청 내내 쥐어 동시 처리량이 준다."
+  },
+  {
+   "q": "끄면 무엇이 깨지나?",
+   "a": "화면의 지연 로딩이 `LazyInitializationException` 이 된다."
+  },
+  {
+   "q": "어떻게 고치나?",
+   "a": "페치 조인이나 DTO 조회로 서비스가 전부 로딩한다."
+  },
+  {
+   "q": "부트가 왜 경고하나?",
+   "a": "기본값이 `true` 인데 명시적으로 설정하라는 뜻이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot Reference",
+   "url": "https://docs.spring.io/spring-boot/reference/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

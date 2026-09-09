@@ -563,7 +563,7 @@
           "title": "엔티티를 화면에 내보냈다",
           "summary": "그 대가를 센다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -571,7 +571,7 @@
           "title": "화면에서 지연 로딩이 돈다",
           "summary": "쿼리가 어디서 나가나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -579,7 +579,7 @@
           "title": "OSIV",
           "summary": "켤까 끌까.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",

@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "lazy-in-view",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "화면에서 지연 로딩이 돈다",
+ "summary": "쿼리가 어디서 나가나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리가 나가는 위치를 확인한다.",
+  "트랜잭션 밖인 것을 안다.",
+  "왜 동작하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절에서 쿼리 31개를 셌다.** **그것이 어디서 나가는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리가 나가는 위치",
+   "ascii": "   where the queries come from\n\n   OrderService.findOrders   1 query, then commit\n   ---- transaction ends ----\n   template rendering        6 more queries\n\n   the java code that caused them is in a .html file",
+   "note": "**여섯이 트랜잭션 밖**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "4.2절의 결정이 여기까지 왔다",
+   "md": "**트랜잭션 경계를 서비스에** 뒀다(4.2절).\n\n```\ncontroller     밖\nservice        begin ... commit\nrepository     안\n```\n\n**서비스가 끝나면 커밋**된다.\n\n**그런데 화면에서 지연 로딩이 된다.**\n\n> **영속성 컨텍스트가 아직 살아 있다는 뜻**이다.\n\n**커밋과 컨텍스트 종료가 다른 일**이다.\n\n| | 언제 |\n|---|---|\n| **트랜잭션 커밋** | 서비스 메서드 끝 |\n| **영속성 컨텍스트 종료** | **응답이 끝날 때** |\n\n**후자를 OSIV 가 미룬다**(9.3절).\n\n**로그로 확인**할 수 있다.\n\n```\nInitiating transaction commit\nCommitting JPA transaction on EntityManager [SessionImpl@1]\nNot closing pre-bound JPA EntityManager after transaction\n```\n\n**`Not closing pre-bound`** 가 그 줄이다.\n\n> **평소에는 `Closing JPA EntityManager after transaction`** 이다.\n>\n> **OSIV 가 켜져 있으면 안 닫는다.**\n\n**4.2절 마지막에서 예고**했다.\n\n> **서비스에 경계를 둔 대가는 하나다. 컨트롤러에서 지연 로딩이 안 된다.**\n>\n> **그런데 된다.** **OSIV 가 막아 준 것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "스택 트레이스",
+   "ascii": "   the stack trace of a lazy load during rendering\n\n   AbstractLazyInitializer.initialize\n   ...\n   SpelExpression.getValue\n   ...\n   ThymeleafView.render\n   ...\n   DispatcherServlet.doDispatch\n\n   no application class in the middle",
+   "note": "**내 클래스가 중간에 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "추적이 어렵다",
+   "md": "**쿼리가 나가는데 자바 코드가 없다.**\n\n**브레이크포인트를 어디에 거나.**\n\n| 방법 | |\n|---|---|\n| **`AbstractLazyInitializer.initialize`** | 프록시 초기화 |\n| **`DefaultLoadEventListener`** | 하이버네이트 내부 |\n| **SQL 로그의 순서** | 가장 실용적 |\n\n**세 번째가 현실적**이다.\n\n```\n[nio-8080-exec-1] Hibernate: select ... from orders o1_0 join member ...\n[nio-8080-exec-1] Committing JPA transaction\n[nio-8080-exec-1] Hibernate: select ... from member m1_0 where ...\n```\n\n**`Committing` 다음에 나온 쿼리는 전부 화면**이다.\n\n> **2.6절에서 트랜잭션 로그를 켜 둔 이유**다.\n\n**더 나쁜 것**이 있다.\n\n**화면을 고치면 쿼리가 는다.**\n\n```html\n<!-- 이 한 줄을 추가하면 -->\n<td th:text=\"${item.delivery.status}\"></td>\n```\n\n**주문마다 배송 조회가 는다.** **1 + 4N** 이 된다.\n\n**커밋 이후 쿼리를 막는 방법**이 있다.\n\n```yaml\nspring.jpa.open-in-view: false\n```\n\n**그러면 예외**가 난다(9.3절). **막는 것이 아니라 드러내는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누가 이 쿼리를 만들었나",
+   "md": "**책임 소재가 흐리다.**\n\n| 후보 | |\n|---|---|\n| **컨트롤러** | 엔티티를 넘겼다 — 8.11절 |\n| **화면** | 연관을 건드렸다 |\n| **매핑** | `LAZY` 로 뒀다 — 3.8절 |\n| **설정** | OSIV 를 켰다 — 기본값 |\n\n**넷 다 맞다.**\n\n**고치는 곳은 하나면** 된다.\n\n| 고치면 | 결과 |\n|---|---|\n| 컨트롤러 → DTO | 화면이 못 건드린다 |\n| 화면 → 필드 제거 | 그 쿼리만 사라진다 |\n| 매핑 → `EAGER` | **더 나빠진다**(3.8절) |\n| 설정 → OSIV 끄기 | **예외로 드러난다** |\n| 조회 → 페치 조인 | **쿼리가 준다** |\n\n**마지막 둘이 실무의 답**이다.\n\n> **OSIV 를 꺼서 문제를 드러내고**, **페치 조인이나 DTO 로 푼다.**\n>\n> **9.3절과 9.4절**이다.\n\n**\"화면이 잘못했다\" 로 끝내면 안 된다.**\n\n> **화면이 건드릴 수 있게 만든 것**이 원인이다. **8.4절에서 말한 그것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 트랜잭션 로그",
+   "sql": "# --- 주문 목록 요청 ---\n\nGET /orders HTTP/1.1\n\n#   [nio-8080-exec-1] Getting transaction for [OrderService.findOrders]\n#   [nio-8080-exec-1] Creating new transaction with name\n#     [OrderService.findOrders]: PROPAGATION_REQUIRED,...,readOnly\n#   [nio-8080-exec-1] Opened new EntityManager [SessionImpl@1]\n#     for JPA transaction\n\n#   [nio-8080-exec-1] Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   [nio-8080-exec-1] Completing transaction for\n#     [OrderService.findOrders]\n#   [nio-8080-exec-1] Initiating transaction commit\n#   [nio-8080-exec-1] Committing JPA transaction on EntityManager\n#     [SessionImpl@1]\n#   [nio-8080-exec-1] Not closing pre-bound JPA EntityManager\n#     after transaction\n\n#   <<<< 여기가 경계다 >>>>\n\n#   [nio-8080-exec-1] Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n\n#   [nio-8080-exec-1] Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   [nio-8080-exec-1] Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   ... (주문마다 셋)\n\n#   [nio-8080-exec-1] Closing JPA EntityManager in OpenEntityManagerInView\n\nHTTP/1.1 200\n\n#   Committing 뒤에 쿼리가 여섯 개 더 나왔다\n#   전부 화면 렌더링 중이다\n\n# --- Not closing pre-bound 를 찾는다 ---\n\n#   이 줄이 있으면 OSIV 가 켜져 있다\n\n#   없으면 (open-in-view: false)\n#   Closing JPA EntityManager [SessionImpl@1] after transaction\n\n# --- 화면에 한 줄을 추가하면 ---\n\n<td th:text=\"${item.delivery.status}\"></td>\n\nGET /orders\n\n#   (앞은 같고)\n\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n#   Hibernate: \n#       select d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#              d1_0.status\n#       from delivery d1_0 where d1_0.delivery_id=?\n\n#   주문마다 넷이 됐다\n\n#   Session Metrics {\n#       41 JDBC statements were executed\n#   }\n\n#   31 -> 41 (주문 10건)\n\n#   자바 코드는 한 글자도 안 바뀌었다\n\n# --- 스택 트레이스를 보면 ---\n\n#   (AbstractLazyInitializer.initialize 에 브레이크포인트)\n\n#   at org.hibernate.proxy.AbstractLazyInitializer.initialize\n#   at org.hibernate.proxy.AbstractLazyInitializer.getImplementation\n#   at ...Member$HibernateProxy.getName\n#   at java.lang.invoke.LambdaForm$DMH.invokeVirtual\n#   at org.springframework.expression.spel.ast.MethodReference.getValueInternal\n#   at org.springframework.expression.spel.SpelExpression.getValue\n#   at org.thymeleaf.spring6.expression.SPELVariableExpressionEvaluator.evaluate\n#   at org.thymeleaf.standard.expression.VariableExpression.executeVariableExpression\n#   ...\n#   at org.thymeleaf.spring6.view.ThymeleafView.render\n#   at org.springframework.web.servlet.DispatcherServlet.render\n\n#   내가 쓴 클래스가 하나도 없다\n\n#   OrderController 도 OrderService 도 없다\n\n# --- 페치 조인으로 하나를 줄이면 ---\n\nselect o from Order o join fetch o.member\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0.member_id, m1_0.city, m1_0.street,\n#              m1_0.zipcode, m1_0.name, o1_0.delivery_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   Committing JPA transaction\n\n#   (화면 렌더링)\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n\n#   회원 쿼리가 사라졌다\n\n#   31 -> 21 (주문 10건)\n\n#   9.4절에서 나머지도 줄인다",
+   "note": "**`Not closing pre-bound JPA EntityManager after transaction`** 이 경계선이다. **그 뒤의 쿼리가 전부 화면**이다.\n\n**화면에 한 줄을 추가하면 31 이 41** 이 된다. **자바 코드는 안 바뀌었다.**\n\n**스택 트레이스에 내 클래스가 하나도** 없다. **타임리프와 하이버네이트뿐**이다.\n\n**페치 조인으로 회원 하나를 줄이면 31 이 21** 이 된다.\n\n**다음 절에서 OSIV 를 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**커밋 뒤에 쿼리가 여섯 개 더** 나간다.",
+  "**`Not closing pre-bound`** 가 그 경계선이다.",
+  "**커밋과 컨텍스트 종료가 다른 일**이다.",
+  "**4.2절의 대가를 OSIV 가 막아 줬다.**",
+  "**스택 트레이스에 내 클래스가 없다.**",
+  "**화면 한 줄이 31 을 41 로** 만든다.",
+  "**책임 소재가 넷** — 컨트롤러·화면·매핑·설정.",
+  "**OSIV 를 꺼서 드러내고 페치 조인으로** 푼다.",
+  "**\"화면이 잘못했다\" 로 끝내면 안 된다.**"
+ ],
+ "drills": [
+  {
+   "task": "로그에서 `Not closing pre-bound` 를 찾는다.",
+   "done_when": "그 뒤의 쿼리를 세었다.",
+   "minutes": 15
+  },
+  {
+   "task": "화면에 `delivery.status` 를 추가한다.",
+   "done_when": "쿼리가 느는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "프록시 초기화에 브레이크포인트를 건다.",
+   "done_when": "스택에 내 클래스가 없는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "회원만 페치 조인해 본다.",
+   "done_when": "쿼리가 주는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커밋 뒤에 왜 쿼리가 나가나?",
+   "a": "OSIV 가 영속성 컨텍스트를 응답까지 열어 두기 때문이다."
+  },
+  {
+   "q": "로그의 어느 줄이 경계인가?",
+   "a": "`Not closing pre-bound JPA EntityManager after transaction` 이다."
+  },
+  {
+   "q": "추적이 왜 어려운가?",
+   "a": "스택 트레이스에 내가 쓴 클래스가 없다."
+  },
+  {
+   "q": "화면 한 줄이 무엇을 하나?",
+   "a": "쿼리를 주문 수만큼 늘린다. 자바 코드는 안 바뀐다."
+  },
+  {
+   "q": "실무의 답은?",
+   "a": "OSIV 를 꺼서 문제를 드러내고 페치 조인이나 DTO 로 푼다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

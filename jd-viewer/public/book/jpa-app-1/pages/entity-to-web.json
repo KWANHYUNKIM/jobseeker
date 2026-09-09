@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "entity-to-web",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "엔티티를 화면에 내보냈다",
+ "summary": "그 대가를 센다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "8장의 결정을 결산한다.",
+  "어느 화면이 대가를 치르는지 안다.",
+  "DTO 로 바꿀지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9장이 시작된다.** **8장까지 만든 것의 청구서**를 읽는다(1.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "얻은 것과 낸 값",
+   "ascii": "   what the decision bought and what it cost\n\n   bought    no dto classes\n             no mapping code\n             the screen can reach anything\n\n   cost      the screen can reach anything\n             queries appear where no java code is\n             an entity rename breaks html silently\n\n   line 3 and line 4 are the same sentence",
+   "note": "**세 번째와 네 번째가 같은 문장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "같은 성질이 이득이자 대가다",
+   "md": "**\"화면이 무엇이든 꺼낼 수 있다\"**\n\n**개발할 때는 편하다.**\n\n```html\n<!-- 컨트롤러를 안 고치고 -->\n<td th:text=\"${order.member.address.city}\"></td>\n```\n\n**바로 쓴다.** **DTO 였다면 필드를 추가하고 매핑을 고쳐야** 한다.\n\n**운영에서는 위험하다.**\n\n**같은 한 줄이 쿼리를 하나 더** 만든다. **자바 코드는 안 바뀌었다.**\n\n> **코드 리뷰에서 안 보인다.** **`.html` 파일의 diff 를 보고 \"쿼리가 는다\" 고 알아채는 사람**이 몇이나 되나.\n\n**8.4절에서 예고**했다.\n\n> **화면 개발자가 SQL 을 만든다.**\n\n**DTO 면 이것이 물리적으로 불가능**하다. **없는 필드는 못 쓴다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "어느 화면이 무는가",
+   "ascii": "   which screens pay\n\n   member list   nothing   uses only own fields\n   item list     nothing   uses only common fields\n   order form    nothing   uses names for the select box\n   order list    3 per row  member, orderItems, item\n\n   one screen out of four. it is enough.",
+   "note": "**넷 중 하나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "왜 셋은 안 아픈가",
+   "md": "**공통점**이 있다.\n\n> **연관을 안 건드린다.**\n\n| 화면 | 쓰는 것 |\n|---|---|\n| 회원 목록 | `name`, `address` — **자기 필드** |\n| 상품 목록 | `name`, `price` — **자기 필드** |\n| 주문 폼 | `member.name`, `item.name` — **목록의 자기 필드** |\n| **주문 목록** | **`member`, `orderItems`, `item`** — **연관 셋** |\n\n**주문만 연관을 따라간다.**\n\n**그래서 주문만 아프다.**\n\n> **9.4절에서 이 화면의 쿼리를** 센다.\n\n**규칙을 하나 뽑을 수** 있다.\n\n> **엔티티를 화면에 넘겨도 되는 경우 — 그 엔티티의 자기 필드만 쓸 때.**\n\n**그런데 그것을 강제할 방법이 없다.**\n\n**오늘 자기 필드만 쓰는 화면이 내일 연관을 쓴다.** **8.4절에서 `member.orders.size()` 를 넣어 본 것**이 그것이다.\n\n> **\"지금은 괜찮다\" 가 설계 근거가 못 되는 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그럼 DTO 로 바꾸나",
+   "md": "**비용을 센다.**\n\n| 화면 | DTO 가 필요한가 |\n|---|---|\n| 회원 목록 | 필드 넷 — **과해 보인다** |\n| 상품 목록 | 필드 넷 — 과해 보인다 |\n| 주문 폼 | 이름만 — 과해 보인다 |\n| **주문 목록** | **필드 일곱, 연관 셋** — **필요하다** |\n\n**하나만 바꾸면** 된다.\n\n```java\npublic record OrderListDto(\n        Long orderId,\n        String memberName,\n        String itemName,\n        int orderPrice,\n        int count,\n        OrderStatus status,\n        LocalDateTime orderDate) { }\n```\n\n**화면이 연관을 못 건드린다.**\n\n**만드는 방법이 둘**이다.\n\n**① 엔티티를 조회하고 변환**\n\n```java\nList<Order> orders = orderRepository.findAll(cond);\nreturn orders.stream()\n        .map(o -> new OrderListDto(o.getId(), o.getMember().getName(), ...))\n        .toList();\n```\n\n**쿼리는 그대로**다. **변환이 트랜잭션 안에서** 일어날 뿐이다.\n\n> **화면이 못 건드리는 것**은 얻는다. **쿼리 수는 안 준다.**\n\n**② JPQL 로 바로 DTO**\n\n```java\nselect new hello.OrderListDto(o.id, m.name, i.name, oi.orderPrice, ...)\nfrom Order o\njoin o.member m\njoin o.orderItems oi\njoin oi.item i\n```\n\n**쿼리 하나**다.\n\n> **9.4절에서 이것을** 본다. **DTO 가 성능까지 해결**하는 경우다.\n>\n> **대신 조인이 명시적**이라 화면이 바뀌면 쿼리도 고쳐야 한다.\n\n**이 책은 안 바꾼다.** **9.7절 목록**에 넣고 **다음 권으로** 넘긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 쿼리 개수",
+   "sql": "# --- 측정 준비 (2.6절) ---\n\nspring:\n  jpa:\n    properties:\n      hibernate:\n        generate_statistics: true\nlogging:\n  level:\n    org.hibernate.stat: debug\n\n# --- 회원 목록 ---\n\nGET /members\n\n#   Session Metrics {\n#       1 JDBC statements were prepared\n#       1 JDBC statements were executed\n#       2 entities were loaded\n#       0 entities were dirty-checked      (readOnly - 5.5절)\n#   }\n\n#   쿼리 1\n\n# --- 상품 목록 ---\n\nGET /items\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       3 entities were loaded\n#   }\n\n#   쿼리 1\n\n# --- 주문 폼 ---\n\nGET /order\n\n#   (트랜잭션이 둘이라 Session Metrics 도 둘)\n#   Session Metrics { 1 JDBC statements were executed }\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   쿼리 2\n\n# --- 주문 목록 (주문 2건) ---\n\nGET /orders\n\n#   Session Metrics {\n#       7 JDBC statements were prepared\n#       7 JDBC statements were executed\n#       9 entities were loaded\n#   }\n\n#   쿼리 7\n\n#   8.11절에서 센 것과 같다\n\n# --- 주문을 10건으로 늘리면 ---\n\nGET /orders\n\n#   Session Metrics {\n#       31 JDBC statements were executed\n#       41 entities were loaded\n#   }\n\n#   쿼리 31\n\n#   1 + 3 x 10\n\n# --- 100건이면 ---\n\n#   Session Metrics {\n#       301 JDBC statements were executed\n#   }\n\n#   선형으로 는다\n\n# --- DTO 로 변환만 하면 (방법 ①) ---\n\nGET /orders\n\n#   Session Metrics {\n#       31 JDBC statements were executed\n#   }\n\n#   같다\n\n#   화면이 못 건드리는 것만 얻었다\n\n# --- JPQL 로 DTO 를 바로 (방법 ②) ---\n\nselect new hello.OrderListDto(o.id, m.name, i.name,\n                              oi.orderPrice, oi.count, o.status, o.orderDate)\nfrom Order o\njoin o.member m\njoin o.orderItems oi\njoin oi.item i\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0.name, i1_0.name, oi1_0.order_price,\n#              oi1_0.count, o1_0.status, o1_0.order_date\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n#       join item i1_0 on i1_0.item_id=oi1_0.item_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       0 entities were loaded\n#   }\n\n#   쿼리 1, 엔티티 0\n\n#   31 -> 1\n\n# --- 다만 ---\n\n#   주문상품이 둘인 주문은 두 행으로 나온다\n#   화면이 '대표상품' 만 보여 주니 중복이 생긴다\n\n#   distinct 나 group by 가 필요하다\n#   또는 화면 요구사항을 바꾼다\n\n#   DTO 조회는 화면과 쿼리가 붙는다\n\n# --- 이 책은 안 바꾼다 ---\n\n#   9.7절 목록\n#   다음 권의 주제다",
+   "note": "**네 화면 중 셋이 쿼리 하나둘**이다. **주문 목록만 31개**다.\n\n**주문이 100건이면 301개**다. **선형으로 는다.**\n\n**DTO 로 변환만 하면 쿼리가 안 준다.** **화면이 못 건드리는 것만** 얻는다.\n\n**JPQL 로 바로 DTO 를 만들면 31 이 1** 이 된다. **엔티티도 0개**다.\n\n**대신 주문상품이 여럿이면 중복 행**이 나온다. **DTO 조회는 화면과 쿼리가 붙는다.**\n\n**다음 절에서 지연 로딩이 어디서 도는지** 본다."
+  }
+ ],
+ "recap": [
+  "**\"화면이 무엇이든 꺼낼 수 있다\" 가 이득이자 대가**다.",
+  "**HTML 한 줄이 쿼리를 만든다** — 코드 리뷰에서 안 보인다.",
+  "**네 화면 중 주문 목록만** 아프다.",
+  "**연관을 안 건드리는 화면은 안전**하다.",
+  "**\"지금은 괜찮다\" 가 설계 근거가 못 된다.**",
+  "**DTO 로 변환만 하면 쿼리가 안 준다.**",
+  "**JPQL 로 바로 DTO 면 31 이 1** 이 된다.",
+  "**DTO 조회는 화면과 쿼리가 붙는다.**",
+  "**주문 100건이면 쿼리 301개**다."
+ ],
+ "drills": [
+  {
+   "task": "`generate_statistics` 를 켜고 네 화면의 쿼리를 센다.",
+   "done_when": "주문 목록만 많은 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "주문을 10건으로 늘리고 다시 센다.",
+   "done_when": "1+3N 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "DTO 변환만 넣어 본다.",
+   "done_when": "쿼리가 안 주는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "JPQL 로 DTO 를 바로 조회해 본다.",
+   "done_when": "쿼리 하나가 되는 것과 중복 행을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "엔티티를 화면에 넘긴 이득과 대가는?",
+   "a": "화면이 무엇이든 꺼낼 수 있다는 같은 성질이다."
+  },
+  {
+   "q": "왜 코드 리뷰에서 안 보이나?",
+   "a": "HTML 한 줄이 쿼리를 만드는데 자바 코드는 안 바뀌기 때문이다."
+  },
+  {
+   "q": "네 화면 중 어느 것이 아픈가?",
+   "a": "주문 목록이다. 연관을 셋 따라간다."
+  },
+  {
+   "q": "DTO 변환만 하면 쿼리가 주나?",
+   "a": "안 준다. 화면이 못 건드리는 것만 얻는다."
+  },
+  {
+   "q": "JPQL 로 바로 DTO 를 만들면?",
+   "a": "쿼리가 하나가 되지만 화면과 쿼리가 붙고 중복 행 처리가 필요하다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
