@@ -633,7 +633,7 @@
           "title": "정리",
           "summary": "경계에서 꺼내 쓰기.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -648,7 +648,7 @@
           "title": "요구사항",
           "summary": "무엇을 만드나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",

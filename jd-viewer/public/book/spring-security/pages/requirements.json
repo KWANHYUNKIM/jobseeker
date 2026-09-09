@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "requirements",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "요구사항",
+ "summary": "무엇을 만드나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "만들 것과 안 만들 것을 정한다.",
+  "순서를 정한다.",
+  "완성 기준을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 조각을** 봤다. **한 번 처음부터 끝까지** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "만들 것과 안 만들 것",
+   "ascii": "   what this chapter builds, and what it leaves out\n\n   builds\n     a member entity with roles and authorities\n     signup with a real password hash\n     a login flow with handlers you wrote\n     one filter of your own in the chain\n     a lockout that survives a restart\n\n   leaves out\n     json login          chapter 11\n     email verification  out of scope, but named\n     password reset      out of scope, but named",
+   "note": "**안 만들 것도 이름은 적어** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "요구사항 아홉 줄",
+   "md": "| # | 요구 | 확인 방법 |\n|---|---|---|\n| 1 | 이메일과 비밀번호로 가입한다 | `member` 행이 생긴다 |\n| 2 | 비밀번호는 되돌릴 수 없게 저장한다 | `{bcrypt}$2a$…` |\n| 3 | 가입하면 기본 역할을 받는다 | `member_role` 행 |\n| 4 | 역할이 권한을 물고 온다 | `authorities` 목록 |\n| 5 | 로그인하면 원래 가려던 곳으로 간다 | `Location` 헤더 |\n| 6 | 실패 이유를 화면이 구별해 보여 준다 | 메시지가 다르다 |\n| 7 | 마지막 로그인 시각과 IP 를 남긴다 | `member` 컬럼 |\n| 8 | 다섯 번 틀리면 30분 잠긴다 | `locked` 플래그 |\n| 9 | 위 여덟이 테스트로 지켜진다 | 빨간 막대 |\n\n> **6번이 4.4절과 충돌**한다.\n> **없는 계정과 틀린 비밀번호는 여전히 같게** 하고, **잠김과 비활성만** 구별한다.\n> **그 계정이 있다는 건 이미 잠겼다는 사실이 말해** 준다.\n\n**쓸 조각들**\n\n> **4.6절 `UserDetailsService`, 4.7절 `PasswordEncoder`, 3.10절 `RequestCache`,\n> 3.2절 성공·실패 핸들러, 8.2절 권한 표, 9.3절 잠금**이다.\n> **새로 배울 건 필터를 끼우는 것** 하나다."
+  },
+  {
+   "type": "figure",
+   "caption": "만드는 순서",
+   "ascii": "   the order the pieces are built, and why\n\n   entity      nothing works without a place to put a user\n   details     the bridge from your domain to the framework\n   signup      you need a user before you can log one in\n   login       now the chain has something to authenticate\n   handlers    only once login works can you change its ending\n   filter      only once the flow is known is a new filter safe\n   lockout     last, because it needs events, which need all of it",
+   "note": "**잠금이 마지막인 건 이벤트가 다** 있어야 해서다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "완성 기준을 먼저 쓴다",
+   "md": "**책 ⑨ 의 방식**이다.\n\n> **테스트를 먼저 적어 두고 채워** 나간다.\n> **아홉 줄이 아홉 개의 빨간 막대**다.\n\n```java\n@Test\nvoid 가입하면_회원이_생긴다() { fail(\"아직\"); }\n\n@Test\nvoid 비밀번호는_해시로_저장된다() { fail(\"아직\"); }\n\n@Test\nvoid 가입하면_ROLE_USER_를_받는다() { fail(\"아직\"); }\n\n@Test\nvoid 역할이_권한을_물고_온다() { fail(\"아직\"); }\n\n@Test\nvoid 로그인하면_원래_가려던_곳으로() { fail(\"아직\"); }\n\n@Test\nvoid 잠긴_계정은_다른_메시지() { fail(\"아직\"); }\n\n@Test\nvoid 로그인하면_시각과_IP_가_남는다() { fail(\"아직\"); }\n\n@Test\nvoid 다섯번_틀리면_잠긴다() { fail(\"아직\"); }\n\n@Test\nvoid 삼십분_뒤_풀린다() { fail(\"아직\"); }\n```\n\n> **9개가 빨갛게** 시작한다.\n> **10.9절에서 9개가 초록이면** 끝난다.\n\n**안 만들 것을 적어 두는 이유**\n\n> **\"안 했다\" 와 \"빠뜨렸다\" 는** 다르다.\n> **이메일 인증과 비밀번호 재설정은 실제 서비스에 필수**인데 여기서는 안 한다.\n> **적어 두면 다음 사람이** 안다.\n>\n> **12.2절에서 이 목록을 다시** 꺼낸다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 완성 기준을 먼저 쓴다 ---\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n가입하면_회원이_생긴다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n비밀번호는_해시로_저장된다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n가입하면_ROLE_USER_를_받는다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n역할이_권한을_물고_온다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n로그인하면_원래_가려던_곳으로 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n잠긴_계정은_다른_메시지 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n로그인하면_시각과_IP_가_남는다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n다섯번_틀리면_잠긴다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n삼십분_뒤_풀린다 FAILED\n    org.opentest4j.AssertionFailedError: 아직\n\n9 tests completed, 9 failed\n\n#   아홉 개가 빨갛다\n\n#   책 ⑨ 이 하던 방식이다\n\n# --- 지금 있는 것 ---\n\nselect table_name from information_schema.tables\n where table_schema = 'PUBLIC' order by table_name;\n\nTABLE_NAME\n-------------------\nMEMBER\nMEMBER_ROLE\nORDERS\nORDER_SHARE\nPERSISTENT_LOGINS\nROLE_AUTHORITY\nSECURITY_AUDIT\nURL_AUTHORITY\n\n#   여덟 개다\n\n#   4.6절 · 8.2절 · 8.7절 · 9.3절에서 만든 것들이다\n\n#   10장은 이걸 정리해 하나로 만든다\n\n# --- 지금 회원 표 ---\n\nselect column_name, data_type, is_nullable\n  from information_schema.columns\n where table_name = 'MEMBER' order by ordinal_position;\n\nCOLUMN_NAME   | DATA_TYPE  | IS_NULLABLE\n--------------+------------+-------------\nID            | BIGINT     | NO\nEMAIL         | VARCHAR    | NO\nPASSWORD      | VARCHAR    | NO\nACTIVE        | BOOLEAN    | NO\nLOCKED        | BOOLEAN    | NO\nFAILED_COUNT  | INTEGER    | NO\nLOCKED_AT     | TIMESTAMP  | YES\n\n#   7번 요구사항의 컬럼이 없다\n\n#   10.2절에서 넣는다\n\n# --- 지금 되는 것 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST localhost:8080/signup \\\n    -d 'email=new@a.com&password=1234'\n404\n\n#   가입 화면이 없다\n\n$ curl -is -c c.txt localhost:8080/login | grep -c 'name=\"username\"'\n1\n\n#   로그인 화면은 있다 (2.7절)\n\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\" -o /dev/null\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt localhost:8080/orders\n200\n\n#   로그인은 된다\n\n#   그런데 사용자가 SQL 로 직접 넣은 것이다\n\nselect email from member;\n\nEMAIL\n---------------\nuser@a.com\nmanager@a.com\nadmin@a.com\n\n#   가입 경로가 없다\n\n#   1번 요구사항이다\n\n# --- 실패 메시지를 확인 ---\n\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\" -o /dev/null -w '%{redirect_url}\\n'\n\nhttp://localhost:8080/login?error\n\nupdate member set locked = true where email = 'user@a.com';\n\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\" -o /dev/null -w '%{redirect_url}\\n'\n\nhttp://localhost:8080/login?error\n\n#   둘이 같다\n\n#   6번 요구사항이다\n\n#   9.1절에서 이벤트는 구별된다고 했다\n\n#   화면까지 가져오는 건 10.6절이다\n\n# --- 시각과 IP ---\n\nselect * from information_schema.columns\n where table_name = 'MEMBER' and column_name like 'LAST%';\n\n#   (0 rows)\n\n#   7번 요구사항이다\n\n# --- 잠금은 이미 있다 ---\n\n$ ./gradlew test --tests LoginAttemptTest\n\n다섯번_틀리면_잠긴다 PASSED\n\n#   9.3절에서 만들었다\n\n#   요구사항 8번은 절반 됐다\n\n#   30분 해제는 코드에만 있고 테스트가 없다\n\n$ grep -rn \"삼십분\\|30\" src/test --include='*.java' | grep -ci lock\n0\n\n#   9번 요구사항이 그걸 말한다\n\n# --- 다음 절에서 ---\n\n#   회원 도메인부터 만든다",
+   "note": "**완성 기준 아홉 개를 먼저 써서 아홉 개가 빨갛게** 시작한다.\n\n**표가 이미 여덟 개**다 — 4.6·8.2·8.7·9.3절에서 만든 것들이고 10장이 정리한다.\n\n**`member` 에 마지막 로그인 컬럼이 없고 가입 경로는 404** 다.\n\n**틀린 비밀번호와 잠긴 계정의 `redirect_url` 이 똑같다** — 6번 요구사항이다.\n\n**잠금은 9.3절에서 절반 됐고 30분 해제는 테스트가** 없다."
+  }
+ ],
+ "recap": [
+  "**요구사항 아홉 줄을 먼저** 적는다.",
+  "**아홉 개가 빨간 막대로** 시작한다.",
+  "**안 만들 것도 이름은 적어** 둔다.",
+  "**만드는 순서에 이유가** 있다.",
+  "**잠금이 마지막인 건 이벤트가 다 필요해서**다.",
+  "**실패 메시지는 잠김·비활성만** 구별한다.",
+  "**없는 계정과 틀린 비밀번호는 여전히** 같다.",
+  "**표가 이미 여덟 개**다.",
+  "**새로 배울 건 필터 끼우기** 하나다."
+ ],
+ "drills": [
+  {
+   "task": "완성 기준을 실패하는 테스트로 적는다.",
+   "done_when": "아홉 개가 빨간 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "지금 표 목록을 뽑는다.",
+   "done_when": "어느 절에서 만들었는지 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "지금 되는 것과 안 되는 것을 나눈다.",
+   "done_when": "요구사항 번호를 붙였다.",
+   "minutes": 20
+  },
+  {
+   "task": "안 만들 것을 목록으로 적는다.",
+   "done_when": "이유를 함께 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 완성 기준을 먼저 쓰나?",
+   "a": "끝났는지 판단할 기준이 생기고 진행이 빨간 막대로 보인다."
+  },
+  {
+   "q": "실패 메시지를 어디까지 구별하나?",
+   "a": "잠김과 비활성만이다. 없는 계정과 틀린 비밀번호는 같게 둔다."
+  },
+  {
+   "q": "잠금을 마지막에 만드는 이유는?",
+   "a": "인증 이벤트가 다 갖춰진 뒤여야 해서다."
+  },
+  {
+   "q": "이 장에서 새로 배우는 것은?",
+   "a": "직접 만든 필터를 체인에 끼우는 것이다."
+  },
+  {
+   "q": "안 만들 것을 적어 두는 이유는?",
+   "a": "\"안 했다\" 와 \"빠뜨렸다\" 를 구별하려고다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security — UserDetailsService",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "integration-review",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "정리",
+ "summary": "경계에서 꺼내 쓰기.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 경계를 정리한다.",
+  "익명일 때의 네 답을 안다.",
+  "9장이 만든 것을 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9장은 시큐리티가 바깥과 만나는 자리**였다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 경계",
+   "ascii": "   four edges where security meets other code\n\n   events        the container tells you what happened\n   servlet api   old code reads the user without knowing spring\n   mvc           a controller receives the user as a parameter\n   templates     a page hides what the user cannot use\n\n   every one of the four can be null in a way you did not expect",
+   "note": "**넷 다 예상 못 한 `null` 이** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "9장이 만든 것",
+   "md": "| 절 | 만든 것 |\n|---|---|\n| 9.1 | 인증 이벤트 리스너 |\n| 9.2 | 거부 이벤트 리스너 + CSRF 로그 |\n| 9.3 | 계정 잠금 + 감사 원장 |\n| 9.4 | `request.login` 을 제대로 쓰는 법 |\n| 9.5 | `@LoginMember` 메타 애너테이션 |\n\n**8.9절의 데이터 층 문제에 답**이 생겼다.\n\n> **\"어제는 됐는데 오늘 안 된다\" 를 원장으로** 물을 수 있다.\n>\n> ```sql\n> select at, kind, principal from security_audit\n>  where principal = 'manager@a.com' order by id desc limit 10;\n> ```\n>\n> **거부가 언제부터 시작됐는지** 보인다.\n\n**남은 사각지대**\n\n> **CSRF 실패와 내가 던진 예외**다(9.2절).\n> **둘 다 직접 남겨야** 한다.\n> **한 군데에 모으는 게** 중요하다 — **원장이 반쪽이면 안 보는** 것과 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "익명일 때의 네 답",
+   "ascii": "   the same anonymous request, seen from four places\n\n   getAuthentication()          an anonymous token\n   getUserPrincipal()           null\n   AuthenticationPrincipal T    null\n   sec:authorize isAuthenticated()  false\n\n   four answers, all correct, none interchangeable",
+   "note": "**넷 다 맞고 서로 바꿔 쓸 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경계에서 조심할 것",
+   "md": "| 자리 | 함정 | 절 |\n|---|---|---|\n| 이벤트 | 리스너 예외가 로그인을 막는다 | 9.1 |\n| 이벤트 | 매니저를 직접 만들면 안 나온다 | 9.1 |\n| 이벤트 | 실패 이벤트에 비밀번호가 있다 | 9.1 |\n| 서블릿 | `isUserInRole` 이 `ROLE_` 을 붙인다 | 9.4 |\n| 서블릿 | `request.login` 이 저장을 안 한다 | 9.4 |\n| MVC | 타입이 안 맞으면 조용히 `null` | 9.5 |\n| MVC | 세션 사본이 낡는다 | 9.5 |\n| 템플릿 | 숨김은 인가가 아니다 | 9.5 |\n\n> **여덟 중 넷이 `null` 이나 \"안 나옴\"** 이다.\n> **경계에서는 없는 것이 조용히 없다.**\n\n**테스트 137개**\n\n> **책 ⑨ 이 남긴 78개에서 쉰아홉이** 늘었다.\n> **인가 21, 인증 이벤트 3, 통합 4** 정도다.\n\n**남은 빚 둘**\n\n> **직접 만든 로그인 방식** — **10장**.\n> **비동기 로그인의 302** — **11.3절**.\n>\n> **9장에서 재료가 다** 모였다.\n> **10장은 그걸로 한 번 처음부터 끝까지** 만든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 익명 요청 하나를 네 곳에서 본다 ---\n\n@GetMapping(\"/edges\")\npublic String edges(HttpServletRequest request, Authentication auth,\n        @AuthenticationPrincipal CustomUserDetails user, Model model) {\n    System.out.println(\">>> getAuthentication = \" + auth);\n    System.out.println(\">>> getUserPrincipal  = \" + request.getUserPrincipal());\n    System.out.println(\">>> @AuthPrincipal    = \" + user);\n    return \"edges\";\n}\n\n<div sec:authorize=\"isAuthenticated()\">로그인함</div>\n<div sec:authorize=\"!isAuthenticated()\">손님</div>\n\n$ curl -s localhost:8080/edges | grep -oE '로그인함|손님'\n\n손님\n\n>>> getAuthentication = AnonymousAuthenticationToken [Principal=anonymousUser]\n>>> getUserPrincipal  = null\n>>> @AuthPrincipal    = null\n\n#   네 답이 다 다르다\n\n#   그리고 넷 다 맞다\n\n$ curl -s -b user.txt localhost:8080/edges | grep -oE '로그인함|손님'\n\n로그인함\n\n>>> getAuthentication = UsernamePasswordAuthenticationToken [...]\n>>> getUserPrincipal  = UsernamePasswordAuthenticationToken [...]\n>>> @AuthPrincipal    = CustomUserDetails [username=user@a.com]\n\n#   로그인하면 셋이 같은 것을 가리킨다\n\n# --- 원장으로 물어본다 ---\n\n#   \"매니저가 언제부터 막혔나\"\n\nselect at, kind, principal, detail\n  from security_audit\n where principal = 'manager@a.com'\n order by id desc limit 6;\n\nAT                  | KIND                     | PRINCIPAL     | DETAIL\n--------------------+--------------------------+---------------+---------------\n2026-09-09 20:27:41 | AuthorizationDeniedEvent | manager@a.com | GET /report/x\n2026-09-09 20:27:38 | AuthorizationDeniedEvent | manager@a.com | GET /report/x\n2026-09-09 20:24:02 | AuthorizationDeniedEvent | manager@a.com | GET /report/x\n2026-09-09 20:12:55 | InteractiveAuthentica... | manager@a.com |\n2026-09-09 19:58:31 | AuthorizationGrantedE... | manager@a.com | GET /report/x\n2026-09-09 19:58:29 | InteractiveAuthentica... | manager@a.com |\n\n#   19:58 에는 통과했고 20:24 부터 막힌다\n\n#   그 사이에 무슨 일이 있었다\n\nselect * from role_authority\n where role = 'ROLE_MANAGER' and authority = 'REPORT_READ';\n\n#   (0 rows)\n\n#   8.9절의 데이터 층 문제를 찾았다\n\n#   로그만 있었다면 회전돼 사라졌을 것이다\n\n# --- 사각지대를 확인한다 ---\n\n$ curl -s -o /dev/null -b user.txt -X POST localhost:8080/orders/new \\\n    -d 'productNumbers=001'\n\nselect count(*) from security_audit where at > now() - interval '1 minute';\n\nCOUNT(*)\n--------\n0\n\n#   403 이었는데 아무것도 안 남았다\n\n#   CSRF 다 (9.2절)\n\n#   핸들러를 붙이면\n\nhttp.csrf(c -> c.accessDeniedHandler((req, res, ex) -> {\n    auditRepository.save(new SecurityAudit(LocalDateTime.now(),\n            \"CsrfDenied\", currentName(), req.getMethod() + \" \" + req.getRequestURI(),\n            req.getRemoteAddr()));\n    res.sendError(403);\n}));\n\n$ curl -s -o /dev/null -b user.txt -X POST localhost:8080/orders/new \\\n    -d 'productNumbers=001'\n\nselect kind, detail from security_audit order by id desc limit 1;\n\nKIND       | DETAIL\n-----------+---------------------\nCsrfDenied | POST /orders/new\n\n#   한 원장에 모였다\n\n# --- 9장이 만든 것을 센다 ---\n\n$ grep -rn \"@EventListener\" src/main --include='*.java' | wc -l\n7\n\n$ grep -rn \"security_audit\\|SecurityAudit\" src/main --include='*.java' | wc -l\n5\n\n$ ./gradlew test\n\n137 tests completed\n\nBUILD SUCCESSFUL\n\n$ grep -rn \"isForbidden\\|is(403)\\|isUnauthorized\" src/test | wc -l\n21\n\n#   책 ⑨ 의 78개에서 137개다\n\n# --- 남은 빚 ---\n\n$ curl -s -X POST localhost:8080/login \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"username\":\"user@a.com\",\"password\":\"1234\"}' -i | head -3\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error\n\n#   JSON 으로 로그인이 안 된다\n\n#   3.2절의 필터가 폼 파라미터만 읽는다\n\n#   11.1절에서 만든다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'X-Requested-With: XMLHttpRequest' localhost:8080/orders\n401\n\n#   이건 6.2절에서 갚았다\n\n#   로그인 자체가 남았다\n\n# --- 지금까지의 필터 목록 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | nl\n\n     1   DisableEncodeUrlFilter\n     2   WebAsyncManagerIntegrationFilter\n     3   SecurityContextHolderFilter\n     4   HeaderWriterFilter\n     5   CorsFilter\n     6   CsrfFilter\n     7   LogoutFilter\n     8   UsernamePasswordAuthenticationFilter\n     9   ConcurrentSessionFilter\n    10   RequestCacheAwareFilter\n    11   SecurityContextHolderAwareRequestFilter\n    12   RememberMeAuthenticationFilter\n    13   AnonymousAuthenticationFilter\n    14   SessionManagementFilter\n    15   ExceptionTranslationFilter\n    16   AuthorizationFilter\n\n#   열여섯이다\n\n#   1.4절에서 열다섯이었다\n\n#   내가 만든 필터는 아직 없다\n\n#   10.7절에서 하나 끼운다\n\n# --- 다음 장에서 ---\n\n#   지금까지의 재료로 처음부터 끝까지 만든다",
+   "note": "**같은 익명 요청에 네 곳이 서로 다른 답**을 주고 넷 다 맞다.\n\n**원장으로 \"19:58 에는 통과, 20:24 부터 거부\" 를 찾아 8.9절의 데이터 층 문제**를 짚었다.\n\n**CSRF 403 은 원장에 0건**이었고 핸들러를 붙여 한 원장에 모았다.\n\n**JSON 로그인은 여전히 302** 다 — 11.1절의 자리다.\n\n**필터가 열여섯인데 내가 만든 건 아직** 없다."
+  }
+ ],
+ "recap": [
+  "**경계가 이벤트·서블릿·MVC·템플릿** 넷이다.",
+  "**익명 요청에 네 답이 서로** 다르다.",
+  "**넷 다 맞고 바꿔 쓸 수** 없다.",
+  "**경계의 함정 여덟 중 넷이 조용한 `null`** 이다.",
+  "**원장이 데이터 층 문제를 찾아** 준다.",
+  "**CSRF 실패는 직접 남겨야** 한다.",
+  "**원장이 반쪽이면 안 보는 것과** 같다.",
+  "**테스트가 137개**다.",
+  "**남은 빚은 JSON 로그인과 그 예외 처리**다."
+ ],
+ "drills": [
+  {
+   "task": "익명 요청을 네 곳에서 찍는다.",
+   "done_when": "네 답을 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "원장으로 거부 시작 시점을 찾는다.",
+   "done_when": "원인 행을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "CSRF 실패를 원장에 넣는다.",
+   "done_when": "한 표에 모인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "지금 필터 목록을 센다.",
+   "done_when": "1장과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "익명 요청에서 `getAuthentication` 과 `getUserPrincipal` 은?",
+   "a": "전자는 익명 토큰, 후자는 `null` 이다."
+  },
+  {
+   "q": "경계 함정의 공통점은?",
+   "a": "없는 것이 예외 없이 조용히 없다."
+  },
+  {
+   "q": "감사 원장이 답해 주는 질문은?",
+   "a": "언제부터 누가 막히기 시작했는가다."
+  },
+  {
+   "q": "원장의 사각지대는?",
+   "a": "CSRF 실패와 직접 던진 예외다."
+  },
+  {
+   "q": "남은 빚 둘은?",
+   "a": "JSON 로그인과 그 예외 처리다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authentication Events",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/events.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Spring MVC Integration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/integrations/mvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
