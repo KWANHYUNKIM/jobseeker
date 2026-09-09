@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "fat-jar",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "빌드와 실행",
+ "summary": "JAR 로 만들어 돌린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "평범한 JAR 를 만든다.",
+  "왜 안 도는지 본다.",
+  "Fat JAR 로 돌린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절까지 그레이들이** 돌려 줬다. **파일 하나로 만들어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "평범한 JAR 가 안 도는 이유",
+   "ascii": "   why a plain jar does not run\n\n   your classes are in it\n   the libraries are not\n   the classpath at runtime is just that one file\n\n   so the first import of a spring class fails",
+   "note": "**스프링 클래스를 처음 부르는 자리에서** 터진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JAR 는 내 클래스만 담는다",
+   "md": "**의존성은 안** 들어간다.\n\n> **`jar` 태스크는 내 것만** 담는다.\n> **2.4절의 `-plain.jar` 가 그것**이다.\n> **4.2K 밖에 안** 됐다.\n\n**실행하면 클래스를 못** 찾는다.\n\n> **`NoClassDefFoundError`** 다.\n> **아래에서 확인**한다.\n> **3.8절의 \"혼자 못 뜸\" 과 다른** 이유다.\n\n**클래스패스를 주면 돈**다.\n\n> **`-cp` 에 JAR 를 다** 적는다.\n> **배포할 때 파일이 여럿이** 된다.\n> **3.9절에서 원한 게 그게** 아니다.\n\n**그래서 다 합친**다.\n\n> **압축을 풀어 한 곳에** 모은다.\n> **다시** 압축한다.\n> **그게 Fat JAR** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "Fat JAR 가 하는 일",
+   "ascii": "   what a fat jar does about it\n\n   unzip every dependency\n   put all the class files together\n   zip the whole thing again\n\n   the result runs, and 4.6 shows what it quietly broke",
+   "note": "**돌기는 하고 4.6절에서 무엇이 깨졌는지** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "매니페스트에 시작점이 있어야 한다",
+   "md": "**`Main-Class` 가** 필요하다.\n\n> **3.4절에서 없어서** 막혔다.\n> **`java -jar` 가 그걸** 읽는다.\n> **아래에서 넣는**다.\n\n**JAR 안의 JAR 는 안** 읽힌다.\n\n> **그냥 넣으면 못** 쓴다.\n> **4.5절이 그** 이야기다.\n> **그래서 풀어서 넣는**다.\n\n**같은 파일이** 겹친다.\n\n> **여러 JAR 에 같은 경로가** 있다.\n> **덮어써도 아무 말이** 없다.\n> **4.6절에서 그걸** 깨뜨린다.\n\n**크기가 커진**다.\n\n> **압축률이 나빠지기도** 한다.\n> **아래에서 재** 본다.\n> **4.7절의 부트 JAR 와** 비교한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 평범한 JAR 를 만든다\n\n// build.gradle\njar {\n    manifest {\n        attributes 'Main-Class': 'study.embed.EmbeddedSpringMain'\n    }\n}\n\n$ ./gradlew jar -q\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff    18K  app.jar\n\n$ unzip -l build/libs/app.jar | tail -3\n     1204  study/embed/HelloController.class\n     2418  study/embed/EmbeddedSpringMain.class\n---------                     -------\n    18204                     14 files\n\n--   내 클래스 열네 개뿐이다\n\n\n-- 돌려 본다\n\n$ java -jar build/libs/app.jar\n\nException in thread \"main\" java.lang.NoClassDefFoundError:\n  org/apache/catalina/startup/Tomcat\n\tat study.embed.EmbeddedSpringMain.main(EmbeddedSpringMain.java:14)\nCaused by: java.lang.ClassNotFoundException:\n  org.apache.catalina.startup.Tomcat\n\n--   톰캣이 없다\n--   3.9절에서 의존성으로 받은 그것이다\n\n\n-- 클래스패스를 주면 돈다\n\n$ ./gradlew -q printClasspath | tr ':' '\\n' | wc -l\n      12\n\n$ CP=$(./gradlew -q printClasspath)\n$ java -cp \"build/libs/app.jar:$CP\" study.embed.EmbeddedSpringMain &\n$ sleep 3 && curl -s localhost:8080/hello\nhello spring\n\n--   된다\n--   대신 JAR 열둘을 같이 옮겨야 한다\n\n\n-- 몇 개를 옮겨야 하나\n\n$ ./gradlew -q printClasspath | tr ':' '\\n' | xargs -n1 basename\ntomcat-embed-core-10.1.26.jar\ntomcat-embed-el-10.1.26.jar\nspring-webmvc-6.1.11.jar\nspring-web-6.1.11.jar\nspring-context-6.1.11.jar\nspring-aop-6.1.11.jar\nspring-beans-6.1.11.jar\nspring-core-6.1.11.jar\nspring-expression-6.1.11.jar\nspring-jcl-6.1.11.jar\njakarta.annotation-api-2.1.1.jar\nmicrometer-observation-1.13.2.jar\n\n--   열둘이다\n--   3.9절에서 \"파일 하나\" 를 원했다\n\n\n-- 다 합친다\n\n// build.gradle\ntask fatJar(type: Jar) {\n    manifest {\n        attributes 'Main-Class': 'study.embed.EmbeddedSpringMain'\n    }\n    archiveFileName = 'fat.jar'\n    duplicatesStrategy = DuplicatesStrategy.WARN\n    from {\n        configurations.runtimeClasspath.collect {\n            it.isDirectory() ? it : zipTree(it)\n        }\n    }\n    with jar\n}\n\n$ ./gradlew fatJar\n\n> Task :fatJar\nEncountered duplicate path \"META-INF/LICENSE\" during copy operation\nEncountered duplicate path \"META-INF/NOTICE\" during copy operation\nEncountered duplicate path \"META-INF/spring.factories\" during copy operation\n\nBUILD SUCCESSFUL in 3s\n\n--   경고가 벌써 나온다\n--   4.6절의 예고다\n\n\n-- 크기를 잰다\n\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff    18K  app.jar\n-rw-r--r--  1 kwanhyun  staff    11M  fat.jar\n\n$ unzip -l build/libs/fat.jar | tail -1\n 11842918                     8241 files\n\n--   18K 가 11M 이 됐다\n--   파일이 8241 개다\n\n\n-- 돌려 본다\n\n$ java -jar build/libs/fat.jar\n\n1. 스프링 컨테이너를 만든다\n2. 디스패처를 만든다\n3. 톰캣을 만든다\n4. 시작한다\n10-Sep-2026 05:26:11.204 INFO [main] o.apache.catalina.core.StandardService\n  .startInternal  Starting service [Tomcat]\n10-Sep-2026 05:26:11.207 INFO [main] o.apache.catalina.core.StandardEngine\n  .startInternal  Starting Servlet engine: [Apache Tomcat/10.1.26]\n10-Sep-2026 05:26:11.418 INFO [main] o.a.coyote.http11.Http11NioProtocol.start\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n$ curl -s localhost:8080/hello\nhello spring\n\n--   파일 하나로 떴다\n--   3.9절에서 원한 것이다\n\n\n-- 다른 데서도 돈다\n\n$ scp build/libs/fat.jar deploy@server:/tmp/\n$ ssh deploy@server 'java -jar /tmp/fat.jar &'\n$ ssh deploy@server 'sleep 3 && curl -s localhost:8080/hello'\nhello spring\n\n$ docker run --rm -v $PWD/build/libs:/w -p 8080:8080 -d \\\n    eclipse-temurin:21-jre java -jar /w/fat.jar\n$ sleep 3 && curl -s localhost:8080/hello\nhello spring\n\n--   3.8절에서 못 하던 것이다\n--   서버를 안 깔았다\n\n\n-- 안을 열어 본다\n\n$ unzip -l build/libs/fat.jar | grep -E 'catalina|springframework' | head -4\n     3418  org/apache/catalina/startup/Tomcat.class\n     1204  org/apache/catalina/startup/Tomcat$1.class\n    12841  org/springframework/web/servlet/DispatcherServlet.class\n     4102  org/springframework/context/ApplicationContext.class\n\n$ unzip -l build/libs/fat.jar | grep -c '\\.jar$'\n0\n\n--   JAR 가 하나도 없다\n--   전부 풀려서 클래스로 들어갔다\n\n\n-- 부트 JAR 와 비교한다\n\n$ unzip -l build/libs/app-boot.jar | grep -c 'BOOT-INF/lib/.*\\.jar$'\n41\n\n$ unzip -l build/libs/fat.jar | grep -c '\\.jar$'\n0\n\n--   부트는 JAR 를 그대로 넣었다\n--   Fat JAR 는 풀었다\n--   4.7절에서 그 차이를 판다\n\n\n-- 왜 풀어야 했나\n\n// JAR 를 그대로 넣어 본다\ntask nestedJar(type: Jar) {\n    manifest { attributes 'Main-Class': 'study.embed.EmbeddedSpringMain' }\n    archiveFileName = 'nested.jar'\n    from { configurations.runtimeClasspath }   // zipTree 를 안 썼다\n    with jar\n}\n\n$ ./gradlew nestedJar -q\n$ unzip -l build/libs/nested.jar | grep -c '\\.jar$'\n12\n\n$ java -jar build/libs/nested.jar\nException in thread \"main\" java.lang.NoClassDefFoundError:\n  org/apache/catalina/startup/Tomcat\n\n--   JAR 는 들어 있는데 못 읽는다\n--   4.5절이 그 이야기다\n\n\n-- 매니페스트를 확인한다\n\n$ unzip -p build/libs/fat.jar META-INF/MANIFEST.MF\nManifest-Version: 1.0\nMain-Class: study.embed.EmbeddedSpringMain\n\n--   3.4절에서 WAR 에 없던 그 줄이다\n\n\n-- 지우면 안 된다\n\n$ zip -d build/libs/fat.jar META-INF/MANIFEST.MF > /dev/null\n$ java -jar build/libs/fat.jar\nno main manifest attribute, in build/libs/fat.jar\n\n--   3.4절과 같은 메시지다\n\n\n-- 겹친 파일을 세 본다\n\n$ ./gradlew fatJar 2>&1 | grep -c 'duplicate path'\n3\n\n$ for j in $(./gradlew -q printClasspath | tr ':' ' '); do\n    unzip -l \"$j\" 2>/dev/null | grep -c 'META-INF/spring.factories'\n  done | paste -sd+ | bc\n2\n\n--   spring.factories 가 두 JAR 에 있다\n--   하나가 다른 하나를 덮었다\n--   4.6절에서 이게 무엇을 깨는지 본다\n\n\n-- 지금까지의 정리\n\n$ printf '%-22s %-10s %s\\n' \\\n  '평범한 JAR'  '18K'   '의존성이 없어 못 뜸' \\\n  '-cp 로 실행'  '18K+12개' '파일이 여럿' \\\n  'Fat JAR'     '11M'   '파일 하나, 뜸' \\\n  'JAR 를 그대로' '11M'   '못 뜸 (4.5절)' \\\n  '부트 JAR'    '21M'   'JAR 를 그대로 넣고도 뜸'\n\n평범한 JAR              18K        의존성이 없어 못 뜸\n-cp 로 실행             18K+12개   파일이 여럿\nFat JAR                 11M        파일 하나, 뜸\nJAR 를 그대로           11M        못 뜸 (4.5절)\n부트 JAR                21M        JAR 를 그대로 넣고도 뜸\n\n--   4.5절에서 넷째 줄의 이유를 본다",
+   "note": "**평범한 JAR 는 18K 에 클래스 14개뿐이라 `NoClassDefFoundError: org/apache/catalina/startup/Tomcat`** 이다.\n\n**`-cp` 에 JAR 열둘을 주면 돌지만 파일이 여럿**이다.\n\n**Fat JAR 는 11M·8241 파일이 되고 `java -jar` 로 다른 서버·컨테이너에서도** 돈다.\n\n**JAR 를 풀지 않고 그대로 넣으면 열둘이 들어 있어도 여전히 `NoClassDefFoundError`** 다.\n\n**빌드 때 `duplicate path` 경고가 셋 — `spring.factories` 가 두 JAR 에** 있다."
+  }
+ ],
+ "recap": [
+  "**JAR 는 내 것만** 담는다.",
+  "**의존성이** 없다.",
+  "**클래스를 못** 찾는다.",
+  "**`-cp` 로는** 된다.",
+  "**파일이** 여럿이다.",
+  "**다 풀어** 합친다.",
+  "**파일 하나로** 뜬다.",
+  "**JAR 를 그대로 넣으면 안** 된다.",
+  "**겹친 파일이** 생긴다."
+ ],
+ "drills": [
+  {
+   "task": "평범한 JAR 를 만들어 돌린다.",
+   "done_when": "오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`-cp` 로 돌린다.",
+   "done_when": "JAR 개수를 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "Fat JAR 를 만든다.",
+   "done_when": "파일 하나로 뜨는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "JAR 를 풀지 않고 넣는다.",
+   "done_when": "안 되는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "평범한 JAR 가 안 도는 이유는?",
+   "a": "의존성 클래스가 들어 있지 않아서다."
+  },
+  {
+   "q": "Fat JAR 는 무엇을 하나?",
+   "a": "의존성 JAR 를 풀어 클래스를 한곳에 모아 다시 압축한다."
+  },
+  {
+   "q": "JAR 를 그대로 넣으면?",
+   "a": "읽지 못해 여전히 클래스를 못 찾는다."
+  },
+  {
+   "q": "실행에 무엇이 필요한가?",
+   "a": "매니페스트의 `Main-Class` 항목이다."
+  },
+  {
+   "q": "빌드 경고는 무엇인가?",
+   "a": "여러 JAR 에 같은 경로 파일이 있어 덮어썼다는 뜻이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Fat JAR",
+   "def": "의존성을 모두 풀어 한 파일에 담은 실행 가능한 JAR."
+  },
+  {
+   "term": "Main-Class",
+   "def": "`java -jar` 가 읽는 시작 클래스 매니페스트 항목."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  }
+ ]
+}

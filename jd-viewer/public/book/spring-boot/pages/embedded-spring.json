@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "embedded-spring",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "스프링 컨테이너까지",
+ "summary": "디스패처를 직접 붙인다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "순서를 뒤집는다.",
+  "디스패처를 등록한다.",
+  "컨트롤러를 늘려 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 서블릿마다 등록 줄이** 늘었다. **스프링이 그 자리를** 가져간다."
+  },
+  {
+   "type": "figure",
+   "caption": "이번엔 순서가 이렇다",
+   "ascii": "   the order, now that main is in charge\n\n   make the spring context   beans exist before any server does\n   make the dispatcher       hand it that context\n   make the tomcat           register the dispatcher as a servlet\n   start                     the port opens last\n\n   3.6 had this list upside down",
+   "note": "**3.6절은 이 목록이 거꾸로**였다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨테이너를 먼저 만들 수 있게 되었다",
+   "md": "**3.6절에서는 못** 했다.\n\n> **서블릿이 `init` 에서** 열었다.\n> **컨테이너가 서블릿을 만든** 뒤였다.\n> **순서를 내가 못** 정했다.\n\n**이제 `main` 에서** 만든다.\n\n> **빈이 서버보다 먼저** 생긴다.\n> **1.4절의 로그 순서가 이걸** 반영한다.\n> **빈이 실패하면 포트를 아예 안** 연다.\n\n**디스패처에 넘겨** 준다.\n\n> **생성자로 컨텍스트를** 준다.\n> **4.2절의 그** 방식이다.\n> **XML 도 초기화 클래스도 필요** 없다.\n\n**등록은 한 번뿐**이다.\n\n> **`/` 하나에** 붙인다.\n> **컨트롤러를 더해도 안** 는다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "URL 은 많고 서블릿은 하나",
+   "ascii": "   one servlet for every url\n\n   the dispatcher is mapped to slash\n   every request lands on it\n   it looks up a controller method and calls it\n\n   so adding a controller no longer means registering a servlet",
+   "note": "**컨트롤러를 더해도 서블릿 등록이 안** 는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "여기까지가 부트 없이 만든 것이다",
+   "md": "**부트 의존성이 아직** 없다.\n\n> **톰캣과 스프링 MVC 뿐**이다.\n> **아래에서 그걸** 센다.\n> **4.4절부터 부트가** 나온다.\n\n**빠진 게** 많다.\n\n> **정적 파일·에러 페이지·인코딩**이다.\n> **4.2절에서 하나씩 붙였던 것**들이다.\n> **6장의 자동 구성이 그걸** 채운다.\n\n**설정도 하드코딩**이다.\n\n> **포트가 코드에 박혀** 있다.\n> **7장에서 밖으로** 뺀다.\n> **지금은 고치면 다시 빌드**다.\n\n**그래도 뜬다.**\n\n> **이게 부트의 뼈대**다.\n> **1.4절과 같은 로그가** 나온다.\n> **아래에서 나란히** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 의존성은 둘이다\n\ndependencies {\n    implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'\n    implementation 'org.springframework:spring-webmvc:6.1.11'\n}\n\n$ grep -c 'org.springframework.boot' build.gradle\n0\n\n--   부트가 없다\n\n\n-- 컨트롤러\n\n@RestController\npublic class HelloController {\n\n    private final GreetingService service;\n\n    public HelloController(GreetingService service) {\n        this.service = service;\n    }\n\n    @GetMapping(value = \"/hello\", produces = \"text/plain;charset=UTF-8\")\n    public String hello() {\n        return \"hello spring\";\n    }\n\n    @GetMapping(value = \"/greet\", produces = \"text/plain;charset=UTF-8\")\n    public String greet(@RequestParam String name) {\n        return service.greet(name);\n    }\n}\n\n@Configuration\n@ComponentScan(basePackages = \"study.embed\")\npublic class SpringConfig {\n    @Bean\n    public GreetingService greetingService() {\n        return new GreetingService();\n    }\n}\n\n\n-- main 에서 순서를 정한다\n\npublic class EmbeddedSpringMain {\n\n    public static void main(String[] args) throws Exception {\n        System.out.println(\"1. 스프링 컨테이너를 만든다\");\n        AnnotationConfigWebApplicationContext ctx =\n                new AnnotationConfigWebApplicationContext();\n        ctx.register(SpringConfig.class);\n\n        System.out.println(\"2. 디스패처를 만든다\");\n        DispatcherServlet dispatcher = new DispatcherServlet(ctx);\n\n        System.out.println(\"3. 톰캣을 만든다\");\n        Tomcat tomcat = new Tomcat();\n        tomcat.setPort(8080);\n        tomcat.setBaseDir(\"/tmp/embedded-spring\");\n\n        Context context = tomcat.addContext(\"\", \"/tmp/embedded-spring\");\n        tomcat.addServlet(\"\", \"dispatcher\", dispatcher);\n        context.addServletMappingDecoded(\"/\", \"dispatcher\");\n\n        System.out.println(\"4. 시작한다\");\n        tomcat.start();\n        tomcat.getServer().await();\n    }\n}\n\n$ wc -l src/main/java/study/embed/EmbeddedSpringMain.java\n      28\n\n\n-- 띄운다\n\n$ ./gradlew run -q\n\n1. 스프링 컨테이너를 만든다\n2. 디스패처를 만든다\n3. 톰캣을 만든다\n4. 시작한다\n10-Sep-2026 05:24:41.204 INFO [main] o.apache.catalina.core.StandardService\n  .startInternal  Starting service [Tomcat]\n10-Sep-2026 05:24:41.207 INFO [main] o.apache.catalina.core.StandardEngine\n  .startInternal  Starting Servlet engine: [Apache Tomcat/10.1.26]\n10-Sep-2026 05:24:41.418 INFO [main] o.a.coyote.http11.Http11NioProtocol.start\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n$ curl -s localhost:8080/hello\nhello spring\n$ curl -s 'localhost:8080/greet?name=관현'\n안녕 관현\n\n--   3.6절과 같은 응답이다\n--   web.xml 이 없다\n\n\n-- 언제 빈이 만들어졌나\n\n@Component\npublic class WhenBean {\n    public WhenBean() {\n        System.out.println(\"빈 생성 \" + Thread.currentThread().getName());\n    }\n}\n\n$ ./gradlew run -q\n1. 스프링 컨테이너를 만든다\n2. 디스패처를 만든다\n3. 톰캣을 만든다\n4. 시작한다\n...\n빈 생성 main\nStarting ProtocolHandler [\"http-nio-8080\"]\n\n--   스레드가 main 이다\n--   3.6절에서는 Catalina-utility-1 이었다\n\n\n-- 그런데 순서가 이상하다\n\n$ ./gradlew run -q 2>&1 | grep -n '빈 생성\\|ProtocolHandler'\n5:빈 생성 main\n6:Starting ProtocolHandler [\"http-nio-8080\"]\n\n--   빈이 4번 뒤에 만들어졌다\n--   디스패처의 init 이 그때 돈다\n--   컨텍스트를 아직 refresh 안 했다\n\n\n-- 먼저 refresh 하면\n\nAnnotationConfigWebApplicationContext ctx =\n        new AnnotationConfigWebApplicationContext();\nctx.register(SpringConfig.class);\nctx.setServletContext(context.getServletContext());\nctx.refresh();                       // 여기서 빈을 만든다\n\nSystem.out.println(\"빈이 다 만들어졌다\");\n\n$ ./gradlew run -q 2>&1 | grep -n '빈 생성\\|빈이 다\\|ProtocolHandler'\n3:빈 생성 main\n4:빈이 다 만들어졌다\n5:Starting ProtocolHandler [\"http-nio-8080\"]\n\n--   포트보다 먼저다\n--   1.4절의 순서가 이것이다\n\n\n-- 빈이 실패하면\n\n@Component\npublic class BrokenBean {\n    public BrokenBean() {\n        throw new IllegalStateException(\"못 만든다\");\n    }\n}\n\n$ ./gradlew run -q\n\n1. 스프링 컨테이너를 만든다\nException in thread \"main\"\n  org.springframework.beans.factory.BeanCreationException:\n  Error creating bean with name 'brokenBean': 못 만든다\n\n$ curl -s -m 1 localhost:8080/hello\ncurl: (7) Failed to connect to localhost port 8080\n\n--   포트를 아예 안 열었다\n--   1.4절에서 본 그것이다\n\n\n-- 컨트롤러를 늘려도 등록은 그대로다\n\n@RestController\npublic class MoreController {\n    @GetMapping(\"/a\") String a() { return \"a\"; }\n    @GetMapping(\"/b\") String b() { return \"b\"; }\n    @GetMapping(\"/c\") String c() { return \"c\"; }\n}\n\n$ grep -c 'addServlet\\|addServletMappingDecoded' \\\n    src/main/java/study/embed/EmbeddedSpringMain.java\n2\n\n$ for p in a b c hello greet; do printf '%-8s ' \"$p\"; \\\n    curl -s \"localhost:8080/$p?name=x\"; echo; done\na        a\nb        b\nc        c\nhello    hello spring\ngreet    안녕 x\n\n--   등록 줄은 여전히 둘이다\n--   4.2절에서는 서블릿마다 늘었다\n\n\n-- 매핑을 확인한다\n\n@RestController\nclass MappingController {\n    private final RequestMappingHandlerMapping mapping;\n\n    MappingController(RequestMappingHandlerMapping mapping) {\n        this.mapping = mapping;\n    }\n\n    @GetMapping(value = \"/mappings\", produces = \"text/plain\")\n    String mappings() {\n        return mapping.getHandlerMethods().keySet().stream()\n                .map(Object::toString)\n                .sorted()\n                .collect(Collectors.joining(\"\\n\"));\n    }\n}\n\n$ curl -s localhost:8080/mappings\n{ [/a], methods=[GET]}\n{ [/b], methods=[GET]}\n{ [/c], methods=[GET]}\n{ [/greet], methods=[GET]}\n{ [/hello], methods=[GET]}\n{ [/mappings], methods=[GET]}\n\n--   디스패처가 이 표를 들고 있다\n--   ③ 2장에서 본 그것이다\n\n\n-- 서블릿은 여전히 하나다\n\n$ curl -s localhost:8080/servlets 2>/dev/null || \\\n  echo '(서블릿 목록용 서블릿을 안 만들었다)'\n\n// 대신 컨트롤러로 찍는다\n@GetMapping(value = \"/servlets\", produces = \"text/plain\")\nString servlets(ServletContext ctx) {\n    return ctx.getServletRegistrations().entrySet().stream()\n            .map(e -> e.getKey() + \" -> \" + e.getValue().getMappings())\n            .collect(Collectors.joining(\"\\n\"));\n}\n\n$ curl -s localhost:8080/servlets\ndispatcher -> [/]\n\n--   하나뿐이다\n--   3.6절에서는 여섯이었다\n\n\n-- 아직 없는 것들\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/index.html\n404\n\n$ curl -s localhost:8080/없는경로\n{}\n\n$ curl -sD - -o /dev/null localhost:8080/없는경로 | head -1\nHTTP/1.1 404 \n\n$ curl -s 'localhost:8080/greet?name=한글'\n안녕 한글\n\n--   정적 파일이 없다 (4.2절에서 붙여야 한다)\n--   에러 페이지가 비어 있다\n--   인코딩은 produces 로 내가 적었다\n\n\n-- 부트와 비교한다\n\n// 부트\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ printf '%-24s %s\\n' \\\n  '직접 만든 것'  '28줄 + 설정 클래스' \\\n  '부트'          '5줄'\n\n직접 만든 것             28줄 + 설정 클래스\n부트                     5줄\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Servlet engine|Tomcat started'\nINFO ... : Starting Servlet engine: [Apache Tomcat/10.1.26]\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ ./gradlew run -q 2>&1 | grep -E 'Servlet engine|ProtocolHandler'\n  Starting Servlet engine: [Apache Tomcat/10.1.26]\n  Starting ProtocolHandler [\"http-nio-8080\"]\n\n--   가운데 줄이 같다\n--   부트가 내 28줄을 대신 쓴 것이다\n\n\n-- 부트의 그 코드를 본다\n\n// ServletWebServerApplicationContext.onRefresh 안\nprivate void createWebServer() {\n    WebServer webServer = this.webServer;\n    ServletContext servletContext = getServletContext();\n    if (webServer == null && servletContext == null) {\n        ServletWebServerFactory factory = getWebServerFactory();\n        this.webServer = factory.getWebServer(getSelfInitializer());\n        ...\n    }\n}\n\nprivate void selfInitialize(ServletContext servletContext) {\n    prepareWebApplicationContext(servletContext);\n    ...\n    for (ServletContextInitializer beans : getServletContextInitializerBeans()) {\n        beans.onStartup(servletContext);\n    }\n}\n\n--   내가 쓴 순서가 여기 있다\n--   4.1절의 팩토리를 이게 부른다\n\n\n-- 여기까지 부트를 얼마나 썼나\n\n$ grep -rn 'org.springframework.boot' build.gradle src/main | wc -l\n0\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -c 'spring-boot'\n0\n\n--   한 번도 안 썼다\n--   4.4절부터 부트가 나온다\n\n\n-- 정리\n\n$ printf '%-26s %-16s %s\\n' \\\n  '컨테이너를 먼저'  '가능해짐'   '3.6절은 반대' \\\n  '빈 생성 스레드'   'main'       '3.6절은 Catalina' \\\n  '빈 실패'          '포트 안 열림' '1.4절과 같음' \\\n  '서블릿 등록'      '두 줄'      '컨트롤러가 늘어도' \\\n  '서블릿 개수'      '하나'       '3.6절은 여섯' \\\n  '없는 것'          '정적·에러'  '6장에서 채움'\n\n컨테이너를 먼저            가능해짐         3.6절은 반대\n빈 생성 스레드             main             3.6절은 Catalina\n빈 실패                    포트 안 열림     1.4절과 같음\n서블릿 등록                두 줄            컨트롤러가 늘어도\n서블릿 개수                하나             3.6절은 여섯\n없는 것                    정적·에러        6장에서 채움\n\n--   4.4절에서 이걸 JAR 로 만든다",
+   "note": "**부트 없이 28줄로 3.6절과 같은 응답이 나오고 `web.xml` 이** 없다.\n\n**빈 생성 스레드가 `main` — 3.6절은 `Catalina-utility-1`** 이었다.\n\n**빈이 실패하면 포트를 아예 안 열어 1.4절과 같은 모양이** 된다.\n\n**컨트롤러를 다섯으로 늘려도 등록 줄은 둘, 서블릿은 `dispatcher -> [/]` 하나**다.\n\n**`Starting Servlet engine` 줄이 부트와 같고 부트는 이걸 5줄로** 한다."
+  }
+ ],
+ "recap": [
+  "**컨테이너를 먼저** 만든다.",
+  "**`main` 이** 만든다.",
+  "**`refresh` 로 앞당긴**다.",
+  "**실패하면 포트가 안** 열린다.",
+  "**디스패처에 넘겨** 준다.",
+  "**등록은 두 줄**이다.",
+  "**서블릿은 하나**다.",
+  "**빠진 게** 많다.",
+  "**부트를 아직 안** 썼다."
+ ],
+ "drills": [
+  {
+   "task": "컨테이너를 먼저 만들어 붙인다.",
+   "done_when": "응답을 받았다.",
+   "minutes": 25
+  },
+  {
+   "task": "`refresh` 위치를 옮긴다.",
+   "done_when": "빈 생성 순서가 바뀌는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈을 실패시킨다.",
+   "done_when": "포트가 안 열리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨트롤러를 늘린다.",
+   "done_when": "등록 줄이 안 느는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "3.6절과 무엇이 뒤집혔나?",
+   "a": "스프링 컨테이너를 서버보다 먼저 만들 수 있게 됐다."
+  },
+  {
+   "q": "빈을 만든 스레드는?",
+   "a": "`main` 이다."
+  },
+  {
+   "q": "빈이 실패하면?",
+   "a": "포트를 열지 않고 기동이 멈춘다."
+  },
+  {
+   "q": "컨트롤러를 늘리면 등록 코드가 느나?",
+   "a": "안 는다. 디스패처 하나가 다 받는다."
+  },
+  {
+   "q": "여기까지 부트를 썼나?",
+   "a": "안 썼다. 톰캣과 스프링 MVC 뿐이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "refresh",
+   "def": "스프링 컨테이너가 빈을 만들고 연결하는 초기화 호출."
+  },
+  {
+   "term": "디스패처 서블릿",
+   "def": "모든 요청을 받아 컨트롤러로 보내는 단일 서블릿."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

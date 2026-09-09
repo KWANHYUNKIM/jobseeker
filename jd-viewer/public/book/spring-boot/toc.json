@@ -204,7 +204,7 @@
           "title": "스프링 컨테이너까지",
           "summary": "디스패처를 직접 붙인다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -212,7 +212,7 @@
           "title": "빌드와 실행",
           "summary": "JAR 로 만들어 돌린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
