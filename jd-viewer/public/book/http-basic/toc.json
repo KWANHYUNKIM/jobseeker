@@ -238,7 +238,7 @@
           "title": "리소스 중심으로 설계한다",
           "summary": "동사를 URI 에서 걷어낸다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -246,7 +246,7 @@
           "title": "GET",
           "summary": "본문 없는 조회.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

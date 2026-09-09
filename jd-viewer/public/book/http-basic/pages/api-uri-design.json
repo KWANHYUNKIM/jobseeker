@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "api-uri-design",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "리소스 중심으로 설계한다",
+ "summary": "동사를 URI 에서 걷어낸다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "동사를 메서드로 옮긴다.",
+  "컬렉션과 단건을 구분한다.",
+  "안 맞는 경우를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4장이 메시지 형식이었다면 5장은 그 첫 토큰**이다. **메서드를 쓰려면 URI 부터 바뀌어야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "동사를 옮긴다",
+   "ascii": "   the same six operations, written two ways\n\n   verbs in the path            nouns in the path\n     GET  /getOrders              GET    /orders\n     GET  /getOrder?id=5          GET    /orders/5\n     POST /createOrder            POST   /orders\n     POST /updateOrder            PUT    /orders/5\n     POST /deleteOrder            DELETE /orders/5\n     POST /cancelOrder            POST   /orders/5/cancellation\n\n   the right column has one path per thing, and the method says the rest",
+   "note": "**한 가지에 경로 하나, 나머지는 메서드가** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "경로는 무엇, 메서드는 무엇을 하나",
+   "md": "**둘로 나누면 조합이** 생긴다.\n\n> **`/orders/5` 하나에 조회·수정·삭제가 다** 붙는다.\n> **경로를 새로 안 만들어도** 된다.\n> **3.1절에서 주소를 안 바꾸는 게 미덕이라고** 했다 — **이게 그걸 돕는다.**\n\n**컬렉션과 단건이 다르다.**\n\n| 경로 | 무엇 |\n|---|---|\n| `/orders` | 주문들. 목록이자 새로 만들 자리 |\n| `/orders/5` | 주문 하나 |\n| `/orders/5/items` | 그 주문의 항목들 |\n\n> **컬렉션은 복수형**이 관행이다.\n> **`POST /orders` 가 새 주문을** 만든다 — **5.3절**.\n> **`GET /orders/5` 가 하나를** 준다.\n\n**필터는 쿼리**다.\n\n> **`/orders?status=paid&page=2`** 다.\n> **`/paidOrders` 를 새로 만들면 다시 동사**다(3.2절).\n> **자원이 다른 게 아니라 보는 방식이** 다르다.\n\n**계층이 깊어지면 자른다.**\n\n> **`/users/1/orders/5/items/3` 은 너무** 길다.\n> **`/items/3` 으로 충분하면 그렇게** 한다.\n> **깊이 2를 넘기면 대개 신호**다."
+  },
+  {
+   "type": "figure",
+   "caption": "안 맞는 자리",
+   "ascii": "   the last row is the one people argue about\n\n   cancelling is not a field on an order, it is an event\n   so it becomes a resource of its own, and creating it is a POST\n\n   this works for approvals, refunds, retries, and publishes\n   and when it does not fit, a verb path is better than a wrong noun",
+   "note": "**억지 명사보다 동사 경로가** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "명사로 다 되지는 않는다",
+   "md": "**행위가 자원이 아닐 때가** 있다.\n\n> **검색·발송·재시도·로그인**이다.\n> **억지로 명사를 만들면 오히려 안** 읽힌다.\n> **`POST /search` 가 `POST /searches` 보다** 낫다.\n\n**두 가지 길이 있다.**\n\n| 방법 | 예 |\n|---|---|\n| 결과를 자원으로 | `POST /orders/5/cancellation` |\n| 동사를 그냥 | `POST /orders/5/cancel` |\n\n> **앞이 순수하고 뒤가 솔직**하다.\n> **팀 안에서 한쪽으로 통일하는 게 더** 중요하다.\n\n**메서드로 못 하는 것도** 있다.\n\n> **브라우저 폼은 `GET` 과 `POST` 만** 보낸다(5.4절).\n> **그래서 `_method=DELETE` 같은 우회가** 생겼다.\n> **API 라면 그냥 진짜 메서드를** 쓴다.\n\n**⑫ 의 API 가 이 모양**이다.\n\n> **`/api/v1/namespaces/default/pods`** 였다.\n> **컬렉션과 단건, 하위 자원(`pods/log`)이 그대로** 있다.\n> **⑫ 10.1절에서 권한을 그 단위로** 줬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 자원 하나에 메서드 여럿 ---\n\n$ cat api.py\n\nimport http.server, json\nDB = {5: {\"id\": 5, \"item\": \"노트북\", \"qty\": 1}}\nNEXT = [6]\n\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, obj=None, extra=None):\n        body = b\"\" if obj is None else json.dumps(\n            obj, ensure_ascii=False).encode()\n        self.send_response(code)\n        if body:\n            self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(body)))\n        for k, v in (extra or {}).items():\n            self.send_header(k, v)\n        self.end_headers()\n        self.wfile.write(body)\n\n    def _id(self):\n        p = self.path.split(\"?\")[0].strip(\"/\").split(\"/\")\n        return int(p[1]) if len(p) > 1 and p[1].isdigit() else None\n\n    def do_GET(self):\n        i = self._id()\n        if i is None:\n            self._send(200, list(DB.values()))\n        elif i in DB:\n            self._send(200, DB[i])\n        else:\n            self._send(404, {\"error\": \"없음\"})\n\n    def do_POST(self):\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = json.loads(self.rfile.read(n) or b\"{}\")\n        i = NEXT[0]; NEXT[0] += 1\n        d[\"id\"] = i; DB[i] = d\n        self._send(201, d, {\"Location\": f\"/orders/{i}\"})\n\n    def do_PUT(self):\n        i = self._id()\n        n = int(self.headers.get(\"Content-Length\", 0))\n        d = json.loads(self.rfile.read(n) or b\"{}\")\n        d[\"id\"] = i\n        created = i not in DB\n        DB[i] = d\n        self._send(201 if created else 200, d)\n\n    def do_DELETE(self):\n        i = self._id()\n        DB.pop(i, None)\n        self._send(204)\n\nhttp.server.HTTPServer((\"\", 9080), H).serve_forever()\n\n$ python3 api.py & sleep 1\n\n$ curl -s -X GET http://localhost:9080/orders/5\n\n{\"id\": 5, \"item\": \"노트북\", \"qty\": 1}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    http://localhost:9080/orders/5\n\n204\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:9080/orders/5\n\n404\n\n#   경로 하나에 세 가지를 했다\n\n#   /getOrder /deleteOrder 를 안 만들었다\n\n# --- 컬렉션과 단건 ---\n\n$ curl -s -X PUT -d '{\"item\":\"모니터\",\"qty\":2}' \\\n    http://localhost:9080/orders/5 > /dev/null\n$ curl -s http://localhost:9080/orders\n\n[{\"id\": 5, \"item\": \"모니터\", \"qty\": 2}]\n\n$ curl -s -D - -X POST -d '{\"item\":\"키보드\",\"qty\":3}' \\\n    http://localhost:9080/orders | grep -E 'HTTP|Location'\n\nHTTP/1.1 201 Created\nLocation: /orders/6\n\n#   컬렉션에 POST 하면 새로 생긴다\n\n#   Location 이 어디 생겼는지 말해 준다\n\n#   5.3절에서 다시 본다\n\n$ curl -s http://localhost:9080/orders\n\n[{\"id\": 5, \"item\": \"모니터\", \"qty\": 2}, {\"id\": 6, \"item\": \"키보드\", \"qty\": 3}]\n\n# --- 필터는 쿼리다 ---\n\n$ curl -s -o /dev/null -v 'http://localhost:9080/orders?qty=3&page=1' 2>&1 \\\n    | grep '^> GET'\n\n> GET /orders?qty=3&page=1 HTTP/1.1\n\n#   자원은 같고 보는 방식만 다르다\n\n#   /qty3Orders 를 만들면 다시 동사다\n\n# --- 동사 경로와 비교 ---\n\n$ for u in /getOrders /getOrder?id=5 /createOrder /deleteOrder; do\n    printf '%-20s' $u\n    curl -s -o /dev/null -w '%{http_code}\\n' \"http://localhost:9080$u\"\n  done\n\n/getOrders          200\n/getOrder?id=5      200\n/createOrder        200\n/deleteOrder        200\n\n#   전부 GET 으로 200 이다\n\n#   /deleteOrder 를 GET 으로 부를 수 있다\n\n#   크롤러가 지나가면 다 지워진다\n\n#   5.6절에서 왜 위험한지 본다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X GET \\\n    http://localhost:9080/orders/6\n\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X DELETE \\\n    http://localhost:9080/orders/6\n\n204\n\n#   메서드로 나누면 GET 은 안전하다\n\n# --- 행위가 자원이 아닐 때 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\\n    http://localhost:9080/orders/5/cancellation\n\n201\n\n$ curl -s -o /dev/null -v -X POST \\\n    http://localhost:9080/orders/5/cancel 2>&1 | grep '^> POST'\n\n> POST /orders/5/cancel HTTP/1.1\n\n#   둘 다 된다\n\n#   앞은 순수하고 뒤는 솔직하다\n\n#   팀에서 한쪽으로 통일하는 게 중요하다\n\n# --- 쿠버네티스 API 도 이 모양이다 ---\n\n$ kubectl get --raw /api/v1 2>/dev/null \\\n  | python3 -c '\nimport sys, json\nfor r in json.load(sys.stdin)[\"resources\"][:6]:\n    print(f\"{r[\\\"name\\\"]:<22} {\\\",\\\".join(r[\\\"verbs\\\"][:5])}\")' 2>/dev/null \\\n  || echo \"(클러스터가 없다)\"\n\nbindings               create\ncomponentstatuses      get,list\nconfigmaps             create,delete,deletecollection,get,list\nendpoints              create,delete,deletecollection,get,list\nevents                 create,delete,deletecollection,get,list\nnamespaces             create,delete,get,list,patch\n\n#   자원 이름은 명사 복수형이다\n\n#   동사는 따로 적혀 있다\n\n#   ⑫ 10.1절에서 이 단위로 권한을 줬다\n\n$ kubectl get --raw \\\n    '/api/v1/namespaces/default/pods?limit=1' 2>/dev/null \\\n  | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"kind\"])' \\\n  || echo \"(클러스터가 없다)\"\n\nPodList\n\n#   컬렉션이다\n\n#   limit 는 쿼리다\n\n#   여기서 배운 게 그대로다\n\n# --- 다음 절에서 ---\n\n#   가장 많이 쓰는 메서드부터",
+   "note": "**같은 `/orders/5` 에 GET·PUT·DELETE 를 걸어 경로를 새로 안** 만든다.\n\n**컬렉션에 POST 하면 `201` 과 `Location: /orders/6`** 이 온다.\n\n**동사 경로는 `/deleteOrder` 가 GET 으로 200** 이다 — 크롤러가 지나가면 다 지워진다.\n\n**`/orders/5/cancellation` 과 `/orders/5/cancel` 이 둘 다** 된다.\n\n**쿠버네티스 API 도 자원은 명사 복수형이고 동사는 따로** 적혀 있다."
+  }
+ ],
+ "recap": [
+  "**동사를 URI 에서 메서드로** 옮긴다.",
+  "**한 가지에 경로 하나**다.",
+  "**컬렉션과 단건을** 나눈다.",
+  "**컬렉션은 복수형**이 관행이다.",
+  "**필터·정렬·페이지는 쿼리**다.",
+  "**계층이 깊으면** 자른다.",
+  "**명사로 안 되는 행위도** 있다.",
+  "**억지 명사보다 동사가** 낫다.",
+  "**한쪽으로 통일하는 게 더** 중요하다."
+ ],
+ "drills": [
+  {
+   "task": "동사 경로 API 를 명사로 바꾼다.",
+   "done_when": "여섯 줄을 다 옮겼다.",
+   "minutes": 25
+  },
+  {
+   "task": "컬렉션에 POST 한다.",
+   "done_when": "201 과 `Location` 을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`/deleteOrder` 를 GET 으로 부른다.",
+   "done_when": "지워지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "취소를 두 방식으로 만든다.",
+   "done_when": "둘의 차이를 말할 수 있다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동사를 URI 에서 걷어내면?",
+   "a": "한 경로에 여러 메서드를 조합할 수 있어 경로가 안 늘어난다."
+  },
+  {
+   "q": "컬렉션과 단건의 차이는?",
+   "a": "`/orders` 는 목록이자 생성 자리이고 `/orders/5` 는 하나다."
+  },
+  {
+   "q": "필터를 어디에 두나?",
+   "a": "쿼리 문자열이다. 새 경로를 만들지 않는다."
+  },
+  {
+   "q": "명사가 안 맞는 행위는?",
+   "a": "검색·취소·발송처럼 사건인 것들이다."
+  },
+  {
+   "q": "동사 경로를 GET 으로 만들면 위험한 이유는?",
+   "a": "크롤러나 프리페치가 부작용을 일으킬 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "컬렉션",
+   "def": "같은 종류의 자원 여럿을 가리키는 경로."
+  },
+  {
+   "term": "하위 자원",
+   "def": "어떤 자원에 딸린 별도 경로. `/orders/5/items` 같은 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Architectural Styles and the Design of Network-based Software Architectures",
+   "url": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm",
+   "publisher": "Roy T. Fielding"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

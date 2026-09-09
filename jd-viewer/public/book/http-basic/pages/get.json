@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "get",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "GET",
+ "summary": "본문 없는 조회.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "GET 의 약속을 안다.",
+  "본문을 안 쓰는 이유를 안다.",
+  "길이 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요청의 대부분이 GET** 이다. **그만큼 많은 것이 그 성질에 기대고** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "웹 전체가 기대는 약속",
+   "ascii": "   what the whole web assumes about GET\n\n   nothing changes    so a crawler may fetch every link it finds\n   repeatable         so a retry after a timeout is free\n   cacheable          so a proxy may answer without asking the server\n   prefetchable       so a browser may fetch a link you only hovered\n\n   break any of these and something invisible starts calling your api",
+   "note": "**하나만 깨도 보이지 않는 무언가가 API 를** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안전하다는 것이 계약이다",
+   "md": "**서버 상태를 바꾸지 않는다는** 약속이다.\n\n> **5.6절에서 정확히** 정의한다.\n> **여기서는 그 약속을 누가 믿는지가** 중요하다.\n\n**믿는 쪽이 아주** 많다.\n\n| 누가 | 무엇을 한다 |\n|---|---|\n| 검색 크롤러 | 링크를 전부 눌러 본다 |\n| 브라우저 | 링크를 미리 받아 둔다 |\n| 프록시·CDN | 응답을 저장해 대신 답한다 |\n| 클라이언트 | 타임아웃이면 다시 보낸다 |\n\n> **⑫ 에서 프리페치가 문제를 만든 적이** 있다.\n> **메신저가 링크 미리보기를 만들며 GET 을 부르기도** 한다.\n\n**로그에 남는다.**\n\n> **쿼리가 서버 액세스 로그에 그대로** 찍힌다(3.2절).\n> **토큰이나 비밀번호를 쿼리에 넣으면 안 되는** 이유다.\n> **`Referer` 로 다른 사이트에 새기도** 한다(8장).\n\n**조건부 조회와 짝**이다.\n\n> **`If-None-Match` 를 붙이면 304 로 본문 없이** 답한다(9장).\n> **캐시가 GET 을 전제로** 돈다.\n> **그래서 GET 이 아니면 캐시 이득이 거의** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "GET 본문",
+   "ascii": "   why a GET body is a bad idea\n\n   the spec       allows it, and says it has no defined meaning\n   proxies        may drop it silently\n   caches         key on the url, so two different bodies collide\n   libraries      some refuse to send it at all\n\n   if the query is too long for a url, the answer is POST, not a GET body",
+   "note": "**쿼리가 길면 답은 POST** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "길이 제한이 서버마다 다르다",
+   "md": "**규격에는 상한이** 없다.\n\n> **\"충분히 길게 받아라\" 라고만** 한다.\n> **실제로는 서버·프록시가 각자 자른다.**\n> **4.6절에서 414 를** 봤다.\n\n**대략 이런 값들이다.**\n\n| 곳 | 대략 |\n|---|---|\n| nginx | 8KB |\n| 톰캣 | 8KB |\n| 브라우저 | 32KB 이상 |\n| 중간 프록시 | 더 작을 수 있다 |\n\n> **가장 작은 데를 따라간다.**\n> **2KB 를 넘으면 슬슬 위험하다고** 본다.\n\n**긴 검색 조건은 어떻게 하나**\n\n> **POST 로 보내고 캐시를 포기**한다.\n> **또는 조건을 저장하고 그 id 를 GET** 한다.\n> **뒤가 캐시도 살리고 주소도 공유** 가능하다.\n\n**한글은 세 배**다.\n\n> **3.3절에서 봤다** — 한 글자가 `%XX` 세 쌍이다.\n> **한글 검색어 500자면 4.5KB**다.\n> **생각보다 빨리** 찬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- GET 은 본문이 없다 ---\n\n$ curl -s -o /dev/null -v http://localhost:9080/orders 2>&1 \\\n    | grep -E '^> ' \n\n> GET /orders HTTP/1.1\n> Host: localhost:9080\n> User-Agent: curl/8.9.1\n> Accept: */*\n> \n\n#   빈 줄로 끝난다\n\n#   Content-Length 가 없다\n\n#   4.5절의 네 부분 중 셋뿐이다\n\n# --- 본문을 억지로 넣으면 ---\n\n$ curl -s -o /dev/null -v -X GET -d '{\"q\":\"검색\"}' \\\n    http://localhost:9080/orders 2>&1 | grep -E '^> (GET|Content)'\n\n> GET /orders HTTP/1.1\n> Content-Length: 20\n> Content-Type: application/x-www-form-urlencoded\n\n$ curl -s -X GET -d '{\"q\":\"검색\"}' http://localhost:9080/orders\n\n[{\"id\": 5, \"item\": \"모니터\", \"qty\": 2}]\n\n#   서버가 본문을 안 읽었다\n\n#   같은 응답이다\n\n#   보내지기는 하는데 뜻이 없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -X GET \\\n    -d 'x=1' http://localhost:8080/api.json\n\n200\n\n#   nginx 도 무시한다\n\n#   프록시가 버리기도 한다\n\n# --- 캐시는 URL 로 구분한다 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'http://localhost:8080/api.json?v=1'\n\n200\n\n$ docker logs --tail 2 lab 2>&1 | awk '{print $7}'\n\n/api.json?v=1\n\n#   쿼리가 로그에 그대로 있다\n\n#   토큰을 여기 넣으면 안 되는 이유다\n\n$ curl -s -o /dev/null 'http://localhost:8080/api.json?token=SECRET123'\n$ docker logs --tail 1 lab 2>&1 | grep -o 'token=[A-Z0-9]*'\n\ntoken=SECRET123\n\n#   평문으로 남았다\n\n#   TLS 를 써도 서버 로그에는 남는다 (3.5절)\n\n# --- 다시 보내도 안전하다 ---\n\n$ for i in 1 2 3; do\n    curl -s http://localhost:9080/orders | python3 -c \\\n      'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n  done\n\n1 건\n1 건\n1 건\n\n#   세 번 불러도 그대로다\n\n#   타임아웃이면 그냥 다시 보내면 된다\n\n#   5.6절이 이 이야기다\n\n# --- 크롤러가 지나가면 ---\n\n$ curl -s -X POST -d '{\"item\":\"마우스\"}' \\\n    http://localhost:9080/orders > /dev/null\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n2 건\n\n$ curl -s -A 'Googlebot/2.1' -o /dev/null \\\n    http://localhost:9080/orders\n$ curl -s http://localhost:9080/orders | python3 -c \\\n    'import sys,json; print(len(json.load(sys.stdin)), \"건\")'\n\n2 건\n\n#   크롤러가 GET 을 해도 안 바뀐다\n\n#   5.1절의 /deleteOrder 였다면 지워졌다\n\n# --- 길이 한계 ---\n\n$ for n in 1000 4000 8000 12000; do\n    printf '%6d ' $n\n    curl -s -o /dev/null -w '%{http_code}\\n' \\\n      \"http://localhost:8080/api.json?q=$(head -c $n /dev/zero | tr '\\0' 'a')\"\n  done\n\n  1000 200\n  4000 200\n  8000 414\n 12000 414\n\n#   8KB 근처에서 끊긴다\n\n#   4.6절에서 본 그 벽이다\n\n# --- 한글은 세 배다 ---\n\n$ python3 - <<'EOF'\nfrom urllib.parse import quote\ns = \"검색어\" * 200\nprint(\"글자 수  \", len(s))\nprint(\"인코딩 후\", len(quote(s)), \"바이트\")\nEOF\n\n글자 수   600\n인코딩 후 5400 바이트\n\n#   600자가 5.4KB 다\n\n#   3.3절의 그것이다\n\n#   생각보다 빨리 찬다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    \"http://localhost:8080/api.json?q=$(python3 -c \\\n     'from urllib.parse import quote; print(quote(\\\"검색어\\\"*400))')\"\n\n414\n\n#   1200자면 넘는다\n\n# --- 긴 조건은 어떻게 하나 ---\n\n$ curl -s -D - -X POST -d '{\"filter\":\"아주 긴 조건\"}' \\\n    http://localhost:9080/orders | grep -E 'HTTP|Location'\n\nHTTP/1.1 201 Created\nLocation: /orders/8\n\n$ curl -s http://localhost:9080/orders/8\n\n{\"filter\": \"아주 긴 조건\", \"id\": 8}\n\n#   조건을 저장하고 id 를 받았다\n\n#   그다음부터는 GET 이다\n\n#   캐시도 살고 주소도 공유된다\n\n#   POST 로만 하면 그 둘을 잃는다\n\n# --- 조건부 조회 ---\n\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ echo $E\n\n\"68c05e3e-19\"\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_download}바이트\\n' \\\n    -H \"If-None-Match: $E\" http://localhost:8080/api.json\n\n304 0바이트\n\n#   본문이 0이다\n\n#   GET 이라 이게 된다\n\n#   9장에서 자세히 본다\n\n# --- 다음 절에서 ---\n\n#   서버에게 처리해 달라고 할 때",
+   "note": "**GET 요청은 빈 줄로 끝나고 `Content-Length` 가** 없다.\n\n**`-d` 로 본문을 넣어도 서버가 안 읽어 응답이** 같다.\n\n**`token=SECRET123` 이 액세스 로그에 평문으로** 남는다.\n\n**쿼리가 8KB 근처에서 414 이고 한글 600자면 이미 5.4KB** 다.\n\n**`If-None-Match` 를 붙이면 `304` 에 본문 0바이트**다."
+  }
+ ],
+ "recap": [
+  "**GET 은 조회이고 본문이** 없다.",
+  "**안전하다는 게 계약**이다.",
+  "**크롤러·프리페치·캐시가 그걸** 믿는다.",
+  "**쿼리는 로그에 남는다.**",
+  "**비밀을 쿼리에 넣으면** 안 된다.",
+  "**GET 본문은 뜻이 정의돼 있지** 않다.",
+  "**길이 한계가 서버마다** 다르다.",
+  "**한글은 세 배로** 찬다.",
+  "**긴 조건은 저장하고 id 를 GET** 한다."
+ ],
+ "drills": [
+  {
+   "task": "GET 요청 원문을 본다.",
+   "done_when": "본문이 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "GET 에 본문을 넣는다.",
+   "done_when": "서버가 무시하는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿼리를 늘려 본다.",
+   "done_when": "414 가 나는 지점을 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건을 저장하고 id 로 조회한다.",
+   "done_when": "두 요청으로 나눠 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "GET 의 계약은?",
+   "a": "서버 상태를 바꾸지 않는다는 것이다."
+  },
+  {
+   "q": "그 계약을 믿는 것들은?",
+   "a": "크롤러, 브라우저 프리페치, 프록시 캐시, 재시도 로직이다."
+  },
+  {
+   "q": "쿼리에 비밀을 넣으면 안 되는 이유는?",
+   "a": "액세스 로그와 `Referer` 등에 평문으로 남는다."
+  },
+  {
+   "q": "GET 본문의 문제는?",
+   "a": "의미가 정의돼 있지 않고 프록시나 캐시가 무시한다."
+  },
+  {
+   "q": "쿼리가 너무 길면?",
+   "a": "POST 로 조건을 저장하고 그 id 를 GET 하는 방법이 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "프리페치",
+   "def": "사용자가 요청하기 전에 브라우저가 미리 받아 두는 것."
+  },
+  {
+   "term": "조건부 조회",
+   "def": "가진 사본이 유효한지 물어 바뀌지 않았으면 304 를 받는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "WHATWG HTML — Form submission",
+   "url": "https://html.spec.whatwg.org/multipage/form-control-infrastructure.html",
+   "publisher": "WHATWG"
+  }
+ ]
+}
