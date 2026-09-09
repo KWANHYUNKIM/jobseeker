@@ -451,7 +451,7 @@
           "title": "협상 헤더",
           "summary": "Accept 와 우선순위 q.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -459,7 +459,7 @@
           "title": "전송 방식",
           "summary": "단순 · 압축 · 분할 · 범위.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",

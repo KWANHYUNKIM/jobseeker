@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "negotiation",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "협상 헤더",
+ "summary": "Accept 와 우선순위 q.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 헤더를 안다.",
+  "q 값을 읽는다.",
+  "Vary 를 붙인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절이 \"이건 이렇게 생겼다\"** 였다면 **여기는 \"이렇게 주세요\"** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 요청",
+   "ascii": "   four things a client may ask for\n\n   Accept             which media types, and how much i want each\n   Accept-Language    which human languages\n   Accept-Encoding    which compressions i can undo\n   Accept-Charset     obsolete, everything is utf-8 now\n\n   the server picks one, and must say which with Vary",
+   "note": "**고른 뒤에는 `Vary` 로 말해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "q 는 순서가 아니라 가중치다",
+   "md": "**0에서 1 사이 소수 셋째 자리까지**다.\n\n> **안 적으면 1.0** 이다.\n> **`q=0` 은 보내지 말라는** 뜻이다.\n> **적힌 순서는 의미가** 없다.\n\n**같은 값이면 구체적인 게** 이긴다.\n\n| 패턴 | 구체성 |\n|---|---|\n| `text/html` | 가장 구체적 |\n| `text/*` | 중간 |\n| `*/*` | 가장 넓다 |\n\n> **`*/*;q=1.0` 과 `text/html;q=1.0` 이면 뒤가** 이긴다.\n> **브라우저가 `*/*;q=0.8` 을 붙이는 건 \"없으면 아무거나\"** 라는 뜻이다.\n\n**언어 태그는 계층**이다.\n\n> **`ko-KR` 은 `ko` 를** 포함한다.\n> **`Accept-Language: ko-KR` 인데 `ko` 만 있으면 그걸** 준다.\n> **`*` 로 나머지 전부를** 가리킨다.\n\n**`Accept-Charset` 은 폐기**됐다.\n\n> **다 UTF-8 이라 협상할 게** 없다(8.2절).\n> **브라우저가 이제 안 보낸다.**\n> **`Accept-Charset: iso-8859-1` 을 봐도 무시하면** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "선호도 목록 읽기",
+   "ascii": "   how a preference list is read\n\n   Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8\n\n   no q means q=1.0, so the first two are equally most wanted\n   then xml at 0.9, then anything at all at 0.8\n   q=0 means do not send this at all\n\n   ties are broken by how specific the type is, not by order",
+   "note": "**동점이면 구체적인 쪽이** 이긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Vary 를 빠뜨리면 캐시가 섞는다",
+   "md": "**같은 URL 에 다른 응답을** 준다(8.1절).\n\n> **캐시는 URL 로** 저장한다.\n> **한국어 응답을 영어 요청에 줄 수** 있다.\n> **`Vary: Accept-Language` 가 그걸** 막는다.\n\n**`Vary` 가 너무 넓으면 캐시가 안** 먹는다.\n\n> **`Vary: User-Agent` 는 사실상 캐시를** 끈다.\n> **브라우저마다 문자열이 다** 다르다.\n> **꼭 필요한 헤더만** 적는다.\n\n**협상이 안 되면 뭘 주나**\n\n> **`406 Not Acceptable` 이 규격**이다.\n> **실무에서는 그냥 기본값을 주는 쪽이** 많다.\n> **브라우저가 `*/*` 를 붙여서 `406` 을 볼 일이 거의** 없다.\n\n**서버 주도와 클라이언트 주도**\n\n> **지금까지가 서버가 고르는** 방식이다.\n> **`300 Multiple Choices` 로 목록을 주고 고르게 할 수도** 있다.\n> **거의 안 쓴다** — 왕복이 하나 더 든다.\n\n**확장자로 나누는 게 더 흔하다.**\n\n> **`/orders/5.json` 과 `/orders/5.xml`** 이다.\n> **캐시가 URL 로 구분하니 `Vary` 가 필요** 없다.\n> **주소로 공유도** 된다(6.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 브라우저가 뭘 보내나 ---\n\n$ python3 headerdump.py > /tmp/hd.log 2>&1 & sleep 1\n$ open -a \"Google Chrome\" http://localhost:9065/x 2>/dev/null; sleep 3\n$ grep -iE '^Accept' /tmp/hd.log | head -3\n\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,\n  image/avif,image/webp,image/apng,*/*;q=0.8\nAccept-Encoding: gzip, deflate, br, zstd\nAccept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n\n#   q 가 없는 게 1.0 이다\n\n#   */*;q=0.8 이 \"없으면 아무거나\" 다\n\n#   Accept-Charset 은 없다\n\n# --- q 를 계산해 본다 ---\n\n$ python3 - <<'EOF'\ndef parse(h):\n    out = []\n    for part in h.split(\",\"):\n        bits = [b.strip() for b in part.split(\";\")]\n        q = 1.0\n        for b in bits[1:]:\n            if b.startswith(\"q=\"):\n                q = float(b[2:])\n        spec = 0 if bits[0] == \"*/*\" else (1 if bits[0].endswith(\"/*\") else 2)\n        out.append((bits[0], q, spec))\n    return sorted(out, key=lambda x: (-x[1], -x[2]))\n\nh = \"text/html,application/xml;q=0.9,*/*;q=0.8,text/plain;q=0\"\nfor t, q, s in parse(h):\n    mark = \"  (거부)\" if q == 0 else \"\"\n    print(f\"{t:<20} q={q}  구체성={s}{mark}\")\nEOF\n\ntext/html            q=1.0  구체성=2\napplication/xml      q=0.9  구체성=2\n*/*                  q=0.8  구체성=0\ntext/plain           q=0.0  구체성=2  (거부)\n\n#   적힌 순서가 아니라 q 로 정렬한다\n\n#   q=0 은 보내지 말라는 뜻이다\n\n# --- 서버가 고른다 ---\n\n$ cat neg.py\n\nimport http.server, json\nAVAIL = {\n    \"application/json\": (b'{\"id\":5}', \"application/json\"),\n    \"application/xml\": (b\"<o><id>5</id></o>\", \"application/xml\"),\n    \"text/html\": (b\"<h1>5</h1>\", \"text/html; charset=utf-8\"),\n}\nBODY = {\"ko\": \"주문 5번\", \"en\": \"Order 5\", \"ja\": \"注文5番\"}\n\ndef best(header, avail, default=None):\n    cands = []\n    for part in (header or \"\").split(\",\"):\n        bits = [b.strip() for b in part.split(\";\") if b.strip()]\n        if not bits: continue\n        q = 1.0\n        for b in bits[1:]:\n            if b.startswith(\"q=\"): q = float(b[2:])\n        if q > 0: cands.append((bits[0], q))\n    for name, _ in sorted(cands, key=lambda x: -x[1]):\n        if name in avail: return name\n        if name.endswith(\"/*\"):\n            pre = name[:-1]\n            for a in avail:\n                if a.startswith(pre): return a\n        if name == \"*/*\" or name == \"*\":\n            return default or next(iter(avail))\n    return None\n\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        t = best(self.headers.get(\"Accept\"), AVAIL, \"application/json\")\n        if t is None:\n            b = b'{\"title\":\"제공할 수 없는 형식\"}'\n            self.send_response(406)\n            self.send_header(\"Content-Type\", \"application/json\")\n            self.send_header(\"Content-Length\", str(len(b)))\n            self.end_headers(); self.wfile.write(b); return\n        lang = best(self.headers.get(\"Accept-Language\"), BODY, \"en\") or \"en\"\n        body, ctype = AVAIL[t]\n        if t == \"application/json\":\n            body = json.dumps({\"id\": 5, \"label\": BODY[lang]},\n                              ensure_ascii=False).encode()\n        self.send_response(200)\n        self.send_header(\"Content-Type\", ctype)\n        self.send_header(\"Content-Language\", lang)\n        self.send_header(\"Vary\", \"Accept, Accept-Language\")\n        self.send_header(\"Content-Length\", str(len(body)))\n        self.end_headers(); self.wfile.write(body)\nhttp.server.HTTPServer((\"\", 9029), H).serve_forever()\n\n$ python3 neg.py & sleep 1\n\n$ for a in 'application/xml' 'text/html' 'application/json;q=0.5, text/html' \\\n           '*/*'; do\n    printf '%-38s' \"$a\"\n    curl -s -D - -o /dev/null -H \"Accept: $a\" \\\n      http://localhost:9029/orders/5 | grep -i '^content-type' | tr -d '\\r'\n  done\n\napplication/xml                       Content-Type: application/xml\ntext/html                             Content-Type: text/html; charset=utf-8\napplication/json;q=0.5, text/html     Content-Type: text/html; charset=utf-8\n*/*                                   Content-Type: application/json\n\n#   셋째는 순서가 json 이 먼저인데\n\n#   q 가 낮아서 html 이 이겼다\n\n#   순서가 아니라 가중치다\n\n# --- 언어 ---\n\n$ for l in 'ko' 'ja' 'en-US,en;q=0.9' 'fr'; do\n    printf '%-18s' \"$l\"\n    curl -s -H \"Accept-Language: $l\" http://localhost:9029/orders/5\n    echo\n  done\n\nko                {\"id\": 5, \"label\": \"주문 5번\"}\nja                {\"id\": 5, \"label\": \"注文5番\"}\nen-US,en;q=0.9    {\"id\": 5, \"label\": \"Order 5\"}\nfr                {\"id\": 5, \"label\": \"Order 5\"}\n\n#   en-US 가 없어 en 으로 떨어졌다\n\n#   fr 은 없어서 기본값이다\n\n#   언어 태그는 계층이다\n\n# --- 못 주면 406 ---\n\n$ curl -s -D - -H 'Accept: image/png' http://localhost:9029/orders/5 \\\n  | grep -E 'HTTP|title'\n\nHTTP/1.1 406 Not Acceptable\n{\"title\":\"제공할 수 없는 형식\"}\n\n$ curl -s -o /dev/null -w '브라우저처럼 보내면 %{http_code}\\n' \\\n    -H 'Accept: image/png, */*;q=0.8' http://localhost:9029/orders/5\n\n브라우저처럼 보내면 200\n\n#   */* 가 있으면 406 을 볼 일이 없다\n\n#   그래서 실무에서 드물다\n\n# --- Vary 를 붙인다 ---\n\n$ curl -s -D - -o /dev/null -H 'Accept: text/html' \\\n    http://localhost:9029/orders/5 | grep -i '^vary'\n\nVary: Accept, Accept-Language\n\n#   캐시에게 이 둘로 구분하라고 말한다\n\n#   없으면 html 을 json 요청에 준다\n\n# --- Vary 가 없으면 ---\n\n$ docker exec lab sh -c \\\n    'printf \"proxy_cache_path /tmp/c levels=1:2 keys_zone=z:1m;\\n\\\nserver { listen 80;\\n\\\n  location /nv/ { proxy_pass http://host.docker.internal:9028/;\\n\\\n    proxy_cache z; proxy_cache_valid 200 60s;\\n\\\n    add_header X-Cache \\$upstream_cache_status; }\\n\\\n  location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ cat novary.py\n\n#   같은 neg.py 인데 Vary 를 안 보낸다\n\n$ python3 novary.py & sleep 1\n$ curl -s -o /dev/null -H 'Accept-Language: ko' http://localhost:8080/nv/o\n$ curl -s -D - -H 'Accept-Language: en' http://localhost:8080/nv/o \\\n  | grep -E 'X-Cache|label'\n\nX-Cache: HIT\n{\"id\": 5, \"label\": \"주문 5번\"}\n\n#   영어를 달라고 했는데 한국어가 왔다\n\n#   캐시가 URL 로만 저장했다\n\n#   Vary 한 줄이 이걸 막는다\n\n$ kill %1 2>/dev/null\n\n# --- Vary 가 너무 넓으면 ---\n\n$ python3 - <<'EOF'\nagents = [\n  \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/140.0.0.0\",\n  \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/139.0.0.0\",\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/140.0.0.0\",\n]\nprint(\"Vary: User-Agent 면 캐시 항목이\", len(set(agents)), \"개로 갈린다\")\nprint(\"실제로는 수천 개다\")\nEOF\n\nVary: User-Agent 면 캐시 항목이 3 개로 갈린다\n실제로는 수천 개다\n\n#   사실상 캐시를 끄는 것이다\n\n#   꼭 필요한 헤더만 적는다\n\n# --- 확장자로 나누기 ---\n\n$ curl -s -o /dev/null -w '%{http_code} ' \\\n    http://localhost:8080/api.json; echo\n\n200 \n\n$ python3 -c \"\nprint('/orders/5.json 과 /orders/5.xml 로 나누면')\nprint('  캐시가 URL 로 구분한다')\nprint('  Vary 가 필요 없다')\nprint('  주소로 공유된다 (6.1절)')\"\n\n/orders/5.json 과 /orders/5.xml 로 나누면\n  캐시가 URL 로 구분한다\n  Vary 가 필요 없다\n  주소로 공유된다 (6.1절)\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   본문을 어떻게 실어 보내나",
+   "note": "**크롬이 `Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7` 을** 보낸다.\n\n**`application/json;q=0.5, text/html` 에서 순서가 뒤인 html 이** 이긴다.\n\n**`en-US` 가 없으면 `en` 으로 떨어지고 `fr` 은** 기본값이다.\n\n**`Accept: image/png` 만이면 `406` 인데 `*/*;q=0.8` 이 붙으면 `200`** 이다.\n\n**`Vary` 없이 캐시하니 영어 요청에 `X-Cache: HIT` 로 한국어가** 왔다."
+  }
+ ],
+ "recap": [
+  "**네 가지를 협상**한다.",
+  "**`q` 는 순서가 아니라 가중치**다.",
+  "**안 적으면 1.0, `q=0` 은** 거부다.",
+  "**동점이면 구체적인 게** 이긴다.",
+  "**언어 태그는** 계층이다.",
+  "**`Accept-Charset` 은 폐기**됐다.",
+  "**`Vary` 로 무엇으로 골랐는지** 말한다.",
+  "**`Vary` 가 넓으면 캐시가 안** 먹는다.",
+  "**확장자로 나누는 게 더** 흔하다."
+ ],
+ "drills": [
+  {
+   "task": "브라우저의 Accept 를 본다.",
+   "done_when": "네 헤더를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`q` 를 섞어 보낸다.",
+   "done_when": "순서가 아닌 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "언어를 바꿔 요청한다.",
+   "done_when": "떨어지는 규칙을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Vary` 없이 캐시한다.",
+   "done_when": "잘못된 응답을 받았다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`q` 값의 의미는?",
+   "a": "각 후보의 선호 가중치다. 적힌 순서와 무관하다."
+  },
+  {
+   "q": "`q` 가 같으면 무엇으로 정하나?",
+   "a": "타입이 얼마나 구체적인지로 정한다."
+  },
+  {
+   "q": "`Vary` 는 왜 필요한가?",
+   "a": "같은 URL 에 다른 응답이 나올 때 캐시가 구분하게 하려고."
+  },
+  {
+   "q": "`Vary: User-Agent` 의 문제는?",
+   "a": "값이 수천 가지라 사실상 캐시가 무력해진다."
+  },
+  {
+   "q": "협상 대신 흔히 쓰는 방법은?",
+   "a": "확장자나 경로로 표현을 나누는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "품질값",
+   "def": "`q=` 로 적는 0에서 1 사이의 선호 가중치."
+  },
+  {
+   "term": "Vary",
+   "def": "응답이 어떤 요청 헤더에 따라 달라지는지 캐시에 알리는 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 5646 — Tags for Identifying Languages",
+   "url": "https://www.rfc-editor.org/rfc/rfc5646.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

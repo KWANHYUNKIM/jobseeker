@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "transfer",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "전송 방식",
+ "summary": "단순 · 압축 · 분할 · 범위.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 방식을 구분한다.",
+  "범위 요청을 안다.",
+  "이어받기를 안전하게 한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 청크를** 봤다. **여기서 네 방식을 한자리에** 놓는다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 방식",
+   "ascii": "   four ways a body travels\n\n   plain      Content-Length, the whole thing, size known up front\n   compressed Content-Encoding, smaller bytes, undone by the client\n   chunked    Transfer-Encoding, size unknown, ends with a zero chunk\n   ranged     Range and 206, only the bytes you asked for\n\n   the first three are about how, and the fourth is about how much",
+   "note": "**앞 셋은 어떻게, 넷째는 얼마나**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "압축은 두 자리에서 일어난다",
+   "md": "**`Content-Encoding` 과 `Transfer-Encoding`** 이다.\n\n| | 무엇 |\n|---|---|\n| `Content-Encoding: gzip` | 자원 자체가 압축된 표현 |\n| `Transfer-Encoding: gzip` | 전송 중에만 압축 |\n\n> **뒤는 사실상 안** 쓴다.\n> **거의 다 앞을** 쓴다.\n> **8.2절에서 길이가 압축 뒤라고** 했다.\n\n**알고리즘이 셋쯤**이다.\n\n> **`gzip` 이 어디서나** 된다.\n> **`br`(Brotli)이 더 잘 줄이는데 https 에서만 브라우저가** 보낸다.\n> **`zstd` 가 최근에** 붙었다.\n\n**이미 압축된 건 다시 안** 줄인다.\n\n> **JPEG·PNG·MP4·ZIP** 이다.\n> **오히려 CPU 만 쓰고 커질 수도** 있다.\n> **nginx 의 `gzip_types` 에 텍스트만 넣는** 이유다.\n\n**청크는 길이를 모를 때**다.\n\n> **스트리밍·SSE 가 그렇다**(4.2절).\n> **끝에 `0` 청크가** 온다.\n> **트레일러로 헤더를 뒤에 붙일 수도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "범위 요청",
+   "ascii": "   what a range request needs from the server\n\n   Accept-Ranges: bytes    i support this at all\n   206 with Content-Range  here is which part you got\n   a strong validator      so a resumed download is of the same file\n\n   If-Range holds the etag, so a changed file restarts from zero\n   instead of silently stitching two different versions together",
+   "note": "**`If-Range` 가 두 판본이 섞이는 걸** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이어받기가 파일을 섞을 수 있다",
+   "md": "**중간에 파일이 바뀌면**\n\n> **앞 절반은 옛 파일, 뒤 절반은 새 파일**이다.\n> **아무 오류도 안** 난다.\n> **깨진 파일이 조용히** 만들어진다.\n\n**`If-Range` 가 막는다.**\n\n> **가진 `ETag` 를 같이** 보낸다.\n> **같으면 `206`, 다르면 `200` 으로 처음부터** 준다.\n> **7.4절에서 약한 검증자는 못 쓴다고** 했다.\n\n**여러 범위도 요청할 수** 있다.\n\n> **`Range: bytes=0-99,200-299`** 다.\n> **응답이 `multipart/byteranges`** 가 된다(6.4절의 그 형식).\n> **서버가 지원 안 하면 전체를** 준다.\n\n**범위가 잘못되면 `416`** 이다.\n\n> **파일 크기를 넘는 시작 위치**다.\n> **`Content-Range: bytes */270544` 로 실제 크기를 알려**준다.\n\n**동영상 탐색이 이걸** 쓴다.\n\n> **재생 막대를 끌면 그 지점부터** 요청한다.\n> **`Accept-Ranges: bytes` 가 없으면 탐색이 안** 된다.\n> **프록시가 이걸 지우면 탐색이** 깨진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 단순 전송 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json \\\n  | grep -iE 'content-length|transfer-encoding|content-encoding'\n\nContent-Length: 25\n\n#   길이를 미리 알고 보냈다\n\n# --- 압축 ---\n\n$ docker exec lab sh -c \\\n    'printf \"gzip on;\\ngzip_types text/plain application/json;\\n\\\ngzip_min_length 100;\\n\" > /etc/nginx/conf.d/gzip.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n$ for e in '' 'gzip' 'br' 'gzip, br, zstd'; do\n    printf '%-16s' \"${e:-없음}\"\n    curl -s -D - -o /dev/null -H \"Accept-Encoding: $e\" \\\n      http://localhost:8080/big.txt \\\n      | grep -i '^content-encoding' | tr -d '\\r' || echo '(압축 안 함)'\n  done\n\n없음            (압축 안 함)\ngzip            Content-Encoding: gzip\nbr              (압축 안 함)\ngzip, br, zstd  Content-Encoding: gzip\n\n#   nginx 가 br 을 안 켰다\n\n#   지원하는 것 중에서 고른다\n\n$ for f in big.txt api.json; do\n    printf '%-10s' $f\n    a=$(curl -s -o /dev/null -w '%{size_download}' \\\n        http://localhost:8080/$f)\n    b=$(curl -s -o /dev/null -w '%{size_download}' \\\n        -H 'Accept-Encoding: gzip' http://localhost:8080/$f)\n    echo \"$a -> $b\"\n  done\n\nbig.txt   270544 -> 202847\napi.json  25 -> 25\n\n#   json 은 100바이트 미만이라 안 줄였다\n\n#   gzip_min_length 다\n\n#   작은 건 헤더가 더 크다\n\n# --- 이미 압축된 것 ---\n\n$ head -c 100000 /dev/urandom > /tmp/r.bin\n$ python3 - <<'EOF'\nimport gzip\nraw = open(\"/tmp/r.bin\", \"rb\").read()\nprint(\"원본     \", len(raw))\nprint(\"gzip 후  \", len(gzip.compress(raw)))\nEOF\n\n원본      100000\ngzip 후   100050\n\n#   오히려 커졌다\n\n#   무작위라 줄일 게 없다\n\n#   JPEG PNG MP4 가 이렇다\n\n#   gzip_types 에 텍스트만 넣는 이유다\n\n# --- 청크 ---\n\n$ curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n    http://localhost:8080/big.txt \\\n  | grep -iE 'transfer-encoding|content-length'\n\nTransfer-Encoding: chunked\n\n#   압축하면 길이를 미리 모른다\n\n#   그래서 청크가 됐다\n\n#   4.4절에서 본 그것이다\n\n$ printf 'GET /big.txt HTTP/1.1\\r\\nHost: localhost\\r\\n\\\nAccept-Encoding: gzip\\r\\nConnection: close\\r\\n\\r\\n' \\\n  | nc localhost 8080 | tail -c 20 | xxd | tail -2\n\n00000000: 0d0a 300d 0a0d 0a                        ..0....\n\n#   마지막이 0 청크다\n\n#   CRLF 0 CRLF CRLF 다\n\n# --- 범위 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n  | grep -i accept-ranges\n\nAccept-Ranges: bytes\n\n$ curl -s -D - -o /dev/null -r 100-199 http://localhost:8080/big.txt \\\n  | grep -E 'HTTP|Content-Range|Content-Length'\n\nHTTP/1.1 206 Partial Content\nContent-Length: 100\nContent-Range: bytes 100-199/270544\n\n$ curl -s -r 0-9 http://localhost:8080/big.txt | xxd | head -1\n\n00000000: 5765 7663 4d33 6a6f 5570                 WevcM3joUp\n\n$ curl -s -r -10 http://localhost:8080/big.txt | wc -c\n\n      10\n\n#   뒤에서 10바이트다\n\n#   음수는 끝에서 센다\n\n# --- 여러 범위 ---\n\n$ curl -s -D - -r 0-9,100-109 http://localhost:8080/big.txt \\\n  | grep -iE 'HTTP|content-type' | head -2\n\nHTTP/1.1 206 Partial Content\nContent-Type: multipart/byteranges; boundary=00000000000000000001\n\n$ curl -s -r 0-9,100-109 http://localhost:8080/big.txt | head -8\n\n--00000000000000000001\nContent-Type: text/plain\nContent-Range: bytes 0-9/270544\n\nWevcM3joUp\n--00000000000000000001\nContent-Type: text/plain\nContent-Range: bytes 100-109/270544\n\n#   6.4절의 멀티파트다\n\n#   조각마다 Content-Range 가 있다\n\n# --- 잘못된 범위 ---\n\n$ curl -s -D - -o /dev/null -r 999999999-  http://localhost:8080/big.txt \\\n  | grep -E 'HTTP|Content-Range'\n\nHTTP/1.1 416 Requested Range Not Satisfiable\nContent-Range: bytes */270544\n\n#   실제 크기를 알려 준다\n\n#   클라이언트가 다시 계산할 수 있다\n\n# --- 이어받기 ---\n\n$ curl -s -o /tmp/part.bin -r 0-99999 http://localhost:8080/big.txt\n$ wc -c /tmp/part.bin\n\n  100000 /tmp/part.bin\n\n$ curl -s -o /dev/null -w '이어받기 %{http_code} %{size_download}\\n' \\\n    -C 100000 http://localhost:8080/big.txt\n\n이어받기 206 170544\n\n$ python3 -c \"print(100000 + 170544, '= 270544')\"\n\n270544 = 270544\n\n#   나머지만 받았다\n\n# --- 중간에 파일이 바뀌면 ---\n\n$ E=$(curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n      | grep -i '^etag' | tr -d '\\r' | cut -d' ' -f2)\n$ echo $E\n\n\"68c0a1b2-42090\"\n\n$ docker exec lab sh -c \\\n    'head -c 300000 /dev/urandom | base64 > /usr/share/nginx/html/big.txt'\n\n$ curl -s -D - -o /dev/null -r 100000- \\\n    -H \"If-Range: $E\" http://localhost:8080/big.txt \\\n  | grep -E 'HTTP|Content-Range|Content-Length'\n\nHTTP/1.1 200 OK\nContent-Length: 405400\n\n#   206 이 아니라 200 이다\n\n#   ETag 가 달라서 처음부터 준다\n\n#   If-Range 가 없었다면\n\n$ curl -s -o /dev/null -w '%{http_code} %{size_download}\\n' \\\n    -r 100000- http://localhost:8080/big.txt\n\n206 305400\n\n#   206 으로 뒷부분만 준다\n\n#   앞 100KB 는 옛 파일이다\n\n#   섞인 파일이 조용히 만들어진다\n\n#   아무 오류도 안 난다\n\n# --- 약한 검증자는 못 쓴다 ---\n\n$ W=$(curl -s -D - -o /dev/null -H 'Accept-Encoding: gzip' \\\n      http://localhost:8080/big.txt | grep -i '^etag' \\\n      | tr -d '\\r' | cut -d' ' -f2)\n$ echo $W\n\nW/\"68c0b3d1-62f18\"\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -r 0-99 \\\n    -H \"If-Range: $W\" http://localhost:8080/big.txt\n\n200\n\n#   약한 검증자면 전체를 준다\n\n#   7.4절에서 본 규칙이다\n\n# --- 프록시가 지우면 탐색이 깨진다 ---\n\n$ docker exec lab sh -c \\\n    'printf \"server { listen 80;\\n\\\n  location / { root /usr/share/nginx/html;\\n\\\n    proxy_force_ranges off; add_header Accept-Ranges none always; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/big.txt \\\n  | grep -i accept-ranges | tail -1\n\nAccept-Ranges: none\n\n#   지원 안 한다고 말했다\n\n#   동영상 탐색이 안 된다\n\n#   재생 막대를 끌 수 없다\n\n# --- 다음 절에서 ---\n\n#   누가 어디서 왔는지 말하는 헤더들",
+   "note": "**`gzip` 은 되고 `br` 은 nginx 가 안 켜서 압축을 안** 한다.\n\n**무작위 100000바이트를 gzip 하면 100050 으로** 커진다.\n\n**압축하면 `Transfer-Encoding: chunked` 가 되고 끝이 `0d0a 300d 0a0d 0a`** 다.\n\n**`-r 0-9,100-109` 에 `multipart/byteranges` 로 조각마다 `Content-Range`** 가 온다.\n\n**파일이 바뀌자 `If-Range` 는 `200` 을 주는데 없으면 `206` 으로 섞인 파일이** 만들어진다."
+  }
+ ],
+ "recap": [
+  "**단순·압축·청크·범위** 넷이다.",
+  "**압축은 `Content-Encoding` 이** 보통이다.",
+  "**이미 압축된 건 오히려** 커진다.",
+  "**길이를 모르면 청크**다.",
+  "**끝에 `0` 청크가** 온다.",
+  "**범위는 `206` 과 `Content-Range`** 다.",
+  "**여러 범위는 멀티파트가** 된다.",
+  "**잘못된 범위는 `416`** 이다.",
+  "**`If-Range` 가 섞이는 걸** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "인코딩별로 크기를 잰다.",
+   "done_when": "무엇이 줄고 안 주는지 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "청크 끝을 xxd 로 본다.",
+   "done_when": "`0` 청크를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "여러 범위를 요청한다.",
+   "done_when": "멀티파트 응답을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "중간에 파일을 바꾼다.",
+   "done_when": "`If-Range` 유무 차이를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Content-Encoding` 과 `Transfer-Encoding` 의 차이는?",
+   "a": "표현 자체의 압축이냐 전송 구간의 인코딩이냐다."
+  },
+  {
+   "q": "이미 압축된 파일을 gzip 하면?",
+   "a": "거의 안 줄고 오히려 커질 수 있다."
+  },
+  {
+   "q": "청크 전송이 필요한 때는?",
+   "a": "본문 길이를 미리 알 수 없을 때다."
+  },
+  {
+   "q": "`If-Range` 가 막는 것은?",
+   "a": "중간에 파일이 바뀌어 두 판본이 섞이는 것이다."
+  },
+  {
+   "q": "`416` 은 언제 나오나?",
+   "a": "요청한 범위가 자원 크기를 벗어났을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "범위 요청",
+   "def": "본문의 일부 바이트만 요청하는 것."
+  },
+  {
+   "term": "트레일러",
+   "def": "청크 전송에서 본문 뒤에 붙이는 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9112 — HTTP/1.1",
+   "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 7932 — Brotli Compressed Data Format",
+   "url": "https://www.rfc-editor.org/rfc/rfc7932.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
