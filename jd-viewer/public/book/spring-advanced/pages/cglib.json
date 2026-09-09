@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "cglib",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "CGLIB",
+ "summary": "상속으로 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "상속으로 만든다.",
+  "두 호출 방식을 안다.",
+  "이름을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절에서 인터페이스가 없으면** 막혔다. **상속으로 만드는 길이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "구현 대신 상속",
+   "ascii": "   a subclass instead of an implementation\n\n   the generated class extends the target class\n   every non final method is overridden\n   each override forwards to one interceptor\n\n   so the concrete type is satisfied, and no interface is needed",
+   "note": "**구체 타입이 만족되니 인터페이스가 필요** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5.3절을 손으로 안 쓰고 하는 것이다",
+   "md": "**5.3절에서 손으로** 썼다.\n\n> **`extends` 와 `super(null)`** 이었다.\n> **여기선 런타임이** 쓴다.\n> **아래에서 그 이름을** 본다.\n\n**인터페이스가 없어도** 된다.\n\n> **6.5절의 그 막힘이** 풀린다.\n> **아래에서 V2 에** 붙인다.\n> **손으로 쓴 셋이** 사라진다.\n\n**원본 없이도** 된다.\n\n> **부모 것을 바로 부른**다.\n> **아래에서 두 방식을** 본다.\n> **객체가 하나 준**다.\n\n**부트의 기본**이다.\n\n> **1.4절에서 그** 이름이었다.\n> **인터페이스가 있어도** 이쪽이다.\n> **12.4절에서 그 이유를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "원본에 닿는 두 길",
+   "ascii": "   two ways the interceptor can reach the original code\n\n   call the method on a separate target object\n   call the superclass implementation directly\n\n   the second needs no target, and skips one object entirely",
+   "note": "**둘째는 대상이 필요 없고 객체 하나를 아예** 건너뛴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "5.3절의 제약이 그대로 따라온다",
+   "md": "**`final` 이면 못** 만든다.\n\n> **5.3절에서 컴파일이** 막았다.\n> **여기선 실행에서** 터진다.\n> **아래에서 그** 차이를 본다.\n\n**메서드가 `final` 이면 조용히** 지나간다.\n\n> **덮어쓸 수가** 없다.\n> **오류도** 없다.\n> **아래에서 그걸** 겪는다.\n\n**생성자가 두 번** 돈다.\n\n> **5.3절의 그것**이다.\n> **아래에서 다시** 센다.\n> **자바 17 부터 피할 길이** 있다.\n\n**`private` 은 안** 지난다.\n\n> **5.3절과 같다.**\n> **12.1절에서 이게** 커진다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 인터셉터를 만든다\n\npublic class LogTraceInterceptor implements MethodInterceptor {\n\n    private final Object target;\n    private final LogTrace trace;\n\n    @Override\n    public Object intercept(Object obj, Method method, Object[] args,\n                            MethodProxy proxy) throws Throwable {\n        TraceStatus status = null;\n        try {\n            String message = method.getDeclaringClass().getSimpleName()\n                             + \".\" + method.getName() + \"()\";\n            status = trace.begin(message);\n            Object result = proxy.invoke(target, args);       // 원본을 부른다\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ wc -l < src/main/java/study/adv/dynamic/LogTraceInterceptor.java\n      28\n\n$ diff <(grep -c 'try {' src/main/java/study/adv/dynamic/LogTraceHandler.java) \\\n       <(grep -c 'try {' src/main/java/study/adv/dynamic/LogTraceInterceptor.java)\n\n--   6.3 절의 핸들러와 거의 같다\n--   인자가 넷이고 네 번째가 다르다\n\n\n-- 만든다\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    OrderServiceV2 target = new OrderServiceV2(orderRepositoryV2(trace));\n\n    Enhancer enhancer = new Enhancer();\n    enhancer.setSuperclass(OrderServiceV2.class);           // 상속한다\n    enhancer.setCallback(new LogTraceInterceptor(target, trace));\n    return (OrderServiceV2) enhancer.create();\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'is not an interface'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2'\n빈 이름:   orderServiceV2\n주입된 것: study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n원본:     study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   6.5 절의 그 오류가 사라졌다\n--   1.4 절의 이름과 닮았다\n\n\n-- 만들어진 클래스를 본다\n\n$ java -Dcglib.debugLocation=/tmp/cglib -jar build/libs/app.jar > /dev/null 2>&1 &\n$ sleep 5 && find /tmp/cglib -name '*.class' | head -3\n/tmp/cglib/study/adv/app/OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class\n/tmp/cglib/study/adv/app/OrderServiceV2$$FastClassByCGLIB$$1c9d2a70.class\n/tmp/cglib/study/adv/app/OrderRepositoryV2$$EnhancerByCGLIB$$4f21a1c9.class\n\n$ javap -p '/tmp/cglib/study/adv/app/OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | head -10\npublic class study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n        extends study.adv.app.OrderServiceV2\n        implements org.springframework.cglib.proxy.Factory {\n  public final void orderItem(java.lang.String);\n  public final java.lang.String find(java.lang.String);\n  final void CGLIB$orderItem$0(java.lang.String);\n  public final boolean equals(java.lang.Object);\n  public final int hashCode();\n  public final java.lang.String toString();\n  ...\n}\n\n--   원본을 상속했다\n--   5.3 절에서 손으로 쓴 그 모양이다\n--   원본 메서드를 부르는 통로도 만들어 뒀다\n\n\n-- 두 클래스가 생긴다\n\n$ find /tmp/cglib -name '*.class' | wc -l\n       9\n\n$ find /tmp/cglib -name '*Enhancer*' | wc -l\n       3\n$ find /tmp/cglib -name '*FastClass*' | wc -l\n       6\n\n$ javap -p '/tmp/cglib/study/adv/app/OrderServiceV2$$FastClassByCGLIB$$1c9d2a70.class' \\\n  | head -5\npublic class study.adv.app.OrderServiceV2$$FastClassByCGLIB$$1c9d2a70\n        extends org.springframework.cglib.reflect.FastClass {\n  public int getIndex(org.springframework.cglib.core.Signature);\n  public java.lang.Object invoke(int, java.lang.Object, java.lang.Object[]);\n\n--   번호로 부르는 표다\n--   6.1 절에서 리플렉션이 느렸던 그 자리를 피한다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV2.request()\n[796bccd9] |-->OrderServiceV2.orderItem()\n[796bccd9] |   |-->OrderRepositoryV2.save()\n[796bccd9] |   |<--OrderRepositoryV2.save() time=1004ms\n[796bccd9] |<--OrderServiceV2.orderItem() time=1006ms\n[796bccd9] OrderControllerV2.request() time=1007ms\n\n$ curl -s localhost:8080/who/all | grep V2\norderControllerV2    study.adv.app.OrderControllerV2$$EnhancerByCGLIB$$c14e0b93\norderServiceV2       study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\norderRepositoryV2    study.adv.app.OrderRepositoryV2$$EnhancerByCGLIB$$4f21a1c9\n\n$ find src/main/java/study/adv/proxy -name '*Concrete*.java' | wc -l\n       0\n\n--   5.3 절과 5.6 절의 손으로 쓴 셋이 사라졌다\n--   로그는 그대로다\n\n\n-- 애너테이션은 그대로다\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    if 'v2' in str(x.get('predicate','')): print(x['handler'][:56])\"\nstudy.adv.app.OrderControllerV2$$EnhancerByCGLIB$$c14e0b93#request(String)\n\n$ javap -v '/tmp/cglib/study/adv/app/OrderControllerV2$$EnhancerByCGLIB$$c14e0b93.class' \\\n  | grep -c 'RuntimeVisibleAnnotations'\n0\n\n--   프록시에는 애너테이션이 없다\n--   그런데 매핑은 산다\n--   스프링이 부모 클래스를 보고 찾는다\n--   5.6 절과 6.4 절과 또 다른 결과다\n\n\n-- 두 호출 방식\n\n// ① 대상 객체를 부른다\nObject result = proxy.invoke(target, args);\n\n// ② 부모 것을 바로 부른다\nObject result = proxy.invokeSuper(obj, args);\n\n$ curl -s 'localhost:8080/bench/cglib?n=10000000&mode=invoke'\ninvoke:      284 ms\n$ curl -s 'localhost:8080/bench/cglib?n=10000000&mode=invokeSuper'\ninvokeSuper: 241 ms\n$ curl -s 'localhost:8080/bench/cglib?n=10000000&mode=reflect'\nmethod.invoke: 412 ms\n\n--   6.1 절의 리플렉션보다 빠르다\n--   FastClass 표를 쓴 덕이다\n\n\n-- 부모를 부르면 객체가 하나 준다\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    Enhancer enhancer = new Enhancer();\n    enhancer.setSuperclass(OrderServiceV2.class);\n    enhancer.setCallback(new SuperCallInterceptor(trace));    // target 이 없다\n    return (OrderServiceV2) enhancer.create(\n            new Class[]{OrderRepositoryV2.class},\n            new Object[]{orderRepositoryV2(trace)});          // 생성자 인자\n}\n\n$ curl -s localhost:8080/proxy/chain?name=orderServiceV2\n빈:      study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n  (원본 객체 없음, 자기 자신이 원본)\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep -c 'OrderServiceV2$'\n0\n\n--   원본 객체가 아예 없다\n--   5.3 절의 필드 두 벌 문제가 사라진다\n\n\n-- 생성자가 한 번만 돈다\n\npublic OrderServiceV2(OrderRepositoryV2 r) {\n    System.out.println(\"[초기화] 서비스\");\n    ...\n}\n\n// ① target 방식\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\] 서비스'\n2\n\n// ② invokeSuper 방식\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\] 서비스'\n1\n\n--   5.3 절과 5.6 절에서 두 번이었다\n--   부모를 부르는 쪽은 한 번이다\n\n\n-- 아예 안 부르게 할 수도 있다\n\nObjenesis objenesis = new ObjenesisStd();\nOrderServiceV2 proxy = (OrderServiceV2) objenesis.newInstance(enhancedClass);\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\] 서비스'\n1\n\n$ curl -s localhost:8080/proxy/fields?name=orderServiceV2 | tail -1\n물려받은 필드: orderRepository = null\n\n--   생성자를 건너뛰고 만든다\n--   그래서 필드가 비어 있다\n--   target 방식과 같이 써야 한다\n\n\n-- final 클래스면\n\npublic final class OrderServiceV2 { ... }\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'IllegalArgument' | head -2\njava.lang.IllegalArgumentException: Cannot subclass final class\n  study.adv.app.OrderServiceV2\n\n--   5.3 절에서는 컴파일이 막았다\n--   여기선 기동에서 터진다\n--   6.5 절과 같은 시점이다\n\n\n-- final 메서드면 조용하다\n\npublic final void orderItem(String itemId) { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -c 'IllegalArgument'\n0\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[3d81f0a2] OrderControllerV2.request()\n[3d81f0a2] |-->OrderRepositoryV2.save()\n[3d81f0a2] |<--OrderRepositoryV2.save() time=1004ms\n[3d81f0a2] OrderControllerV2.request() time=1006ms\n\n$ javap -p '/tmp/cglib/study/adv/app/OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04.class' \\\n  | grep -c 'orderItem'\n0\n\n--   서비스 줄이 사라졌다\n--   오류도 경고도 없다\n--   생성된 클래스에 그 메서드가 아예 없다\n\n\n-- private 도 안 지난다\n\nprivate void validate(String itemId) { ... }\n\npublic void orderItem(String itemId) {\n    validate(itemId);\n    orderRepository.save(itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep -c 'validate' logs/app.log\n1\n$ grep -c 'OrderServiceV2.validate' logs/app.log\n0\n\n--   불리기는 하는데 로그에 안 나온다\n--   5.3 절과 같다\n--   12.1 절에서 이게 커진다\n\n\n-- 기본 생성자가 없으면\n\npublic OrderServiceV2(OrderRepositoryV2 r) {\n    if (r == null) throw new IllegalArgumentException(\"저장소가 필요하다\");\n    ...\n}\n\n// 인자를 안 주면\nreturn (OrderServiceV2) enhancer.create();\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'NoSuchMethod' | head -2\njava.lang.NoSuchMethodError: study.adv.app.OrderServiceV2.<init>()\n\n// 인자를 주면\nreturn (OrderServiceV2) enhancer.create(\n        new Class[]{OrderRepositoryV2.class}, new Object[]{repo});\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n200\n\n--   5.3 절에서 super(null) 로 막혔던 그 자리다\n\n\n-- 두 방식을 견준다\n\n$ printf '%-20s %-16s %-14s %s\\n' \\\n  'JDK'    '인터페이스 필요' '이름 무관'    '$Proxy142' \\\n  'CGLIB'  '인터페이스 불필요' '이름에 원본'  '$$EnhancerByCGLIB$$'\n\nJDK      인터페이스 필요   이름 무관      $Proxy142\nCGLIB    인터페이스 불필요 이름에 원본    $$EnhancerByCGLIB$$\n\n$ printf '%-20s %-12s %s\\n' \\\n  '속도'      '412 ms'  '284 ms' \\\n  '생성 클래스' '1 개'   '2 개' \\\n  '제약'      '인터페이스' 'final, private, 생성자'\n\n속도                 412 ms       284 ms\n생성 클래스          1 개         2 개\n제약                 인터페이스   final, private, 생성자\n\n\n-- 둘 다 붙여 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n\n$ diff <(grep 'study.adv.trace' logs/app.log | head -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V[12]//g') \\\n       <(grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V[12]//g') \\\n  && echo '같음'\n같음\n\n--   두 방식이 같은 로그를 낸다\n--   5.6 절에서도 그랬다\n\n\n-- 손으로 쓴 클래스가 0 개다\n\n$ find src/main/java -name '*Proxy*.java' | wc -l\n       0\n$ find src/main/java/study/adv/dynamic -name '*.java' | wc -l\n       2\n\n$ wc -l src/main/java/study/adv/dynamic/*.java | tail -1\n      62 total\n\n// 5 장 끝에서는\n$ git show v6-final --stat 2>/dev/null | grep -c 'Proxy.java'\n9\n\n--   아홉 개가 두 개가 됐다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV2.request()\n[796bccd9] |-->OrderServiceV2.orderItem()\n[796bccd9] |   |-->OrderRepositoryV2.save()\n[796bccd9] |   |<--OrderRepositoryV2.save() time=1004ms\n[796bccd9] |<--OrderServiceV2.orderItem() time=1006ms\n[796bccd9] OrderControllerV2.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2' | head -2\n빈 이름:   orderServiceV2\n주입된 것: study.adv.app.OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04\n\n$ git add -A && git commit -q -m 'feat: v7 CGLIB' && git tag v7-cglib\n\n--   6.7 절에서 제약을 모아 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '방식'        '상속' \\\n  '인터페이스'  '필요 없음' \\\n  '이름'        '$$EnhancerByCGLIB$$' \\\n  '생성 클래스' '두 개' \\\n  'FastClass'   '번호로 부름' \\\n  '속도'        'JDK 보다 빠름' \\\n  'invokeSuper' '원본 객체 없음' \\\n  '초기화'      '한 번' \\\n  'final 클래스' '기동 실패' \\\n  'final 메서드' '조용히 빠짐'\n\n방식                       상속\n인터페이스                 필요 없음\n이름                       $$EnhancerByCGLIB$$\n생성 클래스                두 개\nFastClass                  번호로 부름\n속도                       JDK 보다 빠름\ninvokeSuper                원본 객체 없음\n초기화                     한 번\nfinal 클래스               기동 실패\nfinal 메서드               조용히 빠짐",
+   "note": "**상속으로 만드니 `is not an interface` 가 사라지고 이름이 `OrderServiceV2$$EnhancerByCGLIB$$8f2a1c04`** 가 된다.\n\n**생성된 클래스가 원본을 상속하고 `FastClass` 표가 따로 생겨 리플렉션 412 ms 가 284 ms** 가 된다.\n\n**부모를 바로 부르면 원본 객체가 아예 없어 초기화가 두 번에서 한 번으로** 준다.\n\n**`final` 클래스는 `Cannot subclass final class` 로 기동이 멈추고 `final` 메서드는 생성된 클래스에 아예 없어 조용히** 빠진다.\n\n**손으로 쓴 프록시 클래스가 아홉 개에서 0 개가** 됐다."
+  }
+ ],
+ "recap": [
+  "**상속으로** 만든다.",
+  "**인터페이스가 필요** 없다.",
+  "**이름에 원본이** 있다.",
+  "**클래스가** 둘이다.",
+  "**표로** 부른다.",
+  "**더** 빠르다.",
+  "**부모를 바로** 부른다.",
+  "**초기화가** 한 번이다.",
+  "**final 이** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "상속으로 만들어 본다.",
+   "done_when": "같은 로그를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "생성된 클래스를 저장해 연다.",
+   "done_when": "두 클래스를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "부모 호출로 바꾼다.",
+   "done_when": "초기화가 한 번인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`final` 을 붙여 본다.",
+   "done_when": "둘의 차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스 없이 어떻게 만드나?",
+   "a": "원본을 상속한 자식 클래스를 런타임에 만든다."
+  },
+  {
+   "q": "왜 클래스가 둘 생기나?",
+   "a": "감싸는 클래스와 메서드를 번호로 부르는 표가 따로 필요해서다."
+  },
+  {
+   "q": "부모를 바로 부르면 무엇이 좋나?",
+   "a": "원본 객체가 필요 없어 초기화가 한 번만 돈다."
+  },
+  {
+   "q": "`final` 클래스와 `final` 메서드의 차이는?",
+   "a": "앞은 기동이 멈추고 뒤는 조용히 안 걸린다."
+  },
+  {
+   "q": "이름은 어떻게 다른가?",
+   "a": "원본 이름 뒤에 표시가 붙어 무엇을 감쌌는지 알 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "바이트코드 생성",
+   "def": "런타임에 클래스 파일을 만들어 로더에 올리는 일."
+  },
+  {
+   "term": "빠른 호출 표",
+   "def": "메서드를 번호로 찾아 부르게 만든 보조 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "cglib — Byte Code Generation Library",
+   "url": "https://github.com/cglib/cglib/wiki",
+   "publisher": "cglib"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

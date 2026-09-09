@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "jdk-limit",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "인터페이스가 없으면",
+ "summary": "못 만든다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 못 만드는지 안다.",
+  "오류를 읽는다.",
+  "세 길을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절에서 V1 만** 됐다. **V2 가 왜 안 되는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 인터페이스가 필요한가",
+   "ascii": "   why the runtime needs an interface\n\n   it writes a class that already extends the proxy base class\n   java allows only one superclass\n   so the only way left to share a type is to implement\n\n   with no interface there is no type left to share",
+   "note": "**인터페이스가 없으면 나눌 타입이 안** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부모 자리가 이미 차 있다",
+   "md": "**만들어진 클래스가 상속을 이미** 썼다.\n\n> **6.3절에서 `javap` 로** 봤다.\n> **`Proxy` 를 상속**했다.\n> **자바는 부모가** 하나다.\n\n**남은 건 구현**뿐이다.\n\n> **인터페이스는 여럿** 된다.\n> **그래서 그것만** 받는다.\n> **아래에서 그 신호를** 본다.\n\n**타입이 없으면 못** 끼운다.\n\n> **5.1절의 조건 ①** 이다.\n> **아래에서 그 오류를** 본다.\n> **바꿔치기가 안** 된다.\n\n**길이** 셋이다.\n\n> **만들거나 상속하거나** 포기다.\n> **아래에서 견준다.**\n> **둘째가 6.6절**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 없을 때의 세 길",
+   "ascii": "   three ways out when there is no interface\n\n   add one, and change every caller to use it\n   generate a subclass instead of an implementation\n   give up and edit the original\n\n   the second is the next section",
+   "note": "**둘째가 다음 절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스를 만드는 것도 값이 든다",
+   "md": "**파일이** 는다.\n\n> **5.8절에서 여섯 대 셋**이었다.\n> **아래에서 다시** 센다.\n> **구현이 하나면** 아깝다.\n\n**부르는 쪽을 다** 고친다.\n\n> **타입을 바꿔야** 한다.\n> **아래에서 세어** 본다.\n> **남의 코드면 못** 고친다.\n\n**애너테이션도** 옮긴다.\n\n> **5.2절의 그** 고생이다.\n> **아래에서 다시** 겪는다.\n> **잊으면 404**다.\n\n**남의 클래스면 아예 못** 한다.\n\n> **라이브러리 안의 것**이다.\n> **아래에서 그** 경우다.\n> **6.6절이 유일한 답**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- V2 에 붙여 본다\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    OrderServiceV2 target = new OrderServiceV2(orderRepositoryV2(trace));\n    return (OrderServiceV2) Proxy.newProxyInstance(\n            OrderServiceV2.class.getClassLoader(),\n            new Class[]{OrderServiceV2.class},          // 클래스를 넣었다\n            new LogTraceHandler(target, trace));\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\njava.lang.IllegalArgumentException: study.adv.app.OrderServiceV2 is not an interface\n\n--   컴파일은 통과한다\n--   기동에서 막는다\n\n\n-- 왜 그런지 본다\n\n$ javap 'jdk/proxy2/$Proxy142.class' | head -2\nfinal class jdk.proxy2.$Proxy142 extends java.lang.reflect.Proxy\n        implements study.adv.app.OrderServiceV1 {\n\n$ javap java.lang.reflect.Proxy | head -3\npublic class java.lang.reflect.Proxy implements java.io.Serializable {\n  protected java.lang.reflect.InvocationHandler h;\n\n--   부모가 이미 Proxy 다\n--   6.3 절에서 본 그 줄이다\n--   자바는 부모를 하나만 갖는다\n\n\n-- 인터페이스는 여럿 된다\n\nnew Class[]{OrderServiceV1.class, Auditable.class, Closeable.class}\n\n$ curl -s localhost:8080/proxy/interfaces?name=orderServiceV1\nstudy.adv.app.OrderServiceV1\nstudy.adv.app.Auditable\njava.io.Closeable\n\n$ javap 'jdk/proxy2/$Proxy145.class' | head -2\nfinal class jdk.proxy2.$Proxy145 extends java.lang.reflect.Proxy\n        implements study.adv.app.OrderServiceV1, study.adv.app.Auditable,\n                   java.io.Closeable {\n\n--   셋을 구현했다\n--   부모는 여전히 하나다\n\n\n-- 오류를 그대로 읽는다\n\n$ jshell -q <<'EOF'\nimport java.lang.reflect.*;\nclass Plain { public void hello() {} }\nProxy.newProxyInstance(Plain.class.getClassLoader(),\n                       new Class[]{Plain.class},\n                       (p, m, a) -> null);\nEOF\n|  Exception java.lang.IllegalArgumentException: Plain is not an interface\n|        at Proxy.newProxyInstance (Proxy.java:1006)\n\n--   메시지가 정확하다\n--   추측할 게 없다\n\n\n-- 인터페이스만 주면 된다\n\n$ jshell -q <<'EOF'\nimport java.lang.reflect.*;\ninterface Greet { String hi(); }\nGreet g = (Greet) Proxy.newProxyInstance(Greet.class.getClassLoader(),\n                                         new Class[]{Greet.class},\n                                         (p, m, a) -> \"안녕\");\ng.hi()\ng.getClass().getName()\nEOF\n$1 ==> \"안녕\"\n$2 ==> \"jdk.proxy1.$Proxy0\"\n\n--   되는 쪽은 이렇다\n\n\n-- 길 ① 인터페이스를 만든다\n\npublic interface OrderServiceV2Api {\n    void orderItem(String itemId);\n}\n\npublic class OrderServiceV2 implements OrderServiceV2Api { ... }\n\n$ find src/main/java/study/adv/app -name '*V2*.java' | wc -l\n       3\n// 만들고 나면\n       6\n\n--   5.8 절에서 V1 이 여섯, V2 가 셋이었다\n--   같아진다\n\n\n-- 부르는 쪽을 다 고친다\n\n$ grep -rn 'OrderServiceV2\\b' src/main/java --include='*.java' | wc -l\n       7\n\n$ grep -rn 'OrderServiceV2 ' src/main/java --include='*.java'\nsrc/main/java/study/adv/app/OrderControllerV2.java:9:    private final OrderServiceV2 orderService;\nsrc/main/java/study/adv/app/OrderControllerV2.java:11:    public OrderControllerV2(OrderServiceV2 orderService) {\nsrc/main/java/study/adv/proxy/OrderServiceConcreteProxy.java:8:    private final OrderServiceV2 target;\n\n$ sed -i '' 's/OrderServiceV2 orderService/OrderServiceV2Api orderService/' \\\n    src/main/java/study/adv/app/OrderControllerV2.java\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   타입을 바꿔야 한다\n--   여기선 셋이지만 실무에선 많다\n\n\n-- 애너테이션도 옮긴다\n\n@RestController\npublic class OrderControllerV2 {\n    @GetMapping(\"/v2/request\")\n    public String request(@RequestParam String itemId) { ... }\n}\n\n// 인터페이스를 만들면\n@RequestMapping\n@ResponseBody\npublic interface OrderControllerV2Api {\n    @GetMapping(\"/v2/request\")\n    String request(@RequestParam String itemId);\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n404\n\n// 옮기기 전\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n200\n\n--   5.2 절과 5.6 절에서 겪은 그 자리다\n\n\n-- 옮기고 나면\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ curl -s localhost:8080/who/all | grep V2\norderControllerV2    jdk.proxy2.$Proxy147\norderServiceV2       jdk.proxy2.$Proxy146\norderRepositoryV2    jdk.proxy2.$Proxy145\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV2Api.request()\n[796bccd9] |-->OrderServiceV2Api.orderItem()\n[796bccd9] |   |-->OrderRepositoryV2Api.save()\n[796bccd9] |   |<--OrderRepositoryV2Api.save() time=1004ms\n[796bccd9] |<--OrderServiceV2Api.orderItem() time=1006ms\n[796bccd9] OrderControllerV2Api.request() time=1007ms\n\n--   됐다\n--   그런데 로그 이름이 Api 로 나온다\n--   6.3 절에서 인터페이스 이름을 쓴다고 했다\n\n\n-- 구현 이름을 쓰려면\n\nString message = target.getClass().getSimpleName()\n                 + \".\" + method.getName() + \"()\";\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[3d81f0a2] OrderControllerV2.request()\n[3d81f0a2] |-->OrderServiceV2.orderItem()\n\n--   원본 이름이 나온다\n--   핸들러에 target 이 있어서 가능하다\n\n\n-- 길 ② 남의 클래스면 못 한다\n\n// 라이브러리 클래스를 감싸고 싶다\nimport com.fasterxml.jackson.databind.ObjectMapper;\n\n@Bean\npublic ObjectMapper objectMapper(LogTrace trace) {\n    ObjectMapper target = new ObjectMapper();\n    return (ObjectMapper) Proxy.newProxyInstance(\n            ObjectMapper.class.getClassLoader(),\n            new Class[]{ObjectMapper.class},\n            new LogTraceHandler(target, trace));\n}\n\n$ ./gradlew bootRun 2>&1 | grep -A1 'IllegalArgument' | head -1\njava.lang.IllegalArgumentException:\n  com.fasterxml.jackson.databind.ObjectMapper is not an interface\n\n$ javap -cp $(find ~/.gradle/caches -name 'jackson-databind-2.17.2.jar' | head -1) \\\n    com.fasterxml.jackson.databind.ObjectMapper | head -1\npublic class com.fasterxml.jackson.databind.ObjectMapper extends\n  com.fasterxml.jackson.core.ObjectCodec implements java.io.Serializable {\n\n--   인터페이스를 만들 수가 없다\n--   ⑯ 6.8절에서 이걸 덮어썼던 그 클래스다\n\n\n-- 인터페이스가 있는 것은 된다\n\n@Bean\npublic DataSource dataSource(LogTrace trace) {\n    DataSource target = ...;\n    return (DataSource) Proxy.newProxyInstance(\n            DataSource.class.getClassLoader(),\n            new Class[]{DataSource.class},\n            new LogTraceHandler(target, trace));\n}\n\n$ curl -s 'localhost:8080/who?name=dataSource' | head -2\n빈 이름:   dataSource\n주입된 것: jdk.proxy2.$Proxy118\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'getConnection' logs/app.log | tail -1 | cut -c56-\n[c14e0b93] |   |-->HikariDataSource.getConnection()\n\n--   1.4 절에서 본 그 $Proxy118 이 이런 것이었다\n--   ⑤ 6장에서 쓰던 그 풀이다\n\n\n-- 길 ③ 원본을 고친다\n\npublic class OrderServiceV2 {\n    public void orderItem(String itemId) {\n        TraceStatus status = trace.begin(\"...\");    // 2 장으로 돌아간다\n        ...\n    }\n}\n\n$ grep -c 'trace' src/main/java/study/adv/app/OrderServiceV2.java\n8\n\n--   5 장에서 없앤 것을 되돌리는 것이다\n--   마지막 수단이다\n\n\n-- 세 길을 견준다\n\n$ printf '%-24s %-16s %s\\n' \\\n  '인터페이스 만들기' '파일 3 개 늚'  '남의 것은 불가' \\\n  '상속으로 만들기'   '파일 0 개'     '제약 넷' \\\n  '원본 고치기'       '파일 0 개'     '2 장으로 회귀'\n\n인터페이스 만들기        파일 3 개 늚      남의 것은 불가\n상속으로 만들기          파일 0 개         제약 넷\n원본 고치기              파일 0 개         2 장으로 회귀\n\n\n-- 실무에서 얼마나 되나\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nimport importlib\nn_iface = n_plain = 0\nfor k, v in b.items():\n    t = v['type']\n    if '\\$\\$' in t or 'Proxy' in t: continue\n    (n_iface if '.' in t else n_plain)\nprint('빈', len(b))\"\n빈 187\n\n$ curl -s localhost:8080/proxy/interface-count\n인터페이스가 있는 빈: 84\n인터페이스가 없는 빈: 103\n\n$ python3 -c \"print('%.0f%% 는 JDK 로 못 감싼다' % (103/187*100))\"\n55% 는 JDK 로 못 감싼다\n\n--   절반이 넘는다\n--   ⑯ 6.1절에서 센 187 이다\n\n\n-- 그래서 부트는 다른 쪽을 기본으로 둔다\n\n$ curl -s localhost:8080/actuator/configprops \\\n    | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nfor k, v in b.items():\n    if k.startswith('spring.aop'): print(v['properties'])\"\n{'proxyTargetClass': True, 'auto': True}\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl' | head -3\n빈 이름:   orderServiceImpl\n주입된 것: study.adv.OrderServiceImpl$$SpringCGLIB$$0\n원본:     study.adv.OrderServiceImpl\n\n--   1.4 절에서 본 그 설정이다\n--   인터페이스가 있어도 상속 쪽을 쓴다\n--   6.6 절에서 그게 무엇인지 본다\n\n\n-- V1 은 그대로 돈다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[e82f14b0] OrderControllerV1.request()\n[e82f14b0] |-->OrderServiceV1.orderItem()\n\n$ curl -s localhost:8080/who/all | grep -c 'jdk.proxy'\n3\n\n--   6.4 절의 것은 살아 있다\n\n\n-- V2 는 아직 5 장의 클래스를 쓴다\n\n$ curl -s localhost:8080/who/all | grep V2\norderControllerV2    study.adv.proxy.OrderControllerConcreteProxy\norderServiceV2       study.adv.proxy.OrderServiceConcreteProxy\norderRepositoryV2    study.adv.proxy.OrderRepositoryConcreteProxy\n\n$ find src/main/java/study/adv/proxy -name '*Concrete*.java' | wc -l\n       3\n\n--   손으로 쓴 클래스가 셋 남아 있다\n--   6.6 절에서 이걸 없앤다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null -w 'v1 %{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\nv1 200\n$ curl -s -o /dev/null -w 'v2 %{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\nv2 200\n\n$ curl -s localhost:8080/who/all | grep -E 'V1|V2'\norderControllerV1    jdk.proxy2.$Proxy144\norderServiceV1       jdk.proxy2.$Proxy142\norderRepositoryV1    jdk.proxy2.$Proxy143\norderControllerV2    study.adv.proxy.OrderControllerConcreteProxy\norderServiceV2       study.adv.proxy.OrderServiceConcreteProxy\norderRepositoryV2    study.adv.proxy.OrderRepositoryConcreteProxy\n\n--   6.6 절에서 아래쪽 셋을 없앤다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '이유'        '부모 자리가 참' \\\n  '오류'        'is not an interface' \\\n  '시점'        '기동' \\\n  '길 ①'        '인터페이스 만들기' \\\n  '값'          '파일과 호출부' \\\n  '애너테이션'  '또 옮김' \\\n  '남의 클래스' '불가' \\\n  '실무'        '절반이 넘음' \\\n  '부트 기본'   '상속 쪽'\n\n이유                       부모 자리가 참\n오류                       is not an interface\n시점                       기동\n길 ①                       인터페이스 만들기\n값                         파일과 호출부\n애너테이션                 또 옮김\n남의 클래스                불가\n실무                       절반이 넘음\n부트 기본                  상속 쪽",
+   "note": "**클래스를 넘기면 컴파일은 통과하고 기동에서 `is not an interface` 로** 멈춘다.\n\n**생성된 클래스가 이미 `Proxy` 를 상속해 부모 자리가 차 있어 인터페이스만 받을 수** 있다.\n\n**인터페이스를 만들면 파일이 셋 늘고 호출부와 애너테이션을 다 옮겨야** 한다.\n\n**`ObjectMapper` 같은 남의 클래스는 인터페이스를 만들 수가 없어 아예** 못 한다.\n\n**빈 187 개 중 103 개가 인터페이스가 없어 55% 는 이 방식으로 못** 감싼다."
+  }
+ ],
+ "recap": [
+  "**부모가 이미** 찼다.",
+  "**구현만** 받는다.",
+  "**기동에서** 막는다.",
+  "**메시지가** 정확하다.",
+  "**만들 수는** 있다.",
+  "**호출부를** 고친다.",
+  "**애너테이션도** 옮긴다.",
+  "**남의 것은** 못 한다.",
+  "**절반이** 넘는다."
+ ],
+ "drills": [
+  {
+   "task": "클래스를 넘겨 본다.",
+   "done_when": "기동에서 막히는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "생성된 클래스의 부모를 본다.",
+   "done_when": "왜 안 되는지 짚었다.",
+   "minutes": 15
+  },
+  {
+   "task": "인터페이스를 만들어 본다.",
+   "done_when": "고쳐야 할 곳을 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "인터페이스 없는 빈을 센다.",
+   "done_when": "비율을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 인터페이스가 필요한가?",
+   "a": "생성된 클래스가 이미 다른 부모를 상속해 자리가 없어서다."
+  },
+  {
+   "q": "언제 실패하나?",
+   "a": "컴파일이 아니라 기동할 때다."
+  },
+  {
+   "q": "인터페이스를 만들면 무엇을 치르나?",
+   "a": "파일이 늘고 호출부와 애너테이션을 다 옮겨야 한다."
+  },
+  {
+   "q": "남의 클래스는?",
+   "a": "인터페이스를 만들 수 없어 이 방식으로는 못 감싼다."
+  },
+  {
+   "q": "실무에서 얼마나 걸리나?",
+   "a": "인터페이스가 없는 빈이 절반이 넘는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "단일 상속",
+   "def": "부모 클래스를 하나만 가질 수 있는 자바의 규칙."
+  },
+  {
+   "term": "인터페이스 추출",
+   "def": "기존 클래스에서 인터페이스를 뽑아내는 리팩터링."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.reflect — Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JLS — Classes",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

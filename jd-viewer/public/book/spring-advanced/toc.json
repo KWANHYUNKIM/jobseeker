@@ -362,7 +362,7 @@
           "title": "인터페이스가 없으면",
           "summary": "못 만든다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -370,7 +370,7 @@
           "title": "CGLIB",
           "summary": "상속으로 만든다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
