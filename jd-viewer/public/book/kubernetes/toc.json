@@ -466,7 +466,7 @@
           "title": "스케줄러",
           "summary": "어디에 띄울지 누가 정하는가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -474,7 +474,7 @@
           "title": "노드 셀렉터와 어피니티",
           "summary": "여기 말고 저기에 띄우고 싶을 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",

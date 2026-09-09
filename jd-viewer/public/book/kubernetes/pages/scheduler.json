@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "scheduler",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "스케줄러",
+ "summary": "어디에 띄울지 누가 정하는가.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "거르기와 점수 매기기를 안다.",
+  "요청만 본다는 걸 안다.",
+  "Pending 이유를 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 스케줄러가 부품 하나로** 나왔다. **4.6절부터 계속 나온 `Pending` 이 여기서** 정해진다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 단계",
+   "ascii": "   one pod at a time, two halves\n\n   filter    throw away every node that cannot host this pod\n             not enough cpu, wrong labels, a taint, a full disk\n             if nothing survives, the pod stays Pending\n\n   score     rank the survivors, 0 to 100 per plugin\n             spread, image locality, least allocated\n             the highest total wins, ties broken at random\n\n   then bind, which is just one more api write",
+   "note": "**바인딩은 API 쓰기 한 번**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스케줄러는 아무것도 안 만든다",
+   "md": "**`nodeName` 을 채워 넣을** 뿐이다.\n\n> **2.4절의 제어 루프 그대로**다.\n> **`nodeName` 이 빈 파드를** 지켜본다.\n> **채우면 그 노드의 `kubelet` 이** 알아챈다.\n>\n> **8.1절에서 `nodeName` 을 직접 적었다** — **그러면 스케줄러를 건너뛴다.**\n> **자원이 모자라도 그냥 밀어 넣는다** — **위험하다.**\n\n**한 번에 파드** 하나다.\n\n> **큐에서 하나 꺼내 노드를** 정한다.\n> **그래서 순서가 결과를** 바꾼다.\n> **큰 파드가 뒤에 오면 자리가 없을 수** 있다.\n\n**거르기 플러그인이** 판단한다.\n\n| 플러그인 | 무엇을 본다 |\n|---|---|\n| `NodeResourcesFit` | 요청이 남은 용량에 들어가나 |\n| `NodeAffinity` | 라벨 조건(9.2절) |\n| `TaintToleration` | 테인트(9.3절) |\n| `VolumeBinding` | PV 의 노드(8.3절) |\n| `NodeUnschedulable` | `cordon` 됐나 |\n\n**점수는 기본 몇 가지가** 있다.\n\n> **`LeastAllocated` 가 덜 찬 노드를 선호**한다.\n> **`ImageLocality` 는 이미지가 이미 있는 노드에 점수를** 준다.\n> **`PodTopologySpread` 가 고르게** 편다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청만 본다",
+   "ascii": "   the number that decides placement\n\n   requests    what the scheduler subtracts from a nodes capacity\n               it never looks at actual usage\n\n   limits      what the kernel enforces at runtime\n               the scheduler ignores these entirely\n\n   so a node at 95 percent real cpu still looks empty\n   if the pods on it declared no requests at all",
+   "note": "**실사용은 안** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "요청을 안 적으면 무한히 들어간다",
+   "md": "**요청이 0 이면 아무 자리나** 맞는다.\n\n> **4.6절에서 요청이 스케줄링용이라고** 했다.\n> **노드가 실제로 터져도 스케줄러는 비었다고** 본다.\n> **그러다 9.4절의 축출이** 온다.\n\n**7.5절의 `LimitRange` 가 그래서** 있다.\n\n> **네임스페이스마다 기본 요청을** 준다.\n> **아무도 안 적어도 숫자가** 생긴다.\n\n**노드 용량은 할당 가능량**이다.\n\n> **`capacity` 에서 시스템 몫을 뺀 게 `allocatable`** 이다.\n> **스케줄러는 `allocatable` 로** 계산한다.\n> **4GB 노드에 4GB 파드를 못 넣는 이유**다.\n\n**`Pending` 이유를 읽는다**\n\n> **`describe` 의 `FailedScheduling` 메시지가 노드별로 왜 걸렸는지** 센다.\n> **`Insufficient cpu`·`node(s) had untolerated taint`·`didn't match node selector`** 다.\n> **6.7절의 사다리처럼 이 한 줄이 대부분** 알려준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 노드가 얼마나 있나 ---\n\n$ kubectl get nodes\n\nNAME                 STATUS   ROLES           AGE   VERSION\nkind-control-plane   Ready    control-plane   6h    v1.31.0\nkind-worker          Ready    <none>          6h    v1.31.0\nkind-worker2         Ready    <none>          6h    v1.31.0\n\n$ kubectl get node kind-worker -o jsonpath=\\\n'capacity:    {.status.capacity.cpu} cpu, {.status.capacity.memory}{\"\\n\"}\\\nallocatable: {.status.allocatable.cpu} cpu, {.status.allocatable.memory}{\"\\n\"}'\n\ncapacity:    8 cpu, 8039580Ki\nallocatable: 8 cpu, 8039580Ki\n\n#   kind 는 도커 안이라 같다\n\n#   진짜 클러스터는 시스템 몫만큼 적다\n\n$ kubectl describe node kind-worker | grep -A6 'Allocated resources'\n\nAllocated resources:\n  (Total limits may be over 100 percent, i.e., overcommitted.)\n  Resource           Requests    Limits\n  --------           --------    ------\n  cpu                200m (2%)   0 (0%)\n  memory             120Mi (1%)  0 (0%)\n\n#   요청 합계다\n\n#   실사용이 아니다\n\n# --- 어디로 갔는지 본다 ---\n\n$ kubectl create deployment spread --image=nginx:1.27 --replicas=6 \\\n    > /dev/null\n$ kubectl rollout status deployment/spread > /dev/null\n$ kubectl get pods -l app=spread -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   3 kind-worker\n   3 kind-worker2\n\n#   고르게 갈렸다\n\n#   PodTopologySpread 와 LeastAllocated 다\n\n$ kubectl get pods -l app=spread -o wide --no-headers | grep -c control-plane\n\n0\n\n#   컨트롤 플레인에는 안 갔다\n\n#   테인트 때문이다 (9.3절)\n\n$ kubectl delete deployment spread > /dev/null\n\n# --- 요청을 크게 준다 ---\n\n$ kubectl create deployment big --image=nginx:1.27 --replicas=4 > /dev/null\n$ kubectl set resources deployment big --requests=cpu=3 > /dev/null\n$ sleep 12 && kubectl get pods -l app=big -o wide --no-headers \\\n    | awk '{print $3, $7}' | sort | uniq -c\n\n   2 Running kind-worker\n   2 Running kind-worker2\n\n$ kubectl scale deployment big --replicas=6 > /dev/null\n$ sleep 10 && kubectl get pods -l app=big --no-headers \\\n    | awk '{print $3}' | sort | uniq -c\n\n   4 Running\n   2 Pending\n\n$ kubectl describe pod $(kubectl get pod -l app=big \\\n    --field-selector status.phase=Pending -o name | head -1) \\\n    | grep -A2 Events | tail -1\n\n  Warning  FailedScheduling  8s  default-scheduler  0/3 nodes are available:\n    1 node(s) had untolerated taint {node-role.kubernetes.io/control-plane: },\n    2 Insufficient cpu. preemption: 0/3 nodes are available: 1 Preemption is\n    not helpful for scheduling, 2 No preemption victims found for incoming pod.\n\n#   노드별로 이유를 센다\n\n#   3 노드 중 1은 테인트, 2는 cpu 부족\n\n#   8 cpu 에 3 cpu 씩 둘이면 6 이다\n\n#   셋째는 못 들어간다\n\n$ kubectl delete deployment big > /dev/null\n\n# --- 요청이 없으면 다 들어간다 ---\n\n$ kubectl create deployment norq --image=nginx:1.27 --replicas=20 > /dev/null\n$ sleep 25 && kubectl get pods -l app=norq --no-headers \\\n    | awk '{print $3}' | sort | uniq -c\n\n  20 Running\n\n$ kubectl describe node kind-worker | grep -A5 'Allocated resources' \\\n    | tail -2\n\n  cpu                200m (2%)   0 (0%)\n  memory             120Mi (1%)  0 (0%)\n\n#   20개가 떴는데 요청 합계는 그대로다\n\n#   스케줄러 눈에는 빈 노드다\n\n#   이러다 9.4절의 축출이 온다\n\n$ kubectl delete deployment norq > /dev/null\n\n# --- 스케줄러를 건너뛴다 ---\n\n$ kubectl run direct --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"nodeName\":\"kind-control-plane\"}}' > /dev/null\n$ sleep 10 && kubectl get pod direct -o wide --no-headers | awk '{print $3, $7}'\n\nRunning kind-control-plane\n\n#   테인트가 있는데도 떴다\n\n#   스케줄러를 안 거쳤으니까다\n\n$ kubectl get pod direct -o jsonpath='{.spec.schedulerName}{\"\\n\"}'\n\ndefault-scheduler\n\n$ kubectl get events --field-selector involvedObject.name=direct \\\n    -o jsonpath='{range .items[*]}{.reason}{\"\\n\"}{end}'\n\nPulled\nCreated\nStarted\n\n#   Scheduled 이벤트가 없다\n\n#   보통은 첫 이벤트가 그것이다\n\n$ kubectl delete pod direct --now > /dev/null\n\n# --- 정상 파드와 비교한다 ---\n\n$ kubectl run normal --image=nginx:1.27 > /dev/null && sleep 8\n$ kubectl get events --field-selector involvedObject.name=normal \\\n    -o jsonpath='{range .items[*]}{.reason}: {.message}{\"\\n\"}{end}' | head -1\n\nScheduled: Successfully assigned default/normal to kind-worker2\n\n#   이 한 줄이 스케줄러가 한 일 전부다\n\n$ kubectl get pod normal -o jsonpath='{.spec.nodeName}{\"\\n\"}'\n\nkind-worker2\n\n#   spec 에 이름 하나 적힌 것이다\n\n$ kubectl delete pod normal --now > /dev/null\n\n# --- cordon 은 거르기에 걸린다 ---\n\n$ kubectl cordon kind-worker2\n\nnode/kind-worker2 cordoned\n\n$ kubectl get nodes --no-headers | awk '{print $1, $2}'\n\nkind-control-plane   Ready,SchedulingDisabled\nkind-worker          Ready\nkind-worker2         Ready,SchedulingDisabled\n\n$ kubectl create deployment after --image=nginx:1.27 --replicas=4 > /dev/null\n$ sleep 15 && kubectl get pods -l app=after -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   4 kind-worker\n\n#   전부 한 노드로 갔다\n\n#   이미 떠 있던 파드는 안 움직인다\n\n$ kubectl uncordon kind-worker2 > /dev/null\n$ kubectl get pods -l app=after -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   4 kind-worker\n\n#   uncordon 해도 재배치는 없다\n\n#   스케줄링은 한 번뿐이다\n\n$ kubectl delete deployment after > /dev/null\n\n# --- 다음 절에서 ---\n\n#   여기 말고 저기에 띄우고 싶을 때",
+   "note": "**6개 레플리카가 두 워커에 3·3 으로** 갈렸고 컨트롤 플레인에는 안 갔다.\n\n**`3 cpu` 씩 여섯이면 `0/3 nodes are available: 1 untolerated taint, 2 Insufficient cpu`** 다.\n\n**요청 없는 파드 20개가 다 떴는데 노드의 요청 합계는 `200m` 그대로**다.\n\n**`nodeName` 을 직접 적으면 `Scheduled` 이벤트 자체가** 없다.\n\n**`cordon` 뒤 새 파드만 한쪽으로 가고 `uncordon` 해도 재배치는** 없다."
+  }
+ ],
+ "recap": [
+  "**거르고 점수 매겨** 고른다.",
+  "**스케줄러가 하는 일은 `nodeName` 을 채우는** 것뿐이다.",
+  "**한 번에 파드 하나라 순서가** 중요하다.",
+  "**요청만 보고 실사용은 안** 본다.",
+  "**요청이 없으면 무한히** 들어간다.",
+  "**`allocatable` 로 계산**한다.",
+  "**`nodeName` 을 직접 적으면 스케줄러를** 건너뛴다.",
+  "**`cordon` 은 새 파드만** 막는다.",
+  "**`FailedScheduling` 메시지가 노드별 이유를** 센다."
+ ],
+ "drills": [
+  {
+   "task": "레플리카를 여섯 띄운다.",
+   "done_when": "노드별 분포를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요청을 크게 줘 `Pending` 을 만든다.",
+   "done_when": "노드별 이유를 읽었다.",
+   "minutes": 20
+  },
+  {
+   "task": "요청 없이 20개를 띄운다.",
+   "done_when": "요청 합계가 안 오르는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`nodeName` 을 직접 적는다.",
+   "done_when": "`Scheduled` 이벤트가 없는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스케줄러의 두 단계는?",
+   "a": "거르기와 점수 매기기다."
+  },
+  {
+   "q": "스케줄러가 실제로 하는 일은?",
+   "a": "파드의 `nodeName` 을 채우는 것뿐이다."
+  },
+  {
+   "q": "요청과 상한 중 스케줄러가 보는 것은?",
+   "a": "요청이다. 상한과 실사용은 안 본다."
+  },
+  {
+   "q": "`nodeName` 을 직접 적으면?",
+   "a": "스케줄러를 건너뛰어 테인트나 자원 검사도 없다."
+  },
+  {
+   "q": "`cordon` 의 효과는?",
+   "a": "새 파드만 안 온다. 이미 있는 파드는 그대로다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "allocatable",
+   "def": "노드 용량에서 시스템 몫을 뺀, 파드에 줄 수 있는 양."
+  },
+  {
+   "term": "cordon",
+   "def": "노드를 스케줄링 대상에서 빼는 표시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Kubernetes Scheduler",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Scheduling Framework",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
