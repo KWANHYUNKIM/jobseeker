@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "dirty-check-merge",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "변경 감지와 병합",
+ "summary": "두 방법이 만드는 SQL.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 방법을 나란히 본다.",
+  "변경 감지로 바꾼다.",
+  "SQL 이 같은 것을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절부터 `merge` 를 써 왔다.** **여기서 걷어낸다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 방법",
+   "ascii": "   merge                            dirty checking\n   -----                            --------------\n   build a detached entity          pass values\n   em.merge(it)                     find it, then change it\n\n   select + update                  select + update\n   every field is written           every field is written\n                                      (hibernate default, 6.6)\n\n   same sql. different safety.",
+   "note": "**SQL 이 같고 안전성이 다르다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "변경 감지로",
+   "code": "// Item 에 메서드를 추가\npublic void change(String name, int price, int stockQuantity) {\n    this.name = name;\n    this.price = price;\n    this.stockQuantity = stockQuantity;\n}\n\n// ItemService\n@Transactional\npublic void updateItem(Long itemId, String name, int price, int stockQuantity) {\n    Item item = itemRepository.findOne(itemId);\n    item.change(name, price, stockQuantity);\n}\n\n// ItemController\n@PostMapping(\"/items/{itemId}/edit\")\npublic String updateItem(@PathVariable Long itemId,\n                         @ModelAttribute(\"form\") BookForm form) {\n    itemService.updateItem(itemId, form.getName(), form.getPrice(),\n                           form.getStockQuantity());\n    return \"redirect:/items\";\n}",
+   "note": "**컨트롤러가 엔티티를 안 만든다.** **값만 넘긴다.**\n\n> **7.7절의 `OrderService.order` 와 같은 모양**이다 — **id 와 값**을 받는다.\n>\n> **거기서는 \"준영속이 들어오면 재고가 안 준다\" 가 이유**였다. **여기서는 \"`null` 이 덮는다\"** 가 이유다. **같은 원칙**이다.\n\n**`item.change(...)`** 가 이름 있는 메서드다(3.8절).\n\n**`author`·`isbn` 을 안 넘긴다.**\n\n> **화면에서 안 바꾸는 필드**다. **넘길 이유가 없다.**\n>\n> **`merge` 였다면 반드시 채워야** 했다 — 안 그러면 `null` 이 된다.\n>\n> **그 차이가 이 절의 요점**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "`change` 메서드",
+   "ascii": "   Item.change(name, price, stockQuantity)\n\n     this.name = name\n     this.price = price\n     this.stockQuantity = stockQuantity\n\n   a named method, so setters can stay closed   3.8\n   and the argument list says what a change is",
+   "note": "**인자 목록이 \"수정\" 의 정의**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SQL 이 같은데 왜 바꾸나",
+   "md": "**둘 다 `select` 하나와 `update` 하나**다.\n\n**차이는 셋**이다.\n\n**① 안 넘긴 필드가 안 날아간다**\n\n```java\n// merge\nbook.setAuthor(form.getAuthor());   // 빠뜨리면 null\n\n// 변경 감지\nitem.change(name, price, stock);    // author 는 건드리지 않는다\n```\n\n**`merge` 는 \"전부\" 를 요구**하고 **변경 감지는 \"바꿀 것\" 만** 받는다.\n\n**② 무엇이 수정 가능한지 코드에 있다**\n\n```java\npublic void change(String name, int price, int stockQuantity)\n```\n\n**셋만 바꿀 수 있다.** **`isbn` 을 바꾸려면 메서드를 고쳐야** 한다.\n\n> **`merge` 는 전부 바꿀 수** 있다. **`id` 만 맞으면 무엇이든.**\n>\n> **8.7절의 `id` 조작 문제**가 여기서도 관련이 있다.\n\n**③ 엔티티가 영속 상태로 산다**\n\n```java\nItem item = itemRepository.findOne(itemId);\nitem.change(...);\n// 이 뒤에 뭘 더 해도 반영된다\n```\n\n**`merge` 는 반환값이 영속**이고 **인자는 준영속으로 남는다**(6.3절). **`save` 가 `void` 라 그것을 버렸다.**\n\n---\n\n**`merge` 가 필요한 경우**가 있기는 하다.\n\n| 경우 | |\n|---|---|\n| **정말로 전체를 덮어써야** 할 때 | 드물다 |\n| **분산 시스템에서 온 엔티티** | 다른 서비스가 만든 것 |\n| **`JpaRepository.save()`** | 안에서 부른다(「DB 2편」 7.1절) |\n\n**세 번째가 중요**하다.\n\n> **스프링 데이터 JPA 를 쓰면 `save()` 가 `merge` 를** 부른다. **그래서 「DB 2편」 7.3절에서 \"수정에 `save` 를 안 쓴다\" 고** 했다.\n>\n> **거기서 한 말이 여기서 실물**이 됐다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 지웠나",
+   "md": "**`ItemRepository.save` 의 `if`** 가 사라질 수 있다.\n\n```java\n// 6.3절\npublic void save(Item item) {\n    if (item.getId() == null) {\n        em.persist(item);\n    } else {\n        em.merge(item);      // 이제 안 탄다\n    }\n}\n```\n\n**등록만 `save` 를 부르고 수정은 `updateItem`** 을 부른다.\n\n```java\n// 이렇게 줄일 수 있다\npublic void save(Item item) {\n    em.persist(item);\n}\n```\n\n> **이 책은 `if` 를 남긴다.** **강의 예제를 따랐다.**\n>\n> **9.7절 목록**에 넣는다.\n\n**`ItemService.saveItem` 도 등록 전용**이 된다.\n\n| 메서드 | 언제 |\n|---|---|\n| `saveItem(Item)` | **등록** — 8.5절 |\n| `updateItem(id, ...)` | **수정** — 8.8절 |\n\n**이름이 정직해졌다.**\n\n> **6.3절에서 \"`save` 하나가 저장과 수정을 다 한다\" 고** 했다. **그것이 헷갈리는 지점**이었다.\n>\n> **나누니 각각이 무엇을 하는지 이름에** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- merge 방식 (8.7절) ---\n\nPOST /items/1/edit\nid=1&name=JPA1+BOOK+SECOND&price=12000&stockQuantity=99&author=김영한&isbn=978\n\n#   Creating new transaction with name [ItemService.saveItem]\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   Initiating transaction commit\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n\nHTTP/1.1 302\n\n#   select 1, update 1\n\n# --- 변경 감지 방식 ---\n\nPOST /items/1/edit\nid=1&name=JPA1+BOOK+SECOND&price=12000&stockQuantity=99&author=김영한&isbn=978\n\n#   Creating new transaction with name [ItemService.updateItem]\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   (item.change - 자바 코드만)\n\n#   Initiating transaction commit\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n\nHTTP/1.1 302\n\n#   select 1, update 1\n\n#   똑같다\n\n# --- author 를 안 보내면 ---\n\n#   (폼에서 author 칸을 지웠다고 치자)\n\nPOST /items/1/edit\nid=1&name=수정&price=12000&stockQuantity=99\n\n#   (merge 방식)\n#   Hibernate: select ... where i1_0.item_id=?\n#   Hibernate: update item set name=?, price=?, stock_quantity=?,\n#                              author=?, isbn=? where item_id=?\n#   binding parameter [4] as [VARCHAR] - [null]\n#   binding parameter [5] as [VARCHAR] - [null]\n\nselect author, isbn from item where item_id = 1;\n#   null  null\n\n#   저자와 ISBN 이 사라졌다\n\n#   (변경 감지 방식)\n#   Hibernate: select ... where i1_0.item_id=?\n#   Hibernate: update item set name=?, price=?, stock_quantity=?,\n#                              author=?, isbn=? where item_id=?\n#   binding parameter [4] as [VARCHAR] - [김영한]\n#   binding parameter [5] as [VARCHAR] - [9788960777330]\n\nselect author, isbn from item where item_id = 1;\n#   김영한  9788960777330\n\n#   그대로다\n\n#   update 문은 같은데 값이 다르다\n\n# --- 왜 그런가 ---\n\n#   merge 는 인자의 필드를 전부 복사한다\n#     form 에서 안 온 것은 null 이다\n\n#   변경 감지는 DB 에서 읽은 엔티티를 고친다\n#     change() 가 안 건드린 필드는 원래 값이다\n\n#   6.3절과 8.9절의 그 차이\n\n# --- 서비스가 반환값을 쓰면 (merge) ---\n\n@Transactional\npublic Item saveItem(Item item) {\n    return itemRepository.save(item);   // merge 의 반환값\n}\n\n#   반환된 것이 영속이다\n#   인자로 넘긴 것은 여전히 준영속\n\n#   save 가 void 라 이것을 버렸다 (6.3절)\n\n# --- 이제 merge 가 안 탄다 ---\n\n#   등록: persist\n#   수정: 변경 감지\n\n#   ItemRepository.save 의 else 가지가 죽은 코드가 됐다",
+   "note": "**두 방식의 SQL 이 완전히 같다.** **`select` 하나, `update` 하나.**\n\n**`author` 를 안 보내면 갈린다.** **`merge` 는 `null`, 변경 감지는 원래 값**이다.\n\n**`update` 문 자체는 같다.** **바인딩되는 값이 다르다** — 그것이 전부다.\n\n**`merge` 는 인자를 복사**하고 **변경 감지는 DB 에서 읽은 것을 고친다.**\n\n**이제 `merge` 가 안 탄다.** **`ItemRepository.save` 의 `else` 가 죽은 코드**가 됐다.\n\n**다음 절에서 그 위험을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**두 방식의 SQL 이 같다** — `select` 하나, `update` 하나.",
+  "**`merge` 는 인자를 복사하고 변경 감지는 읽은 것을 고친다.**",
+  "**안 보낸 필드가 `null` 이 되느냐 남느냐**가 갈린다.",
+  "**컨트롤러가 엔티티를 안 만들고 값만** 넘긴다.",
+  "**7.7절의 `order(memberId, itemId, count)` 와 같은 원칙**이다.",
+  "**`change(...)` 의 인자 목록이 \"수정\" 의 정의**다.",
+  "**`merge` 는 전부 바꿀 수 있고 변경 감지는 정한 것만** 바꾼다.",
+  "**`saveItem` 이 등록 전용**이 되어 이름이 정직해졌다.",
+  "**`JpaRepository.save()` 가 `merge` 를 부른다** — 「DB 2편」 7.3절."
+ ],
+ "drills": [
+  {
+   "task": "`change` 메서드와 `updateItem` 을 만든다.",
+   "done_when": "SQL 이 `merge` 와 같은 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "폼에서 `author` 를 빼고 두 방식으로 제출한다.",
+   "done_when": "값이 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ItemRepository.save` 의 `else` 가 타는지 확인한다.",
+   "done_when": "죽은 코드인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`change` 에 `author` 를 추가해 본다.",
+   "done_when": "수정 가능한 필드가 코드에 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 방식의 SQL 차이는?",
+   "a": "없다. `select` 하나와 `update` 하나로 같다."
+  },
+  {
+   "q": "무엇이 다른가?",
+   "a": "안 보낸 필드가 `merge` 는 `null` 이 되고 변경 감지는 원래 값이 남는다."
+  },
+  {
+   "q": "왜 컨트롤러가 값만 넘기나?",
+   "a": "엔티티를 만들면 준영속이 되어 `merge` 로 가야 하기 때문이다."
+  },
+  {
+   "q": "`change(...)` 의 인자 목록이 뜻하는 것은?",
+   "a": "무엇을 수정할 수 있는지가 코드에 명시된다."
+  },
+  {
+   "q": "`JpaRepository.save()` 는 어떤가?",
+   "a": "id 가 있으면 `merge` 를 부른다. 그래서 수정에 쓰면 안 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

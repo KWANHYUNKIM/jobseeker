@@ -516,7 +516,7 @@
           "title": "변경 감지와 병합",
           "summary": "두 방법이 만드는 SQL.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.9",
@@ -524,7 +524,7 @@
           "title": "병합의 위험",
           "summary": "안 채운 필드가 null 이 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.10",
