@@ -401,7 +401,7 @@
           "title": "어드바이스",
           "summary": "부가 기능만 적는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -409,7 +409,7 @@
           "title": "포인트컷",
           "summary": "어디에 걸지 고른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",

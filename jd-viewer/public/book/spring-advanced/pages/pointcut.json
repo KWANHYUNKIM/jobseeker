@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "pointcut",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "포인트컷",
+ "summary": "어디에 걸지 고른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "거르개를 밖으로 뺀다.",
+  "두 질문을 안다.",
+  "만들어진 것들을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.2절에서 다 걸렸다.** **6.4절의 거르개를 밖으로** 뺀다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 번 묻는다",
+   "ascii": "   the filter answers two questions, at two different times\n\n   is this class worth proxying at all, asked once\n   is this method one I want, asked per call or per method\n\n   the first can skip making an object entirely",
+   "note": "**첫째는 객체를 아예 안 만들게 할 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "거르는 일과 하는 일을 나눈다",
+   "md": "**6.4절에서는 안에** 있었다.\n\n> **어드바이스가 판단**했다.\n> **부가 기능과 섞여** 있었다.\n> **아래에서 밖으로** 뺀다.\n\n**같은 어드바이스를 다르게 걸** 수 있다.\n\n> **대상마다 조건이** 다르다.\n> **아래에서 그렇게** 한다.\n> **7.4절이 그** 묶음이다.\n\n**두 번 묻는**다.\n\n> **클래스와 메서드**다.\n> **아래에서 그 순서를** 찍는다.\n> **8.5절에서 다시** 본다.\n\n**만들어진 게** 많다.\n\n> **이름·애너테이션·표현식**이다.\n> **아래에서 셋을** 쓴다.\n> **11장이 마지막 것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "이미 있는 거르개들",
+   "ascii": "   ready made filters, weakest to strongest\n\n   always true, which matches everything\n   by method name, with simple wildcards\n   by annotation, on the class or the method\n   by expression, which chapter eleven is entirely about\n\n   the last one subsumes the other three",
+   "note": "**마지막 것이 앞의 셋을 다** 품는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 걸리면 프록시가 아예 안 생기기도 한다",
+   "md": "**클래스가 안 맞으면** 그렇다.\n\n> **메서드를 볼 것도** 없다.\n> **아래에서 그걸** 확인한다.\n> **8.7절에서 그 판단을** 본다.\n\n**여기선 프록시가 생긴**다.\n\n> **설정이 직접** 만든다.\n> **거르개는 부를 때** 본다.\n> **아래에서 그 차이를** 본다.\n\n**호출마다 물으면** 느리다.\n\n> **아래에서 재** 본다.\n> **결과를 담아** 둔다.\n> **11.9절에서 그걸** 본다.\n\n**너무 넓으면 다** 걸린다.\n\n> **6.4절의 프로브**다.\n> **아래에서 다시** 겪는다.\n> **11장이 좁히는 법**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금은 다 걸린다\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n10\n\n$ grep -c 'simpleMatch' src/main/java/study/adv/factory/LogTraceAdvice.java\n0\n\n--   7.2 절에서 거르개를 안 넣었다\n\n\n-- 직접 하나 만든다\n\npublic class NameMatchPointcut implements Pointcut {\n\n    @Override\n    public ClassFilter getClassFilter() {\n        return clazz -> {\n            log.info(\"[클래스 확인] {}\", clazz.getSimpleName());\n            return clazz.getSimpleName().startsWith(\"Order\");\n        };\n    }\n\n    @Override\n    public MethodMatcher getMethodMatcher() {\n        return new StaticMethodMatcher() {\n            @Override\n            public boolean matches(Method method, Class<?> targetClass) {\n                log.info(\"[메서드 확인] {}\", method.getName());\n                return !method.getName().equals(\"healthCheck\");\n            }\n        };\n    }\n}\n\n$ wc -l < src/main/java/study/adv/factory/NameMatchPointcut.java\n      28\n\n--   두 부분이다\n--   클래스 확인과 메서드 확인이다\n\n\n-- 붙인다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace, LogTraceAdvice advice) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    ProxyFactory factory = new ProxyFactory(target);\n    factory.addAdvisor(new DefaultPointcutAdvisor(new NameMatchPointcut(), advice));\n    return (OrderServiceV1) factory.getProxy();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/health'\n$ grep -c 'healthCheck' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   6.4 절과 같은 결과다\n--   그런데 어드바이스는 안 고쳤다\n\n\n-- 어드바이스가 깨끗하다\n\n$ grep -c 'healthCheck\\|patterns\\|simpleMatch' \\\n    src/main/java/study/adv/factory/LogTraceAdvice.java\n0\n\n$ diff <(git show v8-advice:src/main/java/study/adv/factory/LogTraceAdvice.java) \\\n       src/main/java/study/adv/factory/LogTraceAdvice.java \\\n  && echo '안 바뀜'\n안 바뀜\n\n--   7.2 절 그대로다\n--   거르는 일이 밖으로 나갔다\n\n\n-- 두 번 묻는 순서를 본다\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[클래스 확인\\]|\\[메서드 확인\\]' | head -8\n[클래스 확인] OrderServiceV1Impl\n[메서드 확인] orderItem\n[메서드 확인] find\n[메서드 확인] healthCheck\n[메서드 확인] equals\n[메서드 확인] hashCode\n[메서드 확인] toString\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -cE '\\[클래스 확인\\]|\\[메서드 확인\\]' logs/app.log\n0\n\n--   기동 때 한 번 다 물어봤다\n--   부를 때는 안 묻는다\n--   결과를 담아 뒀다\n\n\n-- 호출마다 묻게 하면\n\nreturn new DynamicMethodMatcher() {\n    @Override\n    public boolean matches(Method method, Class<?> targetClass, Object... args) {\n        log.info(\"[호출마다] {} {}\", method.getName(), Arrays.toString(args));\n        return true;\n    }\n};\n\n$ for i in 1 2 3; do curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'; done\n$ grep -c '\\[호출마다\\]' logs/app.log\n6\n\n$ curl -s 'localhost:8080/bench/pointcut?n=10000000&mode=static'\n정적 확인:  284 ms\n$ curl -s 'localhost:8080/bench/pointcut?n=10000000&mode=dynamic'\n동적 확인:  1204 ms\n\n--   네 배 넘게 느리다\n--   인자를 봐야 할 때만 쓴다\n--   11.4 절에서 그 경우를 본다\n\n\n-- 클래스가 안 맞으면\n\n@Override\npublic ClassFilter getClassFilter() {\n    return clazz -> clazz.getSimpleName().startsWith(\"Member\");   // 안 맞는다\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[메서드 확인\\]'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy142\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   메서드를 물어보지도 않았다\n--   그런데 프록시는 만들어졌다\n--   설정이 직접 만들어서다\n--   8.7 절에서 이게 달라진다\n\n\n-- 만들어진 것 ① 이름으로\n\nNameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\npointcut.setMappedNames(\"order*\", \"find*\", \"save*\");\n\nfactory.addAdvisor(new DefaultPointcutAdvisor(pointcut, advice));\n\n$ curl -s -o /dev/null 'localhost:8080/v1/health'\n$ grep -c 'healthCheck' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ wc -l < src/main/java/study/adv/factory/NameMatchPointcut.java\n      28\n// 만들어진 것을 쓰면\n0\n\n--   28 줄이 두 줄이 됐다\n--   6.4 절의 패턴이 그대로 들어간다\n\n\n-- 만들어진 것 ② 애너테이션으로\n\n@Target(ElementType.METHOD)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced {}\n\n@Traced\npublic void orderItem(String itemId) { ... }\n\nAnnotationMatchingPointcut pointcut =\n        AnnotationMatchingPointcut.forMethodAnnotation(Traced.class);\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[796bccd9] OrderServiceV1.orderItem()\n[796bccd9] OrderServiceV1.orderItem() time=1004ms\n\n$ grep -c '@Traced' src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n1\n\n--   붙인 것만 걸렸다\n--   1.4 절의 @Transactional 이 이 방식이다\n\n\n-- 어디에 붙였느냐가 다르다\n\n// 인터페이스에 붙이면\npublic interface OrderServiceV1 {\n    @Traced void orderItem(String itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'OrderServiceV1.orderItem' logs/app.log\n2\n\n// 구현에만 붙이면\npublic class OrderServiceV1Impl implements OrderServiceV1 {\n    @Traced public void orderItem(String itemId) { ... }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'OrderServiceV1.orderItem' logs/app.log\n2\n\n--   둘 다 걸린다\n--   구현 쪽을 먼저 보고 없으면 인터페이스를 본다\n--   12.4 절에서 이게 문제가 되는 경우를 본다\n\n\n-- 만들어진 것 ③ 표현식으로\n\nAspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\npointcut.setExpression(\"execution(* study.adv.app..*Service*.*(..))\");\n\nfactory.addAdvisor(new DefaultPointcutAdvisor(pointcut, advice));\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] OrderServiceV1.orderItem()\n[3d81f0a2] OrderServiceV1.orderItem() time=1004ms\n\n$ grep -c 'aspectjweaver' <(./gradlew dependencies --configuration runtimeClasspath)\n1\n\n--   1.1 절에서 쓴 그 표현식이다\n--   서비스만 걸렸다\n--   11 장 전체가 이것이다\n\n\n-- 넷을 견준다\n\n$ printf '%-24s %-10s %s\\n' \\\n  '늘 참'          '0 줄'   '다 걸림' \\\n  '이름'           '2 줄'   '와일드카드' \\\n  '애너테이션'     '2 줄'   '붙인 것만' \\\n  '표현식'         '2 줄'   '거의 다 됨'\n\n늘 참                 0 줄     다 걸림\n이름                  2 줄     와일드카드\n애너테이션            2 줄     붙인 것만\n표현식                2 줄     거의 다 됨\n\n\n-- 합칠 수도 있다\n\nPointcut both = Pointcuts.union(\n        new AnnotationMatchingPointcut(null, Traced.class),\n        namePointcut);\n\nPointcut narrow = Pointcuts.intersection(\n        ClassFilters.union(...),\n        methodPointcut);\n\n$ curl -s localhost:8080/pointcut/match?bean=orderServiceV1\norderItem     걸림\nfind          걸림\nhealthCheck   통과\ncancel        통과\n\n--   11.7 절에서 이걸 표현식으로 한다\n\n\n-- 대상마다 다르게 걸 수 있다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTraceAdvice advice) {\n    ...\n    pointcut.setMappedNames(\"order*\", \"find*\");\n    factory.addAdvisor(new DefaultPointcutAdvisor(pointcut, advice));\n}\n\n@Bean\npublic OrderRepositoryV1 orderRepositoryV1(LogTraceAdvice advice) {\n    ...\n    pointcut.setMappedNames(\"save*\");            // 다르게\n    factory.addAdvisor(new DefaultPointcutAdvisor(pointcut, advice));\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[c14e0b93] OrderServiceV1.orderItem()\n[c14e0b93] |-->OrderRepositoryV1.save()\n[c14e0b93] |<--OrderRepositoryV1.save() time=1004ms\n[c14e0b93] OrderServiceV1.orderItem() time=1006ms\n\n--   같은 어드바이스에 다른 거르개다\n--   7.2 절에서 어드바이스를 하나로 만든 덕이다\n\n\n-- 무엇이 걸렸는지 물어본다\n\n@GetMapping(value = \"/pointcut/match\", produces = \"text/plain\")\nString match(String bean) {\n    Object proxy = ctx.getBean(bean);\n    Advised advised = (Advised) proxy;\n    Class<?> target = advised.getTargetClass();\n    var sb = new StringBuilder();\n    for (Advisor a : advised.getAdvisors()) {\n        if (!(a instanceof PointcutAdvisor pa)) continue;\n        for (Method m : target.getMethods()) {\n            if (m.getDeclaringClass() == Object.class) continue;\n            boolean hit = pa.getPointcut().getClassFilter().matches(target)\n                       && pa.getPointcut().getMethodMatcher().matches(m, target);\n            sb.append(String.format(\"%-14s %s%n\", m.getName(), hit ? \"걸림\" : \"통과\"));\n        }\n    }\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/pointcut/match?bean=orderServiceV1'\norderItem      걸림\nfind           걸림\nhealthCheck    통과\ncancel         통과\n\n--   6.4 절에서 만들던 그 표다\n--   이번엔 스프링에게 물어본 것이다\n\n\n-- 너무 넓으면\n\npointcut.setExpression(\"execution(* study.adv..*.*(..))\");\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n42\n\n// 좁히면\npointcut.setExpression(\"execution(* study.adv.app..*Service*.*(..))\");\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n2\n\n--   1.2 절에서 142 줄과 2 줄이었다\n--   11 장이 이 한 줄을 다룬다\n\n\n-- 설정을 센다\n\n$ wc -l < src/main/java/study/adv/factory/ProxyFactoryConfig.java\n      66\n\n// 7.2 절에서는\n      54\n\n$ grep -c 'new DefaultPointcutAdvisor' \\\n    src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n$ grep -c 'setMappedNames\\|setExpression' \\\n    src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n--   거르개를 적느라 늘었다\n--   7.4 절에서 이걸 묶는다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV1.request()\n[796bccd9] |-->OrderServiceV1.orderItem()\n[796bccd9] |   |-->OrderRepositoryV1.save()\n[796bccd9] |   |<--OrderRepositoryV1.save() time=1004ms\n[796bccd9] |<--OrderServiceV1.orderItem() time=1006ms\n[796bccd9] OrderControllerV1.request() time=1007ms\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: jdk.proxy2.$Proxy142\n\n$ git add -A && git commit -q -m 'feat: v8 포인트컷' && git tag v8-pointcut\n\n--   7.4 절에서 둘을 한 묶음으로 만든다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '거르개'      '밖으로' \\\n  '어드바이스'  '안 바뀜' \\\n  '두 질문'     '클래스와 메서드' \\\n  '시점'        '기동 때 한 번' \\\n  '동적 확인'   '네 배 느림' \\\n  '안 맞으면'   '메서드는 안 봄' \\\n  '이름'        '두 줄' \\\n  '애너테이션'  '붙인 것만' \\\n  '표현식'      '11 장' \\\n  '설정'        '54 에서 66 줄'\n\n거르개                     밖으로\n어드바이스                 안 바뀜\n두 질문                    클래스와 메서드\n시점                       기동 때 한 번\n동적 확인                  네 배 느림\n안 맞으면                  메서드는 안 봄\n이름                       두 줄\n애너테이션                 붙인 것만\n표현식                     11 장\n설정                       54 에서 66 줄",
+   "note": "**거르개를 밖으로 빼니 어드바이스 파일이 7.2절과 diff 0 줄로** 안 바뀐다.\n\n**기동 때 클래스 한 번, 메서드 일곱 번을 묻고 부를 때는 아예 안** 묻는다.\n\n**호출마다 묻게 하면 284 ms 가 1204 ms 로 네 배 넘게** 느려진다.\n\n**클래스가 안 맞으면 메서드는 물어보지도 않는데 프록시는 그대로** 만들어진다.\n\n**직접 쓴 28 줄이 만들어진 것 두 줄로 줄고 표현식 하나로 42 줄이 2 줄이** 된다."
+  }
+ ],
+ "recap": [
+  "**밖으로** 뺀다.",
+  "**어드바이스는** 그대로다.",
+  "**두 번** 묻는다.",
+  "**기동 때** 묻는다.",
+  "**동적은** 느리다.",
+  "**클래스부터** 본다.",
+  "**만들어진 게** 많다.",
+  "**합칠 수** 있다.",
+  "**넓으면 다** 걸린다."
+ ],
+ "drills": [
+  {
+   "task": "거르개를 만들어 붙인다.",
+   "done_when": "어드바이스가 안 바뀐 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "묻는 시점을 찍는다.",
+   "done_when": "기동 때만 묻는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "동적 확인으로 바꿔 본다.",
+   "done_when": "느려지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "만들어진 것 셋을 써 본다.",
+   "done_when": "줄 수를 비교했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "거르개를 밖에 두면 무엇이 좋나?",
+   "a": "어드바이스를 안 고치고 대상마다 다르게 걸 수 있다."
+  },
+  {
+   "q": "두 질문은 언제 물어보나?",
+   "a": "정적 확인이면 기동 때 한 번 물어 결과를 담아 둔다."
+  },
+  {
+   "q": "호출마다 묻는 방식은?",
+   "a": "인자를 봐야 할 때만 쓴다. 몇 배 느리다."
+  },
+  {
+   "q": "클래스가 안 맞으면?",
+   "a": "메서드는 물어보지도 않는다."
+  },
+  {
+   "q": "가장 강한 거르개는?",
+   "a": "표현식이다. 나머지 셋을 다 표현할 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "포인트컷",
+   "def": "어디에 부가 기능을 걸지 정하는 거르개. 클래스와 메서드를 나눠 묻는다."
+  },
+  {
+   "term": "정적 확인",
+   "def": "기동 때 한 번 묻고 결과를 담아 두는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Pointcut API",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html#aop-pointcuts",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

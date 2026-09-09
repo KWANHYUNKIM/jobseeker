@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "advice",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "어드바이스",
+ "summary": "부가 기능만 적는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 벌을 하나로 만든다.",
+  "무엇이 넘어오는지 안다.",
+  "다음으로 넘기는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절에서 부가 기능이 두** 벌이었다. **하나로 만드는 타입이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "몰라도 되는 셋",
+   "ascii": "   what the advice does not have to know\n\n   which technique made the proxy\n   which object the call will end up on\n   how to reach that object\n\n   all three arrive inside one parameter",
+   "note": "**셋 다 인자 하나 안에** 들어온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "만드는 방식과 부가 기능을 떼어 놓는다",
+   "md": "**6.3절과 6.6절이** 달랐다.\n\n> **한쪽은 인자가 셋**이었다.\n> **한쪽은** 넷이었다.\n> **아래에서 diff 로** 본다.\n\n**하나만** 적는다.\n\n> **인자가** 하나다.\n> **아래에서 그 안을** 연다.\n> **대상도 거기** 있다.\n\n**대상을 안 들고** 있다.\n\n> **6.7절에서는 필드**였다.\n> **그래서 빈마다** 만들었다.\n> **아래에서 하나를 나눠** 쓴다.\n\n**다음으로** 넘긴다.\n\n> **대상을 직접 안** 부른다.\n> **아래에서 그 차이를** 본다.\n> **7.5절이 그** 이야기다."
+  },
+  {
+   "type": "figure",
+   "caption": "다음으로 넘긴다는 뜻",
+   "ascii": "   proceed is not a call to the target\n\n   it is a call to the next thing in a list\n   the target sits at the end of that list\n\n   which is why several advices can nest without knowing each other",
+   "note": "**그래서 여럿이 서로 모른 채 겹칠 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 넘기면 대상이 안 불린다",
+   "md": "**부르는 건 내** 몫이다.\n\n> **안 부르면 안** 돈다.\n> **5.1절의 그** 자리다.\n> **아래에서 그걸** 겪는다.\n\n**돌려주는 것도 내** 몫이다.\n\n> **받은 걸 안 돌려주면** 널이다.\n> **아래에서 그걸** 만든다.\n> **조용히** 그렇다.\n\n**예외를 삼키면 안** 된다.\n\n> **2.2절의 요구사항 ②** 다.\n> **아래에서 다시** 확인한다.\n> **여기선 감쌀 필요도** 없다.\n\n**타입이 여럿**이다.\n\n> **앞만·뒤만·둘 다**다.\n> **아래에서 견줘** 본다.\n> **10.3절에서 다섯이** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 6 장의 두 벌\n\n// JDK 용\npublic Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n    ...\n    Object result = method.invoke(target, args);\n    ...\n}\n\n// CGLIB 용\npublic Object intercept(Object obj, Method method, Object[] args,\n                        MethodProxy proxy) throws Throwable {\n    ...\n    Object result = proxy.invoke(target, args);\n    ...\n}\n\n$ diff <(grep -v 'import\\|InvocationHandler' \\\n           src/main/java/study/adv/dynamic/LogTraceHandler.java) \\\n       <(grep -v 'import\\|MethodInterceptor\\|MethodProxy' \\\n           src/main/java/study/adv/dynamic/LogTraceInterceptor.java) \\\n  | grep -c '^[<>]'\n6\n\n--   6.7 절에서 센 그 여섯이다\n\n\n-- 하나로 만든다\n\npublic class LogTraceAdvice implements MethodInterceptor {\n\n    private final LogTrace trace;                 // 대상이 없다\n\n    @Override\n    public Object invoke(MethodInvocation invocation) throws Throwable {\n        TraceStatus status = null;\n        try {\n            Method method = invocation.getMethod();\n            String message = method.getDeclaringClass().getSimpleName()\n                             + \".\" + method.getName() + \"()\";\n            status = trace.begin(message);\n            Object result = invocation.proceed();      // 다음으로 넘긴다\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ wc -l < src/main/java/study/adv/factory/LogTraceAdvice.java\n      26\n\n$ grep -c 'private final' src/main/java/study/adv/factory/LogTraceAdvice.java\n1\n\n--   인자가 하나다\n--   필드도 하나다\n--   대상이 없다\n\n\n-- 6.7 절과 견준다\n\n$ wc -l src/main/java/study/adv/dynamic/LogTrace{Handler,Interceptor}.java | tail -1\n      62 total\n$ wc -l < src/main/java/study/adv/factory/LogTraceAdvice.java\n      26\n\n$ ls src/main/java/study/adv/factory/*.java | wc -l\n       2\n$ ls src/main/java/study/adv/dynamic/*.java | wc -l\n       3\n\n--   두 파일 62 줄이 한 파일 26 줄이 됐다\n\n\n-- 무엇이 넘어오나\n\n@Override\npublic Object invoke(MethodInvocation invocation) throws Throwable {\n    log.info(\"메서드:  {}\", invocation.getMethod());\n    log.info(\"인자:    {}\", Arrays.toString(invocation.getArguments()));\n    log.info(\"대상:    {}\", invocation.getThis());\n    log.info(\"내 위치: {}\", invocation.getStaticPart());\n    return invocation.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -E '메서드:|인자:|대상:|내 위치:' logs/app.log | tail -4\n메서드:  public abstract void study.adv.app.OrderServiceV1.orderItem(String)\n인자:    [연필]\n대상:    study.adv.app.OrderServiceV1Impl@4f21a1c9\n내 위치: public abstract void study.adv.app.OrderServiceV1.orderItem(String)\n\n--   6.3 절에서 인자 셋으로 받던 것이 다 있다\n--   대상까지 들어 있다\n\n\n-- 대상이 없어도 된다\n\n$ grep -c 'target' src/main/java/study/adv/factory/LogTraceAdvice.java\n0\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace, LogTraceAdvice advice) {\n    OrderServiceV1 target = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    ProxyFactory factory = new ProxyFactory(target);\n    factory.addAdvice(advice);                    // 같은 것을 넘긴다\n    return (OrderServiceV1) factory.getProxy();\n}\n\n@Bean\npublic LogTraceAdvice logTraceAdvice(LogTrace trace) {\n    return new LogTraceAdvice(trace);\n}\n\n$ curl -s localhost:8080/advice/same\n서비스 프록시의 어드바이스: study.adv.factory.LogTraceAdvice@8b23e04f\n저장소 프록시의 어드바이스: study.adv.factory.LogTraceAdvice@8b23e04f\n같은 객체인가:              true\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep -c 'LogTraceAdvice'\n1\n\n--   6.4 절에서는 빈마다 하나였다\n--   여기선 하나를 나눠 쓴다\n\n\n-- 두 방식 다 같은 것을 쓴다\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace, LogTraceAdvice advice) {\n    ProxyFactory factory = new ProxyFactory(new OrderServiceV2(...));\n    factory.addAdvice(advice);                    // 똑같다\n    return (OrderServiceV2) factory.getProxy();\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | sed -n '2p'\n주입된 것: jdk.proxy2.$Proxy142\n$ curl -s 'localhost:8080/who?name=orderServiceV2' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV2$$SpringCGLIB$$0\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -12 | wc -l\n12\n\n--   만드는 방식은 다른데 부가 기능은 하나다\n--   7.1 절에서 설정을 합쳤고 여기서 기능을 합쳤다\n\n\n-- proceed 가 무엇을 부르나\n\n@Override\npublic Object invoke(MethodInvocation invocation) throws Throwable {\n    log.info(\"invocation 종류: {}\", invocation.getClass().getName());\n    return invocation.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'invocation 종류' logs/app.log | tail -1\nINFO ... : invocation 종류: org.springframework.aop.framework.ReflectiveMethodInvocation\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'invocation 종류' logs/app.log | tail -1\nINFO ... : invocation 종류: org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation\n\n--   방식마다 다른 것이 온다\n--   내 코드는 그걸 모른다\n\n\n-- 안 넘기면\n\n@Override\npublic Object invoke(MethodInvocation invocation) throws Throwable {\n    TraceStatus status = trace.begin(\"...\");\n    trace.end(status);\n    return null;                       // proceed 를 안 불렀다\n}\n\n$ curl -s 'localhost:8080/v1/request?itemId=연필'\nnull\n\n$ curl -s localhost:8080/order/count\n연필: 0 개\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[796bccd9] OrderServiceV1.orderItem()\n[796bccd9] OrderServiceV1.orderItem() time=0ms\n\n--   5.1 절과 5.2 절에서 본 그것이다\n--   time=0ms 가 실마리다\n\n\n-- 결과를 안 돌려주면\n\n@Override\npublic Object invoke(MethodInvocation invocation) throws Throwable {\n    Object result = invocation.proceed();\n    trace.end(status);\n    return null;                       // 받은 걸 버렸다\n}\n\n$ curl -s 'localhost:8080/v1/find?itemId=연필'\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/find?itemId=연필'\n200\n\n$ curl -s localhost:8080/order/count\n연필: 1 개\n\n--   저장은 됐는데 응답이 비었다\n--   5.4 절에서 결과를 고치던 그 자리다\n\n\n-- 예외는 그냥 던진다\n\n} catch (Exception e) {\n    trace.exception(status, e);\n    throw e;                          // 감쌀 필요가 없다\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=ex'\n500\n\n$ grep -c 'InvocationTargetException' logs/app.log\n0\n$ grep -A1 'IllegalState' logs/app.log | head -1\njava.lang.IllegalStateException: 예외 발생!\n\n--   6.1 절에서 벗겨 내야 했다\n--   여기선 원래 예외가 그대로 온다\n\n\n-- 타입이 여럿이다\n\n// ① 둘 다 감싼다\npublic class LogTraceAdvice implements MethodInterceptor {\n    public Object invoke(MethodInvocation invocation) throws Throwable { ... }\n}\n\n// ② 앞만\npublic class CheckAdvice implements MethodBeforeAdvice {\n    public void before(Method method, Object[] args, Object target) {\n        log.info(\"들어간다 {}\", method.getName());\n    }\n}\n\n// ③ 뒤만\npublic class DoneAdvice implements AfterReturningAdvice {\n    public void afterReturning(Object returnValue, Method method,\n                               Object[] args, Object target) {\n        log.info(\"나왔다 {} -> {}\", method.getName(), returnValue);\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v1/find?itemId=연필'\n$ grep -E '들어간다|나왔다' logs/app.log | tail -2\n들어간다 find\n나왔다 find -> 연필\n\n--   10.3 절에서 다섯을 다 본다\n--   여기선 첫째만 쓴다\n\n\n-- 앞만 쓰면 못 하는 것\n\npublic class CheckAdvice implements MethodBeforeAdvice {\n    public void before(Method method, Object[] args, Object target) {\n        long t0 = System.nanoTime();      // 여기서 잰 것을\n        // 나중에 어디서 쓰나\n    }\n}\n\n$ grep -c 'nanoTime' src/main/java/study/adv/factory/CheckAdvice.java\n1\n\n--   시간을 재려면 앞뒤가 같은 자리여야 한다\n--   그래서 첫째를 쓴다\n\n\n-- 여럿을 걸면\n\nProxyFactory factory = new ProxyFactory(target);\nfactory.addAdvice(new TimeAdvice());\nfactory.addAdvice(new LogTraceAdvice(trace));\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -E 'study.adv.trace|ms$' logs/app.log | tail -4\n[796bccd9] OrderServiceV1.orderItem()\n[796bccd9] |-->OrderRepositoryV1.save()\n[796bccd9] |<--OrderRepositoryV1.save() time=1004ms\n1006 ms\n\n$ curl -s localhost:8080/advice/count?name=orderServiceV1\n어드바이스 2 개\n\n--   프록시는 하나인데 어드바이스가 둘이다\n--   5.4 절에서 프록시를 겹쳐 쌓던 것과 다르다\n--   7.5 절에서 이걸 본다\n\n\n-- 스프링 것도 같은 타입이다\n\n$ curl -s 'localhost:8080/advice/list?name=orderServiceImpl'\norg.springframework.transaction.interceptor.TransactionInterceptor\n\n$ javap -cp $(find ~/.gradle/caches -name 'spring-tx-6.1.11.jar' | head -1) \\\n    org.springframework.transaction.interceptor.TransactionInterceptor | head -3\npublic class org.springframework.transaction.interceptor.TransactionInterceptor\n        extends org.springframework.transaction.interceptor.TransactionAspectSupport\n        implements org.aopalliance.intercept.MethodInterceptor, java.io.Serializable {\n\n--   1.4 절에서 본 그 인터셉터다\n--   내가 만든 것과 같은 타입이다\n\n\n-- 표준 타입이다\n\n$ javap org.aopalliance.intercept.MethodInterceptor\npublic interface org.aopalliance.intercept.MethodInterceptor\n        extends org.aopalliance.intercept.Interceptor {\n  public abstract java.lang.Object invoke(org.aopalliance.intercept.MethodInvocation)\n      throws java.lang.Throwable;\n}\n\n$ find ~/.gradle/caches -name 'spring-aop-6.1.11.jar' | head -1 | xargs unzip -l \\\n    | grep -c 'aopalliance'\n14\n\n--   스프링 것이 아니라 표준이다\n--   스프링이 그 JAR 를 안에 넣어 뒀다\n\n\n-- 설정을 센다\n\n$ wc -l < src/main/java/study/adv/factory/ProxyFactoryConfig.java\n      54\n\n// 7.1 절에서는\n      62\n\n$ grep -c 'new LogTraceAdvice' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n0\n$ grep -c 'addAdvice(advice)' src/main/java/study/adv/factory/ProxyFactoryConfig.java\n6\n\n--   어드바이스를 빈으로 빼서 줄었다\n\n\n-- 전체를 센다\n\n$ printf '%-20s %-14s %-14s %s\\n' \\\n  '6 장'  '핸들러 2 개'  '62 줄'  '설정 84 줄' \\\n  '7.1'   '어드바이스 1' '26 줄'  '설정 62 줄' \\\n  '7.2'   '어드바이스 1' '26 줄'  '설정 54 줄'\n\n6 장          핸들러 2 개    62 줄    설정 84 줄\n7.1           어드바이스 1   26 줄    설정 62 줄\n7.2           어드바이스 1   26 줄    설정 54 줄\n\n$ python3 -c \"print('146 줄이 80 줄, %.0f%%' % (80/146*100))\"\n146 줄이 80 줄, 55%\n\n\n-- 그런데 다 걸린다\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null 'localhost:8080/v1/health'; done\n$ grep -c 'healthCheck' logs/app.log\n10\n\n$ grep -c 'patterns\\|simpleMatch' src/main/java/study/adv/factory/LogTraceAdvice.java\n0\n\n--   6.4 절에서 거르개를 안에 넣었다\n--   여기선 그게 없다\n--   7.3 절이 그 자리다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null -w 'v1 %{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\nv1 200\n$ curl -s -o /dev/null -w 'v2 %{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\nv2 200\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | wc -l\n12\n\n$ curl -s localhost:8080/advice/same | tail -1\n같은 객체인가:              true\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'LogTraceAdvice'\n 812:             1             16  study.adv.factory.LogTraceAdvice\n\n$ git add -A && git commit -q -m 'feat: v8 어드바이스' && git tag v8-advice\n\n--   7.3 절에서 어디에 걸지 고른다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '두 벌'      '한 벌로' \\\n  '줄'         '62 에서 26' \\\n  '인자'       '하나' \\\n  '대상'       '안 들고 있음' \\\n  '객체'       '하나를 나눠 씀' \\\n  'proceed'    '다음으로' \\\n  '안 넘기면'  '대상이 안 돎' \\\n  '결과'       '내가 돌려줌' \\\n  '예외'       '안 싸임' \\\n  '거르개'     '없음'\n\n두 벌                      한 벌로\n줄                         62 에서 26\n인자                       하나\n대상                       안 들고 있음\n객체                       하나를 나눠 씀\nproceed                    다음으로\n안 넘기면                  대상이 안 돎\n결과                       내가 돌려줌\n예외                       안 싸임\n거르개                     없음",
+   "note": "**두 파일 62 줄이 한 파일 26 줄이 되고 인자가 하나로** 줄었다.\n\n**대상을 안 들고 있어 어드바이스 객체 하나를 여섯 프록시가 나눠** 쓴다.\n\n**같은 코드인데 넘어오는 것이 `ReflectiveMethodInvocation` 과 `CglibMethodInvocation` 으로** 갈린다.\n\n**`proceed` 를 안 부르면 `time=0ms` 에 저장 0 건, 결과를 안 돌려주면 응답이** 빈다.\n\n**예외가 안 싸여 원래 것이 그대로 오고 스프링의 트랜잭션 인터셉터도 같은 표준 타입**이다."
+  }
+ ],
+ "recap": [
+  "**한 벌이** 된다.",
+  "**인자가** 하나다.",
+  "**대상을 안** 든다.",
+  "**하나를 나눠** 쓴다.",
+  "**다음으로** 넘긴다.",
+  "**안 넘기면 안** 돈다.",
+  "**결과를** 돌려준다.",
+  "**예외가 안** 싸인다.",
+  "**거르개가** 없다."
+ ],
+ "drills": [
+  {
+   "task": "두 벌을 하나로 합친다.",
+   "done_when": "줄 수가 준 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "넘어오는 것을 다 찍는다.",
+   "done_when": "대상까지 있는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`proceed` 를 빼 본다.",
+   "done_when": "0ms 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "어드바이스를 하나만 만든다.",
+   "done_when": "여섯이 나눠 쓰는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "어드바이스가 몰라도 되는 것은?",
+   "a": "어떤 방식으로 프록시가 만들어졌는지와 대상이 무엇인지다."
+  },
+  {
+   "q": "왜 하나를 나눠 쓸 수 있나?",
+   "a": "대상을 필드로 안 들고 있어서다."
+  },
+  {
+   "q": "`proceed` 는 무엇을 부르나?",
+   "a": "대상이 아니라 목록의 다음 것이다. 대상은 끝에 있다."
+  },
+  {
+   "q": "안 넘기면?",
+   "a": "대상이 안 돌고 걸린 시간이 0 으로 찍힌다."
+  },
+  {
+   "q": "예외는 어떻게 다루나?",
+   "a": "그냥 던진다. 감싸이지 않아 벗겨 낼 필요가 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "어드바이스",
+   "def": "부가 기능만 담은 조각. 대상도 방식도 모른다."
+  },
+  {
+   "term": "진행",
+   "def": "호출을 목록의 다음 자리로 넘기는 일. 끝에 대상이 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "AOP Alliance — MethodInterceptor",
+   "url": "https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/aopalliance/intercept/MethodInterceptor.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
