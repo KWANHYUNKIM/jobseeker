@@ -1,0 +1,139 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-internal-call",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "프록시 내부 호출",
+ "summary": "1편 5.9절을 다시, 더 자세히.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "내부 호출에 트랜잭션이 안 걸리는 이유를 안다.",
+  "해결 방법 다섯을 안다.",
+  "왜 클래스 분리가 답인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「스프링 DB 1편」 5.9절에서 한 번 봤다.** **가장 유명한 함정**이라 다시 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "안 걸리는 코드",
+   "code": "@Slf4j\n@Service\npublic class CallService {\n\n    public void external() {\n        log.info(\"call external\");\n        printTxActive();\n        internal();                    // 여기\n    }\n\n    @Transactional\n    public void internal() {\n        log.info(\"call internal\");\n        printTxActive();\n    }\n\n    private void printTxActive() {\n        boolean active = TransactionSynchronizationManager\n                .isActualTransactionActive();\n        log.info(\"tx active={}\", active);\n    }\n}",
+   "note": "**`external()` 을 부르면 `internal()` 에 트랜잭션이 안 걸린다.**\n\n**`internal()` 을 직접 부르면 걸린다.**\n\n**같은 메서드인데 어떻게 부르느냐로 갈린다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 안 걸리나",
+   "ascii": "   external call\n   -------------\n   caller -> proxy -> begin -> real.external() -> commit\n\n   internal call\n   -------------\n   caller -> proxy -> real.external()\n                          |\n                          +-- this.internal()\n                                   |\n                              the proxy is not here\n\n   'this' is the real object, not the proxy",
+   "note": "**`this` 가 프록시가 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`this.internal()` 이 문제다",
+   "md": "**자바에서 메서드를 그냥 부르면 `this.` 가 생략**된 것이다.\n\n```java\npublic void external() {\n    internal();          // 사실은 this.internal()\n}\n```\n\n**`this` 는 실제 객체**다. **프록시가 아니다.**\n\n**프록시는 밖에서 들어오는 호출만** 가로챈다.\n\n```\ncaller -> proxy.external()\n            proxy: @Transactional 없네, 그냥 넘기자\n          real.external()\n            real: this.internal()   <- 프록시를 안 거친다\n```\n\n> **10.2절에서 `private` 이 안 되는 이유와 뿌리가 같다.** **프록시가 가로챌 수 있는 지점은 하나뿐**이다 — **객체 밖에서 들어오는 문.**\n\n**트랜잭션만의 문제가 아니다.** **`@Cacheable`, `@Async`, `@Retryable`, 커스텀 AOP 전부** 같다.\n\n```java\n@Async\npublic void 비동기() { }\n\npublic void 호출() {\n    비동기();   // 동기로 돈다\n}\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "빠져나가는 방법 다섯",
+   "ascii": "   ways out\n\n   1  move it to another class          <-- the answer\n   2  self injection                    works, ugly\n   3  ObjectProvider / ApplicationContext  works, uglier\n   4  AopContext.currentProxy()         needs exposeProxy=true\n   5  AspectJ weaving                   works everywhere, heavy build\n\n   1 is not a workaround. it is a design fix.",
+   "note": "**1번만 설계 수정**이고 나머지는 우회다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "1번 — 클래스를 나눈다",
+   "code": "@Slf4j\n@Service\n@RequiredArgsConstructor\npublic class CallService {\n\n    private final InternalService internalService;\n\n    public void external() {\n        log.info(\"call external\");\n        internalService.internal();     // 프록시를 거친다\n    }\n}\n\n@Slf4j\n@Service\npublic class InternalService {\n\n    @Transactional\n    public void internal() {\n        log.info(\"call internal\");\n    }\n}",
+   "note": "**주입받은 것이 프록시**다. **거기로 들어가면 걸린다.**\n\n> **우회가 아니라 설계 수정**이다. **\"이 메서드는 별도의 트랜잭션 경계다\" 라는 사실을 클래스 분리로** 표현한 것이다.\n>\n> **트랜잭션 경계가 곧 책임 경계**라는 이야기다. **11장·12장에서 이 관점이 다시** 나온다.\n\n**나머지 넷은 왜 권하지 않나.**\n\n```java\n// 2번 자기 주입\n@Autowired\nprivate CallService self;         // 순환 참조. @Lazy 가 필요할 수 있다\n\n// 4번 AopContext\n((CallService) AopContext.currentProxy()).internal();\n// @EnableAspectJAutoProxy(exposeProxy = true) 가 필요하다\n```\n\n**둘 다 \"프록시를 다시 잡는\" 코드**다. **읽는 사람이 왜 그런지 알아야** 한다. **주석이 필요한 코드**가 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "반대 방향도 있다",
+   "md": "**바깥에 붙어 있으면 안쪽도 같이** 걸린다.\n\n```java\n@Transactional\npublic void external() {\n    internal();          // 트랜잭션 안이다\n}\n\npublic void internal() {\n    // @Transactional 이 없는데 트랜잭션 안에서 돈다\n}\n```\n\n**`internal` 에 애너테이션이 없어도 트랜잭션 안**이다. **이미 열려 있으니까.**\n\n**이것이 문제가 되는 경우**가 있다.\n\n```java\n@Transactional\npublic void 주문처리() {\n    주문저장();\n    이메일발송();      // 오래 걸린다. 트랜잭션 안에서.\n}\n```\n\n**이메일을 보내는 동안 커넥션을 쥐고** 있다. **6.7절의 `open-in-view` 와 같은 종류의 문제**다.\n\n> **트랜잭션은 짧아야** 한다. **외부 API 호출·파일 IO·메일 발송은 트랜잭션 밖**으로 뺀다.\n>\n> **12장에서 이 이야기를 전파와 함께** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- internal 을 직접 부르면 ---\n\ncallService.internal();\n\n#   Getting transaction for [hello...CallService.internal]\n#   Creating new transaction with name [hello...CallService.internal]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [conn0] for JDBC transaction\n\n#   call internal\n#   tx active=true\n\n#   Completing transaction for [hello...CallService.internal]\n#   Initiating transaction commit\n\n# --- external 을 통해 부르면 ---\n\ncallService.external();\n\n#   call external\n#   tx active=false\n#   call internal\n#   tx active=false\n\n#   (Getting transaction 이 한 번도 없다)\n#   (커넥션도 안 빌렸다)\n\n#   @Transactional 이 붙어 있는데 아무 일도 안 일어났다\n\n# --- 클래스를 나누면 ---\n\ncallService.external();\n\n#   call external\n#   tx active=false\n\n#   Getting transaction for [hello...InternalService.internal]\n#   Creating new transaction with name [hello...InternalService.internal]\n#   Acquired Connection [conn0] for JDBC transaction\n\n#   call internal\n#   tx active=true\n\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0]\n\n# --- 실제로 무슨 사고가 나는가 ---\n\npublic void 주문처리() {          // @Transactional 없음\n    재고차감();                   // @Transactional\n    결제저장();                   // @Transactional\n}\n\n#   (프록시 밖에서 부르면)\n#   Getting transaction for [재고차감]\n#   Committing JDBC transaction\n#   Getting transaction for [결제저장]\n#   Committing JDBC transaction\n\n#   각각 커밋됐다. 결제가 실패해도 재고는 이미 줄었다.\n\n#   (내부 호출이면)\n#   (Getting transaction 이 하나도 없다)\n#   각 SQL 이 오토커밋으로 나간다. 더 나쁘다.\n\n# --- 바깥에만 붙이면 ---\n\n@Transactional\npublic void 주문처리() {\n    재고차감();\n    결제저장();\n}\n\n#   Getting transaction for [주문처리]\n#   Creating new transaction\n#     (재고차감, 결제저장 - 로그 없음. 같은 트랜잭션 안이다.)\n#   Initiating transaction commit\n\n#   하나로 묶였다. 이것이 원래 의도다.",
+   "note": "**두 번째 블록에 `Getting transaction` 이 하나도 없다.** **애너테이션이 붙어 있는데도.**\n\n**네 번째 블록이 진짜 사고**다. **각각 커밋되면 1편 3장의 계좌이체가 깨지는 그 상황**이다.\n\n**마지막 블록이 답**이다. **바깥 하나에 붙이면 안쪽이 다 묶인다.**\n\n> **내부 호출 문제를 겪는 사람 중 상당수는 애초에 트랜잭션 경계를 잘못 잡은 것**이다. **10.3절의 해법 1번(클래스 분리)과 이 마지막 블록(바깥에 붙이기)이 대부분을 해결**한다.\n\n**다음 절에서 또 다른 안 걸리는 자리를 본다.**"
+  }
+ ],
+ "recap": [
+  "**`internal()` 은 사실 `this.internal()`** 이다.",
+  "**`this` 는 실제 객체**, 프록시가 아니다.",
+  "**프록시는 밖에서 들어오는 호출만** 가로챈다.",
+  "**`private` 이 안 되는 이유와 뿌리가 같다.**",
+  "**`@Async`·`@Cacheable` 도 똑같다.**",
+  "**클래스를 나누는 것이 답**이다 — 우회가 아니라 설계 수정.",
+  "**자기 주입·`AopContext` 는 주석이 필요한 코드**가 된다.",
+  "**바깥에 붙으면 안쪽은 애너테이션 없이도** 트랜잭션 안이다.",
+  "**외부 API·메일 발송은 트랜잭션 밖**으로 뺀다."
+ ],
+ "drills": [
+  {
+   "task": "`external`/`internal` 예제를 만들고 두 방식으로 부른다.",
+   "done_when": "로그가 갈리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "클래스를 나눠 다시 돌린다.",
+   "done_when": "트랜잭션이 걸리는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Async` 로 같은 실험을 해 본다.",
+   "done_when": "같은 문제인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "바깥 메서드에만 애너테이션을 붙여 본다.",
+   "done_when": "안쪽이 같은 트랜잭션에 묶이는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "내부 호출에 왜 트랜잭션이 안 걸리나?",
+   "a": "`this` 가 프록시가 아니라 실제 객체이기 때문이다."
+  },
+  {
+   "q": "프록시가 가로챌 수 있는 지점은?",
+   "a": "객체 밖에서 들어오는 호출뿐이다."
+  },
+  {
+   "q": "가장 좋은 해결책은?",
+   "a": "클래스를 나누는 것이다. 우회가 아니라 트랜잭션 경계를 명시하는 설계 수정이다."
+  },
+  {
+   "q": "같은 문제를 겪는 다른 기능은?",
+   "a": "`@Async`, `@Cacheable`, `@Retryable` 등 모든 프록시 AOP 다."
+  },
+  {
+   "q": "바깥에만 붙이면 안쪽은?",
+   "a": "애너테이션이 없어도 같은 트랜잭션 안에서 돈다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

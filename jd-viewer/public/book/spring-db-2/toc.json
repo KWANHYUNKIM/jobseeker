@@ -587,7 +587,7 @@
           "title": "우선순위",
           "summary": "클래스와 메서드, 인터페이스.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -595,7 +595,7 @@
           "title": "프록시 내부 호출",
           "summary": "1편 5.9절을 다시, 더 자세히.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
@@ -603,7 +603,7 @@
           "title": "초기화 시점",
           "summary": "@PostConstruct 에는 안 걸린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
