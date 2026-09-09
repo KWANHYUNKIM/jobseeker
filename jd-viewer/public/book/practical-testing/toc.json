@@ -538,7 +538,7 @@
           "title": "Testcontainers",
           "summary": "진짜 DB 로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -546,7 +546,7 @@
           "title": "병렬 실행",
           "summary": "빨라지는데 깨진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",

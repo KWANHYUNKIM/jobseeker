@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "testcontainers",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "Testcontainers",
+ "summary": "진짜 DB 로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "H2 가 못 잡는 것을 안다.",
+  "컨테이너를 붙인다.",
+  "비용을 재고 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 `MODE=MySQL` 이 흉내라고** 했다. **뭘 못 잡는지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "H2 가 못 재현하는 것",
+   "ascii": "   what h2 does not reproduce\n\n   sql dialect      group by rules, string functions, json columns\n   index behaviour  what the planner actually picks\n   locking          for update, gap locks, deadlock messages\n   types            unsigned, tinyint, timestamp precision\n   collation        sorting and case sensitivity\n\n   MODE=MySQL covers the first line, partly",
+   "note": "**`MODE=MySQL` 은 첫 줄 일부**만 덮는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "언제 문제가 되나",
+   "md": "**5.2절에서 \"내가 쓴 쿼리만 테스트한다\" 고** 했다.\n\n> **그 쿼리가 MySQL 문법이면 H2 에서 못** 짠다.\n\n**대표적인 것들**\n\n```sql\n-- MySQL\nselect * from orders\nwhere date_format(registered_date_time, '%Y-%m') = '2026-09'\n\n-- H2 에는 date_format 이 없다\n```\n\n```sql\n-- MySQL 8\nselect *, row_number() over (partition by member_id order by id desc) rn\nfrom orders\n\n-- H2 도 지원하는데 동작이 미묘하게 다르다\n```\n\n```sql\n-- 락\nselect * from stock where product_number = ? for update\n\n-- H2 는 테이블 락에 가깝다. 갭 락이 없다\n```\n\n> **7.11절의 동시성 테스트가 H2 에서는 통과하고 MySQL 에서 깨질 수** 있다.\n> **반대도** 있다.\n\n**`ddl-auto: create` 도** 다르다.\n\n> **하이버네이트가 만든 DDL 과 운영 스키마가** 다르다.\n> **`varchar(255)` 기본값, 인덱스 없음, FK 이름 자동 생성**.\n>\n> **「활용 1편」 9.7절의 \"DB 제약 넷\" 이 그것**이다.\n\n**Flyway 를 같이 쓰면 더** 낫다.\n\n> **운영과 같은 마이그레이션 스크립트를 컨테이너에** 적용한다.\n> **스키마까지 같아**진다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨테이너 붙이기",
+   "code": "@Testcontainers\n@SpringBootTest\n@ActiveProfiles(\"test\")\npublic abstract class IntegrationTestSupport {\n\n    @Container\n    static final MySQLContainer<?> MYSQL =\n            new MySQLContainer<>(\"mysql:8.0.36\")\n                    .withDatabaseName(\"cafekiosk\")\n                    .withReuse(true);\n\n    @DynamicPropertySource\n    static void datasource(DynamicPropertyRegistry registry) {\n        registry.add(\"spring.datasource.url\", MYSQL::getJdbcUrl);\n        registry.add(\"spring.datasource.username\", MYSQL::getUsername);\n        registry.add(\"spring.datasource.password\", MYSQL::getPassword);\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "컨테이너의 비용",
+   "ascii": "   what a container costs\n\n   first run       pull the image, maybe 30s\n   each startup    3 to 8 seconds for mysql\n   reuse enabled   about 0, after the first\n\n   h2 starts in about 200ms\n\n   the question is whether the dialect gap is worth 8 seconds",
+   "note": "**문법 차이가 8초 값어치인가.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "비용을 줄이는 법",
+   "md": "**`static` 으로 한 번만**\n\n```java\n@Container\nstatic final MySQLContainer<?> MYSQL = ...;\n```\n\n> **인스턴스 필드면 테스트 클래스마다** 뜬다.\n> **`static` 이면 JVM 하나에 한 번**이다.\n\n**`withReuse(true)`**\n\n```\n# ~/.testcontainers.properties\ntestcontainers.reuse.enable=true\n```\n\n> **테스트가 끝나도 컨테이너를 안** 내린다.\n> **다음 실행이 붙어** 쓴다.\n>\n> **로컬에서만** 쓴다. **CI 는 매번 새 머신**이다.\n\n**공통 부모에** 둔다\n\n> **8.1절과 같은 이야기**다.\n> **클래스마다 다른 컨테이너면 컨텍스트도** 갈린다.\n\n**단위 테스트는 안 건드린다**\n\n> **47개가 2초**다(7.12절). **컨테이너와 무관**하다.\n> **5.8절의 피라미드가 여기서 값을** 한다.\n>\n> **통합 테스트만 느려**진다.\n\n**언제 쓰나**\n\n| | |\n|---|---|\n| **네이티브 쿼리를 쓴다** | H2 에서 못 짠다 |\n| **락·동시성을 테스트한다** | 7.11절 |\n| **스키마가 중요하다** | Flyway 와 같이 |\n| **운영 DB 고유 기능** | JSON 컬럼, 전문 검색 |\n\n**언제 안 쓰나**\n\n> **JPQL 만 쓰고 표준 문법이면 H2 로** 충분하다.\n> **이 책이 그렇다** — **7.6절까지 H2 로 다** 했다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- H2 에서 통과하는 쿼리 ---\n\n@Query(value = \"\"\"\n        select date_format(o.registered_date_time, '%Y-%m') as month,\n               sum(o.total_price) as total\n        from orders o\n        group by month\n        \"\"\", nativeQuery = true)\nList<MonthlyStatistics> findMonthlyStatistics();\n\n$ ./gradlew test --tests OrderStatisticsRepositoryTest\n\nHibernate: select date_format(o.registered_date_time, '%Y-%m') as month, ...\n\nOrderStatisticsRepositoryTest > 월별 매출을 집계한다 FAILED\n    org.springframework.dao.InvalidDataAccessResourceUsageException:\n    Function \"DATE_FORMAT\" not found; SQL statement\n\n#   H2 에 date_format 이 없다\n\n# --- MODE=MySQL 로 바꿔도 ---\n\nurl: jdbc:h2:mem:test;MODE=MySQL\n\n$ ./gradlew test --tests OrderStatisticsRepositoryTest\n\nOrderStatisticsRepositoryTest > 월별 매출을 집계한다 FAILED\n    Function \"DATE_FORMAT\" not found\n\n#   MODE=MySQL 은 문법 호환 모드지 함수를 다 주는 게 아니다\n\n# --- 컨테이너를 붙이면 ---\n\n@Testcontainers\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n    @Container\n    static final MySQLContainer<?> MYSQL =\n            new MySQLContainer<>(\"mysql:8.0.36\").withReuse(true);\n\n    @DynamicPropertySource\n    static void datasource(DynamicPropertyRegistry registry) {\n        registry.add(\"spring.datasource.url\", MYSQL::getJdbcUrl);\n        registry.add(\"spring.datasource.username\", MYSQL::getUsername);\n        registry.add(\"spring.datasource.password\", MYSQL::getPassword);\n    }\n}\n\n$ ./gradlew test --tests OrderStatisticsRepositoryTest\n\n17:47:02.331 INFO  🐳 [mysql:8.0.36] - Pulling docker image: mysql:8.0.36\n17:47:31.882 INFO  🐳 [mysql:8.0.36] - Creating container for image\n17:47:33.117 INFO  🐳 [mysql:8.0.36] - Container started in PT5.892S\n17:47:39.441 INFO  --- Started IntegrationTestSupport in 6.221 seconds\n\nHibernate: select date_format(o.registered_date_time, '%Y-%m') as month, ...\n\nOrderStatisticsRepositoryTest > 월별 매출을 집계한다 PASSED\n\nBUILD SUCCESSFUL in 48s\n\n#   이미지를 받느라 30초가 들었다\n\n#   컨테이너 기동이 5.9초다\n\n# --- 두 번째 실행 ---\n\n$ ./gradlew test --tests OrderStatisticsRepositoryTest --rerun-tasks\n\n17:48:12.104 INFO  🐳 [mysql:8.0.36] - Creating container for image\n17:48:18.331 INFO  🐳 [mysql:8.0.36] - Container started in PT6.104S\n\nOrderStatisticsRepositoryTest > 월별 매출을 집계한다 PASSED\n\nBUILD SUCCESSFUL in 18s\n\n#   이미지는 캐시됐고 기동이 6초다\n\n# --- reuse 를 켜면 ---\n\n$ echo \"testcontainers.reuse.enable=true\" >> ~/.testcontainers.properties\n\n$ ./gradlew test --tests OrderStatisticsRepositoryTest --rerun-tasks\n\n17:49:03.882 INFO  🐳 [mysql:8.0.36] - Reusing container with ID: a1b2c3d4\n\nOrderStatisticsRepositoryTest > 월별 매출을 집계한다 PASSED\n\nBUILD SUCCESSFUL in 12s\n\n#   기동이 사라졌다\n\n$ docker ps\n\nCONTAINER ID   IMAGE          STATUS         PORTS\na1b2c3d4       mysql:8.0.36   Up 2 minutes   0.0.0.0:54321->3306/tcp\n\n#   테스트가 끝나도 살아 있다\n\n# --- 전체를 돌리면 ---\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 44s\n\n#   31초가 44초가 됐다\n\n#   단위 47개는 그대로 2초다\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n>   --tests DiscountCalculatorTest --tests ProductTypeTest\n\n29 tests completed\n\nBUILD SUCCESSFUL in 2s\n\n#   컨테이너를 안 띄운다\n\n#   5.8절의 피라미드가 여기서 값을 한다\n\n# --- 락 동작이 다른지 ---\n\n#   7.11절의 동시성 테스트를 H2 와 MySQL 에서\n\n#   H2\n$ ./gradlew test --tests ConcurrencyTest\nConcurrencyTest > 동시에 주문해도 재고가 정확히 차감된다 PASSED\n\n#   MySQL\n$ ./gradlew test --tests ConcurrencyTest\n\nHibernate: select s1_0.id, ... from stock s1_0\n           where s1_0.product_number in (?) for update\n\nConcurrencyTest > 동시에 주문해도 재고가 정확히 차감된다 PASSED\n\n#   둘 다 통과한다\n\n#   락을 빼면\n\n#   H2\nConcurrencyTest > ... FAILED\n    Expecting ArrayList: [7] to contain exactly: [0]\n\n#   MySQL\nConcurrencyTest > ... FAILED\n    Expecting ArrayList: [4] to contain exactly: [0]\n\n#   둘 다 잡는다. 값만 다르다\n\n#   이 경우는 H2 로 충분했다\n\n# --- 스키마가 다른 것 ---\n\n#   H2 (ddl-auto: create)\nHibernate: create table product (\n    id bigint generated by default as identity,\n    name varchar(255),\n    price integer not null,\n    product_number varchar(255),\n    ...\n)\n\n#   운영 (Flyway)\ncreate table product (\n    id bigint auto_increment,\n    name varchar(50) not null,\n    price int unsigned not null,\n    product_number varchar(10) not null,\n    unique key uk_product_number (product_number),\n    ...\n)\n\n#   varchar 길이도 unsigned 도 unique 도 다르다\n\n#   H2 에서는 이름 300자짜리 상품이 저장된다\n\n@Test\nvoid longName() {\n    productRepository.save(createProduct(\"001\", \"a\".repeat(300), 4000));\n\n    assertThat(productRepository.findAll()).hasSize(1);\n}\n\n#   H2\nProductRepositoryTest > longName() PASSED\n\n#   MySQL + Flyway\nProductRepositoryTest > longName() FAILED\n    org.springframework.dao.DataIntegrityViolationException:\n    Data truncation: Data too long for column 'name' at row 1\n\n#   운영에서 날 오류를 테스트가 잡는다\n\n#   「활용 1편」 9.7절의 'DB 제약 넷' 이 여기서 잡힌다\n\n# --- 판단 ---\n\n#   이 책의 테스트는 JPQL 과 메서드 이름 쿼리뿐이다\n\n$ grep -rn \"nativeQuery = true\" src/main/java/\n\n(결과 없음)\n\n#   네이티브 쿼리가 없다\n\n#   H2 로 충분하다\n\n#   date_format 예제는 설명용이었다\n\n# --- 다음 절에서 ---\n\n#   병렬로 돌린다",
+   "note": "**`date_format` 이 H2 에** 없다. **`MODE=MySQL` 로도 안** 된다 — 문법 호환 모드지 함수를 다 주는 게 아니다.\n\n**컨테이너는 첫 실행에 이미지 30초, 기동 5.9초**다. **`reuse` 를 켜면 기동이** 사라진다.\n\n**전체가 31초에서 44초**인데 **단위 47개는 그대로 2초**다.\n\n**락은 H2 도 MySQL 도 둘 다** 잡는다. **값만** 다르다.\n\n**스키마는 다르다** — **H2 에서 300자 이름이 저장**되고 **MySQL+Flyway 는 `Data too long`** 이다."
+  }
+ ],
+ "recap": [
+  "**H2 가 못 잡는 것** — 방언, 인덱스, 락, 타입, 콜레이션.",
+  "**`MODE=MySQL` 은 함수를 다 주는 게** 아니다.",
+  "**컨테이너 기동이 5~8초**다.",
+  "**`static` 과 `withReuse` 로** 줄인다.",
+  "**`reuse` 는 로컬에서만** 쓴다.",
+  "**단위 테스트는 안 느려진다** — 피라미드가 값을 한다.",
+  "**락은 H2 도 잡았다** — 값만 달랐다.",
+  "**스키마 차이는 H2 가 못** 잡는다 — 300자 이름이 저장된다.",
+  "**네이티브 쿼리가 없으면 H2 로** 충분하다."
+ ],
+ "drills": [
+  {
+   "task": "H2 에 없는 함수를 쓰는 쿼리를 짠다.",
+   "done_when": "실패를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "Testcontainers 를 붙인다.",
+   "done_when": "컨테이너 기동 로그를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`withReuse` 를 켜고 두 번 돌린다.",
+   "done_when": "기동이 사라지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "긴 문자열을 저장해 본다.",
+   "done_when": "H2 와 MySQL 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "H2 가 못 재현하는 것은?",
+   "a": "SQL 방언, 인덱스 동작, 락, 타입, 콜레이션이다."
+  },
+  {
+   "q": "`MODE=MySQL` 로 충분한가?",
+   "a": "아니다. 문법 호환 모드지 함수를 다 주지 않는다."
+  },
+  {
+   "q": "컨테이너 비용을 어떻게 줄이나?",
+   "a": "`static` 필드와 `withReuse(true)` 다. `reuse` 는 로컬에서만이다."
+  },
+  {
+   "q": "단위 테스트도 느려지나?",
+   "a": "아니다. 컨테이너와 무관해 그대로 2초다."
+  },
+  {
+   "q": "언제 안 써도 되나?",
+   "a": "네이티브 쿼리가 없고 표준 JPQL 만 쓸 때다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Testcontainers for Java",
+   "url": "https://java.testcontainers.org/",
+   "publisher": "Testcontainers"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

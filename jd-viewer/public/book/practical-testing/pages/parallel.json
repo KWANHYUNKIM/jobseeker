@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "parallel",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "병렬 실행",
+ "summary": "빨라지는데 깨진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 수준을 안다.",
+  "무엇이 먼저 깨지는지 안다.",
+  "언제 켤지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**컨텍스트를 줄였는데도 느리면** 그다음이 병렬이다. **그리고 5.9절이 문제**가 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 수준",
+   "ascii": "   three levels to parallelise at\n\n   gradle forks       maxParallelForks, separate jvms\n                      contexts are not shared. 8.1 undone.\n\n   junit classes      one jvm, classes in parallel\n                      contexts shared. db shared too.\n\n   junit methods      one jvm, methods in parallel\n                      the same test class fights itself\n\n   the safest is the first, and it is also the most wasteful",
+   "note": "**가장 안전한 게 가장 낭비**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "세 수준",
+   "md": "**① 그레이들 포크**\n\n```gradle\ntasks.named('test') {\n    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1\n}\n```\n\n| | |\n|---|---|\n| **JVM 이 여럿** | 완전히 격리 |\n| **컨텍스트가 포크마다** | 8.1절이 무효 |\n| **메모리가 는다** | JVM 하나에 수백 MB |\n\n> **8GB 머신에서 포크 넷이면 위험**하다.\n> **컨텍스트 3개 × 4포크 = 12번** 기동이다.\n\n**② JUnit 클래스 병렬**\n\n```\n# junit-platform.properties\njunit.jupiter.execution.parallel.enabled = true\njunit.jupiter.execution.parallel.mode.default = same_thread\njunit.jupiter.execution.parallel.mode.classes.default = concurrent\n```\n\n| | |\n|---|---|\n| **JVM 하나** | 컨텍스트 공유 |\n| **클래스끼리 동시** | DB 도 공유 |\n| **메서드는 순차** | 클래스 안은 안전 |\n\n> **DB 가 공유돼서 5.9절이** 터진다.\n\n**③ JUnit 메서드 병렬**\n\n```\njunit.jupiter.execution.parallel.mode.default = concurrent\n```\n\n> **같은 클래스의 메서드가 동시에** 돈다.\n> **`@BeforeEach` 와 `@AfterEach` 가 서로를** 방해한다.\n>\n> **거의 안 쓴다.**\n\n**단위 테스트는 ③도** 된다.\n\n> **7.12절의 47개가 상태를 안** 쓴다.\n> **2초가 0.5초**가 된다. **1.5초 아낀다.**\n>\n> **이득이 작다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "먼저 깨지는 것",
+   "ascii": "   what breaks first\n\n   shared database rows\n     test A saves product 001\n     test B deletes all products\n     A asserts and finds nothing\n\n   the @AfterEach from 5.9 is now a hazard,\n   because it deletes another test's data",
+   "note": "**5.9절의 `tearDown` 이 위험**이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "DB 를 어떻게 나누나",
+   "md": "**공유 DB 면 반드시** 깨진다.\n\n```java\n@AfterEach\nvoid tearDown() {\n    productRepository.deleteAllInBatch();   // 남의 데이터도 지운다\n}\n```\n\n> **A 가 저장하고 단언하는 사이에 B 의 `tearDown` 이** 돈다.\n\n**해결 넷**\n\n**① 스키마를 나눈다**\n\n```java\nregistry.add(\"spring.datasource.url\",\n        () -> \"jdbc:h2:mem:\" + UUID.randomUUID());\n```\n\n> **스레드마다 다른 DB** 다.\n> **컨텍스트도 갈린다**(8.1절). **캐시가 무효**다.\n\n**② `@ResourceLock`**\n\n```java\n@ResourceLock(\"db\")\nclass OrderServiceTest { }\n```\n\n> **같은 자원을 쓰는 클래스는 순차로** 돈다.\n> **DB 쓰는 게 다 순차면 병렬이 의미가** 없다.\n\n**③ 테스트마다 다른 데이터**\n\n> **상품 번호를 `UUID` 로** 만들고 **`deleteAll` 을 안** 한다.\n> **7.2절과 충돌**한다 — **통제 불가능한 값**이다.\n\n**④ 단위만 병렬**\n\n```\njunit.jupiter.execution.parallel.enabled = true\njunit.jupiter.execution.parallel.mode.default = concurrent\n```\n\n```java\n@Execution(SAME_THREAD)\npublic abstract class IntegrationTestSupport { }\n```\n\n> **통합만 순차**로 둔다.\n> **이득은 단위 테스트 시간만큼**이다.\n\n**결론**\n\n> **병렬은 마지막 수단**이다.\n> **8.1절의 컨텍스트와 5.8절의 피라미드를 먼저** 본다.\n>\n> **68개 31초에서 켤 이유가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 클래스 병렬을 켠다 ---\n\n# src/test/resources/junit-platform.properties\njunit.jupiter.execution.parallel.enabled = true\njunit.jupiter.execution.parallel.mode.default = same_thread\njunit.jupiter.execution.parallel.mode.classes.default = concurrent\n\n$ ./gradlew test\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 FAILED\n    java.lang.AssertionError:\n    Expecting ArrayList: [] to contain exactly: [(\"001\", 0)]\n\nProductServiceTest > 판매 중인 상품만 조회된다 FAILED\n    Expected size: 2 but was: 0\n\nOrderStatisticsServiceTest > 매출 통계 메일을 보낸다 FAILED\n    Expecting ArrayList: [] to contain exactly: [\"총 매출: 12000\"]\n\n68 tests completed, 3 failed\n\nBUILD FAILED in 19s\n\n#   31초가 19초가 됐다\n\n#   대신 셋이 깨졌다\n\n#   전부 '데이터가 없다' 는 증상이다\n\n#   남의 tearDown 이 지웠다\n\n# --- 여러 번 돌리면 ---\n\n$ for i in 1 2 3; do ./gradlew test --rerun-tasks -q 2>&1 | tail -2; done\n\n68 tests completed, 3 failed\n68 tests completed, 5 failed\n68 tests completed, 1 failed\n\n#   깨지는 개수가 매번 다르다\n\n#   7.11절의 가끔 깨지는 테스트를 대량 생산했다\n\n# --- @ResourceLock 을 붙이면 ---\n\n@ResourceLock(\"db\")\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport { }\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 29s\n\n#   안 깨진다\n\n#   31초가 29초다\n\n#   2초 벌었다\n\n#   DB 를 쓰는 건 전부 순차라서다\n\n# --- 단위만 병렬로 ---\n\njunit.jupiter.execution.parallel.enabled = true\njunit.jupiter.execution.parallel.mode.default = concurrent\njunit.jupiter.execution.parallel.mode.classes.default = concurrent\n\n@Execution(ExecutionMode.SAME_THREAD)\npublic abstract class IntegrationTestSupport { }\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 30s\n\n#   1초 벌었다\n\n#   단위 47개가 2초에서 1초가 된 것이다\n\n#   통합 21개가 29초를 그대로 쓴다\n\n# --- 단위만 따로 돌리면 ---\n\n$ ./gradlew test --tests CafeKioskTest --tests OrderTest \\\n>   --tests DiscountCalculatorTest --tests ProductTypeTest \\\n>   --tests ProductTest --tests StockTest --tests OrderStatusTest \\\n>   --tests ProductOrderResolverTest --tests MailServiceTest\n\n47 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   병렬 없이도 2초, 병렬로 1초\n\n#   1초 차이다\n\n# --- 그레이들 포크로 하면 ---\n\ntasks.named('test') {\n    maxParallelForks = 4\n}\n\n$ ./gradlew test 2>&1 | grep -c \"Started .* in\"\n\n8\n\n#   컨텍스트가 8번 떴다\n\n#   3개짜리가 포크마다 다시 뜬 것이다\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 38s\n\n#   31초가 38초가 됐다\n\n#   더 느려졌다\n\n#   8.1절에서 줄인 게 무효가 됐다\n\n# --- 메모리도 본다 ---\n\n$ ./gradlew test --info 2>&1 | grep \"Gradle Test Executor\"\n\nGradle Test Executor 1 started\nGradle Test Executor 2 started\nGradle Test Executor 3 started\nGradle Test Executor 4 started\n\n$ ps aux | grep GradleWorkerMain | awk '{sum+=$6} END {print sum/1024 \" MB\"}'\n\n2847 MB\n\n#   2.8GB 다\n\n#   8GB 머신에서 위험하다\n\n# --- 스키마를 나누면 ---\n\n@DynamicPropertySource\nstatic void datasource(DynamicPropertyRegistry registry) {\n    registry.add(\"spring.datasource.url\",\n            () -> \"jdbc:h2:mem:\" + UUID.randomUUID() + \";MODE=MySQL\");\n}\n\n$ ./gradlew test 2>&1 | grep \"cache statistics\" | tail -1\n\n    [size = 13, maxSize = 32, hitCount = 0, missCount = 13]\n\nBUILD SUCCESSFUL in 62s\n\n#   컨텍스트가 13개다\n\n#   URL 이 매번 달라 캐시 키가 다 다르다\n\n#   31초가 62초다\n\n#   병렬로 만들려다 두 배 느려졌다\n\n# --- 결론 ---\n\n#   방법            시간    결과\n#   병렬 없음        31초    통과\n#   클래스 병렬       19초    3개 깨짐\n#   + ResourceLock  29초    통과\n#   단위만 병렬       30초    통과\n#   포크 4          38초    통과, 더 느림\n#   스키마 분리       62초    통과, 훨씬 느림\n\n#   68개 31초에서 병렬을 켤 이유가 없다\n\n#   되돌린다\n\n# --- 다음 절에서 ---\n\n#   CI 에서 언제 무엇을 돌릴지 정한다",
+   "note": "**클래스 병렬을 켜니 31초가 19초**인데 **셋이** 깨진다. **전부 \"데이터가 없다\"** — 남의 `tearDown` 이 지웠다.\n\n**여러 번 돌리면 깨지는 개수가 매번** 다르다. **7.11절의 가끔 깨지는 테스트를 대량 생산**했다.\n\n**`@ResourceLock` 으로 막으면 29초** — **2초** 벌었다.\n\n**그레이들 포크 4는 컨텍스트가 8번 떠 38초로 더** 느리다. **메모리는 2.8GB** 다.\n\n**스키마를 나누면 컨텍스트가 13개에 62초**다. **병렬로 만들려다 두 배** 느려졌다."
+  }
+ ],
+ "recap": [
+  "**세 수준** — 그레이들 포크, JUnit 클래스, JUnit 메서드.",
+  "**가장 안전한 게 가장 낭비**다.",
+  "**클래스 병렬은 31초를 19초로** 만들고 셋을 깬다.",
+  "**전부 남의 `tearDown` 이 지운** 것이다.",
+  "**깨지는 개수가 매번 달라 7.11절을 대량** 생산한다.",
+  "**`@ResourceLock` 을 걸면 2초** 번다.",
+  "**포크는 컨텍스트를 포크마다 띄워 더** 느리다.",
+  "**스키마 분리는 컨텍스트를 13개로** 만든다.",
+  "**병렬은 마지막 수단**이다."
+ ],
+ "drills": [
+  {
+   "task": "클래스 병렬을 켜 본다.",
+   "done_when": "몇 개가 깨지는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "여러 번 돌려 본다.",
+   "done_when": "개수가 달라지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@ResourceLock` 을 붙인다.",
+   "done_when": "안 깨지고 얼마나 버는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`maxParallelForks` 를 켜고 컨텍스트 수를 센다.",
+   "done_when": "더 느려지는지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "병렬의 세 수준은?",
+   "a": "그레이들 포크, JUnit 클래스, JUnit 메서드다."
+  },
+  {
+   "q": "무엇이 먼저 깨지나?",
+   "a": "공유 DB 다. 남의 `tearDown` 이 내 데이터를 지운다."
+  },
+  {
+   "q": "왜 더 나쁜가?",
+   "a": "깨지는 게 매번 달라 가끔 깨지는 테스트를 대량 생산한다."
+  },
+  {
+   "q": "포크가 왜 느려지나?",
+   "a": "JVM 마다 컨텍스트를 다시 띄워 8.1절의 캐시가 무효가 된다."
+  },
+  {
+   "q": "언제 켜나?",
+   "a": "컨텍스트와 피라미드를 먼저 손보고도 느릴 때다. 마지막 수단이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 — Parallel Execution",
+   "url": "https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}
