@@ -70,6 +70,8 @@
   ⑥ 「스프링 DB 2편」(13장 83절, 완결) — 나간 SQL. 같은 SQL 을 다섯 기술이 만든다
   ⑦ 「스프링 부트와 JPA 활용 1편」(10장 64절, 완결) — 그 결정이 만든 것.
      DDL·SQL·HTTP·쿼리 개수 순으로 바뀐다
+  ⑧ 「스프링 부트와 JPA 활용 2편」(7장 48절, 집필 중) — 나간 JSON 과 그것을
+     만든 쿼리 개수. 같은 응답을 여섯 번 만들어 31 을 1 로 줄인다
   **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
   Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
   `jd-viewer/public/book/README.md`.

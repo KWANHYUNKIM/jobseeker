@@ -1,0 +1,115 @@
+{
+ "book": "jpa-app-2",
+ "id": "whats-left",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "1편이 남긴 것",
+ "summary": "스물한 개와 31.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "1편의 목록에서 이 책의 몫을 가른다.",
+  "31이라는 숫자의 출처를 확인한다.",
+  "무엇을 고칠지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편 9.7절에 스물한 개가** 있었다. **이 책이 그중 넷 갈래를** 가져간다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 무엇을 고치나",
+   "ascii": "   the 21 items from book 7, and who fixes them\n\n   entity exposed on the wire      this book, chapter 2\n   n+1 measured not fixed          this book, chapter 4, 5\n   dto only discussed              this book\n   osiv left on                    this book, chapter 6\n\n   db constraints (4)              nobody. still a list.\n   security (2)                    spring security\n   error handling (3)              mvc 2, chapter 8\n   business rules (3)              a few lines each\n\n   this book takes four of the six groups",
+   "note": "**여섯 갈래 중 넷**이 이 책이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 책의 몫 넷",
+   "md": "**① 엔티티를 노출한다** (1편 8.4, 9.1절)\n\n**화면에서는 \"쿼리가 는다\" 가 대가**였다.\n\n**API 에서는 더 크다.**\n\n| 문제 | 화면 | API |\n|---|---|---|\n| 쿼리가 는다 | ✅ | ✅ |\n| **프록시 직렬화** | 없다 | **500 오류** |\n| **무한 재귀** | 없다 | **StackOverflow** |\n| **API 스펙 결합** | 없다 | **필드 추가가 스펙 변경** |\n| **필드 노출** | 화면이 안 쓰면 안 보인다 | **전부 나간다** |\n\n**아래 넷이 화면에는 없던 것**이다.\n\n> **화면은 타임리프가 쓴 것만** 렌더링한다. **JSON 은 전부** 나간다.\n>\n> **2장에서 이것을** 다룬다.\n\n**② N+1 을 측정만 했다** (1편 9.4절)\n\n**31 → 21 → 11 → 3 → 1 을 계단으로 보여 주고 안 고쳤다.**\n\n> **1편 9.8절에서 \"다시 만들면 바꿀 셋\" 에 넣고 넘겼다.**\n>\n> **4장과 5장이 그것**이다.\n\n**③ DTO 를 논의만 했다** (1편 9.1절)\n\n**\"주문 목록만 DTO\" 라고 결론 내고 안 만들었다.**\n\n**④ OSIV 를 켜 뒀다** (1편 9.3절)\n\n**\"트래픽을 봐야 판단된다\" 고 미뤘다.**\n\n> **6장에서 결정**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "31의 출처",
+   "ascii": "   where 31 came from   (book 7, 9.4)\n\n   1   select orders join member\n   10  select member       per order\n   10  select order_item   per order\n   10  select item         per order item\n\n   = 31 for 10 orders\n   = 301 for 100 orders",
+   "note": "**1편 9.4절에서 센 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이 책이 안 고치는 것",
+   "md": "**나머지 두 갈래**다.\n\n**DB 제약 넷** (1편 3.3, 5.3절)\n\n| | |\n|---|---|\n| `member.name` 유니크 | **동시 가입이 뚫린다** |\n| `not null` | |\n| 인덱스 | |\n| FK 제약 이름 | |\n\n> **설정 몇 줄이면 되는데 안 한다.** **이 책의 주제가 조회 성능**이라서다.\n>\n> **7.3절에서 다시 센다.**\n\n**보안 둘** (1편 8.7절)\n\n| | |\n|---|---|\n| `hidden` id 조작 | **실제 취약점** |\n| 인증·인가 없음 | |\n\n**스프링 시큐리티가 필요**하다. **다른 책**이다.\n\n> **API 가 되면 문제가 더 커진다.** **화면은 그래도 로그인 폼이라도 있는데**, **API 는 아무나 부른다.**\n>\n> **7.3절 목록에 남긴다.**\n\n**예외 처리 셋** (1편 6.2, 8.3절)\n\n**「MVC 2편」이 다룬 주제**다.\n\n> **다만 API 의 오류 응답은 화면과 다르다.** **2.7절에서 최소한만** 다룬다.\n\n**비즈니스 규칙 셋** (1편 6.1, 8.5, 8.12절)\n\n**검증 몇 줄이면 된다.** **주제가 아니라 안 한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 1편의 마지막 상태",
+   "sql": "# --- 1편이 끝난 상태 ---\n\nGET /orders\n\n#   Session Metrics {\n#       31 JDBC statements were executed\n#       41 entities were loaded\n#   }\n\n#   200 OK\n#   Content-Type: text/html\n\n<tr><td>4</td><td>userA</td><td>JPA1 BOOK</td>...</tr>\n\n#   HTML 이다. JSON 이 아니다.\n\n# --- 이 책이 만들 것 ---\n\nGET /api/v1/orders\n\n#   (아직 없다)\n\n# --- 1편에서 이미 확인한 것 ---\n\n#   배치 사이즈 한 줄로\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\nGET /orders\n\n#   Session Metrics { 4 JDBC statements were executed }\n\n#   31 -> 4\n\n#   이것을 1편은 '다시 만들면 바꿀 셋' 에 넣고 안 켰다\n\n# --- 이 책의 출발점 ---\n\n#   설정을 안 켠 상태로 시작한다\n#   4장과 5장에서 단계별로 켠다\n\n#   바로 켜면 왜 그래야 하는지 안 보인다\n#   (1편 8.4절의 방법과 같다)\n\n# --- 1편 9.7절의 21개 중 ---\n\n#   이 책이 고칠 것\n#     엔티티 노출        2장\n#     N+1               4장, 5장\n#     DTO               4장, 5장\n#     OSIV              6장\n\n#   안 고칠 것\n#     DB 제약 4         7.3절 목록\n#     보안 2            7.3절 목록\n#     예외 처리 3        2.7절에서 최소한만\n#     비즈니스 규칙 3     7.3절 목록\n\n#   21 중 넷 갈래를 가져간다\n\n# --- 다음 절에서 ---\n\n#   프로젝트를 이어받는다\n#   화면을 지우지 않고 API 를 더한다",
+   "note": "**1편의 마지막 응답이 HTML** 이다. **이 책은 JSON** 을 만든다.\n\n**배치 사이즈 한 줄로 31 이 4** 가 되는 것을 1편에서 이미 확인했다. **켜지 않고 남겼다.**\n\n**이 책도 안 켠 상태로 시작**한다. **바로 켜면 왜 그래야 하는지 안 보인다** — 1편 8.4절의 방법과 같다.\n\n**21개 중 넷 갈래를 가져간다.** **나머지는 7.3절에서 다시 센다.**\n\n**다음 절에서 프로젝트를 이어받는다.**"
+  }
+ ],
+ "recap": [
+  "**1편 9.7절의 스물한 개 중 넷 갈래**를 가져간다.",
+  "**엔티티 노출의 대가가 API 에서 더 크다** — 직렬화·재귀·스펙 결합.",
+  "**화면은 쓴 것만 렌더링하고 JSON 은 전부** 나간다.",
+  "**N+1 을 1편은 측정만** 했다.",
+  "**DTO 를 논의만** 했다.",
+  "**OSIV 를 \"트래픽을 봐야\" 로** 미뤘다.",
+  "**DB 제약·보안은 안 고친다** — 주제가 아니다.",
+  "**배치 사이즈를 안 켠 상태로** 시작한다.",
+  "**바로 켜면 왜 그래야 하는지 안 보인다.**"
+ ],
+ "drills": [
+  {
+   "task": "1편 9.7절의 목록을 다시 읽는다.",
+   "done_when": "이 책의 몫을 표시했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1편 9.4절의 31을 재현한다.",
+   "done_when": "네 갈래 출처를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배치 사이즈를 켜고 껐다 해 본다.",
+   "done_when": "31과 4를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 가져가는 넷은?",
+   "a": "엔티티 노출, N+1, DTO, OSIV 다."
+  },
+  {
+   "q": "API 에서 엔티티 노출이 왜 더 나쁜가?",
+   "a": "프록시 직렬화 오류, 무한 재귀, API 스펙 결합, 전 필드 노출이 더해진다."
+  },
+  {
+   "q": "31은 어떻게 나온 숫자인가?",
+   "a": "주문 10건에 1(목록) + 10(회원) + 10(주문상품) + 10(상품)이다."
+  },
+  {
+   "q": "왜 배치 사이즈를 처음부터 안 켜나?",
+   "a": "왜 그래야 하는지 안 보이기 때문이다."
+  },
+  {
+   "q": "안 고치는 것은?",
+   "a": "DB 제약 넷, 보안 둘, 비즈니스 규칙 셋이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용2 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-API개발-성능최적화",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

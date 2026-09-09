@@ -1,0 +1,493 @@
+{
+  "id": "jpa-app-2",
+  "title": "스프링 부트와 JPA 활용",
+  "subtitle": "2편 — 응답 하나에 쿼리 몇 개",
+  "blurb": "1편이 만든 애플리케이션에 API 를 붙이고, 9.4절에서 31로 센 쿼리를 실제로 줄인다. 같은 응답을 여섯 버전으로 만들며 매번 JSON 과 그 뒤의 쿼리 개수를 나란히 놓는다.",
+  "updated_at": "2026-09-09",
+  "preface": "**1편 9.4절에서 이렇게 끝냈다.**\n\n> **주문 목록 화면 하나가 쿼리 31개**를 날린다. **주문이 100건이면 301개**다.\n\n**세기만 하고 안 고쳤다.** **1편의 주제가 \"설계 결정이 어떻게 흘러가나\"** 였기 때문이다(1편 1.2절).\n\n**이 책이 그것을 고친다.**\n\n**그리고 화면 대신 API 를 붙인다.**\n\n| | 1편 | 이 책 |\n|---|---|---|\n| 응답 | **HTML** | **JSON** |\n| 문제 | **발견** | **해결** |\n| 같은 조회를 | 한 번 | **여섯 번** |\n\n**세 번째가 이 책의 방법**이다.\n\n> **「DB 2편」 2.1절에서 같은 기능을 여섯 번 만들었다.** **거기서는 기술이 달랐고**, **여기서는 조회 방법이 다르다.**\n>\n> **응답 JSON 이 같으니 쿼리 개수만 비교하면** 된다.\n\n**매 절은 나간 JSON 과 그것을 만든 쿼리 개수로 끝난다.**\n\n```\n[{\"orderId\":4,\"name\":\"userA\",...}]\n\nSession Metrics { 31 JDBC statements were executed }\n```\n\n**두 줄이 짝**이다. **응답이 같고 아래 숫자만 줄어드는 것**을 본다.\n\n**31 에서 1 까지 간다.** **그 사이에 여섯 버전과 세 가지 함정이** 있다.",
+  "how_to_read": [
+    "**1편을 먼저 읽는다.** 이 책은 1편의 프로젝트를 그대로 이어받는다.",
+    "**4장과 5장이 이 책의 본론**이다. 같은 문제를 컬렉션 없이·있이 푼다.",
+    "**버전 번호를 건너뛰지 않는다.** V3 를 이해하려면 V2 의 문제를 봐야 한다.",
+    "**쿼리 개수를 직접 센다.** 3.3절에 설정이 있다.",
+    "**5.6절과 5.11절은 함정**이다. 되는 것처럼 보이는데 안 된다."
+  ],
+  "prereq": [
+    "**「스프링 부트와 JPA 활용 1편」 전체.** 특히 3장(설계)·7장(주문)·9장(청구서).",
+    "**「스프링 DB 2편」 6.7절.** N+1 해결책 넷을 안다고 가정한다.",
+    "**「스프링 MVC 1편」.** `@RestController` 와 JSON 변환.",
+    "**「JPA 기본편」.** 페치 조인과 프록시."
+  ],
+  "env": [
+    {
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
+    },
+    {
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": ""
+    },
+    {
+      "name": "데이터베이스",
+      "value": "H2 2.x",
+      "note": "1편과 같다"
+    },
+    {
+      "name": "프로젝트",
+      "value": "1편의 jpashop",
+      "note": "화면을 두고 API 를 더한다"
+    },
+    {
+      "name": "측정",
+      "value": "hibernate statistics",
+      "note": "3.3절"
+    },
+    {
+      "name": "추가 의존성",
+      "value": "없음",
+      "note": "1편 그대로다"
+    }
+  ],
+  "source": {
+    "name": "실전! 스프링 부트와 JPA 활용2 — API 개발과 성능 최적화 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링부트-JPA-API개발-성능최적화",
+    "note": "차례(7개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·JSON·쿼리 로그·그림은 이 책에서 새로 쓴 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "1편이 만든 애플리케이션에 API 를 붙이고 숫자를 줄인다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "응답 하나에 쿼리 몇 개인가.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "whats-left",
+          "title": "1편이 남긴 것",
+          "summary": "스물한 개와 31.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "project-setup",
+          "title": "프로젝트 이어받기",
+          "summary": "화면을 두고 API 를 더한다.",
+          "minutes": 11,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "API 개발 기본",
+      "goal": "엔티티를 API 에 쓰면 무엇이 깨지나.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "api-vs-view",
+          "title": "API 와 화면은 무엇이 다른가",
+          "summary": "응답이 JSON 이면 바뀌는 것들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "member-save-v1",
+          "title": "회원 등록 V1",
+          "summary": "엔티티를 파라미터로 받는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "member-save-v2",
+          "title": "회원 등록 V2",
+          "summary": "요청 DTO 를 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "member-update",
+          "title": "회원 수정 API",
+          "summary": "변경 감지와 응답 DTO.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "member-list-v1",
+          "title": "회원 조회 V1",
+          "summary": "엔티티를 그대로 내보낸다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "member-list-v2",
+          "title": "회원 조회 V2",
+          "summary": "Result 로 감싼다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.7",
+          "id": "api-error",
+          "title": "API 예외 처리",
+          "summary": "화면과 다른 오류 응답.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.8",
+          "id": "api-basic-review",
+          "title": "정리",
+          "summary": "엔티티를 API 에 쓰면.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "API 개발 고급 — 준비",
+      "goal": "무엇을 재고 무엇을 비교할지 정한다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "advanced-intro",
+          "title": "고급 소개",
+          "summary": "조회가 왜 어려운가.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "sample-data",
+          "title": "조회용 샘플 데이터",
+          "summary": "무엇을 넣어야 문제가 보이나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "measuring",
+          "title": "무엇을 측정하나",
+          "summary": "쿼리 개수 · 응답 크기 · 시간.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "order-api-shape",
+          "title": "주문 API 의 모양",
+          "summary": "두 종류의 조회.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "지연 로딩과 조회 성능 최적화",
+      "goal": "컬렉션 없는 조회를 네 버전으로.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "simple-v1",
+          "title": "간단한 주문 조회 V1",
+          "summary": "엔티티를 직접 노출한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "proxy-json",
+          "title": "프록시와 JSON",
+          "summary": "무한 재귀와 프록시 직렬화.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "simple-v2",
+          "title": "V2 — DTO 로 변환",
+          "summary": "엔티티가 안 나간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "n-plus-one-simple",
+          "title": "여기서 N+1 이 나온다",
+          "summary": "1 + N + N.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "simple-v3",
+          "title": "V3 — 페치 조인",
+          "summary": "쿼리 하나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "simple-v4",
+          "title": "V4 — DTO 로 바로 조회",
+          "summary": "컬럼도 줄인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "v3-vs-v4",
+          "title": "V3 와 V4 를 저울에",
+          "summary": "재사용과 성능.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.8",
+          "id": "simple-repo-structure",
+          "title": "조회 전용 리포지토리",
+          "summary": "어디에 둘까.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.9",
+          "id": "simple-review",
+          "title": "정리",
+          "summary": "네 버전의 숫자.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "컬렉션 조회 최적화",
+      "goal": "일대다가 붙으면 문제가 달라진다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "collection-v1",
+          "title": "주문 조회 V1",
+          "summary": "컬렉션이 붙으면.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "collection-v2",
+          "title": "V2 — DTO 로 변환",
+          "summary": "DTO 안의 DTO.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "collection-n-plus-one",
+          "title": "컬렉션의 N+1",
+          "summary": "1 + N + N + N.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "collection-v3",
+          "title": "V3 — 페치 조인",
+          "summary": "쿼리 하나가 되는데.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "distinct-problem",
+          "title": "distinct 와 중복",
+          "summary": "행이 늘어난다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "paging-limit",
+          "title": "페이징이 안 된다",
+          "summary": "경고 한 줄과 전 건 로딩.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "collection-v3-1",
+          "title": "V3.1 — 배치 사이즈",
+          "summary": "1 + 1 + 1.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "batch-size-tuning",
+          "title": "배치 사이즈를 얼마로",
+          "summary": "100 이냐 1000 이냐.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.9",
+          "id": "collection-v4",
+          "title": "V4 — DTO 직접 조회",
+          "summary": "1 + N 으로 돌아온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.10",
+          "id": "collection-v5",
+          "title": "V5 — in 절 최적화",
+          "summary": "1 + 1.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.11",
+          "id": "collection-v6",
+          "title": "V6 — 플랫 데이터",
+          "summary": "쿼리 하나, 중복 행.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.12",
+          "id": "version-compare",
+          "title": "여섯 버전을 한 표에",
+          "summary": "무엇을 고를까.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.13",
+          "id": "collection-review",
+          "title": "정리",
+          "summary": "권장 순서.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "실무 필수 최적화",
+      "goal": "OSIV 와 계층 구조.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "osiv-cost",
+          "title": "OSIV 의 비용",
+          "summary": "커넥션을 언제까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "osiv-off",
+          "title": "OSIV 를 끄면",
+          "summary": "무엇이 깨지나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "query-service",
+          "title": "커맨드와 쿼리를 나눈다",
+          "summary": "OrderQueryService.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "cache-consideration",
+          "title": "캐시를 쓸까",
+          "summary": "엔티티를 캐시하면 안 된다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "when-to-optimize",
+          "title": "언제 최적화하나",
+          "summary": "순서와 기준.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "optimize-review",
+          "title": "정리",
+          "summary": "실무의 기본값.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "다음으로",
+      "goal": "이 위에 무엇을 올릴까.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "spring-data-jpa",
+          "title": "스프링 데이터 JPA",
+          "summary": "EntityManager 를 걷어낸다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "querydsl-intro",
+          "title": "Querydsl",
+          "summary": "동적 쿼리를 다섯 번째로.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "whats-fixed",
+          "title": "1편의 스물한 개",
+          "summary": "무엇이 남았나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "two-books",
+          "title": "두 권이 만든 것",
+          "summary": "화면과 API.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "서가 여덟 권과 그다음.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

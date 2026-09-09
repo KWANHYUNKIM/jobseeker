@@ -1,0 +1,121 @@
+{
+ "book": "jpa-app-2",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "응답 하나에 쿼리 몇 개인가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 방법을 안다.",
+  "매 절이 무엇으로 끝나는지 안다.",
+  "버전 번호의 의미를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 여덟 번째 책**이다. **1편의 프로젝트를 그대로** 이어받는다."
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 것",
+   "ascii": "   every section ends with two things\n\n   [{\"orderId\":4,\"name\":\"userA\",\"orderDate\":\"...\"}]\n\n   Session Metrics { 31 JDBC statements were executed }\n\n   the json stays the same across versions\n   the number goes down",
+   "note": "**JSON 은 그대로, 숫자만 준다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 둘을 나란히 두나",
+   "md": "**같은 응답을 여섯 번 만든다.**\n\n**응답이 같으니 비교할 것이 쿼리 개수뿐**이다.\n\n> **「DB 2편」 2.1절에서 \"다른 것이 하나뿐이어야 비교가 된다\" 고** 했다.\n>\n> **거기서는 기술이 변수**였다 — JdbcTemplate·MyBatis·JPA.\n> **여기서는 조회 방법이 변수**다 — 엔티티·DTO·페치 조인·배치.\n\n**JSON 을 매번 보여 주는 이유**가 있다.\n\n> **최적화가 응답을 바꾸면 최적화가 아니다.**\n>\n> **5.5절과 5.11절에서 실제로 바뀐다** — 중복 행이 생긴다. **그것이 함정**이다.\n\n**숫자만 보면 못 잡는다.**\n\n| | 쿼리 | 응답 |\n|---|---|---|\n| V3 (distinct 없이) | **1** | **행이 늘었다** |\n| V6 (플랫) | **1** | **행이 늘었다** |\n\n**둘 다 쿼리 하나인데 응답이 틀렸다.**\n\n> **그래서 매 절이 JSON 과 숫자 둘 다로** 끝난다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 가는 길",
+   "ascii": "   where this book goes\n\n   v1   entity exposed        31   and it does not even serialize\n   v2   dto                   31\n   v3   fetch join             1\n   v3.1 batch size             3   and paging works\n   v4   dto direct           1+N\n   v5   in clause              2\n   v6   flat                   1   with duplicate rows\n\n   not a straight line down. that is the point.",
+   "note": "**단조 감소가 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "버전 번호를 건너뛰지 않는다",
+   "md": "**V1 부터 V6 까지**다. **강의의 번호를 그대로** 쓴다.\n\n| 버전 | 무엇 |\n|---|---|\n| **V1** | 엔티티를 그대로 노출 |\n| **V2** | DTO 로 변환 |\n| **V3** | 페치 조인 |\n| **V3.1** | 배치 사이즈 |\n| **V4** | JPA 에서 DTO 로 바로 |\n| **V5** | `in` 절 최적화 |\n| **V6** | 플랫 데이터 |\n\n**앞 버전의 문제가 다음 버전의 이유**다.\n\n> **V3 만 보면 \"페치 조인 쓰면 되네\" 로** 끝난다.\n> **V2 의 N+1 을 봐야 왜 페치 조인인지** 안다.\n> **V3 의 페이징 한계를 봐야 왜 V3.1 인지** 안다.\n\n**V4 에서 쿼리가 다시 는다.**\n\n> **1 + N** 이다. **V3 보다 나쁘다.**\n>\n> **그런데 V5 로 가는 길**이다. **V5 가 최종 형태**다.\n\n**단조 감소가 아닌 것**이 이 책의 특징이다.\n\n> **\"최적화\" 가 한 방향이 아니다.** **재사용성·유연성·성능이 서로 다른 방향**을 가리킨다.\n>\n> **5.12절에서 여섯을 한 표에** 놓고 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "책의 뼈대",
+   "md": "| 장 | 무엇 |\n|---|---|\n| **1** | 시작하기 전에 |\n| **2** | **API 개발 기본** — 엔티티를 API 에 쓰면 |\n| **3** | 준비 — 무엇을 잴까 |\n| **4** | **컬렉션 없는 조회** — 네 버전 |\n| **5** | **컬렉션 조회** — 여섯 버전 |\n| **6** | 실무 필수 최적화 — OSIV |\n| **7** | 다음으로 |\n\n**4장과 5장이 본론**이다.\n\n> **4장은 `@ManyToOne` 만** 있다. **주문·회원·배송.**\n> **5장에 `@OneToMany` 가** 붙는다. **주문상품.**\n>\n> **컬렉션 하나가 문제를 완전히 다르게** 만든다. **그래서 장을 나눴다.**\n\n**2장을 건너뛰지 않는다.**\n\n> **1편 9.1절에서 \"엔티티를 화면에 넘긴 대가\" 를** 셌다. **API 에서는 그 대가가 더 크다.**\n>\n> **프록시 직렬화 오류·무한 재귀·API 스펙 결합** — 화면에는 없던 문제들이다.\n\n**6장은 1편 9.3절의 연장**이다. **거기서 \"트래픽을 봐야 판단된다\" 고 하고 미뤘다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리",
+   "sql": "# --- 이 책이 만들 응답 (미리 보기) ---\n\nGET /api/v3/orders\n\n#   200 OK\n#   Content-Type: application/json\n\n[\n  {\n    \"orderId\": 4,\n    \"name\": \"userA\",\n    \"orderDate\": \"2026-09-09T15:12:03.331\",\n    \"orderStatus\": \"ORDER\",\n    \"address\": {\n      \"city\": \"서울\",\n      \"street\": \"1\",\n      \"zipcode\": \"1111\"\n    },\n    \"orderItems\": [\n      {\"itemName\": \"JPA1 BOOK\", \"orderPrice\": 10000, \"count\": 1},\n      {\"itemName\": \"JPA2 BOOK\", \"orderPrice\": 20000, \"count\": 2}\n    ]\n  },\n  ...\n]\n\n# --- V1 로 만들면 ---\n\nGET /api/v1/orders\n\n#   500 Internal Server Error\n#   Could not write JSON: Infinite recursion (StackOverflowError)\n\n#   응답조차 안 나온다  (4.2절)\n\n# --- V2 로 만들면 ---\n\n#   200 OK  (같은 JSON)\n\n#   Session Metrics { 31 JDBC statements were executed }\n\n# --- V3 로 만들면 ---\n\n#   200 OK  (같은 JSON)\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   31 -> 1\n\n# --- 그런데 V3 에 페이징을 걸면 ---\n\nGET /api/v3/orders?offset=0&limit=100\n\n#   200 OK  (같은 JSON)\n\n#   WARN  HHH90003004: firstResult/maxResults specified with\n#         collection fetch; applying in memory\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   쿼리는 1인데 전 건을 메모리에 올렸다   (5.6절)\n\n# --- V3.1 로 바꾸면 ---\n\nGET /api/v3.1/orders?offset=0&limit=100\n\n#   200 OK  (같은 JSON)\n\n#   Session Metrics { 3 JDBC statements were executed }\n\n#   쿼리는 3인데 페이징이 된다\n\n#   1 보다 3 이 나은 경우다\n\n# --- 이 책이 하는 일 ---\n\n#   JSON 을 고정하고\n#   그 아래 숫자와 경고를 본다\n\n#   숫자가 작다고 나은 것이 아니다\n\n# --- 다음 절에서 ---\n\n#   1편이 무엇을 남겼는지 확인한다",
+   "note": "**V1 은 응답조차 안 나온다.** **`Infinite recursion`** 이다 — 4.2절.\n\n**V2 와 V3 의 JSON 이 같다.** **31 과 1** 이다.\n\n**V3 에 페이징을 걸면 쿼리는 1인데 경고**가 나온다. **전 건을 메모리에** 올렸다.\n\n**V3.1 은 쿼리 3인데 페이징이 된다.** **1 보다 3 이 나은 경우**다.\n\n**숫자가 작다고 나은 것이 아니다.** **그래서 JSON 과 경고까지 같이** 본다.\n\n**다음 절에서 1편이 남긴 것을 확인한다.**"
+  }
+ ],
+ "recap": [
+  "**매 절이 JSON 과 쿼리 개수**로 끝난다.",
+  "**응답이 같으니 비교할 것이 숫자뿐**이다.",
+  "**최적화가 응답을 바꾸면 최적화가 아니다.**",
+  "**V1 부터 V6 까지** — 앞 버전의 문제가 다음 버전의 이유다.",
+  "**단조 감소가 아니다** — V4 에서 다시 는다.",
+  "**4장은 컬렉션 없이, 5장은 있이** 푼다.",
+  "**컬렉션 하나가 문제를 완전히 다르게** 만든다.",
+  "**2장을 건너뛰지 않는다** — API 에서 엔티티 노출의 대가가 더 크다.",
+  "**숫자가 작다고 나은 것이 아니다.**"
+ ],
+ "drills": [
+  {
+   "task": "이 책의 버전 목록을 적어 둔다.",
+   "done_when": "V1~V6 이 무엇인지 한 줄씩 붙였다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편 9.4절을 다시 읽는다.",
+   "done_when": "31이라는 숫자가 어디서 왔는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "\"최적화가 응답을 바꾸면\" 이 무슨 뜻일지 예상해 본다.",
+   "done_when": "5.5절에서 확인할 것을 메모했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매 절이 무엇으로 끝나나?",
+   "a": "나간 JSON 과 그것을 만든 쿼리 개수 둘이다."
+  },
+  {
+   "q": "왜 JSON 도 같이 보나?",
+   "a": "최적화가 응답을 바꾸는 경우가 있어서다. 숫자만 보면 못 잡는다."
+  },
+  {
+   "q": "버전이 단조 감소인가?",
+   "a": "아니다. V4 에서 다시 는다. V5 로 가는 길이다."
+  },
+  {
+   "q": "4장과 5장의 차이는?",
+   "a": "컬렉션(`@OneToMany`)이 있느냐 없느냐다."
+  },
+  {
+   "q": "쿼리 1이 항상 최선인가?",
+   "a": "아니다. V3 는 1인데 페이징이 안 되고 V3.1 은 3인데 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "실전! 스프링 부트와 JPA 활용2 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-API개발-성능최적화",
+   "publisher": "인프런 · 김영한"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}
