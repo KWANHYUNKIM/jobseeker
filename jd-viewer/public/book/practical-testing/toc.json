@@ -309,7 +309,7 @@
           "title": "데이터 정리",
           "summary": "테스트끼리 간섭한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",
@@ -317,7 +317,7 @@
           "title": "직접 해 보기",
           "summary": "주문 생성 전 계층.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.11",

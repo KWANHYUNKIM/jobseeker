@@ -1,0 +1,131 @@
+{
+ "book": "practical-testing",
+ "id": "data-cleanup",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "데이터 정리",
+ "summary": "테스트끼리 간섭한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 남는지 안다.",
+  "정리 순서를 안다.",
+  "`deleteAll` 과 `deleteAllInBatch` 를 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 `tearDown` 을 지우니 깨졌다.** **왜 그런지 여기서** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트 사이에 남는 것",
+   "ascii": "   what leaks between tests\n\n   rows            the obvious one\n   identity values the next id keeps counting up\n   sequences       same\n   caches          second level cache, if enabled\n\n   deleting rows fixes the first one only",
+   "note": "**행을 지워도 나머지는** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇이 남나",
+   "md": "**① 행**\n\n> **가장 명백**하다. **5.3절에서 `(\"001\", 0)` 이 남아** 있었다.\n\n**② 식별자 값**\n\n```java\n@GeneratedValue(strategy = IDENTITY)\nprivate Long id;\n```\n\n> **행을 지워도 다음 `id` 는 이어서** 나간다.\n>\n> **`assertThat(saved.getId()).isEqualTo(1L)` 같은 단언은** 두 번째 실행에서 깨진다.\n> **`id` 값을 단언하지 않는다.**\n\n**③ 시퀀스**\n\n> **`SEQUENCE` 전략도** 같다.\n> **`ALTER SEQUENCE ... RESTART` 를 하지 않는 한 안** 돌아간다.\n\n**④ 캐시**\n\n> **2차 캐시를 켰으면 DB 를 비워도 캐시에** 남는다.\n> **「활용 2편」 6.4절**의 그것이다.\n>\n> **테스트에서는 대개 꺼** 둔다.\n\n**행만 지우면 되는 경우가 대부분**이다.\n\n> **`id` 를 단언 안 하고 캐시를 안 켜면** 그렇다.\n> **그 둘을 지키는 게 먼저**다."
+  },
+  {
+   "type": "figure",
+   "caption": "지우는 순서",
+   "ascii": "   the order deletes have to run in\n\n   order_product   references orders and product\n   orders\n   product\n   stock\n\n   delete the child first, or the fk blows up\n\n   and this list has to be edited every time a table is added",
+   "note": "**자식부터 지운다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "순서를 틀리면",
+   "md": "```java\n@AfterEach\nvoid tearDown() {\n    productRepository.deleteAllInBatch();      // 부모부터\n    orderProductRepository.deleteAllInBatch();\n}\n```\n\n```\norg.springframework.dao.DataIntegrityViolationException:\n  Referential integrity constraint violation:\n  \"FKC3DPFRHOC4C4OTOJDVL4E9UAX: PUBLIC.ORDER_PRODUCT FOREIGN KEY(PRODUCT_ID)\n   REFERENCES PUBLIC.PRODUCT(ID)\"\n```\n\n> **`order_product` 가 `product` 를 참조**한다.\n> **부모를 먼저 지울 수** 없다.\n\n**자식부터**\n\n```java\n@AfterEach\nvoid tearDown() {\n    orderProductRepository.deleteAllInBatch();\n    orderRepository.deleteAllInBatch();\n    productRepository.deleteAllInBatch();\n    stockRepository.deleteAllInBatch();\n}\n```\n\n**문제는 이 목록을 손으로 관리**한다는 것이다.\n\n| | |\n|---|---|\n| 테이블이 늘면 | **줄을 더한다** |\n| 관계가 바뀌면 | **순서를 고친다** |\n| 빠뜨리면 | **다른 테스트가 깨진다** |\n\n> **그리고 어느 테스트가 깨질지 예측이 안** 된다.\n> **실행 순서에 달렸다**(2.1절).\n\n**대안 셋**\n\n| | |\n|---|---|\n| **`@Transactional`** | 5.6절의 함정 |\n| **`@Sql` 스크립트** | `truncate` 를 직접 |\n| **공통 부모의 `tearDown`** | 한 군데서 관리 |\n\n> **세 번째가 실용적**이다. **5.7절의 `IntegrationTestSupport` 에** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`deleteAll` 과 `deleteAllInBatch`",
+   "md": "**둘 다 스프링 데이터 JPA 가** 준다. **하는 일이 완전히 다르다.**\n\n**`deleteAll()`**\n\n```sql\nselect ... from product\ndelete from product where id=?\ndelete from product where id=?\ndelete from product where id=?\n```\n\n> **전부 조회하고 하나씩** 지운다.\n> **행이 100개면 쿼리 101개**다.\n>\n> **「활용 2편」 4.4절의 N+1 과 같은 모양**이다.\n\n**`deleteAllInBatch()`**\n\n```sql\ndelete from product\n```\n\n> **한 방**이다.\n\n**왜 `deleteAll` 이 그렇게 도나**\n\n> **영속성 컨텍스트와 연관관계를 챙기려고**다.\n> **`cascade = REMOVE` 가 걸려 있으면 자식도 같이** 지운다.\n>\n> **`deleteAllInBatch` 는 JPQL `delete` 라 그걸 무시**한다.\n> **연관관계를 직접 챙겨야** 한다.\n\n**테스트 정리에는 `deleteAllInBatch`** 다.\n\n| | |\n|---|---|\n| **빠르다** | 쿼리 1개 |\n| **순서만 지키면** 된다 | |\n\n> **7.6절에서 이걸 다시 잰다** — **쿼리 개수를 세는 테스트**로.\n\n**주의** — **`deleteAllInBatch` 는 영속성 컨텍스트를 안** 비운다.\n\n> **같은 트랜잭션 안에서 부르면 1차 캐시에 남아** 있다.\n> **`@AfterEach` 는 트랜잭션 밖이라 문제가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 정리를 안 하면 ---\n\n@SpringBootTest\nclass OrderServiceTest {\n    // @AfterEach 없음\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 FAILED\n    java.lang.AssertionError:\n    Expecting ArrayList:\n      [(\"001\", 0), (\"001\", 2), (\"002\", 0)]\n    to contain exactly in any order:\n      [(\"001\", 2), (\"002\", 0)]\n\n#   앞 테스트의 (\"001\", 0) 이 남아 있다\n\n# --- 순서를 바꿔 돌리면 ---\n\n$ ./gradlew test --tests OrderServiceTest -Dtest.order=reverse\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 FAILED\n    Expecting ArrayList:\n      [(\"001\", 2), (\"002\", 0), (\"001\", 0)]\n\n#   이번엔 반대가 깨진다\n\n#   실행 순서에 따라 결과가 바뀐다  (7.11절)\n\n# --- 부모부터 지우면 ---\n\n@AfterEach\nvoid tearDown() {\n    productRepository.deleteAllInBatch();\n    orderProductRepository.deleteAllInBatch();\n    orderRepository.deleteAllInBatch();\n    stockRepository.deleteAllInBatch();\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: delete from product\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... FAILED\n    org.springframework.dao.DataIntegrityViolationException:\n    Referential integrity constraint violation:\n    \"FKC3DPFRHOC4C4OTOJDVL4E9UAX: PUBLIC.ORDER_PRODUCT FOREIGN KEY(PRODUCT_ID)\n     REFERENCES PUBLIC.PRODUCT(ID)\"\n\n#   FK 가 막는다\n\n# --- 자식부터 ---\n\n@AfterEach\nvoid tearDown() {\n    orderProductRepository.deleteAllInBatch();\n    orderRepository.deleteAllInBatch();\n    productRepository.deleteAllInBatch();\n    stockRepository.deleteAllInBatch();\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: delete from order_product\nHibernate: delete from orders\nHibernate: delete from product\nHibernate: delete from stock\n\nOrderServiceTest > 같은 상품을 두 개 주문하면 재고가 두 개 줄어든다 PASSED\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\nBUILD SUCCESSFUL in 8s\n\n#   쿼리 네 개다\n\n# --- deleteAll 로 바꾸면 ---\n\n@AfterEach\nvoid tearDown() {\n    orderProductRepository.deleteAll();\n    orderRepository.deleteAll();\n    productRepository.deleteAll();\n    stockRepository.deleteAll();\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: select op1_0.id, ... from order_product op1_0\nHibernate: delete from order_product where id=?\nHibernate: delete from order_product where id=?\nHibernate: select o1_0.id, ... from orders o1_0\nHibernate: select op1_0.order_id, ... from order_product op1_0\n           where op1_0.order_id=?\nHibernate: delete from orders where id=?\nHibernate: select p1_0.id, ... from product p1_0\nHibernate: delete from product where id=?\nHibernate: delete from product where id=?\nHibernate: select s1_0.id, ... from stock s1_0\nHibernate: delete from stock where id=?\nHibernate: delete from stock where id=?\n\nOrderServiceTest > ... PASSED\n\n#   쿼리가 12개다\n\n#   4개가 12개가 됐다. 데이터가 두 건뿐인데\n\n#   행이 100개면 400개가 넘는다\n\n#   7.6절에서 이걸 다시 다룬다\n\n# --- id 가 이어지는 것 ---\n\n@Test\nvoid saveTwice() {\n    Product saved = productRepository.save(createProduct(\"001\", 4000));\n    System.out.println(\">>> id: \" + saved.getId());\n}\n\n$ ./gradlew test --tests ProductRepositoryTest\n\n>>> id: 1\n\n$ ./gradlew test --tests ProductRepositoryTest --rerun-tasks\n\n>>> id: 1\n\n#   테스트 클래스가 새로 뜨면 DB 도 새로 만들어져 1 부터다\n\n#   그런데 같은 클래스 안의 두 테스트는\n\n@Test void first()  { System.out.println(\">>> \" + save().getId()); }\n@Test void second() { System.out.println(\">>> \" + save().getId()); }\n\n>>> 1\n>>> 2\n\n#   deleteAllInBatch 로 행을 지워도 2 가 나온다\n\n#   IDENTITY 는 안 되돌아간다\n\n#   그래서 id 값을 단언하지 않는다\n\nassertThat(saved.getId()).isEqualTo(1L);      # 나쁘다\nassertThat(saved.getId()).isNotNull();        # 이걸로 충분하다\n\n# --- 공통 부모로 빼면 ---\n\n@ActiveProfiles(\"test\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport {\n\n    @Autowired protected OrderProductRepository orderProductRepository;\n    @Autowired protected OrderRepository orderRepository;\n    @Autowired protected ProductRepository productRepository;\n    @Autowired protected StockRepository stockRepository;\n\n    @AfterEach\n    void tearDown() {\n        orderProductRepository.deleteAllInBatch();\n        orderRepository.deleteAllInBatch();\n        productRepository.deleteAllInBatch();\n        stockRepository.deleteAllInBatch();\n    }\n}\n\nclass OrderServiceTest extends IntegrationTestSupport { }\n\n$ ./gradlew test\n\n32 tests completed\n\nBUILD SUCCESSFUL in 19s\n\n#   순서를 한 군데서 관리한다\n\n#   테이블이 늘면 여기만 고친다\n\n# --- 그래도 빠뜨리면 ---\n\n#   새 엔티티 Coupon 을 만들고 tearDown 에 안 넣으면\n\nCouponServiceTest > 쿠폰을 적용하면 할인된다 PASSED\nOrderServiceTest > 같은 상품을 두 개 주문하면 ... FAILED\n    (남은 쿠폰 데이터가 주문 금액을 바꿨다)\n\n#   증상이 엉뚱한 데서 나온다\n\n#   그래서 5.6절의 @Transactional 이 편해 보이는 것이다\n\n#   편한 대신 넷을 가린다\n\n# --- 다음 절에서 ---\n\n#   지금까지 배운 걸로 전 계층을 한 번 짠다",
+   "note": "**정리를 안 하면 앞 테스트의 `(\"001\", 0)` 이** 남는다. **순서를 바꾸면 반대가** 깨진다.\n\n**부모부터 지우면 FK 가** 막는다. **자식부터 지우면 쿼리 네 개**다.\n\n**`deleteAll` 로 바꾸면 데이터가 두 건인데 쿼리 12개**다.\n\n**`IDENTITY` 는 행을 지워도 안 되돌아간다.** **`id` 값을 단언하지 않는다.**\n\n**공통 부모로 빼면 순서를 한 군데서** 관리한다. **그래도 빠뜨리면 증상이 엉뚱한 데서** 나온다."
+  }
+ ],
+ "recap": [
+  "**행·식별자·시퀀스·캐시가** 남는다.",
+  "**행만 지우면 되는 경우가 대부분**이다 — `id` 를 단언 안 하면.",
+  "**자식부터 지운다** — 부모부터면 FK 가 막는다.",
+  "**목록을 손으로 관리**한다 — 빠뜨리면 엉뚱한 데서 터진다.",
+  "**`deleteAll` 은 조회 후 하나씩, `deleteAllInBatch` 는 한 방**이다.",
+  "**두 건인데 4개 대 12개**다.",
+  "**`deleteAll` 이 그런 건 연관관계를 챙기려고**다.",
+  "**`IDENTITY` 는 안 되돌아간다** — `isNotNull()` 로 충분하다.",
+  "**공통 부모의 `tearDown` 이** 실용적이다."
+ ],
+ "drills": [
+  {
+   "task": "`tearDown` 을 지우고 두 테스트를 돌린다.",
+   "done_when": "간섭을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "삭제 순서를 뒤집어 본다.",
+   "done_when": "FK 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`deleteAll` 과 `deleteAllInBatch` 의 쿼리를 센다.",
+   "done_when": "개수 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 클래스에서 두 번 저장해 `id` 를 찍는다.",
+   "done_when": "안 되돌아가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테스트 사이에 뭐가 남나?",
+   "a": "행, 식별자 값, 시퀀스, 캐시다."
+  },
+  {
+   "q": "삭제 순서는?",
+   "a": "FK 를 참조하는 자식부터다. 부모부터면 제약 위반이다."
+  },
+  {
+   "q": "`deleteAll` 과 `deleteAllInBatch` 의 차이는?",
+   "a": "전자는 조회 후 하나씩 지우고 후자는 `delete from` 한 방이다."
+  },
+  {
+   "q": "왜 `id` 값을 단언하면 안 되나?",
+   "a": "`IDENTITY` 는 행을 지워도 안 되돌아가 두 번째 테스트에서 깨진다."
+  },
+  {
+   "q": "정리 코드를 어디에 두나?",
+   "a": "공통 부모 클래스의 `@AfterEach` 다. 한 군데서 순서를 관리한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

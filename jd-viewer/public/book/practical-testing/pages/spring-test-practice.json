@@ -1,0 +1,147 @@
+{
+ "book": "practical-testing",
+ "id": "spring-test-practice",
+ "no": "5.10",
+ "chapter": 5,
+ "title": "직접 해 보기",
+ "summary": "주문 생성 전 계층.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요구사항 하나를 세 계층으로 나눈다.",
+  "쓰는 순서를 정한다.",
+  "5장의 규칙을 다 적용한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 한 줄**이다. **세 계층에서 각각 다르게** 검증된다."
+  },
+  {
+   "type": "prose",
+   "md": "```\n판매 중인 상품만 주문할 수 있다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "한 요구사항, 세 테스트",
+   "ascii": "   one requirement, three tests, three layers\n\n   \"판매 중인 상품만 주문할 수 있다\"\n\n   repository   findAllByProductNumberIn returns what i asked for\n   service      an order with a stopped product throws\n   controller   an empty product number list is a 400\n\n   the same sentence, three different failures",
+   "note": "**같은 문장에 다른 실패**다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓰는 순서",
+   "ascii": "   the order to write them in\n\n   1  service test        the rule is here. write it first.\n   2  repository test     only if the query is mine\n   3  controller test     only the request contract\n\n   starting from the controller makes you stub the rule,\n   and then the rule is never really tested",
+   "note": "**서비스부터**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 서비스부터인가",
+   "md": "**규칙이 거기** 있다.\n\n> **\"판매 중인 상품만\" 은 비즈니스 규칙**이다.\n> **5.1절에서 비즈니스 계층이 가장 값어치 있다고** 했다.\n\n**컨트롤러부터 시작하면**\n\n```java\ngiven(orderService.createOrder(any(), any()))\n        .willThrow(new IllegalArgumentException(\"판매 중이 아닌 상품입니다.\"));\n```\n\n> **규칙을 스텁**한다. **그럼 규칙 자체는 테스트가 안** 됐다.\n>\n> **5.4절에서 \"스텁한 값을 검증하는 건 형식 검증\" 이라고** 했다.\n\n**리포지토리부터 시작하면**\n\n> **어떤 쿼리가 필요한지 아직** 모른다.\n> **서비스를 쓰다 보면 `findAllByProductNumberIn` 이** 필요해진다.\n>\n> **3.3절의 \"테스트가 API 설계\" 와 같은** 이야기다.\n\n**서비스 테스트를 짜다 아래가** 나온다.\n\n```\n서비스 테스트를 쓴다\n  -> 상품을 상품 번호로 찾아야 한다\n    -> findAllByProductNumberIn 이 필요하다\n      -> 리포지토리 테스트를 쓴다\n```\n\n**컨트롤러는 마지막**이다.\n\n> **규칙이 정해진 뒤에 그 규칙을 어떻게 노출할지** 정한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "① 서비스 테스트 — 규칙",
+   "code": "class OrderServiceTest extends IntegrationTestSupport {\n\n    @Autowired\n    private OrderService orderService;\n\n    @DisplayName(\"판매 중지된 상품이 있으면 주문할 수 없다\")\n    @Test\n    void createOrderWithStopSellingProduct() {\n        // given\n        productRepository.saveAll(List.of(\n                createProduct(\"001\", SELLING, 4000),\n                createProduct(\"002\", STOP_SELLING, 4500)));\n\n        OrderCreateRequest request = OrderCreateRequest.builder()\n                .productNumbers(List.of(\"001\", \"002\"))\n                .build();\n\n        // when & then\n        assertThatThrownBy(() -> orderService.createOrder(request, 영업중))\n                .isInstanceOf(IllegalArgumentException.class)\n                .hasMessage(\"판매 중이 아닌 상품이 포함되어 있습니다.\");\n\n        assertThat(orderRepository.findAll()).isEmpty();\n    }\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "② 리포지토리 테스트 — 내가 쓴 쿼리",
+   "code": "@DataJpaTest\n@ActiveProfiles(\"test\")\nclass ProductRepositoryTest {\n\n    @Autowired\n    private ProductRepository productRepository;\n\n    @DisplayName(\"상품 번호 목록으로 조회하면 해당 상품들만 나온다\")\n    @Test\n    void findAllByProductNumberIn() {\n        // given\n        productRepository.saveAll(List.of(\n                createProduct(\"001\", SELLING, \"아메리카노\", 4000),\n                createProduct(\"002\", HOLD, \"카페라떼\", 4500),\n                createProduct(\"003\", STOP_SELLING, \"팥빙수\", 7000)));\n\n        // when\n        List<Product> products =\n                productRepository.findAllByProductNumberIn(List.of(\"001\", \"002\"));\n\n        // then\n        assertThat(products).hasSize(2)\n                .extracting(\"productNumber\", \"name\", \"sellingStatus\")\n                .containsExactlyInAnyOrder(\n                        tuple(\"001\", \"아메리카노\", SELLING),\n                        tuple(\"002\", \"카페라떼\", HOLD));\n    }\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "③ 컨트롤러 테스트 — 요청 계약",
+   "code": "class OrderControllerTest extends ControllerTestSupport {\n\n    @DisplayName(\"주문 시 상품 번호는 1개 이상이어야 한다\")\n    @Test\n    void createOrderWithEmptyProductNumbers() throws Exception {\n        // given\n        OrderCreateRequest request = OrderCreateRequest.builder()\n                .productNumbers(List.of())\n                .build();\n\n        // when & then\n        mockMvc.perform(post(\"/api/v1/orders/new\")\n                        .content(objectMapper.writeValueAsString(request))\n                        .contentType(APPLICATION_JSON))\n                .andExpect(status().isBadRequest())\n                .andExpect(jsonPath(\"$.message\").value(\"상품 번호 리스트는 필수입니다.\"));\n\n        verify(orderService, never()).createOrder(any(), any());\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "5장의 규칙을 다 썼다",
+   "md": "| 규칙 | 어디에 |\n|---|---|\n| **계층별로 다른 것을 본다** | 셋이 다 다르다 (5.1) |\n| **내가 쓴 쿼리만** | `findAllByProductNumberIn` (5.2) |\n| **실패 경로의 DB 상태** | `orderRepository.findAll()).isEmpty()` (5.3) |\n| **DTO 검증만** | `verify(never())` (5.4) |\n| **팩터리 메서드** | `createProduct(...)` (5.5) |\n| **`@Transactional` 안 붙임** | 서비스 테스트 (5.6) |\n| **슬라이스와 공통 부모** | `IntegrationTestSupport` (5.7) |\n| **통합은 규칙, 슬라이스는 계약** | (5.8) |\n| **`tearDown` 은 부모에** | (5.9) |\n\n**4장의 규칙도** 그대로다.\n\n> **`@DisplayName` 이 문장이고 세 칸으로** 나뉜다.\n> **`영업중` 상수에 이름이** 있다.\n\n**하나가 빠졌다.**\n\n> **판매 중지 상품 하나만 주문하면?**\n> **없는 상품 번호를 보내면?**\n>\n> **2.4절의 케이스 세분화**다. **서비스 테스트에 더** 짠다.\n>\n> **그건 세 계층에 다 짤 필요가 없다** — **규칙이니 서비스에만**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- ① 서비스 테스트부터 ---\n\n$ ./gradlew test --tests OrderServiceTest\n\n> Task :compileTestJava FAILED\nOrderServiceTest.java:52: error: cannot find symbol\n        productRepository.findAllByProductNumberIn(productNumbers)\n                         ^\n\n#   빨강이다. 리포지토리 메서드가 없다\n\n#   3.2절의 첫 빨강과 같다\n\n# --- 리포지토리 메서드를 만든다 ---\n\nList<Product> findAllByProductNumberIn(List<String> productNumbers);\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: select p1_0.id, ... from product p1_0\n           where p1_0.product_number in (?,?)\n\nOrderServiceTest > 판매 중지된 상품이 있으면 주문할 수 없다 FAILED\n    java.lang.AssertionError:\n    Expecting code to raise a throwable.\n\n#   조회는 되는데 검증이 없다\n\n# --- 서비스에 규칙을 넣는다 ---\n\nprivate List<Product> findProductsBy(List<String> productNumbers) {\n    List<Product> products =\n            productRepository.findAllByProductNumberIn(productNumbers);\n\n    boolean hasNotSelling = products.stream()\n            .anyMatch(p -> p.getSellingStatus() == STOP_SELLING);\n    if (hasNotSelling) {\n        throw new IllegalArgumentException(\"판매 중이 아닌 상품이 포함되어 있습니다.\");\n    }\n    ...\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\nHibernate: select ... from product p1_0 where p1_0.product_number in (?,?)\nHibernate: select o1_0.id, ... from orders o1_0\nHibernate: delete from order_product\nHibernate: delete from orders\nHibernate: delete from product\nHibernate: delete from stock\n\nOrderServiceTest > 판매 중지된 상품이 있으면 주문할 수 없다 PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   insert into orders 가 안 나갔다\n\n#   tearDown 이 자식부터 돈다  (5.9절)\n\n# --- ② 리포지토리 테스트 ---\n\n$ ./gradlew test --tests ProductRepositoryTest\n\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: insert into product (...) values (?,?,?,?,?)\nHibernate: select p1_0.id, p1_0.name, p1_0.price, p1_0.product_number,\n                  p1_0.selling_status, p1_0.type\n           from product p1_0\n           where p1_0.product_number in (?,?)\nbinding parameter (1:VARCHAR) <- [001]\nbinding parameter (2:VARCHAR) <- [002]\n\nProductRepositoryTest > 상품 번호 목록으로 조회하면 해당 상품들만 나온다 PASSED\n\nBUILD SUCCESSFUL in 5s\n\n#   in (?,?) 이 나갔다\n\n#   sellingStatus 를 안 거른다\n#   그건 서비스의 몫이다\n\n# --- ③ 컨트롤러 테스트 ---\n\n$ ./gradlew test --tests OrderControllerTest\n\nMockHttpServletRequest:\n             Body = {\"productNumbers\":[]}\n\nMockHttpServletResponse:\n           Status = 400\n            Body = {\"code\":400,\"status\":\"BAD_REQUEST\",\n                    \"message\":\"상품 번호 리스트는 필수입니다.\",\"data\":null}\n\nOrderControllerTest > 주문 시 상품 번호는 1개 이상이어야 한다 PASSED\n\nBUILD SUCCESSFUL in 4s\n\n#   Hibernate 로그가 없다\n\n#   판매 상태를 안 본다. 서비스가 목이다\n\n# --- 셋을 한꺼번에 ---\n\n$ ./gradlew test\n\n카페 키오스크 ... 13 tests\n주문 ... 5 tests\n할인 계산 ... 7 tests\nProductRepositoryTest ... 4 tests\nOrderServiceTest ... 4 tests\nOrderControllerTest ... 3 tests\n\n36 tests completed\n\nBUILD SUCCESSFUL in 20s\n\n# --- 규칙을 깨뜨려 본다 ---\n\n#   판매 중지 검증을 지우면\n\nboolean hasNotSelling = false;   // 검증 무력화\n\n$ ./gradlew test\n\nOrderServiceTest > 판매 중지된 상품이 있으면 주문할 수 없다 FAILED\n    Expecting code to raise a throwable.\n\n36 tests completed, 1 failed\n\n#   하나만 깨진다\n\n#   5.1절의 '각 계층은 자기 이유로 깨진다' 가 지켜졌다\n\n# --- 5.1절의 잘못된 버전이었다면 ---\n\n#   컨트롤러 테스트가 서비스를 진짜로 부르는 판\n\nOrderServiceTest > 판매 중지된 상품이 있으면 ... FAILED\nOrderControllerTest > 판매 중지 상품을 주문하면 400 ... FAILED\nOrderE2ETest > 주문 API 를 호출하면 ... FAILED\n\n3 tests failed\n\n#   한 이유로 셋이 깨진다\n\n# --- 빠진 케이스 ---\n\n#   [ ] 판매 중지 상품만 주문하면?\n#   [ ] 없는 상품 번호를 보내면?\n#   [ ] HOLD 상품은 주문되나?\n\n#   셋 다 서비스 테스트다\n\n#   2.4절의 케이스 세분화를 계층에도 적용한다\n\n# --- 다음 절에서 ---\n\n#   5장을 정리한다",
+   "note": "**서비스 테스트의 첫 빨강이 컴파일 오류**다. **3.2절의 첫 빨강과** 같다.\n\n**규칙을 넣으니 `insert into orders` 가 안** 나간다.\n\n**리포지토리는 `in (?,?)` 만** 본다. **`sellingStatus` 를 안 거른다** — 그건 서비스의 몫.\n\n**컨트롤러는 `Hibernate` 로그가** 없다.\n\n**판매 중지 검증을 지우면 36개 중 하나만** 깨진다. **5.1절의 규칙이** 지켜졌다."
+  }
+ ],
+ "recap": [
+  "**요구사항 하나가 세 계층에서 다르게** 검증된다.",
+  "**서비스부터** 짠다 — 규칙이 거기 있다.",
+  "**컨트롤러부터 하면 규칙을 스텁**하게 된다.",
+  "**서비스 테스트를 짜다 필요한 쿼리가** 나온다.",
+  "**첫 빨강이 컴파일 오류**다.",
+  "**리포지토리는 판매 상태를 안 거른다** — 서비스의 몫이다.",
+  "**컨트롤러는 `Hibernate` 로그가** 없다.",
+  "**규칙을 깨뜨리면 하나만** 깨진다.",
+  "**케이스 세분화를 계층에도** 적용한다."
+ ],
+ "drills": [
+  {
+   "task": "요구사항 하나를 세 계층으로 나눈다.",
+   "done_when": "각각 뭘 검증할지 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스 테스트부터 짠다.",
+   "done_when": "컴파일 오류 빨강을 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "규칙을 무력화해 본다.",
+   "done_when": "하나만 깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빠진 케이스 셋을 추가한다.",
+   "done_when": "서비스 테스트에만 짰다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 서비스 테스트부터 짜나?",
+   "a": "규칙이 거기 있고, 컨트롤러부터 하면 규칙을 스텁하게 된다."
+  },
+  {
+   "q": "리포지토리 테스트는 무엇을 안 보나?",
+   "a": "판매 상태 검증이다. 그건 서비스의 규칙이다."
+  },
+  {
+   "q": "규칙을 무력화하면 몇 개가 깨져야 하나?",
+   "a": "하나다. 각 계층이 자기 이유로만 깨진다."
+  },
+  {
+   "q": "필요한 쿼리는 어디서 나오나?",
+   "a": "서비스 테스트를 짜다 나온다."
+  },
+  {
+   "q": "빠진 케이스는 어느 계층에 짜나?",
+   "a": "규칙이니 서비스 테스트에만 짠다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
