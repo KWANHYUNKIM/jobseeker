@@ -1,0 +1,175 @@
+{
+ "book": "docker",
+ "id": "ops-logs",
+ "no": "10.8",
+ "chapter": 10,
+ "title": "운영에서 보는 것",
+ "summary": "로그 드라이버와 자원 지표.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "운영에서 무엇을 켜 두는지 안다.",
+  "장애 때 볼 것을 정리한다.",
+  "10장을 체크리스트로 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10장을 닫으면서, 운영에 올리기 전에 확인할 것들을 한 장으로** 모은다."
+  },
+  {
+   "type": "steps",
+   "caption": "운영 배포 전 체크리스트",
+   "items": [
+    {
+     "title": "이미지",
+     "md": "멀티 스테이지(5.7절) · 불변 태그(4.2절) · **non-root**(10.6절) · 취약점 스캔 통과 · **레이어 분리**(10.2절)"
+    },
+    {
+     "title": "실행",
+     "md": "`--restart unless-stopped`(6.3절) · **`--memory`·`--cpus`**(6.6절) · `--read-only --tmpfs /tmp` · `--cap-drop ALL`"
+    },
+    {
+     "title": "관측",
+     "md": "**로그는 stdout**(6.4절) · **로그 로테이션** · 헬스체크(6.5절) · 라벨로 커밋 추적(3.4절)"
+    },
+    {
+     "title": "데이터",
+     "md": "**볼륨**(8.2절) · 백업 절차 · **`down -v` 를 안 치는 규칙**"
+    },
+    {
+     "title": "비밀",
+     "md": "환경변수 대신 파일(10.7절) · 이미지에 없음 · CI 로그에 없음"
+    },
+    {
+     "title": "JVM",
+     "md": "`MaxRAMPercentage`(10.3절) · **graceful shutdown**(3.5절) · exec 형식 CMD"
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "caption": "장애가 나면 순서대로",
+   "columns": [
+    "순서",
+    "명령",
+    "무엇을 보나"
+   ],
+   "rows": [
+    [
+     "1",
+     "`docker ps -a`",
+     "Restarting 인가, Exited 인가(1.5절)"
+    ],
+    [
+     "2",
+     "`docker logs --tail 200 -t`",
+     "마지막 말과 시각"
+    ],
+    [
+     "3",
+     "`docker inspect -f '{{.State.ExitCode}} {{.State.OOMKilled}}'`",
+     "137 인가, OOM 인가(6.6절)"
+    ],
+    [
+     "4",
+     "`docker stats --no-stream`",
+     "메모리·CPU 가 한도에 붙어 있나"
+    ],
+    [
+     "5",
+     "`docker exec ... ss -tln` / `getent hosts`",
+     "네트워크(7.6절)"
+    ],
+    [
+     "6",
+     "`docker events --since 30m`",
+     "방금 무슨 일이 있었나"
+    ],
+    [
+     "7",
+     "`docker inspect -f '{{index .Config.Labels \"...revision\"}}'`",
+     "**어느 커밋이 돌고 있나**(3.4절)"
+    ]
+   ],
+   "note": "**1~3에서 대부분 끝난다.** **7번은 \"언제부터 이랬나\" 를 좁힌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "로그와 지표를 밖으로 내보내기",
+   "md": "**컨테이너가 죽으면 그 안의 것은 같이** 죽는다. **미리 밖으로 보낸다.**\n\n| 무엇 | 어떻게 |\n|---|---|\n| **로그** | stdout → json-file → **수집기가 파일을 읽어 간다**(promtail·fluent-bit) |\n| **지표** | 애플리케이션이 `/actuator/prometheus` 노출 → Prometheus 가 긁어 간다 |\n| **컨테이너 지표** | cAdvisor 또는 node-exporter |\n| 추적 | OpenTelemetry |\n\n**원격 로깅 드라이버 대신 파일+수집기를 쓰는 이유**(6.4절):\n\n> **`docker logs` 를 잃지 않는다.** **장애 때 그게 제일 편하다.**\n\n**컨테이너 지표를 컴포즈로 붙이면**:\n\n```yaml\n  cadvisor:\n    image: gcr.io/cadvisor/cadvisor:v0.49.1\n    volumes:\n      - /:/rootfs:ro\n      - /var/run:/var/run:ro\n      - /sys:/sys:ro\n      - /var/lib/docker/:/var/lib/docker:ro\n    ports: [\"127.0.0.1:8082:8080\"]\n    profiles: [monitoring]\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "운영에서 하지 말 것",
+   "md": "| 하지 말 것 | 왜 |\n|---|---|\n| **`docker exec` 로 고치기** | 다음 배포에 사라진다(3.6절) |\n| **`latest` 배포** | 무엇이 도는지 모른다(4.2절) |\n| `docker compose down -v` | 데이터가 사라진다(9.7절) |\n| **`--privileged`** | 격리가 없다 |\n| docker.sock 마운트 | 호스트 root(2.5절) |\n| `-p 5432:5432` 로 DB 노출 | 6.1절·7.6절 |\n| 자원 제한 없이 | 한 컨테이너가 호스트를 마비(2.1절) |\n\n> **위 목록은 전부 앞 장에서 한 번씩 나온 것**이다. **이 책이 반복해서 말한 것들의 목록이기도** 하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "운영 형태로 띄우고 상태를 훑는다",
+   "sql": "$ docker run -d --name shop \\\n    --restart unless-stopped \\\n    --memory 768m --cpus 1 \\\n    --read-only --tmpfs /tmp:size=64m \\\n    --cap-drop ALL --security-opt no-new-privileges \\\n    --pids-limit 200 \\\n    --user 10001:10001 \\\n    --log-opt max-size=10m --log-opt max-file=3 \\\n    --health-cmd 'curl -fsS http://localhost:8080/actuator/health || exit 1' \\\n    --health-interval 10s --health-start-period 40s \\\n    -e JAVA_TOOL_OPTIONS='-XX:MaxRAMPercentage=75' \\\n    -p 127.0.0.1:8080:8080 \\\n    ghcr.io/acme/shop:1.4.2 >/dev/null\n\n\n# --- 적용된 것을 한 번에 확인 ---\n\n$ docker inspect shop -f '\nuser:     {{.Config.User}}\nmemory:   {{.HostConfig.Memory}}\ncpus:     {{.HostConfig.NanoCpus}}\nreadonly: {{.HostConfig.ReadonlyRootfs}}\ncapdrop:  {{.HostConfig.CapDrop}}\npids:     {{.HostConfig.PidsLimit}}\nrestart:  {{.HostConfig.RestartPolicy.Name}}\nlogopts:  {{.HostConfig.LogConfig.Config}}\nports:    {{.HostConfig.PortBindings}}'\n\nuser:     10001:10001\nmemory:   805306368\ncpus:     1000000000\nreadonly: true\ncapdrop:  [ALL]\npids:     200\nrestart:  unless-stopped\nlogopts:  map[max-file:3 max-size:10m]\nports:    map[8080/tcp:[{127.0.0.1 8080}]]\n\n\n# --- 어느 커밋이 도는가 ---\n\n$ docker inspect shop -f '{{index .Config.Labels \"org.opencontainers.image.revision\"}}'\na1b2c3d4e5f6\n\n$ docker inspect shop -f '{{.Image}}'\nsha256:8a3f1e2b9c0d...\n\n$ docker image inspect ghcr.io/acme/shop:1.4.2 -f '{{index .RepoDigests 0}}'\nghcr.io/acme/shop@sha256:1a2b3c4d...\n\n#   4.4절의 세 줄. \"무엇이 돌고 있나\" 에 정확히 답한다\n\n\n# --- 상태 훑기 ---\n\n$ docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'\nNAMES   STATUS                    PORTS\nshop    Up 2 minutes (healthy)    127.0.0.1:8080->8080/tcp\n\n$ docker stats --no-stream --format 'table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.MemPerc}}'\nNAME   CPU %   MEM USAGE / LIMIT     MEM %\nshop   1.24%   312.4MiB / 768MiB     40.68%\n\n#   메모리가 40% 다. 10.3절의 계산대로면 여유가 있다\n\n$ docker exec shop cat /sys/fs/cgroup/cpu.stat | grep throttled\nnr_throttled 0\nthrottled_usec 0\n\n#   CPU 스로틀링이 없다 (6.6절)\n\n\n# --- 재시작 횟수 감시 ---\n\n$ docker ps -q | while read c; do\n>   docker inspect -f '{{.Name}} restarts={{.RestartCount}} oom={{.State.OOMKilled}}' $c\n> done\n/shop restarts=0 oom=false\n\n#   0 이 아니면 이유를 알아야 한다 (6.3절)\n\n\n# --- 로그 용량 ---\n\n$ docker inspect -f '{{.LogPath}}' shop\n/var/lib/docker/containers/9f2b.../9f2b...-json.log\n\n$ sudo du -sh $(docker inspect -f '{{.LogPath}}' shop) 2>/dev/null\n1.2M\t/var/lib/docker/containers/9f2b.../9f2b...-json.log\n\n#   max-size 10m 이 걸려 있으므로 30MB 를 안 넘는다 (6.4절)\n\n$ docker rm -f shop >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "운영 배포 전 체크리스트는 이미지·실행·관측·데이터·비밀·JVM 여섯 묶음이다.",
+  "장애 때는 ps -a → logs → ExitCode/OOMKilled → stats → 네트워크 → events → 라벨 순으로 본다.",
+  "로그는 stdout + json-file 로 두고 수집기가 읽어 가게 한다. docker logs 를 잃지 않는다.",
+  "운영에서 하지 말 것 — exec 로 고치기, latest 배포, down -v, --privileged, 소켓 마운트, DB 포트 노출, 무제한 자원."
+ ],
+ "drills": [
+  {
+   "task": "체크리스트의 옵션을 다 붙여 컨테이너를 띄우고 inspect 한 번으로 전부 확인한다.",
+   "done_when": "user·memory·readonly·capdrop·pids·restart·logopts 가 다 나오는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "도는 컨테이너 전부의 RestartCount 와 OOMKilled 를 한 줄로 훑는 명령을 만든다.",
+   "done_when": "0 이 아닌 것을 찾아낼 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "자기 프로젝트 이미지에 revision 라벨이 있는지 확인하고 없으면 넣는다.",
+   "done_when": "inspect 로 커밋 SHA 를 되찾을 수 있다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "장애 때 처음 세 명령은.",
+   "a": "docker ps -a, docker logs, docker inspect 의 ExitCode/OOMKilled."
+  },
+  {
+   "q": "원격 로깅 드라이버 대신 json-file + 수집기를 쓰는 이유는.",
+   "a": "docker logs 를 계속 쓸 수 있다. 장애 때 가장 편한 도구를 잃지 않는다."
+  },
+  {
+   "q": "'무엇이 돌고 있나' 에 답하는 세 값은.",
+   "a": "컨테이너의 이미지 ID, 이미지의 RepoDigest, revision 라벨(커밋 SHA)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "cAdvisor",
+   "what": "컨테이너 자원 지표를 수집하는 도구."
+  },
+  {
+   "term": "로그 수집기",
+   "what": "컨테이너 로그 파일을 읽어 중앙으로 보내는 에이전트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Runtime metrics",
+   "url": "https://docs.docker.com/engine/containers/runmetrics/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Configure logging drivers",
+   "url": "https://docs.docker.com/engine/logging/configure/",
+   "publisher": "Docker"
+  }
+ ]
+}

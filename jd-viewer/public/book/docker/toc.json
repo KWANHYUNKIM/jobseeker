@@ -569,7 +569,7 @@
           "title": "테스트를 컨테이너로",
           "summary": "「Practical Testing」 8.5절이 쓴 것의 안쪽.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -577,7 +577,7 @@
           "title": "이미지 취약점과 최소 권한",
           "summary": "root 로 도는 컨테이너를 내린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.7",
@@ -585,7 +585,7 @@
           "title": "시크릿을 이미지에 넣지 않는다",
           "summary": "지운 줄 알았던 것이 레이어에 남는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.8",
@@ -593,7 +593,7 @@
           "title": "운영에서 보는 것",
           "summary": "로그 드라이버와 자원 지표.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

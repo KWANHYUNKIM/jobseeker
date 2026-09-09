@@ -1,0 +1,136 @@
+{
+ "book": "docker",
+ "id": "testcontainers",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "테스트를 컨테이너로",
+ "summary": "「Practical Testing」 8.5절이 쓴 것의 안쪽.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "Testcontainers 가 도커를 어떻게 쓰는지 안다.",
+  "H2 대신 진짜 DB 로 테스트하는 이유를 안다.",
+  "CI 에서의 제약을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「Practical Testing」 8.5절이 Testcontainers 를** 썼다. **그때는 \"테스트가 진짜 DB 를 쓴다\" 는 결과만** 봤다. **그 안에서 무슨 일이 일어나는지를 여기서** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "테스트 한 번에 일어나는 일",
+   "ascii": "   @Testcontainers test starts\n     |\n   Testcontainers -> docker.sock (2.5절)\n     |\n     +-- pull postgres:16.5 (first time only)\n     +-- run container, random host port\n     +-- wait for log \"database system is ready\"   (6.5절의 헬스체크와 같은 발상)\n     |\n   jdbc:postgresql://localhost:54317/test\n     |\n   tests run\n     |\n   +-- Ryuk container removes everything afterwards\n\n   포트가 랜덤인 이유: 병렬 실행에서 충돌하지 않으려고 (7.6절)",
+   "note": "**Ryuk 이라는 청소 담당 컨테이너가 같이 뜬다** — **테스트가 죽어도 남은 컨테이너를 지운다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "H2 로는 안 되는 것",
+   "md": "**「Practical Testing」이 H2 를 쓰다 옮겨 간 이유**다.\n\n| H2 로 안 잡히는 것 | 예 |\n|---|---|\n| **DB 고유 문법** | `ON CONFLICT`, `RETURNING`, 배열·JSONB 타입 |\n| **격리 수준 동작** | 「스프링 DB 1편」 4장. H2 와 PG 가 다르다 |\n| 인덱스·실행 계획 | 「활용 2편」의 쿼리 튜닝이 의미 없어진다 |\n| **락 동작** | 데드락 재현이 안 된다 |\n| 시퀀스·시간 함수 | `now()` 의 트랜잭션 내 동작 |\n\n> **H2 모드를 PostgreSQL 로 맞춰도 절반만** 된다.\n> **\"테스트는 통과하는데 운영에서 터진다\" 의 가장 흔한 원인**이다."
+  },
+  {
+   "type": "table",
+   "caption": "쓰는 방법 세 가지",
+   "columns": [
+    "방법",
+    "무엇",
+    "비고"
+   ],
+   "rows": [
+    [
+     "`@Testcontainers` + `@Container`",
+     "테스트 클래스가 직접 관리",
+     "**클래스마다 새로 뜨면 느리다**"
+    ],
+    [
+     "**싱글턴 컨테이너**",
+     "**static 으로 한 번만 띄우고 재사용**",
+     "**JVM 전체에서 하나.** 가장 실용적"
+    ],
+    [
+     "`@ServiceConnection` (부트 3.1+)",
+     "**연결 정보를 자동으로 스프링에 넘긴다**",
+     "`spring.datasource.url` 을 안 적어도 된다"
+    ]
+   ],
+   "note": "**`reuse=true` + `~/.testcontainers.properties` 로 테스트 사이에도 컨테이너를 재사용할 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "CI 에서 걸리는 것들",
+   "md": "| 문제 | 왜 | 대응 |\n|---|---|---|\n| **docker.sock 이 없다** | 러너가 컨테이너 안이면 도커가 없다 | DinD 또는 소켓 마운트(2.5절의 위험) |\n| **이미지 pull 제한** | 4.1절 | 로그인하거나 사내 미러 |\n| 느리다 | 매번 pull + 기동 | 이미지 캐시, 컨테이너 재사용 |\n| **포트 충돌** | 병렬 실행 | Testcontainers 가 랜덤 포트를 쓴다 |\n| 남은 컨테이너 | 테스트가 죽었을 때 | Ryuk 이 지운다. 못 지우면 CI 가 더러워진다 |\n\n**GitHub Actions 는 러너가 VM 이라 도커가 그냥** 있다 — **가장 편하다**(11.2절).\n\n> **소켓을 컨테이너에 넘기는 건 호스트 root 를 넘기는 것**이다(2.5절).\n> **CI 러너를 신뢰 경계로 삼고 격리한다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "테스트가 도커에게 무엇을 시키는지 본다",
+   "sql": "# --- 테스트를 돌리면서 도커 사건을 본다 ---\n\n$ docker events --filter type=container --format '{{.Time}} {{.Action}} {{.Actor.Attributes.image}}' &\n\n$ ./gradlew test --tests '*OrderRepositoryTest'\n\n1757451212 create testcontainers/ryuk:0.11.0\n1757451212 start  testcontainers/ryuk:0.11.0\n1757451213 create postgres:16.5\n1757451214 start  postgres:16.5\n1757451221 create postgres:16.5      <- 두 번째 테스트 클래스\n1757451222 start  postgres:16.5\n...\n1757451240 die    postgres:16.5\n1757451240 destroy postgres:16.5\n1757451241 die    testcontainers/ryuk:0.11.0\n\nBUILD SUCCESSFUL in 41s\n\n#   ryuk 이 먼저 뜨고 마지막에 정리한다\n#   테스트 클래스마다 컨테이너가 새로 떴다 -- 이게 느린 이유다\n\n\n# --- 테스트 중에 무엇이 떠 있나 ---\n\n$ docker ps --format 'table {{.Image}}\\t{{.Ports}}\\t{{.Names}}'\nIMAGE                        PORTS                      NAMES\npostgres:16.5                0.0.0.0:54317->5432/tcp    quirky_hodgkin\ntestcontainers/ryuk:0.11.0   0.0.0.0:32769->8080/tcp    testcontainers-ryuk-...\n\n#   호스트 포트가 54317 -- 랜덤이다\n#   그래서 테스트를 병렬로 돌려도 안 부딪힌다 (7.6절)\n\n\n# --- 싱글턴으로 바꾸면 ---\n\n#   abstract class IntegrationTestSupport {\n#     static final PostgreSQLContainer<?> DB =\n#         new PostgreSQLContainer<>(\"postgres:16.5\").withReuse(true);\n#     static { DB.start(); }        // JVM 당 한 번\n#   }\n\n$ ./gradlew test\n1757451312 create postgres:16.5\n1757451313 start  postgres:16.5\n...(테스트 전부)...\n1757451338 die    postgres:16.5\n\nBUILD SUCCESSFUL in 27s\n\n#   컨테이너가 하나만 떴다. 41초 -> 27초\n\n\n# --- 재사용을 켜면 테스트 사이에도 안 내려간다 ---\n\n$ echo 'testcontainers.reuse.enable=true' >> ~/.testcontainers.properties\n$ ./gradlew test\nBUILD SUCCESSFUL in 19s\n\n$ docker ps --format '{{.Image}} {{.Status}}' | grep postgres\npostgres:16.5 Up 3 minutes\n\n#   테스트가 끝나도 떠 있다. 다음 실행이 그걸 그대로 쓴다\n#   (CI 에서는 안 켠다. 로컬 전용이다)\n\n\n# --- H2 와 진짜 PostgreSQL 의 차이 ---\n\n$ docker run --rm -d --name pg -e POSTGRES_PASSWORD=x postgres:16.5 >/dev/null && sleep 5\n\n$ docker exec -u postgres pg psql -q -c 'create table t(id int primary key, v jsonb)'\n$ docker exec -u postgres pg psql -c \"insert into t values (1,'{\\\"a\\\":1}') on conflict (id) do update set v = excluded.v returning id\"\n id\n----\n  1\n(1 row)\n\n#   jsonb 도 on conflict 도 returning 도 된다\n#   H2 에서는 이 SQL 이 통째로 안 돌거나 다르게 돈다\n\n$ docker rm -f pg >/dev/null\n$ kill %1 2>/dev/null\n\n\n# --- CI 에서 도커가 없으면 ---\n\n#   Could not find a valid Docker environment.\n#   Please see logs and check the configuration\n#\n#   -> 러너에 도커가 있는지, DOCKER_HOST 가 맞는지 본다\n#   -> 소켓을 마운트했다면 그 컨테이너는 호스트 root 다 (2.5절)"
+  }
+ ],
+ "recap": [
+  "Testcontainers 는 도커 소켓으로 컨테이너를 띄우고 랜덤 포트를 잡고 준비될 때까지 기다린다.",
+  "Ryuk 컨테이너가 뒷정리를 한다. 테스트가 죽어도 남은 컨테이너를 지운다.",
+  "H2 로는 DB 고유 문법·격리 수준·락·실행 계획이 안 잡힌다.",
+  "싱글턴 컨테이너로 한 번만 띄우고, 로컬에서는 reuse 로 테스트 사이에도 재사용한다.",
+  "CI 에서는 도커 소켓 접근·이미지 pull 제한·속도가 걸린다. 소켓을 넘기는 것은 호스트 root 를 넘기는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "Testcontainers 를 쓰는 테스트를 돌리면서 다른 터미널에서 `docker events` 를 켜 둔다.",
+   "done_when": "ryuk 과 DB 컨테이너가 뜨고 지워지는 순서를 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "테스트 중 `docker ps` 로 호스트 포트가 랜덤인 것을 확인한다.",
+   "done_when": "5432 가 아닌 포트로 매핑된 것을 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "클래스마다 띄우는 방식과 싱글턴 방식의 테스트 시간을 비교한다.",
+   "done_when": "차이를 숫자로 확인한다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Testcontainers 가 컨테이너를 띄우려면 무엇이 필요한가.",
+   "a": "도커 데몬 접근(docker.sock). 그래서 CI 러너에 도커가 있어야 한다."
+  },
+  {
+   "q": "Ryuk 컨테이너의 역할은.",
+   "a": "테스트가 비정상 종료해도 남은 컨테이너·네트워크·볼륨을 지우는 청소 담당."
+  },
+  {
+   "q": "H2 대신 진짜 DB 로 테스트하는 이유를 두 가지 대라.",
+   "a": "DB 고유 문법(jsonb·on conflict)과 격리 수준·락 동작이 다르다. 실행 계획도 의미가 없어진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Testcontainers",
+   "what": "테스트에서 도커 컨테이너를 띄워 주는 라이브러리."
+  },
+  {
+   "term": "Ryuk",
+   "what": "Testcontainers 가 띄우는 정리 담당 컨테이너."
+  },
+  {
+   "term": "@ServiceConnection",
+   "what": "컨테이너의 접속 정보를 스프링 설정으로 자동 연결하는 부트 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Testcontainers for Java",
+   "url": "https://java.testcontainers.org/",
+   "publisher": "Testcontainers"
+  },
+  {
+   "title": "Spring Boot — Testcontainers support",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/testcontainers.html",
+   "publisher": "Spring"
+  }
+ ]
+}

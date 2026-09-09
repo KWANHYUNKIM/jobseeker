@@ -1,0 +1,150 @@
+{
+ "book": "docker",
+ "id": "image-security",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "이미지 취약점과 최소 권한",
+ "summary": "root 로 도는 컨테이너를 내린다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "non-root 로 도는 이미지를 만든다.",
+  "권한을 좁히는 옵션을 안다.",
+  "취약점 스캔을 돌린다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.1절의 이미지는 root 로** 돈다. **대부분의 이미지가 그렇다.**\n\n```bash\n$ docker run --rm shop:1.0 id\nuid=0(root) gid=0(root)\n```\n\n> **컨테이너 안의 root 는 호스트의 root 와 같은 번호**다(2.4절).\n> **격리가 뚫리면 그대로 호스트 root** 다."
+  },
+  {
+   "type": "code",
+   "lang": "dockerfile",
+   "file": "Dockerfile",
+   "caption": "non-root 로 돌리기",
+   "code": "FROM eclipse-temurin:21-jre\n\n# 사용자를 만든다 (uid 를 고정하면 볼륨 권한 관리가 쉽다)\nRUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app app\n\nWORKDIR /app\nCOPY --from=builder --chown=10001:10001 /src/build/libs/*.jar app.jar\n\nUSER 10001:10001\n\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]",
+   "note": "`USER` 는 이름 대신 숫자로 쓴다 — 쿠버네티스의 `runAsNonRoot` 가 숫자를 요구한다."
+  },
+  {
+   "type": "table",
+   "caption": "권한을 좁히는 실행 옵션",
+   "columns": [
+    "옵션",
+    "무엇을 막나"
+   ],
+   "rows": [
+    [
+     "**`--user 10001:10001`**",
+     "이미지가 root 여도 non-root 로 실행"
+    ],
+    [
+     "**`--read-only`**",
+     "**루트 파일 시스템 쓰기 금지**(8.4절). `--tmpfs /tmp` 와 짝"
+    ],
+    [
+     "**`--cap-drop ALL`**",
+     "**리눅스 capability 를 전부 뺀다.** 필요한 것만 `--cap-add`"
+    ],
+    [
+     "`--security-opt no-new-privileges`",
+     "setuid 로 권한 상승 금지"
+    ],
+    [
+     "`--pids-limit 200`",
+     "포크 폭탄(2.4절)"
+    ],
+    [
+     "`--memory` / `--cpus`",
+     "자원 고갈(6.6절)"
+    ]
+   ],
+   "note": "**80 번 포트를 열려면 `NET_BIND_SERVICE` 가** 필요하다 — **애플리케이션 포트를 8080 으로 두면 이 문제가 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "취약점 스캔을 CI 에 넣는다",
+   "md": "```bash\ndocker scout cves myapp:1.4.2\ntrivy image --severity HIGH,CRITICAL myapp:1.4.2\n```\n\n**무엇이 나오나**:\n\n| 출처 | 예 |\n|---|---|\n| **베이스 이미지의 OS 패키지** | glibc, openssl. **베이스를 바꾸면 한 번에 준다**(5.8절) |\n| **애플리케이션 의존성** | log4j 같은 것 |\n| 설정 | root 로 돎, 시크릿 포함 |\n\n**CI 에 넣는 방법**(11.2절):\n\n```yaml\n- uses: aquasecurity/trivy-action@master\n  with:\n    image-ref: ghcr.io/acme/shop:${{ github.sha }}\n    severity: HIGH,CRITICAL\n    exit-code: '1'\n```\n\n> **처음 켜면 수백 개가 나온다.** **CRITICAL 부터, 그리고 \"베이스 이미지를 최신 패치로\" 만 해도 대부분 준다.**\n> **`exit-code: 1` 을 바로 켜면 빌드가 안 돈다** — **단계적으로 조인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "non-root 로 바꾸면 깨지는 것들",
+   "md": "| 깨지는 것 | 왜 | 대응 |\n|---|---|---|\n| **볼륨에 못 쓴다** | 볼륨 소유자가 root(8.4절) | `--chown` 또는 initContainer 로 권한 조정 |\n| **1024 미만 포트** | 특권 포트 | 8080 을 쓰고 앞단에서 매핑 |\n| **`/tmp` 쓰기** | `--read-only` 와 겹치면 | `--tmpfs /tmp` |\n| 홈 디렉터리 | 없으면 도구가 깨진다 | `useradd -m` 또는 `HOME` 지정 |\n| 로그 파일 경로 | 못 쓴다 | **stdout 으로**(6.4절) |\n\n> **대부분은 6장·8장에서 이미 권장한 대로 해 뒀으면 안 깨진다** — **로그는 stdout 으로, 데이터는 볼륨으로, 포트는 8080 으로.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "권한을 좁히고 무엇이 막히는지 본다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 기본: root ---\n\n$ docker run --rm eclipse-temurin:21-jre id\nuid=0(root) gid=0(root) groups=0(root)\n\n$ docker run --rm eclipse-temurin:21-jre sh -c 'cat /etc/shadow | head -1'\nroot:*:19900:0:99999:7:::\n\n\n# --- non-root 이미지 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM eclipse-temurin:21-jre\nRUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app -m app\nWORKDIR /app\nRUN echo 'public class A { public static void main(String[] a) throws Exception {' \\\n         'System.out.println(\"running as uid \" + new ProcessBuilder(\"id\",\"-u\")' \\\n         '.start().inputReader().readLine()); Thread.sleep(600000); } }' > A.java \\\n && javac A.java 2>/dev/null || true\nUSER 10001:10001\nCMD [\"sh\", \"-c\", \"id; sleep 600\"]\nEOF\n\n$ docker build -q -t safe . >/dev/null\n$ docker run --rm safe id\nuid=10001(app) gid=10001(app) groups=10001(app)\n\n$ docker run --rm safe sh -c 'cat /etc/shadow 2>&1 | head -1'\ncat: /etc/shadow: Permission denied\n\n\n# --- 이미지를 안 고치고 실행 시점에 낮추기 ---\n\n$ docker run --rm --user 10001:10001 eclipse-temurin:21-jre id\nuid=10001 gid=10001 groups=10001\n\n#   /etc/passwd 에 없는 uid 라 이름이 안 나온다. 동작에는 문제없다\n\n\n# --- capability 를 뺀다 ---\n\n$ docker run --rm alpine sh -c 'apk add -q --no-cache libcap 2>/dev/null; \\\n    ping -c1 -W1 127.0.0.1 >/dev/null && echo \"ping OK (has NET_RAW)\"'\nping OK (has NET_RAW)\n\n$ docker run --rm --cap-drop ALL alpine sh -c \\\n    'ping -c1 -W1 127.0.0.1 >/dev/null 2>&1 && echo ok || echo \"ping blocked\"'\nping blocked\n\n$ docker run --rm --cap-drop ALL --cap-add NET_RAW alpine sh -c \\\n    'ping -c1 -W1 127.0.0.1 >/dev/null 2>&1 && echo \"ping OK again\"'\nping OK again\n\n\n# --- 읽기 전용 루트 ---\n\n$ docker run --rm --read-only --user 10001:10001 safe sh -c 'echo x > /tmp/f' 2>&1\nsh: 1: cannot create /tmp/f: Read-only file system\n\n$ docker run --rm --read-only --tmpfs /tmp:size=64m --user 10001:10001 safe \\\n    sh -c 'echo x > /tmp/f && cat /tmp/f'\nx\n\n\n# --- 권한 상승 금지 ---\n\n$ docker run --rm --security-opt no-new-privileges --user 10001:10001 safe \\\n    sh -c 'id -u'\n10001\n\n\n# --- 전부 합친 실행 형태 ---\n\n$ docker run -d --name hardened \\\n    --user 10001:10001 \\\n    --read-only --tmpfs /tmp:size=64m \\\n    --cap-drop ALL \\\n    --security-opt no-new-privileges \\\n    --pids-limit 200 \\\n    --memory 768m --cpus 1 \\\n    safe >/dev/null\n\n$ docker inspect -f 'user={{.Config.User}} ro={{.HostConfig.ReadonlyRootfs}} capdrop={{.HostConfig.CapDrop}} pids={{.HostConfig.PidsLimit}}' hardened\nuser=10001:10001 ro=true capdrop=[ALL] pids=200\n\n$ docker logs hardened | head -1\nuid=10001(app) gid=10001(app) groups=10001(app)\n\n\n# --- 스캔 ---\n\n$ docker scout cves --only-severity critical,high eclipse-temurin:21-jre 2>/dev/null | tail -6\n   0C     2H     8M    12L   eclipse-temurin:21-jre\n\n   2 vulnerable packages, 22 vulnerabilities found\n\n$ docker scout cves --only-severity critical,high eclipse-temurin:21-jre-alpine 2>/dev/null | tail -4\n   0C     0H     1M     3L   eclipse-temurin:21-jre-alpine\n\n#   베이스를 바꾸는 것만으로 크게 준다 (5.8절)\n#   다만 musl 호환을 확인해야 한다 (5.2절)\n\n$ docker rm -f hardened >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab && docker rmi -f safe >/dev/null"
+  }
+ ],
+ "recap": [
+  "컨테이너의 root 는 호스트의 root 와 같은 번호다. USER 를 숫자로 지정해 non-root 로 돌린다.",
+  "--read-only + --tmpfs /tmp, --cap-drop ALL, no-new-privileges, --pids-limit 을 함께 건다.",
+  "취약점의 대부분은 베이스 이미지에서 온다. 베이스를 바꾸거나 패치만 올려도 크게 준다.",
+  "non-root 로 바꿔 깨지는 것들(볼륨 권한·특권 포트·파일 로그)은 앞 장의 권장을 따랐으면 대부분 안 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "USER 를 넣은 이미지를 만들고 /etc/shadow 를 읽어 본다.",
+   "done_when": "Permission denied 를 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "`--cap-drop ALL` 로 ping 이 막히는 것과 `--cap-add NET_RAW` 로 다시 되는 것을 확인한다.",
+   "done_when": "둘 다 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "쓰고 있는 이미지에 `docker scout cves` 나 `trivy image` 를 돌리고 베이스를 바꿔 다시 돌린다.",
+   "done_when": "취약점 개수 차이를 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "USER 를 이름 대신 숫자로 쓰는 이유는.",
+   "a": "쿠버네티스의 runAsNonRoot 등이 숫자 uid 를 요구하고, 이름은 이미지 밖에서 해석이 안 된다."
+  },
+  {
+   "q": "--read-only 로 띄우면 무엇이 필요해지나.",
+   "a": "쓸 수 있는 곳. --tmpfs /tmp 를 같이 준다."
+  },
+  {
+   "q": "취약점 스캔 결과가 수백 개일 때 먼저 할 일은.",
+   "a": "CRITICAL/HIGH 부터, 그리고 베이스 이미지를 최신 패치나 더 작은 것으로 바꾼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "capability",
+   "what": "리눅스가 root 권한을 쪼갠 단위. NET_RAW·NET_BIND_SERVICE 등."
+  },
+  {
+   "term": "no-new-privileges",
+   "what": "setuid 등으로 권한이 올라가지 못하게 하는 옵션."
+  },
+  {
+   "term": "CVE",
+   "what": "공개된 취약점 식별자."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Security best practices",
+   "url": "https://docs.docker.com/build/building/best-practices/#user",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Docker Scout",
+   "url": "https://docs.docker.com/scout/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Trivy",
+   "url": "https://trivy.dev/",
+   "publisher": "Aqua Security"
+  }
+ ]
+}
