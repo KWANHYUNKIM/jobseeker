@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "v3-problem",
+ "no": "2.6",
+ "chapter": 2,
+ "title": "무엇이 문제인가",
+ "summary": "메서드 시그니처가 다 바뀐다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 문제를 가른다.",
+  "왜 안 빠지는지 안다.",
+  "어느 장이 무엇을 푸는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**요구사항 여섯이 다** 됐다. **문제도 둘이** 됐다."
+  },
+  {
+   "type": "figure",
+   "caption": "문제가 둘이다",
+   "ascii": "   two problems, and only one of them looks like a problem\n\n   the visible one   the same eight lines in every method\n   the hidden one    the parameter that had to be threaded through\n\n   removing the first is easy; removing the second is chapter three",
+   "note": "**첫째를 없애는 건 쉽고 둘째는 3장이** 필요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보이는 중복보다 보이는 인자가 더 나쁘다",
+   "md": "**여덟 줄은 눈에** 띈다.\n\n> **2.2절에서 세** 봤다.\n> **누구나 중복이라고** 한다.\n> **4장에서 그걸** 줄인다.\n\n**인자는 안** 보인다.\n\n> **시그니처의 일부가** 됐다.\n> **2.5절에서 세** 봤다.\n> **3장이 그걸** 없앤다.\n\n**셋이 각각 다른** 이유다.\n\n> **감싸기·이름·이전 값**이다.\n> **아래에서 하나씩** 짚는다.\n> **장이 다르**다.\n\n**한 번에 못** 푼다.\n\n> **순서가** 있다.\n> **아래에서 그 순서를** 적는다.\n> **9장에서 다** 사라진다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 못 빼내나",
+   "ascii": "   why the eight lines cannot be extracted\n\n   they wrap the body, so a helper still has to be called\n   they need the method name, which only the method knows\n   they need the previous identifier, which only the caller has\n\n   each of these is removed by a different later chapter",
+   "note": "**셋을 각각 다른 장이** 없앤다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지금 상태로 두면 다음 요구사항에서 무너진다",
+   "md": "**새 메서드마다 여덟 줄**이다.\n\n> **1.2절에서 세** 봤다.\n> **깜빡하면 안** 찍힌다.\n> **아래에서 그걸** 확인한다.\n\n**끄는 스위치가** 없다.\n\n> **운영에서 로그를 끄려면 다시** 빌드한다.\n> **⑯ 6.6절의 그** 스위치가 없다.\n> **아래에서 그걸** 본다.\n\n**측정 대상이** 는다.\n\n> **여덟 클래스면 예순네 곳**이다.\n> **아래에서 세어** 본다.\n> **손으로 못** 한다.\n\n**로그가 업무를** 가린다.\n\n> **읽는 사람이 본문을 못** 찾는다.\n> **2.5절에서 한 줄**이었다.\n> **아래에서 다시** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 문제 ① 여덟 줄\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java\n    public void orderItem(TraceId traceId, String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.beginSync(traceId, \"OrderService.orderItem()\");\n            orderRepository.save(status.getTraceId(), itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n$ for f in Controller Service Repository; do\n    printf '%-12s ' \"$f\"\n    sed -n '/TraceStatus status = null/,/^    }/p' \\\n      src/main/java/study/adv/Order$f.java | wc -l\n  done\nController   11\nService      11\nRepository   11\n\n$ diff <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderService.java \\\n         | sed 's/orderItem/X/g; s/orderRepository.save(status.getTraceId(), itemId)/Y/') \\\n       <(sed -n '/TraceStatus status = null/,/^    }/p' \\\n           src/main/java/study/adv/OrderRepository.java \\\n         | sed 's/save/X/g; s/sleep(1000)/Y/') \\\n  | grep -c '^[<>]'\n2\n\n--   두 줄만 다르고 아홉 줄이 같다\n\n\n-- 문제 ② 인자\n\n$ grep -n 'TraceId traceId' src/main/java/study/adv/*.java\nsrc/main/java/study/adv/OrderRepository.java:11:    public void save(TraceId traceId, String itemId) {\nsrc/main/java/study/adv/OrderService.java:14:    public void orderItem(TraceId traceId, String itemId) {\n\n$ grep -rn 'orderItem(\\|\\.save(' src/main/java src/test/java | wc -l\n      14\n\n--   부르는 곳이 열네 군데다\n--   다 인자를 만들어 줘야 한다\n\n\n-- 왜 못 빼내나 ①\n\n// 이렇게 빼내고 싶다\npublic void orderItem(String itemId) {\n    trace.wrap(\"OrderService.orderItem()\", () -> orderRepository.save(itemId));\n}\n\n$ grep -c 'trace.wrap' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   여덟 줄이 한 줄이 됐다\n--   그런데 부르는 줄이 세 개 그대로다\n--   1.2 절에서 본 그것이다\n--   4 장이 여기까지 간다\n\n\n-- 왜 못 빼내나 ②\n\n$ grep -o 'beginSync(traceId, \"[A-Za-z.()]*\"' src/main/java/study/adv/Order*.java \\\n    | awk -F'\"' '{print $2}'\nOrderController.request()\nOrderService.orderItem()\nOrderRepository.save()\n\n--   이름을 손으로 적는다\n--   메서드 자신만 아는 값이다\n--   6 장의 리플렉션이 이걸 없앤다\n\n\n-- 왜 못 빼내나 ③\n\n$ grep -n 'status.getTraceId()' src/main/java/study/adv/Order*.java\nsrc/main/java/study/adv/OrderController.java:21:    orderService.orderItem(status.getTraceId(), itemId);\nsrc/main/java/study/adv/OrderService.java:18:    orderRepository.save(status.getTraceId(), itemId);\n\n--   앞의 값을 부르는 쪽만 안다\n--   3 장의 쓰레드 로컬이 이걸 없앤다\n\n\n-- 새 메서드를 만들면\n\n@Service\npublic class OrderService {\n    public void cancel(Long id) {\n        orderRepository.delete(id);\n    }\n}\n\n$ curl -s -o /dev/null -X DELETE 'localhost:8080/order/1'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] OrderController.cancel()\n[c14e0b93] OrderController.cancel() time=2ms\n\n$ grep -c 'trace' src/main/java/study/adv/OrderService.java\n8\n\n--   서비스와 저장소가 로그에 없다\n--   컴파일도 되고 경고도 없다\n--   1.2 절의 그 문제다\n\n\n-- 대상이 늘면\n\n$ find src/main/java -name '*Service.java' -o -name '*Repository.java' | wc -l\n       2\n\n// 실무 크기라면\n$ python3 -c \"\ncls = 8; per = 4\nprint('클래스', cls, '메서드', cls*per)\nprint('감싸는 줄', cls*per*8)\nprint('부르는 곳', cls*per*2)\"\n클래스 8 메서드 32\n감싸는 줄 256\n부르는 곳 64\n\n--   손으로 할 수 없는 크기다\n\n\n-- 끄는 스위치가 없다\n\n$ grep -rn 'enabled\\|@ConditionalOn' src/main/java/study/adv/trace/\n(없음)\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.adv.trace \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"OFF\"}'\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/request?itemId=연필'\n1.008\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   로그는 껐는데 코드는 그대로 돈다\n--   ⑯ 8.5절의 그 방법이다\n--   시간 재기와 객체 만들기는 여전히 돈다\n\n\n-- 얼마나 도는가\n\n$ curl -s 'localhost:8080/bench/trace?n=1000000&mode=off'\n로그 끄고: 184 ms\n$ curl -s 'localhost:8080/bench/trace?n=1000000&mode=none'\n추적기 없이: 8 ms\n\n--   껐는데도 백만 번에 176 밀리초를 쓴다\n--   TraceStatus 와 TraceId 객체 때문이다\n\n\n-- 업무를 가린다\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java | grep -vc 'trace\\|Trace\\|try\\|catch\\|throw'\n4\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java \\\n    | grep -E 'orderRepository|sleep' \nrepository.save(status.getTraceId(), itemId);\n\n--   열한 줄 중 한 줄이 업무다\n\n\n-- 어느 장이 무엇을 푸는가\n\n$ printf '%-8s %-26s %s\\n' \\\n  '3 장'  '인자를 없앤다'      '쓰레드 로컬' \\\n  '4 장'  '여덟 줄을 줄인다'   '템플릿과 콜백' \\\n  '5 장'  '원본을 안 고친다'   '프록시' \\\n  '6 장'  '이름을 자동으로'    '리플렉션' \\\n  '7 장'  '만드는 걸 맡긴다'   '프록시 팩토리' \\\n  '8 장'  '등록을 맡긴다'      '빈 후처리기' \\\n  '9 장'  '설정도 없앤다'      '@Aspect'\n\n3 장    인자를 없앤다               쓰레드 로컬\n4 장    여덟 줄을 줄인다            템플릿과 콜백\n5 장    원본을 안 고친다            프록시\n6 장    이름을 자동으로             리플렉션\n7 장    만드는 걸 맡긴다            프록시 팩토리\n8 장    등록을 맡긴다               빈 후처리기\n9 장    설정도 없앤다               @Aspect\n\n\n-- 확인한다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/study.adv.trace \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"INFO\"}'\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n--   요구사항은 다 됐고 코드는 망가졌다\n--   2.7 절에서 숫자로 센다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '문제 ①'    '여덟 줄' \\\n  '문제 ②'    '인자' \\\n  '감싸기'    '4 장' \\\n  '이름'      '6 장' \\\n  '이전 값'   '3 장' \\\n  '새 메서드' '조용히 빠짐' \\\n  '실무 크기' '감싸는 줄 256' \\\n  '스위치'    '없음' \\\n  '꺼도'      '176 ms'\n\n문제 ①                     여덟 줄\n문제 ②                     인자\n감싸기                     4 장\n이름                       6 장\n이전 값                    3 장\n새 메서드                  조용히 빠짐\n실무 크기                  감싸는 줄 256\n스위치                     없음\n꺼도                       176 ms",
+   "note": "**세 클래스의 감싸는 코드가 각각 열한 줄이고 그중 아홉 줄이 글자 그대로** 같다.\n\n**빼낼 수 없는 이유가 감싸기·이름·이전 값 셋이고 각각 4장·6장·3장이** 없앤다.\n\n**새 메서드를 만드니 서비스와 저장소가 로그에서 조용히** 빠졌다.\n\n**로그 레벨을 꺼도 백만 번에 176 ms 를 쓰는데 객체를 계속 만들어서**다.\n\n**서비스 메서드 열한 줄 중 업무는 `save` 한 줄**이다."
+  }
+ ],
+ "recap": [
+  "**문제가** 둘이다.",
+  "**여덟 줄이** 보인다.",
+  "**인자는 안** 보인다.",
+  "**이유가** 셋이다.",
+  "**장이 각각** 다르다.",
+  "**새 메서드는** 빠진다.",
+  "**스위치가** 없다.",
+  "**꺼도** 돈다.",
+  "**업무는 한** 줄이다."
+ ],
+ "drills": [
+  {
+   "task": "세 클래스의 감싸는 코드를 견준다.",
+   "done_when": "몇 줄이 같은지 셌다.",
+   "minutes": 15
+  },
+  {
+   "task": "새 메서드를 만든다.",
+   "done_when": "조용히 빠지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그를 꺼고 재 본다.",
+   "done_when": "여전히 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "실무 크기로 환산한다.",
+   "done_when": "손으로 못 하는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 문제는 무엇인가?",
+   "a": "똑같은 여덟 줄과 시그니처에 낀 인자다."
+  },
+  {
+   "q": "여덟 줄을 왜 못 빼내나?",
+   "a": "본문을 감싸야 하고 메서드 이름과 이전 값이 필요해서다."
+  },
+  {
+   "q": "새 메서드를 만들면?",
+   "a": "깜빡하면 경고 없이 로그에서 빠진다."
+  },
+  {
+   "q": "로그 레벨을 꺼면 비용이 없나?",
+   "a": "있다. 객체를 계속 만들어 돈다."
+  },
+  {
+   "q": "인자 문제는 어느 장이 푸나?",
+   "a": "쓰레드 로컬을 다루는 다음 장이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "보이는 중복",
+   "def": "눈에 띄는 똑같은 코드 덩어리."
+  },
+  {
+   "term": "보이지 않는 침범",
+   "def": "시그니처나 인터페이스에 스며들어 눈에 안 띄는 오염."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  }
+ ]
+}

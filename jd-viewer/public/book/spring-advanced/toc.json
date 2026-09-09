@@ -94,7 +94,7 @@
           "title": "파라미터로 넘기기",
           "summary": "앞의 것을 뒤로 전달한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",
@@ -102,7 +102,7 @@
           "title": "무엇이 문제인가",
           "summary": "메서드 시그니처가 다 바뀐다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.7",

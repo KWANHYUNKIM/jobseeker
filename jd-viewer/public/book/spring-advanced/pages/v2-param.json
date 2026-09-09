@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "v2-param",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "파라미터로 넘기기",
+ "summary": "앞의 것을 뒤로 전달한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 번졌는지 센다.",
+  "테스트까지 본다.",
+  "첫 호출 문제를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 시그니처가** 바뀌었다. **얼마나 번졌는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "시그니처가 이렇게 됐다",
+   "ascii": "   what the requirement did to the signatures\n\n   before   orderItem(String itemId)\n   after    orderItem(TraceId traceId, String itemId)\n\n   a logging concern is now part of the business interface",
+   "note": "**로그라는 관심사가 업무 인터페이스에 들어와** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 요구사항이 인터페이스를 바꿨다",
+   "md": "**업무와 상관** 없다.\n\n> **주문에 추적 ID 가 왜** 필요한가.\n> **읽는 사람이** 헷갈린다.\n> **아래에서 그 모양을** 본다.\n\n**부르는 쪽도** 바뀐다.\n\n> **인자를 만들어 줘야** 한다.\n> **아래에서 그걸** 겪는다.\n> **테스트가 제일** 아프다.\n\n**첫 호출이** 애매하다.\n\n> **넘겨받을 게** 없다.\n> **메서드가 둘로** 갈린다.\n> **아래에서 그 둘을** 본다.\n\n**빼먹으면 안** 이어진다.\n\n> **컴파일은** 된다.\n> **로그만 어긋난**다.\n> **아래에서 그걸** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디까지 번지나",
+   "ascii": "   how far the change reaches\n\n   every method that logs\n   every method that calls one of those\n   every test that calls any of them\n\n   the second row is the one that surprises people",
+   "note": "**둘째 줄이 사람들을** 놀라게 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스가 있으면 그것도 바꿔야 한다",
+   "md": "**구현만 고쳐서는 안** 된다.\n\n> **인터페이스가 먼저** 바뀐다.\n> **쓰는 쪽이 다** 깨진다.\n> **아래에서 그걸** 본다.\n\n**남이 쓰는 것이면 못** 바꾼다.\n\n> **라이브러리로 나간 것**이라면.\n> **호환이** 깨진다.\n> **여기선 내 코드라 됐다.**\n\n**테스트가 다** 깨진다.\n\n> **인자를 하나 더 만들어야** 한다.\n> **아래에서 세어** 본다.\n> **⑨에서 쓰던 그 테스트**다.\n\n**null 을 넘기게** 된다.\n\n> **귀찮으니 그렇게** 한다.\n> **아래에서 그게 터진**다.\n> **처음부터 잘못된 길**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 무엇이 바뀌었나\n\n$ git diff v1 v2-level -- src/main/java/study/adv/OrderService.java\n-    public void orderItem(String itemId) {\n+    public void orderItem(TraceId traceId, String itemId) {\n         TraceStatus status = null;\n         try {\n-            status = trace.begin(\"OrderService.orderItem()\");\n-            orderRepository.save(itemId);\n+            status = trace.beginSync(traceId, \"OrderService.orderItem()\");\n+            orderRepository.save(status.getTraceId(), itemId);\n\n$ git diff v1 v2-level --stat -- src/main/java/\n OrderController.java |  8 ++++---\n OrderRepository.java |  6 ++++--\n OrderService.java    | 10 +++++----\n trace/TraceId.java   | 24 ++++++++++++++++++\n trace/TraceV2.java   | 38 +++++++++++++++++++++++++++++\n 5 files changed, 78 insertions(+), 8 deletions(-)\n\n\n-- 업무 메서드가 이렇게 생겼다\n\npublic void orderItem(TraceId traceId, String itemId) { ... }\npublic void save(TraceId traceId, String itemId) { ... }\n\n$ grep -c 'TraceId traceId' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n2\n\n$ grep -n 'public void' src/main/java/study/adv/OrderService.java\n14:    public void orderItem(TraceId traceId, String itemId) {\n\n--   주문하는 데 추적 ID 가 왜 필요한가\n--   읽는 사람은 모른다\n\n\n-- 첫 호출과 그다음이 다르다\n\n// 컨트롤러 — 넘겨받을 게 없다\nstatus = trace.begin(\"OrderController.request()\");\n\n// 서비스와 저장소 — 넘겨받는다\nstatus = trace.beginSync(traceId, \"OrderService.orderItem()\");\n\n$ grep -n 'trace.begin' src/main/java/study/adv/Order*.java\nsrc/main/java/study/adv/OrderController.java:19:  status = trace.begin(\"...\");\nsrc/main/java/study/adv/OrderRepository.java:14:  status = trace.beginSync(traceId, \"...\");\nsrc/main/java/study/adv/OrderService.java:16:  status = trace.beginSync(traceId, \"...\");\n\n$ grep -c 'public TraceStatus begin' src/main/java/study/adv/trace/TraceV2.java\n2\n\n--   메서드가 둘이다\n--   부르는 쪽이 어느 것인지 알아야 한다\n\n\n-- 잘못 부르면\n\n// 서비스에서 begin 을 쓰면\nstatus = trace.begin(\"OrderService.orderItem()\");\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[3d81f0a2] OrderService.orderItem()\n[3d81f0a2] |-->OrderRepository.save()\n[3d81f0a2] |<--OrderRepository.save() time=1004ms\n[3d81f0a2] OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   컴파일은 통과했다\n--   ID 가 둘로 갈리고 깊이도 어긋났다\n--   로그만 조용히 틀린다\n\n\n-- 파라미터를 빼먹으면\n\n// 저장소에 안 넘기면\norderRepository.save(itemId);\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: method save in class OrderRepository cannot be applied to given types;\n  required: TraceId,String   found: String\n\n--   이건 컴파일이 잡는다\n--   앞의 것과 다르다\n\n\n-- null 을 넘기면\n\norderRepository.save(null, itemId);\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n500\n\n$ grep -A1 'NullPointer' logs/app.log | head -2\n07:32:41.204 ERROR ... java.lang.NullPointerException:\n  Cannot invoke \"study.adv.trace.TraceId.createNextId()\" because \"beforeTraceId\" is null\n\n--   로그가 흐름을 바꿨다\n--   2.2 절의 요구사항 ② 를 또 어겼다\n\n\n-- 테스트가 깨진다\n\n@Test\nvoid 주문() {\n    orderService.orderItem(\"연필\");\n}\n\n$ ./gradlew test 2>&1 | head -4\n> Task :compileTestJava FAILED\nOrderServiceTest.java:14: error: method orderItem in class OrderService\n  cannot be applied to given types;\n  required: TraceId,String   found: String\n\n$ grep -rn 'orderItem(\\|save(' src/test/java | wc -l\n      11\n\n--   테스트 열한 곳이 깨졌다\n--   ⑨ 에서 쓰던 그 테스트들이다\n\n\n-- 고쳐 본다\n\n@Test\nvoid 주문() {\n    orderService.orderItem(new TraceId(), \"연필\");\n}\n\n$ ./gradlew test 2>&1 | tail -2\nBUILD SUCCESSFUL in 3s\n\n$ git diff --stat src/test/java\n 4 files changed, 22 insertions(+), 11 deletions(-)\n\n--   테스트마다 필요 없는 인자를 만들어 준다\n--   테스트가 로그를 알게 됐다\n\n\n-- 다른 곳에서 부르면\n\n@Component\nclass Scheduler {\n    @Scheduled(fixedRate = 60000)\n    void reorder() {\n        orderService.orderItem(???, \"자동주문\");\n    }\n}\n\n$ grep -c 'new TraceId()' src/main/java/study/adv/\n2\n\n--   HTTP 요청이 아닌 곳에서도 만들어 줘야 한다\n--   여기 ID 가 무슨 뜻인지 애매하다\n\n\n-- 인터페이스가 있으면\n\npublic interface OrderService {\n    void orderItem(String itemId);\n}\n\n// 이렇게 바꿔야 한다\npublic interface OrderService {\n    void orderItem(TraceId traceId, String itemId);\n}\n\n$ grep -rn 'OrderService' src/main/java --include='*.java' -l | wc -l\n       4\n\n--   인터페이스를 쓰는 곳이 다 깨진다\n--   남이 쓰는 것이면 아예 못 바꾼다\n\n\n-- 얼마나 번졌는지 센다\n\n$ git diff v0 HEAD --stat | tail -1\n 9 files changed, 214 insertions(+), 20 deletions(-)\n\n$ grep -rc 'TraceId\\|TraceStatus\\|trace\\.' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print \"업무 코드 안의 추적 관련 줄:\", s}'\n업무 코드 안의 추적 관련 줄: 24\n\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n     104 total\n\n$ python3 -c \"print('104 줄 중 %d%% 가 로그 코드' % (24/104*100))\"\n104 줄 중 23% 가 로그 코드\n\n--   업무 코드의 4 분의 1 이 로그다\n\n\n-- 본문은 세 줄이다\n\n$ grep -vE 'trace|Trace|try|catch|throw e|^\\s*}\\s*$' \\\n    src/main/java/study/adv/OrderService.java | grep -c '^\\s*[a-zA-Z]'\n7\n\n$ sed -n '14,26p' src/main/java/study/adv/OrderService.java\n    public void orderItem(TraceId traceId, String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.beginSync(traceId, \"OrderService.orderItem()\");\n            orderRepository.save(status.getTraceId(), itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n--   진짜 하는 일은 save 한 줄이다\n--   나머지 아홉 줄이 로그다\n\n\n-- 요구사항은 다 채웠다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n--   여섯 요구사항이 다 됐다\n--   여전히 아무것도 안 감싸졌다\n--   2.6 절에서 이게 왜 문제인지 정리한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '시그니처'   '두 곳이 바뀜' \\\n  '메서드'     'begin 과 beginSync' \\\n  '잘못 부르면' '컴파일 통과, 로그 틀림' \\\n  '빼먹으면'   '컴파일 실패' \\\n  'null'       '500' \\\n  '테스트'     '11 곳 깨짐' \\\n  '인터페이스' '쓰는 곳이 다 깨짐' \\\n  '비율'       '104 줄 중 23%' \\\n  '본문'       '한 줄'\n\n시그니처                   두 곳이 바뀜\n메서드                     begin 과 beginSync\n잘못 부르면                컴파일 통과, 로그 틀림\n빼먹으면                   컴파일 실패\nnull                       500\n테스트                     11 곳 깨짐\n인터페이스                 쓰는 곳이 다 깨짐\n비율                       104 줄 중 23%\n본문                       한 줄",
+   "note": "**업무 메서드가 `orderItem(TraceId traceId, String itemId)` 가 되어 주문과 상관없는 인자가** 들어왔다.\n\n**`beginSync` 대신 `begin` 을 부르면 컴파일은 통과하고 ID 가 둘로 갈려 로그만 조용히** 틀린다.\n\n**테스트 열한 곳이 깨져 필요 없는 인자를 만들어 줘야** 한다.\n\n**`null` 을 넘기면 500 이 나서 요구사항 ②를 또** 어긴다.\n\n**업무 코드 104 줄 중 24 줄이 로그이고 서비스가 하는 진짜 일은 `save` 한 줄**이다."
+  }
+ ],
+ "recap": [
+  "**시그니처가** 바뀐다.",
+  "**메서드가** 둘이다.",
+  "**잘못 부르면** 조용하다.",
+  "**빼먹으면** 안 된다.",
+  "**null 은** 터진다.",
+  "**테스트가** 깨진다.",
+  "**인터페이스도** 깨진다.",
+  "**23% 가** 로그다.",
+  "**본문은 한** 줄이다."
+ ],
+ "drills": [
+  {
+   "task": "바뀐 시그니처를 센다.",
+   "done_when": "몇 곳인지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`begin` 을 잘못 불러 본다.",
+   "done_when": "로그만 틀리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "테스트를 고친다.",
+   "done_when": "몇 곳을 고쳤는지 셌다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그 줄의 비율을 잰다.",
+   "done_when": "본문과 비교했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 업무 인터페이스가 문제인가?",
+   "a": "주문과 상관없는 로그 인자가 들어와 있어서다."
+  },
+  {
+   "q": "잘못된 메서드를 부르면?",
+   "a": "컴파일은 통과하고 로그만 조용히 어긋난다."
+  },
+  {
+   "q": "테스트에는 어떤 영향이 있나?",
+   "a": "필요 없는 인자를 만들어 줘야 해서 다 고쳐야 한다."
+  },
+  {
+   "q": "인터페이스가 있으면?",
+   "a": "그것도 바꿔야 하고 쓰는 곳이 전부 깨진다."
+  },
+  {
+   "q": "업무 코드에서 로그가 차지하는 비율은?",
+   "a": "네 줄 중 한 줄꼴이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동기화 시작",
+   "def": "앞에서 넘어온 추적 정보를 이어받아 시작하는 메서드."
+  },
+  {
+   "term": "관심사 침범",
+   "def": "부가 기능이 업무 메서드의 인자나 인터페이스를 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Logging",
+   "url": "https://docs.spring.io/spring-boot/reference/features/logging.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
