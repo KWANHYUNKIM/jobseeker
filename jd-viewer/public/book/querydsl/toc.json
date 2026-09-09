@@ -473,7 +473,7 @@
           "title": "CountQuery 최적화",
           "summary": "셀 필요가 없을 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -481,7 +481,7 @@
           "title": "컨트롤러 개발과 검증",
           "summary": "주소가 조건이 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",

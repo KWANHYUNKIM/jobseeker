@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "count-optimize",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "CountQuery 최적화",
+ "summary": "셀 필요가 없을 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 단계를 안다.",
+  "Slice 를 만든다.",
+  "비용을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.4절에서 개수 쿼리를** 줄였다. **아예 안 세는 길도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "싼 것부터 비싼 것까지",
+   "ascii": "   four ways to answer how many, from cheapest to dearest\n\n   do not ask       a Slice, which only needs one extra row\n   do not run it    the utils, when the page already tells you\n   run a lean one   a count with no joins and no order by\n   run the full one a count that copies the whole list query\n\n   most screens can live one line higher than they do",
+   "note": "**대부분의 화면은 한 줄 위로 올라갈 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "총 개수가 정말 필요한지부터 묻는다",
+   "md": "**화면에 안 쓰는 값일 수** 있다.\n\n> **\"더 보기\" 버튼만** 있는 화면이다.\n> **총 쪽수를 안 그린**다.\n> **⑫ 6.6절·⑭ 5.11절에서 한 이야기**다.\n\n**그러면 `Slice` 로** 간다.\n\n> **한 건 더 읽어 다음이 있는지만** 안다.\n> **개수 쿼리가 아예** 없다.\n> **아래에서** 만든다.\n\n**필요하면 7.4절의 도우미**다.\n\n> **첫 쪽·마지막 쪽에서** 생략된다.\n> **가운데만** 센다.\n> **이미 확인**했다.\n\n**세야 하면 가볍게** 센다.\n\n> **조인과 정렬을** 뗀다.\n> **7.4절에서 38ms 가 21ms 가** 됐다.\n> **그다음이 인덱스**다."
+  },
+  {
+   "type": "figure",
+   "caption": "Slice 는 세지 않는다",
+   "ascii": "   how a Slice avoids counting at all\n\n   asked for size 3   ->   limit sent as 4\n   four rows came back ->  drop one, hasNext true\n   three or fewer      ->  keep them, hasNext false\n\n   one extra row instead of counting the whole table",
+   "note": "**표 전체를 세는 대신 한 건 더** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "커서 페이징이면 개수도 오프셋도 없다",
+   "md": "**`offset` 이** 사라진다.\n\n> **4.7절에서 41ms 가 4ms 였다.**\n> **뒤 페이지가 안** 느려진다.\n> **무한 스크롤에 맞**는다.\n\n**대신 임의 페이지로 못** 뛴다.\n\n> **\"7쪽으로\" 가 안** 된다.\n> **화면이 그걸 요구하면 못** 쓴다.\n> **⑭ 5.9절에서 한 이야기**다.\n\n**정렬 키가 유일해야** 한다.\n\n> **커서가 그 키를** 쓴다.\n> **동점이면 건너뛰거나** 겹친다.\n> **4.6절의 보조 키**다.\n\n**총계를 근사로 줄 수도** 있다.\n\n> **DB 통계 테이블을 읽는**다.\n> **정확하지** 않다.\n> **화면이 허용할 때만** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 준비\n\n@BeforeEach\nvoid 많이() {\n    for (int i = 0; i < 30000; i++) {\n        Member m = new Member(\"p\" + i, i % 50);\n        if (i % 3 != 0) m.setTeam(teamA);\n        em.persist(m);\n    }\n    em.flush(); em.clear();\n}\n\n\n-- ④ 목록을 그대로 복사한 개수 쿼리\n\n@Test\n@Transactional\nvoid 무거운_개수() {\n    em.clear();\n    long t = System.nanoTime();\n    Long total = queryFactory\n            .select(member.count())\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(member.age.goe(20))\n            .orderBy(member.id.asc())\n            .fetchOne();\n    System.out.printf(\"%d건 %d ms%n\", total,\n            (System.nanoTime() - t) / 1_000_000);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.member_id\n18006건 47 ms\n\n--   개수에 order by 가 있다\n\n\n-- ③ 가볍게 센다\n\n@Test\n@Transactional\nvoid 가벼운_개수() {\n    em.clear();\n    long t = System.nanoTime();\n    Long total = queryFactory\n            .select(member.count())\n            .from(member)\n            .where(member.age.goe(20))\n            .fetchOne();\n    System.out.printf(\"%d건 %d ms%n\", total,\n            (System.nanoTime() - t) / 1_000_000);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n18006건 20 ms\n\n--   47 이 20 이 됐다\n--   7.4절에서 조인만 뗀 것보다 더 줄었다\n\n\n-- 인덱스를 걸면\n\n@Test\n@Transactional\nvoid 인덱스() {\n    em.createNativeQuery(\"create index idx_age on member(age)\")\n            .executeUpdate();\n\n    em.clear();\n    long t = System.nanoTime();\n    queryFactory.select(member.count()).from(member)\n            .where(member.age.goe(20)).fetchOne();\n    System.out.printf(\"인덱스 후 %d ms%n\",\n            (System.nanoTime() - t) / 1_000_000);\n\n    System.out.println(em.createNativeQuery(\n            \"explain analyze select count(*) from member where age >= 20\")\n        .getResultList().get(0));\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0 where m1_0.age>=?\n인덱스 후 12 ms\n\nSELECT COUNT(*) FROM PUBLIC.MEMBER\n    /* PUBLIC.IDX_AGE: AGE >= 20 */\n    /* scanCount: 18007 */\n\n--   20 이 12 가 됐다\n--   여전히 만팔천 행을 훑는다\n\n\n-- ② 도우미로 생략한다\n\n@Test\n@Transactional\nvoid 생략() {\n    em.clear();\n    sqlCounter.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(49);                 // 600 건\n\n    Page<MemberTeamDto> page = memberRepository.searchPageComplex(\n            cond, PageRequest.of(0, 1000));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.age>=?\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n내용: 600\n전체: 600\n쿼리: 1개\n\n--   7.4절에서 본 그것이다\n--   첫 쪽이 안 차서 안 셌다\n\n\n-- ① Slice 로 아예 안 센다\n\npublic interface MemberRepositoryCustom {\n    Slice<MemberTeamDto> searchSlice(MemberSearchCondition cond,\n                                     Pageable pageable);\n}\n\n@Override\npublic Slice<MemberTeamDto> searchSlice(MemberSearchCondition cond,\n                                        Pageable pageable) {\n    BooleanExpression predicate = Expressions.allOf(\n            usernameEq(cond.getUsername()),\n            ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(predicate)\n            .orderBy(member.id.asc())\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize() + 1)      // 한 건 더\n            .fetch();\n\n    boolean hasNext = content.size() > pageable.getPageSize();\n    if (hasNext) {\n        content.remove(content.size() - 1);\n    }\n    return new SliceImpl<>(content, pageable, hasNext);\n}\n\n@Test\n@Transactional\nvoid slice() {\n    em.clear();\n    sqlCounter.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    long t = System.nanoTime();\n    Slice<MemberTeamDto> slice = memberRepository.searchSlice(\n            cond, PageRequest.of(0, 20));\n\n    System.out.println(\"내용: \" + slice.getContent().size());\n    System.out.println(\"다음: \" + slice.hasNext());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n    System.out.printf(\"%d ms%n\", (System.nanoTime() - t) / 1_000_000);\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (3:INTEGER) <- [21]\n내용: 20\n다음: true\n쿼리: 1개\n5 ms\n\n--   limit 이 21 이다\n--   ⑭ 5.11절과 같은 방식이다\n--   개수 쿼리가 아예 없다\n\n\n-- Slice 에는 총 개수가 없다\n\n@Test\nvoid 없는_것() {\n    System.out.println(Arrays.stream(Slice.class.getMethods())\n            .map(Method::getName)\n            .filter(n -> n.startsWith(\"getTotal\")).toList());\n}\n\n[]\n\n--   \"3/900\" 을 못 그린다\n--   ⑭ 5.11절에서 본 그대로다\n\n\n-- 네 방법을 나란히 잰다\n\n@Test\n@Transactional\nvoid 네_방법() {\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    PageRequest req = PageRequest.of(5, 20);\n\n    record C(String name, Runnable r) {}\n    for (C c : List.of(\n            new C(\"무거운 개수\", () ->\n                    memberRepository.searchPageHeavy(cond, req)),\n            new C(\"가벼운 개수\", () ->\n                    memberRepository.searchPageComplex(cond, req)),\n            new C(\"Slice\",      () ->\n                    memberRepository.searchSlice(cond, req)))) {\n        em.clear();\n        sqlCounter.clear();\n        long t = System.nanoTime();\n        c.r().run();\n        System.out.printf(\"%-12s %d개 %d ms%n\", c.name(),\n                sqlCounter.count(), (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\n무거운 개수   2개 63 ms\n가벼운 개수   2개 31 ms\nSlice        1개 6 ms\n\n--   가운데 페이지라 도우미가 생략을 못 했다\n--   Slice 만 한 방이다\n\n\n-- 커서로 가면 오프셋도 없다\n\n@Override\npublic Slice<MemberTeamDto> searchCursor(Long lastId, int size) {\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(lastId == null ? null : member.id.gt(lastId))\n            .orderBy(member.id.asc())\n            .limit(size + 1)\n            .fetch();\n\n    boolean hasNext = content.size() > size;\n    if (hasNext) content.remove(content.size() - 1);\n    return new SliceImpl<>(content, Pageable.unpaged(), hasNext);\n}\n\n@Test\n@Transactional\nvoid 커서() {\n    em.clear();\n    long t1 = System.nanoTime();\n    memberRepository.searchSlice(new MemberSearchCondition(),\n            PageRequest.of(1400, 20));\n    System.out.printf(\"오프셋 1400쪽: %d ms%n\",\n            (System.nanoTime() - t1) / 1_000_000);\n\n    em.clear();\n    long t2 = System.nanoTime();\n    memberRepository.searchCursor(28000L, 20);\n    System.out.printf(\"커서:          %d ms%n\",\n            (System.nanoTime() - t2) / 1_000_000);\n}\n\nHibernate: select ... order by m1_0.member_id\n           offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [28000]\n오프셋 1400쪽: 58 ms\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.id > ?1\norder by\n    member1.id asc */\nHibernate:\n    select ... where m1_0.member_id>?\n    order by m1_0.member_id\n    fetch first ? rows only\n커서:          4 ms\n\n--   offset 절이 아예 없다\n--   4.7절에서 본 그 곡선이다\n\n\n-- 근사 총계\n\n@Test\n@Transactional\nvoid 근사() {\n    Object approx = em.createNativeQuery(\n            \"select row_count_estimate from information_schema.tables\" +\n            \" where table_name = 'MEMBER'\").getSingleResult();\n    System.out.println(\"근사: \" + approx);\n\n    Long exact = queryFactory.select(member.count()).from(member).fetchOne();\n    System.out.println(\"정확: \" + exact);\n}\n\nHibernate: select row_count_estimate from information_schema.tables\n           where table_name = 'MEMBER'\n근사: 30016\n/* select count(member1) from Member member1 */\nHibernate: select count(m1_0.member_id) from member m1_0\n정확: 30010\n\n--   여섯 건 차이다\n--   화면이 허용할 때만 쓴다\n\n\n-- 무엇을 고를까\n\n$ printf '%-18s %-8s %-10s %s\\n' \\\n  'Slice'         '1쿼리'  '6 ms'   '총계 없음' \\\n  'Utils + 가벼움' '1~2쿼리' '31 ms'  '총계 있음' \\\n  'PageImpl'      '2쿼리'  '31 ms'  '항상 센다' \\\n  '무거운 개수'    '2쿼리'  '63 ms'  '조인·정렬 포함' \\\n  '커서'          '1쿼리'  '4 ms'   '임의 쪽 불가'\n\nSlice             1쿼리    6 ms     총계 없음\nUtils + 가벼움    1~2쿼리  31 ms    총계 있음\nPageImpl          2쿼리    31 ms    항상 센다\n무거운 개수       2쿼리    63 ms    조인·정렬 포함\n커서              1쿼리    4 ms     임의 쪽 불가\n\n--   7.6절에서 컨트롤러로 내보낸다",
+   "note": "**개수 쿼리에서 조인·정렬을 떼자 47ms → 20ms, 인덱스까지 걸면 12ms** 다.\n\n**`Slice` 는 `limit` 을 `[21]` 로 보내 개수 쿼리 없이 1쿼리 6ms** 다.\n\n**가운데 페이지에서 무거운 개수 63ms, 가벼운 개수 31ms, `Slice` 6ms** 다.\n\n**커서 방식은 `offset` 절이 아예 없어 1400쪽이 58ms 대 4ms** 다.\n\n**근사 총계는 30016 대 정확 30010 으로 여섯 건** 차이다."
+  }
+ ],
+ "recap": [
+  "**총계가 필요한지부터** 묻는다.",
+  "**`Slice` 는 안** 센다.",
+  "**한 건 더** 읽는다.",
+  "**총 개수가** 없다.",
+  "**도우미는 조건부로** 생략한다.",
+  "**세면 가볍게** 센다.",
+  "**조인·정렬을** 뗀다.",
+  "**인덱스가 더** 줄인다.",
+  "**커서는 오프셋도** 없앤다."
+ ],
+ "drills": [
+  {
+   "task": "개수 쿼리에서 정렬을 뗀다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Slice` 를 만든다.",
+   "done_when": "`limit` 이 하나 큰 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "네 방법을 나란히 잰다.",
+   "done_when": "쿼리 수와 시간을 비교했다.",
+   "minutes": 25
+  },
+  {
+   "task": "커서 방식을 만든다.",
+   "done_when": "`offset` 이 없는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 싼 방법은?",
+   "a": "총계를 안 구하는 `Slice` 나 커서 방식이다."
+  },
+  {
+   "q": "`Slice` 는 어떻게 다음 쪽을 아나?",
+   "a": "요청 크기보다 한 건 더 읽어 본다."
+  },
+  {
+   "q": "개수 쿼리를 가볍게 하려면?",
+   "a": "조건만 남기고 조인과 정렬을 뗀다."
+  },
+  {
+   "q": "커서 방식의 제약은?",
+   "a": "임의 페이지로 이동할 수 없다."
+  },
+  {
+   "q": "근사 총계는 언제 쓰나?",
+   "a": "화면이 정확한 수를 요구하지 않을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Slice",
+   "def": "총 개수 없이 다음 쪽 유무만 알려 주는 반환 타입."
+  },
+  {
+   "term": "커서 페이징",
+   "def": "마지막으로 본 키 다음부터 읽어 오프셋을 없앤 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

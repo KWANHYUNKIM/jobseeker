@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "controller-test",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "컨트롤러 개발과 검증",
+ "summary": "주소가 조건이 된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조건 객체를 바인딩한다.",
+  "상한을 건다.",
+  "응답 모양을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.5절까지 리포지토리** 안이었다. **주소에서 조건이 들어오게** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿼리 문자열이 조건이 된다",
+   "ascii": "   how a query string becomes a condition object\n\n   ?username=m1&ageGoe=20   ->   fields of the condition object\n   ?page=1&size=20&sort=... ->   a Pageable, built by the resolver\n\n   both arrive as method parameters, and neither is parsed by hand",
+   "note": "**둘 다 파라미터로 오고 내가 파싱을 안** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건 객체가 그대로 바인딩된다",
+   "md": "**필드 이름이 파라미터 이름**이다.\n\n> **`?username=m1` 이 `setUsername`** 이다.\n> **6.3절에서 만든 그** 객체다.\n> **어노테이션도 필요** 없다.\n\n**`Pageable` 도 같이** 온다.\n\n> **⑭ 6.6절의 리졸버**다.\n> **`page`·`size`·`sort` 를** 읽는다.\n> **7.3절의 `Pageable` 이 여기서** 온다.\n\n**빈 문자열이 그대로** 온다.\n\n> **`?username=` 이 `\"\"`** 다.\n> **6.3절에서 0건이 나왔던** 자리다.\n> **`hasText` 가 여기서 값을** 한다.\n\n**공개 엔드포인트는 막아야** 한다.\n\n> **크기·정렬·응답 모양**이다.\n> **⑭ 6.7·6.8절의 이야기**다.\n> **아래에서 셋 다** 건다."
+  },
+  {
+   "type": "figure",
+   "caption": "막아야 할 셋",
+   "ascii": "   three things a public endpoint has to bound\n\n   the page size      or one request reads the whole table\n   the sort property  or a caller names any column they like\n   the response shape  or the page internals become the contract\n\n   book 14 hit all three in chapters six and eight",
+   "note": "**⑭가 6장과 8장에서 겪은 것들**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Page 를 그대로 내보내면 모양이 계약이 된다",
+   "md": "**`pageable` 이 통째로** 나간다.\n\n> **⑭ 6.8절에서 본** 것이다.\n> **경고까지** 뜬다.\n> **버전이 바뀌면 모양도** 바뀐다.\n\n**껍데기를** 만든다.\n\n> **필요한 값만 골라** 담는다.\n> **⑭ 6.8절의 `PageResponse`** 다.\n> **6.7절에서도 한 번** 썼다.\n\n**정렬 이름을 그대로 믿으면** 안 된다.\n\n> **⑭ 6.6절에서 500 이** 났다.\n> **6.7절의 허용 목록**이다.\n> **7.7절에서 제대로** 만든다.\n\n**크기 상한이** 필요하다.\n\n> **`?size=100000` 이 온다.**\n> **⑭ 6.7절의 `max-page-size`** 다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 컨트롤러\n\n@RestController\n@RequiredArgsConstructor\npublic class MemberController {\n\n    private final MemberRepository memberRepository;\n\n    @GetMapping(\"/v1/members\")\n    public List<MemberTeamDto> searchV1(MemberSearchCondition cond) {\n        return memberRepository.search(cond);\n    }\n\n    @GetMapping(\"/v2/members\")\n    public Page<MemberTeamDto> searchV2(MemberSearchCondition cond,\n                                        Pageable pageable) {\n        return memberRepository.searchPageComplex(cond, pageable);\n    }\n}\n\n--   어노테이션이 없다\n--   조건 객체가 그대로 바인딩된다\n\n\n-- 조건 없이 부른다\n\n$ curl -s 'localhost:8080/v1/members' | jq 'length'\n100\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n\n--   3.3절의 콘솔용 100건이다\n--   where 가 없다\n\n\n-- 조건을 준다\n\n$ curl -s 'localhost:8080/v1/members?teamName=teamB&ageGoe=31&ageLoe=35' \\\n    | jq '.[].username'\n\"member31\"\n\"member33\"\n\"member35\"\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2\n    and member1.age <= ?3 */\n\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=? and m1_0.age>=? and m1_0.age<=?\nTRACE binding parameter (1:VARCHAR) <- [teamB]\nTRACE binding parameter (2:INTEGER) <- [31]\nTRACE binding parameter (3:INTEGER) <- [35]\n\n--   주소가 조건이 됐다\n\n\n-- 빈 문자열이 온다\n\n$ curl -s 'localhost:8080/v1/members?username=' | jq 'length'\n100\n\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n\n--   hasText 가 걸렀다\n--   6.3절에서 안 했으면 0건이었다\n\n\n-- 숫자에 글자가 오면\n\n$ curl -s -w '\\n%{http_code}\\n' 'localhost:8080/v1/members?ageGoe=abc' | tail -2\n\n{\"status\":400,\"error\":\"Bad Request\"}\n400\n\n--   SQL 이 안 나갔다\n--   바인딩에서 막혔다\n\n\n-- 페이징을 받는다\n\n$ curl -s 'localhost:8080/v2/members?page=0&size=3' \\\n    | jq '{content: (.content | length), total: .totalElements}'\n{\n  \"content\": 3,\n  \"total\": 100\n}\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [0]\nTRACE binding parameter (2:INTEGER) <- [3]\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   ⑭ 6.6절의 리졸버가 만들었다\n--   7.4절의 개수 쿼리가 나갔다\n\n\n-- 크기를 크게 주면\n\n$ curl -s 'localhost:8080/v2/members?size=100000' | jq '.content | length'\n100\n\nHibernate:\n    select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [2000]\n\n--   상한 2000 이 그대로 나갔다\n--   ⑭ 6.7절의 내장 기본값이다\n\n\n-- 상한을 건다\n\n# application.yml\nspring:\n  data:\n    web:\n      pageable:\n        default-page-size: 20\n        max-page-size: 100\n\n$ curl -s 'localhost:8080/v2/members?size=100000' | jq '.size'\n100\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [100]\n\n--   ⑭ 6.7절과 같다\n\n\n-- 응답 모양을 본다\n\n$ curl -s 'localhost:8080/v2/members?size=2' | jq 'keys'\n[\n  \"content\", \"empty\", \"first\", \"last\", \"number\", \"numberOfElements\",\n  \"pageable\", \"size\", \"sort\", \"totalElements\", \"totalPages\"\n]\n\nWARN  Serializing PageImpl instances as-is is not supported\n\n--   ⑭ 6.8절의 그 경고다\n\n\n-- 껍데기를 만든다\n\npublic record PageResponse<T>(\n        List<T> content, int page, int size,\n        long totalElements, int totalPages, boolean hasNext) {\n\n    public static <T> PageResponse<T> of(Page<T> p) {\n        return new PageResponse<>(p.getContent(), p.getNumber(),\n                p.getSize(), p.getTotalElements(), p.getTotalPages(),\n                p.hasNext());\n    }\n}\n\n@GetMapping(\"/v3/members\")\npublic PageResponse<MemberTeamDto> searchV3(MemberSearchCondition cond,\n                                            Pageable pageable) {\n    return PageResponse.of(\n            memberRepository.searchPageComplex(cond, pageable));\n}\n\n$ curl -s 'localhost:8080/v3/members?size=2' | jq .\n{\n  \"content\": [\n    { \"memberId\": 1, \"username\": \"member0\", \"age\": 0,\n      \"teamId\": 1, \"teamName\": \"teamA\" },\n    { \"memberId\": 2, \"username\": \"member1\", \"age\": 1,\n      \"teamId\": 2, \"teamName\": \"teamB\" }\n  ],\n  \"page\": 0,\n  \"size\": 2,\n  \"totalElements\": 100,\n  \"totalPages\": 50,\n  \"hasNext\": true\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   경고가 사라졌다\n--   키가 여섯이다\n--   ⑭ 6.8절과 같은 결론이다\n\n\n-- Slice 도 내보낸다\n\n@GetMapping(\"/v4/members\")\npublic SliceResponse<MemberTeamDto> searchV4(MemberSearchCondition cond,\n                                             Pageable pageable) {\n    Slice<MemberTeamDto> slice =\n            memberRepository.searchSlice(cond, pageable);\n    return new SliceResponse<>(slice.getContent(), slice.hasNext());\n}\n\n$ curl -s 'localhost:8080/v4/members?size=3' | jq .\n{\n  \"content\": [ ... ],\n  \"hasNext\": true\n}\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [4]\n\n--   개수 쿼리가 없다\n--   7.5절의 그것이다\n\n\n-- 정렬을 주면\n\n$ curl -s 'localhost:8080/v3/members?size=3&sort=age,desc' >/dev/null\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   age desc 가 없다\n--   7.3절에서 본 그대로다\n--   7.7절에서 잇는다\n\n\n-- 테스트로 굳힌다\n\n@WebMvcTest(MemberController.class)\nclass MemberControllerTest {\n\n    @Autowired MockMvc mvc;\n    @MockBean MemberRepository memberRepository;\n\n    @Test\n    void 조건이_바인딩된다() throws Exception {\n        mvc.perform(get(\"/v1/members\")\n                        .param(\"username\", \"m1\")\n                        .param(\"ageGoe\", \"20\"))\n                .andExpect(status().isOk());\n\n        ArgumentCaptor<MemberSearchCondition> captor =\n                ArgumentCaptor.forClass(MemberSearchCondition.class);\n        verify(memberRepository).search(captor.capture());\n\n        assertThat(captor.getValue().getUsername()).isEqualTo(\"m1\");\n        assertThat(captor.getValue().getAgeGoe()).isEqualTo(20);\n    }\n\n    @Test\n    void 숫자가_아니면_400() throws Exception {\n        mvc.perform(get(\"/v1/members\").param(\"ageGoe\", \"abc\"))\n                .andExpect(status().isBadRequest());\n    }\n}\n\n$ ./gradlew test --tests '*MemberControllerTest*'\n\nBUILD SUCCESSFUL\n2 tests completed\n\n--   DB 없이 바인딩만 확인했다\n--   6.6절의 층 나누기와 같은 결이다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '조건 객체'   '필드 이름이 파라미터' \\\n  'Pageable'    '리졸버가 만든다' \\\n  '빈 문자열'   'hasText 가 거른다' \\\n  '숫자 오류'   '400, SQL 없음' \\\n  '크기 상한'   'max-page-size' \\\n  '응답 모양'   '껍데기를 만든다' \\\n  '정렬'        '아직 안 걸린다 (7.7절)'\n\n조건 객체                필드 이름이 파라미터\nPageable                 리졸버가 만든다\n빈 문자열                hasText 가 거른다\n숫자 오류                400, SQL 없음\n크기 상한                max-page-size\n응답 모양                껍데기를 만든다\n정렬                     아직 안 걸린다 (7.7절)\n\n--   7.7절에서 정렬을 잇는다",
+   "note": "**조건 객체가 어노테이션 없이 바인딩되어 `?teamName=teamB&ageGoe=31` 이 그대로 `where`** 가 된다.\n\n**`?username=` 은 `hasText` 가 걸러 100건, 6.3절에서 안 했으면 0건**이다.\n\n**`?ageGoe=abc` 는 SQL 전에 400** 이다.\n\n**`?size=100000` 이 상한 2000 으로 나가다 `max-page-size: 100` 을 걸자 `[100]`** 이 됐다.\n\n**`Page` 를 그대로 내보내면 키 11개와 경고, 껍데기를 씌우면 키 6개**다."
+  }
+ ],
+ "recap": [
+  "**필드 이름이 파라미터**다.",
+  "**어노테이션이 필요** 없다.",
+  "**`Pageable` 도 같이** 온다.",
+  "**빈 문자열이 그대로** 온다.",
+  "**`hasText` 가 값을** 한다.",
+  "**숫자 오류는 400**이다.",
+  "**크기 상한을** 건다.",
+  "**껍데기를** 만든다.",
+  "**정렬은 아직 안** 걸린다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러를 만든다.",
+   "done_when": "주소가 조건이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "빈 문자열을 보낸다.",
+   "done_when": "전부 나오는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "크기 상한을 건다.",
+   "done_when": "잘리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "응답 껍데기를 만든다.",
+   "done_when": "경고가 사라진 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조건 객체는 어떻게 바인딩되나?",
+   "a": "필드 이름과 같은 쿼리 파라미터가 세터로 들어간다."
+  },
+  {
+   "q": "빈 문자열이 오면?",
+   "a": "`hasText` 가 없으면 조건이 되어 0건이 된다."
+  },
+  {
+   "q": "크기 상한을 안 걸면?",
+   "a": "내장 기본 상한 2000 까지 요청이 통한다."
+  },
+  {
+   "q": "`Page` 를 그대로 반환하면?",
+   "a": "내부 구조가 응답 계약이 되고 경고가 뜬다."
+  },
+  {
+   "q": "정렬은 지금 적용되나?",
+   "a": "안 된다. `OrderSpecifier` 로 잇기 전까지 무시된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건 객체 바인딩",
+   "def": "쿼리 파라미터를 객체 필드로 자동 매핑하는 MVC 기능."
+  },
+  {
+   "term": "응답 껍데기",
+   "def": "페이지 정보를 직접 정의해 고정한 반환 타입."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Web Support",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
