@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "matcher-order",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "매처 순서",
+ "summary": "먼저 맞는 것이 이긴다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "순서가 뜻을 바꾸는 것을 본다.",
+  "닿지 않는 규칙을 찾는다.",
+  "테스트로 순서를 지킨다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 체인 순서를 뒤집으니 하나가 안** 돌았다. **규칙도 똑같다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 두 줄, 다른 뜻",
+   "ascii": "   the same two rules, two orders, two meanings\n\n   correct\n     admin paths   hasRole ADMIN\n     everything    authenticated\n       a request to /admin/panel stops at line 1\n\n   wrong\n     everything    authenticated\n     admin paths   hasRole ADMIN\n       a request to /admin/panel stops at line 1 as well\n       line 2 is unreachable, and nothing says so",
+   "note": "**둘째 배치에서는 2번 줄이 영영 안** 쓰인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기동이 안 잡아 준다",
+   "md": "**2.3절의 체인은 기동 때** 잡혔다.\n\n```\nThe Filter Chain [0] is misconfigured\n```\n\n**규칙은 안** 잡힌다.\n\n> **`/**` 를 앞에 둬도 기동은 멀쩡히** 된다.\n> **뒤의 규칙이 죽어 있을 뿐**이다.\n>\n> **그리고 대개 더 느슨한 쪽이 앞에** 온다.\n> **`authenticated` 가 `hasRole('ADMIN')` 을 덮으면 관리자 화면이 일반 사용자에게** 열린다.\n\n**OWASP 가 1위로 꼽는 부류**다.\n\n> **깨진 접근 제어**다.\n> **코드가 있고 규칙도 썼는데 순서 때문에 안 도는 것**이다.\n\n**규칙은 하나**다.\n\n> **좁은 것부터 넓은 것으로**.\n> **A 가 B 가 잡는 걸 다 잡을 수 있으면 A 는 B 뒤에** 온다.\n\n**닿지 않는 규칙을 찾는 법**\n\n> **기동 로그의 `mappings=[...]` 를 눈으로** 훑는다.\n> **더 확실한 건 테스트**다 — **각 권한으로 각 경로를 두드려** 본다.\n> **아래에서 표를 만든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "언제나 맞는 순서",
+   "ascii": "   the ordering rule that always works\n\n   most specific first, most general last\n\n   /admin/reports/export\n   any path under /admin/reports\n   any path under /admin\n   any path at all\n\n   if rule A can match everything rule B matches,\n   A must come after B",
+   "note": "**좁은 것부터**."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "메서드가 섞이면 더 미묘해진다",
+   "md": "```java\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/api/orders/**\").authenticated()\n        .requestMatchers(HttpMethod.DELETE, \"/api/orders/**\").hasRole(\"ADMIN\")\n        .anyRequest().denyAll());\n```\n\n> **`DELETE /api/orders/1` 이 1번 줄에** 걸린다.\n> **로그인만 하면 남의 주문을 지울 수** 있다.\n> **2번 줄은 죽었다.**\n\n**고치면**\n\n```java\n.requestMatchers(HttpMethod.DELETE, \"/api/orders/**\").hasRole(\"ADMIN\")\n.requestMatchers(\"/api/orders/**\").authenticated()\n```\n\n> **메서드가 붙은 쪽이 더 좁으니** 앞이다.\n\n**같은 경로에 여러 권한을 주려면**\n\n```java\n.requestMatchers(\"/report/**\").hasAnyRole(\"ADMIN\", \"MANAGER\")\n```\n\n> **줄을 두 개로 나누면 아래 것이** 죽는다.\n> **한 줄에** 모은다.\n\n**정적 리소스는 맨 위**다.\n\n> **2.6절의 `permitAll` 방식이라면 `/css/**` 를 위쪽에** 둔다.\n> **`anyRequest().authenticated()` 아래에 있으면 로그인 화면의 CSS 가 안** 나온다.\n> **로그인 화면이 깨져 보이는 흔한 원인**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 순서를 뒤집어 본다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/**\").authenticated()\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\"));\n\n$ ./gradlew bootRun\n\n#   기동은 된다\n\n#   경고도 없다\n\n$ ./gradlew bootRun 2>&1 | grep -A3 \"mappings=\"\n\nmappings=[\n  { Ant [pattern='/**'] : authenticated },\n  { Ant [pattern='/admin/**'] : hasRole('ROLE_ADMIN') }]\n\n#   둘 다 등록돼 있다\n\n#   2번은 영영 안 쓰인다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n\n200\n\n#   일반 사용자가 관리자 화면에 들어갔다\n\nDEBUG AuthorizationFilter : Authorized filter invocation\n\n#   1번 규칙이 통과시켰다\n\n# --- 바로잡는다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().authenticated());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n403\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n200\n\n#   이제 맞다\n\n# --- 메서드가 섞인 경우 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/api/orders/**\").authenticated()\n        .requestMatchers(HttpMethod.DELETE, \"/api/orders/**\").hasRole(\"ADMIN\")\n        .anyRequest().denyAll());\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    -X DELETE localhost:8080/api/orders/1\n\n200\n\nselect count(*) from orders where id = 1;\n\nCOUNT(*)\n--------\n0\n\n#   일반 사용자가 주문을 지웠다\n\n#   DELETE 규칙이 죽어 있었다\n\n#   순서를 바꾸면\n\n.requestMatchers(HttpMethod.DELETE, \"/api/orders/**\").hasRole(\"ADMIN\")\n.requestMatchers(\"/api/orders/**\").authenticated()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    -X DELETE localhost:8080/api/orders/2\n403\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u admin@a.com:1234 \\\n    -X DELETE localhost:8080/api/orders/2\n200\n\n# --- 같은 경로에 두 줄을 쓰면 ---\n\n.requestMatchers(\"/report/**\").hasRole(\"ADMIN\")\n.requestMatchers(\"/report/**\").hasRole(\"MANAGER\")\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b manager.txt localhost:8080/report/x\n403\n\n#   MANAGER 가 막혔다\n\n#   1번 줄에서 끝났다\n\n.requestMatchers(\"/report/**\").hasAnyRole(\"ADMIN\", \"MANAGER\")\n\n$ for f in admin.txt manager.txt user.txt; do\n    printf '%-12s ' $f\n    curl -s -o /dev/null -w '%{http_code}\\n' -b $f localhost:8080/report/x\n  done\n\nadmin.txt    200\nmanager.txt  200\nuser.txt     403\n\n# --- 정적 리소스가 아래에 있으면 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .anyRequest().authenticated()\n        .requestMatchers(\"/css/**\").permitAll());\n\n$ ./gradlew bootRun\n\nIllegalStateException: Can't configure requestMatchers after anyRequest\n\n#   이 경우는 잡힌다\n\n#   그런데 anyRequest 대신 /** 를 쓰면\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/**\").authenticated()\n        .requestMatchers(\"/css/**\").permitAll());\n\n$ ./gradlew bootRun\n\n#   기동된다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/css/app.css\n302\n\n#   로그인 화면의 CSS 가 안 나온다\n\n#   화면이 깨져 보이는 흔한 원인이다\n\n$ curl -is localhost:8080/css/app.css | grep -i location\nLocation: http://localhost:8080/login\n\n#   CSS 요청이 로그인 HTML 로 리다이렉트된다\n\n# --- 표를 테스트로 만든다 ---\n\n@ParameterizedTest\n@CsvSource({\n    \"/about,          ANONYMOUS, 200\",\n    \"/orders,         ANONYMOUS, 302\",\n    \"/orders,         USER,      200\",\n    \"/admin/panel,    USER,      403\",\n    \"/admin/panel,    ADMIN,     200\",\n    \"/report/x,       USER,      403\",\n    \"/report/x,       MANAGER,   200\",\n    \"/internal/dump,  USER,      403\"\n})\nvoid 인가표(String path, String role, int expected) throws Exception {\n    var request = get(path);\n    if (!\"ANONYMOUS\".equals(role)) {\n        request = request.with(user(\"someone\").roles(role));\n    }\n    mockMvc.perform(request).andExpect(status().is(expected));\n}\n\n$ ./gradlew test --tests AuthorizationMatrixTest\n\n8 tests completed\n\nBUILD SUCCESSFUL\n\n#   규칙표가 테스트가 됐다\n\n#   순서를 뒤집으면 여기서 깨진다\n\n$ ./gradlew test\n\n92 tests completed\n\n#   84 에서 92 가 됐다\n\n$ grep -rn \"isForbidden\\|is(403)\" src/test | wc -l\n\n4\n\n#   인가 테스트가 생겼다\n\n#   4.8절 · 5.8절 · 6.9절에서 세 번 세었던 0이 사라졌다\n\n# --- 순서를 다시 뒤집어 확인 ---\n\n.requestMatchers(\"/**\").authenticated()\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n\n$ ./gradlew test --tests AuthorizationMatrixTest\n\n인가표(/admin/panel, USER, 403) FAILED\n    Status expected:<403> but was:<200>\n인가표(/report/x, USER, 403) FAILED\n    Status expected:<403> but was:<200>\n\n#   테스트가 잡아 준다\n\n#   기동이 못 하던 일이다\n\n# --- 다음 절에서 ---\n\n#   매처가 어떤 종류가 있는지 본다",
+   "note": "**`/**` 를 앞에 두면 기동도 경고도 없이 일반 사용자가 `/admin/panel` 에 200** 으로 들어간다.\n\n**`DELETE` 규칙이 아래 있으면 일반 사용자가 주문을 지운다** — `count` 가 0이 됐다.\n\n**같은 경로에 두 줄을 쓰면 아래 줄이** 죽는다. `hasAnyRole` 로 모은다.\n\n**정적 리소스가 아래면 CSS 요청이 로그인으로** 리다이렉트돼 화면이 깨진다.\n\n**8줄짜리 인가표를 테스트로 만드니 92개**가 됐고, **순서를 뒤집자 테스트가** 잡아 준다."
+  }
+ ],
+ "recap": [
+  "**규칙도 먼저 맞는 것이** 이긴다.",
+  "**잘못된 순서를 기동이 안 잡아** 준다.",
+  "**넓은 규칙이 앞에 오면 뒤가** 죽는다.",
+  "**좁은 것부터 넓은 것으로** 쓴다.",
+  "**메서드가 붙은 규칙이 더** 좁다.",
+  "**같은 경로 두 줄은 아래가** 죽는다 — `hasAnyRole` 로 모은다.",
+  "**정적 리소스가 아래면 화면이** 깨진다.",
+  "**인가표를 테스트로 만들면 순서가** 지켜진다.",
+  "**세 번 세었던 인가 테스트 0이** 사라졌다."
+ ],
+ "drills": [
+  {
+   "task": "순서를 뒤집고 관리자 경로를 두드린다.",
+   "done_when": "200 이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`DELETE` 규칙을 아래에 둔다.",
+   "done_when": "일반 사용자가 지우는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "정적 리소스를 아래에 둔다.",
+   "done_when": "CSS 가 302 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인가표를 `@ParameterizedTest` 로 만든다.",
+   "done_when": "순서를 뒤집었을 때 깨지는지 확인했다.",
+   "minutes": 35
+  }
+ ],
+ "quiz": [
+  {
+   "q": "규칙 순서가 잘못되면 기동이 잡아 주나?",
+   "a": "`anyRequest` 뒤가 아니면 안 잡아 준다."
+  },
+  {
+   "q": "올바른 순서 규칙은?",
+   "a": "좁은 것부터 넓은 것으로다."
+  },
+  {
+   "q": "같은 경로에 두 권한을 주려면?",
+   "a": "줄을 나누지 말고 `hasAnyRole` 로 모은다."
+  },
+  {
+   "q": "로그인 화면이 깨져 보이는 흔한 원인은?",
+   "a": "정적 리소스 규칙이 넓은 규칙 아래에 있다."
+  },
+  {
+   "q": "순서를 어떻게 지키나?",
+   "a": "권한별 경로별 인가표를 테스트로 만든다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorize HTTP Requests",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

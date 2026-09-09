@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "matcher-kinds",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "매처의 종류",
+ "summary": "경로와 메서드와 정규식.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 종류를 안다.",
+  "6.x 의 서블릿 모호성 오류를 읽는다.",
+  "경로 변형 공격을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`requestMatchers(\"/admin/**\")` 만** 썼다. **다른 것도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓸 수 있는 매처들",
+   "ascii": "   the matchers you can write\n\n   requestMatchers(admin path pattern)     path, mvc aware\n   requestMatchers(POST, api pattern)      path plus method\n   requestMatchers(regexMatcher(...))      regular expression\n   requestMatchers(request -> ...)         any predicate you like\n   requestMatchers(toH2Console())          a named PathRequest\n\n   the first form changed meaning in 6.x, and that is the trap",
+   "note": "**첫 번째의 뜻이 6.x 에서** 바뀌었다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다섯 가지",
+   "md": "```java\n// 1) 경로 — 6.x 는 MVC 패턴으로 해석한다\n.requestMatchers(\"/admin/**\")\n\n// 2) 메서드 + 경로\n.requestMatchers(HttpMethod.POST, \"/api/orders\")\n.requestMatchers(HttpMethod.GET)              // 경로 없이 메서드만\n\n// 3) 정규식\n.requestMatchers(RegexRequestMatcher.regexMatcher(\"/user/[0-9]+\"))\n\n// 4) 임의의 조건\n.requestMatchers(request -> request.getHeader(\"X-Internal\") != null)\n\n// 5) 이름 붙은 것\n.requestMatchers(PathRequest.toH2Console()).permitAll()\n.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()\n```\n\n> **5번이 가장 안전**하다 — **경로를 손으로 안** 적는다.\n\n**5.x 와 6.x 의 차이**\n\n| | 5.x | 6.x |\n|---|---|---|\n| `antMatchers` | Ant 패턴 | 제거됨 |\n| `mvcMatchers` | MVC 패턴 | 통합됨 |\n| `requestMatchers` | Ant | **MVC 패턴 우선** |\n\n> **MVC 패턴은 `DispatcherServlet` 과 같은 규칙으로** 맞춘다.\n> **`/admin` 이 `/admin/`·`/admin.html` 도 잡는다** — **5.x 의 유명한 우회를** 막는다.\n\n**서블릿이 둘 이상이면 못 고른다.**\n\n```\nIllegalArgumentException: This method cannot decide whether these patterns\nare Spring MVC patterns or not. If this endpoint is a Spring MVC endpoint,\nplease use requestMatchers(MvcRequestMatcher); otherwise, please use\nrequestMatchers(AntPathRequestMatcher).\n```\n\n> **H2 콘솔을 켜면 흔히** 만난다.\n> **`PathRequest.toH2Console()` 로 해결**된다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 추측을 거부하나",
+   "ascii": "   why 6.x refuses to guess\n\n   two servlets are mapped\n     DispatcherServlet   the root path\n     H2 console servlet  /h2-console/*\n\n   a pattern under /h2-console could mean either\n     an mvc pattern inside the dispatcher\n     a plain servlet path\n\n   so it refuses to start and asks you to say which",
+   "note": "**틀리게 맞추느니 안 뜨는 게** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경로 변형으로 우회한다",
+   "md": "**같은 자원을 여러 문자열로 가리킬 수** 있다.\n\n| 요청 | 5.x Ant | 6.x MVC |\n|---|---|---|\n| `/admin/panel` | 맞음 | 맞음 |\n| `/admin/panel/` | 안 맞음 | 맞음 |\n| `/admin/panel.html` | 안 맞음 | 상황에 따라 |\n| `/admin//panel` | 안 맞음 | 맞음 |\n| `/ADMIN/panel` | 안 맞음 | 안 맞음 |\n\n> **세 번째와 네 번째가 실제 우회 사례**였다.\n> **시큐리티는 안 맞다고 보고 MVC 는 맞다고 보면 규칙을 안 거치고 컨트롤러에** 닿는다.\n\n**대소문자는 여전히 구별**한다.\n\n> **`/ADMIN/panel` 은 시큐리티도 MVC 도 안** 맞는다 — **404**다.\n> **다만 대소문자를 무시하는 서버 앞단이 있으면 얘기가** 달라진다.\n\n**정규식은 되도록 피한다.**\n\n> **`/user/[0-9]+` 는 `/user/1/../admin` 을 안** 잡는다.\n> **경로 정규화는 정규식으로 감당이 안** 된다.\n> **꼭 필요하면 경로 매처와 함께** 쓴다.\n\n**가장 안전한 습관**\n\n> **`denyAll` 을 마지막에 두고 열 것만 적는다**(7.1절).\n> **변형이 뭐가 됐든 안 적힌 건** 막힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 경로 변형을 두드린다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n        .anyRequest().authenticated());\n\n$ for p in /admin/panel /admin/panel/ /admin//panel /ADMIN/panel; do\n    printf '%-18s ' \"$p\"\n    curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \"localhost:8080$p\"\n  done\n\n/admin/panel       403\n/admin/panel/      403\n/admin//panel      403\n/ADMIN/panel       404\n\n#   셋 다 막혔다\n\n#   6.x 의 MVC 패턴이 변형을 같이 잡는다\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation for\n  GET /admin//panel\n\n#   5.x 의 Ant 였다면 세 번째가 통과했다\n\n# --- 메서드만으로 거는 규칙 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(HttpMethod.GET, \"/api/**\").permitAll()\n        .requestMatchers(HttpMethod.POST, \"/api/**\").authenticated()\n        .requestMatchers(HttpMethod.DELETE, \"/api/**\").hasRole(\"ADMIN\")\n        .anyRequest().denyAll());\n\n$ for m in GET POST DELETE PUT; do\n    printf '%-8s ' $m\n    curl -s -o /dev/null -w '%{http_code}\\n' -X $m localhost:8080/api/v1/orders\n  done\n\nGET      200\nPOST     401\nDELETE   401\nPUT      403\n\n#   PUT 은 규칙이 없어 denyAll 에 걸렸다\n\n#   401 과 403 의 차이는 6.1절이다\n\n# --- H2 콘솔을 켜면 ---\n\nspring.h2.console.enabled=true\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/h2-console/**\").permitAll()\n        .anyRequest().authenticated());\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\njava.lang.IllegalArgumentException: This method cannot decide whether\nthese patterns are Spring MVC patterns or not. If this endpoint is a\nSpring MVC endpoint, please use requestMatchers(MvcRequestMatcher);\notherwise, please use requestMatchers(AntPathRequestMatcher).\n\n#   서블릿이 둘이라 못 고른다\n\n#   DispatcherServlet 과 H2 콘솔 서블릿이다\n\n# --- 이름 붙은 매처로 고친다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(PathRequest.toH2Console()).permitAll()\n        .anyRequest().authenticated())\n    .csrf(c -> c.ignoringRequestMatchers(PathRequest.toH2Console()))\n    .headers(h -> h.frameOptions(f -> f.sameOrigin()));\n\n$ ./gradlew bootRun\n\nStarted Application in 2.104 seconds\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/h2-console\n200\n\n#   기동되고 열린다\n\n#   6.7절의 frameOptions 도 같이 필요했다\n\n# --- 임의 조건 매처 ---\n\n.requestMatchers(req -> req.getRemoteAddr().startsWith(\"10.\"))\n    .permitAll()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/internal/dump\n302\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'X-Forwarded-For: 10.0.0.5' localhost:8080/internal/dump\n302\n\n#   헤더로는 안 속는다\n\n#   forward-headers-strategy 를 안 켰다 (6.8절)\n\nserver.forward-headers-strategy=native\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'X-Forwarded-For: 10.0.0.5' localhost:8080/internal/dump\n200\n\n#   켰더니 속는다\n\n#   IP 기반 규칙은 프록시 설정과 한 몸이다\n\n#   6.8절의 internal-proxies 를 반드시 좁힌다\n\n# --- 정규식 매처 ---\n\n.requestMatchers(RegexRequestMatcher.regexMatcher(\"/user/[0-9]+\"))\n    .authenticated()\n.anyRequest().permitAll()\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/user/1\n302\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/user/1/\n200\n\n#   슬래시 하나에 뚫린다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/user/01\n302\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/user/1?x=y'\n302\n\n#   쿼리는 매처가 안 본다\n\n#   슬래시 하나가 문제였다\n\n#   경로 매처로 바꾸면\n\n.requestMatchers(\"/user/*\").authenticated()\n\n$ for p in /user/1 /user/1/ /user/01; do\n    printf '%-10s ' \"$p\"\n    curl -s -o /dev/null -w '%{http_code}\\n' \"localhost:8080$p\"\n  done\n\n/user/1    302\n/user/1/   302\n/user/01   302\n\n#   전부 잡힌다\n\n# --- denyAll 이 가장 안전하다 ---\n\n.requestMatchers(\"/\", \"/about\", \"/login\").permitAll()\n.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n.requestMatchers(\"/orders/**\", \"/user/**\").authenticated()\n.anyRequest().denyAll()\n\n$ for p in /admin/panel/ /admin//panel /user/1/ /internal/dump /whatever; do\n    printf '%-18s ' \"$p\"\n    curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \"localhost:8080$p\"\n  done\n\n/admin/panel/      403\n/admin//panel      403\n/user/1/           200\n/internal/dump     403\n/whatever          403\n\n#   안 적은 건 다 막힌다\n\n#   변형이 무엇이든 상관없다\n\n# --- 다음 절에서 ---\n\n#   permitAll 을 줬는데 막히는 경우를 본다",
+   "note": "**6.x 의 MVC 패턴이 `/admin/panel/`·`/admin//panel` 까지 403 으로** 잡는다 — **5.x 의 Ant 였다면 통과했다.**\n\n**H2 콘솔을 켜면 서블릿이 둘이라 기동이** 실패하고 `PathRequest.toH2Console()` 로 풀린다.\n\n**IP 조건 매처는 `forward-headers-strategy` 를 켜는 순간 `X-Forwarded-For` 에** 속는다.\n\n**정규식 `/user/[0-9]+` 는 슬래시 하나에** 뚫리고 경로 매처 `/user/*` 는 다 잡는다.\n\n**`denyAll` 을 마지막에 두면 변형이 무엇이든** 막힌다."
+  }
+ ],
+ "recap": [
+  "**매처는 경로·메서드·정규식·임의 조건·이름 붙은 것** 다섯이다.",
+  "**6.x 의 경로 매처는 MVC 패턴**이다.",
+  "**변형 경로를 같이** 잡는다.",
+  "**서블릿이 둘이면 기동이** 실패한다.",
+  "**`PathRequest` 로 이름을 붙여** 쓴다.",
+  "**IP 조건은 프록시 설정과 한 몸**이다.",
+  "**정규식은 경로 정규화를 감당 못** 한다.",
+  "**슬래시 하나에** 뚫린다.",
+  "**`denyAll` 을 끝에 두면 변형이 무의미**해진다."
+ ],
+ "drills": [
+  {
+   "task": "경로 변형 넷을 두드린다.",
+   "done_when": "전부 403 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "H2 콘솔을 켜 본다.",
+   "done_when": "기동 실패와 해결을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "정규식 매처로 `/user/1/` 을 시도한다.",
+   "done_when": "뚫리는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`denyAll` 구성으로 바꾼다.",
+   "done_when": "안 적은 경로가 막히는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "6.x 의 `requestMatchers` 는 어떤 패턴인가?",
+   "a": "MVC 패턴을 우선한다."
+  },
+  {
+   "q": "그것의 장점은?",
+   "a": "`/admin/panel/` 같은 변형 경로를 같이 잡는다."
+  },
+  {
+   "q": "H2 콘솔에서 기동이 실패하는 이유는?",
+   "a": "서블릿이 둘이라 어느 쪽 패턴인지 결정할 수 없어서다."
+  },
+  {
+   "q": "정규식 매처의 위험은?",
+   "a": "슬래시 등 경로 변형을 놓친다."
+  },
+  {
+   "q": "가장 안전한 구성은?",
+   "a": "열 것만 적고 마지막에 `denyAll` 을 둔다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PathRequest",
+   "def": "H2 콘솔·정적 리소스처럼 이름이 정해진 경로 묶음을 돌려주는 헬퍼."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Request Matchers",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Web MVC — URI Matching",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-config/path-matching.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Broken Access Control",
+   "url": "https://owasp.org/Top10/A01_2021-Broken_Access_Control/",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

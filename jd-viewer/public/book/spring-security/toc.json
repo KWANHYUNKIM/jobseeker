@@ -443,7 +443,7 @@
           "title": "매처 순서",
           "summary": "먼저 맞는 것이 이긴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -451,7 +451,7 @@
           "title": "매처의 종류",
           "summary": "경로와 메서드와 정규식.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
