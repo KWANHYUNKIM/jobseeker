@@ -532,7 +532,7 @@
           "title": "상품 주문",
           "summary": "회원과 상품을 고른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.11",
@@ -540,7 +540,7 @@
           "title": "주문 목록 검색",
           "summary": "동적 쿼리가 화면에 붙는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.12",
@@ -548,7 +548,7 @@
           "title": "주문 취소",
           "summary": "화면에서 재고가 돌아온다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

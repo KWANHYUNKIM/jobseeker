@@ -1,0 +1,133 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-list",
+ "no": "8.11",
+ "chapter": 8,
+ "title": "주문 목록 검색",
+ "summary": "동적 쿼리가 화면에 붙는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "검색 화면을 만든다.",
+  "화면이 지연 로딩을 얼마나 건드리는지 본다.",
+  "9장의 재료를 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.9절의 동적 쿼리**에 화면을 붙인다. **이 화면이 9장의 주인공**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@GetMapping(\"/orders\")\npublic String orderList(@ModelAttribute(\"orderSearch\") OrderSearch orderSearch,\n                        Model model) {\n    List<Order> orders = orderService.findOrders(orderSearch);\n    model.addAttribute(\"orders\", orders);\n    return \"order/orderList\";\n}",
+   "note": "**`@ModelAttribute` 로 검색 조건을 받는다.** **쿼리 스트링이 `OrderSearch` 로 바인딩**된다.\n\n```\nGET /orders?memberName=userA&orderStatus=ORDER\n```\n\n**`@ModelAttribute(\"orderSearch\")` 로 이름을 주면** 화면에서 그 이름으로 다시 쓴다. **검색 값이 유지**된다.\n\n**엔티티를 그대로** 넘긴다. **8.4절·8.6절과 같다.**\n\n**여기서는 문제가 크다.**"
+  },
+  {
+   "type": "code",
+   "lang": "html",
+   "caption": "화면",
+   "code": "<table class=\"table table-striped\">\n    <thead>\n    <tr>\n        <th>#</th><th>회원명</th><th>대표상품 이름</th>\n        <th>대표상품 주문가격</th><th>대표상품 주문수량</th>\n        <th>상태</th><th>일시</th><th></th>\n    </tr>\n    </thead>\n    <tbody>\n    <tr th:each=\"item : ${orders}\">\n        <td th:text=\"${item.id}\"></td>\n        <td th:text=\"${item.member.name}\"></td>\n        <td th:text=\"${item.orderItems[0].item.name}\"></td>\n        <td th:text=\"${item.orderItems[0].orderPrice}\"></td>\n        <td th:text=\"${item.orderItems[0].count}\"></td>\n        <td th:text=\"${item.status}\"></td>\n        <td th:text=\"${item.orderDate}\"></td>\n        <td>\n            <a th:if=\"${item.status.name() == 'ORDER'}\" href=\"#\"\n               th:href=\"'javascript:cancel('+${item.id}+')'\"\n               class=\"btn btn-danger\">CANCEL</a>\n        </td>\n    </tr>\n    </tbody>\n</table>",
+   "note": "**`item.member.name`** — **지연 로딩**이다.\n\n**`item.orderItems[0].item.name`** — **두 번 더** 간다. **컬렉션을 로딩하고, 그 안의 상품을 로딩**한다.\n\n**\"대표상품\"** 이라는 이름이 붙었다. **주문상품이 여럿이어도 첫 번째만** 보여 준다.\n\n> **1.3절에서 \"화면은 상품 하나\" 라고** 했다. **엔티티는 여럿을 지원**하는데 화면이 안 쓴다.\n>\n> **`[0]` 이 하드코딩**돼 있다. **주문상품이 없으면 예외**다.\n\n**`item` 이라는 변수 이름이 헷갈린다.** **주문인데 `item`** 이다.\n\n> **`order` 로 두면 낫다.** **강의 예제를 따랐다** — 9.7절 목록."
+  },
+  {
+   "type": "figure",
+   "caption": "화면이 건드리는 것",
+   "ascii": "   what the order list template touches\n\n   order.id                     already loaded\n   order.member.name            lazy   -> query\n   order.orderItems[0].item.name  lazy -> query, then query\n   order.orderItems[0].orderPrice\n   order.orderItems[0].count\n   order.status\n   order.delivery.status        lazy   -> query\n\n   four of these load something",
+   "note": "**넷이 쿼리를 낸다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "주문 두 건이면",
+   "ascii": "   two orders on the screen\n\n   1   select orders join member (the search)\n   2   select member    order 1\n   3   select order_item order 1\n   4   select item      order 1\n   5   select delivery  order 1\n   6   select member    order 2\n   ...\n\n   1 + 4 per order",
+   "note": "**1 + 주문당 4**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이것이 9장의 재료다",
+   "md": "**1.1절에서 예고**했다.\n\n> **주문 목록 화면 하나가 쿼리를 몇 개 날리는지 직접 센다.**\n\n**여기서 만들었다.**\n\n**3장의 결정이 여기까지 온 것**이다.\n\n| 3장의 결정 | 이 화면에서 |\n|---|---|\n| **`Order.member` `LAZY`** | 주문마다 회원 조회 |\n| **`Order.orderItems` `LAZY`** | 주문마다 주문상품 조회 |\n| **`OrderItem.item` `LAZY`** | 주문상품마다 상품 조회 |\n| **`Order.delivery` `LAZY`** | 취소 버튼 조건에 쓰면 |\n\n**전부 3.8절에서 `LAZY` 로 정한 것**이다.\n\n> **`EAGER` 였다면?** **더 나쁘다**(3.8절). **JPQL 이라 쓴 대로 SQL 을 만들고 그다음 즉시 로딩**이 돈다.\n\n**해결책은 「DB 2편」 6.7절**에 있다.\n\n| 방법 | 이 화면에 |\n|---|---|\n| **페치 조인** | `join fetch o.member` — 회원만 |\n| **배치 사이즈** | 설정 한 줄로 전부 |\n| **DTO 조회** | 화면 전용 쿼리 |\n\n> **9.4절에서 이 셋을 적용**해 보고 숫자를 비교한다.\n>\n> **여기서는 문제를 만들어 두는 것**이 목적이다.\n\n**OSIV 가 켜져 있어서 동작**한다(9.3절). **끄면 `LazyInitializationException`** 이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 주문 목록 (조건 없음) ---\n\nGET /orders HTTP/1.1\n\n#   Creating new transaction with name [OrderService.findOrders]:\n#     ...,readOnly\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   Resetting read-only flag\n\n#   (트랜잭션이 끝났다)\n\n#   (화면 렌더링 시작 - OSIV 덕에 컨텍스트가 살아 있다)\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n\n#   item.member.name\n\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   item.orderItems[0]\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   item.orderItems[0].item.name\n\n#   (두 번째 주문)\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n\nHTTP/1.1 200\n\n<table class=\"table table-striped\">\n    <tbody>\n    <tr>\n        <td>4</td><td>userA</td><td>JPA1 BOOK</td>\n        <td>10000</td><td>1</td><td>ORDER</td>\n        <td>2026-09-09T14:36:12.331</td>\n        <td><a href=\"javascript:cancel(4)\" class=\"btn btn-danger\">CANCEL</a></td>\n    </tr>\n    <tr>\n        <td>11</td><td>userB</td><td>SPRING1 BOOK</td>\n        <td>20000</td><td>2</td><td>ORDER</td>\n        <td>2026-09-09T14:36:12.348</td>\n        <td><a href=\"javascript:cancel(11)\">CANCEL</a></td>\n    </tr>\n    </tbody>\n</table>\n\n#   쿼리를 세면\n\n#   1  주문 조회 (조인)\n#   2  회원      주문 1\n#   3  주문상품   주문 1\n#   4  상품      주문 1\n#   5  회원      주문 2\n#   6  주문상품   주문 2\n#   7  상품      주문 2\n\n#   7개\n\n#   주문이 100건이면 301개\n\n# --- 검색 조건을 넣으면 ---\n\nGET /orders?memberName=userA&orderStatus=ORDER\n\n#   Hibernate: \n#       select o1_0.order_id, ... from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       where o1_0.status=? and m1_0.name like ? escape ''\n#   binding parameter [1] as [VARCHAR] - [ORDER]\n#   binding parameter [2] as [VARCHAR] - [userA]\n\n#   7.9절의 동적 쿼리다\n\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n\n#   조인해서 이름으로 찾았는데 회원을 또 조회한다\n#   (7.9절에서 말한 그것 - 페치 조인이 아니다)\n\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n\n#   4개\n\nHTTP/1.1 200\n\n<input type=\"text\" name=\"memberName\" value=\"userA\">\n<select name=\"orderStatus\">\n    <option value=\"ORDER\" selected>주문</option>\n</select>\n\n#   검색 값이 유지됐다\n#   @ModelAttribute(\"orderSearch\") 덕이다\n\n# --- OSIV 를 끄면 ---\n\nspring.jpa.open-in-view: false\n\nGET /orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0 join member ...\n#   Resetting read-only flag\n\n#   org.hibernate.LazyInitializationException:\n#     could not initialize proxy\n#     [jpabook.jpashop.domain.Member#1] - no Session\n\nHTTP/1.1 500\n\n#   화면이 아예 안 뜬다\n\n#   9.3절에서 이 선택을 다룬다\n\n# --- 주문상품이 없는 주문이 있으면 ---\n\n<td th:text=\"${item.orderItems[0].item.name}\"></td>\n\n#   IndexOutOfBoundsException: Index 0 out of bounds for length 0\n\nHTTP/1.1 500\n\n#   [0] 이 하드코딩돼 있다 - 9.7절 목록\n\n# --- 이 화면이 9장의 재료다 ---",
+   "note": "**주문 두 건에 쿼리 일곱 개**다. **1 + 주문당 3** 이다(배송은 안 건드렸다).\n\n**검색 조건을 넣으면 조인해서 찾는데 회원을 또 조회**한다. **7.9절에서 말한 그것**이다.\n\n**검색 값이 유지**된다. **`@ModelAttribute(\"orderSearch\")`** 덕이다.\n\n**OSIV 를 끄면 화면이 아예 안 뜬다.** **9.3절의 주제**다.\n\n**주문상품이 없으면 `IndexOutOfBoundsException`** 이다. **`[0]` 이 하드코딩**돼 있다.\n\n**다음 절에서 취소를 붙인다.**"
+  }
+ ],
+ "recap": [
+  "**`@ModelAttribute` 로 검색 조건**을 받는다 — 값이 유지된다.",
+  "**화면이 지연 로딩을 넷** 건드린다.",
+  "**주문 두 건에 쿼리 일곱 개** — 1 + 주문당 3.",
+  "**주문 100건이면 301개**다.",
+  "**전부 3.8절에서 `LAZY` 로 정한 결과**다.",
+  "**조인해서 찾았는데 회원을 또 조회**한다 — 페치 조인이 아니다.",
+  "**OSIV 를 끄면 화면이 아예 안 뜬다.**",
+  "**`[0]` 이 하드코딩**돼 주문상품이 없으면 터진다.",
+  "**이 화면이 9장의 재료**다."
+ ],
+ "drills": [
+  {
+   "task": "주문 목록 화면을 만든다.",
+   "done_when": "쿼리를 세어 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "주문을 다섯 건 만들고 다시 센다.",
+   "done_when": "1+3N 인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`open-in-view: false` 로 두고 열어 본다.",
+   "done_when": "`500` 이 나는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "검색 조건을 넣고 쿼리를 센다.",
+   "done_when": "조인 후에도 회원을 또 조회하는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "화면이 지연 로딩을 몇 번 건드리나?",
+   "a": "회원·주문상품·상품·(배송) 넷이다."
+  },
+  {
+   "q": "주문 N 건이면 쿼리가 몇 개인가?",
+   "a": "1 + 3N 이다. 배송까지 쓰면 1 + 4N 이다."
+  },
+  {
+   "q": "조인했는데 왜 회원을 또 조회하나?",
+   "a": "조건용 조인이지 페치 조인이 아니기 때문이다."
+  },
+  {
+   "q": "OSIV 를 끄면?",
+   "a": "`LazyInitializationException` 으로 화면이 아예 안 뜬다."
+  },
+  {
+   "q": "`[0]` 의 문제는?",
+   "a": "주문상품이 없는 주문에서 `IndexOutOfBoundsException` 이 난다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

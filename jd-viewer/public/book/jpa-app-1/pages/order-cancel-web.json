@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-cancel-web",
+ "no": "8.12",
+ "chapter": 8,
+ "title": "주문 취소",
+ "summary": "화면에서 재고가 돌아온다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "취소 버튼을 만든다.",
+  "GET 으로 상태를 바꾸지 않는 이유를 안다.",
+  "8장을 마친다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.4절의 취소 로직**에 버튼을 붙인다. **8장의 마지막**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "컨트롤러",
+   "code": "@PostMapping(\"/orders/{orderId}/cancel\")\npublic String cancelOrder(@PathVariable(\"orderId\") Long orderId) {\n    orderService.cancelOrder(orderId);\n    return \"redirect:/orders\";\n}",
+   "note": "**`@PostMapping`** 이다. **`@GetMapping` 이 아니다.**\n\n**한 줄**이다. **7.7절의 `cancelOrder` 를 부른다.**\n\n**`redirect:/orders`** — **PRG** 다(8.2절)."
+  },
+  {
+   "type": "figure",
+   "caption": "링크가 POST 가 된다",
+   "ascii": "   the cancel link\n\n   <a href=\"javascript:cancel(4)\">CANCEL</a>\n\n   function cancel(id) {\n     var form = document.createElement('form')\n     form.action = '/orders/' + id + '/cancel'\n     form.method = 'post'\n     form.submit()\n   }\n\n   a link that becomes a POST",
+   "note": "**자바스크립트로 폼을 만든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 GET 이면 안 되나",
+   "ascii": "   why not just a GET link\n\n   /orders/4/cancel as GET\n     a crawler follows it\n     the browser prefetches it\n     a bookmark cancels an order\n\n   state changing operations are not GET",
+   "note": "**세 가지가 다 실제로** 일어난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "GET 은 안전해야 한다",
+   "md": "**HTTP 명세의 규칙**이다.\n\n> **GET 은 조회다.** **서버 상태를 바꾸면 안 된다.**\n\n**어기면 생기는 일**\n\n| | |\n|---|---|\n| **크롤러가 따라간다** | 검색 엔진이 주문을 취소한다 |\n| **브라우저가 미리 가져온다** | 링크에 마우스만 올려도 |\n| **북마크·히스토리** | 뒤로 가기가 취소한다 |\n| **캐시된다** | 두 번째는 서버에 안 온다 |\n\n**두 번째가 실제로 있었다.** **구글 웹 액셀러레이터**가 페이지의 모든 링크를 미리 요청해서, **`/delete?id=1` 같은 링크를 가진 사이트들이 데이터를 잃었다.**\n\n> **「MVC 1편」에서 HTTP 메서드의 속성**을 다뤘다.\n>\n> | 메서드 | 안전 | 멱등 |\n> |---|---|---|\n> | **GET** | **✅** | ✅ |\n> | POST | ❌ | ❌ |\n> | PUT | ❌ | ✅ |\n> | DELETE | ❌ | ✅ |\n\n**취소는 `DELETE` 가 더 맞아** 보인다.\n\n> **HTML 폼은 `GET` 과 `POST` 만** 지원한다. **`DELETE` 를 쓰려면 `_method` 히든 필드**나 **자바스크립트**가 필요하다.\n>\n> **그리고 취소는 삭제가 아니다** — 상태 변경이다(5.6절). **`POST` 가 맞다.**\n\n**`<form>` 을 직접 쓸 수도** 있다.\n\n```html\n<form th:action=\"@{/orders/{id}/cancel(id=${item.id})}\" method=\"post\">\n    <button type=\"submit\" class=\"btn btn-danger\">CANCEL</button>\n</form>\n```\n\n**자바스크립트가 필요 없다.** **표 안에 폼이 들어가는 것이 어색**할 뿐이다.\n\n> **이 책은 강의 예제의 자바스크립트**를 따른다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "8장이 끝났다",
+   "md": "**만든 화면 열 개**다.\n\n| 화면 | 절 |\n|---|---|\n| 홈 | 8.1 |\n| 회원 등록·목록 | 8.2~8.4 |\n| 상품 등록·목록·수정 | 8.5~8.9 |\n| 주문·목록·취소 | 8.10~8.12 |\n\n**8장에서 바뀐 것**\n\n| | |\n|---|---|\n| **`Item.change()`** | 8.8절에 추가 |\n| **`ItemService.updateItem()`** | 8.8절에 추가 |\n| **`ItemRepository.save` 의 `else`** | 죽은 코드가 됨 |\n\n**도메인은 거의 안 바뀌었다.**\n\n> **7장까지 만든 것에 화면만 붙였다.** **5~7장의 설계가 맞았다는 뜻**이기도 하다.\n>\n> **8.8절 하나만 고쳤다.** **그것도 화면을 만들어 보니 `merge` 가 위험한 것이 드러나서**다.\n\n**9장에서 이 화면들을 다시** 본다.\n\n| 볼 것 | 절 |\n|---|---|\n| 엔티티를 화면에 넘긴 대가 | 9.1 |\n| 화면에서 지연 로딩이 도는 것 | 9.2 |\n| OSIV | 9.3 |\n| 쿼리 개수 | **9.4** |\n\n**8.11절의 주문 목록이 그 재료**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 취소 ---\n\nPOST /orders/4/cancel HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 0\n\n#   본문이 없다 - 자바스크립트가 만든 빈 폼\n\n#   Getting transaction for [OrderService.cancelOrder]\n#   Creating new transaction with name [OrderService.cancelOrder]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0 where o1_0.order_id=?\n\n#   Hibernate: \n#       select d1_0.delivery_id, d1_0.city, d1_0.street, d1_0.zipcode,\n#              d1_0.status\n#       from delivery d1_0 where d1_0.delivery_id=?\n\n#   (order.cancel 이 배송 상태를 검사한다 - 7.4절)\n\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0 where oi1_0.order_id=?\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   Initiating transaction commit\n\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [100]\n\n#   Hibernate: \n#       update orders set delivery_id=?, member_id=?, order_date=?, status=?\n#       where order_id=?\n#   binding parameter [4] as [VARCHAR] - [CANCEL]\n\n#   Committing JPA transaction\n\nHTTP/1.1 302\nLocation: /orders\n\n#   7.4절의 SQL 여섯 개가 그대로다\n\n#   select 4, update 2\n\n# --- 이어지는 목록 ---\n\nGET /orders HTTP/1.1\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0 join member ...\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?\n\nHTTP/1.1 200\n\n<tr>\n    <td>4</td><td>userA</td><td>JPA1 BOOK</td>\n    <td>10000</td><td>1</td><td>CANCEL</td>\n    <td>2026-09-09T14:36:12.331</td>\n    <td></td>\n</tr>\n\n#   상태가 CANCEL 이다\n#   취소 버튼이 사라졌다 (th:if 조건)\n\nselect stock_quantity from item where item_id = 1;\n#   100\n\n#   재고가 돌아왔다\n\n# --- GET 으로 만들었다면 ---\n\n@GetMapping(\"/orders/{orderId}/cancel\")\n\n<a th:href=\"@{/orders/{id}/cancel(id=${item.id})}\">CANCEL</a>\n\n#   목록 화면을 여는 것만으로는 안 취소된다\n\n#   그런데\n#   - 크롤러가 링크를 따라가면 취소된다\n#   - 브라우저가 프리페치하면 취소된다\n#   - 뒤로 가기로 재요청하면 또 취소된다\n\n#   두 번째 취소는\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   binding parameter [3] as [INTEGER] - [101]\n\n#   재고가 101 이 됐다\n\n#   이미 취소된 주문을 또 취소했다\n#   상태 검사가 없다 (7.4절은 배송만 본다)\n\n#   9.7절 목록\n\n# --- 8장이 끝났다 ---\n\n#   화면 열 개\n#   도메인은 8.8절 하나만 고쳤다\n\n#   다음 장에서 이것을 다시 본다",
+   "note": "**7.4절의 SQL 여섯 개가 그대로** 나왔다. **화면이 붙었을 뿐**이다.\n\n**목록으로 돌아가면 상태가 `CANCEL`** 이고 **취소 버튼이 사라진다.**\n\n**재고가 100 으로 돌아왔다.**\n\n**`GET` 으로 만들었다면 크롤러·프리페치·뒤로 가기가 취소**한다. **두 번 취소하면 재고가 101** 이 된다 — **이미 취소된 주문을 또 취소**할 수 있다. **7.4절은 배송 상태만 검사**한다.\n\n**8장이 끝났다.** **화면 열 개를 만들고 도메인은 8.8절 하나만 고쳤다.**"
+  }
+ ],
+ "recap": [
+  "**`@PostMapping`** 이다 — `GET` 으로 상태를 안 바꾼다.",
+  "**링크를 자바스크립트로 `POST`** 로 만든다.",
+  "**`GET` 이면 크롤러·프리페치·뒤로 가기가 취소**한다.",
+  "**폼을 직접 써도** 된다 — 표 안에 들어가는 것이 어색할 뿐.",
+  "**취소는 삭제가 아니라 상태 변경**이라 `POST` 가 맞다.",
+  "**7.4절의 SQL 여섯 개가 그대로** 나온다.",
+  "**두 번 취소하면 재고가 넘친다** — 상태 검사가 없다.",
+  "**화면 열 개를 만들었다.**",
+  "**도메인은 8.8절 하나만 고쳤다.**"
+ ],
+ "drills": [
+  {
+   "task": "취소 버튼을 만들고 눌러 본다.",
+   "done_when": "재고가 돌아오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`GET` 으로 바꿔 본다.",
+   "done_when": "뒤로 가기로 또 취소되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "이미 취소된 주문을 또 취소한다.",
+   "done_when": "재고가 넘치는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`Order.cancel()` 에 상태 검사를 넣어 본다.",
+   "done_when": "두 번째 취소가 막히는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `POST` 인가?",
+   "a": "GET 은 안전해야 한다. 상태를 바꾸면 크롤러나 프리페치가 실행한다."
+  },
+  {
+   "q": "링크를 어떻게 `POST` 로 만드나?",
+   "a": "자바스크립트로 폼을 만들어 제출하거나 `<form>` 을 직접 쓴다."
+  },
+  {
+   "q": "왜 `DELETE` 가 아닌가?",
+   "a": "HTML 폼이 지원 안 하고, 취소는 삭제가 아니라 상태 변경이다."
+  },
+  {
+   "q": "두 번 취소하면?",
+   "a": "재고가 두 번 돌아온다. 주문 상태 검사가 없기 때문이다."
+  },
+  {
+   "q": "8장에서 도메인이 얼마나 바뀌었나?",
+   "a": "8.8절의 `change`·`updateItem` 하나뿐이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-form",
+ "no": "8.10",
+ "chapter": 8,
+ "title": "상품 주문",
+ "summary": "회원과 상품을 고른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "주문 화면을 만든다.",
+  "id 만 왕복하는 것을 본다.",
+  "폼 화면의 조회 비용을 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장에서 만든 주문 기능**에 화면을 붙인다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderController`",
+   "code": "@Controller\n@RequiredArgsConstructor\npublic class OrderController {\n\n    private final OrderService orderService;\n    private final MemberService memberService;\n    private final ItemService itemService;\n\n    @GetMapping(\"/order\")\n    public String createForm(Model model) {\n        List<Member> members = memberService.findMembers();\n        List<Item> items = itemService.findItems();\n\n        model.addAttribute(\"members\", members);\n        model.addAttribute(\"items\", items);\n        return \"order/orderForm\";\n    }\n\n    @PostMapping(\"/order\")\n    public String order(@RequestParam(\"memberId\") Long memberId,\n                        @RequestParam(\"itemId\") Long itemId,\n                        @RequestParam(\"count\") int count) {\n        orderService.order(memberId, itemId, count);\n        return \"redirect:/orders\";\n    }\n}",
+   "note": "**서비스를 셋** 주입받는다. **7.7절의 `OrderService` 와 같은 모양**이다.\n\n**`@RequestParam` 셋**이다. **폼 객체를 안 만들었다.**\n\n> **8.2절에서는 `MemberForm` 을 만들었다.** **여기는 안 만든다.**\n>\n> **인자가 셋뿐이고 전부 원시 타입**이라 그렇다. **넷 이상이면 폼 객체**로 간다.\n>\n> **일관성이 없다** — 9.7절 목록.\n\n**`orderService.order(memberId, itemId, count)`** — **7.7절에서 id 를 받게 만든 그것**이다. **컨트롤러가 엔티티를 안 만든다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 오가나",
+   "ascii": "   GET /order\n     load all members    for the select box\n     load all items      for the select box\n\n   POST /order\n     memberId  itemId  count\n     three primitives, no entity\n\n   the form screen costs two queries before anything happens",
+   "note": "**폼 화면이 쿼리 둘**을 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "선택 상자",
+   "ascii": "   <select name=\"memberId\">\n     <option value=\"1\">userA</option>\n     <option value=\"2\">userB</option>\n\n   the option text comes from the entity\n   the option value is the id\n\n   only the id survives the round trip",
+   "note": "**id 만 왕복**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 id 만 보내나",
+   "md": "**8.7절과 대비**된다.\n\n| | 상품 수정 | 상품 주문 |\n|---|---|---|\n| 보내는 것 | **엔티티 전체** | **id 셋** |\n| 서버에서 | 준영속 엔티티 조립 | **id 로 조회** |\n| 위험 | **`null` 덮어쓰기** | 없다 |\n\n**주문 화면은 처음부터 옳게** 만들었다.\n\n> **8.8절에서 상품 수정을 여기 맞춰** 고쳤다.\n\n**이유는 자연스럽다.**\n\n> **주문은 새로 만드는 것**이라 화면에서 엔티티를 조립할 이유가 없다. **회원과 상품은 이미 있는 것을 고르는 것**이라 id 면 충분하다.\n>\n> **수정 화면이 헷갈렸던 것은 \"기존 것을 고친다\" 라 엔티티가 있어 보였기** 때문이다.\n\n**선택 상자의 표시 텍스트**는 엔티티에서 온다.\n\n```html\n<option th:each=\"member : ${members}\"\n        th:value=\"${member.id}\"\n        th:text=\"${member.name}\">\n```\n\n**`value` 는 id, `text` 는 이름**이다. **이름은 화면에만 있고 서버로 안 온다.**\n\n> **8.4절과 같이 엔티티를 화면에** 넘겼다. **여기서도 `member.orders` 를 안 쓰니 문제가 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "폼 화면의 비용",
+   "md": "**주문 화면을 열기만 해도 쿼리 둘**이다.\n\n```\nselect ... from member\nselect ... from item\n```\n\n**회원이 만 명이면 만 개 `option`** 이다.\n\n| 문제 | |\n|---|---|\n| **전체 조회** | 페이징이 없다 |\n| **화면이 무겁다** | HTML 이 커진다 |\n| **매번 조회** | 캐시가 없다 |\n\n**실무라면**\n\n| 방법 | |\n|---|---|\n| **자동완성** | 입력하면 검색 |\n| **페이징된 모달** | 목록에서 고르기 |\n| **최근 사용** | 자주 쓰는 것만 |\n\n> **1.3절에서 뺀 것들**이다. **예제라 전체를 뿌린다.**\n>\n> **9.7절 목록**에 넣는다.\n\n**상품 목록에 재고가 0 인 것도 나온다.**\n\n```html\n<option th:each=\"item : ${items}\" th:value=\"${item.id}\"\n        th:text=\"${item.name}\">\n```\n\n**주문하면 `NotEnoughStockException`** 이다(6.2절). **`500` 페이지**가 뜬다.\n\n> **화면에서 걸러야** 한다.\n>\n> ```html\n> <option th:each=\"item : ${items}\" th:if=\"${item.stockQuantity > 0}\">\n> ```\n>\n> **또는 서비스가 재고 있는 것만** 준다. **이 책은 안 한다** — 9.7절 목록."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 HTTP 와 나간 SQL",
+   "sql": "# --- 주문 폼 ---\n\nGET /order HTTP/1.1\n\n#   Creating new transaction with name [MemberService.findMembers]:\n#     ...,readOnly\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0\n#   Resetting read-only flag\n\n#   Creating new transaction with name [ItemService.findItems]:\n#     ...,readOnly\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0\n#   Resetting read-only flag\n\n#   트랜잭션 둘, 쿼리 둘\n\nHTTP/1.1 200\n\n<form role=\"form\" action=\"/order\" method=\"post\">\n    <div class=\"form-group\">\n        <label for=\"member\">주문회원</label>\n        <select name=\"memberId\" id=\"member\" class=\"form-control\">\n            <option value=\"1\">userA</option>\n            <option value=\"2\">userB</option>\n        </select>\n    </div>\n    <div class=\"form-group\">\n        <label for=\"item\">상품명</label>\n        <select name=\"itemId\" id=\"item\" class=\"form-control\">\n            <option value=\"1\">JPA1 BOOK</option>\n            <option value=\"2\">JPA2 BOOK</option>\n        </select>\n    </div>\n    <div class=\"form-group\">\n        <label for=\"count\">주문수량</label>\n        <input type=\"number\" name=\"count\" class=\"form-control\" id=\"count\">\n    </div>\n    <button type=\"submit\">Order</button>\n</form>\n\n#   회원 이름과 상품 이름이 화면에 있다\n#   value 는 id 다\n\n# --- 주문 ---\n\nPOST /order HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\n\nmemberId=1&itemId=1&count=2\n\n#   숫자 셋만 왔다\n\n#   Getting transaction for [OrderService.order]\n#   Creating new transaction with name [OrderService.order]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, ... from item i1_0\n#       where i1_0.item_id=?\n\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n#   Hibernate: select next value for order_item_seq\n\n#   Initiating transaction commit\n\n#   Hibernate: insert into delivery (city, street, zipcode, status,\n#                                    delivery_id) values (?, ?, ?, ?, ?)\n#   Hibernate: insert into orders (delivery_id, member_id, order_date,\n#                                  status, order_id) values (?, ?, ?, ?, ?)\n#   Hibernate: insert into order_item (count, item_id, order_id,\n#                                      order_price, order_item_id)\n#              values (?, ?, ?, ?, ?)\n#   Hibernate: update item set name=?, price=?, stock_quantity=?,\n#                              author=?, isbn=? where item_id=?\n#   binding parameter [3] as [INTEGER] - [98]\n\n#   Committing JPA transaction\n\nHTTP/1.1 302\nLocation: /orders\n\n#   7.7절의 SQL 아홉 개가 그대로 나왔다\n\n#   화면이 붙었을 뿐이다\n\n# --- 재고보다 많이 주문하면 ---\n\nPOST /order\nmemberId=1&itemId=1&count=1000\n\n#   Hibernate: select ... from member ...\n#   Hibernate: select ... from item ...\n\n#   NotEnoughStockException: need more stock\n\n#   Completing transaction after exception\n#   Initiating transaction rollback\n\nHTTP/1.1 500\nWhitelabel Error Page\nThere was an unexpected error (type=Internal Server Error, status=500).\nneed more stock\n\n#   6.2절에서 예고한 화면이다\n\n#   insert 가 하나도 안 나갔다\n\n# --- 재고가 0 인 상품도 목록에 있다 ---\n\n<option value=\"3\">품절도서</option>\n\n#   고를 수 있다\n#   주문하면 500 이다\n\n#   화면에서 걸러야 한다 - 9.7절 목록\n\n# --- 회원이 만 명이면 ---\n\nGET /order\n\n#   Hibernate: select ... from member m1_0\n\n#   10000 rows\n\n#   <option> 이 만 개인 HTML 이 나간다\n\n#   페이징도 검색도 없다 - 9.7절 목록",
+   "note": "**폼 화면에 쿼리 둘, 트랜잭션 둘**이다. **서비스를 둘 부르니 트랜잭션도 둘**이다.\n\n**`POST` 에 숫자 셋만** 온다. **엔티티가 없다.**\n\n**7.7절의 SQL 아홉 개가 그대로** 나왔다. **화면이 붙었을 뿐**이다.\n\n**재고 부족은 `500`** 이다. **6.2절에서 예고한 화면**이고 **`insert` 가 하나도 안 나간다.**\n\n**재고 0 인 상품도 고를 수** 있고 **회원이 만 명이면 `option` 이 만 개**다. **9.7절 목록**이다.\n\n**다음 절에서 주문 목록을 만든다.**"
+  }
+ ],
+ "recap": [
+  "**서비스 셋**을 주입받는다.",
+  "**`@RequestParam` 셋** — 폼 객체를 안 만들었다.",
+  "**id 만 왕복**한다 — 엔티티를 안 조립한다.",
+  "**주문 화면은 처음부터 옳게** 만들었다 — 8.8절이 여기 맞췄다.",
+  "**폼 화면이 쿼리 둘, 트랜잭션 둘**을 쓴다.",
+  "**7.7절의 SQL 아홉 개가 그대로** 나온다.",
+  "**재고 부족은 `500`** 이고 `insert` 가 안 나간다.",
+  "**재고 0 인 상품도 고를 수** 있다 — 9.7절 목록.",
+  "**회원 전체를 뿌린다** — 페이징도 검색도 없다."
+ ],
+ "drills": [
+  {
+   "task": "주문 화면을 만들고 주문한다.",
+   "done_when": "SQL 아홉 개를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "폼 화면의 쿼리를 센다.",
+   "done_when": "둘인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "재고보다 많이 주문한다.",
+   "done_when": "`500` 이 뜨고 `insert` 가 없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "재고 0 인 상품을 걸러 본다.",
+   "done_when": "화면과 서비스 중 어디가 나은지 판단했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 폼 객체를 안 만들었나?",
+   "a": "인자가 셋뿐이고 전부 원시 타입이라서다. 넷 이상이면 폼 객체로 간다."
+  },
+  {
+   "q": "무엇이 서버로 오나?",
+   "a": "`memberId`, `itemId`, `count` 셋뿐이다. 엔티티가 안 온다."
+  },
+  {
+   "q": "왜 수정 화면과 다른가?",
+   "a": "주문은 새로 만드는 것이라 화면에서 엔티티를 조립할 이유가 없다."
+  },
+  {
+   "q": "폼 화면의 비용은?",
+   "a": "회원과 상품을 전체 조회한다. 쿼리 둘, 트랜잭션 둘이다."
+  },
+  {
+   "q": "재고 부족의 응답은?",
+   "a": "`500` 이다. `insert` 는 하나도 안 나가고 롤백된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
