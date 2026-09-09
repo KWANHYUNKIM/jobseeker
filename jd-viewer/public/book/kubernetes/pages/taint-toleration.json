@@ -1,0 +1,129 @@
+{
+ "book": "kubernetes",
+ "id": "taint-toleration",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "테인트와 톨러레이션",
+ "summary": "오지 말라고 표시하는 쪽.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "노드 쪽 표시임을 안다.",
+  "세 효과를 구분한다.",
+  "내장 테인트를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절부터 계속 나온 `untolerated taint` 메시지의 정체**다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 결정의 두 쪽",
+   "ascii": "   two sides of the same decision\n\n   affinity        the pod says where it wants to go\n                   a node with no opinion accepts anyone\n\n   taint           the node says who may not come\n                   a pod with no toleration is turned away\n\n   a pod that tolerates a taint is allowed, not attracted\n   so tolerating alone never pulls a pod toward that node",
+   "note": "**참는다는 건 끌린다는 뜻이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "허락이지 유인이 아니다",
+   "md": "**가장 자주 하는 오해**다.\n\n> **톨러레이션을 달면 그 노드에 갈 수 있게** 될 뿐이다.\n> **거기로 가라는 말이** 아니다.\n> **보내려면 어피니티가 같이** 있어야 한다 — **둘은 짝**이다.\n\n**전용 노드를 만드는 관용구**\n\n| 걸기 | 무엇 |\n|---|---|\n| 노드에 테인트 | 다른 파드가 못 온다 |\n| 파드에 톨러레이션 | 이 파드는 올 수 있다 |\n| 파드에 노드 어피니티 | 이 파드는 거기로 간다 |\n\n> **GPU 노드나 결제 전용 노드가 이런 모양**이다.\n> **셋 중 하나만 빠져도 새거나** 흩어진다.\n\n**문법**\n\n```yaml\ntolerations:\n  - key: dedicated\n    operator: Equal\n    value: gpu\n    effect: NoSchedule\n```\n\n> **`operator: Exists` 면 값은 안** 본다.\n> **`key` 까지 비우고 `Exists` 만 두면 모든 테인트를** 참는다.\n> **`effect` 를 비우면 그 키의 모든 효과를** 참는다.\n> **데몬셋이 그렇게** 한다 — **5.6절에서 노드마다 하나였던** 이유다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 효과",
+   "ascii": "   three effects, increasing in force\n\n   PreferNoSchedule    try elsewhere first, but come in if you must\n   NoSchedule          new pods are refused, running pods stay\n   NoExecute           new pods refused, and running pods are evicted\n\n   only the third one touches something that is already running",
+   "note": "**셋째만 떠 있는 걸** 건드린다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿠버네티스가 스스로 붙이는 테인트가 있다",
+   "md": "| 테인트 | 언제 |\n|---|---|\n| `node-role.kubernetes.io/control-plane` | 컨트롤 플레인. 설치 때 |\n| `node.kubernetes.io/not-ready` | 노드가 준비 안 됨 |\n| `node.kubernetes.io/unreachable` | 노드와 연락 끊김 |\n| `node.kubernetes.io/memory-pressure` | 메모리 압박(9.4절) |\n| `node.kubernetes.io/disk-pressure` | 디스크 압박 |\n| `node.kubernetes.io/unschedulable` | `cordon` 했을 때 |\n\n> **`cordon` 이 사실은 테인트다** — **9.1절에서 본 그것**이다.\n> **노드가 죽으면 `unreachable` 이 `NoExecute` 로** 붙는다.\n> **그래서 파드가 쫓겨나 다른 노드에서 다시** 뜬다.\n\n**모든 파드에 자동으로 붙는 톨러레이션이** 있다.\n\n```yaml\ntolerations:\n  - key: node.kubernetes.io/not-ready\n    effect: NoExecute\n    tolerationSeconds: 300\n```\n\n> **5분은 버틴다는** 뜻이다.\n> **잠깐 끊긴 노드 때문에 전부 재배치되면 더** 나쁘다.\n> **빨리 옮기고 싶으면 이 값을 줄여** 준다.\n\n**`drain` 은 셋을 한꺼번에** 한다.\n\n> **`cordon` 하고, 파드를 축출하고, 데몬셋은** 남긴다.\n> **10장에서 다시** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 이미 붙어 있는 테인트 ---\n\n$ kubectl get nodes -o custom-columns=\\\nNAME:.metadata.name,TAINTS:.spec.taints[*].key --no-headers\n\nkind-control-plane   node-role.kubernetes.io/control-plane\nkind-worker          <none>\nkind-worker2         <none>\n\n#   9.1·9.2절 메시지의 정체다\n\n$ kubectl describe node kind-control-plane | grep -A1 Taints\n\nTaints:             node-role.kubernetes.io/control-plane:NoSchedule\nUnschedulable:      false\n\n#   값이 없고 키만 있다\n\n#   NoSchedule 이다\n\n# --- 직접 붙인다 ---\n\n$ kubectl taint node kind-worker2 dedicated=gpu:NoSchedule\n\nnode/kind-worker2 tainted\n\n$ kubectl create deployment plain --image=nginx:1.27 --replicas=4 > /dev/null\n$ sleep 15 && kubectl get pods -l app=plain -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   4 kind-worker\n\n#   worker2 를 피했다\n\n#   Pending 은 없다, 갈 데가 있으니\n\n$ kubectl delete deployment plain > /dev/null\n\n# --- 참게 한다 ---\n\n$ cat tol.yaml\n\n      tolerations:\n        - key: dedicated\n          operator: Equal\n          value: gpu\n          effect: NoSchedule\n\n$ kubectl apply -f tol.yaml > /dev/null\n$ kubectl rollout status deployment/tol > /dev/null\n$ kubectl get pods -l app=tol -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   3 kind-worker\n   3 kind-worker2\n\n#   양쪽에 갈렸다\n\n#   참는다고 끌리는 게 아니다\n\n#   허락일 뿐이다\n\n$ kubectl delete deployment tol > /dev/null\n\n# --- 전용 노드로 만들려면 어피니티가 더 있어야 한다 ---\n\n$ cat dedicated.yaml\n\n      tolerations:\n        - key: dedicated\n          operator: Equal\n          value: gpu\n          effect: NoSchedule\n      affinity:\n        nodeAffinity:\n          requiredDuringSchedulingIgnoredDuringExecution:\n            nodeSelectorTerms:\n              - matchExpressions:\n                  - key: kubernetes.io/hostname\n                    operator: In\n                    values: [kind-worker2]\n\n$ kubectl apply -f dedicated.yaml > /dev/null\n$ kubectl rollout status deployment/ded > /dev/null\n$ kubectl get pods -l app=ded -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   3 kind-worker2\n\n#   이제야 전용이다\n\n#   테인트가 남을 막고 어피니티가 나를 보낸다\n\n$ kubectl delete deployment ded > /dev/null\n\n# --- NoExecute 는 떠 있는 걸 쫓아낸다 ---\n\n$ kubectl create deployment live --image=nginx:1.27 --replicas=4 > /dev/null\n$ kubectl rollout status deployment/live > /dev/null\n$ kubectl get pods -l app=live -o wide --no-headers | awk '{print $7}' \\\n    | sort | uniq -c\n\n   4 kind-worker\n\n$ kubectl taint node kind-worker2 dedicated=gpu:NoSchedule- > /dev/null\n$ kubectl delete pod -l app=live --now > /dev/null\n$ sleep 18 && kubectl get pods -l app=live -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   2 kind-worker\n   2 kind-worker2\n\n$ kubectl taint node kind-worker2 maintenance=yes:NoSchedule\n\nnode/kind-worker2 tainted\n\n$ sleep 10 && kubectl get pods -l app=live -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   2 kind-worker\n   2 kind-worker2\n\n#   NoSchedule 은 있던 걸 안 건드린다\n\n$ kubectl taint node kind-worker2 maintenance=yes:NoSchedule- > /dev/null\n$ kubectl taint node kind-worker2 maintenance=yes:NoExecute\n\nnode/kind-worker2 tainted\n\n$ sleep 12 && kubectl get pods -l app=live -o wide --no-headers \\\n    | awk '{print $7}' | sort | uniq -c\n\n   4 kind-worker\n\n#   쫓겨나서 다른 노드에서 다시 떴다\n\n$ kubectl get events --field-selector reason=TaintManagerEviction \\\n    -o jsonpath='{.items[-1].message}{\"\\n\"}'\n\nMarking for deletion Pod default/live-6c94b8d7f-x2m8p\n\n#   TaintManager 가 지웠다\n\n#   컨트롤러가 다시 만들었다\n\n$ kubectl taint node kind-worker2 maintenance=yes:NoExecute- > /dev/null\n\n# --- tolerationSeconds ---\n\n$ kubectl get pod -l app=live -o jsonpath=\\\n'{range .items[0].spec.tolerations[*]}{.key} {.effect} {.tolerationSeconds}{\"\\n\"}{end}'\n\nnode.kubernetes.io/not-ready NoExecute 300\nnode.kubernetes.io/unreachable NoExecute 300\n\n#   아무도 안 적었는데 붙어 있다\n\n#   노드가 끊겨도 5분은 버틴다\n\n#   잠깐 끊긴 것과 죽은 것을 구별하려는 것이다\n\n$ kubectl delete deployment live > /dev/null\n\n# --- cordon 은 테인트다 ---\n\n$ kubectl cordon kind-worker > /dev/null\n$ kubectl describe node kind-worker | grep -A1 Taints\n\nTaints:             node.kubernetes.io/unschedulable:NoSchedule\nUnschedulable:      true\n\n#   9.1절의 cordon 이 이것이다\n\n$ kubectl uncordon kind-worker > /dev/null\n\n# --- 데몬셋은 거의 다 참는다 ---\n\n$ kubectl get daemonset kube-proxy -n kube-system -o jsonpath=\\\n'{range .spec.template.spec.tolerations[*]}{.key}|{.operator}|{.effect}{\"\\n\"}{end}'\n\n|Exists|\nnode.kubernetes.io/not-ready|Exists|NoExecute\nnode.kubernetes.io/unreachable|Exists|NoExecute\n...\n\n#   첫 줄이 키도 효과도 없다\n\n#   모든 테인트를 참는다\n\n#   그래서 컨트롤 플레인에도 뜬다\n\n$ kubectl get pods -n kube-system -l k8s-app=kube-proxy -o wide \\\n    --no-headers | awk '{print $7}' | sort\n\nkind-control-plane\nkind-worker\nkind-worker2\n\n#   5.6절에서 본 그것이다\n\n# --- 다음 절에서 ---\n\n#   자리가 모자라면 누가 먼저 나가나",
+   "note": "**톨러레이션만 달자 파드가 양쪽에 3·3 으로** 갈렸다 — 허락이지 유인이 아니다.\n\n**어피니티를 더하자 그제서야 `kind-worker2` 전용**이 됐다.\n\n**`NoSchedule` 은 떠 있는 걸 안 건드리고 `NoExecute` 는 `TaintManagerEviction` 으로** 쫓아낸다.\n\n**아무도 안 적은 `not-ready`·`unreachable` 톨러레이션이 `tolerationSeconds: 300` 으로** 붙어 있다.\n\n**`cordon` 은 `node.kubernetes.io/unschedulable:NoSchedule` 테인트**다."
+  }
+ ],
+ "recap": [
+  "**테인트는 노드 쪽 표시**다.",
+  "**톨러레이션은 허락이지 유인이** 아니다.",
+  "**전용 노드는 테인트와 어피니티가** 짝이다.",
+  "**`PreferNoSchedule`·`NoSchedule`·`NoExecute`** 셋이다.",
+  "**`NoExecute` 만 떠 있는 걸** 건드린다.",
+  "**컨트롤 플레인 테인트가 기본으로** 있다.",
+  "**노드 이상도 테인트로** 표현된다.",
+  "**모든 파드에 5분 톨러레이션이 자동으로** 붙는다.",
+  "**`cordon` 은 사실 테인트**다."
+ ],
+ "drills": [
+  {
+   "task": "노드에 테인트를 붙인다.",
+   "done_when": "파드가 그 노드를 피하는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "톨러레이션만 준다.",
+   "done_when": "양쪽에 갈리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "어피니티를 더한다.",
+   "done_when": "전용이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`NoExecute` 로 바꾼다.",
+   "done_when": "축출 이벤트를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "테인트와 어피니티의 차이는?",
+   "a": "테인트는 노드가 거절하는 쪽, 어피니티는 파드가 고르는 쪽이다."
+  },
+  {
+   "q": "톨러레이션만 달면?",
+   "a": "갈 수 있게 될 뿐 그리로 가지는 않는다."
+  },
+  {
+   "q": "떠 있는 파드를 쫓아내는 효과는?",
+   "a": "`NoExecute` 뿐이다."
+  },
+  {
+   "q": "`cordon` 의 실체는?",
+   "a": "`node.kubernetes.io/unschedulable:NoSchedule` 테인트다."
+  },
+  {
+   "q": "`tolerationSeconds: 300` 이 기본인 이유는?",
+   "a": "잠깐 끊긴 노드로 전부 재배치되는 걸 막으려는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "테인트",
+   "def": "노드에 붙여 파드를 거절하게 만드는 표시."
+  },
+  {
+   "term": "톨러레이션",
+   "def": "특정 테인트를 참겠다는 파드 쪽 선언."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Taints and Tolerations",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

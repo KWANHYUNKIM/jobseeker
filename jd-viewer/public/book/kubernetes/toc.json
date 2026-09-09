@@ -482,7 +482,7 @@
           "title": "테인트와 톨러레이션",
           "summary": "오지 말라고 표시하는 쪽.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -490,7 +490,7 @@
           "title": "쫓겨나는 순서",
           "summary": "QoS 클래스와 노드 압박.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",

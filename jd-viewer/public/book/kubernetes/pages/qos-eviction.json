@@ -1,0 +1,139 @@
+{
+ "book": "kubernetes",
+ "id": "qos-eviction",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "쫓겨나는 순서",
+ "summary": "QoS 클래스와 노드 압박.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "QoS 세 클래스를 안다.",
+  "OOMKilled 와 Evicted 를 구분한다.",
+  "우선순위와 선점을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절에서 요청 없는 파드 20개가 다** 떴다. **그 청구서가 여기서** 온다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 클래스",
+   "ascii": "   the class is derived, never written\n\n   Guaranteed    every container has requests == limits, cpu and memory\n                 last to be evicted\n\n   Burstable     requests are set, but not equal to limits\n                 evicted by how far over its request it is\n\n   BestEffort    no requests, no limits anywhere\n                 first out the door\n\n   you cannot set this field, only earn it",
+   "note": "**적는 게 아니라 계산되는** 값이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "요청과 상한을 어떻게 적었느냐가 전부다",
+   "md": "**클래스는 파생 필드**다.\n\n> **`status.qosClass` 에** 나온다.\n> **`spec` 에 적는 자리가** 없다.\n> **4.6절에서 숫자를 적었을 때 이미** 정해졌다.\n\n**`Guaranteed` 는 둘이 같아야** 한다.\n\n> **모든 컨테이너가, CPU 와 메모리 둘 다** 그래야 한다.\n> **하나라도 다르면 `Burstable`** 이다.\n> **까다로운 대신 가장 늦게** 쫓겨난다.\n\n**`BestEffort` 는 아무것도 안 적은** 것이다.\n\n> **9.1절의 그 20개가 전부 `BestEffort`** 였다.\n> **스케줄러에는 공짜였지만 압박이 오면 제일 먼저** 나간다.\n> **7.5절의 `LimitRange` 가 이걸** 막는다.\n\n**`Burstable` 안에서도 순서가** 있다.\n\n> **요청 대비 얼마나 넘겨 쓰고 있느냐로** 줄 세운다.\n> **요청을 정직하게 적은 파드가 유리**하다.\n> **요청을 낮게 적고 많이 쓰는 파드가 먼저** 나간다."
+  },
+  {
+   "type": "figure",
+   "caption": "죽이는 주체가 둘이다",
+   "ascii": "   two different things kill pods, and they pick differently\n\n   the kernel oom killer\n     one container went over its own memory limit\n     it is killed, restarted in place, OOMKilled\n\n   kubelet node pressure eviction\n     the node as a whole is running out\n     whole pods are evicted, worst class first\n     the pod is deleted here and rescheduled elsewhere",
+   "note": "**하나는 컨테이너, 하나는 파드**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "OOMKilled 와 Evicted 는 다른 사건이다",
+   "md": "| | OOMKilled | Evicted |\n|---|---|---|\n| 누가 | 커널 | kubelet |\n| 왜 | 컨테이너가 자기 상한 초과 | 노드 전체가 모자람 |\n| 단위 | 컨테이너 | 파드 |\n| 결과 | 그 자리에서 재시작 | 파드가 지워지고 다른 노드로 |\n| 흔적 | `restartCount` 증가 | `Failed` 파드가 남는다 |\n\n> **4.7절에서 본 `OOMKilled` 는 첫 번째**다.\n> **여기서 보는 건 두 번째**다.\n> **증상이 비슷해 자주 섞인다.**\n\n**축출된 파드는 시체로** 남는다.\n\n> **`Evicted` 상태의 파드가 목록에** 쌓인다.\n> **왜 나갔는지 보라고 남기는** 것이다.\n> **`--field-selector status.phase=Failed` 로 치운다.**\n\n**CPU 는 안 죽인다**\n\n> **CPU 는 압축 가능한 자원**이다.\n> **모자라면 느려질 뿐** 죽지 않는다.\n> **메모리와 디스크는 압축이 안 돼 죽인다** — **4.6절에서 한 말**이다.\n\n**우선순위는 다른 축**이다.\n\n```yaml\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata: { name: high }\nvalue: 1000000\n```\n\n> **자리가 없을 때 낮은 파드를 밀어내고 들어**간다(선점).\n> **9.1절의 `No preemption victims found` 가 그 이야기**다.\n> **축출 순서에도 영향을** 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 세 클래스를 만들어 본다 ---\n\n$ kubectl run best --image=nginx:1.27 > /dev/null\n\n$ kubectl run burst --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"burst\",\n      \"image\":\"nginx:1.27\",\"resources\":{\n        \"requests\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"},\n        \"limits\":{\"cpu\":\"500m\",\"memory\":\"256Mi\"}}}]}}' > /dev/null\n\n$ kubectl run guar --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"guar\",\n      \"image\":\"nginx:1.27\",\"resources\":{\n        \"requests\":{\"cpu\":\"200m\",\"memory\":\"128Mi\"},\n        \"limits\":{\"cpu\":\"200m\",\"memory\":\"128Mi\"}}}]}}' > /dev/null\n\n$ sleep 15 && kubectl get pods best burst guar -o custom-columns=\\\nNAME:.metadata.name,QOS:.status.qosClass --no-headers\n\nbest    BestEffort\nburst   Burstable\nguar    Guaranteed\n\n#   적은 적이 없는 필드다\n\n#   요청과 상한에서 계산됐다\n\n$ kubectl get pod guar -o jsonpath='{.spec.qosClass}{\"[없음]\\n\"}'\n\n[없음]\n\n#   spec 에는 없다\n\n#   status 에만 있다\n\n# --- 하나만 어긋나도 Burstable 이다 ---\n\n$ kubectl run almost --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"almost\",\n      \"image\":\"nginx:1.27\",\"resources\":{\n        \"requests\":{\"cpu\":\"200m\",\"memory\":\"128Mi\"},\n        \"limits\":{\"cpu\":\"300m\",\"memory\":\"128Mi\"}}}]}}' > /dev/null\n\n$ sleep 10 && kubectl get pod almost -o jsonpath='{.status.qosClass}{\"\\n\"}'\n\nBurstable\n\n#   cpu 만 다른데도 떨어졌다\n\n#   메모리는 같았다\n\n$ kubectl delete pod best burst guar almost --now > /dev/null\n\n# --- OOMKilled 는 컨테이너 사건이다 ---\n\n$ kubectl run oom --image=polinux/stress --restart=Always \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"oom\",\n      \"image\":\"polinux/stress\",\n      \"command\":[\"stress\",\"--vm\",\"1\",\"--vm-bytes\",\"250M\",\n                 \"--vm-hang\",\"600\"],\n      \"resources\":{\"limits\":{\"memory\":\"100Mi\"},\n                   \"requests\":{\"memory\":\"100Mi\"}}}]}}' > /dev/null\n\n$ sleep 25 && kubectl get pod oom --no-headers\n\noom   0/1   CrashLoopBackOff   2 (8s ago)   25s\n\n$ kubectl get pod oom -o jsonpath=\\\n'{.status.containerStatuses[0].lastState.terminated.reason} \\\nexit={.status.containerStatuses[0].lastState.terminated.exitCode}{\"\\n\"}'\n\nOOMKilled exit=137\n\n#   4.7절에서 본 그것이다\n\n$ kubectl get pod oom -o jsonpath='{.status.phase}{\"\\n\"}'\n\nRunning\n\n#   파드는 살아 있다\n\n#   컨테이너만 죽었다 살아난다\n\n#   노드는 멀쩡했다\n\n$ kubectl delete pod oom --now > /dev/null\n\n# --- 노드를 압박한다 ---\n\n$ kubectl describe node kind-worker | grep -E 'MemoryPressure|DiskPressure'\n\n  MemoryPressure   False   KubeletHasSufficientMemory\n  DiskPressure     False   KubeletHasNoDiskPressure\n\n$ for i in 1 2 3 4 5 6; do\n    kubectl run hog$i --image=polinux/stress \\\n      --overrides='{\"spec\":{\"nodeName\":\"kind-worker\",\n        \"containers\":[{\"name\":\"h\",\"image\":\"polinux/stress\",\n        \"command\":[\"stress\",\"--vm\",\"1\",\"--vm-bytes\",\"1200M\",\n                   \"--vm-hang\",\"600\"]}]}}' > /dev/null\n  done\n\n#   요청도 상한도 없다\n\n#   전부 BestEffort 다\n\n#   nodeName 으로 한 노드에 몰았다\n\n$ sleep 60 && kubectl get pods -o wide --no-headers | grep hog \\\n    | awk '{print $1, $3}'\n\nhog1 Running\nhog2 Running\nhog3 Running\nhog4 Evicted\nhog5 Evicted\nhog6 Running\n\n#   Evicted 다\n\n#   OOMKilled 가 아니다\n\n$ kubectl get pod hog4 -o jsonpath=\\\n'{.status.phase} / {.status.reason}{\"\\n\"}{.status.message}{\"\\n\"}'\n\nFailed / Evicted\nThe node was low on resource: memory. Threshold quantity: 100Mi,\n  available: 84Mi. Container h was using 1201180Ki, request is 0,\n  which exceeds its request of 0.\n\n#   request is 0 라고 콕 집어 말한다\n\n#   요청을 안 적은 대가다\n\n$ kubectl describe node kind-worker | grep MemoryPressure\n\n  MemoryPressure   True    KubeletHasInsufficientMemory\n\n$ kubectl get node kind-worker -o jsonpath=\\\n'{range .spec.taints[*]}{.key}:{.effect}{\"\\n\"}{end}'\n\nnode.kubernetes.io/memory-pressure:NoSchedule\n\n#   테인트가 저절로 붙었다\n\n#   9.3절의 그 목록이다\n\n#   새 파드가 이 노드로 안 온다\n\n$ kubectl get events --field-selector reason=Evicted \\\n    -o jsonpath='{.items[0].message}{\"\\n\"}' | head -1\n\nThe node was low on resource: memory.\n\n# --- 시체가 남는다 ---\n\n$ kubectl get pods --field-selector status.phase=Failed --no-headers \\\n    | wc -l\n\n       2\n\n#   왜 나갔는지 보라고 남긴다\n\n$ kubectl delete pods --field-selector status.phase=Failed > /dev/null\n$ kubectl delete pod hog1 hog2 hog3 hog6 --now > /dev/null 2>&1\n$ sleep 30 && kubectl describe node kind-worker | grep MemoryPressure\n\n  MemoryPressure   False   KubeletHasSufficientMemory\n\n#   압박이 풀리니 테인트도 사라졌다\n\n# --- 우선순위와 선점 ---\n\n$ kubectl apply -f - > /dev/null <<'EOF'\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata: { name: low }\nvalue: 100\n---\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata: { name: high }\nvalue: 1000000\nEOF\n\n$ kubectl create deployment filler --image=nginx:1.27 --replicas=4 > /dev/null\n$ kubectl set resources deployment filler --requests=cpu=3 > /dev/null\n$ kubectl patch deployment filler -p \\\n    '{\"spec\":{\"template\":{\"spec\":{\"priorityClassName\":\"low\"}}}}' > /dev/null\n$ kubectl rollout status deployment/filler > /dev/null\n$ kubectl get pods -l app=filler --no-headers | awk '{print $3}' \\\n    | sort | uniq -c\n\n   4 Running\n\n#   16 cpu 중 12 를 먹었다\n\n$ kubectl run vip --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"priorityClassName\":\"high\",\n      \"containers\":[{\"name\":\"vip\",\"image\":\"nginx:1.27\",\n      \"resources\":{\"requests\":{\"cpu\":\"6\"}}}]}}' > /dev/null\n\n$ sleep 20 && kubectl get pods --no-headers | grep -E 'vip|filler' \\\n    | awk '{print $3}' | sort | uniq -c\n\n   1 Running\n   3 Running\n\n$ kubectl get events --field-selector reason=Preempted \\\n    -o jsonpath='{.items[-1].message}{\"\\n\"}'\n\nPreempted by default/vip on node kind-worker\n\n#   낮은 파드를 밀어내고 들어갔다\n\n#   9.1절의 preemption 메시지가 이것이다\n\n#   레플리카셋이 다시 만들지만 Pending 이다\n\n$ kubectl get pod -l app=filler --no-headers | awk '{print $3}' \\\n    | sort | uniq -c\n\n   1 Pending\n   3 Running\n\n# --- 치운다 ---\n\n$ kubectl delete deployment filler > /dev/null\n$ kubectl delete pod vip --now > /dev/null\n$ kubectl delete priorityclass low high > /dev/null\n\n# --- 다음 절에서 ---\n\n#   개수를 사람이 아니라 지표가 정한다",
+   "note": "**`qosClass` 는 `status` 에만 있고 `spec` 에는** 없다 — 계산되는 값이다.\n\n**CPU 만 달라도 `Guaranteed` 가 아니라 `Burstable`** 이다.\n\n**컨테이너 상한 초과는 `OOMKilled` 에 파드는 `Running`, 노드 압박은 `Failed / Evicted`** 다.\n\n**축출 메시지가 `request is 0` 이라고 콕 집어** 말한다.\n\n**압박이 오자 `memory-pressure` 테인트가 저절로 붙고, 풀리자** 사라졌다."
+  }
+ ],
+ "recap": [
+  "**QoS 는 적는 게 아니라** 계산된다.",
+  "**`Guaranteed` 는 요청과 상한이 전부** 같아야 한다.",
+  "**`BestEffort` 가 제일 먼저** 나간다.",
+  "**`OOMKilled` 는 컨테이너, `Evicted` 는 파드** 사건이다.",
+  "**축출된 파드는 시체로** 남는다.",
+  "**CPU 는 느려질 뿐 안** 죽인다.",
+  "**압박은 테인트로도** 표현된다.",
+  "**우선순위는 선점을** 만든다.",
+  "**요청을 정직하게 적는 게 최선의** 방어다."
+ ],
+ "drills": [
+  {
+   "task": "세 클래스 파드를 만든다.",
+   "done_when": "`qosClass` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "상한만 넘겨 본다.",
+   "done_when": "`OOMKilled` 와 `Running` 파드를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "노드 메모리를 압박한다.",
+   "done_when": "`Evicted` 와 테인트를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "우선순위 클래스를 만든다.",
+   "done_when": "선점 이벤트를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "QoS 클래스는 어떻게 정해지나?",
+   "a": "요청과 상한을 어떻게 적었는지에서 계산된다."
+  },
+  {
+   "q": "`Guaranteed` 조건은?",
+   "a": "모든 컨테이너의 CPU·메모리 요청과 상한이 같아야 한다."
+  },
+  {
+   "q": "`OOMKilled` 와 `Evicted` 의 차이는?",
+   "a": "전자는 컨테이너가 자기 상한을 넘긴 것, 후자는 노드 전체가 모자라 파드가 쫓겨난 것이다."
+  },
+  {
+   "q": "CPU 부족으로 파드가 죽나?",
+   "a": "안 죽는다. 압축 가능한 자원이라 느려질 뿐이다."
+  },
+  {
+   "q": "선점이란?",
+   "a": "높은 우선순위 파드가 자리를 위해 낮은 파드를 밀어내는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "QoS 클래스",
+   "def": "요청과 상한에서 파생되는 파드 등급. 축출 순서를 정한다."
+  },
+  {
+   "term": "선점",
+   "def": "우선순위가 높은 파드를 넣기 위해 낮은 파드를 쫓아내는 스케줄러 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Pod Quality of Service Classes",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Node-pressure Eviction",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Pod Priority and Preemption",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
