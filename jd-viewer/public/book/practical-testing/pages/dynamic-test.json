@@ -1,0 +1,136 @@
+{
+ "book": "practical-testing",
+ "id": "dynamic-test",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "동적 테스트",
+ "summary": "시나리오를 이어서.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "동적 테스트가 무엇인지 안다.",
+  "파라미터화와 언제 갈리는지 안다.",
+  "남용하지 않는 선을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.7절은 독립된 값들**이었다. **여기는 순서가 있는 상태 변화**다."
+  },
+  {
+   "type": "figure",
+   "caption": "순서가 있는 시나리오",
+   "ascii": "   a sequence that only makes sense in order\n\n   stock starts at 5\n     deduct 1   -> 4\n     deduct 2   -> 2\n     deduct 2   -> 0\n     deduct 1   -> exception\n\n   four separate tests would each rebuild the stock\n   and none of them would test the sequence itself",
+   "note": "**넷을 따로 짜면 순서 자체를 안** 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "동적 테스트",
+   "code": "@DisplayName(\"재고 차감 시나리오\")\n@TestFactory\nCollection<DynamicTest> stockDeductionDynamicTest() {\n    // given\n    Stock stock = Stock.create(\"001\", 1);\n\n    return List.of(\n            DynamicTest.dynamicTest(\"재고를 1개 차감하면 0이 된다\", () -> {\n                // when\n                stock.deductQuantity(1);\n\n                // then\n                assertThat(stock.getQuantity()).isZero();\n            }),\n            DynamicTest.dynamicTest(\"재고가 0인데 1개를 더 차감하면 예외가 난다\", () -> {\n                // when & then\n                assertThatThrownBy(() -> stock.deductQuantity(1))\n                        .isInstanceOf(IllegalArgumentException.class)\n                        .hasMessage(\"차감할 재고 수량이 없습니다.\");\n            })\n    );\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 동적인가",
+   "md": "**`@Test` 는 컴파일 시점에** 정해진다.\n\n> **메서드 하나가 테스트 하나**다.\n\n**`@TestFactory` 는 런타임에** 만든다.\n\n> **`Collection<DynamicTest>` 를** 반환한다.\n> **개수도 이름도 실행 중에** 정해진다.\n\n**핵심은 상태 공유**다.\n\n```java\nStock stock = Stock.create(\"001\", 1);   // 하나만 만든다\n```\n\n> **두 `DynamicTest` 가 같은 `stock` 을** 쓴다.\n> **첫 번째가 0으로 만들고 두 번째가 거기서** 시작한다.\n>\n> **2.1절의 \"독립적이다\" 를 의도적으로** 어긴다.\n\n**그래서 순서가 보장**된다.\n\n> **`@Test` 는 순서를 보장 안** 한다(2.1절).\n> **`DynamicTest` 는 리스트 순서대로** 돈다.\n\n**따로 짜면 안 되나**\n\n```java\n@Test void deductOne() {\n    Stock stock = Stock.create(\"001\", 1);\n    stock.deductQuantity(1);\n    assertThat(stock.getQuantity()).isZero();\n}\n\n@Test void deductFromZero() {\n    Stock stock = Stock.create(\"001\", 0);   // 0으로 만들어 시작\n    assertThatThrownBy(() -> stock.deductQuantity(1)).isInstanceOf(...);\n}\n```\n\n> **된다.** **대부분 이게** 낫다.\n>\n> **차이는 두 번째가 \"차감해서 0이 된 재고\" 가 아니라 \"처음부터 0인 재고\"** 라는 것이다.\n> **그 구분이 중요한 도메인이면 동적 테스트**다."
+  },
+  {
+   "type": "figure",
+   "caption": "파라미터화와 동적",
+   "ascii": "   parameterized against dynamic\n\n   parameterized\n     the same body, independent runs\n     order does not matter\n\n   dynamic\n     different bodies, shared state\n     order is the point\n\n   if reordering the cases changes the result, it is dynamic",
+   "note": "**순서를 바꿔 결과가 달라지면 동적**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "남용하지 않는다",
+   "md": "**동적 테스트가 편해 보이는** 순간이 있다.\n\n> **given 을 한 번만 쓰면 되니까**.\n> **7.5절의 `@BeforeEach` 와 같은 유혹**이다.\n\n**대가**\n\n| | |\n|---|---|\n| **하나가 깨지면 뒤가 다 깨진다** | 상태가 이어져서 |\n| **하나만 못 돌린다** | IDE 에서 개별 실행이 어렵다 |\n| **읽기가 어렵다** | 람다 안의 람다 |\n| **`@DisplayName` 이 하나** | 4.2절 |\n\n**첫째가 특히**\n\n```\n재고 차감 시나리오 > 재고를 1개 차감하면 0이 된다 FAILED\n재고 차감 시나리오 > 재고가 0인데 1개를 더 차감하면 예외가 난다 FAILED\n```\n\n> **원인은 하나인데 둘이** 빨갛다.\n> **5.1절의 \"자기 이유로 깨진다\" 가** 깨진다.\n\n**쓸 만한 경우**\n\n| | |\n|---|---|\n| **상태 전이가 요구사항** | 주문 상태 흐름 |\n| **순서가 규칙** | 워크플로 |\n| **누적이 의미** | 재고, 잔액 |\n\n> **\"이 순서로 하면 이렇게 된다\" 가 요구사항 문장이면** 맞다.\n\n**안 쓰는 게 기본**이다.\n\n> **이 책에서 동적 테스트는 이 하나**다.\n> **43개 중 1개**다.\n>\n> **7.7절의 파라미터화는 넷**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 동적 테스트 ---\n\n$ ./gradlew test --tests StockTest\n\nStockTest > 재고 차감 시나리오 > 재고를 1개 차감하면 0이 된다 PASSED\nStockTest > 재고 차감 시나리오 > 재고가 0인데 1개를 더 차감하면 예외가 난다 PASSED\n\n2 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   하나의 stock 을 둘이 나눠 썼다\n\n# --- 순서를 바꿔 보면 ---\n\nreturn List.of(\n        DynamicTest.dynamicTest(\"재고가 0인데 1개를 더 차감하면 예외가 난다\", () -> {\n            assertThatThrownBy(() -> stock.deductQuantity(1))\n                    .isInstanceOf(IllegalArgumentException.class);\n        }),\n        DynamicTest.dynamicTest(\"재고를 1개 차감하면 0이 된다\", () -> {\n            stock.deductQuantity(1);\n            assertThat(stock.getQuantity()).isZero();\n        })\n);\n\n$ ./gradlew test --tests StockTest\n\nStockTest > 재고 차감 시나리오 > 재고가 0인데 1개를 더 차감하면 예외가 난다 FAILED\n    Expecting code to raise a throwable.\nStockTest > 재고 차감 시나리오 > 재고를 1개 차감하면 0이 된다 PASSED\n\n2 tests completed, 1 failed\n\n#   순서가 결과를 바꾼다\n\n#   @Test 로 짰으면 순서가 보장 안 되니 (2.1절)\n#   이렇게 못 짠다\n\n# --- 첫 번째가 깨지면 ---\n\npublic void deductQuantity(int quantity) {\n    if (isQuantityLessThan(quantity)) {\n        throw new IllegalArgumentException(\"차감할 재고 수량이 없습니다.\");\n    }\n    // this.quantity -= quantity;   차감을 안 한다\n}\n\n$ ./gradlew test --tests StockTest\n\nStockTest > 재고 차감 시나리오 > 재고를 1개 차감하면 0이 된다 FAILED\n    expected: 0 but was: 1\nStockTest > 재고 차감 시나리오 > 재고가 0인데 1개를 더 차감하면 예외가 난다 FAILED\n    Expecting code to raise a throwable.\n\n2 tests completed, 2 failed\n\n#   원인은 하나인데 둘이 빨갛다\n\n#   두 번째는 재고가 1로 남아 있어서 예외가 안 났다\n\n#   5.1절의 '자기 이유로 깨진다' 가 깨졌다\n\n# --- 따로 짜면 ---\n\n@DisplayName(\"재고를 차감하면 수량이 줄어든다\")\n@Test\nvoid deductQuantity() {\n    Stock stock = Stock.create(\"001\", 1);\n\n    stock.deductQuantity(1);\n\n    assertThat(stock.getQuantity()).isZero();\n}\n\n@DisplayName(\"재고보다 많은 수량을 차감하면 예외가 난다\")\n@Test\nvoid deductQuantityMoreThanStock() {\n    Stock stock = Stock.create(\"001\", 0);\n\n    assertThatThrownBy(() -> stock.deductQuantity(1))\n            .isInstanceOf(IllegalArgumentException.class)\n            .hasMessage(\"차감할 재고 수량이 없습니다.\");\n}\n\n$ ./gradlew test --tests StockTest\n\nStockTest > 재고를 차감하면 수량이 줄어든다 FAILED\n    expected: 0 but was: 1\nStockTest > 재고보다 많은 수량을 차감하면 예외가 난다 PASSED\n\n2 tests completed, 1 failed\n\n#   하나만 깨진다\n\n#   두 번째는 처음부터 0이라 차감 버그와 무관하다\n\n#   대부분 이게 낫다\n\n# --- 순서 자체가 요구사항일 때 ---\n\n#   \"주문은 INIT -> PAYMENT_COMPLETED -> RECEIVED -> COMPLETED 순으로만\n#    바뀔 수 있다\"\n\n@DisplayName(\"주문 상태 전이 시나리오\")\n@TestFactory\nCollection<DynamicTest> orderStatusTransition() {\n    Order order = Order.create(products, 영업중);\n\n    return List.of(\n            dynamicTest(\"생성된 주문은 INIT 이다\", () ->\n                    assertThat(order.getOrderStatus()).isEqualTo(INIT)),\n\n            dynamicTest(\"INIT 에서 결제 완료로 바꿀 수 있다\", () -> {\n                order.completePayment();\n                assertThat(order.getOrderStatus()).isEqualTo(PAYMENT_COMPLETED);\n            }),\n\n            dynamicTest(\"결제 완료에서 바로 완료로는 못 바꾼다\", () ->\n                    assertThatThrownBy(order::complete)\n                            .isInstanceOf(IllegalStateException.class)\n                            .hasMessage(\"수령 전에는 완료할 수 없습니다.\")),\n\n            dynamicTest(\"결제 완료에서 수령으로 바꿀 수 있다\", () -> {\n                order.receive();\n                assertThat(order.getOrderStatus()).isEqualTo(RECEIVED);\n            }),\n\n            dynamicTest(\"수령에서 완료로 바꿀 수 있다\", () -> {\n                order.complete();\n                assertThat(order.getOrderStatus()).isEqualTo(COMPLETED);\n            })\n    );\n}\n\n$ ./gradlew test --tests OrderStatusTest\n\nOrderStatusTest > 주문 상태 전이 시나리오 > 생성된 주문은 INIT 이다 PASSED\nOrderStatusTest > 주문 상태 전이 시나리오 > INIT 에서 결제 완료로 바꿀 수 있다 PASSED\nOrderStatusTest > 주문 상태 전이 시나리오 > 결제 완료에서 바로 완료로는 못 바꾼다 PASSED\nOrderStatusTest > 주문 상태 전이 시나리오 > 결제 완료에서 수령으로 바꿀 수 있다 PASSED\nOrderStatusTest > 주문 상태 전이 시나리오 > 수령에서 완료로 바꿀 수 있다 PASSED\n\n5 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   상태 흐름이 문서가 됐다\n\n#   따로 짜면 각 테스트가 상태를 만들어야 한다\n\n@Test void completeFromReceived() {\n    Order order = Order.create(products, 영업중);\n    order.completePayment();\n    order.receive();               // 준비만 두 줄\n\n    order.complete();\n\n    assertThat(order.getOrderStatus()).isEqualTo(COMPLETED);\n}\n\n#   given 이 상태 전이의 반복이 된다\n\n#   이 경우는 동적 테스트가 낫다\n\n# --- 이 책의 비율 ---\n\n$ grep -rc \"@TestFactory\" src/test/java/**/*.java | grep -v \":0\"\n\nStockTest.java:1\nOrderStatusTest.java:1\n\n$ grep -rc \"@ParameterizedTest\" src/test/java/**/*.java | grep -v \":0\"\n\nProductTypeTest.java:2\nProductTest.java:1\nOrderStatisticsServiceTest.java:1\n\n$ grep -rc \"@Test\" src/test/java/**/*.java | awk -F: '{s+=$2} END {print s}'\n45\n\n#   @Test 45, @ParameterizedTest 4, @TestFactory 2\n\n#   동적 테스트는 예외적으로 쓴다\n\n# --- 다음 절에서 ---\n\n#   랜덤과 시간을 다시 본다",
+   "note": "**두 `DynamicTest` 가 하나의 `stock` 을 나눠** 쓴다.\n\n**순서를 바꾸면 결과가** 바뀐다. **`@Test` 로는 못 짠다** — 순서가 보장 안 되니까.\n\n**첫 번째가 깨지면 둘이 다** 빨갛다. **5.1절의 \"자기 이유로 깨진다\" 가** 깨진다.\n\n**따로 짜면 하나만** 깨진다. **대부분 이게** 낫다.\n\n**주문 상태 전이는 따로 짜면 given 이 상태 전이의 반복**이 된다. **이 경우는 동적 테스트가** 낫다.\n\n**`@Test` 45, `@ParameterizedTest` 4, `@TestFactory` 2** 다."
+  }
+ ],
+ "recap": [
+  "**`@TestFactory` 가 런타임에 테스트를** 만든다.",
+  "**핵심은 상태 공유**다 — 2.1절의 독립성을 의도적으로 어긴다.",
+  "**순서가 보장**된다 — `@Test` 는 안 그렇다.",
+  "**순서를 바꾸면 결과가** 바뀐다.",
+  "**하나가 깨지면 뒤가 다** 깨진다.",
+  "**개별 실행이 어렵고 읽기도** 어렵다.",
+  "**\"이 순서로 하면 이렇게 된다\" 가 요구사항이면** 쓴다.",
+  "**따로 짜면 given 이 상태 전이의 반복**이 된다.",
+  "**`@Test` 45 에 `@TestFactory` 2** — 예외적으로 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "재고 차감 시나리오를 동적 테스트로 짠다.",
+   "done_when": "상태가 이어지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "순서를 바꿔 본다.",
+   "done_when": "결과가 달라지는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "프로덕션 코드를 깨뜨린다.",
+   "done_when": "둘 다 빨개지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "상태 전이 시나리오를 따로 짜 본다.",
+   "done_when": "given 이 반복되는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동적 테스트의 핵심은?",
+   "a": "상태를 공유하고 순서가 보장된다는 것이다."
+  },
+  {
+   "q": "파라미터화와 어떻게 가르나?",
+   "a": "순서를 바꿔 결과가 달라지면 동적이다."
+  },
+  {
+   "q": "대가는?",
+   "a": "하나가 깨지면 뒤가 다 깨지고 개별 실행이 어렵다."
+  },
+  {
+   "q": "언제 쓰나?",
+   "a": "\"이 순서로 하면 이렇게 된다\" 가 요구사항 문장일 때다."
+  },
+  {
+   "q": "따로 짜면 뭐가 불편한가?",
+   "a": "given 이 상태 전이의 반복이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@TestFactory",
+   "def": "런타임에 `DynamicTest` 컬렉션을 만들어 반환하는 JUnit 5 애노테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "JUnit 5 — Dynamic Tests",
+   "url": "https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

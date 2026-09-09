@@ -1,0 +1,137 @@
+{
+ "book": "practical-testing",
+ "id": "parameterized",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "파라미터화 테스트",
+ "summary": "같은 검증을 여러 값으로.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "값만 다른 테스트를 묶는다.",
+  "소스 애노테이션을 고른다.",
+  "언제 안 묶는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**본문이 같고 값만 다른 테스트가** 쌓인다. **JUnit 5 가 묶어** 준다."
+  },
+  {
+   "type": "figure",
+   "caption": "값만 다른 테스트들",
+   "ascii": "   four tests that differ by two values\n\n   handmade  containsStockType  false\n   bottle    containsStockType  true\n   bakery    containsStockType  true\n\n   the body is the same three lines each time\n   only the input and the expected result move",
+   "note": "**본문 세 줄이 세 번** 반복된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "묶기 전",
+   "code": "@DisplayName(\"HANDMADE 는 재고 관리 대상이 아니다\")\n@Test\nvoid containsStockTypeHandmade() {\n    ProductType type = ProductType.HANDMADE;\n\n    boolean result = ProductType.containsStockType(type);\n\n    assertThat(result).isFalse();\n}\n\n@DisplayName(\"BOTTLE 은 재고 관리 대상이다\")\n@Test\nvoid containsStockTypeBottle() {\n    ProductType type = ProductType.BOTTLE;\n\n    boolean result = ProductType.containsStockType(type);\n\n    assertThat(result).isTrue();\n}\n\n@DisplayName(\"BAKERY 는 재고 관리 대상이다\")\n@Test\nvoid containsStockTypeBakery() {\n    ProductType type = ProductType.BAKERY;\n\n    boolean result = ProductType.containsStockType(type);\n\n    assertThat(result).isTrue();\n}"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "묶은 뒤",
+   "code": "@DisplayName(\"상품 타입이 재고 관리 대상인지 확인한다\")\n@CsvSource({\n        \"HANDMADE, false\",\n        \"BOTTLE, true\",\n        \"BAKERY, true\"\n})\n@ParameterizedTest\nvoid containsStockType(ProductType productType, boolean expected) {\n    // when\n    boolean result = ProductType.containsStockType(productType);\n\n    // then\n    assertThat(result).isEqualTo(expected);\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "값의 출처",
+   "ascii": "   where the values come from\n\n   @ValueSource        one value per run, primitives and strings\n   @CsvSource          several values per run, written inline\n   @MethodSource       several values per run, from a method\n   @EnumSource         every constant of an enum\n   @NullAndEmptySource added to any of the above\n\n   CsvSource for two or three simple values,\n   MethodSource when objects are involved",
+   "note": "**둘 셋이면 `CsvSource`, 객체면 `MethodSource`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "소스 애노테이션",
+   "md": "**`@ValueSource`**\n\n```java\n@ValueSource(strings = {\"\", \" \", \"  \"})\n@ParameterizedTest\nvoid blankName(String name) {\n    assertThatThrownBy(() -> createProduct(name))\n            .isInstanceOf(IllegalArgumentException.class);\n}\n```\n\n> **값 하나**다. **기대 결과가 같을 때** 쓴다.\n\n**`@CsvSource`**\n\n```java\n@CsvSource({\"HANDMADE, false\", \"BOTTLE, true\"})\n```\n\n> **여러 값**이다. **문자열이라 타입 변환이 자동**이다.\n> **`enum`·숫자·`boolean` 이** 된다.\n>\n> **콤마가 값에 들어가면 `'`** 로 감싼다.\n\n**`@MethodSource`**\n\n```java\n@MethodSource(\"provideProducts\")\n@ParameterizedTest\nvoid discount(Product product, int expected) { ... }\n\nprivate static Stream<Arguments> provideProducts() {\n    return Stream.of(\n            Arguments.of(createProduct(\"001\", 10000), 9500),\n            Arguments.of(createProduct(\"002\", 20000), 19000)\n    );\n}\n```\n\n> **객체를 만들 수** 있다.\n> **`static` 이어야** 한다.\n\n**`@EnumSource`**\n\n```java\n@EnumSource(value = ProductType.class, names = {\"BOTTLE\", \"BAKERY\"})\n```\n\n> **`enum` 상수 전부 또는 일부**다.\n> **상수가 늘면 테스트가 자동으로** 는다 — **좋기도 하고 위험하기도** 하다.\n\n**`@NullAndEmptySource`**\n\n```java\n@NullAndEmptySource\n@ValueSource(strings = {\" \"})\n@ParameterizedTest\nvoid blankName(String name) { ... }\n```\n\n> **`null`, `\"\"`, `\" \"`** 셋이다.\n> **5.4절의 `@NotBlank` 경계**를 그대로 짤 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "언제 안 묶나",
+   "md": "**① 본문이 다르면**\n\n```java\n@CsvSource({\"SELLING, 1\", \"STOP_SELLING, 0\"})\n@ParameterizedTest\nvoid findProducts(ProductSellingStatus status, int expected) {\n    if (status == STOP_SELLING) {\n        // 다른 준비가 필요하다\n    }\n    ...\n}\n```\n\n> **`if` 가 들어가면 묶은 게** 아니다.\n> **두 테스트를 한 메서드에 넣은** 것이다.\n\n**② 이름이 안 나오면**\n\n```\ncontainsStockType(ProductType, boolean)[1] HANDMADE, false\ncontainsStockType(ProductType, boolean)[2] BOTTLE, true\n```\n\n> **4.2절의 문장 이름이** 아니다.\n>\n> **`name` 으로 고친다.**\n>\n> ```java\n> @ParameterizedTest(name = \"{0} 은 재고 관리 대상이 {1} 이다\")\n> ```\n>\n> ```\n> HANDMADE 은 재고 관리 대상이 false 이다\n> ```\n>\n> **여전히 어색**하다. **케이스가 셋이면 안 묶는 게 나을 수도** 있다.\n\n**③ 케이스가 개념적으로 다르면**\n\n> **\"정상\" 과 \"예외\" 를 한 파라미터화에 넣으면** 안 된다.\n> **`expectException` 같은 플래그가 붙으면 이미 틀린** 것이다.\n\n**언제 묶나**\n\n| | |\n|---|---|\n| **본문이 완전히 같다** | |\n| **값이 넷 넘는다** | 셋이면 애매하다 |\n| **`enum` 전수 검사** | `@EnumSource` |\n| **경계값 묶음** | `null`·빈 문자열·공백 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 묶기 전 ---\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > HANDMADE 는 재고 관리 대상이 아니다 PASSED\nProductTypeTest > BOTTLE 은 재고 관리 대상이다 PASSED\nProductTypeTest > BAKERY 는 재고 관리 대상이다 PASSED\n\n3 tests completed\n\n$ wc -l ProductTypeTest.java\n38\n\n# --- 묶은 뒤 ---\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > 상품 타입이 재고 관리 대상인지 확인한다 > [1] HANDMADE, false PASSED\nProductTypeTest > 상품 타입이 재고 관리 대상인지 확인한다 > [2] BOTTLE, true PASSED\nProductTypeTest > 상품 타입이 재고 관리 대상인지 확인한다 > [3] BAKERY, true PASSED\n\n3 tests completed\n\n$ wc -l ProductTypeTest.java\n16\n\n#   38줄이 16줄이 됐다\n\n#   그런데 이름이 [1] HANDMADE, false 다\n\n# --- 이름을 고치면 ---\n\n@ParameterizedTest(name = \"{0} 의 재고 관리 여부는 {1} 이다\")\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > ... > HANDMADE 의 재고 관리 여부는 false 이다 PASSED\nProductTypeTest > ... > BOTTLE 의 재고 관리 여부는 true 이다 PASSED\nProductTypeTest > ... > BAKERY 의 재고 관리 여부는 true 이다 PASSED\n\n#   나아졌다\n\n#   그래도 '대상이 아니다' 보다는 못하다\n\n# --- 하나가 틀리면 ---\n\npublic static boolean containsStockType(ProductType type) {\n    return List.of(BOTTLE).contains(type);      // BAKERY 를 뺐다\n}\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > ... > HANDMADE 의 재고 관리 여부는 false 이다 PASSED\nProductTypeTest > ... > BOTTLE 의 재고 관리 여부는 true 이다 PASSED\nProductTypeTest > ... > BAKERY 의 재고 관리 여부는 true 이다 FAILED\n    expected: true\n     but was: false\n\n3 tests completed, 1 failed\n\n#   어느 값이 틀렸는지 나온다\n\n#   묶었어도 실패는 따로 나온다\n\n# --- @EnumSource 로 전수 검사 ---\n\n@DisplayName(\"HANDMADE 를 제외한 모든 타입은 재고 관리 대상이다\")\n@EnumSource(value = ProductType.class, mode = EXCLUDE, names = {\"HANDMADE\"})\n@ParameterizedTest(name = \"{0} 은 재고 관리 대상이다\")\nvoid allExceptHandmade(ProductType type) {\n    assertThat(ProductType.containsStockType(type)).isTrue();\n}\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > ... > BOTTLE 은 재고 관리 대상이다 PASSED\nProductTypeTest > ... > BAKERY 은 재고 관리 대상이다 PASSED\n\n2 tests completed\n\n# --- enum 에 상수를 추가하면 ---\n\npublic enum ProductType {\n    HANDMADE, BOTTLE, BAKERY, FROZEN;      // FROZEN 추가\n}\n\n$ ./gradlew test --tests ProductTypeTest\n\nProductTypeTest > ... > BOTTLE 은 재고 관리 대상이다 PASSED\nProductTypeTest > ... > BAKERY 은 재고 관리 대상이다 PASSED\nProductTypeTest > ... > FROZEN 은 재고 관리 대상이다 FAILED\n    expected: true but was: false\n\n3 tests completed, 1 failed\n\n#   테스트가 자동으로 늘었다\n\n#   containsStockType 을 안 고친 걸 잡았다\n\n#   @CsvSource 였으면 안 잡혔다\n\n# --- @NullAndEmptySource ---\n\n@DisplayName(\"상품 이름이 비어 있으면 예외가 난다\")\n@NullAndEmptySource\n@ValueSource(strings = {\" \", \"   \"})\n@ParameterizedTest(name = \"이름이 [{0}] 이면 예외\")\nvoid blankProductName(String name) {\n    assertThatThrownBy(() -> Product.create(\"001\", HANDMADE, SELLING, name, 4000))\n            .isInstanceOf(IllegalArgumentException.class)\n            .hasMessage(\"상품 이름은 필수입니다.\");\n}\n\n$ ./gradlew test --tests ProductTest\n\nProductTest > ... > 이름이 [null] 이면 예외 PASSED\nProductTest > ... > 이름이 [] 이면 예외 PASSED\nProductTest > ... > 이름이 [ ] 이면 예외 PASSED\nProductTest > ... > 이름이 [   ] 이면 예외 PASSED\n\n4 tests completed\n\n#   5.4절의 @NotBlank 경계를 도메인에서도 짰다\n\n# --- 검증을 isEmpty 로 바꾸면 ---\n\nif (name == null || name.isEmpty()) {\n    throw new IllegalArgumentException(\"상품 이름은 필수입니다.\");\n}\n\n$ ./gradlew test --tests ProductTest\n\nProductTest > ... > 이름이 [null] 이면 예외 PASSED\nProductTest > ... > 이름이 [] 이면 예외 PASSED\nProductTest > ... > 이름이 [ ] 이면 예외 FAILED\n    Expecting code to raise a throwable.\nProductTest > ... > 이름이 [   ] 이면 예외 FAILED\n    Expecting code to raise a throwable.\n\n#   공백이 통과한다\n\n#   5.4절의 @NotEmpty 대 @NotBlank 와 같은 경계다\n\n# --- 본문이 다른데 묶으면 ---\n\n@CsvSource({\"SELLING, true\", \"STOP_SELLING, false\"})\n@ParameterizedTest\nvoid canOrder(ProductSellingStatus status, boolean expected) {\n    Product product = createProduct(\"001\", status, 4000);\n    if (status == STOP_SELLING) {\n        productRepository.save(product);      // 이 경우만 저장한다\n    }\n    ...\n}\n\n#   if 가 들어갔다\n\n#   두 테스트를 한 메서드에 넣은 것이다\n\n#   나눈다\n\n# --- 다음 절에서 ---\n\n#   시나리오를 이어서 검증한다",
+   "note": "**38줄이 16줄**이 됐다. **이름이 `[1] HANDMADE, false`** 라 `name` 으로 고쳤다.\n\n**하나가 틀리면 어느 값인지** 나온다. **묶었어도 실패는 따로** 나온다.\n\n**`@EnumSource` 는 `enum` 에 `FROZEN` 을 추가하니 테스트가 자동으로** 늘어 **안 고친 걸** 잡았다. **`@CsvSource` 였으면 안** 잡혔다.\n\n**`@NullAndEmptySource` 로 `null`·빈 문자열·공백 넷**을 짰다. **`isEmpty` 로 바꾸면 공백이** 통과한다."
+  }
+ ],
+ "recap": [
+  "**본문이 같고 값만 다르면** 묶는다.",
+  "**38줄이 16줄**이 됐다.",
+  "**기본 이름이 `[1] HANDMADE, false`** 라 `name` 으로 고친다.",
+  "**묶어도 실패는 값별로 따로** 나온다.",
+  "**`@CsvSource` 는 둘 셋, `@MethodSource` 는 객체**다.",
+  "**`@EnumSource` 는 상수가 늘면 테스트도** 는다.",
+  "**`@NullAndEmptySource` 로 경계 넷을** 짠다.",
+  "**`if` 가 들어가면 묶은 게** 아니다.",
+  "**정상과 예외를 한 파라미터화에 넣으면** 안 된다."
+ ],
+ "drills": [
+  {
+   "task": "값만 다른 테스트 셋을 찾아 묶는다.",
+   "done_when": "줄 수를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`name` 을 지정해 본다.",
+   "done_when": "실행 결과가 읽히는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@EnumSource` 를 쓰고 상수를 추가한다.",
+   "done_when": "테스트가 자동으로 느는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@NullAndEmptySource` 로 경계를 짠다.",
+   "done_when": "`isEmpty` 와 `isBlank` 차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "언제 묶나?",
+   "a": "본문이 완전히 같고 값만 다를 때다."
+  },
+  {
+   "q": "기본 이름의 문제는?",
+   "a": "`[1] HANDMADE, false` 라 문장이 아니다. `name` 으로 고친다."
+  },
+  {
+   "q": "`@EnumSource` 의 이점과 위험은?",
+   "a": "상수가 늘면 테스트도 늘어 누락을 잡는다. 의도치 않게 깨질 수도 있다."
+  },
+  {
+   "q": "`if` 가 들어가면?",
+   "a": "묶은 게 아니라 두 테스트를 한 메서드에 넣은 것이다."
+  },
+  {
+   "q": "`@NullAndEmptySource` 가 주는 값은?",
+   "a": "`null` 과 빈 문자열이다. 공백은 `@ValueSource` 로 더한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 — Parameterized Tests",
+   "url": "https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

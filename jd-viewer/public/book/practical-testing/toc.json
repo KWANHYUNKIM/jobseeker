@@ -467,7 +467,7 @@
           "title": "파라미터화 테스트",
           "summary": "같은 검증을 여러 값으로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -475,7 +475,7 @@
           "title": "동적 테스트",
           "summary": "시나리오를 이어서.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",
