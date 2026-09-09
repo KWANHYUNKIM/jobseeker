@@ -262,7 +262,7 @@
           "title": "PasswordEncoder",
           "summary": "{bcrypt} 접두어의 뜻.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -270,7 +270,7 @@
           "title": "정리",
           "summary": "한 번의 로그인이 지난 길.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -285,7 +285,7 @@
           "title": "SecurityContext 영속성",
           "summary": "요청마다 새로 만든다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -293,7 +293,7 @@
           "title": "SecurityContextRepository",
           "summary": "세션에 저장되는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

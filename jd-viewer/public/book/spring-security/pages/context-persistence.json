@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "context-persistence",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "SecurityContext 영속성",
+ "summary": "요청마다 새로 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요청 사이에 무엇이 남는지 안다.",
+  "3번 필터가 하는 일을 안다.",
+  "지연 로딩이 왜 생겼는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 홀더가 `finally` 로** 비워졌다. **그런데 로그인은** 유지된다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 요청 사이",
+   "ascii": "   the gap between two requests\n\n   request 1   holder filled ... holder cleared in finally\n               (nothing survives the thread)\n\n   between     only two things exist\n                 a cookie in the browser\n                 a session on the server\n\n   request 2   holder filled again, from the session\n\n   authentication is not kept, it is rebuilt every time",
+   "note": "**인증은 유지되는 게 아니라 매번 다시** 만들어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "남는 건 쿠키와 세션뿐",
+   "md": "**브라우저에는 `JSESSIONID` 한 줄**이다.\n\n**서버 세션에는 직렬화된 컨텍스트**다.\n\n```\nSPRING_SECURITY_CONTEXT ->\n  SecurityContextImpl [Authentication=\n    UsernamePasswordAuthenticationToken [Principal=CustomUserDetails ...]]\n```\n\n> **4.1절의 `Serializable` 이 여기서** 쓰인다.\n> **그리고 `credentials` 가 지워져 있어 비밀번호가 안** 들어간다.\n\n**다음 요청은 이 두 줄로 처음부터 다시** 짓는다.\n\n> **`JSESSIONID` 로 세션을 찾고 → 속성에서 컨텍스트를 꺼내 → 홀더에** 넣는다.\n> **`UserDetailsService` 를 다시 부르지** 않는다.\n>\n> **그래서 DB 에서 권한을 바꿔도 로그인 중인 사람에게는 반영이 안** 된다.\n> **10.9절에서 이걸 어떻게 다루는지** 본다.\n\n**필터 셋이 나뉘어 있다.**\n\n| 필터 | 언제 |\n|---|---|\n| **3번 `SecurityContextHolderFilter`** | 읽어서 홀더에 넣는다 |\n| **인증 필터** | 성공하면 저장한다 |\n| **3번의 `finally`** | 비운다 |\n\n> **읽는 쪽과 쓰는 쪽이** 나뉘었다."
+  },
+  {
+   "type": "figure",
+   "caption": "3번 필터",
+   "ascii": "   SecurityContextHolderFilter, filter 3\n\n   before the chain\n     supplier = repository.loadDeferredContext(request)\n     holder.setDeferredContext(supplier)   nothing read yet\n\n   the session is touched only if someone asks\n\n   after the chain\n     holder.clearContext\n\n   note what it does not do: it never saves",
+   "note": "**저장은 이 필터의 일이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "6.x 에서 이름이 바뀐 이유",
+   "md": "**5.x 의 `SecurityContextPersistenceFilter` 는 읽고 쓰기를 다** 했다.\n\n> **요청 끝에 무조건 세션에 다시** 저장했다.\n> **바뀐 게 없어도 저장했고 세션이 없으면 만들기도** 했다.\n\n**6.x 의 `SecurityContextHolderFilter` 는 읽기만** 한다.\n\n> **저장은 인증한 필터가 명시적으로** 한다.\n> **그래서 무상태 API 에서 세션이 안 생긴다** — **3.3절에서 본** 그것.\n\n**직접 인증을 넣을 때 함정**이다.\n\n```java\n// 6.x 에서 이것만으로는 다음 요청에 안 남는다\nSecurityContextHolder.getContext().setAuthentication(auth);\n\n// 저장까지 해야 한다\nSecurityContext context = SecurityContextHolder.createEmptyContext();\ncontext.setAuthentication(auth);\nSecurityContextHolder.setContext(context);\nsecurityContextRepository.saveContext(context, request, response);\n```\n\n> **5.x 코드를 그대로 옮기면 \"로그인은 되는데 새로고침하면 풀린다\"** 가 된다.\n> **10.5절의 직접 만든 인증에서 실제로** 겪는다.\n\n**지연 로딩도 6.x 에서 들어왔다.**\n\n> **아무도 안 물으면 세션을 안** 건드린다.\n> **정적 리소스처럼 인증이 필요 없는 요청에서 세션 조회를** 아낀다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 세션에 무엇이 들어 있나 ---\n\n@GetMapping(\"/session\")\n@ResponseBody\npublic String session(HttpSession s) {\n    Enumeration<String> names = s.getAttributeNames();\n    while (names.hasMoreElements()) {\n        String n = names.nextElement();\n        System.out.println(\">>> \" + n + \" = \" + s.getAttribute(n));\n    }\n    return s.getId();\n}\n\n$ curl -s -b c.txt localhost:8080/session\n\n9D77AB31C4...\n\n>>> SPRING_SECURITY_CONTEXT = SecurityContextImpl [Authentication=\n     UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n     [username=user@a.com, authorities=[ROLE_USER]], Credentials=[PROTECTED],\n     Authenticated=true, Details=WebAuthenticationDetails\n     [RemoteIpAddress=127.0.0.1, SessionId=9D77AB31C4...],\n     Granted Authorities=[ROLE_USER]]]\n\n#   속성 하나다\n\n#   Credentials=[PROTECTED] 다. 비밀번호가 없다 (4.1절)\n\n# --- 매 요청 UserDetailsService 를 부르나 ---\n\n$ curl -s -b c.txt localhost:8080/orders > /dev/null\n$ curl -s -b c.txt localhost:8080/orders > /dev/null\n$ curl -s -b c.txt localhost:8080/orders > /dev/null\n\n#   (loadUserByUsername 에 찍어 둔 로그)\n$ ./gradlew bootRun 2>&1 | grep -c \">>> loading\"\n\n1\n\n#   로그인할 때 한 번뿐이다\n\n#   그 뒤로는 세션에서 꺼내 쓴다\n\nselect count(*) from member where email = 'user@a.com';\n\n#   (SQL 로그에도 안 나온다)\n\n# --- 권한을 DB 에서 바꿔 본다 ---\n\ninsert into member_role values (1, 'ROLE_ADMIN');\n\n$ curl -s -b c.txt localhost:8080/whoami-roles\n\n[ROLE_USER]\n\n#   DB 에는 둘인데 하나로 보인다\n\n#   세션의 옛 컨텍스트를 쓰고 있다\n\n#   다시 로그인하면\n$ curl -s -b c2.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -b c2.txt localhost:8080/whoami-roles\n\n[ROLE_USER, ROLE_ADMIN]\n\n#   10.9절에서 이걸 즉시 반영하는 법을 본다\n\n# --- 3번 필터가 읽는 것을 본다 ---\n\nlogging.level.org.springframework.security.web.context=TRACE\n\n$ curl -s -b c.txt localhost:8080/orders > /dev/null\n\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/14)\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl\n  [Authentication=UsernamePasswordAuthenticationToken\n  [Principal=CustomUserDetails [username=user@a.com]]]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   Stored 라는 줄이 없다\n\n#   읽기만 하고 저장은 안 한다\n\n#   로그인 요청에만 Stored 가 있었다 (4.8절)\n\n# --- 지연 로딩을 확인 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/public\").permitAll()\n        .anyRequest().authenticated());\n\n@GetMapping(\"/public\")\n@ResponseBody\npublic String pub() { return \"ok\"; }\n\n$ curl -s -b c.txt localhost:8080/public\n\nok\n\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/14)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG AuthorizationFilter : Authorized filter invocation\n\n#   Retrieved 줄이 없다\n\n#   permitAll 이라 아무도 인증을 안 물었다\n\n#   세션을 안 건드렸다\n\n$ curl -s -b c.txt localhost:8080/orders > /dev/null\n\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl [...]\n\n#   authenticated() 인 자리에서는 읽는다\n\n# --- 6.x 함정을 재현한다 ---\n\n@PostMapping(\"/manual-login\")\n@ResponseBody\npublic String manualLogin(@RequestParam String u) {\n    Authentication auth = UsernamePasswordAuthenticationToken.authenticated(\n            u, null, List.of(new SimpleGrantedAuthority(\"ROLE_USER\")));\n    SecurityContextHolder.getContext().setAuthentication(auth);\n    return \"logged in as \" + auth.getName();\n}\n\n$ curl -is -c m.txt -X POST 'localhost:8080/manual-login?u=user@a.com'\n\nHTTP/1.1 200\n\nlogged in as user@a.com\n\n$ grep -c JSESSIONID m.txt\n\n0\n\n#   Set-Cookie 조차 없다\n\n$ curl -s -o /dev/null -b m.txt localhost:8080/orders -w '%{http_code}\\n'\n\n302\n\n#   다음 요청에 안 남았다\n\n#   저장을 안 해서다\n\n# --- 저장까지 한다 ---\n\nprivate final SecurityContextRepository repository =\n        new HttpSessionSecurityContextRepository();\n\n@PostMapping(\"/manual-login2\")\n@ResponseBody\npublic String manualLogin2(@RequestParam String u,\n        HttpServletRequest req, HttpServletResponse res) {\n    Authentication auth = UsernamePasswordAuthenticationToken.authenticated(\n            u, null, List.of(new SimpleGrantedAuthority(\"ROLE_USER\")));\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);\n    SecurityContextHolder.setContext(context);\n    repository.saveContext(context, req, res);\n    return \"logged in as \" + auth.getName();\n}\n\n$ curl -is -c m2.txt -X POST 'localhost:8080/manual-login2?u=user@a.com' \\\n    | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=F1A9...; Path=/; HttpOnly\n\n$ curl -s -o /dev/null -b m2.txt localhost:8080/orders -w '%{http_code}\\n'\n\n200\n\n#   이번엔 남았다\n\n#   10.5절에서 이 형태를 그대로 쓴다\n\n# --- 다음 절에서 ---\n\n#   그 저장소를 자세히 본다",
+   "note": "**세션 속성은 `SPRING_SECURITY_CONTEXT` 하나**고 `Credentials=[PROTECTED]` 다.\n\n**`loadUserByUsername` 로그가 세 요청 뒤에도 1회**다 — **세션에서 꺼내 쓴다.**\n\n**DB 에 `ROLE_ADMIN` 을 넣어도 로그인 중인 세션은 `[ROLE_USER]`** 다.\n\n**3번 필터 로그에 `Retrieved` 는 있고 `Stored` 는** 없다. **`permitAll` 자리에선 `Retrieved` 조차** 없다.\n\n**홀더에만 넣으면 `Set-Cookie` 도 없고 다음 요청이 302, `saveContext` 를 부르면 200** 이다."
+  }
+ ],
+ "recap": [
+  "**요청 사이에 남는 건 쿠키와 세션** 둘뿐이다.",
+  "**인증은 유지되는 게 아니라 매번 다시** 만들어진다.",
+  "**세션 속성은 `SPRING_SECURITY_CONTEXT` 하나**다.",
+  "**비밀번호는 안** 들어간다.",
+  "**`UserDetailsService` 는 다시 안** 불린다.",
+  "**그래서 DB 권한 변경이 즉시 반영되지** 않는다.",
+  "**3번 필터는 읽기만 하고 저장은 인증 필터가** 한다.",
+  "**아무도 안 물으면 세션을 안** 건드린다.",
+  "**홀더에만 넣으면 다음 요청에 안** 남는다."
+ ],
+ "drills": [
+  {
+   "task": "세션 속성을 전부 찍는다.",
+   "done_when": "컨텍스트 하나만 있는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "여러 번 요청하고 조회 로그를 센다.",
+   "done_when": "한 번뿐인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`permitAll` 자리와 `authenticated` 자리의 로그를 비교한다.",
+   "done_when": "`Retrieved` 유무를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "홀더에만 넣는 엔드포인트를 만든다.",
+   "done_when": "다음 요청에 안 남는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "요청 사이에 무엇이 남나?",
+   "a": "브라우저의 쿠키와 서버의 세션뿐이다."
+  },
+  {
+   "q": "다음 요청에 `UserDetailsService` 가 불리나?",
+   "a": "불리지 않는다. 세션의 컨텍스트를 그대로 쓴다."
+  },
+  {
+   "q": "DB 에서 권한을 바꾸면 즉시 반영되나?",
+   "a": "안 된다. 세션에 담긴 옛 권한이 계속 쓰인다."
+  },
+  {
+   "q": "6.x 에서 3번 필터가 안 하는 일은?",
+   "a": "저장이다. 저장은 인증한 필터가 명시적으로 한다."
+  },
+  {
+   "q": "직접 인증을 넣을 때 빠뜨리기 쉬운 것은?",
+   "a": "`repository.saveContext` 호출이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "SecurityContextHolderFilter",
+   "def": "6.x 에서 컨텍스트를 읽어 홀더에 넣고 끝에 비우는 필터. 저장은 하지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security 6 — Migration: SecurityContextRepository",
+   "url": "https://docs.spring.io/spring-security/reference/migration-7/configuration.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

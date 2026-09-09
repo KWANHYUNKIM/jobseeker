@@ -1,0 +1,120 @@
+{
+ "book": "spring-security",
+ "id": "auth-architecture-review",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "정리",
+ "summary": "한 번의 로그인이 지난 길.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "아홉 객체를 한 줄로 잇는다.",
+  "무엇을 갈아 끼울지 고른다.",
+  "지금까지의 빚을 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장과 4장에서 본 것을 한 요청에** 얹는다."
+  },
+  {
+   "type": "figure",
+   "caption": "로그인 한 번의 전 구간",
+   "ascii": "   one login, end to end\n\n   POST /login\n     filter 5   CsrfFilter                 token ok\n     filter 6   UsernamePasswordAuth...    read the two parameters\n                  build an unauthenticated token\n                  AuthenticationManager.authenticate\n                    ProviderManager        pick by supports\n                      DaoAuthProvider\n                        UserDetailsService  one select\n                        four flag checks\n                        PasswordEncoder.matches\n                        build an authenticated token\n                    erase credentials\n                    publish success event\n                  session id changed\n                  holder set, repository saved\n                  302\n\n   nine objects, one request, no controller",
+   "note": "**컨트롤러가 한 번도 안** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "누가 무엇을 하나",
+   "md": "| 객체 | 하는 일 | 절 |\n|---|---|---|\n| `UsernamePassword…Filter` | 파라미터를 꺼내고 결과를 담는다 | 3.2 |\n| `Authentication` | 요청서이자 신분증 | 4.1 |\n| `SecurityContextHolder` | 이 스레드의 보관함 | 4.2 |\n| `AuthenticationManager` | 물어보는 창구 | 4.3 |\n| `AuthenticationProvider` | 실제로 판단 | 4.4 |\n| `ProviderManager` | 여럿에게 차례로 | 4.5 |\n| `UserDetailsService` | 사용자를 읽는다 | 4.6 |\n| `PasswordEncoder` | 비밀번호를 맞춘다 | 4.7 |\n| `SecurityContextRepository` | 다음 요청을 위해 저장 | 5.2 |\n\n> **마지막 하나만 아직 안** 봤다.\n> **5장이 거기서** 시작한다.\n\n**경계가 분명하다.**\n\n> **필터는 HTTP 를 알고 인증을 모른다.**\n> **프로바이더는 인증을 알고 HTTP 를 모른다.**\n> **`UserDetailsService` 는 저장소를 알고 나머지를 모른다.**\n>\n> **그래서 하나씩 갈아 끼울 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 갈아 끼울까",
+   "ascii": "   what you replace, depending on what changed\n\n   users live somewhere else   -> UserDetailsService\n   passwords hashed elsewhere  -> PasswordEncoder\n   a whole new way to prove id -> AuthenticationProvider\n   a new place to read it from -> a filter\n   what happens after success  -> AuthenticationSuccessHandler\n\n   pick the smallest one that fits",
+   "note": "**맞는 것 중 가장 작은 것을** 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지금까지의 빚",
+   "md": "**책 ⑨ 10.4절에서 넘어온 것부터 센다.**\n\n| 빚 | 상태 | 갚을 곳 |\n|---|---|---|\n| **인증 없이 주문이 200** | 갚음 (1.4·2.7) | — |\n| **API 가 401 이 아니라 302** | 절반 (3.3에서 API 체인만) | 6.3 |\n| **CSRF 를 왜 켜 두나** | 아직 | 6.4·6.5 |\n| **직접 만든 로그인 방식** | 아직 | 10.5·10.7 |\n| **비동기 로그인의 302** | 아직 | 11.3 |\n| **인가 규칙이 `authenticated()` 하나** | 아직 | 7장 |\n\n> **두 번째가 절반인 이유**다 — **2.3절처럼 체인을 나눈 API 만 401 이고 섞어 둔 쪽은 여전히 302**다.\n\n**아직 안 한 것 하나가 더** 있다.\n\n> **테스트가 일흔아홉인데 인가 테스트가 하나도** 없다.\n> **`@WithMockUser` 로 통과시키기만** 했다.\n> **권한이 틀렸을 때를 아무도 안** 지킨다.\n>\n> **8.8절에서 이걸** 채운다.\n\n**5장으로 넘어가기 전에 한 가지**\n\n> **여기까지 전부 \"한 요청 안\" 의 이야기**였다.\n> **다음 요청에서 어떻게 기억하는지는 아직 안** 봤다.\n> **4.2절에서 홀더가 `finally` 로 비워진다고 했는데도 로그인이** 유지됐다.\n>\n> **그 사이를 잇는 게 5장**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 아홉 개를 한 로그로 본다 ---\n\nlogging.level.org.springframework.security=TRACE\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/orders\nSet-Cookie: JSESSIONID=9D77...; Path=/; HttpOnly\n\nDEBUG FilterChainProxy : Securing POST /login\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\nTRACE FilterChainProxy : Invoking UsernamePasswordAuthenticationFilter (6/14)\nDEBUG ProviderManager : Authenticating request with\n  DaoAuthenticationProvider (1/1)\n\nselect m.id, m.email, m.password, m.active, m.locked, r.role\n  from member m left join member_role r on r.member_id = m.id\n where m.email = ?\n\nTRACE DaoAuthenticationProvider : (pre checks passed)\nTRACE DaoAuthenticationProvider : (password matched)\nDEBUG ChangeSessionIdAuthenticationStrategy : Changed session id from 4A1C\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n  [username=user@a.com], Authenticated=true,\n  Granted Authorities=[ROLE_USER]]\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n  to HttpSession\nDEBUG SavedRequestAwareAuthenticationSuccessHandler :\n  Redirecting to http://localhost:8080/orders\n\n#   쿼리는 하나다\n\n#   컨트롤러 로그가 없다\n\n#   Secured 도 없다 (6번이 끝냈다)\n\n# --- 각 자리를 하나씩 부숴 본다 ---\n\n#   1) UserDetailsService 가 null 을 준다\n\nInternalAuthenticationServiceException: UserDetailsService returned null\n\n#   2) PasswordEncoder 를 안 만든다\n\njava.lang.IllegalArgumentException: There is no PasswordEncoder mapped\n  for the id \"null\"\n\n#   3) 프로바이더가 supports 를 false 로\n\nProviderNotFoundException: No AuthenticationProvider found for\n  UsernamePasswordAuthenticationToken\n\n#   4) 필터의 매처를 GET 으로\n\nHTTP/1.1 405\n\n#   5) 저장소를 NullSecurityContextRepository 로\n\n$ curl -i -b c.txt -X POST localhost:8080/login -d \"...\"\nHTTP/1.1 302\nLocation: http://localhost:8080/orders\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   로그인은 됐는데 다음 요청이 안 된다\n\n#   5장이 다루는 자리다\n\n# --- 지금 테스트 상태 ---\n\n$ ./gradlew test\n\n79 tests completed\n\nBUILD SUCCESSFUL\n\n$ ./gradlew test --tests '*' 2>&1 | grep -c \"WithMockUser\"\n\n#   (소스에서 센다)\n$ grep -rc \"@WithMockUser\" src/test | grep -v ':0'\n\nsrc/test/java/.../OrderControllerTest.java:3\nsrc/test/java/.../ProductControllerTest.java:1\nsrc/test/java/.../OrderIntegrationTest.java:1\n\n$ grep -rn \"isForbidden\\|isUnauthorized\" src/test | wc -l\n\n0\n\n#   막히는 것을 단언하는 테스트가 하나 있는데\n\n$ grep -rn \"is3xxRedirection\" src/test | wc -l\n\n1\n\n#   2.7절에서 넣은 그거다\n\n#   권한이 틀렸을 때를 지키는 테스트는 0이다\n\n#   8.8절에서 채운다\n\n# --- 다음 장에서 ---\n\n#   홀더가 비워지는데 왜 로그인이 유지되는지 본다",
+   "note": "**한 번의 로그인 로그에 아홉 객체가 순서대로** 나온다. **쿼리는 하나, 컨트롤러 로그는** 없다.\n\n**다섯 자리를 하나씩 부수면 각기 다른 오류**가 난다.\n\n**저장소를 `NullSecurityContextRepository` 로 바꾸면 로그인은 302 인데 다음 요청이 다시 302** 다 — **5장의 자리**다.\n\n**테스트 79개 중 권한이 틀렸을 때를 지키는 것은 0개**다."
+  }
+ ],
+ "recap": [
+  "**로그인 한 번에 객체 아홉이** 관여한다.",
+  "**컨트롤러는 한 번도 안** 불린다.",
+  "**필터는 HTTP 를, 프로바이더는 인증을, 서비스는 저장소를** 안다.",
+  "**경계가 분명해 하나씩 갈아 끼울 수** 있다.",
+  "**바꿀 것 중 가장 작은 것을** 고른다.",
+  "**저장소만 빼고 여덟을** 봤다.",
+  "**API 의 302 는 아직 절반만** 갚았다.",
+  "**인가 테스트는 아직 0개**다.",
+  "**여기까지 전부 한 요청 안의 이야기**였다."
+ ],
+ "drills": [
+  {
+   "task": "TRACE 로 로그인 전 구간을 뽑는다.",
+   "done_when": "아홉 객체를 순서대로 짚었다.",
+   "minutes": 25
+  },
+  {
+   "task": "다섯 자리를 하나씩 부순다.",
+   "done_when": "각기 다른 오류를 적었다.",
+   "minutes": 35
+  },
+  {
+   "task": "빚 목록을 내 프로젝트로 옮긴다.",
+   "done_when": "갚을 절을 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "인가 테스트가 몇 개인지 센다.",
+   "done_when": "숫자를 적었다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "로그인에 컨트롤러가 관여하나?",
+   "a": "하지 않는다. 필터가 응답까지 만든다."
+  },
+  {
+   "q": "사용자 저장소만 바뀌었다면 무엇을 갈아 끼우나?",
+   "a": "`UserDetailsService` 하나다."
+  },
+  {
+   "q": "인증 방식 자체가 새롭다면?",
+   "a": "`AuthenticationProvider` 와, 값을 읽을 필터다."
+  },
+  {
+   "q": "아직 안 본 객체 하나는?",
+   "a": "`SecurityContextRepository` 다."
+  },
+  {
+   "q": "지금 인가 테스트는 몇 개인가?",
+   "a": "0개다. 통과시키는 테스트만 있다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

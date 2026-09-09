@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "context-repository",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "SecurityContextRepository",
+ "summary": "세션에 저장되는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "구현 넷을 구별한다.",
+  "저장이 조건부인 것을 안다.",
+  "3.2절의 어긋남을 설명한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절 표의 마지막 칸**이다. **읽고 쓰는 쪽을 맡는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "구현 넷",
+   "ascii": "   four implementations, four lifetimes\n\n   HttpSessionSecurityContextRepository   the session, across requests\n   RequestAttributeSecurityContextRepository  one request only\n   NullSecurityContextRepository          nowhere\n   DelegatingSecurityContextRepository    several of the above at once\n\n   basic auth uses the second one by default (3.3)",
+   "note": "**어디에 얼마나 오래 두느냐가** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터페이스",
+   "md": "```java\npublic interface SecurityContextRepository {\n    @Deprecated\n    SecurityContext loadContext(HttpRequestResponseHolder holder);\n\n    default Supplier<SecurityContext> loadDeferredContext(\n            HttpServletRequest request) { ... }\n\n    void saveContext(SecurityContext context,\n            HttpServletRequest request, HttpServletResponse response);\n\n    boolean containsContext(HttpServletRequest request);\n}\n```\n\n> **`loadDeferredContext` 가 5.1절의 지연 로딩**이다.\n> **`Supplier` 를 돌려주고 아무도 안 부르면 세션을 안** 건드린다.\n\n**필터마다 저장소가 다를 수** 있다.\n\n```java\nhttp.securityContext(c -> c.securityContextRepository(\n        new HttpSessionSecurityContextRepository()));\n\nhttp.httpBasic(b -> b.securityContextRepository(\n        new RequestAttributeSecurityContextRepository()));\n```\n\n> **3.3절에서 기본 인증이 쿠키를 안 남긴 이유가** 이거였다.\n\n**둘 다 쓰고 싶으면 위임**이다.\n\n```java\nnew DelegatingSecurityContextRepository(\n        new RequestAttributeSecurityContextRepository(),\n        new HttpSessionSecurityContextRepository());\n```\n\n> **저장은 둘 다, 읽기는 먼저 찾은 쪽**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "저장이 조건부다",
+   "ascii": "   saveContext is not a blind write\n\n   context is empty or anonymous?\n     and a session exists -> remove the attribute\n     and no session       -> do nothing, create none\n   context changed?\n     -> write it into the session\n   context identical to what was loaded?\n     -> skip the write\n\n   this is why an anonymous request leaves no session behind",
+   "note": "**익명 요청이 세션을 안 남기는 이유**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "3.2절의 어긋남",
+   "md": "**로그인한 채로 다른 계정 로그인에 실패해도 다음 요청이 200** 이었다.\n\n> **`unsuccessfulAuthentication` 이 `clearContext()` 만** 불렀다.\n> **홀더는 비었는데 세션의 속성은 그대로**다.\n> **다음 요청의 3번 필터가 그걸 다시 꺼내** 온다.\n\n**세션까지 지우려면**\n\n```java\n.failureHandler((req, res, ex) -> {\n    SecurityContextHolder.clearContext();\n    securityContextRepository.saveContext(\n            SecurityContextHolder.createEmptyContext(), req, res);\n    res.sendRedirect(\"/login?error\");\n})\n```\n\n> **빈 컨텍스트를 저장하면 속성이** 지워진다.\n> **그림의 첫 갈래**다.\n\n**이걸 기본으로 안 하는 이유**\n\n> **로그인 실패로 기존 세션을 끊으면 남의 로그인을 끊을 수** 있다.\n> **아이디만 알면 틀린 비밀번호를 계속 보내 상대를 로그아웃**시킨다.\n>\n> **그래서 기본은 안 지운다.**\n> **끊고 싶으면 의도해서** 켠다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 저장이 언제 일어나나 ---\n\nlogging.level.org.springframework.security.web.context=TRACE\n\n#   로그인\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n  to HttpSession\n\n#   그 뒤 평범한 요청\n$ curl -s -b c.txt localhost:8080/orders -o /dev/null\n\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl [...]\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Stored SecurityContextImpl\"\n\n1\n\n#   로그인 때 한 번뿐이다\n\n#   5.x 였다면 요청마다 저장했다\n\n# --- 익명 요청은 ---\n\n$ curl -is localhost:8080/public | grep -ci set-cookie\n\n0\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Stored\"\n\n0\n\n#   익명 컨텍스트는 저장 안 한다 (3.7절)\n\n#   세션도 안 만든다\n\n# --- 3.2절 어긋남을 다시 본다 ---\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   다른 계정으로 로그인 실패\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=admin@a.com&password=틀림&_csrf=$TOKEN\" -o /dev/null\n\nDEBUG UsernamePasswordAuthenticationFilter : Failed to process\n  authentication request\n\n$ curl -s -b c.txt localhost:8080/session\n\n>>> SPRING_SECURITY_CONTEXT = SecurityContextImpl [Authentication=\n     UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n     [username=user@a.com]]]\n\n#   세션에 그대로 있다\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   여전히 로그인 상태다\n\n# --- 빈 컨텍스트를 저장해 본다 ---\n\n.failureHandler((req, res, ex) -> {\n    SecurityContextHolder.clearContext();\n    repository.saveContext(SecurityContextHolder.createEmptyContext(), req, res);\n    res.sendRedirect(\"/login?error\");\n})\n\n$ curl -s -b c.txt -X POST localhost:8080/login \\\n    -d \"username=admin@a.com&password=틀림&_csrf=$TOKEN\" -o /dev/null\n\nTRACE HttpSessionSecurityContextRepository : Removed SecurityContext\n  from HttpSession\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   이번엔 끊겼다\n\n#   그리고 이건 위험할 수 있다\n\n#   남의 아이디로 틀린 비밀번호를 계속 보내면\n\n#   그 사람을 로그아웃시킬 수 있다\n\n#   (같은 세션 쿠키를 가진 경우에 한하지만)\n\n#   기본이 안 지우는 쪽인 데는 이유가 있다\n\n# --- 저장소를 없애 본다 ---\n\nhttp.securityContext(c -> c.securityContextRepository(\n        new NullSecurityContextRepository()));\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -iE 'HTTP/|location|set-cookie'\n\nHTTP/1.1 302\nLocation: http://localhost:8080/orders\n\n#   Set-Cookie 가 없다\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n302\n\n#   로그인은 됐는데 다음 요청이 안 된다\n\n#   4.8절에서 부순 다섯 번째 자리다\n\n# --- 위임 저장소 ---\n\nhttp.securityContext(c -> c.securityContextRepository(\n        new DelegatingSecurityContextRepository(\n                new RequestAttributeSecurityContextRepository(),\n                new HttpSessionSecurityContextRepository())));\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=E4C2...; Path=/; HttpOnly\n\nTRACE RequestAttributeSecurityContextRepository : (stored in request)\nTRACE HttpSessionSecurityContextRepository : Stored SecurityContextImpl\n  to HttpSession\n\n#   둘 다 저장했다\n\n$ curl -s -o /dev/null -b c.txt localhost:8080/orders -w '%{http_code}\\n'\n200\n\n#   세션 쪽에서 읽힌다\n\n# --- 같은 값을 다시 저장하면 ---\n\n$ curl -s -b c.txt localhost:8080/orders -o /dev/null\n$ curl -s -b c.txt localhost:8080/orders -o /dev/null\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Stored SecurityContextImpl\"\n\n1\n\n#   더 안 늘어난다\n\n#   안 바뀌면 안 쓴다\n\n# --- 다음 절에서 ---\n\n#   세션을 아예 안 만드는 쪽으로 간다",
+   "note": "**`Stored` 는 로그인 때 한 번**뿐이고 평범한 요청에는 `Retrieved` 만 있다.\n\n**익명 요청은 `Set-Cookie` 도 `Stored` 도** 없다.\n\n**로그인 실패 뒤에도 세션 속성이 그대로라 200** 이다 — **3.2절의 어긋남**.\n\n**실패 핸들러에서 빈 컨텍스트를 저장하면 `Removed SecurityContext` 가 찍히고 302** 가 된다.\n\n**`NullSecurityContextRepository` 로 바꾸면 `Set-Cookie` 없이 로그인만 되고 다음 요청이** 막힌다."
+  }
+ ],
+ "recap": [
+  "**저장소가 읽기와 쓰기를** 맡는다.",
+  "**구현 넷의 차이는 어디에 얼마나 오래 두느냐**다.",
+  "**기본 인증은 요청 범위 저장소를** 쓴다.",
+  "**저장은 조건부**다 — 비었거나 안 바뀌면 안 쓴다.",
+  "**익명 컨텍스트는 저장 안** 한다.",
+  "**로그인 실패는 세션 속성을 안** 지운다.",
+  "**빈 컨텍스트를 저장하면** 지워진다.",
+  "**기본이 안 지우는 건 남을 로그아웃시킬 수 있어서**다.",
+  "**`Null…Repository` 면 다음 요청에 안** 남는다."
+ ],
+ "drills": [
+  {
+   "task": "`Stored` 로그를 센다.",
+   "done_when": "로그인 때만 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그인 실패 후 세션 속성을 본다.",
+   "done_when": "그대로인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "실패 핸들러에서 빈 컨텍스트를 저장한다.",
+   "done_when": "끊기는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "저장소를 넷으로 바꿔 가며 시험한다.",
+   "done_when": "각각의 결과를 적었다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 인증의 기본 저장소는?",
+   "a": "`RequestAttributeSecurityContextRepository` 로 요청 범위다."
+  },
+  {
+   "q": "익명 컨텍스트를 저장하나?",
+   "a": "하지 않는다. 그래서 세션이 안 생긴다."
+  },
+  {
+   "q": "로그인 실패가 기존 세션을 왜 안 끊나?",
+   "a": "남의 아이디로 실패를 반복해 로그아웃시킬 수 있어서다."
+  },
+  {
+   "q": "세션 속성을 지우려면?",
+   "a": "빈 컨텍스트를 `saveContext` 로 저장한다."
+  },
+  {
+   "q": "같은 컨텍스트를 다시 저장하면?",
+   "a": "안 바뀌었으면 쓰지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DelegatingSecurityContextRepository",
+   "def": "여러 저장소에 함께 저장하고 먼저 찾은 쪽에서 읽는 위임 저장소."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Session Management",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
