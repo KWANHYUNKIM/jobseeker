@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "java-props",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "자바 시스템 속성",
+ "summary": "-D 로 넣는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "자리를 안다.",
+  "누가 읽는지 안다.",
+  "JVM 것과 앱 것을 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.2절은 프로세스 밖에서** 왔다. **이건 JVM 이 시작하며 받는**다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리가 중요하다",
+   "ascii": "   the order on the command line is not cosmetic\n\n   java  minus D goes here  minus jar app.jar  arguments go here\n\n   anything after the jar name is not read by the jvm",
+   "note": "**JAR 이름 뒤는 JVM 이 안** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JVM 자신이 읽는 값도 여기로 들어온다",
+   "md": "**둘이 섞여** 있다.\n\n> **JVM 것과 내 것**이다.\n> **문법이 같아 구별이 안** 된다.\n> **아래에서 갈라** 본다.\n\n**라이브러리도 여기를** 본다.\n\n> **스프링을 안 거친**다.\n> **설정 파일로는 못** 바꾼다.\n> **아래에서 그걸** 겪는다.\n\n**점을 쓸 수** 있다.\n\n> **7.2절의 변환이 필요** 없다.\n> **이름이 그대로**다.\n> **아래에서 확인**한다.\n\n**코드로도 넣을 수** 있다.\n\n> **`System.setProperty`** 다.\n> **너무 늦으면 소용** 없다.\n> **아래에서 그 시점을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 읽나",
+   "ascii": "   who reads what\n\n   the jvm itself      heap size, gc, file encoding, proxies\n   libraries           their own documented properties\n   spring              everything, as one more property source\n\n   only the third row can be replaced by a config file",
+   "note": "**설정 파일로 대신할 수 있는 건 셋째 줄**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JAR 이름 뒤에 -D 를 쓰면 조용히 무시된다",
+   "md": "**오류가 안** 난다.\n\n> **인수로 넘어가** 버린다.\n> **아래에서 그걸** 본다.\n> **7.4절에서 그 인수를** 본다.\n\n**빌드 도구는 또** 다르다.\n\n> **`bootRun` 은 자기 JVM 이** 있다.\n> **그냥 붙이면 그레이들에게** 간다.\n> **아래에서 넘기는 법을** 본다.\n\n**JVM 값은 기동 뒤에 못** 바꾼다.\n\n> **코드로 넣어도** 늦다.\n> **아래에서 인코딩으로** 확인한다.\n> **6.6절과 같은 결**이다.\n\n**공백이 있으면 따옴표**다.\n\n> **셸이 먼저** 자른다.\n> **7.2절과 같은 함정**이다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 점을 그대로 쓴다\n\n$ java -Dstudy.db.url=jdbc:h2:mem:sys -jar build/libs/app.jar > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.db.url \\\n    | python3 -m json.tool | head -5\n{\n    \"property\": {\n        \"source\": \"systemProperties\",\n        \"value\": \"jdbc:h2:mem:sys\"\n    },\n\n--   7.2절의 변환이 필요 없다\n\n\n-- 자리를 틀리면\n\n$ java -jar build/libs/app.jar -Dstudy.db.url=jdbc:h2:mem:sys > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.db.url \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin).get('property'))\"\nNone\n\n$ curl -s localhost:8080/args\n[-Dstudy.db.url=jdbc:h2:mem:sys]\n\n$ java -jar build/libs/app.jar -Dstudy.db.url=x 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   오류 없이 인수가 됐다\n--   7.4절에서 이 인수를 본다\n\n\n-- 자바만으로 확인한다\n\n$ cat > /tmp/Q.java <<'EOF'\npublic class Q {\n    public static void main(String[] a) {\n        System.out.println(\"속성: \" + System.getProperty(\"study.mode\"));\n        System.out.println(\"인수: \" + java.util.Arrays.toString(a));\n    }\n}\nEOF\n\n$ java -Dstudy.mode=before /tmp/Q.java -Dstudy.mode=after\n속성: before\n인수: [-Dstudy.mode=after]\n\n--   앞의 것만 JVM 이 먹었다\n\n\n-- 몇 개나 있나\n\n@GetMapping(value = \"/sysprops\", produces = \"text/plain\")\nString sysprops() {\n    return \"전체: \" + System.getProperties().size() + \"\\n\";\n}\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/sysprops\n전체: 68\n\n$ java -Dstudy.mode=x -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/sysprops\n전체: 69\n\n--   내가 하나 더한 것이다\n--   나머지 68 은 JVM 이 채웠다\n\n\n-- JVM 것을 몇 개 본다\n\n$ java -XshowSettings:properties -version 2>&1 | grep -E \\\n    'java.version|file.encoding|os.name|user.timezone' | head -4\n    file.encoding = UTF-8\n    java.version = 21.0.3\n    os.name = Mac OS X\n    user.timezone = Asia/Seoul\n\n$ curl -s 'localhost:8080/raw2?key=os.name'\nMac OS X\n\n--   6.3절에서 조건으로 읽던 그 값이다\n--   스프링이 이것도 속성으로 본다\n\n\n-- JVM 것은 설정 파일로 못 바꾼다\n\n// application.yml\nfile:\n  encoding: ISO-8859-1\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/encoding\n파일 인코딩: UTF-8\n프로퍼티:    ISO-8859-1\n\n$ java -Dfile.encoding=ISO-8859-1 -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/encoding\n파일 인코딩: ISO-8859-1\n프로퍼티:    ISO-8859-1\n\n--   설정 파일은 스프링만 봤다\n--   JVM 은 -D 만 봤다\n\n\n-- 코드로 넣으면 늦다\n\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        System.setProperty(\"file.encoding\", \"ISO-8859-1\");\n        System.setProperty(\"study.mode\", \"in-code\");\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/encoding\n파일 인코딩: UTF-8\n프로퍼티:    ISO-8859-1\n\n$ curl -s localhost:8080/config | grep 모드\n모드: in-code\n\n--   내가 만든 키는 먹었다\n--   JVM 이 이미 읽은 값은 안 바뀐다\n\n\n-- 라이브러리 것도 있다\n\n$ java -Djava.net.useSystemProxies=true -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s 'localhost:8080/raw2?key=java.net.useSystemProxies'\ntrue\n\n$ java -Dlogging.level.root=DEBUG -jar build/libs/app.jar 2>&1 | grep -c DEBUG\n    412\n\n$ java -Dlogback.configurationFile=/tmp/logback-custom.xml \\\n    -jar build/libs/app.jar 2>&1 | head -1\n[내 로그백 설정] 시작\n\n--   가운데는 스프링이 읽어 로그백에 넘긴 것이다\n--   아래는 로그백이 직접 읽은 것이다\n\n\n-- 빌드 도구에서는 안 넘어간다\n\n$ ./gradlew bootRun -Dstudy.mode=gradle 2>&1 | grep -c 'Started'\n1\n$ curl -s localhost:8080/config | grep 모드\n모드: (없음)\n\n--   그레이들 JVM 이 먹었다\n\n$ ./gradlew bootRun --args='--study.mode=arg' 2>&1 | grep -c 'Started'\n1\n$ curl -s localhost:8080/config | grep 모드\n모드: arg\n\n// build.gradle\ntasks.named('bootRun') {\n    systemProperty 'study.mode', 'gradle-sysprop'\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started'\n1\n$ curl -s localhost:8080/config | grep 모드\n모드: gradle-sysprop\n\n--   따로 적어 줘야 넘어간다\n--   4.11절에서 본 세 방식이 여기서도 다르다\n\n\n-- 공백이 있으면\n\n$ java -Dstudy.title=내 앱 -jar build/libs/app.jar 2>&1 | head -1\nError: Could not find or load main class 앱\n\n$ java '-Dstudy.title=내 앱' -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s 'localhost:8080/raw2?key=study.title'\n내 앱\n\n--   7.2절과 같은 함정이다\n--   셸이 먼저 자른다\n\n\n-- 파일로 모아 둘 수도 있다\n\n$ cat > /tmp/opts.txt <<'EOF'\n-Dstudy.mode=fromfile\n-Dstudy.db.url=jdbc:h2:mem:fromfile\n-Xmx512m\nEOF\n\n$ java @/tmp/opts.txt -jar build/libs/app.jar > /dev/null 2>&1 &\n$ curl -s localhost:8080/config\nurl:  jdbc:h2:mem:fromfile\n모드: fromfile\n\n$ curl -s localhost:8080/actuator/metrics/jvm.memory.max \\\n    | python3 -c \"import json,sys; \\\nprint(int(json.load(sys.stdin)['measurements'][0]['value'] / 1024 / 1024), 'MB')\"\n512 MB\n\n--   자바 것과 내 것이 한 파일에 섞여 있다\n\n\n-- 환경 변수로도 준다\n\n$ JAVA_TOOL_OPTIONS='-Dstudy.mode=tooloptions' java -jar build/libs/app.jar 2>&1 | head -1\nPicked up JAVA_TOOL_OPTIONS: -Dstudy.mode=tooloptions\n\n$ curl -s localhost:8080/config | grep 모드\n모드: tooloptions\n\n--   컨테이너에서 자주 쓴다\n--   찍히는 줄이 있어 알아채기 쉽다\n\n\n-- 셋을 같이 주면\n\n$ STUDY_MODE=env java -Dstudy.mode=sysprop \\\n    -jar build/libs/app.jar --study.mode=arg > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/actuator/env/study.mode \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('이긴 것:', d['property']['source'], '=', d['property']['value'])\nfor s in d['propertySources']:\n    if 'property' in s: print(' ', s['name'], '=', s['property']['value'])\n\"\n이긴 것: commandLineArgs = arg\n  commandLineArgs = arg\n  systemProperties = sysprop\n  systemEnvironment = env\n\n--   시스템 속성이 환경 변수보다 위다\n--   7.12절에서 이 줄 세우기를 다 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '자리'         'JAR 앞' \\\n  '뒤에 쓰면'    '인수가 됨' \\\n  '점'           '그대로 씀' \\\n  'JVM 것'       '설정 파일 안 먹음' \\\n  '코드로 넣기'  'JVM 값은 늦음' \\\n  '빌드 도구'    '따로 적어야 함' \\\n  '공백'         '따옴표' \\\n  '순서'         '환경 변수보다 위'\n\n자리                       JAR 앞\n뒤에 쓰면                  인수가 됨\n점                         그대로 씀\nJVM 것                     설정 파일 안 먹음\n코드로 넣기                JVM 값은 늦음\n빌드 도구                  따로 적어야 함\n공백                       따옴표\n순서                       환경 변수보다 위\n\n--   7.4절에서 인수를 본다",
+   "note": "**`-D` 를 JAR 앞에 쓰면 `systemProperties` 로 잡히고 뒤에 쓰면 오류 없이 인수가** 된다.\n\n**JVM 이 채운 속성이 68 개이고 내가 하나 더하면 69**다.\n\n**`file.encoding` 은 설정 파일로는 안 바뀌고 `-D` 로만 바뀌며 코드로 넣으면 이미** 늦다.\n\n**`bootRun` 에 그냥 붙인 `-D` 는 그레이들 JVM 이 먹어 `모드: (없음)`** 이다.\n\n**셋을 같이 주면 인수 > 시스템 속성 > 환경 변수 순으로** 줄 선다."
+  }
+ ],
+ "recap": [
+  "**JAR 앞에** 쓴다.",
+  "**뒤면 인수가** 된다.",
+  "**조용히** 무시된다.",
+  "**점을 그대로** 쓴다.",
+  "**JVM 것도** 섞인다.",
+  "**설정 파일이 안** 먹는다.",
+  "**코드로는** 늦다.",
+  "**빌드 도구는** 다르다.",
+  "**환경 변수보다** 위다."
+ ],
+ "drills": [
+  {
+   "task": "자리를 바꿔 본다.",
+   "done_when": "인수가 되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "속성 개수를 센다.",
+   "done_when": "내가 더한 하나를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인코딩을 설정 파일로 바꿔 본다.",
+   "done_when": "안 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빌드 도구에서 넘겨 본다.",
+   "done_when": "따로 적어야 하는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`-D` 를 JAR 이름 뒤에 쓰면?",
+   "a": "오류 없이 애플리케이션 인수가 된다."
+  },
+  {
+   "q": "환경 변수와 달리 이름을 어떻게 쓰나?",
+   "a": "점을 그대로 쓴다. 변환 규칙이 필요 없다."
+  },
+  {
+   "q": "JVM 자신이 읽는 값을 설정 파일로 바꿀 수 있나?",
+   "a": "없다. `-D` 로 줘야 한다."
+  },
+  {
+   "q": "코드에서 넣으면 왜 안 먹을 때가 있나?",
+   "a": "JVM 이 기동 때 이미 읽은 값이라 늦어서다."
+  },
+  {
+   "q": "시스템 속성과 환경 변수 중 어느 쪽이 위인가?",
+   "a": "시스템 속성이 위다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "시스템 속성",
+   "def": "JVM 이 시작할 때 받아 프로세스 전체가 공유하는 이름·값."
+  },
+  {
+   "term": "JVM 옵션 파일",
+   "def": "옵션들을 적어 두고 골뱅이로 넘기는 파일."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java — The Java Application Launcher",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

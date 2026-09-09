@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "args",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "커맨드 라인 인수",
+ "summary": "파싱을 내가 한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "날것을 본다.",
+  "직접 파싱해 본다.",
+  "무엇이 아픈지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절에서 JAR 뒤의 것이 인수가** 됐다. **그 인수 자체를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "`main` 이 받는 것",
+   "ascii": "   what java actually hands to main\n\n   a plain array of strings, in order, unparsed\n\n   no keys, no values, no types, no defaults, nothing",
+   "note": "**키도 값도 타입도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "규칙이 없어서 매번 다시 만든다",
+   "md": "**문자열 배열 하나**다.\n\n> **순서만** 있다.\n> **의미는 내가 붙인**다.\n> **아래에서 찍어** 본다.\n\n**형식이 정해져** 있지 않다.\n\n> **`-x`·`--x`·`x=1` 다** 가능하다.\n> **프로그램마다** 다르다.\n> **아래에서 셋을** 본다.\n\n**파싱을 손으로** 쓴다.\n\n> **분리·기본값·타입 변환**이다.\n> **아래에서 다** 써 본다.\n> **길어진**다.\n\n**부트는 하나를 정해** 뒀다.\n\n> **`--키=값`** 이다.\n> **7.5절에서 그걸** 본다.\n> **여기선 손으로** 해 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "파서가 정해야 하는 것",
+   "ascii": "   the three things a parser has to decide\n\n   which token is a key and which is a value\n   what a repeated key means\n   what an unknown key means\n\n   every hand written parser answers these differently",
+   "note": "**손으로 쓴 파서마다 답이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인수는 다른 사람에게도 보인다",
+   "md": "**프로세스 목록에 남는**다.\n\n> **7.2절에서** 확인했다.\n> **비밀번호를 여기 두면 안** 된다.\n> **아래에서 다시** 본다.\n\n**셸이 먼저 손댄**다.\n\n> **별표가 파일 이름으로** 퍼진다.\n> **아래에서 그걸** 겪는다.\n> **따옴표가** 필요하다.\n\n**같은 키를 두 번 주면** 애매하다.\n\n> **앞이 이길지 뒤가 이길지 내가** 정한다.\n> **부트는 다르게** 한다.\n> **7.5절에서** 비교한다.\n\n**모르는 키는 조용히** 지나간다.\n\n> **오타를 못** 잡는다.\n> **아래에서 그걸** 본다.\n> **7.9절에서 그 문제를** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 날것을 본다\n\npublic static void main(String[] args) {\n    System.out.println(\"[인수] 개수 = \" + args.length);\n    for (int i = 0; i < args.length; i++)\n        System.out.println(\"[인수] \" + i + \" = [\" + args[i] + \"]\");\n    SpringApplication.run(BootApplication.class, args);\n}\n\n$ java -jar build/libs/app.jar --study.mode=dev -v extra.txt --study.db.pool-size 20\n[인수] 개수 = 5\n[인수] 0 = [--study.mode=dev]\n[인수] 1 = [-v]\n[인수] 2 = [extra.txt]\n[인수] 3 = [--study.db.pool-size]\n[인수] 4 = [20]\n\n--   그냥 문자열 다섯이다\n--   무엇이 키고 무엇이 값인지 안 적혀 있다\n\n\n-- 형식이 정해져 있지 않다\n\n$ java -jar build/libs/app.jar -p 8080 --port=8080 port=8080\n[인수] 0 = [-p]\n[인수] 1 = [8080]\n[인수] 2 = [--port=8080]\n[인수] 3 = [port=8080]\n\n--   셋 다 자바에게는 똑같이 문자열이다\n\n\n-- 직접 파싱한다\n\nstatic Map<String, String> parse(String[] args) {\n    Map<String, String> m = new LinkedHashMap<>();\n    for (int i = 0; i < args.length; i++) {\n        String a = args[i];\n        if (!a.startsWith(\"--\")) continue;\n        a = a.substring(2);\n        int eq = a.indexOf('=');\n        if (eq >= 0) m.put(a.substring(0, eq), a.substring(eq + 1));\n        else if (i + 1 < args.length && !args[i + 1].startsWith(\"--\"))\n            m.put(a, args[++i]);\n        else m.put(a, \"true\");\n    }\n    return m;\n}\n\n$ java -jar build/libs/app.jar --mode=dev --pool-size 20 --verbose\n[파싱] mode = dev\n[파싱] pool-size = 20\n[파싱] verbose = true\n\n--   스무 줄 가까이 됐다\n\n\n-- 타입 변환도 내 몫이다\n\nint poolSize = Integer.parseInt(m.getOrDefault(\"pool-size\", \"10\"));\nboolean verbose = Boolean.parseBoolean(m.getOrDefault(\"verbose\", \"false\"));\nDuration timeout = Duration.parse(m.getOrDefault(\"timeout\", \"PT30S\"));\n\n$ java -jar build/libs/app.jar --pool-size=스물\n[파싱] pool-size = 스물\nException in thread \"main\" java.lang.NumberFormatException:\n  For input string: \"스물\"\n\tat java.base/java.lang.Integer.parseInt(Integer.java:665)\n\tat study.boot.BootApplication.main(BootApplication.java:31)\n\n--   기동도 못 했다\n--   메시지가 무엇을 잘못 줬는지 안 알려 준다\n--   7.9절에서 이 문제를 제대로 다룬다\n\n\n-- 같은 키를 두 번 주면\n\n$ java -jar build/libs/app.jar --mode=dev --mode=prod\n[파싱] mode = prod\n\n// 파서를 이렇게 바꾸면\nm.putIfAbsent(a.substring(0, eq), a.substring(eq + 1));\n\n$ java -jar build/libs/app.jar --mode=dev --mode=prod\n[파싱] mode = dev\n\n--   내가 정하기 나름이다\n--   7.5절에서 부트가 어떻게 하는지 본다\n\n\n-- 모르는 키는 지나간다\n\n$ java -jar build/libs/app.jar --pool-siz=20\n[파싱] pool-siz = 20\n\n$ curl -s localhost:8080/db/poolsize\n10\n\n$ java -jar build/libs/app.jar --pool-siz=20 2>&1 | grep -ci 'error\\|warn'\n0\n\n--   오타 하나에 기본값으로 돌았다\n--   경고가 없다\n\n\n-- 셸이 먼저 손댄다\n\n$ ls\napp.jar  build.gradle  settings.gradle\n\n$ java -jar build/libs/app.jar --pattern=*\n[인수] 0 = [--pattern=app.jar]\n[인수] 1 = [build.gradle]\n[인수] 2 = [settings.gradle]\n\n$ java -jar build/libs/app.jar '--pattern=*'\n[인수] 0 = [--pattern=*]\n\n--   따옴표가 없으면 셸이 퍼뜨린다\n--   7.2절과 7.3절에서 본 그것이다\n\n\n-- 비밀은 여기 두면 안 된다\n\n$ java -jar build/libs/app.jar --study.db.password='p@ssw0rd' > /dev/null 2>&1 &\n$ ps -o command= -p $!\njava -jar build/libs/app.jar --study.db.password=p@ssw0rd\n\n$ whoami\nkwanhyun\n$ ps aux | grep -c 'study.db.password'\n2\n\n--   같은 머신의 다른 사용자도 볼 수 있다\n--   7.2절에서 환경 변수를 권한 이유다\n\n\n-- 부트도 날것을 준다\n\n@Component\nclass ArgsPrinter implements ApplicationRunner {\n    @Override\n    public void run(ApplicationArguments args) {\n        System.out.println(\"[날것] \" + Arrays.toString(args.getSourceArgs()));\n        System.out.println(\"[옵션] \" + args.getOptionNames());\n        System.out.println(\"[나머지] \" + args.getNonOptionArgs());\n    }\n}\n\n$ java -jar build/libs/app.jar --study.mode=dev -v extra.txt\n[날것] [--study.mode=dev, -v, extra.txt]\n[옵션] [study.mode]\n[나머지] [-v, extra.txt]\n\n--   부트가 대신 나눠 줬다\n--   그런데 -v 는 옵션이 아니라 나머지다\n\n\n-- 두 줄기를 비교한다\n\n$ java -jar build/libs/app.jar --study.mode=dev --pool-size=20 -v file.txt\n\n[날것]   [--study.mode=dev, --pool-size=20, -v, file.txt]\n[옵션]   [study.mode, pool-size]\n[나머지] [-v, file.txt]\n\n$ curl -s localhost:8080/config | grep 모드\n모드: dev\n\n$ curl -s localhost:8080/args/nonoption\n-v,file.txt\n\n--   -- 로 시작하는 것만 속성이 된다\n--   나머지는 손에 남는다\n\n\n-- 값이 없는 옵션\n\n$ java -jar build/libs/app.jar --verbose\n[옵션] [verbose]\n\n$ curl -s 'localhost:8080/raw2?key=verbose'\n(빈 문자열)\n\n$ curl -s 'localhost:8080/args/option?name=verbose'\n[]\n\n--   빈 문자열이지 true 가 아니다\n--   6.6절의 havingValue 와 안 맞는다\n\n\n-- 같은 키를 두 번 주면 (부트)\n\n$ java -jar build/libs/app.jar --study.mode=dev --study.mode=prod\n\n$ curl -s 'localhost:8080/args/option?name=study.mode'\n[dev, prod]\n\n$ curl -s localhost:8080/config | grep 모드\n모드: dev,prod\n\n--   손으로 쓴 파서와 다르다\n--   둘 다 남기고 쉼표로 잇는다\n--   7.5절에서 이걸 제대로 본다\n\n\n-- 인수를 아예 안 받게 할 수도 있다\n\npublic static void main(String[] args) {\n    var app = new SpringApplication(BootApplication.class);\n    app.setAddCommandLinePropertySource(false);\n    app.run(args);\n}\n\n$ java -jar build/libs/app.jar --study.mode=dev > /dev/null 2>&1 &\n$ curl -s localhost:8080/config | grep 모드\n모드: (없음)\n\n$ curl -s localhost:8080/actuator/env \\\n    | python3 -c \"\nimport json,sys\nprint([s['name'] for s in json.load(sys.stdin)['propertySources']\n       if 'commandLine' in s['name']])\"\n[]\n\n--   덩어리가 아예 안 붙는다\n--   운영에서 인수를 막고 싶을 때 쓴다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '받는 것'      '문자열 배열' \\\n  '형식'         '정해져 있지 않음' \\\n  '파싱'         '스무 줄' \\\n  '타입 변환'    '내 몫' \\\n  '중복'         '내가 정함' \\\n  '오타'         '조용히 지나감' \\\n  '별표'         '셸이 퍼뜨림' \\\n  'ps'           '그대로 보임' \\\n  '부트'         '나눠는 줌'\n\n받는 것                    문자열 배열\n형식                       정해져 있지 않음\n파싱                       스무 줄\n타입 변환                  내 몫\n중복                       내가 정함\n오타                       조용히 지나감\n별표                       셸이 퍼뜨림\nps                         그대로 보임\n부트                       나눠는 줌\n\n--   7.5절에서 이 인수가 속성이 되는 걸 본다",
+   "note": "**`main` 이 받는 건 순서만 있는 문자열 다섯이고 무엇이 키인지 안** 적혀 있다.\n\n**손으로 파서를 쓰니 스무 줄이 되고 `--pool-size=스물` 은 `NumberFormatException` 으로 기동도 못** 한다.\n\n**오타 하나면 경고 없이 기본값 10 으로** 돈다.\n\n**따옴표 없는 별표를 셸이 파일 셋으로** 퍼뜨렸다.\n\n**부트는 옵션과 나머지를 나눠 주지만 `-v` 는 나머지로 가고 같은 키 둘은 `dev,prod` 로 둘 다** 남긴다."
+  }
+ ],
+ "recap": [
+  "**배열 하나**다.",
+  "**형식이** 없다.",
+  "**파싱이 내** 몫이다.",
+  "**타입도 내** 몫이다.",
+  "**중복도 내가** 정한다.",
+  "**오타가 조용히** 지나간다.",
+  "**셸이 먼저** 손댄다.",
+  "**ps 에** 보인다.",
+  "**부트는 나눠는** 준다."
+ ],
+ "drills": [
+  {
+   "task": "인수를 그대로 찍는다.",
+   "done_when": "키와 값 구분이 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "파서를 직접 쓴다.",
+   "done_when": "줄 수를 세 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "오타를 넣어 본다.",
+   "done_when": "조용히 지나가는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "옵션과 나머지를 나눠 본다.",
+   "done_when": "`-v` 가 어느 쪽인지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`main` 이 받는 인수는 어떤 형태인가?",
+   "a": "순서만 있는 문자열 배열이다."
+  },
+  {
+   "q": "직접 파싱할 때 정해야 하는 것 셋은?",
+   "a": "키와 값 구분, 중복 처리, 모르는 키 처리다."
+  },
+  {
+   "q": "오타 난 키는 어떻게 되나?",
+   "a": "조용히 무시되고 기본값으로 돈다."
+  },
+  {
+   "q": "부트가 옵션으로 보는 것은?",
+   "a": "두 줄표로 시작하는 것만이다. 나머지는 따로 담긴다."
+  },
+  {
+   "q": "같은 키를 두 번 주면 부트는?",
+   "a": "둘 다 남겨 쉼표로 이은 값이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "커맨드 라인 인수",
+   "def": "실행할 때 프로그램에 넘기는 문자열들. 해석은 프로그램 몫이다."
+  },
+  {
+   "term": "옵션 인수",
+   "def": "부트가 속성으로 삼는, 두 줄표로 시작하는 인수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — SpringApplication",
+   "url": "https://docs.spring.io/spring-boot/reference/features/spring-application.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Externalized Configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/external-config.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "java — The Java Application Launcher",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

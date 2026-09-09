@@ -449,7 +449,7 @@
           "title": "자바 시스템 속성",
           "summary": "-D 로 넣는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -457,7 +457,7 @@
           "title": "커맨드 라인 인수",
           "summary": "파싱을 내가 한다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
