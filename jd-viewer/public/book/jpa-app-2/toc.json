@@ -177,7 +177,7 @@
           "title": "조회용 샘플 데이터",
           "summary": "무엇을 넣어야 문제가 보이나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -185,7 +185,7 @@
           "title": "무엇을 측정하나",
           "summary": "쿼리 개수 · 응답 크기 · 시간.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -193,7 +193,7 @@
           "title": "주문 API 의 모양",
           "summary": "두 종류의 조회.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

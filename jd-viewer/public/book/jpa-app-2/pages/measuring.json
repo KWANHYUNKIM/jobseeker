@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-2",
+ "id": "measuring",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "무엇을 측정하나",
+ "summary": "쿼리 개수 · 응답 크기 · 시간.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리 개수를 주 지표로 삼는 이유를 안다.",
+  "다른 지표가 무엇을 보여 주는지 안다.",
+  "측정 도구를 붙인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**쿼리 개수를 주 지표로** 쓴다. **그게 전부는 아니라는 것도 여기서 적어 둔다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 숫자",
+   "ascii": "   four numbers, and what each one hides\n\n   query count      easy, stable, comparable\n                    hides: how heavy each query is\n\n   rows fetched     shows duplication\n                    hides: nothing much. underused.\n\n   response bytes   shows over exposure\n                    hides: db cost\n\n   wall time        what the user feels\n                    hides: everything. too noisy on a laptop.",
+   "note": "**각각 가리는 것이 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 쿼리 개수인가",
+   "md": "**셋 다 갖췄다.**\n\n| | |\n|---|---|\n| **재기 쉽다** | `generate_statistics` 한 줄 |\n| **안정적이다** | 같은 코드면 같은 숫자. 시간은 흔들린다 |\n| **원인에 가깝다** | 왕복이 늘어난 것이 원인 자체다 |\n\n**시간은 노트북에서 못 믿는다.**\n\n> **8GB M1 에 H2 인메모리**다. **DB 가 같은 프로세스**에 있다.\n>\n> **왕복 비용이 거의 0** 이라 **31개나 1개나 밀리초 차이**다.\n>\n> **실무는 다르다.** **네트워크를 건너면 왕복 하나가 0.5~2ms** 다. **31개면 60ms 가** 그냥 간다.\n\n**그래서 개수로 잰다.**\n\n> **개수가 실무의 시간에 비례**한다. **노트북의 시간은 안 그렇다.**\n\n**한계도 분명**하다.\n\n| | |\n|---|---|\n| **쿼리 하나가 무거울 수 있다** | 5.11절의 플랫 조회 |\n| **행이 몇 개인지 안 보인다** | 5.5절의 중복 |\n| **인덱스를 안 본다** | 실행 계획이 필요하다 |\n\n> **5.11절에서 쿼리 1개인데 행이 4개**다. **개수만 보면 최선인데 아니다.**\n>\n> **그래서 매 절이 JSON 도 같이** 보여 준다(1.1절)."
+  },
+  {
+   "type": "figure",
+   "caption": "한 요청의 시간이 가는 곳",
+   "ascii": "   where the time goes on one request\n\n   |-- connection --|--- n round trips ---|-- serialize --|\n\n   n round trips is the part this book moves\n   one round trip on a lan is under a millisecond\n   thirty one of them is not",
+   "note": "**이 책이 움직이는 건 가운데 칸**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇을 어떻게 재나",
+   "md": "**① 쿼리 개수 — 하이버네이트 통계**\n\n```yaml\nspring.jpa.properties.hibernate.generate_statistics: true\nlogging.level.org.hibernate.stat: debug\n```\n\n```\nSession Metrics {\n    31 JDBC statements were executed\n    41 entities were loaded\n    12 collections were fetched\n}\n```\n\n> **`entities were loaded` 도** 본다. **41 은 중복 포함**이다.\n>\n> **운영에서는 끈다.** **오버헤드가** 있다.\n\n**② 행 개수 — SQL 을 직접 날려 본다**\n\n```sql\nselect count(*) from orders o join order_item oi on ...\n```\n\n> **JPA 가 접어 준 뒤에는 안 보인다.** **5.5절에서 이걸로 `distinct` 를 설명**한다.\n\n**③ 응답 크기 — `curl` 로**\n\n```bash\ncurl -s localhost:8080/api/v1/members | wc -c\n```\n\n> **2.5절의 과다 노출이 숫자로** 나온다. **1,847 바이트 대 89 바이트**.\n\n**④ 시간 — 참고만**\n\n```java\n@Slf4j\n@Aspect\n@Component\npublic class TimerAspect {\n    @Around(\"@annotation(org.springframework.web.bind.annotation.GetMapping)\")\n    public Object timed(ProceedingJoinPoint jp) throws Throwable {\n        long s = System.nanoTime();\n        try { return jp.proceed(); }\n        finally { log.info(\"{} took {}ms\", jp.getSignature().getName(),\n                           (System.nanoTime()-s)/1_000_000); }\n    }\n}\n```\n\n> **AOP 는 「스프링 핵심 원리」 9장**에서 다뤘다.\n>\n> **첫 요청은 버린다** — **JIT·프록시 생성·커넥션 풀 워밍업**이 섞인다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "대량 데이터로 재고 싶다면",
+   "md": "**3.2절의 샘플은 문제를 보여 주는 용**이다. **시간을 재려면 부족**하다.\n\n```java\n// 별도 프로파일에서만\npublic void bulkInit(int members, int ordersPerMember) {\n    for (int i = 0; i < members; i++) {\n        Member m = createMember(\"user\" + i, ...);\n        em.persist(m);\n        for (int j = 0; j < ordersPerMember; j++) {\n            // 주문 생성\n        }\n        if (i % 100 == 0) { em.flush(); em.clear(); }\n    }\n}\n```\n\n**`em.flush()` 와 `em.clear()` 를 주기적으로** 부른다.\n\n> **안 하면 영속성 컨텍스트에 전부 쌓여 메모리가** 터진다. **「JPA 기본편」 12.4절의 벌크 처리**와 같은 이야기다.\n\n**주의할 것**\n\n| | |\n|---|---|\n| **H2 인메모리는 힙을 쓴다** | 8GB 머신에서 10만 건이면 위험 |\n| **`hbm2ddl` 이 매번 다시 만든다** | 시작이 느려진다 |\n| **로그를 꺼야 한다** | SQL 로그가 대량이면 그게 병목 |\n\n> **이 책은 대량 측정을 안 한다.** **개수로 충분**하다.\n>\n> **하고 싶으면 `application-bulk.yml` 로 분리**하고 **로그를 끈 뒤** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 지표 넷을 한 요청에서",
+   "sql": "# --- 같은 요청, 네 가지 숫자 ---\n\nGET /api/v1/members\n\n#   ① 쿼리 개수\n\n#   Session Metrics {\n#       33333 nanoseconds spent acquiring 1 JDBC connections;\n#       191375 nanoseconds spent preparing 17 JDBC statements;\n#       4104458 nanoseconds spent executing 17 JDBC statements;\n#       0 nanoseconds spent performing 0 L2C puts;\n#       17 JDBC statements were executed\n#       23 entities were loaded\n#       6 collections were fetched\n#   }\n\n#   ② 응답 크기\n\n$ curl -s localhost:8080/api/v1/members | wc -c\n    1847\n\n#   ③ 시간\n\n#   INFO  TimerAspect : membersV1 took 41ms\n#   (두 번째 호출)\n#   INFO  TimerAspect : membersV1 took 6ms\n\n#   첫 호출을 버린다\n\n#   ④ 행 개수 (SQL 로 직접)\n\nselect count(*) from member m\n  left join orders o on m.member_id = o.member_id\n  left join order_item oi on o.order_id = oi.order_id;\n\n#   COUNT(*)\n#   --------\n#   6\n\n# --- V2 로 같은 넷 ---\n\nGET /api/v2/members\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       3 entities were loaded\n#       0 collections were fetched\n#   }\n\n$ curl -s localhost:8080/api/v2/members | wc -c\n      89\n\n#   INFO  TimerAspect : membersV2 took 3ms\n\n# --- 나란히 ---\n\n#            쿼리   엔티티   바이트   시간\n#   V1        17     23     1847    6ms\n#   V2         1      3       89    3ms\n\n#   쿼리 17배, 바이트 21배, 시간 2배\n\n#   시간만 2배인 게 중요하다\n#   H2 인메모리라 왕복이 공짜라서다\n\n#   실무면 17번 왕복에 1ms 씩만 붙어도 17ms 차이다\n\n# --- 이 책이 쓸 지표 ---\n\n#   주      쿼리 개수\n#   보조    나간 JSON (응답이 안 바뀌었나)\n#   가끔    엔티티 개수 (중복이 있나)\n\n#   안 쓴다  시간 (노트북에서 안 믿는다)\n\n# --- 다음 절에서 ---\n\n#   주문 API 의 모양을 정한다\n#   두 종류로 나눈다",
+   "note": "**한 요청에서 네 숫자를** 다 냈다.\n\n**V1 과 V2 가 쿼리 17배, 바이트 21배, 시간 2배**다.\n\n**시간만 2배인 게 중요**하다. **H2 인메모리라 왕복이 공짜**라서다. **실무면 17배 차이가 시간에도** 드러난다.\n\n**이 책은 쿼리 개수를 주 지표로, JSON 을 보조로** 쓴다. **시간은 안 쓴다.**\n\n**다음 절에서 주문 API 의 모양을 정한다.**"
+  }
+ ],
+ "recap": [
+  "**쿼리 개수가 주 지표**다 — 재기 쉽고 안정적이고 원인에 가깝다.",
+  "**노트북의 시간은 못 믿는다** — H2 인메모리는 왕복이 거의 공짜다.",
+  "**개수가 실무의 시간에 비례**한다.",
+  "**개수의 한계** — 쿼리 하나가 무거울 수 있고 행 개수를 안 보여 준다.",
+  "**`entities were loaded` 로 중복을** 본다.",
+  "**응답 크기는 `curl | wc -c`** 로 잰다 — 1847 대 89.",
+  "**시간은 AOP 로 재되 첫 요청을 버린다.**",
+  "**대량 데이터는 `flush`·`clear` 없이 만들면 메모리가** 터진다.",
+  "**이 책은 대량 측정을 안 한다** — 개수로 충분하다."
+ ],
+ "drills": [
+  {
+   "task": "V1 과 V2 의 응답 크기를 잰다.",
+   "done_when": "바이트 차이를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`TimerAspect` 를 붙인다.",
+   "done_when": "첫 호출과 두 번째 호출의 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`entities were loaded` 를 V1·V2 에서 비교한다.",
+   "done_when": "23 과 3 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`generate_statistics` 를 껐다 켜 본다.",
+   "done_when": "로그 차이를 확인했다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 쿼리 개수를 주 지표로 쓰나?",
+   "a": "재기 쉽고 안정적이며 왕복 증가라는 원인 자체이기 때문이다."
+  },
+  {
+   "q": "노트북의 시간을 왜 못 믿나?",
+   "a": "H2 인메모리라 왕복 비용이 거의 0 이라 차이가 안 드러난다."
+  },
+  {
+   "q": "쿼리 개수가 못 보여 주는 것은?",
+   "a": "쿼리 하나의 무게, 행 개수, 인덱스 사용 여부다."
+  },
+  {
+   "q": "`entities were loaded` 는 무엇을 보여 주나?",
+   "a": "중복 포함해 몇 개의 엔티티를 올렸는지다."
+  },
+  {
+   "q": "대량 데이터를 만들 때 주의할 것은?",
+   "a": "`flush`·`clear` 를 주기적으로 부르고 SQL 로그를 꺼야 한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — Statistics",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/javadocs/org/hibernate/stat/Statistics.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  }
+ ]
+}

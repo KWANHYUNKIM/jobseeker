@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-2",
+ "id": "order-api-shape",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "주문 API 의 모양",
+ "summary": "두 종류의 조회.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 API 의 응답 모양을 확정한다.",
+  "페이징 파라미터를 정한다.",
+  "검색 조건을 왜 뺐는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**응답 모양을 여기서 못 박는다.** **1.1절에서 \"응답이 같아야 비교된다\" 고** 했다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 API",
+   "ascii": "   two order apis, and why they are separate\n\n   simple-orders\n     Order -> Member    ManyToOne\n     Order -> Delivery  OneToOne\n     no collection. chapter 4.\n\n   orders\n     Order -> Member\n     Order -> Delivery\n     Order -> OrderItem -> Item    OneToMany\n     collection. chapter 5.\n\n   same table, different graph, different problem",
+   "note": "**같은 테이블, 다른 그래프**다."
+  },
+  {
+   "type": "code",
+   "lang": "json",
+   "caption": "simple-orders 의 응답 (4장 전체가 만들 것)",
+   "code": "{\n  \"data\": [\n    {\n      \"orderId\": 4,\n      \"name\": \"userA\",\n      \"orderDate\": \"2026-09-09T15:12:03.331\",\n      \"orderStatus\": \"ORDER\",\n      \"address\": {\"city\": \"서울\", \"street\": \"1\", \"zipcode\": \"1111\"}\n    },\n    {\n      \"orderId\": 11,\n      \"name\": \"userB\",\n      \"orderDate\": \"2026-09-09T15:12:03.402\",\n      \"orderStatus\": \"ORDER\",\n      \"address\": {\"city\": \"진주\", \"street\": \"2\", \"zipcode\": \"2222\"}\n    }\n  ]\n}"
+  },
+  {
+   "type": "code",
+   "lang": "json",
+   "caption": "orders 의 응답 (5장 전체가 만들 것)",
+   "code": "{\n  \"data\": [\n    {\n      \"orderId\": 4,\n      \"name\": \"userA\",\n      \"orderDate\": \"2026-09-09T15:12:03.331\",\n      \"orderStatus\": \"ORDER\",\n      \"address\": {\"city\": \"서울\", \"street\": \"1\", \"zipcode\": \"1111\"},\n      \"orderItems\": [\n        {\"itemName\": \"JPA1 BOOK\", \"orderPrice\": 10000, \"count\": 1},\n        {\"itemName\": \"JPA2 BOOK\", \"orderPrice\": 20000, \"count\": 2}\n      ]\n    }\n  ]\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "응답 모양에서 정한 것들",
+   "md": "**① `name` 이지 `member` 가 아니다**\n\n```json\n\"name\": \"userA\"\n```\n\n> **`\"member\": {\"id\":1, \"name\":\"userA\"}` 로 안** 한다.\n>\n> **평평하게 편다.** **2.6절의 \"DTO 는 DTO 만 품는다\" 를 지키면서 가장 단순한 형태**다.\n\n**② `address` 는 객체로 둔다**\n\n```json\n\"address\": {\"city\": \"서울\", ...}\n```\n\n> **`Address` 가 값 타입**이라(1편 3.4절) **엔티티가 아니다.** **그대로 실어도 된다.**\n>\n> **`city`·`street`·`zipcode` 로 펴도 되는데**, **값 타입을 그대로 쓸 수 있다는 걸 보여 주려고** 남겼다.\n\n**③ `orderItems` 안에 `itemName`**\n\n```json\n{\"itemName\": \"JPA1 BOOK\", \"orderPrice\": 10000, \"count\": 1}\n```\n\n> **`item` 을 통째로 안 싣는다.** **5.2절에서 이걸 안 지킨 버전을 한 번** 만든다.\n\n**④ `Result` 로 감쌌다**\n\n> **2.6절의 규칙 그대로**다.\n>\n> **다만 `count` 는 뺐다.** **페이징이 붙으면 `count` 의 의미가 애매**해진다 — **이 페이지 개수인지 전체인지.**"
+  },
+  {
+   "type": "figure",
+   "caption": "페이징 계약",
+   "ascii": "   paging contract for this book\n\n   GET /api/v3/simple-orders?offset=0&limit=100\n\n   offset  how many to skip     default 0\n   limit   how many to take     default 100\n\n   no total count. no page number.\n   the point is whether paging works at all,\n   not what a good paging api looks like.",
+   "note": "**최소한만 정한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이렇게 최소인가",
+   "md": "**`offset`·`limit` 둘뿐**이다.\n\n```java\n@RequestParam(value = \"offset\", defaultValue = \"0\") int offset,\n@RequestParam(value = \"limit\", defaultValue = \"100\") int limit\n```\n\n**실무의 페이징에 있어야 할 것**\n\n| | 여기 |\n|---|---|\n| 전체 개수 | **없다** |\n| 페이지 번호 | **없다** |\n| 정렬 | **없다** |\n| 커서 | **없다** |\n| `Pageable` | **안 쓴다** |\n\n> **이 책의 관심은 \"페이징이 되느냐\"** 다. **좋은 페이징 API 가 무엇인지가** 아니다.\n>\n> **5.6절에서 페치 조인에 페이징을 걸면 `HHH90003004` 가** 나온다. **그걸 보여 주는 데 `offset`·`limit` 이면 충분**하다.\n\n**`Pageable` 을 안 쓴 이유**\n\n> **스프링 데이터 JPA 의 기능**이다. **7.1절에서 소개**한다.\n>\n> **지금 쓰면 `count` 쿼리가 자동으로 하나 더** 나간다. **쿼리 개수를 세는 책에서 그건 방해**다.\n\n**검색 조건을 뺀 이유**\n\n> **1편 8.11절에서 `OrderSearch` 로 동적 쿼리를** 만들었다. **JPQL 문자열을 이어 붙였고 \"이건 아니다\" 로** 끝났다.\n>\n> **그 답은 Querydsl** 이다(7.2절). **이 책의 주제가 아니라 조회 조건 없이** 간다.\n>\n> **7.3절 목록에 남긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "리포지토리를 어디에 두나",
+   "md": "**4·5장에서 리포지토리가** 는다.\n\n```\nrepository/\n  OrderRepository.java            엔티티 조회. 1편 그대로\n  order/\n    simplequery/\n      OrderSimpleQueryRepository.java   DTO 직접 조회 (4장)\n      OrderSimpleQueryDto.java\n    query/\n      OrderQueryRepository.java         DTO 직접 조회 (5장)\n      OrderQueryDto.java\n      OrderItemQueryDto.java\n```\n\n**왜 나누나**\n\n| | |\n|---|---|\n| **`OrderRepository`** | 엔티티 조회. **핵심 비즈니스** |\n| **`*QueryRepository`** | 화면·API 전용 조회. **성격이 다르다** |\n\n> **1편 4.3절에서 계층으로** 나눴다. **여기서는 같은 계층 안을 성격으로** 나눈다.\n>\n> **섞어 두면 `OrderRepository` 가 화면 수만큼** 커진다. **API 가 바뀔 때마다 핵심 리포지토리를 고치게** 된다.\n>\n> **4.8절에서 이 구조를 다시** 정리한다.\n\n**DTO 도 같이 옮긴다.**\n\n> **`OrderSimpleQueryDto` 가 리포지토리 옆에** 있다.\n>\n> **JPQL 의 `new` 절이 이 클래스를 직접 부르기** 때문이다. **컨트롤러 중첩 클래스로 두면 리포지토리가 컨트롤러를 의존**하게 된다.\n>\n> **4.6절에서 걸린다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 JSON 과 쿼리 — 모양을 확정한다",
+   "sql": "# --- 두 API 의 URL ---\n\nGET /api/v1/simple-orders     4장\nGET /api/v2/simple-orders\nGET /api/v3/simple-orders\nGET /api/v4/simple-orders\n\nGET /api/v1/orders            5장\nGET /api/v2/orders\nGET /api/v3/orders\nGET /api/v3.1/orders\nGET /api/v4/orders\nGET /api/v5/orders\nGET /api/v6/orders\n\n#   11개다. 전부 같은 JSON 을 만든다\n\n# --- 확정된 응답 (simple) ---\n\n#   200 OK\n#   {\n#     \"data\": [\n#       {\"orderId\": 4, \"name\": \"userA\",\n#        \"orderDate\": \"2026-09-09T15:12:03.331\",\n#        \"orderStatus\": \"ORDER\",\n#        \"address\": {\"city\":\"서울\",\"street\":\"1\",\"zipcode\":\"1111\"}},\n#       {\"orderId\": 11, \"name\": \"userB\", ...}\n#     ]\n#   }\n\n#   이 JSON 이 4장 내내 안 바뀐다\n\n# --- 확정된 응답 (collection) ---\n\n#   200 OK\n#   {\n#     \"data\": [\n#       {\"orderId\": 4, \"name\": \"userA\", ...,\n#        \"orderItems\": [\n#          {\"itemName\":\"JPA1 BOOK\",\"orderPrice\":10000,\"count\":1},\n#          {\"itemName\":\"JPA2 BOOK\",\"orderPrice\":20000,\"count\":2}\n#        ]},\n#       {\"orderId\": 11, ...}\n#     ]\n#   }\n\n#   이 JSON 이 5장 내내 안 바뀐다\n#   바뀌면 그 버전이 틀린 것이다  (5.5절, 5.11절)\n\n# --- 페이징 ---\n\nGET /api/v3/simple-orders?offset=0&limit=100\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#              join member m1_0 on m1_0.member_id=o1_0.member_id\n#              join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#              offset ? rows fetch first ? rows only\n#   binding parameter (1:INTEGER) <- [0]\n#   binding parameter (2:INTEGER) <- [100]\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   offset 과 limit 이 SQL 에 그대로 들어간다\n\nGET /api/v3/simple-orders?offset=1&limit=1\n\n#   binding parameter (1:INTEGER) <- [1]\n#   binding parameter (2:INTEGER) <- [1]\n\n#   {\"data\": [{\"orderId\": 11, \"name\": \"userB\", ...}]}\n\n#   한 건만 왔다. 페이징이 된다\n\n# --- 컬렉션이 붙으면 (미리) ---\n\nGET /api/v3/orders?offset=1&limit=1\n\n#   WARN  HHH90003004: firstResult/maxResults specified with\n#         collection fetch; applying in memory\n\n#   Hibernate: select ... from orders o1_0\n#              join order_item ... join item ...\n#              (offset 도 fetch first 도 없다)\n\n#   Session Metrics { 1 JDBC statements were executed }\n\n#   SQL 에 페이징이 안 들어갔다\n#   전 건을 읽고 메모리에서 잘랐다\n\n#   5.6절에서 이것을 다룬다\n\n# --- 3장이 정한 것 ---\n\n#   샘플: 주문 2, 주문상품 4, 회원 2, 상품 4\n#   지표: 쿼리 개수 (주), JSON (보조)\n#   모양: 두 API, 응답 JSON 확정\n#   페이징: offset, limit\n\n# --- 다음 장에서 ---\n\n#   simple-orders 를 네 버전으로 만든다\n#   V1 은 다시 500 이다",
+   "note": "**API 11개가 전부 같은 JSON 을** 만든다. **4장 4개, 5장 7개**다.\n\n**두 응답 모양을 여기서 못 박았다.** **바뀌면 그 버전이 틀린 것**이다.\n\n**simple 은 페이징이 SQL 에 그대로** 들어간다. **`offset=1&limit=1` 이 한 건을** 준다.\n\n**컬렉션이 붙으면 `HHH90003004` 로 SQL 에 페이징이 안** 들어간다. **전 건을 읽고 메모리에서 잘랐다** — 5.6절.\n\n**다음 장에서 `simple-orders` 를 네 버전으로 만든다.**"
+  }
+ ],
+ "recap": [
+  "**응답 JSON 두 개를 여기서 못 박는다** — 바뀌면 그 버전이 틀린 것이다.",
+  "**`name` 으로 평평하게** 편다 — `member` 를 안 싣는다.",
+  "**`address` 는 값 타입이라 객체로 남겼다.**",
+  "**`orderItems` 에 `itemName`** — `item` 을 통째로 안 싣는다.",
+  "**`Result` 로 감싸되 `count` 는 뺐다** — 페이징이 붙으면 의미가 애매하다.",
+  "**페이징은 `offset`·`limit` 둘뿐**이다.",
+  "**`Pageable` 을 안 쓴다** — `count` 쿼리가 자동으로 하나 더 나간다.",
+  "**검색 조건을 뺐다** — 그 답은 Querydsl 이고 7.2절이다.",
+  "**엔티티 조회와 쿼리 전용 리포지토리를 성격으로** 나눈다."
+ ],
+ "drills": [
+  {
+   "task": "두 응답 JSON 을 적어 둔다.",
+   "done_when": "4·5장 내내 비교할 기준이 생겼다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리 패키지 구조를 만든다.",
+   "done_when": "`order/simplequery`, `order/query` 를 만들었다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편의 `/orders` 에 `offset`·`limit` 를 붙여 본다.",
+   "done_when": "SQL 에 페이징이 들어가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 응답 JSON 을 미리 못 박나?",
+   "a": "버전을 비교하려면 응답이 같아야 하고, 바뀌면 그 버전이 틀린 것이기 때문이다."
+  },
+  {
+   "q": "`address` 를 왜 객체로 뒀나?",
+   "a": "값 타입이라 엔티티가 아니고 그대로 실어도 되기 때문이다."
+  },
+  {
+   "q": "`Pageable` 을 왜 안 쓰나?",
+   "a": "`count` 쿼리가 자동으로 하나 더 나가 쿼리 개수를 세는 데 방해된다."
+  },
+  {
+   "q": "검색 조건을 왜 뺐나?",
+   "a": "동적 쿼리의 답은 Querydsl 인데 이 책의 주제가 아니다."
+  },
+  {
+   "q": "쿼리 전용 리포지토리를 왜 나누나?",
+   "a": "화면·API 가 바뀔 때마다 핵심 리포지토리를 고치게 되기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Web MVC",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webmvc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  }
+ ]
+}
