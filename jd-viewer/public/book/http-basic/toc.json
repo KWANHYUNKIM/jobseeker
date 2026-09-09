@@ -144,7 +144,7 @@
           "title": "인코딩",
           "summary": "한글과 공백이 주소에 들어갈 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -152,7 +152,7 @@
           "title": "웹 브라우저 요청 흐름",
           "summary": "주소창 엔터에서 화면까지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
