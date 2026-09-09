@@ -1,0 +1,126 @@
+{
+ "book": "spring-db-2",
+ "id": "choose-tech",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "어떤 기술을 고를까",
+ "summary": "SQL 을 누가 쓰느냐로 갈린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "다섯 기술을 한 축에 놓는다.",
+  "고르는 질문의 순서를 안다.",
+  "대부분의 프로젝트가 어디에 앉는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**다섯을 다 봤다.** **이제 고른다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "하나의 축",
+   "ascii": "   who writes the sql\n\n   me ------------------------------------------------- the framework\n\n   jdbctemplate   mybatis      querydsl    jpa    data jpa\n        |            |            |         |         |\n   sql in java   sql in xml   java dsl   jpql    method name\n\n   left   more control, more code, more typos\n   right  less code, less control, more to watch",
+   "note": "**왼쪽이 나, 오른쪽이 프레임워크**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이 축이 전부인 이유",
+   "md": "**1.1절에서 세운 질문**이다.\n\n> **SQL 을 누가 쓰느냐.**\n\n**이 하나가 나머지를 다 결정**한다.\n\n| SQL 을 내가 쓰면 | SQL 을 프레임워크가 쓰면 |\n|---|---|\n| **어떤 SQL 인지 안다** | **읽어서 알아내야** 한다 |\n| **튜닝이 직접적**이다 | 매핑·설정·시점을 바꾼다 |\n| **DB 기능을 다 쓴다** | 표준에 갇힌다 |\n| **코드가 많다** | 코드가 적다 |\n| **오타가 실행할 때** 난다 | 뜰 때나 컴파일할 때 난다 |\n| **매핑을 매번** 쓴다 | 한 번 쓴다 |\n\n**어느 쪽이 좋다는 것이 아니다.** **무엇을 감당할 수 있느냐**의 문제다.\n\n> **6.8절에서 \"JPA 를 쓰면 SQL 을 더 알아야 한다\"** 고 했다. **오른쪽으로 갈수록 코드는 줄고 알아야 할 것은 는다.**\n>\n> **왼쪽으로 가면 반대**다. **코드는 늘고 알아야 할 것은 적다** — SQL 만 알면 된다.\n\n**팀의 상태가 이 선택을 정한다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "고르는 순서",
+   "ascii": "   start here\n   ----------\n   is the domain model the point?\n      no  -> jdbctemplate or mybatis\n      yes -> jpa\n              |\n         are there dynamic queries?\n            no  -> data jpa alone\n            yes -> data jpa + querydsl\n                     |\n                statistics or batch too?\n                   yes -> add jdbctemplate\n\n   the last box is where most projects land",
+   "note": "**맨 아래 칸이 대부분**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "첫 질문이 가장 중요하다",
+   "md": "**\"도메인 모델이 중요한가\"**\n\n**이것이 갈림길**이다.\n\n| | |\n|---|---|\n| **중요하다** | 주문이 상품을 알고, 상품이 카테고리를 안다. **객체로 사고**한다 |\n| **안 중요하다** | 화면에 필요한 데이터를 조회한다. **결과 집합**으로 사고한다 |\n\n**두 번째가 나쁜 것이 아니다.**\n\n| 이런 시스템 | |\n|---|---|\n| **통계·리포트** | 조인이 다섯이고 집계가 열이다 |\n| **배치** | 백만 건을 읽어 백만 건을 쓴다 |\n| **레거시 연동** | 스키마를 못 바꾼다 |\n| **CRUD 가 거의 없는 조회 시스템** | |\n\n**여기에 JPA 를 넣으면 고생**한다. **엔티티가 화면마다 다르게 필요**하고, **영속성 컨텍스트가 짐**이 된다.\n\n> **6.8절의 표**에서 \"JPA 가 안 맞는 때\" 로 적은 것들이다.\n\n**반대로 CRUD 가 많은 업무 시스템**에 JdbcTemplate 을 쓰면 **같은 코드를 계속** 쓴다. **7.6절에서 본 \"엔티티가 열 개면 인터페이스 열 줄\"** 이 그 대비다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "고를 때 물어볼 것 다섯",
+   "md": "| 질문 | 답이 이러면 |\n|---|---|\n| **동적 쿼리가 몇 개인가** | 많다 → MyBatis 나 **Querydsl** |\n| **엔티티가 몇 개인가** | 많다 → **Data JPA** |\n| **가장 복잡한 쿼리는** | 인라인 뷰·윈도우 함수 → **JdbcTemplate** |\n| **팀이 아는 것은** | SQL 뿐 → **MyBatis** |\n| **빌드를 건드릴 수 있나** | 못 한다 → Querydsl 은 어렵다 |\n\n**세 번째 질문을 먼저 하는 사람이 적다.**\n\n> **\"가장 복잡한 쿼리 하나\" 가 기술 선택을 뒤집지는 않는다.** **그것만 JdbcTemplate 으로** 쓰면 된다. **9.3절의 요점**이다.\n\n**네 번째가 현실적으로 크다.** **팀이 JPA 를 모르면 학습 곡선이 프로젝트 일정**이 된다. **「JPA 기본편」 열두 장을 다 읽어야** 제대로 쓴다.\n\n**MyBatis 는 SQL 만 알면 바로** 쓴다. **그것이 국내에서 오래 쓰인 이유**이기도 하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 같은 화면, 다른 선택\n\n# --- 상품 목록 (조건부) ---\n\n#   어느 기술이든\n#   select id, item_name, price, quantity from item\n#   where item_name like ? and price <= ?\n\n#   -> 다섯 다 잘한다. Querydsl 이 코드가 가장 짧다.\n\n# --- 상품 상세 + 카테고리 + 리뷰 3건 ---\n\n#   JPA\n#     select ... from item where id=?\n#     select ... from category where id=?          (지연 로딩)\n#     select ... from review where item_id=?       (지연 로딩)\n#   -> 3개. 페치 조인으로 1~2개.\n\n#   JdbcTemplate\n#     select i.*, c.name from item i join category c ... where i.id=?\n#     select ... from review where item_id=? limit 3\n#   -> 2개. 내가 정했다.\n\n# --- 카테고리별 상위 3개 상품 ---\n\n#   select * from (\n#       select item_name, price,\n#              row_number() over (partition by category_id\n#                                 order by price desc) rn\n#         from item\n#   ) t where t.rn <= 3\n\n#   JPA / Querydsl -> 못 쓴다 (인라인 뷰)\n#   JdbcTemplate   -> 그대로 쓴다\n#   MyBatis        -> 그대로 쓴다\n\n# --- 10만 건 가격 일괄 인상 ---\n\n#   JPA (엔티티를 하나씩)\n#     select ... from item        (10만 건 로딩)\n#     update item set ... where id=?   x 100000\n#   -> 메모리와 시간이 감당 안 된다\n\n#   JPA 벌크\n#     update item set price = price * 1.1 where price < ?\n#   -> 1개. @Modifying 이 필요하고 컨텍스트를 비워야 한다.\n\n#   JdbcTemplate\n#     update item set price = price * 1.1 where price < ?\n#   -> 1개. 걱정할 것이 없다.\n\n# 네 화면이 서로 다른 기술을 원한다\n# 그래서 섞는다",
+   "note": "**네 화면이 서로 다른 답**을 준다.\n\n**첫 번째는 다섯 다** 잘한다. **두 번째부터 갈린다.**\n\n**세 번째에서 JPA 계열이 못 한다.** **8.5절에서 본 그 쿼리**다.\n\n**네 번째에서 JPA 를 잘못 쓰면 시스템이 멈춘다.** **벌크로 쓰면 되지만 주의할 것이 붙는다**(7.2절).\n\n> **하나의 프로젝트에 이 네 화면이 다 있다.** **그래서 하나를 고르는 문제가 아니다.**\n\n**다음 절에서 그 교환을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**축은 하나다** — SQL 을 누가 쓰느냐.",
+  "**왼쪽은 통제와 코드, 오른쪽은 생산성과 학습**이다.",
+  "**오른쪽으로 갈수록 코드는 줄고 알아야 할 것은 는다.**",
+  "**첫 질문은 \"도메인 모델이 중요한가\"** 다.",
+  "**통계·배치·레거시는 결과 집합으로 사고**한다 — JPA 가 안 맞는다.",
+  "**CRUD 가 많으면 Data JPA** 가 압도적이다.",
+  "**가장 복잡한 쿼리 하나로 기술을 뒤집지 않는다** — 그것만 3장으로.",
+  "**팀이 아는 것**이 현실적으로 크다.",
+  "**네 화면이 서로 다른 기술을 원한다** — 그래서 섞는다."
+ ],
+ "drills": [
+  {
+   "task": "지금 프로젝트의 쿼리를 다섯 개 골라 축 위에 놓아 본다.",
+   "done_when": "어느 쪽이 많은지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "\"도메인 모델이 중요한가\" 에 답해 본다.",
+   "done_when": "이유를 세 줄로 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "가장 복잡한 쿼리 하나를 JPQL 로 써 본다.",
+   "done_when": "되는지 안 되는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "고를 때 물어볼 다섯 질문에 답한다.",
+   "done_when": "결론을 한 줄로 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기술을 가르는 하나의 축은?",
+   "a": "SQL 을 내가 쓰느냐 프레임워크가 쓰느냐다."
+  },
+  {
+   "q": "오른쪽으로 갈수록 무엇이 느나?",
+   "a": "알아야 할 것이 는다. 코드는 줄지만 시점·개수·설정을 봐야 한다."
+  },
+  {
+   "q": "첫 번째 질문은?",
+   "a": "도메인 모델이 중요한 시스템인가다."
+  },
+  {
+   "q": "JPA 가 안 맞는 시스템은?",
+   "a": "통계·리포트, 대량 배치, 레거시 연동, 조회 위주 시스템이다."
+  },
+  {
+   "q": "복잡한 쿼리 하나 때문에 기술을 바꾸나?",
+   "a": "안 바꾼다. 그 쿼리만 JdbcTemplate 으로 쓴다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

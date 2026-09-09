@@ -1,0 +1,150 @@
+{
+ "book": "spring-db-2",
+ "id": "querydsl-summary",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "정리",
+ "summary": "빌드가 복잡해지는 대가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "8장의 손익을 센다.",
+  "다섯 기술의 표를 완성한다.",
+  "Querydsl 의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**다섯 번째 기술이 끝났다.** **3.3절에서 만든 표를 완성**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 열이 다 찼다",
+   "ascii": "   3.3 problems              3장   5장   6장   7장   8장\n   ------------              ---   ---   ---   ---   ---\n   string concatenation       x     o     x     o     o\n   spacing / and              x     o     x     o     o\n   compiler checks            x     x     ~     ~     o\n   2^n cases                  x     o     x     -     o\n   object <-> row by hand     x     x     o     o     o\n\n   o solved   x not   ~ partly   - worse\n\n   only the last column is all o",
+   "note": "**마지막 열만 전부 `o`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 하나만 다 풀었나",
+   "md": "**앞의 넷은 각자 한 방향으로** 갔다.\n\n| 기술 | 무엇을 골랐나 |\n|---|---|\n| JdbcTemplate | **SQL 그대로** — 통제 |\n| MyBatis | **SQL 을 밖으로** — 관리 |\n| JPA | **SQL 을 없앰** — 객체 |\n| Data JPA | **코드를 없앰** — 생산성 |\n| **Querydsl** | **SQL 을 자바로** — 안전 |\n\n**마지막 줄만 \"자바 코드\"** 다. **나머지는 어떤 형태로든 문자열**을 남겼다.\n\n> **문자열이 남아 있으면 컴파일러가 할 일이 없다.** **그것이 이 표의 세 번째 줄**이다.\n\n**2.2절에서 메모리 구현이 편했던 이유**도 같다. **자바였으니까.**\n\n**Querydsl 은 그 편함을 DB 쪽으로 가져온 것**이다. **`filter` 가 `where` 가 됐을 뿐, 자바인 것은 같다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "그 대신 낸 값",
+   "ascii": "   what querydsl costs\n\n   4 dependencies incl. 3 annotation processors\n   a build step before the ide is happy\n   generated sources to ignore in git\n   a version to track myself\n   jpql limits still apply (no inline views)\n   a library outside the spring release train\n\n   3장 cost: one starter line",
+   "note": "**맨 아랫줄과 비교**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "빌드 복잡도라는 대가",
+   "md": "**이것이 Querydsl 도입을 미루게 하는 이유**다.\n\n| 겪는 일 | |\n|---|---|\n| **새 팀원이 빌드를 못 한다** | Q 타입이 없어 IDE 가 빨갛다 |\n| **CI 에서 순서가 꼬인다** | 생성 전에 컴파일하려 든다 |\n| **버전을 올릴 때** | 부트·하이버네이트·Querydsl 삼각 |\n| **`:jakarta` 같은 분류자** | 부트 2→3 이행 때 대량으로 터졌다 |\n\n**세 번째가 실제로 아프다.** **Querydsl 은 스프링 릴리스 트레인 밖**이다. **부트를 올릴 때 Querydsl 이 아직 안 나왔을 수** 있다.\n\n> **5.2절의 MyBatis 도 같은 문제**였다. **부트가 관리하지 않는 라이브러리의 공통 비용**이다.\n>\n> **JdbcTemplate 과 Data JPA 는 이 걱정이 없다** — 부트가 버전을 정한다.\n\n**그래도 쓰는 이유는 8.3절 하나**다. **동적 쿼리가 있는 프로젝트에서는 이 대가가 싸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "Querydsl 이 못 하는 것",
+   "md": "**JPQL 위에 있으니 JPQL 의 제약을 그대로** 받는다.\n\n| 못 하는 것 | 대안 |\n|---|---|\n| **`from` 절 서브쿼리(인라인 뷰)** | **네이티브 쿼리 / JdbcTemplate** |\n| **DB 고유 함수·힌트** | `Expressions.stringTemplate` 또는 3장 |\n| **`update`·`delete` 의 벌크 제약** | 컨텍스트를 비워야 한다 |\n| **복잡한 통계·집계** | **3장이 낫다** |\n\n**첫 번째가 가장 자주** 걸린다.\n\n```sql\n-- 이런 쿼리는 JPQL 로 못 쓴다\nselect * from (\n    select item_name, price,\n           row_number() over (partition by category_id order by price) rn\n      from item\n) where rn <= 3;\n```\n\n**윈도우 함수와 인라인 뷰**다. **3장으로 간다.**\n\n```java\n// JdbcTemplate 으로\ntemplate.query(sql, rowMapper);\n```\n\n> **6.2절에서 `starter-data-jpa` 가 `starter-jdbc` 를 딸고 온다**고 했다. **의존관계를 더 넣을 것이 없다.** **`JdbcTemplate` 을 주입받으면 된다.**\n>\n> **9장이 이 조합을 정리**한다.\n\n**`Expressions` 로 비집고 들어갈 수는** 있다.\n\n```java\nExpressions.stringTemplate(\"function('group_concat', {0})\", item.itemName)\n```\n\n**문자열이 돌아왔다.** **8장에서 얻은 것을 이 줄에서 잃는다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "쓸 때와 안 쓸 때",
+   "left": {
+    "title": "쓴다",
+    "points": [
+     "**동적 쿼리가 있다** — 검색 화면",
+     "**조건이 셋 이상**",
+     "**조회 전용 DTO 가 많다**",
+     "**리팩터링이 잦다**",
+     "**팀이 JPA 를 쓴다**"
+    ]
+   },
+   "right": {
+    "title": "안 쓴다",
+    "points": [
+     "**쿼리가 다 고정**이다",
+     "**프로젝트가 작다** — 빌드 비용이 아깝다",
+     "**통계·집계가 주다** — 3장",
+     "**JPA 를 안 쓴다** — 전제가 JPA 다",
+     "빌드 파이프라인을 못 건드린다"
+    ]
+   }
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 8장이 만든 SQL 전부\n\n# save / update / findById   (Data JPA + 변경 감지)\n#   insert into item (item_name,price,quantity) values (?,?,?)\n#   select i1_0.id, ... from item i1_0 where i1_0.id=?\n#   update item set item_name=?,price=?,quantity=? where id=?\n\n# findAll x4   (Querydsl)\n#   select i1_0.id, ... from item i1_0\n#   select ... where i1_0.item_name like ? escape '!'\n#   select ... where i1_0.price<=?\n#   select ... where i1_0.item_name like ? escape '!' and i1_0.price<=?\n\n# 여덟 개\n\n# --- 다섯 기술의 마지막 SQL 을 모두 ---\n\n#   3장  select id, item_name, price, quantity from item\n#        where item_name like concat('%',?,'%') and price <= ?\n\n#   5장  select id, item_name, price, quantity from item\n#        WHERE item_name like concat('%', ?, '%') and price <= ?\n\n#   6장  select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#        from item i1_0\n#        where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n#   7장  (6장과 동일)\n\n#   8장  select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#        from item i1_0\n#        where i1_0.item_name like ? escape '!' and i1_0.price<=?\n\n# 대소문자, 별칭, escape 문자만 다르다\n# DB 의 실행 계획은 같다\n\n# --- 그 SQL 을 만든 자바 코드 ---\n\n#   3장  25줄, 문자열 조립, andFlag\n#   5장  XML 10줄, <where> <if>\n#   6장  27줄, 문자열 조립, andFlag\n#   7장  12줄, if 분기 4개\n#   8장   4줄, if 0개\n\n# 1.1절의 가설\n#   \"SQL 은 상수, 자바 코드는 변수\"\n\n# 확인됐다\n\n# --- Querydsl 로 못 쓰는 SQL ---\n\n#   select * from (\n#       select item_name, price,\n#              row_number() over (partition by category_id order by price) rn\n#         from item\n#   ) t where t.rn <= 3\n\n#   JPQL 에 인라인 뷰가 없다\n#   -> JdbcTemplate 으로 간다",
+   "note": "**중간 블록이 이 책 전반부의 결말**이다. **다섯 SQL 이 사실상 같다.** **차이는 대소문자와 별칭과 `escape` 문자뿐**이고, **DB 의 실행 계획은 같다.**\n\n**그 아래가 그것을 만든 코드**다. **25줄에서 4줄까지.**\n\n**맨 아래가 8장의 한계**다. **마지막 기술도 다는 못 한다.**\n\n> **그래서 9장이 있다.** **하나를 고르는 문제가 아니었다.**\n\n**다음 장에서 다섯을 놓고 고른다.**"
+  }
+ ],
+ "recap": [
+  "**3.3절의 문제 다섯을 다 푼 것은 Querydsl 뿐**이다.",
+  "**문자열이 남아 있으면 컴파일러가 할 일이 없다.**",
+  "**2.2절의 메모리 구현과 같은 편함**을 DB 쪽으로 가져왔다.",
+  "**의존관계 넷, 애너테이션 프로세서 셋** — 빌드가 복잡해진다.",
+  "**스프링 릴리스 트레인 밖**이라 버전을 따로 챙긴다.",
+  "**JPQL 의 제약을 그대로** 받는다 — 인라인 뷰가 없다.",
+  "**`Expressions` 로 비집으면 문자열이 돌아온다.**",
+  "**동적 쿼리가 있으면 대가가 싸다.**",
+  "**다섯 SQL 이 사실상 같고 자바 코드가 25줄에서 4줄**이 됐다."
+ ],
+ "drills": [
+  {
+   "task": "3.3절의 표를 다섯 열로 완성한다.",
+   "done_when": "마지막 열만 전부 `o` 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "Querydsl 도입 비용을 항목별로 적는다.",
+   "done_when": "3장의 비용과 비교했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인라인 뷰가 필요한 쿼리를 하나 만들어 본다.",
+   "done_when": "Querydsl 로 안 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다섯 기술의 `findAll` 줄 수를 센다.",
+   "done_when": "25에서 4까지 줄어든 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Querydsl 만 다 푼 이유는?",
+   "a": "쿼리가 자바 코드라서다. 나머지는 어떤 형태로든 문자열을 남겼다."
+  },
+  {
+   "q": "가장 큰 대가는?",
+   "a": "빌드 복잡도다. 애너테이션 프로세서와 생성 단계가 필요하다."
+  },
+  {
+   "q": "버전 관리가 왜 번거로운가?",
+   "a": "스프링 릴리스 트레인 밖이라 부트를 올릴 때 따로 챙겨야 한다."
+  },
+  {
+   "q": "Querydsl 로 못 하는 것은?",
+   "a": "인라인 뷰, DB 고유 함수·힌트 등 JPQL 의 제약을 그대로 받는다."
+  },
+  {
+   "q": "다섯 SQL 을 비교하면?",
+   "a": "대소문자·별칭·escape 문자만 다르고 실행 계획은 같다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Querydsl Reference — JPA",
+   "url": "http://querydsl.com/static/querydsl/latest/reference/html_single/#jpa_integration",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

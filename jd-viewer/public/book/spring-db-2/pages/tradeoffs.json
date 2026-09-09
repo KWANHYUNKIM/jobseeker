@@ -1,0 +1,155 @@
+{
+ "book": "spring-db-2",
+ "id": "tradeoffs",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "트레이드오프",
+ "summary": "편함과 통제의 교환.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "각 편함의 값을 안다.",
+  "추상화가 새는 자리를 모은다.",
+  "무엇을 감시해야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**공짜인 것이 없었다.** **이 책이 지나온 거래를 모은다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "얻은 것과 낸 값",
+   "ascii": "   what you pay for what you get\n\n   less code          ->  more indirection\n   no sql strings     ->  sql you did not write\n   object graph       ->  n+1\n   change detection   ->  transactions required\n   compile safety     ->  build complexity\n   db independence    ->  no db specific features\n\n   every row is a real trade, not a free win",
+   "note": "**한 줄도 공짜가 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "가장 비싼 거래 세 개",
+   "md": "**① 코드가 줄면 간접 계층이 는다.**\n\n```\n3장  JdbcTemplate -> JDBC\n8장  Querydsl -> JPQL -> 하이버네이트 -> JDBC\n```\n\n**문제가 생기면 어느 층인지 찾아야** 한다. **로그를 읽는 능력이 그래서 필요**하다.\n\n**② SQL 을 안 쓰면 SQL 을 감시해야 한다.**\n\n**6.8절의 말**이다. **쓰지 않는 것과 모르는 것은 다르다.**\n\n**③ 객체 그래프를 얻으면 N+1 을 얻는다.**\n\n```java\nitem.getCategory().getName()   // 편하다\n```\n\n**이 한 줄이 100번 도는 순간**을 6.7절에서 봤다. **편함의 대가가 그 자리에 정확히** 있다.\n\n> **셋 다 \"편해진 곳\" 과 \"위험해진 곳\" 이 같은 지점**이다. **우연이 아니다.** **추상화는 무언가를 숨기고, 숨긴 것이 문제가 된다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "추상화가 샌 자리들",
+   "ascii": "   the abstraction leaks at\n\n   6.5   jpa exception -> context is unusable after catch\n   6.6   no transaction -> silent no-op\n   6.7   one getter -> 100 queries\n   7.3   save() -> merge() -> nulls\n   7.4   null param -> empty result\n   8.3   null condition -> whole table\n\n   each one is silent. none throws.",
+   "note": "**여섯 다 예외가 안 난다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "조용한 실패의 목록",
+   "md": "**이 책에서 만난 것들**을 모으면 이렇다.\n\n| 어디 | 무엇이 조용한가 |\n|---|---|\n| **3.3** | 파라미터 순서가 바뀌어도 예외 없음 |\n| **5.4** | `test` 속성 오타 → 조건이 사라짐 |\n| **6.6** | 트랜잭션 없이 수정 → 저장 안 됨 |\n| **6.7** | 쿼리 101개 → 느릴 뿐 |\n| **7.2** | 벌크 후 낡은 캐시 |\n| **7.3** | `save()` 로 수정 → `null` 로 덮임 |\n| **7.4** | `<= null` → 빈 결과 |\n| **8.3** | `eq(null)` → 전체 조회 |\n\n**여덟 개 중 하나도 예외를 안 던진다.**\n\n> **컴파일러가 못 잡고 런타임도 안 잡는다.** **테스트와 로그만이 잡는다.**\n\n**그래서 이 책의 두 규칙**이 있었다.\n\n| 규칙 | 어디서 |\n|---|---|\n| **매 절이 나간 SQL 로 끝난다** | 1.1절 |\n| **동적 쿼리는 네 경우를 다 검증한다** | 2.5절 |\n\n**둘 다 조용한 실패를 소리 나게 만드는 장치**다."
+  },
+  {
+   "type": "compare",
+   "caption": "왼쪽 기술과 오른쪽 기술의 실패 방식",
+   "left": {
+    "title": "JdbcTemplate · MyBatis",
+    "points": [
+     "**SQL 문법 오류** — 시끄럽다",
+     "**컬럼 이름 오류** — 시끄럽다",
+     "**파라미터 순서** — 조용하다",
+     "**동적 조립 실수** — 경우에 따라",
+     "**대체로 그 줄에서** 터진다"
+    ]
+   },
+   "right": {
+    "title": "JPA · Data JPA · Querydsl",
+    "points": [
+     "**문법·이름은 미리** 잡힌다",
+     "**성능 문제로 나타난다** — N+1",
+     "**시점 문제로 나타난다** — flush",
+     "**조용한 것이 많다** — merge, null",
+     "**다른 곳에서** 터진다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래서 무엇을 감시하나",
+   "md": "**기술을 고르고 나면 감시 항목이 정해진다.**\n\n| 기술 | 감시할 것 |\n|---|---|\n| JdbcTemplate | **SQL 리뷰**, 파라미터 순서 |\n| MyBatis | **XML 리뷰**, `test` 속성 |\n| JPA 계열 | **쿼리 개수**, 트랜잭션 경계, `open-in-view` |\n| Querydsl | 빌드 파이프라인 |\n\n**JPA 계열의 첫 줄이 특히** 중요하다.\n\n```properties\n# 개발 중에는 늘 켜 둔다\nlogging.level.org.hibernate.SQL=DEBUG\n```\n\n**운영에서는 다른 도구**를 쓴다.\n\n| 도구 | 무엇 |\n|---|---|\n| **APM** | 요청당 쿼리 수 |\n| **`datasource-proxy`·`p6spy`** | 쿼리 카운트를 테스트에서 검증 |\n| **슬로우 쿼리 로그** | DB 쪽에서 |\n\n> **테스트에서 쿼리 개수를 검증**하는 방법도 있다.\n>\n> ```java\n> assertThat(queryCounter.getCount()).isEqualTo(2);\n> ```\n>\n> **N+1 이 회귀하는 것을 막는다.** **6.7절의 문제가 코드 리뷰로만 막기 어려운 종류**라서 쓸모가 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 같은 실수, 다른 신호 ---\n\n# 3장: 파라미터 순서를 바꿨다\ntemplate.update(sql, name, quantity, price, id);\n\n#   [update item set item_name=?, price=?, quantity=? where id=?]\n#   {1: 'itemA', 2: 10, 3: 20000, 4: 1}\n#   -> 1\n\n#   성공했다. 값이 바뀌었을 뿐이다.\n\n# 5장: test 속성 오타\n#   <if test=\"itemNmae != null\">\n\n#   ==>  Preparing: select id, item_name, price, quantity from item\n#   <==      Total: 3\n\n#   성공했다. 조건이 없었을 뿐이다.\n\n# 6장: 트랜잭션 없이 수정\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n\n#   성공했다. update 가 없었을 뿐이다.\n\n# 7장: save 로 부분 수정\n#   Hibernate: select i1_0.id, ... where i1_0.id=?\n#   Hibernate: update item set item_name=?,price=?,quantity=? where id=?\n#   binding parameter [2] as [INTEGER] - [null]\n\n#   성공했다. 두 컬럼이 null 이 됐을 뿐이다.\n\n# 8장: eq(null)\n#   Hibernate: select i1_0.id, ... from item i1_0\n\n#   성공했다. 전체가 나왔을 뿐이다.\n\n# --- 다섯 다 '성공' 이다 ---\n\n# 로그를 읽지 않으면 아무것도 이상하지 않다\n#   binding parameter 값을 본다\n#   where 절이 있는지 본다\n#   쿼리 개수를 센다\n\n# 그것이 이 책이 매 절을 SQL 로 끝낸 이유다",
+   "note": "**다섯 다 `-> 1` 이거나 결과가 나왔다.** **예외 스택 트레이스가 하나도 없다.**\n\n**모두 로그를 읽어야만 보인다.** **`binding parameter` 의 값, `where` 절의 유무, 쿼리의 개수.**\n\n> **1.1절에서 \"매 절은 실제로 나간 SQL 로 끝난다\" 고 규칙을 세웠다.** **그 이유가 이 절에 다 있다.**\n\n**다음 절에서 실무 구조를 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**공짜인 거래가 하나도 없다.**",
+  "**코드가 줄면 간접 계층이 는다** — 로그를 읽어야 한다.",
+  "**SQL 을 안 쓰면 SQL 을 감시**해야 한다.",
+  "**객체 그래프를 얻으면 N+1 을 얻는다.**",
+  "**편해진 지점과 위험해진 지점이 같다.**",
+  "**조용한 실패 여덟 개**를 이 책에서 만났다 — 하나도 예외를 안 던진다.",
+  "**왼쪽 기술은 그 줄에서, 오른쪽 기술은 다른 곳에서** 터진다.",
+  "**기술마다 감시 항목이 다르다.**",
+  "**테스트에서 쿼리 개수를 검증**하면 N+1 회귀를 막는다."
+ ],
+ "drills": [
+  {
+   "task": "조용한 실패 여덟 개를 재현해 본다.",
+   "done_when": "예외가 하나도 안 나는 것을 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "지금 프로젝트의 감시 항목을 정한다.",
+   "done_when": "기술에 맞는 항목 셋을 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "쿼리 카운터를 테스트에 붙여 본다.",
+   "done_when": "개수를 검증하는 테스트를 하나 만들었다.",
+   "minutes": 30
+  },
+  {
+   "task": "얻은 것과 낸 값을 표로 만든다.",
+   "done_when": "각 줄이 실제 거래인지 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 비싼 거래 셋은?",
+   "a": "간접 계층, SQL 감시 부담, N+1 이다."
+  },
+  {
+   "q": "편함과 위험의 관계는?",
+   "a": "편해진 지점과 위험해진 지점이 같다. 추상화가 숨긴 것이 문제가 된다."
+  },
+  {
+   "q": "조용한 실패의 공통점은?",
+   "a": "예외를 안 던진다. 테스트와 로그만이 잡는다."
+  },
+  {
+   "q": "왼쪽과 오른쪽 기술의 실패 방식 차이는?",
+   "a": "왼쪽은 그 줄에서 문법 오류로, 오른쪽은 다른 곳에서 성능·시점 문제로 나타난다."
+  },
+  {
+   "q": "N+1 회귀를 어떻게 막나?",
+   "a": "테스트에서 쿼리 개수를 검증한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

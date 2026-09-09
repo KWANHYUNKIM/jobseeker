@@ -525,7 +525,7 @@
           "title": "정리",
           "summary": "빌드가 복잡해지는 대가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -540,7 +540,7 @@
           "title": "어떤 기술을 고를까",
           "summary": "SQL 을 누가 쓰느냐로 갈린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -548,7 +548,7 @@
           "title": "트레이드오프",
           "summary": "편함과 통제의 교환.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
