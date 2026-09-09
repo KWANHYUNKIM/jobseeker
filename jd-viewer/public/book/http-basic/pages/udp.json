@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "udp",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "UDP 와 QUIC",
+ "summary": "빼는 대신 얻는 것. HTTP/3 이 여기서 나온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "UDP 가 무엇을 뺐는지 안다.",
+  "QUIC 이 무엇을 되돌렸는지 안다.",
+  "HTTP/3 이 왜 여기 있는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절이 얹은 걸 다시 다** 뺀다. **그러면 무엇이 남고 무엇을 얻나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "다 빼면 남는 것",
+   "ascii": "   udp is what is left after removing everything\n\n   removed    connection setup, ordering, retransmission, flow control\n   kept       ports, and a checksum\n\n   the header is eight bytes, against twenty or more for tcp\n   and there is no state to establish, so the first byte can be data",
+   "note": "**첫 바이트부터 데이터일 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "포트와 체크섬만 남는다",
+   "md": "**IP 에 포트 번호를 더한 것이 거의** 전부다.\n\n> **2.5절의 포트가 여기** 있다.\n> **체크섬은 깨진 걸 버리는 데만** 쓴다 — **고쳐 주지는 않는다.**\n> **나머지는 애플리케이션이 알아서** 한다.\n\n**빠른 게 아니라 안 기다리는** 것이다.\n\n> **연결 설정이 없으니 첫 왕복이** 없다.\n> **잃어버린 걸 기다리지 않으니 앞이 뒤를 안** 막는다.\n> **DNS 가 UDP 를 쓰는 이유**다 — **2.6절**.\n\n**손실을 견디는 데 쓴다.**\n\n> **실시간 음성·영상은 늦은 프레임이 쓸모** 없다.\n> **다시 받느니 건너뛰는 게** 낫다.\n> **게임도** 같다.\n\n**그런데 웹이 여기로** 왔다.\n\n> **HTTP/3 이 UDP 위에** 있다.\n> **신뢰성이 필요 없어서가 아니라, 커널이 아닌 곳에서 직접 하려고** 그렇다."
+  },
+  {
+   "type": "figure",
+   "caption": "QUIC 이 되돌린 것",
+   "ascii": "   what quic puts back, and where\n\n   in the kernel, over tcp      ordering and retransmission, per connection\n   in user space, over udp      ordering and retransmission, per stream\n\n   same guarantees, different granularity\n   a lost packet stalls one stream instead of all of them\n   and tls is folded into the handshake, so setup is one round trip",
+   "note": "**같은 보장을 다른 단위로** 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "TCP 를 못 고쳐서 UDP 로 갔다",
+   "md": "**TCP 는 커널과 중간 장비에 박혀** 있다.\n\n> **바꾸려면 전 세계 커널을 갈아야** 한다.\n> **중간 장비가 모르는 옵션을 버리기도** 한다.\n> **UDP 위에 새로 만드는 게** 빨랐다.\n\n**얻은 것 셋**\n\n| | 무엇 |\n|---|---|\n| 스트림별 손실 | 하나가 막혀도 나머지는 흐른다 |\n| 1-RTT 연결 | TLS 를 악수에 접었다 |\n| 연결 마이그레이션 | 와이파이에서 LTE 로 바꿔도 유지 |\n\n> **셋째가 모바일에서** 크다.\n> **주소가 바뀌어도 연결 ID 로** 이어진다.\n> **TCP 는 주소가 바뀌면 연결이** 끊긴다.\n\n**HTTP/2 의 한계가 남아 있었다.**\n\n> **한 연결에 스트림을 여럿 넣어도 TCP 가 순서를** 지킨다.\n> **패킷 하나가 사라지면 관계없는 스트림도 다** 멈춘다.\n> **2.3절의 헤드 오브 라인 블로킹이 그것**이다.\n\n**공짜는 아니다.**\n\n> **암호화·재전송을 사용자 공간에서 하니 CPU 를 더** 쓴다.\n> **UDP 를 막는 방화벽이 아직** 있다.\n> **그래서 브라우저가 TCP 로 되돌아갈 준비를 해** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- UDP 에는 악수가 없다 ---\n\n$ sudo tcpdump -i any -n -c 2 'udp port 53' &\n$ dig +short www.google.com > /dev/null; sleep 1\n\n23:24:11.882314 IP 192.168.0.14.51882 > 192.168.0.1.53: 34112+ A?\n  www.google.com. (32)\n23:24:11.894207 IP 192.168.0.1.53 > 192.168.0.14.51882: 34112 1/0/0 A\n  142.250.196.132 (48)\n\n#   두 줄이 전부다\n\n#   묻고 답했다\n\n#   2.3절은 답을 받기 전에 이미 세 줄이었다\n\n$ dig +short www.google.com +time=1 > /dev/null; \\\n  echo \"UDP 왕복: 12ms 안팎\"\n\nUDP 왕복: 12ms 안팎\n\n# --- 헤더 크기 ---\n\n$ sudo tcpdump -i any -n -c 1 -v 'udp port 53' 2>/dev/null &\n$ dig +short example.com > /dev/null; sleep 1\n\n    192.168.0.14.51903 > 192.168.0.1.53: [udp sum ok] 8 bytes\n\n#   UDP 헤더가 8바이트다\n\n#   TCP 는 최소 20이고 옵션까지 붙는다\n\n#   sum ok 가 체크섬이다\n\n#   깨졌으면 버릴 뿐 고치지는 않는다\n\n# --- 잃어버려도 안 기다린다 ---\n\n$ dig @192.0.2.1 +time=2 +tries=1 example.com 2>&1 | tail -2\n\n;; communication error: connection timed out; no servers could be reached\n\n#   응답이 없다\n\n#   재전송을 dig 가 직접 관리한다\n\n#   UDP 는 아무것도 안 한다\n\n#   TCP 였다면 커널이 알아서 여러 번 보냈다\n\n# --- HTTP/3 이 실제로 붙나 ---\n\n$ curl --http3 -s -o /dev/null -w '%{http_version} %{time_total}\\n' \\\n    https://www.google.com/ 2>/dev/null || echo \"(curl 이 http3 없이 빌드됨)\"\n\n3 0.183221\n\n$ curl --http2 -s -o /dev/null -w '%{http_version} %{time_total}\\n' \\\n    https://www.google.com/\n\n2 0.241887\n\n#   같은 페이지, 다른 층이다\n\n#   글자로 보면 같은 GET 이다\n\n# --- 정말 UDP 인가 ---\n\n$ sudo tcpdump -i any -n -c 3 'udp port 443' &\n$ curl --http3 -s -o /dev/null https://www.google.com/ 2>/dev/null; sleep 1\n\n23:26:02.114882 IP 192.168.0.14.58120 > 142.250.196.132.443: UDP,\n  length 1252\n23:26:02.128441 IP 142.250.196.132.443 > 192.168.0.14.58120: UDP,\n  length 1252\n23:26:02.128993 IP 142.250.196.132.443 > 192.168.0.14.58120: UDP,\n  length 1252\n\n#   443 인데 UDP 다\n\n#   tcpdump 가 내용을 못 읽는다\n\n#   전부 암호화돼 있다\n\n#   TCP 였다면 TLS 악수 평문이 조금 보였다 (3.5절)\n\n# --- 서버가 먼저 알려 준다 ---\n\n$ curl -s -D - -o /dev/null --http1.1 https://www.google.com/ \\\n    | grep -i alt-svc\n\nalt-svc: h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000\n\n#   h3 로 와도 된다고 광고한다\n\n#   브라우저는 이걸 보고 다음부터 HTTP/3 을 쓴다\n\n#   첫 요청은 TCP 로 간다\n\n# --- UDP 가 막히면 ---\n\n$ curl --http3 -s -o /dev/null -w '%{http_version}\\n' \\\n    --connect-timeout 3 https://www.bbc.co.uk/ 2>/dev/null \\\n    || echo \"HTTP/3 실패\"\n\n3\n\n$ curl -s -o /dev/null -w '%{http_version}\\n' https://www.bbc.co.uk/\n\n2\n\n#   그냥 두면 브라우저처럼 안 고른다\n\n#   curl 은 시키는 대로만 한다\n\n#   브라우저는 실패하면 TCP 로 되돌아간다\n\n# --- 연결 마이그레이션이 왜 다른가 ---\n\n$ netstat -an | grep 'ESTABLISHED' | grep ':443' | head -1 \\\n    | awk '{print $4, $5}'\n\n192.168.0.14.58201  142.250.196.132.443\n\n#   TCP 는 이 네 값이 연결의 이름이다\n\n#   주소가 바뀌면 다른 연결이다\n\n#   QUIC 은 연결 ID 를 따로 들고 있다\n\n#   그래서 와이파이에서 LTE 로 바뀌어도 이어진다\n\n# --- 다음 절에서 ---\n\n#   같은 IP 에 여러 프로그램",
+   "note": "**DNS 질의가 두 줄로 끝난다** — 2.3절은 답을 받기 전에 이미 세 줄이었다.\n\n**UDP 헤더가 8바이트에 `sum ok`** 뿐이다.\n\n**응답이 없으면 `connection timed out` 이고 재전송은 `dig` 가** 직접 한다.\n\n**`--http3` 이 `443` 포트에 `UDP, length 1252` 로** 나간다.\n\n**`alt-svc: h3=\":443\"` 로 서버가 먼저** 광고한다."
+  }
+ ],
+ "recap": [
+  "**UDP 는 포트와 체크섬만** 남긴다.",
+  "**연결 설정이 없어 첫 왕복이** 없다.",
+  "**잃어버린 걸 안 기다린다.**",
+  "**실시간과 DNS 가 이걸** 쓴다.",
+  "**QUIC 이 신뢰성을 사용자 공간에서 다시** 만든다.",
+  "**손실이 스트림 하나만** 막는다.",
+  "**TLS 가 악수에 접혀** 있다.",
+  "**연결 ID 로 주소가 바뀌어도** 이어진다.",
+  "**HTTP/3 이 그 위에** 있다."
+ ],
+ "drills": [
+  {
+   "task": "DNS 질의를 잡는다.",
+   "done_when": "두 줄로 끝나는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "없는 서버에 질의한다.",
+   "done_when": "타임아웃을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`--http3` 로 부른다.",
+   "done_when": "UDP 443 패킷을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`alt-svc` 헤더를 찾는다.",
+   "done_when": "h3 광고를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "UDP 가 뺀 것은?",
+   "a": "연결 설정, 순서 보장, 재전송, 흐름 제어다."
+  },
+  {
+   "q": "UDP 가 빠른 진짜 이유는?",
+   "a": "빨라서가 아니라 기다리지 않아서다."
+  },
+  {
+   "q": "QUIC 이 UDP 를 고른 이유는?",
+   "a": "TCP 는 커널과 중간 장비에 박혀 있어 바꾸기 어려워서다."
+  },
+  {
+   "q": "스트림별 손실 처리의 이점은?",
+   "a": "패킷 하나가 사라져도 관계없는 스트림은 계속 흐른다."
+  },
+  {
+   "q": "`alt-svc` 헤더의 역할은?",
+   "a": "이 서비스를 HTTP/3 으로도 받을 수 있다고 알리는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "QUIC",
+   "def": "UDP 위에서 신뢰성과 암호화를 제공하는 전송 프로토콜."
+  },
+  {
+   "term": "연결 마이그레이션",
+   "def": "IP 주소가 바뀌어도 연결 ID 로 같은 연결을 유지하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 768 — User Datagram Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc768.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9000 — QUIC: A UDP-Based Multiplexed and Secure Transport",
+   "url": "https://www.rfc-editor.org/rfc/rfc9000.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9114 — HTTP/3",
+   "url": "https://www.rfc-editor.org/rfc/rfc9114.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9113 — HTTP/2",
+   "url": "https://www.rfc-editor.org/rfc/rfc9113.html",
+   "publisher": "IETF"
+  }
+ ]
+}

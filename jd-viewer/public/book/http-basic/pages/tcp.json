@@ -1,0 +1,129 @@
+{
+ "book": "http-basic",
+ "id": "tcp",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "TCP",
+ "summary": "연결·순서·검증을 얹는다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 번 악수를 안다.",
+  "번호와 확인응답을 안다.",
+  "종료가 왜 네 번인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절의 네 가지 실패를 전부** 메운다. **대가는 왕복 하나와 양쪽의 상태**다."
+  },
+  {
+   "type": "figure",
+   "caption": "HTTP 한 글자 전에",
+   "ascii": "   three packets before a single byte of http\n\n   client -> server   SYN,      here is my starting sequence number\n   server -> client   SYN ACK,  here is mine, and I saw yours\n   client -> server   ACK,      I saw yours\n\n   one full round trip is spent here, every new connection\n   this is the cost that keep-alive exists to avoid",
+   "note": "**킵얼라이브가 존재하는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "번호가 전부다",
+   "md": "**모든 바이트에 번호가** 있다.\n\n> **\"1번부터 16344번까지 보냈다\" 고** 말한다.\n> **받는 쪽은 \"16345번부터 기다린다\" 고** 답한다.\n> **그게 ACK 번호**다.\n\n**확인이 안 오면 다시** 보낸다.\n\n> **타이머가 돈다.**\n> **왕복 시간을 재서 타이머를** 맞춘다.\n> **그래서 먼 서버일수록 재전송도** 느리다.\n\n**창(window)이 속도를** 정한다.\n\n> **받는 쪽이 \"이만큼 더 받을 수 있다\" 고** 알린다.\n> **그게 0이 되면 송신이** 멈춘다.\n> **`win 65535` 같은 게 그 값**이다.\n\n**혼잡 제어는 별개**다.\n\n> **창은 수신자 사정, 혼잡 창은 네트워크 사정**이다.\n> **느리게 시작해서 점점** 올린다.\n> **그래서 새 연결의 첫 몇 KB 가** 느리다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 실패를 메우는 법",
+   "ascii": "   how tcp repairs each ip failure\n\n   loss          every byte is numbered, unacknowledged data is resent\n   reordering    the receiver buffers and delivers in order\n   duplication   a byte already delivered is silently discarded\n   fragmenting   the sender chooses a segment size that fits\n\n   the cost is state on both ends, and a round trip to set it up",
+   "note": "**대가는 상태와 왕복**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "종료는 네 번이고, 그래서 TIME_WAIT 이 있다",
+   "md": "**양쪽이 따로 닫는다.**\n\n> **FIN → ACK → FIN → ACK** 이다.\n> **한쪽이 닫아도 다른 쪽은 계속 보낼 수** 있다.\n> **그게 반만 닫힌 상태**다.\n\n**먼저 닫은 쪽이 `TIME_WAIT`** 이다.\n\n> **2분쯤 포트를 붙들고** 있다.\n> **늦게 오는 패킷이 다음 연결에 섞이지 않게** 하려는 것이다.\n> **부하 시험 때 포트가 모자라는 이유가** 이것이다.\n\n**HTTP 쪽에서 이게 보인다.**\n\n> **`Connection: keep-alive` 로 연결을 재사용**한다(4.4절).\n> **HTTP/1.1 부터 기본**이다.\n> **1.4절에서 `left intact` 로 끝난 게 그것**이다.\n\n**헤드 오브 라인 블로킹**\n\n> **순서대로 넘겨야 하니 앞이 막히면 뒤도** 막힌다.\n> **HTTP/2 가 한 연결에 여러 스트림을 넣어도 TCP 층에서는 여전히** 막힌다.\n> **HTTP/3 이 TCP 를 버린 이유**다 — **2.4절**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 세 번 악수 ---\n\n$ sudo tcpdump -i lo0 -n -c 3 'tcp port 8080 and tcp[tcpflags] & (tcp-syn|tcp-ack) != 0' &\n$ curl -s http://localhost:8080/ > /dev/null; sleep 1\n\n23:18:41.113244 IP 127.0.0.1.54118 > 127.0.0.1.8080: Flags [S],\n  seq 1829443211, win 65535, options [mss 16344,nop,wscale 6,\n  nop,nop,TS val 918234 ecr 0,sackOK,eol], length 0\n23:18:41.113319 IP 127.0.0.1.8080 > 127.0.0.1.54118: Flags [S.],\n  seq 3021884190, ack 1829443212, win 65535, options [...], length 0\n23:18:41.113331 IP 127.0.0.1.54118 > 127.0.0.1.8080: Flags [.],\n  ack 1, win 6379, length 0\n\n#   S, S., 그리고 . 이다\n\n#   ack 1829443212 는 seq+1 이다\n\n#   첫 SYN 이 번호 하나를 쓴다\n\n#   여기까지 HTTP 는 한 글자도 없다\n\n# --- 그 비용이 얼마인가 ---\n\n$ curl -o /dev/null -s -w 'connect %{time_connect} 총 %{time_total}\\n' \\\n    http://localhost:8080/\n\nconnect 0.000212 총 0.000684\n\n$ curl -o /dev/null -s -w 'connect %{time_connect} 총 %{time_total}\\n' \\\n    http://www.bbc.co.uk/\n\nconnect 0.238914 총 0.502117\n\n#   먼 곳은 연결에만 240ms 다\n\n#   왕복 하나가 통째로 든다\n\n$ curl -s -o /dev/null -w '한 번: %{time_total}\\n' \\\n    http://www.bbc.co.uk/ http://www.bbc.co.uk/ 2>/dev/null\n\n한 번: 0.502117\n한 번: 0.261338\n\n#   두 번째가 절반이다\n\n#   연결을 재사용했다\n\n#   이게 keep-alive 다 (4.4절)\n\n# --- 번호와 확인응답 ---\n\n$ sudo tcpdump -i lo0 -n -S 'tcp port 8080' > /tmp/t.txt &\n$ curl -s http://localhost:8080/big.txt -o /dev/null; sleep 1\n$ grep -o 'seq [0-9]*:[0-9]*, ack [0-9]*' /tmp/t.txt | head -3\n\nseq 3021884191:3021900535, ack 1829443290\nseq 3021900535:3021916879, ack 1829443290\nseq 3021916879:3021933223, ack 1829443290\n\n#   16344씩 이어 붙는다\n\n#   앞 조각의 끝이 다음 조각의 시작이다\n\n#   빈틈이 있으면 받는 쪽이 안다\n\n$ grep -o 'ack [0-9]*, win [0-9]*' /tmp/t.txt | tail -3\n\nack 3022147295, win 6379\nack 3022163639, win 6379\nack 3022179983, win 6379\n\n#   받은 만큼 ack 가 올라간다\n\n#   win 이 아직 여유가 있다고 말한다\n\n# --- 창이 0이 되면 멈춘다 ---\n\n$ nc -l 9998 > /dev/null &\n$ (yes | head -c 50000000 | nc -w 5 localhost 9998) &\n$ sleep 1 && sudo tcpdump -i lo0 -n -c 4 'tcp port 9998' 2>/dev/null \\\n    | grep -o 'win [0-9]*' | sort -u | head -3\n\nwin 0\nwin 12\nwin 6379\n\n#   win 0 이 나왔다\n\n#   받는 쪽이 못 따라간 것이다\n\n#   보내는 쪽이 멈춘다\n\n$ kill %1 %2 2>/dev/null\n\n# --- 종료는 네 번이다 ---\n\n$ sudo tcpdump -i lo0 -n 'tcp port 8080 and (tcp[tcpflags] & tcp-fin != 0 or tcp[tcpflags] & tcp-ack != 0)' > /tmp/f.txt &\n$ curl -s --no-keepalive http://localhost:8080/ > /dev/null; sleep 2\n$ grep -o 'Flags \\[[FP.]*\\]' /tmp/f.txt | tail -4\n\nFlags [F.]\nFlags [.]\nFlags [F.]\nFlags [.]\n\n#   FIN, ACK, FIN, ACK 다\n\n#   양쪽이 각자 닫는다\n\n$ netstat -an | grep -c TIME_WAIT\n\n47\n\n#   닫은 연결이 아직 남아 있다\n\n#   2분쯤 붙들고 있는다\n\n#   부하 시험에서 포트가 모자라는 이유다\n\n# --- 앞이 막히면 뒤도 막힌다 ---\n\n$ curl -s --http1.1 -o /dev/null -w 'http1.1 %{time_total}\\n' \\\n    'http://localhost:8080/big.txt'\n\nhttp1.1 0.004112\n\n$ docker exec lab sh -c 'tc qdisc add dev eth0 root netem loss 3% 2>/dev/null' \\\n    || echo \"(컨테이너에 tc 가 없다)\"\n\n(컨테이너에 tc 가 없다)\n\n$ curl -s -o /dev/null -w 'bbc %{time_total} 재전송은 안 보인다\\n' \\\n    https://www.bbc.co.uk/\n\nbbc 0.502117 재전송은 안 보인다\n\n#   TCP 가 다 메워서 위에서는 안 보인다\n\n#   그게 이 층이 하는 일이다\n\n#   대신 느려지는 것으로만 드러난다\n\n$ netstat -s -p tcp 2>/dev/null | grep -E 'retransmit|out-of-order' | head -2\n\n        1842 data packets retransmitted\n        391 out-of-order packets\n\n#   실제로는 이만큼 있었다\n\n#   HTTP 는 이걸 하나도 모른다\n\n# --- 다음 절에서 ---\n\n#   이 층을 빼면 무엇을 얻나",
+   "note": "**`S` → `S.` → `.` 세 패킷이 오가고 그때까지 HTTP 는 한 글자도** 없다.\n\n**먼 서버는 `connect` 에만 240ms**, 두 번째 요청은 절반이다.\n\n**`seq` 가 16344씩 이어 붙고 앞 조각의 끝이 다음 조각의** 시작이다.\n\n**종료가 `F.` `.` `F.` `.` 네 번이고 `TIME_WAIT` 이 47개** 남아 있다.\n\n**재전송 1842건이 실제로 있었는데 HTTP 는 하나도** 모른다."
+  }
+ ],
+ "recap": [
+  "**연결 전에 왕복 하나를** 쓴다.",
+  "**모든 바이트에 번호가** 있다.",
+  "**확인이 안 오면 다시** 보낸다.",
+  "**창이 수신 속도를** 정한다.",
+  "**혼잡 제어는 별개로 천천히** 올린다.",
+  "**종료는 네 번**이다.",
+  "**`TIME_WAIT` 이 포트를 붙들고** 있다.",
+  "**킵얼라이브가 연결 비용을** 아낀다.",
+  "**앞이 막히면 뒤도** 막힌다."
+ ],
+ "drills": [
+  {
+   "task": "악수 세 패킷을 잡는다.",
+   "done_when": "S·S.·. 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 곳을 두 번 부른다.",
+   "done_when": "두 번째가 빠른 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "큰 파일의 `seq` 를 본다.",
+   "done_when": "번호가 이어지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`TIME_WAIT` 개수를 센다.",
+   "done_when": "닫은 연결이 남는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 번 악수의 비용은?",
+   "a": "HTTP 한 글자를 보내기 전에 왕복 한 번을 쓴다."
+  },
+  {
+   "q": "TCP 가 유실을 어떻게 아나?",
+   "a": "보낸 바이트 번호에 대한 확인응답이 안 오면 재전송한다."
+  },
+  {
+   "q": "창(window)이 하는 일은?",
+   "a": "받는 쪽이 더 받을 수 있는 양을 알려 송신 속도를 제한한다."
+  },
+  {
+   "q": "`TIME_WAIT` 이 있는 이유는?",
+   "a": "늦게 도착한 패킷이 다음 연결에 섞이지 않게 하려는 것이다."
+  },
+  {
+   "q": "헤드 오브 라인 블로킹이란?",
+   "a": "순서대로 넘겨야 해서 앞의 손실이 뒤의 데이터까지 막는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세 번 악수",
+   "def": "SYN·SYN ACK·ACK 로 연결을 여는 절차."
+  },
+  {
+   "term": "TIME_WAIT",
+   "def": "먼저 닫은 쪽이 일정 시간 소켓을 붙들고 있는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9293 — Transmission Control Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

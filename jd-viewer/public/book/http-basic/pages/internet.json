@@ -1,0 +1,134 @@
+{
+ "book": "http-basic",
+ "id": "internet",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "인터넷 통신",
+ "summary": "두 대가 아니라 수많은 노드를 지난다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "요청이 지나는 구간을 안다.",
+  "계층이 무엇을 얹는지 안다.",
+  "지연이 어디서 오는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 요청 4줄과 응답 8줄을** 봤다. **그 사이에 무엇이 있는지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "요청이 건너는 곳",
+   "ascii": "   what a request actually crosses\n\n   your machine\n     home router          nat, one public address for the house\n     isp edge             the first hop you do not control\n     several backbones     tens of milliseconds each\n     a cdn edge           often where the answer really comes from\n     the origin server\n\n   every one of these can drop a packet, and none will tell you",
+   "note": "**어느 구간도 실패했다고 알려주지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 대만 있는 그림이 거짓말이다",
+   "md": "**클라이언트와 서버 사이에 열 개 넘는 장비가** 있다.\n\n> **각각이 큐를 가지고** 있다.\n> **각각이 버릴 수** 있다.\n> **그래서 \"보냈다\" 와 \"도착했다\" 가 다른 말**이다 — **2.2절**.\n\n**계층이 하나씩 얹는다**\n\n| 계층 | 답하는 질문 |\n|---|---|\n| HTTP | 무엇을 원하나 |\n| TCP/UDP | 어느 프로그램인가, 도착했나 |\n| IP | 어느 기계인가 |\n| 이더넷 | 다음 한 홉은 어디인가 |\n\n> **아래로 갈수록 시야가** 짧다.\n> **이더넷 헤더는 다음 라우터까지만 유효**하다.\n> **홉마다 새로 붙는다.**\n\n**지연은 대부분 거리**다.\n\n> **빛이 광섬유를 도는 속도는 200,000km/s** 쯤이다.\n> **서울에서 미국 서부가 왕복 130ms 안팎**인 이유다.\n> **서버를 아무리 빠르게 해도 이건 안** 줄어든다.\n> **그래서 CDN 이 가까이 서** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 계층",
+   "ascii": "   four layers, and what each one adds\n\n   application   http     what you asked for\n   transport     tcp/udp  which program, and whether it arrived\n   internet      ip       which machine, roughly\n   link          ethernet which cable, for one hop only\n\n   each layer wraps the one above it and strips it on the way out\n   so a single GET leaves as bytes with four headers in front",
+   "note": "**GET 한 줄 앞에 헤더 넷이** 붙는다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "HTTP 는 아무것도 보장하지 않는다",
+   "md": "**아래에 맡긴다.**\n\n> **순서·재전송·중복 제거는 전부 TCP 일**이다(2.3절).\n> **HTTP 는 그게 다 됐다고 치고 글자만** 쓴다.\n> **그래서 HTTP 명세에 재전송 이야기가** 없다.\n\n**대신 아래가 바뀌면 위도 바뀐다.**\n\n> **HTTP/3 은 TCP 를 버리고 QUIC 으로** 갔다(2.4절).\n> **글자로 보면 같은 GET 인데 실려 가는 방식이 다** 다르다.\n\n**MTU 가 조각을 만든다.**\n\n> **한 번에 보낼 수 있는 크기가 보통 1500바이트**다.\n> **응답 615바이트는 한 조각, 1MB 는 수백 조각**이다.\n> **조각 하나가 사라지면 그것만 다시** 온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 몇 홉이나 되나 ---\n\n$ traceroute -q 1 -m 12 www.google.com\n\ntraceroute to www.google.com (142.250.196.132), 12 hops max, 52 byte packets\n 1  192.168.0.1  3.412 ms\n 2  * \n 3  10.20.32.1  8.117 ms\n 4  112.189.31.145  9.882 ms\n 5  112.174.86.53  10.441 ms\n 6  112.174.9.117  11.203 ms\n 7  72.14.203.28  12.884 ms\n 8  142.251.53.155  13.117 ms\n 9  192.178.110.243  12.996 ms\n10  142.250.196.132  12.741 ms\n\n#   10홉이다\n\n#   2번은 응답을 안 줬다\n\n#   응답을 안 해도 지나가기는 한다\n\n#   1번이 집 공유기다\n\n# --- 멀면 느리다 ---\n\n$ for h in www.naver.com www.google.com www.bbc.co.uk; do\n    printf \"%-20s\" $h\n    ping -c 3 -q $h 2>/dev/null | tail -1 | awk -F'/' '{print $5 \" ms\"}'\n  done\n\nwww.naver.com       4.912 ms\nwww.google.com      12.883 ms\nwww.bbc.co.uk       241.406 ms\n\n#   런던이 240ms 다\n\n#   빛의 속도가 정한 값이다\n\n#   서버를 빠르게 해도 안 줄어든다\n\n# --- 그게 HTTP 시간의 대부분이다 ---\n\n$ curl -o /dev/null -s -w \\\n'dns      %{time_namelookup}\\nconnect  %{time_connect}\\ntls      %{time_appconnect}\\n첫 바이트 %{time_starttransfer}\\n총      %{time_total}\\n' \\\n  https://www.bbc.co.uk/\n\ndns      0.031412\nconnect  0.273918\ntls      0.512004\n첫 바이트 0.759233\n총      0.761880\n\n#   0.76초 중 서버가 쓴 건 0.25초쯤이다\n\n#   나머지는 왕복이다\n\n#   connect 가 한 왕복, tls 가 두 왕복 더다 (3.5절)\n\n# --- 계층을 눈으로 본다 ---\n\n$ sudo tcpdump -i any -c 1 -e -n 'tcp port 80 and host localhost' &\n$ curl -s http://localhost:8080/ > /dev/null\n\n23:12:04.881233 lo0 In ifscope (Ethernet) 00:00:00:00:00:00 >\n  00:00:00:00:00:00, ethertype IPv4 (0x0800), length 78:\n  127.0.0.1.53412 > 127.0.0.1.8080: Flags [S], seq 2914558231,\n  win 65535, options [mss 16344,nop,wscale 6,...], length 0\n\n#   한 줄에 세 계층이 다 있다\n\n#   Ethernet -> IPv4 -> 포트와 Flags\n\n#   그 안에 HTTP 는 아직 없다\n\n#   연결부터 만드는 중이다 (2.3절)\n\n# --- 한 요청의 패킷 수 ---\n\n$ sudo tcpdump -i lo0 -n -c 20 'tcp port 8080' > /tmp/cap.txt &\n$ curl -s http://localhost:8080/ > /dev/null; sleep 1\n$ grep -c . /tmp/cap.txt\n\n10\n\n$ awk '{print $NF, $0}' /tmp/cap.txt | grep -o 'Flags \\[[^]]*\\]' \\\n    | sort | uniq -c | sort -rn\n\n   5 Flags [.]\n   2 Flags [P.]\n   1 Flags [S]\n   1 Flags [S.]\n   1 Flags [F.]\n\n#   615바이트 받는 데 10개다\n\n#   실제 데이터를 실은 건 P. 둘뿐이다\n\n#   나머지는 연결을 만들고 확인하고 닫는 것이다\n\n# --- 큰 응답은 조각난다 ---\n\n$ docker exec lab sh -c \\\n    'head -c 200000 /dev/urandom | base64 > /usr/share/nginx/html/big.txt'\n\n$ sudo tcpdump -i lo0 -n 'tcp port 8080' > /tmp/big.txt &\n$ curl -s http://localhost:8080/big.txt -o /dev/null; sleep 1\n$ grep -c 'length [1-9]' /tmp/big.txt\n\n27\n\n$ grep -o 'length [0-9]*' /tmp/big.txt | sort -t' ' -k2 -rn | head -2\n\nlength 16344\nlength 16344\n\n#   270KB 가 27조각으로 나갔다\n\n#   loopback 이라 한 조각이 크다\n\n#   진짜 네트워크면 1448바이트씩이다\n\n#   조각 하나가 사라지면 그것만 다시 온다 (2.3절)\n\n# --- 다음 절에서 ---\n\n#   보냈다는 것과 도착했다는 것은 다르다",
+   "note": "**`traceroute` 가 10홉을 보여주고 그중 하나는 응답조차 안** 준다.\n\n**런던이 왕복 240ms** — 빛의 속도가 정한 값이라 서버를 빠르게 해도 안 줄어든다.\n\n**0.76초 중 서버가 쓴 건 0.25초쯤**이고 나머지는 왕복이다.\n\n**tcpdump 한 줄에 이더넷·IP·TCP 세 계층이** 다 있다.\n\n**615바이트를 받는 데 패킷 10개, 데이터를 실은 건 둘**뿐이다."
+  }
+ ],
+ "recap": [
+  "**클라이언트와 서버 사이에 열 홉 넘게** 있다.",
+  "**어느 구간도 실패를 알려주지** 않는다.",
+  "**계층이 하나씩 헤더를** 얹는다.",
+  "**아래로 갈수록 시야가** 짧다.",
+  "**지연은 대부분 거리**다.",
+  "**서버 최적화로 왕복은 안** 준다.",
+  "**HTTP 는 순서·재전송을 아래에** 맡긴다.",
+  "**아래가 바뀌면 HTTP/3 처럼 위도** 바뀐다.",
+  "**큰 응답은 여러 조각으로** 나간다."
+ ],
+ "drills": [
+  {
+   "task": "가까운 곳과 먼 곳을 `ping` 한다.",
+   "done_when": "왕복 차이를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`traceroute` 를 찍는다.",
+   "done_when": "홉 수와 무응답 홉을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`curl -w` 로 구간을 나눈다.",
+   "done_when": "왕복이 대부분인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요청 하나의 패킷을 센다.",
+   "done_when": "데이터 패킷이 소수인 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 두 대만 있는 그림이 틀렸나?",
+   "a": "중간에 각자 큐를 가진 장비가 열 개 넘게 있고 어디서든 버려질 수 있다."
+  },
+  {
+   "q": "각 계층이 답하는 질문은?",
+   "a": "HTTP 는 무엇을, TCP 는 어느 프로그램·도착 여부, IP 는 어느 기계, 이더넷은 다음 홉이다."
+  },
+  {
+   "q": "먼 서버가 느린 근본 원인은?",
+   "a": "빛의 속도로 정해지는 왕복 시간이다."
+  },
+  {
+   "q": "HTTP 가 재전송을 안 다루는 이유는?",
+   "a": "TCP 가 순서와 재전송을 보장한다고 전제하기 때문이다."
+  },
+  {
+   "q": "큰 응답은 어떻게 가나?",
+   "a": "MTU 크기로 여러 조각으로 나뉘어 간다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "홉",
+   "def": "패킷이 지나는 라우터 한 단계."
+  },
+  {
+   "term": "MTU",
+   "def": "한 번에 보낼 수 있는 프레임의 최대 크기. 보통 1500바이트다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 791 — Internet Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc791.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}

@@ -65,7 +65,7 @@
           "title": "인터넷 통신",
           "summary": "두 대가 아니라 수많은 노드를 지난다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -73,7 +73,7 @@
           "title": "IP 와 그 한계",
           "summary": "보냈다는 것과 도착했다는 것은 다르다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -81,7 +81,7 @@
           "title": "TCP",
           "summary": "연결·순서·검증을 얹는다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -89,7 +89,7 @@
           "title": "UDP 와 QUIC",
           "summary": "빼는 대신 얻는 것. HTTP/3 이 여기서 나온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
