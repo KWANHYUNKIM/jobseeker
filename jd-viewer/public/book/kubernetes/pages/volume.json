@@ -1,0 +1,129 @@
+{
+ "book": "kubernetes",
+ "id": "volume",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "파드의 볼륨",
+ "summary": "emptyDir 과 hostPath 의 수명.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 수명을 구분한다.",
+  "emptyDir 을 언제 쓰는지 안다.",
+  "hostPath 가 왜 함정인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 사이드카가 같은 디렉터리를 봤다. 그게 볼륨**이다. **여기서 수명을 제대로** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 수명",
+   "ascii": "   three lifetimes, three different volumes\n\n   container   the writable layer, gone on restart\n               nothing you care about lives here\n\n   pod         emptyDir, gone when the pod is deleted\n               survives a container restart, not a reschedule\n\n   cluster     PersistentVolume, outlives every pod\n               that is chapter 8.2",
+   "note": "**세 번째는 8.2절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨테이너 계층은 매번 사라진다",
+   "md": "**「도커」 에서 본 쓰기 가능 계층**이다.\n\n> **컨테이너가 재시작하면 새로** 만들어진다.\n> **4.7절에서 `restartCount` 가 올라갈 때마다** 그렇다.\n> **로그를 파일로 쓰면 재시작에 다** 날린다.\n\n**`emptyDir` 은 파드 수명**이다.\n\n> **파드가 노드에 자리 잡을 때 빈 디렉터리를** 만든다.\n> **컨테이너들이 같이** 본다.\n> **컨테이너가 죽었다 살아나도** 남는다.\n> **파드가 지워지면 같이** 지워진다.\n\n**쓰는 자리 넷**\n\n| 쓰임 | 예 |\n|---|---|\n| 컨테이너 간 공유 | 4.3절 사이드카 |\n| 초기화 산출물 | 4.4절 init 컨테이너 |\n| 스크래치 | 정렬·압축 임시 파일 |\n| 캐시 | 다시 만들 수 있는 것 |\n\n> **공통점은 잃어도 되는** 것이다.\n\n**메모리에 올릴 수도** 있다.\n\n```yaml\nvolumes:\n  - name: cache\n    emptyDir:\n      medium: Memory\n      sizeLimit: 256Mi\n```\n\n> **tmpfs 다** — **7.2절의 시크릿과 같은** 방식이다.\n> **빠르지만 그 노드의 메모리를** 먹는다.\n> **컨테이너 메모리 상한에 잡힌다** — **4.6절의 OOMKilled 가** 난다."
+  },
+  {
+   "type": "figure",
+   "caption": "hostPath 가 함정인 이유",
+   "ascii": "   why hostPath is a trap\n\n   the pod lands on node a and writes to /data\n   the pod is rescheduled to node b\n   /data on node b is empty, or worse, holds another apps files\n\n   and the path is the nodes real filesystem\n   mounting /var/run/docker.sock hands the container the node",
+   "note": "**노드를 통째로 넘겨줄 수도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "hostPath 는 두 가지가 위험하다",
+   "md": "**첫째, 노드에 묶인다**\n\n> **파드가 다른 노드로 가면 데이터가** 없다.\n> **5.6절의 데몬셋처럼 노드마다 하나씩 도는 것에만** 맞는다.\n> **일반 앱의 데이터 저장소로 쓰면 언젠가** 잃는다.\n\n**둘째, 노드 파일시스템**이다\n\n> **`/var/run/docker.sock` 을 붙이면 컨테이너가 노드의 모든 컨테이너를** 다룬다.\n> **`/etc` 를 쓰기로 붙이면 노드 설정을** 바꾼다.\n> **그래서 정책으로 막는 클러스터가** 많다.\n\n**정당한 쓰임도** 있다.\n\n| 쓰임 | 왜 |\n|---|---|\n| 로그 수집 데몬셋 | 노드의 `/var/log` 를 읽어야 한다 |\n| 노드 지표 수집 | `/proc`·`/sys` 를 읽어야 한다 |\n| CSI·CNI 플러그인 | 노드에 파일을 놓아야 한다 |\n\n> **전부 노드가 주인공인** 일이다.\n\n**`type` 을 적으면 안전해**진다.\n\n> **`DirectoryOrCreate`·`Directory`·`File`·`Socket`** 등이다.\n> **`Directory` 인데 없으면 파드가 안** 뜬다.\n> **오타로 빈 디렉터리가 생기는 사고를** 막는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 컨테이너 계층은 재시작에 사라진다 ---\n\n$ cat layer.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: layer\nspec:\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"echo \\\"$(date +%T) 시작\\\" >> /data/log.txt; \\\n         cat /data/log.txt; sleep 25; exit 1\"]\n\n$ kubectl apply -f layer.yaml > /dev/null && sleep 8\n$ kubectl logs layer\n\nmkdir: can't create directory '/data': Permission denied\n\n#   경로가 없다\n\n$ kubectl delete pod layer --now > /dev/null\n$ sed 's|/data/log.txt|/tmp/log.txt|g' layer.yaml | kubectl apply -f - \\\n    > /dev/null\n$ sleep 8 && kubectl logs layer\n\n22:44:07 시작\n\n$ sleep 40 && kubectl logs layer\n\n22:44:39 시작\n\n$ kubectl get pod layer --no-headers\n\nlayer   1/1   Running   1 (12s ago)   45s\n\n#   재시작 1회다\n\n#   줄이 하나뿐이다\n\n#   앞의 것은 사라졌다\n\n$ kubectl delete pod layer --now > /dev/null\n\n# --- emptyDir 은 재시작을 넘긴다 ---\n\n$ cat empty.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: empty\nspec:\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"echo \\\"$(date +%T) 시작\\\" >> /data/log.txt; \\\n         cat /data/log.txt; sleep 25; exit 1\"]\n      volumeMounts:\n        - { name: d, mountPath: /data }\n  volumes:\n    - name: d\n      emptyDir: {}\n\n$ kubectl apply -f empty.yaml > /dev/null && sleep 8\n$ kubectl logs empty\n\n22:45:31 시작\n\n$ sleep 45 && kubectl logs empty\n\n22:45:31 시작\n22:46:04 시작\n\n$ sleep 45 && kubectl logs empty\n\n22:45:31 시작\n22:46:04 시작\n22:46:37 시작\n\n#   쌓인다\n\n#   컨테이너가 죽어도 볼륨은 남는다\n\n$ kubectl get pod empty --no-headers\n\nempty   1/1   Running   2 (14s ago)   1m45s\n\n# --- 파드를 지우면 사라진다 ---\n\n$ kubectl delete pod empty --now > /dev/null\n$ kubectl apply -f empty.yaml > /dev/null && sleep 8\n$ kubectl logs empty\n\n22:47:22 시작\n\n#   한 줄이다\n\n#   emptyDir 은 파드 수명이다\n\n$ kubectl delete pod empty --now > /dev/null\n\n# --- 어디에 있나 ---\n\n$ kubectl apply -f empty.yaml > /dev/null && sleep 8\n$ UID=$(kubectl get pod empty -o jsonpath='{.metadata.uid}')\n$ docker exec kind-worker ls /var/lib/kubelet/pods/$UID/volumes/\\\nkubernetes.io~empty-dir/\n\nd\n\n$ docker exec kind-worker cat /var/lib/kubelet/pods/$UID/volumes/\\\nkubernetes.io~empty-dir/d/log.txt\n\n22:48:11 시작\n\n#   노드 디스크에 있다\n\n#   그래서 노드를 옮기면 없다\n\n$ kubectl delete pod empty --now > /dev/null\n\n# --- 메모리 emptyDir ---\n\n$ cat mem.yaml\n\n      command: [\"sh\", \"-c\", \"df -h /data | tail -1; \\\n        dd if=/dev/zero of=/data/big bs=1M count=300 2>&1 | tail -1\"]\n      resources:\n        limits: { memory: 200Mi }\n      volumeMounts:\n        - { name: d, mountPath: /data }\n  volumes:\n    - name: d\n      emptyDir: { medium: Memory, sizeLimit: 256Mi }\n\n$ kubectl apply -f mem.yaml > /dev/null && sleep 10\n$ kubectl get pod mem --no-headers\n\nmem   0/1   OOMKilled   0   10s\n\n$ kubectl logs mem --previous 2>/dev/null || kubectl logs mem\n\ntmpfs                   256.0M         0    256.0M   0% /data\n\n#   tmpfs 다\n\n#   200Mi 상한인데 300M 을 썼다\n\n#   4.6절의 OOMKilled 다\n\n#   tmpfs 는 컨테이너 메모리에 잡힌다\n\n$ kubectl delete pod mem --now > /dev/null\n\n# --- hostPath 는 노드에 묶인다 ---\n\n$ cat host.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: hostw\nspec:\n  nodeName: kind-worker\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"echo 'worker 가 썼다' > /h/who.txt; cat /h/who.txt\"]\n      volumeMounts:\n        - { name: h, mountPath: /h }\n  volumes:\n    - name: h\n      hostPath: { path: /tmp/demo, type: DirectoryOrCreate }\n\n$ kubectl apply -f host.yaml > /dev/null && sleep 6\n$ kubectl logs hostw\n\nworker 가 썼다\n\n$ sed 's/kind-worker/kind-worker2/; s/name: hostw/name: hostw2/; \\\n       s|echo .*> /h/who.txt; ||' host.yaml | kubectl apply -f - > /dev/null\n$ sleep 6 && kubectl logs hostw2\n\ncat: can't open '/h/who.txt': No such file or directory\n\n#   다른 노드에는 없다\n\n#   같은 경로인데 비었다\n\n$ docker exec kind-worker cat /tmp/demo/who.txt\n\nworker 가 썼다\n\n$ docker exec kind-worker2 ls /tmp/demo\n\n(빈 줄)\n\n#   노드마다 따로다\n\n$ kubectl delete pod hostw hostw2 --now > /dev/null\n\n# --- type 이 오타를 막는다 ---\n\n$ sed 's|type: DirectoryOrCreate|type: Directory|; \\\n       s|/tmp/demo|/tmp/없는경로|; s/name: hostw/name: strict/' host.yaml \\\n  | kubectl apply -f - > /dev/null\n\n$ sleep 8 && kubectl get pod strict --no-headers\n\nstrict   0/1   ContainerCreating   0   8s\n\n$ kubectl describe pod strict | grep -A1 Warning | tail -1\n\n  Warning  FailedMount  2s  kubelet  MountVolume.SetUp failed for volume\n    \"h\" : hostPath type check failed: /tmp/없는경로 is not a directory\n\n#   type 이 없으면 조용히 만들어졌을 것이다\n\n#   빈 디렉터리를 진짜 데이터로 착각한다\n\n$ kubectl delete pod strict --now > /dev/null\n\n# --- 노드를 넘겨주는 마운트 ---\n\n$ kubectl run danger --image=docker:27-cli --restart=Never \\\n    --overrides='{\"spec\":{\"nodeName\":\"kind-worker\",\n      \"containers\":[{\"name\":\"danger\",\"image\":\"docker:27-cli\",\n      \"command\":[\"sh\",\"-c\",\"docker ps --format \\\"{{.Names}}\\\" | head -3\"],\n      \"volumeMounts\":[{\"name\":\"s\",\"mountPath\":\"/var/run/docker.sock\"}]}],\n      \"volumes\":[{\"name\":\"s\",\"hostPath\":\n        {\"path\":\"/var/run/docker.sock\",\"type\":\"Socket\"}}]}}' 2>&1 | tail -1\n\nError from server (Forbidden): pods \"danger\" is forbidden: violates\n  PodSecurity \"baseline:latest\": hostPath volumes (volume \"s\")\n\n#   막혔다\n\n#   막지 않는 클러스터가 아직 많다\n\n#   붙으면 노드의 모든 컨테이너를 다룬다\n\n# --- 데몬셋의 정당한 hostPath ---\n\n$ kubectl get daemonset kindnet -n kube-system -o jsonpath=\\\n'{range .spec.template.spec.volumes[*]}{.name} {.hostPath.path}{\"\\n\"}{end}'\n\ncni-cfg /etc/cni/net.d\nxtables-lock /run/xtables.lock\nlib-modules /lib/modules\n\n#   노드가 주인공인 일이다\n\n#   5.6절에서 본 그 데몬셋이다\n\n# --- 다음 절에서 ---\n\n#   노드를 옮겨도 따라오는 저장소를 만든다",
+   "note": "**컨테이너 계층은 재시작에 줄이 하나로** 돌아가고, `emptyDir` 은 세 줄로 쌓인다.\n\n**파드를 지우고 다시 만들면 다시 한 줄**이다 — 파드 수명이다.\n\n**메모리 `emptyDir` 에 300M 을 쓰자 200Mi 상한에서 `OOMKilled`** 다.\n\n**`hostPath` 는 `kind-worker` 에만 있고 `kind-worker2` 에는** 없다.\n\n**`type: Directory` 는 없는 경로에서 `hostPath type check failed`** 로 막는다."
+  }
+ ],
+ "recap": [
+  "**수명이 컨테이너·파드·클러스터** 셋이다.",
+  "**컨테이너 계층은 재시작마다** 사라진다.",
+  "**`emptyDir` 은 파드 수명**이다.",
+  "**노드 디스크에** 있다.",
+  "**`medium: Memory` 는 tmpfs 이고 컨테이너 메모리에** 잡힌다.",
+  "**`hostPath` 는 노드에** 묶인다.",
+  "**노드를 옮기면 데이터가** 없다.",
+  "**노드 파일시스템이라 위험한 마운트가** 가능하다.",
+  "**`type` 을 적어 오타를** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "볼륨 없이 재시작시킨다.",
+   "done_when": "파일이 사라지는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`emptyDir` 로 같은 걸 한다.",
+   "done_when": "재시작을 넘기는 걸 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "메모리 `emptyDir` 을 넘친다.",
+   "done_when": "`OOMKilled` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 노드에 `hostPath` 파드를 띄운다.",
+   "done_when": "데이터가 따로인 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`emptyDir` 의 수명은?",
+   "a": "파드다. 컨테이너 재시작은 넘기고 파드 삭제로 사라진다."
+  },
+  {
+   "q": "`medium: Memory` 의 대가는?",
+   "a": "tmpfs 사용량이 컨테이너 메모리 상한에 잡혀 OOMKilled 가 날 수 있다."
+  },
+  {
+   "q": "`hostPath` 의 첫째 문제는?",
+   "a": "노드에 묶여 재스케줄되면 데이터가 없다."
+  },
+  {
+   "q": "`hostPath` 의 둘째 문제는?",
+   "a": "노드 파일시스템이라 소켓이나 설정을 통해 노드를 장악할 수 있다."
+  },
+  {
+   "q": "`type` 을 적는 이유는?",
+   "a": "경로가 없을 때 조용히 만들어지는 대신 실패하게 하려는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "emptyDir",
+   "def": "파드가 노드에 배치될 때 만들어져 파드가 지워질 때 사라지는 빈 볼륨."
+  },
+  {
+   "term": "hostPath",
+   "def": "노드의 실제 경로를 그대로 붙이는 볼륨. 노드가 주인공인 일에만 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Volumes",
+   "url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

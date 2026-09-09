@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "config-reload",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "설정을 바꿔도 파드는 안 바뀐다",
+ "summary": "가장 자주 걸리는 함정.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 단계가 따로 논다는 걸 안다.",
+  "파일이 언제 바뀌는지 안다.",
+  "해시로 롤아웃을 건다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`kubectl apply` 는 성공했는데 아무 일도 안** 일어난다. **가장 많이 묻는 것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "따로 노는 세 단계",
+   "ascii": "   three things must all happen, and only the first is automatic\n\n   1  the ConfigMap object changes        instant, apply does it\n   2  the file inside the pod changes     up to about a minute\n   3  the app notices and rereads it      never, unless you wrote it\n\n   most reports of it does not work stop at step 3\n   and most of the rest used env vars, which never even reach step 2",
+   "note": "**3단은 저절로 안** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "성공했다는 말이 오해를 만든다",
+   "md": "**`configmap/app configured` 는 오브젝트가 바뀌었다는** 뜻이다.\n\n> **2.4절의 제어 루프가 여기엔** 없다.\n> **컨피그맵을 지켜보는 컨트롤러가** 없다.\n> **`kubelet` 이 파일만 갱신할** 뿐이다.\n\n**2단이 즉시가** 아니다.\n\n> **`kubelet` 이 주기적으로 동기화**한다(기본 1분).\n> **캐시 만료까지 더하면 최대 2분쯤** 걸린다.\n> **그래서 바로 확인하면 안 바뀐 것처럼** 보인다.\n\n**심볼릭 링크가 원자성을** 만든다.\n\n> **7.1절에서 본 `..data` 다.**\n> **새 타임스탬프 디렉터리를 통째로 만들고 링크를 한 번에** 바꾼다.\n> **반쯤 쓰인 파일을 읽는 일이** 없다.\n\n**갱신이 아예 안 되는 셋**\n\n| | 이유 |\n|---|---|\n| 환경변수 | 7.3절. 시작할 때 얼어붙는다 |\n| `subPath` | 진짜 파일이라 링크 교체가 안 닿는다 |\n| `immutable` | 애초에 못 바꾼다 |\n\n> **둘째가 특히 함정**이다.\n> **한 파일만 깔끔하게 넣으려다 갱신을** 잃는다."
+  },
+  {
+   "type": "figure",
+   "caption": "다들 쓰는 해법",
+   "ascii": "   the fix everyone converges on\n\n   put a hash of the config into the pod template\n\n     annotations:\n       checksum/config: <sha256 of the configmap>\n\n   config changes -> hash changes -> template changes -> rollout\n\n   the same trick as versioned names, spelled differently",
+   "note": "**버전 이름과 같은 수법**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "골라야 한다",
+   "md": "**세 갈래**다.\n\n| 방식 | 언제 |\n|---|---|\n| 해시 애너테이션 → 롤아웃 | 대부분. 명시적이고 되돌릴 수 있다 |\n| 버전 이름(`app-v2`) | `immutable` 과 함께. 7.1절 |\n| 앱이 다시 읽기 | 재시작이 비싼 경우만 |\n\n> **첫째가 기본**이다.\n> **5.3절의 롤아웃과 롤백을 그대로** 얻는다.\n> **설정 변경도 배포로 남는다** — **`rollout history` 에** 뜬다.\n\n**셋째를 고르면 앱이 일을** 한다.\n\n> **스프링 클라우드 쿠버네티스나 액추에이터 `/refresh`** 를 쓴다.\n> **`@RefreshScope` 빈만 다시** 만든다.\n> **⑦ 에서 본 것처럼 빈 하나를 다시 만드는 건 생각보다 넓게** 번진다.\n> **커넥션 풀이나 캐시는 그렇게 못** 바꾼다.\n\n**`kubectl rollout restart` 가 손쉬운 도구**다.\n\n> **템플릿에 재시작 시각 애너테이션을** 넣는다.\n> **해시와 같은 원리**다.\n> **자동은 아니고 사람이 치는** 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 준비 ---\n\n$ kubectl create configmap app --from-literal=MSG=hello > /dev/null\n\n$ cat dep.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 1\n  selector:\n    matchLabels: { app: web }\n  template:\n    metadata:\n      labels: { app: web }\n    spec:\n      containers:\n        - name: t\n          image: busybox:1.36\n          command: [\"sh\", \"-c\", \"sleep 3600\"]\n          env:\n            - name: MSG\n              valueFrom:\n                configMapKeyRef: { name: app, key: MSG }\n          volumeMounts:\n            - { name: c, mountPath: /config }\n            - name: c\n              mountPath: /one/MSG\n              subPath: MSG\n      volumes:\n        - name: c\n          configMap: { name: app }\n\n$ kubectl apply -f dep.yaml > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ POD=$(kubectl get pod -l app=web -o name | head -1)\n\n$ kubectl exec $POD -- sh -c \\\n    'echo \"env:     $MSG\"; echo \"volume:  $(cat /config/MSG)\"; \\\n     echo \"subPath: $(cat /one/MSG)\"'\n\nenv:     hello\nvolume:  hello\nsubPath: hello\n\n#   셋 다 hello 다\n\n# --- 바꾼다 ---\n\n$ kubectl patch configmap app -p '{\"data\":{\"MSG\":\"goodbye\"}}'\n\nconfigmap/app patched\n\n$ kubectl get configmap app -o jsonpath='{.data.MSG}{\"\\n\"}'\n\ngoodbye\n\n#   1단은 즉시다\n\n$ kubectl exec $POD -- sh -c \\\n    'echo \"env:     $MSG\"; echo \"volume:  $(cat /config/MSG)\"; \\\n     echo \"subPath: $(cat /one/MSG)\"'\n\nenv:     hello\nvolume:  hello\nsubPath: hello\n\n#   바로는 아무것도 안 바뀐다\n\n#   여기서 대부분 안 된다고 결론 낸다\n\n$ date +%T && sleep 90 && date +%T\n\n22:31:04\n22:32:34\n\n$ kubectl exec $POD -- sh -c \\\n    'echo \"env:     $MSG\"; echo \"volume:  $(cat /config/MSG)\"; \\\n     echo \"subPath: $(cat /one/MSG)\"'\n\nenv:     hello\nvolume:  goodbye\nsubPath: hello\n\n#   볼륨만 바뀌었다\n\n#   90초 걸렸다\n\n#   env 와 subPath 는 영영 그대로다\n\n# --- 링크가 어떻게 바뀌었나 ---\n\n$ kubectl exec $POD -- ls -la /config\n\ntotal 12\ndrwxrwxrwx    3 root  root   102 Sep  9 22:32 .\ndrwxr-xr-x    1 root  root    60 Sep  9 22:29 ..\ndrwxr-xr-x    2 root  root    60 Sep  9 22:32 ..2026_09_09_22_32_18.318871053\nlrwxrwxrwx    1 root  root    31 Sep  9 22:32 ..data -> ..2026_09_09_22_32_18...\nlrwxrwxrwx    1 root  root    10 Sep  9 22:29 MSG -> ..data/MSG\n\n#   새 디렉터리를 만들고\n\n#   ..data 링크를 한 번에 갈아끼웠다\n\n#   MSG 링크 자체는 22:29 그대로다\n\n#   원자적이라 반쪽 파일을 읽을 일이 없다\n\n$ kubectl exec $POD -- stat -c '%n %i' /one/MSG\n\n/one/MSG 2492304\n\n#   subPath 는 링크가 아니라 실파일이다\n\n#   교체가 안 닿는다\n\n# --- 해시로 롤아웃을 건다 ---\n\n$ cat rollout.sh\n\n#!/bin/bash\nH=$(kubectl get configmap app -o jsonpath='{.data}' | shasum -a 256 \\\n    | cut -c1-16)\nkubectl patch deployment web -p \\\n  \"{\\\"spec\\\":{\\\"template\\\":{\\\"metadata\\\":{\\\"annotations\\\":\n     {\\\"checksum/config\\\":\\\"$H\\\"}}}}}\"\n\n$ ./rollout.sh\n\ndeployment.apps/web patched\n\n$ kubectl rollout status deployment/web\n\nWaiting for deployment \"web\" rollout to finish: 1 old replicas are\n  pending termination...\ndeployment \"web\" successfully rolled out\n\n#   템플릿이 바뀌었으니 롤아웃이다\n\n#   5.2절 그대로다\n\n$ POD=$(kubectl get pod -l app=web -o name | head -1)\n$ kubectl exec $POD -- sh -c \\\n    'echo \"env:     $MSG\"; echo \"subPath: $(cat /one/MSG)\"'\n\nenv:     goodbye\nsubPath: goodbye\n\n#   셋 다 따라왔다\n\n$ kubectl rollout history deployment/web --revision=2 | grep -A2 Annotations\n\nPod Template:\n  Labels:       app=web\n  Annotations:  checksum/config: 8f2a1c0d9b4e7a53\n\n#   설정 변경이 배포 이력에 남았다\n\n#   롤백도 된다\n\n# --- 같은 설정이면 롤아웃이 없다 ---\n\n$ ./rollout.sh && kubectl rollout status deployment/web\n\ndeployment.apps/web patched (no change)\ndeployment \"web\" successfully rolled out\n\n$ kubectl get replicaset -l app=web --no-headers | wc -l\n\n       2\n\n#   해시가 같으면 아무 일도 없다\n\n#   멱등이다\n\n# --- rollout restart 도 같은 원리다 ---\n\n$ kubectl rollout restart deployment/web > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ kubectl get deployment web -o jsonpath=\\\n'{.spec.template.metadata.annotations}{\"\\n\"}'\n\n{\"checksum/config\":\"8f2a1c0d9b4e7a53\",\n\"kubectl.kubernetes.io/restartedAt\":\"2026-09-09T22:35:41+09:00\"}\n\n#   시각 애너테이션을 하나 더 넣었을 뿐이다\n\n#   템플릿을 바꾸는 게 전부다\n\n# --- immutable 이면 ---\n\n$ kubectl get configmap app -o yaml | \\\n    python3 -c \"\nimport sys, yaml\nd = yaml.safe_load(sys.stdin)\nd['immutable'] = True\nd.pop('metadata', None) or None\nprint('(생략)')\"\n\n(생략)\n\n$ kubectl create configmap app-v2 --from-literal=MSG=third \\\n    --dry-run=client -o json | \\\n    python3 -c \"import sys,json; d=json.load(sys.stdin); \\\n      d['immutable']=True; print(json.dumps(d))\" | kubectl apply -f - \\\n    > /dev/null\n\n$ kubectl set env deployment/web --from=configmap/app-v2 --keys=MSG \\\n    > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ kubectl exec $(kubectl get pod -l app=web -o name | head -1) -- \\\n    printenv MSG\n\nthird\n\n#   이름을 바꿔 가리키니 롤아웃이 걸렸다\n\n#   7.1절의 버전 이름 방식이다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web && kubectl delete configmap app app-v2\n\ndeployment.apps \"web\" deleted\nconfigmap \"app\" deleted\nconfigmap \"app-v2\" deleted\n\n# --- 다음 절에서 ---\n\n#   한 클러스터를 나눠 쓴다",
+   "note": "**컨피그맵은 즉시 `goodbye` 인데 파드 안은 90초 뒤에야, 그것도 볼륨만** 바뀌었다.\n\n**`env` 와 `subPath` 는 영영** 그대로다.\n\n**`..data` 링크만 갈아끼워 갱신이 원자적**이다 — `MSG` 링크의 시각은 그대로다.\n\n**해시 애너테이션을 넣으면 롤아웃이 걸리고 `rollout history` 에** 남는다.\n\n**같은 해시면 `(no change)` 로 아무 일도 안** 일어난다."
+  }
+ ],
+ "recap": [
+  "**세 단계가 따로** 논다.",
+  "**`configured` 는 오브젝트가 바뀌었다는 말** 뿐이다.",
+  "**파일 갱신은 1분 안팎** 걸린다.",
+  "**`..data` 링크 교체라 원자적**이다.",
+  "**환경변수·`subPath`·`immutable` 은 아예 갱신이** 없다.",
+  "**앱이 다시 읽는 건 저절로 안** 된다.",
+  "**해시 애너테이션이 기본** 해법이다.",
+  "**설정 변경이 배포 이력에** 남는다.",
+  "**`rollout restart` 도 같은 원리**다."
+ ],
+ "drills": [
+  {
+   "task": "env·볼륨·`subPath` 를 한 파드에 다 넣는다.",
+   "done_when": "갱신 차이를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "갱신까지 걸린 시간을 잰다.",
+   "done_when": "1분 안팎을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "해시 애너테이션 스크립트를 만든다.",
+   "done_when": "롤아웃이 걸리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "같은 설정으로 다시 돌린다.",
+   "done_when": "롤아웃이 안 걸리는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`apply` 후 파드가 안 바뀌는 이유는?",
+   "a": "컨피그맵을 지켜보고 파드를 다시 만드는 컨트롤러가 없어서다."
+  },
+  {
+   "q": "파일 갱신에 걸리는 시간은?",
+   "a": "kubelet 동기화 주기 탓에 1분 안팎, 캐시까지 더하면 최대 2분쯤이다."
+  },
+  {
+   "q": "갱신이 아예 안 되는 셋은?",
+   "a": "환경변수, `subPath` 마운트, `immutable` 컨피그맵이다."
+  },
+  {
+   "q": "갱신이 원자적인 이유는?",
+   "a": "새 디렉터리를 만들고 `..data` 심볼릭 링크를 한 번에 바꾸기 때문이다."
+  },
+  {
+   "q": "가장 흔한 해법은?",
+   "a": "설정 해시를 파드 템플릿 애너테이션에 넣어 롤아웃을 거는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "checksum 애너테이션",
+   "def": "설정 내용의 해시를 파드 템플릿에 넣어 설정이 바뀌면 롤아웃이 걸리게 하는 관용구."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — ConfigMaps",
+   "url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Deployments",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "namespace",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "네임스페이스",
+ "summary": "한 클러스터를 나눠 쓰는 법.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "무엇이 나뉘고 무엇이 안 나뉘는지 안다.",
+  "쿼터와 리밋레인지를 안다.",
+  "삭제가 왜 안 끝나는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절에서 짧은 이름이 다른 네임스페이스에서는 `NXDOMAIN` 이라고** 했다. **그 경계가 여기**다."
+  },
+  {
+   "type": "figure",
+   "caption": "나뉘는 것과 안 나뉘는 것",
+   "ascii": "   what a namespace does and does not split\n\n   split by namespace        shared across the cluster\n     pods, services            nodes\n     configmaps, secrets       persistent volumes\n     deployments, jobs         storage classes\n     roles, quotas             cluster roles, crds\n                               the node network\n\n   so it is an accounting boundary, not a security wall\n   pods in different namespaces still reach each other by default",
+   "note": "**보안 벽이 아니라 회계 경계**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "격리라고 부르면 위험하다",
+   "md": "**다른 네임스페이스 파드끼리 그냥** 통한다.\n\n> **주소만 알면** 닿는다.\n> **막으려면 네트워크 정책이** 필요하다 — **6.7절**.\n> **네임스페이스를 나눴으니 안전하다는 말은** 틀렸다.\n\n**나뉘는 건 이름과 권한과 몫**이다.\n\n> **`web` 이라는 서비스가 네임스페이스마다 하나씩 있을 수** 있다.\n> **RBAC 을 네임스페이스 단위로** 준다 — **7.2절의 1겹**.\n> **쿼터로 자원 몫을** 나눈다.\n\n**기본 넷이 이미** 있다.\n\n| 이름 | 무엇 |\n|---|---|\n| `default` | 안 적으면 여기 |\n| `kube-system` | 클러스터 부품 |\n| `kube-public` | 인증 없이 읽는 것 |\n| `kube-node-lease` | 노드 하트비트 |\n\n> **`kube-system` 에 CoreDNS·kube-proxy 가** 있다.\n> **2.2절에서 본 것들**이다.\n> **여기를 건드리면 클러스터가** 아프다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디서 부르느냐",
+   "ascii": "   the name you use depends on where you are\n\n   same namespace         web\n   another namespace      web.staging\n   fully qualified        web.staging.svc.cluster.local\n\n   the short form works only because of the search list in 6.5\n   so a short name silently means a different pod in another namespace",
+   "note": "**짧은 이름은 조용히 다른 파드를** 가리킬 수 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쿼터와 리밋레인지는 짝이다",
+   "md": "**`ResourceQuota` 는 네임스페이스 합계에 상한을** 건다.\n\n```yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: team\nspec:\n  hard:\n    requests.cpu: \"2\"\n    requests.memory: 4Gi\n    limits.cpu: \"4\"\n    pods: \"20\"\n    persistentvolumeclaims: \"5\"\n```\n\n> **넘으면 생성이** 거부된다.\n> **파드가 `Pending` 이 아니라 아예 안** 만들어진다 — **4.6절과 다르다.**\n> **레플리카셋이 계속 재시도하며 이벤트를** 쌓는다.\n\n**쿼터가 있으면 요청을 반드시 적어야** 한다.\n\n> **`requests.cpu` 쿼터가 있는데 파드에 `requests` 가 없으면** 거부다.\n> **그래서 `LimitRange` 로 기본값을** 준다.\n>\n> ```yaml\n> kind: LimitRange\n> spec:\n>   limits:\n>     - type: Container\n>       default: { cpu: 500m, memory: 512Mi }\n>       defaultRequest: { cpu: 100m, memory: 128Mi }\n> ```\n>\n> **둘은 거의 항상 같이** 쓴다.\n\n**삭제가 안 끝나면**\n\n> **안의 모든 오브젝트를 먼저** 지운다.\n> **`Terminating` 에서 멈추면 대개 파이널라이저**다.\n> **커스텀 리소스가 남아 있는 경우가** 많다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 기본 넷 ---\n\n$ kubectl get namespaces\n\nNAME                 STATUS   AGE\ndefault              Active   5h\nkube-node-lease      Active   5h\nkube-public          Active   5h\nkube-system          Active   5h\nlocal-path-storage   Active   5h\n\n#   kind 가 하나 더 만들었다\n\n$ kubectl get pods -n kube-system --no-headers | awk '{print $1}' | head -6\n\ncoredns-7db6d8ff4d-9x4kq\ncoredns-7db6d8ff4d-tj2wn\netcd-kind-control-plane\nkindnet-p8w4t\nkube-apiserver-kind-control-plane\nkube-controller-manager-kind-control-plane\n\n#   2.2절에서 본 것들이다\n\n# --- 만든다 ---\n\n$ kubectl create namespace staging && kubectl create namespace prod\n\nnamespace/staging created\nnamespace/prod created\n\n$ kubectl create deployment web --image=nginx:1.27 -n staging > /dev/null\n$ kubectl expose deployment web --port=80 -n staging > /dev/null\n$ kubectl create deployment web --image=nginx:1.27 -n prod > /dev/null\n$ kubectl expose deployment web --port=80 -n prod > /dev/null\n\n$ kubectl get service web -A --no-headers\n\nprod      web   ClusterIP   10.96.201.14   <none>   80/TCP   4s\nstaging   web   ClusterIP   10.96.88.230   <none>   80/TCP   7s\n\n#   같은 이름이 둘이다\n\n#   이름 충돌이 없다\n\n# --- 짧은 이름이 어디를 가리키나 ---\n\n$ kubectl run t -n staging --rm -it --image=busybox:1.36 --restart=Never -- \\\n    sh -c 'nslookup web 2>&1 | grep Address | tail -1; \\\n           nslookup web.prod 2>&1 | grep Address | tail -1'\n\nAddress 1: 10.96.88.230 web.staging.svc.cluster.local\nAddress 1: 10.96.201.14 web.prod.svc.cluster.local\npod \"t\" deleted\n\n#   짧은 이름은 자기 네임스페이스다\n\n#   6.5절의 search 목록 때문이다\n\n#   설정을 복사하면 조용히 다른 곳을 부른다\n\n# --- 격리가 아니다 ---\n\n$ kubectl run t -n staging --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=3 web.prod 2>&1 | head -1\n\n<!DOCTYPE html>\npod \"t\" deleted\n\n#   staging 에서 prod 로 그냥 닿는다\n\n#   막으려면 네트워크 정책이다\n\n# --- 쿼터 ---\n\n$ cat quota.yaml\n\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: team\n  namespace: staging\nspec:\n  hard:\n    requests.cpu: \"1\"\n    requests.memory: 1Gi\n    pods: \"3\"\n\n$ kubectl apply -f quota.yaml > /dev/null\n$ kubectl get resourcequota team -n staging\n\nNAME   AGE   REQUEST\nteam   3s    pods: 1/3, requests.cpu: 0/1, requests.memory: 0/1Gi\n\n#   기존 파드는 요청이 0이다\n\n$ kubectl scale deployment web -n staging --replicas=3 > /dev/null\n$ sleep 5 && kubectl get replicaset -n staging --no-headers\n\nweb-6d8f4b9c7   3   1   1   3m\n\n#   DESIRED 3, CURRENT 1 이다\n\n$ kubectl get events -n staging --field-selector reason=FailedCreate \\\n    -o jsonpath='{.items[-1].message}{\"\\n\"}'\n\npods \"web-6d8f4b9c7-\" is forbidden: failed quota: team: must specify\n  requests.cpu,requests.memory\n\n#   Pending 이 아니다\n\n#   아예 안 만들어진다\n\n#   4.6절과 다른 실패다\n\n#   쿼터가 있으면 요청을 적어야 한다\n\n# --- 리밋레인지로 기본값을 준다 ---\n\n$ cat limits.yaml\n\napiVersion: v1\nkind: LimitRange\nmetadata:\n  name: defaults\n  namespace: staging\nspec:\n  limits:\n    - type: Container\n      default: { cpu: 200m, memory: 256Mi }\n      defaultRequest: { cpu: 100m, memory: 128Mi }\n\n$ kubectl apply -f limits.yaml > /dev/null\n$ kubectl rollout restart deployment/web -n staging > /dev/null\n$ sleep 15 && kubectl get pods -n staging --no-headers | wc -l\n\n       3\n\n$ kubectl get resourcequota team -n staging -o jsonpath=\\\n'{.status.used}{\"\\n\"}'\n\n{\"pods\":\"3\",\"requests.cpu\":\"300m\",\"requests.memory\":\"384Mi\"}\n\n#   기본값이 자동으로 들어갔다\n\n#   쿼터와 리밋레인지는 짝이다\n\n$ kubectl scale deployment web -n staging --replicas=4 > /dev/null\n$ sleep 5 && kubectl get events -n staging \\\n    --field-selector reason=FailedCreate \\\n    -o jsonpath='{.items[-1].message}{\"\\n\"}'\n\npods \"web-5c9b7f8d4-\" is forbidden: exceeded quota: team, requested:\n  pods=1, used: pods=3, limited: pods=3\n\n#   이번엔 개수 상한이다\n\n# --- 컨텍스트를 바꿔 둔다 ---\n\n$ kubectl config set-context --current --namespace=staging\n\nContext \"kind-kind\" modified.\n\n$ kubectl get pods --no-headers | wc -l\n\n       3\n\n#   -n 을 안 써도 staging 이다\n\n$ kubectl config set-context --current --namespace=default > /dev/null\n\n# --- 네임스페이스에 없는 것 ---\n\n$ kubectl api-resources --namespaced=false --no-headers \\\n    | awk '{print $1}' | head -6\n\ncomponentstatuses\nnamespaces\nnodes\npersistentvolumes\nmutatingwebhookconfigurations\nvalidatingwebhookconfigurations\n\n#   노드와 PV 는 클러스터 것이다\n\n#   8.2절에서 다시 만난다\n\n# --- 지운다 ---\n\n$ kubectl delete namespace staging prod\n\nnamespace \"staging\" deleted\nnamespace \"prod\" deleted\n\n$ kubectl get namespaces --no-headers | grep -E 'staging|prod' | wc -l\n\n       0\n\n#   안의 것이 다 같이 지워졌다\n\n#   위험한 명령이다\n\n#   Terminating 에서 멈추면 파이널라이저다\n\n$ kubectl get namespace default -o jsonpath='{.spec.finalizers}{\"\\n\"}'\n\n[\"kubernetes\"]\n\n#   이게 안 풀리면 안 지워진다\n\n# --- 다음 장에서 ---\n\n#   파드가 죽어도 남는 데이터를 다룬다",
+   "note": "**같은 `web` 서비스가 두 네임스페이스에** 있고, 짧은 이름은 자기 네임스페이스를 가리킨다.\n\n**staging 에서 prod 로 그냥** 닿는다 — 격리가 아니다.\n\n**쿼터가 있는데 요청을 안 적으면 `Pending` 이 아니라 `FailedCreate`** 다.\n\n**`LimitRange` 를 넣자 `requests.cpu: 300m` 이 자동으로** 채워졌다.\n\n**`--namespaced=false` 로 노드와 PV 가 클러스터 것임을** 확인했다."
+  }
+ ],
+ "recap": [
+  "**이름·권한·몫이** 나뉜다.",
+  "**노드·PV·클러스터롤은 안** 나뉜다.",
+  "**네트워크는 안 나뉜다** — 격리가 아니다.",
+  "**짧은 이름은 자기 네임스페이스**다.",
+  "**쿼터는 합계에 상한을** 건다.",
+  "**쿼터 초과는 `Pending` 이 아니라 생성** 거부다.",
+  "**쿼터가 있으면 요청을 적어야** 한다.",
+  "**`LimitRange` 가 기본값을** 준다.",
+  "**네임스페이스 삭제는 안의 것을 다** 지운다."
+ ],
+ "drills": [
+  {
+   "task": "같은 이름 서비스를 두 곳에 만든다.",
+   "done_when": "짧은 이름이 어디를 가리키는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다른 네임스페이스로 호출한다.",
+   "done_when": "닿는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쿼터만 걸고 스케일한다.",
+   "done_when": "`FailedCreate` 를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`LimitRange` 를 더한다.",
+   "done_when": "기본값이 채워지는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네임스페이스가 나누는 것은?",
+   "a": "이름, 권한(RBAC), 자원 몫(쿼터)이다."
+  },
+  {
+   "q": "나누지 못하는 것은?",
+   "a": "노드, PV, 클러스터 범위 오브젝트, 그리고 네트워크다."
+  },
+  {
+   "q": "다른 네임스페이스 서비스는 어떻게 부르나?",
+   "a": "`이름.네임스페이스` 로 부른다. 짧은 이름은 자기 쪽이다."
+  },
+  {
+   "q": "쿼터 초과의 실패 모양은?",
+   "a": "파드가 `Pending` 이 아니라 아예 생성 거부된다."
+  },
+  {
+   "q": "쿼터와 `LimitRange` 를 같이 쓰는 이유는?",
+   "a": "쿼터가 있으면 요청을 반드시 적어야 하는데 기본값을 줘야 해서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ResourceQuota",
+   "def": "네임스페이스 안 자원 합계에 상한을 거는 오브젝트."
+  },
+  {
+   "term": "LimitRange",
+   "def": "컨테이너의 요청·상한 기본값과 허용 범위를 정하는 오브젝트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Namespaces",
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Resource Quotas",
+   "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

@@ -396,7 +396,7 @@
           "title": "설정을 바꿔도 파드는 안 바뀐다",
           "summary": "가장 자주 걸리는 함정.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -404,7 +404,7 @@
           "title": "네임스페이스",
           "summary": "한 클러스터를 나눠 쓰는 법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -419,7 +419,7 @@
           "title": "파드의 볼륨",
           "summary": "emptyDir 과 hostPath 의 수명.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
