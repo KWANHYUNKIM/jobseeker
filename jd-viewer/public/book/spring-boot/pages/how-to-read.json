@@ -1,0 +1,120 @@
+{
+ "book": "spring-boot",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 로그 아니면 응답으로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 재료를 안다.",
+  "앞 책과의 자리를 안다.",
+  "확인 방법을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**②는 컨테이너가 무엇을 대신하는지** 봤다. **여기서는 부트가 무엇을 대신하는지를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "절을 닫는 두 가지",
+   "ascii": "   two kinds of evidence this book ends a section with\n\n   the startup log   what boot did instead of you, printed as it happens\n   an endpoint reply what the running application says about itself\n\n   the first covers chapters three to seven, the second eight and nine",
+   "note": "**앞쪽 장은 로그, 뒤쪽 장은 응답으로** 끝난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부트가 한 일은 대부분 기동 때 끝난다",
+   "md": "**요청이 오기 전에 다** 벌어진다.\n\n> **서버를 띄우고 빈을 등록**한다.\n> **③은 요청이 온 다음** 이야기였다.\n> **그 앞이 이 책**이다.\n\n**그래서 로그가 재료**다.\n\n> **무엇이 등록됐는지 로그에** 남는다.\n> **안 걸린 것도 볼 수** 있다.\n> **6.7절의 보고서**다.\n\n**뒤 절반은 응답이** 재료다.\n\n> **액츄에이터가 상태를 말해** 준다.\n> **JSON 을 그대로** 싣는다.\n> **8장부터 그렇다.**\n\n**추측을 안** 쓴다.\n\n> **돌려 보고 나온 것만** 싣는다.\n> **막힌 것도 같이** 싣는다.\n> **⑮에서 지킨 규칙 그대로**다."
+  },
+  {
+   "type": "figure",
+   "caption": "서가에서의 자리",
+   "ascii": "   where this book sits next to the others\n\n   book 2    the container, and what it does with your objects\n   book 3    one request, and the path it takes inside\n   book 16   this one, the startup before any request arrives\n\n   the earlier books begin after the log line this book explains",
+   "note": "**앞 책들은 이 책이 설명하는 로그 줄 다음에서** 시작한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "부트 이전 방식을 직접 해 본다",
+   "md": "**3장이 WAR 와 톰캣**이다.\n\n> **깔고 넣고 띄운**다.\n> **불편을 겪어야 4장이** 보인다.\n> **역사 이야기가** 아니다.\n\n**4장에서 뒤집는**다.\n\n> **서버를 라이브러리로** 쓴다.\n> **`main` 하나로 띄운**다.\n> **JAR 안을 직접** 연다.\n\n**5~7장이 설정**이다.\n\n> **버전·자동 구성·외부 설정**이다.\n> **전부 기동 때** 벌어진다.\n> **로그로** 확인한다.\n\n**8~9장이 운영**이다.\n\n> **엔드포인트와 메트릭**이다.\n> **⑪·⑫와 이어**진다.\n> **응답으로** 확인한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 이 책이 절 끝에 싣는 것 ①: 기동 로그\n\n$ ./gradlew bootRun\n\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.3.2)\n\nINFO 12043 --- [           main] s.b.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12043\nINFO 12043 --- [           main] s.b.BootApplication\n     : No active profile set, falling back to 1 default profile: \"default\"\nINFO 12043 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat initialized with port 8080 (http)\nINFO 12043 --- [           main] o.apache.catalina.core.StandardService\n     : Starting service [Tomcat]\nINFO 12043 --- [           main] o.apache.catalina.core.StandardEngine\n     : Starting Servlet engine: [Apache Tomcat/10.1.26]\nINFO 12043 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]\n     : Initializing Spring embedded WebApplicationContext\nINFO 12043 --- [           main] w.s.c.ServletWebServerApplicationContext\n     : Root WebApplicationContext: initialization completed in 612 ms\nINFO 12043 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat started on port 8080 (http) with context path '/'\nINFO 12043 --- [           main] s.b.BootApplication\n     : Started BootApplication in 1.084 seconds (process running for 1.312)\n\n--   이 열 줄이 이 책의 목차에 가깝다\n--   톰캣은 3~4장\n--   프로필은 7장\n--   컨텍스트 초기화는 6장\n\n\n-- 이 책이 절 끝에 싣는 것 ②: 엔드포인트 응답\n\n$ curl -s localhost:8080/actuator/health | jq .\n\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"db\": {\n      \"status\": \"UP\",\n      \"details\": { \"database\": \"H2\", \"validationQuery\": \"isValid()\" }\n    },\n    \"diskSpace\": {\n      \"status\": \"UP\",\n      \"details\": { \"total\": 494384795648, \"free\": 82135883776,\n                   \"threshold\": 10485760, \"exists\": true }\n    },\n    \"ping\": { \"status\": \"UP\" }\n  }\n}\n\n--   8.3절에서 이걸 뜯는다\n\n\n-- 로그를 자세히 켠다\n\n# application.yml\nlogging:\n  level:\n    root: info\n    org.springframework.boot.autoconfigure: debug\n\n$ ./gradlew bootRun | grep -A5 'CONDITIONS EVALUATION REPORT'\n\n============================\nCONDITIONS EVALUATION REPORT\n============================\n\nPositive matches:\n-----------------\n\n--   6.7절의 보고서다\n--   이 책의 핵심 재료다\n\n\n-- 켜기 전과 후\n\n$ ./gradlew bootRun | wc -l\n      24\n$ ./gradlew bootRun --args='--debug' | wc -l\n    1876\n\n--   기본은 스물넷 줄이다\n--   켜면 천팔백 줄이다\n--   그 안에 부트가 한 일이 다 있다\n\n\n-- 앞 책과 이어지는 자리\n\n$ printf '%-14s %s\\n' \\\n  '② 3장'  '컨테이너가 빈을 만든다 -> 6장' \\\n  '③ 2장'  '디스패처 서블릿 -> 4.3절' \\\n  '④ 1장'  '필터와 인터셉터 -> 8.7절' \\\n  '⑪ 5장'  '이미지로 만든다 -> 4.7절' \\\n  '⑫ 4장'  '프로브 -> 8.3절' \\\n  '⑬ 1장'  'HTTP -> 3.1절'\n\n② 3장    컨테이너가 빈을 만든다 -> 6장\n③ 2장    디스패처 서블릿 -> 4.3절\n④ 1장    필터와 인터셉터 -> 8.7절\n⑪ 5장    이미지로 만든다 -> 4.7절\n⑫ 4장    프로브 -> 8.3절\n⑬ 1장    HTTP -> 3.1절\n\n--   1.2절에서 부트 없이 하는 일을 본다",
+   "note": "**기동 로그 열 줄이 이 책의 목차에 가깝다 — 톰캣은 3~4장, 프로필은 7장, 컨텍스트 초기화는 6장**이다.\n\n**`/actuator/health` 가 `UP` 과 세 구성요소를 돌려**준다.\n\n**`--debug` 를 켜면 로그가 24줄에서 1876줄이** 된다.\n\n**그 안에 `CONDITIONS EVALUATION REPORT` 가** 있다.\n\n**앞 책 여섯 권이 이 책의 특정 절과** 이어진다."
+  }
+ ],
+ "recap": [
+  "**부트의 일은 기동에서** 끝난다.",
+  "**로그가 재료**다.",
+  "**뒤 절반은 응답**이다.",
+  "**추측을 안** 쓴다.",
+  "**3장에서 옛 방식을** 한다.",
+  "**4장에서** 뒤집는다.",
+  "**5~7장이 설정**이다.",
+  "**8~9장이 운영**이다.",
+  "**앞 책들과** 이어진다."
+ ],
+ "drills": [
+  {
+   "task": "기동 로그를 끝까지 읽는다.",
+   "done_when": "모르는 줄을 표시했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`--debug` 로 띄운다.",
+   "done_when": "줄 수 차이를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "헬스 엔드포인트를 부른다.",
+   "done_when": "JSON 을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 절 끝에 싣는 두 가지는?",
+   "a": "기동 로그와 엔드포인트 응답이다."
+  },
+  {
+   "q": "왜 로그가 재료인가?",
+   "a": "부트가 한 일은 대부분 요청 전에 끝나기 때문이다."
+  },
+  {
+   "q": "`--debug` 를 켜면 무엇이 나오나?",
+   "a": "자동 구성 조건 평가 보고서가 나온다."
+  },
+  {
+   "q": "③과 이 책의 시점 차이는?",
+   "a": "③은 요청 이후, 이 책은 요청 이전이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "기동 로그",
+   "def": "애플리케이션이 뜨는 동안 남기는 기록."
+  },
+  {
+   "term": "액츄에이터",
+   "def": "애플리케이션이 자기 상태를 HTTP 로 알려 주는 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

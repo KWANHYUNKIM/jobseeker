@@ -1,0 +1,726 @@
+{
+  "book": "spring-boot",
+  "title": "스프링 부트 — 핵심 원리와 활용",
+  "subtitle": "부트가 대신한 일은 로그에 남는다",
+  "rule": "매 절은 기동 로그 아니면 엔드포인트 응답으로 끝난다.",
+  "env": "Java 21, Spring Boot 3.3, Gradle 8.8, Tomcat 10.1, Prometheus 2.53, Grafana 11",
+  "source": {
+    "title": "스프링 부트 - 핵심 원리와 활용 (차례 출처)",
+    "url": "https://www.inflearn.com/course/스프링부트-핵심원리-활용",
+    "publisher": "인프런 · 김영한",
+    "note": "열두 섹션의 뼈대를 빌려 열 장으로 묶었다. 본문·예제·붙인 로그와 응답은 직접 쓰고 직접 확인한 것이다."
+  },
+  "updated_at": "2026-09-10",
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "intro": "부트가 무엇을 대신하는지부터 눈으로 본다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 로그 아니면 응답으로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-boot",
+          "title": "부트가 없으면 무엇을 하나",
+          "summary": "대신해 주는 일의 목록.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "env",
+          "title": "환경과 확인 설정",
+          "summary": "무엇을 켜 두고 시작하나.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.4",
+          "id": "first-run",
+          "title": "한 줄로 서버가 뜬다",
+          "summary": "기동 로그를 처음부터 읽는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "스프링 부트 소개",
+      "intro": "네 가지 기능과, 마법이 아니라는 것.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "what-boot",
+          "title": "부트가 대신하는 넷",
+          "summary": "내장 서버·스타터·자동 구성·액츄에이터.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "not-magic",
+          "title": "마법이 아니다",
+          "summary": "조건이 맞으면 등록될 뿐이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "versions",
+          "title": "버전과 호환",
+          "summary": "무엇이 무엇을 정하나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "project",
+          "title": "프로젝트 구조",
+          "summary": "생성기가 만든 것을 뜯는다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "웹 서버와 서블릿 컨테이너",
+      "intro": "부트 이전 방식을 직접 해 본다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "was",
+          "title": "WAR 와 WAS",
+          "summary": "서버가 애플리케이션을 품던 시절.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "tomcat",
+          "title": "톰캣 설치와 기동",
+          "summary": "깔고 띄우고 로그를 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "servlet",
+          "title": "서블릿 컨테이너",
+          "summary": "누가 서블릿을 만들어 주나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "war-build",
+          "title": "WAR 만들기",
+          "summary": "안에 무엇이 들어가나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "deploy",
+          "title": "배포하고 확인",
+          "summary": "넣고 다시 띄운다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "war-mvc",
+          "title": "스프링 MVC 를 WAR 로",
+          "summary": "컨테이너가 스프링을 시작한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "jsp",
+          "title": "JSP 와 서블릿",
+          "summary": "왜 서버가 필요했나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "war-limits",
+          "title": "WAR 방식의 한계",
+          "summary": "빌드와 배포가 왜 아팠나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.9",
+          "id": "embedded-idea",
+          "title": "서버를 라이브러리로",
+          "summary": "뒤집으면 무엇이 달라지나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.10",
+          "id": "verify",
+          "title": "여기까지 확인",
+          "summary": "두 방식을 나란히 띄운다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "스프링 부트와 내장 톰캣",
+      "intro": "JAR 하나가 어떻게 서버가 되나.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "embedded-tomcat",
+          "title": "내장 톰캣을 코드로 띄운다",
+          "summary": "main 하나로 서버가 뜬다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "embedded-servlet",
+          "title": "서블릿을 코드로 등록한다",
+          "summary": "web.xml 이 없다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "embedded-spring",
+          "title": "스프링 컨테이너까지",
+          "summary": "디스패처를 직접 붙인다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "fat-jar",
+          "title": "빌드와 실행",
+          "summary": "JAR 로 만들어 돌린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "jar-limits",
+          "title": "JAR 안에 JAR 는 못 넣는다",
+          "summary": "자바의 제약.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "fat-jar-problem",
+          "title": "Fat JAR 의 문제",
+          "summary": "같은 이름이 겹친다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "boot-jar",
+          "title": "부트가 만든 JAR",
+          "summary": "무엇이 다른가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.8",
+          "id": "jar-inside",
+          "title": "JAR 를 열어 본다",
+          "summary": "안의 구조를 센다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.9",
+          "id": "loader",
+          "title": "부트 로더",
+          "summary": "누가 JAR 안의 JAR 를 읽나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.10",
+          "id": "main-class",
+          "title": "main 이 둘이다",
+          "summary": "매니페스트를 읽는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.11",
+          "id": "run-compare",
+          "title": "실행 방식 비교",
+          "summary": "세 가지로 같은 서버를 띄운다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "스타터와 라이브러리 관리",
+      "intro": "버전을 누가 정하나.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "dependency-hell",
+          "title": "버전 맞추기",
+          "summary": "손으로 하면 무엇이 생기나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "bom",
+          "title": "버전 관리 플러그인",
+          "summary": "버전을 안 적는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "starter",
+          "title": "스타터가 묶는 것",
+          "summary": "한 줄이 몇 개가 되나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "tree",
+          "title": "의존성 트리를 읽는다",
+          "summary": "무엇이 무엇을 끌고 오나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "exclude",
+          "title": "빼고 바꾸기",
+          "summary": "톰캣을 언더토우로.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "자동 구성",
+      "intro": "조건이 맞으면 등록된다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "what-autoconfig",
+          "title": "자동 구성이란",
+          "summary": "누가 언제 빈을 만드나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "imports-file",
+          "title": "목록 파일",
+          "summary": "후보는 어디에 적혀 있나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "conditional",
+          "title": "@Conditional",
+          "summary": "조건을 코드로 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "conditional-class",
+          "title": "클래스가 있으면",
+          "summary": "라이브러리 유무로 갈린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "conditional-bean",
+          "title": "빈이 없으면",
+          "summary": "내가 만들면 진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "conditional-property",
+          "title": "설정이 있으면",
+          "summary": "한 줄로 켜고 끈다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "report",
+          "title": "자동 구성 보고서",
+          "summary": "걸린 것과 안 걸린 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "override",
+          "title": "기본값을 덮는다",
+          "summary": "무엇이 이기나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.9",
+          "id": "order",
+          "title": "순서",
+          "summary": "누가 먼저 도나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.10",
+          "id": "my-autoconfig",
+          "title": "직접 만든다",
+          "summary": "조건부 빈을 하나 만든다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.11",
+          "id": "my-starter",
+          "title": "스타터로 만든다",
+          "summary": "다른 프로젝트가 쓰게 한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.12",
+          "id": "debug",
+          "title": "안 걸릴 때",
+          "summary": "보고서로 원인을 찾는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "외부 설정과 프로필",
+      "intro": "값을 밖에서 넣는다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "four-ways",
+          "title": "네 가지 방법",
+          "summary": "무엇을 언제 쓰나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "os-env",
+          "title": "OS 환경변수",
+          "summary": "이름 규칙이 다르다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "java-props",
+          "title": "자바 시스템 속성",
+          "summary": "-D 로 넣는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "args",
+          "title": "커맨드 라인 인수",
+          "summary": "파싱을 내가 한다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "spring-args",
+          "title": "스프링 부트 인수",
+          "summary": "--key=value 가 속성이 된다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "environment",
+          "title": "Environment 하나로",
+          "summary": "출처를 안 가린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "value",
+          "title": "@Value",
+          "summary": "한 값씩 꽂는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "config-props",
+          "title": "@ConfigurationProperties",
+          "summary": "묶어서 받는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "validation",
+          "title": "설정 검증",
+          "summary": "틀린 값으로 안 뜬다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.10",
+          "id": "profile",
+          "title": "프로필",
+          "summary": "환경마다 다른 값.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.11",
+          "id": "profile-file",
+          "title": "프로필과 파일 분리",
+          "summary": "한 파일에 여러 환경.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.12",
+          "id": "priority",
+          "title": "우선순위 전부",
+          "summary": "같은 키가 여러 곳에 있으면.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "액츄에이터",
+      "intro": "애플리케이션이 자기 상태를 말한다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "actuator",
+          "title": "켜고 본다",
+          "summary": "의존성 하나와 엔드포인트.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "endpoints",
+          "title": "엔드포인트 목록",
+          "summary": "무엇이 열리나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "health",
+          "title": "헬스",
+          "summary": "살아 있다는 근거.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "info",
+          "title": "정보",
+          "summary": "빌드와 커밋을 담는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "loggers",
+          "title": "로거 바꾸기",
+          "summary": "재기동 없이 레벨을 올린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "httpexchanges",
+          "title": "요청 기록",
+          "summary": "최근 요청을 본다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.7",
+          "id": "actuator-security",
+          "title": "보안",
+          "summary": "포트를 나누고 잠근다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.8",
+          "id": "custom-endpoint",
+          "title": "직접 만든다",
+          "summary": "내 엔드포인트를 연다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.9",
+          "id": "caution",
+          "title": "열면 안 되는 것",
+          "summary": "무엇이 새어 나가나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "메트릭과 모니터링",
+      "intro": "숫자를 모아 그림으로 본다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "why-metric",
+          "title": "무엇을 재나",
+          "summary": "로그로는 안 되는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "micrometer",
+          "title": "마이크로미터",
+          "summary": "추상화가 무엇을 하나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "metrics-endpoint",
+          "title": "메트릭 엔드포인트",
+          "summary": "값을 직접 읽는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "prometheus",
+          "title": "프로메테우스",
+          "summary": "형식이 달라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "scrape",
+          "title": "수집 설정",
+          "summary": "누가 누구를 긁나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "promql",
+          "title": "쿼리",
+          "summary": "레이트와 백분위.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "grafana",
+          "title": "그라파나",
+          "summary": "붙이고 그린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.8",
+          "id": "dashboard",
+          "title": "대시보드",
+          "summary": "무엇을 한 화면에 두나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.9",
+          "id": "custom-metric",
+          "title": "직접 만든다",
+          "summary": "내 카운터를 올린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.10",
+          "id": "alert",
+          "title": "알림",
+          "summary": "언제 깨울 것인가.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "다음으로",
+      "intro": "이 책이 남긴 것.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "wrap-up",
+          "title": "다시 보는 로그",
+          "summary": "기동 한 번에 무엇이 있었나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "with-others",
+          "title": "앞 책들과",
+          "summary": "어디서 이어지나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "여기서 어디로 가나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

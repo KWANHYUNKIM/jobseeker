@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "why-boot",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "부트가 없으면 무엇을 하나",
+ "summary": "대신해 주는 일의 목록.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯 단계를 안다.",
+  "넷으로 줄어든 걸 본다.",
+  "이 책의 순서를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**한 줄로 서버가 뜨는 게 당연해** 보인다. **그 전에 무엇을 했는지부터** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "예전에 하던 다섯",
+   "ascii": "   what shipping a web application used to take\n\n   install a server      download, unpack, configure ports\n   match the versions    servlet api, spring, jackson, logging\n   write the wiring      web xml, a dispatcher, a context loader\n   build a war           and copy it into the server directory\n   restart the server    and hope the old one released the port\n\n   none of those five steps is about the feature you were writing",
+   "note": "**다섯 중 기능에 관한 건 하나도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "설정이 아니라 기능을 쓰게 하는 것이 목표다",
+   "md": "**서버를 먼저** 깔았다.\n\n> **톰캣을 받아 풀고 포트를** 고쳤다.\n> **개발자마다 버전이** 달랐다.\n> **3.2절에서 실제로 해** 본다.\n\n**버전을 손으로** 맞췄다.\n\n> **스프링과 잭슨이 안 맞으면** 터졌다.\n> **어느 조합이 맞는지 표를** 봤다.\n> **5.1절에서 그걸 겪는**다.\n\n**연결을 손으로** 썼다.\n\n> **`web.xml` 에 디스패처를** 적었다.\n> **컨텍스트도 직접** 열었다.\n> **3.6절에서 써** 본다.\n\n**배포가 복사**였다.\n\n> **WAR 를 서버 폴더에** 넣었다.\n> **서버를 껐다 켰다.**\n> **3.5절에서 해** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "부트가 가져간 넷",
+   "ascii": "   what boot took over, one line each\n\n   the server        it is now a library on the classpath\n   the versions      one plugin decides them\n   the wiring        conditions decide what gets registered\n   the operations    health, metrics, and log levels, over http\n\n   the first three are chapters three to seven, the last is eight and nine",
+   "note": "**앞 셋이 3~7장, 넷째가 8~9장**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "가져갔다고 사라진 것은 아니다",
+   "md": "**톰캣은 그대로** 돈다.\n\n> **의존성으로 들어왔을** 뿐이다.\n> **4.1절에서 코드로** 띄운다.\n> **로그에 이름이 그대로** 나온다.\n\n**연결도 그대로** 있다.\n\n> **조건이 맞아서 등록될** 뿐이다.\n> **2.2절에서 그걸** 본다.\n> **내가 만들면 진다(6.5절).**\n\n**버전도 어딘가에** 적혀 있다.\n\n> **플러그인이 들고** 있다.\n> **5.2절에서 그 목록을** 연다.\n> **바꿀 수도** 있다.\n\n**그래서 알아야** 한다.\n\n> **안 보이는 게 없어진 건** 아니다.\n> **문제가 나면 거기로 내려간**다.\n> **이 책이 그 길**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 부트 없이 서버를 준비한다\n\n$ curl -sO https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.26/bin/\\\napache-tomcat-10.1.26.tar.gz\n$ tar xzf apache-tomcat-10.1.26.tar.gz\n$ ls apache-tomcat-10.1.26\nBUILDING.txt  NOTICE     RUNNING.txt  conf  logs            temp     work\nCONTRIBUTING.md README.md  bin          lib   webapps\n\n$ du -sh apache-tomcat-10.1.26\n 16M\tapache-tomcat-10.1.26\n\n--   서버가 먼저 있어야 했다\n--   3.2절에서 이걸 다시 한다\n\n\n-- 버전을 손으로 맞춘다\n\n// build.gradle (부트 없이)\ndependencies {\n    implementation 'org.springframework:spring-webmvc:6.1.11'\n    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'\n    implementation 'ch.qos.logback:logback-classic:1.5.6'\n    implementation 'org.slf4j:slf4j-api:2.0.13'\n}\n\n$ grep -c ':[0-9]' build.gradle\n5\n\n--   다섯 줄에 다섯 버전이 있다\n--   5.1절에서 이게 왜 아픈지 본다\n\n\n-- 하나만 어긋나면\n\n// jackson-databind 를 2.13.0 으로 낮추면\n\n$ ./gradlew bootRun\n\njava.lang.NoSuchMethodError: 'void com.fasterxml.jackson.databind\n  .ObjectMapper.<init>(com.fasterxml.jackson.core.JsonFactory)'\n\n--   실행에서 터진다\n--   조합표를 보며 맞춰야 했다\n\n\n-- 연결을 손으로 쓴다\n\n<!-- src/main/webapp/WEB-INF/web.xml -->\n<web-app>\n    <servlet>\n        <servlet-name>dispatcher</servlet-name>\n        <servlet-class>\n            org.springframework.web.servlet.DispatcherServlet\n        </servlet-class>\n        <init-param>\n            <param-name>contextConfigLocation</param-name>\n            <param-value>classpath:spring-config.xml</param-value>\n        </init-param>\n        <load-on-startup>1</load-on-startup>\n    </servlet>\n    <servlet-mapping>\n        <servlet-name>dispatcher</servlet-name>\n        <url-pattern>/</url-pattern>\n    </servlet-mapping>\n</web-app>\n\n$ wc -l src/main/webapp/WEB-INF/web.xml\n      18 web.xml\n\n--   3.6절에서 이걸 쓴다\n\n\n-- 빌드하고 복사한다\n\n$ ./gradlew war -q\n$ ls -lh build/libs/\n-rw-r--r--  1 kwanhyun  staff   9.2M  app.war\n\n$ cp build/libs/app.war apache-tomcat-10.1.26/webapps/\n$ ./apache-tomcat-10.1.26/bin/startup.sh\nUsing CATALINA_BASE:   /Users/kwanhyun/apache-tomcat-10.1.26\nTomcat started.\n\n$ tail -3 apache-tomcat-10.1.26/logs/catalina.out\n10-Sep-2026 04:49:12.418 INFO [main] o.a.c.startup.HostConfig.deployWAR\n  Deploying web application archive [.../webapps/app.war]\n10-Sep-2026 04:49:14.902 INFO [main] o.a.c.startup.HostConfig.deployWAR\n  Deployment of web application archive [.../app.war] has finished in [2,484] ms\n\n$ curl -s localhost:8080/app/hello\nhello\n\n--   3.5절에서 이걸 그대로 한다\n--   여기까지 다섯 단계였다\n\n\n-- 부트로 하면\n\n// build.gradle\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ grep -c ':[0-9]' build.gradle\n2\n\n$ ./gradlew bootRun\n\nINFO 12043 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat initialized with port 8080 (http)\nINFO 12043 --- [           main] o.apache.catalina.core.StandardEngine\n     : Starting Servlet engine: [Apache Tomcat/10.1.26]\nINFO 12043 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat started on port 8080 (http) with context path '/'\nINFO 12043 --- [           main] s.b.BootApplication\n     : Started BootApplication in 1.084 seconds\n\n$ curl -s localhost:8080/hello\nhello\n\n--   서버를 안 깔았다\n--   버전을 안 적었다\n--   web.xml 이 없다\n--   복사도 안 했다\n\n\n-- 톰캣은 그대로 있다\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -i tomcat\n\n+--- org.springframework.boot:spring-boot-starter-tomcat -> 3.3.2\n|    +--- org.apache.tomcat.embed:tomcat-embed-core:10.1.26\n|    +--- org.apache.tomcat.embed:tomcat-embed-el:10.1.26\n|    \\--- org.apache.tomcat.embed:tomcat-embed-websocket:10.1.26\n\n--   같은 10.1.26 이다\n--   설치가 아니라 의존성이 됐다\n--   4장에서 이걸 직접 띄운다\n\n\n-- 버전도 어딘가에 적혀 있다\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -E 'jackson-databind|spring-webmvc|logback-classic'\n\n+--- com.fasterxml.jackson.core:jackson-databind -> 2.17.2\n+--- org.springframework:spring-webmvc -> 6.1.11\n\\--- ch.qos.logback:logback-classic -> 1.5.6\n\n--   내가 위에서 손으로 적은 그 버전들이다\n--   플러그인이 정했다\n--   5.2절에서 그 목록을 연다\n\n\n-- 줄 수를 센다\n\n$ printf '%-22s %-10s %s\\n' \\\n  '서버 설치'    '16 MB'  '없어짐 (4장)' \\\n  '버전 다섯 줄' '5개'    '두 줄로 (5장)' \\\n  'web.xml'      '18줄'   '없어짐 (4.3절)' \\\n  'WAR 복사'     '수동'   '없어짐 (4.4절)' \\\n  '운영 정보'    '없음'   '생김 (8장)'\n\n서버 설치              16 MB      없어짐 (4장)\n버전 다섯 줄           5개        두 줄로 (5장)\nweb.xml                18줄       없어짐 (4.3절)\nWAR 복사               수동       없어짐 (4.4절)\n운영 정보              없음       생김 (8장)\n\n--   1.3절에서 확인 설정을 정한다",
+   "note": "**부트 없이는 톰캣 16MB 를 깔고 버전 다섯을 손으로** 적었다.\n\n**하나만 어긋나면 `NoSuchMethodError` 로 실행에서** 터진다.\n\n**`web.xml` 18줄과 WAR 복사·재기동이** 필요했다.\n\n**부트로는 버전 줄이 둘이고 `Tomcat started on port 8080` 까지 1.084초**다.\n\n**의존성 트리에 같은 `tomcat-embed-core:10.1.26` 이 그대로** 있다."
+  }
+ ],
+ "recap": [
+  "**서버를 먼저** 깔았다.",
+  "**버전을 손으로** 맞췄다.",
+  "**연결을 손으로** 썼다.",
+  "**배포가 복사**였다.",
+  "**부트가 넷을** 가져갔다.",
+  "**서버는 의존성이** 됐다.",
+  "**버전은 플러그인이** 정한다.",
+  "**사라진 건** 아니다.",
+  "**운영 정보가** 생겼다."
+ ],
+ "drills": [
+  {
+   "task": "톰캣을 직접 받아 푼다.",
+   "done_when": "크기를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "버전을 손으로 적어 본다.",
+   "done_when": "어긋났을 때를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "부트로 같은 걸 띄운다.",
+   "done_when": "줄 수 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "의존성 트리에서 톰캣을 찾는다.",
+   "done_when": "같은 버전인 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트 이전의 다섯 단계는?",
+   "a": "서버 설치, 버전 맞추기, 연결 작성, WAR 빌드, 복사와 재기동이다."
+  },
+  {
+   "q": "부트가 가져간 넷은?",
+   "a": "서버, 버전, 연결, 그리고 운영 정보다."
+  },
+  {
+   "q": "톰캣은 사라졌나?",
+   "a": "아니다. 의존성으로 들어와 같은 버전이 돈다."
+  },
+  {
+   "q": "버전은 누가 정하나?",
+   "a": "의존성 관리 플러그인이 정한다."
+  },
+  {
+   "q": "왜 원리를 알아야 하나?",
+   "a": "안 보일 뿐 없어진 게 아니어서 문제가 나면 내려가야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "WAR",
+   "def": "서버에 배포하던 웹 애플리케이션 묶음 파일."
+  },
+  {
+   "term": "내장 서버",
+   "def": "설치하지 않고 의존성으로 들어와 코드가 띄우는 서버."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
