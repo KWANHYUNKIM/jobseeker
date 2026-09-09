@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "dto-jpql",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "JPQL 의 new",
+ "summary": "패키지 경로를 다 적는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "new 문법을 쓴다.",
+  "무엇이 검증 안 되는지 안다.",
+  "다음 절의 동기를 얻는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절에서 리포지토리 안에서** 바꿨다. **쿼리가 직접 만들게도 할 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "new 가 요구하는 것",
+   "ascii": "   what jpql needs before it can build an object\n\n   the keyword new       so it knows a constructor is coming\n   the full package path so it can find the class by name\n   arguments in order    matched by position, not by name\n\n   the middle line is a string, and nothing checks it until runtime",
+   "note": "**가운데는 문자열이라 실행 전엔 아무도 안** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JPA 표준이 주는 유일한 DTO 방법이다",
+   "md": "**`new` 를 문장 안에** 쓴다.\n\n> **⑭ 5.5절에서 이미** 썼다.\n> **생성자를 호출**한다.\n> **JPA 표준**이다.\n\n**경로를 다** 적는다.\n\n> **`study.querydsl.dto.MemberDto`** 다.\n> **`import` 가** 안 통한다.\n> **패키지를 옮기면 문자열도 고쳐야** 한다.\n\n**인자는 순서로** 맞춘다.\n\n> **이름이** 아니다.\n> **같은 타입 둘이면 바꿔 넣어도 안** 터진다.\n> **아래에서 그걸** 만든다.\n\n**Querydsl 에서도 쓸 수** 있다.\n\n> **문자열 JPQL 을 그대로** 쓴다.\n> **그러면 조립의 장점이** 없다.\n> **5.4절이 그** 대안이다."
+  },
+  {
+   "type": "figure",
+   "caption": "변환이 일어나는 세 자리",
+   "ascii": "   the same conversion, three places it can happen\n\n   in the query        the database returns rows, jpa builds the object\n   in the repository   rows come back as a Tuple, java builds it\n   in the service      the entity travels up, and is converted there\n\n   the first two send the same sql; the third sends a wider one",
+   "note": "**셋째만 더 넓은 SQL 을** 낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "오타는 실행에서만 드러난다",
+   "md": "**클래스 이름이 문자열**이다.\n\n> **1.2절의 그 문제**다.\n> **컴파일이 통과**한다.\n> **기동에서 잡히면 그나마** 낫다.\n\n**생성자가 없으면** 터진다.\n\n> **인자 타입이 맞아야** 한다.\n> **`int` 와 `Integer` 도 구분**한다.\n> **아래에서 확인**한다.\n\n**같은 타입은 순서를 못** 지킨다.\n\n> **`(String, String)` 이면 바꿔 넣어도** 된다.\n> **결과만 뒤바뀐**다.\n> **⑭ 8.7절의 조용한 오류와 같은 종류**다.\n\n**그래서 5.5절이** 있다.\n\n> **`@QueryProjection` 이 컴파일에서** 잡는다.\n> **대신 DTO 가 Querydsl 을** 안다.\n> **거기서 저울질**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- DTO 를 만든다\n\npackage study.querydsl.dto;\n\n@Getter @Setter\n@NoArgsConstructor\npublic class MemberDto {\n    private String username;\n    private int age;\n\n    public MemberDto(String username, int age) {\n        this.username = username;\n        this.age = age;\n    }\n}\n\n\n-- JPQL 로 만든다\n\n@Test\nvoid new_로() {\n    em.clear();\n    List<MemberDto> r = em.createQuery(\n            \"select new study.querydsl.dto.MemberDto(m.username, m.age)\" +\n            \" from Member m\", MemberDto.class)\n        .getResultList();\n\n    r.stream().limit(3).forEach(d ->\n            System.out.println(d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    new study.querydsl.dto.MemberDto(m.username, m.age)\nfrom\n    Member m */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\nm1 10\nm2 20\nm3 30\n\n--   SQL 에는 컬럼 둘뿐이다\n--   5.1절의 값 조회와 같은 문장이다\n\n\n-- 엔티티를 받아 바꾸면\n\n@Test\nvoid 엔티티_받아서() {\n    em.clear();\n    List<MemberDto> r = queryFactory.selectFrom(member).fetch()\n            .stream()\n            .map(m -> new MemberDto(m.getUsername(), m.getAge()))\n            .toList();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n건수: 10\n\n--   컬럼이 넷이다\n--   안 쓸 둘을 더 읽었다\n--   ⑭ 6.8절의 그 이야기다\n\n\n-- Tuple 로 받아 바꾸면\n\n@Test\nvoid Tuple_받아서() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(member.username, member.age)\n            .from(member)\n            .fetch()\n            .stream()\n            .map(t -> new MemberDto(t.get(member.username),\n                                    t.get(member.age)))\n            .toList();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n건수: 10\n\n--   new 로 만든 것과 SQL 이 같다\n--   5.2절에서 한 그 변환이다\n\n\n-- 세 방법의 컬럼 수를 센다\n\n$ printf '%-20s %s\\n' \\\n  'JPQL new'      '2컬럼' \\\n  'Tuple 변환'    '2컬럼' \\\n  '엔티티 변환'   '4컬럼'\n\nJPQL new             2컬럼\nTuple 변환           2컬럼\n엔티티 변환          4컬럼\n\n\n-- 클래스 이름을 틀린다\n\n@Test\nvoid 이름_오타() {\n    try {\n        em.createQuery(\n                \"select new study.querydsl.dto.MemberDTO(m.username, m.age)\" +\n                \" from Member m\", MemberDto.class)\n            .getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   Could not resolve class named 'study.querydsl.dto.MemberDTO'\n\n--   SQL 이 안 나갔다\n--   컴파일은 통과했다\n\n\n-- 짧게 적으면\n\n@Test\nvoid 짧게() {\n    try {\n        em.createQuery(\n                \"select new MemberDto(m.username, m.age) from Member m\",\n                MemberDto.class).getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: SemanticException\n\n--   import 가 안 통한다\n--   경로를 다 적어야 한다\n\n\n-- 생성자가 없으면\n\n@Test\nvoid 생성자_없음() {\n    try {\n        em.createQuery(\n                \"select new study.querydsl.dto.MemberDto(m.username)\" +\n                \" from Member m\", MemberDto.class).getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   Cannot instantiate class 'study.querydsl.dto.MemberDto'\n      (it has no constructor with signature [java.lang.String])\n\n--   인자 개수까지 본다\n\n\n-- 타입이 다르면\n\npublic record LongDto(String username, Long age) {}\n\n@Test\nvoid 타입_다름() {\n    try {\n        em.createQuery(\n                \"select new study.querydsl.dto.LongDto(m.username, m.age)\" +\n                \" from Member m\", LongDto.class).getResultList();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: SemanticException\n\n--   int 와 Long 을 구분한다\n\n\n-- 같은 타입은 못 지킨다\n\npublic record NameDto(String username, String teamName) {}\n\n@Test\nvoid 순서_뒤바뀜() {\n    em.clear();\n    List<NameDto> r = em.createQuery(\n            \"select new study.querydsl.dto.NameDto(t.name, m.username)\" +\n            \" from Member m join m.team t\", NameDto.class)\n        .getResultList();\n\n    r.stream().limit(2).forEach(System.out::println);\n}\n\n/* select\n    new study.querydsl.dto.NameDto(t.name, m.username)\nfrom\n    Member m\n  inner join\n    m.team t */\n\nHibernate:\n    select\n        t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\nNameDto[username=teamA, teamName=m1]\nNameDto[username=teamA, teamName=m2]\n\n--   예외가 없다\n--   username 에 팀 이름이 들어갔다\n--   ⑭ 8.7절의 조용한 오류다\n\n\n-- Querydsl 에서 문자열을 쓰면\n\n@Test\nvoid 조립_안에서() {\n    em.clear();\n    List<MemberDto> r = queryFactory\n            .select(Projections.constructor(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n건수: 10\n\n--   문자열이 없다\n--   JPQL 에 new 도 없다\n--   5.4절에서 이 방법들을 본다\n\n\n-- 두 JPQL 을 비교한다\n\n$ diff jpql-new.txt jpql-projections.txt\n2c2\n<     new study.querydsl.dto.MemberDto(m.username, m.age)\n---\n>     member1.username,\n>     member1.age\n\n$ diff sql-new.txt sql-projections.txt && echo SAME\nSAME\n\n--   JPQL 은 다르고 SQL 은 같다\n--   객체를 누가 만드느냐가 다르다\n\n\n-- 누가 만드는지 확인한다\n\n@Test\nvoid 누가_만드나() {\n    em.clear();\n    MemberDto a = em.createQuery(\n            \"select new study.querydsl.dto.MemberDto(m.username, m.age)\" +\n            \" from Member m where m.username = 'm1'\", MemberDto.class)\n        .getSingleResult();\n\n    em.clear();\n    MemberDto b = queryFactory\n            .select(Projections.constructor(MemberDto.class,\n                    member.username, member.age))\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"JPQL:     \" + a.getUsername() + \" \" + a.getAge());\n    System.out.println(\"Querydsl: \" + b.getUsername() + \" \" + b.getAge());\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username='m1'\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\nJPQL:     m1 10\nQuerydsl: m1 10\n\n--   결과가 같다\n--   앞은 하이버네이트가, 뒤는 Querydsl 이 만들었다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '경로'       '패키지까지 다 적는다' \\\n  'import'     '안 통한다' \\\n  '이름 오타'  '실행에서 SemanticException' \\\n  '인자 개수'  '맞아야 한다' \\\n  '인자 타입'  'int 와 Long 을 구분' \\\n  '같은 타입'  '순서를 못 지킨다'\n\n경로                     패키지까지 다 적는다\nimport                   안 통한다\n이름 오타                실행에서 SemanticException\n인자 개수                맞아야 한다\n인자 타입                int 와 Long 을 구분\n같은 타입                순서를 못 지킨다\n\n--   5.4절에서 Projections 세 가지를 본다",
+   "note": "**`new` 는 SQL 에 컬럼 둘만 내고 엔티티를 받아 바꾸면 넷을** 읽는다.\n\n**클래스 이름을 틀리면 `Could not resolve class named ...` 로 실행에서** 터진다.\n\n**`import` 가 안 통해 짧게 적으면 같은 예외**다.\n\n**같은 타입 둘을 바꿔 넣으면 예외 없이 `NameDto[username=teamA, teamName=m1]`** 이 된다.\n\n**`Projections.constructor` 는 JPQL 이 다르고 SQL 은 `diff` 결과 `SAME`** 이다."
+  }
+ ],
+ "recap": [
+  "**`new` 가 JPA 표준**이다.",
+  "**경로를 다** 적는다.",
+  "**`import` 가 안** 통한다.",
+  "**오타는 실행에서** 난다.",
+  "**인자 개수를** 본다.",
+  "**타입도** 본다.",
+  "**같은 타입은 못** 지킨다.",
+  "**엔티티 변환은 넓게** 읽는다.",
+  "**SQL 은 같**다."
+ ],
+ "drills": [
+  {
+   "task": "`new` 로 DTO 를 만든다.",
+   "done_when": "컬럼이 둘인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "클래스 이름을 틀린다.",
+   "done_when": "실행 예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 타입 둘을 바꿔 넣는다.",
+   "done_when": "조용히 틀리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "엔티티 변환과 컬럼 수를 비교한다.",
+   "done_when": "4 대 2 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JPQL 의 `new` 에 무엇을 적나?",
+   "a": "패키지를 포함한 전체 클래스 경로다."
+  },
+  {
+   "q": "`import` 로 줄일 수 있나?",
+   "a": "없다. 문자열이라 통하지 않는다."
+  },
+  {
+   "q": "인자를 무엇으로 맞추나?",
+   "a": "이름이 아니라 순서와 타입이다."
+  },
+  {
+   "q": "같은 타입 인자를 바꿔 넣으면?",
+   "a": "예외 없이 값만 뒤바뀐다."
+  },
+  {
+   "q": "엔티티를 받아 변환하면 무엇이 다른가?",
+   "a": "안 쓰는 컬럼까지 읽어 SQL 이 넓어진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "생성자 표현식",
+   "def": "JPQL 안에서 `new` 로 객체를 만드는 표준 문법."
+  },
+  {
+   "term": "위치 기반 매칭",
+   "def": "인자를 이름이 아니라 순서로 맞추는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

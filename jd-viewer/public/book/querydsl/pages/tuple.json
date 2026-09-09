@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "tuple",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "Tuple 로 받기",
+ "summary": "리포지토리 밖으로 못 나간다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "표현식으로 읽는다.",
+  "인덱스의 값을 안다.",
+  "경계를 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절에서 이미** 만났다. **여기서는 어디까지 데려갈지를** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "Tuple 이 갈 수 있는 곳",
+   "ascii": "   how far a Tuple should travel\n\n   inside the repository   fine, it is read and converted right there\n   returned to a service   the service now imports a querydsl type\n   returned to a client    the json shape is decided by a library\n\n   the second row is where the dependency quietly spreads",
+   "note": "**둘째 줄에서 의존이 조용히** 퍼진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Tuple 은 Querydsl 의 타입이다",
+   "md": "**`com.querydsl.core.Tuple`** 이다.\n\n> **JPA 표준이** 아니다.\n> **서비스가 그걸 import 하면 묶인**다.\n> **라이브러리를 바꾸면 다** 고친다.\n\n**읽는 법이 특이**하다.\n\n> **고를 때 쓴 표현식을 그대로** 준다.\n> **컴파일이 타입을** 안다.\n> **⑭ 8.6절의 `Object[]` 보다** 낫다.\n\n**인덱스로도** 읽힌다.\n\n> **`get(0, String.class)`** 다.\n> **그러면 `Object[]` 와** 같아진다.\n> **순서가 바뀌면 조용히** 틀린다.\n\n**그래서 리포지토리 안에서만** 쓴다.\n\n> **읽고 바로 DTO 로** 바꾼다.\n> **⑭ 6.2절의 경계와 같은 이야기**다.\n> **5.4절부터 DTO 로** 간다."
+  },
+  {
+   "type": "figure",
+   "caption": "읽는 두 방법",
+   "ascii": "   two ways to read a Tuple, and what each costs\n\n   by expression   the same object you selected, checked at compile time\n   by index        a number and a class, checked at runtime only\n\n   the second one is exactly the Object array you were escaping",
+   "note": "**둘째는 벗어나려던 그 배열로** 돌아간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "표현식이 같아야 읽힌다",
+   "md": "**같은 객체가 아니어도** 된다.\n\n> **동등하면** 읽힌다.\n> **`member.age.sum()` 을 두 번 만들어도** 같다.\n> **아래에서 확인**한다.\n\n**모양이 다르면 `null`** 이다.\n\n> **`member.age` 로 골라 `member.age.sum()` 으로 읽으면 `null`** 이다.\n> **예외가 안** 난다.\n> **⑭ 8.7절의 별칭 오타와 같은 종류**다.\n\n**`Tuple` 은 `null` 원소를 담**는다.\n\n> **5.1절의 그** 상황이다.\n> **`get` 이 `null` 을 줄 수** 있다.\n> **바로 `.toString()` 하면** 터진다.\n\n**크기를 물어볼 수** 있다.\n\n> **`t.size()` 와 `t.toArray()`** 다.\n> **디버깅에** 쓴다.\n> **본 코드에서는 안** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 여럿을 고르면 Tuple 이다\n\n@Test\nvoid 기본() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, member.age)\n            .from(member)\n            .limit(3)\n            .fetch();\n\n    r.forEach(t -> System.out.printf(\"%-4s %d%n\",\n            t.get(member.username), t.get(member.age)));\n    System.out.println(\"타입: \" + r.get(0).getClass().getName());\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age\n    from\n        member m1_0\n    fetch first ? rows only\nm1   10\nm2   20\nm3   30\n타입: com.querydsl.core.Tuple$$Impl\n\n--   Querydsl 타입이다\n--   JPA 표준이 아니다\n\n\n-- 엔티티도 담긴다\n\n@Test\nvoid 엔티티_담기() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"회원: \" + t.get(member).getUsername());\n    System.out.println(\"팀:   \" + t.get(team.name));\n}\n\n/* select\n    member1,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n회원: m1\n팀:   teamA\n\n--   엔티티 컬럼 넷 + 팀 이름이다\n--   회원은 관리 대상이다\n\n\n-- 표현식이 같으면 읽힌다\n\n@Test\nvoid 동등성() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.age.sum(), member.age.avg())\n            .from(member)\n            .fetchOne();\n\n    NumberExpression<Integer> otherSum = member.age.sum();\n    System.out.println(\"같은 객체? \" + (otherSum == member.age.sum()));\n    System.out.println(\"값:        \" + t.get(otherSum));\n}\n\nHibernate: select sum(m1_0.age), avg(m1_0.age) from member m1_0\n같은 객체? false\n값:        235\n\n--   객체는 다른데 읽혔다\n--   동등하면 된다\n\n\n-- 모양이 다르면 null 이다\n\n@Test\nvoid 다른_표현식() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.age, member.username)\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"age:       \" + t.get(member.age));\n    System.out.println(\"age.sum(): \" + t.get(member.age.sum()));\n}\n\nHibernate: select m1_0.age, m1_0.username from member m1_0\n           where m1_0.username=?\nage:       10\nage.sum(): null\n\n--   예외가 아니라 null 이다\n--   ⑭ 8.7절의 별칭 오타와 같다\n\n\n-- 인덱스로 읽으면\n\n@Test\nvoid 인덱스() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.username, member.age)\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"0: \" + t.get(0, String.class));\n    System.out.println(\"1: \" + t.get(1, Integer.class));\n    System.out.println(\"크기: \" + t.size());\n    System.out.println(\"배열: \" + Arrays.toString(t.toArray()));\n}\n\nHibernate: select m1_0.username, m1_0.age from member m1_0\n           where m1_0.username=?\n0: m1\n1: 10\n크기: 2\n배열: [m1, 10]\n\n--   ⑭ 8.6절의 Object[] 와 같아졌다\n\n\n-- 타입을 틀리면\n\n@Test\nvoid 타입_오류() {\n    em.clear();\n    Tuple t = queryFactory\n            .select(member.username, member.age)\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    try {\n        System.out.println(t.get(0, Integer.class));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: ClassCastException\n\n--   컴파일은 통과했다\n--   1.2절에서 벗어나려던 그 상태다\n\n\n-- 순서를 바꾸면 조용히 틀린다\n\n@Test\nvoid 순서_변경() {\n    em.clear();\n    // select(member.age, member.username) 로 바꿨다고 하자\n    Tuple t = queryFactory\n            .select(member.age, member.username)\n            .from(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"표현식: \" + t.get(member.username));\n    try {\n        System.out.println(\"인덱스: \" + t.get(0, String.class));\n    } catch (Exception e) {\n        System.out.println(\"인덱스: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select m1_0.age, m1_0.username from member m1_0\n           where m1_0.username=?\n표현식: m1\n인덱스: ClassCastException\n\n--   표현식은 그대로 읽혔다\n--   인덱스는 깨졌다\n\n\n-- null 원소를 담는다\n\n@Test\nvoid null_원소() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(member.username.eq(\"m8\"))\n            .fetch();\n\n    Tuple t = r.get(0);\n    System.out.println(\"이름: \" + t.get(member.username));\n    System.out.println(\"팀:   \" + t.get(team.name));\n    try {\n        System.out.println(t.get(team.name).length());\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate:\n    select m1_0.username, t1_0.name\n    from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.username=?\n이름: m8\n팀:   null\n예외: NullPointerException\n\n--   5.1절의 null 이 여기도 있다\n\n\n-- 리포지토리 밖으로 내보내면\n\n// 나쁜 예\n@Repository\npublic class MemberQueryRepository {\n    public List<Tuple> findSummaries() {      // Tuple 이 반환 타입이다\n        return queryFactory\n                .select(member.username, member.age, team.name)\n                .from(member).leftJoin(member.team, team).fetch();\n    }\n}\n\n@Service\npublic class MemberService {\n    public void report() {\n        for (Tuple t : repository.findSummaries()) {   // import 가 생긴다\n            ...\n        }\n    }\n}\n\n$ grep -rn 'import com.querydsl' --include='*.java' src/main | \\\n    awk -F/ '{print $(NF-1)}' | sort | uniq -c\n\n   3 repository\n   2 service\n   1 controller\n\n--   컨트롤러까지 갔다\n--   라이브러리 의존이 퍼졌다\n\n\n-- 안에서 바꾼다\n\n@Repository\npublic class MemberQueryRepository {\n\n    public List<MemberSummary> findSummaries() {\n        return queryFactory\n                .select(member.username, member.age, team.name)\n                .from(member)\n                .leftJoin(member.team, team)\n                .fetch()\n                .stream()\n                .map(t -> new MemberSummary(\n                        t.get(member.username),\n                        t.get(member.age),\n                        t.get(team.name)))\n                .toList();\n    }\n}\n\npublic record MemberSummary(String username, int age, String teamName) {}\n\n@Test\nvoid 변환() {\n    em.clear();\n    memberQueryRepository.findSummaries().stream().limit(3)\n            .forEach(System.out::println);\n}\n\n/* select\n    member1.username,\n    member1.age,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\nMemberSummary[username=m1, age=10, teamName=teamA]\nMemberSummary[username=m2, age=20, teamName=teamA]\nMemberSummary[username=m3, age=30, teamName=teamA]\n\n--   SQL 은 똑같다\n--   나가는 타입만 바뀌었다\n\n\n-- 의존을 다시 센다\n\n$ grep -rn 'import com.querydsl' --include='*.java' src/main | \\\n    awk -F/ '{print $(NF-1)}' | sort | uniq -c\n\n   3 repository\n\n--   리포지토리에만 남았다\n--   ⑭ 6.2절과 같은 결론이다\n--   5.3절부터 이 변환을 쿼리가 하게 만든다\n\n\n-- 정리\n\n$ printf '%-22s %s\\n' \\\n  '표현식으로 읽기'  '컴파일이 타입을 안다' \\\n  '인덱스로 읽기'    'Object[] 와 같아진다' \\\n  '모양이 다르면'    '예외가 아니라 null' \\\n  'null 원소'        '그대로 담긴다' \\\n  '반환 타입'        '리포지토리 안에서만'\n\n표현식으로 읽기        컴파일이 타입을 안다\n인덱스로 읽기          Object[] 와 같아진다\n모양이 다르면          예외가 아니라 null\nnull 원소              그대로 담긴다\n반환 타입              리포지토리 안에서만\n\n--   5.3절에서 JPQL 의 new 를 본다",
+   "note": "**`Tuple$$Impl` 은 Querydsl 타입이고 엔티티도 함께** 담긴다.\n\n**표현식은 같은 객체가 아니어도 동등하면 읽히지만 모양이 다르면 예외 없이 `null`** 이다.\n\n**인덱스로 읽으면 `Object[]` 와 같아져 타입을 틀리면 `ClassCastException`** 이다.\n\n**`Tuple` 을 밖으로 내보내면 `import com.querydsl` 이 컨트롤러까지** 퍼진다.\n\n**리포지토리 안에서 DTO 로 바꾸면 SQL 은 그대로고 의존만 3곳으로** 줄었다."
+  }
+ ],
+ "recap": [
+  "**Querydsl 타입**이다.",
+  "**표현식으로** 읽는다.",
+  "**동등하면** 읽힌다.",
+  "**다르면 `null`** 이다.",
+  "**인덱스는 배열과** 같다.",
+  "**타입을 틀리면** 터진다.",
+  "**`null` 원소를** 담는다.",
+  "**밖으로 내면 의존이** 퍼진다.",
+  "**안에서 바꾼**다."
+ ],
+ "drills": [
+  {
+   "task": "`Tuple` 로 둘을 받는다.",
+   "done_when": "표현식으로 읽었다.",
+   "minutes": 15
+  },
+  {
+   "task": "다른 표현식으로 읽어 본다.",
+   "done_when": "`null` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "인덱스로 읽고 타입을 틀린다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "리포지토리에서 DTO 로 바꾼다.",
+   "done_when": "의존이 준 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Tuple` 은 어느 라이브러리의 타입인가?",
+   "a": "Querydsl 이다. JPA 표준이 아니다."
+  },
+  {
+   "q": "값을 읽는 권장 방법은?",
+   "a": "고를 때 쓴 표현식을 그대로 넘긴다."
+  },
+  {
+   "q": "다른 표현식으로 읽으면?",
+   "a": "예외 없이 `null` 이 온다."
+  },
+  {
+   "q": "인덱스로 읽으면 무엇이 문제인가?",
+   "a": "타입과 순서 오류가 실행에서만 드러난다."
+  },
+  {
+   "q": "`Tuple` 은 어디까지 데려가야 하나?",
+   "a": "리포지토리 안까지다. 밖으로는 DTO 로 바꾼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Tuple",
+   "def": "여러 표현식의 결과를 함께 담는 Querydsl 결과 타입."
+  },
+  {
+   "term": "타입 누수",
+   "def": "라이브러리 전용 타입이 상위 계층까지 퍼지는 현상."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

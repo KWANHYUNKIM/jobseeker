@@ -299,7 +299,7 @@
           "title": "Tuple 로 받기",
           "summary": "리포지토리 밖으로 못 나간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -307,7 +307,7 @@
           "title": "JPQL 의 new",
           "summary": "패키지 경로를 다 적는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
