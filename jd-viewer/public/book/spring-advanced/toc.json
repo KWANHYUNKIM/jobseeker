@@ -39,7 +39,7 @@
           "title": "환경 만들기",
           "summary": "로그를 볼 수 있게 해 둔다.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.4",
@@ -47,7 +47,7 @@
           "title": "첫 확인",
           "summary": "빈 이름 옆의 이상한 글자.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

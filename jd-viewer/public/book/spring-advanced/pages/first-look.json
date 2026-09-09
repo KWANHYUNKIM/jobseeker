@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "first-look",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "첫 확인",
+ "summary": "빈 이름 옆의 이상한 글자.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 모양을 구분한다.",
+  "이미 감싸진 것을 찾는다.",
+  "무엇이 감싸는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 감싸진 것이 0 개**였다. **평범한 앱에서 세어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름의 세 모양",
+   "ascii": "   three name shapes you will keep seeing\n\n   plain          the class as written\n   dollar cglib   a subclass generated at runtime\n   jdk proxy      a class with no relation to the original name\n\n   the third one only implements interfaces, so the name tells nothing",
+   "note": "**셋째는 인터페이스만 구현해서 이름이 아무것도 안** 알려 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이미 돌고 있는 장치다",
+   "md": "**새 기능이** 아니다.\n\n> **⑤에서 트랜잭션을** 썼다.\n> **그게 이것**이었다.\n> **아래에서 확인**한다.\n\n**모르고 쓰고** 있었다.\n\n> **애너테이션 하나면** 감싸진다.\n> **아래에서 세어** 본다.\n> **12.7절에서 다시** 만난다.\n\n**두 방식이** 있다.\n\n> **이름 모양이** 다르다.\n> **6장에서 둘 다** 만든다.\n> **12.4절에서 고르는 법을** 본다.\n\n**설정 클래스도** 감싸진다.\n\n> **②에서 본 그** 이야기다.\n> **다른 이유로** 감싼다.\n> **아래에서 그걸** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "이미 감싸는 것들",
+   "ascii": "   things already in a plain boot app that wrap beans\n\n   transactional\n   async\n   cacheable\n   configuration itself\n\n   so this is not an advanced feature; it is already running",
+   "note": "**고급 기능이 아니라 이미 돌고** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름만 보고는 안 감싸졌다고 못 한다",
+   "md": "**JDK 쪽은 이름이 안** 닮았다.\n\n> **`jdk.proxy2.$Proxy142` 같은 것**이다.\n> **어느 빈인지 이름으로** 모른다.\n> **도구로 물어야** 한다.\n\n**타입으로 받으면** 다르다.\n\n> **인터페이스로 받으면 안** 보인다.\n> **12.5절에서 그게 터진**다.\n> **아래에서 미리** 본다.\n\n**속에 또 있을 수** 있다.\n\n> **여러 겹이** 된다.\n> **7.5절에서 그걸** 본다.\n> **끝까지 벗겨야** 원본이다.\n\n**설정 클래스는 다른 이유**다.\n\n> **AOP 가** 아니다.\n> **②의 그 문제** 때문이다.\n> **아래에서 갈라** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금은 하나도 없다\n\n$ curl -s localhost:8080/who/all\norderController      study.adv.OrderController\norderService         study.adv.OrderService\norderRepository      study.adv.OrderRepository\nwhoController        study.adv.WhoController\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$\\|Proxy'\n0\n\n\n-- 애너테이션 하나를 붙인다\n\n@Service\npublic class OrderService {\n    @Transactional\n    public void orderItem(String itemId) { repository.save(itemId); }\n}\n\n$ curl -s 'localhost:8080/who?name=orderService'\n빈 이름:   orderService\n주입된 것: study.adv.OrderService$$SpringCGLIB$$0\n원본:     study.adv.OrderService\n프록시:   true\nJDK:      false\nCGLIB:    true\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n1\n\n--   ⑤ 5장에서 쓰던 그 애너테이션이다\n--   그게 빈을 바꿔치기하고 있었다\n\n\n-- 로그로도 보인다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/org.springframework.transaction \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"DEBUG\"}'\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep -B1 -A1 '주문 처리' logs/app.log | tail -3\n07:24:02.104 DEBUG [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager\n  - Creating new transaction with name [study.adv.OrderService.orderItem]\n07:24:02.106 INFO  [http-nio-8080-exec-1] study.adv.OrderService - 주문 처리\n\n$ grep -c 'JpaTransactionManager' src/main/java/study/adv/OrderService.java\n0\n\n--   ⑯ 8.5절에서 쓰던 그 방법이다\n--   내 코드에 없는 줄이 내 줄 앞에 찍혔다\n\n\n-- 인터페이스가 있으면 모양이 달라진다\n\npublic interface OrderService {\n    void orderItem(String itemId);\n}\n\n@Service\npublic class OrderServiceImpl implements OrderService {\n    @Transactional\n    public void orderItem(String itemId) { repository.save(itemId); }\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl'\n빈 이름:   orderServiceImpl\n주입된 것: study.adv.OrderServiceImpl$$SpringCGLIB$$0\n원본:     study.adv.OrderServiceImpl\n프록시:   true\nJDK:      false\nCGLIB:    true\n\n--   부트는 인터페이스가 있어도 CGLIB 를 쓴다\n--   12.4 절에서 왜인지 본다\n\n\n-- 옛 기본으로 돌려 본다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl'\n빈 이름:   orderServiceImpl\n주입된 것: jdk.proxy2.$Proxy142\n원본:     study.adv.OrderServiceImpl\n프록시:   true\nJDK:      true\nCGLIB:    false\n\n--   이름이 아무것도 안 알려 준다\n--   원본을 물어야 안다\n\n\n-- 타입으로 받으면 터진다\n\n@RestController\nclass OrderController {\n    private final OrderServiceImpl service;   // 구체 타입으로 받았다\n    OrderController(OrderServiceImpl service) { this.service = service; }\n}\n\n$ ./gradlew bootRun 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.adv.OrderController required a bean of type\n'study.adv.OrderServiceImpl' that could not be found.\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl' | head -2\n(서버가 안 뜸)\n\n--   JDK 프록시는 인터페이스만 구현했다\n--   12.5 절에서 이걸 다룬다\n\n\n-- 되돌린다\n\nspring:\n  aop:\n    proxy-target-class: true    # 부트 기본값\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl' | head -2\n빈 이름:   orderServiceImpl\n주입된 것: study.adv.OrderServiceImpl$$SpringCGLIB$$0\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=연필'\n200\n\n--   상속으로 만들었으니 구체 타입으로도 받는다\n\n\n-- 다른 것들도 감싼다\n\n@Service\nclass MailService {\n    @Async\n    public void send(String to) { sleep(3000); }\n}\n\n@Service\nclass PriceService {\n    @Cacheable(\"price\")\n    public int of(String item) { sleep(1000); return 500; }\n}\n\n$ curl -s localhost:8080/who/all\norderController      study.adv.OrderController\norderServiceImpl     study.adv.OrderServiceImpl$$SpringCGLIB$$0\norderRepository      study.adv.OrderRepository\nmailService          study.adv.MailService$$SpringCGLIB$$0\npriceService         study.adv.PriceService$$SpringCGLIB$$0\nwhoController        study.adv.WhoController\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n3\n\n--   애너테이션 셋에 셋이 감싸졌다\n--   ⑦ 6장에서 캐시를 쓰던 그것이다\n\n\n-- 효과도 눈으로 본다\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/price?item=연필'\n1.008\n$ curl -s -o /dev/null -w '%{time_total}\\n' 'localhost:8080/price?item=연필'\n0.003\n\n$ grep -c 'cache\\|Cache' src/main/java/study/adv/PriceService.java\n1\n\n--   두 번째는 메서드가 아예 안 불렸다\n--   그 한 줄이 애너테이션이다\n\n\n-- 설정 클래스도 감싸진다\n\n@Configuration\nclass AppConfig {\n    @Bean A a() { return new A(b()); }\n    @Bean B b() { return new B(); }\n}\n\n$ curl -s 'localhost:8080/who?name=appConfig'\n빈 이름:   appConfig\n주입된 것: study.adv.AppConfig$$SpringCGLIB$$0\n원본:     study.adv.AppConfig\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   이름은 감싸진 모양인데 프록시는 false 다\n--   AOP 가 아니라서 그렇다\n--   ②에서 b() 를 두 번 불러도 같은 빈이던 그 이유다\n\n\n-- 그걸 꺼 본다\n\n@Configuration(proxyBeanMethods = false)\nclass AppConfig { ... }\n\n$ curl -s 'localhost:8080/who?name=appConfig' | head -2\n빈 이름:   appConfig\n주입된 것: study.adv.AppConfig\n\n$ curl -s localhost:8080/beans/same\na 의 b 와 컨테이너의 b 가 같은가: false\n\n--   ⑯ 6장의 자동 구성 클래스들이 이걸 끄고 있다\n\n\n-- 몇 겹인지도 볼 수 있다\n\n@Service\nclass BothService {\n    @Transactional\n    @Cacheable(\"x\")\n    public int work() { return 1; }\n}\n\n$ curl -s 'localhost:8080/who/advisors?name=bothService'\n프록시 클래스: study.adv.BothService$$SpringCGLIB$$0\n어드바이저 수: 2\n  org.springframework.cache.interceptor.CacheInterceptor\n  org.springframework.transaction.interceptor.TransactionInterceptor\n\n--   프록시는 하나고 안에 둘이 들어 있다\n--   7.5 절에서 이걸 만든다\n\n\n-- 부트 앱 전체를 센다\n\n$ curl -s localhost:8080/who/count\n전체 빈:        187\n감싸진 것:      12\n  CGLIB:        9\n  JDK:          3\n\n$ curl -s localhost:8080/who/proxies | head -4\ntransactionManager             jdk.proxy2.$Proxy118\nentityManagerFactory           jdk.proxy2.$Proxy126\norderServiceImpl               study.adv.OrderServiceImpl$$SpringCGLIB$$0\nmailService                    study.adv.MailService$$SpringCGLIB$$0\n\n--   ⑯ 6.1절에서 센 187 이다\n--   그중 열둘이 이미 감싸져 있다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ tail -3 logs/app.log\n07:24:41.104 DEBUG [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager\n  - Creating new transaction with name [study.adv.OrderServiceImpl.orderItem]\n07:24:41.106 INFO  [http-nio-8080-exec-3] study.adv.OrderServiceImpl - 주문 처리\n07:24:42.110 INFO  [http-nio-8080-exec-3] study.adv.OrderRepository - 저장 완료\n\n$ curl -s 'localhost:8080/who?name=orderServiceImpl' | head -3\n빈 이름:   orderServiceImpl\n주입된 것: study.adv.OrderServiceImpl$$SpringCGLIB$$0\n원본:     study.adv.OrderServiceImpl\n\n--   2.1 절에서 이걸 다 떼고 맨손으로 시작한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '처음'        '감싸진 것 0 개' \\\n  '@Transactional' '1 개' \\\n  '셋 붙이면'   '3 개' \\\n  'CGLIB'       '이름에 $$' \\\n  'JDK'         '이름이 무관' \\\n  '구체 타입'   'JDK 면 못 받음' \\\n  '설정 클래스' '감싸지지만 AOP 아님' \\\n  '여러 겹'     '프록시 하나에 둘' \\\n  '부트 앱'     '187 중 12'\n\n처음                       감싸진 것 0 개\n@Transactional             1 개\n셋 붙이면                  3 개\nCGLIB                      이름에 $$\nJDK                        이름이 무관\n구체 타입                  JDK 면 못 받음\n설정 클래스                감싸지지만 AOP 아님\n여러 겹                    프록시 하나에 둘\n부트 앱                    187 중 12",
+   "note": "**`@Transactional` 한 줄에 이름이 `OrderService$$SpringCGLIB$$0` 이 되고 내 코드에 없는 트랜잭션 로그가 내 줄 앞에** 찍힌다.\n\n**옛 기본으로 돌리니 이름이 `jdk.proxy2.$Proxy142` 로 아무것도 안 알려 주고 구체 타입 주입이** 실패한다.\n\n**애너테이션 셋을 붙이니 감싸진 빈이 셋이고 캐시는 두 번째 호출이 1.008 초에서 0.003 초가** 된다.\n\n**설정 클래스는 이름은 감싸진 모양인데 프록시 여부가 `false` 로 AOP 가** 아니다.\n\n**평범한 부트 앱에서 빈 187 개 중 열둘이 이미** 감싸져 있다."
+  }
+ ],
+ "recap": [
+  "**이미 돌고** 있다.",
+  "**한 줄이면** 감싸진다.",
+  "**모양이** 셋이다.",
+  "**CGLIB 은 $$** 다.",
+  "**JDK 는 이름이 무**관하다.",
+  "**구체 타입이** 터진다.",
+  "**설정은 다른** 이유다.",
+  "**여러 겹이** 든다.",
+  "**187 중 12 개**다."
+ ],
+ "drills": [
+  {
+   "task": "애너테이션을 하나 붙인다.",
+   "done_when": "이름이 바뀐 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "옛 기본으로 돌린다.",
+   "done_when": "JDK 프록시 이름을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "구체 타입으로 받아 본다.",
+   "done_when": "기동이 멈추는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "부트 앱의 프록시를 센다.",
+   "done_when": "몇 개인지 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이름 끝에 붙는 글자는 무엇을 뜻하나?",
+   "a": "런타임에 만들어진 하위 클래스라는 뜻이다."
+  },
+  {
+   "q": "JDK 쪽 이름의 문제는?",
+   "a": "원본과 아무 관계가 없어 이름으로는 알 수 없다."
+  },
+  {
+   "q": "왜 구체 타입 주입이 실패했나?",
+   "a": "인터페이스만 구현한 프록시라 그 타입이 아니어서다."
+  },
+  {
+   "q": "설정 클래스도 프록시인가?",
+   "a": "감싸지긴 하지만 AOP 프록시는 아니다."
+  },
+  {
+   "q": "이 장치는 언제부터 돌고 있었나?",
+   "a": "트랜잭션이나 캐시를 쓰던 때부터 계속 돌고 있었다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "생성된 하위 클래스",
+   "def": "원본을 상속해 런타임에 만들어진 클래스. 이름 끝에 표시가 붙는다."
+  },
+  {
+   "term": "인터페이스 프록시",
+   "def": "인터페이스만 구현한 프록시. 원본 타입으로는 받을 수 없다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — AopUtils",
+   "url": "https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/support/AopUtils.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
