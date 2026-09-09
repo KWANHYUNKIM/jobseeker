@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-v3",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "컴포넌트 스캔 버전",
+ "summary": "빈을 바꿔치기한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 어려운지 안다.",
+  "억지로 끼워 본다.",
+  "8장의 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.5절과 5.6절은 설정이 직접** 만들었다. **스캔이 만들면 끼울 자리가** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "스캔이 만드는 차이",
+   "ascii": "   the difference scanning makes\n\n   with a configuration   I build the object, so I can wrap it\n   with scanning          the container builds it, and I never see it\n\n   there is no line where a wrapper could be inserted",
+   "note": "**감쌀 코드를 넣을 줄 자체가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "내가 만들지 않은 것은 못 감싼다",
+   "md": "**5.1절의 조건 ③** 이다.\n\n> **주입을 바꿔야** 한다.\n> **설정이 그걸** 했다.\n> **스캔은 내가 안** 만든다.\n\n**애너테이션이** 만든다.\n\n> **컨테이너가 알아서** 한다.\n> **아래에서 그걸** 본다.\n> **끼어들 줄이** 없다.\n\n**실무는 대개** 스캔이다.\n\n> **설정을 다 손으로 안** 쓴다.\n> **아래에서 세어** 본다.\n> **그래서 이게** 문제다.\n\n**억지로는** 된다.\n\n> **세 길이** 있다.\n> **아래에서 둘을** 해 본다.\n> **셋째가 8장**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "끼어들 수 있는 세 자리",
+   "ascii": "   three places to intervene when scanning builds the bean\n\n   take the scanned bean back and re-register a wrapper\n   let the scan run and override the name afterwards\n   hook the moment between creation and registration\n\n   the third one is chapter eight, and the only clean one",
+   "note": "**셋째가 8장이고 깨끗한 건 그것뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈 이름이 겹치면 조용히 덮인다",
+   "md": "**같은 이름이면** 덮인다.\n\n> **오류가 안** 난다.\n> **아래에서 그걸** 겪는다.\n> **설정에 따라** 다르다.\n\n**순서에** 달렸다.\n\n> **누가 나중이냐**다.\n> **아래에서 뒤집어** 본다.\n> **믿을 게** 못 된다.\n\n**스캔을 막을 수도** 있다.\n\n> **필터로** 뺀다.\n> **아래에서 그렇게** 한다.\n> **그러면 5.5절과** 같아진다.\n\n**결국 설정을 쓰게** 된다.\n\n> **스캔의 이점이** 사라진다.\n> **아래에서 세어** 본다.\n> **8장이 이걸** 푼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 스캔되는 버전\n\n@RestController\n@RequiredArgsConstructor\npublic class OrderControllerV3 {\n    private final OrderServiceV3 orderService;\n\n    @GetMapping(\"/v3/request\")\n    public String request(@RequestParam String itemId) {\n        orderService.orderItem(itemId);\n        return \"ok\";\n    }\n}\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n    private final OrderRepositoryV3 orderRepository;\n    public void orderItem(String itemId) { orderRepository.save(itemId); }\n}\n\n@Repository\npublic class OrderRepositoryV3 {\n    public void save(String itemId) { ... }\n}\n\n$ grep -c '@Service\\|@Repository\\|@RestController' \\\n    src/main/java/study/adv/app/*V3*.java | awk -F: '{s+=$2} END {print s}'\n3\n\n$ grep -rn 'new OrderServiceV3\\|new OrderRepositoryV3' src/main/java\n(없음)\n\n--   내가 만드는 줄이 하나도 없다\n--   5.5 절에서는 설정에 있었다\n\n\n-- 실무는 대개 이쪽이다\n\n$ grep -rlc '@Service\\|@Repository\\|@Component\\|@RestController' \\\n    src/main/java/study/adv/app | wc -l\n       3\n$ grep -c '@Bean' src/main/java/study/adv/proxy/*Config.java \\\n    | awk -F: '{s+=$2} END {print s}'\n6\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nimport collections\nc = collections.Counter()\nfor k, v in b.items():\n    r = str(v.get('resource'))\n    c['스캔' if '.class]' in r else '설정'] += 1\nprint(dict(c))\"\n{'스캔': 142, '설정': 45}\n\n--   ⑯ 6.1절에서 센 그 빈들이다\n--   대부분이 스캔이다\n\n\n-- 어디에 끼우나\n\n$ curl -s localhost:8080/who/all | grep V3\norderControllerV3    study.adv.app.OrderControllerV3\norderServiceV3       study.adv.app.OrderServiceV3\norderRepositoryV3    study.adv.app.OrderRepositoryV3\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   아무것도 안 감싸졌다\n--   5.5, 5.6 절과 다르다\n\n\n-- 길 ① 같은 이름으로 다시 등록한다\n\n@Configuration\npublic class ScanProxyConfig {\n    @Bean\n    public OrderServiceV3 orderServiceV3(OrderRepositoryV3 repo, LogTrace trace) {\n        OrderServiceV3 impl = new OrderServiceV3(repo);\n        return new OrderServiceV3Proxy(impl, trace);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | head -5\n***************************\nAPPLICATION FAILED TO START\n***************************\nThe bean 'orderServiceV3', defined in class path resource [ScanProxyConfig.class],\ncould not be registered. A bean with that name has already been defined in file\n[.../OrderServiceV3.class] and overriding is disabled.\n\n--   이름이 겹쳤다\n--   기본은 못 덮게 되어 있다\n\n\n-- 덮어쓰기를 켠다\n\nspring:\n  main:\n    allow-bean-definition-overriding: true\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Overriding bean definition'\n1\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | head -2\n빈 이름:   orderServiceV3\n주입된 것: study.adv.proxy.OrderServiceV3Proxy\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[796bccd9] OrderService.orderItem()\n[796bccd9] OrderService.orderItem() time=1004ms\n\n--   됐다\n--   그런데 경고가 하나 뜬다\n\n\n-- 순서에 달렸다\n\n$ ./gradlew bootRun 2>&1 | grep 'Overriding bean definition'\nINFO ... : Overriding bean definition for bean 'orderServiceV3' with a different\n  definition: replacing [.../OrderServiceV3.class] with [ScanProxyConfig]\n\n// 스캔을 나중에 돌게 하면\n@ComponentScan\n@Import(ScanProxyConfig.class)\npublic class AdvApplication { }\n\n$ ./gradlew bootRun 2>&1 | grep 'Overriding bean definition'\nINFO ... : Overriding bean definition for bean 'orderServiceV3' with a different\n  definition: replacing [ScanProxyConfig] with [.../OrderServiceV3.class]\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | head -2\n빈 이름:   orderServiceV3\n주입된 것: study.adv.app.OrderServiceV3\n\n--   반대로 덮였다\n--   프록시가 사라졌다\n--   조용히 그렇게 된다\n\n\n-- 길 ② 스캔에서 뺀다\n\n@ComponentScan(excludeFilters = @ComponentScan.Filter(\n    type = FilterType.ASSIGNABLE_TYPE, classes = OrderServiceV3.class))\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Overriding'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | head -2\n빈 이름:   orderServiceV3\n주입된 것: study.adv.proxy.OrderServiceV3Proxy\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] OrderService.orderItem()\n[3d81f0a2] OrderService.orderItem() time=1004ms\n\n--   경고가 사라졌다\n--   그런데 뺀 만큼 설정에 적어야 한다\n\n\n-- 셋 다 빼면\n\n@ComponentScan(excludeFilters = @ComponentScan.Filter(\n    type = FilterType.ASSIGNABLE_TYPE,\n    classes = { OrderControllerV3.class, OrderServiceV3.class,\n                OrderRepositoryV3.class }))\n\n$ grep -c '@Bean' src/main/java/study/adv/proxy/ScanProxyConfig.java\n3\n$ wc -l < src/main/java/study/adv/proxy/ScanProxyConfig.java\n      34\n\n$ diff <(sed 's/V3/VX/g' src/main/java/study/adv/proxy/ScanProxyConfig.java \\\n           | grep -c '@Bean') \\\n       <(sed 's/V1/VX/g' src/main/java/study/adv/proxy/InterfaceProxyConfig.java \\\n           | grep -c '@Bean')\n\n--   5.5 절의 설정과 같아졌다\n--   애너테이션은 그대로 붙어 있는데 아무 소용이 없다\n\n\n-- 스캔의 이점이 사라진다\n\n$ grep -c '@Service\\|@Repository\\|@RestController' \\\n    src/main/java/study/adv/app/*V3*.java | awk -F: '{s+=$2} END {print s}'\n3\n\n$ grep -c 'ASSIGNABLE_TYPE' src/main/java/study/adv/AdvApplication.java\n1\n$ grep -o 'V3.class' src/main/java/study/adv/AdvApplication.java | wc -l\n       3\n\n--   클래스를 하나 만들 때마다 두 곳에 적는다\n--   애너테이션 하나와 제외 목록 하나다\n\n\n-- 새 클래스를 만들면\n\n@Service\npublic class MemberServiceV3 {\n    public void join(String name) { ... }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/join?name=철수'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=memberServiceV3' | head -2\n빈 이름:   memberServiceV3\n주입된 것: study.adv.app.MemberServiceV3\n\n--   2.6 절부터 계속 나오는 그 깜빡함이다\n--   제외 목록과 설정에 둘 다 안 적었다\n\n\n-- 길 ③ 만들어진 뒤에 바꿔치기한다\n\n@Component\npublic class ProxyPostProcessor implements BeanPostProcessor {\n    @Override\n    public Object postProcessAfterInitialization(Object bean, String beanName) {\n        if (bean instanceof OrderServiceV3 target)\n            return new OrderServiceV3Proxy(target, trace);\n        return bean;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Overriding'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | head -2\n빈 이름:   orderServiceV3\n주입된 것: study.adv.proxy.OrderServiceV3Proxy\n\n$ grep -c 'ASSIGNABLE_TYPE' src/main/java/study/adv/AdvApplication.java\n0\n$ grep -c '@Bean' src/main/java/study/adv/proxy/ScanProxyConfig.java\n0\n\n--   제외 목록도 설정도 없다\n--   애너테이션은 그대로 둔다\n--   8 장 전체가 이 이야기다\n\n\n-- 돌려 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] OrderService.orderItem()\n[c14e0b93] OrderService.orderItem() time=1004ms\n\n$ curl -s localhost:8080/who/all | grep V3\norderControllerV3    study.adv.app.OrderControllerV3\norderServiceV3       study.adv.proxy.OrderServiceV3Proxy\norderRepositoryV3    study.adv.app.OrderRepositoryV3\n\n--   서비스만 감싸졌다\n--   조건을 그렇게 적어서다\n\n\n-- 세 길을 견준다\n\n$ printf '%-20s %-14s %-12s %s\\n' \\\n  '덮어쓰기'    '설정 필요'   '경고 뜸'    '순서에 달림' \\\n  '스캔 제외'   '설정 필요'   '경고 없음'  '두 곳에 적음' \\\n  '후처리기'    '설정 없음'   '경고 없음'  '8 장'\n\n덮어쓰기             설정 필요     경고 뜸      순서에 달림\n스캔 제외            설정 필요     경고 없음    두 곳에 적음\n후처리기             설정 없음     경고 없음    8 장\n\n\n-- 지금까지 세 버전\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n\n$ grep 'study.adv.trace' logs/app.log | tail -14 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n3\n\n$ grep 'study.adv.trace' logs/app.log | tail -14 | cut -c56- | sed -n '1,6p'\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[e82f14b0] OrderService.orderItem()\n[e82f14b0] OrderService.orderItem() time=1004ms\n\n--   V1 과 V2 는 여섯 줄, V3 는 두 줄이다\n--   후처리기 조건에 서비스만 적어서다\n\n\n-- 셋 다 감싸려면\n\nif (bean instanceof OrderControllerV3 || bean instanceof OrderServiceV3\n        || bean instanceof OrderRepositoryV3) { ... }\n\n$ curl -s localhost:8080/who/all | grep V3\norderControllerV3    study.adv.proxy.OrderControllerV3Proxy\norderServiceV3       study.adv.proxy.OrderServiceV3Proxy\norderRepositoryV3    study.adv.proxy.OrderRepositoryV3Proxy\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[a3f9c1b2] OrderController.request()\n[a3f9c1b2] |-->OrderService.orderItem()\n[a3f9c1b2] |   |-->OrderRepository.save()\n[a3f9c1b2] |   |<--OrderRepository.save() time=1004ms\n[a3f9c1b2] |<--OrderService.orderItem() time=1006ms\n[a3f9c1b2] OrderController.request() time=1007ms\n\n--   세 버전이 다 같은 여섯 줄이다\n--   V3 만 설정이 0 줄이다\n\n\n-- 클래스는 여전히 만든다\n\n$ find src/main/java/study/adv/proxy -name '*V3Proxy.java' | wc -l\n       3\n\n$ grep -c 'try {' src/main/java/study/adv/proxy/*V3Proxy.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   설정은 없앴는데 클래스는 셋이다\n--   5.8 절에서 이걸 센다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | head -3\n빈 이름:   orderServiceV3\n주입된 것: study.adv.proxy.OrderServiceV3Proxy\n원본:     study.adv.proxy.OrderServiceV3Proxy\n\n$ git add -A && git commit -q -m 'feat: v6 스캔 버전' && git tag v6-v3\n\n--   5.8 절에서 클래스 수를 센다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '스캔'        '내가 안 만듦' \\\n  '끼울 자리'   '없음' \\\n  '덮어쓰기'    '순서에 달림' \\\n  '스캔 제외'   '두 곳에 적음' \\\n  '새 클래스'   '또 깜빡함' \\\n  '후처리기'    '설정 0 줄' \\\n  '실무'        '빈 142 개가 스캔' \\\n  '세 버전'     '같은 여섯 줄' \\\n  '클래스'      '여전히 셋'\n\n스캔                       내가 안 만듦\n끼울 자리                  없음\n덮어쓰기                   순서에 달림\n스캔 제외                  두 곳에 적음\n새 클래스                  또 깜빡함\n후처리기                   설정 0 줄\n실무                       빈 142 개가 스캔\n세 버전                    같은 여섯 줄\n클래스                     여전히 셋",
+   "note": "**스캔 버전에는 `new` 하는 줄이 없어 감쌀 자리가 없고 로그가 0 줄**이다.\n\n**같은 이름으로 다시 등록하면 `overriding is disabled` 로 막히고 켜면 순서에 따라 프록시가 조용히** 사라진다.\n\n**스캔에서 빼면 경고는 없지만 클래스마다 애너테이션과 제외 목록 두 곳에 적어야** 한다.\n\n**빈 후처리기를 쓰니 제외 목록도 설정도 0 줄인데 이름이 `OrderServiceV3Proxy` 로** 바뀐다.\n\n**세 버전이 다 같은 여섯 줄을 내는데 V3 만 설정이 0 줄이고 프록시 클래스는 여전히 셋**이다."
+  }
+ ],
+ "recap": [
+  "**스캔은 내가 안** 만든다.",
+  "**끼울 줄이** 없다.",
+  "**덮어쓰기는** 위험하다.",
+  "**순서에** 달렸다.",
+  "**빼면 두 곳에** 적는다.",
+  "**이점이** 사라진다.",
+  "**후처리기가** 답이다.",
+  "**설정이 0 줄**이다.",
+  "**클래스는** 남는다."
+ ],
+ "drills": [
+  {
+   "task": "스캔 버전에 프록시를 못 끼우는 걸 본다.",
+   "done_when": "로그가 0 줄인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "덮어쓰기를 켜 본다.",
+   "done_when": "순서에 따라 갈리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "스캔에서 빼 본다.",
+   "done_when": "두 곳에 적게 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "후처리기를 써 본다.",
+   "done_when": "설정이 0 줄인 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스캔된 빈을 왜 못 감싸나?",
+   "a": "컨테이너가 만들어서 감쌀 코드를 넣을 자리가 없다."
+  },
+  {
+   "q": "이름을 겹쳐 등록하면?",
+   "a": "기본은 막히고 켜면 순서에 따라 조용히 덮인다."
+  },
+  {
+   "q": "스캔 제외의 단점은?",
+   "a": "클래스마다 애너테이션과 제외 목록 두 곳에 적어야 한다."
+  },
+  {
+   "q": "가장 깨끗한 길은?",
+   "a": "빈이 만들어진 직후에 끼어드는 것이다."
+  },
+  {
+   "q": "그래도 남는 것은?",
+   "a": "프록시 클래스를 대상마다 만들어야 한다는 점이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빈 덮어쓰기",
+   "def": "같은 이름의 빈 정의를 나중 것으로 바꾸는 일. 기본은 막혀 있다."
+  },
+  {
+   "term": "빈 후처리기",
+   "def": "빈이 만들어진 직후 다른 객체로 바꿔치기할 수 있는 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Classpath Scanning",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — BeanPostProcessor",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

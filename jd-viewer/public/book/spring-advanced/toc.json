@@ -307,7 +307,7 @@
           "title": "컴포넌트 스캔 버전",
           "summary": "빈을 바꿔치기한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.8",
@@ -315,7 +315,7 @@
           "title": "클래스가 몇 개인가",
           "summary": "대상마다 하나씩 는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
