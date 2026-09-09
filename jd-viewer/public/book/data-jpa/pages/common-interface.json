@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "common-interface",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "공통 인터페이스로 바꾸기",
+ "summary": "구현 클래스를 지운다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇을 지우는지 안다.",
+  "SQL 이 같은지 확인한다.",
+  "달라지는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 65줄을** 썼다. **이제 지운다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 사라지나",
+   "ascii": "   what gets deleted, and what replaces it\n\n   gone     the class, the EntityManager field, the annotations,\n            every method body, and the jpql for the simple cases\n\n   left     one interface declaration, and the two type arguments\n\n   sixty five lines become two, and the sql does not change",
+   "note": "**65줄이 두 줄이 되고 SQL 은 안** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타입 인자 둘이 전부다",
+   "md": "```java\npublic interface MemberRepository\n        extends JpaRepository<Member, Long> {\n}\n```\n\n> **`Member` 가 엔티티, `Long` 이 식별자**다.\n> **4.1절에서 다른 게 셋이라고** 했다.\n> **셋째인 JPQL 은 아예 사라졌다.**\n\n**`@Repository` 를 안** 붙인다.\n\n> **예외 변환은 여전히** 된다.\n> **`SimpleJpaRepository` 에 붙어** 있다(7.1절).\n> **붙여도 해롭지는 않은데 불필요**하다.\n\n**빈 등록도 자동**이다.\n\n> **2.1절에서 봤다.**\n> **인터페이스를 찾아 프록시를** 만든다.\n> **`@Component` 계열이 하나도** 없다.\n\n**엔티티가 다섯이면 열 줄**이다.\n\n> **160줄이 10줄이** 된다.\n> **줄 수보다 중요한 건 복사가 사라진 것**이다.\n> **한 곳을 고치면 다 고쳐**진다."
+  },
+  {
+   "type": "figure",
+   "caption": "지운 뒤에도 남는 것",
+   "ascii": "   what you keep even after the delete\n\n   exception translation   still applied, without @Repository\n   transaction handling    now inside the generated implementation\n   the jpql you wrote      only for queries that are not derivable\n\n   the second one is a real change in behaviour, not just less typing",
+   "note": "**둘째는 타자 수가 아니라 동작의** 변화다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "트랜잭션이 안으로 들어간다",
+   "md": "**4.1절에서는 밖에서** 걸었다.\n\n> **테스트나 서비스의 `@Transactional`** 이었다.\n> **없으면 `persist` 가** 터졌다.\n\n**이제는 `save` 안에** 있다.\n\n> **2.5절에서 트랜잭션 없이도 `insert` 가** 나갔다.\n> **`SimpleJpaRepository` 에 클래스 단위로 붙어** 있다.\n> **7.2절에서 그 코드를** 연다.\n\n**편한데 위험**하다.\n\n> **메서드마다 트랜잭션이** 열린다.\n> **`save` 둘을 나란히 부르면 트랜잭션이** 둘이다.\n> **하나가 실패해도 앞의 것은 커밋돼** 있다.\n> **서비스에 `@Transactional` 을 거는 이유**다.\n\n**조회 메서드는 읽기 전용**이다.\n\n> **`readOnly = true` 가 붙어** 있다.\n> **스냅샷을 안 만들어 메모리를** 아낀다.\n> **7.5절의 힌트와 같은 효과**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 지우기 전\n\n$ wc -l src/main/java/study/datajpa/repository/MemberJpaRepository.java\n\n      34 MemberJpaRepository.java\n\n\n-- 지운다\n\n$ rm src/main/java/study/datajpa/repository/MemberJpaRepository.java\n$ rm src/main/java/study/datajpa/repository/TeamJpaRepository.java\n\n\n-- 대신 쓰는 것\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n}\n\npublic interface TeamRepository extends JpaRepository<Team, Long> {\n}\n\n$ wc -l src/main/java/study/datajpa/repository/*.java\n\n       7 MemberRepository.java\n       7 TeamRepository.java\n      14 total\n\n--   65줄이 14줄이다\n--   그중 절반은 package 와 import 다\n\n\n-- SQL 이 같은지 본다\n\n@Test\n@Transactional\nvoid 저장과_조회() {\n    Member m = memberRepository.save(new Member(\"김\", 20));\n    em.flush(); em.clear();\n    Member found = memberRepository.findById(m.getId()).orElseThrow();\n    System.out.println(\"이름: \" + found.getUsername());\n}\n\nHibernate:\n    insert\n    into\n        member (age, team_id, username, member_id)\n    values\n        (?, ?, ?, ?)\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n이름: 김\n\n--   4.1절과 한 글자도 안 다르다\n\n\n-- findAll 도\n\n@Test\n@Transactional\nvoid 전체() {\n    memberRepository.findAll();\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n\n--   JPQL 을 아무도 안 썼다\n--   4.1절에서는 문자열로 적었다\n\n\n-- count 도\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n\n--   같다\n\n\n-- @Repository 없이 예외 변환\n\n@Test\n@Transactional\nvoid 예외_변환() {\n    memberRepository.save(new Member(null, 20));\n    try {\n        em.flush();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getName());\n    }\n}\n\n예외: org.springframework.dao.DataIntegrityViolationException\n\n$ grep -c 'Repository' src/main/java/study/datajpa/repository/MemberRepository.java\n\n1\n\n$ grep '@' src/main/java/study/datajpa/repository/MemberRepository.java\n\n(애너테이션이 하나도 없다)\n\n--   @Repository 를 안 붙였는데 변환됐다\n--   SimpleJpaRepository 에 붙어 있다 (7.1절)\n\n\n-- 빈이 어떻게 떴나\n\n@Test\nvoid 빈_확인() {\n    ctx.getBeansOfType(JpaRepository.class)\n       .forEach((k, v) -> System.out.printf(\"%-18s %s%n\",\n               k, v.getClass().getSimpleName()));\n}\n\nmemberRepository   $Proxy127\nteamRepository     $Proxy128\n\n$ grep -rc '@Component\\|@Repository\\|@Service' \\\n    src/main/java/study/datajpa/repository/\n\n0\n\n--   애너테이션이 하나도 없다\n--   그래도 빈이 둘이다\n--   4.3절에서 이게 어떻게 되는지 본다\n\n\n-- 트랜잭션이 안으로 들어갔다\n\n@SpringBootTest\n// @Transactional 이 없다\nclass NoTxTest {\n\n    @Test\n    void 순수_JPA_였다면() {\n        // memberJpaRepository.save(new Member(\"김\"));\n        // -> TransactionRequiredException\n    }\n\n    @Test\n    void 데이터_JPA_는() {\n        Member m = memberRepository.save(new Member(\"김\", 20));\n        System.out.println(\"id: \" + m.getId());\n    }\n}\n\nHibernate:\n    insert\n    into\n        member (age, team_id, username, member_id)\n    values\n        (?, ?, ?, ?)\nid: 1\n\n--   2.5절에서 본 그것이다\n--   save 안에 @Transactional 이 있다\n\n\n-- 트랜잭션이 메서드마다 열린다\n\n@Test\nvoid 두_번_저장() {\n    memberRepository.save(new Member(\"a\", 20));\n    memberRepository.save(new Member(\"b\", 21));\n}\n\n2026-09-10 01:50:11 DEBUG o.s.orm.jpa.JpaTransactionManager :\n    Creating new transaction with name\n    [...SimpleJpaRepository.save]\nHibernate: insert into member (...) values (?, ?, ?, ?)\n2026-09-10 01:50:11 DEBUG o.s.orm.jpa.JpaTransactionManager :\n    Initiating transaction commit\n2026-09-10 01:50:11 DEBUG o.s.orm.jpa.JpaTransactionManager :\n    Creating new transaction with name\n    [...SimpleJpaRepository.save]\nHibernate: insert into member (...) values (?, ?, ?, ?)\n2026-09-10 01:50:11 DEBUG o.s.orm.jpa.JpaTransactionManager :\n    Initiating transaction commit\n\n--   트랜잭션이 둘이다\n--   각각 커밋됐다\n\n\n-- 두 번째가 실패하면\n\n@Test\nvoid 두_번째_실패() {\n    memberRepository.save(new Member(\"a\", 20));\n    try {\n        memberRepository.save(new Member(null, 21));\n    } catch (Exception e) {\n        System.out.println(\"실패: \" + e.getClass().getSimpleName());\n    }\n    System.out.println(\"남은 회원: \" + memberRepository.count());\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?)\n실패: DataIntegrityViolationException\nHibernate: select count(m1_0.member_id) from member m1_0\n남은 회원: 1\n\n--   a 는 커밋됐다\n--   둘이 하나의 단위가 아니었다\n--   서비스에 @Transactional 을 걸어야 한다\n\n\n-- 서비스에 걸면\n\n@Service\n@RequiredArgsConstructor\npublic class MemberService {\n    private final MemberRepository memberRepository;\n\n    @Transactional\n    public void 둘_저장() {\n        memberRepository.save(new Member(\"a\", 20));\n        memberRepository.save(new Member(null, 21));\n    }\n}\n\n@Test\nvoid 서비스_경유() {\n    try {\n        memberService.둘_저장();\n    } catch (Exception e) {\n        System.out.println(\"실패: \" + e.getClass().getSimpleName());\n    }\n    System.out.println(\"남은 회원: \" + memberRepository.count());\n}\n\nDEBUG JpaTransactionManager : Creating new transaction with name\n    [study.datajpa.service.MemberService.둘_저장]\nDEBUG JpaTransactionManager : Participating in existing transaction\nDEBUG JpaTransactionManager : Participating in existing transaction\nDEBUG JpaTransactionManager : Initiating transaction rollback\n실패: DataIntegrityViolationException\nHibernate: select count(m1_0.member_id) from member m1_0\n남은 회원: 0\n\n--   participating 이다\n--   기존 트랜잭션에 합류했다\n--   둘 다 롤백됐다\n--   ⑤ 에서 본 전파 규칙이다\n\n\n-- 조회는 읽기 전용이다\n\n@Test\nvoid 읽기_전용() {\n    memberRepository.findAll();\n}\n\nDEBUG JpaTransactionManager : Creating new transaction with name\n    [...SimpleJpaRepository.findAll]; readOnly\nHibernate: select m1_0.member_id, ... from member m1_0\n\n--   readOnly 가 붙어 있다\n--   스냅샷을 안 만든다\n--   7.5절의 힌트와 같은 효과다\n\n\n-- 지운 코드와 남은 코드\n\n$ git diff --stat HEAD~1\n\n MemberJpaRepository.java | 34 ----------------------\n TeamJpaRepository.java   | 31 -----------------------\n MemberRepository.java    |  7 ++++++\n TeamRepository.java      |  7 ++++++\n 4 files changed, 14 insertions(+), 65 deletions(-)\n\n--   65줄을 지우고 14줄을 넣었다\n--   SQL 은 한 글자도 안 바뀌었다",
+   "note": "**65줄이 14줄이 되고 `insert`·`select`·`count` 가 4.1절과 한 글자도 안** 다르다.\n\n**애너테이션이 하나도 없는데 예외가 `DataIntegrityViolationException` 으로** 변환된다.\n\n**`save` 를 두 번 부르면 트랜잭션이 둘이라 하나가 실패해도 앞은 커밋돼** 있다.\n\n**서비스에 걸면 `Participating in existing transaction` 으로 합류해 둘 다** 롤백된다.\n\n**`findAll` 트랜잭션에 `readOnly` 가 붙어** 있다."
+  }
+ ],
+ "recap": [
+  "**타입 인자 둘이** 전부다.",
+  "**65줄이 14줄이** 된다.",
+  "**SQL 은 안** 바뀐다.",
+  "**JPQL 이 아예** 사라진다.",
+  "**`@Repository` 없이 예외 변환이** 된다.",
+  "**애너테이션 없이 빈이** 뜬다.",
+  "**트랜잭션이 안으로** 들어간다.",
+  "**메서드마다 하나씩** 열린다.",
+  "**서비스에 걸어야 한 단위**가 된다."
+ ],
+ "drills": [
+  {
+   "task": "순수 JPA 리포지토리를 지운다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Repository` 없이 예외를 낸다.",
+   "done_when": "변환된 타입을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`save` 를 두 번 부른다.",
+   "done_when": "트랜잭션이 둘인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스에 `@Transactional` 을 건다.",
+   "done_when": "합류와 롤백을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스에 필요한 것은?",
+   "a": "엔티티 타입과 식별자 타입 두 인자다."
+  },
+  {
+   "q": "`@Repository` 를 안 붙여도 되는 이유는?",
+   "a": "생성된 구현체에 이미 붙어 있어 예외 변환이 된다."
+  },
+  {
+   "q": "트랜잭션은 어디 있나?",
+   "a": "`SimpleJpaRepository` 의 메서드에 붙어 있다."
+  },
+  {
+   "q": "`save` 두 번이 한 단위가 아닌 이유는?",
+   "a": "각 호출마다 트랜잭션이 열리고 닫히기 때문이다."
+  },
+  {
+   "q": "조회 메서드의 트랜잭션 속성은?",
+   "a": "`readOnly = true` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "트랜잭션 전파",
+   "def": "이미 트랜잭션이 있으면 합류하고 없으면 새로 여는 규칙."
+  },
+  {
+   "term": "readOnly",
+   "def": "변경을 안 한다고 알려 스냅샷 생성을 생략하게 하는 속성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data Commons — Reference",
+   "url": "https://docs.spring.io/spring-data/commons/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

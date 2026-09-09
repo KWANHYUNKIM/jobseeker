@@ -156,7 +156,7 @@
           "title": "순수 JPA 리포지토리",
           "summary": "먼저 손으로 다 쓴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -164,7 +164,7 @@
           "title": "공통 인터페이스로 바꾸기",
           "summary": "구현 클래스를 지운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",

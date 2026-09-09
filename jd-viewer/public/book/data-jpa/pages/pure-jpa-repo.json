@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "pure-jpa-repo",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "순수 JPA 리포지토리",
+ "summary": "먼저 손으로 다 쓴다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "손으로 다 써 본다.",
+  "무엇이 반복되는지 안다.",
+  "제네릭이 왜 답인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 손으로 먼저 쓰고 지운다고** 했다. **여기가 그 \"먼저\"** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "엔티티마다 스무 줄",
+   "ascii": "   what the same repository costs, per entity\n\n   save                3 lines\n   findById            3 lines\n   findAll             4 lines\n   count               4 lines\n   delete              3 lines\n   the class shell     4 lines\n\n   about twenty per entity, and the body is identical every time",
+   "note": "**몸통이 매번** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "다른 건 세 토큰뿐이다",
+   "md": "**엔티티 타입, 식별자 타입, JPQL 문자열**이다.\n\n> **나머지는 복사**다.\n> **엔티티가 다섯이면 백 줄이 복사된 코드**다.\n> **1.2절에서 세어 본 그** 숫자다.\n\n**`@PersistenceContext` 가** 주입한다.\n\n> **`@Autowired` 로도** 된다 — 부트가 지원한다.\n> **주입되는 건 실제 `EntityManager` 가** 아니다.\n> **트랜잭션마다 다른 걸 찾아 주는 프록시**다.\n\n**`@Repository` 가 예외를** 바꾼다.\n\n> **`PersistenceException` 을 스프링 예외로** 옮긴다.\n> **`DataIntegrityViolationException` 같은 것**이다.\n> **⑤ 에서 본 그 변환**이다.\n\n**트랜잭션은 서비스에** 건다.\n\n> **리포지토리에는 안** 건다.\n> **7.2절에서 데이터 JPA 는 다르다는 걸** 본다.\n> **여기서는 테스트의 `@Transactional` 이 그 역할**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "실제로 다른 것",
+   "ascii": "   what actually differs between two such classes\n\n   the entity type      Member versus Team\n   the id type          Long, both times\n   the jpql string      from Member versus from Team\n\n   three tokens, and everything else is copied\n   which is exactly the shape generics were invented for",
+   "note": "**제네릭이 만들어진 이유가 이 모양**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "손으로 쓰면 보이는 것도 있다",
+   "md": "**`Optional` 을 직접 감싼다.**\n\n> **`em.find` 는 `null` 을** 준다.\n> **`Optional.ofNullable` 로 싼다.**\n> **데이터 JPA 는 이걸 대신** 해 준다(5.8절).\n\n**JPQL 을 문자열로** 쓴다.\n\n> **오타가 컴파일에 안** 잡힌다.\n> **실행해야 안다.**\n> **5.3절의 `NamedQuery` 가 이걸 조금** 푼다.\n\n**페이징을 직접** 짠다.\n\n> **`setFirstResult`·`setMaxResults`** 다.\n> **총 개수 쿼리는 따로** 쓴다.\n> **5.9절에서 이걸 손으로 쓴 뒤 5.10절에서** 지운다.\n\n**이름을 마음대로 정할 수** 있다.\n\n> **`findByName` 이든 `searchByName` 이든** 된다.\n> **데이터 JPA 는 이름이 곧 규칙**이다(5.1절).\n> **자유를 잃고 편함을 얻는** 거래다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 손으로 쓴 리포지토리\n\n@Repository\npublic class MemberJpaRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public Member save(Member member) {\n        em.persist(member);\n        return member;\n    }\n\n    public Optional<Member> findById(Long id) {\n        Member member = em.find(Member.class, id);\n        return Optional.ofNullable(member);\n    }\n\n    public List<Member> findAll() {\n        return em.createQuery(\"select m from Member m\", Member.class)\n                 .getResultList();\n    }\n\n    public long count() {\n        return em.createQuery(\"select count(m) from Member m\", Long.class)\n                 .getSingleResult();\n    }\n\n    public void delete(Member member) {\n        em.remove(member);\n    }\n\n    public List<Member> findByUsername(String username) {\n        return em.createQuery(\n                \"select m from Member m where m.username = :username\",\n                Member.class)\n            .setParameter(\"username\", username)\n            .getResultList();\n    }\n}\n\n$ wc -l MemberJpaRepository.java\n\n      34 MemberJpaRepository.java\n\n\n-- 팀도 똑같이 쓴다\n\n@Repository\npublic class TeamJpaRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public Team save(Team team) {\n        em.persist(team);\n        return team;\n    }\n\n    public Optional<Team> findById(Long id) {\n        Team team = em.find(Team.class, id);\n        return Optional.ofNullable(team);\n    }\n\n    public List<Team> findAll() {\n        return em.createQuery(\"select t from Team t\", Team.class)\n                 .getResultList();\n    }\n    ...\n}\n\n$ diff <(sed 's/Member/X/g; s/member/x/g' MemberJpaRepository.java) \\\n       <(sed 's/Team/X/g; s/team/x/g' TeamJpaRepository.java)\n\n(차이 없음)\n\n--   타입 이름만 바꾸면 완전히 같다\n--   이게 복사된 코드다\n\n\n-- 동작은 한다\n\n@Test\n@Transactional\nvoid 저장과_조회() {\n    Member m = memberJpaRepository.save(new Member(\"김\", 20));\n    em.flush(); em.clear();\n    Member found = memberJpaRepository.findById(m.getId()).orElseThrow();\n    System.out.println(\"이름: \" + found.getUsername());\n}\n\nHibernate:\n    insert\n    into\n        member (age, team_id, username, member_id)\n    values\n        (?, ?, ?, ?)\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n이름: 김\n\n\n-- findAll\n\n@Test\n@Transactional\nvoid 전체_조회() {\n    memberJpaRepository.findAll();\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n\n--   JPQL 이 SQL 이 됐다\n--   select m from Member m 이 이렇게 번역된다\n\n\n-- count\n\n@Test\n@Transactional\nvoid 개수() {\n    System.out.println(memberJpaRepository.count());\n}\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n3\n\n--   count(m) 이 count(member_id) 가 됐다\n\n\n-- 조건 조회\n\n@Test\n@Transactional\nvoid 이름으로() {\n    memberJpaRepository.findByUsername(\"m1\");\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE o.h.orm.jdbc.bind : binding parameter (1:VARCHAR) <- [m1]\n\n--   JPQL 을 내가 썼다\n--   5.1절에서 이걸 이름만으로 만든다\n\n\n-- JPQL 오타는 실행해야 안다\n\npublic List<Member> findByUsernameTypo(String username) {\n    return em.createQuery(\n            \"select m from Member m where m.usernamee = :username\",\n            Member.class)\n        .setParameter(\"username\", username)\n        .getResultList();\n}\n\n$ ./gradlew compileJava\n\nBUILD SUCCESSFUL\n\n--   컴파일은 통과한다\n\n@Test\n@Transactional\nvoid 오타() {\n    memberJpaRepository.findByUsernameTypo(\"m1\");\n}\n\norg.hibernate.query.SemanticException:\n    Could not interpret path expression 'm.usernamee'\n\n--   실행해야 안다\n--   5.3절의 NamedQuery 가 이걸 조금 푼다\n\n\n-- 페이징도 손으로\n\npublic List<Member> findByPage(int age, int offset, int limit) {\n    return em.createQuery(\n            \"select m from Member m where m.age = :age\" +\n            \" order by m.username desc\", Member.class)\n        .setParameter(\"age\", age)\n        .setFirstResult(offset)\n        .setMaxResults(limit)\n        .getResultList();\n}\n\npublic long totalCount(int age) {\n    return em.createQuery(\n            \"select count(m) from Member m where m.age = :age\", Long.class)\n        .setParameter(\"age\", age)\n        .getSingleResult();\n}\n\n@Test\n@Transactional\nvoid 페이징() {\n    for (int i = 0; i < 5; i++) em.persist(new Member(\"p\" + i, 10));\n    em.flush(); em.clear();\n\n    List<Member> page = memberJpaRepository.findByPage(10, 0, 3);\n    long total = memberJpaRepository.totalCount(10);\n    System.out.println(\"이 페이지 \" + page.size() + \"건, 전체 \" + total + \"건\");\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age=?\n    order by\n        m1_0.username desc\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age=?\n이 페이지 3건, 전체 6건\n\n--   쿼리 둘을 내가 짰다\n--   5.9절에서 다시 쓰고 5.10절에서 지운다\n\n\n-- @Repository 가 예외를 바꾼다\n\n@Test\n@Transactional\nvoid 예외_변환() {\n    Member m = new Member(null, 20);      // not null 위반\n    memberJpaRepository.save(m);\n    try {\n        em.flush();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getName());\n    }\n}\n\n예외: org.springframework.dao.DataIntegrityViolationException\n\n--   PersistenceException 이 아니다\n--   @Repository 가 바꿨다\n--   ⑤ 에서 본 변환이다\n\n\n-- @Repository 를 떼면\n\n// @Repository 를 지우고 @Component 로\n\n예외: jakarta.persistence.PersistenceException\n\n--   JPA 예외가 그대로 올라온다\n--   데이터 JPA 는 이걸 자동으로 해 준다 (4.2절)\n\n\n-- 반복되는 양을 센다\n\n$ wc -l src/main/java/study/datajpa/repository/*JpaRepository.java\n\n      34 MemberJpaRepository.java\n      31 TeamJpaRepository.java\n      65 total\n\n$ grep -c 'em\\.' src/main/java/study/datajpa/repository/*JpaRepository.java\n\nMemberJpaRepository.java:8\nTeamJpaRepository.java:7\n\n--   엔티티 둘에 65줄이다\n--   다섯이면 160줄이다\n--   다른 건 세 토큰뿐이다\n--   4.2절에서 이걸 지운다",
+   "note": "**두 리포지토리를 타입 이름만 바꿔 `diff` 하면 차이가** 없다.\n\n**JPQL `select m from Member m` 이 컬럼 넷을 나열한 SQL 로** 번역된다.\n\n**JPQL 오타는 컴파일을 통과하고 실행에서 `SemanticException`** 이다.\n\n**페이징은 `offset ? rows fetch first ? rows only` 와 `count` 두 쿼리를 내가** 짰다.\n\n**`@Repository` 를 떼면 스프링 예외 대신 `PersistenceException`** 이 온다."
+  }
+ ],
+ "recap": [
+  "**엔티티마다 스무 줄쯤** 든다.",
+  "**몸통은 매번** 같다.",
+  "**다른 건 세 토큰**뿐이다.",
+  "**`Optional` 을 직접** 감싼다.",
+  "**JPQL 오타는 실행해야** 안다.",
+  "**페이징은 쿼리 둘을 직접** 짠다.",
+  "**`@Repository` 가 예외를** 바꾼다.",
+  "**이름은 마음대로 정할 수** 있다.",
+  "**그 자유를 다음 절에서** 판다."
+ ],
+ "drills": [
+  {
+   "task": "순수 JPA 리포지토리를 쓴다.",
+   "done_when": "여섯 메서드를 다 썼다.",
+   "minutes": 30
+  },
+  {
+   "task": "팀 것도 쓰고 `diff` 한다.",
+   "done_when": "차이가 없는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "JPQL 에 오타를 낸다.",
+   "done_when": "실행 시점에 나는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Repository` 를 떼 본다.",
+   "done_when": "예외 타입이 바뀌는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 리포지토리에서 실제로 다른 것은?",
+   "a": "엔티티 타입, 식별자 타입, JPQL 문자열 세 가지뿐이다."
+  },
+  {
+   "q": "JPQL 오타는 언제 드러나나?",
+   "a": "컴파일이 아니라 실행 시점이다."
+  },
+  {
+   "q": "순수 JPA 페이징에 필요한 쿼리는?",
+   "a": "목록 쿼리와 총 개수 쿼리 둘이다."
+  },
+  {
+   "q": "`@Repository` 의 역할은?",
+   "a": "JPA 예외를 스프링 데이터 접근 예외로 변환한다."
+  },
+  {
+   "q": "`em.find` 의 반환은?",
+   "a": "`null` 이라 `Optional` 로 직접 감싸야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "예외 변환",
+   "def": "구현 기술의 예외를 스프링 공통 예외로 바꾸는 것."
+  },
+  {
+   "term": "@PersistenceContext",
+   "def": "트랜잭션마다 알맞은 EntityManager 를 찾아 주는 주입."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
