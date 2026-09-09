@@ -47,7 +47,7 @@
           "title": "첫 쿼리",
           "summary": "한 줄을 조립하고 두 문장을 받는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -62,7 +62,7 @@
           "title": "프로젝트 생성",
           "summary": "의존성과 플러그인.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",

@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "first-query",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "첫 쿼리",
+ "summary": "한 줄을 조립하고 두 문장을 받는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "필요한 넷을 안다.",
+  "한 줄을 읽는다.",
+  "두 겹을 받는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 대응을** 봤다. **이제 처음부터 한 줄을** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "미리 있어야 하는 넷",
+   "ascii": "   four things that must exist before one line runs\n\n   the entity        an ordinary jpa entity, nothing added to it\n   the Q type        generated from it at compile time\n   the factory       a JPAQueryFactory holding an EntityManager\n   the transaction   because the EntityManager needs one\n\n   the second row is the one that is missing when nothing compiles",
+   "note": "**아무것도 컴파일이 안 될 땐 둘째 줄이** 없는 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "엔티티에는 아무것도 안 붙인다",
+   "md": "**평범한 JPA 엔티티**다.\n\n> **`@Entity` 와 `@Id` 면** 된다.\n> **Querydsl 용 어노테이션이** 없다.\n> **①에서 만든 것 그대로** 쓴다.\n\n**Q 타입이 대신 생긴**다.\n\n> **컴파일 때 `QMember` 가** 만들어진다.\n> **필드가 `StringPath`·`NumberPath`** 다.\n> **그게 1.2절의 타입 검사 근거**다.\n\n**팩토리가 `EntityManager` 를 들고** 있다.\n\n> **결국 JPA 로** 나간다.\n> **⑭ 7.1절에서 본 그** 자리다.\n> **3.4절에서 어디에 둘지** 정한다.\n\n**트랜잭션이** 필요하다.\n\n> **`EntityManager` 를 쓰니** 당연하다.\n> **테스트에 `@Transactional` 을** 붙인다.\n> **⑭ 7.2절의 이야기가 그대로** 온다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄을 읽는 법",
+   "ascii": "   one line, read left to right\n\n   queryFactory   the object that owns the EntityManager\n   selectFrom     the select and from clauses at once\n   where          one predicate, or several separated by commas\n   fetch          the call that actually sends anything\n\n   everything before the last word only builds an object",
+   "note": "**마지막 낱말 전까지는 객체만** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Q 타입은 소스가 아니라 빌드 산출물이다",
+   "md": "**`build/` 아래에** 생긴다.\n\n> **`src/` 에 두면 안** 된다.\n> **커밋하면 엔티티와 어긋난**다.\n> **2.2절에서 그 자리를** 본다.\n\n**엔티티를 고치면 다시 만들어야** 한다.\n\n> **필드를 더하면 Q 타입도** 는다.\n> **컴파일이 알아서** 한다.\n> **IDE 가 안 하면 손으로** 돌린다.\n\n**`static import` 가 관례**다.\n\n> **`QMember.member` 를 `member` 로** 쓴다.\n> **문장이 JPQL 처럼** 읽힌다.\n> **4.2절에서 다시** 본다.\n\n**첫 실패가 대개 여기**다.\n\n> **`cannot find symbol: QMember`** 다.\n> **엔티티 문제가** 아니다.\n> **2.3절이 그 절**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 엔티티는 평범하다\n\n@Entity\n@Getter @Setter\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\npublic class Member {\n\n    @Id @GeneratedValue\n    @Column(name = \"member_id\")\n    private Long id;\n\n    private String username;\n    private int age;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"team_id\")\n    private Team team;\n}\n\n$ grep -c 'Querydsl\\|QueryProjection' Member.java\n0\n\n--   Querydsl 어노테이션이 하나도 없다\n\n\n-- Q 타입이 생겼는지 본다\n\n$ ./gradlew compileJava -q\n\n$ find build -name 'QMember.java'\nbuild/generated/sources/annotationProcessor/java/main/\n  study/querydsl/entity/QMember.java\n\n$ sed -n '1,26p' build/generated/.../QMember.java\n\npackage study.querydsl.entity;\n\nimport static com.querydsl.core.types.PathMetadataFactory.*;\nimport com.querydsl.core.types.dsl.*;\n\npublic class QMember extends EntityPathBase<Member> {\n\n    public static final QMember member = new QMember(\"member1\");\n\n    public final NumberPath<Integer> age =\n            createNumber(\"age\", Integer.class);\n\n    public final NumberPath<Long> id =\n            createNumber(\"id\", Long.class);\n\n    public final QTeam team;\n\n    public final StringPath username =\n            createString(\"username\", String.class);\n\n    public QMember(String variable) { ... }\n}\n\n--   age 가 NumberPath 다\n--   username 이 StringPath 다\n--   1.2절의 타입 검사가 여기서 나온다\n\n\n-- 팩토리를 만든다\n\n@SpringBootTest\n@Transactional\nclass FirstQueryTest {\n\n    @PersistenceContext EntityManager em;\n    JPAQueryFactory queryFactory;\n\n    @BeforeEach\n    void init() {\n        queryFactory = new JPAQueryFactory(em);\n\n        Team teamA = new Team(\"teamA\");\n        em.persist(teamA);\n        em.persist(new Member(\"m1\", 10, teamA));\n        em.persist(new Member(\"m2\", 20, teamA));\n        em.flush();\n        em.clear();\n    }\n}\n\n--   EntityManager 하나를 넘긴다\n\n\n-- 한 줄을 조립한다\n\n@Test\nvoid 첫_쿼리() {\n    Member found = queryFactory\n            .selectFrom(member)\n            .where(member.username.eq(\"m1\"))\n            .fetchOne();\n\n    System.out.println(\"이름: \" + found.getUsername());\n    System.out.println(\"나이: \" + found.getAge());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.team_id,\n        m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- [m1]\n이름: m1\n나이: 10\n\n--   별칭이 member1 이다\n--   QMember 소스의 그 문자열이다\n\n\n-- 별칭의 출처를 확인한다\n\n$ grep 'new QMember' build/generated/.../QMember.java | head -1\n    public static final QMember member = new QMember(\"member1\");\n\n--   변수 이름은 member 인데 별칭은 member1 이다\n--   JPQL 에 나오는 건 뒤쪽이다\n\n\n-- static import 를 뺀다\n\n@Test\nvoid import_없이() {\n    Member found = queryFactory\n            .selectFrom(QMember.member)\n            .where(QMember.member.username.eq(\"m1\"))\n            .fetchOne();\n    System.out.println(\"이름: \" + found.getUsername());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\n\n--   결과가 같다\n--   읽기만 길어졌다\n\n\n-- 조립과 실행을 나눠 본다\n\n@Test\nvoid 나눠서() {\n    System.out.println(\"--- 조립 시작 ---\");\n    JPAQuery<Member> query = queryFactory\n            .selectFrom(member)\n            .where(member.age.goe(15));\n    System.out.println(\"--- 조립 끝 ---\");\n    System.out.println(\"JPQL: \" + query);\n    System.out.println(\"--- fetch ---\");\n    List<Member> result = query.fetch();\n    System.out.println(\"건수: \" + result.size());\n}\n\n--- 조립 시작 ---\n--- 조립 끝 ---\nJPQL: select member1\nfrom Member member1\nwhere member1.age >= ?1\n--- fetch ---\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0 where m1_0.age>=?\n건수: 1\n\n--   조립 구간에서는 아무 로그도 없다\n--   fetch 에서만 나갔다\n\n\n-- 같은 쿼리를 두 번 실행할 수도 있다\n\n@Test\nvoid 재사용() {\n    JPAQuery<Member> query = queryFactory\n            .selectFrom(member)\n            .where(member.age.goe(15));\n\n    System.out.println(\"첫 번째: \" + query.fetch().size());\n    em.clear();\n    System.out.println(\"두 번째: \" + query.fetch().size());\n}\n\nHibernate: select ... from member m1_0 where m1_0.age>=?\n첫 번째: 1\nHibernate: select ... from member m1_0 where m1_0.age>=?\n두 번째: 1\n\n--   두 번 나갔다\n--   조립한 객체를 다시 쓸 수 있다\n\n\n-- 트랜잭션이 없으면\n\n@SpringBootTest\nclass NoTxTest {          // @Transactional 이 없다\n\n    @Test\n    void 조회() {\n        List<Member> r = queryFactory.selectFrom(member).fetch();\n        System.out.println(\"건수: \" + r.size());\n    }\n}\n\nHibernate: select m1_0.member_id, ... from member m1_0\n건수: 2\n\n--   조회는 된다\n--   ⑭ 7.2절처럼 짧은 트랜잭션이 열렸다 닫힌다\n--   대신 지연 로딩은 안 된다\n\n\n-- 연관을 건드리면\n\n@Test\nvoid 지연_로딩() {\n    Member m = queryFactory.selectFrom(member).fetchFirst();\n    try {\n        System.out.println(m.getTeam().getName());\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select ... from member m1_0 fetch first ? rows only\n예외: LazyInitializationException\n\n--   ⑭ 6.5절에서 본 그것이다\n--   4.13절에서 fetch join 으로 푼다\n\n\n-- 여기까지 쓴 것\n\n$ wc -l src/main/java/study/querydsl/entity/Member.java\n      28 Member.java\n$ find build -name 'Q*.java' | wc -l\n       2\n$ grep -c 'queryFactory' FirstQueryTest.java\n       6\n\n--   내가 쓴 건 엔티티 28 줄이 전부다\n--   Q 타입 둘은 컴파일이 만들었다\n--   2.1절에서 그 컴파일 설정을 본다",
+   "note": "**엔티티에 Querydsl 어노테이션이 `0` 개인데 `QMember.java` 가 `build/generated` 아래에** 생긴다.\n\n**`age` 가 `NumberPath<Integer>`, `username` 이 `StringPath` — 타입 검사의 근거**다.\n\n**JPQL 별칭이 `member1` 로 나오고 그 출처가 `new QMember(\"member1\")`** 이다.\n\n**조립 구간에는 로그가 한 줄도 없고 `fetch` 에서만** 나간다.\n\n**트랜잭션 없이 조회는 되지만 연관을 건드리면 `LazyInitializationException`** 이다."
+  }
+ ],
+ "recap": [
+  "**엔티티는 평범**하다.",
+  "**Q 타입이 대신** 생긴다.",
+  "**필드가 타입을** 가진다.",
+  "**팩토리가 `EntityManager` 를** 든다.",
+  "**별칭은 `member1`** 이다.",
+  "**조립은 실행이** 아니다.",
+  "**`fetch` 에서** 나간다.",
+  "**쿼리를 다시 쓸 수** 있다.",
+  "**지연 로딩엔 트랜잭션이** 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "엔티티를 만들고 컴파일한다.",
+   "done_when": "Q 타입 파일을 찾았다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성된 Q 타입 소스를 읽는다.",
+   "done_when": "필드 타입을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조립과 실행을 나눈다.",
+   "done_when": "로그가 언제 나오는지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "트랜잭션 없이 연관을 건드린다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "엔티티에 Querydsl 어노테이션이 필요한가?",
+   "a": "필요 없다. 평범한 JPA 엔티티면 된다."
+  },
+  {
+   "q": "Q 타입은 어디에 생기나?",
+   "a": "빌드 산출물로 `build/generated` 아래에 생긴다."
+  },
+  {
+   "q": "JPQL 에 나오는 별칭은?",
+   "a": "Q 타입이 들고 있는 문자열이며 기본은 `member1` 이다."
+  },
+  {
+   "q": "SQL 은 언제 나가나?",
+   "a": "`fetch` 계열을 부를 때다."
+  },
+  {
+   "q": "트랜잭션 없이 지연 로딩을 하면?",
+   "a": "`LazyInitializationException` 이 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "JPAQueryFactory",
+   "def": "`EntityManager` 를 들고 쿼리를 시작하는 진입점 객체."
+  },
+  {
+   "term": "EntityPathBase",
+   "def": "생성된 Q 타입이 상속하는, 경로 표현식의 기반 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

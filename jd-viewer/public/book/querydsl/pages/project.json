@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "project",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "프로젝트 생성",
+ "summary": "의존성과 플러그인.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "필요한 넷을 안다.",
+  "jakarta 를 안다.",
+  "빌드가 도는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 Q 타입이 이미** 있었다. **그게 어떻게 생기는지를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "클래스패스에 있어야 하는 것",
+   "ascii": "   what has to be on the classpath, and why\n\n   querydsl jpa      the query api itself, jakarta classifier\n   querydsl apt      the annotation processor that writes Q types\n   jakarta annotation the Generated annotation the processor emits\n   jakarta persistence the Entity annotation the processor reads\n\n   the last two are what people forget, and the error is confusing",
+   "note": "**뒤 둘을 빠뜨리고 헤매는 일이** 잦다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "라이브러리 하나가 아니라 둘이다",
+   "md": "**쓰는 것과 만드는 것이** 다르다.\n\n> **`querydsl-jpa` 는 실행에** 쓴다.\n> **`querydsl-apt` 는 컴파일에만** 쓴다.\n> **둘 다 있어야** 한다.\n\n**APT 는 애노테이션 프로세서**다.\n\n> **`@Entity` 가 붙은 클래스를** 읽는다.\n> **그 옆에 `Q` 클래스를** 쓴다.\n> **자바 표준 기능**이다.\n\n**`annotationProcessor` 로** 건다.\n\n> **`implementation` 이면 안** 돈다.\n> **컴파일 경로가** 다르다.\n> **아래에서 그 실수를** 본다.\n\n**`jakarta` 분류자가 핵심**이다.\n\n> **부트 3부터 `javax` 가 아예** 없다.\n> **분류자를 빼면 `javax.persistence` 를** 찾는다.\n> **엔티티를 하나도 못** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "분류자가 전부를 가른다",
+   "ascii": "   the classifier that decides everything\n\n   querydsl 5.0 and below   javax by default, jakarta as a classifier\n   spring boot 3 and above  jakarta only, javax is gone\n\n   a javax jar on a jakarta project compiles and then finds no entities",
+   "note": "**빌드는 되고 Q 타입만 안** 생긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "실패가 조용하다",
+   "md": "**빌드가 성공한다.**\n\n> **처리할 엔티티가 없으니 할 일도** 없다.\n> **경고 하나 없이** 끝난다.\n> **다음 컴파일에서 `cannot find symbol`** 이다.\n\n**메시지가 Q 타입을** 가리킨다.\n\n> **원인은 분류자인데 증상은 심볼**이다.\n> **엔티티를 의심하게** 된다.\n> **2.3절이 그 절**이다.\n\n**롬복과 순서 문제가** 있었다.\n\n> **예전에는 둘이 부딪혔다.**\n> **지금 버전에서는 안** 그렇다.\n> **아래에서 같이 돌려** 본다.\n\n**`clean` 뒤에 다시 생겨야** 한다.\n\n> **안 생기면 설정이 아니라 캐시** 문제다.\n> **`build/` 를 지우고 다시** 돌린다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- build.gradle\n\nplugins {\n    id 'java'\n    id 'org.springframework.boot' version '3.3.2'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(21) }\n}\n\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n\n    // Querydsl\n    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'\n    annotationProcessor \"com.querydsl:querydsl-apt:5.1.0:jakarta\"\n    annotationProcessor \"jakarta.annotation:jakarta.annotation-api\"\n    annotationProcessor \"jakarta.persistence:jakarta.persistence-api\"\n\n    compileOnly 'org.projectlombok:lombok'\n    annotationProcessor 'org.projectlombok:lombok'\n\n    runtimeOnly 'com.h2database:h2'\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n}\n\ntasks.withType(JavaCompile) {\n    options.compilerArgs << '-parameters'\n}\n\n--   jakarta 가 두 번 나온다\n--   -parameters 는 ⑭ 5.6절의 그것이다\n\n\n-- 의존성 트리를 본다\n\n$ ./gradlew dependencies --configuration annotationProcessor \\\n    | grep -i 'querydsl\\|jakarta\\|lombok'\n\n+--- com.querydsl:querydsl-apt:5.1.0\n+--- jakarta.annotation:jakarta.annotation-api -> 2.1.1\n+--- jakarta.persistence:jakarta.persistence-api -> 3.1.0\n\\--- org.projectlombok:lombok -> 1.18.34\n\n--   컴파일 때만 쓰는 것들이다\n\n\n-- 실행 경로에는 없다\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -c 'querydsl-apt'\n0\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep 'querydsl-jpa'\n+--- com.querydsl:querydsl-jpa:5.1.0\n\n--   apt 는 빠졌고 jpa 만 남았다\n--   배포 크기가 안 는다\n\n\n-- 컴파일한다\n\n$ ./gradlew clean compileJava\n\n> Task :clean\n> Task :compileJava\nNote: Processing 2 entities.\n\nBUILD SUCCESSFUL in 3s\n\n$ find build -name 'Q*.java' | sort\nbuild/generated/sources/annotationProcessor/java/main/\n  study/querydsl/entity/QMember.java\nbuild/generated/sources/annotationProcessor/java/main/\n  study/querydsl/entity/QTeam.java\n\n--   엔티티 둘에 Q 타입 둘이다\n\n\n-- 분류자를 빼면\n\n// implementation 'com.querydsl:querydsl-jpa:5.1.0'\n// annotationProcessor \"com.querydsl:querydsl-apt:5.1.0\"\n\n$ ./gradlew clean compileJava\n\n> Task :compileJava\nBUILD SUCCESSFUL in 2s\n\n$ find build -name 'Q*.java' | wc -l\n0\n\n--   빌드가 성공했다\n--   Q 타입이 하나도 없다\n--   경고도 없다\n\n\n-- 그래서 다음 컴파일이 깨진다\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nFirstQueryTest.java:9: error: cannot find symbol\nimport static study.querydsl.entity.QMember.member;\n                                   ^\n  symbol:   class QMember\n\n--   증상은 심볼인데 원인은 분류자다\n\n\n-- annotationProcessor 대신 implementation 을 쓰면\n\n// implementation \"com.querydsl:querydsl-apt:5.1.0:jakarta\"\n\n$ ./gradlew clean compileJava -q\n$ find build -name 'Q*.java' | wc -l\n0\n\n--   경로에는 있는데 프로세서로 안 돈다\n--   설정 이름이 곧 역할이다\n\n\n-- jakarta.persistence-api 를 빼면\n\n// annotationProcessor \"jakarta.persistence:jakarta.persistence-api\" 제거\n\n$ ./gradlew clean compileJava\n\n> Task :compileJava FAILED\nerror: cannot access jakarta.persistence.Entity\n  class file for jakarta.persistence.Entity not found\n\n--   프로세서가 @Entity 를 못 읽는다\n--   이건 메시지가 정직하다\n\n\n-- 롬복과 같이 돈다\n\n$ ./gradlew clean compileJava -q\n\n$ grep -n 'getUsername' build/classes/java/main/study/querydsl/entity/Member.class \\\n    >/dev/null && echo 'lombok OK'\nlombok OK\n\n$ ls build/generated/sources/annotationProcessor/java/main/study/querydsl/entity/\nQMember.java\nQTeam.java\n\n--   둘 다 돌았다\n--   지금 버전에서는 순서 문제가 없다\n\n\n-- clean 뒤에도 다시 생긴다\n\n$ ./gradlew clean -q && find build -name 'Q*.java' | wc -l\n0\n$ ./gradlew compileJava -q && find build -name 'Q*.java' | wc -l\n2\n\n--   지워도 컴파일이 다시 만든다\n--   그래서 커밋할 이유가 없다\n\n\n-- gitignore 를 확인한다\n\n$ cat .gitignore | grep -A2 build\nbuild/\n!gradle/wrapper/gradle-wrapper.jar\n\n$ git status --porcelain | grep -c 'QMember'\n0\n\n--   빌드 산출물이라 추적하지 않는다\n\n\n-- 설정이 끝났는지 확인한다\n\n@Test\nvoid 설정_확인() {\n    Long count = queryFactory\n            .select(member.count())\n            .from(member)\n            .fetchOne();\n    System.out.println(\"건수: \" + count);\n}\n\n/* select\n    count(member1)\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n건수: 2\n\n--   Q 타입이 있고 팩토리가 돌았다\n--   2.2절에서 이 생성 과정을 더 들여다본다",
+   "note": "**`annotationProcessor` 경로에 apt·jakarta 셋이 있고 `runtimeClasspath` 에는 apt 가 `0`** 개다.\n\n**엔티티 둘에 `QMember`·`QTeam` 둘이** 생겼다.\n\n**분류자를 빼면 `BUILD SUCCESSFUL` 인데 Q 타입이 0개 — 경고조차** 없다.\n\n**`annotationProcessor` 대신 `implementation` 으로 걸어도 마찬가지로 0개**다.\n\n**`jakarta.persistence-api` 를 빼면 `cannot access jakarta.persistence.Entity` 로 정직하게** 터진다."
+  }
+ ],
+ "recap": [
+  "**쓰는 것과 만드는 것이** 다르다.",
+  "**`querydsl-apt` 가 생성기**다.",
+  "**`annotationProcessor` 로** 건다.",
+  "**`jakarta` 분류자가** 핵심이다.",
+  "**빼면 조용히 0개**다.",
+  "**증상은 심볼, 원인은 분류자**다.",
+  "**`persistence-api` 도** 필요하다.",
+  "**롬복과 같이** 돈다.",
+  "**커밋하지** 않는다."
+ ],
+ "drills": [
+  {
+   "task": "의존성 넷을 건다.",
+   "done_when": "Q 타입이 생긴 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "분류자를 빼 본다.",
+   "done_when": "조용히 0개인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`implementation` 으로 바꿔 본다.",
+   "done_when": "안 도는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`clean` 뒤 다시 만든다.",
+   "done_when": "재생성을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Querydsl 의존성이 둘인 이유는?",
+   "a": "실행용 API 와 컴파일용 애노테이션 프로세서가 따로다."
+  },
+  {
+   "q": "`jakarta` 분류자를 빼면?",
+   "a": "빌드는 성공하고 Q 타입이 하나도 안 생긴다."
+  },
+  {
+   "q": "그때 증상은?",
+   "a": "다음 컴파일에서 `cannot find symbol: QMember` 다."
+  },
+  {
+   "q": "`annotationProcessor` 대신 `implementation` 을 쓰면?",
+   "a": "경로에는 있어도 프로세서로 돌지 않는다."
+  },
+  {
+   "q": "Q 타입을 커밋해야 하나?",
+   "a": "안 한다. 컴파일이 매번 다시 만드는 빌드 산출물이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "애노테이션 프로세서",
+   "def": "컴파일 중에 소스를 읽고 새 소스를 생성하는 자바 표준 확장."
+  },
+  {
+   "term": "분류자(classifier)",
+   "def": "같은 좌표의 아티팩트를 구분하는 꼬리표. 여기서는 `jakarta`."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Gradle — Java Plugin",
+   "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
