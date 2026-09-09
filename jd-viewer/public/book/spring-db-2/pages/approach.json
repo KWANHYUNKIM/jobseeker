@@ -1,0 +1,145 @@
+{
+ "book": "spring-db-2",
+ "id": "approach",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "진행 방식",
+ "summary": "인터페이스 하나에 구현을 여섯 개 붙인다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책이 같은 것을 여섯 번 만드는 이유를 안다.",
+  "매 기술마다 반복하는 네 단계를 안다.",
+  "무엇을 비교의 기준으로 삼는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 기능을 여섯 번 만든다.** 우습게 들리지만 **비교하려면 다른 것이 하나뿐이어야** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "하나의 인터페이스, 여섯 개의 구현",
+   "ascii": "                  ItemRepository (interface)\n                          |\n   +------+------+--------+--------+---------+---------+\n   |      |      |        |        |         |         |\n Memory  Jdbc   MyBatis  JPA    DataJPA  Querydsl\n  2.2    3.2     5.3     6.3     7.3      8.4\n\n   위로는 하나. 아래로는 여섯.",
+   "note": "**절 번호를 적어 뒀다.** 이 책의 3~8장이 그대로 저 여섯 갈래다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 여섯 번인가",
+   "md": "**기술을 하나씩 따로 배우면 비교가 안 된다.**\n\n각각을 따로 배우면 이런 문장만 남는다.\n\n- \"JdbcTemplate 은 SQL 을 직접 쓴다\"\n- \"JPA 는 객체로 다룬다\"\n\n**둘 다 맞는 말인데 아무것도 안 알려 준다.** 언제 뭘 쓸지 모른다.\n\n**같은 기능을 같은 인터페이스로 만들면** 다른 것이 **구현 파일 하나**뿐이다. 그러면 이렇게 물을 수 있다.\n\n| 질문 | 답이 나오는 곳 |\n|---|---|\n| 코드가 몇 줄인가 | 구현 파일 |\n| **어떤 SQL 이 나갔나** | **로그** |\n| 동적 쿼리는 어떻게 되나 | `findAll` 하나 |\n| 컴파일러가 뭘 잡아 주나 | 오타를 내 본다 |\n| 예외가 무엇으로 오나 | 1편 6장의 그 이야기 |\n\n**두 번째가 이 책의 기준**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "기술마다 반복하는 네 단계",
+   "ascii": "   for each technology:\n\n     1  write the implementation\n     2  swap it in  (config: one line)\n     3  run the same test          --> green\n     4  read the sql it emitted    --> compare\n\n   3 과 4 사이에서 배운다",
+   "note": "**3번이 초록이 아니면 4번은 볼 필요가 없다.**"
+  },
+  {
+   "type": "compare",
+   "caption": "따로 배우기 vs 같은 것을 여섯 번",
+   "left": {
+    "title": "기술별로 따로",
+    "points": [
+     "각 기술의 튜토리얼을 따라간다",
+     "예제가 매번 다르다",
+     "**비교할 축이 없다**",
+     "\"좋다더라\" 로 고른다",
+     "면접에서 설명이 안 된다"
+    ]
+   },
+   "right": {
+    "title": "같은 것을 여섯 번",
+    "points": [
+     "인터페이스와 테스트가 고정이다",
+     "**구현 파일만 바뀐다**",
+     "나간 SQL 로 비교한다",
+     "**직접 본 것으로 고른다**",
+     "차이를 말로 설명할 수 있다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "고정된 것과 바뀌는 것",
+   "md": "**책 내내 안 바뀌는 것**을 먼저 못 박는다.\n\n| | 바뀌나 |\n|---|---|\n| `Item`, `ItemSearchCond` | **안 바뀐다** |\n| `ItemRepository` 인터페이스 | **안 바뀐다** |\n| `ItemService` | **안 바뀐다** |\n| 컨트롤러·화면 | **안 바뀐다** |\n| 테스트 | **안 바뀐다** |\n| **구현 클래스** | **매 장 새로 쓴다** |\n| **설정 클래스** | 한 줄 |\n\n**6장에서 딱 한 번 예외**가 생긴다 — JPA 는 `Item` 에 `@Entity` 를 붙여야 한다. **그때 그 사실 자체를 다룬다.**\n\n> **비교의 규칙: 기준선이 흔들리면 비교가 아니다.** 그래서 도메인을 건드려야 하는 기술이 있으면 그것을 **비용으로 적는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "순서에도 이유가 있다",
+   "md": "**아래에서 위로** 간다.\n\n```\n3장  JdbcTemplate   SQL 을 내가 쓴다\n5장  MyBatis        SQL 을 XML 로 뺀다\n6장  JPA            SQL 을 안 쓴다\n7장  Data JPA       구현조차 안 쓴다\n8장  Querydsl       동적 쿼리를 자바로 쓴다\n```\n\n**갈수록 SQL 이 눈앞에서 사라진다.** 그런데 **DB 에 나가는 SQL 은 여전히 SQL** 이다.\n\n> **그래서 매 절이 나간 SQL 로 끝난다.** 위로 올라갈수록 그 로그가 더 중요해진다 — **내가 안 쓴 SQL 이 나가기 때문**이다.\n\n**4장(테스트)이 3장 바로 뒤인 것**도 이유가 있다. 구현이 여섯이면 **같은 테스트를 여섯 번 돌린다.** 테스트가 못 미더우면 비교 전체가 못 미덥다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# 같은 테스트, 같은 호출\nrepository.findAll(new ItemSearchCond(\"itemA\", 10000));\n\n# --- 3장 JdbcTemplate ---\n#   select id, item_name, price, quantity from item\n#   where item_name like concat('%',?,'%') and price <= ?\n\n# --- 5장 MyBatis ---\n#   select id, item_name, price, quantity from item\n#   WHERE item_name like concat('%',?,'%') and price <= ?\n\n# --- 6장 JPA ---\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#   from item i1_0\n#   where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# --- 8장 Querydsl ---\n#   select item0_.id, item0_.item_name, item0_.price, item0_.quantity\n#   from item item0_\n#   where item0_.item_name like ? escape '!' and item0_.price<=?\n\n# 자바 코드는 다 다르다\n# DB 가 받은 것은 사실상 같다",
+   "note": "**네 개가 거의 같다.** 별칭과 공백이 다를 뿐이다.\n\n**이것이 이 책의 첫 번째 결론**이다 — **기술은 SQL 을 없애지 않는다. 누가 쓰느냐만 바꾼다.**\n\n**두 번째 결론은 나중에** 온다. 6장부터는 **내가 안 시킨 SQL** 도 나가기 시작한다."
+  }
+ ],
+ "recap": [
+  "**같은 기능을 여섯 번** 만든다.",
+  "**다른 것이 하나뿐이어야** 비교가 된다.",
+  "**나간 SQL 이 비교의 기준**이다.",
+  "**네 단계**: 구현 → 교체 → 같은 테스트 → SQL 읽기.",
+  "**도메인·서비스·컨트롤러·테스트는 안 바뀐다.**",
+  "**6장에서 한 번 예외** — JPA 가 `@Entity` 를 요구한다.",
+  "**아래에서 위로** — SQL 이 눈앞에서 사라지는 순서다.",
+  "**사라져도 DB 가 받는 것은 SQL** 이다.",
+  "**기술은 SQL 을 없애지 않는다. 누가 쓰는지만 바꾼다.**"
+ ],
+ "drills": [
+  {
+   "task": "고정될 것과 바뀔 것을 종이에 적어 본다.",
+   "done_when": "구현과 설정만 바뀌는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "네 단계를 순서대로 적어 본다.",
+   "done_when": "3번이 실패하면 4번을 안 본다는 것을 확인했다.",
+   "minutes": 5
+  },
+  {
+   "task": "지금 쓰는 기술 하나를 골라 위 표의 다섯 질문에 답해 본다.",
+   "done_when": "SQL 을 직접 못 봤다면 그것을 적어 뒀다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 같은 기능을 여섯 번 만드나?",
+   "a": "다른 것이 하나뿐이어야 비교가 되기 때문이다."
+  },
+  {
+   "q": "비교의 기준은 무엇인가?",
+   "a": "실제로 나간 SQL 이다."
+  },
+  {
+   "q": "네 단계는?",
+   "a": "구현 작성 → 설정 교체 → 같은 테스트 → 나간 SQL 읽기."
+  },
+  {
+   "q": "무엇이 안 바뀌나?",
+   "a": "도메인·인터페이스·서비스·컨트롤러·테스트. 구현과 설정만 바뀐다."
+  },
+  {
+   "q": "장 순서의 원리는?",
+   "a": "SQL 이 눈앞에서 점점 사라지는 순서다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

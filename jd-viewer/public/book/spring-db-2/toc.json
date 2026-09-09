@@ -99,7 +99,7 @@
           "title": "진행 방식",
           "summary": "인터페이스 하나에 구현을 여섯 개 붙인다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -107,7 +107,7 @@
           "title": "메모리 저장소",
           "summary": "기술 없이 먼저 돌아가게 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -115,7 +115,7 @@
           "title": "프로젝트 구조",
           "summary": "도메인 · 리포지토리 · 서비스 · 웹.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
