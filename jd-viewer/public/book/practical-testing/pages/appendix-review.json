@@ -1,0 +1,157 @@
+{
+ "book": "practical-testing",
+ "id": "appendix-review",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "정리",
+ "summary": "곁가지에서 남는 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 절의 공통점을 본다.",
+  "무엇을 도입할지 정한다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**넷 다 곁가지**인데 **셋은 문서를 만들고 하나는** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 절의 공통점",
+   "ascii": "   what the four appendix sections share\n\n   learning test    a test that documents a library\n   rest docs        a test that documents an api\n   assertj          a failure message that documents itself\n   coverage         a number that documents nothing\n\n   three of them make something readable\n   the fourth is the one people report in meetings",
+   "note": "**넷째만 아무것도 안** 만든다."
+  },
+  {
+   "type": "table",
+   "caption": "9장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "9.1",
+     "학습 테스트",
+     "**`partition` 이 복사본이 아니라 뷰였다**"
+    ],
+    [
+     "9.2",
+     "REST Docs",
+     "**깨진 API 의 문서는 나갈 수가 없다**"
+    ],
+    [
+     "9.3",
+     "AssertJ",
+     "**타입만 보면 다른 예외도 통과한다**"
+    ],
+    [
+     "9.4",
+     "커버리지",
+     "**단언 0개로 2% 가 올랐다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "셋은 4.1절의 연장이다",
+   "md": "**4.1절의 명제**\n\n> **틀리면 빌드가 깨지는 문서는 테스트뿐이다.**\n\n**9.1절 — 라이브러리 문서**\n\n> **`Lists.partition` 이 뷰라는 사실이 테스트로** 남았다.\n> **구아바를 올리면 그 테스트가 먼저** 깨진다.\n\n**9.2절 — API 문서**\n\n> **응답 필드를 바꾸면 문서가 안** 나온다.\n> **스웨거는 틀린 채로 생성**된다.\n\n**9.3절 — 실패 메시지가 문서**\n\n> **`hasSize(2) but was 1 in: [...]`** 는 그 자체로 설명이다.\n> **맞는 매처를 고르는 게 문서를 쓰는** 일이다.\n\n**9.4절만 반대**다.\n\n> **숫자는 아무것도 설명 안** 한다.\n> **87% 가 무슨 뜻인지 아무도** 모른다.\n>\n> **그런데 회의에서 보고되는 건 그것**이다.\n\n**이 책의 태도**\n\n> **읽을 수 있는 것을 만든다.**\n> **1.1절에서 \"매 절이 실제로 돌린 테스트 결과로 끝난다\" 고** 한 것도 같은 이유다.\n>\n> **숫자보다 출력**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 도입하나",
+   "ascii": "   what to actually adopt\n\n   learning test    when a library surprised you\n   rest docs        when an api has external consumers\n   assertj          always. pick the right matcher.\n   coverage         as a report, never as a target\n\n   only the third one is unconditional",
+   "note": "**셋째만 조건이** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "도입 판단",
+   "md": "**학습 테스트 — 놀랐을 때**\n\n> **\"어? 이게 이렇게 되네\" 가 나오면** 짠다.\n> **미리 짜 두는 게** 아니다.\n>\n> **이 책은 넷** 짰다(9.1절).\n\n**REST Docs — 소비자가 밖에 있을 때**\n\n| | |\n|---|---|\n| **외부 클라이언트** | 앱, 파트너사 |\n| **다른 팀** | 프런트엔드 |\n| **내부만** | 안 해도 된다 |\n\n> **설정이 무겁다**(9.2절). **읽는 사람이 있어야** 값을 한다.\n>\n> **스웨거로 충분한 팀도** 많다.\n\n**AssertJ — 항상**\n\n> **이미 의존성에** 있다(1.4절).\n> **비용이** 없다.\n>\n> **모양에 맞는 매처를 고르는 게** 전부다.\n\n**커버리지 — 리포트로만**\n\n| 하는 것 | 안 하는 것 |\n|---|---|\n| 리포트를 본다 | **목표를 정한다** |\n| 차이를 본다 | **PR 을 막는다** |\n| 특정 패키지에 경보 | **전체에 80%** |\n\n> **9.4절에서 96% 를 만드는 데 테스트를 한 줄도 안** 짰다.\n> **그 숫자로 뭘 판단하나.**\n\n**넷 다 안 해도 이 책의 본론은** 성립한다.\n\n> **1~8장이 본론**이다.\n> **9장은 있으면 좋은** 것들이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "10장이 이어받는 것",
+   "md": "**9장까지가 내용**이다.\n\n**10장은 돌아보기**다.\n\n| | |\n|---|---|\n| 10.1 | 서가가 빠뜨렸던 것 |\n| 10.2 | 내 프로젝트에 적용하기 |\n| 10.3 | 아홉 권 |\n| 10.4 | 다음 단계 |\n\n**10.1 이 이 책의 출발점**이다.\n\n> **1.1절에서 「활용 2편」 7.5절의 \"여덟 권이 다 건너뛰었다\" 를** 인용했다.\n> **그 자리를 채웠는지** 확인한다.\n>\n> **「활용 1편」 9.7절의 \"하나도 테스트를 안 깼다\" 를 다시** 본다.\n\n**10.2 가 실질**이다.\n\n> **테스트가 하나도 없는 프로젝트에 어디부터** 짜나.\n> **3.5절에서 \"버그 수정이 가장 쉽다\" 고** 했다.\n>\n> **레거시에 테스트를 씌우는 순서**를 다룬다.\n\n**10.3 은 서가 아홉 권**이다.\n\n> **「활용 2편」 7.5절에서 여덟 권을** 정리했다.\n> **이 책이 아홉 번째**다.\n>\n> **각 권이 무엇으로 끝났는지** 다시 본다.\n\n**10.4 는 그다음**이다.\n\n> **7.5절에서 꼽은 것 중 테스트가** 채워졌다.\n> **보안·아키텍처·Querydsl 이** 남는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 9장이 끝난 상태",
+   "sql": "# --- 전체 ---\n\n$ ./gradlew test\n\n카페 키오스크 ... 13 tests\n주문 ... 5 tests\n할인 계산 ... 7 tests\n상품 타입 ... 5 tests\n상품 ... 4 tests\n재고 ... 2 tests\n주문 상태 ... 5 tests\nProductOrderResolverTest ... 3 tests\nProductRepositoryTest ... 5 tests\nProductServiceTest ... 3 tests\nOrderServiceTest ... 5 tests\nOrderControllerTest ... 3 tests\nOrderControllerDocsTest ... 1 test\nMailServiceTest ... 3 tests\nOrderStatisticsServiceTest ... 2 tests\nOrderStatisticsServiceFakeTest ... 2 tests\nConcurrencyTest ... 1 test\nAsyncTest ... 1 test\nGuavaLearningTest ... 2 tests\nJacksonLearningTest ... 2 tests\nAssertJTest ... 4 tests\n\n78 tests completed\n\nBUILD SUCCESSFUL in 33s\n\n#   68개에서 78개가 됐다\n\n#   9장이 10개를 더했다\n\n#   시간은 31초에서 33초다\n\n# --- 학습 테스트와 AssertJ 는 단위다 ---\n\n$ ./gradlew test --tests GuavaLearningTest --tests JacksonLearningTest \\\n>   --tests AssertJTest\n\n8 tests completed\n\nBUILD SUCCESSFUL in 1s\n\n#   1초다. 스프링이 안 뜬다\n\n# --- 문서 ---\n\n$ ./gradlew asciidoctor\n\nBUILD SUCCESSFUL in 6s\n\n$ ls build/docs/asciidoc/\nindex.html\n\n$ grep -c \"<h3\" build/docs/asciidoc/index.html\n1\n\n#   API 하나가 문서화됐다\n\n# --- 커버리지 ---\n\n$ ./gradlew jacocoTestReport\n\n$ python3 - <<'PY'\nimport xml.etree.ElementTree as ET\nr = ET.parse('build/reports/jacoco/test/jacocoTestReport.xml').getroot()\nfor c in r.findall('counter'):\n    if c.get('type') in ('LINE', 'BRANCH'):\n        m, cv = int(c.get('missed')), int(c.get('covered'))\n        print(f\"{c.get('type'):8} {cv*100//(m+cv):3}%  ({cv}/{m+cv})\")\nPY\n\nLINE          88%  (533/605)\nBRANCH        76%  (61/80)\n\n#   88% 다\n\n#   목표가 아니라 참고 숫자다\n\n# --- 9장이 쓴 것 ---\n\n$ ls src/test/java/sample/cafekiosk/learning/\n\nGuavaLearningTest.java\nJacksonLearningTest.java\n\n$ ls src/docs/asciidoc/\n\nindex.adoc\n\n$ grep -n \"jacoco\" build.gradle\n\n8:    id 'jacoco'\n\n#   학습 테스트 둘, 문서 하나, JaCoCo 플러그인 하나\n\n# --- 9장 없이도 되는지 ---\n\n#   이 넷을 다 지워도\n\n$ ./gradlew test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 31s\n\n#   1~8장의 68개가 그대로 돈다\n\n#   6.7절의 네 실험도\n\n#   ① 쿼리 오타      5 failed\n#   ② @Transactional 1 failed\n#   ③ 메일 계산       2 failed\n#   ④ 배치 사이즈     1 failed\n\n#   다 잡힌다\n\n#   9장은 곁가지다\n\n# --- 다시 넣고 ---\n\n$ ./gradlew test\n\n78 tests completed\n테스트 33초 (예산 120초)\n\nBUILD SUCCESSFUL in 35s\n\n#   예산의 27% 다\n\n# --- 다음 장에서 ---\n\n#   서가가 빠뜨렸던 것을 확인한다",
+   "note": "**68개가 78개, 31초가 33초**다.\n\n**학습 테스트와 AssertJ 예제 여덟이 1초**다. **스프링이 안** 뜬다.\n\n**커버리지가 88%** 인데 **목표가 아니라 참고**다.\n\n**9장의 넷을 다 지워도 1~8장의 68개가 그대로** 돌고 **6.7절의 네 실험도 다** 잡힌다.\n\n**9장은 곁가지**다."
+  }
+ ],
+ "recap": [
+  "**셋은 문서를 만들고 하나는 아무것도 안** 만든다.",
+  "**9.1~9.3 이 4.1절의 연장**이다.",
+  "**9.4 만 반대** — 숫자는 설명을 안 한다.",
+  "**그런데 회의에서 보고되는 건 그것**이다.",
+  "**학습 테스트는 놀랐을 때** 짠다.",
+  "**REST Docs 는 소비자가 밖에 있을** 때다.",
+  "**AssertJ 만 조건이** 없다.",
+  "**커버리지는 리포트로만** 쓴다.",
+  "**9장을 다 지워도 본론이** 성립한다."
+ ],
+ "drills": [
+  {
+   "task": "9장의 넷 중 자기 프로젝트에 맞는 걸 고른다.",
+   "done_when": "이유를 적었다.",
+   "minutes": 15
+  },
+  {
+   "task": "학습 테스트를 하나 짠다.",
+   "done_when": "최근에 놀랐던 걸 남겼다.",
+   "minutes": 25
+  },
+  {
+   "task": "커버리지 리포트를 열어 본다.",
+   "done_when": "가장 낮은 패키지가 왜 낮은지 판단했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "9장 넷의 공통점과 차이는?",
+   "a": "셋은 읽을 수 있는 걸 만들고 커버리지만 숫자다."
+  },
+  {
+   "q": "학습 테스트는 언제 짜나?",
+   "a": "라이브러리 동작에 놀랐을 때다. 미리 짜 두는 게 아니다."
+  },
+  {
+   "q": "REST Docs 는 언제 도입하나?",
+   "a": "API 소비자가 밖에 있을 때다. 설정이 무겁다."
+  },
+  {
+   "q": "무조건 쓰는 것은?",
+   "a": "AssertJ 다. 이미 의존성에 있고 비용이 없다."
+  },
+  {
+   "q": "9장 없이도 되나?",
+   "a": "된다. 1~8장이 본론이고 9장은 곁가지다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JaCoCo Java Code Coverage Library",
+   "url": "https://www.jacoco.org/jacoco/trunk/doc/",
+   "publisher": "JaCoCo"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}

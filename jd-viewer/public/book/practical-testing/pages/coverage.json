@@ -1,0 +1,130 @@
+{
+ "book": "practical-testing",
+ "id": "coverage",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "커버리지",
+ "summary": "숫자를 목표로 하면.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "커버리지가 무엇을 세는지 안다.",
+  "왜 목표로 삼으면 안 되는지 안다.",
+  "그럼에도 어떻게 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.8절에서 조건에 안 넣었고 3.1절에서 100% 가 절반을 놓쳤다.** **여기서 정리**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "커버리지가 세는 것",
+   "ascii": "   what a coverage number counts\n\n   line        a line was executed\n   branch      both sides of an if were taken\n   method      a method was entered\n   class       a class was touched\n\n   none of them counts whether anything was asserted",
+   "note": "**단언 여부는 하나도 안** 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "실행과 검증은 다르다",
+   "md": "**JaCoCo 는 바이트코드 실행을** 센다.\n\n> **그 줄이 돌았나**를 본다.\n> **그 결과가 맞는지는 안** 본다.\n\n**2.1절의 이야기가 여기서 다시** 나온다.\n\n```java\n@Test\nvoid createOrder() {\n    orderService.createOrder(request, 영업중);\n}\n```\n\n> **단언이 없다.** **커버리지는 92%** 다.\n> **`println` 판과 같은 상태**다.\n\n**3.1절에서 본 것**\n\n```\n코드를 보고 짠 테스트 3개    커버리지 100%\n요구사항의 절반을 놓침\n```\n\n> **커버리지는 \"코드가 실행됐나\" 지 \"요구사항을 덮었나\" 가** 아니다.\n> **없는 코드는 셀 수가** 없다.\n\n**분기 커버리지는 조금** 낫다.\n\n```java\nif (currentTime.isBefore(OPEN) || !currentTime.isBefore(CLOSE)) {\n    throw ...;\n}\n```\n\n> **`||` 의 양쪽을 다 밟았나**를 본다.\n> **2.5절의 경계값과 가까워**진다.\n>\n> **그래도 `22:00` 이 포함인지 아닌지는 안** 묻는다.\n\n**세 줄 요약**\n\n| | |\n|---|---|\n| **낮으면** | **문제다.** 안 짠 코드가 있다 |\n| **높으면** | **모른다** |\n| **목표로 하면** | **나빠진다** |"
+  },
+  {
+   "type": "figure",
+   "caption": "단언 없는 테스트의 커버리지",
+   "ascii": "   a test with no assertion, and its coverage\n\n   @Test\n   void createOrder() {\n       orderService.createOrder(request, 영업중);\n   }\n\n   line coverage of OrderService: 92%\n   assertions: 0\n\n   the number says covered. nothing is checked.",
+   "note": "**숫자는 덮였다고** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "목표로 하면 나빠지는 이유",
+   "md": "**굿하트의 법칙**이다.\n\n> **측정값이 목표가 되면 좋은 측정값이기를** 멈춘다.\n\n**80% 를 강제하면 나오는 것들**\n\n**① 단언 없는 테스트**\n\n```java\n@Test\nvoid getters() {\n    Product p = createProduct(\"001\", 4000);\n    p.getId(); p.getName(); p.getPrice(); p.getType();\n}\n```\n\n> **커버리지가** 오른다. **아무것도 안** 지킨다.\n\n**② 게터·세터·DTO 테스트**\n\n> **`@Data` 가 만든 코드를** 테스트한다.\n> **5.2절의 `findById` 와 같은** 종류다.\n\n**③ 예외 처리 코드를 안 짠다**\n\n> **`catch` 블록은 커버하기** 어렵다.\n> **차라리 `catch` 를 없애 커버리지를** 올린다.\n>\n> **본말전도**다.\n\n**④ 중요한 걸 안 짠다**\n\n> **80% 를 채우는 가장 싼 길은 쉬운 코드**다.\n> **어려운 도메인 로직은 뒤로** 밀린다.\n\n**제외 규칙이 필요해**진다.\n\n```gradle\njacocoTestReport {\n    afterEvaluate {\n        classDirectories.setFrom(files(classDirectories.files.collect {\n            fileTree(dir: it, exclude: [\n                    '**/*Application*',\n                    '**/dto/**',\n                    '**/config/**',\n                    '**/Q*.class'\n            ])\n        }))\n    }\n}\n```\n\n> **제외를 늘리면 숫자가 오른다.**\n> **그것도 조작**이다.\n\n**쓸 만한 방식**\n\n| | |\n|---|---|\n| **경보로** | 특정 패키지가 50% 아래면 본다 |\n| **차이로** | 이번 PR 이 커버리지를 낮췄나 |\n| **탐색으로** | 리포트를 열어 빨간 줄을 읽는다 |\n\n> **셋 다 \"숫자를 올려라\" 가** 아니다.\n> **\"여기 안 짠 게 있다\" 를 알려 주는 용도**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- JaCoCo 를 붙인다 ---\n\n// build.gradle\nplugins {\n    id 'jacoco'\n}\n\njacoco { toolVersion = \"0.8.11\" }\n\njacocoTestReport {\n    dependsOn test\n    reports { html.required = true; xml.required = true }\n}\n\n$ ./gradlew test jacocoTestReport\n\n74 tests completed\n\nBUILD SUCCESSFUL in 34s\n\n$ python3 - <<'PY'\nimport xml.etree.ElementTree as ET\nr = ET.parse('build/reports/jacoco/test/jacocoTestReport.xml').getroot()\nfor c in r.findall('counter'):\n    t, m, cv = c.get('type'), int(c.get('missed')), int(c.get('covered'))\n    print(f\"{t:12} {cv*100//(m+cv):3}%  ({cv}/{m+cv})\")\nPY\n\nINSTRUCTION   84%  (2418/2871)\nBRANCH        76%  (61/80)\nLINE          87%  (521/598)\nCOMPLEXITY    78%  (142/181)\nMETHOD        81%  (178/219)\nCLASS         94%  (34/36)\n\n#   라인 87%, 분기 76% 다\n\n# --- 어디가 빨간지 ---\n\n$ open build/reports/jacoco/test/html/index.html\n\n#   sample.cafekiosk.api.controller     62%\n#   sample.cafekiosk.domain.order        96%\n#   sample.cafekiosk.api.service         91%\n#   sample.cafekiosk.client.mail         31%\n\n#   client.mail 이 31% 다\n\n#   SmtpMailSendClient 를 안 짰다  (6.8절)\n\n#   \"테스트할 로직이 없게 만드는 게 요점\" 이라고 했다\n\n#   숫자는 그걸 모른다\n\n# --- 단언 없는 테스트를 넣어 보면 ---\n\n@Test\nvoid coverageOnly() {\n    orderService.createOrder(\n            OrderCreateRequest.builder().productNumbers(List.of(\"001\")).build(),\n            영업중);\n}\n\n$ ./gradlew test jacocoTestReport\n\n75 tests completed\n\nLINE          89%  (533/598)\n\n#   87% 가 89% 가 됐다\n\n$ grep -c \"assertThat\" src/test/java/.../CoverageOnlyTest.java\n\n0\n\n#   단언이 0개인데 2% 올랐다\n\n#   2.1절의 println 테스트와 같다\n\n# --- 게터를 테스트하면 ---\n\n@Test\nvoid getters() {\n    Product p = createProduct(\"001\", 4000);\n\n    assertThat(p.getProductNumber()).isEqualTo(\"001\");\n    assertThat(p.getName()).isNotNull();\n    assertThat(p.getPrice()).isEqualTo(4000);\n    assertThat(p.getType()).isEqualTo(HANDMADE);\n    assertThat(p.getSellingStatus()).isEqualTo(SELLING);\n}\n\n$ ./gradlew test jacocoTestReport\n\nLINE          92%  (551/598)\n\n#   89% 가 92% 가 됐다\n\n#   단언이 다섯이라 '단언 없는 테스트' 도 아니다\n\n#   그런데 롬복이 만든 코드를 테스트한 것이다\n\n#   5.2절의 findById 와 같다. 내 코드 중 지울 게 없다\n\n# --- 제외 규칙을 넣으면 ---\n\njacocoTestReport {\n    afterEvaluate {\n        classDirectories.setFrom(files(classDirectories.files.collect {\n            fileTree(dir: it, exclude: [\n                    '**/*Application*',\n                    '**/dto/**',\n                    '**/client/**',\n                    '**/config/**'\n            ])\n        }))\n    }\n}\n\n$ ./gradlew test jacocoTestReport\n\nLINE          96%  (412/429)\n\n#   92% 가 96% 가 됐다\n\n#   테스트를 한 줄도 안 짰다\n\n#   client 를 제외한 게 컸다 (6.8절의 SmtpMailSendClient)\n\n#   제외가 정당한 경우도 있는데\n#   숫자를 올리려고 늘리면 조작이다\n\n# --- 3.1절의 상황을 재현하면 ---\n\n#   할인 계산을 구현부터 짜고 코드를 보고 테스트 셋\n\npublic static int calculate(int price, int level) {\n    if (level == 1) return (int) (price * 0.95);\n    if (level == 2) return (int) (price * 0.90);\n    return price;\n}\n\n@Test void level1() { assertThat(calculate(10000, 1)).isEqualTo(9500); }\n@Test void level2() { assertThat(calculate(10000, 2)).isEqualTo(9000); }\n@Test void level0() { assertThat(calculate(10000, 0)).isEqualTo(10000); }\n\n$ ./gradlew test jacocoTestReport\n\n$ python3 - <<'PY'\nimport xml.etree.ElementTree as ET\nr = ET.parse('build/reports/jacoco/test/jacocoTestReport.xml').getroot()\nfor p in r.iter('class'):\n    if 'DiscountCalculator' in p.get('name'):\n        for c in p.findall('counter'):\n            if c.get('type') in ('LINE','BRANCH'):\n                m, cv = int(c.get('missed')), int(c.get('covered'))\n                print(f\"{c.get('type'):8} {cv*100//(m+cv):3}%\")\nPY\n\nLINE     100%\nBRANCH   100%\n\n#   라인도 분기도 100% 다\n\n#   그런데 VIP 등급과 잘못된 등급 검증이 없다\n\n#   요구사항의 절반을 놓쳤는데 100% 다\n\n#   3.1절의 결론이 숫자로 나온다\n\n# --- 분기 커버리지가 잡는 것 ---\n\n#   영업시간 검증에서 한쪽만 테스트하면\n\n@Test void beforeOpen() {\n    assertThatThrownBy(() -> cafeKiosk.createOrder(개점직전))\n            .isInstanceOf(IllegalArgumentException.class);\n}\n\n#   마감 쪽 테스트를 지운다\n\n$ ./gradlew test jacocoTestReport\n\n#   CafeKiosk.createOrder\n\nBRANCH    50%  (2/4)\n\n#   || 의 오른쪽을 안 밟았다\n\n#   라인 커버리지는\n\nLINE     100%\n\n#   그 줄은 실행됐으니 100% 다\n\n#   분기가 라인보다 낫다\n\n#   그래도 22:00 이 포함인지는 안 묻는다  (2.5절)\n\n# --- 쓸 만한 방식: 차이로 ---\n\n$ ./gradlew jacocoTestReport\n\n$ git stash && ./gradlew test jacocoTestReport -q\n$ cp build/reports/jacoco/test/jacocoTestReport.xml /tmp/before.xml\n$ git stash pop && ./gradlew test jacocoTestReport -q\n\n$ python3 - <<'PY'\nimport xml.etree.ElementTree as ET\ndef line(f):\n    r = ET.parse(f).getroot()\n    for c in r.findall('counter'):\n        if c.get('type') == 'LINE':\n            m, cv = int(c.get('missed')), int(c.get('covered'))\n            return cv * 100 / (m + cv)\nb = line('/tmp/before.xml')\na = line('build/reports/jacoco/test/jacocoTestReport.xml')\nprint(f\"before {b:.1f}%  after {a:.1f}%  diff {a-b:+.1f}%\")\nPY\n\nbefore 87.1%  after 87.1%  diff +0.0%\n\n#   이번 변경이 커버리지를 안 낮췄다\n\n#   절대값이 아니라 차이를 본다\n\n# --- 쓸 만한 방식: 경보로 ---\n\njacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            element = 'PACKAGE'\n            includes = ['sample.cafekiosk.domain.*']\n            limit { counter = 'BRANCH'; minimum = 0.70 }\n        }\n    }\n}\n\n$ ./gradlew jacocoTestCoverageVerification\n\nBUILD SUCCESSFUL in 2s\n\n#   도메인 패키지만 분기 70% 를 요구한다\n\n#   전체에 80% 를 거는 것과 다르다\n\n#   도메인 분기를 하나 지우면\n\n$ ./gradlew jacocoTestCoverageVerification\n\n> Task :jacocoTestCoverageVerification FAILED\nRule violated for package sample.cafekiosk.domain.order:\n  branches covered ratio is 0.6, but expected minimum is 0.7\n\n#   경보가 온다\n\n#   숫자를 올리라는 게 아니라 보라는 것이다\n\n# --- 되돌린다 ---\n\n$ git checkout -- src/test/java\n$ ./gradlew test jacocoTestReport\n\n74 tests completed\n\nLINE          87%  (521/598)\nBRANCH        76%  (61/80)\n\n#   87% 다\n\n#   목표로 삼지 않는다\n\n# --- 다음 절에서 ---\n\n#   9장을 정리한다",
+   "note": "**라인 87%, 분기 76%** 다.\n\n**단언 없는 테스트 하나로 87% 가 89%** 가 된다. **`assertThat` 이 0개**인데.\n\n**게터 테스트로 92%, 제외 규칙으로 96%** — **테스트를 한 줄도 안** 짰다.\n\n**3.1절의 상황을 재현하니 라인도 분기도 100%** 인데 **요구사항의 절반을** 놓쳤다.\n\n**분기 커버리지가 `||` 의 한쪽을 안 밟은 걸** 잡는다. **라인은 100%** 다.\n\n**차이로 보거나 도메인 패키지에만 경보를** 건다."
+  }
+ ],
+ "recap": [
+  "**커버리지는 실행을 세고 검증은 안** 센다.",
+  "**단언 없는 테스트 하나가 2% 를** 올린다.",
+  "**게터 테스트와 제외 규칙으로 96% 까지** 간다.",
+  "**요구사항의 절반을 놓쳐도 100%** 가 나온다.",
+  "**없는 코드는 셀 수가** 없다.",
+  "**분기가 라인보다** 낫다 — `||` 의 한쪽을 잡는다.",
+  "**낮으면 문제, 높으면 모른다, 목표로 하면** 나빠진다.",
+  "**차이로 본다** — 이번 변경이 낮췄나.",
+  "**도메인 패키지에만 경보를** 건다."
+ ],
+ "drills": [
+  {
+   "task": "JaCoCo 를 붙이고 리포트를 연다.",
+   "done_when": "가장 낮은 패키지를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "단언 없는 테스트를 하나 넣어 본다.",
+   "done_when": "커버리지가 오르는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "제외 규칙을 늘려 본다.",
+   "done_when": "숫자가 오르는 것을 확인하고 되돌렸다.",
+   "minutes": 15
+  },
+  {
+   "task": "도메인 패키지에만 분기 경보를 건다.",
+   "done_when": "위반 시 실패하는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "커버리지가 세는 것은?",
+   "a": "코드가 실행됐는지다. 검증됐는지는 안 센다."
+  },
+  {
+   "q": "단언 없는 테스트의 커버리지는?",
+   "a": "오른다. 실행만 하면 세기 때문이다."
+  },
+  {
+   "q": "100% 인데 왜 부족할 수 있나?",
+   "a": "없는 코드는 셀 수가 없다. 요구사항의 절반을 놓쳐도 100% 다."
+  },
+  {
+   "q": "라인과 분기 중 무엇이 나은가?",
+   "a": "분기다. `||` 의 한쪽만 밟은 걸 잡는다."
+  },
+  {
+   "q": "어떻게 쓰나?",
+   "a": "절대값 목표가 아니라 차이와 특정 패키지 경보로 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "굿하트의 법칙",
+   "def": "측정값이 목표가 되면 좋은 측정값이기를 멈춘다는 법칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "JaCoCo Java Code Coverage Library",
+   "url": "https://www.jacoco.org/jacoco/trunk/doc/",
+   "publisher": "JaCoCo"
+  },
+  {
+   "title": "Gradle — The JaCoCo Plugin",
+   "url": "https://docs.gradle.org/current/userguide/jacoco_plugin.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  }
+ ]
+}

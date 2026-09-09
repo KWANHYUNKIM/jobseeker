@@ -609,7 +609,7 @@
           "title": "커버리지",
           "summary": "숫자를 목표로 하면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -617,7 +617,7 @@
           "title": "정리",
           "summary": "곁가지에서 남는 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
