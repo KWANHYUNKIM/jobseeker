@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-callback",
+ "no": "4.8",
+ "chapter": 4,
+ "title": "콜백 적용",
+ "summary": "여전히 남는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 버전을 센다.",
+  "남은 것을 짚는다.",
+  "4장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4장이 여덟 줄을 두 줄로** 줄였다. **남은 것을** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 버전이 없앤 것",
+   "ascii": "   four versions, and what each removed\n\n   v2   the parameter was added\n   v3   the parameter was removed\n   v4   the wrapping was moved into a template\n   v5   the template became a singleton bean\n\n   nothing removed the one line that calls it",
+   "note": "**부르는 한 줄을 없앤 버전은 하나도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "줄었지만 원본은 계속 열어야 했다",
+   "md": "**많이** 줄었다.\n\n> **104 줄이 62 줄**이다.\n> **아래에서 다시** 센다.\n> **일 대 십이 일 대 이**다.\n\n**그래도 파일을** 열었다.\n\n> **버전마다 세 파일**이다.\n> **아래에서 세어** 본다.\n> **5장이 그걸** 없앤다.\n\n**부르는 줄이** 남았다.\n\n> **1.2절부터 말한 그것**이다.\n> **아래에서 다시** 짚는다.\n> **8장까지** 간다.\n\n**깜빡함도** 남았다.\n\n> **네 버전 내내** 그랬다.\n> **아래에서 확인**한다.\n> **같은 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "여기선 왜 못 없애나",
+   "ascii": "   why the call line cannot be removed from here\n\n   the code that runs is inside the method\n   the method is inside the class\n   the class file has to be edited to add anything\n\n   the next chapter stops editing the class at all",
+   "note": "**다음 장은 클래스를 아예 안** 고친다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "람다가 늘면 읽기 어려워진다",
+   "md": "**중첩이** 깊어진다.\n\n> **4.7절에서 두 겹이** 됐다.\n> **아래에서 세 겹을** 본다.\n> **괄호가** 쌓인다.\n\n**스택 트레이스가** 길어진다.\n\n> **람다 프레임이** 낀다.\n> **아래에서 그걸** 본다.\n> **디버깅이** 불편하다.\n\n**중단점을 못 거는 자리도** 있다.\n\n> **한 줄짜리 람다**다.\n> **아래에서 그걸** 겪는다.\n> **여러 줄로** 편다.\n\n**타입 추론이** 헷갈린다.\n\n> **제네릭이 겹칠** 때다.\n> **아래에서 그** 오류를 본다.\n> **명시하면** 풀린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 네 버전을 나란히 센다\n\n$ for t in v0 v2-final v3-final v4-final v5-callback; do\n    printf '%-14s ' \"$t\"\n    git ls-tree -r $t --name-only | grep 'study/adv/Order' \\\n      | xargs -I{} git show $t:{} | wc -l\n  done\nv0              56\nv2-final       104\nv3-final       100\nv4-final        76\nv5-callback     62\n\n$ python3 -c \"print('v2 에서 v5 로', 104-62, '줄 줄었다')\"\nv2 에서 v5 로 42 줄 줄었다\n\n\n-- 전체를 센다\n\n$ for t in v0 v2-final v3-final v4-final v5-callback; do\n    printf '%-14s ' \"$t\"\n    git ls-tree -r $t --name-only | grep 'study/adv/' \\\n      | xargs -I{} git show $t:{} 2>/dev/null | wc -l\n  done\nv0              92\nv2-final       196\nv3-final       196\nv4-final       196\nv5-callback    182\n\n--   업무에서 빠진 만큼 틀로 갔다\n--   전체는 거의 안 준다\n\n\n-- 같은 메서드를 다섯 번 본다\n\n$ for t in v0 v2-final v3-final v4-final v5-callback; do\n    echo \"--- $t\"\n    git show $t:src/main/java/study/adv/OrderService.java \\\n      | sed -n '/public void orderItem/,/^    }/p'\n  done\n\n--- v0\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n\n--- v2-final\n    public void orderItem(TraceId traceId, String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.beginSync(traceId, \"OrderService.orderItem()\");\n            orderRepository.save(status.getTraceId(), itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n--- v3-final\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            orderRepository.save(itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n--- v4-final\n    public void orderItem(String itemId) {\n        new AbstractTemplate<Void>(trace) {\n            @Override protected Void call() {\n                orderRepository.save(itemId);\n                return null;\n            }\n        }.execute(\"OrderService.orderItem()\");\n    }\n\n--- v5-callback\n    public void orderItem(String itemId) {\n        template.execute(\"OrderService.orderItem()\",\n                         () -> { orderRepository.save(itemId); return null; });\n    }\n\n--   v0 의 두 줄이 v5 의 네 줄이 됐다\n--   v2 에서는 열한 줄이었다\n\n\n-- 비율을 다시 잰다\n\n$ printf '%-14s %s\\n' \\\n  'v2'  '업무 1 줄에 10 줄' \\\n  'v3'  '업무 1 줄에 9 줄' \\\n  'v4'  '업무 1 줄에 5 줄' \\\n  'v5'  '업무 1 줄에 2 줄'\n\nv2               업무 1 줄에 10 줄\nv3               업무 1 줄에 9 줄\nv4               업무 1 줄에 5 줄\nv5               업무 1 줄에 2 줄\n\n\n-- 로그는 다섯 번 다 같다\n\n$ for t in v2-final v3-final v4-final v5-callback; do\n    git checkout -q $t\n    ./gradlew bootRun > /dev/null 2>&1 &\n    until curl -sf localhost:8080/who/all > /dev/null 2>&1; do sleep 0.3; done\n    printf '%-14s ' \"$t\"\n    curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n    grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n      | sed 's/\\[[0-9a-f]*\\]/[ID]/' | md5 -q\n    pkill -f bootRun; : > logs/app.log\n  done\n\nv2-final       8f2a1c043e974b62a01852c9d7e3b410\nv3-final       8f2a1c043e974b62a01852c9d7e3b410\nv4-final       8f2a1c043e974b62a01852c9d7e3b410\nv5-callback    8f2a1c043e974b62a01852c9d7e3b410\n\n$ git checkout -q v5-callback\n\n--   해시가 같다\n--   2.4 절에서 만든 그 여섯 줄이다\n\n\n-- 남은 것 ① 부르는 줄\n\n$ grep -n 'template.execute' src/main/java/study/adv/Order*.java\nsrc/main/java/study/adv/OrderController.java:17:        return template.execute(\nsrc/main/java/study/adv/OrderRepository.java:13:        template.execute(\nsrc/main/java/study/adv/OrderService.java:15:        template.execute(\n\n$ grep -c 'template.execute' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   1.2 절에서 34 곳이었다\n--   여기선 3 곳이지만 같은 문제다\n\n\n-- 남은 것 ② 이름 문자열\n\n$ grep -o 'execute(\"[A-Za-z.()]*\"' src/main/java/study/adv/Order*.java \\\n    | awk -F'\"' '{print $2}'\nOrderController.request()\nOrderService.orderItem()\nOrderRepository.save()\n\n// 이름을 바꾸면\n$ sed -i '' 's/public void orderItem/public void placeOrder/' \\\n    src/main/java/study/adv/OrderService.java\n$ ./gradlew compileJava 2>&1 | grep -c error\n1\n\n$ sed -i '' 's/orderService.orderItem/orderService.placeOrder/' \\\n    src/main/java/study/adv/OrderController.java\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -5 | head -1 | cut -c56-\n[3d81f0a2] |-->OrderService.orderItem()\n\n--   메서드는 placeOrder 인데 로그는 orderItem 이다\n--   2.5 절과 4.1 절에서 본 그 어긋남이다\n\n\n-- 남은 것 ③ 파일을 열었다\n\n$ for t in v2-final v3-final v4-final v5-callback; do\n    printf '%-14s ' \"$t\"\n    git diff --name-only v0 $t | grep -c 'study/adv/Order'\n  done\nv2-final       3\nv3-final       3\nv4-final       3\nv5-callback    3\n\n--   네 버전 다 세 파일을 열었다\n--   5 장이 이걸 없앤다\n\n\n-- 남은 것 ④ 깜빡함\n\n$ git checkout -q HEAD -- src/main/java/\n\npublic void cancel(Long id) {\n    orderRepository.delete(id);\n}\n\n$ curl -s -o /dev/null -X DELETE 'localhost:8080/order/1'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] OrderController.cancel()\n[c14e0b93] OrderController.cancel() time=2ms\n\n$ grep -c 'template.execute' src/main/java/study/adv/OrderService.java\n1\n\n--   2.6, 3.7, 4.4, 4.7 절과 똑같다\n--   네 버전 내내 안 고쳐졌다\n\n\n-- 중첩이 깊어지면\n\ntemplate.execute(\"OrderService.orderItem()\", () ->\n    timeTemplate.execute(() ->\n        retryTemplate.execute(3, () -> {\n            orderRepository.save(itemId);\n            return null;\n        })));\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | wc -l\n9\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/OrderService.java | grep -c ')));'\n1\n\n--   괄호가 세 겹이다\n--   4.5 절에서 본 그 문제가 그대로다\n\n\n-- 스택 트레이스가 길어진다\n\n$ curl -s 'localhost:8080/request?itemId=ex' > /dev/null\n$ grep -A12 'IllegalStateException' logs/app.log | head -8\njava.lang.IllegalStateException: 예외 발생!\n\tat study.adv.OrderRepository.lambda$save$0(OrderRepository.java:14)\n\tat study.adv.template.TraceTemplate.execute(TraceTemplate.java:18)\n\tat study.adv.OrderRepository.save(OrderRepository.java:13)\n\tat study.adv.OrderService.lambda$orderItem$0(OrderService.java:16)\n\tat study.adv.template.TraceTemplate.execute(TraceTemplate.java:18)\n\tat study.adv.OrderService.orderItem(OrderService.java:15)\n\tat study.adv.OrderController.lambda$request$0(OrderController.java:18)\n\tat study.adv.template.TraceTemplate.execute(TraceTemplate.java:18)\n\n$ grep -c 'lambda\\$' logs/app.log\n3\n\n// v3 에서는\n$ git show v3-final:logs/stack.txt | grep -c 'lambda\\$'\n0\n\n--   람다 프레임이 셋 끼었다\n--   ⑯ 8.2 절의 그 덤프를 읽을 때도 이렇다\n\n\n-- 중단점을 못 거는 자리\n\n// 한 줄짜리\n() -> { orderRepository.save(itemId); return null; }\n\n// 여러 줄로 펴면\n() -> {\n    orderRepository.save(itemId);      // 여기 걸 수 있다\n    return null;\n}\n\n$ grep -c '() -> {$' src/main/java/study/adv/Order*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   한 줄이면 그 줄 전체가 한 자리다\n\n\n-- 타입 추론이 헷갈릴 때\n\ntemplate.execute(\"...\", () -> orderRepository.findById(id));\n\n$ ./gradlew compileJava 2>&1 | head -3\n> Task :compileJava FAILED\nerror: incompatible types: inference variable T has incompatible bounds\n\n// 명시하면 풀린다\ntemplate.<Order>execute(\"...\", () -> orderRepository.findById(id));\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   제네릭이 겹치면 이렇게 된다\n\n\n-- 4 장이 만든 것\n\n$ printf '%-8s %-26s %s\\n' \\\n  '4.1'  '중복을 갈랐다'      '아홉 줄이 같음' \\\n  '4.2'  '상속으로 뚫었다'    '틀이 순서를 쥠' \\\n  '4.3'  '익명으로 줄였다'    '파일 0 개' \\\n  '4.4'  '세 곳에 붙였다'     '일 대 오' \\\n  '4.5'  '상속의 값을 셌다'   '축 둘이면 곱하기' \\\n  '4.6'  '위임으로 바꿨다'    '람다가 됨' \\\n  '4.7'  '인자로 옮겼다'      '빈 하나' \\\n  '4.8'  '남은 것을 셌다'     '일 대 이'\n\n4.1    중복을 갈랐다               아홉 줄이 같음\n4.2    상속으로 뚫었다             틀이 순서를 쥠\n4.3    익명으로 줄였다             파일 0 개\n4.4    세 곳에 붙였다              일 대 오\n4.5    상속의 값을 셌다            축 둘이면 곱하기\n4.6    위임으로 바꿨다             람다가 됨\n4.7    인자로 옮겼다               빈 하나\n4.8    남은 것을 셌다              일 대 이\n\n\n-- 다음 장의 목표\n\n$ printf '%-8s %-26s %s\\n' \\\n  '지금'  '62 줄, 부르는 줄 3 개'  '파일 3 개를 엶' \\\n  '5 장'  '업무 코드 0 줄'         '파일을 안 엶'\n\n지금     62 줄, 부르는 줄 3 개        파일 3 개를 엶\n5 장     업무 코드 0 줄               파일을 안 엶\n\n\n-- 마지막 확인\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderService' | head -3\n빈 이름:   orderService\n주입된 것: study.adv.OrderService\n원본:     study.adv.OrderService\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n0\n\n--   4 장 내내 아무것도 안 감싸졌다\n--   5.1 절에서 처음으로 감싼다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '업무 줄'    '104 에서 62' \\\n  '전체 줄'    '196 에서 182' \\\n  '비율'       '일 대 십에서 일 대 이' \\\n  '로그'       '네 버전 다 같음' \\\n  '부르는 줄'  '3 개 그대로' \\\n  '이름'       '어긋날 수 있음' \\\n  '연 파일'    '네 버전 다 3 개' \\\n  '깜빡함'     '그대로' \\\n  '중첩'       '괄호 세 겹' \\\n  '프록시'     '0 개'\n\n업무 줄                    104 에서 62\n전체 줄                    196 에서 182\n비율                       일 대 십에서 일 대 이\n로그                       네 버전 다 같음\n부르는 줄                  3 개 그대로\n이름                       어긋날 수 있음\n연 파일                    네 버전 다 3 개\n깜빡함                     그대로\n중첩                       괄호 세 겹\n프록시                     0 개",
+   "note": "**업무 코드가 v2 의 104 줄에서 v5 의 62 줄로 42 줄 줄고 비율이 일 대 십에서 일 대 이가** 됐다.\n\n**네 버전의 로그 여섯 줄 해시가 전부 같아 결과는 하나도 안** 바뀌었다.\n\n**메서드 이름을 `placeOrder` 로 바꿨는데 로그는 `orderItem` 그대로**다.\n\n**네 버전 다 세 파일을 열어 고쳤고 새 메서드가 조용히 빠지는 문제도 그대로**다.\n\n**스택 트레이스에 `lambda$` 프레임이 셋 끼고 4장 내내 감싸진 빈은 0 개**다."
+  }
+ ],
+ "recap": [
+  "**42 줄** 줄었다.",
+  "**전체는 거의** 같다.",
+  "**로그는 다** 같다.",
+  "**일 대 이**다.",
+  "**부르는 줄은** 남았다.",
+  "**이름이** 어긋난다.",
+  "**파일을** 열었다.",
+  "**깜빡함도** 남았다.",
+  "**아무것도 안** 감싸졌다."
+ ],
+ "drills": [
+  {
+   "task": "다섯 버전의 같은 메서드를 본다.",
+   "done_when": "모양 변화를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그 해시를 견준다.",
+   "done_when": "네 버전이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "메서드 이름을 바꿔 본다.",
+   "done_when": "로그가 어긋나는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스택 트레이스를 본다.",
+   "done_when": "람다 프레임을 셌다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "4장이 줄인 것은?",
+   "a": "업무 코드 42 줄과 비율 일 대 십에서 일 대 이다."
+  },
+  {
+   "q": "전체 줄은 왜 별로 안 줄었나?",
+   "a": "업무에서 빠진 만큼 공용 틀로 옮겨 갔기 때문이다."
+  },
+  {
+   "q": "메서드 이름을 바꾸면?",
+   "a": "로그의 문자열은 안 바뀌어 조용히 어긋난다."
+  },
+  {
+   "q": "네 버전이 공통으로 못 없앤 것은?",
+   "a": "부르는 줄, 이름 문자열, 파일을 여는 일, 깜빡함이다."
+  },
+  {
+   "q": "다음 장은 무엇을 바꾸나?",
+   "a": "원본 클래스를 아예 안 고치게 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "부르는 줄",
+   "def": "틀을 실제로 호출하는, 메서드마다 남는 한 줄."
+  },
+  {
+   "term": "람다 프레임",
+   "def": "스택 트레이스에 나타나는, 람다 본문에 해당하는 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — JdbcTemplate",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Design Patterns — Strategy",
+   "url": "https://refactoring.guru/design-patterns/strategy",
+   "publisher": "Refactoring.Guru"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

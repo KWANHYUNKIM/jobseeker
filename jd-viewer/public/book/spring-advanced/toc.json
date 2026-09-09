@@ -236,7 +236,7 @@
           "title": "콜백으로 넘기기",
           "summary": "실행할 것을 인자로 준다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.8",
@@ -244,7 +244,7 @@
           "title": "콜백 적용",
           "summary": "여전히 남는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
