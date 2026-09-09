@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "simple-paging",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "스프링 데이터 페이징 — 단순",
+ "summary": "fetchResults 는 왜 사라졌나.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "Pageable 을 받는다.",
+  "PageImpl 을 만든다.",
+  "사라진 API 를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절에서 페이징을 손으로** 썼다. **그 계산을 `Page` 에** 넘긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "Pageable 이 가져오는 것",
+   "ascii": "   what Pageable brings, and what it does not\n\n   brings   the page number, the size, and the sort\n   brings   the arithmetic, once a Page is built from it\n   not      the count query, which is still a second query you write\n\n   the removed fetchResults used to hide that third line",
+   "note": "**셋째 줄은 여전히 내가** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "계산은 넘기고 개수 쿼리는 남는다",
+   "md": "**`Pageable` 이 셋을** 나른다.\n\n> **번호·크기·정렬**이다.\n> **⑭ 5.10절에서 본** 것이다.\n> **`offset` 곱셈이** 사라진다.\n\n**`PageImpl` 이 계산을** 한다.\n\n> **총 쪽수·다음 여부**다.\n> **6.7절의 두 줄이** 사라진다.\n> **내용·`Pageable`·총 개수만** 준다.\n\n**개수 쿼리는 내가** 쓴다.\n\n> **⑭ 5.10절은 그것도 해** 줬다.\n> **여기는 커스텀 구현이라 아니**다.\n> **6.7절과 같은 상태**다.\n\n**옛날엔 `fetchResults` 가** 있었다.\n\n> **한 줄로 둘을 다** 했다.\n> **4.5절에서 왜 사라졌는지** 봤다.\n> **여기서 그걸 다시 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 없어졌나",
+   "ascii": "   why the convenient call was taken away\n\n   it derived the count query from the select query\n   a group by or a distinct made that derivation wrong\n   the wrong total came back with no warning\n\n   4.5 showed a total of two where seven rows existed",
+   "note": "**4.5절에서 7행에 총계 2를** 봤다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "정렬을 Pageable 에서 꺼내 쓰지 못한다",
+   "md": "**`Sort` 는 문자열 기반**이다.\n\n> **`OrderSpecifier` 로 바꿔야** 한다.\n> **6.7절에서 `switch` 로** 했다.\n> **7.7절에서 제대로** 다룬다.\n\n**안 쓰면 정렬이 조용히** 빠진다.\n\n> **`Pageable` 에 있는데 SQL 에** 없다.\n> **예외가 안** 난다.\n> **아래에서 확인**한다.\n\n**정렬이 없으면 페이지가** 흔들린다.\n\n> **4.7절·⑭ 5.9절의 그** 이야기다.\n> **기본 정렬을** 둔다.\n> **`orderBy(member.id.asc())` 로 못** 박는다.\n\n**크기 상한도 없**다.\n\n> **⑭ 6.7절의 `max-page-size` 가** 있다.\n> **컨트롤러 쪽 설정**이다.\n> **7.6절에서** 건다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 인터페이스에 페이징을 더한다\n\npublic interface MemberRepositoryCustom {\n    List<MemberTeamDto> search(MemberSearchCondition cond);\n    Page<MemberTeamDto> searchPageSimple(MemberSearchCondition cond,\n                                         Pageable pageable);\n}\n\n\n-- 구현\n\n@Override\npublic Page<MemberTeamDto> searchPageSimple(MemberSearchCondition cond,\n                                            Pageable pageable) {\n    BooleanExpression predicate = Expressions.allOf(\n            usernameEq(cond.getUsername()),\n            teamNameEq(cond.getTeamName()),\n            ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(predicate)\n            .orderBy(member.id.asc())\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n\n    Long total = queryFactory\n            .select(member.count())\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(predicate)\n            .fetchOne();\n\n    return new PageImpl<>(content, pageable, total == null ? 0 : total);\n}\n\n--   6.7절에서 곱셈과 계산 두 줄이 사라졌다\n--   6.5절의 allOf 를 그대로 쓴다\n\n\n-- 부른다\n\n@Test\n@Transactional\nvoid 첫_페이지() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page =\n            memberRepository.searchPageSimple(cond, PageRequest.of(0, 3));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쪽수: \" + page.getTotalPages());\n    System.out.println(\"번호: \" + page.getNumber());\n    System.out.println(\"다음: \" + page.hasNext());\n    System.out.println(\"처음: \" + page.isFirst());\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [0]\nTRACE binding parameter (3:INTEGER) <- [3]\n/* select\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n내용: 3\n전체: 6\n쪽수: 2\n번호: 0\n다음: true\n처음: true\n\n--   6.7절과 SQL 이 같다\n--   계산을 PageImpl 이 했다\n\n\n-- 6.7 과 비교한다\n\n$ diff hand.sql pageimpl.sql && echo SAME\nSAME\n\n$ diff <(awk '/searchPage/,/^    }/' Pure.java) \\\n       <(awk '/searchPageSimple/,/^    }/' Impl.java) | grep '^[<>]' | head\n\n<     int totalPages = (int) Math.ceil((double) total / size);\n<     boolean hasNext = page + 1 < totalPages;\n<     return new PageResult<>(content, page, size, total, totalPages, hasNext);\n<     .offset((long) page * size)\n>     .offset(pageable.getOffset())\n>     return new PageImpl<>(content, pageable, total);\n\n--   계산 두 줄과 곱셈이 사라졌다\n\n\n-- 두 번째 페이지\n\n@Test\n@Transactional\nvoid 두번째() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page =\n            memberRepository.searchPageSimple(cond, PageRequest.of(1, 3));\n\n    System.out.println(\"번호: \" + page.getNumber());\n    System.out.println(\"다음: \" + page.hasNext());\n    System.out.println(\"마지막: \" + page.isLast());\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [3]\nHibernate: select count(m1_0.member_id) from member m1_0 ...\n번호: 1\n다음: false\n마지막: true\n\n--   getOffset() 이 곱셈을 했다\n--   6.7절에서는 내가 했다\n\n\n-- 정렬을 주면\n\n@Test\n@Transactional\nvoid 정렬_무시() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n\n    memberRepository.searchPageSimple(cond,\n            PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, \"age\")));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\norder by\n    member1.id asc */\n\nHibernate:\n    select ... order by m1_0.member_id\n    offset ? rows fetch first ? rows only\n\n--   age desc 가 어디에도 없다\n--   내가 orderBy 를 고정했다\n--   예외도 경고도 없다\n--   7.7절에서 이걸 잇는다\n\n\n-- 사라진 API 를 불러 본다\n\n@Override\npublic Page<MemberTeamDto> searchPageOld(MemberSearchCondition cond,\n                                         Pageable pageable) {\n    QueryResults<MemberTeamDto> results = queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(...)\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetchResults();\n\n    return new PageImpl<>(results.getResults(), pageable,\n            results.getTotal());\n}\n\n$ ./gradlew compileJava\n\nwarning: [deprecation] fetchResults() in FetchableQuery has been deprecated\n\nBUILD SUCCESSFUL\n\n--   아직 컴파일은 된다\n\n\n-- 돌려 보면\n\n@Test\n@Transactional\nvoid 옛_방식() {\n    em.clear();\n    Page<MemberTeamDto> page = memberRepository.searchPageOld(\n            new MemberSearchCondition(), PageRequest.of(0, 3));\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\n/* select\n    count(member1.id)\nfrom\n    Member member1\n  left join\n    member1.team as team */\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\nHibernate:\n    select ... offset ? rows fetch first ? rows only\n전체: 10\n\n--   여기서는 맞았다\n--   개수 쿼리를 알아서 만들었다\n--   조인도 그대로 복사했다\n\n\n-- 그런데 group by 를 넣으면\n\n@Override\npublic Page<TeamStat> statsPageOld(Pageable pageable) {\n    QueryResults<TeamStat> results = queryFactory\n            .select(new QTeamStat(team.name, member.count(),\n                    member.age.avg()))\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetchResults();\n\n    return new PageImpl<>(results.getResults(), pageable,\n            results.getTotal());\n}\n\n@Test\n@Transactional\nvoid 그룹_옛_방식() {\n    em.clear();\n    Page<TeamStat> page = memberRepository.statsPageOld(\n            PageRequest.of(0, 10));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쪽수: \" + page.getTotalPages());\n}\n\nHibernate:\n    select\n        count(t1_0.name)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\nHibernate:\n    select t1_0.name, count(m1_0.member_id), avg(m1_0.age)\n    from member m1_0 join team t1_0 on t1_0.team_id=m1_0.team_id\n    group by t1_0.name\n    offset ? rows fetch first ? rows only\n내용: 2\n전체: 4\n쪽수: 1\n\n--   내용은 2인데 전체가 4다\n--   count 가 그룹마다 나와 첫 줄만 읽었다\n--   4.5절에서 본 그것이다\n--   예외가 없다\n\n\n-- 직접 세면 맞는다\n\n@Override\npublic Page<TeamStat> statsPage(Pageable pageable) {\n    List<TeamStat> content = queryFactory\n            .select(new QTeamStat(team.name, member.count(),\n                    member.age.avg()))\n            .from(member).join(member.team, team)\n            .groupBy(team.name)\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n\n    Long total = queryFactory\n            .select(team.countDistinct())\n            .from(member).join(member.team, team)\n            .fetchOne();\n\n    return new PageImpl<>(content, pageable, total);\n}\n\n@Test\n@Transactional\nvoid 그룹_직접() {\n    em.clear();\n    Page<TeamStat> page = memberRepository.statsPage(PageRequest.of(0, 10));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\nHibernate:\n    select t1_0.name, count(m1_0.member_id), avg(m1_0.age)\n    from member m1_0 join team t1_0 on t1_0.team_id=m1_0.team_id\n    group by t1_0.name\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(distinct t1_0.team_id)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n내용: 2\n전체: 2\n\n--   개수 쿼리를 내가 썼다\n--   4.5절의 결론과 같다\n\n\n-- 정렬이 없으면 페이지가 흔들린다\n\n@Override\npublic Page<MemberTeamDto> searchNoOrder(MemberSearchCondition cond,\n                                         Pageable pageable) {\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member).leftJoin(member.team, team)\n            // orderBy 가 없다\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n    ...\n}\n\n@Test\n@Transactional\nvoid 정렬_없이() {\n    em.clear();\n    List<String> p1 = memberRepository.searchNoOrder(\n            new MemberSearchCondition(), PageRequest.of(0, 3))\n            .getContent().stream().map(MemberTeamDto::getUsername).toList();\n    em.clear();\n    List<String> p2 = memberRepository.searchNoOrder(\n            new MemberSearchCondition(), PageRequest.of(1, 3))\n            .getContent().stream().map(MemberTeamDto::getUsername).toList();\n    System.out.println(\"1쪽: \" + p1);\n    System.out.println(\"2쪽: \" + p2);\n}\n\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    offset ? rows fetch first ? rows only\n1쪽: [m1, m2, m3]\n2쪽: [m4, m5, m6]\n\n--   order by 가 없다\n--   여기서는 우연히 맞았다\n--   4.7절에서 경고한 상태다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  'Pageable'       '번호·크기·정렬을 나른다' \\\n  'getOffset()'    '곱셈을 대신한다' \\\n  'PageImpl'       '쪽수·다음 여부를 계산한다' \\\n  '개수 쿼리'      '여전히 내가 쓴다' \\\n  'fetchResults'   '삭제됨, group by 에서 틀림' \\\n  'Sort'           '아직 안 쓰고 있다 (7.7절)'\n\nPageable                 번호·크기·정렬을 나른다\ngetOffset()              곱셈을 대신한다\nPageImpl                 쪽수·다음 여부를 계산한다\n개수 쿼리                여전히 내가 쓴다\nfetchResults             삭제됨, group by 에서 틀림\nSort                     아직 안 쓰고 있다 (7.7절)\n\n--   7.4절에서 개수 쿼리를 나눈다",
+   "note": "**`getOffset()` 이 곱셈을, `PageImpl` 이 쪽수·다음 여부 계산을 대신해 6.7절의 두 줄이** 사라졌다.\n\n**SQL 은 6.7절과 `diff` 결과 `SAME`** 이다.\n\n**`Pageable` 에 `Sort` 를 줘도 `orderBy` 를 고정해 뒀으면 SQL 에 흔적이** 없다.\n\n**`fetchResults` 는 `group by` 에서 내용 2에 전체 4를 돌려주고 예외가** 없다.\n\n**개수 쿼리를 `count(distinct t1_0.team_id)` 로 직접 쓰면 `2`** 가 맞는다."
+  }
+ ],
+ "recap": [
+  "**`Pageable` 이 셋을** 나른다.",
+  "**곱셈이** 사라진다.",
+  "**`PageImpl` 이** 계산한다.",
+  "**개수 쿼리는** 남는다.",
+  "**SQL 은 6.7절과** 같다.",
+  "**`Sort` 는 아직 안** 쓴다.",
+  "**주면 조용히** 빠진다.",
+  "**`fetchResults` 는** 사라졌다.",
+  "**`group by` 에서** 틀렸다."
+ ],
+ "drills": [
+  {
+   "task": "`Pageable` 로 바꾼다.",
+   "done_when": "계산 두 줄이 사라진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "6.7절과 SQL 을 비교한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Sort` 를 줘 본다.",
+   "done_when": "무시되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`fetchResults` 에 `group by` 를 넣는다.",
+   "done_when": "틀린 총계를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Pageable` 이 대신해 주는 계산은?",
+   "a": "`offset` 곱셈이고, 쪽수 계산은 `PageImpl` 이 한다."
+  },
+  {
+   "q": "여전히 내가 써야 하는 것은?",
+   "a": "같은 조건의 개수 쿼리다."
+  },
+  {
+   "q": "`Sort` 를 주면 자동으로 적용되나?",
+   "a": "안 된다. `OrderSpecifier` 로 바꿔 써야 한다."
+  },
+  {
+   "q": "`fetchResults` 가 사라진 이유는?",
+   "a": "개수 쿼리를 추측해 `group by` 등에서 틀린 값을 줬다."
+  },
+  {
+   "q": "그럴 때 총계는 어떻게 구하나?",
+   "a": "`countDistinct` 같은 개수 쿼리를 직접 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PageImpl",
+   "def": "내용과 `Pageable`, 총 개수로 `Page` 를 만드는 구현체."
+  },
+  {
+   "term": "개수 추측",
+   "def": "본 쿼리에서 개수 쿼리를 자동으로 만들어 내던 옛 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Paging and Sorting",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/query-methods-details.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "complex-paging",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "스프링 데이터 페이징 — 복잡",
+ "summary": "목록과 개수를 나눈다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "개수 쿼리를 따로 만든다.",
+  "조인을 뗀다.",
+  "생략되는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절은 두 쿼리가 거의** 같았다. **다르게 만들면 개수가** 싸진다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 쿼리의 같은 곳과 다른 곳",
+   "ascii": "   the list query and the count query, and how they differ\n\n   the same   the conditions, always, or the page numbers are wrong\n   different  the select list, the joins that only feed it, the order by\n\n   a join that only supplies columns can be dropped from the count",
+   "note": "**컬럼만 대는 조인은 개수에서 뗄 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건은 같아야 하고 나머지는 달라도 된다",
+   "md": "**조건이 다르면 쪽수가** 틀린다.\n\n> **6.3절에서 그걸** 봤다.\n> **조건 메서드를 공유**한다.\n> **그게 6.4절의 값**이다.\n\n**`select` 는 달라야** 한다.\n\n> **개수는 컬럼이 필요** 없다.\n> **`count()` 하나**다.\n> **DTO 생성자도 안** 부른다.\n\n**조인도 뗄 수** 있다.\n\n> **팀 이름을 보여 주려던 조인**이다.\n> **조건이 안 쓰면 필요** 없다.\n> **⑭ 5.11절의 `countQuery` 와 같은 발상**이다.\n\n**정렬도 뗀**다.\n\n> **개수에 순서가 무슨** 소용인가.\n> **`order by` 가 개수 쿼리에 있으면** 낭비다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "아예 안 나가는 경우",
+   "ascii": "   when the count query does not have to run at all\n\n   the first page is not full   the total is what you already read\n   the last page is short       the offset plus what you read\n\n   PageableExecutionUtils checks both and skips the query",
+   "note": "**둘 다 검사해 쿼리를** 건너뛴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조인을 뗄 수 없는 경우가 있다",
+   "md": "**조건이 그 표를 보면 남**긴다.\n\n> **팀 이름이 조건에** 있으면이다.\n> **떼면 결과가** 달라진다.\n> **아래에서 그걸** 만든다.\n\n**`leftJoin` 이면 개수가 안** 바뀐다.\n\n> **왼쪽 행이 다** 남는다.\n> **조건이 안 쓰면 떼도 안전**하다.\n> **`join` 이면 개수가 줄 수** 있다.\n\n**컬렉션 조인이면 개수가** 는다.\n\n> **4.10절에서 팀 둘이 7행이** 됐다.\n> **`countDistinct` 가** 필요하다.\n> **7.3절에서 한 번** 썼다.\n\n**`PageableExecutionUtils` 는 조건부**다.\n\n> **항상 건너뛰는 게** 아니다.\n> **가운데 페이지면 그냥** 나간다.\n> **아래에서 셋을 다** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 개수 쿼리를 따로 만든다\n\n@Override\npublic Page<MemberTeamDto> searchPageComplex(MemberSearchCondition cond,\n                                             Pageable pageable) {\n    BooleanExpression predicate = Expressions.allOf(\n            usernameEq(cond.getUsername()),\n            ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)          // 팀 이름을 보여 주려고\n            .where(predicate)\n            .orderBy(member.id.asc())\n            .offset(pageable.getOffset())\n            .limit(pageable.getPageSize())\n            .fetch();\n\n    JPAQuery<Long> countQuery = queryFactory\n            .select(member.count())\n            .from(member)                          // 조인이 없다\n            .where(predicate);\n\n    return PageableExecutionUtils.getPage(content, pageable,\n            countQuery::fetchOne);\n}\n\n--   조건은 같고 조인·정렬·select 가 다르다\n--   개수 쿼리를 아직 실행 안 했다\n\n\n-- 부른다\n\n@Test\n@Transactional\nvoid 가운데_페이지() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    Page<MemberTeamDto> page = memberRepository.searchPageComplex(\n            cond, PageRequest.of(1, 2));\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\n/* select\n    count(member1)\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n내용: 2\n전체: 6\n\n--   개수 쿼리에 조인도 정렬도 없다\n--   7.3절과 비교하면 짧다\n\n\n-- 7.3 과 개수 쿼리를 비교한다\n\n$ diff simple-count.sql complex-count.sql\n3,5c3\n<     from member m1_0\n<     left join team t1_0 on t1_0.team_id=m1_0.team_id\n---\n>     from member m1_0\n\n--   조인 한 줄이 사라졌다\n\n\n-- 시간을 잰다\n\n@Test\n@Transactional\nvoid 개수_시간() {\n    for (int i = 0; i < 30000; i++) {\n        Member m = new Member(\"p\" + i, i % 50);\n        if (i % 2 == 0) m.setTeam(teamA);\n        em.persist(m);\n    }\n    em.flush(); em.clear();\n\n    for (String kind : List.of(\"조인 있음\", \"조인 없음\")) {\n        em.clear();\n        long t = System.nanoTime();\n        if (kind.equals(\"조인 있음\")) {\n            queryFactory.select(member.count()).from(member)\n                    .leftJoin(member.team, team)\n                    .where(member.age.goe(20)).fetchOne();\n        } else {\n            queryFactory.select(member.count()).from(member)\n                    .where(member.age.goe(20)).fetchOne();\n        }\n        System.out.printf(\"%-10s %d ms%n\", kind,\n                (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select count(m1_0.member_id) from member m1_0\n           left join team t1_0 on t1_0.team_id=m1_0.team_id\n           where m1_0.age>=?\n조인 있음   38 ms\nHibernate: select count(m1_0.member_id) from member m1_0\n           where m1_0.age>=?\n조인 없음   21 ms\n\n--   ⑭ 5.11절에서 잰 것과 같은 결이다\n\n\n-- 조건이 팀을 보면 못 뗀다\n\n@Override\npublic Page<MemberTeamDto> searchPageWithTeam(MemberSearchCondition cond,\n                                              Pageable pageable) {\n    BooleanExpression predicate = Expressions.allOf(\n            teamNameEq(cond.getTeamName()),        // 팀 조건이다\n            ageBetween(cond.getAgeGoe(), cond.getAgeLoe()));\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member).leftJoin(member.team, team)\n            .where(predicate)\n            .orderBy(member.id.asc())\n            .offset(pageable.getOffset()).limit(pageable.getPageSize())\n            .fetch();\n\n    JPAQuery<Long> countQuery = queryFactory\n            .select(member.count())\n            .from(member)\n            .leftJoin(member.team, team)           // 남겨야 한다\n            .where(predicate);\n\n    return PageableExecutionUtils.getPage(content, pageable,\n            countQuery::fetchOne);\n}\n\n@Test\n@Transactional\nvoid 팀_조건() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n\n    Page<MemberTeamDto> page = memberRepository.searchPageWithTeam(\n            cond, PageRequest.of(0, 2));\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\nHibernate: select ... left join team t1_0 on ... where t1_0.name=?\n           order by m1_0.member_id offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n전체: 4\n\n--   조인이 남았다\n--   조건이 team 별칭을 쓴다\n\n\n-- 억지로 떼면\n\n// countQuery 에서 leftJoin 을 지웠다\n\n@Test\nvoid 떼면() {\n    try {\n        memberRepository.searchPageBadCount(cond, PageRequest.of(0, 2));\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   Could not interpret path expression 'team.name'\n\n--   6.4절에서 본 그 메시지다\n\n\n-- 첫 페이지가 안 차면 개수 쿼리가 안 나간다\n\n@Test\n@Transactional\nvoid 첫_페이지_생략() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(35);                    // 두 명뿐이다\n\n    sqlCounter.clear();\n    Page<MemberTeamDto> page = memberRepository.searchPageComplex(\n            cond, PageRequest.of(0, 10));\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\norder by\n    member1.id asc */\nHibernate:\n    select ... offset ? rows fetch first ? rows only\n내용: 2\n전체: 2\n쿼리: 1개\n\n--   개수 쿼리가 없다\n--   읽은 게 곧 전체다\n\n\n-- 마지막 페이지도 생략된다\n\n@Test\n@Transactional\nvoid 마지막_생략() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);                    // 여섯 명\n\n    sqlCounter.clear();\n    Page<MemberTeamDto> page = memberRepository.searchPageComplex(\n            cond, PageRequest.of(2, 2));   // 5, 6번째\n\n    System.out.println(\"내용: \" + page.getContent().size());\n    System.out.println(\"전체: \" + page.getTotalElements());\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nTRACE binding parameter (2:INTEGER) <- [4]\n내용: 2\n전체: 6\n쿼리: 1개\n\n--   offset 4 + 읽은 2 = 6 이다\n--   개수 쿼리를 안 냈다\n\n\n-- 가운데면 나간다\n\n@Test\n@Transactional\nvoid 가운데는_나간다() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    sqlCounter.clear();\n    memberRepository.searchPageComplex(cond, PageRequest.of(1, 2));\n    System.out.println(\"쿼리: \" + sqlCounter.count() + \"개\");\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0 where m1_0.age>=?\n쿼리: 2개\n\n--   페이지가 꽉 찼고 마지막도 아니다\n--   그래서 세야 한다\n\n\n-- 세 경우를 표로\n\n@Test\n@Transactional\nvoid 세_경우() {\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    record C(String name, PageRequest req) {}\n    for (C c : List.of(\n            new C(\"첫 쪽 여유\", PageRequest.of(0, 10)),\n            new C(\"가운데\",     PageRequest.of(1, 2)),\n            new C(\"마지막\",     PageRequest.of(2, 2)))) {\n        em.clear();\n        sqlCounter.clear();\n        memberRepository.searchPageComplex(cond, c.req());\n        System.out.printf(\"%-10s %d개%n\", c.name(), sqlCounter.count());\n    }\n}\n\n첫 쪽 여유   1개\n가운데       2개\n마지막       1개\n\n--   ⑭ 6.8절에서 본 것과 같은 최적화다\n\n\n-- PageImpl 로 바꾸면 항상 나간다\n\n@Test\n@Transactional\nvoid PageImpl_비교() {\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(35);\n\n    em.clear(); sqlCounter.clear();\n    memberRepository.searchPageSimple(cond, PageRequest.of(0, 10));\n    System.out.println(\"PageImpl:  \" + sqlCounter.count() + \"개\");\n\n    em.clear(); sqlCounter.clear();\n    memberRepository.searchPageComplex(cond, PageRequest.of(0, 10));\n    System.out.println(\"Utils:     \" + sqlCounter.count() + \"개\");\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nHibernate: select count(m1_0.member_id) from member m1_0\n           left join team t1_0 on ... where m1_0.age>=?\nPageImpl:  2개\nHibernate: select ... offset ? rows fetch first ? rows only\nUtils:     1개\n\n--   7.3절은 항상 둘이다\n--   여기는 필요할 때만이다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '조건'        '같아야 한다' \\\n  'select'      'count 하나면 된다' \\\n  '조인'        '조건이 안 쓰면 뗀다' \\\n  '정렬'        '뗀다' \\\n  '첫 쪽 여유'  '개수 쿼리 생략' \\\n  '마지막 쪽'   '개수 쿼리 생략' \\\n  '가운데'      '개수 쿼리 실행'\n\n조건                       같아야 한다\nselect                     count 하나면 된다\n조인                       조건이 안 쓰면 뗀다\n정렬                       뗀다\n첫 쪽 여유                 개수 쿼리 생략\n마지막 쪽                  개수 쿼리 생략\n가운데                     개수 쿼리 실행\n\n--   7.5절에서 이 최적화를 더 본다",
+   "note": "**개수 쿼리에서 `left join` 한 줄이 사라져 3만 건에서 38ms 대 21ms** 다.\n\n**조건이 `team` 별칭을 쓰면 조인을 못 떼고, 억지로 떼면 `Could not interpret path expression 'team.name'`** 이다.\n\n**첫 쪽이 안 차면 쿼리 1개, 가운데는 2개, 마지막 쪽은 `offset 4 + 2 = 6` 으로 다시 1개**다.\n\n**`PageImpl` 은 같은 상황에서 항상 2개를** 낸다.\n\n**목록·개수의 조건은 같고 `select`·조인·정렬은 다르게** 둔다."
+  }
+ ],
+ "recap": [
+  "**조건은 같아야** 한다.",
+  "**`select` 는** 다르다.",
+  "**조인을 뗄 수** 있다.",
+  "**정렬도** 뗀다.",
+  "**조건이 쓰면 못** 뗀다.",
+  "**떼면** 터진다.",
+  "**첫 쪽은** 생략된다.",
+  "**마지막도** 생략된다.",
+  "**가운데만** 나간다."
+ ],
+ "drills": [
+  {
+   "task": "개수 쿼리에서 조인을 뗀다.",
+   "done_when": "SQL 이 짧아진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "조건이 팀을 보게 한다.",
+   "done_when": "조인을 못 떼는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "세 페이지에서 쿼리 수를 센다.",
+   "done_when": "생략 조건을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "목록과 개수 쿼리에서 반드시 같아야 하는 것은?",
+   "a": "조건이다. 다르면 쪽수가 틀린다."
+  },
+  {
+   "q": "개수 쿼리에서 뗄 수 있는 것은?",
+   "a": "컬럼만 대는 조인과 정렬이다."
+  },
+  {
+   "q": "조건이 그 표를 쓰면?",
+   "a": "조인을 떼면 경로를 해석하지 못해 터진다."
+  },
+  {
+   "q": "개수 쿼리가 생략되는 두 경우는?",
+   "a": "첫 페이지가 다 안 찼을 때와 마지막 페이지일 때다."
+  },
+  {
+   "q": "`PageImpl` 과의 차이는?",
+   "a": "`PageImpl` 은 항상 개수 쿼리를 실행한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PageableExecutionUtils",
+   "def": "필요할 때만 개수 쿼리를 실행해 `Page` 를 만드는 도우미."
+  },
+  {
+   "term": "개수 쿼리 분리",
+   "def": "목록과 다른 모양의 개수 전용 쿼리를 따로 두는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data Commons — Paging and Sorting",
+   "url": "https://docs.spring.io/spring-data/commons/reference/repositories/query-methods-details.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  }
+ ]
+}

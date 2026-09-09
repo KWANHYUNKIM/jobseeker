@@ -457,7 +457,7 @@
           "title": "스프링 데이터 페이징 — 단순",
           "summary": "fetchResults 는 왜 사라졌나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -465,7 +465,7 @@
           "title": "스프링 데이터 페이징 — 복잡",
           "summary": "목록과 개수를 나눈다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
