@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "helm",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "Helm",
+ "summary": "패키지로 다루기.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "차트 구성을 안다.",
+  "릴리스가 무엇인지 안다.",
+  "템플릿의 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.2절은 내 앱을 다루는 데** 좋다. **남의 소프트웨어를 가져다 쓰는 건 다른** 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "차트의 구성",
+   "ascii": "   what a chart is made of\n\n   Chart.yaml       name, version, appVersion, dependencies\n   values.yaml      every knob, with a default\n   templates/       go templates that render to manifests\n   templates/NOTES  what to print after install\n\n   install renders the templates with the values, then applies\n   the rendered result is stored in the cluster as a release secret",
+   "note": "**렌더 결과가 클러스터에 릴리스로** 저장된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "두 가지를 한꺼번에 한다",
+   "md": "**템플릿 엔진이면서 패키지 매니저**다.\n\n> **`helm install postgres bitnami/postgresql`** 한 줄이다.\n> **수백 줄 매니페스트를 안 읽어도** 된다.\n> **`values.yaml` 이 그 소프트웨어의 설정 화면**이다.\n\n**릴리스가 상태를 들고** 있다.\n\n> **네임스페이스에 시크릿으로** 저장된다.\n> **`sh.helm.release.v1.<이름>.v3` 같은 이름**이다.\n> **그래서 `helm rollback` 이** 된다.\n> **11.1절에서 `apply` 가 못 하던 것**이다.\n\n**지우면 같이 지워**진다.\n\n> **릴리스가 무엇을 만들었는지 알고** 있다.\n> **`helm uninstall` 이 다** 치운다.\n> **PVC 는 남는 경우가 많다** — **8.4절과 같은** 이유다.\n\n**템플릿 문법**\n\n```\n{{ .Values.replicaCount }}\n{{- if .Values.ingress.enabled }}\n{{ include \"shop.fullname\" . }}\n{{ .Values.image.tag | default .Chart.AppVersion }}\n```\n\n> **`{{-` 는 앞 공백을** 없앤다.\n> **YAML 은 들여쓰기가 문법이라 이게** 중요하다.\n> **`nindent` 를 자주** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "둘의 차이",
+   "ascii": "   kustomize versus helm, in one line each\n\n   kustomize   valid yaml, patched\n               you can read the input, you cannot parameterise it deeply\n\n   helm        a template language, plus a package manager\n               you can ship it to strangers, the input is not yaml anymore\n\n   consuming other peoples software is where helm clearly wins",
+   "note": "**남의 것을 쓸 때 헬름이** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "템플릿은 YAML 이 아니다",
+   "md": "**에디터가 검사를 못** 한다.\n\n> **들여쓰기 하나에 렌더 결과가** 깨진다.\n> **`helm template` 으로 눈으로 봐야** 안다.\n> **`--dry-run=server` 로 API 서버에 물어볼 수도** 있다.\n\n**조건이 늘면 읽기** 어렵다.\n\n> **공개 차트가 `{{- if }}` 로 뒤덮인 걸 자주** 본다.\n> **내 앱 차트는 단순하게** 두는 게 낫다.\n> **둘을 같이 쓰기도** 한다 — **헬름으로 렌더하고 Kustomize 로** 얹는다.\n\n**`--set` 은 편하고 위험**하다.\n\n> **`helm install --set image.tag=1.4.0`** 이다.\n> **어디에도 안** 남는다.\n> **다음 사람이 왜 그렇게 떠 있는지** 모른다.\n> **`values` 파일을 깃에 두는 게** 낫다.\n\n**차트 버전이 둘**이다.\n\n> **`version` 은 차트 자신, `appVersion` 은 담긴 앱**이다.\n> **`helm list` 에 둘 다** 나온다.\n> **헷갈리면 롤백할 때 엉뚱한 걸** 되돌린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 helm 이 돌려준 것",
+   "sql": "# --- 차트를 만든다 ---\n\n$ helm version --short\n\nv3.16.1+g5a5449d\n\n$ helm create shop > /dev/null && find shop -maxdepth 2 -type f | sort\n\nshop/.helmignore\nshop/Chart.yaml\nshop/templates/NOTES.txt\nshop/templates/_helpers.tpl\nshop/templates/deployment.yaml\nshop/templates/hpa.yaml\nshop/templates/ingress.yaml\nshop/templates/service.yaml\nshop/templates/serviceaccount.yaml\nshop/values.yaml\n\n$ head -6 shop/Chart.yaml\n\napiVersion: v2\nname: shop\ndescription: A Helm chart for Kubernetes\ntype: application\nversion: 0.1.0\nappVersion: \"1.16.0\"\n\n#   version 은 차트, appVersion 은 앱이다\n\n$ head -8 shop/templates/deployment.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: {{ include \"shop.fullname\" . }}\n  labels:\n    {{- include \"shop.labels\" . | nindent 4 }}\nspec:\n  {{- if not .Values.autoscaling.enabled }}\n\n#   YAML 이 아니다\n\n#   에디터가 검사를 못 한다\n\n# --- 렌더해 본다 ---\n\n$ helm template shop ./shop | grep -E 'kind:|replicas:|image:'\n\nkind: ServiceAccount\nkind: Service\nkind: Deployment\n  replicas: 1\n          image: \"nginx:1.16.0\"\n\n$ helm template shop ./shop --set replicaCount=6 \\\n    --set image.tag=1.4.0 | grep -E 'replicas:|image:'\n\n  replicas: 6\n          image: \"nginx:1.4.0\"\n\n#   values 가 구멍을 채운다\n\n$ helm template shop ./shop --set ingress.enabled=true \\\n    | grep -c 'kind: Ingress'\n\n1\n\n$ helm template shop ./shop | grep -c 'kind: Ingress'\n\n0\n\n#   조건으로 통째로 빠진다\n\n#   Kustomize 로는 이렇게 못 한다\n\n# --- 들여쓰기가 깨지면 ---\n\n$ sed 's/| nindent 4/| nindent 2/' shop/templates/deployment.yaml \\\n  > /tmp/broken.yaml && cp /tmp/broken.yaml shop/templates/deployment.yaml\n\n$ helm template shop ./shop 2>&1 | tail -2\n\nError: YAML parse error on shop/templates/deployment.yaml: error\n  converting YAML to JSON: yaml: line 6: mapping values are not allowed\n  in this context\n\n#   숫자 하나다\n\n#   렌더하기 전엔 아무도 모른다\n\n$ helm create shop2 > /dev/null && rm -rf shop && mv shop2 shop\n\n# --- 설치한다 ---\n\n$ helm install shop ./shop --namespace shop --create-namespace \\\n    --set replicaCount=3 2>&1 | head -5\n\nNAME: shop\nLAST DEPLOYED: Tue Sep  9 23:02:41 2026\nNAMESPACE: shop\nSTATUS: deployed\nREVISION: 1\n\n$ helm list -n shop\n\nNAME  NAMESPACE  REVISION  STATUS    CHART       APP VERSION\nshop  shop       1         deployed  shop-0.1.0  1.16.0\n\n#   차트 0.1.0, 앱 1.16.0 이다\n\n$ kubectl get secrets -n shop --no-headers | awk '{print $1, $2}'\n\nsh.helm.release.v1.shop.v1   helm.sh/release.v1\n\n#   릴리스가 시크릿으로 저장된다\n\n#   7.2절의 그 시크릿이다\n\n$ kubectl get secret sh.helm.release.v1.shop.v1 -n shop \\\n    -o jsonpath='{.data.release}' | base64 -d | base64 -d \\\n    | gunzip 2>/dev/null | python3 -c \\\n    'import sys,json; d=json.load(sys.stdin); \\\n     print(\"차트\", d[\"chart\"][\"metadata\"][\"name\"]); \\\n     print(\"매니페스트\", len(d[\"manifest\"]), \"바이트\")'\n\n차트 shop\n매니페스트 1842 바이트\n\n#   렌더 결과가 통째로 들어 있다\n\n#   그래서 롤백이 된다\n\n# --- 값을 바꾼다 ---\n\n$ helm upgrade shop ./shop -n shop --set replicaCount=6 2>&1 | grep REVISION\n\nREVISION: 2\n\n$ kubectl get deployment -n shop --no-headers | awk '{print $2}'\n\n6/6\n\n$ helm history shop -n shop\n\nREVISION  STATUS      CHART       APP VERSION  DESCRIPTION\n1         superseded  shop-0.1.0  1.16.0       Install complete\n2         deployed    shop-0.1.0  1.16.0       Upgrade complete\n\n#   replicaCount 를 안 남겼다\n\n#   무엇이 바뀌었는지 안 적혀 있다\n\n$ helm get values shop -n shop\n\nUSER-SUPPLIED VALUES:\nreplicaCount: 6\n\n#   여기 있긴 하다\n\n#   그래도 깃에 두는 게 낫다\n\n# --- 되돌린다 ---\n\n$ helm rollback shop 1 -n shop\n\nRollback was a success! Happy Helming!\n\n$ kubectl get deployment -n shop --no-headers | awk '{print $2}'\n\n3/3\n\n$ helm history shop -n shop --max=3 | tail -2\n\n2         superseded  shop-0.1.0  1.16.0   Upgrade complete\n3         deployed    shop-0.1.0  1.16.0   Rollback to 1\n\n#   되돌리기도 새 리비전이다\n\n#   5.3절의 rollout undo 와 같은 모양이다\n\n#   11.1절에서 apply 가 못 하던 것이다\n\n# --- 지운다 ---\n\n$ helm uninstall shop -n shop\n\nrelease \"shop\" uninstalled\n\n$ kubectl get all -n shop --no-headers 2>&1 | wc -l\n\n       0\n\n#   만든 걸 다 안다\n\n#   apply 는 이걸 못 한다 (11.1절)\n\n$ kubectl get secrets -n shop --no-headers | wc -l\n\n       0\n\n#   릴리스 기록도 갔다\n\n#   그래서 uninstall 뒤엔 롤백이 안 된다\n\n# --- 남의 차트 ---\n\n$ helm repo add bitnami https://charts.bitnami.com/bitnami > /dev/null\n$ helm show values bitnami/postgresql 2>/dev/null | wc -l\n\n    1893\n\n#   설정 항목이 1893줄이다\n\n#   이걸 직접 쓰지는 않는다\n\n$ helm show values bitnami/postgresql 2>/dev/null \\\n    | grep -E '^  (persistence|replicaCount|auth):' | head -3\n\n  auth:\n  persistence:\n\n#   values 가 이 소프트웨어의 설정 화면이다\n\n#   여기가 헬름이 확실히 이기는 자리다\n\n$ kubectl delete namespace shop > /dev/null\n\n# --- 다음 절에서 ---\n\n#   클러스터의 상태를 Git 에 둔다",
+   "note": "**템플릿은 YAML 이 아니라 `nindent 4` 를 `2` 로 바꾸자 `mapping values are not allowed`** 다.\n\n**릴리스가 `sh.helm.release.v1.shop.v1` 시크릿에 렌더 결과째로** 저장된다.\n\n**`helm rollback` 이 3/3 으로 되돌리고 그것도 새 리비전**이다.\n\n**`helm uninstall` 은 만든 걸 다 치운다** — `apply` 가 못 하던 것이다.\n\n**남의 차트 `values` 가 1893줄**이다."
+  }
+ ],
+ "recap": [
+  "**템플릿 엔진이자 패키지 매니저**다.",
+  "**`Chart.yaml`·`values.yaml`·`templates/`** 다.",
+  "**릴리스가 시크릿으로** 저장된다.",
+  "**그래서 롤백과 완전 삭제가** 된다.",
+  "**템플릿은 YAML 이** 아니다.",
+  "**들여쓰기 하나에** 깨진다.",
+  "**`--set` 은 기록에 안** 남는다.",
+  "**`version` 과 `appVersion` 은 다른** 것이다.",
+  "**남의 소프트웨어를 쓸 때 확실히** 낫다."
+ ],
+ "drills": [
+  {
+   "task": "`helm create` 로 차트를 만든다.",
+   "done_when": "구성 파일을 다 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "`helm template` 으로 렌더한다.",
+   "done_when": "값에 따라 결과가 바뀌는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "들여쓰기를 망가뜨린다.",
+   "done_when": "파싱 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "업그레이드하고 롤백한다.",
+   "done_when": "리비전이 늘어나는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "릴리스는 어디에 저장되나?",
+   "a": "네임스페이스 안 시크릿에 렌더 결과째로 저장된다."
+  },
+  {
+   "q": "`helm rollback` 이 가능한 이유는?",
+   "a": "이전 리비전의 렌더 결과를 클러스터가 들고 있어서다."
+  },
+  {
+   "q": "템플릿의 대가는?",
+   "a": "YAML 이 아니라 에디터 검사가 안 되고 들여쓰기에 취약하다."
+  },
+  {
+   "q": "`--set` 의 문제는?",
+   "a": "선언이 깃에 남지 않아 왜 그렇게 떠 있는지 알기 어렵다."
+  },
+  {
+   "q": "`version` 과 `appVersion` 의 차이는?",
+   "a": "전자는 차트 자신의 버전, 후자는 담긴 애플리케이션 버전이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "차트",
+   "def": "쿠버네티스 매니페스트를 템플릿과 값으로 묶은 헬름 패키지."
+  },
+  {
+   "term": "릴리스",
+   "def": "차트를 클러스터에 설치한 한 벌. 리비전으로 이력이 쌓인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Helm — Documentation",
+   "url": "https://helm.sh/docs/",
+   "publisher": "Helm"
+  },
+  {
+   "title": "Helm — Chart Best Practices",
+   "url": "https://helm.sh/docs/chart_best_practices/",
+   "publisher": "Helm"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

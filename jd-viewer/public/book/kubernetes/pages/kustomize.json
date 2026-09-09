@@ -1,0 +1,134 @@
+{
+ "book": "kubernetes",
+ "id": "kustomize",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "Kustomize",
+ "summary": "겹쳐 쓰기.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "베이스와 오버레이를 안다.",
+  "두 패치 방식을 안다.",
+  "생성기와 해시를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절에서 31줄 중 28줄이 두 번 관리**됐다. **그 28줄을 한 번만** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "베이스와 오버레이",
+   "ascii": "   a base, and overlays that only say what differs\n\n   base/                    complete, valid, deployable on its own\n     deployment.yaml\n     service.yaml\n     kustomization.yaml\n\n   overlays/prod/\n     kustomization.yaml     names the base, then the differences\n     replicas-patch.yaml    three lines, not thirty\n\n   the base stays deployable, which is what keeps it honest",
+   "note": "**베이스가 그대로 배포 가능해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "템플릿이 아니라 YAML 이다",
+   "md": "**구멍 뚫린 틀이 아니라 완전한 YAML** 이다.\n\n> **에디터가 검사해** 준다.\n> **`kubectl apply -f base/` 가 그냥** 된다.\n> **11.3절의 헬름과 가장 다른** 점이다.\n\n**`kubectl` 에 들어** 있다.\n\n```bash\nkubectl apply -k overlays/prod\nkubectl kustomize overlays/prod\n```\n\n> **따로 안 깔아도** 된다.\n> **`kustomize` 명령은 더 최신**이라 기능 차이가 조금 있다.\n> **`kubectl kustomize` 로 결과를 먼저 눈으로** 본다.\n\n**자주 쓰는 필드**\n\n| 필드 | 무엇 |\n|---|---|\n| `resources` | 가져올 파일·디렉터리·URL |\n| `namePrefix`·`nameSuffix` | 이름 앞뒤에 붙인다 |\n| `namespace` | 전부 그 네임스페이스로 |\n| `commonLabels` | 전부에 라벨 |\n| `images` | 이미지 태그 교체 |\n| `replicas` | 개수 교체 |\n| `patches` | 나머지 전부 |\n\n> **`images` 와 `replicas` 가 제일 자주 쓰는 둘**이다.\n> **CI 가 태그만 바꿔 커밋하는 게 흔한 방식**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 패치 방식",
+   "ascii": "   two ways to say what changes\n\n   strategic merge     write a fragment shaped like the original\n                       same kind, same name, only the fields you change\n                       lists merge by a key, usually name\n\n   json patch          op, path, value, precise and fragile\n                       the only way to remove a field or hit an index\n\n   reach for the first, fall back to the second",
+   "note": "**첫째를 먼저** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "생성기가 이름을 바꾼다",
+   "md": "**`configMapGenerator` 가 해시를 붙인다.**\n\n```yaml\nconfigMapGenerator:\n  - name: app\n    literals: [MODE=prod]\n```\n\n> **결과는 `app-7d4gk9m2t8`** 이다.\n> **내용이 바뀌면 이름이** 바뀐다.\n> **참조하는 디플로이먼트 이름도 자동으로** 고쳐진다.\n> **7.4절의 롤아웃 문제가 구조로** 풀린다.\n\n**옛 컨피그맵이 쌓인다.**\n\n> **이름이 매번 달라지니 남는다.**\n> **`--prune` 이나 깃옵스가 치운다** — **11.4절**.\n\n**끌 수도 있다**\n\n```yaml\ngeneratorOptions:\n  disableNameSuffixHash: true\n```\n\n> **그러면 7.4절의 함정이 그대로** 돌아온다.\n> **끄지 않는 게** 낫다.\n\n**`commonLabels` 는 셀렉터도** 바꾼다.\n\n> **11.1절에서 셀렉터가 불변이라고** 했다.\n> **이미 배포된 것에 `commonLabels` 를 추가하면** 막힌다.\n> **1.25 부터 `labels` 로 셀렉터를 안 건드릴 수** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 베이스 ---\n\n$ find base -type f | sort\n\nbase/deployment.yaml\nbase/kustomization.yaml\nbase/service.yaml\n\n$ cat base/kustomization.yaml\n\napiVersion: kustomize.config.k8s.io/v1beta1\nkind: Kustomization\nresources:\n  - deployment.yaml\n  - service.yaml\nlabels:\n  - pairs:\n      app.kubernetes.io/name: shop\n    includeSelectors: true\n\n$ kubectl apply -f base/deployment.yaml --dry-run=server -o name\n\ndeployment.apps/shop\n\n#   베이스 자체가 유효한 YAML 이다\n\n#   템플릿이 아니다\n\n# --- 오버레이 ---\n\n$ cat overlays/prod/kustomization.yaml\n\napiVersion: kustomize.config.k8s.io/v1beta1\nkind: Kustomization\nnamespace: shop-prod\nnamePrefix: prod-\nresources:\n  - ../../base\nreplicas:\n  - name: shop\n    count: 6\nimages:\n  - name: shop\n    newTag: 1.4.0\npatches:\n  - path: probe-patch.yaml\n\n$ cat overlays/prod/probe-patch.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: shop\nspec:\n  template:\n    spec:\n      containers:\n        - name: app\n          readinessProbe:\n            periodSeconds: 10\n            failureThreshold: 3\n\n$ wc -l overlays/prod/*.yaml\n\n      16 overlays/prod/kustomization.yaml\n      14 overlays/prod/probe-patch.yaml\n      30 total\n\n#   11.1절에서는 34줄을 통째로 복사했다\n\n#   여기는 차이만 적었다\n\n#   컨테이너 이름 app 이 병합 키다\n\n# --- 결과를 본다 ---\n\n$ kubectl kustomize overlays/prod | grep -E \\\n    'name: prod|replicas|image:|namespace:|periodSeconds|path:'\n\n  namespace: shop-prod\n  name: prod-shop\n  replicas: 6\n        image: shop:1.4.0\n            path: /health\n            periodSeconds: 10\n\n#   path 는 베이스 것이 그대로다\n\n#   안 적은 건 안 바뀐다\n\n$ kubectl kustomize overlays/prod | grep -c 'kind:'\n\n2\n\n#   디플로이먼트와 서비스 둘이다\n\n$ diff <(kubectl kustomize base) <(kubectl kustomize overlays/prod) \\\n    | grep -c '^[<>]'\n\n14\n\n#   14줄만 다르다\n\n# --- 서비스 셀렉터도 따라간다 ---\n\n$ kubectl kustomize overlays/prod | grep -A3 'kind: Service' | tail -1\n\n  name: prod-shop\n\n$ kubectl kustomize overlays/prod \\\n  | python3 -c '\nimport sys, yaml\nfor d in yaml.safe_load_all(sys.stdin):\n    if d[\"kind\"] == \"Service\":\n        print(\"셀렉터\", d[\"spec\"][\"selector\"])\n    if d[\"kind\"] == \"Deployment\":\n        print(\"라벨  \", d[\"spec\"][\"template\"][\"metadata\"][\"labels\"])'\n\n라벨   {'app.kubernetes.io/name': 'shop', 'app': 'shop'}\n셀렉터 {'app.kubernetes.io/name': 'shop', 'app': 'shop'}\n\n#   namePrefix 를 붙였는데 셀렉터는 안 깨졌다\n\n#   6.7절의 4단 사고를 도구가 막아 준다\n\n# --- 실제로 적용 ---\n\n$ kubectl create namespace shop-prod > /dev/null\n$ kubectl apply -k overlays/prod\n\ndeployment.apps/prod-shop created\nservice/prod-shop created\n\n$ kubectl get all -n shop-prod --no-headers | awk '{print $1, $2}'\n\npod/prod-shop-6d8f4b9c7-2xk4m 1/1\n...\nservice/prod-shop ClusterIP\ndeployment.apps/prod-shop 6/6\n\n# --- 생성기와 해시 ---\n\n$ cat overlays/prod/kustomization.yaml | tail -5\n\nconfigMapGenerator:\n  - name: config\n    literals:\n      - MODE=prod\n      - LEVEL=info\n\n$ kubectl kustomize overlays/prod | grep -E 'name: prod-config|configMap'\n\n  name: prod-config-9f2t4k8m7d\n            name: prod-config-9f2t4k8m7d\n\n#   해시가 붙었다\n\n#   참조하는 쪽도 같이 바뀌었다\n\n$ kubectl apply -k overlays/prod > /dev/null\n$ kubectl get configmap -n shop-prod --no-headers | awk '{print $1}'\n\nprod-config-9f2t4k8m7d\n\n$ sed -i '' 's/LEVEL=info/LEVEL=debug/' overlays/prod/kustomization.yaml\n$ kubectl kustomize overlays/prod | grep 'name: prod-config'\n\n  name: prod-config-6t8k2m4d9f\n\n#   이름이 바뀌었다\n\n$ kubectl apply -k overlays/prod\n\nconfigmap/prod-config-6t8k2m4d9f created\ndeployment.apps/prod-shop configured\nservice/prod-shop unchanged\n\n$ kubectl rollout status deployment/prod-shop -n shop-prod > /dev/null\n$ kubectl exec -n shop-prod \\\n    $(kubectl get pod -n shop-prod -o name | head -1) -- printenv LEVEL\n\ndebug\n\n#   설정을 바꾸니 롤아웃이 걸렸다\n\n#   7.4절의 함정이 구조로 풀렸다\n\n$ kubectl get configmap -n shop-prod --no-headers | wc -l\n\n       2\n\n#   옛것이 남아 있다\n\n#   이건 치워야 한다\n\n# --- JSON 패치가 필요할 때 ---\n\n$ cat overlays/prod/remove-patch.yaml\n\n- op: remove\n  path: /spec/template/spec/containers/0/livenessProbe\n\n$ kubectl kustomize overlays/prod | grep -c livenessProbe\n\n0\n\n#   전략 병합으로는 못 지운다\n\n#   null 을 넣는 방법도 있지만 헷갈린다\n\n#   지우기와 인덱스는 JSON 패치다\n\n# --- 셀렉터를 건드리면 ---\n\n$ cat bad.yaml\n\nlabels:\n  - pairs:\n      env: prod\n    includeSelectors: true\n\n$ kubectl apply -k overlays/bad 2>&1 | tail -2\n\nThe Deployment \"prod-shop\" is invalid: spec.selector: Invalid value: ...\n  field is immutable\n\n#   11.1절에서 말한 그것이다\n\n#   includeSelectors 를 빼면 된다\n\n$ kubectl kustomize overlays/good \\\n  | python3 -c '\nimport sys, yaml\nfor d in yaml.safe_load_all(sys.stdin):\n    if d[\"kind\"] == \"Deployment\":\n        print(\"셀렉터\", d[\"spec\"][\"selector\"][\"matchLabels\"])\n        print(\"라벨  \", d[\"metadata\"][\"labels\"])'\n\n셀렉터 {'app.kubernetes.io/name': 'shop', 'app': 'shop'}\n라벨   {'app.kubernetes.io/name': 'shop', 'app': 'shop', 'env': 'prod'}\n\n#   라벨만 붙고 셀렉터는 그대로다\n\n# --- 치운다 ---\n\n$ kubectl delete namespace shop-prod\n\nnamespace \"shop-prod\" deleted\n\n# --- 다음 절에서 ---\n\n#   패키지로 다루는 쪽",
+   "note": "**오버레이가 30줄인데 그중 차이는 14줄**이고, 안 적은 `path: /health` 는 베이스 것 그대로다.\n\n**`namePrefix` 를 붙여도 서비스 셀렉터는 안** 깨진다.\n\n**`LEVEL` 을 바꾸자 컨피그맵 이름이 `prod-config-6t8k2m4d9f` 로 바뀌고 롤아웃이** 걸렸다.\n\n**옛 컨피그맵이 남아 두 개**다.\n\n**`includeSelectors: true` 로 라벨을 더하면 `field is immutable`** 이다."
+  }
+ ],
+ "recap": [
+  "**베이스는 완전한 YAML** 이다.",
+  "**오버레이는 차이만** 적는다.",
+  "**`kubectl` 에 들어** 있다.",
+  "**`images` 와 `replicas` 를 제일 자주** 쓴다.",
+  "**전략 병합을 먼저, JSON 패치는** 나중에.",
+  "**지우기는 JSON 패치라야** 한다.",
+  "**생성기가 해시를** 붙인다.",
+  "**설정 변경이 롤아웃을** 만든다.",
+  "**셀렉터를 건드리면** 막힌다."
+ ],
+ "drills": [
+  {
+   "task": "베이스와 오버레이를 만든다.",
+   "done_when": "`kubectl kustomize` 결과를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "프로브만 패치한다.",
+   "done_when": "안 적은 필드가 유지되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨피그맵 값을 바꾼다.",
+   "done_when": "이름이 바뀌고 롤아웃이 걸리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "필드를 지워 본다.",
+   "done_when": "JSON 패치가 필요한 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Kustomize 와 템플릿 방식의 차이는?",
+   "a": "베이스가 그 자체로 유효한 YAML 이라 그대로 배포된다."
+  },
+  {
+   "q": "전략 병합 패치란?",
+   "a": "원본과 같은 모양의 조각을 써서 바꿀 필드만 적는 방식이다."
+  },
+  {
+   "q": "필드를 지우려면?",
+   "a": "JSON 패치의 `remove` 를 쓴다."
+  },
+  {
+   "q": "생성기 해시의 효과는?",
+   "a": "설정이 바뀌면 이름이 바뀌어 자동으로 롤아웃이 걸린다."
+  },
+  {
+   "q": "`includeSelectors` 를 켜면 생기는 문제는?",
+   "a": "셀렉터가 불변이라 이미 배포된 워크로드에서 거부된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "오버레이",
+   "def": "베이스를 참조하고 차이만 적는 kustomization 디렉터리."
+  },
+  {
+   "term": "생성기 해시",
+   "def": "생성된 컨피그맵·시크릿 이름에 붙는 내용 해시 접미사."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kustomize — Reference",
+   "url": "https://kubectl.docs.kubernetes.io/references/kustomize/",
+   "publisher": "Kubernetes SIG CLI"
+  },
+  {
+   "title": "Kubernetes — Declarative Management with Kustomize",
+   "url": "https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

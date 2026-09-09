@@ -592,7 +592,7 @@
           "title": "Kustomize",
           "summary": "겹쳐 쓰기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -600,7 +600,7 @@
           "title": "Helm",
           "summary": "패키지로 다루기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
