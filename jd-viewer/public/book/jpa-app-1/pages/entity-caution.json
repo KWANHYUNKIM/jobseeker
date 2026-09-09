@@ -1,0 +1,137 @@
+{
+ "book": "jpa-app-1",
+ "id": "entity-caution",
+ "no": "3.8",
+ "chapter": 3,
+ "title": "엔티티 설계 시 주의점",
+ "summary": "setter · 컬렉션 · 지연 로딩 · Cascade.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "엔티티 설계 규칙 다섯을 정한다.",
+  "각 규칙의 근거를 안다.",
+  "지금까지 쓴 코드를 고친다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4~3.7절에서 `@Setter` 를 붙여 뒀다.** **이제 뗀다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "규칙 다섯",
+   "ascii": "   five rules for entities in this book\n\n   1  no setters                 change through methods with names\n   2  all associations LAZY      EAGER breaks jpql\n   3  do not replace collections hibernate tracks the instance\n   4  cascade only where owned   order -> orderItem, delivery\n   5  no @Data, careful @ToString  bidirectional recursion\n\n   rule 2 is the one that costs the most to get wrong",
+   "note": "**두 번째가 가장 비싸다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "① setter 를 안 만든다",
+   "md": "**setter 가 열려 있으면 아무 데서나 바꾼다.**\n\n```java\norder.setStatus(OrderStatus.CANCEL);\n// 재고는? 배송 상태 검사는?\n```\n\n**\"주문 취소\" 는 세 가지**를 해야 한다(1.3절).\n\n1. 배송 상태를 검사한다\n2. 주문 상태를 바꾼다\n3. 재고를 되돌린다\n\n**setter 하나로는 1번과 3번이 빠진다.**\n\n**이름 있는 메서드**로 바꾼다.\n\n```java\npublic void cancel() {\n    if (delivery.getStatus() == DeliveryStatus.COMP) {\n        throw new IllegalStateException(\"이미 배송된 상품은 취소가 불가능합니다\");\n    }\n    this.status = OrderStatus.CANCEL;\n    for (OrderItem orderItem : orderItems) {\n        orderItem.cancel();\n    }\n}\n```\n\n**7.4절에서 이것을** 만든다.\n\n> **`@Setter` 를 떼면 컴파일이 깨진다.** **그 깨진 자리마다 \"이 변경에 이름이 뭔가\" 를 묻게** 된다.\n>\n> **그것이 목적**이다.\n\n**생성은 생성자나 정적 팩토리**로 한다.\n\n```java\nprotected Order() {}      // JPA 용\n// 만드는 것은 createOrder() 정적 팩토리 (7.3절)\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "② 모든 연관을 `LAZY` 로",
+   "ascii": "   why EAGER breaks\n\n   em.find(Order.class, 1L)\n     one query with joins        fine\n\n   select o from Order o\n     select ... from orders      then\n     select ... from member where member_id=?   per row\n     select ... from delivery where delivery_id=?  per row\n\n   jpql is translated as written; eager fires after",
+   "note": "**JPQL 은 쓴 대로 번역**되고 `EAGER` 는 그 뒤에 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`EAGER` 가 왜 위험한가",
+   "md": "**「DB 2편」 6.7절에서 본 그것**이다. **여기서는 더 나쁘다.**\n\n**기본값이 함정**이다.\n\n| 애너테이션 | 기본 `fetch` |\n|---|---|\n| **`@ManyToOne`** | **`EAGER`** |\n| **`@OneToOne`** | **`EAGER`** |\n| `@OneToMany` | `LAZY` |\n| `@ManyToMany` | `LAZY` |\n\n**위 둘을 명시하지 않으면 즉시 로딩**이다.\n\n**`Order` 를 보면**\n\n```java\n@ManyToOne  Member member;      // EAGER\n@OneToOne   Delivery delivery;  // EAGER\n```\n\n**`select o from Order o` 하나가 주문 100건이면**\n\n```\n1  주문 조회\n100  회원 조회\n100  배송 조회\n= 201개\n```\n\n> **`em.find` 는 괜찮다.** **하이버네이트가 조인해서 한 번에** 가져온다.\n>\n> **JPQL 이 문제**다. **쓴 대로 SQL 을 만들고**, **그다음 `EAGER` 를 채우려고 추가 쿼리**를 날린다.\n\n**전부 `LAZY` 로 두고 필요할 때 페치 조인**한다.\n\n```java\n@ManyToOne(fetch = FetchType.LAZY)\n@OneToOne(fetch = FetchType.LAZY)\n```\n\n**9.4절에서 이 결정의 결과를** 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "③ 컬렉션을 바꾸지 않는다",
+   "md": "```java\n// 이러면 안 된다\nmember.setOrders(new ArrayList<>());\n```\n\n**하이버네이트가 컬렉션을 자기 것으로 바꿔치기**해 뒀다.\n\n```java\nlog.info(\"before = {}\", member.getOrders().getClass());\n// class java.util.ArrayList\n\nem.persist(member);\n\nlog.info(\"after = {}\", member.getOrders().getClass());\n// class org.hibernate.collection.spi.PersistentBag\n```\n\n**`PersistentBag` 이 변경을 추적**한다. **`ArrayList` 로 갈아 끼우면 추적이 끊긴다.**\n\n**필드에서 바로 초기화**하고 **그대로 둔다.**\n\n```java\nprivate List<Order> orders = new ArrayList<>();\n```\n\n> **`null` 체크가 필요 없어지는 것**도 이득이다.\n>\n> **생성자에서 초기화해도 되는데**, **필드에서 하면 어느 생성자로 만들든 안전**하다.\n\n**④ `cascade` 는 소유한 곳에만**\n\n| 관계 | `cascade` | 왜 |\n|---|---|---|\n| **`Order` → `OrderItem`** | **`ALL`** | 주문상품은 주문만 참조한다 |\n| **`Order` → `Delivery`** | **`ALL`** | 배송도 주문만 |\n| `Order` → `Member` | **안 건다** | 회원은 여러 주문이 참조한다 |\n| `OrderItem` → `Item` | **안 건다** | 상품은 독립적이다 |\n\n**기준**이 있다.\n\n> **\"이것의 생명주기가 저것에 완전히 종속되나?\"**\n>\n> **주문이 지워지면 주문상품도 지워져야** 한다. **주문이 지워졌다고 회원이 지워지면 안 된다.**\n\n**9.6절에서 이 판단을 다시** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "⑤ 롬복을 골라 쓴다",
+   "md": "**2.1절에서 예고한 것**이다.\n\n| 애너테이션 | 엔티티에 |\n|---|---|\n| **`@Getter`** | **쓴다** |\n| **`@Setter`** | **안 쓴다** — ① |\n| **`@Data`** | **안 쓴다** |\n| **`@ToString`** | **연관 필드를 빼고** |\n| **`@EqualsAndHashCode`** | **안 쓴다** |\n| `@NoArgsConstructor(access = PROTECTED)` | **쓴다** |\n\n**`@ToString` 을 쓸 거면**\n\n```java\n@ToString(exclude = {\"orders\"})\n```\n\n**연관 필드를 빼야** 한다. **안 그러면 무한 재귀**다(2.1절).\n\n**`@EqualsAndHashCode` 가 위험한 이유**는 다르다.\n\n```java\n// 지연 로딩 프록시를 비교하면\norder1.equals(order2);\n// getMember() 를 부르면서 쿼리가 나간다\n```\n\n**`equals` 한 번에 쿼리가 여럿**이다.\n\n> **엔티티의 동등성은 id 로** 본다. **필요하면 직접** 쓴다.\n>\n> ```java\n> @Override\n> public boolean equals(Object o) {\n>     if (this == o) return true;\n>     if (!(o instanceof Order other)) return false;\n>     return id != null && id.equals(other.id);\n> }\n> ```\n>\n> **`id` 가 `null` 이면 같지 않다** — 아직 저장 안 된 것끼리는 인스턴스로 비교한다.\n\n**`@NoArgsConstructor(access = AccessLevel.PROTECTED)`** 를 붙인다. **JPA 는 기본 생성자가 필요한데**, **아무나 빈 객체를 만들면 안 된다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL 과 나간 SQL",
+   "sql": "# --- 규칙을 적용해도 DDL 은 안 바뀐다 ---\n\n#   @Setter 를 떼도 create table 은 같다\n#   fetch 전략도 DDL 에 안 나타난다\n#   cascade 도 안 나타난다\n\n#   설계 규칙 다섯 중 DDL 에 나타나는 것은 없다\n\n# --- 그런데 SQL 은 완전히 달라진다 ---\n\n# --- EAGER 일 때 (fetch 를 명시 안 하면) ---\n\nem.createQuery(\"select o from Order o\", Order.class).getResultList();\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, ... from member m1_0\n#       where m1_0.member_id=?\n#   Hibernate: \n#       select d1_0.delivery_id, d1_0.city, ... from delivery d1_0\n#       where d1_0.delivery_id=?\n#   Hibernate: \n#       select m1_0.member_id, ... from member m1_0 where m1_0.member_id=?\n#   Hibernate: \n#       select d1_0.delivery_id, ... from delivery d1_0\n#       where d1_0.delivery_id=?\n#   ... (주문 건수만큼)\n\n#   주문 2건에 쿼리 5개\n#   주문 100건이면 201개\n\n# --- LAZY 로 바꾸면 ---\n\nem.createQuery(\"select o from Order o\", Order.class).getResultList();\n\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n\n#   쿼리 1개\n\n#   member 와 delivery 는 프록시로 들어 있다\n#   실제로 쓸 때 조회된다\n\n# --- em.find 는 둘 다 한 번이다 ---\n\nem.find(Order.class, 1L);\n\n#   (EAGER 일 때)\n#   Hibernate: \n#       select o1_0.order_id, ..., m1_0.member_id, m1_0.city, ...,\n#              d1_0.delivery_id, d1_0.city, ...\n#       from orders o1_0\n#       left join member m1_0 on m1_0.member_id=o1_0.member_id\n#       left join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n#       where o1_0.order_id=?\n\n#   조인 하나로 끝냈다\n\n#   (LAZY 일 때)\n#   Hibernate: \n#       select o1_0.order_id, o1_0.delivery_id, o1_0.member_id,\n#              o1_0.order_date, o1_0.status from orders o1_0\n#       where o1_0.order_id=?\n\n#   조인이 없다\n\n# --- 컬렉션을 갈아 끼우면 ---\n\nmember.setOrders(new ArrayList<>());\nmember.getOrders().add(order);\nem.flush();\n\n#   (아무 insert 도 안 나간다)\n\n#   PersistentBag 이 ArrayList 로 바뀌어 추적이 끊겼다\n\n# --- setter 를 떼면 ---\n\n#   컴파일 오류 12곳\n\n#   그 자리마다 '이 변경의 이름이 뭔가' 를 묻게 된다\n#   5~7장에서 하나씩 메서드로 만든다\n\n# --- 3장이 끝났다 ---\n\n#   엔티티 열 개, 테이블 일곱 개\n#   설계 결정 여덟 개를 다 정했다 (3.1절 목록)\n\n#   다음 절에서 만들어진 DDL 을 통째로 읽는다",
+   "note": "**설계 규칙 다섯 중 DDL 에 나타나는 것이 하나도 없다.** **전부 SQL 에서만 드러난다.**\n\n**`EAGER` 와 `LAZY` 의 차이가 쿼리 5개와 1개**다. **주문이 100건이면 201개와 1개**다.\n\n**`em.find` 는 둘 다 한 번**이다. **JPQL 만 문제**라는 것이 이 절의 요점이다.\n\n**컬렉션을 갈아 끼우면 `insert` 가 아예 안 나간다.** **조용한 실패**다.\n\n**`@Setter` 를 떼면 컴파일 오류 열두 곳** — 그 자리들이 5~7장이다.\n\n**다음 절에서 DDL 전체를 읽는다.**"
+  }
+ ],
+ "recap": [
+  "**setter 를 안 만든다** — 변경마다 이름 있는 메서드를 만든다.",
+  "**`@ManyToOne`·`@OneToOne` 의 기본이 `EAGER`** 라 전부 `LAZY` 로 명시한다.",
+  "**`em.find` 는 조인 한 번, JPQL 은 쓴 대로 + 추가 쿼리**다.",
+  "**컬렉션을 갈아 끼우지 않는다** — `PersistentBag` 추적이 끊긴다.",
+  "**필드에서 바로 초기화**한다.",
+  "**`cascade` 는 생명주기가 종속된 곳에만** — 주문→주문상품·배송.",
+  "**`@Data`·`@EqualsAndHashCode` 를 안 쓴다.**",
+  "**`@ToString` 은 연관 필드를 빼고** 쓴다.",
+  "**설계 규칙 다섯이 DDL 에는 안 나타난다** — SQL 에서만 드러난다."
+ ],
+ "drills": [
+  {
+   "task": "`@Setter` 를 전부 떼고 컴파일한다.",
+   "done_when": "깨진 자리를 세었다.",
+   "minutes": 20
+  },
+  {
+   "task": "`fetch` 를 명시하지 않고 JPQL 조회를 해 본다.",
+   "done_when": "쿼리가 여러 개 나가는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`em.find` 와 JPQL 의 SQL 을 비교한다.",
+   "done_when": "조인 유무가 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컬렉션을 갈아 끼우고 저장해 본다.",
+   "done_when": "`insert` 가 안 나가는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "setter 를 왜 안 만드나?",
+   "a": "변경에 이름과 규칙이 필요한데 setter 는 그것을 건너뛰게 한다."
+  },
+  {
+   "q": "어떤 애너테이션의 기본이 `EAGER` 인가?",
+   "a": "`@ManyToOne` 과 `@OneToOne` 이다."
+  },
+  {
+   "q": "`em.find` 는 왜 괜찮은가?",
+   "a": "하이버네이트가 조인해서 한 번에 가져오기 때문이다. JPQL 은 쓴 대로 번역된다."
+  },
+  {
+   "q": "컬렉션을 갈아 끼우면?",
+   "a": "하이버네이트의 `PersistentBag` 이 사라져 변경 추적이 끊긴다."
+  },
+  {
+   "q": "`cascade` 의 판단 기준은?",
+   "a": "그것의 생명주기가 이것에 완전히 종속되느냐다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

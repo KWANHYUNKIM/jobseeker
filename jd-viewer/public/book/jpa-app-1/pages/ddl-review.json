@@ -1,0 +1,131 @@
+{
+ "book": "jpa-app-1",
+ "id": "ddl-review",
+ "no": "3.9",
+ "chapter": 3,
+ "title": "만들어진 DDL 읽기",
+ "summary": "내 설계가 무엇을 만들었나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "DDL 전체를 읽는다.",
+  "애너테이션과 DDL 을 짝짓는다.",
+  "DDL 에 안 나타나는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장이 끝났다.** **애플리케이션을 띄우고 로그 전체**를 읽는다."
+  },
+  {
+   "type": "figure",
+   "caption": "애너테이션과 DDL",
+   "ascii": "   annotation                       ddl\n   ----------                       ---\n   @Column(name=\"member_id\")        member_id\n   @Embedded Address                city street zipcode\n   int price                        price integer not null\n   Integer price                    price integer\n   @Enumerated(STRING)              varchar(255) check (...)\n   @Enumerated(ORDINAL)             integer\n   @OneToOne @JoinColumn            delivery_id bigint unique\n   @ManyToOne @JoinColumn           member_id bigint\n   @OneToMany(mappedBy)             nothing\n   @ManyToMany @JoinTable           a two column table, no pk\n   @Inheritance(SINGLE_TABLE)       one table with dtype",
+   "note": "**왼쪽을 바꾸면 오른쪽이 바뀐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 이 책의 방법이다",
+   "md": "**1.1절에서 \"매 절은 그 결정이 만든 것으로 끝난다\" 고** 했다.\n\n**3장은 설계 장**이었다. **설계는 눈에 안 보인다.**\n\n**그래서 DDL 을 본다.**\n\n> **`@Embedded` 를 붙였더니 컬럼 셋이 생겼다.**\n> **`int` 로 두었더니 `not null` 이 붙었다.**\n> **`@OneToOne` 이라 `unique` 가 붙었다.**\n\n**\"값 타입이란 무엇인가\" 를 설명하는 것보다**, **`create table` 을 보는 것이 빠르다.**\n\n**반대로도 쓴다.**\n\n**DDL 이 예상과 다르면 매핑이 잘못된 것**이다.\n\n| 이상한 DDL | 원인 |\n|---|---|\n| **테이블이 하나 더 생겼다** | `@JoinTable` 이 자동 생성됐다 |\n| **`unique` 가 없다** | `@OneToOne` 이 아니라 `@ManyToOne` |\n| **컬럼이 `integer`** | `@Enumerated` 를 안 붙였다 |\n| **`not null` 이 없다** | `Integer` 를 썼다 |\n| **컬럼이 없다** | `@Transient` 거나 오타 |\n\n> **`ddl-auto: validate` 로 두면 운영 DB 와 매핑이 어긋날 때 뜰 때** 잡힌다(2.4절). **개발에서는 `create` 로 두고 DDL 을 눈으로** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "DDL 이 말하지 않는 것",
+   "ascii": "   what the ddl does not say\n\n   fetch = LAZY or EAGER            invisible\n   cascade = ALL                    invisible\n   the direction of an association  invisible\n   which side is the owner          almost invisible (the fk side)\n   business rules                   invisible\n\n   the ddl is half the design. the other half shows up as sql.",
+   "note": "**나머지 절반은 SQL 로** 드러난다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "설계 결정 여덟 개를 확인한다",
+   "md": "**3.1절에서 세운 목록**이다.\n\n| 정할 것 | 정한 것 | DDL 에 |\n|---|---|---|\n| 주소를 어떻게 | **값 타입** | **보인다** — 컬럼 셋 |\n| 상품 세 종류 | **`SINGLE_TABLE`** | **보인다** — `dtype` |\n| 주문과 회원의 방향 | **양방향, 주인은 `Order`** | 반쯤 — `member_id` 위치 |\n| 주문과 배송 | **1:1, 주인은 `Order`** | **보인다** — `unique` |\n| 카테고리와 상품 | **`@ManyToMany`** | **보인다** — 연결 테이블 |\n| id 생성 전략 | **기본값(시퀀스)** | **보인다** — `create sequence` |\n| `fetch` 기본값 | **전부 `LAZY`** | **안 보인다** |\n| `cascade` 범위 | **`Order` → 주문상품·배송** | **안 보인다** |\n\n**여섯이 보이고 둘이 안 보인다.**\n\n> **안 보이는 둘이 9장에서 가장 크게 청구**된다.\n>\n> **`fetch`** → 9.2, 9.4절의 쿼리 개수\n> **`cascade`** → 9.6절\n\n**DDL 에 안 보이는 것이 더 위험**하다. **눈으로 확인할 방법이 없어서**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "3장을 마치며",
+   "md": "**만든 것**\n\n| | 개수 |\n|---|---|\n| 엔티티 클래스 | **아홉** |\n| 값 타입 | **하나** |\n| enum | **둘** |\n| 테이블 | **일곱** |\n| 시퀀스 | **여섯** |\n\n**아직 안 만든 것**\n\n| | 어디서 |\n|---|---|\n| 비즈니스 로직 | 6, 7장 |\n| 리포지토리 | 5~7장 |\n| 서비스 | 5~7장 |\n| 화면 | 8장 |\n\n**3장에서 만든 것이 아직 아무 일도 안 한다.** **테이블만 있다.**\n\n> **그런데 이 책의 나머지가 전부 여기서 나온다**(1.1절).\n>\n> | 3장의 결정 | 어디서 청구되나 |\n> |---|---|\n> | `SINGLE_TABLE` | **6.5, 8.7절** |\n> | `LAZY` | **9.2, 9.4절** |\n> | `cascade` | **7.7, 9.6절** |\n> | 값 타입 | 8.2절 |\n> | 양방향 | **9.2, 9.7절** |\n> | `@ManyToMany` | 9.7절 |\n\n**다음 장에서 무엇을 어디에 둘지** 정한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL — 전체",
+   "sql": "# --- 애플리케이션 실행, 로그 전체 ---\n\n#   Hibernate: drop table if exists category cascade\n#   Hibernate: drop table if exists category_item cascade\n#   Hibernate: drop table if exists delivery cascade\n#   Hibernate: drop table if exists item cascade\n#   Hibernate: drop table if exists member cascade\n#   Hibernate: drop table if exists order_item cascade\n#   Hibernate: drop table if exists orders cascade\n\n#   Hibernate: drop sequence if exists category_seq\n#   Hibernate: drop sequence if exists delivery_seq\n#   Hibernate: drop sequence if exists item_seq\n#   Hibernate: drop sequence if exists member_seq\n#   Hibernate: drop sequence if exists order_item_seq\n#   Hibernate: drop sequence if exists orders_seq\n\n#   Hibernate: create sequence category_seq start with 1 increment by 50\n#   Hibernate: create sequence delivery_seq start with 1 increment by 50\n#   Hibernate: create sequence item_seq start with 1 increment by 50\n#   Hibernate: create sequence member_seq start with 1 increment by 50\n#   Hibernate: create sequence order_item_seq start with 1 increment by 50\n#   Hibernate: create sequence orders_seq start with 1 increment by 50\n\n#   시퀀스 여섯. 엔티티마다 하나씩.\n#   Book/Album/Movie 는 Item 것을 같이 쓴다.\n\n#   Hibernate: \n#       create table category (\n#           category_id bigint not null,\n#           parent_id bigint,\n#           name varchar(255),\n#           primary key (category_id))\n\n#   Hibernate: \n#       create table category_item (\n#           category_id bigint not null,\n#           item_id bigint not null)\n\n#   Hibernate: \n#       create table delivery (\n#           delivery_id bigint not null,\n#           status varchar(255) check (status in ('READY','COMP')),\n#           city varchar(255),\n#           street varchar(255),\n#           zipcode varchar(255),\n#           primary key (delivery_id))\n\n#   Hibernate: \n#       create table item (\n#           dtype varchar(31) not null,\n#           price integer not null,\n#           stock_quantity integer not null,\n#           item_id bigint not null,\n#           actor varchar(255),\n#           artist varchar(255),\n#           author varchar(255),\n#           director varchar(255),\n#           etc varchar(255),\n#           isbn varchar(255),\n#           name varchar(255),\n#           primary key (item_id))\n\n#   Hibernate: \n#       create table member (\n#           member_id bigint not null,\n#           city varchar(255),\n#           street varchar(255),\n#           zipcode varchar(255),\n#           name varchar(255),\n#           primary key (member_id))\n\n#   Hibernate: \n#       create table order_item (\n#           count integer not null,\n#           order_price integer not null,\n#           item_id bigint,\n#           order_id bigint,\n#           order_item_id bigint not null,\n#           primary key (order_item_id))\n\n#   Hibernate: \n#       create table orders (\n#           order_id bigint not null,\n#           delivery_id bigint unique,\n#           member_id bigint,\n#           order_date timestamp(6),\n#           status varchar(255) check (status in ('ORDER','CANCEL')),\n#           primary key (order_id))\n\n#   외래 키 일곱 개\n#   Hibernate: alter table if exists category add constraint ...\n#              foreign key (parent_id) references category\n#   Hibernate: alter table if exists category_item add constraint ...\n#              foreign key (item_id) references item\n#   Hibernate: alter table if exists category_item add constraint ...\n#              foreign key (category_id) references category\n#   Hibernate: alter table if exists order_item add constraint ...\n#              foreign key (item_id) references item\n#   Hibernate: alter table if exists order_item add constraint ...\n#              foreign key (order_id) references orders\n#   Hibernate: alter table if exists orders add constraint ...\n#              foreign key (delivery_id) references delivery\n#   Hibernate: alter table if exists orders add constraint ...\n#              foreign key (member_id) references member\n\n#   Initialized JPA EntityManagerFactory for persistence unit 'default'\n#   Started JpashopApplication in 2.891 seconds\n\n# --- 세어 보면 ---\n\n#   drop table    7\n#   drop sequence 6\n#   create sequence 7    (item_seq 하나에 Book/Album/Movie)\n#   create table  7\n#   alter table   7\n\n#   내가 쓴 SQL: 0줄\n\n# --- 3.3절의 예상과 비교 ---\n\n#   테이블 이름  일치\n#   컬럼 목록    일치\n#   unique       일치\n#   check        예상 못 했다 (@Enumerated 의 부산물)\n#   시퀀스       예상 못 했다 (@GeneratedValue 의 부산물)\n\n#   설계는 맞았고 부산물이 둘 있었다\n\n# --- 이것이 3장의 결과다 ---\n\n#   애너테이션 서른 개쯤이 DDL 스물일곱 줄을 만들었다\n#   그리고 아직 아무 데이터도 없다",
+   "note": "**DDL 스물일곱 줄을 내가 한 줄도 안 썼다.** **애너테이션 서른 개쯤이 만들었다.**\n\n**3.3절의 예상과 대체로 일치**한다. **`check` 제약과 시퀀스 둘은 예상 못 한 부산물**이었다.\n\n**`item_seq` 하나를 `Book`·`Album`·`Movie` 가 같이** 쓴다. **`SINGLE_TABLE` 의 또 다른 얼굴**이다.\n\n**외래 키 제약이 일곱 개**다. **3.2절에서 그린 선 일곱 개**와 같다.\n\n**아직 데이터가 하나도 없다.** **4장에서 구조를 정하고 5장부터 채운다.**"
+  }
+ ],
+ "recap": [
+  "**애너테이션이 DDL 을 만든다** — 왼쪽을 바꾸면 오른쪽이 바뀐다.",
+  "**DDL 이 예상과 다르면 매핑이 잘못된** 것이다.",
+  "**설계 결정 여덟 중 여섯이 DDL 에 보인다.**",
+  "**`fetch` 와 `cascade` 는 안 보인다** — 9장에서 청구된다.",
+  "**안 보이는 것이 더 위험**하다.",
+  "**시퀀스 일곱, 테이블 일곱, 외래 키 일곱**이 생겼다.",
+  "**`item_seq` 하나를 세 클래스가 공유**한다.",
+  "**`check` 제약과 시퀀스는 예상 못 한 부산물**이었다.",
+  "**DDL 스물일곱 줄을 한 줄도 안 썼다.**"
+ ],
+ "drills": [
+  {
+   "task": "DDL 로그 전체를 파일로 저장한다.",
+   "done_when": "3.3절 예상과 대조했다.",
+   "minutes": 20
+  },
+  {
+   "task": "애너테이션 하나를 바꾸고 DDL 을 다시 본다.",
+   "done_when": "어느 줄이 바뀌는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "설계 결정 여덟 개 중 DDL 에 보이는 것을 표시한다.",
+   "done_when": "둘이 안 보이는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Enumerated` 를 떼고 DDL 을 본다.",
+   "done_when": "`check` 가 사라지고 타입이 바뀌는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 DDL 을 읽나?",
+   "a": "설계는 눈에 안 보이는데 DDL 은 보이기 때문이다."
+  },
+  {
+   "q": "DDL 에 안 나타나는 설계 결정은?",
+   "a": "`fetch` 전략과 `cascade` 범위, 연관의 방향이다."
+  },
+  {
+   "q": "그것이 왜 더 위험한가?",
+   "a": "눈으로 확인할 방법이 없고 9장에서 쿼리 개수로 청구되기 때문이다."
+  },
+  {
+   "q": "예상 못 한 부산물 둘은?",
+   "a": "`@Enumerated(STRING)` 이 만든 `check` 제약과 `@GeneratedValue` 가 만든 시퀀스다."
+  },
+  {
+   "q": "`item_seq` 를 몇 클래스가 쓰나?",
+   "a": "셋이다. `SINGLE_TABLE` 이라 `Book`·`Album`·`Movie` 가 공유한다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

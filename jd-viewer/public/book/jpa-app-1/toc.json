@@ -201,7 +201,7 @@
           "title": "카테고리와 다대다",
           "summary": "쓰면 안 되는 것을 써 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",
@@ -209,7 +209,7 @@
           "title": "엔티티 설계 시 주의점",
           "summary": "setter · 컬렉션 · 지연 로딩 · Cascade.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",
@@ -217,7 +217,7 @@
           "title": "만들어진 DDL 읽기",
           "summary": "내 설계가 무엇을 만들었나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

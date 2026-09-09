@@ -1,0 +1,139 @@
+{
+ "book": "jpa-app-1",
+ "id": "entity-category",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "카테고리와 다대다",
+ "summary": "쓰면 안 되는 것을 써 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`@ManyToMany` 를 써 본다.",
+  "왜 실무에서 안 쓰는지 확인한다.",
+  "자기 참조를 매핑한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.3절에서 \"화면은 없는데 엔티티는 만든다\" 고** 했다. **이 절이 그 이유**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`Category`",
+   "code": "@Entity\n@Getter @Setter\npublic class Category {\n\n    @Id @GeneratedValue\n    @Column(name = \"category_id\")\n    private Long id;\n\n    private String name;\n\n    @ManyToMany\n    @JoinTable(name = \"category_item\",\n            joinColumns = @JoinColumn(name = \"category_id\"),\n            inverseJoinColumns = @JoinColumn(name = \"item_id\"))\n    private List<Item> items = new ArrayList<>();\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"parent_id\")\n    private Category parent;\n\n    @OneToMany(mappedBy = \"parent\")\n    private List<Category> child = new ArrayList<>();\n}",
+   "note": "**`@JoinTable`** 로 연결 테이블 이름과 컬럼을 지정한다. **안 쓰면 `category_item` 대신 `category_items`** 같은 이름이 자동으로 생긴다.\n\n**`Item` 쪽은 `mappedBy`** 다(3.5절).\n\n```java\n@ManyToMany(mappedBy = \"items\")\nprivate List<Category> categories = new ArrayList<>();\n```\n\n**아래 둘이 자기 참조**다. **`parent` 와 `child` 가 같은 엔티티**를 가리킨다."
+  },
+  {
+   "type": "figure",
+   "caption": "`@ManyToMany` 가 만드는 것",
+   "ascii": "   @ManyToMany\n\n   Category.items  <---->  Item.categories\n        |\n   category_item\n     category_id  item_id\n\n   no entity, no id, no extra column, no place to add one",
+   "note": "**맨 아랫줄이 이 절의 문제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "왜 실무에서 안 쓰나",
+   "md": "**편해 보인다.** **연결 테이블을 자동으로 만들어** 준다.\n\n**문제는 그 테이블에 컬럼을 못 넣는 것**이다.\n\n```sql\ncreate table category_item (\n    category_id bigint not null,\n    item_id bigint not null\n)\n```\n\n**딱 두 컬럼**이다. **PK 도 없다.**\n\n**실무에서 반드시 필요해지는 것들**이 있다.\n\n| 필요해지는 컬럼 | 언제 |\n|---|---|\n| **`created_at`** | 언제 이 카테고리에 넣었나 |\n| **`sort_order`** | 카테고리 안에서 상품 순서 |\n| **`is_main`** | 대표 카테고리 |\n| **`created_by`** | 누가 넣었나 |\n\n**하나라도 필요해지면 `@ManyToMany` 를 버리고 엔티티로 다시** 만들어야 한다.\n\n> **그 시점에는 이미 데이터가 있다.** **마이그레이션**이다.\n\n**두 번째 문제는 쿼리**다.\n\n```java\ncategory.getItems();\n```\n\n**중간 테이블을 조인하는 쿼리가 나가는데 내가 그 조인을 못 만진다.** **조건을 붙일 수도, 정렬을 넣을 수도 없다.**\n\n> **3.2절에서 \"연결 테이블에 컬럼이 필요하면 그것은 이미 엔티티\" 라고** 했다. **`OrderItem` 이 그렇게 나온 것**이다.\n>\n> **카테고리도 실무라면 `CategoryItem` 엔티티**로 만든다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "실무라면 이렇게",
+   "code": "@Entity\npublic class CategoryItem {\n\n    @Id @GeneratedValue\n    @Column(name = \"category_item_id\")\n    private Long id;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"category_id\")\n    private Category category;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @JoinColumn(name = \"item_id\")\n    private Item item;\n\n    private int sortOrder;\n    private LocalDateTime createdAt;\n}",
+   "note": "**`@ManyToMany` 하나가 `@ManyToOne` 둘**이 됐다.\n\n**코드는 늘었는데 얻는 것**이 있다.\n\n| | `@ManyToMany` | 엔티티로 |\n|---|---|---|\n| 연결 테이블에 컬럼 | **못 넣는다** | **넣는다** |\n| 조인 쿼리 제어 | 못 한다 | **된다** |\n| id | 없다 | 있다 |\n| 코드 | **짧다** | 길다 |\n\n> **이 책은 `@ManyToMany` 로 둔다.** **화면이 없어서 문제가 안 드러나기** 때문이고, **그 자체가 이 절의 교훈**이다 — **화면이 없으면 설계 문제가 안 보인다.**\n>\n> **9.7절에서 이 이야기를 다시** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "자기 참조",
+   "ascii": "   a category knows its parent and its children\n\n   category\n     category_id  parent_id  name\n\n   1   null   ROOT\n   2   1      BOOK\n   3   2      SPRING\n\n   one table, a tree inside it",
+   "note": "**한 테이블 안에 트리**가 들어간다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "자기 참조의 특징",
+   "md": "**엔티티 하나가 자기 타입을 참조**한다.\n\n```java\n@ManyToOne @JoinColumn(name = \"parent_id\")\nprivate Category parent;\n\n@OneToMany(mappedBy = \"parent\")\nprivate List<Category> child;\n```\n\n**매핑은 평범한 1:N** 이다. **테이블도 하나**다.\n\n**어려운 것은 조회**다.\n\n| 하고 싶은 것 | JPQL 로 |\n|---|---|\n| 자식 목록 | **된다** — `where parent_id = ?` |\n| 부모 | 된다 |\n| **모든 자손** | **안 된다** |\n| **루트까지의 경로** | **안 된다** |\n\n**아래 둘은 재귀 쿼리**가 필요하다.\n\n```sql\n-- 표준 SQL 의 재귀 CTE\nwith recursive tree as (\n    select * from category where category_id = 1\n    union all\n    select c.* from category c join tree t on c.parent_id = t.category_id\n)\nselect * from tree;\n```\n\n**JPQL 에 재귀가 없다.** **네이티브 쿼리나 JdbcTemplate** 으로 간다.\n\n> **「DB 2편」 9.1절에서 \"가장 복잡한 쿼리 하나로 기술을 뒤집지 않는다\" 고** 했다. **이것이 그런 쿼리**다.\n>\n> **트리를 자주 쓰면 다른 방법**도 있다 — **경로 열거(`/1/2/3/`)** 나 **중첩 집합**. **설계로 푸는 문제**다.\n\n**이 책은 자식 조회까지만** 한다. **화면이 없으니 그 이상이 필요 없다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL",
+   "sql": "# --- 애플리케이션 실행 ---\n\n#   Hibernate: \n#       create table category (\n#           category_id bigint not null,\n#           parent_id bigint,\n#           name varchar(255),\n#           primary key (category_id)\n#       )\n\n#   parent_id 가 자기 테이블을 가리킨다\n\n#   Hibernate: \n#       create table category_item (\n#           category_id bigint not null,\n#           item_id bigint not null\n#       )\n\n#   컬럼 둘. PK 가 없다.\n\n#   Hibernate: \n#       alter table if exists category \n#       add constraint FKs6cydsualtsrprvlf2bb3lcmy \n#       foreign key (parent_id) references category\n\n#   자기 자신을 참조하는 외래 키\n\n#   Hibernate: \n#       alter table if exists category_item \n#       add constraint FKfaa1v3g9pjnj6vsu35nrdtq7q \n#       foreign key (item_id) references item\n#   Hibernate: \n#       alter table if exists category_item \n#       add constraint FKe0y8n1jfnvfa1kjcpo9v3jxln \n#       foreign key (category_id) references category\n\n# --- 테이블 일곱 개가 다 생겼다 ---\n\nshow tables;\n#   CATEGORY\n#   CATEGORY_ITEM\n#   DELIVERY\n#   ITEM\n#   MEMBER\n#   ORDERS\n#   ORDER_ITEM\n\n#   3.3절에서 예상한 그대로다\n\n# --- 카테고리에 상품을 넣으면 ---\n\nCategory book = new Category();\nbook.setName(\"도서\");\nbook.getItems().add(item);\nem.persist(book);\nem.flush();\n\n#   Hibernate: \n#       insert into category (name, parent_id, category_id)\n#       values (?, ?, ?)\n#   Hibernate: \n#       insert into category_item (category_id, item_id) values (?, ?)\n\n#   연결 테이블에 자동으로 들어갔다\n#   편하다\n\n# --- 조회하면 ---\n\ncategory.getItems();\n\n#   Hibernate: \n#       select i1_0.category_id, i1_1.item_id, i1_1.dtype, i1_1.name,\n#              i1_1.price, i1_1.stock_quantity, ...\n#       from category_item i1_0\n#       join item i1_1 on i1_1.item_id=i1_0.item_id\n#       where i1_0.category_id=?\n\n#   조인이 자동으로 만들어졌다\n#   이 조인에 조건을 붙일 방법이 없다\n\n# --- 순서를 넣고 싶으면 ---\n\n#   category_item 에 sort_order 컬럼을 넣을 수 없다\n#   @ManyToMany 를 버리고 CategoryItem 엔티티로 다시 만들어야 한다\n\n# --- 자기 참조 조회 ---\n\ncategory.getChild();\n\n#   Hibernate: \n#       select c1_0.parent_id, c1_0.category_id, c1_0.name\n#       from category c1_0 where c1_0.parent_id=?\n\n#   자식 한 단계는 쉽다\n\n#   모든 자손을 구하려면?\n#   JPQL 에 재귀가 없다 -> 네이티브 쿼리\n\n# --- 3장의 엔티티가 다 만들어졌다 ---\n\n#   Member Address Item Book Album Movie\n#   Order OrderItem Delivery Category\n\n#   다음 절에서 설계 규칙을 정리한다",
+   "note": "**`category_item` 에 컬럼 둘, PK 없음.** **`@ManyToMany` 의 얼굴**이다.\n\n**저장할 때는 편하다.** **`getItems().add()` 하나로 연결 테이블에 행이 들어갔다.**\n\n**조회 쿼리의 조인을 하이버네이트가 만들었다.** **거기에 손댈 수가 없다.**\n\n**자기 참조는 자식 한 단계까지 쉽다.** **모든 자손은 JPQL 로 못 한다.**\n\n**테이블 일곱 개가 3.3절 예상과 정확히 같다.**\n\n**다음 절에서 설계 규칙을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**`@ManyToMany` 가 연결 테이블을 자동으로** 만든다.",
+  "**컬럼 둘, PK 없음** — 컬럼을 더 못 넣는다.",
+  "**`created_at`·`sort_order` 가 필요해지면** 엔티티로 다시 만들어야 한다.",
+  "**조인 쿼리를 하이버네이트가 만들고 손댈 수 없다.**",
+  "**실무라면 `CategoryItem` 엔티티**로 만든다.",
+  "**이 책은 화면이 없어서 문제가 안 드러난다** — 그 자체가 교훈이다.",
+  "**자기 참조는 평범한 1:N** 매핑이다.",
+  "**자식 한 단계는 쉽고 모든 자손은 JPQL 로 안 된다.**",
+  "**테이블 일곱 개가 3.3절 예상과 같다.**"
+ ],
+ "drills": [
+  {
+   "task": "`Category` 를 만들고 DDL 을 본다.",
+   "done_when": "`category_item` 에 PK 가 없는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "카테고리에 상품을 넣고 조회한다.",
+   "done_when": "조인 쿼리가 자동으로 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`CategoryItem` 엔티티로 다시 만들어 본다.",
+   "done_when": "코드가 얼마나 느는지 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "모든 자손을 구하는 JPQL 을 써 본다.",
+   "done_when": "안 되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`@ManyToMany` 가 만드는 테이블의 모양은?",
+   "a": "외래 키 두 컬럼뿐이고 PK 도 없다."
+  },
+  {
+   "q": "왜 실무에서 안 쓰나?",
+   "a": "연결 테이블에 컬럼을 못 넣고 조인 쿼리를 제어할 수 없다."
+  },
+  {
+   "q": "대안은?",
+   "a": "연결 엔티티(`CategoryItem`)를 만들어 `@ManyToOne` 둘로 푼다."
+  },
+  {
+   "q": "이 책이 그대로 둔 이유는?",
+   "a": "화면이 없어 문제가 안 드러나기 때문이고, 그것 자체가 교훈이다."
+  },
+  {
+   "q": "자기 참조로 모든 자손을 구할 수 있나?",
+   "a": "JPQL 로는 안 된다. 재귀 쿼리가 필요해 네이티브로 간다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
