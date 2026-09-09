@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "cache-control",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "Cache-Control 총정리",
+ "summary": "지시어를 언제 무엇으로.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "지시어를 세 축으로 나눈다.",
+  "네 가지 처방을 안다.",
+  "stale 계열을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절부터 지시어가 하나씩** 나왔다. **여기서 한자리에** 놓는다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 축",
+   "ascii": "   the directives sort into three questions\n\n   may you store it     no-store, private, public\n   for how long         max-age, s-maxage, immutable\n   what when it expires no-cache, must-revalidate, stale-while-revalidate\n\n   most confusion comes from reading a name in the wrong column\n   no-cache belongs in the third, not the first",
+   "note": "**`no-cache` 는 첫째가 아니라 셋째 칸**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "축마다 다른 것을 정한다",
+   "md": "**저장 여부**\n\n| 지시어 | 뜻 |\n|---|---|\n| `no-store` | 어디에도 안 남긴다 |\n| `private` | 브라우저만. 공유 캐시는 안 된다 |\n| `public` | 공유 캐시도 저장해도 된다 |\n\n> **`private` 은 개인용이라는 뜻이지 비밀이라는 뜻이** 아니다.\n> **비밀은 `no-store`** 다(9.2절).\n\n**기간**\n\n| 지시어 | 뜻 |\n|---|---|\n| `max-age` | 초 단위 신선도 |\n| `s-maxage` | 공유 캐시에만 적용. `max-age` 를 덮는다 |\n| `immutable` | 신선한 동안 새로고침해도 재검증 안 한다 |\n\n> **`immutable` 이 의외로** 크다.\n> **새로고침하면 브라우저가 `max-age` 를 무시하고 물어본다**(9.2절).\n> **`immutable` 이 그걸** 막는다.\n\n**만료 뒤**\n\n> **`no-cache` 는 매번 검증**이다.\n> **`must-revalidate` 는 만료된 걸 절대 못 쓰게** 한다.\n> **`stale-while-revalidate` 는 낡은 걸 주면서 뒤에서 갱신**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 처방",
+   "ascii": "   four settings that cover almost everything\n\n   hashed asset      max-age=31536000, immutable\n   html document     no-cache\n   private api       private, no-cache\n   secret            no-store\n\n   the first works only because the filename changes when the bytes do",
+   "note": "**첫째는 이름이 바뀐다는 전제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "stale 계열이 지연을 없앤다",
+   "md": "**만료 직후가 제일** 느리다.\n\n> **누군가는 재검증 왕복을 기다려야** 한다.\n> **인기 있는 자원이면 여럿이 동시에** 기다린다.\n> **`stale-while-revalidate` 가 그걸** 없앤다.\n\n```\nCache-Control: max-age=60, stale-while-revalidate=600\n```\n\n> **60초까지는 그냥** 준다.\n> **60초에서 660초 사이면 낡은 걸 주고 뒤에서 갱신**한다.\n> **사용자는 기다림이** 없다.\n\n**`stale-if-error` 는 장애용**이다.\n\n> **원본이 `5xx` 면 낡은 걸** 준다.\n> **7.6절의 장애 때 화면이라도** 살린다.\n> **CDN 이 이걸 많이** 쓴다.\n\n**`must-revalidate` 는 그 반대**다.\n\n> **만료되면 무슨 일이 있어도 검증해야** 한다.\n> **원본이 죽으면 `504`** 다.\n> **잔액이나 재고처럼 틀리면 안 되는** 것에 쓴다.\n\n**요청 쪽 지시어도** 있다.\n\n> **`max-stale`·`min-fresh`·`only-if-cached`** 다.\n> **마지막은 캐시에 없으면 `504`** 다.\n> **오프라인 모드에 쓴다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 세 축을 만들어 본다 ---\n\n$ cat cc.py\n\nimport http.server, time\nMODES = {\n  \"/nostore\":   \"no-store\",\n  \"/private\":   \"private, max-age=60\",\n  \"/public\":    \"public, max-age=60\",\n  \"/smax\":      \"max-age=10, s-maxage=60\",\n  \"/immutable\": \"max-age=60, immutable\",\n  \"/must\":      \"max-age=5, must-revalidate\",\n  \"/swr\":       \"max-age=5, stale-while-revalidate=60\",\n  \"/sie\":       \"max-age=5, stale-if-error=60\",\n}\nFAIL = [False]\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        if self.path == \"/toggle\":\n            FAIL[0] = not FAIL[0]\n            self.send_response(200); self.send_header(\"Content-Length\", \"0\")\n            self.end_headers(); return\n        if FAIL[0] and self.path in (\"/sie\", \"/must\"):\n            self.send_response(500)\n            self.send_header(\"Content-Length\", \"0\")\n            self.end_headers(); return\n        b = f\"생성 {time.strftime('%H:%M:%S')}\\n\".encode()\n        self.send_response(200)\n        self.send_header(\"Cache-Control\", MODES.get(self.path, \"max-age=60\"))\n        self.send_header(\"ETag\", f'\"{int(time.time())}\"')\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9003), H).serve_forever()\n\n$ python3 cc.py & sleep 1\n$ docker exec lab sh -c \\\n    'printf \"proxy_cache_path /tmp/pc3 levels=1:2 keys_zone=z3:1m;\\n\\\nserver { listen 80;\\n\\\n  location /c/ { proxy_pass http://host.docker.internal:9003/;\\n\\\n    proxy_cache z3; add_header X-Cache \\$upstream_cache_status; }\\n\\\n  location / { root /usr/share/nginx/html; }\\n}\\n\" \\\n     > /etc/nginx/conf.d/default.conf && nginx -s reload' 2>/dev/null; sleep 1\n\n# --- 저장 여부 ---\n\n$ for p in nostore private public; do\n    curl -s -o /dev/null http://localhost:8080/c/$p\n    printf '%-9s' $p\n    curl -s -D - -o /dev/null http://localhost:8080/c/$p \\\n      | grep -i '^x-cache' | tr -d '\\r'\n  done\n\nnostore   X-Cache: MISS\nprivate   X-Cache: MISS\npublic    X-Cache: HIT\n\n#   private 은 공유 캐시가 저장을 안 한다\n\n#   브라우저는 저장한다\n\n#   no-store 는 아무도 안 한다\n\n$ docker exec lab sh -c 'find /tmp/pc3 -type f | wc -l'\n\n       1\n\n#   public 것 하나뿐이다\n\n# --- s-maxage 가 덮는다 ---\n\n$ curl -s -o /dev/null http://localhost:8080/c/smax\n$ sleep 12 && curl -s -D - -o /dev/null http://localhost:8080/c/smax \\\n  | grep -i x-cache\n\nX-Cache: HIT\n\n#   max-age 는 10초인데\n\n#   12초 뒤에도 HIT 다\n\n#   공유 캐시는 s-maxage 60 을 본다\n\n$ python3 -c \"\nprint('브라우저는 max-age=10 을 본다')\nprint('CDN 은 s-maxage=60 을 본다')\nprint('  -> 개인은 자주 확인, 공유는 오래 보관')\"\n\n브라우저는 max-age=10 을 본다\nCDN 은 s-maxage=60 을 본다\n  -> 개인은 자주 확인, 공유는 오래 보관\n\n# --- immutable ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/c/immutable \\\n  | grep -i cache-control\n\nCache-Control: max-age=60, immutable\n\n$ python3 - <<'EOF'\nprint(\"새로고침을 누르면\")\nprint(\"  보통    : max-age 를 무시하고 조건부 요청을 보낸다\")\nprint(\"  immutable: 아무것도 안 보낸다\")\nprint()\nprint(\"해시 이름 자산에 붙이면 새로고침 트래픽이 사라진다\")\nEOF\n\n새로고침을 누르면\n  보통    : max-age 를 무시하고 조건부 요청을 보낸다\n  immutable: 아무것도 안 보낸다\n\n해시 이름 자산에 붙이면 새로고침 트래픽이 사라진다\n\n# --- stale-while-revalidate ---\n\n$ curl -s http://localhost:8080/c/swr\n$ sleep 7\n$ curl -s -D - http://localhost:8080/c/swr | grep -iE 'x-cache|생성'\n\n생성 01:16:02\nX-Cache: STALE\n생성 01:16:02\n\n#   만료됐는데 옛것을 줬다\n\n#   기다림이 없다\n\n$ sleep 1 && curl -s -D - http://localhost:8080/c/swr \\\n  | grep -iE 'x-cache|생성'\n\nX-Cache: HIT\n생성 01:16:09\n\n#   뒤에서 갱신했다\n\n#   다음 사람은 새것을 받는다\n\n#   만료 직후의 지연이 사라진다\n\n# --- stale-if-error ---\n\n$ curl -s -o /dev/null http://localhost:8080/c/sie\n$ curl -s -o /dev/null http://localhost:9003/toggle\n$ sleep 7\n$ curl -s -D - http://localhost:8080/c/sie | grep -iE 'HTTP|x-cache|생성'\n\nHTTP/1.1 200 OK\nX-Cache: STALE\n생성 01:16:20\n\n#   원본이 500 인데 200 이 왔다\n\n#   낡은 걸 줬다\n\n#   7.6절의 장애 때 화면이 산다\n\n$ curl -s -o /dev/null -w '원본은 %{http_code}\\n' http://localhost:9003/sie\n\n원본은 500\n\n# --- must-revalidate 는 반대다 ---\n\n$ curl -s -o /dev/null http://localhost:8080/c/must 2>/dev/null\n$ curl -s -o /dev/null http://localhost:9003/toggle\n$ curl -s -o /dev/null http://localhost:8080/c/must\n$ curl -s -o /dev/null http://localhost:9003/toggle\n$ sleep 7\n$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/c/must\n\n500\n\n#   만료되면 반드시 확인한다\n\n#   원본이 죽었으니 오류를 준다\n\n#   틀리면 안 되는 것에 쓴다\n\n$ curl -s -o /dev/null http://localhost:9003/toggle\n\n# --- 요청 쪽 지시어 ---\n\n$ curl -s -o /dev/null http://localhost:8080/c/public\n$ curl -s -D - -o /dev/null -H 'Cache-Control: only-if-cached' \\\n    http://localhost:8080/c/public | head -1\n$ curl -s -D - -o /dev/null -H 'Cache-Control: only-if-cached' \\\n    http://localhost:8080/c/없는것 | head -1\n\nHTTP/1.1 200 OK\nHTTP/1.1 504 Gateway Timeout\n\n#   캐시에 없으면 504 다\n\n#   오프라인 모드가 이걸 쓴다\n\n$ python3 - <<'EOF'\nprint(\"요청 쪽 지시어\")\nprint(\"  max-age=0       : 매번 검증\")\nprint(\"  no-cache        : 새로고침\")\nprint(\"  max-stale=60    : 60초 지난 것까지 받겠다\")\nprint(\"  min-fresh=30    : 앞으로 30초는 신선해야 한다\")\nprint(\"  only-if-cached  : 캐시에 없으면 504\")\nEOF\n\n요청 쪽 지시어\n  max-age=0       : 매번 검증\n  no-cache        : 새로고침\n  max-stale=60    : 60초 지난 것까지 받겠다\n  min-fresh=30    : 앞으로 30초는 신선해야 한다\n  only-if-cached  : 캐시에 없으면 504\n\n# --- 네 처방 ---\n\n$ python3 - <<'EOF'\nrx = [\n  (\"해시 이름 자산\", \"max-age=31536000, immutable\"),\n  (\"HTML 문서\", \"no-cache\"),\n  (\"개인 API\", \"private, no-cache\"),\n  (\"비밀\", \"no-store\"),\n]\nfor k, v in rx:\n    print(f\"{k:<16} Cache-Control: {v}\")\nEOF\n\n해시 이름 자산   Cache-Control: max-age=31536000, immutable\nHTML 문서        Cache-Control: no-cache\n개인 API         Cache-Control: private, no-cache\n비밀             Cache-Control: no-store\n\n#   1년은 규격상 최댓값 권고다\n\n#   9.8절에서 왜 이게 되는지 본다\n\n# --- 서로 모순되면 ---\n\n$ cat conflict2.py\n\n        self.send_header(\"Cache-Control\", \"no-store, max-age=3600\")\n\n$ python3 conflict2.py & sleep 1\n$ docker exec lab sh -c \\\n    'sed -i \"s|internal:9003|internal:9002|\" /etc/nginx/conf.d/default.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n$ curl -s -o /dev/null http://localhost:8080/c/x\n$ curl -s -D - -o /dev/null http://localhost:8080/c/x | grep -i x-cache\n\nX-Cache: MISS\n\n#   제한이 강한 쪽이 이긴다\n\n#   no-store 가 max-age 를 이긴다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   public 과 private 이 갈리는 이유",
+   "note": "**`private` 은 프록시가 `MISS`, `public` 은 `HIT`** 이고 캐시 디렉터리에 파일이 하나뿐이다.\n\n**`max-age=10, s-maxage=60` 이면 12초 뒤에도 공유 캐시는 `HIT`** 다.\n\n**`stale-while-revalidate` 가 `STALE` 로 옛것을 주고 뒤에서** 갱신한다.\n\n**원본이 `500` 인데 `stale-if-error` 가 `200` 을** 준다.\n\n**`only-if-cached` 로 없는 걸 요청하면 `504`** 다."
+  }
+ ],
+ "recap": [
+  "**저장·기간·만료 뒤 세 축**이다.",
+  "**`no-cache` 는 셋째 칸**이다.",
+  "**`private` 은 비밀이** 아니다.",
+  "**`s-maxage` 는 공유 캐시만** 본다.",
+  "**`immutable` 이 새로고침을** 막는다.",
+  "**`stale-while-revalidate` 가 지연을** 없앤다.",
+  "**`stale-if-error` 는 장애용**이다.",
+  "**`must-revalidate` 는 그** 반대다.",
+  "**모순되면 강한 쪽이** 이긴다."
+ ],
+ "drills": [
+  {
+   "task": "`private` 과 `public` 을 비교한다.",
+   "done_when": "프록시 저장 여부를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`s-maxage` 를 걸어 본다.",
+   "done_when": "공유 캐시만 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`stale-while-revalidate` 를 쓴다.",
+   "done_when": "`STALE` 뒤 갱신을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`only-if-cached` 를 보낸다.",
+   "done_when": "`504` 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`private` 의 뜻은?",
+   "a": "공유 캐시는 저장하지 말고 브라우저만 저장하라는 것이다."
+  },
+  {
+   "q": "`s-maxage` 는 누구에게 적용되나?",
+   "a": "공유 캐시에만 적용되며 `max-age` 를 덮는다."
+  },
+  {
+   "q": "`immutable` 의 효과는?",
+   "a": "신선한 동안 새로고침해도 재검증 요청을 보내지 않는다."
+  },
+  {
+   "q": "`stale-while-revalidate` 는 무엇을 없애나?",
+   "a": "만료 직후 재검증을 기다리는 지연이다."
+  },
+  {
+   "q": "`must-revalidate` 를 쓰는 곳은?",
+   "a": "낡은 값을 주면 안 되는 잔액·재고 같은 데다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "s-maxage",
+   "def": "공유 캐시에만 적용되는 신선도 지시어."
+  },
+  {
+   "term": "stale-while-revalidate",
+   "def": "만료된 응답을 주면서 뒤에서 갱신하게 하는 지시어."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9111 — HTTP Caching",
+   "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "RFC 5861 — HTTP Cache-Control Extensions for Stale Content",
+   "url": "https://www.rfc-editor.org/rfc/rfc5861.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "MDN — HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "publisher": "Mozilla"
+  },
+  {
+   "title": "web.dev — HTTP caching",
+   "url": "https://web.dev/articles/http-cache",
+   "publisher": "Google"
+  }
+ ]
+}

@@ -554,7 +554,7 @@
           "title": "Cache-Control 총정리",
           "summary": "지시어를 언제 무엇으로.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -562,7 +562,7 @@
           "title": "프록시 캐시",
           "summary": "public 과 private 이 갈리는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
