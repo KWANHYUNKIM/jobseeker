@@ -363,7 +363,7 @@
           "title": "SQL function 호출",
           "summary": "방언에 등록된 것만.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -378,7 +378,7 @@
           "title": "순수 JPA 리포지토리",
           "summary": "EntityManager 를 들고 시작한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",

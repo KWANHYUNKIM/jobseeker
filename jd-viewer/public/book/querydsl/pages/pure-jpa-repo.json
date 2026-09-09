@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "pure-jpa-repo",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "순수 JPA 리포지토리",
+ "summary": "EntityManager 를 들고 시작한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "둘을 한 클래스에 둔다.",
+  "역할을 가른다.",
+  "같은 트랜잭션인 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장까지 테스트에서만** 썼다. **이제 리포지토리에** 넣는다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 리포지토리, 두 도구",
+   "ascii": "   one repository, two tools\n\n   the EntityManager   save, find, and everything jpa gives for free\n   the query factory   the reads that need conditions or shapes\n\n   both hold the same manager, so they share one transaction",
+   "note": "**같은 관리자를 들어 트랜잭션이** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Querydsl 이 JPA 를 대체하지 않는다",
+   "md": "**저장은 `EntityManager` 가** 한다.\n\n> **`persist` 하나면** 된다.\n> **조립할 게** 없다.\n> **Querydsl 에 `insert` 가 없**다.\n\n**식별자 조회도** 그렇다.\n\n> **`em.find` 가 1차 캐시를** 본다.\n> **Querydsl 은 항상 쿼리를** 낸다.\n> **아래에서 그 차이를** 본다.\n\n**조건이 붙으면 Querydsl 이** 낫다.\n\n> **5.8절의 조건 메서드가** 있다.\n> **화면마다 다른 조회를** 만든다.\n> **⑭ 6.1절의 자리와 같**다.\n\n**둘이 같은 관리자를 든다.**\n\n> **3.4절의 프록시**다.\n> **트랜잭션이 하나**다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 어디에 둘까",
+   "ascii": "   what belongs where\n\n   save and findById     plain jpa, there is nothing to assemble\n   findAll with filters  querydsl, the conditions change per call\n   a report shaped read  querydsl, the select list is not an entity\n\n   the first row is what book 14 removed entirely",
+   "note": "**첫 줄이 ⑭에서 통째로 사라졌던 부분**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@Transactional 을 내가 붙여야 한다",
+   "md": "**⑭ 7.2절이 여기엔** 없다.\n\n> **`SimpleJpaRepository` 가** 없다.\n> **아무것도 안 걸려** 있다.\n> **서비스나 리포지토리에 직접** 붙인다.\n\n**안 붙이면 저장이 안** 된다.\n\n> **조회는 되는데 쓰기는** 터진다.\n> **3.4절에서 본** 그것이다.\n> **아래에서 확인**한다.\n\n**리포지토리에 붙이면 호출마다 커밋**이다.\n\n> **⑭ 7.2절의 그** 문제다.\n> **서비스에 두는 게** 낫다.\n> **여기서는 테스트에** 붙인다.\n\n**`readOnly` 도 직접** 쓴다.\n\n> **조회 전용에 붙이면 스냅샷이** 준다.\n> **⑭ 7.2절에서 잰** 것이다.\n> **6.6절에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 리포지토리를 만든다\n\n@Repository\npublic class MemberJpaRepository {\n\n    private final EntityManager em;\n    private final JPAQueryFactory queryFactory;\n\n    public MemberJpaRepository(EntityManager em) {\n        this.em = em;\n        this.queryFactory = new JPAQueryFactory(em);\n    }\n\n    public void save(Member member) {\n        em.persist(member);\n    }\n\n    public Optional<Member> findById(Long id) {\n        return Optional.ofNullable(em.find(Member.class, id));\n    }\n\n    public List<Member> findAll() {\n        return queryFactory.selectFrom(member).fetch();\n    }\n\n    public List<Member> findByUsername(String username) {\n        return queryFactory\n                .selectFrom(member)\n                .where(member.username.eq(username))\n                .fetch();\n    }\n}\n\n--   저장은 em, 조회는 queryFactory 다\n\n\n-- 저장한다\n\n@Test\n@Transactional\nvoid 저장() {\n    Member m = new Member(\"새회원\", 99);\n    memberJpaRepository.save(m);\n    em.flush();\n    System.out.println(\"id: \" + m.getId());\n}\n\nHibernate:\n    select\n        next value for member_seq\nHibernate:\n    insert\n    into\n        member (age, team_id, username, member_id)\n    values\n        (?, ?, ?, ?)\nid: 61\n\n--   Querydsl 에는 insert 가 없다\n--   em 이 한다\n\n\n-- 식별자 조회는 캐시를 쓴다\n\n@Test\n@Transactional\nvoid 캐시() {\n    Member m = memberJpaRepository.findAll().get(0);\n    Long id = m.getId();\n\n    System.out.println(\"--- em.find ---\");\n    memberJpaRepository.findById(id);\n\n    System.out.println(\"--- querydsl ---\");\n    queryFactory.selectFrom(member).where(member.id.eq(id)).fetchOne();\n}\n\n/* select member1 from Member member1 */\nHibernate: select ... from member m1_0\n--- em.find ---\n--- querydsl ---\n/* select member1 from Member member1 where member1.id = ?1 */\nHibernate: select ... from member m1_0 where m1_0.member_id=?\n\n--   em.find 는 SQL 이 안 나갔다\n--   1차 캐시에 있었다\n--   Querydsl 은 항상 나간다\n\n\n-- 같은 트랜잭션을 쓴다\n\n@Test\n@Transactional\nvoid 같은_트랜잭션() {\n    Member m = new Member(\"확인용\", 1);\n    memberJpaRepository.save(m);\n\n    System.out.println(\"--- flush 없이 조회 ---\");\n    List<Member> r = queryFactory.selectFrom(member)\n            .where(member.username.eq(\"확인용\"))\n            .fetch();\n    System.out.println(\"찾음: \" + r.size());\n}\n\nHibernate: select next value for member_seq\n--- flush 없이 조회 ---\nHibernate:\n    insert into member (age, team_id, username, member_id)\n    values (?, ?, ?, ?)\n/* select member1 from Member member1 where member1.username = ?1 */\nHibernate:\n    select ... from member m1_0 where m1_0.username=?\n찾음: 1\n\n--   조회 전에 insert 가 먼저 나갔다\n--   JPQL 이라 flush 가 자동이다\n--   같은 관리자라 서로 본다\n\n\n-- 팩토리를 빈으로 주입해도 된다\n\n@Repository\n@RequiredArgsConstructor\npublic class MemberJpaRepositoryV2 {\n\n    private final EntityManager em;\n    private final JPAQueryFactory queryFactory;    // 3.4절의 빈\n\n    public List<Member> findAll() {\n        return queryFactory.selectFrom(member).fetch();\n    }\n}\n\n@Test\n@Transactional\nvoid 주입판() {\n    em.clear();\n    System.out.println(\"건수: \" + memberJpaRepositoryV2.findAll().size());\n}\n\n/* select member1 from Member member1 */\nHibernate: select ... from member m1_0\n건수: 10\n\n--   결과가 같다\n--   3.4절에서 확인한 그대로다\n\n\n-- 트랜잭션이 없으면\n\n@SpringBootTest\nclass NoTxRepositoryTest {\n\n    @Autowired MemberJpaRepository repository;\n\n    @Test\n    void 조회는_된다() {\n        System.out.println(\"건수: \" + repository.findAll().size());\n    }\n\n    @Test\n    void 저장은_안_된다() {\n        try {\n            repository.save(new Member(\"안됨\", 1));\n        } catch (Exception e) {\n            System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        }\n    }\n}\n\n/* select member1 from Member member1 */\nHibernate: select ... from member m1_0\n건수: 10\n예외: TransactionRequiredException\n\n--   ⑭ 7.2절과 다르다\n--   거기는 구현체에 이미 붙어 있었다\n\n\n-- 서비스에 붙인다\n\n@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class MemberService {\n\n    private final MemberJpaRepository repository;\n\n    public List<Member> search(String username) {\n        return repository.findByUsername(username);\n    }\n\n    @Transactional\n    public Long join(String username, int age) {\n        Member m = new Member(username, age);\n        repository.save(m);\n        return m.getId();\n    }\n}\n\n@Test\nvoid 서비스() {\n    Long id = memberService.join(\"가입\", 30);\n    System.out.println(\"id: \" + id);\n    System.out.println(\"조회: \" + memberService.search(\"가입\").size());\n}\n\nDEBUG Creating new transaction [MemberService.join]\nHibernate: select next value for member_seq\nHibernate: insert into member (...) values (?, ?, ?, ?)\nDEBUG Initiating transaction commit\nid: 61\nDEBUG Creating new transaction [MemberService.search]: readOnly\n/* select member1 from Member member1 where member1.username = ?1 */\nHibernate: select ... where m1_0.username=?\n조회: 1\n\n--   ⑭ 7.2절의 구조를 내가 만들었다\n\n\n-- 순수 JPA 로 같은 조회를 쓰면\n\npublic List<Member> findByUsernameJpql(String username) {\n    return em.createQuery(\n            \"select m from Member m where m.username = :username\",\n            Member.class)\n        .setParameter(\"username\", username)\n        .getResultList();\n}\n\n@Test\n@Transactional\nvoid 나란히() {\n    em.clear();\n    System.out.println(\"--- JPQL ---\");\n    memberJpaRepository.findByUsernameJpql(\"m1\");\n    em.clear();\n    System.out.println(\"--- Querydsl ---\");\n    memberJpaRepository.findByUsername(\"m1\");\n}\n\n--- JPQL ---\n/* select\n    m\nfrom\n    Member m\nwhere\n    m.username = :username */\nHibernate: select ... from member m1_0 where m1_0.username=?\n--- Querydsl ---\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username = ?1 */\nHibernate: select ... from member m1_0 where m1_0.username=?\n\n--   4.1절과 같은 비교다\n--   SQL 이 같다\n\n\n-- 조건이 늘면 갈린다\n\npublic List<Member> searchJpql(String username, Integer minAge) {\n    StringBuilder jpql = new StringBuilder(\"select m from Member m where 1=1\");\n    Map<String, Object> params = new HashMap<>();\n    if (username != null) {\n        jpql.append(\" and m.username = :username\");\n        params.put(\"username\", username);\n    }\n    if (minAge != null) {\n        jpql.append(\" and m.age >= :minAge\");\n        params.put(\"minAge\", minAge);\n    }\n    TypedQuery<Member> q = em.createQuery(jpql.toString(), Member.class);\n    params.forEach(q::setParameter);\n    return q.getResultList();\n}\n\npublic List<Member> search(String username, Integer minAge) {\n    return queryFactory.selectFrom(member)\n            .where(usernameEq(username), ageGoe(minAge))\n            .fetch();\n}\n\n$ awk '/searchJpql/,/^    }/' MemberJpaRepository.java | wc -l\n      16\n$ awk '/List<Member> search\\(/,/^    }/' MemberJpaRepository.java | wc -l\n       5\n\n--   16 줄이 5 줄이다\n--   ⑭ 6.1절에서 18 줄이었다\n\n\n-- 조건 없이 부르면\n\n@Test\n@Transactional\nvoid 조건_없이() {\n    em.clear();\n    System.out.println(\"--- JPQL 조립 ---\");\n    memberJpaRepository.searchJpql(null, null);\n    em.clear();\n    System.out.println(\"--- Querydsl ---\");\n    memberJpaRepository.search(null, null);\n}\n\n--- JPQL 조립 ---\n/* select\n    m\nfrom\n    Member m\nwhere\n    1 = 1 */\nHibernate:\n    select ... from member m1_0 where 1=1\n--- Querydsl ---\n/* select\n    member1\nfrom\n    Member member1 */\nHibernate:\n    select ... from member m1_0\n\n--   where 1=1 이 없다\n--   4.4절에서 본 그대로다\n--   6.2절에서 팩토리를 빈으로 굳힌다",
+   "note": "**저장은 `em.persist` 가 하고 Querydsl 에는 `insert` 가** 없다.\n\n**`em.find` 는 1차 캐시라 SQL 이 안 나가고 Querydsl 은 항상** 나간다.\n\n**flush 없이 조회해도 JPQL 이라 `insert` 가 먼저 나가 같은 관리자를 공유하는 게** 보인다.\n\n**트랜잭션 없이 조회는 되지만 저장은 `TransactionRequiredException` — ⑭ 7.2절과** 다르다.\n\n**같은 동적 조회가 JPQL 조립 16줄에서 5줄이 되고 `where 1=1` 이** 사라진다."
+  }
+ ],
+ "recap": [
+  "**둘을 한 클래스에** 둔다.",
+  "**저장은 `em` 이** 한다.",
+  "**`insert` 가** 없다.",
+  "**식별자 조회는 캐시를** 쓴다.",
+  "**Querydsl 은 항상** 나간다.",
+  "**같은 관리자를** 든다.",
+  "**트랜잭션을 내가** 붙인다.",
+  "**조회는 되고 쓰기는** 막힌다.",
+  "**16줄이 5줄이** 된다."
+ ],
+ "drills": [
+  {
+   "task": "리포지토리를 만든다.",
+   "done_when": "저장과 조회가 도는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`em.find` 와 Querydsl 을 비교한다.",
+   "done_when": "SQL 유무를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "트랜잭션 없이 저장한다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "JPQL 조립판과 줄 수를 센다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "저장은 무엇이 하나?",
+   "a": "`EntityManager` 다. Querydsl 에는 `insert` 가 없다."
+  },
+  {
+   "q": "`em.find` 와 Querydsl 조회의 차이는?",
+   "a": "앞은 1차 캐시를 보고 뒤는 항상 쿼리를 낸다."
+  },
+  {
+   "q": "둘이 같은 트랜잭션인 이유는?",
+   "a": "같은 `EntityManager` 프록시를 공유하기 때문이다."
+  },
+  {
+   "q": "트랜잭션은 누가 거나?",
+   "a": "직접 건다. ⑭처럼 구현체에 걸려 있지 않다."
+  },
+  {
+   "q": "동적 조회에서 무엇이 사라지나?",
+   "a": "`where 1=1` 과 조건 조립 코드다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "순수 JPA 리포지토리",
+   "def": "스프링 데이터 없이 `EntityManager` 로 직접 만든 리포지토리."
+  },
+  {
+   "term": "1차 캐시 조회",
+   "def": "식별자 조회 시 컨텍스트에 있으면 쿼리 없이 돌려주는 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
