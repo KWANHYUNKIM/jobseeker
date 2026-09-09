@@ -714,7 +714,7 @@
           "title": "내부 롤백",
           "summary": "rollback-only 표시가 남는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -722,7 +722,7 @@
           "title": "정리",
           "summary": "하나가 실패하면 전부 롤백이다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -737,7 +737,7 @@
           "title": "예제 준비",
           "summary": "회원 가입과 로그.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.2",

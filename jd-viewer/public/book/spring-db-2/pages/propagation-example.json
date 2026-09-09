@@ -1,0 +1,139 @@
+{
+ "book": "spring-db-2",
+ "id": "propagation-example",
+ "no": "12.1",
+ "chapter": 12,
+ "title": "예제 준비",
+ "summary": "회원 가입과 로그.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "12장의 예제를 만든다.",
+  "요구사항을 확인한다.",
+  "여섯 실험의 순서를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12장은 하나의 상황을 여섯 번 배선**한다. **2.1절의 방법을 트랜잭션에** 적용한다."
+  },
+  {
+   "type": "figure",
+   "caption": "도메인",
+   "ascii": "   Member          username\n   Log             message\n\n   MemberService.joinV1(username)\n        memberRepository.save(new Member(username))\n        logRepository.save(new Log(username))\n\n   the log must not stop the join\n   that is the requirement, and the problem",
+   "note": "**마지막 두 줄이 요구사항이자 문제**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "엔티티 둘",
+   "code": "@Entity\n@Getter @Setter\n@NoArgsConstructor\npublic class Member {\n\n    @Id @GeneratedValue\n    private Long id;\n    private String username;\n\n    public Member(String username) {\n        this.username = username;\n    }\n}\n\n@Entity\n@Getter @Setter\n@NoArgsConstructor\npublic class Log {\n\n    @Id @GeneratedValue\n    private Long id;\n    private String message;\n\n    public Log(String message) {\n        this.message = message;\n    }\n}",
+   "note": "**단순하다.** **트랜잭션 실험이 목적**이라 도메인은 최소로 둔다.\n\n**전반부의 `Item` 을 안 쓴다.** **회원과 로그가 \"주 작업과 부수 작업\" 이라는 관계를 더 분명히** 보여 준다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "리포지토리와 서비스",
+   "code": "@Repository\n@RequiredArgsConstructor\npublic class LogRepository {\n\n    private final EntityManager em;\n\n    @Transactional\n    public void save(Log logMessage) {\n        log.info(\"log 저장\");\n        em.persist(logMessage);\n\n        if (logMessage.getMessage().contains(\"로그예외\")) {\n            log.info(\"log 저장시 예외 발생\");\n            throw new RuntimeException(\"예외 발생\");\n        }\n    }\n}\n\n@Service\n@RequiredArgsConstructor\npublic class MemberService {\n\n    private final MemberRepository memberRepository;\n    private final LogRepository logRepository;\n\n    public void joinV1(String username) {\n        Member member = new Member(username);\n        Log logMessage = new Log(username);\n\n        memberRepository.save(member);\n        logRepository.save(logMessage);\n    }\n}",
+   "note": "**`\"로그예외\"` 가 들어간 이름이면 예외**를 던진다. **실패를 마음대로 만들기 위한 장치**다.\n\n**`joinV1` 에 `@Transactional` 이 없다.** **12.2절이 그 상태**다.\n\n> **리포지토리에 `@Transactional` 을 붙인 것**은 6.3절과 같은 이유다. **서비스를 안 건드리고 실험하려고** 그렇게 뒀다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 실험",
+   "ascii": "   the six experiments of chapter 12\n\n   12.2  no service tx, both repos have tx\n   12.3  service tx, repos join\n   12.4  service tx, catch the log exception\n   12.5  log repo uses REQUIRES_NEW\n   12.6  what REQUIRES_NEW costs\n   12.7  restructure instead\n\n   same domain, six wirings",
+   "note": "**같은 도메인에 배선만 바꾼다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 이 예제인가",
+   "md": "**\"주 작업은 살리고 부수 작업만 실패해도 된다\"** 는 요구가 실무에 흔하다.\n\n| 주 작업 | 부수 작업 |\n|---|---|\n| 주문 | **주문 로그** |\n| 회원 가입 | **환영 메일 발송 이력** |\n| 결제 | **결제 시도 기록** |\n| 게시글 저장 | **조회수 갱신** |\n\n**11.6절의 사고 목록**과 같다.\n\n**그런데 `REQUIRED` 로는 안 된다.** **11.8절의 결론**이다 — **운명을 공유**한다.\n\n> **12장의 순서가 그래서 이렇다.**\n>\n> 1. **묶어 본다** (12.2, 12.3) — 잘 된다\n> 2. **부수 작업을 실패시켜 본다** (12.4) — 주 작업까지 죽는다\n> 3. **예외를 잡아 본다** (12.4) — 안 된다\n> 4. **`REQUIRES_NEW` 로 나눈다** (12.5) — 된다\n> 5. **대가를 센다** (12.6)\n> 6. **다른 방법을 본다** (12.7)\n\n**4번에서 멈추면 안 된다.** **5번과 6번이 이 장의 결론**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "테스트 준비",
+   "md": "```java\n@SpringBootTest\nclass MemberServiceTest {\n\n    @Autowired MemberService memberService;\n    @Autowired MemberRepository memberRepository;\n    @Autowired LogRepository logRepository;\n\n    @Test\n    void outerTxOff_success() {\n        String username = \"outerTxOff_success\";\n\n        memberService.joinV1(username);\n\n        assertTrue(memberRepository.find(username).isPresent());\n        assertTrue(logRepository.find(username).isPresent());\n    }\n}\n```\n\n**테스트에 `@Transactional` 이 없다.** **11.1절과 같은 이유**다 — 붙이면 실험이 망가진다.\n\n**그래서 데이터가 남는다.** **4장에서 배운 격리가 안 된다.**\n\n> **실험용 테스트라 그렇다.** **매번 DB 를 비우거나 이름을 다르게** 쓴다. **메서드 이름을 `username` 으로 쓰는 것**이 그 방법이다.\n>\n> **4.5절에서 \"`@Commit` 은 임시로만\" 이라고 했다.** **12장의 테스트가 사실상 그 상태**다.\n\n**임베디드 DB 를 쓰면**(4.6절) **테스트 실행마다 새로 뜨니 그나마 낫다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 준비 확인 ---\n\nmemberService.joinV1(\"hello\");\n\n#   (서비스에 @Transactional 이 없다)\n\n#   Getting transaction for [MemberRepository.save]\n#   Creating new transaction with name [MemberRepository.save]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   member 저장\n#   Completing transaction for [MemberRepository.save]\n#   Initiating transaction commit\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Releasing JDBC Connection [conn0]\n\n#   Getting transaction for [LogRepository.save]\n#   Creating new transaction with name [LogRepository.save]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@2] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn0]\n#   log 저장\n#   Completing transaction for [LogRepository.save]\n#   Initiating transaction commit\n#   Hibernate: insert into log (message,id) values (?,?)\n#   Committing JPA transaction on EntityManager [SessionImpl@2]\n#   Releasing JDBC Connection [conn0]\n\n#   Creating new       2\n#   Releasing          2\n#   물리 2, 논리 2\n\n#   11.2절의 '따로 쓰기' 다\n\nselect count(*) from member;   # -> 1\nselect count(*) from log;      # -> 1\n\n# --- 로그를 실패시키면 ---\n\nmemberService.joinV1(\"로그예외\");\n\n#   Creating new transaction with name [MemberRepository.save]\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Committing JPA transaction\n#   Releasing JDBC Connection [conn0]\n\n#   Creating new transaction with name [LogRepository.save]\n#   log 저장\n#   log 저장시 예외 발생\n#   Completing transaction for [LogRepository.save] after exception:\n#     java.lang.RuntimeException: 예외 발생\n#   Initiating transaction rollback\n#   Rolling back JPA transaction\n\n#   RuntimeException 이 테스트까지 올라온다\n\nselect count(*) from member;   # -> 1\nselect count(*) from log;      # -> 0\n\n#   회원은 남고 로그만 사라졌다\n#   요구사항이 이미 만족된다\n\n# --- 그런데 ---\n\n#   회원 저장과 로그 저장이 하나의 트랜잭션이 아니다\n#   회원만 저장되고 로그가 실패한 상태가 '정상' 이 되어 버렸다\n#   회원 저장 자체가 실패해도 앞의 작업이 롤백 안 된다\n\n#   12.3절에서 묶는다",
+   "note": "**첫 블록이 11.2절과 같은 모양**이다. **물리 2, 논리 2.** **`SessionImpl@1` 과 `@2` 가 다르다** — `EntityManager` 도 둘이다.\n\n**두 번째 블록에서 요구사항이 이미 만족**된다. **회원은 남고 로그만 사라졌다.**\n\n> **그런데 이것은 트랜잭션이 없어서 우연히 된 것**이다. **작업이 셋 넷으로 늘면 통제가 안 된다.**\n\n**맨 아래가 12.3절의 이유**다. **묶어야 하는데, 묶으면 문제가 시작**된다.\n\n**다음 절에서 묶는다.**"
+  }
+ ],
+ "recap": [
+  "**`Member` 와 `Log`** 두 엔티티로 실험한다.",
+  "**`\"로그예외\"` 가 든 이름이면 예외**를 던진다.",
+  "**\"주 작업은 살리고 부수 작업만 실패해도 된다\"** 가 요구사항이다.",
+  "**`REQUIRED` 로는 안 된다** — 11.8절의 결론.",
+  "**여섯 번 배선**한다 — 2.1절의 방법을 트랜잭션에.",
+  "**테스트에 `@Transactional` 을 안 붙인다** — 실험이 망가진다.",
+  "**서비스에 트랜잭션이 없으면 물리 2, 논리 2** 다.",
+  "**그 상태로는 요구사항이 우연히 만족**된다.",
+  "**작업이 늘면 통제가 안 된다** — 그래서 묶는다."
+ ],
+ "drills": [
+  {
+   "task": "엔티티와 리포지토리를 만든다.",
+   "done_when": "저장이 되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "서비스에 트랜잭션 없이 실행하고 로그를 센다.",
+   "done_when": "물리 2 인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`\"로그예외\"` 로 실행한다.",
+   "done_when": "회원만 남는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "왜 이 상태로 두면 안 되는지 적어 본다.",
+   "done_when": "이유를 세 줄로 적었다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "12장의 요구사항은?",
+   "a": "주 작업(회원 가입)은 살리고 부수 작업(로그)만 실패해도 된다."
+  },
+  {
+   "q": "왜 `REQUIRED` 로는 안 되나?",
+   "a": "묶인 논리 트랜잭션들이 운명을 공유하기 때문이다."
+  },
+  {
+   "q": "테스트에 `@Transactional` 을 왜 안 붙이나?",
+   "a": "테스트가 트랜잭션을 열면 전파 실험이 망가진다."
+  },
+  {
+   "q": "서비스에 트랜잭션이 없으면 몇 개인가?",
+   "a": "물리 2, 논리 2 다. 11.2절의 따로 쓰기와 같다."
+  },
+  {
+   "q": "그 상태의 문제는?",
+   "a": "우연히 요구사항이 맞을 뿐, 작업이 늘면 통제가 안 된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

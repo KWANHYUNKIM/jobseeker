@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "inner-rollback",
+ "no": "11.7",
+ "chapter": 11,
+ "title": "내부 롤백",
+ "summary": "rollback-only 표시가 남는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`rollback-only` 표시를 안다.",
+  "`UnexpectedRollbackException` 이 왜 나는지 안다.",
+  "이 예외를 만났을 때 무엇을 볼지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**네 경우 중 세 번째**다. **이 책에서 몇 안 되는, 시끄럽게 실패하는 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "표시하고, 읽고, 던진다",
+   "ascii": "   inner.rollback\n     isNewTransaction = false\n     -> cannot call con.rollback()\n     -> setRollbackOnly()          a flag on the shared status\n\n   outer.commit\n     reads the flag\n     -> con.rollback()             not commit\n     -> throw UnexpectedRollbackException\n\n   the caller asked for commit and got an exception. on purpose.",
+   "note": "**세 단계**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안쪽은 롤백을 못 한다",
+   "md": "**11.4절의 코드를 다시 본다.**\n\n```java\nprivate void processRollback(DefaultTransactionStatus status) {\n    if (status.isNewTransaction()) {\n        doRollback(status);                    // 진짜 롤백\n    }\n    else if (status.hasTransaction()) {\n        status.setRollbackOnly();              // 표시만\n    }\n}\n```\n\n**안쪽은 `else if` 로 간다.**\n\n**왜 진짜 롤백을 못 하나.**\n\n**롤백하면 바깥이 지금까지 한 일도 다 사라진다.** **바깥은 아직 진행 중**인데 말이다.\n\n```java\nouter.getTransaction();\ninsert itemA;\n\ninner.getTransaction();\ninsert itemB;\ninner.rollback();          // 여기서 con.rollback() 을 하면?\n                           // itemA 도 사라진다\ninsert itemC;              // 바깥은 계속 진행한다\nouter.commit();            // 무엇을 커밋하나?\n```\n\n**커넥션의 트랜잭션은 부분 롤백이 안 된다.** **`NESTED` 의 세이브포인트가 그것을 하는데**, **11.3절에서 봤듯 JPA 에서는 못 쓴다.**\n\n> **그래서 표시만 남기고 끝을 기다린다.** **결정은 물리 트랜잭션의 주인이** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 조용히 롤백하지 않나",
+   "ascii": "   why not just roll back quietly\n\n   outer code thinks it succeeded\n     order saved      -> actually gone\n     mail sent        -> about a row that does not exist\n     response 200     -> to the user\n\n   the exception is the only way to tell the outer code\n   that its commit did not happen",
+   "note": "**바깥에게 알릴 방법이 예외뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`UnexpectedRollbackException`",
+   "md": "**이름 그대로다.** **\"예상하지 못한 롤백\"**\n\n```\norg.springframework.transaction.UnexpectedRollbackException:\n  Transaction rolled back because it has been marked as rollback-only\n```\n\n**바깥 코드는 커밋을 요청**했다. **롤백됐다.** **그 사실을 알려 주는 것**이다.\n\n**언제 만나나.**\n\n| 상황 | |\n|---|---|\n| **안쪽에서 예외가 났는데 바깥이 잡았다** | **12.4절** |\n| 안쪽이 `setRollbackOnly()` 를 불렀다 | 10.6절 |\n| 안쪽의 `rollbackFor` 가 발동했다 | 10.7절 |\n\n**첫 번째가 압도적으로 흔하다.**\n\n```java\n@Transactional\npublic void 회원가입() {\n    회원저장();\n    try {\n        로그저장();          // @Transactional, 예외 발생\n    } catch (Exception e) {\n        log.info(\"로그 실패는 무시\");\n    }\n}\n// UnexpectedRollbackException\n```\n\n> **\"예외를 잡았으니 괜찮겠지\"** 가 안 통한다. **잡기 전에 이미 표시가 남았다.**\n>\n> **12장 전체가 이 상황**이다. **6.5절과 10.6절에서 두 번 예고한 그것**이다.\n\n**11.6절과 비교**한다.\n\n| | 예외 |\n|---|---|\n| **11.6** 바깥 롤백 | **안 난다** — 바깥이 롤백을 원했다 |\n| **11.7** 안쪽 롤백 + 바깥 커밋 | **난다** — 요청이 충돌했다 |"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "만났을 때 무엇을 보나",
+   "md": "**이 예외는 원인이 아니라 결과**다. **진짜 원인은 안쪽에서 난 예외**다.\n\n**로그에서 이 줄을 찾는다.**\n\n```\nParticipating transaction failed - marking existing transaction\n  as rollback-only\n```\n\n**그 바로 앞에 진짜 예외**가 있다.\n\n```\nCompleting transaction for [LogService.save] after exception:\n  java.lang.RuntimeException: 로그 예외 발생\nParticipating transaction failed - marking existing transaction\n  as rollback-only\n```\n\n**`RuntimeException: 로그 예외 발생`** 이 원인이다.\n\n> **스택 트레이스만 보면 `UnexpectedRollbackException` 밖에 안 보인다.** **원인 예외는 이미 잡혔으니** 체인에도 없다.\n>\n> **로그를 켜 두지 않으면 원인을 못 찾는다.** **10.10절에서 \"개발 환경에서는 늘 켜 둔다\" 고 한 이유**다.\n\n**표시를 미리 확인**할 수도 있다.\n\n```java\nif (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {\n    // 이미 글렀다\n}\n```\n\n**쓸 일은 드물다.** **구조를 고치는 편**이 낫다 — 12.7절."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 안쪽 롤백, 바깥 커밋 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\njdbcTemplate.update(\"insert into item ... values ('itemA', 10000, 10)\");\n#   [insert into item (item_name, price, quantity) values (?, ?, ?)]\n\nTransactionStatus inner = txManager.getTransaction(def);\n#   Participating in existing transaction\n\ntxManager.rollback(inner);\n\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n#   Setting JDBC transaction [conn0] rollback-only\n\n#   (con.rollback() 이 아니다. 플래그를 세웠다.)\n\ntxManager.commit(outer);\n\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n#   org.springframework.transaction.UnexpectedRollbackException:\n#     Transaction rolled back because it has been marked as rollback-only\n\nselect count(*) from item;\n#   -> 0\n\n# --- 애너테이션으로, 예외를 잡아도 ---\n\n@Transactional\npublic void 회원가입(String username) {\n    회원서비스.저장(username);          // 성공\n    try {\n        로그서비스.저장(username);      // @Transactional, 예외\n    } catch (RuntimeException e) {\n        log.info(\"로그 저장 실패, 무시한다\");\n    }\n}\n\n#   Getting transaction for [회원가입]\n#   Creating new transaction with name [회원가입]\n#   Acquired Connection [conn0] for JDBC transaction\n\n#   Getting transaction for [회원서비스.저장]\n#   Participating in existing transaction\n#   Hibernate: insert into member (username) values (?)\n#   Completing transaction for [회원서비스.저장]\n\n#   Getting transaction for [로그서비스.저장]\n#   Participating in existing transaction\n#   Completing transaction for [로그서비스.저장] after exception:\n#     java.lang.RuntimeException: 로그 예외 발생\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n\n#   로그 저장 실패, 무시한다\n\n#   Completing transaction for [회원가입]\n#   Global transaction is marked as rollback-only but transactional code\n#     requested commit\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n\n#   UnexpectedRollbackException\n\nselect count(*) from member;\n#   -> 0\n\n#   예외를 잡았는데 회원도 안 저장됐다\n\n# --- 11.6절과 비교 ---\n\n#   11.6  안쪽 커밋, 바깥 롤백\n#         (예외 없음, 조용히 롤백)\n\n#   11.7  안쪽 롤백, 바깥 커밋\n#         UnexpectedRollbackException\n\n#   차이는 '요청이 충돌했는가' 다\n\n# --- 원인을 찾으려면 ---\n\n#   'marking existing transaction as rollback-only' 를 찾는다\n#   바로 앞줄에 진짜 예외가 있다\n\n#   Completing transaction for [로그서비스.저장] after exception:\n#     java.lang.RuntimeException: 로그 예외 발생   <-- 이것",
+   "note": "**`Setting JDBC transaction [conn0] rollback-only`** 가 표시를 세운 줄이다. **`Rolling back` 이 아니다.**\n\n**`Global transaction is marked as rollback-only but transactional code requested commit`** 이 충돌을 알리는 줄이다.\n\n**두 번째 블록이 12장 전체의 문제**다. **예외를 잡았는데 회원도 안 저장됐다.**\n\n**맨 아래가 원인 찾는 법**이다. **스택 트레이스가 아니라 로그에서** 찾는다.\n\n**다음 절에서 11장을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**안쪽은 진짜 롤백을 못 한다** — 표시만 남긴다.",
+  "**커넥션 트랜잭션은 부분 롤백이 안 된다.**",
+  "**`Setting JDBC transaction rollback-only`** 가 그 줄이다.",
+  "**바깥의 커밋 요청이 표시를 읽고 롤백**한다.",
+  "**`UnexpectedRollbackException`** 이 그 사실을 알린다.",
+  "**조용히 롤백하면 바깥이 성공한 줄** 안다.",
+  "**예외를 잡아도 표시는 이미 남았다** — 12장의 문제다.",
+  "**11.6절과 달리 요청이 충돌**해서 예외가 난다.",
+  "**원인은 `marking ... rollback-only` 바로 앞줄**에 있다."
+ ],
+ "drills": [
+  {
+   "task": "안쪽 롤백 후 바깥 커밋을 해 본다.",
+   "done_when": "`UnexpectedRollbackException` 을 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Setting ... rollback-only` 줄을 찾는다.",
+   "done_when": "진짜 롤백이 아닌 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "애너테이션으로 예외를 잡아 본다.",
+   "done_when": "잡았는데도 롤백되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "로그에서 원인 예외를 찾아본다.",
+   "done_when": "`marking` 앞줄에 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "안쪽 롤백이 하는 일은?",
+   "a": "`rollback-only` 표시를 세운다. 진짜 롤백은 못 한다."
+  },
+  {
+   "q": "왜 진짜 롤백을 못 하나?",
+   "a": "바깥이 지금까지 한 일도 사라지는데 바깥은 아직 진행 중이기 때문이다."
+  },
+  {
+   "q": "`UnexpectedRollbackException` 은 왜 던지나?",
+   "a": "커밋을 요청한 바깥에게 롤백됐다는 사실을 알리기 위해서다."
+  },
+  {
+   "q": "예외를 잡으면 해결되나?",
+   "a": "안 된다. 잡기 전에 이미 표시가 남았다."
+  },
+  {
+   "q": "원인 예외는 어디서 찾나?",
+   "a": "로그의 `marking existing transaction as rollback-only` 바로 앞줄이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
