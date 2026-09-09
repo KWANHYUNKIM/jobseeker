@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "debug",
+ "no": "6.12",
+ "chapter": 6,
+ "title": "안 걸릴 때",
+ "summary": "보고서로 원인을 찾는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯 관문을 순서대로 본다.",
+  "증상으로 자리를 좁힌다.",
+  "6장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6장 내내 조용히** 꺼졌다. **그때 어디부터 보는지** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "관문이 다섯이다",
+   "ascii": "   five gates a candidate must pass, in this order\n\n   1 is the jar on the classpath at all\n   2 is the class named in an imports file\n   3 was it excluded by name\n   4 did every condition on the class match\n   5 did every condition on the bean method match\n\n   the report only speaks from gate four onward",
+   "note": "**보고서는 넷째부터** 말한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보고서에 없다는 것도 정보다",
+   "md": "**있으면 이유가** 적힌다.\n\n> **6.7절의 넷째 줄**이다.\n> **읽으면 끝난**다.\n> **아래에서 그** 경우다.\n\n**없으면 앞 관문**이다.\n\n> **JAR 가 없거나 목록에 없거나**다.\n> **6.2절의 조용함**이다.\n> **아래에서 나눈**다.\n\n**제외 부분도 본**다.\n\n> **내가 뺐을 수도** 있다.\n> **속성으로 뺐으면 잊기** 쉽다.\n> **아래에서 확인**한다.\n\n**클래스와 메서드가 다르**다.\n\n> **클래스가 걸려도 메서드가 안 걸릴 수** 있다.\n> **6.5절의 없음 조건**이다.\n> **아래에서 둘 다** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "증상으로 자리를 좁힌다",
+   "ascii": "   three symptoms, three different gates\n\n   nothing in the report at all      gate one or two\n   listed under exclusions           gate three\n   listed with a reason              gate four or five\n\n   the first symptom is the one that wastes the most time",
+   "note": "**첫째 증상이 시간을 제일 많이** 잡아먹는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "엉뚱한 관문을 고치면 아무 일도 안 생긴다",
+   "md": "**설정을 아무리 고쳐도** 소용없다.\n\n> **JAR 가 없으면 그렇**다.\n> **아래에서 그 순서를** 지킨다.\n> **위에서부터** 본다.\n\n**빈이 있는데 안 먹기도** 한다.\n\n> **6.8절에서 덮어** 놨다.\n> **자동 구성 문제가** 아니다.\n> **아래에서 그걸** 가른다.\n\n**웹 종류도 조건**이다.\n\n> **서블릿이냐 리액티브냐**다.\n> **아무것도 아닐 수도** 있다.\n> **아래에서 그걸** 만든다.\n\n**테스트에서는 또 다르**다.\n\n> **⑨ 3장의 슬라이스**다.\n> **후보 자체가** 줄어든다.\n> **아래에서 세어** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 증상: 레디스 템플릿이 없다\n\n@RestController\nclass CacheController {\n    CacheController(StringRedisTemplate redis) { }\n}\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor required a bean of type 'StringRedisTemplate'\nthat could not be found.\n\n\n-- 관문 4 부터 본다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 > /tmp/d.txt\n$ grep -A3 'RedisAutoConfiguration' /tmp/d.txt | head -4\n   RedisAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass did not find required class\n           'org.springframework.data.redis.core.RedisOperations'\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c redis\n0\n\n// 스타터를 넣으면\nimplementation 'org.springframework.boot:spring-boot-starter-data-redis'\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Started BootApplication'\n1\n$ curl -s localhost:8080/cache/ping\nPONG\n\n--   넷째 줄이 시킨 대로 했다\n\n\n-- 증상: 보고서에 아예 없다\n\n$ grep -c 'CounterAutoConfiguration' /tmp/d.txt\n0\n\n--   관문 1 이나 2 다\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c counter\n1\n\n--   JAR 는 있다, 관문 2 다\n\n$ ./gradlew bootJar -q\n$ unzip -l build/libs/app.jar | grep counter\n    18422  BOOT-INF/lib/counter-spring-boot-autoconfigure-1.0.0.jar\n\n$ mkdir -p /tmp/y && (cd /tmp/y && unzip -oq ~/proj/build/libs/app.jar \\\n    'BOOT-INF/lib/counter*')\n$ unzip -l /tmp/y/BOOT-INF/lib/counter-*.jar | grep -c 'META-INF/spring/'\n0\n\n--   목록 파일이 JAR 에 안 들어갔다\n--   6.2절에서 이름을 틀렸을 때와 같다\n\n$ find counter-spring-boot-autoconfigure/src -name '*.imports'\ncounter-spring-boot-autoconfigure/src/main/java/META-INF/spring/\n  org.springframework.boot.autoconfigure.AutoConfiguration.imports\n\n--   resources 가 아니라 java 아래 있었다\n\n$ mv counter-spring-boot-autoconfigure/src/main/java/META-INF \\\n     counter-spring-boot-autoconfigure/src/main/resources/\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'CounterAutoConfiguration'\n1\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n\n-- 증상: 제외돼 있다\n\n$ grep -c 'JacksonAutoConfiguration' /tmp/d.txt\n1\n$ sed -n '/^Exclusions:/,/^Unconditional/p' /tmp/d.txt | grep -c Jackson\n1\n\n$ grep -rn 'autoconfigure' src/main/resources/application.yml\n5:  autoconfigure:\n6:    exclude:\n7:      - org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration\n\n--   내가 설정에 적어 뒀다\n--   6.2절에서 넣고 잊었다\n\n$ curl -s localhost:8080/actuator/env \\\n    | python3 -c \"\nimport json,sys\nfor s in json.load(sys.stdin)['propertySources']:\n    for k in s['properties']:\n        if 'autoconfigure.exclude' in k:\n            print(s['name'], '|', k, '=', s['properties'][k]['value'])\n\"\napplicationConfig: [classpath:/application.yml] |\n  spring.autoconfigure.exclude[0] = ...JacksonAutoConfiguration\n\n--   어느 파일에서 왔는지까지 나온다\n--   7.12절에서 이 우선순위를 본다\n\n\n-- 증상: 클래스는 걸렸는데 빈이 없다\n\n$ grep 'DataSourceAutoConfiguration' /tmp/d.txt | head -3\n   DataSourceAutoConfiguration matched:\n   DataSourceAutoConfiguration$PooledDataSourceConfiguration matched:\n   DataSourceAutoConfiguration$PooledDataSourceConfiguration#dataSource:\n\n$ grep -A3 'PooledDataSourceConfiguration#dataSource:' /tmp/d.txt | head -4\n   DataSourceAutoConfiguration$PooledDataSourceConfiguration#dataSource:\n      Did not match:\n         - @ConditionalOnMissingBean found beans of type\n           'javax.sql.DataSource' myDataSource\n\n$ curl -s 'localhost:8080/beans/def?name=myDataSource'\n출처: study.boot.MyDataSourceConfig\n\n--   내가 만들어 둔 것이 있었다\n--   6.5절의 물러섬이다, 고장이 아니다\n\n\n-- 증상: 웹이 아니다\n\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        new SpringApplicationBuilder(BootApplication.class)\n            .web(WebApplicationType.NONE)\n            .run(args);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Tomcat started|Started'\nINFO ... : Started BootApplication in 0.518 seconds\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A3 'ServletWebServerFactoryAutoConfiguration' | head -4\n   ServletWebServerFactoryAutoConfiguration:\n      Did not match:\n         - @ConditionalOnWebApplication did not find servlet web application classes\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'matched:'\n      18\n\n--   5.5절에서 JAR 를 뺐을 때와 메시지가 다르다\n--   JAR 는 있는데 종류가 아니다\n--   걸린 것이 44 에서 18 로 줄었다\n\n\n-- 증상: 테스트에서만 없다\n\n@WebMvcTest(HelloController.class)\nclass HelloControllerTest { ... }\n\n$ ./gradlew test --debug-jvm 2>&1 | grep -c 'matched:'\n      21\n\n$ ./gradlew test 2>&1 | grep -A3 'DataSourceAutoConfiguration' | head -4\n   DataSourceAutoConfiguration:\n      Did not match:\n         - @ConditionalOnClass found required class 'javax.sql.DataSource'\n         - Ancestor org.springframework.boot.autoconfigure.jdbc.\n           DataSourceAutoConfiguration did not match\n\n$ ./gradlew test 2>&1 | grep -i 'TypeExcludeFilter' | head -1\nSlice test filter kept 21 of 163 candidates\n\n--   ⑨ 3장의 슬라이스다\n--   후보 자체가 줄었다\n\n\n-- 다섯 관문을 한 번에 훑는 방법\n\n$ NAME=RedisAutoConfiguration\n\n$ echo '1) JAR'; ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -ci redis\n1) JAR\n0\n\n$ echo '2) 목록'; for j in /tmp/x/BOOT-INF/lib/*.jar; do\n    unzip -p \"$j\" 'META-INF/spring/*.imports' 2>/dev/null | grep -c \"$NAME\"\n  done | paste -sd+ | bc\n2) 목록\n0\n\n$ echo '3) 제외'; sed -n '/^Exclusions:/,/^Unconditional/p' /tmp/d.txt \\\n    | grep -c \"$NAME\"\n3) 제외\n0\n\n$ echo '4) 클래스 조건'; grep -A3 \"^   $NAME:\" /tmp/d.txt | tail -2\n4) 클래스 조건\n         - @ConditionalOnClass did not find required class\n           'org.springframework.data.redis.core.RedisOperations'\n\n--   1 에서 이미 0 이었다\n--   설정을 아무리 고쳐도 소용없었을 것이다\n\n\n-- 액츄에이터로도 같은 걸 본다\n\n$ curl -s localhost:8080/actuator/conditions \\\n    | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['contexts']['application']\nname = 'RedisAutoConfiguration'\nprint('positive', name in d['positiveMatches'])\nprint('negative', name in d['negativeMatches'])\nif name in d['negativeMatches']:\n    for m in d['negativeMatches'][name]['notMatched']:\n        print(' ', m['message'])\n\"\npositive False\nnegative True\n  @ConditionalOnClass did not find required class\n  'org.springframework.data.redis.core.RedisOperations'\n\n--   운영에서는 이쪽이 편하다\n--   8장에서 이 엔드포인트를 제대로 본다\n\n\n-- 6장에서 만든 것들\n\n$ printf '%-8s %-24s %s\\n' \\\n  '6.1'  '자동 구성'      '빈 187, 내 것 2' \\\n  '6.2'  '목록 파일'      '161 + 2' \\\n  '6.3'  '조건'           'matches 하나' \\\n  '6.4'  '클래스 조건'    'JAR 가 스위치' \\\n  '6.5'  '빈 없음'        '내가 이김' \\\n  '6.6'  '속성 조건'      '설정이 스위치' \\\n  '6.7'  '보고서'         '44 + 119' \\\n  '6.8'  '덮기'           '넷, 가벼운 것부터' \\\n  '6.9'  '순서'           '이름 순, 앞뒤' \\\n  '6.10' '직접'           '조각 넷' \\\n  '6.11' '스타터'         '모듈 둘' \\\n  '6.12' '안 걸릴 때'     '관문 다섯'\n\n6.1    자동 구성                빈 187, 내 것 2\n6.2    목록 파일                161 + 2\n6.3    조건                     matches 하나\n6.4    클래스 조건              JAR 가 스위치\n6.5    빈 없음                  내가 이김\n6.6    속성 조건                설정이 스위치\n6.7    보고서                   44 + 119\n6.8    덮기                     넷, 가벼운 것부터\n6.9    순서                     이름 순, 앞뒤\n6.10   직접                     조각 넷\n6.11   스타터                   모듈 둘\n6.12   안 걸릴 때               관문 다섯\n\n--   7.1절에서 그 설정 값이 어디서 오는지 본다",
+   "note": "**보고서에 이유가 있으면 넷째 줄대로 스타터를 넣어 `PONG`** 이 나왔다.\n\n**보고서에 아예 없던 것은 목록 파일이 `resources` 가 아니라 `java` 아래 있어 JAR 에 안 들어간** 탓이었다.\n\n**제외 부분에 있던 것은 내가 `application.yml` 에 적어 둔 것이고 `/actuator/env` 가 어느 파일인지까지** 짚어 준다.\n\n**웹이 아니게 띄우니 `did not find servlet web application classes` 로 걸린 것이 44 에서 18 로** 줄었다.\n\n**다섯 관문을 순서대로 훑으니 첫 관문에서 이미 0 이라 설정을 고쳐도 소용없었을 것이 드러난다.**"
+  }
+ ],
+ "recap": [
+  "**관문이** 다섯이다.",
+  "**보고서는 넷째부터**다.",
+  "**없으면 앞** 관문이다.",
+  "**제외도** 본다.",
+  "**클래스와 메서드가** 다르다.",
+  "**내가 덮었을 수도** 있다.",
+  "**웹 종류도** 조건이다.",
+  "**테스트는 후보가** 줄어든다.",
+  "**위에서부터** 본다."
+ ],
+ "drills": [
+  {
+   "task": "보고서에 이유가 있는 것을 고친다.",
+   "done_when": "넷째 줄대로 고쳐 돌았다.",
+   "minutes": 15
+  },
+  {
+   "task": "보고서에 없는 것을 찾는다.",
+   "done_when": "JAR 인지 목록인지 갈랐다.",
+   "minutes": 20
+  },
+  {
+   "task": "제외를 확인한다.",
+   "done_when": "어느 파일에서 왔는지 짚었다.",
+   "minutes": 15
+  },
+  {
+   "task": "다섯 관문을 훑는 명령을 적어 둔다.",
+   "done_when": "한 번에 돌려 봤다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "보고서에 아예 안 나오면?",
+   "a": "JAR 가 없거나 목록에 안 적힌 것이다."
+  },
+  {
+   "q": "제외 부분만 봐야 하는 이유는?",
+   "a": "설정으로 빼 두고 잊는 일이 흔해서다."
+  },
+  {
+   "q": "클래스는 걸렸는데 빈이 없으면?",
+   "a": "빈 메서드 조건이다. 대개 내가 이미 만들어 둔 것이다."
+  },
+  {
+   "q": "웹 종류 조건이 안 맞으면 메시지가 어떻게 다른가?",
+   "a": "클래스가 없다는 말이 아니라 웹 종류가 아니라고 적힌다."
+  },
+  {
+   "q": "관문은 어느 쪽부터 보나?",
+   "a": "위에서부터다. 앞이 막혔으면 뒤를 고쳐도 소용없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "관문",
+   "def": "후보가 실제로 적용되기까지 통과해야 하는 단계들."
+  },
+  {
+   "term": "슬라이스 테스트",
+   "def": "필요한 자동 구성만 남기고 후보를 줄여 띄우는 테스트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Creating Your Own Starter",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html#features.developing-auto-configuration.custom-starter",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

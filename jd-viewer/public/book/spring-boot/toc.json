@@ -410,7 +410,7 @@
           "title": "스타터로 만든다",
           "summary": "다른 프로젝트가 쓰게 한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.12",
@@ -418,7 +418,7 @@
           "title": "안 걸릴 때",
           "summary": "보고서로 원인을 찾는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

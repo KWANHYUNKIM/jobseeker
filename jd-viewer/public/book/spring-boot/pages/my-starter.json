@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "my-starter",
+ "no": "6.11",
+ "chapter": 6,
+ "title": "스타터로 만든다",
+ "summary": "다른 프로젝트가 쓰게 한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 모듈로 나눈다.",
+  "선택 의존성을 안다.",
+  "설정 도움말을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.10절의 것은 같은 프로젝트 안에** 있었다. **남이 쓰게** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "모듈이 둘이다",
+   "ascii": "   a starter is two modules, not one\n\n   the autoconfigure module   the code, the conditions, the list\n   the starter module         an empty pom naming the other two\n\n   splitting them lets someone take the code without the opinions",
+   "note": "**나누면 코드만 가져다 쓸 수도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름과 의존성이 곧 사용법이다",
+   "md": "**5.3절에서 열어** 봤다.\n\n> **스타터 JAR 는 비어** 있었다.\n> **POM 만 있었다.**\n> **아래에서 같은 걸** 만든다.\n\n**이름 규칙이** 있다.\n\n> **뒤에 붙이는 쪽**이다.\n> **앞은 부트 팀이** 예약했다.\n> **아래에서 그렇게** 짓는다.\n\n**선택 의존성으로 컴파일**한다.\n\n> **쓰는 쪽에 강요 안** 한다.\n> **6.4절의 조건이 그걸 전제**한다.\n> **아래에서 그 차이를** 센다.\n\n**설정 도움말도 낸**다.\n\n> **편집기가 키를 알려** 준다.\n> **JSON 파일 하나**다.\n> **아래에서 만들어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 선택으로 두나",
+   "ascii": "   why the autoconfigure module marks things optional\n\n   it compiles against libraries it may never see at runtime\n   the conditions decide whether that code is even read\n   so the dependency must not be forced on the consumer\n\n   the starter module is where the real dependencies go",
+   "note": "**진짜 의존성은 스타터 쪽에** 적는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "스타터에 다 넣으면 쓰는 쪽이 못 뺀다",
+   "md": "**넣은 건 다 딸려** 간다.\n\n> **5.3절에서 36 개가** 왔다.\n> **필요 없어도 따라** 온다.\n> **최소만 적는**다.\n\n**부트를 직접 의존하면** 무겁다.\n\n> **버전이 박혀** 버린다.\n> **5.2절의 목록에** 맡긴다.\n> **아래에서 버전을 안** 적는다.\n\n**같은 이름이 겹치면** 싸운다.\n\n> **패키지를 내 것으로** 짓는다.\n> **6.2절의 목록이** 합쳐진다.\n> **남과 겹치면** 곤란하다.\n\n**도움말이 없으면 키를 모른**다.\n\n> **편집기가 아무것도 안** 준다.\n> **아래에서 그 차이를** 본다.\n> **주석을 적으면 설명이** 나온다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 두 모듈로 나눈다\n\n$ tree -L 2 -I build\n.\n├── settings.gradle\n├── counter-spring-boot-autoconfigure\n│   ├── build.gradle\n│   └── src\n├── counter-spring-boot-starter\n│   └── build.gradle\n└── sample-app\n    ├── build.gradle\n    └── src\n\n$ cat settings.gradle\nrootProject.name = 'counter'\ninclude 'counter-spring-boot-autoconfigure'\ninclude 'counter-spring-boot-starter'\ninclude 'sample-app'\n\n--   5.3절에서 본 이름 규칙이다\n--   뒤에 붙였다\n\n\n-- 코드 모듈\n\n$ cat counter-spring-boot-autoconfigure/build.gradle\nplugins {\n    id 'java-library'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencyManagement {\n    imports { mavenBom 'org.springframework.boot:spring-boot-dependencies:3.3.2' }\n}\ndependencies {\n    api 'org.springframework.boot:spring-boot-autoconfigure'\n    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'\n\n    compileOnly 'org.springframework:spring-web'\n    compileOnly 'jakarta.servlet:jakarta.servlet-api'\n    compileOnly 'io.micrometer:micrometer-core'\n}\n\n$ grep -c \":[0-9]\" counter-spring-boot-autoconfigure/build.gradle\n1\n\n--   버전은 목록 하나뿐이다\n--   5.2절에 맡겼다\n\n\n-- 무엇이 딸려 가나\n\n$ ./gradlew :counter-spring-boot-autoconfigure:dependencies \\\n    --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n       8\n\n$ ./gradlew :counter-spring-boot-autoconfigure:dependencies \\\n    --configuration runtimeClasspath | grep -cE 'servlet|micrometer|spring-web'\n0\n\n--   compileOnly 는 안 딸려 간다\n--   5.4절의 그 네 길이다\n\n\n-- 스타터 모듈\n\n$ cat counter-spring-boot-starter/build.gradle\nplugins {\n    id 'java-library'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencyManagement {\n    imports { mavenBom 'org.springframework.boot:spring-boot-dependencies:3.3.2' }\n}\ndependencies {\n    api project(':counter-spring-boot-autoconfigure')\n    api 'org.springframework.boot:spring-boot-starter'\n    api 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ find counter-spring-boot-starter/src -type f 2>/dev/null | wc -l\n       0\n\n--   소스가 하나도 없다\n--   5.3절에서 연 그 JAR 와 같다\n\n\n-- 만들어진 JAR 를 연다\n\n$ ./gradlew :counter-spring-boot-starter:jar -q\n$ ls -lh counter-spring-boot-starter/build/libs/*.jar | awk '{print $5, $9}'\n1.2K counter-spring-boot-starter/build/libs/counter-spring-boot-starter.jar\n\n$ unzip -l counter-spring-boot-starter/build/libs/*.jar | grep -c '\\.class'\n0\n\n--   5.3절의 4.7K 와 같은 모양이다\n\n\n-- 목록은 코드 모듈에 있다\n\n$ ./gradlew :counter-spring-boot-autoconfigure:jar -q\n$ unzip -l counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    | grep 'META-INF/spring'\n       48  ...  META-INF/spring/org.springframework.boot.autoconfigure\n                .AutoConfiguration.imports\n\n$ unzip -p counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    'META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports'\nstudy.lib.counter.CounterAutoConfiguration\n\n--   6.2절에서 연 그 자리다\n\n\n-- 쓰는 쪽\n\n$ cat sample-app/build.gradle\nplugins {\n    id 'org.springframework.boot' version '3.3.2'\n    id 'io.spring.dependency-management' version '1.1.6'\n}\ndependencies {\n    implementation project(':counter-spring-boot-starter')\n}\n\n$ grep -c 'starter-web' sample-app/build.gradle\n0\n\n$ ./gradlew :sample-app:bootRun 2>&1 | grep -E '\\[카운터\\]|Tomcat started'\n[카운터] 필터 등록 header=X-Count\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n--   한 줄만 적었는데 서버도 뜨고 필터도 붙었다\n--   5.3절의 그 한 줄이 이런 것이었다\n\n\n-- 한 줄이 몇 개를 끌고 오나\n\n$ ./gradlew :sample-app:dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n      37\n\n--   5.3절에서 센 36 에 하나 더 붙었다\n\n\n-- 선택 의존성이 왜 필요한가\n\n// 코드 모듈에서 compileOnly 를 implementation 으로 바꾸면\ndependencies {\n    implementation 'io.micrometer:micrometer-core'\n}\n\n$ ./gradlew :sample-app:dependencies --configuration runtimeClasspath \\\n    | grep -c micrometer\n4\n\n$ ./gradlew :sample-app:bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 미터 붙임\n\n--   액츄에이터를 안 넣었는데 미터가 켜졌다\n--   쓰는 쪽이 안 고른 것이다\n\n// compileOnly 로 되돌리면\n$ ./gradlew :sample-app:dependencies --configuration runtimeClasspath \\\n    | grep -c micrometer\n0\n$ ./gradlew :sample-app:bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 그냥\n\n--   6.4절의 조건이 그제야 뜻이 있다\n\n\n-- 쓰는 쪽이 골라 넣으면\n\n// sample-app/build.gradle\nimplementation 'org.springframework.boot:spring-boot-starter-actuator'\n\n$ ./gradlew :sample-app:bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 미터 붙임\n\n$ curl -s localhost:8080/actuator/metrics/study.counter.requests \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n1.0\n\n--   고른 사람만 켠다\n\n\n-- 설정 도움말을 만든다\n\n$ unzip -l counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    | grep 'spring-configuration-metadata'\n     1284  ...  META-INF/spring-configuration-metadata.json\n\n$ unzip -p counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    META-INF/spring-configuration-metadata.json \\\n  | python3 -m json.tool | head -20\n{\n    \"groups\": [\n        {\n            \"name\": \"study.counter\",\n            \"type\": \"study.lib.counter.CounterProperties\",\n            \"sourceType\": \"study.lib.counter.CounterProperties\"\n        }\n    ],\n    \"properties\": [\n        {\n            \"name\": \"study.counter.enabled\",\n            \"type\": \"java.lang.Boolean\",\n            \"sourceType\": \"study.lib.counter.CounterProperties\",\n            \"defaultValue\": true\n        },\n\n$ unzip -p counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    META-INF/spring-configuration-metadata.json \\\n  | python3 -c \"import json,sys; print(len(json.load(sys.stdin)['properties']))\"\n3\n\n--   annotationProcessor 가 만들어 줬다\n--   6.10절에서 만든 세 키가 다 있다\n\n\n-- 설명도 넣는다\n\n@ConfigurationProperties(prefix = \"study.counter\")\npublic class CounterProperties {\n    /**\n     * 요청 수를 담을 응답 헤더 이름.\n     */\n    private String header = \"X-Count\";\n}\n\n$ ./gradlew :counter-spring-boot-autoconfigure:jar -q\n$ unzip -p counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    META-INF/spring-configuration-metadata.json \\\n  | python3 -c \"\nimport json,sys\nfor p in json.load(sys.stdin)['properties']:\n    print(p['name'], '|', p.get('description', '(설명 없음)'))\n\"\nstudy.counter.enabled   | (설명 없음)\nstudy.counter.header    | 요청 수를 담을 응답 헤더 이름.\nstudy.counter.threshold | (설명 없음)\n\n--   주석이 그대로 설명이 됐다\n\n\n-- 도움말이 없으면\n\n// annotationProcessor 를 지우면\n$ unzip -l counter-spring-boot-autoconfigure/build/libs/*.jar \\\n    | grep -c 'spring-configuration-metadata'\n0\n\n$ ./gradlew :sample-app:bootRun 2>&1 | grep -c 'Started'\n1\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n--   도는 데는 문제가 없다\n--   편집기가 키를 못 알려 줄 뿐이다\n\n\n-- 로컬로 내보내 본다\n\n$ ./gradlew :counter-spring-boot-starter:publishToMavenLocal -q\n$ find ~/.m2/repository/study -name '*.jar' -o -name '*.pom' | sort\n~/.m2/repository/study/counter-spring-boot-autoconfigure/1.0.0/\n  counter-spring-boot-autoconfigure-1.0.0.jar\n~/.m2/repository/study/counter-spring-boot-autoconfigure/1.0.0/\n  counter-spring-boot-autoconfigure-1.0.0.pom\n~/.m2/repository/study/counter-spring-boot-starter/1.0.0/\n  counter-spring-boot-starter-1.0.0.jar\n~/.m2/repository/study/counter-spring-boot-starter/1.0.0/\n  counter-spring-boot-starter-1.0.0.pom\n\n$ grep -A2 '<artifactId>counter' \\\n    ~/.m2/repository/study/counter-spring-boot-starter/1.0.0/*.pom | head -3\n      <artifactId>counter-spring-boot-autoconfigure</artifactId>\n      <version>1.0.0</version>\n\n\n-- 완전히 다른 프로젝트에서 쓴다\n\n$ mkdir -p /tmp/other && cd /tmp/other\n// build.gradle\nrepositories { mavenLocal(); mavenCentral() }\ndependencies {\n    implementation 'study:counter-spring-boot-starter:1.0.0'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep counter\n\\--- study:counter-spring-boot-starter:1.0.0\n     +--- study:counter-spring-boot-autoconfigure:1.0.0\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[카운터\\]|Tomcat started'\n[카운터] 필터 등록 header=X-Count\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n--   남의 프로젝트에서 한 줄로 켜졌다\n--   5.3절에서 마이바티스가 그랬던 것처럼\n\n\n-- 코드만 가져다 쓰기\n\n// 스타터 말고 코드 모듈만 넣으면\ndependencies {\n    implementation 'study:counter-spring-boot-autoconfigure:1.0.0'\n    implementation 'org.springframework.boot:spring-boot-starter-web'\n}\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -oE '[a-z.]+:[a-z0-9-]+:[0-9][0-9a-zA-Z.-]*' | sort -u | wc -l\n      37\n\n$ ./gradlew bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 필터 등록 header=X-Count\n\n--   나눠 뒀으니 이렇게도 된다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '모듈'          '둘' \\\n  '스타터 JAR'    '1.2K, 클래스 0' \\\n  '목록'          '코드 모듈에' \\\n  '이름'          '뒤에 붙임' \\\n  '선택 의존성'   'compileOnly' \\\n  '한 줄'         '37 개' \\\n  '도움말'        '키 3 개' \\\n  '주석'          '설명이 됨'\n\n모듈                       둘\n스타터 JAR                 1.2K, 클래스 0\n목록                       코드 모듈에\n이름                       뒤에 붙임\n선택 의존성                compileOnly\n한 줄                      37 개\n도움말                     키 3 개\n주석                       설명이 됨\n\n--   6.12절에서 안 걸릴 때를 판다",
+   "note": "**스타터 JAR 가 1.2K 에 클래스 0 개로 5.3절에서 연 부트 것과 같은** 모양이다.\n\n**쓰는 쪽은 한 줄만 적었는데 서버가 뜨고 `X-Count: 1` 이 붙으며 37 개가 딸려** 온다.\n\n**미터를 `implementation` 으로 두면 쓰는 쪽이 안 골랐는데 `[카운터] 미터 붙임` 이 되고 `compileOnly` 면 `[카운터] 그냥`** 이다.\n\n**애너테이션 프로세서가 키 3 개짜리 도움말 JSON 을 만들고 주석이 그대로 설명이** 된다.\n\n**로컬 저장소로 내보내 다른 프로젝트에서 한 줄로 같은 헤더가** 붙었다."
+  }
+ ],
+ "recap": [
+  "**모듈이** 둘이다.",
+  "**스타터는 비어** 있다.",
+  "**목록은 코드 쪽**이다.",
+  "**이름은 뒤에** 붙인다.",
+  "**선택으로** 컴파일한다.",
+  "**쓰는 쪽이** 고른다.",
+  "**한 줄이 37 개**다.",
+  "**도움말이** 나온다.",
+  "**주석이 설명이** 된다."
+ ],
+ "drills": [
+  {
+   "task": "두 모듈로 나눈다.",
+   "done_when": "스타터 JAR 에 클래스가 없는 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "선택 의존성을 바꿔 본다.",
+   "done_when": "쓰는 쪽에 딸려 가는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "도움말 JSON 을 연다.",
+   "done_when": "키와 설명을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "로컬로 내보내 다른 프로젝트에서 쓴다.",
+   "done_when": "한 줄로 켜지는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스타터를 왜 두 모듈로 나누나?",
+   "a": "코드만 가져다 쓰고 싶은 쪽을 위해서다."
+  },
+  {
+   "q": "목록 파일은 어느 모듈에 두나?",
+   "a": "코드가 있는 자동 구성 모듈이다."
+  },
+  {
+   "q": "코드 모듈이 라이브러리를 선택으로 두는 이유는?",
+   "a": "조건으로 갈리는 것이라 쓰는 쪽에 강요하면 안 돼서다."
+  },
+  {
+   "q": "설정 도움말은 어떻게 생기나?",
+   "a": "애너테이션 프로세서가 빌드 때 JSON 을 만든다."
+  },
+  {
+   "q": "이름을 어떻게 짓나?",
+   "a": "제3자는 뒤에 붙인다. 앞은 부트 팀이 예약했다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 구성 모듈",
+   "def": "조건과 빈, 목록 파일을 담은 실제 코드 모듈."
+  },
+  {
+   "term": "설정 메타데이터",
+   "def": "편집기가 키와 설명을 알려 줄 수 있게 빌드 때 만들어지는 JSON."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Creating Your Own Starter",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html#features.developing-auto-configuration.custom-starter",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Configuration Metadata",
+   "url": "https://docs.spring.io/spring-boot/specification/configuration-metadata/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
