@@ -254,7 +254,7 @@
           "title": "디플로이먼트",
           "summary": "실무에서 실제로 쓰는 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -262,7 +262,7 @@
           "title": "롤링 업데이트와 롤백",
           "summary": "배포 중에도 요청을 받는다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",

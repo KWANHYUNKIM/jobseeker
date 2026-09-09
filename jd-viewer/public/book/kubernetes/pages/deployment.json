@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "deployment",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "디플로이먼트",
+ "summary": "실무에서 실제로 쓰는 것.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 층의 관계를 안다.",
+  "히스토리가 무엇인지 안다.",
+  "롤백이 왜 빠른지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 레플리카셋만으로는 롤링이 안 된다고** 했다. **그 위층**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 층",
+   "ascii": "   three objects, three jobs\n\n   Deployment   owns a history of ReplicaSets, and moves between them\n   ReplicaSet   keeps N pods alive, one template only\n   Pod          runs the containers\n\n   changing the template makes a new ReplicaSet, never edits the old\n   that is the whole trick behind rolling updates",
+   "note": "**템플릿이 바뀌면 새 레플리카셋을** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "무엇이 새 레플리카셋을 만드나",
+   "md": "**`spec.template` 이 바뀌면**이다.\n\n| 바꾼 것 | 새 레플리카셋 |\n|---|---|\n| `image` | 만든다 |\n| `env` | 만든다 |\n| `resources` | 만든다 |\n| 파드 라벨 | 만든다 |\n| **`replicas`** | **안 만든다** |\n| 디플로이먼트 애너테이션 | 안 만든다 |\n\n> **`replicas` 는 `spec.template` 밖**이다.\n> **그래서 스케일은 롤아웃이** 아니다.\n> **2.4절에서 `scale` 때 이벤트가 `ScalingReplicaSet` 하나였던 이유**다.\n\n**해시로 구별한다.**\n\n> **`pod-template-hash` 가 템플릿의 해시**다(5.1절).\n> **같은 템플릿으로 돌아오면 같은 해시**다.\n> **그래서 롤백이 새 레플리카셋을 안 만들고 옛것을 다시** 쓴다.\n\n**히스토리 보관**\n\n```yaml\nspec:\n  revisionHistoryLimit: 10   # 기본값\n```\n\n> **옛 레플리카셋을 열 개까지** 남긴다.\n> **`replicas: 0` 이라 자원은 안** 든다.\n> **0으로 두면 롤백을 못** 한다.\n\n**`kubectl rollout` 명령들**\n\n```bash\nkubectl rollout status deployment/web\nkubectl rollout history deployment/web\nkubectl rollout history deployment/web --revision=2\nkubectl rollout undo deployment/web\nkubectl rollout undo deployment/web --to-revision=2\nkubectl rollout restart deployment/web\nkubectl rollout pause deployment/web\nkubectl rollout resume deployment/web\n```\n\n> **`restart` 가 유용**하다 — **템플릿에 타임스탬프 애너테이션을 넣어 롤링을** 일으킨다.\n> **설정을 다시 읽게 할 때** 쓴다(7장)."
+  },
+  {
+   "type": "figure",
+   "caption": "히스토리",
+   "ascii": "   what the history actually is\n\n   kubectl get rs\n     web-6d8f4b9c7   0   0   0    the old template, kept at zero\n     web-7f9c8d6b5   3   3   3    the current one\n\n   rollback means scaling the old one up and the new one down\n   nothing is re-pulled, nothing is rebuilt, it is just a number",
+   "note": "**롤백은 숫자를 옮기는 것**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "롤백이 빠른 이유",
+   "md": "**이미지를 다시 안** 받는다.\n\n> **옛 레플리카셋이 그대로** 있다.\n> **`replicas` 를 0에서 3으로** 올린다.\n> **노드에 이미지가 이미 있으면 즉시** 뜬다.\n>\n> **`kubectl rollout undo` 가 초 단위로 끝나는** 이유다.\n\n**`--record` 는 사라졌다.**\n\n> **옛날에는 `--record` 로 명령을 히스토리에** 남겼다.\n> **1.28 에서** 제거됐다.\n> **`kubernetes.io/change-cause` 애너테이션을 직접** 넣는다.\n>\n> ```bash\n> kubectl annotate deployment/web \\\n>   kubernetes.io/change-cause=\"nginx 1.27-alpine 으로 올림\"\n> ```\n\n**같은 템플릿으로 두 번 바꾸면**\n\n> **1 → 2 → 1 로 갔을 때 리비전이 3이** 된다.\n> **레플리카셋은 둘인데 리비전 번호는 3**이다.\n> **`rollout history` 에서 2번이** 사라진다.\n>\n> **처음 보면 헷갈린다** — **아래에서** 본다.\n\n**멈춰 둘 수 있다.**\n\n> **`pause` 하면 템플릿을 여러 번 고쳐도 롤아웃이 안** 시작된다.\n> **다 고치고 `resume` 하면 한 번에** 나간다.\n> **여러 필드를 같이 바꿀 때** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 세 층을 확인 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3 > /dev/null\n$ sleep 10 && kubectl get deploy,rs,pod --no-headers | head -6\n\ndeployment.apps/web            3/3   3   3   10s\nreplicaset.apps/web-6d8f4b9c7  3     3   3   10s\npod/web-6d8f4b9c7-h4n8q        1/1   Running   0   10s\npod/web-6d8f4b9c7-r5t2w        1/1   Running   0   10s\npod/web-6d8f4b9c7-x9m2k        1/1   Running   0   10s\n\n$ kubectl get rs web-6d8f4b9c7 -o jsonpath=\\\n'{.metadata.ownerReferences[0].kind}/{.metadata.ownerReferences[0].name}{\"\\n\"}'\n\nDeployment/web\n\n# --- replicas 는 새 레플리카셋을 안 만든다 ---\n\n$ kubectl scale deployment web --replicas=5 > /dev/null && sleep 8\n$ kubectl get rs --no-headers\n\nweb-6d8f4b9c7   5   5   5   1m\n\n#   하나뿐이다\n\n$ kubectl rollout history deployment/web\n\ndeployment.apps/web\nREVISION  CHANGE-CAUSE\n1         <none>\n\n#   리비전도 1 이다\n\n#   스케일은 롤아웃이 아니다\n\n# --- 이미지를 바꾸면 ---\n\n$ kubectl set image deployment/web nginx=nginx:1.27-alpine > /dev/null\n$ sleep 15 && kubectl get rs --no-headers\n\nweb-6d8f4b9c7   0   0   0   2m\nweb-7f9c8d6b5   5   5   5   15s\n\n#   둘이 됐다\n\n#   옛것은 0 이다\n\n$ kubectl rollout history deployment/web\n\ndeployment.apps/web\nREVISION  CHANGE-CAUSE\n1         <none>\n2         <none>\n\n$ kubectl get rs -o custom-columns=\\\nNAME:.metadata.name,REV:.metadata.annotations.deployment\\\\.kubernetes\\\\.io/revision \\\n    --no-headers\n\nweb-6d8f4b9c7   1\nweb-7f9c8d6b5   2\n\n#   레플리카셋에 리비전 번호가 붙어 있다\n\n# --- 무엇이 바뀌었는지 ---\n\n$ kubectl rollout history deployment/web --revision=2 | head -8\n\ndeployment.apps/web with revision #2\nPod Template:\n  Labels:       app=web\n        pod-template-hash=7f9c8d6b5\n  Containers:\n   nginx:\n    Image:      nginx:1.27-alpine\n    Port:       <none>\n\n#   그 리비전의 템플릿이다\n\n$ kubectl annotate deployment/web \\\n    kubernetes.io/change-cause=\"alpine 으로 교체\" --overwrite > /dev/null\n\n$ kubectl rollout history deployment/web\n\nREVISION  CHANGE-CAUSE\n1         <none>\n2         alpine 으로 교체\n\n#   --record 대신 이렇게 한다\n\n# --- 롤백은 숫자를 옮기는 것 ---\n\n$ time kubectl rollout undo deployment/web\n\ndeployment.apps/web rolled back\n\nreal    0m0.184s\n\n$ sleep 10 && kubectl get rs --no-headers\n\nweb-6d8f4b9c7   5   5   5   3m\nweb-7f9c8d6b5   0   0   0   1m\n\n#   숫자가 뒤바뀌었다\n\n$ kubectl get events --sort-by=.lastTimestamp --no-headers | tail -3\n\n8s   Normal   ScalingReplicaSet   deployment/web   Scaled up replica set\n  web-6d8f4b9c7 to 2 from 0\n7s   Normal   ScalingReplicaSet   deployment/web   Scaled down replica set\n  web-7f9c8d6b5 to 3 from 5\n5s   Normal   ScalingReplicaSet   deployment/web   Scaled up replica set\n  web-6d8f4b9c7 to 5 from 2\n\n#   두 레플리카셋의 숫자를 주고받는다\n\n#   이미지를 다시 안 받는다\n\n$ kubectl get pods -o jsonpath=\\\n'{.items[0].status.containerStatuses[0].image}{\"\\n\"}'\n\ndocker.io/library/nginx:1.27\n\n#   원래대로다\n\n# --- 리비전 번호가 건너뛴다 ---\n\n$ kubectl rollout history deployment/web\n\nREVISION  CHANGE-CAUSE\n2         alpine 으로 교체\n3         <none>\n\n#   1 이 사라지고 3 이 생겼다\n\n#   같은 템플릿이 다시 쓰이면 번호만 올라간다\n\n$ kubectl get rs --no-headers | wc -l\n\n2\n\n#   레플리카셋은 여전히 둘이다\n\n#   번호는 3 인데 실체는 둘이다\n\n#   처음 보면 헷갈린다\n\n# --- 특정 리비전으로 ---\n\n$ kubectl rollout undo deployment/web --to-revision=2 > /dev/null\n$ sleep 10 && kubectl get pods -o jsonpath=\\\n'{.items[0].status.containerStatuses[0].image}{\"\\n\"}'\n\ndocker.io/library/nginx:1.27-alpine\n\n$ kubectl rollout history deployment/web\n\nREVISION  CHANGE-CAUSE\n3         <none>\n4         alpine 으로 교체\n\n#   또 올라갔다\n\n# --- 히스토리를 0 으로 두면 ---\n\n$ kubectl patch deployment web -p '{\"spec\":{\"revisionHistoryLimit\":0}}' > /dev/null\n$ sleep 8 && kubectl get rs --no-headers\n\nweb-7f9c8d6b5   5   5   5   5m\n\n#   옛것이 지워졌다\n\n$ kubectl rollout undo deployment/web\n\nerror: no rollout history found for deployment \"web\"\n\n#   롤백을 못 한다\n\n$ kubectl patch deployment web -p '{\"spec\":{\"revisionHistoryLimit\":10}}' > /dev/null\n\n# --- rollout restart ---\n\n$ kubectl rollout restart deployment/web > /dev/null\n$ sleep 12 && kubectl get rs --no-headers\n\nweb-5c8f2a9d1   5   5   5   12s\nweb-7f9c8d6b5   0   0   0   6m\n\n#   새 레플리카셋이 생겼다\n\n$ kubectl get deployment web -o jsonpath=\\\n'{.spec.template.metadata.annotations}{\"\\n\"}'\n\n{\"kubectl.kubernetes.io/restartedAt\":\"2026-09-09T12:54:11+09:00\"}\n\n#   타임스탬프 애너테이션이 붙었다\n\n#   템플릿이 바뀌었으니 롤아웃이다\n\n#   이미지는 그대로다\n\n$ kubectl get pods -o jsonpath=\\\n'{.items[0].spec.containers[0].image}{\"\\n\"}'\n\nnginx:1.27-alpine\n\n#   7장에서 설정을 다시 읽게 할 때 쓴다\n\n# --- pause 와 resume ---\n\n$ kubectl rollout pause deployment/web\n\ndeployment.apps/web paused\n\n$ kubectl set image deployment/web nginx=nginx:1.26 > /dev/null\n$ kubectl set resources deployment/web --limits=memory=256Mi > /dev/null\n$ sleep 8 && kubectl get rs --no-headers | wc -l\n\n2\n\n#   안 늘었다\n\n#   두 번 고쳤는데 롤아웃이 없다\n\n$ kubectl rollout resume deployment/web\n\ndeployment.apps/web resumed\n\n$ sleep 15 && kubectl get rs --no-headers | wc -l\n\n3\n\n#   한 번만 나갔다\n\n#   따로 했으면 두 번이었다\n\n$ kubectl rollout history deployment/web | tail -2\n\n5         <none>\n6         <none>\n\n#   리비전은 하나만 늘었다\n\n# --- 지금 상태를 한 줄로 ---\n\n$ kubectl get deployment web -o custom-columns=\\\nNAME:.metadata.name,DESIRED:.spec.replicas,READY:.status.readyReplicas,\\\nUPDATED:.status.updatedReplicas,AVAILABLE:.status.availableReplicas \\\n    --no-headers\n\nweb   5   5   5   5\n\n#   넷이 다 같으면 정상이다\n\n#   롤아웃 중에는 다르다\n\n$ kubectl set image deployment/web nginx=nginx:1.27 > /dev/null\n$ kubectl get deployment web -o custom-columns=\\\nDESIRED:.spec.replicas,READY:.status.readyReplicas,\\\nUPDATED:.status.updatedReplicas --no-headers\n\n5   5   2\n\n#   UPDATED 가 2 다\n\n#   다섯 중 둘만 새 템플릿이다\n\n$ kubectl rollout status deployment/web\n\nWaiting for deployment \"web\" rollout to finish: 3 of 5 updated replicas\n  are available...\ndeployment \"web\" successfully rolled out\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web > /dev/null\n\n$ kubectl get rs --no-headers | wc -l\n\n0\n\n#   레플리카셋도 같이 지워졌다\n\n#   2.3절의 소유 사슬이다\n\n# --- 다음 절에서 ---\n\n#   롤링 중에도 요청을 받는지 확인한다",
+   "note": "**`scale` 은 레플리카셋이 하나 그대로고 리비전도 1** 이다 — 스케일은 롤아웃이 아니다.\n\n**이미지를 바꾸면 레플리카셋이 둘이 되고 옛것은 `0`** 으로 남는다.\n\n**`rollout undo` 가 0.18초**다 — 두 레플리카셋의 숫자를 주고받을 뿐이다.\n\n**리비전 번호는 3인데 레플리카셋은 둘**이다 — 같은 템플릿이 다시 쓰이면 번호만 오른다.\n\n**`pause` 중에 두 번 고쳐도 롤아웃이 없고 `resume` 하면 한 번만** 나간다."
+  }
+ ],
+ "recap": [
+  "**디플로이먼트가 레플리카셋의 히스토리를** 들고 있다.",
+  "**템플릿이 바뀌면 새 레플리카셋을** 만든다.",
+  "**`replicas` 는 템플릿 밖이라 롤아웃이** 아니다.",
+  "**옛 레플리카셋은 0으로** 남는다.",
+  "**롤백은 숫자를 주고받는 것**이다.",
+  "**그래서 0.2초에** 끝난다.",
+  "**리비전 번호와 레플리카셋 개수가 다를 수** 있다.",
+  "**`revisionHistoryLimit: 0` 이면 롤백을 못** 한다.",
+  "**`pause`·`resume` 으로 여러 변경을 한 번에** 낸다."
+ ],
+ "drills": [
+  {
+   "task": "스케일과 이미지 변경의 차이를 본다.",
+   "done_when": "레플리카셋 개수를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "롤백 시간을 잰다.",
+   "done_when": "이미지를 다시 안 받는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "리비전 번호가 건너뛰는 것을 만든다.",
+   "done_when": "번호와 실체 개수를 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`pause` 후 두 번 고친다.",
+   "done_when": "롤아웃이 한 번인 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "새 레플리카셋은 언제 생기나?",
+   "a": "`spec.template` 이 바뀔 때다."
+  },
+  {
+   "q": "`replicas` 를 바꾸면?",
+   "a": "같은 레플리카셋의 숫자만 바뀐다. 롤아웃이 아니다."
+  },
+  {
+   "q": "롤백이 빠른 이유는?",
+   "a": "옛 레플리카셋이 남아 있어 숫자만 올리면 된다."
+  },
+  {
+   "q": "리비전 번호와 레플리카셋 수가 다른 이유는?",
+   "a": "같은 템플릿이 다시 쓰이면 번호만 올라간다."
+  },
+  {
+   "q": "`rollout restart` 는 무엇을 바꾸나?",
+   "a": "템플릿에 타임스탬프 애너테이션을 넣어 롤아웃을 일으킨다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리비전",
+   "def": "디플로이먼트가 지나온 템플릿의 번호. 레플리카셋 애너테이션에 기록된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Deployments",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — ReplicaSet",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
