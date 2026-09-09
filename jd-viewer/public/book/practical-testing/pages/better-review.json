@@ -1,0 +1,197 @@
+{
+ "book": "practical-testing",
+ "id": "better-review",
+ "no": "7.12",
+ "chapter": 7,
+ "title": "정리",
+ "summary": "열한 가지 조언.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "7장의 조언을 모은다.",
+  "미룬 빚을 확인한다.",
+  "다음 장이 무엇을 이어받는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**앞에서 여섯을 미뤘다.** **이 장이 다** 갚았다."
+  },
+  {
+   "type": "figure",
+   "caption": "갚은 여섯",
+   "ascii": "   the six debts this chapter paid\n\n   4.3  then with eight assertions        -> 7.1\n   1.4  a builder in production code      -> 7.3\n   2.2  a growing @BeforeEach             -> 7.5\n   5.9  4 queries against 12              -> 7.6\n   2.6  time and randomness               -> 7.9\n   2.1  repeatable                        -> 7.11\n\n   every one of them was named before it was solved",
+   "note": "**전부 미리 이름이 붙어** 있었다."
+  },
+  {
+   "type": "table",
+   "caption": "7장 요약",
+   "columns": [
+    "절",
+    "무엇",
+    "핵심"
+   ],
+   "rows": [
+    [
+     "7.1",
+     "한 문단에 한 주제",
+     "**세 문제를 보려고 세 번 돌린다**"
+    ],
+    [
+     "7.2",
+     "완벽하게 통제",
+     "**두 `now()` 사이에 자정이 지난다**"
+    ],
+    [
+     "7.3",
+     "프로덕션 코드",
+     "**테스트가 없어도 좋은 변경인가**"
+    ],
+    [
+     "7.4",
+     "`private` 메서드",
+     "**나누고 나서야 경계 버그가 보였다**"
+    ],
+    [
+     "7.5",
+     "환경 공유",
+     "**\"데이터가 없는\" 상태를 못 만든다**"
+    ],
+    [
+     "7.6",
+     "`deleteAll`",
+     "**100건이면 1개와 101개**"
+    ],
+    [
+     "7.7",
+     "파라미터화",
+     "**`@EnumSource` 는 상수가 늘면 는다**"
+    ],
+    [
+     "7.8",
+     "동적 테스트",
+     "**순서를 바꿔 결과가 달라지면**"
+    ],
+    [
+     "7.9",
+     "랜덤과 시간",
+     "**값을 모르는데도 검증한다**"
+    ],
+    [
+     "7.10",
+     "이름 짓기",
+     "**섞이는 게 가장 나쁘다**"
+    ],
+    [
+     "7.11",
+     "가끔 깨지는",
+     "**빨강을 무시하라고 가르친다**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "열한 조언을 한 줄씩",
+   "md": "**① 테스트 하나에 한 주제**\n\n> **요구사항이 다르면 나누고 한 결과의 여러 면이면** 묶는다.\n\n**② given 에 변수를 남기지 않는다**\n\n> **시각·랜덤·환경·앞 테스트**를 전부 고정한다.\n\n**③ 프로덕션 변경은 \"테스트가 없어도 좋은가\"**\n\n> **좋으면 설계 개선, 아니면 테스트 훅**이다.\n\n**④ `private` 을 테스트하고 싶으면 나눈다**\n\n> **리플렉션이 아니라 클래스** 추출이다.\n\n**⑤ 공유보다 중복**\n\n> **테스트는 위에서 아래로 읽고** 끝나야 한다.\n\n**⑥ 정리는 `deleteAllInBatch` 로 순서를 지켜**\n\n> **`deleteAll` 은 행 수에** 비례한다.\n\n**⑦ 값만 다르면 파라미터화**\n\n> **`if` 가 들어가면 묶은 게** 아니다.\n\n**⑧ 순서가 요구사항이면 동적 테스트**\n\n> **예외적으로** 쓴다.\n\n**⑨ 통제할 수 없으면 성질을 검증**\n\n> **값이 아니라 \"안 겹친다\"** 를 본다.\n\n**⑩ 이름 스타일을 하나로**\n\n> **섞이는 게 가장** 나쁘다.\n\n**⑪ 가끔 깨지면 고치거나 지운다**\n\n> **`@Disabled` 는 영영 안** 고쳐진다."
+  },
+  {
+   "type": "figure",
+   "caption": "책 전체의 설계 신호 셋",
+   "ascii": "   the three design signals in this book\n\n   i want to spy on this               6.5\n   i want to test this private method  7.4\n   this given is twenty lines          4.3\n\n   all three mean the same thing\n   the class is doing more than one job",
+   "note": "**셋 다 같은 뜻**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "테스트가 설계를 말한다",
+   "md": "**1.2절에서 \"설계 압력\" 을 얻는 것으로** 꼽았다.\n\n**이 책에서 실제로 세 번** 나왔다.\n\n| 신호 | 뜻 | 어디서 |\n|---|---|---|\n| **스파이를 쓰고 싶다** | 두 가지 일을 한다 | 6.5 |\n| **`private` 을 테스트하고 싶다** | 다른 책임이다 | 7.4 |\n| **given 이 스무 줄이다** | 의존성이 많다 | 4.3 |\n\n**그리고 결과가** 있었다.\n\n> **7.4절에서 `ProductOrderResolver` 를 뽑으니 27초가 1초가 되고 경계 버그가** 나왔다.\n> **6.5절에서 인터페이스로 나누니 스파이가 필요** 없어졌다.\n>\n> **둘 다 테스트가 목적이었는데 설계가** 좋아졌다.\n\n**반대도 성립**한다.\n\n> **테스트가 느리면 설계를 의심**한다(5.8절).\n> **테스트가 자주 깨지면 결합을 의심**한다(6.7절).\n>\n> **테스트를 짜기 어려우면 대개 코드가** 문제다.\n\n**다만 만능은** 아니다.\n\n> **테스트하기 좋은 설계가 항상 좋은 설계는** 아니다.\n> **7.3절에서 선을 그은** 이유다.\n>\n> **\"테스트가 없어도 좋은 변경인가\" 가 그 선**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "8장이 이어받는 것",
+   "md": "**7장 내내 시간이 나왔다.**\n\n| | |\n|---|---|\n| 7.1 | 나눈 판 14초, 소프트 판 10초 |\n| 7.4 | 27초가 1초 |\n| 7.6 | 3ms 와 87ms |\n| 7.10 | 2초와 22초 |\n| 7.11 | 스무 번 돌리는 데 8분 |\n\n> **개별 최적화**였다.\n> **8장은 전체를** 본다.\n\n| | |\n|---|---|\n| 8.1 | 컨텍스트 캐싱 |\n| 8.2 | 테스트 프로파일 |\n| 8.3 | Testcontainers |\n| 8.4 | 병렬 실행 |\n| 8.5 | CI 시간 |\n| 8.6 | 느린 테스트 예산 |\n| 8.7 | 정리 |\n\n**5.7절에서 이미** 했다.\n\n> **공통 부모로 컨텍스트를 3개에서 1개로** 줄였다.\n> **8.1절이 그걸 제대로** 센다.\n\n**8.3절이 새 주제**다.\n\n> **5.7절에서 `@DataJpaTest` 가 H2 로 바꾼다고** 했다.\n> **MySQL 문법을 쓰면 거기서** 깨진다.\n>\n> **진짜 DB 를 컨테이너로** 띄운다.\n\n**8.6절이 이 책의 태도**다.\n\n> **\"몇 분까지 참을까\"** 다.\n> **정답이 없고 팀이** 정한다.\n>\n> **지금 54개에 24초**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트 — 7장이 끝난 상태",
+   "sql": "# --- 전체 ---\n\n$ ./gradlew test\n\n카페 키오스크 ... 13 tests\n주문 ... 5 tests\n할인 계산 ... 7 tests\n상품 타입 ... 5 tests   (파라미터화)\n상품 ... 4 tests        (파라미터화)\n재고 ... 2 tests        (동적)\n주문 상태 ... 5 tests    (동적)\nProductOrderResolverTest ... 3 tests\nProductRepositoryTest ... 4 tests\nProductServiceTest ... 3 tests\nOrderServiceTest ... 5 tests\nOrderControllerTest ... 3 tests\nMailServiceTest ... 3 tests\nOrderStatisticsServiceTest ... 2 tests\nOrderStatisticsServiceFakeTest ... 2 tests\nConcurrencyTest ... 1 test\nAsyncTest ... 1 test\n\n68 tests completed\n\nBUILD SUCCESSFUL in 31s\n\n#   54개에서 68개가 됐다\n\n#   24초에서 31초다\n\n# --- 단위와 통합 ---\n\n$ ./gradlew test --tests \"*Test\" \\\n>   --tests CafeKioskTest --tests OrderTest --tests DiscountCalculatorTest \\\n>   --tests ProductTypeTest --tests ProductTest --tests StockTest \\\n>   --tests OrderStatusTest --tests ProductOrderResolverTest \\\n>   --tests MailServiceTest\n\n47 tests completed\n\nBUILD SUCCESSFUL in 2s\n\n#   47개가 2초다\n\n#   나머지 21개가 29초다\n\n#   5.8절의 피라미드가 유지되고 있다\n\n# --- 미룬 여섯을 확인 ---\n\n#   4.3절: then 에 단언이 여덟\n\n$ awk '/@Test/{c=0} /assertThat|softly.assertThat/{c++} \\\n>   /^    }$/{if(c>3) print FILENAME\": \"c}' src/test/java/**/*.java\n\n(결과 없음)\n\n#   단언이 넷 넘는 테스트가 없다\n\n#   1.4절: 프로덕션의 테스트 전용 코드\n\n$ grep -rn \"VisibleForTesting\\|System.getProperty(\\\"test\" src/main/java/\n\n(결과 없음)\n\n#   2.2절: 큰 @BeforeEach\n\n$ awk '/@BeforeEach/{f=1;c=0} f&&/^    }$/{if(c>5) print FILENAME\": \"c; f=0} \\\n>   f{c++}' src/test/java/**/*.java\n\n(결과 없음)\n\n#   여섯 줄 넘는 @BeforeEach 가 없다\n\n#   5.9절: deleteAll\n\n$ grep -rn \"deleteAll()\" src/test/java/\n\n(결과 없음)\n\n#   전부 deleteAllInBatch 다\n\n#   2.6절: 시간과 랜덤\n\n$ grep -rn \"LocalDateTime.now()\\|new Random()\\|UUID.randomUUID()\" src/test/java/\n\n(결과 없음)\n\n#   2.1절: 반복 가능\n\n$ for i in $(seq 1 20); do ./gradlew test --rerun-tasks -q || echo \"FAIL $i\"; done\n\n(FAIL 없음)\n\n#   여섯이 다 갚였다\n\n# --- 설계 신호 셋의 결과 ---\n\n$ ls src/main/java/sample/cafekiosk/\n\ndomain/\n  order/OrderNumberGenerator.java     7.9절에서 생겼다\n  product/ProductOrderResolver.java   7.4절에서 생겼다\nclient/\n  mail/MailSendClient.java            6.8절에서 생겼다\n\n#   테스트를 짜다 클래스 셋이 생겼다\n\n#   전부 인터페이스이거나 순수 함수다\n\n#   그리고 전부 프로덕션도 쓴다  (7.3절의 기준)\n\n# --- 다음 장에서 ---\n\n#   31초를 어디까지 줄일지 정한다",
+   "note": "**54개가 68개, 24초가 31초**다.\n\n**단위 47개가 2초, 나머지 21개가 29초**다. **5.8절의 피라미드가** 유지된다.\n\n**미룬 여섯을 `grep` 과 반복 실행으로 다** 확인했다. **단언 넷 넘는 테스트도, 큰 `@BeforeEach` 도, `deleteAll` 도, `now()` 도** 없다.\n\n**테스트를 짜다 클래스 셋이** 생겼다. **전부 인터페이스이거나 순수 함수**이고 **전부 프로덕션도** 쓴다."
+  }
+ ],
+ "recap": [
+  "**앞에서 미룬 여섯을 이 장이 다** 갚았다.",
+  "**조언 열하나**를 한 줄씩 정리했다.",
+  "**설계 신호 셋이 다 같은 뜻**이다 — 두 가지 일을 한다.",
+  "**7.4절에서 나누니 27초가 1초가 되고 버그가** 나왔다.",
+  "**테스트가 느리면 설계를, 자주 깨지면 결합을** 의심한다.",
+  "**만능은 아니다** — 7.3절이 선을 그었다.",
+  "**54개가 68개, 24초가 31초**다.",
+  "**단위 47개가 2초, 나머지 21개가 29초**다.",
+  "**테스트를 짜다 클래스 셋이** 생겼다."
+ ],
+ "drills": [
+  {
+   "task": "미룬 빚 목록을 자기 프로젝트에 만든다.",
+   "done_when": "이름을 붙였다.",
+   "minutes": 20
+  },
+  {
+   "task": "`grep` 으로 여섯을 점검한다.",
+   "done_when": "몇 개가 남았는지 셌다.",
+   "minutes": 25
+  },
+  {
+   "task": "단위와 통합 시간을 나눠 잰다.",
+   "done_when": "비율을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "설계 신호 셋이 있는지 찾는다.",
+   "done_when": "하나를 골라 나눠 봤다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "7장이 갚은 여섯은?",
+   "a": "4.3, 1.4, 2.2, 5.9, 2.6, 2.1 절에서 미룬 것들이다."
+  },
+  {
+   "q": "설계 신호 셋은?",
+   "a": "스파이를 쓰고 싶다, `private` 을 테스트하고 싶다, given 이 스무 줄이다."
+  },
+  {
+   "q": "셋이 뜻하는 것은?",
+   "a": "그 클래스가 한 가지 이상을 하고 있다는 것이다."
+  },
+  {
+   "q": "테스트가 만능인가?",
+   "a": "아니다. 테스트하기 좋은 설계가 항상 좋은 설계는 아니다."
+  },
+  {
+   "q": "8장이 다루는 것은?",
+   "a": "개별이 아니라 전체 시간이다. 컨텍스트, 프로파일, 컨테이너, 병렬, CI 다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

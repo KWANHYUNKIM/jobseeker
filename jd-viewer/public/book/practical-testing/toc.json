@@ -499,7 +499,7 @@
           "title": "가끔 깨지는 테스트",
           "summary": "가장 나쁜 테스트.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.12",
@@ -507,7 +507,7 @@
           "title": "정리",
           "summary": "열한 가지 조언.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
