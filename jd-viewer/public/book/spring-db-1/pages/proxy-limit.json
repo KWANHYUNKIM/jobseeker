@@ -1,0 +1,174 @@
+{
+ "book": "spring-db-1",
+ "id": "proxy-limit",
+ "no": "5.9",
+ "chapter": 5,
+ "title": "프록시의 한계",
+ "summary": "내부 호출은 트랜잭션이 안 걸린다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "내부 호출에 AOP 가 안 걸리는 이유를 안다.",
+  "해결 방법 셋을 안다.",
+  "왜 이것이 다른 애너테이션에도 적용되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "5.7절에서 셋을 꼽았다.\n\n> 안 걸리는 경우 — **`new` 로 만들기 · 내부 호출 · `private`**\n\n**둘째가 제일 자주 걸린다.** 코드가 멀쩡해 보이기 때문이다."
+  },
+  {
+   "type": "figure",
+   "caption": "this 는 프록시가 아니다",
+   "ascii": "   external call\n   -------------\n   caller  ->  proxy.external()\n                    |\n                    +--> transaction starts\n                    +--> target.external()\n\n   internal call\n   -------------\n   caller  ->  proxy.external()\n                    |\n                    +--> transaction starts\n                    +--> target.external()\n                              |\n                              +--> this.internal()\n                                        |\n                                        +--> proxy is not involved\n\n   this 는 프록시가 아니라 진짜 객체다",
+   "note": "**프록시를 안 거치면 아무 일도 안 일어난다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "안 걸리는 코드",
+   "code": "@Slf4j\npublic class CallService {\n\n    public void external() {\n        log.info(\"call external\");\n        printTxInfo();\n        internal();          // this.internal() 이다\n    }\n\n    @Transactional\n    public void internal() {\n        log.info(\"call internal\");\n        printTxInfo();\n    }\n\n    private void printTxInfo() {\n        boolean txActive = TransactionSynchronizationManager.isActualTransactionActive();\n        log.info(\"tx active={}\", txActive);\n    }\n}",
+   "note": "**`internal()` 은 사실 `this.internal()`** 이다. 자바가 생략을 허용할 뿐이다.\n\n**`this` 는 진짜 객체**다 — 프록시는 `target` 을 들고 있고, **`target` 안에서 `this` 는 자기 자신**이다.\n\n**`isActualTransactionActive()`** 로 확인한다. 5.3절의 `ThreadLocal` 을 들여다보는 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 프록시가 못 끼어드나",
+   "md": "**프록시는 바깥에서만 감쌀 수 있다.**\n\n```\ncaller  ->  proxy  ->  target\n                        |\n                        +--> this.internal()   프록시를 지나칠 방법이 없다\n```\n\n**`target` 은 프록시의 존재를 모른다.** 자기를 감싸고 있는 것이 있다는 것을 알 수도 없다.\n\n**자바의 메서드 호출**이 그렇다. `this.internal()` 은 **가상 메서드 테이블을 타고 자기 클래스의 메서드**로 간다. **중간에 아무도 못 낀다.**\n\n**「MVC 2편」에서 본 그 구조의 한계**다.\n\n> 8.7절: **AOP 는 메서드 호출을 가로챈다.**\n\n**\"호출\" 을 가로채는 것**이라, **호출이 밖에서 안 오면** 가로챌 것이 없다.\n\n**5.7절의 커넥션 프록시(3.2절)와 비교**하면 차이가 보인다. 거기는 **`con.close()` 를 부르는 쪽이 항상 밖**이라 문제가 없었다."
+  },
+  {
+   "type": "table",
+   "caption": "해결 방법 셋",
+   "note": "**첫째가 정석**이다. 나머지는 사정이 있을 때.",
+   "columns": [
+    "",
+    "어떻게",
+    "대가"
+   ],
+   "rows": [
+    [
+     "**클래스를 나눈다**",
+     "`internal` 을 다른 빈으로",
+     "클래스가 는다"
+    ],
+    [
+     "**자기를 주입받는다**",
+     "`@Autowired` 로 프록시를",
+     "순환 참조. 헷갈린다"
+    ],
+    [
+     "`AopContext`",
+     "`currentProxy()` 로 꺼낸다",
+     "설정 필요. 권하지 않는다"
+    ]
+   ]
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "정석 — 클래스를 나눈다",
+   "code": "@RequiredArgsConstructor\npublic class CallService {\n\n    private final InternalService internalService;\n\n    public void external() {\n        internalService.internal();   // 다른 빈이라 프록시를 거친다\n    }\n}\n\npublic class InternalService {\n    @Transactional\n    public void internal() { ... }\n}",
+   "note": "**다른 빈이니 주입받은 것이 프록시**다. 5.7절에서 본 그것.\n\n**클래스가 하나 늘지만** 구조가 명확해진다.\n\n**\"트랜잭션이 필요한 단위\" 가 클래스로 드러난다** — 4.11절에서 서비스가 트랜잭션 경계라고 한 것과 같은 방향이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "왜 이것이 자주 나오나",
+   "md": "**리팩터링하다 생긴다.**\n\n```java\n// 처음\n@Transactional\npublic void order() {\n    validate();\n    save();\n    notify();\n}\n\n// 나중에 - notify 를 재사용하려고 public 으로 빼고 애너테이션을 붙였다\n@Transactional\npublic void order() {\n    ...\n    notify();          // 여전히 내부 호출\n}\n\n@Transactional(propagation = REQUIRES_NEW)\npublic void notify() { ... }   // 안 걸린다\n```\n\n**`REQUIRES_NEW` 로 분리하려던 의도가 무시**된다. **바깥 트랜잭션에 그냥 포함**된다.\n\n**\"알림 실패가 주문을 롤백시키면 안 된다\"** 는 요구였는데 **그대로 롤백**된다 — 5.4절의 `rollback-only` 문제까지 온다.\n\n**그리고 오류가 안 난다.** 로그를 보지 않으면 **몇 달 뒤 사고**로 발견한다.\n\n> **`@Async` 도 같다.** 내부 호출하면 **비동기가 안 되고 그냥 동기로** 실행된다. **`@Cacheable` 은 캐시를 안 탄다.**\n\n**5.7절에서 나열한 애너테이션 전부**가 이 한계를 공유한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "확인하는 법",
+   "md": "**로그를 켜 두는 것이 가장 빠르다.**\n\n```properties\nlogging.level.org.springframework.transaction.interceptor=TRACE\n```\n\n**메서드마다 트랜잭션 진입·종료가 찍힌다.**\n\n```\nGetting transaction for [CallService.external]\nCompleting transaction for [CallService.external]\n```\n\n**`internal` 이 안 나오면** 안 걸린 것이다.\n\n**코드로 확인**하려면\n\n```java\nTransactionSynchronizationManager.isActualTransactionActive();\nTransactionSynchronizationManager.isCurrentTransactionReadOnly();\nTransactionSynchronizationManager.getCurrentTransactionName();\n```\n\n**세 번째가 유용**하다 — **어느 메서드가 트랜잭션을 열었는지** 알려 준다.\n\n**테스트로 못 박아 두는 방법**도 있다.\n\n```java\n@Test\nvoid internalMustBeSeparate() {\n    // REQUIRES_NEW 가 실제로 별도 트랜잭션인지 검증\n}\n```\n\n> **1.1절에서 로그를 강조한 이유**가 5장 내내 이어진다. **코드에서 사라진 것은 로그에만 남는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 외부 호출 - 걸린다\ncallService.internal();\n\n#   Creating new transaction with name [CallService.internal]\n#   Acquired Connection [conn0] for JDBC transaction\n#   call internal\n#   tx active=true\n#   Initiating transaction commit\n\n# 내부 호출 - 안 걸린다\ncallService.external();\n\n#   call external\n#   tx active=false\n#   call internal\n#   tx active=false          <- @Transactional 이 붙어 있는데도\n\n#   (Creating new transaction 로그가 하나도 없다)\n\n# 클래스를 나누면\ncallService.external();\n\n#   call external\n#   tx active=false\n#   Creating new transaction with name [InternalService.internal]\n#   Acquired Connection [conn0]\n#   call internal\n#   tx active=true\n#   Initiating transaction commit\n\n# 실제 사고 - REQUIRES_NEW 가 무시된다\n@Transactional\npublic void order() {\n    orderRepository.save(order);\n    notify();                      // 내부 호출\n}\n\n@Transactional(propagation = REQUIRES_NEW)\npublic void notify() {\n    throw new RuntimeException(\"알림 실패\");\n}\n\n#   Creating new transaction with name [OrderService.order]\n#     insert into orders ...\n#   (notify 에 대한 트랜잭션 로그 없음)\n#   Initiating transaction rollback\n\n# 주문까지 롤백됐다",
+   "note": "**둘째 로그에 `Creating new transaction` 이 하나도 없다.** `@Transactional` 이 코드에 보이는데도 그렇다 — **5.7절에서 말한 그 증거**다.\n\n**`tx active=false` 가 두 번** 찍혔다. `internal` 안에서도 트랜잭션이 없다.\n\n**맨 아래가 실무의 사고**다. `REQUIRES_NEW` 로 분리하려 했는데 **`notify` 의 트랜잭션 로그가 아예 없고**, 예외가 바깥으로 올라가 **주문까지 롤백**됐다.\n\n**의도와 정반대**다. 그리고 **컴파일도 되고 예외도 안 난다.**"
+  }
+ ],
+ "recap": [
+  "**`internal()` 은 `this.internal()`** 이다 — 프록시를 안 거친다.",
+  "**`target` 은 프록시의 존재를 모른다.**",
+  "**프록시는 바깥에서만** 감쌀 수 있다.",
+  "**\"호출\" 을 가로채는 것**이라 호출이 밖에서 안 오면 못 낀다.",
+  "해결 셋 — **클래스 분리 · 자기 주입 · `AopContext`**.",
+  "**클래스를 나누는 것이 정석**이다.",
+  "**리팩터링하다 생긴다** — `REQUIRES_NEW` 가 무시되는 사고.",
+  "**의도와 정반대가 되고 오류도 안 난다.**",
+  "**`@Async`·`@Cacheable` 도 같은 한계**를 공유한다.",
+  "**로그를 켜 두는 것이 가장 빠른 확인법**이다.",
+  "**`getCurrentTransactionName()`** 으로 어느 메서드가 열었는지 안다."
+ ],
+ "drills": [
+  {
+   "task": "`external` 과 `internal` 을 만들고 각각 호출한다.",
+   "done_when": "내부 호출에서 `tx active=false` 인 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "트랜잭션 인터셉터 로그를 TRACE 로 켠다.",
+   "done_when": "메서드별 진입·종료를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "클래스를 나눠서 고친다.",
+   "done_when": "`tx active=true` 가 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`REQUIRES_NEW` 를 내부 호출로 부른다.",
+   "done_when": "무시되고 같이 롤백되는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`@Async` 를 내부 호출해 본다.",
+   "done_when": "동기로 실행되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "내부 호출에 왜 AOP 가 안 걸리나?",
+   "a": "`this.internal()` 은 진짜 객체의 메서드를 직접 부르므로 프록시를 지나가지 않는다."
+  },
+  {
+   "q": "정석적인 해결은?",
+   "a": "클래스를 나눠 다른 빈으로 만드는 것이다. 주입받은 것이 프록시라 걸린다."
+  },
+  {
+   "q": "왜 리팩터링 중에 생기나?",
+   "a": "메서드를 `public` 으로 빼고 애너테이션을 붙여도 호출 방식이 그대로면 안 걸린다."
+  },
+  {
+   "q": "`REQUIRES_NEW` 를 내부 호출하면?",
+   "a": "무시되고 바깥 트랜잭션에 포함된다. 실패하면 바깥까지 롤백된다."
+  },
+  {
+   "q": "다른 애너테이션도 같은가?",
+   "a": "같다. `@Async` 는 동기로 실행되고 `@Cacheable` 은 캐시를 안 탄다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내부 호출",
+   "en": "self-invocation",
+   "what": "같은 객체 안에서 자기 메서드를 부르는 것. 프록시를 거치지 않는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

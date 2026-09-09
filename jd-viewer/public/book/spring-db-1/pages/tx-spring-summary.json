@@ -1,0 +1,124 @@
+{
+ "book": "spring-db-1",
+ "id": "tx-spring-summary",
+ "no": "5.11",
+ "chapter": 5,
+ "title": "정리",
+ "summary": "네 문제가 각각 어디서 풀렸나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "5장의 진행을 정리한다.",
+  "무엇이 남았는지 안다.",
+  "6장이 왜 자바 이야기인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "다섯 단계",
+   "ascii": "   4.7   Connection, setAutoCommit, commit, rollback, close\n   5.2   PlatformTransactionManager                   problem 1\n   5.3   ThreadLocal                                  problem 2\n   5.5   the Connection parameter is gone             problem 2\n   5.6   TransactionTemplate                          problem 3\n   5.8   @Transactional                               problems 1 and 4\n\n   what is left in the service\n   ---------------------------\n   the repository field\n   @Transactional\n   throws SQLException          <-- chapters 6 and 7",
+   "note": "**`throws SQLException` 하나가 남았다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5장이 반복한 것",
+   "md": "**매 절이 하나씩 감췄다.**\n\n| | 감춘 것 | 대신 나타난 것 |\n|---|---|---|\n| 5.2 | JDBC API | `PlatformTransactionManager` |\n| 5.3 | 커넥션 전달 | `ThreadLocal` |\n| 5.6 | `try-catch` | 람다 |\n| 5.8 | 나머지 전부 | **애너테이션** |\n\n**서가에서 반복해서 본 그 교환**이다.\n\n> **자동화의 대가는 동작이 선언 뒤로 숨는 것**이다 — 「MVC 2편」에서 네 번 나왔다.\n\n**5.9절이 그 대가를 정면으로** 보여 줬다. **내부 호출에서 조용히 사라진다.**\n\n**그런데 대가를 치를 만하다.**\n\n```\n4.7:  업무 5 줄 + 트랜잭션 16 줄\n5.8:  업무 5 줄 + 애너테이션 1 줄\n```\n\n**업무 로직이 4.6절 이후로 한 번도 안 바뀌었다**는 것이 이 장의 요점이다. **트랜잭션을 붙이든 떼든 업무는 그대로**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "로그는 하나도 안 바뀌었다",
+   "md": "**4.7절부터 5.8절까지 DB 에 가는 것이 같다.**\n\n```\nSET AUTOCOMMIT FALSE\nselect ... select ... update ... update ...\nCOMMIT\n```\n\n**스프링이 자기 말로 로그를 더 남길 뿐**이다.\n\n```\nCreating new transaction with name [...]\nAcquired Connection [conn0] for JDBC transaction\nSwitching JDBC Connection [conn0] to manual commit\n  ...\nInitiating transaction commit\nCommitting JDBC transaction on Connection [conn0]\nReleasing JDBC Connection [conn0] after transaction\n```\n\n**일곱 줄이 위 세 줄**이다.\n\n**「MVC 2편」에서 여러 번 본 성격의 장**이다.\n\n> 5.11절: **응답이 바뀐 것은 V2 와 V3 뿐**이고 나머지는 코드 정리였다.\n\n**여기는 아예 하나도 안 바뀌었다.** 4장에서 이미 맞는 SQL 을 만들었고, **5장은 자바 코드만** 정리했다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "5장이 감춰도 남는 것",
+   "md": "**4.12절에서 꼽은 넷**을 다시 본다.\n\n**1. 트랜잭션은 커넥션 단위다**\n\n`@Transactional` 이 붙어도 **커넥션 하나**를 잡는다. `REQUIRES_NEW` 는 **커넥션이 둘**이고 **풀을 두 배** 쓴다(5.4절).\n\n**2. 락은 트랜잭션과 함께 풀린다**\n\n**`@Transactional` 이 길면 락이 길다.** 애너테이션 하나라 **범위를 신경 안 쓰기 쉬운데**, 4.1절의 그 문제가 그대로다.\n\n**3. 조회한 값은 낡을 수 있다**\n\n**갱신 손실**(4.10절)은 트랜잭션이 있어도 난다.\n\n**4. 롤백은 DB 안의 것만**\n\n**파일·메일·API 는 안 돌아온다**(4.5절).\n\n**여기에 5장이 셋을 더한다.**\n\n| | |\n|---|---|\n| **프록시를 거쳐야** 걸린다 | 5.7·5.9절 |\n| **체크 예외는 커밋**된다 | 5.6절 |\n| **`readOnly` 는 기술마다 다르다** | 5.8절 |\n\n**일곱 개가 `@Transactional` 뒤에 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "6장이 왜 자바 이야기인가",
+   "md": "**서비스에 남은 것**\n\n```java\npublic void accountTransfer(...) throws SQLException\n```\n\n**5.1절의 첫 문제가 완전히 안 끝났다.** JDBC API 는 사라졌는데 **JDBC 예외가 남았다.**\n\n**왜 안 사라지나** — **체크 예외**라서다.\n\n```java\n// 리포지토리\npublic Member findById(String id) throws SQLException\n\n// 서비스가 부르면\npublic void accountTransfer(...) throws SQLException   // 어쩔 수 없다\n\n// 컨트롤러가 부르면\npublic String transfer(...) throws SQLException        // 여기까지\n```\n\n**컴파일러가 강제**한다. 잡거나 던지거나.\n\n**던지면 위로 번지고**, **잡으면 할 것이 없다** — 컨트롤러가 `SQLException` 을 어떻게 복구하나.\n\n**이것을 이해하려면 자바의 예외 규칙**을 알아야 한다. **6장이 그것**이고, **7장에서 스프링의 해법**을 본다.\n\n> **1.1절에서 말한 두 번째 주제**다.\n>\n> **`SQLException` 은 체크 예외라 `throws` 가 위로 번진다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그 — 5장의 결과",
+   "sql": "# 4.7 절 - 손으로\n#   자바: getConnection, setAutoCommit(false), try, commit,\n#         catch, rollback, finally, release   (16 줄)\n#   로그:\nSET AUTOCOMMIT FALSE\nselect ... select ... update ... update ...\nCOMMIT\n\n# 5.8 절 - 애너테이션\n#   자바: @Transactional   (1 줄)\n#   로그:\nSET AUTOCOMMIT FALSE\nselect ... select ... update ... update ...\nCOMMIT\n\n# DB 에 가는 것이 완전히 같다\n\n# 스프링 로그만 더 있다\n#   Creating new transaction with name [MemberServiceV3_3.accountTransfer]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 서비스에 남은 것\npublic void accountTransfer(String fromId, String toId, int money)\n        throws SQLException {          <- 6·7 장이 없앤다\n    Member fromMember = memberRepository.findById(fromId);\n    ...\n}",
+   "note": "**같은 로그를 두 번 실었다.** 4.7절과 5.8절의 DB 로그가 **한 글자도 안 다르다.**\n\n**바뀐 것은 자바 코드 열여섯 줄**이다.\n\n**스프링 로그가 여섯 줄 더** 붙었는데, **그것이 감춘 것을 설명**한다. 코드에서 사라진 `getConnection` 이 `Acquired Connection` 으로, `setAutoCommit(false)` 가 `Switching to manual commit` 으로 남았다.\n\n**맨 아래가 6장의 시작점**이다. **`throws SQLException` 하나** 때문에 서비스가 여전히 JDBC 를 안다."
+  }
+ ],
+ "recap": [
+  "**매 절이 하나씩 감췄다** — API · 커넥션 전달 · `try-catch` · 나머지.",
+  "**서가에서 반복된 그 교환**이다.",
+  "**5.9절이 대가를 정면으로** 보여 줬다.",
+  "**업무 로직은 4.6절 이후로 한 번도 안 바뀌었다.**",
+  "**DB 로그는 4.7절부터 하나도 안 바뀌었다.**",
+  "**스프링이 자기 말로 더 남길 뿐**이다.",
+  "4장이 남긴 넷 — **커넥션 단위 · 락 시간 · 낡은 값 · 롤백 범위**.",
+  "5장이 더한 셋 — **프록시 · 체크 예외 커밋 · `readOnly`**.",
+  "**일곱 개가 애너테이션 뒤에** 있다.",
+  "**`throws SQLException` 이 남았다** — 체크 예외라 안 사라진다.",
+  "**6장이 자바 예외, 7장이 스프링의 해법**이다."
+ ],
+ "drills": [
+  {
+   "task": "4.7절과 5.8절의 DB 로그를 나란히 놓는다.",
+   "done_when": "같은 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스프링 트랜잭션 로그와 SQL 을 대응시킨다.",
+   "done_when": "어느 줄이 무엇인지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "서비스에서 `throws SQLException` 을 지워 본다.",
+   "done_when": "컴파일이 안 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "일곱 가지 주의점을 각각 한 줄로 적어 본다.",
+   "done_when": "무엇이 애너테이션 뒤에 있는지 말할 수 있다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "5장의 다섯 단계는?",
+   "a": "추상화(5.2), 동기화(5.3), 파라미터 제거(5.5), 템플릿(5.6), 애너테이션(5.8)이다."
+  },
+  {
+   "q": "DB 로그가 얼마나 바뀌었나?",
+   "a": "하나도 안 바뀌었다. 4장에서 이미 맞는 SQL 을 만들었고 5장은 자바 코드만 정리했다."
+  },
+  {
+   "q": "`@Transactional` 뒤에 있는 주의점은?",
+   "a": "커넥션 단위, 락 시간, 낡은 조회값, 롤백 범위, 프록시를 거쳐야 함, 체크 예외 커밋, `readOnly` 의 기술 의존이다."
+  },
+  {
+   "q": "왜 `throws SQLException` 이 안 사라지나?",
+   "a": "체크 예외라 컴파일러가 잡거나 던지도록 강제하기 때문이다."
+  },
+  {
+   "q": "6장이 왜 자바 이야기인가?",
+   "a": "체크 예외의 성질을 알아야 7장의 해법이 이해되기 때문이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

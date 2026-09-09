@@ -1,0 +1,170 @@
+{
+ "book": "spring-db-1",
+ "id": "exception-hierarchy",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "예외 계층",
+ "summary": "Throwable · Error · Exception.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "예외 계층을 안다.",
+  "`Error` 를 왜 안 잡는지 안다.",
+  "체크와 언체크의 경계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장이 남긴 것 하나**를 풀려면 자바로 돌아가야 한다.\n\n> **`throws SQLException` 이 남았다** — 체크 예외라 안 사라진다.\n\n**6장에는 스프링이 안 나온다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "계층",
+   "ascii": "   Object\n     |\n   Throwable\n     |\n     +-- Error                    do not catch\n     |     OutOfMemoryError\n     |     StackOverflowError\n     |\n     +-- Exception                checked\n           |\n           |  IOException\n           |  SQLException\n           |\n           +-- RuntimeException   unchecked\n                 NullPointerException\n                 IllegalArgumentException\n\n   RuntimeException 만 언체크다. 나머지 Exception 은 다 체크다",
+   "note": "**`RuntimeException` 과 그 자식만 언체크**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Error 를 안 잡는 이유",
+   "md": "**애플리케이션이 복구할 수 없는 것**이다.\n\n```\nOutOfMemoryError      힙이 찼다\nStackOverflowError    재귀가 너무 깊다\nNoClassDefFoundError  클래스가 없다\n```\n\n**잡아서 무엇을 하나** — 할 것이 없다. 메모리가 없는데 **로그를 찍으려 해도 실패**할 수 있다.\n\n**그리고 잡으면 더 나쁘다.**\n\n```java\ntry {\n    ...\n} catch (Throwable t) {   // Error 까지 잡힌다\n    log.error(\"오류\", t);\n}\n```\n\n**`OutOfMemoryError` 를 잡고 계속 돌면** 애플리케이션이 **이상한 상태로 살아 있다.** 죽는 편이 낫다 — **재시작하면 정상**이 된다.\n\n**`catch (Throwable)` 을 쓰지 않는다** 가 규칙이다.\n\n**`Exception` 을 잡으면 안전**하다 — `Error` 는 안 잡힌다.\n\n> **「MVC 2편」 9.2절에서 본 그것**이다.\n>\n> **`Exception.class` 를 등록하면 거의 다 잡는다.** 다만 **`Error` 는 안 잡힌다** — 그건 잡아도 할 수 있는 것이 없다."
+  },
+  {
+   "type": "table",
+   "caption": "체크와 언체크",
+   "note": "**컴파일러가 확인하느냐**가 갈림점이다.",
+   "columns": [
+    "",
+    "체크",
+    "언체크"
+   ],
+   "rows": [
+    [
+     "상속",
+     "`Exception`",
+     "`RuntimeException`"
+    ],
+    [
+     "`throws` 선언",
+     "**필수**",
+     "선택"
+    ],
+    [
+     "잡기",
+     "**잡거나 던지거나**",
+     "안 해도 된다"
+    ],
+    [
+     "컴파일",
+     "안 하면 **오류**",
+     "통과"
+    ],
+    [
+     "예",
+     "`IOException` · `SQLException`",
+     "`NPE` · `IllegalArgument`"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름이 헷갈린다",
+   "md": "**`RuntimeException` 이 \"실행 중 예외\"** 라는 뜻이 아니다.\n\n**모든 예외는 실행 중에 난다.** 컴파일 중에 나는 예외는 없다.\n\n**정확한 뜻은 \"컴파일러가 확인하지 않는\"** 이다. 그래서 **언체크(unchecked)** 라고 부르는 편이 낫다.\n\n**`Error` 도 언체크**다. `Exception` 을 안 상속하니 당연하다.\n\n```\n언체크 = RuntimeException 계열 + Error 계열\n체크   = Exception 중 RuntimeException 이 아닌 것\n```\n\n**`Throwable` 을 직접 상속하면** — 체크 예외다. **하지 않는다.**\n\n**커스텀 예외를 만들 때**\n\n```java\npublic class MyException extends RuntimeException { }   // 언체크\npublic class MyException extends Exception { }          // 체크\n```\n\n**한 글자 차이**로 완전히 다른 것이 된다. **6.8절에서 무엇을 고를지** 다룬다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "예외도 상속이 적용된다",
+   "md": "```java\ntry {\n    ...\n} catch (Exception e) {\n    // SQLException 도 여기 걸린다\n}\n```\n\n**부모로 잡으면 자식도 잡힌다.**\n\n**「MVC 2편」에서 세 번 본 규칙**이다.\n\n> 9.2절: **예외 타입은 자식까지 걸린다.**\n> 10.6절: **자식이 우선**이다 — 구체적인 것부터.\n\n**`catch` 를 여러 개 쓰면 위에서부터** 확인한다.\n\n```java\ntry {\n    ...\n} catch (SQLException e) {      // 구체적인 것 먼저\n    ...\n} catch (Exception e) {         // 나머지\n    ...\n}\n```\n\n**순서를 반대로 하면 컴파일 오류**다 — 아래가 **도달할 수 없다.**\n\n```\nunreachable catch block for SQLException.\nIt is already handled by the catch block for Exception\n```\n\n**컴파일러가 잡아 준다.** 「MVC 2편」 10.6절의 `@ExceptionHandler` 는 **런타임에 고르는 것**이라 이 검사가 없었다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 계층 확인\n@Test\nvoid hierarchy() {\n    assertThat(RuntimeException.class.getSuperclass()).isEqualTo(Exception.class);\n    assertThat(Exception.class.getSuperclass()).isEqualTo(Throwable.class);\n    assertThat(Error.class.getSuperclass()).isEqualTo(Throwable.class);\n\n    assertThat(SQLException.class.getSuperclass()).isEqualTo(Exception.class);\n    // SQLException 은 체크 예외다\n}\n\n# 리포지토리가 던지는 것\nrepository.findById(\"nobody\");\n\n#   get connection=HikariProxyConnection@1 wrapping conn0\n#     select * from member where member_id = ?    {1: 'nobody'}\n#   resource close conn0\n#\n# java.util.NoSuchElementException: member not found memberId=nobody\n#   (우리가 만든 것. RuntimeException 의 자식이라 언체크)\n\n# DB 가 죽으면\nrepository.findById(\"memberA\");\n\n#   get connection ... 실패\n#\n# org.springframework.jdbc.CannotGetJdbcConnectionException:\n#   Failed to obtain JDBC Connection\n# Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException:\n#   Connection is broken: \"java.net.ConnectException: Connection refused\"\n\n# JdbcSQLNonTransientConnectionException 은 SQLException 의 자식\n#   -> 체크 예외\n# CannotGetJdbcConnectionException 은 RuntimeException 의 자식\n#   -> 언체크. 7.5 절에서 변환된 것이다",
+   "note": "**`SQLException` 의 부모가 `Exception`** 이다 — `RuntimeException` 이 아니라서 **체크 예외**다. 5.11절에서 안 사라지던 이유가 이 한 줄이다.\n\n**두 번째가 우리가 만든 예외**다. `NoSuchElementException` 은 `RuntimeException` 의 자식이라 **`throws` 를 안 써도 된다** — 2.6절에서 그렇게 만든 이유다.\n\n**맨 아래가 이 책의 목적지**다. **체크 예외를 언체크로 감싼 것**이고, `Caused by` 로 원인이 남아 있다.\n\n**7.5절에서 이 변환을 다룬다.**"
+  }
+ ],
+ "recap": [
+  "**6장에는 스프링이 안 나온다** — 자바 이야기다.",
+  "**`Throwable` 아래에 `Error` 와 `Exception`**.",
+  "**`Error` 는 복구할 수 없다** — 잡으면 더 나쁘다.",
+  "**`catch (Throwable)` 을 쓰지 않는다.**",
+  "**`Exception` 을 잡으면 `Error` 는 안 잡힌다.**",
+  "**`RuntimeException` 과 그 자식만 언체크**다.",
+  "**\"실행 중 예외\" 라는 뜻이 아니다** — 컴파일러가 확인하지 않는다는 뜻.",
+  "**한 글자 차이**로 체크와 언체크가 갈린다.",
+  "**부모로 잡으면 자식도 잡힌다.**",
+  "**`catch` 순서를 반대로 하면 컴파일 오류**다.",
+  "**`SQLException` 의 부모가 `Exception`** 이라 체크 예외다."
+ ],
+ "drills": [
+  {
+   "task": "계층을 테스트로 확인한다.",
+   "done_when": "`SQLException` 이 체크인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`catch (Exception)` 으로 `Error` 를 잡아 본다.",
+   "done_when": "안 잡히는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`catch` 순서를 반대로 써 본다.",
+   "done_when": "컴파일 오류를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`RuntimeException` 과 `Exception` 을 각각 상속한 예외를 만든다.",
+   "done_when": "`throws` 강제 여부가 다른 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "무한 재귀로 `StackOverflowError` 를 낸다.",
+   "done_when": "`catch (Exception)` 으로 안 잡히는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Error` 를 왜 안 잡나?",
+   "a": "복구할 수 없고 잡아서 계속 돌면 이상한 상태로 살아 있게 된다. 죽고 재시작하는 편이 낫다."
+  },
+  {
+   "q": "체크와 언체크의 경계는?",
+   "a": "`RuntimeException` 과 그 자식이 언체크고 나머지 `Exception` 은 체크다."
+  },
+  {
+   "q": "`RuntimeException` 이라는 이름이 왜 헷갈리나?",
+   "a": "모든 예외가 실행 중에 나기 때문이다. 정확한 뜻은 컴파일러가 확인하지 않는다는 것이다."
+  },
+  {
+   "q": "`catch` 순서를 반대로 하면?",
+   "a": "컴파일 오류다. 아래 블록에 도달할 수 없다고 알려 준다."
+  },
+  {
+   "q": "`SQLException` 이 왜 체크인가?",
+   "a": "부모가 `RuntimeException` 이 아니라 `Exception` 이기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "체크 예외",
+   "en": "checked exception",
+   "what": "컴파일러가 처리를 강제하는 예외. `Exception` 중 `RuntimeException` 이 아닌 것."
+  },
+  {
+   "term": "언체크 예외",
+   "en": "unchecked exception",
+   "what": "처리를 강제하지 않는 예외. `RuntimeException` 계열과 `Error` 계열."
+  }
+ ],
+ "sources": [
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

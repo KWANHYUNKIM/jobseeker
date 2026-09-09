@@ -1,0 +1,140 @@
+{
+ "book": "spring-db-1",
+ "id": "boot-auto-config",
+ "no": "5.10",
+ "chapter": 5,
+ "title": "스프링 부트의 자동 등록",
+ "summary": "DataSource 와 매니저를 알아서 만든다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "부트가 무엇을 자동으로 등록하는지 안다.",
+  "직접 만들면 어떻게 되는지 안다.",
+  "언제 직접 만들어야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "설정 두 줄이면 끝",
+   "ascii": "   application.properties\n   ----------------------\n   spring.datasource.url=jdbc:h2:tcp://localhost/~/test\n   spring.datasource.username=sa\n        |\n        v\n   DataSourceAutoConfiguration     ->  HikariDataSource\n   DataSourceTransactionManagerAutoConfiguration\n                                   ->  DataSourceTransactionManager\n        |\n        v\n   both registered as beans\n\n   @ConditionalOnMissingBean\n        |\n        +--> 내가 만들면 부트가 안 만든다",
+   "note": "**3.6절에서 예고한 그것**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "지금까지 만든 것",
+   "code": "@TestConfiguration\nstatic class TestConfig {\n\n    @Bean\n    DataSource dataSource() {\n        return new DriverManagerDataSource(URL, USERNAME, PASSWORD);\n    }\n\n    @Bean\n    PlatformTransactionManager transactionManager() {\n        return new DataSourceTransactionManager(dataSource());\n    }\n\n    @Bean\n    MemberRepositoryV3 memberRepository() {\n        return new MemberRepositoryV3(dataSource());\n    }\n\n    @Bean\n    MemberServiceV3_3 memberService() {\n        return new MemberServiceV3_3(memberRepository());\n    }\n}",
+   "note": "**앞의 둘이 없어도 된다.**\n\n```properties\nspring.datasource.url=jdbc:h2:tcp://localhost/~/test\nspring.datasource.username=sa\nspring.datasource.password=\n```\n\n**부트가 `HikariDataSource` 와 `DataSourceTransactionManager`** 를 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 보고 정하나",
+   "md": "**클래스패스와 설정**이다.\n\n| | 조건 | 만드는 것 |\n|---|---|---|\n| `DataSource` | `spring.datasource.url` 이 있으면 | 풀 라이브러리를 보고 고른다 |\n| 트랜잭션 매니저 | `DataSource` 가 있으면 | `DataSourceTransactionManager` |\n| | **JPA 가 있으면** | **`JpaTransactionManager`** |\n\n**풀도 클래스패스를 본다.**\n\n```\nHikariCP 가 있으면      ->  HikariDataSource   (starter-jdbc 의 기본)\n없고 Tomcat JDBC 가     ->  그것\n없고 Commons DBCP2 가   ->  그것\n```\n\n**`@ConditionalOnMissingBean`** 이 핵심이다.\n\n> **내가 만들면 부트가 안 만든다.**\n\n**「MVC 2편」 9.6절에서 본 그것**이다 — `BasicErrorController` 도 같은 방식이었다.\n\n**그래서 하나만 만들면 위험**하다.\n\n```java\n@Bean\nDataSource dataSource() { ... }   // 직접 만들었다\n// 트랜잭션 매니저는 부트가 만든다 - 내 DataSource 를 쓴다\n```\n\n**이건 괜찮다.** 그런데 **`DataSource` 가 둘**이면 부트가 **어느 것을 쓸지 모른다** — `@Primary` 가 필요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JPA 를 넣으면 매니저가 바뀐다",
+   "md": "```gradle\nimplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n```\n\n**의존성 하나 넣었을 뿐인데** 트랜잭션 매니저가 **`JpaTransactionManager`** 로 바뀐다.\n\n**대부분 문제가 없다.** `JpaTransactionManager` 는 **`DataSource` 도 같이 관리**한다 — JDBC 와 JPA 를 섞어 써도 **같은 트랜잭션**이다(2.3절).\n\n**문제는 반대다.**\n\n```java\n@Bean\nPlatformTransactionManager transactionManager(DataSource ds) {\n    return new DataSourceTransactionManager(ds);   // 직접 만들었다\n}\n```\n\n**JPA 를 쓰는데 JDBC 매니저**를 등록하면 — **JPA 의 영속성 컨텍스트가 트랜잭션에 안 묶인다.** 플러시가 안 되거나 지연 로딩이 실패한다.\n\n**직접 만들 이유가 없으면 안 만든다.**\n\n> **1.2절에서 \"JPA 를 배운 사람이 이 책을 봐야 하는 이유\"** 라고 한 것에 하나 더한다. **JPA 를 쓰는데 이 책의 코드를 그대로 옮기면 깨진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "직접 만들어야 하는 경우",
+   "md": "**셋 정도**다.\n\n**1. `DataSource` 가 여럿**\n\n3.6절에서 말한 것 — **읽기 전용 복제본**, 멀티 테넌시.\n\n```java\n@Bean @Primary\nDataSource writeDataSource() { ... }\n\n@Bean\nDataSource readDataSource() { ... }\n```\n\n**트랜잭션 매니저도 각각** 필요하고, **`@Transactional(\"readTxManager\")`** 로 고른다.\n\n**2. 프록시로 감싸야 할 때**\n\n```java\n@Bean\nDataSource dataSource(DataSource actual) {\n    return new LazyConnectionDataSourceProxy(actual);   // 3.3절\n}\n```\n\n**3. 설정을 코드로 해야 할 때**\n\n**환경마다 다른 것을 프로퍼티로 표현하기 어려울 때**다. 대개는 프로파일로 푼다.\n\n**그 외에는 안 만든다.** 부트의 자동 설정이 **모니터링·메트릭·헬스체크까지** 붙여 준다 — 직접 만들면 그것들이 사라진다.\n\n> **액추에이터의 `/actuator/health` 가 DB 를 확인**하고, **커넥션 풀 메트릭**(3.5절의 `waiting`)도 자동으로 노출된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 커넥션 로그",
+   "sql": "# 설정만 두고 빈을 안 만들면\n# application.properties\n#   spring.datasource.url=jdbc:h2:tcp://localhost/~/test\n#   spring.datasource.username=sa\n\n@Test\nvoid checkAutoConfig() {\n    log.info(\"dataSource={}\", dataSource.getClass());\n    log.info(\"txManager={}\", transactionManager.getClass());\n}\n\n#   dataSource=class com.zaxxer.hikari.HikariDataSource\n#   txManager=class org.springframework.jdbc.support.JdbcTransactionManager\n\n# 부트 3 부터는 JdbcTransactionManager 다\n# DataSourceTransactionManager 의 자식이고 예외 변환을 더 한다 (7.5 절)\n\nservice.accountTransfer(\"memberA\", \"memberB\", 2000);\n\n#   Creating new transaction with name [MemberServiceV3_3.accountTransfer]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Switching JDBC Connection [conn0] to manual commit\n#     select ... select ... update ... update ...\n#   Initiating transaction commit\n#   Releasing JDBC Connection [conn0] after transaction\n\n# 5.8 절과 로그가 같다\n\n# JPA 를 추가하면\n#   txManager=class org.springframework.orm.jpa.JpaTransactionManager\n\n# 의존성 하나로 바뀐다",
+   "note": "**`JdbcTransactionManager`** 가 나온다 — 5.2절 표의 마지막 줄이다. **부트 3 부터의 기본**이고 `DataSourceTransactionManager` 의 자식이다.\n\n**무엇이 다른가** — **예외를 스프링 예외로 변환**한다. 7.5절에서 다룰 것을 트랜잭션 매니저 수준에서도 한다.\n\n**로그가 5.8절과 같다.** 빈을 우리가 만들든 부트가 만들든 **동작이 같다.**\n\n**맨 아래가 이 절의 주의점**이다. **의존성 하나로 매니저가 바뀐다** — 우리 코드는 그대로인데."
+  }
+ ],
+ "recap": [
+  "**설정 두 줄이면 `DataSource` 와 매니저**를 만들어 준다.",
+  "**클래스패스와 설정을 보고** 정한다.",
+  "**풀도 클래스패스 순서**로 고른다 — HikariCP 가 기본.",
+  "**`@ConditionalOnMissingBean`** — 내가 만들면 부트가 안 만든다.",
+  "**「MVC 2편」 9.6절의 `BasicErrorController` 와 같은 방식**이다.",
+  "**JPA 를 넣으면 `JpaTransactionManager`** 로 바뀐다.",
+  "**JDBC 매니저를 직접 등록하면 JPA 가 깨진다.**",
+  "**부트 3 부터는 `JdbcTransactionManager`** 가 기본이다.",
+  "직접 만들 경우 셋 — **`DataSource` 여럿 · 프록시 · 코드 설정**.",
+  "**직접 만들면 모니터링·메트릭이 사라진다.**"
+ ],
+ "drills": [
+  {
+   "task": "빈 등록을 지우고 프로퍼티만 남긴다.",
+   "done_when": "그대로 동작하는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`dataSource.getClass()` 와 매니저 클래스를 찍는다.",
+   "done_when": "무엇이 등록됐는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`DataSource` 빈을 직접 만든다.",
+   "done_when": "부트가 안 만드는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "JPA 의존성을 추가하고 매니저를 다시 찍는다.",
+   "done_when": "바뀌는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`/actuator/health` 를 열어 본다.",
+   "done_when": "DB 상태가 나오는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트가 무엇을 보고 빈을 만드나?",
+   "a": "클래스패스에 무엇이 있는지와 `spring.datasource.*` 설정이다."
+  },
+  {
+   "q": "`@ConditionalOnMissingBean` 은?",
+   "a": "내가 같은 타입의 빈을 만들면 부트가 안 만든다."
+  },
+  {
+   "q": "JPA 를 넣으면 무엇이 바뀌나?",
+   "a": "트랜잭션 매니저가 `JpaTransactionManager` 로 바뀐다. `DataSource` 도 같이 관리한다."
+  },
+  {
+   "q": "JPA 를 쓰는데 JDBC 매니저를 등록하면?",
+   "a": "영속성 컨텍스트가 트랜잭션에 안 묶여 플러시나 지연 로딩이 실패한다."
+  },
+  {
+   "q": "직접 만들면 무엇을 잃나?",
+   "a": "부트가 붙여 주는 헬스체크·메트릭 같은 것들이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 설정",
+   "en": "auto-configuration",
+   "what": "클래스패스와 설정을 보고 빈을 자동으로 등록하는 부트의 기능."
+  },
+  {
+   "term": "JdbcTransactionManager",
+   "en": "",
+   "what": "부트 3 의 기본 JDBC 트랜잭션 매니저. 예외 변환을 더 한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 1편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

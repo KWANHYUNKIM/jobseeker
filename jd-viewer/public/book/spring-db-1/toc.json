@@ -400,7 +400,7 @@
           "title": "프록시의 한계",
           "summary": "내부 호출은 트랜잭션이 안 걸린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.10",
@@ -408,7 +408,7 @@
           "title": "스프링 부트의 자동 등록",
           "summary": "DataSource 와 매니저를 알아서 만든다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.11",
@@ -416,7 +416,7 @@
           "title": "정리",
           "summary": "네 문제가 각각 어디서 풀렸나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -431,7 +431,7 @@
           "title": "예외 계층",
           "summary": "Throwable · Error · Exception.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
