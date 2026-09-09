@@ -159,7 +159,7 @@
           "title": "기억하기 인증",
           "summary": "쿠키에 뭐가 담기나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -167,7 +167,7 @@
           "title": "RememberMeAuthenticationFilter",
           "summary": "토큰 두 방식.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -175,7 +175,7 @@
           "title": "익명 인증",
           "summary": "인증 안 된 것과 익명은 다르다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.8",
@@ -183,7 +183,7 @@
           "title": "로그아웃",
           "summary": "무엇을 지우나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.9",

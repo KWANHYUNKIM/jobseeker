@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "remember-me",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "기억하기 인증",
+ "summary": "쿠키에 뭐가 담기나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿠키 안을 열어 본다.",
+  "비밀번호가 서명에 들어가는 이유를 안다.",
+  "세션과 수명이 다른 것을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**브라우저를 닫으면 `JSESSIONID` 가** 사라진다. **그래도 로그인이 남아 있는 사이트가** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "쿠키가 들고 있는 것",
+   "ascii": "   what the remember-me cookie carries\n\n   base64( username : expiryTime : algorithm : signature )\n\n   signature = hash( username : expiryTime : password : key )\n\n   the password is inside the hash, not inside the cookie\n   change the password and every old cookie stops matching",
+   "note": "**비밀번호는 쿠키가 아니라 해시 안에** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "한 줄로 켠다",
+   "md": "```java\nhttp.rememberMe(r -> r\n        .key(\"my-secret-key\")\n        .tokenValiditySeconds(1209600)          // 14일\n        .rememberMeParameter(\"remember-me\")\n        .rememberMeCookieName(\"remember-me\")\n        .alwaysRemember(false));\n```\n\n> **필터가 하나 늘고 로그인 폼에 체크박스 하나가** 필요하다.\n>\n> ```html\n> <input type=\"checkbox\" name=\"remember-me\"> 로그인 유지\n> ```\n\n**`key` 를 안 주면**\n\n> **기동할 때마다 무작위로** 만든다.\n> **재시작하면 어제 쿠키가 다 죽는다.**\n> **여러 대로 띄우면 서로 다른 키라 반쪽만** 산다.\n>\n> **운영에서는 반드시 고정한다** — **그리고 소스에 안** 박는다.\n\n**`alwaysRemember(true)` 면 체크박스 없이도** 항상이다.\n\n> **편하지만 사용자가 고를 수** 없다.\n> **공용 PC 를 생각하면 기본값이 `false` 인 게** 맞다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 브라우저의 세 가지 수명",
+   "ascii": "   three lifetimes on one browser\n\n   JSESSIONID     until the browser closes\n   session on the server   30 min of silence\n   remember-me    14 days, written on disk\n\n   the third one outlives the other two on purpose",
+   "note": "**셋째만 일부러 오래** 산다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 서명에 비밀번호를 넣나",
+   "md": "**서명이 없으면 아무나 쿠키를 지어낼 수** 있다.\n\n> **`admin:9999999999:SHA256:...` 이라고 쓰면 관리자가** 된다.\n> **그래서 서버만 아는 `key` 로** 묶는다.\n\n**비밀번호까지 넣는 이유는** 따로다.\n\n> **비밀번호를 바꾸면 해시가** 달라진다.\n> **훔쳐 간 쿠키가 그 순간 죽는다.**\n>\n> **\"비밀번호를 바꿨는데 저쪽 기기가 계속 로그인돼 있다\" 를** 막는 장치다.\n\n**그래도 남는 위험이** 있다.\n\n| 위험 | 이유 |\n|---|---|\n| **쿠키를 훔치면 14일** | 로그아웃해도 다른 기기의 쿠키는 산다 |\n| **취소할 방법이 없다** | 서버에 아무 기록이 없다 |\n| **아이디가 그대로 보인다** | Base64 라 3.4절처럼 풀린다 |\n\n> **셋째는 정보 노출이고 둘째가 진짜** 문제다.\n> **다음 절의 영속 토큰 방식이 둘째를** 푼다.\n\n**`HttpOnly` 는 기본으로** 붙는다.\n\n> **`Secure` 는 요청이 `https` 일 때만** 붙는다.\n> **로컬 `http` 에서 확인하면 안 보이는 게** 정상이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 켜기 전 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n\n13\n\n# --- 켠다 ---\n\nhttp.rememberMe(r -> r.key(\"my-secret-key\").tokenValiditySeconds(1209600));\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n\n14\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -n Remember\n\n11:   RememberMeAuthenticationFilter\n\n#   AnonymousAuthenticationFilter 앞이다\n\n# --- 체크 없이 로그인 ---\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\" | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=A1B2...; Path=/; HttpOnly\n\n#   쿠키가 하나다\n\n# --- 체크하고 로그인 ---\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&remember-me=on&_csrf=$TOKEN\" \\\n    | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=C3D4...; Path=/; HttpOnly\nSet-Cookie: remember-me=dXNlcjoxNzk0MTQ4MjYyMDAwOlNIQTI1NjpiNzQ0Yz...;\n  Max-Age=1209600; Expires=Tue, 23 Sep 2026 10:04:22 GMT; Path=/; HttpOnly\n\n#   둘이다\n\n#   Max-Age 가 14일이다\n\nDEBUG TokenBasedRememberMeServices : Added remember-me cookie for user\n  'user', expiry: 'Tue Sep 23 19:04:22 KST 2026'\n\n# --- 쿠키 안을 연다 ---\n\n$ grep remember-me c.txt | awk '{print $NF}' \\\n    | tr '_-' '/+' | base64 -d\n\nuser:1794148262000:SHA256:b744c8f1e3a90d5c2f7b18ee49d0a3c6...\n\n#   아이디가 그대로 보인다\n\n#   만료 시각은 epoch 밀리초다\n\n$ date -r 1794148262\n\nTue Sep 23 19:04:22 KST 2026\n\n#   Max-Age 와 같다\n\n#   비밀번호는 안 보인다\n\n#   네 번째 조각은 서명이다\n\n# --- 브라우저를 닫은 셈 치고 ---\n\n$ grep -v JSESSIONID c.txt > closed.txt\n\n$ curl -i -b closed.txt -c closed.txt localhost:8080/orders\n\nHTTP/1.1 200\nSet-Cookie: JSESSIONID=E5F6...; Path=/; HttpOnly\n\nDEBUG FilterChainProxy : Securing GET /orders\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/14)\nTRACE FilterChainProxy : Invoking RememberMeAuthenticationFilter (11/14)\nDEBUG TokenBasedRememberMeServices : Remember-me cookie accepted\nDEBUG RememberMeAuthenticationFilter : SecurityContextHolder populated with\n  remember-me token: RememberMeAuthenticationToken [Principal=User\n  [Username=user], Authenticated=true]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG FilterChainProxy : Secured GET /orders\n\n#   세션이 없는데 200 이다\n\n#   3번 필터는 아무것도 못 꺼냈고 11번이 살렸다\n\n#   그리고 새 세션이 하나 생겼다\n\n# --- 비밀번호를 바꾼다 ---\n\n@Bean\nUserDetailsService users(PasswordEncoder encoder) {\n    return new InMemoryUserDetailsManager(\n            User.withUsername(\"user\")\n                .password(encoder.encode(\"5678\"))     // 1234 에서 바꿈\n                .roles(\"USER\").build());\n}\n\n$ curl -i -b closed.txt localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\nSet-Cookie: remember-me=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT\n\nTRACE FilterChainProxy : Invoking RememberMeAuthenticationFilter (11/14)\nDEBUG TokenBasedRememberMeServices : Cancelling cookie\norg.springframework.security.authentication.BadCredentialsException:\n  Remember-me login was valid but corresponding user details could not\n  be reloaded (or signature did not match)\n\n#   서명이 안 맞는다\n\n#   비밀번호가 해시 안에 있어서다\n\n#   그리고 쿠키를 Max-Age=0 으로 지운다\n\n# --- key 를 안 주고 재시작하면 ---\n\nhttp.rememberMe(withDefaults());\n\n$ ./gradlew bootRun 2>&1 | grep -i \"remember.*key\"\n\nINFO TokenBasedRememberMeServices : Using generated remember-me key\n\n#   (로그인 후 쿠키를 받아 두고 재시작)\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b closed.txt localhost:8080/orders\n\n302\n\n#   어제 쿠키가 다 죽었다\n\n#   운영에서 key 를 고정해야 하는 이유다\n\n# --- 쿠키를 지어내 본다 ---\n\n$ printf 'admin:9999999999999:SHA256:aaaa' | base64\n\nYWRtaW46OTk5OTk5OTk5OTk5OTpTSEEyNTY6YWFhYQ==\n\n$ curl -i -H 'Cookie: remember-me=YWRtaW46OTk5OTk5OTk5OTk5OTpTSEEyNTY6YWFhYQ==' \\\n    localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG TokenBasedRememberMeServices : Cancelling cookie\nInvalidCookieException: Cookie token signature does not match\n\n#   서명이 서버 key 로 계산되니 못 만든다\n\n# --- 다음 절에서 ---\n\n#   서버에 기록을 남기는 방식을 본다",
+   "note": "**필터가 13에서 14로** 늘고 `RememberMeAuthenticationFilter` 가 11번 자리에 들어갔다.\n\n**체크박스를 켜면 쿠키가 둘이고 `Max-Age` 가 14일**이다.\n\n**`base64 -d` 로 열면 `user:1794148262000:SHA256:b744c8…`** 다 — **아이디와 만료는 보이고 비밀번호는 안** 보인다.\n\n**`JSESSIONID` 를 지워도 200** 이다 — **3번이 못 꺼낸 걸 11번이** 살렸다.\n\n**비밀번호를 바꾸니 서명이 안 맞아 쿠키가 `Max-Age=0` 으로** 지워진다.\n\n**`key` 를 안 주면 재시작에 어제 쿠키가 다** 죽는다."
+  }
+ ],
+ "recap": [
+  "**쿠키는 `아이디:만료:알고리즘:서명` 의 Base64** 다.",
+  "**아이디와 만료는 그대로** 보인다.",
+  "**서명이 서버 `key` 로 묶여 있어 지어낼 수** 없다.",
+  "**비밀번호가 해시에 들어가 바꾸면 옛 쿠키가** 죽는다.",
+  "**`key` 를 안 주면 재시작마다 쿠키가 다** 죽는다.",
+  "**세션이 없어도 필터가 인증을** 되살린다.",
+  "**되살릴 때 새 세션이** 생긴다.",
+  "**훔친 쿠키를 취소할 방법이** 없다.",
+  "**`HttpOnly` 는 기본, `Secure` 는 https 일 때** 붙는다."
+ ],
+ "drills": [
+  {
+   "task": "쿠키를 `base64 -d` 로 연다.",
+   "done_when": "네 조각을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`JSESSIONID` 만 지우고 요청한다.",
+   "done_when": "200 과 되살아난 로그를 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "비밀번호를 바꾼 뒤 옛 쿠키로 요청한다.",
+   "done_when": "서명 불일치 로그를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "쿠키를 손으로 지어내 본다.",
+   "done_when": "서명 검증에 막히는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쿠키에 비밀번호가 담기나?",
+   "a": "담기지 않는다. 서명 해시의 재료로만 쓰인다."
+  },
+  {
+   "q": "비밀번호를 바꾸면 옛 쿠키는?",
+   "a": "서명이 달라져 거절되고 `Max-Age=0` 으로 지워진다."
+  },
+  {
+   "q": "`key` 를 안 주면?",
+   "a": "기동마다 무작위 키라 재시작에 모든 쿠키가 죽는다."
+  },
+  {
+   "q": "세션이 없는데 왜 통과하나?",
+   "a": "`RememberMeAuthenticationFilter` 가 쿠키로 인증을 되살려서다."
+  },
+  {
+   "q": "이 방식의 가장 큰 약점은?",
+   "a": "훔쳐 간 쿠키를 서버에서 취소할 방법이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "TokenBasedRememberMeServices",
+   "def": "서버에 기록을 안 남기고 쿠키의 서명만으로 판단하는 기억하기 구현."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Remember Me Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/rememberme.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

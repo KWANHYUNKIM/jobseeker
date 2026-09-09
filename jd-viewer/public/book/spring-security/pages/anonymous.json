@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "anonymous",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "익명 인증",
+ "summary": "인증 안 된 것과 익명은 다르다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "익명 토큰이 왜 있는지 안다.",
+  "isAuthenticated 가 true 인 함정을 본다.",
+  "permitAll 과 anonymous 를 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**로그인 안 한 사람의 `getAuthentication()` 이 `null` 일 것** 같다. **아니다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "null 과 익명",
+   "ascii": "   null and anonymous are not the same\n\n   inside the filter chain, after filter 12\n     getAuthentication()  ->  AnonymousAuthenticationToken\n     isAuthenticated()    ->  true\n     getName()            ->  anonymousUser\n     getAuthorities()     ->  [ROLE_ANONYMOUS]\n\n   null happens only before filter 12, or outside the chain",
+   "note": "**`null` 은 12번 필터 앞에서만** 만난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "널 체크를 없애려고 만들었다",
+   "md": "**널 객체 패턴**이다.\n\n```java\n// 익명이 없다면 어디서나 이렇게 써야 한다\nAuthentication auth = SecurityContextHolder.getContext().getAuthentication();\nif (auth != null && auth.isAuthenticated()) { ... }\n\n// 익명이 있으니\nAuthentication auth = SecurityContextHolder.getContext().getAuthentication();\nauth.getAuthorities();          // 늘 최소 하나는 있다\n```\n\n> **인가 규칙도 단순해진다** — **8.2절의 권한 비교가 늘 같은 모양**이다.\n\n**필터가 만든다.**\n\n```java\n// AnonymousAuthenticationFilter\nif (SecurityContextHolder.getContext().getAuthentication() == null) {\n    SecurityContextHolder.getContext()\n            .setAuthentication(createAuthentication(request));\n}\nchain.doFilter(request, response);\n```\n\n> **3.6절의 필터와 같은 모양**이다 — **비었을 때만 채운다.**\n\n**세션에 저장되지** 않는다.\n\n> **요청마다 새로** 만든다.\n> **`SecurityContextHolderFilter` 는 익명 컨텍스트를 저장 안** 한다.\n> **익명 사용자 때문에 세션이 쌓이지는** 않는다.\n\n**설정으로 이름과 권한을 바꿀 수** 있다.\n\n```java\nhttp.anonymous(a -> a\n        .principal(\"guest\")\n        .authorities(\"ROLE_GUEST\"));\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "닮은 규칙 셋",
+   "ascii": "   three rules that look alike\n\n   permitAll        everyone, logged in or not\n   anonymous        only the not logged in\n   authenticated    only the logged in\n\n   a login page wants anonymous, not permitAll\n   an about page wants permitAll",
+   "note": "**로그인 화면은 `permitAll` 이 아니라 `anonymous` 가 맞을 때가** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "isAuthenticated 는 true 다",
+   "md": "**익명 토큰의 `isAuthenticated()` 가 `true`** 다.\n\n```java\n// 이 코드는 익명도 통과시킨다\nif (auth.isAuthenticated()) {\n    // 로그인한 사람만 오는 줄 알았는데\n}\n```\n\n> **직접 판단하려면 타입을** 본다.\n>\n> ```java\n> boolean loggedIn = auth != null\n>         && !(auth instanceof AnonymousAuthenticationToken);\n> ```\n>\n> **`AuthenticationTrustResolver` 가 이 판단을 대신** 해 준다.\n>\n> ```java\n> trustResolver.isAnonymous(auth);\n> trustResolver.isRememberMe(auth);\n> ```\n\n**`@AuthenticationPrincipal` 도** 함정이다.\n\n> **익명일 때 `principal` 은 `UserDetails` 가 아니라 `\"anonymousUser\"` 문자열**이다.\n> **`UserDetails` 로 받으면 `null` 이** 들어온다.\n> **타입이 안 맞으면 조용히 `null`** 이다.\n\n**`anonymous()` 규칙은 로그인한 사람을** 막는다.\n\n```java\n.requestMatchers(\"/login\", \"/signup\").anonymous()\n```\n\n> **이미 로그인한 사람이 `/signup` 에 오면 403** 이다.\n> **`permitAll` 이면 그냥 들어간다.**\n>\n> **2.7절에서 `/login` 에 `permitAll` 을** 줬다.\n> **`anonymous()` 로 바꾸면 로그인한 채로 로그인 화면에 못** 간다 — **의도에 따라 고른다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 컨트롤러에서 찍어 본다 ---\n\n@GetMapping(\"/whoami\")\n@ResponseBody\npublic String whoami() {\n    Authentication auth = SecurityContextHolder.getContext().getAuthentication();\n    System.out.println(\">>> class = \" + auth.getClass().getSimpleName());\n    System.out.println(\">>> name  = \" + auth.getName());\n    System.out.println(\">>> auth? = \" + auth.isAuthenticated());\n    System.out.println(\">>> roles = \" + auth.getAuthorities());\n    return auth.getName();\n}\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/whoami\").permitAll()\n        .anyRequest().authenticated());\n\n$ curl -s localhost:8080/whoami\n\nanonymousUser\n\n>>> class = AnonymousAuthenticationToken\n>>> name  = anonymousUser\n>>> auth? = true\n>>> roles = [ROLE_ANONYMOUS]\n\n#   null 이 아니다\n\n#   isAuthenticated 가 true 다\n\n#   로그인 안 했는데 true 다\n\nDEBUG FilterChainProxy : Securing GET /whoami\nTRACE FilterChainProxy : Invoking RememberMeAuthenticationFilter (11/14)\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (12/14)\nDEBUG AnonymousAuthenticationFilter : Set SecurityContextHolder to\n  AnonymousAuthenticationToken [Principal=anonymousUser,\n  Authenticated=true, Granted Authorities=[ROLE_ANONYMOUS]]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (14/14)\nDEBUG FilterChainProxy : Secured GET /whoami\n\n#   12번이 채웠다\n\n# --- 로그인하고 부르면 ---\n\n$ curl -s -b c.txt localhost:8080/whoami\n\nuser\n\n>>> class = UsernamePasswordAuthenticationToken\n>>> name  = user\n>>> auth? = true\n>>> roles = [ROLE_USER]\n\nTRACE FilterChainProxy : Invoking AnonymousAuthenticationFilter (12/14)\n\n#   12번은 돌았지만 아무것도 안 했다\n\n#   3번이 이미 채워 놨다\n\n#   두 경우 다 auth? = true 다\n\n#   이것만 보면 구별이 안 된다\n\n# --- 세션이 쌓이나 ---\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null localhost:8080/whoami; done\n\n$ curl -s localhost:8080/actuator/sessions 2>/dev/null | head -1\n\n#   (익명 요청은 세션을 안 만든다)\n\n$ curl -i -s localhost:8080/whoami | grep -ci set-cookie\n\n0\n\n#   Set-Cookie 가 없다\n\n#   익명 컨텍스트는 저장하지 않는다\n\n# --- @AuthenticationPrincipal 로 받으면 ---\n\n@GetMapping(\"/whoami2\")\n@ResponseBody\npublic String whoami2(@AuthenticationPrincipal UserDetails user,\n                      @AuthenticationPrincipal Object raw) {\n    System.out.println(\">>> as UserDetails = \" + user);\n    System.out.println(\">>> as Object      = \" + raw\n            + \" (\" + (raw == null ? \"-\" : raw.getClass().getSimpleName()) + \")\");\n    return String.valueOf(user);\n}\n\n$ curl -s localhost:8080/whoami2\n\nnull\n\n>>> as UserDetails = null\n>>> as Object      = anonymousUser (String)\n\n#   UserDetails 로 받으면 null 이다\n\n#   실제로는 String 이다\n\n#   타입이 안 맞으면 조용히 null 이다\n\n#   2.6절에서 ignoring 일 때 본 그 null 과 이유가 다르다\n\n#   저기는 필터가 안 돌아서, 여기는 타입이 안 맞아서다\n\n# --- 세 규칙을 비교한다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/about\").permitAll()\n        .requestMatchers(\"/signup\").anonymous()\n        .requestMatchers(\"/orders\").authenticated()\n        .anyRequest().permitAll());\n\n#   로그인 안 한 채로\n$ for p in about signup orders; do\n    printf '%-8s ' $p\n    curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/$p\n  done\n\nabout    200\nsignup   200\norders   302\n\n#   로그인한 채로\n$ for p in about signup orders; do\n    printf '%-8s ' $p\n    curl -s -o /dev/null -b c.txt -w '%{http_code}\\n' localhost:8080/$p\n  done\n\nabout    200\nsignup   403\norders   200\n\n#   signup 만 뒤집혔다\n\n#   anonymous 는 로그인한 사람을 막는다\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n  for SecurityContextHolderAwareRequestWrapper GET /signup\n\n# --- TrustResolver 로 판단한다 ---\n\nprivate final AuthenticationTrustResolver trustResolver =\n        new AuthenticationTrustResolverImpl();\n\n@GetMapping(\"/whoami3\")\n@ResponseBody\npublic String whoami3() {\n    Authentication auth = SecurityContextHolder.getContext().getAuthentication();\n    System.out.println(\">>> anonymous  = \" + trustResolver.isAnonymous(auth));\n    System.out.println(\">>> rememberMe = \" + trustResolver.isRememberMe(auth));\n    return \"ok\";\n}\n\n#   로그인 안 함\n>>> anonymous  = true\n>>> rememberMe = false\n\n#   비밀번호로 로그인\n>>> anonymous  = false\n>>> rememberMe = false\n\n#   쿠키로 되살아남 (3.6절)\n>>> anonymous  = false\n>>> rememberMe = true\n\n#   셋이 구별된다\n\n#   isAuthenticated 하나로는 안 되던 일이다\n\n# --- 다음 절에서 ---\n\n#   이 모든 걸 지우는 요청을 본다",
+   "note": "**로그인 안 한 요청도 `getAuthentication()` 이 `null` 이 아니라 `AnonymousAuthenticationToken`** 이다. **`isAuthenticated()` 가 `true`** 다.\n\n**로그인해도 `true`** 라 이것만으로는 구별이 안 된다.\n\n**익명 요청에 `Set-Cookie` 가 없다** — **세션이 안** 쌓인다.\n\n**`@AuthenticationPrincipal UserDetails` 는 `null`, `Object` 로 받으면 `String`** 이다.\n\n**`/signup` 만 로그인 여부에 따라 200 과 403 으로** 뒤집혔다.\n\n**`TrustResolver` 로 익명·기억하기·완전 인증 셋이** 구별된다."
+  }
+ ],
+ "recap": [
+  "**익명 토큰은 널 체크를 없애려고** 있다.",
+  "**12번 필터가 비었을 때만** 채운다.",
+  "**`getName()` 이 `anonymousUser`, 권한이 `ROLE_ANONYMOUS`** 다.",
+  "**`isAuthenticated()` 가 `true` 라 이것만으론 구별이 안** 된다.",
+  "**익명 컨텍스트는 세션에 저장되지** 않는다.",
+  "**`@AuthenticationPrincipal UserDetails` 는 `null` 이** 들어온다.",
+  "**`permitAll` 은 모두, `anonymous` 는 안 한 사람만**이다.",
+  "**로그인한 사람이 `anonymous()` 자리에 오면 403** 이다.",
+  "**`AuthenticationTrustResolver` 가 셋을** 가른다."
+ ],
+ "drills": [
+  {
+   "task": "`/whoami` 를 만들어 로그인 전후를 찍는다.",
+   "done_when": "토큰 클래스가 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "익명 요청에 `Set-Cookie` 가 있는지 본다.",
+   "done_when": "없는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`permitAll`·`anonymous`·`authenticated` 를 나란히 건다.",
+   "done_when": "여섯 조합의 상태 코드를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "`TrustResolver` 로 세 상태를 구별한다.",
+   "done_when": "기억하기까지 세 경우를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "로그인 안 한 요청의 `getAuthentication()` 은?",
+   "a": "`null` 이 아니라 `AnonymousAuthenticationToken` 이다."
+  },
+  {
+   "q": "익명의 `isAuthenticated()` 는?",
+   "a": "`true` 다. 그래서 이것만으로 구별하면 안 된다."
+  },
+  {
+   "q": "익명 요청이 세션을 만드나?",
+   "a": "만들지 않는다. 익명 컨텍스트는 저장되지 않는다."
+  },
+  {
+   "q": "`permitAll` 과 `anonymous` 의 차이는?",
+   "a": "후자는 로그인한 사람을 막는다."
+  },
+  {
+   "q": "세 상태를 구별하는 방법은?",
+   "a": "`AuthenticationTrustResolver` 의 `isAnonymous`·`isRememberMe` 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "AuthenticationTrustResolver",
+   "def": "익명인지 기억하기인지 완전 인증인지 판단해 주는 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Anonymous Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/anonymous.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

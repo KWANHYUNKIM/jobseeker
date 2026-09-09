@@ -1,0 +1,139 @@
+{
+ "book": "spring-security",
+ "id": "remember-me-filter",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "RememberMeAuthenticationFilter",
+ "summary": "토큰 두 방식.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "필터가 언제 일하는지 안다.",
+  "영속 토큰 방식의 표를 만든다.",
+  "도난 감지가 되는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.5절의 약점은 취소할 수 없다는 것**이었다. **서버에 한 줄 남기면** 달라진다."
+  },
+  {
+   "type": "figure",
+   "caption": "기억하는 두 방식",
+   "ascii": "   two ways to remember\n\n   token based\n     cookie   username : expiry : algorithm : signature\n     server   nothing\n     revoke   impossible\n\n   persistent token based\n     cookie   series : token\n     server   one row per series, token rotates each visit\n     revoke   delete the row\n     bonus    a reused old token means the cookie was stolen",
+   "note": "**한 줄을 남기면 지울 수도 있고 도난도** 안다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "필터는 비어 있을 때만 일한다",
+   "md": "```java\nprotected void doFilterInternal(...) {\n    if (SecurityContextHolder.getContext().getAuthentication() != null) {\n        chain.doFilter(request, response);       // 이미 누군가 있다\n        return;\n    }\n    Authentication rememberMeAuth =\n            this.rememberMeServices.autoLogin(request, response);\n    ...\n}\n```\n\n> **세션으로 이미 인증됐으면 쿠키를 아예 안** 본다.\n> **11번은 3번이 실패했을 때만 의미가** 있다.\n\n**만들어지는 토큰이** 다르다.\n\n| 어떻게 들어왔나 | 토큰 |\n|---|---|\n| **방금 로그인** | `UsernamePasswordAuthenticationToken` |\n| **쿠키로 되살림** | `RememberMeAuthenticationToken` |\n| **아무것도 없음** | `AnonymousAuthenticationToken` (3.7절) |\n\n**이 구별이 인가에서** 쓰인다.\n\n```java\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/mypage\").authenticated()        // 쿠키도 통과\n        .requestMatchers(\"/mypage/password\").fullyAuthenticated()\n        .anyRequest().permitAll());\n```\n\n> **`fullyAuthenticated` 는 기억하기를** 거른다.\n> **비밀번호 변경·결제처럼 방금 그 사람임을 확인하고 싶은 자리**다.\n> **7.7절에서 표현식으로 다시** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "채우는 순서",
+   "ascii": "   where the filter sits, and why\n\n   6   UsernamePasswordAuthenticationFilter   sets the holder on login\n   11  RememberMeAuthenticationFilter         only if the holder is empty\n   12  AnonymousAuthenticationFilter          only if the holder is empty\n   14  AuthorizationFilter                    reads the holder\n\n   each one checks first, then fills",
+   "note": "**앞이 채웠으면 뒤는 비킨다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "영속 토큰이 도난을 안다",
+   "md": "**쿠키에 `series` 와 `token` 둘이** 담긴다.\n\n> **`series` 는 이 기기를 가리키는 고정값**이다.\n> **`token` 은 방문할 때마다 새로** 바뀐다.\n\n**훔쳐 간 쪽이 먼저 쓰면**\n\n> **서버의 `token` 이 바뀐다.**\n> **원래 사람이 옛 `token` 으로** 온다.\n> **`series` 는 맞는데 `token` 이 다르다.**\n>\n> **정상적으로는 일어날 수 없는 일**이다.\n> **그래서 그 `series` 를 통째로** 지운다.\n\n```\nCookieTheftException: Invalid remember-me token (Series/token) mismatch.\nImplies previous cookie theft attack.\n```\n\n> **양쪽 다 로그아웃**된다.\n> **불편하지만 그게** 맞다.\n\n**설정은 저장소 하나를 더** 준다.\n\n```java\n@Bean\nPersistentTokenRepository tokenRepository(DataSource dataSource) {\n    JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();\n    repo.setDataSource(dataSource);\n    // repo.setCreateTableOnStartup(true);   // 개발에서만\n    return repo;\n}\n\nhttp.rememberMe(r -> r\n        .key(\"my-secret-key\")\n        .tokenRepository(tokenRepository)\n        .userDetailsService(userDetailsService));\n```\n\n> **`userDetailsService` 를 명시로 줘야 할 때가** 있다.\n> **안 주면 기동 때 `UserDetailsService is required`** 다.\n\n**표는 스펙이 정해** 뒀다.\n\n> **`JdbcTokenRepositoryImpl.CREATE_TABLE_SQL` 에 박혀** 있다.\n> **아래에서 그대로** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 표를 만든다 ---\n\ncreate table persistent_logins (\n    username  varchar(64) not null,\n    series    varchar(64) primary key,\n    token     varchar(64) not null,\n    last_used timestamp   not null\n);\n\n#   JdbcTokenRepositoryImpl.CREATE_TABLE_SQL 그대로다\n\n#   기본 키가 username 이 아니라 series 다\n\n#   한 사람이 기기마다 한 줄을 갖는다\n\n# --- 로그인 ---\n\n$ curl -i -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&remember-me=on&_csrf=$TOKEN\" \\\n    | grep -i 'set-cookie: remember-me'\n\nSet-Cookie: remember-me=OFhKUmpXd1FBTmdSMlZWTkZBPT06Q1VUUXhRUmdSMlpB;\n  Max-Age=1209600; Path=/; HttpOnly\n\n#   3.5절과 형식이 다르다\n\n$ grep remember-me c.txt | awk '{print $NF}' | base64 -d\n\n8XJRjWwQANgR2VVNFA==:CUTQxQRgR2ZA\n\n#   series : token 이다\n\n#   아이디도 만료도 안 보인다\n\nselect * from persistent_logins;\n\nUSERNAME | SERIES                | TOKEN        | LAST_USED\n---------+-----------------------+--------------+------------------------\nuser     | 8XJRjWwQANgR2VVNFA==  | CUTQxQRgR2ZA | 2026-09-09 19:12:41.221\n\n#   서버가 알고 있다\n\n#   3.5절에서는 아무 기록도 없었다\n\n# --- 세션을 지우고 다시 온다 ---\n\n$ grep -v JSESSIONID c.txt > closed.txt\n$ curl -s -o /dev/null -b closed.txt -c closed.txt localhost:8080/orders \\\n    -w '%{http_code}\\n'\n\n200\n\nTRACE FilterChainProxy : Invoking RememberMeAuthenticationFilter (11/14)\nDEBUG PersistentTokenBasedRememberMeServices : Refreshing persistent\n  login token for user 'user', series '8XJRjWwQANgR2VVNFA==', new token\n  'kM2pQ1vTbA9F'\nDEBUG RememberMeAuthenticationFilter : SecurityContextHolder populated with\n  remember-me token: RememberMeAuthenticationToken [Principal=User\n  [Username=user], Authenticated=true]\n\nselect series, token, last_used from persistent_logins;\n\nSERIES                | TOKEN        | LAST_USED\n----------------------+--------------+------------------------\n8XJRjWwQANgR2VVNFA==  | kM2pQ1vTbA9F | 2026-09-09 19:13:08.674\n\n#   series 는 그대로, token 이 바뀌었다\n\n#   방문할 때마다 회전한다\n\n# --- 훔쳐 간 쿠키를 흉내 낸다 ---\n\n$ cp closed.txt stolen.txt\n\n#   (도둑이 먼저 쓴다)\n$ curl -s -o /dev/null -b stolen.txt -c stolen.txt localhost:8080/orders \\\n    -w '%{http_code}\\n'\n\n200\n\nselect token from persistent_logins;\n\nTOKEN\n-------------\nZq7LmN4xR1cV\n\n#   또 회전했다\n\n#   원래 사람이 갖고 있는 건 kM2pQ1vTbA9F 다\n\n#   (원래 사람이 온다)\n$ curl -i -b closed.txt localhost:8080/orders\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\nSet-Cookie: remember-me=; Max-Age=0\n\nDEBUG PersistentTokenBasedRememberMeServices : Cancelling cookie\norg.springframework.security.web.authentication.rememberme.CookieTheftException:\n  Invalid remember-me token (Series/token) mismatch. Implies previous\n  cookie theft attack.\n\nselect count(*) from persistent_logins;\n\nCOUNT(*)\n--------\n0\n\n#   줄이 지워졌다\n\n#   도둑도 같이 쫓겨난다\n\n$ curl -s -o /dev/null -b stolen.txt localhost:8080/orders -w '%{http_code}\\n'\n\n302\n\n#   훔친 쪽도 끝났다\n\n#   3.5절에서는 이걸 알 방법이 없었다\n\n# --- 취소해 본다 ---\n\ndelete from persistent_logins where username = 'user';\n\n$ curl -s -o /dev/null -b closed.txt localhost:8080/orders -w '%{http_code}\\n'\n\n302\n\n#   관리자가 한 줄로 로그아웃시켰다\n\n#   11.6절의 회원 관리에서 쓸 수 있다\n\n# --- fullyAuthenticated 를 걸어 본다 ---\n\nhttp.authorizeHttpRequests(a -> a\n        .requestMatchers(\"/mypage/password\").fullyAuthenticated()\n        .anyRequest().authenticated());\n\n#   (쿠키로 되살아난 상태)\n$ curl -i -b closed.txt localhost:8080/mypage/password\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login\n\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n$ curl -s -o /dev/null -b closed.txt localhost:8080/orders -w '%{http_code}\\n'\n\n200\n\n#   같은 쿠키로 하나는 되고 하나는 안 된다\n\n#   토큰의 종류를 보고 갈랐다\n\n#   (다시 비밀번호로 로그인하면)\n$ curl -s -o /dev/null -b c.txt localhost:8080/mypage/password \\\n    -w '%{http_code}\\n'\n\n200\n\n# --- 다음 절에서 ---\n\n#   아무도 아닌 사람에게도 이름이 있다",
+   "note": "**쿠키가 `series:token` 으로** 바뀌었고 `persistent_logins` 에 한 줄이 남는다.\n\n**방문할 때마다 `token` 이 회전**한다 — `CUTQ…` → `kM2p…` → `Zq7L…`.\n\n**도둑이 먼저 쓴 뒤 원래 사람이 오면 `CookieTheftException` 이 나고 줄이** 지워진다. **양쪽 다** 끝난다.\n\n**`delete` 한 줄로 관리자가 로그아웃**시킬 수 있다.\n\n**`fullyAuthenticated` 를 건 자리는 같은 쿠키로 302, 다른 자리는 200** 이다."
+  }
+ ],
+ "recap": [
+  "**필터는 홀더가 비어 있을 때만** 일한다.",
+  "**되살린 토큰은 `RememberMeAuthenticationToken`** 이다.",
+  "**`fullyAuthenticated` 가 그 둘을** 가른다.",
+  "**영속 방식은 쿠키에 `series:token` 만** 담는다.",
+  "**`token` 은 방문마다** 회전한다.",
+  "**`series` 는 맞고 `token` 이 다르면 도난**이다.",
+  "**그때 그 줄을 지워 양쪽 다** 끝낸다.",
+  "**표의 기본 키가 `series` 라 기기마다 한 줄**이다.",
+  "**서버에 줄이 있으니 취소가** 된다."
+ ],
+ "drills": [
+  {
+   "task": "`persistent_logins` 표를 만들고 로그인한다.",
+   "done_when": "한 줄이 생긴 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "쿠키를 복사해 두 클라이언트로 번갈아 요청한다.",
+   "done_when": "`CookieTheftException` 을 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "`delete` 로 줄을 지운다.",
+   "done_when": "쿠키가 못 쓰이는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`fullyAuthenticated` 를 건다.",
+   "done_when": "같은 쿠키로 결과가 갈리는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "필터는 언제 일하나?",
+   "a": "홀더가 비어 있을 때만이다. 세션으로 이미 인증됐으면 비킨다."
+  },
+  {
+   "q": "영속 방식 쿠키에는 무엇이 담기나?",
+   "a": "`series` 와 `token` 둘뿐이다. 아이디도 만료도 없다."
+  },
+  {
+   "q": "도난을 어떻게 감지하나?",
+   "a": "`series` 는 맞는데 `token` 이 옛것이면 누군가 먼저 쓴 것이다."
+  },
+  {
+   "q": "감지하면 어떻게 되나?",
+   "a": "그 `series` 줄을 지워 양쪽 다 로그아웃된다."
+  },
+  {
+   "q": "`fullyAuthenticated` 는 무엇을 거르나?",
+   "a": "기억하기 쿠키로 되살아난 인증이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "series",
+   "def": "영속 기억하기에서 기기 하나를 가리키는 고정 식별자. 표의 기본 키다."
+  },
+  {
+   "term": "CookieTheftException",
+   "def": "같은 `series` 에 옛 `token` 이 다시 온 상황. 쿠키가 복제됐다는 신호다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Remember Me Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/rememberme.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Persisting Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Session Management Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
