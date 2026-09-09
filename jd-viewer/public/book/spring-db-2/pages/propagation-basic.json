@@ -1,0 +1,127 @@
+{
+ "book": "spring-db-2",
+ "id": "propagation-basic",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "커밋과 롤백",
+ "summary": "트랜잭션 매니저를 직접 쓴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`PlatformTransactionManager` 를 직접 쓴다.",
+  "`TransactionStatus` 를 안다.",
+  "11장의 실험 도구를 준비한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11장은 애너테이션 대신 매니저를 직접** 쓴다. **왜 그런지부터.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 직접 쓰나",
+   "md": "**전파를 실험하려면 트랜잭션 경계를 손으로 그어야** 한다.\n\n```java\n// 애너테이션이면\n@Transactional\npublic void 바깥() {\n    안쪽서비스.안쪽();\n}\n```\n\n**클래스를 둘 만들어야** 한다(10.3절). **`@Transactional` 을 어디에 붙였는지 따라다녀야** 한다.\n\n```java\n// 직접 쓰면\nTransactionStatus outer = manager.getTransaction(new DefaultTransactionDefinition());\nTransactionStatus inner = manager.getTransaction(new DefaultTransactionDefinition());\nmanager.commit(inner);\nmanager.commit(outer);\n```\n\n**한 메서드 안에서 다 보인다.** **시작과 끝이 눈에 있다.**\n\n> **애너테이션이 하는 일이 정확히 이것**이다. **프록시가 앞에서 `getTransaction`, 뒤에서 `commit` 이나 `rollback`** 을 부른다.\n>\n> **1편 5.3절에서 `TransactionTemplate` 을 쓸 때 이미 봤다.** **여기서는 한 겹 더 아래**다.\n\n**4.4절의 `@Transactional` 테스트도 안 쓴다.** **테스트에 붙이면 이미 트랜잭션 안**이라 실험이 다 망가진다 — **4.4절에서 예고한 그것**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스 셋",
+   "ascii": "   PlatformTransactionManager\n     TransactionStatus getTransaction(TransactionDefinition d)\n     void commit(TransactionStatus s)\n     void rollback(TransactionStatus s)\n\n   three methods. that is the whole interface.\n\n   @Transactional does exactly this, through a proxy",
+   "note": "**메서드가 셋뿐**이다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "실험 준비",
+   "code": "@Slf4j\n@SpringBootTest\npublic class BasicTxTest {\n\n    @Autowired\n    PlatformTransactionManager txManager;\n\n    @TestConfiguration\n    static class Config {\n        @Bean\n        public PlatformTransactionManager transactionManager(DataSource ds) {\n            return new JdbcTransactionManager(ds);\n        }\n    }\n\n    @Test\n    void commit() {\n        log.info(\"트랜잭션 시작\");\n        TransactionStatus status =\n                txManager.getTransaction(new DefaultTransactionAttribute());\n\n        log.info(\"트랜잭션 커밋 시작\");\n        txManager.commit(status);\n        log.info(\"트랜잭션 커밋 완료\");\n    }\n\n    @Test\n    void rollback() {\n        TransactionStatus status =\n                txManager.getTransaction(new DefaultTransactionAttribute());\n        txManager.rollback(status);\n    }\n}",
+   "note": "**JPA 가 아니라 `JdbcTransactionManager`** 를 쓴다. **전파는 기술과 무관**하고(9.4절), **JDBC 쪽 로그가 더 단순**하다.\n\n**`DefaultTransactionAttribute`** 가 기본 옵션이다 — `PROPAGATION_REQUIRED`, `ISOLATION_DEFAULT`.\n\n**`@Transactional` 이 붙어 있지 않다.** **테스트가 트랜잭션 밖**이어야 실험이 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "`TransactionStatus` 가 알려 주는 것",
+   "ascii": "   TransactionStatus tells you\n\n   isNewTransaction()     did i start it, or join one\n   isRollbackOnly()       is it already doomed\n   setRollbackOnly()      doom it\n   isCompleted()          done\n\n   the first one is what chapter 11 is about",
+   "note": "**`isNewTransaction()` 이 11장의 주인공**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`getTransaction` 이라는 이름",
+   "md": "**\"시작\" 이 아니라 \"얻는다\"** 다.\n\n**이름이 그렇게 된 이유가 이 장의 내용**이다.\n\n| 상황 | 무엇을 하나 |\n|---|---|\n| **트랜잭션이 없다** | **새로 시작**한다 |\n| **이미 있다** | **그것을 돌려준다** — 참여 |\n\n**항상 새로 만드는 것이 아니다.** **그래서 `beginTransaction` 이 아니다.**\n\n> **10.9절 마지막에 본 `Participating in existing transaction`** 이 두 번째 경우다.\n\n**`TransactionStatus.isNewTransaction()`** 으로 구분한다.\n\n```java\nTransactionStatus outer = manager.getTransaction(def);\nlog.info(\"outer.isNewTransaction()={}\", outer.isNewTransaction());  // true\n\nTransactionStatus inner = manager.getTransaction(def);\nlog.info(\"inner.isNewTransaction()={}\", inner.isNewTransaction());  // false\n```\n\n**이 두 줄의 차이가 11장 전체**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 커밋 ---\n\n@Test\nvoid commit() { ... }\n\n#   트랜잭션 시작\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   트랜잭션 커밋 시작\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n#   트랜잭션 커밋 완료\n\n#   name 이 [null] 이다. 애너테이션이 아니라 직접 불렀으니까.\n\n# --- 롤백 ---\n\n@Test\nvoid rollback() { ... }\n\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [conn0] for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n# --- 애너테이션과 비교 ---\n\n#   @Transactional\n#     Getting transaction for [hello...ItemService.save]   <- 프록시\n#     Creating new transaction with name [hello...ItemService.save]\n#     ...\n#     Completing transaction for [hello...ItemService.save] <- 프록시\n#     Initiating transaction commit\n\n#   직접 호출\n#     Creating new transaction with name [null]\n#     ...\n#     Initiating transaction commit\n\n#   Getting/Completing 두 줄만 없다\n#   그 두 줄이 프록시가 하는 일의 전부다\n\n# --- isNewTransaction 확인 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\nlog.info(\"outer.isNewTransaction()={}\", outer.isNewTransaction());\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [conn0] for JDBC transaction\n#   outer.isNewTransaction()=true\n\nTransactionStatus inner = txManager.getTransaction(def);\nlog.info(\"inner.isNewTransaction()={}\", inner.isNewTransaction());\n\n#   Participating in existing transaction\n#   inner.isNewTransaction()=false\n\n#   (Creating new 가 없다. 커넥션도 안 빌렸다.)\n\n# 이 두 줄이 11장의 전부다",
+   "note": "**`name [null]`** 이 직접 부른 표시다. **애너테이션이면 메서드 이름이 들어간다.**\n\n**세 번째 블록의 비교가 요점**이다. **`Getting transaction for` 와 `Completing transaction for` 두 줄만 다르다.** **그것이 프록시가 하는 일의 전부**다.\n\n**맨 아래에서 두 번째 `getTransaction` 이 `Participating`** 을 찍었다. **커넥션을 또 안 빌렸다.**\n\n**다음 절에서 이것을 따로따로 써 본다.**"
+  }
+ ],
+ "recap": [
+  "**11장은 매니저를 직접** 쓴다 — 경계가 한 메서드 안에 보인다.",
+  "**테스트에 `@Transactional` 을 안 붙인다** — 실험이 망가진다.",
+  "**인터페이스 메서드가 셋**뿐이다.",
+  "**애너테이션은 프록시로 이것을 부를 뿐**이다.",
+  "**로그 차이는 `Getting`/`Completing` 두 줄**뿐이다.",
+  "**`getTransaction` 은 \"시작\" 이 아니라 \"얻는다\"** 다.",
+  "**이미 있으면 그것을 돌려준다** — 참여.",
+  "**`isNewTransaction()`** 으로 구분한다.",
+  "**`true`/`false` 두 줄의 차이가 11장 전체**다."
+ ],
+ "drills": [
+  {
+   "task": "매니저를 직접 써서 커밋과 롤백을 해 본다.",
+   "done_when": "로그 두 벌을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "애너테이션 로그와 나란히 비교한다.",
+   "done_when": "두 줄만 다른 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`getTransaction` 을 두 번 부른다.",
+   "done_when": "`Participating` 을 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "`isNewTransaction()` 을 두 번 찍는다.",
+   "done_when": "true/false 가 갈리는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "11장에서 왜 매니저를 직접 쓰나?",
+   "a": "트랜잭션 경계를 한 메서드 안에서 눈으로 보기 위해서다."
+  },
+  {
+   "q": "테스트에 `@Transactional` 을 왜 안 붙이나?",
+   "a": "이미 트랜잭션 안이 되어 전파 실험이 망가진다."
+  },
+  {
+   "q": "애너테이션과 직접 호출의 로그 차이는?",
+   "a": "`Getting transaction for` 와 `Completing transaction for` 두 줄뿐이다."
+  },
+  {
+   "q": "`getTransaction` 이라는 이름의 뜻은?",
+   "a": "없으면 시작하고 있으면 그것을 돌려준다는 뜻이다."
+  },
+  {
+   "q": "`isNewTransaction()` 은 무엇을 알려 주나?",
+   "a": "내가 트랜잭션을 시작했는지, 남의 것에 참여했는지다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

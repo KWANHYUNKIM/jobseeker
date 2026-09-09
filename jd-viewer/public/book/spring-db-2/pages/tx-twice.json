@@ -1,0 +1,127 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-twice",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "트랜잭션 두 번 사용",
+ "summary": "따로 쓰면 각각 커밋된다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "겹치지 않는 두 트랜잭션을 본다.",
+  "커넥션 풀의 재사용을 읽는다.",
+  "왜 이것이 문제인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**전파를 보기 전에, 전파가 아닌 경우**를 먼저 본다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "순서대로 두 번",
+   "code": "@Test\nvoid double_commit() {\n    log.info(\"트랜잭션1 시작\");\n    TransactionStatus tx1 = txManager.getTransaction(new DefaultTransactionAttribute());\n    log.info(\"트랜잭션1 커밋\");\n    txManager.commit(tx1);\n\n    log.info(\"트랜잭션2 시작\");\n    TransactionStatus tx2 = txManager.getTransaction(new DefaultTransactionAttribute());\n    log.info(\"트랜잭션2 커밋\");\n    txManager.commit(tx2);\n}\n\n@Test\nvoid double_commit_rollback() {\n    TransactionStatus tx1 = txManager.getTransaction(new DefaultTransactionAttribute());\n    txManager.commit(tx1);\n\n    TransactionStatus tx2 = txManager.getTransaction(new DefaultTransactionAttribute());\n    txManager.rollback(tx2);      // 2 만 롤백된다\n}",
+   "note": "**첫 번째를 커밋하고 나서 두 번째를 시작**한다. **겹치지 않는다.**\n\n**두 번째를 롤백해도 첫 번째는 이미 커밋**됐다. **되돌릴 수 없다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "겹치지 않는 두 트랜잭션",
+   "ascii": "   sequential\n   ----------\n   begin  conn0\n   commit conn0   released\n\n   begin  conn0   (borrowed again from the pool)\n   commit conn0   released\n\n   two transactions. no overlap.\n   the second one cannot undo the first.",
+   "note": "**두 번째가 첫 번째를 못 되돌린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이것이 10.3절의 사고다",
+   "md": "**10.3절 마지막 로그**를 다시 본다.\n\n```java\npublic void 주문처리() {          // @Transactional 없음\n    재고차감();                   // @Transactional\n    결제저장();                   // @Transactional\n}\n```\n\n**이 절의 구조와 같다.** **트랜잭션이 둘, 겹치지 않는다.**\n\n```\nbegin  재고차감  commit\nbegin  결제저장  rollback\n```\n\n**재고는 이미 줄었고 결제는 실패**했다. **1편 3장의 계좌이체가 깨지는 그 상황**이다.\n\n> **바깥을 트랜잭션으로 감싸야** 한다. **그러면 두 개가 하나가 된다** — **11.3절의 전파**다.\n\n**반대로 겹치지 않는 것이 필요한 경우**도 있다.\n\n| 상황 | |\n|---|---|\n| **로그를 남긴다** | 본 작업이 실패해도 로그는 남아야 |\n| **알림을 보낸다** | |\n| **이력을 적는다** | |\n\n**12장에서 `REQUIRES_NEW` 로 이것을 만든다.** **다만 이 절처럼 순서대로가 아니라 중첩된 상태**에서다."
+  },
+  {
+   "type": "figure",
+   "caption": "로그를 읽을 때",
+   "ascii": "   the same conn0 in both logs, but\n\n   HikariProxyConnection@1 wrapping conn0\n   HikariProxyConnection@2 wrapping conn0\n\n   different proxy, same underlying connection\n   the pool handed the same one back\n\n   read the number after the @, not conn0",
+   "note": "**`@` 뒤의 번호를 본다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "같은 커넥션인데 다른 트랜잭션",
+   "md": "**로그에 `conn0` 가 두 번 나온다.** **같은 커넥션이 맞다.**\n\n```\nAcquired Connection [HikariProxyConnection@1 wrapping conn0]\nReleasing JDBC Connection [conn0] after transaction\nAcquired Connection [HikariProxyConnection@2 wrapping conn0]\n```\n\n**풀에 돌려줬다가 다시 빌렸는데 같은 것이 나왔다.** **풀에 하나뿐이거나 방금 반납한 것을 다시 주기 때문**이다.\n\n**그런데 트랜잭션은 완전히 별개**다.\n\n| | |\n|---|---|\n| **커넥션** | 같다 |\n| **트랜잭션** | **다르다** |\n\n**첫 번째를 커밋한 순간 DB 쪽 트랜잭션이 끝났다.** **다시 `setAutoCommit(false)` 를 하면 새 트랜잭션**이다.\n\n> **`HikariProxyConnection@1` 과 `@2` 가 다른 것**이 그 표시다. **풀이 빌려줄 때마다 새 프록시로 감싼다.**\n>\n> **`conn0` 만 보고 \"같은 트랜잭션\" 이라고 읽으면 안 된다.**\n\n**커넥션 풀 크기를 1로 두면** 이것이 더 분명해진다.\n\n```properties\nspring.datasource.hikari.maximum-pool-size=1\n```\n\n**11.3절부터는 커넥션을 반납하지 않고 붙잡고** 있게 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 커밋 두 번 ---\n\n#   트랜잭션1 시작\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   트랜잭션1 커밋\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n#   트랜잭션2 시작\n#   Creating new transaction with name [null]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn0]\n#     for JDBC transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   트랜잭션2 커밋\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0] after transaction\n\n#   Creating new 가 두 번\n#   Releasing 이 두 번\n#   프록시 번호가 @1 과 @2\n\n# --- 커밋하고 롤백 ---\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0]\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn0]\n#   Initiating transaction rollback\n#   Rolling back JDBC transaction on Connection [conn0]\n#   Releasing JDBC Connection [conn0]\n\n#   1은 커밋, 2는 롤백. 서로 영향이 없다.\n\n# --- 실제 데이터로 보면 ---\n\nTransactionStatus tx1 = txManager.getTransaction(def);\njdbcTemplate.update(\"insert into item (item_name, price, quantity) \" +\n                    \"values ('itemA', 10000, 10)\");\ntxManager.commit(tx1);\n\nTransactionStatus tx2 = txManager.getTransaction(def);\njdbcTemplate.update(\"insert into item (item_name, price, quantity) \" +\n                    \"values ('itemB', 20000, 20)\");\ntxManager.rollback(tx2);\n\nselect item_name from item;\n#   -> itemA\n\n#   itemB 만 사라졌다\n\n# --- 11.3절에서 볼 것 ---\n\nTransactionStatus outer = txManager.getTransaction(def);\nTransactionStatus inner = txManager.getTransaction(def);\n\n#   Creating new transaction with name [null]\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#   Participating in existing transaction\n\n#   Acquired 가 한 번뿐이다\n#   Creating new 도 한 번뿐이다",
+   "note": "**첫 블록에 `Creating new` 가 둘, `Releasing` 이 둘**이다. **완전히 분리된 두 트랜잭션**이다.\n\n**`HikariProxyConnection@1` 과 `@2`** 가 다른 것을 본다. **`conn0` 는 같은데**.\n\n**세 번째 블록이 실제 결과**다. **`itemA` 는 남고 `itemB` 만 사라졌다.**\n\n**맨 아래가 다음 절**이다. **커밋하기 전에 두 번째를 시작하면 `Participating`** 이다. **커넥션을 한 번만 빌렸다.**"
+  }
+ ],
+ "recap": [
+  "**순서대로 쓰면 트랜잭션이 둘**이다 — 겹치지 않는다.",
+  "**두 번째가 첫 번째를 못 되돌린다.**",
+  "**10.3절의 주문 처리 사고가 이 구조**다.",
+  "**로그의 `Creating new` 와 `Releasing` 개수**를 센다.",
+  "**`conn0` 가 같아도 같은 트랜잭션이 아니다.**",
+  "**`HikariProxyConnection@N` 의 번호**를 본다.",
+  "**풀이 방금 반납한 것을 다시** 준다.",
+  "**겹치지 않는 것이 필요한 경우**도 있다 — 로그·알림.",
+  "**그때는 12장의 `REQUIRES_NEW`** 를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "커밋 두 번을 실행하고 로그를 센다.",
+   "done_when": "`Creating new` 가 둘인 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "커밋하고 롤백해 실제 데이터를 본다.",
+   "done_when": "첫 건만 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "커넥션 풀 크기를 1로 줄여 본다.",
+   "done_when": "그래도 도는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "10.3절의 주문 처리 예제와 비교한다.",
+   "done_when": "같은 구조인 것을 설명했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "순서대로 두 번 쓰면 트랜잭션이 몇 개인가?",
+   "a": "둘이다. 겹치지 않고 서로 영향이 없다."
+  },
+  {
+   "q": "두 번째를 롤백하면 첫 번째는?",
+   "a": "이미 커밋됐으므로 그대로 남는다."
+  },
+  {
+   "q": "`conn0` 가 같으면 같은 트랜잭션인가?",
+   "a": "아니다. 풀이 같은 커넥션을 다시 빌려준 것뿐이다."
+  },
+  {
+   "q": "무엇으로 구분하나?",
+   "a": "`HikariProxyConnection@N` 의 번호와 `Creating new`/`Releasing` 개수다."
+  },
+  {
+   "q": "이 구조가 문제가 되는 예는?",
+   "a": "재고 차감과 결제 저장이 각각 커밋되는 경우다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

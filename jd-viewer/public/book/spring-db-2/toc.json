@@ -666,7 +666,7 @@
           "title": "커밋과 롤백",
           "summary": "트랜잭션 매니저를 직접 쓴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -674,7 +674,7 @@
           "title": "트랜잭션 두 번 사용",
           "summary": "따로 쓰면 각각 커밋된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -682,7 +682,7 @@
           "title": "전파 기본",
           "summary": "REQUIRED 가 무엇을 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
