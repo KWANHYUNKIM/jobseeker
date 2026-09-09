@@ -1,0 +1,158 @@
+{
+ "book": "docker",
+ "id": "resources",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "자원 제한",
+ "summary": "메모리와 CPU 를 묶어 둔다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "메모리·CPU 제한 옵션을 안다.",
+  "제한이 없으면 무슨 일이 생기는지 안다.",
+  "무엇을 얼마로 줄지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 \"안 주면 무제한\" 이라고** 했다. **그 결과를 여기서** 본다.\n\n```bash\n$ docker inspect -f '{{.HostConfig.Memory}}' myapp\n0\n```\n\n> **`0` 은 무제한**이다. **한 컨테이너가 호스트 메모리를 다 먹으면 커널이 아무나** 죽인다(2.1절)."
+  },
+  {
+   "type": "table",
+   "caption": "자주 쓰는 제한 옵션",
+   "columns": [
+    "옵션",
+    "무엇",
+    "안 주면"
+   ],
+   "rows": [
+    [
+     "**`--memory 512m`**",
+     "**메모리 상한.** 넘으면 OOMKill(137)",
+     "무제한"
+    ],
+    [
+     "`--memory-swap 512m`",
+     "메모리+스왑 합계. **메모리와 같게 주면 스왑 금지**",
+     "메모리의 두 배"
+    ],
+    [
+     "`--memory-reservation 256m`",
+     "여유 있을 때만 넘어도 되는 소프트 한도",
+     "없음"
+    ],
+    [
+     "**`--cpus 1.5`**",
+     "**CPU 시간.** 1.5 코어 분량",
+     "무제한"
+    ],
+    [
+     "`--cpu-shares 512`",
+     "경쟁할 때의 상대적 비중(기본 1024)",
+     "1024"
+    ],
+    [
+     "`--pids-limit 200`",
+     "프로세스 개수",
+     "무제한"
+    ]
+   ],
+   "note": "**메모리와 CPU 의 성질이 다르다** — **CPU 는 넘으면 느려지고(스로틀), 메모리는 넘으면 죽는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메모리는 죽고 CPU 는 느려진다",
+   "md": "```\n--memory 512m 를 넘으면\n  -> 커널이 SIGKILL. 종료 코드 137. OOMKilled=true\n\n--cpus 0.5 를 넘으면\n  -> 죽지 않는다. cgroup 이 주기마다 재운다 (throttling)\n  -> 응답이 느려진다. GC 가 길어진다\n```\n\n**그래서 증상이 다르다.**\n\n| 증상 | 의심 |\n|---|---|\n| 갑자기 죽고 137 | 메모리 한도 |\n| **점점 느려지는데 CPU 사용률은 낮게 보인다** | **CPU 스로틀링** |\n\n**스로틀링 확인**:\n\n```bash\ndocker exec myapp cat /sys/fs/cgroup/cpu.stat\n# nr_throttled 와 throttled_usec 이 계속 늘면 CPU 가 모자란 것이다\n```\n\n> **\"CPU 30% 인데 느려요\" 의 흔한 원인**이다 — **`--cpus 0.5` 인데 호스트 기준으로 보면 낮게 보인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JVM 은 이 숫자를 어떻게 보나",
+   "md": "**2.4절에서 `free -m` 이 호스트 값을 답하는 것을** 봤다. **JVM 은 다행히 cgroup 을 읽는다**(JDK 10+).\n\n```bash\n$ docker run --rm -m 512m eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version | grep MaxHeapSize\n   size_t MaxHeapSize = 134217728    # 128MB = 512m 의 25%\n```\n\n**기본값이 컨테이너 메모리의 25%** 다. **512MB 를 줬는데 힙은 128MB** 다.\n\n```bash\n-XX:MaxRAMPercentage=75.0\n```\n\n**그리고 힙만이 전부가 아니다**:\n\n```\n컨테이너 메모리 = 힙 + 메타스페이스 + 스레드 스택 + 코드 캐시 + 네이티브 + 다이렉트 버퍼\n```\n\n> **힙을 컨테이너 한도와 같게 주면 반드시 OOMKill** 된다.\n> **10.3절이 이 이야기 전체**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "무엇을 얼마로 줄 것인가",
+   "md": "| 단계 | 무엇 |\n|---|---|\n| 1 | **제한 없이 부하를 줘 보고 `docker stats` 로 실제 사용량을** 본다 |\n| 2 | 최대 사용량 + 여유 30~50% 를 메모리 한도로 |\n| 3 | CPU 는 **응답 시간을 보며** 조정. 스로틀 카운터를 같이 본다 |\n| 4 | 한도를 걸고 다시 부하를 줘서 137 이 안 나는지 확인 |\n\n**아무 숫자도 모르겠으면**:\n\n> **일단 넉넉히 걸어 둔다.** **제한이 없는 것보다 낫다** — **무제한은 호스트 전체를 위험하게** 한다.\n\n**컴포즈에서는**(9.2절):\n\n```yaml\nservices:\n  api:\n    deploy:\n      resources:\n        limits: { memory: 768M, cpus: '1.0' }\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "제한을 걸고 넘겨 본다",
+   "sql": "# --- 제한이 없으면 무제한이다 ---\n\n$ docker run -d --name free alpine sleep 3600 >/dev/null\n$ docker inspect -f 'mem={{.HostConfig.Memory}} cpus={{.HostConfig.NanoCpus}}' free\nmem=0 cpus=0\n\n$ docker stats --no-stream free --format 'table {{.Name}}\\t{{.MemUsage}}'\nNAME   MEM USAGE / LIMIT\nfree   372KiB / 7.654GiB\n\n#   LIMIT 이 호스트 전체다\n\n\n# --- 메모리 한도를 넘기면 죽는다 ---\n\n$ docker run --name oom -m 64m --memory-swap 64m alpine \\\n    sh -c 'dd if=/dev/zero of=/dev/shm/f bs=1M count=128'\ndd: writing '/dev/shm/f': No space left on device\n\n$ docker rm oom >/dev/null\n\n$ docker run --name oom2 -m 64m --memory-swap 64m python:3.12-slim \\\n    python -c \"a=bytearray(200*1024*1024)\"\nKilled\n\n$ docker inspect -f 'code={{.State.ExitCode}} oom={{.State.OOMKilled}}' oom2\ncode=137 oom=true\n\n#   1.5절의 표 그대로다\n\n\n# --- CPU 는 죽지 않고 느려진다 ---\n\n$ cat > /tmp/burn.sh <<'EOF'\nend=$(( $(date +%s) + 5 ))\nn=0\nwhile [ $(date +%s) -lt $end ]; do n=$((n+1)); done\necho \"loops=$n\"\nEOF\n\n$ docker run --rm -v /tmp/burn.sh:/burn.sh:ro alpine sh /burn.sh\nloops=1284301\n\n$ docker run --rm --cpus 0.2 -v /tmp/burn.sh:/burn.sh:ro alpine sh /burn.sh\nloops=254118\n\n#   5분의 1 정도로 줄었다. 죽지 않고 느려졌다\n\n\n# --- 스로틀 카운터 ---\n\n$ docker run -d --name throttled --cpus 0.2 alpine \\\n    sh -c 'while true; do :; done' >/dev/null\n$ sleep 5\n$ docker exec throttled cat /sys/fs/cgroup/cpu.stat\nusage_usec 1002481\nuser_usec 998210\nsystem_usec 4271\nnr_periods 51\nnr_throttled 50\nthrottled_usec 4008122\n\n#   51번 중 50번 재워졌다. 4초를 기다렸다\n#   \"CPU 사용률은 낮은데 느리다\" 의 정체\n\n$ docker stats --no-stream throttled --format 'table {{.Name}}\\t{{.CPUPerc}}'\nNAME        CPU %\nthrottled   20.01%\n\n#   호스트 기준 20% 로 보인다. 한도를 모르면 여유 있어 보인다\n\n\n# --- JVM 이 보는 숫자 ---\n\n$ docker run --rm -m 512m eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E 'MaxHeapSize|ActiveProcessorCount'\n   size_t MaxHeapSize                     = 134217728\n\n$ docker run --rm -m 512m eclipse-temurin:21-jre \\\n    java -XX:MaxRAMPercentage=75 -XX:+PrintFlagsFinal -version 2>/dev/null | grep MaxHeapSize\n   size_t MaxHeapSize                     = 402653184\n\n#   128MB -> 384MB\n\n$ docker run --rm -m 512m --cpus 1 eclipse-temurin:21-jre \\\n    java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -i activeprocessor\n     int ActiveProcessorCount             = -1\n\n$ docker run --rm -m 512m --cpus 1 eclipse-temurin:21-jre \\\n    sh -c 'java -e 2>/dev/null; nproc; java -XshowSettings:system -version 2>&1 | grep -i cpu'\n8\nCPUs total: 1\n\n#   nproc 은 8 이라고 하는데 JVM 은 1 로 본다\n#   JVM 이 cgroup 을 읽기 때문이다. 스레드 풀 크기가 여기서 정해진다\n\n\n# --- 도는 컨테이너의 한도를 바꾼다 ---\n\n$ docker update --memory 256m --memory-swap 256m free\nfree\n$ docker inspect -f '{{.HostConfig.Memory}}' free\n268435456\n\n$ docker rm -f free throttled oom2 >/dev/null 2>&1; rm -f /tmp/burn.sh"
+  }
+ ],
+ "recap": [
+  "제한을 안 주면 무제한이다. 한 컨테이너가 호스트를 위험하게 만들 수 있다.",
+  "메모리는 넘으면 죽고(137, OOMKilled) CPU 는 넘으면 느려진다(스로틀).",
+  "'CPU 사용률은 낮은데 느리다' 면 cpu.stat 의 nr_throttled 를 본다.",
+  "JVM 은 cgroup 을 읽어 힙 기본값을 컨테이너 메모리의 25% 로 잡는다. MaxRAMPercentage 로 조정한다.",
+  "실제 사용량을 재고 여유를 얹어 한도를 정한다. 모르겠으면 넉넉히라도 건다."
+ ],
+ "drills": [
+  {
+   "task": "`-m 64m` 으로 메모리를 넘기는 컨테이너를 돌려 137 과 OOMKilled=true 를 확인한다.",
+   "done_when": "두 값을 다 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "같은 CPU 부하를 제한 없이와 `--cpus 0.2` 로 돌려 처리량을 비교한다.",
+   "done_when": "죽지 않고 느려지는 것을 숫자로 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "`--cpus 0.2` 컨테이너의 `/sys/fs/cgroup/cpu.stat` 에서 nr_throttled 를 읽는다.",
+   "done_when": "스로틀 횟수가 늘어나는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "`-m 512m` 으로 JVM 의 MaxHeapSize 를 확인하고 MaxRAMPercentage 로 바꿔 본다.",
+   "done_when": "128MB 에서 384MB 로 바뀌는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메모리 한도와 CPU 한도의 증상 차이는.",
+   "a": "메모리는 넘으면 SIGKILL(137)로 죽고, CPU 는 죽지 않고 스로틀링되어 느려진다."
+  },
+  {
+   "q": "'CPU 사용률이 낮은데 응답이 느리다' 면 무엇을 확인하나.",
+   "a": "cgroup 의 cpu.stat 에서 nr_throttled/throttled_usec. --cpus 한도에 걸린 것일 수 있다."
+  },
+  {
+   "q": "-m 512m 을 줬는데 JVM 힙이 128MB 인 이유는.",
+   "a": "JVM 이 컨테이너 메모리의 25% 를 기본 최대 힙으로 잡기 때문. MaxRAMPercentage 로 올린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스로틀링",
+   "en": "throttling",
+   "what": "한도를 넘지 않게 주기마다 프로세스를 재우는 것."
+  },
+  {
+   "term": "MaxRAMPercentage",
+   "what": "컨테이너 메모리의 몇 %를 최대 힙으로 쓸지 정하는 JVM 옵션."
+  },
+  {
+   "term": "소프트 한도",
+   "en": "reservation",
+   "what": "여유가 있으면 넘어도 되는 한도. 압박이 있을 때만 회수된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Runtime options with Memory, CPUs",
+   "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "OpenJDK — Container awareness",
+   "url": "https://docs.oracle.com/en/java/javase/21/vm/java-virtual-machine-technology-overview.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

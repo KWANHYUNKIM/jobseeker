@@ -317,7 +317,7 @@
           "title": "포트",
           "summary": "안의 8080 은 밖의 8080 이 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -325,7 +325,7 @@
           "title": "환경변수로 설정을 밖에 둔다",
           "summary": "같은 이미지가 개발과 운영에서 다르게 도는 법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -333,7 +333,7 @@
           "title": "컨테이너는 언제 죽는가",
           "summary": "종료 코드와 재시작 정책.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -341,7 +341,7 @@
           "title": "로그는 stdout 으로",
           "summary": "파일에 쓰면 안 되는 이유.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -349,7 +349,7 @@
           "title": "헬스체크",
           "summary": "떠 있는 것과 받을 수 있는 것은 다르다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -357,7 +357,7 @@
           "title": "자원 제한",
           "summary": "메모리와 CPU 를 묶어 둔다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

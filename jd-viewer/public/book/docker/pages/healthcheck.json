@@ -1,0 +1,143 @@
+{
+ "book": "docker",
+ "id": "healthcheck",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "헬스체크",
+ "summary": "떠 있는 것과 받을 수 있는 것은 다르다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "헬스체크가 무엇을 알려 주는지 안다.",
+  "옵션 네 개를 정확히 쓴다.",
+  "무엇을 체크해야 하는지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`docker ps` 가 `Up 3 minutes` 라고** 한다. **그런데 요청을 넣으면 503 이** 온다.\n\n> **프로세스가 살아 있는 것과 요청을 처리할 수 있는 것은 다른** 상태다.\n> **스프링 부트는 뜨는 데 20초가 걸린다** — **그 20초 동안 컨테이너는 `Up` 이다.**"
+  },
+  {
+   "type": "code",
+   "lang": "dockerfile",
+   "file": "Dockerfile",
+   "caption": "이미지에 굽는 헬스체크",
+   "code": "HEALTHCHECK --interval=10s --timeout=3s --start-period=40s --retries=3 \\\n  CMD curl -fsS http://localhost:8080/actuator/health || exit 1",
+   "note": "`--start-period` 가 없으면 뜨는 중에 unhealthy 가 되고, 재시작 정책과 만나면 영영 못 뜬다."
+  },
+  {
+   "type": "table",
+   "caption": "옵션 네 개",
+   "columns": [
+    "옵션",
+    "뜻",
+    "기본"
+   ],
+   "rows": [
+    [
+     "`--interval`",
+     "검사 주기",
+     "30s"
+    ],
+    [
+     "`--timeout`",
+     "한 번의 검사가 이 시간을 넘으면 실패",
+     "30s"
+    ],
+    [
+     "**`--start-period`**",
+     "**이 시간 안의 실패는 안 센다**(기동 유예)",
+     "0s"
+    ],
+    [
+     "`--retries`",
+     "연속 몇 번 실패하면 unhealthy",
+     "3"
+    ]
+   ],
+   "note": "**`--start-period` 를 안 주면 느리게 뜨는 애플리케이션이 계속 unhealthy** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "헬스체크가 실제로 쓰이는 곳",
+   "md": "**도커 단독으로는 헬스체크가 컨테이너를 재시작해 주지** 않는다. **상태를 표시만** 한다.\n\n| 어디서 쓰나 | 무엇이 달라지나 |\n|---|---|\n| `docker ps` | `Up 3 minutes (healthy)` |\n| **컴포즈의 `depends_on: condition: service_healthy`** | **의존 서비스가 준비될 때까지 기다린다**(9.3절) |\n| 로드밸런서·오케스트레이터 | 트래픽을 보낼지 결정 |\n| 쿠버네티스 | 별도의 프로브를 쓴다. 이미지의 HEALTHCHECK 는 안 본다 |\n\n> **9.3절이 헬스체크의 가장 실용적인 용도**다 — **\"DB 가 뜰 때까지 기다렸다가 애플리케이션을 띄운다\".**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "무엇을 체크할 것인가",
+   "md": "**헬스체크가 너무 얕으면 의미가 없고 너무 깊으면 연쇄 장애를** 만든다.\n\n| 체크 | 문제 |\n|---|---|\n| TCP 포트만 | **떠 있기만 하면 healthy.** 안에서 DB 가 끊겨도 모른다 |\n| **`/health` 기본** | 적당하다. 애플리케이션이 요청을 받을 수 있는가 |\n| **DB 까지 확인** | **DB 가 잠깐 느려지면 모든 인스턴스가 동시에 unhealthy** 가 된다 |\n\n**스프링 부트라면**:\n\n```\n/actuator/health/liveness   -> 살아 있나 (재시작 판단)\n/actuator/health/readiness  -> 트래픽 받을 수 있나 (DB 포함)\n```\n\n> **둘을 나눈 이유가 위 표**다. **DB 장애로 프로세스를 재시작해 봐야 소용이** 없다.\n> **「쿠버네티스 입문」 4.5절에서 이 구분을 다시** 본다.\n\n**그리고 헬스체크 명령 자체의 비용도** 본다 — **10초마다 curl 프로세스를 띄우는 것도 부담**이다. **`curl` 이 없는 이미지에서는 `wget --spider` 나 애플리케이션 내장 체크를 쓴다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "unhealthy 를 만들어 보고 상태 기록을 읽는다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 뜨는 데 시간이 걸리는 애플리케이션을 흉내 낸다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM python:3.12-slim\nRUN apt-get update && apt-get install -y --no-install-recommends curl \\\n && rm -rf /var/lib/apt/lists/*\nWORKDIR /app\nCOPY app.py .\nHEALTHCHECK --interval=5s --timeout=2s --start-period=15s --retries=2 \\\n  CMD curl -fsS http://localhost:8000/health || exit 1\nCMD [\"python\", \"app.py\"]\nEOF\n\n$ cat > app.py <<'EOF'\nimport time, threading\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\n\nready = False\ndef warmup():\n    global ready\n    time.sleep(12)          # 기동에 12초 걸린다\n    ready = True\nthreading.Thread(target=warmup, daemon=True).start()\n\nclass H(BaseHTTPRequestHandler):\n    def do_GET(self):\n        code = 200 if ready else 503\n        self.send_response(code); self.end_headers()\n        self.wfile.write(b\"ok\" if ready else b\"starting\")\n    def log_message(self, *a): pass\n\nHTTPServer((\"0.0.0.0\", 8000), H).serve_forever()\nEOF\n\n$ docker build -q -t hc . >/dev/null\n$ docker run -d --name h1 -p 8000:8000 hc >/dev/null\n\n\n# --- 기동 유예 동안 ---\n\n$ sleep 3 && docker ps --format 'table {{.Names}}\\t{{.Status}}'\nNAMES   STATUS\nh1      Up 3 seconds (health: starting)\n\n#   health: starting 이다. 실패해도 안 센다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8000/health\n503\n\n#   아직 503 인데 unhealthy 가 아니다. start-period 덕분이다\n\n$ sleep 12 && docker ps --format 'table {{.Names}}\\t{{.Status}}'\nNAMES   STATUS\nh1      Up 15 seconds (healthy)\n\n\n# --- 상태 기록을 읽는다 ---\n\n$ docker inspect -f '{{json .State.Health}}' h1 | python3 -m json.tool | head -16\n{\n    \"Status\": \"healthy\",\n    \"FailingStreak\": 0,\n    \"Log\": [\n        {\n            \"Start\": \"2026-09-09T21:52:14.10Z\",\n            \"End\": \"2026-09-09T21:52:14.19Z\",\n            \"ExitCode\": 1,\n            \"Output\": \"curl: (22) The requested URL returned error: 503\"\n        },\n        {\n            \"Start\": \"2026-09-09T21:52:24.11Z\",\n            \"ExitCode\": 0,\n            \"Output\": \"ok\"\n        }\n\n#   마지막 5회의 검사 결과가 남는다. 실패 출력까지 그대로\n\n\n# --- start-period 를 안 주면 ---\n\n$ sed 's/--start-period=15s //' Dockerfile > Dockerfile.nostart\n$ docker build -q -f Dockerfile.nostart -t hc2 . >/dev/null\n$ docker run -d --name h2 hc2 >/dev/null\n\n$ sleep 12 && docker ps -a --format 'table {{.Names}}\\t{{.Status}}' | grep h2\nh2    Up 12 seconds (unhealthy)\n\n#   아직 뜨는 중인데 unhealthy 가 됐다\n#   9.3절에서 depends_on 이 이걸 보고 판단하면 배포가 멈춘다\n\n\n# --- 도커는 unhealthy 라고 재시작해 주지 않는다 ---\n\n$ sleep 10 && docker ps --format 'table {{.Names}}\\t{{.Status}}' | grep h2\nh2    Up 22 seconds (healthy)\n\n$ docker inspect -f '{{.RestartCount}}' h2\n0\n\n#   상태만 바뀌었을 뿐 아무 조치도 없었다\n\n\n# --- 실행 시점에 헬스체크를 덮거나 끄기 ---\n\n$ docker run -d --name h3 --no-healthcheck hc >/dev/null\n$ sleep 3 && docker ps --format 'table {{.Names}}\\t{{.Status}}' | grep h3\nh3    Up 3 seconds\n\n#   괄호가 없다 = 헬스체크 없음\n\n$ docker rm -f h1 h2 h3 >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab && docker rmi -f hc hc2 >/dev/null"
+  }
+ ],
+ "recap": [
+  "Up 은 프로세스가 살아 있다는 뜻이지 요청을 받을 수 있다는 뜻이 아니다.",
+  "--start-period 를 주지 않으면 느리게 뜨는 애플리케이션이 기동 중에 unhealthy 가 된다.",
+  "도커 단독으로는 unhealthy 라고 재시작해 주지 않는다. 상태를 표시할 뿐이다.",
+  "가장 실용적인 용도는 컴포즈의 depends_on: service_healthy 다(9.3절).",
+  "체크가 DB 까지 들어가면 DB 장애가 모든 인스턴스를 동시에 unhealthy 로 만든다. liveness 와 readiness 를 나눈다."
+ ],
+ "drills": [
+  {
+   "task": "기동에 시간이 걸리는 서버를 만들어 --start-period 유무로 상태가 어떻게 달라지는지 비교한다.",
+   "done_when": "하나는 health: starting, 하나는 unhealthy 가 되는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "`docker inspect -f '{{json .State.Health}}'` 로 실패한 검사의 Output 을 읽어 본다.",
+   "done_when": "실패 이유(503 등)가 그대로 기록되는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "unhealthy 상태를 만들고 RestartCount 를 확인한다.",
+   "done_when": "도커가 아무 조치도 안 하는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "--start-period 는 무엇을 위한 옵션인가.",
+   "a": "기동에 걸리는 시간 동안의 헬스체크 실패를 세지 않기 위한 유예."
+  },
+  {
+   "q": "컨테이너가 unhealthy 가 되면 도커가 무엇을 하나.",
+   "a": "상태만 표시한다. 재시작하지 않는다. 컴포즈나 오케스트레이터가 그 상태를 보고 판단한다."
+  },
+  {
+   "q": "헬스체크에서 DB 연결까지 확인하면 무엇이 위험한가.",
+   "a": "DB 가 잠깐 느려지면 모든 인스턴스가 동시에 unhealthy 가 되어 연쇄 장애가 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "HEALTHCHECK",
+   "what": "이미지에 굽는 상태 검사 명령. Dockerfile 지시어."
+  },
+  {
+   "term": "liveness / readiness",
+   "what": "살아 있는지와 트래픽을 받을 수 있는지를 나눈 두 가지 검사."
+  },
+  {
+   "term": "FailingStreak",
+   "what": "연속 실패 횟수. retries 를 넘으면 unhealthy 가 된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Dockerfile: HEALTHCHECK",
+   "url": "https://docs.docker.com/reference/dockerfile/#healthcheck",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Spring Boot — Kubernetes probes",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.kubernetes-probes",
+   "publisher": "Spring"
+  }
+ ]
+}

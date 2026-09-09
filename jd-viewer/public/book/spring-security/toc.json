@@ -704,7 +704,7 @@
           "title": "계정 잠금",
           "summary": "다섯 번 틀리면.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.9",
@@ -712,7 +712,7 @@
           "title": "정리",
           "summary": "만든 것과 안 만든 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

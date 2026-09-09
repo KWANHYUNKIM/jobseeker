@@ -1,0 +1,132 @@
+{
+ "book": "docker",
+ "id": "restart-policy",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "컨테이너는 언제 죽는가",
+ "summary": "종료 코드와 재시작 정책.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "재시작 정책 네 가지를 구분한다.",
+  "백오프 동작을 안다.",
+  "재시작이 감추는 문제를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**컨테이너는 PID 1 이 끝나면** 끝난다(2.3절). **그러면 서버가 죽으면 누가 다시 띄우나.**"
+  },
+  {
+   "type": "table",
+   "caption": "재시작 정책 네 가지",
+   "columns": [
+    "정책",
+    "언제 다시 띄우나",
+    "데몬 재시작 후"
+   ],
+   "rows": [
+    [
+     "`no` (기본)",
+     "안 띄운다",
+     "—"
+    ],
+    [
+     "`on-failure[:N]`",
+     "**0 이 아닌 종료 코드일 때만**. N 번까지",
+     "안 띄운다"
+    ],
+    [
+     "**`always`**",
+     "**항상.** `docker stop` 한 것도 데몬 재시작 시 다시 뜬다",
+     "**띄운다**"
+    ],
+    [
+     "**`unless-stopped`**",
+     "항상. 다만 **내가 stop 한 것은 안** 띄운다",
+     "**stop 한 것 빼고 띄운다**"
+    ]
+   ],
+   "note": "**운영에서는 대개 `unless-stopped`** 다. **`always` 는 정비하려고 내려놨는데 재부팅되면 다시 뜬다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "백오프 — 무한히 빨리 재시작하지 않는다",
+   "md": "**즉시 재시작을 반복하면 CPU 만 태운다.** **도커는 간격을 늘려** 간다.\n\n```\n100ms -> 200ms -> 400ms -> 800ms -> ... -> 최대 1분\n```\n\n**컨테이너가 10초 이상 살아 있으면 카운터가 초기화**된다.\n\n```bash\n$ docker ps --format 'table {{.Names}}\\t{{.Status}}'\nNAMES   STATUS\napi     Restarting (1) 18 seconds ago\n```\n\n> **`Restarting (1)` 의 괄호 안이 마지막 종료 코드**다(1.5절).\n> **이 상태가 계속되면 `docker logs` 로 이유를 본다.** **로그는 재시작 사이에도 계속 쌓인다.**\n\n**몇 번 재시작했는지**:\n\n```bash\ndocker inspect -f '{{.RestartCount}}' api\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "재시작 정책이 문제를 감춘다",
+   "md": "**`always` 를 걸어 두면 죽어도 다시 떠서 \"돌고 있는 것처럼\"** 보인다.\n\n| 감춰지는 것 | 어떻게 드러나나 |\n|---|---|\n| 메모리 누수 | 몇 시간마다 137 로 죽고 되살아난다. 그동안 요청은 실패 |\n| 시작 시 DB 연결 실패 | 재시도처럼 보이지만 **의존성 순서 문제**다(9.3절) |\n| OOM | `RestartCount` 가 계속 는다 |\n\n**정기적으로 확인할 것**:\n\n```bash\ndocker ps -a --format 'table {{.Names}}\\t{{.Status}}\\t{{.RunningFor}}'\ndocker inspect -f '{{.Name}} restarts={{.RestartCount}}' $(docker ps -q)\n```\n\n> **`RestartCount` 가 0 이 아닌 컨테이너는 전부 이유를 알아야** 한다.\n> **재시작은 응급 처치지 고침이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "종료 코드로 정책을 고른다",
+   "md": "| 워크로드 | 정책 | 왜 |\n|---|---|---|\n| 웹 서버 | `unless-stopped` | 계속 떠 있어야 한다 |\n| **배치 작업** | **`no` 또는 `on-failure:3`** | 성공하면 끝나는 게 정상이다. `always` 면 무한 반복 |\n| 개발 중 | `no` | 죽으면 왜 죽었는지 보고 싶다 |\n\n**배치에 `always` 를 걸면**:\n\n```\n작업 성공 -> exit 0 -> always 니까 다시 띄운다 -> 또 실행 -> ...\n```\n\n> **정산 배치가 하루에 3000번 돌아 버린** 사고가 이렇게 난다.\n> **`on-failure` 는 0 이 아닐 때만 다시** 띄운다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "정책별로 실제 동작을 본다",
+   "sql": "# --- 정책 없음: 죽으면 끝 ---\n\n$ docker run -d --name a1 alpine sh -c 'sleep 2; exit 1' >/dev/null\n$ sleep 4 && docker ps -a --format 'table {{.Names}}\\t{{.Status}}' | grep a1\na1    Exited (1) 2 seconds ago\n\n\n# --- on-failure: 실패할 때만 ---\n\n$ docker run -d --name a2 --restart on-failure:3 alpine sh -c 'sleep 1; exit 1' >/dev/null\n$ sleep 8\n$ docker ps -a --format 'table {{.Names}}\\t{{.Status}}' | grep a2\na2    Exited (1) 1 second ago\n\n$ docker inspect -f 'restarts={{.RestartCount}}' a2\nrestarts=3\n\n#   3번 시도하고 포기했다\n\n\n# --- 성공하면 안 띄운다 ---\n\n$ docker run -d --name a3 --restart on-failure alpine sh -c 'echo done; exit 0' >/dev/null\n$ sleep 3\n$ docker inspect -f 'code={{.State.ExitCode}} restarts={{.RestartCount}}' a3\ncode=0 restarts=0\n\n\n# --- always 는 성공해도 다시 띄운다 ---\n\n$ docker run -d --name a4 --restart always alpine sh -c 'echo run; exit 0' >/dev/null\n$ sleep 10\n$ docker inspect -f 'restarts={{.RestartCount}}' a4\nrestarts=7\n\n$ docker logs a4 | wc -l\n8\n\n#   배치 작업에 always 를 걸면 이렇게 된다\n\n\n# --- 백오프 ---\n\n$ docker rm -f a5 >/dev/null 2>&1\n$ docker run -d --name a5 --restart always alpine sh -c 'exit 1' >/dev/null\n$ for i in 1 2 3 4 5 6; do\n>   sleep 5\n>   printf '%2ds  restarts=%s  %s\\n' $((i*5)) \\\n>     \"$(docker inspect -f '{{.RestartCount}}' a5)\" \\\n>     \"$(docker ps -a --filter name=a5 --format '{{.Status}}')\"\n> done\n 5s  restarts=5   Restarting (1) 1 second ago\n10s  restarts=7   Restarting (1) 2 seconds ago\n15s  restarts=8   Restarting (1) 4 seconds ago\n20s  restarts=9   Restarting (1) 3 seconds ago\n25s  restarts=9   Restarting (1) 8 seconds ago\n30s  restarts=10  Restarting (1) 6 seconds ago\n\n#   간격이 점점 늘어난다. 100ms -> ... -> 최대 1분\n\n\n# --- unless-stopped 와 always 의 차이 ---\n\n$ docker run -d --name a6 --restart always nginx:1.27 >/dev/null\n$ docker run -d --name a7 --restart unless-stopped nginx:1.27 >/dev/null\n$ docker stop a6 a7 >/dev/null\n\n$ docker inspect -f '{{.Name}} {{.HostConfig.RestartPolicy.Name}} {{.State.Status}}' a6 a7\n/a6 always exited\n/a7 unless-stopped exited\n\n#   여기서 데몬을 재시작하면 (또는 머신을 재부팅하면)\n#   $ sudo systemctl restart docker\n#   a6 -> 다시 뜬다 (내가 내렸는데도)\n#   a7 -> 그대로 있는다\n\n\n# --- 정책은 나중에 바꿀 수 있다 ---\n\n$ docker update --restart unless-stopped a6\na6\n$ docker inspect -f '{{.HostConfig.RestartPolicy.Name}}' a6\nunless-stopped\n\n\n# --- 죽고 있는 컨테이너 찾기 ---\n\n$ docker ps -a --format '{{.Names}}' | while read n; do\n>   c=$(docker inspect -f '{{.RestartCount}}' \"$n\")\n>   [ \"$c\" -gt 0 ] && echo \"$n restarts=$c\"\n> done\na2 restarts=3\na4 restarts=7\na5 restarts=11\n\n#   운영에서 정기적으로 봐야 하는 목록이다\n\n$ docker rm -f a1 a2 a3 a4 a5 a6 a7 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "정책은 no / on-failure[:N] / always / unless-stopped 넷이다. 운영은 대개 unless-stopped.",
+  "재시작 간격은 100ms 부터 두 배씩 최대 1분까지 늘어난다. 10초 이상 살면 초기화된다.",
+  "배치 작업에 always 를 걸면 성공해도 무한 반복한다. on-failure 를 쓴다.",
+  "재시작 정책은 문제를 감춘다. RestartCount 가 0 이 아니면 이유를 알아야 한다."
+ ],
+ "drills": [
+  {
+   "task": "`--restart on-failure:3` 으로 항상 실패하는 컨테이너를 띄우고 RestartCount 를 확인한다.",
+   "done_when": "3에서 멈추는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "`--restart always` 로 `exit 0` 하는 컨테이너를 띄우고 10초 뒤 RestartCount 를 본다.",
+   "done_when": "성공해도 계속 다시 뜨는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "항상 실패하는 컨테이너의 Status 를 5초 간격으로 찍어 백오프를 관찰한다.",
+   "done_when": "간격이 늘어나는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "always 와 unless-stopped 의 차이는.",
+   "a": "데몬 재시작 시 always 는 내가 stop 한 것도 다시 띄우고, unless-stopped 는 안 띄운다."
+  },
+  {
+   "q": "배치 작업에 always 를 걸면 무슨 일이 생기나.",
+   "a": "성공(exit 0)해도 다시 띄워서 무한 반복한다."
+  },
+  {
+   "q": "`Restarting (137)` 이 반복되면 무엇을 의심하나.",
+   "a": "OOMKilled. inspect 의 OOMKilled 와 메모리 한도를 확인한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "백오프",
+   "en": "backoff",
+   "what": "재시도 간격을 점점 늘리는 것."
+  },
+  {
+   "term": "RestartCount",
+   "what": "컨테이너가 재시작된 횟수. inspect 로 본다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Restart policies",
+   "url": "https://docs.docker.com/engine/containers/start-containers-automatically/",
+   "publisher": "Docker"
+  }
+ ]
+}

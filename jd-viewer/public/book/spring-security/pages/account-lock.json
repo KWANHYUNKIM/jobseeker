@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "account-lock",
+ "no": "10.8",
+ "chapter": 10,
+ "title": "계정 잠금",
+ "summary": "다섯 번 틀리면.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 상태와 전이를 정리한다.",
+  "검사 순서의 의미를 안다.",
+  "마지막 요구사항을 초록으로 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절에서 만들었는데 10.2절에서 표를 바꾸며** 깨졌다. **도메인에 맞춰 다시** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 상태",
+   "ascii": "   the four states of an account, and what moves it\n\n   open        failed_count 0..4, locked false\n     a failure  -> count up\n     a success  -> count back to 0\n   locked      failed_count 5, locked true, locked_at set\n     30 minutes -> open again, on the next load\n     an admin   -> open again, now\n   disabled    active false, set by an admin only\n   expired     password_changed_at too old\n\n   only the first two are reached by ordinary use",
+   "note": "**일상적으로 닿는 건 앞의** 둘이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "엔티티가 규칙을 가진다",
+   "md": "```java\n@Entity\npublic class Member {\n\n    private static final int MAX_FAILED = 5;\n    private static final Duration LOCK_DURATION = Duration.ofMinutes(30);\n\n    public void recordFailure(LocalDateTime now) {\n        this.failedCount++;\n        if (this.failedCount >= MAX_FAILED) {\n            this.locked = true;\n            this.lockedAt = now;\n        }\n    }\n\n    public void recordLogin(LocalDateTime now, String ip) {\n        this.failedCount = 0;\n        this.lastLoginAt = now;\n        this.lastLoginIp = ip;\n    }\n\n    public boolean unlockIfExpired(LocalDateTime now) {\n        if (!locked || lockedAt == null) return false;\n        if (lockedAt.plus(LOCK_DURATION).isAfter(now)) return false;\n        this.locked = false;\n        this.lockedAt = null;\n        this.failedCount = 0;\n        return true;\n    }\n}\n```\n\n> **규칙이 리스너가 아니라 엔티티에** 있다.\n> **테스트가 HTTP 없이** 된다.\n> **8.5절에서 매니저를 만든 이유와** 같다.\n\n**리스너는 얇다.**\n\n```java\n@EventListener\n@Transactional\npublic void onFailure(AbstractAuthenticationFailureEvent event) {\n    if (event instanceof AuthenticationFailureLockedEvent) return;\n    memberRepository.findByEmail(event.getAuthentication().getName())\n            .ifPresent(m -> m.recordFailure(LocalDateTime.now()));\n}\n```\n\n> **잠긴 계정의 실패는 안** 센다.\n> **안 그러면 잠긴 채로 계속 시도해 `failed_count` 가 무한히** 는다.\n> **9.3절에서 빠뜨린 줄**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "검사 순서",
+   "ascii": "   the order the provider checks, and why it matters\n\n   1  load the user            a missing user stops here\n   2  pre checks               locked, disabled, expired\n   3  password compare         only now is bcrypt run\n   4  post checks              credentials expired\n\n   a locked account never reaches step 3\n   so a lockout also stops the brute force cost, not just the login",
+   "note": "**잠긴 계정은 bcrypt 를 안** 돈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "잠금이 비용도 막는다",
+   "md": "**4.4절의 순서를 다시** 본다.\n\n> **잠김 검사가 비밀번호 비교보다** 앞이다.\n> **잠긴 계정에 요청이 쏟아져도 bcrypt 가 안** 돈다.\n>\n> **10.5절에서 로그인 130ms 중 60ms 가 해시**였다.\n> **잠기면 그 60ms 가** 사라진다.\n> **잠금은 계정만이 아니라 서버도** 지킨다.\n\n**그런데 9.3절의 위험은 그대로**다.\n\n> **이메일만 알면 남을 잠글 수** 있다.\n> **완화 셋**:\n>\n> | 방법 | 효과 |\n> |---|---|\n> | 시간 잠금 | 영구가 아니라 30분 |\n> | IP 카운터 | 한 곳에서 오는 시도를 먼저 막는다 |\n> | 지연 | 실패마다 응답을 늦춘다 |\n>\n> **셋째가 가장 싸다** — **`Thread.sleep` 은 스레드를 묶으니 실패 횟수에 비례한 짧은 지연만**.\n\n**해제 자리**\n\n> **10.3절에서 `loadUserByUsername` 안에** 뒀다.\n> **로그인 시도가 있어야 풀린다** — **아무도 안 오면 잠긴 채**다.\n> **그게 맞다** — **배치로 풀 이유가** 없다.\n>\n> **다만 `readOnly` 를 빼야 저장된다**(10.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 왜 깨졌나 ---\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n다섯번_틀리면_잠긴다 FAILED\n    expected: true but was: false\n\nselect failed_count, locked from member where email = 'user@a.com';\n\nFAILED_COUNT | LOCKED\n-------------+--------\n           0 | f\n\n#   카운트가 안 올랐다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set failed_count\"\n0\n\n#   리스너가 옛 리포지토리를 본다\n\n#   9.3절의 코드가 findByEmail 을 쓰는데\n\n#   10.2절에서 엔티티를 다시 만들며 시그니처가 바뀌었다\n\n#   컴파일은 통과했다\n\n#   ifPresent 라 없으면 조용히 지나간다\n\n$ ./gradlew bootRun 2>&1 | grep \"select .* from member\" | head -1\n\nselect m1_0.id, ... from member m1_0 where m1_0.email = ?\n\n#   조회는 나간다\n\n#   그런데 update 가 없다\n\n#   @Transactional 이 빠져 있었다\n\n@EventListener\npublic void onFailure(AbstractAuthenticationFailureEvent event) { ... }\n\n#   더티 체킹이 안 된다\n\n@EventListener\n@Transactional\npublic void onFailure(AbstractAuthenticationFailureEvent event) { ... }\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n\nupdate member set failed_count = 1 where id = ?\n\n#   나간다\n\n# --- 다섯 번 ---\n\n$ for i in 1 2 3 4 5; do\n    printf '%d: ' $i\n    curl -s -o /dev/null -w '%{redirect_url} ' -b c.txt -X POST \\\n        localhost:8080/login -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n    psql -tc \"select failed_count || ' ' || locked from member\n              where email='user@a.com'\"\n  done\n\n1: http://localhost:8080/login?error=bad   1 f\n2: http://localhost:8080/login?error=bad   2 f\n3: http://localhost:8080/login?error=bad   3 f\n4: http://localhost:8080/login?error=bad   4 f\n5: http://localhost:8080/login?error=bad   5 t\n\n#   다섯 번째에 잠겼다\n\n#   그런데 메시지는 아직 bad 다\n\n#   그 요청은 아직 안 잠긴 상태로 판정됐다\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nhttp://localhost:8080/login?error=locked\n\n#   여섯 번째부터 locked 다\n\n#   10.6절의 매핑이 돈다\n\n# --- bcrypt 가 안 돈다 ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -w '%{time_total}\\n' -b c.txt -X POST \\\n        localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$T\"\n  done\n\n0.062\n0.059\n0.061\n\n#   60ms 다\n\n#   잠기기 전에는 130ms 였다 (10.5절)\n\n$ ./gradlew bootRun 2>&1 | grep -c \"password does not match\"\n0\n\n#   비교조차 안 했다\n\n#   4.4절의 검사 순서다\n\n# --- 잠긴 채로 더 시도하면 ---\n\n#   (리스너에 LockedEvent 제외를 안 넣었을 때)\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n        -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n  done\n\nselect failed_count from member where email = 'user@a.com';\n\nFAILED_COUNT\n-------------\n8\n\n#   계속 는다\n\n#   의미 없는 update 가 요청마다 나간다\n\n#   제외를 넣으면\n\nif (event instanceof AuthenticationFailureLockedEvent) return;\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -b c.txt -X POST localhost:8080/login -d \"...\"\n  done\n\nselect failed_count from member where email = 'user@a.com';\n5\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set failed_count\"\n0\n\n#   조회도 안 나간다\n\n#   잠긴 계정에 대한 시도가 공짜가 됐다\n\n# --- 30분 뒤 ---\n\nupdate member set locked_at = now() - interval '31 minutes'\n where email = 'user@a.com';\n\n$ curl -s -o /dev/null -w '%{redirect_url}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nhttp://localhost:8080/\n\nupdate member set failed_count = 0, locked = false, locked_at = null\n where id = ?\nupdate member set failed_count = ?, last_login_at = ?, last_login_ip = ?\n where id = ?\n\n#   해제되고 로그인됐다\n\n#   update 가 둘이다\n\n#   해제는 loadUserByUsername, 기록은 리스너다\n\nselect locked, failed_count, last_login_at from member\n where email = 'user@a.com';\n\nLOCKED | FAILED_COUNT | LAST_LOGIN_AT\n-------+--------------+-------------------------\nf      |            0 | 2026-09-09 20:43:07.812\n\n# --- 아홉 개가 초록 ---\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n가입하면_회원이_생긴다 PASSED\n비밀번호는_해시로_저장된다 PASSED\n가입하면_ROLE_USER_를_받는다 PASSED\n역할이_권한을_물고_온다 PASSED\n로그인하면_원래_가려던_곳으로 PASSED\n잠긴_계정은_다른_메시지 PASSED\n로그인하면_시각과_IP_가_남는다 PASSED\n다섯번_틀리면_잠긴다 PASSED\n삼십분_뒤_풀린다 PASSED\n\n9 tests completed\n\nBUILD SUCCESSFUL\n\n#   10.1절에서 아홉 개가 빨갰다\n\n$ ./gradlew test\n\n145 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 엔티티만 단위 테스트 ---\n\n@Test\nvoid 다섯번에_잠기고_삼십일분_뒤_풀린다() {\n    Member member = Member.builder().email(\"unit@a.com\").build();\n    LocalDateTime now = LocalDateTime.of(2026, 9, 9, 12, 0);\n\n    for (int i = 1; i <= 4; i++) {\n        member.recordFailure(now);\n        System.out.println(i + \" -> locked=\" + member.isLocked());\n    }\n    member.recordFailure(now);\n    System.out.println(\"5 -> locked=\" + member.isLocked());\n\n    System.out.println(\"29분 -> \" + member.unlockIfExpired(now.plusMinutes(29)));\n    System.out.println(\"31분 -> \" + member.unlockIfExpired(now.plusMinutes(31)));\n}\n\n$ ./gradlew test --tests MemberLockTest\n\n1 -> locked=false\n2 -> locked=false\n3 -> locked=false\n4 -> locked=false\n5 -> locked=true\n29분 -> false\n31분 -> true\n\n#   HTTP 도 DB 도 없이 경계를 확인했다\n\n#   8.5절에서 Clock 을 주입하던 것과 같다\n\n# --- 남을 잠가 본다 ---\n\n$ for i in 1 2 3 4 5; do\n    curl -s -o /dev/null -X POST localhost:8080/login \\\n        -d \"username=admin@a.com&password=아무거나&_csrf=$T\"\n  done\n\nselect email, locked from member where email = 'admin@a.com';\n\nEMAIL        | LOCKED\n-------------+--------\nadmin@a.com  | t\n\n#   9.3절의 그 위험이 그대로다\n\n#   지연을 넣는다\n\n@EventListener\npublic void onFailure(AbstractAuthenticationFailureEvent event) {\n    ...\n    int count = member.getFailedCount();\n    if (count > 2) {\n        Thread.sleep(Math.min(count * 200L, 2000L));\n    }\n}\n\n$ for i in 1 2 3 4 5; do\n    printf '%d: ' $i\n    curl -s -o /dev/null -w '%{time_total}\\n' -X POST localhost:8080/login \\\n        -d \"username=admin@a.com&password=아무거나&_csrf=$T\"\n  done\n\n1: 0.134\n2: 0.131\n3: 0.735\n4: 0.938\n5: 1.141\n\n#   느려진다\n\n#   스레드를 묶으니 상한을 둔다\n\n#   근본 해결은 아니다\n\n#   10.9절에서 안 만든 것으로 적어 둔다\n\n# --- 다음 절에서 ---\n\n#   만든 것과 안 만든 것을 센다",
+   "note": "**리스너에 `@Transactional` 이 빠져 `update` 가 0회**였다 — `ifPresent` 라 조용했다.\n\n**다섯 번째에 `locked = t` 인데 메시지는 아직 `bad`** 이고 여섯 번째부터 `locked` 다.\n\n**잠긴 뒤 로그인이 60ms** 다 — 130ms 중 bcrypt 60ms 가 사라졌다.\n\n**`LockedEvent` 를 제외하지 않으면 `failed_count` 가 8까지** 올라간다.\n\n**요구사항 아홉 개가 전부 초록**이 됐다. 테스트 145개."
+  }
+ ],
+ "recap": [
+  "**규칙을 엔티티에 두면 단위 테스트가** 된다.",
+  "**리스너에 `@Transactional` 이 없으면 조용히 안** 저장된다.",
+  "**잠긴 계정의 실패는 안** 센다.",
+  "**안 그러면 카운트가 무한히** 는다.",
+  "**잠김 검사가 비밀번호보다** 앞이다.",
+  "**잠기면 bcrypt 비용도** 사라진다.",
+  "**해제는 로그인 시도가 있을 때** 한다.",
+  "**남을 잠글 수 있는 위험은** 남는다.",
+  "**요구사항 아홉이 다** 초록이다."
+ ],
+ "drills": [
+  {
+   "task": "잠금 규칙을 엔티티로 옮긴다.",
+   "done_when": "단위 테스트로 경계를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`@Transactional` 을 빼 본다.",
+   "done_when": "조용히 안 되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "잠긴 뒤 로그인 시간을 잰다.",
+   "done_when": "bcrypt 가 빠진 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "실패 지연을 넣는다.",
+   "done_when": "시간이 늘어나는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "잠금 규칙을 어디에 두나?",
+   "a": "엔티티다. HTTP 없이 단위 테스트가 된다."
+  },
+  {
+   "q": "리스너에 `@Transactional` 이 없으면?",
+   "a": "더티 체킹이 안 돼 `update` 가 나가지 않는다."
+  },
+  {
+   "q": "잠긴 계정의 실패를 왜 안 세나?",
+   "a": "카운트가 무한히 늘고 의미 없는 갱신이 반복된다."
+  },
+  {
+   "q": "잠금이 서버를 지키는 이유는?",
+   "a": "잠김 검사가 앞이라 bcrypt 가 아예 안 돈다."
+  },
+  {
+   "q": "남을 잠그는 공격의 완화책은?",
+   "a": "시간 잠금, IP 카운터, 실패 지연이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authentication Events",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/events.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security — UserDetailsService",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

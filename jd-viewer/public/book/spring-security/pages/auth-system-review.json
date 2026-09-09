@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "auth-system-review",
+ "no": "10.9",
+ "chapter": 10,
+ "title": "정리",
+ "summary": "만든 것과 안 만든 것.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "만든 것을 센다.",
+  "안 만든 것을 적어 둔다.",
+  "권한 즉시 반영을 다룬다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.1절의 아홉 줄이 다** 초록이다. **무엇을 만들었나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이 장이 더한 것",
+   "ascii": "   what this chapter added to the chain\n\n   filters   17, one of them ours\n   tables    3 for identity, 1 for audit\n   beans     a user details service, an adapter,\n             two handlers, two listeners, one filter\n   tests     9 requirements, all green, 145 in total\n\n   the framework classes we replaced: four",
+   "note": "**바꾼 프레임워크 클래스는** 넷이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "바꾼 넷",
+   "md": "| 프레임워크 | 우리 것 | 절 |\n|---|---|---|\n| `UserDetailsService` | `MemberUserDetailsService` | 10.3 |\n| `UserDetails` | `CustomUserDetails` | 10.3 |\n| `AuthenticationSuccessHandler` | 상속판 | 10.6 |\n| `AuthenticationFailureHandler` | 상속판 | 10.6 |\n\n> **필터·매니저·프로바이더·인코더·저장소는 그대로**다.\n> **4.8절의 \"가장 작은 것을 고른다\" 를** 지켰다.\n\n**추가한 것**\n\n> **필터 하나**(10.7), **리스너 둘**(10.5·10.8), **표 셋**.\n> **엔티티에 규칙 셋**(`recordFailure`·`recordLogin`·`unlockIfExpired`).\n\n**남은 빚 하나**\n\n> **비동기 로그인의 302** — **11장**이다.\n> **10장에서 만든 폼 로그인은 JSON 을 못** 받는다."
+  },
+  {
+   "type": "figure",
+   "caption": "안 만든 것",
+   "ascii": "   what we did not build, and where it would go\n\n   email verification    a token table, a mail sender, a state on member\n   password reset        the same table, a short lived token\n   password change       a form that re-checks the current password\n   two factor            an extra provider, or a second filter\n   social login          oauth2 client, a whole other chapter\n   admin unlock          a screen over the locked column\n\n   none of these is hard, all of them are real work",
+   "note": "**어렵진 않고 다 실제 작업**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "권한을 즉시 반영하려면",
+   "md": "**5.1절부터 계속 나온 문제**다.\n\n> **세션에 담긴 권한은 재로그인 전까지 안** 바뀐다.\n> **관리자가 권한을 줬는데 \"다시 로그인하세요\" 라고 해야** 한다.\n\n**세 가지 방법**\n\n```java\n// 1) 그 사람의 세션을 만료시킨다\nsessionRegistry.getAllSessions(principal, false)\n        .forEach(SessionInformation::expireNow);\n\n// 2) 컨텍스트를 다시 만들어 넣는다\nUserDetails fresh = userDetailsService.loadUserByUsername(email);\nAuthentication auth = UsernamePasswordAuthenticationToken.authenticated(\n        fresh, null, fresh.getAuthorities());\nSecurityContextHolder.getContext().setAuthentication(auth);\nsecurityContextRepository.saveContext(...);\n\n// 3) 매 요청 권한을 다시 읽는다\n```\n\n| 방법 | 대가 |\n|---|---|\n| 세션 만료 | 그 사람이 로그아웃된다 |\n| 컨텍스트 교체 | 그 사람의 요청이 있을 때만 |\n| 매 요청 조회 | 쿼리가 요청마다 |\n\n> **첫째가 가장 정직**하다 — **권한이 바뀌었으니 다시 들어오라는** 것이다.\n> **5.5절의 `SessionRegistry` 가 필요**하고 **5.7절대로 여러 대면 공유**해야 한다.\n>\n> **둘째는 자기 세션에만** 된다 — **남의 세션에는 못 넣는다.**\n\n**8.7절의 동적 인가와 겹친다.**\n\n> **URL 규칙은 즉시 반영됐는데 권한은 안 됐다.**\n> **규칙은 서버 메모리, 권한은 각자 세션에 있어서**다.\n> **이 비대칭을 알고 있어야** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 만든 것을 센다 ---\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | wc -l\n17\n\n$ ./gradlew bootRun 2>&1 | grep \"Will secure\" | tr ',' '\\n' | grep -c RequestTrace\n1\n\n$ psql -tc \"select count(*) from information_schema.tables\n            where table_schema='public' and table_name in\n            ('member','member_role','role_authority','security_audit')\"\n4\n\n$ grep -rln \"implements UserDetailsService\\|implements UserDetails\\|extends SavedRequestAware\\|extends SimpleUrlAuthenticationFailure\\|extends OncePerRequestFilter\" \\\n    src/main --include='*.java' | wc -l\n5\n\n$ grep -rn \"@EventListener\" src/main --include='*.java' | wc -l\n9\n\n$ ./gradlew test\n\n145 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 전체 흐름을 한 번 ---\n\n$ rm -f full.txt\n\n#   1) 가입\n$ T=$(curl -s -c full.txt localhost:8080/signup \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n$ curl -s -o /dev/null -w '가입 %{http_code}\\n' -b full.txt -X POST \\\n    localhost:8080/signup \\\n    -d \"email=final@a.com&password=hunter2secret&nickname=마무리&_csrf=$T\"\n\n가입 302\n\n#   2) 보호된 곳에 먼저 간다\n$ curl -s -o /dev/null -w '주문 %{http_code}\\n' -b full.txt -c full.txt \\\n    'localhost:8080/orders?page=2'\n\n주문 302\n\n#   3) 로그인\n$ T=$(curl -s -b full.txt -c full.txt localhost:8080/login \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n$ curl -s -o /dev/null -w '로그인 %{redirect_url}\\n' -b full.txt -c full.txt \\\n    -X POST localhost:8080/login \\\n    -d \"username=final@a.com&password=hunter2secret&_csrf=$T\"\n\n로그인 http://localhost:8080/welcome\n\n#   첫 로그인이라 /welcome 이다 (10.6절)\n\n#   SavedRequest 는 아직 살아 있다\n\n$ curl -s -o /dev/null -w '주문 %{http_code}\\n' -b full.txt \\\n    'localhost:8080/orders?page=2'\n\n주문 200\n\n#   4) 다시 로그인하면\n$ curl -s -o /dev/null -w '로그인 %{redirect_url}\\n' -b full2.txt -c full2.txt \\\n    -X POST localhost:8080/login -d \"...\"\n\n로그인 http://localhost:8080/\n\n#   5) 상태 확인\nselect email, nickname, last_login_at, last_login_ip, failed_count, locked\n  from member where email = 'final@a.com';\n\nEMAIL        | NICKNAME | LAST_LOGIN_AT           | LAST_LOGIN_IP | FAILED | LOCKED\n-------------+----------+-------------------------+---------------+--------+-------\nfinal@a.com  | 마무리    | 2026-09-09 20:45:31.204 | 127.0.0.1     |      0 | f\n\nselect role from member_role mr join member m on m.id = mr.member_id\n where m.email = 'final@a.com';\n\nROLE\n-----------\nROLE_USER\n\n#   요구사항 아홉이 한 흐름에 다 있다\n\n# --- 권한을 즉시 반영 ---\n\n#   관리자가 권한을 준다\n\ninsert into member_role\n    select m.id, 'ROLE_MANAGER' from member m where m.email = 'final@a.com';\n\n$ curl -s -b full.txt localhost:8080/authorities\n\n[ROLE_USER, ORDER_READ]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b full.txt localhost:8080/report/x\n403\n\n#   안 바뀐다\n\n#   1) 세션을 만료시킨다\n\n@PostMapping(\"/admin/members/{id}/roles\")\npublic String grant(@PathVariable Long id, @RequestParam String role) {\n    memberService.addRole(id, role);\n    String email = memberService.findEmail(id);\n    sessionRegistry.getAllPrincipals().stream()\n            .filter(p -> p instanceof CustomUserDetails u\n                    && u.getUsername().equals(email))\n            .flatMap(p -> sessionRegistry.getAllSessions(p, false).stream())\n            .forEach(SessionInformation::expireNow);\n    return \"redirect:/admin/members\";\n}\n\n$ curl -s -o /dev/null -b admin.txt -X POST \\\n    localhost:8080/admin/members/5/roles -d \"role=ROLE_MANAGER&_csrf=$T\"\n\n$ curl -is -b full.txt localhost:8080/report/x | grep -i location\n\nLocation: http://localhost:8080/login?expired\n\n#   쫓겨났다 (5.5절)\n\n$ curl -s -o /dev/null -b full3.txt -c full3.txt -X POST \\\n    localhost:8080/login -d \"...\"\n$ curl -s -b full3.txt localhost:8080/authorities\n\n[ROLE_USER, ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b full3.txt localhost:8080/report/x\n200\n\n#   다시 로그인하니 반영됐다\n\n#   2) 자기 세션이면 교체할 수 있다\n\n@PostMapping(\"/me/refresh\")\npublic String refresh(HttpServletRequest request, HttpServletResponse response,\n        Authentication current) {\n    UserDetails fresh = userDetailsService.loadUserByUsername(current.getName());\n    Authentication auth = UsernamePasswordAuthenticationToken.authenticated(\n            fresh, null, fresh.getAuthorities());\n    SecurityContext context = SecurityContextHolder.createEmptyContext();\n    context.setAuthentication(auth);\n    SecurityContextHolder.setContext(context);\n    securityContextRepository.saveContext(context, request, response);\n    return \"redirect:/\";\n}\n\n$ curl -s -o /dev/null -b full4.txt -X POST localhost:8080/me/refresh -d \"_csrf=$T\"\n$ curl -s -b full4.txt localhost:8080/authorities\n\n[ROLE_USER, ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]\n\n#   로그아웃 없이 반영됐다\n\n#   다만 사용자가 눌러야 한다\n\n# --- 동적 인가와의 비대칭 ---\n\nupdate url_authority set authority = 'REPORT_READ' where pattern = '/report/**';\n\n$ curl -s -o /dev/null -b admin.txt -X POST \\\n    localhost:8080/admin/authorities/reload -d \"_csrf=$T\"\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b full4.txt localhost:8080/report/x\n200\n\n#   규칙은 즉시 반영됐다\n\n#   권한은 세션에 있어서 아니었다\n\n#   8.7절과 10.9절의 차이다\n\n# --- 안 만든 것을 적는다 ---\n\n$ cat docs/not-implemented.md\n\n# 안 만든 것\n\n- 이메일 인증 — member.email_verified, verification_token 표\n- 비밀번호 재설정 — 같은 토큰 표, 만료 30분\n- 비밀번호 변경 — 현재 비밀번호 재확인 필요\n- 2단계 인증 — AuthenticationProvider 하나 더\n- 소셜 로그인 — oauth2Login, 별도 장\n- 관리자 해제 화면 — locked 컬럼 위의 화면\n\n#   10.1절에서 적기로 한 것이다\n\n#   12.2절에서 다시 꺼낸다\n\n# --- 마지막 확인 ---\n\n$ ./gradlew test\n\n145 tests completed\n\nBUILD SUCCESSFUL\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n9 tests completed\n\n#   10.1절의 아홉 개가 다 초록이다\n\n# --- 다음 장에서 ---\n\n#   JSON 으로 로그인한다",
+   "note": "**필터 17개 중 하나가 우리 것, 표 넷, 리스너 아홉, 테스트 145개**다.\n\n**가입→막힘→로그인→`/welcome`→재로그인→`/`** 한 흐름에 요구사항 아홉이 다 들어 있다.\n\n**권한 행을 넣어도 `[ROLE_USER, ORDER_READ]`** 인데, **세션을 만료시키면 `?expired` 로 쫓겨나고** 재로그인하면 반영된다.\n\n**`/me/refresh` 로는 로그아웃 없이** 바뀐다.\n\n**URL 규칙은 즉시 반영되는데 권한은 아닌** 비대칭이 있다."
+  }
+ ],
+ "recap": [
+  "**프레임워크 클래스 넷을** 바꿨다.",
+  "**필터·매니저·프로바이더·인코더는 그대로** 뒀다.",
+  "**필터 하나, 리스너 둘, 표 셋을** 더했다.",
+  "**규칙을 엔티티에** 뒀다.",
+  "**요구사항 아홉이 다** 초록이다.",
+  "**권한 변경은 세션 때문에 즉시 반영이 안** 된다.",
+  "**세션 만료가 가장 정직한** 방법이다.",
+  "**URL 규칙과 권한의 반영 시점이** 다르다.",
+  "**안 만든 것을 목록으로** 남겼다."
+ ],
+ "drills": [
+  {
+   "task": "전체 흐름을 한 번에 돌린다.",
+   "done_when": "아홉 요구사항을 다 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "권한을 주고 반영을 확인한다.",
+   "done_when": "안 바뀌는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세션 만료로 반영시킨다.",
+   "done_when": "`?expired` 를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "안 만든 것을 문서로 적는다.",
+   "done_when": "각각 어디에 들어갈지 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 장에서 바꾼 프레임워크 클래스는?",
+   "a": "`UserDetailsService`, `UserDetails`, 성공·실패 핸들러 넷이다."
+  },
+  {
+   "q": "권한 변경이 즉시 반영 안 되는 이유는?",
+   "a": "권한이 각자의 세션에 담겨 있어서다."
+  },
+  {
+   "q": "가장 정직한 반영 방법은?",
+   "a": "그 사람의 세션을 만료시켜 다시 로그인하게 하는 것이다."
+  },
+  {
+   "q": "URL 규칙과 권한의 차이는?",
+   "a": "규칙은 서버 메모리라 즉시, 권한은 세션이라 지연된다."
+  },
+  {
+   "q": "안 만든 것을 왜 적나?",
+   "a": "\"안 했다\" 와 \"빠뜨렸다\" 를 구별하려고다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — UserDetailsService",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

@@ -1,0 +1,145 @@
+{
+ "book": "docker",
+ "id": "ports",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "포트",
+ "summary": "안의 8080 은 밖의 8080 이 아니다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "-p 의 형식을 정확히 안다.",
+  "0.0.0.0 바인딩의 의미를 안다.",
+  "포트가 안 열릴 때 어디를 보는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "```bash\ndocker run -d -p 8080:80 nginx:1.27\n```\n\n**왼쪽이 호스트, 오른쪽이 컨테이너**다. **순서를 헷갈리면 아무 데도 안** 붙는다."
+  },
+  {
+   "type": "figure",
+   "caption": "-p 8080:80 이 만드는 길",
+   "ascii": "   curl localhost:8080\n        |\n   host 0.0.0.0:8080\n        |  docker-proxy / iptables DNAT\n        v\n   container 172.17.0.2:80\n        |\n   nginx listening on 0.0.0.0:80\n\n   two things must both be true:\n     1) the mapping exists      -> docker ps PORTS\n     2) the app listens on 0.0.0.0 inside, not 127.0.0.1\n\n   두 번째를 놓쳐서 헤매는 경우가 절반이다",
+   "note": "**애플리케이션이 컨테이너 안에서 `127.0.0.1` 에만 바인딩하면 매핑이 있어도 못** 붙는다."
+  },
+  {
+   "type": "table",
+   "caption": "-p 의 여러 형태",
+   "columns": [
+    "형태",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "`-p 8080:80`",
+     "**호스트 모든 인터페이스**의 8080 → 컨테이너 80"
+    ],
+    [
+     "**`-p 127.0.0.1:8080:80`**",
+     "**호스트의 루프백에만.** 밖에서 못 붙는다"
+    ],
+    [
+     "`-p 80`",
+     "호스트 임의 포트 → 컨테이너 80"
+    ],
+    [
+     "`-P`",
+     "이미지의 `EXPOSE` 전부를 임의 포트로(3.4절)"
+    ],
+    [
+     "`-p 8080:80/udp`",
+     "UDP"
+    ],
+    [
+     "`-p 8000-8010:8000-8010`",
+     "범위"
+    ]
+   ],
+   "note": "**`-p 8080:80` 은 사실상 `0.0.0.0:8080`** 이다 — **개발 노트북에서 같은 와이파이의 남이 붙을 수** 있다. **의도한 게 아니면 `127.0.0.1:` 을 붙인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "애플리케이션이 127.0.0.1 에 바인딩하면 안 된다",
+   "md": "**가장 흔한 함정**이다.\n\n```\n$ docker run -d -p 8080:8080 myapp\n$ curl localhost:8080\ncurl: (52) Empty reply from server\n\n$ docker exec myapp curl -s -o /dev/null -w '%{http_code}' localhost:8080\n200\n```\n\n> **안에서는 되고 밖에서는 안** 된다. **컨테이너 안의 `127.0.0.1` 은 그 컨테이너의 루프백**이라 호스트에서 온 패킷이 못 닿는다.\n\n| 프레임워크 | 고치는 법 |\n|---|---|\n| Spring Boot | 기본이 `0.0.0.0` 이라 대개 문제없다. `server.address` 를 건드렸다면 확인 |\n| Node/Express | `app.listen(3000)` 은 괜찮고 `app.listen(3000,'127.0.0.1')` 이 문제 |\n| Flask | `flask run --host=0.0.0.0` |\n| Rails | `-b 0.0.0.0` |\n\n**확인하는 법**:\n\n```bash\ndocker exec myapp sh -c 'netstat -tlnp 2>/dev/null || ss -tlnp'\n# 0.0.0.0:8080 이어야 한다. 127.0.0.1:8080 이면 그게 원인이다\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "포트가 안 열릴 때 순서대로",
+   "md": "| 순서 | 확인 | 명령 |\n|---|---|---|\n| 1 | **매핑이 있나** | `docker port myapp` |\n| 2 | **컨테이너가 살아 있나** | `docker ps` — Restarting 이면 6.3절 |\n| 3 | **안에서는 되나** | `docker exec myapp curl -s localhost:8080` |\n| 4 | **무엇에 바인딩했나** | `docker exec myapp ss -tlnp` |\n| 5 | 호스트 포트가 이미 쓰이나 | `lsof -i :8080` |\n\n**3번이 실패하면 애플리케이션 문제, 3번이 성공하고 밖이 실패하면 4번**이다.\n\n> **7.7절의 네트워크 디버깅과 같은 사고 방식**이다 — **안과 밖을 나눠서 어디까지 되는지를 좁힌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "컨테이너끼리는 -p 가 필요 없다",
+   "md": "**`-p` 는 \"호스트에서 컨테이너로\" 의 문**이다. **컨테이너끼리는 상관없다.**\n\n```bash\n# 같은 네트워크에 있으면 (7.3절)\ndocker exec api curl http://db:5432      # -p 없어도 된다\n```\n\n> **DB 에 `-p 5432:5432` 를 주는 건 \"내 노트북의 DBeaver 로 붙고 싶어서\"** 지 **애플리케이션이 붙기 위해서가** 아니다.\n> **운영에서 DB 포트를 호스트에 여는 건 대개 실수**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "안에서는 되고 밖에서는 안 되는 상황을 만든다",
+   "sql": "# --- 정상 ---\n\n$ docker run -d --name ok -p 8080:80 nginx:1.27 >/dev/null\n$ docker port ok\n80/tcp -> 0.0.0.0:8080\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080\n200\n\n$ docker exec ok sh -c 'apk add -q --no-cache iproute2 2>/dev/null; ss -tln' | head -3\nState   Recv-Q  Send-Q  Local Address:Port\nLISTEN  0       511           0.0.0.0:80\nLISTEN  0       511              [::]:80\n\n#   0.0.0.0:80 이다\n\n\n# --- -p 를 안 주면 ---\n\n$ docker run -d --name noport nginx:1.27 >/dev/null\n$ docker port noport\n\n$ docker ps --format 'table {{.Names}}\\t{{.Ports}}' | head -3\nNAMES     PORTS\nnoport    80/tcp\nok        0.0.0.0:8080->80/tcp\n\n#   noport 는 화살표가 없다. EXPOSE 만 있고 매핑이 없다 (3.4절)\n\n$ curl -s -m 2 localhost:80 >/dev/null; echo \"exit=$?\"\nexit=7\n\n\n# --- 127.0.0.1 에만 바인딩하는 애플리케이션 ---\n\n$ docker run -d --name loop -p 8081:8000 python:3.12-slim \\\n    python -m http.server 8000 --bind 127.0.0.1 >/dev/null\n\n$ docker port loop\n8000/tcp -> 0.0.0.0:8081\n\n#   매핑은 있다\n\n$ curl -s -m 2 -o /dev/null -w '%{http_code}\\n' localhost:8081\n000\n\n$ docker exec loop sh -c 'python -c \"import urllib.request;print(urllib.request.urlopen(\\\"http://127.0.0.1:8000\\\").status)\"'\n200\n\n#   안에서는 200, 밖에서는 안 된다\n\n$ docker exec loop sh -c 'cat /proc/net/tcp | head -2'\n  sl  local_address rem_address   st\n   0: 0100007F:1F40 00000000:0000 0A\n\n#   0100007F = 127.0.0.1 (리틀 엔디언), 1F40 = 8000\n#   0.0.0.0 이면 00000000 이어야 한다\n\n\n# --- 고치면 ---\n\n$ docker rm -f loop >/dev/null\n$ docker run -d --name loop -p 8081:8000 python:3.12-slim \\\n    python -m http.server 8000 --bind 0.0.0.0 >/dev/null\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8081\n200\n\n\n# --- 루프백에만 노출하기 ---\n\n$ docker run -d --name private -p 127.0.0.1:8082:80 nginx:1.27 >/dev/null\n$ docker port private\n80/tcp -> 127.0.0.1:8082\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8082\n200\n\n$ curl -s -m 2 -o /dev/null -w '%{http_code}\\n' $(ipconfig getifaddr en0):8082\n000\n\n#   같은 네트워크의 다른 기기에서는 못 붙는다\n#   -p 8082:80 이었으면 붙었을 것이다\n\n\n# --- 포트 충돌 ---\n\n$ docker run -d --name dup -p 8080:80 nginx:1.27\ndocker: Error response from daemon: driver failed programming external\nconnectivity on endpoint dup: Bind for 0.0.0.0:8080 failed: port is already\nallocated.\n\n$ lsof -nP -iTCP:8080 -sTCP:LISTEN | head -2\nCOMMAND     PID  USER   FD   TYPE NODE NAME\ncom.docke  1204  kwan   82u  IPv6  TCP *:8080 (LISTEN)\n\n$ docker rm -f ok noport loop private dup >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "-p 는 호스트:컨테이너 순서다. 매핑이 있어도 안에서 127.0.0.1 에 바인딩하면 못 붙는다.",
+  "-p 8080:80 은 0.0.0.0 바인딩이라 같은 네트워크의 남이 붙을 수 있다. 127.0.0.1: 을 붙여 좁힌다.",
+  "안 될 때는 port → ps → 안에서 curl → ss -tln 순서로 좁힌다.",
+  "컨테이너끼리 통신에는 -p 가 필요 없다. DB 포트를 호스트에 여는 건 대개 개발 편의용이다."
+ ],
+ "drills": [
+  {
+   "task": "`python -m http.server --bind 127.0.0.1` 로 컨테이너를 띄우고 밖에서 안 붙는 것을 확인한다.",
+   "done_when": "매핑은 있는데 접속이 안 되고, 안에서는 되는 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "`-p 127.0.0.1:8082:80` 과 `-p 8082:80` 을 각각 띄우고 다른 기기(또는 호스트 IP)에서 붙어 본다.",
+   "done_when": "루프백 바인딩이 밖에서 안 열리는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "`docker exec <이름> ss -tln` 으로 애플리케이션이 무엇에 바인딩했는지 확인한다.",
+   "done_when": "0.0.0.0 인지 127.0.0.1 인지 읽을 수 있다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`-p 8080:80` 에서 각 숫자는.",
+   "a": "왼쪽이 호스트 포트, 오른쪽이 컨테이너 포트."
+  },
+  {
+   "q": "매핑이 있는데 접속이 안 되는 가장 흔한 원인은.",
+   "a": "애플리케이션이 컨테이너 안에서 127.0.0.1 에만 바인딩한 것."
+  },
+  {
+   "q": "개발 중에 DB 를 `-p 5432:5432` 로 여는 것이 왜 신중해야 하나.",
+   "a": "0.0.0.0 바인딩이라 같은 네트워크의 다른 기기에서 붙을 수 있다. 127.0.0.1: 을 붙이는 게 안전하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "포트 매핑",
+   "en": "port mapping",
+   "what": "호스트 포트로 온 연결을 컨테이너 포트로 전달하는 규칙."
+  },
+  {
+   "term": "0.0.0.0",
+   "what": "모든 네트워크 인터페이스. 여기 바인딩하면 밖에서 붙을 수 있다."
+  },
+  {
+   "term": "docker-proxy",
+   "what": "포트 매핑을 담당하는 도커의 보조 프로세스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Published ports",
+   "url": "https://docs.docker.com/engine/network/#published-ports",
+   "publisher": "Docker"
+  }
+ ]
+}
