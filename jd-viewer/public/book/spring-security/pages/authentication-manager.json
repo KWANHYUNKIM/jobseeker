@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "authentication-manager",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "AuthenticationManager",
+ "summary": "누구에게 물어보나.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "메서드 하나짜리 인터페이스를 읽는다.",
+  "빈으로 꺼내는 법을 안다.",
+  "null 반환의 의미를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절 필터가 `getAuthenticationManager().authenticate(...)` 를** 불렀다. **그 매니저**다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드 하나, 결과 셋",
+   "ascii": "   one method, three outcomes\n\n   authenticate(Authentication)\n     returns  a fully populated Authentication   the answer is yes\n     throws   AuthenticationException            the answer is no\n     returns  null                               I do not handle this\n\n   the third one is the reason a manager can delegate",
+   "note": "**`null` 이 있어서 넘길 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터페이스가 전부다",
+   "md": "```java\npublic interface AuthenticationManager {\n    Authentication authenticate(Authentication authentication)\n            throws AuthenticationException;\n}\n```\n\n> **한 줄**이다.\n> **구현이 `ProviderManager` 하나뿐인 것도 아니다** — **람다로도** 된다.\n\n```java\nAuthenticationManager manager = auth -> {\n    if (\"admin\".equals(auth.getName())) {\n        return UsernamePasswordAuthenticationToken.authenticated(\n                \"admin\", null, List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\")));\n    }\n    throw new BadCredentialsException(\"no\");\n};\n```\n\n> **실제로 이렇게 쓰지는 않지만 구조가 이만큼 얇다는 건 알아 둘** 만하다.\n\n**돌려주는 세 가지**\n\n| | 뜻 |\n|---|---|\n| **채워진 `Authentication`** | 맞다 |\n| **`AuthenticationException`** | 틀리다 |\n| **`null`** | 나는 모르겠다 |\n\n> **세 번째가 4.5절의 위임을 가능하게** 한다.\n> **매니저 자신이 `null` 을 돌려주는 일은 드물고 프로바이더가 그렇게** 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "매니저가 둘 있을 수 있다",
+   "ascii": "   two managers can exist at once\n\n   the one HttpSecurity built\n     lives in the shared object map\n     every filter in that chain gets it\n     no bean, so you cannot inject it\n\n   the one you exposed as a bean\n     AuthenticationConfiguration.getAuthenticationManager()\n     injectable anywhere, including your own filter\n\n   telling them apart is most of the confusion",
+   "note": "**헷갈림의 대부분이 여기서** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "주입하려면 빈으로 꺼내야 한다",
+   "md": "**직접 만든 필터에 매니저가** 필요하다.\n\n```java\n// 이러면 기동이 안 된다\n@Bean\nMyLoginFilter myLoginFilter(AuthenticationManager manager) { ... }\n```\n\n```\nNoSuchBeanDefinitionException: No qualifying bean of type\n'org.springframework.security.authentication.AuthenticationManager'\n```\n\n> **`HttpSecurity` 가 만든 매니저는 빈이** 아니다.\n> **공유 객체 맵에만** 있다(2.5절).\n\n**꺼내는 법**\n\n```java\n@Bean\nAuthenticationManager authenticationManager(\n        AuthenticationConfiguration configuration) throws Exception {\n    return configuration.getAuthenticationManager();\n}\n```\n\n> **자동 설정이 만든 그 매니저를 빈으로 노출**한다.\n> **새로 만드는 게 아니라 같은 것을** 꺼낸다.\n\n**직접 조립할 수도** 있다.\n\n```java\n@Bean\nAuthenticationManager authenticationManager(\n        UserDetailsService uds, PasswordEncoder encoder) {\n    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();\n    provider.setUserDetailsService(uds);\n    provider.setPasswordEncoder(encoder);\n    return new ProviderManager(provider);\n}\n```\n\n> **이 빈이 있으면 `HttpSecurity` 가 그걸** 쓴다.\n> **`UserDetailsService` 빈만 있을 때의 자동 조립을 대신하는** 셈이다.\n>\n> **10.5절에서 직접 만든 필터에 이걸** 넣는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 주입해 본다 ---\n\n@Component\npublic class NeedsManager {\n    public NeedsManager(AuthenticationManager manager) { }\n}\n\n$ ./gradlew bootRun\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nParameter 0 of constructor in NeedsManager required a bean of type\n'org.springframework.security.authentication.AuthenticationManager'\nthat could not be found.\n\n#   체인은 잘 도는데 빈이 없다\n\n# --- 빈으로 꺼낸다 ---\n\n@Bean\nAuthenticationManager authenticationManager(\n        AuthenticationConfiguration configuration) throws Exception {\n    AuthenticationManager m = configuration.getAuthenticationManager();\n    System.out.println(\">>> manager = \" + m);\n    return m;\n}\n\n$ ./gradlew bootRun 2>&1 | grep \">>>\"\n\n>>> manager = ProviderManager [providers=[DaoAuthenticationProvider], ...]\n\n#   기동한다\n\n#   프로바이더가 하나 들어 있다\n\n# --- 체인이 쓰는 것과 같은가 ---\n\npublic class PeekConfigurer\n        extends AbstractHttpConfigurer<PeekConfigurer, HttpSecurity> {\n    @Override\n    public void configure(HttpSecurity http) {\n        System.out.println(\">>> shared = \"\n                + http.getSharedObject(AuthenticationManager.class));\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep \">>>\"\n\n>>> manager = ProviderManager [providers=[DaoAuthenticationProvider]]\n>>> shared  = ProviderManager [providers=[DaoAuthenticationProvider]]\n\n@Autowired ApplicationContext ctx;\n\n@Test\nvoid same() {\n    AuthenticationManager bean = ctx.getBean(AuthenticationManager.class);\n    System.out.println(\">>> identity = \" + System.identityHashCode(bean));\n}\n\n$ ./gradlew test --tests ManagerTest\n\n>>> identity = 1183837033\n\n#   같은 인스턴스다\n\n#   새로 만드는 게 아니라 꺼내는 것이다\n\n# --- 직접 불러 본다 ---\n\n@RestController\n@RequiredArgsConstructor\npublic class AuthProbe {\n    private final AuthenticationManager manager;\n\n    @PostMapping(\"/probe\")\n    public String probe(@RequestParam String u, @RequestParam String p) {\n        try {\n            Authentication result = manager.authenticate(\n                    UsernamePasswordAuthenticationToken.unauthenticated(u, p));\n            return \"OK \" + result.getName() + \" \" + result.getAuthorities();\n        } catch (AuthenticationException e) {\n            return e.getClass().getSimpleName() + \": \" + e.getMessage();\n        }\n    }\n}\n\n$ curl -s -X POST 'localhost:8080/probe?u=user&p=1234'\n\nOK user [ROLE_USER]\n\n$ curl -s -X POST 'localhost:8080/probe?u=user&p=nope'\n\nBadCredentialsException: 자격 증명에 실패하였습니다.\n\n$ curl -s -X POST 'localhost:8080/probe?u=nobody&p=1234'\n\nBadCredentialsException: 자격 증명에 실패하였습니다.\n\n#   없는 사용자도 같은 메시지다\n\n#   4.4절에서 왜 그런지 본다\n\n#   그리고 이건 로그인이 아니다\n\n$ curl -is -X POST 'localhost:8080/probe?u=user&p=1234' | grep -ci set-cookie\n\n0\n\n#   홀더에 넣지도 저장하지도 않았다\n\n#   매니저는 판단만 한다\n\n#   담는 건 필터의 일이다 (3.2절)\n\n# --- 람다 매니저로 바꿔 본다 ---\n\n@Bean\nAuthenticationManager authenticationManager() {\n    return auth -> {\n        System.out.println(\">>> asked about \" + auth.getName());\n        if (\"admin\".equals(auth.getName())\n                && \"admin\".equals(auth.getCredentials())) {\n            return UsernamePasswordAuthenticationToken.authenticated(\n                    \"admin\", null,\n                    List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\")));\n        }\n        throw new BadCredentialsException(\"no\");\n    };\n}\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=admin&password=admin&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\n\n>>> asked about admin\n\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=admin,\n  Granted Authorities=[ROLE_ADMIN]]\n\n#   로그인이 된다\n\n#   UserDetailsService 도 PasswordEncoder 도 안 썼다\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user&password=1234&_csrf=$TOKEN\" | grep -i location\n\nLocation: http://localhost:8080/login?error\n\n#   원래 사용자가 못 들어온다\n\n#   내 빈이 자동 설정을 대체했다\n\n#   실제로 쓸 코드는 아니지만 구조는 이만큼 얇다\n\n# --- 다음 절에서 ---\n\n#   진짜로 비밀번호를 맞춰 보는 자리로 간다",
+   "note": "**매니저를 주입하려 하면 `NoSuchBeanDefinitionException`** 이다 — **체인이 쓰는 것은 빈이** 아니다.\n\n**`AuthenticationConfiguration.getAuthenticationManager()` 로 꺼내면 공유 객체와 같은 인스턴스**다.\n\n**직접 부르면 판단만 하고 `Set-Cookie` 도 홀더 저장도** 없다 — **담는 건 필터의 일**이다.\n\n**없는 사용자도 `BadCredentialsException`** 이다.\n\n**람다 매니저로 바꾸니 `UserDetailsService` 없이 로그인이** 되고 원래 사용자가 막힌다."
+  }
+ ],
+ "recap": [
+  "**`AuthenticationManager` 는 메서드 하나짜리 인터페이스**다.",
+  "**결과는 채워진 토큰 · 예외 · `null`** 셋이다.",
+  "**`null` 은 \"나는 모르겠다\"** 다.",
+  "**`HttpSecurity` 가 만든 매니저는 빈이** 아니다.",
+  "**`AuthenticationConfiguration` 으로** 꺼낸다.",
+  "**꺼낸 것은 체인이 쓰는 것과 같은 인스턴스**다.",
+  "**매니저는 판단만 하고 저장은 안** 한다.",
+  "**내가 매니저 빈을 만들면 자동 조립을** 대체한다.",
+  "**없는 사용자도 같은 예외로** 돌아온다."
+ ],
+ "drills": [
+  {
+   "task": "매니저를 그냥 주입해 본다.",
+   "done_when": "기동 실패 메시지를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빈으로 꺼내고 인스턴스를 비교한다.",
+   "done_when": "공유 객체와 같은지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "매니저를 직접 부르는 엔드포인트를 만든다.",
+   "done_when": "쿠키가 안 생기는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "람다 매니저로 바꿔 본다.",
+   "done_when": "자동 조립이 대체되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매니저의 메서드는 몇 개인가?",
+   "a": "하나다. `authenticate` 뿐이다."
+  },
+  {
+   "q": "`null` 반환의 뜻은?",
+   "a": "이 인증 방식은 내가 처리하지 않는다는 뜻이다."
+  },
+  {
+   "q": "매니저를 주입하려면?",
+   "a": "`AuthenticationConfiguration.getAuthenticationManager()` 를 빈으로 노출한다."
+  },
+  {
+   "q": "매니저를 직접 부르면 로그인이 되나?",
+   "a": "안 된다. 판단만 하고 홀더나 세션에 담지 않는다."
+  },
+  {
+   "q": "내 매니저 빈을 만들면?",
+   "a": "`HttpSecurity` 가 그걸 쓰고 자동 조립이 대체된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "AuthenticationConfiguration",
+   "def": "자동 설정이 조립한 `AuthenticationManager` 를 꺼내 주는 설정 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Java Configuration",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/configuration/java.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

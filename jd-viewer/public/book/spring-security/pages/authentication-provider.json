@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "authentication-provider",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "AuthenticationProvider",
+ "summary": "실제로 검증하는 자리.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "supports 와 authenticate 를 안다.",
+  "Dao 프로바이더의 다섯 단계를 본다.",
+  "예외를 뭉뚱그리는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**매니저는 물어보기만** 했다. **답하는 쪽이 여기**다."
+  },
+  {
+   "type": "figure",
+   "caption": "Dao 프로바이더의 다섯 단계",
+   "ascii": "   DaoAuthenticationProvider, step by step\n\n   supports(UsernamePasswordAuthenticationToken)   yes\n\n   retrieveUser\n     userDetailsService.loadUserByUsername\n       not found -> throw UsernameNotFoundException\n\n   preAuthenticationChecks\n     locked, disabled, expired -> throw\n\n   additionalAuthenticationChecks\n     passwordEncoder.matches(raw, stored) -> or throw\n\n   createSuccessAuthentication\n     a new token, this time with authorities",
+   "note": "**읽고 · 확인하고 · 맞춰 보고 · 새로** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "메서드가 둘이다",
+   "md": "```java\npublic interface AuthenticationProvider {\n    Authentication authenticate(Authentication authentication)\n            throws AuthenticationException;\n    boolean supports(Class<?> authentication);\n}\n```\n\n> **`supports` 가 매니저와 다른 점**이다.\n> **\"이 타입이면 내가 답한다\" 를 미리** 말한다.\n\n**기본 프로바이더들**\n\n| 프로바이더 | 지원 타입 |\n|---|---|\n| `DaoAuthenticationProvider` | `UsernamePasswordAuthenticationToken` |\n| `RememberMeAuthenticationProvider` | `RememberMeAuthenticationToken` |\n| `AnonymousAuthenticationProvider` | `AnonymousAuthenticationToken` |\n\n> **3장에서 본 토큰 셋이 여기서 각자의 주인을** 만난다.\n> **`RememberMeAuthenticationProvider` 는 `key` 해시만** 비교한다 — **비밀번호를 다시 안** 본다.\n\n**앞의 세 검사**\n\n```java\n// DefaultPreAuthenticationChecks\nif (!user.isAccountNonLocked()) throw new LockedException(...);\nif (!user.isEnabled())          throw new DisabledException(...);\nif (!user.isAccountNonExpired()) throw new AccountExpiredException(...);\n\n// DefaultPostAuthenticationChecks\nif (!user.isCredentialsNonExpired())\n    throw new CredentialsExpiredException(...);\n```\n\n> **비밀번호를 맞춰 보기 전에 잠김·비활성부터** 본다.\n> **10.8절의 계정 잠금이 이 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 다 같은 소리를 하나",
+   "ascii": "   why every failure sounds the same\n\n   telling them apart\n     no such user      -> an attacker learns the id does not exist\n     wrong password    -> an attacker learns the id exists\n\n   so both come back as BadCredentials\n   and a fake hash is compared even for a missing user\n   so the two paths take about the same time",
+   "note": "**아이디가 있는지조차 안** 알려 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "시간까지 맞춘다",
+   "md": "**메시지를 같게 하는 것만으로는 부족**하다.\n\n> **없는 사용자는 해시 비교를 안 하니** 빨리 끝난다.\n> **응답 시간 차이로 아이디 존재를 알아낼 수** 있다.\n\n**그래서 가짜 해시를** 비교한다.\n\n```java\n// DaoAuthenticationProvider\nprivate void mitigateAgainstTimingAttack(\n        UsernamePasswordAuthenticationToken authentication) {\n    if (authentication.getCredentials() != null) {\n        String presentedPassword = authentication.getCredentials().toString();\n        this.passwordEncoder.matches(presentedPassword, this.userNotFoundEncodedPassword);\n    }\n}\n```\n\n> **없는 사용자에게도 bcrypt 를 한 번** 돌린다.\n> **버리는 계산인데 일부러** 한다.\n\n**감추기를 끌 수도** 있다.\n\n```java\nprovider.setHideUserNotFoundExceptions(false);\n```\n\n> **개발 중에는 편하다.**\n> **운영에서 켜 두면 회원 아이디 목록이 새어** 나간다.\n>\n> **로그에는 원래 예외가 남는다** — **감추는 건 응답이지 로그가** 아니다.\n\n**직접 만들 때의 모양**\n\n```java\n@Component\npublic class SmsAuthenticationProvider implements AuthenticationProvider {\n    @Override\n    public Authentication authenticate(Authentication auth) {\n        String phone = auth.getName();\n        String code = (String) auth.getCredentials();\n        if (!codeStore.matches(phone, code)) {\n            throw new BadCredentialsException(\"bad code\");\n        }\n        return new SmsAuthenticationToken(phone, null, List.of(USER));\n    }\n\n    @Override\n    public boolean supports(Class<?> authentication) {\n        return SmsAuthenticationToken.class.isAssignableFrom(authentication);\n    }\n}\n```\n\n> **빈으로 등록만 하면 `ProviderManager` 목록에** 들어간다 — **4.5절**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 다섯 단계를 로그로 본다 ---\n\nlogging.level.org.springframework.security.authentication=TRACE\n\n$ curl -s -X POST 'localhost:8080/probe?u=user&p=1234'\n\nOK user [ROLE_USER]\n\nDEBUG ProviderManager : Authenticating request with\n  DaoAuthenticationProvider (1/1)\nTRACE JdbcUserDetailsManager : (loading user 'user')\nTRACE DaoAuthenticationProvider : (pre checks passed)\nTRACE DaoAuthenticationProvider : (password matched)\n\n# --- 세 경우의 시간을 잰다 ---\n\n$ for c in 'u=user&p=1234' 'u=user&p=nope' 'u=nobody&p=nope'; do\n    printf '%-22s ' \"$c\"\n    curl -s -o /dev/null -w '%{time_total}\\n' -X POST \\\n        \"localhost:8080/probe?$c\"\n  done\n\nu=user&p=1234          0.104271\nu=user&p=nope          0.101884\nu=nobody&p=nope        0.099517\n\n#   셋이 비슷하다\n\n#   없는 사용자도 bcrypt 를 한 번 돌렸다\n\n# --- 가짜 해시를 안 돌리면 ---\n\n#   (시간 방어를 끈 것처럼 흉내 내어 직접 재 본다)\n\n@PostMapping(\"/probe2\")\npublic String probe2(@RequestParam String u, @RequestParam String p) {\n    UserDetails found = repository.findByUsername(u).orElse(null);\n    if (found == null) return \"no user\";              // 여기서 바로 끝\n    return encoder.matches(p, found.getPassword()) ? \"ok\" : \"bad\";\n}\n\n$ for c in 'u=user&p=nope' 'u=nobody&p=nope'; do\n    printf '%-18s ' \"$c\"\n    curl -s -o /dev/null -w '%{time_total}\\n' -X POST \"localhost:8080/probe2?$c\"\n  done\n\nu=user&p=nope      0.101044\nu=nobody&p=nope    0.008362\n\n#   열 배 넘게 빠르다\n\n#   응답 시간만으로 아이디 존재를 알 수 있다\n\n#   그래서 스프링은 버리는 계산을 한다\n\n# --- 감추기를 꺼 본다 ---\n\n@Bean\nAuthenticationManager authenticationManager(\n        UserDetailsService uds, PasswordEncoder encoder) {\n    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();\n    provider.setUserDetailsService(uds);\n    provider.setPasswordEncoder(encoder);\n    provider.setHideUserNotFoundExceptions(false);\n    return new ProviderManager(provider);\n}\n\n$ curl -s -X POST 'localhost:8080/probe?u=nobody&p=1234'\n\nUsernameNotFoundException: nobody\n\n$ curl -s -X POST 'localhost:8080/probe?u=user&p=nope'\n\nBadCredentialsException: 자격 증명에 실패하였습니다.\n\n#   이제 구별된다\n\n#   회원 아이디를 하나씩 확인할 수 있다\n\n#   운영에서는 켜 두면 안 된다\n\n# --- 로그는 원래 안 감춘다 ---\n\n#   (다시 감추기를 켠 상태로)\n\n$ curl -s -X POST 'localhost:8080/probe?u=nobody&p=1234'\n\nBadCredentialsException: 자격 증명에 실패하였습니다.\n\nDEBUG DaoAuthenticationProvider : Failed to find user 'nobody'\n\n#   응답은 뭉뚱그렸는데 로그에는 남는다\n\n#   운영자는 알 수 있어야 한다\n\n# --- 계정을 잠가 본다 ---\n\n@Bean\nUserDetailsService users(PasswordEncoder encoder) {\n    return new InMemoryUserDetailsManager(\n            User.withUsername(\"locked\").password(encoder.encode(\"1234\"))\n                .roles(\"USER\").accountLocked(true).build(),\n            User.withUsername(\"user\").password(encoder.encode(\"1234\"))\n                .roles(\"USER\").build());\n}\n\n$ curl -s -X POST 'localhost:8080/probe?u=locked&p=1234'\n\nLockedException: 사용자 계정이 잠겨 있습니다.\n\n$ curl -s -X POST 'localhost:8080/probe?u=locked&p=nope'\n\nLockedException: 사용자 계정이 잠겨 있습니다.\n\n#   비밀번호가 틀려도 잠김이 먼저다\n\n#   비밀번호 검사 전에 검사한다\n\n# --- 로그인 화면에서는 ---\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=locked&password=1234&_csrf=$TOKEN\" | grep -i location\n\nLocation: http://localhost:8080/login?error\n\nDEBUG UsernamePasswordAuthenticationFilter : Failed to process\n  authentication request\norg.springframework.security.authentication.LockedException:\n  사용자 계정이 잠겨 있습니다.\n\n#   화면에는 error 하나로만 간다\n\n#   구별해서 보여 주려면 실패 핸들러를 만든다 (10.6절)\n\n# --- 다음 절에서 ---\n\n#   프로바이더가 여럿일 때를 본다",
+   "note": "**세 경우의 응답 시간이 0.099~0.104초로** 비슷하다 — **없는 사용자에게도 bcrypt 를 한 번** 돌린다.\n\n**직접 짠 `/probe2` 는 없는 사용자가 0.008초**다 — **열 배 넘게** 빠르다.\n\n**`hideUserNotFoundExceptions(false)` 로 끄면 `UsernameNotFoundException` 이 그대로** 나온다.\n\n**감추기를 켜도 로그에는 `Failed to find user 'nobody'`** 가 남는다.\n\n**잠긴 계정은 비밀번호가 틀려도 `LockedException`** 이다 — **검사 순서가** 앞이다."
+  }
+ ],
+ "recap": [
+  "**`supports` 로 자기 타입을** 밝힌다.",
+  "**`Dao` 는 읽고 · 상태 확인 · 비밀번호 비교 · 새 토큰** 순이다.",
+  "**잠김·비활성 검사가 비밀번호보다** 먼저다.",
+  "**없는 사용자와 틀린 비밀번호가 같은 예외로** 나간다.",
+  "**응답 시간까지 맞추려고 가짜 해시를** 비교한다.",
+  "**직접 재 보면 안 그럴 때 열 배 차이가** 난다.",
+  "**감추기를 끄면 아이디 존재가** 새어 나간다.",
+  "**응답만 감추고 로그에는** 남긴다.",
+  "**기억하기 프로바이더는 비밀번호를 다시 안** 본다."
+ ],
+ "drills": [
+  {
+   "task": "세 경우의 응답 시간을 잰다.",
+   "done_when": "비슷한 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "직접 조회하는 엔드포인트로 다시 잰다.",
+   "done_when": "차이가 나는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`hideUserNotFoundExceptions` 를 끈다.",
+   "done_when": "예외가 구별되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "계정을 잠그고 틀린 비밀번호로 시도한다.",
+   "done_when": "`LockedException` 이 먼저인 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매니저와 프로바이더의 차이는?",
+   "a": "프로바이더에는 `supports` 가 있어 자기가 맡을 타입을 밝힌다."
+  },
+  {
+   "q": "검사 순서는?",
+   "a": "사용자 조회 → 잠김·비활성 → 비밀번호 → 자격 만료다."
+  },
+  {
+   "q": "왜 예외를 뭉뚱그리나?",
+   "a": "아이디의 존재 여부가 새어 나가지 않게 하려고다."
+  },
+  {
+   "q": "가짜 해시를 왜 비교하나?",
+   "a": "응답 시간 차이로 아이디 존재가 드러나는 것을 막으려고다."
+  },
+  {
+   "q": "감추기를 켜면 로그도 감춰지나?",
+   "a": "아니다. 응답만 감추고 로그에는 원래 이유가 남는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "타이밍 공격",
+   "def": "응답 시간 차이로 내부 상태를 알아내는 공격. 여기서는 아이디의 존재 여부다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — DaoAuthenticationProvider",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Authentication Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

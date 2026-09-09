@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "user-details-service",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "UserDetailsService",
+ "summary": "사용자를 어디서 읽나.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "메서드 하나의 계약을 안다.",
+  "네 플래그의 뜻을 안다.",
+  "JPA 로 직접 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절의 첫 단계가 `loadUserByUsername`** 이었다. **그 자리**다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드 하나의 계약",
+   "ascii": "   one method, one rule\n\n   loadUserByUsername(String username)\n     found     -> a UserDetails\n     not found -> throw UsernameNotFoundException\n     never     -> return null\n\n   returning null is the classic bug\n   the caller does not check for it",
+   "note": "**`null` 을 돌려주면 안** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인터페이스 둘",
+   "md": "```java\npublic interface UserDetailsService {\n    UserDetails loadUserByUsername(String username)\n            throws UsernameNotFoundException;\n}\n\npublic interface UserDetails extends Serializable {\n    Collection<? extends GrantedAuthority> getAuthorities();\n    String getPassword();\n    String getUsername();\n    boolean isAccountNonExpired();\n    boolean isAccountNonLocked();\n    boolean isCredentialsNonExpired();\n    boolean isEnabled();\n}\n```\n\n> **`UserDetails` 는 `Authentication` 의 `principal` 이** 된다(4.1절).\n> **`Serializable` 이라 세션에** 들어간다 — **엔티티를 그대로 넣으면 지연 로딩 프록시가 같이** 간다.\n\n**기본 구현들**\n\n| 구현 | 어디서 읽나 |\n|---|---|\n| `InMemoryUserDetailsManager` | 메모리 맵 |\n| `JdbcUserDetailsManager` | 정해진 스키마의 표 |\n| **내가 만든 것** | 내 엔티티 |\n\n> **`JdbcUserDetailsManager` 의 스키마는 고정**이다.\n> **`users(username, password, enabled)` 와 `authorities(username, authority)`** 다.\n> **실무 회원 표와 잘 안 맞아 대개 직접** 만든다.\n\n**빈 하나면 자동으로** 쓰인다.\n\n> **`UserDetailsService` 빈이 있으면 `DaoAuthenticationProvider` 가 그걸** 잡는다.\n> **그리고 기동 로그의 `Using generated security password` 가** 사라진다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 플래그",
+   "ascii": "   the four flags, and what each one means\n\n   isEnabled                 the account was turned off\n   isAccountNonExpired       the account itself timed out\n   isAccountNonLocked        too many failed logins, or a ban\n   isCredentialsNonExpired   the password is too old\n\n   all four default to true when you build with User.builder\n   an entity mapped by hand often forgets one, and forgets it silently",
+   "note": "**손으로 매핑하면 하나쯤 조용히** 잊는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "엔티티를 그대로 쓰면",
+   "md": "**두 갈래**가 있다.\n\n```java\n// 1) 어댑터를 따로 만든다\npublic class CustomUserDetails implements UserDetails {\n    private final Member member;\n    public String getPassword() { return member.getPassword(); }\n    public String getUsername() { return member.getEmail(); }\n    public boolean isEnabled()  { return member.isActive(); }\n    ...\n}\n\n// 2) 엔티티가 UserDetails 를 구현한다\n@Entity\npublic class Member implements UserDetails { ... }\n```\n\n> **둘째가 편하고 위험**하다.\n> **엔티티가 세션에 직렬화**된다.\n> **연관이 `LAZY` 면 세션에서 꺼낼 때 프록시가 살아 있지** 않다.\n>\n> **책 ⑦ 8.4절의 지연 로딩과 직렬화 얘기가 여기서 다시** 나온다.\n> **어댑터를 쓰면 필요한 값만 복사해** 담는다.\n\n**조회는 트랜잭션 밖**이다.\n\n> **`loadUserByUsername` 은 필터에서** 불린다.\n> **`@Transactional` 이 없으면 지연 로딩이** 터진다.\n>\n> ```\n> LazyInitializationException: could not initialize proxy\n>   [Member#1] - no Session\n> ```\n>\n> **권한을 `@OneToMany` 로 뒀을 때 자주** 만난다.\n> **`@Transactional(readOnly = true)` 를 붙이거나 조인 페치로** 가져온다.\n\n**`null` 반환의 결과**\n\n> **`DaoAuthenticationProvider` 가 이렇게** 감싼다.\n>\n> ```\n> InternalAuthenticationServiceException:\n>   UserDetailsService returned null, which is an interface contract violation\n> ```\n>\n> **4.5절에서 본 즉시 던지는 예외**다.\n> **500 이 되고 다른 프로바이더에게 기회가 안** 간다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 표를 만든다 ---\n\ncreate table member (\n    id       bigint       primary key,\n    email    varchar(100) not null unique,\n    password varchar(100) not null,\n    active   boolean      not null default true,\n    locked   boolean      not null default false\n);\n\ncreate table member_role (\n    member_id bigint      not null references member(id),\n    role      varchar(30) not null,\n    primary key (member_id, role)\n);\n\ninsert into member values (1, 'user@a.com',\n    '{bcrypt}$2a$10$Dow1...', true, false);\ninsert into member_role values (1, 'ROLE_USER');\n\n# --- 서비스를 만든다 ---\n\n@Service\n@RequiredArgsConstructor\npublic class MemberUserDetailsService implements UserDetailsService {\n    private final MemberRepository repository;\n\n    @Override\n    @Transactional(readOnly = true)\n    public UserDetails loadUserByUsername(String email) {\n        System.out.println(\">>> loading \" + email);\n        Member member = repository.findByEmailWithRoles(email)\n                .orElseThrow(() -> new UsernameNotFoundException(email));\n        return new CustomUserDetails(member);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Using generated security password\"\n\n0\n\n#   기본 사용자가 사라졌다\n\n#   내 서비스가 잡혔다\n\n# --- 로그인한다 ---\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/\n\n>>> loading user@a.com\n\nselect m.id, m.email, m.password, m.active, m.locked, r.role\n  from member m\n  left join member_role r on r.member_id = m.id\n where m.email = ?\n\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n  [username=user@a.com, authorities=[ROLE_USER]]]\n\n#   쿼리 한 방이다\n\n#   findByEmailWithRoles 가 조인 페치라서다\n\n# --- 조인 페치를 빼면 ---\n\nMember member = repository.findByEmail(email).orElseThrow(...);\n\n#   그리고 @Transactional 도 뺀다\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 500\n\n>>> loading user@a.com\n\nselect m.id, m.email, m.password, m.active, m.locked from member m\n where m.email = ?\n\norg.hibernate.LazyInitializationException: could not initialize proxy\n  [Member.roles#1] - no Session\n\n#   권한을 읽으려는 순간 터졌다\n\n#   필터에는 트랜잭션이 없다\n\n#   @Transactional(readOnly = true) 를 붙이면\n\nselect m.id, ... from member m where m.email = ?\nselect r.member_id, r.role from member_role r where r.member_id = ?\n\nHTTP/1.1 302\n\n#   된다. 쿼리가 둘이다\n\n#   조인 페치면 하나다\n\n#   책 ⑦ 6장의 그 얘기다\n\n# --- null 을 돌려주면 ---\n\npublic UserDetails loadUserByUsername(String email) {\n    return repository.findByEmail(email)\n            .map(CustomUserDetails::new)\n            .orElse(null);                     // 예외 대신 null\n}\n\n$ curl -s -X POST 'localhost:8080/probe?u=nobody&p=1234'\n\nInternalAuthenticationServiceException: UserDetailsService returned null,\nwhich is an interface contract violation\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=nobody&password=1234&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/login?error\n\nDEBUG UsernamePasswordAuthenticationFilter : Failed to process\n  authentication request\norg.springframework.security.authentication\n  .InternalAuthenticationServiceException:\n  UserDetailsService returned null, which is an interface contract violation\n\n#   화면에는 똑같이 보이는데\n\n#   로그에는 계약 위반이라고 적힌다\n\n#   그리고 이건 즉시 던지는 예외다 (4.5절)\n\n#   뒤에 다른 프로바이더가 있어도 기회가 없다\n\n# --- 플래그를 하나 잊으면 ---\n\npublic class CustomUserDetails implements UserDetails {\n    public boolean isEnabled() { return member.isActive(); }\n    public boolean isAccountNonLocked() { return true; }   // locked 를 안 봤다\n    ...\n}\n\nupdate member set locked = true where id = 1;\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\" | grep -i location\n\nLocation: http://localhost:8080/\n\n#   잠긴 계정이 로그인됐다\n\n#   표에는 locked = true 인데\n\n#   플래그를 안 이어 준 것이다\n\n#   고치면\n\npublic boolean isAccountNonLocked() { return !member.isLocked(); }\n\n$ curl -i -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\" | grep -i location\n\nLocation: http://localhost:8080/login?error\n\nDEBUG DaoAuthenticationProvider : Failed to authenticate since user\n  account is locked\n\n#   막혔다\n\n#   10.8절에서 이 플래그로 잠금을 만든다\n\n# --- 다음 절에서 ---\n\n#   저 {bcrypt} 접두어를 읽는다",
+   "note": "**내 `UserDetailsService` 빈이 잡히자 `Using generated security password` 가** 사라졌다.\n\n**조인 페치면 쿼리 한 방, 아니면 둘, `@Transactional` 이 없으면 `LazyInitializationException`** 이다.\n\n**`null` 을 돌려주면 `InternalAuthenticationServiceException: … interface contract violation`** 이다.\n\n**`isAccountNonLocked` 를 `true` 로 박아 두면 `locked = true` 인 계정이** 로그인된다. **표는 맞는데 플래그를 안 이어** 줬다."
+  }
+ ],
+ "recap": [
+  "**`loadUserByUsername` 은 찾거나 던지거나** 둘이다.",
+  "**`null` 을 돌려주면 계약 위반 예외**다.",
+  "**그 예외는 즉시 던져져 뒤가 안** 돈다.",
+  "**`UserDetails` 는 `Authentication` 의 `principal` 이** 된다.",
+  "**네 플래그를 손으로 이어** 줘야 한다.",
+  "**하나를 `true` 로 박으면 조용히** 뚫린다.",
+  "**필터에는 트랜잭션이** 없다.",
+  "**권한을 지연 로딩하면** 터진다.",
+  "**엔티티를 그대로 담으면 세션에 그대로** 간다."
+ ],
+ "drills": [
+  {
+   "task": "JPA 로 `UserDetailsService` 를 만든다.",
+   "done_when": "로그인이 되고 쿼리를 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "`@Transactional` 을 뺀다.",
+   "done_when": "지연 로딩 예외를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`null` 을 돌려준다.",
+   "done_when": "계약 위반 예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`isAccountNonLocked` 를 `true` 로 박는다.",
+   "done_when": "잠긴 계정이 통과하는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "사용자가 없으면 무엇을 하나?",
+   "a": "`UsernameNotFoundException` 을 던진다. `null` 은 계약 위반이다."
+  },
+  {
+   "q": "`null` 을 돌려주면?",
+   "a": "`InternalAuthenticationServiceException` 이 되고 즉시 던져진다."
+  },
+  {
+   "q": "권한 지연 로딩이 왜 터지나?",
+   "a": "필터에서 호출돼 트랜잭션이 없어서다."
+  },
+  {
+   "q": "플래그를 안 이어 주면?",
+   "a": "잠기거나 비활성인 계정이 그대로 로그인된다."
+  },
+  {
+   "q": "엔티티를 그대로 `UserDetails` 로 쓰면?",
+   "a": "세션에 엔티티가 직렬화돼 들어간다. 어댑터가 안전하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "UserDetails",
+   "def": "인증에 필요한 사용자 정보. 비밀번호·권한·네 개의 상태 플래그를 담는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — UserDetailsService",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — JDBC Authentication",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/jdbc.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Servlet Authentication Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

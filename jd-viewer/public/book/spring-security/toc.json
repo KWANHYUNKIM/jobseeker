@@ -230,7 +230,7 @@
           "title": "AuthenticationManager",
           "summary": "누구에게 물어보나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
@@ -238,7 +238,7 @@
           "title": "AuthenticationProvider",
           "summary": "실제로 검증하는 자리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -246,7 +246,7 @@
           "title": "ProviderManager",
           "summary": "여럿 중 하나가 답한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -254,7 +254,7 @@
           "title": "UserDetailsService",
           "summary": "사용자를 어디서 읽나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
