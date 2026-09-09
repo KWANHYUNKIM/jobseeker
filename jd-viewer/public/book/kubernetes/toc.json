@@ -325,7 +325,7 @@
           "title": "NodePort",
           "summary": "밖에서 들어오는 가장 단순한 문.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -333,7 +333,7 @@
           "title": "LoadBalancer",
           "summary": "클라우드에서 실제로 쓰는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
