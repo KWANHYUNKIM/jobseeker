@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "info",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "정보",
+ "summary": "빌드와 커밋을 담는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빈 응답을 채운다.",
+  "빌드 정보를 넣는다.",
+  "커밋을 담는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 두 바이트가** 왔다. **빈 중괄호**였다."
+  },
+  {
+   "type": "figure",
+   "caption": "조각들이 어디서 오나",
+   "ascii": "   where the pieces come from\n\n   what I typed        keys under a prefix in a config file\n   what the build made a properties file written at package time\n   what git knew       another properties file, from the working tree\n   what the jvm knows  read at runtime, nothing to prepare\n\n   the middle two must be produced before the jar exists",
+   "note": "**가운데 둘은 JAR 가 만들어지기 전에 준비돼야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "어느 것이 돌고 있는지 물어볼 데가 필요하다",
+   "md": "**해시로는 못** 읽는다.\n\n> **7.1절에서 그걸** 쟀다.\n> **사람이 볼 수** 없다.\n> **버전과 커밋이** 필요하다.\n\n**배포 기록과 따로 논**다.\n\n> **기록은 틀릴 수** 있다.\n> **돌고 있는 것에 직접** 묻는다.\n> **아래에서 그렇게** 한다.\n\n**빌드 때 담아** 둔다.\n\n> **파일 하나가 JAR 에** 들어간다.\n> **아래에서 열어** 본다.\n> **6.11절의 도움말 파일과 같은 자리**다.\n\n**기본은 다 꺼져** 있다.\n\n> **그래서 두 바이트**였다.\n> **하나씩 켠**다.\n> **아래에서 늘어난**다."
+  },
+  {
+   "type": "figure",
+   "caption": "이걸로 답하는 질문",
+   "ascii": "   the question this answers\n\n   the bug report says version one point four\n   three hosts are running something\n   which commit is on each of them\n\n   without this you are reading deploy logs to guess",
+   "note": "**없으면 배포 로그를 뒤져 짐작해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "커밋 정보는 그대로 두면 다 보인다",
+   "md": "**기본이 넓**다.\n\n> **작성자 메일까지 들어간**다.\n> **아래에서 세어** 본다.\n> **줄여서 담는**다.\n\n**빌드 때 안 만들면 안** 나온다.\n\n> **파일이 없으면** 조용하다.\n> **6.2절의 그** 조용함이다.\n> **아래에서 확인**한다.\n\n**작업 트리가 더러우면 그것도** 담긴다.\n\n> **`dirty` 표시**다.\n> **아래에서 그걸** 본다.\n> **오히려 쓸모** 있다.\n\n**노출은 따로** 열어야 한다.\n\n> **8.1절의 두 스위치**다.\n> **켜도 안 열면 못** 본다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 비어 있다\n\n$ curl -s localhost:8080/actuator/info\n{}\n\n$ curl -s localhost:8080/actuator/info | wc -c\n       2\n\n\n-- ① 내가 적는다\n\n// application.yml\ninfo:\n  app:\n    name: 주문 서비스\n    owner: backend\n  contact: backend@example.com\n\n$ curl -s localhost:8080/actuator/info\n{}\n\nmanagement:\n  info:\n    env:\n      enabled: true\n\n$ curl -s localhost:8080/actuator/info | python3 -m json.tool\n{\n    \"app\": { \"name\": \"주문 서비스\", \"owner\": \"backend\" },\n    \"contact\": \"backend@example.com\"\n}\n\n--   기본은 꺼져 있다\n--   켜야 나온다\n\n\n-- ② 빌드 정보를 넣는다\n\n// build.gradle\nspringBoot {\n    buildInfo()\n}\n\n$ ./gradlew bootJar -q\n$ unzip -l build/libs/app.jar | grep build-info\n      179  ...  BOOT-INF/classes/META-INF/build-info.properties\n\n$ unzip -p build/libs/app.jar BOOT-INF/classes/META-INF/build-info.properties\nbuild.artifact=app\nbuild.group=study\nbuild.name=app\nbuild.time=2026-09-10T06:37:12.418Z\nbuild.version=1.4.0\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; print(json.dumps(json.load(sys.stdin)['build'],\n  ensure_ascii=False, indent=1))\"\n{\n \"artifact\": \"app\",\n \"group\": \"study\",\n \"name\": \"app\",\n \"time\": \"2026-09-10T06:37:12.418Z\",\n \"version\": \"1.4.0\"\n}\n\n--   6.11절의 도움말과 같은 자리에 들어갔다\n--   이건 자동으로 켜진다\n\n\n-- 내 값을 더 넣는다\n\nspringBoot {\n    buildInfo {\n        properties {\n            additional = [\n                'ci'   : System.getenv('CI') ?: 'local',\n                'jdk'  : System.getProperty('java.version')\n            ]\n        }\n    }\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classes/META-INF/build-info.properties \\\n    | grep -E 'ci|jdk'\nbuild.ci=local\nbuild.jdk=21.0.3\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; d=json.load(sys.stdin)['build']; print(d['ci'], d['jdk'])\"\nlocal 21.0.3\n\n\n-- ③ 커밋을 담는다\n\nplugins {\n    id 'com.gorylenko.gradle-git-properties' version '2.4.2'\n}\n\n$ ./gradlew bootJar -q\n$ unzip -l build/libs/app.jar | grep git.properties\n      412  ...  BOOT-INF/classes/git.properties\n\n$ unzip -p build/libs/app.jar BOOT-INF/classes/git.properties\ngit.branch=main\ngit.build.host=kwanhyun-mac\ngit.build.user.email=molba06@naver.com\ngit.build.user.name=KWANHYUNKIM\ngit.build.version=1.4.0\ngit.commit.id=6d79727a1c4e8b02f3195d7a6c0e84b21f9d3e50\ngit.commit.id.abbrev=6d79727\ngit.commit.message.short=feat(automation): 사이클이 정본 DB 의 벡터까지 맞춘다\ngit.commit.time=2026-09-08T21:14:33+0900\ngit.commit.user.email=molba06@naver.com\ngit.dirty=false\ngit.tags=\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; print(json.dumps(json.load(sys.stdin)['git'],\n  ensure_ascii=False, indent=1))\"\n{\n \"branch\": \"main\",\n \"commit\": { \"id\": \"6d79727\", \"time\": \"2026-09-08T21:14:33+0900\" }\n}\n\n--   파일에는 열둘인데 셋만 나왔다\n--   기본 모드가 간단히다\n\n\n-- 다 보이게 하면\n\nmanagement:\n  info:\n    git:\n      mode: full\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys\ndef flat(d, p=''):\n    for k, v in d.items():\n        if isinstance(v, dict): yield from flat(v, p+k+'.')\n        else: yield p+k\nprint(len(list(flat(json.load(sys.stdin)['git']))))\"\n12\n\n$ curl -s localhost:8080/actuator/info | grep -c 'naver.com'\n1\n\n--   메일 주소가 그대로 나간다\n--   8.9절에서 이런 것을 본다\n\n\n-- 담을 것을 줄인다\n\n// build.gradle\ngitProperties {\n    keys = ['git.branch', 'git.commit.id.abbrev', 'git.commit.time', 'git.dirty']\n}\n\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classes/git.properties | wc -l\n       4\n\n$ curl -s localhost:8080/actuator/info | grep -c 'naver.com'\n0\n\n--   애초에 안 담는 게 낫다\n\n\n-- 더러운 트리도 담긴다\n\n$ echo '// 임시' >> src/main/java/study/boot/HelloController.java\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classes/git.properties | grep dirty\ngit.dirty=true\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['git']['dirty'])\"\ntrue\n\n$ git checkout src/main/java/study/boot/HelloController.java\n$ ./gradlew bootJar -q\n$ unzip -p build/libs/app.jar BOOT-INF/classes/git.properties | grep dirty\ngit.dirty=false\n\n--   커밋 안 한 채로 만든 JAR 인지 알 수 있다\n\n\n-- ④ JVM 것은 준비가 필요 없다\n\nmanagement:\n  info:\n    java:\n      enabled: true\n    os:\n      enabled: true\n    process:\n      enabled: true\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint(json.dumps({k: d[k] for k in ('java','os','process')},\n                 ensure_ascii=False, indent=1))\"\n{\n \"java\": {\n  \"version\": \"21.0.3\",\n  \"vendor\": { \"name\": \"Eclipse Adoptium\" },\n  \"runtime\": { \"name\": \"OpenJDK Runtime Environment\", \"version\": \"21.0.3+9-LTS\" }\n },\n \"os\": { \"name\": \"Mac OS X\", \"version\": \"15.5\", \"arch\": \"aarch64\" },\n \"process\": { \"pid\": 18422, \"parentPid\": 18402, \"owner\": \"kwanhyun\" }\n}\n\n--   7.3절에서 본 그 시스템 속성들이다\n\n\n-- 직접 만든다\n\n@Component\nclass DeployInfoContributor implements InfoContributor {\n    @Override\n    public void contribute(Info.Builder builder) {\n        builder.withDetail(\"deploy\", Map.of(\n            \"host\", InetAddress.getLocalHost().getHostName(),\n            \"startedAt\", startedAt.toString(),\n            \"uptime\", Duration.between(startedAt, Instant.now()).toSeconds() + \"s\"));\n    }\n}\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; print(json.dumps(json.load(sys.stdin)['deploy'],\n  ensure_ascii=False, indent=1))\"\n{\n \"host\": \"kwanhyun-mac\",\n \"startedAt\": \"2026-09-10T06:37:41.204Z\",\n \"uptime\": \"84s\"\n}\n\n$ sleep 10 && curl -s localhost:8080/actuator/info \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['deploy']['uptime'])\"\n94s\n\n--   부를 때마다 다시 만든다\n\n\n-- 빌드 파일을 안 만들면\n\n// buildInfo() 를 지우면\n$ ./gradlew bootJar -q\n$ unzip -l build/libs/app.jar | grep -c build-info\n0\n\n$ curl -s localhost:8080/actuator/info | python3 -c \"\nimport json,sys; print('build' in json.load(sys.stdin))\"\nFalse\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'build-info'\n0\n\n--   경고 없이 그냥 빠진다\n\n\n-- 열어야 보인다\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/info\n404\n\n$ curl -s localhost:8080/eps | grep -c infoEndpoint\n1\n\n--   8.1절의 두 스위치다\n\n\n-- 세 대에 물어본다\n\n$ for h in app-1 app-2 app-3; do\n    printf '%-8s ' \"$h\"\n    curl -s \"http://$h:8080/actuator/info\" | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint(d['build']['version'], d['git']['commit']['id'], d['git']['dirty'])\"\n  done\n\napp-1    1.4.0 6d79727 False\napp-2    1.4.0 6d79727 False\napp-3    1.3.2 71d4538 False\n\n--   한 대가 안 올라갔다\n--   배포 로그를 안 뒤져도 안다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '기본'      '빈 중괄호' \\\n  '내가 적기' '켜야 나옴' \\\n  '빌드'      '파일이 JAR 에' \\\n  '커밋'      '플러그인이 만듦' \\\n  '기본 모드' '셋만 나옴' \\\n  '전체 모드' '메일까지' \\\n  '더러움'    'dirty 로 남음' \\\n  'JVM'       '준비 필요 없음' \\\n  '직접'      'InfoContributor'\n\n기본                     빈 중괄호\n내가 적기                켜야 나옴\n빌드                     파일이 JAR 에\n커밋                     플러그인이 만듦\n기본 모드                셋만 나옴\n전체 모드                메일까지\n더러움                   dirty 로 남음\nJVM                      준비 필요 없음\n직접                     InfoContributor\n\n--   8.5절에서 재기동 없이 로그를 올린다",
+   "note": "**빈 `{}` 두 바이트에서 시작해 설정·빌드·커밋·JVM 네 갈래를 하나씩** 채웠다.\n\n**`build-info.properties` 와 `git.properties` 가 JAR 안에 들어가 있고 기본 모드는 커밋 정보 열둘 중 셋만** 낸다.\n\n**전체 모드로 열면 작성자 메일까지 나가서 담을 키를 넷으로** 줄였다.\n\n**커밋 안 한 채 만든 JAR 는 `git.dirty=true` 로** 남는다.\n\n**세 대에 물어보니 `app-3` 만 `1.3.2`·`71d4538` 로 안** 올라갔다."
+  }
+ ],
+ "recap": [
+  "**기본은 비어** 있다.",
+  "**켜야** 나온다.",
+  "**빌드 파일이** 들어간다.",
+  "**커밋도** 담는다.",
+  "**기본 모드는** 셋이다.",
+  "**전체는** 넓다.",
+  "**줄여** 담는다.",
+  "**더러움도** 남는다.",
+  "**직접 더할 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "설정 값을 넣어 켠다.",
+   "done_when": "빈 응답이 채워진 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빌드 정보를 켠다.",
+   "done_when": "JAR 안 파일을 열어 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "커밋을 담는다.",
+   "done_when": "전체 모드에서 무엇이 나가는지 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "직접 하나 더한다.",
+   "done_when": "부를 때마다 바뀌는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 응답이 왜 비어 있나?",
+   "a": "기여자들이 다 꺼져 있어서다."
+  },
+  {
+   "q": "빌드와 커밋 정보는 언제 만들어지나?",
+   "a": "JAR 를 만들 때다. 안 만들면 조용히 빠진다."
+  },
+  {
+   "q": "커밋 정보를 전체로 열면?",
+   "a": "작성자 메일 같은 것까지 나간다."
+  },
+  {
+   "q": "커밋 안 한 채로 빌드했는지 어떻게 아나?",
+   "a": "더러움 표시가 참으로 담긴다."
+  },
+  {
+   "q": "여러 대 중 안 올라간 것을 어떻게 찾나?",
+   "a": "각 대에 물어 버전과 커밋을 비교한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "정보 기여자",
+   "def": "정보 응답에 한 덩어리를 보태는 조각."
+  },
+  {
+   "term": "빌드 정보 파일",
+   "def": "패키징할 때 만들어져 JAR 안에 들어가는 버전과 시각 기록."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Application Information",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.info",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "gradle-git-properties",
+   "url": "https://github.com/n0mer/gradle-git-properties",
+   "publisher": "n0mer"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

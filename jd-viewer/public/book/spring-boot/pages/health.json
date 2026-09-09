@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "health",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "헬스",
+ "summary": "살아 있다는 근거.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇을 모아 답하는지 안다.",
+  "직접 하나 만든다.",
+  "두 프로브를 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 열다섯 바이트가** 왔다. **그 안을 연다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "하나가 여럿으로 만들어진다",
+   "ascii": "   one status is made of many\n\n   each component reports its own status\n   the worst one wins and becomes the overall status\n\n   so a single broken dependency turns the whole thing down",
+   "note": "**하나만 망가져도 전체가** 내려간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "떠 있다가 아니라 일할 수 있다를 답한다",
+   "md": "**포트만으로는** 모른다.\n\n> **8.1절에서 그 말을** 했다.\n> **DB 가 끊겨도 200 은** 나온다.\n> **아래에서 그걸** 만든다.\n\n**딸린 것들을 대신 물어** 준다.\n\n> **DB·디스크·레디스**다.\n> **6.4절 조건으로 붙는**다.\n> **아래에서 세어** 본다.\n\n**제일 나쁜 것이** 이긴다.\n\n> **하나만 내려가도 전체가** 내려간다.\n> **아래에서 확인**한다.\n> **바꿀 수도** 있다.\n\n**바깥 도구가 이걸** 본다.\n\n> **로드밸런서와 오케스트레이터**다.\n> **⑫ 6장에서 그걸** 걸었다.\n> **아래에서 그 둘을** 나눈다."
+  },
+  {
+   "type": "figure",
+   "caption": "묻는 것이 둘이다",
+   "ascii": "   two questions an orchestrator asks, and they differ\n\n   liveness    is the process broken beyond recovery\n   readiness   should traffic be sent to it right now\n\n   answering both with one url is the usual mistake",
+   "note": "**하나의 주소로 둘 다 답하는 게 흔한** 실수다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자세히 보여 주면 그것도 정보다",
+   "md": "**기본은 상태만** 준다.\n\n> **8.1절의 열다섯 바이트**다.\n> **자세히 켜면 주소가** 보인다.\n> **아래에서 그** 차이를 본다.\n\n**느린 검사가 섞이면** 늦다.\n\n> **원격을 부르면 그렇**다.\n> **아래에서 재** 본다.\n> **프로브가 그걸** 기다린다.\n\n**내려간 이유가 안 보일 수** 있다.\n\n> **자세히를 안 켜면** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **운영에서 답답**하다.\n\n**한 검사가 전체를** 흔든다.\n\n> **부수적인 것도** 그렇다.\n> **아래에서 등급을** 낮춘다.\n> **필수만 남긴**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 기본은 상태만\n\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"UP\"}\n\n$ curl -s localhost:8080/actuator/health | wc -c\n      15\n\n\n-- 안을 연다\n\nmanagement:\n  endpoint:\n    health:\n      show-details: always\n\n$ curl -s localhost:8080/actuator/health | python3 -m json.tool\n{\n    \"status\": \"UP\",\n    \"components\": {\n        \"db\": {\n            \"status\": \"UP\",\n            \"details\": { \"database\": \"PostgreSQL\", \"validationQuery\": \"isValid()\" }\n        },\n        \"diskSpace\": {\n            \"status\": \"UP\",\n            \"details\": { \"total\": 494384795648, \"free\": 82910384128,\n                         \"threshold\": 10485760, \"path\": \"/Users/kwanhyun/proj/.\",\n                         \"exists\": true }\n        },\n        \"ping\": { \"status\": \"UP\" },\n        \"redis\": { \"status\": \"UP\", \"details\": { \"version\": \"7.2.5\" } }\n    }\n}\n\n$ curl -s localhost:8080/actuator/health | wc -c\n     412\n\n--   넷이 모여 하나가 됐다\n\n\n-- 누가 붙었나\n\n$ curl -s localhost:8080/eps/health | head -6\nHealthIndicator 빈: 4\ndbHealthContributor\ndiskSpaceHealthIndicator\npingHealthIndicator\nredisHealthContributor\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep ' matched:$' | grep -oE '[A-Za-z]+HealthContributorAutoConfiguration' \\\n    | sort -u\nDataSourceHealthContributorAutoConfiguration\nDiskSpaceHealthContributorAutoConfiguration\nRedisHealthContributorAutoConfiguration\n\n--   6.4절의 조건으로 붙었다\n--   JAR 를 빼면 사라진다\n\n\n-- 하나를 망가뜨린다\n\n$ docker stop redis\nredis\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n503\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('전체:', d['status'])\nfor k, v in d['components'].items(): print(' ', k, v['status'])\n\"\n전체: DOWN\n  db UP\n  diskSpace UP\n  ping UP\n  redis DOWN\n\n$ curl -s localhost:8080/hello\nhello\n\n--   /hello 는 여전히 200 이다\n--   8.1절에서 말한 그 차이다\n\n\n-- 왜 내려갔는지\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys\nprint(json.load(sys.stdin)['components']['redis']['details']['error'])\"\norg.springframework.data.redis.RedisConnectionFailureException:\n  Unable to connect to Redis\n\n// show-details 를 never 로 두면\n$ curl -s localhost:8080/actuator/health\n{\"status\":\"DOWN\"}\n\n--   이유가 사라진다\n--   운영에서 이러면 답답하다\n\n\n-- 직접 하나 만든다\n\n@Component\nclass PaymentApiHealthIndicator implements HealthIndicator {\n    private final RestClient client;\n\n    @Override\n    public Health health() {\n        long t0 = System.nanoTime();\n        try {\n            var body = client.get().uri(\"/ping\").retrieve().body(String.class);\n            long ms = (System.nanoTime() - t0) / 1_000_000;\n            if (ms > 500)\n                return Health.status(\"DEGRADED\")\n                    .withDetail(\"응답\", ms + \"ms\").build();\n            return Health.up().withDetail(\"응답\", ms + \"ms\")\n                             .withDetail(\"본문\", body).build();\n        } catch (Exception e) {\n            return Health.down(e).withDetail(\"주소\", \"pay.example.com\").build();\n        }\n    }\n}\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys\nprint(json.dumps(json.load(sys.stdin)['components']['paymentApi'],\n                 ensure_ascii=False, indent=1))\"\n{\n \"status\": \"UP\",\n \"details\": { \"응답\": \"42ms\", \"본문\": \"pong\" }\n}\n\n--   이름은 클래스 이름에서 왔다\n--   HealthIndicator 를 뗀 것이다\n\n\n-- 모르는 상태는 내려간 걸로 안 본다\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys; d=json.load(sys.stdin); print(d['status'],\n  d['components']['paymentApi']['status'])\"\nDEGRADED DEGRADED\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n200\n\n--   모르는 이름은 200 이다\n--   DOWN 만 503 이다\n\n\n-- 순서를 정해 준다\n\nmanagement:\n  endpoint:\n    health:\n      status:\n        order: DOWN,OUT_OF_SERVICE,DEGRADED,UP,UNKNOWN\n        http-mapping:\n          DEGRADED: 429\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n429\n\n--   상태 이름을 내가 늘렸다\n\n\n-- 부수적인 것은 등급을 낮춘다\n\n@Component\nclass CacheWarmHealthIndicator implements HealthIndicator {\n    public Health health() {\n        return warm ? Health.up().build()\n                    : Health.down().withDetail(\"사유\", \"아직 안 데워짐\").build();\n    }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n503\n\n--   캐시 하나 때문에 트래픽이 끊긴다\n\nmanagement:\n  endpoint:\n    health:\n      group:\n        readiness:\n          include: db, paymentApi\n        liveness:\n          include: ping\n\n$ curl -s -o /dev/null -w 'readiness %{http_code}\\n' \\\n    localhost:8080/actuator/health/readiness\nreadiness 200\n$ curl -s -o /dev/null -w 'liveness  %{http_code}\\n' \\\n    localhost:8080/actuator/health/liveness\nliveness  200\n$ curl -s -o /dev/null -w '전체      %{http_code}\\n' localhost:8080/actuator/health\n전체      503\n\n--   묶어서 나누면 된다\n\n\n-- 그룹의 안을 본다\n\n$ curl -s localhost:8080/actuator/health/readiness | python3 -m json.tool\n{\n    \"status\": \"UP\",\n    \"components\": {\n        \"db\": { \"status\": \"UP\" },\n        \"paymentApi\": { \"status\": \"UP\" }\n    }\n}\n\n$ curl -s localhost:8080/actuator | python3 -c \"\nimport json,sys; print([k for k in json.load(sys.stdin)['_links'] if 'health' in k])\"\n['health', 'health-path']\n\n--   그룹은 경로 조각으로 붙는다\n--   8.2절의 그 규칙이다\n\n\n-- 부트가 주는 두 프로브\n\nmanagement:\n  endpoint:\n    health:\n      probes:\n        enabled: true\n\n$ curl -s localhost:8080/actuator/health/liveness\n{\"status\":\"UP\"}\n$ curl -s localhost:8080/actuator/health/readiness\n{\"status\":\"UP\"}\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['components']))\"\n['db', 'diskSpace', 'livenessState', 'paymentApi', 'ping', 'readinessState', 'redis']\n\n--   상태 둘이 구성 요소로 들어왔다\n\n\n-- 상태를 코드에서 바꾼다\n\n@Component\nclass Warmer {\n    private final ApplicationEventPublisher pub;\n\n    @EventListener(ApplicationReadyEvent.class)\n    void warm() {\n        AvailabilityChangeEvent.publish(pub, this, ReadinessState.REFUSING_TRAFFIC);\n        System.out.println(\"[준비] 캐시 데우는 중\");\n        loadCache();\n        AvailabilityChangeEvent.publish(pub, this, ReadinessState.ACCEPTING_TRAFFIC);\n        System.out.println(\"[준비] 끝\");\n    }\n}\n\n$ java -jar build/libs/app.jar 2>&1 | grep -E '\\[준비\\]|Started' &\nINFO ... : Started BootApplication in 1.204 seconds\n[준비] 캐시 데우는 중\n\n$ curl -s -o /dev/null -w 'readiness %{http_code}\\n' \\\n    localhost:8080/actuator/health/readiness\nreadiness 503\n$ curl -s -o /dev/null -w 'liveness  %{http_code}\\n' \\\n    localhost:8080/actuator/health/liveness\nliveness  200\n\n// 잠시 뒤\n[준비] 끝\n$ curl -s -o /dev/null -w 'readiness %{http_code}\\n' \\\n    localhost:8080/actuator/health/readiness\nreadiness 200\n\n--   죽이지 말고 트래픽만 끊으라는 뜻이다\n--   ⑫ 6장에서 이 둘을 걸었다\n\n\n-- 느린 검사가 섞이면\n\n@Component\nclass SlowHealthIndicator implements HealthIndicator {\n    public Health health() {\n        try { Thread.sleep(3000); } catch (InterruptedException e) { }\n        return Health.up().build();\n    }\n}\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/actuator/health\n3.014\n\n$ curl -s -o /dev/null -w '%{time_total}\\n' localhost:8080/actuator/health/liveness\n0.003\n\n--   프로브가 이걸 기다리면 죽은 걸로 본다\n--   그룹으로 빼야 한다\n\n\n-- 디스크 기준을 바꾼다\n\nmanagement:\n  health:\n    diskspace:\n      threshold: 500GB\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['components']['diskSpace']\nprint(d['status'], round(d['details']['free']/1e9, 1), 'GB 남음')\"\nDOWN 82.9 GB 남음\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n503\n\n--   기본은 10MB 다\n--   기준을 잘못 잡으면 멀쩡한 게 내려간다\n\n\n-- 검사 하나를 끈다\n\nmanagement:\n  health:\n    redis:\n      enabled: false\n\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys; print(sorted(json.load(sys.stdin)['components']))\"\n['db', 'diskSpace', 'paymentApi', 'ping']\n\n$ docker stop redis\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/actuator/health\n200\n\n--   레디스가 죽어도 UP 이다\n--   정말 없어도 되는 것만 끈다\n\n\n-- 마지막으로 확인한다\n\n$ docker start redis && sleep 2\n$ curl -s -o /dev/null -w '전체      %{http_code}\\n' localhost:8080/actuator/health\n전체      200\n$ curl -s localhost:8080/actuator/health | python3 -c \"\nimport json,sys; d=json.load(sys.stdin); print(d['status'],\n  len(d['components']), '개')\"\nUP 6 개\n\n--   8.4절에서 어느 빌드인지 담는다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  '기본'        '상태만, 15 바이트' \\\n  '자세히'      '구성 요소와 이유' \\\n  '제일 나쁜 것' '전체가 됨' \\\n  'DOWN'        '503' \\\n  '모르는 이름' '200' \\\n  '직접 만들기' 'HealthIndicator' \\\n  '그룹'        '경로 조각' \\\n  '두 프로브'   '죽이기와 끊기' \\\n  '느린 검사'   '그룹으로 뺌'\n\n기본                     상태만, 15 바이트\n자세히                   구성 요소와 이유\n제일 나쁜 것             전체가 됨\nDOWN                     503\n모르는 이름              200\n직접 만들기              HealthIndicator\n그룹                     경로 조각\n두 프로브                죽이기와 끊기\n느린 검사                그룹으로 뺌",
+   "note": "**열다섯 바이트를 열어 보니 `db`·`diskSpace`·`ping`·`redis` 넷이 모여 412 바이트**다.\n\n**레디스를 멈추니 전체가 `DOWN` 에 503 인데 `/hello` 는 여전히 200**이다.\n\n**직접 만든 검사가 `DEGRADED` 를 돌려주면 모르는 이름이라 200, 순서를 적어 주니 429 가** 됐다.\n\n**느린 검사 하나가 전체를 3.014 초로 만들고 `liveness` 그룹은 0.003 초로** 남는다.\n\n**준비 상태를 코드에서 바꾸니 `readiness` 만 503 이고 `liveness` 는 200 으로** 갈린다."
+  }
+ ],
+ "recap": [
+  "**여럿이 모여** 하나다.",
+  "**제일 나쁜 게** 이긴다.",
+  "**기본은 상태만**이다.",
+  "**DOWN 은 503**이다.",
+  "**모르는 이름은 200**이다.",
+  "**직접** 만든다.",
+  "**그룹으로** 나눈다.",
+  "**프로브가** 둘이다.",
+  "**느린 건** 뺀다."
+ ],
+ "drills": [
+  {
+   "task": "자세히를 켠다.",
+   "done_when": "구성 요소를 다 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "하나를 멈춘다.",
+   "done_when": "503 과 200 을 둘 다 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "검사를 하나 만든다.",
+   "done_when": "내 이름이 나오는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "그룹으로 나눈다.",
+   "done_when": "두 프로브가 갈리는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "전체 상태는 어떻게 정해지나?",
+   "a": "구성 요소 중 제일 나쁜 것이 전체가 된다."
+  },
+  {
+   "q": "내려갔을 때 응답 코드는?",
+   "a": "503 이다. 모르는 상태 이름은 200 이다."
+  },
+  {
+   "q": "느린 검사가 왜 문제인가?",
+   "a": "프로브가 그걸 기다리다 죽은 걸로 판단한다."
+  },
+  {
+   "q": "두 프로브의 차이는?",
+   "a": "하나는 죽일지, 하나는 트래픽을 보낼지를 묻는다."
+  },
+  {
+   "q": "부수적인 검사는 어떻게 다루나?",
+   "a": "그룹에서 빼서 전체를 흔들지 않게 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "헬스 지표",
+   "def": "딸린 것 하나의 상태를 보고하는 조각."
+  },
+  {
+   "term": "헬스 그룹",
+   "def": "지표 일부만 모아 따로 답하게 만든 묶음."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Health Information",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.health",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

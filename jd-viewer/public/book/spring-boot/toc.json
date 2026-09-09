@@ -552,7 +552,7 @@
           "title": "헬스",
           "summary": "살아 있다는 근거.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -560,7 +560,7 @@
           "title": "정보",
           "summary": "빌드와 커밋을 담는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
