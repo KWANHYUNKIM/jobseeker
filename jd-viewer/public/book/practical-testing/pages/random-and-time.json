@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "random-and-time",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "랜덤과 시간",
+ "summary": "다시 나온 문제.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 가지 방법을 비교한다.",
+  "`Clock` 주입을 제대로 쓴다.",
+  "랜덤을 통제한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.6절에서 밀어냈고 7.2절에서 테스트 쪽을** 고쳤다. **여기서 방법을 정리**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "값이 오는 세 곳",
+   "ascii": "   three places the same value can come from\n\n   read inside          LocalDateTime.now() in the method\n                        untestable\n\n   passed in            createOrder(LocalDateTime)\n                        testable, signature grows\n\n   injected             a Clock or a Supplier field\n                        testable, signature clean, one more dependency\n\n   the second and third are both fine. the first is not.",
+   "note": "**둘째와 셋째 둘 다** 괜찮다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파라미터와 주입",
+   "md": "**파라미터**\n\n```java\npublic Order createOrder(LocalDateTime currentDateTime) { }\n```\n\n| | |\n|---|---|\n| **간단하다** | 의존성이 안 는다 |\n| **호출자가 통제** | 명시적이다 |\n| **시그니처가 는다** | 여러 메서드면 다 붙는다 |\n| **전파된다** | 컨트롤러까지 올라간다(2.7절) |\n\n**`Clock` 주입**\n\n```java\n@Service\n@RequiredArgsConstructor\npublic class OrderService {\n    private final Clock clock;\n\n    public OrderResponse createOrder(OrderCreateRequest request) {\n        LocalDateTime now = LocalDateTime.now(clock);\n        ...\n    }\n}\n\n@Configuration\npublic class ClockConfig {\n    @Bean\n    public Clock clock() {\n        return Clock.systemDefaultZone();\n    }\n}\n```\n\n| | |\n|---|---|\n| **시그니처가 깨끗** | |\n| **한 곳에서 통제** | 클래스 전체 |\n| **의존성이 는다** | 생성자에 하나 |\n| **테스트에서 교체** | `@MockBean` 또는 `@TestConfiguration` |\n\n**어느 쪽인가**\n\n| | |\n|---|---|\n| **메서드 하나** | 파라미터 |\n| **클래스 전체가 시각을 쓴다** | `Clock` |\n| **도메인 객체** | 파라미터 (스프링이 없다) |\n| **서비스** | 둘 다 |\n\n> **이 책은 `CafeKiosk` 에 파라미터, 서비스에도 파라미터**를 썼다.\n> **`Clock` 은 서비스가 여럿이면 낫다.**\n\n**`Supplier<LocalDateTime>` 도** 있다.\n\n```java\nprivate final Supplier<LocalDateTime> now;\n```\n\n> **`Clock` 보다 가볍다.** **`() -> LocalDateTime.of(...)`** 로 넣는다.\n> **표준이 아니라 팀 규약이** 필요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "랜덤은 증상이 더 나쁘다",
+   "ascii": "   random is the same problem with a worse symptom\n\n   a time bug fails at a predictable moment\n     midnight, month end, a leap day\n\n   a random bug fails at a random moment\n     one run in fifty, on someone else's machine\n\n   both are fixed the same way: pass the value in",
+   "note": "**고치는 방법은** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "랜덤을 통제하는 셋",
+   "md": "**① 값을 받는다**\n\n```java\npublic String generate(String seed) { }\n```\n\n> **가장 단순**하다. **호출자가 만든다.**\n\n**② 생성기를 주입한다**\n\n```java\npublic interface OrderNumberGenerator {\n    String generate();\n}\n\n@Component\npublic class UuidOrderNumberGenerator implements OrderNumberGenerator {\n    @Override public String generate() { return UUID.randomUUID().toString(); }\n}\n```\n\n> **6.8절의 인터페이스**다.\n> **테스트에서 `() -> \"ORD-001\"`** 로 바꾼다.\n\n**③ 시드를 고정한다**\n\n```java\nRandom random = new Random(42);\n```\n\n> **같은 시드면 같은 순서**다.\n> **알고리즘이 바뀌면 값이** 바뀐다 — **JDK 업그레이드에서 깨질 수** 있다.\n>\n> **결과값을 단언하지 말고 성질을** 본다.\n\n**성질을 검증하는 것**\n\n```java\n@Test\nvoid orderNumberIsUnique() {\n    Set<String> numbers = IntStream.range(0, 1000)\n            .mapToObj(i -> generator.generate())\n            .collect(toSet());\n\n    assertThat(numbers).hasSize(1000);\n}\n```\n\n> **값이 뭔지는 안** 본다. **\"안 겹친다\" 만** 본다.\n> **2.6절에서 `isNotNull()` 로 갔던 자리**에 쓸 수 있다.\n>\n> **다만 확률적**이다. **`Random` 이 우연히 겹치면** 깨진다.\n> **7.11절과 이어**진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- Clock 주입 ---\n\n@Configuration\npublic class ClockConfig {\n    @Bean\n    public Clock clock() {\n        return Clock.systemDefaultZone();\n    }\n}\n\n@Service\n@RequiredArgsConstructor\npublic class OrderService {\n    private final Clock clock;\n\n    @Transactional\n    public OrderResponse createOrder(OrderCreateRequest request) {\n        LocalDateTime now = LocalDateTime.now(clock);\n        ...\n    }\n}\n\n#   테스트에서 고정한다\n\n@TestConfiguration\nstatic class FixedClockConfig {\n    @Bean\n    @Primary\n    Clock fixedClock() {\n        return Clock.fixed(\n                LocalDateTime.of(2026, 9, 9, 11, 0)\n                        .atZone(ZoneId.systemDefault()).toInstant(),\n                ZoneId.systemDefault());\n    }\n}\n\n@SpringBootTest\n@Import(FixedClockConfig.class)\nclass OrderServiceClockTest extends IntegrationTestSupport {\n\n    @DisplayName(\"주문 등록 시각이 고정된 시각으로 기록된다\")\n    @Test\n    void createOrder() {\n        productRepository.save(createProduct(\"001\", 4000));\n\n        OrderResponse response = orderService.createOrder(request);\n\n        assertThat(response.getRegisteredDateTime())\n                .isEqualTo(LocalDateTime.of(2026, 9, 9, 11, 0));\n    }\n}\n\n$ ./gradlew test --tests OrderServiceClockTest\n\nHibernate: insert into orders (order_status,registered_date_time,total_price)\n           values (?,?,?)\nbinding parameter (2:TIMESTAMP) <- [2026-09-09T11:00]\n\nOrderServiceClockTest > 주문 등록 시각이 고정된 시각으로 기록된다 PASSED\n\nBUILD SUCCESSFUL in 9s\n\n#   시그니처에 시각이 없다\n\n#   그런데 언제 돌려도 11:00 이다\n\n# --- 시계를 새벽으로 옮겨도 ---\n\n$ sudo date 0910030000\n$ ./gradlew test --tests OrderServiceClockTest --rerun-tasks\n\nbinding parameter (2:TIMESTAMP) <- [2026-09-09T11:00]\n\nOrderServiceClockTest > 주문 등록 시각이 고정된 시각으로 기록된다 PASSED\n\n#   같다\n\n# --- Clock 을 안 쓰고 now() 를 그대로 두면 ---\n\nLocalDateTime now = LocalDateTime.now();\n\n$ sudo date 0910030000\n$ ./gradlew test --tests OrderServiceClockTest --rerun-tasks\n\nbinding parameter (2:TIMESTAMP) <- [2026-09-10T03:00:12.331]\n\nOrderServiceClockTest > 주문 등록 시각이 고정된 시각으로 기록된다 FAILED\n    expected: 2026-09-09T11:00\n     but was: 2026-09-10T03:00:12.331\n\n#   Clock 을 주입해도 안 쓰면 소용없다\n\n#   grep 으로 확인한다\n\n$ grep -rn \"LocalDateTime.now()\" src/main/java/ | grep -v \"now(clock)\"\n\nsrc/main/java/sample/cafekiosk/api/controller/order/OrderController.java:31\n\n#   컨트롤러 한 곳만 남았다\n\n# --- 랜덤: 결과를 단언하려 하면 ---\n\n@Test\nvoid generateOrderNumber() {\n    String number = orderNumberGenerator.generate();\n\n    assertThat(number).isEqualTo(\"???\");\n}\n\n#   무엇과 비교하나  (2.6절)\n\n# --- 인터페이스로 주입하면 ---\n\npublic interface OrderNumberGenerator {\n    String generate();\n}\n\n@TestConfiguration\nstatic class FixedNumberConfig {\n    @Bean @Primary\n    OrderNumberGenerator fixedGenerator() {\n        return () -> \"ORD-20260909-0001\";\n    }\n}\n\n@Test\nvoid createOrderWithNumber() {\n    productRepository.save(createProduct(\"001\", 4000));\n\n    OrderResponse response = orderService.createOrder(request);\n\n    assertThat(response.getOrderNumber()).isEqualTo(\"ORD-20260909-0001\");\n}\n\n$ ./gradlew test --tests OrderServiceClockTest\n\nOrderServiceClockTest > createOrderWithNumber() PASSED\n\n#   값이 정해졌다\n\n# --- 성질만 검증하면 ---\n\n@DisplayName(\"주문 번호는 천 번을 뽑아도 겹치지 않는다\")\n@Test\nvoid orderNumberIsUnique() {\n    OrderNumberGenerator generator = new UuidOrderNumberGenerator();\n\n    Set<String> numbers = IntStream.range(0, 1000)\n            .mapToObj(i -> generator.generate())\n            .collect(toSet());\n\n    assertThat(numbers).hasSize(1000);\n}\n\n$ ./gradlew test --tests OrderNumberGeneratorTest\n\nOrderNumberGeneratorTest > 주문 번호는 천 번을 뽑아도 겹치지 않는다 PASSED\n\nBUILD SUCCESSFUL in 1s\n\n#   값은 안 본다. 안 겹친다만 본다\n\n#   2.6절에서 isNotNull() 로 갔던 자리다\n\n# --- 생성기를 망가뜨리면 ---\n\npublic String generate() {\n    return \"ORD-\" + LocalDate.now();      // 날짜만\n}\n\n$ ./gradlew test --tests OrderNumberGeneratorTest\n\nOrderNumberGeneratorTest > 주문 번호는 천 번을 뽑아도 겹치지 않는다 FAILED\n    Expected size: 1000 but was: 1\n\n#   잡는다\n\n#   값을 모르는데도 검증했다\n\n# --- 시드를 고정하면 ---\n\n@Test\nvoid seededRandom() {\n    Random random = new Random(42);\n\n    assertThat(random.nextInt(100)).isEqualTo(63);\n    assertThat(random.nextInt(100)).isEqualTo(11);\n}\n\n$ ./gradlew test --tests RandomTest\n\nRandomTest > seededRandom() PASSED\n\n$ ./gradlew test --tests RandomTest --rerun-tasks\n\nRandomTest > seededRandom() PASSED\n\n#   같은 시드면 같은 값이다\n\n#   그런데 이 63 과 11 은 JDK 구현에 달렸다\n\n#   JDK 를 바꾸면\n\nRandomTest > seededRandom() FAILED\n    expected: 63 but was: 88\n\n#   (실제로는 java.util.Random 이 스펙에 고정돼 있어 잘 안 바뀌는데,\n#    ThreadLocalRandom 이나 SecureRandom 은 다르다)\n\n#   구현 값을 단언하는 건 위험하다\n\n# --- 세 방법 정리 ---\n\n#   값 전달        가장 단순. 호출자가 만든다\n#   생성기 주입     인터페이스. 6.8절과 같다\n#   시드 고정       구현에 묶인다. 성질 검증이 낫다\n\n# --- 지금 상태 ---\n\n$ grep -rn \"LocalDateTime.now()\\|new Random()\\|UUID.randomUUID()\" \\\n    src/main/java/ src/test/java/\n\nsrc/main/java/.../OrderController.java:31\nsrc/main/java/.../UuidOrderNumberGenerator.java:9\n\n#   둘 다 가장 바깥이다\n\n#   둘 다 테스트를 안 짠다  (6.8절의 SmtpMailSendClient 와 같다)\n\n# --- 다음 절에서 ---\n\n#   이름 짓기를 정리한다",
+   "note": "**`Clock` 을 주입하니 시그니처에 시각이 없는데도 언제 돌려도 11:00** 이다.\n\n**주입해 놓고 `now()` 를 그대로 쓰면 소용** 없다. **`grep` 으로** 확인한다.\n\n**주문 번호는 생성기를 주입해 값을** 고정하거나 **성질만** 본다.\n\n**\"천 번을 뽑아도 안 겹친다\" 는 값을 모르는데도** 검증한다. **날짜만 쓰게 망가뜨리면 `but was: 1`** 이다.\n\n**시드 고정은 구현 값에 묶인다** — 성질 검증이 낫다.\n\n**`now()`·`randomUUID()` 가 둘 다 가장 바깥에만** 남았다."
+  }
+ ],
+ "recap": [
+  "**값이 오는 곳 셋** — 안에서 읽기, 파라미터, 주입.",
+  "**첫째만 안** 된다.",
+  "**메서드 하나면 파라미터, 클래스 전체면 `Clock`** 이다.",
+  "**주입해 놓고 `now()` 를 쓰면 소용** 없다.",
+  "**랜덤은 실패 시점이 예측 불가라 더** 나쁘다.",
+  "**고치는 방법은** 같다 — 값을 밖에서 준다.",
+  "**생성기를 인터페이스로** 주입한다 — 6.8절과 같다.",
+  "**성질만 검증할 수도** 있다 — \"안 겹친다\".",
+  "**시드 고정은 구현 값에** 묶인다."
+ ],
+ "drills": [
+  {
+   "task": "`Clock` 을 주입해 본다.",
+   "done_when": "시계를 옮겨도 같은 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "주입해 놓고 `now()` 를 그대로 써 본다.",
+   "done_when": "깨지는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성기를 인터페이스로 뺀다.",
+   "done_when": "테스트에서 값을 고정했다.",
+   "minutes": 25
+  },
+  {
+   "task": "성질만 검증하는 테스트를 짠다.",
+   "done_when": "값을 모르는데도 잡는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값이 오는 세 곳은?",
+   "a": "메서드 안에서 읽기, 파라미터로 받기, 필드로 주입받기다."
+  },
+  {
+   "q": "파라미터와 `Clock` 중 무엇을 고르나?",
+   "a": "메서드 하나면 파라미터, 클래스 전체가 시각을 쓰면 `Clock` 이다."
+  },
+  {
+   "q": "랜덤이 왜 더 나쁜가?",
+   "a": "실패 시점이 예측 불가라 재현이 안 된다."
+  },
+  {
+   "q": "값을 모를 때 뭘 검증하나?",
+   "a": "성질이다. \"천 번을 뽑아도 안 겹친다\" 같은 것이다."
+  },
+  {
+   "q": "시드 고정의 위험은?",
+   "a": "구현이 만드는 값에 묶여 JDK 나 알고리즘이 바뀌면 깨진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Java SE — java.time.Clock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Clock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "AssertJ Core Documentation",
+   "url": "https://assertj.github.io/doc/",
+   "publisher": "AssertJ"
+  }
+ ]
+}

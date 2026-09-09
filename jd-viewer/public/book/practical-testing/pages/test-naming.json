@@ -1,0 +1,125 @@
+{
+ "book": "practical-testing",
+ "id": "test-naming",
+ "no": "7.10",
+ "chapter": 7,
+ "title": "테스트 이름 짓기",
+ "summary": "무엇을 적나.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "네 층의 이름을 구분한다.",
+  "클래스 이름 규칙을 정한다.",
+  "접미사로 분리하는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절은 `@DisplayName`** 이었다. **여기는 나머지 셋**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "독자가 보는 네 이름",
+   "ascii": "   four names a reader sees\n\n   class      OrderServiceTest\n   nested     주문을 생성할 때\n   display    재고가 부족하면 예외가 난다\n   method     createOrderWithNotEnoughStock\n\n   the first three are read. the fourth is clicked.",
+   "note": "**앞의 셋은 읽고 넷째는** 클릭한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "층마다 다른 규칙",
+   "md": "**클래스 이름**\n\n```\nOrderServiceTest        대상 + Test\nOrderControllerTest\nProductRepositoryTest\n```\n\n> **테스트 대상 클래스 이름 + `Test`** 다.\n> **찾기가 목적**이다 — **`OrderService` 를 열면 IDE 가 짝을** 보여 준다.\n>\n> **대상이 없는 테스트도** 있다.\n>\n> ```\n> OrderE2ETest\n> ProductNumberPolicyTest\n> ```\n>\n> **그럼 주제로** 짓는다.\n\n**`@Nested` 이름**\n\n```java\n@Nested @DisplayName(\"음료를 담을 때\")\n@Nested @DisplayName(\"주문을 생성할 때\")\n```\n\n> **\"~할 때\"** 다. **상황이나 대상 메서드**다.\n> **4.2절에서 목차라고** 했다.\n\n**`@DisplayName`**\n\n> **4.2절**이다. **`[조건] 하면 [결과] 한다`**.\n\n**메서드 이름**\n\n```java\nvoid createOrderWithNotEnoughStock()\n```\n\n| | |\n|---|---|\n| **영어** | 관례다 |\n| **짧게** | 문장은 `@DisplayName` 이 |\n| **중복 금지** | 같은 클래스 안에서 |\n| **읽히면 좋고 아니어도** | |\n\n> **실행 결과에 안 나온다**(4.2절).\n> **IDE 목록과 스택트레이스에만** 보인다.\n>\n> **너무 공들일 필요가** 없다.\n\n**한글 메서드 이름**\n\n```java\nvoid 재고가_부족하면_예외가_난다()\n```\n\n> **`@DisplayName` 이 필요 없어**진다.\n> **`_` 가 섞이고 문장 부호를 못** 쓴다.\n>\n> **팀에서 하나로 정한다.** **섞이는 게 가장** 나쁘다."
+  },
+  {
+   "type": "figure",
+   "caption": "접미사가 정하는 것",
+   "ascii": "   what the class name suffix decides\n\n   *Test        gradle runs it in the test task\n   *Tests       gradle runs it too, by default pattern\n   *IT          gradle ignores it unless configured\n\n   splitting unit and integration by suffix lets ci\n   run the fast ones on every push",
+   "note": "**CI 가 빠른 것만 돌릴 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "접미사로 분리한다",
+   "md": "**그레이들 기본 패턴**\n\n```gradle\ntest {\n    // 기본: **/*Test.class, **/*Tests.class, **/Test*.class\n}\n```\n\n> **`*IT` 는 안** 돈다.\n\n**분리하면**\n\n```gradle\ntasks.register('unitTest', Test) {\n    useJUnitPlatform()\n    include '**/*Test.class'\n    exclude '**/*IT.class'\n}\n\ntasks.register('integrationTest', Test) {\n    useJUnitPlatform()\n    include '**/*IT.class'\n}\n```\n\n```\nOrderTest.java            단위. 1초\nOrderServiceIT.java       통합. 9초\n```\n\n> **푸시마다 `unitTest`, 머지 전에 `integrationTest`** 다.\n> **8.5절**에서 다룬다.\n\n**태그로도** 된다.\n\n```java\n@Tag(\"integration\")\nclass OrderServiceTest { }\n```\n\n```gradle\ntasks.register('unitTest', Test) {\n    useJUnitPlatform { excludeTags 'integration' }\n}\n```\n\n| | |\n|---|---|\n| **접미사** | 파일명으로 보인다 |\n| **태그** | 여러 개를 붙일 수 있다 |\n\n> **접미사가 눈에 보여서** 낫다.\n> **`OrderServiceIT` 를 열면 느린 테스트인 걸** 안다.\n\n**이 책은 안 나눴다.**\n\n> **43개에 24초**다. **나눌 이유가** 없다.\n> **8장에서 그 기준을** 잡는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 돌린 테스트",
+   "sql": "# --- 네 이름이 어떻게 보이나 ---\n\n@DisplayName(\"주문 서비스\")\nclass OrderServiceTest extends IntegrationTestSupport {\n\n    @Nested\n    @DisplayName(\"주문을 생성할 때\")\n    class CreateOrder {\n\n        @DisplayName(\"재고가 부족하면 예외가 나고 아무것도 저장되지 않는다\")\n        @Test\n        void createOrderWithNotEnoughStock() { ... }\n    }\n}\n\n$ ./gradlew test --tests OrderServiceTest\n\n주문 서비스 > 주문을 생성할 때 > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\n#   메서드 이름은 안 나온다\n\n# --- 실패하면 ---\n\n주문 서비스 > 주문을 생성할 때 > 재고가 부족하면 ... FAILED\n    java.lang.AssertionError:\n    ...\n        at OrderServiceTest$CreateOrder.createOrderWithNotEnoughStock(\n              OrderServiceTest.java:88)\n\n#   스택트레이스에는 메서드 이름이 나온다\n\n#   그래서 메서드 이름도 아예 아무렇게나 지을 순 없다\n\n#   test1() 이었으면\n\n        at OrderServiceTest$CreateOrder.test1(OrderServiceTest.java:88)\n\n#   줄 번호는 있지만 안 읽힌다\n\n# --- 클래스 이름이 없으면 ---\n\n#   IntelliJ 에서 OrderService.java 를 열고 Ctrl+Shift+T\n\n#   OrderServiceTest 가 안 보인다\n\n#   OrderServiceSpec, OrderServiceTests 같은 이름이면\n#   IDE 규칙에 따라 안 찾아질 수 있다\n\n#   대상 + Test 가 관례인 이유다\n\n# --- 그레이들이 뭘 돌리는지 ---\n\n$ ls src/test/java/sample/cafekiosk/api/service/order/\nOrderServiceTest.java\nOrderStatisticsServiceIT.java\n\n$ ./gradlew test\n\nOrderServiceTest > ... PASSED\n\n1 test class\n\n#   IT 가 안 돌았다\n\n#   기본 패턴이 *Test 라서다\n\n# --- 분리 태스크를 만들면 ---\n\ntasks.register('unitTest', Test) {\n    useJUnitPlatform()\n    include '**/*Test.class'\n    testLogging { events \"passed\", \"failed\" }\n}\n\ntasks.register('integrationTest', Test) {\n    useJUnitPlatform()\n    include '**/*IT.class'\n    testLogging { events \"passed\", \"failed\" }\n}\n\n$ ./gradlew unitTest\n\nCafeKioskTest > ... PASSED\nOrderTest > ... PASSED\nDiscountCalculatorTest > ... PASSED\nProductTypeTest > ... PASSED\n\n30 tests completed\n\nBUILD SUCCESSFUL in 2s\n\n$ ./gradlew integrationTest\n\nOrderServiceIT > ... PASSED\nProductRepositoryIT > ... PASSED\nOrderControllerIT > ... PASSED\n\n13 tests completed\n\nBUILD SUCCESSFUL in 22s\n\n#   2초와 22초로 갈렸다\n\n#   푸시마다 unitTest, 머지 전에 둘 다\n\n# --- 태그로 하면 ---\n\n@Tag(\"integration\")\n@SpringBootTest\npublic abstract class IntegrationTestSupport { }\n\ntasks.register('unitTest', Test) {\n    useJUnitPlatform { excludeTags 'integration' }\n}\n\n$ ./gradlew unitTest\n\n30 tests completed\n\nBUILD SUCCESSFUL in 2s\n\n#   같은 결과다\n\n#   IntegrationTestSupport 하나에 붙이면 상속받은 게 다 걸린다\n\n#   파일명은 안 바뀐다\n\n# --- 한글 메서드 이름으로 하면 ---\n\n@Test\nvoid 재고가_부족하면_예외가_난다() { ... }\n\n$ ./gradlew test\n\nOrderServiceTest > 재고가_부족하면_예외가_난다() PASSED\n\n#   @DisplayName 없이도 읽힌다\n\n#   그런데 밑줄이 섞인다\n\n#   @DisplayName 판\n\nOrderServiceTest > 재고가 부족하면 예외가 나고 아무것도 저장되지 않는다 PASSED\n\n#   문장으로 읽힌다\n\n#   섞여 있으면\n\nOrderServiceTest > 재고가_부족하면_예외가_난다() PASSED\nOrderServiceTest > 판매 중지된 상품이 있으면 주문할 수 없다 PASSED\nOrderServiceTest > createOrder() PASSED\n\n#   세 가지 스타일이 한 화면에 있다\n\n#   가장 나쁜 상태다\n\n# --- 지금 이 책의 규칙 ---\n\n$ grep -rc \"@DisplayName\" src/test/java/**/*.java | awk -F: '{s+=$2} END {print s}'\n58\n\n$ grep -rc \"@Test\\|@ParameterizedTest\\|@TestFactory\" src/test/java/**/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n51\n\n#   @DisplayName 이 더 많다\n\n#   @Nested 와 클래스에도 붙어서다\n\n$ grep -rn \"void [가-힣]\" src/test/java/\n\n(결과 없음)\n\n#   한글 메서드 이름은 안 쓴다\n\n#   하나로 정했다\n\n# --- 다음 절에서 ---\n\n#   가끔 깨지는 테스트를 다룬다",
+   "note": "**실행 결과에는 메서드 이름이 안 나오고 스택트레이스에는** 나온다. **`test1()` 이면 안** 읽힌다.\n\n**클래스 이름이 `대상 + Test` 여야 IDE 가 짝을** 찾는다.\n\n**`*IT` 는 기본 패턴이 아니라 안** 돈다. **분리 태스크를 만들면 2초와 22초로** 갈린다.\n\n**태그로 하면 `IntegrationTestSupport` 하나에 붙여 상속받은 게 다** 걸린다.\n\n**세 스타일이 한 화면에 섞이는 게 가장 나쁜** 상태다."
+  }
+ ],
+ "recap": [
+  "**독자가 보는 이름이 넷** — 클래스·`@Nested`·`@DisplayName`·메서드.",
+  "**메서드 이름은 실행 결과에 안 나오고 스택트레이스에** 나온다.",
+  "**클래스는 `대상 + Test`** — IDE 가 짝을 찾는다.",
+  "**`@Nested` 는 \"~할 때\"** 다.",
+  "**메서드 이름에 너무 공들일 필요가** 없다.",
+  "**한글 메서드 이름도 방법**이다 — 팀에서 하나로 정한다.",
+  "**섞이는 게 가장** 나쁘다.",
+  "**`*IT` 는 기본 패턴이 아니라 안** 돈다.",
+  "**접미사나 태그로 나눠 CI 가 빠른 것만** 돌린다."
+ ],
+ "drills": [
+  {
+   "task": "테스트 클래스 이름 규칙을 확인한다.",
+   "done_when": "IDE 가 짝을 찾는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드 이름을 `test1` 로 바꿔 실패시켜 본다.",
+   "done_when": "스택트레이스를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`*IT` 로 이름을 바꿔 본다.",
+   "done_when": "안 돌아가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "분리 태스크를 만든다.",
+   "done_when": "시간 차이를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "메서드 이름은 어디에 나오나?",
+   "a": "실행 결과가 아니라 IDE 목록과 스택트레이스다."
+  },
+  {
+   "q": "클래스 이름 규칙은?",
+   "a": "대상 클래스 + `Test` 다. IDE 가 짝을 찾는다."
+  },
+  {
+   "q": "`*IT` 는 왜 안 도나?",
+   "a": "그레이들 기본 패턴이 `*Test`, `*Tests`, `Test*` 여서다."
+  },
+  {
+   "q": "접미사와 태그의 차이는?",
+   "a": "접미사는 파일명으로 보이고 태그는 여러 개를 붙일 수 있다."
+  },
+  {
+   "q": "가장 나쁜 상태는?",
+   "a": "한글·영어·`@DisplayName` 스타일이 섞인 것이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Gradle — Testing in Java projects",
+   "url": "https://docs.gradle.org/current/userguide/java_testing.html",
+   "publisher": "Gradle"
+  },
+  {
+   "title": "JUnit 5 User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
+  },
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  }
+ ]
+}
