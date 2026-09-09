@@ -1,0 +1,148 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-understand-summary",
+ "no": "10.10",
+ "chapter": 10,
+ "title": "정리",
+ "summary": "애너테이션 하나 뒤의 것들.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "10장을 정리한다.",
+  "트랜잭션 로그를 읽는 법을 굳힌다.",
+  "11장이 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`@Transactional` 한 줄 뒤에 이만큼**이 있었다."
+  },
+  {
+   "type": "figure",
+   "caption": "1편이 남긴 일곱 개",
+   "ascii": "   1편 5.11절 left seven notes. this chapter answered six.\n\n   is it applied at all           10.1\n   class vs method vs interface   10.2\n   internal call                  10.3\n   initialization callbacks       10.4\n   checked exception commits      10.6, 10.7\n   options and readOnly           10.8, 10.9\n\n   the seventh is propagation     11장, 12장",
+   "note": "**일곱 번째가 남았다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "10장을 관통하는 하나",
+   "md": "**절반이 같은 문장으로 요약**된다.\n\n> **프록시를 안 거치면 안 걸린다.**\n\n| 절 | 왜 안 걸리나 |\n|---|---|\n| 10.1 | **`new` 로 만들었다** — 프록시가 아니다 |\n| 10.2 | **`private`·`final`** — 프록시가 못 감싼다 |\n| 10.3 | **`this.method()`** — 프록시를 안 거친다 |\n| 10.4 | **`@PostConstruct`** — 프록시가 아직 없다 |\n\n**네 절이 하나의 원인**이다.\n\n**나머지 절반은 \"걸렸는데 예상과 다르게 동작\"** 한다.\n\n| 절 | 무엇이 다른가 |\n|---|---|\n| 10.6 | **체크 예외가 커밋**된다 |\n| 10.8 | 타임아웃이 자바 코드는 못 끊는다 |\n| 10.9 | **`readOnly` 가 수정을 조용히** 무시한다 |\n\n> **9.2절의 \"조용한 실패\" 목록**이 이 장에서 여섯 개 더 늘었다. **전부 예외를 안 던진다.**\n\n**그래서 로그를 읽는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "로그 한 벌 읽기",
+   "ascii": "   reading one transaction log\n\n   Getting transaction for [X]           aop applied      10.1\n   Creating new transaction ... opts     options          10.8\n   Acquired Connection [conn0]           borrowed\n   Switching to manual commit            autocommit off\n   ... sql ...\n   Completing transaction for [X]        method returned\n     after exception: E                  proxy saw it     10.6\n   Initiating transaction commit         verdict\n   Releasing JDBC Connection             returned\n\n   a missing first line is the most common bug",
+   "note": "**첫 줄이 없는 것이 가장 흔한 버그**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "체크리스트",
+   "md": "**트랜잭션이 이상할 때 순서대로** 본다.\n\n| 순서 | 확인 |\n|---|---|\n| 1 | **`Getting transaction for` 가 있나** |\n| 2 | 없다면 — **프록시를 거쳤나** (10.1, 10.3) |\n| 3 | 없다면 — **`private`·`final` 인가** (10.2) |\n| 4 | 없다면 — **초기화 시점인가** (10.4) |\n| 5 | 있는데 롤백이 안 된다면 — **체크 예외인가** (10.6) |\n| 6 | 있는데 롤백이 안 된다면 — **잡고 있나** (10.6) |\n| 7 | 있는데 저장이 안 된다면 — **`readOnly` 인가** (10.9) |\n| 8 | **`Participating in existing`** 이 보이나 (11장) |\n\n**여덟 번째가 11장의 문**이다.\n\n**설정을 켜 두는 것**이 전제다.\n\n```properties\nlogging.level.org.springframework.transaction.interceptor=TRACE\n```\n\n> **개발 환경에서는 늘 켜 둔다.** **2.6절의 `logging.level.org.springframework.jdbc=debug` 와 같은 자리**다."
+  },
+  {
+   "type": "compare",
+   "caption": "10장 전과 후",
+   "left": {
+    "title": "1편을 읽고 나서",
+    "points": [
+     "**`@Transactional` 을 붙이면 된다**",
+     "예외가 나면 롤백된다",
+     "서비스에 붙인다",
+     "**왜 안 되는지 모를 때가 있다**"
+    ]
+   },
+   "right": {
+    "title": "10장을 읽고 나서",
+    "points": [
+     "**프록시를 거쳐야** 걸린다",
+     "**언체크 예외**가 나면 롤백된다",
+     "**클래스에 `readOnly`, 메서드에 쓰기**",
+     "**로그 첫 줄부터 확인**한다"
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "11장은 무엇인가",
+   "md": "**10장은 트랜잭션이 하나일 때**의 이야기였다.\n\n**11장부터는 둘 이상**이다.\n\n```java\n@Transactional\npublic void 바깥() {\n    안쪽();      // 여기도 @Transactional\n}\n```\n\n**질문이 셋** 생긴다.\n\n| 질문 | |\n|---|---|\n| **트랜잭션이 두 개인가 한 개인가** | 11.3절 |\n| **안쪽이 실패하면 바깥도 롤백되나** | 11.7절 |\n| **바깥이 실패하면 안쪽도 롤백되나** | 11.6절 |\n\n**10.9절에서 이미 한 조각을 봤다.**\n\n```\nParticipating in existing transaction\n```\n\n**새 트랜잭션이 아니라 참여**했다. **그래서 `readOnly` 가 바깥 것을 따랐다.**\n\n> **11장이 그 규칙 전체**를 다룬다. **12장은 그것을 실무 상황에 적용**한다 — **특히 \"예외를 잡아 복구한다\" 는 시도가 왜 어려운지.**\n>\n> **6.5절과 10.6절에서 두 번 예고한 그 이야기**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 정상적인 한 벌 ---\n\nitemService.save(item);\n\n#   Getting transaction for [hello...ItemService.save]\n#   Creating new transaction with name [hello...ItemService.save]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n#     for JPA transaction\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\n#   Completing transaction for [hello...ItemService.save]\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Closing JPA EntityManager [SessionImpl@1] after transaction\n\n# 아홉 줄이다. SQL 은 한 줄이다.\n\n# --- 10장에서 본 이상한 로그들 ---\n\n# 10.1  (Getting transaction 이 없다)          new 로 만들었다\n# 10.2  (Getting transaction 이 없다)          private 이다\n# 10.3  (Getting transaction 이 없다)          this 로 불렀다\n# 10.4  (Getting transaction 이 없다)          @PostConstruct 다\n\n# 10.6  Initiating transaction commit          체크 예외였다\n#         after exception: MyException\n\n# 10.9  (update 가 없다)                       readOnly 였다\n\n# --- 그리고 11장의 첫 줄 ---\n\n@Transactional\npublic void 바깥() { 안쪽서비스.안쪽(); }\n\n#   Getting transaction for [바깥]\n#   Creating new transaction with name [바깥]\n#   Acquired Connection [conn0] for JDBC transaction\n\n#   Getting transaction for [안쪽]\n#   Participating in existing transaction\n\n#   (Creating new transaction 이 없다)\n#   (커넥션을 또 안 빌렸다)\n\n#   Completing transaction for [안쪽]\n#   Completing transaction for [바깥]\n#   Initiating transaction commit\n#   Committing JDBC transaction on Connection [conn0]\n\n# 'Getting transaction' 은 둘, 'Creating new' 는 하나\n# commit 도 하나\n\n# 이 세 줄이 11장의 전부다",
+   "note": "**첫 블록이 표준형**이다. **아홉 줄에 SQL 한 줄.** **이 모양을 외워 두면 이상한 것이 눈에 띈다.**\n\n**중간 블록이 10장의 목록**이다. **대부분 \"없는 줄\" 로 나타난다.**\n\n**맨 아래가 11장**이다. **`Getting transaction` 은 둘인데 `Creating new` 는 하나**다. **커밋도 하나**다.\n\n> **그 비대칭이 전파**다.\n\n**11장으로 간다.**"
+  }
+ ],
+ "recap": [
+  "**1편 5.11절의 일곱 중 여섯**을 10장이 답했다.",
+  "**절반이 \"프록시를 안 거치면 안 걸린다\"** 로 요약된다.",
+  "**나머지 절반은 걸렸는데 예상과 다르게** 동작한다.",
+  "**조용한 실패가 여섯 개 더** 늘었다.",
+  "**로그 한 벌은 아홉 줄**이다.",
+  "**첫 줄이 없는 것이 가장 흔한 버그**다.",
+  "**체크리스트 여덟 개**로 순서대로 확인한다.",
+  "**`Participating in existing transaction`** 이 11장의 문이다.",
+  "**`Getting transaction` 둘에 `Creating new` 하나** — 그 비대칭이 전파다."
+ ],
+ "drills": [
+  {
+   "task": "정상적인 트랜잭션 로그 아홉 줄을 외운다.",
+   "done_when": "각 줄이 무엇인지 말할 수 있다.",
+   "minutes": 15
+  },
+  {
+   "task": "10장의 여섯 가지 이상 상황을 재현한다.",
+   "done_when": "각각의 로그 특징을 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "체크리스트를 팀 문서로 만든다.",
+   "done_when": "여덟 항목을 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "중첩 호출의 로그를 본다.",
+   "done_when": "`Participating in existing` 을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "10장의 절반을 요약하는 문장은?",
+   "a": "프록시를 안 거치면 안 걸린다."
+  },
+  {
+   "q": "가장 흔한 버그의 신호는?",
+   "a": "`Getting transaction for` 로그가 없는 것이다."
+  },
+  {
+   "q": "롤백이 안 될 때 확인할 두 가지는?",
+   "a": "체크 예외인지, 예외를 잡고 있는지다."
+  },
+  {
+   "q": "저장이 안 될 때 확인할 것은?",
+   "a": "`readOnly` 트랜잭션인지다."
+  },
+  {
+   "q": "11장의 문이 되는 로그는?",
+   "a": "`Participating in existing transaction` 이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

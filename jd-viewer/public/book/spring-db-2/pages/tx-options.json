@@ -1,0 +1,137 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-options",
+ "no": "10.8",
+ "chapter": 10,
+ "title": "트랜잭션 옵션",
+ "summary": "격리 수준 · 타임아웃 · 라벨.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "옵션 일곱 개를 안다.",
+  "격리 수준을 바꿀 때를 안다.",
+  "타임아웃의 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**로그 첫 줄에 찍히던 그 목록**이다. **하나씩 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "일곱 개",
+   "ascii": "   @Transactional(\n       value        = \"txManager\"          which manager\n       propagation  = REQUIRED              11장\n       isolation    = DEFAULT               db default\n       timeout      = -1                    seconds, no limit\n       readOnly     = false                 10.9\n       rollbackFor  = {}                    10.7\n       label        = {}                    hints for the manager\n   )\n\n   only propagation and readOnly are used often",
+   "note": "**대부분 기본값으로 둔다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`value` — 매니저 지정",
+   "md": "**10.5절에서 본 것**이다.\n\n```java\n@Transactional(\"subTxManager\")\npublic void 부DB작업() { }\n```\n\n**`value` 와 `transactionManager` 는 같은 것**이다(별칭).\n\n**매니저가 하나면 안 쓴다.** **DB 가 둘 이상일 때만** 필요하다.\n\n> **`@Primary` 를 붙여 둔 것이 기본**으로 쓰인다."
+  },
+  {
+   "type": "figure",
+   "caption": "격리 수준",
+   "ascii": "   isolation levels and what they allow\n\n                       dirty  non-repeatable  phantom\n   READ_UNCOMMITTED      o          o            o\n   READ_COMMITTED        x          o            o\n   REPEATABLE_READ       x          x            o*\n   SERIALIZABLE          x          x            x\n\n   o allowed   x prevented\n   * mysql innodb prevents it too, with gap locks\n\n   DEFAULT means: whatever the database says",
+   "note": "**「스프링 DB 1편」 3.4절에서 다룬 그 표**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "격리 수준을 언제 바꾸나",
+   "md": "**거의 안 바꾼다.** **`DEFAULT` 로 두고 DB 설정을 따른다.**\n\n| DB | 기본 |\n|---|---|\n| **H2·PostgreSQL·오라클** | `READ_COMMITTED` |\n| **MySQL(InnoDB)** | **`REPEATABLE_READ`** |\n\n**MySQL 만 다르다.** **같은 코드를 H2 로 테스트하고 MySQL 에 배포하면 동작이 달라질 수** 있다 — **4.7절에서 말한 방언 위험의 또 다른 얼굴**이다.\n\n**바꾸는 경우**가 있다.\n\n```java\n@Transactional(isolation = Isolation.SERIALIZABLE)\npublic void 재고차감(Long id, int 수량) { }\n```\n\n**동시에 재고를 줄이는 경우** — **읽고 계산하고 쓰는 사이에 남이 끼어들면** 재고가 음수가 된다.\n\n**그런데 격리 수준을 올리는 것이 답인 경우는 드물다.**\n\n| 더 나은 방법 | |\n|---|---|\n| **비관적 락** | `select ... for update` |\n| **낙관적 락** | `@Version` — 6.5절의 그 예외 |\n| **DB 에서 계산** | `update item set qty = qty - 1 where qty >= 1` |\n\n**세 번째가 가장 단순**하다. **읽지 않고 조건부로 쓴다.**\n\n> **`SERIALIZABLE` 은 성능을 크게 떨어뜨린다.** **락 경합과 데드락이 는다.** **문제가 되는 한 지점에만 락을 거는 편**이 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "`timeout` 의 한계",
+   "md": "```java\n@Transactional(timeout = 10)   // 초\npublic void 오래걸리는작업() { }\n```\n\n**트랜잭션이 10초를 넘으면 롤백**한다.\n\n**그런데 정확히 10초에 끊기지 않는다.**\n\n| 무엇이 | |\n|---|---|\n| **쿼리 실행 중** | **다음 쿼리를 보낼 때** 확인한다 |\n| **자바 코드가 도는 중** | **확인 못 한다** |\n| **네트워크 대기** | 드라이버 타임아웃이 따로 있다 |\n\n**동작 방식**은 이렇다.\n\n```\n1  트랜잭션 시작 시 데드라인을 기록\n2  각 JDBC 문을 보낼 때 남은 시간을 계산\n3  statement.setQueryTimeout(남은시간) 으로 넘긴다\n4  남은 시간이 없으면 TransactionTimedOutException\n```\n\n**무한 루프에 빠진 자바 코드는 못 끊는다.**\n\n> **커넥션 풀의 타임아웃과 다르다.** **1편 4.3절의 `connectionTimeout`** 은 **커넥션을 빌리기까지의 대기 시간**이다. **셋을 구분**한다.\n>\n> | 설정 | 무엇 |\n> |---|---|\n> | `connectionTimeout` | **풀에서 빌리기까지** |\n> | `@Transactional(timeout)` | **트랜잭션 전체** |\n> | `queryTimeout` | **쿼리 하나** |\n\n**전역 기본값**도 있다.\n\n```properties\nspring.transaction.default-timeout=30s\n```\n\n**긴 트랜잭션을 막는 안전장치**로 쓸 만하다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "`label` — 잘 안 쓰는 옵션",
+   "md": "**스프링 5.3 부터 있다.**\n\n```java\n@Transactional(label = \"retry-3\")\npublic void 작업() { }\n```\n\n**트랜잭션 매니저가 읽을 수 있는 힌트**다. **스프링 자체는 아무것도 안 한다.**\n\n**직접 매니저를 확장할 때** 쓴다.\n\n```java\npublic class MyTxManager extends DataSourceTransactionManager {\n    @Override\n    protected void doBegin(Object tx, TransactionDefinition def) {\n        if (def.getLabels().contains(\"read-replica\")) {\n            // 읽기 복제본으로 라우팅\n        }\n        super.doBegin(tx, def);\n    }\n}\n```\n\n> **읽기 복제본 라우팅**에 쓰는 곳이 있다. **`readOnly` 로 판단하는 경우가 더 흔하다** — 10.9절.\n\n**거의 안 쓴다.** **있다는 것만 안다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- 기본값 ---\n\n@Transactional\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n# --- 격리 수준을 주면 ---\n\n@Transactional(isolation = Isolation.SERIALIZABLE)\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_SERIALIZABLE\n#   Acquired Connection [conn0] for JDBC transaction\n#   Changing isolation level of JDBC Connection [conn0] to 8\n#   Switching JDBC Connection [conn0] to manual commit\n\n#   (커밋 후)\n#   Resetting isolation level of JDBC Connection [conn0] to 2\n\n#   8 = SERIALIZABLE, 2 = READ_COMMITTED (H2 기본)\n#   빌린 커넥션의 격리 수준을 바꿨다가 되돌린다\n\n# --- 타임아웃 ---\n\n@Transactional(timeout = 2)\npublic void 느린쿼리() {\n    jdbcTemplate.execute(\"select 1 from item where sleep(5) = 0\");\n}\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,timeout_2\n\n#   TransactionTimedOutException:\n#     Transaction timed out: deadline was Wed Sep 09 10:48:12 KST 2026\n\n#   Initiating transaction rollback\n\n# --- 자바 코드가 오래 걸리면 ---\n\n@Transactional(timeout = 2)\npublic void 무한루프() {\n    repository.save(item);\n    while (true) { }        // 안 끊긴다\n}\n\n#   Hibernate: insert into item ...\n#   (아무 로그도 없다. 영원히.)\n\n#   타임아웃은 다음 JDBC 호출 때 검사된다\n\n# --- 여러 옵션을 같이 ---\n\n@Transactional(isolation = Isolation.READ_COMMITTED,\n               timeout = 30,\n               readOnly = true,\n               rollbackFor = Exception.class)\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,timeout_30,readOnly,\n#     -Exception\n\n#   -Exception 이 rollbackFor 다\n\n# --- 매니저를 지정하면 ---\n\n@Transactional(\"subTxManager\")\n\n#   Creating new transaction with name [...]\n#   Acquired Connection [conn7] for JDBC transaction\n\n#   다른 풀에서 나왔다",
+   "note": "**로그 첫 줄이 이 절의 요약**이다. **설정한 옵션이 전부 거기 찍힌다.**\n\n**두 번째 블록의 `Changing isolation level ... to 8` 과 `Resetting ... to 2`** 가 짝이다. **커넥션은 풀에서 빌린 것**이니 **쓰고 돌려주기 전에 원래대로** 되돌린다.\n\n**네 번째 블록이 타임아웃의 한계**다. **로그가 아무것도 안 남고 영원히** 돈다.\n\n**다섯 번째 블록의 `-Exception`** 이 `rollbackFor` 의 표기다. **`+` 는 `noRollbackFor`** 다.\n\n**다음 절에서 `readOnly` 를 자세히** 본다."
+  }
+ ],
+ "recap": [
+  "**옵션은 일곱 개**, 대부분 기본값으로 둔다.",
+  "**`value`/`transactionManager`** 는 DB 가 둘 이상일 때만.",
+  "**격리 수준은 `DEFAULT`** 로 두고 DB 설정을 따른다.",
+  "**MySQL 만 `REPEATABLE_READ`** 다 — 방언 위험의 또 다른 얼굴.",
+  "**격리를 올리기보다 락이나 조건부 update** 가 낫다.",
+  "**타임아웃은 다음 JDBC 호출 때** 검사된다.",
+  "**자바 코드의 무한 루프는 못 끊는다.**",
+  "**세 타임아웃을 구분**한다 — 커넥션·트랜잭션·쿼리.",
+  "**`label` 은 매니저를 확장할 때만** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "격리 수준을 바꾸고 로그를 본다.",
+   "done_when": "`Changing`/`Resetting` 짝을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "타임아웃을 짧게 주고 느린 쿼리를 돌린다.",
+   "done_when": "`TransactionTimedOutException` 을 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "타임아웃을 주고 자바 루프를 돌린다.",
+   "done_when": "안 끊기는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "옵션 넷을 한꺼번에 주고 로그 첫 줄을 읽는다.",
+   "done_when": "전부 찍히는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "격리 수준을 왜 대개 안 바꾸나?",
+   "a": "DB 기본값이 대부분 적절하고, 올리면 락 경합과 성능 저하가 크다."
+  },
+  {
+   "q": "MySQL 이 다른 점은?",
+   "a": "기본 격리 수준이 `REPEATABLE_READ` 다. 다른 DB 는 `READ_COMMITTED` 다."
+  },
+  {
+   "q": "타임아웃은 어떻게 동작하나?",
+   "a": "다음 JDBC 문을 보낼 때 남은 시간을 확인한다. 자바 코드는 못 끊는다."
+  },
+  {
+   "q": "세 가지 타임아웃은?",
+   "a": "커넥션 획득, 트랜잭션 전체, 쿼리 하나다."
+  },
+  {
+   "q": "`label` 은 무엇인가?",
+   "a": "트랜잭션 매니저가 읽을 수 있는 힌트다. 스프링 자체는 쓰지 않는다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Declarative Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

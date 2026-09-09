@@ -1,0 +1,131 @@
+{
+ "book": "spring-db-2",
+ "id": "tx-readonly",
+ "no": "10.9",
+ "chapter": 10,
+ "title": "readOnly",
+ "summary": "세 곳에서 최적화가 일어난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`readOnly` 가 어디서 무엇을 하는지 안다.",
+  "JPA 에서 왜 중요한지 안다.",
+  "믿으면 안 되는 부분을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절과 10.2절에서 계속 쓴 옵션**이다. **실제로 무엇을 하나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "세 층에서 동작한다",
+   "ascii": "   readOnly = true works at three levels\n\n   1  framework\n        spring refuses insert/update/delete in some paths\n\n   2  jpa (hibernate)\n        flush mode -> MANUAL\n        no snapshot, no dirty checking\n\n   3  jdbc driver / db\n        con.setReadOnly(true)\n        the db may refuse writes, or route to a replica\n\n   level 3 depends entirely on the driver and the db",
+   "note": "**층마다 하는 일이 다르다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "2층이 왜 중요한가",
+   "ascii": "   why level 2 matters\n\n   normal read of 10000 rows\n     entity   +  snapshot copy      2x memory\n     at commit: compare all of them\n\n   readOnly read of 10000 rows\n     entity only                    1x memory\n     at commit: nothing to compare\n\n   this is the biggest practical win",
+   "note": "**스냅숏을 안 만든다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "변경 감지를 끈다는 것",
+   "md": "**6.3절에서 변경 감지를 봤다.** **영속성 컨텍스트가 원본 스냅숏을 들고** 있다가 커밋 때 비교한다.\n\n**조회만 하는데도 그 일을 한다.**\n\n```java\n@Transactional\npublic List<Item> 목록() {\n    return repository.findAll();   // 10000건\n}\n// 커밋 시점에 10000건을 전부 비교한다\n```\n\n**`readOnly = true` 를 주면**:\n\n| | |\n|---|---|\n| **스냅숏을 안 만든다** | **메모리 절반** |\n| **flush 를 안 한다** | `FlushMode.MANUAL` |\n| **커밋 때 비교 안 한다** | **CPU 절약** |\n\n**조회가 많은 서비스에서 차이가 크다.**\n\n> **10.2절의 패턴**이 여기서 값을 한다.\n>\n> ```java\n> @Transactional(readOnly = true)   // 클래스\n> public class ItemService {\n>     @Transactional                 // 쓰기 메서드만\n>     public Item save(Item item) { }\n> }\n> ```\n>\n> **기본이 읽기 전용**이니 **조회 메서드가 자동으로 최적화**된다.\n\n**변경 감지가 꺼지므로 수정이 안 된다.**\n\n```java\n@Transactional(readOnly = true)\npublic void 수정() {\n    Item item = repository.findById(1L).get();\n    item.setPrice(99999);\n}\n// update 가 안 나간다. 예외도 없다.\n```\n\n> **9.2절의 조용한 실패에 하나 더** 얹힌다. **`readOnly` 를 클래스에 걸었는데 쓰기 메서드에 애너테이션을 빠뜨리면** 이렇게 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "1층과 3층은 못 믿는다",
+   "md": "**\"`readOnly` 를 걸었으니 쓰기가 막히겠지\"** — **아니다.**\n\n**1층(프레임워크)**\n\n**JPA 는 변경 감지만 끈다.** **`persist` 는 여전히** 된다.\n\n```java\n@Transactional(readOnly = true)\npublic void 저장() {\n    em.persist(new Item(\"itemA\", 10000, 10));\n}\n```\n\n**하이버네이트가 예외를 던지기도** 한다.\n\n```\njakarta.persistence.TransactionRequiredException:\n  Executing an update/delete query\n```\n\n**JPQL `update`/`delete` 는 막힌다.** **`persist` 는 버전에 따라** 다르다.\n\n**3층(드라이버·DB)**\n\n**`con.setReadOnly(true)` 를 드라이버가 어떻게 해석하는지가 제각각**이다.\n\n| DB | 무엇을 하나 |\n|---|---|\n| **H2** | 쓰기를 거부한다 |\n| **MySQL** | 거부한다 (5.6+) |\n| **PostgreSQL** | 거부한다 |\n| **오라클** | **DDL 만 막고 DML 은 통과**하기도 |\n\n> **\"읽기 전용\" 이 보안 장치가 아니다.** **최적화 힌트**로 생각한다.\n>\n> **진짜로 막으려면 DB 계정 권한**으로 한다.\n\n**읽기 복제본 라우팅**에 쓰기도 한다. **`AbstractRoutingDataSource` 가 `readOnly` 를 보고** 복제본으로 보낸다. **10.8절의 `label` 보다 흔한 방법**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "전파와 만나면",
+   "md": "**11장의 예고**를 하나 한다.\n\n```java\n@Transactional(readOnly = true)\npublic void 바깥() {\n    안쪽();                        // @Transactional (쓰기)\n}\n\n@Transactional\npublic void 안쪽() {\n    repository.save(item);\n}\n```\n\n**안쪽이 새 트랜잭션을 안 연다.** **바깥의 것에 참여**한다(11장).\n\n**그러면 `readOnly` 는?** **바깥의 것이 유지**된다.\n\n> **참여하는 트랜잭션은 바깥의 속성을 따른다.** **`readOnly`, 격리 수준, 타임아웃 전부** 그렇다.\n>\n> **안쪽의 애너테이션이 무시**된다. **11.3절에서 이 규칙을 자세히** 본다.\n\n**그래서 이런 사고가 난다.**\n\n```java\n@Transactional(readOnly = true)\npublic void 조회하고저장() {\n    List<Item> items = repository.findAll();\n    저장서비스.save(items.get(0));   // 저장이 안 된다\n}\n```\n\n**`REQUIRES_NEW` 를 주면 새 트랜잭션**이 열려 `readOnly` 가 풀린다 — **12.5절의 그 옵션**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- readOnly = false (기본) ---\n\n@Transactional\npublic List<Item> 목록() { return repository.findAll(); }\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Hibernate: select i1_0.id, ... from item i1_0\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n\n#   (커밋 시점에 전 건을 스냅숏과 비교했다. 로그에는 안 보인다.)\n\n# --- readOnly = true ---\n\n@Transactional(readOnly = true)\npublic List<Item> 목록() { return repository.findAll(); }\n\n#   Creating new transaction with name [...]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Setting JDBC Connection [conn0] read-only\n#   Hibernate: select i1_0.id, ... from item i1_0\n#   Initiating transaction commit\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Resetting read-only flag of JDBC Connection [conn0]\n\n#   'Setting ... read-only' 와 'Resetting' 이 짝이다\n\n# --- readOnly 에서 수정하면 ---\n\n@Transactional(readOnly = true)\npublic void 수정() {\n    Item item = repository.findById(1L).get();\n    item.setPrice(99999);\n}\n\n#   Hibernate: select i1_0.id, ... from item i1_0 where i1_0.id=?\n#   Initiating transaction commit\n\n#   (update 가 없다. 예외도 없다.)\n\nselect price from item where id = 1;\n#   -> 10000\n\n# --- readOnly 에서 save 하면 (H2) ---\n\n@Transactional(readOnly = true)\npublic void 저장() { repository.save(new Item(\"itemA\", 10000, 10)); }\n\n#   Setting JDBC Connection [conn0] read-only\n#   Hibernate: insert into item (item_name,price,quantity) values (?,?,?)\n\n#   SQL Error: 90097, SQLState: 90097\n#   The database is read only\n\n#   org.springframework.dao.InvalidDataAccessApiUsageException\n\n#   (드라이버가 막았다. 3층이다.)\n\n# --- readOnly 에서 JPQL update ---\n\n#   jakarta.persistence.TransactionRequiredException:\n#     Executing an update/delete query\n\n#   (SQL 이 안 나갔다. 2층에서 막혔다.)\n\n# --- 참여하는 트랜잭션 ---\n\n@Transactional(readOnly = true)\npublic void 바깥() { 저장서비스.save(item); }\n\n#   Creating new transaction with name [바깥]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly\n#   Participating in existing transaction\n#   Hibernate: insert into item ...\n#   The database is read only\n\n#   안쪽의 @Transactional 이 무시됐다",
+   "note": "**두 번째 블록의 `Setting ... read-only`** 가 3층이 동작한 증거다. **`Resetting` 과 짝**이다 — 10.8절의 격리 수준과 같은 모양이다.\n\n**세 번째 블록이 조용한 실패**다. **`update` 도 예외도 없다.**\n\n**네 번째와 다섯 번째가 서로 다른 층에서** 막혔다. **하나는 SQL 이 나가고 DB 가 거부**했고, **하나는 SQL 이 아예 안 나갔다.**\n\n**맨 아래의 `Participating in existing transaction`** 이 11장의 첫 줄이다. **안쪽 애너테이션이 무시되는 순간**이다.\n\n**다음 절에서 10장을 정리한다.**"
+  }
+ ],
+ "recap": [
+  "**프레임워크·JPA·드라이버 세 층**에서 동작한다.",
+  "**JPA 층이 가장 실용적**이다 — 스냅숏을 안 만든다.",
+  "**메모리 절반, 커밋 시 비교 없음.**",
+  "**변경 감지가 꺼져 수정이 조용히 안 된다.**",
+  "**`persist` 는 막힐 수도 안 막힐 수도** 있다.",
+  "**드라이버 동작이 DB 마다 다르다** — 보안 장치가 아니다.",
+  "**진짜로 막으려면 DB 계정 권한**으로.",
+  "**읽기 복제본 라우팅**에 쓰기도 한다.",
+  "**참여하는 트랜잭션은 바깥의 `readOnly` 를 따른다** — 11장."
+ ],
+ "drills": [
+  {
+   "task": "`readOnly` 를 켜고 끄며 로그를 비교한다.",
+   "done_when": "`Setting read-only` 짝을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`readOnly` 에서 엔티티를 수정해 본다.",
+   "done_when": "조용히 안 되는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`readOnly` 에서 `save` 와 JPQL `update` 를 각각 해 본다.",
+   "done_when": "막히는 층이 다른 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`readOnly` 안에서 쓰기 서비스를 부른다.",
+   "done_when": "안쪽 애너테이션이 무시되는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`readOnly` 가 동작하는 세 층은?",
+   "a": "프레임워크, JPA(하이버네이트), JDBC 드라이버·DB 다."
+  },
+  {
+   "q": "JPA 층에서 무엇을 하나?",
+   "a": "스냅숏을 안 만들고 flush 모드를 MANUAL 로 바꿔 변경 감지를 끈다."
+  },
+  {
+   "q": "가장 실용적인 이득은?",
+   "a": "조회 시 메모리 사용과 커밋 시 비교 비용이 준다."
+  },
+  {
+   "q": "왜 보안 장치가 아닌가?",
+   "a": "드라이버와 DB 마다 동작이 달라 쓰기가 통과하기도 한다."
+  },
+  {
+   "q": "참여하는 트랜잭션에서는?",
+   "a": "바깥의 `readOnly` 가 유지되고 안쪽 애너테이션은 무시된다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

@@ -635,7 +635,7 @@
           "title": "트랜잭션 옵션",
           "summary": "격리 수준 · 타임아웃 · 라벨.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.9",
@@ -643,7 +643,7 @@
           "title": "readOnly",
           "summary": "세 곳에서 최적화가 일어난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.10",
@@ -651,7 +651,7 @@
           "title": "정리",
           "summary": "애너테이션 하나 뒤의 것들.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
