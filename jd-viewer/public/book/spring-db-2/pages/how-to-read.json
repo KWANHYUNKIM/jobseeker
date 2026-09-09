@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "같은 기능을 다섯 번 만든다. 나가는 SQL 로 비교한다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이 책의 비교 방법을 안다.",
+  "앞뒤 절반이 다른 주제라는 것을 안다.",
+  "무엇을 로그로 볼지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1편이 두 문제를 다뤘다** — 트랜잭션과 예외.\n\n**이 책도 둘**인데 성격이 다르다. **앞은 기술 비교**이고 **뒤는 1편의 심화**다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯이 같은 SQL 을 만든다",
+   "ascii": "   five implementations, one interface\n   -----------------------------------\n   JdbcTemplate      ->  select ... where item_name like ?\n   MyBatis           ->  select ... where item_name like ?\n   JPA (JPQL)        ->  select ... where item_name like ?\n   Spring Data JPA   ->  select ... where item_name like ?\n   Querydsl          ->  select ... where item_name like ?\n\n   the java code differs. the sql does not.\n\n   when it does differ, that is the point of that section",
+   "note": "**다르면 그것이 그 절의 요점**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 SQL 로 비교하나",
+   "md": "**기술을 고르는 글은 대개 \"편하다\" 로 끝난다.**\n\n```\nJPA 가 편하다\nMyBatis 가 SQL 을 다루기 좋다\n```\n\n**틀린 말은 아닌데 판단에 쓸 수 없다.** \"얼마나\" 가 없다.\n\n**나가는 SQL 을 고정하면 비교가 가능해진다.**\n\n```\n같은 SQL 을 만드는 데 자바 코드가 몇 줄인가\n조건이 늘면 코드가 얼마나 느는가\n무엇을 놓치기 쉬운가\n```\n\n**서가의 방식**이기도 하다. 「JPA 기본편」이 **실제로 나가는 SQL 로** 끝났고, 「MVC」 두 권이 **오간 HTTP 로** 끝났다.\n\n**여기는 SQL 이 상수이고 코드가 변수**다.\n\n> **SQL 이 다르게 나오는 절이 있다.** 6.7절의 N+1 이 그렇다 — **한 번 부른 것이 열한 번 나간다.** 그것이 JPA 를 볼 때 봐야 하는 지점이다."
+  },
+  {
+   "type": "table",
+   "caption": "두 부분",
+   "note": "**따로 읽어도 된다.** 다만 둘 다 1편을 전제로 한다.",
+   "columns": [
+    "",
+    "무엇",
+    "무엇으로 끝나나"
+   ],
+   "rows": [
+    [
+     "**2~9장**",
+     "데이터 접근 기술 다섯",
+     "**나간 SQL**"
+    ],
+    [
+     "**10~12장**",
+     "트랜잭션의 세부",
+     "**트랜잭션 로그**"
+    ]
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "뒤 세 장은 1편이 남긴 것이다",
+   "md": "**1편 5.11절에서 일곱 가지를 꼽았다.**\n\n> **`@Transactional` 뒤에 있는 것들** — 커넥션 단위 · 락 시간 · 낡은 값 · 롤백 범위 · 프록시 · 체크 예외 커밋 · `readOnly`.\n\n**그중 다섯을 이 책에서 자세히** 본다.\n\n| | 어디서 |\n|---|---|\n| 프록시의 한계 | **10.3·10.4절** |\n| 체크 예외 커밋 | **10.6·10.7절** |\n| `readOnly` | **10.9절** |\n| 커넥션 단위 | **12.5·12.6절** |\n| 전파 | **11장 전체** |\n\n**전파가 1편에 거의 안 나왔다.** 5.4절에서 `REQUIRED` 와 `REQUIRES_NEW` 를 이름만 짚었다.\n\n**11·12장이 그것을 정면으로** 다룬다. **\"물리 트랜잭션과 논리 트랜잭션\"** 이라는 구분 하나로 대부분이 설명된다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "동적 쿼리만 이어 봐도 된다",
+   "md": "**같은 기능을 다섯 번 만드는 것은 지루하다.**\n\n**기술마다 진짜 차이가 나는 자리**가 있고, 그것이 **동적 쿼리**다.\n\n```\n3.3  JdbcTemplate      조건 넷이면 SQL 이 열여섯 가지\n5.4  MyBatis           XML 의 <if> 로 조립\n6.4  JPA               JPQL 문자열. 여전히 조립\n7.4  스프링 데이터 JPA   쿼리 메서드로는 안 된다\n8.3  Querydsl          자바 코드로 조건을 조립\n```\n\n**다섯 절만 이어 읽으면** 이 책 앞부분의 결론이 보인다.\n\n**나머지 절은 그 기술의 나머지 면**이다 — 설정·매핑·예외·성능.\n\n> **1편 7.7절에서 남긴 문제**가 정확히 이 다섯 절이다.\n>\n> **조건이 셋만 되어도 문자열 조립이 지옥이 된다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# 앞부분 - 같은 조회를 다섯 기술로\nitemRepository.findAll(new ItemSearchCond(\"itemA\", 10000));\n\n# JdbcTemplate\n#   select id, item_name, price, quantity from item\n#   where item_name like concat('%',?,'%') and price <= ?\n#   {1: 'itemA', 2: 10000}\n\n# MyBatis\n#   select id, item_name, price, quantity from item\n#   WHERE item_name like concat('%',?,'%') and price <= ?\n\n# JPA\n#   select i1_0.id, i1_0.item_name, i1_0.price, i1_0.quantity\n#   from item i1_0 where i1_0.item_name like ? escape '' and i1_0.price<=?\n\n# Querydsl\n#   select item0_.id, item0_.item_name, item0_.price, item0_.quantity\n#   from item item0_ where item0_.item_name like ? escape '!' and item0_.price<=?\n\n# 별칭과 escape 가 다를 뿐 하는 일이 같다\n\n# 뒤부분 - 트랜잭션 로그\n#   Creating new transaction with name [OrderService.order]\n#   Participating in existing transaction\n#   Setting JDBC transaction [conn0] rollback-only\n#   Global transaction is marked as rollback-only\n#\n# UnexpectedRollbackException",
+   "note": "**네 SQL 이 거의 같다.** 별칭(`i1_0` · `item0_`)과 `escape` 절이 다를 뿐이다.\n\n**ORM 이 만든 SQL 이 더 길다** — 별칭을 붙이고 컬럼을 다 적는다. **`select *` 를 안 쓴다**(1편 2.6절의 권고를 지킨다).\n\n**아래가 뒤 세 장의 모양**이다. 1편 5.4절에서 이름만 본 **`UnexpectedRollbackException`** 이 여기서 주인공이다.\n\n**앞은 SQL 을 보고 뒤는 트랜잭션 로그를 본다.** 같은 책인데 **보는 것이 다르다.**"
+  }
+ ],
+ "recap": [
+  "**앞은 기술 비교, 뒤는 1편의 심화**다.",
+  "**\"편하다\" 로는 판단할 수 없다** — SQL 을 고정하고 코드를 비교한다.",
+  "**SQL 이 상수이고 코드가 변수**다.",
+  "**SQL 이 다르게 나오는 절**이 그 기술의 특징이다 — 6.7절의 N+1.",
+  "**2~9장은 나간 SQL, 10~12장은 트랜잭션 로그**로 끝난다.",
+  "**1편 5.11절의 일곱 중 다섯**을 여기서 자세히 본다.",
+  "**전파가 1편에 거의 안 나왔다** — 11·12장이 정면으로 다룬다.",
+  "**\"물리와 논리\" 구분 하나로** 대부분이 설명된다.",
+  "**동적 쿼리 절만 이어 봐도** 앞부분의 결론이 보인다.",
+  "**1편 7.7절이 남긴 문제**가 그 다섯 절이다."
+ ],
+ "drills": [
+  {
+   "task": "1편 7.7절을 다시 읽는다.",
+   "done_when": "동적 쿼리 문제가 무엇이었는지 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "1편 5.11절의 일곱 가지를 적어 본다.",
+   "done_when": "이 책이 다룰 다섯을 골랐다.",
+   "minutes": 10
+  },
+  {
+   "task": "지금 쓰는 프로젝트가 무엇을 쓰는지 확인한다.",
+   "done_when": "다섯 중 어디인지 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 SQL 로 비교하나?",
+   "a": "\"편하다\"는 판단에 쓸 수 없다. SQL 을 고정하면 코드 양과 증가율을 비교할 수 있다."
+  },
+  {
+   "q": "SQL 이 다르게 나오는 절은?",
+   "a": "그 기술의 특징이 드러나는 자리다. 6.7절의 N+1 이 그렇다."
+  },
+  {
+   "q": "이 책의 두 부분은?",
+   "a": "2~9장은 데이터 접근 기술 비교, 10~12장은 트랜잭션의 세부다."
+  },
+  {
+   "q": "1편에서 거의 안 다룬 것은?",
+   "a": "트랜잭션 전파다. 5.4절에서 이름만 짚었고 11·12장이 정면으로 다룬다."
+  },
+  {
+   "q": "동적 쿼리 절은 어디인가?",
+   "a": "3.3 · 5.4 · 6.4 · 7.4 · 8.3절이다. 이것만 이어 읽어도 앞부분의 결론이 보인다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

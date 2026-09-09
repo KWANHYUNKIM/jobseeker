@@ -67,6 +67,7 @@
   ③ 「스프링 MVC 1편」(9장 71절, 완결) — 실제로 오간 HTTP
   ④ 「스프링 MVC 2편」(13장 99절, 완결) — 오간 HTTP. 절반이 오류 응답이다
   ⑤ 「스프링 DB 1편」(8장 57절, 완결) — 나간 SQL 과 커넥션·트랜잭션 로그
+  ⑥ 「스프링 DB 2편」(13장 83절, 집필 중) — 나간 SQL. 같은 SQL 을 다섯 기술이 만든다
   **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
   Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
   `jd-viewer/public/book/README.md`.

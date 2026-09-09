@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "whats-left",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "1편이 남긴 것",
+ "summary": "동적 쿼리. 그리고 트랜잭션의 세부.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "동적 쿼리가 왜 어려운지 안다.",
+  "1편이 미룬 트랜잭션 주제를 안다.",
+  "이 책이 무엇을 안 다루는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "두 목록",
+   "ascii": "   spring db 1, 7.7\n   ----------------\n   crud repeats per table\n   columns change, all sql changes\n   dynamic query is unmanageable      <-- this book, ch 3 to 8\n\n   spring db 1, 5.11\n   -----------------\n   connection scope\n   lock duration\n   stale reads\n   rollback scope\n   proxy                              <-- ch 10\n   checked exception commits          <-- ch 10\n   readOnly                           <-- ch 10\n   propagation                        <-- ch 11, 12",
+   "note": "**하나는 3~8장, 하나는 10~12장**이 받는다."
+  },
+  {
+   "type": "heading",
+   "text": "1. 동적 쿼리"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건 넷이면 SQL 이 열여섯 가지",
+   "md": "**상품 검색 화면**을 생각한다.\n\n```\n상품명   (선택)\n가격 이하 (선택)\n```\n\n**조건 둘이면 경우가 넷**이다.\n\n```sql\nselect * from item\nselect * from item where item_name like ?\nselect * from item where price <= ?\nselect * from item where item_name like ? and price <= ?\n```\n\n**넷이면 열여섯**이다. **`2^n`** 이다.\n\n**문자열로 만들면**\n\n```java\nString sql = \"select id, item_name, price, quantity from item\";\nif (StringUtils.hasText(itemName) || maxPrice != null) {\n    sql += \" where\";\n}\nboolean andFlag = false;\nif (StringUtils.hasText(itemName)) {\n    sql += \" item_name like concat('%',?,'%')\";\n    andFlag = true;\n}\nif (maxPrice != null) {\n    if (andFlag) {\n        sql += \" and\";\n    }\n    sql += \" price <= ?\";\n}\n```\n\n**조건 둘에 이 정도**다.\n\n**무엇이 문제인가**\n\n| | |\n|---|---|\n| **`where` 를 붙일지** | 조건이 하나라도 있어야 |\n| **`and` 를 붙일지** | 앞에 조건이 있었나 |\n| **띄어쓰기** | 빠뜨리면 `itemand` 가 된다 |\n| **파라미터 순서** | 조건과 짝을 맞춰야 |\n\n**넷 다 컴파일러가 안 잡는다.** 실행해 봐야 안다.\n\n**3.3절에서 이 코드를 실제로 쓴다.**"
+  },
+  {
+   "type": "heading",
+   "text": "2. 트랜잭션의 세부"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "1편이 이름만 짚은 것들",
+   "md": "**1편 5.4절**에서 이렇게 적었다.\n\n> **`REQUIRES_NEW` 는 커넥션이 둘**이라 풀을 두 배로 쓴다.\n\n**왜 둘인지, 언제 써야 하는지**는 안 봤다.\n\n**1편 5.9절**에서는\n\n> **`REQUIRES_NEW` 로 분리하려던 의도가 무시된다.**\n\n**내부 호출 때문**이라고 했는데, **제대로 분리했을 때 무슨 일이 생기는지**는 안 봤다.\n\n**12장이 그것**이다. **로그를 남기려다 주문까지 롤백되는 상황**을 만들고, `REQUIRES_NEW` 로 풀고, **그 대가**를 본다.\n\n**11장이 준비**다. **물리 트랜잭션과 논리 트랜잭션**이라는 구분을 세우면 **`UnexpectedRollbackException` 이 왜 나는지** 설명된다.\n\n> 1편 5.4절에서 이렇게만 적었다.\n>\n> **안쪽이 롤백 표시를 남겼다.** 물리 롤백은 안 했는데 **\"이 트랜잭션은 롤백해야 한다\"** 고 적어 뒀다.\n>\n> **\"물리\" 라는 말이 거기 이미** 나왔다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이 책이 안 다루는 것",
+   "md": "**1편 5.11절의 일곱 중 둘**은 여기서도 안 다룬다.\n\n| | 왜 |\n|---|---|\n| **락 시간** | 1편 4.8~4.10절에서 했다 |\n| **낡은 조회값** | 같은 자리 |\n\n**그리고 새로 안 다루는 것들**\n\n- **JPA 의 매핑** — 서가 첫 책의 내용이다. 6장은 **연동과 트랜잭션**만 본다\n- **QueryDSL 의 고급 기능** — 서브쿼리·케이스식 같은 것\n- **성능 튜닝** — 인덱스·실행 계획\n- **분산 트랜잭션** — 1편 5.2절에서 이름만\n\n**첫째가 중요**하다. **6장은 JPA 입문이 아니다.** 엔티티 매핑과 영속성 컨텍스트를 **안다고 가정**하고, **스프링과 어떻게 붙는지**만 본다.\n\n> **서가 첫 책 「JPA 기본편」 56절**이 그것이다. **안 읽었으면 6장이 어려울 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "그래서 순서가 이렇다",
+   "md": "**2장이 먼저인 이유**가 있다.\n\n```\n2 장   인터페이스와 구현 갈아 끼우기\n3~8 장 구현을 하나씩 만든다\n9 장   비교하고 고른다\n```\n\n**2장 없이 3장부터 하면** 각 기술을 따로 배우는 것이 된다. **비교가 안 된다.**\n\n**1편 3.3절에서 한 것**과 같은 구조다.\n\n> **`DataSource` 로 설정과 사용이 갈렸다** — 구현만 바꿔 끼운다.\n\n**여기는 리포지토리 전체**를 갈아 끼운다.\n\n**4장이 중간에 있는 이유**도 있다. **구현이 늘수록 테스트가 중요**해지는데, **DB 가 붙은 테스트는 서로를 망가뜨린다.** 5장 이후를 편하게 하려고 먼저 정리한다.\n\n**10장부터는 앞과 독립**이다. 앞을 안 봐도 되는데 **1편 5장은 필요**하다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL 과 로그",
+   "sql": "# 동적 쿼리 - 조건이 없으면\nitemRepository.findAll(new ItemSearchCond(null, null));\n\n#   select id, item_name, price, quantity from item\n\n# 상품명만\nitemRepository.findAll(new ItemSearchCond(\"itemA\", null));\n\n#   select id, item_name, price, quantity from item\n#   where item_name like concat('%',?,'%')\n#   {1: 'itemA'}\n\n# 가격만\nitemRepository.findAll(new ItemSearchCond(null, 10000));\n\n#   select id, item_name, price, quantity from item\n#   where price <= ?\n#   {1: 10000}\n\n# 둘 다\nitemRepository.findAll(new ItemSearchCond(\"itemA\", 10000));\n\n#   select id, item_name, price, quantity from item\n#   where item_name like concat('%',?,'%') and price <= ?\n#   {1: 'itemA', 2: 10000}\n\n# 네 가지 SQL 이 나온다. 조건이 넷이면 열여섯 가지\n\n# 띄어쓰기를 빠뜨리면\n#   select ... from itemwhere item_name like ?\n# org.springframework.jdbc.BadSqlGrammarException: [42001-232]\n\n# 실행해 봐야 안다",
+   "note": "**같은 메서드가 네 가지 SQL** 을 만든다. **조건에 따라 문자열이 달라지는 것**이 동적 쿼리다.\n\n**파라미터 개수도 달라진다** — 없거나, 하나거나, 둘이다. **순서를 맞추는 것도 우리 몫**이다.\n\n**맨 아래가 이 방식의 위험**이다. **띄어쓰기 하나**로 `itemwhere` 가 됐고, 1편 7.5절의 `BadSqlGrammarException` 이 났다.\n\n**컴파일러는 이것을 못 잡는다.** 그냥 문자열이니까."
+  }
+ ],
+ "recap": [
+  "**조건이 `n` 개면 SQL 이 `2^n` 가지**다.",
+  "**`where` · `and` · 띄어쓰기 · 파라미터 순서** 넷을 손으로 맞춘다.",
+  "**컴파일러가 안 잡는다** — 실행해 봐야 안다.",
+  "**1편 5.4·5.9절이 이름만 짚은 것**을 11·12장이 다룬다.",
+  "**\"물리 트랜잭션\" 이라는 말이 1편에 이미** 나왔다.",
+  "**락과 낡은 값은 1편 4장**에서 했다.",
+  "**6장은 JPA 입문이 아니다** — 매핑은 서가 첫 책의 몫.",
+  "**2장이 먼저인 이유** — 갈아 끼울 구조가 없으면 비교가 안 된다.",
+  "**1편 3.3절의 `DataSource` 와 같은 구조**를 리포지토리에 적용한다.",
+  "**4장이 중간인 이유** — 구현이 늘수록 테스트가 중요해진다.",
+  "**10장부터는 앞과 독립**이다."
+ ],
+ "drills": [
+  {
+   "task": "조건 둘짜리 동적 쿼리를 문자열로 만들어 본다.",
+   "done_when": "네 가지 SQL 이 나오는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "띄어쓰기를 일부러 빠뜨린다.",
+   "done_when": "`BadSqlGrammarException` 을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "조건을 넷으로 늘려 본다.",
+   "done_when": "코드가 얼마나 느는지 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "1편 5.11절의 일곱 가지를 이 책의 장에 매핑한다.",
+   "done_when": "다섯이 여기 있는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동적 쿼리가 왜 어려운가?",
+   "a": "조건이 `n` 개면 SQL 이 `2^n` 가지이고 `where`·`and`·띄어쓰기·파라미터 순서를 손으로 맞춰야 한다."
+  },
+  {
+   "q": "왜 컴파일러가 못 잡나?",
+   "a": "SQL 이 문자열이라 조립 결과를 실행해 봐야 안다."
+  },
+  {
+   "q": "11·12장이 다루는 것은?",
+   "a": "트랜잭션 전파다. 1편 5.4·5.9절에서 이름만 짚었다."
+  },
+  {
+   "q": "6장이 JPA 입문이 아닌 이유는?",
+   "a": "엔티티 매핑과 영속성 컨텍스트는 서가 첫 책의 내용이고 여기는 스프링 연동과 트랜잭션만 본다."
+  },
+  {
+   "q": "2장이 왜 먼저인가?",
+   "a": "구현을 갈아 끼우는 구조가 없으면 다섯 기술을 비교할 수 없기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동적 쿼리",
+   "en": "dynamic query",
+   "what": "조건에 따라 SQL 문장 자체가 달라지는 쿼리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Data Access",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

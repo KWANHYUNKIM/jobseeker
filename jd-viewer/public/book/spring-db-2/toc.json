@@ -1,0 +1,816 @@
+{
+  "id": "spring-db-2",
+  "title": "스프링 DB",
+  "subtitle": "2편 — 같은 기능을 다섯 가지 기술로",
+  "blurb": "JdbcTemplate · MyBatis · JPA · 스프링 데이터 JPA · Querydsl 로 같은 화면을 만든다. 나가는 SQL 이 같으니 코드만 비교하면 된다. 뒤 세 장은 1편이 애너테이션 하나로 감춘 트랜잭션의 세부다.",
+  "updated_at": "2026-09-09",
+  "preface": "1편 7.7절에서 이렇게 끝냈다.\n\n> **SQL 은 여전히 우리가 쓴다.** `JdbcTemplate` 은 가운데다.\n>\n> 그래서 남는 문제 — **CRUD 반복 · 컬럼이 늘면 SQL 을 다 고침 · 동적 쿼리**\n\n**세 번째가 이 책의 시작**이다. 조건이 붙었다 빠졌다 하는 조회를 **문자열로 만드는 것**은 감당이 안 된다.\n\n**그리고 1편이 감춘 것이 하나 더** 있다. 5장에서 `@Transactional` 한 줄을 만들면서 **일곱 가지를 그 뒤에** 남겨 뒀다(1편 5.11절). **전파·롤백 규칙·`readOnly`·프록시의 한계** 같은 것들이다.\n\n**이 책은 둘을 다룬다.**\n\n**앞 아홉 장은 데이터 접근 기술**이다. **같은 상품 관리 기능을 다섯 번 만든다** — `JdbcTemplate` · MyBatis · JPA · 스프링 데이터 JPA · Querydsl. **인터페이스 하나에 구현을 갈아 끼우는 구조**를 2장에서 먼저 만들고, **설정 한 줄로 바꿔 가며** 비교한다.\n\n**뒤 세 장은 트랜잭션**이다. 1편 5장이 \"어떻게 거는가\" 였다면 여기는 **\"걸었는데 왜 안 되나\"** 다. 로그를 남기려고 `REQUIRES_NEW` 를 붙였는데 주문까지 롤백되는 상황을 **직접 만들어 본다.**\n\n이 책의 규칙 셋.\n\n첫째, **매 절은 실제로 나간 SQL 로 끝난다.** 다섯 기술이 **같은 SQL 을 만든다** — 그것이 이 책의 비교 방법이다. **자바 코드는 절마다 다른데 DB 가 받는 것은 같다.** 다르면 그것이 그 기술의 특징이다.\n\n둘째, **뒤 세 장은 트랜잭션 로그로 끝난다.** `Creating new transaction` · `Participating in existing transaction` · `Setting rollback-only`. **1편에서 본 그 로그들**이 여기서 주인공이 된다.\n\n셋째, **1편을 전제로 쓴다.** 커넥션 풀·`DataSourceUtils`·`DataAccessException`·프록시를 설명 없이 쓴다.\n\n차례는 인프런 김영한 강사의 「스프링 DB 2편 — 데이터 접근 활용 기술」 커리큘럼(13개 섹션)을 뼈대로 삼았고, 본문·예제·SQL 로그·그림은 새로 썼다.",
+  "how_to_read": [
+    "**1편을 먼저 읽는다.** 이 책은 `DataSourceUtils`·`DataAccessException`·프록시를 설명 없이 쓴다.",
+    "**2장을 건너뛰지 않는다.** 구현을 갈아 끼우는 구조가 없으면 3~8장의 비교가 안 된다.",
+    "3~8장은 **같은 기능을 다섯 번** 만든다. 지루하면 **동적 쿼리 절만** 이어 봐도 된다 — 3.3 · 5.4 · 6.4 · 7.4 · 8.3.",
+    "**4장은 따로 읽어도 된다.** 테스트와 DB 이야기이고 어느 기술에나 적용된다.",
+    "**10~12장이 이 책의 후반부**다. 앞을 안 보고 여기부터 읽어도 되는데, 1편 5장은 필요하다.",
+    "**로그를 켜고 읽는다.** 앞은 SQL, 뒤는 트랜잭션 로그다."
+  ],
+  "prereq": [
+    "**「스프링 DB 1편」 전체.** 특히 4·5장(트랜잭션)과 7장(예외 추상화).",
+    "**JPA 기본.** 6장부터 엔티티 매핑과 영속성 컨텍스트를 안다고 가정한다 — 서가 첫 책의 내용이다.",
+    "**스프링 컨테이너와 프로파일.** 구현을 갈아 끼우는 데 쓴다.",
+    "**SQL 조인과 like.** 동적 쿼리 예제에 나온다."
+  ],
+  "env": [
+    {
+      "name": "Java",
+      "value": "17",
+      "note": "21 도 그대로 된다"
+    },
+    {
+      "name": "Spring Boot",
+      "value": "3.x",
+      "note": ""
+    },
+    {
+      "name": "데이터베이스",
+      "value": "H2 2.x",
+      "note": "서버 모드. 4장에서 임베디드도 쓴다"
+    },
+    {
+      "name": "빌드",
+      "value": "Gradle",
+      "note": "8장에서 Querydsl 플러그인을 더한다"
+    },
+    {
+      "name": "의존성",
+      "value": "Web, Thymeleaf, JDBC, JPA, MyBatis, Querydsl",
+      "note": "장마다 하나씩 붙인다"
+    },
+    {
+      "name": "확인 도구",
+      "value": "SQL 로그 · 트랜잭션 로그",
+      "note": "앞뒤 절반씩 나뉜다"
+    }
+  ],
+  "source": {
+    "name": "스프링 DB 2편 - 데이터 접근 활용 기술 (김영한, 인프런)",
+    "url": "https://www.inflearn.com/course/스프링-db-2",
+    "note": "차례(13개 섹션)의 뼈대만 빌렸다. 본문·예제 코드·SQL 로그·그림은 이 책에서 새로 쓴 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "1편이 남긴 동적 쿼리 문제와, 다섯 기술을 같은 잣대로 보는 법.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "같은 기능을 다섯 번 만든다. 나가는 SQL 로 비교한다.",
+          "minutes": 11,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "whats-left",
+          "title": "1편이 남긴 것",
+          "summary": "동적 쿼리. 그리고 트랜잭션의 세부.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "project-setup",
+          "title": "프로젝트와 예제",
+          "summary": "상품 관리. MVC 2편의 그 화면을 다시 쓴다.",
+          "minutes": 11,
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "데이터 접근 기술 — 시작",
+      "goal": "기술을 갈아 끼울 수 있는 구조부터 만든다.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "approach",
+          "title": "진행 방식",
+          "summary": "인터페이스 하나에 구현을 여섯 개 붙인다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "memory-repository",
+          "title": "메모리 저장소",
+          "summary": "기술 없이 먼저 돌아가게 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "project-structure",
+          "title": "프로젝트 구조",
+          "summary": "도메인 · 리포지토리 · 서비스 · 웹.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "config-profile",
+          "title": "설정과 프로파일",
+          "summary": "구현을 바꾸는 것이 설정 한 줄이 되게.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "test-structure",
+          "title": "테스트 구조",
+          "summary": "같은 테스트로 여섯 구현을 검증한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "db-table",
+          "title": "테이블 만들기",
+          "summary": "스키마와 초기 데이터를 어디에 둘까.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "JdbcTemplate",
+      "goal": "1편 7.6절의 그것을 실전 예제에 붙인다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "jdbc-intro",
+          "title": "소개와 설정",
+          "summary": "1편에서 본 것과 무엇이 다른가.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "jdbc-apply",
+          "title": "적용 — 기본",
+          "summary": "네 메서드를 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "dynamic-query",
+          "title": "동적 쿼리 문제",
+          "summary": "조건이 넷이면 SQL 이 열여섯 가지다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "jdbc-config",
+          "title": "구성과 실행",
+          "summary": "설정을 바꿔 구현을 갈아 끼운다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "named-param",
+          "title": "이름 지정 파라미터",
+          "summary": "물음표를 세지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "param-source",
+          "title": "SqlParameterSource",
+          "summary": "객체를 그대로 넘긴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "simple-jdbc-insert",
+          "title": "SimpleJdbcInsert",
+          "summary": "insert 문을 안 쓴다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.8",
+          "id": "jdbc-features",
+          "title": "기능 정리",
+          "summary": "언제 무엇을 쓸까.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.9",
+          "id": "jdbc-summary",
+          "title": "정리",
+          "summary": "동적 쿼리가 여전히 문제다.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "데이터 접근 기술 — 테스트",
+      "goal": "DB 가 붙은 테스트를 어떻게 다룰까.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "test-and-db",
+          "title": "테스트와 데이터베이스",
+          "summary": "테스트가 서로를 망가뜨린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "test-db-separate",
+          "title": "테스트 전용 데이터베이스",
+          "summary": "운영 DB 로 테스트하지 않는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "test-isolation",
+          "title": "테스트 격리",
+          "summary": "실행 순서에 따라 결과가 달라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "test-transactional",
+          "title": "@Transactional 테스트",
+          "summary": "테스트가 끝나면 롤백한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "test-rollback-commit",
+          "title": "롤백과 커밋",
+          "summary": "@Commit 이 필요한 자리.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "embedded-db",
+          "title": "임베디드 모드 DB",
+          "summary": "테스트가 DB 를 띄운다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "test-summary",
+          "title": "정리",
+          "summary": "그리고 Testcontainers.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "MyBatis",
+      "goal": "SQL 을 XML 로 빼면 무엇이 달라지나.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "mybatis-intro",
+          "title": "소개",
+          "summary": "JdbcTemplate 과 무엇이 다른가.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "mybatis-setup",
+          "title": "설정",
+          "summary": "의존성과 매퍼 스캔.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "mybatis-apply",
+          "title": "적용",
+          "summary": "인터페이스와 XML 로 나눈다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "mybatis-dynamic",
+          "title": "동적 쿼리",
+          "summary": "3.3절의 문제가 여기서 풀린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "mybatis-xml-annotation",
+          "title": "XML 과 애너테이션",
+          "summary": "어느 쪽에 쓸까.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "mybatis-features",
+          "title": "기능 정리",
+          "summary": "resultMap · 재사용 · 타입 별칭.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "mybatis-internals",
+          "title": "스프링 연동 원리",
+          "summary": "인터페이스만 있는데 어떻게 도나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.8",
+          "id": "mybatis-summary",
+          "title": "정리",
+          "summary": "SQL 을 밖으로 뺀 대가.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "JPA",
+      "goal": "SQL 을 안 쓰면 무엇을 얻고 무엇을 잃나.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "jpa-intro",
+          "title": "소개",
+          "summary": "서가 첫 책과 이 책의 자리.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "jpa-setup",
+          "title": "설정",
+          "summary": "의존성과 매핑.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "jpa-apply",
+          "title": "적용",
+          "summary": "저장과 조회에 SQL 이 없다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "jpa-jpql",
+          "title": "JPQL 과 동적 쿼리",
+          "summary": "객체를 대상으로 쓰는 쿼리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "jpa-exception",
+          "title": "예외 변환",
+          "summary": "1편 7.4절의 계층으로 온다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "jpa-transaction",
+          "title": "트랜잭션과 영속성 컨텍스트",
+          "summary": "왜 @Transactional 이 필수인가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "jpa-lazy",
+          "title": "지연 로딩과 N+1",
+          "summary": "나가는 SQL 을 봐야 하는 이유.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "jpa-summary",
+          "title": "정리",
+          "summary": "편해진 만큼 봐야 할 것이 늘었다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "스프링 데이터 JPA",
+      "goal": "인터페이스만 만들면 구현이 생긴다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "data-jpa-intro",
+          "title": "소개",
+          "summary": "무엇을 대신해 주나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "data-jpa-features",
+          "title": "주요 기능",
+          "summary": "쿼리 메서드 · @Query · 페이징.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "data-jpa-apply",
+          "title": "적용",
+          "summary": "리포지토리가 인터페이스 하나가 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "query-method-limit",
+          "title": "쿼리 메서드의 한계",
+          "summary": "이름이 길어지고 동적 쿼리가 안 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "custom-repository",
+          "title": "사용자 정의 리포지토리",
+          "summary": "직접 구현을 끼워 넣는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "data-jpa-summary",
+          "title": "정리",
+          "summary": "무엇이 남고 무엇이 사라졌나.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "Querydsl",
+      "goal": "동적 쿼리를 자바 코드로 쓴다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "querydsl-intro",
+          "title": "소개와 설정",
+          "summary": "1편 7.7절이 남긴 문제의 답.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "q-type",
+          "title": "Q 타입 생성",
+          "summary": "컴파일 시점에 만들어진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "querydsl-dynamic",
+          "title": "동적 쿼리",
+          "summary": "조건이 넷이어도 코드가 안 는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "querydsl-apply",
+          "title": "적용",
+          "summary": "스프링 데이터 JPA 와 같이 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "querydsl-summary",
+          "title": "정리",
+          "summary": "빌드가 복잡해지는 대가.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "데이터 접근 기술 — 활용 방안",
+      "goal": "다섯을 다 봤으니 무엇을 고를까.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "choose-tech",
+          "title": "어떤 기술을 고를까",
+          "summary": "SQL 을 누가 쓰느냐로 갈린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "tradeoffs",
+          "title": "트레이드오프",
+          "summary": "편함과 통제의 교환.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "practical-structure",
+          "title": "실용적인 구조",
+          "summary": "스프링 데이터 JPA + Querydsl.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "tech-summary",
+          "title": "정리",
+          "summary": "섞어 쓰는 것이 정상이다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "스프링 트랜잭션 이해",
+      "goal": "1편 5장이 애너테이션 하나로 감춘 것의 세부.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "tx-apply-check",
+          "title": "트랜잭션 적용 확인",
+          "summary": "지금 트랜잭션이 걸려 있나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "tx-priority",
+          "title": "우선순위",
+          "summary": "클래스와 메서드, 인터페이스.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "tx-internal-call",
+          "title": "프록시 내부 호출",
+          "summary": "1편 5.9절을 다시, 더 자세히.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "tx-init-timing",
+          "title": "초기화 시점",
+          "summary": "@PostConstruct 에는 안 걸린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "tx-auto-resource",
+          "title": "자동 리소스 등록",
+          "summary": "DataSource 와 매니저가 어디서 오나.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "rollback-rule",
+          "title": "롤백 규칙",
+          "summary": "체크 예외는 왜 커밋되나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.7",
+          "id": "rollback-for",
+          "title": "rollbackFor",
+          "summary": "규칙을 바꾼다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "10.8",
+          "id": "tx-options",
+          "title": "트랜잭션 옵션",
+          "summary": "격리 수준 · 타임아웃 · 라벨.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.9",
+          "id": "tx-readonly",
+          "title": "readOnly",
+          "summary": "세 곳에서 최적화가 일어난다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.10",
+          "id": "tx-understand-summary",
+          "title": "정리",
+          "summary": "애너테이션 하나 뒤의 것들.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "트랜잭션 전파 — 기본",
+      "goal": "트랜잭션 안에서 트랜잭션을 시작하면.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "propagation-basic",
+          "title": "커밋과 롤백",
+          "summary": "트랜잭션 매니저를 직접 쓴다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "tx-twice",
+          "title": "트랜잭션 두 번 사용",
+          "summary": "따로 쓰면 각각 커밋된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "propagation-intro",
+          "title": "전파 기본",
+          "summary": "REQUIRED 가 무엇을 하나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "physical-logical",
+          "title": "물리 트랜잭션과 논리 트랜잭션",
+          "summary": "이 구분이 전부다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "all-commit",
+          "title": "전체 커밋",
+          "summary": "안쪽은 커밋하지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "outer-rollback",
+          "title": "외부 롤백",
+          "summary": "안쪽이 성공해도 같이 롤백된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.7",
+          "id": "inner-rollback",
+          "title": "내부 롤백",
+          "summary": "rollback-only 표시가 남는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.8",
+          "id": "propagation-summary",
+          "title": "정리",
+          "summary": "하나가 실패하면 전부 롤백이다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 12,
+      "title": "트랜잭션 전파 — 활용",
+      "goal": "로그를 남기려는데 주문까지 롤백된다면.",
+      "sections": [
+        {
+          "no": "12.1",
+          "id": "propagation-example",
+          "title": "예제 준비",
+          "summary": "회원 가입과 로그.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "12.2",
+          "id": "all-logical",
+          "title": "모든 논리 트랜잭션",
+          "summary": "하나로 묶었을 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.3",
+          "id": "service-tx",
+          "title": "서비스 계층 트랜잭션",
+          "summary": "경계를 어디에 둘까.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.4",
+          "id": "recovery-attempt",
+          "title": "복구를 시도하면",
+          "summary": "예외를 잡아도 롤백된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.5",
+          "id": "requires-new",
+          "title": "REQUIRES_NEW",
+          "summary": "물리 트랜잭션을 나눈다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.6",
+          "id": "requires-new-cost",
+          "title": "REQUIRES_NEW 의 대가",
+          "summary": "커넥션이 둘이 된다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.7",
+          "id": "alternative",
+          "title": "대안",
+          "summary": "구조를 바꾸는 편이 낫다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.8",
+          "id": "propagation-use-summary",
+          "title": "정리",
+          "summary": "전파를 쓰기 전에 볼 것.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 13,
+      "title": "다음으로",
+      "goal": "두 권이 만든 데이터 계층과 그 위에 올릴 것.",
+      "sections": [
+        {
+          "no": "13.1",
+          "id": "whats-next",
+          "title": "다음 단계",
+          "summary": "서가의 여섯 권과 그다음.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}
