@@ -1,0 +1,138 @@
+{
+ "book": "jpa-app-1",
+ "id": "db-setup",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "H2 와 JPA 설정",
+ "summary": "설정 파일 한 장.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "H2 를 서버 모드로 띄운다.",
+  "`application.yml` 을 쓴다.",
+  "`ddl-auto` 를 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 `jdbc:h2:mem:`** 이 자동으로 잡혔다. **이제 직접 정한다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "H2 의 두 모드",
+   "ascii": "   h2 in two modes\n\n   file / server\n     jdbc:h2:~/jpashop            first run, creates the file\n     jdbc:h2:tcp://localhost/~/jpashop   after that, over tcp\n     data survives a restart\n\n   embedded\n     jdbc:h2:mem:test            lives in the jvm\n     gone when the jvm stops\n\n   this book: server mode for running, embedded for tests",
+   "note": "**「DB 2편」 4.6절에서 본 그 구분**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "처음 한 번은 파일 모드로",
+   "md": "**H2 콘솔을 열고 이렇게 접속**한다.\n\n```\njdbc:h2:~/jpashop\n```\n\n**`~/jpashop.mv.db` 파일이 만들어진다.** **그다음부터는 TCP 로** 붙는다.\n\n```\njdbc:h2:tcp://localhost/~/jpashop\n```\n\n**왜 두 단계인가.**\n\n| | |\n|---|---|\n| **파일 모드** | **JVM 하나만** 붙을 수 있다 |\n| **서버 모드(TCP)** | **여럿이** 붙는다 — 앱과 콘솔을 동시에 |\n\n**앱이 파일 모드로 붙어 있으면 콘솔이 못 붙는다.**\n\n```\nDatabase may be already in use: null.\n  Possible solutions: close all other connection(s)\n```\n\n> **개발 중에는 콘솔로 데이터를 보면서** 한다. **그래서 서버 모드**다.\n>\n> **테스트는 임베디드**로 간다 — 5.4절.\n\n**H2 콘솔을 애플리케이션 안에서 열 수도** 있다.\n\n```yaml\nspring:\n  h2:\n    console:\n      enabled: true    # /h2-console\n```\n\n**이 책은 별도 H2 서버**를 쓴다. **애플리케이션을 껐다 켜도 콘솔이 살아 있는 편**이 편하다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "caption": "`src/main/resources/application.yml`",
+   "code": "spring:\n  datasource:\n    url: jdbc:h2:tcp://localhost/~/jpashop\n    username: sa\n    password:\n    driver-class-name: org.h2.Driver\n\n  jpa:\n    hibernate:\n      ddl-auto: create\n    properties:\n      hibernate:\n        format_sql: true\n\nlogging:\n  level:\n    org.hibernate.SQL: debug\n    org.hibernate.orm.jdbc.bind: trace",
+   "note": "**`.properties` 대신 `.yml`** 을 쓴다. **계층이 눈에 보인다.**\n\n**`application.properties` 를 지운다.** **둘 다 있으면 `.properties` 가 이긴다.**\n\n**`format_sql: true`** 는 SQL 을 여러 줄로 만든다. **읽기 좋은 대신 로그가 길어진다** — 「DB 2편」 6.2절에서 말한 그것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "설정 네 묶음",
+   "ascii": "   application.yml, four groups\n\n   spring.datasource     url, username, password, driver\n   spring.jpa.hibernate  ddl-auto\n   spring.jpa.properties hibernate.*  (format_sql, etc)\n   logging.level         org.hibernate.*\n\n   the last group is what this book reads",
+   "note": "**마지막 묶음이 이 책의 눈**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "`ddl-auto: create` 를 고른다",
+   "md": "**「DB 2편」 2.6절에서는 `schema.sql` 을** 썼다. **여기서는 반대**다.\n\n| | DB 2편 | 이 책 |\n|---|---|---|\n| 테이블을 누가 | **내가 쓴 SQL** | **하이버네이트** |\n| 이유 | **구현 여섯 중 셋이 JPA 가 아니다** | **JPA 하나뿐이다** |\n| 매 절이 보는 것 | 나간 SQL | **매핑이 만든 DDL** |\n\n**이 책은 JPA 만 쓴다.** **그러니 매핑이 스키마의 원본**이어도 된다.\n\n**그리고 그것이 이 책의 방법**이다.\n\n> **1.1절**: 2~3장은 **하이버네이트가 만든 DDL** 로 끝난다.\n>\n> **`@Column(length = 10)` 하나가 `varchar(10)` 이 되는 것**을 눈으로 본다. **설계가 만든 것을 보는 것**이 이 책이다.\n\n**`create` 는 뜰 때마다 `drop` + `create`** 다.\n\n| 값 | |\n|---|---|\n| **`create`** | **이 책** — 매번 새로 |\n| `create-drop` | 끌 때 지운다 |\n| `update` | **운영에서 절대 안 쓴다** |\n| `validate` | 스테이징 |\n| `none` | **운영** |\n\n**개발 중에는 데이터가 매번 날아간다.** **8장에서 화면을 만들 때 불편**한데, **초기 데이터를 넣는 클래스**를 만들어 해결한다(8.1절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "테스트 설정을 따로 두지 않으면",
+   "md": "**「DB 2편」 4.2절의 교훈**이다.\n\n**테스트가 개발 DB 를 지운다.** **`ddl-auto: create` 니까 뜰 때마다 `drop`** 이다.\n\n```\nsrc/test/resources/application.yml\n```\n\n**이 파일을 만들어 둔다.**\n\n```yaml\nspring:\n  datasource:\n    url: jdbc:h2:mem:testdb\n    username: sa\n    password:\n    driver-class-name: org.h2.Driver\n\n  jpa:\n    hibernate:\n      ddl-auto: create\n\nlogging:\n  level:\n    org.hibernate.SQL: debug\n```\n\n**메모리 DB** 라 **테스트가 끝나면 사라진다.**\n\n> **사실 이 파일 없이도** 된다. **`url` 을 지우면 부트가 임베디드를** 잡는다(「DB 2편」 4.6절). **명시하는 편**이 낫다 — **`main` 을 고쳤을 때 테스트가 조용히 따라가는 것**을 막는다.\n\n**5.4절에서 이 설정으로 첫 테스트**를 돌린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL — 아직 없다",
+   "sql": "# --- H2 서버를 띄우고 ---\n\n#   (H2 설치 폴더의 h2.sh 또는 h2.bat)\n\n#   TCP server running at tcp://192.168.0.10:9092 (only local)\n#   PG server running at pg://192.168.0.10:5435 (only local)\n#   Web Console server running at http://192.168.0.10:8082\n\n# --- 애플리케이션 실행 ---\n\n#   HikariConfig - jdbcUrl.................jdbc:h2:tcp://localhost/~/jpashop\n#   HikariConfig - username................sa\n#   HikariConfig - maximumPoolSize.........10\n#   HikariPool-1 - Added connection conn0: url=jdbc:h2:tcp://localhost/~/jpashop\n#   HikariPool-1 - Start completed.\n\n#   2.1절의 jdbc:h2:mem: 이 바뀌었다\n\n#   HHH000204: Processing PersistenceUnitInfo [name: default]\n#   HHH000412: Hibernate ORM core version 6.4.x\n\n#   Initialized JPA EntityManagerFactory for persistence unit 'default'\n\n# --- ddl-auto: create 인데 DDL 이 없다 ---\n\n#   (create table 로그가 하나도 없다)\n\n#   엔티티가 하나도 없다\n#   하이버네이트가 만들 것이 없다\n\n# --- 엔티티를 하나만 만들어 보면 ---\n\n@Entity\npublic class Member {\n    @Id @GeneratedValue\n    private Long id;\n    private String name;\n}\n\n# --- 다시 실행 ---\n\n#   Hibernate: \n#       drop table if exists member cascade \n#   Hibernate: \n#       drop sequence if exists member_seq\n#   Hibernate: create sequence member_seq start with 1 increment by 50\n#   Hibernate: \n#       create table member (\n#           id bigint not null,\n#           name varchar(255),\n#           primary key (id)\n#       )\n\n#   내가 안 쓴 DDL 이다\n\n#   format_sql: true 라서 여러 줄로 나온다\n\n# --- H2 콘솔에서 확인 ---\n\nshow tables;\n#   MEMBER\n\nselect * from member;\n#   (빈 결과)\n\n# --- 확인용 엔티티는 지운다 ---\n\n#   3장에서 제대로 만든다\n\n# 다음 절에서 이 DDL 을 읽는다",
+   "note": "**`jdbcUrl` 이 2.1절과 달라졌다.** **`mem:` 에서 `tcp://` 로.**\n\n**`ddl-auto: create` 인데 DDL 이 없다.** **엔티티가 없어서**다 — 2.1~2.3절과 같은 상태다.\n\n**엔티티 하나를 만들자 DDL 이 나왔다.** **이 책에서 처음 나온 \"만들어진 것\"** 이다.\n\n**`member_seq` 시퀀스**가 같이 생겼다. **`@GeneratedValue` 의 기본 전략**이 그렇다 — **3.4절에서 이 이야기**를 한다.\n\n**다음 절에서 이 DDL 을 제대로** 본다."
+  }
+ ],
+ "recap": [
+  "**H2 는 파일 모드로 한 번 만들고 TCP 로** 붙는다.",
+  "**파일 모드는 JVM 하나만** 붙을 수 있다.",
+  "**`.yml` 을 쓰고 `.properties` 는 지운다.**",
+  "**`ddl-auto: create`** 를 고른다 — 매핑이 스키마의 원본이다.",
+  "**「DB 2편」과 반대** — 거기는 구현이 여섯이라 `schema.sql` 이었다.",
+  "**`format_sql: true`** 로 여러 줄로 본다.",
+  "**테스트 설정을 따로** 둔다 — 안 그러면 개발 DB 가 날아간다.",
+  "**엔티티가 없으면 DDL 도 없다.**",
+  "**`@GeneratedValue` 가 시퀀스**를 같이 만든다."
+ ],
+ "drills": [
+  {
+   "task": "H2 를 파일 모드로 한 번 접속해 파일을 만든다.",
+   "done_when": "`~/jpashop.mv.db` 가 생긴 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`application.yml` 을 쓰고 실행한다.",
+   "done_when": "`jdbcUrl` 이 `tcp://` 인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "엔티티 하나를 만들고 DDL 을 본다.",
+   "done_when": "`create table` 로그를 봤다.",
+   "minutes": 10
+  },
+  {
+   "task": "테스트용 설정을 만든다.",
+   "done_when": "테스트가 메모리 DB 를 쓰는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 서버 모드를 쓰나?",
+   "a": "파일 모드는 JVM 하나만 붙을 수 있어 앱과 콘솔을 동시에 못 쓴다."
+  },
+  {
+   "q": "왜 `ddl-auto: create` 인가?",
+   "a": "JPA 하나만 쓰므로 매핑이 스키마의 원본이어도 되고, 매핑이 만든 DDL 을 보는 것이 이 책의 방법이다."
+  },
+  {
+   "q": "「DB 2편」과 무엇이 다른가?",
+   "a": "거기는 구현이 여섯이라 `schema.sql` 로 테이블을 고정했다."
+  },
+  {
+   "q": "테스트 설정을 왜 따로 두나?",
+   "a": "`create` 라서 테스트가 개발 DB 를 지운다."
+  },
+  {
+   "q": "엔티티가 없으면?",
+   "a": "하이버네이트가 만들 DDL 도 없다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "H2 Database — Features",
+   "url": "https://www.h2database.com/html/features.html",
+   "publisher": "H2"
+  },
+  {
+   "title": "Spring Boot — SQL Databases",
+   "url": "https://docs.spring.io/spring-boot/reference/data/sql.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

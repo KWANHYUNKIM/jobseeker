@@ -1,0 +1,139 @@
+{
+ "book": "jpa-app-1",
+ "id": "first-run",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "동작 확인",
+ "summary": "테이블이 생기는 것을 본다.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "엔티티 하나로 전체 흐름을 확인한다.",
+  "DDL 이 만들어지는 과정을 안다.",
+  "첫 테스트를 통과시킨다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3장에서 엔티티 여덟 개를 만들기 전에**, **하나로 전체가 도는지** 확인한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "확인용 엔티티와 리포지토리",
+   "code": "@Entity\n@Getter @Setter\npublic class Member {\n\n    @Id @GeneratedValue\n    private Long id;\n    private String username;\n}\n\n@Repository\npublic class MemberRepository {\n\n    @PersistenceContext\n    private EntityManager em;\n\n    public Long save(Member member) {\n        em.persist(member);\n        return member.getId();\n    }\n\n    public Member find(Long id) {\n        return em.find(Member.class, id);\n    }\n}",
+   "note": "**`@PersistenceContext`** 로 `EntityManager` 를 주입받는다. **스프링이 프록시를 넣어** 준다 — 트랜잭션마다 다른 것을 쓴다.\n\n**이 클래스들은 이 절이 끝나면 지운다.** **3장과 5장에서 제대로** 만든다.\n\n> **`@Setter` 를 붙였다.** **확인용이라 그렇다.** **3.8절에서 왜 안 쓰는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "애너테이션이 DDL 이 되기까지",
+   "ascii": "   entity class\n        |\n   hibernate reads the annotations\n        |\n   builds an internal model  (Metadata)\n        |\n   asks the Dialect for the sql of this database\n        |\n   drop table / create sequence / create table\n\n   the dialect is why the same entity makes\n   different ddl on h2 and mysql",
+   "note": "**방언(Dialect)이 마지막을** 결정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "방언이 하는 일",
+   "md": "**같은 엔티티가 DB 마다 다른 DDL** 이 된다.\n\n```java\n@Id @GeneratedValue\nprivate Long id;\n```\n\n| DB | DDL |\n|---|---|\n| **H2** | `create sequence member_seq start with 1 increment by 50` |\n| **MySQL** | `id bigint not null auto_increment` |\n| **오라클** | `create sequence member_seq ...` |\n\n**부트가 방언을 자동으로** 고른다. **JDBC URL 을 보고 판단**한다.\n\n```yaml\n# 명시할 수도 있다\nspring:\n  jpa:\n    database-platform: org.hibernate.dialect.H2Dialect\n```\n\n> **「DB 2편」 4.7절에서 \"H2 로 테스트하고 MySQL 로 배포\" 의 위험**을 봤다. **방언이 그 위험을 줄인다** — SQL 을 하이버네이트가 만드니까.\n>\n> **네이티브 쿼리를 쓰면 그 이점이 사라진다**(「DB 2편」 6.4절).\n\n**타입도 방언이 정한다.**\n\n| 자바 | H2 | MySQL |\n|---|---|---|\n| `String` | `varchar(255)` | `varchar(255)` |\n| `LocalDateTime` | `timestamp(6)` | `datetime(6)` |\n| `Enum` + `STRING` | `varchar(255)` | `varchar(255)` |\n| `boolean` | `boolean` | `bit` |"
+  },
+  {
+   "type": "figure",
+   "caption": "확인할 것",
+   "ascii": "   the smoke test\n\n   save an entity     em.persist\n   read it back       em.find\n   assert             equal\n\n   plus one question\n     is the object i read back the same object?\n\n   inside one transaction, yes. that is the first cache.",
+   "note": "**마지막 질문이 JPA 를 쓰는 이유**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "첫 테스트",
+   "code": "@SpringBootTest\nclass MemberRepositoryTest {\n\n    @Autowired MemberRepository memberRepository;\n\n    @Test\n    @Transactional\n    void 저장하고_조회한다() {\n        Member member = new Member();\n        member.setUsername(\"memberA\");\n\n        Long savedId = memberRepository.save(member);\n        Member found = memberRepository.find(savedId);\n\n        assertThat(found.getId()).isEqualTo(member.getId());\n        assertThat(found.getUsername()).isEqualTo(member.getUsername());\n        assertThat(found).isSameAs(member);      // 같은 객체다\n    }\n}",
+   "note": "**`@Transactional` 이 필요**하다. **없으면 `persist` 에서 터진다** — 「DB 2편」 6.6절.\n\n**마지막 줄이 이 테스트의 요점**이다.\n\n**`isSameAs`** 는 **같은 인스턴스**인지 본다. **`isEqualTo` 가 아니다.**\n\n> **1차 캐시** 때문에 **같은 객체가 돌아온다**(「JPA 기본편」 3장).\n>\n> **트랜잭션 안에서 같은 id 를 조회하면 항상 같은 인스턴스**다. **JPA 가 보장하는 것**이고, **JdbcTemplate 이 못 하는 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "테스트에 `@Transactional` 을 붙인 것",
+   "md": "**「DB 2편」 4.4절에서 배운 대로**다. **끝나면 롤백**된다.\n\n**그런데 「DB 2편」 11.1절에서는 \"붙이면 실험이 망가진다\" 고** 했다.\n\n**둘 다 맞다.** **목적이 다르다.**\n\n| 목적 | `@Transactional` |\n|---|---|\n| **기능 검증** | **붙인다** — 격리가 공짜 |\n| **트랜잭션 전파 실험** | **안 붙인다** |\n\n**이 책은 대부분 첫 번째**다. **5.4절과 7.8절의 테스트가 그렇다.**\n\n**한 가지 주의**가 있다.\n\n```java\n@Test\n@Transactional\nvoid 저장하고_조회한다() {\n    memberRepository.save(member);\n    Member found = memberRepository.find(savedId);\n    // insert 가 아직 안 나갔다\n}\n```\n\n**`insert` 를 로그로 보고 싶으면 `em.flush()`** 가 필요하다.\n\n> **이 책은 매 절이 \"만들어진 것\" 으로 끝난다.** **SQL 을 보려면 flush 하거나 커밋**해야 한다.\n>\n> **「DB 2편」 4.5절의 `@Commit` vs `flush` 딜레마**가 여기서도 온다. **이 책은 `flush` 를** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 만들어진 DDL 과 나간 SQL",
+   "sql": "# --- 애플리케이션이 뜰 때 ---\n\n#   Hibernate: \n#       drop table if exists member cascade \n#   Hibernate: \n#       drop sequence if exists member_seq\n#   Hibernate: \n#       create sequence member_seq start with 1 increment by 50\n#   Hibernate: \n#       create table member (\n#           id bigint not null,\n#           username varchar(255),\n#           primary key (id)\n#       )\n\n#   내 엔티티에는 이렇게만 썼다\n#     @Id @GeneratedValue Long id;\n#     String username;\n\n#   varchar(255) 는 기본값이다\n#   member_seq 는 @GeneratedValue 가 만든 것이다\n#   increment by 50 은 allocationSize 기본값이다\n\n# --- 테스트 ---\n\n@Test\n@Transactional\nvoid 저장하고_조회한다() { ... }\n\n#   Creating new transaction with name [...저장하고_조회한다]\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n\n#   Hibernate: \n#       select next value for member_seq\n\n#   (persist 시점에 id 를 받아 왔다)\n\n#   (em.find - SQL 없음)\n\n#   Rolled back transaction for test\n\n#   insert 가 안 나갔다\n\n# --- flush 를 넣으면 ---\n\nLong savedId = memberRepository.save(member);\nem.flush();\n\n#   Hibernate: \n#       select next value for member_seq\n#   Hibernate: \n#       insert into member (username, id) values (?, ?)\n#   binding parameter [1] as [VARCHAR] - [memberA]\n#   binding parameter [2] as [BIGINT] - [1]\n\n# --- isSameAs 가 통과하는 이유 ---\n\nMember found = memberRepository.find(savedId);\n\n#   (SQL 없음)\n\n#   1차 캐시에서 왔다\n#   persist 한 그 인스턴스 그대로다\n\n#   assertThat(found).isSameAs(member)   PASSED\n\n# --- 트랜잭션을 나누면 ---\n\n#   (다른 트랜잭션에서 find)\n#   Hibernate: select m1_0.id, m1_0.username from member m1_0\n#              where m1_0.id=?\n\n#   이번엔 다른 인스턴스다\n#   isSameAs 는 실패한다\n\n# --- 확인이 끝났다 ---\n\n#   Member, MemberRepository, MemberRepositoryTest 를 지운다\n#   3장에서 제대로 만든다",
+   "note": "**`increment by 50`** 이 눈에 띈다. **`@GeneratedValue` 의 `allocationSize` 기본값**이다 — **시퀀스를 한 번 호출해 50개를 미리** 받아 둔다. **3.4절에서 이 이야기**를 한다.\n\n**`insert` 가 안 나갔다.** **롤백되니 flush 할 이유가 없었다.**\n\n**`select next value for member_seq` 는 나갔다.** **id 를 받아야 영속성 컨텍스트에 넣을 수 있어서**다.\n\n**`isSameAs` 가 통과하는 것**이 이 절의 확인이다. **같은 트랜잭션이면 같은 인스턴스**다.\n\n**다음 절에서 로그 설정을 마무리한다.**"
+  }
+ ],
+ "recap": [
+  "**엔티티 하나로 전체 흐름**을 확인한다.",
+  "**애너테이션 → 메타데이터 → 방언 → DDL** 순으로 만들어진다.",
+  "**방언이 같은 엔티티를 DB 마다 다르게** 만든다.",
+  "**부트가 JDBC URL 을 보고 방언을** 고른다.",
+  "**`@PersistenceContext`** 로 `EntityManager` 를 받는다.",
+  "**`@Transactional` 이 없으면 `persist` 가 터진다.**",
+  "**`isSameAs` 가 통과**한다 — 1차 캐시.",
+  "**롤백되니 `insert` 가 안 나간다** — 보려면 `flush`.",
+  "**`increment by 50`** 은 `allocationSize` 기본값이다."
+ ],
+ "drills": [
+  {
+   "task": "확인용 엔티티와 리포지토리를 만든다.",
+   "done_when": "`create table` 로그를 봤다.",
+   "minutes": 20
+  },
+  {
+   "task": "첫 테스트를 통과시킨다.",
+   "done_when": "`isSameAs` 가 통과하는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`em.flush()` 를 넣고 로그를 본다.",
+   "done_when": "`insert` 가 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`@Transactional` 을 떼 본다.",
+   "done_when": "`persist` 가 터지는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DDL 이 만들어지는 순서는?",
+   "a": "애너테이션 → 하이버네이트 내부 모델 → 방언 → DDL 이다."
+  },
+  {
+   "q": "방언이 왜 필요한가?",
+   "a": "같은 엔티티가 DB 마다 다른 DDL·SQL 이 되어야 하기 때문이다."
+  },
+  {
+   "q": "`isSameAs` 가 왜 통과하나?",
+   "a": "같은 트랜잭션의 1차 캐시에서 같은 인스턴스가 오기 때문이다."
+  },
+  {
+   "q": "왜 `insert` 가 안 나가나?",
+   "a": "테스트가 롤백되어 flush 할 이유가 없기 때문이다."
+  },
+  {
+   "q": "`increment by 50` 은 무엇인가?",
+   "a": "`@GeneratedValue` 의 `allocationSize` 기본값이다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Hibernate ORM — User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
