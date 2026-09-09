@@ -1,0 +1,129 @@
+{
+ "book": "kubernetes",
+ "id": "metrics",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "자원 지표",
+ "summary": "top 과 그 너머.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "두 파이프라인을 구분한다.",
+  "세 숫자를 구분한다.",
+  "요청을 숫자로 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.5절에서 metrics-server 를** 깔았다. **그게 무엇이고 무엇이 아닌지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "두 파이프라인",
+   "ascii": "   two pipelines, often confused\n\n   resource metrics    metrics-server, cpu and memory only\n                       in memory, no history, one value per pod\n                       this is what top and the hpa read\n\n   full monitoring     prometheus and friends\n                       any metric, stored over time, alerting\n                       this is what you page on\n\n   the first one cannot answer what happened an hour ago",
+   "note": "**왼쪽은 한 시간 전을 못** 답한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "metrics-server 는 저장하지 않는다",
+   "md": "**메모리에 최근 값만** 둔다.\n\n> **`kubectl top` 과 HPA 를 위한** 것이다.\n> **그래프도 알림도** 없다.\n> **그 이상은 프로메테우스 같은 게** 있어야 한다.\n\n**출처는 `kubelet`** 이다.\n\n> **`kubelet` 이 cAdvisor 로 컨테이너 사용량을** 읽는다.\n> **metrics-server 가 15초마다** 긁는다.\n> **그래서 새 파드는 잠깐 안** 보인다.\n\n**API 로 노출**된다.\n\n```bash\nkubectl get --raw /apis/metrics.k8s.io/v1beta1/pods | ...\n```\n\n> **2.3절의 API 확장 방식**이다.\n> **`kubectl top` 이 이걸 예쁘게** 찍는다.\n> **`kubectl get apiservices` 에 등록돼** 있다.\n\n**CPU 단위가 헷갈린다.**\n\n> **`1` 은 코어 하나, `1000m` 도** 같다.\n> **`top` 의 `41m` 은 0.041 코어**다.\n> **메모리 `Mi` 는 1024 기반, `M` 은 1000 기반**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 숫자",
+   "ascii": "   three numbers that are not the same thing\n\n   requests    what the scheduler reserved      spec\n   limits      what the kernel enforces         spec\n   usage       what is happening right now      metrics\n\n   top shows the third, describe node shows the first two\n   a node at 3 percent requested can still be at 90 percent used",
+   "note": "**요청 3% 인 노드가 실사용 90% 일 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "요청은 관찰해서 정한다",
+   "md": "**추측으로 적으면 둘 중 하나로** 틀린다.\n\n> **너무 크면 노드가 비어 보이는데 파드가 안** 들어간다(9.1절).\n> **너무 작으면 `BestEffort` 에 가까워져 먼저** 나간다(9.4절).\n\n**절차**\n\n| 단계 | 무엇 |\n|---|---|\n| 1 | 넉넉한 상한으로 띄운다 |\n| 2 | 부하를 주고 `top` 을 본다 |\n| 3 | 정상 사용량을 요청으로 |\n| 4 | 최대 사용량 위를 상한으로 |\n\n> **자바는 특히 조심**한다.\n> **힙 밖 메모리가 상당하다** — **메타스페이스·스레드 스택·다이렉트 버퍼**다.\n> **`-Xmx` 만 보고 상한을 잡으면 `OOMKilled`** 다.\n> **`-XX:MaxRAMPercentage` 로 컨테이너 상한에 맞추는 게** 요즘 방식이다.\n\n**CPU 상한은 신중히**\n\n> **상한에 닿으면 스로틀링**이다 — 죽지 않고 느려진다.\n> **JVM 은 시작할 때 CPU 를 많이** 쓴다.\n> **상한이 낮으면 기동이 느려져 프로브가** 실패한다(4.5절).\n> **CPU 상한을 아예 안 주는 게 낫다는 의견도** 많다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 어디서 오나 ---\n\n$ kubectl get apiservices | grep metrics\n\nv1beta1.metrics.k8s.io   kube-system/metrics-server   True   12m\n\n#   2.3절의 확장 방식이다\n\n$ kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes \\\n  | python3 -c 'import sys,json; \\\n      [print(i[\"metadata\"][\"name\"], i[\"usage\"]) for i in \\\n       json.load(sys.stdin)[\"items\"]]'\n\nkind-control-plane {'cpu': '191m', 'memory': '751208Ki'}\nkind-worker {'cpu': '44m', 'memory': '243812Ki'}\nkind-worker2 {'cpu': '39m', 'memory': '236104Ki'}\n\n$ kubectl top nodes\n\nNAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%\nkind-control-plane   191m         2%     733Mi           9%\nkind-worker          44m          0%     238Mi           3%\nkind-worker2         39m          0%     230Mi           2%\n\n#   같은 숫자를 예쁘게 찍은 것이다\n\n# --- 요청과 실사용이 다르다 ---\n\n$ for i in 1 2 3; do\n    kubectl run burn$i --image=polinux/stress \\\n      --overrides='{\"spec\":{\"nodeName\":\"kind-worker\",\n        \"containers\":[{\"name\":\"b\",\"image\":\"polinux/stress\",\n        \"command\":[\"stress\",\"--cpu\",\"2\",\"--timeout\",\"600\"]}]}}' > /dev/null\n  done\n\n#   요청을 안 적었다\n\n$ sleep 45 && kubectl top pods --no-headers | grep burn\n\nburn1   1994m   0Mi\nburn2   1991m   0Mi\nburn3   1988m   0Mi\n\n#   6 코어 가까이 쓰고 있다\n\n$ kubectl describe node kind-worker | grep -A5 'Allocated resources' \\\n    | tail -2\n\n  cpu                200m (2%)   0 (0%)\n  memory             120Mi (1%)  0 (0%)\n\n#   요청 합계는 2% 다\n\n$ kubectl top node kind-worker --no-headers\n\nkind-worker   6142m   76%   251Mi   3%\n\n#   실사용은 76% 다\n\n#   9.1절에서 말한 그 간극이다\n\n#   스케줄러는 왼쪽만 본다\n\n$ kubectl delete pod burn1 burn2 burn3 --now > /dev/null\n\n# --- 컨테이너별로 본다 ---\n\n$ kubectl run multi --image=nginx:1.27 \\\n    --overrides='{\"spec\":{\"containers\":[\n      {\"name\":\"web\",\"image\":\"nginx:1.27\"},\n      {\"name\":\"side\",\"image\":\"busybox:1.36\",\n       \"command\":[\"sleep\",\"600\"]}]}}' > /dev/null\n\n$ sleep 45 && kubectl top pod multi --containers\n\nPOD     NAME   CPU(cores)   MEMORY(bytes)\nmulti   side   0m           0Mi\nmulti   web    0m           6Mi\n\n#   어느 컨테이너가 먹는지 보인다\n\n$ kubectl delete pod multi --now > /dev/null\n\n# --- 새 파드는 잠깐 안 보인다 ---\n\n$ kubectl run fresh --image=nginx:1.27 > /dev/null\n$ sleep 5 && kubectl top pod fresh 2>&1 | tail -1\n\nerror: Metrics not available for pod default/fresh, age: 5.42s\n\n$ sleep 40 && kubectl top pod fresh --no-headers\n\nfresh   0m   6Mi\n\n#   15초 주기라 그렇다\n\n$ kubectl delete pod fresh --now > /dev/null\n\n# --- 역사가 없다 ---\n\n$ kubectl top pod --sort-by=memory --no-headers | head -2\n\nnginx-abc   0m   7Mi\n\n$ kubectl get --raw \\\n    '/apis/metrics.k8s.io/v1beta1/pods?since=1h' 2>&1 \\\n  | python3 -c 'import sys,json; d=json.load(sys.stdin); \\\n      print(\"항목\", len(d[\"items\"]))'\n\n항목 1\n\n#   since 를 무시한다\n\n#   지금 값 하나뿐이다\n\n#   어제 왜 죽었는지는 못 묻는다\n\n#   프로메테우스가 필요한 이유다\n\n# --- 자바의 힙 밖 ---\n\n$ cat java.yaml\n\n      containers:\n        - name: app\n          image: eclipse-temurin:21-jre\n          command: [\"sh\", \"-c\",\n            \"java -Xmx200m -XX:+PrintFlagsFinal -version 2>&1 \\\n             | grep -E 'MaxHeapSize|MaxRAMPercentage'; sleep 300\"]\n          resources:\n            limits: { memory: 256Mi }\n            requests: { memory: 256Mi }\n\n$ kubectl apply -f java.yaml > /dev/null && sleep 20\n$ kubectl logs javapod\n\n   size_t MaxHeapSize   = 209715200   {product} {command line}\n   double MaxRAMPercentage = 25.000000   {product} {default}\n\n$ sleep 30 && kubectl top pod javapod --no-headers\n\njavapod   3m   84Mi\n\n#   힙은 200m 인데 아직 84Mi 다\n\n#   힙은 필요할 때 늘어난다\n\n#   상한 256Mi 에 힙 200m 이면 밖이 56Mi 뿐이다\n\n#   메타스페이스와 스레드 스택이 거기 들어간다\n\n#   부하가 오면 OOMKilled 다\n\n$ kubectl get pod javapod -o jsonpath='{.status.qosClass}{\"\\n\"}'\n\nGuaranteed\n\n#   9.4절 기준으로는 최선이다\n\n#   그래도 숫자가 틀리면 죽는다\n\n$ kubectl delete pod javapod --now > /dev/null\n\n# --- CPU 스로틀링 ---\n\n$ kubectl run throttled --image=polinux/stress \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"t\",\n      \"image\":\"polinux/stress\",\n      \"command\":[\"stress\",\"--cpu\",\"4\",\"--timeout\",\"300\"],\n      \"resources\":{\"limits\":{\"cpu\":\"500m\"},\n                   \"requests\":{\"cpu\":\"500m\"}}}]}}' > /dev/null\n\n$ sleep 45 && kubectl top pod throttled --no-headers\n\nthrottled   499m   1Mi\n\n#   4 코어를 쓰려는데 0.5 에 묶였다\n\n$ NODE=$(kubectl get pod throttled -o jsonpath='{.spec.nodeName}')\n$ docker exec $NODE sh -c \\\n    'find /sys/fs/cgroup -name cpu.stat -path \"*throttled*\" \\\n     -exec cat {} \\; 2>/dev/null | head -4'\n\nusage_usec 22481933\nnr_periods 452\nnr_throttled 449\nthrottled_usec 17832104\n\n#   452 주기 중 449 번 묶였다\n\n#   죽지 않고 느려질 뿐이다\n\n#   9.4절에서 CPU 는 안 죽인다고 한 것이다\n\n#   기동이 느려져 프로브가 실패하는 게 진짜 문제다\n\n$ kubectl delete pod throttled --now > /dev/null\n\n# --- 다음 절에서 ---\n\n#   describe 아래쪽을 읽는다",
+   "note": "**`kubectl top` 은 `/apis/metrics.k8s.io/v1beta1` 를 예쁘게 찍은** 것이다.\n\n**요청 합계 `2%` 인 노드의 실사용이 `76%`** 다 — 9.1절이 말한 간극.\n\n**새 파드는 `Metrics not available ... age: 5.42s`** 로 잠깐 안 보인다.\n\n**`since=1h` 를 줘도 항목이 하나**다 — 역사가 없다.\n\n**CPU 상한 `500m` 에 `nr_throttled 449 / nr_periods 452`** 로 묶였다."
+  }
+ ],
+ "recap": [
+  "**metrics-server 는 저장하지** 않는다.",
+  "**`top` 과 HPA 만을 위한** 것이다.",
+  "**출처는 `kubelet`** 이다.",
+  "**API 확장으로** 붙는다.",
+  "**요청·상한·실사용은 다른 숫자**다.",
+  "**요청 합계와 실사용이 크게 다를 수** 있다.",
+  "**새 파드는 잠깐 안** 보인다.",
+  "**자바는 힙 밖 메모리를 고려**한다.",
+  "**CPU 상한은 스로틀링을** 만든다."
+ ],
+ "drills": [
+  {
+   "task": "`top` 과 원시 API 를 비교한다.",
+   "done_when": "같은 숫자임을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "요청 없이 CPU 를 태운다.",
+   "done_when": "요청 합계와 실사용 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`--containers` 로 본다.",
+   "done_when": "컨테이너별 값을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "CPU 상한을 낮게 준다.",
+   "done_when": "스로틀링 수치를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "metrics-server 의 한계는?",
+   "a": "CPU·메모리만, 지금 값만이다. 역사도 알림도 없다."
+  },
+  {
+   "q": "요청 합계와 `top` 의 차이는?",
+   "a": "전자는 예약한 양, 후자는 실제 사용량이다."
+  },
+  {
+   "q": "새 파드가 `top` 에 안 나오는 이유는?",
+   "a": "수집 주기가 15초 정도라 아직 값이 없어서다."
+  },
+  {
+   "q": "자바 컨테이너 메모리를 잡을 때 주의점은?",
+   "a": "힙 밖 메모리가 상당해 `-Xmx` 만 보고 상한을 잡으면 OOMKilled 가 난다."
+  },
+  {
+   "q": "CPU 상한에 닿으면?",
+   "a": "죽지 않고 스로틀링으로 느려진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스로틀링",
+   "def": "CPU 상한에 닿아 주기마다 실행이 멈추는 것."
+  },
+  {
+   "term": "cAdvisor",
+   "def": "kubelet 에 내장돼 컨테이너 자원 사용량을 수집하는 부분."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Resource Metrics Pipeline",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

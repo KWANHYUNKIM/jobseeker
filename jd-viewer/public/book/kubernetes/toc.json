@@ -537,7 +537,7 @@
           "title": "로그",
           "summary": "파드가 죽으면 로그도 죽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
@@ -545,7 +545,7 @@
           "title": "자원 지표",
           "summary": "top 과 그 너머.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",

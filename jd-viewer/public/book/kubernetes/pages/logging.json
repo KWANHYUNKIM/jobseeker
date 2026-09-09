@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "logging",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "로그",
+ "summary": "파드가 죽으면 로그도 죽는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "로그가 어디 있는지 안다.",
+  "previous 를 쓴다.",
+  "수집 방식을 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절부터 `kubectl logs` 를 계속** 썼다. **그 줄이 어디서 오는지 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "로그가 사는 곳",
+   "ascii": "   where a log line actually lives\n\n   the process writes to stdout\n   the container runtime captures it\n   the node writes it to a file under /var/log/pods\n   kubectl logs asks the kubelet to read that file back\n\n   so the file is on one node, sized by that nodes rotation policy\n   delete the pod and the file goes with it",
+   "note": "**파드를 지우면 파일도 같이** 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "kubectl logs 는 저장소가 아니다",
+   "md": "**노드의 파일 하나를 읽어 주는** 것뿐이다.\n\n> **파드가 지워지면 파일도** 사라진다.\n> **9.4절에서 축출된 파드를 치우면 로그도 같이** 간다.\n> **노드가 죽으면 그 노드 로그는 전부** 없다.\n\n**회전도** 있다.\n\n> **`kubelet` 이 기본 10Mi·5개로** 자른다.\n> **말 많은 앱은 몇 분 만에** 지워진다.\n> **`kubectl logs` 로 어제 걸 볼 수 있다고 생각하면** 안 된다.\n\n**재시작 전 로그는 `--previous`** 다.\n\n> **`CrashLoopBackOff` 는 지금 로그가** 비어 있다.\n> **죽기 직전 로그가** 답이다.\n> **4.7절·9.4절에서 계속 쓴** 플래그다.\n> **재시작 한 세대 전까지만** 남는다.\n\n**컨테이너를 골라야 할 때가** 있다.\n\n> **`-c` 로** 고른다.\n> **안 적으면 첫 컨테이너**다.\n> **`--all-containers` 로 다 볼 수** 있다.\n> **4.3절의 사이드카가 있으면 늘 겪는** 일이다."
+  },
+  {
+   "type": "figure",
+   "caption": "노드 밖으로 옮기는 두 방법",
+   "ascii": "   two ways to get logs off the node\n\n   node agent        a daemonset reads /var/log/pods for every pod\n                     one agent per node, apps change nothing\n                     this is what almost everyone runs\n\n   sidecar           a second container in the pod ships its own logs\n                     needed when the app insists on writing to a file\n                     costs memory in every single pod",
+   "note": "**대부분 왼쪽**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "표준출력으로 쓰라는 이유",
+   "md": "**12요소가 그렇게** 말한다.\n\n> **로그를 이벤트 스트림으로** 다루라는 것이다.\n> **앱은 찍기만 하고 어디에 쌓을지는 플랫폼이** 정한다.\n> **7.1절에서 설정을 밖으로 뺀 것과 같은** 생각이다.\n\n**파일로 쓰면 두 번 잃는다.**\n\n> **`kubectl logs` 에 아무것도 안** 나온다.\n> **컨테이너 계층에 쌓여 재시작에** 사라진다(8.1절).\n> **`emptyDir` 에 쓰고 사이드카로 퍼내야** 한다.\n\n**스프링은 콘솔이** 기본이다.\n\n> **`logging.file.name` 을 안 적으면 표준출력**이다.\n> **⑦·⑧ 에서 본 SQL 로그가 그대로 `kubectl logs` 에** 나온다.\n> **JSON 인코더를 쓰면 수집기가 파싱하기** 좋다.\n\n**여러 파드를 한꺼번에**\n\n> **`-l app=web` 로 라벨** 선택이다.\n> **`--prefix` 로 어느 파드인지 앞에** 붙인다.\n> **`--max-log-requests` 기본이 5** 라 그 이상이면 거부된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 어디 있나 ---\n\n$ kubectl run talker --image=busybox:1.36 -- \\\n    sh -c 'i=0; while true; do i=$((i+1)); echo \"line $i\"; sleep 2; done' \\\n    > /dev/null\n$ sleep 12 && kubectl logs talker --tail=3\n\nline 4\nline 5\nline 6\n\n$ NODE=$(kubectl get pod talker -o jsonpath='{.spec.nodeName}')\n$ docker exec $NODE ls /var/log/pods/default_talker_*/talker/\n\n0.log\n\n$ docker exec $NODE sh -c \\\n    'tail -2 /var/log/pods/default_talker_*/talker/0.log'\n\n2026-09-09T22:51:14.882Z stdout F line 7\n2026-09-09T22:51:16.884Z stdout F line 8\n\n#   시각, 스트림, 태그, 내용이다\n\n#   kubectl logs 는 이 파일을 읽는다\n\n#   F 는 완결된 줄이다\n\n$ docker exec $NODE ls -la \\\n    /var/log/containers/ | grep talker\n\nlrwxrwxrwx 1 root root 96 talker_default_talker-a1b2c3.log ->\n  /var/log/pods/default_talker_.../talker/0.log\n\n#   수집기는 이 디렉터리를 본다\n\n#   이름에 파드·네임스페이스가 들어 있다\n\n# --- 파드를 지우면 사라진다 ---\n\n$ kubectl delete pod talker --now > /dev/null\n$ sleep 5 && docker exec $NODE ls /var/log/pods/ | grep -c talker\n\n0\n\n#   같이 갔다\n\n#   kubectl logs 는 저장소가 아니다\n\n# --- 회전 ---\n\n$ kubectl get --raw \\\n    \"/api/v1/nodes/$NODE/proxy/configz\" 2>/dev/null \\\n  | python3 -c 'import sys,json; k=json.load(sys.stdin)[\"kubeletconfig\"]; \\\n      print(k.get(\"containerLogMaxSize\"), k.get(\"containerLogMaxFiles\"))'\n\n10Mi 5\n\n#   10Mi 짜리 5개다\n\n#   말 많은 앱은 금방 밀린다\n\n# --- 죽기 직전 로그 ---\n\n$ kubectl run crasher --image=busybox:1.36 -- \\\n    sh -c 'echo \"준비 중\"; echo \"설정 읽는 중\"; \\\n           echo \"오류: 접속 실패\" >&2; exit 1' > /dev/null\n\n$ sleep 25 && kubectl get pod crasher --no-headers\n\ncrasher   0/1   CrashLoopBackOff   2 (10s ago)   25s\n\n$ kubectl logs crasher\n\n준비 중\n설정 읽는 중\n오류: 접속 실패\n\n#   마지막 시도의 로그다\n\n$ kubectl logs crasher --previous | tail -1\n\n오류: 접속 실패\n\n#   한 세대 전이다\n\n$ kubectl logs crasher --previous --previous 2>&1 | tail -1\n\nerror: unknown shorthand flag\n\n#   두 세대 전은 못 본다\n\n$ docker exec $NODE ls /var/log/pods/default_crasher_*/crasher/\n\n0.log\n1.log\n2.log\n\n#   파일은 남아 있다\n\n#   kubectl 이 안 꺼내 줄 뿐이다\n\n$ kubectl delete pod crasher --now > /dev/null\n\n# --- 표준에러도 같이 나온다 ---\n\n$ kubectl run streams --image=busybox:1.36 --restart=Never -- \\\n    sh -c 'echo 나가는 쪽; echo 오류 쪽 >&2' > /dev/null\n$ sleep 8 && kubectl logs streams\n\n나가는 쪽\n오류 쪽\n\n$ docker exec $NODE sh -c \\\n    'cat /var/log/pods/default_streams_*/streams/0.log' | awk '{print $2}'\n\nstdout\nstderr\n\n#   파일에는 구분돼 있다\n\n#   kubectl logs 는 섞어서 준다\n\n$ kubectl delete pod streams --now > /dev/null\n\n# --- 파일로 쓰면 안 보인다 ---\n\n$ kubectl run tofile --image=busybox:1.36 -- \\\n    sh -c 'while true; do echo \"파일에 쓴다\" >> /var/log/app.log; \\\n           sleep 2; done' > /dev/null\n$ sleep 12 && kubectl logs tofile | wc -l\n\n       0\n\n#   아무것도 없다\n\n$ kubectl exec tofile -- wc -l /var/log/app.log\n\n6 /var/log/app.log\n\n#   안에는 쌓이고 있다\n\n#   컨테이너 계층이라 재시작에 사라진다 (8.1절)\n\n$ kubectl delete pod tofile --now > /dev/null\n\n# --- 사이드카로 퍼낸다 ---\n\n$ cat sidecar.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: shipped\nspec:\n  containers:\n    - name: app\n      image: busybox:1.36\n      command: [\"sh\", \"-c\",\n        \"while true; do echo \\\"앱 로그\\\" >> /logs/app.log; sleep 2; done\"]\n      volumeMounts: [{ name: logs, mountPath: /logs }]\n    - name: shipper\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"tail -F /logs/app.log\"]\n      volumeMounts: [{ name: logs, mountPath: /logs }]\n  volumes:\n    - name: logs\n      emptyDir: {}\n\n$ kubectl apply -f sidecar.yaml > /dev/null && sleep 12\n$ kubectl logs shipped\n\nerror: a container name must be specified for pod shipped, choose one of:\n  [app shipper]\n\n#   4.3절의 그것이다\n\n$ kubectl logs shipped -c shipper --tail=2\n\n앱 로그\n앱 로그\n\n#   퍼내는 컨테이너를 통해 보인다\n\n$ kubectl logs shipped --all-containers --prefix --tail=2\n\n[pod/shipped/shipper] 앱 로그\n[pod/shipped/shipper] 앱 로그\n\n#   app 은 여전히 아무것도 안 낸다\n\n$ kubectl delete pod shipped --now > /dev/null\n\n# --- 여러 파드를 한꺼번에 ---\n\n$ kubectl create deployment many --image=nginx:1.27 --replicas=3 > /dev/null\n$ kubectl rollout status deployment/many > /dev/null\n$ kubectl logs -l app=many --prefix --tail=1 2>&1 | head -3\n\n[pod/many-5d9c7b8f4-2xk9m/nginx] /docker-entrypoint.sh: Configuration\n  complete; ready for start up\n[pod/many-5d9c7b8f4-7t3wq/nginx] /docker-entrypoint.sh: Configuration\n  complete; ready for start up\n[pod/many-5d9c7b8f4-m4n2r/nginx] /docker-entrypoint.sh: Configuration\n  complete; ready for start up\n\n$ kubectl scale deployment many --replicas=8 > /dev/null\n$ sleep 20 && kubectl logs -l app=many --tail=1 2>&1 | tail -1\n\nerror: you are attempting to follow 8 log streams, but maximum allowed\n  concurrency is 5, use --max-log-requests to increase the limit\n\n#   기본이 5다\n\n$ kubectl logs -l app=many --tail=1 --max-log-requests=10 2>&1 | wc -l\n\n       8\n\n$ kubectl delete deployment many > /dev/null\n\n# --- 수집기가 보는 것 ---\n\n$ docker exec $NODE ls /var/log/containers/ | wc -l\n\n      14\n\n#   데몬셋 하나가 이걸 다 읽는다\n\n#   앱은 아무것도 안 바꿔도 된다\n\n#   5.6절의 노드마다 하나가 이 쓰임이다\n\n# --- 다음 절에서 ---\n\n#   숫자로 보는 쪽",
+   "note": "**`/var/log/pods/.../0.log` 에 `시각 stdout F 내용` 형식으로** 있고 `kubectl logs` 는 그 파일을 읽는다.\n\n**파드를 지우자 파일도 같이** 사라졌다.\n\n**`CrashLoopBackOff` 는 `--previous` 가 답이고 두 세대 전은 못** 본다 — 파일은 남아 있는데도 그렇다.\n\n**파일로 쓴 로그는 `kubectl logs` 에 0줄이고 컨테이너 안에만** 쌓인다.\n\n**8개를 한꺼번에 보려면 `--max-log-requests` 가** 필요하다."
+  }
+ ],
+ "recap": [
+  "**표준출력이 노드 파일로** 간다.",
+  "**`kubectl logs` 는 그 파일을 읽는** 것뿐이다.",
+  "**파드를 지우면 로그도** 간다.",
+  "**회전이 있어 오래 안** 남는다.",
+  "**재시작 전은 `--previous`** 다.",
+  "**한 세대 전까지만** 된다.",
+  "**파일로 쓰면 두 번** 잃는다.",
+  "**노드 에이전트가 표준 수집** 방식이다.",
+  "**여러 파드는 라벨로 한꺼번에** 본다."
+ ],
+ "drills": [
+  {
+   "task": "노드에서 로그 파일을 찾는다.",
+   "done_when": "형식을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "파드를 지운다.",
+   "done_when": "파일이 사라지는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "죽는 파드에 `--previous` 를 쓴다.",
+   "done_when": "직전 로그를 봤다.",
+   "minutes": 15
+  },
+  {
+   "task": "파일로만 쓰는 앱을 만든다.",
+   "done_when": "`kubectl logs` 가 비는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`kubectl logs` 가 읽는 것은?",
+   "a": "그 파드가 뜬 노드의 `/var/log/pods` 아래 파일이다."
+  },
+  {
+   "q": "파드를 지우면 로그는?",
+   "a": "파일과 함께 사라진다."
+  },
+  {
+   "q": "`CrashLoopBackOff` 에서 볼 로그는?",
+   "a": "`--previous` 로 보는 죽기 직전 로그다."
+  },
+  {
+   "q": "파일로 로그를 쓰면?",
+   "a": "`kubectl logs` 에 안 나오고 재시작에 사라진다."
+  },
+  {
+   "q": "가장 흔한 수집 방식은?",
+   "a": "노드마다 데몬셋 에이전트가 로그 디렉터리를 읽는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "로그 회전",
+   "def": "kubelet 이 컨테이너 로그 파일을 크기와 개수로 잘라 내는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Logging Architecture",
+   "url": "https://kubernetes.io/docs/concepts/cluster-administration/logging/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "The Twelve-Factor App — Logs",
+   "url": "https://12factor.net/logs",
+   "publisher": "Adam Wiggins"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
