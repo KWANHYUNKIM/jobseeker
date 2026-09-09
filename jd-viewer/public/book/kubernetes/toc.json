@@ -309,7 +309,7 @@
           "title": "왜 서비스가 필요한가",
           "summary": "IP 를 적어 두면 다음 배포에서 깨진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -317,7 +317,7 @@
           "title": "ClusterIP",
           "summary": "클러스터 안에서 부르는 이름.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",

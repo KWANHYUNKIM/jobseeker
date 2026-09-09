@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "clusterip",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "ClusterIP",
+ "summary": "클러스터 안에서 부르는 이름.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "패킷이 어떻게 가는지 본다.",
+  "세 포트 필드를 가른다.",
+  "세션 어피니티를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 `iptables` 규칙이라고** 했다. **실제로 열어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "패킷 한 개의 여정",
+   "ascii": "   what happens to a packet sent to a ClusterIP\n\n   the pod sends to 10.96.201.144:80\n   iptables in that node's namespace matches the destination\n     picks one backend at random, with equal probability\n     rewrites the destination to 10.244.2.21:80\n   conntrack remembers the choice for that connection\n\n   there is no proxy process in the path, only a kernel rule",
+   "note": "**경로에 프록시 프로세스가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "kube-proxy 는 프록시가 아니다",
+   "md": "**이름이 오해를** 부른다.\n\n> **트래픽이 `kube-proxy` 를 지나가지** 않는다.\n> **`kube-proxy` 는 규칙을 쓰는** 프로그램이다.\n> **패킷은 커널이** 처리한다.\n>\n> **`kube-proxy` 가 죽어도 이미 쓰인 규칙은** 돈다.\n> **새 서비스만 반영이 안** 된다.\n\n**모드가 셋**이다.\n\n| 모드 | 특징 |\n|---|---|\n| `iptables` | 기본, 규칙이 선형이라 서비스가 많으면 느려진다 |\n| `ipvs` | 해시 테이블, 수천 서비스에서 유리 |\n| `nftables` | 1.29+, iptables 의 후계 |\n\n> **작은 클러스터는 차이가 안** 난다.\n> **`kind` 기본은 `iptables`** 다.\n\n**분산은 무작위**다.\n\n> **라운드 로빈이** 아니다.\n> **각 규칙에 확률이** 붙는다 — **셋이면 1/3, 1/2, 1** 순이다.\n> **연결 단위**라 한 연결의 요청들은 같은 파드로 간다.\n>\n> **HTTP 킵얼라이브면 여러 요청이 한 파드에** 몰린다.\n> **5.4절에서 본 그** 연결이다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 포트",
+   "ascii": "   three port fields, and which one is which\n\n   port         the service listens here\n   targetPort   the container receives here\n   nodePort     only for NodePort, the node listens here\n\n   port 80 targetPort 8080 means\n     call web:80, arrive at the container's 8080",
+   "note": "**`port` 는 서비스, `targetPort` 는 컨테이너**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "targetPort 에 이름을 쓴다",
+   "md": "```yaml\n# 파드\nports:\n  - name: http\n    containerPort: 8080\n\n# 서비스\nports:\n  - port: 80\n    targetPort: http     # 숫자가 아니라 이름\n```\n\n> **컨테이너 포트가 바뀌어도 서비스를 안** 고친다.\n> **4.2절에서 `containerPort` 가 문서일 뿐이라고 했는데**, **이름을 쓰면 실제 쓸모가** 생긴다.\n\n**포트가 여럿이면 이름이 필수**다.\n\n```yaml\nports:\n  - { name: http, port: 80, targetPort: 8080 }\n  - { name: metrics, port: 9090, targetPort: 9090 }\n```\n\n> **하나면 이름을 생략할 수** 있다.\n> **둘 이상이면 안 주면** 거부된다.\n\n**세션 어피니티**\n\n```yaml\nspec:\n  sessionAffinity: ClientIP\n  sessionAffinityConfig:\n    clientIP: { timeoutSeconds: 10800 }\n```\n\n> **같은 클라이언트 IP 를 같은 파드로** 보낸다.\n> **⑩ 5.7절에서 세션을 Redis 로 옮긴 것과 반대 방향**이다.\n>\n> **클라이언트가 프록시 뒤면 IP 가 다 같아** 한 파드로 몰린다.\n> **응급 처방이지 설계가** 아니다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 규칙을 본다 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3 > /dev/null\n$ kubectl expose deployment web --port=80 > /dev/null\n$ sleep 12\n\n$ CIP=$(kubectl get service web -o jsonpath='{.spec.clusterIP}')\n$ echo $CIP\n\n10.96.13.77\n\n$ NODE=lab-worker\n$ docker exec $NODE iptables-save -t nat | grep \"$CIP\" | head -2\n\n-A KUBE-SERVICES -d 10.96.13.77/32 -p tcp -m comment\n  --comment \"default/web cluster IP\" -m tcp --dport 80 -j KUBE-SVC-LOLE4ISW44XBNF3G\n\n#   서비스 IP 로 오면 체인으로 보낸다\n\n$ docker exec $NODE iptables-save -t nat | grep 'KUBE-SVC-LOLE4ISW44XBNF3G' \\\n    | grep -v '^:' | tail -3\n\n-A KUBE-SVC-LOLE4ISW44XBNF3G -m statistic --mode random --probability\n  0.33333333349 -j KUBE-SEP-A3F21B84C7E4\n-A KUBE-SVC-LOLE4ISW44XBNF3G -m statistic --mode random --probability\n  0.50000000000 -j KUBE-SEP-7E4C2A9F1B8C\n-A KUBE-SVC-LOLE4ISW44XBNF3G -j KUBE-SEP-3D5B8E1A9C4F\n\n#   확률이 1/3, 1/2, 나머지다\n\n#   합치면 균등하다\n\n#   라운드 로빈이 아니라 무작위다\n\n$ docker exec $NODE iptables-save -t nat | grep 'KUBE-SEP-A3F21B84C7E4' \\\n    | grep DNAT\n\n-A KUBE-SEP-A3F21B84C7E4 -p tcp -m tcp -j DNAT --to-destination 10.244.1.30:80\n\n#   목적지를 파드 IP 로 바꾼다\n\n#   프록시 프로세스가 없다\n\n# --- 분산을 확인 ---\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    sh -c 'for i in $(seq 1 30); do\n             curl -s http://web | grep -o \"Welcome\" > /dev/null;\n             curl -s -o /dev/null -w \"%{remote_ip}\\n\" http://web;\n           done' 2>/dev/null | sort | uniq -c\n\n  30 10.96.13.77\npod \"tmp\" deleted\n\n#   remote_ip 는 서비스 IP 다\n\n#   어느 파드인지 안 보인다\n\n#   파드가 자기 이름을 말하게 한다\n\n$ for p in $(kubectl get pod -l app=web -o name); do\n    kubectl exec $p -- sh -c \\\n      \"echo $(basename $p) > /usr/share/nginx/html/index.html\"\n  done\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    sh -c 'for i in $(seq 1 60); do curl -s http://web; done' 2>/dev/null \\\n    | sort | uniq -c\n\n  18 web-6d8f4b9c7-h4n8q\n  23 web-6d8f4b9c7-r5t2w\n  19 web-6d8f4b9c7-x9m2k\n\n#   고르게 나뉜다\n\n#   정확히 20씩은 아니다\n\n#   무작위라서다\n\n# --- 연결 단위다 ---\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    sh -c 'curl -s http://web/ http://web/ http://web/ http://web/' 2>/dev/null\n\nweb-6d8f4b9c7-r5t2w\nweb-6d8f4b9c7-r5t2w\nweb-6d8f4b9c7-r5t2w\nweb-6d8f4b9c7-r5t2w\npod \"tmp\" deleted\n\n#   넷 다 같은 파드다\n\n#   curl 이 연결을 재사용했다\n\n#   5.4절의 킵얼라이브다\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    sh -c 'for i in 1 2 3 4; do curl -s -H \"Connection: close\" http://web; done' \\\n    2>/dev/null\n\nweb-6d8f4b9c7-x9m2k\nweb-6d8f4b9c7-h4n8q\nweb-6d8f4b9c7-x9m2k\nweb-6d8f4b9c7-r5t2w\npod \"tmp\" deleted\n\n#   매번 새 연결이라 갈린다\n\n# --- 세 포트 ---\n\n$ cat ports.yaml\n\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: app\nspec:\n  replicas: 2\n  selector: { matchLabels: { app: app } }\n  template:\n    metadata: { labels: { app: app } }\n    spec:\n      containers:\n        - name: app\n          image: hashicorp/http-echo:1.0\n          args: [\"-listen=:5678\", \"-text=hello\"]\n          ports:\n            - { name: http, containerPort: 5678 }\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: app\nspec:\n  selector: { app: app }\n  ports:\n    - port: 80\n      targetPort: http\n\n$ kubectl apply -f ports.yaml > /dev/null && sleep 12\n$ kubectl get service app -o jsonpath=\\\n'port={.spec.ports[0].port} target={.spec.ports[0].targetPort}{\"\\n\"}'\n\nport=80 target=http\n\n$ kubectl get endpointslice -l kubernetes.io/service-name=app \\\n    -o jsonpath='{.items[0].ports[0].port}{\"\\n\"}'\n\n5678\n\n#   이름이 숫자로 풀렸다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- app:80\n\nhello\npod \"tmp\" deleted\n\n#   80 으로 불러 5678 에 닿았다\n\n# --- 컨테이너 포트를 바꿔 본다 ---\n\n$ kubectl patch deployment app --type=json -p='[\n  {\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/args\",\n   \"value\":[\"-listen=:9000\",\"-text=hello\"]},\n  {\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/ports/0/containerPort\",\n   \"value\":9000}]' > /dev/null\n\n$ kubectl rollout status deployment/app > /dev/null\n$ kubectl get endpointslice -l kubernetes.io/service-name=app \\\n    -o jsonpath='{.items[0].ports[0].port}{\"\\n\"}'\n\n9000\n\n#   서비스를 안 고쳤는데 따라갔다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- app:80\n\nhello\npod \"tmp\" deleted\n\n#   이름을 쓴 덕이다\n\n# --- 포트가 둘이면 이름이 필수 ---\n\n$ kubectl patch service app --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/ports/-\",\"value\":{\"port\":9090,\"targetPort\":9090}}]'\n\nThe Service \"app\" is invalid: spec.ports[0].name: Required value\n\n#   하나였을 때는 생략해도 됐다\n\n#   둘이 되면 둘 다 이름이 필요하다\n\n# --- 세션 어피니티 ---\n\n$ kubectl patch service web -p \\\n    '{\"spec\":{\"sessionAffinity\":\"ClientIP\"}}' > /dev/null\n\n$ kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- \\\n    sh -c 'for i in $(seq 1 10); do\n             curl -s -H \"Connection: close\" http://web; done' 2>/dev/null \\\n    | sort | uniq -c\n\n  10 web-6d8f4b9c7-h4n8q\npod \"tmp\" deleted\n\n#   전부 한 파드다\n\n#   같은 클라이언트 IP 라서다\n\n$ docker exec $NODE iptables-save -t nat \\\n    | grep -c 'recent --set --name KUBE-SEP'\n\n3\n\n#   recent 모듈로 기억한다\n\n$ kubectl patch service web -p \\\n    '{\"spec\":{\"sessionAffinity\":\"None\"}}' > /dev/null\n\n#   프록시 뒤 클라이언트면 IP 가 다 같다\n\n#   한 파드로 몰린다\n\n#   ⑩ 5.7절처럼 세션을 밖에 두는 게 낫다\n\n# --- kube-proxy 를 죽여 본다 ---\n\n$ kubectl delete pod -n kube-system -l k8s-app=kube-proxy > /dev/null\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=3 web 2>&1 | head -1\n\nweb-6d8f4b9c7-r5t2w\npod \"tmp\" deleted\n\n#   그래도 된다\n\n#   규칙이 이미 커널에 있다\n\n#   kube-proxy 는 규칙을 쓰는 프로그램일 뿐이다\n\n$ sleep 20 && kubectl get pods -n kube-system -l k8s-app=kube-proxy \\\n    --no-headers | wc -l\n\n3\n\n#   데몬셋이라 다시 떴다 (5.6절)\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web app && kubectl delete service web app\n\ndeployment.apps \"web\" deleted\ndeployment.apps \"app\" deleted\nservice \"web\" deleted\nservice \"app\" deleted\n\n# --- 다음 절에서 ---\n\n#   밖에서 들어오는 문을 만든다",
+   "note": "**`iptables` 규칙에 확률이 `0.333`·`0.5`·나머지로** 붙어 있다 — 라운드 로빈이 아니라 무작위다.\n\n**60번 요청이 18·23·19 로** 나뉘고, **같은 연결로 네 번 부르면 넷 다 같은 파드**다.\n\n**`targetPort: http` 로 이름을 쓰면 컨테이너 포트를 9000으로 바꿔도 서비스를 안** 고친다.\n\n**포트가 둘이 되면 `spec.ports[0].name: Required value`** 다.\n\n**`kube-proxy` 를 다 지워도 요청이 된다** — 규칙은 이미 커널에 있다."
+  }
+ ],
+ "recap": [
+  "**패킷 경로에 프록시 프로세스가** 없다.",
+  "**`kube-proxy` 는 규칙을 쓰는 프로그램**이다.",
+  "**분산은 확률 기반 무작위**다.",
+  "**연결 단위라 킵얼라이브면 한 파드에** 몰린다.",
+  "**`port` 는 서비스, `targetPort` 는 컨테이너**다.",
+  "**`targetPort` 에 이름을 쓰면 포트 변경에 안** 깨진다.",
+  "**포트가 둘이면 이름이** 필수다.",
+  "**세션 어피니티는 클라이언트 IP 기준**이다.",
+  "**프록시 뒤에서는 한 파드로** 몰린다."
+ ],
+ "drills": [
+  {
+   "task": "`iptables` 규칙을 찾아 확률을 본다.",
+   "done_when": "체인 셋을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "60번 요청해 분포를 센다.",
+   "done_when": "고르게 나뉘는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "같은 연결로 여러 번 요청한다.",
+   "done_when": "한 파드로 가는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`targetPort` 에 이름을 쓴다.",
+   "done_when": "포트를 바꿔도 되는 것을 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`kube-proxy` 를 트래픽이 지나가나?",
+   "a": "지나가지 않는다. 규칙을 쓸 뿐이고 처리는 커널이 한다."
+  },
+  {
+   "q": "분산 방식은?",
+   "a": "확률 기반 무작위이며 연결 단위다."
+  },
+  {
+   "q": "킵얼라이브면 어떻게 되나?",
+   "a": "한 연결의 요청이 모두 같은 파드로 간다."
+  },
+  {
+   "q": "`targetPort` 에 이름을 쓰는 이점은?",
+   "a": "컨테이너 포트가 바뀌어도 서비스를 고칠 필요가 없다."
+  },
+  {
+   "q": "세션 어피니티의 한계는?",
+   "a": "프록시 뒤 클라이언트는 IP 가 같아 한 파드로 몰린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "conntrack",
+   "def": "커널이 연결 단위로 NAT 선택을 기억하는 테이블."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Virtual IPs and Service Proxies",
+   "url": "https://kubernetes.io/docs/reference/networking/virtual-ips/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Service",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

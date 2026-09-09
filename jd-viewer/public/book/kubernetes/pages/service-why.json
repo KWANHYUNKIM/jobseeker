@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "service-why",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "왜 서비스가 필요한가",
+ "summary": "IP 를 적어 두면 다음 배포에서 깨진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "파드 IP 가 사라지는 것을 본다.",
+  "서비스가 더하는 넷을 안다.",
+  "엔드포인트가 무엇인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 파드 IP 를 적어 두면 안 된다고** 했다. **여기가 그 대안**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "IP 는 안 남는다",
+   "ascii": "   the pod ip is not a stable address\n\n   a pod is deleted        the ip is gone\n   a rollout happens       every ip is gone\n   a node dies            those ips are gone\n   the pod restarts       the ip survives (4.1)\n\n   three of the four happen on an ordinary tuesday",
+   "note": "**넷 중 셋이 평범한 화요일에** 일어난다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서비스가 없으면",
+   "md": "**IP 를 어딘가 적어야** 한다.\n\n> **설정 파일에 적으면 배포 때마다** 고쳐야 한다.\n> **1.2절의 스크립트 문제와** 같다.\n>\n> **DNS 를 직접 만들면 파드 생멸을 따라가야** 한다.\n> **그게 서비스가 하는 일**이다.\n\n**서비스가 더하는 넷**\n\n| 더하는 것 | 무엇 |\n|---|---|\n| **가상 IP** | `ClusterIP`, 안 바뀐다 |\n| **DNS 이름** | `web.default.svc.cluster.local` |\n| **백엔드 목록** | 엔드포인트슬라이스 |\n| **분산 규칙** | `kube-proxy` 가 노드마다 |\n\n> **셋째가 핵심**이다.\n> **컨트롤러가 라벨에 맞는 준비된 파드를 계속** 갱신한다.\n> **2.3절의 라벨과 4.5절의 `readiness` 가 여기서** 만난다.\n\n**`ClusterIP` 는 진짜 IP 가 아니다.**\n\n> **아무 인터페이스에도 안** 붙어 있다.\n> **`ping` 이 안** 간다.\n> **`iptables` 나 `ipvs` 규칙일** 뿐이다.\n>\n> **패킷이 그 IP 로 가면 규칙이 파드 IP 로 바꿔** 준다.\n> **6.2절에서 규칙을 직접** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "서비스가 얹는 것",
+   "ascii": "   what a Service adds on top of pods\n\n   one virtual ip that never changes\n   one dns name that never changes\n   a set of backends, kept current by a controller\n   a rule that spreads connections across them\n\n   the pods change underneath, the name does not",
+   "note": "**아래가 바뀌어도 이름은 안** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "엔드포인트슬라이스",
+   "md": "**서비스는 파드를 직접 안** 가리킨다.\n\n```\nService/web  ──(selector)──▶  EndpointSlice/web-2k9mv\n                                  10.244.1.5:80  ready\n                                  10.244.2.4:80  ready\n                                  10.244.1.9:80  notReady\n```\n\n> **`EndpointSlice` 가 실제 주소 목록**이다.\n> **`readiness` 가 실패한 파드는 `ready: false`** 다(4.5절).\n> **`kube-proxy` 는 `ready` 인 것만** 쓴다.\n\n**옛날에는 `Endpoints` 하나**였다.\n\n> **파드가 수천 개면 오브젝트 하나가 거대**해졌다.\n> **하나 바뀔 때마다 전체를 모든 노드에** 보냈다.\n> **`EndpointSlice` 는 100개씩** 나눈다.\n>\n> **`kubectl get endpoints` 는 아직 되는데 1.33 에서 제거** 예정이다.\n> **`kubectl get endpointslices` 를** 쓴다.\n\n**셀렉터 없는 서비스도** 있다.\n\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: external-db\nspec:\n  ports: [{ port: 5432 }]\n```\n\n> **엔드포인트를 손으로** 만든다.\n> **클러스터 밖 DB 에 이름을 붙일 때** 쓴다.\n> **앱은 `external-db:5432` 로 부르고 나중에 안으로 옮겨도 코드가 안** 바뀐다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- IP 를 적어 두면 ---\n\n$ kubectl create deployment web --image=nginx:1.27 --replicas=3 > /dev/null\n$ sleep 12 && kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.status.podIP}{\"\\n\"}{end}'\n\n10.244.1.22\n10.244.2.17\n10.244.1.23\n\n$ IPS=$(kubectl get pods -l app=web -o jsonpath='{range .items[*]}{.status.podIP} {end}')\n$ echo $IPS > backends.txt && cat backends.txt\n\n10.244.1.22 10.244.2.17 10.244.1.23\n\n#   설정 파일에 적었다고 치자\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    sh -c 'for ip in 10.244.1.22 10.244.2.17 10.244.1.23; do\n             wget -qO- --timeout=2 $ip > /dev/null && echo \"$ip ok\"; done'\n\n10.244.1.22 ok\n10.244.2.17 ok\n10.244.1.23 ok\npod \"tmp\" deleted\n\n#   지금은 된다\n\n$ kubectl rollout restart deployment/web > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    sh -c 'for ip in 10.244.1.22 10.244.2.17 10.244.1.23; do\n             wget -qO- --timeout=2 $ip > /dev/null && echo \"$ip ok\" \\\n             || echo \"$ip 실패\"; done'\n\n10.244.1.22 실패\n10.244.2.17 실패\n10.244.1.23 실패\npod \"tmp\" deleted\n\n#   셋 다 죽었다\n\n$ kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.status.podIP}{\"\\n\"}{end}'\n\n10.244.2.19\n10.244.1.25\n10.244.2.20\n\n#   전부 다른 IP 다\n\n#   배포 한 번에 설정이 깨졌다\n\n# --- 서비스를 만든다 ---\n\n$ kubectl expose deployment web --port=80\n\nservice/web exposed\n\n$ kubectl get service web --no-headers\n\nweb   ClusterIP   10.96.201.144   <none>   80/TCP   5s\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=2 web | head -1\n\n<!DOCTYPE html>\npod \"tmp\" deleted\n\n#   이름으로 된다\n\n$ kubectl rollout restart deployment/web > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n$ kubectl get service web -o jsonpath='{.spec.clusterIP}{\"\\n\"}'\n\n10.96.201.144\n\n#   서비스 IP 는 안 바뀌었다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=2 web | head -1\n\n<!DOCTYPE html>\npod \"tmp\" deleted\n\n#   그대로 된다\n\n# --- 엔드포인트슬라이스 ---\n\n$ kubectl get endpointslices -l kubernetes.io/service-name=web --no-headers\n\nweb-2k9mv   IPv4   80   10.244.1.26,10.244.2.21,10.244.1.27   1m\n\n$ kubectl get endpointslice -l kubernetes.io/service-name=web -o jsonpath=\\\n'{range .items[0].endpoints[*]}{.addresses[0]} ready={.conditions.ready}{\"\\n\"}{end}'\n\n10.244.1.26 ready=true\n10.244.2.21 ready=true\n10.244.1.27 ready=true\n\n#   준비 상태가 같이 있다\n\n$ kubectl get pods -l app=web -o jsonpath=\\\n'{range .items[*]}{.status.podIP}{\"\\n\"}{end}' | sort\n\n10.244.1.26\n10.244.1.27\n10.244.2.21\n\n#   파드 IP 와 같다\n\n#   컨트롤러가 계속 맞춘다\n\n# --- readiness 가 빠지면 ---\n\n$ kubectl patch deployment web --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/template/spec/containers/0/readinessProbe\",\n  \"value\":{\"httpGet\":{\"path\":\"/ready\",\"port\":80},\"periodSeconds\":3}}]' > /dev/null\n\n$ sleep 25 && kubectl get endpointslice \\\n    -l kubernetes.io/service-name=web -o jsonpath=\\\n'{range .items[0].endpoints[*]}{.addresses[0]} ready={.conditions.ready}{\"\\n\"}{end}'\n\n10.244.1.28 ready=false\n10.244.2.22 ready=false\n10.244.1.29 ready=false\n\n#   전부 false 다\n\n$ kubectl get endpoints web --no-headers\n\nweb   <none>   3m\n\n#   옛 API 로는 아예 안 보인다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=3 web 2>&1 | tail -1\n\nwget: download timed out\npod \"tmp\" deleted\n\n#   아무도 못 받는다\n\n#   4.5절의 그것이다\n\n$ kubectl rollout undo deployment/web > /dev/null\n$ kubectl rollout status deployment/web > /dev/null\n\n# --- ClusterIP 는 진짜 IP 가 아니다 ---\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    ping -c 2 -W 2 10.96.201.144 2>&1 | tail -3\n\n2 packets transmitted, 0 packets received, 100% packet loss\npod \"tmp\" deleted\n\n#   ping 이 안 간다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=2 10.96.201.144 | head -1\n\n<!DOCTYPE html>\npod \"tmp\" deleted\n\n#   HTTP 는 된다\n\n#   TCP 만 규칙이 있다\n\n$ NODE=$(kubectl get pod -l app=web -o jsonpath='{.items[0].spec.nodeName}')\n$ docker exec $NODE ip addr | grep -c '10.96.201.144'\n\n0\n\n#   어느 인터페이스에도 없다\n\n$ docker exec $NODE iptables-save -t nat 2>/dev/null \\\n    | grep -c '10.96.201.144'\n\n4\n\n#   iptables 규칙으로만 있다\n\n#   6.2절에서 자세히 본다\n\n# --- 셀렉터 없는 서비스 ---\n\n$ cat external.yaml\n\napiVersion: v1\nkind: Service\nmetadata:\n  name: external-db\nspec:\n  ports:\n    - port: 5432\n      targetPort: 5432\n---\napiVersion: discovery.k8s.io/v1\nkind: EndpointSlice\nmetadata:\n  name: external-db-1\n  labels:\n    kubernetes.io/service-name: external-db\naddressType: IPv4\nports:\n  - port: 5432\nendpoints:\n  - addresses: [\"172.18.0.10\"]\n\n$ kubectl apply -f external.yaml > /dev/null\n$ kubectl get service external-db --no-headers\n\nexternal-db   ClusterIP   10.96.44.201   <none>   5432/TCP   4s\n\n$ kubectl get endpointslice external-db-1 --no-headers\n\nexternal-db-1   IPv4   5432   172.18.0.10   4s\n\n#   셀렉터가 없어도 엔드포인트가 있다\n\n$ kubectl get service external-db -o jsonpath='{.spec.selector}{\"\\n\"}'\n\n#   (비어 있다)\n\n#   앱은 external-db:5432 로 부른다\n\n#   나중에 클러스터 안으로 옮겨도 이름이 같다\n\n$ kubectl delete -f external.yaml > /dev/null\n\n# --- 서비스도 지우면 IP 가 바뀐다 ---\n\n$ kubectl delete service web > /dev/null\n$ kubectl expose deployment web --port=80 > /dev/null\n$ kubectl get service web -o jsonpath='{.spec.clusterIP}{\"\\n\"}'\n\n10.96.87.13\n\n#   다른 IP 다\n\n#   그래서 이름을 쓴다\n\n#   IP 는 서비스도 안 보장한다\n\n$ kubectl run tmp --rm -it --image=busybox:1.36 --restart=Never -- \\\n    wget -qO- --timeout=2 web | head -1\n\n<!DOCTYPE html>\npod \"tmp\" deleted\n\n#   이름은 그대로다\n\n# --- 치운다 ---\n\n$ kubectl delete deployment web && kubectl delete service web\n\ndeployment.apps \"web\" deleted\nservice \"web\" deleted\n\n# --- 다음 절에서 ---\n\n#   그 이름이 실제로 어떻게 도는지 본다",
+   "note": "**IP 셋을 적어 두고 `rollout restart` 하니 셋 다** 실패한다 — 전부 다른 IP 가 됐다.\n\n**서비스를 만들면 재시작 뒤에도 `10.96.201.144` 그대로**다.\n\n**엔드포인트슬라이스에 `ready=true/false` 가 같이** 있고, readiness 가 다 실패하면 요청이 타임아웃이다.\n\n**`ClusterIP` 는 `ping` 이 안 가고 인터페이스에도 없는데 `iptables` 규칙으로 4줄** 있다.\n\n**서비스를 지웠다 다시 만들면 IP 가 바뀐다** — 그래서 이름을 쓴다."
+  }
+ ],
+ "recap": [
+  "**파드 IP 는 배포 한 번에 다** 바뀐다.",
+  "**서비스가 가상 IP·이름·백엔드 목록·분산 규칙을** 준다.",
+  "**엔드포인트슬라이스가 실제 주소 목록**이다.",
+  "**`readiness` 가 실패하면 목록에서** 빠진다.",
+  "**`ClusterIP` 는 `ping` 이 안** 간다.",
+  "**`iptables` 규칙일** 뿐이다.",
+  "**셀렉터 없는 서비스로 클러스터 밖도** 가리킨다.",
+  "**서비스를 다시 만들면 IP 가** 바뀐다.",
+  "**그래서 IP 가 아니라 이름을** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "파드 IP 를 적어 두고 재시작한다.",
+   "done_when": "전부 깨지는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "서비스를 만들고 다시 재시작한다.",
+   "done_when": "이름이 유지되는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "엔드포인트슬라이스를 본다.",
+   "done_when": "`ready` 상태를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`ClusterIP` 에 `ping` 을 해 본다.",
+   "done_when": "안 가는 것과 HTTP 는 되는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "파드 IP 를 적어 두면 왜 안 되나?",
+   "a": "배포 한 번에 전부 바뀐다."
+  },
+  {
+   "q": "서비스가 더하는 넷은?",
+   "a": "가상 IP, DNS 이름, 백엔드 목록, 분산 규칙이다."
+  },
+  {
+   "q": "엔드포인트슬라이스는 무엇인가?",
+   "a": "서비스 뒤의 실제 주소 목록이며 준비 상태를 포함한다."
+  },
+  {
+   "q": "`ClusterIP` 에 `ping` 이 안 되는 이유는?",
+   "a": "실제 인터페이스가 아니라 `iptables` 규칙이라서다."
+  },
+  {
+   "q": "셀렉터 없는 서비스는 언제 쓰나?",
+   "a": "클러스터 밖 주소에 이름을 붙일 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "EndpointSlice",
+   "def": "서비스 뒤의 파드 주소 목록. 준비 상태를 담고 100개 단위로 나뉜다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Service",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — EndpointSlices",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Cluster Networking",
+   "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
