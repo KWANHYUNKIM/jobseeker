@@ -394,7 +394,7 @@
           "title": "순서",
           "summary": "누가 먼저 도나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.10",
@@ -402,7 +402,7 @@
           "title": "직접 만든다",
           "summary": "조건부 빈을 하나 만든다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.11",

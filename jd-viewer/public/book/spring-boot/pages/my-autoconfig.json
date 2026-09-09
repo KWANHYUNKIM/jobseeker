@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "my-autoconfig",
+ "no": "6.10",
+ "chapter": 6,
+ "title": "직접 만든다",
+ "summary": "조건부 빈을 하나 만든다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 조각을 갖춘다.",
+  "설정을 받는다.",
+  "덮어쓰기를 열어 둔다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절부터 조각을 하나씩** 봤다. **이제 하나를 제대로** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "조각이 넷이다",
+   "ascii": "   the four pieces of one auto configuration\n\n   a properties class   the keys the user may set\n   a condition          when it should apply at all\n   a bean method        the default object\n   a line in the list   so it is a candidate\n\n   leave out the last one and nothing happens, silently",
+   "note": "**마지막을 빼면 아무 일도 안 일어난다 — 조용히**."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓰는 쪽이 아무것도 안 적어도 돌아야 한다",
+   "md": "**기본값을 준**다.\n\n> **설정 없이도 도는 것**이다.\n> **6.6절의 없을 때 참**이다.\n> **아래에서 그렇게** 만든다.\n\n**필요하면 바꾸게** 한다.\n\n> **설정 키를 연**다.\n> **7.8절의 바인딩**이다.\n> **아래에서 클래스로** 받는다.\n\n**통째로 바꿀 길도** 연다.\n\n> **6.5절의 없음 조건**이다.\n> **쓰는 쪽이 빈을 만들면** 비킨다.\n> **아래에서 확인**한다.\n\n**끌 수 있게** 한다.\n\n> **6.6절의 속성 조건**이다.\n> **다시 빌드 없이** 끈다.\n> **아래에서 그걸** 단다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리를 잘못 잡으면",
+   "ascii": "   where the class must not live\n\n   inside the scanned package   it runs twice, in the wrong order\n   outside it                   it runs once, at the right time\n\n   this is why library code sits in its own package",
+   "note": "**라이브러리 코드가 제 패키지에 사는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "목록에 안 적으면 아무 일도 안 일어난다",
+   "md": "**오류가 안** 난다.\n\n> **6.2절에서 겪었다.**\n> **그냥 안** 읽는다.\n> **아래에서 확인**한다.\n\n**스캔 자리에 두면 두 번** 잡힌다.\n\n> **순서도** 꼬인다.\n> **6.9절의 그 순서**다.\n> **아래에서 그걸** 본다.\n\n**설정 클래스를 등록해야** 한다.\n\n> **`@EnableConfigurationProperties`** 다.\n> **안 하면 값이 안** 채워진다.\n> **아래에서 빠뜨려** 본다.\n\n**조건을 빈 메서드에 붙이면** 위험하다.\n\n> **6.4절의 그** 이야기다.\n> **안쪽 클래스로** 감싼다.\n> **아래에서 그렇게** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 만들 것\n\n// 요청을 세는 필터를 자동 구성으로 만든다\n// 쓰는 쪽은 의존성만 넣으면 켜진다\n\n\n-- ① 설정 클래스\n\npackage study.lib.counter;\n\n@ConfigurationProperties(prefix = \"study.counter\")\npublic class CounterProperties {\n    private boolean enabled = true;\n    private String header = \"X-Count\";\n    private int threshold = 100;\n    // getter, setter 생략\n}\n\n\n-- ② 알맹이\n\npublic class CounterFilter extends OncePerRequestFilter {\n    private final AtomicLong count = new AtomicLong();\n    private final CounterProperties props;\n\n    public CounterFilter(CounterProperties props) { this.props = props; }\n\n    @Override\n    protected void doFilterInternal(HttpServletRequest req,\n                                    HttpServletResponse res, FilterChain chain)\n            throws ServletException, IOException {\n        long n = count.incrementAndGet();\n        res.setHeader(props.getHeader(), String.valueOf(n));\n        if (n > props.getThreshold()) res.setHeader(\"X-Count-Warn\", \"넘음\");\n        chain.doFilter(req, res);\n    }\n}\n\n\n-- ③ 자동 구성\n\n@AutoConfiguration\n@ConditionalOnWebApplication(type = Type.SERVLET)\n@ConditionalOnClass(name = \"jakarta.servlet.Filter\")\n@ConditionalOnProperty(prefix = \"study.counter\", name = \"enabled\",\n                       havingValue = \"true\", matchIfMissing = true)\n@EnableConfigurationProperties(CounterProperties.class)\npublic class CounterAutoConfiguration {\n\n    @Bean\n    @ConditionalOnMissingBean\n    public CounterFilter counterFilter(CounterProperties props) {\n        System.out.println(\"[카운터] 필터 등록 header=\" + props.getHeader());\n        return new CounterFilter(props);\n    }\n}\n\n\n-- ④ 목록에 적는다\n\n$ cat src/main/resources/META-INF/spring/\\\norg.springframework.boot.autoconfigure.AutoConfiguration.imports\nstudy.lib.counter.CounterAutoConfiguration\n\n\n-- 아무것도 안 적고 돌린다\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[카운터\\]|Started'\n[카운터] 필터 등록 header=X-Count\nINFO ... : Started BootApplication in 1.048 seconds\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 2\n\n--   설정 한 줄 없이 켜졌다\n\n\n-- 보고서에 나온다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A4 'CounterAutoConfiguration matched' | head -5\n   CounterAutoConfiguration matched:\n      - @ConditionalOnClass found required class 'jakarta.servlet.Filter'\n      - @ConditionalOnProperty (study.counter.enabled=true) matched\n      - @ConditionalOnWebApplication (required) found 'session' scope\n\n--   6.7절에서 읽던 그 모양이다\n\n\n-- 설정으로 바꾼다\n\nstudy:\n  counter:\n    header: X-요청수\n    threshold: 2\n\n$ ./gradlew bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 필터 등록 header=X-요청수\n\n$ for i in 1 2 3; do\n    curl -s -D - -o /dev/null localhost:8080/hello \\\n      | grep -iE '^x-요청수|^x-count-warn'\n  done\nX-요청수: 1\nX-요청수: 2\nX-요청수: 3\nX-Count-Warn: 넘음\n\n--   세 번째부터 경고가 붙었다\n\n\n-- 설정 클래스를 안 적으면\n\n// @EnableConfigurationProperties 를 지우면\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of method counterFilter required a bean of type\n'study.lib.counter.CounterProperties' that could not be found.\n\n--   빈이 없다\n--   7.8절에서 이 애너테이션을 다시 본다\n\n\n-- 목록에 안 적으면\n\n$ mv src/main/resources/META-INF/spring/\\\norg.springframework.boot.autoconfigure.AutoConfiguration.imports /tmp/\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[카운터\\]'\n0\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -ci '^x-count'\n0\n\n--   6.2절에서 겪은 그 조용함이다\n\n\n-- 스캔되는 자리에 두면\n\n$ mv src/main/java/study/lib src/main/java/study/boot/lib\n// 패키지 선언도 고치고 목록도 되살린다\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[카운터\\]'\n2\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -c 'CounterAutoConfiguration'\n2\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n--   두 번 등록됐다\n--   빈은 하나지만 순서가 꼬인다\n--   6.9절의 그 자리다\n\n\n-- 쓰는 쪽이 끌 수 있다\n\n$ ./gradlew bootJar -q\n$ java -jar build/libs/app.jar --study.counter.enabled=false 2>&1 \\\n    | grep -c '\\[카운터\\]'\n0\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -ci '^x-count'\n0\n\n$ java -jar build/libs/app.jar --study.counter.enabled=false --debug 2>&1 \\\n    | grep -A3 'CounterAutoConfiguration' | head -4\n   CounterAutoConfiguration:\n      Did not match:\n         - @ConditionalOnProperty (study.counter.enabled=true) found different value\n           in property 'enabled'\n\n--   다시 빌드 안 했다\n--   6.6절의 그 스위치다\n\n\n-- 쓰는 쪽이 통째로 바꿀 수 있다\n\n@Configuration\nclass MyCounterConfig {\n    @Bean\n    CounterFilter counterFilter(CounterProperties props) {\n        System.out.println(\"[내] 카운터\");\n        return new CounterFilter(props) {\n            @Override protected boolean shouldNotFilter(HttpServletRequest r) {\n                return r.getRequestURI().startsWith(\"/actuator\");\n            }\n        };\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[내\\]|\\[카운터\\]'\n[내] 카운터\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'CounterAutoConfiguration#counterFilter:' | tail -2\n         - @ConditionalOnMissingBean found beans of type\n           'study.lib.counter.CounterFilter' counterFilter\n\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n$ curl -s -D - -o /dev/null localhost:8080/actuator/health | grep -ci '^x-count'\n0\n\n--   6.5절의 그 물러섬이다\n--   설정도 그대로 먹는다\n\n\n-- 조건을 안쪽으로 감싼다\n\n@AutoConfiguration\n@EnableConfigurationProperties(CounterProperties.class)\npublic class CounterAutoConfiguration {\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnClass(name = \"io.micrometer.core.instrument.MeterRegistry\")\n    static class WithMetrics {\n        @Bean @ConditionalOnMissingBean\n        CounterFilter counterFilter(CounterProperties p, MeterRegistry reg) {\n            System.out.println(\"[카운터] 미터 붙임\");\n            return new MeteredCounterFilter(p, reg);\n        }\n    }\n\n    @Configuration(proxyBeanMethods = false)\n    @ConditionalOnMissingClass(\"io.micrometer.core.instrument.MeterRegistry\")\n    static class WithoutMetrics {\n        @Bean @ConditionalOnMissingBean\n        CounterFilter counterFilter(CounterProperties p) {\n            System.out.println(\"[카운터] 그냥\");\n            return new CounterFilter(p);\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 그냥\n\n// 액츄에이터를 넣으면\nimplementation 'org.springframework.boot:spring-boot-starter-actuator'\n\n$ ./gradlew bootRun 2>&1 | grep '\\[카운터\\]'\n[카운터] 미터 붙임\n\n$ curl -s localhost:8080/actuator/metrics/study.counter.requests \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n3.0\n\n--   6.4절에서 배운 감싸기다\n--   9장에서 이 메트릭을 제대로 본다\n\n\n-- 순서도 적어 둔다\n\n@AutoConfiguration(after = {\n    org.springframework.boot.autoconfigure.web.servlet.\\\n        ServletWebServerFactoryAutoConfiguration.class })\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -cE 'ServletWebServerFactoryAutoConfiguration matched'\n1\n$ ./gradlew bootRun 2>&1 | grep -nE 'Tomcat started|\\[카운터\\]'\n38:[카운터] 그냥\n45:INFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   구성은 먼저 읽히고 서버는 나중에 뜬다\n--   6.9절의 두 순서다\n\n\n-- 다 갖췄는지 센다\n\n$ find src/main/java/study/lib -name '*.java' | wc -l\n       4\n$ cat src/main/resources/META-INF/spring/*.imports | wc -l\n       1\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -c 'CounterAutoConfiguration'\n1\n$ curl -s -D - -o /dev/null localhost:8080/hello | grep -i '^x-count'\nX-Count: 1\n\n--   6.11절에서 이걸 남이 쓰게 만든다",
+   "note": "**설정 한 줄 없이 `[카운터] 필터 등록 header=X-Count` 로 켜지고 응답에 `X-Count: 1`** 이 붙는다.\n\n**설정으로 이름과 임계값을 바꾸니 세 번째 요청부터 `X-Count-Warn: 넘음`** 이 붙었다.\n\n**목록에서 파일을 치우면 오류 없이 헤더만** 사라진다.\n\n**스캔되는 자리에 두면 `[카운터]` 가 두 번 찍혀 두 번** 등록된다.\n\n**쓰는 쪽이 빈을 만들면 `found beans of type ... counterFilter` 로 비키고 액츄에이터를 넣으면 `[카운터] 미터 붙임` 으로 구현이** 갈린다."
+  }
+ ],
+ "recap": [
+  "**조각이** 넷이다.",
+  "**기본으로** 켜진다.",
+  "**설정으로** 바꾼다.",
+  "**목록이** 필수다.",
+  "**빠지면** 조용하다.",
+  "**스캔 자리는** 두 번이다.",
+  "**끌 수 있게** 한다.",
+  "**바꿀 수 있게** 한다.",
+  "**안쪽으로** 감싼다."
+ ],
+ "drills": [
+  {
+   "task": "자동 구성 하나를 만든다.",
+   "done_when": "설정 없이 켜지는 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "설정으로 값을 바꾼다.",
+   "done_when": "헤더가 달라진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "목록을 빼 본다.",
+   "done_when": "조용히 사라지는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "쓰는 쪽에서 빈을 만들어 본다.",
+   "done_when": "물러서는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자동 구성 하나에 필요한 네 조각은?",
+   "a": "설정 클래스, 조건, 빈 메서드, 목록 한 줄이다."
+  },
+  {
+   "q": "목록에 안 적으면?",
+   "a": "오류 없이 아무 일도 안 일어난다."
+  },
+  {
+   "q": "스캔되는 패키지에 두면?",
+   "a": "두 번 잡혀 순서가 꼬인다."
+  },
+  {
+   "q": "쓰는 쪽이 끌 수 있게 하려면?",
+   "a": "속성 조건을 달고 없을 때는 참으로 둔다."
+  },
+  {
+   "q": "쓰는 쪽이 통째로 바꿀 수 있게 하려면?",
+   "a": "빈 메서드에 없음 조건을 단다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "설정 클래스",
+   "def": "쓰는 쪽이 만질 수 있는 키를 묶어 둔 클래스."
+  },
+  {
+   "term": "기본 제공",
+   "def": "아무것도 안 적어도 도는 상태로 빈을 하나 주는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Creating Your Own Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
