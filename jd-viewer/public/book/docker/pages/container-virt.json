@@ -1,0 +1,169 @@
+{
+ "book": "docker",
+ "id": "container-virt",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "컨테이너 가상화",
+ "summary": "커널은 하나, 격리는 프로세스 단위.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨테이너가 그냥 프로세스라는 것을 안다.",
+  "호스트에서 컨테이너 프로세스가 보인다는 것을 확인한다.",
+  "격리가 어디까지인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**한 문장으로 적으면 이렇다.**\n\n> **컨테이너는 격리된 프로세스다.**\n\n**\"가벼운 VM\" 이 아니라 \"이상하게 포장된 `ps` 에 보이는 프로세스\"** 다. **이 문장을 눈으로 확인하는 것이 이 절**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "호스트에서 보면 그냥 프로세스다",
+   "ascii": "   host                                container view\n   ----                                --------------\n   PID 1     systemd\n   PID 812   dockerd\n   PID 1043  containerd\n   PID 2871  nginx: master  <-------->  PID 1   nginx: master\n   PID 2905  nginx: worker  <-------->  PID 7   nginx: worker\n   PID 3012  java -jar app  <-------->  PID 1   java -jar app\n\n   같은 프로세스를 두 이름표로 부르고 있다\n   PID namespace 가 번호만 다시 매긴 것이다",
+   "note": "**VM 이었다면 호스트 `ps` 에 게스트의 프로세스가 아예 안** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "'격리' 가 실제로 하는 일",
+   "md": "**컨테이너의 격리는 프로세스에게 거짓말을 하는** 것이다. **커널이 프로세스마다 다른 세계를 보여** 준다.\n\n| 프로세스가 보는 것 | 실제 | 무엇이 속이나 |\n|---|---|---|\n| **나는 PID 1 이다** | 호스트에서는 2871 | PID namespace |\n| **`/` 아래에 알파인이 깔려 있다** | 호스트의 어느 디렉터리 | mount namespace |\n| **내 IP 는 172.17.0.2 다** | 가상 인터페이스 | network namespace |\n| **호스트 이름은 9f2b1c0a7e31 이다** | 호스트 이름은 다르다 | UTS namespace |\n| **메모리가 512MB 있다** | 호스트는 8GB | cgroup |\n\n**\"속인다\" 는 게 정확한 표현**이다. **컨테이너 안의 프로세스는 자기가 컨테이너 안에 있다는 것을 원칙적으로 모른다.**\n\n> **10.3절에서 다룰 JVM 메모리 문제가 정확히 여기서** 나온다.\n> **JVM 이 \"이 머신의 메모리\" 를 물었는데, 예전 JVM 은 cgroup 이 아니라 호스트 값을 보고** 답했다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컨테이너 = 이미지 + namespace + cgroup",
+   "md": "**컨테이너를 만드는 재료는 셋**이다.\n\n| 재료 | 무엇을 준다 | 어디서 |\n|---|---|---|\n| **이미지** | 무엇이 보이나 (`/` 아래의 파일들) | 3장 |\n| **namespace** | 무엇이 안 보이나 (격리) | 2.4절 |\n| **cgroup** | 얼마나 쓸 수 있나 (제한) | 2.4절 · 6.6절 |\n\n**셋 다 도커가 만든 게** 아니다. **리눅스 커널의 기능**이다.\n\n> **도커가 한 일은 이 셋을 묶어서 `docker run` 한 줄로 만든** 것이다.\n> **그리고 이미지를 만들고 주고받는 형식을 정했다.** **그게 더 큰 기여였다**(4장)."
+  },
+  {
+   "type": "table",
+   "caption": "2.1절의 요구 다섯 개를 컨테이너로 채점하면",
+   "columns": [
+    "요구",
+    "컨테이너",
+    "비고"
+   ],
+   "rows": [
+    [
+     "① 파일 시스템 격리",
+     "✓",
+     "mount namespace + 이미지"
+    ],
+    [
+     "② 네트워크 격리",
+     "✓",
+     "network namespace. 컨테이너마다 자기 8080"
+    ],
+    [
+     "③ 프로세스 격리",
+     "✓ (한 방향)",
+     "**컨테이너는 호스트를 못 보지만 호스트는 컨테이너를 본다**"
+    ],
+    [
+     "④ 자원 제한",
+     "△",
+     "cgroup 으로 되지만 **안 주면 무제한**이다"
+    ],
+    [
+     "⑤ 싸야 한다",
+     "✓✓",
+     "시작 0.4초, 메모리 수백 KB"
+    ]
+   ],
+   "note": "**③이 한 방향이라는 게 VM 과의 결정적 차이**다. **보안 경계로 삼을 때 이 점을 기억해야** 한다."
+  },
+  {
+   "type": "compare",
+   "caption": "같은 명령을 안과 밖에서",
+   "left": {
+    "title": "컨테이너 안에서 본 세계",
+    "lang": "text",
+    "code": "$ docker exec web ps -ef\nPID   USER     COMMAND\n    1 root     nginx: master process\n   29 nginx    nginx: worker process\n   35 root     ps -ef\n\n$ docker exec web hostname\n9f2b1c0a7e31\n\n$ docker exec web ls /\nbin  docker-entrypoint.sh  etc\nhome lib  media  mnt  opt  proc\nroot run  sbin  srv  sys  tmp  usr  var\n\n#   자기가 전부인 줄 안다"
+   },
+   "right": {
+    "title": "호스트에서 본 같은 것",
+    "lang": "text",
+    "code": "$ ps -ef | grep nginx\nroot     2871  1043  nginx: master process\nsystemd+ 2905  2871  nginx: worker process\n\n$ hostname\nprod-web-01\n\n$ sudo ls /proc/2871/root\nbin  docker-entrypoint.sh  etc\nhome lib  media  mnt  opt  proc\nroot run  sbin  srv  sys  tmp  usr  var\n\n#   호스트는 컨테이너의 루트까지 다 본다"
+   }
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "한 컨테이너에 여러 프로세스를 넣지 않는다",
+   "md": "**컨테이너를 작은 서버처럼 쓰고 싶은 유혹이** 있다. **nginx 도 넣고 자바도 넣고 크론도** 넣고.\n\n**그러면 이렇게** 된다.\n\n| 넣으면 | 무슨 일이 |\n|---|---|\n| PID 1 이 아닌 프로세스가 죽어도 | **컨테이너는 계속 Up 이다.** 죽은 걸 모른다 |\n| 로그가 섞인다 | `docker logs` 가 셋의 출력을 뒤섞어 준다 |\n| 재시작 단위가 하나다 | 자바만 다시 띄우고 싶어도 전부 내려간다 |\n| 좀비 프로세스 | PID 1 이 init 이 아니라서 회수를 안 한다(5.5절) |\n\n> **\"컨테이너 하나에 관심사 하나\"** 가 규칙이다.\n> **여러 개가 정말 필요하면 컨테이너를 여러 개 띄우고 컴포즈로 묶는다**(9장)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "컨테이너가 프로세스라는 증거 (리눅스 호스트)",
+   "sql": "$ docker run -d --name web -p 8080:80 nginx:1.27\n9f2b1c0a7e31...\n\n\n# --- 1. 호스트의 프로세스 목록에 그대로 있다 ---\n\n$ ps -ef | grep -v grep | grep nginx\nroot        2871    1043  0 19:44 ?  00:00:00 nginx: master process nginx -g daemon off;\nsystemd+    2905    2871  0 19:44 ?  00:00:00 nginx: worker process\n\n#   PID 2871. 부모는 1043 (containerd-shim) 이다\n\n\n# --- 2. 컨테이너 안에서는 1번이다 ---\n\n$ docker exec web sh -c 'echo $$; cat /proc/1/comm'\n41\nnginx\n\n$ docker inspect -f '{{.State.Pid}}' web\n2871\n\n#   같은 프로세스를 도커는 2871 로, 컨테이너 안에서는 1 로 부른다\n\n\n# --- 3. 네임스페이스가 실제로 다르다 ---\n\n$ sudo ls -l /proc/2871/ns/\nlrwxrwxrwx  ipc  -> 'ipc:[4026532445]'\nlrwxrwxrwx  mnt  -> 'mnt:[4026532443]'\nlrwxrwxrwx  net  -> 'net:[4026532448]'\nlrwxrwxrwx  pid  -> 'pid:[4026532446]'\nlrwxrwxrwx  uts  -> 'uts:[4026532444]'\n\n$ sudo ls -l /proc/1/ns/          # 호스트의 init\nlrwxrwxrwx  mnt  -> 'mnt:[4026531841]'\nlrwxrwxrwx  net  -> 'net:[4026531840]'\nlrwxrwxrwx  pid  -> 'pid:[4026531836]'\n\n#   숫자가 다르다. 다른 세계에 있다는 뜻이다 (2.4절)\n\n\n# --- 4. 파일 시스템도 호스트에서 보인다 ---\n\n$ sudo cat /proc/2871/root/etc/os-release | head -1\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\n\n$ cat /etc/os-release | head -1\nPRETTY_NAME=\"Ubuntu 22.04.4 LTS\"\n\n#   호스트는 우분투, 컨테이너 안은 데비안. 커널은 하나다\n\n\n# --- 5. 죽이면 컨테이너가 죽는다 ---\n\n$ sudo kill -9 2871\n$ docker ps -a --format '{{.Names}} {{.Status}}'\nweb Exited (137) 2 seconds ago\n\n#   137 = 128 + 9 (SIGKILL). 1.5절의 표 그대로다\n#   컨테이너를 죽인 게 아니라 프로세스를 죽였는데 컨테이너가 죽었다\n#   컨테이너가 곧 그 프로세스이기 때문이다\n\n$ docker rm -f web"
+  }
+ ],
+ "recap": [
+  "컨테이너는 격리된 프로세스다. 호스트의 ps 에 그대로 보인다.",
+  "격리는 커널이 프로세스에게 다른 세계를 보여 주는 것이다 — PID·mount·network·UTS namespace 와 cgroup.",
+  "컨테이너 = 이미지(무엇이 보이나) + namespace(무엇이 안 보이나) + cgroup(얼마나 쓰나).",
+  "격리는 한 방향이다. 컨테이너는 호스트를 못 보지만 호스트는 컨테이너를 다 본다.",
+  "컨테이너 하나에 관심사 하나. 여러 프로세스를 넣으면 죽어도 모르고 로그도 섞인다."
+ ],
+ "drills": [
+  {
+   "task": "리눅스 호스트에서 nginx 컨테이너를 띄우고 `docker inspect -f '{{.State.Pid}}'` 로 얻은 PID 를 호스트 `ps -ef` 에서 찾아본다.",
+   "done_when": "같은 프로세스임을 확인한다. 맥이면 VM 안이라 안 보인다 — 2.6절.",
+   "minutes": 5
+  },
+  {
+   "task": "`docker exec <이름> hostname` 과 호스트의 `hostname` 을 비교한다.",
+   "done_when": "컨테이너 쪽이 컨테이너 ID 인 것을 확인한다.",
+   "hint": "UTS namespace 다.",
+   "minutes": 3
+  },
+  {
+   "task": "`docker run -d --name multi alpine sh -c 'sleep 1000 & sleep 5; exit 0'` 처럼 PID 1 이 먼저 끝나는 컨테이너를 만들어 본다.",
+   "done_when": "PID 1 이 끝나는 순간 나머지 프로세스도 같이 사라지는 것을 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨테이너를 한 문장으로 정의하면.",
+   "a": "이미지가 정한 파일 시스템 위에서, namespace 로 격리되고 cgroup 으로 제한된 프로세스."
+  },
+  {
+   "q": "격리가 '한 방향' 이라는 말은.",
+   "a": "컨테이너는 호스트와 다른 컨테이너를 못 보지만, 호스트는 컨테이너의 프로세스와 파일을 전부 본다."
+  },
+  {
+   "q": "컨테이너 안에서 PID 1 을 죽이면.",
+   "a": "컨테이너가 종료된다. 컨테이너의 수명은 PID 1 프로세스의 수명이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "namespace",
+   "en": "namespace",
+   "what": "프로세스에게 격리된 세계를 보여 주는 리눅스 커널 기능. 2.4절."
+  },
+  {
+   "term": "cgroup",
+   "en": "control group",
+   "what": "프로세스 그룹의 자원 사용을 제한·측정하는 커널 기능."
+  },
+  {
+   "term": "PID 1",
+   "what": "컨테이너 안에서 첫 번째로 뜨는 프로세스. 이것이 끝나면 컨테이너가 끝난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker overview",
+   "url": "https://docs.docker.com/get-started/docker-overview/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "man7 — namespaces(7)",
+   "url": "https://man7.org/linux/man-pages/man7/namespaces.7.html",
+   "publisher": "Linux man-pages"
+  }
+ ]
+}

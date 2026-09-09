@@ -1,0 +1,144 @@
+{
+ "book": "docker",
+ "id": "hypervisor",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "하이퍼바이저 가상화",
+ "summary": "OS 를 통째로 하나 더 켠다는 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "VM 이 무엇을 복제하는지 안다.",
+  "Type 1 과 Type 2 를 구분한다.",
+  "VM 이 지는 자리와 이기는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절의 요구 다섯 개 중 ①~④를 가장 확실하게 푸는 방법**은 **아예 컴퓨터를 하나 더 만드는** 것이다.\n\n> **그게 가상 머신**이다. **소프트웨어로 만든 가짜 하드웨어 위에 진짜 OS 를** 올린다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇이 몇 겹인가",
+   "ascii": "   virtual machines                    containers (2.3)\n   ----------------                    ----------------\n   app A    app B    app C             app A   app B   app C\n   libs     libs     libs              libs    libs    libs\n   guest OS guest OS guest OS          ------------------------\n   (kernel) (kernel) (kernel)          shared host kernel\n   ------------------------            ------------------------\n   hypervisor                          container runtime\n   ------------------------            ------------------------\n   host OS / hardware                  host OS / hardware\n\n   차이는 한 줄이다: guest kernel 이 있느냐",
+   "note": "**커널을 세 벌 켜느냐 한 벌을 나눠 쓰느냐.** **비용의 거의 전부가 여기서** 갈린다."
+  },
+  {
+   "type": "table",
+   "caption": "하이퍼바이저 두 종류",
+   "columns": [
+    "",
+    "Type 1 (베어메탈)",
+    "Type 2 (호스트형)"
+   ],
+   "rows": [
+    [
+     "어디에 얹히나",
+     "**하드웨어 바로 위**",
+     "**호스트 OS 위의 앱으로**"
+    ],
+    [
+     "예",
+     "ESXi, Xen, KVM, Hyper-V",
+     "VirtualBox, VMware Workstation, **UTM·Parallels**"
+    ],
+    [
+     "성능",
+     "호스트 OS 를 안 거친다",
+     "한 겹 더 거친다"
+    ],
+    [
+     "쓰는 데",
+     "**클라우드·데이터센터**",
+     "**내 노트북에서 리눅스 하나 켜기**"
+    ]
+   ],
+   "note": "**AWS EC2 인스턴스 하나가 Type 1 위의 게스트**다. **2.6절의 Docker Desktop 은 Type 2 에 가깝다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "VM 이 실제로 이기는 자리",
+   "md": "**컨테이너를 배우는 책이라고 VM 을 깎을 이유가** 없다. **VM 이 확실히 나은 자리가** 있다.\n\n| 필요 | 왜 VM 인가 |\n|---|---|\n| **다른 커널** | 리눅스 호스트에서 윈도우를 돌려야 한다. 컨테이너로는 안 된다 |\n| **커널 모듈·드라이버** | 게스트가 자기 커널을 만진다 |\n| **강한 보안 경계** | 커널을 공유하지 않으니 커널 취약점의 영향 범위가 다르다 |\n| **남의 코드를 돌린다** | 멀티테넌시. 그래서 클라우드는 VM 경계 위에 컨테이너를 얹는다 |\n\n**컨테이너 탈출(container escape)이라는 말이 있는** 이유는 **커널이 하나이기** 때문이다.\n\n> **그래서 실무의 구조는 대개 \"VM 안에 컨테이너\"** 다. **둘 중 하나를 고르는 문제가** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "VM 이 지는 자리 — 숫자로",
+   "md": "**2.1절의 ⑤(싸야 한다)에서** 진다. **왜 비싼지가 중요**하다.\n\n| 비용 | VM | 컨테이너 |\n|---|---|---|\n| **시작 시간** | 게스트 커널 부팅 + init + 서비스 = **수십 초** | 프로세스 하나 실행 = **수십 밀리초~수 초** |\n| **메모리** | 게스트 OS 가 **아무것도 안 해도** 수백 MB | 애플리케이션이 쓰는 만큼 |\n| **디스크** | 이미지가 **GB 단위**. 겹쳐 쓰기 어렵다 | 레이어를 공유한다(3.2절) |\n| **밀도** | 한 호스트에 수십 개 | 한 호스트에 **수백 개** |\n\n**시작 시간이 특히** 중요하다.\n\n> **오토스케일링은 \"트래픽이 몰리면 몇 초 안에 늘린다\"** 는 일이다.\n> **뜨는 데 40초 걸리면 이미 늦었다.**\n>\n> **CI 도 마찬가지**다. **테스트마다 DB 를 새로 띄우는 일**(「Practical Testing」 8.5절)**은 컨테이너라서 가능**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "'가벼운 VM' 이라는 설명이 만드는 오해",
+   "md": "**컨테이너를 \"가벼운 가상 머신\" 이라고 배우면 세 가지를 틀리게** 된다.\n\n| 오해 | 실제 |\n|---|---|\n| \"컨테이너 안에서 OS 가 돈다\" | **커널은 호스트 것 하나**다. 컨테이너 안에는 커널이 없다 |\n| \"컨테이너를 재부팅한다\" | 재부팅이 아니라 **프로세스를 죽이고 다시 실행**하는 것이다 |\n| \"컨테이너 안에 여러 서비스를 넣는다\" | VM 처럼 쓰면 로그·수명·자원이 다 엉킨다. **컨테이너 하나에 프로세스 하나**가 기본이다 |\n\n**`docker run alpine uname -r` 을 쳐 보면 호스트 커널 버전이** 나온다. **컨테이너가 자기 커널을 안 가진다는 증거**다.\n\n> **알파인 이미지 안에 리눅스가 통째로 들어 있는 게 아니라, 리눅스 배포판의 사용자 공간 파일들만 들어** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "커널이 하나라는 것을 눈으로 확인한다",
+   "sql": "# --- 호스트의 커널 (리눅스 호스트에서) ---\n\n$ uname -r\n5.15.0-119-generic\n\n$ cat /etc/os-release | head -2\nNAME=\"Ubuntu\"\nVERSION=\"22.04.4 LTS (Jammy Jellyfish)\"\n\n\n# --- 컨테이너 안 ---\n\n$ docker run --rm alpine:3.20 uname -r\n5.15.0-119-generic\n\n#   같다. 알파인이 자기 커널을 안 갖는다는 뜻이다\n\n$ docker run --rm alpine:3.20 cat /etc/os-release | head -2\nNAME=\"Alpine Linux\"\nID=alpine\n\n#   배포판은 알파인인데 커널은 우분투 호스트의 것이다\n#   컨테이너 이미지는 '커널 위에 얹는 파일들' 일 뿐이다\n\n\n# --- 시작 시간 차이 ---\n\n$ time docker run --rm alpine:3.20 echo hi\nhi\n\nreal    0m0.412s\nuser    0m0.019s\nsys     0m0.011s\n\n#   0.4초. 이 중 대부분이 도커 CLI 왕복이다\n\n#   같은 일을 VM 으로 하면 (참고: 미리 만들어 둔 우분투 VM 부팅)\n#   $ time (VBoxManage startvm ubuntu --type headless && wait-for-ssh)\n#   real    0m38.7s\n\n\n# --- 메모리: 아무것도 안 하는 컨테이너 ---\n\n$ docker run -d --name idle alpine:3.20 sleep 3600\n$ docker stats --no-stream idle\nCONTAINER   NAME   CPU %   MEM USAGE / LIMIT     MEM %\nc4f1e2a3b5d6 idle   0.00%   372KiB / 7.654GiB    0.00%\n\n#   372KiB 다. 게스트 OS 가 없으니 뜨는 것 자체의 비용이 거의 없다\n#   아무것도 안 하는 우분투 VM 은 보통 300~500MB 를 쓴다\n\n$ docker rm -f idle"
+  }
+ ],
+ "recap": [
+  "VM 은 게스트 커널을 통째로 하나 더 켠다. 격리는 확실하지만 시작 시간·메모리·디스크가 비싸다.",
+  "Type 1 은 하드웨어 위, Type 2 는 호스트 OS 위. EC2 는 Type 1, Docker Desktop 은 Type 2 에 가깝다.",
+  "다른 커널·커널 모듈·강한 보안 경계가 필요하면 VM 이다. 실무 구조는 대개 VM 안에 컨테이너다.",
+  "컨테이너는 '가벼운 VM' 이 아니다. 컨테이너 안에는 커널이 없다."
+ ],
+ "drills": [
+  {
+   "task": "호스트에서 `uname -r` 을 치고, `docker run --rm alpine uname -r` 과 비교한다.",
+   "done_when": "두 값이 같은 것을 확인한다. 맥이라면 왜 다른지는 2.6절에서 본다.",
+   "minutes": 3
+  },
+  {
+   "task": "`time docker run --rm alpine echo hi` 를 세 번 돌려 평균을 재고, 첫 실행(이미지 pull 포함)과 비교한다.",
+   "done_when": "pull 이 끝난 뒤에는 1초 미만인 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "VM 과 컨테이너의 그림에서 딱 한 줄 차이는 무엇인가.",
+   "a": "게스트 커널의 유무. VM 은 게스트마다 커널이 있고, 컨테이너는 호스트 커널 하나를 공유한다."
+  },
+  {
+   "q": "클라우드가 VM 위에 컨테이너를 얹는 이유는.",
+   "a": "커널을 공유하는 컨테이너는 보안 경계가 VM 보다 약하다. 남의 코드끼리는 VM 경계로 나누고 그 안에서 컨테이너를 쓴다."
+  },
+  {
+   "q": "컨테이너를 '재부팅' 한다는 말이 왜 부정확한가.",
+   "a": "커널이 없으므로 부팅이 없다. 프로세스를 죽이고 다시 실행하는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "하이퍼바이저",
+   "en": "hypervisor",
+   "what": "가상 하드웨어를 만들어 게스트 OS 를 올리는 소프트웨어."
+  },
+  {
+   "term": "게스트 OS",
+   "en": "guest OS",
+   "what": "VM 안에서 도는 운영체제. 자기 커널을 갖는다."
+  },
+  {
+   "term": "컨테이너 탈출",
+   "en": "container escape",
+   "what": "컨테이너 안에서 호스트 커널을 통해 밖으로 나가는 공격. 커널이 하나라서 성립한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker overview",
+   "url": "https://docs.docker.com/get-started/docker-overview/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Red Hat — Containers vs VMs",
+   "url": "https://www.redhat.com/en/topics/containers/containers-vs-vms",
+   "publisher": "Red Hat"
+  }
+ ]
+}

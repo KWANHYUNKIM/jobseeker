@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "custom-manager",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "직접 만드는 인가 규칙",
+ "summary": "AuthorizationManager 구현.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "매니저를 직접 구현한다.",
+  "메타 애너테이션을 만든다.",
+  "문자열 규칙을 줄인다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.9절에서 규칙이 열일곱 군데고 전부 문자열**이라고 했다. **줄여 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "내 규칙을 쓰는 세 가지 길",
+   "ascii": "   three ways to write a rule of your own\n\n   a bean called from an expression\n     readable in the annotation, but it is still a string\n   an AuthorizationManager\n     type safe, testable, reusable across both layers\n   a meta annotation\n     the expression lives in one place, used by name\n\n   the second one is the only one a compiler checks",
+   "note": "**컴파일러가 봐 주는 건 가운데** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "매니저를 구현한다",
+   "md": "```java\npublic class BusinessHoursAuthorizationManager\n        implements AuthorizationManager<RequestAuthorizationContext> {\n\n    private final Clock clock;\n\n    @Override\n    public AuthorizationDecision check(Supplier<Authentication> authentication,\n            RequestAuthorizationContext context) {\n        LocalTime now = LocalTime.now(clock);\n        boolean open = !now.isBefore(LocalTime.of(9, 0))\n                && now.isBefore(LocalTime.of(18, 0));\n        return new AuthorizationDecision(open);\n    }\n}\n```\n\n> **`Clock` 을 받아 두면 테스트에서 시간을 고정할 수** 있다.\n> **책 ⑨ 에서 쓰던 방식**이다.\n\n**두 층에 다 쓸 수** 있다.\n\n```java\n// 웹\n.requestMatchers(\"/admin/**\").access(businessHours)\n\n// 메서드\n@Bean\nAdvisor businessHoursAdvisor() {\n    return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(\n            (auth, invocation) -> businessHours.check(auth, null));\n}\n```\n\n> **타입 인자만** 맞춰 준다.\n\n**표현식에서 빈을 부르는 것과 비교**\n\n| | 빈 호출 | 매니저 |\n|---|---|---|\n| 오타 | 런타임 500 | 컴파일 오류 |\n| 테스트 | 통합 테스트 필요 | 단위 테스트 가능 |\n| 재사용 | 표현식 복사 | 빈 하나 |\n| 읽기 | 애너테이션에 다 보임 | 이름만 보임 |\n\n> **마지막 줄이 빈 호출의 장점**이다.\n> **`@PreAuthorize(\"@orderGuard.isOwner(#id, authentication.name)\")` 는 읽으면 안다.**\n> **매니저는 이름을 보고 찾아** 가야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "메타 애너테이션",
+   "ascii": "   a meta annotation collapses repetition\n\n   before\n     PreAuthorize(\"hasRole('ADMIN') and hasAuthority('ORDER_CANCEL')\")\n     written in nine places, misspelled in one\n\n   after\n     IsOrderCanceller\n     declared once, used nine times\n\n   a typo now breaks the build instead of one endpoint",
+   "note": "**오타가 엔드포인트 하나가 아니라 빌드를** 깬다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메타 애너테이션이 가장 싸다",
+   "md": "```java\n@Target({ElementType.METHOD, ElementType.TYPE})\n@Retention(RetentionPolicy.RUNTIME)\n@PreAuthorize(\"hasRole('ADMIN') and hasAuthority('ORDER_CANCEL')\")\npublic @interface IsOrderCanceller { }\n```\n\n```java\n@IsOrderCanceller\npublic void cancel(Long id) { ... }\n```\n\n> **표현식은 한 군데**다.\n> **쓰는 쪽은 이름만** 쓴다.\n> **이름 오타는 컴파일이** 잡는다.\n\n**인자를 받는 것도** 된다.\n\n```java\n@Target(ElementType.METHOD)\n@Retention(RetentionPolicy.RUNTIME)\n@PreAuthorize(\"hasAuthority('{value}')\")\npublic @interface HasPermission {\n    String value();\n}\n\n@HasPermission(\"ORDER_CANCEL\")\npublic void cancel(Long id) { ... }\n```\n\n> **`{value}` 자리에 애너테이션 값이** 들어간다.\n> **6.x 의 `PrePostTemplateDefaults` 를 켜야** 한다.\n>\n> ```java\n> @Bean\n> static PrePostTemplateDefaults prePostTemplateDefaults() {\n>     return new PrePostTemplateDefaults();\n> }\n> ```\n\n**세 가지를 섞어 쓰는 게 보통**이다.\n\n> **반복되는 규칙은 메타 애너테이션**.\n> **도메인 조회가 필요한 규칙은 빈 호출**.\n> **인프라 조건(시간·IP·기능 플래그)은 매니저**.\n>\n> **7.9절의 열일곱 군데를 세 종류로 나누면 관리가** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 매니저를 만든다 ---\n\npublic class BusinessHoursAuthorizationManager\n        implements AuthorizationManager<RequestAuthorizationContext> {\n    private final Clock clock;\n\n    @Override\n    public AuthorizationDecision check(Supplier<Authentication> auth,\n            RequestAuthorizationContext context) {\n        LocalTime now = LocalTime.now(clock);\n        boolean open = !now.isBefore(LocalTime.of(9, 0))\n                && now.isBefore(LocalTime.of(18, 0));\n        System.out.println(\">>> now=\" + now + \" open=\" + open);\n        return new AuthorizationDecision(open);\n    }\n}\n\n#   단위 테스트가 된다\n\n@Test\nvoid 업무시간에만_통과한다() {\n    Authentication admin = UsernamePasswordAuthenticationToken.authenticated(\n            \"a\", null, List.of(new SimpleGrantedAuthority(\"ROLE_ADMIN\")));\n\n    for (String time : List.of(\"08:59\", \"09:00\", \"17:59\", \"18:00\")) {\n        Clock fixed = Clock.fixed(\n                LocalDateTime.of(2026, 9, 9, Integer.parseInt(time.substring(0,2)),\n                        Integer.parseInt(time.substring(3)))\n                        .atZone(ZoneId.systemDefault()).toInstant(),\n                ZoneId.systemDefault());\n        var manager = new BusinessHoursAuthorizationManager(fixed);\n        System.out.println(time + \" -> \" + manager.check(() -> admin, null));\n    }\n}\n\n$ ./gradlew test --tests BusinessHoursTest\n\n08:59 -> AuthorizationDecision [granted=false]\n09:00 -> AuthorizationDecision [granted=true]\n17:59 -> AuthorizationDecision [granted=true]\n18:00 -> AuthorizationDecision [granted=false]\n\n#   경계 넷을 HTTP 없이 확인했다\n\n#   표현식이었다면 통합 테스트가 필요했다\n\n# --- 웹 규칙에 건다 ---\n\n.requestMatchers(\"/admin/**\").access(AuthorizationManagers.allOf(\n        AuthorityAuthorizationManager.hasRole(\"ADMIN\"),\n        businessHours))\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n\n200\n\n>>> now=20:11 open=false\n\n#   어? 200 이다\n\n$ ./gradlew bootRun 2>&1 | grep \">>> now\"\n\n>>> now=20:11 open=false\n\n#   매니저는 false 를 줬는데 통과했다\n\n#   규칙 순서를 보면\n\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")          // 이게 위에 남아 있었다\n.requestMatchers(\"/admin/**\").access(...)\n\n#   7.2절이다\n\n#   위 줄을 지우면\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt localhost:8080/admin/panel\n403\n\n>>> now=20:11 open=false\n\n#   막힌다\n\n# --- 메서드 쪽에도 붙인다 ---\n\n@Bean\nAdvisor businessHoursAdvisor(BusinessHoursAuthorizationManager manager) {\n    JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();\n    pointcut.setPattern(\".*AdminService.*\");\n    return new AuthorizationManagerBeforeMethodInterceptor(\n            pointcut, (auth, invocation) -> manager.check(auth, null));\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    -X POST localhost:8080/api/admin/rebuild\n403\n\n>>> now=20:11 open=false\n\n#   같은 매니저가 두 층에서 돈다\n\n# --- 메타 애너테이션 ---\n\n@Target({ElementType.METHOD, ElementType.TYPE})\n@Retention(RetentionPolicy.RUNTIME)\n@PreAuthorize(\"hasRole('ADMIN') and hasAuthority('ORDER_CANCEL')\")\npublic @interface IsOrderCanceller { }\n\n#   쓰기 전\n\n$ grep -rn \"hasAuthority('ORDER_CANCEL')\" src/main --include='*.java' | wc -l\n9\n\n#   아홉 군데다\n\n#   하나를 오타 냈다\n\n@PreAuthorize(\"hasRole('ADMIN') and hasAuthority('ORDER_CANCLE')\")\npublic void cancelByAdmin(Long id) { ... }\n\n$ ./gradlew build\nBUILD SUCCESSFUL\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    -X POST localhost:8080/api/admin/orders/1/cancel\n403\n\n#   관리자가 막힌다\n\n#   ORDER_CANCLE 을 가진 사람이 없어서다\n\n#   기동도 빌드도 통과했다\n\n#   쓴 뒤\n\n$ grep -rn \"@IsOrderCanceller\" src/main --include='*.java' | wc -l\n9\n\n$ grep -rn \"hasAuthority('ORDER_CANCEL')\" src/main --include='*.java' | wc -l\n1\n\n#   문자열이 한 군데다\n\n@IsOrderCanceler          // 이름을 틀리면\n\n$ ./gradlew build\n\nerror: cannot find symbol\n  symbol:   class IsOrderCanceler\n\n#   컴파일이 잡는다\n\n# --- 인자를 받는 메타 애너테이션 ---\n\n@Bean\nstatic PrePostTemplateDefaults prePostTemplateDefaults() {\n    return new PrePostTemplateDefaults();\n}\n\n@Target(ElementType.METHOD)\n@Retention(RetentionPolicy.RUNTIME)\n@PreAuthorize(\"hasAuthority('{value}')\")\npublic @interface HasPermission {\n    String value();\n}\n\n@HasPermission(\"ORDER_CANCEL\")\npublic void cancel(Long id) { ... }\n\n$ for f in admin.txt manager.txt user.txt; do\n    printf '%-12s ' $f\n    curl -s -o /dev/null -w '%{http_code}\\n' -b $f \\\n        -X POST localhost:8080/api/orders/1/cancel\n  done\n\nadmin.txt    200\nmanager.txt  200\nuser.txt     403\n\n#   8.2절의 권한 표대로다\n\n#   PrePostTemplateDefaults 를 빼면\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b admin.txt \\\n    -X POST localhost:8080/api/orders/1/cancel\n403\n\nSpelEvaluationException: EL1041E: Cannot find property or method '{value}'\n\n#   치환이 안 된다\n\n# --- 규칙 개수를 다시 센다 ---\n\n$ grep -rnE \"hasRole\\(|hasAuthority\\(\" src/main --include='*.java' | wc -l\n\n5\n\n#   열일곱에서 다섯이 됐다\n\n$ grep -rn \"@Is[A-Z]\\|@HasPermission\" src/main --include='*.java' | wc -l\n\n14\n\n#   나머지는 이름으로 바뀌었다\n\n#   이름 오타는 컴파일이 잡는다\n\n#   7.7절의 마지막 함정 하나가 줄었다\n\n# --- 다음 절에서 ---\n\n#   객체 하나하나에 권한을 붙이는 얘기를 한다",
+   "note": "**`Clock` 을 주입한 매니저로 경계 넷(08:59·09:00·17:59·18:00)을 HTTP 없이** 확인했다.\n\n**매니저가 `false` 를 줬는데 200 이었다** — **7.2절의 순서 문제**였고 위 줄을 지우니 403 이다.\n\n**`ORDER_CANCLE` 오타는 빌드도 기동도 통과하고 관리자만 조용히** 막는다.\n\n**메타 애너테이션 이름을 틀리면 `cannot find symbol` 로 컴파일이** 잡는다.\n\n**문자열 규칙이 열일곱에서 다섯으로** 줄었다."
+  }
+ ],
+ "recap": [
+  "**규칙을 쓰는 길이** 셋이다.",
+  "**매니저는 타입 안전하고 단위 테스트가** 된다.",
+  "**`Clock` 을 주입하면 시간 조건도** 테스트된다.",
+  "**같은 매니저를 두 층에 쓸 수** 있다.",
+  "**빈 호출은 읽기 쉽지만 여전히** 문자열이다.",
+  "**메타 애너테이션은 표현식을 한 군데로** 모은다.",
+  "**이름 오타는 컴파일이** 잡는다.",
+  "**인자를 받으려면 `PrePostTemplateDefaults` 를** 켠다.",
+  "**셋을 섞어 쓰는 게** 보통이다."
+ ],
+ "drills": [
+  {
+   "task": "시간 조건 매니저를 만든다.",
+   "done_when": "경계 넷을 단위 테스트했다.",
+   "minutes": 30
+  },
+  {
+   "task": "같은 매니저를 메서드 쪽에도 건다.",
+   "done_when": "둘 다 도는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "반복되는 표현식을 메타 애너테이션으로 뺀다.",
+   "done_when": "문자열이 한 군데가 됐다.",
+   "minutes": 30
+  },
+  {
+   "task": "이름을 틀려 본다.",
+   "done_when": "컴파일이 잡는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "매니저 구현의 장점은?",
+   "a": "타입 안전하고 단위 테스트가 가능하다."
+  },
+  {
+   "q": "표현식에서 빈을 부르는 방식의 장점은?",
+   "a": "애너테이션만 보고도 규칙을 읽을 수 있다."
+  },
+  {
+   "q": "메타 애너테이션이 해결하는 것은?",
+   "a": "같은 표현식의 반복과 그로 인한 오타다."
+  },
+  {
+   "q": "메타 애너테이션에 인자를 넘기려면?",
+   "a": "`PrePostTemplateDefaults` 빈을 등록한다."
+  },
+  {
+   "q": "표현식 오타와 애너테이션 이름 오타의 차이는?",
+   "a": "전자는 런타임, 후자는 컴파일에서 드러난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메타 애너테이션",
+   "def": "다른 애너테이션을 붙여 만든 애너테이션. 표현식을 한 곳에 모을 때 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Method Security",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

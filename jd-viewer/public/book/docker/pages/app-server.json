@@ -1,0 +1,140 @@
+{
+ "book": "docker",
+ "id": "app-server",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "애플리케이션 서버",
+ "summary": "배포가 아픈 이유는 프로세스가 아니라 환경이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "서버 한 대에 여러 앱을 올릴 때 무엇이 부딪히는지 안다.",
+  "격리가 없으면 무엇이 새는지 안다.",
+  "가상화가 왜 나왔는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서버 한 대를** 받았다. **거기에 애플리케이션 세 개를** 올린다.\n\n> **결제 API** — Java 21, PostgreSQL 드라이버\n> **정산 배치** — Java 11 (레거시라 못 올린다)\n> **관리자 페이지** — Node.js 20\n\n**첫날부터 부딪힌다.**"
+  },
+  {
+   "type": "table",
+   "caption": "한 서버에 여러 앱을 올릴 때 부딪히는 것",
+   "columns": [
+    "무엇이",
+    "어떻게 부딪히나",
+    "임시방편"
+   ],
+   "rows": [
+    [
+     "**런타임 버전**",
+     "`java` 가 하나뿐이다. 21 을 깔면 배치가 죽는다",
+     "`update-alternatives`, `JAVA_HOME` 을 앱마다 다르게 — 사람이 기억해야 한다"
+    ],
+    [
+     "**포트**",
+     "둘 다 8080 을 원한다",
+     "한쪽을 8081 로. 그 사실을 어딘가 적어 둬야 한다"
+    ],
+    [
+     "**시스템 라이브러리**",
+     "A 는 OpenSSL 1.1, B 는 3.0 을 요구",
+     "`LD_LIBRARY_PATH` 로 우회. 깨지면 원인 찾기 어렵다"
+    ],
+    [
+     "**설정 파일**",
+     "둘 다 `/etc/app/config.yml` 을 쓴다",
+     "경로를 나눈다. 배포 스크립트가 길어진다"
+    ],
+    [
+     "**자원**",
+     "배치가 메모리를 다 먹으면 **API 가 같이 죽는다**",
+     "`nice`, `ulimit` — 잘 안 지켜진다"
+    ],
+    [
+     "**로그**",
+     "셋이 같은 `/var/log` 에 쌓인다",
+     "파일명 규칙. 누가 안 지키면 무너진다"
+    ]
+   ],
+   "note": "**전부 \"한 OS 를 나눠 쓰기 때문\"** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "제일 아픈 건 자원이 아니라 신뢰다",
+   "md": "**위 표에서 실제로 사람을 지치게 하는 건 마지막 두** 줄이다.\n\n> **배치가 메모리를 다 먹어서 결제 API 가 OOM 으로** 죽는다.\n> **API 는 아무 잘못이** 없다.\n\n**이게 반복되면 어떤 일이** 벌어지냐면 — **아무도 그 서버에 새 앱을 안 올리려** 한다. **그래서 앱 하나에 서버 한 대**를 쓰게 된다.\n\n| 방식 | 안전 | 비용 |\n|---|---|---|\n| 한 서버에 여러 앱 | 서로 죽인다 | 자원을 다 쓴다 |\n| **앱 하나에 서버 한 대** | 안전하다 | **CPU 5% 쓰는 서버가 수십 대** |\n\n**가상화는 이 둘 사이를 메우려고** 나왔다.\n\n> **\"한 대를 여러 대처럼 쓰되, 서로 못 건드리게\"**"
+  },
+  {
+   "type": "figure",
+   "caption": "격리가 없으면 새는 것들",
+   "ascii": "   one host, three apps, no isolation\n\n   /usr/bin/java  -> only one version can win\n   :8080          -> only one process can bind\n   /etc/app/       -> shared\n   RAM            -> whoever grabs it first\n   /var/log        -> everybody appends\n\n   batch job leaks memory\n           |\n     kernel OOM killer\n           |\n     kills the biggest process\n           |\n     payment API dies        <- 잘못한 쪽이 아니다",
+   "note": "**커널은 누가 잘못했는지 모른다.** **가장 큰 프로세스를 죽일** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래서 무엇이 필요한가 — 요구사항으로 적어 보면",
+   "md": "**해결책을 고르기 전에 문제를 적어** 둔다. **이 목록이 2장 나머지의 채점표**다.\n\n| 요구 | 뜻 |\n|---|---|\n| **① 파일 시스템 격리** | A 의 `/usr/bin/java` 와 B 의 그것이 달라야 한다 |\n| **② 네트워크 격리** | 둘 다 8080 을 쓸 수 있어야 한다 |\n| **③ 프로세스 격리** | A 가 B 의 프로세스를 못 봐야 한다 |\n| **④ 자원 제한** | 한쪽이 메모리를 다 먹어도 다른 쪽이 안 죽어야 한다 |\n| **⑤ 싸야 한다** | 앱 하나에 서버 한 대만큼 비싸면 의미가 없다 |\n\n**2.2절(VM)은 ①~④를 완벽히 하고 ⑤에서** 진다.\n**2.3절(컨테이너)은 ①~④를 충분히 하고 ⑤를** 이긴다.\n\n> **\"충분히\" 와 \"완벽히\" 의 차이가 무엇인지가 두 절의 핵심**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "이 문제는 지금도 남아 있다",
+   "md": "**컨테이너를 써도 ⑤ 때문에 한 호스트에 여러 컨테이너를** 올린다. **그러면 ④가 다시 문제**가 된다.\n\n> **`docker run` 에 아무 제한도 안 주면 컨테이너는 호스트 메모리를 전부 쓸 수** 있다.\n> **한 컨테이너가 호스트를 마비시킬 수** 있다는 뜻이다.\n\n**그래서 6.6절에서 `--memory` 와 `--cpus` 를 반드시** 준다. **컨테이너가 격리해 준다는 말을 자원까지 자동으로 막아 준다는 뜻으로 읽으면** 안 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "격리 없는 한 대와 컨테이너 두 개",
+   "sql": "# --- 격리 없는 호스트: 자바는 하나뿐이다 ---\n\n$ java -version\nopenjdk version \"11.0.24\" 2024-07-16\n\n$ which -a java\n/usr/bin/java\n\n#   결제 API 는 21 이 필요하다. 배치는 11 이어야 한다. 둘 중 하나만 된다\n\n\n# --- 포트도 하나뿐이다 ---\n\n$ java -jar payment.jar &\n$ java -jar admin.jar\n\nWeb server failed to start. Port 8080 was already in use.\n\n\n# --- 컨테이너 둘: 같은 포트를 각자 쓴다 ---\n\n$ docker run -d --name payment -p 8080:8080 payment:1.4\n$ docker run -d --name admin   -p 8081:8080 admin:2.1\n\n$ docker ps --format 'table {{.Names}}\\t{{.Ports}}'\nNAMES     PORTS\nadmin     0.0.0.0:8081->8080/tcp\npayment   0.0.0.0:8080->8080/tcp\n\n#   컨테이너 안에서는 둘 다 8080 이다. 밖에서만 다르게 붙였다\n\n\n# --- 자바 버전도 각자다 ---\n\n$ docker exec payment java -version\nopenjdk version \"21.0.4\" 2024-07-16 LTS\n\n$ docker exec admin java -version\nopenjdk version \"11.0.24\" 2024-07-16\n\n#   같은 호스트다. /usr/bin/java 가 서로 다른 파일이다\n\n\n# --- 프로세스도 서로 안 보인다 ---\n\n$ docker exec payment ps -ef\nPID   USER     TIME  COMMAND\n    1 app       0:12 java -jar /app/app.jar\n   38 app       0:00 ps -ef\n\n#   PID 1 이 내 애플리케이션이다. admin 컨테이너의 프로세스는 안 보인다\n\n\n# --- 다만 자원은 안 막아 준다. 안 주면 무제한이다 ---\n\n$ docker inspect -f '{{.HostConfig.Memory}}' payment\n0\n\n#   0 은 '제한 없음' 이다. 호스트 메모리를 다 쓸 수 있다 (6.6절)"
+  }
+ ],
+ "recap": [
+  "한 OS 를 나눠 쓰면 런타임 버전·포트·라이브러리·설정·자원·로그가 전부 부딪힌다.",
+  "제일 아픈 건 자원 간섭이다. 잘못 없는 앱이 같이 죽으면 아무도 그 서버를 안 쓰려 한다.",
+  "필요한 것은 파일·네트워크·프로세스 격리와 자원 제한, 그리고 싸야 한다는 것.",
+  "컨테이너도 자원은 자동으로 안 막는다. 제한을 안 주면 무제한이다."
+ ],
+ "drills": [
+  {
+   "task": "같은 호스트에서 컨테이너 둘을 서로 다른 자바 버전 이미지로 띄우고 `docker exec <이름> java -version` 을 각각 찍어 본다.",
+   "done_when": "같은 호스트인데 두 버전이 다르게 나오는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "컨테이너 둘을 각각 `-p 8080:8080`, `-p 8081:8080` 으로 띄운다.",
+   "done_when": "컨테이너 안에서는 둘 다 8080 인데 호스트에서는 안 부딪히는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "한 서버에 앱을 여러 개 올릴 때 가장 아픈 문제는 무엇이고 왜인가.",
+   "a": "자원 간섭. 한쪽이 메모리를 다 먹으면 잘못 없는 다른 앱이 OOM 으로 죽는다. 커널은 누가 잘못했는지 모르고 큰 프로세스를 죽인다."
+  },
+  {
+   "q": "격리에 필요한 다섯 가지를 대 보라.",
+   "a": "파일 시스템·네트워크·프로세스 격리, 자원 제한, 그리고 싸야 한다는 것."
+  }
+ ],
+ "terms": [
+  {
+   "term": "격리",
+   "en": "isolation",
+   "what": "한쪽에서 한 일이 다른 쪽에 안 보이고 안 닿게 하는 것."
+  },
+  {
+   "term": "OOM 킬러",
+   "en": "OOM killer",
+   "what": "메모리가 모자랄 때 커널이 프로세스를 골라 죽이는 장치."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Docker overview",
+   "url": "https://docs.docker.com/get-started/docker-overview/",
+   "publisher": "Docker"
+  }
+ ]
+}

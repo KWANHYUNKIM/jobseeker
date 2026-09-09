@@ -73,7 +73,7 @@
           "title": "애플리케이션 서버",
           "summary": "배포가 아픈 이유는 프로세스가 아니라 환경이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -81,7 +81,7 @@
           "title": "하이퍼바이저 가상화",
           "summary": "OS 를 통째로 하나 더 켠다는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -89,7 +89,7 @@
           "title": "컨테이너 가상화",
           "summary": "커널은 하나, 격리는 프로세스 단위.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

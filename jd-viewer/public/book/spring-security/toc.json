@@ -546,7 +546,7 @@
           "title": "직접 만드는 인가 규칙",
           "summary": "AuthorizationManager 구현.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -554,7 +554,7 @@
           "title": "객체 단위 인가",
           "summary": "내 주문만 볼 수 있다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",
