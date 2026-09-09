@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-service",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "주문 서비스",
+ "summary": "Cascade 가 하는 일.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`OrderService` 를 만든다.",
+  "id 를 받는 이유를 안다.",
+  "`cascade` 의 범위를 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5·6장의 서비스보다 두껍다.** **조립할 것이 많다.**"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderService`",
+   "code": "@Service\n@Transactional(readOnly = true)\n@RequiredArgsConstructor\npublic class OrderService {\n\n    private final OrderRepository orderRepository;\n    private final MemberRepository memberRepository;\n    private final ItemRepository itemRepository;\n\n    @Transactional\n    public Long order(Long memberId, Long itemId, int count) {\n        Member member = memberRepository.findOne(memberId);\n        Item item = itemRepository.findOne(itemId);\n\n        Delivery delivery = new Delivery();\n        delivery.setAddress(member.getAddress());\n        delivery.setStatus(DeliveryStatus.READY);\n\n        OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);\n        Order order = Order.createOrder(member, delivery, orderItem);\n\n        orderRepository.save(order);\n        return order.getId();\n    }\n\n    @Transactional\n    public void cancelOrder(Long orderId) {\n        Order order = orderRepository.findOne(orderId);\n        order.cancel();\n    }\n\n    public List<Order> findOrders(OrderSearch orderSearch) {\n        return orderRepository.findAll(orderSearch);\n    }\n}",
+   "note": "**리포지토리를 셋** 주입받는다. **회원과 상품을 찾아야** 한다.\n\n**`cancelOrder` 에 `@Transactional`** 이 있다. **7.4절에서 빠뜨리면 침묵**하는 것을 봤다.\n\n**`delivery.setAddress(member.getAddress())`** — **7.2절의 스냅숏**이다. **회원 주소가 나중에 바뀌어도 배송지는 그대로**다.\n\n> **`Address` 가 불변 값 타입**이라 안전하다(3.4절). **같은 인스턴스를 공유해도 아무도 못 바꾼다.**\n>\n> **가변이었다면 회원 주소를 고칠 때 배송지도 바뀔** 뻔했다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 단계",
+   "ascii": "   OrderService.order(memberId, itemId, count)\n\n     find member\n     find item\n     build delivery      from member.address\n     build orderItem     removes stock\n     build order         connects the three\n     save order          cascade saves delivery and orderItem\n\n   two selects in, three inserts and one update out",
+   "note": "**`select` 둘에 `insert` 셋 + `update` 하나**다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 id 를 받나",
+   "ascii": "   why the service takes ids, not entities\n\n   order(Member member, Item item, int count)\n     the controller must load them first\n     outside the transaction\n     detached entities enter the boundary\n\n   order(Long memberId, Long itemId, int count)\n     the service loads them inside its own transaction\n     everything stays managed",
+   "note": "**경계 안에서 로딩**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "엔티티를 받으면",
+   "md": "```java\n// 이렇게 하면\npublic Long order(Member member, Item item, int count) { }\n\n// 컨트롤러에서\nMember member = memberService.findOne(memberId);   // 트랜잭션 A\nItem item = itemService.findOne(itemId);           // 트랜잭션 B\norderService.order(member, item, count);           // 트랜잭션 C\n```\n\n**트랜잭션이 셋**이다. **`member` 와 `item` 이 준영속**으로 C 에 들어온다.\n\n**무슨 일이 생기나.**\n\n| 문제 | |\n|---|---|\n| **`item.removeStock()` 이 안 먹는다** | 준영속이라 변경 감지 밖 |\n| **`member` 가 낡았을 수** 있다 | A 이후 바뀌었으면 |\n| **지연 로딩이 안 된다** | 컨텍스트가 닫혔다 |\n\n**첫 번째가 결정적**이다.\n\n> **재고가 안 줄어든다.** **주문은 저장되는데.**\n>\n> **`merge` 로 붙이면** 되는데 **6.3절의 `null` 덮어쓰기 위험**이 따라온다.\n\n**id 를 받으면 전부 해결**된다.\n\n```java\nMember member = memberRepository.findOne(memberId);   // 이 트랜잭션 안에서\n```\n\n**영속 상태**다. **변경 감지가 동작**하고 **지연 로딩도** 된다.\n\n> **\"엔티티를 트랜잭션 경계 밖으로 내보내지 않는다\"**(5.2절)**의 반대 방향**이다.\n>\n> **밖에서 안으로 들여올 때도 id 로** 받는다.\n\n**8.10절의 컨트롤러가 그렇게 부른다.**\n\n```java\norderService.order(memberId, itemId, count);   // 전부 Long 과 int\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "`cascade` 의 범위를 다시",
+   "md": "**`orderRepository.save(order)`** 한 줄이 셋을 저장한다.\n\n**어디까지 가나.**\n\n```\norder\n  -> delivery      cascade ALL     저장된다\n  -> orderItems    cascade ALL     저장된다\n       -> item     cascade 없음     저장 안 된다 (이미 있다)\n  -> member        cascade 없음     저장 안 된다 (이미 있다)\n```\n\n**`item` 과 `member` 는 이미 영속**이다. **`cascade` 가 필요 없다.**\n\n**만약 걸었다면?**\n\n```java\n@ManyToOne(cascade = CascadeType.ALL)    // 이러면 안 된다\nprivate Member member;\n```\n\n**주문을 지울 때 회원이 같이** 지워진다. **다른 주문이 참조하고 있는데**도.\n\n> **3.8절의 기준**이다 — **\"생명주기가 종속되나\"**.\n>\n> **회원은 주문보다 오래 산다.** **종속이 아니다.**\n\n**`cascade` 가 없으면 직접 저장**해야 한다.\n\n```java\n// cascade 를 뺐다면\ndeliveryRepository.save(delivery);\norderItemRepository.save(orderItem);\norderRepository.save(order);\n```\n\n**리포지토리가 셋** 필요하다(7.6절). **순서도 맞춰야** 한다.\n\n> **`cascade` 가 그것을 없앴다.** **9.6절에서 이 편함의 대가**를 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 주문 ---\n\nLong orderId = orderService.order(memberId, itemId, 2);\n\n#   Getting transaction for [OrderService.order]\n#   Creating new transaction with name [OrderService.order]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   (readOnly 가 없다 - 메서드가 이겼다)\n\n#   Hibernate: \n#       select m1_0.member_id, m1_0.city, m1_0.street, m1_0.zipcode,\n#              m1_0.name\n#       from member m1_0 where m1_0.member_id=?\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0 where i1_0.item_id=?\n\n#   (delivery, orderItem, order 생성 - 자바 코드만)\n#   (item.removeStock(2) - SQL 없음)\n\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n#   Hibernate: select next value for order_item_seq\n\n#   Completing transaction for [OrderService.order]\n#   Initiating transaction commit\n\n#   Hibernate: \n#       insert into delivery (city, street, zipcode, status, delivery_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       insert into orders (delivery_id, member_id, order_date, status,\n#                           order_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       insert into order_item (count, item_id, order_id, order_price,\n#                               order_item_id)\n#       values (?, ?, ?, ?, ?)\n#   Hibernate: \n#       update item set name=?, price=?, stock_quantity=?, author=?, isbn=?\n#       where item_id=?\n#   binding parameter [3] as [INTEGER] - [8]\n\n#   Committing JPA transaction\n\n#   select 2 + 시퀀스 3 + insert 3 + update 1 = 9개\n\n#   내가 쓴 것\n#     findOne 둘, save 하나\n\n# --- 4.1절의 예상과 비교 ---\n\n#   예상: 열 개쯤\n#   실제: 아홉 개\n\n#   맞았다\n\n# --- 엔티티를 받았다면 (실험) ---\n\n@Transactional\npublic Long orderWithEntity(Member member, Item item, int count) {\n    Delivery delivery = new Delivery();\n    delivery.setAddress(member.getAddress());\n\n    OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);\n    Order order = Order.createOrder(member, delivery, orderItem);\n    orderRepository.save(order);\n    return order.getId();\n}\n\n#   (준영속 member, item 을 넘기면)\n\n#   Hibernate: insert into delivery ...\n\n#   org.hibernate.TransientObjectException:\n#     persistent instance references an unsaved transient instance\n\n#   또는 member 가 detached 라면\n#   Hibernate: insert into orders (delivery_id, member_id, ...)\n#   Hibernate: insert into order_item (... item_id ...)\n\n#   (update item 이 없다)\n\nselect stock_quantity from item where item_id = 1;\n#   10\n\n#   재고가 안 줄었다\n#   주문은 저장됐는데\n\n# --- 취소 ---\n\norderService.cancelOrder(orderId);\n\n#   Creating new transaction with name [OrderService.cancelOrder]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   Initiating transaction commit\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n#   Hibernate: update orders set ... status=? where order_id=?\n\n#   7.4절과 같다\n\n# --- 재고가 모자라면 ---\n\norderService.order(memberId, itemId, 100);\n\n#   Hibernate: select ... from member ...\n#   Hibernate: select ... from item ...\n\n#   NotEnoughStockException: need more stock\n\n#   Completing transaction after exception\n#   Initiating transaction rollback\n\n#   (insert 가 하나도 안 나갔다)\n\n#   쓰기 지연 덕에 SQL 자체가 안 나갔다",
+   "note": "**SQL 아홉 개**다. **`select` 둘, 시퀀스 셋, `insert` 셋, `update` 하나.** **4.1절 예상과 맞았다.**\n\n**내가 쓴 것은 `findOne` 둘과 `save` 하나**뿐이다.\n\n**엔티티를 받으면 `update item` 이 없다.** **재고가 안 준다** — id 를 받는 이유다.\n\n**재고가 모자라면 `insert` 가 하나도 안 나간다.** **쓰기 지연 덕에 SQL 자체가 안 나가고 롤백**된다.\n\n**다음 절에서 테스트로 확인한다.**"
+  }
+ ],
+ "recap": [
+  "**리포지토리 셋**을 주입받는다.",
+  "**id 를 받는다** — 엔티티를 받으면 준영속이 들어온다.",
+  "**준영속이면 `removeStock` 이 안 먹는다** — 재고가 안 준다.",
+  "**`delivery.setAddress(member.getAddress())`** 가 스냅숏이다.",
+  "**`Address` 가 불변이라 공유해도 안전**하다.",
+  "**`cascade` 가 배송·주문상품까지**만 간다.",
+  "**회원에 걸면 주문 삭제가 회원을 지운다.**",
+  "**SQL 아홉 개** — 4.1절 예상과 맞았다.",
+  "**재고 부족이면 `insert` 가 아예 안 나간다.**"
+ ],
+ "drills": [
+  {
+   "task": "`OrderService.order` 를 만들고 로그를 센다.",
+   "done_when": "SQL 아홉 개를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "엔티티를 받는 버전을 만들어 본다.",
+   "done_when": "재고가 안 주는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`Member` 에 `cascade` 를 걸어 본다.",
+   "done_when": "무엇이 위험한지 설명했다.",
+   "minutes": 15
+  },
+  {
+   "task": "재고보다 많이 주문한다.",
+   "done_when": "`insert` 가 안 나가는 것을 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 엔티티가 아니라 id 를 받나?",
+   "a": "밖에서 로딩하면 준영속이라 변경 감지와 지연 로딩이 안 된다."
+  },
+  {
+   "q": "엔티티를 받으면 무엇이 안 되나?",
+   "a": "`item.removeStock()` 이 반영이 안 되어 재고가 안 준다."
+  },
+  {
+   "q": "배송지가 왜 스냅숏인가?",
+   "a": "회원 주소가 나중에 바뀌어도 그때 보낸 주소가 남아야 한다."
+  },
+  {
+   "q": "`Member` 에 `cascade` 를 걸면?",
+   "a": "주문을 지울 때 회원이 같이 지워진다. 생명주기가 종속이 아니다."
+  },
+  {
+   "q": "주문 하나에 SQL 이 몇 개인가?",
+   "a": "아홉 개다. `select` 둘, 시퀀스 셋, `insert` 셋, `update` 하나."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

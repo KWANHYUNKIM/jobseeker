@@ -429,7 +429,7 @@
           "title": "주문 서비스",
           "summary": "Cascade 가 하는 일.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -437,7 +437,7 @@
           "title": "주문 기능 테스트",
           "summary": "재고가 줄고 되돌아온다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",

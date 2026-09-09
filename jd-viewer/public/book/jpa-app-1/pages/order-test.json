@@ -1,0 +1,132 @@
+{
+ "book": "jpa-app-1",
+ "id": "order-test",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "주문 기능 테스트",
+ "summary": "재고가 줄고 되돌아온다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 경로를 테스트한다.",
+  "부수 효과를 검증한다.",
+  "테스트가 놓치는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5·6·7장의 로직이 다 얽힌다.** **테스트가 그것을 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 테스트",
+   "ascii": "   OrderServiceTest\n\n   상품주문           order, then check status, count, stock, total\n   재고수량초과        order too many, expect the exception\n   주문취소           order then cancel, stock comes back\n\n   three tests, one for each path through the domain",
+   "note": "**도메인의 세 경로**다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "`OrderServiceTest`",
+   "code": "@SpringBootTest\n@Transactional\nclass OrderServiceTest {\n\n    @PersistenceContext EntityManager em;\n    @Autowired OrderService orderService;\n    @Autowired OrderRepository orderRepository;\n\n    @Test\n    void 상품주문() {\n        Member member = createMember();\n        Book book = createBook(\"시골 JPA\", 10000, 10);\n        int orderCount = 2;\n\n        Long orderId = orderService.order(member.getId(), book.getId(), orderCount);\n\n        Order order = orderRepository.findOne(orderId);\n        assertThat(order.getStatus()).isEqualTo(OrderStatus.ORDER);\n        assertThat(order.getOrderItems().size()).isEqualTo(1);\n        assertThat(order.getTotalPrice()).isEqualTo(10000 * 2);\n        assertThat(book.getStockQuantity()).isEqualTo(8);\n    }\n\n    @Test\n    void 재고수량_초과() {\n        Member member = createMember();\n        Item item = createBook(\"시골 JPA\", 10000, 10);\n\n        assertThatThrownBy(() ->\n                orderService.order(member.getId(), item.getId(), 11))\n                .isInstanceOf(NotEnoughStockException.class);\n    }\n\n    @Test\n    void 주문취소() {\n        Member member = createMember();\n        Book item = createBook(\"시골 JPA\", 10000, 10);\n        Long orderId = orderService.order(member.getId(), item.getId(), 2);\n\n        orderService.cancelOrder(orderId);\n\n        Order order = orderRepository.findOne(orderId);\n        assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCEL);\n        assertThat(item.getStockQuantity()).isEqualTo(10);\n    }\n\n    private Member createMember() {\n        Member member = new Member();\n        member.setName(\"회원1\");\n        member.setAddress(new Address(\"서울\", \"강가\", \"123-123\"));\n        em.persist(member);\n        return member;\n    }\n\n    private Book createBook(String name, int price, int stockQuantity) {\n        Book book = new Book();\n        book.setName(name);\n        book.setPrice(price);\n        book.setStockQuantity(stockQuantity);\n        em.persist(book);\n        return book;\n    }\n}",
+   "note": "**`createMember`·`createBook` 이 준비 코드**다. **세 테스트가 같이** 쓴다.\n\n**`assertThat(book.getStockQuantity())`** 가 중요하다. **`book` 은 테스트가 만든 인스턴스**인데 **재고가 8** 이다.\n\n> **1차 캐시라 서비스가 조회한 것과 같은 인스턴스**다(5.1절). **서비스가 고친 것이 테스트에도 보인다.**\n>\n> **`em.clear()` 를 넣으면 다른 인스턴스**가 되어 이 검증이 안 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 검증하나",
+   "ascii": "   what the order test asserts\n\n   order.status        == ORDER\n   orderItems.size()   == 1\n   order.totalPrice    == price * count\n   item.stock          == 10 - count\n\n   the last one is the side effect from 7.2",
+   "note": "**마지막이 부수 효과**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "부수 효과를 검증한다",
+   "md": "**주문 테스트가 재고를 확인**한다.\n\n```java\nassertThat(book.getStockQuantity()).isEqualTo(8);\n```\n\n**주문 기능 테스트인데 상품을 본다.**\n\n**7.2절에서 `createOrderItem` 이 재고를 줄인다**고 했다. **그것이 동작하는지 확인**하는 것이다.\n\n> **부수 효과가 있으면 테스트가 그것을 지킨다.**\n>\n> **누가 `removeStock` 을 빼면 이 테스트가 깨진다.**\n\n**취소 테스트도 마찬가지**다.\n\n```java\nassertThat(item.getStockQuantity()).isEqualTo(10);\n```\n\n**원래대로 돌아왔는지** 본다.\n\n**이것이 6.1절의 결정을 지킨다.**\n\n> **로직이 엔티티에 있으면 테스트가 엔티티를** 본다.\n> **서비스에 있으면 테스트가 서비스를** 본다.\n>\n> **어느 쪽이든 검증은 필요**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "이 테스트가 놓치는 것",
+   "md": "**셋** 있다.\n\n**① 트랜잭션 경계를 검증 못 한다**\n\n**테스트에 `@Transactional`** 이 있어 **서비스가 참여**한다(5.4절).\n\n```java\nGetting transaction for [OrderService.order]\nParticipating in existing transaction\n```\n\n**서비스에 `@Transactional` 이 없어도 테스트는 통과**한다.\n\n> **7.4절의 침묵을 이 테스트로 못 잡는다.**\n>\n> **테스트에서 애너테이션을 빼면** 잡힌다. **대신 격리가 사라진다**(「DB 2편」 4.4절).\n\n**② 커밋 시점 문제를 못 잡는다**\n\n**롤백되니 `insert` 가 안 나간다**(5.4절). **`flush` 를 안 부르면 컬럼 길이나 제약 위반을 못 본다.**\n\n**③ 쿼리 개수를 안 센다**\n\n**N+1 이 있어도 통과**한다. **9.4절에서 따로** 센다.\n\n---\n\n**보완하려면**\n\n```java\n@Test\nvoid 상품주문() {\n    // ...\n    em.flush();\n    em.clear();\n\n    Order found = orderRepository.findOne(orderId);\n    assertThat(found.getStatus()).isEqualTo(OrderStatus.ORDER);\n}\n```\n\n**`flush` + `clear` 로 DB 를 거친다.** **대신 `book` 인스턴스 검증이 안 된다.**\n\n> **둘 다 하려면 테스트를 나눈다.** **이 책은 강의 예제를 따라 하나로** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 SQL",
+   "sql": "# --- 상품주문 테스트 ---\n\n#   Begin transaction for test context\n\n#   (createMember)\n#   Hibernate: select next value for member_seq\n\n#   (createBook)\n#   Hibernate: select next value for item_seq\n\n#   (orderService.order)\n#   Getting transaction for [OrderService.order]\n#   Participating in existing transaction\n\n#   (memberRepository.findOne)\n#   (SQL 없음 - 1차 캐시)\n\n#   (itemRepository.findOne)\n#   (SQL 없음 - 1차 캐시)\n\n#   Hibernate: select next value for delivery_seq\n#   Hibernate: select next value for orders_seq\n#   Hibernate: select next value for order_item_seq\n\n#   Completing transaction for [OrderService.order]\n#   (커밋 안 한다 - 참여한 트랜잭션)\n\n#   (orderRepository.findOne)\n#   (SQL 없음 - 1차 캐시)\n\n#   PASSED\n#   Rolled back transaction for test\n\n#   insert 가 하나도 안 나갔다\n\n# --- 7.7절과 비교 ---\n\n#   7.7절 (실제 실행)  select 2, 시퀀스 3, insert 3, update 1 = 9\n#   7.8절 (테스트)     시퀀스 5                              = 5\n\n#   select 가 없다 - 테스트가 방금 persist 한 것을 캐시가 준다\n#   insert 가 없다 - 롤백된다\n\n# --- flush 를 넣으면 ---\n\nLong orderId = orderService.order(member.getId(), book.getId(), 2);\nem.flush();\n\n#   Hibernate: insert into member (...) values (?,?,?,?,?)\n#   Hibernate: insert into item (...) values (?,?,?,?,?,'B',?)\n#   Hibernate: insert into delivery (...) values (?,?,?,?,?)\n#   Hibernate: insert into orders (...) values (?,?,?,?,?)\n#   Hibernate: insert into order_item (...) values (?,?,?,?,?)\n#   Hibernate: update item set ... stock_quantity=? where item_id=?\n\n#   여섯 개가 한꺼번에 나갔다\n\n#   쓰기 지연이 여기서 풀렸다\n\n# --- 재고수량_초과 테스트 ---\n\norderService.order(member.getId(), item.getId(), 11);\n\n#   Getting transaction for [OrderService.order]\n#   Participating in existing transaction\n\n#   NotEnoughStockException: need more stock\n\n#   Completing transaction for [OrderService.order] after exception\n#   Participating transaction failed - marking existing transaction\n#     as rollback-only\n\n#   테스트의 트랜잭션에 rollback-only 표시가 붙었다\n#   (「DB 2편」 11.7절)\n\n#   테스트는 어차피 롤백이라 UnexpectedRollbackException 이 안 난다\n\n#   PASSED\n\n# --- 주문취소 테스트 ---\n\norderService.cancelOrder(orderId);\n\n#   (order, delivery, orderItem, item 이 다 캐시에 있다)\n#   (SQL 없음)\n\nassertThat(item.getStockQuantity()).isEqualTo(10);\n#   PASSED\n\n#   지연 로딩도 안 일어났다\n#   전부 같은 트랜잭션에서 만든 것이라\n\n# --- em.clear() 를 넣으면 ---\n\nem.flush();\nem.clear();\norderService.cancelOrder(orderId);\n\n#   Hibernate: select ... from orders o1_0 where o1_0.order_id=?\n#   Hibernate: select ... from delivery d1_0 where d1_0.delivery_id=?\n#   Hibernate: select ... from order_item oi1_0 where oi1_0.order_id=?\n#   Hibernate: select ... from item i1_0 where i1_0.item_id=?\n\n#   이번엔 지연 로딩이 넷 일어났다\n#   7.4절의 로그와 같다\n\nassertThat(item.getStockQuantity()).isEqualTo(10);\n#   FAILED\n#   expected: 10 but was: 8\n\n#   item 이 다른 인스턴스다\n#   캐시를 비웠으니까\n\n# --- 그래서 이 테스트는 clear 를 안 쓴다 ---",
+   "note": "**테스트에서 SQL 이 다섯 개**뿐이다. **시퀀스만** 나갔다. **`select` 도 `insert` 도 없다** — 전부 1차 캐시이고 롤백된다.\n\n**`flush` 를 넣으면 여섯 개가 한꺼번에** 나간다. **쓰기 지연이 풀린다.**\n\n**재고 초과 테스트에서 `marking ... rollback-only`** 가 붙는다. **「DB 2편」 11.7절**인데, **테스트가 어차피 롤백이라 예외가 안 난다.**\n\n**`em.clear()` 를 넣으면 지연 로딩이 넷** 일어나고 **`item` 검증이 깨진다.** **그래서 이 테스트는 안 쓴다.**\n\n**다음 절에서 동적 쿼리를 만든다.**"
+  }
+ ],
+ "recap": [
+  "**세 경로**를 테스트한다 — 주문·재고 초과·취소.",
+  "**주문 테스트가 재고를 검증**한다 — 부수 효과를 지킨다.",
+  "**1차 캐시라 테스트의 인스턴스가 서비스의 것과 같다.**",
+  "**테스트에서 SQL 이 다섯 개**뿐이다 — 시퀀스만.",
+  "**`flush` 를 넣으면 여섯 개가 한꺼번에** 나간다.",
+  "**트랜잭션 경계를 검증 못 한다** — 서비스가 참여한다.",
+  "**커밋 시점 문제와 쿼리 개수도 못 잡는다.**",
+  "**`marking ... rollback-only` 가 붙는데** 테스트라 예외가 안 난다.",
+  "**`em.clear()` 를 넣으면 `item` 검증이 깨진다.**"
+ ],
+ "drills": [
+  {
+   "task": "세 테스트를 만들고 돌린다.",
+   "done_when": "전부 초록인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "SQL 로그를 센다.",
+   "done_when": "시퀀스만 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`flush` 를 넣고 다시 센다.",
+   "done_when": "여섯 개가 나가는 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "`em.clear()` 를 넣어 본다.",
+   "done_when": "`item` 검증이 깨지는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "주문 테스트가 왜 재고를 보나?",
+   "a": "`createOrderItem` 의 부수 효과가 동작하는지 지키기 위해서다."
+  },
+  {
+   "q": "테스트에서 왜 `select` 가 없나?",
+   "a": "방금 `persist` 한 것들이 전부 1차 캐시에 있기 때문이다."
+  },
+  {
+   "q": "이 테스트가 못 잡는 것 셋은?",
+   "a": "트랜잭션 경계, 커밋 시점 문제, 쿼리 개수다."
+  },
+  {
+   "q": "`marking ... rollback-only` 인데 왜 예외가 안 나나?",
+   "a": "테스트가 어차피 롤백을 요청하므로 요청이 충돌하지 않는다."
+  },
+  {
+   "q": "`em.clear()` 를 왜 안 쓰나?",
+   "a": "`item` 이 다른 인스턴스가 되어 재고 검증이 깨진다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Boot — Testing",
+   "url": "https://docs.spring.io/spring-boot/reference/testing/index.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
