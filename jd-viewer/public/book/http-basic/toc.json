@@ -467,7 +467,7 @@
           "title": "일반 정보",
           "summary": "From · Referer · User-Agent · Server · Date.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -475,7 +475,7 @@
           "title": "특별한 정보",
           "summary": "Host · Location · Allow · Retry-After.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",

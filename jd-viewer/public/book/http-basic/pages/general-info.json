@@ -1,0 +1,139 @@
+{
+ "book": "http-basic",
+ "id": "general-info",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "일반 정보",
+ "summary": "From · Referer · User-Agent · Server · Date.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯 헤더를 안다.",
+  "Referer 누출을 막는다.",
+  "Server 를 감춘다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2~8.4절이 본문 이야기**였다면 **여기는 부가 정보**다."
+  },
+  {
+   "type": "figure",
+   "caption": "다섯 헤더",
+   "ascii": "   five headers that say who, where, and when\n\n   From          an email address, and nobody sends it\n   Referer       the page that linked here, misspelled since 1996\n   User-Agent    the client, and a museum of compatibility lies\n   Server        the server software, and a gift to scanners\n   Date          when the response was generated, in gmt\n\n   only the last one is required, and only in responses",
+   "note": "**필수는 `Date` 하나**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "Referer 는 철자부터 틀렸다",
+   "md": "**`Referrer` 가 맞는 철자**다.\n\n> **1996년 명세에 오타로** 들어갔다.\n> **고치면 다 깨지니 그대로** 뒀다.\n> **정책 헤더는 `Referrer-Policy` 로 제대로** 쓴다 — **둘이 다르다.**\n\n**주소가 통째로 새어 나간다.**\n\n> **경로에 id 가 있으면 그것도** 간다(3.2절).\n> **쿼리에 토큰이 있으면 남의 서버 로그에** 남는다(5.2절).\n> **비밀을 쿼리에 넣지 말라던 이유가 이것**이다.\n\n**정책으로 줄인다.**\n\n| 값 | 무엇을 보낸다 |\n|---|---|\n| `no-referrer` | 아무것도 안 보낸다 |\n| `same-origin` | 같은 출처에만 전체 |\n| `strict-origin-when-cross-origin` | 남에겐 출처만. 요즘 기본값 |\n| `unsafe-url` | 언제나 전체. 쓰지 않는다 |\n\n> **https 에서 http 로는 원래 안** 보낸다.\n> **`strict-` 가 그 뜻**이다.\n\n**`Date` 는 GMT 로 고정**이다.\n\n> **`Thu, 10 Sep 2026 00:57:11 GMT`** 형식이다.\n> **로컬 시간대를 쓰면** 안 된다.\n> **캐시 나이 계산에** 쓴다(9장)."
+  },
+  {
+   "type": "figure",
+   "caption": "Referer 가 나르는 것",
+   "ascii": "   what a referer can carry across origins\n\n   the path        /orders/9812/invoice, so an id leaks\n   the query       ?token=abc, so a credential leaks\n   the origin      which tells the other site who your users are\n\n   a policy header decides how much of that crosses the boundary\n   and modern browsers default to origin only, for cross site links",
+   "note": "**요즘 기본값은 남에게 출처만**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "User-Agent 는 거짓말의 역사다",
+   "md": "**호환성 때문에 계속 붙여** 왔다.\n\n> **모든 브라우저가 `Mozilla/5.0` 으로** 시작한다.\n> **크롬이 `Safari` 와 `KHTML` 을 같이** 적는다.\n> **옛 사이트의 분기문을 통과하려던** 흔적이다.\n\n**그래서 파싱이** 어렵다.\n\n> **정규식으로 갈라 봐야 계속** 틀린다.\n> **기능 탐지가 더** 낫다.\n> **8.3절에서 `Vary: User-Agent` 가 캐시를 죽인다고** 했다.\n\n**클라이언트 힌트가 대안**이다.\n\n> **`Sec-CH-UA` 같은 짧은 헤더로** 쪼갰다.\n> **서버가 물어봐야 자세한 걸** 준다.\n> **크롬이 `User-Agent` 를 점점 고정값으로** 바꾸고 있다.\n\n**`Server` 는 안 보내는 게** 낫다.\n\n> **`nginx/1.27.2` 는 스캐너에게 주는 선물**이다.\n> **취약점 목록과 대조하면** 된다.\n> **`server_tokens off` 로 버전만이라도** 감춘다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "와이어에 실제로 오간 것",
+   "sql": "# --- 브라우저가 실제로 보내는 것 ---\n\n$ python3 headerdump.py > /tmp/hd.log 2>&1 & sleep 1\n$ open -a \"Google Chrome\" http://localhost:9065/x 2>/dev/null; sleep 3\n$ grep -iE '^(User-Agent|Referer|From|Sec-CH-UA)' /tmp/hd.log | head -4\n\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)\n  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36\nSec-CH-UA: \"Chromium\";v=\"140\", \"Not_A Brand\";v=\"24\"\nSec-CH-UA-Mobile: ?0\nSec-CH-UA-Platform: \"macOS\"\n\n#   Mozilla 도 AppleWebKit 도 KHTML 도 Safari 도 아니다\n\n#   전부 호환성 거짓말이다\n\n#   Sec-CH-UA 가 그걸 쪼갠 것이다\n\n$ grep -ci '^From' /tmp/hd.log\n\n0\n\n#   From 은 아무도 안 보낸다\n\n# --- Referer 가 무엇을 나르나 ---\n\n$ docker exec lab sh -c 'cat > /usr/share/nginx/html/link.html' <<'EOF'\n<!DOCTYPE html>\n<html><body>\n<a href=\"http://localhost:9065/target\">같은 출처</a>\n</body></html>\nEOF\n\n$ curl -s -o /dev/null -v \\\n    -H 'Referer: http://localhost:8080/orders/9812/invoice?token=SECRET' \\\n    http://localhost:9065/target 2>&1 | grep '^> Referer'\n\n> Referer: http://localhost:8080/orders/9812/invoice?token=SECRET\n\n$ grep -i '^Referer' /tmp/hd.log | tail -1\n\nReferer: http://localhost:8080/orders/9812/invoice?token=SECRET\n\n#   경로의 id 도 쿼리의 토큰도 갔다\n\n#   남의 서버 로그에 남는다\n\n#   5.2절에서 비밀을 쿼리에 넣지 말라던 이유다\n\n# --- 정책으로 줄인다 ---\n\n$ cat refpol.py\n\nimport http.server\nPOL = {\"/none\": \"no-referrer\",\n       \"/same\": \"same-origin\",\n       \"/strict\": \"strict-origin-when-cross-origin\",\n       \"/all\": \"unsafe-url\"}\nclass H(http.server.BaseHTTPRequestHandler):\n    protocol_version = \"HTTP/1.1\"\n    def do_GET(self):\n        p = POL.get(self.path, \"strict-origin-when-cross-origin\")\n        b = (f'<html><head><meta name=\"referrer\" content=\"{p}\">'\n             f'</head><body><a href=\"http://localhost:9065/t\">'\n             f'{p}</a></body></html>').encode()\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"text/html; charset=utf-8\")\n        self.send_header(\"Referrer-Policy\", p)\n        self.send_header(\"Content-Length\", str(len(b)))\n        self.end_headers(); self.wfile.write(b)\nhttp.server.HTTPServer((\"\", 9027), H).serve_forever()\n\n$ python3 refpol.py & sleep 1\n$ for p in none same strict all; do\n    printf '%-8s' $p\n    curl -s -D - -o /dev/null \"http://localhost:9027/$p\" \\\n      | grep -i '^referrer-policy' | tr -d '\\r'\n  done\n\nnone    Referrer-Policy: no-referrer\nsame    Referrer-Policy: same-origin\nstrict  Referrer-Policy: strict-origin-when-cross-origin\nall     Referrer-Policy: unsafe-url\n\n#   헤더 이름은 r 이 둘이다\n\n#   요청 헤더는 하나다\n\n#   1996년 오타가 아직 살아 있다\n\n$ python3 - <<'EOF'\ncases = [\n  (\"no-referrer\", \"아무것도\"),\n  (\"same-origin\", \"같은 출처면 전체, 남이면 아무것도\"),\n  (\"strict-origin-when-cross-origin\",\n   \"같은 출처면 전체, 남이면 출처만, https->http 면 아무것도\"),\n  (\"unsafe-url\", \"언제나 전체\"),\n]\nfor k, v in cases:\n    print(f\"{k:<34} {v}\")\nEOF\n\nno-referrer                        아무것도\nsame-origin                        같은 출처면 전체, 남이면 아무것도\nstrict-origin-when-cross-origin    같은 출처면 전체, 남이면 출처만, https->http 면 아무것도\nunsafe-url                         언제나 전체\n\n#   셋째가 요즘 기본값이다\n\n$ kill %1 2>/dev/null\n\n# --- Date 는 GMT 다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json | grep -i '^date'\n\nDate: Thu, 10 Sep 2026 00:58:02 GMT\n\n$ date -u '+%a, %d %b %Y %H:%M:%S GMT'\n\nThu, 10 Sep 2026 00:58:03 GMT\n\n#   형식이 고정이다\n\n#   로컬 시간대를 쓰면 안 된다\n\n$ python3 - <<'EOF'\nfrom email.utils import parsedate_to_datetime, format_datetime\nimport datetime\nd = parsedate_to_datetime(\"Thu, 10 Sep 2026 00:58:02 GMT\")\nprint(\"파싱\", d)\nprint(\"다시\", format_datetime(d, usegmt=True))\nEOF\n\n파싱 2026-09-10 00:58:02+00:00\n다시 Thu, 10 Sep 2026 00:58:02 GMT\n\n#   라이브러리를 쓴다\n\n#   9장의 캐시 나이 계산에 쓰인다\n\n# --- Server 를 감춘다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json | grep -i '^server'\n\nServer: nginx/1.27.2\n\n$ docker exec lab sh -c \\\n    'printf \"server_tokens off;\\n\" > /etc/nginx/conf.d/tokens.conf \\\n     && nginx -s reload' 2>/dev/null; sleep 1\n\n$ curl -s -D - -o /dev/null http://localhost:8080/api.json | grep -i '^server'\n\nServer: nginx\n\n#   버전이 사라졌다\n\n#   스캐너에게 주는 정보가 줄었다\n\n$ curl -s -D - -o /dev/null https://www.google.com/ 2>/dev/null \\\n  | grep -i '^server'\n\nserver: gws\n\n#   무슨 소프트웨어인지 안 알려 준다\n\n# --- 다른 데서도 새어 나간다 ---\n\n$ curl -s -D - -o /dev/null http://localhost:9065/x \\\n  | grep -iE '^(server|x-powered)'\n\nServer: BaseHTTP/0.6 Python/3.12.4\n\n#   파이썬 버전까지 알려 준다\n\n#   프레임워크 기본값이 대개 이렇다\n\n#   X-Powered-By 도 같은 문제다\n\n$ python3 - <<'EOF'\nimport http.server\nclass H(http.server.BaseHTTPRequestHandler):\n    def version_string(self):\n        return \"srv\"\nprint(\"version_string 을 덮어쓰면 된다\")\nEOF\n\nversion_string 을 덮어쓰면 된다\n\n# --- User-Agent 파싱은 계속 틀린다 ---\n\n$ python3 - <<'EOF'\nimport re\nua = (\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \"\n      \"AppleWebKit/537.36 (KHTML, like Gecko) \"\n      \"Chrome/140.0.0.0 Safari/537.36\")\nprint(\"Safari 인가?  \", \"Safari\" in ua)\nprint(\"Chrome 인가?  \", \"Chrome\" in ua)\nprint(\"실제로는     \", re.search(r\"Chrome/(\\d+)\", ua).group(0))\nprint()\nprint(\"Safari 를 먼저 보면 크롬을 사파리로 분류한다\")\nEOF\n\nSafari 인가?   True\nChrome 인가?   True\n실제로는      Chrome/140\n\nSafari 를 먼저 보면 크롬을 사파리로 분류한다\n\n#   순서를 잘못 보면 틀린다\n\n#   기능 탐지가 더 낫다\n\n$ kill %1 2>/dev/null\n\n# --- 다음 절에서 ---\n\n#   특정 상황에만 쓰이는 헤더들",
+   "note": "**크롬이 `Mozilla`·`AppleWebKit`·`KHTML`·`Safari` 를 다 적는데 넷 다 사실이** 아니다.\n\n**`Referer` 에 경로의 id 와 쿼리의 `token=SECRET` 이 통째로** 실린다.\n\n**요청 헤더는 `Referer`, 정책 헤더는 `Referrer-Policy` 로 r 개수가** 다르다.\n\n**`server_tokens off` 로 `nginx/1.27.2` 가 `nginx` 가** 된다.\n\n**`Safari` 를 먼저 보면 크롬을 사파리로** 분류한다."
+  }
+ ],
+ "recap": [
+  "**필수는 `Date`** 하나다.",
+  "**`Referer` 는 철자가** 틀렸다.",
+  "**경로와 쿼리가 통째로** 나간다.",
+  "**`Referrer-Policy` 로** 줄인다.",
+  "**요즘 기본은 남에겐 출처만**이다.",
+  "**`Date` 는 GMT 고정 형식**이다.",
+  "**`User-Agent` 는 호환성 거짓말**이다.",
+  "**파싱보다 기능 탐지가** 낫다.",
+  "**`Server` 버전은 감추는 게** 낫다."
+ ],
+ "drills": [
+  {
+   "task": "브라우저의 UA 를 본다.",
+   "done_when": "네 가지 거짓말을 찾았다.",
+   "minutes": 10
+  },
+  {
+   "task": "토큰이 든 주소에서 링크를 탄다.",
+   "done_when": "`Referer` 에 실리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "정책 헤더를 바꿔 본다.",
+   "done_when": "네 값의 차이를 정리했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`server_tokens` 를 끈다.",
+   "done_when": "버전이 사라지는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`Referer` 가 나르는 것은?",
+   "a": "출처·경로·쿼리를 포함한 이전 페이지 주소다."
+  },
+  {
+   "q": "요즘 브라우저의 기본 참조 정책은?",
+   "a": "`strict-origin-when-cross-origin` 이다."
+  },
+  {
+   "q": "`Date` 의 형식은?",
+   "a": "GMT 기준의 고정 형식이다."
+  },
+  {
+   "q": "`User-Agent` 파싱이 어려운 이유는?",
+   "a": "호환성 때문에 사실이 아닌 토큰이 잔뜩 들어 있어서다."
+  },
+  {
+   "q": "`Server` 헤더를 줄이는 이유는?",
+   "a": "소프트웨어와 버전이 공격자에게 단서가 되기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Referrer-Policy",
+   "def": "`Referer` 를 얼마나 보낼지 정하는 응답 헤더."
+  },
+  {
+   "term": "클라이언트 힌트",
+   "def": "`User-Agent` 를 쪼개 필요한 것만 주고받는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Referrer Policy",
+   "url": "https://w3c.github.io/webappsec-referrer-policy/",
+   "publisher": "W3C"
+  },
+  {
+   "title": "User-Agent Client Hints",
+   "url": "https://wicg.github.io/ua-client-hints/",
+   "publisher": "WICG"
+  },
+  {
+   "title": "MDN — HTTP",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+   "publisher": "Mozilla"
+  }
+ ]
+}
