@@ -341,7 +341,7 @@
           "title": "클러스터 DNS",
           "summary": "서비스 이름이 호스트 이름이 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -349,7 +349,7 @@
           "title": "인그레스",
           "summary": "주소로 나누는 하나의 입구.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

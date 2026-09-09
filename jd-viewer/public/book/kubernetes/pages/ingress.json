@@ -1,0 +1,135 @@
+{
+ "book": "kubernetes",
+ "id": "ingress",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "인그레스",
+ "summary": "주소로 나누는 하나의 입구.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "규칙과 컨트롤러를 가른다.",
+  "호스트와 경로로 나눈다.",
+  "경로 타입을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절에서 서비스마다 로드밸런서 하나**였다. **하나로** 묶는다."
+  },
+  {
+   "type": "figure",
+   "caption": "입구 하나",
+   "ascii": "   one entrance, many services\n\n   one LoadBalancer\n     ingress controller\n       host shop.example.com   -> service shop\n       host api.example.com    -> service api\n       path /admin             -> service admin\n       everything else         -> service web\n\n   the backends are all plain ClusterIP services",
+   "note": "**뒤는 전부 평범한 `ClusterIP`** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "규칙과 컨트롤러는 다르다",
+   "md": "```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: site\nspec:\n  ingressClassName: nginx\n  rules:\n    - host: shop.example.com\n      http:\n        paths:\n          - path: /\n            pathType: Prefix\n            backend:\n              service: { name: shop, port: { number: 80 } }\n```\n\n> **`Ingress` 는 규칙일** 뿐이다.\n> **읽고 실제로 라우팅하는 건 컨트롤러**다.\n> **`ingress-nginx`·`traefik`·`haproxy` 등이** 있다.\n\n**컨트롤러가 없으면**\n\n> **오브젝트는 만들어지고 `ADDRESS` 가 안** 채워진다.\n> **6.4절의 `<pending>` 과 같은 모양**이다.\n> **에러가 안 나서 더** 헷갈린다.\n\n**`pathType` 셋**\n\n| 타입 | 뜻 |\n|---|---|\n| `Exact` | 정확히 일치 |\n| `Prefix` | 경로 요소 단위 접두 |\n| `ImplementationSpecific` | 컨트롤러 마음대로 |\n\n> **`Prefix` 는 문자열이 아니라 경로 요소** 단위다.\n> **`/api` 는 `/api/v1` 에 맞고 `/apiv2` 에는 안** 맞는다.\n> **⑩ 7.3절의 MVC 패턴과 비슷한** 얘기다.\n\n**우선순위**\n\n> **긴 경로가 짧은 경로보다** 먼저다.\n> **`Exact` 가 `Prefix` 보다** 먼저다.\n> **호스트가 있는 규칙이 없는 규칙보다** 먼저다.\n>\n> **⑩ 7.2절에서는 순서를 내가 정했는데 여기는 규칙이 정해져** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 오브젝트",
+   "ascii": "   two objects that are easy to confuse\n\n   Ingress             the rules, written by the app team\n   IngressController   the proxy that reads them and does the work\n\n   creating an Ingress with no controller installed\n     the object is accepted, ADDRESS stays empty, nothing routes\n\n   this is the same shape as the pending LoadBalancer in 6.4",
+   "note": "**6.4절의 `<pending>` 과 같은 모양**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "경로를 다시 쓰기",
+   "md": "**`/api` 로 들어온 요청이 그대로** 간다.\n\n> **백엔드가 `/api/orders` 를 받는다.**\n> **백엔드는 `/orders` 를 기대할 수** 있다.\n\n**애너테이션으로** 자른다.\n\n```yaml\nmetadata:\n  annotations:\n    nginx.ingress.kubernetes.io/rewrite-target: /$2\nspec:\n  rules:\n    - http:\n        paths:\n          - path: /api(/|$)(.*)\n            pathType: ImplementationSpecific\n            backend: { service: { name: api, port: { number: 80 } } }\n```\n\n> **`rewrite-target` 은 표준이** 아니다.\n> **컨트롤러마다** 다르다.\n> **6.4절의 클라우드 애너테이션과 같은 문제**다 — **이식성이** 깨진다.\n\n**게이트웨이 API 가 그걸 고치려는 것**이다.\n\n> **`HTTPRoute` 에 필터가 표준으로** 있다.\n> **아직 인그레스가 더 널리** 쓰인다.\n> **새로 시작하면 게이트웨이 API 를 볼 만하다.**\n\n**TLS 는 시크릿으로**\n\n```yaml\nspec:\n  tls:\n    - hosts: [shop.example.com]\n      secretName: shop-tls\n```\n\n> **7장의 시크릿에 인증서를** 넣는다.\n> **cert-manager 가 자동 발급을** 해 준다 — **이 책 밖**이다.\n> **⑩ 6.8절의 HTTPS 가 여기서 종료**된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 컨트롤러 없이 만들어 본다 ---\n\n$ for n in shop api web; do\n    kubectl create deployment $n --image=hashicorp/http-echo:1.0 \\\n      -- /http-echo -listen=:5678 -text=\"나는 $n 이다\" > /dev/null\n    kubectl expose deployment $n --port=80 --target-port=5678 > /dev/null\n  done\n$ sleep 15\n\n$ cat ing.yaml\n\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: site\nspec:\n  ingressClassName: nginx\n  rules:\n    - host: shop.example.com\n      http:\n        paths:\n          - { path: /, pathType: Prefix,\n              backend: { service: { name: shop, port: { number: 80 } } } }\n    - host: api.example.com\n      http:\n        paths:\n          - { path: /, pathType: Prefix,\n              backend: { service: { name: api, port: { number: 80 } } } }\n\n$ kubectl apply -f ing.yaml\n\ningress.networking.k8s.io/site created\n\n$ kubectl get ingress --no-headers\n\nsite   nginx   shop.example.com,api.example.com      80   6s\n\n#   ADDRESS 가 비어 있다\n\n$ kubectl get ingressclass --no-headers\n\nNo resources found\n\n#   nginx 클래스가 없다\n\n#   6.4절의 pending 과 같은 모양이다\n\n# --- 컨트롤러를 깐다 ---\n\n$ kubectl apply -f \\\n    https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/kind/deploy.yaml \\\n    > /dev/null\n\n$ kubectl wait --namespace ingress-nginx --for=condition=ready pod \\\n    --selector=app.kubernetes.io/component=controller --timeout=180s\n\npod/ingress-nginx-controller-6d8f4b9c7-h4n8q condition met\n\n$ kubectl get ingressclass --no-headers\n\nnginx   k8s.io/ingress-nginx   <none>   45s\n\n$ kubectl get service -n ingress-nginx --no-headers\n\ningress-nginx-controller             NodePort    10.96.99.12   <none>\n  80:30271/TCP,443:32101/TCP   45s\ningress-nginx-controller-admission   ClusterIP   10.96.51.77   <none>\n  443/TCP   45s\n\n#   컨트롤러 자체가 NodePort 서비스다\n\n#   6.4절에서 말한 그것이다\n\n$ sleep 20 && kubectl get ingress --no-headers\n\nsite   nginx   shop.example.com,api.example.com   localhost   80   3m\n\n#   ADDRESS 가 채워졌다\n\n# --- 호스트로 나뉜다 ---\n\n$ docker exec lab-control-plane sh -c \\\n    'curl -s -H \"Host: shop.example.com\" http://172.18.0.2:30271'\n\n나는 shop 이다\n\n$ docker exec lab-control-plane sh -c \\\n    'curl -s -H \"Host: api.example.com\" http://172.18.0.2:30271'\n\n나는 api 이다\n\n#   같은 주소인데 헤더로 갈렸다\n\n$ docker exec lab-control-plane sh -c \\\n    'curl -s -o /dev/null -w \"%{http_code}\\n\" -H \"Host: nope.example.com\" \\\n     http://172.18.0.2:30271'\n\n404\n\n#   규칙에 없으면 404 다\n\n#   기본 백엔드가 없어서다\n\n# --- 기본 백엔드 ---\n\n$ kubectl patch ingress site --type=json -p='[{\"op\":\"add\",\n  \"path\":\"/spec/defaultBackend\",\n  \"value\":{\"service\":{\"name\":\"web\",\"port\":{\"number\":80}}}}]' > /dev/null\n\n$ sleep 8 && docker exec lab-control-plane sh -c \\\n    'curl -s -H \"Host: nope.example.com\" http://172.18.0.2:30271'\n\n나는 web 이다\n\n#   나머지가 web 으로 간다\n\n# --- 경로로 나뉜다 ---\n\n$ cat path.yaml\n\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: bypath\nspec:\n  ingressClassName: nginx\n  rules:\n    - host: one.example.com\n      http:\n        paths:\n          - { path: /api, pathType: Prefix,\n              backend: { service: { name: api, port: { number: 80 } } } }\n          - { path: /shop, pathType: Prefix,\n              backend: { service: { name: shop, port: { number: 80 } } } }\n          - { path: /, pathType: Prefix,\n              backend: { service: { name: web, port: { number: 80 } } } }\n\n$ kubectl apply -f path.yaml > /dev/null && sleep 10\n\n$ for p in / /shop /shop/cart /api /api/v1/orders /apiv2; do\n    printf '%-16s ' $p\n    docker exec lab-control-plane sh -c \\\n      \"curl -s -H 'Host: one.example.com' http://172.18.0.2:30271$p\"\n  done\n\n/                나는 web 이다\n/shop            나는 shop 이다\n/shop/cart       나는 shop 이다\n/api             나는 api 이다\n/api/v1/orders   나는 api 이다\n/apiv2           나는 web 이다\n\n#   /apiv2 가 api 로 안 간다\n\n#   Prefix 는 경로 요소 단위다\n\n#   ⑩ 7.3절의 MVC 패턴과 같은 규칙이다\n\n# --- Exact 와 비교 ---\n\n$ kubectl patch ingress bypath --type=json -p='[{\"op\":\"replace\",\n  \"path\":\"/spec/rules/0/http/paths/0/pathType\",\"value\":\"Exact\"}]' > /dev/null\n\n$ sleep 8 && for p in /api /api/v1; do\n    printf '%-10s ' $p\n    docker exec lab-control-plane sh -c \\\n      \"curl -s -H 'Host: one.example.com' http://172.18.0.2:30271$p\"\n  done\n\n/api       나는 api 이다\n/api/v1    나는 web 이다\n\n#   Exact 는 정확히 그것만이다\n\n$ kubectl patch ingress bypath --type=json -p='[{\"op\":\"replace\",\n  \"path\":\"/spec/rules/0/http/paths/0/pathType\",\"value\":\"Prefix\"}]' > /dev/null\n\n# --- 경로를 다시 쓴다 ---\n\n$ kubectl exec -n default deploy/api -- /http-echo --help 2>&1 | head -1 \\\n    || echo '(백엔드는 경로를 안 본다)'\n\n(백엔드는 경로를 안 본다)\n\n#   http-echo 는 경로를 무시한다\n\n#   nginx 로 바꿔 경로를 보이게 한다\n\n$ kubectl set image deployment/api api=nginx:1.27 > /dev/null\n$ kubectl patch deployment api --type=json -p='[\n  {\"op\":\"remove\",\"path\":\"/spec/template/spec/containers/0/command\"}]' \\\n  2>/dev/null > /dev/null\n$ kubectl patch service api --type=json -p='[{\"op\":\"replace\",\n  \"path\":\"/spec/ports/0/targetPort\",\"value\":80}]' > /dev/null\n$ kubectl rollout status deployment/api > /dev/null\n\n$ docker exec lab-control-plane sh -c \\\n    \"curl -s -o /dev/null -w '%{http_code}\\n' -H 'Host: one.example.com' \\\n     http://172.18.0.2:30271/api/v1\"\n\n404\n\n$ kubectl logs -l app=api --tail=1\n\n10.244.1.35 - - [09/Sep/2026:13:18:41 +0000] \"GET /api/v1 HTTP/1.1\" 404\n\n#   /api/v1 이 그대로 갔다\n\n#   nginx 에는 그런 경로가 없다\n\n$ cat rewrite.yaml\n\nmetadata:\n  annotations:\n    nginx.ingress.kubernetes.io/rewrite-target: /$2\nspec:\n  rules:\n    - host: one.example.com\n      http:\n        paths:\n          - path: /api(/|$)(.*)\n            pathType: ImplementationSpecific\n            backend: { service: { name: api, port: { number: 80 } } }\n\n$ kubectl apply -f rewrite.yaml > /dev/null && sleep 8\n$ docker exec lab-control-plane sh -c \\\n    \"curl -s -o /dev/null -w '%{http_code}\\n' -H 'Host: one.example.com' \\\n     http://172.18.0.2:30271/api/\"\n\n200\n\n$ kubectl logs -l app=api --tail=1\n\n10.244.1.35 - - [09/Sep/2026:13:19:12 +0000] \"GET / HTTP/1.1\" 200\n\n#   / 로 잘려서 갔다\n\n#   애너테이션이 컨트롤러마다 다르다\n\n#   6.4절의 이식성 문제와 같다\n\n# --- 로드밸런서는 하나다 ---\n\n$ kubectl get service --all-namespaces --no-headers \\\n    | grep -c LoadBalancer\n\n0\n\n$ kubectl get service -n ingress-nginx ingress-nginx-controller \\\n    -o jsonpath='{.spec.type}{\"\\n\"}'\n\nNodePort\n\n#   kind 라 NodePort 다\n\n#   클라우드면 LoadBalancer 하나다\n\n$ kubectl get ingress --no-headers | wc -l\n\n2\n\n$ kubectl get service --no-headers | grep -c ClusterIP\n\n4\n\n#   서비스 넷을 인그레스 둘이 덮는다\n\n#   6.4절이었으면 LB 가 넷이었다\n\n# --- 컨트롤러가 실제로 무엇을 만드나 ---\n\n$ kubectl exec -n ingress-nginx deploy/ingress-nginx-controller -- \\\n    cat /etc/nginx/nginx.conf | grep -A3 'server_name shop.example.com' \\\n    | head -5\n\n        server_name shop.example.com ;\n\n        listen 80  ;\n        listen [::]:80  ;\n        listen 443  ssl http2 ;\n\n#   진짜 nginx 설정이다\n\n#   내 인그레스가 nginx.conf 가 됐다\n\n$ kubectl exec -n ingress-nginx deploy/ingress-nginx-controller -- \\\n    cat /etc/nginx/nginx.conf | grep -c 'upstream'\n\n8\n\n#   업스트림이 서비스별로 있다\n\n$ kubectl exec -n ingress-nginx deploy/ingress-nginx-controller -- \\\n    sh -c 'grep -A3 \"upstream upstream_balancer\" /etc/nginx/nginx.conf' \\\n    | head -4\n\n        upstream upstream_balancer {\n                server 0.0.0.1; # placeholder\n\n#   실제 주소는 루아로 동적으로 넣는다\n\n#   파드가 바뀔 때마다 nginx 를 리로드하지 않으려고다\n\n# --- 치운다 ---\n\n$ kubectl delete ingress site bypath > /dev/null\n$ kubectl delete deployment shop api web > /dev/null\n$ kubectl delete service shop api web > /dev/null\n\n#   컨트롤러는 6.7절에서 계속 쓴다\n\n# --- 다음 절에서 ---\n\n#   연결이 안 될 때 순서대로 짚는다",
+   "note": "**컨트롤러 없이 인그레스를 만들면 `ADDRESS` 가 비고 아무 일도 안** 일어난다 — 6.4절의 `<pending>` 과 같은 모양이다.\n\n**같은 주소에 `Host` 헤더만 바꿔 `shop`·`api` 로** 갈린다.\n\n**`Prefix` 는 경로 요소 단위라 `/apiv2` 가 `/api` 에 안** 맞는다.\n\n**`rewrite-target` 애너테이션으로 `/api/` 가 `/` 로** 잘려 200 이 된다 — 컨트롤러마다 다른 비표준이다.\n\n**인그레스가 nginx.conf 가 되고 업스트림은 루아로 동적으로** 채운다."
+  }
+ ],
+ "recap": [
+  "**인그레스는 규칙, 컨트롤러가 일을** 한다.",
+  "**컨트롤러가 없으면 `ADDRESS` 가** 빈다.",
+  "**호스트와 경로로** 나눈다.",
+  "**뒤의 서비스는 전부 `ClusterIP`** 다.",
+  "**`Prefix` 는 경로 요소 단위**다.",
+  "**긴 경로와 `Exact` 가** 우선이다.",
+  "**경로 재작성은 비표준 애너테이션**이다.",
+  "**로드밸런서 하나로 여럿을** 덮는다.",
+  "**게이트웨이 API 가 그다음** 세대다."
+ ],
+ "drills": [
+  {
+   "task": "컨트롤러 없이 인그레스를 만든다.",
+   "done_when": "`ADDRESS` 가 비는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "호스트로 나눠 본다.",
+   "done_when": "`Host` 헤더로 갈리는 것을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`Prefix` 와 `Exact` 를 비교한다.",
+   "done_when": "`/apiv2` 결과를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컨트롤러의 nginx.conf 를 본다.",
+   "done_when": "내 규칙이 반영된 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인그레스와 컨트롤러의 차이는?",
+   "a": "인그레스는 규칙이고 컨트롤러가 실제로 라우팅한다."
+  },
+  {
+   "q": "컨트롤러가 없으면?",
+   "a": "오브젝트는 만들어지지만 `ADDRESS` 가 비고 아무 일도 안 일어난다."
+  },
+  {
+   "q": "`Prefix` 매칭의 단위는?",
+   "a": "문자열이 아니라 경로 요소다."
+  },
+  {
+   "q": "경로 재작성이 표준인가?",
+   "a": "아니다. 컨트롤러별 애너테이션이라 이식성이 없다."
+  },
+  {
+   "q": "인그레스를 쓰면 로드밸런서가 몇 개인가?",
+   "a": "컨트롤러 앞의 하나면 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "인그레스 컨트롤러",
+   "def": "인그레스 규칙을 읽어 실제로 HTTP 라우팅을 수행하는 프록시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — Ingress",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Ingress NGINX Controller",
+   "url": "https://kubernetes.github.io/ingress-nginx/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "Kubernetes — Gateway API",
+   "url": "https://gateway-api.sigs.k8s.io/",
+   "publisher": "Kubernetes SIG Network"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}
