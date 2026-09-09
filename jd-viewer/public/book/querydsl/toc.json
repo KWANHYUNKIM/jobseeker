@@ -402,7 +402,7 @@
           "title": "동적 쿼리와 성능 최적화 — Where",
           "summary": "메서드를 재사용한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -410,7 +410,7 @@
           "title": "조건을 조합한다",
           "summary": "BooleanExpression 을 합친다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",

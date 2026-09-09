@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "search-where",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "동적 쿼리와 성능 최적화 — Where",
+ "summary": "메서드를 재사용한다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빌더를 메서드로 바꾼다.",
+  "재사용을 확인한다.",
+  "SQL 이 같은 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.3절의 빌더를 5.8절 방식으로** 바꾼다. **SQL 은 안 바뀐다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 메서드, 두 모양",
+   "ascii": "   the same repository method, two shapes\n\n   builder   a block of ifs, then one where(builder)\n   methods   no ifs at all, and four names inside where\n\n   the second reads like the requirement it came from",
+   "note": "**둘째가 요구사항 문장처럼** 읽힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건에 이름을 붙이면 요구사항이 코드에 남는다",
+   "md": "**`if` 가 안으로** 들어간다.\n\n> **5.8절에서 본 그** 방식이다.\n> **쿼리에는 이름만** 남는다.\n> **6.3절의 열두 줄이** 사라진다.\n\n**이름이 문서**다.\n\n> **`usernameEq`·`ageBetween` 이다.**\n> **주석이 필요** 없다.\n> **빌더는 `if` 를 읽어야** 안다.\n\n**둘 이상이 나눠** 쓴다.\n\n> **목록과 개수 쿼리가 같이** 쓴다.\n> **다른 리포지토리 메서드도** 쓴다.\n> **6.3절에서 어긋났던 자리**다.\n\n**하나만 테스트할 수** 있다.\n\n> **조건 메서드를 따로** 부른다.\n> **빌더는 그게** 안 된다.\n> **6.6절에서 그걸** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇과 나눠 쓸 수 있나",
+   "ascii": "   what the named conditions can be shared with\n\n   the list query and its count query, in the same call\n   another repository method with a different select list\n   a test that wants to check one condition alone\n\n   a builder can do the first, and neither of the other two",
+   "note": "**빌더는 첫 줄만** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조건 메서드 안에 조인이 숨는다",
+   "md": "**`team.name` 은 별칭을** 쓴다.\n\n> **`leftJoin` 이 쿼리에 있어야** 한다.\n> **없으면 별칭을 못** 찾는다.\n> **아래에서 그 오류를** 본다.\n\n**`member.team.name` 이면 묵시적**이다.\n\n> **메서드 안에 조인이** 생긴다.\n> **4.10절·5.8절의 그** 함정이다.\n> **내부 조인이라 행이** 준다.\n\n**개수 쿼리에도 조인이 따라온**다.\n\n> **조건이 팀을 보니 어쩔 수** 없다.\n> **⑭ 5.11절의 `countQuery` 와 같은 문제**다.\n> **6.7절에서 다시** 본다.\n\n**정적 메서드로 빼면 더** 낫다.\n\n> **다른 리포지토리에서도** 쓴다.\n> **`MemberExpressions` 같은 클래스에** 모은다.\n> **아래에서 그렇게** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 조건 메서드로 바꾼다\n\npublic List<MemberTeamDto> search(MemberSearchCondition cond) {\n    return queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   teamNameEq(cond.getTeamName()),\n                   ageGoe(cond.getAgeGoe()),\n                   ageLoe(cond.getAgeLoe()))\n            .fetch();\n}\n\nprivate BooleanExpression usernameEq(String username) {\n    return hasText(username) ? member.username.eq(username) : null;\n}\n\nprivate BooleanExpression teamNameEq(String teamName) {\n    return hasText(teamName) ? team.name.eq(teamName) : null;\n}\n\nprivate BooleanExpression ageGoe(Integer age) {\n    return age == null ? null : member.age.goe(age);\n}\n\nprivate BooleanExpression ageLoe(Integer age) {\n    return age == null ? null : member.age.loe(age);\n}\n\n\n-- 줄 수를 센다\n\n$ awk '/searchByBuilder/,/^    }/' MemberJpaRepository.java | wc -l\n      23\n$ awk '/List<MemberTeamDto> search\\(/,/^    }/' MemberJpaRepository.java | wc -l\n      12\n\n$ awk '/List<MemberTeamDto> search\\(/,/^    }/' MemberJpaRepository.java \\\n    | grep -c 'if'\n0\n\n--   23 줄이 12 줄이다\n--   조건 메서드 넷을 더해도 32 줄이다\n--   대신 그 넷은 재사용된다\n\n\n-- 조건 없이\n\n@Test\nvoid 조건_없음() {\n    em.clear();\n    System.out.println(\"건수: \" +\n            memberJpaRepository.search(new MemberSearchCondition()).size());\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 10\n\n--   6.3절과 같다\n\n\n-- 넷을 다 준다\n\n@Test\nvoid 넷() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setUsername(\"m6\");\n    cond.setTeamName(\"teamB\");\n    cond.setAgeGoe(20);\n    cond.setAgeLoe(30);\n\n    memberJpaRepository.search(cond)\n            .forEach(d -> System.out.println(\n                    d.getUsername() + \" \" + d.getAge() + \" \" + d.getTeamName()));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.username = ?1\n    and team.name = ?2\n    and member1.age >= ?3\n    and member1.age <= ?4 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        and t1_0.name=?\n        and m1_0.age>=?\n        and m1_0.age<=?\nm6 25 teamB\n\n\n-- 6.3 과 SQL 을 비교한다\n\n$ diff builder.jpql where.jpql && echo SAME\nSAME\n$ diff builder.sql where.sql && echo SAME\nSAME\n\n--   완전히 같다\n--   ⑭ 4.2절부터 계속 나오는 결론이다\n\n\n-- 개수 쿼리가 같은 조건을 쓴다\n\npublic Long count(MemberSearchCondition cond) {\n    return queryFactory\n            .select(member.count())\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   teamNameEq(cond.getTeamName()),\n                   ageGoe(cond.getAgeGoe()),\n                   ageLoe(cond.getAgeLoe()))\n            .fetchOne();\n}\n\n@Test\nvoid 목록과_개수() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n\n    System.out.println(\"목록: \" + memberJpaRepository.search(cond).size());\n    System.out.println(\"개수: \" + memberJpaRepository.count(cond));\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0 left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.age>=?\n목록: 6\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.age>=?\n개수: 6\n\n--   6.3절에서 어긋났던 자리다\n--   같은 메서드를 썼다\n\n\n-- 다른 조회에도 쓴다\n\npublic List<String> findUsernames(MemberSearchCondition cond) {\n    return queryFactory\n            .select(member.username)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(usernameEq(cond.getUsername()),\n                   ageGoe(cond.getAgeGoe()))\n            .fetch();\n}\n\n@Test\nvoid 다른_조회() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(30);\n    System.out.println(memberJpaRepository.findUsernames(cond));\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n[m3, m4, m7, m10]\n\n--   select 절만 다르다\n--   조건은 그대로 썼다\n--   빌더로는 이게 어려웠다\n\n\n-- 조인을 빼면\n\npublic List<MemberTeamDto> searchNoJoin(MemberSearchCondition cond) {\n    return queryFactory\n            .select(new QMemberTeamDto(...))\n            .from(member)\n            // leftJoin 이 없다\n            .where(teamNameEq(cond.getTeamName()))\n            .fetch();\n}\n\n@Test\nvoid 조인_없이() {\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n    try {\n        memberJpaRepository.searchNoJoin(cond);\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   Could not interpret path expression 'team.name'\n\n--   별칭을 못 찾았다\n--   조건 메서드는 조인이 있다고 가정한다\n\n\n-- 묵시적으로 쓰면 조인이 숨는다\n\nprivate BooleanExpression teamNameImplicit(String teamName) {\n    return hasText(teamName) ? member.team.name.eq(teamName) : null;\n}\n\n@Test\nvoid 묵시적_조인() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamA\");\n\n    System.out.println(\"건수: \" + queryFactory\n            .select(member.username).from(member)\n            .where(teamNameImplicit(cond.getTeamName()))\n            .fetch().size());\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    team.name = ?1 */\n\nHibernate:\n    select m1_0.username from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    where t1_0.name=?\n건수: 4\n\n--   조인이 메서드 안에서 생겼다\n--   inner 라 팀 없는 회원이 빠진다\n--   명시적으로 두는 게 낫다\n\n\n-- 정적 클래스로 뺀다\n\npublic final class MemberExpressions {\n\n    private MemberExpressions() {}\n\n    public static BooleanExpression usernameEq(String username) {\n        return hasText(username) ? member.username.eq(username) : null;\n    }\n\n    public static BooleanExpression ageGoe(Integer age) {\n        return age == null ? null : member.age.goe(age);\n    }\n\n    public static BooleanExpression ageLoe(Integer age) {\n        return age == null ? null : member.age.loe(age);\n    }\n\n    public static BooleanExpression teamNameEq(String name) {\n        return hasText(name) ? team.name.eq(name) : null;\n    }\n}\n\n// 다른 리포지토리에서\nimport static study.querydsl.repository.MemberExpressions.*;\n\npublic List<Team> findTeamsWithMembers(MemberSearchCondition cond) {\n    return queryFactory\n            .selectFrom(team).distinct()\n            .join(team.members, member)\n            .where(ageGoe(cond.getAgeGoe()))\n            .fetch();\n}\n\n@Test\nvoid 다른_리포지토리() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(35);\n    teamJpaRepository.findTeamsWithMembers(cond)\n            .forEach(t -> System.out.println(t.getName()));\n}\n\n/* select\n    distinct team\nfrom\n    Team team\n  inner join\n    team.members as member1\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select\n        distinct t1_0.team_id, t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\nteamA\nteamB\n\n--   Team 리포지토리가 Member 조건을 썼다\n--   빌더로는 못 하던 것이다\n\n\n-- 조건 하나만 테스트한다\n\n@Test\nvoid 조건_단위() {\n    System.out.println(\"값 있음: \" + MemberExpressions.ageGoe(20));\n    System.out.println(\"값 없음: \" + MemberExpressions.ageGoe(null));\n    System.out.println(\"빈 문자: \" + MemberExpressions.usernameEq(\"\"));\n    System.out.println(\"공백:    \" + MemberExpressions.usernameEq(\"  \"));\n}\n\n값 있음: member1.age >= 20\n값 없음: null\n빈 문자: null\n공백:    null\n\n--   SQL 없이 조건만 확인했다\n--   6.6절에서 이걸 테스트로 쓴다\n\n\n-- 문장 모양을 센다\n\n@Test\nvoid 문장_수() {\n    Set<String> shapes = new LinkedHashSet<>();\n    for (String u : new String[]{null, \"m1\"})\n      for (String t : new String[]{null, \"teamA\"})\n        for (Integer g : new Integer[]{null, 20})\n          for (Integer l : new Integer[]{null, 30}) {\n            em.clear();\n            MemberSearchCondition c = new MemberSearchCondition();\n            c.setUsername(u); c.setTeamName(t);\n            c.setAgeGoe(g); c.setAgeLoe(l);\n            shapes.add(sqlCapture.capture(() ->\n                    memberJpaRepository.search(c)));\n          }\n    System.out.println(\"서로 다른 문장: \" + shapes.size());\n}\n\n서로 다른 문장: 16\n\n--   5.8절과 같다\n--   메서드 넷이 문장 열여섯을 낸다\n\n\n-- 정리\n\n$ printf '%-22s %-8s %-10s %s\\n' \\\n  'Builder' '23줄'  'if 넷'   '재사용 어려움' \\\n  'Where 메서드' '12줄' 'if 0개' '다른 쿼리도 씀'\n\nBuilder                23줄     if 넷      재사용 어려움\nWhere 메서드           12줄     if 0개     다른 쿼리도 씀\n\n--   SQL 은 같다\n--   6.5절에서 조건을 합친다",
+   "note": "**빌더판 23줄이 12줄이 되고 `if` 가 `0` 개** 다.\n\n**두 판의 JPQL·SQL 이 `diff` 결과 둘 다 `SAME`** 이다.\n\n**목록과 개수가 같은 조건 메서드를 써 6.3절에서 어긋났던 자리가** 맞았다.\n\n**조인을 빼면 `Could not interpret path expression 'team.name'` 이고, 묵시적으로 쓰면 `inner join` 이 숨어 10건이 4건이** 된다.\n\n**정적 클래스로 빼니 `Team` 리포지토리가 `Member` 조건을 그대로** 썼다."
+  }
+ ],
+ "recap": [
+  "**`if` 가 안으로** 들어간다.",
+  "**이름이 문서**다.",
+  "**23줄이 12줄이** 된다.",
+  "**SQL 은** 같다.",
+  "**목록과 개수가** 맞는다.",
+  "**다른 조회도** 쓴다.",
+  "**조인이 있어야** 한다.",
+  "**묵시적이면** 숨는다.",
+  "**정적 클래스로** 뺀다."
+ ],
+ "drills": [
+  {
+   "task": "빌더를 조건 메서드로 바꾼다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "개수 쿼리에 같이 쓴다.",
+   "done_when": "값이 맞는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조인을 빼 본다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "정적 클래스로 옮긴다.",
+   "done_when": "다른 리포지토리에서 쓴 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조건 메서드가 빌더보다 나은 점은?",
+   "a": "이름이 뜻을 주고 다른 쿼리에서도 재사용된다."
+  },
+  {
+   "q": "SQL 은 달라지나?",
+   "a": "안 달라진다. 자바 코드만 바뀐다."
+  },
+  {
+   "q": "조건이 별칭을 쓰면 무엇이 필요한가?",
+   "a": "쿼리에 그 조인이 있어야 한다."
+  },
+  {
+   "q": "묵시적 경로를 쓰면?",
+   "a": "메서드 안에 내부 조인이 숨어 결과가 준다."
+  },
+  {
+   "q": "정적 클래스로 빼면?",
+   "a": "다른 리포지토리에서도 같은 조건을 쓸 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건 표현식 클래스",
+   "def": "재사용할 조건 메서드를 모아 둔 정적 유틸 클래스."
+  },
+  {
+   "term": "숨은 조인",
+   "def": "조건 메서드 안의 경로 표기가 만들어 내는 보이지 않는 조인."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

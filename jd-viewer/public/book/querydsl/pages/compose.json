@@ -1,0 +1,129 @@
+{
+ "book": "querydsl",
+ "id": "compose",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "조건을 조합한다",
+ "summary": "BooleanExpression 을 합친다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "합칠 때의 예외를 본다.",
+  "안전하게 합친다.",
+  "이름 붙인 조건을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.8절과 4.4절에서 두 번** 터졌다. **여기서** 고친다."
+  },
+  {
+   "type": "figure",
+   "caption": "둘을 합치면",
+   "ascii": "   what happens when two conditions are combined\n\n   both present   an and, exactly as written\n   the first null a NullPointerException, before any sql\n   the second null the and silently keeps only the first\n\n   the two failures are not symmetric, and that is the trap",
+   "note": "**두 실패가 대칭이 아닌 게** 함정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "조건을 합쳐야 이름이 생긴다",
+   "md": "**`ageBetween` 이 하고 싶다.**\n\n> **`ageGoe` 와 `ageLoe` 를 하나로** 묶는다.\n> **부르는 쪽이 짧아**진다.\n> **요구사항 낱말과** 맞는다.\n\n**그런데 `null` 이** 낀다.\n\n> **`ageGoe(null)` 이 `null` 을** 준다.\n> **`.and(...)` 를 못** 부른다.\n> **5.8절 끝에서 본 그것**이다.\n\n**둘째가 `null` 이면 조용히** 넘어간다.\n\n> **`.and(null)` 은 4.4절에서** 터졌었다.\n> **여기선 앞이 살아 있어 다르**다.\n> **아래에서 둘을** 나눠 본다.\n\n**`allOf` 가 답**이다.\n\n> **`null` 을 알아서** 버린다.\n> **전부 `null` 이면 `null` 을** 준다.\n> **쉼표와 같은 규칙**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "안전하게 합치는 셋",
+   "ascii": "   three ways to make combining safe\n\n   a null guard        check before calling and, verbose but obvious\n   Expressions.allOf   takes the nulls itself, and returns null if all are\n   a builder inside    wrap the two, then hand the builder over\n\n   the middle one keeps the caller flat and the method short",
+   "note": "**가운데가 부르는 쪽을 평평하게** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "합친 조건 안에서 or 를 쓰면 괄호를 확인한다",
+   "md": "**`or` 는 우선순위가** 낮다.\n\n> **4.3절에서 본** 것이다.\n> **합친 조건이 다른 조건과 `and` 로** 이어진다.\n> **괄호가 있어야 뜻이** 맞는다.\n\n**`anyOf` 도** 있다.\n\n> **`or` 로** 잇는다.\n> **`null` 을 버리는 건 같다.**\n> **아래에서 확인**한다.\n\n**조합을 너무 깊게 하지** 않는다.\n\n> **이름이 안 남으면 읽기가** 나빠진다.\n> **두 겹까지가 실용적**이다.\n> **더 깊으면 메서드를 하나 더** 만든다.\n\n**`Expressions.TRUE` 는 쓰지** 않는다.\n\n> **`1=1` 이 붙는**다.\n> **⑭ 6.1절에서 없애려던 그것**이다.\n> **`null` 을 쓰면 절이 아예 안** 생긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 합쳐 본다\n\nprivate BooleanExpression ageBetweenNaive(Integer min, Integer max) {\n    return ageGoe(min).and(ageLoe(max));\n}\n\n@Test\nvoid 둘_다_있으면() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(ageBetweenNaive(20, 30))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1\n    and member1.age <= ?2 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.age>=?\n        and m1_0.age<=?\n\n--   여기까지는 좋다\n\n\n-- 앞이 null 이면\n\n@Test\nvoid 앞이_null() {\n    try {\n        queryFactory.selectFrom(member)\n                .where(ageBetweenNaive(null, 30))\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n예외: NullPointerException\n\n--   SQL 이 안 나갔다\n--   5.8절 끝에서 본 그것이다\n\n\n-- 뒤가 null 이면\n\n@Test\nvoid 뒤가_null() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(ageBetweenNaive(20, null))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.age >= ?1 */\n\nHibernate:\n    select ... from member m1_0 where m1_0.age>=?\n\n--   그냥 된다\n--   .and(null) 이 앞만 남겼다\n--   4.4절에서는 터졌는데 여기선 아니다\n\n\n-- 4.4절과 무엇이 다른가\n\n@Test\nvoid 차이() {\n    BooleanExpression a = member.age.goe(20);\n    System.out.println(\"a.and(null): \" + a.and(null));\n\n    BooleanExpression b = null;\n    try {\n        System.out.println(b.and(a));\n    } catch (Exception e) {\n        System.out.println(\"null.and(a): \" + e.getClass().getSimpleName());\n    }\n}\n\na.and(null): member1.age >= 20\nnull.and(a): NullPointerException\n\n--   4.4절은 where(...) 안의 .and(null) 이었다\n--   거기서도 예외는 아니었다\n--   호출 주체가 null 인 게 문제다\n\n\n-- 널 검사로 고친다\n\nprivate BooleanExpression ageBetweenGuard(Integer min, Integer max) {\n    BooleanExpression goe = ageGoe(min);\n    BooleanExpression loe = ageLoe(max);\n    if (goe == null) return loe;\n    if (loe == null) return goe;\n    return goe.and(loe);\n}\n\n@Test\nvoid 널_검사() {\n    em.clear();\n    System.out.println(\"둘 다:   \" + ageBetweenGuard(20, 30));\n    System.out.println(\"앞 없음: \" + ageBetweenGuard(null, 30));\n    System.out.println(\"뒤 없음: \" + ageBetweenGuard(20, null));\n    System.out.println(\"둘 없음: \" + ageBetweenGuard(null, null));\n}\n\n둘 다:   member1.age >= 20 && member1.age <= 30\n앞 없음: member1.age <= 30\n뒤 없음: member1.age >= 20\n둘 없음: null\n\n--   네 경우가 다 맞다\n--   대신 다섯 줄이다\n\n\n-- allOf 로 줄인다\n\nprivate BooleanExpression ageBetween(Integer min, Integer max) {\n    return Expressions.allOf(ageGoe(min), ageLoe(max));\n}\n\n@Test\nvoid allOf() {\n    System.out.println(\"둘 다:   \" + ageBetween(20, 30));\n    System.out.println(\"앞 없음: \" + ageBetween(null, 30));\n    System.out.println(\"뒤 없음: \" + ageBetween(20, null));\n    System.out.println(\"둘 없음: \" + ageBetween(null, null));\n}\n\n둘 다:   member1.age >= 20 && member1.age <= 30\n앞 없음: member1.age <= 30\n뒤 없음: member1.age >= 20\n둘 없음: null\n\n--   한 줄이다\n--   null 을 알아서 버린다\n\n\n-- 실제로 써 본다\n\n@Test\nvoid 써_보기() {\n    em.clear();\n    System.out.println(\"--- 둘 다 ---\");\n    queryFactory.selectFrom(member).where(ageBetween(20, 30)).fetch();\n\n    em.clear();\n    System.out.println(\"--- 앞 없음 ---\");\n    queryFactory.selectFrom(member).where(ageBetween(null, 30)).fetch();\n\n    em.clear();\n    System.out.println(\"--- 둘 없음 ---\");\n    queryFactory.selectFrom(member).where(ageBetween(null, null)).fetch();\n}\n\n--- 둘 다 ---\n/* select member1 from Member member1\n   where member1.age >= ?1 and member1.age <= ?2 */\nHibernate: select ... where m1_0.age>=? and m1_0.age<=?\n--- 앞 없음 ---\n/* select member1 from Member member1\n   where member1.age <= ?1 */\nHibernate: select ... where m1_0.age<=?\n--- 둘 없음 ---\n/* select member1 from Member member1 */\nHibernate: select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n           from member m1_0\n\n--   마지막은 where 가 아예 없다\n\n\n-- 부르는 쪽이 짧아진다\n\n// 6.4절\n.where(usernameEq(cond.getUsername()),\n       teamNameEq(cond.getTeamName()),\n       ageGoe(cond.getAgeGoe()),\n       ageLoe(cond.getAgeLoe()))\n\n// 지금\n.where(usernameEq(cond.getUsername()),\n       teamNameEq(cond.getTeamName()),\n       ageBetween(cond.getAgeGoe(), cond.getAgeLoe()))\n\n@Test\nvoid 합친_뒤() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    cond.setAgeLoe(30);\n    memberJpaRepository.searchV2(cond);\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\n    and member1.age <= ?2 */\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0 left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.age>=? and m1_0.age<=?\n\n--   6.4절과 SQL 이 같다\n--   조건 이름만 줄었다\n\n\n-- anyOf 는 or 로 잇는다\n\nprivate BooleanExpression nameOrTeam(String name) {\n    return Expressions.anyOf(usernameEq(name), teamNameEq(name));\n}\n\n@Test\nvoid anyOf() {\n    em.clear();\n    queryFactory\n            .select(member.username)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(nameOrTeam(\"teamA\"))\n            .fetch()\n            .forEach(System.out::println);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.username = ?1\n    or team.name = ?2 */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.username=?\n        or t1_0.name=?\nm1\nm2\nm3\nm4\n\n--   or 로 이어졌다\n\n\n-- 다른 조건과 섞으면\n\n@Test\nvoid 섞기() {\n    em.clear();\n    queryFactory\n            .select(member.username)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(nameOrTeam(\"teamA\"), ageGoe(30))\n            .fetch()\n            .forEach(System.out::println);\n}\n\n/* select\n    member1.username\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    (\n        member1.username = ?1\n        or team.name = ?2\n    )\n    and member1.age >= ?3 */\n\nHibernate:\n    select m1_0.username from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where (m1_0.username=? or t1_0.name=?)\n      and m1_0.age>=?\nm3\nm4\n\n--   괄호가 생겼다\n--   쉼표가 and 라 안쪽이 묶였다\n--   4.4절에서 본 그대로다\n\n\n-- Expressions.TRUE 를 쓰면\n\nprivate BooleanExpression ageBetweenBad(Integer min, Integer max) {\n    BooleanExpression e = Expressions.TRUE;\n    if (min != null) e = e.and(member.age.goe(min));\n    if (max != null) e = e.and(member.age.loe(max));\n    return e;\n}\n\n@Test\nvoid TRUE() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(ageBetweenBad(null, null))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    ?1 = ?2 */\n\nHibernate:\n    select ... from member m1_0 where ?=?\nTRACE binding parameter (1:BOOLEAN) <- [true]\nTRACE binding parameter (2:BOOLEAN) <- [true]\n\n--   ⑭ 6.1절의 where 1=1 이 돌아왔다\n--   null 을 쓰면 절이 아예 안 생긴다\n\n\n-- 정리\n\n$ printf '%-24s %s\\n' \\\n  'a.and(b)'         '둘 다 있어야 안전' \\\n  'null.and(b)'      'NullPointerException' \\\n  'a.and(null)'      '앞만 남는다' \\\n  'allOf(a, b)'      'null 을 버린다' \\\n  'anyOf(a, b)'      'or 로 잇는다' \\\n  'Expressions.TRUE' 'where 1=1 이 생긴다'\n\na.and(b)                 둘 다 있어야 안전\nnull.and(b)              NullPointerException\na.and(null)              앞만 남는다\nallOf(a, b)              null 을 버린다\nanyOf(a, b)              or 로 잇는다\nExpressions.TRUE         where 1=1 이 생긴다\n\n--   6.6절에서 이걸 테스트로 굳힌다",
+   "note": "**`null.and(b)` 는 `NullPointerException` 인데 `a.and(null)` 은 앞만 남아 두 실패가 대칭이** 아니다.\n\n**널 검사 다섯 줄을 `Expressions.allOf` 한 줄이** 대신한다.\n\n**둘 다 없으면 `null` 이라 `where` 절이 아예 안** 생긴다.\n\n**`anyOf` 를 다른 조건과 쉼표로 이으면 `(username=? or name=?) and age>=?` 로 괄호가** 생긴다.\n\n**`Expressions.TRUE` 를 쓰면 `where ?=?` 에 `[true]` 가 바인딩돼 ⑭ 6.1절의 `where 1=1` 이** 돌아온다."
+  }
+ ],
+ "recap": [
+  "**합쳐야 이름이** 생긴다.",
+  "**앞이 `null` 이면** 터진다.",
+  "**뒤가 `null` 이면** 넘어간다.",
+  "**두 실패가 대칭이** 아니다.",
+  "**널 검사로** 고친다.",
+  "**`allOf` 가 한 줄**이다.",
+  "**전부 `null` 이면 `null`** 이다.",
+  "**`anyOf` 는 `or`** 다.",
+  "**`TRUE` 는 안** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "합친 조건에 `null` 을 준다.",
+   "done_when": "두 방향의 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "널 검사판을 쓴다.",
+   "done_when": "네 경우가 맞는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`allOf` 로 바꾼다.",
+   "done_when": "한 줄로 같은 결과를 얻었다.",
+   "minutes": 15
+  },
+  {
+   "task": "`anyOf` 를 다른 조건과 섞는다.",
+   "done_when": "괄호를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`null.and(b)` 와 `a.and(null)` 의 차이는?",
+   "a": "앞은 예외, 뒤는 앞 조건만 남는다."
+  },
+  {
+   "q": "안전하게 합치는 간단한 방법은?",
+   "a": "`Expressions.allOf` 로 `null` 을 버리게 한다."
+  },
+  {
+   "q": "전부 `null` 이면 결과는?",
+   "a": "`null` 이라 `where` 절이 안 생긴다."
+  },
+  {
+   "q": "`anyOf` 는 무엇으로 잇나?",
+   "a": "`or` 다."
+  },
+  {
+   "q": "`Expressions.TRUE` 를 피하는 이유는?",
+   "a": "`where 1=1` 같은 불필요한 조건이 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "allOf",
+   "def": "`null` 을 버리고 나머지를 `and` 로 잇는 조합 도우미."
+  },
+  {
+   "term": "anyOf",
+   "def": "`null` 을 버리고 나머지를 `or` 로 잇는 조합 도우미."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}
