@@ -346,7 +346,7 @@
           "title": "Auditing",
           "summary": "등록일과 수정일을 안 적는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -354,7 +354,7 @@
           "title": "누가 바꿨나",
           "summary": "등록자와 수정자.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

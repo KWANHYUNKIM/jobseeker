@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "auditing",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "Auditing",
+ "summary": "등록일과 수정일을 안 적는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "콜백을 안다.",
+  "스프링 방식을 안다.",
+  "공통 클래스로 뽑는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**모든 표에 등록일과 수정일이** 있다. **그리고 모든 서비스가 그걸** 적는다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 네 줄이 어디에나 있다",
+   "ascii": "   the same four lines, in every service method\n\n   on create   set created at, set updated at\n   on update   set updated at, and only that one\n\n   forgetting the second line does not fail a test,\n   it just quietly leaves a wrong timestamp in the table",
+   "note": "**빠뜨려도 테스트는 안** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "손으로 적으면 언젠가 빠진다",
+   "md": "**서비스마다** 적는다.\n\n> **`setCreatedAt(now())` 를 저장 직전에** 쓴다.\n> **수정에서는 `setUpdatedAt` 만** 쓴다.\n> **새 메서드를 쓸 때마다 다시** 적는다.\n\n**빠뜨려도 안** 터진다.\n\n> **컬럼이 `null` 로** 남는다.\n> **테스트는 그 값을 안** 본다.\n> **한참 뒤 통계에서** 드러난다.\n\n**저장 순간이 진짜** 순간이다.\n\n> **서비스에서 찍은 시각과 `insert` 시각이** 다르다.\n> **트랜잭션이 길면 차이가** 커진다.\n> **콜백은 flush 직전에** 찍는다.\n\n**JPA 에 이미 자리가** 있다.\n\n> **`@PrePersist`·`@PreUpdate`** 다.\n> **엔티티에 메서드 하나** 두면 된다.\n> **스프링은 그걸 어노테이션으로 더 줄인** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 일을 하는 두 자리",
+   "ascii": "   two places the same job can be done\n\n   JPA callbacks     PrePersist and PreUpdate on the entity itself\n   Spring auditing   CreatedDate and LastModifiedDate, filled by a listener\n\n   both write the same columns at the same moment;\n   the second one is declared instead of coded",
+   "note": "**같은 컬럼을 같은 순간에** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "@EnableJpaAuditing 을 안 켜면 조용히 null 이다",
+   "md": "**어노테이션만 붙이면 아무 일도 안** 난다.\n\n> **리스너를 켜는 스위치가** 따로다.\n> **`@EnableJpaAuditing` 이** 그것이다.\n> **안 켜도 예외가** 없다.\n\n**`@EntityListeners` 도 있어야** 한다.\n\n> **엔티티에 리스너를** 붙인다.\n> **공통 클래스에 붙이면 상속으로** 따라온다.\n> **둘 중 하나만 빠져도 `null`** 이다.\n\n**`@MappedSuperclass` 여야** 한다.\n\n> **`@Entity` 로 두면 표가 하나 더** 생긴다.\n> **상속 전략까지 끼어**든다.\n> **① 7.4절에서 다룬** 그것이다.\n\n**수정일이 등록 때도** 찍힌다.\n\n> **`@LastModifiedDate` 는 `insert` 에서도** 채운다.\n> **`null` 이 아니라 등록 시각이** 들어간다.\n> **\"한 번도 안 고쳤다\"를 `null` 로 보려면 콜백을 직접** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 손으로 적던 것\n\n@Transactional\npublic Long join(String username, int age) {\n    Member m = new Member(username, age);\n    m.setCreatedAt(LocalDateTime.now());\n    m.setUpdatedAt(LocalDateTime.now());\n    return memberRepository.save(m).getId();\n}\n\n@Transactional\npublic void rename(Long id, String name) {\n    Member m = memberRepository.findById(id).orElseThrow();\n    m.setUsername(name);\n    m.setUpdatedAt(LocalDateTime.now());   // 이걸 자꾸 빠뜨린다\n}\n\n$ grep -rn 'setUpdatedAt' --include='*.java' src/main | wc -l\n      14\n$ grep -rn 'Transactional' --include='*Service.java' src/main | wc -l\n      19\n\n--   트랜잭션 19 곳에 setUpdatedAt 이 14 개다\n--   다섯 곳이 안 적는다\n\n\n-- 빠뜨린 결과\n\n@Test\n@Transactional\nvoid 빠뜨림() {\n    Long id = memberService.join(\"m1\", 10);\n    em.flush(); em.clear();\n\n    memberService.renameWithoutTouch(id, \"바뀐이름\");\n    em.flush(); em.clear();\n\n    Object[] row = (Object[]) em.createNativeQuery(\n            \"select username, updated_at from member where member_id = ?\")\n        .setParameter(1, id).getSingleResult();\n    System.out.println(\"이름:   \" + row[0]);\n    System.out.println(\"수정일: \" + row[1]);\n}\n\nHibernate: insert into member (age, created_at, team_id, updated_at,\n           username, member_id) values (?, ?, ?, ?, ?, ?)\nHibernate: select ... where m1_0.member_id=?\nHibernate: update member set age=?, created_at=?, team_id=?,\n           updated_at=?, username=? where member_id=?\n이름:   바뀐이름\n수정일: 2026-09-10 02:31:04.117\n\n--   이름은 바뀌었는데 수정일이 등록 시각 그대로다\n--   update 는 나갔다\n--   틀린 값이 조용히 남았다\n\n\n-- ① JPA 콜백으로 바꾼다\n\n@MappedSuperclass\npublic abstract class JpaBaseEntity {\n\n    @Column(updatable = false)\n    private LocalDateTime createdAt;\n    private LocalDateTime updatedAt;\n\n    @PrePersist\n    public void prePersist() {\n        LocalDateTime now = LocalDateTime.now();\n        createdAt = now;\n        updatedAt = now;\n    }\n\n    @PreUpdate\n    public void preUpdate() {\n        updatedAt = LocalDateTime.now();\n    }\n}\n\n@Entity\npublic class Member extends JpaBaseEntity { ... }\n\n@Test\n@Transactional\nvoid 콜백() {\n    Member m = memberRepository.save(new Member(\"m1\", 10));\n    em.flush();\n    System.out.println(\"등록: \" + m.getCreatedAt());\n    System.out.println(\"수정: \" + m.getUpdatedAt());\n\n    m.setUsername(\"고침\");\n    em.flush();\n    System.out.println(\"고친 뒤 수정: \" + m.getUpdatedAt());\n}\n\nHibernate:\n    insert\n    into\n        member (age, created_at, team_id, updated_at, username, member_id)\n    values\n        (?, ?, ?, ?, ?, ?)\nTRACE binding parameter (2:TIMESTAMP) <- [2026-09-10T02:31:04.201]\nTRACE binding parameter (4:TIMESTAMP) <- [2026-09-10T02:31:04.201]\n등록: 2026-09-10T02:31:04.201\n수정: 2026-09-10T02:31:04.201\nHibernate:\n    update\n        member\n    set\n        age=?, team_id=?, updated_at=?, username=?\n    where\n        member_id=?\nTRACE binding parameter (3:TIMESTAMP) <- [2026-09-10T02:31:04.219]\n고친 뒤 수정: 2026-09-10T02:31:04.219\n\n--   서비스에서 한 줄도 안 적었다\n--   update 문에 created_at 이 없다 (updatable = false)\n\n\n-- ② 스프링 방식으로 바꾼다\n\n@SpringBootApplication\n@EnableJpaAuditing\npublic class DataJpaApplication { ... }\n\n@EntityListeners(AuditingEntityListener.class)\n@MappedSuperclass\npublic abstract class BaseTimeEntity {\n\n    @CreatedDate\n    @Column(updatable = false)\n    private LocalDateTime createdDate;\n\n    @LastModifiedDate\n    private LocalDateTime lastModifiedDate;\n}\n\n@Test\n@Transactional\nvoid 스프링_방식() {\n    Member m = memberRepository.save(new Member(\"m2\", 10));\n    em.flush();\n    System.out.println(\"등록: \" + m.getCreatedDate());\n    System.out.println(\"수정: \" + m.getLastModifiedDate());\n\n    m.setUsername(\"고침\");\n    em.flush();\n    System.out.println(\"고친 뒤: \" + m.getLastModifiedDate());\n}\n\nHibernate:\n    insert\n    into\n        member (age, created_date, last_modified_date, team_id,\n                username, member_id)\n    values\n        (?, ?, ?, ?, ?, ?)\nTRACE binding parameter (2:TIMESTAMP) <- [2026-09-10T02:31:04.302]\nTRACE binding parameter (3:TIMESTAMP) <- [2026-09-10T02:31:04.302]\n등록: 2026-09-10T02:31:04.302\n수정: 2026-09-10T02:31:04.302\nHibernate:\n    update member\n    set age=?, last_modified_date=?, team_id=?, username=?\n    where member_id=?\n고친 뒤: 2026-09-10T02:31:04.318\n\n--   콜백 메서드가 없다\n--   SQL 은 ① 과 같다\n\n\n-- 두 방식의 SQL 을 비교한다\n\n$ diff callback.sql auditing.sql\n2c2\n<     member (age, created_at, team_id, updated_at, username, member_id)\n---\n>     member (age, created_date, last_modified_date, team_id,\n\n--   컬럼 이름만 다르다\n--   구조는 똑같다\n\n\n-- 스위치를 끄면\n\n// @EnableJpaAuditing   <- 주석 처리\n\n@Test\n@Transactional\nvoid 스위치_없이() {\n    Member m = memberRepository.save(new Member(\"m3\", 10));\n    em.flush();\n    System.out.println(\"등록: \" + m.getCreatedDate());\n    System.out.println(\"수정: \" + m.getLastModifiedDate());\n}\n\nHibernate:\n    insert into member (age, created_date, last_modified_date, team_id,\n                        username, member_id) values (?, ?, ?, ?, ?, ?)\nTRACE binding parameter (2:TIMESTAMP) <- [null]\nTRACE binding parameter (3:TIMESTAMP) <- [null]\n등록: null\n수정: null\n\n--   예외가 없다\n--   그냥 null 이 들어갔다\n--   제일 무서운 실패다\n\n\n-- 리스너를 빼면\n\n// @EntityListeners(AuditingEntityListener.class)   <- 주석 처리\n\n등록: null\n수정: null\n\n--   같다\n--   둘 중 하나만 빠져도 null 이다\n\n\n-- 등록일은 안 바뀐다\n\n@Test\n@Transactional\nvoid 등록일_고정() {\n    Member m = memberRepository.save(new Member(\"m4\", 10));\n    em.flush();\n    LocalDateTime first = m.getCreatedDate();\n\n    m.setUsername(\"한번\"); em.flush();\n    m.setUsername(\"두번\"); em.flush();\n\n    System.out.println(\"처음:   \" + first);\n    System.out.println(\"지금:   \" + m.getCreatedDate());\n    System.out.println(\"같은가: \" + first.equals(m.getCreatedDate()));\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?, ?, ?)\nHibernate: update member set age=?, last_modified_date=?, team_id=?,\n           username=? where member_id=?\nHibernate: update member set age=?, last_modified_date=?, team_id=?,\n           username=? where member_id=?\n처음:   2026-09-10T02:31:04.401\n지금:   2026-09-10T02:31:04.401\n같은가: true\n\n--   update 문에 created_date 가 아예 없다\n--   @Column(updatable = false) 다\n\n\n-- 그걸 빼면 어떻게 되나\n\n// @Column(updatable = false) 제거\n\nHibernate:\n    update member\n    set age=?, created_date=?, last_modified_date=?, team_id=?, username=?\n    where member_id=?\n\n--   created_date 가 update 에 들어왔다\n--   값은 그대로지만 매번 쓴다\n\n\n-- 수정일이 등록 때도 찍힌다\n\n@Test\n@Transactional\nvoid 한번도_안_고쳤는데() {\n    Member m = memberRepository.save(new Member(\"m5\", 10));\n    em.flush();\n    System.out.println(\"고친 적 없음, 수정일: \" + m.getLastModifiedDate());\n}\n\nHibernate: insert into member (age, created_date, last_modified_date, ...)\nTRACE binding parameter (3:TIMESTAMP) <- [2026-09-10T02:31:04.501]\n고친 적 없음, 수정일: 2026-09-10T02:31:04.501\n\n--   null 이 아니다\n--   \"한 번도 안 고쳤다\"를 구분하려면 콜백을 직접 써야 한다\n\n\n-- 시각을 고정해 테스트한다\n\n@TestConfiguration\nstatic class FixedClock {\n    @Bean DateTimeProvider fixed() {\n        return () -> Optional.of(\n                LocalDateTime.of(2026, 1, 1, 0, 0));\n    }\n}\n\n@EnableJpaAuditing(dateTimeProviderRef = \"fixed\")\n\n@Test\n@Transactional\nvoid 고정_시각() {\n    Member m = memberRepository.save(new Member(\"m6\", 10));\n    em.flush();\n    System.out.println(\"등록: \" + m.getCreatedDate());\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?, ?, ?)\nTRACE binding parameter (2:TIMESTAMP) <- [2026-01-01T00:00]\n등록: 2026-01-01T00:00\n\n--   테스트에서 시각을 못 박는다\n--   ⑨ 5.4절에서 한 이야기다\n\n\n-- 손으로 적던 줄을 지운다\n\n$ git diff --stat\n MemberService.java | 14 --------------\n OrderService.java  |  9 ---------\n TeamService.java   |  6 ------\n 3 files changed, 29 deletions(-)\n\n$ grep -rn 'setUpdatedAt\\|setCreatedAt' --include='*.java' src/main | wc -l\n       0\n\n--   29 줄이 사라졌다\n--   6.4절에서 누가 바꿨는지를 본다",
+   "note": "**손으로 적던 시절엔 트랜잭션 19곳에 `setUpdatedAt` 이 14개, 다섯 곳이 안** 적었다.\n\n**콜백·스프링 방식 모두 `insert` 에 두 타임스탬프가 같은 값으로** 들어간다.\n\n**두 방식의 SQL 은 컬럼 이름만** 다르다.\n\n**`@EnableJpaAuditing` 이나 `@EntityListeners` 가 빠지면 예외 없이 `[null]`** 이 바인딩된다.\n\n**`updatable = false` 라 `update` 문에 `created_date` 가 아예** 없다."
+  }
+ ],
+ "recap": [
+  "**손으로 적으면 언젠가** 빠진다.",
+  "**빠뜨려도 안** 터진다.",
+  "**JPA 콜백이** 있다.",
+  "**스프링은 어노테이션으로** 줄인다.",
+  "**SQL 은** 같다.",
+  "**스위치를 안 켜면 `null`** 이다.",
+  "**리스너도 있어야** 한다.",
+  "**등록일은 `update` 에** 없다.",
+  "**수정일은 등록 때도** 찍힌다."
+ ],
+ "drills": [
+  {
+   "task": "손으로 적는 코드를 콜백으로 바꾼다.",
+   "done_when": "서비스에서 줄을 지웠다.",
+   "minutes": 25
+  },
+  {
+   "task": "스프링 방식으로 다시 바꾼다.",
+   "done_when": "SQL 이 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@EnableJpaAuditing` 을 끈다.",
+   "done_when": "`null` 이 들어가는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "고정 시각 제공자를 붙인다.",
+   "done_when": "테스트에서 값이 고정된 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JPA 표준 콜백 두 개는?",
+   "a": "`@PrePersist` 와 `@PreUpdate` 다."
+  },
+  {
+   "q": "스프링 감사 기능을 켜는 어노테이션은?",
+   "a": "`@EnableJpaAuditing` 이다."
+  },
+  {
+   "q": "안 켜면 어떻게 되나?",
+   "a": "예외 없이 컬럼에 `null` 이 들어간다."
+  },
+  {
+   "q": "등록일이 `update` 문에 없는 이유는?",
+   "a": "`@Column(updatable = false)` 때문이다."
+  },
+  {
+   "q": "수정일은 등록 시점에 어떤 값인가?",
+   "a": "`null` 이 아니라 등록 시각과 같다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "감사(Auditing)",
+   "def": "등록·수정 시각과 주체를 자동으로 기록하는 기능."
+  },
+  {
+   "term": "MappedSuperclass",
+   "def": "표를 만들지 않고 매핑 정보만 물려주는 공통 부모 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Auditing",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/auditing.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}
