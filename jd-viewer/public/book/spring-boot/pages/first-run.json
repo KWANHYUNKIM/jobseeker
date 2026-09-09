@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "first-run",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "한 줄로 서버가 뜬다",
+ "summary": "기동 로그를 처음부터 읽는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "순서를 읽는다.",
+  "스레드 칸을 본다.",
+  "각 줄의 장을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 열 줄을 훑었다.** **이제 한 줄씩** 읽는다."
+  },
+  {
+   "type": "figure",
+   "caption": "로그가 말하는 순서",
+   "ascii": "   the order the startup log tells, from the top\n\n   the banner        printed before anything is decided\n   the environment   java version, pid, and which profile is on\n   the context       beans are created, conditions are evaluated\n   the server        tomcat starts and binds a port\n   the total         how long all of that took\n\n   the server line is near the end, not the beginning",
+   "note": "**서버 줄은 끝에 가깝지 처음이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서버는 마지막에 뜬다",
+   "md": "**컨테이너가** 먼저다.\n\n> **빈을 다 만들고 나서** 연다.\n> **②에서 본 그** 순서다.\n> **다 못 만들면 포트를 아예 안** 연다.\n\n**그래서 반쪽으로 안** 뜬다.\n\n> **빈 하나가 실패하면 전체가** 멈춘다.\n> **요청을 받다 죽는 게** 아니다.\n> **아래에서 그걸** 만든다.\n\n**시간이 두 개** 찍힌다.\n\n> **기동 시간과 프로세스 시간**이다.\n> **앞은 스프링, 뒤는 JVM 부터**다.\n> **차이가 클래스 로딩**이다.\n\n**PID 가 첫 줄에** 있다.\n\n> **끌 때 쓴**다.\n> **1.3절에서 `lsof` 로** 찾았다.\n> **로그가 알려 주는 게** 낫다."
+  },
+  {
+   "type": "figure",
+   "caption": "지나치기 쉬운 칸",
+   "ascii": "   one column that is easy to skip\n\n   [           main]   everything above happens on one thread\n   [nio-8080-exec-1]   the first request arrives on another\n\n   startup is single threaded, and that is why order can be read",
+   "note": "**기동은 한 스레드라 순서를 읽을 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "로그가 없으면 어디서 멈췄는지 모른다",
+   "md": "**멈춘 자리가 곧 원인**이다.\n\n> **마지막 줄 다음이** 문제다.\n> **로그가 짧으면 범위가** 넓다.\n> **1.3절에서 보고서를 켜는** 이유다.\n\n**배너는 끌 수** 있다.\n\n> **`spring.main.banner-mode: off`** 다.\n> **로그 수집기에는 쓰레기**다.\n> **개발에서는 버전이 보여** 편하다.\n\n**프로필 줄을 꼭** 본다.\n\n> **`No active profile set`** 이다.\n> **운영에서 이게 나오면** 사고다.\n> **7.10절에서 다시** 본다.\n\n**포트 줄이 없으면 웹이** 아니다.\n\n> **의존성에 웹이 없으면 그냥** 끝난다.\n> **2.1절에서 그걸** 본다.\n> **로그로 바로** 안다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 애플리케이션은 이게 전부다\n\n@SpringBootApplication\npublic class BootApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ wc -l src/main/java/study/boot/BootApplication.java\n      12\n\n\n-- 띄운다\n\n$ ./gradlew bootRun\n\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.3.2)\n\n2026-09-10T04:56:01.204+09:00  INFO 12043 --- [           main]\n  study.boot.BootApplication\n  : Starting BootApplication using Java 21.0.3 with PID 12043\n2026-09-10T04:56:01.207+09:00  INFO 12043 --- [           main]\n  study.boot.BootApplication\n  : No active profile set, falling back to 1 default profile: \"default\"\n2026-09-10T04:56:01.712+09:00  INFO 12043 --- [           main]\n  o.s.b.w.embedded.tomcat.TomcatWebServer\n  : Tomcat initialized with port 8080 (http)\n2026-09-10T04:56:01.719+09:00  INFO 12043 --- [           main]\n  o.apache.catalina.core.StandardService\n  : Starting service [Tomcat]\n2026-09-10T04:56:01.719+09:00  INFO 12043 --- [           main]\n  o.apache.catalina.core.StandardEngine\n  : Starting Servlet engine: [Apache Tomcat/10.1.26]\n2026-09-10T04:56:01.766+09:00  INFO 12043 --- [           main]\n  o.a.c.c.C.[Tomcat].[localhost].[/]\n  : Initializing Spring embedded WebApplicationContext\n2026-09-10T04:56:01.767+09:00  INFO 12043 --- [           main]\n  w.s.c.ServletWebServerApplicationContext\n  : Root WebApplicationContext: initialization completed in 528 ms\n2026-09-10T04:56:02.041+09:00  INFO 12043 --- [           main]\n  o.s.b.w.embedded.tomcat.TomcatWebServer\n  : Tomcat started on port 8080 (http) with context path '/'\n2026-09-10T04:56:02.048+09:00  INFO 12043 --- [           main]\n  study.boot.BootApplication\n  : Started BootApplication in 1.084 seconds (process running for 1.312)\n\n--   아홉 줄이다\n--   전부 [main] 이다\n\n\n-- 줄마다 어느 장인가\n\n$ printf '%-40s %s\\n' \\\n  'Starting ... with PID'          '이 절' \\\n  'No active profile set'          '7.10절' \\\n  'Tomcat initialized with port'   '4.1절' \\\n  'Starting service [Tomcat]'      '3.3절' \\\n  'Starting Servlet engine'        '3.3절' \\\n  'Initializing ... WebApplicationContext' '4.3절' \\\n  'Root WebApplicationContext'     '6장' \\\n  'Tomcat started on port'         '4.1절' \\\n  'Started ... in 1.084 seconds'   '이 절'\n\nStarting ... with PID                    이 절\nNo active profile set                    7.10절\nTomcat initialized with port             4.1절\nStarting service [Tomcat]                3.3절\nStarting Servlet engine                  3.3절\nInitializing ... WebApplicationContext   4.3절\nRoot WebApplicationContext               6장\nTomcat started on port                   4.1절\nStarted ... in 1.084 seconds             이 절\n\n--   1.1절에서 말한 그 목차다\n\n\n-- 시간이 둘이다\n\nStarted BootApplication in 1.084 seconds (process running for 1.312)\n\n$ printf '%-16s %s\\n' \\\n  '1.084 초' '스프링이 뜨는 데' \\\n  '1.312 초' 'JVM 이 시작한 뒤로'\n\n1.084 초         스프링이 뜨는 데\n1.312 초         JVM 이 시작한 뒤로\n\n--   0.228 초가 JVM 과 클래스 로딩이다\n\n\n-- 요청이 오면 스레드가 바뀐다\n\n@RestController\nclass HelloController {\n    private static final Logger log =\n            LoggerFactory.getLogger(HelloController.class);\n\n    @GetMapping(\"/hello\")\n    String hello() {\n        log.info(\"요청을 받았다\");\n        return \"hello\";\n    }\n}\n\n$ curl -s localhost:8080/hello\nhello\n\n2026-09-10T04:56:31.402+09:00  INFO 12043 --- [nio-8080-exec-1]\n  study.boot.HelloController : 요청을 받았다\n\n--   [main] 이 아니다\n--   ③ 2장에서 본 그 스레드다\n\n\n-- 서버는 마지막에 뜬다\n\n@Component\nclass SlowBean {\n    private static final Logger log = LoggerFactory.getLogger(SlowBean.class);\n\n    SlowBean() throws InterruptedException {\n        log.info(\"빈을 만드는 중\");\n        Thread.sleep(2000);\n        log.info(\"빈을 다 만들었다\");\n    }\n}\n\n$ ./gradlew bootRun\n\nINFO 12088 --- [           main] study.boot.SlowBean : 빈을 만드는 중\nINFO 12088 --- [           main] study.boot.SlowBean : 빈을 다 만들었다\nINFO 12088 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat started on port 8080 (http) with context path '/'\nINFO 12088 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 3.091 seconds\n\n--   빈이 다 만들어진 뒤에 포트가 열렸다\n\n\n-- 그 사이에 요청을 보내면\n\n$ ./gradlew bootRun & sleep 1 ; curl -s -m 1 localhost:8080/hello\ncurl: (7) Failed to connect to localhost port 8080\n\n--   아직 안 열렸다\n--   반쪽으로 뜨지 않는다\n\n\n-- 빈이 실패하면\n\n@Component\nclass BrokenBean {\n    BrokenBean() {\n        throw new IllegalStateException(\"못 만든다\");\n    }\n}\n\n$ ./gradlew bootRun\n\nINFO 12102 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat initialized with port 8080 (http)\nWARN 12102 --- [           main] ConfigServletWebServerApplicationContext\n     : Exception encountered during context initialization -\n       cancelling refresh attempt\nINFO 12102 --- [           main] o.apache.catalina.core.StandardService\n     : Stopping service [Tomcat]\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nFailed to instantiate [study.boot.BrokenBean]: 못 만든다\n\n$ curl -s -m 1 localhost:8080/hello\ncurl: (7) Failed to connect to localhost port 8080\n\n--   initialized 는 했는데 started 가 없다\n--   Stopping service 로 되돌렸다\n--   포트가 안 열렸다\n\n\n-- 두 줄의 차이\n\n$ printf '%-36s %s\\n' \\\n  'Tomcat initialized with port 8080' '객체를 만들었다' \\\n  'Tomcat started on port 8080'       '실제로 듣기 시작했다'\n\nTomcat initialized with port 8080    객체를 만들었다\nTomcat started on port 8080          실제로 듣기 시작했다\n\n--   4.1절에서 이 둘을 코드로 나눠 본다\n\n\n-- 웹이 아니면 포트 줄이 없다\n\n// build.gradle 에서 starter-web 을 빼면\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter'\n}\n\n$ ./gradlew bootRun\n\nINFO 12130 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12130\nINFO 12130 --- [           main] study.boot.BootApplication\n     : No active profile set, falling back to 1 default profile: \"default\"\nINFO 12130 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 0.412 seconds (process running for 0.611)\n\nBUILD SUCCESSFUL\n\n--   세 줄이다\n--   톰캣 줄이 통째로 없다\n--   그리고 프로세스가 그냥 끝났다\n--   2.1절에서 왜 그런지 본다\n\n\n-- 배너를 끈다\n\n# application.yml\nspring:\n  main:\n    banner-mode: off\n\n$ ./gradlew bootRun | head -2\nINFO 12141 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12141\n\n--   여섯 줄이 사라졌다\n--   버전도 같이 사라졌다\n\n\n-- 프로필을 주면\n\n$ ./gradlew bootRun --args='--spring.profiles.active=dev'\n\nINFO 12155 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12155\nINFO 12155 --- [           main] study.boot.BootApplication\n     : The following 1 profile is active: \"dev\"\nINFO 12155 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat started on port 8080 (http) with context path '/'\n\n--   No active profile set 이 바뀌었다\n--   7.10절에서 이걸 쓴다\n\n\n-- PID 로 끈다\n\n$ ./gradlew bootRun &\n$ ./gradlew bootRun 2>&1 | grep 'with PID'\n     : Starting BootApplication using Java 21.0.3 with PID 12043\n$ kill 12043\n\nINFO 12043 --- [ionShutdownHook] o.apache.catalina.core.StandardService\n     : Stopping service [Tomcat]\n\n--   종료 로그도 남는다\n--   스레드가 ionShutdownHook 이다\n--   2.1절에서 부트가 대신하는 넷을 센다",
+   "note": "**기동 로그 아홉 줄이 전부 `[main]` 한 스레드**다.\n\n**`initialized` 와 `started` 는 다른 줄이고 빈이 실패하면 앞만 찍힌 채 `Stopping service`** 로 되돌아간다.\n\n**빈 생성에 2초를 넣으니 그게 끝난 뒤에야 포트가** 열렸다.\n\n**웹 의존성을 빼면 톰캣 줄이 통째로 없고 프로세스가 그냥** 끝난다.\n\n**요청은 `[nio-8080-exec-1]` 로** 들어온다."
+  }
+ ],
+ "recap": [
+  "**서버는 마지막에** 뜬다.",
+  "**반쪽으로 안** 뜬다.",
+  "**빈이 실패하면 되돌린**다.",
+  "**시간이 두 개**다.",
+  "**전부 `[main]`** 이다.",
+  "**요청은 다른 스레드**다.",
+  "**`initialized` 와 `started` 가** 다르다.",
+  "**웹이 아니면 포트 줄이** 없다.",
+  "**프로필 줄을 꼭** 본다."
+ ],
+ "drills": [
+  {
+   "task": "기동 로그를 줄마다 장에 대응시킨다.",
+   "done_when": "아홉 줄을 다 설명했다.",
+   "minutes": 15
+  },
+  {
+   "task": "느린 빈을 넣는다.",
+   "done_when": "포트가 늦게 열리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈을 실패시킨다.",
+   "done_when": "`Stopping service` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "웹 의존성을 뺀다.",
+   "done_when": "세 줄만 남는 걸 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "포트는 언제 열리나?",
+   "a": "빈을 다 만든 뒤, 로그의 거의 마지막에 열린다."
+  },
+  {
+   "q": "빈 하나가 실패하면?",
+   "a": "컨텍스트를 되돌리고 포트를 열지 않는다."
+  },
+  {
+   "q": "`initialized` 와 `started` 의 차이는?",
+   "a": "앞은 객체 생성, 뒤는 실제로 듣기 시작한 것이다."
+  },
+  {
+   "q": "기동은 몇 스레드인가?",
+   "a": "하나다. 전부 `[main]` 이다."
+  },
+  {
+   "q": "웹 의존성이 없으면?",
+   "a": "톰캣 줄이 없고 프로세스가 바로 끝난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "컨텍스트 초기화",
+   "def": "빈을 만들고 연결하는 기동 단계."
+  },
+  {
+   "term": "refresh 취소",
+   "def": "초기화 중 실패하면 만든 것을 되돌리는 동작."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Tomcat 10.1 Documentation",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/",
+   "publisher": "Apache"
+  }
+ ]
+}

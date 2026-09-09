@@ -47,7 +47,7 @@
           "title": "한 줄로 서버가 뜬다",
           "summary": "기동 로그를 처음부터 읽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -62,7 +62,7 @@
           "title": "부트가 대신하는 넷",
           "summary": "내장 서버·스타터·자동 구성·액츄에이터.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",

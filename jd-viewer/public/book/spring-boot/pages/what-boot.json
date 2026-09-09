@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "what-boot",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "부트가 대신하는 넷",
+ "summary": "내장 서버·스타터·자동 구성·액츄에이터.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "넷을 가른다.",
+  "웹 타입을 안다.",
+  "각각 어디서 보이는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 목록을** 봤다. **넷을 하나씩 로그에서** 찾는다."
+  },
+  {
+   "type": "figure",
+   "caption": "넷과 그 흔적",
+   "ascii": "   four things, and where each one shows up\n\n   the embedded server   a port line in the startup log\n   the starters          one dependency line pulling in many\n   the auto configuration a bean you never declared\n   the actuator          an http endpoint about the app itself\n\n   the first three are invisible until something breaks",
+   "note": "**앞 셋은 깨지기 전까지 안** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클래스패스가 애플리케이션 종류를 정한다",
+   "md": "**내가 안** 적는다.\n\n> **`@SpringBootApplication` 하나**다.\n> **웹인지 아닌지 코드에** 없다.\n> **의존성이** 정한다.\n\n**셋 중 하나가** 된다.\n\n> **없음·서블릿·리액티브**다.\n> **1.4절에서 웹을 빼자 프로세스가** 끝났다.\n> **아래에서 로그로** 확인한다.\n\n**강제할 수도** 있다.\n\n> **`spring.main.web-application-type`** 이다.\n> **의존성이 있어도 안 뜨게** 한다.\n> **배치에서 쓴**다.\n\n**넷이 서로 독립**이다.\n\n> **스타터 없이 자동 구성만 쓸 수** 있다.\n> **액츄에이터는 따로** 넣는다.\n> **하나씩 빼 보면** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 애플리케이션",
+   "ascii": "   three kinds of application, decided by the classpath\n\n   none      no web classes, the process ends when main returns\n   servlet   a servlet container is present, so a port opens\n   reactive  a reactive server instead, and a different context\n\n   nothing in your code says which of the three this is",
+   "note": "**셋 중 무엇인지 코드에는 안** 적혀 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "@SpringBootApplication 은 셋을 합친 것이다",
+   "md": "**어노테이션 셋을 합쳤**다.\n\n> **`@SpringBootConfiguration`** 이다.\n> **`@ComponentScan`** 이다.\n> **`@EnableAutoConfiguration`** 이다.\n\n**스캔 범위가 그 패키지** 아래다.\n\n> **`main` 이 있는 패키지가** 기준이다.\n> **위로는 안** 간다.\n> **아래에서 그걸** 만든다.\n\n**자동 구성이 셋째**다.\n\n> **6장 전체가 그** 이야기다.\n> **끄면 아무것도 안** 뜬다.\n> **아래에서 꺼** 본다.\n\n**셋을 따로 쓸 수도** 있다.\n\n> **합친 게 편할** 뿐이다.\n> **하나씩 붙여도** 같다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- ① 내장 서버\n\n$ ./gradlew bootRun 2>&1 | grep -i tomcat\n\nINFO ... o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat initialized with port 8080 (http)\nINFO ... o.apache.catalina.core.StandardEngine\n     : Starting Servlet engine: [Apache Tomcat/10.1.26]\nINFO ... o.s.b.w.embedded.tomcat.TomcatWebServer\n     : Tomcat started on port 8080 (http) with context path '/'\n\n--   패키지에 embedded 가 있다\n--   4장에서 이걸 직접 만든다\n\n\n-- ② 스타터\n\n$ grep -c 'implementation' build.gradle\n2\n\n$ ./gradlew dependencies --configuration runtimeClasspath \\\n    | grep -c '^[+\\\\]---'\n8\n\n$ ./gradlew dependencies --configuration runtimeClasspath | wc -l\n      63\n\n--   두 줄이 63 줄이 됐다\n--   5장에서 이 트리를 읽는다\n\n\n-- ③ 자동 구성\n\n@Test\nvoid 내가_안_만든_빈() {\n    String[] names = ctx.getBeanNamesForType(\n            org.springframework.web.servlet.DispatcherServlet.class);\n    System.out.println(\"디스패처: \" + Arrays.toString(names));\n\n    System.out.println(\"만든 곳: \" + ctx.getBeanDefinition(names[0])\n            .getResourceDescription());\n}\n\n디스패처: [dispatcherServlet]\n만든 곳: class path resource [org/springframework/boot/autoconfigure/web/\n         servlet/DispatcherServletAutoConfiguration$DispatcherServletRegistration\n         Configuration.class]\n\n--   내 코드가 아니다\n--   ③ 2장의 그 디스패처다\n--   6장에서 이걸 판다\n\n\n-- ④ 액츄에이터\n\n$ curl -s localhost:9090/actuator | jq -r '._links | keys[]' | head -6\nbeans\ncaches\nconditions\nconfigprops\nenv\nhealth\n\n--   앞 셋과 달리 눈에 보인다\n--   8장에서 하나씩 연다\n\n\n-- 웹이 없으면 종류가 바뀐다\n\n// starter-web 을 빼고 starter 만\n\n$ ./gradlew bootRun\n\nINFO 12130 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12130\nINFO 12130 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 0.412 seconds\n\nBUILD SUCCESSFUL in 2s\n\n--   1.4절에서 본 그것이다\n--   포트가 없고 프로세스가 끝났다\n\n\n-- 컨텍스트 타입이 다르다\n\n@Component\nclass TypePrinter implements ApplicationRunner {\n    private final ApplicationContext ctx;\n    TypePrinter(ApplicationContext ctx) { this.ctx = ctx; }\n\n    @Override\n    public void run(ApplicationArguments args) {\n        System.out.println(\"컨텍스트: \" + ctx.getClass().getSimpleName());\n    }\n}\n\n// 웹 있음\n컨텍스트: AnnotationConfigServletWebServerApplicationContext\n\n// 웹 없음\n컨텍스트: AnnotationConfigApplicationContext\n\n--   서블릿 쪽만 WebServer 가 이름에 있다\n--   1.4절의 그 줄을 만드는 클래스다\n\n\n-- 강제로 끌 수도 있다\n\n# application.yml\nspring:\n  main:\n    web-application-type: none\n\n$ ./gradlew bootRun\n\nINFO 12166 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12166\nINFO 12166 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 0.487 seconds\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c tomcat\n3\n\n--   톰캣은 있는데 안 떴다\n--   배치 애플리케이션이 이렇게 쓴다\n\n\n-- @SpringBootApplication 을 뜯는다\n\n@Test\nvoid 어노테이션() {\n    Arrays.stream(SpringBootApplication.class.getAnnotations())\n            .map(a -> a.annotationType().getSimpleName())\n            .filter(n -> !n.startsWith(\"Target\") && !n.startsWith(\"Retention\")\n                      && !n.startsWith(\"Documented\") && !n.startsWith(\"Inherited\"))\n            .forEach(System.out::println);\n}\n\nSpringBootConfiguration\nEnableAutoConfiguration\nComponentScan\n\n--   셋을 합친 것이다\n\n\n-- 셋을 따로 써도 된다\n\n@SpringBootConfiguration\n@EnableAutoConfiguration\n@ComponentScan\npublic class BootApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BootApplication.class, args);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep 'Tomcat started'\nINFO ... : Tomcat started on port 8080 (http) with context path '/'\n\n--   똑같이 뜬다\n\n\n-- 자동 구성을 끄면\n\n@SpringBootConfiguration\n@ComponentScan\npublic class BootApplication { ... }\n\n$ ./gradlew bootRun\n\nINFO 12180 --- [           main] study.boot.BootApplication\n     : Starting BootApplication using Java 21.0.3 with PID 12180\nINFO 12180 --- [           main] study.boot.BootApplication\n     : Started BootApplication in 0.398 seconds\n\n$ curl -s -m 1 localhost:8080/hello\ncurl: (7) Failed to connect to localhost port 8080\n\n--   톰캣이 클래스패스에 있는데 안 떴다\n--   자동 구성이 없으면 아무도 안 만든다\n--   6장의 그 이야기다\n\n\n-- 스캔 범위를 벗어나면\n\n// study.boot.BootApplication\n// study.other.OtherController  <- 밖이다\n\n@RestController\npackage study.other;\nclass OtherController {\n    @GetMapping(\"/other\") String other() { return \"other\"; }\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/other\n404\n\n$ ./gradlew bootRun 2>&1 | grep -c 'Mapped.*\\/other'\n0\n\n--   컨트롤러를 못 찾았다\n--   ② 6장의 컴포넌트 스캔이다\n\n\n-- 범위를 넓힌다\n\n@SpringBootApplication(scanBasePackages = \"study\")\n\n$ curl -s localhost:8080/other\nother\n\n--   기준이 main 의 패키지라 그렇다\n\n\n-- 넷을 하나씩 빼 본다\n\n$ printf '%-20s %-14s %s\\n' \\\n  '전부'          '9줄'  'Tomcat started 있음' \\\n  '웹 의존성 없음' '3줄'  '포트 없음' \\\n  '자동 구성 없음' '3줄'  '톰캣 있는데 안 뜸' \\\n  '액츄에이터 없음' '9줄'  '/actuator 404'\n\n전부                  9줄    Tomcat started 있음\n웹 의존성 없음        3줄    포트 없음\n자동 구성 없음        3줄    톰캣 있는데 안 뜸\n액츄에이터 없음       9줄    /actuator 404\n\n--   2.2절에서 자동 구성이 마법이 아닌 걸 본다",
+   "note": "**의존성 두 줄이 트리 63줄이 되고 `dispatcherServlet` 의 출처가 내 코드가 아니라 `DispatcherServletAutoConfiguration`** 이다.\n\n**웹이 없으면 컨텍스트 이름이 `AnnotationConfigApplicationContext` 로** 바뀐다.\n\n**`web-application-type: none` 이면 톰캣 의존성이 셋 있는데도 안** 뜬다.\n\n**`@EnableAutoConfiguration` 을 빼면 톰캣이 클래스패스에 있어도 아무도 안** 만든다.\n\n**스캔 범위 밖 컨트롤러는 404** 다."
+  }
+ ],
+ "recap": [
+  "**넷이** 있다.",
+  "**앞 셋은 안** 보인다.",
+  "**클래스패스가 종류를** 정한다.",
+  "**셋 중 하나가** 된다.",
+  "**강제할 수도** 있다.",
+  "**어노테이션은 셋을** 합친 것이다.",
+  "**따로 써도** 같다.",
+  "**자동 구성을 빼면 안** 뜬다.",
+  "**스캔 기준은 `main` 패키지**다."
+ ],
+ "drills": [
+  {
+   "task": "넷의 흔적을 각각 찾는다.",
+   "done_when": "로그와 응답에서 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "웹 의존성을 뺀다.",
+   "done_when": "컨텍스트 타입이 바뀌는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "자동 구성을 끈다.",
+   "done_when": "톰캣이 안 뜨는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "스캔 범위 밖에 컨트롤러를 둔다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "부트가 대신하는 넷은?",
+   "a": "내장 서버, 스타터, 자동 구성, 액츄에이터다."
+  },
+  {
+   "q": "애플리케이션 종류는 누가 정하나?",
+   "a": "클래스패스에 무엇이 있는지가 정한다."
+  },
+  {
+   "q": "`@SpringBootApplication` 은 무엇의 합인가?",
+   "a": "설정, 컴포넌트 스캔, 자동 구성 셋이다."
+  },
+  {
+   "q": "자동 구성을 끄면?",
+   "a": "톰캣이 있어도 아무도 서버를 만들지 않는다."
+  },
+  {
+   "q": "컴포넌트 스캔의 기준 패키지는?",
+   "a": "`main` 클래스가 있는 패키지 아래다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "웹 애플리케이션 타입",
+   "def": "없음·서블릿·리액티브 중 무엇으로 뜰지 정하는 값."
+  },
+  {
+   "term": "@EnableAutoConfiguration",
+   "def": "조건에 맞는 자동 구성을 켜는 어노테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Reference",
+   "url": "https://docs.spring.io/spring-framework/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
