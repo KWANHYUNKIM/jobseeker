@@ -1,0 +1,138 @@
+{
+ "book": "spring-db-2",
+ "id": "requires-new",
+ "no": "12.5",
+ "chapter": 12,
+ "title": "REQUIRES_NEW",
+ "summary": "물리 트랜잭션을 나눈다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "`REQUIRES_NEW` 로 요구사항을 만족시킨다.",
+  "보류와 재개를 안다.",
+  "표시가 안 생기는 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.4절이 안 됐다.** **논리를 나눠서는 안 되고 물리를 나눠야** 한다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "caption": "애너테이션 하나",
+   "code": "@Repository\n@RequiredArgsConstructor\npublic class LogRepository {\n\n    private final EntityManager em;\n\n    @Transactional(propagation = Propagation.REQUIRES_NEW)\n    public void save(Log logMessage) {\n        log.info(\"log 저장\");\n        em.persist(logMessage);\n\n        if (logMessage.getMessage().contains(\"로그예외\")) {\n            throw new RuntimeException(\"예외 발생\");\n        }\n    }\n}",
+   "note": "**서비스는 12.4절의 `joinV2` 그대로**다. **`try-catch` 도 그대로.**\n\n**리포지토리의 애너테이션 속성 하나**만 바뀌었다."
+  },
+  {
+   "type": "figure",
+   "caption": "보류하고 새로 시작한다",
+   "ascii": "   outer  @Transactional               conn0\n     |\n     +-- inner  REQUIRES_NEW\n            suspend outer\n            new physical transaction   conn1\n            ... fails ...\n            rollback conn1\n            resume outer\n     |\n   outer continues on conn0\n   commit conn0\n\n   two physical transactions, alive at the same time",
+   "note": "**물리 트랜잭션 둘이 동시에 살아 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보류(suspend)가 무엇인가",
+   "md": "**바깥 트랜잭션을 잠시 치워 둔다.**\n\n**1편 5.4절의 트랜잭션 동기화 매니저**를 떠올린다. **`ThreadLocal` 에 커넥션이 묶여** 있다.\n\n```\n스레드\n  TransactionSynchronizationManager\n    dataSource -> conn0        <- 바깥\n```\n\n**`REQUIRES_NEW` 가 시작될 때**:\n\n```\n1  현재 묶인 것을 꺼내 따로 보관한다 (SuspendedResourcesHolder)\n2  ThreadLocal 을 비운다\n3  새 커넥션 conn1 을 빌려 묶는다\n4  ... 안쪽 작업 ...\n5  conn1 을 커밋/롤백하고 반납한다\n6  보관해 둔 conn0 를 다시 묶는다\n```\n\n**6번이 재개(resume)** 다.\n\n**그래서 안쪽 작업 동안 커넥션이 둘**이다.\n\n| | 커넥션 |\n|---|---|\n| 바깥 | **conn0** — 쓰이지 않고 대기 |\n| 안쪽 | **conn1** — 작업 중 |\n\n> **11.2절의 \"따로 쓰기\" 와 다르다.** **거기서는 앞의 것이 끝난 뒤 다음이 시작**했다. **여기는 겹쳐 있다.**\n>\n> **그 차이가 12.6절의 대가**다."
+  },
+  {
+   "type": "figure",
+   "caption": "표시가 왜 안 생기나",
+   "ascii": "   why the mark does not appear\n\n   REQUIRED     inner is not new  -> setRollbackOnly on the shared status\n   REQUIRES_NEW inner IS new      -> doRollback on its own connection\n\n   the outer status is untouched\n   nothing to read at commit time",
+   "note": "**안쪽이 자기 커넥션을 직접 롤백**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "11.4절의 코드로 확인",
+   "md": "```java\nprivate void processRollback(DefaultTransactionStatus status) {\n    if (status.isNewTransaction()) {\n        doRollback(status);              // 여기로 간다\n    }\n    else if (status.hasTransaction()) {\n        status.setRollbackOnly();        // 12.4절은 여기였다\n    }\n}\n```\n\n**`REQUIRES_NEW` 면 `isNewTransaction()` 이 `true`** 다. **첫 번째 가지로** 간다.\n\n**진짜 롤백을 한다.** **자기 커넥션이니까 할 수 있다.**\n\n**바깥의 `TransactionStatus` 는 손대지 않는다.** **표시가 없으니 바깥의 커밋이 그대로** 된다.\n\n> **11.7절에서 \"안쪽은 롤백을 못 한다\" 고 했다.** **그것은 `REQUIRED` 로 참여했을 때** 이야기다. **`REQUIRES_NEW` 는 남의 트랜잭션이 아니라 자기 것**이다.\n\n**그러면 12.4절의 `try-catch` 가 이제 진짜로 동작**한다.\n\n```java\ntry {\n    logRepository.save(logMessage);\n} catch (RuntimeException e) {\n    log.info(\"log 저장에 실패했습니다.\");\n}\n// 회원은 저장된다\n```\n\n**요구사항이 만족됐다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "안쪽에서 바깥 데이터를 못 본다",
+   "md": "**커넥션이 다르면 트랜잭션도 다르다.** **격리 수준이 적용된다.**\n\n```java\n@Transactional\npublic void 주문() {\n    orderRepository.save(order);      // conn0, 커밋 전\n    로그서비스.기록(order.getId());    // REQUIRES_NEW, conn1\n}\n\n@Transactional(propagation = Propagation.REQUIRES_NEW)\npublic void 기록(Long orderId) {\n    Order o = orderRepository.findById(orderId);   // 못 찾는다\n}\n```\n\n**`READ_COMMITTED` 면 커밋 안 된 행을 다른 커넥션이 못 본다**(1편 3.4절).\n\n**로그에 주문 번호를 남기려는데 그 주문이 아직 DB 에 없다.**\n\n| 넘길 수 있는 것 | |\n|---|---|\n| **값** | 파라미터로 |\n| **id** | 생성됐다면 |\n| **엔티티 조회** | **안 된다** |\n\n**더 나쁜 경우**도 있다.\n\n```java\n@Transactional\npublic void 재고차감(Long id) {\n    Item item = repository.findById(id).get();   // conn0 가 락을 쥔다\n    item.setQuantity(item.getQuantity() - 1);\n    로그서비스.기록(id);                          // conn1 이 같은 행을 읽으려 하면\n}\n```\n\n**`select ... for update` 를 썼다면 conn1 이 대기**한다. **conn0 는 conn1 을 기다리고, conn1 은 conn0 의 락을 기다린다.**\n\n> **자기 자신과 데드락**이다. **커넥션 풀이 하나면 더 확실**하다 — 12.6절.\n\n**`REQUIRES_NEW` 안에서는 바깥과 같은 행을 건드리지 않는다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "트랜잭션 로그",
+   "sql": "# --- REQUIRES_NEW 로 성공 ---\n\nmemberService.joinV2(\"로그예외\");\n\n#   Getting transaction for [MemberService.joinV2]\n#   Creating new transaction with name [MemberService.joinV2]:\n#     PROPAGATION_REQUIRED,ISOLATION_DEFAULT\n#   Opened new EntityManager [SessionImpl@1] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@1 wrapping conn0]\n\n#   Getting transaction for [MemberRepository.save]\n#   Participating in existing transaction\n#   member 저장\n#   Completing transaction for [MemberRepository.save]\n\n#   Getting transaction for [LogRepository.save]\n#   Suspending current transaction, creating new transaction with name\n#     [LogRepository.save]\n#   Opened new EntityManager [SessionImpl@2] for JPA transaction\n#   Acquired Connection [HikariProxyConnection@2 wrapping conn1]\n\n#   log 저장\n#   log 저장시 예외 발생\n\n#   Completing transaction for [LogRepository.save] after exception:\n#     java.lang.RuntimeException: 예외 발생\n#   Initiating transaction rollback\n#   Rolling back JPA transaction on EntityManager [SessionImpl@2]\n#   Closing JPA EntityManager [SessionImpl@2] after transaction\n#   Releasing JDBC Connection [conn1] after transaction\n#   Resuming suspended transaction after completion\n\n#   (marking rollback-only 가 없다)\n\n#   log 저장에 실패했습니다. logMessage=로그예외\n#   정상 흐름 반환\n\n#   Completing transaction for [MemberService.joinV2]\n#   Initiating transaction commit\n#   Hibernate: insert into member (username,id) values (?,?)\n#   Committing JPA transaction on EntityManager [SessionImpl@1]\n#   Releasing JDBC Connection [conn0] after transaction\n\nselect count(*) from member;   # -> 1\nselect count(*) from log;      # -> 0\n\n#   요구사항이 만족됐다\n\n# --- 12.4절과 나란히 ---\n\n#   12.4  Participating in existing transaction\n#         Participating transaction failed - marking ... rollback-only\n#         Global transaction is marked as rollback-only\n#         -> UnexpectedRollbackException, member 0\n\n#   12.5  Suspending current transaction, creating new transaction\n#         Rolling back JPA transaction on EntityManager [SessionImpl@2]\n#         Resuming suspended transaction after completion\n#         -> 예외 없음, member 1\n\n#   애너테이션 속성 하나 차이다\n\n# --- 개수 ---\n\n#   Creating new transaction    2   (Suspending... creating 포함)\n#   Participating               1\n#   Acquired Connection         2   (conn0, conn1)\n#   Releasing JDBC Connection   2\n\n#   물리 2, 논리 3\n\n# --- EntityManager 도 둘이다 ---\n\n#   SessionImpl@1   바깥\n#   SessionImpl@2   안쪽\n\n#   영속성 컨텍스트가 따로다\n#   안쪽에서 저장한 것을 바깥이 못 본다\n\n# --- 안쪽에서 바깥 데이터를 조회하면 ---\n\n@Transactional\npublic void 주문() {\n    orderRepository.save(order);          // conn0, 커밋 전\n    로그서비스.기록(order.getId());\n}\n\n#   Suspending current transaction, creating new transaction\n#   Acquired Connection [conn1]\n#   Hibernate: select o1_0.id, ... from orders o1_0 where o1_0.id=?\n#   <== 0 rows\n\n#   NoSuchElementException\n\n#   conn0 가 아직 커밋 안 했다",
+   "note": "**`Suspending current transaction, creating new transaction`** 이 이 절의 새 로그다. **한 줄에 보류와 생성이 같이** 찍힌다.\n\n**`Resuming suspended transaction after completion`** 이 짝이다.\n\n**`marking rollback-only` 가 없다.** **그것이 12.4절과의 결정적 차이**다.\n\n**`conn0` 와 `conn1`, `SessionImpl@1` 과 `@2`** — **커넥션도 영속성 컨텍스트도 둘**이다.\n\n**맨 아래가 새로 생긴 문제**다. **안쪽에서 바깥이 저장한 것을 못 찾는다.**\n\n**다음 절에서 대가를 센다.**"
+  }
+ ],
+ "recap": [
+  "**`REQUIRES_NEW` 는 항상 새 물리 트랜잭션**을 연다.",
+  "**바깥을 보류(suspend)하고 커넥션을 새로** 빌린다.",
+  "**끝나면 재개(resume)** 한다.",
+  "**안쪽이 `isNewTransaction()` 이라 진짜 롤백**을 한다.",
+  "**바깥의 상태를 안 건드리니 표시가 없다.**",
+  "**12.4절의 `try-catch` 가 이제 동작**한다.",
+  "**물리 2, 논리 3.**",
+  "**영속성 컨텍스트도 둘**이다.",
+  "**안쪽에서 바깥의 커밋 안 된 데이터를 못 본다.**"
+ ],
+ "drills": [
+  {
+   "task": "`LogRepository.save` 에 `REQUIRES_NEW` 를 붙인다.",
+   "done_when": "회원만 남는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`Suspending`/`Resuming` 로그를 찾는다.",
+   "done_when": "짝을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "커넥션 번호를 센다.",
+   "done_when": "conn0, conn1 둘인 것을 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "안쪽에서 바깥이 저장한 것을 조회해 본다.",
+   "done_when": "못 찾는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`REQUIRES_NEW` 는 무엇을 하나?",
+   "a": "바깥을 보류하고 새 커넥션으로 별도의 물리 트랜잭션을 연다."
+  },
+  {
+   "q": "왜 `rollback-only` 표시가 안 생기나?",
+   "a": "안쪽이 자기 커넥션을 직접 롤백하고 바깥 상태는 안 건드리기 때문이다."
+  },
+  {
+   "q": "로그의 새 문장 둘은?",
+   "a": "`Suspending current transaction, creating new transaction` 과 `Resuming suspended transaction` 이다."
+  },
+  {
+   "q": "물리와 논리 개수는?",
+   "a": "물리 2, 논리 3 이다."
+  },
+  {
+   "q": "안쪽에서 바깥 데이터를 왜 못 보나?",
+   "a": "다른 커넥션이라 커밋 전 데이터가 격리 수준에 막힌다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "스프링 DB 2편 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링-db-2",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}

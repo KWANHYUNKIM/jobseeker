@@ -769,7 +769,7 @@
           "title": "REQUIRES_NEW",
           "summary": "물리 트랜잭션을 나눈다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.6",
@@ -777,7 +777,7 @@
           "title": "REQUIRES_NEW 의 대가",
           "summary": "커넥션이 둘이 된다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.7",
@@ -785,7 +785,7 @@
           "title": "대안",
           "summary": "구조를 바꾸는 편이 낫다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.8",
