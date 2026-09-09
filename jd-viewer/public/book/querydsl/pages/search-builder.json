@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "search-builder",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "동적 쿼리와 성능 최적화 — Builder",
+ "summary": "조건 넷을 모은다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "조건 객체를 만든다.",
+  "빈 문자열을 처리한다.",
+  "DTO 로 바로 받는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.7절의 빌더를 실무 모양으로** 옮긴다. **조건이 객체로** 들어온다."
+  },
+  {
+   "type": "figure",
+   "caption": "화면이 보내는 것",
+   "ascii": "   one object carrying what the screen typed\n\n   a username, possibly blank\n   an age range, either end possibly missing\n   a team name, possibly blank\n\n   every field is optional, which is the whole difficulty",
+   "note": "**전부 선택이라는 게 어려움의** 전부다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파라미터가 넷을 넘으면 객체로 묶는다",
+   "md": "**메서드 시그니처가** 길어진다.\n\n> **5.8절은 넷을 그대로** 받았다.\n> **여섯이면 읽기가** 나빠진다.\n> **같은 타입이 섞이면 순서를** 틀린다.\n\n**조건 객체로** 묶는다.\n\n> **`MemberSearchCondition` 하나**다.\n> **필드 이름이 뜻을** 준다.\n> **화면이 늘면 필드만** 는다.\n\n**DTO 로 바로** 받는다.\n\n> **5.5절의 `@QueryProjection`** 이다.\n> **엔티티를 안 읽는다.**\n> **⑭ 6.8절의 그** 이야기다.\n\n**조인이 필요해**진다.\n\n> **팀 이름이 조건에** 있다.\n> **`leftJoin` 을 명시**한다.\n> **4.10절의 그** 이유다."
+  },
+  {
+   "type": "figure",
+   "caption": "빈 문자열이 온다",
+   "ascii": "   three states a text field can arrive in\n\n   null          the parameter was not sent at all\n   empty string  the box was there and left alone\n   whitespace    someone pressed space and gave up\n\n   only the first is handled by a plain null check",
+   "note": "**`null` 검사만으로는 첫 줄만** 잡는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "빈 문자열은 조건이 되어 아무것도 안 나온다",
+   "md": "**`null` 이** 아니다.\n\n> **`\"\"` 도 값**이다.\n> **`username = ''` 이 `where` 에** 붙는다.\n> **결과가 0건**이다.\n\n**`hasText` 로** 본다.\n\n> **스프링의 `StringUtils.hasText`** 다.\n> **공백만 있는 것도** 걸러 준다.\n> **아래에서 확인**한다.\n\n**조건이 하나도 없으면 전부** 나온다.\n\n> **5.7절에서 `hasValue` 로** 막았다.\n> **⑭ 6.7절의 상한과 같은 이야기**다.\n> **`limit` 을 같이** 건다.\n\n**개수 쿼리에도 같은 조건이** 필요하다.\n\n> **빌더를 두 번 만들면** 어긋난다.\n> **하나를 만들어 둘에** 쓴다.\n> **6.7절에서 페이징을** 붙인다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 조건 객체\n\n@Getter @Setter\npublic class MemberSearchCondition {\n    private String username;\n    private String teamName;\n    private Integer ageGoe;\n    private Integer ageLoe;\n}\n\n\n-- 결과 DTO\n\n@Getter @Setter\npublic class MemberTeamDto {\n    private Long memberId;\n    private String username;\n    private int age;\n    private Long teamId;\n    private String teamName;\n\n    @QueryProjection\n    public MemberTeamDto(Long memberId, String username, int age,\n                         Long teamId, String teamName) {\n        this.memberId = memberId;\n        this.username = username;\n        this.age = age;\n        this.teamId = teamId;\n        this.teamName = teamName;\n    }\n}\n\n$ ./gradlew compileJava -q && find build -name 'QMemberTeamDto.java' | wc -l\n1\n\n\n-- 빌더로 조립한다\n\npublic List<MemberTeamDto> searchByBuilder(MemberSearchCondition cond) {\n    BooleanBuilder builder = new BooleanBuilder();\n\n    if (hasText(cond.getUsername())) {\n        builder.and(member.username.eq(cond.getUsername()));\n    }\n    if (hasText(cond.getTeamName())) {\n        builder.and(team.name.eq(cond.getTeamName()));\n    }\n    if (cond.getAgeGoe() != null) {\n        builder.and(member.age.goe(cond.getAgeGoe()));\n    }\n    if (cond.getAgeLoe() != null) {\n        builder.and(member.age.loe(cond.getAgeLoe()));\n    }\n\n    return queryFactory\n            .select(new QMemberTeamDto(\n                    member.id, member.username, member.age,\n                    team.id, team.name))\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(builder)\n            .fetch();\n}\n\n--   hasText 는 스프링 StringUtils 다\n\n\n-- 조건 없이\n\n@Test\nvoid 조건_없음() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    System.out.println(\"건수: \" +\n            memberJpaRepository.searchByBuilder(cond).size());\n}\n\n/* select\n    member1.id,\n    member1.username,\n    member1.age,\n    team.id,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.username,\n        m1_0.age,\n        t1_0.team_id,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 10\n\n--   where 가 없다\n--   엔티티를 안 읽고 컬럼 다섯만 읽었다\n\n\n-- 나이 범위만\n\n@Test\nvoid 나이만() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setAgeGoe(20);\n    cond.setAgeLoe(35);\n    memberJpaRepository.searchByBuilder(cond)\n            .forEach(d -> System.out.println(\n                    d.getUsername() + \" \" + d.getAge()));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= ?1\n    and member1.age <= ?2 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n        and m1_0.age<=?\nm2 20\nm3 30\nm6 25\nm7 35\nm9 20\nm10 30\n\n--   팀 없는 회원도 나왔다\n--   leftJoin 이라 그렇다\n\n\n-- 팀 이름까지\n\n@Test\nvoid 팀까지() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setTeamName(\"teamB\");\n    cond.setAgeGoe(20);\n    memberJpaRepository.searchByBuilder(cond)\n            .forEach(d -> System.out.println(\n                    d.getUsername() + \" \" + d.getTeamName()));\n}\n\n/* select\n    member1.id, member1.username, member1.age, team.id, team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    team.name = ?1\n    and member1.age >= ?2 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, m1_0.age,\n        t1_0.team_id, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n        and m1_0.age>=?\nm6 teamB\nm7 teamB\n\n--   leftJoin 인데 where 가 null 을 걸렀다\n--   4.12절의 그 현상이다\n--   여기서는 의도한 결과다\n\n\n-- 빈 문자열이 오면\n\npublic List<MemberTeamDto> searchNaive(MemberSearchCondition cond) {\n    BooleanBuilder builder = new BooleanBuilder();\n    if (cond.getUsername() != null) {          // null 만 본다\n        builder.and(member.username.eq(cond.getUsername()));\n    }\n    ...\n}\n\n@Test\nvoid 빈_문자열() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setUsername(\"\");\n\n    System.out.println(\"--- null 만 검사 ---\");\n    System.out.println(\"건수: \" +\n            memberJpaRepository.searchNaive(cond).size());\n\n    em.clear();\n    System.out.println(\"--- hasText 검사 ---\");\n    System.out.println(\"건수: \" +\n            memberJpaRepository.searchByBuilder(cond).size());\n}\n\n--- null 만 검사 ---\n/* select\n    ...\nwhere\n    member1.username = ?1 */\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on ...\n    where m1_0.username=?\nTRACE binding parameter (1:VARCHAR) <- []\n건수: 0\n--- hasText 검사 ---\nHibernate:\n    select ... from member m1_0\n    left join team t1_0 on ...\n건수: 10\n\n--   빈 문자열이 조건이 됐다\n--   0건이 정답처럼 보인다\n\n\n-- 공백만 와도 마찬가지다\n\n@Test\nvoid 공백() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setUsername(\"   \");\n\n    System.out.println(\"hasText: \" + StringUtils.hasText(\"   \"));\n    System.out.println(\"건수:    \" +\n            memberJpaRepository.searchByBuilder(cond).size());\n}\n\nhasText: false\nHibernate: select ... left join team t1_0 on ...\n건수:    10\n\n--   공백도 걸러 준다\n\n\n-- 조건이 없으면 전부 나온다\n\n@Test\nvoid 전체_조회_위험() {\n    for (int i = 0; i < 20000; i++) em.persist(new Member(\"p\" + i, 10));\n    em.flush(); em.clear();\n\n    MemberSearchCondition cond = new MemberSearchCondition();\n    long t = System.nanoTime();\n    int n = memberJpaRepository.searchByBuilder(cond).size();\n    System.out.printf(\"%d건 %d ms%n\", n, (System.nanoTime()-t)/1_000_000);\n}\n\nHibernate: select ... from member m1_0 left join team t1_0 on ...\n20010건 71 ms\n\n--   ⑭ 6.7절의 상한 이야기가 여기도 있다\n--   6.7절에서 페이징을 붙인다\n\n\n-- 막는다\n\npublic List<MemberTeamDto> searchSafe(MemberSearchCondition cond) {\n    BooleanBuilder builder = buildCondition(cond);\n    if (!builder.hasValue()) {\n        throw new IllegalArgumentException(\"조건이 하나는 있어야 한다\");\n    }\n    return queryFactory.select(...).where(builder).fetch();\n}\n\n@Test\nvoid 막기() {\n    try {\n        memberJpaRepository.searchSafe(new MemberSearchCondition());\n    } catch (Exception e) {\n        System.out.println(e.getMessage());\n    }\n}\n\n조건이 하나는 있어야 한다\n\n--   SQL 이 안 나갔다\n\n\n-- 빌더를 두 번 만들면\n\npublic Page<MemberTeamDto> searchBad(MemberSearchCondition cond) {\n    BooleanBuilder b1 = new BooleanBuilder();\n    if (hasText(cond.getUsername())) b1.and(member.username.eq(...));\n    // ... 목록용\n\n    BooleanBuilder b2 = new BooleanBuilder();\n    if (cond.getAgeGoe() != null) b2.and(member.age.goe(...));\n    // ... 개수용, 조건을 하나 빠뜨렸다\n\n    ...\n}\n\n@Test\nvoid 어긋남() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setUsername(\"m1\");\n    cond.setAgeGoe(20);\n\n    System.out.println(\"목록: \" +\n            memberJpaRepository.searchByBuilder(cond).size());\n    System.out.println(\"개수: \" + memberJpaRepository.countBad(cond));\n}\n\nHibernate: select ... where m1_0.username=? and m1_0.age>=?\n목록: 0\nHibernate: select count(m1_0.member_id) from member m1_0\n           where m1_0.age>=?\n개수: 6\n\n--   목록 0건에 전체 6건이다\n--   4.7절에서 본 그 어긋남이다\n\n\n-- 하나를 만들어 둘에 쓴다\n\nprivate BooleanBuilder buildCondition(MemberSearchCondition cond) {\n    BooleanBuilder builder = new BooleanBuilder();\n    if (hasText(cond.getUsername()))\n        builder.and(member.username.eq(cond.getUsername()));\n    if (hasText(cond.getTeamName()))\n        builder.and(team.name.eq(cond.getTeamName()));\n    if (cond.getAgeGoe() != null)\n        builder.and(member.age.goe(cond.getAgeGoe()));\n    if (cond.getAgeLoe() != null)\n        builder.and(member.age.loe(cond.getAgeLoe()));\n    return builder;\n}\n\n@Test\nvoid 같은_조건() {\n    em.clear();\n    MemberSearchCondition cond = new MemberSearchCondition();\n    cond.setUsername(\"m1\");\n    cond.setAgeGoe(20);\n\n    BooleanBuilder builder = buildCondition(cond);\n\n    List<MemberTeamDto> content = queryFactory\n            .select(new QMemberTeamDto(member.id, member.username,\n                    member.age, team.id, team.name))\n            .from(member).leftJoin(member.team, team)\n            .where(builder).fetch();\n\n    Long total = queryFactory.select(member.count())\n            .from(member).leftJoin(member.team, team)\n            .where(builder).fetchOne();\n\n    System.out.println(\"목록 \" + content.size() + \" / 전체 \" + total);\n}\n\nHibernate:\n    select m1_0.member_id, m1_0.username, m1_0.age,\n           t1_0.team_id, t1_0.name\n    from member m1_0 left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.username=? and m1_0.age>=?\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n    left join team t1_0 on t1_0.team_id=m1_0.team_id\n    where m1_0.username=? and m1_0.age>=?\n목록 0 / 전체 0\n\n--   같아졌다\n--   빌더 객체를 나눠 썼다\n--   6.4절에서 메서드로 나눈다",
+   "note": "**DTO 로 바로 받아 컬럼 다섯만 읽고 엔티티를 안** 읽는다.\n\n**빈 문자열을 `null` 검사만 하면 `binding parameter (1:VARCHAR) <- []` 로 조건이 붙어 `0건`** 이다.\n\n**`hasText` 는 공백만 있는 값도 걸러** 준다.\n\n**목록·개수 빌더를 따로 만들면 목록 0건에 전체 6건으로** 어긋난다.\n\n**빌더 하나를 둘에 나눠 쓰면 `where` 절이 같아진다**."
+  }
+ ],
+ "recap": [
+  "**조건을 객체로** 묶는다.",
+  "**DTO 로 바로** 받는다.",
+  "**엔티티를 안** 읽는다.",
+  "**`leftJoin` 을 명시**한다.",
+  "**빈 문자열이** 조건이 된다.",
+  "**`hasText` 로** 본다.",
+  "**공백도** 걸러진다.",
+  "**빌더 둘은** 어긋난다.",
+  "**하나를 나눠** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "조건 객체와 DTO 를 만든다.",
+   "done_when": "컬럼 다섯을 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "빈 문자열을 넣는다.",
+   "done_when": "0건이 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`hasText` 로 고친다.",
+   "done_when": "조건이 빠지는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "빌더를 하나로 공유한다.",
+   "done_when": "목록과 개수가 맞는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조건을 객체로 묶는 이유는?",
+   "a": "파라미터가 늘어도 이름으로 뜻이 드러나기 때문이다."
+  },
+  {
+   "q": "빈 문자열을 `null` 검사만 하면?",
+   "a": "`= ''` 조건이 붙어 결과가 0건이 된다."
+  },
+  {
+   "q": "무엇으로 거르나?",
+   "a": "`StringUtils.hasText` 다. 공백도 걸러 준다."
+  },
+  {
+   "q": "목록과 개수에 빌더를 따로 만들면?",
+   "a": "조건이 어긋나 쪽수가 틀린다."
+  },
+  {
+   "q": "DTO 로 바로 받으면 무엇이 좋나?",
+   "a": "엔티티를 안 읽어 필요한 컬럼만 조회한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조건 객체",
+   "def": "화면이 보낸 검색 조건을 필드로 묶은 DTO."
+  },
+  {
+   "term": "hasText",
+   "def": "`null`·빈 문자열·공백을 한 번에 거르는 스프링 유틸."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

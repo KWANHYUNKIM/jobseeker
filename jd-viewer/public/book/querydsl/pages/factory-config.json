@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "factory-config",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "JPAQueryFactory 스프링 빈",
+ "summary": "동시성은 괜찮은가.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빈으로 굳힌다.",
+  "동시성을 확인한다.",
+  "테스트에서도 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 한 번** 봤다. **실무 코드에 넣기 전에 다시** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "만들 수 있는 세 자리",
+   "ascii": "   three places the factory can be created, in a real project\n\n   a field built in the constructor   one per repository, no bean needed\n   a bean injected everywhere         one object, shared by all\n   a new one inside every method      one per call, and pointless\n\n   the first two are both correct, and they behave identically",
+   "note": "**앞 둘은 똑같이** 동작한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "빈으로 두면 리포지토리가 가벼워진다",
+   "md": "**생성자에서 안 만들어도** 된다.\n\n> **6.1절은 `new JPAQueryFactory(em)` 를** 썼다.\n> **빈이면 주입만** 받는다.\n> **`@RequiredArgsConstructor` 한 줄**이다.\n\n**설정이 한자리에** 모인다.\n\n> **템플릿을 바꿀 일이** 생긴다.\n> **모든 리포지토리를 안 고쳐도** 된다.\n> **4.14절에서 그런 이야기가** 있었다.\n\n**테스트에서도 같은 걸** 쓴다.\n\n> **3.3절의 공통 클래스에서 주입**받는다.\n> **`new` 가 사라진**다.\n> **2.6절의 `NullPointerException` 도** 없다.\n\n**안전한 이유는 3.4절에** 있다.\n\n> **프록시를 들고 있어 상태가** 없다.\n> **스레드마다 다른 세션이** 붙는다.\n> **여기서 다시 재현**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 공유해도 되나",
+   "ascii": "   why sharing one object across threads is safe\n\n   the factory holds a proxy, not a session\n   the proxy asks for the session bound to this thread\n   two threads, two sessions, one factory object\n\n   the danger is only when a real EntityManager is held instead",
+   "note": "**진짜 관리자를 들 때만** 위험하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "EntityManager 를 필드로 들고 도는 클래스를 만들지 않는다",
+   "md": "**직접 만든 건 프록시가** 아니다.\n\n> **`emf.createEntityManager()` 는 진짜**다.\n> **3.4절에서 예외를** 봤다.\n> **빈으로 두면 안** 된다.\n\n**팩토리에 상태를 얹지** 않는다.\n\n> **감쌀 거면 조회 메서드만** 둔다.\n> **캐시 같은 걸 필드로 두면** 깨진다.\n> **8.2절의 지원 클래스도 같은 규칙**이다.\n\n**설정 클래스 위치를 잘** 잡는다.\n\n> **컴포넌트 스캔 범위 밖이면 빈이 안** 뜬다.\n> **주입에서 실패**한다.\n> **아래에서 그 메시지를** 본다.\n\n**테스트 설정과 섞이지 않게** 한다.\n\n> **테스트에서 또 만들면 둘이** 뜬다.\n> **`@Primary` 나 이름으로** 가른다.\n> **보통은 하나면** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 설정\n\n@Configuration\npublic class QuerydslConfig {\n\n    @Bean\n    public JPAQueryFactory jpaQueryFactory(EntityManager em) {\n        return new JPAQueryFactory(em);\n    }\n}\n\n$ grep -c 'class QuerydslConfig' src/main/java/study/querydsl/config/*.java\n1\n\n\n-- 리포지토리가 짧아진다\n\n// 6.1절\npublic MemberJpaRepository(EntityManager em) {\n    this.em = em;\n    this.queryFactory = new JPAQueryFactory(em);\n}\n\n// 지금\n@Repository\n@RequiredArgsConstructor\npublic class MemberJpaRepository {\n    private final EntityManager em;\n    private final JPAQueryFactory queryFactory;\n    ...\n}\n\n$ git diff --stat\n MemberJpaRepository.java | 8 ++------\n 1 file changed, 2 insertions(+), 6 deletions(-)\n\n--   생성자가 사라졌다\n\n\n-- 도는지 본다\n\n@Test\n@Transactional\nvoid 주입판() {\n    em.clear();\n    System.out.println(\"건수: \" + memberJpaRepository.findAll().size());\n}\n\n/* select\n    member1\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n건수: 10\n\n--   6.1절과 SQL 이 같다\n\n\n-- 빈이 하나인지 본다\n\n@Test\nvoid 빈_개수() {\n    Map<String, JPAQueryFactory> beans =\n            ctx.getBeansOfType(JPAQueryFactory.class);\n    System.out.println(\"개수: \" + beans.size());\n    System.out.println(\"이름: \" + beans.keySet());\n}\n\n개수: 1\n이름: [jpaQueryFactory]\n\n\n-- 여러 리포지토리가 같은 것을 쓴다\n\n@Test\nvoid 공유() throws Exception {\n    Field f1 = MemberJpaRepository.class.getDeclaredField(\"queryFactory\");\n    Field f2 = TeamJpaRepository.class.getDeclaredField(\"queryFactory\");\n    f1.setAccessible(true); f2.setAccessible(true);\n\n    Object a = f1.get(memberJpaRepository);\n    Object b = f2.get(teamJpaRepository);\n    System.out.println(\"같은 객체? \" + (a == b));\n}\n\n같은 객체? true\n\n--   하나를 나눠 쓴다\n\n\n-- 스레드 둘에서 동시에\n\n@Test\nvoid 동시성() throws Exception {\n    ExecutorService pool = Executors.newFixedThreadPool(2);\n    List<Future<String>> futures = new ArrayList<>();\n\n    for (String name : List.of(\"m1\", \"m2\")) {\n        futures.add(pool.submit(() -> txTemplate.execute(status -> {\n            List<Member> r = memberJpaRepository.findByUsername(name);\n            return Thread.currentThread().getName()\n                    + \" -> \" + r.get(0).getUsername()\n                    + \" (session \" + System.identityHashCode(\n                        em.unwrap(SessionImpl.class)) + \")\";\n        })));\n    }\n    for (Future<String> f : futures) System.out.println(f.get());\n    pool.shutdown();\n}\n\n/* select member1 from Member member1 where member1.username = ?1 */\nHibernate: select ... from member m1_0 where m1_0.username=?\n/* select member1 from Member member1 where member1.username = ?1 */\nHibernate: select ... from member m1_0 where m1_0.username=?\npool-1-thread-1 -> m1 (session 1183947220)\npool-1-thread-2 -> m2 (session 927104553)\n\n--   팩토리는 하나, 세션은 둘이다\n--   3.4절에서 본 그대로다\n\n\n-- 테스트에서도 주입받는다\n\n@SpringBootTest\n@Transactional\npublic abstract class QuerydslTestSupport {\n\n    @PersistenceContext protected EntityManager em;\n    @Autowired protected JPAQueryFactory queryFactory;\n\n    @BeforeEach\n    void setUp() { /* 3.3절의 열 건 */ }\n}\n\n$ grep -rn 'new JPAQueryFactory' --include='*.java' src | wc -l\n       1\n\n$ grep -rn 'new JPAQueryFactory' --include='*.java' src\nsrc/main/java/study/querydsl/config/QuerydslConfig.java:12:\n    return new JPAQueryFactory(em);\n\n--   프로젝트 전체에 하나뿐이다\n\n\n-- 설정을 스캔 밖에 두면\n\n// package other.config 로 옮겼다\n\n$ ./gradlew test\n\n***************************\nAPPLICATION FAILED TO START\n***************************\n\nDescription:\n\nParameter 1 of constructor in\nstudy.querydsl.repository.MemberJpaRepository required a bean of type\n'com.querydsl.jpa.impl.JPAQueryFactory' that could not be found.\n\n--   기동에서 막힌다\n--   2.3절과 달리 메시지가 정확하다\n\n\n-- 테스트에서 또 만들면\n\n@TestConfiguration\nstatic class ExtraConfig {\n    @Bean\n    public JPAQueryFactory another(EntityManager em) {\n        return new JPAQueryFactory(em);\n    }\n}\n\n$ ./gradlew test --tests '*FactoryConfigTest*'\n\nParameter 1 of constructor required a single bean, but 2 were found:\n    - jpaQueryFactory\n    - another\n\n--   둘이 떠서 못 고른다\n--   보통은 하나면 된다\n\n\n-- 직접 만든 관리자로 빈을 만들면\n\n@Bean\npublic JPAQueryFactory unsafe(EntityManagerFactory emf) {\n    return new JPAQueryFactory(emf.createEntityManager());   // 진짜다\n}\n\n@Test\nvoid 위험한_빈() throws Exception {\n    ExecutorService pool = Executors.newFixedThreadPool(2);\n    List<Future<String>> futures = new ArrayList<>();\n    for (String name : List.of(\"m1\", \"m2\")) {\n        futures.add(pool.submit(() -> {\n            try {\n                return name + \" -> \" + unsafe.selectFrom(member)\n                        .where(member.username.eq(name)).fetchOne()\n                        .getUsername();\n            } catch (Exception e) {\n                return name + \" -> \" + e.getClass().getSimpleName();\n            }\n        }));\n    }\n    for (Future<String> f : futures) System.out.println(f.get());\n    pool.shutdown();\n}\n\nHibernate: select ... where m1_0.username=?\nm1 -> m1\nm2 -> IllegalStateException\n\n--   3.4절에서 본 그것이다\n--   빈으로 두면 상시 위험하다\n\n\n-- 템플릿을 바꿀 자리도 하나다\n\n@Bean\npublic JPAQueryFactory jpaQueryFactory(EntityManager em) {\n    return new JPAQueryFactory(HQLTemplates.DEFAULT, em);\n}\n\n@Test\n@Transactional\nvoid 템플릿() {\n    em.clear();\n    queryFactory.selectFrom(member)\n            .where(member.username.startsWith(\"m\"))\n            .limit(2)\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!' */\n\nHibernate:\n    select ... from member m1_0\n    where m1_0.username like ? escape '!'\n    fetch first ? rows only\n\n--   기본과 같은 문장이 나왔다\n--   바꿀 일이 생기면 여기 한 줄이다\n\n\n-- 최종 모양\n\n$ tree src/main/java/study/querydsl -L 2\nstudy/querydsl\n├── config\n│   └── QuerydslConfig.java\n├── dto\n│   ├── MemberDto.java\n│   └── MemberSearchCondition.java\n├── entity\n│   ├── Member.java\n│   └── Team.java\n└── repository\n    ├── MemberJpaRepository.java\n    └── TeamJpaRepository.java\n\n@Test\n@Transactional\nvoid 최종() {\n    em.clear();\n    List<Member> r = memberJpaRepository.search(\"m\", 20);\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\nwhere\n    member1.username like ?1 escape '!'\n    and member1.age >= ?2 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.username like ? escape '!'\n        and m1_0.age>=?\n건수: 6\n\n--   6.3절에서 조건을 넷으로 늘린다",
+   "note": "**빈으로 바꾸니 리포지토리 생성자가 사라져 6줄이** 줄었다.\n\n**빈은 하나뿐이고 리포지토리 둘이 같은 객체를 나눠** 쓴다.\n\n**스레드 둘이 각각 다른 세션(`1183947220`·`927104553`)을 쓰는데 팩토리는** 하나다.\n\n**설정을 스캔 밖에 두면 `required a bean of type 'JPAQueryFactory' that could not be found` 로 기동이** 막힌다.\n\n**프로젝트 전체에 `new JPAQueryFactory` 가 설정 한 곳뿐**이다."
+  }
+ ],
+ "recap": [
+  "**빈으로** 둔다.",
+  "**생성자가** 사라진다.",
+  "**하나를 나눠** 쓴다.",
+  "**프록시라 안전**하다.",
+  "**세션은 스레드마다**다.",
+  "**테스트도 주입**받는다.",
+  "**스캔 밖이면** 막힌다.",
+  "**둘이면 못** 고른다.",
+  "**진짜 관리자는 위험**하다."
+ ],
+ "drills": [
+  {
+   "task": "팩토리를 빈으로 바꾼다.",
+   "done_when": "생성자가 줄어든 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "빈 개수를 찍는다.",
+   "done_when": "하나인 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "스레드 둘에서 부른다.",
+   "done_when": "세션이 다른 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "설정을 스캔 밖으로 옮긴다.",
+   "done_when": "기동 실패 메시지를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "팩토리를 빈으로 두면 무엇이 좋나?",
+   "a": "리포지토리가 주입만 받고 설정이 한자리에 모인다."
+  },
+  {
+   "q": "여러 스레드가 공유해도 되는 이유는?",
+   "a": "프록시를 들고 있어 상태가 없기 때문이다."
+  },
+  {
+   "q": "위험한 경우는?",
+   "a": "직접 만든 실제 `EntityManager` 를 들고 있을 때다."
+  },
+  {
+   "q": "설정이 스캔 밖이면?",
+   "a": "주입할 빈이 없어 기동에 실패한다."
+  },
+  {
+   "q": "빈이 둘이면?",
+   "a": "어느 것을 쓸지 못 골라 실패한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "설정 클래스",
+   "def": "빈 정의를 모아 두는 `@Configuration` 클래스."
+  },
+  {
+   "term": "빈 공유",
+   "def": "상태 없는 객체 하나를 여러 곳이 주입받아 함께 쓰는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

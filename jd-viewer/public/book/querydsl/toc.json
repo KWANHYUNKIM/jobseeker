@@ -386,7 +386,7 @@
           "title": "JPAQueryFactory 스프링 빈",
           "summary": "동시성은 괜찮은가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -394,7 +394,7 @@
           "title": "동적 쿼리와 성능 최적화 — Builder",
           "summary": "조건 넷을 모은다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
