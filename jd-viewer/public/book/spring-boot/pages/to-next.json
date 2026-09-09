@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "to-next",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "다음으로",
+ "summary": "여기서 어디로 가나.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "안 연 것을 안다.",
+  "습관을 정한다.",
+  "책을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.2절에서 앞 책들과** 이었다. **여기서 안 연 문들을** 적는다."
+  },
+  {
+   "type": "figure",
+   "caption": "일부러 안 연 것들",
+   "ascii": "   what this book deliberately did not open\n\n   proxies and aspects, which chapter six only brushed\n   tracing, which follows one request across services\n   the reactive stack, which replaces the servlet one\n   native images, which move conditions to build time\n\n   the last one undoes an assumption held for eighty sections",
+   "note": "**마지막 줄은 여든 절 내내 깔고 있던 전제를** 뒤집는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여든 절이 전제한 것이 하나 있다",
+   "md": "**조건을 실행할 때** 판정했다.\n\n> **6.3절부터 계속 그랬**다.\n> **기동 때 163 번** 물었다.\n> **그게 늘 그런 건** 아니다.\n\n**네이티브는 빌드 때** 정한다.\n\n> **판정이 앞으로** 간다.\n> **아래에서 그 차이를** 본다.\n> **못 하는 것도** 생긴다.\n\n**서블릿도 전제**였다.\n\n> **3장부터 계속 그랬**다.\n> **리액티브는 그걸** 바꾼다.\n> **아래에서 로그로** 본다.\n\n**한 대만** 봤다.\n\n> **9장의 숫자도 대별**이었다.\n> **요청 하나를 따라가는 건** 다르다.\n> **아래에서 그 실마리를** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "남길 습관 넷",
+   "ascii": "   four habits worth keeping\n\n   read the startup log to the last line\n   turn on the report before guessing\n   put the value outside the artifact\n   count the thing the business cares about\n\n   none of these need a new library",
+   "note": "**넷 다 새 라이브러리가** 필요 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "새 도구보다 안 본 줄이 문제일 때가 많다",
+   "md": "**로그를 끝까지 안** 읽는다.\n\n> **10.1절의 그** 스물여섯 줄이다.\n> **멈춘 자리가** 답이었다.\n> **아래에서 다시** 센다.\n\n**보고서를 안 켜고** 짐작한다.\n\n> **6.12절의 다섯 관문**이다.\n> **켜면 이유가 적혀** 있다.\n> **아래에서 다시** 켠다.\n\n**값을 코드에** 박는다.\n\n> **7.1절에서 해시가** 달라졌다.\n> **시험한 것과 나가는 게** 다르다.\n> **아래에서 다시** 확인한다.\n\n**기술 숫자만** 본다.\n\n> **9.9절에서 오류율이 0** 이었다.\n> **주문만 줄고** 있었다.\n> **아래에서 그 둘을 나란히** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 안 연 문 ① 프록시와 애스펙트\n\n$ curl -s localhost:9090/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nn = [k for k,v in b.items() if 'Proxy' in v['type'] or '\\$\\$' in v['type']]\nprint('프록시로 감싼 빈', len(n))\nfor k in n[:3]: print(' ', k, b[k]['type'][:56])\"\n프록시로 감싼 빈 12\n  orderService  study.boot.OrderService$$SpringCGLIB$$0\n  txManager     jdk.proxy2.$Proxy142\n  auditAspect   study.boot.AuditAspect$$SpringCGLIB$$0\n\n$ curl -s -o /dev/null 'localhost:8080/orders?item=x&qty=1'\n$ tail -1 logs/app.log | cut -c1-64\n07:15:02 DEBUG o.s.orm.jpa.JpaTransactionManager - Creating new tra\n\n--   9.9절에서 @Timed 를 붙였을 때 이게 돌았다\n--   6장은 빈이 생기는 것까지만 봤다\n--   왜 감싸지고 어떻게 도는지는 다른 책이다\n\n\n-- 안 연 문 ② 추적\n\n$ curl -s -o /dev/null -H 'traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01' \\\n    localhost:8080/orders -X POST -H 'Content-Type: application/json' \\\n    -d '{\"item\":\"연필\",\"qty\":1}'\n\n$ tail -1 logs/app.log | cut -c1-96\n07:15:12 INFO  [orders,4bf92f3577b34da6a3ce929d0e0e4736,00f067aa0ba902b7] s.b.OrderService\n\ndependencies {\n    implementation 'io.micrometer:micrometer-tracing-bridge-otel'\n    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'\n}\n\n$ curl -s localhost:9090/actuator/metrics | python3 -c \"\nimport json,sys\nprint([n for n in json.load(sys.stdin)['names'] if 'span' in n or 'trace' in n])\"\n['spans.export.count', 'spans.dropped']\n\n--   9.2절의 그 마이크로미터가 추적도 한다\n--   9 장은 숫자만 봤다\n--   요청 하나가 서비스 셋을 지나는 건 안 봤다\n\n\n-- 안 연 문 ③ 리액티브\n\ndependencies {\n    implementation('org.springframework.boot:spring-boot-starter-web') {\n        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'\n    }\n}\n// 대신\ndependencies {\n    implementation 'org.springframework.boot:spring-boot-starter-webflux'\n}\n\n$ java -jar build/libs/app-flux.jar 2>&1 | grep -E 'Netty started|Tomcat started'\nINFO ... : Netty started on port 8080 (http)\n\n$ java -jar build/libs/app-flux.jar --debug 2>&1 \\\n    | grep -A2 'ReactiveWebServerFactoryAutoConfiguration matched' | head -3\n   ReactiveWebServerFactoryAutoConfiguration matched:\n      - @ConditionalOnClass found required class\n        'org.springframework.http.ReactiveHttpInputMessage'\n\n$ curl -s localhost:8080/hello\nhello\n\n$ java -jar build/libs/app-flux.jar --debug 2>&1 | grep -c 'matched:'\n      64\n\n--   5.3절에서 웹과 웹플럭스를 같이 넣으면 톰캣이 이겼다\n--   웹을 빼니 네티가 떴다\n--   6장의 조건은 그대로고 걸리는 것만 달라졌다\n--   3장과 4장이 전제하던 서블릿이 없다\n\n\n-- 안 연 문 ④ 네이티브 이미지\n\n$ ./gradlew nativeCompile\n> Task :nativeCompile\n[app:24102] classlist: 1,204.12 ms\n[app:24102] analysis: 18,412.44 ms\n[app:24102] image: 22,104.81 ms\nFinished generating 'app' in 2m 14s\n\n$ ls -lh build/native/nativeCompile/app | awk '{print $5}'\n 84M\n$ ls -lh build/libs/app.jar | awk '{print $5}'\n 48M\n\n$ ./build/native/nativeCompile/app --spring.profiles.active=prod 2>&1 | tail -1\nINFO ... : Started BootApplication in 0.078 seconds (process running for 0.091)\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod 2>&1 | tail -1\nINFO ... : Started BootApplication in 2.104 seconds (process running for 2.418)\n\n--   2.104 초가 0.078 초가 됐다\n\n\n-- 그런데 조건이 사라졌다\n\n$ ./build/native/nativeCompile/app --debug 2>&1 | grep -c 'matched:'\n0\n$ ./build/native/nativeCompile/app --debug 2>&1 | grep -c 'CONDITIONS EVALUATION'\n0\n\n$ ./build/native/nativeCompile/app 2>&1 \\\n    --management.endpoints.web.exposure.include='*' > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/conditions\n404\n\n$ curl -s localhost:9090/actuator/beans | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['contexts']['application']['beans']))\"\n187\n\n--   6.7절의 그 보고서가 없다\n--   판정이 빌드 때 끝났다\n--   빈 수는 같다\n\n\n-- 조건이 빌드 때 굳는다\n\n$ ls build/generated/aotSources/study/boot/ | head -3\nBootApplication__ApplicationContextInitializer.java\nBootApplication__BeanDefinitions.java\nBootApplication__BeanFactoryRegistrations.java\n\n$ grep -c 'BeanDefinition' \\\n    build/generated/aotSources/study/boot/BootApplication__BeanFactoryRegistrations.java\n187\n\n$ STUDY_STORAGE_TYPE=file ./build/native/nativeCompile/app > /dev/null 2>&1 &\n$ curl -s localhost:8080/storage\nstudy.lib.MemoryStorage\n\n--   6.6절에서 값으로 구현을 고르던 그것이다\n--   빌드 때 memory 였으니 그대로 굳었다\n--   7 장의 값은 바뀌는데 6 장의 조건은 안 바뀐다\n\n\n-- 무엇이 그대로인가\n\n$ ./build/native/nativeCompile/app --spring.profiles.active=prod \\\n    --study.mode=인수 > /dev/null 2>&1 &\n\n$ curl -s localhost:8080/config | grep 모드\n모드: 인수\n$ curl -s localhost:9090/actuator/health\n{\"status\":\"UP\"}\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^[a-z]'\n412\n\n--   7 장과 8 장과 9 장은 그대로 돈다\n--   6 장만 시점이 옮겨 갔다\n\n\n-- 습관 ① 로그를 끝까지 읽는다\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod 2>&1 | wc -l\n      26\n$ java -jar build/libs/app.jar --spring.profiles.active=prod 2>&1 | tail -1 \\\n    | grep -o 'Started BootApplication in [0-9.]* seconds'\nStarted BootApplication in 2.104 seconds\n\n$ java -jar build/libs/app-notomcat.jar 2>&1 | grep -c 'Tomcat started'\n0\n\n--   10.1 절의 그 확인이다\n--   끝 줄이 있는데 포트 줄이 없으면 안 뜬 것이다\n\n\n-- 습관 ② 짐작 전에 보고서를 켠다\n\n$ java -jar build/libs/app-notomcat.jar --debug 2>&1 \\\n    | grep -A3 'ServletWebServerFactoryAutoConfiguration:' | tail -2\n         - @ConditionalOnClass did not find required class\n           'jakarta.servlet.ServletRequest'\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c tomcat\n0\n\n--   6.12절의 다섯 관문이다\n--   첫 관문에서 이미 0 이었다\n\n\n-- 습관 ③ 값을 밖에 둔다\n\n$ md5 -q build/libs/app.jar\nb28f4d6a91c035e7f24a8b0d17e3c962\n\n$ for p in dev prod; do\n    printf '%-6s ' \"$p\"\n    java -jar build/libs/app.jar --spring.profiles.active=$p --server.port=0 2>&1 \\\n      | grep -o 'profile is active: \"[a-z]*\"'\n  done\ndev    profile is active: \"dev\"\nprod   profile is active: \"prod\"\n\n$ md5 -q build/libs/app.jar\nb28f4d6a91c035e7f24a8b0d17e3c962\n\n--   7.1 절의 그 해시다\n--   시험한 것이 그대로 나간다\n\n\n-- 습관 ④ 업무 숫자를 센다\n\n$ Q() { curl -sG localhost:9091/api/v1/query --data-urlencode \"query=$1\" \\\n    | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result']\nprint(round(float(r[0]['value'][1]), 4) if r else '(없음)')\"; }\n\n$ Q 'sum(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[5m]))\n     / sum(rate(http_server_requests_seconds_count[5m]))'\n0.0\n$ Q 'sum(rate(order_placed_total[5m]))'\n6.2\n$ Q 'sum(rate(order_rejected_total[5m]))'\n3.8\n\n--   9.9절의 그 짝이다\n--   기술 숫자만 보면 아무 일도 없다\n\n\n-- 여든 절을 센다\n\n$ printf '%-6s %-30s %s\\n' \\\n  '3 장'  '서블릿과 WAR'      '부트 없이 다섯 가지 아픔' \\\n  '4 장'  '내장 톰캣과 JAR'   'JAR 안의 JAR, 로더' \\\n  '5 장'  '스타터와 버전'     '한 줄이 36 개' \\\n  '6 장'  '자동 구성'         '후보 163, 걸림 44' \\\n  '7 장'  '외부 설정'         '층 일곱' \\\n  '8 장'  '액츄에이터'        '엔드포인트 13' \\\n  '9 장'  '메트릭'            '계열 1308' \\\n  '10 장' '다시 보기'         '로그 26 줄'\n\n3 장   서블릿과 WAR                    부트 없이 다섯 가지 아픔\n4 장   내장 톰캣과 JAR                 JAR 안의 JAR, 로더\n5 장   스타터와 버전                   한 줄이 36 개\n6 장   자동 구성                       후보 163, 걸림 44\n7 장   외부 설정                       층 일곱\n8 장   액츄에이터                      엔드포인트 13\n9 장   메트릭                          계열 1308\n10 장  다시 보기                       로그 26 줄\n\n\n-- 마지막으로 한 번 띄운다\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod > /tmp/last.log 2>&1 &\n$ sleep 4\n\n$ grep -c . /tmp/last.log\n      26\n$ tail -1 /tmp/last.log | cut -c1-88\nINFO ... : Started BootApplication in 2.104 seconds (process running for 2.418)\n\n$ curl -s localhost:8080/hello\nhello\n$ curl -s localhost:9090/actuator/health\n{\"status\":\"UP\"}\n$ curl -s localhost:9090/actuator/info | python3 -c \"\nimport json,sys; d=json.load(sys.stdin)\nprint(d['build']['version'], d['git']['commit']['id'])\"\n1.4.0 6d79727\n$ curl -s localhost:9090/actuator/prometheus | grep -c '^[a-z]'\n412\n\n$ pkill -f app.jar\n\n--   1.4 절에서 그냥 지나갔던 줄들이다\n--   이제 스물여섯 줄이 다 읽힌다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '프록시'    '왜 감싸지나' \\\n  '추적'      '요청 하나를 따라' \\\n  '리액티브'  '서블릿이 없다' \\\n  '네이티브'  '2.104 에서 0.078 초' \\\n  '대신'      '보고서가 없다' \\\n  '조건'      '빌드 때 굳음' \\\n  '설정'      '그대로 돎' \\\n  '습관'      '넷'\n\n프록시                     왜 감싸지나\n추적                       요청 하나를 따라\n리액티브                   서블릿이 없다\n네이티브                   2.104 에서 0.078 초\n대신                       보고서가 없다\n조건                       빌드 때 굳음\n설정                       그대로 돎\n습관                       넷",
+   "note": "**네이티브로 만드니 기동이 2.104 초에서 0.078 초가 되는데 조건 평가 보고서가 아예** 없다.\n\n**빌드 때 판정이 끝나 환경 변수로 구현을 바꿔도 `MemoryStorage` 그대로**다.\n\n**7·8·9 장의 것들은 네이티브에서도 그대로 돌고 6 장만 시점이** 옮겨 간다.\n\n**웹을 빼고 웹플럭스를 넣으니 `Netty started` 로 3·4 장의 전제가** 사라진다.\n\n**마지막으로 한 번 띄운 스물여섯 줄이 이제 줄마다** 읽힌다."
+  }
+ ],
+ "recap": [
+  "**안 연 문이** 넷이다.",
+  "**프록시는 다른** 책이다.",
+  "**추적은 대별이** 아니다.",
+  "**리액티브는 서블릿을** 뺀다.",
+  "**네이티브는** 빠르다.",
+  "**대신 보고서가** 없다.",
+  "**조건이 빌드 때** 굳는다.",
+  "**설정은** 그대로다.",
+  "**습관이** 넷이다."
+ ],
+ "drills": [
+  {
+   "task": "프록시로 감싼 빈을 센다.",
+   "done_when": "몇 개인지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "웹플럭스로 바꿔 띄운다.",
+   "done_when": "네티가 뜬 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "네이티브로 만들어 본다.",
+   "done_when": "기동 시간과 보고서 유무를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "습관 넷을 한 번씩 해 본다.",
+   "done_when": "네 확인을 다 마쳤다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책이 여든 절 내내 전제한 것은?",
+   "a": "조건을 기동할 때 판정한다는 것이다."
+  },
+  {
+   "q": "네이티브에서 무엇이 달라지나?",
+   "a": "판정이 빌드 때 끝나 보고서가 없고 조건이 굳는다."
+  },
+  {
+   "q": "네이티브에서도 그대로인 것은?",
+   "a": "외부 설정, 액츄에이터, 메트릭이다."
+  },
+  {
+   "q": "웹플럭스로 바꾸면 로그가 어떻게 다른가?",
+   "a": "톰캣 대신 네티가 떴다고 찍힌다."
+  },
+  {
+   "q": "남길 습관 넷은?",
+   "a": "로그를 끝까지 읽기, 보고서 켜기, 값을 밖에 두기, 업무 숫자 세기다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빌드 시점 판정",
+   "def": "조건을 실행할 때가 아니라 이미지를 만들 때 정해 굳히는 방식."
+  },
+  {
+   "term": "추적",
+   "def": "요청 하나가 여러 서비스를 지나는 경로를 잇는 기록."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — GraalVM Native Image",
+   "url": "https://docs.spring.io/spring-boot/reference/packaging/native-image/index.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "OpenTelemetry — Documentation",
+   "url": "https://opentelemetry.io/docs/",
+   "publisher": "OpenTelemetry"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

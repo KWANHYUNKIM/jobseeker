@@ -710,7 +710,7 @@
           "title": "앞 책들과",
           "summary": "어디서 이어지나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -718,7 +718,7 @@
           "title": "다음으로",
           "summary": "여기서 어디로 가나.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "with-others",
+ "no": "10.2",
+ "chapter": 10,
+ "title": "앞 책들과",
+ "summary": "어디서 이어지나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "앞 책들과 잇는다.",
+  "같은 줄을 다시 읽는다.",
+  "무엇이 새로 보이는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.1절에서 로그 한 줄마다 이 책의 장이** 붙었다. **그 아래에 앞 책들이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "자리",
+   "ascii": "   where this book sits among the others\n\n   below it   the container, the web layer, the data layer\n   this book  what turns those into one runnable artifact\n   beside it  testing, security, docker, kubernetes\n\n   every book below ran on the arrangement this one explains",
+   "note": "**아래의 책들이 다 이 책이 설명한 배치 위에서** 돌았다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "같은 코드를 다르게 읽게 된다",
+   "md": "**②는 빈을 만들었다.**\n\n> **거기선 내가 다** 적었다.\n> **6.1절에서 187 개 중 둘**이었다.\n> **나머지가 어디서 왔는지 이제** 안다.\n\n**③④는 요청을 받았다.**\n\n> **디스패처가 이미** 있었다.\n> **6.7절 보고서에 그 이름이** 있다.\n> **누가 등록했는지 이제** 안다.\n\n**⑤⑥은 SQL 을 냈다.**\n\n> **데이터소스가 이미** 있었다.\n> **6.4절 조건과 7.8절 설정이 그걸** 만든다.\n> **9.8절에서 그 풀을** 봤다.\n\n**⑨는 슬라이스로** 띄웠다.\n\n> **후보를 줄인 것**이었다.\n> **6.12절에서 그걸** 셌다.\n> **왜 빠른지 이제** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 줄, 다른 깊이",
+   "ascii": "   the same line, read at three depths\n\n   book two    a container was created\n   book three  a dispatcher was mapped onto it\n   this book   a condition decided both of them existed\n\n   nothing changed; only what the line means changed",
+   "note": "**바뀐 건 없고 그 줄의 뜻만** 바뀌었다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이 책이 앞 책들을 대신하지는 않는다",
+   "md": "**여기선 SQL 을 안** 봤다.\n\n> **⑤⑥⑭⑮의 몫**이다.\n> **여기선 그 풀만** 봤다.\n> **9.8절의 셋째 줄**이다.\n\n**여기선 HTTP 도 얕게** 봤다.\n\n> **③④⑬의 몫**이다.\n> **여기선 그 서버가 어떻게 뜨는지**만.\n> **3장과 4장**이다.\n\n**보안 규칙도 한 절**이다.\n\n> **⑩이 열두 장**이다.\n> **여기선 액츄에이터를 잠그는 데만** 썼다.\n> **8.7절**이다.\n\n**배포도 한 절씩**이다.\n\n> **⑪⑫가 각각 열한 장**이다.\n> **여기선 JAR 와 프로브만** 닿았다.\n> **4.11절과 8.3절**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- ② 스프링 핵심 원리 — 빈이 어디서 오나\n\n// ② 3장에서는 이렇게 적었다\n@Configuration\nclass AppConfig {\n    @Bean MemberService memberService() { return new MemberServiceImpl(memberRepository()); }\n    @Bean MemberRepository memberRepository() { return new MemoryMemberRepository(); }\n}\n\n$ curl -s localhost:9090/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nmine = [k for k,v in b.items() if 'study.boot' in str(v.get('resource'))]\nprint('전체', len(b))\nprint('내 것', len(mine))\nprint('자동 구성이 만든 것', len(b) - len(mine))\"\n전체 187\n내 것 2\n자동 구성이 만든 것 185\n\n--   6.1절에서 센 그 숫자다\n--   ②에서 손으로 적던 것이 185 개 늘어 있다\n\n\n-- ③ 스프링 MVC — 디스패처는 누가 등록했나\n\n// ③ 1장에서는 web.xml 에 적거나 직접 등록했다\n$ curl -s localhost:9090/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nprint(json.dumps(b['dispatcherServlet'], ensure_ascii=False, indent=1))\"\n{\n \"scope\": \"singleton\",\n \"type\": \"org.springframework.web.servlet.DispatcherServlet\",\n \"resource\": \"class path resource [org/springframework/boot/autoconfigure/web/\n              servlet/DispatcherServletAutoConfiguration$DispatcherServletConfiguration.class]\",\n \"dependencies\": [\"spring.mvc-org.springframework.boot.autoconfigure.web.WebProperties\"]\n}\n\n$ java -jar build/libs/app.jar --debug 2>&1 \\\n    | grep -A2 'DispatcherServletAutoConfiguration matched' | head -3\n   DispatcherServletAutoConfiguration matched:\n      - @ConditionalOnWebApplication (required) found 'session' scope\n      - @ConditionalOnClass found required class\n        'org.springframework.web.servlet.DispatcherServlet'\n\n--   3.6절에서 web.xml 로 적던 그것이다\n--   6.4절의 조건이 대신 등록했다\n\n\n-- ④ MVC 2편 — 오류 페이지는 누가 만들었나\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/없는주소\n404\n$ curl -s localhost:8080/없는주소 | python3 -m json.tool\n{\n    \"timestamp\": \"2026-09-10T07:13:41.204+00:00\",\n    \"status\": 404,\n    \"error\": \"Not Found\",\n    \"path\": \"/없는주소\"\n}\n\n$ java -jar build/libs/app.jar --debug 2>&1 | grep -c 'ErrorMvcAutoConfiguration matched'\n1\n\n$ curl -s localhost:9090/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    if 'error' in str(x.get('predicate','')): print(x['predicate'], x['handler'][:44])\"\n{ [/error]} org.springframework.boot.autoconfigure.web.servlet.error.Basic\n\n--   ④ 8장에서 손으로 만들던 그 페이지다\n--   8.2절의 매핑 목록에 들어 있다\n\n\n-- ⑤ 스프링 DB — 데이터소스는 누가 만들었나\n\n// ⑤ 2장에서는 이렇게 적었다\n@Bean\nDataSource dataSource() {\n    var ds = new HikariDataSource();\n    ds.setJdbcUrl(URL); ds.setUsername(USER); ds.setPassword(PW);\n    return ds;\n}\n\n$ java -jar build/libs/app.jar --debug 2>&1 \\\n    | grep -A2 'PooledDataSourceConfiguration#dataSource matched' | head -3\n   DataSourceAutoConfiguration$PooledDataSourceConfiguration#dataSource matched:\n      - @ConditionalOnMissingBean (types: javax.sql.DataSource) did not find any beans\n\n$ curl -s localhost:9090/actuator/configprops | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nfor k,v in b.items():\n    if 'datasource' in k.lower():\n        p = v['properties']\n        print('url     ', p.get('url'))\n        print('password', p.get('password'))\"\nurl      jdbc:postgresql://db:5432/app\npassword ******\n\n--   6.5절에서 내가 만들면 부트가 물러선다고 했다\n--   여기선 내가 안 만들어서 부트가 만들었다\n--   7.8절의 설정이 값을 넣었다\n\n\n-- ⑥ DB 2편 — 같은 SQL 을 다섯 기술이 냈다\n\n$ curl -s -X POST localhost:8080/actuator/loggers/org.hibernate.SQL \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"DEBUG\"}'\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/orders?item=연필&qty=1'\n$ tail -1 logs/app.log\n07:13:52 DEBUG org.hibernate.SQL - insert into orders (item,qty,id) values (?,?,default)\n\n--   ⑥에서 보던 그 SQL 이다\n--   8.5절 덕에 다시 안 뜨고 켰다\n\n\n-- ⑦⑧ JPA 활용 — 쿼리 개수를 셌었다\n\n$ curl -s localhost:9090/actuator/metrics/hikaricp.connections.usage \\\n    | python3 -c \"\nimport json,sys\nd = {m['statistic']: m['value'] for m in json.load(sys.stdin)['measurements']}\nprint('사용 횟수', int(d['COUNT']))\"\n사용 횟수 1204\n\n$ curl -sG localhost:9091/api/v1/query \\\n    --data-urlencode 'query=rate(hikaricp_connections_usage_seconds_count[5m])' \\\n    | python3 -c \"import json,sys; \\\nprint('초당', round(float(json.load(sys.stdin)['data']['result'][0]['value'][1]),1))\"\n초당 14.2\n\n--   ⑧에서 31 을 3 으로 줄이던 그것이다\n--   9.6절의 질문으로 그 수를 계속 볼 수 있다\n\n\n-- ⑨ 실용적인 테스트 — 슬라이스가 왜 빠른가\n\n@SpringBootTest\nclass FullTest { }\n\n@WebMvcTest(HelloController.class)\nclass SliceTest { }\n\n$ ./gradlew test --tests '*FullTest' 2>&1 | grep -E 'matched:|BUILD' | tail -2\n     92 개 걸림\nBUILD SUCCESSFUL in 6s\n\n$ ./gradlew test --tests '*SliceTest' 2>&1 | grep -E 'matched:|BUILD' | tail -2\n     21 개 걸림\nBUILD SUCCESSFUL in 2s\n\n$ curl -s localhost:9090/actuator/beans | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['contexts']['application']['beans']))\"\n187\n\n--   6.12절에서 후보가 163 에서 21 로 줄던 그것이다\n--   빈을 덜 만드니 빠르다\n\n\n-- ⑩ 시큐리티 — 필터가 어디 붙었나\n\n$ curl -s localhost:9090/actuator/mappings | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)['contexts']['application']['mappings']\nfor f in d['servletFilters']:\n    if 'security' in f['className'].lower() or 'Filter' in f['name']:\n        print('%-38s %s' % (f['name'], f['urlPatternMappings']))\" | head -4\nsecurityFilterChainRegistration        ['/*']\ncharacterEncodingFilter                ['/*']\nrequestContextFilter                   ['/*']\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:9090/actuator/env\n401\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u ops:secret localhost:9090/actuator/env\n404\n\n--   ⑩ 2장에서 필터 목록을 읽던 그것이다\n--   8.7절에서 그걸로 액츄에이터를 잠갔다\n\n\n-- ⑪ 도커 — 이미지가 왜 그렇게 나뉘었나\n\n$ docker history app:layered --format '{{.Size}}\\t{{.CreatedBy}}' | head -5\n0B\tENTRYPOINT [\"java\" \"org.springframework.boot.loader.launch.JarLauncher\"]\n412kB\tCOPY /b/extracted/application/ ./\n0B\tCOPY /b/extracted/snapshot-dependencies/ ./\n2.1kB\tCOPY /b/extracted/spring-boot-loader/ ./\n48.2MB\tCOPY /b/extracted/dependencies/ ./\n\n$ unzip -p build/libs/app.jar BOOT-INF/layers.idx | head -4\n- \"dependencies\":\n  - \"BOOT-INF/lib/\"\n- \"spring-boot-loader\":\n  - \"org/springframework/boot/loader/\"\n\n--   4.7절에서 만든 그 순서다\n--   ⑪ 4장의 캐시가 이걸 쓴다\n\n\n-- ⑫ 쿠버네티스 — 프로브가 무엇을 부르나\n\n$ kubectl get deploy orders -o jsonpath='{.spec.template.spec.containers[0].livenessProbe}' \\\n    | python3 -m json.tool\n{\n    \"httpGet\": { \"path\": \"/actuator/health/liveness\", \"port\": 9090 },\n    \"initialDelaySeconds\": 10,\n    \"periodSeconds\": 10\n}\n\n$ kubectl exec orders-7d9c4f-2x8kq -- \\\n    curl -s localhost:9090/actuator/health/readiness\n{\"status\":\"UP\"}\n\n--   8.3절에서 나눈 그 둘이다\n--   ⑫ 6장에서 이 주소를 적었다\n\n\n-- ⑬ HTTP — 오간 것을 다시 본다\n\n$ curl -s -D - -o /dev/null localhost:8080/orders -X POST \\\n    -H 'Content-Type: application/json' -d '{\"item\":\"연필\",\"qty\":1}' | head -5\nHTTP/1.1 201\nLocation: /orders/1205\nContent-Type: application/json\nDate: Thu, 10 Sep 2026 07:14:02 GMT\n\n$ curl -s localhost:9090/actuator/httpexchanges | python3 -c \"\nimport json,sys\ne = json.load(sys.stdin)['exchanges'][-1]\nprint(e['request']['method'], e['response']['status'], e['timeTaken'])\"\nPOST 201 PT0.041S\n\n--   ⑬에서 원문을 읽던 것을 8.6절이 기록으로 남긴다\n\n\n-- ⑭⑮ 데이터 JPA 와 Querydsl\n\n$ grep -rn 'createQuery(\"' src/main/java | wc -l\n0\n$ grep -rn '@Query' src/main/java | wc -l\n0\n\n$ curl -s -X POST localhost:8080/actuator/loggers/org.hibernate.SQL \\\n    -H 'Content-Type: application/json' -d '{\"configuredLevel\":\"DEBUG\"}'\n$ curl -s -o /dev/null 'localhost:8080/orders/search?item=연필'\n$ tail -1 logs/app.log | cut -c1-72\n07:14:11 DEBUG org.hibernate.SQL - select o1_0.id,o1_0.item,o1_0.qty from\n\n--   ⑭에서 인터페이스만 적고 SQL 을 받아 냈다\n--   8.5절로 그 SQL 을 언제든 켤 수 있다\n\n\n-- 열여섯 권이 한 로그에 있다\n\n$ java -jar build/libs/app.jar --spring.profiles.active=prod 2>&1 \\\n  | awk '\n    /Starting BootApplication/     {print \"⑯ 4장   \" $0}\n    /profile is active/            {print \"⑯ 7장   \" $0}\n    /Starting service .Tomcat./    {print \"③ 1장   \" $0}\n    /initialization completed/     {print \"② 4장   \" $0}\n    /HikariPool-1 - Start completed/ {print \"⑤ 6장   \" $0}\n    /Hibernate ORM core version/   {print \"① 1장   \" $0}\n    /Exposing .* endpoints/        {print \"⑯ 8장   \" $0}\n    /Tomcat started on port 8080/  {print \"⑬ 1장   \" $0}\n  ' | sed 's/INFO [0-9]* --- \\[ *main\\] //' | cut -c1-92\n\n⑯ 4장   study.boot.BootApplication : Starting BootApplication v1.4.0 using Java 21\n⑯ 7장   study.boot.BootApplication : The following 1 profile is active: \"prod\"\n③ 1장   o.apache.catalina.core.StandardService : Starting service [Tomcat]\n② 4장   w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: ini\n⑤ 6장   com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Start completed.\n① 1장   org.hibernate.Version : HHH000412: Hibernate ORM core version 6.5.2.Final\n⑯ 8장   o.s.b.a.e.web.EndpointLinksResolver : Exposing 7 endpoints beneath base pa\n⑬ 1장   o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat started on port 8080 (htt\n\n--   10.1 절의 스물여섯 줄에 여러 권이 겹쳐 있다\n\n\n-- 무엇이 새로 보이나\n\n$ printf '%-10s %-30s %s\\n' \\\n  '②'  '빈을 내가 다 적었다'      '185 개가 어디서 오는지 안다' \\\n  '③④' '디스패처가 이미 있었다'   '어느 조건이 등록했는지 안다' \\\n  '⑤⑥' 'SQL 을 봤다'              '그 풀이 얼마나 찼는지 본다' \\\n  '⑦⑧' '쿼리 수를 셌다'           '계속 재는 법을 안다' \\\n  '⑨'  '슬라이스가 빨랐다'        '후보가 줄어서라는 걸 안다' \\\n  '⑩'  '필터 목록을 읽었다'       '그걸로 운영 창구를 잠근다' \\\n  '⑪⑫' '이미지를 만들었다'        '왜 그렇게 나뉘는지 안다' \\\n  '⑬'  'HTTP 원문을 봤다'         '지난 요청을 되짚는다' \\\n  '⑭⑮' '구현 없이 SQL 을 받았다'  '언제든 켜서 확인한다'\n\n②          빈을 내가 다 적었다              185 개가 어디서 오는지 안다\n③④         디스패처가 이미 있었다           어느 조건이 등록했는지 안다\n⑤⑥         SQL 을 봤다                      그 풀이 얼마나 찼는지 본다\n⑦⑧         쿼리 수를 셌다                   계속 재는 법을 안다\n⑨          슬라이스가 빨랐다                후보가 줄어서라는 걸 안다\n⑩          필터 목록을 읽었다               그걸로 운영 창구를 잠근다\n⑪⑫         이미지를 만들었다                왜 그렇게 나뉘는지 안다\n⑬          HTTP 원문을 봤다                 지난 요청을 되짚는다\n⑭⑮         구현 없이 SQL 을 받았다          언제든 켜서 확인한다\n\n--   10.3 절에서 여기서 어디로 갈지 본다",
+   "note": "**빈 187 개 중 내 것은 둘이고 185 개가 자동 구성에서 온 걸 ②의 손으로 적던 코드와 나란히** 놨다.\n\n**디스패처 서블릿의 출처가 자동 구성 클래스이고 조건이 `matched` 로** 찍힌다.\n\n**전체 테스트가 92 개 걸림에 6 초, 슬라이스가 21 개에 2 초로 6.12절의 그** 숫자다.\n\n**프로브가 부르는 주소가 8.3절에서 나눈 `liveness`·`readiness` 그대로**다.\n\n**한 기동 로그에 ①·②·③·⑤·⑬ 과 이 책 세 장이 겹쳐** 있다."
+  }
+ ],
+ "recap": [
+  "**아래에 앞 책들이** 있다.",
+  "**185 개가 어디서** 왔는지 안다.",
+  "**디스패처를 누가** 등록했는지 안다.",
+  "**데이터소스도** 그렇다.",
+  "**슬라이스가 왜** 빠른지 안다.",
+  "**필터로 창구를** 잠근다.",
+  "**이미지가 왜** 나뉘는지 안다.",
+  "**지난 요청을** 되짚는다.",
+  "**한 로그에 여러 권이** 겹친다."
+ ],
+ "drills": [
+  {
+   "task": "빈의 출처를 갈라 센다.",
+   "done_when": "내 것과 자동 구성 것을 나눴다.",
+   "minutes": 20
+  },
+  {
+   "task": "디스패처의 출처를 찾는다.",
+   "done_when": "조건까지 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "전체와 슬라이스를 견준다.",
+   "done_when": "걸린 수와 시간을 비교했다.",
+   "minutes": 20
+  },
+  {
+   "task": "기동 로그에 책 번호를 붙인다.",
+   "done_when": "여러 권이 겹친 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "②에서 손으로 적던 빈들은 지금 어디 있나?",
+   "a": "대부분 자동 구성이 만든다. 내 것은 몇 개뿐이다."
+  },
+  {
+   "q": "디스패처 서블릿은 누가 등록하나?",
+   "a": "조건이 맞은 자동 구성 클래스가 등록한다."
+  },
+  {
+   "q": "슬라이스 테스트가 왜 빠른가?",
+   "a": "후보 자체가 줄어 만드는 빈이 적어서다."
+  },
+  {
+   "q": "이 책이 앞 책들을 대신하나?",
+   "a": "아니다. 그 위에 무엇이 얹혀 있었는지를 설명할 뿐이다."
+  },
+  {
+   "q": "한 기동 로그에 무엇이 겹쳐 있나?",
+   "a": "여러 책이 각각 다루던 층들이 순서대로 겹쳐 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "겹쳐 읽기",
+   "def": "같은 로그 한 줄을 여러 책의 관점에서 다시 읽는 것."
+  },
+  {
+   "term": "층",
+   "def": "컨테이너·웹·데이터처럼 서로 얹혀 있는 관심사 묶음."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Auto-configuration",
+   "url": "https://docs.spring.io/spring-boot/reference/using/auto-configuration.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
