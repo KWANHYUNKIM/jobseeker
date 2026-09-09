@@ -276,7 +276,7 @@
           "title": "case 와 상수",
           "summary": "문자 더하기까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -291,7 +291,7 @@
           "title": "프로젝션 대상이 하나",
           "summary": "엔티티가 아닌 값.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",

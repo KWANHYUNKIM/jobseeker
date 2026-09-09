@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "case-constant",
+ "no": "4.15",
+ "chapter": 4,
+ "title": "case 와 상수",
+ "summary": "문자 더하기까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 형태를 쓴다.",
+  "상수와 concat 을 안다.",
+  "어디서 분기할지 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4장의 마지막**이다. **값을 그대로 안 주고 바꿔서 주는 법을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "case 두 형태",
+   "ascii": "   two shapes of case, and where each one fits\n\n   caseBuilder when then    a general condition per branch\n   path when then           equality against one column\n\n   the second reads better when every branch tests the same thing",
+   "note": "**같은 컬럼만 볼 때는 둘째가** 낫다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "SQL 에서 분기하면 정렬과 묶기가 된다",
+   "md": "**자바에서 해도** 된다.\n\n> **행을 받아서 `if` 로** 바꾼다.\n> **읽기도 쉽고 테스트도** 쉽다.\n> **대부분은 그게** 낫다.\n\n**그런데 정렬을 못** 한다.\n\n> **DB 는 그 이름표를** 모른다.\n> **`order by` 에 못** 쓴다.\n> **4.9절의 `group by` 도** 같다.\n\n**그럴 때만 `case` 로** 내린다.\n\n> **등급별 인원을 세는 식**이다.\n> **분기가 SQL 에** 있어야 한다.\n> **아래에서 그걸** 만든다.\n\n**상수도 넣을 수** 있다.\n\n> **`Expressions.constant(...)`** 다.\n> **JPQL 에는 나오는데 SQL 에는 안 나올 수** 있다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "분기를 어디에 둘까",
+   "ascii": "   where the branching should actually live\n\n   in the sql        the database computes a label per row\n   in the java code  the rows come back raw, the label is added after\n\n   only the first one can be sorted or grouped by that label",
+   "note": "**정렬·묶기가 필요하면 SQL 쪽**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "concat 은 타입을 맞춰야 한다",
+   "md": "**숫자를 바로 못** 붙인다.\n\n> **`username.concat(age)` 는 컴파일이** 안 된다.\n> **`age.stringValue()` 로** 바꾼다.\n> **1.2절의 타입 검사가 여기서도** 돈다.\n\n**`stringValue()` 가 `cast` 가** 된다.\n\n> **JPQL 에 `str(...)` 이** 나간다.\n> **SQL 에서는 `cast(... as varchar)`** 다.\n> **아래에서 확인**한다.\n\n**열거형에도** 쓴다.\n\n> **`stringValue()` 가 이름을** 준다.\n> **`ordinal` 이 아니라 이름**이다.\n> **비교할 때 편**하다.\n\n**`case` 안에서 `null` 을 줄 수** 있다.\n\n> **`otherwise((String) null)` 이다.**\n> **캐스팅이** 필요하다.\n> **안 그러면 어느 오버로드인지 모른**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 단순 case\n\n@Test\nvoid 단순_case() {\n    em.clear();\n    queryFactory\n            .select(member.username,\n                    member.age\n                            .when(10).then(\"열살\")\n                            .when(20).then(\"스무살\")\n                            .otherwise(\"기타\"))\n            .from(member)\n            .limit(4)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %s%n\",\n                    t.get(member.username), t.get(1, String.class)));\n}\n\n/* select\n    member1.username,\n    case member1.age\n        when ?1 then ?2\n        when ?3 then ?4\n        else ?5\n    end\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        case m1_0.age\n            when ? then ?\n            when ? then ?\n            else ?\n        end\n    from\n        member m1_0\n    fetch first ? rows only\nTRACE binding parameter (1:INTEGER) <- [10]\nTRACE binding parameter (2:VARCHAR) <- [열살]\nm1   열살\nm2   스무살\nm3   기타\nm4   기타\n\n--   컬럼 하나를 여러 값과 비교한다\n\n\n-- 복잡한 case\n\n@Test\nvoid 복잡한_case() {\n    em.clear();\n    queryFactory\n            .select(member.username,\n                    new CaseBuilder()\n                            .when(member.age.between(0, 19)).then(\"미성년\")\n                            .when(member.age.between(20, 29)).then(\"청년\")\n                            .otherwise(\"장년\"))\n            .from(member)\n            .limit(4)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %s%n\",\n                    t.get(member.username), t.get(1, String.class)));\n}\n\n/* select\n    member1.username,\n    case\n        when member1.age between ?1 and ?2 then ?3\n        when member1.age between ?4 and ?5 then ?6\n        else ?7\n    end\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username,\n        case\n            when m1_0.age between ? and ? then ?\n            when m1_0.age between ? and ? then ?\n            else ?\n        end\n    from\n        member m1_0\n    fetch first ? rows only\nm1   미성년\nm2   청년\nm3   장년\nm4   장년\n\n--   조건이 컬럼마다 다를 수 있다\n\n\n-- 자바에서 해도 된다\n\n@Test\nvoid 자바에서() {\n    em.clear();\n    queryFactory.select(member.username, member.age)\n            .from(member).limit(4).fetch()\n            .forEach(t -> {\n                int age = t.get(member.age);\n                String grade = age < 20 ? \"미성년\" : age < 30 ? \"청년\" : \"장년\";\n                System.out.printf(\"%-4s %s%n\", t.get(member.username), grade);\n            });\n}\n\n/* select\n    member1.username,\n    member1.age\nfrom\n    Member member1 */\n\nHibernate:\n    select m1_0.username, m1_0.age from member m1_0\n    fetch first ? rows only\nm1   미성년\nm2   청년\nm3   장년\nm4   장년\n\n--   SQL 이 훨씬 단순하다\n--   결과가 같다\n--   대부분 이쪽이 낫다\n\n\n-- 그런데 정렬은 못 한다\n\n// 자바에서 만든 등급으로 order by 를 걸 방법이 없다\n\n@Test\nvoid 등급으로_정렬() {\n    em.clear();\n    NumberExpression<Integer> rank = new CaseBuilder()\n            .when(member.age.goe(30)).then(3)\n            .when(member.age.goe(20)).then(2)\n            .otherwise(1);\n\n    queryFactory\n            .select(member.username, member.age, rank)\n            .from(member)\n            .orderBy(rank.desc(), member.age.desc())\n            .limit(4)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %2d %d%n\",\n                    t.get(member.username), t.get(member.age),\n                    t.get(rank)));\n}\n\n/* select\n    member1.username,\n    member1.age,\n    case\n        when member1.age >= ?1 then ?2\n        when member1.age >= ?3 then ?4\n        else ?5\n    end\nfrom\n    Member member1\norder by\n    case\n        when member1.age >= ?6 then ?7\n        when member1.age >= ?8 then ?9\n        else ?10\n    end desc,\n    member1.age desc */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age,\n        case when m1_0.age>=? then ? when m1_0.age>=? then ? else ? end\n    from\n        member m1_0\n    order by\n        case when m1_0.age>=? then ? when m1_0.age>=? then ? else ? end desc,\n        m1_0.age desc\n    fetch first ? rows only\nm4   40 3\nm7   35 3\nm3   30 3\nm10  30 3\n\n--   case 가 두 번 나갔다\n--   같은 표현식을 변수로 뒀는데도 그렇다\n--   4.8절에서 변수로 두던 것과 다르다\n\n\n-- 등급으로 묶는다\n\n@Test\nvoid 등급별_인원() {\n    em.clear();\n    StringExpression grade = new CaseBuilder()\n            .when(member.age.goe(30)).then(\"장년\")\n            .when(member.age.goe(20)).then(\"청년\")\n            .otherwise(\"미성년\");\n\n    queryFactory\n            .select(grade, member.count())\n            .from(member)\n            .groupBy(grade)\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(grade) + \" \" + t.get(member.count()) + \"명\"));\n}\n\n/* select\n    case\n        when member1.age >= ?1 then ?2\n        when member1.age >= ?3 then ?4\n        else ?5\n    end,\n    count(member1)\nfrom\n    Member member1\ngroup by\n    case\n        when member1.age >= ?6 then ?7\n        when member1.age >= ?8 then ?9\n        else ?10\n    end */\n\nHibernate:\n    select\n        case when m1_0.age>=? then ? when m1_0.age>=? then ? else ? end,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    group by\n        case when m1_0.age>=? then ? when m1_0.age>=? then ? else ? end\n장년 4명\n청년 3명\n미성년 3명\n\n--   자바로는 못 하는 일이다\n--   4.9절의 group by 다\n\n\n-- 상수를 넣는다\n\n@Test\nvoid 상수() {\n    em.clear();\n    queryFactory\n            .select(member.username, Expressions.constant(\"A\"))\n            .from(member)\n            .limit(2)\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(member.username) + \" \" + t.get(1, String.class)));\n}\n\n/* select\n    member1.username\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        m1_0.username\n    from\n        member m1_0\n    fetch first ? rows only\nm1 A\nm2 A\n\n--   SQL 에 A 가 없다\n--   JPQL 에도 없다\n--   Querydsl 이 자바에서 붙였다\n\n\n-- 그래서 정렬에는 못 쓴다\n\n@Test\nvoid 상수_정렬() {\n    em.clear();\n    try {\n        queryFactory\n                .select(member.username, Expressions.constant(\"A\"))\n                .from(member)\n                .orderBy(Expressions.constant(\"A\").asc())\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: cannot find symbol\n  symbol: method asc()\n\n--   정렬 대상이 아니다\n\n\n-- 문자를 더한다\n\n@Test\nvoid concat() {\n    em.clear();\n    queryFactory\n            .select(member.username.concat(\"_\")\n                    .concat(member.age.stringValue()))\n            .from(member)\n            .limit(3)\n            .fetch()\n            .forEach(System.out::println);\n}\n\n/* select\n    concat(\n        concat(member1.username, ?1),\n        str(member1.age)\n    )\nfrom\n    Member member1 */\n\nHibernate:\n    select\n        (m1_0.username||?)||cast(m1_0.age as varchar)\n    from\n        member m1_0\n    fetch first ? rows only\nTRACE binding parameter (1:VARCHAR) <- [_]\nm1_10\nm2_20\nm3_30\n\n--   JPQL 은 concat 과 str 이다\n--   SQL 은 || 와 cast 다\n--   방언이 바꿨다 (2.4절)\n\n\n-- stringValue 없이 하면\n\n// member.username.concat(\"_\").concat(member.age)\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: incompatible types: NumberPath<Integer> cannot be converted to\n       Expression<String>\n\n--   1.2절의 타입 검사다\n\n\n-- 열거형에도 쓴다\n\npublic enum Grade { BRONZE, SILVER, GOLD }\n\n@Test\nvoid 열거형() {\n    em.clear();\n    queryFactory\n            .select(member.username, member.grade.stringValue())\n            .from(member)\n            .where(member.grade.stringValue().eq(\"GOLD\"))\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(member.username) + \" \" + t.get(1, String.class)));\n}\n\n/* select\n    member1.username,\n    str(member1.grade)\nfrom\n    Member member1\nwhere\n    str(member1.grade) = ?1 */\n\nHibernate:\n    select\n        m1_0.username,\n        cast(m1_0.grade as varchar)\n    from\n        member m1_0\n    where\n        cast(m1_0.grade as varchar)=?\n\n--   where 에 함수가 붙어 인덱스를 못 탄다\n--   보통은 member.grade.eq(Grade.GOLD) 를 쓴다\n\n\n-- case 에서 null 을 주려면\n\n@Test\nvoid case_null() {\n    em.clear();\n    queryFactory\n            .select(member.username,\n                    new CaseBuilder()\n                            .when(member.team.isNotNull())\n                                .then(member.team.name)\n                            .otherwise((String) null))\n            .from(member)\n            .limit(10)\n            .fetch()\n            .stream().filter(t -> t.get(1, String.class) == null)\n            .forEach(t -> System.out.println(\n                    t.get(member.username) + \" -> null\"));\n}\n\n/* select\n    member1.username,\n    case\n        when member1.team is not null then team.name\n        else null\n    end\nfrom\n    Member member1\n  inner join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.username,\n        case when m1_0.team_id is not null then t1_0.name else null end\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n\n--   캐스팅이 필요했다\n--   then 안의 team.name 이 묵시적 조인을 만들었다\n--   그래서 팀 없는 회원이 아예 안 나온다\n--   4.10절의 그 함정이다\n\n\n-- 4장을 닫는다\n\n@Test\nvoid 4장_결론() {\n    QMember sub = new QMember(\"memberSub\");\n    em.clear();\n\n    StringExpression grade = new CaseBuilder()\n            .when(member.age.goe(30)).then(\"장년\")\n            .otherwise(\"그 외\");\n\n    queryFactory\n            .select(member.username, member.age, grade, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .where(member.age.goe(\n                    JPAExpressions.select(sub.age.avg()).from(sub)))\n            .groupBy(member.username, member.age, team.name)\n            .orderBy(member.age.desc(), member.username.asc())\n            .limit(3)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-4s %2d %-6s %s%n\",\n                    t.get(member.username), t.get(member.age),\n                    t.get(grade),\n                    t.get(team.name) == null ? \"(없음)\" : t.get(team.name)));\n}\n\n/* select\n    member1.username,\n    member1.age,\n    case\n        when member1.age >= ?1 then ?2\n        else ?3\n    end,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team\nwhere\n    member1.age >= (\n        select\n            avg(memberSub.age)\n        from\n            Member memberSub\n    )\ngroup by\n    member1.username,\n    member1.age,\n    team.name\norder by\n    member1.age desc,\n    member1.username asc */\n\nHibernate:\n    select\n        m1_0.username,\n        m1_0.age,\n        case when m1_0.age>=? then ? else ? end,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=(select avg(m2_0.age) from member m2_0)\n    group by\n        m1_0.username, m1_0.age, t1_0.name\n    order by\n        m1_0.age desc, m1_0.username\n    fetch first ? rows only\nm4   40 장년   teamA\nm7   35 장년   teamB\nm10  30 장년   (없음)\n\n--   4장의 낱말이 거의 다 들어 있다\n--   5.1절에서 반환 모양을 바꾼다",
+   "note": "**`case` 를 정렬에 쓰면 `select` 와 `order by` 에 같은 식이 두 번** 나간다.\n\n**등급으로 `group by` 하는 건 자바에서는 못 하는** 일이다.\n\n**`Expressions.constant(\"A\")` 는 JPQL·SQL 어디에도 안 나오고 Querydsl 이 자바에서** 붙인다.\n\n**`concat`·`stringValue()` 가 JPQL 에서 `concat`/`str`, SQL 에서 `||`/`cast(... as varchar)` 로** 바뀐다.\n\n**`case` 의 `then` 안에서 `team.name` 을 쓰자 묵시적 `inner join` 이 생겨 팀 없는 회원이** 사라졌다."
+  }
+ ],
+ "recap": [
+  "**형태가 둘**이다.",
+  "**자바에서 해도** 된다.",
+  "**정렬·묶기는 SQL 에서만** 된다.",
+  "**식이 두 번** 나간다.",
+  "**상수는 SQL 에 안** 나온다.",
+  "**정렬에 못** 쓴다.",
+  "**`concat` 은 타입을** 맞춘다.",
+  "**`str` 이 `cast` 가** 된다.",
+  "**`then` 안의 경로도 조인을** 만든다."
+ ],
+ "drills": [
+  {
+   "task": "두 형태의 `case` 를 쓴다.",
+   "done_when": "JPQL 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "등급으로 묶는다.",
+   "done_when": "`group by` 에 식이 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "상수를 넣어 본다.",
+   "done_when": "SQL 에 없는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "숫자를 문자에 붙인다.",
+   "done_when": "`cast` 를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`case` 의 두 형태는?",
+   "a": "`CaseBuilder` 와 경로에 붙이는 `when` 이다."
+  },
+  {
+   "q": "분기를 SQL 에 둬야 하는 경우는?",
+   "a": "그 결과로 정렬하거나 묶어야 할 때다."
+  },
+  {
+   "q": "`Expressions.constant` 는 SQL 에 나오나?",
+   "a": "안 나온다. 자바에서 결과에 붙인다."
+  },
+  {
+   "q": "숫자를 문자에 붙이려면?",
+   "a": "`stringValue()` 로 바꾼다."
+  },
+  {
+   "q": "`then` 안에서 연관 경로를 쓰면?",
+   "a": "묵시적 내부 조인이 생겨 행이 줄 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CaseBuilder",
+   "def": "분기마다 다른 조건을 줄 수 있는 `case` 표현식 생성기."
+  },
+  {
+   "term": "stringValue",
+   "def": "숫자나 열거형을 문자열 표현으로 바꾸는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
