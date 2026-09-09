@@ -228,7 +228,7 @@
           "title": "GroupBy",
           "summary": "having 까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.10",
@@ -236,7 +236,7 @@
           "title": "조인",
           "summary": "기본 조인과 별칭.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.11",

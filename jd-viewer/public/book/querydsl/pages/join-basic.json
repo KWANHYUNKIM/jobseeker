@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "join-basic",
+ "no": "4.10",
+ "chapter": 4,
+ "title": "조인",
+ "summary": "기본 조인과 별칭.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 낱말을 안다.",
+  "묵시적 조인과 가른다.",
+  "별칭의 쓸모를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**앞 절들에서 조인이 저절로 생겼다.** **이제 직접** 적는다."
+  },
+  {
+   "type": "figure",
+   "caption": "조인 낱말 넷",
+   "ascii": "   four join words, and what they change\n\n   join       inner, rows without a match disappear\n   leftJoin   outer, rows without a match stay, with nulls\n   rightJoin  the same, from the other side\n   innerJoin  the same as join, spelled out\n\n   the choice changes the row count, not the columns",
+   "note": "**컬럼이 아니라 행 수가** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "별칭을 주면 그 표를 조건에 쓸 수 있다",
+   "md": "**둘째 인자가 별칭**이다.\n\n> **`join(member.team, team)`** 이다.\n> **앞은 탈 연관, 뒤는 붙일** 이름이다.\n> **4.2절의 Q 타입**이다.\n\n**별칭이 있어야 조건에** 쓴다.\n\n> **`team.name.eq(...)` 처럼** 쓴다.\n> **없으면 그 표를 부를 수** 없다.\n> **`select` 에도 못** 넣는다.\n\n**묵시적 조인은 이름이** 없다.\n\n> **`member.team.name` 은 조인을** 만든다.\n> **그런데 그 표를 따로 못** 부른다.\n> **항상 내부 조인**이다.\n\n**그래서 명시적으로 적는 게** 낫다.\n\n> **어떤 조인인지 코드에** 보인다.\n> **4.6절에서 건수가 줄었던 그** 사고를 막는다.\n> **4.12절의 `on` 도 붙일 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "묵시적과 명시적",
+   "ascii": "   two ways to reach the team, and one difference\n\n   member.team.name        an implicit join, always inner\n   join(member.team, team) an explicit join, you choose the kind\n\n   the implicit form silently drops the rows with no team",
+   "note": "**묵시적은 팀 없는 행을 조용히** 버린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "조인해도 연관은 안 채워진다",
+   "md": "**조인과 페치는 다른** 것이다.\n\n> **`join` 은 조건을 위한** 것이다.\n> **`select` 는 여전히 `member` 뿐**이다.\n> **팀을 부르면 또 나간다.**\n\n**4.13절이 그** 절이다.\n\n> **`fetchJoin()` 을 붙여야 같이** 읽는다.\n> **⑭ 5.13절의 그** 이야기다.\n> **아래에서 쿼리 수를** 센다.\n\n**컬렉션을 조인하면 행이** 는다.\n\n> **팀 하나에 회원 넷이면 네 행**이다.\n> **`distinct` 가 필요해**진다.\n> **아래에서 확인**한다.\n\n**같은 연관을 두 번 조인하면 둘이** 붙는다.\n\n> **별칭이 다르면 각각 조인**이다.\n> **4.2절에서 조건은 한 번이라고** 했다.\n> **명시적으로 두 번 적으면 다르**다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 내부 조인\n\n@Test\nvoid 내부() {\n    em.clear();\n    List<Member> r = queryFactory\n            .selectFrom(member)\n            .join(member.team, team)\n            .where(team.name.eq(\"teamA\"))\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    team.name = ?1 */\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n    where\n        t1_0.name=?\n건수: 4\n\n--   on 절은 JPQL 에 없다\n--   연관을 아니까 만들어 준다\n\n\n-- 외부 조인\n\n@Test\nvoid 외부() {\n    em.clear();\n    List<Tuple> r = queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .fetch();\n    System.out.println(\"건수: \" + r.size());\n    r.stream().filter(t -> t.get(team.name) == null)\n            .forEach(t -> System.out.println(\n                    t.get(member.username) + \" -> null\"));\n}\n\n/* select\n    member1.username,\n    team.name\nfrom\n    Member member1\n  left join\n    member1.team as team */\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0\n            on t1_0.team_id=m1_0.team_id\n건수: 10\nm8 -> null\nm9 -> null\nm10 -> null\n\n--   3.3절의 셋이 남았다\n\n\n-- 네 낱말을 다 써 본다\n\n@Test\nvoid 네_낱말() {\n    for (String kind : List.of(\"join\", \"innerJoin\", \"leftJoin\", \"rightJoin\")) {\n        em.clear();\n        System.out.println(\"--- \" + kind + \" ---\");\n        JPAQuery<Member> q = queryFactory.selectFrom(member);\n        switch (kind) {\n            case \"join\"      -> q.join(member.team, team);\n            case \"innerJoin\" -> q.innerJoin(member.team, team);\n            case \"leftJoin\"  -> q.leftJoin(member.team, team);\n            default          -> q.rightJoin(member.team, team);\n        }\n        System.out.println(\"건수: \" + q.fetch().size());\n    }\n}\n\n--- join ---\n/* ... inner join member1.team as team */\nHibernate: select ... join team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 7\n--- innerJoin ---\n/* ... inner join member1.team as team */\nHibernate: select ... join team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 7\n--- leftJoin ---\n/* ... left join member1.team as team */\nHibernate: select ... left join team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 10\n--- rightJoin ---\n/* ... right join member1.team as team */\nHibernate: select ... right join team t1_0 on t1_0.team_id=m1_0.team_id\n건수: 7\n\n--   join 과 innerJoin 이 같다\n--   rightJoin 은 팀 기준이라 여기선 7 이다\n\n\n-- 묵시적 조인과 비교한다\n\n@Test\nvoid 묵시적() {\n    em.clear();\n    System.out.println(\"묵시적: \" + queryFactory\n            .selectFrom(member)\n            .where(member.team.name.eq(\"teamA\"))\n            .fetch().size());\n\n    em.clear();\n    System.out.println(\"명시적: \" + queryFactory\n            .selectFrom(member)\n            .join(member.team, team)\n            .where(team.name.eq(\"teamA\"))\n            .fetch().size());\n}\n\n/* select member1 from Member member1\n     inner join member1.team as team\n   where team.name = ?1 */\nHibernate: select ... join team t1_0 on ... where t1_0.name=?\n묵시적: 4\n/* select member1 from Member member1\n     inner join member1.team as team\n   where team.name = ?1 */\nHibernate: select ... join team t1_0 on ... where t1_0.name=?\n명시적: 4\n\n--   JPQL 이 똑같다\n--   묵시적도 결국 inner join 이다\n\n\n-- 그런데 외부 조인을 못 만든다\n\n@Test\nvoid 묵시적_외부() {\n    em.clear();\n    System.out.println(\"묵시적: \" + queryFactory\n            .select(member.username, member.team.name)\n            .from(member)\n            .fetch().size());\n\n    em.clear();\n    System.out.println(\"명시적: \" + queryFactory\n            .select(member.username, team.name)\n            .from(member)\n            .leftJoin(member.team, team)\n            .fetch().size());\n}\n\n/* select member1.username, team.name\n   from Member member1 inner join member1.team as team */\nHibernate: select m1_0.username, t1_0.name from member m1_0\n           join team t1_0 on t1_0.team_id=m1_0.team_id\n묵시적: 7\n/* select member1.username, team.name\n   from Member member1 left join member1.team as team */\nHibernate: select m1_0.username, t1_0.name from member m1_0\n           left join team t1_0 on t1_0.team_id=m1_0.team_id\n명시적: 10\n\n--   묵시적은 셋을 조용히 버렸다\n--   4.6절에서 정렬로 겪은 그 사고다\n\n\n-- 별칭이 없으면 select 에 못 넣는다\n\n// .select(member.username, team.name)\n//     .from(member)\n//     .join(member.team)          // 별칭이 없다\n\n$ ./gradlew compileTestJava\n\n> Task :compileTestJava FAILED\nerror: no suitable method found for join(QTeam)\n\n--   연관만으로는 부를 수 없다\n\n\n-- 컬렉션을 조인하면 행이 는다\n\n@Test\nvoid 컬렉션_조인() {\n    em.clear();\n    List<Team> teams = queryFactory\n            .selectFrom(team)\n            .join(team.members, member)\n            .fetch();\n    System.out.println(\"건수: \" + teams.size());\n    teams.forEach(t -> System.out.println(t.getName()));\n}\n\n/* select\n    team\nfrom\n    Team team\n  inner join\n    team.members as member1 */\n\nHibernate:\n    select\n        t1_0.team_id, t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0\n            on t1_0.team_id=m1_0.team_id\n건수: 7\nteamA\nteamA\nteamA\nteamA\nteamB\nteamB\nteamB\n\n--   팀이 둘인데 일곱 줄이다\n--   회원 수만큼 곱해졌다\n\n\n-- distinct 를 붙인다\n\n@Test\nvoid distinct() {\n    em.clear();\n    List<Team> teams = queryFactory\n            .selectFrom(team).distinct()\n            .join(team.members, member)\n            .fetch();\n    System.out.println(\"건수: \" + teams.size());\n}\n\n/* select\n    distinct team\nfrom\n    Team team\n  inner join\n    team.members as member1 */\n\nHibernate:\n    select\n        distinct t1_0.team_id, t1_0.name\n    from\n        team t1_0\n    join\n        member m1_0 on t1_0.team_id=m1_0.team_id\n건수: 2\n\n--   SQL 에도 distinct 가 붙었다\n\n\n-- 조인해도 연관은 안 채워진다\n\n@Test\nvoid 조인은_페치가_아니다() {\n    em.clear();\n    long n = counter.count(() -> {\n        List<Member> members = queryFactory.selectFrom(member)\n                .join(member.team, team)\n                .fetch();\n        members.forEach(m -> m.getTeam().getName());\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\n/* select member1 from Member member1\n     inner join member1.team as team */\nHibernate:\n    select m1_0.member_id, m1_0.age, m1_0.team_id, m1_0.username\n    from member m1_0 join team t1_0 on t1_0.team_id=m1_0.team_id\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\nHibernate:\n    select t1_0.team_id, t1_0.name from team t1_0 where t1_0.team_id=?\n쿼리 3개\n\n--   조인했는데 팀을 또 읽었다\n--   select 에 team 컬럼이 없다\n--   4.13절에서 fetchJoin 을 붙인다\n\n\n-- 같은 연관을 두 번 조인하면\n\n@Test\nvoid 두_번_조인() {\n    QTeam t2 = new QTeam(\"t2\");\n    em.clear();\n    queryFactory.selectFrom(member)\n            .join(member.team, team)\n            .join(member.team, t2)\n            .where(team.name.eq(\"teamA\"), t2.name.startsWith(\"team\"))\n            .fetch();\n}\n\n/* select\n    member1\nfrom\n    Member member1\n  inner join\n    member1.team as team\n  inner join\n    member1.team as t2\nwhere\n    team.name = ?1\n    and t2.name like ?2 escape '!' */\n\nHibernate:\n    select ... from member m1_0\n    join team t1_0 on t1_0.team_id=m1_0.team_id\n    join team t2_0 on t2_0.team_id=m1_0.team_id\n    where t1_0.name=? and t2_0.name like ? escape '!'\n\n--   조인이 둘이다\n--   4.2절에서는 조건만 둘이라 한 번이었다\n--   4.11절에서 연관 없는 조인을 본다",
+   "note": "**`join` 과 `innerJoin` 이 같은 JPQL 을 내고 `leftJoin` 만 10건**이다.\n\n**묵시적 조인은 JPQL 이 명시적과 똑같지만 항상 `inner` 라 팀 없는 셋을 조용히** 버린다.\n\n**컬렉션을 조인하면 팀 둘이 7행이 되고 `distinct` 로 2행이** 된다.\n\n**조인해도 `select` 에 팀 컬럼이 없어 쿼리가 3개** 나간다.\n\n**같은 연관을 별칭 둘로 조인하면 `join team t1_0` 과 `join team t2_0` 이 각각** 붙는다."
+  }
+ ],
+ "recap": [
+  "**낱말이 넷**이다.",
+  "**행 수가** 바뀐다.",
+  "**둘째 인자가 별칭**이다.",
+  "**별칭이 있어야 조건에** 쓴다.",
+  "**묵시적은 항상 내부**다.",
+  "**조용히 행을** 버린다.",
+  "**컬렉션 조인은 행이** 는다.",
+  "**조인은 페치가** 아니다.",
+  "**별칭이 다르면 조인도** 는다."
+ ],
+ "drills": [
+  {
+   "task": "네 낱말을 다 써 본다.",
+   "done_when": "건수 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "묵시적과 명시적을 비교한다.",
+   "done_when": "외부 조인이 안 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "컬렉션을 조인한다.",
+   "done_when": "행이 느는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조인 뒤 쿼리를 센다.",
+   "done_when": "3개인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`join` 의 둘째 인자는 무엇인가?",
+   "a": "그 표에 붙일 별칭용 Q 타입이다."
+  },
+  {
+   "q": "묵시적 조인의 한계는?",
+   "a": "항상 내부 조인이고 그 표를 따로 부를 수 없다."
+  },
+  {
+   "q": "컬렉션을 조인하면?",
+   "a": "자식 수만큼 행이 늘어난다."
+  },
+  {
+   "q": "조인하면 연관이 채워지나?",
+   "a": "안 채워진다. `select` 에 그 컬럼이 없다."
+  },
+  {
+   "q": "같은 연관을 별칭 둘로 조인하면?",
+   "a": "조인이 두 번 붙는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "묵시적 조인",
+   "def": "점 표기로 연관을 타면 자동으로 생기는 내부 조인."
+  },
+  {
+   "term": "조인 별칭",
+   "def": "조인한 표를 조건과 `select` 에서 부를 수 있게 하는 이름."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

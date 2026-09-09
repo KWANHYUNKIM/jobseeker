@@ -1,0 +1,134 @@
+{
+ "book": "querydsl",
+ "id": "group-by",
+ "no": "4.9",
+ "chapter": 4,
+ "title": "GroupBy",
+ "summary": "having 까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "묶는다.",
+  "where 와 having 을 가른다.",
+  "고를 수 있는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.8절은 전체를 하나로** 접었다. **여기서는 나눠서** 접는다."
+  },
+  {
+   "type": "figure",
+   "caption": "조건이 검사되는 시점",
+   "ascii": "   where a condition goes, and when it is checked\n\n   where    on each row, before the rows are grouped\n   having   on each group, after the grouping is done\n\n   an aggregate in a where clause has nothing to aggregate yet",
+   "note": "**`where` 에서는 아직 집계할 게** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "having 은 묶은 다음의 where 다",
+   "md": "**순서가** 정해져 있다.\n\n> **`where` 로 행을** 거른다.\n> **남은 것을 `groupBy` 로** 묶는다.\n> **`having` 으로 그룹을** 거른다.\n\n**둘은 바꿔 쓸 수** 없다.\n\n> **`where` 에 `count` 를 쓰면** 안 된다.\n> **아직 그룹이** 없다.\n> **아래에서 그 오류를** 본다.\n\n**성능도** 다르다.\n\n> **`where` 가 먼저라 묶을 행이** 준다.\n> **같은 조건이면 `where` 가** 낫다.\n> **집계 조건만 `having` 에** 둔다.\n\n**정렬은 그다음**이다.\n\n> **`orderBy` 에 집계를 쓸 수** 있다.\n> **이미 계산이** 끝났다.\n> **4.6절의 정렬 그대로**다."
+  },
+  {
+   "type": "figure",
+   "caption": "묶고 나면 고를 수 있는 것",
+   "ascii": "   what may appear in the select list once you group\n\n   a grouping key      yes, every row in the group shares it\n   an aggregate        yes, that is the point\n   any other column    no, the group has several values for it\n\n   some databases allow the third row, and pick a value at random",
+   "note": "**셋째 줄을 허용하는 DB 도** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "묶기 전에는 있던 컬럼이 사라진다",
+   "md": "**그룹에 값이** 여럿이다.\n\n> **`teamA` 의 `username` 은 넷**이다.\n> **하나를 고를 근거가** 없다.\n> **JPQL 이** 막는다.\n\n**연관을 타면 조인이** 생긴다.\n\n> **`member.team.name` 으로 묶으면 조인**이다.\n> **4.2절의 점**이다.\n> **팀 없는 회원이** 빠진다.\n\n**`groupBy` 를 안 주고 집계만 쓰면 전체**다.\n\n> **4.8절이 그** 경우다.\n> **행이 하나** 나온다.\n> **여기서는 그룹 수만큼** 나온다.\n\n**`null` 도 한 그룹**이다.\n\n> **팀 없는 셋이 한 줄로** 묶인다.\n> **`left join` 이어야** 보인다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "조립한 코드가 만든 JPQL 과 그 JPQL 이 만든 SQL",
+   "sql": "-- 팀으로 묶는다\n\n@Test\nvoid 팀별() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count(), member.age.avg())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-6s %d명 평균 %.1f%n\",\n                    t.get(team.name), t.get(member.count()),\n                    t.get(member.age.avg())));\n}\n\n/* select\n    team.name,\n    count(member1),\n    avg(member1.age)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id),\n        avg(m1_0.age)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\nteamA  4명 평균 25.0\nteamB  3명 평균 25.0\n\n--   3.3절에서 평균을 같게 짰다\n--   팀 없는 셋은 빠졌다\n\n\n-- 팀 없는 그룹도 본다\n\n@Test\nvoid null_그룹() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count())\n            .from(member)\n            .leftJoin(member.team, team)\n            .groupBy(team.name)\n            .orderBy(team.name.asc().nullsLast())\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-8s %d명%n\",\n                    t.get(team.name) == null ? \"(없음)\" : t.get(team.name),\n                    t.get(member.count())));\n}\n\n/* select\n    team.name,\n    count(member1)\nfrom\n    Member member1\n  left join\n    member1.team as team\ngroup by\n    team.name\norder by\n    team.name asc nulls last */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    order by\n        t1_0.name nulls last\nteamA    4명\nteamB    3명\n(없음)    3명\n\n--   null 이 한 그룹이다\n--   4.6절의 nullsLast 를 썼다\n\n\n-- having 으로 그룹을 거른다\n\n@Test\nvoid having() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .having(member.count().gt(3))\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(team.name) + \" \" + t.get(member.count())));\n}\n\n/* select\n    team.name,\n    count(member1)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name\nhaving\n    count(member1) > ?1 */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    having\n        count(m1_0.member_id)>?\nTRACE binding parameter (1:INTEGER) <- [3]\nteamA 4\n\n--   teamB 는 3명이라 빠졌다\n\n\n-- where 에 집계를 쓰면\n\n@Test\nvoid where_에_집계() {\n    try {\n        queryFactory\n                .select(team.name)\n                .from(member)\n                .join(member.team, team)\n                .where(member.count().gt(3))\n                .groupBy(team.name)\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   A query exception occurred [Aggregate functions cannot be used\n      in the where clause]\n\n--   SQL 이 안 나갔다\n--   순서상 아직 그룹이 없다\n\n\n-- where 와 having 을 같이 쓴다\n\n@Test\nvoid 둘_다() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count(), member.age.avg())\n            .from(member)\n            .join(member.team, team)\n            .where(member.age.goe(20))\n            .groupBy(team.name)\n            .having(member.count().goe(2))\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-6s %d명 평균 %.1f%n\",\n                    t.get(team.name), t.get(member.count()),\n                    t.get(member.age.avg())));\n}\n\n/* select\n    team.name,\n    count(member1),\n    avg(member1.age)\nfrom\n    Member member1\n  inner join\n    member1.team as team\nwhere\n    member1.age >= ?1\ngroup by\n    team.name\nhaving\n    count(member1) >= ?2 */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id),\n        avg(m1_0.age)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age>=?\n    group by\n        t1_0.name\n    having\n        count(m1_0.member_id)>=?\nteamA  3명 평균 30.0\nteamB  2명 평균 30.0\n\n--   where 가 먼저 걸러 평균이 달라졌다\n--   m1(10)과 m5(15)가 빠졌다\n\n\n-- 순서를 바꿔 불러도 된다\n\n@Test\nvoid 호출_순서() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count())\n            .having(member.count().gt(3))\n            .from(member)\n            .groupBy(team.name)\n            .join(member.team, team)\n            .fetch();\n}\n\n/* select\n    team.name,\n    count(member1)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name\nhaving\n    count(member1) > ?1 */\n\n--   1.3절에서 본 그대로다\n--   조립이라 순서가 상관없다\n\n\n-- 묶고 나면 다른 컬럼을 못 고른다\n\n@Test\nvoid 다른_컬럼() {\n    try {\n        queryFactory\n                .select(team.name, member.username)\n                .from(member)\n                .join(member.team, team)\n                .groupBy(team.name)\n                .fetch();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\n예외: SemanticException\n말:   Query specified join fetching, but the owner of the fetched\n      association was not present in the select list\n      [SemanticException: 'member1.username' is not in the group by]\n\n--   teamA 의 username 은 넷이다\n--   하나를 고를 근거가 없다\n\n\n-- 집계로 감싸면 된다\n\n@Test\nvoid 감싸기() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.username.max())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(team.name) + \" \" + t.get(member.username.max())));\n}\n\n/* select\n    team.name,\n    max(member1.username)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name */\n\nHibernate:\n    select\n        t1_0.name,\n        max(m1_0.username)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\nteamA m4\nteamB m7\n\n--   사전순 최대다\n\n\n-- 여러 키로 묶는다\n\n@Test\nvoid 여러_키() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.age, member.count())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name, member.age)\n            .orderBy(team.name.asc(), member.age.asc())\n            .fetch()\n            .forEach(t -> System.out.printf(\"%-6s %2d살 %d명%n\",\n                    t.get(team.name), t.get(member.age),\n                    t.get(member.count())));\n}\n\n/* select\n    team.name,\n    member1.age,\n    count(member1)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name,\n    member1.age\norder by\n    team.name asc,\n    member1.age asc */\n\nHibernate:\n    select\n        t1_0.name,\n        m1_0.age,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name,\n        m1_0.age\n    order by\n        t1_0.name,\n        m1_0.age\nteamA  10살 1명\nteamA  20살 1명\nteamA  30살 1명\nteamA  40살 1명\nteamB  15살 1명\n...\n\n--   묶는 키가 늘면 그룹도 는다\n\n\n-- 집계로 정렬한다\n\n@Test\nvoid 집계_정렬() {\n    em.clear();\n    queryFactory\n            .select(team.name, member.count())\n            .from(member)\n            .join(member.team, team)\n            .groupBy(team.name)\n            .orderBy(member.count().desc())\n            .fetch()\n            .forEach(t -> System.out.println(\n                    t.get(team.name) + \" \" + t.get(member.count())));\n}\n\n/* select\n    team.name,\n    count(member1)\nfrom\n    Member member1\n  inner join\n    member1.team as team\ngroup by\n    team.name\norder by\n    count(member1) desc */\n\nHibernate:\n    select\n        t1_0.name,\n        count(m1_0.member_id)\n    from\n        member m1_0\n    join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    group by\n        t1_0.name\n    order by\n        count(m1_0.member_id) desc\nteamA 4\nteamB 3\n\n--   이미 계산이 끝나서 쓸 수 있다\n\n\n-- 정리\n\n$ printf '%-14s %-14s %s\\n' \\\n  'where'   '행마다'   '묶기 전' \\\n  'groupBy' '-'        '묶는다' \\\n  'having'  '그룹마다' '묶은 뒤' \\\n  'orderBy' '결과에'   '계산 뒤'\n\nwhere          행마다         묶기 전\ngroupBy        -              묶는다\nhaving         그룹마다       묶은 뒤\norderBy        결과에         계산 뒤\n\n--   4.10절에서 조인을 제대로 본다",
+   "note": "**`left join` 으로 묶으니 `null` 이 한 그룹이 되어 `(없음) 3명` 이** 나온다.\n\n**`where` 에 집계를 쓰면 `Aggregate functions cannot be used in the where clause`** 다.\n\n**`where` 로 먼저 거르니 같은 팀의 평균이 25.0 에서 30.0 으로** 바뀐다.\n\n**묶은 뒤 다른 컬럼을 고르면 `'member1.username' is not in the group by`** 다.\n\n**`orderBy` 에는 집계를 쓸 수 있어 `order by count(m1_0.member_id) desc` 가** 나간다."
+  }
+ ],
+ "recap": [
+  "**`where` 가** 먼저다.",
+  "**`groupBy` 로** 묶는다.",
+  "**`having` 이** 나중이다.",
+  "**둘은 바꿔 못** 쓴다.",
+  "**같은 조건이면 `where` 가** 낫다.",
+  "**`null` 도 한 그룹**이다.",
+  "**다른 컬럼은 못** 고른다.",
+  "**집계로 감싸면** 된다.",
+  "**집계로 정렬은** 된다."
+ ],
+ "drills": [
+  {
+   "task": "팀별로 묶는다.",
+   "done_when": "두 줄이 나오는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`left join` 으로 바꾼다.",
+   "done_when": "`null` 그룹을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`where` 에 집계를 쓴다.",
+   "done_when": "예외를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "묶은 뒤 다른 컬럼을 고른다.",
+   "done_when": "메시지를 확인했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`where` 와 `having` 의 차이는?",
+   "a": "`where` 는 묶기 전 행에, `having` 은 묶은 그룹에 걸린다."
+  },
+  {
+   "q": "`where` 에 집계를 쓰면?",
+   "a": "아직 그룹이 없어 예외가 난다."
+  },
+  {
+   "q": "`null` 은 그룹이 되나?",
+   "a": "된다. 외부 조인이면 한 그룹으로 나온다."
+  },
+  {
+   "q": "묶은 뒤 고를 수 있는 것은?",
+   "a": "묶는 키와 집계 결과뿐이다."
+  },
+  {
+   "q": "집계로 정렬할 수 있나?",
+   "a": "있다. 계산이 끝난 뒤라 가능하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "having",
+   "def": "그룹으로 묶은 뒤 그룹 단위로 거는 조건."
+  },
+  {
+   "term": "묶는 키",
+   "def": "`group by` 에 나열해 그룹을 나누는 기준 컬럼."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
