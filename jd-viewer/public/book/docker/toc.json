@@ -474,7 +474,7 @@
           "title": "docker run 이 길어질 때",
           "summary": "명령 한 줄이 열두 줄이 되는 지점.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -482,7 +482,7 @@
           "title": "compose.yaml 읽기",
           "summary": "services · networks · volumes.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -490,7 +490,7 @@
           "title": "depends_on 은 기다려 주지 않는다",
           "summary": "떠 있는 것과 준비된 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -498,7 +498,7 @@
           "title": "컴포즈의 볼륨과 네트워크",
           "summary": "이름이 프로젝트 이름으로 붙는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -506,7 +506,7 @@
           "title": "개발과 운영을 한 파일로",
           "summary": "override 와 profile.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -514,7 +514,7 @@
           "title": "스프링 부트 + 포스트그레스",
           "summary": "한 줄로 띄우고 한 줄로 내린다.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
@@ -522,7 +522,7 @@
           "title": "up 과 down 사이",
           "summary": "down 뒤에 무엇이 남는가.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

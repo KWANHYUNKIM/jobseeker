@@ -1,0 +1,113 @@
+{
+ "book": "docker",
+ "id": "compose-spring",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "스프링 부트 + 포스트그레스",
+ "summary": "한 줄로 띄우고 한 줄로 내린다.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "실제 프로젝트용 compose 를 완성한다.",
+  "개발용과 운영용을 나눈다.",
+  "서가의 앞 책들과 이어 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9장을 실전으로** 닫는다. **「스프링 부트와 JPA 활용 1편」이 만든 애플리케이션을 컴포즈로** 띄운다.\n\n> **6~8장에서 배운 것이 전부 한 파일에** 들어간다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "compose.yaml",
+   "caption": "공통 — 개발·운영이 같이 쓰는 것",
+   "code": "name: shop\n\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_USER: shop\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U shop -d shop\"]\n      interval: 5s\n      timeout: 3s\n      retries: 10\n      start_period: 20s\n    restart: unless-stopped\n    deploy:\n      resources:\n        limits: { memory: 1g }\n\n  api:\n    build:\n      context: .\n      target: runtime          # 5.7절\n    image: ghcr.io/acme/shop:${TAG:-dev}\n    depends_on:\n      db: { condition: service_healthy }     # 9.3절\n    environment:\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shop\n      SPRING_DATASOURCE_USERNAME: shop\n      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}\n      SPRING_JPA_HIBERNATE_DDL_AUTO: validate\n      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75\n    ports:\n      - \"127.0.0.1:8080:8080\"\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-fsS\", \"http://localhost:8080/actuator/health\"]\n      interval: 10s\n      start_period: 40s\n    restart: unless-stopped\n    deploy:\n      resources:\n        limits: { memory: 768m }\n    logging:\n      driver: json-file\n      options: { max-size: \"10m\", max-file: \"3\" }\n\nvolumes:\n  pgdata:"
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "compose.override.yaml",
+   "caption": "개발용 — 자동으로 겹쳐진다",
+   "code": "services:\n  db:\n    ports:\n      - \"127.0.0.1:5432:5432\"     # DBeaver 로 붙기 위해\n\n  api:\n    build:\n      target: builder             # 개발은 JDK 가 있는 단계로\n    environment:\n      SPRING_PROFILES_ACTIVE: dev\n      SPRING_JPA_HIBERNATE_DDL_AUTO: update\n      LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG    # 6.2절\n      JAVA_TOOL_OPTIONS: >-\n        -XX:MaxRAMPercentage=75\n        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005\n    ports:\n      - \"5005:5005\"               # 디버거\n    restart: \"no\"                 # 죽으면 왜 죽었는지 보고 싶다\n\n  adminer:\n    image: adminer\n    ports: [\"127.0.0.1:8081:8080\"]\n    profiles: [tools]",
+   "note": "9.5절의 병합 규칙대로 `ports` 는 더해지고 `environment` 는 키 단위로 합쳐진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "앞 장들이 여기서 다 쓰인다",
+   "md": "| 줄 | 어디서 왔나 |\n|---|---|\n| `target: runtime` | **5.7절** 멀티 스테이지 |\n| `127.0.0.1:8080:8080` | **6.1절** 루프백 바인딩 |\n| `SPRING_DATASOURCE_URL` | **6.2절** relaxed binding |\n| `restart: unless-stopped` | **6.3절** |\n| `logging.options.max-size` | **6.4절** 로그가 무한히 안 크게 |\n| `healthcheck` + `start_period` | **6.5절** |\n| `deploy.resources.limits` + `MaxRAMPercentage` | **6.6절 · 10.3절** |\n| `jdbc:postgresql://db:5432` | **7.3·7.5절** 이름으로 부르기 |\n| `pgdata:` 볼륨 | **8.5절** |\n| `condition: service_healthy` | **9.3절** |\n\n> **컴포즈 파일은 새 지식이 아니라 앞의 것들을 적어 두는 형식**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "개발 루프를 짧게",
+   "md": "**코드를 고칠 때마다 이미지를 다시 빌드하면 느리다.**\n\n| 방법 | 어떻게 |\n|---|---|\n| **`docker compose watch`** | 파일이 바뀌면 동기화하거나 다시 빌드한다 |\n| 바인드 마운트 + devtools | 8.3절. 자바는 클래스 재로딩 한계가 있다 |\n| **DB 만 컴포즈, 애플리케이션은 IDE** | **가장 빠르다.** `docker compose up -d db` 만 |\n\n```yaml\n    develop:\n      watch:\n        - action: rebuild\n          path: ./src\n        - action: sync\n          path: ./src/main/resources\n          target: /app/resources\n```\n\n> **자바에서는 세 번째가 현실적**이다 — **DB·캐시만 컨테이너로 띄우고 애플리케이션은 IDE 에서** 돌린다.\n> **그때 접속 주소는 `localhost:5432`** 다(7.5절의 세 방향)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "띄우고, 확인하고, 내린다",
+   "sql": "$ mkdir -p /tmp/shop && cd /tmp/shop\n$ echo 'DB_PASSWORD=devpass' > .env\n\n#   (여기서는 실제 애플리케이션 대신 postgres 이미지로 흉내 낸다)\n\n$ cat > compose.yaml <<'EOF'\nname: shop\nservices:\n  db:\n    image: postgres:16.5\n    environment:\n      POSTGRES_DB: shop\n      POSTGRES_USER: shop\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}\n    volumes: [pgdata:/var/lib/postgresql/data]\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U shop -d shop\"]\n      interval: 3s\n      retries: 10\n      start_period: 15s\n    deploy:\n      resources: { limits: { memory: 512m } }\n\n  api:\n    image: postgres:16.5\n    depends_on:\n      db: { condition: service_healthy }\n    environment:\n      PGPASSWORD: ${DB_PASSWORD}\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shop\n    command: >\n      sh -c 'psql -h db -U shop -d shop -tAc \"select 1\" &&\n             echo \"[api] connected to $$SPRING_DATASOURCE_URL\" &&\n             sleep 3600'\n    ports: [\"127.0.0.1:8080:8080\"]\n    logging:\n      driver: json-file\n      options: { max-size: \"10m\", max-file: \"3\" }\n\nvolumes:\n  pgdata:\nEOF\n\n$ docker compose up -d\n[+] Running 4/4\n ✔ Network shop_default  Created\n ✔ Volume shop_pgdata    Created\n ✔ Container shop-db-1    Healthy\n ✔ Container shop-api-1   Started\n\n$ docker compose ps --format 'table {{.Service}}\\t{{.Status}}\\t{{.Ports}}'\nSERVICE   STATUS                   PORTS\napi       Up 2 seconds             127.0.0.1:8080->8080/tcp\ndb        Up 20 seconds (healthy)  5432/tcp\n\n$ docker compose logs api | tail -2\nshop-api-1  | 1\nshop-api-1  | [api] connected to jdbc:postgresql://db:5432/shop\n\n#   db 는 호스트에 포트를 안 열었다. api 만 열었다\n\n\n# --- 적용된 설정 확인 ---\n\n$ docker inspect -f 'mem={{.HostConfig.Memory}} log={{.HostConfig.LogConfig.Config}}' shop-api-1\nmem=0 log=map[max-file:3 max-size:10m]\n\n$ docker inspect -f 'mem={{.HostConfig.Memory}}' shop-db-1\n536870912\n\n\n# --- 데이터를 넣고 컨테이너를 갈아 끼운다 (8.5절) ---\n\n$ docker compose exec -T db psql -U shop -d shop -q \\\n    -c 'create table orders(id serial, amount int)' \\\n    -c 'insert into orders(amount) values (100),(200)'\n\n$ docker compose exec -T db psql -U shop -d shop -tAc 'select count(*) from orders'\n2\n\n$ docker compose down\n[+] Running 3/3\n ✔ Container shop-api-1  Removed\n ✔ Container shop-db-1   Removed\n ✔ Network shop_default  Removed\n\n$ docker volume ls | grep shop\nlocal     shop_pgdata\n\n$ docker compose up -d >/dev/null\n$ sleep 8\n$ docker compose exec -T db psql -U shop -d shop -tAc 'select count(*) from orders'\n2\n\n#   내렸다 올렸는데 데이터가 남았다\n\n\n# --- 개발용 override 를 얹는다 ---\n\n$ cat > compose.override.yaml <<'EOF'\nservices:\n  db:\n    ports: [\"127.0.0.1:5432:5432\"]\n  api:\n    environment:\n      LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG\nEOF\n\n$ docker compose up -d >/dev/null\n$ docker compose ps --format 'table {{.Service}}\\t{{.Ports}}'\nSERVICE   PORTS\napi       127.0.0.1:8080->8080/tcp\ndb        127.0.0.1:5432->5432/tcp\n\n#   개발에서는 DBeaver 로 붙을 수 있게 열렸다\n\n$ docker compose exec api printenv LOGGING_LEVEL_ORG_HIBERNATE_SQL\nDEBUG\n\n$ docker compose -f compose.yaml ps --format 'table {{.Service}}\\t{{.Ports}}' 2>/dev/null | head -3\nSERVICE   PORTS\napi       127.0.0.1:8080->8080/tcp\ndb        127.0.0.1:5432->5432/tcp\n\n#   (이미 떠 있는 것을 보여 준다. 운영에서는 처음부터 -f 로 띄운다)\n\n\n# --- 완전히 정리 ---\n\n$ docker compose down -v\n[+] Running 4/4\n ✔ Container shop-api-1  Removed\n ✔ Container shop-db-1   Removed\n ✔ Volume shop_pgdata    Removed\n ✔ Network shop_default  Removed\n\n#   -v 를 줬으므로 볼륨까지 지웠다. 9.7절에서 이 차이를 본다\n\n$ cd - >/dev/null && rm -rf /tmp/shop"
+  }
+ ],
+ "recap": [
+  "컴포즈 파일은 6~8장의 옵션을 적어 두는 형식이다. 새 지식이 거의 없다.",
+  "공통은 compose.yaml, 로컬 편의는 compose.override.yaml 에 둔다.",
+  "DB 는 호스트에 포트를 안 열고 API 만 연다. 개발에서만 override 로 연다.",
+  "자바 개발에서는 DB 만 컴포즈로 띄우고 애플리케이션은 IDE 에서 돌리는 게 가장 빠르다."
+ ],
+ "drills": [
+  {
+   "task": "DB 와 애플리케이션 두 서비스로 compose.yaml 을 쓰고 up -d 로 띄운다.",
+   "done_when": "db 가 healthy 가 된 뒤 api 가 뜨는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "데이터를 넣고 `docker compose down` 후 다시 `up -d` 해서 데이터가 남는지 본다.",
+   "done_when": "볼륨 덕분에 남는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "compose.override.yaml 로 DB 포트를 열고 GUI 도구로 붙어 본다.",
+   "done_when": "개발에서만 열리는 구성을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "compose.yaml 에서 DB 포트를 호스트에 안 여는 이유는.",
+   "a": "애플리케이션은 컨테이너 네트워크로 붙으므로 필요 없다. 여는 것은 개발 편의이고 노출 위험이 있다."
+  },
+  {
+   "q": "api 의 SPRING_DATASOURCE_URL 에 왜 db 라고 쓰나.",
+   "a": "같은 컴포즈 네트워크에서 서비스 이름이 DNS 로 풀리기 때문(7.3절)."
+  },
+  {
+   "q": "자바 프로젝트에서 개발 루프를 가장 짧게 하는 방법은.",
+   "a": "DB·캐시만 컴포즈로 띄우고 애플리케이션은 IDE 에서 돌린다. 그때 주소는 localhost 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "compose watch",
+   "what": "파일 변경을 감지해 동기화하거나 다시 빌드하는 컴포즈 기능."
+  },
+  {
+   "term": "ddl-auto validate",
+   "what": "스키마를 바꾸지 않고 검증만 하는 하이버네이트 설정. 운영의 기본값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Use Compose in production",
+   "url": "https://docs.docker.com/compose/how-tos/production/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Compose Watch",
+   "url": "https://docs.docker.com/compose/how-tos/file-watch/",
+   "publisher": "Docker"
+  }
+ ]
+}

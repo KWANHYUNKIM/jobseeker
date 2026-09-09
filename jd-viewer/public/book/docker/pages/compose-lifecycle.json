@@ -1,0 +1,167 @@
+{
+ "book": "docker",
+ "id": "compose-lifecycle",
+ "no": "9.7",
+ "chapter": 9,
+ "title": "up 과 down 사이",
+ "summary": "down 뒤에 무엇이 남는가.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "명령마다 무엇이 지워지는지 안다.",
+  "안전하게 정리한다.",
+  "자주 쓰는 운영 명령을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "명령별로 무엇이 남고 무엇이 사라지나",
+   "columns": [
+    "명령",
+    "컨테이너",
+    "네트워크",
+    "**볼륨**",
+    "이미지"
+   ],
+   "rows": [
+    [
+     "`stop`",
+     "**멈춘다(남는다)**",
+     "남는다",
+     "남는다",
+     "남는다"
+    ],
+    [
+     "`start`",
+     "다시 시작",
+     "—",
+     "—",
+     "—"
+    ],
+    [
+     "`restart`",
+     "재시작",
+     "—",
+     "—",
+     "—"
+    ],
+    [
+     "**`down`**",
+     "**지운다**",
+     "**지운다**",
+     "**남는다**",
+     "남는다"
+    ],
+    [
+     "**`down -v`**",
+     "지운다",
+     "지운다",
+     "**지운다**",
+     "남는다"
+    ],
+    [
+     "`down --rmi local`",
+     "지운다",
+     "지운다",
+     "남는다",
+     "**빌드한 이미지 지운다**"
+    ],
+    [
+     "`up -d --force-recreate`",
+     "다시 만든다",
+     "—",
+     "남는다",
+     "—"
+    ]
+   ],
+   "note": "**`down` 은 볼륨을 안 지운다**(8.1절). **`-v` 가 데이터를 지우는 스위치**다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "down -v 는 데이터를 지운다",
+   "md": "```bash\n$ docker compose down -v\n ✔ Volume shop_pgdata  Removed\n```\n\n> **DB 데이터가 사라진다.** **되돌릴 수 없다.**\n\n| 습관 | |\n|---|---|\n| 개발에서 초기화하고 싶을 때 | `down -v` 가 맞다 |\n| **운영에서** | **절대 안 친다.** `-f` 로 파일을 명시하고 `-v` 를 안 붙인다 |\n| 지키고 싶은 볼륨 | **`external: true`**(9.4절) — `down -v` 가 안 건드린다 |\n\n**프로필 서비스는 `--profile` 을 줘야 같이 내려간다**(9.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "자주 쓰는 명령",
+   "md": "```bash\ndocker compose ps -a                 # 멈춘 것까지\ndocker compose logs -f --tail 50 api # 6.4절\ndocker compose exec api sh           # 3.6절\ndocker compose run --rm api sh       # 새 컨테이너로 한 번만\ndocker compose top                   # 각 서비스의 프로세스\ndocker compose pull                  # 이미지만 최신으로\ndocker compose build --no-cache api  # 5.3절\ndocker compose up -d --build         # 빌드하고 띄우기\ndocker compose config --services     # 서비스 목록\ndocker compose events                # 실시간 사건\n```\n\n**`exec` 와 `run` 의 차이**:\n\n| | `exec` | `run` |\n|---|---|---|\n| 대상 | **도는 컨테이너** | **새 컨테이너** |\n| 포트 | 이미 열려 있다 | **기본으로 안 연다** |\n| depends_on | — | **의존 서비스를 같이 띄운다** |\n| 쓰는 데 | 디버깅 | 일회성 작업(마이그레이션·시드) |\n\n> **`run` 은 `--rm` 을 안 주면 컨테이너가 쌓인다**(3.7절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "바꾼 게 반영이 안 될 때",
+   "md": "| 무엇을 바꿨나 | 필요한 것 |\n|---|---|\n| compose.yaml 의 설정 | `up -d` (바뀐 서비스만 다시 만든다) |\n| **소스 코드** | **`up -d --build`** — `up` 만으로는 다시 안 빌드한다 |\n| 레지스트리의 이미지 | **`pull` 후 `up -d`** (4.2절의 그 문제) |\n| Dockerfile 의 앞부분 | `build --no-cache` |\n| **아무것도 안 바뀐 것 같은데 이상** | `up -d --force-recreate` |\n\n**\"배포했는데 안 바뀌었어요\" 의 컴포즈 판**이다.\n\n```yaml\n    pull_policy: always      # 매번 최신을 받게\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "무엇이 남는지 하나씩 확인한다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n$ cat > compose.yaml <<'EOF'\nname: lab\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n    volumes: [pgdata:/var/lib/postgresql/data]\nvolumes:\n  pgdata:\nEOF\n\n$ docker compose up -d >/dev/null && sleep 6\n$ docker compose exec -T db psql -U postgres -q -c 'create table t(id int)' -c 'insert into t values (1)'\n\n\n# --- stop: 다 남는다 ---\n\n$ docker compose stop >/dev/null\n$ docker compose ps -a --format 'table {{.Service}}\\t{{.Status}}'\nSERVICE   STATUS\ndb        Exited (0) 2 seconds ago\n\n$ docker network ls | grep -c lab_default\n1\n\n$ docker compose start >/dev/null && sleep 4\n$ docker compose exec -T db psql -U postgres -tAc 'select count(*) from t'\n1\n\n\n# --- down: 컨테이너와 네트워크만 ---\n\n$ docker compose down\n[+] Running 2/2\n ✔ Container lab-db-1     Removed\n ✔ Network lab_default    Removed\n\n$ docker network ls | grep -c lab_default\n0\n\n$ docker volume ls | grep lab_pgdata\nlocal     lab_pgdata\n\n#   볼륨은 남았다\n\n$ docker compose up -d >/dev/null && sleep 6\n$ docker compose exec -T db psql -U postgres -tAc 'select count(*) from t'\n1\n\n#   데이터가 살아 있다\n\n\n# --- down -v: 볼륨까지 ---\n\n$ docker compose down -v\n[+] Running 3/3\n ✔ Container lab-db-1   Removed\n ✔ Volume lab_pgdata    Removed\n ✔ Network lab_default  Removed\n\n$ docker volume ls | grep -c lab_pgdata\n0\n\n$ docker compose up -d >/dev/null && sleep 6\n$ docker compose exec -T db psql -U postgres -tAc 'select count(*) from t'\nERROR:  relation \"t\" does not exist\n\n#   데이터가 사라졌다\n\n\n# --- external 볼륨은 -v 로도 안 지워진다 ---\n\n$ docker compose down -v >/dev/null\n$ docker volume create keepme >/dev/null\n$ cat > compose.yaml <<'EOF'\nname: lab\nservices:\n  db:\n    image: postgres:16.5\n    environment: { POSTGRES_PASSWORD: x }\n    volumes: [keepme:/var/lib/postgresql/data]\nvolumes:\n  keepme:\n    external: true\nEOF\n\n$ docker compose up -d >/dev/null && sleep 6\n$ docker compose exec -T db psql -U postgres -q -c 'create table t(id int)'\n$ docker compose down -v\n[+] Running 2/2\n ✔ Container lab-db-1   Removed\n ✔ Network lab_default  Removed\n\n$ docker volume ls | grep keepme\nlocal     keepme\n\n#   external 이라 -v 로도 안 지웠다\n\n\n# --- exec 와 run ---\n\n$ docker compose up -d >/dev/null && sleep 6\n$ docker compose exec db hostname\nlab-db-1\n\n$ docker compose run --rm db hostname\nlab-db-run-8f2a1b3c\n\n#   새 컨테이너가 생겼다 (--rm 이라 바로 지워진다)\n\n$ docker compose run db echo one >/dev/null\n$ docker compose run db echo two >/dev/null\n$ docker compose ps -a --format '{{.Name}}' | grep -c run-\n2\n\n#   --rm 을 안 주면 쌓인다\n\n$ docker compose down -v >/dev/null 2>&1\n$ docker volume rm keepme >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "stop 은 다 남기고, down 은 컨테이너와 네트워크를 지우고, down -v 가 볼륨까지 지운다.",
+  "down -v 는 되돌릴 수 없다. 운영에서는 안 친다. external 볼륨은 -v 로도 안 지워진다.",
+  "소스를 고쳤으면 up -d --build, 레지스트리 이미지가 바뀌었으면 pull 후 up -d.",
+  "exec 는 도는 컨테이너, run 은 새 컨테이너다. run 은 --rm 을 안 주면 쌓인다."
+ ],
+ "drills": [
+  {
+   "task": "데이터를 넣고 stop/start, down/up, down -v/up 세 가지로 각각 데이터가 남는지 확인한다.",
+   "done_when": "세 결과가 다른 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "볼륨을 external 로 바꾸고 `down -v` 를 쳐 본다.",
+   "done_when": "볼륨이 안 지워지는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "`docker compose run db echo x` 를 --rm 없이 몇 번 실행하고 `ps -a` 를 본다.",
+   "done_when": "run- 컨테이너가 쌓이는 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker compose down` 은 볼륨을 지우나.",
+   "a": "안 지운다. -v 를 줘야 지운다."
+  },
+  {
+   "q": "운영 데이터 볼륨을 실수로 안 지우게 하려면.",
+   "a": "external: true 로 선언한다. down -v 가 건드리지 않는다."
+  },
+  {
+   "q": "코드를 고쳤는데 반영이 안 되면.",
+   "a": "up -d 만으로는 다시 안 빌드한다. --build 를 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "down -v",
+   "what": "컴포즈가 만든 볼륨까지 지우는 옵션."
+  },
+  {
+   "term": "force-recreate",
+   "what": "설정이 안 바뀌어도 컨테이너를 다시 만드는 옵션."
+  },
+  {
+   "term": "compose run",
+   "what": "일회성 새 컨테이너를 띄우는 명령. 의존 서비스를 같이 띄운다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker compose down",
+   "url": "https://docs.docker.com/reference/cli/docker/compose/down/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — docker compose run",
+   "url": "https://docs.docker.com/reference/cli/docker/compose/run/",
+   "publisher": "Docker"
+  }
+ ]
+}
