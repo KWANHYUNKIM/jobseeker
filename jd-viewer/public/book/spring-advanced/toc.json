@@ -149,7 +149,7 @@
           "title": "적용한다",
           "summary": "파라미터가 정말 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -157,7 +157,7 @@
           "title": "지우지 않으면",
           "summary": "다음 요청이 남은 값을 본다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",

@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "적용한다",
+ "summary": "파라미터가 정말 사라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "인터페이스로 갈아 끼운다.",
+  "둘을 견준다.",
+  "남은 문제를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 동작을** 봤다. **업무 코드에 제대로** 붙인다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 만든 교체",
+   "ascii": "   the swap that the interface made possible\n\n   the business code depends on an interface\n   two classes implement it, one broken and one not\n   only the configuration decides which is injected\n\n   the business code is not recompiled for either choice",
+   "note": "**어느 쪽을 고르든 업무 코드는 다시 컴파일되지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "구현만 바꿔 끼우면 업무 코드가 안 바뀐다",
+   "md": "**인터페이스를 하나** 둔다.\n\n> **②에서 늘 하던 일**이다.\n> **아래에서 그걸** 만든다.\n> **구현이** 둘이 된다.\n\n**설정이** 고른다.\n\n> **빈 하나만** 바꾼다.\n> **아래에서 갈아** 끼운다.\n> **업무 코드는 안** 본다.\n\n**둘을 나란히 돌릴 수** 있다.\n\n> **같은 시험을 두 번**이다.\n> **아래에서 그렇게** 한다.\n> **차이가** 드러난다.\n\n**남은 문제는** 그대로다.\n\n> **여덟 줄이 안** 없어졌다.\n> **아래에서 다시** 센다.\n> **4장이 그걸** 친다."
+  },
+  {
+   "type": "figure",
+   "caption": "남은 것과 사라진 것",
+   "ascii": "   what survived from chapter two and what did not\n\n   survived   the six lines, the identifier, the depth\n   gone       the extra parameter, the two begin methods\n   still here the eight lines wrapping every method\n\n   the third row is what chapter four attacks",
+   "note": "**셋째 줄이 4장이 칠** 대상이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스가 없으면 갈아 끼우지도 못한다",
+   "md": "**구체 타입으로 받으면** 묶인다.\n\n> **⑯ 6.8절의 그** 이야기다.\n> **아래에서 그걸** 겪는다.\n> **테스트도** 어렵다.\n\n**빈이 둘이면** 터진다.\n\n> **어느 것인지** 모른다.\n> **아래에서 그** 오류를 본다.\n> **하나만 등록**한다.\n\n**설정으로 고르게** 한다.\n\n> **⑯ 6.6절의 그** 조건이다.\n> **아래에서 그렇게** 한다.\n> **다시 빌드 안** 해도 된다.\n\n**테스트에서 갈아 끼운**다.\n\n> **깨지는 쪽을 일부러** 쓴다.\n> **아래에서 그걸** 확인한다.\n> **⑨의 그** 방법이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 인터페이스를 만든다\n\npublic interface LogTrace {\n    TraceStatus begin(String message);\n    void end(TraceStatus status);\n    void exception(TraceStatus status, Exception e);\n}\n\npublic class FieldLogTrace implements LogTrace { ... }\npublic class ThreadLocalLogTrace implements LogTrace { ... }\n\n$ grep -l 'implements LogTrace' src/main/java/study/adv/trace/*.java\nsrc/main/java/study/adv/trace/FieldLogTrace.java\nsrc/main/java/study/adv/trace/ThreadLocalLogTrace.java\n\n\n-- 업무 코드는 인터페이스만 안다\n\n@Service\n@RequiredArgsConstructor\npublic class OrderService {\n    private final OrderRepository orderRepository;\n    private final LogTrace trace;            // 구현이 아니다\n\n    public void orderItem(String itemId) { ... }\n}\n\n$ grep -rn 'FieldLogTrace\\|ThreadLocalLogTrace' src/main/java/study/adv/Order*.java\n(없음)\n\n$ grep -rn 'LogTrace' src/main/java/study/adv/Order*.java\nsrc/main/java/study/adv/OrderController.java:12:    private final LogTrace trace;\nsrc/main/java/study/adv/OrderRepository.java:10:    private final LogTrace trace;\nsrc/main/java/study/adv/OrderService.java:11:    private final LogTrace trace;\n\n--   세 곳 다 인터페이스다\n\n\n-- 설정이 고른다\n\n@Configuration\npublic class LogTraceConfig {\n    @Bean\n    public LogTrace logTrace() {\n        return new ThreadLocalLogTrace();\n    }\n}\n\n$ curl -s 'localhost:8080/who?name=logTrace'\n빈 이름:   logTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n원본:     study.adv.trace.ThreadLocalLogTrace\n프록시:   false\nJDK:      false\nCGLIB:    false\n\n--   아직 아무것도 안 감싸졌다\n\n\n-- 둘을 나란히 시험한다\n\n@Bean\npublic LogTrace logTrace(@Value(\"${study.trace:threadlocal}\") String kind) {\n    return kind.equals(\"field\") ? new FieldLogTrace() : new ThreadLocalLogTrace();\n}\n\n$ for kind in field threadlocal; do\n    pkill -f app.jar\n    java -jar build/libs/app.jar --study.trace=$kind > /dev/null 2>&1 &\n    until curl -sf localhost:8080/who/all > /dev/null 2>&1; do sleep 0.2; done\n\n    for i in $(seq 1 50); do\n      curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n    done; wait\n\n    printf '%-14s ID %3d 개  ' \"$kind\" \\\n      \"$(grep 'study.adv.trace' logs/app.log | tail -300 \\\n         | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l)\"\n    printf 'NPE %d 건\\n' \"$(grep -c NullPointerException logs/app.log)\"\n    : > logs/app.log\n  done\n\nfield          ID   7 개  NPE 2 건\nthreadlocal    ID  50 개  NPE 0 건\n\n--   같은 시험, 같은 업무 코드다\n--   설정 한 줄만 달랐다\n\n\n-- 깊이도 견준다\n\n$ for kind in field threadlocal; do\n    ...\n    printf '%-14s 최대 깊이 %s\\n' \"$kind\" \\\n      \"$(grep 'study.adv.trace' logs/app.log | tail -300 \\\n         | awk -F'|' '{print NF-1}' | sort -rn | head -1)\"\n  done\n\nfield          최대 깊이 23\nthreadlocal    최대 깊이 3\n\n--   3 층짜리 예제인데 field 는 23 층까지 갔다\n\n\n-- 업무 코드는 한 줄도 안 바뀌었다\n\n$ git diff --stat v3 v3-threadlocal -- src/main/java/study/adv/Order*.java\n\n$ git diff --stat v3 v3-threadlocal\n LogTrace.java            | 7 +++++++\n FieldLogTrace.java       | 2 +-\n ThreadLocalLogTrace.java | 68 +++++++++++++++++++++++++++++++++++\n LogTraceConfig.java      | 4 ++--\n 4 files changed, 78 insertions(+), 3 deletions(-)\n\n--   Order 로 시작하는 파일이 하나도 없다\n\n\n-- 구체 타입으로 받으면\n\n@Service\npublic class OrderService {\n    private final ThreadLocalLogTrace trace;   // 구체 타입\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n// 이제 field 로 바꿔 보면\n@Bean\npublic LogTrace logTrace() { return new FieldLogTrace(); }\n\n$ ./gradlew bootRun 2>&1 | head -4\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 1 of constructor in study.adv.OrderService required a bean of type\n'study.adv.trace.ThreadLocalLogTrace' that could not be found.\n\n--   갈아 끼울 수가 없다\n--   ⑯ 6.8절에서 본 그 자리다\n\n\n-- 둘 다 빈으로 등록하면\n\n@Bean LogTrace fieldLogTrace() { return new FieldLogTrace(); }\n@Bean LogTrace threadLocalLogTrace() { return new ThreadLocalLogTrace(); }\n\n$ ./gradlew bootRun 2>&1 | head -6\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 1 of constructor in study.adv.OrderService required a single bean,\nbut 2 were found:\n\t- fieldLogTrace: defined by method 'fieldLogTrace' in LogTraceConfig\n\t- threadLocalLogTrace: defined by method 'threadLocalLogTrace' in LogTraceConfig\n\n--   ② 에서 본 그 오류다\n\n\n-- 조건으로 고르게 한다\n\n@Bean\n@ConditionalOnProperty(name = \"study.trace\", havingValue = \"field\")\nLogTrace fieldLogTrace() { return new FieldLogTrace(); }\n\n@Bean\n@ConditionalOnProperty(name = \"study.trace\", havingValue = \"threadlocal\",\n                       matchIfMissing = true)\nLogTrace threadLocalLogTrace() { return new ThreadLocalLogTrace(); }\n\n$ java -jar build/libs/app.jar --debug 2>&1 \\\n    | grep -A2 'fieldLogTrace' | head -3\n   LogTraceConfig#fieldLogTrace:\n      Did not match:\n         - @ConditionalOnProperty (study.trace=field) did not find property 'study.trace'\n\n$ curl -s 'localhost:8080/who?name=threadLocalLogTrace' | head -2\n빈 이름:   threadLocalLogTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n\n$ java -jar build/libs/app.jar --study.trace=field > /dev/null 2>&1 &\n$ curl -s localhost:8080/who/all | grep -i logtrace\nfieldLogTrace        study.adv.trace.FieldLogTrace\n\n--   ⑯ 6.6절의 그 스위치다\n--   다시 빌드 안 하고 갈아 끼운다\n\n\n-- 테스트에서도 갈아 끼운다\n\n@Test\nvoid 필드는_깨진다() throws Exception {\n    var service = new OrderService(repository, new FieldLogTrace());\n    var t1 = new Thread(() -> service.orderItem(\"A\"));\n    var t2 = new Thread(() -> service.orderItem(\"B\"));\n    t1.start(); sleep(100); t2.start();\n    t1.join(); t2.join();\n    assertThat(uniqueTraceIds()).hasSize(1);      // 뭉친다\n}\n\n@Test\nvoid 쓰레드로컬은_안_깨진다() throws Exception {\n    var service = new OrderService(repository, new ThreadLocalLogTrace());\n    ...\n    assertThat(uniqueTraceIds()).hasSize(2);      // 나뉜다\n}\n\n$ ./gradlew test --tests '*LogTraceTest*' 2>&1 | tail -3\nOrderServiceLogTraceTest > 필드는_깨진다 PASSED\nOrderServiceLogTraceTest > 쓰레드로컬은_안_깨진다 PASSED\nBUILD SUCCESSFUL in 4s\n\n--   깨지는 쪽도 시험으로 남겼다\n--   ⑨ 에서 쓰던 그 방법이다\n\n\n-- 요구사항 여섯을 다시 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필' &\n$ sleep 0.1 && curl -s -o /dev/null 'localhost:8080/request?itemId=지우개' &\n$ wait\n\n$ grep '796bccd9' logs/app.log | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/request?itemId=ex'\n500\n\n--   여섯이 다 되고 동시성도 안 깨진다\n\n\n-- 그런데 여덟 줄은 그대로다\n\n$ sed -n '14,25p' src/main/java/study/adv/OrderService.java\n    public void orderItem(String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(\"OrderService.orderItem()\");\n            orderRepository.save(itemId);\n            trace.end(status);\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n\n$ grep -c 'try {' src/main/java/study/adv/Order*.java | awk -F: '{s+=$2} END {print s}'\n3\n$ wc -l src/main/java/study/adv/Order*.java | tail -1\n     100 total\n\n--   2.7 절에서 104 줄이었다\n--   인자가 빠져 네 줄 줄었을 뿐이다\n\n\n-- 비율을 다시 잰다\n\n$ python3 -c \"print('업무 1 줄에 감싸는 코드 9 줄')\"\n업무 1 줄에 감싸는 코드 9 줄\n\n// 2.7 절에서는\n업무 1 줄에 감싸는 코드 10 줄\n\n--   한 줄 줄었다\n--   4 장이 여기를 친다\n\n\n-- 확인한다\n\n$ curl -s 'localhost:8080/who?name=logTrace' | head -3\n빈 이름:   logTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n원본:     study.adv.trace.ThreadLocalLogTrace\n\n$ curl -s localhost:8080/who/all | grep -c '\\$\\$'\n0\n\n$ git add -A && git commit -q -m 'feat: v3 적용' && git tag v3-final\n\n--   3.5 절에서 지우지 않으면 무슨 일이 나는지 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '인터페이스'  '하나' \\\n  '구현'        '둘' \\\n  '업무 코드'   '0 줄 바뀜' \\\n  'field'       'ID 7 개, NPE 2' \\\n  'threadlocal' 'ID 50 개, NPE 0' \\\n  '깊이'        '23 대 3' \\\n  '구체 타입'   '갈아 못 끼움' \\\n  '둘 등록'     '기동 실패' \\\n  '조건'        '설정으로 고름' \\\n  '남은 것'     '여덟 줄'\n\n인터페이스                 하나\n구현                       둘\n업무 코드                  0 줄 바뀜\nfield                      ID 7 개, NPE 2\nthreadlocal                ID 50 개, NPE 0\n깊이                       23 대 3\n구체 타입                  갈아 못 끼움\n둘 등록                    기동 실패\n조건                       설정으로 고름\n남은 것                    여덟 줄",
+   "note": "**같은 업무 코드로 구현만 갈아 끼우니 50 요청에서 `field` 는 ID 7 개·NPE 2 건, `threadlocal` 은 ID 50 개·NPE 0 건**이다.\n\n**세 겹짜리 예제인데 `field` 의 최대 깊이가 23 층, `threadlocal` 은 3 층**이다.\n\n**`Order` 로 시작하는 파일이 diff 에 하나도 없고 인터페이스 덕에 설정 한 줄만** 달랐다.\n\n**구체 타입으로 받으면 갈아 끼울 때 기동이 멈추고 둘 다 등록하면 `2 were found`** 다.\n\n**동시성은 잡혔는데 감싸는 여덟 줄은 그대로라 비율이 일 대 십에서 일 대 구로만** 줄었다."
+  }
+ ],
+ "recap": [
+  "**인터페이스를** 둔다.",
+  "**구현이** 둘이다.",
+  "**설정이** 고른다.",
+  "**업무는 안** 바뀐다.",
+  "**나란히** 시험한다.",
+  "**구체 타입은** 묶인다.",
+  "**둘이면** 터진다.",
+  "**조건으로** 고른다.",
+  "**여덟 줄은** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "인터페이스를 만들어 나눈다.",
+   "done_when": "업무 코드가 안 바뀐 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "둘을 나란히 시험한다.",
+   "done_when": "숫자로 차이를 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "구체 타입으로 받아 본다.",
+   "done_when": "갈아 끼울 수 없는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "비율을 다시 잰다.",
+   "done_when": "2.7 절과 비교했다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "구현을 갈아 끼울 수 있는 이유는?",
+   "a": "업무 코드가 인터페이스에만 기대기 때문이다."
+  },
+  {
+   "q": "둘을 나란히 시험하면 무엇이 보이나?",
+   "a": "같은 코드에서 ID 개수와 깊이가 크게 갈린다."
+  },
+  {
+   "q": "구체 타입으로 받으면?",
+   "a": "다른 구현으로 바꿀 때 기동이 실패한다."
+  },
+  {
+   "q": "빈을 둘 등록하면?",
+   "a": "어느 것인지 몰라 기동이 멈춘다."
+  },
+  {
+   "q": "이 장에서 못 없앤 것은?",
+   "a": "메서드마다 붙은 감싸는 여덟 줄이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "구현 교체",
+   "def": "인터페이스는 두고 등록하는 구현만 바꾸는 것."
+  },
+  {
+   "term": "나란히 시험",
+   "def": "같은 부하를 두 구현에 걸어 숫자로 견주는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "java.lang.ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

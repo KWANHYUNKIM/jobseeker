@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "remove",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "지우지 않으면",
+ "summary": "다음 요청이 남은 값을 본다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "안 지운 결과를 본다.",
+  "두 문제를 가른다.",
+  "모든 길에서 지운다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 `remove` 를 한 줄** 넣었다. **그 한 줄을 빼** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "안 지우면 문제가 둘",
+   "ascii": "   two different consequences of not clearing\n\n   the next request on that thread sees the stale value\n   the object behind the value is never collected\n\n   the first is a correctness bug, the second is a memory bug",
+   "note": "**첫째는 값이 틀리는 문제, 둘째는 메모리** 문제다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓰레드가 죽지 않기 때문이다",
+   "md": "**요청이 끝나도 쓰레드는** 산다.\n\n> **풀로 돌아갈** 뿐이다.\n> **1.3절에서 이름이** 같았다.\n> **아래에서 그걸** 센다.\n\n**값이 그대로** 남는다.\n\n> **쓰레드 지도에 붙어** 있다.\n> **3.3절에서 그걸** 봤다.\n> **다음 요청이 그걸** 본다.\n\n**회수도 안** 된다.\n\n> **쓰레드가 살아 있는 동안**이다.\n> **아래에서 재** 본다.\n> **쌓이면 넘친**다.\n\n**모든 길에서 지워야** 한다.\n\n> **정상·예외·그 밖**이다.\n> **2.2절과 같은 결**이다.\n> **아래에서 셋을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "나가는 길마다 지운다",
+   "ascii": "   every path out of the request must clear\n\n   the normal return\n   the thrown exception\n   the exception thrown while clearing\n\n   missing any one of them leaves the value behind",
+   "note": "**하나만 빠져도 값이** 남는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "약한 참조라 안전하다는 말은 절반만 맞다",
+   "md": "**열쇠만** 약하다.\n\n> **값은 강하게** 붙어 있다.\n> **아래에서 그걸** 확인한다.\n> **열쇠가 사라져도 값은** 남는다.\n\n**청소가 게으르**다.\n\n> **다음에 만질 때** 치운다.\n> **안 만지면 계속** 있다.\n> **아래에서 그걸** 본다.\n\n**정적 필드면 더** 오래 산다.\n\n> **열쇠가 안** 사라진다.\n> **애플리케이션이 살아 있는 동안** 남는다.\n> **아래에서 그** 경우다.\n\n**다시 배포할 때 터진**다.\n\n> **클래스로더가 안** 풀린다.\n> **⑯ 4.9절의 그 로더**다.\n> **아래에서 그 흔적을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 한 줄을 뺀다\n\nprivate void releaseTraceId() {\n    TraceId traceId = traceIdHolder.get();\n    if (traceId.isFirstLevel()) {\n        // traceIdHolder.remove();     지웠다\n    } else {\n        traceIdHolder.set(traceId.createPreviousId());\n    }\n}\n\n$ ./gradlew bootRun > /dev/null 2>&1 &\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | cut -c56- | head -4\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[796bccd9] |   |   |-->OrderController.request()\n[796bccd9] |   |   |   |-->OrderService.orderItem()\n\n--   두 요청이 같은 ID 다\n--   깊이도 3 층에서 시작했다\n--   3.2 절의 그 모양인데 동시성 문제가 아니다\n\n\n-- 순차인데도 그렇다\n\n$ grep 'study.adv.trace' logs/app.log | tail -12 | grep -oE 'exec-[0-9]+' | sort -u\nexec-1\n\n$ ps -o command= -p $(pgrep -f app.jar) > /dev/null\n$ curl -s localhost:8080/threads | head -3\nhttp-nio-8080-exec-1  RUNNABLE\nhttp-nio-8080-exec-2  WAITING\nhttp-nio-8080-exec-3  WAITING\n\n--   같은 쓰레드가 다음 요청을 받았다\n--   3.6 절에서 왜 그런지 본다\n\n\n-- 계속 부르면\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n\n$ grep 'study.adv.trace' logs/app.log | tail -1 | cut -c56- | wc -c\n     264\n\n$ grep 'study.adv.trace' logs/app.log | tail -1 | cut -c56- | cut -c1-72\n[796bccd9] |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n\n--   스무 번에 60 층이다\n--   2.4 절에서 본 그 쌓임이다\n\n\n-- 값이 어디 남아 있나\n\n@GetMapping(value = \"/trace/leak\", produces = \"text/plain\")\nString leak() throws Exception {\n    Field f = Thread.class.getDeclaredField(\"threadLocals\");\n    f.setAccessible(true);\n    Object map = f.get(Thread.currentThread());\n    return \"쓰레드:   \" + Thread.currentThread().getName() + \"\\n\"\n         + \"항목 수:  \" + sizeOf(map) + \"\\n\"\n         + \"남은 값:  \" + traceIdHolder.get() + \"\\n\";\n}\n\n$ curl -s localhost:8080/trace/leak\n쓰레드:   http-nio-8080-exec-1\n항목 수:  4\n남은 값:  TraceId(id=796bccd9, level=20)\n\n--   요청이 끝났는데 값이 남아 있다\n--   3.3 절에서 본 그 지도다\n\n\n-- 지우면 사라진다\n\n// remove 를 되살리고\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n$ curl -s localhost:8080/trace/leak\n쓰레드:   http-nio-8080-exec-1\n항목 수:  3\n남은 값:  null\n\n$ grep 'study.adv.trace' logs/app.log | tail -120 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      20\n\n--   스무 요청이 스무 개 ID 다\n--   항목도 하나 줄었다\n\n\n-- 메모리도 본다\n\n@Component\nclass HeavyHolder {\n    static final ThreadLocal<byte[]> BUF = new ThreadLocal<>();\n}\n\n@GetMapping(\"/heavy\")\nString heavy(@RequestParam(defaultValue = \"false\") boolean clear) {\n    HeavyHolder.BUF.set(new byte[10 * 1024 * 1024]);   // 10MB\n    if (clear) HeavyHolder.BUF.remove();\n    return \"ok\";\n}\n\n$ for i in $(seq 1 50); do curl -s -o /dev/null 'localhost:8080/heavy?clear=false'; done\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ curl -s localhost:9090/actuator/metrics/jvm.memory.used \\\n    | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n412 MB\n\n$ for i in $(seq 1 50); do curl -s -o /dev/null 'localhost:8080/heavy?clear=true'; done\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ curl -s localhost:9090/actuator/metrics/jvm.memory.used \\\n    | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n148 MB\n\n--   GC 를 돌려도 412MB 가 안 줄었다\n--   쓰레드마다 10MB 를 붙들고 있다\n\n\n-- 몇 개나 붙들고 있나\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'byte\\[\\]' | head -1\n   1:         26      272629520  [B (java.base@21.0.3)\n\n$ curl -s localhost:8080/threads | grep -c 'http-nio'\n26\n\n$ python3 -c \"print('쓰레드 26 개 x 10MB =', 26*10, 'MB')\"\n쓰레드 26 개 x 10MB = 260 MB\n\n--   요청을 받은 쓰레드마다 하나씩이다\n\n\n-- 약한 참조는 절반만 맞다\n\n$ jcmd $(pgrep -f app.jar) GC.class_histogram \\\n    | grep 'ThreadLocal\\$ThreadLocalMap' | head -2\n  18:       26          832  java.lang.ThreadLocal$ThreadLocalMap\n  41:      104         4160  java.lang.ThreadLocal$ThreadLocalMap$Entry\n\n// 열쇠를 없애 본다\n@GetMapping(\"/heavy/dropkey\")\nString dropKey() {\n    ThreadLocal<byte[]> local = new ThreadLocal<>();   // 지역 변수\n    local.set(new byte[10 * 1024 * 1024]);\n    return \"ok\";                                       // local 은 여기서 사라진다\n}\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null localhost:8080/heavy/dropkey; done\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'byte\\[\\]' | head -1\n   1:         20      209715360  [B (java.base@21.0.3)\n\n--   열쇠는 사라졌는데 값은 200MB 그대로다\n--   열쇠만 약한 참조다\n\n\n-- 만지면 그때 치운다\n\n$ curl -s -o /dev/null localhost:8080/heavy?clear=true\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'byte\\[\\]' | head -1\n   1:         12      125829120  [B (java.base@21.0.3)\n\n--   그 쓰레드를 다시 만지니 죽은 항목이 좀 치워졌다\n--   안 만지면 계속 있다\n\n\n-- 정적 필드면 더 오래 산다\n\n$ grep -n 'static final ThreadLocal' src/main/java/study/adv/HeavyHolder.java\n8:    static final ThreadLocal<byte[]> BUF = new ThreadLocal<>();\n\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ jcmd $(pgrep -f app.jar) GC.class_histogram | grep 'byte\\[\\]' | head -1\n   1:         12      125829120  [B (java.base@21.0.3)\n\n--   열쇠가 정적이라 안 사라진다\n--   remove 말고는 방법이 없다\n\n\n-- 나가는 길 셋을 다 막는다\n\n// ① 정상\npublic void end(TraceStatus status) { complete(status, null); }\n\n// ② 예외\npublic void exception(TraceStatus status, Exception e) { complete(status, e); }\n\nprivate void complete(TraceStatus status, Exception e) {\n    ...\n    releaseTraceId();          // 둘 다 여기를 지난다\n}\n\n$ grep -c 'releaseTraceId()' src/main/java/study/adv/trace/ThreadLocalLogTrace.java\n2\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=ex'\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -12 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n2\n\n--   예외가 나도 안 샌다\n--   3.1 절에서 겪었던 자리다\n\n\n-- 세 번째 길\n\n// end 자체가 터지면\npublic void end(TraceStatus status) {\n    log.info(...);              // 여기서 터지면\n    releaseTraceId();           // 여기가 안 돈다\n}\n\n// 이렇게 막는다\npublic void end(TraceStatus status) {\n    try {\n        log.info(...);\n    } finally {\n        releaseTraceId();\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request/broken-log'\n$ curl -s localhost:8080/trace/leak | tail -1\n남은 값:  null\n\n--   2.2 절에서 본 그 finally 다\n--   여기선 삼키는 게 아니라 정리다\n\n\n-- 필터로 한 번 더 막는 길\n\n@Component\nclass TraceCleanupFilter extends OncePerRequestFilter {\n    protected void doFilterInternal(...) throws ... {\n        try {\n            chain.doFilter(req, res);\n        } finally {\n            if (trace instanceof ThreadLocalLogTrace t) t.clear();\n            MDC.clear();\n        }\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/request?itemId=연필'\n$ curl -s localhost:8080/trace/leak\n쓰레드:   http-nio-8080-exec-2\n항목 수:  3\n남은 값:  null\n\n--   2.3 절의 MDC 도 여기서 같이 지운다\n--   무슨 일이 있어도 지워진다\n\n\n-- 확인한다\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/request?itemId=연필'; done\n$ grep 'study.adv.trace' logs/app.log | tail -120 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      20\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[c14e0b93] OrderController.request()\n[c14e0b93] |-->OrderService.orderItem()\n[c14e0b93] |   |-->OrderRepository.save()\n[c14e0b93] |   |<--OrderRepository.save() time=1004ms\n[c14e0b93] |<--OrderService.orderItem() time=1006ms\n[c14e0b93] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=logTrace' | head -3\n빈 이름:   logTrace\n주입된 것: study.adv.trace.ThreadLocalLogTrace\n원본:     study.adv.trace.ThreadLocalLogTrace\n\n--   3.6 절에서 쓰레드가 왜 재사용되는지 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '안 지우면'   '다음이 이어받음' \\\n  '순차인데도'  '같은 쓰레드' \\\n  '스무 번'     '60 층' \\\n  '메모리'      'GC 해도 412MB' \\\n  '붙든 곳'     '쓰레드 26 개' \\\n  '약한 참조'   '열쇠만' \\\n  '청소'        '만질 때만' \\\n  '정적 필드'   '안 사라짐' \\\n  '길'          '셋 다 막음' \\\n  '필터'        '마지막 그물'\n\n안 지우면                  다음이 이어받음\n순차인데도                 같은 쓰레드\n스무 번                    60 층\n메모리                     GC 해도 412MB\n붙든 곳                    쓰레드 26 개\n약한 참조                  열쇠만\n청소                       만질 때만\n정적 필드                  안 사라짐\n길                         셋 다 막음\n필터                       마지막 그물",
+   "note": "**`remove` 한 줄을 빼니 순차 요청 둘이 같은 ID 가 되고 스무 번이면 60 층까지** 쌓인다.\n\n**요청이 끝났는데 쓰레드 지도에 `TraceId(level=20)` 이 그대로** 남아 있다.\n\n**10MB 씩 담고 안 지우면 GC 를 돌려도 412MB, 쓰레드 26 개가 하나씩 붙들고** 있다.\n\n**열쇠를 지역 변수로 버려도 값 200MB 는 그대로라 약한 참조는 열쇠에만** 해당된다.\n\n**정상·예외·정리 중 예외 세 길을 다 막고 필터로 마지막 그물을 쳤다.**"
+  }
+ ],
+ "recap": [
+  "**쓰레드가 안** 죽는다.",
+  "**값이** 남는다.",
+  "**다음이** 이어받는다.",
+  "**깊이가** 쌓인다.",
+  "**회수도 안** 된다.",
+  "**열쇠만** 약하다.",
+  "**만질 때** 치운다.",
+  "**길이** 셋이다.",
+  "**필터가** 그물이다."
+ ],
+ "drills": [
+  {
+   "task": "`remove` 를 빼 본다.",
+   "done_when": "다음 요청이 이어받는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "쓰레드 지도를 들여다본다.",
+   "done_when": "남은 값을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "큰 값을 담고 GC 를 돌린다.",
+   "done_when": "안 줄어드는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "나가는 길 셋을 막는다.",
+   "done_when": "예외에도 안 새는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 값이 남나?",
+   "a": "요청이 끝나도 쓰레드는 풀로 돌아가 계속 살아 있어서다."
+  },
+  {
+   "q": "안 지우면 생기는 두 문제는?",
+   "a": "다음 요청이 낡은 값을 보는 것과 메모리가 안 풀리는 것이다."
+  },
+  {
+   "q": "약한 참조라 안전한가?",
+   "a": "열쇠만 약하다. 값은 강하게 붙어 있어 남는다."
+  },
+  {
+   "q": "언제 청소되나?",
+   "a": "그 쓰레드가 다시 만질 때다. 안 만지면 계속 있다."
+  },
+  {
+   "q": "지워야 하는 길은 몇 개인가?",
+   "a": "정상, 예외, 정리 중 예외까지 셋이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "값 잔존",
+   "def": "요청이 끝나도 쓰레드 저장소에 값이 남아 있는 상태."
+  },
+  {
+   "term": "정리 필터",
+   "def": "요청 마지막에 무슨 일이 있어도 저장소를 비우는 그물."
+  }
+ ],
+ "sources": [
+  {
+   "title": "java.lang.ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Apache Tomcat — The Executor Component",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/config/executor.html",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  }
+ ]
+}
