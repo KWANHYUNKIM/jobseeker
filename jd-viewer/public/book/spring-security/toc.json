@@ -372,7 +372,7 @@
           "title": "API 의 인증 예외",
           "summary": "리다이렉트가 아니라 JSON.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -380,7 +380,7 @@
           "title": "CSRF",
           "summary": "왜 POST 가 403 인가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",

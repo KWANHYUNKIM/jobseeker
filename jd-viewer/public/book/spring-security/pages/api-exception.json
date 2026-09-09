@@ -1,0 +1,135 @@
+{
+ "book": "spring-security",
+ "id": "api-exception",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "API 의 인증 예외",
+ "summary": "리다이렉트가 아니라 JSON.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "세 곳에서 나는 오류를 하나로 만든다.",
+  "필터 예외가 왜 ControllerAdvice 를 안 타는지 안다.",
+  "테스트로 형식을 고정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 401 이** 나왔다. **본문은 아직 비어** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "오류가 태어나는 세 곳",
+   "ascii": "   three places an api error can be born\n\n   the filter chain      401 from the entry point\n                         403 from the denied handler\n   method security       403, thrown inside the controller call\n   the controller        whatever ControllerAdvice says\n\n   three places means three formats, unless you make them one",
+   "note": "**세 곳이면 형식도** 셋이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "필터 예외는 ControllerAdvice 를 안 탄다",
+   "md": "**`@RestControllerAdvice` 는 `DispatcherServlet` 의 기능**이다.\n\n> **필터는 그 앞**이다.\n> **`ExceptionTranslationFilter` 가 잡은 예외는 서블릿에 도달한 적이** 없다.\n>\n> **그래서 아무리 잘 만든 `ControllerAdvice` 도 401 을 못** 꾸민다.\n\n**두 가지 방법**이 있다.\n\n```java\n// 1) 진입점과 핸들러에서 직접 쓴다\nhttp.exceptionHandling(e -> e\n        .authenticationEntryPoint(this::writeUnauthorized)\n        .accessDeniedHandler(this::writeForbidden));\n\nprivate void writeUnauthorized(HttpServletRequest req,\n        HttpServletResponse res, AuthenticationException ex) throws IOException {\n    write(res, HttpStatus.UNAUTHORIZED, \"authentication required\", req);\n}\n\nprivate void write(HttpServletResponse res, HttpStatus status,\n        String detail, HttpServletRequest req) throws IOException {\n    ProblemDetail body = ProblemDetail.forStatusAndDetail(status, detail);\n    body.setInstance(URI.create(req.getRequestURI()));\n    res.setStatus(status.value());\n    res.setContentType(\"application/problem+json\");\n    objectMapper.writeValue(res.getWriter(), body);\n}\n\n// 2) HandlerExceptionResolver 에게 넘긴다\nprivate final HandlerExceptionResolver resolver;   // @Qualifier(\"handlerExceptionResolver\")\n\n(req, res, ex) -> resolver.resolveException(req, res, null, ex);\n```\n\n> **둘째는 `ControllerAdvice` 를 다시 태우는** 방법이다.\n> **형식이 한 군데로** 모인다.\n> **다만 `null` 핸들러라 일부 리졸버가 못 다루는 경우가** 있다.\n\n**첫째가 단순하고 예측 가능**하다.\n\n> **필터 쪽 둘, 컨트롤러 쪽 하나를 같은 함수로** 쓰면 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "본문 하나의 모양",
+   "ascii": "   one body shape for every failure\n\n   {\n     \"type\":   \"about:blank\",\n     \"title\":  \"Unauthorized\",\n     \"status\": 401,\n     \"detail\": \"authentication required\",\n     \"instance\": \"/api/v1/orders\"\n   }\n\n   RFC 9457 calls this a problem detail\n   Spring has ProblemDetail built in since 6.0",
+   "note": "**표준이 있으니 새로 만들지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "본문을 안 쓰면 안 나간다",
+   "md": "**상태 코드만 세팅하면 본문이** 없다.\n\n```java\n(req, res, ex) -> res.setStatus(401);      // 본문 없음\n```\n\n> **`sendError(401)` 을 쓰면 컨테이너 기본 오류 페이지가** 나간다.\n> **HTML** 이다.\n> **API 클라이언트가 JSON 을 기대하는데 HTML 을** 받는다.\n\n**`setStatus` + 직접 쓰기가** 맞다.\n\n> **그리고 `Content-Type` 을 꼭** 준다.\n\n**메서드 보안은 다른 길로** 온다.\n\n> **`@PreAuthorize` 예외는 컨트롤러 호출 중에 나서 `ControllerAdvice` 가 먼저** 본다.\n> **6.1절에서 500 이 되던 그것**이다.\n> **`AccessDeniedException` 을 명시로 잡아 같은 형식으로** 써 준다.\n\n```java\n@ExceptionHandler(AccessDeniedException.class)\nProblemDetail denied(AccessDeniedException e, HttpServletRequest req) {\n    ProblemDetail body = ProblemDetail.forStatusAndDetail(FORBIDDEN, \"forbidden\");\n    body.setInstance(URI.create(req.getRequestURI()));\n    return body;\n}\n```\n\n> **필터 쪽과 같은 모양이면** 된다.\n> **어디서 났는지 클라이언트가 알 필요가** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 지금 상태 ---\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 401\nContent-Length: 0\n\n#   본문이 없다\n\n$ curl -i -b user.txt localhost:8080/api/v1/admin/stats\n\nHTTP/1.1 500\nContent-Type: application/json\n\n{\"error\":\"error: Access Denied\"}\n\n#   403 이어야 하는데 500 이다 (6.1절)\n\n#   그리고 형식이 다르다\n\n# --- sendError 를 써 보면 ---\n\nhttp.exceptionHandling(e -> e.authenticationEntryPoint(\n        (req, res, ex) -> res.sendError(401)));\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 401\nContent-Type: text/html;charset=utf-8\n\n<!doctype html><html lang=\"en\"><head><title>HTTP Status 401</title>\n\n#   HTML 이 나온다\n\n#   JSON 을 기대한 클라이언트가 파싱에 실패한다\n\n# --- 직접 쓴다 ---\n\n@Component\n@RequiredArgsConstructor\npublic class ProblemWriter {\n    private final ObjectMapper objectMapper;\n\n    public void write(HttpServletRequest req, HttpServletResponse res,\n            HttpStatus status, String detail) throws IOException {\n        ProblemDetail body = ProblemDetail.forStatusAndDetail(status, detail);\n        body.setInstance(URI.create(req.getRequestURI()));\n        res.setStatus(status.value());\n        res.setContentType(\"application/problem+json\");\n        objectMapper.writeValue(res.getWriter(), body);\n    }\n}\n\nhttp.exceptionHandling(e -> e\n        .authenticationEntryPoint((req, res, ex) ->\n                writer.write(req, res, UNAUTHORIZED, \"authentication required\"))\n        .accessDeniedHandler((req, res, ex) ->\n                writer.write(req, res, FORBIDDEN, \"forbidden\")));\n\n$ curl -i localhost:8080/api/v1/orders\n\nHTTP/1.1 401\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\n \"detail\":\"authentication required\",\"instance\":\"/api/v1/orders\"}\n\n$ curl -i -u user@a.com:1234 localhost:8080/api/v1/admin/orders\n\nHTTP/1.1 403\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Forbidden\",\"status\":403,\n \"detail\":\"forbidden\",\"instance\":\"/api/v1/admin/orders\"}\n\n#   둘이 같은 모양이다\n\n# --- 메서드 보안 쪽도 맞춘다 ---\n\n@RestControllerAdvice\npublic class ApiExceptionHandler {\n    @ExceptionHandler(AccessDeniedException.class)\n    ProblemDetail denied(HttpServletRequest req) {\n        ProblemDetail body = ProblemDetail.forStatusAndDetail(\n                HttpStatus.FORBIDDEN, \"forbidden\");\n        body.setInstance(URI.create(req.getRequestURI()));\n        return body;\n    }\n}\n\n$ curl -i -u user@a.com:1234 localhost:8080/api/v1/admin/stats\n\nHTTP/1.1 403\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Forbidden\",\"status\":403,\n \"detail\":\"forbidden\",\"instance\":\"/api/v1/admin/stats\"}\n\n#   500 이 403 이 됐다\n\n#   그리고 필터 쪽과 같은 모양이다\n\n# --- 세 곳을 나란히 확인 ---\n\n$ for u in /api/v1/orders /api/v1/admin/orders /api/v1/admin/stats; do\n    printf '%-24s ' $u\n    curl -s -o /dev/null -w '%{http_code} %{content_type}\\n' \\\n        -u user@a.com:1234 localhost:8080$u\n  done\n\n/api/v1/orders           200 application/json\n/api/v1/admin/orders     403 application/problem+json\n/api/v1/admin/stats      403 application/problem+json\n\n$ curl -s -o /dev/null -w '%{http_code} %{content_type}\\n' \\\n    localhost:8080/api/v1/orders\n\n401 application/problem+json\n\n#   세 곳이 한 형식이다\n\n#   필터 · 인가 필터 · 메서드 보안\n\n# --- 화면 쪽은 그대로인가 ---\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080/orders\n302\n\n$ curl -is localhost:8080/orders | grep -i location\nLocation: http://localhost:8080/login\n\n#   브라우저는 여전히 로그인 화면으로 간다\n\n#   6.2절의 위임 진입점 덕분이다\n\n# --- 테스트로 고정한다 ---\n\n@Test\nvoid 인증_없는_api_는_401_problem_json() throws Exception {\n    mockMvc.perform(get(\"/api/v1/orders\"))\n            .andExpect(status().isUnauthorized())\n            .andExpect(content().contentType(\"application/problem+json\"))\n            .andExpect(jsonPath(\"$.status\").value(401))\n            .andExpect(jsonPath(\"$.instance\").value(\"/api/v1/orders\"));\n}\n\n@Test\n@WithMockUser(roles = \"USER\")\nvoid 권한_없는_api_는_403_problem_json() throws Exception {\n    mockMvc.perform(get(\"/api/v1/admin/orders\"))\n            .andExpect(status().isForbidden())\n            .andExpect(jsonPath(\"$.status\").value(403));\n}\n\n$ ./gradlew test\n\n83 tests completed\n\nBUILD SUCCESSFUL\n\n#   83 이다\n\n$ grep -rn \"isForbidden\" src/test | wc -l\n\n1\n\n#   인가 테스트가 처음으로 0이 아니다\n\n#   4.8절과 5.8절에서 두 번 세었던 그 0이다\n\n#   8.8절에서 제대로 채운다\n\n# --- 4.8절 표를 갱신한다 ---\n\n#   API 가 401 이 아니라 302        -> 갚음 (6.2 · 6.3)\n#   CSRF 를 왜 켜 두나              -> 다음 절\n#   직접 만든 로그인 방식            -> 10장\n#   비동기 로그인의 302             -> 11.3\n#   인가 규칙이 authenticated() 하나 -> 7장\n\n# --- 다음 절에서 ---\n\n#   1.4절부터 계속 나오던 403 의 정체를 본다",
+   "note": "**`sendError(401)` 은 HTML 을** 돌려준다. **`setStatus` + 직접 쓰기로 `application/problem+json`** 이 나간다.\n\n**필터의 401·인가 필터의 403·메서드 보안의 403 이 한 형식**으로 모였다. **6.1절의 500 이 403 이** 됐다.\n\n**브라우저는 여전히 302** 다 — **6.2절 위임 진입점** 덕이다.\n\n**테스트가 83개가 되고 `isForbidden` 이 처음으로 1** 이다."
+  }
+ ],
+ "recap": [
+  "**API 오류는 세 곳에서** 난다.",
+  "**필터 예외는 `ControllerAdvice` 를 안** 탄다.",
+  "**`DispatcherServlet` 보다 앞이라 그렇다.**",
+  "**`sendError` 는 HTML 을** 돌려준다.",
+  "**`setStatus` + 직접 쓰기가** 맞다.",
+  "**`ProblemDetail` 이 표준 형식을** 준다.",
+  "**메서드 보안 예외는 `ControllerAdvice` 에서** 맞춘다.",
+  "**세 곳을 같은 모양으로** 만든다.",
+  "**브라우저 쪽은 위임 진입점으로 따로** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "`sendError` 와 직접 쓰기를 비교한다.",
+   "done_when": "`Content-Type` 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`ProblemDetail` 로 401·403 을 만든다.",
+   "done_when": "같은 모양인 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "메서드 보안 예외를 맞춘다.",
+   "done_when": "500 이 403 이 된 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "세 경로를 테스트로 고정한다.",
+   "done_when": "상태와 본문을 단언했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 `ControllerAdvice` 가 401 을 못 꾸미나?",
+   "a": "필터 예외는 `DispatcherServlet` 에 도달하지 않아서다."
+  },
+  {
+   "q": "`sendError` 의 문제는?",
+   "a": "컨테이너 기본 오류 페이지, 즉 HTML 이 나간다."
+  },
+  {
+   "q": "표준 오류 본문 형식은?",
+   "a": "RFC 9457 의 problem detail 이고 스프링에 `ProblemDetail` 이 있다."
+  },
+  {
+   "q": "메서드 보안의 403 은 어디서 꾸미나?",
+   "a": "`ControllerAdvice` 에서 `AccessDeniedException` 을 잡는다."
+  },
+  {
+   "q": "브라우저는 왜 여전히 302 인가?",
+   "a": "위임 진입점이 요청을 보고 갈라 주기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ProblemDetail",
+   "def": "RFC 9457 의 오류 본문을 표현하는 스프링 6 의 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "RFC 9457 — Problem Details for HTTP APIs",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9457",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Security — Handling Security Exceptions",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter",
+   "publisher": "Spring"
+  },
+  {
+   "title": "RFC 9110 — HTTP Semantics",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9110#section-15.5.2",
+   "publisher": "IETF"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

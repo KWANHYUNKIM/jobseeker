@@ -1,0 +1,134 @@
+{
+ "book": "spring-security",
+ "id": "csrf",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "CSRF",
+ "summary": "왜 POST 가 403 인가.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "공격을 재현한다.",
+  "왜 쿠키가 방어가 안 되는지 안다.",
+  "언제 꺼도 되는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절부터 `POST` 가 403** 이었다. **막고 있던 게 무엇인지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "페이지 하나로 되는 공격",
+   "ascii": "   the attack, in one page\n\n   the victim is logged in to bank.example\n   the victim opens evil.example, which contains\n\n     <form action=\"https://bank.example/transfer\" method=\"post\">\n       <input name=\"to\" value=\"attacker\">\n       <input name=\"amount\" value=\"1000000\">\n     </form>\n     <script>document.forms[0].submit()</script>\n\n   the browser attaches the bank cookie, because it always does\n   the bank sees a valid session and does the transfer",
+   "note": "**브라우저는 늘 쿠키를** 붙인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쿠키는 방어가 될 수 없다",
+   "md": "**공격자가 할 수 있는 것과 없는 것**이 있다.\n\n> **요청을 보내게 하는 건** 된다.\n> **응답을 읽는 건 안** 된다 — **동일 출처 정책**.\n\n**그래서 방어는 \"공격자가 못 읽는 값\"** 이다.\n\n> **쿠키는 브라우저가 자동으로 붙이니 값이** 된다.\n> **하지만 자동으로 붙는다는 게 문제**다.\n> **공격자가 값을 몰라도 브라우저가 대신 보내** 준다.\n\n**토큰은 페이지 안에** 있다.\n\n> **폼의 히든 필드나 메타 태그**다.\n> **공격자가 그 페이지를 읽어야 아는데 못** 읽는다.\n> **그래서 요청에 못** 넣는다.\n\n**그러니 방어는 두 조건**이다.\n\n| | |\n|---|---|\n| **자동으로 안 붙는다** | 쿠키가 아니어야 |\n| **읽을 수 없다** | 같은 출처에서만 |\n\n**어떤 요청을 검사하나**\n\n> **`GET`·`HEAD`·`OPTIONS`·`TRACE` 는 안** 한다.\n> **안전해야 하는 메서드라 상태를 안 바꾼다는** 전제다.\n>\n> **그래서 `GET` 으로 상태를 바꾸면 CSRF 방어가 통째로** 무의미해진다.\n> **3.8절의 `GET` 로그아웃이 그** 예다."
+  },
+  {
+   "type": "figure",
+   "caption": "공격자가 할 수 있는 것",
+   "ascii": "   what the attacker can and cannot do\n\n   can    make the browser send a request\n   can    make the browser attach the cookie\n   cannot read the response          (same origin policy)\n   cannot read a token from the page (same origin policy)\n\n   so the defence is a value the attacker cannot read\n   the cookie is not that value, because it is sent automatically",
+   "note": "**읽을 수 없다는 게 방어의 뿌리**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "언제 꺼도 되나",
+   "md": "**끄면 되는 경우**\n\n> **쿠키로 인증하지 않을** 때다.\n> **`Authorization` 헤더만 쓰는 API 라면 브라우저가 자동으로 붙여 주는 게** 없다.\n> **공격자가 헤더를 못 붙이니 공격이 성립하지** 않는다.\n\n**끄면 안 되는 경우**\n\n> **세션 쿠키를 쓰는 모든 화면**이다.\n> **\"우리는 SPA 라서\" 는 이유가 안** 된다 — **쿠키를 쓰면 대상**이다.\n> **3.3절에서 기본 인증을 세션에 담게 바꾸면 CSRF 가 다시 필요하다고 한** 이유다.\n\n**`SameSite` 쿠키가 많이 막아** 준다.\n\n```properties\nserver.servlet.session.cookie.same-site=lax\n```\n\n| 값 | 뜻 |\n|---|---|\n| `strict` | 외부에서 온 요청에 아예 안 붙인다 |\n| `lax` | 최상위 `GET` 이동에만 붙인다 (요즘 브라우저 기본) |\n| `none` | 늘 붙인다 (`Secure` 필수) |\n\n> **`lax` 면 위 그림의 `POST` 에 쿠키가 안** 붙는다.\n> **그래도 토큰을 끄지는** 않는다 — **브라우저 기본값에만 의존할 수는** 없다.\n> **OWASP 도 심층 방어로** 권한다.\n\n**끌 때는 체인 단위**로 한다.\n\n> **2.3절처럼 API 체인에만** 끈다.\n> **전체에 `csrf().disable()` 을 쓰면 화면까지 열린다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 공격 페이지를 만든다 ---\n\n$ cat > /tmp/evil.html <<'HTML'\n<html><body>\n  <form id=\"f\" action=\"http://localhost:8080/orders/new\" method=\"post\">\n    <input name=\"productNumbers\" value=\"001\">\n  </form>\n  <script>document.getElementById('f').submit()</script>\n</body></html>\nHTML\n\n$ python3 -m http.server 9000 --directory /tmp &\n\n#   9000 이 공격자, 8080 이 우리 서비스다\n\n# --- CSRF 를 끈 상태로 ---\n\nhttp.csrf(c -> c.disable());\n\n#   (브라우저로 localhost:9000/evil.html 을 연다)\n#   (미리 8080 에 로그인해 둔 상태)\n\n$ curl -s -o /dev/null -b user.txt localhost:8080/orders \\\n    -w '주문 수 확인용\\n'\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n3\n\n#   (evil.html 을 연 뒤)\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n4\n\n#   주문이 하나 늘었다\n\n#   내가 누른 적이 없다\n\nDEBUG FilterChainProxy : Securing POST /orders/new\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/13)\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl\n  [Authentication=... Principal=CustomUserDetails [username=user@a.com]]\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Authorized filter invocation\nDEBUG FilterChainProxy : Secured POST /orders/new\n\n#   인증도 인가도 다 통과했다\n\n#   서버 입장에선 정상 요청이다\n\n#   Referer 를 보면\n\n#   Referer: http://localhost:9000/\n\n#   다른 출처인데 쿠키가 붙어 왔다\n\n# --- CSRF 를 켠다 ---\n\nhttp.csrf(withDefaults());\n\n#   (evil.html 을 다시 연다)\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n4\n\n#   안 늘었다\n\nDEBUG FilterChainProxy : Securing POST /orders/new\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\nDEBUG CsrfFilter : Invalid CSRF token found for\n  http://localhost:8080/orders/new\nDEBUG AccessDeniedHandlerImpl : Responding with 403 status code\n\n#   1.4절의 그 403 이다\n\n#   토큰이 없어서다\n\n# --- 정상 폼은 어떻게 통과하나 ---\n\n$ curl -s -b user.txt localhost:8080/orders/new | grep _csrf\n\n<input type=\"hidden\" name=\"_csrf\"\n  value=\"tKmM9Fx2-vQ1nR8sL0pZ...\">\n\n$ TOKEN=$(curl -s -b user.txt localhost:8080/orders/new \\\n    | grep _csrf | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')\n\n$ curl -i -b user.txt -X POST localhost:8080/orders/new \\\n    -d \"productNumbers=001&_csrf=$TOKEN\"\n\nHTTP/1.1 302\nLocation: http://localhost:8080/orders\n\nTRACE FilterChainProxy : Invoking CsrfFilter (5/14)\nTRACE FilterChainProxy : Invoking LogoutFilter (6/14)\n\n#   (6/14) 가 있다\n\n#   통과했다\n\n#   공격자는 저 값을 못 읽는다\n\n# --- 메서드별로 확인 ---\n\n$ for m in GET POST PUT DELETE HEAD OPTIONS; do\n    printf '%-8s ' $m\n    curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n        -X $m localhost:8080/orders/probe\n  done\n\nGET      200\nPOST     403\nPUT      403\nDELETE   403\nHEAD     200\nOPTIONS  200\n\n#   안전한 메서드 셋은 검사 안 한다\n\n#   GET 으로 상태를 바꾸면 이 방어가 통째로 무의미하다\n\n# --- SameSite 를 켜 본다 ---\n\nserver.servlet.session.cookie.same-site=strict\n\n$ curl -is -c s.txt -b s.txt -X POST localhost:8080/login -d \"...\" \\\n    | grep -i set-cookie\n\nSet-Cookie: JSESSIONID=A1B2C3; Path=/; HttpOnly; SameSite=Strict\n\n#   (CSRF 를 끄고 evil.html 을 다시 연다)\n\nselect count(*) from orders;\n\nCOUNT(*)\n--------\n4\n\n#   안 늘었다\n\nDEBUG FilterChainProxy : Securing POST /orders/new\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/13)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (13/13)\nDEBUG AuthorizationFilter : Failed to authorize filter invocation\n\n#   이번엔 인증이 없어서 막혔다\n\n#   브라우저가 쿠키를 안 붙였다\n\n#   그래도 토큰은 켜 둔다\n\n#   브라우저 기본값에만 기대지 않는다\n\n# --- API 체인만 끈다 ---\n\n@Bean @Order(1)\nSecurityFilterChain api(HttpSecurity http) throws Exception {\n    http.securityMatcher(\"/api/**\")\n        .csrf(c -> c.disable())\n        .httpBasic(withDefaults())\n        .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))\n        .authorizeHttpRequests(a -> a.anyRequest().authenticated());\n    return http.build();\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -u user@a.com:1234 \\\n    -X POST localhost:8080/api/v1/orders -H 'Content-Type: application/json' \\\n    -d '{\"productNumbers\":[\"001\"]}'\n200\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt \\\n    -X POST localhost:8080/orders/new -d 'productNumbers=001'\n403\n\n#   API 는 열려 있고 화면은 막혀 있다\n\n#   API 는 헤더 인증이라 CSRF 가 성립하지 않는다\n\n# --- 다음 절에서 ---\n\n#   그 토큰이 어디에 담기는지 본다",
+   "note": "**CSRF 를 끄면 남의 페이지가 연 `POST` 로 주문이 3→4** 로 늘어난다. **인증도 인가도 통과한 정상 요청**이다.\n\n**켜면 `Invalid CSRF token found` 로 403** 이고 주문이 안 는다.\n\n**메서드별로 `GET`·`HEAD`·`OPTIONS` 는 200, 나머지는 403** 이다.\n\n**`SameSite=Strict` 만으로도 막히는데 이번엔 쿠키가 안 붙어 인증이** 없어서다.\n\n**API 체인만 끄면 API 는 200, 화면은 403** 이다."
+  }
+ ],
+ "recap": [
+  "**CSRF 는 남의 페이지가 내 쿠키로 요청을 보내는** 공격이다.",
+  "**브라우저는 출처를 안 가리고 쿠키를** 붙인다.",
+  "**공격자는 응답을 못 읽는다** — 그게 방어의 뿌리다.",
+  "**토큰은 페이지 안에 있어 못** 읽는다.",
+  "**`GET`·`HEAD`·`OPTIONS`·`TRACE` 는 검사 안** 한다.",
+  "**`GET` 으로 상태를 바꾸면 방어가** 무의미해진다.",
+  "**헤더 인증 API 는 꺼도** 된다.",
+  "**쿠키를 쓰면 SPA 여도 대상**이다.",
+  "**`SameSite` 는 도움이 되지만 대체는** 아니다."
+ ],
+ "drills": [
+  {
+   "task": "공격 페이지를 만들어 CSRF 를 끄고 열어 본다.",
+   "done_when": "데이터가 바뀐 것을 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "CSRF 를 켜고 다시 열어 본다.",
+   "done_when": "403 로그를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "메서드별 상태 코드를 잰다.",
+   "done_when": "안전한 메서드 셋을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`SameSite=Strict` 를 켜 본다.",
+   "done_when": "쿠키가 안 붙는 것을 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CSRF 공격에 비밀번호가 필요한가?",
+   "a": "필요 없다. 브라우저가 쿠키를 자동으로 붙여 준다."
+  },
+  {
+   "q": "왜 토큰이 방어가 되나?",
+   "a": "공격자가 페이지를 읽을 수 없어 토큰 값을 모른다."
+  },
+  {
+   "q": "어떤 메서드가 검사에서 빠지나?",
+   "a": "`GET`·`HEAD`·`OPTIONS`·`TRACE` 다."
+  },
+  {
+   "q": "언제 꺼도 되나?",
+   "a": "쿠키가 아니라 헤더로만 인증할 때다."
+  },
+  {
+   "q": "`SameSite` 만으로 충분한가?",
+   "a": "아니다. 브라우저 기본값에만 의존할 수 없어 토큰도 유지한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CSRF",
+   "def": "다른 사이트가 사용자의 쿠키를 이용해 의도하지 않은 요청을 보내게 하는 공격."
+  },
+  {
+   "term": "SameSite",
+   "def": "쿠키를 다른 출처의 요청에 붙일지 정하는 쿠키 속성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Cross Site Request Forgery (CSRF)",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "OWASP — Cross-Site Request Forgery Prevention Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+   "publisher": "OWASP"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}
