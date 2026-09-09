@@ -1,0 +1,140 @@
+{
+ "book": "docker",
+ "id": "bind-mount",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "바인드 마운트",
+ "summary": "내 폴더를 컨테이너 안에 꽂는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "바인드 마운트의 용도를 안다.",
+  "가려짐 문제를 안다.",
+  "맥에서의 성능 대책을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "```bash\ndocker run -d -v \"$PWD/src:/app/src\" -p 8080:8080 myapp:dev\n```\n\n**호스트의 디렉터리를 컨테이너 안 경로에 그대로** 꽂는다. **고치면 즉시 반영**된다."
+  },
+  {
+   "type": "table",
+   "caption": "어디에 쓰나",
+   "columns": [
+    "용도",
+    "예"
+   ],
+   "rows": [
+    [
+     "**개발 중 소스 코드**",
+     "고치면 바로 반영. 재빌드 없이 확인"
+    ],
+    [
+     "**설정 파일 주입**",
+     "`-v ./nginx.conf:/etc/nginx/nginx.conf:ro`"
+    ],
+    [
+     "빌드 산출물 꺼내기",
+     "`-v \"$PWD/out:/out\"`"
+    ],
+    [
+     "**호스트 파일 읽기**",
+     "로그 수집기가 `/var/log` 를 읽는다"
+    ],
+    [
+     "**하면 안 되는 것**",
+     "**운영 DB 데이터** — 볼륨을 쓴다"
+    ]
+   ],
+   "note": "**\"내 컴퓨터의 이 경로\" 라는 전제가 들어가므로 이식성이 없다** — **운영에서는 안 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "마운트는 덮는다 — node_modules 문제",
+   "md": "**가장 유명한 함정**이다.\n\n```dockerfile\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci          # /app/node_modules 가 이미지 안에 생긴다\nCOPY . .\n```\n\n```bash\ndocker run -v \"$PWD:/app\" myapp\n```\n\n> **호스트의 `$PWD` 가 `/app` 을 통째로** 덮는다.\n> **이미지 안의 `node_modules` 가 안 보인다.** **`Cannot find module` 이** 난다.\n\n**해결**: **그 경로만 볼륨으로 한 겹 더 얹는다.**\n\n```bash\ndocker run -v \"$PWD:/app\" -v /app/node_modules myapp\n```\n\n**나중에 온 마운트가 이긴다** — **`/app/node_modules` 는 익명 볼륨(이미지 내용이 복사됨, 8.2절)이** 된다.\n\n**자바에서는 `build/` 나 `target/` 이 같은 문제를** 낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "-v 는 오타를 잡아 주지 않는다",
+   "md": "```bash\ndocker run -v \"$PWD/confg:/etc/nginx/conf.d\" nginx:1.27\n#              ^^^^^ 오타\n```\n\n**에러가 안 난다.** **`confg` 라는 빈 디렉터리를 만들어 붙인다.**\n\n> **nginx 는 설정 파일이 하나도 없는 채로** 뜬다. **404 만 돌려주는데 왜인지 모른다.**\n\n**`--mount` 를 쓰면 에러가** 난다:\n\n```bash\ndocker run --mount type=bind,src=\"$PWD/confg\",dst=/etc/nginx/conf.d nginx:1.27\n# Error: bind source path does not exist\n```\n\n**상대 경로도 주의**: **`-v ./src:/app`** 은 **도커 컴포즈에서는 되지만 `docker run` 에서는 버전에 따라 안 된다.** **`$PWD` 를 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "맥에서 느릴 때",
+   "md": "**2.6절 때문에 파일이 많으면 눈에 띄게** 느리다.\n\n| 대책 | 어떻게 |\n|---|---|\n| **의존성 디렉터리는 볼륨으로** | `node_modules`·`.gradle` 을 익명/이름 볼륨으로 빼면 VM 안에 있게 된다 |\n| **`:cached` / `:delegated`** | 일관성을 약간 포기하고 속도를 얻는다(VirtioFS 에서는 의미가 줄었다) |\n| VirtioFS 켜기 | Docker Desktop 설정. 기본값인 경우가 많다 |\n| **동기화 도구** | mutagen 등. 복잡도가 는다 |\n\n**첫 번째가 가장 효과가** 크다 — **호스트에서 볼 필요가 없는 디렉터리를 호스트에서 빼는** 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "덮이는 것과 오타를 직접 본다",
+   "sql": "$ mkdir -p /tmp/lab/src && cd /tmp/lab\n$ echo 'console.log(\"v1\")' > src/app.js\n\n# --- 고치면 바로 반영된다 ---\n\n$ docker run -d --name dev -v \"$PWD/src:/app/src\" -w /app node:20-slim \\\n    sh -c 'while true; do node src/app.js; sleep 2; done' >/dev/null\n\n$ sleep 3 && docker logs --tail 1 dev\nv1\n\n$ echo 'console.log(\"v2\")' > src/app.js\n$ sleep 3 && docker logs --tail 1 dev\nv2\n\n#   재빌드도 재시작도 없이 바뀌었다\n\n$ docker rm -f dev >/dev/null\n\n\n# --- 마운트가 이미지 내용을 덮는다 ---\n\n$ cat > package.json <<'EOF'\n{ \"name\": \"lab\", \"version\": \"1.0.0\", \"dependencies\": { \"lodash\": \"4.17.21\" } }\nEOF\n\n$ cat > Dockerfile <<'EOF'\nFROM node:20-slim\nWORKDIR /app\nCOPY package.json ./\nRUN npm install --omit=dev\nCOPY . .\nCMD [\"node\", \"-e\", \"require('lodash'); console.log('lodash ok')\"]\nEOF\n\n$ docker build -q -t nodeapp . >/dev/null\n\n$ docker run --rm nodeapp\nlodash ok\n\n#   이미지 안에는 node_modules 가 있다\n\n$ docker run --rm -v \"$PWD:/app\" nodeapp\nnode:internal/modules/cjs/loader:1215\n  throw err;\nError: Cannot find module 'lodash'\n\n#   호스트에는 node_modules 가 없다. 마운트가 통째로 덮었다\n\n$ docker run --rm -v \"$PWD:/app\" -v /app/node_modules nodeapp\nlodash ok\n\n#   그 경로에만 익명 볼륨을 한 겹 더 얹었다\n#   빈 볼륨이라 이미지의 node_modules 가 복사됐다 (8.2절)\n\n$ ls node_modules 2>&1\nls: node_modules: No such file or directory\n\n#   호스트에는 여전히 없다. VM 안에만 있다\n\n\n# --- 마운트 목록을 확인 ---\n\n$ docker run -d --name m -v \"$PWD:/app\" -v /app/node_modules nodeapp sleep 300 >/dev/null\n$ docker inspect -f '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}}{{println}}{{end}}' m\nbind /tmp/lab -> /app\nvolume /var/lib/docker/volumes/8f3a2b.../_data -> /app/node_modules\n\n#   나중 것이 더 깊은 경로라 안쪽에서 이긴다\n\n$ docker rm -f m >/dev/null\n\n\n# --- 오타는 조용히 빈 디렉터리가 된다 ---\n\n$ mkdir -p conf.d && echo 'server { listen 80; return 200 \"hi\\n\"; }' > conf.d/site.conf\n\n$ docker run -d --name ok -p 8080:80 -v \"$PWD/conf.d:/etc/nginx/conf.d:ro\" nginx:1.27 >/dev/null\n$ sleep 1 && curl -s localhost:8080\nhi\n\n$ docker run -d --name typo -p 8081:80 -v \"$PWD/confd:/etc/nginx/conf.d:ro\" nginx:1.27 >/dev/null\n$ sleep 1 && curl -s -o /dev/null -w '%{http_code}\\n' localhost:8081\n404\n\n$ ls -d confd\nconfd\n\n#   $PWD/confd 라는 빈 디렉터리가 생겼다. 에러는 하나도 안 났다\n\n$ docker exec typo ls /etc/nginx/conf.d\n#   비어 있다\n\n\n# --- --mount 는 잡아 준다 ---\n\n$ docker run --rm --mount type=bind,src=\"$PWD/confd2\",dst=/etc/nginx/conf.d nginx:1.27 true\ndocker: Error response from daemon: invalid mount config for type \"bind\":\nbind source path does not exist: /tmp/lab/confd2\n\n\n# --- 읽기 전용 ---\n\n$ docker exec ok sh -c 'echo x > /etc/nginx/conf.d/new.conf' 2>&1\nsh: can't create /etc/nginx/conf.d/new.conf: Read-only file system\n\n#   :ro 를 붙였으므로 컨테이너가 내 설정 파일을 못 고친다\n\n$ docker rm -f ok typo >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab && docker rmi -f nodeapp >/dev/null"
+  }
+ ],
+ "recap": [
+  "바인드 마운트는 개발 중 소스와 설정 파일 주입에 쓴다. 운영 데이터에는 안 쓴다.",
+  "마운트는 이미지의 내용을 덮는다. node_modules 는 그 경로에 볼륨을 한 겹 더 얹어 살린다.",
+  "-v 는 없는 호스트 경로를 조용히 만든다. 오타가 빈 디렉터리로 붙어 원인 찾기가 어렵다.",
+  "설정 파일은 :ro 로 붙여 컨테이너가 못 고치게 한다.",
+  "맥에서 느리면 의존성 디렉터리를 볼륨으로 빼는 것이 가장 효과가 크다."
+ ],
+ "drills": [
+  {
+   "task": "node_modules 가 있는 이미지에 `-v \"$PWD:/app\"` 를 붙여 Cannot find module 을 재현한다.",
+   "done_when": "에러를 보고 `-v /app/node_modules` 로 해결한다.",
+   "minutes": 8
+  },
+  {
+   "task": "경로에 일부러 오타를 내서 빈 디렉터리가 생기는 것을 확인한다.",
+   "done_when": "에러 없이 빈 디렉터리가 만들어지는 것을 보고 --mount 로 에러를 낸다.",
+   "minutes": 5
+  },
+  {
+   "task": "설정 파일을 `:ro` 로 붙이고 컨테이너 안에서 수정을 시도한다.",
+   "done_when": "Read-only file system 을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`-v \"$PWD:/app\"` 를 붙였더니 Cannot find module 이 나는 이유는.",
+   "a": "마운트가 이미지의 /app 을 통째로 덮어 그 안의 node_modules 가 안 보인다."
+  },
+  {
+   "q": "그 문제를 어떻게 푸나.",
+   "a": "`-v /app/node_modules` 처럼 그 경로에 볼륨을 한 겹 더 얹는다. 더 깊은 마운트가 이긴다."
+  },
+  {
+   "q": "바인드 마운트를 운영에 안 쓰는 이유는.",
+   "a": "호스트 경로에 묶여 이식성이 없고, 권한·성능 문제가 있으며 도커가 관리해 주지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "바인드 마운트",
+   "what": "호스트의 특정 경로를 컨테이너 안 경로에 그대로 연결하는 것."
+  },
+  {
+   "term": ":ro",
+   "what": "읽기 전용 마운트 옵션."
+  },
+  {
+   "term": "VirtioFS",
+   "what": "맥 Docker Desktop 의 파일 공유 구현. 이전 방식보다 빠르다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Bind mounts",
+   "url": "https://docs.docker.com/engine/storage/bind-mounts/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — File sharing performance on Mac",
+   "url": "https://docs.docker.com/desktop/settings-and-maintenance/settings/",
+   "publisher": "Docker"
+  }
+ ]
+}

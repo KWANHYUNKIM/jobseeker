@@ -1,0 +1,139 @@
+{
+ "book": "docker",
+ "id": "db-volume",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "DB 컨테이너를 다시 만들어도",
+ "summary": "데이터를 남기고 컨테이너만 바꾼다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "DB 컨테이너를 안전하게 교체한다.",
+  "초기화 스크립트를 언제 쓰는지 안다.",
+  "메이저 버전 업의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8장을 실전으로** 닫는다. **PostgreSQL 컨테이너를 데이터를 잃지 않고 교체**한다."
+  },
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "띄우기",
+   "caption": "볼륨을 붙여 띄운다",
+   "code": "docker volume create shop-pgdata\n\ndocker run -d --name shop-db \\\n  --network shop \\\n  -v shop-pgdata:/var/lib/postgresql/data \\\n  -e POSTGRES_DB=shop \\\n  -e POSTGRES_USER=shop \\\n  -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n  -v \"$PWD/secrets/pgpass:/run/secrets/pgpass:ro\" \\\n  -p 127.0.0.1:5432:5432 \\\n  --restart unless-stopped \\\n  --memory 1g \\\n  --health-cmd 'pg_isready -U shop' --health-interval 5s --health-start-period 20s \\\n  postgres:16.4",
+   "note": "3.4절에서 확인한 `PGDATA` 경로, 6.2절의 `_FILE`, 6.1절의 루프백 바인딩, 6.5절의 헬스체크가 여기서 다 쓰인다."
+  },
+  {
+   "type": "steps",
+   "caption": "패치 버전을 올리는 절차 (16.4 → 16.5)",
+   "items": [
+    {
+     "title": "백업",
+     "lang": "bash",
+     "code": "docker exec shop-db pg_dump -U shop -d shop -Fc > shop-$(date +%F).dump",
+     "md": "**볼륨 tar 백업보다 이게 낫다** — 도는 중에도 일관된 스냅숏이다"
+    },
+    {
+     "title": "컨테이너를 지운다",
+     "lang": "bash",
+     "code": "docker rm -f shop-db",
+     "md": "**볼륨은 안 지운다.** `docker volume ls` 로 남아 있는지 확인"
+    },
+    {
+     "title": "새 이미지로 같은 볼륨을 붙여 띄운다",
+     "lang": "bash",
+     "code": "docker run -d --name shop-db -v shop-pgdata:/var/lib/postgresql/data ... postgres:16.5"
+    },
+    {
+     "title": "확인",
+     "lang": "bash",
+     "code": "docker exec shop-db psql -U shop -d shop -c '\\dt'",
+     "md": "테이블이 그대로 있어야 한다"
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "메이저 버전은 이렇게 못 올린다",
+   "md": "**16 → 17 은 데이터 디렉터리 형식이** 다르다.\n\n```\nFATAL:  database files are incompatible with server\nDETAIL: The data directory was initialized by PostgreSQL version 16,\n        which is not compatible with this version 17.0.\n```\n\n**컨테이너가 시작하자마자 죽고, 재시작 정책이 있으면 무한 반복**한다(6.3절).\n\n**방법**:\n\n| 방법 | 어떻게 |\n|---|---|\n| **덤프 → 새 볼륨에 복원** | 가장 안전하다. 다운타임이 있다 |\n| `pg_upgrade` | 전용 이미지 사용. 빠르지만 준비가 필요 |\n| 논리 복제 | 다운타임 최소. 복잡하다 |\n\n```bash\n# 덤프 → 복원\ndocker exec old-db pg_dump -U shop -d shop -Fc > shop.dump\ndocker volume create shop-pg17\ndocker run -d --name new-db -v shop-pg17:/var/lib/postgresql/data ... postgres:17\ndocker exec -i new-db pg_restore -U shop -d shop < shop.dump\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "초기화 스크립트는 처음 한 번만 돈다",
+   "md": "**공식 이미지는 `/docker-entrypoint-initdb.d/` 의 `.sql`·`.sh` 를 실행**한다.\n\n```bash\ndocker run -d -v \"$PWD/initdb:/docker-entrypoint-initdb.d:ro\" \\\n  -v shop-pgdata:/var/lib/postgresql/data postgres:16\n```\n\n**중요**: **데이터 디렉터리가 비어 있을 때만** 돈다.\n\n> **볼륨에 이미 데이터가 있으면 스크립트를 조용히 건너뛴다.**\n> **\"스키마를 고쳤는데 안 반영돼요\" 의 원인**이다.\n>\n> **스키마 변경은 마이그레이션 도구(Flyway·Liquibase)로** 한다. **초기화 스크립트는 로컬 개발의 첫 세팅용**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "교체와 실패를 다 해 본다",
+   "sql": "$ docker network create shop >/dev/null\n$ docker volume create shop-pgdata >/dev/null\n$ mkdir -p /tmp/lab && cd /tmp/lab && echo -n 'secret' > pgpass\n\n# --- 띄우고 데이터를 넣는다 ---\n\n$ docker run -d --name shop-db --network shop \\\n    -v shop-pgdata:/var/lib/postgresql/data \\\n    -e POSTGRES_DB=shop -e POSTGRES_USER=shop \\\n    -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n    -v \"$PWD/pgpass:/run/secrets/pgpass:ro\" \\\n    --health-cmd 'pg_isready -U shop' --health-interval 3s --health-start-period 20s \\\n    postgres:16.4 >/dev/null\n\n$ until [ \"$(docker inspect -f '{{.State.Health.Status}}' shop-db)\" = healthy ]; do sleep 1; done\n$ docker inspect -f '{{.State.Health.Status}}' shop-db\nhealthy\n\n$ docker exec -u postgres shop-db psql -q -U shop -d shop \\\n    -c 'create table orders(id serial primary key, amount int)' \\\n    -c \"insert into orders(amount) select generate_series(1,1000)\"\n\n$ docker exec -u postgres shop-db psql -U shop -d shop -tAc 'select count(*) from orders'\n1000\n\n\n# --- 백업 ---\n\n$ docker exec shop-db pg_dump -U shop -d shop -Fc > shop.dump\n$ ls -la shop.dump\n-rw-r--r--  1 kwan  staff  18432 Sep  9 22:50 shop.dump\n\n\n# --- 패치 버전 올리기: 컨테이너만 갈아 끼운다 ---\n\n$ docker rm -f shop-db >/dev/null\n\n$ docker volume ls | grep shop-pgdata\nlocal     shop-pgdata\n\n#   볼륨은 그대로 있다\n\n$ docker run -d --name shop-db --network shop \\\n    -v shop-pgdata:/var/lib/postgresql/data \\\n    -e POSTGRES_DB=shop -e POSTGRES_USER=shop \\\n    -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n    -v \"$PWD/pgpass:/run/secrets/pgpass:ro\" \\\n    postgres:16.5 >/dev/null\n\n$ sleep 6\n$ docker exec -u postgres shop-db psql -U shop -d shop -tAc 'select count(*) from orders'\n1000\n\n$ docker exec shop-db postgres --version\npostgres (PostgreSQL) 16.5\n\n#   버전은 올라갔고 데이터는 그대로다\n\n\n# --- 메이저 버전은 안 된다 ---\n\n$ docker rm -f shop-db >/dev/null\n$ docker run -d --name shop-db17 \\\n    -v shop-pgdata:/var/lib/postgresql/data \\\n    -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n    -v \"$PWD/pgpass:/run/secrets/pgpass:ro\" \\\n    postgres:17 >/dev/null\n\n$ sleep 4 && docker logs shop-db17 | tail -3\nFATAL:  database files are incompatible with server\nDETAIL:  The data directory was initialized by PostgreSQL version 16, which\n         is not compatible with this version 17.0.\n\n$ docker ps -a --format '{{.Names}} {{.Status}}' | grep shop-db17\nshop-db17 Exited (1) 2 seconds ago\n\n\n# --- 덤프 -> 새 볼륨으로 옮긴다 ---\n\n$ docker rm -f shop-db17 >/dev/null\n$ docker volume create shop-pg17 >/dev/null\n$ docker run -d --name shop-db17 \\\n    -v shop-pg17:/var/lib/postgresql/data \\\n    -e POSTGRES_DB=shop -e POSTGRES_USER=shop \\\n    -e POSTGRES_PASSWORD_FILE=/run/secrets/pgpass \\\n    -v \"$PWD/pgpass:/run/secrets/pgpass:ro\" \\\n    postgres:17 >/dev/null\n$ sleep 8\n\n$ docker exec -i shop-db17 pg_restore -U shop -d shop < shop.dump\n$ docker exec -u postgres shop-db17 psql -U shop -d shop -tAc 'select count(*) from orders'\n1000\n\n$ docker exec shop-db17 postgres --version\npostgres (PostgreSQL) 17.0\n\n#   17 에서 데이터가 살아 있다\n\n\n# --- 초기화 스크립트는 처음 한 번만 ---\n\n$ mkdir -p initdb && echo 'create table hello(id int);' > initdb/01.sql\n$ docker volume create fresh >/dev/null\n\n$ docker run -d --name i1 -v fresh:/var/lib/postgresql/data \\\n    -v \"$PWD/initdb:/docker-entrypoint-initdb.d:ro\" \\\n    -e POSTGRES_PASSWORD=x postgres:16.5 >/dev/null\n$ sleep 7\n$ docker exec -u postgres i1 psql -tAc \"select count(*) from information_schema.tables where table_name='hello'\"\n1\n\n$ echo 'create table world(id int);' > initdb/02.sql\n$ docker rm -f i1 >/dev/null\n$ docker run -d --name i1 -v fresh:/var/lib/postgresql/data \\\n    -v \"$PWD/initdb:/docker-entrypoint-initdb.d:ro\" \\\n    -e POSTGRES_PASSWORD=x postgres:16.5 >/dev/null\n$ sleep 6\n$ docker exec -u postgres i1 psql -tAc \"select count(*) from information_schema.tables where table_name='world'\"\n0\n\n$ docker logs i1 | grep -c 'running /docker-entrypoint-initdb.d'\n0\n\n#   두 번째 스크립트는 안 돌았다. 데이터 디렉터리가 비어 있지 않으므로\n#   \"스키마를 고쳤는데 안 반영돼요\" 의 정체\n\n$ docker rm -f i1 shop-db17 >/dev/null 2>&1\n$ docker volume rm shop-pgdata shop-pg17 fresh >/dev/null\n$ docker network rm shop >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab"
+  }
+ ],
+ "recap": [
+  "DB 는 볼륨에 데이터를 두고 컨테이너만 갈아 끼운다. 패치 버전 업은 이걸로 끝난다.",
+  "백업은 볼륨 tar 보다 pg_dump 가 낫다. 도는 중에도 일관된 스냅숏이다.",
+  "메이저 버전은 데이터 디렉터리 형식이 달라 그대로 못 올린다. 덤프 후 새 볼륨에 복원한다.",
+  "초기화 스크립트는 데이터 디렉터리가 비어 있을 때만 돈다. 스키마 변경은 마이그레이션 도구로."
+ ],
+ "drills": [
+  {
+   "task": "볼륨을 붙인 postgres 에 데이터를 넣고 컨테이너를 지운 뒤 패치 버전을 올려 다시 띄운다.",
+   "done_when": "데이터가 그대로고 버전이 올라간 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 볼륨에 메이저 버전 이미지를 붙여 실패 로그를 본다.",
+   "done_when": "incompatible 메시지를 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "초기화 스크립트를 추가한 뒤 기존 볼륨으로 다시 띄워 안 도는 것을 확인한다.",
+   "done_when": "두 번째 스크립트가 실행되지 않는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DB 이미지의 패치 버전을 올리는 절차는.",
+   "a": "백업 → 컨테이너만 rm → 같은 볼륨을 새 이미지에 붙여 실행 → 데이터 확인."
+  },
+  {
+   "q": "메이저 버전 업이 그대로 안 되는 이유는.",
+   "a": "데이터 디렉터리 형식이 달라 서버가 시작을 거부한다. 덤프/복원이나 pg_upgrade 가 필요하다."
+  },
+  {
+   "q": "docker-entrypoint-initdb.d 의 스크립트가 안 도는 이유는.",
+   "a": "데이터 디렉터리가 비어 있지 않으면 건너뛴다. 처음 초기화할 때만 실행된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PGDATA",
+   "what": "PostgreSQL 이 데이터를 두는 디렉터리. 이미지에 환경변수로 적혀 있다."
+  },
+  {
+   "term": "pg_dump / pg_restore",
+   "what": "논리 백업·복원 도구. 버전이 달라도 옮길 수 있다."
+  },
+  {
+   "term": "초기화 스크립트",
+   "what": "docker-entrypoint-initdb.d 에 둔 SQL/셸. 첫 초기화 때만 실행된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "PostgreSQL Docker 공식 이미지",
+   "url": "https://hub.docker.com/_/postgres",
+   "publisher": "Docker Hub"
+  },
+  {
+   "title": "Docker Docs — Volumes",
+   "url": "https://docs.docker.com/engine/storage/volumes/",
+   "publisher": "Docker"
+  }
+ ]
+}

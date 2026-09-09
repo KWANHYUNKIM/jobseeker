@@ -1,0 +1,140 @@
+{
+ "book": "docker",
+ "id": "permissions",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "권한과 tmpfs",
+ "summary": "root 로 만든 파일이 내 것이 아니게 될 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "UID 가 컨테이너 경계를 넘는다는 것을 안다.",
+  "권한 문제를 해결하는 방법을 안다.",
+  "tmpfs 를 언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**빌드 산출물을 바인드 마운트로 꺼냈다.** **호스트에서 지우려니 안** 지워진다.\n\n```\n$ rm -rf build\nrm: cannot remove 'build/classes': Permission denied\n```\n\n> **컨테이너가 root 로 만들었기** 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "UID 는 이름이 아니라 숫자다",
+   "md": "**2.4절에서 USER namespace 를 안 쓰면 컨테이너의 root 가 호스트의 root 라고** 했다. **일반 사용자도 마찬가지**다.\n\n```\n컨테이너 안: uid=0(root)      -> 호스트에서도 uid 0\n컨테이너 안: uid=1000(app)    -> 호스트에서는 uid 1000 인 누군가\n```\n\n**파일 시스템은 이름을 저장하지 않는다.** **숫자만** 저장한다.\n\n| 상황 | 결과 |\n|---|---|\n| 컨테이너가 root 로 파일 생성 | 호스트에서 root 소유 → 일반 사용자가 못 지운다 |\n| 컨테이너 uid 1000, 내 uid 501 (맥) | **맥은 VM 이 중간에서 변환해 줘서 대개 문제없다** |\n| 컨테이너 uid 1000, 내 uid 1000 (리눅스) | 맞아떨어진다 |\n| 컨테이너 uid 1000, 내 uid 1001 | **Permission denied** |\n\n> **리눅스에서 개발할 때 이 문제를 자주** 만난다. **맥은 파일 공유 계층이 가려 줘서 덜 겪는다.**"
+  },
+  {
+   "type": "table",
+   "caption": "해결 방법",
+   "columns": [
+    "방법",
+    "명령",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**호스트 uid 로 실행**",
+     "`--user \"$(id -u):$(id -g)\"`",
+     "**가장 간단하다.** 다만 컨테이너 안에 그 uid 의 홈이 없을 수 있다"
+    ],
+    [
+     "이미지에서 uid 맞추기",
+     "`ARG UID=1000` + `useradd -u $UID`",
+     "팀에서 uid 가 같아야 한다"
+    ],
+    [
+     "나중에 고치기",
+     "`docker run --rm -v \"$PWD\":/w alpine chown -R 1000:1000 /w`",
+     "임시방편"
+    ],
+    [
+     "**볼륨을 쓴다**",
+     "바인드 마운트를 안 쓰면 문제 자체가 없다",
+     "도커가 권한을 초기화한다"
+    ],
+    [
+     "rootless 도커",
+     "데몬을 일반 사용자로",
+     "2.4절"
+    ]
+   ],
+   "note": "**운영 이미지는 어차피 non-root 로 돌려야 한다**(10.6절) — **그 준비를 여기서 같이** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "tmpfs — 디스크에 안 쓰는 마운트",
+   "md": "```bash\ndocker run --tmpfs /tmp:size=64m,mode=1777 myapp\ndocker run --mount type=tmpfs,dst=/app/cache,tmpfs-size=100m myapp\n```\n\n| 성질 | |\n|---|---|\n| **메모리에 있다** | 컨테이너가 멈추면 사라진다 |\n| **디스크에 안 쓴다** | 비밀·임시 파일이 디스크에 안 남는다 |\n| 빠르다 | 임시 파일이 많은 작업 |\n| **메모리를 먹는다** | `--memory` 한도에 포함된다(6.6절) |\n\n**쓰는 자리**:\n\n| 상황 | 왜 |\n|---|---|\n| 시크릿 파일 | 디스크에 흔적을 안 남긴다 |\n| **읽기 전용 루트 파일 시스템**(10.6절) | `--read-only` 로 띄우면 쓸 곳이 필요하다. `/tmp` 만 tmpfs 로 |\n| 세션·캐시 | 잃어도 되는 것 |\n\n> **`--read-only` + `--tmpfs /tmp` 조합이 10.6절의 권장 형태**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "권한 문제를 만들고 고친다",
+   "sql": "$ mkdir -p /tmp/lab/out && cd /tmp/lab\n$ id -u; id -g\n501\n20\n\n# --- 컨테이너가 root 로 파일을 만든다 ---\n\n$ docker run --rm -v \"$PWD/out:/out\" alpine sh -c 'echo built > /out/app.jar'\n$ ls -la out/\n-rw-r--r--  1 root  root   6  Sep  9 22:35 app.jar\n\n#   내 uid 가 아니라 root 소유다 (리눅스 호스트 기준)\n\n#   리눅스에서라면:\n#   $ rm out/app.jar\n#   rm: remove write-protected regular file 'out/app.jar'?\n#   $ echo x > out/app.jar\n#   bash: out/app.jar: Permission denied\n\n\n# --- --user 로 내 uid 를 준다 ---\n\n$ docker run --rm --user \"$(id -u):$(id -g)\" -v \"$PWD/out:/out\" alpine \\\n    sh -c 'id; echo built2 > /out/app2.jar'\nuid=501 gid=20 groups=20\n\n$ ls -la out/app2.jar\n-rw-r--r--  1 kwan  staff  7  Sep  9 22:36 app2.jar\n\n#   내 소유다\n\n\n# --- --user 의 부작용: 홈이 없다 ---\n\n$ docker run --rm --user \"$(id -u):$(id -g)\" node:20-slim sh -c 'echo $HOME; npm config get cache'\n/\n/.npm\n\n$ docker run --rm --user \"$(id -u):$(id -g)\" node:20-slim npm config set foo bar 2>&1 | head -2\nnpm error code EACCES\nnpm error syscall mkdir\n\n#   / 에 못 쓴다. HOME 을 따로 줘야 한다\n\n$ docker run --rm --user \"$(id -u):$(id -g)\" -e HOME=/tmp node:20-slim \\\n    sh -c 'npm config set foo bar && echo ok'\nok\n\n\n# --- 이미지에서 uid 를 맞추는 방법 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM alpine:3.20\nARG UID=1000\nARG GID=1000\nRUN addgroup -g $GID app && adduser -D -u $UID -G app app\nUSER app\nEOF\n\n$ docker build -q --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t asme . >/dev/null 2>&1 \\\n  || docker build -q --build-arg UID=1501 --build-arg GID=1520 -t asme . >/dev/null\n\n$ docker run --rm asme id\nuid=1501(app) gid=1520(app) groups=1520(app)\n\n#   이미지 안에 그 uid 의 사용자와 홈이 있다\n\n\n# --- 볼륨은 권한 문제가 덜하다 ---\n\n$ docker volume create vol >/dev/null\n$ docker run --rm -v vol:/data alpine sh -c 'echo x > /data/f; ls -la /data/f'\n-rw-r--r--    1 root     root             2 Sep  9 22:38 /data/f\n\n$ docker run --rm --user 1000:1000 -v vol:/data alpine sh -c 'echo y > /data/g' 2>&1\nsh: can't create /data/g: Permission denied\n\n#   볼륨도 처음 만든 소유자가 남는다. 다만 호스트에서 만질 일이 없어\n#   개발 중 '내 파일이 내 것이 아닌' 문제는 안 생긴다\n\n$ docker run --rm -v vol:/data alpine chown -R 1000:1000 /data\n$ docker run --rm --user 1000:1000 -v vol:/data alpine sh -c 'echo y > /data/g && echo ok'\nok\n\n\n# --- tmpfs ---\n\n$ docker run --rm --tmpfs /scratch:size=16m alpine sh -c \\\n    'df -h /scratch | tail -1; dd if=/dev/zero of=/scratch/f bs=1M count=8 2>/dev/null; ls -la /scratch'\ntmpfs                    16.0M      0     16.0M   0% /scratch\n-rw-r--r--    1 root     root     8388608 Sep  9 22:40 f\n\n$ docker run --rm --tmpfs /scratch:size=16m alpine sh -c \\\n    'dd if=/dev/zero of=/scratch/f bs=1M count=32 2>&1 | tail -1'\ndd: writing '/scratch/f': No space left on device\n\n#   size 를 넘으면 거부된다. 메모리를 다 먹지 않게 반드시 준다\n\n\n# --- 읽기 전용 루트 + tmpfs (10.6절의 형태) ---\n\n$ docker run --rm --read-only alpine sh -c 'echo x > /tmp/f' 2>&1\nsh: can't create /tmp/f: Read-only file system\n\n$ docker run --rm --read-only --tmpfs /tmp alpine sh -c 'echo x > /tmp/f && cat /tmp/f'\nx\n\n#   루트는 못 쓰고 /tmp 만 쓸 수 있다\n\n$ docker volume rm vol >/dev/null\n$ cd - >/dev/null && rm -rf /tmp/lab && docker rmi -f asme >/dev/null"
+  }
+ ],
+ "recap": [
+  "파일 시스템은 사용자 이름이 아니라 UID 숫자를 저장한다. 컨테이너의 uid 가 호스트에 그대로 보인다.",
+  "컨테이너가 root 로 만든 파일은 호스트에서 못 지운다. --user \"$(id -u):$(id -g)\" 가 가장 간단한 해결이다.",
+  "--user 를 주면 홈 디렉터리가 없어 도구가 깨질 수 있다. HOME 을 같이 준다.",
+  "볼륨을 쓰면 호스트에서 만질 일이 없어 이 문제를 덜 겪는다.",
+  "tmpfs 는 메모리에 두는 마운트다. 반드시 size 를 준다. --read-only 와 짝으로 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "바인드 마운트에 컨테이너가 파일을 만들게 하고 소유자를 확인한다.",
+   "done_when": "root 소유인 것을 확인한다(리눅스면 지우기까지 시도).",
+   "minutes": 5
+  },
+  {
+   "task": "`--user \"$(id -u):$(id -g)\"` 로 다시 해서 내 소유가 되는지 확인한다.",
+   "done_when": "소유자가 바뀌는 것을 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "`--read-only --tmpfs /tmp` 로 컨테이너를 띄워 어디에 쓸 수 있는지 확인한다.",
+   "done_when": "/ 는 막히고 /tmp 만 되는 것을 본다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨테이너가 만든 파일을 호스트에서 못 지우는 이유는.",
+   "a": "컨테이너의 root(uid 0)가 호스트의 uid 0 으로 기록되기 때문. 이름이 아니라 숫자가 저장된다."
+  },
+  {
+   "q": "`--user` 를 줬을 때 생기는 부작용은.",
+   "a": "그 uid 의 홈 디렉터리가 이미지에 없어 캐시·설정을 쓰는 도구가 깨질 수 있다. HOME 을 지정한다."
+  },
+  {
+   "q": "tmpfs 마운트에 size 를 반드시 주는 이유는.",
+   "a": "메모리를 쓰기 때문에 제한이 없으면 컨테이너 메모리 한도를 밀어 OOM 을 낼 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "UID/GID",
+   "what": "사용자·그룹 식별 번호. 파일 시스템에 저장되는 것은 이름이 아니라 이 숫자다."
+  },
+  {
+   "term": "tmpfs",
+   "what": "메모리에 있는 파일 시스템. 컨테이너가 멈추면 사라진다."
+  },
+  {
+   "term": "--read-only",
+   "what": "컨테이너 루트 파일 시스템을 읽기 전용으로 띄우는 옵션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — tmpfs mounts",
+   "url": "https://docs.docker.com/engine/storage/tmpfs/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — docker run --user",
+   "url": "https://docs.docker.com/reference/cli/docker/container/run/#user",
+   "publisher": "Docker"
+  }
+ ]
+}

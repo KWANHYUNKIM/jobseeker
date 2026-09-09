@@ -1,0 +1,137 @@
+{
+ "book": "docker",
+ "id": "volume",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "볼륨",
+ "summary": "도커가 관리하는 저장소.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "볼륨을 만들고 붙이고 확인한다.",
+  "-v 와 --mount 를 구분한다.",
+  "볼륨을 백업·복원한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**볼륨은 도커가 관리하는 저장 공간**이다.\n\n```bash\ndocker volume create shopdata\ndocker run -d -v shopdata:/var/lib/postgresql/data postgres:16\n```\n\n**미리 안 만들어도 첫 사용에 자동으로** 생긴다."
+  },
+  {
+   "type": "table",
+   "caption": "-v 와 --mount",
+   "columns": [
+    "",
+    "`-v`",
+    "`--mount`"
+   ],
+   "rows": [
+    [
+     "형태",
+     "`-v 이름:경로:옵션`",
+     "`--mount type=volume,src=이름,dst=경로`"
+    ],
+    [
+     "**없는 호스트 경로**",
+     "**자동으로 만든다**(디렉터리)",
+     "**에러**"
+    ],
+    [
+     "가독성",
+     "짧다",
+     "길지만 명시적"
+    ],
+    [
+     "권장",
+     "익숙하면 이것",
+     "**스크립트·컴포즈에서는 이쪽**"
+    ]
+   ],
+   "note": "**`-v` 의 자동 생성이 함정**이다 — **바인드 마운트에서 경로를 오타 내면 빈 디렉터리가 생기고 조용히 빈 채로** 돈다(8.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "볼륨이 바인드 마운트보다 나은 자리",
+   "md": "| | 볼륨 | 바인드 마운트 |\n|---|---|---|\n| 경로 | 도커가 정한다 | **호스트 경로에 묶인다** |\n| 이식성 | 어느 머신에서도 같은 명령 | 경로가 다르면 깨진다 |\n| **성능(맥·윈도우)** | **VM 안이라 빠르다** | **파일 공유 계층을 거쳐 느리다**(2.6절) |\n| 백업 | `docker run --rm -v` 로 tar | 그냥 호스트에서 |\n| 권한 | 도커가 초기화해 준다 | **호스트 uid 그대로**(8.4절) |\n| 드라이버 | NFS·클라우드 볼륨 플러그인 | 없음 |\n\n> **운영 데이터는 볼륨**이다. **개발 중 소스 코드만 바인드 마운트**를 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "볼륨을 처음 붙일 때 이미지의 내용이 복사된다",
+   "md": "**빈 볼륨을 컨테이너의 어떤 경로에 붙이면, 이미지에 있던 그 경로의 내용이 볼륨으로 복사**된다.\n\n```bash\n$ docker run --rm -v conf:/etc/nginx nginx:1.27 true\n$ docker run --rm -v conf:/data alpine ls /data\nconf.d  nginx.conf  mime.types ...\n```\n\n**이건 볼륨에만 있는 동작**이다. **바인드 마운트는 복사를 안 하고 그냥 덮는다.**\n\n| | 빈 볼륨을 붙이면 | 바인드 마운트를 붙이면 |\n|---|---|---|\n| 이미지의 내용 | **볼륨으로 복사된다** | **가려진다** |\n\n> **그래서 `-v ./empty:/app/node_modules` 같은 걸 하면 안이 텅 빈다** — 8.3절의 함정.\n> **볼륨은 이미 내용이 있으면 복사를 안 한다.** **첫 번째만 그렇다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "백업과 복원",
+   "md": "**볼륨은 호스트 경로가 `/var/lib/docker/volumes/...` 라 직접 만지기 불편**하다(맥에서는 VM 안이라 아예 안 보인다). **도우미 컨테이너를 쓴다.**\n\n```bash\n# 백업\ndocker run --rm -v shopdata:/data -v \"$PWD\":/backup alpine \\\n  tar czf /backup/shopdata.tgz -C /data .\n\n# 복원\ndocker run --rm -v shopdata2:/data -v \"$PWD\":/backup alpine \\\n  sh -c 'cd /data && tar xzf /backup/shopdata.tgz'\n```\n\n> **DB 볼륨을 이렇게 백업할 때는 컨테이너를 먼저 멈춘다** — **도는 중에 파일을 복사하면 깨진 스냅숏이** 된다.\n> **진짜 백업은 `pg_dump` 처럼 DB 자신의 도구로** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "만들고 붙이고 옮기고 백업한다",
+   "sql": "# --- 만들고 확인 ---\n\n$ docker volume create shopdata\nshopdata\n\n$ docker volume inspect shopdata\n[\n    {\n        \"CreatedAt\": \"2026-09-09T22:20:11Z\",\n        \"Driver\": \"local\",\n        \"Mountpoint\": \"/var/lib/docker/volumes/shopdata/_data\",\n        \"Name\": \"shopdata\",\n        \"Scope\": \"local\"\n    }\n]\n\n#   맥에서는 이 경로가 VM 안이라 Finder 로는 못 본다\n\n\n# --- 두 컨테이너가 같은 볼륨을 본다 ---\n\n$ docker run --rm -v shopdata:/data alpine sh -c 'echo hello > /data/a.txt'\n$ docker run --rm -v shopdata:/data alpine cat /data/a.txt\nhello\n\n$ docker run --rm -v shopdata:/other alpine ls /other\na.txt\n\n#   컨테이너 안의 경로는 달라도 같은 볼륨이다\n\n\n# --- 빈 볼륨을 붙이면 이미지 내용이 복사된다 ---\n\n$ docker volume create nginxconf >/dev/null\n$ docker run --rm -v nginxconf:/etc/nginx nginx:1.27 true\n$ docker run --rm -v nginxconf:/x alpine ls /x\nconf.d\nfastcgi_params\nmime.types\nnginx.conf\nscgi_params\nuwsgi_params\n\n#   이미지의 /etc/nginx 가 볼륨으로 복사됐다\n\n$ docker run --rm -v nginxconf:/x alpine sh -c 'echo \"# edited\" >> /x/nginx.conf'\n$ docker run --rm -v nginxconf:/etc/nginx nginx:1.27 tail -1 /etc/nginx/nginx.conf\n# edited\n\n#   두 번째부터는 볼륨의 내용이 이긴다 (복사 안 한다)\n\n\n# --- 읽기 전용으로 붙이기 ---\n\n$ docker run --rm -v shopdata:/data:ro alpine sh -c 'echo x > /data/b.txt' 2>&1\nsh: can't create /data/b.txt: Read-only file system\n\n\n# --- --mount 는 오타를 잡아 준다 ---\n\n$ docker run --rm --mount type=bind,src=/no/such/path,dst=/app alpine ls /app\ndocker: Error response from daemon: invalid mount config for type \"bind\":\nbind source path does not exist: /no/such/path\n\n$ docker run --rm -v /no/such/path:/app alpine ls /app\n\n#   -v 는 조용히 빈 디렉터리를 만들어 붙인다. 에러가 없다\n#   8.3절에서 이것 때문에 한참 헤맨다\n\n\n# --- 누가 이 볼륨을 쓰고 있나 ---\n\n$ docker run -d --name user1 -v shopdata:/data alpine sleep 3600 >/dev/null\n$ docker ps -a --filter volume=shopdata --format '{{.Names}}'\nuser1\n\n$ docker volume rm shopdata\nError response from daemon: remove shopdata: volume is in use - [9a8b7c...]\n\n#   쓰는 컨테이너가 있으면 못 지운다\n\n\n# --- 백업 ---\n\n$ docker run --rm -v shopdata:/data -v \"$PWD\":/backup alpine \\\n    tar czf /backup/shopdata.tgz -C /data .\n$ ls -la shopdata.tgz\n-rw-r--r--  1 kwan  staff  132 Sep  9 22:24 shopdata.tgz\n\n$ tar tzf shopdata.tgz\n./\n./a.txt\n\n\n# --- 복원 ---\n\n$ docker volume create restored >/dev/null\n$ docker run --rm -v restored:/data -v \"$PWD\":/backup alpine \\\n    sh -c 'cd /data && tar xzf /backup/shopdata.tgz'\n$ docker run --rm -v restored:/data alpine cat /data/a.txt\nhello\n\n\n# --- 사용량 ---\n\n$ docker system df -v | sed -n '/Local Volumes/,+5p'\nLocal Volumes space usage:\n\nVOLUME NAME   LINKS     SIZE\nnginxconf     0         28.4kB\nrestored      0         6B\nshopdata      1         6B\n\n#   LINKS 가 0 이면 아무도 안 쓰는 것 -> prune 대상이다\n\n$ docker rm -f user1 >/dev/null\n$ docker volume rm shopdata nginxconf restored >/dev/null && rm -f shopdata.tgz"
+  }
+ ],
+ "recap": [
+  "볼륨은 도커가 관리하는 저장소다. 이름을 주면 컨테이너를 지워도 남는다.",
+  "-v 는 없는 호스트 경로를 조용히 만들고 --mount 는 에러를 낸다. 스크립트에는 --mount 가 안전하다.",
+  "빈 볼륨을 붙이면 이미지의 해당 경로 내용이 볼륨으로 복사된다. 두 번째부터는 볼륨이 이긴다.",
+  "맥에서는 볼륨이 VM 안이라 바인드 마운트보다 빠르다.",
+  "백업은 도우미 컨테이너로 tar. DB 는 컨테이너를 멈추거나 pg_dump 를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "볼륨을 만들어 두 컨테이너에서 서로 다른 경로로 붙이고 같은 파일을 보는지 확인한다.",
+   "done_when": "한쪽에서 쓴 파일이 다른 쪽에서 보이는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "빈 볼륨을 nginx 의 /etc/nginx 에 붙였다가 다른 컨테이너에서 내용을 확인한다.",
+   "done_when": "이미지 내용이 복사된 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "볼륨을 tar 로 백업하고 새 볼륨에 복원한다.",
+   "done_when": "복원한 볼륨에서 파일을 읽는다.",
+   "minutes": 7
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`-v /no/such/path:/app` 과 `--mount type=bind,src=/no/such/path` 의 차이는.",
+   "a": "-v 는 빈 디렉터리를 만들어 붙이고, --mount 는 에러를 낸다."
+  },
+  {
+   "q": "빈 볼륨을 컨테이너 경로에 붙이면.",
+   "a": "이미지에 있던 그 경로의 내용이 볼륨으로 복사된다. 바인드 마운트는 그냥 덮는다."
+  },
+  {
+   "q": "맥에서 DB 데이터를 바인드 마운트로 두면 왜 느린가.",
+   "a": "맥 파일 시스템을 VM 이 보려면 파일 공유 계층을 거치기 때문. 볼륨은 VM 안이라 빠르다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "볼륨 드라이버",
+   "what": "볼륨의 실제 저장소를 결정하는 플러그인. local 이 기본이고 NFS·클라우드 볼륨도 있다."
+  },
+  {
+   "term": "Mountpoint",
+   "what": "볼륨이 호스트(맥에서는 VM)에서 실제로 놓인 경로."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Volumes",
+   "url": "https://docs.docker.com/engine/storage/volumes/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Back up and restore volumes",
+   "url": "https://docs.docker.com/engine/storage/volumes/#back-up-restore-or-migrate-data-volumes",
+   "publisher": "Docker"
+  }
+ ]
+}

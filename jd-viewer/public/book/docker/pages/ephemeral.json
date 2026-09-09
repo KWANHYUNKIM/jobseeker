@@ -1,0 +1,147 @@
+{
+ "book": "docker",
+ "id": "ephemeral",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "컨테이너를 지우면 데이터도 지워진다",
+ "summary": "쓰기 레이어의 수명.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "데이터를 컨테이너 안에 두면 안 되는 이유를 안다.",
+  "무엇을 밖에 둬야 하는지 구분한다.",
+  "마운트 세 종류를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 이미 봤다** — **쓰기 레이어의 수명은 컨테이너의 수명**이다. **이 장은 그것을 어떻게 넘기느냐**다.\n\n```bash\ndocker rm -f db      # 컨테이너를 지운 게 아니라\n                     # 데이터베이스를 지운 것이다\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컨테이너를 지우는 일은 자주 일어난다",
+   "md": "**\"지울 일이 없으면 되잖아\" 가 안 통하는** 이유:\n\n| 언제 지우나 | 얼마나 자주 |\n|---|---|\n| **이미지 버전 업** | 배포할 때마다. 컨테이너는 갈아 끼우는 것이다 |\n| 설정 변경 | 대부분의 옵션은 재생성해야 바뀐다 |\n| 호스트 재부팅 후 정리 | |\n| **`docker compose down`** | 매일 |\n| prune | 3.7절 |\n\n> **컨테이너는 소모품**이다. **소모품 안에 영구 데이터를 두는 게** 문제다.\n> **\"가축이지 애완동물이 아니다\" 라는 표현이 이 이야기**다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 밖에 둘 것인가",
+   "columns": [
+    "데이터",
+    "어디에",
+    "왜"
+   ],
+   "rows": [
+    [
+     "**DB 데이터 파일**",
+     "**볼륨**",
+     "없어지면 안 된다. 성능도 중요"
+    ],
+    [
+     "업로드된 파일",
+     "볼륨 또는 오브젝트 스토리지",
+     ""
+    ],
+    [
+     "**로그**",
+     "**stdout**",
+     "6.4절"
+    ],
+    [
+     "캐시",
+     "컨테이너 안이어도 된다",
+     "다시 만들면 된다"
+    ],
+    [
+     "**설정**",
+     "환경변수·마운트",
+     "6.2절"
+    ],
+    [
+     "**소스 코드(개발 중)**",
+     "**바인드 마운트**",
+     "고치면 바로 반영되게. 8.3절"
+    ],
+    [
+     "빌드 산출물",
+     "이미지 안",
+     "불변이어야 한다"
+    ]
+   ],
+   "note": "**\"다시 만들 수 있나\" 가 기준**이다. **다시 만들 수 없으면 밖에 둔다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "마운트 세 종류",
+   "ascii": "   volume                       bind mount                tmpfs\n   ------                       ----------                -----\n   /var/lib/docker/volumes/     any host path             RAM\n     pgdata/_data                 ./src                    (nothing on disk)\n        |                          |                        |\n        v                          v                        v\n   container:/var/lib/postgresql  container:/app          container:/tmp\n\n   docker manages it            you manage it            gone on stop\n   portable across hosts        host-path dependent      never written\n\n   생성·백업·삭제를 도커가 안다   경로가 호스트에 묶인다    비밀·임시 파일용",
+   "note": "**운영 데이터는 볼륨, 개발 중 소스는 바인드 마운트, 비밀은 tmpfs.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "익명 볼륨이 조용히 쌓인다",
+   "md": "**3.4절에서 postgres 이미지에 `VOLUME` 선언이 있는 것을** 봤다.\n\n```bash\n$ docker run -d --name db postgres:16      # -v 를 안 줬다\n$ docker volume ls\nDRIVER    VOLUME NAME\nlocal     8f3a2b1c0d9e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a\n```\n\n**이름 없는 볼륨이 생겼다.** **데이터는 남지만**:\n\n| 문제 | 왜 |\n|---|---|\n| **어느 컨테이너 것인지 모른다** | 이름이 해시다 |\n| 컨테이너를 지워도 남는다 | 디스크를 계속 먹는다 |\n| **`docker volume prune` 이 지운다** | 3.7절 — 데이터가 사라진다 |\n| 다시 만든 컨테이너는 **새 볼륨**을 쓴다 | **데이터가 없는 것처럼** 보인다 |\n\n> **마지막이 가장 헷갈리는** 자리다. **데이터는 어딘가 남아 있는데 새 컨테이너는 못 찾는다.**\n> **그래서 이름을 준다** — **8.2절.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "데이터가 사라지는 것을 재현한다",
+   "sql": "# --- 컨테이너 안에 데이터를 쌓는다 ---\n\n$ docker run -d --name db1 -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ sleep 6\n$ docker exec -u postgres db1 psql -q -c 'create table t(id int)' -c 'insert into t values (1),(2),(3)'\n$ docker exec -u postgres db1 psql -tAc 'select count(*) from t'\n3\n\n\n# --- 재시작은 견딘다 ---\n\n$ docker restart db1 >/dev/null && sleep 5\n$ docker exec -u postgres db1 psql -tAc 'select count(*) from t'\n3\n\n\n# --- 컨테이너를 지우면 ---\n\n$ docker rm -f db1 >/dev/null\n$ docker run -d --name db1 -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ sleep 6\n$ docker exec -u postgres db1 psql -tAc 'select count(*) from t'\nERROR:  relation \"t\" does not exist\n\n#   테이블이 없다. 이미지 버전만 올리려 했는데 데이터가 사라졌다\n\n\n# --- 그런데 옛 데이터는 어딘가 남아 있다 ---\n\n$ docker volume ls\nDRIVER    VOLUME NAME\nlocal     3f8a9b2c1d0e5f4a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a\nlocal     9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b\n\n#   익명 볼륨이 둘이다. 하나는 지운 컨테이너의 것이다\n#   이미지의 VOLUME 선언 때문에 자동으로 생겼다 (3.4절)\n\n$ docker volume inspect $(docker volume ls -q | head -1) -f '{{.CreatedAt}} {{.Mountpoint}}'\n2026-09-09T22:10:31Z /var/lib/docker/volumes/3f8a.../_data\n\n#   어느 컨테이너 것인지 이름으로는 알 수 없다\n\n\n# --- 새 컨테이너는 새 볼륨을 쓴다 ---\n\n$ docker inspect -f '{{range .Mounts}}{{.Name}}{{end}}' db1\n9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b\n\n#   데이터는 앞의 볼륨에 있고 이 컨테이너는 뒤의 볼륨을 본다\n\n\n# --- 이름을 주면 이 문제가 없다 (8.2절) ---\n\n$ docker rm -f db1 >/dev/null\n$ docker run -d --name db2 -v shopdata:/var/lib/postgresql/data \\\n    -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ sleep 6\n$ docker exec -u postgres db2 psql -q -c 'create table t(id int)' -c 'insert into t values (1),(2),(3)'\n\n$ docker rm -f db2 >/dev/null\n$ docker run -d --name db2 -v shopdata:/var/lib/postgresql/data \\\n    -e POSTGRES_PASSWORD=x postgres:16 >/dev/null\n$ sleep 6\n$ docker exec -u postgres db2 psql -tAc 'select count(*) from t'\n3\n\n#   컨테이너를 지웠는데 데이터가 남았다\n\n\n# --- 익명 볼륨 정리 ---\n\n$ docker rm -f db2 >/dev/null\n$ docker volume ls -qf dangling=true | wc -l\n2\n\n$ docker volume prune -f\nTotal reclaimed space: 84.21MB\n\n$ docker volume ls\nDRIVER    VOLUME NAME\nlocal     shopdata\n\n#   이름 있는 볼륨은 남고 익명만 지워졌다\n#   (--all 을 주면 이름 있는 것도 지운다 -- 3.7절)\n\n$ docker volume rm shopdata >/dev/null"
+  }
+ ],
+ "recap": [
+  "컨테이너는 소모품이다. 배포·설정 변경·compose down 때마다 지워진다.",
+  "다시 만들 수 없는 것은 밖에 둔다 — DB 데이터·업로드 파일.",
+  "마운트는 볼륨·바인드 마운트·tmpfs 셋이다. 운영 데이터는 볼륨.",
+  "이미지의 VOLUME 선언 때문에 익명 볼륨이 자동으로 생긴다. 어느 컨테이너 것인지 알 수 없고 새 컨테이너는 새 볼륨을 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "postgres 를 볼륨 없이 띄워 데이터를 넣고, 컨테이너를 지운 뒤 다시 띄워 데이터가 없는 것을 확인한다.",
+   "done_when": "relation does not exist 를 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "`docker volume ls` 로 그때 생긴 익명 볼륨을 찾고 Mountpoint 를 확인한다.",
+   "done_when": "이름이 해시인 볼륨이 남아 있는 것을 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "같은 실험을 `-v shopdata:/var/lib/postgresql/data` 로 다시 한다.",
+   "done_when": "컨테이너를 지워도 데이터가 남는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "컨테이너를 지우는 일이 왜 자주 일어나나.",
+   "a": "이미지 버전 업·설정 변경·compose down 등 배포와 운영의 일상이다. 컨테이너는 갈아 끼우는 소모품이다."
+  },
+  {
+   "q": "무엇을 컨테이너 밖에 둘지 판단하는 기준은.",
+   "a": "다시 만들 수 있나. 못 만들면 밖에 둔다."
+  },
+  {
+   "q": "익명 볼륨의 문제 두 가지는.",
+   "a": "어느 컨테이너 것인지 알 수 없고, 새로 만든 컨테이너는 새 볼륨을 써서 데이터가 없는 것처럼 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "익명 볼륨",
+   "what": "이름 없이 자동 생성되는 볼륨. 이미지의 VOLUME 선언으로 생긴다."
+  },
+  {
+   "term": "소모품 서버",
+   "en": "cattle not pets",
+   "what": "개별 서버·컨테이너를 언제든 버리고 다시 만드는 것으로 다루는 관점."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Manage data in Docker",
+   "url": "https://docs.docker.com/engine/storage/",
+   "publisher": "Docker"
+  }
+ ]
+}
