@@ -504,7 +504,7 @@
           "title": "동적 네이티브 프로젝션",
           "summary": "그나마 쓸 만한 조합.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.8",
@@ -512,7 +512,7 @@
           "title": "다음으로",
           "summary": "이 책이 남긴 것과 Querydsl.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

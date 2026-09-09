@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "native-projection",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "동적 네이티브 프로젝션",
+ "summary": "그나마 쓸 만한 조합.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "별칭을 게터에 맞춘다.",
+  "Object[] 를 없앤다.",
+  "JdbcClient 와 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.6절이 `Object[]` 를** 남겼다. **여기서 그걸** 없앤다."
+  },
+  {
+   "type": "figure",
+   "caption": "서로를 메우는 두 조각",
+   "ascii": "   the two halves that fix each other\n\n   native sql          says what jpql cannot say\n   interface projection gives the columns names and types\n\n   the alias in the sql becomes the getter on the interface,\n   so the Object array disappears without losing the statement",
+   "note": "**문장을 잃지 않고 배열만** 없앤다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "별칭이 게터가 된다",
+   "md": "**8.3절의 인터페이스를 그대로** 쓴다.\n\n> **네이티브 결과에도 붙**는다.\n> **`nativeQuery = true` 와 같이** 쓴다.\n> **선언만 하면 매핑이** 된다.\n\n**별칭이 이름을** 정한다.\n\n> **`as username` 이 `getUsername()`** 이다.\n> **8.3절 끝의 JPQL 별칭과 같은 규칙**이다.\n> **컬럼 순서는 상관이** 없다.\n\n**계산 결과도 받을 수** 있다.\n\n> **`rank() over (...) as ageRank`** 다.\n> **엔티티에 없는 값이라 프로젝션이** 답이다.\n> **8.6절의 순위 쿼리가 여기서** 완성된다.\n\n**타입이** 생긴다.\n\n> **`Object[]` 의 `r[3]` 이 `getAgeRank()`** 가 된다.\n> **순서를 바꿔도 안** 깨진다.\n> **읽는 사람이 뜻을** 안다."
+  },
+  {
+   "type": "figure",
+   "caption": "별칭이 계약이다",
+   "ascii": "   the alias is the contract\n\n   select m.username as username   ->  getUsername()\n   select count(*)   as total      ->  getTotal()\n   select t.name                   ->  no alias, no getter match\n\n   the third line returns null, quietly, with no error at all",
+   "note": "**셋째 줄은 조용히 `null`** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "별칭이 안 맞으면 예외가 아니라 null 이다",
+   "md": "**못 찾으면 그냥 비어** 있다.\n\n> **오타가 있어도 안** 터진다.\n> **8.3절의 JPQL 은 기동에서** 막혔다.\n> **네이티브는 결과를 열어 봐야** 안다.\n\n**대소문자가 DB 마다** 다르다.\n\n> **어떤 DB 는 대문자로 돌려**준다.\n> **`as \"username\"` 처럼 따옴표로** 고정한다.\n> **방언이 없으니 내가 맞춰야** 한다.\n\n**동적 프로젝션은 안** 된다.\n\n> **8.4절의 `Class<T>` 인자를 못** 쓴다.\n> **반환 타입을 미리 적어야** 한다.\n> **네이티브는 그만큼 굳어** 있다.\n\n**여기까지 오면 JDBC 도 후보**다.\n\n> **`JdbcClient` 가 더 솔직**하다.\n> **JPA 를 흉내 낼 이유가** 없다.\n> **아래에서 나란히** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 8.6 의 Object[] 를 되짚는다\n\n@Query(value = \"select username, age from member where age = ?1\",\n       nativeQuery = true)\nList<Object[]> findRows(int age);\n\n@Test\n@Transactional\nvoid 배열() {\n    em.clear();\n    Object[] r = memberRepository.findRows(10).get(0);\n    System.out.println(\"r[0]=\" + r[0] + \" r[1]=\" + r[1]);\n}\n\nHibernate: select username, age from member where age = ?\nr[0]=m1 r[1]=10\n\n--   순서가 곧 의미다\n--   컬럼을 바꿔 넣으면 조용히 틀린다\n\n\n-- 인터페이스를 붙인다\n\npublic interface MemberRow {\n    String getUsername();\n    int getAge();\n}\n\n@Query(value = \"select m.username as username, m.age as age\"\n             + \" from member m where m.age = ?1\",\n       nativeQuery = true)\nList<MemberRow> findTyped(int age);\n\n@Test\n@Transactional\nvoid 타입() {\n    em.clear();\n    MemberRow r = memberRepository.findTyped(10).get(0);\n    System.out.println(\"이름: \" + r.getUsername());\n    System.out.println(\"나이: \" + r.getAge());\n    System.out.println(\"타입: \" + r.getClass().getName());\n}\n\nHibernate:\n    select\n        m.username as username,\n        m.age as age\n    from\n        member m\n    where\n        m.age = ?\n이름: m1\n나이: 10\n타입: jdk.proxy2.$Proxy155\n\n--   Object[] 가 사라졌다\n--   8.3절과 같은 프록시다\n\n\n-- 순서를 바꿔도 된다\n\n@Query(value = \"select m.age as age, m.username as username\"\n             + \" from member m where m.age = ?1\",\n       nativeQuery = true)\nList<MemberRow> findSwapped(int age);\n\n@Test\n@Transactional\nvoid 순서() {\n    em.clear();\n    MemberRow r = memberRepository.findSwapped(10).get(0);\n    System.out.println(\"이름: \" + r.getUsername());\n}\n\nHibernate:\n    select m.age as age, m.username as username\n    from member m where m.age = ?\n이름: m1\n\n--   별칭으로 찾아서 순서가 상관없다\n--   Object[] 였으면 뒤바뀐다\n\n\n-- 별칭을 빼면\n\n@Query(value = \"select m.username, m.age from member m where m.age = ?1\",\n       nativeQuery = true)\nList<MemberRow> findNoAlias(int age);\n\n@Test\n@Transactional\nvoid 별칭_없이() {\n    em.clear();\n    MemberRow r = memberRepository.findNoAlias(10).get(0);\n    System.out.println(\"이름: \" + r.getUsername());\n    System.out.println(\"나이: \" + r.getAge());\n}\n\nHibernate: select m.username, m.age from member m where m.age = ?\n이름: m1\n나이: 10\n\n--   컬럼 이름이 곧 별칭이라 맞았다\n\n\n-- 이름이 다르면\n\n@Query(value = \"select m.username as name from member m where m.age = ?1\",\n       nativeQuery = true)\nList<MemberRow> findWrongAlias(int age);\n\n@Test\n@Transactional\nvoid 틀린_별칭() {\n    em.clear();\n    MemberRow r = memberRepository.findWrongAlias(10).get(0);\n    System.out.println(\"이름: \" + r.getUsername());\n}\n\nHibernate: select m.username as name from member m where m.age = ?\n이름: null\n\n--   예외가 아니다\n--   조용히 null 이다\n--   8.3절의 JPQL 은 기동에서 막혔었다\n\n\n-- 8.6 의 순위 쿼리를 완성한다\n\npublic interface TeamRank {\n    String getTeamName();\n    String getUsername();\n    int getAge();\n    int getAgeRank();\n}\n\n@Query(value = \"\"\"\n        select\n            t.name     as teamName,\n            m.username as username,\n            m.age      as age,\n            rank() over (partition by t.team_id order by m.age desc)\n                       as ageRank\n        from member m\n        join team t on t.team_id = m.team_id\n        where m.age >= :minAge\n        \"\"\", nativeQuery = true)\nList<TeamRank> rankByTeam(@Param(\"minAge\") int minAge);\n\n@Test\n@Transactional\nvoid 순위() {\n    em.clear();\n    for (TeamRank r : memberRepository.rankByTeam(10)) {\n        System.out.printf(\"%-8s %-6s %2d %d위%n\",\n                r.getTeamName(), r.getUsername(), r.getAge(), r.getAgeRank());\n    }\n}\n\nHibernate:\n    select\n        t.name     as teamName,\n        m.username as username,\n        m.age      as age,\n        rank() over (partition by t.team_id order by m.age desc)\n                   as ageRank\n    from member m\n    join team t on t.team_id = m.team_id\n    where m.age >= ?\nteamA    m3     30 1위\nteamA    m2     20 2위\nteamA    m1     10 3위\nteamB    m5     25 1위\n\n--   r[3] 이 getAgeRank() 가 됐다\n--   엔티티에 없는 값이다\n\n\n-- 페이징도 붙는다\n\n@Query(value = \"\"\"\n        select t.name as teamName, m.username as username, m.age as age\n        from member m join team t on t.team_id = m.team_id\n        where m.age >= :minAge\n        \"\"\",\n       countQuery = \"\"\"\n        select count(*) from member m where m.age >= :minAge\n        \"\"\",\n       nativeQuery = true)\nPage<TeamRank> rankPage(@Param(\"minAge\") int minAge, Pageable pageable);\n\n@Test\n@Transactional\nvoid 네이티브_페이징() {\n    em.clear();\n    Page<TeamRank> p = memberRepository.rankPage(10,\n            PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, \"age\")));\n    System.out.println(\"전체: \" + p.getTotalElements());\n}\n\nHibernate:\n    select t.name as teamName, m.username as username, m.age as age\n    from member m join team t on t.team_id = m.team_id\n    where m.age >= ?\n    order by age desc\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(*) from member m where m.age >= ?\n전체: 4\n\n--   8.6절의 countQuery 가 여전히 필수다\n--   정렬은 별칭 이름으로 걸었다\n\n\n-- 동적 프로젝션은 안 된다\n\n@Query(value = \"select m.username as username from member m\",\n       nativeQuery = true)\n<T> List<T> findDynamicNative(Class<T> type);\n\n$ ./gradlew test\n\nCaused by: java.lang.IllegalArgumentException:\n  Cannot use dynamic projections with native queries\n\n--   8.4절의 방법을 못 쓴다\n\n\n-- 대소문자를 못 믿을 때\n\n@Query(value = \"select m.username as \\\"username\\\" from member m\"\n             + \" where m.age = ?1\",\n       nativeQuery = true)\nList<UsernameOnly> findQuoted(int age);\n\nHibernate:\n    select m.username as \"username\" from member m where m.age = ?\n\n--   따옴표로 고정한다\n--   DB 를 바꿀 때 이 줄이 문제가 된다\n\n\n-- JdbcClient 와 나란히 둔다\n\n@Repository\n@RequiredArgsConstructor\npublic class MemberJdbcRepository {\n\n    private final JdbcClient jdbc;\n\n    public List<TeamRankDto> rankByTeam(int minAge) {\n        return jdbc.sql(\"\"\"\n                select\n                    t.name     as team_name,\n                    m.username as username,\n                    m.age      as age,\n                    rank() over (partition by t.team_id order by m.age desc)\n                               as age_rank\n                from member m\n                join team t on t.team_id = m.team_id\n                where m.age >= :minAge\n                \"\"\")\n            .param(\"minAge\", minAge)\n            .query(TeamRankDto.class)\n            .list();\n    }\n}\n\n@Test\nvoid jdbc() {\n    memberJdbcRepository.rankByTeam(10)\n            .forEach(System.out::println);\n}\n\nselect\n    t.name     as team_name,\n    m.username as username,\n    m.age      as age,\n    rank() over (partition by t.team_id order by m.age desc)\n               as age_rank\nfrom member m\njoin team t on t.team_id = m.team_id\nwhere m.age >= ?\n\nTeamRankDto[teamName=teamA, username=m3, age=30, ageRank=1]\nTeamRankDto[teamName=teamA, username=m2, age=20, ageRank=2]\n\n--   문장이 같다\n--   스네이크 표기를 알아서 맞춘다\n--   영속성 컨텍스트가 아예 안 낀다\n\n\n-- 셋을 비교한다\n\n$ printf '%-22s %-12s %s\\n' \\\n  'Object[]' '타입 없음'  '순서가 의미' \\\n  '네이티브+프로젝션' '타입 있음' '별칭이 계약, 오타는 null' \\\n  'JdbcClient' '타입 있음' 'JPA 를 안 흉내 냄'\n\nObject[]               타입 없음     순서가 의미\n네이티브+프로젝션      타입 있음     별칭이 계약, 오타는 null\nJdbcClient             타입 있음     JPA 를 안 흉내 냄\n\n\n-- 이 책에서 쓴 조회 방법을 다 센다\n\n$ grep -rho '@Query\\|@EntityGraph\\|nativeQuery = true\\|Specification\\|Example\\.of' \\\n    --include='*.java' src/ | sort | uniq -c | sort -rn\n\n  31 @Query\n  12 @EntityGraph\n   6 Specification\n   4 nativeQuery = true\n   3 Example.of\n\n--   네이티브가 제일 적다\n--   그게 맞는 비율이다\n--   8.8절에서 이 책을 닫는다",
+   "note": "**별칭을 붙이자 `Object[]` 가 `$Proxy155` 로 바뀌고 컬럼 순서를 바꿔도 안** 깨진다.\n\n**`as name` 으로 어긋나면 예외가 아니라 조용히 `null`** 이다.\n\n**`rank() over` 결과가 `getAgeRank()` 로 — 엔티티에 없는 값이 타입을** 얻었다.\n\n**동적 프로젝션은 `Cannot use dynamic projections with native queries`** 다.\n\n**`JdbcClient` 는 같은 문장을 내면서 스네이크 표기를 알아서** 맞춘다."
+  }
+ ],
+ "recap": [
+  "**별칭이 게터가** 된다.",
+  "**`Object[]` 가** 사라진다.",
+  "**순서가 상관** 없어진다.",
+  "**계산 값도** 받는다.",
+  "**오타는 `null`** 이다.",
+  "**기동에서 안** 막힌다.",
+  "**대소문자를 고정**한다.",
+  "**동적 프로젝션은 안** 된다.",
+  "**`JdbcClient` 도** 후보다."
+ ],
+ "drills": [
+  {
+   "task": "네이티브에 프로젝션을 붙인다.",
+   "done_when": "`Object[]` 가 사라진 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "별칭을 일부러 틀린다.",
+   "done_when": "`null` 이 되는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "윈도우 함수 결과를 받는다.",
+   "done_when": "게터로 읽히는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "`JdbcClient` 로 같은 걸 짠다.",
+   "done_when": "두 문장을 비교했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네이티브 결과를 인터페이스에 매핑하는 기준은?",
+   "a": "`select` 의 별칭이 게터 이름과 맞는지다."
+  },
+  {
+   "q": "별칭이 안 맞으면?",
+   "a": "예외 없이 `null` 이 들어온다."
+  },
+  {
+   "q": "컬럼 순서를 바꾸면?",
+   "a": "별칭으로 찾으므로 영향이 없다."
+  },
+  {
+   "q": "동적 프로젝션을 쓸 수 있나?",
+   "a": "없다. 네이티브에서는 지원하지 않는다."
+  },
+  {
+   "q": "`JdbcClient` 를 쓸 만한 이유는?",
+   "a": "JPA 를 흉내 내지 않고 SQL 을 그대로 다루기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "네이티브 프로젝션",
+   "def": "네이티브 SQL 결과를 별칭 기준으로 인터페이스에 매핑하는 방식."
+  },
+  {
+   "term": "JdbcClient",
+   "def": "스프링 6.1의 SQL 실행 API 로, ORM 없이 결과를 객체로 받는다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Native Queries",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — JdbcClient",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

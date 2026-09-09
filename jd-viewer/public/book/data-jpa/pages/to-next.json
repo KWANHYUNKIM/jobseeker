@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "to-next",
+ "no": "8.8",
+ "chapter": 8,
+ "title": "다음으로",
+ "summary": "이 책이 남긴 것과 Querydsl.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "지운 코드를 센다.",
+  "안 바뀐 것을 확인한다.",
+  "다음 책을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 65줄을** 썼다. **8.7절까지 오는 동안 한 번도 그 줄이 다시 필요하지** 않았다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 책이 올라온 사다리",
+   "ascii": "   the ladder this book climbed, rung by rung\n\n   chapter 4   the hand written repository, then its deletion\n   chapter 5   method names, then jpql, then paging and bulk\n   chapter 6   the things around the query, not the query itself\n   chapter 7   the one class underneath all of it\n   chapter 8   the ways out when declaration is not enough\n\n   every rung removed code, and none of them changed the sql",
+   "note": "**칸마다 코드가 줄었고 SQL 은 안** 바뀌었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "줄어든 것은 코드지 SQL 이 아니다",
+   "md": "**같은 문장을 계속** 봤다.\n\n> **4.2절의 `diff` 가 0** 이었다.\n> **5.10절도, 6.2절도** 그랬다.\n> **7.1절에서 그 이유를 소스로** 봤다.\n\n**바뀐 건 누가 쓰느냐**다.\n\n> **내가 쓰던 것을 프록시가** 쓴다.\n> **`SimpleJpaRepository` 하나**다.\n> **그 안은 `EntityManager`** 다.\n\n**그래서 SQL 을 계속** 봤다.\n\n> **선언이 무엇을 냈는지 봐야** 안다.\n> **안 보면 8.5절의 13컬럼을 못** 본다.\n> **이 책의 규칙이 그것**이었다.\n\n**남은 문제는 형태**다.\n\n> **조건이 실행 시점에** 정해진다.\n> **6.1·8.1·8.2절이 각자** 답했다.\n> **셋 다 만족스럽지** 않았다."
+  },
+  {
+   "type": "figure",
+   "caption": "아직 안 풀린 것",
+   "ascii": "   what is still not solved\n\n   a where clause built from screen input, with types checked\n   a select list decided at runtime without losing type safety\n   a join written once and reused across queries\n\n   chapter 8 answered each of these, badly, three different ways",
+   "note": "**8장이 세 번 답했고 세 번 다 아쉬웠다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "다음 책은 그 세 가지를 한 번에 답한다",
+   "md": "**Querydsl 이 다음**이다.\n\n> **JPQL 처럼 읽히고 컴파일이** 잡는다.\n> **8.1절의 조립을 문자열 없이** 한다.\n> **8.4절의 `select` 선택을 타입으로** 한다.\n\n**6.1절의 자리에** 들어간다.\n\n> **사용자 정의 리포지토리가 그 자리**다.\n> **거기서 배운 게 그대로** 쓰인다.\n> **버릴 게** 없다.\n\n**이 책의 SQL 읽기가 그대로** 간다.\n\n> **거기서도 나가는 문장을** 본다.\n> **N+1 도, 페이징도 같은 문제**다.\n> **도구만** 바뀐다.\n\n**그 전에 이 책을 한 번** 훑는다.\n\n> **아래에서 여덟 장을 한 화면에** 모은다.\n> **각 장이 무엇을 지웠는지** 센다.\n> **마지막 SQL 로** 닫는다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 4.1 에서 쓴 것을 다시 꺼낸다\n\n$ git show \"$(git log --oneline --all | grep '4.1' | tail -1 | cut -d' ' -f1)\" \\\n    --stat -- MemberJpaRepository.java\n\n MemberJpaRepository.java | 65 ++++++++++++++++++++++++++++++++++++++\n 1 file changed, 65 insertions(+)\n\n$ git log --oneline --diff-filter=D -- MemberJpaRepository.java\nb3f91c2 4.2 인터페이스만 남긴다\n\n--   쓴 커밋과 지운 커밋이 나란히 있다\n\n\n-- 장마다 무엇을 지웠나\n\n$ git log --format='%s' --numstat --reverse -- src/main \\\n    | awk '/^[0-9]/ {a+=$1; d+=$2} /^[0-9]장/ {print prev, a, d; a=0; d=0}'\n\n4장  12줄 추가   65줄 삭제      손으로 쓴 리포지토리\n5장  48줄 추가   31줄 삭제      쿼리 메서드\n6장  96줄 추가   29줄 삭제      감사, 웹, 커스텀\n7장   9줄 추가    0줄 삭제      Persistable\n8장  74줄 추가   18줄 삭제      프로젝션과 네이티브\n\n--   4장이 제일 많이 지웠다\n--   6장은 늘었는데 서비스 코드가 줄었다\n\n\n-- 그런데 SQL 은 몇 번 바뀌었나\n\n$ ls sql-snapshots/\n4-1-hand.sql   5-9-paging.sql    6-2-split.sql\n4-2-data.sql   5-10-pageable.sql 6-2-moved.sql\n\n$ diff sql-snapshots/4-1-hand.sql sql-snapshots/4-2-data.sql && echo SAME\nSAME\n$ diff sql-snapshots/5-9-paging.sql sql-snapshots/5-10-pageable.sql && echo SAME\nSAME\n$ diff sql-snapshots/6-2-split.sql sql-snapshots/6-2-moved.sql && echo SAME\nSAME\n\n--   세 번 다 같다\n--   이 책의 주장이다\n\n\n-- 무엇이 SQL 을 바꿨나\n\n$ printf '%-14s %s\\n' \\\n  '5.13 EntityGraph' '6개 -> 1개' \\\n  '5.11 Slice'       '2개 -> 1개' \\\n  '5.12 벌크'        '4개 -> 1개' \\\n  '6.8 DTO 변환'     '6개 -> 2개' \\\n  '7.4 Persistable'  '200개 -> 100개' \\\n  '8.3 프로젝션'     '8컬럼 -> 1컬럼' \\\n  '8.5 평평하게'     '7컬럼 -> 2컬럼'\n\n5.13 EntityGraph  6개 -> 1개\n5.11 Slice        2개 -> 1개\n5.12 벌크         4개 -> 1개\n6.8 DTO 변환      6개 -> 2개\n7.4 Persistable   200개 -> 100개\n8.3 프로젝션      8컬럼 -> 1컬럼\n8.5 평평하게      7컬럼 -> 2컬럼\n\n--   구조가 아니라 이것들이 바꿨다\n\n\n-- 조용히 틀렸던 것들을 모은다\n\n$ printf '%-24s %s\\n' \\\n  '5.6 위치 바인딩'   '조건을 끼우면 어긋난다' \\\n  '5.12 벌크 뒤 조회' 'DB 21, 객체 20' \\\n  '6.3 스위치 없음'   '등록일이 null' \\\n  '6.5 컨버터'        'update 가 안 나감' \\\n  '7.2 readOnly'      '고쳐도 사라짐' \\\n  '7.5 힌트'          '같은 이유로 사라짐' \\\n  '8.2 int 필드'      'where age = 0' \\\n  '8.7 별칭 오타'     '조용히 null'\n\n5.6 위치 바인딩          조건을 끼우면 어긋난다\n5.12 벌크 뒤 조회        DB 21, 객체 20\n6.3 스위치 없음          등록일이 null\n6.5 컨버터               update 가 안 나감\n7.2 readOnly             고쳐도 사라짐\n7.5 힌트                 같은 이유로 사라짐\n8.2 int 필드             where age = 0\n8.7 별칭 오타            조용히 null\n\n--   여덟 개 다 예외가 없었다\n--   SQL 을 봐야 알 수 있었다\n\n\n-- 다른 책과 이어진 자리\n\n$ printf '%-16s %s\\n' \\\n  '① 8.1절'   '변경 감지 -> 5.12·7.5절' \\\n  '① 10.4절'  'fetch join -> 5.13절' \\\n  '④ 4.4절'   '자기 호출 -> 7.2절' \\\n  '⑤ 4.4절'   '준영속 -> 6.5·7.3절' \\\n  '⑦ 8.5절'   '컬렉션 페이징 -> 5.13절' \\\n  '⑧ 3.1절'   '엔티티 반환 -> 6.8절' \\\n  '⑩ 2.3절'   'SecurityContext -> 6.4절' \\\n  '⑫ 6.6절'   'total 이 비싸다 -> 5.11절'\n\n① 8.1절     변경 감지 -> 5.12·7.5절\n① 10.4절    fetch join -> 5.13절\n④ 4.4절     자기 호출 -> 7.2절\n⑤ 4.4절     준영속 -> 6.5·7.3절\n⑦ 8.5절     컬렉션 페이징 -> 5.13절\n⑧ 3.1절     엔티티 반환 -> 6.8절\n⑩ 2.3절     SecurityContext -> 6.4절\n⑫ 6.6절     total 이 비싸다 -> 5.11절\n\n--   여덟 권이 여기서 만난다\n\n\n-- 남은 문제를 한 화면에 둔다\n\n// 6.1 커스텀 — 되는데 문자열이다\nif (username != null) {\n    jpql.append(\" and m.username = :username\");\n    params.put(\"username\", username);\n}\n\n// 8.1 명세 — 되는데 안 읽힌다\nreturn (root, query, cb) -> cb.equal(root.get(\"username\"), username);\n\n// 8.2 QBE — 짧은데 등호만 된다\nprobe.setUsername(username);\n\n--   셋 다 같은 문제를 다르게 못 풀었다\n\n\n-- 다음 책이 쓸 모양\n\n// Querydsl\nreturn queryFactory\n        .select(member)\n        .from(member)\n        .leftJoin(member.team, team)\n        .where(usernameEq(username), ageGoe(minAge), teamNameEq(teamName))\n        .fetch();\n\nprivate BooleanExpression usernameEq(String username) {\n    return username == null ? null : member.username.eq(username);\n}\n\n--   null 이면 조건이 빠진다 (6.1절)\n--   문자열이 없다 (8.1절)\n--   부등호가 된다 (8.2절)\n--   컴파일이 잡는다\n\n\n-- 이 책의 마지막 SQL\n\n@Test\n@Transactional\nvoid 마지막() {\n    em.clear();\n    Page<MemberDto> page = memberRepository\n            .findWithTeamBy(PageRequest.of(0, 2, Sort.by(\"id\")))\n            .map(MemberDto::of);\n    System.out.println(\"전체: \" + page.getTotalElements());\n}\n\nHibernate:\n    select\n        m1_0.member_id,\n        m1_0.age,\n        m1_0.created_by,\n        m1_0.created_date,\n        m1_0.last_modified_by,\n        m1_0.last_modified_date,\n        t1_0.team_id,\n        t1_0.name,\n        m1_0.username\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    order by\n        m1_0.member_id\n    offset ? rows fetch first ? rows only\nHibernate:\n    select\n        count(m1_0.member_id)\n    from\n        member m1_0\n전체: 12\n\n--   이 아홉 컬럼과 두 문장에 이 책이 다 있다\n--   left join 은 5.13절이 붙였다\n--   created_by 는 6.4절이 만들었다\n--   offset 은 5.10절이 넣었다\n--   count 는 5.11절이 설명했다\n--   그리고 나는 구현을 한 줄도 안 썼다\n\n$ grep -c 'class MemberRepositoryImpl' src/main/java/**/*.java\n0\n\n--   실전! Querydsl 로 이어진다",
+   "note": "**4.1절의 65줄이 4.2절에서 지워졌고 그 SQL `diff` 는 세 번 다 `SAME`** 이었다.\n\n**SQL 을 실제로 바꾼 건 구조가 아니라 `EntityGraph`·`Slice`·벌크·`Persistable`·프로젝션 일곱** 가지다.\n\n**예외 없이 조용히 틀렸던 자리가 여덟 개 — 전부 SQL 을 봐야** 알았다.\n\n**여덟 권의 절이 이 책 안에서** 만난다.\n\n**마지막 아홉 컬럼과 두 문장에 이 책이 다 있고, `MemberRepositoryImpl` 은 `0`** 개다."
+  }
+ ],
+ "recap": [
+  "**코드가 줄었고 SQL 은 안** 바뀌었다.",
+  "**구현체는 하나**였다.",
+  "**그 안은 `EntityManager`** 였다.",
+  "**SQL 을 바꾼 건 따로** 있었다.",
+  "**조용한 실패가 여덟**이었다.",
+  "**전부 SQL 로만** 보였다.",
+  "**여덟 권이 여기서** 만난다.",
+  "**남은 건 동적 쿼리**다.",
+  "**다음은 Querydsl** 이다."
+ ],
+ "drills": [
+  {
+   "task": "4.1절 파일의 커밋 이력을 본다.",
+   "done_when": "쓴 커밋과 지운 커밋을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "SQL 스냅샷 셋을 `diff` 한다.",
+   "done_when": "세 번 다 같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조용한 실패 여덟을 다시 만든다.",
+   "done_when": "예외가 없다는 걸 확인했다.",
+   "minutes": 40
+  },
+  {
+   "task": "마지막 쿼리의 컬럼을 절에 대응시킨다.",
+   "done_when": "아홉 컬럼의 출처를 다 댔다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책에서 구조 변경이 SQL 을 바꾼 적이 있나?",
+   "a": "없다. `diff` 가 매번 같았다."
+  },
+  {
+   "q": "그럼 무엇이 SQL 을 바꿨나?",
+   "a": "`EntityGraph`, `Slice`, 벌크, `Persistable`, 프로젝션 같은 선택이다."
+  },
+  {
+   "q": "조용한 실패들의 공통점은?",
+   "a": "예외가 없어 나가는 SQL 을 봐야만 알 수 있었다."
+  },
+  {
+   "q": "동적 쿼리를 세 번 답한 절은?",
+   "a": "6.1 커스텀, 8.1 명세, 8.2 QBE 다."
+  },
+  {
+   "q": "다음 책의 주제는?",
+   "a": "타입이 지켜 주는 동적 쿼리, Querydsl 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "선언적 리포지토리",
+   "def": "구현을 쓰지 않고 인터페이스 선언만으로 쿼리를 얻는 방식."
+  },
+  {
+   "term": "Querydsl",
+   "def": "JPQL 을 타입 안전한 자바 코드로 조립하는 라이브러리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Querydsl Reference Guide",
+   "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+   "publisher": "Querydsl"
+  },
+  {
+   "title": "Spring Data JPA — Native Queries",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
