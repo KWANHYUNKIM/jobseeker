@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "native-query",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "네이티브 쿼리",
+ "summary": "마지막 수단.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "선언하는 법을 안다.",
+  "무엇을 잃는지 안다.",
+  "언제 쓰는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**여기까지 SQL 을 한 줄도 안** 썼다. **이 절만 예외**다."
+  },
+  {
+   "type": "figure",
+   "caption": "무엇을 잃나",
+   "ascii": "   what a native query gives up\n\n   the dialect       gone, the sql is now tied to one database\n   the sort object   gone, sorting has to be written into the text\n   the paging        partly gone, the count query must be supplied\n   the return type   an Object array, unless you say otherwise\n\n   what it gains is everything the database can do and jpql cannot",
+   "note": "**얻는 건 JPQL 이 못 하는 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "JPQL 이 말할 수 없는 문장이 있다",
+   "md": "**윈도우 함수가 없**다.\n\n> **`row_number() over (...)` 를 못** 적는다.\n> **순위·누적을 자바에서 계산**하게 된다.\n> **DB 가 하면 한 번에** 끝난다.\n\n**CTE 도** 없다.\n\n> **`with recursive` 로 계층을** 판다.\n> **JPQL 에 그런 문법이** 없다.\n> **조직도·댓글 트리가 그런 것**이다.\n\n**DB 고유 기능이** 있다.\n\n> **배열·JSON·전문 검색**이다.\n> **표준에 없으니 표준으로 못** 쓴다.\n> **그럴 때만 내려간다.**\n\n**어색해서가 아니다.**\n\n> **JPQL 로 되는데 귀찮아서 쓰면** 안 된다.\n> **못 하는 것만 여기서** 한다.\n> **⑥ 9.1절에서 정한 기준과** 같다."
+  },
+  {
+   "type": "figure",
+   "caption": "진짜 필요한 자리",
+   "ascii": "   when it is actually the right answer\n\n   a window function, a cte, a database specific operator\n   a statistics query touching several tables in one pass\n   a bulk statement that jpql cannot express\n\n   not because jpql felt awkward, but because it cannot say it",
+   "note": "**못 말해서지 어색해서가** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "영속성 컨텍스트를 안 거치니 flush 가 안 된다",
+   "md": "**바뀐 값이 반영이 안** 된다.\n\n> **JPQL 은 실행 전에 flush 를** 한다.\n> **네이티브는 그런 보장이** 없다.\n> **직접 `flush()` 를** 부른다.\n\n**엔티티로 받으면 컬럼이 다 맞아야** 한다.\n\n> **하나만 빠져도** 터진다.\n> **`select *` 로 쓰게** 된다.\n> **8.3절의 컬럼 절약이** 무의미해진다.\n\n**정렬이 문자열이** 된다.\n\n> **`Sort` 를 붙일 데가** 마땅찮다.\n> **5.6절에서 경고한 문자열 정렬**이다.\n> **바인딩이 아니라 문자열 이어붙이기가** 된다.\n\n**페이징은 개수 쿼리를 직접** 준다.\n\n> **`countQuery` 가 필수**다.\n> **없으면 기동에서** 막힌다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 가장 단순한 형태\n\n@Query(value = \"select * from member where username = ?1\",\n       nativeQuery = true)\nMember findByNativeUsername(String username);\n\n@Test\n@Transactional\nvoid 기본() {\n    em.clear();\n    Member m = memberRepository.findByNativeUsername(\"m1\");\n    System.out.println(\"이름: \" + m.getUsername());\n}\n\nHibernate:\n    select\n        *\n    from\n        member\n    where\n        username = ?\n이름: m1\n\n--   내가 쓴 문자열이 그대로 나갔다\n--   하이버네이트가 손댄 게 없다\n\n\n-- 반환이 엔티티면 관리된다\n\n@Test\n@Transactional\nvoid 관리() {\n    em.clear();\n    Member m = memberRepository.findByNativeUsername(\"m1\");\n    System.out.println(\"관리 중? \" + em.contains(m));\n    m.setAge(99);\n    em.flush();\n}\n\nHibernate: select * from member where username = ?\n관리 중? true\nHibernate:\n    update member set age=?, last_modified_by=?, last_modified_date=?,\n                      team_id=?, username=? where member_id=?\n\n--   변경 감지가 걸린다\n\n\n-- 컬럼이 하나라도 빠지면\n\n@Query(value = \"select member_id, username from member where age = ?1\",\n       nativeQuery = true)\nList<Member> findPartial(int age);\n\n@Test\n@Transactional\nvoid 부분_컬럼() {\n    try {\n        memberRepository.findPartial(10);\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n        System.out.println(\"말:   \" + e.getMessage().split(\"\\n\")[0]);\n    }\n}\n\nHibernate: select member_id, username from member where age = ?\n예외: SQLGridException\n말:   Column \"age\" not found in ResultSet\n\n--   엔티티를 못 만든다\n--   그래서 select * 를 쓰게 된다\n\n\n-- 값만 받으면\n\n@Query(value = \"select username from member where age = ?1\",\n       nativeQuery = true)\nList<String> findNames(int age);\n\n@Test\n@Transactional\nvoid 값() {\n    em.clear();\n    System.out.println(memberRepository.findNames(10));\n}\n\nHibernate:\n    select\n        username\n    from\n        member\n    where\n        age = ?\n[m1, m2, m3]\n\n--   이건 된다\n\n\n-- 여러 컬럼이면 Object[] 다\n\n@Query(value = \"select username, age from member where age = ?1\",\n       nativeQuery = true)\nList<Object[]> findRows(int age);\n\n@Test\n@Transactional\nvoid 배열() {\n    em.clear();\n    for (Object[] r : memberRepository.findRows(10)) {\n        System.out.println(r[0] + \" / \" + r[1] +\n                \"  (\" + r[1].getClass().getSimpleName() + \")\");\n    }\n}\n\nHibernate: select username, age from member where age = ?\nm1 / 10  (Integer)\nm2 / 10  (Integer)\n\n--   타입이 없다\n--   순서가 곧 의미다\n--   8.7절에서 이걸 고친다\n\n\n-- flush 가 안 된다\n\n@Test\n@Transactional\nvoid flush_없음() {\n    Member m = memberRepository.findById(1L).orElseThrow();\n    m.setUsername(\"바뀐이름\");        // 아직 안 나갔다\n\n    System.out.println(\"--- JPQL ---\");\n    memberRepository.countByUsername(\"바뀐이름\");\n\n    System.out.println(\"--- 네이티브 ---\");\n    System.out.println(\"찾은 건수: \" +\n            memberRepository.countNative(\"바뀐이름\"));\n}\n\nHibernate: select ... where m1_0.member_id=?\n--- JPQL ---\nHibernate: update member set age=?, ... where member_id=?\nHibernate: select count(m1_0.member_id) from member m1_0\n           where m1_0.username=?\n--- 네이티브 ---\nHibernate: select count(*) from member where username = ?\n찾은 건수: 1\n\n--   JPQL 이 먼저 flush 를 했다\n--   그래서 네이티브도 값을 봤다\n--   JPQL 이 없었으면 0 이었다\n\n\n-- 순서를 바꾸면\n\n@Test\n@Transactional\nvoid 순서_바꿈() {\n    Member m = memberRepository.findById(1L).orElseThrow();\n    m.setUsername(\"안나간이름\");\n\n    System.out.println(\"찾은 건수: \" +\n            memberRepository.countNative(\"안나간이름\"));\n}\n\nHibernate: select ... where m1_0.member_id=?\nHibernate: select count(*) from member where username = ?\n찾은 건수: 0\n\n--   update 가 안 나갔다\n--   변경이 아직 메모리에만 있다\n--   em.flush() 를 직접 불러야 한다\n\n\n-- 페이징에는 countQuery 가 필수다\n\n@Query(value = \"select * from member where age = ?1\",\n       nativeQuery = true)\nPage<Member> findPageNative(int age, Pageable pageable);\n\n$ ./gradlew test\n\nCaused by: org.springframework.data.repository.query\n        .QueryCreationException:\n  Cannot use native queries with dynamic sorting and/or pagination\n\n--   기동에서 막힌다\n\n\n-- 개수 쿼리를 준다\n\n@Query(value = \"select * from member where age = ?1\",\n       countQuery = \"select count(*) from member where age = ?1\",\n       nativeQuery = true)\nPage<Member> findPageNative(int age, Pageable pageable);\n\n@Test\n@Transactional\nvoid 네이티브_페이징() {\n    em.clear();\n    Page<Member> p = memberRepository.findPageNative(10,\n            PageRequest.of(0, 2));\n    System.out.println(\"전체: \" + p.getTotalElements());\n}\n\nHibernate:\n    select\n        *\n    from\n        member\n    where\n        age = ?\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(*) from member where age = ?\n전체: 3\n\n--   offset 은 붙여 준다\n--   방언이 아직 살아 있는 부분이다\n\n\n-- 정렬을 주면\n\n@Test\n@Transactional\nvoid 네이티브_정렬() {\n    em.clear();\n    memberRepository.findPageNative(10,\n            PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, \"username\")));\n}\n\nHibernate:\n    select * from member where age = ?\n    order by username desc\n    offset ? rows fetch first ? rows only\n\n--   되긴 된다\n--   컬럼 이름이 DB 컬럼이어야 한다\n--   엔티티 속성이 아니다\n\n\n-- 속성 이름을 주면\n\n@Test\n@Transactional\nvoid 속성_이름() {\n    try {\n        memberRepository.findPageNative(10,\n                PageRequest.of(0, 2, Sort.by(\"createdDate\"))).getContent();\n    } catch (Exception e) {\n        System.out.println(\"예외: \" + e.getClass().getSimpleName());\n    }\n}\n\nHibernate: select * from member where age = ? order by createdDate\n           offset ? rows fetch first ? rows only\n예외: BadSqlGrammarException\n\n--   created_date 여야 했다\n--   5.10절의 검증이 여기선 없다\n\n\n-- 진짜 필요한 자리\n\n@Query(value = \"\"\"\n        select\n            t.name           as team_name,\n            m.username       as username,\n            m.age            as age,\n            rank() over (partition by t.team_id order by m.age desc)\n                             as age_rank\n        from member m\n        join team t on t.team_id = m.team_id\n        where m.age >= :minAge\n        \"\"\", nativeQuery = true)\nList<Object[]> rankByTeam(@Param(\"minAge\") int minAge);\n\n@Test\n@Transactional\nvoid 순위() {\n    em.clear();\n    for (Object[] r : memberRepository.rankByTeam(10)) {\n        System.out.printf(\"%-8s %-6s %2s %s%n\", r[0], r[1], r[2], r[3]);\n    }\n}\n\nHibernate:\n    select\n        t.name           as team_name,\n        m.username       as username,\n        m.age            as age,\n        rank() over (partition by t.team_id order by m.age desc)\n                         as age_rank\n    from member m\n    join team t on t.team_id = m.team_id\n    where m.age >= ?\nteamA    m3     30 1\nteamA    m2     20 2\nteamA    m1     10 3\nteamB    m5     25 1\n\n--   JPQL 로는 못 쓴다\n--   자바로 계산하려면 전부 읽어야 한다\n--   이럴 때 쓰는 것이다\n\n\n-- 계층도 판다\n\n@Query(value = \"\"\"\n        with recursive sub as (\n            select team_id, name, parent_id, 0 as depth\n            from team where parent_id is null\n            union all\n            select t.team_id, t.name, t.parent_id, sub.depth + 1\n            from team t join sub on t.parent_id = sub.team_id\n        )\n        select name, depth from sub order by depth, name\n        \"\"\", nativeQuery = true)\nList<Object[]> tree();\n\nHibernate:\n    with recursive sub as (\n        select team_id, name, parent_id, 0 as depth\n        from team where parent_id is null\n        union all\n        select t.team_id, t.name, t.parent_id, sub.depth + 1\n        from team t join sub on t.parent_id = sub.team_id\n    )\n    select name, depth from sub order by depth, name\n\n본사      0\n개발본부   1\n영업본부   1\n플랫폼팀   2\n\n--   JPQL 에 with 가 없다\n--   8.7절에서 Object[] 를 없앤다\n\n\n-- 정리\n\n$ printf '%-22s %s\\n' \\\n  '반환 엔티티' '모든 컬럼이 있어야 함' \\\n  '반환 여러 값' 'Object[]' \\\n  'flush' '자동이 아님' \\\n  '페이징' 'countQuery 필수' \\\n  '정렬' 'DB 컬럼 이름, 검증 없음' \\\n  '쓸 자리' '윈도우 함수, CTE, DB 고유'\n\n반환 엔티티            모든 컬럼이 있어야 함\n반환 여러 값           Object[]\nflush                  자동이 아님\n페이징                 countQuery 필수\n정렬                   DB 컬럼 이름, 검증 없음\n쓸 자리                윈도우 함수, CTE, DB 고유\n\n--   8.7절에서 그나마 쓸 만한 조합을 본다",
+   "note": "**내가 쓴 문자열이 손대지 않은 채 그대로** 나간다.\n\n**컬럼이 빠지면 `Column \"age\" not found in ResultSet` 이라 `select *` 를 쓰게** 된다.\n\n**JPQL 이 먼저 flush 해 줄 때만 값이 보이고, 없으면 `찾은 건수: 0`** 이다.\n\n**`countQuery` 없이 페이징하면 `Cannot use native queries with dynamic sorting` 로 기동이** 막힌다.\n\n**정렬에 속성 이름을 주면 `order by createdDate` 가 그대로 나가 `BadSqlGrammarException`** 이다."
+  }
+ ],
+ "recap": [
+  "**문자열이 그대로** 나간다.",
+  "**엔티티면 컬럼이 다 있어야** 한다.",
+  "**여러 값은 `Object[]`** 다.",
+  "**flush 가 자동이** 아니다.",
+  "**개수 쿼리가** 필수다.",
+  "**정렬은 DB 컬럼 이름**이다.",
+  "**검증이** 없다.",
+  "**방언을** 잃는다.",
+  "**못 하는 것만 여기서** 한다."
+ ],
+ "drills": [
+  {
+   "task": "네이티브 쿼리를 선언한다.",
+   "done_when": "문자열이 그대로 나가는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "컬럼을 일부만 고른다.",
+   "done_when": "엔티티 매핑 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "flush 없이 조회한다.",
+   "done_when": "값이 안 보이는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "윈도우 함수를 써 본다.",
+   "done_when": "JPQL 로 못 쓰는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네이티브 쿼리로 엔티티를 받으려면?",
+   "a": "매핑에 필요한 모든 컬럼이 결과에 있어야 한다."
+  },
+  {
+   "q": "여러 컬럼을 값으로 받으면 무엇이 오나?",
+   "a": "타입 없는 `Object[]` 다."
+  },
+  {
+   "q": "flush 는 자동인가?",
+   "a": "아니다. 변경이 반영되려면 직접 flush 해야 한다."
+  },
+  {
+   "q": "페이징에 무엇이 필요한가?",
+   "a": "`countQuery` 를 직접 줘야 한다."
+  },
+  {
+   "q": "정렬 컬럼 이름은?",
+   "a": "엔티티 속성이 아니라 실제 DB 컬럼 이름이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "네이티브 쿼리",
+   "def": "JPQL 을 거치지 않고 DB 에 그대로 보내는 SQL."
+  },
+  {
+   "term": "방언",
+   "def": "DB 마다 다른 문법 차이를 흡수해 주는 하이버네이트 계층."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Native Queries",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}

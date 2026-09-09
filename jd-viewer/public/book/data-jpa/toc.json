@@ -488,7 +488,7 @@
           "title": "중첩 구조",
           "summary": "연관까지 내려가면 최적화가 깨진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -496,7 +496,7 @@
           "title": "네이티브 쿼리",
           "summary": "마지막 수단.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",

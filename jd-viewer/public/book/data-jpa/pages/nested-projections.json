@@ -1,0 +1,129 @@
+{
+ "book": "data-jpa",
+ "id": "nested-projections",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "중첩 구조",
+ "summary": "연관까지 내려가면 최적화가 깨진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "중첩을 선언한다.",
+  "어디서 깨지는지 본다.",
+  "대안을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.3절이 컬럼을 하나로** 줄였다. **연관을 한 칸 내려가면 그게** 끝난다."
+  },
+  {
+   "type": "figure",
+   "caption": "어디까지 살아남나",
+   "ascii": "   how far the column selection survives\n\n   the root level     only the columns the getters name\n   one level down     every column of the associated entity\n   two levels down    the same, all of it, again\n\n   the optimization stops at the first association",
+   "note": "**첫 연관에서** 멈춘다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "루트만 컬럼을 고를 수 있다",
+   "md": "**루트는 표 하나**다.\n\n> **필요한 컬럼을 나열하면** 된다.\n> **8.3·8.4절이 그것**이다.\n> **`select` 가 짧아**진다.\n\n**연관은 다른 행**이다.\n\n> **그 행을 통째로 만들어야** 한다.\n> **엔티티는 반쪽으로 못** 만든다.\n> **그래서 전부** 읽는다.\n\n**조인은 붙어** 준다.\n\n> **`left join` 이 자동으로** 생긴다.\n> **5.13절의 N+1 은 안** 난다.\n> **컬럼만 안** 줄어든다.\n\n**두 칸이면 더** 그렇다.\n\n> **한 칸마다 표 하나가 통째로** 온다.\n> **깊을수록 폭이** 넓어진다.\n> **아래에서 세** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 거기서 멈추나",
+   "ascii": "   why it stops there\n\n   the root is one table, so the columns can be listed\n   the association is a separate row that has to be built whole\n\n   an entity cannot be half loaded, so it is loaded entirely",
+   "note": "**반쪽 엔티티는 만들 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "평평하게 펴면 다시 줄어든다",
+   "md": "**중첩을 안 쓰면** 된다.\n\n> **`getTeamName()` 하나로** 적는다.\n> **`@Value(\"#{target.team.name}\")` 은 안** 된다 — 열린 프로젝션이다.\n> **`@Query` 별칭으로** 푼다.\n\n**JPQL 을 직접 쓰는 게** 확실하다.\n\n> **`select m.username as username, t.name as teamName`** 이다.\n> **8.3절 끝에서 본** 방법이다.\n> **컬럼이 정확히 둘**이다.\n\n**`new` 로 뽑아도** 된다.\n\n> **5.5절의 그것**이다.\n> **결과가 같고 읽기도** 쉽다.\n> **중첩 프로젝션보다 예측 가능**하다.\n\n**중첩은 편할 때만** 쓴다.\n\n> **연관 표가 좁으면 손해가** 작다.\n> **넓으면 그냥 엔티티 조회와** 같다.\n> **재고 나 목록 화면에서 차이가** 크다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 중첩 인터페이스를 만든다\n\npublic interface NestedClosed {\n    String getUsername();\n\n    TeamInfo getTeam();\n\n    interface TeamInfo {\n        String getName();\n    }\n}\n\nList<NestedClosed> findNestedByAge(int age);\n\n@Test\n@Transactional\nvoid 중첩() {\n    em.clear();\n    List<NestedClosed> rows = memberRepository.findNestedByAge(10);\n    System.out.println(\"이름: \" + rows.get(0).getUsername());\n    System.out.println(\"팀:   \" + rows.get(0).getTeam().getName());\n}\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.team_id,\n        t1_0.created_by,\n        t1_0.created_date,\n        t1_0.last_modified_by,\n        t1_0.last_modified_date,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age=?\n이름: m1\n팀:   teamA\n\n--   member 는 username 하나다\n--   team 은 여섯 다 나왔다\n--   getName() 하나만 적었는데도\n\n\n-- 조인은 붙어 준다\n\n@Test\n@Transactional\nvoid N더하기1_없음() {\n    em.clear();\n    long n = counter.count(() -> {\n        for (NestedClosed r : memberRepository.findNestedByAge(10)) {\n            r.getTeam().getName();\n        }\n    });\n    System.out.println(\"쿼리 \" + n + \"개\");\n}\n\nHibernate: select m1_0.username, t1_0.team_id, ... from member m1_0\n           left join team t1_0 on t1_0.team_id=m1_0.team_id where m1_0.age=?\n쿼리 1개\n\n--   5.13절의 N+1 은 안 난다\n--   left join 이 자동이다\n\n\n-- 팀이 없으면\n\n@Test\n@Transactional\nvoid 팀_없음() {\n    em.persist(new Member(\"팀없음\", 10));\n    em.flush(); em.clear();\n\n    for (NestedClosed r : memberRepository.findNestedByAge(10)) {\n        System.out.println(r.getUsername() + \" / \" +\n                (r.getTeam() == null ? \"없음\" : r.getTeam().getName()));\n    }\n}\n\nHibernate: insert into member (...) values (?, ?, ?, ?, ?, ?, ?, ?)\nHibernate: select m1_0.username, t1_0.team_id, ...\n           from member m1_0 left join team t1_0 on ... where m1_0.age=?\nm1 / teamA\n팀없음 / 없음\n\n--   left join 이라 같이 나온다\n--   8.2절의 QBE 와 다르다\n\n\n-- 컬럼 수를 센다\n\n@Test\n@Transactional\nvoid 컬럼_수() {\n    record C(String name, Runnable r) {}\n    for (C c : List.of(\n            new C(\"엔티티\",     () -> memberRepository.findByAge(10)),\n            new C(\"평평\",       () -> memberRepository.findProjectionByAge(10)),\n            new C(\"중첩\",       () -> memberRepository.findNestedByAge(10)))) {\n        em.clear();\n        System.out.printf(\"%-8s %d개%n\", c.name(),\n                sqlCapture.columnCount(c.r()));\n    }\n}\n\n엔티티   8개\n평평     1개\n중첩     7개\n\n--   중첩이 엔티티에 가깝다\n\n\n-- 두 칸 내려간다\n\npublic interface DeepNested {\n    String getUsername();\n    TeamDeep getTeam();\n\n    interface TeamDeep {\n        String getName();\n        OfficeInfo getOffice();\n\n        interface OfficeInfo {\n            String getCity();\n        }\n    }\n}\n\n@Test\n@Transactional\nvoid 두_칸() {\n    em.clear();\n    memberRepository.findDeepByAge(10);\n}\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.team_id,\n        t1_0.created_by,\n        t1_0.created_date,\n        t1_0.last_modified_by,\n        t1_0.last_modified_date,\n        t1_0.name,\n        t1_0.office_id,\n        o1_0.office_id,\n        o1_0.address,\n        o1_0.city,\n        o1_0.floor,\n        o1_0.phone\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    left join\n        office o1_0 on o1_0.office_id=t1_0.office_id\n    where\n        m1_0.age=?\n\n--   getCity() 하나 적었는데 office 가 다 왔다\n--   컬럼이 13 개다\n--   깊을수록 넓어진다\n\n\n-- record 로 중첩해도 같다\n\npublic record NestedDto(String username, TeamDto team) {\n    public record TeamDto(String name) {}\n}\n\n@Test\n@Transactional\nvoid record_중첩() {\n    em.clear();\n    memberRepository.findNestedRecordByAge(10);\n}\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.team_id,\n        t1_0.created_by,\n        t1_0.created_date,\n        t1_0.last_modified_by,\n        t1_0.last_modified_date,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age=?\n\n--   8.4절의 클래스도 마찬가지다\n--   중첩이 문제지 타입이 아니다\n\n\n-- 평평하게 편다\n\n@Query(\"select m.username as username, t.name as teamName\"\n     + \" from Member m left join m.team t where m.age = :age\")\nList<FlatView> findFlatByAge(@Param(\"age\") int age);\n\npublic interface FlatView {\n    String getUsername();\n    String getTeamName();\n}\n\n@Test\n@Transactional\nvoid 평평하게() {\n    em.clear();\n    List<FlatView> rows = memberRepository.findFlatByAge(10);\n    System.out.println(rows.get(0).getUsername() + \" / \" +\n            rows.get(0).getTeamName());\n}\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age=?\nm1 / teamA\n\n--   컬럼이 둘이다\n--   7 이 2 가 됐다\n--   별칭이 게터 이름과 맞아야 한다 (8.3절)\n\n\n-- new 로 뽑아도 같다\n\n@Query(\"select new study.datajpa.dto.FlatDto(m.username, t.name)\"\n     + \" from Member m left join m.team t where m.age = :age\")\nList<FlatDto> findFlatDtoByAge(@Param(\"age\") int age);\n\nHibernate:\n    select\n        m1_0.username,\n        t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\n    where\n        m1_0.age=?\n\n--   5.5절의 new 다\n--   결과가 같다\n\n\n-- 네 방법을 나란히 둔다\n\n@Test\n@Transactional\nvoid 정리() {\n    record C(String name, Runnable r) {}\n    for (C c : List.of(\n            new C(\"엔티티\",  () -> memberRepository.findByAge(10)),\n            new C(\"중첩\",    () -> memberRepository.findNestedByAge(10)),\n            new C(\"두 칸\",   () -> memberRepository.findDeepByAge(10)),\n            new C(\"평평\",    () -> memberRepository.findFlatByAge(10)),\n            new C(\"new\",     () -> memberRepository.findFlatDtoByAge(10)))) {\n        em.clear();\n        System.out.printf(\"%-8s %2d개%n\", c.name(),\n                sqlCapture.columnCount(c.r()));\n    }\n}\n\n엔티티    8개\n중첩      7개\n두 칸    13개\n평평      2개\nnew       2개\n\n--   중첩은 엔티티와 비슷하다\n--   평평하게 펴야 준다\n\n\n-- 시간도 잰다\n\n@Test\n@Transactional\nvoid 시간() {\n    for (String kind : List.of(\"중첩\", \"평평\")) {\n        em.clear();\n        long t = System.nanoTime();\n        if (kind.equals(\"중첩\")) memberRepository.findNestedByAge(10);\n        else                     memberRepository.findFlatByAge(10);\n        System.out.printf(\"%-6s %d ms%n\", kind,\n                (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select m1_0.username, t1_0.team_id, ... left join team ...\n중첩   84 ms\nHibernate: select m1_0.username, t1_0.name from member m1_0 left join team ...\n평평   31 ms\n\n--   2만 건에서 세 배 가까이 차이다\n--   8.6절에서 마지막 수단을 본다",
+   "note": "**`getName()` 하나만 적었는데 `team` 컬럼 여섯이 다 나와 총 7컬럼**이다.\n\n**두 칸 내려가니 `office` 까지 통째로 와 13컬럼**이 됐다.\n\n**`record` 로 중첩해도 같다 — 중첩이 문제지 타입이** 아니다.\n\n**JPQL 별칭으로 평평하게 펴면 7 → 2컬럼**이다.\n\n**2만 건에서 중첩 84ms 대 평평 31ms** 다."
+  }
+ ],
+ "recap": [
+  "**루트만 컬럼을** 고른다.",
+  "**연관은 통째로** 온다.",
+  "**엔티티는 반쪽으로 못** 만든다.",
+  "**조인은 붙어** 준다.",
+  "**N+1 은 안** 난다.",
+  "**깊을수록** 넓어진다.",
+  "**타입이 아니라 중첩이** 문제다.",
+  "**평평하게 펴면** 준다.",
+  "**`new` 도** 같다."
+ ],
+ "drills": [
+  {
+   "task": "중첩 프로젝션을 만든다.",
+   "done_when": "연관 컬럼이 다 나오는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "두 칸 내려간다.",
+   "done_when": "컬럼이 더 느는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "평평한 뷰로 바꾼다.",
+   "done_when": "컬럼이 준 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "둘의 시간을 비교한다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "중첩 프로젝션에서 컬럼 선택은 어디까지 되나?",
+   "a": "루트까지만 되고 연관은 통째로 읽는다."
+  },
+  {
+   "q": "그 이유는?",
+   "a": "엔티티를 반쪽만 만들 수 없기 때문이다."
+  },
+  {
+   "q": "N+1 은 나나?",
+   "a": "안 난다. `left join` 이 자동으로 붙는다."
+  },
+  {
+   "q": "컬럼을 줄이려면?",
+   "a": "JPQL 별칭이나 `new` 로 평평하게 편다."
+  },
+  {
+   "q": "`record` 로 중첩하면 다른가?",
+   "a": "같다. 타입이 아니라 중첩이 문제다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "중첩 프로젝션",
+   "def": "연관 엔티티를 다시 프로젝션 타입으로 받는 구조."
+  },
+  {
+   "term": "평평한 뷰",
+   "def": "연관 값을 루트 수준 필드로 펴서 컬럼 선택을 유지한 프로젝션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Data JPA — Projections",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/repositories/projections.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  }
+ ]
+}
