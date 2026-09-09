@@ -1,0 +1,130 @@
+{
+ "book": "spring-security",
+ "id": "auth-events",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "인증 이벤트",
+ "summary": "성공과 실패가 이벤트다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이벤트 나무를 안다.",
+  "성공 이벤트 둘의 차이를 안다.",
+  "실패 종류를 구별해 받는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.5절에서 `ProviderManager` 가 이벤트를 낸다고** 했다. **받아 본다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이벤트 나무",
+   "ascii": "   the event tree, and who fires it\n\n   AbstractAuthenticationEvent\n     AuthenticationSuccessEvent          ProviderManager\n     InteractiveAuthenticationSuccessEvent  the filter, after saving\n     AbstractAuthenticationFailureEvent\n       BadCredentials, Locked, Disabled, Expired, ServiceException\n\n   two success events, and they mean different things",
+   "note": "**성공이 둘이고 뜻이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "받는 법",
+   "md": "```java\n@Component\npublic class AuthEventListener {\n\n    @EventListener\n    public void onSuccess(AuthenticationSuccessEvent event) {\n        log.info(\"success {}\", event.getAuthentication().getName());\n    }\n\n    @EventListener\n    public void onFailure(AbstractAuthenticationFailureEvent event) {\n        log.warn(\"failure {} {}\",\n                event.getAuthentication().getName(),\n                event.getException().getClass().getSimpleName());\n    }\n}\n```\n\n> **부모 타입으로 받으면 자식이 다** 온다.\n> **`AbstractAuthenticationFailureEvent` 하나로 다섯 종류를** 받는다.\n\n**실패 이벤트 종류**\n\n| 이벤트 | 언제 |\n|---|---|\n| `AuthenticationFailureBadCredentialsEvent` | 비밀번호 불일치, 없는 사용자 |\n| `AuthenticationFailureLockedEvent` | 계정 잠김 |\n| `AuthenticationFailureDisabledEvent` | 비활성 |\n| `AuthenticationFailureExpiredEvent` | 계정 만료 |\n| `AuthenticationFailureCredentialsExpiredEvent` | 비밀번호 만료 |\n| `AuthenticationFailureServiceExceptionEvent` | 시스템 오류 |\n\n> **4.4절에서 응답은 뭉뚱그렸지만 이벤트는** 구별한다.\n> **로그에는 진짜 이유가 남는다는 게** 이거다.\n\n**실패 이벤트에도 인증 객체가** 있다.\n\n> **`getAuthentication().getName()` 이 시도한 아이디**다.\n> **비밀번호는 `credentials` 에 아직** 있다.\n> **로그에 통째로 찍으면 비밀번호가** 샌다 — **이름만** 찍는다."
+  },
+  {
+   "type": "figure",
+   "caption": "성공 이벤트가 둘인 이유",
+   "ascii": "   why there are two success events\n\n   AuthenticationSuccessEvent\n     the credentials checked out\n     fired even for a basic auth request that saves nothing\n\n   InteractiveAuthenticationSuccessEvent\n     a human logged in and the session now holds it\n     this is the one a last login timestamp belongs to\n\n   count the first and you count every api call",
+   "note": "**첫째를 세면 API 호출까지** 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "어느 쪽을 들을까",
+   "md": "**마지막 로그인 시각을 기록**한다면\n\n> **`InteractiveAuthenticationSuccessEvent`** 다.\n> **첫째를 쓰면 기본 인증 API 호출마다 갱신**된다.\n> **3.3절에서 요청마다 인증한다고** 했다.\n\n**로그인 실패 횟수를 센다면**\n\n> **`AbstractAuthenticationFailureEvent`** 다.\n> **9.3절에서 잠금을 만든다.**\n\n**이벤트가 안 나올 때가** 있다.\n\n> **매니저를 직접 만들면 발행기를 안 물려 줄 수** 있다.\n>\n> ```java\n> @Bean\n> AuthenticationManager authenticationManager(\n>         DaoAuthenticationProvider provider,\n>         ApplicationEventPublisher publisher) {\n>     ProviderManager manager = new ProviderManager(provider);\n>     manager.setAuthenticationEventPublisher(\n>             new DefaultAuthenticationEventPublisher(publisher));\n>     return manager;\n> }\n> ```\n>\n> **4.3절에서 만든 매니저 빈이 그** 경우다.\n> **이벤트가 조용히 안 나오는데 아무도** 모른다.\n\n**동기 실행이다.**\n\n> **리스너가 느리면 로그인이** 느려진다.\n> **리스너에서 예외를 던지면 로그인이** 실패한다.\n> **`@Async` 를 붙이면 컨텍스트가** 없다(4.2절).\n> **필요하면 이벤트 값을 복사해서** 넘긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 리스너를 만든다 ---\n\n@Component\npublic class AuthEventListener {\n    @EventListener\n    public void onSuccess(AuthenticationSuccessEvent e) {\n        System.out.println(\">>> SUCCESS \" + e.getAuthentication().getName()\n                + \" (\" + e.getAuthentication().getClass().getSimpleName() + \")\");\n    }\n\n    @EventListener\n    public void onInteractive(InteractiveAuthenticationSuccessEvent e) {\n        System.out.println(\">>> INTERACTIVE \" + e.getAuthentication().getName()\n                + \" by \" + e.getGeneratedBy().getSimpleName());\n    }\n\n    @EventListener\n    public void onFailure(AbstractAuthenticationFailureEvent e) {\n        System.out.println(\">>> FAILURE \" + e.getAuthentication().getName()\n                + \" \" + e.getClass().getSimpleName()\n                + \" \" + e.getException().getClass().getSimpleName());\n    }\n}\n\n# --- 폼 로그인 ---\n\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\" -o /dev/null\n\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n>>> INTERACTIVE user@a.com by UsernamePasswordAuthenticationFilter\n\n#   둘 다 나온다\n\n#   순서는 SUCCESS 가 먼저다\n\n#   3.2절의 성공 처리 순서와 같다\n\n# --- 기본 인증 API ---\n\n$ for i in 1 2 3; do\n    curl -s -o /dev/null -u user@a.com:1234 localhost:8080/api/v1/orders\n  done\n\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n\n#   세 번이다\n\n#   INTERACTIVE 는 없다\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> INTERACTIVE\"\n0\n\n#   마지막 로그인 시각을 SUCCESS 로 찍으면\n\n#   API 호출마다 갱신된다\n\n# --- 기억하기로 되살아나면 ---\n\n$ grep -v JSESSIONID c.txt > closed.txt\n$ curl -s -o /dev/null -b closed.txt localhost:8080/orders\n\n>>> SUCCESS user@a.com (RememberMeAuthenticationToken)\n>>> INTERACTIVE user@a.com by RememberMeAuthenticationFilter\n\n#   둘 다 나온다\n\n#   토큰 타입이 다르다 (3.6절)\n\n#   \"마지막 로그인\" 에 이걸 넣을지는 정해야 한다\n\n# --- 실패들 ---\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=틀림&_csrf=$TOKEN\"\n\n>>> FAILURE user@a.com AuthenticationFailureBadCredentialsEvent\n    BadCredentialsException\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=nobody@a.com&password=x&_csrf=$TOKEN\"\n\n>>> FAILURE nobody@a.com AuthenticationFailureBadCredentialsEvent\n    BadCredentialsException\n\n#   4.4절대로 없는 사용자도 같은 종류다\n\nupdate member set locked = true where email = 'user@a.com';\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\n>>> FAILURE user@a.com AuthenticationFailureLockedEvent LockedException\n\n#   이건 구별된다\n\nupdate member set locked = false, active = false where email = 'user@a.com';\n\n>>> FAILURE user@a.com AuthenticationFailureDisabledEvent DisabledException\n\n#   응답은 셋 다 /login?error 다\n\n$ curl -is -b c.txt -X POST localhost:8080/login -d \"...\" | grep -i location\nLocation: http://localhost:8080/login?error\n\n#   응답은 뭉뚱그리고 이벤트는 구별한다\n\n# --- 비밀번호가 이벤트에 있다 ---\n\n@EventListener\npublic void unsafe(AbstractAuthenticationFailureEvent e) {\n    System.out.println(\">>> \" + e.getAuthentication());\n}\n\n>>> UsernamePasswordAuthenticationToken [Principal=user@a.com,\n    Credentials=[PROTECTED], Authenticated=false, ...]\n\n#   toString 은 가려 준다\n\n@EventListener\npublic void worse(AbstractAuthenticationFailureEvent e) {\n    System.out.println(\">>> \" + e.getAuthentication().getCredentials());\n}\n\n>>> 1234\n\n#   직접 꺼내면 나온다\n\n#   로그에 남기면 안 된다\n\n#   4.1절에서 지워지는 건 성공한 토큰이다\n\n# --- 매니저를 직접 만들면 ---\n\n@Bean\nAuthenticationManager authenticationManager(\n        UserDetailsService uds, PasswordEncoder encoder) {\n    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();\n    provider.setUserDetailsService(uds);\n    provider.setPasswordEncoder(encoder);\n    return new ProviderManager(provider);\n}\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login -d \"...\"\n\n>>> INTERACTIVE user@a.com by UsernamePasswordAuthenticationFilter\n\n$ ./gradlew bootRun 2>&1 | grep -c \">>> SUCCESS\"\n0\n$ ./gradlew bootRun 2>&1 | grep -c \">>> FAILURE\"\n0\n\n#   성공도 실패도 안 나온다\n\n#   발행기를 안 물려 줬다\n\n#   9.3절의 잠금이 조용히 안 돈다\n\nmanager.setAuthenticationEventPublisher(\n        new DefaultAuthenticationEventPublisher(publisher));\n\n>>> SUCCESS user@a.com (UsernamePasswordAuthenticationToken)\n>>> INTERACTIVE user@a.com by UsernamePasswordAuthenticationFilter\n\n#   돌아왔다\n\n# --- 리스너가 던지면 ---\n\n@EventListener\npublic void boom(AuthenticationSuccessEvent e) {\n    throw new IllegalStateException(\"리스너 폭발\");\n}\n\n$ curl -is -b c.txt -X POST localhost:8080/login -d \"...\" | head -1\n\nHTTP/1.1 500\n\njava.lang.IllegalStateException: 리스너 폭발\n  at ...ProviderManager.authenticate\n\n#   로그인이 실패한다\n\n#   동기 실행이라서다\n\n#   감사 로그를 남기다 로그인을 막을 수 있다\n\n#   try-catch 로 감싸 둔다\n\n# --- 테스트로 고정 ---\n\n@Test\nvoid 로그인_실패는_이벤트를_낸다() {\n    assertThatThrownBy(() -> manager.authenticate(\n            UsernamePasswordAuthenticationToken.unauthenticated(\n                    \"user@a.com\", \"틀림\")))\n            .isInstanceOf(BadCredentialsException.class);\n\n    assertThat(recorder.getFailures()).hasSize(1);\n    assertThat(recorder.getFailures().get(0).getAuthentication().getName())\n            .isEqualTo(\"user@a.com\");\n}\n\n$ ./gradlew test\n\n128 tests completed\n\nBUILD SUCCESSFUL\n\n# --- 다음 절에서 ---\n\n#   거부 이벤트를 듣는다",
+   "note": "**폼 로그인은 `SUCCESS` 와 `INTERACTIVE` 둘, 기본 인증 API 는 세 번 호출에 `SUCCESS` 만 세 번**이다.\n\n**잠김·비활성은 이벤트가 구별되는데 응답은 셋 다 `/login?error`** 다.\n\n**`getCredentials()` 를 직접 찍으면 비밀번호가** 그대로 나온다.\n\n**매니저를 직접 만들면 `SUCCESS`·`FAILURE` 가 0회**다 — 발행기를 안 물려 줬다.\n\n**리스너가 예외를 던지면 로그인이 500** 이다."
+  }
+ ],
+ "recap": [
+  "**성공 이벤트가** 둘이다.",
+  "**`AuthenticationSuccessEvent` 는 자격 확인**이다.",
+  "**`Interactive…` 는 사람이 로그인한 것**이다.",
+  "**API 호출은 첫째만** 낸다.",
+  "**실패는 여섯 종류로** 구별된다.",
+  "**응답은 뭉뚱그리고 이벤트는** 구별한다.",
+  "**실패 이벤트에 비밀번호가 아직** 있다.",
+  "**매니저를 직접 만들면 이벤트가 안** 나온다.",
+  "**리스너는 동기라 던지면 로그인이** 실패한다."
+ ],
+ "drills": [
+  {
+   "task": "성공·실패 리스너를 만든다.",
+   "done_when": "폼과 API 의 차이를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "계정을 잠그고 이벤트를 본다.",
+   "done_when": "종류가 구별되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "매니저 빈을 직접 만들어 본다.",
+   "done_when": "이벤트가 안 나오는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "리스너에서 예외를 던진다.",
+   "done_when": "로그인이 실패하는 것을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "성공 이벤트가 둘인 이유는?",
+   "a": "자격 확인과, 사람이 실제로 로그인한 것을 구별하려고다."
+  },
+  {
+   "q": "마지막 로그인 시각은 어느 것으로 찍나?",
+   "a": "`InteractiveAuthenticationSuccessEvent` 다."
+  },
+  {
+   "q": "실패 이벤트가 응답보다 자세한 이유는?",
+   "a": "응답은 감추고 운영자는 알아야 해서다."
+  },
+  {
+   "q": "매니저를 직접 만들면 왜 이벤트가 없나?",
+   "a": "`AuthenticationEventPublisher` 를 안 물려 줘서다."
+  },
+  {
+   "q": "리스너에서 예외를 던지면?",
+   "a": "동기 실행이라 로그인 자체가 실패한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "InteractiveAuthenticationSuccessEvent",
+   "def": "사람이 실제로 로그인해 컨텍스트가 저장된 뒤 필터가 내는 이벤트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Security — Authentication Events",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/events.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Framework — Application Events",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

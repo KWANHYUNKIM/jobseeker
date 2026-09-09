@@ -1,0 +1,115 @@
+{
+ "book": "docker",
+ "id": "image",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "이미지란 무엇인가",
+ "summary": "실행 파일이 아니라 파일 시스템의 스냅숏.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이미지가 무엇으로 이루어져 있는지 안다.",
+  "이미지가 실행 파일이 아니라는 것을 안다.",
+  "이미지 안을 직접 열어 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**\"이미지를 실행한다\" 는 말을 계속** 써 왔다. **그런데 이미지는 실행 파일이** 아니다.\n\n> **이미지는 파일 더미 + 설명서**다.\n> **파일 더미** — 컨테이너의 `/` 아래에 놓일 것들.\n> **설명서** — 무엇을 어떤 환경변수로 어느 디렉터리에서 실행할지."
+  },
+  {
+   "type": "figure",
+   "caption": "이미지를 열어 보면",
+   "ascii": "   nginx:1.27\n   +-----------------------------------------+\n   |  manifest.json                          |   무엇으로 이루어져 있나\n   |    - config digest                      |\n   |    - layer digests (ordered)            |\n   +-----------------------------------------+\n   |  config.json                            |   어떻게 실행하나\n   |    Env  [PATH=..., NGINX_VERSION=1.27]  |\n   |    Cmd  [\"nginx\", \"-g\", \"daemon off;\"]  |\n   |    WorkingDir  /                        |\n   |    User  (empty = root)                 |\n   +-----------------------------------------+\n   |  layer 1  (tar.gz)  debian rootfs       |   무엇이 들어 있나\n   |  layer 2  (tar.gz)  nginx binaries      |\n   |  layer 3  (tar.gz)  entrypoint scripts  |\n   +-----------------------------------------+\n\n   전부 합쳐서 그냥 파일이다. 실행 비트가 붙은 무언가가 아니다",
+   "note": "**`docker save` 로 tar 로 뽑으면 이 구조가 그대로** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 '스냅숏' 이라고 부르나",
+   "md": "**이미지 안에는 리눅스 배포판의 사용자 공간이 통째로** 들어 있다.\n\n```bash\n$ docker run --rm alpine ls /\nbin  dev  etc  home  lib  media  mnt  opt  proc  root\nrun  sbin  srv  sys  tmp  usr  var\n```\n\n**리눅스 루트 디렉터리 그대로**다. **다만 커널은** 없다(2.3절).\n\n| 이미지에 있는 것 | 이미지에 없는 것 |\n|---|---|\n| `/bin`, `/lib`, `/usr` 의 바이너리·라이브러리 | **커널** |\n| 설정 파일 (`/etc`) | **커널 모듈·드라이버** |\n| 내 애플리케이션 (`/app/app.jar`) | 실행 중인 프로세스 |\n| 실행 방법(config) | 데이터 (그건 볼륨으로, 8장) |\n\n> **그래서 \"우분투 이미지를 받았다\" 는 우분투를 깐 게** 아니다.\n> **우분투의 파일들을 받은** 것이고, **커널은 여전히 호스트 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "이미지는 읽기 전용이다",
+   "md": "**이게 이 장 전체의 축**이다.\n\n```\n이미지  ->  읽기 전용. 절대 안 바뀐다\n컨테이너 ->  그 위에 쓰기 레이어 한 겹 (3.3절)\n```\n\n**컨테이너 안에서 파일을 지워도 이미지는 안** 바뀐다.\n\n```bash\n$ docker run --rm alpine rm -rf /bin/ls\n$ docker run --rm alpine ls /        # 멀쩡하다\nbin  dev  etc  home ...\n```\n\n> **두 번째 컨테이너는 원본 이미지에서 다시** 시작했다.\n> **첫 컨테이너의 삭제는 그 컨테이너의 쓰기 레이어에만 기록됐고, `--rm` 으로 같이** 사라졌다.\n\n**이 성질 때문에**:\n\n| 결과 | 어디서 |\n|---|---|\n| 같은 이미지로 몇 개를 띄워도 디스크가 안 는다 | 3.3절 |\n| 이미지를 고치려면 다시 빌드해야 한다 | 5장 |\n| 데이터를 컨테이너 안에 두면 안 된다 | 8.1절 |"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "docker commit 으로 이미지를 만들지 않는다",
+   "md": "**컨테이너를 고쳐서 이미지로 굳히는 명령이** 있다.\n\n```bash\ndocker exec -it web sh\n# apt install vim ... 이것저것 설치\ndocker commit web myimage:fixed   # 굳힌다\n```\n\n**되긴 된다.** **그런데 하지** 않는다.\n\n| 문제 | 왜 |\n|---|---|\n| **재현이 안 된다** | 무엇을 했는지 기록이 없다. 6개월 뒤 아무도 모른다 |\n| **리뷰가 안 된다** | Dockerfile 이면 diff 가 남는다 |\n| **커진다** | 설치 과정의 캐시·임시 파일이 다 들어간다 |\n| **버전 관리가 안 된다** | Git 에 못 올린다 |\n\n> **1.2절에서 \"환경이 문서가 아니라 코드가 된다\" 고 한 게 도커의 핵심 가치**다.\n> **`commit` 은 그걸 다시 문서 없는 상태로** 되돌린다.\n>\n> **딱 한 자리에서만 쓸모가 있다** — 장애 난 컨테이너를 통째로 떠서 나중에 분석할 때."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이미지를 풀어서 안을 직접 본다",
+   "sql": "# --- 이미지 목록과 크기 ---\n\n$ docker images alpine\nREPOSITORY   TAG       IMAGE ID       CREATED       SIZE\nalpine       3.20      b0c9d60fc5e3   5 weeks ago   8.83MB\n\n#   8.83MB 다. 리눅스 사용자 공간 전체가 이만큼이다\n\n\n# --- tar 로 뽑아서 풀어 본다 ---\n\n$ docker save alpine:3.20 -o alpine.tar\n$ mkdir -p /tmp/alpine && tar -xf alpine.tar -C /tmp/alpine\n$ ls /tmp/alpine\nblobs  index.json  manifest.json  oci-layout\n\n$ cat /tmp/alpine/manifest.json | python3 -m json.tool\n[\n    {\n        \"Config\": \"blobs/sha256/b0c9d60fc5e3...\",\n        \"RepoTags\": [\"alpine:3.20\"],\n        \"Layers\": [\"blobs/sha256/63ca1fbb43ae...\"]\n    }\n]\n\n#   레이어가 하나뿐이다. 알파인은 단순하다\n\n\n# --- config 를 읽으면 '어떻게 실행하나' 가 있다 ---\n\n$ python3 -c \"import json;d=json.load(open('/tmp/alpine/blobs/sha256/b0c9d60fc5e3'));print(json.dumps(d['config'],indent=1))\"\n{\n \"Env\": [\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"],\n \"Cmd\": [\"/bin/sh\"],\n \"WorkingDir\": \"\"\n}\n\n#   docker run alpine 이 sh 를 띄우는 이유가 여기 적혀 있다\n\n\n# --- 레이어는 그냥 tar 다 ---\n\n$ tar -tf /tmp/alpine/blobs/sha256/63ca1fbb43ae | head -12\nbin/\nbin/arch\nbin/ash\nbin/base64\nbin/bbconfig\nbin/busybox\nbin/cat\n...\netc/\netc/alpine-release\netc/apk/\n\n#   리눅스 루트 디렉터리가 통째로 들어 있다. 커널은 없다\n\n$ tar -tf /tmp/alpine/blobs/sha256/63ca1fbb43ae | grep -c '^'\n565\n\n$ tar -tf /tmp/alpine/blobs/sha256/63ca1fbb43ae | grep -E 'vmlinuz|boot/' | wc -l\n0\n\n#   커널 이미지가 하나도 없다\n\n\n# --- 이미지는 안 바뀐다 ---\n\n$ docker run --rm alpine:3.20 sh -c 'rm -rf /bin/ls && ls / 2>&1 | head -1'\nsh: ls: not found\n\n$ docker run --rm alpine:3.20 ls / | head -1\nbin\n\n#   두 번째는 멀쩡하다. 원본 이미지에서 다시 시작했으므로\n\n$ rm -rf /tmp/alpine alpine.tar"
+  }
+ ],
+ "recap": [
+  "이미지는 실행 파일이 아니라 '파일 더미 + 실행 설명서(config)' 다.",
+  "안에는 리눅스 사용자 공간이 통째로 들어 있고 커널은 없다.",
+  "이미지는 읽기 전용이다. 컨테이너에서 지워도 원본은 안 바뀐다.",
+  "docker commit 으로 이미지를 만들지 않는다 — 재현·리뷰·버전 관리를 전부 잃는다."
+ ],
+ "drills": [
+  {
+   "task": "`docker save alpine:3.20 -o alpine.tar` 로 뽑아 풀고 manifest.json 과 config 를 읽어 본다.",
+   "done_when": "Cmd 가 [\"/bin/sh\"] 인 것을 확인하고, 그것이 `docker run alpine` 의 동작과 같다는 것을 안다.",
+   "minutes": 8
+  },
+  {
+   "task": "레이어 tar 안에 커널(`vmlinuz`, `boot/`)이 있는지 찾아본다.",
+   "done_when": "하나도 없는 것을 확인한다.",
+   "minutes": 3
+  },
+  {
+   "task": "컨테이너 안에서 `/bin/ls` 를 지운 뒤, 새 컨테이너를 띄워 멀쩡한지 확인한다.",
+   "done_when": "이미지가 안 바뀐다는 것을 눈으로 본다.",
+   "minutes": 3
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이미지를 한 줄로 정의하면.",
+   "a": "컨테이너의 루트 파일 시스템이 될 레이어들과, 어떻게 실행할지 적은 config 의 묶음."
+  },
+  {
+   "q": "우분투 이미지를 받으면 우분투를 깐 것인가.",
+   "a": "아니다. 우분투의 사용자 공간 파일들을 받은 것이고 커널은 호스트 것을 쓴다."
+  },
+  {
+   "q": "docker commit 을 쓰지 않는 이유 세 가지.",
+   "a": "재현이 안 되고, 리뷰(diff)가 안 되고, 불필요한 파일이 들어가 커진다. 버전 관리도 안 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "manifest",
+   "what": "이미지가 어떤 config 와 어떤 레이어로 이루어졌는지 적은 목록."
+  },
+  {
+   "term": "config",
+   "what": "Env·Cmd·Entrypoint·WorkingDir·User 등 실행 방법을 적은 JSON."
+  },
+  {
+   "term": "루트 파일 시스템",
+   "en": "rootfs",
+   "what": "컨테이너의 / 아래에 놓이는 파일 전체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "OCI — Image Specification",
+   "url": "https://github.com/opencontainers/image-spec/blob/main/spec.md",
+   "publisher": "Open Container Initiative"
+  },
+  {
+   "title": "Docker Docs — docker save",
+   "url": "https://docs.docker.com/reference/cli/docker/image/save/",
+   "publisher": "Docker"
+  }
+ ]
+}

@@ -578,7 +578,7 @@
           "title": "정리",
           "summary": "인가가 실패하는 다섯 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -593,7 +593,7 @@
           "title": "인증 이벤트",
           "summary": "성공과 실패가 이벤트다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",

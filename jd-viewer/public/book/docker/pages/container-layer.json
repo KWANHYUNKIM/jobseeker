@@ -1,0 +1,112 @@
+{
+ "book": "docker",
+ "id": "container-layer",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "컨테이너는 이미지 + 쓰기 레이어",
+ "summary": "같은 이미지로 열 개를 띄워도 디스크는 한 벌.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "컨테이너가 이미지에 무엇을 더한 것인지 안다.",
+  "쓰기 레이어의 수명을 안다.",
+  "컨테이너가 왜 가벼운지 숫자로 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절의 레이어는 전부 읽기 전용**이었다. **그런데 컨테이너 안에서는 파일을 쓸 수** 있다.\n\n> **맨 위에 쓰기 가능한 레이어 한 겹을 더 얹기** 때문이다.\n> **컨테이너 = 이미지(읽기 전용 레이어들) + 쓰기 레이어 한 겹 + namespace + cgroup.**"
+  },
+  {
+   "type": "figure",
+   "caption": "컨테이너 세 개가 이미지 하나를 나눠 쓴다",
+   "ascii": "   container A        container B        container C\n   -----------        -----------        -----------\n   writable layer     writable layer     writable layer      <- each has its own\n   (a few KB)         (a few KB)         (a few KB)\n   ==================================================\n                  nginx:1.27 layers                          <- shared, read-only\n                  192MB, stored once\n\n   docker run x3  ->  disk grows by kilobytes, not by 576MB",
+   "note": "**2.2절에서 VM 대비 밀도가 높다고 한 이유가 이것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "쓰기 레이어의 수명은 컨테이너의 수명이다",
+   "md": "**이 한 줄이 8장 전체의 전제**다.\n\n| 명령 | 쓰기 레이어 |\n|---|---|\n| `docker stop` / `start` | **남는다.** 안에서 만든 파일 그대로 |\n| `docker restart` | **남는다** |\n| `docker rm` | **사라진다** |\n| `docker run` 을 다시 침 | **새 컨테이너 = 새 쓰기 레이어.** 이전 것과 무관 |\n\n**그래서 흔한 사고가** 이것이다.\n\n```bash\ndocker run -d --name db postgres:16      # 데이터 쌓임\ndocker rm -f db                          # 이미지 업그레이드하려고\ndocker run -d --name db postgres:16.4    # 데이터가 없다\n```\n\n> **컨테이너를 지운 게 아니라 데이터베이스를** 지운 것이다.\n> **8.5절에서 이걸 볼륨으로 막는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "'컨테이너 크기' 를 보는 법",
+   "md": "**`docker ps -s` 가 두 숫자를 준다.**\n\n```\nSIZE\n1.2MB (virtual 193MB)\n```\n\n| 숫자 | 뜻 |\n|---|---|\n| **앞 (SIZE)** | **쓰기 레이어만.** 이 컨테이너가 실제로 더 먹는 디스크 |\n| **뒤 (virtual)** | 이미지까지 합친 값. 여러 컨테이너가 나눠 쓰므로 **더하면 안 된다** |\n\n> **`docker ps -s` 는 느리다** — 레이어를 실제로 훑는다. 컨테이너가 많으면 몇 초 걸린다.\n\n**앞 숫자가 계속 크면** — **애플리케이션이 컨테이너 안에 뭔가를 쌓고** 있다는 뜻이다. **로그 파일이 대부분**이다(6.4절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "쓰기 레이어는 느리다",
+   "md": "**overlayfs 의 copy-up**(3.2절)**때문**이다.\n\n| 작업 | 컨테이너 쓰기 레이어 | 볼륨(8.2절) |\n|---|---|---|\n| 새 파일 쓰기 | 보통 |  빠름 |\n| **기존 큰 파일 수정** | **통째 복사 후 수정** | 빠름 |\n| **DB 데이터 파일** | **최악** | 이것 때문에 볼륨이 있다 |\n\n**그래서 DB 컨테이너는 볼륨 없이 쓰면** 안 된다. **데이터가 사라지는 문제만이 아니라 느리다.**\n\n```bash\n# 이렇게 하지 않는다\ndocker run -d postgres:16\n\n# 이렇게 한다 (8.5절)\ndocker run -d -v pgdata:/var/lib/postgresql/data postgres:16\n```\n\n> **공식 postgres 이미지는 사실 볼륨을 안 줘도 익명 볼륨을 자동으로** 만든다. **그래서 데이터는 남지만, 그 볼륨이 어디 있는지 아무도** 모른다(8.2절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "컨테이너 열 개를 띄워도 디스크가 안 는다",
+   "sql": "# --- 시작 상태 ---\n\n$ docker system df\nTYPE          TOTAL   ACTIVE   SIZE      RECLAIMABLE\nImages        1       0        192.4MB   192.4MB\nContainers    0       0        0B        0B\n\n\n# --- nginx 컨테이너 10개 ---\n\n$ for i in $(seq 1 10); do docker run -d --name web$i nginx:1.27 >/dev/null; done\n$ docker ps -q | wc -l\n10\n\n$ docker system df\nTYPE          TOTAL   ACTIVE   SIZE      RECLAIMABLE\nImages        1       1        192.4MB   0B\nContainers    10      10       11.5kB    0B\n\n#   컨테이너 10개가 합쳐서 11.5kB 다\n#   이미지 192MB 는 한 벌 그대로다\n\n\n# --- 컨테이너마다의 크기 ---\n\n$ docker ps -s --format 'table {{.Names}}\\t{{.Size}}' | head -4\nNAMES   SIZE\nweb10   1.15kB (virtual 192MB)\nweb9    1.15kB (virtual 192MB)\nweb8    1.15kB (virtual 192MB)\n\n#   virtual 을 더하면 1.9GB 지만 실제로는 192MB 다\n\n\n# --- 한 컨테이너에만 파일을 쓴다 ---\n\n$ docker exec web1 dd if=/dev/zero of=/tmp/big bs=1M count=50 2>/dev/null\n$ docker ps -s --format 'table {{.Names}}\\t{{.Size}}' | grep -E 'web1$|web2$'\nweb1    52.4MB (virtual 245MB)\nweb2    1.15kB (virtual 192MB)\n\n#   web1 만 커졌다. 쓰기 레이어가 컨테이너마다 따로이므로\n\n$ docker exec web2 ls /tmp\n#   비어 있다. web1 이 쓴 파일은 web1 것이다\n\n\n# --- stop/start 는 살아남고 rm 은 안 살아남는다 ---\n\n$ docker restart web1 >/dev/null\n$ docker exec web1 ls -la /tmp/big\n-rw-r--r-- 1 root root 52428800 Sep  9 20:14 /tmp/big\n\n#   재시작해도 남아 있다\n\n$ docker rm -f web1 >/dev/null\n$ docker run -d --name web1 nginx:1.27 >/dev/null\n$ docker exec web1 ls /tmp\n\n#   비어 있다. 새 컨테이너는 새 쓰기 레이어다\n\n\n# --- 정리 ---\n\n$ docker rm -f $(docker ps -aq) >/dev/null\n$ docker system df\nTYPE          TOTAL   ACTIVE   SIZE      RECLAIMABLE\nImages        1       0        192.4MB   192.4MB\nContainers    0       0        0B        0B\n\n#   컨테이너를 지우니 쓰기 레이어가 전부 사라졌다"
+  }
+ ],
+ "recap": [
+  "컨테이너 = 읽기 전용 이미지 레이어들 + 자기만의 쓰기 레이어 한 겹.",
+  "같은 이미지로 열 개를 띄워도 디스크는 이미지 한 벌 + 컨테이너별 킬로바이트다.",
+  "쓰기 레이어의 수명은 컨테이너의 수명이다. rm 하면 안에서 만든 파일도 같이 사라진다.",
+  "쓰기 레이어는 copy-up 때문에 느리다. DB 데이터는 반드시 볼륨에 둔다."
+ ],
+ "drills": [
+  {
+   "task": "nginx 컨테이너 다섯 개를 띄우고 `docker system df` 로 Containers 의 SIZE 를 확인한다.",
+   "done_when": "이미지 크기는 그대로고 컨테이너 합계가 킬로바이트인 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "한 컨테이너에만 50MB 파일을 만들고 `docker ps -s` 로 그 컨테이너만 커지는 것을 확인한다.",
+   "done_when": "다른 컨테이너의 SIZE 가 그대로인 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "파일을 만든 컨테이너를 restart 한 뒤 확인하고, rm 후 같은 이름으로 다시 띄워 확인한다.",
+   "done_when": "restart 후에는 남고 rm 후에는 사라지는 것을 본다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`docker ps -s` 의 두 숫자는 각각 무엇인가.",
+   "a": "앞은 쓰기 레이어 크기(이 컨테이너가 실제로 더 먹는 디스크), 뒤(virtual)는 이미지를 합친 값이라 더하면 안 된다."
+  },
+  {
+   "q": "컨테이너 안에서 만든 파일은 언제 사라지나.",
+   "a": "docker rm 할 때. stop/start/restart 로는 안 사라진다."
+  },
+  {
+   "q": "DB 데이터를 컨테이너 안에 두면 안 되는 이유 두 가지.",
+   "a": "컨테이너를 지우면 사라지고, copy-up 때문에 느리다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "쓰기 레이어",
+   "en": "writable layer",
+   "what": "컨테이너마다 하나씩 얹히는 최상단 레이어. 컨테이너와 수명이 같다."
+  },
+  {
+   "term": "익명 볼륨",
+   "en": "anonymous volume",
+   "what": "이미지의 VOLUME 지시로 자동 생성되는 이름 없는 볼륨. 8.2절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Storage drivers",
+   "url": "https://docs.docker.com/engine/storage/drivers/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Manage data in Docker",
+   "url": "https://docs.docker.com/engine/storage/",
+   "publisher": "Docker"
+  }
+ ]
+}

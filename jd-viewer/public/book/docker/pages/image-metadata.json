@@ -1,0 +1,138 @@
+{
+ "book": "docker",
+ "id": "image-metadata",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "이미지 메타데이터",
+ "summary": "inspect 가 알려 주는 것들.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "이미지의 config 를 읽을 줄 안다.",
+  "history 로 어떻게 만들어졌는지 읽는다.",
+  "라벨로 이미지에 정보를 남긴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**남이 만든 이미지를 받았다.** **무엇을 어떻게 실행하는지, 포트는 뭘 여는지, 어디에 데이터를 쓰는지를 어떻게 아나.**\n\n> **문서를 찾기 전에 이미지에게 직접** 묻는다. **거의 다 적혀** 있다."
+  },
+  {
+   "type": "table",
+   "caption": "이미지에게 묻는 다섯 가지",
+   "columns": [
+    "묻는 것",
+    "명령"
+   ],
+   "rows": [
+    [
+     "**무엇으로 뜨나**",
+     "`docker inspect -f '{{.Config.Entrypoint}} {{.Config.Cmd}}' <이미지>`"
+    ],
+    [
+     "**어떤 환경변수가 있나**",
+     "`docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' <이미지>`"
+    ],
+    [
+     "**어느 포트를 여나**",
+     "`docker inspect -f '{{.Config.ExposedPorts}}' <이미지>`"
+    ],
+    [
+     "**어디에 데이터를 쓰나**",
+     "`docker inspect -f '{{.Config.Volumes}}' <이미지>`"
+    ],
+    [
+     "**누구로 도나**",
+     "`docker inspect -f '{{.Config.User}}' <이미지>` (비어 있으면 root)"
+    ]
+   ],
+   "note": "**마지막이 보안 점검의 첫 줄**이다(10.6절). **비어 있으면 root 로 돈다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "history 는 Dockerfile 을 거의 복원해 준다",
+   "md": "**`docker history` 는 레이어마다 어떤 명령으로 만들어졌는지를** 보여 준다.\n\n```bash\ndocker history --no-trunc --format 'table {{.Size}}\\t{{.CreatedBy}}' myapp:1.4\n```\n\n**읽을 때 세 가지를** 본다.\n\n| 볼 것 | 왜 |\n|---|---|\n| **큰 레이어** | 이미지가 왜 큰지가 여기서 바로 보인다(5.8절) |\n| **`COPY` 위치** | 자주 바뀌는 것이 앞에 있으면 캐시가 매번 깨진다(5.6절) |\n| **의심스러운 RUN** | `curl ... | sh` 같은 줄. 남의 이미지를 쓸 때 |\n\n**주의**: **`docker pull` 로 받은 이미지는 `CreatedBy` 가 `<missing>` 인 줄이 많다** — 레이어의 히스토리가 로컬에 다 안 온다. **내가 빌드한 것은 전부 보인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "라벨로 '이 이미지가 무엇인지' 를 남긴다",
+   "md": "**운영에서 이미지를 보고 \"이게 어느 커밋이지\" 를 되찾을 수 있어야** 한다(11.4절).\n\n```dockerfile\nLABEL org.opencontainers.image.source=\"https://github.com/acme/shop\"\nLABEL org.opencontainers.image.revision=\"a1b2c3d\"\nLABEL org.opencontainers.image.version=\"1.4.2\"\nLABEL org.opencontainers.image.created=\"2026-09-09T10:00:00Z\"\n```\n\n**읽는 법**:\n\n```bash\ndocker inspect -f '{{json .Config.Labels}}' myapp:1.4 | python3 -m json.tool\n```\n\n> **OCI 표준 라벨 이름을 쓰면 GitHub·레지스트리 UI 가 알아서 링크를** 걸어 준다.\n> **11.2절의 GitHub Actions 에서 이 값들을 자동으로 채운다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "EXPOSE 는 포트를 열지 않는다",
+   "md": "**이름이 헷갈리게 지어져** 있다.\n\n```dockerfile\nEXPOSE 8080\n```\n\n| 하는 일 | 안 하는 일 |\n|---|---|\n| **문서다.** \"이 이미지는 8080 을 쓴다\" 는 표시 | **포트를 안 연다** |\n| `docker run -P` (대문자)가 이걸 보고 임의 포트에 매핑 | `-p` 없이 밖에서 붙게 해 주지 **않는다** |\n\n```bash\n$ docker run -d --name web nginx:1.27      # EXPOSE 80 이 이미지에 있다\n$ curl localhost:80\ncurl: (7) Failed to connect to localhost port 80: Connection refused\n\n$ docker run -d -p 8080:80 nginx:1.27      # 이래야 열린다\n```\n\n> **6.1절에서 다시** 본다. **`EXPOSE` 는 사람과 `-P` 를 위한 메모**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "postgres 이미지에게 직접 물어본다",
+   "sql": "$ docker pull postgres:16 >/dev/null\n\n# --- 무엇으로 뜨나 ---\n\n$ docker inspect -f 'entrypoint={{.Config.Entrypoint}} cmd={{.Config.Cmd}}' postgres:16\nentrypoint=[docker-entrypoint.sh] cmd=[postgres]\n\n#   docker-entrypoint.sh postgres 로 뜬다 (5.5절)\n\n\n# --- 환경변수 ---\n\n$ docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' postgres:16\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nGOSU_VERSION=1.17\nLANG=en_US.utf8\nPG_MAJOR=16\nPG_VERSION=16.4-1.pgdg120+1\nPGDATA=/var/lib/postgresql/data\n\n#   PGDATA 가 어디인지 여기 적혀 있다. 8.5절에서 이 경로에 볼륨을 붙인다\n\n\n# --- 포트와 볼륨 ---\n\n$ docker inspect -f 'ports={{.Config.ExposedPorts}} volumes={{.Config.Volumes}}' postgres:16\nports=map[5432/tcp:{}] volumes=map[/var/lib/postgresql/data:{}]\n\n#   VOLUME 이 선언돼 있다 -> 안 붙여도 익명 볼륨이 생긴다 (3.3절의 함정)\n\n\n# --- 누구로 도나 ---\n\n$ docker inspect -f 'user=[{{.Config.User}}]' postgres:16\nuser=[]\n\n#   비어 있다 = root 로 시작한다\n#   (엔트리포인트 안에서 gosu 로 postgres 사용자로 내려간다)\n\n$ docker run --rm postgres:16 id\nuid=0(root) gid=0(root) groups=0(root)\n\n\n# --- 어떻게 만들어졌나 ---\n\n$ docker history postgres:16 --format 'table {{.Size}}\\t{{.CreatedBy}}' | head -8\nSIZE      CREATED BY\n0B        CMD [\"postgres\"]\n0B        EXPOSE map[5432/tcp:{}]\n0B        ENTRYPOINT [\"docker-entrypoint.sh\"]\n0B        COPY docker-entrypoint.sh /usr/local/bin/ # buildkit\n0B        VOLUME [/var/lib/postgresql/data]\n32.8kB    RUN /bin/sh -c mkdir -p \"$PGDATA\" && chown -R postgres...\n169MB     RUN /bin/sh -c set -ex; ... apt-get install -y postgresql-$PG_MAJOR\n\n#   169MB 짜리 한 줄이 이미지 크기의 대부분이다\n\n\n# --- 내가 만든 이미지에 라벨을 넣어 본다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM alpine:3.20\nLABEL org.opencontainers.image.source=\"https://github.com/acme/shop\"\nLABEL org.opencontainers.image.revision=\"a1b2c3d\"\nCMD [\"echo\", \"hi\"]\nEOF\n\n$ docker build -q -t labeled .\n$ docker inspect -f '{{json .Config.Labels}}' labeled | python3 -m json.tool\n{\n    \"org.opencontainers.image.revision\": \"a1b2c3d\",\n    \"org.opencontainers.image.source\": \"https://github.com/acme/shop\"\n}\n\n#   운영에서 이미지를 보고 커밋을 되찾을 수 있다 (11.4절)\n\n$ docker rmi labeled >/dev/null && rm Dockerfile"
+  }
+ ],
+ "recap": [
+  "이미지의 config 에 시작 명령·환경변수·포트·볼륨·사용자가 다 적혀 있다. 문서보다 이걸 먼저 본다.",
+  "User 가 비어 있으면 root 로 돈다. 보안 점검의 첫 줄이다.",
+  "docker history 로 큰 레이어와 COPY 위치와 의심스러운 RUN 을 본다.",
+  "OCI 표준 라벨로 소스·커밋·버전을 남겨 두면 운영에서 되찾을 수 있다.",
+  "EXPOSE 는 포트를 열지 않는다. 문서와 -P 를 위한 메모다."
+ ],
+ "drills": [
+  {
+   "task": "`postgres:16` 이미지에서 PGDATA 환경변수와 VOLUME 선언을 찾아본다.",
+   "done_when": "/var/lib/postgresql/data 라는 값을 두 곳에서 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "자주 쓰는 이미지 셋의 `.Config.User` 를 확인한다.",
+   "done_when": "몇 개가 root 로 도는지 세어 본다.",
+   "hint": "nginx·postgres·redis 를 비교해 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "`docker history` 로 어떤 이미지의 가장 큰 레이어를 찾고 그 명령이 무엇인지 읽는다.",
+   "done_when": "이미지 크기의 대부분을 차지하는 한 줄을 지목할 수 있다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "남이 만든 이미지가 어느 경로에 데이터를 쓰는지 어떻게 아나.",
+   "a": "`docker inspect -f '{{.Config.Volumes}}'`. VOLUME 선언이 보인다."
+  },
+  {
+   "q": "EXPOSE 8080 이 하는 일은.",
+   "a": "문서 역할과 `-P` 의 대상이 되는 것. 포트를 실제로 열지는 않는다."
+  },
+  {
+   "q": "pull 한 이미지의 history 에 `<missing>` 이 많은 이유는.",
+   "a": "레이어의 빌드 히스토리가 로컬에 전부 오지 않기 때문. 직접 빌드한 이미지는 전부 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "라벨",
+   "en": "label",
+   "what": "이미지·컨테이너에 붙이는 키-값 메타데이터. OCI 표준 키를 쓰면 도구들이 알아본다."
+  },
+  {
+   "term": "ExposedPorts",
+   "what": "이미지가 쓴다고 선언한 포트 목록. 실제 개방과는 무관하다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — docker image inspect",
+   "url": "https://docs.docker.com/reference/cli/docker/image/inspect/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "OCI — Annotations (표준 라벨)",
+   "url": "https://github.com/opencontainers/image-spec/blob/main/annotations.md",
+   "publisher": "Open Container Initiative"
+  }
+ ]
+}

@@ -1,0 +1,120 @@
+{
+ "book": "spring-security",
+ "id": "arch-review",
+ "no": "8.9",
+ "chapter": 8,
+ "title": "정리",
+ "summary": "인가가 실패하는 다섯 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "거부 한 번의 전 구간을 잇는다.",
+  "다섯 자리를 층으로 정리한다.",
+  "8장이 만든 것을 센다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장이 규칙을 만들었고 8장은 그 판단을** 열었다."
+  },
+  {
+   "type": "figure",
+   "caption": "거부 한 번의 전 구간",
+   "ascii": "   one denied request, all the way down\n\n   GET /admin/panel as a plain user\n     filter 15  AuthorizationFilter\n       RequestMatcherDelegatingAuthorizationManager\n         rule 4 matches   admin paths\n           AuthorityAuthorizationManager  ROLE_ADMIN\n             the token holds ROLE_USER  ->  granted false\n       publish AuthorizationDeniedEvent\n       throw AccessDeniedException\n     filter 14  ExceptionTranslationFilter catches it\n       not anonymous, not remember me  ->  403",
+   "note": "**객체 다섯이 한 요청에** 관여한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "8장의 지도",
+   "md": "| 객체 | 하는 일 | 절 |\n|---|---|---|\n| `AuthorizationFilter` | 묻고 알리고 던진다 | 8.3 |\n| `RequestMatcherDelegating…` | 규칙 목록에서 하나를 고른다 | 8.1 |\n| `AuthorityAuthorizationManager` | 문자열을 비교한다 | 8.1 |\n| `GrantedAuthority` | 그 문자열 | 8.2 |\n| `…MethodInterceptor` | 메서드 쪽의 같은 일 | 8.4 |\n\n**4.8절과 대칭**이다.\n\n> **인증은 아홉 객체, 인가는 다섯**이다.\n> **인가가 더 단순한데 더 자주** 틀린다.\n> **인증은 실패하면 못 들어가고 인가는 실패하면 들어가지기** 때문이다.\n\n**직접 만들 자리**\n\n| 필요 | 만들 것 | 절 |\n|---|---|---|\n| 인프라 조건 | `AuthorizationManager` | 8.5 |\n| 반복되는 표현식 | 메타 애너테이션 | 8.5 |\n| 소유권 | 조회 조건 | 8.6 |\n| 자주 바뀌는 규칙 | DB 표 | 8.7 |"
+  },
+  {
+   "type": "figure",
+   "caption": "층으로 본 다섯 자리",
+   "ascii": "   the five places authorization breaks, by layer\n\n   rules      no catch all, or a broader rule above\n   wiring     the annotation never enabled\n   proxy      a self call, a private or final method\n   strings    a typo in an expression or an authority name\n   data       a role that grants nothing, or a stale session\n\n   the first four are code, the fifth one only shows in production",
+   "note": "**다섯째만 운영에서** 드러난다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "데이터 층이 남는다",
+   "md": "**앞의 넷은 테스트가** 잡는다.\n\n> **8.8절의 인가표와 훑기가 규칙·배선·프록시·문자열을** 덮는다.\n> **규칙을 지우면 빨간 막대가** 난다.\n\n**다섯째는 다르다.**\n\n| 증상 | 원인 |\n|---|---|\n| 특정 계정만 막힌다 | 그 역할에 권한 행이 없다 |\n| 권한을 줬는데 안 된다 | 세션이 옛것이다 (5.1절) |\n| 어제는 됐는데 오늘 안 된다 | 누가 행을 지웠다 |\n| 테스트는 통과한다 | 시드와 운영이 다르다 (8.7절) |\n\n> **넷 다 코드가 멀쩡**하다.\n> **운영 DB 를 봐야** 안다.\n\n**그래서 이벤트가 필요하다.**\n\n> **누가 어디서 왜 막혔는지 남겨** 둔다.\n> **8.3절에서 인가 필터가 이벤트를 낸다고** 했다.\n> **9장이 그 얘기**다.\n\n**빚 표**\n\n| 빚 | 상태 |\n|---|---|\n| 인증 없이 주문이 200 | 갚음 |\n| API 가 401 이 아니라 302 | 갚음 |\n| CSRF | 갚음 |\n| 인가 규칙이 하나뿐 | 갚음 |\n| 직접 만든 로그인 방식 | 10장 |\n| 비동기 로그인의 302 | 11.3 |\n\n> **남은 둘은 실전 두 장**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 거부 한 번을 TRACE 로 ---\n\nlogging.level.org.springframework.security=TRACE\n\n$ curl -i -b user.txt localhost:8080/admin/panel\n\nHTTP/1.1 403\nContent-Type: application/problem+json\n\n{\"type\":\"about:blank\",\"title\":\"Forbidden\",\"status\":403,\n \"detail\":\"forbidden\",\"instance\":\"/admin/panel\"}\n\nDEBUG FilterChainProxy : Securing GET /admin/panel\nTRACE FilterChainProxy : Invoking SecurityContextHolderFilter (3/15)\nDEBUG SecurityContextHolderFilter : Retrieved SecurityContextImpl\n  [Authentication=... Granted Authorities=[ROLE_USER, ORDER_READ]]\nTRACE FilterChainProxy : Invoking ExceptionTranslationFilter (14/15)\nTRACE FilterChainProxy : Invoking AuthorizationFilter (15/15)\nTRACE RequestMatcherDelegatingAuthorizationManager : Authorizing GET /admin/panel\nTRACE RequestMatcherDelegatingAuthorizationManager : Checking authorization\n  using AuthorityAuthorizationManager [authorities=[ROLE_ADMIN]]\nDEBUG AuthorizationFilter : Failed to authorize filter invocation with\n  attributes AuthorizationDecision [granted=false]\nDEBUG ExceptionTranslationFilter : Sending AccessDeniedHandler since access\n  is denied\n\n#   다섯 객체가 다 나온다\n\n#   6.3절의 problem+json 으로 나갔다\n\n# --- 인증과 인가의 객체 수를 센다 ---\n\n$ ./gradlew bootRun 2>&1 | grep -c \"Authenticating request with\"\n1\n\n$ ./gradlew bootRun 2>&1 | grep -cE \"DaoAuthenticationProvider|ProviderManager|UserDetails|PasswordEncoder\"\n#   로그인 한 번에\n7\n\n$ ./gradlew bootRun 2>&1 | grep -cE \"AuthorizationFilter|AuthorizationManager\"\n#   거부 한 번에\n3\n\n#   인증이 더 많은 객체를 지난다\n\n#   그런데 틀리는 건 인가 쪽이 잦다\n\n# --- 다섯 자리를 층별로 재현 ---\n\n#   규칙 층\n.requestMatchers(\"/**\").authenticated()\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b user.txt localhost:8080/admin/panel\n200\n\n$ ./gradlew test --tests AuthorizationMatrixTest 2>&1 | grep -c FAILED\n2\n\n#   배선 층\n//  @EnableMethodSecurity\n\n$ ./gradlew test 2>&1 | grep -c FAILED\n3\n\n#   프록시 층\npublic void cancelAll() { cancel(id); }\n\n$ ./gradlew test 2>&1 | grep -c FAILED\n1\n\n#   문자열 층\n@PreAuthorize(\"hasAuthority('ORDER_CANCLE')\")\n\n$ ./gradlew test 2>&1 | grep -c FAILED\n2\n\n#   넷 다 테스트가 잡는다\n\n# --- 데이터 층은 다르다 ---\n\ndelete from role_authority\n where role = 'ROLE_MANAGER' and authority = 'REPORT_READ';\n\n$ ./gradlew test\n\n126 tests completed\n\nBUILD SUCCESSFUL\n\n#   다 통과한다\n\n#   인가표가 @WithMockUser 를 쓰니까\n\n$ curl -s -c m.txt -X POST localhost:8080/login \\\n    -d \"username=manager@a.com&password=1234&_csrf=$TOKEN\" -o /dev/null\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b m.txt localhost:8080/report/x\n403\n\n#   운영에서는 막힌다\n\n#   8.8절의 @WithUserDetails 테스트만 잡는다\n\n$ ./gradlew test --tests AuthorityMappingTest\n\n매니저는_보고서를_본다 FAILED\n    Status expected:<200> but was:<403>\n\n#   그 하나가 잡았다\n\n#   두 종류를 다 써야 하는 이유다\n\n# --- 세션이 옛것일 때 ---\n\ninsert into role_authority values ('ROLE_MANAGER', 'REPORT_READ');\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b m.txt localhost:8080/report/x\n403\n\n#   행을 되돌렸는데 여전히 막힌다\n\n$ curl -s -b m.txt localhost:8080/authorities\n[ROLE_MANAGER, ORDER_READ, ORDER_CANCEL]\n\n#   세션에 REPORT_READ 가 없다\n\n$ curl -s -c m2.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -b m2.txt localhost:8080/authorities\n[ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b m2.txt localhost:8080/report/x\n200\n\n#   재로그인해야 한다\n\n#   10.9절에서 즉시 반영하는 법을 본다\n\n# --- 지금 상태 ---\n\n$ ./gradlew test\n\n126 tests completed\n\nBUILD SUCCESSFUL\n\n$ grep -rnE \"hasRole\\(|hasAuthority\\(\" src/main --include='*.java' | wc -l\n5\n\n$ grep -rn \"@Is[A-Z]\\|@HasPermission\" src/main --include='*.java' | wc -l\n14\n\n$ ./gradlew bootRun 2>&1 | grep -A9 \"RequestMatcherDelegating\" | grep -c \"{\"\n7\n\n#   규칙 일곱 줄, 애너테이션 열넷, 문자열 다섯\n\n#   그리고 테스트 126개가 지킨다\n\n# --- 아직 못 보는 것 ---\n\n$ ./gradlew bootRun 2>&1 | grep -c \"AuthorizationDeniedEvent\"\n0\n\n#   거부가 이벤트로 나가는데 아무도 안 듣는다\n\n#   누가 언제 어디서 막혔는지 기록이 없다\n\n#   데이터 층 문제를 운영에서 찾을 방법이 없다\n\n# --- 다음 장에서 ---\n\n#   그 이벤트를 듣는다",
+   "note": "**거부 한 번의 TRACE 로그에 다섯 객체가 다** 나오고 6.3절의 `problem+json` 으로 응답한다.\n\n**규칙·배선·프록시·문자열 네 층을 부수면 테스트가 다** 잡는다.\n\n**권한 행을 지우면 테스트 126개가 전부 통과**하는데 운영에서는 403 이다 — **`@WithUserDetails` 테스트 하나만** 잡았다.\n\n**행을 되돌려도 세션이 옛것이라 여전히 403** 이고 재로그인해야 200 이다.\n\n**거부 이벤트가 나가는데 아무도 안 듣는다** — 9장의 자리다."
+  }
+ ],
+ "recap": [
+  "**거부 한 번에 객체 다섯이** 관여한다.",
+  "**인증은 아홉, 인가는 다섯**이다.",
+  "**인가가 더 단순한데 더 자주** 틀린다.",
+  "**실패가 규칙·배선·프록시·문자열·데이터 다섯 층**이다.",
+  "**앞의 넷은 테스트가** 잡는다.",
+  "**데이터 층은 `@WithUserDetails` 만** 잡는다.",
+  "**세션이 옛것이면 행을 고쳐도 안** 바뀐다.",
+  "**빚 여섯 중 넷이** 지워졌다.",
+  "**거부 이벤트를 아무도 안 듣고** 있다."
+ ],
+ "drills": [
+  {
+   "task": "거부 한 번을 TRACE 로 뽑는다.",
+   "done_when": "다섯 객체를 짚었다.",
+   "minutes": 20
+  },
+  {
+   "task": "네 층을 부수고 실패 수를 센다.",
+   "done_when": "각각 몇 개인지 적었다.",
+   "minutes": 30
+  },
+  {
+   "task": "권한 행을 지우고 테스트를 돌린다.",
+   "done_when": "무엇이 잡는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "내 프로젝트의 규칙 개수를 센다.",
+   "done_when": "세 종류로 나눠 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "거부 한 번에 관여하는 객체는?",
+   "a": "필터, 위임 매니저, 권한 매니저, 권한 객체, 예외 변환 필터다."
+  },
+  {
+   "q": "인가가 인증보다 자주 틀리는 이유는?",
+   "a": "인증은 실패하면 못 들어가고 인가는 실패하면 들어가진다."
+  },
+  {
+   "q": "다섯 층 중 테스트가 못 잡는 것은?",
+   "a": "데이터 층이다. `@WithUserDetails` 로만 일부 잡힌다."
+  },
+  {
+   "q": "권한 행을 되돌려도 안 되는 이유는?",
+   "a": "세션에 담긴 옛 권한을 계속 쓴다."
+  },
+  {
+   "q": "9장이 필요한 이유는?",
+   "a": "누가 언제 어디서 막혔는지 기록이 없어서다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — Authorization Architecture",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

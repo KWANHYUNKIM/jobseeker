@@ -128,7 +128,7 @@
           "title": "이미지란 무엇인가",
           "summary": "실행 파일이 아니라 파일 시스템의 스냅숏.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -136,7 +136,7 @@
           "title": "레이어와 유니온 파일 시스템",
           "summary": "이미지가 겹으로 쌓여 있는 이유.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",

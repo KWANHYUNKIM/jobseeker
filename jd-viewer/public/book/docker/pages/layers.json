@@ -1,0 +1,122 @@
+{
+ "book": "docker",
+ "id": "layers",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "레이어와 유니온 파일 시스템",
+ "summary": "이미지가 겹으로 쌓여 있는 이유.",
+ "minutes": 14,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "레이어가 왜 나뉘어 있는지 안다.",
+  "유니온 마운트가 무엇인지 안다.",
+  "레이어가 공유된다는 것을 크기로 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절의 알파인은 레이어가 하나**였다. **보통 이미지는 여러** 겹이다.\n\n```bash\n$ docker history nginx:1.27 --format 'table {{.Size}}\\t{{.CreatedBy}}' | head -5\nSIZE      CREATED BY\n0B        CMD [\"nginx\" \"-g\" \"daemon off;\"]\n0B        STOPSIGNAL SIGQUIT\n0B        EXPOSE map[80/tcp:{}]\n1.62kB    COPY docker-entrypoint.sh / # buildkit\n```\n\n**왜 한 덩어리로 안 만들고 겹으로 쌓나.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "겹으로 쌓는 이유 셋",
+   "md": "| 이유 | 무엇이 좋아지나 |\n|---|---|\n| **① 공유** | `openjdk:21` 을 쓰는 이미지 다섯 개가 있으면 **JDK 레이어는 디스크에 한 벌**만 있다 |\n| **② 전송** | 이미지를 새로 올릴 때 **바뀐 레이어만** 오간다. 300MB 이미지의 배포가 2MB 로 끝난다 |\n| **③ 캐시** | 빌드할 때 **안 바뀐 단계는 다시 안** 만든다(5.3절) |\n\n**②가 특히** 크다.\n\n```\n애플리케이션을 고쳐서 다시 배포한다\n\n한 덩어리라면       -> 300MB 를 매번 올리고 내린다\n레이어로 나뉘면     -> 내 코드 레이어 2MB 만 오간다\n```\n\n> **하루에 열 번 배포하는 팀에게 이 차이가 얼마나 큰지는 계산할 필요도** 없다.\n> **10.2절에서 자바 애플리케이션의 레이어를 일부러 쪼개는 이유**가 이것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "유니온 마운트 — 여러 겹을 하나로 겹쳐 보인다",
+   "ascii": "   what the container sees at /\n   ============================\n            /etc/nginx/nginx.conf   (from layer 3)\n            /usr/sbin/nginx         (from layer 2)\n            /bin/sh                 (from layer 1)\n\n   how it is stored\n   ================\n   layer 3  (upper)   +-- etc/nginx/nginx.conf\n   layer 2            +-- usr/sbin/nginx\n   layer 1  (lower)   +-- bin/sh, lib/, etc/, usr/\n\n   same path in two layers -> the upper one wins\n\n   layer 2:  /etc/passwd   (root:x:0:0...)\n   layer 3:  /etc/passwd   (root:x:0:0... + nginx user)\n   result:   layer 3 version",
+   "note": "**겹치면 위가 이긴다.** **이 규칙 하나가 전부**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "overlay2 가 실제로 하는 일",
+   "md": "**리눅스의 `overlayfs` 를 쓴다**(2.5절의 `docker info` 에서 본 `Storage Driver`).\n\n```\nlowerdir  = 이미지 레이어들 (읽기 전용, 여러 개)\nupperdir  = 컨테이너의 쓰기 레이어 (3.3절)\nmerged    = 컨테이너가 보는 /\n```\n\n**파일을 지우면 어떻게 되나** — **아래 레이어는 못 고치니까 \"지웠다\" 는 표시를 위에** 남긴다.\n\n| 동작 | overlayfs 가 하는 일 |\n|---|---|\n| 읽기 | 위에서부터 찾아 내려간다 |\n| 새 파일 쓰기 | upperdir 에 만든다 |\n| 기존 파일 수정 | **아래 것을 위로 통째 복사한 뒤 고친다** (copy-up) |\n| 삭제 | upperdir 에 **whiteout** 표시를 만든다 |\n\n> **copy-up 이 중요**하다. **1GB 짜리 파일 한 줄을 고치면 1GB 가 복사**된다.\n> **그래서 자주 바뀌는 큰 파일은 볼륨에** 둔다(8.2절).\n>\n> **그리고 whiteout 때문에 \"지워도 이미지가 안 작아진다\"** 는 일이 생긴다 — 5.3절의 함정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "RUN 으로 지워도 이미지는 안 작아진다",
+   "md": "**5장에서 자세히 보지만 원리가 여기 있으니 미리 적어** 둔다.\n\n```dockerfile\nRUN apt-get update && apt-get install -y build-essential   # 300MB 추가\nRUN apt-get remove -y build-essential                      # 지웠다\n```\n\n**이미지는 여전히 300MB 크다.**\n\n> **첫 RUN 이 만든 레이어에 300MB 가 이미** 들어갔다.\n> **둘째 RUN 은 그 위에 \"없는 셈 쳐라\" 는 표시만 얹었다.**\n> **레이어는 지워지지 않는다.** **더해질 뿐이다.**\n\n**그래서 한 RUN 안에서 설치하고 지워야** 한다.\n\n```dockerfile\nRUN apt-get update \\\n && apt-get install -y build-essential \\\n && ./build.sh \\\n && apt-get remove -y build-essential \\\n && rm -rf /var/lib/apt/lists/*\n```\n\n**더 나은 답은 멀티 스테이지**다(5.7절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "레이어에 넣은 비밀은 지워도 남는다",
+   "md": "**같은 원리의 보안판**이다.\n\n```dockerfile\nCOPY id_rsa /root/.ssh/id_rsa\nRUN git clone git@github.com:acme/private.git && rm /root/.ssh/id_rsa\n```\n\n**최종 이미지의 `/root/.ssh/id_rsa` 는** 없다. **그런데 레이어 tar 를 풀면** 있다.\n\n```bash\ndocker save myimage -o out.tar && tar -xf out.tar && grep -r 'BEGIN.*PRIVATE KEY' .\n```\n\n> **이미지를 받은 사람은 누구나 그걸 꺼낼 수** 있다.\n> **10.7절에서 빌드 시크릿을 제대로 다루는 법**을 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "레이어가 공유되는 것을 크기로 확인한다",
+   "sql": "# --- 같은 베이스를 쓰는 이미지 둘 ---\n\n$ docker pull eclipse-temurin:21-jre\n$ docker images eclipse-temurin:21-jre --format '{{.Size}}'\n279MB\n\n$ cat > Dockerfile.a <<'EOF'\nFROM eclipse-temurin:21-jre\nCOPY a.txt /a.txt\nEOF\n$ echo hello > a.txt\n$ docker build -q -f Dockerfile.a -t app-a .\n\n$ cat > Dockerfile.b <<'EOF'\nFROM eclipse-temurin:21-jre\nCOPY b.txt /b.txt\nEOF\n$ echo world > b.txt\n$ docker build -q -f Dockerfile.b -t app-b .\n\n\n# --- images 는 각각 279MB 라고 말한다 ---\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E 'app-|temurin'\napp-b                   279MB\napp-a                   279MB\neclipse-temurin         279MB\n\n#   합치면 837MB 처럼 보인다\n\n\n# --- 실제로 디스크가 얼마나 찼나 ---\n\n$ docker system df -v | head -8\nImages space usage:\n\nREPOSITORY        TAG       IMAGE ID       SHARED SIZE   UNIQUE SIZE\napp-a             latest    3f2a1b0c9d8e   279MB         32B\napp-b             latest    7e6d5c4b3a29   279MB         32B\neclipse-temurin   21-jre    b1c2d3e4f5a6   279MB         0B\n\n$ docker system df\nTYPE     TOTAL   ACTIVE   SIZE      RECLAIMABLE\nImages   3       0        279.1MB   279.1MB\n\n#   837MB 가 아니라 279.1MB 다\n#   SHARED SIZE 가 겹친 부분, UNIQUE SIZE 가 그 이미지만의 것이다\n\n\n# --- 레이어 목록을 보면 겹치는 것이 보인다 ---\n\n$ docker inspect -f '{{range .RootFS.Layers}}{{println .}}{{end}}' app-a\nsha256:2d429b9e73a6f0a1c8e7d6b5a4938271...\nsha256:5f8e5b0d2c3a9b8e7f6d5c4b3a291807...\nsha256:b1a4f6c8d9e0f1a2b3c4d5e6f7a8b9c0...\nsha256:aa11bb22cc33dd44ee55ff66aa77bb88...   <- a.txt\n\n$ docker inspect -f '{{range .RootFS.Layers}}{{println .}}{{end}}' app-b\nsha256:2d429b9e73a6f0a1c8e7d6b5a4938271...\nsha256:5f8e5b0d2c3a9b8e7f6d5c4b3a291807...\nsha256:b1a4f6c8d9e0f1a2b3c4d5e6f7a8b9c0...\nsha256:99cc88dd77ee66ff55aa44bb33cc2211...   <- b.txt\n\n#   앞의 세 줄이 완전히 같다. 그래서 한 벌만 저장된다\n\n\n# --- 겹으로 쌓이기만 한다는 증거 ---\n\n$ cat > Dockerfile.fat <<'EOF'\nFROM alpine:3.20\nRUN dd if=/dev/urandom of=/big.bin bs=1M count=100\nRUN rm /big.bin\nEOF\n$ docker build -q -f Dockerfile.fat -t fat .\n\n$ docker images fat --format '{{.Size}}'\n113MB\n\n$ docker run --rm fat ls -la /big.bin\nls: /big.bin: No such file or directory\n\n#   파일은 없는데 이미지는 113MB 다\n#   지운 것이 아니라 '없는 셈 쳐라' 는 표시를 얹은 것이다\n\n$ docker history fat --format 'table {{.Size}}\\t{{.CreatedBy}}'\nSIZE      CREATED BY\n0B        RUN /bin/sh -c rm /big.bin # buildkit\n105MB     RUN /bin/sh -c dd if=/dev/urandom of=/big.bin bs=1M count=100\n8.83MB    /bin/sh -c #(nop) ADD file:... in /\n\n#   105MB 짜리 레이어가 그대로 남아 있다\n\n$ docker rmi -f fat app-a app-b && rm -f Dockerfile.* a.txt b.txt"
+  }
+ ],
+ "recap": [
+  "레이어로 나누는 이유는 공유·전송·캐시 세 가지다. 배포에서 바뀐 레이어만 오간다.",
+  "유니온 마운트는 여러 겹을 하나로 겹쳐 보인다. 같은 경로가 겹치면 위가 이긴다.",
+  "수정은 copy-up 이다. 큰 파일 한 줄을 고치면 통째로 복사된다.",
+  "레이어는 더해지기만 한다. RUN 으로 지워도 앞 레이어의 용량은 남는다.",
+  "그래서 레이어에 넣은 비밀은 최종 이미지에서 안 보여도 tar 를 풀면 나온다."
+ ],
+ "drills": [
+  {
+   "task": "같은 베이스 이미지로 파일 하나씩만 다른 이미지 둘을 빌드하고 `docker system df -v` 로 SHARED/UNIQUE SIZE 를 본다.",
+   "done_when": "합계가 두 배가 아니라는 것을 숫자로 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "100MB 파일을 만들고 다음 RUN 에서 지우는 Dockerfile 을 빌드해 크기를 잰다.",
+   "done_when": "파일은 없는데 이미지는 100MB 이상인 것을 확인하고 `docker history` 에서 원인 레이어를 찾는다.",
+   "minutes": 7
+  },
+  {
+   "task": "`docker inspect -f '{{range .RootFS.Layers}}{{println .}}{{end}}'` 로 두 이미지의 레이어 목록을 비교한다.",
+   "done_when": "앞쪽 다이제스트가 동일한 것을 확인한다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이미지를 레이어로 나누는 이유 세 가지는.",
+   "a": "디스크 공유, 전송량 절약(바뀐 레이어만), 빌드 캐시."
+  },
+  {
+   "q": "같은 경로의 파일이 두 레이어에 있으면.",
+   "a": "위 레이어가 이긴다. 유니온 마운트의 기본 규칙이다."
+  },
+  {
+   "q": "RUN 으로 파일을 지웠는데 이미지가 안 작아지는 이유는.",
+   "a": "레이어는 더해지기만 한다. 앞 레이어의 데이터는 남고 위에 whiteout 표시만 얹힌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "유니온 파일 시스템",
+   "en": "union filesystem",
+   "what": "여러 디렉터리를 겹쳐 하나로 보이게 하는 파일 시스템. 도커는 overlay2 를 쓴다."
+  },
+  {
+   "term": "copy-up",
+   "what": "아래 레이어의 파일을 수정할 때 위로 통째 복사하는 동작."
+  },
+  {
+   "term": "whiteout",
+   "what": "아래 레이어의 파일이 지워졌음을 표시하는 특수 항목."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Storage drivers: overlayfs",
+   "url": "https://docs.docker.com/engine/storage/drivers/overlayfs-driver/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Linux kernel — Overlay Filesystem",
+   "url": "https://docs.kernel.org/filesystems/overlayfs.html",
+   "publisher": "kernel.org"
+  }
+ ]
+}
