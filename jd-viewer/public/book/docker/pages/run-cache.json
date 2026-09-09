@@ -1,0 +1,111 @@
+{
+ "book": "docker",
+ "id": "run-cache",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "RUN 과 레이어 캐시",
+ "summary": "명령 하나가 레이어 하나가 된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "캐시가 언제 맞고 언제 깨지는지 안다.",
+  "apt/apk 를 어떻게 써야 하는지 안다.",
+  "캐시가 만드는 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 두 번째 빌드가 4.8초에서 0.4초가** 됐다. **`CACHED` 때문**이다.\n\n> **BuildKit 은 단계마다 \"이 단계를 전에 한 적 있나\" 를** 묻는다. **있으면 안 한다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "캐시가 맞는 조건",
+   "md": "**단계마다 캐시 키를 만들고 비교**한다.\n\n| 지시어 | 캐시 키 |\n|---|---|\n| `RUN` | **명령 문자열 그대로** + 부모 레이어 |\n| `COPY`/`ADD` | **복사할 파일들의 내용 해시** + 부모 레이어 |\n| 나머지 | 지시어 문자열 |\n\n**\"부모 레이어\" 가 핵심**이다.\n\n```\n한 단계가 깨지면 그 아래는 전부 깨진다\n```\n\n> **위에서부터 도미노**다. **그래서 순서가 빌드 시간을 정한다**(5.6절).\n\n**RUN 은 명령 문자열만** 본다 — **실제로 무엇이 설치되는지는 안** 본다. **이게 다음 함정**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "apt-get update 를 따로 쓰면 안 된다",
+   "md": "```dockerfile\nRUN apt-get update\nRUN apt-get install -y curl\n```\n\n**이렇게 쓰면**:\n\n1. 3개월 뒤 `curl` 을 `curl vim` 으로 고친다\n2. **첫 줄은 문자열이 안 바뀌었으니 `CACHED`** — **3개월 전의 패키지 목록을 그대로 쓴다**\n3. 둘째 줄이 없는 버전을 찾아 **`404 Not Found`** 로 실패하거나 **낡은 버전을 설치**한다\n\n**이 문제의 이름이 있다** — **cache busting**.\n\n**한 RUN 안에 넣는다**:\n\n```dockerfile\nRUN apt-get update \\\n && apt-get install -y --no-install-recommends curl vim \\\n && rm -rf /var/lib/apt/lists/*\n```\n\n| 조각 | 왜 |\n|---|---|\n| `&&` 로 한 줄 | update 와 install 의 캐시 운명을 묶는다 |\n| `--no-install-recommends` | 안 쓰는 패키지를 안 깐다 |\n| **`rm -rf /var/lib/apt/lists/*`** | **같은 레이어에서 지워야** 작아진다(3.2절) |\n\n**알파인은 `--no-cache`** 한 방이면 된다:\n\n```dockerfile\nRUN apk add --no-cache curl\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "캐시를 일부러 안 쓰기",
+   "md": "| 목적 | 방법 |\n|---|---|\n| 전체 다시 | `docker build --no-cache` |\n| 베이스만 새로 | `docker build --pull` |\n| **특정 단계부터** | 그 위의 `ARG` 값을 바꾼다 |\n\n```dockerfile\nARG CACHEBUST=1\nRUN git clone https://github.com/acme/config.git /cfg\n```\n\n```bash\ndocker build --build-arg CACHEBUST=$(date +%s) .\n```\n\n> **`git clone` 이나 `curl` 로 밖에서 뭘 받아 오는 RUN 은 캐시가 위험**하다. **명령 문자열이 같으면 내용이 바뀌어도 안 다시** 한다.\n> **되도록 그런 것은 `COPY` 로 파일을 넣어서 내용 해시로 캐시가 판단되게** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "RUN --mount=type=cache 로 패키지 캐시를 아낀다",
+   "md": "**BuildKit 의 기능**이다. **레이어에는 안 남고 빌드 사이에만 남는 캐시**를 붙인다.\n\n```dockerfile\n# syntax=docker/dockerfile:1\nFROM eclipse-temurin:21-jdk\nWORKDIR /src\nCOPY build.gradle settings.gradle ./\nRUN --mount=type=cache,target=/root/.gradle \\\n    gradle dependencies --no-daemon\n```\n\n| | 레이어에 남나 | 빌드 사이에 유지되나 |\n|---|---|---|\n| 그냥 `RUN` | **남는다** (이미지가 커진다) | 캐시가 맞을 때만 |\n| `--mount=type=cache` | **안 남는다** | **항상** |\n\n> **의존성 다운로드가 5분 걸리는 프로젝트에서 이게 결정적**이다.\n> **11.3절에서 CI 에 이걸 붙인다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "캐시가 깨지는 자리를 직접 만든다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 나쁜 예: update 와 install 을 나눈다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM debian:12-slim\nRUN apt-get update\nRUN apt-get install -y --no-install-recommends curl\nEOF\n\n$ docker build -q -t split . >/dev/null && echo built\nbuilt\n\n$ cat > Dockerfile <<'EOF'\nFROM debian:12-slim\nRUN apt-get update\nRUN apt-get install -y --no-install-recommends curl jq\nEOF\n\n$ docker build -t split .\n[+] Building 6.1s (7/7) FINISHED\n => CACHED [2/3] RUN apt-get update                      0.0s\n => [3/3] RUN apt-get install -y --no-install-recomm...  5.2s\n\n#   update 는 CACHED 다. 그날의 패키지 목록을 계속 쓴다\n#   시간이 지나면 여기서 404 가 난다:\n#     E: Failed to fetch .../curl_8.9.1-1_arm64.deb  404  Not Found\n\n\n# --- 좋은 예: 한 RUN 으로 묶는다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM debian:12-slim\nRUN apt-get update \\\n && apt-get install -y --no-install-recommends curl jq \\\n && rm -rf /var/lib/apt/lists/*\nEOF\n\n$ docker build -q -t joined . >/dev/null\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E 'split|joined'\njoined    97.4MB\nsplit     118MB\n\n#   20MB 차이. /var/lib/apt/lists 를 같은 레이어에서 지웠기 때문이다\n\n\n# --- 다른 레이어에서 지우면 안 작아진다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM debian:12-slim\nRUN apt-get update && apt-get install -y --no-install-recommends curl jq\nRUN rm -rf /var/lib/apt/lists/*\nEOF\n\n$ docker build -q -t late-clean . >/dev/null\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep late-clean\nlate-clean    118MB\n\n#   118MB. 지웠는데 그대로다 (3.2절)\n\n\n# --- RUN 은 명령 문자열만 본다 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM alpine:3.20\nRUN date > /built-at\nEOF\n\n$ docker build -q -t stamp . >/dev/null\n$ docker run --rm stamp cat /built-at\nTue Sep  9 21:02:14 UTC 2026\n\n$ sleep 3\n$ docker build -q -t stamp . >/dev/null\n$ docker run --rm stamp cat /built-at\nTue Sep  9 21:02:14 UTC 2026\n\n#   시각이 안 바뀌었다. RUN 을 다시 안 했으므로\n#   git clone 이나 curl 도 똑같이 낡은 결과를 계속 쓴다\n\n\n# --- 캐시를 깨는 법 ---\n\n$ docker build -q --no-cache -t stamp . >/dev/null\n$ docker run --rm stamp cat /built-at\nTue Sep  9 21:02:31 UTC 2026\n\n\n# --- ARG 로 특정 단계부터 깨기 ---\n\n$ cat > Dockerfile <<'EOF'\nFROM alpine:3.20\nRUN apk add --no-cache curl\nARG CACHEBUST=0\nRUN date > /built-at\nEOF\n\n$ docker build -q -t stamp2 . >/dev/null\n$ docker build -t stamp2 --build-arg CACHEBUST=$(date +%s) .\n[+] Building 1.1s (8/8) FINISHED\n => CACHED [2/3] RUN apk add --no-cache curl            0.0s\n => [3/3] RUN date > /built-at                          0.3s\n\n#   앞은 캐시, 뒤만 다시 했다\n\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f split joined late-clean stamp stamp2 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "캐시 키는 RUN 은 명령 문자열, COPY 는 파일 내용 해시다. 한 단계가 깨지면 아래가 전부 깨진다.",
+  "apt-get update 를 따로 두면 낡은 패키지 목록이 캐시된다. && 로 묶는다.",
+  "정리(rm)는 반드시 같은 RUN 안에서 해야 이미지가 작아진다.",
+  "RUN 은 명령 문자열만 본다. git clone·curl 은 내용이 바뀌어도 다시 안 한다.",
+  "RUN --mount=type=cache 는 이미지에 안 남으면서 빌드 사이에는 유지되는 캐시다."
+ ],
+ "drills": [
+  {
+   "task": "apt-get update 와 install 을 두 RUN 으로 나눈 Dockerfile 을 만들고, install 줄만 고쳐 다시 빌드해 update 가 CACHED 되는 것을 본다.",
+   "done_when": "CACHED 를 확인하고 왜 위험한지 설명할 수 있다.",
+   "minutes": 6
+  },
+  {
+   "task": "`rm -rf /var/lib/apt/lists/*` 를 같은 RUN 안과 다음 RUN 에 각각 두고 이미지 크기를 비교한다.",
+   "done_when": "다음 RUN 에 두면 안 작아지는 것을 숫자로 본다.",
+   "minutes": 7
+  },
+  {
+   "task": "`RUN date > /built-at` 을 두 번 빌드해 시각이 안 바뀌는 것을 확인하고 --no-cache 로 바꿔 본다.",
+   "done_when": "RUN 이 명령 문자열만 본다는 것을 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "`RUN apt-get update` 를 따로 쓰면 무슨 일이 생기나.",
+   "a": "명령 문자열이 안 바뀌어 계속 캐시되고, 낡은 패키지 목록으로 install 이 404 나 낡은 버전을 받는다."
+  },
+  {
+   "q": "apt 캐시를 다음 RUN 에서 지우면 왜 소용없나.",
+   "a": "레이어는 더해지기만 한다. 앞 레이어의 용량은 그대로 남는다."
+  },
+  {
+   "q": "RUN --mount=type=cache 가 그냥 RUN 과 다른 점은.",
+   "a": "캐시 내용이 이미지 레이어에 안 남고, 캐시가 깨져도 빌드 사이에 유지된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "cache busting",
+   "what": "캐시를 일부러 깨서 최신 상태를 받게 하는 것. 또는 그렇게 하지 못해 생기는 문제."
+  },
+  {
+   "term": "BuildKit",
+   "what": "도커의 현재 빌드 엔진. 병렬 실행·캐시 마운트·시크릿을 지원한다. 5.9절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Best practices: apt-get",
+   "url": "https://docs.docker.com/build/building/best-practices/#apt-get",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Docker Docs — Cache mounts",
+   "url": "https://docs.docker.com/build/cache/optimize/#use-cache-mounts",
+   "publisher": "Docker"
+  }
+ ]
+}

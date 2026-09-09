@@ -1,0 +1,146 @@
+{
+ "book": "docker",
+ "id": "from",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "FROM — 무엇 위에 쌓을 것인가",
+ "summary": "베이스 이미지 고르기가 절반이다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "베이스 이미지 종류와 차이를 안다.",
+  "alpine 의 함정을 안다.",
+  "베이스를 고르는 기준을 세운다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`FROM` 한 줄이 이미지 크기의 대부분과 보안 취약점의 대부분을** 정한다.\n\n> **그리고 그 한 줄이 남의 코드를 내 프로덕션에 들이는** 줄이다."
+  },
+  {
+   "type": "table",
+   "caption": "자바 애플리케이션의 베이스 후보",
+   "columns": [
+    "베이스",
+    "크기",
+    "특징"
+   ],
+   "rows": [
+    [
+     "`eclipse-temurin:21-jdk`",
+     "~450MB",
+     "**JDK.** 컴파일 도구까지 들어 있다. 빌드 단계용"
+    ],
+    [
+     "`eclipse-temurin:21-jre`",
+     "~280MB",
+     "**JRE 만.** 실행에 충분하다"
+    ],
+    [
+     "`eclipse-temurin:21-jre-alpine`",
+     "~180MB",
+     "알파인 기반. **musl libc**"
+    ],
+    [
+     "`gcr.io/distroless/java21`",
+     "~230MB",
+     "**셸도 패키지 매니저도 없다.** 공격면 최소"
+    ],
+    [
+     "`scratch`",
+     "0B",
+     "완전히 빈 것. 정적 링크 바이너리(Go)에나 쓴다"
+    ]
+   ],
+   "note": "**5.7절의 멀티 스테이지에서 \"빌드는 jdk, 실행은 jre\" 로** 나눈다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "alpine 이 항상 답은 아니다",
+   "md": "**\"작으니까 alpine\" 은 절반만** 맞다. **알파인은 glibc 가 아니라 musl libc 를** 쓴다.\n\n| 문제 | 언제 터지나 |\n|---|---|\n| **네이티브 라이브러리** | glibc 로 빌드된 `.so` 가 안 뜬다. `Error loading shared library` |\n| **DNS 해석 차이** | musl 의 resolver 가 다르게 동작한다. 검색 도메인·타임아웃 |\n| **파이썬 wheel** | 미리 빌드된 휠이 대개 glibc 용이라 **소스에서 컴파일**한다. 빌드가 10배 느려진다 |\n| **JVM 성능** | 예전에는 차이가 컸다. 지금은 많이 좁혀졌지만 벤치마크를 봐야 한다 |\n\n**대안**: **`-slim` 계열**(데비안 기반, glibc, 불필요한 것 제거).\n\n```dockerfile\nFROM python:3.12-slim     # alpine 보다 크지만 대개 이게 낫다\n```\n\n> **\"작게\" 의 목적은 전송과 공격면**이다. **빌드가 10분 늘어나면 그 이득이 사라진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "태그 이름 읽는 법",
+   "md": "```\neclipse-temurin:21.0.4_7-jre-alpine\n                ------ --- ------\n                 버전  변종  배포판\n```\n\n| 흔한 접미사 | 뜻 |\n|---|---|\n| `-jdk` / `-jre` | 컴파일러 포함 / 실행만 |\n| **`-slim`** | 불필요한 패키지를 뺀 데비안 |\n| **`-alpine`** | 알파인 기반 |\n| `-bookworm`, `-bullseye` | 데비안 코드명 |\n| `-windowsservercore` | 윈도우 |\n\n**태그를 얼마나 자세히 쓸 것인가**:\n\n```dockerfile\nFROM eclipse-temurin:21           # 21 안에서 계속 움직인다\nFROM eclipse-temurin:21.0.4_7-jre # 거의 고정\nFROM eclipse-temurin:21-jre@sha256:...  # 완전 고정 (4.4절)\n```\n\n> **운영은 세 번째, 개발은 첫 번째로 시작해서 필요할 때 좁힌다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "FROM 은 남의 코드를 들이는 줄이다",
+   "md": "**베이스 이미지 안에 무엇이 들었는지 확인**한다.\n\n```bash\ndocker scout cves eclipse-temurin:21-jre    # Docker Desktop\ntrivy image eclipse-temurin:21-jre          # 또는 trivy\n```\n\n**점검 항목**:\n\n| 볼 것 | 왜 |\n|---|---|\n| **누가 관리하나** | 공식·검증된 게시자인가. 마지막 갱신이 언제인가 |\n| **취약점 개수** | 크리티컬이 몇 개인가 |\n| **USER 가 root 인가** | 3.4절 |\n| **크기** | 안 쓰는 게 많이 들었나 |\n\n> **10.6절에서 이걸 CI 에 넣는다.**\n> **`FROM ubuntu:latest` 로 시작해서 필요한 걸 다 설치하는 습관이 가장 흔한 실수**다 — **런타임 공식 이미지가 대개 더 작고 더 안전하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "베이스를 바꿔 가며 크기와 동작을 비교한다",
+   "sql": "$ mkdir -p /tmp/lab && cd /tmp/lab\n\n# --- 같은 애플리케이션, 베이스만 다르게 ---\n\n$ for b in eclipse-temurin:21-jdk eclipse-temurin:21-jre alpine:3.20; do\n>   docker pull -q $b >/dev/null\n> done\n\n$ docker images --format 'table {{.Repository}}:{{.Tag}}\\t{{.Size}}' | grep -E 'temurin|alpine'\neclipse-temurin:21-jdk    458MB\neclipse-temurin:21-jre    279MB\nalpine:3.20               8.83MB\n\n#   jdk 와 jre 의 차이가 179MB 다. 실행에는 jre 면 된다\n\n\n# --- 무엇이 더 들어 있나 ---\n\n$ docker run --rm eclipse-temurin:21-jdk sh -c 'ls /opt/java/openjdk/bin | head -8'\njar\njarsigner\njavac\njavadoc\njavap\njcmd\njdb\njfr\n\n$ docker run --rm eclipse-temurin:21-jre sh -c 'ls /opt/java/openjdk/bin'\njava\njrunscript\nkeytool\nrmiregistry\n\n#   jre 에는 javac 가 없다. 운영에 컴파일러가 있을 이유가 없다\n\n\n# --- alpine 의 libc 는 다르다 ---\n\n$ docker run --rm alpine:3.20 sh -c 'ls /lib/ld-musl-* 2>/dev/null; ls /lib/x86_64-linux-gnu 2>/dev/null | head -2'\n/lib/ld-musl-aarch64.so.1\n\n$ docker run --rm debian:12-slim sh -c 'ls /lib/*/libc.so.6'\n/lib/aarch64-linux-gnu/libc.so.6\n\n#   musl 과 glibc. 네이티브 라이브러리가 여기서 갈린다\n\n\n# --- glibc 용 바이너리를 알파인에서 돌리면 ---\n\n$ docker run --rm debian:12-slim sh -c 'cp /bin/ls /tmp/ls && echo copied'\ncopied\n\n$ docker create --name tmp debian:12-slim >/dev/null\n$ docker cp tmp:/bin/ls ./ls-glibc >/dev/null && docker rm tmp >/dev/null\n\n$ printf 'FROM alpine:3.20\\nCOPY ls-glibc /ls\\nCMD [\"/ls\"]\\n' > Dockerfile\n$ docker build -q -t glibc-on-musl . >/dev/null\n$ docker run --rm glibc-on-musl\nexec /ls: no such file or directory\n\n#   파일은 있는데 no such file or directory 다\n#   실제로 없는 건 그 바이너리가 찾는 동적 링커(ld-linux)다\n#   알파인을 쓰다 만나는 가장 헷갈리는 에러다\n\n\n# --- 파이썬: alpine 이 느린 이유 ---\n\n$ printf 'FROM python:3.12-slim\\nRUN pip install --no-cache-dir cryptography==43.0.1\\n' > Dockerfile.slim\n$ printf 'FROM python:3.12-alpine\\nRUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev rust cargo \\\\\\n && pip install --no-cache-dir cryptography==43.0.1\\n' > Dockerfile.alpine\n\n$ time docker build -q -f Dockerfile.slim -t p-slim . >/dev/null\nreal    0m14.2s\n\n$ time docker build -q -f Dockerfile.alpine -t p-alpine . >/dev/null\nreal    4m51.7s\n\n$ docker images --format 'table {{.Repository}}\\t{{.Size}}' | grep -E 'p-slim|p-alpine'\np-alpine    431MB\np-slim      213MB\n\n#   빌드는 20배 느리고 결과는 더 크다\n#   미리 빌드된 휠이 glibc 용이라 알파인에서는 소스 컴파일을 한다\n\n$ cd - >/dev/null && rm -rf /tmp/lab\n$ docker rmi -f glibc-on-musl p-slim p-alpine >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "FROM 한 줄이 이미지 크기와 취약점의 대부분을 정한다.",
+  "실행에는 JDK 가 아니라 JRE 면 된다. 179MB 차이고 컴파일러가 운영에 있을 이유가 없다.",
+  "alpine 은 musl libc 라 네이티브 라이브러리·DNS·파이썬 휠에서 문제가 난다. -slim 이 대개 낫다.",
+  "'no such file or directory' 인데 파일이 있으면 동적 링커가 없는 것이다.",
+  "FROM 은 남의 코드를 들이는 줄이다. 관리자·갱신일·취약점·USER 를 확인한다."
+ ],
+ "drills": [
+  {
+   "task": "`eclipse-temurin:21-jdk` 와 `21-jre` 의 크기와 `bin` 디렉터리를 비교한다.",
+   "done_when": "jre 에 javac 가 없는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "데비안 이미지에서 바이너리를 꺼내 알파인 이미지에 COPY 해서 실행해 본다.",
+   "done_when": "파일이 있는데도 no such file or directory 가 나오는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "쓰고 있는 베이스 이미지를 `docker scout cves` 나 `trivy image` 로 스캔한다.",
+   "done_when": "크리티컬 취약점 개수를 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "운영 이미지에 JDK 대신 JRE 를 쓰는 이유 두 가지.",
+   "a": "크기가 179MB 작고, 컴파일러 같은 도구가 운영 환경에 있을 이유가 없다(공격면)."
+  },
+  {
+   "q": "alpine 이 파이썬 프로젝트에서 오히려 느리고 커지는 이유는.",
+   "a": "미리 빌드된 휠이 glibc 용이라 musl 환경에서는 소스에서 컴파일해야 하고, 그러려면 빌드 도구를 다 깔아야 한다."
+  },
+  {
+   "q": "파일이 분명히 있는데 'no such file or directory' 가 나면.",
+   "a": "그 바이너리가 요구하는 동적 링커나 공유 라이브러리가 없는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "musl libc",
+   "what": "알파인이 쓰는 가벼운 C 표준 라이브러리. glibc 와 호환되지 않는 부분이 있다."
+  },
+  {
+   "term": "slim 이미지",
+   "what": "데비안 기반에서 문서·불필요 패키지를 제거한 변종."
+  },
+  {
+   "term": "distroless",
+   "what": "셸과 패키지 매니저를 뺀 런타임 전용 이미지."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Docker Docs — Base images",
+   "url": "https://docs.docker.com/build/building/base-images/",
+   "publisher": "Docker"
+  },
+  {
+   "title": "Eclipse Temurin — Docker images",
+   "url": "https://hub.docker.com/_/eclipse-temurin",
+   "publisher": "Docker Hub"
+  }
+ ]
+}

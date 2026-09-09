@@ -1,0 +1,125 @@
+{
+ "book": "spring-security",
+ "id": "custom-user-details",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "커스텀 UserDetails",
+ "summary": "도메인을 감싼다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "어댑터를 만든다.",
+  "세션에 무엇이 담기는지 잰다.",
+  "서비스를 잇는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.6절에서 두 갈래라고** 했다. **어댑터 쪽으로** 간다."
+  },
+  {
+   "type": "figure",
+   "caption": "어댑터가 복사하는 것",
+   "ascii": "   the adapter, and what it copies\n\n   Member entity                CustomUserDetails\n     id                 ->        id\n     email              ->        username\n     password           ->        password\n     nickname           ->        nickname\n     active, locked     ->        the flags\n     roles, authorities ->        a list of GrantedAuthority\n\n   nothing lazy, nothing managed, nothing that needs a session",
+   "note": "**지연 로딩도 영속성 컨텍스트도 안** 딸려 간다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "어댑터",
+   "md": "```java\npublic class CustomUserDetails implements UserDetails {\n\n    private final Long id;\n    private final String username;\n    private final String password;\n    private final String nickname;\n    private final boolean active;\n    private final boolean locked;\n    private final boolean credentialsValid;\n    private final List<GrantedAuthority> authorities;\n\n    public CustomUserDetails(Member member, Collection<String> authorityNames) {\n        this.id = member.getId();\n        this.username = member.getEmail();\n        this.password = member.getPassword();\n        this.nickname = member.getNickname();\n        this.active = member.isActive();\n        this.locked = member.isLocked();\n        this.credentialsValid = member.isPasswordFresh();\n        this.authorities = Stream.concat(\n                        member.getRoles().stream(),\n                        authorityNames.stream())\n                .distinct()\n                .map(SimpleGrantedAuthority::new)\n                .toList();\n    }\n\n    @Override public boolean isEnabled() { return active; }\n    @Override public boolean isAccountNonLocked() { return !locked; }\n    @Override public boolean isAccountNonExpired() { return true; }   // 안 쓴다\n    @Override public boolean isCredentialsNonExpired() { return credentialsValid; }\n}\n```\n\n> **역할과 권한을 한 목록에** 넣는다.\n> **`hasRole` 과 `hasAuthority` 를 둘 다 쓸 수** 있다(8.2절).\n\n**`Serializable` 을 붙인다.**\n\n> **5.7절의 Redis 세션에** 필요하다.\n> **`serialVersionUID` 를 고정해 배포 때 전원 로그아웃을** 막는다.\n\n**`equals`·`hashCode` 를** 넣는다.\n\n> **5.5절의 동시 세션 제어가 `principal` 로** 센다.\n> **안 넣으면 제한이 안 걸린다.**\n> **`id` 나 `username` 하나로** 비교한다."
+  },
+  {
+   "type": "figure",
+   "caption": "세션에 담기는 크기",
+   "ascii": "   what ends up in the http session, byte for byte\n\n   the entity version\n     a managed Member, its proxy, its collection wrapper\n     serialization fails, or drags half the graph along\n\n   the adapter version\n     a few strings and a small list\n     about 500 bytes, and it survives a redis round trip",
+   "note": "**어댑터 쪽이 작고 안전**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "서비스를 잇는다",
+   "md": "```java\n@Service\n@RequiredArgsConstructor\npublic class MemberUserDetailsService implements UserDetailsService {\n\n    private final MemberRepository memberRepository;\n    private final RoleAuthorityRepository roleAuthorityRepository;\n\n    @Override\n    @Transactional(readOnly = true)\n    public UserDetails loadUserByUsername(String email) {\n        Member member = memberRepository.findByEmailWithRoles(email)\n                .orElseThrow(() -> new UsernameNotFoundException(email));\n\n        member.unlockIfExpired(LocalDateTime.now());     // 9.3절의 자동 해제\n\n        List<String> authorities =\n                roleAuthorityRepository.findAuthorities(member.getRoles());\n        return new CustomUserDetails(member, authorities);\n    }\n}\n```\n\n> **`@Transactional` 이 있어야 지연 로딩이** 된다(4.6절).\n> **자동 해제가 여기 있는 건 로그인 경로에서 반드시 불리기** 때문이다.\n\n**`readOnly = true` 인데 `unlockIfExpired` 가 쓰기**다.\n\n> **더티 체킹이 안** 된다.\n> **`readOnly` 는 플러시를 막는다** — **책 ⑤ 에서 본 그** 얘기다.\n> **해제가 조용히 안** 된다.\n>\n> **`readOnly` 를 빼거나 해제를 따로 부른다.**\n> **아래에서 그 로그를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 오간 요청과 지나간 필터",
+   "sql": "# --- 어댑터를 잇는다 ---\n\n$ curl -s -b c.txt -c c.txt -X POST localhost:8080/login \\\n    -d \"username=manager@a.com&password=1234&_csrf=$TOKEN\" -o /dev/null\n\nselect m1_0.id, m1_0.active, ..., r1_0.role\n  from member m1_0 left join member_role r1_0 on m1_0.id = r1_0.member_id\n where m1_0.email = ?\n\nselect ra1_0.authority from role_authority ra1_0 where ra1_0.role in (?)\n\nDEBUG UsernamePasswordAuthenticationFilter : Set SecurityContextHolder to\n  UsernamePasswordAuthenticationToken [Principal=CustomUserDetails\n  [username=manager@a.com], Granted Authorities=[ROLE_MANAGER,\n  ORDER_READ, ORDER_CANCEL, REPORT_READ]]\n\n#   역할과 권한이 한 목록이다\n\n$ curl -s -b c.txt localhost:8080/authorities\n\n[ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]\n\n$ for p in /orders /report/x /admin/panel; do\n    printf '%-14s ' $p\n    curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt \"localhost:8080$p\"\n  done\n\n/orders        200\n/report/x      200\n/admin/panel   403\n\n#   요구사항 4번이 됐다\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n역할이_권한을_물고_온다 PASSED\n\n#   아홉 중 하나가 초록이다\n\n# --- 세션 크기를 잰다 ---\n\n@GetMapping(\"/session-size\")\n@ResponseBody\npublic String sessionSize(HttpSession session) throws IOException {\n    Object context = session.getAttribute(\"SPRING_SECURITY_CONTEXT\");\n    ByteArrayOutputStream out = new ByteArrayOutputStream();\n    new ObjectOutputStream(out).writeObject(context);\n    return out.size() + \" bytes\";\n}\n\n$ curl -s -b c.txt localhost:8080/session-size\n\n612 bytes\n\n#   어댑터 판이다\n\n#   엔티티를 직접 담으면\n\n@Entity\npublic class Member implements UserDetails { ... }\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c2.txt -X POST \\\n    localhost:8080/login -d \"username=manager@a.com&password=1234&_csrf=$T\"\n302\n\n$ curl -s -b c2.txt localhost:8080/session-size\n\njava.io.NotSerializableException:\n  org.hibernate.collection.spi.PersistentSet\n\n#   컬렉션 래퍼가 직렬화가 안 된다\n\n#   톰캣 세션은 메모리라 지금은 안 터진다\n\n#   Redis 로 바꾸면 로그인 자체가 500 이다 (5.7절)\n\n# --- equals 를 넣는다 ---\n\n@Override\npublic boolean equals(Object o) {\n    return o instanceof CustomUserDetails other\n            && Objects.equals(this.id, other.id);\n}\n\n@Override\npublic int hashCode() { return Objects.hash(id); }\n\nhttp.sessionManagement(s -> s.maximumSessions(1));\n\n$ curl -s -c a.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n$ curl -s -c b.txt -X POST localhost:8080/login -d \"...\" -o /dev/null\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b a.txt localhost:8080/orders\n302\n\n#   첫 세션이 만료됐다\n\n#   equals 가 없으면 둘 다 200 이었다 (5.5절)\n\n# --- readOnly 함정 ---\n\n@Override\n@Transactional(readOnly = true)\npublic UserDetails loadUserByUsername(String email) {\n    Member member = ...;\n    member.unlockIfExpired(LocalDateTime.now());\n    ...\n}\n\nupdate member set locked = true, locked_at = '2026-09-09 19:00:00'\n where email = 'user@a.com';\n\n#   (30분이 지났다)\n\n$ curl -s -o /dev/null -b c.txt -X POST localhost:8080/login \\\n    -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n\n>>> 자동 해제 user@a.com\n\n>>> FAILURE user@a.com AuthenticationFailureLockedEvent LockedException\n\n#   해제했다고 찍혔는데 막혔다\n\nselect locked from member where email = 'user@a.com';\n\nLOCKED\n-------\nt\n\n#   update 가 안 나갔다\n\n$ ./gradlew bootRun 2>&1 | grep -c \"update member set locked\"\n0\n\n#   readOnly 라 플러시를 안 한다\n\n#   책 ⑤ 5.5절의 그 얘기다\n\n#   그리고 객체는 이미 unlock 된 상태다\n\n#   그런데 프로바이더가 보는 건 새로 만든 어댑터다\n\n#   어댑터를 만들 때 member.isLocked() 가 이미 false 다\n\n#   그래서 통과해야 하는데?\n\n#   순서를 보면\n\npublic UserDetails loadUserByUsername(String email) {\n    Member member = ...;\n    List<String> authorities = ...;\n    CustomUserDetails details = new CustomUserDetails(member, authorities);\n    member.unlockIfExpired(LocalDateTime.now());     // 어댑터를 만든 뒤였다\n    return details;\n}\n\n#   내가 순서를 틀렸다\n\n#   해제를 앞으로 옮기고\n\nmember.unlockIfExpired(LocalDateTime.now());\nCustomUserDetails details = new CustomUserDetails(member, authorities);\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' -b c.txt -X POST \\\n    localhost:8080/login -d \"username=user@a.com&password=1234&_csrf=$TOKEN\"\n302\n\n$ curl -is -b c.txt -X POST localhost:8080/login -d \"...\" | grep -i location\nLocation: http://localhost:8080/\n\n#   들어갔다\n\nselect locked from member where email = 'user@a.com';\nLOCKED\n-------\nt\n\n#   그런데 DB 는 아직 t 다\n\n#   readOnly 때문이다\n\n#   매번 해제 로직이 돈다\n\n#   readOnly 를 뺀다\n\n@Transactional\npublic UserDetails loadUserByUsername(String email) { ... }\n\nupdate member set locked = false, failed_count = 0, locked_at = null\n where id = ?\n\nselect locked from member where email = 'user@a.com';\nLOCKED\n-------\nf\n\n#   이제 저장된다\n\n#   조회 경로에 쓰기가 생겼다\n\n#   대신 명시적이다\n\n# --- 요구사항 확인 ---\n\n$ ./gradlew test --tests AuthSystemRequirementTest\n\n역할이_권한을_물고_온다 PASSED\n삼십분_뒤_풀린다 PASSED\n\n7 tests completed, 7 failed\n\n#   아홉 중 둘이 초록이다\n\n# --- 다음 절에서 ---\n\n#   가입을 만든다",
+   "note": "**역할과 권한이 한 목록으로 `[ROLE_MANAGER, ORDER_READ, ORDER_CANCEL, REPORT_READ]`** 가 됐다.\n\n**세션의 컨텍스트가 612바이트**이고, **엔티티를 담으면 `PersistentSet` 직렬화가** 실패한다.\n\n**`equals` 를 넣자 동시 세션 제어가** 걸린다.\n\n**해제를 어댑터 생성 뒤에 부르면 로그가 찍혀도 막힌다** — 순서 실수였다.\n\n**`readOnly` 를 빼야 `update` 가 실제로** 나간다. **아홉 중 둘이 초록**이다."
+  }
+ ],
+ "recap": [
+  "**어댑터가 필요한 값만** 복사한다.",
+  "**역할과 권한을 한 목록에** 넣는다.",
+  "**`Serializable` 과 고정된 UID 를** 붙인다.",
+  "**`equals`·`hashCode` 가 동시 세션 제어에** 필요하다.",
+  "**세션 컨텍스트가 600바이트 수준**이다.",
+  "**엔티티를 담으면 컬렉션 래퍼가** 터진다.",
+  "**해제 로직의 순서를 틀리면 조용히 안** 듣는다.",
+  "**`readOnly` 는 플러시를** 막는다.",
+  "**아홉 중 둘이** 초록이다."
+ ],
+ "drills": [
+  {
+   "task": "어댑터를 만들고 권한을 합친다.",
+   "done_when": "한 목록으로 나오는 것을 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "세션 컨텍스트 크기를 잰다.",
+   "done_when": "바이트 수를 적었다.",
+   "minutes": 20
+  },
+  {
+   "task": "엔티티를 직접 담아 본다.",
+   "done_when": "직렬화 실패를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`readOnly` 를 붙였다 뗀다.",
+   "done_when": "`update` 유무를 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "어댑터가 복사하는 것은?",
+   "a": "식별자·이름·비밀번호·플래그·권한 목록이다."
+  },
+  {
+   "q": "왜 엔티티를 그대로 안 쓰나?",
+   "a": "지연 로딩 컬렉션이 직렬화되지 않는다."
+  },
+  {
+   "q": "`equals` 가 왜 필요한가?",
+   "a": "동시 세션 제어가 `principal` 로 같은 사람을 센다."
+  },
+  {
+   "q": "`readOnly` 트랜잭션에서 쓰기를 하면?",
+   "a": "플러시가 막혀 `update` 가 나가지 않는다."
+  },
+  {
+   "q": "자동 해제를 어디서 부르나?",
+   "a": "어댑터를 만들기 전, 로그인 경로에서 반드시 불리는 자리다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Spring Security — UserDetailsService",
+   "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security — Password Storage",
+   "url": "https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "publisher": "Spring"
+  }
+ ]
+}

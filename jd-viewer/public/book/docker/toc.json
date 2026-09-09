@@ -238,7 +238,7 @@
           "title": "첫 Dockerfile",
           "summary": "세 줄로 시작해서 빌드해 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -246,7 +246,7 @@
           "title": "FROM — 무엇 위에 쌓을 것인가",
           "summary": "베이스 이미지 고르기가 절반이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -254,7 +254,7 @@
           "title": "RUN 과 레이어 캐시",
           "summary": "명령 하나가 레이어 하나가 된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
