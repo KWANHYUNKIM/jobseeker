@@ -1,0 +1,137 @@
+{
+ "book": "jpa-app-1",
+ "id": "n-plus-one-here",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "이 애플리케이션의 N+1",
+ "summary": "주문 목록에서 센다.",
+ "minutes": 13,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "쿼리를 단계별로 줄인다.",
+  "각 방법의 대가를 안다.",
+  "회귀를 막는 테스트를 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1~9.3절에서 문제를 확인**했다. **여기서 줄인다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "네 단계",
+   "ascii": "   the order list, 10 orders\n\n   as built                       31 queries\n   + fetch join member            21\n   + fetch join delivery          11\n   + batch fetch size 100          3\n   dto projection                  1\n\n   four steps, and the last one is a different kind of fix",
+   "note": "**마지막이 다른 종류**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "① 페치 조인 — `@ManyToOne` 부터",
+   "md": "```java\nselect o from Order o\n  join fetch o.member m\n```\n\n**주문 10건이면 회원 쿼리 10개가 사라진다.**\n\n**`@ManyToOne`·`@OneToOne` 은 안전**하다.\n\n| | |\n|---|---|\n| **행이 안 는다** | 주문 하나에 회원 하나 |\n| **페이징이 된다** | |\n| **`distinct` 가 필요 없다** | |\n\n**배송도 같다.**\n\n```java\nselect o from Order o\n  join fetch o.member m\n  join fetch o.delivery d\n```\n\n**31 → 21 → 11** 이다.\n\n> **`join fetch` 를 둘 붙여도 행이 안 는다.** **전부 1:1 이나 N:1** 이라서다.\n\n**동적 쿼리와 섞을 때 주의**한다.\n\n```java\nString jpql = \"select o from Order o\" +\n              \" join fetch o.member m\" +\n              \" join fetch o.delivery d\";\n// 그다음 where 를 붙인다\n```\n\n**7.9절의 `join o.member m` 이 `join fetch` 로** 바뀌었다. **조건에도 쓰고 로딩에도** 쓴다.\n\n> **별칭 `m` 을 `where` 에서 쓸 수** 있다. **`join fetch` 에 별칭을 주는 것은 원래 권장되지 않는데**, **`where` 조건용으로는 쓴다.**\n>\n> **컬렉션 페치 조인에 별칭을 주고 `where` 를 걸면 위험**하다 — 일부만 로딩된 컬렉션이 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "② 배치 사이즈",
+   "ascii": "   default_batch_fetch_size: 100\n\n   before   select ... from order_item where order_id = ?   x10\n   after    select ... from order_item where order_id in (?,?,?...)\n\n   1 + ceil(n / size) instead of 1 + n\n   works for collections and for proxies",
+   "note": "**설정 한 줄**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "컬렉션은 배치로",
+   "md": "**`orderItems` 는 컬렉션**이다. **페치 조인하면 행이 는다**(7.5절).\n\n**배치 사이즈를 쓴다.**\n\n```yaml\nspring:\n  jpa:\n    properties:\n      hibernate:\n        default_batch_fetch_size: 100\n```\n\n**`in` 절로 묶는다.**\n\n```sql\nselect ... from order_item where order_id in (?,?,?,?,?,?,?,?,?,?)\n```\n\n**주문 10건 → 쿼리 1개**다.\n\n**상품도 마찬가지**다.\n\n```sql\nselect ... from item where item_id in (?,?,?,...)\n```\n\n**11 → 3** 이 된다.\n\n| 쿼리 | |\n|---|---|\n| 1 | 주문 + 회원 + 배송 (페치 조인) |\n| 2 | 주문상품 (`in`) |\n| 3 | 상품 (`in`) |\n\n**크기를 얼마로 두나.**\n\n| 값 | |\n|---|---|\n| 100 | **무난하다** |\n| 1000 | **오라클은 `in` 절 한계가 1000** |\n| 너무 크면 | 한 번에 로딩되는 데이터가 많다 |\n\n> **개별 필드에 `@BatchSize(size = 100)`** 를 붙일 수도 있다. **전역 설정이 단순**하다.\n\n**페이징과 같이 쓸 수** 있다. **페치 조인과의 결정적 차이**다.\n\n> **컬렉션을 페치 조인하면 페이징이 메모리에서** 일어난다(「DB 2편」 6.7절). **배치는 안 그렇다.**\n>\n> **그래서 실무 조합이 \"N:1 은 페치 조인, 1:N 은 배치\"** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "③ DTO 조회 — 다른 종류의 해결",
+   "md": "**앞의 둘은 엔티티를 그대로** 두고 로딩 방법만 바꿨다.\n\n**DTO 조회는 엔티티를 안 만든다.**\n\n```java\nselect new hello.OrderListDto(o.id, m.name, i.name,\n                              oi.orderPrice, oi.count, o.status, o.orderDate)\nfrom Order o\njoin o.member m\njoin o.orderItems oi\njoin oi.item i\n```\n\n**쿼리 1개, 엔티티 0개**다.\n\n| | 페치 조인 + 배치 | DTO 조회 |\n|---|---|---|\n| 쿼리 | **3** | **1** |\n| 엔티티 로딩 | 41개 | **0** |\n| 재사용 | **넓다** | 화면 전용 |\n| 변경 감지 | 된다 | **안 된다** |\n| 화면이 바뀌면 | **안 고쳐도** 된다 | **쿼리를 고친다** |\n\n**마지막 줄이 거래**다.\n\n> **DTO 는 화면과 쿼리가 붙는다**(9.1절). **화면에 컬럼 하나가 추가되면 쿼리를 고친다.**\n>\n> **페치 조인은 엔티티를 다 주니 화면이 뭘 쓰든** 된다.\n\n**어느 것을 고르나.**\n\n| 상황 | |\n|---|---|\n| **일반 화면** | **페치 조인 + 배치** |\n| **트래픽이 큰 목록** | **DTO** |\n| **API** | **DTO** |\n\n> **성능이 문제가 되기 전에 DTO 로 가지 않는다.** **먼저 페치 조인과 배치로 줄이고**, **그래도 모자라면 DTO** 다.\n>\n> **다음 권의 순서**이기도 하다."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "회귀를 막는다",
+   "md": "**고쳐 놔도 다시 는다.**\n\n> **화면에 한 줄 추가하면 31 이 41**(9.2절).\n\n**테스트로 지킨다.**\n\n```java\n@SpringBootTest\n@AutoConfigureMockMvc\nclass OrderListQueryCountTest {\n\n    @Autowired MockMvc mvc;\n    @PersistenceContext EntityManager em;\n\n    @Test\n    void 주문목록_쿼리개수() throws Exception {\n        Statistics stats = em.getEntityManagerFactory()\n                .unwrap(SessionFactory.class).getStatistics();\n        stats.clear();\n\n        mvc.perform(get(\"/orders\")).andExpect(status().isOk());\n\n        assertThat(stats.getPrepareStatementCount()).isLessThanOrEqualTo(3);\n    }\n}\n```\n\n**`generate_statistics: true`** 가 필요하다(2.6절).\n\n> **「DB 2편」 9.2절에서 \"테스트에서 쿼리 개수를 검증하면 N+1 회귀를 막는다\" 고** 했다. **그것의 실물**이다.\n\n**대안**도 있다.\n\n| 도구 | |\n|---|---|\n| **`datasource-proxy`** | 쿼리 카운트 어서션 |\n| **`p6spy`** | 로그만 |\n| **하이버네이트 `Statistics`** | 위의 방법 |\n\n**첫 번째가 편하다.**\n\n```java\nassertThat(SingleQueryCountHolder.get().getSelect()).isEqualTo(3);\n```\n\n> **이 책은 안 넣는다.** **9.7절 목록**이다.\n>\n> **실무 프로젝트라면 주요 화면에 하나씩** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 나간 쿼리 개수",
+   "sql": "# --- 준비: 주문 10건 ---\n\n# --- ① 만든 그대로 ---\n\nGET /orders\n\n#   Hibernate: select o1_0.order_id, ... from orders o1_0\n#              join member m1_0 on m1_0.member_id=o1_0.member_id\n#   Hibernate: select m1_0.member_id, ... where m1_0.member_id=?   x10\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?   x10\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?       x10\n\n#   Session Metrics {\n#       31 JDBC statements were executed\n#       41 entities were loaded\n#   }\n\n# --- ② 회원 페치 조인 ---\n\nselect o from Order o join fetch o.member m\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0.member_id, m1_0.city, m1_0.street,\n#              m1_0.zipcode, m1_0.name, o1_0.delivery_id,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n\n#   Hibernate: select oi1_0.order_id, ... where oi1_0.order_id=?   x10\n#   Hibernate: select i1_0.item_id, ... where i1_0.item_id=?       x10\n\n#   Session Metrics { 21 JDBC statements were executed }\n\n#   31 -> 21\n\n# --- ③ 배송도 ---\n\nselect o from Order o join fetch o.member m join fetch o.delivery d\n\n#   Hibernate: \n#       select o1_0.order_id, d1_0.delivery_id, d1_0.city, d1_0.street,\n#              d1_0.zipcode, d1_0.status, m1_0.member_id, m1_0.city,\n#              m1_0.street, m1_0.zipcode, m1_0.name,\n#              o1_0.order_date, o1_0.status\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       join delivery d1_0 on d1_0.delivery_id=o1_0.delivery_id\n\n#   Session Metrics { 21 JDBC statements were executed }\n\n#   (화면이 delivery 를 안 쓰면 그대로다)\n#   (쓰면 31 -> 21 이 된다)\n\n# --- ④ 배치 사이즈 ---\n\nspring.jpa.properties.hibernate.default_batch_fetch_size: 100\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0..., d1_0... from orders o1_0\n#       join member m1_0 ... join delivery d1_0 ...\n\n#   Hibernate: \n#       select oi1_0.order_id, oi1_0.order_item_id, oi1_0.count,\n#              oi1_0.item_id, oi1_0.order_price\n#       from order_item oi1_0\n#       where oi1_0.order_id in (?,?,?,?,?,?,?,?,?,?)\n\n#   Hibernate: \n#       select i1_0.item_id, i1_0.dtype, i1_0.name, i1_0.price,\n#              i1_0.stock_quantity, ... from item i1_0\n#       where i1_0.item_id in (?,?,?)\n\n#   Session Metrics {\n#       3 JDBC statements were executed\n#       41 entities were loaded\n#   }\n\n#   21 -> 3\n\n#   in 절이 둘이다\n\n# --- ⑤ DTO 조회 ---\n\nselect new hello.OrderListDto(o.id, m.name, i.name,\n                              oi.orderPrice, oi.count, o.status, o.orderDate)\nfrom Order o\njoin o.member m\njoin o.orderItems oi\njoin oi.item i\n\n#   Hibernate: \n#       select o1_0.order_id, m1_0.name, i1_0.name, oi1_0.order_price,\n#              oi1_0.count, o1_0.status, o1_0.order_date\n#       from orders o1_0\n#       join member m1_0 on m1_0.member_id=o1_0.member_id\n#       join order_item oi1_0 on o1_0.order_id=oi1_0.order_id\n#       join item i1_0 on i1_0.item_id=oi1_0.item_id\n\n#   Session Metrics {\n#       1 JDBC statements were executed\n#       0 entities were loaded\n#   }\n\n#   3 -> 1\n#   엔티티 41 -> 0\n\n# --- 정리 ---\n\n#   단계          쿼리   엔티티\n#   그대로         31     41\n#   페치조인 x2     11     41\n#   + 배치          3     41\n#   DTO             1      0\n\n#   (delivery 를 화면에서 쓴다고 가정)\n\n# --- 주문 100건이면 ---\n\n#   그대로         301\n#   페치조인 x2     201\n#   + 배치           3\n#   DTO              1\n\n#   배치부터는 건수와 무관하다\n\n# --- 쿼리 개수 테스트 ---\n\n@Test\nvoid 주문목록_쿼리개수() throws Exception {\n    stats.clear();\n    mvc.perform(get(\"/orders\")).andExpect(status().isOk());\n    assertThat(stats.getPrepareStatementCount()).isLessThanOrEqualTo(3);\n}\n\n#   (배치 적용 전)\n#   expected: <= 3 but was: 31\n#   FAILED\n\n#   (배치 적용 후)\n#   PASSED\n\n#   화면에 한 줄을 추가하면\n\n<td th:text=\"${item.member.address.city}\"></td>\n\n#   (배치 덕에 회원은 이미 로딩됨)\n#   PASSED\n\n<td th:text=\"${item.orderItems[0].item.categories.size()}\"></td>\n\n#   Hibernate: select ... from category_item ... where item_id in (?,?,?)\n\n#   4 queries\n#   expected: <= 3 but was: 4\n#   FAILED\n\n#   회귀를 잡았다",
+   "note": "**31 → 21 → 11 → 3 → 1** 이다. **네 단계**다.\n\n**배치부터는 건수와 무관**하다. **주문이 100건이어도 3개**다.\n\n**DTO 는 엔티티도 0개**다. **다른 종류의 해결**이다.\n\n**쿼리 개수 테스트가 회귀를 잡는다.** **화면에 한 줄을 추가하면 4개가 되어 실패**한다.\n\n**다음 절에서 도메인 모델 패턴을 결산한다.**"
+  }
+ ],
+ "recap": [
+  "**31 → 21 → 11 → 3 → 1** 네 단계로 줄인다.",
+  "**`@ManyToOne`·`@OneToOne` 은 페치 조인**이 안전하다.",
+  "**컬렉션은 배치 사이즈**로 — 페이징과 같이 쓸 수 있다.",
+  "**실무 조합은 \"N:1 은 페치 조인, 1:N 은 배치\"** 다.",
+  "**배치부터는 건수와 무관**하다.",
+  "**DTO 는 엔티티를 0개**로 만든다 — 다른 종류의 해결.",
+  "**DTO 는 화면과 쿼리가 붙는다.**",
+  "**성능이 문제 되기 전에 DTO 로 가지 않는다.**",
+  "**쿼리 개수 테스트**로 회귀를 막는다."
+ ],
+ "drills": [
+  {
+   "task": "주문을 10건 만들고 쿼리를 센다.",
+   "done_when": "31개인 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "페치 조인을 둘 붙인다.",
+   "done_when": "11개가 되는 것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "배치 사이즈를 켠다.",
+   "done_when": "3개가 되고 `in` 절이 나오는 것을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "쿼리 개수 테스트를 쓴다.",
+   "done_when": "화면에 한 줄 추가하면 깨지는 것을 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네 단계는?",
+   "a": "페치 조인(회원), 페치 조인(배송), 배치 사이즈, DTO 조회다."
+  },
+  {
+   "q": "컬렉션을 왜 페치 조인 안 하나?",
+   "a": "행이 늘고 페이징이 메모리에서 일어난다."
+  },
+  {
+   "q": "배치 사이즈의 이점은?",
+   "a": "건수와 무관하게 쿼리가 고정되고 페이징과 같이 쓸 수 있다."
+  },
+  {
+   "q": "DTO 조회의 대가는?",
+   "a": "화면과 쿼리가 붙어 화면이 바뀌면 쿼리를 고쳐야 한다."
+  },
+  {
+   "q": "회귀를 어떻게 막나?",
+   "a": "하이버네이트 통계로 쿼리 개수를 검증하는 테스트를 둔다."
+  }
+ ],
+ "terms": [],
+ "sources": [
+  {
+   "title": "Hibernate ORM — Fetching",
+   "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+   "publisher": "Hibernate"
+  },
+  {
+   "title": "Jakarta Persistence 3.1",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Jakarta EE"
+  },
+  {
+   "title": "실전! 스프링 부트와 JPA 활용1 (차례 출처)",
+   "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+   "publisher": "인프런 · 김영한"
+  }
+ ]
+}
