@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "micrometer",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "마이크로미터",
+ "summary": "추상화가 무엇을 하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇을 추상화하는지 안다.",
+  "네 계기를 만든다.",
+  "게이지 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절에서 숫자를 골랐다.** **그 숫자를 만드는 층을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "로그 앞단과 같은 모양",
+   "ascii": "   the same shape as the logging facade\n\n   my code talks to one small interface\n   one jar on the classpath decides where it goes\n   swapping that jar changes nothing in my code\n\n   this is the arrangement chapter five already swapped once",
+   "note": "**5장에서 이미 한 번 갈아** 끼운 배치다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재는 코드가 보내는 곳을 몰라야 한다",
+   "md": "**보내는 곳이 여럿**이다.\n\n> **프로메테우스·데이터독·뉴렐릭**이다.\n> **바꿀 때 코드를 안** 고친다.\n> **아래에서 갈아** 끼운다.\n\n**5.5절과 같은 구조**다.\n\n> **거기선 로그백을 log4j2 로** 바꿨다.\n> **여기도 JAR 하나**다.\n> **6.4절 조건이 붙인**다.\n\n**계기가** 넷이다.\n\n> **9.1절의 그 종류**다.\n> **여기서 만들어** 본다.\n> **고르는 게** 중요하다.\n\n**꼬리표는 여기서** 붙는다.\n\n> **전역으로 붙일 수도** 있다.\n> **아래에서 그걸** 한다.\n> **9.5절에서 그게 왜 필요한지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 계기",
+   "ascii": "   four instruments, and what each remembers\n\n   counter    one number that only goes up\n   gauge      one number read on demand, from something else\n   timer      count, total, max, and optionally buckets\n   summary    the same, for things that are not time\n\n   a gauge holds a reference; the others hold state themselves",
+   "note": "**게이지만 남의 것을 가리키고 나머지는 자기가** 들고 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "게이지가 가리키던 것이 사라지면 값이 사라진다",
+   "md": "**약한 참조**다.\n\n> **가리키던 게 회수되면** 끝이다.\n> **아래에서 그걸** 만든다.\n> **필드로 잡아** 둔다.\n\n**같은 이름을 다시 만들면 무시**된다.\n\n> **처음 것이** 남는다.\n> **아래에서 확인**한다.\n> **조용히** 그렇다.\n\n**꼬리표 순서는 안** 따진다.\n\n> **같은 계열이** 된다.\n> **아래에서 확인**한다.\n> **개수와 이름만** 본다.\n\n**계기를 매번 만들면** 느리다.\n\n> **찾는 값이** 있다.\n> **아래에서 재** 본다.\n> **필드에 담아** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 무엇이 붙어 있나\n\n$ curl -s localhost:8080/registry\n종류: io.micrometer.core.instrument.simple.SimpleMeterRegistry\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep micrometer\n|    +--- io.micrometer:micrometer-core:1.13.2\n|    |    \\--- io.micrometer:micrometer-commons:1.13.2\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'SimpleMetricsExportAutoConfiguration matched' | head -3\n   SimpleMetricsExportAutoConfiguration matched:\n      - @ConditionalOnMissingBean (types: MeterRegistry) did not find any beans\n\n--   6.5절의 그 조건이다\n--   아무것도 안 넣으면 메모리에만 담는다\n\n\n-- 하나를 넣으면 바뀐다\n\ndependencies {\n    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'\n}\n\n$ curl -s localhost:8080/registry\n종류: io.micrometer.prometheusmetrics.PrometheusMeterRegistry\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'SimpleMetricsExportAutoConfiguration:' | head -3\n   SimpleMetricsExportAutoConfiguration:\n      Did not match:\n         - @ConditionalOnMissingBean found beans of type\n           'io.micrometer.core.instrument.MeterRegistry' prometheusMeterRegistry\n\n$ grep -rn 'MeterRegistry' src/main/java | wc -l\n      3\n$ git diff --stat src/main/java\n\n--   내 코드는 한 줄도 안 고쳤다\n--   5.5절에서 로거를 바꿀 때와 같다\n\n\n-- 둘을 같이 넣으면\n\ndependencies {\n    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'\n    runtimeOnly 'io.micrometer:micrometer-registry-jmx'\n}\n\n$ curl -s localhost:8080/registry\n종류: io.micrometer.core.instrument.composite.CompositeMeterRegistry\n\n$ curl -s localhost:8080/registry/children\nPrometheusMeterRegistry\nJmxMeterRegistry\n\n--   합친 것이 된다\n--   같은 숫자가 두 곳으로 간다\n--   5.5절에서는 둘이면 싸웠다\n\n\n-- ① 세기\n\n@Service\nclass OrderService {\n    private final Counter placed;\n    private final Counter failed;\n\n    OrderService(MeterRegistry registry) {\n        this.placed = Counter.builder(\"order.placed\")\n                .description(\"접수된 주문 수\")\n                .baseUnit(\"orders\")\n                .register(registry);\n        this.failed = registry.counter(\"order.failed\");\n    }\n\n    Order place(String item, int qty) {\n        try {\n            var o = repo.save(new Order(item, qty));\n            placed.increment();\n            return o;\n        } catch (Exception e) {\n            failed.increment();\n            throw e;\n        }\n    }\n}\n\n$ for i in 1 2 3; do curl -s -o /dev/null \"localhost:8080/orders?item=x&qty=1\"; done\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -m json.tool\n{\n    \"name\": \"order.placed\",\n    \"description\": \"접수된 주문 수\",\n    \"baseUnit\": \"orders\",\n    \"measurements\": [ { \"statistic\": \"COUNT\", \"value\": 3.0 } ]\n}\n\n\n-- 내려가지 않는다\n\n$ curl -s localhost:8080/orders/1 -X DELETE > /dev/null\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n3.0\n\n--   9.1절에서 말한 그것이다\n\n\n-- ② 재기\n\n@Bean\nGauge queueGauge(MeterRegistry registry, OrderQueue queue) {\n    return Gauge.builder(\"order.queue.size\", queue, OrderQueue::size)\n            .description(\"대기 중인 주문\")\n            .register(registry);\n}\n\n$ curl -s localhost:8080/actuator/metrics/order.queue.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n0.0\n\n$ for i in $(seq 1 5); do curl -s -o /dev/null -X POST localhost:8080/queue; done\n$ curl -s localhost:8080/actuator/metrics/order.queue.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n5.0\n\n$ curl -s -X POST localhost:8080/queue/drain > /dev/null\n$ curl -s localhost:8080/actuator/metrics/order.queue.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n0.0\n\n--   오르내린다\n--   부를 때 큐에 물어본다\n\n\n-- 게이지가 사라지는 함정\n\n@Bean\nApplicationRunner setup(MeterRegistry registry) {\n    return args -> {\n        var list = new ArrayList<String>();       // 지역 변수다\n        Gauge.builder(\"my.list.size\", list, List::size).register(registry);\n        list.add(\"a\"); list.add(\"b\");\n    };\n}\n\n$ curl -s localhost:8080/actuator/metrics/my.list.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n2.0\n\n$ curl -s -X POST localhost:8080/actuator/gc > /dev/null 2>&1 \\\n  || jcmd $(pgrep -f app.jar) GC.run\n\n$ curl -s localhost:8080/actuator/metrics/my.list.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\nNaN\n\n--   가리키던 것이 회수됐다\n--   NaN 이 된다\n\n\n-- 잡아 두면 산다\n\n@Component\nclass ListHolder {\n    private final List<String> list = new ArrayList<>();   // 필드다\n\n    ListHolder(MeterRegistry registry) {\n        Gauge.builder(\"my.list.size\", list, List::size).register(registry);\n    }\n}\n\n$ jcmd $(pgrep -f app.jar) GC.run > /dev/null\n$ curl -s localhost:8080/actuator/metrics/my.list.size | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n2.0\n\n--   필드로 잡아 두면 안 사라진다\n\n\n-- ③ 시간 재기\n\n@Timed(value = \"order.place\", description = \"주문 처리 시간\")\nOrder place(String item, int qty) { ... }\n\n// 또는 직접\nTimer timer = Timer.builder(\"order.place\")\n        .publishPercentiles(0.5, 0.95, 0.99)\n        .register(registry);\n\nOrder place(String item, int qty) {\n    return timer.record(() -> repo.save(new Order(item, qty)));\n}\n\n$ for i in $(seq 1 100); do curl -s -o /dev/null \"localhost:8080/orders?item=x&qty=1\"; done\n\n$ curl -s localhost:8080/actuator/metrics/order.place | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nfor m in d['measurements']: print('%-12s %s' % (m['statistic'], round(m['value'],4)))\"\nCOUNT        100.0\nTOTAL_TIME   1.0412\nMAX          0.1204\n\n$ curl -s localhost:8080/actuator/prometheus | grep '^order_place' | head -5\norder_place_seconds{quantile=\"0.5\"} 0.008\norder_place_seconds{quantile=\"0.95\"} 0.041\norder_place_seconds{quantile=\"0.99\"} 0.118\norder_place_seconds_count 100.0\norder_place_seconds_sum 1.0412\n\n--   백분위가 나온다\n--   9.4절에서 이 형식을 본다\n\n\n-- ④ 시간이 아닌 것\n\nDistributionSummary size = DistributionSummary.builder(\"order.amount\")\n        .baseUnit(\"won\")\n        .publishPercentiles(0.5, 0.95)\n        .register(registry);\n\nsize.record(order.getTotal());\n\n$ curl -s localhost:8080/actuator/metrics/order.amount | python3 -c \"\nimport json,sys\nfor m in json.load(sys.stdin)['measurements']:\n    print('%-12s %s' % (m['statistic'], round(m['value'])))\"\nCOUNT        100\nTOTAL         842000\nMAX           45000\n\n--   금액이나 크기에 쓴다\n\n\n-- 꼬리표를 붙인다\n\nregistry.counter(\"order.placed\", \"channel\", channel, \"paid\", String.valueOf(paid))\n        .increment();\n\n$ curl -s localhost:8080/actuator/metrics/order.placed | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint('합계', d['measurements'][0]['value'])\nfor t in d['availableTags']: print(' ', t['tag'], t['values'])\"\n합계 100.0\n  channel ['web', 'app']\n  paid ['true', 'false']\n\n$ curl -s 'localhost:8080/actuator/metrics/order.placed?tag=channel:app' \\\n    | python3 -c \"import json,sys; \\\nprint(json.load(sys.stdin)['measurements'][0]['value'])\"\n38.0\n\n--   9.3절에서 이걸 제대로 본다\n\n\n-- 순서는 안 따진다\n\nregistry.counter(\"order.x\", \"a\", \"1\", \"b\", \"2\").increment();\nregistry.counter(\"order.x\", \"b\", \"2\", \"a\", \"1\").increment();\n\n$ curl -s localhost:8080/actuator/metrics/order.x | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n2.0\n\n$ curl -s localhost:8080/actuator/prometheus | grep -c '^order_x_total'\n1\n\n--   같은 계열이다\n\n\n-- 꼬리표가 다르면 다른 계열이다\n\nregistry.counter(\"order.x\", \"a\", \"1\").increment();\nregistry.counter(\"order.x\", \"a\", \"1\", \"b\", \"2\").increment();\n\n$ curl -s localhost:8080/actuator/prometheus | grep '^order_x_total'\norder_x_total{a=\"1\"} 1.0\norder_x_total{a=\"1\",b=\"2\"} 1.0\n\n--   개수가 다르면 다른 것이다\n\n\n-- 전역 꼬리표\n\n@Bean\nMeterRegistryCustomizer<MeterRegistry> common(\n        @Value(\"${spring.application.name}\") String app,\n        Environment env) {\n    return registry -> registry.config().commonTags(\n        \"application\", app,\n        \"env\", String.join(\",\", env.getActiveProfiles()),\n        \"host\", hostname());\n}\n\n$ curl -s localhost:8080/actuator/prometheus | grep '^order_placed_total' | head -2\norder_placed_total{application=\"orders\",channel=\"web\",env=\"prod\",\n  host=\"app-1\",paid=\"true\"} 62.0\n\n$ curl -s localhost:8080/actuator/prometheus | grep -c 'application=\"orders\"'\n412\n\n--   412 개 줄에 다 붙었다\n--   9.5절에서 왜 필요한지 본다\n\n\n-- 같은 이름을 다시 만들면\n\nCounter a = Counter.builder(\"order.dup\").description(\"첫째\").register(registry);\nCounter b = Counter.builder(\"order.dup\").description(\"둘째\").register(registry);\na.increment(); b.increment();\n\n$ curl -s localhost:8080/actuator/metrics/order.dup | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nprint(d['description'], d['measurements'][0]['value'])\"\n첫째 2.0\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'duplicate\\|warn.*meter'\n0\n\n--   둘째 설명이 조용히 버려졌다\n--   같은 계기를 가리킨다\n\n\n-- 매번 만들면 느리다\n\n// 매번\nvoid handle() { registry.counter(\"a.b\", \"k\", \"v\").increment(); }\n\n// 필드로\nprivate final Counter c = registry.counter(\"a.b\", \"k\", \"v\");\nvoid handle() { c.increment(); }\n\n$ curl -s localhost:8080/bench/counter?mode=lookup\n1000000 번: 214 ms\n$ curl -s localhost:8080/bench/counter?mode=field\n1000000 번: 8 ms\n\n--   찾는 비용이 있다\n--   뜨거운 자리는 필드에 담는다\n\n\n-- 필터로 걸러 낸다\n\n@Bean\nMeterFilter dropNoisy() {\n    return MeterFilter.deny(id -> id.getName().startsWith(\"jvm.buffer\"));\n}\n\n@Bean\nMeterFilter capTags() {\n    return MeterFilter.maximumAllowableTags(\"order.lookup\", \"id\", 100,\n                                            MeterFilter.deny());\n}\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys; n=json.load(sys.stdin)['names']\nprint(len(n), len([x for x in n if x.startswith('jvm.buffer')]))\"\n68 0\n\n$ for i in $(seq 1 5000); do curl -s -o /dev/null \"localhost:8080/orders/$i\"; done\n$ curl -s localhost:8080/actuator/prometheus | grep -c '^order_lookup'\n100\n\n--   9.1절의 그 폭발을 막았다\n--   백 개에서 끊긴다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '추상화'    '보내는 곳을 모름' \\\n  'JAR 하나'  '레지스트리가 바뀜' \\\n  '둘이면'    '합쳐짐' \\\n  '세기'      '올라만 감' \\\n  '재기'      '오르내림' \\\n  '게이지'    '약한 참조' \\\n  '시간'      '백분위' \\\n  '꼬리표'    '순서 무관' \\\n  '전역'      '412 줄에 붙음' \\\n  '필터'      '폭발을 막음'\n\n추상화                     보내는 곳을 모름\nJAR 하나                   레지스트리가 바뀜\n둘이면                     합쳐짐\n세기                       올라만 감\n재기                       오르내림\n게이지                     약한 참조\n시간                       백분위\n꼬리표                     순서 무관\n전역                       412 줄에 붙음\n필터                       폭발을 막음\n\n--   9.3절에서 값을 직접 읽는다",
+   "note": "**JAR 하나를 넣으니 레지스트리가 `SimpleMeterRegistry` 에서 `PrometheusMeterRegistry` 로 바뀌는데 내 코드는 한 줄도 안** 고쳤다.\n\n**둘을 넣으면 싸우지 않고 `CompositeMeterRegistry` 로** 합쳐진다.\n\n**지역 변수를 가리킨 게이지가 회수 뒤 `NaN` 이 되고 필드로 잡으면 2.0 으로** 남는다.\n\n**같은 이름을 다시 만들면 둘째 설명이 조용히 버려지고 계기는** 하나다.\n\n**필터로 꼬리표 상한을 두니 9.1절의 5000 계열이 100 에서** 끊긴다."
+  }
+ ],
+ "recap": [
+  "**보내는 곳을 안** 알아도 된다.",
+  "**JAR 이** 정한다.",
+  "**둘이면** 합쳐진다.",
+  "**계기가** 넷이다.",
+  "**세기는 올라만** 간다.",
+  "**게이지는 약한** 참조다.",
+  "**시간은 백분위를** 낸다.",
+  "**꼬리표 순서는 무**관하다.",
+  "**필터로** 막는다."
+ ],
+ "drills": [
+  {
+   "task": "레지스트리를 갈아 끼운다.",
+   "done_when": "코드를 안 고친 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "게이지를 지역 변수로 만든다.",
+   "done_when": "NaN 이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "타이머에 백분위를 켠다.",
+   "done_when": "분위 값을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "꼬리표 상한 필터를 건다.",
+   "done_when": "계열이 끊기는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "보내는 곳을 어떻게 바꾸나?",
+   "a": "레지스트리 JAR 를 바꾼다. 재는 코드는 안 고친다."
+  },
+  {
+   "q": "레지스트리를 둘 넣으면?",
+   "a": "합쳐져서 같은 숫자가 양쪽으로 간다."
+  },
+  {
+   "q": "게이지가 NaN 이 되는 이유는?",
+   "a": "가리키던 객체가 회수돼서다. 필드로 잡아 둔다."
+  },
+  {
+   "q": "같은 이름으로 계기를 두 번 만들면?",
+   "a": "하나만 남고 나중 설정은 조용히 버려진다."
+  },
+  {
+   "q": "꼬리표 폭발을 어떻게 막나?",
+   "a": "필터로 값 개수 상한을 둔다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "레지스트리",
+   "def": "계기들을 담고 어디로 내보낼지 아는 곳."
+  },
+  {
+   "term": "계기",
+   "def": "숫자를 재는 단위. 세기·재기·시간·요약 넷이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Micrometer — Concepts",
+   "url": "https://docs.micrometer.io/micrometer/reference/concepts.html",
+   "publisher": "Micrometer"
+  },
+  {
+   "title": "Spring Boot — Metrics",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/metrics.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

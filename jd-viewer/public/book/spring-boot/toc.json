@@ -623,7 +623,7 @@
           "title": "마이크로미터",
           "summary": "추상화가 무엇을 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -631,7 +631,7 @@
           "title": "메트릭 엔드포인트",
           "summary": "값을 직접 읽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",

@@ -1,0 +1,134 @@
+{
+ "book": "spring-boot",
+ "id": "metrics-endpoint",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "메트릭 엔드포인트",
+ "summary": "값을 직접 읽는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이름 목록을 훑는다.",
+  "꼬리표로 좁힌다.",
+  "한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절에서 계기를** 만들었다. **그 값을 눈으로** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "질의 언어가 아니다",
+   "ascii": "   the endpoint is a browser, not a query language\n\n   no argument gives the list of names\n   a name gives that meter, summed over every tag\n   a name plus tags narrows it before summing\n\n   there is no way to ask for a rate or a window",
+   "note": "**비율이나 구간을 물을 방법이** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "지금 값을 확인하는 데는 이것으로 충분하다",
+   "md": "**도구 없이 바로** 본다.\n\n> **9.7절의 그림판이 없어도** 된다.\n> **`curl` 하나면** 된다.\n> **아래에서 그렇게** 쓴다.\n\n**무엇이 있는지 훑는**다.\n\n> **이름만 먼저** 본다.\n> **아래에서 갈래별로** 센다.\n> **부트가 많이 붙여** 준다.\n\n**꼬리표로** 좁힌다.\n\n> **9.1절에서 한 번** 했다.\n> **여기서 제대로** 본다.\n> **조합이** 된다.\n\n**합계라는 걸 잊지** 않는다.\n\n> **다 더한 값**이다.\n> **아래에서 그 함정을** 본다.\n> **9.6절이 그걸** 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "합계가 감추는 것",
+   "ascii": "   what the sum hides\n\n   one endpoint at ten milliseconds, called a thousand times\n   one endpoint at two seconds, called twice\n\n   the combined average says forty milliseconds, which is nobody",
+   "note": "**합친 평균 40 밀리초는 아무도 겪지 않은** 값이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이걸로 감시하면 안 된다",
+   "md": "**지금 값뿐**이다.\n\n> **과거가** 없다.\n> **아래에서 그걸** 겪는다.\n> **9.5절이 그걸** 모은다.\n\n**두 번 불러 빼면** 틀린다.\n\n> **재기동이 끼면** 음수다.\n> **9.1절에서** 봤다.\n> **아래에서 그걸** 만든다.\n\n**계열마다 부르면** 느리다.\n\n> **호출이** 많아진다.\n> **9.4절이 한 번에** 준다.\n> **아래에서 세어** 본다.\n\n**없는 이름은 404**다.\n\n> **아직 안 만들어진 계기**다.\n> **처음 쓸 때** 생긴다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "기동 로그와 엔드포인트 응답",
+   "sql": "-- 이름을 훑는다\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['names']))\"\n74\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys\nfrom collections import Counter\nn = json.load(sys.stdin)['names']\nc = Counter(x.split('.')[0] for x in n)\nfor k, v in c.most_common(8): print('%-14s %d' % (k, v))\n\"\njvm            22\nhttp            4\nhikaricp        9\ntomcat          6\nsystem          4\nprocess         3\nspring          3\norder           5\n\n--   내가 만든 건 다섯이다\n--   나머지는 부트가 붙였다\n\n\n-- 하나를 읽는다\n\n$ curl -s localhost:8080/actuator/metrics/jvm.memory.used | python3 -m json.tool\n{\n    \"name\": \"jvm.memory.used\",\n    \"description\": \"The amount of used memory\",\n    \"baseUnit\": \"bytes\",\n    \"measurements\": [ { \"statistic\": \"VALUE\", \"value\": 187432448.0 } ],\n    \"availableTags\": [\n        { \"tag\": \"area\", \"values\": [\"heap\", \"nonheap\"] },\n        { \"tag\": \"id\", \"values\": [\"G1 Survivor Space\", \"Metaspace\",\n                                  \"G1 Old Gen\", \"G1 Eden Space\", ...] }\n    ]\n}\n\n--   187MB 는 다 더한 값이다\n\n\n-- 꼬리표로 좁힌다\n\n$ for a in heap nonheap; do\n    printf '%-8s ' \"$a\"\n    curl -s \"localhost:8080/actuator/metrics/jvm.memory.used?tag=area:$a\" \\\n      | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n  done\nheap     118 MB\nnonheap  69 MB\n\n$ curl -s 'localhost:8080/actuator/metrics/jvm.memory.used?tag=area:heap' \\\n    | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['availableTags']:\n    if t['tag'] == 'id': print(t['values'])\"\n['G1 Survivor Space', 'G1 Old Gen', 'G1 Eden Space']\n\n--   좁히면 남은 꼬리표도 줄어든다\n\n\n-- 조합한다\n\n$ curl -s 'localhost:8080/actuator/metrics/jvm.memory.used?tag=area:heap&tag=id:G1%20Old%20Gen' \\\n    | python3 -c \"import json,sys; \\\nprint(round(json.load(sys.stdin)['measurements'][0]['value']/1e6), 'MB')\"\n42 MB\n\n--   9.1절에서 한 것과 같다\n\n\n-- 요청을 갈라 본다\n\n$ curl -s localhost:8080/actuator/metrics/http.server.requests | python3 -c \"\nimport json,sys\nd = json.load(sys.stdin)\nfor m in d['measurements']: print('%-12s %s' % (m['statistic'], round(m['value'],3)))\nfor t in d['availableTags']: print('%-10s %s' % (t['tag'], t['values']))\n\"\nCOUNT        6012.0\nTOTAL_TIME   241.812\nMAX          2.104\nmethod       ['GET', 'POST']\nuri          ['/hello', '/orders', '/orders/{id}', '/report', '/actuator/health']\noutcome      ['SUCCESS', 'CLIENT_ERROR', 'SERVER_ERROR']\nstatus       ['200', '201', '400', '404', '500']\n\n$ for u in /hello /orders /report; do\n    printf '%-10s ' \"$u\"\n    curl -s \"localhost:8080/actuator/metrics/http.server.requests?tag=uri:$u\" \\\n      | python3 -c \"\nimport json,sys\nd = {m['statistic']: m['value'] for m in json.load(sys.stdin)['measurements']}\nprint('%6d 건  평균 %6.1f ms  최대 %7.1f ms' % (\n    d['COUNT'], d['TOTAL_TIME']/d['COUNT']*1000, d['MAX']*1000))\"\n  done\n\n/hello      5000 건  평균    2.1 ms  최대    41.0 ms\n/orders     1000 건  평균   11.5 ms  최대   204.0 ms\n/report        2 건  평균 2050.0 ms  최대  2104.0 ms\n\n--   전체 평균은 40.2 ms 였다\n--   갈라 보면 아무도 40ms 를 안 겪었다\n\n\n-- 오류만 본다\n\n$ for o in SUCCESS CLIENT_ERROR SERVER_ERROR; do\n    printf '%-14s ' \"$o\"\n    curl -s \"localhost:8080/actuator/metrics/http.server.requests?tag=outcome:$o\" \\\n      | python3 -c \"import json,sys; \\\nprint(int(json.load(sys.stdin)['measurements'][0]['value']))\"\n  done\nSUCCESS        5980\nCLIENT_ERROR     29\nSERVER_ERROR      3\n\n$ python3 -c \"print('오류율 %.3f%%' % (32 / 6012 * 100))\"\n오류율 0.532%\n\n--   비율은 내가 계산했다\n--   엔드포인트는 못 한다\n\n\n-- 없는 이름은 404\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    localhost:8080/actuator/metrics/order.refunded\n404\n\n$ curl -s -X POST 'localhost:8080/orders/1/refund' > /dev/null\n$ curl -s localhost:8080/actuator/metrics/order.refunded | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n1.0\n\n--   한 번도 안 쓰면 계기가 없다\n--   미리 만들고 싶으면 기동 때 0 으로 올려 둔다\n\n\n-- 미리 만들어 둔다\n\n@Bean\nApplicationRunner initMeters(MeterRegistry registry) {\n    return args -> {\n        registry.counter(\"order.refunded\");\n        registry.counter(\"order.failed\", \"reason\", \"stock\");\n        registry.counter(\"order.failed\", \"reason\", \"payment\");\n    };\n}\n\n$ curl -s localhost:8080/actuator/metrics/order.refunded | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n0.0\n\n$ curl -s localhost:8080/actuator/metrics/order.failed | python3 -c \"\nimport json,sys\nfor t in json.load(sys.stdin)['availableTags']: print(t['tag'], t['values'])\"\nreason ['stock', 'payment']\n\n--   0 이라도 있는 게 낫다\n--   9.10절의 알림이 없는 계열을 못 본다\n\n\n-- 두 번 불러 빼면\n\n$ A=$(curl -s localhost:8080/actuator/metrics/order.placed \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\")\n$ sleep 10\n$ B=$(curl -s localhost:8080/actuator/metrics/order.placed \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\")\n$ python3 -c \"print('초당 %.1f 건' % ((float('$B') - float('$A')) / 10))\"\n초당 4.2 건\n\n// 그 사이 재기동이 끼면\n$ pkill -f app.jar && java -jar build/libs/app.jar > /dev/null 2>&1 &\n$ C=$(curl -s localhost:8080/actuator/metrics/order.placed \\\n      | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\")\n$ python3 -c \"print('초당 %.1f 건' % ((float('$C') - float('$B')) / 10))\"\n초당 -4.1 건\n\n--   음수가 나왔다\n--   9.6절에서 이걸 다루는 함수를 본다\n\n\n-- 과거가 없다\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' \\\n    'localhost:8080/actuator/metrics/order.placed?start=-1h'\n200\n$ curl -s 'localhost:8080/actuator/metrics/order.placed?start=-1h' \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n42.0\n\n$ curl -s localhost:8080/actuator/metrics/order.placed \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n42.0\n\n--   모르는 인자는 무시된다\n--   8.2절에서 본 그것과 같다\n--   구간을 물을 방법이 없다\n\n\n-- 계열마다 부르면 느리다\n\n$ curl -s localhost:8080/actuator/metrics | python3 -c \"\nimport json,sys; print(len(json.load(sys.stdin)['names']))\"\n74\n\n$ time (for n in $(curl -s localhost:8080/actuator/metrics \\\n        | python3 -c \"import json,sys; print(' '.join(json.load(sys.stdin)['names']))\"); do\n    curl -s -o /dev/null \"localhost:8080/actuator/metrics/$n\"\n  done)\nreal\t0m1.842s\n\n$ time curl -s -o /dev/null localhost:8080/actuator/prometheus\nreal\t0m0.041s\n\n$ curl -s localhost:8080/actuator/prometheus | grep -c '^[a-z]'\n412\n\n--   74 번 대 한 번이다\n--   9.4절이 이걸 한 번에 준다\n\n\n-- 그래도 이걸 쓰는 자리\n\n$ curl -s localhost:8080/actuator/metrics/hikaricp.connections.active \\\n    | python3 -c \"import json,sys; \\\nprint('활성', json.load(sys.stdin)['measurements'][0]['value'])\"\n활성 8.0\n$ curl -s localhost:8080/actuator/metrics/hikaricp.connections.pending \\\n    | python3 -c \"import json,sys; \\\nprint('대기', json.load(sys.stdin)['measurements'][0]['value'])\"\n대기 4.0\n$ curl -s localhost:8080/actuator/metrics/hikaricp.connections.max \\\n    | python3 -c \"import json,sys; \\\nprint('최대', json.load(sys.stdin)['measurements'][0]['value'])\"\n최대 10.0\n\n--   ⑤ 6장의 그 풀이다\n--   지금 막혔는지 바로 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '인자 없음'  '이름 74 개' \\\n  '이름'       '다 더한 값' \\\n  '꼬리표'     '좁힘, 조합됨' \\\n  '평균'       '갈라 봐야 함' \\\n  '비율'       '내가 계산' \\\n  '없는 이름'  '404' \\\n  '미리 만들기' '0 으로 둠' \\\n  '두 번 빼기' '음수 가능' \\\n  '구간'       '못 물음' \\\n  '한 번에'    '9.4 절'\n\n인자 없음                  이름 74 개\n이름                       다 더한 값\n꼬리표                     좁힘, 조합됨\n평균                       갈라 봐야 함\n비율                       내가 계산\n없는 이름                  404\n미리 만들기                0 으로 둠\n두 번 빼기                 음수 가능\n구간                       못 물음\n한 번에                    9.4 절",
+   "note": "**이름 74 개 중 내가 만든 건 다섯이고 나머지는 부트가** 붙였다.\n\n**전체 평균이 40.2ms 인데 갈라 보니 2.1·11.5·2050ms 로 아무도 40ms 를 안** 겪었다.\n\n**한 번도 안 쓴 계기는 404 라 기동 때 0 으로 미리 만들어** 뒀다.\n\n**두 번 불러 빼는 중에 재기동이 끼니 초당 `-4.1 건` 이** 나온다.\n\n**계열마다 부르면 74 번에 1.842 초, 9.4절의 한 번은 0.041 초**다."
+  }
+ ],
+ "recap": [
+  "**이름을** 훑는다.",
+  "**값은** 합계다.",
+  "**꼬리표로** 좁힌다.",
+  "**조합이** 된다.",
+  "**평균은** 감춘다.",
+  "**비율은 내가** 센다.",
+  "**없으면 404**다.",
+  "**미리** 만든다.",
+  "**구간은 못** 묻는다."
+ ],
+ "drills": [
+  {
+   "task": "이름을 갈래별로 센다.",
+   "done_when": "내 것과 부트 것을 갈랐다.",
+   "minutes": 15
+  },
+  {
+   "task": "주소별로 갈라 본다.",
+   "done_when": "전체 평균과 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "계기를 미리 만든다.",
+   "done_when": "0 으로 보이는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 번 불러 빼 본다.",
+   "done_when": "재기동에 음수가 되는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이름만 주면 무엇이 나오나?",
+   "a": "모든 꼬리표를 다 더한 값이다."
+  },
+  {
+   "q": "전체 평균이 왜 위험한가?",
+   "a": "성격이 다른 주소들이 섞여 아무도 안 겪은 값이 된다."
+  },
+  {
+   "q": "한 번도 안 쓴 계기는?",
+   "a": "없어서 404 다. 기동 때 미리 만들어 둔다."
+  },
+  {
+   "q": "두 번 불러 빼면 왜 틀리나?",
+   "a": "그 사이 재기동이 끼면 음수가 된다."
+  },
+  {
+   "q": "이 엔드포인트로 못 하는 것은?",
+   "a": "구간이나 비율을 묻는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "측정값",
+   "def": "한 계기가 내놓는 통계 하나. 세기면 건수, 시간이면 건수와 합계와 최댓값이다."
+  },
+  {
+   "term": "꼬리표 좁히기",
+   "def": "특정 꼬리표 값만 골라 그것들만 더해 보는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot — Actuator Endpoints",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/endpoints.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Metrics",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/metrics.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Micrometer — Concepts",
+   "url": "https://docs.micrometer.io/micrometer/reference/concepts.html",
+   "publisher": "Micrometer"
+  }
+ ]
+}
