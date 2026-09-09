@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "lock",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "Lock",
+ "summary": "for update 가 붙는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "갱신 분실을 만든다.",
+  "낙관적 락을 본다.",
+  "비관적 락을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.12절에서 벌크가 `@Version` 을 안 올렸다.** **그 버전이 뭘 하는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 트랜잭션, 한 행",
+   "ascii": "   two transactions, one row, one lost update\n\n   A reads stock 10        B reads stock 10\n   A computes 10 - 1 = 9   B computes 10 - 1 = 9\n   A writes 9              B writes 9\n\n   two orders were placed and the stock went down by one",
+   "note": "**주문 둘에 재고가 하나** 줄었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "읽고 계산해서 쓰는 사이가 문제다",
+   "md": "**읽은 값이 낡는**다.\n\n> **읽고 쓰는 사이에 남이** 바꾼다.\n> **각자 옳게 계산**했다.\n> **결과만** 틀렸다.\n\n**트랜잭션만으로는 안** 막힌다.\n\n> **둘 다 커밋에** 성공한다.\n> **격리 수준을 올리면 성능이** 준다.\n> **읽기 커밋 수준이 기본**이다.\n\n**낙관적 락은 버전을 본다.**\n\n> **`update ... where version = ?`** 다.\n> **0줄이 바뀌면 남이 먼저 고친** 것이다.\n> **커밋 때 터진다.**\n\n**비관적 락은 DB 에 맡긴**다.\n\n> **`for update` 가** 붙는다.\n> **둘째는 읽기에서** 기다린다.\n> **터지지 않고 순서가** 생긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "막는 두 가지",
+   "ascii": "   two ways to stop it\n\n   optimistic   a version column, checked in the where clause\n   pessimistic  for update, the database refuses the second reader\n\n   the first one fails at commit, the second one waits at read",
+   "note": "**하나는 커밋에서, 하나는 읽기에서** 걸린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "for update 는 기다리다 안 되면 터진다",
+   "md": "**기다리는 동안 커넥션을 잡는**다.\n\n> **동시 요청이 몰리면 풀이** 마른다.\n> **⑤ 5.5절에서 본** 문제다.\n> **트랜잭션을 짧게** 둔다.\n\n**타임아웃을 준다.**\n\n> **`jakarta.persistence.lock.timeout`** 이다.\n> **넘으면 `PessimisticLockException`** 이다.\n> **무한정 기다리는 것보다** 낫다.\n\n**서로 다른 순서로 잡으면 교착**이다.\n\n> **A 는 1→2, B 는 2→1 로** 잡는다.\n> **DB 가 하나를** 죽인다.\n> **항상 같은 순서로** 잡는다.\n\n**벌크는 버전을 안** 올린다.\n\n> **5.12절에서 확인**했다.\n> **낙관적 락을 무력화**한다.\n> **벌크와 버전은 같이 쓰기** 어렵다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 갱신 분실을 만든다\n\n@Entity\npublic class Item {\n    @Id @GeneratedValue private Long id;\n    private String name;\n    private int stock;\n}\n\n@Test\nvoid 갱신_분실() throws Exception {\n    Long id = tx(() -> itemRepository.save(new Item(\"연필\", 10)).getId());\n\n    CountDownLatch read = new CountDownLatch(2);\n    Runnable order = () -> tx(() -> {\n        Item i = itemRepository.findById(id).orElseThrow();\n        read.countDown();\n        await(read);                       // 둘 다 읽을 때까지 기다린다\n        i.setStock(i.getStock() - 1);\n        return null;\n    });\n\n    Thread a = new Thread(order), b = new Thread(order);\n    a.start(); b.start(); a.join(); b.join();\n\n    System.out.println(\"남은 재고: \" +\n            tx(() -> itemRepository.findById(id).orElseThrow().getStock()));\n}\n\nHibernate: insert into item (name, stock, id) values (?, ?, ?)\nHibernate: select i1_0.id, i1_0.name, i1_0.stock from item i1_0\n           where i1_0.id=?\nHibernate: select i1_0.id, i1_0.name, i1_0.stock from item i1_0\n           where i1_0.id=?\nHibernate: update item set name=?, stock=? where id=?\nTRACE binding parameter (2:INTEGER) <- [9]\nHibernate: update item set name=?, stock=? where id=?\nTRACE binding parameter (2:INTEGER) <- [9]\nHibernate: select ... where i1_0.id=?\n남은 재고: 9\n\n--   둘 다 9 를 썼다\n--   주문은 둘인데 하나만 줄었다\n\n\n-- 버전을 붙인다\n\n@Entity\npublic class Item {\n    @Id @GeneratedValue private Long id;\n    private String name;\n    private int stock;\n\n    @Version\n    private Long version;\n}\n\n@Test\n@Transactional\nvoid 버전_동작() {\n    Item i = itemRepository.save(new Item(\"연필\", 10));\n    em.flush();\n    System.out.println(\"버전: \" + i.getVersion());\n\n    i.setStock(9);\n    em.flush();\n    System.out.println(\"고친 뒤 버전: \" + i.getVersion());\n}\n\nHibernate:\n    insert\n    into\n        item (name, stock, version, id)\n    values\n        (?, ?, ?, ?)\nTRACE binding parameter (3:BIGINT) <- [0]\n버전: 0\nHibernate:\n    update\n        item\n    set\n        name=?, stock=?, version=?\n    where\n        id=?\n        and version=?\nTRACE binding parameter (3:BIGINT) <- [1]\nTRACE binding parameter (5:BIGINT) <- [0]\n고친 뒤 버전: 1\n\n--   where 에 version 이 들어갔다\n--   새 버전을 같이 쓴다\n\n\n-- 다시 갱신 분실을 시도한다\n\n@Test\nvoid 낙관적_락() throws Exception {\n    Long id = tx(() -> itemRepository.save(new Item(\"연필\", 10)).getId());\n\n    List<String> results = Collections.synchronizedList(new ArrayList<>());\n    CountDownLatch read = new CountDownLatch(2);\n    Runnable order = () -> {\n        try {\n            tx(() -> {\n                Item i = itemRepository.findById(id).orElseThrow();\n                read.countDown(); await(read);\n                i.setStock(i.getStock() - 1);\n                return null;\n            });\n            results.add(\"성공\");\n        } catch (Exception e) {\n            results.add(e.getClass().getSimpleName());\n        }\n    };\n\n    Thread a = new Thread(order), b = new Thread(order);\n    a.start(); b.start(); a.join(); b.join();\n\n    System.out.println(\"결과: \" + results);\n    System.out.println(\"남은 재고: \" +\n            tx(() -> itemRepository.findById(id).orElseThrow().getStock()));\n}\n\nHibernate: select i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n           from item i1_0 where i1_0.id=?\nHibernate: select i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n           from item i1_0 where i1_0.id=?\nHibernate: update item set name=?, stock=?, version=?\n           where id=? and version=?\nTRACE binding parameter (5:BIGINT) <- [0]\nHibernate: update item set name=?, stock=?, version=?\n           where id=? and version=?\nTRACE binding parameter (5:BIGINT) <- [0]\n결과: [성공, ObjectOptimisticLockingFailureException]\n남은 재고: 9\n\n--   둘째 update 가 0 줄을 고쳤다\n--   version=0 인 행이 이미 없었다\n--   재고는 여전히 9 지만 실패를 알았다\n\n\n-- 실패를 다시 시도한다\n\n@Retryable(retryFor = ObjectOptimisticLockingFailureException.class,\n           maxAttempts = 3)\n@Transactional\npublic void order(Long id) {\n    Item i = itemRepository.findById(id).orElseThrow();\n    i.setStock(i.getStock() - 1);\n}\n\n결과: [성공, 성공]\n남은 재고: 8\n\nHibernate: select ... where i1_0.id=?\nHibernate: update item set ... where id=? and version=?\nTRACE binding parameter (5:BIGINT) <- [0]\nHibernate: select ... where i1_0.id=?\nHibernate: update item set ... where id=? and version=?\nTRACE binding parameter (5:BIGINT) <- [1]\n\n--   두 번째가 다시 읽고 version=1 로 썼다\n--   재고가 둘 줄었다\n\n\n-- 비관적 락을 건다\n\npublic interface ItemRepository extends JpaRepository<Item, Long> {\n\n    @Lock(LockModeType.PESSIMISTIC_WRITE)\n    Optional<Item> findWithLockById(Long id);\n}\n\n@Test\n@Transactional\nvoid 비관적_SQL() {\n    em.clear();\n    itemRepository.findWithLockById(1L);\n}\n\nHibernate:\n    select\n        i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n    from\n        item i1_0\n    where\n        i1_0.id=?\n    for update\n\n--   for update 가 붙었다\n--   내가 SQL 을 안 썼다\n\n\n-- 둘째가 기다린다\n\n@Test\nvoid 비관적_동작() throws Exception {\n    Long id = tx(() -> itemRepository.save(new Item(\"연필\", 10)).getId());\n\n    Runnable order = () -> tx(() -> {\n        long t = System.nanoTime();\n        Item i = itemRepository.findWithLockById(id).orElseThrow();\n        System.out.printf(\"  읽기까지 %d ms%n\",\n                (System.nanoTime() - t) / 1_000_000);\n        i.setStock(i.getStock() - 1);\n        sleep(300);\n        return null;\n    });\n\n    Thread a = new Thread(order), b = new Thread(order);\n    a.start(); sleep(50); b.start(); a.join(); b.join();\n\n    System.out.println(\"남은 재고: \" +\n            tx(() -> itemRepository.findById(id).orElseThrow().getStock()));\n}\n\nHibernate: select ... from item i1_0 where i1_0.id=? for update\n  읽기까지 4 ms\nHibernate: select ... from item i1_0 where i1_0.id=? for update\nHibernate: update item set name=?, stock=?, version=?\n           where id=? and version=?\n  읽기까지 302 ms\nHibernate: update item set name=?, stock=?, version=?\n           where id=? and version=?\n남은 재고: 8\n\n--   둘째가 302 ms 기다렸다\n--   앞이 커밋한 뒤에야 읽었다\n--   예외 없이 8 이 됐다\n\n\n-- 읽기 락은 다르다\n\n@Lock(LockModeType.PESSIMISTIC_READ)\nOptional<Item> findWithReadLockById(Long id);\n\nHibernate:\n    select i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n    from item i1_0 where i1_0.id=?\n    for share\n\n--   for update 가 아니라 for share 다\n--   둘이 같이 읽을 수 있다\n\n\n-- 타임아웃을 준다\n\n@Lock(LockModeType.PESSIMISTIC_WRITE)\n@QueryHints(@QueryHint(name = \"jakarta.persistence.lock.timeout\",\n                       value = \"1000\"))\nOptional<Item> findWithTimeoutById(Long id);\n\nHibernate:\n    select i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n    from item i1_0 where i1_0.id=?\n    for update wait 1\n\n예외: PessimisticLockException\n말:   could not obtain lock on row in relation \"item\"\n\n--   wait 1 이 붙었다\n--   7.5절의 힌트를 여기 쓴다\n\n\n-- 락 없이 읽으면 안 기다린다\n\n@Test\nvoid 락_없이_읽기() throws Exception {\n    // A 가 for update 로 잡고 있는 동안\n    Item i = tx(() -> itemRepository.findById(1L).orElseThrow());\n    System.out.println(\"읽었다: \" + i.getStock());\n}\n\nHibernate: select i1_0.id, i1_0.name, i1_0.stock, i1_0.version\n           from item i1_0 where i1_0.id=?\n읽었다: 10\n\n--   for update 가 없으니 안 막힌다\n--   커밋 전 값이 아니라 커밋된 값을 봤다\n\n\n-- 벌크는 버전을 안 올린다\n\n@Modifying(clearAutomatically = true)\n@Query(\"update Item i set i.stock = i.stock - 1 where i.id = :id\")\nint decrease(@Param(\"id\") Long id);\n\n@Test\n@Transactional\nvoid 벌크와_버전() {\n    Long v0 = (Long) em.createNativeQuery(\n            \"select version from item where id = 1\").getSingleResult();\n    itemRepository.decrease(1L);\n    Long v1 = (Long) em.createNativeQuery(\n            \"select version from item where id = 1\").getSingleResult();\n    System.out.println(\"버전: \" + v0 + \" -> \" + v1);\n}\n\nHibernate: select version from item where id = 1\nHibernate: update item set stock=(stock-1) where id=?\nHibernate: select version from item where id = 1\n버전: 0 -> 0\n\n--   5.12절에서 본 그대로다\n--   where 에 version 이 없다\n--   낙관적 락이 무력화된다\n\n\n-- 정리\n\n$ printf '%-20s %-26s %s\\n' \\\n  '락 없음' 'select' '갱신 분실' \\\n  '@Version' 'update ... and version=?' '커밋에서 실패' \\\n  'PESSIMISTIC_WRITE' 'select ... for update'   '읽기에서 대기' \\\n  'PESSIMISTIC_READ'  'select ... for share'    '같이 읽기 가능' \\\n  'lock.timeout'      'select ... for update wait 1' '기다리다 예외' \\\n  '벌크'  'update ... (version 없음)' '버전 안 오름'\n\n락 없음              select                     갱신 분실\n@Version             update ... and version=?   커밋에서 실패\nPESSIMISTIC_WRITE    select ... for update      읽기에서 대기\nPESSIMISTIC_READ     select ... for share       같이 읽기 가능\nlock.timeout         select ... for update wait 1 기다리다 예외\n벌크                 update ... (version 없음)  버전 안 오름\n\n--   8장에서 나머지 기능을 본다",
+   "note": "**락 없이는 둘 다 `[9]` 를 써서 주문 둘에 재고가 하나만** 줄었다.\n\n**`@Version` 이면 `update ... where id=? and version=?` 로 둘째가 `ObjectOptimisticLockingFailureException`** 이다.\n\n**`@Lock(PESSIMISTIC_WRITE)` 은 `for update` 를 붙이고 둘째가 302ms** 기다렸다.\n\n**`PESSIMISTIC_READ` 는 `for share`, 타임아웃을 주면 `for update wait 1`** 이다.\n\n**벌크는 `where` 에 `version` 이 없어 버전이 `0 -> 0`** 이다."
+  }
+ ],
+ "recap": [
+  "**읽고 쓰는 사이가** 문제다.",
+  "**둘 다 커밋에** 성공한다.",
+  "**버전을 `where` 에** 넣는다.",
+  "**0줄이면** 실패다.",
+  "**커밋에서** 터진다.",
+  "**`for update` 는 읽기에서** 막는다.",
+  "**타임아웃을** 준다.",
+  "**교착을** 조심한다.",
+  "**벌크는 버전을 안** 올린다."
+ ],
+ "drills": [
+  {
+   "task": "갱신 분실을 재현한다.",
+   "done_when": "재고가 하나만 준 걸 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "`@Version` 을 붙인다.",
+   "done_when": "`where` 절과 예외를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@Lock` 을 붙인다.",
+   "done_when": "`for update` 와 대기를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "락 타임아웃을 준다.",
+   "done_when": "`wait` 과 예외를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "갱신 분실은 왜 생기나?",
+   "a": "읽고 계산해서 쓰는 사이에 남이 같은 행을 바꿔서다."
+  },
+  {
+   "q": "낙관적 락은 SQL 을 어떻게 바꾸나?",
+   "a": "`update` 의 `where` 에 버전 조건을 넣는다."
+  },
+  {
+   "q": "실패는 언제 드러나나?",
+   "a": "0줄이 갱신되어 커밋 시점에 예외가 난다."
+  },
+  {
+   "q": "비관적 락은 무엇을 붙이나?",
+   "a": "조회에 `for update` 를 붙여 다른 트랜잭션을 기다리게 한다."
+  },
+  {
+   "q": "벌크 연산과 `@Version` 을 같이 쓰면?",
+   "a": "벌크는 버전을 올리지 않아 낙관적 락이 무력해진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "낙관적 락",
+   "def": "버전 컬럼으로 충돌을 커밋 시점에 잡는 방식."
+  },
+  {
+   "term": "비관적 락",
+   "def": "조회 시점에 DB 잠금을 걸어 다른 트랜잭션을 기다리게 하는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

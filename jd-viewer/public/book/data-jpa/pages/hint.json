@@ -1,0 +1,134 @@
+{
+ "book": "data-jpa",
+ "id": "hint",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "JPA Hint",
+ "summary": "읽기 전용 스냅샷을 안 만든다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "스냅샷의 비용을 안다.",
+  "QueryHints 를 쓴다.",
+  "언제 의미 없는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.2절에서 `readOnly` 가 스냅샷을 안 만들었다.** **여기서는 쿼리 하나만** 그렇게 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 행이 차지하는 것",
+   "ascii": "   what the context keeps for one loaded row\n\n   the entity itself   the object your code touches\n   the snapshot        a second copy, taken at load time\n\n   the dirty check compares the two at flush,\n   so the copy is the entire price of automatic updates",
+   "note": "**복사본이 자동 수정의 값**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "고칠 생각이 없는데 복사본을 만든다",
+   "md": "**변경 감지의 재료가 그것**이다.\n\n> **읽을 때 복사본을 하나** 만든다.\n> **flush 때 둘을** 비교한다.\n> **① 8.1절에서 본** 구조다.\n\n**조회만 할 때는 낭비**다.\n\n> **화면에 뿌리고 버린**다.\n> **비교할 일이 없**다.\n> **행이 많으면 그만큼** 쌓인다.\n\n**힌트로 그걸** 끈다.\n\n> **`@QueryHints` 에 `readOnly` 를** 준다.\n> **하이버네이트가 복사본을 안** 만든다.\n> **7.2절의 트랜잭션 설정과 범위가** 다르다.\n\n**SQL 은 안** 바뀐다.\n\n> **같은 문장이** 나간다.\n> **바뀌는 건 메모리와 flush** 다.\n> **아래에서 그걸** 잰다."
+  },
+  {
+   "type": "figure",
+   "caption": "힌트가 바꾸는 것",
+   "ascii": "   what a read only hint changes, and what it does not\n\n   the sql sent        exactly the same statement\n   the snapshot        not taken\n   the flush           no update generated for this entity\n   the memory used     roughly half per row\n\n   nothing in the statement shows that the hint was there",
+   "note": "**문장만 봐서는 알 수** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "고쳐도 안 나가는데 예외는 없다",
+   "md": "**7.2절과 같은 실패**다.\n\n> **`setUsername` 이 아무 일도 안** 한다.\n> **로그도 없**다.\n> **조회 전용에만 붙**인다.\n\n**전체에 붙일 필요는** 없다.\n\n> **대부분은 차이가 안** 보인다.\n> **큰 목록에만** 붙인다.\n> **측정 없이 붙이는 건 낭비**다.\n\n**`Page` 면 개수 쿼리에는 안** 붙는다.\n\n> **목록 쿼리에만 적용**된다.\n> **개수는 엔티티를 안 만들어 상관이** 없다.\n> **아래에서 확인**한다.\n\n**`forCounting` 이라는 옵션이** 있다.\n\n> **개수 쿼리에도 힌트를 줄지 정**한다.\n> **기본이 `true`** 다.\n> **타임아웃 같은 힌트에는 의미가** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "sql",
+   "caption": "구현을 안 쓰고 받아 낸 SQL",
+   "sql": "-- 스냅샷을 확인한다\n\n@Test\n@Transactional\nvoid 스냅샷() {\n    em.clear();\n    Member m = memberRepository.findById(1L).orElseThrow();\n\n    SessionImpl session = em.unwrap(SessionImpl.class);\n    EntityEntry entry = session.getPersistenceContext().getEntry(m);\n    System.out.println(\"상태:     \" + entry.getStatus());\n    System.out.println(\"스냅샷:   \" +\n            Arrays.toString(entry.getLoadedState()));\n}\n\nHibernate: select ... where m1_0.member_id=?\n상태:     MANAGED\n스냅샷:   [10, kwanhyun, 2026-09-10T02:48:01.1,\n           kwanhyun, 2026-09-10T02:48:01.1, 1, m1]\n\n--   읽은 값이 그대로 한 벌 더 있다\n\n\n-- 힌트를 붙인다\n\npublic interface MemberRepository extends JpaRepository<Member, Long> {\n\n    @QueryHints(@QueryHint(name = \"org.hibernate.readOnly\", value = \"true\"))\n    Optional<Member> findReadOnlyById(Long id);\n}\n\n@Test\n@Transactional\nvoid 힌트() {\n    em.clear();\n    Member m = memberRepository.findReadOnlyById(1L).orElseThrow();\n\n    SessionImpl session = em.unwrap(SessionImpl.class);\n    EntityEntry entry = session.getPersistenceContext().getEntry(m);\n    System.out.println(\"상태:   \" + entry.getStatus());\n    System.out.println(\"스냅샷: \" +\n            Arrays.toString(entry.getLoadedState()));\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.age, m1_0.created_by, m1_0.created_date,\n        m1_0.last_modified_by, m1_0.last_modified_date,\n        m1_0.team_id, m1_0.username\n    from\n        member m1_0\n    where\n        m1_0.member_id=?\n상태:   READ_ONLY\n스냅샷: null\n\n--   SQL 이 똑같다\n--   상태가 READ_ONLY 다\n--   스냅샷이 없다\n\n\n-- SQL 을 비교한다\n\n$ diff <(grep -A9 'select' normal.log) <(grep -A9 'select' hint.log)\n\n$ echo $?\n0\n\n--   한 글자도 안 다르다\n--   힌트는 문장에 안 나온다\n\n\n-- 고쳐도 안 나간다\n\n@Test\n@Transactional\nvoid 고쳐도() {\n    em.clear();\n    Member m = memberRepository.findReadOnlyById(1L).orElseThrow();\n    m.setUsername(\"고쳤다\");\n    em.flush();\n    System.out.println(\"flush 했는데 update 가 없다\");\n\n    em.clear();\n    System.out.println(\"다시 읽으면: \" +\n            memberRepository.findById(1L).orElseThrow().getUsername());\n}\n\nHibernate: select ... where m1_0.member_id=?\nflush 했는데 update 가 없다\nHibernate: select ... where m1_0.member_id=?\n다시 읽으면: m1\n\n--   예외가 없다\n--   7.2절의 readOnly 와 같은 종류다\n\n\n-- 일반 조회와 섞으면\n\n@Test\n@Transactional\nvoid 섞으면() {\n    em.clear();\n    Member readOnly = memberRepository.findReadOnlyById(1L).orElseThrow();\n    Member normal = memberRepository.findById(2L).orElseThrow();\n\n    readOnly.setUsername(\"A\");\n    normal.setUsername(\"B\");\n    em.flush();\n}\n\nHibernate: select ... where m1_0.member_id=?\nHibernate: select ... where m1_0.member_id=?\nHibernate:\n    update\n        member\n    set\n        age=?, last_modified_by=?, last_modified_date=?,\n        team_id=?, username=?\n    where\n        member_id=?\nTRACE binding parameter (5:VARCHAR) <- [B]\n\n--   update 가 하나만 나갔다\n--   엔티티 단위로 갈린다\n\n\n-- 같은 행을 두 방법으로 읽으면\n\n@Test\n@Transactional\nvoid 같은_행() {\n    em.clear();\n    Member first = memberRepository.findReadOnlyById(1L).orElseThrow();\n    Member second = memberRepository.findById(1L).orElseThrow();\n\n    System.out.println(\"같은 객체? \" + (first == second));\n    second.setUsername(\"고침\");\n    em.flush();\n    System.out.println(\"flush 끝\");\n}\n\nHibernate: select ... where m1_0.member_id=?\n같은 객체? true\nflush 끝\n\n--   두 번째는 1차 캐시가 답했다\n--   이미 READ_ONLY 라 고쳐도 안 나간다\n--   순서가 결과를 바꾼다\n\n\n-- 목록에 붙인다\n\n@QueryHints(@QueryHint(name = \"org.hibernate.readOnly\", value = \"true\"))\nPage<Member> findReadOnlyPageBy(Pageable pageable);\n\n@Test\n@Transactional\nvoid 목록() {\n    em.clear();\n    memberRepository.findReadOnlyPageBy(PageRequest.of(0, 3));\n}\n\nHibernate:\n    select ... from member m1_0\n    offset ? rows fetch first ? rows only\nHibernate:\n    select count(m1_0.member_id) from member m1_0\n\n--   개수 쿼리도 그대로 나간다\n--   힌트는 문장을 안 바꾼다\n\n\n-- forCounting 을 본다\n\n@QueryHints(value = @QueryHint(name = \"jakarta.persistence.query.timeout\",\n                              value = \"3000\"),\n            forCounting = false)\nPage<Member> findWithTimeout(Pageable pageable);\n\n@Test\n@Transactional\nvoid 타임아웃() {\n    em.clear();\n    memberRepository.findWithTimeout(PageRequest.of(0, 3));\n}\n\nHibernate: select ... offset ? rows fetch first ? rows only\nDEBUG  Query timeout: 3000 ms\nHibernate: select count(m1_0.member_id) from member m1_0\n\n--   목록에만 타임아웃이 걸렸다\n--   개수 쿼리는 안 걸렸다\n\n\n-- 메모리를 잰다\n\n@Test\n@Transactional\nvoid 메모리() {\n    for (boolean ro : new boolean[]{false, true}) {\n        em.clear();\n        System.gc();\n        long before = used();\n        if (ro) memberRepository.findAllReadOnly();\n        else    memberRepository.findAll();\n        long after = used();\n        System.out.printf(\"readOnly=%-5s %d KB%n\", ro,\n                (after - before) / 1024);\n    }\n}\n\nHibernate: select ... from member m1_0\nreadOnly=false 9640 KB\nHibernate: select ... from member m1_0\nreadOnly=true  5120 KB\n\n--   4만 건에서 절반쯤이다\n--   7.2절에서 잰 것과 같은 이유다\n\n\n-- flush 시간도 준다\n\n@Test\n@Transactional\nvoid flush_시간() {\n    for (boolean ro : new boolean[]{false, true}) {\n        em.clear();\n        if (ro) memberRepository.findAllReadOnly();\n        else    memberRepository.findAll();\n\n        long t = System.nanoTime();\n        em.flush();\n        System.out.printf(\"readOnly=%-5s flush %d ms%n\", ro,\n                (System.nanoTime() - t) / 1_000_000);\n    }\n}\n\nHibernate: select ... from member m1_0\nreadOnly=false flush 61 ms\nHibernate: select ... from member m1_0\nreadOnly=true  flush 2 ms\n\n--   비교할 게 없어서 빠르다\n\n\n-- DTO 로 읽으면 애초에 없다\n\n@Query(\"select new study.datajpa.dto.MemberDto(m.id, m.username, t.name)\"\n     + \" from Member m left join m.team t\")\nList<MemberDto> findDtos();\n\n@Test\n@Transactional\nvoid DTO() {\n    em.clear();\n    System.gc();\n    long before = used();\n    List<MemberDto> dtos = memberRepository.findDtos();\n    System.out.printf(\"DTO %d KB, %d건%n\",\n            (used() - before) / 1024, dtos.size());\n\n    SessionImpl s = em.unwrap(SessionImpl.class);\n    System.out.println(\"컨텍스트 엔티티 수: \" +\n            s.getPersistenceContext().getNumberOfManagedEntities());\n}\n\nHibernate:\n    select\n        m1_0.member_id, m1_0.username, t1_0.name\n    from\n        member m1_0\n    left join\n        team t1_0 on t1_0.team_id=m1_0.team_id\nDTO 2210 KB, 40000건\n컨텍스트 엔티티 수: 0\n\n--   컨텍스트에 아무것도 안 담긴다\n--   힌트보다 더 적다\n--   5.5절의 new 다\n\n\n-- 세 방법을 나란히 둔다\n\n$ printf '%-16s %-10s %-10s %s\\n' \\\n  '일반 조회' '9640 KB' 'flush 61ms' '고칠 수 있다' \\\n  'readOnly 힌트' '5120 KB' 'flush 2ms'  '고쳐도 안 나감' \\\n  'DTO 조회' '2210 KB' 'flush 0ms'  '엔티티가 없다'\n\n일반 조회          9640 KB    flush 61ms   고칠 수 있다\nreadOnly 힌트      5120 KB    flush 2ms    고쳐도 안 나감\nDTO 조회           2210 KB    flush 0ms    엔티티가 없다\n\n--   7.6절에서 락을 본다",
+   "note": "**힌트를 붙여도 SQL 은 `diff` 결과 `0`, 상태만 `MANAGED` → `READ_ONLY` 로** 바뀐다.\n\n**스냅샷이 `null` 이라 고쳐도 `update` 가 안** 나간다.\n\n**같은 행을 두 번 읽으면 1차 캐시가 답해 순서가 결과를** 바꾼다.\n\n**4만 건에서 9640KB → 5120KB, flush 가 61ms → 2ms** 다.\n\n**DTO 로 읽으면 컨텍스트 엔티티 수가 `0`, 2210KB** 다."
+  }
+ ],
+ "recap": [
+  "**스냅샷이 자동 수정의 값**이다.",
+  "**조회만 할 땐** 낭비다.",
+  "**힌트로** 끈다.",
+  "**SQL 은 안** 바뀐다.",
+  "**상태가 `READ_ONLY`** 다.",
+  "**고쳐도 안** 나간다.",
+  "**엔티티 단위로** 갈린다.",
+  "**메모리와 flush 가** 준다.",
+  "**DTO 가 제일** 적다."
+ ],
+ "drills": [
+  {
+   "task": "스냅샷을 직접 찍는다.",
+   "done_when": "복사본을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`@QueryHints` 를 붙인다.",
+   "done_when": "`READ_ONLY` 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "SQL 을 비교한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메모리와 flush 시간을 잰다.",
+   "done_when": "차이를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스냅샷은 무엇에 쓰이나?",
+   "a": "flush 때 변경을 감지하려고 원본과 비교하는 복사본이다."
+  },
+  {
+   "q": "`readOnly` 힌트를 주면 SQL 이 바뀌나?",
+   "a": "안 바뀐다. 스냅샷과 flush 동작만 달라진다."
+  },
+  {
+   "q": "힌트를 준 엔티티를 고치면?",
+   "a": "예외 없이 `update` 가 나가지 않는다."
+  },
+  {
+   "q": "7.2절의 `readOnly` 와 무엇이 다른가?",
+   "a": "적용 범위가 트랜잭션 전체가 아니라 그 쿼리다."
+  },
+  {
+   "q": "메모리를 가장 적게 쓰는 조회는?",
+   "a": "엔티티를 만들지 않는 DTO 조회다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스냅샷",
+   "def": "변경 감지를 위해 읽는 순간 떠 두는 값의 복사본."
+  },
+  {
+   "term": "쿼리 힌트",
+   "def": "SQL 을 바꾸지 않고 실행 방식만 지시하는 옵션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html",
+   "publisher": "Red Hat"
+  },
+  {
+   "title": "Spring Data JPA — Reference Documentation",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Jakarta Persistence 3.1 Specification",
+   "url": "https://jakarta.ee/specifications/persistence/3.1/",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

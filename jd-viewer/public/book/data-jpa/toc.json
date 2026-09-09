@@ -433,7 +433,7 @@
           "title": "JPA Hint",
           "summary": "읽기 전용 스냅샷을 안 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -441,7 +441,7 @@
           "title": "Lock",
           "summary": "for update 가 붙는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
