@@ -1,0 +1,130 @@
+{
+ "book": "kubernetes",
+ "id": "configmap",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "컨피그맵",
+ "summary": "설정을 이미지에서 꺼낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-09",
+ "goals": [
+  "왜 밖으로 빼는지 안다.",
+  "네 가지 주입 방법을 안다.",
+  "크기 제한을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 12요소를 지키면 그냥 뜬다고** 했다. **설정이 그** 요소다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 이미지, 세 환경",
+   "ascii": "   the same image, three environments\n\n   without config outside\n     three images, or one image with three profiles baked in\n     a change to prod means a rebuild\n\n   with config outside\n     one image, three ConfigMaps\n     a change to prod means an apply and a restart\n\n   the image becomes the artifact you actually promoted",
+   "note": "**이미지가 진짜 승격 단위가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이미지를 다시 안 만든다",
+   "md": "**개발에서 검증한 이미지가 그대로 운영에** 간다.\n\n> **설정만** 다르다.\n> **\"개발에서는 됐는데\" 의 원인 하나가** 줄어든다.\n>\n> **스프링 프로파일을 이미지에 넣으면 세 이미지가** 된다.\n> **엄밀히는 하나인데 어느 프로파일로 떴는지가 이미지 밖에** 있어야 한다.\n\n**만드는 법 넷**\n\n```bash\nkubectl create configmap app \\\n  --from-literal=MODE=prod \\\n  --from-literal=LOG_LEVEL=info\n\nkubectl create configmap app --from-file=application.yaml\nkubectl create configmap app --from-file=config/\nkubectl create configmap app --from-env-file=.env\n```\n\n> **`--from-file` 은 파일 이름이 키**다.\n> **디렉터리를 주면 안의 파일이 다** 들어간다.\n> **`--from-env-file` 은 `KEY=VALUE` 줄을 각각 키로** 만든다.\n\n**YAML 로 쓰면**\n\n```yaml\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: app\ndata:\n  MODE: \"prod\"\n  application.yaml: |\n    server:\n      port: 8080\n    logging:\n      level:\n        root: INFO\n```\n\n> **`|` 로 여러 줄을** 넣는다(3.1절).\n> **값은 전부 문자열**이다 — **3.1절의 따옴표 함정이 여기도** 있다.\n\n**1MiB 제한**\n\n> **etcd 에 들어가서** 그렇다.\n> **JAR 이나 큰 데이터를 넣으면** 안 된다.\n> **넘으면 `apply` 가** 거부된다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 가지 주입",
+   "ascii": "   four ways a ConfigMap reaches a container\n\n   env             one key becomes one variable\n   envFrom         every key becomes a variable\n   volume          every key becomes a file\n   subPath         one key becomes one file, at a chosen path\n\n   only the volume form updates without a restart, and 7.4 explains why",
+   "note": "**볼륨만 재시작 없이** 갱신된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "immutable 을 쓴다",
+   "md": "```yaml\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: app-v2\nimmutable: true\ndata: ...\n```\n\n> **바꿀 수 없게** 만든다.\n> **`kubelet` 이 변경을 감시할 필요가 없어 부하가** 준다.\n> **큰 클러스터에서 의미가** 있다.\n\n**대신 이름에 버전을** 붙인다.\n\n> **`app-v1`·`app-v2` 로 만들고 디플로이먼트가 가리키는 이름을** 바꾼다.\n> **템플릿이 바뀌니 롤아웃이 저절로** 일어난다(5.2절).\n> **7.4절의 함정을 구조로** 피한다.\n\n**없는 컨피그맵을 참조하면**\n\n> **파드가 `CreateContainerConfigError` 로** 멈춘다.\n> **4.8절의 상태 목록에** 있다.\n> **`optional: true` 를 주면 없어도** 뜬다.\n\n**바이너리도 넣을 수** 있다.\n\n```yaml\nbinaryData:\n  cert.der: <base64>\n```\n\n> **`data` 는 문자열, `binaryData` 는 Base64** 다.\n> **인증서 같은 건 시크릿이** 낫다 — **7.2절**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제로 친 명령과 kubectl 이 돌려준 것",
+   "sql": "# --- 만든다 ---\n\n$ kubectl create configmap app \\\n    --from-literal=MODE=prod \\\n    --from-literal=LOG_LEVEL=info\n\nconfigmap/app created\n\n$ kubectl get configmap app -o jsonpath='{.data}{\"\\n\"}'\n\n{\"LOG_LEVEL\":\"info\",\"MODE\":\"prod\"}\n\n$ cat application.yaml\n\nserver:\n  port: 8080\nlogging:\n  level:\n    root: INFO\n\n$ kubectl create configmap app-file --from-file=application.yaml\n\nconfigmap/app-file created\n\n$ kubectl get configmap app-file -o jsonpath='{.data}{\"\\n\"}' | head -c 80\n\n{\"application.yaml\":\"server:\\n  port: 8080\\nlogging:\\n  level:\\n    root: INFO\\n\"}\n\n#   파일 이름이 키다\n\n# --- env 로 하나씩 ---\n\n$ cat env1.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: env1\nspec:\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"env | grep -E '^(MODE|LEVEL)='\"]\n      env:\n        - name: MODE\n          valueFrom:\n            configMapKeyRef: { name: app, key: MODE }\n        - name: LEVEL\n          valueFrom:\n            configMapKeyRef: { name: app, key: LOG_LEVEL }\n\n$ kubectl apply -f env1.yaml > /dev/null && sleep 5\n$ kubectl logs env1\n\nLEVEL=info\nMODE=prod\n\n#   이름을 바꿔서 넣을 수 있다\n\n$ kubectl delete pod env1 > /dev/null\n\n# --- envFrom 으로 전부 ---\n\n$ cat env2.yaml\n\n      command: [\"sh\", \"-c\", \"env | grep -E '^(MODE|LOG_LEVEL)='\"]\n      envFrom:\n        - configMapRef: { name: app }\n\n$ kubectl apply -f env2.yaml > /dev/null && sleep 5\n$ kubectl logs env2\n\nMODE=prod\nLOG_LEVEL=info\n\n#   키 이름 그대로 들어간다\n\n#   접두어를 붙일 수도 있다\n\n$ kubectl delete pod env2 > /dev/null\n\n$ cat env3.yaml\n\n      envFrom:\n        - configMapRef: { name: app }\n          prefix: APP_\n\n$ kubectl apply -f env3.yaml > /dev/null && sleep 5\n$ kubectl logs env3\n\nAPP_MODE=prod\nAPP_LOG_LEVEL=info\n\n$ kubectl delete pod env3 > /dev/null\n\n# --- 볼륨으로 파일 ---\n\n$ cat vol.yaml\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: vol\nspec:\n  restartPolicy: Never\n  containers:\n    - name: t\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"ls -la /config; echo ---; cat /config/MODE; \\\n                 echo; cat /config/application.yaml\"]\n      volumeMounts:\n        - { name: c, mountPath: /config }\n  volumes:\n    - name: c\n      configMap:\n        name: app\n\n$ kubectl apply -f vol.yaml > /dev/null && sleep 5\n$ kubectl logs vol\n\ntotal 12\ndrwxrwxrwx    3 root     root           102 Sep  9 13:22 .\ndrwxr-xr-x    1 root     root            60 Sep  9 13:22 ..\ndrwxr-xr-x    2 root     root            60 Sep  9 13:22 ..2026_09_09_13_22_11\nlrwxrwxrwx    1 root     root            31 Sep  9 13:22 ..data -> ..2026_09...\nlrwxrwxrwx    1 root     root            16 Sep  9 13:22 LOG_LEVEL -> ..data/...\nlrwxrwxrwx    1 root     root            11 Sep  9 13:22 MODE -> ..data/MODE\n---\nprod\n\n#   심볼릭 링크다\n\n#   타임스탬프 디렉터리를 가리킨다\n\n#   7.4절에서 이게 왜 중요한지 본다\n\n#   application.yaml 은 없다\n\n#   app 컨피그맵에 없어서다\n\n$ kubectl delete pod vol > /dev/null\n\n# --- subPath 로 한 파일만 ---\n\n$ cat sub.yaml\n\n      volumeMounts:\n        - name: c\n          mountPath: /etc/app/application.yaml\n          subPath: application.yaml\n  volumes:\n    - name: c\n      configMap: { name: app-file }\n\n$ kubectl apply -f sub.yaml > /dev/null && sleep 5\n$ kubectl logs sub\n\nserver:\n  port: 8080\nlogging:\n  level:\n    root: INFO\n\n$ kubectl exec sub -- ls -la /etc/app 2>/dev/null || \\\n  kubectl logs sub --tail=0\n\n#   (파드가 끝났다)\n\n#   subPath 는 심볼릭 링크가 아니라 진짜 파일이다\n\n#   그래서 갱신이 안 된다 (7.4절)\n\n$ kubectl delete pod sub > /dev/null\n\n# --- 일부 키만 ---\n\n$ cat items.yaml\n\n  volumes:\n    - name: c\n      configMap:\n        name: app\n        items:\n          - { key: MODE, path: mode.txt }\n\n$ kubectl apply -f items.yaml > /dev/null && sleep 5\n$ kubectl logs items\n\nmode.txt\nprod\n\n#   MODE 만 mode.txt 로 들어갔다\n\n#   LOG_LEVEL 은 없다\n\n$ kubectl delete pod items > /dev/null\n\n# --- 없는 컨피그맵을 참조하면 ---\n\n$ kubectl run missing --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"missing\",\n      \"image\":\"busybox:1.36\",\"command\":[\"sleep\",\"60\"],\n      \"envFrom\":[{\"configMapRef\":{\"name\":\"nope\"}}]}]}}' > /dev/null\n\n$ sleep 8 && kubectl get pod missing --no-headers\n\nmissing   0/1   CreateContainerConfigError   0   8s\n\n$ kubectl describe pod missing | grep -A2 Warning | tail -2\n\n  Warning  Failed  3s  kubelet  Error: configmap \"nope\" not found\n\n#   4.8절의 상태 목록에 있던 것이다\n\n$ kubectl delete pod missing > /dev/null\n\n$ kubectl run optional --image=busybox:1.36 --restart=Never \\\n    --overrides='{\"spec\":{\"containers\":[{\"name\":\"optional\",\n      \"image\":\"busybox:1.36\",\"command\":[\"sh\",\"-c\",\"echo 떴다\"],\n      \"envFrom\":[{\"configMapRef\":{\"name\":\"nope\",\"optional\":true}}]}]}}' \\\n    > /dev/null\n\n$ sleep 6 && kubectl logs optional\n\n떴다\n\n#   optional 이면 없어도 뜬다\n\n$ kubectl delete pod optional > /dev/null\n\n# --- 1MiB 제한 ---\n\n$ head -c 1200000 /dev/urandom | base64 > big.txt\n$ wc -c big.txt\n\n 1621622 big.txt\n\n$ kubectl create configmap big --from-file=big.txt\n\nThe ConfigMap \"big\" is invalid: []: Too long: may not be more than\n  1048576 bytes\n\n#   1MiB 다\n\n#   etcd 에 들어가서 그렇다\n\n$ rm big.txt\n\n# --- immutable ---\n\n$ kubectl create configmap frozen --from-literal=A=1 \\\n    --dry-run=client -o yaml \\\n    | python3 -c \"\nimport sys, yaml\nd = yaml.safe_load(sys.stdin)\nd['immutable'] = True\nprint(yaml.dump(d))\" | kubectl apply -f - > /dev/null\n\n$ kubectl patch configmap frozen -p '{\"data\":{\"A\":\"2\"}}'\n\nThe ConfigMap \"frozen\" is invalid: data: Forbidden: field is immutable\n  when `immutable` is set\n\n#   못 바꾼다\n\n#   이름에 버전을 붙여 새로 만든다\n\n#   7.4절의 함정을 구조로 피한다\n\n$ kubectl delete configmap frozen > /dev/null\n\n# --- 값이 전부 문자열이다 ---\n\n$ cat numeric.yaml\n\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: numeric\ndata:\n  PORT: 8080\n\n$ kubectl apply -f numeric.yaml\n\nError from server (BadRequest): ... cannot unmarshal number into Go struct\n  field ConfigMap.data of type string\n\n#   3.1절의 그것이다\n\n$ sed 's/PORT: 8080/PORT: \"8080\"/' numeric.yaml | kubectl apply -f - > /dev/null\n\nconfigmap/numeric created\n\n# --- 치운다 ---\n\n$ kubectl delete configmap app app-file numeric\n\nconfigmap \"app\" deleted\nconfigmap \"app-file\" deleted\nconfigmap \"numeric\" deleted\n\n# --- 다음 절에서 ---\n\n#   비밀은 다르게 다룬다",
+   "note": "**`--from-file` 은 파일 이름이 키**가 되고, `|` 로 여러 줄을 넣는다.\n\n**볼륨으로 붙이면 `..data` 심볼릭 링크와 타임스탬프 디렉터리**가 보인다 — 7.4절의 근거다.\n\n**없는 컨피그맵을 참조하면 `CreateContainerConfigError`** 이고 `optional: true` 면 뜬다.\n\n**1MiB 를 넘으면 `Too long: may not be more than 1048576 bytes`** 다.\n\n**`immutable: true` 면 `field is immutable` 로 수정이** 막힌다."
+  }
+ ],
+ "recap": [
+  "**설정을 밖에 두면 이미지가 승격 단위가** 된다.",
+  "**`--from-literal`·`--from-file`·디렉터리·`--from-env-file`** 로 만든다.",
+  "**주입 방법이 `env`·`envFrom`·볼륨·`subPath`** 넷이다.",
+  "**볼륨은 심볼릭 링크로** 붙는다.",
+  "**`subPath` 는 진짜 파일이라 갱신이 안** 된다.",
+  "**없으면 `CreateContainerConfigError`** 다.",
+  "**`optional: true` 로 넘어갈 수** 있다.",
+  "**1MiB 제한이** 있다.",
+  "**`immutable` 과 버전 이름이 좋은** 조합이다."
+ ],
+ "drills": [
+  {
+   "task": "컨피그맵을 네 방법으로 만든다.",
+   "done_when": "키가 어떻게 정해지는지 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "볼륨으로 붙이고 `ls -la` 한다.",
+   "done_when": "심볼릭 링크를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "없는 컨피그맵을 참조한다.",
+   "done_when": "오류와 `optional` 차이를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "1MiB 를 넘겨 본다.",
+   "done_when": "거부 메시지를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정을 밖에 두는 이유는?",
+   "a": "같은 이미지를 환경만 바꿔 승격할 수 있다."
+  },
+  {
+   "q": "볼륨으로 붙이면 무엇이 보이나?",
+   "a": "`..data` 심볼릭 링크와 타임스탬프 디렉터리다."
+  },
+  {
+   "q": "`subPath` 의 특징은?",
+   "a": "진짜 파일이라 컨피그맵이 바뀌어도 갱신되지 않는다."
+  },
+  {
+   "q": "없는 컨피그맵을 참조하면?",
+   "a": "`CreateContainerConfigError` 로 파드가 안 뜬다."
+  },
+  {
+   "q": "크기 제한은?",
+   "a": "1MiB 다. etcd 에 저장되기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "immutable ConfigMap",
+   "def": "수정할 수 없게 표시한 컨피그맵. kubelet 의 감시 부하를 줄인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Kubernetes — ConfigMaps",
+   "url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+   "publisher": "Kubernetes"
+  },
+  {
+   "title": "The Twelve-Factor App — Config",
+   "url": "https://12factor.net/config",
+   "publisher": "Adam Wiggins"
+  },
+  {
+   "title": "Kubernetes — Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "publisher": "Kubernetes"
+  }
+ ]
+}

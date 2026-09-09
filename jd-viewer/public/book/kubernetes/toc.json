@@ -357,7 +357,7 @@
           "title": "연결이 안 될 때",
           "summary": "셀렉터부터 엔드포인트까지 순서대로.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -372,7 +372,7 @@
           "title": "컨피그맵",
           "summary": "설정을 이미지에서 꺼낸다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
