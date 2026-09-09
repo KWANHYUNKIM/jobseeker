@@ -291,7 +291,7 @@
           "title": "인터페이스 버전에 적용",
           "summary": "설정으로 갈아 끼운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -299,7 +299,7 @@
           "title": "구체 버전에 적용",
           "summary": "상속으로 갈아 끼운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",

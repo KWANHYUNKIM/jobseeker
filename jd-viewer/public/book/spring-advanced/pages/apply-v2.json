@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-v2",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "구체 버전에 적용",
+ "summary": "상속으로 갈아 끼운다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 곳을 상속으로 감싼다.",
+  "설정 차이를 본다.",
+  "두 방식을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절에서 하나를 상속으로** 만들었다. **세 곳에 다** 붙인다."
+  },
+  {
+   "type": "figure",
+   "caption": "인터페이스가 없으면 달라지는 것",
+   "ascii": "   what changes when there is no interface\n\n   the proxy extends instead of implements\n   the configuration returns the concrete type\n   the parent constructor must be satisfied\n\n   the wiring code looks almost the same; the constraints do not",
+   "note": "**조립 코드는 거의 같고 제약만** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "인터페이스를 안 만들고도 같은 결과를 낸다",
+   "md": "**파일이 적**다.\n\n> **인터페이스 셋이** 없다.\n> **아래에서 세어** 본다.\n> **5.5절과 견준다.**\n\n**애너테이션 옮기기가 없**다.\n\n> **컨트롤러가 클래스**다.\n> **5.2절의 그 고생이** 없다.\n> **아래에서 확인**한다.\n\n**설정은 거의** 같다.\n\n> **타입만** 다르다.\n> **아래에서 diff 를** 본다.\n> **조립 방식은 그대로**다.\n\n**대신 제약이** 따라온다.\n\n> **5.3절의 넷**이다.\n> **아래에서 다시** 겪는다.\n> **생성자가 제일** 아프다."
+  },
+  {
+   "type": "figure",
+   "caption": "부모 생성자를 채우는 두 길",
+   "ascii": "   two ways to satisfy the parent constructor\n\n   pass null, and never touch the inherited fields\n   pass the real dependency, and hold it twice\n\n   the first is smaller and the second is safer",
+   "note": "**첫째가 짧고 둘째가** 안전하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨트롤러는 애너테이션이 상속되지 않는다",
+   "md": "**타입 애너테이션은 안** 물려받는다.\n\n> **자식에 다시 적어야** 한다.\n> **아래에서 그걸** 겪는다.\n> **매핑이** 사라진다.\n\n**메서드 애너테이션은** 다르다.\n\n> **찾아 올라가** 준다.\n> **아래에서 확인**한다.\n> **둘이** 다르다.\n\n**파라미터 이름이** 걸린다.\n\n> **자식에 안 적으면** 못 찾는다.\n> **아래에서 그** 오류를 본다.\n> **다시 적어야** 한다.\n\n**초기화가 두 번** 돈다.\n\n> **5.3절의 그것**이다.\n> **아래에서 다시** 센다.\n> **세 곳이면 여섯 번**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 인터페이스가 없다\n\n$ find src/main/java/study/adv/app -name '*V1*.java' | wc -l\n       6\n$ find src/main/java/study/adv/app -name '*V2*.java' | wc -l\n       3\n\n$ ls src/main/java/study/adv/app/ | grep V2\nOrderControllerV2.java\nOrderRepositoryV2.java\nOrderServiceV2.java\n\n--   V1 은 인터페이스와 구현이 셋씩이다\n--   V2 는 셋뿐이다\n\n\n-- 원본은 평범하다\n\n@RestController\npublic class OrderControllerV2 {\n    private final OrderServiceV2 orderService;\n\n    public OrderControllerV2(OrderServiceV2 orderService) {\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/v2/request\")\n    public String request(@RequestParam String itemId) {\n        orderService.orderItem(itemId);\n        return \"ok\";\n    }\n}\n\n$ grep -c '@RestController' src/main/java/study/adv/app/OrderControllerV2.java\n1\n\n--   5.2 절처럼 인터페이스로 옮길 필요가 없다\n\n\n-- 프록시가 상속한다\n\npublic class OrderServiceConcreteProxy extends OrderServiceV2 {\n    private final OrderServiceV2 target;\n    private final LogTrace trace;\n\n    public OrderServiceConcreteProxy(OrderServiceV2 target, LogTrace trace) {\n        super(null);\n        this.target = target;\n        this.trace = trace;\n    }\n\n    @Override\n    public void orderItem(String itemId) { ... }\n}\n\n$ grep -c 'extends' src/main/java/study/adv/proxy/*Concrete*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n$ grep -c 'super(null)' src/main/java/study/adv/proxy/*Concrete*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n3\n\n--   세 곳 다 super(null) 이다\n\n\n-- 설정은 거의 같다\n\n@Configuration\npublic class ConcreteProxyConfig {\n    @Bean\n    public OrderRepositoryV2 orderRepositoryV2(LogTrace trace) {\n        OrderRepositoryV2 impl = new OrderRepositoryV2();\n        return new OrderRepositoryConcreteProxy(impl, trace);\n    }\n\n    @Bean\n    public OrderServiceV2 orderServiceV2(LogTrace trace) {\n        OrderServiceV2 impl = new OrderServiceV2(orderRepositoryV2(trace));\n        return new OrderServiceConcreteProxy(impl, trace);\n    }\n\n    @Bean\n    public OrderControllerV2 orderControllerV2(LogTrace trace) {\n        OrderControllerV2 impl = new OrderControllerV2(orderServiceV2(trace));\n        return new OrderControllerConcreteProxy(impl, trace);\n    }\n}\n\n$ diff <(sed 's/V1/VX/g; s/Interface/X/g' \\\n           src/main/java/study/adv/proxy/InterfaceProxyConfig.java) \\\n       <(sed 's/V2/VX/g; s/Concrete/X/g' \\\n           src/main/java/study/adv/proxy/ConcreteProxyConfig.java) \\\n  | grep -c '^[<>]'\n4\n\n--   네 줄만 다르다\n--   Impl 이 붙고 안 붙고다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ curl -s localhost:8080/who/all | grep V2\norderControllerV2    study.adv.proxy.OrderControllerConcreteProxy\norderServiceV2       study.adv.proxy.OrderServiceConcreteProxy\norderRepositoryV2    study.adv.proxy.OrderRepositoryConcreteProxy\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n--   5.5 절과 같은 여섯 줄이다\n\n\n-- 두 버전을 같이 돌린다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n\n$ diff <(grep 'study.adv.trace' logs/app.log | head -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/') \\\n       <(grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/') \\\n  && echo '같음'\n같음\n\n--   두 방식의 결과가 글자까지 같다\n\n\n-- 컨트롤러 애너테이션이 안 물려받아진다\n\npublic class OrderControllerConcreteProxy extends OrderControllerV2 {\n    // @RestController 를 안 적었다\n}\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n404\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nprint(len([x for x in d if 'v2' in str(x.get('predicate',''))]))\"\n0\n\n--   매핑이 사라졌다\n--   5.2 절과 같은 증상, 다른 원인이다\n\n\n-- 자식에 다시 적는다\n\n@RestController\npublic class OrderControllerConcreteProxy extends OrderControllerV2 { ... }\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    if 'v2' in str(x.get('predicate','')): print(x['predicate'], x['handler'][:40])\"\n{GET [/v2/request]} study.adv.proxy.OrderControllerConcreteProxy\n\n--   프록시가 핸들러다\n\n\n-- 메서드 애너테이션은 다르다\n\n@Override\npublic String request(String itemId) {      // @GetMapping 을 안 적었다\n    ...\n}\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n--   메서드 쪽은 부모에서 찾아 준다\n--   타입 쪽만 다시 적으면 된다\n\n\n-- 파라미터 이름이 걸린다\n\n@Override\npublic String request(String itemId) {      // @RequestParam 이 없다\n    ...\n}\n\n$ ./gradlew clean bootRun > /dev/null 2>&1 &\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v2/request?itemId=연필'\n500\n\n$ grep -i 'parameter name' logs/app.log | head -1\nName for argument of type [java.lang.String] not specified, and parameter name\n  information not found in class file either.\n\n--   컴파일 옵션이 없으면 이름을 못 찾는다\n--   자식에 다시 적어야 한다\n\n\n-- 적으면 된다\n\n@Override\npublic String request(@RequestParam String itemId) { ... }\n\n$ curl -s 'localhost:8080/v2/request?itemId=연필'\nok\n\n--   부모의 것을 그대로 옮겨 적었다\n\n\n-- 초기화가 여섯 번 돈다\n\npublic OrderServiceV2(OrderRepositoryV2 r) {\n    System.out.println(\"[초기화] 서비스\");\n    ...\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[초기화\\]'\n6\n\n$ ./gradlew bootRun 2>&1 | grep '\\[초기화\\]'\n[초기화] 저장소\n[초기화] 저장소\n[초기화] 서비스\n[초기화] 서비스\n[초기화] 컨트롤러\n[초기화] 컨트롤러\n\n--   세 곳이 각각 두 번씩이다\n--   5.3 절의 그것이 셋으로 늘었다\n\n\n-- 인터페이스 쪽은 세 번이다\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[V1 초기화\\]'\n3\n\n--   구현체만 만들어진다\n--   프록시는 부모가 없다\n\n\n-- 진짜 값을 넘기면\n\npublic OrderServiceConcreteProxy(OrderServiceV2 target, LogTrace trace,\n                                 OrderRepositoryV2 repo) {\n    super(repo);\n    ...\n}\n\n@Bean\npublic OrderServiceV2 orderServiceV2(LogTrace trace) {\n    OrderRepositoryV2 repo = orderRepositoryV2(trace);\n    OrderServiceV2 impl = new OrderServiceV2(repo);\n    return new OrderServiceConcreteProxy(impl, trace, repo);   // 두 번 넘긴다\n}\n\n$ curl -s localhost:8080/proxy/fields?name=orderServiceV2 | tail -2\n물려받은 필드: orderRepository = study.adv.proxy.OrderRepositoryConcreteProxy@4f21\ntarget 의 필드: orderRepository = study.adv.proxy.OrderRepositoryConcreteProxy@4f21\n\n--   같은 것을 두 벌 들고 있다\n--   설정도 한 줄 길어졌다\n\n\n-- 두 방식을 견준다\n\n$ printf '%-20s %-10s %-10s %s\\n' \\\n  '파일 수'      'V1 6 개'  'V2 3 개'  '인터페이스만큼' \\\n  '프록시'       'implements' 'extends' '' \\\n  '애너테이션'   '인터페이스로' '자식에 다시' '' \\\n  '초기화'       '3 번'     '6 번'     '두 배' \\\n  'final'        '상관없음' '막힘'     '' \\\n  'private'      '상관없음' '안 지남'  '' \\\n  '생성자'       '자유'     '맞춰야 함' ''\n\n파일 수              V1 6 개    V2 3 개    인터페이스만큼\n프록시               implements extends    \n애너테이션           인터페이스로 자식에 다시 \n초기화               3 번       6 번       두 배\nfinal                상관없음   막힘       \nprivate              상관없음   안 지남    \n생성자               자유       맞춰야 함  \n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/app/*V1*.java | tail -1\n      92 total\n$ wc -l src/main/java/study/adv/app/*V2*.java | tail -1\n      56 total\n\n$ wc -l src/main/java/study/adv/proxy/*Interface*.java | tail -1\n     140 total\n$ wc -l src/main/java/study/adv/proxy/*Concrete*.java | tail -1\n     148 total\n\n--   앱은 V2 가 짧다\n--   프록시는 V2 가 조금 길다, super 때문이다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v2/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV2' | head -3\n빈 이름:   orderServiceV2\n주입된 것: study.adv.proxy.OrderServiceConcreteProxy\n원본:     study.adv.proxy.OrderServiceConcreteProxy\n\n$ git add -A && git commit -q -m 'feat: v6 구체 버전 적용' && git tag v6-v2\n\n--   5.7 절에서 스캔된 빈을 바꿔치기한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '파일'        'V2 가 절반' \\\n  '프록시'      '상속' \\\n  '설정'        '네 줄만 다름' \\\n  '로그'        '글자까지 같음' \\\n  '타입 애너테이션' '자식에 다시' \\\n  '메서드 애너테이션' '물려받음' \\\n  '파라미터 이름'  '다시 적어야' \\\n  '초기화'      '여섯 번' \\\n  '제약'        '넷 더'\n\n파일                       V2 가 절반\n프록시                     상속\n설정                       네 줄만 다름\n로그                       글자까지 같음\n타입 애너테이션            자식에 다시\n메서드 애너테이션          물려받음\n파라미터 이름              다시 적어야\n초기화                     여섯 번\n제약                       넷 더",
+   "note": "**인터페이스가 없어 파일이 여섯에서 셋으로 줄고 설정은 네 줄만** 다르다.\n\n**두 방식의 로그 여섯 줄이 `[ID]` 를 지우면 글자까지 같다.**\n\n**타입 애너테이션은 안 물려받아 `404` 가 나고 자식에 다시 적어야 하는데 메서드 쪽은 부모에서 찾아** 준다.\n\n**파라미터 애너테이션을 빼면 `parameter name information not found` 로 500**이다.\n\n**초기화가 세 곳에서 두 번씩 여섯 번 돌아 인터페이스 쪽 세 번의 두 배**다."
+  }
+ ],
+ "recap": [
+  "**파일이** 적다.",
+  "**상속으로** 감싼다.",
+  "**설정은 거의** 같다.",
+  "**로그는** 같다.",
+  "**타입 것은 다시** 적는다.",
+  "**메서드 것은** 물려받는다.",
+  "**이름도 다시** 적는다.",
+  "**초기화가 두** 배다.",
+  "**제약이 넷** 더다."
+ ],
+ "drills": [
+  {
+   "task": "세 곳을 상속으로 감싼다.",
+   "done_when": "같은 로그를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "두 버전 로그를 diff 한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "타입 애너테이션을 빼 본다.",
+   "done_when": "404 를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "초기화 횟수를 센다.",
+   "done_when": "두 배인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터페이스가 없으면 프록시는?",
+   "a": "원본을 상속한 자식이 된다."
+  },
+  {
+   "q": "설정 코드는 얼마나 다른가?",
+   "a": "타입 이름만 다르고 조립 방식은 같다."
+  },
+  {
+   "q": "컨트롤러 애너테이션은?",
+   "a": "타입에 붙은 것은 안 물려받아 자식에 다시 적어야 한다."
+  },
+  {
+   "q": "메서드 애너테이션은?",
+   "a": "부모에서 찾아 주므로 다시 안 적어도 된다."
+  },
+  {
+   "q": "초기화는 몇 번 도나?",
+   "a": "곳마다 두 번씩이라 세 곳이면 여섯 번이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "애너테이션 상속",
+   "def": "부모에 붙은 표시를 자식이 물려받는지의 규칙. 타입과 메서드가 다르다."
+  },
+  {
+   "term": "이중 조립",
+   "def": "원본과 프록시 양쪽에 같은 의존성을 넘겨야 하는 상황."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Classpath Scanning",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

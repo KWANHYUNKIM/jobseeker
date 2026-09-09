@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-v1",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "인터페이스 버전에 적용",
+ "summary": "설정으로 갈아 끼운다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 곳을 조립한다.",
+  "만드는 순서를 안다.",
+  "원본이 안 바뀐 걸 확인한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.2절에서 프록시를** 만들었다. **설정이 세 곳을 어떻게 잇는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "빈마다 세 줄",
+   "ascii": "   what the configuration has to say for each bean\n\n   make the target, with its own dependencies\n   make the proxy, handing it the target\n   register the proxy under the interface, not the target\n\n   the third line is the whole trick, and it is one word",
+   "note": "**셋째 줄이 요령 전부이고 그건 낱말** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "무엇을 반환하느냐가 전부다",
+   "md": "**원본을 만든**다.\n\n> **자기 의존성까지** 챙긴다.\n> **아래에서 그 순서를** 본다.\n> **여기까진 평범**하다.\n\n**프록시로** 감싼다.\n\n> **원본을 넘겨** 준다.\n> **5.1절의 조건 ②** 다.\n> **아래에서 확인**한다.\n\n**프록시를 돌려**준다.\n\n> **원본이 아니라**다.\n> **그 한 낱말이** 전부다.\n> **아래에서 바꿔** 본다.\n\n**아래에서 위로** 짓는다.\n\n> **안쪽부터 만들어야** 한다.\n> **아래에서 순서를** 찍는다.\n> **거꾸로면 못** 만든다."
+  },
+  {
+   "type": "figure",
+   "caption": "만들어지는 순서",
+   "ascii": "   the order the objects are built\n\n   the innermost target first, because the proxy needs it\n   then its proxy\n   then the next target, which receives that proxy\n\n   so the chain is built from the bottom up",
+   "note": "**체인은 아래에서 위로** 지어진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "원본을 빈으로도 등록하면 둘이 된다",
+   "md": "**애너테이션을 떼야** 한다.\n\n> **안 떼면 빈이 둘**이다.\n> **아래에서 그** 오류를 본다.\n> **8장에서 이걸** 되돌린다.\n\n**원본에 주입이 안** 된다.\n\n> **설정이 직접** 만든다.\n> **생성자 인자를 손으로** 넘긴다.\n> **아래에서 그** 모양이다.\n\n**빈 메서드를 두 번 부르면** 헷갈린다.\n\n> **②의 그** 이야기다.\n> **아래에서 확인**한다.\n> **같은 것이** 온다.\n\n**설정이** 길어진다.\n\n> **빈마다 두세 줄**이다.\n> **5.8절에서 세어** 본다.\n> **7.7절에서 터진**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 원본에서 애너테이션을 뗀다\n\n$ grep -n '@Service\\|@Repository\\|@Controller' src/main/java/study/adv/app/*.java\nsrc/main/java/study/adv/app/OrderControllerImpl.java:11:@RestController\n\n$ grep -c '@Service' src/main/java/study/adv/app/OrderServiceImpl.java\n0\n\n--   컨트롤러만 남았다\n--   나머지는 설정이 만든다\n\n\n-- 컨트롤러도 뗀다\n\n@RequestMapping\n@ResponseBody\npublic interface OrderControllerV1 {\n    @GetMapping(\"/v1/request\")\n    String request(@RequestParam String itemId);\n}\n\npublic class OrderControllerV1Impl implements OrderControllerV1 {\n    private final OrderServiceV1 orderService;\n    ...\n}\n\n$ grep -c '@RestController' src/main/java/study/adv/app/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n$ grep -c '@RequestMapping' src/main/java/study/adv/app/OrderControllerV1.java\n1\n\n--   5.2 절에서 본 그것이다\n--   애너테이션이 인터페이스에 있다\n\n\n-- 설정이 아래에서 위로 짓는다\n\n@Configuration\npublic class InterfaceProxyConfig {\n\n    @Bean\n    public OrderRepositoryV1 orderRepositoryV1(LogTrace trace) {\n        OrderRepositoryV1 impl = new OrderRepositoryV1Impl();\n        return new OrderRepositoryInterfaceProxy(impl, trace);\n    }\n\n    @Bean\n    public OrderServiceV1 orderServiceV1(LogTrace trace) {\n        OrderServiceV1 impl = new OrderServiceV1Impl(orderRepositoryV1(trace));\n        return new OrderServiceInterfaceProxy(impl, trace);\n    }\n\n    @Bean\n    public OrderControllerV1 orderControllerV1(LogTrace trace) {\n        OrderControllerV1 impl = new OrderControllerV1Impl(orderServiceV1(trace));\n        return new OrderControllerInterfaceProxy(impl, trace);\n    }\n}\n\n$ grep -c '@Bean' src/main/java/study/adv/proxy/InterfaceProxyConfig.java\n3\n$ wc -l < src/main/java/study/adv/proxy/InterfaceProxyConfig.java\n      32\n\n--   빈 하나에 세 줄씩이다\n\n\n-- 만드는 순서를 찍는다\n\npublic OrderRepositoryV1Impl() { System.out.println(\"[생성] 저장소 원본\"); }\npublic OrderRepositoryInterfaceProxy(...) { System.out.println(\"[생성] 저장소 프록시\"); }\npublic OrderServiceV1Impl(...) { System.out.println(\"[생성] 서비스 원본\"); }\npublic OrderServiceInterfaceProxy(...) { System.out.println(\"[생성] 서비스 프록시\"); }\n\n$ ./gradlew bootRun 2>&1 | grep '\\[생성\\]'\n[생성] 저장소 원본\n[생성] 저장소 프록시\n[생성] 서비스 원본\n[생성] 서비스 프록시\n[생성] 컨트롤러 원본\n[생성] 컨트롤러 프록시\n\n--   안쪽부터 위로 지어진다\n--   프록시가 원본을 받으려면 원본이 먼저다\n\n\n-- 무엇이 등록됐나\n\n$ curl -s localhost:8080/who/all\norderControllerV1    study.adv.proxy.OrderControllerInterfaceProxy\norderServiceV1       study.adv.proxy.OrderServiceInterfaceProxy\norderRepositoryV1    study.adv.proxy.OrderRepositoryInterfaceProxy\nwhoController        study.adv.WhoController\n\n$ curl -s localhost:8080/who/all | grep -c 'Impl'\n0\n\n--   원본은 빈이 아니다\n--   설정 안에서만 산다\n\n\n-- 그 한 낱말을 바꿔 본다\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    OrderServiceV1 impl = new OrderServiceV1Impl(orderRepositoryV1(trace));\n    new OrderServiceInterfaceProxy(impl, trace);      // 만들기만 한다\n    return impl;                                      // 원본을 돌려준다\n}\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1' | head -2\n빈 이름:   orderServiceV1\n주입된 것: study.adv.app.OrderServiceV1Impl\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderRepository.save()\n[796bccd9] |<--OrderRepository.save() time=1004ms\n[796bccd9] OrderController.request() time=1006ms\n\n--   서비스 줄만 빠졌다\n--   프록시는 만들어졌는데 아무도 안 쓴다\n\n\n-- 되돌린다\n\n    return new OrderServiceInterfaceProxy(impl, trace);\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[3d81f0a2] OrderController.request()\n[3d81f0a2] |-->OrderService.orderItem()\n[3d81f0a2] |   |-->OrderRepository.save()\n[3d81f0a2] |   |<--OrderRepository.save() time=1004ms\n[3d81f0a2] |<--OrderService.orderItem() time=1006ms\n[3d81f0a2] OrderController.request() time=1007ms\n\n--   2.4 절의 여섯 줄이다\n--   낱말 하나가 정한다\n\n\n-- 원본을 빈으로도 두면\n\n@Service\npublic class OrderServiceV1Impl implements OrderServiceV1 { ... }\n\n$ ./gradlew bootRun 2>&1 | head -6\n***************************\nAPPLICATION FAILED TO START\n***************************\nParameter 0 of constructor in study.adv.app.OrderControllerV1Impl required a\nsingle bean, but 2 were found:\n\t- orderServiceV1: defined by method 'orderServiceV1' in InterfaceProxyConfig\n\t- orderServiceV1Impl: defined in file [.../OrderServiceV1Impl.class]\n\n--   3.4 절에서 본 그 오류다\n--   원본에서 애너테이션을 떼야 한다\n\n\n-- 빈 메서드를 두 번 부르면\n\n@Bean\npublic OrderServiceV1 orderServiceV1(LogTrace trace) {\n    System.out.println(\"[빈] 서비스 만든다\");\n    ...\n}\n\n@Bean\npublic SomethingElse other(LogTrace trace) {\n    return new SomethingElse(orderServiceV1(trace));   // 또 부른다\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[빈\\] 서비스 만든다'\n1\n\n$ curl -s localhost:8080/proxy/same\n컨트롤러가 가진 서비스: study.adv.proxy.OrderServiceInterfaceProxy@4f21a1c9\nother 가 가진 서비스:   study.adv.proxy.OrderServiceInterfaceProxy@4f21a1c9\n같은 객체인가:         true\n\n--   두 번 불렀는데 한 번만 만들어졌다\n--   1.4 절에서 본 설정 클래스 프록시 덕이다\n\n\n-- 그걸 꺼 보면\n\n@Configuration(proxyBeanMethods = false)\npublic class InterfaceProxyConfig { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[빈\\] 서비스 만든다'\n2\n\n$ curl -s localhost:8080/proxy/same | tail -1\n같은 객체인가:         false\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n1\n\n--   로그는 멀쩡하다\n--   서비스가 두 개 생겼을 뿐이다\n--   1.4 절의 그 자리가 여기서 뜻을 갖는다\n\n\n-- 원본이 안 바뀐 걸 확인한다\n\n$ git diff v0 HEAD --stat -- src/main/java/study/adv/app/OrderServiceV1Impl.java\n OrderServiceV1Impl.java | 4 ++--\n 1 file changed, 2 insertions(+), 2 deletions(-)\n\n$ git diff v0 HEAD -- src/main/java/study/adv/app/OrderServiceV1Impl.java\n-public class OrderService {\n+public class OrderServiceV1Impl implements OrderServiceV1 {\n-    public void orderItem(String itemId) {\n+    @Override public void orderItem(String itemId) {\n\n--   이름과 구현 선언만 바뀌었다\n--   본문은 v0 그대로다\n\n\n-- 감싸는 코드가 어디 있나\n\n$ grep -c 'try {' src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n0\n$ grep -c 'try {' src/main/java/study/adv/proxy/*.java | awk -F: '{s+=$2} END {print s}'\n6\n\n$ grep -c 'trace\\|Trace' src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n0\n\n--   앱 패키지에 그 낱말이 하나도 없다\n--   4.8 절에서는 부르는 줄이 셋 있었다\n\n\n-- 요구사항 여섯을 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n[796bccd9] |   |-->OrderRepository.save()\n[796bccd9] |   |<--OrderRepository.save() time=1004ms\n[796bccd9] |<--OrderService.orderItem() time=1006ms\n[796bccd9] OrderController.request() time=1007ms\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=ex'\n500\n\n$ for i in $(seq 1 30); do\n    curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필' &\n  done; wait\n$ grep 'study.adv.trace' logs/app.log | tail -180 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n      30\n\n--   여섯이 다 되고 동시성도 그대로다\n\n\n-- 새 메서드를 만들면\n\npublic interface OrderServiceV1 {\n    void orderItem(String itemId);\n    void cancel(Long id);              // 새로 넣었다\n}\n\n$ ./gradlew compileJava 2>&1 | grep -c 'error:'\n2\n\n$ ./gradlew compileJava 2>&1 | head -3\nerror: OrderServiceV1Impl is not abstract and does not override abstract\n  method cancel(Long) in OrderServiceV1\nerror: OrderServiceInterfaceProxy is not abstract and does not override ...\n\n--   원본과 프록시 둘 다 깨진다\n--   2.6 절의 깜빡함과 다르다, 컴파일이 막는다\n\n\n-- 둘 다 구현하면\n\n@Override\npublic void cancel(Long id) {\n    TraceStatus status = null;\n    try {\n        status = trace.begin(\"OrderService.cancel()\");\n        target.cancel(id);\n        trace.end(status);\n    } catch (Exception e) { ... }\n}\n\n$ curl -s -o /dev/null -X DELETE 'localhost:8080/v1/order/1'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] |-->OrderService.cancel()\n[c14e0b93] |<--OrderService.cancel() time=2ms\n\n$ grep -c 'try {' src/main/java/study/adv/proxy/OrderServiceInterfaceProxy.java\n2\n\n--   프록시에 또 아홉 줄이다\n--   4.1 절의 그 아홉 줄이 자리만 옮겼다\n\n\n-- 줄 수를 센다\n\n$ wc -l src/main/java/study/adv/app/*.java | tail -1\n      92 total\n$ wc -l src/main/java/study/adv/proxy/*.java | tail -1\n     140 total\n\n$ python3 -c \"print('앱 92 + 프록시 140 =', 92+140)\"\n앱 92 + 프록시 140 = 232\n\n// v5 에서는\n$ git show v5-callback --stat | tail -2\n 182 total\n\n--   전체는 늘었다\n--   앱은 v0 수준이다\n\n\n-- 확인한다\n\n$ curl -s localhost:8080/who/all | grep V1\norderControllerV1    study.adv.proxy.OrderControllerInterfaceProxy\norderServiceV1       study.adv.proxy.OrderServiceInterfaceProxy\norderRepositoryV1    study.adv.proxy.OrderRepositoryInterfaceProxy\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- | head -2\n[796bccd9] OrderController.request()\n[796bccd9] |-->OrderService.orderItem()\n\n$ git add -A && git commit -q -m 'feat: v6 인터페이스 버전 적용' && git tag v6-v1\n\n--   5.6 절에서 구체 클래스 버전에 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '애너테이션'  '원본에서 뗌' \\\n  '설정'        '빈마다 세 줄' \\\n  '순서'        '안쪽부터' \\\n  '한 낱말'     'return 이 정함' \\\n  '원본도 빈이면' '기동 실패' \\\n  '두 번 부르면' '한 번만 만듦' \\\n  '앱 패키지'   'trace 0 개' \\\n  '메서드 추가' '둘 다 깨짐' \\\n  '전체 줄'     '182 에서 232'\n\n애너테이션                 원본에서 뗌\n설정                       빈마다 세 줄\n순서                       안쪽부터\n한 낱말                    return 이 정함\n원본도 빈이면              기동 실패\n두 번 부르면               한 번만 만듦\n앱 패키지                  trace 0 개\n메서드 추가                둘 다 깨짐\n전체 줄                    182 에서 232",
+   "note": "**생성자를 찍어 보니 저장소 원본 → 저장소 프록시 → 서비스 원본 → 서비스 프록시 순으로 안쪽부터** 지어진다.\n\n**`return` 을 원본으로 바꾸면 서비스 줄만 빠져 프록시가 만들어졌는데 아무도 안** 쓴다.\n\n**원본에 애너테이션을 남기면 `2 were found` 로 기동이** 멈춘다.\n\n**앱 패키지에 `trace` 라는 낱말이 0 개인데 여섯 줄이 다** 나온다.\n\n**인터페이스에 메서드를 더하면 원본과 프록시가 둘 다 컴파일 오류로 깨져 조용하지** 않다."
+  }
+ ],
+ "recap": [
+  "**애너테이션을** 뗀다.",
+  "**설정이** 조립한다.",
+  "**안쪽부터** 짓는다.",
+  "**return 이** 정한다.",
+  "**둘이면** 터진다.",
+  "**두 번 불러도** 하나다.",
+  "**앱은** 깨끗하다.",
+  "**추가는 컴파일이** 막는다.",
+  "**전체는** 늘었다."
+ ],
+ "drills": [
+  {
+   "task": "생성 순서를 찍는다.",
+   "done_when": "안쪽부터인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "`return` 을 바꿔 본다.",
+   "done_when": "그 줄만 빠지는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "원본에 애너테이션을 남긴다.",
+   "done_when": "기동 실패를 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "메서드를 하나 더한다.",
+   "done_when": "둘 다 고쳐야 하는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정에서 무엇이 전부인가?",
+   "a": "무엇을 돌려주느냐다. 원본을 돌려주면 프록시가 안 쓰인다."
+  },
+  {
+   "q": "왜 안쪽부터 만드나?",
+   "a": "프록시가 원본을 받아야 만들어질 수 있어서다."
+  },
+  {
+   "q": "원본에 애너테이션을 남기면?",
+   "a": "같은 타입 빈이 둘이 되어 기동이 멈춘다."
+  },
+  {
+   "q": "빈 메서드를 두 번 부르면?",
+   "a": "설정 클래스가 감싸져 있어 한 번만 만들어진다."
+  },
+  {
+   "q": "인터페이스에 메서드를 더하면?",
+   "a": "원본과 프록시가 둘 다 컴파일 오류가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "수동 조립",
+   "def": "설정 클래스에서 원본과 프록시를 손으로 만들어 잇는 것."
+  },
+  {
+   "term": "빈 등록 대상",
+   "def": "컨테이너에 실제로 올라가는 객체. 여기서는 프록시다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying Mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Design Patterns — Proxy",
+   "url": "https://refactoring.guru/design-patterns/proxy",
+   "publisher": "Refactoring.Guru"
+  }
+ ]
+}
