@@ -1,0 +1,146 @@
+{
+ "book": "kafka",
+ "id": "rebalance-storm",
+ "no": "11.4",
+ "chapter": 11,
+ "title": "리밸런싱 폭풍",
+ "summary": "배포할 때마다 멈추는 컨슈머.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "배포가 리밸런싱을 몇 번 일으키는지 안다.",
+  "줄이는 방법을 안다.",
+  "설정 조합을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.3절에서 리밸런싱 중에 처리가 멈춘다고** 했다. **배포는 그것을 인스턴스 수만큼** 일으킨다."
+  },
+  {
+   "type": "figure",
+   "caption": "롤링 배포의 리밸런싱 횟수",
+   "ascii": "   3 instances, rolling update, no static membership\n\n   pod-1 down   -> rebalance 1\n   pod-1 up     -> rebalance 2\n   pod-2 down   -> rebalance 3\n   pod-2 up     -> rebalance 4\n   pod-3 down   -> rebalance 5\n   pod-3 up     -> rebalance 6\n\n   6 rebalances x (pause time)  =  total downtime\n   with 500 partitions that is close to a minute of no progress\n\n   인스턴스가 10개면 20번이다",
+   "note": "**\"배포할 때마다 랙이 튄다\" 의 정체**다(1.5절의 다섯 모양 중 하나)."
+  },
+  {
+   "type": "table",
+   "caption": "줄이는 방법",
+   "columns": [
+    "방법",
+    "효과",
+    "비용"
+   ],
+   "rows": [
+    [
+     "**`group.instance.id`(정적 멤버십)**",
+     "**재시작 리밸런싱이 사라진다**",
+     "인스턴스마다 고유 ID 관리"
+    ],
+    [
+     "**`CooperativeStickyAssignor`**",
+     "**멈추는 범위를 줄인다**",
+     "전략 변경 롤링 절차"
+    ],
+    [
+     "`session.timeout.ms` 조정",
+     "죽은 감지 속도",
+     "길면 장애 감지가 늦다"
+    ],
+    [
+     "파티션 수를 줄인다",
+     "리밸런싱이 빨라진다",
+     "4.6절. 줄일 수 없다"
+    ],
+    [
+     "배포 방식",
+     "한꺼번에 교체",
+     "다운타임"
+    ]
+   ],
+   "note": "**정적 멤버십 + 협력적 전략의 조합이 가장 효과가** 크다. **둘 다 설정 두 줄**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "정적 멤버십이 배포에서 하는 일",
+   "md": "```java\nprops.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, \"worker-\" + podOrdinal);\nprops.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, \"45000\");\n```\n\n```\npod-1 down   -> 코디네이터는 45초 기다린다 (리밸런싱 안 함)\npod-1 up     -> 같은 instance.id -> 파티션을 그대로 돌려준다\n\n리밸런싱: 0번\n```\n\n| 조건 | |\n|---|---|\n| **`session.timeout.ms` 안에 돌아와야** | 안 그러면 결국 리밸런싱 |\n| **ID 가 고유해야** | 겹치면 서로를 밀어낸다 |\n| **파드 이름이 안정적이어야** | **StatefulSet 의 `-0`, `-1`**(「쿠버네티스 입문」 5.5절) |\n\n> **Deployment 의 랜덤 파드 이름으로는 못 쓴다.**\n> **StatefulSet 이나 환경변수로 순번을 주입해야** 한다.\n>\n> **애플리케이션 기동이 45초보다 오래 걸리면 소용이** 없다 — **기동 시간을 먼저** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리밸런싱이 계속 도는 다른 원인들",
+   "md": "**배포가 아닌데도 리밸런싱이 반복되면**:\n\n| 원인 | 확인 | 절 |\n|---|---|---|\n| **poll 간격 초과** | 로그의 `consumer poll timeout has expired` | **7.6** |\n| **GC 로 멈춤** | GC 로그. 긴 STW | — |\n| **네트워크 순단** | 하트비트 실패 로그 | — |\n| **`session.timeout.ms` 가 너무 짧다** | 기본 45초보다 줄였나 | 7.3 |\n| 컨테이너 OOMKill | 「도커」 6.6절 | — |\n| **패턴 구독의 새 토픽** | `metadata.max.age.ms` 마다 | 7.2 |\n\n**가장 흔한 것은 첫 번째**다(7.6절).\n\n> **`max.poll.records` 를 줄이는 것으로 대부분** 해결된다.\n> **`rebalance-rate-per-hour` 지표를 보면 바로** 보인다(11.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "배포를 흉내 내 리밸런싱을 센다",
+   "sql": "$ kt --create --topic rbs --partitions 60 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 60000); do echo \"m-$i\"; done | kcp --topic rbs\n\n# --- 기본 설정으로 롤링 배포 ---\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' RollingConsumer --group rb-plain --label \"pod-$i\" \\\n>     --timeout 120000 &\n> done\n$ sleep 15\n\n$ java -cp 'out:libs/*' RebalanceCounter --group rb-plain --watch 60 &\n\n#   롤링 배포를 흉내 낸다 (하나씩 죽였다 살린다)\n$ for i in 1 2 3; do\n>   pkill -f \"label pod-$i\"\n>   sleep 8\n>   java -cp 'out:libs/*' RollingConsumer --group rb-plain --label \"pod-$i\" --timeout 90000 &\n>   sleep 12\n> done\n$ sleep 20\n\n[RebalanceCounter] group=rb-plain rebalances=6 total-pause=18.4s\n\n#   6번, 18.4초 동안 처리가 멈췄다\n\n$ pkill -f RollingConsumer; pkill -f RebalanceCounter\n\n\n# --- 협력적 전략 ---\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' RollingConsumer --group rb-coop --label \"pod-$i\" \\\n>     --assignor cooperative-sticky --timeout 120000 &\n> done\n$ sleep 15\n$ java -cp 'out:libs/*' RebalanceCounter --group rb-coop --watch 60 &\n$ for i in 1 2 3; do\n>   pkill -f \"label pod-$i\"; sleep 8\n>   java -cp 'out:libs/*' RollingConsumer --group rb-coop --label \"pod-$i\" \\\n>     --assignor cooperative-sticky --timeout 90000 &\n>   sleep 12\n> done\n$ sleep 20\n\n[RebalanceCounter] group=rb-coop rebalances=12 total-pause=6.1s\n\n#   횟수는 늘었는데(협력적은 두 번에 나눠 한다) 멈춘 시간은 1/3 이다\n#   그리고 그동안 안 옮기는 파티션은 계속 처리됐다\n\n$ pkill -f RollingConsumer; pkill -f RebalanceCounter\n\n\n# --- 정적 멤버십 ---\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' RollingConsumer --group rb-static --label \"pod-$i\" \\\n>     --instance-id \"worker-$i\" --assignor cooperative-sticky --timeout 120000 &\n> done\n$ sleep 15\n$ java -cp 'out:libs/*' RebalanceCounter --group rb-static --watch 60 &\n$ for i in 1 2 3; do\n>   pkill -f \"label pod-$i\"; sleep 8\n>   java -cp 'out:libs/*' RollingConsumer --group rb-static --label \"pod-$i\" \\\n>     --instance-id \"worker-$i\" --assignor cooperative-sticky --timeout 90000 &\n>   sleep 12\n> done\n$ sleep 20\n\n[RebalanceCounter] group=rb-static rebalances=0 total-pause=0.0s\n\n#   0번. 같은 instance.id 로 45초 안에 돌아왔기 때문이다\n\n$ kcg --describe --group rb-static --members --verbose | head -4\nGROUP      CONSUMER-ID       GROUP-INSTANCE-ID  #PARTITIONS\nrb-static  consumer-...-7    worker-1           20\nrb-static  consumer-...-8    worker-2           20\nrb-static  consumer-...-9    worker-3           20\n\n#   CONSUMER-ID 는 바뀌었는데 GROUP-INSTANCE-ID 와 할당은 그대로다\n\n$ pkill -f RollingConsumer; pkill -f RebalanceCounter\n\n\n# --- 기동이 느리면 소용없다 ---\n\n$ java -cp 'out:libs/*' RollingConsumer --group rb-slow --instance-id worker-1 \\\n    --startup-delay 60000 --timeout 60000 &\n$ sleep 5 && pkill -f 'group rb-slow'\n$ sleep 50\n$ kcg --describe --group rb-slow --state | tail -1\nrb-slow  kafka-1:19092 (1)  cooperative-sticky  Empty  0\n\n#   45초를 넘겨 결국 그룹에서 빠졌다\n#   기동이 session.timeout.ms 보다 오래 걸리면 정적 멤버십의 이득이 없다\n\n\n# --- 리밸런싱이 반복되는지 지표로 ---\n\n$ curl -s 'localhost:8080/actuator/metrics/kafka.consumer.coordinator.rebalance.rate.per.hour' | \\\n    python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n0.0\n\n#   배포 때만 오르고 평소에 0이어야 한다\n#   평소에 크면 7.6절(poll 간격)이나 GC 를 본다\n\n$ kt --delete --topic rbs >/dev/null\n$ for g in rb-plain rb-coop rb-static rb-slow; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "롤링 배포는 인스턴스 수의 두 배만큼 리밸런싱을 일으킨다. 파티션이 많으면 그만큼 멈춘다.",
+  "협력적 전략은 횟수는 늘지만 멈추는 시간과 범위를 크게 줄인다.",
+  "정적 멤버십은 재시작 리밸런싱을 아예 없앤다. 두 조합이 가장 효과가 크다.",
+  "instance.id 는 안정적인 순번이어야 한다. StatefulSet 이 맞고 Deployment 의 랜덤 이름은 안 된다.",
+  "기동이 session.timeout.ms 보다 오래 걸리면 정적 멤버십의 이득이 없다."
+ ],
+ "drills": [
+  {
+   "task": "컨슈머 셋을 하나씩 죽였다 살리며 리밸런싱 횟수와 멈춘 시간을 잰다.",
+   "done_when": "기본 설정의 횟수를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "CooperativeStickyAssignor 로 바꿔 같은 실험을 한다.",
+   "done_when": "멈춘 시간이 줄어드는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "group.instance.id 를 주고 리밸런싱이 0이 되는 것을 확인한다.",
+   "done_when": "GROUP-INSTANCE-ID 가 유지되는 것을 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인스턴스 3개를 롤링 배포하면 리밸런싱이 몇 번인가.",
+   "a": "기본적으로 6번(내릴 때와 올릴 때 각각)."
+  },
+  {
+   "q": "정적 멤버십이 통하는 조건은.",
+   "a": "같은 group.instance.id 로 session.timeout.ms 안에 돌아와야 한다. ID 는 안정적인 순번이어야 한다."
+  },
+  {
+   "q": "평소에도 리밸런싱이 반복되면 가장 먼저 의심할 것은.",
+   "a": "poll 간격 초과. max.poll.records 를 줄인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리밸런싱 폭풍",
+   "what": "짧은 시간에 리밸런싱이 반복되어 처리가 진행되지 않는 상태."
+  },
+  {
+   "term": "롤링 배포",
+   "what": "인스턴스를 하나씩 교체하는 배포 방식."
+  },
+  {
+   "term": "rebalance-rate-per-hour",
+   "what": "시간당 리밸런싱 횟수 지표."
+  }
+ ],
+ "sources": [
+  {
+   "title": "KIP-345 — Static membership",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-345",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Consumer rebalancing",
+   "url": "https://www.confluent.io/blog/cooperative-rebalancing-in-kafka-streams-consumer-ksqldb/",
+   "publisher": "Confluent"
+  }
+ ]
+}

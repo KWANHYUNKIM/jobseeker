@@ -1,0 +1,150 @@
+{
+ "book": "kafka",
+ "id": "to-next",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "다음으로",
+ "summary": "이 책이 남긴 것과 이어지는 자리.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "책의 요지를 한 줄씩 모은다.",
+  "다음에 볼 것을 정한다.",
+  "서가에서의 위치를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**72절을 여기서** 닫는다.\n\n> **매 절이 오간 레코드와 오프셋·LAG 로 끝났다**(1.1절).\n> **그 습관이 이 책의 진짜 내용**이다 — **막히면 개념을 다시 읽기 전에 `--describe --group` 을 친다.**"
+  },
+  {
+   "type": "table",
+   "caption": "장마다 한 줄",
+   "columns": [
+    "장",
+    "한 줄"
+   ],
+   "rows": [
+    [
+     "2",
+     "읽어도 안 사라진다. 그게 큐와 갈라지는 자리다"
+    ],
+    [
+     "3",
+     "브로커는 받아서 파일 끝에 붙일 뿐이다. 덜 하는 만큼 빠르다"
+    ],
+    [
+     "4",
+     "**키가 파티션을 정하고 순서는 파티션 안에서만이다**"
+    ],
+    [
+     "5",
+     "막히면 여섯 명령. 안 들어갔나와 안 읽었나를 먼저 가른다"
+    ],
+    [
+     "6",
+     "**보냈다는 것과 저장됐다는 것은 다르다.** acks 가 그 경계다"
+    ],
+    [
+     "7",
+     "**어디까지 읽었는지는 내가 적는다.** 언제 적느냐가 중복과 유실을 가른다"
+    ],
+    [
+     "8",
+     "정확히 한 번은 카프카 안에서만이다. 밖은 멱등 처리다"
+    ],
+    [
+     "9",
+     "스프링이 루프를 대신 돌려 준다. 기본값이 조용한 유실인 자리가 있다"
+    ],
+    [
+     "10",
+     "옮기는 것은 커넥트, 바꾸는 것은 스트림즈, 나머지는 컨슈머"
+    ],
+    [
+     "11",
+     "장애는 대개 랙에서 먼저 보인다"
+    ]
+   ],
+   "note": "**4장과 7장이 이 책의 축**이다. **나머지는 그 둘의 결과이거나 그 둘을 지키는 방법**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "실무에서 가장 자주 쓰게 될 것",
+   "md": "**72절 중에 매주 쓰는 것은 열 개쯤**이다.\n\n| 무엇 | 절 |\n|---|---|\n| `--describe --group` 으로 랙 보기 | 5.4 |\n| 키를 무엇으로 잡을지 | 4.4 |\n| 수동 커밋 + 멱등 처리 | 7.4·7.5 |\n| `max.poll.records` 조정 | 7.6 |\n| DLT 와 에러 핸들러 | 9.4·9.5 |\n| acks·min.isr 조합 | 3.6·6.3 |\n| 오프셋 되감기 | 5.6 |\n| 아웃박스 | 8.5 |\n| 파티션 수 정하기 | 4.6 |\n| 리밸런싱 줄이기 | 7.3·11.4 |\n\n> **나머지는 필요할 때 돌아와 찾는 것**이다.\n> **이 표를 노트 앞에 붙여** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "다음에 볼 것",
+   "md": "| 방향 | 무엇 |\n|---|---|\n| **운영을 깊이** | 클러스터 확장·재배치·업그레이드·보안(SASL·mTLS·ACL) |\n| **스트림 처리** | 스트림즈 조인·프로세서 API, 플링크 |\n| **아키텍처** | 이벤트 소싱, CQRS, 사가 패턴 |\n| **다른 도구** | Pulsar, Redpanda, NATS — **같은 문제를 다르게 푼다** |\n| **관리형** | MSK·Confluent Cloud — 운영을 돈으로 산다 |\n\n**서가 안에서 이어지는 자리**:\n\n| 책 | 어디 |\n|---|---|\n| **「도커」** | 1.3절 실습 클러스터, 8장 볼륨(10.5절의 상태) |\n| **「쿠버네티스 입문」** | **11.4절의 StatefulSet, 컨슈머 스케일링** |\n| 「스프링 부트와 JPA 활용 1편」 | 9장이 그 주문을 쪼갠다 |\n| 「스프링 DB 1편」 | 8.5절 아웃박스 |\n| 「Practical Testing」 | 9.7절 |\n| 「모든 개발자를 위한 HTTP」 | 2.1절의 결합 이야기가 같은 문제다 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이 책을 덮으며 확인하는 것",
+   "sql": "# --- 클러스터가 건강한가 ---\n\n$ kt --describe --under-replicated-partitions | wc -l\n0\n$ kt --describe --under-min-isr-partitions | wc -l\n0\n$ kt --describe --unavailable-partitions | wc -l\n0\n\n#   셋 다 0. 11.1절의 알람 2번이 조용하다\n\n\n# --- 모든 그룹의 랙 ---\n\n$ for g in $(kcg --list); do\n>   printf '%-24s %s\\n' \"$g\" \"$(kcg --describe --group $g 2>/dev/null | \\\n>     awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n> done\ninventory                0\nmail                     0\nanalytics                0\norder-worker             0\n\n\n# --- DLT ---\n\n$ for t in $(kt --list | grep -E '\\.DL[TQ]$'); do\n>   printf '%-24s %s\\n' \"$t\" \"$(docker compose exec -T kafka-1 \\\n>     /opt/kafka/bin/kafka-run-class.sh kafka.tools.GetOffsetShell \\\n>     --bootstrap-server kafka-1:19092 --topic $t 2>/dev/null | \\\n>     awk -F: '{s+=$3} END {print s+0}')\"\n> done\norder.placed.v1.DLT      0\n\n#   11.1절의 세 알람이 전부 조용하다\n\n\n# --- 이 책에서 만든 것들 ---\n\n$ kt --list | grep -v '^__' | sort\norder.placed.v1\norder.placed.v1.DLT\norder.big.v1\ninventory.changed.v1\n\n$ kcg --list | sort\nanalytics\ninventory\nmail\norder-worker\n\n$ docker compose ps --format 'table {{.Service}}\\t{{.Status}}'\nSERVICE   STATUS\nkafka-1   Up 4 hours\nkafka-2   Up 4 hours\nkafka-3   Up 4 hours\n\n\n# --- 실습 클러스터를 치운다 ---\n\n$ docker compose down -v\n[+] Running 7/7\n ✔ Container kafka-lab-kafka-3-1  Removed\n ✔ Container kafka-lab-kafka-2-1  Removed\n ✔ Container kafka-lab-kafka-1-1  Removed\n ✔ Volume kafka-lab_k1            Removed\n ✔ Volume kafka-lab_k2            Removed\n ✔ Volume kafka-lab_k3            Removed\n ✔ Network kafka-lab_default      Removed\n\n#   「도커」 9.7절의 그 명령이다\n\n\n# --- 여기까지가 「아파치 카프카 애플리케이션 프로그래밍」이다 ---\n#\n#   막히면 순서대로 친다:\n#     1. kafka-topics --describe --under-min-isr-partitions\n#     2. GetOffsetShell --topic <t>          (들어왔나)\n#     3. kafka-consumer-groups --describe    (읽었나)\n#\n#   그리고 두 문장을 기억한다:\n#     키가 파티션을 정하고 순서는 파티션 안에서만이다   (4.4·4.5절)\n#     어디까지 읽었는지는 내가 적는다                    (7.4절)"
+  }
+ ],
+ "recap": [
+  "매 절이 오간 레코드와 랙으로 끝났다. 막히면 개념보다 --describe --group 을 먼저 친다.",
+  "4장(키와 순서)과 7장(오프셋)이 이 책의 축이다. 나머지는 그 결과이거나 그것을 지키는 방법이다.",
+  "72절 중 매주 쓰는 것은 열 개쯤이다. 나머지는 필요할 때 찾아온다.",
+  "다음은 운영 심화·스트림 처리·이벤트 아키텍처다. 서가에서는 「쿠버네티스 입문」으로 이어진다.",
+  "클러스터가 건강한지는 세 명령으로 확인한다 — under-min-isr, 랙, DLT."
+ ],
+ "drills": [
+  {
+   "task": "장마다 한 줄 표를 보지 않고 자기 말로 다시 써 본다.",
+   "done_when": "열 줄을 채운다.",
+   "minutes": 15
+  },
+  {
+   "task": "매주 쓸 열 개 표를 노트에 옮겨 적는다.",
+   "done_when": "각각이 몇 절인지 함께 적는다.",
+   "minutes": 8
+  },
+  {
+   "task": "실습 클러스터를 정리하고, 자기 프로젝트에 적용할 것 세 가지를 적는다.",
+   "done_when": "우선순위를 정한다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 책의 두 축은 무엇인가.",
+   "a": "키가 파티션을 정하고 순서는 파티션 안에서만이라는 것(4장), 어디까지 읽었는지는 컨슈머가 적는다는 것(7장)."
+  },
+  {
+   "q": "막혔을 때 치는 세 명령은.",
+   "a": "under-min-isr 확인, 끝 오프셋 확인(들어왔나), consumer-groups describe(읽었나)."
+  },
+  {
+   "q": "카프카 장애가 대개 어디서 먼저 보이나.",
+   "a": "랙. 즉시 실패가 아니라 밀리는 것으로 나타난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "랙",
+   "what": "아직 안 읽은 레코드 수. 이 책의 마지막 블록마다 나온 값."
+  },
+  {
+   "term": "멱등 처리",
+   "what": "중복이 와도 결과가 같게 만드는 것. 실무의 기본 전략."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Documentation",
+   "url": "https://kafka.apache.org/documentation/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (차례 출처)",
+   "url": "https://www.inflearn.com/course/아파치-카프카-애플리케이션-프로그래밍",
+   "publisher": "인프런 · 데브원영"
+  }
+ ]
+}
