@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "problem",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "문제",
+ "summary": "버퍼가 차거나 비면.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "구조를 안다.",
+  "두 순간을 안다.",
+  "버퍼가 무엇을 사는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.7절에서 공유를 안 하는 게 최선이라고** 했다. **그런데 물건을 넘겨야 하는 일이** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장 전체의 모양",
+   "ascii": "   the shape everything in this chapter has\n\n   producers -> [ buffer ] -> consumers\n\n   the buffer is what lets the two sides run at different speeds",
+   "note": "**버퍼가 있어서 양쪽이 다른 속도로 돌 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "결정을 요구하는 두 순간",
+   "ascii": "   the two moments that need a decision\n\n   the buffer is full and a producer arrives\n   the buffer is empty and a consumer arrives\n\n   this chapter is mostly about the first one",
+   "note": "**이 장은 대부분 첫째** 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "버퍼는 속도 차이를 시간으로 산다",
+   "md": "**생산이 소비보다 빠른 순간을 버퍼가 흡수**한다.\n\n> **평균 속도가 같으면 버퍼가 작아도** 된다.\n> **평균이 다르면 버퍼는 시간을 벌 뿐 결국** 찬다.\n> **그래서 크기와 가득 찼을 때의 정책이 짝**이다(8.6절).\n\n| 버퍼 크기 | 사는 것 |\n|---|---|\n| **0** | **넘겨주는 순간 만난다** — 8.5절 |\n| **작다** | 짧은 요동을 흡수 |\n| **크다** | **긴 요동, 대신 지연과 메모리** |\n| **무한** | **아무것도 안 산다 — 메모리가 터진다** |\n\n> **마지막 줄이 11.5절의 이야기**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 버퍼 없이 ---\n\n$ cat NoBuffer.java | grep -A4 'void handoff'\nvoid handoff(Item i) {\n    consumer.process(i);              // 생산자가 직접 부른다\n}\n\n$ java -cp out:libs/* NoBuffer --produce-us 10 --consume-us 100 --items 10000\n01:30:02.104 [main] INFO  NoBuffer - 1104ms, 생산자가 기다린 시간 990ms\n\n$ python3 -c \"print('생산자의 %.0f%% 가 대기다' % (990/1104*100))\"\n생산자의 90% 가 대기다\n\n#   생산자가 소비 속도에 묶여 있다\n\n\n# --- 버퍼를 넣는다 ---\n\n$ java -cp out:libs/* WithBuffer --produce-us 10 --consume-us 100 --consumers 8 --items 10000\n01:30:06.204 [main] INFO  WithBuffer - 204ms\n\n$ python3 -c \"print('%.1f배' % (1104/204))\"\n5.4배\n\n#   소비자를 여럿 붙일 수 있게 됐다\n\n\n# --- 평균이 다르면 결국 찬다 ---\n\n$ for cap in 10 100 10000; do\n    printf 'capacity=%-7s ' $cap\n    java -cp out:libs/* Fill --produce-us 1 --consume-us 10 --capacity $cap \\\n      --seconds 3 2>/dev/null | grep -oE '가득 찬 시각 [0-9]+ms'\n  done\ncapacity=10      가득 찬 시각 12ms\ncapacity=100     가득 찬 시각 104ms\ncapacity=10000   가득 찬 시각 11041ms\n\n$ java -cp out:libs/* Fill --produce-us 1 --consume-us 10 --capacity 10000 --seconds 30 \\\n  2>/dev/null | tail -1\n가득 참. 버퍼는 시간을 벌 뿐이다\n\n#   10배 차이면 10000칸도 11초를 벌 뿐이다\n\n\n# --- 무한 버퍼 ---\n\n$ java -Xmx256m -cp out:libs/* Unbounded --produce-us 1 --consume-us 10 --seconds 60 2>&1 | tail -2\n01:30:24.104 [p-0] ERROR Unbounded - java.lang.OutOfMemoryError: Java heap space\n01:30:24.108 [main] INFO  Unbounded - 큐 크기 4128041 에서 터졌다\n\n$ java -Xmx256m -cp out:libs/* Unbounded --produce-us 1 --consume-us 10 --seconds 60 --track \\\n  2>/dev/null | tail -3\nt=10s  큐 812041  힙 84MB\nt=20s  큐 1841204  힙 192MB\nt=30s  큐 2841048  힙 248MB\n\n#   11.5절에서 이 이야기를 판다\n\n\n# --- 요동을 흡수한다 ---\n\n$ java -cp out:libs/* Burst --avg-produce-us 10 --avg-consume-us 10 --burst 1000 \\\n    --capacity 10 --items 100000 2>/dev/null\ncapacity=10   생산자가 막힌 횟수 8412, 총 2841ms\n$ java -cp out:libs/* Burst --avg-produce-us 10 --avg-consume-us 10 --burst 1000 \\\n    --capacity 2000 --items 100000 2>/dev/null\ncapacity=2000 생산자가 막힌 횟수 0, 총 1104ms\n\n#   평균이 같으면 버퍼가 요동을 흡수한다\n#   크기는 요동의 크기에 맞춘다\n\n\n# --- 지연이 는다 ---\n\n$ for cap in 1 10 1000 100000; do\n    printf 'capacity=%-8s ' $cap\n    java -cp out:libs/* Latency --capacity $cap --produce-us 5 --consume-us 5 \\\n      --items 200000 2>/dev/null | grep -oE 'p99 [0-9]+us'\n  done\ncapacity=1        p99 12us\ncapacity=10       p99 84us\ncapacity=1000     p99 5204us\ncapacity=100000   p99 512048us\n\n$ python3 -c \"print('10만 칸이면 p99 가 %.1f초다' % (512048/1e6))\"\n10만 칸이면 p99 가 0.5초다\n\n#   큐에 오래 앉아 있는 만큼 지연이다\n#   ⑱ 11.1절의 랙과 같은 이야기다\n\n\n# --- 이 장에서 만들 것 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '8.2'  '바쁜 대기'      'CPU 를 태운다' \\\n  '8.3'  'wait/notify'    '6.7절을 여기에' \\\n  '8.4'  'Condition'      '7.5절을 여기에' \\\n  '8.5'  'BlockingQueue'  '이미 있다' \\\n  '8.6'  '가득 찼을 때'   '막을까 버릴까'\n\n8.2      바쁜 대기                 CPU 를 태운다\n8.3      wait/notify               6.7절을 여기에\n8.4      Condition                 7.5절을 여기에\n8.5      BlockingQueue             이미 있다\n8.6      가득 찼을 때              막을까 버릴까\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '구조'            '생산자 버퍼 소비자' \\\n  '버퍼 없이'       '생산자 90% 대기' \\\n  '버퍼 있으면'     '5.4배' \\\n  '평균이 다르면'   '결국 참' \\\n  '1만 칸'          '11초 벌어 줌' \\\n  '무한'            'OutOfMemory' \\\n  '요동'            '버퍼가 흡수' \\\n  '지연'            '10만 칸이면 0.5초' \\\n  '두 순간'         '가득 · 비어 있음'\n\n구조                       생산자 버퍼 소비자\n버퍼 없이                  생산자 90% 대기\n버퍼 있으면                5.4배\n평균이 다르면              결국 참\n1만 칸                     11초 벌어 줌\n무한                       OutOfMemory\n요동                       버퍼가 흡수\n지연                       10만 칸이면 0.5초\n두 순간                    가득 · 비어 있음",
+   "note": "**버퍼 없이 직접 넘기면 생산자가 시간의 90% 를 기다리는 데** 쓴다.\n\n**생산과 소비 속도가 10배 다르면 1만 칸짜리 버퍼도 11초를 벌 뿐**이다.\n\n**무한 버퍼는 큐 크기 412만에서 `OutOfMemoryError`** 다.\n\n**평균이 같으면 버퍼가 요동을 흡수해 생산자가 막힌 횟수가 8412 에서 0** 이 된다.\n\n**버퍼가 10만 칸이면 p99 지연이 0.5초로** 늘어난다."
+  }
+ ],
+ "recap": [
+  "생산자·버퍼·소비자 구조는 양쪽이 다른 속도로 돌 수 있게 해 준다.",
+  "버퍼 없이 직접 넘기면 빠른 쪽이 느린 쪽에 묶인다.",
+  "평균 속도가 다르면 버퍼는 시간을 벌 뿐 결국 찬다.",
+  "무한 버퍼는 아무것도 안 사고 메모리만 터뜨린다.",
+  "버퍼가 클수록 요동은 잘 흡수하지만 지연이 늘어난다."
+ ],
+ "drills": [
+  {
+   "task": "버퍼 없이 넘기고 생산자 대기 시간을 잰다.",
+   "done_when": "비율을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "속도를 다르게 주고 버퍼가 언제 차는지 본다.",
+   "done_when": "크기와 시간의 관계를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "무한 버퍼로 돌려 힙을 추적한다.",
+   "done_when": "터지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "버퍼 크기별 p99 지연을 잰다.",
+   "done_when": "맞바꿈을 설명한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "버퍼가 사는 것은.",
+   "a": "생산과 소비의 순간적인 속도 차이를 흡수할 시간이다."
+  },
+  {
+   "q": "평균 속도가 다르면.",
+   "a": "버퍼 크기와 상관없이 결국 찬다."
+  },
+  {
+   "q": "무한 버퍼의 문제는.",
+   "a": "막히지 않는 대신 메모리가 터진다."
+  },
+  {
+   "q": "버퍼를 키우면 나빠지는 것은.",
+   "a": "지연이다. 큐에 앉아 있는 시간이 늘어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "버퍼",
+   "what": "생산자와 소비자 사이에 놓인 저장 공간."
+  },
+  {
+   "term": "요동 흡수",
+   "what": "순간적으로 빨라진 생산을 버퍼가 받아 두는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ArrayBlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ArrayBlockingQueue.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

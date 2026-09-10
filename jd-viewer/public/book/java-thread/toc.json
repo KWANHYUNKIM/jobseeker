@@ -412,7 +412,7 @@
           "title": "문제",
           "summary": "버퍼가 차거나 비면.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -420,7 +420,7 @@
           "title": "바쁜 대기",
           "summary": "CPU 를 태우며 기다린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -428,7 +428,7 @@
           "title": "wait/notify 로",
           "summary": "notify 와 notifyAll 의 차이.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",

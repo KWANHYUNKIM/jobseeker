@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "busy-wait",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "바쁜 대기",
+ "summary": "CPU 를 태우며 기다린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "값을 잰다.",
+  "언제 이득인지 안다.",
+  "중간 단계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**가장 단순한 버퍼는 반복문으로 계속 물어보는** 것이다.\n\n```java\nwhile (queue.isEmpty()) { }      // 계속 묻는다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "계속 다시 묻는 반복문",
+   "ascii": "   the loop that asks again and again\n\n   check the condition\n   if false, check it again immediately\n\n   correct, and it burns a whole core doing nothing",
+   "note": "**옳고, 코어 하나를 아무 일 없이** 태운다."
+  },
+  {
+   "type": "figure",
+   "caption": "회전과 대기 사이",
+   "ascii": "   from pure spinning to pure blocking\n\n   spin                  lowest latency, highest cpu\n   spin with a hint      the cpu is told this is a spin\n   spin then sleep       a compromise\n   block on a condition  no cpu, wake up costs microseconds\n\n   the right point depends on how long the wait usually is",
+   "note": "**알맞은 자리는 보통 얼마나 기다리는지에** 달렸다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "짧게 기다릴 때만 이득이다",
+   "md": "**깨우는 값이 수 마이크로초**다(2.3절).\n\n> **대기가 그보다 짧으면 회전이** 싸다.\n> **길면 그냥 CPU 를** 버린다.\n> **경계는 대략 문맥 전환 두 번 값**이다.\n\n| 대기 시간 | 나은 쪽 |\n|---|---|\n| **수십 나노초** | **회전** |\n| **수 마이크로초** | **섞기** |\n| **그 이상** | **차단** |\n\n> **문제는 대기 시간을 미리 모른다는** 것이다.\n> **그래서 실무에서는 대부분** 차단이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 바쁜 대기 버퍼 ---\n\n$ cat SpinBuffer.java | grep -A8 'Object take'\nObject take() {\n    while (true) {\n        synchronized (lock) {\n            if (count > 0) { ... return x; }\n        }\n        // 아무것도 안 한다. 곧바로 다시 시도\n    }\n}\n\n$ java -cp out:libs/* SpinBuffer --producers 1 --consumers 4 --items 100000 2>/dev/null\n01:33:02.104 [main] INFO  SpinBuffer - 완료 100000건 412ms\n\n$ java -cp out:libs/* SpinBuffer --producers 1 --consumers 4 --items 1000000 &\n$ sleep 2 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 94.8% user, 2.1% sys, 3.1% idle\n$ jcmd $! Thread.print | grep -c RUNNABLE\n9\n$ kill %1\n\n#   4명이 다 RUNNABLE 로 CPU 를 태운다\n#   1.5절에서 \"RUNNABLE + 고CPU\" 라고 한 그것이다\n\n\n# --- 얼마나 헛도나 ---\n\n$ java -cp out:libs/* SpinBuffer --producers 1 --consumers 4 --items 100000 --count-spins\n성공한 take 100000, 헛돈 회전 412048204\n\n$ python3 -c \"print('한 건당 %.0f번 헛돈다' % (412048204/100000))\"\n한 건당 4120번 헛돈다\n\n\n# --- 소비자를 늘리면 나빠진다 ---\n\n$ for c in 1 2 4 8; do\n    printf 'consumers=%-3s ' $c\n    java -cp out:libs/* SpinBuffer --producers 1 --consumers $c --items 200000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nconsumers=1   204ms\nconsumers=2   412ms\nconsumers=4   1204ms\nconsumers=8   8412ms\n\n#   생산자는 하나인데 소비자가 늘수록 느려진다\n#   서로 락을 두고 다투기만 한다\n\n\n# --- 차단과 견준다 ---\n\n$ for m in spin block; do\n    for c in 1 4 8; do\n      printf '%-6s consumers=%-3s ' $m $c\n      java -cp out:libs/* BufCompare --mode $m --consumers $c --items 200000 2>/dev/null \\\n        | grep -oE '[0-9]+ms CPU [0-9]+%'\n    done\n  done\nspin   consumers=1   204ms CPU 48%\nspin   consumers=4   1204ms CPU 94%\nspin   consumers=8   8412ms CPU 98%\nblock  consumers=1   241ms CPU 12%\nblock  consumers=4   118ms CPU 28%\nblock  consumers=8   104ms CPU 41%\n\n$ python3 -c \"print('소비자 8명이면 차단이 %.0f배 빠르고 CPU 는 절반 이하다' % (8412/104))\"\n소비자 8명이면 차단이 81배 빠르고 CPU 는 절반 이하다\n\n#   회전은 스레드가 늘수록 급격히 나빠진다\n\n\n# --- 아주 짧은 대기라면 ---\n\n$ for waitns in 50 500 5000 50000; do\n    printf 'wait=%-7sns ' $waitns\n    printf 'spin %-9s ' \\\n      \"$(java -cp out:libs/* HandoffBench --mode spin --wait-ns $waitns --rounds 1000000 \\\n         2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* HandoffBench --mode block --wait-ns $waitns --rounds 1000000 \\\n      2>/dev/null | grep -o '[0-9]*ms'\n  done\nwait=50     ns spin 84ms      2841ms\nwait=500    ns spin 412ms     2904ms\nwait=5000   ns spin 4128ms    3204ms\nwait=50000  ns spin 41204ms   8412ms\n\n$ python3 -c \"print('50ns 면 회전이 %.0f배 빠르고 50000ns 면 %.1f배 느리다' % (2841/84, 41204/8412))\"\n50ns 면 회전이 34배 빠르고 50000ns 면 4.9배 느리다\n\n#   교차점이 수 마이크로초쯤이다\n\n\n# --- onSpinWait ---\n\n$ cat SpinHint.java | grep -A3 'while'\nwhile (!ready) {\n    Thread.onSpinWait();               // CPU 에게 회전 중이라고 알린다\n}\n\n$ for m in plain hint; do\n    printf '%-8s ' $m\n    java -cp out:libs/* SpinHint --mode $m --wait-ns 500 --rounds 2000000 2>/dev/null \\\n      | grep -oE '[0-9]+ms CPU [0-9]+%'\n  done\nplain    841ms CPU 98%\nhint     512ms CPU 71%\n\n$ python3 -c \"print('%.0f%% 빠르고 CPU 도 %.0f%%p 낮다' % ((841-512)/841*100, 98-71))\"\n39% 빠르고 CPU 도 27%p 낮다\n\n#   같은 코어의 다른 하이퍼스레드에게 자원을 양보한다\n#   4.6절의 yield 와 다르다 -- 스케줄러가 아니라 CPU 에게 말한다\n\n\n# --- 섞는다 ---\n\n$ cat SpinThenBlock.java | grep -A7 'Object take'\nObject take() throws InterruptedException {\n    for (int i = 0; i < SPIN_LIMIT; i++) {\n        Object x = tryTake();\n        if (x != null) return x;\n        Thread.onSpinWait();\n    }\n    return blockingTake();             // 그래도 없으면 차단\n}\n\n$ for limit in 0 64 1024 999999; do\n    printf 'spin-limit=%-8s ' $limit\n    java -cp out:libs/* SpinThenBlock --limit $limit --consumers 4 --items 500000 \\\n      2>/dev/null | grep -oE '[0-9]+ms CPU [0-9]+%'\n  done\nspin-limit=0        412ms CPU 31%\nspin-limit=64       284ms CPU 42%\nspin-limit=1024     241ms CPU 68%\nspin-limit=999999   2841ms CPU 97%\n\n#   조금 회전하고 포기하는 게 가장 낫다\n#   락 구현 안에서 실제로 쓰는 방식이다\n\n\n# --- JVM 도 그렇게 한다 ---\n\n$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -iE 'SpinPause|PreBlockSpin'\n     intx PreBlockSpin  = 10   {product}\n\n$ java -XX:PreBlockSpin=0 -cp out:libs/* LockBench2 --mode sync --threads 8 \\\n    --rounds 20000000 2>/dev/null | grep -o '[0-9]*ms'\n8412ms\n$ java -cp out:libs/* LockBench2 --mode sync --threads 8 --rounds 20000000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n4128ms\n\n#   6.3절의 락 승격 전에 잠깐 회전한다\n#   내가 안 짜도 이미 섞여 있다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '바쁜 대기'       '계속 묻는다' \\\n  'CPU'             '94.8%' \\\n  '한 건당'         '4120번 헛돎' \\\n  '소비자 8명'      '8412ms' \\\n  '차단은'          '104ms' \\\n  '차이'            '81배' \\\n  '대기 50ns'       '회전이 34배 빠름' \\\n  '대기 50us'       '차단이 4.9배 빠름' \\\n  'onSpinWait'      '39% 빠르고 CPU 27%p 낮음' \\\n  '섞으면'          '가장 나음' \\\n  'JVM'             '이미 섞어 씀'\n\n바쁜 대기                  계속 묻는다\nCPU                        94.8%\n한 건당                    4120번 헛돎\n소비자 8명                 8412ms\n차단은                     104ms\n차이                       81배\n대기 50ns                  회전이 34배 빠름\n대기 50us                  차단이 4.9배 빠름\nonSpinWait                 39% 빠르고 CPU 27%p 낮음\n섞으면                     가장 나음\nJVM                        이미 섞어 씀",
+   "note": "**바쁜 대기 버퍼는 CPU 94.8% 를 쓰면서 한 건당 4120번 헛돈다**.\n\n**소비자를 8명으로 늘리면 8412ms 인데 차단 방식은 104ms 로 81배** 차이다.\n\n**대기가 50ns 면 회전이 34배 빠르고 50us 면 차단이 4.9배** 빠르다.\n\n**`onSpinWait` 를 넣으면 39% 빨라지고 CPU 도 27%p** 낮아진다.\n\n**조금 회전하다 차단하는 방식이 가장 낫고 JVM 의 락도 그렇게** 되어 있다."
+  }
+ ],
+ "recap": [
+  "바쁜 대기는 옳지만 코어를 통째로 태운다.",
+  "스레드가 늘수록 급격히 나빠져 차단 방식과 수십 배 차이가 난다.",
+  "대기가 수십 나노초로 아주 짧을 때만 회전이 이득이다.",
+  "onSpinWait 는 CPU 에게 회전 중이라고 알려 자원을 양보하게 한다.",
+  "조금 회전하다 차단하는 절충이 가장 낫고 JVM 의 락도 그렇게 되어 있다."
+ ],
+ "drills": [
+  {
+   "task": "바쁜 대기 버퍼를 만들고 CPU 와 헛돈 횟수를 센다.",
+   "done_when": "숫자를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "소비자 수를 늘려 가며 두 방식을 비교한다.",
+   "done_when": "교차하지 않는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "대기 시간을 바꿔 가며 교차점을 찾는다.",
+   "done_when": "경계를 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "onSpinWait 를 넣고 빼며 잰다.",
+   "done_when": "효과를 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "바쁜 대기의 대가는.",
+   "a": "코어를 통째로 쓰면서 아무 일도 안 한다."
+  },
+  {
+   "q": "언제 회전이 이득인가.",
+   "a": "대기가 문맥 전환 값보다 짧을 때, 대략 수십 나노초다."
+  },
+  {
+   "q": "onSpinWait 가 하는 일은.",
+   "a": "CPU 에게 회전 중임을 알려 자원을 양보하게 한다."
+  },
+  {
+   "q": "실무에서 쓰는 방식은.",
+   "a": "조금 회전하다 안 되면 차단하는 절충이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "바쁜 대기",
+   "what": "조건이 될 때까지 반복해서 확인하며 CPU 를 쓰는 대기."
+  },
+  {
+   "term": "onSpinWait",
+   "what": "지금 회전 중임을 CPU 에 알리는 힌트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.onSpinWait",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html#onSpinWait()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
