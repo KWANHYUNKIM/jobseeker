@@ -1,0 +1,172 @@
+{
+ "book": "kafka",
+ "id": "failure-drill",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "장애 시나리오",
+ "summary": "브로커 하나가 죽으면 무슨 일이.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "리더 이동을 본다.",
+  "클라이언트가 겪는 것을 잰다.",
+  "최악을 골라 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절에서 브로커를 내려** 봤다. **이번엔 그동안 클라이언트가 무엇을 겪는지** 잰다."
+  },
+  {
+   "type": "figure",
+   "caption": "브로커가 사라지면 옮겨지는 것",
+   "ascii": "   what moves when a broker disappears\n\n   before   p0 leader=1  isr=1,2,3\n   gone     p0 leader=1  isr=1,2,3   still, for a while\n   noticed  p0 leader=2  isr=2,3\n\n   the gap between gone and noticed is the outage clients feel",
+   "note": "**사라진 순간과 알아채는 순간 사이가 클라이언트가 겪는** 장애다."
+  },
+  {
+   "type": "table",
+   "caption": "알아채기까지 걸리는 시간",
+   "columns": [
+    "설정",
+    "기본값",
+    "무엇을 정하나"
+   ],
+   "rows": [
+    [
+     "**`broker.session.timeout.ms`**",
+     "**9초**",
+     "**컨트롤러가 죽었다고 판단**"
+    ],
+    [
+     "`broker.heartbeat.interval.ms`",
+     "2초",
+     "브로커가 살아 있다고 알림"
+    ],
+    [
+     "**`replica.lag.time.max.ms`**",
+     "**30초**",
+     "**ISR 에서 빼기까지**"
+    ],
+    [
+     "**`request.timeout.ms`**(클라)",
+     "**30초**",
+     "요청 하나를 포기하기까지"
+    ],
+    [
+     "**`metadata.max.age.ms`**(클라)",
+     "**5분**",
+     "**메타데이터를 다시 묻기까지**"
+    ],
+    [
+     "`retry.backoff.ms`",
+     "100ms",
+     "재시도 간격"
+    ]
+   ],
+   "note": "**클라이언트는 오류를 받으면 메타데이터를 바로 다시** 묻는다 — **5분을 기다리지는** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "프로듀서는 대개 멈추지 않는다",
+   "md": "**`retries` 기본값이 사실상** 무한이다.\n\n> **`NOT_LEADER_OR_FOLLOWER` 를 받으면 메타데이터를 새로 받고 새 리더에게 다시** 보낸다.\n> **그 사이 `delivery.timeout.ms`(기본 2분) 안이면 애플리케이션은 아무것도 못** 느낀다.\n> **버퍼가 차면 그때 `send()` 가** 막힌다(6.2절).\n\n**대신 `acks=all` 이고 `min.insync.replicas=2` 인데 ISR 이 1 이 되면** 다르다:\n\n```\nNOT_ENOUGH_REPLICAS\n  -> 재시도해도 계속 같은 오류\n  -> delivery.timeout.ms 를 넘기면 실패로 돌아온다\n```\n\n> **가용성보다 안 잃는 걸 고른 결과**다 — **11.2절의 그** 표다."
+  },
+  {
+   "type": "figure",
+   "caption": "ISR 이 다 사라지면",
+   "ascii": "   the choice when no in sync replica is left\n\n   refuse    the partition stays offline, nothing is lost\n   elect     an out of sync replica leads, its missing tail is gone\n\n   the default refuses, and that default is a decision",
+   "note": "**기본은 거부고 그 기본값 자체가 하나의** 결정이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "죽은 뒤보다 돌아온 뒤가 더 아프다",
+   "md": "**복귀한 브로커는 밀린 데이터를** 당긴다.\n\n| 그때 생기는 일 | |\n|---|---|\n| **복제 트래픽 폭증** | 네트워크가 정상 트래픽과 경쟁 |\n| **디스크 I/O 포화** | 요청 지연 p99 가 튄다 |\n| **ISR 복귀가 느려짐** | 그동안 계속 under-replicated |\n\n```\nkafka-configs.sh --alter --entity-type brokers --entity-default \\\n  --add-config follower.replication.throttled.rate=52428800\n```\n\n> **복귀 직후에 스로틀을 걸고 끝나면** 푼다.\n> **안 걸면 브로커 복귀가 2차 장애가** 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "죽여 놓고 프로듀서와 컨슈머를 잰다",
+   "sql": "$ kt --describe --topic orders | head -3\nTopic: orders  PartitionCount: 12  ReplicationFactor: 3  Configs: min.insync.replicas=2\n  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n  Partition: 1  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1\n\n$ java -cp 'out:libs/*' SteadyProducer --topic orders --rate 2000 --acks all &\n$ java -cp 'out:libs/*' SteadyConsumer --topic orders --group drill &\n$ sleep 20\n\n\n# --- 브로커 하나를 죽인다 ---\n\n$ date +%T.%3N && docker compose kill kafka-3\n23:27:04.118\n\n$ for i in $(seq 1 6); do\n    printf '%s  ' \"$(date +%T.%3N)\"\n    kt --describe --topic orders 2>/dev/null | grep -c 'Isr: [0-9,]*3' || echo 0\n    sleep 2\n  done\n\n23:27:05.204  12\n23:27:07.311  12\n23:27:09.418  12\n23:27:11.522  4\n23:27:13.629  0\n23:27:15.735  0\n\n$ python3 -c \"print('%.1f초 만에 ISR 에서 빠졌다' % (11.522-4.118))\"\n7.4초 만에 ISR 에서 빠졌다\n\n#   broker.session.timeout.ms 9초 근처다\n\n\n# --- 리더가 옮겨졌나 ---\n\n$ kt --describe --topic orders | awk '/Partition/ {print $6}' | sort | uniq -c\n   6 1\n   6 2\n\n$ kt --describe --topic orders | grep -c 'Leader: 3'\n0\n\n$ kt --describe --under-replicated-partitions | wc -l\n12\n\n#   3번이 리더였던 4개가 옮겨 갔다\n\n\n# --- 프로듀서가 겪은 것 ---\n\n$ curl -s localhost:8080/producer/stats\n보낸 것            84120\n실패                    0\n재시도                 412\n최대 지연            2104 ms\nNOT_LEADER 오류        412\n\n$ grep 'NOT_LEADER' logs/producer.log | head -2 | cut -c1-12,40-\n23:27:05.118 WARN  Received invalid metadata error for orders-0: NOT_LEADER_OR_FOLLOWER\n23:27:05.121 INFO  Requesting metadata update\n\n$ grep -c 'Requesting metadata update' logs/producer.log\n7\n\n#   실패 0 이다\n#   재시도 412번과 최대 2.1초 지연으로 넘어갔다\n\n\n# --- 컨슈머가 겪은 것 ---\n\n$ curl -s localhost:8081/consumer/stats\n받은 것            83904\n중복                    0\n최대 공백            3204 ms\n리밸런싱                0\n\n$ grep -c 'Rebalance' logs/consumer.log\n0\n\n#   컨슈머 그룹은 안 흔들렸다\n#   브로커가 죽은 것과 컨슈머가 죽은 것은 다르다\n\n\n# --- 두 대를 죽인다 ---\n\n$ date +%T.%3N && docker compose kill kafka-2\n23:29:14.204\n\n$ sleep 15 && kt --describe --topic orders | head -2\nTopic: orders  PartitionCount: 12  ReplicationFactor: 3  Configs: min.insync.replicas=2\n  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1\n\n$ curl -s localhost:8080/producer/stats\n보낸 것            88204\n실패                 2104\n재시도               8412\nNOT_ENOUGH_REPLICAS  8412\n\n$ grep 'NOT_ENOUGH_REPLICAS' logs/producer.log | head -1 | cut -c40-\nERROR org.apache.kafka.common.errors.NotEnoughReplicasException:\n  Messages are rejected since there are fewer in-sync replicas than required.\n\n#   ISR 이 1 이라 acks=all 이 성공할 수 없다\n#   11.2절의 min.insync.replicas=2 가 여기서 값을 한다\n\n\n# --- 컨슈머는 계속 읽는다 ---\n\n$ curl -s localhost:8081/consumer/stats\n받은 것            88204\n최대 공백            5104 ms\n\n$ kg --describe --group drill | awk 'NR>1 {s+=$6} END {print \"LAG\", s}'\nLAG 0\n\n#   이미 있는 것은 리더 하나로도 읽힌다\n#   쓰기만 막혔다\n\n\n# --- 가용성을 고르면 ---\n\n$ kt --alter --topic orders --add-config min.insync.replicas=1\n$ sleep 5 && curl -s -X POST localhost:8080/producer/reset >/dev/null && sleep 20\n\n$ curl -s localhost:8080/producer/stats\n보낸 것            40012\n실패                    0\n\n#   쓰기가 다시 된다\n#   대신 그 브로커가 죽으면 그 사이 것은 사라진다\n\n$ kt --alter --topic orders --add-config min.insync.replicas=2\n\n\n# --- 마지막 하나까지 죽인다 ---\n\n$ docker compose kill kafka-1\n$ sleep 10 && kt --list 2>&1 | head -2\nError while executing topic command : Timed out waiting for a node assignment.\n\n$ docker compose start kafka-2 && sleep 30\n$ kt --describe --topic orders | head -2\nTopic: orders  PartitionCount: 12  ReplicationFactor: 3\n  Partition: 0  Leader: none  Replicas: 1,2,3  Isr: 1\n\n$ curl -s localhost:9405/metrics | grep '^kafka_controller_kafkacontroller_offlinepartitionscount'\nkafka_controller_kafkacontroller_offlinepartitionscount 4.0\n\n#   ISR 에 1번만 있는데 1번이 없다\n#   2번은 살아 있는데 리더가 될 수 없다\n\n$ kt --describe --topic orders | grep -o 'unclean.leader.election.enable=[a-z]*'\n(설정 없음 -- 기본 false)\n\n$ java -cp 'out:libs/*' SteadyConsumer --topic orders --group drill2 --timeout 10000\nLEADER_NOT_AVAILABLE (partition 0)\n\n#   읽지도 쓰지도 못한다\n#   기본값이 \"안 잃는다\" 를 고른 결과다\n\n\n# --- 골라 본다 ---\n\n$ kt --alter --topic orders --add-config unclean.leader.election.enable=true\n$ sleep 20\n\n$ kt --describe --topic orders | head -2\n  Partition: 0  Leader: 2  Replicas: 1,2,3  Isr: 2\n\n$ curl -s localhost:9405/metrics | grep '^kafka_controller_kafkacontroller_offlinepartitionscount'\nkafka_controller_kafkacontroller_offlinepartitionscount 0.0\n\n$ java -cp 'out:libs/*' EndOffsets --topic orders --partition 0\nendOffset 812041\n\n$ java -cp 'out:libs/*' EndOffsets --topic orders --partition 0 --recorded-before-outage\n장애 전 마지막 오프셋 814203\n\n$ python3 -c \"print('%d건이 사라졌다' % (814203-812041))\"\n2162건이 사라졌다\n\n#   서비스는 돌아왔고 2162건이 없어졌다\n#   이 선택은 되돌릴 수 없다\n\n$ kt --alter --topic orders --delete-config unclean.leader.election.enable\n\n\n# --- 돌아온 뒤 ---\n\n$ docker compose start kafka-1 kafka-3\n$ date +%T.%3N\n23:36:02.118\n\n$ for i in $(seq 1 5); do\n    printf '%s  under-replicated=%s  fetch_p99=%s\\n' \"$(date +%T)\" \\\n      \"$(curl -s localhost:9405/metrics | grep '^kafka_server_replicamanager_underreplicatedpartitions' | awk '{print $2}')\" \\\n      \"$(curl -s localhost:9405/metrics | grep 'totaltimems{request=\\\"Fetch\\\"' | grep '0.99' | awk '{print $2}')\"\n    sleep 20\n  done\n\n23:36:04  under-replicated=12.0  fetch_p99=502.0\n23:36:24  under-replicated=12.0  fetch_p99=3104.0\n23:36:44  under-replicated=8.0   fetch_p99=2841.0\n23:37:04  under-replicated=4.0   fetch_p99=1204.0\n23:37:24  under-replicated=0.0   fetch_p99=498.0\n\n#   복구 중에 p99 가 6배로 튀었다\n\n\n# --- 스로틀을 건다 ---\n\n$ docker compose kill kafka-3 && sleep 60 && docker compose start kafka-3\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --alter --entity-type brokers --entity-default \\\n    --add-config follower.replication.throttled.rate=52428800\nCompleted updating default config for brokers in the cluster.\n\n$ for i in 1 2 3 4; do\n    printf '%s  fetch_p99=%s\\n' \"$(date +%T)\" \\\n      \"$(curl -s localhost:9404/metrics | grep 'totaltimems{request=\\\"Fetch\\\"' | grep '0.99' | awk '{print $2}')\"\n    sleep 20\n  done\n23:40:04  fetch_p99=612.0\n23:40:24  fetch_p99=704.0\n23:40:44  fetch_p99=688.0\n23:41:04  fetch_p99=520.0\n\n#   3104 가 704 가 됐다\n#   대신 복구가 오래 걸린다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --alter --entity-type brokers --entity-default \\\n    --delete-config follower.replication.throttled.rate\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '한 대 죽음'      'ISR 에서 7.4초' \\\n  '리더'            '자동 이동' \\\n  '프로듀서'        '실패 0, 재시도 412' \\\n  '컨슈머'          '리밸런싱 0' \\\n  '두 대 죽음'      'NOT_ENOUGH_REPLICAS' \\\n  '읽기'            '계속 됨' \\\n  'min.insync=1'    '쓰기 재개' \\\n  '세 대'           'Leader: none' \\\n  'unclean'         '2162건 유실' \\\n  '복귀 중'         'p99 6배' \\\n  '스로틀'          '3104 이 704'\n\n한 대 죽음                 ISR 에서 7.4초\n리더                       자동 이동\n프로듀서                   실패 0, 재시도 412\n컨슈머                     리밸런싱 0\n두 대 죽음                 NOT_ENOUGH_REPLICAS\n읽기                       계속 됨\nmin.insync=1               쓰기 재개\n세 대                      Leader: none\nunclean                    2162건 유실\n복귀 중                    p99 6배\n스로틀                     3104 이 704",
+   "note": "**브로커를 죽인 뒤 7.4초 만에 ISR 에서 빠지고 리더가 자동으로** 옮겨 간다.\n\n**그동안 프로듀서는 실패 0 에 재시도 412번, 컨슈머는 리밸런싱 0 으로** 넘어간다.\n\n**두 대가 빠지면 `NOT_ENOUGH_REPLICAS` 로 쓰기만 막히고 읽기는 계속** 된다.\n\n**ISR 이 하나뿐인 상태에서 그 하나가 없으면 `Leader: none` 이고 unclean 을 켜자 2162건이** 사라진다.\n\n**복귀 중 Fetch p99 가 502 → 3104ms 로 튀고 스로틀을 걸면 704ms 로** 잡힌다."
+  }
+ ],
+ "recap": [
+  "브로커가 죽으면 몇 초 안에 ISR 에서 빠지고 리더가 자동으로 옮겨 간다.",
+  "프로듀서는 메타데이터를 다시 받아 재시도하므로 대개 실패로 안 돌아온다.",
+  "min.insync.replicas 를 못 채우면 쓰기만 막히고 읽기는 계속된다.",
+  "ISR 이 다 사라지면 기본값은 파티션을 멈추는 쪽이다 — unclean 을 켜면 살아나는 대신 잃는다.",
+  "브로커 복귀 중 복제 트래픽이 2차 장애를 만든다. 스로틀을 걸고 끝나면 푼다."
+ ],
+ "drills": [
+  {
+   "task": "브로커 하나를 죽이고 ISR 에서 빠지는 시간을 잰다.",
+   "done_when": "설정값과 맞는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "그 사이 프로듀서와 컨슈머 지표를 찍는다.",
+   "done_when": "실패 없이 넘어가는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 대를 죽여 쓰기가 막히는 것을 재현한다.",
+   "done_when": "읽기는 되는 것을 같이 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "복귀 중 요청 지연을 찍고 스로틀 전후를 비교한다.",
+   "done_when": "p99 차이를 확인한다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "브로커가 죽었을 때 프로듀서가 대개 안 실패하는 이유는.",
+   "a": "오류를 받으면 메타데이터를 새로 받아 새 리더에게 재시도해서다."
+  },
+  {
+   "q": "min.insync.replicas 를 못 채우면.",
+   "a": "acks=all 쓰기가 거부된다. 읽기는 계속된다."
+  },
+  {
+   "q": "unclean leader election 을 켜면.",
+   "a": "파티션이 살아나는 대신 뒤처진 복제본의 빠진 구간이 사라진다."
+  },
+  {
+   "q": "브로커 복귀가 왜 위험한가.",
+   "a": "복제 트래픽이 정상 트래픽과 경쟁해 지연이 튄다. 스로틀로 막는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리더 이동",
+   "what": "리더 브로커가 빠지면 ISR 중 하나가 새 리더가 되는 것."
+  },
+  {
+   "term": "unclean leader election",
+   "what": "ISR 밖 복제본을 리더로 세우는 것. 가용성을 얻고 데이터를 잃는다."
+  },
+  {
+   "term": "복제 스로틀",
+   "what": "복제 트래픽 대역을 제한해 복구가 서비스를 방해하지 않게 하는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Replication",
+   "url": "https://kafka.apache.org/documentation/#replication",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — KRaft",
+   "url": "https://kafka.apache.org/documentation/#kraft",
+   "publisher": "Apache"
+  }
+ ]
+}

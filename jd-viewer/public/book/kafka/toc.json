@@ -632,7 +632,7 @@
           "title": "산정",
           "summary": "파티션 · 보관 기간 · 디스크.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -640,7 +640,7 @@
           "title": "장애 시나리오",
           "summary": "브로커 하나가 죽으면 무슨 일이.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",

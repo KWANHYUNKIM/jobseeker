@@ -1,0 +1,172 @@
+{
+ "book": "kafka",
+ "id": "sizing",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "산정",
+ "summary": "파티션 · 보관 기간 · 디스크.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "디스크를 계산한다.",
+  "파티션 수를 정한다.",
+  "못 되돌리는 결정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절에서 7일 뒤 -42GB 라는 예측이** 나왔다. **그 숫자가 어디서 오는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "디스크를 정하는 한 줄",
+   "ascii": "   the one line that decides disk\n\n   bytes per day  x  retention days  x  replication factor\n\n   plus room for a broker being down and its data moving elsewhere",
+   "note": "**브로커 하나가 빠졌을 때 그 데이터가 갈 자리도 같이** 잡는다."
+  },
+  {
+   "type": "table",
+   "caption": "계산에 넣을 값",
+   "columns": [
+    "값",
+    "어디서 얻나",
+    "예"
+   ],
+   "rows": [
+    [
+     "**하루 유입 바이트**",
+     "**`BytesInPerSec` x 86400**",
+     "**412 GB/일**"
+    ],
+    [
+     "보관 기간",
+     "정책",
+     "7일"
+    ],
+    [
+     "**복제 계수**",
+     "토픽 설정",
+     "**3**"
+    ],
+    [
+     "**압축 효과**",
+     "**실측**(6.5절)",
+     "**zstd 3.8배**"
+    ],
+    [
+     "**여유**",
+     "**한 대 빠짐 + 30%**",
+     "**x 1.8**"
+    ],
+    [
+     "내부 토픽",
+     "체인지로그·리파티션(10.5절)",
+     "**+15%**"
+    ]
+   ],
+   "note": "**압축은 프로듀서가 켜는 것**이라 **토픽마다 실제로 켜져 있는지 확인하고** 넣는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보관 기간은 저장 비용이 아니라 복구 시간이다",
+   "md": "**\"며칠 두나\" 는 디스크 문제로만** 보이지만 실제로는 이걸 정한다.\n\n> **컨슈머가 며칠까지 죽어 있어도 되나**(7.3절의 `auto.offset.reset` 이 안 걸리는 범위).\n> **버그를 고치고 며칠 전 것까지 다시 돌릴 수 있나**(9.5절의 재투입).\n> **새 서비스가 붙을 때 과거를 얼마나 볼 수 있나**.\n\n| 기간 | 쓰는 자리 |\n|---|---|\n| **1~3일** | 로그·지표처럼 다시 안 볼 것 |\n| **7일** | **기본값. 주말 장애를 넘긴다** |\n| **30일 이상** | **재처리가 실제로 일어나는 파이프라인** |\n| **무한 + 압축** | **상태 토픽**(4.6절, 10.5절) |\n\n> **금요일 밤에 죽은 컨슈머를 월요일에 고치려면 3일로는** 모자란다."
+  },
+  {
+   "type": "figure",
+   "caption": "파티션 수의 세 경계",
+   "ascii": "   partition count is bounded from three sides\n\n   below   consumer parallelism you need now and soon\n   above   ordering, since order is only per partition\n   above   memory and open files on every broker\n\n   the number is easy to raise and impossible to lower",
+   "note": "**올리기는 쉽고 내리기는** 불가능하다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "파티션을 늘리면 키의 배치가 바뀐다",
+   "md": "**4.4절의 해시가 파티션 수로 나눈** 값이다.\n\n```\npartition = hash(key) % partitions\n\n6개일 때  hash(\"A-1044\") % 6  = 2\n12개일 때 hash(\"A-1044\") % 12 = 8\n```\n\n| 그래서 생기는 일 | |\n|---|---|\n| **같은 키가 다른 파티션으로** | **순서 보장이 그 시점에 끊긴다** |\n| **압축 토픽이면** | **옛 값과 새 값이 다른 파티션에** 남는다 |\n| 스트림즈 상태 | **체인지로그와 안 맞는다**(10.5절) |\n\n> **압축 토픽과 스트림즈 입력 토픽은 사실상 파티션 수를 못** 바꾼다.\n> **바꾸려면 새 토픽을 만들어 옮기고 컨슈머를** 이전시킨다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "실제 값으로 계산해 본다",
+   "sql": "# --- 하루 유입을 잰다 ---\n\n$ curl -s 'localhost:9090/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesin_total[1h]))' \\\n  | python3 -c \"import json,sys; v=float(json.load(sys.stdin)['data']['result'][0]['value'][1]); \\\nprint('%.1f MB/s' % (v/1e6)); print('%.0f GB/day' % (v*86400/1e9))\"\n4.8 MB/s\n412 GB/day\n\n$ curl -s 'localhost:9090/api/v1/query?query=topk(3, sum by (topic) (rate(kafka_topic_bytesin_total[1h])))' \\\n  | python3 -c \"\nimport json,sys\nfor r in json.load(sys.stdin)['data']['result']:\n    print('%-16s %.1f MB/s' % (r['metric']['topic'], float(r['value'][1])/1e6))\"\norders            3.1 MB/s\nclickstream       1.2 MB/s\naudit             0.4 MB/s\n\n#   한 토픽이 65% 다\n\n\n# --- 압축이 실제로 켜져 있나 ---\n\n$ for t in orders clickstream audit; do\n    printf '%-14s ' $t\n    kt --describe --topic $t | grep -o 'compression.type=[a-z]*' || echo 'compression.type=producer'\n  done\norders         compression.type=producer\nclickstream    compression.type=producer\naudit          compression.type=producer\n\n$ java -cp 'out:libs/*' CompressionAudit --topic orders --sample 1000\n배치 1000개 표본\n  압축 사용        zstd 941, none 59\n  평균 압축비      3.8배\n  none 인 프로듀서 client.id=legacy-batch\n\n#   6.5절에서 잰 그 비율이다\n#   한 프로듀서가 안 켜고 있다\n\n\n# --- 디스크를 계산한다 ---\n\n$ python3 - <<'EOF'\nper_day_gb = 412\nretention   = 7\nrf          = 3\ninternal    = 1.15\nheadroom    = 1.8\ntotal = per_day_gb * retention * rf * internal * headroom\nprint('원본       %6.0f GB' % (per_day_gb * retention))\nprint('x 복제 3   %6.0f GB' % (per_day_gb * retention * rf))\nprint('+ 내부 15%% %6.0f GB' % (per_day_gb * retention * rf * internal))\nprint('+ 여유 80%% %6.0f GB' % total)\nprint('브로커 3대 %6.0f GB/대' % (total / 3))\nEOF\n원본         2884 GB\nx 복제 3     8652 GB\n+ 내부 15%   9950 GB\n+ 여유 80%  17910 GB\n브로커 3대   5970 GB/대\n\n#   대당 6TB 다\n\n\n# --- 지금 얼마나 쓰고 있나 ---\n\n$ for b in kafka-1 kafka-2 kafka-3; do\n    printf '%-10s ' $b\n    docker compose exec -T $b df -h /var/lib/kafka/data | tail -1 | awk '{print $2, $3, $5}'\n  done\nkafka-1    300G 186G 62%\nkafka-2    300G 181G 61%\nkafka-3    300G 184G 62%\n\n$ python3 -c \"print('계산값 %.0fGB 대 실제 디스크 %dGB' % (5970, 300))\"\n계산값 5970GB 대 실제 디스크 300GB\n\n#   이 테스트 환경은 보관 기간이 짧다\n\n$ kt --describe --topic orders | grep -o 'retention.ms=[0-9]*'\nretention.ms=86400000\n\n$ python3 -c \"print('실제 보관 %d일' % (86400000/86400000))\"\n실제 보관 1일\n\n\n# --- 보관 기간을 바꿔 본다 ---\n\n$ docker compose exec -T kafka-1 du -sh /var/lib/kafka/data/orders-* | awk '{s+=$1} END {print s\"M\"}'\n2841M\n\n$ kt --alter --topic orders --add-config retention.ms=604800000\nCompleted updating config for topic orders.\n\n$ sleep 300 && docker compose exec -T kafka-1 du -sh /var/lib/kafka/data/orders-* \\\n  | awk '{s+=$1} END {print s\"M\"}'\n2841M\n\n#   당장은 안 늘어난다 -- 이미 있는 것만큼만 있다\n#   앞으로 안 지워질 뿐이다\n\n$ kt --describe --topic orders | grep -o 'segment.bytes=[0-9]*'\nsegment.bytes=1073741824\n\n$ docker compose exec -T kafka-1 ls /var/lib/kafka/data/orders-0/ | grep -c '\\.log$'\n4\n\n#   세그먼트 단위로 지워진다\n#   3.6절에서 본 그것이다\n\n\n# --- 파티션 수를 정한다 ---\n\n$ java -cp 'out:libs/*' ThroughputProbe --topic orders --consumer-instances 1\n인스턴스 1개   3980 rec/s\n$ java -cp 'out:libs/*' ThroughputProbe --topic orders --consumer-instances 3\n인스턴스 3개  11840 rec/s\n$ java -cp 'out:libs/*' ThroughputProbe --topic orders --consumer-instances 6\n인스턴스 6개  22104 rec/s\n$ java -cp 'out:libs/*' ThroughputProbe --topic orders --consumer-instances 12\n인스턴스 12개 22380 rec/s\n\n$ kt --describe --topic orders | head -1 | grep -o 'PartitionCount: [0-9]*'\nPartitionCount: 6\n\n#   6개를 넘으면 안 는다\n#   10.4절에서 본 상한이다\n\n$ python3 -c \"\nneed = 40000\nper  = 22104/6\nprint('필요 %d rec/s, 파티션당 %.0f rec/s' % (need, per))\nprint('필요 파티션 %d개' % -(-need//int(per)))\"\n필요 40000 rec/s, 파티션당 3684 rec/s\n필요 파티션 11개\n\n\n# --- 파티션을 늘려 본다 ---\n\n$ kcc --topic orders --from-beginning --timeout-ms 3000 \\\n    --property print.partition=true --property print.key=true \\\n  | awk '$2==\"A-1044\" {print $1}' | sort -u\n2\n\n$ kt --alter --topic orders --partitions 12\n$ sleep 5\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --key A-1044 --records 5\n$ kcc --topic orders --timeout-ms 3000 --property print.partition=true \\\n    --property print.key=true --offset -5 | awk '$2==\"A-1044\" {print $1}' | sort -u\n8\n\n#   같은 키가 2 에서 8 로 옮겨 갔다\n#   4.4절의 나머지 연산이다\n\n$ java -cp 'out:libs/*' OrderCheck --topic orders --key A-1044\n파티션 2: OrderPlaced OrderPaid\n파티션 8: OrderShipped\n경고: 같은 키가 두 파티션에 있다. 순서 보장이 끊겼다.\n\n\n# --- 줄일 수는 없다 ---\n\n$ kt --alter --topic orders --partitions 6\nError: The number of partitions for a topic can only be increased.\n  Topic orders currently has 12 partitions, 6 would be a reduction.\n\n#   내릴 수 없다\n\n\n# --- 브로커당 파티션 수 ---\n\n$ kt --list | wc -l\n47\n$ for b in 1 2 3; do\n    printf 'broker %d: ' $b\n    curl -s localhost:940$((3+b))/metrics | grep '^kafka_server_replicamanager_partitioncount' | awk '{print $2}'\n  done\nbroker 1: 812.0\nbroker 2: 804.0\nbroker 3: 808.0\n\n$ docker compose exec -T kafka-1 sh -c 'ls /proc/1/fd | wc -l'\n2104\n$ docker compose exec -T kafka-1 sh -c 'ulimit -n'\n100000\n\n$ python3 -c \"print('파티션당 파일 %.1f개' % (2104/812))\"\n파티션당 파일 2.6개\n\n#   세그먼트마다 .log .index .timeindex 가 열린다\n#   파티션이 만개가 되면 파일 핸들이 문제가 된다\n\n\n# --- 복제 계수 ---\n\n$ kt --describe --topic orders | head -1 | grep -o 'ReplicationFactor: [0-9]*'\nReplicationFactor: 3\n\n$ kt --describe --topic orders | grep -o 'min.insync.replicas=[0-9]*'\nmin.insync.replicas=2\n\n$ printf '%-6s %-14s %-20s %s\\n' 'RF' 'min.insync' '견디는 장애' '디스크' && \\\n  printf '%-6s %-14s %-20s %s\\n' \\\n  '1' '1' '없음' 'x1' \\\n  '2' '1' '1대 (유실 가능)' 'x2' \\\n  '3' '2' '1대' 'x3' \\\n  '5' '3' '2대' 'x5'\n\nRF     min.insync     견디는 장애          디스크\n1      1              없음                 x1\n2      1              1대 (유실 가능)      x2\n3      2              1대                  x3\n5      3              2대                  x5\n\n#   6.3절의 acks=all 이 min.insync 와 짝이다\n\n\n# --- 예측을 다시 본다 ---\n\n$ curl -s 'localhost:9090/api/v1/query?query=predict_linear(node_filesystem_avail_bytes{mountpoint=\"/var/lib/kafka/data\"}[6h],7*24*3600)/1e9' \\\n  | python3 -c \"import json,sys; print('%.0f GB' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n-42 GB\n\n$ kt --alter --topic clickstream --add-config retention.ms=259200000\n$ sleep 600\n\n$ curl -s 'localhost:9090/api/v1/query?query=predict_linear(node_filesystem_avail_bytes{mountpoint=\"/var/lib/kafka/data\"}[6h],7*24*3600)/1e9' \\\n  | python3 -c \"import json,sys; print('%.0f GB' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n61 GB\n\n#   한 토픽의 보관 기간을 줄여 예측이 양수가 됐다\n#   11.1절에서 본 그 값이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '유입'            '412 GB/일' \\\n  '한 토픽이'       '65%' \\\n  '압축'            '3.8배, 한 곳 미적용' \\\n  '계산'            '대당 6TB' \\\n  '보관'            '복구 시간의 문제' \\\n  '늘려도'          '당장 안 늘어남' \\\n  '파티션 상한'     '6에서 22104 rec/s' \\\n  '필요 파티션'     '11개' \\\n  '늘리면'          '키가 2에서 8로' \\\n  '줄이기'          '불가' \\\n  '예측'            '-42GB 가 61GB 로'\n\n유입                       412 GB/일\n한 토픽이                  65%\n압축                       3.8배, 한 곳 미적용\n계산                       대당 6TB\n보관                       복구 시간의 문제\n늘려도                     당장 안 늘어남\n파티션 상한                6에서 22104 rec/s\n필요 파티션                11개\n늘리면                     키가 2에서 8로\n줄이기                     불가\n예측                       -42GB 가 61GB 로",
+   "note": "**하루 412 GB 유입에 보관 7일·복제 3·여유를 넣으면 브로커 대당 6TB 가** 나온다.\n\n**압축 표본을 보니 평균 3.8배인데 `legacy-batch` 프로듀서 하나만 안 켜고** 있다.\n\n**컨슈머를 6개 넘게 늘려도 22104 rec/s 에서 안 올라 파티션이** 상한이다.\n\n**파티션을 6 → 12 로 늘리자 같은 키가 파티션 2 에서 8 로 옮겨 순서가** 끊긴다.\n\n**한 토픽의 보관 기간을 줄이자 11.1절의 7일 예측이 -42GB 에서 61GB 로** 바뀐다."
+  }
+ ],
+ "recap": [
+  "디스크는 하루 유입 x 보관일 x 복제 계수에 내부 토픽과 여유를 곱해 잡는다.",
+  "보관 기간은 저장 비용이 아니라 컨슈머가 며칠 죽어 있어도 되는지를 정한다.",
+  "파티션 수는 컨슈머 병렬성의 상한이자 순서 보장의 단위다.",
+  "파티션을 늘리면 키의 배치가 바뀌어 그 시점에 순서가 끊긴다. 줄일 수는 없다.",
+  "압축은 프로듀서가 켜는 것이라 실제로 켜져 있는지 표본으로 확인하고 계산에 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "실제 유입량으로 디스크 요구량을 계산해 본다.",
+   "done_when": "대당 필요 용량을 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨슈머 인스턴스를 늘려 가며 처리량 상한을 찾는다.",
+   "done_when": "파티션 수에서 멈추는 것을 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "파티션을 늘리고 같은 키가 어디로 가는지 본다.",
+   "done_when": "순서가 끊기는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "보관 기간을 줄여 디스크 예측이 어떻게 바뀌는지 본다.",
+   "done_when": "예측이 양수로 도는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "디스크 계산에 꼭 들어가야 하는 곱은.",
+   "a": "복제 계수다. 여기에 내부 토픽과 장애 여유를 더한다."
+  },
+  {
+   "q": "보관 기간이 실제로 정하는 것은.",
+   "a": "컨슈머가 며칠까지 죽어 있어도 되는지, 며칠 전까지 재처리할 수 있는지다."
+  },
+  {
+   "q": "파티션을 늘리면 무엇이 깨지나.",
+   "a": "키의 배치가 바뀌어 같은 키의 순서 보장이 그 시점에 끊긴다."
+  },
+  {
+   "q": "파티션 수를 줄이려면.",
+   "a": "줄일 수 없다. 새 토픽을 만들어 옮겨야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "여유",
+   "what": "브로커 한 대가 빠졌을 때 그 데이터가 갈 자리까지 잡아 두는 몫."
+  },
+  {
+   "term": "min.insync.replicas",
+   "what": "acks=all 이 성공으로 치는 최소 복제본 수."
+  },
+  {
+   "term": "세그먼트",
+   "what": "파티션 로그를 자르는 파일 단위. 삭제도 이 단위로 일어난다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Broker Configs",
+   "url": "https://kafka.apache.org/documentation/#brokerconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Design",
+   "url": "https://kafka.apache.org/documentation/#design",
+   "publisher": "Apache"
+  }
+ ]
+}
