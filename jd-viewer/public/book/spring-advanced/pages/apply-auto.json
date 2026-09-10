@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-auto",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "어드바이저만 등록",
+ "summary": "빈 하나로 끝난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "빈 하나만 남긴다.",
+  "닿는 범위를 잰다.",
+  "일곱 장을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.4절에서 설정이 14 줄이** 됐다. **그 하나가 어디까지 닿는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "기능 전부",
+   "ascii": "   what the whole feature is now\n\n   one advisor bean\n\n   there is nothing else to register, wire, or remember",
+   "note": "**등록하거나 잇거나 기억할 게 더** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "2.6절부터 일곱 번 나온 문제가 사라졌다",
+   "md": "**새 클래스가 저절로** 걸린다.\n\n> **8.3절에서** 확인했다.\n> **아래에서 여러 개로** 해 본다.\n> **설정을 안** 고친다.\n\n**어느 모듈이든** 닿는다.\n\n> **패키지만 맞으면** 된다.\n> **아래에서 그걸** 본다.\n> **남의 라이브러리도** 닿는다.\n\n**거르개가 유일한** 울타리다.\n\n> **8.5절에서 그 말을** 했다.\n> **아래에서 넓혀** 본다.\n> **11장이 좁히는 법**이다.\n\n**한 줄로 다** 끈다.\n\n> **묶음 빈을 지우면** 된다.\n> **아래에서 그렇게** 한다.\n> **⑯ 6.6절의 조건도** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "하나가 닿는 곳",
+   "ascii": "   what one advisor reaches\n\n   every bean the container makes, scanned or configured\n   every class added later, without touching the config\n   every module on the classpath, unless the filter says no\n\n   the filter is now the only thing that limits reach",
+   "note": "**이제 범위를 정하는 건 거르개** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "닿는 범위가 넓어서 다치기도 쉽다",
+   "md": "**모르는 빈까지** 감싼다.\n\n> **패키지가 겹치면** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **8.7절에서 그** 사고를 본다.\n\n**로그가** 폭발한다.\n\n> **1.2절에서 142 줄이** 됐다.\n> **아래에서 다시** 만든다.\n> **거르개를** 좁힌다.\n\n**끄고 켜기가** 필요하다.\n\n> **운영에서 꺼야 할** 때가 있다.\n> **아래에서 조건을** 단다.\n> **⑯ 6.6절의 그** 스위치다.\n\n**누가 감쌌는지 모른**다.\n\n> **설정에 목록이** 없다.\n> **7.6절의 창구가** 필요하다.\n> **아래에서 그걸** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 전부를 본다\n\n$ find src/main/java/study/adv/auto -name '*.java'\nsrc/main/java/study/adv/auto/AutoProxyConfig.java\nsrc/main/java/study/adv/auto/LogTraceAdvice.java\n\n$ cat src/main/java/study/adv/auto/AutoProxyConfig.java\n@Configuration\npublic class AutoProxyConfig {\n\n    @Bean\n    public Advisor logTraceAdvisor(LogTrace trace) {\n        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\n        pointcut.setExpression(\"execution(* study.adv.app..*(..))\");\n        return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n    }\n}\n\n$ wc -l src/main/java/study/adv/auto/*.java | tail -1\n      40 total\n\n--   빈 하나와 부가 기능 하나다\n\n\n-- 클래스를 다섯 더한다\n\n@Service public class PaymentService { public void pay(int won) { ... } }\n@Service public class ShippingService { public void ship(Long id) { ... } }\n@Service public class CouponService { public void apply(String code) { ... } }\n@Repository public class PaymentRepository { public void save(int won) { ... } }\n@Repository public class ShippingRepository { public void save(Long id) { ... } }\n\n$ git diff --stat src/main/java/study/adv/auto/\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop.framework.autoproxy=TRACE' 2>&1 \\\n    | grep -c 'Creating implicit proxy'\n15\n\n// 더하기 전에는\n10\n\n--   설정을 한 줄도 안 고쳤다\n--   다섯이 저절로 걸렸다\n\n\n-- 돌려 본다\n\n$ curl -s -o /dev/null 'localhost:8080/pay?won=1000'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] PaymentService.pay()\n[796bccd9] |-->PaymentRepository.save()\n[796bccd9] |<--PaymentRepository.save() time=2ms\n[796bccd9] PaymentService.pay() time=4ms\n\n$ grep -c 'pay\\*\\|Payment' src/main/java/study/adv/auto/AutoProxyConfig.java\n0\n\n--   8.3 절에서는 거르개에 한 줄을 더해야 했다\n--   표현식이라 이름을 안 적는다\n\n\n-- 일곱 번의 깜빡함이 끝났다\n\n$ printf '%-8s %-30s %s\\n' \\\n  '2.6'  '새 메서드가 빠짐'      '손으로 넣어야 함' \\\n  '3.7'  '그대로'                '3 장이 안 건드림' \\\n  '4.4'  '틀을 안 쓰면 빠짐'     '부르는 줄이 필요' \\\n  '5.7'  '설정에 없으면 빠짐'    '스캔은 아예 불가' \\\n  '6.4'  '설정에 없으면 빠짐'    '같은 자리' \\\n  '7.4'  '설정에 없으면 빠짐'    '같은 자리' \\\n  '7.7'  '설정에 없으면 빠짐'    '같은 자리' \\\n  '8.6'  '저절로 걸림'           '설정 0 줄'\n\n2.6    새 메서드가 빠짐                손으로 넣어야 함\n3.7    그대로                          3 장이 안 건드림\n4.4    틀을 안 쓰면 빠짐               부르는 줄이 필요\n5.7    설정에 없으면 빠짐              스캔은 아예 불가\n6.4    설정에 없으면 빠짐              같은 자리\n7.4    설정에 없으면 빠짐              같은 자리\n7.7    설정에 없으면 빠짐              같은 자리\n8.6    저절로 걸림                     설정 0 줄\n\n\n-- 새 메서드도 걸린다\n\n@Service\npublic class PaymentService {\n    public void pay(int won) { ... }\n    public void refund(int won) { ... }        // 새로 만들었다\n}\n\n$ curl -s -o /dev/null -X POST 'localhost:8080/refund?won=1000'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[3d81f0a2] PaymentService.refund()\n[3d81f0a2] PaymentService.refund() time=2ms\n\n--   2.6 절의 그 문제도 사라졌다\n\n\n-- 다른 모듈에도 닿는다\n\n$ tree src/main/java/study/adv -L 1 -d\nsrc/main/java/study/adv\n├── app\n├── auto\n├── billing        새로 만든 모듈\n└── trace\n\n@Service\npublic class BillingService {          // study.adv.billing\n    public void charge(int won) { ... }\n}\n\n$ curl -s 'localhost:8080/who?name=billingService' | sed -n '2p'\n프록시인가: false\n\n--   표현식이 app 만 가리킨다\n\n\n-- 넓히면 닿는다\n\npointcut.setExpression(\"execution(* study.adv..*(..))\");\n\n$ curl -s 'localhost:8080/who?name=billingService' | sed -n '2p'\n프록시인가: true\n\n$ curl -s -o /dev/null 'localhost:8080/charge?won=1000'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[c14e0b93] BillingService.charge()\n[c14e0b93] BillingService.charge() time=2ms\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        24\n\n--   한 줄로 모듈 하나가 들어왔다\n\n\n-- 너무 넓히면\n\npointcut.setExpression(\"execution(* study.adv..*(..))\");\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n38\n\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56- | head -4\n[e82f14b0] |   |   |-->LogTrace.begin()\n[e82f14b0] |   |   |<--LogTrace.begin() time=0ms\n[e82f14b0] |   |   |-->TraceId.createNextId()\n[e82f14b0] |   |   |<--TraceId.createNextId() time=0ms\n\n--   추적기 자신까지 감쌌다\n--   1.2 절에서 142 줄이 되던 그것이다\n\n\n-- 무한이 되기도 한다\n\npointcut.setExpression(\"execution(* study.adv.trace..*(..))\");\n\n$ ./gradlew bootRun 2>&1 | grep -c 'StackOverflowError'\n1\n\n$ ./gradlew bootRun 2>&1 | grep -A3 'StackOverflow' | head -4\njava.lang.StackOverflowError\n\tat study.adv.auto.LogTraceAdvice.invoke(LogTraceAdvice.java:16)\n\tat study.adv.trace.ThreadLocalLogTrace$$SpringCGLIB$$0.begin(<generated>)\n\tat study.adv.auto.LogTraceAdvice.invoke(LogTraceAdvice.java:16)\n\n--   로그를 남기려고 로그를 남긴다\n--   6.3 절의 그 무한과 같은 모양이다\n\n\n-- 좁힌다\n\npointcut.setExpression(\n    \"execution(* study.adv.app..*(..)) || execution(* study.adv.billing..*(..))\");\n\n$ ./gradlew bootRun 2>&1 | grep -c 'StackOverflow'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n--   1.2 절에서 142 줄이 2 줄이 되던 그것이다\n--   11.7 절에서 이 합치기를 본다\n\n\n-- 끄고 켠다\n\n@Bean\n@ConditionalOnProperty(name = \"study.trace.enabled\", havingValue = \"true\",\n                       matchIfMissing = true)\npublic Advisor logTraceAdvisor(LogTrace trace) { ... }\n\n$ java -jar build/libs/app.jar --study.trace.enabled=false > /dev/null 2>&1 &\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n프록시인가: false\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/order?item=연필'\n$ grep -c 'Creating new transaction' logs/app.log\n1\n\n--   ⑯ 6.6절의 그 조건이다\n--   8.4 절의 스위치와 달리 내 것만 꺼진다\n\n\n-- 값을 잰다\n\n$ java -jar build/libs/app.jar --study.trace.enabled=true 2>&1 | grep 'Started'\nINFO ... : Started AdvApplication in 2.412 seconds\n$ java -jar build/libs/app.jar --study.trace.enabled=false 2>&1 | grep 'Started'\nINFO ... : Started AdvApplication in 2.104 seconds\n\n$ curl -s 'localhost:8080/bench/method?n=10000000&bean=orderServiceV3&method=orderItem'\n켰을 때: 284 ms\n$ curl -s 'localhost:8080/bench/method?n=10000000&mode=no-proxy'\n껐을 때:  24 ms\n\n--   기동이 0.3 초 늘고 호출이 28 나노초 는다\n--   1.2 절에서 잰 그 값이다\n\n\n-- 누가 감쌌는지 물어본다\n\n$ curl -s localhost:8080/proxy/census/detail | head -8\nbillingService            CGLIB  1 개  [LogTraceAdvice]\ncouponService             CGLIB  1 개  [LogTraceAdvice]\norderControllerV1Impl     CGLIB  1 개  [LogTraceAdvice]\norderControllerV2         CGLIB  1 개  [LogTraceAdvice]\norderControllerV3         CGLIB  1 개  [LogTraceAdvice]\norderServiceImpl          CGLIB  2 개  [TransactionInterceptor, LogTraceAdvice]\npaymentRepository         CGLIB  1 개  [LogTraceAdvice]\npaymentService            CGLIB  1 개  [LogTraceAdvice]\n\n$ curl -s localhost:8080/proxy/census/detail | wc -l\n      24\n\n--   설정에 목록이 없으니 물어봐야 안다\n--   7.6 절의 창구다\n\n\n-- 일곱 장을 견준다\n\n$ printf '%-8s %-14s %-12s %-12s %s\\n' \\\n  '2 장'  '업무 104 줄'  '설정 0'     '깜빡함 O'  '원본 고침' \\\n  '4 장'  '업무 62 줄'   '설정 0'     '깜빡함 O'  '원본 고침' \\\n  '5 장'  '업무 v0'      '설정 32'    '깜빡함 O'  '클래스 9' \\\n  '6 장'  '업무 v0'      '설정 84'    '깜빡함 O'  '클래스 0' \\\n  '7 장'  '업무 v0'      '설정 52'    '깜빡함 O'  '묶음 1' \\\n  '8 장'  '업무 v0'      '설정 14'    '깜빡함 X'  '빈 1'\n\n2 장     업무 104 줄     설정 0       깜빡함 O    원본 고침\n4 장     업무 62 줄      설정 0       깜빡함 O    원본 고침\n5 장     업무 v0         설정 32      깜빡함 O    클래스 9\n6 장     업무 v0         설정 84      깜빡함 O    클래스 0\n7 장     업무 v0         설정 52      깜빡함 O    묶음 1\n8 장     업무 v0         설정 14      깜빡함 X    빈 1\n\n\n-- 전체 줄을 센다\n\n$ wc -l $(find src/main/java/study/adv -name '*.java') | tail -1\n     324 total\n\n$ wc -l $(find src/main/java/study/adv/app -name '*.java') | tail -1\n     216 total\n$ wc -l $(find src/main/java/study/adv/auto -name '*.java') | tail -1\n      40 total\n$ wc -l $(find src/main/java/study/adv/trace -name '*.java') | tail -1\n      68 total\n\n$ python3 -c \"print('부가 기능은 전체의 %.0f%%' % (40/324*100))\"\n부가 기능은 전체의 12%\n\n--   2.7 절에서 업무 코드의 23% 가 로그였다\n--   이제 따로 12% 다\n\n\n-- 업무 코드를 확인한다\n\n$ grep -c 'trace\\|Trace\\|try {\\|Proxy\\|Advisor' \\\n    src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n0\n\n$ sed -n '/public void orderItem/,/^    }/p' \\\n    src/main/java/study/adv/app/OrderServiceV3.java\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n\n$ diff <(git show v0:src/main/java/study/adv/OrderService.java \\\n           | sed -n '/public void orderItem/,/^    }/p') \\\n       <(sed -n '/public void orderItem/,/^    }/p' \\\n           src/main/java/study/adv/app/OrderServiceV3.java) \\\n  && echo '같음'\n같음\n\n--   2.1 절의 그 두 줄이다\n\n\n-- 목표 로그를 다시 낸다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=ex'\n$ grep 'study.adv.trace' logs/app.log | tail -3 | cut -c56- | cut -c1-64\n[b7119f27] |   |<X-OrderRepositoryV3.save() time=1ms ex=java.lang.Ill\n[b7119f27] |<X-OrderServiceV3.orderItem() time=3ms ex=java.lang.Illeg\n[b7119f27] OrderControllerV3.request() time=5ms ex=java.lang.IllegalS\n\n--   2.1 절의 목표 파일 그대로다\n--   요구사항 여섯이 다 산다\n\n\n-- 남은 것\n\n$ cat src/main/java/study/adv/auto/AutoProxyConfig.java | grep -c 'setExpression'\n1\n\n$ grep -o 'setExpression(.*)' src/main/java/study/adv/auto/AutoProxyConfig.java\nsetExpression(\"execution(* study.adv.app..*(..)) || execution(* study.adv.billing..*(..))\")\n\n--   이 한 줄이 전부다\n--   9 장이 이걸 애너테이션으로 옮긴다\n\n\n-- 확인한다\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        24\n\n$ find src/main/java/study/adv/auto -name '*.java' | wc -l\n       2\n\n$ grep -rn 'BeanPostProcessor\\|ProxyFactory\\|newProxyInstance\\|Enhancer' src/main/java\n(없음)\n\n$ git add -A && git commit -q -m 'feat: v9 어드바이저만 등록' && git tag v9-only\n\n--   8.7 절에서 안 걸리는 것을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '전부'        '빈 하나' \\\n  '새 클래스'   '설정 0 줄' \\\n  '새 메서드'   '설정 0 줄' \\\n  '깜빡함'      '끝남' \\\n  '모듈'        '한 줄로 들어옴' \\\n  '너무 넓으면' '무한' \\\n  '스위치'      '조건 한 줄' \\\n  '값'          '기동 0.3 초' \\\n  '목록'        '물어봐야 앎' \\\n  '업무 코드'   'v0 과 같음'\n\n전부                       빈 하나\n새 클래스                  설정 0 줄\n새 메서드                  설정 0 줄\n깜빡함                     끝남\n모듈                       한 줄로 들어옴\n너무 넓으면                무한\n스위치                     조건 한 줄\n값                         기동 0.3 초\n목록                       물어봐야 앎\n업무 코드                  v0 과 같음",
+   "note": "**클래스 다섯을 더해도 설정을 한 줄도 안 고치는데 프록시가 10 개에서 15 개가** 된다.\n\n**2.6절부터 일곱 번 나온 깜빡함이 여기서** 끝난다.\n\n**표현식을 너무 넓히면 추적기 자신까지 감싸 `StackOverflowError`** 가 난다.\n\n**조건 한 줄로 내 것만 끄면 트랜잭션은 그대로 돌고 기동이 0.3 초** 준다.\n\n**업무 코드가 v0 의 두 줄과 diff 0 이고 목표 로그 여섯 줄과 예외 세 줄이 그대로** 나온다."
+  }
+ ],
+ "recap": [
+  "**빈 하나**다.",
+  "**새 클래스가** 걸린다.",
+  "**새 메서드도** 걸린다.",
+  "**깜빡함이** 끝났다.",
+  "**모듈도** 닿는다.",
+  "**넓으면** 무한이다.",
+  "**끌 수** 있다.",
+  "**물어봐야** 안다.",
+  "**업무는 v0**다."
+ ],
+ "drills": [
+  {
+   "task": "클래스를 여럿 더한다.",
+   "done_when": "설정을 안 고친 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "표현식을 너무 넓힌다.",
+   "done_when": "무한을 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건으로 꺼 본다.",
+   "done_when": "트랜잭션은 도는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "일곱 장을 표로 견준다.",
+   "done_when": "깜빡함이 사라진 자리를 짚었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기능 전부는 무엇인가?",
+   "a": "어드바이저 빈 하나다."
+  },
+  {
+   "q": "새 클래스를 만들면?",
+   "a": "설정을 안 고쳐도 저절로 걸린다."
+  },
+  {
+   "q": "표현식을 너무 넓히면?",
+   "a": "부가 기능 자신까지 감싸 무한 호출이 된다."
+  },
+  {
+   "q": "내 것만 끄려면?",
+   "a": "묶음 빈에 조건을 달아 등록을 막는다."
+  },
+  {
+   "q": "무엇이 감싸졌는지 어떻게 아나?",
+   "a": "설정에 목록이 없으므로 물어봐야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "닿는 범위",
+   "def": "한 묶음이 감쌀 수 있는 빈의 폭. 거르개가 정한다."
+  },
+  {
+   "term": "자기 감쌈",
+   "def": "부가 기능 자신이 감싸져 무한 호출이 되는 사고."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Using the auto-proxy facility",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api/autoproxy.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

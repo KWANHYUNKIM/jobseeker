@@ -488,7 +488,7 @@
           "title": "포인트컷이 두 번 쓰인다",
           "summary": "만들 때와 부를 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -496,7 +496,7 @@
           "title": "어드바이저만 등록",
           "summary": "빈 하나로 끝난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.7",

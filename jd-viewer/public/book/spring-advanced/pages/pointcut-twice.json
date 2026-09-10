@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "pointcut-twice",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "포인트컷이 두 번 쓰인다",
+ "summary": "만들 때와 부를 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 시점을 가른다.",
+  "하나만 맞을 때를 본다.",
+  "값을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.4절에서 열 개가** 감싸졌다. **무엇을 보고 그렇게 정했는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 거르개, 두 시점",
+   "ascii": "   the same filter is consulted at two different times\n\n   at startup   should this bean get a proxy at all\n   at call time which advisors apply to this method\n\n   a filter that matches nothing means no proxy is made",
+   "note": "**아무것도 안 맞으면 프록시를 아예 안** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "만들지 말지도 같은 거르개가 정한다",
+   "md": "**7.3절에서 두 질문이라** 했다.\n\n> **거기선 부를 때만** 썼다.\n> **설정이 만들지를** 정했다.\n> **여기선 거르개가 둘 다** 한다.\n\n**하나도 안 맞으면 안** 만든다.\n\n> **8.3절에서 껍데기가** 생겼다.\n> **아래에서 그게** 사라진다.\n> **값을 안** 치른다.\n\n**하나라도 맞으면** 만든다.\n\n> **클래스 단위**다.\n> **아래에서 그걸** 본다.\n> **나머지 메서드도** 지난다.\n\n**부를 때 다시** 본다.\n\n> **메서드마다 목록이** 다르다.\n> **7.5절의 그** 표다.\n> **아래에서 다시** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "절반만 맞으면",
+   "ascii": "   what happens when only half matches\n\n   one method matches, so the bean is wrapped\n   the other methods still go through the proxy\n   they just find an empty advisor list\n\n   so a single matching method costs the whole class",
+   "note": "**메서드 하나 때문에 클래스 전체가 값을** 치른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "만들 때 판단은 클래스 단위다",
+   "md": "**메서드 하나면** 충분하다.\n\n> **나머지는 빈 목록**이다.\n> **아래에서 그 시간을** 잰다.\n> **8.3절의 껍데기와 다르**다.\n\n**클래스가 안 맞으면 아예** 안 본다.\n\n> **7.3절에서** 봤다.\n> **메서드를 안** 묻는다.\n> **아래에서 세어** 본다.\n\n**기동이** 길어진다.\n\n> **빈 수만큼 곱 메서드 수**다.\n> **아래에서 그 수를** 센다.\n> **표현식이면 더** 무겁다.\n\n**결과를 담아** 둔다.\n\n> **부를 때 다시 안** 계산한다.\n> **7.3절에서** 확인했다.\n> **아래에서 다시** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 거르개에 찍어 본다\n\npublic class LoggingPointcut extends NameMatchMethodPointcut {\n\n    @Override\n    public boolean matches(Method method, Class<?> targetClass) {\n        boolean hit = super.matches(method, targetClass);\n        log.info(\"[물음] {}.{} -> {}\",\n                 targetClass.getSimpleName(), method.getName(), hit);\n        return hit;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[물음\\]'\n412\n\n$ ./gradlew bootRun 2>&1 | grep '\\[물음\\]' | grep 'OrderServiceV3' \nINFO ... : [물음] OrderServiceV3.orderItem -> true\nINFO ... : [물음] OrderServiceV3.find -> true\nINFO ... : [물음] OrderServiceV3.healthCheck -> false\nINFO ... : [물음] OrderServiceV3.equals -> false\nINFO ... : [물음] OrderServiceV3.hashCode -> false\nINFO ... : [물음] OrderServiceV3.toString -> false\n\n--   기동 때 412 번 물었다\n--   한 클래스에 여섯 번씩이다\n\n\n-- 부를 때는 안 묻는다\n\n$ : > logs/app.log\n$ for i in 1 2 3; do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n$ grep -c '\\[물음\\]' logs/app.log\n0\n\n$ grep -c 'study.adv.trace' logs/app.log\n18\n\n--   7.3 절에서 본 그것이다\n--   결과를 담아 뒀다\n\n\n-- 하나도 안 맞으면\n\n@Service\npublic class ClockService {\n    public String now() { return Instant.now().toString(); }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[물음\\] ClockService'\nINFO ... : [물음] ClockService.now -> false\nINFO ... : [물음] ClockService.equals -> false\nINFO ... : [물음] ClockService.hashCode -> false\nINFO ... : [물음] ClockService.toString -> false\n\n$ curl -s 'localhost:8080/who?name=clockService'\n주입된 것: study.adv.app.ClockService\n프록시인가: false\n\n--   8.3 절에서는 감싸졌었다\n--   여기선 아예 안 만들었다\n\n\n-- 8.3 절과 견준다\n\n// 8.3 절의 후처리기\nif (!bean.getClass().getPackageName().startsWith(\"study.adv.app\"))\n    return bean;\nreturn factory.getProxy();          // 무조건 감쌌다\n\n$ git show v9-apply:logs/census.txt | head -2\n전체 빈:      191\n프록시:        24\n\n// 8.4 절부터\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      191\n프록시:        21\n\n--   셋이 줄었다\n--   아무것도 안 걸리는 빈들이다\n\n\n-- 값을 잰다\n\n$ curl -s 'localhost:8080/bench/proxy?n=10000000&bean=clockService'\n프록시 없이:  24 ms\n\n// 8.3 절에서는\n프록시 통과: 284 ms\n\n$ python3 -c \"print('%.1f 배' % (284/24))\"\n11.8 배\n\n--   껍데기 프록시가 사라졌다\n--   8.3 절의 그 값이다\n\n\n-- 하나만 맞으면\n\n@Service\npublic class MixedService {\n    public void orderSomething() { ... }      // 걸린다\n    public String now() { ... }               // 안 걸린다\n    public int count() { ... }                // 안 걸린다\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[물음\\] MixedService'\nINFO ... : [물음] MixedService.orderSomething -> true\nINFO ... : [물음] MixedService.now -> false\nINFO ... : [물음] MixedService.count -> false\n\n$ curl -s 'localhost:8080/who?name=mixedService' | sed -n '2p'\n프록시인가: true\n\n--   하나가 맞아서 만들어졌다\n\n\n-- 나머지도 프록시를 지난다\n\n$ curl -s 'localhost:8080/advisor/matrix?bean=mixedService'\n메서드          걸린 어드바이저\norderSomething  [LogTraceAdvice]\nnow             []\ncount           []\n\n$ curl -s 'localhost:8080/bench/method?n=10000000&bean=mixedService&method=now'\n안 걸리는 메서드: 41 ms\n$ curl -s 'localhost:8080/bench/method?n=10000000&bean=mixedService&method=orderSomething'\n걸리는 메서드:   284 ms\n$ curl -s 'localhost:8080/bench/method?n=10000000&mode=no-proxy'\n프록시 없이:      24 ms\n\n--   목록이 비어도 프록시는 지난다\n--   7.5 절에서 잰 그 값이다\n\n\n-- 클래스가 안 맞으면 안 묻는다\n\n@Bean\npublic Advisor logTraceAdvisor(LogTrace trace) {\n    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\n    pointcut.setExpression(\"execution(* study.adv.app..*Service*.*(..))\");\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[클래스 물음\\]'\n191\n$ ./gradlew bootRun 2>&1 | grep -c '\\[메서드 물음\\]'\n42\n\n$ ./gradlew bootRun 2>&1 | grep '\\[클래스 물음\\] OrderRepositoryV3'\nINFO ... : [클래스 물음] OrderRepositoryV3 -> false\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[메서드 물음\\] OrderRepositoryV3'\n0\n\n--   클래스가 191 번, 메서드가 42 번이다\n--   7.3 절에서 본 그 순서다\n\n\n-- 물어보는 횟수를 센다\n\n$ ./gradlew bootRun 2>&1 | grep '\\[물음\\]' | awk -F'.' '{print $1}' | sort -u | wc -l\n      68\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[물음\\]'\n412\n\n$ python3 -c \"print('빈 68 개에 메서드 평균 %.1f 개' % (412/68))\"\n빈 68 개에 메서드 평균 6.1 개\n\n--   패키지 거르개가 68 개로 좁혔다\n--   안 좁히면 191 개를 다 묻는다\n\n\n-- 안 좁히면\n\npointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\");\n// 클래스 거르개가 없다\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[물음\\]'\n1842\n\n$ ./gradlew bootRun 2>&1 | grep 'Started AdvApplication'\nINFO ... : Started AdvApplication in 3.104 seconds\n\n// 좁히면\n$ ./gradlew bootRun 2>&1 | grep 'Started AdvApplication'\nINFO ... : Started AdvApplication in 2.412 seconds\n\n--   1842 번과 412 번이다\n--   기동이 0.7 초 차이다\n\n\n-- 표현식은 더 무겁다\n\n$ curl -s 'localhost:8080/bench/pointcut?n=1000000&mode=name'\n이름 맞추기:     84 ms\n$ curl -s 'localhost:8080/bench/pointcut?n=1000000&mode=annotation'\n애너테이션:     124 ms\n$ curl -s 'localhost:8080/bench/pointcut?n=1000000&mode=expression'\n표현식:        1412 ms\n\n$ python3 -c \"print('표현식이 이름보다 %.0f 배' % (1412/84))\"\n표현식이 이름보다 17 배\n\n--   기동 때만 치르는 값이다\n--   부를 때는 안 계산한다\n\n\n-- 담아 두는 걸 확인한다\n\n$ curl -s 'localhost:8080/bench/method?n=10000000&bean=orderServiceV3&method=orderItem'\n걸리는 메서드: 284 ms\n\n$ python3 -c \"print('한 번에 %.1f 나노초' % (284*1000000/10000000))\"\n한 번에 28.4 나노초\n\n$ curl -s 'localhost:8080/bench/pointcut?n=10000000&mode=expression'\n표현식 매번:  14120 ms\n\n--   매번 계산하면 50 배다\n--   담아 두니 안 그렇다\n\n\n-- 동적 확인이면 다르다\n\npointcut.setExpression(\"execution(* study.adv.app..*(..)) && args(String)\");\n\n$ : > logs/app.log\n$ for i in 1 2 3; do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n$ grep -c '\\[물음\\]' logs/app.log\n9\n\n$ curl -s 'localhost:8080/bench/method?n=10000000&bean=orderServiceV3&method=orderItem'\n동적 확인:  1204 ms\n\n--   7.3 절에서 네 배라 했다\n--   부를 때마다 묻는다\n--   11.4 절에서 이걸 본다\n\n\n-- 만들지 말지를 판단하는 자리\n\n@GetMapping(value = \"/proxy/decide\", produces = \"text/plain\")\nString decide(String bean) {\n    Class<?> clazz = ctx.getType(bean);\n    var sb = new StringBuilder();\n    for (Advisor a : ctx.getBeansOfType(Advisor.class).values()) {\n        if (!(a instanceof PointcutAdvisor pa)) continue;\n        boolean cls = pa.getPointcut().getClassFilter().matches(clazz);\n        long hits = cls ? Arrays.stream(clazz.getMethods())\n            .filter(m -> pa.getPointcut().getMethodMatcher().matches(m, clazz))\n            .count() : 0;\n        sb.append(String.format(\"%-20s 클래스=%s 메서드=%d%n\",\n            a.getAdvice().getClass().getSimpleName(), cls, hits));\n    }\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/proxy/decide?bean=orderServiceV3'\nLogTraceAdvice        클래스=true 메서드=2\n\n$ curl -s 'localhost:8080/proxy/decide?bean=clockService'\nLogTraceAdvice        클래스=true 메서드=0\n\n$ curl -s 'localhost:8080/who?name=clockService' | sed -n '2p'\n프록시인가: false\n\n--   메서드가 0 이면 안 만든다\n--   그게 8.3 절과 다른 점이다\n\n\n-- 스프링이 그렇게 한다\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop.framework.autoproxy=TRACE' 2>&1 \\\n    | grep -E 'Creating implicit proxy|No advisor' | head -5\nTRACE ... : Creating implicit proxy for bean 'orderControllerV3' with 1 advisor\nTRACE ... : Creating implicit proxy for bean 'orderServiceV3' with 1 advisor\nTRACE ... : Creating implicit proxy for bean 'orderRepositoryV3' with 1 advisor\nTRACE ... : Did not attempt to auto-proxy bean 'clockService'\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop.framework.autoproxy=TRACE' 2>&1 \\\n    | grep -c 'Did not attempt'\n181\n\n--   ⑯ 8.5절의 그 방법이다\n--   181 개는 아예 안 시도했다\n\n\n-- 두 시점을 표로\n\n$ printf '%-16s %-20s %-14s %s\\n' \\\n  '기동 때'  '만들까 말까'  '클래스 단위'  '한 번' \\\n  '부를 때'  '어떤 게 걸리나' '메서드 단위'  '담아 둔 것'\n\n기동 때          만들까 말까           클래스 단위    한 번\n부를 때          어떤 게 걸리나        메서드 단위    담아 둔 것\n\n\n-- 거르개를 좁히면 둘 다 준다\n\npointcut.setExpression(\n    \"execution(* study.adv.app..*Service*.order*(..)) || \" +\n    \"execution(* study.adv.app..*Repository*.save*(..))\");\n\n$ ./gradlew bootRun 2>&1 | grep -c '\\[물음\\]'\n186\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      191\n프록시:        17\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderServiceV3.orderItem()\n[796bccd9] |-->OrderRepositoryV3.save()\n[796bccd9] |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] OrderServiceV3.orderItem() time=1006ms\n\n--   프록시가 21 에서 17 로 줄었다\n--   컨트롤러가 빠져 네 줄이 됐다\n--   11 장이 이 표현식을 다룬다\n\n\n-- 확인한다\n\n$ git checkout HEAD -- src/main/java/\n$ ./gradlew bootRun 2>&1 | grep -c '\\[물음\\]'\n412\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ curl -s 'localhost:8080/who?name=clockService' | sed -n '2p'\n프록시인가: false\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      191\n프록시:        21\n\n$ git add -A && git commit -q -m 'feat: v9 두 시점' && git tag v9-twice\n\n--   8.6 절에서 어드바이저만 등록한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '시점'        '기동과 호출' \\\n  '기동 때'     '만들까 말까' \\\n  '부를 때'     '어떤 게 걸리나' \\\n  '0 개면'      '안 만듦' \\\n  '하나면'      '만듦' \\\n  '나머지'      '빈 목록으로 지남' \\\n  '클래스'      '안 맞으면 안 물음' \\\n  '횟수'        '412 번' \\\n  '표현식'      '17 배 무거움' \\\n  '담아 둠'     '부를 땐 안 계산'\n\n시점                       기동과 호출\n기동 때                    만들까 말까\n부를 때                    어떤 게 걸리나\n0 개면                     안 만듦\n하나면                     만듦\n나머지                     빈 목록으로 지남\n클래스                     안 맞으면 안 물음\n횟수                       412 번\n표현식                     17 배 무거움\n담아 둠                    부를 땐 안 계산",
+   "note": "**기동 때 412 번 묻고 부를 때는 0 번으로 결과를 담아** 둔다.\n\n**아무 메서드도 안 맞는 빈은 아예 안 만들어져 8.3절의 284 ms 가 24 ms** 가 된다.\n\n**메서드 하나만 맞아도 클래스가 감싸져 나머지는 빈 목록으로 41 ms 를** 치른다.\n\n**클래스가 안 맞으면 메서드는 묻지도 않아 클래스 191 번·메서드 42 번**이다.\n\n**표현식이 이름보다 17 배 무겁지만 기동 때만 치르고 매번 계산하면 50 배**다."
+  }
+ ],
+ "recap": [
+  "**두 번** 쓰인다.",
+  "**만들까를** 정한다.",
+  "**0 개면 안** 만든다.",
+  "**하나면** 만든다.",
+  "**나머지도** 지난다.",
+  "**클래스부터** 본다.",
+  "**412 번** 묻는다.",
+  "**표현식이** 무겁다.",
+  "**담아** 둔다."
+ ],
+ "drills": [
+  {
+   "task": "거르개에 로그를 넣는다.",
+   "done_when": "기동 때만 묻는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "안 걸리는 빈을 만든다.",
+   "done_when": "프록시가 안 생기는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "하나만 걸리는 빈을 만든다.",
+   "done_when": "나머지 값을 쟀다.",
+   "minutes": 20
+  },
+  {
+   "task": "거르개를 좁힌다.",
+   "done_when": "프록시 수가 준 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "거르개는 언제 쓰이나?",
+   "a": "기동 때 만들지 말지와 호출 때 어느 것이 걸리는지 두 번이다."
+  },
+  {
+   "q": "아무것도 안 맞으면?",
+   "a": "프록시를 아예 안 만들어 비용이 없다."
+  },
+  {
+   "q": "메서드 하나만 맞으면?",
+   "a": "클래스가 감싸지고 나머지도 프록시를 지난다."
+  },
+  {
+   "q": "클래스가 안 맞으면?",
+   "a": "메서드는 물어보지도 않는다."
+  },
+  {
+   "q": "표현식이 무거운데 왜 쓰나?",
+   "a": "기동 때 한 번 계산하고 결과를 담아 두기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "만들기 판단",
+   "def": "기동 때 이 빈에 프록시를 만들지 정하는 일."
+  },
+  {
+   "term": "빈 목록 통과",
+   "def": "감싸졌지만 걸린 어드바이저가 없어 바로 대상으로 가는 호출."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Using the auto-proxy facility",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api/autoproxy.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Pointcut API",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html#aop-pointcuts",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
