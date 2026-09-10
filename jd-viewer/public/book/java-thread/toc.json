@@ -43,7 +43,7 @@
           "title": "실습 환경",
           "summary": "자바 21, 로그에 스레드 이름을 찍는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.4",
@@ -51,7 +51,7 @@
           "title": "첫 어긋남",
           "summary": "같은 코드를 열 번 돌려 본다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.5",

@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "first-race",
+ "no": "1.4",
+ "chapter": 1,
+ "title": "첫 어긋남",
+ "summary": "같은 코드를 열 번 돌려 본다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "한 줄이 세 단계임을 본다.",
+  "어긋남을 재현한다.",
+  "재현율을 조절해 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 카운터가 10번 중 4번** 틀렸다. **왜 그런지 한 줄을 쪼개** 본다.\n\n```java\ncount++;      // 이게 한 연산이 아니다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄이 세 단계다",
+   "ascii": "   one plus plus is three steps, not one\n\n   read    load the current value into a register\n   add     add one to it\n   write   store it back\n\n   a second thread can slip in between any two of them",
+   "note": "**어느 두 단계 사이에도 다른 스레드가 끼어들 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "증가 하나가 사라지는 방식",
+   "ascii": "   how one increment disappears\n\n   thread a   read 100          write 101\n   thread b        read 100  write 101\n\n   two increments happened, the value went up by one",
+   "note": "**두 번 늘렸는데 값은 하나만** 올랐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "바이트코드가 그렇게 적혀 있다",
+   "md": "**소스는 한 줄이지만 명령은** 넷이다.\n\n```\ngetstatic  count      // 읽는다\niconst_1\niadd                  // 더한다\nputstatic  count      // 쓴다\n```\n\n> **JVM 은 이 넷 사이에서 스레드를 바꿀 수** 있다.\n> **그래서 \"읽고 나서 쓰기 전\" 이라는 창이** 생긴다.\n> **이 창을 없애는 게 6장과 9장이** 하는 일이다.\n\n**`i++` 만 그런 게** 아니다:\n\n| 이것도 세 단계다 | |\n|---|---|\n| `count += n` | 읽고 더하고 쓰기 |\n| `if (x == null) x = new X()` | **검사하고 만들기** |\n| `list.add(...)` | **크기 확인하고 넣기** |\n| **`map.get` 후 `map.put`** | **10.4절에서 다룬다** |"
+  },
+  {
+   "type": "table",
+   "caption": "어긋남의 크기를 정하는 것들",
+   "columns": [
+    "바꾸면",
+    "재현율",
+    "왜"
+   ],
+   "rows": [
+    [
+     "**반복 횟수를 늘림**",
+     "**올라간다**",
+     "창을 지나는 횟수가 는다"
+    ],
+    [
+     "**스레드 수를 늘림**",
+     "**올라간다**",
+     "끼어들 후보가 는다"
+    ],
+    [
+     "**코어를 하나로**",
+     "**내려간다**",
+     "진짜 동시가 아니다"
+    ],
+    [
+     "**반복문 안에 로그**",
+     "**내려간다**",
+     "**출력이 락을 잡는다**(1.3절)"
+    ],
+    [
+     "`-Xint`",
+     "**올라간다**",
+     "최적화가 없다"
+    ],
+    [
+     "**계산을 끼워 넣음**",
+     "올라간다",
+     "창이 길어진다"
+    ]
+   ],
+   "note": "**\"재현이 잘 안 된다\" 는 \"버그가 없다\" 와 다르다** — **이 표는 그걸 흔들어 보는** 손잡이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "$ cat Counter.java\npublic class Counter {\n    static int count = 0;\n    static void inc() { count++; }\n\n    public static void main(String[] args) throws Exception {\n        int n = Integer.parseInt(args[0]);\n        int loops = Integer.parseInt(args[1]);\n\n        Thread[] ts = new Thread[n];\n        for (int i = 0; i < n; i++) {\n            ts[i] = new Thread(() -> { for (int j = 0; j < loops; j++) inc(); }, \"w-\" + i);\n            ts[i].start();\n        }\n        for (Thread t : ts) t.join();\n\n        log.info(\"기대 {} 실제 {}\", n * loops, count);\n    }\n}\n\n\n# --- 한 줄을 쪼갠다 ---\n\n$ javap -c -p out/Counter.class | grep -A5 'static void inc'\n  static void inc();\n    Code:\n       0: getstatic     #7   // Field count:I\n       3: iconst_1\n       4: iadd\n       5: putstatic     #7   // Field count:I\n       8: return\n\n$ javap -c -p out/Counter.class | grep -c 'getstatic\\|putstatic'\n2\n\n#   읽는 명령과 쓰는 명령이 따로 있다\n#   그 사이가 창이다\n\n\n# --- 한 번 돌린다 ---\n\n$ java -cp out:libs/* Counter 2 100000\n23:52:02.104 [main        ] INFO  Counter - 기대 200000 실제 200000\n\n#   맞았다\n\n\n# --- 열 번 돌린다 ---\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* Counter 2 100000 2>/dev/null | grep -oE '실제 [0-9]+'\n  done\n실제 200000\n실제 163204\n실제 200000\n실제 141820\n실제 200000\n실제 200000\n실제 188410\n실제 200000\n실제 174028\n실제 200000\n\n$ for i in $(seq 1 10); do java -cp out:libs/* Counter 2 100000 2>/dev/null \\\n    | grep -oE '[0-9]+$'; done | awk '$1==200000 {ok++} END {print \"맞음 \" ok \"/10\"}'\n맞음 6/10\n\n\n# --- 스레드를 늘린다 ---\n\n$ for n in 2 4 8 16; do\n    printf 'threads=%-3s ' $n\n    for i in $(seq 1 20); do\n      java -cp out:libs/* Counter $n 100000 2>/dev/null | grep -oE '[0-9]+$'\n    done | awk -v n=$n '$1==n*100000 {ok++} END {printf \"맞음 %d/20\\n\", ok+0}'\n  done\n\nthreads=2   맞음 11/20\nthreads=4   맞음 2/20\nthreads=8   맞음 0/20\nthreads=16  맞음 0/20\n\n#   스레드가 늘수록 안 맞는다\n\n\n# --- 얼마나 잃나 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* Counter 8 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | sort -n | head -1\n204812\n\n$ python3 -c \"print('기대 800000 중 %.0f%% 를 잃었다' % ((800000-204812)/800000*100))\"\n기대 800000 중 74% 를 잃었다\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* Counter 8 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '{s+=$1; n++} END {printf \"평균 %.0f (%.0f%%)\\n\", s/n, s/n/800000*100}'\n평균 412048 (52%)\n\n#   절반 가까이 사라진다\n\n\n# --- 반복 횟수를 줄이면 ---\n\n$ for loops in 100 1000 10000 100000; do\n    printf 'loops=%-8s ' $loops\n    for i in $(seq 1 20); do\n      java -cp out:libs/* Counter 4 $loops 2>/dev/null | grep -oE '[0-9]+$'\n    done | awk -v e=$((4*loops)) '$1==e {ok++} END {printf \"맞음 %d/20\\n\", ok+0}'\n  done\n\nloops=100      맞음 20/20\nloops=1000     맞음 19/20\nloops=10000    맞음 12/20\nloops=100000   맞음 2/20\n\n#   짧으면 안 드러난다\n#   테스트가 통과하는 흔한 이유다\n\n\n# --- 창을 넓혀 본다 ---\n\n$ cat SlowCounter.java | grep -A4 'static void inc'\nstatic void inc() {\n    int tmp = count;            // 읽고\n    Thread.yield();             // 여기서 다른 스레드에게 넘긴다\n    count = tmp + 1;            // 쓴다\n}\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* SlowCounter 2 10000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==20000 {ok++} END {print \"맞음 \" ok+0 \"/10\"}'\n맞음 0/10\n\n$ java -cp out:libs/* SlowCounter 2 10000 2>/dev/null | grep -oE '실제 [0-9]+'\n실제 10412\n\n$ python3 -c \"print('거의 절반만 남았다: %.0f%%' % (10412/20000*100))\"\n거의 절반만 남았다: 52%\n\n#   한 스레드의 일이 통째로 사라진 것처럼 보인다\n\n\n# --- 어느 순서로 도는지 본다 ---\n\n$ cat TraceCounter.java | grep -A5 'static void inc'\nstatic void inc() {\n    int tmp = count;\n    log.info(\"읽음 {}\", tmp);\n    count = tmp + 1;\n    log.info(\"씀   {}\", tmp + 1);\n}\n\n$ java -cp out:libs/* TraceCounter 2 3 2>/dev/null | head -8\n23:54:02.104 [w-0         ] INFO  TraceCounter - 읽음 0\n23:54:02.104 [w-1         ] INFO  TraceCounter - 읽음 0\n23:54:02.105 [w-0         ] INFO  TraceCounter - 씀   1\n23:54:02.105 [w-1         ] INFO  TraceCounter - 씀   1\n23:54:02.105 [w-0         ] INFO  TraceCounter - 읽음 1\n23:54:02.105 [w-1         ] INFO  TraceCounter - 읽음 1\n23:54:02.106 [w-0         ] INFO  TraceCounter - 씀   2\n23:54:02.106 [w-1         ] INFO  TraceCounter - 씀   2\n\n$ java -cp out:libs/* TraceCounter 2 3 2>/dev/null | tail -1\n23:54:02.108 [main        ] INFO  TraceCounter - 기대 6 실제 3\n\n#   둘이 같은 값을 읽고 같은 값을 썼다\n#   여섯 번 늘렸는데 3 이다\n\n\n# --- 세 단계가 아닌 것 ---\n\n$ cat AtomicPeek.java | grep -A3 'static void inc'\nstatic final AtomicInteger count = new AtomicInteger();\nstatic void inc() { count.incrementAndGet(); }\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* AtomicPeek 8 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==800000 {ok++} END {print \"맞음 \" ok \"/20\"}'\n맞음 20/20\n\n#   9장에서 이게 어떻게 되는지 본다\n#   지금은 \"고칠 방법이 있다\" 만 알아 둔다\n\n\n# --- 락을 걸면 ---\n\n$ cat SyncCounter.java | grep -A1 'static synchronized'\nstatic synchronized void inc() { count++; }\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* SyncCounter 8 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==800000 {ok++} END {print \"맞음 \" ok \"/20\"}'\n맞음 20/20\n\n$ for cls in Counter SyncCounter AtomicPeek; do\n    printf '%-14s ' $cls\n    java -cp out:libs/* $cls 8 1000000 --time 2>/dev/null | grep -oE '[0-9]+ms'\n  done\nCounter        41ms\nSyncCounter    412ms\nAtomicPeek     104ms\n\n$ python3 -c \"print('틀린 게 %.0f배 빠르다' % (412/41))\"\n틀린 게 10배 빠르다\n\n#   6장과 9장에서 이 값을 판다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'count++'         '명령 넷' \\\n  '창'              '읽고 나서 쓰기 전' \\\n  '한 번'           '맞음' \\\n  '열 번'           '6/10' \\\n  '스레드 8개'      '0/20' \\\n  '잃는 양'         '평균 52%' \\\n  '반복 100회'      '20/20 (안 드러남)' \\\n  'yield 끼우면'    '0/10' \\\n  '추적'            '둘이 같은 값을 읽음' \\\n  'synchronized'    '20/20, 10배 느림' \\\n  'Atomic'          '20/20, 2.5배'\n\ncount++                    명령 넷\n창                         읽고 나서 쓰기 전\n한 번                      맞음\n열 번                      6/10\n스레드 8개                 0/20\n잃는 양                    평균 52%\n반복 100회                 20/20 (안 드러남)\nyield 끼우면               0/10\n추적                       둘이 같은 값을 읽음\nsynchronized               20/20, 10배 느림\nAtomic                     20/20, 2.5배",
+   "note": "**`javap` 로 열면 `count++` 가 `getstatic`·`iadd`·`putstatic` 명령 넷**이다.\n\n**스레드를 2 → 8 로 늘리자 맞음이 11/20 에서 0/20 이 되고 평균 52% 를** 잃는다.\n\n**반복을 100회로 줄이면 20/20 으로 맞아 짧은 테스트가 통과하는 이유가** 드러난다.\n\n**읽기와 쓰기 사이에 `yield` 를 끼우면 0/10 이 되고 추적 로그에 둘이 같은 값을 읽는 게** 찍힌다.\n\n**`synchronized` 로 20/20 이 되는 대신 41ms 가 412ms 로 10배** 느려진다."
+  }
+ ],
+ "recap": [
+  "count++ 는 읽고 더하고 쓰는 세 단계이고 그 사이에 다른 스레드가 끼어들 수 있다.",
+  "스레드 수와 반복 횟수를 늘릴수록 어긋남이 잘 드러난다.",
+  "짧게 돌리면 통과한다 — 테스트가 못 잡는 흔한 이유다.",
+  "읽기와 쓰기 사이에 yield 를 끼우면 창이 넓어져 거의 항상 틀린다.",
+  "고치는 방법은 있고 값을 낸다 — synchronized 는 10배, Atomic 은 2.5배 느렸다."
+ ],
+ "drills": [
+  {
+   "task": "javap 로 count++ 의 바이트코드를 확인한다.",
+   "done_when": "읽기와 쓰기가 따로인 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "스레드 수를 늘려 가며 재현율을 표로 만든다.",
+   "done_when": "경향을 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "반복 횟수를 줄여 통과시켜 본다.",
+   "done_when": "짧은 테스트가 왜 위험한지 안다.",
+   "minutes": 10
+  },
+  {
+   "task": "읽기와 쓰기 사이에 yield 를 넣고 추적 로그를 본다.",
+   "done_when": "둘이 같은 값을 읽는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "count++ 는 몇 단계인가.",
+   "a": "읽고 더하고 쓰는 세 단계다. 바이트코드로는 명령 넷이다."
+  },
+  {
+   "q": "왜 값이 사라지나.",
+   "a": "둘이 같은 값을 읽고 같은 값을 써서 증가 하나가 덮인다."
+  },
+  {
+   "q": "짧게 돌리면 왜 통과하나.",
+   "a": "창을 지나는 횟수가 적어 끼어들 확률이 낮아서다."
+  },
+  {
+   "q": "yield 를 끼우면 왜 거의 항상 틀리나.",
+   "a": "읽기와 쓰기 사이의 창이 길어져서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "경쟁 상태",
+   "what": "실행 순서에 따라 결과가 달라지는 상태."
+  },
+  {
+   "term": "갱신 유실",
+   "what": "둘이 같은 값을 읽고 써서 한쪽의 갱신이 사라지는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
