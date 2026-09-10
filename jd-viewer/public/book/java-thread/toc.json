@@ -577,7 +577,7 @@
           "title": "왜 풀인가",
           "summary": "생성 비용과 상한.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -585,7 +585,7 @@
           "title": "ExecutorService",
           "summary": "제출하고 결과를 받는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -593,7 +593,7 @@
           "title": "Future 와 결과",
           "summary": "get 이 막는 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",

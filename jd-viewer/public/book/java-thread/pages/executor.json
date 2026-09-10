@@ -1,0 +1,151 @@
+{
+ "book": "java-thread",
+ "id": "executor",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "ExecutorService",
+ "summary": "제출하고 결과를 받는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 부분을 안다.",
+  "편의 메서드의 함정을 본다.",
+  "직접 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8장의 큐와 4장의 스레드를 묶은 게** 풀이다.\n\n```java\nExecutorService pool = Executors.newFixedThreadPool(8);\npool.submit(task);\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "실제로 정하는 세 가지",
+   "ascii": "   the three pieces you actually configure\n\n   the threads   how many, and how they are named\n   the queue     what holds work that has no thread yet\n   the policy    what happens when both are full\n\n   the convenience factories pick these for you, sometimes badly",
+   "note": "**편의 메서드가 대신 골라 주는데 가끔 나쁘게** 고른다."
+  },
+  {
+   "type": "table",
+   "caption": "편의 메서드가 고르는 것",
+   "columns": [
+    "",
+    "스레드",
+    "큐",
+    "위험"
+   ],
+   "rows": [
+    [
+     "**newFixedThreadPool**",
+     "**고정**",
+     "**무한**",
+     "**메모리**(8.1절)"
+    ],
+    [
+     "**newCachedThreadPool**",
+     "**무한**",
+     "**용량 0**",
+     "**스레드 폭발**(11.1절)"
+    ],
+    [
+     "**newSingleThreadExecutor**",
+     "1",
+     "무한",
+     "메모리"
+    ],
+    [
+     "**newWorkStealingPool**",
+     "코어 수",
+     "-",
+     "순서 없음"
+    ],
+    [
+     "**직접 만들기**",
+     "**내가**",
+     "**내가**",
+     "**없음**"
+    ]
+   ],
+   "note": "**앞 셋의 위험이 8.1절과 11.1절에서 본 그것**이다 — **무한 큐와 무한 스레드**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 세 부분을 직접 준다 ---\n\n$ cat MyPool.java | grep -A10 'ExecutorService create'\nnew ThreadPoolExecutor(\n        8, 8,                                  // 스레드 수\n        0L, TimeUnit.MILLISECONDS,\n        new ArrayBlockingQueue<>(1000),        // 큐\n        new ThreadFactory() { ... \"order-\" + n ... },   // 3.6절\n        new ThreadPoolExecutor.CallerRunsPolicy());     // 8.6절\n\n$ java -cp out:libs/* MyPool --tasks 100000 2>/dev/null | tail -2\n02:15:02.104 [order-3] INFO  MyPool - 완료 100000\n02:15:02.108 [main] INFO  MyPool - 스레드 8, 최대 큐 1000, 거부 0\n\n\n# --- 무한 큐의 위험 ---\n\n$ java -Xmx256m -cp out:libs/* FixedPool --tasks 5000000 --work-ms 10 --pool 4 2>&1 | tail -2\n02:15:12.104 [main] INFO  FixedPool - t=20s 큐 크기 1841204\n02:15:14.108 [main] ERROR FixedPool - OutOfMemoryError: Java heap space\n\n$ javap -c -p /Library/Java/.../Executors.class 2>/dev/null | grep -A3 'newFixedThreadPool' \\\n  | grep LinkedBlockingQueue\n     8: new  #x  // class java/util/concurrent/LinkedBlockingQueue\n\n#   용량을 안 준 LinkedBlockingQueue 는 무한이다\n#   8.1절의 그것이다\n\n\n# --- 무한 스레드의 위험 ---\n\n$ java -cp out:libs/* CachedPool --rps 5000 --work-ms 200 --seconds 20 2>&1 | tail -2\n02:15:24.104 [main] INFO  CachedPool - t=15s 스레드 3841\n02:15:26.108 [main] ERROR CachedPool - unable to create native thread\n\n$ javap -c -p /Library/Java/.../Executors.class 2>/dev/null | grep -A4 'newCachedThreadPool' \\\n  | grep -E 'SynchronousQueue|2147483647'\n     3: ldc  #x  // int 2147483647\n     8: new  #x  // class java/util/concurrent/SynchronousQueue\n\n#   최대 스레드가 21억이다\n#   큐가 용량 0 이라 (8.5절) 남으면 곧바로 스레드를 만든다\n\n\n# --- 코어와 최대 ---\n\n$ cat CorePool.java | grep -A6 'new ThreadPoolExecutor'\nnew ThreadPoolExecutor(2, 8,                   // 코어 2, 최대 8\n        60L, TimeUnit.SECONDS,\n        new ArrayBlockingQueue<>(10), ...);\n\n$ java -cp out:libs/* CorePool --tasks 100 --work-ms 100 --trace 2>/dev/null | head -6\n02:15:34.104 [main] INFO  CorePool - 제출 1  스레드 1 큐 0\n02:15:34.105 [main] INFO  CorePool - 제출 2  스레드 2 큐 0\n02:15:34.106 [main] INFO  CorePool - 제출 3  스레드 2 큐 1\n02:15:34.116 [main] INFO  CorePool - 제출 12 스레드 2 큐 10\n02:15:34.117 [main] INFO  CorePool - 제출 13 스레드 3 큐 10\n02:15:34.124 [main] INFO  CorePool - 제출 19 스레드 8 큐 10\n\n#   코어까지는 스레드를 만든다\n#   그다음은 큐에 쌓는다\n#   큐가 차면 최대까지 스레드를 만든다\n\n$ java -cp out:libs/* CorePool --tasks 100 --work-ms 100 --idle-check 2>/dev/null | tail -1\n60초 뒤 스레드 2 (여분이 죽었다)\n\n#   순서가 직관과 다르다\n#   \"바쁘면 스레드를 늘린다\" 가 아니라 \"큐가 차면\" 이다\n\n\n# --- 큐가 무한이면 최대가 무의미하다 ---\n\n$ cat UselessMax.java | grep -A3 'new ThreadPoolExecutor'\nnew ThreadPoolExecutor(2, 100, ...,            // 최대 100\n        new LinkedBlockingQueue<>());          // 무한 큐\n\n$ java -cp out:libs/* UselessMax --tasks 100000 --work-ms 10 2>/dev/null | tail -1\n최대 스레드 수 2 (설정은 100)\n\n#   큐가 절대 안 차니 스레드가 안 는다\n#   흔한 오해다\n\n\n# --- 제출과 실행 ---\n\n$ cat SubmitVsExecute.java | grep -A4 'main'\npool.execute(() -> { throw new RuntimeException(\"e\"); });   // 3.7절\nFuture<?> f = pool.submit(() -> { throw new RuntimeException(\"s\"); });\n\n$ java -cp out:libs/* SubmitVsExecute 2>&1 | grep -c 'RuntimeException: e'\n1\n$ java -cp out:libs/* SubmitVsExecute 2>&1 | grep -c 'RuntimeException: s'\n0\n\n#   3.7절의 그 차이다\n\n\n# --- 상태를 물어본다 ---\n\n$ cat PoolStats.java | grep -A6 'void dump'\nlog.info(\"활성 {} 풀 크기 {} 최대 {} 큐 {} 완료 {}\",\n        p.getActiveCount(), p.getPoolSize(), p.getLargestPoolSize(),\n        p.getQueue().size(), p.getCompletedTaskCount());\n\n$ java -cp out:libs/* PoolStats --tasks 100000 --pool 8 --queue 1000 2>/dev/null | tail -3\n02:15:52.104 [monitor] INFO  PoolStats - 활성 8 풀 크기 8 최대 8 큐 1000 완료 41204\n02:15:53.108 [monitor] INFO  PoolStats - 활성 8 풀 크기 8 최대 8 큐 1000 완료 84120\n02:15:54.112 [monitor] INFO  PoolStats - 활성 8 풀 크기 8 최대 8 큐 0 완료 100000\n\n#   큐가 계속 가득 차 있으면 처리량이 모자라다는 뜻이다\n#   11.5절에서 이 지표를 쓴다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '세 부분'         '스레드 · 큐 · 정책' \\\n  'newFixed'        '무한 큐' \\\n  '그 결과'         'OutOfMemory' \\\n  'newCached'       '최대 21억' \\\n  '그 결과'         'native thread 실패' \\\n  '순서'            '코어 → 큐 → 최대' \\\n  '무한 큐면'       '최대가 무의미' \\\n  'execute'         '예외가 보임' \\\n  'submit'          '조용함' \\\n  '지표'            '활성 · 큐 · 완료'\n\n세 부분                    스레드 · 큐 · 정책\nnewFixed                   무한 큐\n그 결과                    OutOfMemory\nnewCached                  최대 21억\n그 결과                    native thread 실패\n순서                       코어 → 큐 → 최대\n무한 큐면                  최대가 무의미\nexecute                    예외가 보임\nsubmit                     조용함\n지표                       활성 · 큐 · 완료",
+   "note": "**`newFixedThreadPool` 은 무한 큐라 큐가 184만까지 쌓이다 `OutOfMemoryError`** 다.\n\n**`newCachedThreadPool` 은 최대 스레드가 21억이라 3841개에서 생성이** 실패한다.\n\n**스레드가 느는 순서가 코어 → 큐 → 최대라 큐가 무한이면 최대 설정이** 무의미하다.\n\n**최대 100 으로 줘도 실제 스레드는 2개에서 안** 는다.\n\n**활성·큐·완료 지표를 찍으면 큐가 계속 가득 찬 게** 보인다."
+  }
+ ],
+ "recap": [
+  "풀에서 실제로 정하는 것은 스레드 수, 큐, 가득 찼을 때의 정책 셋이다.",
+  "편의 메서드는 무한 큐나 무한 스레드를 골라 준다.",
+  "스레드는 코어까지 늘고 그다음은 큐에 쌓이며 큐가 차야 최대까지 는다.",
+  "그래서 큐가 무한이면 최대 스레드 설정이 아무 의미가 없다.",
+  "활성 수와 큐 길이를 찍으면 처리량이 모자란지 바로 보인다."
+ ],
+ "drills": [
+  {
+   "task": "세 부분을 직접 지정해 풀을 만든다.",
+   "done_when": "스레드 이름이 나오는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "편의 메서드로 부하를 넣어 터뜨린다.",
+   "done_when": "두 가지 실패를 다 본다.",
+   "minutes": 20
+  },
+  {
+   "task": "제출을 늘려 가며 스레드와 큐 변화를 찍는다.",
+   "done_when": "순서를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "무한 큐에 최대 스레드를 크게 줘 본다.",
+   "done_when": "안 느는 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "풀에서 정하는 세 가지는.",
+   "a": "스레드 수, 큐, 거부 정책이다."
+  },
+  {
+   "q": "스레드가 느는 순서는.",
+   "a": "코어까지 만들고, 큐에 쌓고, 큐가 차면 최대까지 만든다."
+  },
+  {
+   "q": "무한 큐의 문제는.",
+   "a": "메모리가 터지고 최대 스레드 설정이 무의미해진다."
+  },
+  {
+   "q": "편의 메서드의 위험은.",
+   "a": "무한 큐 또는 무한 스레드를 고른다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "코어 스레드",
+   "what": "놀아도 유지하는 기본 스레드 수."
+  },
+  {
+   "term": "거부 정책",
+   "what": "스레드와 큐가 모두 찼을 때의 행동."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Executors",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

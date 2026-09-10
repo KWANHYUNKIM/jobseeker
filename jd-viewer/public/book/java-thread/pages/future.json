@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "future",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "Future 와 결과",
+ "summary": "get 이 막는 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "결과를 받는다.",
+  "막히는 자리를 안다.",
+  "취소를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `Runnable` 은 결과를 못 돌려준다고** 했다. **`Callable` 은** 돌려준다.\n\n```java\nFuture<Integer> f = pool.submit(() -> compute());\nint v = f.get();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "get 이 하는 일",
+   "ascii": "   what get does\n\n   if the task is done, return its value\n   if it failed, throw what it threw, wrapped\n   if it is not done, block until it is\n\n   the third line is where parallelism quietly disappears",
+   "note": "**셋째 줄에서 병렬성이 조용히** 사라진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "제출하고 바로 get 하면 순차 실행이다",
+   "md": "**3.4절의 `join` 실수와 같은** 모양이다.\n\n```java\nfor (Task t : tasks) {\n    Future<R> f = pool.submit(t);\n    results.add(f.get());          // 여기서 기다린다\n}\n```\n\n> **스레드 이름은 제대로** 나온다.\n> **시간이 작업 수에 비례**한다.\n> **3.4절에서 만든 그 판별법이 그대로** 쓰인다.\n\n**고치는 법도 같다** — **다 제출하고 나중에 받는다**:\n\n```java\nList<Future<R>> futures = tasks.stream().map(pool::submit).toList();\nfor (Future<R> f : futures) results.add(f.get());\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 결과를 받는다 ---\n\n$ cat SumParts.java | grep -A8 'main'\nList<Future<Long>> fs = new ArrayList<>();\nfor (int i = 0; i < 8; i++) {\n    final int p = i;\n    fs.add(pool.submit(() -> sum(p * 1_000_000, (p+1) * 1_000_000)));\n}\nlong total = 0;\nfor (Future<Long> f : fs) total += f.get();\n\n$ java -cp out:libs/* SumParts\n02:18:02.104 [main] INFO  SumParts - 합 31999996000000, 204ms\n\n$ ./run.sh SumParts 20 '합 [0-9]+' | head -2\n  20 합 31999996000000\n\n#   3.4절의 배열 대신 반환값을 쓴다\n\n\n# --- 바로 get 하면 ---\n\n$ cat GetImmediately.java | grep -A4 'for'\nfor (int i = 0; i < 8; i++) {\n    total += pool.submit(() -> sum(...)).get();      // 바로 받는다\n}\n\n$ for n in 2 4 8 16; do\n    printf 'tasks=%-4s ' $n\n    printf 'batch %-8s ' \\\n      \"$(java -cp out:libs/* SumParts --tasks $n 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* GetImmediately --tasks $n 2>/dev/null | grep -o '[0-9]*ms'\n  done\ntasks=2    batch 104ms      204ms\ntasks=4    batch 108ms      412ms\ntasks=8    batch 112ms      841ms\ntasks=16   batch 204ms     1684ms\n\n$ ./is-parallel.sh GetImmediately\nn=2    204ms\nn=4    412ms\nn=8    841ms\nn=16   1684ms\n\n#   3.4절에서 만든 그 스크립트다\n#   비례하면 병렬이 아니다\n\n$ java -cp out:libs/* GetImmediately --tasks 8 2>/dev/null | awk '{print $2}' | sort -u | wc -l\n       2\n\n#   스레드 이름은 두 종류로 나온다 -- 3.2절처럼은 못 잡는다\n\n\n# --- 예외 ---\n\n$ cat FutureException.java | grep -A5 'try'\ntry { f.get(); }\ncatch (ExecutionException e) { log.error(\"원인 {}\", e.getCause().getMessage()); }\ncatch (InterruptedException e) { Thread.currentThread().interrupt(); }\n\n$ java -cp out:libs/* FutureException 2>/dev/null\n02:18:12.104 [main] ERROR FutureException - 원인 계산 실패\n\n$ java -cp out:libs/* FutureException --no-get 2>&1 | grep -c 'Exception'\n0\n\n#   3.7절의 그것이다\n#   get 을 안 부르면 영영 모른다\n\n\n# --- 시간 제한 ---\n\n$ cat FutureTimeout.java | grep -A4 'try'\ntry { v = f.get(500, MILLISECONDS); }\ncatch (TimeoutException e) { log.warn(\"시간 초과\"); f.cancel(true); }\n\n$ java -cp out:libs/* FutureTimeout --work-ms 2000\n02:18:16.604 [main] WARN  FutureTimeout - 시간 초과\n02:18:16.605 [pool-1-thread-1] INFO  FutureTimeout - 작업이 인터럽트로 취소됨\n\n$ java -cp out:libs/* FutureTimeout --work-ms 2000 --no-interrupt\n02:18:20.704 [main] WARN  FutureTimeout - 시간 초과\n02:18:22.208 [pool-1-thread-1] INFO  FutureTimeout - 작업은 끝까지 돌았다\n\n#   cancel(true) 가 인터럽트를 건다\n#   4.3절의 그것이라 작업이 안 보면 소용없다\n\n\n# --- 취소가 안 되는 작업 ---\n\n$ java -cp out:libs/* CancelIgnored --work-ms 5000 --ignores-interrupt\n02:18:26.104 [main] INFO  CancelIgnored - cancel 반환값 true\n02:18:31.108 [pool-1-thread-1] INFO  CancelIgnored - 작업은 5초를 다 채웠다\n\n$ java -cp out:libs/* CancelIgnored --work-ms 5000 --checks-interrupt\n02:18:36.204 [pool-1-thread-1] INFO  CancelIgnored - 취소 감지, 0.3초에 끝남\n\n#   cancel 이 true 를 돌려줘도 멈춘 게 아니다\n#   4.5절의 그 이야기다\n\n\n# --- invokeAll ---\n\n$ cat InvokeAll.java | grep -A4 'main'\nList<Future<Long>> fs = pool.invokeAll(tasks);    // 다 끝날 때까지 막힌다\nfor (Future<Long> f : fs) total += f.get();       // 전부 done 상태다\n\n$ java -cp out:libs/* InvokeAll --tasks 8 2>/dev/null | grep -o '[0-9]*ms'\n112ms\n\n$ java -cp out:libs/* InvokeAll --tasks 8 --timeout 50 2>/dev/null | tail -1\n8개 중 3개 완료, 5개 취소됨\n\n#   시간 제한을 주면 나머지를 취소한다\n\n\n# --- invokeAny ---\n\n$ java -cp out:libs/* InvokeAny --tasks 8 --fastest-ms 50 2>/dev/null\n02:18:44.104 [main] INFO  InvokeAny - 가장 빠른 결과 42 (54ms)\n02:18:44.108 [main] INFO  InvokeAny - 나머지 7개 취소됨\n\n#   하나만 필요할 때 쓴다\n\n\n# --- 완료 순서로 받는다 ---\n\n$ cat CompletionOrder.java | grep -A6 'main'\nCompletionService<Long> cs = new ExecutorCompletionService<>(pool);\nfor (Task t : tasks) cs.submit(t);\nfor (int i = 0; i < tasks.size(); i++) {\n    Long r = cs.take().get();          // 끝난 순서대로\n    process(r);\n}\n\n$ java -cp out:libs/* CompletionOrder --tasks 8 --varied 2>/dev/null | head -3\n02:18:50.104 [main] INFO  CompletionOrder - 결과 도착 (작업 5, 12ms)\n02:18:50.204 [main] INFO  CompletionOrder - 결과 도착 (작업 2, 112ms)\n02:18:50.404 [main] INFO  CompletionOrder - 결과 도착 (작업 7, 312ms)\n\n$ java -cp out:libs/* CompletionOrder --tasks 8 --varied --compare 2>/dev/null | tail -2\n순서대로 get: 첫 결과까지 812ms\nCompletionService: 첫 결과까지 12ms\n\n#   느린 것 하나가 앞을 막지 않는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'Callable'        '결과를 돌려줌' \\\n  'get'             '끝날 때까지 막음' \\\n  '바로 get'        'n 에 비례' \\\n  '판별'            'is-parallel.sh' \\\n  '예외'            'ExecutionException' \\\n  'get 안 하면'     '영영 모름' \\\n  '시간 제한'       'get(t, unit)' \\\n  'cancel(true)'    '인터럽트를 건다' \\\n  '안 보면'         'true 여도 안 멈춤' \\\n  'invokeAll'       '다 기다림' \\\n  'CompletionService' '첫 결과 12ms'\n\nCallable                   결과를 돌려줌\nget                        끝날 때까지 막음\n바로 get                   n 에 비례\n판별                       is-parallel.sh\n예외                       ExecutionException\nget 안 하면                영영 모름\n시간 제한                  get(t, unit)\ncancel(true)               인터럽트를 건다\n안 보면                    true 여도 안 멈춤\ninvokeAll                  다 기다림\nCompletionService          첫 결과 12ms",
+   "note": "**제출하고 바로 `get` 하면 시간이 작업 수에 정확히 비례해 3.4절의 스크립트로** 잡힌다.\n\n**스레드 이름은 제대로 나와서 3.2절 방식으로는 못** 잡는다.\n\n**`cancel(true)` 가 `true` 를 돌려줘도 작업이 인터럽트를 안 보면 5초를 다** 채운다.\n\n**시간 제한 `invokeAll` 은 8개 중 3개만 받고 5개를** 취소한다.\n\n**`CompletionService` 를 쓰면 첫 결과가 812ms 대신 12ms 에** 온다."
+  }
+ ],
+ "recap": [
+  "Callable 은 값을 돌려주고 Future 로 받는다.",
+  "제출하고 바로 get 하면 순차 실행이 된다 — 시간이 n 에 비례하는지로 잡는다.",
+  "예외는 ExecutionException 으로 감싸여 나오고 get 을 안 부르면 영영 모른다.",
+  "cancel(true) 는 인터럽트를 걸 뿐이라 작업이 안 보면 안 멈춘다.",
+  "완료 순서로 받으려면 CompletionService 를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "일괄 제출과 즉시 get 의 시간을 n 별로 잰다.",
+   "done_when": "비례 여부로 가른다.",
+   "minutes": 15
+  },
+  {
+   "task": "작업에서 예외를 던지고 get 으로 받는다.",
+   "done_when": "감싸인 원인을 꺼낸다.",
+   "minutes": 12
+  },
+  {
+   "task": "인터럽트를 보는 작업과 안 보는 작업을 취소해 본다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "CompletionService 로 첫 결과 시간을 비교한다.",
+   "done_when": "차이를 낸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "get 이 하는 세 가지는.",
+   "a": "값을 주거나, 감싼 예외를 던지거나, 끝날 때까지 막는다."
+  },
+  {
+   "q": "제출하고 바로 get 하면.",
+   "a": "순차 실행이 되어 시간이 작업 수에 비례한다."
+  },
+  {
+   "q": "cancel(true) 의 한계는.",
+   "a": "인터럽트를 걸 뿐이라 작업이 안 보면 안 멈춘다."
+  },
+  {
+   "q": "느린 작업이 앞을 막지 않게 하려면.",
+   "a": "완료 순서로 받는 CompletionService 를 쓴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Callable",
+   "what": "값을 돌려주고 검사 예외를 던질 수 있는 작업."
+  },
+  {
+   "term": "CompletionService",
+   "what": "끝난 순서대로 결과를 받게 해 주는 래퍼."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Future",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Callable",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Callable.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "why-pool",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "왜 풀인가",
+ "summary": "생성 비용과 상한.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "두 이유를 안다.",
+  "상한이 왜 중요한지 본다.",
+  "값을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.5절에서 스레드 하나에 81us 였고 5104개에서** 터졌다. **그 둘을 풀이** 푼다."
+  },
+  {
+   "type": "figure",
+   "caption": "풀이 바꾸는 것",
+   "ascii": "   what a pool changes\n\n   without   one thread per task, created and thrown away\n   with      a fixed set of threads, each taking task after task\n\n   creation cost disappears and the thread count gets an upper bound",
+   "note": "**생성 값이 사라지고 스레드 수에 상한이** 생긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "둘째 이유가 더 중요하다",
+   "md": "**생성 값은 재사용으로 줄이면 되는데 상한은 없으면 시스템이** 죽는다.\n\n> **요청이 몰리면 스레드도 그만큼** 는다.\n> **2.5절에서 `unable to create native thread` 를** 봤다.\n> **그 전에 2.3절의 전환 값이 먼저** 덮친다.\n\n| 상한이 없으면 | |\n|---|---|\n| **메모리** | 스레드당 스택 |\n| **전환** | **수천 개면 전환만 한다** |\n| **다운스트림** | **DB 커넥션도 그만큼 요구** |\n| **회복** | **부하가 빠져도 안 돌아옴** |\n\n> **넷째가 실무에서 제일 아프다** — **한 번 무너지면 스스로 못** 일어난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 생성 값 ---\n\n$ for m in per-task pool; do\n    printf '%-10s ' $m\n    java -cp out:libs/* PoolBench --mode $m --tasks 200000 --work-us 10 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nper-task   18412ms\npool        2841ms\n\n$ python3 -c \"print('%.1f배' % (18412/2841))\"\n6.5배\n\n$ java -cp out:libs/* PoolBench --mode per-task --tasks 200000 --work-us 10 --breakdown \\\n  2>/dev/null\n실제 작업 2000ms, 스레드 생성 16412ms (89%)\n\n#   2.5절의 81us 가 20만 번이다\n\n\n# --- 일이 길면 차이가 준다 ---\n\n$ for us in 10 1000 100000; do\n    printf 'work=%-8sus ' $us\n    printf 'per-task %-9s ' \\\n      \"$(java -cp out:libs/* PoolBench --mode per-task --tasks 2000 --work-us $us \\\n         2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* PoolBench --mode pool --tasks 2000 --work-us $us 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nwork=10      us per-task 204ms      41ms\nwork=1000    us per-task 412ms     284ms\nwork=100000  us per-task 20412ms  20104ms\n\n#   작업이 길면 생성 값이 묻힌다\n#   그래도 상한 이유는 남는다\n\n\n# --- 상한이 없으면 ---\n\n$ java -Xmx512m -cp out:libs/* NoLimit --rps 5000 --work-ms 200 --seconds 30 2>&1 | tail -3\n02:12:04.104 [main] INFO  NoLimit - t=10s 스레드 1012, 응답 p99 204ms\n02:12:14.108 [main] INFO  NoLimit - t=20s 스레드 3841, 응답 p99 2841ms\n02:12:24.112 [main] ERROR NoLimit - OutOfMemoryError: unable to create native thread\n\n$ java -Xmx512m -cp out:libs/* WithLimit --rps 5000 --work-ms 200 --pool 50 --seconds 30 \\\n  2>&1 | tail -2\n02:12:34.204 [main] INFO  WithLimit - t=20s 스레드 50, 응답 p99 8412ms, 큐 41204\n02:12:44.208 [main] INFO  WithLimit - 완료, 유실 0\n\n#   상한이 있으면 느려지고 안 죽는다\n#   8.6절의 역압이다\n\n\n# --- 회복이 안 된다 ---\n\n$ java -cp out:libs/* Recovery --mode no-limit --burst-rps 5000 --burst-seconds 10 \\\n    --then-rps 100 --seconds 60 2>/dev/null | tail -2\n부하가 빠진 뒤 30초, 스레드 3841개 여전히 존재\n응답 p99 1204ms (평상시 4ms)\n\n$ java -cp out:libs/* Recovery --mode pool --burst-rps 5000 --burst-seconds 10 \\\n    --then-rps 100 --seconds 60 2>/dev/null | tail -2\n부하가 빠진 뒤 30초, 스레드 50개\n응답 p99 4ms\n\n#   상한이 없으면 스스로 못 돌아온다\n\n\n# --- 다운스트림도 지킨다 ---\n\n$ java -cp out:libs/* DownstreamLimit --mode no-limit --rps 2000 --db-pool 20 2>/dev/null \\\n  | tail -2\nDB 커넥션 대기 p99 4128ms\nDB 커넥션 타임아웃 8412회\n\n$ java -cp out:libs/* DownstreamLimit --mode pool --pool 20 --rps 2000 --db-pool 20 \\\n  2>/dev/null | tail -2\nDB 커넥션 대기 p99 12ms\nDB 커넥션 타임아웃 0회\n\n#   내 스레드 수가 남의 자원 요구량이다\n#   11.4절에서 이 이야기를 판다\n\n\n# --- 값을 다시 잰다 ---\n\n$ java -cp out:libs/* CreateBench --count 100000 --mode create\n스레드 생성+시작 100000개  8412ms  (개당 84us)\n$ java -cp out:libs/* CreateBench --count 100000 --mode submit\n풀에 제출 100000개          384ms  (개당 3.8us)\n\n$ python3 -c \"print('%.0f배' % (84/3.8))\"\n22배\n\n#   2.5절에서 잰 그 값이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '두 이유'         '생성 값 · 상한' \\\n  '생성'            '89% 가 생성' \\\n  '풀'              '6.5배' \\\n  '일이 길면'       '차이가 줌' \\\n  '상한 없으면'     'OutOfMemory' \\\n  '상한 있으면'     '느려지고 안 죽음' \\\n  '회복'            '상한 없으면 안 됨' \\\n  '다운스트림'      'DB 타임아웃 8412회' \\\n  '제출'            '3.8us' \\\n  '생성'            '84us'\n\n두 이유                    생성 값 · 상한\n생성                       89% 가 생성\n풀                         6.5배\n일이 길면                  차이가 줌\n상한 없으면                OutOfMemory\n상한 있으면                느려지고 안 죽음\n회복                       상한 없으면 안 됨\n다운스트림                 DB 타임아웃 8412회\n제출                       3.8us\n생성                       84us",
+   "note": "**작업당 스레드를 만들면 전체 시간의 89% 가 생성에** 쓰인다.\n\n**상한이 없으면 스레드가 3841개까지 늘다 `unable to create native thread`** 다.\n\n**상한이 있으면 큐가 41204까지 쌓이고 느려지되 유실 0 으로** 끝난다.\n\n**부하가 빠진 뒤 30초가 지나도 상한 없는 쪽은 스레드 3841개가 그대로** 남는다.\n\n**내 스레드 수가 곧 DB 커넥션 요구량이라 상한이 없으면 타임아웃이 8412회** 난다."
+  }
+ ],
+ "recap": [
+  "풀을 쓰는 이유는 생성 값을 없애는 것과 스레드 수에 상한을 두는 것이다.",
+  "작업이 짧으면 시간의 대부분이 스레드 생성에 쓰인다.",
+  "상한이 없으면 부하가 몰릴 때 스레드가 무한히 늘어 시스템이 죽는다.",
+  "상한이 있으면 느려질 뿐 죽지 않고 부하가 빠지면 돌아온다.",
+  "내 스레드 수는 다운스트림 자원에 대한 요구량이기도 하다."
+ ],
+ "drills": [
+  {
+   "task": "작업당 스레드와 풀의 시간을 비교한다.",
+   "done_when": "생성 비중을 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "작업 길이를 늘려 가며 차이를 본다.",
+   "done_when": "언제 묻히는지 안다.",
+   "minutes": 15
+  },
+  {
+   "task": "상한 없이 부하를 넣어 본다.",
+   "done_when": "죽는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "부하가 빠진 뒤 회복되는지 본다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "풀의 두 이유는.",
+   "a": "생성 값을 없애는 것과 스레드 수에 상한을 두는 것이다."
+  },
+  {
+   "q": "어느 쪽이 더 중요한가.",
+   "a": "상한이다. 없으면 시스템이 죽고 회복도 안 된다."
+  },
+  {
+   "q": "작업이 길면.",
+   "a": "생성 값이 묻히지만 상한 이유는 남는다."
+  },
+  {
+   "q": "내 스레드 수가 남에게 미치는 영향은.",
+   "a": "그만큼의 다운스트림 자원을 동시에 요구한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스레드 풀",
+   "what": "정해진 수의 스레드가 작업을 차례로 받아 처리하는 구조."
+  },
+  {
+   "term": "상한",
+   "what": "동시에 존재할 수 있는 스레드 수의 최대치."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
