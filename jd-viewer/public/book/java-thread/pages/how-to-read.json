@@ -1,0 +1,183 @@
+{
+ "book": "java-thread",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 찍힌 스레드 이름과 실행 순서로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이 책의 끝나는 방식을 안다.",
+  "왜 여러 번 돌리는지 안다.",
+  "무엇을 기대하지 말아야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**서가의 다른 책들은 한 번 돌려서 답을** 봤다. **여기서는 열 번 돌려 열 가지를** 본다.\n\n```\n[main] 시작\n[Thread-0] 작업\n[Thread-1] 작업     <- 순서가 매번 다르다\n[main] 끝\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 모양",
+   "ascii": "   what every section ends with\n\n   a log line that carries the thread name in front\n   the same program run several times, side by side\n\n   if the runs are identical, the section has not shown anything yet",
+   "note": "**여러 번 돌린 결과가 다 같으면 그 절은 아직 아무것도 안** 보여 준 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 번 돌아간 것은 증거가 아니다",
+   "md": "**동시성 버그는 대부분 대체로** 동작한다.\n\n> **테스트를 한 번 돌려 통과했다는 건 이번에 운이 좋았다는** 뜻이다.\n> **그래서 이 책은 같은 코드를 열 번, 백 번, 만 번 돌린 결과를 같이** 싣는다.\n> **그중 몇 번이 어긋났는지가 그 절의** 결론이다.\n\n| 이 책에서 세는 것 | |\n|---|---|\n| **몇 번 중 몇 번 틀렸나** | 재현율 |\n| **스레드 이름 순서** | 실행 순서 |\n| **최종 값과 기대값의 차** | 얼마나 잃었나 |\n| **걸린 시간** | 고치는 값 |"
+  },
+  {
+   "type": "figure",
+   "caption": "스레드가 둘이 되면 무너지는 둘",
+   "ascii": "   the two things that break when a second thread appears\n\n   order        what runs before what is no longer written down\n   visibility   a value you just wrote may not be the value read\n\n   most people know the first one and get bitten by the second",
+   "note": "**앞의 것은 대개 알고 있고 뒤의 것은 겪어야** 안다."
+  },
+  {
+   "type": "table",
+   "caption": "이 책의 구성",
+   "columns": [
+    "장",
+    "무엇을",
+    "눈으로 보는 것"
+   ],
+   "rows": [
+    [
+     "**1~2**",
+     "**스레드가 무엇인가**",
+     "이름과 개수"
+    ],
+    [
+     "3~4",
+     "만들고 제어하기",
+     "**상태 전이**"
+    ],
+    [
+     "**5**",
+     "**가시성**",
+     "**안 끝나는 반복문**"
+    ],
+    [
+     "**6~7**",
+     "**동기화**",
+     "**맞아지는 잔고**"
+    ],
+    [
+     "8",
+     "생산자 소비자",
+     "큐의 길이"
+    ],
+    [
+     "**9**",
+     "**CAS**",
+     "**락 없이 맞는 값**"
+    ],
+    [
+     "10",
+     "동시성 컬렉션",
+     "깨지는 맵"
+    ],
+    [
+     "**11**",
+     "**스레드 풀**",
+     "**풀 크기와 처리량**"
+    ],
+    [
+     "12",
+     "실무로",
+     "**스프링의 그 스레드**"
+    ]
+   ],
+   "note": "**5장과 6장이 나머지 전부의** 기초다 — **5장을 건너뛰면 9장이 왜 필요한지 안** 보인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "책과 다른 결과가 나오는 게 정상이다",
+   "md": "**출력은 기계마다, 실행마다** 다르다.\n\n| 다르게 만드는 것 | |\n|---|---|\n| **코어 수** | 진짜 동시인지 번갈아인지 |\n| **JIT 컴파일 시점** | **초반 몇 번은 느리다** |\n| **OS 스케줄러** | 어느 스레드를 먼저 깨우나 |\n| **JVM 버전** | 최적화가 다르다 |\n\n> **그래서 이 책의 숫자는 절대값이 아니라 방향과** 배수다.\n> **\"10번 중 3번 틀렸다\" 가 \"10번 중 0번\" 이 되는 것이** 결론이다.\n\n**반대로 절대 안 바뀌는 것도** 있다 — **틀릴 수 있는 코드는 언젠가 틀린다는** 것이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "$ java --version\nopenjdk 21.0.4 2024-07-16 LTS\nOpenJDK 64-Bit Server VM (build 21.0.4+8-LTS-274, mixed mode, sharing)\n\n$ cat src/main/resources/logback.xml | grep pattern\n  <pattern>%d{HH:mm:ss.SSS} [%-12thread] %-5level %logger{0} - %msg%n</pattern>\n\n#   스레드 이름이 로그 앞에 온다\n#   이 책의 거의 모든 출력이 이 모양이다\n\n\n# --- 이 책이 보여 주려는 것 ---\n\n$ cat HelloThread.java\npublic class HelloThread {\n    public static void main(String[] args) {\n        log.info(\"시작\");\n        new Thread(() -> log.info(\"작업 A\")).start();\n        new Thread(() -> log.info(\"작업 B\")).start();\n        log.info(\"끝\");\n    }\n}\n\n$ java HelloThread\n23:41:02.104 [main        ] INFO  HelloThread - 시작\n23:41:02.108 [main        ] INFO  HelloThread - 끝\n23:41:02.108 [Thread-0    ] INFO  HelloThread - 작업 A\n23:41:02.108 [Thread-1    ] INFO  HelloThread - 작업 B\n\n#   \"끝\" 이 작업보다 먼저 찍혔다\n\n\n# --- 열 번 돌린다 ---\n\n$ for i in $(seq 1 10); do\n    java HelloThread 2>/dev/null | awk '{printf \"%s \", $NF}'\n    echo\n  done\n\n시작 끝 A B \n시작 끝 A B \n시작 A 끝 B \n시작 끝 B A \n시작 끝 A B \n시작 A B 끝 \n시작 끝 A B \n시작 끝 B A \n시작 A 끝 B \n시작 끝 A B \n\n$ for i in $(seq 1 10); do java HelloThread 2>/dev/null | awk '{printf \"%s\", $NF}'; echo; done \\\n  | sort | uniq -c | sort -rn\n   5 시작끝AB\n   2 시작A끝B\n   2 시작끝BA\n   1 시작AB끝\n\n#   열 번에 네 가지가 나왔다\n#   이 표가 이 책의 기본 단위다\n\n\n# --- 한 번만 돌리면 안 보이는 것 ---\n\n$ cat Counter.java\npublic class Counter {\n    static int count = 0;\n    public static void main(String[] args) throws Exception {\n        Thread a = new Thread(() -> { for (int i = 0; i < 100000; i++) count++; });\n        Thread b = new Thread(() -> { for (int i = 0; i < 100000; i++) count++; });\n        a.start(); b.start(); a.join(); b.join();\n        log.info(\"count = {}\", count);\n    }\n}\n\n$ java Counter\n23:41:14.204 [main        ] INFO  Counter - count = 200000\n\n#   맞았다. 여기서 멈추면 이 코드는 옳아 보인다\n\n$ for i in $(seq 1 10); do java Counter 2>/dev/null | grep -o 'count = [0-9]*'; done\ncount = 200000\ncount = 138204\ncount = 200000\ncount = 172041\ncount = 200000\ncount = 200000\ncount = 145820\ncount = 200000\ncount = 191204\ncount = 200000\n\n$ for i in $(seq 1 10); do java Counter 2>/dev/null | grep -o '[0-9]*$'; done \\\n  | awk '$1==200000 {ok++} END {print \"맞은 횟수\", ok\"/10\"}'\n맞은 횟수 6/10\n\n#   10번 중 4번 틀렸다\n#   6.1절에서 이 코드를 고친다\n\n\n# --- 더 돌리면 더 드러난다 ---\n\n$ for i in $(seq 1 100); do java Counter 2>/dev/null | grep -o '[0-9]*$'; done \\\n  | awk '$1==200000 {ok++} END {printf \"맞은 횟수 %d/100 (%.0f%%)\\n\", ok, ok}'\n맞은 횟수 58/100 (58%)\n\n$ for i in $(seq 1 100); do java Counter 2>/dev/null | grep -o '[0-9]*$'; done \\\n  | sort -n | head -1\n112408\n\n$ python3 -c \"print('최악의 경우 %.0f%% 를 잃었다' % ((200000-112408)/200000*100))\"\n최악의 경우 44% 를 잃었다\n\n\n# --- 기계마다 다르다 ---\n\n$ nproc\n10\n$ sysctl -n hw.memsize | awk '{print $1/1024/1024/1024\" GB\"}'\n16 GB\n\n$ taskset -c 0 bash -c 'for i in $(seq 1 10); do java Counter 2>/dev/null | grep -o \"[0-9]*$\"; done' \\\n  | awk '$1==200000 {ok++} END {print \"코어 1개로 고정:\", ok\"/10\"}'\n코어 1개로 고정: 10/10\n\n#   코어를 하나로 묶으니 열 번 다 맞았다\n#   버그가 없어진 게 아니라 안 드러났을 뿐이다\n#   2.4절에서 이 이야기를 한다\n\n\n# --- 이 책에서 세는 것들 ---\n\n$ printf '%-24s %s\\n' \\\n  '재현율'        '100번 중 42번' \\\n  '실행 순서'     '네 가지 패턴' \\\n  '잃은 양'       '최대 44%' \\\n  '고친 뒤'       '100/100' \\\n  '고치는 값'     '느려진 배수'\n\n재현율                   100번 중 42번\n실행 순서                네 가지 패턴\n잃은 양                  최대 44%\n고친 뒤                  100/100\n고치는 값                느려진 배수\n\n\n# --- 앞으로 계속 쓸 도구 ---\n\n$ cat run.sh\n#!/bin/sh\n# 같은 프로그램을 N번 돌려 결과 분포를 낸다\nN=${2:-10}\nfor i in $(seq 1 $N); do java \"$1\" 2>/dev/null | tail -1; done \\\n  | sort | uniq -c | sort -rn\n\n$ ./run.sh Counter 20\n  11 count = 200000\n   1 count = 194820\n   1 count = 188104\n   1 count = 182041\n   ...\n\n#   이 스크립트가 이 책의 실습 도구다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '매 절의 끝'      '스레드 이름과 순서' \\\n  '한 번 돌리기'    '증거가 아님' \\\n  '기본 단위'       '여러 번 돌린 분포' \\\n  '무너지는 둘'     '순서와 가시성' \\\n  '이 예제'         '10번 중 4번 틀림' \\\n  '100번이면'       '42번 틀림' \\\n  '최악'            '44% 유실' \\\n  '코어 1개'        '10/10 (안 드러남)' \\\n  '결과가 다름'     '정상' \\\n  '고칠 자리'       '6.1절'\n\n매 절의 끝                 스레드 이름과 순서\n한 번 돌리기               증거가 아님\n기본 단위                  여러 번 돌린 분포\n무너지는 둘                순서와 가시성\n이 예제                    10번 중 4번 틀림\n100번이면                  42번 틀림\n최악                       44% 유실\n코어 1개                   10/10 (안 드러남)\n결과가 다름                정상\n고칠 자리                  6.1절",
+   "note": "**같은 프로그램을 열 번 돌리니 실행 순서가 네 가지로** 나온다.\n\n**카운터 예제는 한 번 돌리면 200000 으로 맞고 열 번 돌리면 4번** 틀린다.\n\n**100번으로 늘리면 42번 틀리고 최악의 경우 44% 를** 잃는다.\n\n**코어를 하나로 묶으면 10번 다 맞아 버그가 안 드러날 뿐임이** 드러난다.\n\n**여러 번 돌려 분포를 내는 `run.sh` 가 이 책 내내 쓰는 도구**다."
+  }
+ ],
+ "recap": [
+  "매 절은 스레드 이름이 앞에 붙은 로그와 여러 번 돌린 결과로 끝난다.",
+  "동시성 버그는 대체로 동작한다 — 한 번 돌려 통과한 것은 증거가 아니다.",
+  "스레드가 둘이 되면 순서와 가시성 둘이 무너진다.",
+  "책과 결과가 다른 것이 정상이다. 절대값이 아니라 재현율과 배수를 본다.",
+  "코어를 하나로 묶으면 버그가 안 드러난다 — 없어진 게 아니다."
+ ],
+ "drills": [
+  {
+   "task": "로그 패턴에 스레드 이름을 넣고 스레드 둘을 띄워 본다.",
+   "done_when": "실행마다 순서가 다른 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "카운터 예제를 100번 돌려 맞은 횟수를 센다.",
+   "done_when": "재현율을 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "코어를 하나로 묶고 같은 실험을 한다.",
+   "done_when": "결과가 달라지는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "여러 번 돌려 분포를 내는 스크립트를 만든다.",
+   "done_when": "이 책 내내 쓸 수 있게 해 둔다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 같은 코드를 여러 번 돌리나.",
+   "a": "동시성 버그는 대체로 동작해서 한 번으로는 안 드러나기 때문이다."
+  },
+  {
+   "q": "스레드가 둘이 되면 무너지는 둘은.",
+   "a": "실행 순서와 메모리 가시성이다."
+  },
+  {
+   "q": "책과 결과가 다르면.",
+   "a": "정상이다. 코어 수·JIT·스케줄러가 다르기 때문이다."
+  },
+  {
+   "q": "코어를 하나로 묶어 통과하면.",
+   "a": "버그가 없어진 게 아니라 안 드러난 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "재현율",
+   "what": "같은 코드를 여러 번 돌렸을 때 문제가 실제로 나는 비율."
+  },
+  {
+   "term": "스레드 이름",
+   "what": "로그 앞에 붙여 어느 스레드가 찍었는지 알려 주는 값."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Logback — Layouts",
+   "url": "https://logback.qos.ch/manual/layouts.html",
+   "publisher": "QOS.ch"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

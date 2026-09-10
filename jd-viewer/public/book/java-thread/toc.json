@@ -1,0 +1,696 @@
+{
+  "id": "java-thread",
+  "title": "실전 자바 — 멀티스레드와 동시성",
+  "subtitle": "같은 코드, 매번 다른 결과",
+  "blurb": "서가의 다른 책들은 코드를 한 번 돌리면 답이 하나였다. 이 책은 같은 코드를 열 번 돌려 열 가지 결과를 본다 — 스레드가 둘이 되는 순간 순서는 약속이 아니고, 본 값은 지금 값이 아니다. 매 절은 실제로 찍힌 스레드 이름과 실행 순서로 끝난다.",
+  "updated_at": "2026-09-10",
+  "preface": "「스프링 MVC 1편」에서 톰캣이 요청 하나에 스레드 하나를 붙인다고 했다. 「스프링 핵심 원리 - 고급편」 3장에서는 그래서 필드에 상태를 두면 안 된다고 했고, 쓰레드 로컬로 넘겼다.\n\n그때 넘긴 것을 여기서 연다.\n\n스레드가 하나면 프로그램은 적힌 순서대로 돈다. 둘이 되는 순간 두 가지가 무너진다. 순서가 약속이 아니게 되고, 내가 방금 쓴 값을 남이 못 볼 수 있다. 앞의 것은 대개 알고 있고 뒤의 것은 겪어야 안다.\n\n이 책은 그 둘을 눈으로 본다. 잔고가 맞지 않는 것을 만들고, 끝나야 할 반복문이 안 끝나는 것을 만들고, 고친 뒤에 다시 열 번 돌린다.\n\n매 절은 실제로 찍힌 로그로 끝난다. 앞에 스레드 이름이 붙어 있고, 같은 코드를 여러 번 돌린 결과가 같이 실려 있다. 한 번 돌아간 것은 증거가 아니다.",
+  "how_to_read": "차례 순서대로 읽는다. 5장(가시성)과 6장(synchronized)이 나머지 전부의 기초다 — 5장을 건너뛰면 9장의 CAS 가 왜 필요한지 안 보인다. 실행 결과가 책과 다르게 나오는 것이 정상이다. 그게 이 책의 주제다. 「스프링 핵심 원리 - 고급편」 3장을 읽었으면 12.2절이 바로 이어지고, 「스프링 MVC 1편」을 읽었으면 12.3절이 편하다.",
+  "prereq": "자바 문법과 클래스·인터페이스·람다. 컬렉션을 써 본 경험. 스프링은 12장에서만 나온다.",
+  "env": "Java 21 (가상 스레드는 12.4절), JMH 는 안 쓰고 직접 잰다, 로그는 SLF4J + Logback 에 %thread 패턴",
+  "rule": "매 절은 실제로 찍힌 스레드 이름과 실행 순서로 끝난다. 같은 코드를 여러 번 돌린 결과를 같이 싣는다.",
+  "source": {
+    "title": "김영한의 실전 자바 - 고급편 1 (차례 출처)",
+    "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급편1",
+    "publisher": "인프런 · 김영한",
+    "note": "열두 섹션의 뼈대를 빌려 열두 장으로 묶었고, 10장(동시성 컬렉션)과 12장(실무로)은 자바 공식 문서와 스프링 레퍼런스로 늘렸다. 본문·예제·출력은 직접 쓰고 직접 돌린 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "스레드 하나가 늘면 무엇이 달라지나.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 찍힌 스레드 이름과 실행 순서로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-concurrency",
+          "title": "왜 동시성인가",
+          "summary": "기다리는 시간과 노는 코어.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "env",
+          "title": "실습 환경",
+          "summary": "자바 21, 로그에 스레드 이름을 찍는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-race",
+          "title": "첫 어긋남",
+          "summary": "같은 코드를 열 번 돌려 본다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.5",
+          "id": "what-to-watch",
+          "title": "무엇을 볼 것인가",
+          "summary": "스레드 이름 · 상태 · 순서, 이 셋.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "프로세스와 스레드",
+      "goal": "무엇이 나뉘고 무엇이 공유되나.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "process-thread",
+          "title": "프로세스와 스레드",
+          "summary": "주소 공간을 나누느냐 마느냐.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "memory-layout",
+          "title": "무엇을 공유하나",
+          "summary": "힙은 같이, 스택은 따로.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "context-switch",
+          "title": "문맥 전환",
+          "summary": "공짜가 아닌 전환.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "single-vs-multi",
+          "title": "단일 코어와 멀티 코어",
+          "summary": "동시에 보이는 것과 실제로 동시인 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "cost",
+          "title": "스레드의 값",
+          "summary": "메모리 1MB 와 생성 시간.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "스레드 생성과 실행",
+      "goal": "만들고 시작하고 기다린다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "create",
+          "title": "스레드 만들기",
+          "summary": "Thread 와 Runnable.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "start-vs-run",
+          "title": "start 와 run",
+          "summary": "한 글자 차이로 스레드가 안 생긴다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "daemon",
+          "title": "데몬 스레드",
+          "summary": "남아 있으면 JVM 이 안 끝난다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "join",
+          "title": "join",
+          "summary": "끝나기를 기다린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "lambda",
+          "title": "람다로 적기",
+          "summary": "익명 클래스가 한 줄이 된다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "name-id",
+          "title": "이름과 식별자",
+          "summary": "로그에 무엇을 남길 것인가.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "exception",
+          "title": "스레드 안의 예외",
+          "summary": "아무도 안 잡으면 어디로 가나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "스레드 제어와 생명 주기",
+      "goal": "여섯 상태 사이를 오간다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "states",
+          "title": "여섯 상태",
+          "summary": "NEW 에서 TERMINATED 까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "sleep",
+          "title": "sleep",
+          "summary": "재우면 무엇을 놓지 않나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "interrupt",
+          "title": "인터럽트",
+          "summary": "죽이는 게 아니라 두드리는 것.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "interrupt-flag",
+          "title": "인터럽트 플래그",
+          "summary": "잡으면 지워진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "stop-safely",
+          "title": "안전하게 멈추기",
+          "summary": "플래그와 인터럽트를 같이 쓴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "yield-priority",
+          "title": "yield 와 우선순위",
+          "summary": "힌트일 뿐이다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "메모리 가시성",
+      "goal": "본 것과 실제로 있는 것.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "visibility",
+          "title": "가시성 문제",
+          "summary": "끝나야 할 반복문이 안 끝난다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "cache-reorder",
+          "title": "캐시와 재배치",
+          "summary": "왜 그런 일이 생기나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "volatile",
+          "title": "volatile",
+          "summary": "보이게는 하고 원자적이진 않다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "happens-before",
+          "title": "happens-before",
+          "summary": "무엇이 무엇보다 먼저인가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "final-safe",
+          "title": "안전한 발행",
+          "summary": "final 과 생성자 밖으로 새는 this.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "동기화 — synchronized",
+      "goal": "한 번에 하나만 들어간다.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "critical-section",
+          "title": "임계 영역",
+          "summary": "잔고가 맞지 않는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "synchronized",
+          "title": "synchronized",
+          "summary": "메서드와 블록.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "monitor",
+          "title": "모니터 락",
+          "summary": "락은 객체마다 하나다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "static-lock",
+          "title": "static 과 인스턴스 락",
+          "summary": "서로 다른 락이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "deadlock",
+          "title": "데드락",
+          "summary": "둘이 서로를 기다린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "scope",
+          "title": "락의 범위",
+          "summary": "좁힐수록 빠르고 위험하다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "wait-notify",
+          "title": "wait 와 notify",
+          "summary": "락을 놓고 기다린다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "고급 동기화 — Lock",
+      "goal": "기다리는 방식을 고른다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "reentrantlock",
+          "title": "ReentrantLock",
+          "summary": "try-finally 가 필수다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "trylock",
+          "title": "tryLock",
+          "summary": "못 얻으면 포기한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "lock-interruptibly",
+          "title": "인터럽트 가능한 대기",
+          "summary": "기다리다 취소한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "fairness",
+          "title": "공정성",
+          "summary": "순서를 보장하면 느려진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "condition",
+          "title": "Condition",
+          "summary": "조건마다 대기실을 따로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "rwlock",
+          "title": "읽기 쓰기 락",
+          "summary": "읽기끼리는 같이 들어간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "which-lock",
+          "title": "무엇을 언제 쓰나",
+          "summary": "synchronized 로 되면 그걸 쓴다.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "생산자 소비자 문제",
+      "goal": "큐 하나를 사이에 둔다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "problem",
+          "title": "문제",
+          "summary": "버퍼가 차거나 비면.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "busy-wait",
+          "title": "바쁜 대기",
+          "summary": "CPU 를 태우며 기다린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "wait-notify-queue",
+          "title": "wait/notify 로",
+          "summary": "notify 와 notifyAll 의 차이.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "condition-queue",
+          "title": "Condition 으로",
+          "summary": "생산자와 소비자를 갈라 깨운다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "blocking-queue",
+          "title": "BlockingQueue",
+          "summary": "이미 만들어져 있다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "queue-policy",
+          "title": "가득 찼을 때",
+          "summary": "막을까 버릴까 기다릴까.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "CAS 와 원자적 연산",
+      "goal": "락 없이 하나를 바꾼다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "atomic-problem",
+          "title": "왜 ++ 가 안 되나",
+          "summary": "세 연산이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "cas",
+          "title": "CAS",
+          "summary": "비교하고 바꾸기.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "atomic-types",
+          "title": "Atomic 타입들",
+          "summary": "AtomicInteger 와 그 친척들.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "cas-cost",
+          "title": "CAS 의 값",
+          "summary": "경합이 세지면 뒤집힌다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "adder",
+          "title": "LongAdder",
+          "summary": "쪼개서 더한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "aba",
+          "title": "ABA 문제",
+          "summary": "같은 값인데 같은 상태가 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "동시성 컬렉션",
+      "goal": "쓰면서 읽어도 되는 자료구조.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "why-not-hashmap",
+          "title": "HashMap 을 같이 쓰면",
+          "summary": "무한 루프와 유실.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "synchronized-wrappers",
+          "title": "동기화 래퍼",
+          "summary": "메서드마다 락, 그래서 부족하다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "concurrent-map",
+          "title": "ConcurrentHashMap",
+          "summary": "구간을 나눠 잠근다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "compute-atomic",
+          "title": "원자적 갱신",
+          "summary": "compute 와 merge.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "copy-on-write",
+          "title": "CopyOnWriteArrayList",
+          "summary": "읽기가 압도적일 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "iteration",
+          "title": "순회 중 변경",
+          "summary": "예외냐 스냅숏이냐.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "스레드 풀과 Executor",
+      "goal": "스레드를 매번 만들지 않는다.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "why-pool",
+          "title": "왜 풀인가",
+          "summary": "생성 비용과 상한.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "executor",
+          "title": "ExecutorService",
+          "summary": "제출하고 결과를 받는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "future",
+          "title": "Future 와 결과",
+          "summary": "get 이 막는 자리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "pool-sizing",
+          "title": "풀 크기",
+          "summary": "CPU 바운드와 I/O 바운드.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "queue-reject",
+          "title": "큐와 거부 정책",
+          "summary": "다 차면 무슨 일이.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "shutdown",
+          "title": "종료",
+          "summary": "shutdown 과 shutdownNow.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.7",
+          "id": "scheduled",
+          "title": "예약 실행",
+          "summary": "주기 실행의 함정.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.8",
+          "id": "completable",
+          "title": "CompletableFuture",
+          "summary": "이어 붙이고 합친다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 12,
+      "title": "실무로",
+      "goal": "스프링과 만나는 자리.",
+      "sections": [
+        {
+          "no": "12.1",
+          "id": "spring-async",
+          "title": "@Async",
+          "summary": "누가 어느 풀에서 도나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.2",
+          "id": "threadlocal",
+          "title": "ThreadLocal",
+          "summary": "풀에서 되면 안 지워진다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.3",
+          "id": "tomcat-threads",
+          "title": "서블릿 스레드",
+          "summary": "요청 하나에 스레드 하나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.4",
+          "id": "virtual-threads",
+          "title": "가상 스레드",
+          "summary": "막아도 되는 스레드.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.5",
+          "id": "debug",
+          "title": "동시성 버그를 잡는 법",
+          "summary": "재현하고 좁힌다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.6",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "이 책이 남긴 것과 이어지는 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

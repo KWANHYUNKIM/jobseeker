@@ -1,0 +1,168 @@
+{
+ "book": "java-thread",
+ "id": "why-concurrency",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 동시성인가",
+ "summary": "기다리는 시간과 노는 코어.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "두 가지 이유를 가른다.",
+  "기다림을 숨기는 걸 본다.",
+  "코어를 쓰는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**스레드를 늘리는 이유는** 둘이다. **하나는 기다림을 숨기려고, 하나는 코어를 쓰려고**다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청 하나의 시간이 어디로 가나",
+   "ascii": "   where the time actually goes in one request\n\n   cpu   |#|                             1 ms\n   io    |###########################|  120 ms\n\n   one thread spends most of a request doing nothing at all",
+   "note": "**스레드 하나는 요청의 대부분을 아무것도 안 하고** 보낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "기다리는 스레드는 코어를 안 쓴다",
+   "md": "**I/O 를 기다리는 동안 그 스레드는 실행 상태가** 아니다.\n\n> **소켓·디스크·DB 응답을 기다리면 `BLOCKED` 나 `WAITING` 이** 된다(4.1절).\n> **그 시간에 코어는 다른 스레드를 돌릴 수** 있다.\n> **그래서 코어가 하나여도 스레드를 늘리면 처리량이** 는다.\n\n| 어디서 기다리나 | 대략 |\n|---|---|\n| **DB 쿼리** | **1~50 ms** |\n| **HTTP 호출** | **10~500 ms** |\n| 파일 읽기 | 0.1~10 ms |\n| **CPU 계산** | **마이크로초 단위** |\n\n> **웹 애플리케이션은 거의 전부 첫 세 줄**이다 — **12.3절에서 톰캣이 왜 스레드를 수백 개 두는지 그** 이유다."
+  },
+  {
+   "type": "figure",
+   "caption": "이유가 둘이면 답도 둘이다",
+   "ascii": "   two different reasons to add threads\n\n   hide waiting    one core, many blocked threads, more throughput\n   use cores       many cores, cpu bound work, less wall clock\n\n   they need different thread counts, which chapter eleven measures",
+   "note": "**필요한 스레드 수가 달라 11.4절에서 따로** 잰다."
+  },
+  {
+   "type": "table",
+   "caption": "둘을 가른다",
+   "columns": [
+    "",
+    "기다림을 숨김",
+    "코어를 씀"
+   ],
+   "rows": [
+    [
+     "**작업 성격**",
+     "**I/O 바운드**",
+     "**CPU 바운드**"
+    ],
+    [
+     "**적정 스레드 수**",
+     "**코어보다 훨씬 많이**",
+     "**코어 수 근처**"
+    ],
+    [
+     "더 늘리면",
+     "메모리와 전환 비용",
+     "**오히려 느려진다**"
+    ],
+    [
+     "**얻는 것**",
+     "**처리량**",
+     "**응답 시간**"
+    ],
+    [
+     "**한계**",
+     "**메모리와 커넥션 수**",
+     "**코어 수**"
+    ],
+    [
+     "예",
+     "웹 요청 처리",
+     "**이미지 변환·정렬**"
+    ]
+   ],
+   "note": "**둘을 같은 풀에 섞으면 둘 다 나빠진다** — **11.4절과 11.5절이 그** 얘기다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "공짜가 아닌 것들",
+   "md": "**스레드를 늘리면 같이 늘어나는 게** 있다.\n\n| 늘어나는 것 | 2.5절 |\n|---|---|\n| **스택 메모리** | 스레드당 기본 1MB |\n| **문맥 전환** | 스레드가 많을수록 자주 |\n| **경합** | **공유 자원을 두고 다툰다** |\n| **버그** | **이 책의 5~10장 전부** |\n\n> **그리고 마지막 줄이 제일** 비싸다.\n> **1.4절에서 스레드 둘로 만들 수 있는 가장 짧은 버그를** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "$ nproc\n10\n\n\n# --- I/O 를 기다리는 일 ---\n\n$ cat IoWork.java\nstatic void one() throws Exception {\n    Thread.sleep(100);          // 외부 호출이라고 치자\n}\n\n$ java IoWork --threads 1 --tasks 20\n23:43:02.104 [main        ] INFO  IoWork - 시작\n23:43:04.118 [main        ] INFO  IoWork - 20개 완료 2014ms\n\n$ java IoWork --threads 10 --tasks 20\n23:43:06.204 [main        ] INFO  IoWork - 시작\n23:43:06.418 [pool-1-thread-3] INFO  IoWork - task 2 완료\n23:43:06.418 [pool-1-thread-1] INFO  IoWork - task 0 완료\n23:43:06.419 [pool-1-thread-7] INFO  IoWork - task 6 완료\n23:43:06.421 [main        ] INFO  IoWork - 20개 완료 217ms\n\n$ python3 -c \"print('%.1f배 빠르다' % (2014/217))\"\n9.3배 빠르다\n\n#   코어를 더 쓴 게 아니다\n#   기다리는 시간을 겹쳐 놓았을 뿐이다\n\n\n# --- 코어보다 많이 늘려도 는다 ---\n\n$ for t in 1 2 5 10 20 50 100; do\n    printf 'threads=%-4s ' $t\n    java IoWork --threads $t --tasks 200 2>/dev/null | grep -o '[0-9]*ms'\n  done\nthreads=1    20142ms\nthreads=2    10088ms\nthreads=5     4041ms\nthreads=10    2024ms\nthreads=20    1018ms\nthreads=50     418ms\nthreads=100    214ms\n\n$ python3 -c \"print('코어 10개인데 스레드 100개가 %.1f배 빠르다' % (2024/214))\"\n코어 10개인데 스레드 100개가 9.5배 빠르다\n\n#   기다리는 일에서는 코어 수가 상한이 아니다\n\n\n# --- CPU 를 쓰는 일 ---\n\n$ cat CpuWork.java\nstatic long one() {\n    long s = 0;\n    for (int i = 0; i < 20_000_000; i++) s += i % 7;\n    return s;\n}\n\n$ for t in 1 2 5 10 20 50 100; do\n    printf 'threads=%-4s ' $t\n    java CpuWork --threads $t --tasks 40 2>/dev/null | grep -o '[0-9]*ms'\n  done\nthreads=1     8412ms\nthreads=2     4218ms\nthreads=5     1704ms\nthreads=10     902ms\nthreads=20     918ms\nthreads=50     974ms\nthreads=100   1104ms\n\n$ python3 -c \"print('10에서 100으로 늘리자 %.0f%% 느려졌다' % ((1104-902)/902*100))\"\n10에서 100으로 늘리자 22% 느려졌다\n\n#   코어 수에서 멈춘다\n#   더 늘리면 전환 비용만 는다\n\n\n# --- 둘을 나란히 ---\n\n$ printf '%-12s %-14s %s\\n' 'threads' 'I/O 일 200개' 'CPU 일 40개' && \\\n  for t in 1 10 100; do\n    printf '%-12s %-14s %s\\n' $t \\\n      \"$(java IoWork --threads $t --tasks 200 2>/dev/null | grep -o '[0-9]*ms')\" \\\n      \"$(java CpuWork --threads $t --tasks 40 2>/dev/null | grep -o '[0-9]*ms')\"\n  done\n\nthreads      I/O 일 200개   CPU 일 40개\n1            20142ms        8412ms\n10           2024ms         902ms\n100          214ms          1104ms\n\n#   같은 스레드 수가 한쪽은 최선이고 한쪽은 최악이다\n\n\n# --- 기다리는 동안 무엇을 하고 있나 ---\n\n$ java IoWork --threads 10 --tasks 200 &\n$ sleep 1 && jcmd $! Thread.print | grep -A2 'pool-1-thread-1\\\"' | head -3\n\"pool-1-thread-1\" #21 [12547] prio=5 os_prio=31 cpu=4.12ms elapsed=1.02s\n   java.lang.Thread.State: TIMED_WAITING (sleeping)\n\tat java.base@21.0.4/java.lang.Thread.sleep(Native Method)\n\n$ jcmd $! Thread.print | grep -c 'TIMED_WAITING'\n10\n\n$ top -l 1 -pid $! | grep -E '^CPU|^PID' -A1 | tail -1 | awk '{print \"CPU\", $3\"%\"}'\nCPU 2.4%\n\n#   열 개가 다 자고 있고 CPU 는 2.4% 다\n#   4.1절에서 이 상태들을 본다\n\n\n# --- CPU 를 쓸 때는 다르다 ---\n\n$ java CpuWork --threads 10 --tasks 40 &\n$ sleep 0.3 && jcmd $! Thread.print | grep -c 'RUNNABLE'\n11\n$ top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 91.2% user, 3.1% sys, 5.7% idle\n\n#   열 개가 다 RUNNABLE 이고 CPU 가 91% 다\n\n\n# --- 섞으면 ---\n\n$ java MixedWork --threads 10 --io-tasks 100 --cpu-tasks 20\n23:45:12.104 [main        ] INFO  MixedWork - 완료 6104ms\n\n$ java MixedWork --io-threads 50 --cpu-threads 10 --io-tasks 100 --cpu-tasks 20\n23:45:20.204 [main        ] INFO  MixedWork - 완료 1418ms\n\n$ python3 -c \"print('풀을 나누니 %.1f배' % (6104/1418))\"\n풀을 나누니 4.3배\n\n#   CPU 작업이 풀을 다 잡고 있는 동안 I/O 작업이 기다렸다\n#   11.4절에서 이 이야기를 판다\n\n\n# --- 스레드는 공짜가 아니다 ---\n\n$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep ThreadStackSize | head -1\n     intx ThreadStackSize   = 1024   {pd product} {default}\n\n$ java ManyThreads --count 10000 &\n$ sleep 3 && ps -o rss= -p $! | awk '{print \"RSS\", $1/1024, \"MB\"}'\nRSS 1204 MB\n\n$ java ManyThreads --count 50000\n23:46:02.104 [main        ] ERROR ManyThreads - 실패\njava.lang.OutOfMemoryError: unable to create native thread:\n  possibly out of memory or process/resource limits reached\n\n$ ulimit -u\n5333\n\n#   1만 개에 1.2GB 다\n#   2.5절에서 이 값을 잰다\n#   12.4절의 가상 스레드가 여기를 바꾼다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '이유'            '기다림 숨기기와 코어 쓰기' \\\n  'I/O 1개'         '20142ms' \\\n  'I/O 100개'       '214ms' \\\n  '코어 상한'       'I/O 에는 없음' \\\n  'CPU 10개'        '902ms' \\\n  'CPU 100개'       '1104ms' \\\n  '더 늘리면'       '22% 느려짐' \\\n  '기다릴 때'       'CPU 2.4%' \\\n  '계산할 때'       'CPU 91%' \\\n  '섞으면'          '4.3배 손해' \\\n  '1만 스레드'      '1.2GB'\n\n이유                       기다림 숨기기와 코어 쓰기\nI/O 1개                    20142ms\nI/O 100개                  214ms\n코어 상한                  I/O 에는 없음\nCPU 10개                   902ms\nCPU 100개                  1104ms\n더 늘리면                  22% 느려짐\n기다릴 때                  CPU 2.4%\n계산할 때                  CPU 91%\n섞으면                     4.3배 손해\n1만 스레드                 1.2GB",
+   "note": "**기다리는 일은 코어가 10개인데 스레드 100개가 9.5배** 빠르다.\n\n**계산하는 일은 코어 수에서 멈추고 100개로 늘리면 오히려 22%** 느려진다.\n\n**기다리는 중에는 열 스레드가 다 `TIMED_WAITING` 이고 CPU 가 2.4%** 다.\n\n**둘을 한 풀에 섞으면 6104ms, 풀을 나누면 1418ms 로 4.3배** 차이다.\n\n**스레드 1만 개에 1.2GB 를 쓰고 5만 개에서 `OutOfMemoryError` 가** 난다."
+  }
+ ],
+ "recap": [
+  "스레드를 늘리는 이유는 기다림을 숨기려는 것과 코어를 쓰려는 것 둘이다.",
+  "I/O 바운드는 코어 수가 상한이 아니라 스레드를 훨씬 많이 둘 수 있다.",
+  "CPU 바운드는 코어 수에서 멈추고 더 늘리면 전환 비용으로 느려진다.",
+  "둘을 같은 풀에 섞으면 둘 다 나빠진다.",
+  "스레드는 스택 메모리와 전환 비용과 버그를 같이 늘린다."
+ ],
+ "drills": [
+  {
+   "task": "sleep 하는 작업으로 스레드 수를 늘려 가며 시간을 잰다.",
+   "done_when": "코어 수를 넘어도 빨라지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "계산하는 작업으로 같은 실험을 한다.",
+   "done_when": "코어 수에서 멈추는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "기다리는 중과 계산 중의 스레드 상태와 CPU 사용률을 찍는다.",
+   "done_when": "둘이 다른 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 종류 작업을 한 풀과 두 풀로 각각 돌린다.",
+   "done_when": "차이를 숫자로 낸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "코어가 하나여도 스레드를 늘리면 왜 빨라지나.",
+   "a": "기다리는 스레드는 코어를 안 쓰므로 그 시간을 겹칠 수 있다."
+  },
+  {
+   "q": "CPU 바운드에서 스레드를 코어보다 많이 두면.",
+   "a": "문맥 전환 비용만 늘어 오히려 느려진다."
+  },
+  {
+   "q": "두 종류 작업을 한 풀에 섞으면.",
+   "a": "계산 작업이 풀을 잡고 있어 기다리는 작업이 밀린다."
+  },
+  {
+   "q": "스레드가 늘 때 같이 늘어나는 것은.",
+   "a": "스택 메모리, 문맥 전환, 경합, 그리고 버그다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "I/O 바운드",
+   "what": "대부분의 시간을 외부 응답을 기다리며 보내는 작업."
+  },
+  {
+   "term": "CPU 바운드",
+   "what": "대부분의 시간을 계산에 쓰는 작업. 코어 수가 상한이다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.util.concurrent",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
