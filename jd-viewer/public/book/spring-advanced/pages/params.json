@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "params",
+ "no": "11.8",
+ "chapter": 11,
+ "title": "인자를 받는다",
+ "summary": "값을 꺼내 쓴다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "묶는 법을 안다.",
+  "이름이 남아야 함을 안다.",
+  "값을 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.4절과 11.5절에서 살짝** 봤다. **값을 꺼내는 걸** 판다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 인자가 되기까지",
+   "ascii": "   how a name in the expression becomes a parameter\n\n   the type slot holds a name instead of a type\n   the advice method declares a parameter with that name\n   the type is read from the parameter, not from the expression",
+   "note": "**타입은 표현식이 아니라 인자에서** 읽는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타입 자리에 이름을 적는다",
+   "md": "**타입 대신** 이름이다.\n\n> **11.4절에서 그랬다**.\n> **아래에서 견준다**.\n> **소문자로** 적는다.\n\n**인자로** 선언한다.\n\n> **같은 이름**이다.\n> **아래에서 확인**한다.\n> **타입은 거기서** 온다.\n\n**타입이 거르개가** 된다.\n\n> **안 맞으면 안** 걸린다.\n> **아래에서 그걸** 본다.\n> **적은 셈**이다.\n\n**넷 다** 된다.\n\n> **11.4절과 11.5절의 말들**이다.\n> **아래에서 하나씩** 본다.\n> **감싸기 아니어도** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 이름이 남아야 하나",
+   "ascii": "   why the name has to survive compilation\n\n   parameter names are dropped from the class file by default\n   the compiler keeps them only when told to\n\n   without them the binding cannot be resolved",
+   "note": "**이름이 없으면 묶을 수가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이름이 지워지면 기동에서 막힌다",
+   "md": "**기본은** 지워진다.\n\n> **클래스 파일에 안** 남는다.\n> **아래에서 확인**한다.\n> **자바 규칙**이다.\n\n**빌드가 켜** 준다.\n\n> **부트가 기본으로** 넣는다.\n> **아래에서 그 옵션을** 본다.\n> **직접 세우면** 다르다.\n\n**시끄럽게** 막힌다.\n\n> **오류가** 난다.\n> **아래에서 그 글을** 본다.\n> **11장에선 드문 일**이다.\n\n**적어 둘 수도** 있다.\n\n> **argNames 로** 준다.\n> **아래에서 그걸** 본다.\n> **마지막 수단**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 타입 자리에 이름을 적는다\n\n// 11.4 절: 타입\n@Around(\"args(String)\")\npublic Object a(ProceedingJoinPoint jp) throws Throwable { ... }\n\n// 여기: 이름\n@Around(\"args(itemId)\")\npublic Object b(ProceedingJoinPoint jp, String itemId) throws Throwable {\n    log.info(\"값 {}\", itemId);\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '값 ' logs/app.log | tail -1 | cut -c56-\n값 연필\n\n$ curl -s --get 'localhost:8080/pointcut/split' --data-urlencode 'expr=args(itemId)'\n인자 이름  itemId\n인자 타입  java.lang.String (메서드 인자에서 읽음)\n\n--   표현식엔 타입이 없다\n\n\n-- 인자 타입이 거르개다\n\n@Around(\"args(itemId)\")\npublic Object b(ProceedingJoinPoint jp, Integer itemId) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '값 ' logs/app.log\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/count?n=3'\n$ grep '값 ' logs/app.log | tail -1 | cut -c56-\n값 3\n\n--   Integer 를 적으니 Integer 만 걸린다\n--   args(Integer) 라고 적은 것과 같다\n\n\n-- 이름이 안 남으면\n\n$ javap -p build/classes/java/main/study/adv/aspect/LogTraceAspect.class | grep execute\n  public java.lang.Object execute(org.aspectj.lang.ProceedingJoinPoint, java.lang.String);\n\n$ javap -v build/classes/java/main/study/adv/aspect/LogTraceAspect.class | grep -c MethodParameters\n1\n\n// -parameters 를 끄면\ntasks.withType(JavaCompile) { options.compilerArgs.remove('-parameters') }\n\n$ ./gradlew compileJava -q\n$ javap -v build/classes/java/main/study/adv/aspect/LogTraceAspect.class | grep -c MethodParameters\n0\n\n$ ./gradlew bootRun 2>&1 | grep -i 'argument names' | head -2\njava.lang.IllegalArgumentException: Failure to bind all pointcut parameters:\n  could not determine argument names for method execute\n\n--   시끄럽게 막는다\n--   11 장에서 드문 일이다\n\n\n-- 부트가 켜 준다\n\n$ ./gradlew properties -q | grep -i 'compilerArgs' | head -1\n\n$ cat build.gradle | grep -A3 'tasks.withType(JavaCompile)'\n(없음)\n\n$ ./gradlew compileJava --info 2>&1 | grep -oE '\\-parameters' | head -1\n-parameters\n\n--   부트 플러그인이 넣는다\n--   ⑯ 2.4절에서 플러그인이 하는 일을 보던 그 자리다\n\n\n-- 적어 두는 길\n\n@Around(value = \"args(itemId)\", argNames = \"jp,itemId\")\npublic Object b(ProceedingJoinPoint jp, String itemId) throws Throwable { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'argument names'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '값 ' logs/app.log | tail -1 | cut -c56-\n값 연필\n\n--   이름이 지워져도 돈다\n--   대신 손으로 맞춰야 한다\n\n\n-- 표시를 받는다\n\n@Target({ElementType.METHOD})\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced { String value() default \"\"; int slowMs() default 500; }\n\n@Around(\"@annotation(traced)\")\npublic Object t(ProceedingJoinPoint jp, Traced traced) throws Throwable {\n    long t0 = System.currentTimeMillis();\n    try { return jp.proceed(); }\n    finally {\n        long ms = System.currentTimeMillis() - t0;\n        if (ms > traced.slowMs()) log.warn(\"느림 {} {}ms (한계 {}ms)\",\n            traced.value(), ms, traced.slowMs());\n    }\n}\n\n@Traced(value = \"주문 넣기\", slowMs = 200)\npublic void orderItem(String itemId) { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '느림' logs/app.log | tail -1 | cut -c56-\n느림 주문 넣기 1006ms (한계 200ms)\n\n--   11.5 절에서 예고한 그것이다\n--   한계를 메서드마다 다르게 준다\n\n\n-- 타깃과 이것도 받는다\n\n@Around(\"target(repo)\")\npublic Object t(ProceedingJoinPoint jp, Repo repo) throws Throwable {\n    log.info(\"원본 {}\", repo.getClass().getName());\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '원본 ' logs/app.log | tail -1 | cut -c56-\n원본 study.adv.app.OrderRepositoryV3\n\n@Around(\"this(repo)\")\npublic Object h(ProceedingJoinPoint jp, Repo repo) throws Throwable {\n    log.info(\"든 것 {}\", repo.getClass().getName());\n    return jp.proceed();\n}\n\n$ grep '든 것 ' logs/app.log | tail -1 | cut -c56-\n든 것 study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n\n--   10.1 절의 그 둘이 인자로 들어왔다\n\n\n-- 감싸기가 아니어도 된다\n\n@Before(\"@annotation(traced) && args(itemId)\")\npublic void before(JoinPoint jp, Traced traced, String itemId) {\n    log.info(\"앞 {} {}\", traced.value(), itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '앞 ' logs/app.log | tail -1 | cut -c56-\n앞 주문 넣기 연필\n\n@AfterReturning(pointcut = \"@annotation(traced)\", returning = \"ret\", argNames = \"traced,ret\")\npublic void after(Traced traced, Object ret) { log.info(\"뒤 {} {}\", traced.value(), ret); }\n\n$ grep '뒤 ' logs/app.log | tail -1 | cut -c56-\n뒤 주문 넣기 null\n\n--   10.3 절의 다섯 중 어느 것이든 된다\n--   조인 포인트를 아예 안 받아도 된다\n\n\n-- 순서는 상관없다\n\n@Around(\"@annotation(traced) && args(itemId)\")\npublic Object t(ProceedingJoinPoint jp, String itemId, Traced traced) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '느림' logs/app.log\n1\n\n@Around(\"@annotation(traced) && args(itemId)\")\npublic Object t(String itemId, ProceedingJoinPoint jp, Traced traced) throws Throwable { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -i 'must be the first' | head -1\njava.lang.IllegalArgumentException: ProceedingJoinPoint parameter must be the\n  first parameter of around advice method\n\n--   10.3 절에서 본 그 규칙이다\n--   나머지 순서는 자유다\n\n\n-- 인자를 바꿔 넘긴다\n\n@Around(\"args(itemId)\")\npublic Object trim(ProceedingJoinPoint jp, String itemId) throws Throwable {\n    return jp.proceed(new Object[]{ itemId.trim() });\n}\n\n$ curl -s -G 'localhost:8080/v3/raw' --data-urlencode 'itemId=  연필  '\n주문 연필\n\n$ grep '원래 인자' logs/app.log | tail -1 | cut -c56-\n원래 인자 [  연필  ]\n\n--   10.3 절에서 본 그것이다\n--   꺼낸 값을 고쳐서 다시 넣는다\n\n\n-- 여러 인자를 받는다\n\npublic void pay(String orderId, int amount) { }\n\n@Around(\"args(orderId, amount)\")\npublic Object p(ProceedingJoinPoint jp, String orderId, int amount) throws Throwable {\n    log.info(\"결제 {} {}원\", orderId, amount);\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/pay?orderId=A1&amount=5000'\n$ grep '결제' logs/app.log | tail -1 | cut -c56-\n결제 A1 5000원\n\n$ curl -s --get 'localhost:8080/pointcut/match' --data-urlencode 'expr=args(orderId, amount)'\n맞는 메서드 1 개\n\n--   개수와 타입이 다 맞아야 한다\n\n\n-- 일부만 받는다\n\n@Around(\"args(orderId, ..)\")\npublic Object p(ProceedingJoinPoint jp, String orderId) throws Throwable { ... }\n\n$ curl -s --get 'localhost:8080/pointcut/match' --data-urlencode 'expr=args(orderId, ..)'\n맞는 메서드 9 개\n\n$ curl -s -o /dev/null 'localhost:8080/pay?orderId=A1&amount=5000'\n$ grep '결제' logs/app.log | tail -1 | cut -c56-\n결제 A1\n\n--   11.1 절의 점 둘이다\n\n\n-- 값이 는다\n\n$ curl -s 'localhost:8080/bench?n=1000000'\n빈 메서드 100 만 회   889 ms\n\n// args 로 묶고\n$ curl -s 'localhost:8080/bench?n=1000000'\n빈 메서드 100 만 회   1187 ms\n\n$ python3 -c \"print('한 번에 %.3f 마이크로초 더' % ((1187-889)/1000000*1000))\"\n한 번에 0.298 마이크로초 더\n\n$ curl -s localhost:8080/pointcut/count\n[물음] 300\n\n--   11.4 절의 그 물음이 그대로다\n--   꺼내는 값이 조금 더 붙는다\n\n\n-- 되돌리고 확인한다\n\n$ git checkout -- .\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s localhost:8080/pointcut/count\n[물음] 0\n\n--   11.9 절에서 표현식에 이름을 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '적는 법'      '타입 자리에 이름' \\\n  '타입'         '인자에서 읽음' \\\n  '거르개'       '인자 타입이 함' \\\n  '이름'         '남아야 함' \\\n  '기본'         '지워짐' \\\n  '부트'         '켜 줌' \\\n  '없으면'       '기동 실패' \\\n  'argNames'     '적어 두는 길' \\\n  '받는 것'      '인자 표시 타깃 이것' \\\n  '순서'         '조인 포인트만 먼저' \\\n  '값'           '0.298 마이크로초'\n\n적는 법                    타입 자리에 이름\n타입                       인자에서 읽음\n거르개                     인자 타입이 함\n이름                       남아야 함\n기본                       지워짐\n부트                       켜 줌\n없으면                     기동 실패\nargNames                   적어 두는 길\n받는 것                    인자 표시 타깃 이것\n순서                       조인 포인트만 먼저\n값                         0.298 마이크로초",
+   "note": "**표현식에 타입이 없는데 인자를 `Integer` 로 바꾸면 `Integer` 만** 걸린다.\n\n**`-parameters` 를 끄면 `could not determine argument names` 로 기동이 막혀 11장에선 드물게** 시끄럽다.\n\n**표시를 인자로 받아 `slowMs` 한계를 메서드마다 다르게** 준다.\n\n**타깃은 `OrderRepositoryV3`, 이것은 `…$$SpringCGLIB$$0` 으로 10.1절의 둘이 인자로** 들어온다.\n\n**감싸기가 아닌 앞·뒤 어드바이스도 받고 조인 포인트를 아예 안 받아도** 된다."
+  }
+ ],
+ "recap": [
+  "**이름을** 적는다.",
+  "**타입은 인자에서** 온다.",
+  "**타입이** 거른다.",
+  "**이름이 남아야** 한다.",
+  "**기본은** 지워진다.",
+  "**부트가** 켠다.",
+  "**없으면** 막힌다.",
+  "**넷 다** 된다.",
+  "**값이 조금** 는다."
+ ],
+ "drills": [
+  {
+   "task": "값을 꺼내 찍어 본다.",
+   "done_when": "인자가 로그에 나온 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "인자 타입을 바꿔 본다.",
+   "done_when": "안 걸리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "-parameters 를 꺼 본다.",
+   "done_when": "기동 실패를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "표시 값을 받아 쓴다.",
+   "done_when": "메서드마다 다른 한계를 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타입은 어디서 오나?",
+   "a": "표현식이 아니라 어드바이스 메서드의 인자 선언에서 온다."
+  },
+  {
+   "q": "인자 타입을 바꾸면?",
+   "a": "그 타입만 걸린다. 타입 자체가 거르개가 된다."
+  },
+  {
+   "q": "이름이 안 남으면?",
+   "a": "기동이 실패한다. 이 장에서는 드물게 시끄러운 자리다."
+  },
+  {
+   "q": "무엇을 받을 수 있나?",
+   "a": "인자 값, 애너테이션, 타깃 객체, 든 객체 넷이다."
+  },
+  {
+   "q": "인자 순서 규칙은?",
+   "a": "조인 포인트만 첫째여야 하고 나머지는 자유다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "묶기",
+   "def": "표현식의 이름과 어드바이스 인자를 이어 값을 넘겨받는 것."
+  },
+  {
+   "term": "인자 이름 보존",
+   "def": "컴파일 뒤에도 메서드 인자 이름을 클래스 파일에 남기는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring Advice",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/advice.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  }
+ ]
+}

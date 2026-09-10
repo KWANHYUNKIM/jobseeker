@@ -685,7 +685,7 @@
           "title": "합치기",
           "summary": "그리고·또는·아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -693,7 +693,7 @@
           "title": "인자를 받는다",
           "summary": "값을 꺼내 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.9",

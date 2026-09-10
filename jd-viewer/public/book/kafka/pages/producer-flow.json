@@ -1,0 +1,152 @@
+{
+ "book": "kafka",
+ "id": "producer-flow",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "보내기 전에 일어나는 일",
+ "summary": "직렬화 · 파티셔너 · 배치 · 전송.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "send() 이후의 파이프라인을 안다.",
+  "버퍼 구조를 안다.",
+  "어디서 막히는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "send() 부터 브로커까지",
+   "ascii": "   app thread                          sender thread (background)\n   ----------                          --------------------------\n   send(record)\n      |\n   [ serializer ]      key/value -> bytes\n      |\n   [ partitioner ]     -> partition 2                (4.4)\n      |\n   [ RecordAccumulator ]                             (buffer.memory = 32MB)\n      topic-0: [batch][batch]\n      topic-1: [batch]\n      topic-2: [batch ....... ]  <- record goes here\n      |                                    |\n   returns Future                          | batch full (batch.size)\n                                           | or linger.ms elapsed\n                                           v\n                                    group by broker\n                                           |\n                                    send ProduceRequest\n                                           |\n                                    wait for acks                (6.3)\n                                           |\n                                    complete Future / callback   (6.7)\n\n   앱 스레드는 버퍼까지만 간다",
+   "note": "**버퍼가 가득 차면 앱 스레드가 막힌다** — **`max.block.ms`**(6.8절)."
+  },
+  {
+   "type": "table",
+   "caption": "각 단계에서 정해지는 것",
+   "columns": [
+    "단계",
+    "설정",
+    "절"
+   ],
+   "rows": [
+    [
+     "직렬화",
+     "`key/value.serializer`",
+     "6.1·9.6"
+    ],
+    [
+     "**파티션 결정**",
+     "`partitioner.class`",
+     "**4.4·6.6**"
+    ],
+    [
+     "**버퍼에 쌓기**",
+     "`buffer.memory`(32MB), `max.block.ms`(60초)",
+     "6.8"
+    ],
+    [
+     "**배치 묶기**",
+     "`batch.size`(16KB), `linger.ms`(0)",
+     "**6.5**"
+    ],
+    [
+     "압축",
+     "`compression.type`",
+     "6.5"
+    ],
+    [
+     "**전송·재시도**",
+     "`acks`, `retries`, `delivery.timeout.ms`",
+     "**6.3·6.4**"
+    ],
+    [
+     "동시 요청",
+     "`max.in.flight.requests.per.connection`(5)",
+     "4.5·8.1"
+    ]
+   ],
+   "note": "**설정 대부분이 이 그림의 한 칸씩**이다. **어느 칸의 설정인지를 알면 헷갈리지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "배치는 파티션마다 따로 쌓인다",
+   "md": "**`RecordAccumulator` 는 파티션별 큐**다.\n\n```\ntopic-0: [ batch(16KB) ][ batch ]\ntopic-1: [ batch ]\ntopic-2: [ batch ..... ]   <- 아직 안 참\n```\n\n**그래서**:\n\n| 결과 | |\n|---|---|\n| **파티션이 많으면 배치가 잘게** 나뉜다 | 4.6절에서 파티션을 과하게 늘리지 말라는 이유 |\n| 전송할 때 **브로커별로 다시 묶는다** | 같은 브로커가 리더인 파티션들을 한 요청에 |\n| 키가 쏠리면 한 배치만 커진다 | 4.4절 |\n\n**`linger.ms=0` 이 기본**인데 **그래도 배치가** 된다.\n\n> **앞 요청이 나가 있는 동안 쌓인 것들이 다음 배치**가 된다.\n> **부하가 높으면 자연스럽게 배치가** 커진다. **`linger.ms` 를 주면 일부러 기다린다**(6.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "메타데이터를 못 받으면 send() 가 막힌다",
+   "md": "**첫 `send()` 는 그 토픽의 메타데이터가** 필요하다(2.4절).\n\n```java\nproducer.send(record);   // 여기서 60초 멈출 수 있다\n```\n\n```\norg.apache.kafka.common.errors.TimeoutException:\n  Topic orders not present in metadata after 60000 ms.\n```\n\n| 원인 | |\n|---|---|\n| **토픽이 없다** | 자동 생성이 꺼져 있으면(1.3절) |\n| 브로커에 못 붙는다 | 리스너 설정(1.3절) |\n| 권한이 없다 | ACL |\n\n> **`max.block.ms`(기본 60초)가 이 대기의 상한**이다.\n> **웹 요청 처리 중에 이게 걸리면 그 요청이 60초 멈춘다** — **운영에서는 5~10초로 줄이는 게** 보통이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "파이프라인의 각 칸을 지표로 본다",
+   "sql": "# --- 프로듀서 지표를 찍는 예제 ---\n\n#   var m = producer.metrics();\n#   m.forEach((k, v) -> {\n#       if (k.name().matches(\"batch-size-avg|records-per-request-avg|\" +\n#                            \"record-send-rate|buffer-available-bytes|\" +\n#                            \"request-latency-avg|compression-rate-avg\"))\n#           System.out.printf(\"%-28s %s%n\", k.name(), v.metricValue());\n#   });\n\n$ java -cp 'out:libs/*' MetricsProducer --records 100000 --linger 0\nbatch-size-avg               1284.4\nrecords-per-request-avg      12.7\nrecord-send-rate             58201.3\nbuffer-available-bytes       3.2E7\nrequest-latency-avg          4.1\ncompression-rate-avg         1.0\n\n$ java -cp 'out:libs/*' MetricsProducer --records 100000 --linger 20\nbatch-size-avg               15872.1\nrecords-per-request-avg      148.3\nrecord-send-rate             142905.7\nbuffer-available-bytes       3.1E7\nrequest-latency-avg          9.8\ncompression-rate-avg         1.0\n\n#   linger.ms 20 을 주니 배치가 1.2KB -> 15.8KB 로 커졌다\n#   요청당 레코드가 12개 -> 148개, 처리량이 2.4배\n#   대신 요청 지연이 4.1ms -> 9.8ms (6.5절의 맞바꿈)\n\n\n# --- 브로커 쪽에서도 보인다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/orders-0/00000000000000000000.log 2>/dev/null | \\\n    awk '/baseOffset/ {split($0,a,\"count: \"); split(a[2],b,\" \"); s+=b[1]; n++} \\\n         END {printf \"batches=%d records=%d avg=%.1f\\n\", n, s, s/n}'\nbatches=674 records=100000 avg=148.4\n\n#   브로커에 저장된 배치의 평균 레코드 수가 148 이다\n#   클라이언트 지표(records-per-request-avg)와 같다\n\n\n# --- 파티션이 많으면 배치가 잘게 나뉜다 ---\n\n$ kt --create --topic p3 --partitions 3 --replication-factor 3 >/dev/null\n$ kt --create --topic p48 --partitions 48 --replication-factor 3 >/dev/null\n\n$ java -cp 'out:libs/*' MetricsProducer --topic p3 --records 100000 --linger 10 | grep batch-size-avg\nbatch-size-avg               15104.2\n\n$ java -cp 'out:libs/*' MetricsProducer --topic p48 --records 100000 --linger 10 | grep batch-size-avg\nbatch-size-avg               1108.7\n\n#   같은 linger.ms 인데 파티션이 48개면 배치가 1/14 다\n#   레코드가 48개 큐로 흩어지기 때문이다\n\n\n# --- 메타데이터가 없으면 막힌다 ---\n\n$ java -cp 'out:libs/*' SimpleProducer --topic no-such-topic\nException in thread \"main\" java.util.concurrent.ExecutionException:\n  org.apache.kafka.common.errors.TimeoutException:\n  Topic no-such-topic not present in metadata after 60000 ms.\n\nreal    1m0.412s\n\n#   60초를 기다렸다 (max.block.ms 기본값)\n\n$ java -cp 'out:libs/*' SimpleProducer --topic no-such-topic --max-block 5000\nException in thread \"main\" ... TimeoutException:\n  Topic no-such-topic not present in metadata after 5000 ms.\n\nreal    0m5.318s\n\n#   운영에서는 이렇게 줄인다\n\n$ kt --delete --topic p3 >/dev/null; kt --delete --topic p48 >/dev/null"
+  }
+ ],
+ "recap": [
+  "send() 는 직렬화 → 파티셔너 → 버퍼까지만 하고 돌아온다. 전송은 sender 스레드가 한다.",
+  "배치는 파티션마다 따로 쌓이고 전송할 때 브로커별로 다시 묶인다.",
+  "파티션이 많으면 배치가 잘게 나뉘어 처리량이 떨어진다.",
+  "linger.ms 를 주면 배치가 커지고 처리량이 오르며 지연이 는다.",
+  "첫 send() 는 메타데이터를 기다린다. max.block.ms(기본 60초)를 운영에서는 줄인다."
+ ],
+ "drills": [
+  {
+   "task": "linger.ms 를 0과 20으로 바꿔 batch-size-avg 와 record-send-rate 를 비교한다.",
+   "done_when": "배치가 커지고 처리량이 오르는 것을 숫자로 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "파티션 3과 48인 토픽에 같은 설정으로 보내 batch-size-avg 를 비교한다.",
+   "done_when": "파티션이 많으면 배치가 작아지는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "없는 토픽으로 보내 TimeoutException 까지 걸리는 시간을 재고 max.block.ms 를 줄여 본다.",
+   "done_when": "60초와 5초의 차이를 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "send() 가 하는 일까지는 어디인가.",
+   "a": "직렬화, 파티션 결정, 버퍼(RecordAccumulator)에 넣기. 전송은 백그라운드 sender 스레드가 한다."
+  },
+  {
+   "q": "파티션이 많으면 왜 배치가 작아지나.",
+   "a": "배치가 파티션별 큐에 따로 쌓이므로 같은 시간에 모이는 레코드가 흩어진다."
+  },
+  {
+   "q": "첫 send() 가 60초 멈췄다면.",
+   "a": "토픽 메타데이터를 못 받은 것. 토픽이 없거나 브로커에 못 붙는다. max.block.ms 가 그 상한이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "RecordAccumulator",
+   "what": "파티션별로 배치를 쌓아 두는 프로듀서 버퍼."
+  },
+  {
+   "term": "sender 스레드",
+   "what": "버퍼에서 배치를 꺼내 브로커로 보내는 백그라운드 스레드."
+  },
+  {
+   "term": "max.block.ms",
+   "what": "버퍼가 차거나 메타데이터가 없을 때 send() 가 막히는 최대 시간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer configs",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Producer metrics",
+   "url": "https://kafka.apache.org/documentation/#producer_monitoring",
+   "publisher": "Apache"
+  }
+ ]
+}

@@ -309,7 +309,7 @@
           "title": "첫 프로듀서",
           "summary": "자바 열 줄로 보낸다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -317,7 +317,7 @@
           "title": "보내기 전에 일어나는 일",
           "summary": "직렬화 · 파티셔너 · 배치 · 전송.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",

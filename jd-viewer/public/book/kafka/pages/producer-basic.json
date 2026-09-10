@@ -1,0 +1,135 @@
+{
+ "book": "kafka",
+ "id": "producer-basic",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "첫 프로듀서",
+ "summary": "자바 열 줄로 보낸다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "프로듀서를 만들고 보낸다.",
+  "필수 설정 셋을 안다.",
+  "전송 결과를 읽는다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SimpleProducer.java",
+   "caption": "가장 단순한 프로듀서",
+   "code": "import org.apache.kafka.clients.producer.*;\nimport org.apache.kafka.common.serialization.StringSerializer;\nimport java.util.Properties;\n\npublic class SimpleProducer {\n    public static void main(String[] args) throws Exception {\n        Properties props = new Properties();\n        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, \"localhost:9092\");\n        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());\n        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());\n\n        try (var producer = new KafkaProducer<String, String>(props)) {\n            var record = new ProducerRecord<>(\"orders\", \"order-1001\", \"{\\\"amount\\\":25000}\");\n\n            RecordMetadata meta = producer.send(record).get();   // 동기\n\n            System.out.printf(\"topic=%s partition=%d offset=%d timestamp=%d%n\",\n                meta.topic(), meta.partition(), meta.offset(), meta.timestamp());\n        }\n    }\n}",
+   "note": "필수 설정은 셋뿐이다 — `bootstrap.servers` 와 키·값 **직렬화기**. 나머지는 기본값이 있다."
+  },
+  {
+   "type": "table",
+   "caption": "필수 설정 셋",
+   "columns": [
+    "설정",
+    "무엇",
+    "안 주면"
+   ],
+   "rows": [
+    [
+     "`bootstrap.servers`",
+     "처음 물어볼 브로커(2.4절)",
+     "**필수.** 없으면 예외"
+    ],
+    [
+     "`key.serializer`",
+     "키를 바이트로 바꾸는 법",
+     "**필수**"
+    ],
+    [
+     "`value.serializer`",
+     "값을 바이트로",
+     "**필수**"
+    ]
+   ],
+   "note": "**브로커는 바이트만** 안다(4.3절). **직렬화는 클라이언트의 일**이다 — 9.6절."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "send() 는 바로 안 보낸다",
+   "md": "```java\nproducer.send(record);        // 즉시 돌아온다\n```\n\n> **레코드를 버퍼에 넣고 돌아온다.** **실제 전송은 백그라운드 스레드가** 한다(6.2절).\n\n**그래서 세 가지 방식이** 있다.\n\n| 방식 | 코드 | 특징 |\n|---|---|---|\n| **fire-and-forget** | `send(record)` | **가장 빠르다.** 실패를 모른다 |\n| **동기** | `send(record).get()` | **가장 느리다.** 배치가 안 된다 |\n| **비동기 콜백** | `send(record, callback)` | **실무의 기본** |\n\n**6.7절에서 셋을 비교**한다.\n\n**그리고 `close()` 가 중요**하다 — **버퍼에 남은 것을 보내고 닫는다.** **try-with-resources 를 쓰거나 `flush()` 를 부른다.**\n\n> **`close()` 를 안 부르고 프로세스가 끝나면 버퍼의 레코드가 사라진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "프로듀서는 스레드 안전하고, 하나만 만든다",
+   "md": "| | |\n|---|---|\n| **스레드 안전** | 여러 스레드가 같은 인스턴스를 써도 된다 |\n| **무겁다** | 커넥션·버퍼·백그라운드 스레드를 갖는다 |\n| **하나면 충분** | **애플리케이션당 하나를 공유**하는 게 기본 |\n\n**요청마다 만들면**:\n\n```java\n// 이렇게 하지 않는다\npublic void order(...) {\n    try (var producer = new KafkaProducer<>(props)) {   // 매번 생성\n        producer.send(record).get();\n    }\n}\n```\n\n> **연결을 매번 맺고 메타데이터를 매번 받는다.** **배치도 안 된다.**\n> **스프링에서는 `KafkaTemplate` 이 싱글턴이라 이 문제가 없다**(9.2절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "보내고 결과를 확인한다",
+   "sql": "$ kt --create --topic orders --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 컴파일하고 실행 ---\n\n$ ls\nSimpleProducer.java  kafka-clients-3.8.0.jar  ...\n\n$ javac -cp 'libs/*' -d out SimpleProducer.java\n$ java -cp 'out:libs/*' SimpleProducer\ntopic=orders partition=2 offset=0 timestamp=1757502011482\n\n#   RecordMetadata 가 파티션과 오프셋을 알려 준다\n#   이 두 값이 \"어디에 저장됐는지\" 의 답이다 (1.1절)\n\n\n# --- 브로커에서 확인 ---\n\n$ kcc --topic orders --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true --property print.offset=true\nPartition:2  Offset:0  order-1001  {\"amount\":25000}\n\n#   프로그램이 말한 partition=2 offset=0 과 같다\n\n\n# --- 같은 키로 또 보내면 ---\n\n$ java -cp 'out:libs/*' SimpleProducer\ntopic=orders partition=2 offset=1 timestamp=1757502031104\n\n#   같은 파티션(2), 다음 오프셋(1). 4.4절 그대로다\n\n\n# --- 직렬화기를 안 주면 ---\n\n#   props 에서 VALUE_SERIALIZER 를 빼고 실행하면:\n#\n#   Exception in thread \"main\" org.apache.kafka.common.config.ConfigException:\n#     Missing required configuration \"value.serializer\" which has no default value.\n\n\n# --- 타입이 안 맞으면 (컴파일은 되는데 런타임에) ---\n\n#   ProducerRecord<String, Integer> 인데 value.serializer 가 StringSerializer 면:\n#\n#   org.apache.kafka.common.errors.SerializationException:\n#     Can't convert value of class java.lang.Integer to class\n#     org.apache.kafka.common.serialization.StringSerializer\n\n\n# --- close() 를 안 하면 버퍼의 레코드가 사라진다 ---\n\n#   public static void main(String[] a) {\n#       var producer = new KafkaProducer<String,String>(props);\n#       for (int i = 0; i < 100; i++)\n#           producer.send(new ProducerRecord<>(\"orders\", \"k\", \"v-\" + i));\n#       // close() 없음\n#   }\n#\n$ java -cp 'out:libs/*' NoCloseProducer\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic orders | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 2\n\n#   100건을 보냈는데 2건뿐이다 (앞서 보낸 것)\n#   linger.ms 만큼 버퍼에 있다가 프로세스가 끝나며 사라졌다 (6.5절)\n\n#   close() 를 넣으면:\n$ java -cp 'out:libs/*' WithCloseProducer\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic orders | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 102\n\n#   전부 들어갔다\n\n\n# --- 클라이언트 로그로 무엇을 보내는지 본다 ---\n\n$ java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -cp 'out:libs/*' SimpleProducer 2>&1 | \\\n    grep -E 'ProducerConfig|Cluster ID|Instantiated' | head -6\n[main] INFO  ProducerConfig - ProducerConfig values:\n\tacks = -1\n\tbatch.size = 16384\n\tbootstrap.servers = [localhost:9092]\n\tenable.idempotence = true\n\tlinger.ms = 0\n\n#   실제로 적용된 설정 전체가 로그에 찍힌다\n#   acks=-1(all), enable.idempotence=true 가 3.0+ 기본값이다 (6.3·8.1절)\n#   \"설정을 줬는데 안 먹는다\" 싶으면 이 로그를 먼저 본다\n\n$ kt --delete --topic orders >/dev/null"
+  }
+ ],
+ "recap": [
+  "필수 설정은 bootstrap.servers 와 키·값 직렬화기 셋뿐이다.",
+  "send() 는 버퍼에 넣고 즉시 돌아온다. 실제 전송은 백그라운드 스레드가 한다.",
+  "RecordMetadata 의 partition·offset 이 '어디에 저장됐는지' 의 답이다.",
+  "close() 나 flush() 를 안 부르면 버퍼의 레코드가 사라진다.",
+  "프로듀서는 스레드 안전하고 무겁다. 애플리케이션당 하나를 공유한다."
+ ],
+ "drills": [
+  {
+   "task": "프로듀서를 하나 만들어 보내고 RecordMetadata 를 출력한 뒤 CLI 로 같은 위치를 확인한다.",
+   "done_when": "partition·offset 이 일치하는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "close() 없이 100건을 보내고 실제로 몇 건이 들어갔는지 센다.",
+   "done_when": "버퍼에 남은 것이 사라지는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "DEBUG 로그로 ProducerConfig 전체를 찍어 acks 와 enable.idempotence 의 기본값을 확인한다.",
+   "done_when": "3.0+ 의 기본값을 눈으로 본다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프로듀서 필수 설정 셋은.",
+   "a": "bootstrap.servers, key.serializer, value.serializer."
+  },
+  {
+   "q": "send() 가 즉시 돌아오는 이유는.",
+   "a": "버퍼에 넣기만 하고 실제 전송은 백그라운드 스레드가 하기 때문."
+  },
+  {
+   "q": "프로듀서를 요청마다 만들면 무엇이 문제인가.",
+   "a": "연결·메타데이터를 매번 다시 하고 배치가 안 된다. 애플리케이션당 하나를 공유한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "RecordMetadata",
+   "what": "전송 결과. 토픽·파티션·오프셋·타임스탬프를 담는다."
+  },
+  {
+   "term": "직렬화기",
+   "en": "serializer",
+   "what": "객체를 바이트로 바꾸는 클래스."
+  },
+  {
+   "term": "flush()",
+   "what": "버퍼의 레코드를 전부 보낼 때까지 기다리는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer API",
+   "url": "https://kafka.apache.org/documentation/#producerapi",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Producer configs",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs",
+   "publisher": "Apache"
+  }
+ ]
+}
