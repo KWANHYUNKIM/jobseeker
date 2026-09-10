@@ -302,7 +302,7 @@
           "title": "모니터 락",
           "summary": "락은 객체마다 하나다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -310,7 +310,7 @@
           "title": "static 과 인스턴스 락",
           "summary": "서로 다른 락이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -318,7 +318,7 @@
           "title": "데드락",
           "summary": "둘이 서로를 기다린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",

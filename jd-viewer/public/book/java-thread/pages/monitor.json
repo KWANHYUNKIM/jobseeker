@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "monitor",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "모니터 락",
+ "summary": "락은 객체마다 하나다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "모니터의 구성을 안다.",
+  "재진입을 본다.",
+  "두 대기실을 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 \"객체마다 락이 하나\" 라고** 했다. **그 락 안에 무엇이 들었는지** 연다."
+  },
+  {
+   "type": "figure",
+   "caption": "모니터 하나가 들고 있는 것",
+   "ascii": "   what one monitor holds\n\n   an owner        the thread currently inside, or none\n   a count         how many times that owner entered\n   an entry set    threads blocked, waiting for the lock\n   a wait set      threads that called wait and gave the lock back\n\n   the last two are different rooms, and section four point one named them",
+   "note": "**아래 둘은 서로 다른 방이고 4.1절에서 이름을** 봤다."
+  },
+  {
+   "type": "figure",
+   "caption": "횟수가 있는 이유",
+   "ascii": "   why the count exists\n\n   a synchronized method calls another synchronized method on the same object\n   without a count, the second call would wait for a lock it already holds\n\n   so the owner is let through, and the count goes up instead",
+   "note": "**주인은 통과시키고 대신 횟수를** 올린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재진입이 없으면 자기 자신에게 막힌다",
+   "md": "**같은 객체의 `synchronized` 메서드끼리 부르는 건 아주** 흔하다.\n\n```java\nsynchronized void a() { b(); }      // 여기서 이미 락을 쥐고 있다\nsynchronized void b() { }           // 재진입이 없으면 여기서 멈춘다\n```\n\n> **자바의 모니터는 재진입 가능**하다.\n> **`ReentrantLock` 의 이름도 여기서** 왔다(7.1절).\n> **재진입이 안 되는 락도 세상에는** 있다.\n\n**횟수가 0 이 될 때만 락이** 풀린다:\n\n```\nenter  count 1\n  enter  count 2\n  exit   count 1     아직 안 풀린다\nexit   count 0       이제 풀린다\n```"
+  },
+  {
+   "type": "table",
+   "caption": "두 대기실",
+   "columns": [
+    "",
+    "진입 대기",
+    "조건 대기"
+   ],
+   "rows": [
+    [
+     "**들어가는 법**",
+     "**락을 못 얻어서**",
+     "**`wait()` 을 불러서**"
+    ],
+    [
+     "**락을 쥐고 있나**",
+     "**아니오**",
+     "**놓았다**"
+    ],
+    [
+     "**상태**",
+     "**BLOCKED**",
+     "**WAITING**"
+    ],
+    [
+     "**나오는 법**",
+     "**락이 비면**",
+     "**`notify` 를 받아야**"
+    ],
+    [
+     "덤프 문구",
+     "`waiting to lock`",
+     "`waiting on`"
+    ]
+   ],
+   "note": "**4.1절에서 본 두 문구가 이 두 방을** 가리킨다 — **6.7절에서 오른쪽을** 판다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 재진입 ---\n\n$ cat Reentrant.java | grep -A6 'synchronized void outer'\nsynchronized void outer() {\n    log.info(\"outer 진입\");\n    inner();\n    log.info(\"outer 나감\");\n}\nsynchronized void inner() { log.info(\"inner 진입\"); }\n\n$ java -cp out:libs/* Reentrant\n00:54:02.104 [w-0         ] INFO  Reentrant - outer 진입\n00:54:02.104 [w-0         ] INFO  Reentrant - inner 진입\n00:54:02.105 [w-0         ] INFO  Reentrant - outer 나감\n\n#   안 막힌다\n\n\n# --- 횟수를 센다 ---\n\n$ cat CountProbe.java | grep -A5 'static void depth'\nstatic synchronized void depth(int n) {\n    log.info(\"깊이 {} 잠금 보유 {}\", n, Thread.holdsLock(CountProbe.class));\n    if (n > 0) depth(n - 1);\n}\n\n$ java -cp out:libs/* CountProbe --depth 3\n00:54:06.204 [main] INFO  CountProbe - 깊이 3 잠금 보유 true\n00:54:06.204 [main] INFO  CountProbe - 깊이 2 잠금 보유 true\n00:54:06.205 [main] INFO  CountProbe - 깊이 1 잠금 보유 true\n00:54:06.205 [main] INFO  CountProbe - 깊이 0 잠금 보유 true\n\n$ java -cp out:libs/* CountProbe --depth 10000\n00:54:08.104 [main] INFO  CountProbe - 깊이 10000까지 들어갔다\n\n#   횟수에 실질적 한계는 없다\n\n\n# --- 다 나와야 풀린다 ---\n\n$ cat ReleaseWhenZero.java | grep -A8 'main'\nThread a = new Thread(() -> {\n    synchronized (lock) {\n        synchronized (lock) {\n            log.info(\"두 겹 진입\");\n            sleep(1000);\n        }\n        log.info(\"한 겹 나옴 -- 아직 안 풀렸다\");\n        sleep(1000);\n    }\n}, \"a\");\nThread b = new Thread(() -> { sleep(200); long s = now(); synchronized (lock) {\n    log.info(\"b 가 {}ms 기다렸다\", now() - s); } }, \"b\");\n\n$ java -cp out:libs/* ReleaseWhenZero\n00:54:12.104 [a           ] INFO  ReleaseWhenZero - 두 겹 진입\n00:54:13.108 [a           ] INFO  ReleaseWhenZero - 한 겹 나옴 -- 아직 안 풀렸다\n00:54:14.112 [b           ] INFO  ReleaseWhenZero - b 가 1808ms 기다렸다\n\n#   한 겹 나왔을 때가 아니라 다 나왔을 때 풀렸다\n\n\n# --- 락을 쥐고 있는지 물어본다 ---\n\n$ cat HoldsLock.java | grep -A5 'main'\nlog.info(\"밖에서 {}\", Thread.holdsLock(lock));\nsynchronized (lock) {\n    log.info(\"안에서 {}\", Thread.holdsLock(lock));\n}\n\n$ java -cp out:libs/* HoldsLock\n00:54:16.104 [main] INFO  HoldsLock - 밖에서 false\n00:54:16.104 [main] INFO  HoldsLock - 안에서 true\n\n$ cat AssertHolds.java | grep -A3 'void mustHoldLock'\nvoid unsafeInternal() {\n    assert Thread.holdsLock(lock) : \"락을 안 쥐고 불렀다\";\n    count++;\n}\n\n$ java -ea -cp out:libs/* AssertHolds --without-lock\nException in thread \"main\" java.lang.AssertionError: 락을 안 쥐고 불렀다\n\n#   내부 메서드의 전제를 코드로 적을 수 있다\n\n\n# --- 두 대기실을 같이 본다 ---\n\n$ cat TwoRooms.java | grep -A10 'main'\n// waiter 셋: wait() 을 불러 조건 대기실로\n// blocker 셋: 락을 못 얻어 진입 대기실로\n// holder 하나: 락을 쥐고 잔다\n\n$ java -cp out:libs/* TwoRooms &\n$ sleep 1 && jcmd $! Thread.print | grep 'java.lang.Thread.State' | awk '{print $2}' \\\n    | sort | uniq -c\n   3 BLOCKED\n   8 RUNNABLE\n   3 WAITING\n   1 TIMED_WAITING\n\n$ jcmd $! Thread.print | grep -B4 'waiting to lock' | grep '^\"' | wc -l\n       3\n$ jcmd $! Thread.print | grep -B4 'waiting on' | grep '^\"' | wc -l\n       3\n\n$ jcmd $! Thread.print | grep -A4 '\"waiter-0\"' | tail -2\n\t- waiting on <0x000000061a2c4f18> (a java.lang.Object)\n\tat java.base/java.lang.Object.wait(Object.java:389)\n\n$ jcmd $! Thread.print | grep -A4 '\"blocker-0\"' | tail -1\n\t- waiting to lock <0x000000061a2c4f18> (a java.lang.Object)\n\n$ kill %1\n\n#   같은 객체에 두 방이 있다\n#   문구가 다르다\n\n\n# --- 락은 객체마다 따로다 ---\n\n$ cat PerObject.java | grep -A7 'main'\nCounter a = new Counter();\nCounter b = new Counter();\n// 각각 4스레드씩 8스레드가 증가시킨다\n\n$ java -cp out:libs/* PerObject --mode two-objects --threads 8 --rounds 1000000\n객체 둘     1204ms   a=4000000 b=4000000\n$ java -cp out:libs/* PerObject --mode one-object --threads 8 --rounds 1000000\n객체 하나   8412ms   a=8000000\n\n$ python3 -c \"print('객체를 나누면 %.1f배 빠르다' % (8412/1204))\"\n객체를 나누면 7.0배 빠르다\n\n#   9.5절의 LongAdder 가 이 원리다\n\n\n# --- 락 승격 ---\n\n$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -w UseBiasedLocking\n(자바 15부터 제거됨)\n\n$ java -cp out:libs/* LockInflation --mode single --rounds 100000000\n한 스레드만        1841ms\n$ java -cp out:libs/* LockInflation --mode contended --rounds 100000000\n경합 있음         41204ms\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,LockInflation::inc \\\n    -cp out:libs/* LockInflation 2>/dev/null | grep -cE 'lock cmpxchg'\n1\n\n#   무경합이면 CAS 한 번으로 끝난다 (9.2절)\n#   경합이 생기면 진짜 OS 락으로 승격된다\n\n\n# --- 승격된 락은 덤프에 나온다 ---\n\n$ java -cp out:libs/* LockInflation --mode contended --rounds 1000000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c 'BLOCKED (on object monitor)'\n7\n$ jcmd $! Thread.print | grep -oE 'locked <0x[0-9a-f]+>' | sort -u | wc -l\n       1\n$ kill %1\n\n#   여덟이 락 하나를 두고 다툰다\n\n\n# --- 락 하나가 병목인지 세는 법 ---\n\n$ cat lock-census.sh\n#!/bin/sh\n# 덤프를 여러 번 떠서 어느 락에서 몇 번 막혔는지 센다\nPID=$1; N=${2:-20}\nfor i in $(seq 1 $N); do\n  jcmd $PID Thread.print 2>/dev/null | grep -oE 'waiting to lock <0x[0-9a-f]+>'\n  sleep 0.1\ndone | sort | uniq -c | sort -rn\n\n$ java -cp out:libs/* MultiLockApp & sleep 1\n$ ./lock-census.sh $! 20\n  84 waiting to lock <0x000000061a2c4f18>\n  12 waiting to lock <0x000000061a2c5a20>\n   2 waiting to lock <0x000000061a2c6b28>\n$ kill %1\n\n#   첫째 락이 병목이다\n#   6.6절에서 이걸 쓴다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '모니터'          '주인 · 횟수 · 두 방' \\\n  '재진입'          '된다' \\\n  '깊이'            '1만도 됨' \\\n  '풀리는 때'       '횟수가 0' \\\n  '확인'            'holdsLock' \\\n  '진입 대기'       'BLOCKED, waiting to lock' \\\n  '조건 대기'       'WAITING, waiting on' \\\n  '객체마다'        '따로' \\\n  '나누면'          '7.0배' \\\n  '무경합'          'CAS 한 번' \\\n  '경합'            'OS 락으로 승격' \\\n  '병목 찾기'       '덤프를 여러 번'\n\n모니터                     주인 · 횟수 · 두 방\n재진입                     된다\n깊이                       1만도 됨\n풀리는 때                  횟수가 0\n확인                       holdsLock\n진입 대기                  BLOCKED, waiting to lock\n조건 대기                  WAITING, waiting on\n객체마다                   따로\n나누면                     7.0배\n무경합                     CAS 한 번\n경합                       OS 락으로 승격\n병목 찾기                  덤프를 여러 번",
+   "note": "**같은 객체의 `synchronized` 메서드끼리 불러도 안 막히고 깊이 1만까지** 들어간다.\n\n**두 겹 중 한 겹만 나왔을 때는 안 풀려 `b` 가 1808ms** 기다린다.\n\n**한 객체에 진입 대기 3개(`BLOCKED`)와 조건 대기 3개(`WAITING`)가 같이** 찍힌다.\n\n**락을 두 객체로 나누면 8412ms 가 1204ms 로 7배** 빨라진다.\n\n**덤프를 20번 떠서 세면 어느 락 주소에서 84번 막혔는지가** 나온다."
+  }
+ ],
+ "recap": [
+  "모니터는 주인, 재진입 횟수, 진입 대기실, 조건 대기실로 되어 있다.",
+  "자바의 락은 재진입 가능해서 같은 객체의 synchronized 메서드끼리 부를 수 있다.",
+  "횟수가 0 이 될 때만 락이 풀린다.",
+  "BLOCKED 와 WAITING 은 서로 다른 방이고 덤프 문구도 다르다.",
+  "락은 객체마다 따로이므로 나누면 경합이 줄어든다."
+ ],
+ "drills": [
+  {
+   "task": "재진입을 재귀로 깊게 해 본다.",
+   "done_when": "안 막히는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "두 겹 락에서 한 겹만 나왔을 때를 재현한다.",
+   "done_when": "안 풀리는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 대기실을 동시에 만들어 덤프를 본다.",
+   "done_when": "문구 차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "덤프를 여러 번 떠 락별 대기 횟수를 센다.",
+   "done_when": "병목 락을 찾는다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "모니터가 들고 있는 넷은.",
+   "a": "주인, 재진입 횟수, 진입 대기실, 조건 대기실이다."
+  },
+  {
+   "q": "재진입이 왜 필요한가.",
+   "a": "같은 객체의 synchronized 메서드끼리 부를 때 자기 락에 막히지 않으려고."
+  },
+  {
+   "q": "락은 언제 풀리나.",
+   "a": "재진입 횟수가 0 이 될 때다."
+  },
+  {
+   "q": "두 대기실을 덤프에서 어떻게 가르나.",
+   "a": "waiting to lock 과 waiting on 문구로 가른다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "재진입",
+   "what": "이미 락을 쥔 스레드가 같은 락에 다시 들어갈 수 있는 성질."
+  },
+  {
+   "term": "락 승격",
+   "what": "경합이 생기면 가벼운 락을 진짜 OS 락으로 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JVM Specification, monitorenter",
+   "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html#jvms-6.5.monitorenter",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

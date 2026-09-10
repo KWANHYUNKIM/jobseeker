@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "static-lock",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "static 과 인스턴스 락",
+ "summary": "서로 다른 락이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "두 락을 가른다.",
+  "섞였을 때를 본다.",
+  "고르는 기준을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 `static synchronized` 는 클래스 객체를 잠근다고** 했다. **그게 왜 문제가 되는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 클래스에 락이 둘",
+   "ascii": "   one class, two completely separate locks\n\n   the class object      guards static state\n   each instance         guards that instance's state\n\n   a thread in one of them does not exclude a thread in the other",
+   "note": "**한쪽에 있는 스레드가 다른 쪽을 막지** 못한다."
+  },
+  {
+   "type": "figure",
+   "caption": "괜찮아 보이는 실수",
+   "ascii": "   the mistake that looks fine\n\n   an instance method guarded by this\n   touching a field that is static\n\n   two instances, two different locks, one shared field",
+   "note": "**인스턴스 둘, 락 둘, 공유 필드** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지키는 상태와 락이 짝이 맞아야 한다",
+   "md": "**규칙은** 하나다.\n\n> **한 상태는 언제나 같은 락으로만** 지킨다.\n> **`static` 상태는 `static` 락, 인스턴스 상태는 그 인스턴스 락**으로.\n> **섞이면 5.4절의 happens-before 관계가 안** 생긴다.\n\n| 상태 | 지켜야 할 락 |\n|---|---|\n| **`static` 필드** | **클래스 객체 또는 전용 static 락** |\n| **인스턴스 필드** | **그 인스턴스 또는 전용 인스턴스 락** |\n| **둘 다 만짐** | **둘 다 잡거나 하나로 통일** |\n\n> **셋째 줄이 6.5절의 데드락을 만드는 흔한 경로**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 둘은 다른 락이다 ---\n\n$ cat TwoLocks.java | grep -A6 'class Service'\nstatic class Service {\n    static synchronized void staticWork() { log.info(\"static 진입\"); sleep(1000); }\n    synchronized void instanceWork() { log.info(\"instance 진입\"); sleep(1000); }\n}\n\n$ java -cp out:libs/* TwoLocks\n00:57:02.104 [a           ] INFO  TwoLocks - static 진입\n00:57:02.104 [b           ] INFO  TwoLocks - instance 진입\n\nreal\t0m1.412s\n\n#   둘이 동시에 들어갔다\n#   같은 클래스인데 서로 안 막는다\n\n\n# --- 같은 종류끼리는 막는다 ---\n\n$ java -cp out:libs/* TwoLocks --mode both-static\n00:57:06.204 [a] INFO  TwoLocks - static 진입\n00:57:07.208 [b] INFO  TwoLocks - static 진입\nreal\t0m2.412s\n\n$ java -cp out:libs/* TwoLocks --mode both-instance-same\n00:57:10.104 [a] INFO  TwoLocks - instance 진입\n00:57:11.108 [b] INFO  TwoLocks - instance 진입\nreal\t0m2.412s\n\n$ java -cp out:libs/* TwoLocks --mode both-instance-different\n00:57:14.204 [a] INFO  TwoLocks - instance 진입\n00:57:14.204 [b] INFO  TwoLocks - instance 진입\nreal\t0m1.412s\n\n#   인스턴스가 다르면 락도 다르다\n\n\n# --- 섞으면 깨진다 ---\n\n$ cat MixedGuard.java | grep -A6 'class Counter'\nstatic class Counter {\n    static int total = 0;                  // static 상태다\n    synchronized void inc() { total++; }    // 인스턴스 락으로 지킨다\n}\n\n$ java -cp out:libs/* MixedGuard --instances 1 --threads 8 --rounds 100000\n인스턴스 1개  기대 800000 실제 800000\n\n$ java -cp out:libs/* MixedGuard --instances 8 --threads 8 --rounds 100000\n인스턴스 8개  기대 800000 실제 412048\n\n$ ./run.sh MixedGuard8 20 '실제 [0-9]+' | awk '$3==800000 {print \"맞음\", $1+0 \"/20\"}'\n맞음 0/20\n\n#   인스턴스가 하나면 우연히 맞는다\n#   여럿이면 항상 틀린다\n\n\n# --- 테스트가 못 잡는 이유 ---\n\n$ cat MixedGuardTest.java | grep -A5 'void 카운터가_맞는다'\n@Test\nvoid 카운터가_맞는다() {\n    Counter c = new Counter();             // 하나만 만든다\n    // 8스레드로 증가\n    assertThat(Counter.total).isEqualTo(800000);\n}\n\n$ for i in $(seq 1 20); do\n    ./gradlew test --tests MixedGuardTest -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  20 0\n\n#   싱글턴으로 테스트하면 20/20 통과한다\n#   운영에서 인스턴스가 둘이 되는 순간 깨진다\n\n\n# --- 고친다 ---\n\n$ cat StaticGuard.java | grep -A3 'static synchronized void inc'\nstatic synchronized void inc() { total++; }\n\n$ java -cp out:libs/* StaticGuard --instances 8 --threads 8 --rounds 100000\n인스턴스 8개  기대 800000 실제 800000\n\n$ ./run.sh StaticGuard8 20 '실제 [0-9]+' | head -2\n  20 실제 800000\n\n#   상태가 static 이면 락도 static 이다\n\n\n# --- 전용 락으로 ---\n\n$ cat DedicatedLocks.java | grep -A8 'class Service'\nstatic class Service {\n    private static final Object STATIC_LOCK = new Object();\n    private final Object instanceLock = new Object();\n\n    private static int total;\n    private int count;\n\n    void incTotal() { synchronized (STATIC_LOCK) { total++; } }\n    void incCount() { synchronized (instanceLock) { count++; } }\n}\n\n$ java -cp out:libs/* DedicatedLocks --instances 4 --threads 8 --rounds 100000\ntotal 기대 800000 실제 800000\ncount 합 기대 800000 실제 800000\n\n$ ./run.sh DedicatedLocks 20 '전부 맞음' | head -2\n  20 전부 맞음\n\n#   6.2절의 전용 락을 둘로 나눈 것이다\n\n\n# --- 둘 다 만지면 ---\n\n$ cat TouchesBoth.java | grep -A5 'void transfer'\nvoid transfer(int n) {\n    synchronized (STATIC_LOCK) {\n        synchronized (instanceLock) {      // 순서가 중요하다\n            total -= n; count += n;\n        }\n    }\n}\n\n$ java -cp out:libs/* TouchesBoth --threads 8 --rounds 100000\n합계 보존됨: true\n\n$ java -cp out:libs/* TouchesBoth --reverse-order --threads 8 --rounds 100000 &\n$ sleep 3 && jcmd $! Thread.print | grep -c 'Found one Java-level deadlock'\n1\n$ kill -9 %1\n\n#   순서를 뒤집은 코드가 섞이면 데드락이다\n#   6.5절에서 이 이야기를 판다\n\n\n# --- 클래스 객체를 밖에서 잠그면 ---\n\n$ cat LockClassOutside.java | grep -A5 'main'\nnew Thread(() -> { synchronized (Service.class) { sleep(3000); } }, \"outsider\").start();\nsleep(100);\nlong s = now();\nService.staticWork();\nlog.info(\"{}ms 걸렸다\", now() - s);\n\n$ java -cp out:libs/* LockClassOutside\n00:57:32.104 [main] INFO  LockClassOutside - 2904ms 걸렸다\n\n#   6.2절의 this 문제와 같다\n#   클래스 객체도 공개되어 있다\n\n\n# --- 상속하면 ---\n\n$ cat InheritLock.java | grep -A6 'class Child'\nstatic class Parent { synchronized void work() { sleep(1000); } }\nstatic class Child extends Parent { synchronized void extra() { sleep(1000); } }\n\n$ java -cp out:libs/* InheritLock\n00:57:36.204 [a] INFO  InheritLock - work 진입\n00:57:37.208 [b] INFO  InheritLock - extra 진입\nreal\t0m2.412s\n\n#   둘 다 this 라 같은 락이다\n#   부모가 어디에 락을 걸었는지 모르면 겹친다\n\n\n# --- 어떤 락으로 지키는지 적어 둔다 ---\n\n$ cat Documented.java | grep -B2 -A4 'GuardedBy'\nprivate final Object lock = new Object();\n\n@GuardedBy(\"lock\")\nprivate int count;\n\n@GuardedBy(\"Service.class\")\nprivate static int total;\n\n$ grep -rn 'GuardedBy' src/main/java/ | wc -l\n      12\n$ grep -rn -A2 'private.*int total' src/main/java/ | grep -c 'GuardedBy'\n1\n\n#   주석이지만 검사 도구가 읽는다\n#   무엇을 무엇으로 지키는지 적는 습관이 이 절의 결론이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '두 락'           '클래스 객체와 인스턴스' \\\n  '서로'            '안 막는다' \\\n  '인스턴스 다르면' '락도 다름' \\\n  '섞으면'          '8개 인스턴스에 0/20' \\\n  '싱글턴 테스트'   '20/20 통과' \\\n  '고침'            '상태에 맞는 락' \\\n  '전용 락'         '둘로 나눔' \\\n  '둘 다 만지면'    '순서를 정해야' \\\n  '뒤집으면'        '데드락' \\\n  '클래스 객체'     '밖에서도 잠금' \\\n  '상속'            '같은 this' \\\n  '적어 두기'       'GuardedBy'\n\n두 락                      클래스 객체와 인스턴스\n서로                       안 막는다\n인스턴스 다르면            락도 다름\n섞으면                     8개 인스턴스에 0/20\n싱글턴 테스트              20/20 통과\n고침                       상태에 맞는 락\n전용 락                    둘로 나눔\n둘 다 만지면               순서를 정해야\n뒤집으면                   데드락\n클래스 객체                밖에서도 잠금\n상속                       같은 this\n적어 두기                  GuardedBy",
+   "note": "**`static synchronized` 와 인스턴스 `synchronized` 가 동시에 들어가 1.4초에** 끝난다.\n\n**`static` 필드를 인스턴스 락으로 지키면 인스턴스가 8개일 때 0/20 으로** 틀린다.\n\n**그 코드가 인스턴스 하나짜리 테스트에서는 20/20** 통과한다.\n\n**두 락을 잡는 순서를 뒤집은 코드를 섞으면 `Found one Java-level deadlock`** 이다.\n\n**부모와 자식의 `synchronized` 메서드는 둘 다 `this` 라 서로** 막는다."
+  }
+ ],
+ "recap": [
+  "클래스 객체 락과 인스턴스 락은 완전히 다른 락이라 서로를 막지 않는다.",
+  "static 상태를 인스턴스 락으로 지키면 인스턴스가 여럿일 때 깨진다.",
+  "그 버그는 싱글턴으로 테스트하면 안 잡힌다.",
+  "규칙은 하나다 — 한 상태는 언제나 같은 락으로 지킨다.",
+  "무엇을 무엇으로 지키는지 코드에 적어 둔다."
+ ],
+ "drills": [
+  {
+   "task": "static 과 인스턴스 락이 동시에 들어가는 것을 확인한다.",
+   "done_when": "시간으로 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "static 필드를 인스턴스 락으로 지키고 인스턴스 수를 늘려 본다.",
+   "done_when": "깨지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "같은 코드를 인스턴스 하나로 테스트해 본다.",
+   "done_when": "통과하는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "GuardedBy 로 어떤 락이 지키는지 적어 둔다.",
+   "done_when": "모든 공유 필드에 적는다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "static synchronized 가 잠그는 것은.",
+   "a": "그 클래스의 클래스 객체다."
+  },
+  {
+   "q": "둘이 서로를 막나.",
+   "a": "안 막는다. 완전히 다른 락이다."
+  },
+  {
+   "q": "static 필드를 인스턴스 락으로 지키면.",
+   "a": "인스턴스가 여럿이 되는 순간 깨진다."
+  },
+  {
+   "q": "이 버그가 테스트에서 왜 안 잡히나.",
+   "a": "테스트가 대개 인스턴스를 하나만 만들어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "클래스 객체 락",
+   "what": "static synchronized 가 잠그는 락. 클래스마다 하나다."
+  },
+  {
+   "term": "GuardedBy",
+   "what": "이 필드를 어떤 락이 지키는지 적어 두는 표시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  }
+ ]
+}
