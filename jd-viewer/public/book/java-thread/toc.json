@@ -357,7 +357,7 @@
           "title": "tryLock",
           "summary": "못 얻으면 포기한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -365,7 +365,7 @@
           "title": "인터럽트 가능한 대기",
           "summary": "기다리다 취소한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
@@ -373,7 +373,7 @@
           "title": "공정성",
           "summary": "순서를 보장하면 느려진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",

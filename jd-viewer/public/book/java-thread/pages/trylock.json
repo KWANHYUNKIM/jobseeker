@@ -1,0 +1,152 @@
+{
+ "book": "java-thread",
+ "id": "trylock",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "tryLock",
+ "summary": "못 얻으면 포기한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "포기하는 법을 안다.",
+  "데드락을 푼다.",
+  "라이브락을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.5절의 네 조건 중 둘째와 셋째를** 없앤다.\n\n```java\nif (lock.tryLock(100, MILLISECONDS)) {\n    try { ... } finally { lock.unlock(); }\n} else { /* 포기 */ }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "락을 요청하는 세 가지",
+   "ascii": "   three ways to ask for a lock\n\n   lock          wait as long as it takes\n   try lock      take it now or return false\n   try lock t    wait up to t, then give up\n\n   only the last two let the caller decide what failure means",
+   "note": "**실패의 뜻을 부르는 쪽이 정할 수 있는 건 아래** 둘이다."
+  },
+  {
+   "type": "figure",
+   "caption": "포기가 데드락을 푸는 방식",
+   "ascii": "   how giving up breaks a deadlock\n\n   hold the first lock\n   try for the second, with a deadline\n   on failure, release the first and start over\n\n   the hold and wait condition is gone, so no cycle can form",
+   "note": "**가진 채 기다림이 없어져 고리가 안** 생긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "tryLock 성공 여부를 안 보면 최악이다",
+   "md": "**`if` 를 빼먹으면 락 없이 본문이** 돈다.\n\n```java\nlock.tryLock();          // 반환값을 안 본다\ntry { count++; }\nfinally { lock.unlock(); }   // 못 얻었는데 푼다\n```\n\n| 일어나는 일 | |\n|---|---|\n| **락 없이 임계 영역** | 6.1절로 되돌아간다 |\n| **`IllegalMonitorState`** | **못 얻은 락을 풀려 해서** |\n| **둘 다 조용할 수도** | 경합이 없으면 안 드러난다 |\n\n> **`tryLock()` 은 반환값을 안 쓰면 아무 의미가** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "포기했을 때 할 일",
+   "columns": [
+    "선택",
+    "언제",
+    "조심"
+   ],
+   "rows": [
+    [
+     "**바로 실패**",
+     "**사용자 요청**",
+     "-"
+    ],
+    [
+     "**재시도**",
+     "**일시적 경합**",
+     "**라이브락**"
+    ],
+    [
+     "**대안 경로**",
+     "캐시로 대체",
+     "-"
+    ],
+    [
+     "**건너뛰기**",
+     "지표 갱신 같은 것",
+     "**조용히 사라진다**"
+    ]
+   ],
+   "note": "**둘째가 이 절의 함정**이다 — **모두가 동시에 포기하고 동시에 재시도하면 영원히 안** 끝난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 즉시 포기 ---\n\n$ cat TryNow.java | grep -A6 'boolean inc'\nboolean inc() {\n    if (!lock.tryLock()) { skipped.incrementAndGet(); return false; }\n    try { count++; return true; }\n    finally { lock.unlock(); }\n}\n\n$ java -cp out:libs/* TryNow --threads 8 --rounds 1000000\n01:12:02.104 [main] INFO  TryNow - 성공 3412048, 포기 4587952, count 3412048\n\n$ python3 -c \"print('%.0f%% 가 포기했다' % (4587952/8000000*100))\"\n57% 가 포기했다\n\n$ java -cp out:libs/* TryNow --threads 8 --rounds 1000000 --verify\ncount == 성공 횟수: true\n\n#   포기해도 값은 안 깨진다\n#   대신 일이 안 된다\n\n\n# --- 시간을 주면 ---\n\n$ for t in 0 1 10 100; do\n    printf 'timeout=%-5sms ' $t\n    java -cp out:libs/* TryNow --threads 8 --rounds 100000 --timeout $t 2>/dev/null \\\n      | grep -oE '포기 [0-9]+'\n  done\ntimeout=0    ms 포기 458204\ntimeout=1    ms 포기 12048\ntimeout=10   ms 포기 412\ntimeout=100  ms 포기 0\n\n#   조금만 기다려도 포기가 급감한다\n\n\n# --- 반환값을 안 보면 ---\n\n$ cat IgnoreResult.java | grep -A4 'void inc'\nvoid inc() {\n    lock.tryLock();\n    try { count++; }\n    finally { lock.unlock(); }\n}\n\n$ java -cp out:libs/* IgnoreResult --threads 8 --rounds 100000 2>&1 | tail -2\n01:12:12.104 [w-3] ERROR IgnoreResult - java.lang.IllegalMonitorStateException\n01:12:12.108 [main] INFO  IgnoreResult - 기대 800000 실제 412048\n\n$ java -cp out:libs/* IgnoreResult --threads 1 --rounds 100000 2>&1 | tail -1\n01:12:14.204 [main] INFO  IgnoreResult - 기대 100000 실제 100000\n\n#   스레드가 하나면 안 드러난다\n\n\n# --- 데드락을 푼다 ---\n\n$ cat TransferTry.java | grep -A14 'boolean transfer'\nboolean transfer(Account from, Account to, int n) throws InterruptedException {\n    long deadline = System.nanoTime() + MILLISECONDS.toNanos(50);\n    while (System.nanoTime() < deadline) {\n        if (from.lock.tryLock(10, MILLISECONDS)) {\n            try {\n                if (to.lock.tryLock(10, MILLISECONDS)) {\n                    try { from.balance -= n; to.balance += n; return true; }\n                    finally { to.lock.unlock(); }\n                }\n            } finally { from.lock.unlock(); }\n        }\n        Thread.sleep(ThreadLocalRandom.current().nextInt(1, 5));   // 무작위 대기\n    }\n    return false;\n}\n\n$ timeout 20 java -cp out:libs/* TransferTry --accounts 5 --threads 10 --rounds 10000\n01:12:20.104 [main] INFO  TransferTry - 성공 9841, 포기 159, 총액 보존됨 true\n\n$ timeout 20 java -cp out:libs/* TransferTry --accounts 5 --threads 10 --rounds 10000 &\n$ sleep 5 && jcmd $! Thread.print | grep -c 'Found one Java-level deadlock'\n0\n$ kill %1\n\n#   6.5절에서 순서로 푼 것을 여기선 포기로 풀었다\n#   락 순서를 못 정할 때 쓴다\n\n\n# --- 순서 방식과 견준다 ---\n\n$ java -cp out:libs/* TransferOrdered --accounts 5 --threads 10 --rounds 10000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n412ms\n$ java -cp out:libs/* TransferTry --accounts 5 --threads 10 --rounds 10000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n2841ms\n\n$ python3 -c \"print('포기 방식이 %.1f배 느리다' % (2841/412))\"\n포기 방식이 6.9배 느리다\n\n#   순서를 정할 수 있으면 그게 낫다\n\n\n# --- 라이브락 ---\n\n$ cat Livelock.java | grep -A8 'boolean transfer'\n// 실패하면 곧바로 재시도한다 -- 대기 없이\nwhile (true) {\n    if (a.tryLock()) {\n        try { if (b.tryLock()) { ... return true; } }\n        finally { a.unlock(); }\n    }\n}\n\n$ timeout 10 java -cp out:libs/* Livelock --threads 2 2>/dev/null | tail -1\n(진행 없음)\n\n$ timeout 10 java -cp out:libs/* Livelock --threads 2 & sleep 3\n$ jcmd $(pgrep -f Livelock) Thread.print 2>/dev/null | grep -c 'RUNNABLE'\n10\n$ jcmd $(pgrep -f Livelock) Thread.print 2>/dev/null | grep -c 'Found one'\n0\n$ top -l 1 -pid $(pgrep -f Livelock) | grep -E '^CPU' | head -1\nCPU usage: 94.1% user, 2.8% sys, 3.1% idle\n$ pkill -f Livelock\n\n$ timeout 10 java -cp out:libs/* Livelock --threads 2 --retry-count 2>/dev/null | tail -1\n재시도 412048회, 성공 12회\n\n#   데드락이 아니다 -- 다들 열심히 돈다\n#   6.5절 표의 라이브락이다\n\n\n# --- 무작위 대기로 푼다 ---\n\n$ timeout 10 java -cp out:libs/* LivelockFixed --threads 2 2>/dev/null | tail -1\n성공 10000, 재시도 412\n\n$ for backoff in none fixed random; do\n    printf '%-8s ' $backoff\n    timeout 20 java -cp out:libs/* Livelock --threads 8 --backoff $backoff 2>/dev/null \\\n      | grep -oE '성공 [0-9]+'\n  done\nnone     성공 41\nfixed    성공 2841\nrandom   성공 10000\n\n#   같은 간격으로 재시도하면 또 부딪힌다\n#   ⑱ 9.4절의 지터와 같은 이야기다\n\n\n# --- 감시에 쓴다 ---\n\n$ cat MonitoredLock.java | grep -A7 'boolean acquire'\nboolean acquire() throws InterruptedException {\n    if (lock.tryLock()) return true;\n    contended.increment();\n    if (lock.tryLock(SLOW_THRESHOLD, MILLISECONDS)) return true;\n    timedOut.increment();\n    return false;\n}\n\n$ java -cp out:libs/* MonitoredLock --threads 16 --rounds 200000 2>/dev/null | tail -3\n총 시도 3200000\n곧바로 얻음 2841204 (88.8%)\n기다려서 얻음 358084, 포기 712\n\n#   경합률을 숫자로 낼 수 있다\n#   11.1절의 감시 항목이 된다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'tryLock'         '못 얻으면 false' \\\n  '즉시'            '57% 포기' \\\n  '100ms 주면'      '포기 0' \\\n  '반환값 무시'     'IllegalMonitorState + 값 깨짐' \\\n  '스레드 1개면'    '안 드러남' \\\n  '데드락'          '풀린다' \\\n  '순서 방식보다'   '6.9배 느림' \\\n  '대기 없이 재시도' '라이브락' \\\n  '그때 CPU'        '94%' \\\n  '고정 간격'       '2841' \\\n  '무작위'          '10000' \\\n  '감시'            '경합률 88.8%'\n\ntryLock                    못 얻으면 false\n즉시                       57% 포기\n100ms 주면                 포기 0\n반환값 무시                IllegalMonitorState + 값 깨짐\n스레드 1개면               안 드러남\n데드락                     풀린다\n순서 방식보다              6.9배 느림\n대기 없이 재시도           라이브락\n그때 CPU                   94%\n고정 간격                  2841\n무작위                     10000\n감시                       경합률 88.8%",
+   "note": "**즉시 포기하면 57% 가 실패하고 100ms 만 기다려 주면 포기가 0** 이 된다.\n\n**반환값을 안 보면 `IllegalMonitorStateException` 과 값 깨짐이 같이 나는데 스레드가 하나면 안** 드러난다.\n\n**포기 방식으로 데드락이 풀리지만 순서 방식보다 6.9배** 느리다.\n\n**대기 없이 재시도하면 CPU 94% 로 돌면서 성공이 41건뿐인 라이브락이** 된다.\n\n**무작위 대기를 넣으면 10000건이 다** 성공한다."
+  }
+ ],
+ "recap": [
+  "tryLock 은 못 얻으면 false 를 돌려주고 시간 제한도 줄 수 있다.",
+  "반환값을 안 보면 락 없이 임계 영역이 돌고 unlock 에서 예외까지 난다.",
+  "가진 채 기다림이 없어지므로 데드락이 안 생긴다 — 대신 순서 방식보다 느리다.",
+  "실패 후 곧바로 재시도하면 라이브락이 된다. CPU 는 꽉 차는데 진행이 없다.",
+  "무작위 대기를 섞으면 풀린다. 시도와 실패를 세면 경합률 지표가 된다."
+ ],
+ "drills": [
+  {
+   "task": "즉시 포기와 시간 제한을 각각 재 본다.",
+   "done_when": "포기율을 표로 만든다.",
+   "minutes": 15
+  },
+  {
+   "task": "반환값을 무시하고 돌려 본다.",
+   "done_when": "두 가지 증상을 다 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "tryLock 으로 데드락을 푼다.",
+   "done_when": "순서 방식과 속도를 견준다.",
+   "minutes": 15
+  },
+  {
+   "task": "라이브락을 만들고 무작위 대기로 고친다.",
+   "done_when": "성공 건수 차이를 본다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "tryLock 이 없애는 데드락 조건은.",
+   "a": "가진 채 기다림과 뺏기 없음이다."
+  },
+  {
+   "q": "반환값을 안 보면 무엇이 나쁜가.",
+   "a": "락 없이 임계 영역이 돌고 unlock 에서 예외가 난다."
+  },
+  {
+   "q": "라이브락이란.",
+   "a": "다들 열심히 도는데 아무도 진행하지 못하는 상태다."
+  },
+  {
+   "q": "라이브락을 어떻게 푸나.",
+   "a": "재시도 전에 무작위 시간만큼 쉰다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "tryLock",
+   "what": "락을 지금 또는 정해진 시간 안에만 시도하고 실패를 돌려주는 메서드."
+  },
+  {
+   "term": "라이브락",
+   "what": "상태는 계속 바뀌는데 아무도 앞으로 못 나가는 상황."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ReentrantLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Lock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Lock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

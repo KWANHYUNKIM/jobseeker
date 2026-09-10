@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "lock-interruptibly",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "인터럽트 가능한 대기",
+ "summary": "기다리다 취소한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "4.3절의 빈칸을 메운다.",
+  "종료가 되게 만든다.",
+  "예외 처리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 `synchronized` 진입 대기는 인터럽트에 안 반응한다고** 했다. **여기서** 반응한다."
+  },
+  {
+   "type": "figure",
+   "caption": "4장이 남긴 빈칸",
+   "ascii": "   the gap chapter four left open\n\n   synchronized entry   an interrupt sets the flag and nothing happens\n   lock                 the same\n   lock interruptibly   the wait ends with an exception\n\n   this is the only way to cancel a thread that is waiting for a lock",
+   "note": "**락을 기다리는 스레드를 취소하는 유일한** 방법이다."
+  },
+  {
+   "type": "figure",
+   "caption": "종료가 이걸 필요로 하는 이유",
+   "ascii": "   why shutdown needs it\n\n   shutdown now interrupts every worker\n   a worker blocked on a lock ignores that\n   await termination then reports failure\n\n   one method call changes the whole shutdown story",
+   "note": "**메서드 하나가 종료 이야기 전체를** 바꾼다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "lock() 도 인터럽트를 안 본다",
+   "md": "**`ReentrantLock` 이라고 다 되는 게** 아니다.\n\n| 메서드 | 인터럽트 |\n|---|---|\n| **`lock()`** | **안 본다** |\n| **`lockInterruptibly()`** | **예외로 나온다** |\n| **`tryLock()`** | 안 기다리니 무관 |\n| **`tryLock(t, unit)`** | **예외로 나온다** |\n\n> **`lock()` 은 플래그만 세워 두고 락을 얻은 뒤에** 돌아온다.\n> **4.4절의 복원이 여기서 필요**하다.\n\n```java\nlock.lock();\ntry { ... } finally { lock.unlock(); }\n// 여기서 Thread.currentThread().isInterrupted() 가 true 일 수 있다\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 4.3절의 그 실험 ---\n\n$ cat SyncNotInterruptible.java | grep -A3 'waiter'\n// holder 가 10초 쥐고 있는 동안 waiter 에게 인터럽트를 건다\n\n$ timeout 5 java -cp out:libs/* SyncNotInterruptible 2>/dev/null | tail -1\n01:15:02.408 [main] INFO  SyncNotInterruptible - 인터럽트 걸었다\n$ echo $?\n124\n\n$ cat LockInterruptible.java | grep -A6 'waiter'\nThread waiter = new Thread(() -> {\n    try { lock.lockInterruptibly(); try { } finally { lock.unlock(); } }\n    catch (InterruptedException e) { log.info(\"기다리다 취소됐다\"); }\n}, \"waiter\");\n\n$ java -cp out:libs/* LockInterruptible\n01:15:06.204 [waiter      ] INFO  LockInterruptible - 락 기다린다\n01:15:06.508 [waiter      ] INFO  LockInterruptible - 기다리다 취소됐다\n\nreal\t0m0.712s\n\n#   10초를 안 기다렸다\n#   4.3절 표의 넷 중 하나가 채워졌다\n\n\n# --- lock() 은 안 된다 ---\n\n$ cat PlainLock.java | grep -A4 'waiter'\nlock.lock();\ntry { log.info(\"들어왔다. 플래그 {}\", Thread.currentThread().isInterrupted()); }\nfinally { lock.unlock(); }\n\n$ java -cp out:libs/* PlainLock\n01:15:12.104 [waiter] INFO  PlainLock - 락 기다린다\n01:15:16.108 [waiter] INFO  PlainLock - 들어왔다. 플래그 true\n\nreal\t0m4.412s\n\n#   끝까지 기다렸다\n#   대신 플래그는 살아 있다\n#   4.4절에서 말한 그 복원이 이미 되어 있다\n\n\n# --- 상태가 다르다 ---\n\n$ java -cp out:libs/* PlainLock --hold & sleep 1\n$ jcmd $! Thread.print | grep -A3 '\"waiter\"' | tail -2\n   java.lang.Thread.State: WAITING (parking)\n\t- parking to wait for  <0x...> (a java.util.concurrent.locks.ReentrantLock$NonfairSync)\n$ kill %1\n\n$ java -cp out:libs/* SyncNotInterruptible --hold & sleep 1\n$ jcmd $! Thread.print | grep -A2 '\"waiter\"' | tail -1\n   java.lang.Thread.State: BLOCKED (on object monitor)\n$ kill %1\n\n#   4.1절의 두 상태다\n#   BLOCKED 는 인터럽트가 안 통하고 WAITING(parking) 은 통한다\n\n\n# --- 종료가 되게 만든다 ---\n\n$ cat PoolLockWorker.java | grep -A6 'submit'\npool.submit(() -> {\n    while (!Thread.currentThread().isInterrupted()) {\n        lock.lock();                          // 여기서 막힌다\n        try { process(); } finally { lock.unlock(); }\n    }\n});\n\n$ java -cp out:libs/* PoolLockWorker --hold-lock --shutdown-after 1000\n01:15:22.104 [main] INFO  PoolLockWorker - shutdownNow 호출\n01:15:27.108 [main] INFO  PoolLockWorker - 5초 안에 끝났나 false\n\n$ java -cp out:libs/* PoolLockWorker --hold-lock --shutdown-after 1000 --interruptible\n01:15:30.204 [order-1] INFO  PoolLockWorker - 취소됨\n01:15:30.208 [main] INFO  PoolLockWorker - 5초 안에 끝났나 true\n\n#   4.5절의 그 종료가 완성된다\n\n\n# --- 예외 처리 ---\n\n$ cat CatchShape.java | grep -A8 'void work'\nvoid work() {\n    try {\n        lock.lockInterruptibly();\n        try { doWork(); }\n        finally { lock.unlock(); }            // 얻었을 때만 푼다\n    } catch (InterruptedException e) {\n        Thread.currentThread().interrupt();    // 4.4절\n    }\n}\n\n$ java -cp out:libs/* CatchShape --wrong 2>&1 | grep -c IllegalMonitorState\n1\n$ java -cp out:libs/* CatchShape 2>&1 | grep -c IllegalMonitorState\n0\n\n#   lockInterruptibly 를 try 밖에 둬야 한다\n#   예외로 나왔으면 락을 안 얻은 것이다\n\n\n# --- 값을 잰다 ---\n\n$ for m in lock lockInterruptibly; do\n    printf '%-20s ' $m\n    java -cp out:libs/* LockModeBench --mode $m --threads 8 --rounds 20000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nlock                 4128ms\nlockInterruptibly    4204ms\n\n$ python3 -c \"print('%.1f%% 차이' % ((4204-4128)/4128*100))\"\n1.8% 차이\n\n#   거의 공짜다\n#   기본으로 쓸 만하다\n\n\n# --- 4.3절 표를 다시 채운다 ---\n\n$ java -cp out:libs/* InterruptSurvey2 2>/dev/null\nsleep                    반응함\njoin                     반응함\nwait                     반응함\nBlockingQueue.take       반응함\nlockInterruptibly        반응함\ntryLock(t, unit)         반응함\nSocketChannel.read       반응함\nsynchronized 진입        안 함\nReentrantLock.lock       안 함\nInputStream.read         안 함\n계산 반복문              안 함\n\n$ java -cp out:libs/* InterruptSurvey2 2>/dev/null | grep -c '반응함'\n7\n\n#   4.3절에서 6개였다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '4.3절 빈칸'      '채워졌다' \\\n  'synchronized'    '안 됨' \\\n  'lock()'          '안 됨, 플래그만' \\\n  'lockInterruptibly' '0.7초에 취소' \\\n  '상태'            'BLOCKED 대 WAITING(parking)' \\\n  '종료'            'false 가 true 로' \\\n  '예외면'          '락을 안 얻은 것' \\\n  'try 위치'        'lockInterruptibly 는 밖에' \\\n  '값'              '1.8%' \\\n  '반응하는 것'     '6에서 7'\n\n4.3절 빈칸                 채워졌다\nsynchronized               안 됨\nlock()                     안 됨, 플래그만\nlockInterruptibly          0.7초에 취소\n상태                       BLOCKED 대 WAITING(parking)\n종료                       false 가 true 로\n예외면                     락을 안 얻은 것\ntry 위치                   lockInterruptibly 는 밖에\n값                         1.8%\n반응하는 것                6에서 7",
+   "note": "**`synchronized` 진입은 5초를 기다려도 안 깨지는데 `lockInterruptibly` 는 0.7초에** 취소된다.\n\n**`lock()` 은 끝까지 기다리고 대신 인터럽트 플래그가 `true` 로 남아** 있다.\n\n**덤프에서 `BLOCKED` 와 `WAITING (parking)` 으로 두 방식이** 갈린다.\n\n**풀 종료가 `awaitTermination` false 에서 true 로** 바뀐다.\n\n**값은 1.8% 차이라 사실상 공짜**다."
+  }
+ ],
+ "recap": [
+  "lockInterruptibly 는 락을 기다리는 중에도 인터럽트로 취소할 수 있다.",
+  "lock() 은 안 된다 — 플래그만 세워 두고 락을 얻은 뒤 돌아온다.",
+  "덤프에서 BLOCKED 와 WAITING (parking) 으로 두 방식이 구별된다.",
+  "이것 하나로 4.5절의 종료가 완성된다.",
+  "예외로 나왔으면 락을 안 얻은 것이므로 try 블록 밖에서 호출해야 한다."
+ ],
+ "drills": [
+  {
+   "task": "synchronized 와 lockInterruptibly 를 같은 상황에서 취소해 본다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "lock() 뒤에 인터럽트 플래그를 찍는다.",
+   "done_when": "살아 있는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "락에 막힌 풀을 종료해 본다.",
+   "done_when": "두 방식의 결과를 비교한다.",
+   "minutes": 15
+  },
+  {
+   "task": "try 위치를 잘못 두고 예외를 본다.",
+   "done_when": "올바른 모양을 익힌다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "락 대기 중 취소가 되는 메서드는.",
+   "a": "lockInterruptibly 와 시간 제한 tryLock 이다."
+  },
+  {
+   "q": "lock() 은 인터럽트에 어떻게 반응하나.",
+   "a": "안 한다. 플래그만 세워 두고 락을 얻은 뒤 돌아온다."
+  },
+  {
+   "q": "예외로 빠져나왔을 때 unlock 을 부르면.",
+   "a": "락을 안 얻었으므로 IllegalMonitorStateException 이 난다."
+  },
+  {
+   "q": "덤프에서 두 방식을 어떻게 가르나.",
+   "a": "BLOCKED 인지 WAITING (parking) 인지 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "lockInterruptibly",
+   "what": "락을 기다리는 동안 인터럽트로 취소될 수 있는 획득 방법."
+  },
+  {
+   "term": "parking",
+   "what": "명시적 락이 스레드를 재우는 방식. 덤프에 그렇게 찍힌다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ReentrantLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Lock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Lock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

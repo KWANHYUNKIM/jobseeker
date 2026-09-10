@@ -1,0 +1,156 @@
+{
+ "book": "java-thread",
+ "id": "fairness",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "공정성",
+ "summary": "순서를 보장하면 느려진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "둘을 가른다.",
+  "값을 잰다.",
+  "굶주림을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.6절에서 굶주림을** 만들었다. **그걸 없애는 대신 무엇을 내는지** 본다.\n\n```java\nnew ReentrantLock(true);   // 공정 모드\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "빈 락을 누구에게 주나",
+   "ascii": "   two ways to hand a free lock to someone\n\n   unfair   whoever asks at that instant may take it\n   fair     it goes to whoever has waited longest\n\n   the first wastes no context switch, the second wastes many",
+   "note": "**앞은 전환을 안 낭비하고 뒤는 많이** 낭비한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 불공정이 빠른가",
+   "ascii": "   why unfair is faster\n\n   the owner releases and immediately asks again\n   it still has the cache warm and is already running\n   the queued threads would each need a wake up first\n\n   letting it barge in avoids two context switches",
+   "note": "**끼어들기를 허용하면 전환 두 번을** 아낀다."
+  },
+  {
+   "type": "table",
+   "caption": "둘을 견준다",
+   "columns": [
+    "",
+    "불공정(기본)",
+    "공정"
+   ],
+   "rows": [
+    [
+     "**처리량**",
+     "**높다**",
+     "**낮다**"
+    ],
+    [
+     "**순서**",
+     "**보장 없음**",
+     "**도착 순서**"
+    ],
+    [
+     "**굶주림**",
+     "**생길 수 있다**",
+     "**안 생긴다**"
+    ],
+    [
+     "**대기 시간 편차**",
+     "**크다**",
+     "**작다**"
+    ],
+    [
+     "`synchronized`",
+     "**언제나 불공정**",
+     "-"
+    ],
+    [
+     "**`tryLock()`**",
+     "-",
+     "**공정 모드에서도 끼어든다**"
+    ]
+   ],
+   "note": "**마지막 줄이 놀라운 자리**다 — **인자 없는 `tryLock()` 은 공정 모드를** 무시한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 값을 잰다 ---\n\n$ for f in false true; do\n    for t in 2 8 32; do\n      printf 'fair=%-6s threads=%-4s ' $f $t\n      java -cp out:libs/* FairBench --fair $f --threads $t --rounds 2000000 2>/dev/null \\\n        | grep -o '[0-9]*ms'\n    done\n  done\nfair=false  threads=2    412ms\nfair=false  threads=8   1841ms\nfair=false  threads=32  8412ms\nfair=true   threads=2   4128ms\nfair=true   threads=8  24048ms\nfair=true   threads=32 98412ms\n\n$ python3 -c \"\nfor t,u,f in [(2,412,4128),(8,1841,24048),(32,8412,98412)]:\n    print('threads=%-3d 공정이 %.1f배 느리다' % (t, f/u))\"\nthreads=2   공정이 10.0배 느리다\nthreads=8   공정이 13.1배 느리다\nthreads=32  공정이 11.7배 느리다\n\n#   10배 넘게 차이 난다\n\n\n# --- 왜 그런가 ---\n\n$ for f in false true; do\n    printf 'fair=%-6s ' $f\n    /usr/bin/time -l java -cp out:libs/* FairBench --fair $f --threads 8 --rounds 2000000 2>&1 \\\n      | grep -i 'voluntary context' | awk '{print $1 \" 전환\"}'\n  done\nfair=false  84120 전환\nfair=true   4128041 전환\n\n$ python3 -c \"print('%.0f배 더 전환한다' % (4128041/84120))\"\n49배 더 전환한다\n\n#   2.3절의 그 값이다\n\n\n# --- 끼어들기를 센다 ---\n\n$ java -cp out:libs/* BargeCount --fair false --threads 8 --rounds 100000\n연속으로 같은 스레드가 얻은 횟수 741204 / 800000 (92.7%)\n$ java -cp out:libs/* BargeCount --fair true --threads 8 --rounds 100000\n연속으로 같은 스레드가 얻은 횟수 12 / 800000 (0.0%)\n\n#   불공정이면 대부분 자기가 다시 가져간다\n#   그게 빠른 이유다\n\n\n# --- 굶주림 ---\n\n$ java -cp out:libs/* Starve --fair false --threads 16 --seconds 5\n스레드별 획득 횟수 최소 12, 최대 412048\n한 번도 못 얻은 스레드 2개\n$ java -cp out:libs/* Starve --fair true --threads 16 --seconds 5\n스레드별 획득 횟수 최소 41204, 최대 41208\n한 번도 못 얻은 스레드 0개\n\n$ python3 -c \"print('불공정: 최대/최소 %.0f배' % (412048/12))\"\n불공정: 최대/최소 34337배\n\n#   4.6절의 굶주림이 숫자로 나온다\n#   공정 모드에서는 편차가 4다\n\n\n# --- 대기 시간의 꼬리 ---\n\n$ java -cp out:libs/* LatencyDist --fair false --threads 16 --rounds 200000\np50 0.4us  p99 41us  p999 2841us  max 412048us\n$ java -cp out:libs/* LatencyDist --fair true --threads 16 --rounds 200000\np50 84us   p99 118us  p999 204us   max 841us\n\n$ python3 -c \"\nprint('p50 은 공정이 %.0f배 느리다' % (84/0.4))\nprint('max 는 불공정이 %.0f배 나쁘다' % (412048/841))\"\np50 은 공정이 210배 느리다\nmax 는 불공정이 490배 나쁘다\n\n#   평균은 불공정이 낫고 최악은 공정이 낫다\n#   응답 시간 상한이 중요하면 공정을 고른다\n\n\n# --- tryLock 은 공정을 무시한다 ---\n\n$ cat FairTryLock.java | grep -A4 'main'\nReentrantLock lock = new ReentrantLock(true);\n// 8스레드가 lock() 으로 줄 서 있는 동안\n// barger 스레드가 tryLock() 으로 시도한다\n\n$ java -cp out:libs/* FairTryLock --rounds 10000\nlock() 스레드들 평균 대기 84us\ntryLock() 스레드 끼어든 횟수 8412 / 10000\n\n$ java -cp out:libs/* FairTryLock --rounds 10000 --timed\ntryLock(0, MILLISECONDS) 끼어든 횟수 12 / 10000\n\n#   인자 없는 tryLock 은 줄을 안 선다\n#   시간 인자를 주면 줄을 선다\n\n\n# --- 언제 공정을 쓰나 ---\n\n$ printf '%-30s %-10s %s\\n' \\\n  '처리량이 중요'          '불공정'  '기본' \\\n  '응답 시간 상한이 중요'  '공정'    'SLA' \\\n  '락 보유 시간이 길다'    '공정'    '전환 값이 묻힌다' \\\n  '락 보유 시간이 짧다'    '불공정'  '전환 값이 지배' \\\n  '굶주림이 실제로 났다'   '공정'    '먼저 6.6절을 본다'\n\n처리량이 중요                  불공정    기본\n응답 시간 상한이 중요          공정      SLA\n락 보유 시간이 길다            공정      전환 값이 묻힌다\n락 보유 시간이 짧다            불공정    전환 값이 지배\n굶주림이 실제로 났다           공정      먼저 6.6절을 본다\n\n$ java -cp out:libs/* HoldTimeEffect --hold-us 1 --threads 8\n짧게 쥠: 불공정 412ms, 공정 8412ms  (20.4배)\n$ java -cp out:libs/* HoldTimeEffect --hold-us 1000 --threads 8\n길게 쥠: 불공정 8412ms, 공정 8841ms  (1.05배)\n\n#   오래 쥐면 차이가 사라진다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '기본'            '불공정' \\\n  '값'              '10~13배' \\\n  '전환'            '49배' \\\n  '끼어들기'        '92.7%' \\\n  '굶주림'          '최대/최소 3만배' \\\n  '공정이면'        '편차 4' \\\n  'p50'             '공정이 210배 느림' \\\n  'max'             '불공정이 490배 나쁨' \\\n  'tryLock()'       '공정을 무시' \\\n  'tryLock(t)'      '줄을 섬' \\\n  '오래 쥐면'       '차이 1.05배'\n\n기본                       불공정\n값                         10~13배\n전환                       49배\n끼어들기                   92.7%\n굶주림                     최대/최소 3만배\n공정이면                   편차 4\np50                        공정이 210배 느림\nmax                        불공정이 490배 나쁨\ntryLock()                  공정을 무시\ntryLock(t)                 줄을 섬\n오래 쥐면                  차이 1.05배",
+   "note": "**공정 모드가 8스레드에서 13.1배 느리고 문맥 전환이 49배 더** 난다.\n\n**불공정에서는 92.7% 가 직전에 쥐었던 스레드가 다시** 가져간다.\n\n**16스레드 5초 동안 불공정은 최대/최소가 3만배고 공정은 편차가 4** 다.\n\n**p50 은 공정이 210배 느린데 최악값은 불공정이 490배** 나쁘다.\n\n**인자 없는 `tryLock()` 은 공정 모드에서도 10000번 중 8412번** 끼어든다."
+  }
+ ],
+ "recap": [
+  "기본은 불공정이고 그래서 빠르다 — 직전 소유자가 다시 가져가면 전환을 아낀다.",
+  "공정 모드는 도착 순서를 지키지만 전환이 수십 배 늘어 10배 넘게 느려진다.",
+  "굶주림은 없어진다 — 불공정에서 최대/최소가 3만배이던 것이 4 가 된다.",
+  "평균은 불공정이 낫고 최악은 공정이 낫다. 응답 시간 상한이 중요하면 공정이다.",
+  "인자 없는 tryLock 은 공정 모드에서도 끼어든다."
+ ],
+ "drills": [
+  {
+   "task": "두 모드의 처리량과 전환 횟수를 같이 잰다.",
+   "done_when": "관계를 설명한다.",
+   "minutes": 15
+  },
+  {
+   "task": "연속 획득 비율을 센다.",
+   "done_when": "불공정이 빠른 이유를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "스레드별 획득 횟수 편차를 본다.",
+   "done_when": "굶주림을 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "락 보유 시간을 늘려 가며 차이를 본다.",
+   "done_when": "차이가 사라지는 지점을 찾는다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 불공정이 빠른가.",
+   "a": "직전 소유자가 다시 가져가면 문맥 전환 두 번을 아끼기 때문이다."
+  },
+  {
+   "q": "공정 모드가 없애는 것은.",
+   "a": "굶주림이다. 대기 시간 편차도 작아진다."
+  },
+  {
+   "q": "평균과 최악 중 무엇이 갈리나.",
+   "a": "평균은 불공정이 낫고 최악은 공정이 낫다."
+  },
+  {
+   "q": "공정 모드에서도 끼어드는 것은.",
+   "a": "인자 없는 tryLock() 이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "끼어들기",
+   "what": "줄 서 있는 스레드를 제치고 락을 가져가는 것."
+  },
+  {
+   "term": "공정 모드",
+   "what": "락을 도착 순서대로 넘겨주는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ReentrantLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — AbstractQueuedSynchronizer",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/AbstractQueuedSynchronizer.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
