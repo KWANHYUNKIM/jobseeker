@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "create",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "스레드 만들기",
+ "summary": "Thread 와 Runnable.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "두 방법을 안다.",
+  "왜 둘째가 나은지 안다.",
+  "만든 뒤에 무엇이 생기는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2장에서 스레드가 무엇인지** 봤다. **이제 만든다**.\n\n```java\nnew Thread(() -> log.info(\"일한다\"), \"worker\").start();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "할 일을 알려 주는 두 방법",
+   "ascii": "   two ways to say what a thread should do\n\n   extend Thread     the work and the thread are one class\n   pass a Runnable   the work is a separate object handed in\n\n   the second one leaves the class free to extend something else",
+   "note": "**둘째는 클래스가 다른 것을 상속할 자리를 남겨** 둔다."
+  },
+  {
+   "type": "table",
+   "caption": "둘을 견준다",
+   "columns": [
+    "",
+    "Thread 상속",
+    "Runnable 전달"
+   ],
+   "rows": [
+    [
+     "**상속 자리**",
+     "**써 버린다**",
+     "**남는다**"
+    ],
+    [
+     "**일과 실행 수단**",
+     "**한 클래스**",
+     "**분리된다**"
+    ],
+    [
+     "재사용",
+     "**어렵다**",
+     "**스레드 풀에 그대로**(11장)"
+    ],
+    [
+     "람다",
+     "안 된다",
+     "**된다**"
+    ],
+    [
+     "**테스트**",
+     "스레드를 띄워야",
+     "**`run()` 을 직접 부른다**"
+    ],
+    [
+     "쓰는 자리",
+     "거의 없다",
+     "**대부분**"
+    ]
+   ],
+   "note": "**넷째 줄이 실무의 이유**다 — **`Runnable` 은 `ExecutorService` 에 그대로 넣을 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 무엇을 실행하나",
+   "ascii": "   who runs what\n\n   main    creates the Thread object      still one thread here\n   main    calls start                    a new os thread appears\n   new     runs run, then disappears\n\n   start returns immediately, it does not wait for run",
+   "note": "**`start()` 는 곧바로 돌아오고 `run()` 을 기다리지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "Runnable 은 그냥 함수 하나다",
+   "md": "**추상 메서드가 하나뿐이라 람다가** 된다.\n\n```java\n@FunctionalInterface\npublic interface Runnable {\n    void run();\n}\n```\n\n> **인자도 없고 반환도 없고 검사 예외도 못** 던진다.\n> **그 셋이 3.7절과 11.3절의 이야기를** 만든다.\n\n| 없는 것 | 어디서 해결하나 |\n|---|---|\n| **반환값** | **`Callable`**(11.3절) |\n| **검사 예외** | `Callable` |\n| **결과 받기** | **`Future`**(11.3절) |\n\n> **지금은 \"돌려주는 게 없다\" 는 것만 기억해** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- ① Thread 를 상속한다 ---\n\n$ cat ExtendThread.java\npublic class ExtendThread extends Thread {\n    ExtendThread(String name) { super(name); }\n\n    @Override public void run() {\n        log.info(\"일한다\");\n    }\n\n    public static void main(String[] args) {\n        log.info(\"만들기 전\");\n        new ExtendThread(\"w-0\").start();\n        new ExtendThread(\"w-1\").start();\n        log.info(\"만든 뒤\");\n    }\n}\n\n$ java -cp out:libs/* ExtendThread\n00:03:02.104 [main        ] INFO  ExtendThread - 만들기 전\n00:03:02.108 [main        ] INFO  ExtendThread - 만든 뒤\n00:03:02.108 [w-0         ] INFO  ExtendThread - 일한다\n00:03:02.108 [w-1         ] INFO  ExtendThread - 일한다\n\n#   \"만든 뒤\" 가 먼저 찍혔다\n#   start() 가 안 기다린다\n\n\n# --- ② Runnable 을 넘긴다 ---\n\n$ cat PassRunnable.java\npublic class PassRunnable {\n    static class Work implements Runnable {\n        @Override public void run() { log.info(\"일한다\"); }\n    }\n\n    public static void main(String[] args) {\n        Runnable work = new Work();\n        new Thread(work, \"w-0\").start();\n        new Thread(work, \"w-1\").start();       // 같은 객체를 둘이 쓴다\n    }\n}\n\n$ java -cp out:libs/* PassRunnable\n00:03:06.204 [w-0         ] INFO  PassRunnable - 일한다\n00:03:06.204 [w-1         ] INFO  PassRunnable - 일한다\n\n$ ./run.sh PassRunnable 10 '일한다' | head -2\n  20 일한다\n\n#   같은 Runnable 객체를 둘이 나눠 썼다\n#   2.2절에서 본 그 공유다\n\n\n# --- 상속 자리를 써 버린다 ---\n\n$ cat CannotExtend.java\nclass Base { void help() {} }\n\nclass Worker extends Thread, Base { }     // 안 된다\n\n$ javac -d out CannotExtend.java 2>&1 | head -2\nCannotExtend.java:3: error: '{' expected\nclass Worker extends Thread, Base { }\n                           ^\n\n$ cat CanImplement.java\nclass Worker extends Base implements Runnable {\n    @Override public void run() { help(); }\n}\n\n$ javac -d out CanImplement.java && echo '컴파일 됨'\n컴파일 됨\n\n#   Runnable 은 인터페이스라 자리를 안 쓴다\n\n\n# --- 무엇이 생겼나 ---\n\n$ cat WhatExists.java | grep -A6 'main'\npublic static void main(String[] args) throws Exception {\n    Thread t = new Thread(() -> sleep(3000), \"w-0\");\n    log.info(\"start 전 상태 {}\", t.getState());\n    t.start();\n    log.info(\"start 후 상태 {}\", t.getState());\n    Thread.sleep(200);\n    log.info(\"조금 뒤 상태 {}\", t.getState());\n}\n\n$ java -cp out:libs/* WhatExists &\n00:03:12.104 [main        ] INFO  WhatExists - start 전 상태 NEW\n00:03:12.108 [main        ] INFO  WhatExists - start 후 상태 RUNNABLE\n00:03:12.310 [main        ] INFO  WhatExists - 조금 뒤 상태 TIMED_WAITING\n\n$ sleep 1 && jcmd $! Thread.print | grep -A2 '\"w-0\"'\n\"w-0\" #21 [12547] prio=5 os_prio=31 cpu=0.41ms elapsed=1.20s\n   java.lang.Thread.State: TIMED_WAITING (sleeping)\n\n#   4.1절에서 이 상태들을 다 본다\n\n\n# --- start 전에는 OS 스레드가 없다 ---\n\n$ cat CountBefore.java | grep -A5 'main'\npublic static void main(String[] args) throws Exception {\n    log.info(\"만들기 전 {}\", Thread.activeCount());\n    Thread[] ts = new Thread[100];\n    for (int i = 0; i < 100; i++) ts[i] = new Thread(() -> sleep(3000));\n    log.info(\"객체만 만든 뒤 {}\", Thread.activeCount());\n    for (Thread t : ts) t.start();\n    log.info(\"start 한 뒤 {}\", Thread.activeCount());\n}\n\n$ java -cp out:libs/* CountBefore\n00:03:18.104 [main        ] INFO  CountBefore - 만들기 전 1\n00:03:18.108 [main        ] INFO  CountBefore - 객체만 만든 뒤 1\n00:03:18.121 [main        ] INFO  CountBefore - start 한 뒤 101\n\n#   객체 100개를 만들어도 스레드는 안 는다\n#   2.5절에서 4us 와 81us 로 갈렸던 이유다\n\n\n# --- 이름을 안 주면 ---\n\n$ cat NoName.java | grep -A2 'for'\nfor (int i = 0; i < 3; i++)\n    new Thread(() -> log.info(\"일한다\")).start();\n\n$ java -cp out:libs/* NoName\n00:03:22.104 [Thread-0    ] INFO  NoName - 일한다\n00:03:22.104 [Thread-1    ] INFO  NoName - 일한다\n00:03:22.105 [Thread-2    ] INFO  NoName - 일한다\n\n$ java -cp out:libs/* NoNameInPool\n00:03:24.204 [pool-1-thread-1] INFO  NoNameInPool - 일한다\n00:03:24.204 [pool-1-thread-2] INFO  NoNameInPool - 일한다\n\n#   기본 이름이 붙는다\n#   3.6절에서 이름을 짓는 이야기를 한다\n\n\n# --- 같은 Runnable 을 여럿이 쓰면 ---\n\n$ cat SharedRunnable.java\nstatic class Counting implements Runnable {\n    int count = 0;                          // 인스턴스 필드다\n    @Override public void run() {\n        for (int i = 0; i < 100000; i++) count++;\n    }\n}\n\npublic static void main(String[] args) throws Exception {\n    Counting shared = new Counting();\n    Thread[] ts = new Thread[4];\n    for (int i = 0; i < 4; i++) { ts[i] = new Thread(shared, \"w-\" + i); ts[i].start(); }\n    for (Thread t : ts) t.join();\n    log.info(\"기대 400000 실제 {}\", shared.count);\n}\n\n$ ./run.sh SharedRunnable 20 '[0-9]+$' | head -3\n   2 400000\n   1 312041\n   1 298412\n\n$ ./run.sh SharedRunnable 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1\"/20\"}'\n맞음 2/20\n\n#   2.2절의 인스턴스 필드다\n#   Runnable 을 나눠 쓰면 그 안의 필드도 나눠 쓴다\n\n\n# --- 따로 주면 ---\n\n$ cat SeparateRunnable.java | grep -A3 'for (int i'\nfor (int i = 0; i < 4; i++) {\n    Counting own = new Counting();          // 각자 하나씩\n    ts[i] = new Thread(own, \"w-\" + i);\n}\n\n$ ./run.sh SeparateRunnable 20 'each=100000' | head -2\n  80 each=100000\n\n#   20번 x 4개가 다 맞았다\n\n\n# --- 실행 순서는 정해지지 않는다 ---\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* ExtendThread 2>/dev/null | awk '{printf \"%s\", substr($3,2,3)}'\n    echo\n  done\nmai mai w-0 w-1\nmai mai w-1 w-0\nmai w-0 mai w-1\nmai mai w-0 w-1\nmai mai w-1 w-0\nmai w-0 w-1 mai\nmai mai w-0 w-1\nmai mai w-0 w-1\nmai w-0 mai w-1\nmai mai w-1 w-0\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* ExtendThread 2>/dev/null | awk '{printf \"%s\", substr($3,2,3)}'; echo\n  done | sort | uniq -c | sort -rn\n  16 maimaiw-0w-1\n   6 maimaiw-1w-0\n   5 maiw-0maiw-1\n   3 maiw-0w-1mai\n\n#   1.1절의 그 표다\n#   start 한 순서와 도는 순서가 다르다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '두 방법'         '상속과 Runnable' \\\n  '상속'            '자리를 씀' \\\n  'Runnable'        '인터페이스, 람다 됨' \\\n  'start'           '안 기다림' \\\n  '객체만'          '스레드 안 늚' \\\n  'start 후'        '1 에서 101' \\\n  '이름 없으면'     'Thread-0' \\\n  'Runnable 공유'   '필드도 공유, 2/20' \\\n  '따로 주면'       '80/80' \\\n  '순서'            '네 가지'\n\n두 방법                    상속과 Runnable\n상속                       자리를 씀\nRunnable                   인터페이스, 람다 됨\nstart                      안 기다림\n객체만                     스레드 안 늚\nstart 후                   1 에서 101\n이름 없으면                Thread-0\nRunnable 공유              필드도 공유, 2/20\n따로 주면                  80/80\n순서                       네 가지",
+   "note": "**`start()` 가 안 기다려서 \"만든 뒤\" 가 작업보다 먼저** 찍힌다.\n\n**`Thread` 객체를 100개 만들어도 `activeCount` 는 1 이고 `start()` 뒤에 101 이** 된다.\n\n**같은 `Runnable` 을 넷이 나눠 쓰면 그 안의 필드도 공유돼 2/20**이다.\n\n**각자 하나씩 주면 20번 × 4개 = 80줄이 다** 맞는다.\n\n**30번 돌리면 실행 순서가 네 가지로** 나온다."
+  }
+ ],
+ "recap": [
+  "스레드가 할 일을 알려 주는 방법은 Thread 상속과 Runnable 전달 둘이다.",
+  "Runnable 이 나은 건 상속 자리를 안 쓰고 람다가 되고 스레드 풀에 그대로 넣을 수 있어서다.",
+  "start() 는 곧바로 돌아오고 run() 이 끝나기를 기다리지 않는다.",
+  "Thread 객체를 만드는 것과 start() 하는 것은 다르다 — 객체만으로는 OS 스레드가 안 생긴다.",
+  "같은 Runnable 객체를 여럿이 쓰면 그 안의 필드가 공유된다."
+ ],
+ "drills": [
+  {
+   "task": "두 방법으로 각각 스레드를 만들어 본다.",
+   "done_when": "출력이 같은 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "Thread 객체만 100개 만들고 activeCount 를 찍는다.",
+   "done_when": "start 전후 차이를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 Runnable 을 공유했을 때와 따로 줬을 때의 재현율을 비교한다.",
+   "done_when": "필드 공유를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "실행 순서를 30번 돌려 분포로 만든다.",
+   "done_when": "여러 패턴이 나오는 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Runnable 을 쓰는 이유는.",
+   "a": "상속 자리를 안 쓰고 람다가 되며 스레드 풀에 그대로 넣을 수 있어서다."
+  },
+  {
+   "q": "start() 는 무엇을 기다리나.",
+   "a": "아무것도 안 기다린다. 곧바로 돌아온다."
+  },
+  {
+   "q": "Thread 객체 100개를 만들면 스레드가 몇 개 생기나.",
+   "a": "0개다. start() 를 해야 OS 스레드가 생긴다."
+  },
+  {
+   "q": "같은 Runnable 을 여럿이 쓰면.",
+   "a": "그 객체의 필드가 공유돼 경쟁 상태가 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Runnable",
+   "what": "인자도 반환도 없는 추상 메서드 하나짜리 인터페이스."
+  },
+  {
+   "term": "start",
+   "what": "OS 스레드를 만들어 run() 을 그 위에서 실행시키는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Runnable",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runnable.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

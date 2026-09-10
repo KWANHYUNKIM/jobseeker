@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "start-vs-run",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "start 와 run",
+ "summary": "한 글자 차이로 스레드가 안 생긴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "둘의 차이를 본다.",
+  "왜 조용한지 안다.",
+  "두 번 부르면 어떻게 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`run()` 을 부르면 컴파일도 되고 실행도** 된다. **스레드만 안** 생긴다.\n\n```java\nt.run();     // 그냥 메서드 호출이다\nt.start();   // 스레드가 생긴다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "닮아 보이는 두 호출",
+   "ascii": "   two calls that look alike\n\n   run     an ordinary method call, on the caller's stack\n   start   asks the os for a thread, which then calls run\n\n   the first one never creates anything",
+   "note": "**앞의 것은 아무것도 안** 만든다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "오류가 안 난다는 게 문제다",
+   "md": "**`run()` 은 `Thread` 의 public 메서드**다.\n\n> **컴파일러가 안** 막는다.\n> **실행도** 된다.\n> **결과도 맞게** 나온다 — **순서대로 도니까**.\n\n| 그래서 생기는 일 | |\n|---|---|\n| **테스트가 통과** | 순차 실행이라 경쟁이 없다 |\n| **성능이 안 남** | **병렬이 아니다** |\n| **로그를 봐야 안다** | **스레드 이름이 전부 main** |\n\n> **1.3절에서 로그에 스레드 이름을 넣은 이유가 여기서 처음** 쓰인다.\n> **이름이 없으면 이 실수를 눈으로 못** 잡는다."
+  },
+  {
+   "type": "figure",
+   "caption": "start 는 한 번뿐이다",
+   "ascii": "   start can be called once, and only once\n\n   new        start is allowed\n   started    start throws\n   finished   start still throws\n\n   a finished thread object cannot be restarted",
+   "note": "**끝난 스레드 객체는 다시 시작할 수** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 다른가",
+   "columns": [
+    "",
+    "run()",
+    "start()"
+   ],
+   "rows": [
+    [
+     "**누가 실행**",
+     "**부른 스레드**",
+     "**새 스레드**"
+    ],
+    [
+     "**스택**",
+     "부른 쪽 스택에 프레임",
+     "**새 스택**"
+    ],
+    [
+     "돌아오는 시점",
+     "**끝나야**",
+     "**곧바로**"
+    ],
+    [
+     "**OS 스레드**",
+     "**안 생긴다**",
+     "생긴다"
+    ],
+    [
+     "여러 번",
+     "**된다**",
+     "**두 번째는 예외**"
+    ],
+    [
+     "**병렬**",
+     "**아니다**",
+     "맞다"
+    ]
+   ],
+   "note": "**마지막 줄이 결과**지만 **셋째 줄이 눈으로 보기** 쉽다 — **`start()` 뒤 로그가 먼저** 찍힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- run 을 부른다 ---\n\n$ cat RunNotStart.java | grep -A6 'main'\npublic static void main(String[] args) {\n    Thread a = new Thread(() -> work(\"A\"), \"w-a\");\n    Thread b = new Thread(() -> work(\"B\"), \"w-b\");\n    long t = System.currentTimeMillis();\n    a.run(); b.run();                       // start 가 아니다\n    log.info(\"끝 {}ms\", System.currentTimeMillis() - t);\n}\nstatic void work(String tag) { sleep(1000); log.info(\"{} 완료\", tag); }\n\n$ javac -d out RunNotStart.java && echo '컴파일 통과'\n컴파일 통과\n\n$ java -cp out:libs/* RunNotStart\n00:05:02.104 [main        ] INFO  RunNotStart - A 완료\n00:05:03.108 [main        ] INFO  RunNotStart - B 완료\n00:05:03.108 [main        ] INFO  RunNotStart - 끝 2007ms\n\n#   전부 main 이다\n#   2초 걸렸다 -- 순서대로 돌았다\n\n\n# --- start 로 바꾼다 ---\n\n$ sed -i '' 's/a.run(); b.run();/a.start(); b.start(); a.join(); b.join();/' RunNotStart.java\n$ javac -d out RunNotStart.java\n$ java -cp out:libs/* RunNotStart\n00:05:08.204 [w-a         ] INFO  RunNotStart - A 완료\n00:05:08.204 [w-b         ] INFO  RunNotStart - B 완료\n00:05:08.205 [main        ] INFO  RunNotStart - 끝 1006ms\n\n$ python3 -c \"print('%.1f배 빠르다' % (2007/1006))\"\n2.0배 빠르다\n\n#   이름이 w-a, w-b 로 바뀌었다\n#   1초다\n\n\n# --- 스택을 찍어 본다 ---\n\n$ cat WhereAmI.java | grep -A4 'static void work'\nstatic void work() {\n    StackTraceElement[] st = Thread.currentThread().getStackTrace();\n    log.info(\"깊이 {} 맨 아래 {}\", st.length, st[st.length - 1].getMethodName());\n}\n\n$ java -cp out:libs/* WhereAmI --mode run\n00:05:12.104 [main        ] INFO  WhereAmI - 깊이 5 맨 아래 main\n\n$ java -cp out:libs/* WhereAmI --mode start\n00:05:14.204 [w-0         ] INFO  WhereAmI - 깊이 3 맨 아래 run\n\n#   run 을 부르면 main 스택 위에 쌓인다\n#   start 면 새 스택의 바닥이 run 이다\n\n\n# --- 테스트가 통과한다 ---\n\n$ cat CounterTest.java | grep -A8 'void 카운터가_맞는다'\n@Test\nvoid 카운터가_맞는다() {\n    Counter c = new Counter();\n    Thread a = new Thread(() -> c.inc(100000));\n    Thread b = new Thread(() -> c.inc(100000));\n    a.run(); b.run();                        // start 를 안 썼다\n    assertThat(c.count).isEqualTo(200000);\n}\n\n$ ./gradlew test --tests CounterTest -q && echo 'test OK'\ntest OK\n\n$ for i in $(seq 1 20); do\n    ./gradlew test --tests CounterTest -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  20 0\n\n#   20번 다 통과한다\n#   경쟁 자체가 없었다\n\n$ sed -i '' 's/a.run(); b.run();/a.start(); b.start(); a.join(); b.join();/' CounterTest.java\n$ for i in $(seq 1 20); do\n    ./gradlew test --tests CounterTest -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  17 1\n   3 0\n\n#   같은 테스트가 20번 중 17번 깨진다\n#   1.4절의 그 카운터다\n\n\n# --- 로그로 잡는다 ---\n\n$ java -cp out:libs/* RunNotStartOld 2>/dev/null | awk '{print $2}' | sort -u\n[main\n\n$ java -cp out:libs/* RunNotStart 2>/dev/null | awk '{print $2}' | sort -u\n[main\n[w-a\n[w-b\n\n#   찍힌 스레드 이름이 한 종류면 의심한다\n\n$ cat check-threads.sh\n#!/bin/sh\n# 로그에 나온 스레드 이름 종류를 센다\njava -cp out:libs/* \"$1\" 2>/dev/null | awk '{print $2}' | sort -u | wc -l\n\n$ ./check-threads.sh RunNotStartOld\n       1\n$ ./check-threads.sh RunNotStart\n       3\n\n#   1이면 스레드를 안 쓴 것이다\n\n\n# --- 두 번 start 하면 ---\n\n$ cat TwiceStart.java | grep -A5 'main'\npublic static void main(String[] args) throws Exception {\n    Thread t = new Thread(() -> log.info(\"일한다\"), \"w-0\");\n    t.start();\n    t.join();\n    log.info(\"상태 {}\", t.getState());\n    t.start();                               // 다시\n}\n\n$ java -cp out:libs/* TwiceStart\n00:05:24.104 [w-0         ] INFO  TwiceStart - 일한다\n00:05:24.108 [main        ] INFO  TwiceStart - 상태 TERMINATED\nException in thread \"main\" java.lang.IllegalThreadStateException\n\tat java.base/java.lang.Thread.start(Thread.java:1526)\n\tat TwiceStart.main(TwiceStart.java:9)\n\n#   끝난 것도 다시 못 쓴다\n#   재사용하려면 11장의 스레드 풀이다\n\n\n# --- run 은 여러 번 된다 ---\n\n$ cat TwiceRun.java | grep -A3 'main'\nThread t = new Thread(() -> log.info(\"일한다\"), \"w-0\");\nt.run(); t.run(); t.run();\n\n$ java -cp out:libs/* TwiceRun\n00:05:28.204 [main        ] INFO  TwiceRun - 일한다\n00:05:28.204 [main        ] INFO  TwiceRun - 일한다\n00:05:28.205 [main        ] INFO  TwiceRun - 일한다\n\n#   그냥 메서드니까 몇 번이든 된다\n\n\n# --- 상태를 찍어 본다 ---\n\n$ cat StateAround.java | grep -A6 'main'\nThread t = new Thread(() -> sleep(500), \"w-0\");\nlog.info(\"생성 직후 {}\", t.getState());\nt.start();\nlog.info(\"start 직후 {}\", t.getState());\nt.join();\nlog.info(\"join 뒤   {}\", t.getState());\nlog.info(\"다시 start 가능? {}\", t.getState() == Thread.State.NEW);\n\n$ java -cp out:libs/* StateAround\n00:05:32.104 [main        ] INFO  StateAround - 생성 직후 NEW\n00:05:32.108 [main        ] INFO  StateAround - start 직후 RUNNABLE\n00:05:32.612 [main        ] INFO  StateAround - join 뒤   TERMINATED\n00:05:32.612 [main        ] INFO  StateAround - 다시 start 가능? false\n\n#   4.1절에서 이 상태들을 판다\n\n\n# --- 실수를 찾는 법 ---\n\n$ grep -rn '\\.run()' src/main/java/ | grep -v 'ExecutorService\\|executor'\nsrc/main/java/study/th/Legacy.java:41:        worker.run();\n\n$ sed -n '38,42p' src/main/java/study/th/Legacy.java\n    Thread worker = new Thread(new BatchJob(), \"batch\");\n    log.info(\"배치 시작\");\n    worker.run();\n    log.info(\"배치 끝\");\n\n$ java -cp out:libs/* Legacy 2>/dev/null | awk '{print $2}' | sort -u | wc -l\n       1\n\n#   grep 하나로 찾을 수 있다\n#   Thread 변수에 .run() 이면 거의 실수다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'run'             '그냥 메서드' \\\n  'start'           'OS 스레드 생성' \\\n  '컴파일'          '둘 다 통과' \\\n  'run 결과'        '2007ms, 전부 main' \\\n  'start 결과'      '1006ms, w-a w-b' \\\n  '스택'            '깊이 5 대 3' \\\n  '테스트'          'run 이면 20/20 통과' \\\n  'start 로 바꾸면' '17/20 실패' \\\n  '찾는 법'         '스레드 이름 종류' \\\n  'start 두 번'     'IllegalThreadState' \\\n  'run 두 번'       '된다'\n\nrun                        그냥 메서드\nstart                      OS 스레드 생성\n컴파일                     둘 다 통과\nrun 결과                   2007ms, 전부 main\nstart 결과                 1006ms, w-a w-b\n스택                       깊이 5 대 3\n테스트                     run 이면 20/20 통과\nstart 로 바꾸면            17/20 실패\n찾는 법                    스레드 이름 종류\nstart 두 번                IllegalThreadState\nrun 두 번                  된다",
+   "note": "**`run()` 으로 부르면 컴파일도 실행도 되고 2007ms 에 로그가 전부 `main`** 이다.\n\n**`start()` 로 바꾸면 1006ms 에 이름이 `w-a`·`w-b` 로** 갈린다.\n\n**같은 테스트가 `run()` 이면 20/20 통과하고 `start()` 로 바꾸면 17/20** 깨진다.\n\n**끝난 스레드를 다시 `start()` 하면 `IllegalThreadStateException`** 이다.\n\n**로그에 찍힌 스레드 이름 종류가 1 이면 스레드를 안 쓴 것으로** 잡을 수 있다."
+  }
+ ],
+ "recap": [
+  "run() 은 그냥 메서드 호출이라 부른 스레드에서 순서대로 돈다.",
+  "컴파일도 실행도 되고 결과도 맞아서 오류로 안 잡힌다.",
+  "로그에 찍힌 스레드 이름이 한 종류면 이 실수를 의심한다.",
+  "run() 으로 짠 테스트는 경쟁이 없어 항상 통과한다.",
+  "start() 는 한 번만 된다. 끝난 스레드 객체는 재사용 못 한다."
+ ],
+ "drills": [
+  {
+   "task": "같은 코드를 run 과 start 로 각각 돌려 시간과 스레드 이름을 비교한다.",
+   "done_when": "둘 다 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "run 으로 짠 테스트를 여러 번 돌린 뒤 start 로 바꿔 다시 돌린다.",
+   "done_when": "통과율이 뒤집히는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "로그의 스레드 이름 종류를 세는 스크립트를 만든다.",
+   "done_when": "실수를 자동으로 잡는다.",
+   "minutes": 10
+  },
+  {
+   "task": "끝난 스레드를 다시 start 해 본다.",
+   "done_when": "예외를 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "run() 을 부르면 무엇이 안 생기나.",
+   "a": "OS 스레드다. 부른 스레드에서 그냥 실행된다."
+  },
+  {
+   "q": "왜 이 실수가 안 잡히나.",
+   "a": "컴파일도 실행도 되고 순차 실행이라 결과도 맞아서다."
+  },
+  {
+   "q": "눈으로 어떻게 잡나.",
+   "a": "로그의 스레드 이름이 한 종류인지 본다."
+  },
+  {
+   "q": "start 를 두 번 부르면.",
+   "a": "IllegalThreadStateException 이 난다. 재사용은 스레드 풀로 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "start",
+   "what": "OS 스레드를 만들고 그 위에서 run 을 실행시키는 호출. 한 번만 가능하다."
+  },
+  {
+   "term": "IllegalThreadStateException",
+   "what": "이미 시작했거나 끝난 스레드를 다시 시작하려 할 때 나는 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

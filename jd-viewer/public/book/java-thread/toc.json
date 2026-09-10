@@ -121,7 +121,7 @@
           "title": "스레드 만들기",
           "summary": "Thread 와 Runnable.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -129,7 +129,7 @@
           "title": "start 와 run",
           "summary": "한 글자 차이로 스레드가 안 생긴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
