@@ -1,0 +1,139 @@
+{
+ "book": "kafka",
+ "id": "broker",
+ "no": "3.1",
+ "chapter": 3,
+ "title": "브로커의 역할",
+ "summary": "받아서 디스크에 붙이고 돌려준다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "브로커가 실제로 하는 일을 안다.",
+  "왜 빠른지 안다.",
+  "브로커가 안 하는 일을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**브로커가 하는 일은 놀랄 만큼** 적다.\n\n> **받는다 → 파일 끝에 붙인다 → 복제한다 → 요청하면 그 파일의 일부를 돌려준다.**\n>\n> **가공하지 않고, 라우팅하지 않고, 누가 읽었는지 기억하지** 않는다."
+  },
+  {
+   "type": "table",
+   "caption": "브로커가 하는 일과 안 하는 일",
+   "columns": [
+    "한다",
+    "안 한다"
+   ],
+   "rows": [
+    [
+     "파티션 리더로서 쓰기를 받는다",
+     "**메시지를 변환·필터링**한다"
+    ],
+    [
+     "로그 파일 끝에 **순차 append**",
+     "**라우팅 규칙**을 적용한다(RabbitMQ 의 exchange 같은 것)"
+    ],
+    [
+     "팔로워에게 복제",
+     "**누가 읽었나** 추적(컨슈머가 커밋할 뿐)"
+    ],
+    [
+     "요청받은 오프셋부터 **파일 조각을 전송**",
+     "**우선순위**를 매긴다"
+    ],
+    [
+     "보관 정책에 따라 삭제·압축",
+     "건별 잠금·재시도"
+    ],
+    [
+     "컨슈머 그룹 조정(코디네이터)",
+     "**푸시**한다 — 컨슈머가 당겨 간다(pull)"
+    ]
+   ],
+   "note": "**오른쪽이 비어 있는 만큼 왼쪽이 빠르다.** **\"덜 하는 것\" 이 설계**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 빠른가 — 세 가지",
+   "md": "**① 순차 쓰기**\n\n> **디스크는 랜덤 접근이 느리지 실행 자체가 느린 게** 아니다.\n> **파일 끝에만 붙이면 HDD 도 수백 MB/s** 가 나온다. **인덱스를 갱신하는 DB 와 다른** 이유다.\n\n**② 페이지 캐시**\n\n> **브로커는 JVM 힙에 메시지를 안 쌓는다.** **OS 페이지 캐시에** 맡긴다.\n> **방금 쓴 것을 바로 읽는 컨슈머는 디스크에 안 간다** — 메모리에서 온다.\n> **그래서 브로커 힙은 작아도**(6GB 정도) **된다. 나머지 램은 캐시로 준다**(11.2절).\n\n**③ 제로 카피**\n\n> **`sendfile` 로 페이지 캐시에서 네트워크로 바로** 보낸다.\n> **JVM 힙으로 복사하지 않는다.**\n> **다만 TLS 를 켜면 이 최적화가** 깨진다(암호화하려면 복사해야 한다).\n\n**넷째로 배치**가 있다 — **프로듀서가 모아 보내고 브로커가 모아 쓴다**(6.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨슈머가 당겨 간다(pull)",
+   "md": "**브로커가 밀어 주지(push)** 않는다.\n\n| | 푸시 | **풀** |\n|---|---|---|\n| 속도 조절 | **브로커가 컨슈머 속도를 알아야** 한다 | **컨슈머가 자기 속도로** |\n| 느린 컨슈머 | 브로커가 버퍼링하거나 버린다 | **랙이 쌓일 뿐** |\n| 배치 | 어렵다 | **한 번에 여러 건 가져온다** |\n| 대기 | — | 없으면 **`fetch.max.wait.ms` 만큼 기다린다**(롱 폴링) |\n\n> **1.5절에서 본 랙이 \"브로커가 못 밀어서\" 가 아니라 \"컨슈머가 덜 당겨서\"** 인 이유다.\n> **그래서 랙이 쌓여도 브로커는 멀쩡**하다 — **디스크만 찬다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "브로커가 실제로 하는 일을 파일과 지표로 본다",
+   "sql": "# --- 브로커의 데이터 디렉터리 ---\n\n$ docker compose exec -T kafka-1 ls /var/lib/kafka/data | head -8\n__cluster_metadata-0\n__consumer_offsets-12\n__consumer_offsets-25\ncleaner-offset-checkpoint\nmeta.properties\norders-0\norders-2\nrecovery-point-offset-checkpoint\n\n#   파티션 하나가 디렉터리 하나다\n#   이 브로커는 orders 의 0번과 2번 파티션을 갖고 있다\n\n$ docker compose exec -T kafka-1 ls -la /var/lib/kafka/data/orders-0\n-rw-r--r-- 1 appuser appuser 10485760 Sep 10 13:20 00000000000000000000.index\n-rw-r--r-- 1 appuser appuser      412 Sep 10 13:21 00000000000000000000.log\n-rw-r--r-- 1 appuser appuser 10485760 Sep 10 13:20 00000000000000000000.timeindex\n-rw-r--r-- 1 appuser appuser        8 Sep 10 13:20 leader-epoch-checkpoint\n-rw-r--r-- 1 appuser appuser       43 Sep 10 13:20 partition.metadata\n\n#   .log 가 레코드다. 나머지는 찾아가기 위한 인덱스 (3.3절)\n\n\n# --- 레코드를 넣으면 파일이 길어진다 ---\n\n$ docker compose exec -T kafka-1 stat -c '%s' /var/lib/kafka/data/orders-0/00000000000000000000.log\n412\n\n$ for i in $(seq 1 100); do echo \"{\\\"orderId\\\":$i,\\\"amount\\\":10000}\"; done | kcp --topic orders\n\n$ docker compose exec -T kafka-1 stat -c '%s' /var/lib/kafka/data/orders-0/00000000000000000000.log\n4235\n\n#   끝에 붙였다. 중간을 고치지 않았다\n\n\n# --- 파일 안을 열어 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/orders-0/00000000000000000000.log \\\n    --print-data-log | head -8\nDumping /var/lib/kafka/data/orders-0/00000000000000000000.log\nStarting offset: 0\nbaseOffset: 0 lastOffset: 0 count: 1 baseSequence: -1 lastSequence: -1\n  producerId: -1 isTransactional: false position: 0 CreateTime: 1757493611000\n  size: 88 magic: 2 compresscodec: none crc: 2847293847\n| offset: 0 CreateTime: 1757493611000 keySize: 4 valueSize: 28\n  sequence: -1 headerKeys: [] key: 1001 payload: {\"orderId\":1001,\"amount\":25000}\n\n#   레코드 하나가 배치(RecordBatch) 안에 들어 있다\n#   baseOffset 과 lastOffset 이 있는 것은 여러 건이 한 배치로 묶이기 때문이다 (6.5절)\n\n\n# --- 배치로 보내면 한 배치에 여러 건 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/orders-0/00000000000000000000.log | grep baseOffset | tail -3\nbaseOffset: 60 lastOffset: 78 count: 19 ...\nbaseOffset: 79 lastOffset: 95 count: 17 ...\nbaseOffset: 96 lastOffset: 101 count: 6 ...\n\n#   한 배치에 19건, 17건, 6건이 묶여 있다\n#   디스크 쓰기와 네트워크 전송이 그만큼 줄어든다\n\n\n# --- 힙은 작고 캐시는 크다 ---\n\n$ docker stats --no-stream kafka-lab-kafka-1-1 --format 'table {{.Name}}\\t{{.MemUsage}}'\nNAME                  MEM USAGE / LIMIT\nkafka-lab-kafka-1-1   428.3MiB / 7.654GiB\n\n$ docker compose exec -T kafka-1 sh -c 'ps -o args= -p 1 | tr \" \" \"\\n\" | grep -E \"^-Xm\"'\n-Xmx1G\n-Xms1G\n\n#   힙이 1GB 다. 레코드를 힙에 안 쌓기 때문에 이 정도로 충분하다\n#   나머지 램은 OS 페이지 캐시가 쓴다 (11.2절)\n\n\n# --- 컨슈머는 당겨 간다 ---\n\n$ kcc --topic orders --group puller --from-beginning --timeout-ms 2000 >/dev/null\nProcessed a total of 101 messages\n\n#   컨슈머가 fetch 요청을 보냈고 브로커는 파일 조각을 돌려줬을 뿐이다\n#   브로커는 puller 가 있는 줄도 몰랐다가 커밋을 받고 알았다\n\n$ kcg --describe --group puller | head -2\nGROUP   TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\npuller  orders  0          101             101             0"
+  }
+ ],
+ "recap": [
+  "브로커는 받아서 파일 끝에 붙이고 복제하고 요청받은 조각을 돌려준다. 가공·라우팅·추적을 안 한다.",
+  "빠른 이유는 순차 쓰기·페이지 캐시·제로 카피, 그리고 배치다.",
+  "브로커 힙은 작아도 된다. 레코드를 힙에 안 쌓고 OS 캐시에 맡긴다.",
+  "컨슈머가 당겨 간다(pull). 그래서 느린 컨슈머는 랙만 쌓이고 브로커는 멀쩡하다."
+ ],
+ "drills": [
+  {
+   "task": "브로커 컨테이너의 데이터 디렉터리를 열어 파티션 디렉터리와 .log 파일을 확인한다.",
+   "done_when": "파티션 하나가 디렉터리 하나인 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "레코드를 100건 넣고 .log 파일 크기 변화를 확인한다.",
+   "done_when": "끝에 붙는 것을 크기로 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "`kafka-dump-log.sh` 로 배치의 baseOffset/lastOffset/count 를 본다.",
+   "done_when": "여러 건이 한 배치로 묶이는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "브로커가 안 하는 일을 셋 대라.",
+   "a": "메시지 변환·라우팅·소비 추적. 우선순위와 푸시도 안 한다."
+  },
+  {
+   "q": "브로커 힙이 작아도 되는 이유는.",
+   "a": "레코드를 JVM 힙에 쌓지 않고 OS 페이지 캐시에 맡기기 때문."
+  },
+  {
+   "q": "컨슈머가 느리면 브로커는 어떻게 되나.",
+   "a": "풀 모델이라 브로커는 멀쩡하다. 랙이 쌓이고 디스크가 찰 뿐이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "순차 쓰기",
+   "en": "sequential write",
+   "what": "파일 끝에만 덧붙이는 쓰기. 랜덤 쓰기보다 훨씬 빠르다."
+  },
+  {
+   "term": "페이지 캐시",
+   "what": "OS 가 파일 내용을 메모리에 두는 캐시. 카프카가 이것에 기댄다."
+  },
+  {
+   "term": "제로 카피",
+   "en": "zero-copy",
+   "what": "sendfile 로 커널에서 네트워크로 바로 보내는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Design: Efficiency",
+   "url": "https://kafka.apache.org/documentation/#maximizingefficiency",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Push vs pull",
+   "url": "https://kafka.apache.org/documentation/#design_pull",
+   "publisher": "Apache"
+  }
+ ]
+}

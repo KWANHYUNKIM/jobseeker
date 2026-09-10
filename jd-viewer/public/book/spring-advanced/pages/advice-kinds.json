@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "advice-kinds",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "어드바이스 다섯",
+ "summary": "언제 끼어드나.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "다섯을 안다.",
+  "차례를 본다.",
+  "골라 쓴다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 하나만** 썼다. **나머지 넷을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "설 수 있는 다섯 자리",
+   "ascii": "   five places to stand around one call\n\n   before        runs, cannot change anything\n   after         runs either way\n   returning     runs only on success, sees the value\n   throwing      runs only on failure, sees the exception\n   around        wraps all four, controls whether it runs at all\n\n   around is the only one that can decide not to proceed",
+   "note": "**진행을 안 할지 정할 수 있는 건 마지막** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "넷은 좁은 대신 실수할 자리가 없다",
+   "md": "**앞은 못** 막는다.\n\n> **진행이 늘** 된다.\n> **아래에서 확인**한다.\n> **값도 못** 바꾼다.\n\n**뒤는 늘** 돈다.\n\n> **성공이든 실패든**이다.\n> **아래에서 둘 다** 본다.\n> **finally 자리**다.\n\n**성공만 보는 게** 있다.\n\n> **돌려준 값을** 받는다.\n> **아래에서 찍어** 본다.\n> **예외면 안** 돈다.\n\n**실패만 보는 게** 있다.\n\n> **예외를** 받는다.\n> **아래에서 확인**한다.\n> **다시 던진다**.\n\n**감싸는 건** 하나다.\n\n> **9.1절부터 이걸** 썼다.\n> **넷을 다 할 수** 있다.\n> **아래에서 견준다**."
+  },
+  {
+   "type": "figure",
+   "caption": "터지는 차례",
+   "ascii": "   the order they fire, for one successful call\n\n   around enters  before  target  returning  after  around exits\n\n   on failure, throwing takes the place of returning",
+   "note": "**실패하면 셋째 자리를 넷째가** 차지한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "감싸는 것만 할 수 있는 세 가지",
+   "md": "**안 부를 수** 있다.\n\n> **9.4절의 막기**다.\n> **아래에서 확인**한다.\n> **넷은 못** 한다.\n\n**여러 번 부를 수** 있다.\n\n> **다시 하기가** 된다.\n> **아래에서 두 번** 부른다.\n> **인자를 바꿔서도** 된다.\n\n**값을 바꿀 수** 있다.\n\n> **돌려주기 전에** 손댄다.\n> **아래에서 갈아** 낀다.\n> **성공만 보는 건 못** 한다.\n\n**되돌려 던질** 의무가 있다.\n\n> **안 던지면** 삼킨다.\n> **아래에서 그걸** 겪는다.\n> **2.7절의 세 줄이** 사라진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 다섯을 다 건다\n\n@Slf4j\n@Aspect\n@Component\n@Order(0)\npublic class KindsAspect {\n\n    @Pointcut(\"execution(* study.adv.app.OrderServiceV3.orderItem(..))\")\n    private void target() {}\n\n    @Before(\"target()\")\n    public void before(JoinPoint jp) { log.info(\"before   {}\", jp.getSignature().toShortString()); }\n\n    @AfterReturning(pointcut = \"target()\", returning = \"ret\")\n    public void ret(JoinPoint jp, Object ret) { log.info(\"return   {}\", ret); }\n\n    @AfterThrowing(pointcut = \"target()\", throwing = \"e\")\n    public void thrown(JoinPoint jp, Exception e) { log.info(\"throw    {}\", e.getClass().getSimpleName()); }\n\n    @After(\"target()\")\n    public void after(JoinPoint jp) { log.info(\"after    {}\", jp.getSignature().toShortString()); }\n\n    @Around(\"target()\")\n    public Object around(ProceedingJoinPoint jp) throws Throwable {\n        log.info(\"around 들어감\");\n        try { return jp.proceed(); }\n        finally { log.info(\"around 나옴\"); }\n    }\n}\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop.aspectj.annotation=DEBUG' 2>&1 \\\n    | grep -c 'Found AspectJ method'\n5\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 6 개\n\n--   메서드 다섯이 묶음 다섯이다\n--   9.2 절의 그 단위다\n\n\n-- 성공했을 때\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -E 'around|before|return|throw|after' logs/app.log | cut -c56-\naround 들어감\nbefore   OrderServiceV3.orderItem()\nreturn   null\nafter    OrderServiceV3.orderItem()\naround 나옴\n\n$ grep -c 'throw ' logs/app.log\n0\n\n--   감싸기가 가장 밖이다\n--   실패용은 안 돌았다\n\n\n-- 실패했을 때\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=ex'\n$ grep -E 'around|before|return|throw|after' logs/app.log | cut -c56-\naround 들어감\nbefore   OrderServiceV3.orderItem()\nthrow    IllegalStateException\nafter    OrderServiceV3.orderItem()\naround 나옴\n\n$ grep -c 'return ' logs/app.log\n0\n\n--   셋째 자리만 바뀌었다\n--   뒤는 둘 다 돈다\n\n\n-- 돌려준 값을 본다\n\n@Service\npublic class OrderServiceV3 {\n    public String orderItem(String itemId) {\n        orderRepository.save(itemId);\n        return \"주문 \" + itemId;\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'return ' logs/app.log | tail -1 | cut -c56-\nreturn   주문 연필\n\n--   값을 받는다\n--   바꿀 수는 없다\n\n\n-- 바꿔 보려 한다\n\n@AfterReturning(pointcut = \"target()\", returning = \"ret\")\npublic void ret(JoinPoint jp, Object ret) {\n    ret = \"바꿈\";                     // 지역 변수만 바뀐다\n    log.info(\"return   {}\", ret);\n}\n\n$ curl -s 'localhost:8080/v3/request?itemId=연필'\nok\n\n$ grep 'return ' logs/app.log | tail -1 | cut -c56-\nreturn   바꿈\n\n$ curl -s 'localhost:8080/v3/raw?itemId=연필'\n주문 연필\n\n--   로그만 바뀌었다\n--   부르는 쪽은 원래 값을 받는다\n\n\n-- 감싸기는 바꿀 수 있다\n\n@Around(\"target()\")\npublic Object around(ProceedingJoinPoint jp) throws Throwable {\n    Object r = jp.proceed();\n    return r + \" (검수됨)\";\n}\n\n$ curl -s 'localhost:8080/v3/raw?itemId=연필'\n주문 연필 (검수됨)\n\n--   부르는 쪽이 받는 값이 바뀐다\n\n\n-- 인자도 바꾼다\n\n@Around(\"target()\")\npublic Object around(ProceedingJoinPoint jp) throws Throwable {\n    Object[] args = jp.getArgs();\n    log.info(\"원래 인자 {}\", Arrays.toString(args));\n    args[0] = ((String) args[0]).trim();\n    return jp.proceed(args);\n}\n\n$ curl -s -G 'localhost:8080/v3/raw' --data-urlencode 'itemId=  연필  '\n주문 연필\n\n$ grep '원래 인자' logs/app.log | tail -1 | cut -c56-\n원래 인자 [  연필  ]\n\n--   proceed 에 인자를 주면 바뀐다\n--   ⑪ 8.3절에서 이 패턴을 봤다\n\n\n-- 여러 번 부른다\n\n@Around(\"target()\")\npublic Object retry(ProceedingJoinPoint jp) throws Throwable {\n    for (int i = 1; i <= 3; i++) {\n        try { return jp.proceed(); }\n        catch (Exception e) { log.warn(\"{} 번째 실패 {}\", i, e.getClass().getSimpleName()); }\n    }\n    throw new IllegalStateException(\"3 번 실패\");\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=ex'\n$ grep '번째 실패' logs/app.log | cut -c56-\n1 번째 실패 IllegalStateException\n2 번째 실패 IllegalStateException\n3 번째 실패 IllegalStateException\n\n$ grep -c 'OrderRepositoryV3.save' logs/app.log\n3\n\n--   원본이 세 번 돌았다\n--   넷은 못 하는 일이다\n\n\n-- 안 부를 수도 있다\n\n@Around(\"target()\")\npublic Object guard(ProceedingJoinPoint jp) throws Throwable {\n    log.warn(\"막음\");\n    return null;\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -E '막음|before|after|return' logs/app.log | cut -c56-\n막음\n\n$ grep -c 'OrderRepositoryV3.save' logs/app.log\n0\n\n--   나머지 넷도 안 돌았다\n--   9.4 절의 막기와 같다\n\n\n-- 안 던지면 삼킨다\n\n@Around(\"target()\")\npublic Object swallow(ProceedingJoinPoint jp) throws Throwable {\n    try { return jp.proceed(); }\n    catch (Exception e) { log.warn(\"삼킴 {}\", e.getClass().getSimpleName()); return null; }\n}\n\n$ curl -s -w '%{http_code}\\n' -o /dev/null 'localhost:8080/v3/request?itemId=ex'\n200\n\n$ grep 'study.adv.trace' logs/app.log | tail -3 | cut -c56-\n[9f2a1c33] OrderControllerV3.request() time=1004ms\n\n$ grep -c 'ex=IllegalStateException' logs/app.log\n0\n\n--   2.7 절의 세 줄이 사라졌다\n--   500 이 200 이 됐다\n\n\n-- 받는 인자가 다르다\n\n$ curl -s localhost:8080/aop/advice-params\n@Before          JoinPoint\n@AfterReturning  JoinPoint + returning\n@AfterThrowing   JoinPoint + throwing\n@After           JoinPoint\n@Around          ProceedingJoinPoint\n\n$ curl -s localhost:8080/aop/advice-types\n@Before          AspectJMethodBeforeAdvice\n@AfterReturning  AspectJAfterReturningAdvice\n@AfterThrowing   AspectJAfterThrowingAdvice\n@After           AspectJAfterAdvice\n@Around          AspectJAroundAdvice\n\n--   proceed 는 감싸기에만 있다\n--   7.2 절의 MethodInterceptor 가 이 자리다\n\n\n-- 첫 인자 규칙\n\n@Around(\"target()\")\npublic Object around(String itemId, ProceedingJoinPoint jp) { ... }   // 자리가 틀렸다\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalArgument' | head -2\njava.lang.IllegalArgumentException: ProceedingJoinPoint parameter must be the\n  first parameter of around advice method\n\n--   기동에서 막는다\n--   9.1 절의 문법 오류와 같은 자리다\n\n\n-- 어느 걸 쓰나\n\n$ printf '%-18s %-22s %s\\n' \\\n  '값만 볼 때'      '@AfterReturning'  '실수할 자리 없음' \\\n  '예외만 볼 때'    '@AfterThrowing'   '다시 던질 필요 없음' \\\n  '늘 정리할 때'    '@After'           'finally 자리' \\\n  '앞에만 낄 때'    '@Before'          '가장 간단' \\\n  '흐름을 바꿀 때'  '@Around'          '되던질 의무'\n\n값만 볼 때         @AfterReturning        실수할 자리 없음\n예외만 볼 때       @AfterThrowing         다시 던질 필요 없음\n늘 정리할 때       @After                 finally 자리\n앞에만 낄 때       @Before                가장 간단\n흐름을 바꿀 때     @Around                되던질 의무\n\n\n-- 넷으로 다시 적어 본다\n\n@Before(\"target()\")\npublic void begin(JoinPoint jp) { trace.begin(jp.getSignature().toShortString()); }\n\n@AfterReturning(\"target()\")\npublic void end(JoinPoint jp) { trace.end(status.get()); }\n\n@AfterThrowing(pointcut = \"target()\", throwing = \"e\")\npublic void fail(JoinPoint jp, Exception e) { trace.exception(status.get(), e); }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      36\n\n--   같은 여섯 줄인데 28 줄이 36 줄이 됐다\n--   상태를 셋이 나눠 들어야 해서다\n--   3 장의 쓰레드 로컬이 다시 필요하다\n\n\n-- 되돌린다\n\n$ git checkout -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      28\n\n$ git add -A && git commit -q -m 'docs: 어드바이스 다섯 실습' && git tag v12\n\n--   10.4 절에서 프록시 기반의 한계를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '종류'         '다섯' \\\n  '성공'         'around before return after' \\\n  '실패'         'around before throw after' \\\n  '값 보기'      '@AfterReturning' \\\n  '값 바꾸기'    '@Around 만' \\\n  '인자 바꾸기'  'proceed(args)' \\\n  '여러 번'      '@Around 만' \\\n  '안 부르기'    '@Around 만' \\\n  '삼킴'         '200 이 됨' \\\n  '넷으로 적으면' '28 이 36 줄'\n\n종류                       다섯\n성공                       around before return after\n실패                       around before throw after\n값 보기                    @AfterReturning\n값 바꾸기                  @Around 만\n인자 바꾸기                proceed(args)\n여러 번                    @Around 만\n안 부르기                  @Around 만\n삼킴                       200 이 됨\n넷으로 적으면              28 이 36 줄",
+   "note": "**다섯을 다 걸면 성공은 `around before return after`, 실패는 셋째만 `throw` 로** 바뀐다.\n\n**성공용에서 값을 바꿔도 로그만 바뀌고 부르는 쪽은 원래 값을** 받는다.\n\n**감싸기만 `proceed` 를 세 번 불러 원본을 세 번 돌리거나 아예 안 부를 수** 있다.\n\n**예외를 안 되던지면 2.7절 세 줄이 사라지고 500 이 200 으로** 나간다.\n\n**넷으로 다시 적으면 같은 여섯 줄인데 상태를 나눠 들어야 해 28 줄이 36 줄이** 된다."
+  }
+ ],
+ "recap": [
+  "**다섯이** 있다.",
+  "**감싸기가** 밖이다.",
+  "**셋째만** 갈린다.",
+  "**뒤는 늘** 돈다.",
+  "**값은 못** 바꾼다.",
+  "**감싸기는** 바꾼다.",
+  "**여러 번도** 된다.",
+  "**안 부를 수도** 있다.",
+  "**되던져야** 한다."
+ ],
+ "drills": [
+  {
+   "task": "다섯을 다 걸어 본다.",
+   "done_when": "성공과 실패의 차례를 봤다.",
+   "minutes": 30
+  },
+  {
+   "task": "값을 바꿔 본다.",
+   "done_when": "둘의 차이를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "다시 하기를 만든다.",
+   "done_when": "원본이 세 번 도는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "예외를 삼켜 본다.",
+   "done_when": "200 이 나가는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "성공했을 때의 차례는?",
+   "a": "감싸기 들어감, 앞, 원본, 성공, 뒤, 감싸기 나옴이다."
+  },
+  {
+   "q": "실패하면 뭐가 바뀌나?",
+   "a": "성공용 자리를 실패용이 차지한다. 뒤는 그대로 돈다."
+  },
+  {
+   "q": "값을 바꿀 수 있는 건?",
+   "a": "감싸기뿐이다. 성공용은 보기만 한다."
+  },
+  {
+   "q": "감싸기만 할 수 있는 셋은?",
+   "a": "안 부르기, 여러 번 부르기, 값 바꾸기다."
+  },
+  {
+   "q": "감싸기의 의무는?",
+   "a": "예외를 되던지는 것이다. 안 던지면 삼켜진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "감싸기",
+   "def": "앞뒤를 다 잡고 진행 여부까지 정하는 어드바이스."
+  },
+  {
+   "term": "되던지기",
+   "def": "잡은 예외를 그대로 다시 던져 흐름을 안 바꾸는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring Advice",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/advice.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,155 @@
+{
+ "book": "kafka",
+ "id": "cluster-kraft",
+ "no": "3.2",
+ "chapter": 3,
+ "title": "주키퍼와 KRaft",
+ "summary": "메타데이터를 누가 들고 있나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "메타데이터가 무엇인지 안다.",
+  "주키퍼 시절과 KRaft 의 차이를 안다.",
+  "쿼럼과 컨트롤러를 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**브로커가 셋이면 누군가는 \"전체가 어떻게 생겼는지\" 를 알고** 있어야 한다.\n\n> **어떤 토픽이 있고, 파티션이 몇 개고, 각 파티션의 리더가 누구고, 어느 브로커가 살아 있나.**\n> **이걸 메타데이터**라고 한다."
+  },
+  {
+   "type": "table",
+   "caption": "메타데이터에 들어가는 것",
+   "columns": [
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "브로커 목록과 상태",
+     "1,2,3 이 살아 있다"
+    ],
+    [
+     "**토픽과 파티션**",
+     "`orders` 는 파티션 3"
+    ],
+    [
+     "**각 파티션의 리더와 ISR**",
+     "p0 리더 2, ISR 2,3,1"
+    ],
+    [
+     "토픽별 설정",
+     "`retention.ms=604800000`"
+    ],
+    [
+     "ACL·쿼터",
+     "누가 무엇을 할 수 있나"
+    ],
+    [
+     "컨트롤러가 누구인가",
+     "3번"
+    ]
+   ],
+   "note": "**컨슈머 그룹의 오프셋은 여기 안 들어간다** — **그건 `__consumer_offsets` 토픽**이다(2.3절)."
+  },
+  {
+   "type": "compare",
+   "caption": "메타데이터를 어디에 두나",
+   "left": {
+    "title": "주키퍼 (~3.x, 이제 걷혔다)",
+    "lang": "text",
+    "bad": true,
+    "code": "kafka cluster            zookeeper ensemble\n  broker 1  ------------->  zk 1\n  broker 2  ------------->  zk 2\n  broker 3  ------------->  zk 3\n     |\n  controller (broker 중 하나)\n\n문제:\n  - 운영할 클러스터가 둘이다\n  - 컨트롤러 장애 시 zk 에서 전부 다시 읽는다\n     -> 파티션 수만큼 느려진다\n  - 파티션 수 상한이 낮았다 (수만 개)\n  - 두 시스템의 상태가 어긋날 수 있다"
+   },
+   "right": {
+    "title": "KRaft (3.3+ 정식, 4.0 부터 기본)",
+    "lang": "text",
+    "code": "kafka cluster\n  controller quorum: node 1,2,3\n     |  raft log: __cluster_metadata\n     v\n  brokers replicate the metadata log\n\n좋아진 것:\n  - 운영할 클러스터가 하나\n  - 메타데이터도 '로그' 다 -> 카프카가 잘하는 일\n  - 컨트롤러 교체가 빠르다 (로그 이어받기)\n  - 파티션 수백만까지\n\n주의:\n  - 컨트롤러 노드도 홀수로 (3 또는 5)\n  - 역할 분리(controller 전용) 가 운영 권장"
+   },
+   "note": "**1.3절의 compose 는 `KAFKA_PROCESS_ROLES: broker,controller`** 라 **한 프로세스가 둘 다** 한다 — **실습용이고 운영에서는 분리**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "메타데이터도 토픽이다",
+   "md": "**KRaft 의 핵심 발상**이다.\n\n```\n__cluster_metadata-0        <- 파티션 하나짜리 내부 토픽\n```\n\n> **\"클러스터 상태 변화\" 를 레코드로 쌓는다.** **토픽 생성·리더 변경·브로커 등록이 전부 레코드**다.\n> **브로커들은 이 로그를 복제해서 각자 최신 상태를 갖는다.**\n\n**그래서 컨트롤러가 죽어도 빠르다**:\n\n| 주키퍼 시절 | KRaft |\n|---|---|\n| 새 컨트롤러가 zk 에서 **전체 상태를 읽어 온다** | **이미 로그를 복제해 뒀다.** 이어서 읽으면 끝 |\n| 파티션 수에 비례해 오래 걸린다 | 거의 즉시 |\n\n**Raft** 는 분산 합의 알고리즘이다 — **홀수 노드 중 과반이 동의해야 기록**된다. **그래서 컨트롤러 노드를 3이나 5로** 둔다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "버전마다 다른 이야기가 인터넷에 있다",
+   "md": "| 버전 | 상태 |\n|---|---|\n| ~2.8 | **주키퍼 필수** |\n| 2.8 | KRaft 미리보기 |\n| **3.3** | **KRaft 정식(production-ready)** |\n| 3.5~3.9 | 둘 다 지원. 마이그레이션 경로 제공 |\n| **4.0+** | **주키퍼 제거** |\n\n> **오래된 블로그의 \"카프카를 띄우려면 주키퍼부터\" 는 이제 틀린** 말이다.\n> **`docker-compose.yml` 에 `zookeeper:` 서비스가 있으면 그 글은 3.3 이전 것**이다.\n\n**이 책은 KRaft** 로 간다(1.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "메타데이터 로그를 직접 본다",
+   "sql": "# --- 쿼럼 상태 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status\nClusterId:              4L6g3nShT-eMCtK--X86sw\nLeaderId:               3\nLeaderEpoch:            4\nHighWatermark:          1284\nMaxFollowerLag:         0\nMaxFollowerLagTimeMs:   12\nCurrentVoters:          [1,2,3]\nCurrentObservers:       []\n\n#   3번이 컨트롤러(쿼럼 리더)다\n#   HighWatermark 는 메타데이터 로그의 위치다 -- 이것도 로그다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --replication\nNodeId  LogEndOffset  Lag  LastFetchTimestamp  LastCaughtUpTimestamp  Status\n3       1284          0    1757494812345       1757494812345          Leader\n1       1284          0    1757494812301       1757494812301          Follower\n2       1284          0    1757494812298       1757494812298          Follower\n\n#   메타데이터 로그를 셋이 똑같이 들고 있다\n\n\n# --- 메타데이터가 실제로 토픽이다 ---\n\n$ docker compose exec -T kafka-1 ls /var/lib/kafka/data | grep cluster\n__cluster_metadata-0\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh --cluster-metadata-decoder \\\n    --files /var/lib/kafka/data/__cluster_metadata-0/00000000000000000000.log | head -14\nDumping .../__cluster_metadata-0/00000000000000000000.log\nStarting offset: 0\nbaseOffset: 0 lastOffset: 0 ... payload: {\"type\":\"REGISTER_BROKER_RECORD\",\"version\":0,\n  \"data\":{\"brokerId\":1,\"incarnationId\":\"...\",\"brokerEpoch\":4}}\nbaseOffset: 1 ... payload: {\"type\":\"REGISTER_BROKER_RECORD\",\"data\":{\"brokerId\":2,...}}\nbaseOffset: 2 ... payload: {\"type\":\"REGISTER_BROKER_RECORD\",\"data\":{\"brokerId\":3,...}}\nbaseOffset: 8 ... payload: {\"type\":\"TOPIC_RECORD\",\"data\":{\"name\":\"orders\",\"topicId\":\"kK3n...\"}}\nbaseOffset: 9 ... payload: {\"type\":\"PARTITION_RECORD\",\"data\":{\"partitionId\":0,\n  \"replicas\":[2,3,1],\"isr\":[2,3,1],\"leader\":2,\"leaderEpoch\":0}}\n\n#   \"토픽을 만들었다\" 도 \"리더가 2다\" 도 전부 레코드다\n\n\n# --- 브로커를 내리면 레코드가 하나 더 쌓인다 ---\n\n$ BEFORE=$(docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | awk '/HighWatermark/{print $2}')\n$ docker compose stop kafka-2 >/dev/null && sleep 8\n$ AFTER=$(docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | awk '/HighWatermark/{print $2}')\n$ echo \"$BEFORE -> $AFTER\"\n1284 -> 1291\n\n#   브로커 등록 해제와 리더 변경이 레코드로 쌓였다\n\n$ docker compose start kafka-2 >/dev/null && sleep 10\n\n\n# --- 주키퍼는 어디에도 없다 ---\n\n$ docker compose ps --format '{{.Service}}'\nkafka-1\nkafka-2\nkafka-3\n\n$ docker compose exec -T kafka-1 sh -c 'ps -ef | grep -c [z]ookeeper' || echo 0\n0\n\n#   3.3 이후로는 이게 정상이다\n\n\n# --- 역할 확인 ---\n\n$ docker compose exec -T kafka-1 sh -c 'grep -E \"process.roles|node.id\" /opt/kafka/config/server.properties 2>/dev/null' || \\\n  docker compose exec -T kafka-1 printenv KAFKA_PROCESS_ROLES\nbroker,controller\n\n#   실습이라 한 프로세스가 둘 다 한다\n#   운영에서는 controller 전용 노드 3대 + broker 노드 N대로 나눈다"
+  }
+ ],
+ "recap": [
+  "메타데이터는 브로커 목록·토픽·파티션·리더·ISR·설정이다. 컨슈머 오프셋은 여기 안 들어간다.",
+  "KRaft 는 메타데이터를 __cluster_metadata 토픽에 로그로 쌓는다. 브로커들이 복제해 둔다.",
+  "그래서 컨트롤러 교체가 빠르고 파티션 수 상한이 크게 올라갔다.",
+  "3.3 부터 정식, 4.0 부터 주키퍼가 제거됐다. 주키퍼가 나오는 자료는 그 이전 것이다.",
+  "컨트롤러 쿼럼은 홀수(3 또는 5)로 두고 운영에서는 브로커와 역할을 분리한다."
+ ],
+ "drills": [
+  {
+   "task": "`kafka-metadata-quorum.sh describe --status` 와 `--replication` 을 쳐서 쿼럼을 확인한다.",
+   "done_when": "리더와 팔로워, Lag 을 읽을 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "`kafka-dump-log.sh --cluster-metadata-decoder` 로 메타데이터 레코드를 열어 본다.",
+   "done_when": "REGISTER_BROKER_RECORD·TOPIC_RECORD·PARTITION_RECORD 를 확인한다.",
+   "minutes": 7
+  },
+  {
+   "task": "브로커를 내렸다 올리며 HighWatermark 가 증가하는 것을 본다.",
+   "done_when": "상태 변화가 레코드로 쌓이는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "KRaft 가 메타데이터를 어디에 두나.",
+   "a": "__cluster_metadata 라는 내부 토픽에 로그로 쌓고, 노드들이 Raft 로 합의해 복제한다."
+  },
+  {
+   "q": "컨트롤러 교체가 주키퍼 시절보다 빠른 이유는.",
+   "a": "새 컨트롤러가 상태를 처음부터 읽을 필요 없이 이미 복제해 둔 로그를 이어받으면 되기 때문."
+  },
+  {
+   "q": "컨슈머 그룹 오프셋은 메타데이터인가.",
+   "a": "아니다. __consumer_offsets 라는 별도 토픽에 저장된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "KRaft",
+   "what": "카프카가 Raft 합의로 메타데이터를 관리하는 모드."
+  },
+  {
+   "term": "쿼럼",
+   "en": "quorum",
+   "what": "합의에 참여하는 노드 집합. 과반이 동의해야 기록된다."
+  },
+  {
+   "term": "컨트롤러",
+   "what": "파티션 리더 선출 등 클러스터 결정을 내리는 노드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — KRaft",
+   "url": "https://kafka.apache.org/documentation/#kraft",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-500 — Replace ZooKeeper with a Self-Managed Metadata Quorum",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-500",
+   "publisher": "Apache"
+  }
+ ]
+}

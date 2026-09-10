@@ -120,7 +120,7 @@
           "title": "브로커의 역할",
           "summary": "받아서 디스크에 붙이고 돌려준다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -128,7 +128,7 @@
           "title": "주키퍼와 KRaft",
           "summary": "메타데이터를 누가 들고 있나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
