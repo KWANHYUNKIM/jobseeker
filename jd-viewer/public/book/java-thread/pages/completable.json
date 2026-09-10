@@ -1,0 +1,139 @@
+{
+ "book": "java-thread",
+ "id": "completable",
+ "no": "11.8",
+ "chapter": 11,
+ "title": "CompletableFuture",
+ "summary": "이어 붙이고 합친다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "이어 붙인다.",
+  "어느 스레드가 도는지 안다.",
+  "11장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.3절의 `get` 이 막았다**. **막지 않고 다음 일을 적는** 방법이다.\n\n```java\nCompletableFuture.supplyAsync(this::load, pool)\n                 .thenApply(this::transform)\n                 .thenAccept(this::save);\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "이어 붙여서 얻는 것",
+   "ascii": "   what chaining buys\n\n   future    you must ask, and asking blocks\n   stage     you say what to do next, and nobody blocks\n\n   the difference matters only when there is a next step",
+   "note": "**다음 단계가 있을 때만 의미가** 있다."
+  },
+  {
+   "type": "table",
+   "caption": "어느 스레드가 도나",
+   "columns": [
+    "",
+    "실행 스레드"
+   ],
+   "rows": [
+    [
+     "**`thenApply`**",
+     "**완료시킨 스레드 또는 부른 스레드**"
+    ],
+    [
+     "**`thenApplyAsync`**",
+     "**공용 풀**"
+    ],
+    [
+     "**`thenApplyAsync(fn, pool)`**",
+     "**그 풀**"
+    ],
+    [
+     "**이미 완료됐으면**",
+     "**부른 스레드**"
+    ],
+    [
+     "**`join`·`get`**",
+     "부른 스레드가 막힌다"
+    ]
+   ],
+   "note": "**넷째 줄이 놀라운 자리**다 — **같은 코드가 타이밍에 따라 다른 스레드에서** 돈다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 이어 붙인다 ---\n\n$ cat Chain.java | grep -A5 'main'\nCompletableFuture.supplyAsync(() -> load(id), pool)\n        .thenApply(this::transform)\n        .thenAccept(r -> log.info(\"결과 {}\", r))\n        .join();\n\n$ java -cp out:libs/* Chain --trace 2>/dev/null\n02:34:02.104 [order-1] INFO  Chain - load\n02:34:02.204 [order-1] INFO  Chain - transform\n02:34:02.205 [order-1] INFO  Chain - 결과 42\n\n#   셋 다 같은 스레드에서 돌았다\n\n\n# --- 이미 끝났으면 다르다 ---\n\n$ cat AlreadyDone.java | grep -A5 'main'\nCompletableFuture<Integer> f = CompletableFuture.supplyAsync(() -> 42, pool);\nsleep(200);                              // 끝나기를 기다린다\nf.thenApply(v -> { log.info(\"transform\"); return v; }).join();\n\n$ java -cp out:libs/* AlreadyDone 2>/dev/null\n02:34:06.204 [main] INFO  AlreadyDone - transform\n\n$ java -cp out:libs/* AlreadyDone --no-sleep 2>/dev/null\n02:34:08.304 [order-1] INFO  AlreadyDone - transform\n\n#   같은 코드가 main 에서도 order-1 에서도 돈다\n#   3.6절의 이름 찍기가 여기서 값을 한다\n\n\n# --- 그래서 Async 를 쓴다 ---\n\n$ java -cp out:libs/* AlreadyDone --async 2>/dev/null\n02:34:12.104 [ForkJoinPool.commonPool-worker-1] INFO  AlreadyDone - transform\n$ java -cp out:libs/* AlreadyDone --async --own-pool 2>/dev/null\n02:34:14.204 [order-2] INFO  AlreadyDone - transform\n\n#   Async 는 반드시 풀에서 돈다\n#   풀을 안 주면 공용 풀이다 (11.4절)\n\n\n# --- 공용 풀에 막히는 일을 넣으면 ---\n\n$ java -cp out:libs/* CommonPoolBlock --tasks 100 --wait-ms 100 2>/dev/null | grep -o '[0-9]*ms'\n1204ms\n$ java -cp out:libs/* CommonPoolBlock --tasks 100 --wait-ms 100 --own-pool 100 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n112ms\n\n$ java -cp out:libs/* CommonPoolBlock --tasks 100 --wait-ms 100 --with-parallel-stream \\\n  2>/dev/null | tail -1\n같이 돌던 병렬 스트림도 1204ms 로 밀렸다\n\n#   11.4절에서 본 그것이다\n#   I/O 에는 반드시 자기 풀을 준다\n\n\n# --- 합친다 ---\n\n$ cat Combine.java | grep -A6 'main'\nCompletableFuture<User> u = supplyAsync(() -> loadUser(id), pool);\nCompletableFuture<Cart> c = supplyAsync(() -> loadCart(id), pool);\nu.thenCombine(c, Page::new).thenAccept(this::render).join();\n\n$ java -cp out:libs/* Combine --user-ms 200 --cart-ms 300 2>/dev/null | grep -o '[0-9]*ms'\n312ms\n\n$ java -cp out:libs/* Combine --user-ms 200 --cart-ms 300 --sequential 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n508ms\n\n#   둘 중 느린 쪽만큼이다\n#   11.3절의 invokeAll 과 같은 결과인데 막지 않는다\n\n\n# --- 여럿을 기다린다 ---\n\n$ cat AllOf.java | grep -A5 'main'\nCompletableFuture<?>[] fs = ids.stream().map(id -> supplyAsync(() -> load(id), pool))\n        .toArray(CompletableFuture[]::new);\nCompletableFuture.allOf(fs).join();\n\n$ java -cp out:libs/* AllOf --items 100 --work-ms 50 --pool 20 2>/dev/null | grep -o '[0-9]*ms'\n284ms\n\n$ java -cp out:libs/* AllOf --items 100 --work-ms 50 --pool 20 --collect 2>/dev/null | tail -1\n결과 100개 수집 완료\n\n#   allOf 는 Void 를 준다\n#   결과는 각 future 에서 따로 꺼낸다\n\n\n# --- 예외 ---\n\n$ cat Exceptionally.java | grep -A5 'main'\nsupplyAsync(() -> load(id), pool)\n        .thenApply(this::transform)          // 앞이 실패하면 건너뛴다\n        .exceptionally(e -> Page.EMPTY)      // 여기서 받는다\n        .thenAccept(this::render);\n\n$ java -cp out:libs/* Exceptionally --fail-at load 2>/dev/null\n02:34:32.104 [order-1] INFO  Exceptionally - 빈 페이지 렌더\n02:34:32.104 [main] INFO  Exceptionally - transform 은 안 돌았다\n\n$ java -cp out:libs/* Exceptionally --fail-at load --no-handler 2>&1 | tail -1\nException in thread \"main\" java.util.concurrent.CompletionException: 로드 실패\n\n#   handle 이나 exceptionally 가 없으면 join 에서 터진다\n#   3.7절의 그 이야기다\n\n\n# --- 시간 제한 ---\n\n$ cat Timeout.java | grep -A4 'main'\nsupplyAsync(() -> slowLoad(), pool)\n        .orTimeout(500, MILLISECONDS)\n        .exceptionally(e -> fallback())\n\n$ java -cp out:libs/* Timeout --work-ms 2000 2>/dev/null\n02:34:38.604 [CompletableFutureDelayScheduler] INFO  Timeout - 대체 값 사용\n02:34:40.108 [order-1] INFO  Timeout - 원래 작업은 끝까지 돌았다\n\n#   11.3절의 cancel 과 같다\n#   기다리는 걸 그만둘 뿐 작업은 안 멈춘다\n\n\n# --- 값을 잰다 ---\n\n$ for m in future cf; do\n    printf '%-8s ' $m\n    java -cp out:libs/* CfBench --mode $m --tasks 100000 --stages 3 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nfuture   4128ms\ncf        841ms\n\n$ python3 -c \"print('단계가 셋이면 %.1f배' % (4128/841))\"\n단계가 셋이면 4.9배\n\n$ for m in future cf; do\n    printf '%-8s ' $m\n    java -cp out:libs/* CfBench --mode $m --tasks 100000 --stages 1 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nfuture    412ms\ncf        448ms\n\n#   단계가 하나면 오히려 조금 느리다\n#   이어 붙일 게 있을 때만 쓴다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '이어 붙이기'     '막지 않는다' \\\n  '실행 스레드'     '타이밍에 따라 다름' \\\n  '이미 끝났으면'   'main 에서 돎' \\\n  'Async'           '반드시 풀에서' \\\n  '풀 안 주면'      '공용 풀' \\\n  '막히는 일'       '자기 풀 필수' \\\n  'thenCombine'     '느린 쪽만큼' \\\n  'allOf'           'Void 를 줌' \\\n  '예외'            'exceptionally' \\\n  '없으면'          'join 에서 터짐' \\\n  'orTimeout'       '작업은 안 멈춤' \\\n  '단계 3개'        '4.9배' \\\n  '단계 1개'        '오히려 느림'\n\n이어 붙이기                막지 않는다\n실행 스레드                타이밍에 따라 다름\n이미 끝났으면              main 에서 돎\nAsync                      반드시 풀에서\n풀 안 주면                 공용 풀\n막히는 일                  자기 풀 필수\nthenCombine                느린 쪽만큼\nallOf                      Void 를 줌\n예외                       exceptionally\n없으면                     join 에서 터짐\norTimeout                  작업은 안 멈춤\n단계 3개                   4.9배\n단계 1개                   오히려 느림",
+   "note": "**같은 `thenApply` 가 아직 안 끝났으면 `order-1`, 이미 끝났으면 `main` 에서** 돈다.\n\n**`Async` 를 붙이면 반드시 풀에서 돌고 풀을 안 주면 공용 풀**이다.\n\n**막히는 일을 공용 풀에 넣으면 같이 돌던 병렬 스트림까지 1204ms 로** 밀린다.\n\n**`thenCombine` 은 200ms 와 300ms 를 312ms 에** 끝낸다.\n\n**단계가 셋이면 4.9배 빠르고 하나면 오히려 조금** 느리다."
+  }
+ ],
+ "recap": [
+  "CompletableFuture 는 결과를 기다리는 대신 다음에 할 일을 적어 둔다.",
+  "Async 가 없는 단계는 타이밍에 따라 부른 스레드에서 돌 수 있다.",
+  "Async 에 풀을 안 주면 공용 풀이고 거기에 막히는 일을 넣으면 안 된다.",
+  "여러 작업을 합치면 가장 느린 것만큼만 걸린다.",
+  "이어 붙일 단계가 없으면 Future 보다 나을 게 없다."
+ ],
+ "drills": [
+  {
+   "task": "이미 완료된 future 에 단계를 붙여 스레드 이름을 찍는다.",
+   "done_when": "달라지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "공용 풀에 막히는 일을 넣고 병렬 스트림과 같이 돌린다.",
+   "done_when": "서로 밀리는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 작업을 합쳐 시간을 잰다.",
+   "done_when": "느린 쪽만큼인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "단계 수를 바꿔 가며 Future 와 비교한다.",
+   "done_when": "교차점을 찾는다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "thenApply 는 어느 스레드에서 도나.",
+   "a": "완료시킨 스레드나 부른 스레드다. 타이밍에 따라 다르다."
+  },
+  {
+   "q": "Async 에 풀을 안 주면.",
+   "a": "공용 풀에서 돈다."
+  },
+  {
+   "q": "예외를 안 다루면.",
+   "a": "join 이나 get 에서 CompletionException 으로 터진다."
+  },
+  {
+   "q": "언제 Future 로 충분한가.",
+   "a": "이어 붙일 단계가 없을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "단계",
+   "what": "완료 뒤에 이어서 실행하도록 등록한 처리."
+  },
+  {
+   "term": "공용 풀",
+   "what": "Async 계열이 기본으로 쓰는 ForkJoinPool.commonPool."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — CompletableFuture",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CompletableFuture.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ForkJoinPool",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ForkJoinPool.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

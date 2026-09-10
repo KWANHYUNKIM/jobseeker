@@ -625,7 +625,7 @@
           "title": "예약 실행",
           "summary": "주기 실행의 함정.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -633,7 +633,7 @@
           "title": "CompletableFuture",
           "summary": "이어 붙이고 합친다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -648,7 +648,7 @@
           "title": "@Async",
           "summary": "누가 어느 풀에서 도나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.2",

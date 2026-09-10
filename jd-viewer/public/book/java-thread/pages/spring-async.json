@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "spring-async",
+ "no": "12.1",
+ "chapter": 12,
+ "title": "@Async",
+ "summary": "누가 어느 풀에서 도나.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "기본 풀을 안다.",
+  "예외가 어디로 가는지 안다.",
+  "프록시 한계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11장의 풀을 스프링이 대신 관리해** 준다. **어떤 풀인지가** 문제다.\n\n```java\n@Async(\"orderExecutor\")\npublic void process(Order o) { ... }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "물어야 할 두 가지",
+   "ascii": "   the two questions to ask about any at async method\n\n   which pool does it run on\n   who ever looks at the result\n\n   the default answers are both bad",
+   "note": "**기본값이 둘 다** 나쁘다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기본 풀은 상한이 사실상 없다",
+   "md": "**부트가 만들어 주는 실행기의 기본값**이다.\n\n```\nspring.task.execution.pool.core-size = 8\nspring.task.execution.pool.max-size = Integer.MAX_VALUE\nspring.task.execution.pool.queue-capacity = Integer.MAX_VALUE\n```\n\n> **큐가 무한이라 최대 크기는 무의미**하다(11.2절).\n> **11.1절의 그 무한 큐**다.\n> **부하가 몰리면 메모리가** 찬다.\n\n**실행기를 안 만들면 더 나쁘다** — **옛 스프링은 요청마다 스레드를 새로** 만들었다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 기본값을 확인한다 ---\n\n$ java -jar app.jar --debug 2>/dev/null | grep -A3 'TaskExecutionAutoConfiguration'\n   TaskExecutionAutoConfiguration#applicationTaskExecutor matched\n\n$ curl -s localhost:8080/actuator/configprops | python3 -c \"\nimport json,sys\np = json.load(sys.stdin)['contexts']['application']['beans']\nprint(json.dumps(p['spring.task.execution-org...']['properties'], ensure_ascii=False, indent=1))\" \\\n  | head -8\n{\n \"pool\": {\n  \"coreSize\": 8,\n  \"maxSize\": 2147483647,\n  \"queueCapacity\": 2147483647,\n  \"keepAlive\": \"60s\"\n }\n}\n\n$ java -Xmx256m -jar app.jar --load-test --rps 3000 --work-ms 200 2>&1 | tail -2\n02:38:12.104 [main] INFO  - t=20s 큐 크기 412048\n02:38:14.108 [main] ERROR - OutOfMemoryError: Java heap space\n\n#   11.2절의 newFixedThreadPool 과 같은 문제다\n\n\n# --- 상한을 준다 ---\n\n$ cat application.yml | grep -A5 'task:'\nspring:\n  task:\n    execution:\n      pool: { core-size: 8, max-size: 32, queue-capacity: 1000 }\n      thread-name-prefix: \"task-\"\n\n$ java -Xmx256m -jar app.jar --load-test --rps 3000 --work-ms 200 2>&1 | tail -2\n02:38:24.104 [main] WARN  - TaskRejectedException 41204건\n02:38:26.108 [main] INFO  - 완료, 죽지 않음\n\n#   11.5절의 거부다\n\n\n# --- 여러 풀을 나눈다 ---\n\n$ cat AsyncConfig.java | grep -A12 '@Bean'\n@Bean(\"orderExecutor\")\npublic ThreadPoolTaskExecutor orderExecutor() {\n    var ex = new ThreadPoolTaskExecutor();\n    ex.setCorePoolSize(8); ex.setMaxPoolSize(8);\n    ex.setQueueCapacity(1000);\n    ex.setThreadNamePrefix(\"order-\");                    // 3.6절\n    ex.setRejectedExecutionHandler(new CallerRunsPolicy());  // 11.5절\n    ex.setWaitForTasksToCompleteOnShutdown(true);        // 11.6절\n    ex.setAwaitTerminationSeconds(30);\n    return ex;\n}\n\n$ java -jar app.jar 2>/dev/null | grep -E 'order-|mail-' | head -3\n02:38:34.104 [order-1] INFO  OrderService - 주문 처리\n02:38:34.104 [mail-1 ] INFO  MailService - 메일 발송\n02:38:34.105 [order-2] INFO  OrderService - 주문 처리\n\n$ java -jar app.jar --one-pool --load-test 2>/dev/null | tail -1\n한 풀: 메일이 느려 주문 p99 8412ms\n$ java -jar app.jar --load-test 2>/dev/null | tail -1\n두 풀: 주문 p99 204ms\n\n#   11.4절의 그 이야기다\n\n\n# --- 이름을 안 주면 ---\n\n$ java -jar app.jar --no-prefix 2>/dev/null | grep -oE '\\[task-[0-9]+\\]' | head -2\n[task-1]\n[task-2]\n\n$ java -jar app.jar --no-executor 2>/dev/null | grep -oE '\\[[a-zA-Z0-9-]+\\]' | head -2\n[SimpleAsyncTaskExecutor-1]\n[SimpleAsyncTaskExecutor-2]\n\n$ java -jar app.jar --no-executor --load-test --rps 1000 2>/dev/null | tail -1\nSimpleAsyncTaskExecutor: 스레드 4128개 생성됨 (재사용 안 함)\n\n#   실행기를 안 만들면 요청마다 스레드를 만든다\n#   11.1절의 그것이다\n\n\n# --- 예외가 사라진다 ---\n\n$ cat AsyncVoid.java | grep -A3 '@Async'\n@Async(\"orderExecutor\")\npublic void process(Order o) { throw new IllegalStateException(\"실패\"); }\n\n$ java -jar app.jar --trigger-failure 2>&1 | grep -c 'IllegalState'\n1\n$ java -jar app.jar --trigger-failure 2>&1 | grep 'IllegalState' | head -1\n02:38:44.104 [order-1] ERROR o.s.a.i.SimpleAsyncUncaughtExceptionHandler - Unexpected error\n\n$ cat AsyncFuture.java | grep -A3 '@Async'\n@Async(\"orderExecutor\")\npublic CompletableFuture<Result> process(Order o) { throw new IllegalStateException(\"실패\"); }\n\n$ java -jar app.jar --trigger-failure --returns-future 2>&1 | grep -c 'IllegalState'\n0\n\n#   void 면 기본 핸들러가 로그를 남긴다\n#   Future 를 돌려주면 3.7절처럼 조용하다\n\n$ cat CustomHandler.java | grep -A5 'getAsyncUncaughtExceptionHandler'\n@Override\npublic AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {\n    return (ex, method, params) -> {\n        log.error(\"[{}] 비동기 실패\", method.getName(), ex);\n        metrics.counter(\"async.failed\", \"method\", method.getName()).increment();\n    };\n}\n\n$ java -jar app.jar --trigger-failure --custom-handler 2>&1 | grep -c '비동기 실패'\n1\n\n#   3.7절의 전역 핸들러와 같은 자리다\n\n\n# --- 자기 호출은 안 걸린다 ---\n\n$ cat SelfCall.java | grep -A6 'class OrderService'\npublic void handle(Order o) {\n    process(o);                          // 자기 메서드를 부른다\n}\n@Async(\"orderExecutor\")\npublic void process(Order o) { log.info(\"처리\"); }\n\n$ java -jar app.jar --self-call 2>/dev/null | grep '처리'\n02:38:54.104 [http-nio-8080-exec-1] INFO  OrderService - 처리\n\n$ java -jar app.jar --external-call 2>/dev/null | grep '처리'\n02:38:56.204 [order-1] INFO  OrderService - 처리\n\n#   스레드 이름이 http-nio 다 -- 비동기가 아니다\n#   프록시를 안 지났다\n#   3.2절의 \"이름 종류 세기\" 로 잡힌다\n\n$ java -jar app.jar --self-call --check 2>/dev/null | tail -1\n경고: @Async 메서드가 같은 클래스에서 불렸다 (프록시 우회)\n\n\n# --- private 이면 안 걸린다 ---\n\n$ cat PrivateAsync.java | grep -A2 '@Async'\n@Async\nprivate void process() { }\n\n$ java -jar app.jar --private-async 2>&1 | grep -c '처리'\n0\n$ java -jar app.jar --private-async --debug 2>&1 | grep -ci 'async'\n0\n\n#   오류도 경고도 없다\n\n\n# --- 종료 ---\n\n$ java -jar app.jar & sleep 3 && kill -TERM %1 && sleep 5\n02:39:04.104 [main] INFO  - Shutting down ExecutorService 'orderExecutor'\n02:39:06.108 [order-3] INFO  - 진행 중 작업 완료\n02:39:06.112 [main] INFO  - 종료 완료\n\n$ java -jar app.jar --no-wait-on-shutdown & sleep 3 && kill -TERM %1 && sleep 2\n02:39:12.204 [main] INFO  - Shutting down ExecutorService 'orderExecutor'\n02:39:12.208 [order-3] WARN  - 작업이 중간에 끊겼다\n\n#   11.6절의 그 설정이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '기본 풀'         '큐 무한' \\\n  '그 결과'         'OutOfMemory' \\\n  '상한 주면'       '거부 4만건, 안 죽음' \\\n  '실행기 없으면'   '스레드 4128개' \\\n  '풀 나누기'       'p99 8412 이 204' \\\n  'void 예외'       '기본 핸들러가 로그' \\\n  'Future 예외'     '조용함' \\\n  '자기 호출'       'http-nio 에서 돎' \\\n  'private'         '아무 일 없음' \\\n  '종료'            'setWaitForTasks...'\n\n기본 풀                    큐 무한\n그 결과                    OutOfMemory\n상한 주면                  거부 4만건, 안 죽음\n실행기 없으면              스레드 4128개\n풀 나누기                  p99 8412 이 204\nvoid 예외                  기본 핸들러가 로그\nFuture 예외                조용함\n자기 호출                  http-nio 에서 돎\nprivate                    아무 일 없음\n종료                       setWaitForTasks...",
+   "note": "**기본 실행기는 큐가 21억이라 큐가 41만까지 쌓이다 `OutOfMemoryError`** 다.\n\n**실행기를 아예 안 만들면 요청마다 스레드를 만들어 4128개가** 생긴다.\n\n**`void` 면 기본 핸들러가 로그를 남기고 `Future` 를 돌려주면 3.7절처럼** 조용하다.\n\n**자기 호출이면 `http-nio-8080-exec-1` 에서 돌아 비동기가** 아니다.\n\n**`private` 에 붙이면 오류도 경고도 없이 아무 일도 안** 일어난다."
+  }
+ ],
+ "recap": [
+  "스프링의 기본 비동기 실행기는 큐가 사실상 무한이라 부하에 취약하다.",
+  "실행기를 아예 안 만들면 요청마다 스레드를 새로 만든다.",
+  "역할별로 풀을 나누고 이름·거부 정책·종료 설정을 직접 준다.",
+  "void 면 기본 핸들러가 예외를 남기고 Future 를 돌려주면 조용히 사라진다.",
+  "자기 호출과 private 메서드에서는 비동기가 아예 적용되지 않는다."
+ ],
+ "drills": [
+  {
+   "task": "기본 실행기로 부하를 넣어 본다.",
+   "done_when": "큐가 쌓이는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "역할별로 풀을 나눠 p99 를 비교한다.",
+   "done_when": "차이를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "void 와 Future 반환에서 예외를 던져 본다.",
+   "done_when": "한쪽만 로그가 남는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "자기 호출로 비동기를 무력화해 본다.",
+   "done_when": "스레드 이름으로 잡는다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 실행기의 문제는.",
+   "a": "큐 용량이 사실상 무한이라 메모리가 찬다."
+  },
+  {
+   "q": "void 와 Future 반환의 차이는.",
+   "a": "void 는 기본 핸들러가 로그를 남기고 Future 는 조용하다."
+  },
+  {
+   "q": "자기 호출이면 왜 안 되나.",
+   "a": "프록시를 안 지나기 때문이다."
+  },
+  {
+   "q": "그것을 어떻게 잡나.",
+   "a": "로그의 스레드 이름을 보면 요청 스레드에서 돈 게 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "TaskExecutor",
+   "what": "스프링이 비동기 작업에 쓰는 스레드 풀 추상화."
+  },
+  {
+   "term": "비동기 예외 핸들러",
+   "what": "반환값이 없는 비동기 메서드의 예외를 받는 곳."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Task Execution and Scheduling",
+   "url": "https://docs.spring.io/spring-framework/reference/integration/scheduling.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — CompletableFuture",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CompletableFuture.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

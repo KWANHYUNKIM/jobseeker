@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "scheduled",
+ "no": "11.7",
+ "chapter": 11,
+ "title": "예약 실행",
+ "summary": "주기 실행의 함정.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "두 방식을 가른다.",
+  "멈추는 이유를 안다.",
+  "겹치는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.7절에서 주기 실행이 예외 하나에 멈췄다**. **왜 그런지와 다른 함정을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "되풀이하는 두 방식",
+   "ascii": "   two ways to repeat\n\n   fixed rate    the next start is scheduled from the previous start\n   fixed delay   the next start is scheduled from the previous end\n\n   if the task is slower than the period, only the first one piles up",
+   "note": "**작업이 주기보다 느리면 첫째만** 밀린다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "예외 하나로 영영 멈춘다",
+   "md": "**3.7절에서 본 그것**이다.\n\n> **주기 작업에서 예외가 나면 그 스케줄이 취소**된다.\n> **로그도 안** 남는다.\n> **`Future.get()` 을 부르지 않으면 영영** 모른다.\n\n```java\nscheduler.scheduleAtFixedRate(() -> {\n    try { doWork(); }\n    catch (Exception e) { log.error(\"실패, 다음에 계속\", e); }   // 반드시\n}, 0, 1, SECONDS);\n```\n\n**`Error` 는 잡지 않는 게 보통이지만 여기서는 그것도 스케줄을** 죽인다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 두 방식 ---\n\n$ cat RateVsDelay.java | grep -A4 'main'\nscheduler.scheduleAtFixedRate(task, 0, 1000, MILLISECONDS);\n// 또는\nscheduler.scheduleWithFixedDelay(task, 0, 1000, MILLISECONDS);\n// task 는 700ms 걸린다\n\n$ timeout 6 java -cp out:libs/* RateVsDelay --mode rate --work-ms 700 2>/dev/null\n02:30:00.104 [sched-1] INFO  - 시작 (직전 시작으로부터 0ms)\n02:30:01.108 [sched-1] INFO  - 시작 (직전 시작으로부터 1004ms)\n02:30:02.112 [sched-1] INFO  - 시작 (직전 시작으로부터 1004ms)\n\n$ timeout 6 java -cp out:libs/* RateVsDelay --mode delay --work-ms 700 2>/dev/null\n02:30:10.104 [sched-1] INFO  - 시작 (직전 시작으로부터 0ms)\n02:30:11.808 [sched-1] INFO  - 시작 (직전 시작으로부터 1704ms)\n02:30:13.512 [sched-1] INFO  - 시작 (직전 시작으로부터 1704ms)\n\n#   rate 는 1초마다, delay 는 1.7초마다다\n\n\n# --- 작업이 주기보다 느리면 ---\n\n$ timeout 10 java -cp out:libs/* RateVsDelay --mode rate --work-ms 2000 2>/dev/null \\\n  | awk '{print $NF}' | head -4\n0ms\n2004ms\n2004ms\n2004ms\n\n$ timeout 10 java -cp out:libs/* RateVsDelay --mode rate --work-ms 2000 --count-overlap \\\n  2>/dev/null | tail -1\n동시에 도는 작업 최대 1개\n\n#   밀리기만 하고 겹치지는 않는다\n#   같은 주기 작업은 절대 겹치지 않는다\n\n\n# --- 다른 작업끼리는 겹친다 ---\n\n$ java -cp out:libs/* MultiSchedule --pool 1 --tasks 3 --work-ms 2000 --period 1000 \\\n    --seconds 10 2>/dev/null | tail -2\n스레드 1개, 작업 3개\n작업 B 의 실제 주기 p99 6041ms (설정 1000ms)\n\n$ java -cp out:libs/* MultiSchedule --pool 4 --tasks 3 --work-ms 2000 --period 1000 \\\n    --seconds 10 2>/dev/null | tail -1\n작업 B 의 실제 주기 p99 2104ms\n\n#   느린 작업 하나가 다른 스케줄을 밀어낸다\n#   스케줄러 풀 크기를 1로 두면 흔한 사고다\n\n\n# --- 예외로 멈춘다 ---\n\n$ timeout 8 java -cp out:libs/* ScheduleException --fail-at 3 2>&1 | grep -c '실행'\n3\n\n$ timeout 8 java -cp out:libs/* ScheduleException --fail-at 3 2>&1 | grep -c 'Exception'\n0\n\n$ timeout 8 java -cp out:libs/* ScheduleException --fail-at 3 --check-future 2>/dev/null | tail -1\nfuture.get() -> ExecutionException: 계산 실패\n\n#   3.7절의 그것이다\n#   Future 를 들고 있어야 안다\n\n$ timeout 8 java -cp out:libs/* ScheduleException --fail-at 3 --catch 2>/dev/null | grep -c '실행'\n8\n\n#   try-catch 하나로 계속 돈다\n\n\n# --- 감시한다 ---\n\n$ cat WatchedSchedule.java | grep -A8 'void schedule'\nScheduledFuture<?> f = scheduler.scheduleAtFixedRate(wrapped, 0, 1, SECONDS);\nscheduler.scheduleAtFixedRate(() -> {\n    if (f.isDone()) {\n        log.error(\"주기 작업이 멈췄다\");\n        metrics.counter(\"schedule.dead\").increment();\n    }\n}, 5, 5, SECONDS);\n\n$ timeout 15 java -cp out:libs/* WatchedSchedule --fail-at 3 2>/dev/null | grep -c '멈췄다'\n2\n\n#   감시 작업이 알려 준다\n#   ⑱ 11.1절의 감시 항목이 된다\n\n\n# --- 시계가 바뀌면 ---\n\n$ java -cp out:libs/* ClockChange --demo\nSystem.currentTimeMillis 기반: 시계가 뒤로 가면 작업이 두 번 돈다\nSystem.nanoTime 기반: 영향 없음\nScheduledExecutorService: nanoTime 을 쓴다 -- 영향 없음\n\n$ java -cp out:libs/* ClockChange --check-source 2>/dev/null\nScheduledThreadPoolExecutor.now() -> System.nanoTime()\n\n#   벽시계가 아니라 단조 시계를 쓴다\n#   서머타임이나 NTP 보정에 안 흔들린다\n\n\n# --- 정확한 시각에 돌리려면 ---\n\n$ java -cp out:libs/* AtSpecificTime --at '03:00' --demo\nScheduledExecutorService: 상대 시간만 받는다\n계산: 지금부터 그 시각까지의 간격을 직접 구한다\n주의: 그 사이 시계가 바뀌면 어긋난다\n\n$ printf '%-30s %s\\n' \\\n  '주기 실행'          'ScheduledExecutorService' \\\n  '정확한 시각'        '스프링 @Scheduled(cron)' \\\n  '분산 환경'          '외부 스케줄러'\n\n주기 실행                      ScheduledExecutorService\n정확한 시각                    스프링 @Scheduled(cron)\n분산 환경                      외부 스케줄러\n\n#   12.1절에서 스프링 쪽을 본다\n\n\n# --- 종료할 때 ---\n\n$ java -cp out:libs/* ScheduleShutdown --mode default 2>/dev/null | tail -1\nshutdown 뒤에도 예약된 작업이 실행됨\n$ java -cp out:libs/* ScheduleShutdown --mode no-run-after 2>/dev/null | tail -1\nsetExecuteExistingDelayedTasksAfterShutdownPolicy(false) -> 실행 안 됨\n\n#   11.6절의 종료가 여기서는 기본값이 다르다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '두 방식'         'rate 는 시작 기준, delay 는 끝 기준' \\\n  '700ms 작업'      '1004ms 대 1704ms' \\\n  '느리면'          '밀리되 안 겹침' \\\n  '다른 작업끼리'   '겹치고 밀어냄' \\\n  '풀 1이면'        'p99 6041ms' \\\n  '예외'            '조용히 멈춤' \\\n  'Future'          'get 해야 보임' \\\n  'try-catch'       '계속 돎' \\\n  '감시'            'isDone 확인' \\\n  '시계'            'nanoTime 기반' \\\n  '종료'            '기본은 예약분 실행'\n\n두 방식                    rate 는 시작 기준, delay 는 끝 기준\n700ms 작업                 1004ms 대 1704ms\n느리면                     밀리되 안 겹침\n다른 작업끼리              겹치고 밀어냄\n풀 1이면                   p99 6041ms\n예외                       조용히 멈춤\nFuture                     get 해야 보임\ntry-catch                  계속 돎\n감시                       isDone 확인\n시계                       nanoTime 기반\n종료                       기본은 예약분 실행",
+   "note": "**700ms 작업이 `fixedRate` 면 1004ms 마다, `fixedDelay` 면 1704ms 마다** 돈다.\n\n**작업이 주기보다 느려도 같은 작업은 절대 안 겹치고 밀리기만** 한다.\n\n**스케줄러 풀이 1이면 느린 작업 하나가 다른 작업의 주기를 6041ms 로** 밀어낸다.\n\n**예외가 나면 로그 없이 멈추고 `Future.get()` 을 해야** 보인다.\n\n**`ScheduledExecutorService` 는 `nanoTime` 을 써서 시계 보정에 안** 흔들린다."
+  }
+ ],
+ "recap": [
+  "fixedRate 는 시작 기준, fixedDelay 는 끝 기준으로 다음 실행을 잡는다.",
+  "같은 주기 작업은 겹치지 않고 밀리기만 한다.",
+  "스케줄러 풀이 작으면 느린 작업이 다른 작업의 주기를 밀어낸다.",
+  "예외가 나면 조용히 멈추므로 반드시 try-catch 로 감싼다.",
+  "멈췄는지 감시하려면 ScheduledFuture 의 완료 여부를 확인한다."
+ ],
+ "drills": [
+  {
+   "task": "두 방식의 실제 간격을 잰다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "작업을 주기보다 느리게 만들어 겹치는지 본다.",
+   "done_when": "안 겹치는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "예외를 던져 멈추게 하고 감시를 붙인다.",
+   "done_when": "알림이 오는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "스케줄러 풀 크기를 바꿔 서로 밀어내는 것을 본다.",
+   "done_when": "p99 차이를 낸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 방식의 차이는.",
+   "a": "다음 실행을 직전 시작에서 잡느냐 직전 종료에서 잡느냐다."
+  },
+  {
+   "q": "작업이 주기보다 느리면.",
+   "a": "겹치지 않고 밀린다."
+  },
+  {
+   "q": "예외가 나면.",
+   "a": "그 스케줄이 조용히 취소된다."
+  },
+  {
+   "q": "왜 시계 보정에 안 흔들리나.",
+   "a": "벽시계가 아니라 단조 시계를 쓰기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "고정 주기",
+   "what": "직전 시작 시각을 기준으로 다음 실행을 잡는 방식."
+  },
+  {
+   "term": "고정 지연",
+   "what": "직전 종료 시각을 기준으로 다음 실행을 잡는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ScheduledExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
