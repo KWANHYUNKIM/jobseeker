@@ -653,7 +653,7 @@
           "title": "within",
           "summary": "타입으로 고른다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
@@ -661,7 +661,7 @@
           "title": "args 와 this·target",
           "summary": "실제 타입과 선언 타입.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",

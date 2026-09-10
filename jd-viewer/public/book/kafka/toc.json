@@ -246,7 +246,7 @@
           "title": "kafka-topics",
           "summary": "만들고 보고 늘린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -254,7 +254,7 @@
           "title": "console-producer",
           "summary": "손으로 레코드를 넣는다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",

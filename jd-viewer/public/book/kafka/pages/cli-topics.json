@@ -1,0 +1,142 @@
+{
+ "book": "kafka",
+ "id": "cli-topics",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "kafka-topics",
+ "summary": "만들고 보고 늘린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "토픽 명령의 주요 옵션을 안다.",
+  "진단용 필터를 안다.",
+  "안전하게 쓰는 습관을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5장은 참고용으로 다시 오게 되는 장**이다. **지금은 훑고, 막힐 때마다 돌아온다.**\n\n> **모든 명령에 `--bootstrap-server` 가** 필요하다. **1.3절의 별칭을 쓰면 그 부분이** 빠진다."
+  },
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "kafka-topics",
+   "caption": "자주 쓰는 형태",
+   "code": "# 목록\nkafka-topics --list\nkafka-topics --list --exclude-internal\n\n# 상세\nkafka-topics --describe --topic orders\nkafka-topics --describe                      # 전부\n\n# 만들기\nkafka-topics --create --topic orders \\\n  --partitions 6 --replication-factor 3 \\\n  --config retention.ms=604800000 \\\n  --config min.insync.replicas=2\n\n# 파티션 늘리기 (줄이기는 안 된다)\nkafka-topics --alter --topic orders --partitions 12\n\n# 지우기\nkafka-topics --delete --topic orders\n\n# 진단용 필터 -- 평소에 비어 있어야 정상이다\nkafka-topics --describe --under-replicated-partitions\nkafka-topics --describe --under-min-isr-partitions\nkafka-topics --describe --unavailable-partitions\nkafka-topics --describe --at-min-isr-partitions"
+  },
+  {
+   "type": "table",
+   "caption": "describe 출력 읽기",
+   "columns": [
+    "열",
+    "뜻",
+    "이상하면"
+   ],
+   "rows": [
+    [
+     "`PartitionCount`",
+     "파티션 수",
+     "4.6절"
+    ],
+    [
+     "`ReplicationFactor`",
+     "복제 수",
+     "3.5절"
+    ],
+    [
+     "`Configs`",
+     "**기본값과 다른 설정만**",
+     "5.5절"
+    ],
+    [
+     "`Leader`",
+     "이 파티션의 리더 브로커",
+     "**`none` 이면 읽고 쓸 수 없다**"
+    ],
+    [
+     "`Replicas`",
+     "복제본이 있는 브로커. **첫 번째가 선호 리더**",
+     "3.7절"
+    ],
+    [
+     "**`Isr`**",
+     "**따라잡은 복제본**",
+     "`Replicas` 보다 적으면 문제(3.6절)"
+    ],
+    [
+     "`Elr`",
+     "마지막까지 살아 있던 복제본(3.9+)",
+     "unclean 판단에 쓴다"
+    ]
+   ],
+   "note": "**`--describe` 를 아무 옵션 없이 치면 모든 토픽이 나온다** — **토픽이 많으면 화면이 넘친다.** `--topic` 을 준다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "운영에서 조심할 것",
+   "md": "| 명령 | 위험 |\n|---|---|\n| **`--delete`** | **되돌릴 수 없다.** 컨슈머 오프셋은 남아 엉킨다(4.1절) |\n| **`--alter --partitions`** | **키 매핑이 바뀐다**(4.4절). 순서가 깨진다 |\n| `--create` 오타 | 자동 생성이 켜져 있으면 조용히 만들어진다(1.3절) |\n| `--describe` (전체) | 토픽이 수천 개면 브로커에 부담 |\n\n**안전 습관**:\n\n```bash\n# 지우기 전에 누가 쓰는지 본다\nkafka-consumer-groups --list | while read g; do\n  kafka-consumer-groups --describe --group \"$g\" | grep -q orders && echo \"$g uses orders\"\ndone\n\n# 파티션 늘리기 전에 순서 요구가 있는지 확인\nkafka-topics --describe --topic orders\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "만들고 보고 늘리고 진단한다",
+   "sql": "# --- 만들고 확인 ---\n\n$ kt --create --topic ops --partitions 6 --replication-factor 3 \\\n    --config retention.ms=86400000 --config min.insync.replicas=2\nCreated topic ops.\n\n$ kt --describe --topic ops\nTopic: ops  TopicId: 7fQ2mL9xRb3nKpW8vTcYdA  PartitionCount: 6  ReplicationFactor: 3\n  Configs: min.insync.replicas=2,retention.ms=86400000\n  Topic: ops  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n  Topic: ops  Partition: 1  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1\n  Topic: ops  Partition: 2  Leader: 3  Replicas: 3,1,2  Isr: 3,1,2\n  Topic: ops  Partition: 3  Leader: 1  Replicas: 1,3,2  Isr: 1,3,2\n  Topic: ops  Partition: 4  Leader: 2  Replicas: 2,1,3  Isr: 2,1,3\n  Topic: ops  Partition: 5  Leader: 3  Replicas: 3,2,1  Isr: 3,2,1\n\n\n# --- 요약해서 보기 ---\n\n$ kt --describe --topic ops | awk '/Leader:/ {print $6}' | sort | uniq -c\n   2 1\n   2 2\n   2 3\n\n$ kt --describe --topic ops | awk '/Partition:/ {split($8,r,\",\"); split($10,i,\",\");\n>   if (length($8) != length($10)) print \"under-replicated: p\"$4}'\n(비어 있음)\n\n\n# --- 목록 ---\n\n$ kt --list\nops\n\n$ kt --list --exclude-internal=false 2>/dev/null | head -3\n__consumer_offsets\nops\n\n#   내부 토픽까지 보려면\n\n\n# --- 파티션 늘리기 ---\n\n$ kt --alter --topic ops --partitions 12\n$ kt --describe --topic ops | head -1\nTopic: ops  PartitionCount: 12  ReplicationFactor: 3\n\n$ kt --describe --topic ops | awk '/Leader:/ {print $6}' | sort | uniq -c\n   4 1\n   4 2\n   4 3\n\n#   새 파티션도 골고루 배치됐다\n\n\n# --- 진단 필터 ---\n\n$ kt --describe --under-replicated-partitions\n(비어 있음 = 정상)\n\n$ docker compose stop kafka-3 >/dev/null && sleep 35\n\n$ kt --describe --under-replicated-partitions | head -3\n  Topic: ops  Partition: 2  Leader: 1  Replicas: 3,1,2  Isr: 1,2\n  Topic: ops  Partition: 5  Leader: 2  Replicas: 3,2,1  Isr: 2,1\n  Topic: ops  Partition: 8  Leader: 1  Replicas: 3,1,2  Isr: 1,2\n\n$ kt --describe --under-min-isr-partitions\n(비어 있음)\n\n#   ISR 이 2라 min.insync.replicas=2 는 아직 만족한다\n#   쓰기는 계속 된다 (3.6절)\n\n$ docker compose stop kafka-2 >/dev/null && sleep 35\n$ kt --describe --under-min-isr-partitions | head -2\n  Topic: ops  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1\n  Topic: ops  Partition: 2  Leader: 1  Replicas: 3,1,2  Isr: 1\n\n#   이제 acks=all 쓰기가 막힌다. 알람을 걸 지표다 (11.1절)\n\n$ kt --describe --unavailable-partitions\n(비어 있음 -- 리더는 다 있다)\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 지우기 전에 누가 쓰는지 확인 ---\n\n$ kcc --topic ops --group ops-reader --from-beginning --timeout-ms 2000 >/dev/null\n$ kcg --list | while read g; do\n>   kcg --describe --group \"$g\" 2>/dev/null | grep -q ' ops ' && echo \"$g uses ops\"\n> done\nops-reader uses ops\n\n#   지우기 전에 이걸 먼저 친다\n\n$ kt --delete --topic ops\n$ kcg --describe --group ops-reader\nConsumer group 'ops-reader' has no active members.\nGROUP        TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nops-reader   ops    0          0               -               -\n\n#   토픽은 없는데 그룹 기록이 남았다 (4.1절)\n\n$ kcg --delete --group ops-reader >/dev/null"
+  }
+ ],
+ "recap": [
+  "kafka-topics 로 목록·상세·생성·파티션 증가·삭제를 한다.",
+  "describe 의 Isr 이 Replicas 보다 적으면 문제다. Leader: none 이면 읽고 쓸 수 없다.",
+  "--under-replicated-partitions / --under-min-isr-partitions / --unavailable-partitions 가 평소에 비어 있어야 정상이다.",
+  "삭제와 파티션 증가는 되돌릴 수 없다. 지우기 전에 누가 쓰는지 확인한다."
+ ],
+ "drills": [
+  {
+   "task": "토픽을 만들고 `--describe` 출력의 각 열을 자기 말로 설명해 본다.",
+   "done_when": "Leader·Replicas·Isr 의 차이를 말할 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "브로커를 하나씩 내리며 세 가지 진단 필터가 언제 채워지는지 확인한다.",
+   "done_when": "under-replicated 와 under-min-isr 이 다른 시점에 나오는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "토픽을 지우기 전에 사용하는 그룹을 찾는 한 줄 스크립트를 만들어 둔다.",
+   "done_when": "그룹 이름이 나오는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "--under-replicated-partitions 와 --under-min-isr-partitions 의 차이는.",
+   "a": "전자는 ISR 이 복제 수보다 적은 것, 후자는 ISR 이 min.insync.replicas 보다 적어 acks=all 쓰기가 막히는 것."
+  },
+  {
+   "q": "describe 의 Replicas 첫 번째 값이 뜻하는 것은.",
+   "a": "선호 리더. preferred election 이 이 브로커를 리더로 되돌린다."
+  },
+  {
+   "q": "토픽을 지우기 전에 확인할 것은.",
+   "a": "어느 컨슈머 그룹이 그 토픽을 쓰는지. 오프셋 기록이 남아 엉킨다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "내부 토픽",
+   "what": "__consumer_offsets 같은 카프카 자체용 토픽. 기본 목록에서 제외된다."
+  },
+  {
+   "term": "ELR",
+   "en": "Eligible Leader Replicas",
+   "what": "마지막까지 ISR 이었던 복제본 목록(3.9+)."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — kafka-topics.sh",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_add_topic",
+   "publisher": "Apache"
+  }
+ ]
+}

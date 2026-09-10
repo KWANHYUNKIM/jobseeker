@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "args",
+ "no": "11.4",
+ "chapter": 11,
+ "title": "args 와 this·target",
+ "summary": "실제 타입과 선언 타입.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "실제 타입을 본다.",
+  "셋을 가른다.",
+  "값을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.2절의 인자는 적힌** 타입이었다. **실제 타입을 보는 것도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "부를 때의 타입을 보는 셋",
+   "ascii": "   three ways to talk about types at call time\n\n   args     the runtime types of the arguments handed in\n   target   the runtime type of the object underneath\n   this     the runtime type of the object the caller holds\n\n   all three look at what is actually there, not what is written",
+   "note": "**셋 다 적힌 게 아니라 실제로 거기 있는 걸** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "선언형과 실제형이 다를 수 있다",
+   "md": "**인자를** 본다.\n\n> **넘어온 값의** 타입이다.\n> **아래에서 견준다**.\n> **11.2절과 반대**다.\n\n**타깃을** 본다.\n\n> **프록시 밑의** 원본이다.\n> **10.1절의 그것**이다.\n> **아래에서 확인**한다.\n\n**이것을** 본다.\n\n> **부르는 쪽이 든 것**이다.\n> **곧 프록시**다.\n> **아래에서 갈린다**.\n\n**둘이 같아** 보인다.\n\n> **CGLIB 이면 그렇다**.\n> **JDK 면** 갈린다.\n> **아래에서 바꿔** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 더 비싼가",
+   "ascii": "   why these cost more than a type pattern\n\n   a type pattern is answered once, at startup\n   a runtime type test cannot be, because values differ per call\n\n   so the matcher runs again on every single invocation",
+   "note": "**값이 호출마다 달라 매번 다시** 물어야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "호출마다 묻는 표현식이 있다",
+   "md": "**기동에 못** 끝낸다.\n\n> **8.5절의 담기가 안** 된다.\n> **아래에서 수를** 센다.\n> **0 이 아니게** 된다.\n\n**개수도** 정한다.\n\n> **적은 만큼 딱** 맞는다.\n> **아래에서 확인**한다.\n> **점 둘을 섞는다**.\n\n**혼자 쓰면** 넓다.\n\n> **모든 빈이** 후보다.\n> **아래에서 겪는다**.\n> **11.7절에서 합친다**.\n\n**값을 꺼낼 수도** 있다.\n\n> **이름을 붙이면** 된다.\n> **11.8절에서 판다**.\n> **아래에서 미리** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 선언형과 실제형\n\n@Service\npublic class ArgService {\n    public void take(Object o) { log.info(\"받음 {}\", o.getClass().getSimpleName()); }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/arg/take?v=연필'\n$ grep '받음' logs/app.log | tail -1 | cut -c56-\n받음 String\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.arg..*(String))'\n맞는 메서드 0 개\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.arg..*(Object))'\n맞는 메서드 1 개\n\n--   적힌 건 Object 다\n--   11.2 절의 그 선언형이다\n\n\n-- 실제 타입으로 잡는다\n\n@Around(\"args(String)\")\npublic Object a(ProceedingJoinPoint jp) throws Throwable {\n    log.info(\"걸림 {}\", jp.getSignature().toShortString());\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/arg/take?v=연필'\n$ grep '걸림' logs/app.log | tail -1 | cut -c56-\n걸림 ArgService.take()\n\n$ curl -s -o /dev/null 'localhost:8080/arg/takeInt?v=3'\n$ grep -c '걸림 ArgService.take()' logs/app.log\n1\n\n--   Object 로 선언됐는데 String 이 와서 걸렸다\n\n\n-- 같은 메서드가 걸리고 안 걸린다\n\n@GetMapping(\"/arg/any\")\npublic String any(String kind) {\n    argService.take(kind.equals(\"s\") ? \"연필\" : 42);\n    return \"ok\";\n}\n\n$ curl -s -o /dev/null 'localhost:8080/arg/any?kind=s'\n$ grep -c '걸림' logs/app.log\n1\n\n$ curl -s -o /dev/null 'localhost:8080/arg/any?kind=i'\n$ grep -c '걸림' logs/app.log\n1\n\n--   두 번 불렀는데 한 번만 걸렸다\n--   10.4 절에서는 경로가 정했고 여기선 값이 정한다\n\n\n-- 개수도 맞춘다\n\n$ for e in 'args()' 'args(*)' 'args(..)' 'args(String)' 'args(String, ..)' 'args(.., String)'; do\n    printf '%-20s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/hits-live' --data-urlencode \"expr=$e\" | head -1\n  done\n\nargs()               적중 4 회\nargs(*)              적중 9 회\nargs(..)             적중 16 회\nargs(String)         적중 7 회\nargs(String, ..)     적중 9 회\nargs(.., String)     적중 8 회\n\n--   11.1 절의 괄호 규칙과 같다\n\n\n-- 타깃과 이것\n\n@Around(\"target(study.adv.app.Repo)\")\npublic Object t(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=target(study.adv.app.Repo)'\n맞는 빈 3 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=within(study.adv.app.Repo)'\n맞는 빈 0 개\n\n--   11.3 절에서 0 이던 것이 3 이다\n--   더하기를 안 붙여도 아래를 본다\n\n\n-- 둘이 같아 보인다\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=target(study.adv.app.OrderRepositoryV3)'\n맞는 빈 1 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=this(study.adv.app.OrderRepositoryV3)'\n맞는 빈 1 개\n\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3' | sed -n '2,4p'\n주입된 것: study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\nCGLIB:     true\n원본:      study.adv.app.OrderRepositoryV3\n\n--   자식 클래스라 둘 다 그 타입이다\n\n\n-- JDK 로 바꾸면 갈린다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3' | sed -n '2,4p'\n주입된 것: jdk.proxy2.$Proxy187\nJDK:       true\n원본:      study.adv.app.OrderRepositoryV3\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=target(study.adv.app.OrderRepositoryV3)'\n맞는 빈 1 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=this(study.adv.app.OrderRepositoryV3)'\n맞는 빈 0 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=this(study.adv.app.Repo)'\n맞는 빈 3 개\n\n--   6.4 절의 그 프록시다\n--   구현체 타입이 아니다\n--   12.4 절에서 이 갈림을 판다\n\n\n-- 되돌리고 확인한다\n\n$ git checkout -- src/main/resources/application.yml\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=this(study.adv.app.OrderRepositoryV3)'\n맞는 빈 1 개\n\n--   기본은 CGLIB 이라 둘이 같다\n\n\n-- 호출마다 묻는다\n\n$ curl -s 'localhost:8080/pointcut/count?reset=true' > /dev/null\n$ for i in $(seq 1 100); do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n\n// execution 만 쓸 때\n$ curl -s localhost:8080/pointcut/count\n[물음] 0\n\n// args 를 쓸 때\n$ curl -s localhost:8080/pointcut/count\n[물음] 300\n\n$ python3 -c \"print('한 요청에 %d 회' % (300/100))\"\n한 요청에 3 회\n\n--   9.5 절에서 0 이던 그 수다\n--   값이 호출마다 달라 담아 둘 수가 없다\n\n\n-- 값을 잰다\n\n$ curl -s 'localhost:8080/bench?n=1000000'\n빈 메서드 100 만 회   889 ms\n\n// args 를 넣고\n$ curl -s 'localhost:8080/bench?n=1000000'\n빈 메서드 100 만 회   1104 ms\n\n$ python3 -c \"print('한 번에 %.3f 마이크로초 더' % ((1104-889)/1000000*1000))\"\n한 번에 0.215 마이크로초 더\n\n--   9.6 절에서 잰 889 가 기준이다\n\n\n-- 혼자 쓰면 넓다\n\n@Around(\"args(String)\")\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop=TRACE' 2>&1 \\\n    | grep -c 'Creating implicit proxy'\n41\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        55\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n14\n\n--   9.5 절의 10 개가 41 개가 됐다\n--   스프링 빈까지 감쌌다\n\n\n-- 합쳐서 좁힌다\n\n@Around(\"within(study.adv.app..*) && args(String)\")\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop=TRACE' 2>&1 \\\n    | grep -c 'Creating implicit proxy'\n10\n\n$ curl -s 'localhost:8080/pointcut/count?reset=true' > /dev/null\n$ for i in $(seq 1 100); do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n$ curl -s localhost:8080/pointcut/count\n[물음] 300\n\n--   프록시는 10 으로 돌아왔다\n--   호출마다 묻는 건 그대로다\n--   11.7 절에서 이 합치기를 판다\n\n\n-- 값을 꺼내 본다\n\n@Around(\"args(itemId)\")\npublic Object a(ProceedingJoinPoint jp, String itemId) throws Throwable {\n    log.info(\"값 {}\", itemId);\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '값 ' logs/app.log | tail -1 | cut -c56-\n값 연필\n\n$ curl -s --get 'localhost:8080/pointcut/split' --data-urlencode 'expr=args(itemId)'\n인자 이름  itemId\n인자 타입  java.lang.String (메서드 인자에서 읽음)\n\n--   타입 자리에 이름을 적었다\n--   11.8 절에서 이걸 판다\n\n\n-- 셋을 표로\n\n$ printf '%-10s %-20s %-16s %s\\n' '' '보는 것' '기동에 끝나나' '더하기' && \\\n  printf '%-10s %-20s %-16s %s\\n' \\\n  'within'  '적힌 타입'    '끝남'      '필요' \\\n  'args'    '넘어온 값'    '안 끝남'   '불필요' \\\n  'target'  '원본 객체'    '끝남'      '불필요' \\\n  'this'    '든 객체'      '끝남'      '불필요'\n\n             보는 것              기동에 끝나나     더하기\nwithin       적힌 타입            끝남              필요\nargs         넘어온 값            안 끝남           불필요\ntarget       원본 객체            끝남              불필요\nthis         든 객체              끝남              불필요\n\n\n-- 확인한다\n\n$ git checkout -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s localhost:8080/pointcut/count\n[물음] 0\n\n--   11.5 절에서 애너테이션으로 고른다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  'args'         '넘어온 값의 타입' \\\n  '선언형'       'Object 인데 String 이 옴' \\\n  '같은 메서드'  '값이 정함' \\\n  '개수'         '괄호 규칙 같음' \\\n  'target'       '원본, 더하기 불필요' \\\n  'this'         '든 것' \\\n  'CGLIB'        '둘이 같음' \\\n  'JDK'          '갈림' \\\n  '물음'         '한 요청에 3 회' \\\n  '값'           '0.215 마이크로초' \\\n  '혼자 쓰면'    '프록시 41 개'\n\nargs                       넘어온 값의 타입\n선언형                     Object 인데 String 이 옴\n같은 메서드                값이 정함\n개수                       괄호 규칙 같음\ntarget                     원본, 더하기 불필요\nthis                       든 것\nCGLIB                      둘이 같음\nJDK                        갈림\n물음                       한 요청에 3 회\n값                         0.215 마이크로초\n혼자 쓰면                  프록시 41 개",
+   "note": "**`Object` 로 선언된 메서드가 `String` 이 들어올 때만 걸려 두 번 중 한 번만** 걸린다.\n\n**`within(Repo)` 은 0 개인데 `target(Repo)` 은 3 개로 더하기가** 필요 없다.\n\n**JDK 로 바꾸면 `this(OrderRepositoryV3)` 이 0 개, `this(Repo)` 가 3 개로** 갈린다.\n\n**100 요청에 물음이 300 회 나와 9.5절의 0 회가** 깨진다.\n\n**혼자 쓰면 프록시가 10 개에서 41 개가 되고 타입과 합치면 10 으로** 돌아온다."
+  }
+ ],
+ "recap": [
+  "**실제 타입을** 본다.",
+  "**선언형과** 다르다.",
+  "**값이** 정한다.",
+  "**개수도** 맞춘다.",
+  "**타깃은** 원본이다.",
+  "**이것은** 든 것이다.",
+  "**JDK 면** 갈린다.",
+  "**호출마다** 묻는다.",
+  "**혼자 쓰면** 넓다."
+ ],
+ "drills": [
+  {
+   "task": "Object 선언에 String 을 넣어 본다.",
+   "done_when": "걸리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "타깃과 이것을 견준다.",
+   "done_when": "CGLIB 에서 같은 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "JDK 로 바꿔 본다.",
+   "done_when": "갈리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "호출 중 물음을 센다.",
+   "done_when": "0 이 아닌 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인자 실제형과 선언형의 차이는?",
+   "a": "적힌 타입이냐 넘어온 값의 타입이냐다."
+  },
+  {
+   "q": "타깃과 이것은?",
+   "a": "원본 객체와 부르는 쪽이 든 객체다."
+  },
+  {
+   "q": "언제 둘이 갈리나?",
+   "a": "JDK 프록시일 때다. 든 것은 인터페이스 타입뿐이다."
+  },
+  {
+   "q": "왜 더 비싼가?",
+   "a": "값이 호출마다 달라 매번 다시 물어야 해서다."
+  },
+  {
+   "q": "혼자 쓰면?",
+   "a": "모든 빈이 후보가 되어 프록시가 크게 는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "실제 타입",
+   "def": "호출 시점에 실제로 거기 있는 객체의 타입."
+  },
+  {
+   "term": "호출마다 묻기",
+   "def": "기동에 끝내지 못하고 부를 때마다 다시 판정하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

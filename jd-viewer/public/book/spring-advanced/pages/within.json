@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "within",
+ "no": "11.3",
+ "chapter": 11,
+ "title": "within",
+ "summary": "타입으로 고른다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "타입만 보는 걸 안다.",
+  "두 단계를 잇는다.",
+  "값을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.2절은 메서드를** 봤다. **타입만 보는 것도** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "둘이 묻는 것",
+   "ascii": "   what each one asks\n\n   execution   does this method match, in this type\n   within      is this type inside the named scope, whatever the method\n\n   one is a method filter with a type part, the other is only a type",
+   "note": "**하나는 타입 칸이 있는 메서드 거르개, 하나는 타입** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "타입만 보면 두 번째 물음이 없다",
+   "md": "**클래스만** 본다.\n\n> **메서드는 안** 본다.\n> **아래에서 확인**한다.\n> **전부** 걸린다.\n\n**두 단계 중** 앞이다.\n\n> **8.5절의 그** 둘이다.\n> **아래에서 세어** 본다.\n> **뒤는 늘 참**이다.\n\n**싸다**.\n\n> **한 번만 묻는다**.\n> **아래에서 잰다**.\n> **8.5절의 그 값**이다.\n\n**꾸러미로도** 된다.\n\n> **11.1절의 점 둘**이다.\n> **아래에서 견준다**.\n> **더하기도** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 단계 중 어디에 답하나",
+   "ascii": "   which of the two stages each one can answer\n\n   class filter    can the type possibly match at all\n   method matcher  does this particular method match\n\n   a type only expression answers the first and always yes to the second",
+   "note": "**타입만 보는 것은 두 번째에 늘 예라고** 답한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타깃 타입이지 프록시 타입이 아니다",
+   "md": "**타깃을** 본다.\n\n> **10.1절의 그** 둘이다.\n> **아래에서 확인**한다.\n> **프록시 이름이** 아니다.\n\n**인터페이스는 안** 맞는다.\n\n> **선언 타입을 본다**.\n> **아래에서 겪는다**.\n> **더하기가** 답이다.\n\n**JDK 프록시면** 다르다.\n\n> **12.4절의 그** 갈림이다.\n> **아래에서 그걸** 본다.\n> **CGLIB 이라 지금은 같다**.\n\n**메서드를 못** 좁힌다.\n\n> **합쳐야** 한다.\n> **11.7절에서 합친다**.\n> **아래에서 미리** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 메서드를 안 본다\n\n@Around(\"within(study.adv.app.OrderServiceV3)\")\npublic Object w(ProceedingJoinPoint jp) throws Throwable {\n    log.info(\"걸림 {}\", jp.getSignature().toShortString());\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n걸림 OrderServiceV3.validate()\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=within(study.adv.app.OrderServiceV3)'\n맞는 메서드 2 개\n\n--   메서드 이름을 안 적었는데 둘 다 걸렸다\n\n\n-- execution 과 견준다\n\n$ for e in 'within(study.adv.app.OrderServiceV3)' \\\n           'execution(* study.adv.app.OrderServiceV3.*(..))'; do\n    printf '%-52s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/match' --data-urlencode \"expr=$e\" | head -1\n  done\n\nwithin(study.adv.app.OrderServiceV3)                 맞는 메서드 2 개\nexecution(* study.adv.app.OrderServiceV3.*(..))      맞는 메서드 2 개\n\n$ curl -s --get 'localhost:8080/pointcut/split' \\\n    --data-urlencode 'expr=within(study.adv.app.OrderServiceV3)'\n반환형   (없음)\n타입     study.adv.app.OrderServiceV3\n이름     (없음)\n인자     (없음)\n\n--   같은 결과인데 적은 게 적다\n\n\n-- 꾸러미로 넓힌다\n\n$ for e in 'within(study.adv.app.*)' 'within(study.adv.app..*)' 'within(study.adv..*)'; do\n    printf '%-32s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/count-beans' --data-urlencode \"expr=$e\" | head -1\n  done\n\nwithin(study.adv.app.*)          맞는 빈 10 개\nwithin(study.adv.app..*)         맞는 빈 11 개\nwithin(study.adv..*)             맞는 빈 14 개\n\n--   11.1 절의 점 하나 점 둘이 그대로다\n\n\n-- 이름으로도 고른다\n\n$ for e in 'within(study.adv.app.*Service*)' 'within(study.adv.app.*RepositoryV3)' \\\n           'within(*..*Controller*)'; do\n    printf '%-40s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/count-beans' --data-urlencode \"expr=$e\" | head -1\n  done\n\nwithin(study.adv.app.*Service*)          맞는 빈 3 개\nwithin(study.adv.app.*RepositoryV3)      맞는 빈 1 개\nwithin(*..*Controller*)                  맞는 빈 6 개\n\n$ curl -s --get 'localhost:8080/pointcut/which' \\\n    --data-urlencode 'expr=within(*..*Controller*)' | head -3\n  OrderControllerV1\n  OrderControllerV2\n  OrderControllerV3\n\n--   마지막 것은 스프링 것도 셋 잡았다\n\n\n-- 타깃 타입이다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2,5p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\nCGLIB:     true\n원본:      study.adv.app.OrderServiceV3\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=within(study.adv.app.OrderServiceV3$$SpringCGLIB$$0)'\n맞는 메서드 0 개\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=within(study.adv.app.OrderServiceV3)'\n맞는 메서드 2 개\n\n--   10.1 절의 타깃이다\n--   프록시 이름으로는 못 잡는다\n\n\n-- 인터페이스는 안 맞는다\n\npublic interface Repo { void save(String itemId); }\n\n@Repository\npublic class OrderRepositoryV3 implements Repo { ... }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=within(study.adv.app.Repo)'\n맞는 빈 0 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=within(study.adv.app.Repo+)'\n맞는 빈 3 개\n\n--   11.2 절의 더하기가 여기서도 답이다\n--   조용히 0 이 되는 자리다\n\n\n-- 상속에도 쓴다\n\npublic abstract class BaseService { public void ping() { } }\n\n@Service\npublic class OrderServiceV3 extends BaseService { ... }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=within(study.adv.app.BaseService+)'\n맞는 빈 3 개\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=within(study.adv.app.BaseService+)'\n맞는 메서드 8 개\n\n$ curl -s -o /dev/null 'localhost:8080/v3/ping'\n$ grep '걸림' logs/app.log | tail -1 | cut -c56-\n걸림 OrderServiceV3.ping()\n\n--   물려받은 메서드도 걸린다\n\n\n-- 두 단계를 센다\n\n@Component\nclass CountingPointcut implements Pointcut {\n    static final AtomicInteger CLASS = new AtomicInteger();\n    static final AtomicInteger METHOD = new AtomicInteger();\n    ...\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[단계\\]' | cut -c56-\n[단계] within  클래스 물음 196  메서드 물음 0\n[단계] execution 클래스 물음 196  메서드 물음 412\n\n$ python3 -c \"print('메서드 물음이 %d 회 없다' % 412)\"\n메서드 물음이 412 회 없다\n\n--   8.5 절에서 412 를 세던 그 자리다\n--   타입만 보는 건 뒤 단계가 없다\n\n\n-- 값을 잰다\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=within(study.adv.app..*)&n=1000000'\n100 만 회   319 ms\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=execution(*%20study.adv.app..*(..))&n=1000000'\n100 만 회   1412 ms\n\n$ python3 -c \"print('%.1f 배' % (1412/319))\"\n4.4 배\n\n$ ./gradlew bootRun 2>&1 | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n2.149\n\n--   8.5 절에서 잰 1412 ms 가 그대로다\n--   기동만 조금 빨라진다\n\n\n-- 왜 기동만인가\n\n$ curl -s 'localhost:8080/pointcut/count?reset=true' > /dev/null\n$ for i in $(seq 1 100); do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n$ curl -s localhost:8080/pointcut/count\n[물음] 0\n\n--   9.5 절의 그 담기다\n--   부를 때는 어느 쪽도 안 묻는다\n\n\n-- 메서드를 못 좁힌다\n\n@Around(\"within(study.adv.app.OrderServiceV3)\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n걸림 OrderServiceV3.validate()\n\n@Around(\"within(study.adv.app.OrderServiceV3) && execution(* order*(..))\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n\n--   11.7 절에서 이 합치기를 판다\n\n\n-- 실제 표현식을 바꿔 본다\n\n// 지금\n@Around(\"execution(* study.adv.app..*(..))\")\n\n// 타입만으로\n@Around(\"within(study.adv.app..*)\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s localhost:8080/proxy/census | sed -n '3p'\n  내 것:       10\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=within(study.adv.app..*)'\n맞는 메서드 16 개\n\n--   11.1 절의 16 과 같다\n--   같은 여섯 줄이 나온다\n\n\n-- 언제 어느 쪽인가\n\n$ printf '%-16s %-26s %s\\n' \\\n  'within'    '타입 전부를 걸 때'      '짧고 싸다' \\\n  'execution' '메서드를 골라야 할 때'  '길고 정확하다' \\\n  '합침'      '타입 + 메서드'          '11.7'\n\nwithin           타입 전부를 걸 때           짧고 싸다\nexecution        메서드를 골라야 할 때       길고 정확하다\n합침             타입 + 메서드               11.7\n\n\n-- 되돌린다\n\n$ git checkout -- src/main/java/\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: execution(* study.adv.app..*(..))\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   11.4 절에서 실제 타입으로 고르는 법을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '보는 것'      '타입만' \\\n  '메서드'       '안 봄' \\\n  '단계'         '앞 하나' \\\n  '메서드 물음'  '0 회' \\\n  '값'           '4.4 배 쌈' \\\n  '기동'         '조금 빠름' \\\n  '호출'         '차이 없음' \\\n  '타깃 타입'    '프록시 이름 아님' \\\n  '인터페이스'   '더하기 필요' \\\n  '좁히기'       '합쳐야 함'\n\n보는 것                    타입만\n메서드                     안 봄\n단계                       앞 하나\n메서드 물음                0 회\n값                         4.4 배 쌈\n기동                       조금 빠름\n호출                       차이 없음\n타깃 타입                  프록시 이름 아님\n인터페이스                 더하기 필요\n좁히기                     합쳐야 함",
+   "note": "**메서드 이름을 안 적었는데 그 클래스의 두 메서드가 다** 걸린다.\n\n**클래스 물음 196 회는 같은데 메서드 물음이 412 회에서 0 회로** 없어진다.\n\n**100 만 회 재면 319 ms 대 1412 ms 로 4.4 배** 싸다.\n\n**프록시 이름 `…$$SpringCGLIB$$0` 으로는 0 개고 타깃 이름으로만** 맞는다.\n\n**인터페이스 `Repo` 는 0 개, `Repo+` 는 3 개로 11.2절의 더하기가 여기서도** 답이다."
+  }
+ ],
+ "recap": [
+  "**타입만** 본다.",
+  "**메서드는 안** 본다.",
+  "**앞 단계만** 답한다.",
+  "**물음이** 준다.",
+  "**4.4 배** 싸다.",
+  "**호출은** 같다.",
+  "**타깃** 이름이다.",
+  "**더하기가** 필요하다.",
+  "**합쳐야** 좁는다."
+ ],
+ "drills": [
+  {
+   "task": "타입만으로 걸어 본다.",
+   "done_when": "메서드를 안 적고 걸린 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 단계 물음을 센다.",
+   "done_when": "메서드 물음이 0 인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "프록시 이름으로 적어 본다.",
+   "done_when": "0 개인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "인터페이스로 적어 본다.",
+   "done_when": "더하기가 필요한 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "타입만 보는 표현식은 뭘 안 하나?",
+   "a": "메서드를 안 본다. 그 타입의 전부가 걸린다."
+  },
+  {
+   "q": "두 단계 중 어디에 답하나?",
+   "a": "앞 단계뿐이고 뒤 단계는 늘 참이다."
+  },
+  {
+   "q": "값은 얼마나 차이 나나?",
+   "a": "100 만 회에 319 ms 대 1412 ms 로 4.4 배다."
+  },
+  {
+   "q": "어느 타입을 보나?",
+   "a": "타깃 타입이다. 프록시 클래스 이름으로는 안 맞는다."
+  },
+  {
+   "q": "메서드를 좁히려면?",
+   "a": "메서드를 보는 표현식과 합쳐야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "타입만 보는 표현식",
+   "def": "메서드를 안 보고 클래스 하나로 걸리는지를 정하는 규칙."
+  },
+  {
+   "term": "클래스 거르개",
+   "def": "두 단계 중 앞 단계. 타입이 아예 후보인지를 정한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

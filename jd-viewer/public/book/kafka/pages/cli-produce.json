@@ -1,0 +1,101 @@
+{
+ "book": "kafka",
+ "id": "cli-produce",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "console-producer",
+ "summary": "손으로 레코드를 넣는다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "키·헤더를 붙여 보낸다.",
+  "acks 를 CLI 로 바꿔 본다.",
+  "kcat 과의 차이를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "kafka-console-producer",
+   "caption": "자주 쓰는 형태",
+   "code": "# 한 줄에 한 레코드 (Ctrl+D 로 끝)\nkafka-console-producer --topic orders\n\n# 키를 붙인다\nkafka-console-producer --topic orders \\\n  --property parse.key=true --property key.separator='|'\n\n# 파일에서\nkafka-console-producer --topic orders < events.jsonl\n\n# acks 를 바꿔서 (6.3절)\nkafka-console-producer --topic orders --request-required-acks -1\n\n# 임의 설정\nkafka-console-producer --topic orders \\\n  --producer-property compression.type=lz4 \\\n  --producer-property linger.ms=100"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "console-producer 의 한계",
+   "md": "| 못 하는 것 | 대신 |\n|---|---|\n| **헤더 붙이기** | **kcat `-H`**(4.3절) |\n| **null 값(툼스톤)** | `--property null.marker=` 를 주거나 kcat `-Z` |\n| 특정 파티션 지정 | kcat `-p` |\n| **전송 결과 확인** | 실패해도 조용할 수 있다. 로그를 본다 |\n| 바이너리 | kcat |\n\n**그리고 기본이 `acks=1`** 이다 — **`--request-required-acks -1` 을 줘야 `acks=all`** 이다(6.3절).\n\n> **실습에서 \"넣었는데 없다\" 면 acks 와 예외 로그를 먼저** 본다.\n> **console-producer 는 예외를 stderr 에 찍고 계속 돈다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "kcat 이 편한 경우",
+   "md": "```bash\n# 헤더 + 키 + 파티션 지정\nkcat -b localhost:9092 -P -t orders -p 2 -k 'order-1' \\\n     -H 'eventType=OrderPlaced' -H 'traceId=abc' <<< '{\"orderId\":1}'\n\n# 툼스톤 (null 값)\nkcat -b localhost:9092 -P -t profiles -k 'user-2' -Z <<< ''\n\n# 파일 하나를 통째로 한 레코드로\nkcat -b localhost:9092 -P -t files -k 'doc-1' -T -f payload.json\n\n# 메타데이터만 보기\nkcat -b localhost:9092 -L -t orders\n```\n\n> **`-P` 발행, `-C` 소비, `-L` 메타데이터, `-Q` 오프셋 조회**가 기본이다.\n> **한 도구로 다 되는 게 편해서 실무에서 많이** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "넣는 여러 방법",
+   "sql": "$ kt --create --topic prod --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 기본 ---\n\n$ printf 'hello\\nworld\\n' | kcp --topic prod\n\n$ kcc --topic prod --from-beginning --timeout-ms 2000 --property print.partition=true\nPartition:1  hello\nPartition:1  world\n\n\n# --- 키를 붙인다 ---\n\n$ kcp --topic prod --property parse.key=true --property key.separator='|' <<'EOF'\norder-1|{\"amount\":1000}\norder-2|{\"amount\":2000}\norder-1|{\"amount\":3000}\nEOF\n\n$ kcc --topic prod --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true | grep order\nPartition:0  order-2  {\"amount\":2000}\nPartition:2  order-1  {\"amount\":1000}\nPartition:2  order-1  {\"amount\":3000}\n\n\n# --- 구분자를 안 주면 전부 값이 된다 ---\n\n$ kcp --topic prod --property parse.key=true <<'EOF'\norder-3\tvalue-with-tab\nEOF\n\n#   기본 key.separator 는 탭이다. 모르면 헤매는 자리\n\n$ kcc --topic prod --from-beginning --timeout-ms 2000 --property print.key=true | grep order-3\norder-3\tvalue-with-tab\n\n\n# --- acks 를 바꿔 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name prod \\\n    --alter --add-config min.insync.replicas=3 >/dev/null\n$ docker compose stop kafka-3 >/dev/null && sleep 35\n\n$ echo 'acks-all' | kcp --topic prod --request-required-acks -1 2>&1 | tail -1\norg.apache.kafka.common.errors.NotEnoughReplicasException: Messages are rejected...\n\n$ echo 'acks-1' | kcp --topic prod --request-required-acks 1\n$ echo $?\n0\n\n#   같은 명령인데 acks 하나로 갈렸다 (3.6·6.3절)\n\n$ docker compose start kafka-3 >/dev/null && sleep 15\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name prod \\\n    --alter --delete-config min.insync.replicas >/dev/null\n\n\n# --- 헤더는 kcat 으로 ---\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t prod \\\n    -k 'order-9' -H 'eventType=OrderPlaced' -H 'traceId=t-1' <<< '{\"orderId\":9}'\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t prod \\\n    -o beginning -e -f '%k | %h | %s\\n' 2>/dev/null | grep order-9\norder-9 | eventType=OrderPlaced,traceId=t-1 | {\"orderId\":9}\n\n\n# --- 툼스톤 ---\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t prod \\\n    -k 'order-9' -Z <<< ''\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t prod \\\n    -o beginning -e -f '%k | len=%S | %s\\n' 2>/dev/null | grep order-9\norder-9 | len=13 | {\"orderId\":9}\norder-9 | len=-1 | \n\n#   len=-1 이 null 값이다. compact 토픽이면 삭제 표시가 된다 (3.4절)\n\n\n# --- 부하를 줄 때는 perf-test ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic prod --num-records 50000 --record-size 200 --throughput 10000 \\\n    --producer-props bootstrap.servers=kafka-1:19092 acks=1 | tail -2\n49992 records sent, 9998.4 records/sec (1.91 MB/sec), 2.14 ms avg latency, 89.00 ms max latency.\n50000 records sent, 9997.000900 records/sec (1.91 MB/sec), 2.19 ms avg latency,\n  89.00 ms max latency, 2 ms 50th, 5 ms 95th, 14 ms 99th, 41 ms 99.9th.\n\n#   --throughput 으로 속도를 제한할 수 있다\n#   백분위 지연이 같이 나온다 (11.1절에서 감시할 값)\n\n$ kt --delete --topic prod >/dev/null"
+  }
+ ],
+ "recap": [
+  "console-producer 는 한 줄에 한 레코드다. parse.key 와 key.separator 로 키를 붙인다.",
+  "기본 acks 는 1이다. --request-required-acks -1 로 acks=all 을 준다.",
+  "헤더·툼스톤·파티션 지정은 console-producer 로 안 된다. kcat 을 쓴다.",
+  "부하를 줄 때는 kafka-producer-perf-test 로 처리량과 백분위 지연을 함께 본다."
+ ],
+ "drills": [
+  {
+   "task": "parse.key 와 key.separator 를 주고 같은 키로 여러 건을 넣어 본다.",
+   "done_when": "같은 파티션에 들어가는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "min.insync.replicas 를 올리고 acks=1 과 acks=all 의 결과 차이를 본다.",
+   "done_when": "하나는 성공하고 하나는 실패하는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "kcat 으로 헤더와 툼스톤을 넣고 `%h`, `%S` 서식으로 확인한다.",
+   "done_when": "null 값이 len=-1 인 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "console-producer 의 기본 acks 는.",
+   "a": "1. acks=all 을 쓰려면 --request-required-acks -1 을 준다."
+  },
+  {
+   "q": "헤더를 붙여 보내려면.",
+   "a": "console-producer 로는 안 된다. kcat 의 -H 를 쓴다."
+  },
+  {
+   "q": "parse.key=true 만 주고 구분자를 안 주면.",
+   "a": "기본 구분자가 탭이라 탭으로 나뉜다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "kcat",
+   "what": "만능 명령줄 카프카 클라이언트. -P/-C/-L/-Q."
+  },
+  {
+   "term": "툼스톤",
+   "what": "값이 null 인 레코드. kcat -Z 로 보낸다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Console producer",
+   "url": "https://kafka.apache.org/quickstart",
+   "publisher": "Apache"
+  },
+  {
+   "title": "kcat (kafkacat)",
+   "url": "https://github.com/edenhill/kcat",
+   "publisher": "edenhill"
+  }
+ ]
+}
