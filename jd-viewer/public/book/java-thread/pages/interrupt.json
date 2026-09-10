@@ -1,0 +1,167 @@
+{
+ "book": "java-thread",
+ "id": "interrupt",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "인터럽트",
+ "summary": "죽이는 게 아니라 두드리는 것.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "무엇을 하는지 안다.",
+  "두 가지 알아채는 법을 안다.",
+  "안 먹히는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.2절에서 `sleep` 이 인터럽트로** 깨졌다. **그 인터럽트가 실제로 무엇을 하는지** 본다.\n\n```java\nt.interrupt();     // 부탁이지 명령이 아니다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "인터럽트가 하는 일",
+   "ascii": "   what interrupt actually does\n\n   sets a flag on the target thread\n   if the target is sleeping or waiting, wakes it with an exception\n   otherwise nothing visible happens at all\n\n   the target decides what it means, the caller cannot force anything",
+   "note": "**뜻은 대상이 정하고 부르는 쪽은 아무것도 강제 못** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "stop() 이 사라진 이유",
+   "md": "**옛날에는 강제로 죽이는 방법이** 있었다.\n\n> **`Thread.stop()` 은 어디서든 예외를 던져** 넣었다.\n> **락 안이든 파일을 반쯤 썼든 상관** 없었다.\n> **자바 20 에서 아예 예외를** 던지도록 바뀌었다.\n\n```\nUnsupportedOperationException\n\tat java.base/java.lang.Thread.stop(Thread.java:1650)\n```\n\n| 왜 위험한가 | |\n|---|---|\n| **어디서 죽을지 모른다** | 불변식이 깨진 채로 |\n| **락은 풀린다** | **깨진 상태가 남들에게 보인다** |\n| `finally` 는 돈다 | 그래도 복구는 못 한다 |\n\n> **그래서 지금은 \"멈춰 달라고 말하는\" 것만** 남았다.\n> **멈출지는 대상이** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "두 가지 모양, 두 가지 알아채기",
+   "ascii": "   two shapes of code, two ways to notice\n\n   blocking call   an exception arrives, you must catch it\n   tight loop      nothing arrives, you must ask for the flag\n\n   code that does neither cannot be stopped this way",
+   "note": "**둘 다 아닌 코드는 이 방법으로 못** 멈춘다."
+  },
+  {
+   "type": "table",
+   "caption": "인터럽트에 반응하는 것과 아닌 것",
+   "columns": [
+    "",
+    "반응",
+    "무엇이 일어나나"
+   ],
+   "rows": [
+    [
+     "**`sleep`·`join`·`wait`**",
+     "**예**",
+     "**`InterruptedException`**"
+    ],
+    [
+     "**`BlockingQueue.take`**",
+     "예",
+     "같음"
+    ],
+    [
+     "**`Lock.lockInterruptibly`**",
+     "예",
+     "같음(7.3절)"
+    ],
+    [
+     "**NIO 채널 읽기**",
+     "**예**",
+     "`ClosedByInterruptException`"
+    ],
+    [
+     "**`synchronized` 진입 대기**",
+     "**아니오**",
+     "**플래그만 선다**"
+    ],
+    [
+     "**`InputStream.read`**",
+     "**아니오**",
+     "**그대로 막힌다**"
+    ],
+    [
+     "**계산 반복문**",
+     "**아니오**",
+     "플래그만 선다"
+    ]
+   ],
+   "note": "**아래 셋이 \"인터럽트를 걸었는데 안 멈춘다\" 의** 정체다 — **4.5절에서 이걸** 다룬다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 자는 스레드를 깨운다 ---\n\n$ cat WakeSleeper.java | grep -A7 'Thread t'\nThread t = new Thread(() -> {\n    try {\n        log.info(\"10초 잔다\");\n        Thread.sleep(10000);\n        log.info(\"다 잤다\");\n    } catch (InterruptedException e) {\n        log.info(\"깼다. 플래그 {}\", Thread.currentThread().isInterrupted());\n    }\n}, \"sleeper\");\n\n$ java -cp out:libs/* WakeSleeper\n00:26:02.104 [sleeper     ] INFO  WakeSleeper - 10초 잔다\n00:26:02.408 [sleeper     ] INFO  WakeSleeper - 깼다. 플래그 false\n\nreal\t0m0.612s\n\n#   10초를 안 기다렸다\n#   플래그가 false 다 -- 4.4절에서 이 이야기를 한다\n\n\n# --- 계산 중이면 아무 일도 안 난다 ---\n\n$ cat SpinIgnores.java | grep -A6 'Thread t'\nThread t = new Thread(() -> {\n    long n = 0;\n    while (true) n++;                       // 아무것도 안 물어본다\n}, \"spinner\");\nt.start();\nsleep(300);\nt.interrupt();\nlog.info(\"인터럽트 걸었다. 살아 있나 {}\", t.isAlive());\n\n$ timeout 3 java -cp out:libs/* SpinIgnores\n00:26:06.404 [main        ] INFO  SpinIgnores - 인터럽트 걸었다. 살아 있나 true\n\n$ echo $?\n124\n\n$ timeout 3 java -cp out:libs/* SpinIgnores & sleep 1\n$ jcmd $(pgrep -f SpinIgnores) Thread.print 2>/dev/null | grep -A1 '\"spinner\"'\n\"spinner\" #21 [12547] prio=5 os_prio=31 cpu=902.41ms elapsed=1.02s\n   java.lang.Thread.State: RUNNABLE\n\n#   플래그는 섰는데 계속 돈다\n\n\n# --- 물어보게 한다 ---\n\n$ cat SpinChecks.java | grep -A5 'Thread t'\nThread t = new Thread(() -> {\n    long n = 0;\n    while (!Thread.currentThread().isInterrupted()) n++;\n    log.info(\"멈췄다. {} 번 돌았다\", n);\n}, \"spinner\");\n\n$ java -cp out:libs/* SpinChecks\n00:26:12.404 [spinner     ] INFO  SpinChecks - 멈췄다. 412048204 번 돌았다\n\nreal\t0m0.612s\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* SpinChecks 2>/dev/null | grep -oE '[0-9]+ 번'\n  done | head -3\n412048204 번\n398412041 번\n421840112 번\n\n#   멈추는 데 걸린 시간은 같고 돈 횟수만 다르다\n\n\n# --- 물어보는 값 ---\n\n$ java -cp out:libs/* CheckCost --mode never --seconds 3\n안 물어봄       1204812041 회\n$ java -cp out:libs/* CheckCost --mode every --seconds 3\n매번 물어봄      412048204 회\n$ java -cp out:libs/* CheckCost --mode every-1000 --seconds 3\n1000회마다      1198412048 회\n\n$ python3 -c \"print('매번 물어보면 %.1f배 느리다' % (1204812041/412048204))\"\n매번 물어보면 2.9배 느리다\n$ python3 -c \"print('1000회마다면 %.1f%% 손해' % ((1204812041-1198412048)/1204812041*100))\"\n1000회마다면 0.5% 손해\n\n#   반복 안쪽에서 매번 물어볼 필요는 없다\n\n\n# --- 두 가지 검사 메서드 ---\n\n$ cat TwoChecks.java | grep -A6 'main'\nThread.currentThread().interrupt();\nlog.info(\"isInterrupted() 1회 {}\", Thread.currentThread().isInterrupted());\nlog.info(\"isInterrupted() 2회 {}\", Thread.currentThread().isInterrupted());\nlog.info(\"interrupted()   1회 {}\", Thread.interrupted());\nlog.info(\"interrupted()   2회 {}\", Thread.interrupted());\n\n$ java -cp out:libs/* TwoChecks\n00:26:20.104 [main] INFO  TwoChecks - isInterrupted() 1회 true\n00:26:20.104 [main] INFO  TwoChecks - isInterrupted() 2회 true\n00:26:20.105 [main] INFO  TwoChecks - interrupted()   1회 true\n00:26:20.105 [main] INFO  TwoChecks - interrupted()   2회 false\n\n#   하나는 읽기만 하고 하나는 읽고 지운다\n#   4.4절에서 이 이야기를 판다\n\n\n# --- synchronized 는 안 먹힌다 ---\n\n$ cat SyncNotInterruptible.java | grep -A8 'Thread holder'\nThread holder = new Thread(() -> { synchronized (lock) { sleep(10000); } }, \"holder\");\nThread waiter = new Thread(() -> {\n    log.info(\"락 기다린다\");\n    synchronized (lock) { log.info(\"들어왔다\"); }\n}, \"waiter\");\nholder.start(); sleep(200); waiter.start(); sleep(300);\nwaiter.interrupt();\nlog.info(\"인터럽트 걸었다\");\n\n$ timeout 4 java -cp out:libs/* SyncNotInterruptible\n00:26:26.104 [waiter      ] INFO  SyncNotInterruptible - 락 기다린다\n00:26:26.408 [main        ] INFO  SyncNotInterruptible - 인터럽트 걸었다\n\n$ timeout 4 java -cp out:libs/* SyncNotInterruptible & sleep 2\n$ jcmd $(pgrep -f SyncNot) Thread.print 2>/dev/null | grep -A2 '\"waiter\"' | tail -1\n   java.lang.Thread.State: BLOCKED (on object monitor)\n\n#   BLOCKED 인 채로 그대로다\n#   7.3절에서 이걸 고치는 락을 본다\n\n\n# --- 스트림 읽기도 안 먹힌다 ---\n\n$ cat StreamNotInterruptible.java | grep -A5 'Thread t'\nThread t = new Thread(() -> {\n    try { new ServerSocket(19998).accept().getInputStream().read(); }\n    catch (Exception e) { log.info(\"예외 {}\", e.getClass().getSimpleName()); }\n}, \"reader\");\n\n$ timeout 4 java -cp out:libs/* StreamNotInterruptible & sleep 1\n$ nc localhost 19998 & sleep 1\n$ jcmd $(pgrep -f StreamNot) Thread.print 2>/dev/null | grep -A2 '\"reader\"' | tail -1\n   java.lang.Thread.State: RUNNABLE\n\n$ sleep 2 && jcmd $(pgrep -f StreamNot) Thread.print 2>/dev/null | grep -c 'reader'\n1\n\n#   인터럽트를 걸어도 계속 막혀 있다\n#   소켓을 닫는 것이 유일한 방법이다\n\n$ pkill -f StreamNot; pkill nc\n\n\n# --- NIO 는 먹힌다 ---\n\n$ cat NioInterruptible.java | grep -A4 'Thread t'\nThread t = new Thread(() -> {\n    try { SocketChannel.open().connect(addr); }\n    catch (Exception e) { log.info(\"예외 {}\", e.getClass().getSimpleName()); }\n}, \"nio\");\n\n$ java -cp out:libs/* NioInterruptible\n00:26:38.404 [nio         ] INFO  NioInterruptible - 예외 ClosedByInterruptException\n\n#   NIO 채널은 인터럽트에 반응한다\n#   대신 채널이 닫힌다\n\n\n# --- 큐도 먹힌다 ---\n\n$ cat QueueInterrupt.java | grep -A4 'Thread t'\nThread t = new Thread(() -> {\n    try { queue.take(); }                    // 비어 있다\n    catch (InterruptedException e) { log.info(\"take 가 깨졌다\"); }\n}, \"consumer\");\n\n$ java -cp out:libs/* QueueInterrupt\n00:26:42.404 [consumer    ] INFO  QueueInterrupt - take 가 깨졌다\n\n#   8.5절에서 이 큐를 판다\n\n\n# --- 무엇이 반응하나 세어 본다 ---\n\n$ java -cp out:libs/* InterruptSurvey 2>/dev/null\nsleep                반응함   InterruptedException\njoin                 반응함   InterruptedException\nwait                 반응함   InterruptedException\nBlockingQueue.take   반응함   InterruptedException\nlockInterruptibly    반응함   InterruptedException\nSocketChannel.read   반응함   ClosedByInterruptException\nsynchronized 진입    안 함    BLOCKED 유지\nInputStream.read     안 함    RUNNABLE 유지\n계산 반복문          안 함    RUNNABLE 유지\nLock.lock            안 함    WAITING 유지\n\n$ java -cp out:libs/* InterruptSurvey 2>/dev/null | grep -c '반응함'\n6\n$ java -cp out:libs/* InterruptSurvey 2>/dev/null | grep -c '안 함'\n4\n\n#   반은 되고 반은 안 된다\n\n\n# --- 풀에서 ---\n\n$ cat PoolInterrupt.java | grep -A3 'shutdownNow'\nList<Runnable> notRun = pool.shutdownNow();     // 도는 것에 인터럽트를 건다\nlog.info(\"실행 안 된 작업 {}\", notRun.size());\nlog.info(\"3초 안에 끝났나 {}\", pool.awaitTermination(3, SECONDS));\n\n$ java -cp out:libs/* PoolInterrupt --interruptible\n00:26:50.104 [order-1     ] INFO  PoolInterrupt - 작업 중단됨\n00:26:50.104 [order-2     ] INFO  PoolInterrupt - 작업 중단됨\n00:26:50.108 [main        ] INFO  PoolInterrupt - 실행 안 된 작업 8\n00:26:50.108 [main        ] INFO  PoolInterrupt - 3초 안에 끝났나 true\n\n$ java -cp out:libs/* PoolInterrupt --ignore\n00:26:54.204 [main        ] INFO  PoolInterrupt - 실행 안 된 작업 8\n00:26:57.208 [main        ] INFO  PoolInterrupt - 3초 안에 끝났나 false\n\n#   작업이 인터럽트를 안 보면 shutdownNow 도 소용없다\n#   11.6절에서 이 이야기를 판다\n\n\n# --- stop 은 이제 없다 ---\n\n$ cat StopIsGone.java | grep -A2 'stop'\nt.stop();\n\n$ java -cp out:libs/* StopIsGone\nException in thread \"main\" java.lang.UnsupportedOperationException\n\tat java.base/java.lang.Thread.stop(Thread.java:1650)\n\n$ javac -d out StopIsGone.java 2>&1 | grep -c 'deprecated'\n1\n\n#   자바 20부터 아예 던진다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '하는 일'         '플래그를 세움' \\\n  '자는 중이면'     '예외로 깨움' \\\n  '계산 중이면'     '아무 일 없음' \\\n  '물어보면'        '멈춘다' \\\n  '물어보는 값'     '매번이면 2.9배' \\\n  '1000회마다'      '0.5% 손해' \\\n  '두 메서드'       '읽기와 읽고 지우기' \\\n  'synchronized'    '안 먹힘' \\\n  'InputStream'     '안 먹힘' \\\n  'NIO'             '먹힘, 채널이 닫힘' \\\n  'shutdownNow'     '작업이 안 보면 소용없음' \\\n  'stop'            'UnsupportedOperation'\n\n하는 일                    플래그를 세움\n자는 중이면                예외로 깨움\n계산 중이면                아무 일 없음\n물어보면                   멈춘다\n물어보는 값                매번이면 2.9배\n1000회마다                 0.5% 손해\n두 메서드                  읽기와 읽고 지우기\nsynchronized               안 먹힘\nInputStream                안 먹힘\nNIO                        먹힘, 채널이 닫힘\nshutdownNow                작업이 안 보면 소용없음\nstop                       UnsupportedOperation",
+   "note": "**자는 스레드는 0.6초 만에 깨는데 계산만 하는 스레드는 인터럽트를 걸어도 계속** 돈다.\n\n**반복문에서 매번 물어보면 2.9배 느려지고 1000회마다면 0.5%** 손해다.\n\n**`synchronized` 진입 대기와 `InputStream.read` 는 인터럽트에 안 반응해 상태가 그대로**다.\n\n**`shutdownNow()` 를 불러도 작업이 플래그를 안 보면 `awaitTermination` 이 false** 다.\n\n**`Thread.stop()` 은 자바 20부터 `UnsupportedOperationException` 을** 던진다."
+  }
+ ],
+ "recap": [
+  "인터럽트는 플래그를 세우는 것이고 멈출지는 대상이 정한다.",
+  "자거나 기다리는 중이면 InterruptedException 으로 깨어나고 계산 중이면 아무 일도 안 난다.",
+  "계산 반복문은 직접 플래그를 물어봐야 멈춘다 — 매 회전마다 물어볼 필요는 없다.",
+  "synchronized 진입 대기와 고전 InputStream 읽기는 인터럽트에 반응하지 않는다.",
+  "강제로 죽이는 stop() 은 사라졌다. 멈춤은 협력으로만 가능하다."
+ ],
+ "drills": [
+  {
+   "task": "자는 스레드와 도는 스레드에 각각 인터럽트를 걸어 본다.",
+   "done_when": "한쪽만 멈추는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "반복문에서 플래그를 얼마나 자주 물어볼지 바꿔 가며 성능을 잰다.",
+   "done_when": "적절한 간격을 정한다.",
+   "minutes": 15
+  },
+  {
+   "task": "synchronized 대기 중인 스레드에 인터럽트를 걸어 본다.",
+   "done_when": "BLOCKED 가 유지되는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "shutdownNow 를 인터럽트를 보는 작업과 안 보는 작업에 각각 써 본다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "인터럽트가 실제로 하는 일은.",
+   "a": "대상 스레드의 플래그를 세우고 대기 중이면 예외로 깨우는 것이다."
+  },
+  {
+   "q": "계산만 하는 반복문은 왜 안 멈추나.",
+   "a": "예외가 안 오고 플래그를 물어보지도 않아서다."
+  },
+  {
+   "q": "인터럽트가 안 먹히는 대표적인 자리는.",
+   "a": "synchronized 진입 대기와 고전 InputStream 읽기다."
+  },
+  {
+   "q": "stop() 은 왜 없어졌나.",
+   "a": "어디서 죽을지 모른 채 락을 풀어 깨진 상태를 남기기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "인터럽트 플래그",
+   "what": "스레드마다 하나씩 있는 불린 값. 멈춰 달라는 표시다."
+  },
+  {
+   "term": "협력적 취소",
+   "what": "강제로 죽이지 않고 대상이 스스로 멈추기를 기다리는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.interrupt",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html#interrupt()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

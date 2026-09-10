@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "sleep",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "sleep",
+ "summary": "재우면 무엇을 놓지 않나.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "락을 안 놓는 걸 본다.",
+  "정확도를 잰다.",
+  "쓰면 안 되는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.1절에서 `sleep` 이 `TIMED_WAITING` 을** 만들었다. **그동안 무엇을 놓고 무엇을 쥐고 있는지가** 문제다.\n\n```java\nThread.sleep(1000);          // 코어는 놓고 락은 쥔다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "놓는 것과 쥐는 것",
+   "ascii": "   what sleep gives up and what it keeps\n\n   gives up   the core, for at least the requested time\n   keeps      every lock it is currently holding\n\n   which means sleeping inside a lock blocks everyone else",
+   "note": "**락 안에서 자면 나머지가 다** 멈춘다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "락을 쥔 채로 자는 것이 가장 흔한 실수다",
+   "md": "**`wait()` 과 정반대**다.\n\n```java\nsynchronized (lock) {\n    Thread.sleep(1000);      // 락을 쥔 채로 1초\n}\n\nsynchronized (lock) {\n    lock.wait(1000);         // 락을 놓고 1초\n}\n```\n\n| | 코어 | 락 | 깨우는 법 |\n|---|---|---|---|\n| **`sleep(n)`** | **놓는다** | **쥔다** | 시간·인터럽트 |\n| **`wait(n)`** | 놓는다 | **놓는다** | **시간·인터럽트·notify** |\n| `join(n)` | 놓는다 | 쥔다 | 종료·시간·인터럽트 |\n\n> **6.7절에서 `wait`/`notify` 를 판다**.\n> **지금은 \"`sleep` 은 락을 안 놓는다\" 만 기억해** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청한 시간은 하한이다",
+   "ascii": "   why the requested time is a floor, not a promise\n\n   the thread becomes eligible again after the interval\n   then it waits for a core like everyone else\n\n   under load the gap between eligible and running grows",
+   "note": "**부하가 걸리면 깨어날 자격과 실제 실행 사이가** 벌어진다."
+  },
+  {
+   "type": "table",
+   "caption": "sleep 을 쓰면 안 되는 자리",
+   "columns": [
+    "자리",
+    "왜",
+    "대신"
+   ],
+   "rows": [
+    [
+     "**조건을 기다릴 때**",
+     "**언제 될지 모른다**",
+     "**`wait`/`await`**(6.7, 7.5절)"
+    ],
+    [
+     "**테스트에서 동기화**",
+     "느리고 깜빡인다",
+     "**`await()`**(1.3절)"
+    ],
+    [
+     "**락 안에서**",
+     "**전부 멈춘다**",
+     "락 밖으로 빼기"
+    ],
+    [
+     "폴링 간격",
+     "-",
+     "**괜찮다**"
+    ],
+    [
+     "재시도 백오프",
+     "-",
+     "**괜찮다**"
+    ],
+    [
+     "**정확한 타이밍**",
+     "**보장이 없다**",
+     "`ScheduledExecutor`(11.7절)"
+    ]
+   ],
+   "note": "**넷째·다섯째 줄만이 `sleep` 의 제대로 된** 용도다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 상태를 본다 ---\n\n$ cat SleepState.java | grep -A4 'Thread t'\nThread t = new Thread(() -> sleep(5000), \"sleeper\");\nt.start();\nsleep(200);\nlog.info(\"상태 {}\", t.getState());\n\n$ java -cp out:libs/* SleepState\n00:23:02.304 [main        ] INFO  SleepState - 상태 TIMED_WAITING\n\n$ java -cp out:libs/* SleepState --dump &\n$ sleep 1 && jcmd $! Thread.print | grep -A3 '\"sleeper\"' | tail -2\n   java.lang.Thread.State: TIMED_WAITING (sleeping)\n\tat java.base/java.lang.Thread.sleep(Native Method)\n$ kill %1\n\n\n# --- 코어를 놓는다 ---\n\n$ java -cp out:libs/* SleepCpu --threads 10 --seconds 3 &\n$ sleep 1 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 1.8% user, 1.2% sys, 97.0% idle\n$ kill %1\n\n$ java -cp out:libs/* SpinCpu --threads 10 --seconds 3 &\n$ sleep 1 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 93.4% user, 2.1% sys, 4.5% idle\n$ kill %1\n\n#   자는 건 CPU 를 안 쓴다\n#   8.2절의 바쁜 대기와 정반대다\n\n\n# --- 락은 안 놓는다 ---\n\n$ cat SleepInLock.java\nstatic final Object lock = new Object();\n\nstatic void work(String tag, boolean sleepInside) {\n    synchronized (lock) {\n        log.info(\"{} 들어옴\", tag);\n        if (sleepInside) sleep(1000);\n        log.info(\"{} 나감\", tag);\n    }\n}\n\n$ java -cp out:libs/* SleepInLock --inside\n00:23:10.104 [w-0         ] INFO  SleepInLock - w-0 들어옴\n00:23:11.108 [w-0         ] INFO  SleepInLock - w-0 나감\n00:23:11.108 [w-1         ] INFO  SleepInLock - w-1 들어옴\n00:23:12.112 [w-1         ] INFO  SleepInLock - w-1 나감\n00:23:12.112 [w-2         ] INFO  SleepInLock - w-2 들어옴\n00:23:13.116 [w-2         ] INFO  SleepInLock - w-2 나감\n\nreal\t0m3.412s\n\n#   셋이 순서대로 1초씩 = 3초다\n\n$ java -cp out:libs/* SleepInLock --outside\n00:23:16.204 [w-0         ] INFO  SleepInLock - w-0 들어옴\n00:23:16.204 [w-0         ] INFO  SleepInLock - w-0 나감\n00:23:16.205 [w-1         ] INFO  SleepInLock - w-1 들어옴\n00:23:16.205 [w-1         ] INFO  SleepInLock - w-1 나감\n00:23:17.208 [main        ] INFO  SleepInLock - 끝\n\nreal\t0m1.412s\n\n$ python3 -c \"print('%.1f배 차이' % (3.412/1.412))\"\n2.4배 차이\n\n#   sleep 을 락 밖으로 빼면 병렬이 된다\n\n\n# --- 그동안 남들은 BLOCKED ---\n\n$ java -cp out:libs/* SleepInLock --inside --threads 5 &\n$ sleep 0.5 && jcmd $! Thread.print | grep 'java.lang.Thread.State' \\\n    | awk '{print $2}' | sort | uniq -c\n   4 BLOCKED\n   8 RUNNABLE\n   1 TIMED_WAITING\n\n$ jcmd $! Thread.print | grep -B3 'waiting to lock' | grep '^\"' | head -2\n\"w-1\"\n\"w-2\"\n\n$ kill %1\n\n#   하나가 자는 동안 넷이 락을 기다린다\n#   4.1절의 그 두 상태다\n\n\n# --- 정확도를 잰다 ---\n\n$ cat SleepAccuracy.java | grep -A5 'static long measure'\nstatic long measure(long ms, int times) {\n    long total = 0;\n    for (int i = 0; i < times; i++) {\n        long s = System.nanoTime();\n        sleep(ms);\n        total += (System.nanoTime() - s) / 1000;      // us\n    }\n    return total / times;\n}\n\n$ java -cp out:libs/* SleepAccuracy --idle\n요청 1ms    실제 평균 1204us   (+204us)\n요청 10ms   실제 평균 10412us  (+412us)\n요청 100ms  실제 평균 100841us (+841us)\n\n$ java -cp out:libs/* SleepAccuracy --load 40\n요청 1ms    실제 평균 4128us   (+3128us)\n요청 10ms   실제 평균 14204us  (+4204us)\n요청 100ms  실제 평균 108412us (+8412us)\n\n$ python3 -c \"print('1ms 요청이 부하 아래서 %.1f배' % (4128/1204))\"\n1ms 요청이 부하 아래서 3.4배\n\n#   짧을수록 오차 비율이 크다\n#   2.3절의 전환 값이 여기 들어 있다\n\n\n# --- 1ms 이하는 의미가 적다 ---\n\n$ java -cp out:libs/* SleepAccuracy --nanos\n요청 1us     실제 평균 118us\n요청 100us   실제 평균 204us\n요청 1000us  실제 평균 1198us\n\n$ python3 -c \"print('1us 를 요청해도 %dus 다 -- %d배' % (118, 118))\"\n1us 를 요청해도 118us 다 -- 118배\n\n#   OS 타이머 해상도가 하한이다\n#   8.2절에서 짧은 대기를 다시 본다\n\n\n# --- 폴링에 쓴다 ---\n\n$ cat PollingLoop.java | grep -A6 'while'\nwhile (!done) {\n    if (check()) { log.info(\"완료 감지\"); break; }\n    sleep(100);                                   // 이건 맞는 용도다\n}\n\n$ java -cp out:libs/* PollingLoop --ready-after 700\n00:23:30.104 [poller      ] INFO  PollingLoop - 완료 감지\n00:23:30.104 [poller      ] INFO  PollingLoop - 검사 8회, 걸린 시간 812ms\n\n$ java -cp out:libs/* PollingLoop --ready-after 700 --interval 10\n00:23:32.204 [poller      ] INFO  PollingLoop - 검사 71회, 걸린 시간 718ms\n\n$ java -cp out:libs/* PollingLoop --ready-after 700 --interval 1000\n00:23:34.304 [poller      ] INFO  PollingLoop - 검사 1회, 걸린 시간 1004ms\n\n$ printf '%-12s %-10s %s\\n' '간격' '검사 횟수' '지연' '10ms' '71회' '18ms' '100ms' '8회' '112ms' '1000ms' '1회' '304ms'\n간격         검사 횟수  지연\n10ms         71회       18ms\n100ms        8회        112ms\n1000ms       1회        304ms\n\n#   맞바꿈이 눈에 보인다\n#   6.7절에서 이걸 wait/notify 로 없앤다\n\n\n# --- 백오프에 쓴다 ---\n\n$ cat Backoff.java | grep -A7 'for (int attempt'\nfor (int attempt = 1; attempt <= 5; attempt++) {\n    try { return call(); }\n    catch (Exception e) {\n        long wait = (long) Math.min(1000, 50 * Math.pow(2, attempt - 1));\n        log.warn(\"{}회 실패, {}ms 뒤 재시도\", attempt, wait);\n        sleep(wait);\n    }\n}\n\n$ java -cp out:libs/* Backoff --fail-until 4\n00:23:40.104 [caller      ] WARN  Backoff - 1회 실패, 50ms 뒤 재시도\n00:23:40.158 [caller      ] WARN  Backoff - 2회 실패, 100ms 뒤 재시도\n00:23:40.262 [caller      ] WARN  Backoff - 3회 실패, 200ms 뒤 재시도\n00:23:40.466 [caller      ] INFO  Backoff - 4회 만에 성공 (총 362ms)\n\n#   ⑱ 9.4절의 그 백오프다\n\n\n# --- 테스트에 쓰면 ---\n\n$ cat SleepTest.java | grep -A5 'void 처리된다'\n@Test\nvoid 처리된다() {\n    pool.submit(() -> repository.save(item));\n    Thread.sleep(500);                             // 이러면 안 된다\n    assertThat(repository.count()).isOne();\n}\n\n$ for i in $(seq 1 20); do\n    ./gradlew test --tests SleepTest -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  17 0\n   3 1\n\n$ ./gradlew test --tests SleepTest --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 0.512s\n\n$ ./gradlew test --tests AwaitTest --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 0.084s\n\n$ for i in $(seq 1 20); do\n    ./gradlew test --tests AwaitTest -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  20 0\n\n#   1.3절과 ⑱ 9.7절에서 한 그 이야기다\n\n\n# --- 인터럽트로 깨진다 ---\n\n$ cat SleepInterrupt.java | grep -A6 'Thread t'\nThread t = new Thread(() -> {\n    try { sleep(10000); log.info(\"다 잤다\"); }\n    catch (InterruptedException e) { log.info(\"깨웠다\"); }\n}, \"sleeper\");\nt.start();\nsleep(300);\nt.interrupt();\n\n$ java -cp out:libs/* SleepInterrupt\n00:23:50.404 [sleeper     ] INFO  SleepInterrupt - 깨웠다\n\nreal\t0m0.612s\n\n#   10초를 안 기다렸다\n#   4.3절에서 이 이야기를 판다\n\n\n# --- TimeUnit 이 읽기 좋다 ---\n\n$ printf '%-40s %s\\n' \\\n  'Thread.sleep(180000)'                  '얼마지?' \\\n  'TimeUnit.MINUTES.sleep(3)'             '3분' \\\n  'Thread.sleep(Duration.ofMinutes(3))'   '자바 19+'\n\nThread.sleep(180000)                     얼마지?\nTimeUnit.MINUTES.sleep(3)                3분\nThread.sleep(Duration.ofMinutes(3))      자바 19+\n\n$ java -cp out:libs/* SleepStyles 2>/dev/null\n00:23:56.104 [main] INFO  SleepStyles - 셋 다 같은 상태 TIMED_WAITING\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '상태'            'TIMED_WAITING' \\\n  '놓는 것'         '코어' \\\n  '쥐는 것'         '락' \\\n  '락 안에서 자면'  '3.4초, 남들 BLOCKED' \\\n  '밖으로 빼면'     '1.4초' \\\n  '정확도'          '요청은 하한' \\\n  '부하 아래'       '1ms 가 4.1ms' \\\n  '하한'            '약 118us' \\\n  '맞는 용도'       '폴링 · 백오프' \\\n  '틀린 용도'       '조건 대기 · 테스트' \\\n  '인터럽트'        '깨진다'\n\n상태                       TIMED_WAITING\n놓는 것                    코어\n쥐는 것                    락\n락 안에서 자면             3.4초, 남들 BLOCKED\n밖으로 빼면                1.4초\n정확도                     요청은 하한\n부하 아래                  1ms 가 4.1ms\n하한                       약 118us\n맞는 용도                  폴링 · 백오프\n틀린 용도                  조건 대기 · 테스트\n인터럽트                   깨진다",
+   "note": "**자는 스레드 열 개가 CPU 1.8% 를 쓰는데 도는 열 개는 93.4% 를** 쓴다.\n\n**락 안에서 자면 셋이 순서대로 3.4초, 밖으로 빼면 1.4초로 2.4배** 차이다.\n\n**그동안 덤프에는 `TIMED_WAITING` 1 개와 `BLOCKED` 4 개가 같이** 찍힌다.\n\n**부하를 걸면 1ms 요청이 4.1ms 로 3.4배가 되고 1us 를 요청해도 118us** 다.\n\n**테스트에서 `sleep` 은 20번 중 3번 깨지고 `await` 는 20/20 에 6배** 빠르다."
+  }
+ ],
+ "recap": [
+  "sleep 은 코어를 놓지만 잡고 있던 락은 안 놓는다.",
+  "락 안에서 자면 그 락을 기다리는 모두가 BLOCKED 로 멈춘다.",
+  "요청한 시간은 하한이다 — 부하가 걸리면 몇 배가 되고 하한도 수십 마이크로초다.",
+  "조건을 기다리거나 테스트를 동기화할 때 쓰면 안 된다. 폴링 간격과 백오프가 제대로 된 용도다.",
+  "sleep 은 인터럽트로 깨진다 — 4.3절의 이야기다."
+ ],
+ "drills": [
+  {
+   "task": "자는 스레드와 도는 스레드의 CPU 사용률을 비교한다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "sleep 을 락 안과 밖에 두고 전체 시간을 잰다.",
+   "done_when": "덤프에서 BLOCKED 를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "부하를 걸고 sleep 정확도를 잰다.",
+   "done_when": "요청 시간이 하한인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "폴링 간격을 바꿔 가며 검사 횟수와 지연을 표로 만든다.",
+   "done_when": "맞바꿈을 설명한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "sleep 이 놓는 것과 쥐는 것은.",
+   "a": "코어는 놓고 락은 쥔다."
+  },
+  {
+   "q": "락 안에서 자면 무슨 일이 나나.",
+   "a": "그 락을 기다리는 스레드가 전부 BLOCKED 가 된다."
+  },
+  {
+   "q": "요청한 시간만큼 정확히 자나.",
+   "a": "아니다. 하한일 뿐이고 부하가 걸리면 몇 배가 된다."
+  },
+  {
+   "q": "sleep 의 제대로 된 용도는.",
+   "a": "폴링 간격과 재시도 백오프다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "TIMED_WAITING",
+   "what": "정해진 시간 동안 기다리는 상태. sleep 이 만드는 상태다."
+  },
+  {
+   "term": "타이머 해상도",
+   "what": "OS 가 스레드를 깨울 수 있는 최소 단위. sleep 의 하한을 만든다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — TimeUnit",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/TimeUnit.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Thread.State",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.State.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

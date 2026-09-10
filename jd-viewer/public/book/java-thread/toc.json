@@ -192,7 +192,7 @@
           "title": "sleep",
           "summary": "재우면 무엇을 놓지 않나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -200,7 +200,7 @@
           "title": "인터럽트",
           "summary": "죽이는 게 아니라 두드리는 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",
