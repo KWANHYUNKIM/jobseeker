@@ -8,145 +8,186 @@
  "minutes": 12,
  "updated_at": "2026-09-10",
  "goals": [
-  "네 가지를 비교한다.",
-  "고르는 기준을 세운다.",
+  "네 가지를 가른다.",
+  "고르는 순서를 안다.",
   "10장을 닫는다."
  ],
  "blocks": [
   {
+   "type": "prose",
+   "md": "**같은 일을 네 가지로 할 수** 있다. **7장부터 여기까지가 그** 넷이다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 계단",
+   "ascii": "   four rungs, in order of what they cost you\n\n   consumer     you write the loop, you own everything\n   streams      a library takes the loop and the state\n   connect      a config file replaces the code entirely\n   flink        a separate cluster, for what the others cannot do\n\n   go up a rung only when the one below actually failed you",
+   "note": "**아래 것이 실제로 모자랐을 때만 한 칸** 올라간다."
+  },
+  {
    "type": "table",
-   "caption": "네 가지",
+   "caption": "네 가지를 나란히",
    "columns": [
     "",
-    "컨슈머/프로듀서",
-    "커넥트",
+    "컨슈머",
     "스트림즈",
+    "커넥트",
     "플링크"
    ],
    "rows": [
     [
-     "**무엇**",
-     "직접 짠 애플리케이션",
-     "**설정으로 옮기기**",
-     "**변환·집계 라이브러리**",
-     "분산 스트림 처리 엔진"
+     "**코드**",
+     "**루프 전부**",
+     "**토폴로지**",
+     "**설정 JSON**",
+     "잡"
     ],
     [
-     "코드",
-     "**전부 내가**",
-     "**거의 없음**",
-     "DSL",
-     "API"
+     "**띄우는 것**",
+     "**내 앱**",
+     "**내 앱**",
+     "**커넥트 워커**",
+     "**별도 클러스터**"
     ],
     [
      "상태",
-     "직접",
+     "**직접 만든다**",
+     "**저장소 제공**",
      "없음",
-     "**내장**",
-     "**내장(더 강력)**"
+     "**체크포인트**"
     ],
     [
-     "운영 단위",
-     "내 애플리케이션",
-     "**커넥트 클러스터**",
-     "내 애플리케이션",
-     "**전용 클러스터**"
+     "정확히 한 번",
+     "**8.4절을 손으로**",
+     "**설정 한 줄**",
+     "커넥터마다",
+     "**있다**"
     ],
     [
-     "배우는 비용",
-     "낮다",
-     "낮다",
+     "**이벤트 시각**",
+     "없음",
+     "**있다**",
+     "-",
+     "**가장 낫다**"
+    ],
+    [
+     "SQL",
+     "없음",
+     "ksqlDB 별도",
+     "-",
+     "**있다**"
+    ],
+    [
+     "**시작 비용**",
+     "**낮다**",
+     "**낮다**",
      "중간",
      "**높다**"
-    ],
-    [
-     "언제",
-     "**대부분**",
-     "표준 시스템 이동",
-     "집계·조인",
-     "복잡한 이벤트 처리"
     ]
    ],
-   "note": "**대부분의 팀은 왼쪽 둘로 충분**하다. **오른쪽으로 갈수록 얻는 것과 운영 비용이 함께** 는다."
+   "note": "**\"띄우는 것\" 줄이 실제 운영 부담을** 가른다 — **앞 둘은 배포 파이프라인이** 그대로다."
+  },
+  {
+   "type": "figure",
+   "caption": "물어볼 순서",
+   "ascii": "   the questions, in the order worth asking\n\n   is it just moving data between two systems      -> connect\n   does it need memory of earlier records          -> streams\n   does it need only this record                   -> consumer\n   does it need event time, sql, or huge state     -> flink",
+   "note": "**첫 물음에서 걸리면 코드를 한 줄도 안** 쓴다."
   },
   {
    "type": "callout",
    "tone": "why",
-   "title": "고르는 순서",
-   "md": "**질문을 순서대로** 던진다.\n\n```\n1. 표준 시스템 사이를 그냥 옮기는가?\n     예 -> 커넥트 (10.1~10.3절)\n\n2. 상태(집계·조인·윈도우)가 필요한가?\n     아니오 -> 컨슈머 (7·9장)\n\n3. 카프카 안에서만 끝나는가? (카프카 -> 카프카)\n     예 -> 스트림즈 (10.4~10.5절)\n     아니오 -> 컨슈머 + DB (7.5절의 멱등 처리)\n\n4. 스트림즈로 감당이 안 되는가?\n     (복잡한 패턴 탐지, 대규모 상태, 정교한 워터마크)\n     예 -> 플링크\n```\n\n> **3번이 갈림길**이다. **결과를 DB 에 써야 하면 스트림즈의 EOS 이점이 사라진다**(8.4절).\n> **그러면 컨슈머 + 멱등 처리가 더 단순**하다."
+   "title": "옮기기만 하는 코드는 짜지 않는다",
+   "md": "**DB 에서 읽어 토픽에 넣는 코드는 이미 누가** 짰다.\n\n> **10.1~10.3절의 커넥트**다.\n> **재시도·오프셋·스키마·백프레셔가 다 들어** 있다.\n> **직접 짜면 그걸 다 다시** 만든다.\n\n**그런데 커넥트도 공짜가** 아니다:\n\n| 커넥트를 안 쓰는 게 나을 때 | |\n|---|---|\n| **커넥터가 없다** | 직접 짜면 커넥터를 만드는 셈 |\n| **변환이 복잡하다** | SMT 로 되는 선을 넘으면 스트림즈 |\n| **워커를 운영할 사람이 없다** | 앱 하나가 더 늘어난다 |\n\n> **\"토픽 → 다른 저장소\" 한 방향이고 변환이 거의 없으면 커넥트가** 이긴다."
   },
   {
    "type": "callout",
-   "tone": "note",
-   "title": "실제 조합 예",
-   "md": "| 요구 | 구성 |\n|---|---|\n| **주문 이벤트를 검색엔진에** | 커넥트(ES 싱크) |\n| **DB 변경을 이벤트로** | Debezium CDC(10.3절) |\n| **주문 → 재고 차감** | **컨슈머**(9장) + 멱등 처리 |\n| **분당 매출 집계** | 스트림즈 윈도우(10.5절) 또는 컨슈머 + DB |\n| 실시간 이상 탐지 | 스트림즈 또는 플링크 |\n| **아웃박스 발행** | **CDC + outbox router**(8.5·10.3절) |\n| 데이터 웨어하우스 적재 | 커넥트(S3·BigQuery 싱크) |\n\n> **한 조직에서 여럿을 같이** 쓴다. **\"하나로 통일\" 이 목표가** 아니다.\n\n**10장을 한 줄로**:\n\n> **옮기는 것은 커넥트, 바꾸는 것은 스트림즈, 나머지는 컨슈머.**"
+   "tone": "trap",
+   "title": "플링크로 올라가는 진짜 이유",
+   "md": "**스트림즈가 못 하는 게 아니라 불편해지는 자리가** 있다.\n\n| 신호 | |\n|---|---|\n| **상태가 수백 GB** | 체인지로그 복원이 몇십 분(10.5절) |\n| **워터마크가 필요** | 늦게 온 것을 정교하게 다뤄야 한다 |\n| **여러 소스 조인** | 카프카 밖 소스가 섞인다 |\n| **SQL 로 분석** | 분석가가 직접 쓴다 |\n| 배치와 스트림 같이 | 같은 코드로 둘 다 |\n\n> **반대로 이 중 아무것도 아니면 클러스터 하나를 더 운영할 값이** 없다.\n> **10.5절에서 스탠바이로 복원을 29배 줄인 것도 그** 얘기다."
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "같은 요구를 여러 가지로 풀어 본다",
-   "sql": "# --- 요구 1: 1만 원 이상 주문만 다른 토픽으로 ---\n\n# 컨슈머로\n\n#   @KafkaListener(topics = \"order.placed.v1\")\n#   public void handle(OrderPlaced e) {\n#       if (e.amount() >= 10000) template.send(\"order.big.v1\", e.orderId(), e);\n#   }\n\n$ java -cp 'out:libs/*' FilterConsumer --in order.placed.v1 --out order.big.v1 & sleep 5\n$ kcp --topic order.placed.v1 --property parse.key=true --property key.separator='|' <<'EOF'\n1|{\"orderId\":1,\"amount\":5000}\n2|{\"orderId\":2,\"amount\":25000}\nEOF\n$ sleep 3 && kcc --topic order.big.v1 --from-beginning --timeout-ms 2000 | wc -l\n1\n\n#   코드 5줄. 익숙하다. 상태가 없으니 이걸로 충분하다\n\n$ pkill -f FilterConsumer\n\n# 스트림즈로\n\n$ java -cp 'out:libs/*' OrderStream & sleep 12\n$ kcc --topic order.big.v1 --from-beginning --timeout-ms 2000 | wc -l\n1\n\n#   같은 결과. 대신 내부 토픽·리셋 도구·DSL 을 배워야 한다\n#   상태가 없으면 이득이 적다\n\n$ pkill -f OrderStream\n\n\n# --- 요구 2: 회원별 주문 수를 집계 ---\n\n# 컨슈머 + DB\n\n#   @KafkaListener(...)\n#   @Transactional\n#   public void handle(OrderPlaced e) {\n#       if (processedRepo.existsById(e.eventId())) return;      // 7.5절\n#       jdbc.update(\"insert into counts(member_id, cnt) values (?,1) \" +\n#                   \"on conflict (member_id) do update set cnt = counts.cnt + 1\", ...);\n#       processedRepo.save(e.eventId());\n#   }\n\n$ java -cp 'out:libs/*' CountConsumer & sleep 5\n$ for i in $(seq 1 20); do echo \"{\\\"eventId\\\":\\\"e$i\\\",\\\"memberId\\\":10,\\\"amount\\\":1000}\"; done | \\\n    kcp --topic order.placed.v1\n$ sleep 4\n$ psql -h localhost -U shop -d shop -tAc 'select cnt from counts where member_id = 10'\n20\n\n$ pkill -f CountConsumer\n\n# 스트림즈\n\n$ java -cp 'out:libs/*' MemberCountStream & sleep 12\n$ for i in $(seq 21 40); do echo \"{\\\"eventId\\\":\\\"e$i\\\",\\\"memberId\\\":10,\\\"amount\\\":1000}\"; done | \\\n    kcp --topic order.placed.v1\n$ sleep 4\n$ curl -s localhost:8080/counts/10\n{\"memberId\":10,\"count\":20}\n\n#   로컬 상태라 DB 왕복이 없다\n\n$ java -cp 'out:libs/*' ThroughputBench --mode consumer-db --records 50000\nconsumer + db upsert :  4,120 rec/s   (DB 병목)\n$ java -cp 'out:libs/*' ThroughputBench --mode streams --records 50000\nkafka streams        : 78,400 rec/s\n\n#   19배 차이다. 상태가 있으면 스트림즈가 크게 이긴다\n\n$ pkill -f MemberCountStream\n\n\n# --- 요구 3: 토픽을 Elasticsearch 로 ---\n\n#   컨슈머로 짜면: ES 클라이언트, 배치, 재시도, DLQ, 오프셋... 전부 내가\n#   커넥트: 설정 20줄\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' -d '{\n  \"name\": \"orders-es-sink\",\n  \"config\": {\n    \"connector.class\": \"io.confluent.connect.elasticsearch.ElasticsearchSinkConnector\",\n    \"topics\": \"order.placed.v1\",\n    \"connection.url\": \"http://elasticsearch:9200\",\n    \"key.ignore\": \"false\", \"schema.ignore\": \"true\",\n    \"behavior.on.null.values\": \"delete\",\n    \"errors.tolerance\": \"all\",\n    \"errors.deadletterqueue.topic.name\": \"orders-es.DLQ\"\n  }\n}' >/dev/null\n\n$ sleep 10 && curl -s 'localhost:9200/order.placed.v1/_count' | python3 -m json.tool\n{\"count\": 42, ...}\n\n#   코드 0줄. 이게 커넥트를 쓰는 이유다\n\n$ curl -s -X DELETE localhost:8083/connectors/orders-es-sink\n\n\n# --- 정리 ---\n\n#   옮기는 것    -> 커넥트\n#   바꾸는 것    -> 스트림즈 (상태가 있으면)\n#   나머지       -> 컨슈머\n#\n#   그리고 결과가 DB 로 가야 하면 스트림즈의 이점이 줄어든다 (8.4절)"
+   "caption": "같은 요구를 넷으로 짜 보고 잰다",
+   "sql": "# 요구: orders 토픽을 읽어 고객별 5분 주문 수를 내고 결과를 토픽에 쓴다\n\n$ kt --create --topic orders --partitions 6 --replication-factor 3 >/dev/null\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 200000 --customers 5000\nsent 200000\n\n\n# --- ① 컨슈머로 ---\n\n$ wc -l ConsumerVersion.java\n     214 ConsumerVersion.java\n\n$ grep -c 'HashMap\\|window\\|commitSync\\|rebalance' ConsumerVersion.java\n27\n\n$ java -cp 'out:libs/*' ConsumerVersion &\n$ sleep 60 && kcc --topic out-consumer --from-beginning --timeout-ms 5000 | wc -l\n4812\n\n$ kill -9 %1 && java -cp 'out:libs/*' ConsumerVersion &\n$ sleep 30 && kcc --topic out-consumer --from-beginning --timeout-ms 5000 | wc -l\n5904\n\n#   죽였다 살리니 창 상태가 사라져 다시 셌다\n#   상태를 어디에 둘지 내가 정해야 한다\n\n\n# --- ② 스트림즈로 ---\n\n$ wc -l StreamsVersion.java\n      31 StreamsVersion.java\n\n$ python3 -c \"print('%.0f%% 짧다' % ((214-31)/214*100))\"\n86% 짧다\n\n$ java -cp 'out:libs/*' StreamsVersion &\n$ sleep 60 && kcc --topic out-streams --from-beginning --timeout-ms 5000 \\\n    --isolation-level read_committed | wc -l\n4812\n\n$ kill -9 %1 && java -cp 'out:libs/*' StreamsVersion &\n$ sleep 30 && kcc --topic out-streams --from-beginning --timeout-ms 5000 \\\n    --isolation-level read_committed | sort -u | wc -l\n4812\n\n#   같은 수다 -- 10.5절의 체인지로그가 복원했다\n\n\n# --- ③ 커넥트로 되나 ---\n\n$ curl -s localhost:8083/connector-plugins | python3 -c \"\nimport json,sys\nfor p in json.load(sys.stdin): print(p['class'].split('.')[-1])\" | head -5\nJdbcSinkConnector\nJdbcSourceConnector\nS3SinkConnector\nElasticsearchSinkConnector\nMirrorSourceConnector\n\n$ curl -s -X PUT localhost:8083/connectors/agg/config \\\n    -H 'Content-Type: application/json' -d '{\"transforms\":\"window\",...}' \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin).get('message','ok'))\"\nUnknown transformation type: window\n\n#   집계는 커넥트가 하는 일이 아니다\n#   SMT 는 레코드 하나를 고치는 것까지다\n\n\n# --- 커넥트가 이기는 요구 ---\n\n# 요구를 바꾼다: out-streams 를 그대로 검색엔진에 넣는다\n\n$ cat sink.json\n{\n  \"connector.class\": \"io.confluent.connect.elasticsearch.ElasticsearchSinkConnector\",\n  \"topics\": \"out-streams\",\n  \"connection.url\": \"http://es:9200\",\n  \"key.ignore\": \"false\",\n  \"tasks.max\": \"3\"\n}\n\n$ wc -l sink.json\n       7 sink.json\n\n$ curl -s -X PUT localhost:8083/connectors/es-sink/config \\\n    -H 'Content-Type: application/json' -d @sink.json | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['name'])\"\nes-sink\n\n$ sleep 20 && curl -s 'localhost:9200/out-streams/_count' | python3 -c \"\nimport json,sys; print(json.load(sys.stdin)['count'])\"\n4812\n\n$ printf '%-14s %s\\n' '컨슈머로' '~120줄' '커넥트로' '7줄 JSON'\n컨슈머로       ~120줄\n커넥트로       7줄 JSON\n\n#   10.2절의 그 싱크다\n\n\n# --- ④ 플링크가 필요한 자리 ---\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 5000000 --customers 2000000\nsent 5000000\n\n$ java -cp 'out:libs/*' StreamsVersion &\n$ sleep 180 && du -sh /tmp/kafka-streams/*/\n4.1G\t/tmp/kafka-streams/count-5m/\n\n$ kill -9 %1 && rm -rf /tmp/kafka-streams && java -cp 'out:libs/*' StreamsVersion &\n$ grep -i 'Restoration took' logs/streams.log | tail -1 | cut -c40-\nINFO  Restoration took 412104 ms for all active tasks\n\n$ python3 -c \"print('%.1f분' % (412104/1000/60))\"\n6.9분\n\n#   상태가 커지자 복원이 7분이다\n#   10.5절의 스탠바이로 줄일 수 있지만 메모리가 두 배다\n\n$ java -cp 'out:libs/*' StreamsVersion --standby 1 &\n$ ps -o rss= -p $! | awk '{print $1/1024\"MB\"}'\n3812MB\n\n\n# --- 늦게 온 것을 얼마나 다루나 ---\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 1000 \\\n    --late-fraction 0.1 --late-by 10m\n\n$ curl -s localhost:8080/actuator/metrics/kafka.stream.task.dropped.records \\\n    | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n104.0\n\n$ grep -c 'Skipping record for expired window' logs/streams.log\n104\n\n#   grace 를 넘긴 104건이 버려졌다\n#   워터마크로 더 정교하게 다루려면 플링크다\n\n\n# --- SQL 로 물어야 한다면 ---\n\n$ docker compose exec -T ksqldb ksql http://ksqldb:8088 <<'EOF'\nCREATE STREAM orders_s (customer VARCHAR, amount BIGINT)\n  WITH (KAFKA_TOPIC='orders', VALUE_FORMAT='JSON');\nSELECT customer, COUNT(*) FROM orders_s\n  WINDOW TUMBLING (SIZE 5 MINUTES) GROUP BY customer EMIT CHANGES LIMIT 3;\nEOF\n+----------+-------+\n|CUSTOMER  |KSQL_COL_0|\n+----------+-------+\n|A-1044    |41     |\n|A-1045    |38     |\n|A-1046    |44     |\n\n$ docker compose ps --format '{{.Service}}' | grep -c ksqldb\n1\n\n#   ksqlDB 도 결국 스트림즈다\n#   대신 서버를 하나 더 띄운다\n\n\n# --- 넷을 표로 ---\n\n$ printf '%-12s %-10s %-14s %-12s %s\\n' '' '코드' '띄우는 것' '상태' '이 요구에' && \\\n  printf '%-12s %-10s %-14s %-12s %s\\n' \\\n  '컨슈머'   '214줄'  '내 앱'        '직접'      '재시작에 깨짐' \\\n  '스트림즈' '31줄'   '내 앱'        '체인지로그' '됨' \\\n  '커넥트'   '7줄'    '워커'         '없음'      '집계는 안 됨' \\\n  '플링크'   '~40줄'  '별도 클러스터' '체크포인트' '과함'\n\n               코드       띄우는 것      상태         이 요구에\n컨슈머         214줄      내 앱          직접         재시작에 깨짐\n스트림즈       31줄       내 앱          체인지로그   됨\n커넥트         7줄        워커           없음         집계는 안 됨\n플링크         ~40줄      별도 클러스터  체크포인트   과함\n\n\n# --- 10장이 만든 것 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '10.1'  '커넥트'          '옮기는 코드를 안 짬' \\\n  '10.2'  '소스와 싱크'     '설정 JSON' \\\n  '10.3'  'CDC'             'DB 변경이 이벤트로' \\\n  '10.4'  '스트림즈'        '루프를 넘김' \\\n  '10.5'  '상태'            '체인지로그와 윈도우' \\\n  '10.6'  '고르기'          '아래부터 올라감'\n\n10.1     커넥트                    옮기는 코드를 안 짬\n10.2     소스와 싱크               설정 JSON\n10.3     CDC                       DB 변경이 이벤트로\n10.4     스트림즈                  루프를 넘김\n10.5     상태                      체인지로그와 윈도우\n10.6     고르기                    아래부터 올라감\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '넷'              '컨슈머 스트림즈 커넥트 플링크' \\\n  '첫 물음'         '옮기기만 하나' \\\n  '둘째 물음'       '앞을 기억해야 하나' \\\n  '코드 차이'       '214줄 대 31줄' \\\n  '재시작'          '컨슈머만 깨짐' \\\n  '커넥트 한계'     '집계는 안 됨' \\\n  '같은 싱크'       '120줄이 7줄' \\\n  '상태 4G'         '복원 6.9분' \\\n  '스탠바이'        '메모리 두 배' \\\n  '늦은 레코드'     '104건 버림' \\\n  'ksqlDB'          '결국 스트림즈'\n\n넷                         컨슈머 스트림즈 커넥트 플링크\n첫 물음                    옮기기만 하나\n둘째 물음                  앞을 기억해야 하나\n코드 차이                  214줄 대 31줄\n재시작                     컨슈머만 깨짐\n커넥트 한계                집계는 안 됨\n같은 싱크                  120줄이 7줄\n상태 4G                    복원 6.9분\n스탠바이                   메모리 두 배\n늦은 레코드                104건 버림\nksqlDB                     결국 스트림즈",
+   "note": "**같은 요구를 컨슈머로 214줄, 스트림즈로 31줄에 짜 86%** 짧아진다.\n\n**죽였다 살리면 컨슈머 판은 창 상태가 사라져 다시 세고 스트림즈 판은 4812건 그대로**다.\n\n**집계를 커넥트에 시키려니 `Unknown transformation type` 이고, 그냥 옮기는 요구는 120줄이 7줄 JSON 이** 된다.\n\n**상태가 4.1G 로 커지자 복원이 6.9분이고 스탠바이를 켜면 메모리가 두 배**다.\n\n**늦게 온 104건이 버려져 워터마크가 필요하면 플링크로 올라갈 자리가** 드러난다."
   }
  ],
  "recap": [
-  "표준 시스템 사이를 옮기면 커넥트, 상태가 필요하면 스트림즈, 나머지는 컨슈머다.",
-  "결과를 DB 에 써야 하면 스트림즈의 EOS 이점이 사라진다. 컨슈머 + 멱등 처리가 단순하다.",
-  "상태가 있는 집계는 스트림즈가 컨슈머+DB 보다 크게 빠르다. DB 왕복이 없기 때문이다.",
-  "플링크는 스트림즈로 감당이 안 될 때다. 운영 비용이 크게 는다.",
-  "한 조직에서 여럿을 같이 쓴다. 하나로 통일하는 것이 목표가 아니다."
+  "네 가지는 계단이다 — 아래 것이 실제로 모자랐을 때만 올라간다.",
+  "옮기기만 하는 일이면 코드를 안 짜고 커넥트 설정으로 끝낸다.",
+  "앞의 레코드를 기억해야 하면 스트림즈다. 컨슈머로 짜면 상태를 직접 만들어야 한다.",
+  "커넥트는 레코드 하나를 고치는 데까지고 집계는 못 한다.",
+  "상태가 수백 GB 이거나 워터마크·SQL 이 필요할 때만 별도 클러스터로 올라간다."
  ],
  "drills": [
   {
-   "task": "같은 필터 요구를 컨슈머와 스트림즈로 각각 구현해 코드량과 운영 요소를 비교한다.",
-   "done_when": "상태가 없을 때 스트림즈의 이득이 적은 것을 확인한다.",
-   "minutes": 15
+   "task": "같은 요구를 컨슈머와 스트림즈로 각각 짜고 줄 수를 센다.",
+   "done_when": "차이를 숫자로 말할 수 있다.",
+   "minutes": 30
   },
   {
-   "task": "집계를 컨슈머+DB 와 스트림즈로 각각 만들어 처리량을 비교한다.",
-   "done_when": "차이를 숫자로 본다.",
-   "minutes": 15
+   "task": "둘 다 돌리는 중에 죽였다 살려 결과를 비교한다.",
+   "done_when": "상태 복원의 유무를 확인한다.",
+   "minutes": 20
   },
   {
-   "task": "자기 시스템의 파이프라인을 넷 중 어디에 해당하는지 분류한다.",
-   "done_when": "각각 왜 그 선택인지 한 줄로 적는다.",
+   "task": "집계를 커넥트로 시켜 본다.",
+   "done_when": "왜 안 되는지 설명할 수 있다.",
    "minutes": 10
+  },
+  {
+   "task": "상태를 키워 복원 시간을 잰다.",
+   "done_when": "언제 다른 도구를 볼지 기준을 세운다.",
+   "minutes": 20
   }
  ],
  "quiz": [
   {
-   "q": "고르는 첫 질문은.",
-   "a": "표준 시스템 사이를 그냥 옮기는가. 그렇다면 커넥트."
+   "q": "가장 먼저 물을 것은.",
+   "a": "그냥 옮기기만 하는 일인가다. 그러면 커넥트로 끝난다."
   },
   {
-   "q": "스트림즈 대신 컨슈머가 나은 경우는.",
-   "a": "상태가 없거나, 결과를 DB 에 써야 해서 EOS 이점이 사라질 때."
+   "q": "컨슈머 대신 스트림즈를 쓰는 기준은.",
+   "a": "앞의 레코드를 기억해야 하는가다."
   },
   {
-   "q": "상태가 있는 집계에서 스트림즈가 빠른 이유는.",
-   "a": "로컬 상태 저장소를 써서 레코드마다 DB 왕복을 하지 않는다."
+   "q": "커넥트의 한계는.",
+   "a": "레코드 하나를 고치는 변환까지고 집계는 못 한다."
+  },
+  {
+   "q": "플링크로 올라가는 신호는.",
+   "a": "거대한 상태, 워터마크, 여러 소스 조인, SQL 요구다."
   }
  ],
  "terms": [
   {
-   "term": "CEP",
-   "en": "Complex Event Processing",
-   "what": "이벤트 패턴을 탐지하는 처리. 플링크의 강점."
+   "term": "SMT",
+   "what": "커넥트가 레코드 하나에 적용하는 단순 변환."
   },
   {
-   "term": "인터랙티브 쿼리",
-   "what": "스트림즈의 상태 저장소를 애플리케이션이 직접 조회하는 것."
+   "term": "워터마크",
+   "what": "늦게 온 레코드를 얼마나 기다릴지 정하는 이벤트 시각 기준."
+  },
+  {
+   "term": "ksqlDB",
+   "what": "SQL 로 스트림즈 토폴로지를 만드는 서버."
   }
  ],
  "sources": [
   {
-   "title": "Apache Kafka — Streams",
+   "title": "Kafka Streams — Developer Guide",
    "url": "https://kafka.apache.org/documentation/streams/",
    "publisher": "Apache"
   },
   {
-   "title": "Confluent — Stream processing",
-   "url": "https://developer.confluent.io/courses/kafka-streams/get-started/",
-   "publisher": "Confluent"
+   "title": "Apache Kafka — Kafka Connect",
+   "url": "https://kafka.apache.org/documentation/#connect",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Flink — Documentation",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "publisher": "Apache"
   }
  ]
 }

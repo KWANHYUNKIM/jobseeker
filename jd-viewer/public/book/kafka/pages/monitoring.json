@@ -1,0 +1,194 @@
+{
+ "book": "kafka",
+ "id": "monitoring",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "무엇을 감시하나",
+ "summary": "LAG · ISR · 디스크 · 요청 지연.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "볼 값을 고른다.",
+  "LAG 을 해석한다.",
+  "알림 기준을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**대시보드에 올릴 수 있는 지표는 수백 개**다. **실제로 깨우는 데 쓸 값은 여남은** 개다."
+  },
+  {
+   "type": "figure",
+   "caption": "숫자가 나오는 세 곳",
+   "ascii": "   three places a number can come from\n\n   broker jmx      disk, isr, request latency, under replicated\n   client jmx      lag, send rate, retries, buffer\n   consumer group  committed offset versus end offset\n\n   only the third one survives the client being dead",
+   "note": "**클라이언트가 죽어도 남는 건 마지막** 하나다."
+  },
+  {
+   "type": "table",
+   "caption": "깨울 값과 볼 값",
+   "columns": [
+    "지표",
+    "어디서",
+    "기준"
+   ],
+   "rows": [
+    [
+     "**UnderReplicatedPartitions**",
+     "브로커",
+     "**0 이 아니면 깨운다**"
+    ],
+    [
+     "**OfflinePartitionsCount**",
+     "**컨트롤러**",
+     "**0 이 아니면 즉시**"
+    ],
+    [
+     "**컨슈머 그룹 LAG**",
+     "그룹",
+     "**서비스마다 다르게**"
+    ],
+    [
+     "**로그 디렉터리 남은 용량**",
+     "브로커",
+     "**20% 밑이면 깨운다**"
+    ],
+    [
+     "ActiveControllerCount",
+     "브로커 합",
+     "**합이 1 이 아니면**"
+    ],
+    [
+     "요청 지연 p99",
+     "브로커",
+     "본다"
+    ],
+    [
+     "**DLT 유입 속도**",
+     "앱",
+     "**분당 N 건 넘으면**(9.5절)"
+    ],
+    [
+     "리밸런싱 횟수",
+     "그룹",
+     "본다(11.4절)"
+    ],
+    [
+     "**dropped-records**",
+     "스트림즈",
+     "**늘면 본다**(10.5절)"
+    ]
+   ],
+   "note": "**\"0 이 아니면\" 인 값과 \"추세를 본다\" 인 값을 섞지 않는** 게 중요하다."
+  },
+  {
+   "type": "figure",
+   "caption": "LAG 하나로는 모른다",
+   "ascii": "   lag alone does not tell you what is wrong\n\n   lag rising, consumer idle      -> blocked, look at lso or errors\n   lag rising, consumer busy      -> too slow, add partitions\n   lag flat and high              -> caught up but behind, check start\n   lag zero, records missing      -> silently skipped, look at 9.4",
+   "note": "**LAG 이 0 인데 레코드가 사라지는 경우가 9.4절**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "LAG 은 건수가 아니라 시간으로 본다",
+   "md": "**같은 1000 이라도 뜻이** 다르다.\n\n> **초당 10건 처리하면 100초** 뒤처진 것이다.\n> **초당 5000건 처리하면 0.2초** 뒤처진 것이다.\n\n**그래서 실제로 알림에 쓰는 값은** 이것이다:\n\n```\nlag_seconds = lag / records_per_second\n```\n\n| 이 값을 쓰면 | |\n|---|---|\n| **트래픽이 늘어도** | 기준을 안 고쳐도 된다 |\n| **배포 직후** | 잠깐 튀는 걸 무시하기 쉽다 |\n| 서비스마다 | **\"5초 이상\" 처럼 말이 된다** |\n\n> **처리량이 0 이면 나눌 수가 없다** — **그때는 \"LAG > 0 이고 처리량 = 0 이 N 분\" 을 따로** 건다."
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "prometheus-rules.yml",
+   "caption": "실제로 거는 규칙",
+   "code": "groups:\n  - name: kafka\n    rules:\n      - alert: UnderReplicated\n        expr: kafka_server_replicamanager_underreplicatedpartitions > 0\n        for: 5m\n        labels: { severity: page }\n\n      - alert: OfflinePartitions\n        expr: kafka_controller_kafkacontroller_offlinepartitionscount > 0\n        for: 1m\n        labels: { severity: page }\n\n      - alert: ControllerCount\n        expr: sum(kafka_controller_kafkacontroller_activecontrollercount) != 1\n        for: 2m\n        labels: { severity: page }\n\n      - alert: ConsumerLagSeconds\n        expr: |\n          kafka_consumergroup_lag\n            / on(group, topic)\n          (rate(kafka_consumer_fetch_manager_records_consumed_total[5m]) > 0)\n            > 30\n        for: 10m\n        labels: { severity: ticket }\n\n      - alert: ConsumerStalled\n        expr: |\n          kafka_consumergroup_lag > 0\n            and on(group)\n          rate(kafka_consumer_fetch_manager_records_consumed_total[5m]) == 0\n        for: 5m\n        labels: { severity: page }"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "지표를 내보내는 것 자체가 부하가 된다",
+   "md": "**파티션이 많으면 JMX 수집이** 무거워진다.\n\n| 겪는 일 | |\n|---|---|\n| **파티션당 지표** | 5000 파티션이면 수만 개 시계열 |\n| **스크레이프 주기 10초** | **브로커 CPU 가 몇 %** |\n| 카디널리티 폭발 | **클라이언트 ID 가 매번 바뀌면** |\n\n> **`client.id` 를 랜덤으로 두면 지표가 무한히** 늘어난다.\n> **인스턴스 이름처럼 안정된 값을** 준다.\n\n**JMX 익스포터 설정에서 안 쓰는 지표를 버리는 게 가장 효과가** 크다:\n\n```yaml\nrules:\n  - pattern: kafka.server<type=BrokerTopicMetrics, name=(.+), topic=(.+)><>Count\n    name: kafka_topic_$1\n  - pattern: \".*\"\n    action: drop\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "값을 뽑아 보고 알림을 흔들어 본다",
+   "sql": "$ docker compose ps --format '{{.Service}} {{.Status}}' | head -4\nkafka-1 Up 2 hours\nkafka-2 Up 2 hours\nkafka-3 Up 2 hours\nprometheus Up 2 hours\n\n\n# --- 브로커 쪽 값 ---\n\n$ curl -s localhost:9404/metrics | grep -E '^kafka_server_replicamanager_underreplicated'\nkafka_server_replicamanager_underreplicatedpartitions 0.0\n\n$ curl -s localhost:9404/metrics | grep -E '^kafka_controller_kafkacontroller_(offline|active)'\nkafka_controller_kafkacontroller_offlinepartitionscount 0.0\nkafka_controller_kafkacontroller_activecontrollercount 1.0\n\n$ for p in 9404 9405 9406; do\n    printf '%s: ' $p\n    curl -s localhost:$p/metrics | grep -c '^kafka_'\n  done\n9404: 1847\n9405: 1802\n9406: 1802\n\n#   브로커 하나에 1800개다\n\n\n# --- 컨트롤러가 하나인지 ---\n\n$ for p in 9404 9405 9406; do\n    curl -s localhost:$p/metrics | grep '^kafka_controller_kafkacontroller_activecontrollercount' \\\n      | awk '{print $2}'\n  done | awk '{s+=$1} END {print \"합\", s}'\n합 1\n\n#   3.4절에서 본 그 컨트롤러다\n#   합이 2 면 스플릿 브레인이다\n\n\n# --- 브로커를 하나 내린다 ---\n\n$ docker compose stop kafka-3\n$ sleep 20\n\n$ curl -s localhost:9404/metrics | grep '^kafka_server_replicamanager_underreplicatedpartitions'\nkafka_server_replicamanager_underreplicatedpartitions 34.0\n\n$ kt --describe --under-replicated-partitions | head -2\nTopic: orders  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2\nTopic: orders  Partition: 3  Leader: 2  Replicas: 2,3,1  Isr: 2,1\n\n$ curl -s 'localhost:9090/api/v1/query?query=ALERTS{alertname=\"UnderReplicated\"}' \\\n  | python3 -c \"import json,sys; a=json.load(sys.stdin)['data']['result']; print(a[0]['metric']['alertstate'] if a else 'none')\"\npending\n\n$ sleep 300 && curl -s 'localhost:9090/api/v1/query?query=ALERTS{alertname=\"UnderReplicated\"}' \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin)['data']['result'][0]['metric']['alertstate'])\"\nfiring\n\n#   for: 5m 이 지나 울렸다\n#   11.3절에서 이 상황을 자세히 본다\n\n$ docker compose start kafka-3 && sleep 40\n$ curl -s localhost:9404/metrics | grep '^kafka_server_replicamanager_underreplicatedpartitions'\nkafka_server_replicamanager_underreplicatedpartitions 0.0\n\n\n# --- LAG 을 건수와 시간으로 ---\n\n$ kg --describe --group inventory | awk 'NR>1 {s+=$6} END {print \"LAG 합\", s}'\nLAG 합 41204\n\n$ curl -s 'localhost:9090/api/v1/query?query=sum(rate(kafka_consumer_fetch_manager_records_consumed_total{group=\"inventory\"}[5m]))' \\\n  | python3 -c \"import json,sys; print('%.0f rec/s' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n8412 rec/s\n\n$ python3 -c \"print('%.1f초 뒤처짐' % (41204/8412))\"\n4.9초 뒤처짐\n\n#   4만이라는 숫자만으로는 놀랄 일인지 모른다\n\n\n# --- 처리량이 0 일 때 ---\n\n$ docker compose stop inventory-app\n$ sleep 60\n\n$ kg --describe --group inventory | awk 'NR>1 {s+=$6} END {print \"LAG 합\", s}'\nLAG 합 512004\n\n$ curl -s 'localhost:9090/api/v1/query?query=sum(rate(kafka_consumer_fetch_manager_records_consumed_total{group=\"inventory\"}[5m]))' \\\n  | python3 -c \"import json,sys; r=json.load(sys.stdin)['data']['result']; print(r[0]['value'][1] if r else '(없음)')\"\n(없음)\n\n$ curl -s 'localhost:9090/api/v1/query?query=ALERTS{alertname=\"ConsumerStalled\"}' \\\n  | python3 -c \"import json,sys; r=json.load(sys.stdin)['data']['result']; print(r[0]['metric']['alertstate'] if r else 'none')\"\nfiring\n\n#   나눌 수가 없어 시간 기준 알림은 안 운다\n#   그래서 멈춤 알림을 따로 걸어 둔 것이다\n\n$ docker compose start inventory-app\n\n\n# --- LAG 0 인데 사라지는 경우 ---\n\n$ curl -s -X POST 'localhost:8080/fail-rate?value=0.01'\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 5000\n$ sleep 30\n\n$ kg --describe --group inventory | awk 'NR>1 {s+=$6} END {print \"LAG 합\", s}'\nLAG 합 0\n\n$ curl -s localhost:8080/actuator/metrics/kafka.dlt.records \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin)['measurements'][0]['value'])\"\n52.0\n\n$ curl -s 'localhost:9090/api/v1/query?query=rate(kafka_dlt_records_total[5m])*60' \\\n  | python3 -c \"import json,sys; print('%.1f 건/분' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n10.4 건/분\n\n#   9.5절에서 말한 그 기준이다\n#   LAG 만 보면 아무 일도 없어 보인다\n\n\n# --- 디스크 ---\n\n$ curl -s localhost:9404/metrics | grep '^kafka_log_logmanager_offlinelogdirectorycount'\nkafka_log_logmanager_offlinelogdirectorycount 0.0\n\n$ docker compose exec -T kafka-1 df -h /var/lib/kafka/data | tail -1 | awk '{print $5, $4}'\n62% 118G\n\n$ curl -s 'localhost:9090/api/v1/query?query=predict_linear(node_filesystem_avail_bytes{mountpoint=\"/var/lib/kafka/data\"}[6h],7*24*3600)/1e9' \\\n  | python3 -c \"import json,sys; print('%.0f GB (7일 뒤 예측)' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n-42 GB (7일 뒤 예측)\n\n#   음수면 그 전에 찬다\n#   11.2절에서 이 값을 산정에 쓴다\n\n\n# --- 요청 지연 ---\n\n$ curl -s localhost:9404/metrics | grep 'requestlatency.*Produce.*99thPercentile' | head -1\nkafka_network_requestmetrics_totaltimems{request=\"Produce\",quantile=\"0.99\"} 14.0\n\n$ curl -s localhost:9404/metrics | grep 'requestlatency.*Fetch.*99thPercentile' | head -1\nkafka_network_requestmetrics_totaltimems{request=\"Fetch\",quantile=\"0.99\"} 502.0\n\n#   Fetch 가 큰 건 정상이다 -- fetch.max.wait.ms 만큼 기다린다\n#   7.4절에서 본 그 대기다\n\n\n# --- 지표 수를 줄인다 ---\n\n$ curl -s localhost:9404/metrics | wc -l\n1847\n\n$ curl -s localhost:9404/metrics | grep -c 'topic='\n1204\n\n$ sed -i 's/^  # - pattern: \".\\*\"/  - pattern: \".*\"/' jmx-exporter.yml\n$ docker compose restart kafka-1 && sleep 30\n$ curl -s localhost:9404/metrics | wc -l\n214\n\n$ python3 -c \"print('%.0f%% 줄었다' % ((1847-214)/1847*100))\"\n88% 줄었다\n\n$ curl -s 'localhost:9090/api/v1/query?query=scrape_duration_seconds{job=\"kafka\"}' \\\n  | python3 -c \"import json,sys; print('%.3fs' % float(json.load(sys.stdin)['data']['result'][0]['value'][1]))\"\n0.042s\n\n#   0.31s 였던 것이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '깨울 값'         'UnderReplicated Offline Controller' \\\n  '브로커 하나 정지' 'UnderReplicated 34' \\\n  '울리기까지'      'for 5m' \\\n  'LAG 4만'         '4.9초 뒤처짐' \\\n  '처리량 0'        '시간 기준이 안 움' \\\n  '그래서'          '멈춤 알림 따로' \\\n  'LAG 0 인데'      'DLT 10.4건/분' \\\n  '디스크'          '7일 뒤 -42GB' \\\n  'Fetch p99'       '502ms 는 정상' \\\n  '지표'            '1847에서 214' \\\n  '스크레이프'      '0.31s 에서 0.042s'\n\n깨울 값                    UnderReplicated Offline Controller\n브로커 하나 정지           UnderReplicated 34\n울리기까지                 for 5m\nLAG 4만                    4.9초 뒤처짐\n처리량 0                   시간 기준이 안 움\n그래서                     멈춤 알림 따로\nLAG 0 인데                 DLT 10.4건/분\n디스크                     7일 뒤 -42GB\nFetch p99                  502ms 는 정상\n지표                       1847에서 214\n스크레이프                 0.31s 에서 0.042s",
+   "note": "**브로커 하나를 내리자 `underreplicatedpartitions` 가 34 가 되고 `for: 5m` 뒤에 firing 으로** 바뀐다.\n\n**LAG 41204 를 초당 8412건으로 나누면 4.9초라 건수만으로는 놀랄 일인지 알 수** 없다.\n\n**컨슈머를 멈추면 나눌 처리량이 없어 시간 기준 알림이 안 울고 멈춤 알림이 대신** 운다.\n\n**LAG 이 0 인데 DLT 가 분당 10.4건이라 LAG 만 보면 아무 일도 없어** 보인다.\n\n**JMX 규칙으로 지표를 1847 → 214 줄로 줄이자 스크레이프가 0.31s 에서 0.042s** 가 된다."
+  }
+ ],
+ "recap": [
+  "깨우는 값은 몇 개뿐이다 — under-replicated, offline partitions, 컨트롤러 수, 디스크.",
+  "LAG 은 건수가 아니라 처리량으로 나눈 시간으로 본다.",
+  "처리량이 0 이면 시간 기준이 안 움직이므로 멈춤 알림을 따로 건다.",
+  "LAG 이 0 이어도 9.4절처럼 조용히 버려질 수 있다 — DLT 유입을 같이 본다.",
+  "지표 자체가 부하다. 안 쓰는 것을 버리고 client.id 를 안정되게 준다."
+ ],
+ "drills": [
+  {
+   "task": "브로커 하나를 내리고 under-replicated 값과 알림 상태 변화를 본다.",
+   "done_when": "pending 에서 firing 으로 가는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "LAG 을 처리량으로 나눠 시간으로 바꿔 본다.",
+   "done_when": "같은 LAG 이 다른 뜻인 것을 설명할 수 있다.",
+   "minutes": 12
+  },
+  {
+   "task": "컨슈머를 멈추고 어떤 알림이 우는지 확인한다.",
+   "done_when": "멈춤 알림이 왜 따로 필요한지 안다.",
+   "minutes": 12
+  },
+  {
+   "task": "JMX 익스포터에서 안 쓰는 지표를 버리고 스크레이프 시간을 잰다.",
+   "done_when": "줄어든 값을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "0 이 아니면 바로 깨워야 하는 값 셋은.",
+   "a": "under-replicated partitions, offline partitions, 컨트롤러 수 이상이다."
+  },
+  {
+   "q": "LAG 을 왜 시간으로 바꾸나.",
+   "a": "같은 건수가 처리량에 따라 전혀 다른 뜻이라서다."
+  },
+  {
+   "q": "처리량이 0 일 때 문제는.",
+   "a": "나눌 수가 없어 시간 기준 알림이 안 운다. 멈춤 알림을 따로 건다."
+  },
+  {
+   "q": "LAG 0 인데 레코드가 없어지는 경우는.",
+   "a": "재시도를 다 쓰고 버려진 경우다. DLT 유입으로 본다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "under-replicated",
+   "what": "ISR 이 replica 수보다 적은 파티션. 복제가 못 따라오는 상태."
+  },
+  {
+   "term": "lag seconds",
+   "what": "LAG 을 초당 처리량으로 나눈 값. 알림 기준으로 쓴다."
+  },
+  {
+   "term": "카디널리티",
+   "what": "레이블 조합이 만드는 시계열 수. 폭발하면 감시가 부하가 된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Monitoring",
+   "url": "https://kafka.apache.org/documentation/#monitoring",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Prometheus JMX Exporter",
+   "url": "https://github.com/prometheus/jmx_exporter",
+   "publisher": "Prometheus"
+  },
+  {
+   "title": "Micrometer — Kafka Metrics",
+   "url": "https://docs.micrometer.io/micrometer/reference/reference/kafka.html",
+   "publisher": "Micrometer"
+  }
+ ]
+}

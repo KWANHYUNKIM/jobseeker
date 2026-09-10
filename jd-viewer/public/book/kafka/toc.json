@@ -624,7 +624,7 @@
           "title": "무엇을 감시하나",
           "summary": "LAG · ISR · 디스크 · 요청 지연.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
