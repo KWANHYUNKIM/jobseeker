@@ -136,7 +136,7 @@
           "title": "로그와 세그먼트",
           "summary": "파티션은 파일이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -144,7 +144,7 @@
           "title": "보관 정책",
           "summary": "시간 · 크기 · 압축(compact).",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

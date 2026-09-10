@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "weaving",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "위빙 시점",
+ "summary": "컴파일·로드·런타임.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "셋을 안다.",
+  "값을 견준다.",
+  "한계를 넘어 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.4절의 다섯이 정말 못 넘는 건** 아니다. **시점을** 바꾼다."
+  },
+  {
+   "type": "figure",
+   "caption": "붙일 수 있는 세 순간",
+   "ascii": "   three moments to put the aspect in\n\n   compile time   the class file already contains the advice\n   load time      an agent rewrites the class as it is loaded\n   runtime        a proxy object stands in front of the original\n\n   only the last one leaves the class file untouched",
+   "note": "**클래스 파일을 안 건드리는 건 마지막** 하나다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "일찍 붙일수록 멀리 닿는다",
+   "md": "**컴파일에** 붙인다.\n\n> **특별한 컴파일러가** 필요하다.\n> **아래에서 바이트코드를** 연다.\n> **소스가 있어야** 한다.\n\n**로드에** 붙인다.\n\n> **에이전트가 고쳐** 준다.\n> **아래에서 옵션을** 준다.\n> **남의 클래스도** 된다.\n\n**실행에** 세운다.\n\n> **아홉 장 동안 한 것**이다.\n> **아래에서 견준다**.\n> **아무것도 안** 붙인다.\n\n**닿는 범위가** 다르다.\n\n> **10.2절의 열둘**이다.\n> **아래에서 필드를** 잡는다.\n> **자기 호출도** 잡는다."
+  },
+  {
+   "type": "figure",
+   "caption": "차리는 값",
+   "ascii": "   what each moment costs to set up\n\n   compile time   a special compiler in the build\n   load time      a jvm agent on every launch\n   runtime        nothing at all\n\n   the cheaper it is to set up, the less it can reach",
+   "note": "**차리기 쉬울수록 닿는 데가** 좁다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "에이전트를 붙이면 기동이 통째로 느려진다",
+   "md": "**모든 클래스를** 지난다.\n\n> **내 것만이** 아니다.\n> **아래에서 수를** 센다.\n> **수천 개**다.\n\n**기동이** 는다.\n\n> **아래에서 잰다**.\n> **몇 배가** 된다.\n> **10.4절의 2.178 초와 견준다**.\n\n**옵션을 빠뜨리면 조용히** 꺼진다.\n\n> **에이전트가 없으면 그만**이다.\n> **아래에서 그걸** 겪는다.\n> **운영에서 무섭다**.\n\n**거의 안 쓴다**.\n\n> **10.6절에서 왜인지** 본다.\n> **알아 두면 판단이** 는다.\n> **아래에서 값을** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금은 실행 시점이다\n\n$ grep -c 'javaagent\\|aspectj' build.gradle\n1\n$ grep 'aspectj' build.gradle\n    // spring-boot-starter-aop 이 aspectjweaver 를 끌고 온다\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -c 'ajc\\|aspectOf'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   클래스 파일은 깨끗하다\n--   실행 중에 앞에 하나가 섰을 뿐이다\n\n\n-- 로드 시점으로 바꾼다\n\n// src/main/resources/META-INF/aop.xml\n<aspectj>\n  <weaver options=\"-verbose -showWeaveInfo\">\n    <include within=\"study.adv..*\"/>\n  </weaver>\n  <aspects>\n    <aspect name=\"study.adv.aspect.LogTraceAspect\"/>\n  </aspects>\n</aspectj>\n\n$ ls ~/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.9.22/*/*.jar\n.../aspectjweaver-1.9.22.jar\n\n$ ./gradlew bootRun -Dorg.gradle.jvmargs=\"-javaagent:$AJ/aspectjweaver-1.9.22.jar\"\n\n$ ./gradlew bootRun --args='...' 2>&1 | grep -i 'weaveinfo' | head -3\n[AppClassLoader] weaveinfo Join point 'method-execution(void\n  study.adv.app.OrderServiceV3.orderItem(java.lang.String))' in Type\n  'study.adv.app.OrderServiceV3' advised by around advice from 'study.adv.aspect.LogTraceAspect'\n\n$ ./gradlew bootRun --args='...' 2>&1 | grep -c 'weaveinfo'\n34\n\n--   34 곳이 고쳐졌다\n--   프록시 10 개보다 많다\n\n\n-- 클래스 파일이 바뀐다\n\n$ curl -s localhost:8080/aop/dump?bean=orderServiceV3 > /tmp/woven.class\n$ javap -c -p /tmp/woven.class | grep -c 'aspectOf\\|ajc'\n7\n\n$ javap -c -p /tmp/woven.class | grep 'aspectOf' | head -2\n    12: invokestatic  #42  // Method study/adv/aspect/LogTraceAspect.aspectOf:()...\n\n--   원본 클래스 안에 부가 기능 호출이 들어갔다\n\n\n-- 프록시가 없다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3'\n빈 이름:   orderServiceV3\n주입된 것: study.adv.app.OrderServiceV3\n프록시인가: false\n원본:      study.adv.app.OrderServiceV3\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        14\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   프록시 없이 같은 여섯 줄이 나온다\n--   9.5 절의 그 census 에서 10 개가 빠졌다\n\n\n-- 자기 호출이 걸린다\n\n$ curl -s -o /dev/null 'localhost:8080/limit/run'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 LimitService.outer()\n걸림 LimitService.inner()\n\n$ grep -c '걸림' logs/app.log\n2\n\n--   10.4 절에서 1 이던 것이 2 다\n--   this 를 안 지나도 된다\n\n\n-- final 도 private 도 걸린다\n\n$ curl -s -o /dev/null 'localhost:8080/limit/all'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 LimitService.outer()\n걸림 LimitService.inner()\n걸림 LimitService.sealed()\n걸림 LimitService.hidden()\n걸림 LimitService.statik()\n걸림 Helper.help()\n\n$ grep -c '걸림' logs/app.log\n6\n\n--   10.4 절의 다섯이 다 걸렸다\n--   new 로 만든 것까지 걸렸다\n\n\n-- final 클래스도 산다\n\n@Service\npublic final class SealedService { public void work() { } }\n\n$ ./gradlew bootRun --args='...' 2>&1 | grep -ci 'Cannot subclass final'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/limit/sealed-class'\n$ grep -c '걸림 SealedService' logs/app.log\n1\n\n--   10.4 절에서 기동을 죽이던 그것이다\n--   자식을 안 만드니 상관없다\n\n\n-- 필드도 걸린다\n\n@Around(\"get(* study.adv.app.OrderServiceV3.orderRepository)\")\npublic Object field(ProceedingJoinPoint jp) throws Throwable {\n    log.info(\"필드 읽음 {}\", jp.getSignature());\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '필드 읽음' logs/app.log | cut -c56-\n필드 읽음 OrderRepositoryV3 study.adv.app.OrderServiceV3.orderRepository\n\n$ grep -c '필드 읽음' logs/app.log\n1\n\n--   10.2 절에서 0 회였던 그것이다\n--   종류가 하나가 아니게 됐다\n\n\n-- 종류를 다시 센다\n\n$ curl -s -o /dev/null 'localhost:8080/limit/all'\n$ grep '종류' logs/app.log | awk '{print $NF}' | sort | uniq -c\n   1 field-get\n   1 constructor-execution\n  12 method-execution\n\n--   10.2 절에서는 method-execution 하나였다\n\n\n-- 값을 잰다\n\n$ ./gradlew bootRun 2>&1 | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n2.178\n\n$ ./gradlew bootRun --args='...' -Dorg.gradle.jvmargs=\"-javaagent:$AJ/aspectjweaver-1.9.22.jar\" 2>&1 \\\n    | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n7.412\n\n$ python3 -c \"print('%.1f 배' % (7.412/2.178))\"\n3.4 배\n\n$ ./gradlew bootRun --args='...' 2>&1 | grep -ci 'weaveinfo\\|not weaving'\n4187\n\n--   내 클래스만이 아니라 다 지난다\n--   ⑯ 10.3절의 네이티브 이미지와 정반대 방향이다\n\n\n-- 호출은 오히려 빠르다\n\n$ curl -s 'localhost:8080/bench?n=1000000'\n빈 메서드 100 만 회   612 ms\n\n$ printf '%-16s %s\\n' '프록시' '889 ms' '로드 위빙' '612 ms'\n프록시           889 ms\n로드 위빙        612 ms\n\n$ python3 -c \"print('%.0f ms 빠름' % (889-612))\"\n277 ms 빠름\n\n--   9.6 절에서 잰 그 값이다\n--   사슬을 안 걷고 코드가 안에 있다\n\n\n-- 옵션을 빼면 조용히 꺼진다\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn\\|aop.xml'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/limit/run'\n$ grep -c '걸림' logs/app.log\n1\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   프록시로 조용히 돌아갔다\n--   자기 호출이 다시 안 걸린다\n--   9.1 절부터 이어진 그 조용함이다\n\n\n-- 컴파일 시점은 어떻게 다른가\n\n// build.gradle 에 ajc 를 붙이면\nplugins { id 'io.freefair.aspectj.post-compile-weaving' version '8.6' }\n\n$ ./gradlew compileJava -q\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class | grep -c 'aspectOf'\n7\n\n$ ./gradlew bootRun 2>&1 | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n2.204\n\n--   클래스 파일에 이미 들어 있다\n--   기동은 안 느리다\n--   대신 소스가 있어야 한다\n\n\n-- 셋을 나란히\n\n$ printf '%-12s %-14s %-14s %-12s %s\\n' \\\n  '' '차리기' '기동' '호출' '닿는 곳' && \\\n  printf '%-12s %-14s %-14s %-12s %s\\n' \\\n  '컴파일'   'ajc 필요'    '2.204 초'  '612 ms'  '전부(내 소스)' \\\n  '로드'     '에이전트'    '7.412 초'  '612 ms'  '전부' \\\n  '실행'     '없음'        '2.178 초'  '889 ms'  '메서드 실행'\n\n               차리기         기동           호출         닿는 곳\n컴파일         ajc 필요       2.204 초       612 ms       전부(내 소스)\n로드           에이전트       7.412 초       612 ms       전부\n실행           없음           2.178 초       889 ms       메서드 실행\n\n\n-- 되돌린다\n\n$ rm src/main/resources/META-INF/aop.xml\n$ git checkout -- build.gradle\n$ ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   10.6 절에서 빌린 것과 안 빌린 것을 가른다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '시점'        '셋' \\\n  '컴파일'      '클래스 파일에 들어감' \\\n  '로드'        '에이전트가 고침' \\\n  '실행'        '앞에 하나 세움' \\\n  '로드 위빙'   '34 곳' \\\n  '프록시'      '10 개에서 0 개' \\\n  '자기 호출'   '걸림' \\\n  '필드'        '걸림' \\\n  '기동'        '3.4 배' \\\n  '호출'        '277 ms 빠름' \\\n  '옵션 누락'   '조용히 프록시로'\n\n시점                       셋\n컴파일                     클래스 파일에 들어감\n로드                       에이전트가 고침\n실행                       앞에 하나 세움\n로드 위빙                  34 곳\n프록시                     10 개에서 0 개\n자기 호출                  걸림\n필드                       걸림\n기동                       3.4 배\n호출                       277 ms 빠름\n옵션 누락                  조용히 프록시로",
+   "note": "**에이전트를 붙이니 `weaveinfo` 가 34 줄 나오고 프록시는 10 개에서 0 개가** 된다.\n\n**10.4절에서 1 개만 걸리던 실험이 6 개 전부 걸리고 `final` 클래스도 기동이** 산다.\n\n**10.2절에서 0 회였던 필드 표현식이 걸려 종류가 `field-get`·`constructor-execution` 까지** 는다.\n\n**기동이 2.178 초에서 7.412 초로 3.4 배가 되고 호출은 오히려 277 ms** 빠르다.\n\n**에이전트 옵션을 빼면 오류 없이 프록시로 돌아가 자기 호출이 다시 안** 걸린다."
+  }
+ ],
+ "recap": [
+  "**시점이** 셋이다.",
+  "**컴파일은 파일에** 넣는다.",
+  "**로드는** 고친다.",
+  "**실행은** 세운다.",
+  "**프록시가** 사라진다.",
+  "**자기 호출이** 걸린다.",
+  "**필드도** 걸린다.",
+  "**기동이** 3.4 배다.",
+  "**옵션이 빠지면** 조용하다."
+ ],
+ "drills": [
+  {
+   "task": "에이전트를 붙여 본다.",
+   "done_when": "weaveinfo 를 확인했다.",
+   "minutes": 30
+  },
+  {
+   "task": "프록시 수를 견준다.",
+   "done_when": "0 개인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "10.4 절 실험을 다시 돌린다.",
+   "done_when": "여섯이 다 걸리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "기동과 호출을 잰다.",
+   "done_when": "반대로 움직이는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 시점은?",
+   "a": "컴파일, 로드, 실행이다."
+  },
+  {
+   "q": "로드 위빙에서 프록시는?",
+   "a": "안 만들어진다. 원본 클래스 자체가 고쳐져서다."
+  },
+  {
+   "q": "10.4 절의 다섯 한계는?",
+   "a": "전부 사라진다. 자기 호출도 final 도 걸린다."
+  },
+  {
+   "q": "값은?",
+   "a": "기동이 3.4 배로 늘고 호출은 오히려 빨라진다."
+  },
+  {
+   "q": "에이전트 옵션을 빠뜨리면?",
+   "a": "오류 없이 프록시 방식으로 돌아간다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "위빙",
+   "def": "애스펙트를 대상에 실제로 붙이는 일."
+  },
+  {
+   "term": "에이전트",
+   "def": "클래스를 읽어 들이는 길목에서 바이트코드를 고치는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Load-time weaving with AspectJ",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/using-aspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Java SE 21 — java.lang.instrument",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.instrument/java/lang/instrument/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

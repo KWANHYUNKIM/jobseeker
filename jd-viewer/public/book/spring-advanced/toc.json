@@ -598,7 +598,7 @@
           "title": "프록시 기반이라는 뜻",
           "summary": "무엇을 못 하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -606,7 +606,7 @@
           "title": "위빙 시점",
           "summary": "컴파일·로드·런타임.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",

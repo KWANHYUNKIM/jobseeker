@@ -1,0 +1,118 @@
+{
+ "book": "kafka",
+ "id": "log-segment",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "로그와 세그먼트",
+ "summary": "파티션은 파일이다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세그먼트가 무엇인지 안다.",
+  "인덱스가 무엇을 하는지 안다.",
+  "오프셋으로 찾아가는 과정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 파티션 디렉터리 안을** 봤다.\n\n```\norders-0/\n  00000000000000000000.log\n  00000000000000000000.index\n  00000000000000000000.timeindex\n```\n\n**파일 이름의 숫자가 그 파일의 첫 오프셋**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "파티션은 세그먼트의 나열이다",
+   "ascii": "   partition orders-0\n   +-----------------+-----------------+-----------------+\n   | segment 0       | segment 1000    | segment 2450    |\n   | offsets 0..999  | 1000..2449      | 2450..  (active)|\n   +-----------------+-----------------+-----------------+\n     .log   records\n     .index offset -> byte position\n     .timeindex timestamp -> offset\n\n   only the last one is written to (active segment)\n   older ones are read-only, and deleted whole (3.4)\n\n   파일 이름 = 그 세그먼트의 첫 오프셋",
+   "note": "**삭제는 레코드 단위가 아니라 세그먼트 단위**다 — **그래서 보관 기간이 정확히 딱 떨어지지** 않는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 여러 파일로 나누나",
+   "md": "| 이유 | |\n|---|---|\n| **삭제** | 파일 하나를 `unlink` 하면 끝이다. 큰 파일 앞부분을 지우는 건 비싸다 |\n| **찾기** | 인덱스가 세그먼트마다라 작다 |\n| **파일 핸들·복구** | 하나가 깨져도 그 세그먼트만 |\n\n**언제 새 세그먼트로 넘어가나**:\n\n| 설정 | 기본 | 뜻 |\n|---|---|---|\n| `segment.bytes` | **1GB** | 이 크기를 넘으면 새 파일 |\n| `segment.ms` | **7일** | 이 시간이 지나면 새 파일 |\n\n> **둘 중 먼저 오는 쪽**이다.\n> **실습에서 삭제를 보려면 `segment.ms` 를 작게** 줘야 한다(2.3절에서 그렇게 했다)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "인덱스는 듬성듬성하다",
+   "md": "**오프셋 5,000,000 번을 읽으라는 요청이** 왔다. **파일을 처음부터 훑을 수는** 없다.\n\n```\n.index:  offset(상대) -> 파일 안 바이트 위치\n\n  0     -> 0\n  37    -> 4096\n  81    -> 8192\n  ...\n```\n\n| 성질 | |\n|---|---|\n| **듬성듬성(sparse)** | 모든 오프셋이 아니라 `index.interval.bytes`(기본 4KB)마다 하나 |\n| 찾는 법 | **가장 가까운 앞 항목으로 점프한 뒤 거기서부터 순차** 스캔 |\n| 크기 | 미리 잡아 둔다(기본 10MB). **그래서 빈 파티션도 파일이 크게** 보인다 |\n| `.timeindex` | **타임스탬프 → 오프셋.** 시간으로 되감기(5.6절)가 이걸 쓴다 |\n\n> **3.1절에서 `.index` 가 10MB 였던 이유**다 — **내용이 있어서가 아니라 미리 잡아 둔** 것이다.\n> **세그먼트가 닫히면 실제 크기로** 줄인다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "디스크 사용량 계산이 어긋나는 이유",
+   "md": "**\"7일 × 하루 10GB = 70GB\" 로 잡았는데 디스크가 터진다.**\n\n| 빠뜨린 것 | 얼마나 |\n|---|---|\n| **복제** | **×3**. 210GB |\n| **활성 세그먼트** | 아직 안 지워진다. 파티션마다 최대 `segment.bytes` |\n| **인덱스** | 파티션마다 최대 20MB 예약 |\n| **삭제 지연** | `log.retention.check.interval.ms`(기본 5분)마다 확인 |\n| **`file.delete.delay.ms`** | 지우기로 정한 뒤에도 **1분 대기** |\n\n> **파티션이 많으면 활성 세그먼트만으로도 커진다** — **파티션 1000개 × 1GB = 1TB** 가 될 수 있다(4.6절에서 파티션 수를 조심하라는 이유의 하나).\n\n**11.2절에서 이걸 표로** 정리한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "세그먼트가 넘어가고 인덱스가 쓰이는 것을 본다",
+   "sql": "# --- 세그먼트를 작게 잡은 토픽 ---\n\n$ kt --create --topic segs --partitions 1 --replication-factor 1 \\\n    --config segment.bytes=1024 --config index.interval.bytes=64\nCreated topic segs.\n\n$ for i in $(seq 1 200); do echo \"record-number-$i-with-some-padding-data\"; done | kcp --topic segs\n\n$ docker compose exec -T kafka-1 ls -la /var/lib/kafka/data/segs-0/\n-rw-r--r-- 1 appuser appuser      104 Sep 10 14:02 00000000000000000000.index\n-rw-r--r-- 1 appuser appuser     1064 Sep 10 14:02 00000000000000000000.log\n-rw-r--r-- 1 appuser appuser      156 Sep 10 14:02 00000000000000000000.timeindex\n-rw-r--r-- 1 appuser appuser      104 Sep 10 14:02 00000000000000000026.index\n-rw-r--r-- 1 appuser appuser     1052 Sep 10 14:02 00000000000000000026.log\n-rw-r--r-- 1 appuser appuser      156 Sep 10 14:02 00000000000000000026.timeindex\n-rw-r--r-- 1 appuser appuser 10485760 Sep 10 14:02 00000000000000000182.index\n-rw-r--r-- 1 appuser appuser      612 Sep 10 14:02 00000000000000000182.log\n\n#   세그먼트가 여럿 생겼다. 파일 이름이 첫 오프셋이다\n#   마지막(활성) 세그먼트의 .index 만 10MB 다 -- 미리 잡아 둔 것\n#   닫힌 세그먼트는 104바이트로 줄었다\n\n\n# --- 인덱스 안을 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/segs-0/00000000000000000000.index | head -8\nDumping .../00000000000000000000.index\noffset: 3 position: 132\noffset: 7 position: 268\noffset: 11 position: 404\noffset: 15 position: 540\n...\n\n#   모든 오프셋이 아니다. 몇 개씩 건너뛴다 (sparse)\n#   offset 13 을 찾으려면 11 로 점프한 뒤 순차로 두 건 읽는다\n\n\n# --- 타임 인덱스 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/segs-0/00000000000000000000.timeindex | head -4\nDumping .../00000000000000000000.timeindex\ntimestamp: 1757497321004 offset: 3\ntimestamp: 1757497321004 offset: 7\n\n#   시간으로 되감기(--to-datetime)가 이걸 쓴다 (5.6절)\n\n\n# --- 특정 오프셋을 읽으면 어느 세그먼트에서 오나 ---\n\n$ kcc --topic segs --partition 0 --offset 100 --max-messages 1\nrecord-number-101-with-some-padding-data\nProcessed a total of 1 messages\n\n#   100번은 26~181 세그먼트 안에 있다\n#   브로커가 파일 이름으로 후보를 고르고 인덱스로 위치를 찾았다\n\n\n# --- 활성 세그먼트는 안 지워진다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name segs \\\n    --alter --add-config retention.ms=1000 >/dev/null\n\n$ sleep 70 && docker compose exec -T kafka-1 ls /var/lib/kafka/data/segs-0/*.log\n/var/lib/kafka/data/segs-0/00000000000000000182.log\n\n#   앞의 세그먼트는 다 지워졌고 활성 세그먼트만 남았다\n#   retention 1초인데 데이터가 남아 있는 것은 활성 세그먼트라서다\n\n$ kcc --topic segs --from-beginning --timeout-ms 2000 | head -2\nrecord-number-183-with-some-padding-data\nrecord-number-184-with-some-padding-data\n\n#   183번부터 남아 있다. 앞은 통째로 사라졌다\n\n\n# --- 디스크 사용량은 복제까지 세야 한다 ---\n\n$ for b in 1 2 3; do\n>   printf 'broker %s: ' $b\n>   docker compose exec -T kafka-$b du -sh /var/lib/kafka/data 2>/dev/null | cut -f1\n> done\nbroker 1: 21M\nbroker 2: 19M\nbroker 3: 20M\n\n#   같은 데이터가 셋에 있다. 계산할 때 ×3 을 잊지 않는다 (11.2절)\n\n$ kt --delete --topic segs >/dev/null"
+  }
+ ],
+ "recap": [
+  "파티션은 세그먼트 파일들의 나열이고 파일 이름이 그 세그먼트의 첫 오프셋이다.",
+  "segment.bytes(1GB) 나 segment.ms(7일) 중 먼저 오는 쪽에서 새 파일로 넘어간다.",
+  "인덱스는 듬성듬성하다. 가까운 앞 항목으로 점프한 뒤 순차 스캔한다.",
+  "삭제는 세그먼트 단위다. 활성 세그먼트는 안 지워져서 retention 이 짧아도 데이터가 남는다.",
+  "디스크 계산에는 복제·활성 세그먼트·인덱스 예약·삭제 지연을 함께 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "segment.bytes 를 1KB 로 준 토픽에 레코드를 넣고 세그먼트가 여럿 생기는 것을 본다.",
+   "done_when": "파일 이름이 첫 오프셋인 것을 확인한다.",
+   "minutes": 7
+  },
+  {
+   "task": "`kafka-dump-log.sh --files ...index` 로 인덱스가 듬성듬성한 것을 확인한다.",
+   "done_when": "모든 오프셋이 없는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "retention.ms 를 1초로 주고 활성 세그먼트만 남는 것을 확인한다.",
+   "done_when": "데이터가 다 안 지워지는 이유를 설명할 수 있다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세그먼트 파일 이름의 숫자는 무엇인가.",
+   "a": "그 세그먼트에 들어 있는 첫 레코드의 오프셋."
+  },
+  {
+   "q": "retention.ms 를 짧게 줬는데 데이터가 안 지워지는 이유는.",
+   "a": "삭제가 세그먼트 단위이고 활성 세그먼트는 지우지 않기 때문. segment.ms/bytes 도 함께 봐야 한다."
+  },
+  {
+   "q": "인덱스가 듬성듬성해도 되는 이유는.",
+   "a": "가까운 앞 항목으로 점프한 뒤 순차 스캔하면 되기 때문. 인덱스가 작아진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "세그먼트",
+   "en": "segment",
+   "what": "파티션 로그를 나눈 파일. .log/.index/.timeindex 한 벌."
+  },
+  {
+   "term": "활성 세그먼트",
+   "en": "active segment",
+   "what": "지금 쓰고 있는 마지막 세그먼트. 삭제 대상이 아니다."
+  },
+  {
+   "term": "듬성듬성 인덱스",
+   "en": "sparse index",
+   "what": "일정 바이트마다 하나씩만 기록하는 인덱스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Log configs",
+   "url": "https://kafka.apache.org/documentation/#topicconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Design: The log",
+   "url": "https://kafka.apache.org/documentation/#log",
+   "publisher": "Apache"
+  }
+ ]
+}

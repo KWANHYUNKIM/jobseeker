@@ -1,0 +1,141 @@
+{
+ "book": "kafka",
+ "id": "retention",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "보관 정책",
+ "summary": "시간 · 크기 · 압축(compact).",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "delete 와 compact 를 구분한다.",
+  "보관 설정을 정한다.",
+  "compact 토픽의 쓰임을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 \"보관 기간이 지나면 없다\" 고** 했다. **그 정책이 둘**이다.\n\n```\ncleanup.policy = delete    (기본)  -> 오래된 것을 버린다\ncleanup.policy = compact           -> 키마다 최신만 남긴다\ncleanup.policy = compact,delete    -> 둘 다\n```"
+  },
+  {
+   "type": "table",
+   "caption": "delete 정책의 설정",
+   "columns": [
+    "설정",
+    "기본",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "**`retention.ms`**",
+     "**7일**",
+     "이 시간이 지난 세그먼트를 지운다"
+    ],
+    [
+     "`retention.bytes`",
+     "-1(무제한)",
+     "**파티션당** 이 크기를 넘으면 오래된 것부터"
+    ],
+    [
+     "`segment.ms` / `segment.bytes`",
+     "7일 / 1GB",
+     "세그먼트를 언제 닫나(3.3절)"
+    ],
+    [
+     "`log.retention.check.interval.ms`",
+     "5분",
+     "확인 주기(브로커 설정)"
+    ],
+    [
+     "`file.delete.delay.ms`",
+     "1분",
+     "지우기로 정한 뒤 실제 삭제까지"
+    ]
+   ],
+   "note": "**`retention.bytes` 는 파티션당**이다 — **파티션 10개면 총량은 10배**다. 자주 틀리는 자리."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "compact 는 '지금 상태' 를 남긴다",
+   "md": "**같은 키로 여러 번 쓰면 최신만 남긴다.**\n\n```\nbefore compaction:\n  offset 0: user-1 -> {\"name\":\"kim\",\"city\":\"seoul\"}\n  offset 1: user-2 -> {\"name\":\"lee\"}\n  offset 2: user-1 -> {\"name\":\"kim\",\"city\":\"busan\"}\n  offset 3: user-3 -> {\"name\":\"park\"}\n  offset 4: user-2 -> null                       <- tombstone\n\nafter compaction:\n  offset 2: user-1 -> {\"name\":\"kim\",\"city\":\"busan\"}\n  offset 3: user-3 -> {\"name\":\"park\"}\n```\n\n| 성질 | |\n|---|---|\n| **오프셋은 안 바뀐다** | 2번은 계속 2번이다. 빈 번호가 생긴다 |\n| **`null` 값 = 삭제 표시(tombstone)** | 일정 시간 뒤 그것도 사라진다 |\n| 키가 필수 | **키 없는 레코드는 compact 대상이 아니다** |\n| 활성 세그먼트는 제외 | 3.3절과 같은 이유 |\n\n**쓰는 곳**:\n\n| 어디 | 왜 |\n|---|---|\n| **`__consumer_offsets`** | 그룹·토픽·파티션마다 최신 오프셋만 필요(2.3절) |\n| **설정·프로필 같은 현재 상태** | 처음부터 읽으면 전체 상태가 복원된다 |\n| **CDC 스냅숏** | 10.3절 |\n| 스트림즈 상태 저장소 | 10.5절 |"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "보관 기간을 정할 때 걸리는 것들",
+   "md": "| 질문 | 기준 |\n|---|---|\n| **컨슈머가 며칠 죽어 있어도 되나** | 그보다 길게. 연휴를 생각한다 |\n| **재처리를 얼마나 거슬러 갈 건가** | 버그 발견까지 걸리는 시간 |\n| 디스크가 얼마나 있나 | 하루 유입 × 일수 × 복제(11.2절) |\n| **개인정보가 들어 있나** | 길게 두면 삭제 요구를 못 지킨다 |\n\n**흔한 값**:\n\n```\n이벤트 스트림      retention.ms = 7일 (기본)\n감사 로그          30~90일 + 오브젝트 스토리지로 티어링\n현재 상태          cleanup.policy = compact (무기한)\n대용량 원시 로그    retention.bytes 로 디스크에 맞춘다\n```\n\n> **늘리는 건 언제든 되지만 이미 지워진 건 못** 되돌린다.\n> **줄이면 다음 확인 주기에 바로 지워진다** — **운영에서 `retention.ms` 를 줄이는 건 되돌릴 수 없는 작업**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "delete 와 compact 를 각각 만들어 본다",
+   "sql": "# --- delete: 시간이 지나면 사라진다 ---\n\n$ kt --create --topic ttl --partitions 1 --replication-factor 1 \\\n    --config retention.ms=10000 --config segment.ms=5000 >/dev/null\n\n$ for i in 1 2 3; do echo \"old-$i\"; done | kcp --topic ttl\n$ sleep 8\n$ for i in 4 5; do echo \"new-$i\"; done | kcp --topic ttl\n\n$ kcc --topic ttl --from-beginning --timeout-ms 2000\nold-1\nold-2\nold-3\nnew-4\nnew-5\nProcessed a total of 5 messages\n\n$ sleep 70\n$ kcc --topic ttl --from-beginning --timeout-ms 2000\nnew-4\nnew-5\nProcessed a total of 2 messages\n\n#   앞의 세그먼트가 통째로 사라졌다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic ttl --time -2\nttl:0:3\n\n#   --time -2 는 '가장 이른 오프셋' 이다. 0 이 아니라 3 이다\n#   앞의 셋이 지워졌다는 뜻 (오프셋 번호는 재사용 안 된다)\n\n\n# --- compact: 키마다 최신만 ---\n\n$ kt --create --topic profiles --partitions 1 --replication-factor 1 \\\n    --config cleanup.policy=compact \\\n    --config segment.ms=5000 --config min.cleanable.dirty.ratio=0.01 \\\n    --config delete.retention.ms=1000 >/dev/null\n\n$ kcp --topic profiles --property parse.key=true --property key.separator='|' <<'EOF'\nuser-1|{\"name\":\"kim\",\"city\":\"seoul\"}\nuser-2|{\"name\":\"lee\"}\nuser-1|{\"name\":\"kim\",\"city\":\"busan\"}\nuser-3|{\"name\":\"park\"}\nEOF\n\n$ kcc --topic profiles --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.offset=true\nOffset:0  user-1  {\"name\":\"kim\",\"city\":\"seoul\"}\nOffset:1  user-2  {\"name\":\"lee\"}\nOffset:2  user-1  {\"name\":\"kim\",\"city\":\"busan\"}\nOffset:3  user-3  {\"name\":\"park\"}\nProcessed a total of 4 messages\n\n#   아직 압축 전이다. 활성 세그먼트라서\n\n$ echo 'user-9|{\"name\":\"trigger\"}' | kcp --topic profiles \\\n    --property parse.key=true --property key.separator='|'\n$ sleep 45\n\n$ kcc --topic profiles --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.offset=true\nOffset:1  user-2  {\"name\":\"lee\"}\nOffset:2  user-1  {\"name\":\"kim\",\"city\":\"busan\"}\nOffset:3  user-3  {\"name\":\"park\"}\nOffset:4  user-9  {\"name\":\"trigger\"}\nProcessed a total of 4 messages\n\n#   Offset 0 이 사라졌다. user-1 의 최신은 2번이다\n#   오프셋 번호는 그대로다 -- 0 이 비었다\n\n\n# --- 툼스톤으로 지운다 ---\n\n$ echo 'user-2|' | kcp --topic profiles \\\n    --property parse.key=true --property key.separator='|' --property null.marker=''\n\n$ kcc --topic profiles --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.offset=true\nOffset:2  user-1  {\"name\":\"kim\",\"city\":\"busan\"}\nOffset:3  user-3  {\"name\":\"park\"}\nOffset:4  user-9  {\"name\":\"trigger\"}\nOffset:5  user-2  null\nProcessed a total of 4 messages\n\n$ sleep 45\n$ kcc --topic profiles --from-beginning --timeout-ms 2000 --property print.key=true\nuser-1  {\"name\":\"kim\",\"city\":\"busan\"}\nuser-3  {\"name\":\"park\"}\nuser-9  {\"name\":\"trigger\"}\nProcessed a total of 3 messages\n\n#   툼스톤도 delete.retention.ms 뒤에 사라졌다\n#   처음부터 읽으면 '현재 상태' 가 나온다\n\n\n# --- 키가 없으면 compact 가 안 된다 ---\n\n$ echo 'no-key-record' | kcp --topic profiles\n$ sleep 45\n$ kcc --topic profiles --from-beginning --timeout-ms 2000 --property print.key=true\nuser-1  {\"name\":\"kim\",\"city\":\"busan\"}\nuser-3  {\"name\":\"park\"}\nuser-9  {\"name\":\"trigger\"}\nnull    no-key-record\n\n#   키가 null 인 레코드는 압축 대상이 아니라 계속 쌓인다\n\n\n# --- 정리 ---\n\n$ kt --delete --topic ttl >/dev/null\n$ kt --delete --topic profiles >/dev/null"
+  }
+ ],
+ "recap": [
+  "cleanup.policy 는 delete(오래된 것 버리기)와 compact(키마다 최신만 남기기)다.",
+  "retention.bytes 는 파티션당이다. 파티션 수를 곱해야 총량이 나온다.",
+  "compact 는 오프셋을 바꾸지 않는다. 빈 번호가 생기고 null 값이 삭제 표시(tombstone)다.",
+  "키 없는 레코드는 compact 대상이 아니다.",
+  "보관 기간은 늘리기는 쉽고 줄이면 되돌릴 수 없다. 컨슈머 정지 허용 시간과 재처리 범위로 정한다."
+ ],
+ "drills": [
+  {
+   "task": "retention.ms 를 10초로 준 토픽에서 앞 레코드가 사라지는 것과 `--time -2` 로 가장 이른 오프셋이 0이 아닌 것을 확인한다.",
+   "done_when": "오프셋 번호가 재사용되지 않는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "compact 토픽에 같은 키로 두 번 쓰고 압축 후 앞 레코드가 사라지는 것을 확인한다.",
+   "done_when": "오프셋에 빈 번호가 생기는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "툼스톤(null 값)을 써서 키가 사라지는 것을 확인한다.",
+   "done_when": "처음부터 읽었을 때 '현재 상태' 가 나오는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "compact 정책이 오프셋을 어떻게 다루나.",
+   "a": "바꾸지 않는다. 지워진 자리의 번호는 비어 있고 남은 레코드의 오프셋은 그대로다."
+  },
+  {
+   "q": "키가 null 인 레코드는 compact 토픽에서 어떻게 되나.",
+   "a": "압축 대상이 아니라 계속 쌓인다."
+  },
+  {
+   "q": "retention.bytes 를 정할 때 자주 하는 실수는.",
+   "a": "파티션당 값이라는 것을 잊는 것. 파티션 수를 곱해야 총량이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "tombstone",
+   "what": "값이 null 인 레코드. compact 토픽에서 그 키의 삭제를 뜻한다."
+  },
+  {
+   "term": "min.cleanable.dirty.ratio",
+   "what": "압축을 시작할 '더러운' 비율 기준. 기본 0.5."
+  },
+  {
+   "term": "티어드 스토리지",
+   "en": "tiered storage",
+   "what": "오래된 세그먼트를 오브젝트 스토리지로 옮기는 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Log compaction",
+   "url": "https://kafka.apache.org/documentation/#compaction",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Topic configs",
+   "url": "https://kafka.apache.org/documentation/#topicconfigs",
+   "publisher": "Apache"
+  }
+ ]
+}
