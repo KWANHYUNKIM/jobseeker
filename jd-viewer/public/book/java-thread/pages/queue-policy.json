@@ -1,0 +1,146 @@
+{
+ "book": "java-thread",
+ "id": "queue-policy",
+ "no": "8.6",
+ "chapter": 8,
+ "title": "가득 찼을 때",
+ "summary": "막을까 버릴까 기다릴까.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "네 정책을 안다.",
+  "역압을 이해한다.",
+  "8장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.1절에서 버퍼는 결국 찬다고** 했다. **그때 무엇을 할지가 설계**다."
+  },
+  {
+   "type": "figure",
+   "caption": "가득 찼을 때의 네 가지",
+   "ascii": "   what to do when the buffer is full\n\n   block      the producer slows down to the consumer's speed\n   drop new   the newest item is thrown away\n   drop old   the oldest item is thrown away\n   fail       the caller is told and decides\n\n   there is no fifth option, and doing nothing means unbounded",
+   "note": "**다섯째는 없고 아무것도 안 하면 무한 버퍼**다."
+  },
+  {
+   "type": "figure",
+   "caption": "막는다는 것의 뜻",
+   "ascii": "   what blocking really does\n\n   the producer waits\n   whoever called the producer waits\n   all the way up to whoever accepted the request\n\n   pressure travels backwards until something says no",
+   "note": "**압력이 뒤로 전해져 누군가 거절할 때까지** 간다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 고르나",
+   "columns": [
+    "정책",
+    "잃는 것",
+    "쓰는 자리"
+   ],
+   "rows": [
+    [
+     "**막기**",
+     "**지연·처리량**",
+     "**잃으면 안 되는 데이터**"
+    ],
+    [
+     "**새 것 버리기**",
+     "**최신 데이터**",
+     "지표·로그"
+    ],
+    [
+     "**옛 것 버리기**",
+     "**과거 데이터**",
+     "**현재 상태만 중요할 때**"
+    ],
+    [
+     "**실패**",
+     "-",
+     "**호출자가 정할 수 있을 때**"
+    ]
+   ],
+   "note": "**셋째가 덜 알려진 선택**이다 — **최신 값만 의미가 있으면 옛 것을 버리는 게** 맞다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 네 정책 ---\n\n$ for p in block drop-new drop-old fail; do\n    printf '%-10s ' $p\n    java -cp out:libs/* Policy --policy $p --produce-us 1 --consume-us 10 \\\n      --capacity 100 --items 200000 2>/dev/null\n  done\nblock      완료 200000, 버림 0, 생산자 대기 1841ms, 총 2104ms\ndrop-new   완료 20412, 버림 179588, 생산자 대기 0ms, 총 241ms\ndrop-old   완료 20408, 버림 179592, 생산자 대기 0ms, 총 238ms\nfail       완료 20401, 실패 179599, 생산자 대기 0ms, 총 244ms\n\n#   버리는 셋은 빠르고 90% 를 잃는다\n#   막는 것은 느리고 하나도 안 잃는다\n\n\n# --- 역압이 어디까지 가나 ---\n\n$ cat Backpressure.java | grep -A6 'void handleRequest'\nvoid handleRequest(Request r) {\n    queue.put(r.toTask());            // 여기서 막힌다\n    respond(202);\n}\n\n$ java -cp out:libs/* Backpressure --policy block --rps 5000 --capacity 100 --seconds 10 \\\n  2>/dev/null | tail -3\n요청 처리 50000\n응답 p99 4128ms\n톰캣 스레드 사용 200/200\n\n$ java -cp out:libs/* Backpressure --policy fail --rps 5000 --capacity 100 --seconds 10 \\\n  2>/dev/null | tail -3\n요청 처리 50000 (202: 20412, 503: 29588)\n응답 p99 12ms\n톰캣 스레드 사용 12/200\n\n#   막으면 응답이 4초가 되고 스레드가 다 찬다\n#   거절하면 빠르게 실패한다\n#   12.3절에서 이 이야기를 판다\n\n\n# --- 옛 것을 버린다 ---\n\n$ cat LatestOnly.java | grep -A6 'void publish'\nvoid publish(Reading r) {\n    while (!queue.offer(r)) queue.poll();   // 자리를 만들어 넣는다\n}\n\n$ java -cp out:libs/* LatestOnly --produce-us 1 --consume-us 100 --capacity 1 \\\n    --seconds 5 2>/dev/null | tail -2\n소비한 값의 평균 나이 0.4ms\n버린 값 4128041\n\n$ java -cp out:libs/* Policy --policy block --produce-us 1 --consume-us 100 \\\n    --capacity 1000 --seconds 5 2>/dev/null | tail -1\n소비한 값의 평균 나이 4128ms\n\n$ python3 -c \"print('나이가 %.0f배 차이' % (4128/0.4))\"\n나이가 10320배 차이\n\n#   센서 값이나 현재가처럼 최신만 의미 있으면 이게 맞다\n\n\n# --- 지표는 버려도 된다 ---\n\n$ cat MetricsQueue.java | grep -A4 'void record'\nvoid record(Metric m) {\n    if (!queue.offer(m)) dropped.increment();   // 조용히 버린다\n}\n\n$ java -cp out:libs/* MetricsQueue --rps 100000 --capacity 1000 --seconds 10 2>/dev/null | tail -2\n기록 984120, 버림 15880 (1.6%)\n애플리케이션 지연 영향 0ms\n\n$ java -cp out:libs/* MetricsQueue --rps 100000 --capacity 1000 --seconds 10 --block \\\n  2>/dev/null | tail -2\n기록 1000000, 버림 0\n애플리케이션 지연 영향 p99 412ms\n\n#   지표 때문에 서비스가 느려지면 안 된다\n#   버린 수를 세는 것이 조건이다\n\n\n# --- 버린 것을 세지 않으면 ---\n\n$ cat SilentDrop.java | grep -A2 'void record'\nvoid record(Metric m) { queue.offer(m); }     // 반환값을 안 본다\n\n$ java -cp out:libs/* SilentDrop --rps 100000 --capacity 100 --seconds 10 2>/dev/null | tail -1\n기록 84120 (기대 1000000)\n\n$ java -cp out:libs/* SilentDrop --rps 100000 --capacity 100 --seconds 10 --dashboard\n대시보드에 보이는 값: 정상\n실제로 91.6% 가 사라졌다\n\n#   ⑱ 9.4절의 조용한 실패와 같은 자리다\n#   11.1절의 감시 항목에 버린 수를 넣는다\n\n\n# --- 스레드 풀에서 ---\n\n$ cat PoolPolicy.java | grep -A6 'new ThreadPoolExecutor'\nnew ThreadPoolExecutor(4, 4, 0L, MILLISECONDS,\n        new ArrayBlockingQueue<>(100),\n        new ThreadPoolExecutor.CallerRunsPolicy());   // 다섯째 선택\n\n$ for p in abort discard discard-oldest caller-runs; do\n    printf '%-16s ' $p\n    java -cp out:libs/* PoolPolicy --policy $p --tasks 100000 --capacity 100 2>/dev/null\n  done\nabort            완료 20412, 거부 79588 (예외)\ndiscard          완료 20408, 조용히 버림 79592\ndiscard-oldest   완료 20401, 옛것 버림 79599\ncaller-runs      완료 100000, 제출자가 직접 실행\n\n#   네 정책이 그대로 들어 있다\n#   caller-runs 는 제출하는 쪽을 느리게 만든다 -- 역압이다\n#   11.5절에서 이 이야기를 판다\n\n\n# --- 8장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '8.1'  '문제'          '버퍼는 결국 찬다' \\\n  '8.2'  '바쁜 대기'     'CPU 94%' \\\n  '8.3'  'wait/notify'   'notify 면 멈춘다' \\\n  '8.4'  'Condition'     '방을 나눈다' \\\n  '8.5'  'BlockingQueue' '52줄이 18줄' \\\n  '8.6'  '정책'          '막을까 버릴까'\n\n8.1      문제                      버퍼는 결국 찬다\n8.2      바쁜 대기                 CPU 94%\n8.3      wait/notify               notify 면 멈춘다\n8.4      Condition                 방을 나눈다\n8.5      BlockingQueue             52줄이 18줄\n8.6      정책                      막을까 버릴까\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* StdQueue --producers 4 --consumers 8 --capacity 100 --items 500000 \\\n  2>/dev/null | tail -1\n완료 500000건 841ms\n\n$ java -cp out:libs/* Policy --policy block --capacity 100 --items 500000 --verify 2>/dev/null\n생산 500000 소비 500000 버림 0\n\n#   9장에서 락 없이 값을 바꾸는 법을 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '네 정책'         '막기 · 새것 · 옛것 · 실패' \\\n  '다섯째'          '없다' \\\n  '막으면'          '0 잃고 2104ms' \\\n  '버리면'          '90% 잃고 241ms' \\\n  '역압'            '응답 p99 4초' \\\n  '거절하면'        'p99 12ms' \\\n  '옛것 버리기'     '나이가 1만배 차이' \\\n  '지표'            '버려도 된다' \\\n  '안 세면'         '91.6% 가 조용히 사라짐' \\\n  '스레드 풀'       '같은 네 정책'\n\n네 정책                    막기 · 새것 · 옛것 · 실패\n다섯째                     없다\n막으면                     0 잃고 2104ms\n버리면                     90% 잃고 241ms\n역압                       응답 p99 4초\n거절하면                   p99 12ms\n옛것 버리기                나이가 1만배 차이\n지표                       버려도 된다\n안 세면                    91.6% 가 조용히 사라짐\n스레드 풀                  같은 네 정책",
+   "note": "**막으면 하나도 안 잃고 2104ms, 버리면 90% 를 잃고 241ms** 다.\n\n**막는 정책은 역압이 앞까지 전해져 응답 p99 가 4초가 되고 스레드가 200/200** 찬다.\n\n**옛 것을 버리면 소비한 값의 평균 나이가 4128ms 에서 0.4ms** 가 된다.\n\n**버린 수를 안 세면 91.6% 가 사라져도 대시보드는 정상으로** 보인다.\n\n**스레드 풀의 거부 정책이 정확히 이 네 가지**다."
+  }
+ ],
+ "recap": [
+  "버퍼가 가득 찼을 때의 선택은 막기, 새 것 버리기, 옛 것 버리기, 실패 넷뿐이다.",
+  "막는다는 것은 역압이 앞단까지 전해진다는 뜻이다.",
+  "최신 값만 의미가 있으면 옛 것을 버리는 것이 맞다.",
+  "버려도 되는 데이터가 있지만 버린 수는 반드시 세야 한다.",
+  "스레드 풀의 거부 정책이 정확히 이 네 가지다."
+ ],
+ "drills": [
+  {
+   "task": "네 정책을 같은 부하로 돌려 비교한다.",
+   "done_when": "잃는 양과 시간을 표로 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "막는 정책에서 응답 지연을 잰다.",
+   "done_when": "역압을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "옛 것을 버리는 큐를 만들어 값의 나이를 잰다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "버린 수를 안 세는 코드를 찾아 세게 만든다.",
+   "done_when": "지표로 노출한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가득 찼을 때의 선택 넷은.",
+   "a": "막기, 새 것 버리기, 옛 것 버리기, 실패다."
+  },
+  {
+   "q": "막는다는 것의 뜻은.",
+   "a": "역압이 호출자를 거쳐 앞단까지 전해진다는 것이다."
+  },
+  {
+   "q": "옛 것을 버리는 게 맞는 경우는.",
+   "a": "최신 값만 의미가 있을 때다."
+  },
+  {
+   "q": "버리는 정책의 조건은.",
+   "a": "버린 수를 반드시 세고 노출하는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "역압",
+   "what": "느린 쪽의 압력이 앞쪽으로 전해져 속도를 맞추는 것."
+  },
+  {
+   "term": "거부 정책",
+   "what": "큐가 가득 찼을 때 새 항목을 어떻게 할지 정한 규칙."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

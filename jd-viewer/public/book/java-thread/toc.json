@@ -436,7 +436,7 @@
           "title": "Condition 으로",
           "summary": "생산자와 소비자를 갈라 깨운다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -444,7 +444,7 @@
           "title": "BlockingQueue",
           "summary": "이미 만들어져 있다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -452,7 +452,7 @@
           "title": "가득 찼을 때",
           "summary": "막을까 버릴까 기다릴까.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

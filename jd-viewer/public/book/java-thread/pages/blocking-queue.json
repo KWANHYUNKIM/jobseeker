@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "blocking-queue",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "BlockingQueue",
+ "summary": "이미 만들어져 있다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "네 가지 요청을 안다.",
+  "구현을 고른다.",
+  "직접 만든 것과 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.4절에서 52줄을** 썼다. **그게 표준 라이브러리에 이미** 있다.\n\n```java\nBlockingQueue<Item> q = new ArrayBlockingQueue<>(100);\nq.put(item);   Item i = q.take();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "방향마다 네 가지 요청",
+   "ascii": "   four ways to ask, for each direction\n\n   throw       add, remove\n   return      offer, poll\n   block       put, take\n   time out    offer with timeout, poll with timeout\n\n   picking the row is picking what full and empty mean to you",
+   "note": "**줄을 고르는 게 곧 가득참과 비어있음의 뜻을 고르는** 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "구현을 고른다",
+   "columns": [
+    "",
+    "용량",
+    "락",
+    "쓰는 자리"
+   ],
+   "rows": [
+    [
+     "**ArrayBlockingQueue**",
+     "**고정**",
+     "**하나**",
+     "**대부분**"
+    ],
+    [
+     "**LinkedBlockingQueue**",
+     "**선택**",
+     "**둘(넣기·꺼내기)**",
+     "처리량이 중요"
+    ],
+    [
+     "**SynchronousQueue**",
+     "**0**",
+     "-",
+     "**직접 전달**(11.5절)"
+    ],
+    [
+     "**LinkedTransferQueue**",
+     "무한",
+     "-",
+     "고성능 전달"
+    ],
+    [
+     "**PriorityBlockingQueue**",
+     "무한",
+     "하나",
+     "**우선순위**"
+    ],
+    [
+     "**DelayQueue**",
+     "무한",
+     "하나",
+     "예약 실행(11.7절)"
+    ]
+   ],
+   "note": "**둘째 줄의 락이 둘이라는 게 처리량 차이**다 — **넣는 쪽과 꺼내는 쪽이 안** 다툰다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 52줄이 2줄이 된다 ---\n\n$ cat StdQueue.java | grep -A6 'main'\nBlockingQueue<Item> q = new ArrayBlockingQueue<>(capacity);\n// 생산자: q.put(item)\n// 소비자: Item i = q.take()\n\n$ wc -l CondQueue.java StdQueue.java\n      52 CondQueue.java\n      18 StdQueue.java\n\n$ for i in $(seq 1 20); do\n    timeout 10 java -cp out:libs/* StdQueue --producers 2 --consumers 4 \\\n      --capacity 2 --items 100000 2>/dev/null | grep -c '완료'\n  done | sort | uniq -c\n  20 1\n\n#   8.3절에서 멈추던 설정이다\n\n\n# --- 성능도 낫다 ---\n\n$ for m in cond abq lbq; do\n    printf '%-6s ' $m\n    java -cp out:libs/* QueueBench2 --mode $m --producers 8 --consumers 8 \\\n      --capacity 1000 --items 2000000 2>/dev/null | grep -o '[0-9]*ms'\n  done\ncond   4128ms\nabq    3841ms\nlbq    1204ms\n\n$ python3 -c \"print('LinkedBlockingQueue 가 %.1f배' % (4128/1204))\"\nLinkedBlockingQueue 가 3.4배\n\n#   락이 둘이라 넣기와 꺼내기가 안 다툰다\n\n\n# --- 락이 둘인 것을 확인한다 ---\n\n$ javap -p /Library/Java/.../LinkedBlockingQueue.class 2>/dev/null | grep -i lock\n  private final java.util.concurrent.locks.ReentrantLock takeLock;\n  private final java.util.concurrent.locks.ReentrantLock putLock;\n\n$ javap -p /Library/Java/.../ArrayBlockingQueue.class 2>/dev/null | grep -i lock\n  final java.util.concurrent.locks.ReentrantLock lock;\n\n$ java -cp out:libs/* QueueBench2 --mode abq --producers 8 --consumers 8 --items 2000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c 'WAITING (parking)'\n11\n$ kill %1\n$ java -cp out:libs/* QueueBench2 --mode lbq --producers 8 --consumers 8 --items 2000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c 'WAITING (parking)'\n4\n$ kill %1\n\n#   대기하는 스레드가 훨씬 적다\n\n\n# --- 네 가지 요청 ---\n\n$ cat FourWays.java | grep -A8 'void demo'\nBlockingQueue<String> q = new ArrayBlockingQueue<>(1);\nq.put(\"a\");\nlog.info(\"offer  {}\", q.offer(\"b\"));                       // false\nlog.info(\"offer(t) {}\", q.offer(\"b\", 100, MILLISECONDS));  // false, 100ms 뒤\ntry { q.add(\"b\"); } catch (IllegalStateException e) { log.info(\"add  예외\"); }\n// q.put(\"b\") 는 영원히 막힌다\n\n$ java -cp out:libs/* FourWays\n01:43:02.104 [main] INFO  FourWays - offer  false\n01:43:02.208 [main] INFO  FourWays - offer(t) false\n01:43:02.208 [main] INFO  FourWays - add  예외\n\n$ java -cp out:libs/* FourWays --with-put &\n$ sleep 2 && jcmd $! Thread.print | grep -A2 '\"main\"' | tail -1\n\t- parking to wait for <0x...> (a ArrayBlockingQueue)\n$ kill %1\n\n#   같은 상황에 네 가지 답이 있다\n#   8.6절에서 무엇을 고를지 본다\n\n\n# --- 용량 0 ---\n\n$ cat Synchronous.java | grep -A4 'main'\nBlockingQueue<Item> q = new SynchronousQueue<>();\n// put 은 take 하는 사람이 나타날 때까지 막힌다\n\n$ java -cp out:libs/* Synchronous --producers 1 --consumers 0 --items 1 &\n$ sleep 2 && jcmd $! Thread.print | grep -A2 '\"p-0\"' | tail -1\n\t- parking to wait for <0x...> (a SynchronousQueue)\n$ kill %1\n\n$ java -cp out:libs/* Synchronous --producers 4 --consumers 4 --items 200000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n2841ms\n$ java -cp out:libs/* QueueBench2 --mode abq --capacity 1 --producers 4 --consumers 4 \\\n    --items 200000 2>/dev/null | grep -o '[0-9]*ms'\n4128ms\n\n#   저장하지 않고 직접 넘긴다\n#   11.5절의 CachedThreadPool 이 이걸 쓴다\n\n\n# --- 우선순위 ---\n\n$ cat Priority.java | grep -A5 'main'\nBlockingQueue<Task> q = new PriorityBlockingQueue<>(11,\n        Comparator.comparingInt(Task::priority));\n// 넣은 순서와 상관없이 우선순위 순으로 나온다\n\n$ java -cp out:libs/* Priority --items 10 2>/dev/null\n넣은 순서 [5, 3, 9, 1, 7, 2, 8, 4, 6, 0]\n나온 순서 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n\n$ java -cp out:libs/* Priority --items 100000 --starve-check 2>/dev/null | tail -1\n낮은 우선순위 항목의 최대 대기 시간 8412ms\n\n#   우선순위 큐는 굶주림이 난다\n#   7.4절의 그 이야기다\n\n\n# --- 인터럽트에 반응한다 ---\n\n$ java -cp out:libs/* QueueInterrupt2 --mode take\n01:43:20.404 [c-0] INFO  QueueInterrupt2 - take 가 인터럽트로 깨졌다\n$ java -cp out:libs/* QueueInterrupt2 --mode put\n01:43:22.504 [p-0] INFO  QueueInterrupt2 - put 이 인터럽트로 깨졌다\n\n#   4.3절 표의 그 줄이다\n#   4.5절의 종료가 그냥 된다\n\n\n# --- happens-before 를 준다 ---\n\n$ cat QueueEdge2.java | grep -A6 'main'\nint[] box = new int[1];\nnew Thread(() -> { box[0] = 42; q.put(TOKEN); }, \"p\").start();\nnew Thread(() -> { q.take(); log.info(\"box = {}\", box[0]); }, \"c\").start();\n\n$ ./run.sh QueueEdge2 50 'box = [0-9]+' | head -2\n  50 box = 42\n\n#   volatile 도 락도 안 썼다\n#   5.4절 표의 그 줄이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '줄 수'           '52 가 18' \\\n  '8.3절 설정'      '20/20' \\\n  'ArrayBlocking'   '락 하나' \\\n  'LinkedBlocking'  '락 둘, 3.4배' \\\n  '대기 스레드'     '11 대 4' \\\n  '네 가지'         'add offer put offer(t)' \\\n  '용량 0'          'SynchronousQueue' \\\n  '우선순위'        '굶주림 8.4초' \\\n  '인터럽트'        '반응함' \\\n  'happens-before'  '50/50'\n\n줄 수                      52 가 18\n8.3절 설정                 20/20\nArrayBlocking              락 하나\nLinkedBlocking             락 둘, 3.4배\n대기 스레드                11 대 4\n네 가지                    add offer put offer(t)\n용량 0                     SynchronousQueue\n우선순위                   굶주림 8.4초\n인터럽트                   반응함\nhappens-before             50/50",
+   "note": "**8.4절의 52줄이 18줄이 되고 8.3절에서 멈추던 설정이 20/20** 통과한다.\n\n**`LinkedBlockingQueue` 는 락이 둘이라 3.4배 빠르고 대기 스레드가 11 대 4** 다.\n\n**같은 상황에 `add`·`offer`·`put`·시간 제한 `offer` 네 가지 답이** 있다.\n\n**우선순위 큐는 낮은 우선순위 항목이 8.4초까지** 기다린다.\n\n**큐를 지나면 `volatile` 없이도 50/50 으로 값이 보여 5.4절 관계를** 만든다."
+  }
+ ],
+ "recap": [
+  "직접 만든 버퍼는 표준 라이브러리에 이미 더 낫게 들어 있다.",
+  "가득 찼을 때의 네 가지 반응이 메서드로 나뉘어 있다.",
+  "LinkedBlockingQueue 는 넣기와 꺼내기 락이 따로라 처리량이 낫다.",
+  "SynchronousQueue 는 저장하지 않고 직접 넘기고 우선순위 큐는 굶주림이 난다.",
+  "인터럽트에 반응하고 happens-before 관계도 만들어 준다."
+ ],
+ "drills": [
+  {
+   "task": "직접 만든 버퍼를 표준 큐로 바꾼다.",
+   "done_when": "줄 수와 성능을 비교한다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 구현의 대기 스레드 수를 본다.",
+   "done_when": "락이 둘인 효과를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "네 가지 요청을 가득 찬 큐에 해 본다.",
+   "done_when": "반응을 다 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "큐를 지난 값이 보이는지 확인한다.",
+   "done_when": "5.4절과 이어 설명한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가득 찼을 때의 네 가지 반응은.",
+   "a": "예외, false 반환, 막힘, 시간 제한 뒤 false 다."
+  },
+  {
+   "q": "LinkedBlockingQueue 가 빠른 이유는.",
+   "a": "넣기와 꺼내기 락이 따로라 서로 안 다퉈서다."
+  },
+  {
+   "q": "SynchronousQueue 는 무엇인가.",
+   "a": "용량이 0 이라 넘기는 순간 양쪽이 만나는 큐다."
+  },
+  {
+   "q": "큐가 공짜로 주는 것은.",
+   "a": "인터럽트 반응과 happens-before 관계다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "블로킹 큐",
+   "what": "가득 차거나 비었을 때 막아 주는 스레드 안전한 큐."
+  },
+  {
+   "term": "직접 전달",
+   "what": "저장하지 않고 넘기는 쪽과 받는 쪽이 만나서 주고받는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — LinkedBlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/LinkedBlockingQueue.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — SynchronousQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/SynchronousQueue.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
