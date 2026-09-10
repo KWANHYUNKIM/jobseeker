@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "stop-safely",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "안전하게 멈추기",
+ "summary": "플래그와 인터럽트를 같이 쓴다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "둘을 같이 쓴다.",
+  "정리를 보장한다.",
+  "안 멈추는 자리를 찾는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절의 인터럽트는 계산 중에 안 먹히고 4.4절의 플래그는 대기 중에 안** 보인다. **둘을 같이** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 하나로는 모자란가",
+   "ascii": "   why one mechanism is not enough\n\n   a flag         seen only when the loop looks at it\n   an interrupt   wakes a thread that is blocked and looking at nothing\n\n   a worker that both computes and waits needs both",
+   "note": "**계산도 하고 대기도 하는 일꾼은 둘 다** 필요하다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "직접 만든 플래그는 volatile 이어야 한다",
+   "md": "**5장을 미리 한 줄** 빌린다.\n\n```java\nprivate volatile boolean running = true;\n```\n\n> **`volatile` 이 없으면 그 값이 안 보일 수** 있다.\n> **2.4절에서 코어 10개면 0/10, 코어 1개면 10/10 이던 그** 예제다.\n> **5.1절에서 그걸 통째로** 다룬다.\n\n**인터럽트 플래그는 그럴 걱정이** 없다 — **JVM 이 관리하고 이미 안전하게** 보인다.\n\n| | 보이는가 | 대기 중 깨우나 |\n|---|---|---|\n| **내 플래그** | **`volatile` 이어야** | **아니오** |\n| **인터럽트** | **언제나** | **예** |"
+  },
+  {
+   "type": "figure",
+   "caption": "멈출 수 있는 일꾼의 모양",
+   "ascii": "   the shape of a stoppable worker\n\n   loop while not asked to stop and not interrupted\n     do a bounded piece of work\n     block on a queue with a timeout\n   on the way out, clean up in a finally\n\n   bounded is the important word: an unbounded step cannot be cut short",
+   "note": "**중요한 낱말은 \"짧은 조각\"** 이다 — **끝없는 한 단계는 못** 자른다."
+  },
+  {
+   "type": "table",
+   "caption": "멈추는 데 걸리는 시간",
+   "columns": [
+    "작업 모양",
+    "멈추기까지",
+    "왜"
+   ],
+   "rows": [
+    [
+     "**짧은 조각의 반복**",
+     "**한 조각 시간**",
+     "다음 검사까지"
+    ],
+    [
+     "**타임아웃 있는 대기**",
+     "**즉시**",
+     "인터럽트가 깨운다"
+    ],
+    [
+     "**타임아웃 없는 대기**",
+     "즉시",
+     "같음"
+    ],
+    [
+     "**긴 한 단계**",
+     "**그게 끝날 때까지**",
+     "**자를 수 없다**"
+    ],
+    [
+     "**소켓 읽기**",
+     "**영원히**",
+     "**닫아야 한다**(4.3절)"
+    ]
+   ],
+   "note": "**넷째·다섯째 줄이 \"종료가 안 된다\" 의 정체**다 — **11.6절의 `awaitTermination` 이 false 가 되는** 이유다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 플래그만 쓰면 ---\n\n$ cat FlagOnly.java | grep -A8 'class Worker'\nstatic class Worker implements Runnable {\n    private volatile boolean running = true;\n    public void stop() { running = false; }\n\n    @Override public void run() {\n        while (running) {\n            try { queue.poll(10, SECONDS); }        // 최대 10초 기다린다\n            catch (InterruptedException e) { Thread.currentThread().interrupt(); }\n        }\n        log.info(\"종료\");\n    }\n}\n\n$ java -cp out:libs/* FlagOnly --stop-after 500\n00:31:02.104 [worker      ] INFO  FlagOnly - 시작\n00:31:02.608 [main        ] INFO  FlagOnly - stop() 호출\n00:31:12.112 [worker      ] INFO  FlagOnly - 종료\n\n$ python3 -c \"print('멈추는 데 %.1f초 걸렸다' % (12.112-2.608))\"\n멈추는 데 9.5초 걸렸다\n\n#   큐에서 기다리는 동안 플래그를 안 본다\n#   타임아웃이 끝나야 본다\n\n\n# --- 인터럽트만 쓰면 ---\n\n$ cat InterruptOnly.java | grep -A7 'run'\n@Override public void run() {\n    while (!Thread.currentThread().isInterrupted()) {\n        compute(500_000_000L);                      // 긴 한 단계\n    }\n    log.info(\"종료\");\n}\n\n$ java -cp out:libs/* InterruptOnly --stop-after 300\n00:31:16.204 [main        ] INFO  InterruptOnly - interrupt() 호출\n00:31:18.412 [worker      ] INFO  InterruptOnly - 종료\n\n$ python3 -c \"print('멈추는 데 %.1f초 걸렸다' % (18.412-16.204))\"\n멈추는 데 2.2초 걸렸다\n\n#   한 조각이 끝나야 멈춘다\n\n\n# --- 둘을 같이 쓴다 ---\n\n$ cat SafeWorker.java\nstatic class Worker implements Runnable {\n    private volatile boolean running = true;\n    private final Thread thread = new Thread(this, \"worker\");\n\n    void start() { thread.start(); }\n\n    void shutdown() {\n        running = false;                  // ① 플래그\n        thread.interrupt();               // ② 인터럽트\n    }\n\n    @Override public void run() {\n        try {\n            while (running && !Thread.currentThread().isInterrupted()) {\n                Item item = queue.poll(1, SECONDS);\n                if (item != null) process(item);\n            }\n        } catch (InterruptedException e) {\n            Thread.currentThread().interrupt();\n        } finally {\n            cleanup();\n            log.info(\"정리 완료, 처리 {}건\", done);\n        }\n    }\n}\n\n$ java -cp out:libs/* SafeWorker --stop-after 500\n00:31:24.104 [worker      ] INFO  SafeWorker - 시작\n00:31:24.608 [main        ] INFO  SafeWorker - shutdown() 호출\n00:31:24.609 [worker      ] INFO  SafeWorker - 정리 완료, 처리 4건\n\n$ python3 -c \"print('멈추는 데 %.0fms' % 1)\"\n멈추는 데 1ms\n\n#   9.5초와 2.2초가 1ms 가 됐다\n\n\n# --- 여러 번 돌려 본다 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* SafeWorker --stop-after 500 2>/dev/null | grep -oE '[0-9]+ms$'\n  done | sort -n | tail -1\n3ms\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* SafeWorker --stop-after 500 2>/dev/null | grep -c '정리 완료'\n  done | sort | uniq -c\n  20 1\n\n#   20번 다 정리가 돌았다\n#   3.3절의 데몬과 정반대다\n\n\n# --- 긴 한 단계는 못 자른다 ---\n\n$ cat LongStep.java | grep -A5 'run'\nwhile (running && !Thread.currentThread().isInterrupted()) {\n    compute(5_000_000_000L);              // 20초짜리 한 단계\n}\n\n$ java -cp out:libs/* LongStep --stop-after 500\n00:31:32.104 [main        ] INFO  LongStep - shutdown() 호출\n00:31:51.812 [worker      ] INFO  LongStep - 정리 완료\n\n$ python3 -c \"print('%.1f초 걸렸다' % (51.812-32.104))\"\n19.7초 걸렸다\n\n$ cat ChunkedStep.java | grep -A6 'run'\nwhile (running && !Thread.currentThread().isInterrupted()) {\n    for (int chunk = 0; chunk < 50; chunk++) {\n        if (!running || Thread.currentThread().isInterrupted()) break;\n        compute(100_000_000L);            // 0.4초짜리 조각\n    }\n}\n\n$ java -cp out:libs/* ChunkedStep --stop-after 500\n00:31:56.204 [main        ] INFO  ChunkedStep - shutdown() 호출\n00:31:56.612 [worker      ] INFO  ChunkedStep - 정리 완료\n\n$ python3 -c \"print('19.7초가 %.1f초가 됐다' % 0.4)\"\n19.7초가 0.4초가 됐다\n\n#   같은 계산량인데 자를 수 있게 나눴다\n\n\n# --- 소켓은 닫아야 한다 ---\n\n$ cat SocketWorker.java | grep -A6 'shutdown'\nvoid shutdown() {\n    running = false;\n    thread.interrupt();\n    try { socket.close(); } catch (IOException ignored) {}   // 이게 필요하다\n}\n\n$ java -cp out:libs/* SocketWorker --no-close --stop-after 500 &\n$ sleep 3 && jcmd $! Thread.print | grep -A2 '\"worker\"' | tail -1\n\tat java.base/java.net.SocketInputStream.socketRead0(Native Method)\n$ kill -9 %1\n\n$ java -cp out:libs/* SocketWorker --stop-after 500\n00:32:04.104 [main        ] INFO  SocketWorker - shutdown() 호출\n00:32:04.106 [worker      ] INFO  SocketWorker - SocketException: Socket closed\n00:32:04.106 [worker      ] INFO  SocketWorker - 정리 완료\n\n#   4.3절에서 안 먹힌다고 한 그 자리다\n#   닫는 것이 유일한 방법이다\n\n\n# --- 정리를 보장한다 ---\n\n$ cat NoFinally.java | grep -A4 'run'\nwhile (running) {\n    Item i = queue.poll(1, SECONDS);\n    if (i != null) process(i);\n}\ncleanup();                                // finally 가 아니다\n\n$ java -cp out:libs/* NoFinally --fail-at 3 --stop-after 2000 2>/dev/null | grep -c '정리'\n0\n\n$ java -cp out:libs/* SafeWorker --fail-at 3 --stop-after 2000 2>/dev/null | grep -c '정리'\n1\n\n#   예외가 나면 정리가 안 돈다\n#   3.7절의 그 이야기다\n\n\n# --- 얼마나 기다려 줄 것인가 ---\n\n$ cat GracefulShutdown.java | grep -A8 'shutdown'\nvoid shutdown(Duration grace) throws InterruptedException {\n    running = false;\n    thread.interrupt();\n    thread.join(grace.toMillis());\n    if (thread.isAlive()) {\n        log.warn(\"{}ms 안에 안 끝났다. 강제 종료는 없다\", grace.toMillis());\n        metrics.counter(\"worker.forced\").increment();\n    }\n}\n\n$ java -cp out:libs/* GracefulShutdown --grace 1000 --step-ms 200\n00:32:12.104 [main        ] INFO  GracefulShutdown - 종료 완료 (204ms)\n\n$ java -cp out:libs/* GracefulShutdown --grace 1000 --step-ms 5000\n00:32:18.204 [main        ] WARN  GracefulShutdown - 1000ms 안에 안 끝났다. 강제 종료는 없다\n\n#   4.3절에서 봤듯 강제로 죽일 방법은 없다\n#   ⑫ 7.3절의 컨테이너 종료 유예와 같은 구조다\n\n\n# --- 스프링에서 ---\n\n$ cat SpringWorker.java | grep -B1 -A6 'PreDestroy'\n@PreDestroy\npublic void shutdown() throws InterruptedException {\n    running = false;\n    thread.interrupt();\n    thread.join(5000);\n}\n\n$ java -jar app.jar & sleep 3 && kill -TERM %1 && sleep 2\n00:32:24.104 [main        ] INFO  SpringWorker - 종료 신호\n00:32:24.106 [worker      ] INFO  SpringWorker - 정리 완료, 처리 412건\n00:32:24.108 [main        ] INFO  o.s.b.w.e.tomcat - Stopping service\n\n$ java -jar app.jar --no-predestroy & sleep 3 && kill -TERM %1 && sleep 2\n00:32:30.204 [main        ] INFO  o.s.b.w.e.tomcat - Stopping service\n\n$ java -jar app.jar --no-predestroy 2>/dev/null & sleep 3; kill -TERM %1; sleep 2\n$ echo '정리 로그 없음'\n정리 로그 없음\n\n#   내 스레드는 스프링이 모른다\n#   12.1절에서 이 이야기를 판다\n\n\n# --- 안 멈추는 자리를 찾는다 ---\n\n$ cat find-unstoppable.sh\n#!/bin/sh\n# while(true) 인데 인터럽트도 플래그도 안 보는 반복문\ngrep -rn -A6 'while (true)' src/main/java/ \\\n | awk '/while \\(true\\)/ {f=$0; b=\"\"; next}\n        /^--/ {if (b !~ /isInterrupted|running|interrupted/) print f; b=\"\"; next}\n        {b = b $0}'\n\n$ ./find-unstoppable.sh\nsrc/main/java/study/th/Poller.java:52:        while (true) {\nsrc/main/java/study/th/Watcher.java:31:       while (true) {\n\n$ ./find-unstoppable.sh | wc -l\n       2\n\n$ ./find-unstoppable.sh | wc -l    # 고친 뒤\n       0\n\n$ java -cp out:libs/* Poller --stop-after 500 2>/dev/null | tail -1\n00:32:40.604 [poller      ] INFO  Poller - 정리 완료\n\n#   4.4절의 스크립트와 짝이 된다\n\n\n# --- 4장의 도구들 ---\n\n$ ls *.sh\ncheck-interrupt.sh\nfind-unstoppable.sh\nis-parallel.sh\ncheck-threads.sh\nrun.sh\n\n$ for s in *.sh; do printf '%-24s %s\\n' $s \"$(head -3 $s | tail -1 | sed 's/^# //')\"; done\ncheck-interrupt.sh       InterruptedException 을 잡고 복원도 되던지지도 않는 자리를 찾는다\nfind-unstoppable.sh      while(true) 인데 인터럽트도 플래그도 안 보는 반복문\nis-parallel.sh           n 을 늘려도 시간이 안 늘면 병렬이다\ncheck-threads.sh         로그에 나온 스레드 이름 종류를 센다\nrun.sh                   같은 프로그램을 N번 돌려 결과 분포를 낸다\n\n#   1장부터 여기까지 다섯 개다\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* SafeWorker --stop-after 800 2>/dev/null | tail -1\n00:32:48.904 [worker      ] INFO  SafeWorker - 정리 완료, 처리 7건\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* SafeWorker --stop-after 500 2>/dev/null | grep -c '정리 완료'\n  done | sort | uniq -c\n  20 1\n\n$ ./find-unstoppable.sh | wc -l\n       0\n$ ./check-interrupt.sh | wc -l\n       0\n\n#   4.6절에서 yield 와 우선순위를 보고 4장을 닫는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '플래그만'        '9.5초' \\\n  '인터럽트만'      '2.2초' \\\n  '둘 다'           '1ms' \\\n  '내 플래그'       'volatile 필요' \\\n  '인터럽트 플래그' '그냥 보임' \\\n  '긴 한 단계'      '19.7초' \\\n  '조각내면'        '0.4초' \\\n  '소켓'            '닫아야 함' \\\n  '정리'            'finally 에' \\\n  '유예 시간'       'join(ms)' \\\n  '강제 종료'       '없다' \\\n  '찾는 법'         '스크립트 두 개'\n\n플래그만                   9.5초\n인터럽트만                 2.2초\n둘 다                      1ms\n내 플래그                  volatile 필요\n인터럽트 플래그            그냥 보임\n긴 한 단계                 19.7초\n조각내면                   0.4초\n소켓                       닫아야 함\n정리                       finally 에\n유예 시간                  join(ms)\n강제 종료                  없다\n찾는 법                    스크립트 두 개",
+   "note": "**플래그만 쓰면 9.5초, 인터럽트만 쓰면 2.2초, 둘 다 쓰면 1ms 에** 멈춘다.\n\n**20번을 돌려도 정리가 20번 다 돌아 3.3절의 데몬과** 정반대다.\n\n**20초짜리 한 단계는 19.7초가 걸리고 조각으로 나누면 0.4초**다.\n\n**소켓은 닫지 않으면 `socketRead0` 에서 영영 안** 나온다.\n\n**`while (true)` 인데 아무것도 안 보는 반복문을 스크립트로 2곳** 찾았다."
+  }
+ ],
+ "recap": [
+  "직접 만든 플래그는 대기 중에 안 보이고 인터럽트는 계산 중에 안 먹힌다 — 둘을 같이 쓴다.",
+  "내 플래그는 volatile 이어야 하고 인터럽트 플래그는 그럴 걱정이 없다.",
+  "긴 한 단계는 자를 수 없다. 짧은 조각으로 나눠야 멈출 수 있다.",
+  "소켓 읽기는 인터럽트로 못 깨우므로 닫아야 한다.",
+  "정리는 finally 에 두고 유예 시간은 join(ms) 로 준다. 강제 종료는 없다."
+ ],
+ "drills": [
+  {
+   "task": "플래그만·인터럽트만·둘 다로 각각 멈춰 시간을 잰다.",
+   "done_when": "세 값을 표로 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "긴 한 단계를 조각으로 나눠 멈추는 시간을 줄인다.",
+   "done_when": "같은 계산량인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "소켓을 닫지 않고 멈춰 본다.",
+   "done_when": "스택에서 막힌 자리를 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "멈출 수 없는 반복문을 찾는 스크립트를 만든다.",
+   "done_when": "실제로 몇 곳인지 센다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 플래그와 인터럽트를 같이 쓰나.",
+   "a": "플래그는 대기 중에 안 보이고 인터럽트는 계산 중에 안 먹혀서다."
+  },
+  {
+   "q": "직접 만든 플래그의 조건은.",
+   "a": "volatile 이어야 다른 스레드에 보인다."
+  },
+  {
+   "q": "긴 한 단계를 어떻게 멈추나.",
+   "a": "못 멈춘다. 짧은 조각으로 나눠 사이에서 검사해야 한다."
+  },
+  {
+   "q": "소켓 읽기를 멈추려면.",
+   "a": "소켓을 닫아야 한다. 인터럽트로는 안 깨어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "협력적 종료",
+   "what": "플래그와 인터럽트로 멈춰 달라고 알리고 대상이 스스로 끝내는 방식."
+  },
+  {
+   "term": "유예 시간",
+   "what": "종료를 요청한 뒤 끝나기를 기다려 주는 시간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.interrupt",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html#interrupt()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — AtomicBoolean",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicBoolean.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

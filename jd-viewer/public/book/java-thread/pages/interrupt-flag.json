@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "interrupt-flag",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "인터럽트 플래그",
+ "summary": "잡으면 지워진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "지워지는 걸 본다.",
+  "복원하는 법을 안다.",
+  "삼키면 어떻게 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 깨어난 뒤 플래그가 `false`** 였다. **그게 실수가 아니라 규칙**이다.\n\n```java\ncatch (InterruptedException e) {\n    Thread.currentThread().interrupt();   // 다시 세운다\n}\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "알려 주는 쪽이 지운다",
+   "ascii": "   the flag is cleared by the very thing that tells you about it\n\n   interrupt called   flag goes up\n   sleep throws       flag goes back down, then the exception arrives\n\n   so inside the catch block, nobody is interrupted any more",
+   "note": "**`catch` 블록 안에서는 아무도 인터럽트된 상태가** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 지우고 알려 주나",
+   "md": "**\"이 인터럽트는 내가 처리했다\" 는** 표시다.\n\n> **예외가 곧 그** 신호다.\n> **플래그를 남겨 두면 다음 `sleep` 도 곧바로 예외를** 던진다.\n> **그래서 한 번의 인터럽트가 한 번만 쓰이도록** 지운다.\n\n**문제는 내가 그 신호를 어디까지 처리했는지**다:\n\n| 상황 | 해야 할 일 |\n|---|---|\n| **여기서 끝낼 수 있다** | **정리하고 반환** |\n| **위층이 알아야 한다** | **되던지거나 플래그 복원** |\n| 모르겠다 | **복원한다** — 안전한 쪽이다 |\n\n> **`InterruptedException` 을 잡고 `log.error` 만 하고 넘어가면 그 신호가 사라진다**."
+  },
+  {
+   "type": "figure",
+   "caption": "catch 에서 나가는 두 가지 정직한 길",
+   "ascii": "   the two honest ways out of a catch block\n\n   rethrow      let the caller deal with it\n   restore      set the flag again and return\n\n   swallowing it silently is the third way, and it is a bug",
+   "note": "**조용히 삼키는 셋째 길은** 버그다."
+  },
+  {
+   "type": "table",
+   "caption": "두 검사 메서드",
+   "columns": [
+    "",
+    "`isInterrupted()`",
+    "`Thread.interrupted()`"
+   ],
+   "rows": [
+    [
+     "**대상**",
+     "그 인스턴스",
+     "**현재 스레드**"
+    ],
+    [
+     "**플래그를**",
+     "**읽기만**",
+     "**읽고 지운다**"
+    ],
+    [
+     "static",
+     "아니다",
+     "**맞다**"
+    ],
+    [
+     "**반복문 조건에**",
+     "**여기 쓴다**",
+     "**쓰면 한 번만 걸린다**"
+    ],
+    [
+     "**남의 스레드 확인**",
+     "**가능**",
+     "불가"
+    ]
+   ],
+   "note": "**넷째 줄이 흔한 실수**다 — **`while (!Thread.interrupted())` 는 첫 검사에서 플래그를 지워** 버린다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 잡으면 지워진다 ---\n\n$ cat FlagCleared.java | grep -A7 'Thread t'\nThread t = new Thread(() -> {\n    try { Thread.sleep(10000); }\n    catch (InterruptedException e) {\n        log.info(\"catch 안: 플래그 {}\", Thread.currentThread().isInterrupted());\n    }\n    log.info(\"catch 밖: 플래그 {}\", Thread.currentThread().isInterrupted());\n}, \"w-0\");\n\n$ java -cp out:libs/* FlagCleared\n00:28:02.404 [w-0         ] INFO  FlagCleared - catch 안: 플래그 false\n00:28:02.404 [w-0         ] INFO  FlagCleared - catch 밖: 플래그 false\n\n#   4.3절에서 본 그 false 다\n#   예외를 던지면서 지운다\n\n\n# --- 안 지웠다면 어떻게 되나 ---\n\n$ cat WhyClear.java | grep -A8 'catch'\ncatch (InterruptedException e) {\n    log.info(\"1차 깨움\");\n    try {\n        Thread.sleep(1000);            // 다시 잔다\n        log.info(\"1초 잤다\");\n    } catch (InterruptedException e2) { log.info(\"또 깨졌다\"); }\n}\n\n$ java -cp out:libs/* WhyClear\n00:28:06.404 [w-0         ] INFO  WhyClear - 1차 깨움\n00:28:07.408 [w-0         ] INFO  WhyClear - 1초 잤다\n\n#   지워졌으니 다시 잘 수 있다\n\n$ cat WhyClearRestored.java | grep -A3 'interrupt()'\nThread.currentThread().interrupt();     // 복원했다\ntry { Thread.sleep(1000); }\ncatch (InterruptedException e2) { log.info(\"곧바로 또 깨졌다\"); }\n\n$ java -cp out:libs/* WhyClearRestored\n00:28:10.404 [w-0         ] INFO  WhyClearRestored - 1차 깨움\n00:28:10.404 [w-0         ] INFO  WhyClearRestored - 곧바로 또 깨졌다\n\nreal\t0m0.512s\n\n#   1초를 안 기다렸다\n#   복원하면 그다음 대기가 즉시 깨진다\n\n\n# --- 삼키면 안 멈춘다 ---\n\n$ cat Swallow.java | grep -A8 'while'\nwhile (!Thread.currentThread().isInterrupted()) {\n    try {\n        Thread.sleep(200);\n        n++;\n    } catch (InterruptedException e) {\n        log.warn(\"인터럽트 무시\");        // 삼켰다\n    }\n}\nlog.info(\"멈췄다. {} 회\", n);\n\n$ timeout 4 java -cp out:libs/* Swallow\n00:28:16.404 [w-0         ] WARN  Swallow - 인터럽트 무시\n00:28:16.608 [w-0         ] WARN  Swallow - 인터럽트 무시\n00:28:16.812 [w-0         ] WARN  Swallow - 인터럽트 무시\n...\n\n$ timeout 4 java -cp out:libs/* Swallow 2>/dev/null | grep -c '무시'\n1\n\n$ timeout 4 java -cp out:libs/* Swallow 2>/dev/null | grep -c '멈췄다'\n0\n\n$ echo $?\n124\n\n#   반복문 조건은 플래그를 보는데 catch 가 지워 버렸다\n#   영원히 안 멈춘다\n\n\n# --- 복원하면 멈춘다 ---\n\n$ cat Restore.java | grep -A4 'catch'\ncatch (InterruptedException e) {\n    log.info(\"인터럽트 받음, 플래그 복원\");\n    Thread.currentThread().interrupt();\n}\n\n$ java -cp out:libs/* Restore\n00:28:22.404 [w-0         ] INFO  Restore - 인터럽트 받음, 플래그 복원\n00:28:22.404 [w-0         ] INFO  Restore - 멈췄다. 1 회\n\nreal\t0m0.612s\n\n#   한 줄로 고쳐졌다\n\n\n# --- 되던지는 길 ---\n\n$ cat Rethrow.java | grep -A6 'static void work'\nstatic void work() throws InterruptedException {\n    for (int i = 0; i < 100; i++) {\n        Thread.sleep(200);                 // 안 잡는다\n        log.info(\"{} 회\", i);\n    }\n}\n\n$ cat Rethrow.java | grep -A4 'new Thread'\nnew Thread(() -> {\n    try { work(); }\n    catch (InterruptedException e) { log.info(\"위층에서 처리\"); }\n}, \"w-0\");\n\n$ java -cp out:libs/* Rethrow\n00:28:26.604 [w-0         ] INFO  Rethrow - 0 회\n00:28:26.808 [w-0         ] INFO  Rethrow - 1 회\n00:28:27.012 [w-0         ] INFO  Rethrow - 위층에서 처리\n\n#   중간 메서드는 그냥 선언만 한다\n#   가장 깔끔한 길이다\n\n\n# --- Runnable 은 못 던진다 ---\n\n$ cat CannotThrow.java | grep -A2 'new Thread'\nnew Thread(() -> {\n    Thread.sleep(1000);                    // 검사 예외다\n}, \"w-0\").start();\n\n$ javac -d out CannotThrow.java 2>&1 | head -3\nCannotThrow.java:5: error: unreported exception InterruptedException;\n  must be caught or declared to be thrown\n        Thread.sleep(1000);\n                    ^\n\n#   3.1절에서 말한 그 제약이다\n#   Runnable 경계에서는 반드시 잡아야 한다\n#   그래서 거기서 복원하는 것이다\n\n\n# --- 두 메서드의 차이 ---\n\n$ cat TwoMethods.java | grep -A8 'main'\nThread.currentThread().interrupt();\nlog.info(\"isInterrupted 1 {}\", Thread.currentThread().isInterrupted());\nlog.info(\"isInterrupted 2 {}\", Thread.currentThread().isInterrupted());\nlog.info(\"interrupted   1 {}\", Thread.interrupted());\nlog.info(\"interrupted   2 {}\", Thread.interrupted());\nlog.info(\"마지막 플래그  {}\", Thread.currentThread().isInterrupted());\n\n$ java -cp out:libs/* TwoMethods\n00:28:32.104 [main] INFO  TwoMethods - isInterrupted 1 true\n00:28:32.104 [main] INFO  TwoMethods - isInterrupted 2 true\n00:28:32.105 [main] INFO  TwoMethods - interrupted   1 true\n00:28:32.105 [main] INFO  TwoMethods - interrupted   2 false\n00:28:32.105 [main] INFO  TwoMethods - 마지막 플래그  false\n\n#   interrupted() 가 지웠다\n\n\n# --- 반복문 조건에 쓰면 ---\n\n$ cat WrongCondition.java | grep -A4 'while'\nwhile (!Thread.interrupted()) {            // 여기서 지워진다\n    n++;\n    if (n % 100_000_000 == 0) log.info(\"{}억\", n / 100_000_000);\n}\n\n$ timeout 4 java -cp out:libs/* WrongCondition\n00:28:38.404 [w-0         ] INFO  WrongCondition - 멈췄다\n\n$ for i in $(seq 1 10); do\n    timeout 4 java -cp out:libs/* WrongCondition 2>/dev/null | grep -c '멈췄다'\n  done | sort | uniq -c\n  10 1\n\n#   이 경우엔 멈춘다 -- 검사 직후 인터럽트가 오면 다음 회전에 잡힌다\n\n$ cat WrongConditionSleep.java | grep -A5 'while'\nwhile (!Thread.interrupted()) {\n    try { Thread.sleep(200); }\n    catch (InterruptedException e) { Thread.currentThread().interrupt(); }\n}\n\n$ timeout 4 java -cp out:libs/* WrongConditionSleep 2>/dev/null | grep -c '멈췄다'\n1\n\n$ cat WrongConditionSleepBad.java | grep -A5 'while'\nwhile (!Thread.interrupted()) {\n    try { Thread.sleep(200); }\n    catch (InterruptedException e) { log.warn(\"무시\"); }    // 삼킴\n}\n\n$ timeout 4 java -cp out:libs/* WrongConditionSleepBad 2>/dev/null | grep -c '멈췄다'\n0\n\n#   삼키면 조건도 소용없다\n\n\n# --- 풀에서 삼키면 ---\n\n$ cat PoolSwallow.java | grep -A5 'submit'\npool.submit(() -> {\n    while (true) {\n        try { Thread.sleep(200); process(); }\n        catch (InterruptedException e) { log.warn(\"무시\"); }\n    }\n});\n\n$ java -cp out:libs/* PoolSwallow --shutdown-after 1000\n00:28:46.104 [order-1     ] WARN  PoolSwallow - 무시\n00:28:46.108 [main        ] INFO  PoolSwallow - shutdownNow 호출\n00:28:49.112 [main        ] INFO  PoolSwallow - 5초 안에 끝났나 false\n\n$ java -cp out:libs/* PoolSwallow --restore --shutdown-after 1000\n00:28:52.204 [order-1     ] INFO  PoolSwallow - 인터럽트 받음, 종료\n00:28:52.208 [main        ] INFO  PoolSwallow - 5초 안에 끝났나 true\n\n#   4.3절에서 본 그 shutdownNow 다\n#   삼키는 코드 하나가 종료를 막는다\n\n\n# --- 어디서 삼키고 있나 찾는다 ---\n\n$ grep -rn -A3 'catch (InterruptedException' src/main/java/ \\\n  | grep -B2 'log\\.' | grep -v 'interrupt()' | grep 'catch' | head -3\nsrc/main/java/study/th/Poller.java:41:      } catch (InterruptedException e) {\nsrc/main/java/study/th/Batch.java:88:       } catch (InterruptedException e) {\n\n$ grep -rn -A4 'catch (InterruptedException' src/main/java/ | grep -c 'interrupt();'\n6\n$ grep -rc 'catch (InterruptedException' src/main/java/ | awk -F: '{s+=$2} END {print s}'\n8\n\n$ python3 -c \"print('8곳 중 6곳만 복원한다')\"\n8곳 중 6곳만 복원한다\n\n#   grep 두 줄로 찾는다\n\n\n# --- 검사로 만든다 ---\n\n$ cat check-interrupt.sh\n#!/bin/sh\n# InterruptedException 을 잡고 복원도 되던지지도 않는 자리를 찾는다\ngrep -rn -A4 'catch (InterruptedException' src/main/java/ \\\n | awk '/catch \\(InterruptedException/ {file=$0; buf=\"\"; next}\n        /^--/ {if (buf !~ /interrupt\\(\\)|throw/) print file; buf=\"\"; next}\n        {buf = buf $0}'\n\n$ ./check-interrupt.sh\nsrc/main/java/study/th/Poller.java:41:      } catch (InterruptedException e) {\nsrc/main/java/study/th/Batch.java:88:       } catch (InterruptedException e) {\n\n$ ./check-interrupt.sh | wc -l\n       2\n\n#   두 자리를 고치면 된다\n\n\n# --- 고친 뒤 ---\n\n$ ./check-interrupt.sh | wc -l\n       0\n\n$ java -cp out:libs/* Poller --shutdown-after 500 2>/dev/null | tail -1\n00:29:02.604 [main        ] INFO  Poller - 5초 안에 끝났나 true\n\n$ java -cp out:libs/* Batch --items 100 --shutdown-after 300 2>/dev/null | tail -1\n00:29:04.904 [main        ] INFO  Batch - 남은 작업 74, 정상 종료\n\n#   둘 다 제때 멈춘다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '예외가 나면'     '플래그가 지워짐' \\\n  '왜'              '처리했다는 표시' \\\n  '삼키면'          '영원히 안 멈춤' \\\n  '복원하면'        '0.6초에 멈춤' \\\n  '되던지면'        '위층이 처리' \\\n  'Runnable 경계'   '반드시 잡아야 함' \\\n  'isInterrupted'   '읽기만' \\\n  'interrupted'     '읽고 지움' \\\n  '조건에 쓰면'     '삼키면 소용없음' \\\n  '풀'              '종료가 막힘' \\\n  '찾는 법'         'grep 두 줄' \\\n  '이 코드베이스'   '8곳 중 6곳만 복원'\n\n예외가 나면                플래그가 지워짐\n왜                         처리했다는 표시\n삼키면                     영원히 안 멈춤\n복원하면                   0.6초에 멈춤\n되던지면                   위층이 처리\nRunnable 경계              반드시 잡아야 함\nisInterrupted              읽기만\ninterrupted                읽고 지움\n조건에 쓰면                삼키면 소용없음\n풀                         종료가 막힘\n찾는 법                    grep 두 줄\n이 코드베이스              8곳 중 6곳만 복원",
+   "note": "**예외를 잡은 `catch` 안에서 플래그가 이미 `false` 라 다시 잘 수** 있다.\n\n**복원하면 그다음 `sleep(1000)` 이 0.5초 만에 곧바로** 깨진다.\n\n**삼키는 코드는 반복문 조건이 플래그를 봐도 영원히 안 멈춰 종료 코드가 124** 다.\n\n**풀에서 삼키면 `shutdownNow()` 뒤 `awaitTermination` 이 false, 복원하면 true** 다.\n\n**`grep` 두 줄로 이 코드베이스의 8곳 중 복원 안 하는 2곳을** 찾았다."
+  }
+ ],
+ "recap": [
+  "InterruptedException 이 던져질 때 인터럽트 플래그는 지워진다 — 예외가 그 신호이기 때문이다.",
+  "그래서 catch 안에서는 아무도 인터럽트된 상태가 아니다.",
+  "나가는 정직한 길은 둘이다 — 되던지거나 플래그를 복원하거나.",
+  "삼키면 반복문 조건이 플래그를 봐도 영원히 안 멈추고 풀 종료까지 막는다.",
+  "Thread.interrupted() 는 읽으면서 지우므로 반복문 조건에 쓸 때 조심한다."
+ ],
+ "drills": [
+  {
+   "task": "catch 안팎에서 플래그를 찍어 본다.",
+   "done_when": "지워진 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "삼키는 코드를 만들어 안 멈추는 것을 재현한다.",
+   "done_when": "복원 한 줄로 고친다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 검사 메서드를 연달아 불러 차이를 본다.",
+   "done_when": "한쪽이 지우는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "코드베이스에서 복원 안 하는 자리를 찾는 스크립트를 만든다.",
+   "done_when": "실제로 몇 곳인지 센다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "예외가 던져질 때 플래그는 어떻게 되나.",
+   "a": "지워진다. 예외 자체가 인터럽트를 전달했기 때문이다."
+  },
+  {
+   "q": "catch 에서 나가는 두 가지 정직한 길은.",
+   "a": "되던지거나 플래그를 복원하는 것이다."
+  },
+  {
+   "q": "삼키면 무슨 일이 나나.",
+   "a": "반복문 조건이 플래그를 봐도 안 멈추고 풀 종료도 막힌다."
+  },
+  {
+   "q": "Thread.interrupted() 를 조건에 쓸 때 주의점은.",
+   "a": "읽으면서 지우므로 다른 곳에서 플래그를 다시 볼 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "플래그 복원",
+   "what": "InterruptedException 을 잡은 뒤 다시 interrupt() 를 불러 신호를 살려 두는 것."
+  },
+  {
+   "term": "삼키기",
+   "what": "예외를 잡고 아무것도 안 해 취소 신호를 없애 버리는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.interrupt",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html#interrupt()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

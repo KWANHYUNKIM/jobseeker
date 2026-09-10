@@ -208,7 +208,7 @@
           "title": "인터럽트 플래그",
           "summary": "잡으면 지워진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -216,7 +216,7 @@
           "title": "안전하게 멈추기",
           "summary": "플래그와 인터럽트를 같이 쓴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
