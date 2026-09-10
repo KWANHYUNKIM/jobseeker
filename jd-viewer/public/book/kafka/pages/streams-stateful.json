@@ -8,167 +8,162 @@
  "minutes": 14,
  "updated_at": "2026-09-10",
  "goals": [
-  "상태가 어디 있는지 안다.",
-  "체인지로그를 본다.",
-  "윈도우를 고른다."
+  "상태 저장소의 구조를 안다.",
+  "윈도우 종류를 안다.",
+  "KTable 과 KStream 을 구분한다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**10.4절의 연산들은 레코드 하나만 보면** 됐다. **세거나 합치려면 앞의 것을 기억해야** 한다.\n\n```java\norders.groupBy((k, v) -> v.customerId())\n      .count(Materialized.as(\"order-count\"));   // 이 이름이 저장소 이름이 된다\n```"
+   "md": "**컨슈머로 집계를 하려면 상태를 어디에 둘지가** 문제다.\n\n> **메모리에 두면 죽을 때 잃고, DB 에 두면 매 레코드마다 왕복**이다.\n> **스트림즈는 로컬 RocksDB + changelog 토픽**으로 푼다."
   },
   {
    "type": "figure",
-   "caption": "상태가 있는 두 곳",
-   "ascii": "   where the state actually lives\n\n   local disk      rocksdb, next to the instance\n   kafka topic     a changelog, compacted, one per store\n\n   the local copy is a cache; the topic is the truth",
-   "note": "**로컬은 캐시고 진짜는** 토픽이다."
+   "caption": "상태 저장소와 changelog",
+   "ascii": "   task 0_1 (partition 1)\n   +----------------------------------+\n   |  local state store (RocksDB)     |   <- fast read/write\n   |    member-10 -> 3                |\n   |    member-11 -> 7                |\n   +----------------------------------+\n              |  every change\n              v\n   changelog topic (compact)              <- for recovery\n     member-10 -> 3\n     member-11 -> 7\n\n   instance dies -> another reads the changelog and restores\n   standby.replicas keeps a warm copy, so recovery is fast",
+   "note": "**로컬이라 빠르고 changelog 라 안 잃는다.** **둘을 합친 것이 핵심**이다."
+  },
+  {
+   "type": "table",
+   "caption": "KStream · KTable · GlobalKTable",
+   "columns": [
+    "",
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "**KStream**",
+     "**사실의 흐름.** 레코드마다 독립",
+     "클릭·주문 이벤트"
+    ],
+    [
+     "**KTable**",
+     "**키별 최신 상태.** 같은 키는 덮어쓴다",
+     "회원 정보·재고 현재값"
+    ],
+    [
+     "**GlobalKTable**",
+     "**모든 인스턴스가 전체 사본**",
+     "작은 참조 데이터(코드표)"
+    ]
+   ],
+   "note": "**같은 토픽을 KStream 으로 볼지 KTable 로 볼지가 설계**다 — **3.4절의 delete/compact 와 짝**이다."
+  },
+  {
+   "type": "table",
+   "caption": "윈도우 네 가지",
+   "columns": [
+    "종류",
+    "무엇",
+    "예"
+   ],
+   "rows": [
+    [
+     "**Tumbling**",
+     "**겹치지 않는 고정 구간**",
+     "5분마다 주문 수"
+    ],
+    [
+     "**Hopping**",
+     "겹치는 구간",
+     "5분 창을 1분마다"
+    ],
+    [
+     "**Sliding**",
+     "레코드 기준 상대 구간",
+     "두 이벤트 사이 10초"
+    ],
+    [
+     "**Session**",
+     "**활동 간격으로 묶음**",
+     "사용자 세션"
+    ]
+   ],
+   "note": "```java\n.windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(5), Duration.ofMinutes(1)))\n```\n**`grace` 안에 온 늦은 레코드는 창을 다시 계산**한다. **그 뒤에 오면 버린다.**"
   },
   {
    "type": "callout",
    "tone": "why",
-   "title": "체인지로그가 있어서 죽어도 된다",
-   "md": "**로컬 디스크는 인스턴스와 함께** 사라진다.\n\n> **그래서 상태가 바뀔 때마다 토픽에도** 쓴다.\n> **그 토픽 이름은 `<application.id>-<store>-changelog`**다.\n> **압축이 켜져 있어 키마다 최신 값만** 남는다(4.6절).\n\n**새 인스턴스가 그 태스크를 받으면 체인지로그를 처음부터 읽어 로컬을** 복원한다:\n\n```\nRestoring state for task 0_3 from order-count-changelog-3\n  restored 128,441 records in 4.2s\n```\n\n> **상태가 크면 이 복원이 곧 다운타임**이다.\n> **`num.standby.replicas` 를 1 이상 주면 미리 따라 두어 복원이** 짧아진다."
-  },
-  {
-   "type": "figure",
-   "caption": "시간을 자르는 세 방법",
-   "ascii": "   three ways to cut time\n\n   tumbling   [0-5)[5-10)[10-15)        no overlap\n   hopping    [0-5)[2-7)[4-9)           overlap by the advance\n   session    [.. gap ..][.. gap ..]    cut by silence, not by clock\n\n   a record can belong to several hopping windows at once",
-   "note": "**가운데는 한 레코드가 여러 창에 동시에** 들어간다."
-  },
-  {
-   "type": "table",
-   "caption": "이벤트 시각과 늦게 온 레코드",
-   "columns": [
-    "",
-    "뜻",
-    "정하는 것"
-   ],
-   "rows": [
-    [
-     "**이벤트 시각**",
-     "**레코드에 찍힌 시각**",
-     "기본은 프로듀서가 찍은 타임스탬프"
-    ],
-    [
-     "처리 시각",
-     "지금 시각",
-     "**늦게 온 것을 구별 못 한다**"
-    ],
-    [
-     "**grace period**",
-     "**창이 닫힌 뒤에도 받아 주는 시간**",
-     "기본 24시간(구버전) / **0**(신버전)"
-    ],
-    [
-     "**늦게 온 레코드**",
-     "**grace 를 넘기면 버려진다**",
-     "`late-records` 지표로 센다"
-    ],
-    [
-     "**stream time**",
-     "**본 것 중 가장 큰 이벤트 시각**",
-     "**시계가 아니라 데이터가** 민다"
-    ]
-   ],
-   "note": "**입력이 끊기면 stream time 이 안 움직여 창이 안** 닫힌다 — **테스트에서 결과가 안 나오는 흔한** 이유다."
-  },
-  {
-   "type": "code",
-   "lang": "java",
-   "file": "WindowedCount.java",
-   "caption": "5분 텀블링 윈도우",
-   "code": "orders.selectKey((k, v) -> v.customerId())\n      .groupByKey(Grouped.with(Serdes.String(), orderSerde))\n      .windowedBy(TimeWindows.ofSizeAndGrace(\n              Duration.ofMinutes(5), Duration.ofMinutes(1)))\n      .count(Materialized.as(\"count-5m\"))\n      .suppress(Suppressed.untilWindowCloses(unbounded()))   // 창이 닫힐 때 한 번만\n      .toStream()\n      .map((wk, v) -> KeyValue.pair(\n              wk.key(),\n              new CountResult(wk.key(), wk.window().startTime(), v)))\n      .to(\"order-count-5m\");"
+   "title": "늦게 온 레코드는 어디로 가나",
+   "md": "**4.5절의 순서 문제가 여기서 다시** 나온다.\n\n```\n창: 10:00 ~ 10:05, grace 1분\n\n10:04:59 에 발생한 이벤트가 10:05:30 에 도착 -> 반영된다\n같은 이벤트가 10:06:30 에 도착           -> 버려진다\n```\n\n| 확인할 것 | |\n|---|---|\n| **`dropped-records-total`** | **버려진 건수. 지표로 감시**(11.1절) |\n| `timestamp.extractor` | **무엇을 이벤트 시각으로 볼 것인가** |\n| grace 길이 | 길수록 정확하고 결과가 늦다 |\n\n**시각을 무엇으로 볼 것인가**:\n\n> **기본은 레코드 타임스탬프**(4.3절)다. **프로듀서가 찍은 시각.**\n> **`occurredAt` 같은 도메인 시각을 쓰려면 `TimestampExtractor` 를 직접** 만든다.\n> **4.3절에서 \"도메인 시각은 값 안에 따로 넣는다\" 고 한 것이 여기서** 쓰인다."
   },
   {
    "type": "callout",
    "tone": "trap",
-   "title": "suppress 를 안 쓰면 중간 결과가 다 나간다",
-   "md": "**집계 결과는 레코드가 올 때마다** 갱신된다.\n\n```\nA-1 window[0-5) count=1\nA-1 window[0-5) count=2\nA-1 window[0-5) count=3     <- 세 번 나갔다\n```\n\n| 상황 | 선택 |\n|---|---|\n| **하류가 KTable 로 읽는다** | **그대로 둬도 된다** — 덮어쓴다 |\n| **알림을 보낸다** | **`suppress` 없으면 세 번 보낸다** |\n| 대시보드 | 중간 결과가 오히려 낫다 |\n\n> **`suppress` 는 창이 닫힐 때까지 메모리에** 들고 있는다.\n> **`unbounded()` 로 주면 키가 많을 때 힙을** 먹는다 — **`maxBytes` 로 한계를 주고 넘치면 어떻게 할지도 같이** 정한다."
+   "title": "상태 저장소의 운영 비용",
+   "md": "| 비용 | |\n|---|---|\n| **디스크** | RocksDB 가 로컬 디스크를 쓴다. **컨테이너면 볼륨이 필요**(「도커」 8장) |\n| **복구 시간** | changelog 를 다시 읽는다. **상태가 크면 오래** 걸린다 |\n| **리밸런싱** | 태스크가 옮겨 가면 상태도 옮겨야 한다 |\n| 메모리 | RocksDB 블록 캐시 |\n\n**복구를 빠르게**:\n\n```java\nprops.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 1);\n```\n\n> **다른 인스턴스가 미리 changelog 를 따라가** 둔다.\n> **장애 시 몇 초 만에 이어받는다.** **대신 디스크·네트워크를 더** 쓴다.\n\n**쿠버네티스에서는 StatefulSet + PVC 로** 둔다 — **파드가 재시작해도 로컬 상태가 남아 복구가 빠르다**(「쿠버네티스 입문」 5.5절)."
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "체인지로그를 열고 복원 시간을 잰다",
-   "sql": "$ kt --create --topic orders --partitions 6 --replication-factor 3 >/dev/null\n\n$ java -cp 'out:libs/*' CountByCustomer &\n$ sleep 10 && java -cp 'out:libs/*' SeqProducer --topic orders --records 200000 --customers 5000\nsent 200000\n\n$ sleep 40\n\n\n# --- 내부 토픽이 생겼다 ---\n\n$ kt --list | grep order-count\norder-count-KSTREAM-AGGREGATE-STATE-STORE-0000000003-changelog\norder-count-KSTREAM-AGGREGATE-STATE-STORE-0000000003-repartition\n\n$ kt --describe --topic order-count-KSTREAM-AGGREGATE-STATE-STORE-0000000003-changelog \\\n    | head -1\nTopic: order-count-...-changelog  PartitionCount: 6  ReplicationFactor: 3\n  Configs: cleanup.policy=compact\n\n$ kt --describe --topic order-count-...-repartition | head -1 | grep -o 'cleanup.policy=[a-z,]*'\ncleanup.policy=delete\n\n#   체인지로그는 압축, 리파티션은 삭제다\n#   4.6절의 그 차이다\n\n\n# --- 상태가 어디 있나 ---\n\n$ ls /tmp/kafka-streams/order-count/\n0_0  0_1  0_2  0_3  0_4  0_5\n\n$ du -sh /tmp/kafka-streams/order-count/\n 48M\t/tmp/kafka-streams/order-count/\n\n$ ls /tmp/kafka-streams/order-count/0_0/rocksdb/\nKSTREAM-AGGREGATE-STATE-STORE-0000000003\n\n$ ls /tmp/kafka-streams/order-count/0_0/rocksdb/KSTREAM-*/ | head -4\n000012.sst\nCURRENT\nMANIFEST-000011\nOPTIONS-000014\n\n#   RocksDB 파일이다\n\n\n# --- 조회한다 ---\n\n$ curl -s 'localhost:8080/count/A-1044'\n{\"customer\":\"A-1044\",\"count\":41}\n\n$ curl -s localhost:8080/count/_all | python3 -c \"import json,sys; print(len(json.load(sys.stdin)))\"\n834\n\n$ curl -s 'localhost:8080/count/Z-9999'\n{\"error\":\"not found locally\",\"hint\":\"이 키는 다른 인스턴스가 갖고 있다\"}\n\n#   내 태스크의 키만 로컬에 있다\n#   전체를 보려면 인스턴스끼리 물어야 한다\n\n\n# --- 죽여 보고 복원을 잰다 ---\n\n$ kill -9 %1\n$ rm -rf /tmp/kafka-streams/order-count\n$ java -cp 'out:libs/*' CountByCustomer &\n\n$ grep -i 'restor' logs/streams.log | head -3 | cut -c40-\nINFO  Restoration in progress for 6 partitions\nINFO  Restored 200000 records from changelog in 6412ms\nINFO  Restoration took 6412 ms for all active tasks\n\n$ curl -s 'localhost:8080/count/A-1044'\n{\"customer\":\"A-1044\",\"count\":41}\n\n#   로컬을 지웠는데 값이 같다\n#   체인지로그에서 복원했다\n\n\n# --- 스탠바이를 켠다 ---\n\n$ java -cp 'out:libs/*' CountByCustomer --standby 1 --port 8080 &\n$ java -cp 'out:libs/*' CountByCustomer --standby 1 --port 8081 &\n$ sleep 30\n\n$ curl -s localhost:8081/streams/tasks\nactive   0_3 0_4 0_5\nstandby  0_0 0_1 0_2\n\n$ kill -9 %1\n$ sleep 15 && grep -i 'Restored' logs/streams-8081.log | tail -1 | cut -c40-\nINFO  Restored 1204 records from changelog in 218ms\n\n$ python3 -c \"print('%.1f배 빠르다' % (6412/218))\"\n29.4배 빠르다\n\n#   미리 따라 두고 있었다\n\n\n# --- 윈도우를 건다 ---\n\n$ java -cp 'out:libs/*' WindowedCount &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 600 --rate 10 --customers 3\n\n$ sleep 70\n$ kcc --topic order-count-5m --from-beginning --timeout-ms 5000 \\\n    --property print.key=true | head -4\nA-1\t{\"customer\":\"A-1\",\"windowStart\":\"2026-09-10T23:15:00Z\",\"count\":98}\nA-2\t{\"customer\":\"A-2\",\"windowStart\":\"2026-09-10T23:15:00Z\",\"count\":101}\nA-3\t{\"customer\":\"A-3\",\"windowStart\":\"2026-09-10T23:15:00Z\",\"count\":99}\n\n$ kcc --topic order-count-5m --from-beginning --timeout-ms 5000 | wc -l\n3\n\n#   창마다 키마다 한 건이다 -- suppress 가 한 일이다\n\n\n# --- suppress 를 뺀다 ---\n\n$ java -cp 'out:libs/*' WindowedCount --no-suppress &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 600 --rate 10 --customers 3\n$ sleep 70\n\n$ kcc --topic order-count-5m --from-beginning --timeout-ms 5000 | wc -l\n412\n\n$ python3 -c \"print('%d배 더 나갔다' % (412/3))\"\n137배 더 나갔다\n\n#   중간 결과가 다 나갔다\n\n\n# --- 창이 안 닫힌다 ---\n\n$ java -cp 'out:libs/*' WindowedCount &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 30 --customers 1\n$ sleep 120\n\n$ kcc --topic order-count-5m --from-beginning --timeout-ms 5000 | wc -l\n0\n\n$ curl -s localhost:8080/streams/stream-time\ntask 0_2  streamTime 2026-09-10T23:22:31Z  windowEnd 2026-09-10T23:25:00Z\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 1 --customers 1 \\\n    --timestamp '2026-09-10T23:27:00Z'\n$ sleep 10 && kcc --topic order-count-5m --from-beginning --timeout-ms 5000 | wc -l\n1\n\n#   시계가 아니라 데이터가 시간을 민다\n#   레코드 하나를 더 넣자 창이 닫혔다\n\n\n# --- 늦게 온 레코드 ---\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 5 --customers 1 \\\n    --timestamp '2026-09-10T23:16:00Z'\n$ sleep 10\n\n$ curl -s localhost:8080/actuator/metrics/kafka.stream.task.dropped.records \\\n    | python3 -m json.tool | grep -A1 COUNT\n            \"statistic\": \"COUNT\",\n            \"value\": 5.0\n\n$ grep -i 'skipping record' logs/streams.log | tail -1 | cut -c40-\nWARN  Skipping record for expired window. topic=orders partition=2 offset=1204\n  timestamp=1789413360000 window=[1789412100000,1789412400000) expiration=1789413000000\n\n#   grace 를 넘겨 버려졌다\n#   버려진 걸 세는 지표가 따로 있다 (11.1절)\n\n\n# --- 세션 윈도우 ---\n\n$ java -cp 'out:libs/*' SessionCount --gap 30s &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 5 --customers 1 --rate 1\n$ sleep 40\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 3 --customers 1 --rate 1\n$ sleep 40\n\n$ kcc --topic order-sessions --from-beginning --timeout-ms 5000 --property print.key=true\nA-1@1789412100000/1789412104000\t{\"count\":5}\nA-1@1789412148000/1789412150000\t{\"count\":3}\n\n#   40초 침묵이 세션을 갈랐다\n#   시계가 아니라 데이터의 공백이 자른다\n\n\n# --- 디스크를 센다 ---\n\n$ du -sh /tmp/kafka-streams/*/\n 48M\t/tmp/kafka-streams/order-count/\n112M\t/tmp/kafka-streams/count-5m/\n\n$ docker compose exec -T kafka-1 du -sh \\\n    /var/lib/kafka/data/order-count-*changelog-* | awk '{s+=$1} END {print s\"M\"}'\n52M\n\n#   로컬 48M, 체인지로그 52M -- 두 곳에 있다\n#   11.2절에서 이 값을 산정에 넣는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '상태'            '로컬 RocksDB + 체인지로그' \\\n  '체인지로그'      '압축 토픽' \\\n  '리파티션'        '삭제 토픽' \\\n  '복원'            '200000건 6.4초' \\\n  '스탠바이'        '29배 빠름' \\\n  '조회'            '로컬 키만' \\\n  'suppress'        '3건' \\\n  '없으면'          '412건' \\\n  'stream time'     '데이터가 민다' \\\n  '늦은 레코드'     '지표로 셈' \\\n  '세션'            '침묵이 자름'\n\n상태                       로컬 RocksDB + 체인지로그\n체인지로그                 압축 토픽\n리파티션                   삭제 토픽\n복원                       200000건 6.4초\n스탠바이                   29배 빠름\n조회                       로컬 키만\nsuppress                   3건\n없으면                     412건\nstream time                데이터가 민다\n늦은 레코드                지표로 셈\n세션                       침묵이 자름",
-   "note": "**체인지로그는 `cleanup.policy=compact`, 리파티션은 `delete` 로 성격이** 갈린다.\n\n**로컬을 통째로 지우고 다시 떠도 20만 건을 6.4초에 복원해 같은 값이** 나온다.\n\n**스탠바이를 1 주면 복원이 6412ms 에서 218ms 로 29배** 빨라진다.\n\n**`suppress` 가 있으면 3건, 없으면 412건이 나가 137배** 차이다.\n\n**입력이 끊기면 창이 안 닫히고 레코드 하나를 더 넣자 닫혀 stream time 이 시계가 아님이** 드러난다."
+   "caption": "집계와 복구를 본다",
+   "sql": "$ kt --create --topic clicks --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 키별 카운트 ---\n\n#   builder.stream(\"clicks\")\n#          .groupByKey()\n#          .count(Materialized.as(\"click-counts\"))\n#          .toStream().to(\"click.counts\");\n\n$ java -cp 'out:libs/*' ClickCountStream & sleep 12\n\n$ for i in $(seq 1 10); do echo \"user-1|click\"; done | \\\n    kcp --topic clicks --property parse.key=true --property key.separator='|'\n$ for i in $(seq 1 4); do echo \"user-2|click\"; done | \\\n    kcp --topic clicks --property parse.key=true --property key.separator='|'\n\n$ sleep 5\n$ kcc --topic click.counts --from-beginning --timeout-ms 3000 \\\n    --property print.key=true \\\n    --value-deserializer org.apache.kafka.common.serialization.LongDeserializer\nuser-1\t1\nuser-1\t2\nuser-1\t3\n...\nuser-1\t10\nuser-2\t4\n\n#   갱신될 때마다 새 레코드가 나온다 (KTable 을 KStream 으로 바꿨으므로)\n#   최종 상태만 원하면 suppress() 를 쓴다\n\n\n# --- 상태 저장소를 직접 조회 (인터랙티브 쿼리) ---\n\n$ curl -s localhost:8080/counts/user-1\n{\"key\":\"user-1\",\"count\":10}\n\n#   store = streams.store(StoreQueryParameters.fromNameAndType(\n#       \"click-counts\", QueryableStoreTypes.keyValueStore()));\n#   store.get(\"user-1\")\n#\n#   DB 없이 애플리케이션이 상태를 서빙한다\n\n\n# --- changelog 토픽 ---\n\n$ kt --list | grep changelog\nclick-processor-click-counts-changelog\n\n$ kcc --topic click-processor-click-counts-changelog --from-beginning --timeout-ms 3000 \\\n    --property print.key=true \\\n    --value-deserializer org.apache.kafka.common.serialization.LongDeserializer | tail -3\nuser-1\t9\nuser-1\t10\nuser-2\t4\n\n$ kt --describe --topic click-processor-click-counts-changelog | head -2\nTopic: ...-changelog  PartitionCount: 3\n  Configs: cleanup.policy=compact\n\n#   compact 라 키마다 최신만 남는다 (3.4절)\n#   전부 읽으면 현재 상태가 복원된다\n\n\n# --- 죽였다 살리면 복구한다 ---\n\n$ pkill -f ClickCountStream\n$ rm -rf /tmp/kafka-streams/click-processor        # 로컬 상태를 지운다\n\n$ java -cp 'out:libs/*' ClickCountStream 2>&1 | grep -E 'Restoration' &\n$ sleep 15\nINFO  Restoration in progress for 3 partitions\nINFO  Restoration complete for partition click-processor-click-counts-changelog-0,\n  restored 2 records in 41 ms\n\n$ curl -s localhost:8080/counts/user-1\n{\"key\":\"user-1\",\"count\":10}\n\n#   changelog 를 읽어 10 을 복원했다\n\n\n# --- 상태가 크면 복구가 오래 걸린다 ---\n\n$ java -cp 'out:libs/*' ClickCountStream --generate 500000 & sleep 60; pkill -f ClickCountStream\n$ rm -rf /tmp/kafka-streams/click-processor\n$ java -cp 'out:libs/*' ClickCountStream 2>&1 | grep 'Restoration complete' &\n$ sleep 90\nINFO  Restoration complete for partition ...-0, restored 166891 records in 12418 ms\n\n#   12초 동안 처리를 못 한다\n#   standby.replicas=1 을 두면 이 시간이 거의 0이 된다\n\n\n# --- 윈도우 집계 ---\n\n#   .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(5)))\n\n$ java -cp 'out:libs/*' WindowedCountStream & sleep 12\n$ for i in $(seq 1 5); do echo \"user-1|click\"; sleep 1; done | \\\n    kcp --topic clicks --property parse.key=true --property key.separator='|'\n$ sleep 12\n\n$ kcc --topic click.counts.10s --from-beginning --timeout-ms 3000 --property print.key=true\n[user-1@1757512000000/1757512010000]\t3\n[user-1@1757512010000/1757512020000]\t2\n\n#   10초 창마다 따로 세어졌다. 키에 창의 시작·끝이 들어 있다\n\n\n# --- 늦게 온 레코드 ---\n\n$ java -cp 'out:libs/*' WindowedCountStream --metrics 2>&1 | grep dropped\ndropped-records-total = 3\n\n#   grace 를 넘겨 도착한 3건이 버려졌다\n#   이 지표를 감시하지 않으면 조용히 사라진다 (11.1절)\n\n$ pkill -f Stream\n$ kt --delete --topic clicks >/dev/null"
   }
  ],
  "recap": [
-  "상태는 로컬 RocksDB 에 있고 진짜 원본은 체인지로그 토픽이다.",
-  "체인지로그는 압축 토픽이라 키마다 최신 값만 남고, 새 인스턴스는 그걸 읽어 복원한다.",
-  "복원 시간이 곧 다운타임이다 — 스탠바이 레플리카가 그걸 줄인다.",
-  "집계 결과는 레코드마다 갱신돼 나간다. 한 번만 내보내려면 suppress 를 쓴다.",
-  "창은 시계가 아니라 데이터의 이벤트 시각으로 닫힌다. 입력이 멈추면 창도 안 닫힌다."
+  "상태는 로컬 RocksDB 에 두고 changelog 토픽으로 복구한다. 빠르면서 안 잃는다.",
+  "KStream 은 사실의 흐름, KTable 은 키별 최신 상태, GlobalKTable 은 전체 사본이다.",
+  "윈도우는 Tumbling·Hopping·Sliding·Session 넷이고 grace 안에 온 늦은 레코드는 반영된다.",
+  "grace 를 넘긴 레코드는 조용히 버려진다. dropped-records 지표를 감시한다.",
+  "상태가 크면 복구가 오래 걸린다. standby.replicas 나 영속 볼륨으로 줄인다."
  ],
  "drills": [
   {
-   "task": "집계를 돌리고 생긴 내부 토픽 둘의 cleanup.policy 를 비교한다.",
-   "done_when": "압축과 삭제의 이유를 설명할 수 있다.",
+   "task": "키별 count 토폴로지를 돌리고 갱신마다 레코드가 나오는 것을 확인한다.",
+   "done_when": "1,2,3... 이 순서대로 나오는 것을 본다.",
    "minutes": 12
   },
   {
-   "task": "로컬 상태를 지우고 다시 띄워 복원 시간을 잰다.",
-   "done_when": "값이 복구되는 것을 확인한다.",
-   "minutes": 15
+   "task": "로컬 상태 디렉터리를 지우고 재시작해 changelog 로 복구되는 로그를 확인한다.",
+   "done_when": "Restoration complete 와 복원 건수를 본다.",
+   "minutes": 10
   },
   {
-   "task": "suppress 를 넣고 빼고 결과 건수를 센다.",
-   "done_when": "중간 결과의 양을 확인한다.",
-   "minutes": 15
-  },
-  {
-   "task": "입력을 멈춰 창이 안 닫히는 것을 재현하고 레코드 하나로 닫는다.",
-   "done_when": "stream time 을 설명할 수 있다.",
-   "minutes": 15
+   "task": "윈도우 집계를 돌려 키에 창 범위가 들어가는 것을 확인한다.",
+   "done_when": "[key@start/end] 형태를 본다.",
+   "minutes": 10
   }
  ],
  "quiz": [
   {
-   "q": "상태의 원본은 어디에 있나.",
-   "a": "체인지로그 토픽이다. 로컬 RocksDB 는 캐시다."
+   "q": "스트림즈가 상태를 두는 두 곳은.",
+   "a": "로컬 RocksDB(빠른 접근)와 changelog 토픽(복구용)."
   },
   {
-   "q": "스탠바이 레플리카는 무엇을 줄이나.",
-   "a": "장애 때 상태 복원 시간, 곧 다운타임이다."
+   "q": "KStream 과 KTable 의 차이는.",
+   "a": "KStream 은 레코드마다 독립된 사실, KTable 은 키별 최신 상태로 같은 키를 덮어쓴다."
   },
   {
-   "q": "suppress 가 없으면 무엇이 달라지나.",
-   "a": "집계 중간 결과가 매번 하류로 나간다."
-  },
-  {
-   "q": "창은 무엇으로 닫히나.",
-   "a": "stream time 이다. 시계가 아니라 본 레코드의 이벤트 시각이 민다."
+   "q": "grace 를 넘겨 도착한 레코드는.",
+   "a": "버려진다. dropped-records 지표로만 알 수 있으므로 감시해야 한다."
   }
  ],
  "terms": [
   {
-   "term": "체인지로그",
-   "what": "상태 저장소의 변경을 담는 압축 토픽. 복원의 원본."
+   "term": "상태 저장소",
+   "en": "state store",
+   "what": "집계·조인 결과를 담는 로컬 저장소. 기본은 RocksDB."
   },
   {
-   "term": "스탠바이 레플리카",
-   "what": "다른 인스턴스의 상태를 미리 따라 두는 복제본."
+   "term": "standby replica",
+   "what": "changelog 를 미리 따라가 두는 대기 인스턴스."
   },
   {
-   "term": "stream time",
-   "what": "본 레코드 중 가장 큰 이벤트 시각. 창을 닫는 기준."
+   "term": "grace period",
+   "what": "윈도우가 닫힌 뒤에도 늦은 레코드를 받아 주는 시간."
   }
  ],
  "sources": [
   {
-   "title": "Kafka Streams — State Stores",
+   "title": "Kafka Streams — State stores",
    "url": "https://kafka.apache.org/documentation/streams/developer-guide/processor-api.html#state-stores",
    "publisher": "Apache"
   },
   {
-   "title": "Kafka Streams — DSL Operations",
-   "url": "https://kafka.apache.org/documentation/streams/developer-guide/dsl-api.html",
+   "title": "Kafka Streams — Windowing",
+   "url": "https://kafka.apache.org/documentation/streams/developer-guide/dsl-api.html#windowing",
    "publisher": "Apache"
-  },
-  {
-   "title": "RocksDB — Documentation",
-   "url": "https://rocksdb.org/docs/getting-started.html",
-   "publisher": "Meta"
   }
  ]
 }

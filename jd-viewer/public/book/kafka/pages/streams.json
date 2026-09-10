@@ -8,171 +8,151 @@
  "minutes": 13,
  "updated_at": "2026-09-10",
  "goals": [
-  "토폴로지를 읽는다.",
-  "태스크와 파티션의 관계를 안다.",
-  "컨슈머로 짠 것과 견준다."
+  "스트림즈가 무엇인지 안다.",
+  "컨슈머와의 차이를 안다.",
+  "토폴로지를 읽는다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**8.4절에서 read-process-write 를 손으로** 짰다. **그 루프를 라이브러리가 대신** 돈다.\n\n```java\nbuilder.stream(\"orders\")\n       .filter((k, v) -> v.amount() > 0)\n       .mapValues(OrderSummary::from)\n       .to(\"order-summary\");\n```"
-  },
-  {
-   "type": "figure",
-   "caption": "토폴로지",
-   "ascii": "   a topology is a graph, not a loop\n\n   [ source: orders ]\n         |\n   [ filter amount > 0 ]\n         |\n   [ map to summary ]\n         |\n   [ sink: order-summary ]\n\n   the library builds this once and runs it on every record",
-   "note": "**이 그래프를 한 번 만들고 레코드마다** 태운다."
-  },
-  {
-   "type": "callout",
-   "tone": "why",
-   "title": "클러스터가 아니라 라이브러리다",
-   "md": "**따로 띄우는 게** 없다.\n\n> **`java -jar` 로 뜨는 보통 애플리케이션**이다.\n> **스케일은 인스턴스를 더 띄우는 것**이다.\n> **7장의 컨슈머 그룹이 그대로** 쓰인다.\n\n| 스트림즈가 대신 하는 일 | 7~9장에서 손으로 하던 것 |\n|---|---|\n| **poll 루프** | 9.3절의 리스너 |\n| **오프셋 커밋** | 7.5절 |\n| **정확히 한 번** | **8.4절 전체** |\n| **재처리·리밸런싱** | 7.7절 |\n| **상태 저장소** | **없었다**(10.5절) |\n\n> **`application.id` 가 곧 컨슈머 그룹 ID** 다 — **7.2절의 그** 그룹이다."
-  },
-  {
-   "type": "figure",
-   "caption": "태스크는 파티션에서 나온다",
-   "ascii": "   tasks come from partitions, not from threads\n\n   input topic has 6 partitions   ->   6 tasks\n\n   1 instance,  2 threads   ->   3 tasks each\n   3 instances, 2 threads   ->   1 task each\n\n   more instances than partitions leaves some doing nothing",
-   "note": "**파티션보다 인스턴스가 많으면 노는 게** 생긴다."
-  },
-  {
-   "type": "table",
-   "caption": "KStream 과 KTable",
-   "columns": [
-    "",
-    "KStream",
-    "KTable"
-   ],
-   "rows": [
-    [
-     "**뜻**",
-     "**일어난 일들**",
-     "**지금 상태**"
-    ],
-    [
-     "같은 키가 또 오면",
-     "**둘 다 남는다**",
-     "**덮어쓴다**"
-    ],
-    [
-     "null 값",
-     "그냥 레코드",
-     "**삭제(툼스톤)**"
-    ],
-    [
-     "**만드는 법**",
-     "`builder.stream()`",
-     "`builder.table()`"
-    ],
-    [
-     "대응하는 토픽",
-     "보통 토픽",
-     "**압축 토픽**(4.6절)"
-    ],
-    [
-     "예",
-     "주문 이벤트",
-     "**주문의 현재 상태**"
-    ]
-   ],
-   "note": "**같은 토픽을 둘 중 무엇으로 읽느냐가 결과를** 바꾼다 — **4.6절의 압축과 짝이** 된다."
+   "md": "**8.4절의 read-process-write 를 라이브러리로 만든** 것이다.\n\n> **별도 클러스터가 아니다.** **내 애플리케이션에 라이브러리로 들어간다.**\n> **컨슈머 + 프로듀서 + 상태 저장소 + 트랜잭션을 묶어 둔 것**이다."
   },
   {
    "type": "code",
    "lang": "java",
-   "file": "OrderTopology.java",
-   "caption": "설정과 토폴로지",
-   "code": "Properties p = new Properties();\np.put(StreamsConfig.APPLICATION_ID_CONFIG, \"order-summary\");   // = 컨슈머 그룹 ID\np.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, \"kafka-1:19092\");\np.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);\np.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2);\n\nStreamsBuilder builder = new StreamsBuilder();\n\nKStream<String, OrderEvent> orders =\n        builder.stream(\"orders\", Consumed.with(Serdes.String(), orderSerde));\n\norders.filter((k, v) -> v.amount() > 0)\n      .mapValues(OrderSummary::from)\n      .peek((k, v) -> log.debug(\"{} -> {}\", k, v))\n      .to(\"order-summary\", Produced.with(Serdes.String(), summarySerde));\n\nKafkaStreams streams = new KafkaStreams(builder.build(), p);\nRuntime.getRuntime().addShutdownHook(new Thread(streams::close));\nstreams.start();"
+   "file": "OrderStream.java",
+   "caption": "토폴로지",
+   "code": "var builder = new StreamsBuilder();\n\nKStream<String, OrderPlaced> orders = builder.stream(\"order.placed.v1\");\n\norders\n    .filter((k, v) -> v.amount() >= 10_000)\n    .mapValues(v -> new BigOrder(v.orderId(), v.amount(), v.memberId()))\n    .to(\"order.big.v1\");\n\nvar props = new Properties();\nprops.put(StreamsConfig.APPLICATION_ID_CONFIG, \"order-processor\");   // = group.id\nprops.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, \"localhost:9092\");\nprops.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG,\n          StreamsConfig.EXACTLY_ONCE_V2);                            // 8.4절\n\nvar streams = new KafkaStreams(builder.build(), props);\nRuntime.getRuntime().addShutdownHook(new Thread(streams::close));\nstreams.start();",
+   "note": "`application.id` 가 **컨슈머 그룹 ID 이자 내부 토픽 접두사**다. **바꾸면 처음부터 다시 읽는다.**"
+  },
+  {
+   "type": "table",
+   "caption": "컨슈머로 짜는 것과 스트림즈",
+   "columns": [
+    "",
+    "컨슈머 + 프로듀서",
+    "스트림즈"
+   ],
+   "rows": [
+    [
+     "단순 변환",
+     "**둘 다 쉽다**",
+     "둘 다 쉽다"
+    ],
+    [
+     "**상태(집계·조인)**",
+     "**직접 만든다**",
+     "**상태 저장소 내장**(10.5절)"
+    ],
+    [
+     "EOS",
+     "트랜잭션 수동(8.2절)",
+     "**설정 한 줄**"
+    ],
+    [
+     "**윈도우**",
+     "직접",
+     "**내장**"
+    ],
+    [
+     "재처리",
+     "오프셋 되감기",
+     "**앱 리셋 도구**"
+    ],
+    [
+     "운영",
+     "익숙하다",
+     "**내부 토픽이 여럿 생긴다**"
+    ],
+    [
+     "배우는 비용",
+     "낮다",
+     "**DSL 을 배워야 한다**"
+    ]
+   ],
+   "note": "**상태가 없으면 컨슈머로 충분**하다. **집계·조인·윈도우가 필요해지면 스트림즈**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "토폴로지와 태스크",
+   "md": "**스트림즈는 코드를 토폴로지(그래프)로** 만든다.\n\n```\nSource: order.placed.v1 (3 partitions)\n   -> filter\n   -> mapValues\n   -> Sink: order.big.v1\n```\n\n| 개념 | |\n|---|---|\n| **태스크** | **입력 파티션 하나당 하나**. 파티션 3개면 태스크 3개 |\n| **스레드** | `num.stream.threads`. 태스크를 나눠 맡는다 |\n| **인스턴스** | 애플리케이션 프로세스. 여러 대면 태스크가 나뉜다 |\n\n> **병렬성의 상한은 여전히 파티션 수**다(4.6절).\n> **인스턴스 × 스레드 > 파티션이면 남는 것은** 논다.\n\n**토폴로지를 출력해 볼 수** 있다:\n\n```java\nSystem.out.println(builder.build().describe());\n```"
   },
   {
    "type": "callout",
    "tone": "trap",
-   "title": "리파티션은 조용히 토픽을 만든다",
-   "md": "**키를 바꾸는 연산 뒤에 키가 필요한 연산이 오면 중간 토픽이** 생긴다.\n\n```java\norders.selectKey((k, v) -> v.customerId())   // 키가 바뀐다\n      .groupByKey()                          // 키가 필요하다\n      .count();                              // -> repartition 토픽이 생긴다\n```\n\n| 확인할 것 | |\n|---|---|\n| **토픽 이름** | `<application.id>-...-repartition` |\n| **파티션 수** | **입력 토픽과 같다** |\n| 지연 | **한 번 더 왕복한다** |\n| 디스크 | **입력만큼 또 쌓인다** |\n\n> **`describe()` 로 토폴로지를 찍으면 미리** 보인다.\n> **키를 안 바꾸고 되면 `groupBy` 대신 `groupByKey` 를** 쓴다."
+   "title": "내부 토픽이 조용히 생긴다",
+   "md": "**리파티셔닝이나 상태 저장소가 필요하면 토픽을 만든다.**\n\n```\norder-processor-KSTREAM-AGGREGATE-STATE-STORE-0000000003-changelog\norder-processor-KSTREAM-KEY-SELECT-0000000002-repartition\n```\n\n| 언제 생기나 | |\n|---|---|\n| **`selectKey`·`map` 후 집계·조인** | 키가 바뀌었으므로 **리파티션 토픽** |\n| **상태 저장소** | **changelog 토픽**(10.5절) |\n| `through()` | 명시적 |\n\n**주의할 점**:\n\n| 주의 | |\n|---|---|\n| **파티션 수** | 입력 토픽과 같게 만들어진다 |\n| **디스크** | changelog 는 compact, 리파티션은 delete |\n| **`application.id` 를 바꾸면** | **새 내부 토픽이 생기고 옛것이 남는다** |\n| 지울 때 | **`kafka-streams-application-reset` 도구**를 쓴다 |\n\n> **\"토픽이 왜 이렇게 많지\" 의 절반이 스트림즈 내부 토픽**이다."
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "토폴로지를 찍고 인스턴스를 늘려 본다",
-   "sql": "$ kt --create --topic orders --partitions 6 --replication-factor 3 >/dev/null\n$ kt --create --topic order-summary --partitions 6 --replication-factor 3 >/dev/null\n\n\n# --- 토폴로지를 찍는다 ---\n\n$ java -cp 'out:libs/*' OrderTopology --describe\nTopologies:\n   Sub-topology: 0\n    Source: KSTREAM-SOURCE-0000000000 (topics: [orders])\n      --> KSTREAM-FILTER-0000000001\n    Processor: KSTREAM-FILTER-0000000001 (stores: [])\n      --> KSTREAM-MAPVALUES-0000000002\n      <-- KSTREAM-SOURCE-0000000000\n    Processor: KSTREAM-MAPVALUES-0000000002 (stores: [])\n      --> KSTREAM-SINK-0000000004\n    Sink: KSTREAM-SINK-0000000004 (topic: order-summary)\n      <-- KSTREAM-PEEK-0000000003\n\n$ java -cp 'out:libs/*' OrderTopology --describe | grep -c 'Sub-topology'\n1\n\n#   서브토폴로지가 하나다 -- 중간 토픽이 없다\n\n\n# --- 돌린다 ---\n\n$ java -cp 'out:libs/*' OrderTopology &\n$ sleep 8\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 10000\nsent 10000\n\n$ sleep 15\n$ kcc --topic order-summary --from-beginning --timeout-ms 5000 \\\n    --isolation-level read_committed | wc -l\n9847\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --count-nonpositive\namount <= 0 인 레코드 153\n\n$ python3 -c \"print('%d - %d = %d' % (10000, 153, 10000-153))\"\n10000 - 153 = 9847\n\n#   filter 가 153건을 걸렀다\n\n\n# --- 컨슈머 그룹으로 보인다 ---\n\n$ kg --list | grep order-summary\norder-summary\n\n$ kg --describe --group order-summary | awk 'NR>1 {print $2, $3, $6}'\norders 0 0\norders 1 0\norders 2 0\norders 3 0\norders 4 0\norders 5 0\n\n$ kg --describe --group order-summary --members | awk 'NR>1 {print $1, $3}'\norder-summary-...-StreamThread-1-consumer /172.19.0.1\norder-summary-...-StreamThread-2-consumer /172.19.0.1\n\n#   7.2절의 그 그룹이다\n#   스레드 2개가 각각 컨슈머다\n\n\n# --- 태스크를 센다 ---\n\n$ curl -s localhost:8080/streams/tasks\nthread StreamThread-1  tasks 0_0 0_1 0_2\nthread StreamThread-2  tasks 0_3 0_4 0_5\n\n$ curl -s localhost:8080/streams/tasks | grep -o '0_[0-9]' | wc -l\n6\n\n#   파티션 6개 -> 태스크 6개\n\n\n# --- 인스턴스를 늘린다 ---\n\n$ java -cp 'out:libs/*' OrderTopology --port 8081 &\n$ sleep 10\n\n$ curl -s localhost:8080/streams/tasks | grep -o '0_[0-9]' | wc -l\n3\n$ curl -s localhost:8081/streams/tasks | grep -o '0_[0-9]' | wc -l\n3\n\n$ kg --describe --group order-summary --members | wc -l\n5\n\n#   6개를 둘이 나눠 가졌다\n#   7.7절의 리밸런싱이다\n\n\n# --- 파티션보다 많이 띄우면 ---\n\n$ for port in 8082 8083 8084 8085; do java -cp 'out:libs/*' OrderTopology --port $port & done\n$ sleep 15\n\n$ for port in 8080 8081 8082 8083 8084 8085; do\n    printf '%s: %s tasks\\n' $port \"$(curl -s localhost:$port/streams/tasks | grep -c '0_')\"\n  done\n8080: 1 tasks\n8081: 1 tasks\n8082: 1 tasks\n8083: 1 tasks\n8084: 1 tasks\n8085: 1 tasks\n\n$ java -cp 'out:libs/*' OrderTopology --port 8086 &\n$ sleep 12 && curl -s localhost:8086/streams/tasks\nthread StreamThread-1  tasks (없음)\nthread StreamThread-2  tasks (없음)\n\n#   7번째는 아무것도 안 받는다\n#   4.2절에서 파티션이 병렬성의 상한이라고 한 그것이다\n\n\n# --- 8.4절과 견준다 ---\n\n$ wc -l ExactlyOnceProcessor.java OrderTopology.java\n      68 ExactlyOnceProcessor.java\n      24 OrderTopology.java\n\n$ grep -c 'try\\|catch\\|commitTransaction\\|sendOffsets\\|poll' ExactlyOnceProcessor.java\n11\n$ grep -c 'try\\|catch\\|commitTransaction\\|sendOffsets\\|poll' OrderTopology.java\n0\n\n#   68줄이 24줄이 됐다\n#   루프와 트랜잭션 코드가 통째로 없다\n\n\n# --- 정확히 한 번이 되는지 확인한다 ---\n\n$ kt --delete --topic order-summary >/dev/null\n$ kt --create --topic order-summary --partitions 6 --replication-factor 3 >/dev/null\n$ kg --delete --group order-summary >/dev/null\n\n$ java -cp 'out:libs/*' OrderTopology &\n$ sleep 8 && java -cp 'out:libs/*' SeqProducer --topic orders --records 20000 &\n$ for i in 1 2 3; do sleep 5; kill -9 %1; java -cp 'out:libs/*' OrderTopology & done\n\n$ sleep 30\n$ kcc --topic order-summary --from-beginning --timeout-ms 8000 \\\n    --isolation-level read_committed | wc -l\n29694\n$ kcc --topic order-summary --from-beginning --timeout-ms 8000 \\\n    --isolation-level read_committed | sort -u | wc -l\n29694\n\n#   세 번 죽였는데 중복이 없다\n#   8.4절에서 손으로 하던 것이다\n\n\n# --- KTable 로 읽으면 ---\n\n$ java -cp 'out:libs/*' OrderTopology --as-table &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --key A-1 --records 5\n\n$ sleep 10\n$ kcc --topic order-summary --from-beginning --timeout-ms 3000 \\\n    --isolation-level read_committed --property print.key=true | awk '$1==\"A-1\"' | wc -l\n1\n\n$ java -cp 'out:libs/*' OrderTopology &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --key A-2 --records 5\n$ sleep 10\n$ kcc --topic order-summary --from-beginning --timeout-ms 3000 \\\n    --property print.key=true | awk '$1==\"A-2\"' | wc -l\n5\n\n#   같은 입력인데 1건과 5건이다\n\n\n# --- 리파티션이 생기는지 본다 ---\n\n$ java -cp 'out:libs/*' CountByCustomer --describe | grep -E 'Sub-topology|repartition'\n   Sub-topology: 0\n    Sink: KSTREAM-SINK-0000000004 (topic: order-count-...-repartition)\n   Sub-topology: 1\n    Source: KSTREAM-SOURCE-0000000005 (topics: [order-count-...-repartition])\n\n$ java -cp 'out:libs/*' CountByCustomer &\n$ sleep 12 && kt --list | grep repartition\norder-count-KSTREAM-AGGREGATE-STATE-STORE-0000000003-repartition\n\n$ kt --describe --topic order-count-KSTREAM-AGGREGATE-STATE-STORE-0000000003-repartition \\\n    | head -1 | grep -o 'PartitionCount: [0-9]*'\nPartitionCount: 6\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 10000\n$ sleep 20\n$ docker compose exec -T kafka-1 du -sh /var/lib/kafka/data | cut -f1\n412M\n\n$ docker compose exec -T kafka-1 du -sh \\\n    /var/lib/kafka/data/order-count-*-repartition-* 2>/dev/null | awk '{s+=$1} END {print s\"M 정도\"}'\n38M 정도\n\n#   입력만큼 한 번 더 쌓인다\n#   10.5절에서 이 토픽이 왜 필요한지 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '무엇인가'        '라이브러리' \\\n  '토폴로지'        '그래프 한 번' \\\n  'application.id'  '= 컨슈머 그룹' \\\n  '태스크'          '파티션 수만큼 6개' \\\n  '인스턴스 2개'    '3개씩' \\\n  '7번째'           '아무것도 안 받음' \\\n  '코드'            '68줄이 24줄' \\\n  '정확히 한 번'    '세 번 죽여도 중복 0' \\\n  'KStream'         '5건 다 남음' \\\n  'KTable'          '1건으로 덮임' \\\n  '리파티션'        '토픽이 조용히 생김'\n\n무엇인가                   라이브러리\n토폴로지                   그래프 한 번\napplication.id             = 컨슈머 그룹\n태스크                     파티션 수만큼 6개\n인스턴스 2개               3개씩\n7번째                      아무것도 안 받음\n코드                       68줄이 24줄\n정확히 한 번               세 번 죽여도 중복 0\nKStream                    5건 다 남음\nKTable                     1건으로 덮임\n리파티션                   토픽이 조용히 생김",
-   "note": "**`describe()` 로 토폴로지를 찍으면 소스·필터·맵·싱크가 서브토폴로지 하나로** 나온다.\n\n**`kg --list` 에 `order-summary` 가 그대로 나와 7.2절의 컨슈머 그룹임이** 드러난다.\n\n**파티션 6개에 태스크 6개라 인스턴스 7번째는 아무 태스크도 못** 받는다.\n\n**8.4절의 68줄이 24줄이 되고 세 번 죽여도 중복이** 없다.\n\n**키를 바꾸고 집계하면 `...-repartition` 토픽이 조용히 생겨 38M 이 더** 쌓인다."
+   "caption": "스트림즈를 돌리고 내부를 본다",
+   "sql": "$ kt --create --topic order.placed.v1 --partitions 3 --replication-factor 3 >/dev/null\n$ kt --create --topic order.big.v1 --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 토폴로지 출력 ---\n\n$ java -cp 'out:libs/*' OrderStream --print-topology\nTopologies:\n   Sub-topology: 0\n    Source: KSTREAM-SOURCE-0000000000 (topics: [order.placed.v1])\n      --> KSTREAM-FILTER-0000000001\n    Processor: KSTREAM-FILTER-0000000001 (stores: [])\n      --> KSTREAM-MAPVALUES-0000000002\n      <-- KSTREAM-SOURCE-0000000000\n    Processor: KSTREAM-MAPVALUES-0000000002 (stores: [])\n      --> KSTREAM-SINK-0000000003\n      <-- KSTREAM-FILTER-0000000001\n    Sink: KSTREAM-SINK-0000000003 (topic: order.big.v1)\n      <-- KSTREAM-MAPVALUES-0000000002\n\n#   코드가 그래프로 보인다\n\n\n# --- 돌린다 ---\n\n$ java -cp 'out:libs/*' OrderStream &\n$ sleep 10\n\n$ kcp --topic order.placed.v1 --property parse.key=true --property key.separator='|' <<'EOF'\n1|{\"orderId\":1,\"memberId\":10,\"amount\":5000}\n2|{\"orderId\":2,\"memberId\":11,\"amount\":25000}\n3|{\"orderId\":3,\"memberId\":12,\"amount\":150000}\nEOF\n\n$ sleep 3\n$ kcc --topic order.big.v1 --from-beginning --timeout-ms 3000 --property print.key=true\n2\t{\"orderId\":2,\"amount\":25000,\"memberId\":11}\n3\t{\"orderId\":3,\"amount\":150000,\"memberId\":12}\n\n#   1만 원 미만은 걸러졌다\n\n\n# --- 컨슈머 그룹이 application.id 다 ---\n\n$ kcg --list | grep order-processor\norder-processor\n\n$ kcg --describe --group order-processor\nGROUP            TOPIC              PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\norder-processor  order.placed.v1    0          1               1               0\norder-processor  order.placed.v1    1          1               1               0\norder-processor  order.placed.v1    2          1               1               0\n\n#   5장의 명령이 그대로 통한다. 랙 감시도 같다\n\n\n# --- 태스크와 스레드 ---\n\n$ java -cp 'out:libs/*' OrderStream --print-state\nStreams state: RUNNING\nThreads: 1\n  thread-1 active tasks: [0_0, 0_1, 0_2]\n\n$ java -cp 'out:libs/*' OrderStream --threads 3 --print-state\nThreads: 3\n  thread-1 active tasks: [0_0]\n  thread-2 active tasks: [0_1]\n  thread-3 active tasks: [0_2]\n\n$ java -cp 'out:libs/*' OrderStream --threads 5 --print-state\nThreads: 5\n  thread-1 active tasks: [0_0]\n  thread-2 active tasks: [0_1]\n  thread-3 active tasks: [0_2]\n  thread-4 active tasks: []\n  thread-5 active tasks: []\n\n#   파티션 3이 상한이다 (4.6·7.2절)\n\n\n# --- EOS 를 켜면 트랜잭션을 쓴다 ---\n\n$ java -cp 'out:libs/*' OrderStream --eos 2>&1 | grep -E 'processing.guarantee|transactional.id'\n\tprocessing.guarantee = exactly_once_v2\n\ttransactional.id = order-processor-...-0_0\n\n$ kcc --topic order.big.v1 --from-beginning --timeout-ms 3000 \\\n    --isolation-level read_committed | wc -l\n2\n\n#   8.2절의 트랜잭션을 설정 한 줄로 켰다\n\n\n# --- 집계를 넣으면 내부 토픽이 생긴다 ---\n\n$ java -cp 'out:libs/*' OrderCountStream & sleep 15\n$ kt --list | grep order-count-processor\norder-count-processor-KSTREAM-AGGREGATE-STATE-STORE-0000000003-changelog\norder-count-processor-member-order-count-repartition\n\n$ kt --describe --topic order-count-processor-KSTREAM-AGGREGATE-STATE-STORE-0000000003-changelog | head -2\nTopic: ...-changelog  PartitionCount: 3  ReplicationFactor: 1\n  Configs: cleanup.policy=compact\n\n#   changelog 는 compact (3.4절)\n#   입력 토픽과 같은 파티션 수로 만들어졌다\n\n$ kt --describe --topic order-count-processor-member-order-count-repartition | head -2\nTopic: ...-repartition  PartitionCount: 3\n  Configs: cleanup.policy=delete,retention.ms=-1,segment.bytes=52428800\n\n#   리파티션은 delete 이고 스트림즈가 직접 지운다\n\n\n# --- 앱 리셋 ---\n\n$ pkill -f OrderCountStream\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-streams-application-reset.sh \\\n    --bootstrap-server kafka-1:19092 --application-id order-count-processor \\\n    --input-topics order.placed.v1\nReset-offsets for input topics [order.placed.v1]\nDeleting all internal/auto-created topics for application order-count-processor\nDone.\n\n$ kt --list | grep -c order-count-processor\n0\n\n#   내부 토픽이 지워지고 오프셋이 초기화됐다\n#   application.id 를 바꾸는 대신 이걸 쓴다\n\n$ pkill -f OrderStream\n$ kt --delete --topic order.placed.v1 >/dev/null; kt --delete --topic order.big.v1 >/dev/null"
   }
  ],
  "recap": [
-  "스트림즈는 별도 클러스터가 아니라 애플리케이션에 붙는 라이브러리다.",
-  "토폴로지는 레코드마다 도는 루프가 아니라 한 번 만드는 그래프다.",
-  "application.id 가 컨슈머 그룹 ID 이고 태스크 수는 입력 파티션 수다.",
-  "8.4절에서 손으로 짠 read-process-write 가 설정 한 줄과 24줄 코드로 줄어든다.",
-  "키를 바꾸는 연산 뒤에 키가 필요한 연산이 오면 리파티션 토픽이 조용히 생긴다."
+  "스트림즈는 별도 클러스터가 아니라 애플리케이션에 들어가는 라이브러리다.",
+  "application.id 가 컨슈머 그룹 ID 라 5장의 명령과 랙 감시가 그대로 통한다.",
+  "태스크는 입력 파티션당 하나다. 병렬성의 상한은 여전히 파티션 수다.",
+  "processing.guarantee 한 줄로 8장의 트랜잭션이 켜진다.",
+  "집계·조인을 넣으면 changelog·repartition 내부 토픽이 조용히 생긴다. 지울 때는 리셋 도구를 쓴다."
  ],
  "drills": [
   {
-   "task": "토폴로지를 describe 로 찍고 서브토폴로지 수를 센다.",
-   "done_when": "그래프를 그림으로 옮길 수 있다.",
+   "task": "filter/mapValues 만 있는 토폴로지를 만들어 돌리고 describe() 출력을 읽는다.",
+   "done_when": "Source→Processor→Sink 구조를 확인한다.",
    "minutes": 12
   },
   {
-   "task": "인스턴스를 파티션 수보다 많이 띄운다.",
-   "done_when": "노는 인스턴스가 생기는 것을 확인한다.",
-   "minutes": 15
+   "task": "num.stream.threads 를 늘려 가며 태스크 할당을 보고 파티션 수 상한을 확인한다.",
+   "done_when": "남는 스레드가 노는 것을 본다.",
+   "minutes": 8
   },
   {
-   "task": "돌리는 중에 여러 번 죽이고 결과 토픽의 중복을 센다.",
-   "done_when": "중복이 0 인 것을 확인한다.",
-   "minutes": 15
-  },
-  {
-   "task": "같은 토픽을 KStream 과 KTable 로 각각 읽어 결과 건수를 비교한다.",
-   "done_when": "둘의 차이를 설명할 수 있다.",
-   "minutes": 12
+   "task": "집계를 넣고 생기는 내부 토픽 이름과 cleanup.policy 를 확인한다.",
+   "done_when": "changelog 가 compact 인 것을 본다.",
+   "minutes": 10
   }
  ],
  "quiz": [
   {
-   "q": "스트림즈를 돌리려면 무엇을 따로 띄워야 하나.",
-   "a": "아무것도 없다. 보통 애플리케이션에 붙는 라이브러리다."
+   "q": "스트림즈의 application.id 는 무엇인가.",
+   "a": "컨슈머 그룹 ID 이자 내부 토픽의 접두사. 바꾸면 처음부터 다시 읽는다."
   },
   {
-   "q": "태스크 수는 무엇이 정하나.",
-   "a": "입력 토픽의 파티션 수다."
+   "q": "스트림즈의 병렬성 상한은.",
+   "a": "입력 토픽의 파티션 수. 태스크가 파티션당 하나다."
   },
   {
-   "q": "application.id 는 무엇인가.",
-   "a": "컨슈머 그룹 ID 이자 내부 토픽 이름의 접두사다."
-  },
-  {
-   "q": "리파티션 토픽은 언제 생기나.",
-   "a": "키를 바꾼 뒤 키가 필요한 연산을 할 때다."
+   "q": "컨슈머 대신 스트림즈를 쓸 만한 신호는.",
+   "a": "집계·조인·윈도우 같은 상태가 필요해질 때."
   }
  ],
  "terms": [
   {
    "term": "토폴로지",
-   "what": "소스에서 싱크까지 이어진 처리 그래프."
+   "en": "topology",
+   "what": "소스·프로세서·싱크로 이루어진 처리 그래프."
   },
   {
    "term": "태스크",
-   "what": "파티션 하나에 대응하는 처리 단위. 스레드에 배정된다."
+   "what": "입력 파티션 하나에 대응하는 실행 단위."
   },
   {
-   "term": "리파티션 토픽",
-   "what": "키를 바꾼 뒤 다시 나누기 위해 스트림즈가 만드는 내부 토픽."
+   "term": "changelog 토픽",
+   "what": "상태 저장소의 변경을 기록하는 내부 토픽."
   }
  ],
  "sources": [
   {
-   "title": "Kafka Streams — Developer Guide",
+   "title": "Apache Kafka — Streams",
    "url": "https://kafka.apache.org/documentation/streams/",
    "publisher": "Apache"
   },
   {
-   "title": "Kafka Streams — Core Concepts",
-   "url": "https://kafka.apache.org/documentation/streams/core-concepts",
-   "publisher": "Apache"
-  },
-  {
-   "title": "Kafka Streams — DSL Operations",
-   "url": "https://kafka.apache.org/documentation/streams/developer-guide/dsl-api.html",
+   "title": "Kafka Streams — Application reset tool",
+   "url": "https://kafka.apache.org/documentation/streams/developer-guide/app-reset-tool.html",
    "publisher": "Apache"
   }
  ]

@@ -1,0 +1,152 @@
+{
+ "book": "kafka",
+ "id": "when-which",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "무엇을 언제 쓰나",
+ "summary": "컨슈머 · 스트림즈 · 커넥트 · 플링크.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 가지를 비교한다.",
+  "고르는 기준을 세운다.",
+  "10장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "네 가지",
+   "columns": [
+    "",
+    "컨슈머/프로듀서",
+    "커넥트",
+    "스트림즈",
+    "플링크"
+   ],
+   "rows": [
+    [
+     "**무엇**",
+     "직접 짠 애플리케이션",
+     "**설정으로 옮기기**",
+     "**변환·집계 라이브러리**",
+     "분산 스트림 처리 엔진"
+    ],
+    [
+     "코드",
+     "**전부 내가**",
+     "**거의 없음**",
+     "DSL",
+     "API"
+    ],
+    [
+     "상태",
+     "직접",
+     "없음",
+     "**내장**",
+     "**내장(더 강력)**"
+    ],
+    [
+     "운영 단위",
+     "내 애플리케이션",
+     "**커넥트 클러스터**",
+     "내 애플리케이션",
+     "**전용 클러스터**"
+    ],
+    [
+     "배우는 비용",
+     "낮다",
+     "낮다",
+     "중간",
+     "**높다**"
+    ],
+    [
+     "언제",
+     "**대부분**",
+     "표준 시스템 이동",
+     "집계·조인",
+     "복잡한 이벤트 처리"
+    ]
+   ],
+   "note": "**대부분의 팀은 왼쪽 둘로 충분**하다. **오른쪽으로 갈수록 얻는 것과 운영 비용이 함께** 는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "고르는 순서",
+   "md": "**질문을 순서대로** 던진다.\n\n```\n1. 표준 시스템 사이를 그냥 옮기는가?\n     예 -> 커넥트 (10.1~10.3절)\n\n2. 상태(집계·조인·윈도우)가 필요한가?\n     아니오 -> 컨슈머 (7·9장)\n\n3. 카프카 안에서만 끝나는가? (카프카 -> 카프카)\n     예 -> 스트림즈 (10.4~10.5절)\n     아니오 -> 컨슈머 + DB (7.5절의 멱등 처리)\n\n4. 스트림즈로 감당이 안 되는가?\n     (복잡한 패턴 탐지, 대규모 상태, 정교한 워터마크)\n     예 -> 플링크\n```\n\n> **3번이 갈림길**이다. **결과를 DB 에 써야 하면 스트림즈의 EOS 이점이 사라진다**(8.4절).\n> **그러면 컨슈머 + 멱등 처리가 더 단순**하다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "실제 조합 예",
+   "md": "| 요구 | 구성 |\n|---|---|\n| **주문 이벤트를 검색엔진에** | 커넥트(ES 싱크) |\n| **DB 변경을 이벤트로** | Debezium CDC(10.3절) |\n| **주문 → 재고 차감** | **컨슈머**(9장) + 멱등 처리 |\n| **분당 매출 집계** | 스트림즈 윈도우(10.5절) 또는 컨슈머 + DB |\n| 실시간 이상 탐지 | 스트림즈 또는 플링크 |\n| **아웃박스 발행** | **CDC + outbox router**(8.5·10.3절) |\n| 데이터 웨어하우스 적재 | 커넥트(S3·BigQuery 싱크) |\n\n> **한 조직에서 여럿을 같이** 쓴다. **\"하나로 통일\" 이 목표가** 아니다.\n\n**10장을 한 줄로**:\n\n> **옮기는 것은 커넥트, 바꾸는 것은 스트림즈, 나머지는 컨슈머.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "같은 요구를 여러 가지로 풀어 본다",
+   "sql": "# --- 요구 1: 1만 원 이상 주문만 다른 토픽으로 ---\n\n# 컨슈머로\n\n#   @KafkaListener(topics = \"order.placed.v1\")\n#   public void handle(OrderPlaced e) {\n#       if (e.amount() >= 10000) template.send(\"order.big.v1\", e.orderId(), e);\n#   }\n\n$ java -cp 'out:libs/*' FilterConsumer --in order.placed.v1 --out order.big.v1 & sleep 5\n$ kcp --topic order.placed.v1 --property parse.key=true --property key.separator='|' <<'EOF'\n1|{\"orderId\":1,\"amount\":5000}\n2|{\"orderId\":2,\"amount\":25000}\nEOF\n$ sleep 3 && kcc --topic order.big.v1 --from-beginning --timeout-ms 2000 | wc -l\n1\n\n#   코드 5줄. 익숙하다. 상태가 없으니 이걸로 충분하다\n\n$ pkill -f FilterConsumer\n\n# 스트림즈로\n\n$ java -cp 'out:libs/*' OrderStream & sleep 12\n$ kcc --topic order.big.v1 --from-beginning --timeout-ms 2000 | wc -l\n1\n\n#   같은 결과. 대신 내부 토픽·리셋 도구·DSL 을 배워야 한다\n#   상태가 없으면 이득이 적다\n\n$ pkill -f OrderStream\n\n\n# --- 요구 2: 회원별 주문 수를 집계 ---\n\n# 컨슈머 + DB\n\n#   @KafkaListener(...)\n#   @Transactional\n#   public void handle(OrderPlaced e) {\n#       if (processedRepo.existsById(e.eventId())) return;      // 7.5절\n#       jdbc.update(\"insert into counts(member_id, cnt) values (?,1) \" +\n#                   \"on conflict (member_id) do update set cnt = counts.cnt + 1\", ...);\n#       processedRepo.save(e.eventId());\n#   }\n\n$ java -cp 'out:libs/*' CountConsumer & sleep 5\n$ for i in $(seq 1 20); do echo \"{\\\"eventId\\\":\\\"e$i\\\",\\\"memberId\\\":10,\\\"amount\\\":1000}\"; done | \\\n    kcp --topic order.placed.v1\n$ sleep 4\n$ psql -h localhost -U shop -d shop -tAc 'select cnt from counts where member_id = 10'\n20\n\n$ pkill -f CountConsumer\n\n# 스트림즈\n\n$ java -cp 'out:libs/*' MemberCountStream & sleep 12\n$ for i in $(seq 21 40); do echo \"{\\\"eventId\\\":\\\"e$i\\\",\\\"memberId\\\":10,\\\"amount\\\":1000}\"; done | \\\n    kcp --topic order.placed.v1\n$ sleep 4\n$ curl -s localhost:8080/counts/10\n{\"memberId\":10,\"count\":20}\n\n#   로컬 상태라 DB 왕복이 없다\n\n$ java -cp 'out:libs/*' ThroughputBench --mode consumer-db --records 50000\nconsumer + db upsert :  4,120 rec/s   (DB 병목)\n$ java -cp 'out:libs/*' ThroughputBench --mode streams --records 50000\nkafka streams        : 78,400 rec/s\n\n#   19배 차이다. 상태가 있으면 스트림즈가 크게 이긴다\n\n$ pkill -f MemberCountStream\n\n\n# --- 요구 3: 토픽을 Elasticsearch 로 ---\n\n#   컨슈머로 짜면: ES 클라이언트, 배치, 재시도, DLQ, 오프셋... 전부 내가\n#   커넥트: 설정 20줄\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' -d '{\n  \"name\": \"orders-es-sink\",\n  \"config\": {\n    \"connector.class\": \"io.confluent.connect.elasticsearch.ElasticsearchSinkConnector\",\n    \"topics\": \"order.placed.v1\",\n    \"connection.url\": \"http://elasticsearch:9200\",\n    \"key.ignore\": \"false\", \"schema.ignore\": \"true\",\n    \"behavior.on.null.values\": \"delete\",\n    \"errors.tolerance\": \"all\",\n    \"errors.deadletterqueue.topic.name\": \"orders-es.DLQ\"\n  }\n}' >/dev/null\n\n$ sleep 10 && curl -s 'localhost:9200/order.placed.v1/_count' | python3 -m json.tool\n{\"count\": 42, ...}\n\n#   코드 0줄. 이게 커넥트를 쓰는 이유다\n\n$ curl -s -X DELETE localhost:8083/connectors/orders-es-sink\n\n\n# --- 정리 ---\n\n#   옮기는 것    -> 커넥트\n#   바꾸는 것    -> 스트림즈 (상태가 있으면)\n#   나머지       -> 컨슈머\n#\n#   그리고 결과가 DB 로 가야 하면 스트림즈의 이점이 줄어든다 (8.4절)"
+  }
+ ],
+ "recap": [
+  "표준 시스템 사이를 옮기면 커넥트, 상태가 필요하면 스트림즈, 나머지는 컨슈머다.",
+  "결과를 DB 에 써야 하면 스트림즈의 EOS 이점이 사라진다. 컨슈머 + 멱등 처리가 단순하다.",
+  "상태가 있는 집계는 스트림즈가 컨슈머+DB 보다 크게 빠르다. DB 왕복이 없기 때문이다.",
+  "플링크는 스트림즈로 감당이 안 될 때다. 운영 비용이 크게 는다.",
+  "한 조직에서 여럿을 같이 쓴다. 하나로 통일하는 것이 목표가 아니다."
+ ],
+ "drills": [
+  {
+   "task": "같은 필터 요구를 컨슈머와 스트림즈로 각각 구현해 코드량과 운영 요소를 비교한다.",
+   "done_when": "상태가 없을 때 스트림즈의 이득이 적은 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "집계를 컨슈머+DB 와 스트림즈로 각각 만들어 처리량을 비교한다.",
+   "done_when": "차이를 숫자로 본다.",
+   "minutes": 15
+  },
+  {
+   "task": "자기 시스템의 파이프라인을 넷 중 어디에 해당하는지 분류한다.",
+   "done_when": "각각 왜 그 선택인지 한 줄로 적는다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "고르는 첫 질문은.",
+   "a": "표준 시스템 사이를 그냥 옮기는가. 그렇다면 커넥트."
+  },
+  {
+   "q": "스트림즈 대신 컨슈머가 나은 경우는.",
+   "a": "상태가 없거나, 결과를 DB 에 써야 해서 EOS 이점이 사라질 때."
+  },
+  {
+   "q": "상태가 있는 집계에서 스트림즈가 빠른 이유는.",
+   "a": "로컬 상태 저장소를 써서 레코드마다 DB 왕복을 하지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CEP",
+   "en": "Complex Event Processing",
+   "what": "이벤트 패턴을 탐지하는 처리. 플링크의 강점."
+  },
+  {
+   "term": "인터랙티브 쿼리",
+   "what": "스트림즈의 상태 저장소를 애플리케이션이 직접 조회하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Streams",
+   "url": "https://kafka.apache.org/documentation/streams/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Stream processing",
+   "url": "https://developer.confluent.io/courses/kafka-streams/get-started/",
+   "publisher": "Confluent"
+  }
+ ]
+}
