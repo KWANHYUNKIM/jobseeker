@@ -1,0 +1,179 @@
+{
+ "book": "kafka",
+ "id": "dlt",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "데드 레터 토픽",
+ "summary": "못 처리한 것을 버리지 않는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "버리는 대신 옮긴다.",
+  "헤더를 읽는다.",
+  "다시 넣는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.4절의 기본값은 열 번 만에 레코드를 조용히** 버렸다. **버리는 대신 다른 토픽에** 둔다.\n\n```java\nnew DefaultErrorHandler(new DeadLetterPublishingRecoverer(template), backOff);\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "재시도 두 모양",
+   "ascii": "   two shapes of retry\n\n   blocking      orders -> retry in place -> dlt\n                 the partition waits\n\n   non blocking  orders -> orders-retry-1 -> orders-retry-2 -> orders-dlt\n                 each hop has its own topic and its own consumer\n                 the original partition moves on immediately",
+   "note": "**아래쪽은 원래 파티션이 곧바로 앞으로** 나간다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 토픽으로 옮기나",
+   "md": "**실패한 레코드도** 데이터다.\n\n> **버리면 무엇이 왜 실패했는지 남는 게** 없다.\n> **토픽에 두면 `보관 기간` 동안 언제든 다시** 읽는다.\n> **그동안 원래 파티션은 안** 막힌다.\n\n**기본 이름은 원래 토픽 뒤에 `-dlt` 가** 붙는다 — **`orders` 면 `orders.DLT`**다. **파티션 번호도** 그대로 간다.\n\n```java\nnew DeadLetterPublishingRecoverer(template,\n        (record, ex) -> new TopicPartition(record.topic() + \".DLT\", record.partition()));\n```\n\n> **DLT 토픽은 미리 만들어 둬야** 한다 — **자동 생성이 꺼져 있으면 복구자마저 실패해서 원래 문제가 두 배가** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "죽은 레코드가 들고 가는 것",
+   "ascii": "   what travels with a dead record\n\n   original topic, partition, offset, timestamp\n   the exception class, message and stack trace\n   the number of attempts already made\n\n   enough to find the record and to replay it later",
+   "note": "**찾을 수 있고 다시 넣을 수 있을 만큼** 싣는다."
+  },
+  {
+   "type": "table",
+   "caption": "막는 재시도와 안 막는 재시도",
+   "columns": [
+    "",
+    "제자리(9.4)",
+    "재시도 토픽"
+   ],
+   "rows": [
+    [
+     "**파티션**",
+     "**막힌다**",
+     "**안 막힌다**"
+    ],
+    [
+     "**긴 대기**",
+     "**리밸런싱 위험**",
+     "**몇 분이든 된다**"
+    ],
+    [
+     "순서",
+     "지켜진다",
+     "**깨진다**"
+    ],
+    [
+     "토픽 수",
+     "1 + DLT",
+     "**단계마다 하나씩**"
+    ],
+    [
+     "설정",
+     "핸들러 하나",
+     "`@RetryableTopic`"
+    ],
+    [
+     "**쓸 자리**",
+     "**짧고 순서가 중요할 때**",
+     "**길게 기다려야 할 때**"
+    ]
+   ],
+   "note": "**순서가 깨지는 게 대가**다 — **같은 주문의 두 번째 이벤트가 첫 번째보다 먼저 처리될 수** 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OrderListener.java",
+   "caption": "재시도 토픽",
+   "code": "@RetryableTopic(\n        attempts = \"4\",\n        backoff = @Backoff(delay = 2_000, multiplier = 3.0),   // 2s, 6s, 18s\n        dltTopicSuffix = \".DLT\",\n        autoCreateTopics = \"true\",\n        exclude = { JsonProcessingException.class })\n@KafkaListener(topics = \"orders\", groupId = \"inventory\")\npublic void on(OrderEvent e) {\n    inventory.reserve(e);\n}\n\n@DltHandler\npublic void dead(OrderEvent e,\n                 @Header(KafkaHeaders.ORIGINAL_TOPIC) String topic,\n                 @Header(KafkaHeaders.ORIGINAL_OFFSET) long offset,\n                 @Header(KafkaHeaders.EXCEPTION_MESSAGE) String message) {\n    alerting.notify(\"처리 실패 %s@%d %s\".formatted(topic, offset, message));\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "DLT 를 만들어 놓고 안 보면 없는 것과 같다",
+   "md": "**가장 흔한 운영 실수**다.\n\n| 해 둘 것 | |\n|---|---|\n| **DLT 의 레코드 수를 감시** | 0 이 아니면 알림 (11.1절) |\n| **보관 기간을 길게** | 원본보다 길게 — 고칠 시간이 필요하다 |\n| **다시 넣는 도구** | **손으로 `kcat` 치지 말고 만들어 둔다** |\n| 파티션 수 | 원본과 같게 — 파티션 번호를 살리려면 |\n\n> **DLT 에 쌓이는 속도가 원본 처리 속도와 비슷해지면 그건 데드 레터가 아니라 그냥** 장애다.\n> **알림 기준은 \"0 보다 크면\" 이 아니라 \"분당 N 건 넘으면\" 이** 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "죽은 레코드를 열어 보고 다시 넣는다",
+   "sql": "$ kt --create --topic orders --partitions 3 --replication-factor 3 >/dev/null\n$ kt --create --topic orders.DLT --partitions 3 --replication-factor 3 >/dev/null\n\n$ java -jar app.jar --spring.profiles.active=dlt &\n\n\n# --- 실패를 섞어 넣는다 ---\n\n$ curl -s -X POST 'localhost:8080/fail-rate?value=0.01'\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 2000\nsent 2000\n\n$ sleep 30\n$ curl -s localhost:8080/processed/count\n1978\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 5000 | wc -l\n22\n\n$ python3 -c \"print('%d + %d = %d' % (1978, 22, 1978+22))\"\n1978 + 22 = 2000\n\n#   9.4절에서는 11건이 사라졌다\n#   여기선 22건이 다 남아 있다\n\n\n# --- 헤더를 읽는다 ---\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 3000 \\\n    --property print.headers=true --max-messages 1 | tr ',' '\\n' | head -12\nkafka_dlt-original-topic:orders\nkafka_dlt-original-partition:1\nkafka_dlt-original-offset:418\nkafka_dlt-original-timestamp:1789412204221\nkafka_dlt-exception-fqcn:java.lang.IllegalStateException\nkafka_dlt-exception-message:재고 없음 sku=A-1044\nkafka_dlt-exception-stacktrace:java.lang.IllegalStateException: 재고 없음...\nkafka_dlt-original-consumer-group:inventory\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 3000 \\\n    --property print.headers=true | grep -o 'exception-fqcn:[^,]*' \\\n    | sort | uniq -c | sort -rn\n  19 exception-fqcn:java.lang.IllegalStateException\n   3 exception-fqcn:org.springframework.dao.QueryTimeoutException\n\n#   무엇이 왜 죽었는지 세어진다\n\n\n# --- 파티션이 보존됐나 ---\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 3000 \\\n    --property print.partition=true --property print.headers=true \\\n    | awk '{print $1, $2}' | grep -o 'original-partition:[0-9]' | head -3\noriginal-partition:1\noriginal-partition:0\noriginal-partition:2\n\n$ java -cp 'out:libs/*' DltAudit --topic orders.DLT\nDLT 파티션과 원본 파티션이 같은 레코드: 22 / 22\n\n#   같은 파티션에 들어갔다\n\n\n# --- 파티션은 안 막혔나 ---\n\n$ kg --describe --group inventory | awk 'NR>1 {print $3, $6}'\n0 0\n1 0\n2 0\n\n$ grep '재시도' logs/app.log | sed -n '1p;3p' | cut -c1-12\n23:14:02.104\n23:14:10.118\n\n#   4회 재시도가 8초, 그동안은 여전히 막힌다\n#   @RetryableTopic 으로 바꾼다\n\n\n# --- 안 막는 재시도로 바꾼다 ---\n\n$ java -jar app.jar --spring.profiles.active=retry-topic &\n$ sleep 10 && kt --list | grep orders\norders\norders-retry-0\norders-retry-1\norders-retry-2\norders.DLT\n\n$ kg --list | grep inventory\ninventory\ninventory-retry-0\ninventory-retry-1\ninventory-retry-2\n\n#   단계마다 토픽과 컨슈머 그룹이 생겼다\n\n\n# --- 파티션이 안 막히는지 본다 ---\n\n$ curl -s -X POST 'localhost:8080/fail-partition?partition=1&count=1'\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 3000\n\n$ for i in 1 2 3 4; do\n    sleep 3\n    kg --describe --group inventory | awk 'NR>1 {printf \"%s:%s \", $3, $6}'\n    echo\n  done\n\n0:0 1:0 2:0 \n0:0 1:0 2:0 \n0:0 1:0 2:0 \n0:0 1:0 2:0 \n\n#   9.4절에서 812건이 기다리던 자리다\n#   원본 파티션은 곧바로 앞으로 갔다\n\n$ kg --describe --group inventory-retry-0 | awk 'NR>1 {print $2, $6}'\norders-retry-0 1\n\n#   실패한 하나가 재시도 토픽에 가 있다\n\n\n# --- 얼마나 걸리나 ---\n\n$ grep -E 'orders-retry|DLT' logs/app.log | grep 'received' | cut -c1-12,40-\n23:16:04.112 received from orders-retry-0 offset=0\n23:16:10.331 received from orders-retry-1 offset=0\n23:16:28.554 received from orders-retry-2 offset=0\n23:16:28.601 @DltHandler 처리 실패 orders@1204 재고 없음\n\n$ python3 -c \"print('2 + 6 + 18 = %d초' % (2+6+18))\"\n2 + 6 + 18 = 26초\n\n#   26초를 기다렸는데 원본은 안 막혔다\n\n\n# --- 다시 넣는다 ---\n\n$ cat replay.sh\n#!/bin/sh\nkcc --topic \"$1.DLT\" --from-beginning --timeout-ms 5000 \\\n    --property print.headers=true --property print.key=true \\\n  | java -cp 'out:libs/*' DltReplay --to \"$1\" --filter-exception \"$2\"\n\n$ psql -c \"update inventory set qty = qty + 100 where sku like 'A-%'\" >/dev/null\n\n$ ./replay.sh orders org.springframework.dao.QueryTimeoutException\n읽음 22\n조건에 맞음 3\n다시 넣음 3\n\n$ sleep 10 && curl -s localhost:8080/processed/count\n1981\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 5000 | wc -l\n22\n\n#   DLT 는 안 줄어든다 -- 읽기만 했다\n#   다시 넣은 3건이 이번엔 성공했다\n\n\n# --- 보관 기간을 길게 준다 ---\n\n$ kt --describe --topic orders | grep -o 'retention.ms=[0-9]*'\nretention.ms=604800000\n\n$ kt --alter --topic orders.DLT --add-config retention.ms=2592000000\nCompleted updating config for topic orders.DLT.\n\n$ kt --describe --topic orders.DLT | grep -o 'retention.ms=[0-9]*'\nretention.ms=2592000000\n\n$ python3 -c \"print('원본 %d일, DLT %d일' % (604800000/86400000, 2592000000/86400000))\"\n원본 7일, DLT 30일\n\n\n# --- 감시할 값을 정한다 ---\n\n$ java -cp 'out:libs/*' DltRate --topic orders.DLT --window 60\n분당 유입     0.4 건\n총 누적       22 건\n마지막 유입   4분 전\n\n$ curl -s localhost:8080/actuator/metrics/kafka.dlt.records | python3 -m json.tool | head -6\n{\n    \"name\": \"kafka.dlt.records\",\n    \"measurements\": [ { \"statistic\": \"COUNT\", \"value\": 22.0 } ]\n}\n\n#   11.1절에서 이 값을 감시 대상에 넣는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '기본'            '버림' \\\n  'DLT'             '2000 = 1978 + 22' \\\n  '헤더'            '원본 위치와 예외' \\\n  '파티션 번호'     '보존됨 22/22' \\\n  '제자리 재시도'   '여전히 막힘' \\\n  '재시도 토픽'     'LAG 0 유지' \\\n  '생기는 것'       '토픽 3개 그룹 3개' \\\n  '총 대기'         '26초' \\\n  '순서'            '깨짐' \\\n  '다시 넣기'       '조건으로 3건' \\\n  '보관'            '원본 7일 DLT 30일'\n\n기본                       버림\nDLT                        2000 = 1978 + 22\n헤더                       원본 위치와 예외\n파티션 번호                보존됨 22/22\n제자리 재시도              여전히 막힘\n재시도 토픽                LAG 0 유지\n생기는 것                  토픽 3개 그룹 3개\n총 대기                    26초\n순서                       깨짐\n다시 넣기                  조건으로 3건\n보관                       원본 7일 DLT 30일",
+   "note": "**9.4절에서 사라지던 레코드가 `1978 + 22 = 2000` 으로 하나도 안** 없어진다.\n\n**헤더에 원본 토픽·파티션·오프셋과 예외 클래스가 실려 예외별로 세어진다**(IllegalState 19, QueryTimeout 3).\n\n**`@RetryableTopic` 으로 바꾸니 26초를 기다리는 동안에도 원본 LAG 이 계속 0**이다.\n\n**단계마다 토픽과 컨슈머 그룹이 생겨 `orders-retry-0/1/2` 와 같은 이름의 그룹이** 함께 난다.\n\n**예외 종류로 걸러 3건만 다시 넣었고 DLT 자체는 22건 그대로** 남는다."
+  }
+ ],
+ "recap": [
+  "복구자를 붙이면 재시도를 다 쓴 레코드가 버려지는 대신 DLT 로 간다.",
+  "원본 토픽·파티션·오프셋과 예외 정보가 헤더로 함께 실린다.",
+  "제자리 재시도는 여전히 파티션을 막는다. 길게 기다려야 하면 재시도 토픽을 쓴다.",
+  "재시도 토픽은 단계마다 토픽과 컨슈머 그룹을 만들고 순서 보장을 포기한다.",
+  "DLT 는 감시와 재투입 도구가 같이 있어야 의미가 있다."
+ ],
+ "drills": [
+  {
+   "task": "복구자를 붙이고 실패를 섞어 원본 처리 수와 DLT 수의 합을 맞춰 본다.",
+   "done_when": "하나도 안 사라진 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "DLT 레코드의 헤더를 찍고 예외 종류별로 세어 본다.",
+   "done_when": "무엇이 왜 죽었는지 표로 만든다.",
+   "minutes": 12
+  },
+  {
+   "task": "@RetryableTopic 으로 바꾸고 실패 중 원본 LAG 을 찍는다.",
+   "done_when": "파티션이 안 막히는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외 종류로 걸러 다시 넣는 스크립트를 만든다.",
+   "done_when": "조건에 맞는 것만 재처리되는 것을 확인한다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "복구자가 하는 일은.",
+   "a": "재시도를 다 쓴 레코드를 버리지 않고 데드 레터 토픽으로 보낸다."
+  },
+  {
+   "q": "DLT 레코드에 무엇이 실리나.",
+   "a": "원본 토픽·파티션·오프셋·타임스탬프와 예외 클래스·메시지·스택트레이스다."
+  },
+  {
+   "q": "재시도 토픽이 제자리 재시도와 다른 점은.",
+   "a": "원본 파티션을 안 막는 대신 순서 보장을 잃는다."
+  },
+  {
+   "q": "DLT 알림 기준을 어떻게 잡나.",
+   "a": "0 보다 크면이 아니라 유입 속도로 잡는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "데드 레터 토픽",
+   "what": "처리에 실패한 레코드를 모아 두는 별도 토픽."
+  },
+  {
+   "term": "@RetryableTopic",
+   "what": "단계별 재시도 토픽을 만들어 원본 파티션을 안 막는 방식."
+  },
+  {
+   "term": "재투입",
+   "what": "DLT 의 레코드를 고친 뒤 원본 토픽으로 다시 넣는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Non-Blocking Retries",
+   "url": "https://docs.spring.io/spring-kafka/reference/retrytopic.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring for Apache Kafka — Handling Exceptions",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring for Apache Kafka — Reference",
+   "url": "https://docs.spring.io/spring-kafka/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

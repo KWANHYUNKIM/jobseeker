@@ -506,7 +506,7 @@
           "title": "spring-kafka 설정",
           "summary": "프로퍼티가 곧 클라이언트 설정이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -514,7 +514,7 @@
           "title": "KafkaTemplate",
           "summary": "보내고 결과를 받는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -522,7 +522,7 @@
           "title": "@KafkaListener",
           "summary": "컨슈머 루프를 대신 돌려 준다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
@@ -530,7 +530,7 @@
           "title": "에러 핸들러와 재시도",
           "summary": "예외가 나면 어디로 가나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -538,7 +538,7 @@
           "title": "데드 레터 토픽",
           "summary": "못 처리한 것을 버리지 않는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",

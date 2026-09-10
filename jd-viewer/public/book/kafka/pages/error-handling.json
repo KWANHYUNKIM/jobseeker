@@ -1,0 +1,174 @@
+{
+ "book": "kafka",
+ "id": "error-handling",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "에러 핸들러와 재시도",
+ "summary": "예외가 나면 어디로 가나.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "기본 동작을 안다.",
+  "재시도 정책을 정한다.",
+  "막히는 재시도와 안 막히는 재시도를 가른다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.3절의 리스너가 예외를 던지면 컨슈머 루프는 안** 죽는다. **컨테이너가 가로채서 어디로 보낼지** 정한다.\n\n```java\n@KafkaListener(topics = \"orders\")\npublic void on(OrderEvent e) {\n    inventory.reserve(e);      // 여기서 예외가 나면?\n}\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "예외가 가는 길",
+   "ascii": "   where an exception goes\n\n   listener throws\n      |\n   [ error handler ]\n      |                    |\n   retryable            not retryable\n      |                    |\n   seek back, poll again   skip, hand to the recoverer\n\n   the container never lets the exception reach the poll loop",
+   "note": "**예외가 `poll()` 루프까지 올라가는 일은** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "기본값 — DefaultErrorHandler",
+   "columns": [
+    "",
+    "값",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "**재시도 횟수**",
+     "**9회 + 최초 1회**",
+     "합쳐서 10번 처리한다"
+    ],
+    [
+     "**간격**",
+     "**0ms**",
+     "쉬지 않고 바로 다시 한다"
+    ],
+    [
+     "**방식**",
+     "**같은 자리에서**",
+     "`seek()` 으로 되돌아가 다시 `poll`"
+    ],
+    [
+     "다 실패하면",
+     "로그 찍고 넘어감",
+     "**오프셋이 커밋된다 — 그 레코드는 사라진다**"
+    ],
+    [
+     "**커밋 시점**",
+     "**성공 또는 포기 후**",
+     "그 전에는 커밋 안 함"
+    ]
+   ],
+   "note": "**기본값 그대로 두면 실패한 레코드가 열 번 만에 조용히** 버려진다 — **9.5절이 이걸** 고친다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재시도할 것과 아닌 것을 먼저 가른다",
+   "md": "**같은 입력으로 다시 해서 될 것만 재시도할** 값이 있다.\n\n| 재시도해야 | 재시도하면 안 되는 |\n|---|---|\n| **DB 커넥션 끊김** | **역직렬화 실패** |\n| **일시적 타임아웃** | **필수 필드 없음** |\n| 락 경합 | **비즈니스 규칙 위반** |\n| 다운스트림 503 | 다운스트림 400 |\n\n```java\nDefaultErrorHandler handler = new DefaultErrorHandler(recoverer, backOff);\nhandler.addNotRetryableExceptions(\n        JsonProcessingException.class,\n        IllegalArgumentException.class);\nhandler.addRetryableExceptions(\n        TransientDataAccessException.class);\n```\n\n> **역직렬화 실패는 몇 번을 다시 해도 같은 바이트라 같은** 예외다.\n> **그걸 열 번 하는 동안 그 파티션이** 멈춘다."
+  },
+  {
+   "type": "figure",
+   "caption": "제자리 재시도가 막는 것",
+   "ascii": "   why retrying in place stops the partition\n\n   partition 0:  [r1][r2 failing][r3][r4][r5]...\n                      ^ retried here, 10 times, 1s apart\n\n   r3 onward wait 10 seconds for a record that is not theirs",
+   "note": "**r3 뒤는 자기와 상관없는 레코드 때문에 10초를** 기다린다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "KafkaConfig.java",
+   "caption": "지수 백오프와 복구자",
+   "code": "@Bean\npublic DefaultErrorHandler errorHandler(KafkaTemplate<String, Object> template) {\n\n    ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(4);\n    backOff.setInitialInterval(1_000L);\n    backOff.setMultiplier(2.0);\n    backOff.setMaxInterval(10_000L);          // 1s, 2s, 4s, 8s\n\n    DeadLetterPublishingRecoverer recoverer =\n            new DeadLetterPublishingRecoverer(template);   // 9.5절\n\n    DefaultErrorHandler handler = new DefaultErrorHandler(recoverer, backOff);\n    handler.addNotRetryableExceptions(JsonProcessingException.class);\n    handler.setCommitRecovered(true);\n\n    handler.setRetryListeners((record, ex, attempt) ->\n            log.warn(\"재시도 {}회 offset={} {}\", attempt, record.offset(), ex.getMessage()));\n\n    return handler;\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "max.poll.interval.ms 를 넘기면 리밸런싱이 난다",
+   "md": "**재시도 시간이 길어지면 다음 `poll()` 이** 늦어진다.\n\n```\n1s + 2s + 4s + 8s = 15s      -- 괜찮다\n1s x 10 + 처리 5s = 15s      -- 괜찮다\n30s x 5 = 150s               -- 기본 max.poll.interval.ms(300s) 안이다\n60s x 10 = 600s              -- 넘는다. 그룹에서 쫓겨난다\n```\n\n> **쫓겨나면 리밸런싱이 나고 그 파티션을 받은 다른 컨슈머가 처음부터 다시** 처리한다.\n> **재시도하다가 중복이 생기는** 경로다.\n\n**긴 재시도가 필요하면 제자리에서 하면 안** 된다 — **다른 토픽으로 넘겨서 시간을 버는 게 9.5절의 방식**이다.\n\n**컨테이너는 이걸 미리** 알려 준다 — **백오프 합이 `max.poll.interval.ms` 를 넘으면 기동 때 경고가** 찍힌다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "예외를 던져 놓고 LAG 을 본다",
+   "sql": "$ kt --create --topic orders --partitions 3 --replication-factor 3 >/dev/null\n\n$ java -jar app.jar --spring.profiles.active=default &\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 1000\nsent 1000\n\n\n# --- 기본 에러 핸들러 ---\n\n$ curl -s -X POST 'localhost:8080/fail-rate?value=0.01'\nfailRate=0.01\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 1000\n$ sleep 20\n\n$ grep -c 'Backoff none exhausted' logs/app.log\n11\n\n$ grep 'Backoff none exhausted' logs/app.log | head -2 | cut -c40-\nERROR o.s.k.l.DefaultErrorHandler : Backoff none exhausted for\n  orders-1@418\nERROR o.s.k.l.DefaultErrorHandler : Backoff none exhausted for\n  orders-0@377\n\n$ curl -s localhost:8080/processed/count\n1989\n\n$ python3 -c \"print('버려진 레코드 %d건' % (2000-1989))\"\n버려진 레코드 11건\n\n#   열 번 시도하고 조용히 넘어갔다\n#   오프셋은 커밋됐다 -- 다시 읽을 방법이 없다\n\n$ kg --describe --group inventory | awk 'NR>1 {print $3, $6}'\n0 0\n1 0\n2 0\n\n#   LAG 은 0 이다. 아무 문제 없어 보인다\n\n\n# --- 몇 번 돌았나 ---\n\n$ grep -c 'reserve() 호출' logs/app.log\n2110\n\n$ python3 -c \"print('%d번 헛돌았다' % (2110-2000))\"\n110번 헛돌았다\n\n#   실패한 11건이 각각 10번씩 돌았다\n\n\n# --- 역직렬화 실패를 섞는다 ---\n\n$ kcp --topic orders <<< 'this is not json'\n\n$ sleep 15\n$ grep -c 'JsonProcessingException' logs/app.log\n10\n\n$ grep 'Backoff none exhausted' logs/app.log | tail -1 | cut -c40-\nERROR o.s.k.l.DefaultErrorHandler : Backoff none exhausted for orders-2@669\n\n#   같은 바이트로 열 번 다시 했다\n#   될 리가 없다\n\n\n# --- 그동안 그 파티션이 막힌다 ---\n\n$ curl -s -X POST 'localhost:8080/fail-rate?value=0'\n$ java -jar app.jar --spring.profiles.active=backoff &\n\n$ curl -s -X POST 'localhost:8080/fail-partition?partition=1&count=1'\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 3000\n\n$ for i in 1 2 3 4 5 6; do\n    sleep 3\n    kg --describe --group inventory | awk 'NR>1 {printf \"%s:%s \", $3, $6}'\n    echo\n  done\n\n0:0 1:812 2:0 \n0:0 1:809 2:0 \n0:0 1:806 2:0 \n0:0 1:803 2:0 \n0:0 1:0 2:0 \n0:0 1:0 2:0 \n\n#   파티션 1 만 15초 동안 거의 안 줄었다\n#   레코드 하나 때문에 812건이 기다렸다\n\n$ grep '재시도' logs/app.log | cut -c40- | head -5\nWARN  재시도 1회 offset=1204 reserve failed\nWARN  재시도 2회 offset=1204 reserve failed\nWARN  재시도 3회 offset=1204 reserve failed\nWARN  재시도 4회 offset=1204 reserve failed\n\n$ grep '재시도' logs/app.log | head -4 | awk '{print $1}' \nWARN\n\n$ grep '재시도' logs/app.log | sed -n '1p;4p' | cut -c1-12\n23:11:04.221\n23:11:19.238\n\n$ python3 -c \"print('%.1f초 걸렸다' % (19.238-4.221))\"\n15.0초 걸렸다\n\n#   1 + 2 + 4 + 8 = 15 다\n\n\n# --- 재시도 안 할 것을 등록한다 ---\n\n$ java -jar app.jar --spring.profiles.active=classified &\n\n$ kcp --topic orders <<< 'this is not json'\n$ sleep 5\n\n$ grep -c 'JsonProcessingException' logs/app.log\n1\n\n$ grep 'not retryable' logs/app.log | cut -c40-\nWARN  o.s.k.l.DefaultErrorHandler : Record not retryable, sending to recoverer:\n  orders-2@670\n\n$ kg --describe --group inventory | awk 'NR>1 {print $3, $6}'\n0 0\n1 0\n2 0\n\n#   한 번에 넘어갔다\n#   열 번이 한 번이 됐다\n\n\n# --- max.poll.interval.ms 를 넘겨 본다 ---\n\n$ java -jar app.jar --spring.profiles.active=long-backoff \\\n    --spring.kafka.consumer.properties.max.poll.interval.ms=30000 &\n\n$ grep -i 'backoff' logs/app.log | grep -i 'poll' | cut -c40-\nWARN  o.s.k.l.KafkaMessageListenerContainer : Consumer configured with\n  max.poll.interval.ms=30000 but the retry backoff may take up to 62000ms;\n  a rebalance may occur\n\n$ curl -s -X POST 'localhost:8080/fail-partition?partition=0&count=1'\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 100\n\n$ sleep 45\n$ grep -c 'Attempt to heartbeat failed' logs/app.log\n1\n$ grep 'rebalance' logs/app.log | tail -2 | cut -c40-\nINFO  Member consumer-inventory-1 sending LeaveGroup request\nINFO  (Re-)joining group\n\n$ curl -s localhost:8080/processed/count\n107\n\n$ python3 -c \"print('중복 %d건' % (107-100))\"\n중복 7건\n\n#   쫓겨났다 돌아오면서 7건을 다시 처리했다\n#   재시도가 중복을 만드는 경로다\n\n\n# --- 재시도 횟수를 로그로 남긴다 ---\n\n$ grep '재시도' logs/app.log | awk '{print $3}' | sort | uniq -c | sort -rn\n  47 1회\n  12 2회\n   4 3회\n   1 4회\n\n#   1회에서 대부분 성공한다\n#   2회 이상이 는다면 다운스트림을 봐야 한다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '기본'            '10번, 간격 0' \\\n  '다 실패하면'     '조용히 버림' \\\n  'LAG'             '0 이라 안 보임' \\\n  '헛돈 횟수'       '110번' \\\n  '역직렬화'        '열 번 해도 같음' \\\n  '분류'            '열 번이 한 번' \\\n  '제자리 재시도'   '파티션이 막힘' \\\n  '막힌 시간'       '15초에 812건' \\\n  'max.poll 초과'   '리밸런싱' \\\n  '그 결과'         '중복 7건' \\\n  '경고'            '기동 때 미리 알림'\n\n기본                       10번, 간격 0\n다 실패하면                조용히 버림\nLAG                        0 이라 안 보임\n헛돈 횟수                  110번\n역직렬화                   열 번 해도 같음\n분류                       열 번이 한 번\n제자리 재시도              파티션이 막힘\n막힌 시간                  15초에 812건\nmax.poll 초과              리밸런싱\n그 결과                    중복 7건\n경고                       기동 때 미리 알림",
+   "note": "**기본값으로 두면 실패한 11건이 열 번씩 돌고 조용히 버려지는데 LAG 은 0 이라 안** 보인다.\n\n**역직렬화 실패도 같은 바이트로 열 번 다시 하고, 재시도 제외로 등록하면 한 번에** 넘어간다.\n\n**레코드 하나가 15초 재시도하는 동안 그 파티션의 812건이 같이** 기다린다.\n\n**백오프 합이 `max.poll.interval.ms` 를 넘으면 기동 때 경고가 찍히고 실제로 쫓겨나 중복 7건이** 생긴다.\n\n**재시도 횟수 분포가 1회 47건·2회 12건으로 대부분 첫 재시도에서** 끝난다."
+  }
+ ],
+ "recap": [
+  "리스너의 예외는 컨테이너가 가로채고 컨슈머 루프는 안 죽는다.",
+  "기본은 간격 없이 10번 하고 실패하면 로그만 남기고 오프셋을 커밋한다 — 레코드가 사라진다.",
+  "재시도해도 될 것과 안 될 것을 등록해서 갈라야 한다. 역직렬화 실패는 열 번 해도 같다.",
+  "제자리 재시도는 그 파티션 전체를 멈춘다.",
+  "백오프 합이 max.poll.interval.ms 를 넘으면 쫓겨나고 리밸런싱이 중복을 만든다."
+ ],
+ "drills": [
+  {
+   "task": "실패율을 주고 기본 핸들러로 돌려 버려진 건수와 LAG 을 확인한다.",
+   "done_when": "LAG 이 0 인데 레코드가 사라진 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "잘못된 JSON 을 넣고 재시도 횟수를 센 뒤 재시도 제외로 등록한다.",
+   "done_when": "열 번이 한 번이 되는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "한 파티션의 레코드 하나만 실패시키고 그 파티션 LAG 을 주기적으로 찍는다.",
+   "done_when": "다른 레코드가 같이 막히는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "백오프 합을 max.poll.interval.ms 보다 크게 주고 무슨 일이 나는지 본다.",
+   "done_when": "리밸런싱과 중복 처리를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 에러 핸들러가 다 실패한 뒤 하는 일은.",
+   "a": "로그를 남기고 오프셋을 커밋한다. 그 레코드는 다시 못 읽는다."
+  },
+  {
+   "q": "역직렬화 실패를 재시도하면 안 되는 이유는.",
+   "a": "같은 바이트라 결과가 같고 그동안 파티션이 막힌다."
+  },
+  {
+   "q": "제자리 재시도의 대가는.",
+   "a": "그 파티션의 뒤쪽 레코드가 전부 같이 기다린다."
+  },
+  {
+   "q": "백오프가 max.poll.interval.ms 를 넘으면.",
+   "a": "그룹에서 쫓겨나 리밸런싱이 나고 중복 처리가 생긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "DefaultErrorHandler",
+   "what": "리스너 예외를 받아 재시도와 복구를 결정하는 기본 핸들러."
+  },
+  {
+   "term": "백오프",
+   "what": "재시도 사이에 쉬는 간격. 고정이나 지수로 준다."
+  },
+  {
+   "term": "복구자",
+   "what": "재시도를 다 쓴 레코드를 넘겨받는 곳. 보통 데드 레터로 보낸다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Handling Exceptions",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring for Apache Kafka — Reference",
+   "url": "https://docs.spring.io/spring-kafka/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Apache Kafka — Consumer Configs",
+   "url": "https://kafka.apache.org/documentation/#consumerconfigs",
+   "publisher": "Apache"
+  }
+ ]
+}
