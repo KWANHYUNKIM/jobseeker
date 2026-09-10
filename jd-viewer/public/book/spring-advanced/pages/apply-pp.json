@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-pp",
+ "no": "8.3",
+ "chapter": 8,
+ "title": "적용한다",
+ "summary": "설정이 하나로 준다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "설정을 하나로 줄인다.",
+  "돌려받은 것을 확인한다.",
+  "네 장을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.2절에서 자리를** 찾았다. **세 버전에 다** 붙인다."
+  },
+  {
+   "type": "figure",
+   "caption": "네 장의 설정",
+   "ascii": "   the configuration across four chapters\n\n   five     one class per target, wired by hand\n   six      no classes, still one method per bean\n   seven    one advisor, still one method per bean\n   eight    one advisor, no methods at all\n\n   only the last line stops growing with the codebase",
+   "note": "**코드가 늘어도 안 늘어나는 건 마지막 줄**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "설정이 코드 크기를 안 따라간다",
+   "md": "**빈 메서드가** 사라진다.\n\n> **8.1절에서 여섯**이었다.\n> **아래에서 0 개로** 만든다.\n> **묶음만** 남는다.\n\n**클래스가 늘어도 안** 는다.\n\n> **8.2절에서** 확인했다.\n> **아래에서 다시** 센다.\n> **이게 제일 큰** 차이다.\n\n**돌려받는 것도** 있다.\n\n> **애너테이션과 주입과 스캔**이다.\n> **5.5절에서 다** 버렸다.\n> **아래에서 되찾는**다.\n\n**세 버전이 다** 된다.\n\n> **인터페이스가 있든** 없든.\n> **7.1절이 알아서** 고른다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "돌려받는 셋",
+   "ascii": "   what comes back once the config stops building beans\n\n   the stereotype annotations on the original classes\n   constructor injection done by the container\n   component scanning finding new classes by itself\n\n   all three were given up in chapter five",
+   "note": "**셋 다 5장에서 내줬던** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "거르개가 이제 유일한 방어선이다",
+   "md": "**설정이 안** 거른다.\n\n> **8.1절에서는 목록이** 있었다.\n> **이제 다** 지나간다.\n> **아래에서 그 수를** 센다.\n\n**넓으면 다** 걸린다.\n\n> **1.2절에서 142 줄이** 됐다.\n> **아래에서 다시** 겪는다.\n> **8.6절에서 그걸** 판다.\n\n**패키지로 거르는 건** 거칠다.\n\n> **8.2절에서 그렇게** 했다.\n> **아래에서 그 값을** 센다.\n> **11장이 제대로 좁힌**다.\n\n**모르는 사이에 감싸진**다.\n\n> **어떤 빈이 감싸졌는지** 모른다.\n> **7.6절의 창구가** 필요하다.\n> **아래에서 그걸** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 설정을 다 지운다\n\n$ git rm -q src/main/java/study/adv/factory/ProxyFactoryConfig.java\n\n@Configuration\npublic class PostProcessorConfig {\n\n    @Bean\n    public Advisor logTraceAdvisor(LogTrace trace) {\n        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n        pointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\");\n        return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n    }\n\n    @Bean\n    public ProxyPostProcessor proxyPostProcessor(Advisor advisor) {\n        return new ProxyPostProcessor(advisor);\n    }\n}\n\n$ grep -c '@Bean' src/main/java/study/adv/post/PostProcessorConfig.java\n2\n$ wc -l < src/main/java/study/adv/post/PostProcessorConfig.java\n      18\n\n// 8.1 절에서는\n$ git show v8-done:src/main/java/study/adv/factory/ProxyFactoryConfig.java \\\n    | grep -c '@Bean'\n7\n\n--   빈 메서드가 일곱에서 둘이 됐다\n\n\n-- 원본에 애너테이션을 되돌린다\n\n@Service\npublic class OrderServiceV1Impl implements OrderServiceV1 { ... }\n\n@Repository\npublic class OrderRepositoryV1Impl implements OrderRepositoryV1 { ... }\n\n@RestController\npublic class OrderControllerV1Impl implements OrderControllerV1 { ... }\n\n$ grep -c '@Service\\|@Repository\\|@RestController' \\\n    src/main/java/study/adv/app/*.java | awk -F: '{s+=$2} END {print s}'\n9\n\n// 5.5 절에서는\n0\n\n--   9 개가 돌아왔다\n\n\n-- 주입도 돌아왔다\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV1Impl implements OrderServiceV1 {\n    private final OrderRepositoryV1 orderRepository;    // 컨테이너가 채운다\n}\n\n$ grep -rn 'new OrderServiceV1Impl' src/main/java\n(없음)\n\n$ curl -s 'localhost:8080/proxy/target?name=orderServiceV1Impl' | head -1\n대상 원본:   study.adv.app.OrderServiceV1Impl@4f21a1c9\n\n$ curl -s -o /dev/null -w '%{http_code}\\n' 'localhost:8080/v1/request?itemId=연필'\n200\n\n--   7.7 절에서 손으로 넘기던 것이다\n--   내가 만드는 줄이 하나도 없다\n\n\n-- 세 버전이 다 된다\n\n$ curl -s localhost:8080/who/all | grep -E 'V1|V2|V3'\norderControllerV1Impl  study.adv.app.OrderControllerV1Impl$$SpringCGLIB$$0\norderServiceV1Impl     study.adv.app.OrderServiceV1Impl$$SpringCGLIB$$0\norderRepositoryV1Impl  study.adv.app.OrderRepositoryV1Impl$$SpringCGLIB$$0\norderControllerV2      study.adv.app.OrderControllerV2$$SpringCGLIB$$0\norderServiceV2         study.adv.app.OrderServiceV2$$SpringCGLIB$$0\norderRepositoryV2      study.adv.app.OrderRepositoryV2$$SpringCGLIB$$0\norderControllerV3      study.adv.app.OrderControllerV3$$SpringCGLIB$$0\norderServiceV3         study.adv.app.OrderServiceV3$$SpringCGLIB$$0\norderRepositoryV3      study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n\n$ for v in v1 v2 v3; do\n    curl -s -o /dev/null \"localhost:8080/$v/request?itemId=연필\"\n  done\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 \\\n    | grep -oE '\\[[0-9a-f]{8}\\]' | sort -u | wc -l\n3\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 | cut -c56- \\\n    | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V[123]//g; s/Impl//g' | sort -u | wc -l\n6\n\n--   세 버전이 여섯 가지 줄뿐이다\n--   5.8 절에서 본 그 확인이다\n\n\n-- 인터페이스가 있는데 CGLIB 이다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV1Impl'\n주입된 것: study.adv.app.OrderServiceV1Impl$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n원본:      study.adv.app.OrderServiceV1Impl\n\n$ grep -n 'setProxyTargetClass' src/main/java/study/adv/post/ProxyPostProcessor.java\n(없음)\n\n$ curl -s localhost:8080/actuator/configprops | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nfor k, v in b.items():\n    if k.startswith('spring.aop'): print(v['properties'])\"\n{'proxyTargetClass': True, 'auto': True}\n\n--   1.4 절에서 본 그 설정이다\n--   8.4 절에서 이게 어디서 오는지 본다\n\n\n-- 애너테이션 문제가 사라졌다\n\n$ curl -s localhost:8080/actuator/mappings | python3 -c \"\nimport json,sys\nm = json.load(sys.stdin)['contexts']['application']['mappings']\nd = m['dispatcherServlets']['dispatcherServlet']\nfor x in d:\n    if 'v1/request' in str(x.get('predicate','')): print(x['handler'][:60])\"\nstudy.adv.app.OrderControllerV1Impl$$SpringCGLIB$$0#request(String)\n\n$ grep -n '@GetMapping' src/main/java/study/adv/app/OrderControllerV1Impl.java\n18:    @GetMapping(\"/v1/request\")\n\n$ grep -c '@GetMapping' src/main/java/study/adv/app/OrderControllerV1.java\n0\n\n--   5.2 절과 6.4 절에서 인터페이스로 옮겼었다\n--   상속 방식이라 구현에 둬도 된다\n--   5.6 절에서 본 그것이다\n\n\n-- 새 클래스를 만든다\n\n@Service\npublic class PaymentServiceV1 {\n    public void pay(int won) { log.info(\"결제 {}\", won); }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | tail -1\n감쌈 paymentServiceV1 -> PaymentServiceV1\n\n$ git diff --stat src/main/java/study/adv/post/\n\n$ curl -s -o /dev/null 'localhost:8080/pay?won=1000'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n(없음)\n\n$ grep -o 'setMappedNames(.*)' src/main/java/study/adv/post/PostProcessorConfig.java\nsetMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\")\n\n--   설정은 안 고쳤는데 감싸졌다\n--   그런데 pay 가 거르개에 없어 로그가 없다\n--   깜빡함이 설정에서 거르개로 옮겨 갔다\n\n\n-- 거르개에 더한다\n\npointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\", \"join*\", \"pay*\");\n\n$ curl -s -o /dev/null 'localhost:8080/pay?won=1000'\n$ grep 'study.adv.trace' logs/app.log | tail -2 | cut -c56-\n[796bccd9] PaymentServiceV1.pay()\n[796bccd9] PaymentServiceV1.pay() time=2ms\n\n$ git diff --stat\n PostProcessorConfig.java | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)\n\n--   한 줄이다\n--   8.1 절에서는 여덟 줄이었다\n\n\n-- 네 장을 견준다\n\n$ printf '%-10s %-16s %-14s %-12s %s\\n' \\\n  '5 장'  '프록시 9 개'  '설정 32 줄'  '빈 6 개'  '스캔 불가' \\\n  '6 장'  '프록시 0 개'  '설정 84 줄'  '빈 6 개'  '스캔 불가' \\\n  '7 장'  '프록시 0 개'  '설정 52 줄'  '빈 6 개'  '스캔 불가' \\\n  '8 장'  '프록시 0 개'  '설정 18 줄'  '빈 0 개'  '스캔 가능'\n\n5 장       프록시 9 개     설정 32 줄    빈 6 개    스캔 불가\n6 장       프록시 0 개     설정 84 줄    빈 6 개    스캔 불가\n7 장       프록시 0 개     설정 52 줄    빈 6 개    스캔 불가\n8 장       프록시 0 개     설정 18 줄    빈 0 개    스캔 가능\n\n\n-- 클래스가 늘 때를 견준다\n\n$ printf '%-10s %s\\n' \\\n  '5 장'  '프록시 클래스 1 개 + 설정 3 줄' \\\n  '6 장'  '설정 5 줄' \\\n  '7 장'  '설정 3 줄' \\\n  '8 장'  '0 줄 (거르개에 없으면 1 줄)'\n\n5 장       프록시 클래스 1 개 + 설정 3 줄\n6 장       설정 5 줄\n7 장       설정 3 줄\n8 장       0 줄 (거르개에 없으면 1 줄)\n\n--   설정이 코드 크기를 안 따라간다\n\n\n-- 그런데 다 지나간다\n\n$ ./gradlew bootRun 2>&1 | grep -c '후처리 호출'\n191\n\n$ ./gradlew bootRun 2>&1 | grep -c '감쌈'\n10\n\n$ curl -s localhost:8080/proxy/census\n전체 빈:      191\n프록시:        24\n  JDK:          4\n  CGLIB:       20\n어드바이저 합계: 31\n\n--   191 번 불려서 10 개를 감쌌다\n--   8.1 절에서는 설정이 여섯을 골랐다\n\n\n-- 패키지로 거르는 값\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈'\n감쌈 orderControllerV1Impl\n감쌈 orderServiceV1Impl\n감쌈 orderRepositoryV1Impl\n감쌈 orderControllerV2\n감쌈 orderServiceV2\n감쌈 orderRepositoryV2\n감쌈 orderControllerV3\n감쌈 orderServiceV3\n감쌈 orderRepositoryV3\n감쌈 paymentServiceV1\n\n$ curl -s localhost:8080/proxy/census/detail | grep -c '0 개'\n0\n\n--   전부 어드바이저가 하나씩 붙었다\n--   그런데 거르개가 안 맞으면 붙어도 안 돈다\n\n\n-- 붙었는데 안 도는 것\n\n@Service\npublic class ClockService {\n    public String now() { return Instant.now().toString(); }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | tail -1\n감쌈 clockService -> ClockService\n\n$ curl -s -o /dev/null 'localhost:8080/now'\n$ grep -c 'ClockService' logs/app.log\n0\n\n$ curl -s 'localhost:8080/advisor/matrix?bean=clockService'\n메서드         걸린 어드바이저\nnow            []\n\n$ curl -s 'localhost:8080/bench/proxy?n=10000000&bean=clockService'\n프록시 통과: 284 ms\n$ curl -s 'localhost:8080/bench/proxy?n=10000000&mode=no-proxy'\n프록시 없이:  24 ms\n\n--   감쌌는데 아무것도 안 한다\n--   값만 치른다\n--   8.7 절에서 이걸 없앤다\n\n\n-- 넓게 걸면\n\npointcut.setMappedNames(\"*\");\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n38\n\n// 좁히면\npointcut.setMappedNames(\"order*\", \"find*\", \"save*\", \"request*\");\n\n$ curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n--   1.2 절에서 142 줄과 2 줄이었다\n--   8.6 절에서 이걸 판다\n\n\n-- 무엇이 감싸졌는지 본다\n\n$ curl -s localhost:8080/proxy/census/detail | head -6\norderControllerV1Impl     CGLIB  1 개  [LogTraceAdvice]\norderServiceV1Impl        CGLIB  1 개  [LogTraceAdvice]\norderRepositoryV1Impl     CGLIB  1 개  [LogTraceAdvice]\norderServiceImpl          CGLIB  2 개  [TransactionInterceptor, LogTraceAdvice]\ncacheService              CGLIB  1 개  [CacheInterceptor]\ntransactionManager        JDK    0 개  []\n\n--   7.6 절의 창구다\n--   설정을 읽는 대신 물어본다\n\n\n-- 스캔 비율이 뒤집혔다\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nb = json.load(sys.stdin)['contexts']['application']['beans']\nimport collections\nc = collections.Counter()\nfor k, v in b.items():\n    c['스캔' if '.class]' in str(v.get('resource')) else '설정'] += 1\nprint(dict(c))\"\n{'스캔': 146, '설정': 45}\n\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | wc -l\n      10\n$ ./gradlew bootRun 2>&1 | grep '감쌈' | grep -c 'V3\\|payment'\n4\n\n--   8.1 절에서 76% 가 못 닿는다고 했다\n--   이제 다 닿는다\n\n\n-- 파일을 센다\n\n$ ls src/main/java/study/adv/post/\nLogTraceAdvice.java\nPostProcessorConfig.java\nProxyPostProcessor.java\n\n$ wc -l src/main/java/study/adv/post/*.java | tail -1\n      70 total\n\n// 5 장 끝에서는\n$ python3 -c \"print('프록시 9 개 412 줄 + 설정 32 줄 =', 412+32)\"\n프록시 9 개 412 줄 + 설정 32 줄 = 444\n\n--   444 줄이 70 줄이 됐다\n\n\n-- 업무 코드는 v0 그대로다\n\n$ grep -c 'trace\\|Trace\\|try {' src/main/java/study/adv/app/*.java \\\n    | awk -F: '{s+=$2} END {print s}'\n0\n\n$ diff <(git show v0:src/main/java/study/adv/OrderService.java \\\n           | sed -n '/public void orderItem/,/^    }/p') \\\n       <(sed -n '/public void orderItem/,/^    }/p' \\\n           src/main/java/study/adv/app/OrderServiceV3.java) \\\n  && echo '같음'\n같음\n\n--   2.1 절의 그 메서드다\n\n\n-- 확인한다\n\n$ for v in v1 v2 v3; do\n    curl -s -o /dev/null \"localhost:8080/$v/request?itemId=연필\"\n  done\n\n$ grep 'study.adv.trace' logs/app.log | tail -18 | wc -l\n      18\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n원본:      study.adv.app.OrderServiceV3\n\n$ grep -c '@Bean' src/main/java/study/adv/post/PostProcessorConfig.java\n2\n\n$ git add -A && git commit -q -m 'feat: v9 적용' && git tag v9-apply\n\n--   8.4 절에서 부트가 이미 넣어 둔 것을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '빈 메서드'   '7 에서 2' \\\n  '설정'        '52 에서 18 줄' \\\n  '애너테이션'  '9 개 돌아옴' \\\n  '주입'        '컨테이너가 함' \\\n  '세 버전'     '다 됨' \\\n  '새 클래스'   '설정 0 줄' \\\n  '거르개'      '한 줄' \\\n  '지나감'      '191 번' \\\n  '감쌈'        '10 개' \\\n  '전체'        '444 에서 70 줄'\n\n빈 메서드                  7 에서 2\n설정                       52 에서 18 줄\n애너테이션                 9 개 돌아옴\n주입                       컨테이너가 함\n세 버전                    다 됨\n새 클래스                  설정 0 줄\n거르개                     한 줄\n지나감                     191 번\n감쌈                       10 개\n전체                       444 에서 70 줄",
+   "note": "**빈 메서드가 일곱에서 둘이 되고 설정이 52 줄에서 18 줄이** 됐다.\n\n**원본에 애너테이션 아홉 개가 돌아오고 `new` 하는 줄이 하나도** 없다.\n\n**세 버전이 다 감싸져 `[ID]` 와 버전 표시를 지우면 여섯 가지 줄뿐**이다.\n\n**새 클래스는 설정 0 줄인데 거르개에 없으면 감싸지고도 안 돌아 값만** 치른다.\n\n**5장의 444 줄이 70 줄이 되고 업무 코드는 v0 의 메서드와 diff 0 줄**이다."
+  }
+ ],
+ "recap": [
+  "**빈 메서드가** 사라졌다.",
+  "**설정이** 줄었다.",
+  "**애너테이션이** 돌아왔다.",
+  "**주입도** 돌아왔다.",
+  "**세 버전이 다** 된다.",
+  "**새 클래스는 0 줄**이다.",
+  "**다** 지나간다.",
+  "**거르개가** 방어선이다.",
+  "**붙어도 안 돌 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "설정을 하나로 줄인다.",
+   "done_when": "빈 메서드가 0 인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "애너테이션을 되돌린다.",
+   "done_when": "주입이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "새 클래스를 만든다.",
+   "done_when": "설정을 안 고친 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "네 장을 표로 견준다.",
+   "done_when": "설정 추이를 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "설정에서 무엇이 사라졌나?",
+   "a": "빈마다 프록시를 만들던 메서드다."
+  },
+  {
+   "q": "무엇을 돌려받았나?",
+   "a": "애너테이션, 컨테이너 주입, 컴포넌트 스캔이다."
+  },
+  {
+   "q": "새 클래스를 만들면?",
+   "a": "설정은 안 고쳐도 되지만 거르개에 없으면 안 돈다."
+  },
+  {
+   "q": "거르개가 왜 중요해졌나?",
+   "a": "설정이 안 거르므로 유일한 방어선이 되어서다."
+  },
+  {
+   "q": "감싸졌는데 안 도는 빈의 문제는?",
+   "a": "아무 일도 안 하면서 프록시 비용만 치른다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 감싸기",
+   "def": "설정에 적지 않아도 조건에 맞는 빈을 후처리기가 감싸는 것."
+  },
+  {
+   "term": "빈 껍데기",
+   "def": "감싸졌지만 걸린 부가 기능이 없는 프록시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — BeanPostProcessor",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Spring AOP APIs",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

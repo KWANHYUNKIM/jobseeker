@@ -472,7 +472,7 @@
           "title": "적용한다",
           "summary": "설정이 하나로 준다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -480,7 +480,7 @@
           "title": "자동 프록시 생성기",
           "summary": "부트가 이미 넣어 뒀다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
