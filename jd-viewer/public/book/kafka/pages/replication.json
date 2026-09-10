@@ -1,0 +1,144 @@
+{
+ "book": "kafka",
+ "id": "replication",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "복제",
+ "summary": "리더와 팔로워.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "복제가 어떻게 일어나는지 안다.",
+  "복제 계수를 정한다.",
+  "고수위(high watermark)를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**브로커 한 대가 죽으면 그 브로커에 있던 파티션은** 어떻게 되나.\n\n> **복제해 두지 않았으면 없어진다.**\n> **`--replication-factor 3` 은 \"같은 파티션을 브로커 세 대에 두라\" 는** 뜻이다."
+  },
+  {
+   "type": "figure",
+   "caption": "팔로워가 리더에서 당겨 온다",
+   "ascii": "   producer\n      |  write\n      v\n   leader (broker 2)        follower (broker 3)     follower (broker 1)\n   log: 0 1 2 3 4              log: 0 1 2 3 4          log: 0 1 2 3\n         ^                          ^                       ^\n         |                          |                       |\n   LEO = 5                     LEO = 5                  LEO = 4\n\n   high watermark = min(LEO of ISR) = 4\n\n   consumers can read up to offset 3 (< HW)\n   offset 4 is written but not yet visible\n\n   팔로워도 컨슈머처럼 fetch 로 당겨 온다",
+   "note": "**팔로워는 특별한 프로토콜이 아니라 컨슈머와 거의 같은 방식으로 당겨** 온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "고수위 — 아직 안 보이는 레코드",
+   "md": "**리더에 쓰였다고 바로 읽히는 게** 아니다.\n\n| 용어 | 뜻 |\n|---|---|\n| **LEO** (Log End Offset) | 그 복제본이 가진 마지막 오프셋 + 1 |\n| **HW** (High Watermark) | **ISR 전부가 가진 지점.** 여기까지만 컨슈머에게 보인다 |\n\n> **왜 감추나** — **리더가 죽어서 팔로워가 리더가 됐을 때, 그 팔로워에 없던 레코드를 컨슈머가 이미 읽었으면 \"있었던 게 없어지는\"** 일이 된다.\n> **HW 까지만 보여 주면 그런 일이 없다.**\n\n**그래서 복제가 느리면 컨슈머도 느려진다** — **HW 가 안 올라가기** 때문이다.\n\n**1.5절의 랙이 안 줄어드는 원인 중 하나**가 이것이다 — **컨슈머가 느린 게 아니라 복제가 밀린** 것."
+  },
+  {
+   "type": "table",
+   "caption": "복제 계수를 몇으로",
+   "columns": [
+    "값",
+    "견디는 장애",
+    "쓰는 곳"
+   ],
+   "rows": [
+    [
+     "1",
+     "**없다.** 브로커 하나 죽으면 유실",
+     "로컬 실습·재생성 가능한 데이터"
+    ],
+    [
+     "2",
+     "한 대",
+     "드물다. `min.insync.replicas=2` 면 한 대만 죽어도 쓰기가 막힌다"
+    ],
+    [
+     "**3**",
+     "**한 대(min.isr=2 와 함께)**",
+     "**사실상의 표준**"
+    ],
+    [
+     "4+",
+     "두 대 이상",
+     "금융권·멀티 AZ 요구"
+    ]
+   ],
+   "note": "**복제 계수는 브로커 수를 넘을 수** 없다. **브로커 3대에 `--replication-factor 4` 는 에러**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "복제는 공짜가 아니다",
+   "md": "| 비용 | 얼마나 |\n|---|---|\n| **디스크** | ×3 (3.4절) |\n| **네트워크** | 쓰기 1건이 **브로커 간 2건**을 더 만든다 |\n| **지연** | `acks=all` 이면 ISR 전부가 받을 때까지 기다린다(6.3절) |\n| 복구 시간 | 브로커가 돌아오면 밀린 만큼 당겨 온다 |\n\n**그래서 이런 계산이** 나온다.\n\n```\n하루 유입 100GB, 복제 3\n  디스크: 300GB/일 × 보관일수\n  네트워크: 유입의 3배가 브로커 간에 흐른다\n```\n\n> **11.2절에서 이걸 표로** 만든다.\n> **복제를 줄여서 아끼려는 유혹이 있는데, 그러면 브로커 한 대 장애가 곧 유실**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "복제와 고수위를 눈으로 본다",
+   "sql": "# --- 복제 계수 1 과 3 ---\n\n$ kt --create --topic rf1 --partitions 1 --replication-factor 1 >/dev/null\n$ kt --create --topic rf3 --partitions 1 --replication-factor 3 >/dev/null\n\n$ kt --describe --topic rf1 --topic rf3 2>/dev/null || { kt --describe --topic rf1; kt --describe --topic rf3; }\nTopic: rf1  PartitionCount: 1  ReplicationFactor: 1\n  Topic: rf1  Partition: 0  Leader: 2  Replicas: 2  Isr: 2\nTopic: rf3  PartitionCount: 1  ReplicationFactor: 3\n  Topic: rf3  Partition: 0  Leader: 3  Replicas: 3,1,2  Isr: 3,1,2\n\n$ echo 'only-copy' | kcp --topic rf1\n$ echo 'three-copies' | kcp --topic rf3\n\n\n# --- rf1 의 리더 브로커를 내린다 ---\n\n$ docker compose stop kafka-2 >/dev/null && sleep 8\n\n$ kt --describe --topic rf1\nTopic: rf1  Partition: 0  Leader: none  Replicas: 2  Isr: 2\n\n#   Leader: none. 읽을 수도 쓸 수도 없다\n\n$ kcc --topic rf1 --from-beginning --timeout-ms 5000 2>&1 | tail -2\n[2026-09-10 14:31:02,441] WARN [Consumer ...] Error while fetching metadata\n  with correlation id 5 : {rf1=LEADER_NOT_AVAILABLE}\nProcessed a total of 0 messages\n\n$ kt --describe --topic rf3\nTopic: rf3  Partition: 0  Leader: 3  Replicas: 3,1,2  Isr: 3,1\n\n$ kcc --topic rf3 --from-beginning --timeout-ms 3000\nthree-copies\nProcessed a total of 1 messages\n\n#   rf3 은 멀쩡하다. ISR 에서 2만 빠졌다\n\n$ docker compose start kafka-2 >/dev/null && sleep 12\n$ kt --describe --topic rf1\nTopic: rf1  Partition: 0  Leader: 2  Replicas: 2  Isr: 2\n\n#   돌아오니 다시 읽힌다. 하지만 그 사이 서비스는 멈춰 있었다\n#   디스크가 통째로 날아갔다면 데이터도 없다\n\n\n# --- 복제 진행 상태 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-replica-verification.sh \\\n    --bootstrap-server kafka-1:19092 --topic-white-list rf3 --report-interval-ms 2000 &\n$ sleep 5\n2026-09-10 14:33:10,102: verification process is healthy: maxLag = 0\n$ kill %1 2>/dev/null\n\n\n# --- 고수위: ISR 이 줄면 쓰기가 어떻게 되나 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name rf3 \\\n    --alter --add-config min.insync.replicas=3 >/dev/null\n\n$ docker compose stop kafka-2 >/dev/null && sleep 8\n\n$ echo 'after-stop' | kcp --topic rf3 --request-required-acks -1 2>&1 | tail -2\n[2026-09-10 14:35:11,203] ERROR Error when sending message to topic rf3\norg.apache.kafka.common.errors.NotEnoughReplicasException: Messages are\n  rejected since there are fewer in-sync replicas than required.\n\n#   ISR 이 2인데 min.insync.replicas=3 이라 acks=all 쓰기가 거부됐다 (3.6절)\n\n$ echo 'acks-1-ok' | kcp --topic rf3 --request-required-acks 1\n$ kcc --topic rf3 --from-beginning --timeout-ms 3000\nthree-copies\nacks-1-ok\n\n#   acks=1 이면 들어간다. 대신 리더가 죽으면 유실될 수 있다 (6.3절)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name rf3 \\\n    --alter --add-config min.insync.replicas=2 >/dev/null\n$ docker compose start kafka-2 >/dev/null && sleep 12\n\n\n# --- 복제 계수를 나중에 늘리려면 ---\n\n$ kt --describe --topic rf1\nTopic: rf1  Partition: 0  Leader: 2  Replicas: 2  Isr: 2\n\n$ cat > /tmp/reassign.json <<'EOF'\n{\"version\":1,\"partitions\":[{\"topic\":\"rf1\",\"partition\":0,\"replicas\":[2,3,1]}]}\nEOF\n$ docker compose cp /tmp/reassign.json kafka-1:/tmp/reassign.json\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-reassign-partitions.sh \\\n    --bootstrap-server kafka-1:19092 --reassignment-json-file /tmp/reassign.json --execute\nSuccessfully started partition reassignment for rf1-0\n\n$ sleep 5 && kt --describe --topic rf1\nTopic: rf1  Partition: 0  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1\n\n#   --alter 로는 못 바꾼다. 재배치 파일을 써야 한다 (5.7절)\n\n$ kt --delete --topic rf1 >/dev/null; kt --delete --topic rf3 >/dev/null"
+  }
+ ],
+ "recap": [
+  "복제 계수는 같은 파티션을 몇 대에 둘 것인가다. 팔로워가 리더에서 당겨 온다.",
+  "고수위(HW)는 ISR 전부가 가진 지점이고 컨슈머는 거기까지만 읽는다. 복제가 밀리면 컨슈머도 밀린다.",
+  "복제 계수 1 은 그 브로커가 죽는 순간 읽지도 쓰지도 못한다. 표준은 3이다.",
+  "복제는 디스크 ×3 과 브로커 간 네트워크를 쓴다.",
+  "복제 계수는 --alter 로 못 바꾼다. 파티션 재배치로 늘린다."
+ ],
+ "drills": [
+  {
+   "task": "복제 계수 1과 3인 토픽을 만들고 리더 브로커를 내려 각각 어떻게 되는지 본다.",
+   "done_when": "rf1 은 Leader: none 이 되고 rf3 은 계속 읽히는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "min.insync.replicas 를 3으로 올린 뒤 브로커를 하나 내리고 acks=all 로 써 본다.",
+   "done_when": "NotEnoughReplicasException 을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "복제 계수 1짜리 토픽을 재배치 파일로 3으로 늘려 본다.",
+   "done_when": "Replicas 가 셋이 되는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "고수위(HW)가 하는 일은.",
+   "a": "ISR 전부가 가진 지점까지만 컨슈머에게 보여 준다. 리더 교체 시 '있었던 게 없어지는' 일을 막는다."
+  },
+  {
+   "q": "복제 계수 1인 토픽의 브로커가 죽으면.",
+   "a": "Leader: none 이 되어 읽지도 쓰지도 못한다. 디스크가 날아갔으면 유실이다."
+  },
+  {
+   "q": "복제 계수를 나중에 늘리려면.",
+   "a": "--alter 가 아니라 kafka-reassign-partitions 로 재배치한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "LEO",
+   "en": "Log End Offset",
+   "what": "복제본이 가진 마지막 오프셋 + 1."
+  },
+  {
+   "term": "고수위",
+   "en": "High Watermark",
+   "what": "ISR 전부가 복제한 지점. 컨슈머가 읽을 수 있는 한계."
+  },
+  {
+   "term": "복제 계수",
+   "en": "replication factor",
+   "what": "같은 파티션의 복제본 수. 브로커 수를 넘을 수 없다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Replication",
+   "url": "https://kafka.apache.org/documentation/#replication",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Reassign partitions",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_partitionassignment",
+   "publisher": "Apache"
+  }
+ ]
+}

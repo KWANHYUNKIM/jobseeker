@@ -1,0 +1,136 @@
+{
+ "book": "kafka",
+ "id": "isr",
+ "no": "3.6",
+ "chapter": 3,
+ "title": "ISR 과 min.insync.replicas",
+ "summary": "몇 대가 받아야 성공인가.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "ISR 에 들고 나는 조건을 안다.",
+  "acks 와 min.isr 의 조합을 안다.",
+  "유실과 가용성의 맞바꿈을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절부터 계속 나온 `Isr:`** 이다. **In-Sync Replicas — 리더를 따라잡은 복제본 목록.**\n\n> **복제본이 셋이어도 ISR 이 하나면 사실상 복제가 안 되고** 있다."
+  },
+  {
+   "type": "table",
+   "caption": "ISR 에 들고 나는 조건",
+   "columns": [
+    "설정",
+    "기본",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "**`replica.lag.time.max.ms`**",
+     "**30초**",
+     "이 시간 안에 리더를 따라잡지 못하면 **ISR 에서 빠진다**"
+    ],
+    [
+     "",
+     "",
+     "다시 따라잡으면 들어온다"
+    ],
+    [
+     "`num.replica.fetchers`",
+     "1",
+     "팔로워가 당겨 오는 스레드 수. 늘리면 복제가 빨라진다"
+    ]
+   ],
+   "note": "**빠지는 이유는 죽어서만이** 아니다 — **GC·디스크 포화·네트워크 지연으로도 빠진다.** **그리고 조용히 다시 들어온다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "acks 와 min.insync.replicas 의 조합",
+   "ascii": "   rf=3, min.insync.replicas=2\n\n   ISR = [1,2,3]                ISR = [1,2]              ISR = [1]\n   ---------------              -----------              ---------\n   acks=0   ok (안 기다림)      ok                       ok\n   acks=1   ok (리더만)         ok                       ok\n   acks=all ok (셋 다)          ok (둘 다)               REJECTED\n                                                          NotEnoughReplicas\n\n   min.insync.replicas 는 acks=all 일 때만 검사된다\n   acks=1 은 ISR 이 하나여도 쓰인다 -> 리더가 죽으면 유실",
+   "note": "**`min.insync.replicas` 는 프로듀서가 `acks=all` 을 줄 때만 의미가** 있다. **둘은 짝**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 min.isr = 2 인가 (rf=3 에서)",
+   "md": "| min.isr | 브로커 1대 죽으면 | 유실 위험 |\n|---|---|---|\n| 1 | **계속 쓴다** | **리더만 갖고 있다가 죽으면 유실** |\n| **2** | **계속 쓴다** (ISR 2) | 낮다. 두 대가 갖고 있다 |\n| 3 | **쓰기가 막힌다** | 없다 |\n\n> **rf=3, min.isr=2, acks=all** 이 **가용성과 내구성의 균형점**이다.\n> **한 대가 죽어도 서비스가 돌고, 두 대가 갖고 있어서 유실이 어렵다.**\n\n**rf=2 로 아끼면** — **min.isr=2 여야 안전한데 그러면 한 대만 죽어도 쓰기가** 막힌다. **그래서 3이 사실상의 표준**이다(3.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "unclean.leader.election — 유실을 허용할 것인가",
+   "md": "**ISR 이 전부 죽고 뒤처진 복제본만 남았다.** **둘 중 하나를 골라야** 한다.\n\n| 설정 | 무슨 일 |\n|---|---|\n| **`unclean.leader.election.enable=false`**(기본) | **파티션이 멈춘다.** ISR 중 하나가 살아날 때까지 |\n| `true` | **뒤처진 복제본이 리더가 된다.** 서비스는 도는데 **일부 레코드가 사라진다** |\n\n```\nISR = [1]  (2,3 은 뒤처짐)\nbroker 1 죽음\n\nfalse -> Leader: none. 1이 돌아와야 한다\ntrue  -> broker 2 가 리더. 1에만 있던 레코드는 없어진다\n```\n\n> **금융·주문은 `false`**, **로그 수집처럼 유실을 견디는 데이터는 `true` 도** 있다.\n> **기본이 `false` 인 것은 \"조용한 유실보다 멈추는 게 낫다\" 는** 판단이다.\n\n**같은 자리에서 `acks=1` 도 같은 맞바꿈**이다 — **빠르지만 리더가 죽으면 잃는다**(6.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "ISR 이 줄고 쓰기가 막히는 것을 만든다",
+   "sql": "$ kt --create --topic safe --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n$ kt --describe --topic safe\nTopic: safe  PartitionCount: 1  ReplicationFactor: 3  Configs: min.insync.replicas=2\n  Topic: safe  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n\n\n# --- 정상: acks=all 로 쓴다 ---\n\n$ echo 'msg-1' | kcp --topic safe --request-required-acks -1\n$ kcc --topic safe --from-beginning --timeout-ms 2000\nmsg-1\n\n\n# --- 브로커 하나를 내린다 (ISR 3 -> 2) ---\n\n$ docker compose stop kafka-3 >/dev/null && sleep 35\n$ kt --describe --topic safe\n  Topic: safe  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2\n\n#   30초(replica.lag.time.max.ms)가 지나 3이 ISR 에서 빠졌다\n\n$ echo 'msg-2' | kcp --topic safe --request-required-acks -1\n$ kcc --topic safe --from-beginning --timeout-ms 2000\nmsg-1\nmsg-2\n\n#   ISR 이 2라 min.insync.replicas=2 를 만족한다. 쓰기 성공\n\n\n# --- 하나 더 내린다 (ISR 2 -> 1) ---\n\n$ docker compose stop kafka-2 >/dev/null && sleep 35\n$ kt --describe --topic safe\n  Topic: safe  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1\n\n$ echo 'msg-3' | kcp --topic safe --request-required-acks -1 2>&1 | tail -3\n[2026-09-10 14:52:08,113] ERROR Error when sending message to topic safe with key: null,\n  value: 5 bytes with error:\norg.apache.kafka.common.errors.NotEnoughReplicasException: Messages are rejected\n  since there are fewer in-sync replicas than required.\n\n#   쓰기가 막혔다. 유실 위험보다 멈추는 쪽을 골랐다\n\n\n# --- acks=1 이면 들어간다 ---\n\n$ echo 'msg-4-acks1' | kcp --topic safe --request-required-acks 1\n$ kcc --topic safe --from-beginning --timeout-ms 2000\nmsg-1\nmsg-2\nmsg-4-acks1\n\n#   지금 이 레코드는 브로커 1에만 있다\n#   1이 죽고 2가 리더가 되면 msg-4 는 사라진다 (6.3절)\n\n\n# --- 되살리면 ISR 이 돌아온다 ---\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n$ kt --describe --topic safe\n  Topic: safe  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n\n$ echo 'msg-5' | kcp --topic safe --request-required-acks -1\n$ kcc --topic safe --from-beginning --timeout-ms 2000 | tail -2\nmsg-4-acks1\nmsg-5\n\n#   따라잡고 ISR 에 다시 들어왔다\n\n\n# --- unclean 설정 확인 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type brokers --entity-default --describe \\\n    2>/dev/null | head -2\nDefault configs for brokers in the cluster are:\n\n$ docker compose exec -T kafka-1 sh -c \\\n    'grep -r unclean /opt/kafka/config/ 2>/dev/null | head -2' || \\\n  echo 'unclean.leader.election.enable = false (기본값)'\nunclean.leader.election.enable = false (기본값)\n\n#   기본이 false 다. 조용한 유실보다 멈추는 쪽\n\n\n# --- under-replicated 를 감시한다 (11.1절) ---\n\n$ kt --describe --under-min-isr-partitions\n(비어 있으면 정상)\n\n$ docker compose stop kafka-2 kafka-3 >/dev/null && sleep 35\n$ kt --describe --under-min-isr-partitions\n  Topic: safe  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1\n\n#   --under-min-isr-partitions 는 '지금 acks=all 이 막히는' 파티션을 보여 준다\n#   운영에서 알람을 걸 지표다\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n$ kt --delete --topic safe >/dev/null"
+  }
+ ],
+ "recap": [
+  "ISR 은 replica.lag.time.max.ms(30초) 안에 리더를 따라잡은 복제본이다. GC·디스크로도 빠질 수 있다.",
+  "min.insync.replicas 는 acks=all 일 때만 검사된다. 둘은 짝이다.",
+  "rf=3 · min.isr=2 · acks=all 이 가용성과 내구성의 균형점이다.",
+  "ISR 이 min.isr 보다 적으면 acks=all 쓰기가 거부된다. acks=1 은 들어가지만 유실될 수 있다.",
+  "unclean.leader.election 은 '멈출 것인가 잃을 것인가' 의 선택이다. 기본은 멈춘다."
+ ],
+ "drills": [
+  {
+   "task": "min.insync.replicas=2 인 토픽에서 브로커를 하나씩 내리며 acks=all 쓰기를 시도한다.",
+   "done_when": "ISR 이 1이 되는 순간 NotEnoughReplicasException 이 나는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "같은 상태에서 acks=1 로 쓰고, 그 레코드가 몇 대에 있는지 생각해 본다.",
+   "done_when": "리더만 갖고 있어 유실 가능한 상태임을 설명할 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "`--under-min-isr-partitions` 로 지금 쓰기가 막히는 파티션을 확인한다.",
+   "done_when": "평소에 비어 있고 장애 때 나오는 것을 확인한다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "min.insync.replicas 는 언제 검사되나.",
+   "a": "프로듀서가 acks=all 로 보낼 때만. acks=0/1 에는 영향이 없다."
+  },
+  {
+   "q": "rf=3 에서 min.isr 을 3으로 두면 무엇이 문제인가.",
+   "a": "브로커 한 대만 죽어도 acks=all 쓰기가 전부 막힌다."
+  },
+  {
+   "q": "unclean.leader.election.enable=true 의 대가는.",
+   "a": "뒤처진 복제본이 리더가 되어 일부 레코드가 사라진다. 대신 서비스는 계속 돈다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ISR",
+   "what": "리더를 따라잡은 복제본 목록."
+  },
+  {
+   "term": "min.insync.replicas",
+   "what": "acks=all 성공에 필요한 최소 ISR 수."
+  },
+  {
+   "term": "unclean leader election",
+   "what": "ISR 밖 복제본을 리더로 뽑는 것. 유실을 허용한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Replication and ISR",
+   "url": "https://kafka.apache.org/documentation/#replication",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Durability and availability guarantees",
+   "url": "https://docs.confluent.io/kafka/design/replication.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

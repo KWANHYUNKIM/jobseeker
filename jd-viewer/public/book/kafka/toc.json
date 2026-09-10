@@ -152,7 +152,7 @@
           "title": "복제",
           "summary": "리더와 팔로워.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -160,7 +160,7 @@
           "title": "ISR 과 min.insync.replicas",
           "summary": "몇 대가 받아야 성공인가.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.7",
@@ -168,7 +168,7 @@
           "title": "컨트롤러와 리더 선출",
           "summary": "브로커가 죽으면 누가 정하나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

@@ -1,0 +1,133 @@
+{
+ "book": "kafka",
+ "id": "controller",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "컨트롤러와 리더 선출",
+ "summary": "브로커가 죽으면 누가 정하나.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "리더 선출 과정을 안다.",
+  "클라이언트가 어떻게 따라가는지 안다.",
+  "선호 리더와 균형을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 브로커를 내리니 리더가 옮겨** 갔다. **누가 정했나.**\n\n> **컨트롤러**다(3.2절). **KRaft 쿼럼의 리더가 그 역할을** 한다."
+  },
+  {
+   "type": "steps",
+   "caption": "브로커가 죽고 나서 일어나는 일",
+   "items": [
+    {
+     "title": "세션이 끊긴다",
+     "md": "**컨트롤러가 브로커의 하트비트를 못 받는다**(`broker.session.timeout.ms`, 기본 9초)"
+    },
+    {
+     "title": "그 브로커를 뺀다",
+     "md": "**메타데이터 로그에 \"브로커 등록 해제\" 레코드**를 쓴다"
+    },
+    {
+     "title": "영향받는 파티션을 찾는다",
+     "md": "그 브로커가 리더였던 파티션 전부"
+    },
+    {
+     "title": "새 리더를 고른다",
+     "md": "**ISR 중에서** 고른다. 없으면 `unclean` 설정에 따라(3.6절)"
+    },
+    {
+     "title": "메타데이터를 퍼뜨린다",
+     "md": "브로커들이 로그를 복제해 새 지도를 갖는다"
+    },
+    {
+     "title": "클라이언트가 따라온다",
+     "md": "**`NOT_LEADER_OR_FOLLOWER` 를 받으면 메타데이터를 다시** 받는다"
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클라이언트는 에러를 받고 알아챈다",
+   "md": "**클라이언트에게 \"리더가 바뀌었어\" 라고 알려 주지** 않는다.\n\n```\n프로듀서: 파티션 0 리더(브로커 2)에게 쓴다\n브로커 2:  이제 내가 리더가 아니다\n           -> NOT_LEADER_OR_FOLLOWER 에러\n프로듀서: 메타데이터를 다시 받는다 -> 새 리더에게 재시도\n```\n\n| 설정 | 기본 | 뜻 |\n|---|---|---|\n| `retries` | **Integer.MAX_VALUE** | 재시도 횟수(6.4절) |\n| `retry.backoff.ms` | 100ms | 재시도 간격 |\n| `metadata.max.age.ms` | 5분 | 주기적 메타데이터 갱신 |\n| **`delivery.timeout.ms`** | **2분** | 전체 시한. 이걸 넘으면 실패 |\n\n> **그래서 리더 교체는 애플리케이션 코드에 안** 보인다 — **몇 백 ms 의 지연으로** 지나간다.\n> **다만 `acks=all` + 재시도면 그 사이에 중복이 생길 수** 있다(6.4·8.1절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리더가 자동으로 안 돌아온다",
+   "md": "**2.4절에서 봤다.** **브로커가 살아나도 리더는 옮겨 간 채로** 있다.\n\n| 상황 | 결과 |\n|---|---|\n| 브로커 2가 죽음 | 2의 리더들이 1,3 으로 흩어진다 |\n| 브로커 2가 돌아옴 | **팔로워로만 참여**한다. 리더는 안 되찾는다 |\n| 이게 반복되면 | **한두 브로커에 리더가 몰린다.** 그 브로커만 바쁘다 |\n\n**되돌리는 법**:\n\n```bash\nkafka-leader-election.sh --election-type preferred --all-topic-partitions\n```\n\n**또는 자동으로**:\n\n```\nauto.leader.rebalance.enable=true          # 기본 true\nleader.imbalance.check.interval.seconds=300\nleader.imbalance.per.broker.percentage=10\n```\n\n> **기본이 켜져 있지만 불균형이 10%를 넘어야 움직인다** — **작은 클러스터에서는 안 움직이는 것처럼** 보인다.\n> **11.3절에서 이걸 감시 항목으로** 넣는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "리더 교체를 관찰한다",
+   "sql": "$ kt --create --topic elect --partitions 6 --replication-factor 3 >/dev/null\n\n$ kt --describe --topic elect | awk '/Leader:/ {print \"p\"$4\" leader=\"$6}'\np0 leader=1\np1 leader=2\np2 leader=3\np3 leader=1\np4 leader=2\np5 leader=3\n\n#   여섯 파티션의 리더가 골고루 나뉘어 있다\n\n\n# --- 쓰면서 브로커를 내린다 ---\n\n$ (for i in $(seq 1 2000); do echo \"m-$i\"; sleep 0.01; done | \\\n    kcp --topic elect --request-required-acks -1) &\n\n$ sleep 3 && docker compose stop kafka-2 >/dev/null\n$ sleep 10\n\n$ kt --describe --topic elect | awk '/Leader:/ {print \"p\"$4\" leader=\"$6\" isr=\"$8}'\np0 leader=1 isr=1,3\np1 leader=3 isr=3,1\np2 leader=3 isr=3,1\np3 leader=1 isr=1,3\np4 leader=1 isr=1,3\np5 leader=3 isr=3,1\n\n#   2가 맡던 p1, p4 가 3과 1로 넘어갔다\n\n$ wait 2>/dev/null\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic elect | \\\n    awk -F: '{s+=$3} END {print \"total records =\", s}'\ntotal records = 2000\n\n#   2000건이 다 들어갔다. 리더 교체 중에도 프로듀서가 재시도로 넘어갔다\n\n\n# --- 프로듀서 로그에는 이렇게 남는다 ---\n\n#   WARN [Producer clientId=console-producer] Received invalid metadata error in\n#     produce request on partition elect-1 due to\n#     org.apache.kafka.common.errors.NotLeaderOrFollowerException. Going to request\n#     metadata update now\n#\n#   에러를 받고 -> 메타데이터를 다시 받고 -> 새 리더에게 재시도했다\n\n\n# --- 브로커가 돌아와도 리더는 안 돌아온다 ---\n\n$ docker compose start kafka-2 >/dev/null && sleep 20\n\n$ kt --describe --topic elect | awk '/Leader:/ {print $6}' | sort | uniq -c\n   3 1\n   3 3\n\n#   2번은 리더가 하나도 없다. 팔로워로만 참여한다\n\n$ kt --describe --topic elect | awk '/Leader:/ {print \"p\"$4\" leader=\"$6\" replicas=\"$8}' | head -3\np0 leader=1 replicas=1,2,3\np1 leader=3 replicas=2,3,1\np2 leader=3 replicas=3,1,2\n\n#   p1 의 Replicas 첫 번째는 2다 = 선호 리더는 2인데 리더는 3이다\n\n\n# --- 선호 리더로 되돌린다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-leader-election.sh \\\n    --bootstrap-server kafka-1:19092 --election-type preferred --all-topic-partitions\nSuccessfully completed leader election (PREFERRED) for partitions elect-1, elect-4\n\n$ kt --describe --topic elect | awk '/Leader:/ {print $6}' | sort | uniq -c\n   2 1\n   2 2\n   2 3\n\n#   균형이 돌아왔다\n\n\n# --- 컨트롤러 자신이 죽으면 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | awk '/LeaderId/{print}'\nLeaderId:               3\n\n$ docker compose stop kafka-3 >/dev/null && sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | awk '/LeaderId|CurrentVoters/{print}'\nLeaderId:               1\nCurrentVoters:          [1,2,3]\n\n#   쿼럼이 새 리더(1)를 뽑았다. 클러스터는 계속 돈다\n#   주키퍼 시절에는 이 전환이 파티션 수만큼 느렸다 (3.2절)\n\n$ docker compose start kafka-3 >/dev/null && sleep 15\n$ kt --delete --topic elect >/dev/null"
+  }
+ ],
+ "recap": [
+  "컨트롤러가 브로커의 하트비트를 놓치면 그 브로커를 빼고 ISR 중에서 새 리더를 뽑는다.",
+  "클라이언트는 통보를 안 받는다. NOT_LEADER_OR_FOLLOWER 에러를 받고 메타데이터를 다시 받아 재시도한다.",
+  "그래서 리더 교체는 대개 코드에 안 보이지만, 재시도 때문에 중복이 생길 수 있다.",
+  "브로커가 돌아와도 리더는 안 돌아온다. preferred election 이나 자동 리밸런스가 필요하다.",
+  "컨트롤러가 죽으면 쿼럼이 새 리더를 뽑는다. KRaft 라 전환이 빠르다."
+ ],
+ "drills": [
+  {
+   "task": "레코드를 계속 쓰면서 브로커를 내리고, 총 레코드 수가 맞는지 확인한다.",
+   "done_when": "리더 교체 중에도 유실 없이 들어가는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "브로커를 되살린 뒤 리더 분포를 세고 preferred election 을 돌린다.",
+   "done_when": "자동으로 안 돌아오는 것과 명령으로 돌아오는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "컨트롤러 노드를 내리고 쿼럼 리더가 바뀌는 것을 확인한다.",
+   "done_when": "LeaderId 가 바뀌고 클러스터가 계속 도는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "클라이언트는 리더가 바뀐 것을 어떻게 아나.",
+   "a": "NOT_LEADER_OR_FOLLOWER 에러를 받고 메타데이터를 다시 요청한다. 통보받지 않는다."
+  },
+  {
+   "q": "브로커가 되살아나면 리더 균형이 자동으로 돌아오나.",
+   "a": "자동 리밸런스가 켜져 있어도 불균형이 임계값을 넘어야 움직인다. 대개 preferred election 을 직접 돌린다."
+  },
+  {
+   "q": "리더 교체가 중복을 만들 수 있는 이유는.",
+   "a": "프로듀서가 재시도하는데, 앞의 전송이 사실 성공했을 수 있기 때문(6.4절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "선호 리더",
+   "what": "Replicas 목록의 첫 번째 브로커."
+  },
+  {
+   "term": "NOT_LEADER_OR_FOLLOWER",
+   "what": "그 브로커가 해당 파티션의 리더가 아닐 때 돌려주는 에러."
+  },
+  {
+   "term": "broker.session.timeout.ms",
+   "what": "컨트롤러가 브로커를 죽은 것으로 판단하는 시간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Leader election",
+   "url": "https://kafka.apache.org/documentation/#design_replicamanagment",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Balancing leadership",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_leader_balancing",
+   "publisher": "Apache"
+  }
+ ]
+}
